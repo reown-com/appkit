@@ -77,13 +77,13 @@ export interface Balance {
   name: string
   symbol: string
   chainId: string
-  value: string
+  value: number
   price: number
   quantity: BalanceQuantity
   iconUrl: string
 }
 
 type BalanceQuantity = {
-  decimals: number
-  quantity: number
+  decimals: string
+  numeric: string
 }

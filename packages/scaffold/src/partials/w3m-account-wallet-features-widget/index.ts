@@ -3,7 +3,8 @@ import {
   ModalController,
   NetworkController,
   AssetUtil,
-  RouterController
+  RouterController,
+  CoreHelperUtil
 } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -30,6 +31,8 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
   @state() private currentTab = AccountController.state.currentTab
 
+  @state() private tokenBalance = AccountController.state.tokenBalance
+
   public constructor() {
     super()
     this.unsubscribe.push(
@@ -40,6 +43,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
             this.profileImage = val.profileImage
             this.profileName = val.profileName
             this.currentTab = val.currentTab
+            this.tokenBalance = val.tokenBalance
           } else {
             ModalController.close()
           }
@@ -80,7 +84,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
         avatarSrc=${ifDefined(this.profileImage ? this.profileImage : undefined)}
         ?isprofilename=${Boolean(this.profileName)}
       ></wui-profile-button>
-      <wui-balance dollars="0" pennies="00"></wui-balance>
+      ${this.tokenBalanceTemplate()}
       <wui-flex gap="s">
         <wui-tooltip-select
           @click=${this.onBuyClick.bind(this)}
@@ -109,98 +113,27 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   // -- Private ------------------------------------------- //
   private listContentTemplate() {
     if (this.currentTab === 0) {
-      return this.tokenTemplate()
-    } else if (this.currentTab === 1) {
-      return this.nftTemplate()
-    } else if (this.currentTab === 2) {
-      return this.activityTemplate()
+      return html`<w3m-account-tokens-widget></w3m-account-tokens-widget>`
+    }
+    if (this.currentTab === 1) {
+      return html`<w3m-account-nfts-widget></w3m-account-nfts-widget>`
+    }
+    if (this.currentTab === 2) {
+      return html`<w3m-account-activity-widget></w3m-account-activity-widget>`
     }
 
     return this.tokenTemplate()
   }
 
-  private tokenTemplate() {
-    return html` <wui-flex flexDirection="column" gap="xs"
-      ><wui-list-description
-        @click=${this.onBuyClick.bind(this)}
-        text="Buy Crypto"
-        description="Easy with card or bank account"
-        icon="card"
-        iconColor="success-100"
-        iconBackgroundColor="success-100"
-        tag="popular"
-      ></wui-list-description
-      ><wui-list-description
-        @click=${this.onReceiveClick.bind(this)}
-        text="Receive funds"
-        description="Transfer tokens on your wallet"
-        icon="arrowBottomCircle"
-        iconColor="fg-200"
-        iconBackgroundColor="fg-200"
-      ></wui-list-description
-    ></wui-flex>`
-  }
+  private tokenBalanceTemplate() {
+    if (this.tokenBalance && this.tokenBalance?.length >= 0) {
+      const value = CoreHelperUtil.calculateBalance(this.tokenBalance)
+      const { dollars = '0', pennies = '00' } = CoreHelperUtil.formatTokenBalance(value)
 
-  private nftTemplate() {
-    return html` <wui-flex
-      class="contentContainer"
-      alignItems="center"
-      justifyContent="center"
-      flexDirection="column"
-      gap="l"
-    >
-      <wui-icon-box
-        icon="wallet"
-        size="inherit"
-        iconColor="fg-200"
-        backgroundColor="fg-200"
-        iconSize="lg"
-      ></wui-icon-box>
-      <wui-flex
-        class="textContent"
-        gap="xs"
-        flexDirection="column"
-        justifyContent="center"
-        flexDirection="column"
-      >
-        <wui-text variant="paragraph-500" align="center" color="fg-100">No NFTs yet</wui-text>
-        <wui-text variant="small-400" align="center" color="fg-200"
-          >Transfer from another wallets to get started</wui-text
-        >
-      </wui-flex>
-      <wui-link @click=${this.onReceiveClick.bind(this)}>Receive NFTs</wui-link>
-    </wui-flex>`
-  }
+      return html`<wui-balance dollars=${dollars} pennies=${pennies}></wui-balance>`
+    }
 
-  private activityTemplate() {
-    return html` <wui-flex
-      class="contentContainer"
-      alignItems="center"
-      justifyContent="center"
-      flexDirection="column"
-      gap="l"
-    >
-      <wui-icon-box
-        icon="swapHorizontal"
-        size="inherit"
-        iconColor="fg-200"
-        backgroundColor="fg-200"
-        iconSize="lg"
-      ></wui-icon-box>
-      <wui-flex
-        class="textContent"
-        gap="xs"
-        flexDirection="column"
-        justifyContent="center"
-        flexDirection="column"
-      >
-        <wui-text variant="paragraph-500" align="center" color="fg-100">No activity yet</wui-text>
-        <wui-text variant="small-400" align="center" color="fg-200"
-          >Your next transactions will appear here</wui-text
-        >
-      </wui-flex>
-      <wui-link @click=${this.onReceiveClick.bind(this)}>Trade</wui-link>
-    </wui-flex>`
+    return html`<wui-balance dollars="0" pennies="00"></wui-balance>`
   }
 
   private activateAccountTemplate() {
