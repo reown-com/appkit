@@ -1,20 +1,12 @@
-FROM node:20-bookworm as base
+FROM node:20-bookworm
 
-
-WORKDIR /
-
-# RUN apk --update --no-cache \
-#     add g++ make python3
-
-FROM base as build
-
-WORKDIR /
+WORKDIR /src
 
 COPY ../ ./
 RUN npm ci
 RUN npm run build
 
-WORKDIR /apps/laboratory/
+WORKDIR ./apps/laboratory/
 
 RUN npm run playwright:install
 
