@@ -1,5 +1,6 @@
 import { Connection } from '@solana/web3.js'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
+import { OptionsController } from '@web3modal/core'
 import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@web3modal/scaffold-utils'
 
 import { WalletConnectConnector } from './connectors/WalletConnectConnector'
@@ -189,7 +190,11 @@ export class Web3Modal extends Web3ModalScaffold {
       qrcode: true
     })
     SolStoreUtil.setConnection(
-      new Connection(chain?.rpcUrl ?? 'https://api.devnet.solana.com', 'recent')
+      new Connection(
+        SolHelpersUtil.detectRpcUrl(chain, OptionsController.state.projectId) ??
+          'https://api.devnet.solana.com',
+        'recent'
+      )
     )
 
     SolStoreUtil.subscribeKey('address', () => {
@@ -375,7 +380,11 @@ export class Web3Modal extends Web3ModalScaffold {
               ? 'trustWallet'
               : (providerType.split('_')[1] as AdapterKey)
           SolStoreUtil.setConnection(
-            new Connection(chain.rpcUrl ?? 'https://api.devnet.solana.com', 'recent')
+            new Connection(
+              SolHelpersUtil.detectRpcUrl(chain, OptionsController.state.projectId) ??
+                'https://api.devnet.solana.com',
+              'recent'
+            )
           )
           this.setAddress(this.walletAdapters[wallet].publicKey?.toString())
           await this.syncAccount()
@@ -387,7 +396,11 @@ export class Web3Modal extends Web3ModalScaffold {
 
           const namespaces = this.WalletConnectConnector.generateNamespaces(chain.chainId)
           SolStoreUtil.setConnection(
-            new Connection(chain.rpcUrl ?? 'https://api.devnet.solana.com', 'recent')
+            new Connection(
+              SolHelpersUtil.detectRpcUrl(chain, OptionsController.state.projectId) ??
+                'https://api.devnet.solana.com',
+              'recent'
+            )
           )
           universalProvider.connect({ namespaces, pairingTopic: undefined })
           await this.syncAccount()

@@ -1,10 +1,19 @@
 import { PresetsUtil } from '@web3modal/scaffold-utils'
 
-import type { CaipNetwork } from '@web3modal/core'
-import type { Chain, Provider } from './SolanaTypesUtil'
 import { SolConstantsUtil } from './SolanaConstantsUtil'
 
+import type { CaipNetwork } from '@web3modal/core'
+import type { Chain, Provider } from './SolanaTypesUtil'
+
 export const SolHelpersUtil = {
+  detectRpcUrl(chain: Chain, projectId: string) {
+    if (chain.rpcUrl.includes('rpc.walletconnect.com/')) {
+      return `${chain.rpcUrl}?chainId=solana:${chain.chainId}&projectId=${projectId}`
+    }
+
+    return chain.rpcUrl
+  },
+
   getChain(chains: Chain[], chainId: string | null) {
     const chain = chains.find(lChain => lChain.chainId === chainId)
 
