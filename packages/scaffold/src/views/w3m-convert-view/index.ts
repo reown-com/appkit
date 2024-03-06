@@ -68,7 +68,6 @@ export class W3mConvertView extends LitElement {
           this.toToken = newToToken
         }),
         SwapApiController.subscribe(newState => {
-          console.log('>>> newState', newState.tokensPriceMap)
           if (this.loading !== newState.loading) {
             this.loading = newState.loading
           }
@@ -108,8 +107,6 @@ export class W3mConvertView extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    console.log('>>> toToken', this.toToken)
-
     return html`
       <wui-flex flexDirection="column" padding="s" gap="s">
         ${this.initialLoading || this.isTransactionPending
@@ -291,10 +288,7 @@ export class W3mConvertView extends LitElement {
               <wui-flex flexDirection="column" gap="xs">
                 <wui-flex justifyContent="space-between" class="details-row">
                   <wui-text variant="small-400" color="fg-150">Network cost</wui-text>
-                  <wui-flex>
-                    <wui-text variant="small-400" color="fg-200">$5.3836</wui-text>
-                    <wui-text variant="small-400" color="fg-100">15.4007 1INCH</wui-text>
-                  </wui-flex>
+                  <wui-text variant="small-400" color="fg-100">$-</wui-text>
                 </wui-flex>
               </wui-flex>
               <wui-flex flexDirection="column" gap="xs">

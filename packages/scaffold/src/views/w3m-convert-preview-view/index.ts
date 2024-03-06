@@ -1,8 +1,15 @@
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
-import { SwapApiController } from '@web3modal/core'
+import {
+  AccountController,
+  AssetUtil,
+  NetworkController,
+  RouterController,
+  SwapApiController
+} from '@web3modal/core'
 import { state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('w3m-convert-preview-view')
 export class W3mConvertPreviewView extends LitElement {
@@ -19,7 +26,11 @@ export class W3mConvertPreviewView extends LitElement {
 
   @state() private sourceToken = SwapApiController.state.sourceToken
 
-  @state() private tokensPriceMap = SwapApiController.state.tokensPriceMap
+  @state() private caipNetwork = NetworkController.state.caipNetwork
+
+  @state() private isTransactionPending = SwapApiController.state.isTransactionPending
+
+  @state() private balanceSymbol = AccountController.state.balanceSymbol
 
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
@@ -27,10 +38,23 @@ export class W3mConvertPreviewView extends LitElement {
 
     this.unsubscribe.push(
       ...[
+        AccountController.subscribeKey('balanceSymbol', newBalanceSymbol => {
+          if (this.balanceSymbol !== newBalanceSymbol) {
+            RouterController.goBack()
+            // TODO(enes): maybe reset state as well?
+          }
+        }),
+        NetworkController.subscribeKey('caipNetwork', newCaipNetwork => {
+          if (this.caipNetwork !== newCaipNetwork) {
+            this.caipNetwork = newCaipNetwork
+          }
+        }),
         SwapApiController.subscribe(newState => {
           this.sourceToken = newState.sourceToken
           this.toToken = newState.toToken
-          this.tokensPriceMap = newState.tokensPriceMap
+          this.sourceTokenAmount = newState.sourceTokenAmount
+          this.toTokenAmount = newState.toTokenAmount
+          this.isTransactionPending = newState.isTransactionPending
         })
       ]
     )
@@ -122,20 +146,17 @@ export class W3mConvertPreviewView extends LitElement {
 
         <wui-flex class="details-container" flexDirection="column" alignItems="center" gap="xs">
           <wui-flex justifyContent="space-between" alignItems="center" class="details-row">
-            <wui-text variant="paragraph-400" color="fg-200">Price</wui-text>
-            <wui-flex flexDirection="column" gap="4xs" alignItems="flex-end">
-              <wui-text variant="small-400" color="fg-100">1 ETH = 5,700.05 1INCH</wui-text>
-              <wui-text variant="small-400" color="fg-200">$2,003.62</wui-text>
-            </wui-flex>
+            <wui-text variant="paragraph-400" color="fg-200">Network cost</wui-text>
+            <wui-text variant="small-400" color="fg-100">$-</wui-text>
           </wui-flex>
 
           <wui-flex justifyContent="space-between" class="details-row">
             <wui-text variant="paragraph-500" color="fg-200">Network</wui-text>
             <wui-flex alignItems="center" gap="xs">
-              <wui-text variant="paragraph-400" color="fg-200">Ethereum</wui-text>
+              <wui-text variant="paragraph-400" color="fg-200">${this.caipNetwork?.name}</wui-text>
               <wui-image
                 class="token-image"
-                src="https://explorer-api.walletconnect.com/w3m/v1/getAssetImage/692ed6ba-e569-459a-556a-776476829e00?projectId=c1781fc385454899a2b1385a2b83df3b"
+                src=${ifDefined(AssetUtil.getNetworkImage(this.caipNetwork))}
               ></wui-image>
             </wui-flex>
           </wui-flex>
@@ -149,17 +170,52 @@ export class W3mConvertPreviewView extends LitElement {
           </wui-flex>
 
           <wui-flex justifyContent="space-between" class="details-row">
-            <wui-text variant="paragraph-400" color="fg-200">Service fee</wui-text>
-            <wui-flex>
-              <wui-text variant="small-400" color="fg-100">Free</wui-text>
+            <wui-text variant="paragraph-400" color="fg-200">Provider fee</wui-text>
+            <wui-flex alignItems="center" justifyContent="center" class="free-badge">
+              <wui-text variant="micro-700" color="success-100">Free</wui-text>
             </wui-flex>
           </wui-flex>
         </wui-flex>
 
-        <wui-flex class="details-container" flexDirection="column" alignItems="center" gap="xs">
+        <wui-flex flexDirection="row" alignItems="center" justifyContent="center" gap="xs">
+          <wui-icon size="sm" color="fg-200" name="infoCircle"></wui-icon>
+          <wui-text variant="small-400" color="fg-200">Review transaction carefully</wui-text>
+        </wui-flex>
+
+        <wui-flex
+          class="action-buttons-container"
+          flexDirection="row"
+          alignItems="center"
+          justifyContent="space-between"
+          gap="xs"
+        >
+          <button
+            class="cancel-button"
+            ?disabled=${this.isTransactionPending}
+            @click=${this.onCancelTransaction.bind(this)}
+          >
+            <wui-text variant="paragraph-600" color="fg-200">Cancel</wui-text>
+          </button>
+          <button
+            class="convert-button"
+            ?disabled=${this.isTransactionPending}
+            @click=${this.onSendTransaction.bind(this)}
+          >
+            ${this.isTransactionPending
+              ? html`<wui-loading-spinner color="inverse-100"></wui-loading-spinner>`
+              : html`<wui-text variant="paragraph-600" color="inverse-100">Convert</wui-text>`}
+          </button>
         </wui-flex>
       </wui-flex>
     `
+  }
+
+  private onCancelTransaction() {
+    RouterController.goBack()
+  }
+
+  private async onSendTransaction() {
+    await SwapApiController.swapTokens()
   }
 }
 

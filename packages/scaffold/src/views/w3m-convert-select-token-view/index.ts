@@ -92,8 +92,8 @@ export class W3mConvertSelectTokenView extends LitElement {
             <wui-text variant="paragraph-500" color="fg-200">Popular tokens</wui-text>
           </wui-flex>
           <wui-flex flexDirection="column" gap="1xs">
-            ${SwapApiController.state.tokens &&
-            Object.values(SwapApiController.state.tokens).map(
+            ${SwapApiController.state.popularTokens &&
+            Object.values(SwapApiController.state.popularTokens).map(
               tokenInfo => html`
                 <wui-token-list-item
                   name=${tokenInfo.name}
@@ -111,8 +111,8 @@ export class W3mConvertSelectTokenView extends LitElement {
   }
 
   private templateSuggestedTokens() {
-    const tokens = SwapApiController.state.tokens
-      ? Object.values(SwapApiController.state.tokens).slice(0, 8)
+    const tokens = SwapApiController.state.popularTokens
+      ? Object.values(SwapApiController.state.popularTokens).slice(0, 8)
       : null
 
     if (!tokens) {

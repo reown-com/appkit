@@ -40,7 +40,7 @@ import {
 } from './utils/helpers.js'
 import { W3mFrameHelpers, W3mFrameRpcConstants } from '@web3modal/wallet'
 import type { W3mFrameProvider } from '@web3modal/wallet'
-import { ConnectionController, ConstantsUtil as CoreConstants } from '@web3modal/core'
+import { ConstantsUtil as CoreConstants } from '@web3modal/core'
 import type { defaultWagmiConfig as coreConfig } from './utils/defaultWagmiCoreConfig.js'
 import type { defaultWagmiConfig as reactConfig } from './utils/defaultWagmiReactConfig.js'
 
@@ -174,33 +174,27 @@ export class Web3Modal extends Web3ModalScaffold {
 
       signMessage: async message => signMessage(this.wagmiConfig, { message }),
 
-      sendTransaction: async ({
-        data,
-        to,
-        value,
-        gas,
-        gasPrice,
-        chainId,
-        address
-      }: SendTransactionArgs) => {
+      sendTransaction: async (data: SendTransactionArgs) => {
         try {
-          // Prepare transaction parameters
-          const params = {
-            to,
-            data,
-            value,
-            gas,
-            gasPrice,
-            chainId,
-            account: address,
-            type: 'legacy'
-          }
-
           // Prepare the transaction with the given parameters
-          await prepareTransactionRequest(this.wagmiConfig, params)
+          await prepareTransactionRequest(this.wagmiConfig, {
+            account: data.address,
+            to: data.to,
+            value: data.value,
+            gas: data.gas,
+            gasPrice: data.gasPrice,
+            type: 'legacy'
+          })
 
           // Send the transaction
-          const tx = await wagmiSendTransaction(this.wagmiConfig, params)
+          const tx = await wagmiSendTransaction(this.wagmiConfig, {
+            account: data.address,
+            to: data.to,
+            value: data.value,
+            gas: data.gas,
+            gasPrice: data.gasPrice,
+            type: 'legacy'
+          })
 
           // Optionally wait for the transaction to be mined
           await waitForTransactionReceipt(this.wagmiConfig, { hash: tx, timeout: 25000 })

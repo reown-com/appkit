@@ -42,6 +42,10 @@ export default css`
     background: var(--wui-gray-glass-005);
   }
 
+  .preview-token-details-container {
+    width: 100%;
+  }
+
   .details-row {
     width: 100%;
     padding: var(--wui-spacing-s) var(--wui-spacing-xl);
@@ -49,7 +53,43 @@ export default css`
     background: var(--wui-gray-glass-002);
   }
 
-  .preview-token-details-container {
+  .action-buttons-container {
     width: 100%;
+    gap: var(--wui-spacing-xs);
+  }
+
+  .action-buttons-container > button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    height: 48px;
+    border-radius: var(--wui-border-radius-xs);
+    border: none;
+    box-shadow: inset 0 0 0 1px var(--wui-gray-glass-010);
+  }
+
+  .action-buttons-container > button:disabled {
+    opacity: 0.8;
+    cursor: not-allowed;
+  }
+
+  .action-buttons-container > button.cancel-button {
+    flex: 2;
+  }
+
+  .action-buttons-container > button.convert-button {
+    flex: 4;
+    background-color: var(--wui-color-accent-090);
+  }
+
+  .action-buttons-container > button.convert-button > wui-text {
+    color: white;
+  }
+
+  .free-badge {
+    background: rgba(38, 217, 98, 0.15);
+    border-radius: var(--wui-border-radius-4xs);
+    padding: 4.5px 6px;
   }
 `

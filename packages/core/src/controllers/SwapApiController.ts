@@ -8,10 +8,12 @@ import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { ConnectionController } from './ConnectionController.js'
 
 const ONEINCH_API_BASE_URL = 'https://1inch-swap-proxy.walletconnect-v1-bridge.workers.dev'
+const CURRENT_CHAIN_ADDRESS = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
 
 const OneInchAPIEndpoints = {
   approveTransaction: (chainId: number) => `/swap/v5.2/${chainId}/approve/transaction`,
   approveAllowance: (chainId: number) => `/swap/v5.2/${chainId}/approve/allowance`,
+  gasPrice: (chainId: number) => `/gas-price/v1.5/${chainId}`,
   swap: (chainId: number) => `/swap/v5.2/${chainId}/swap`,
   tokens: (chainId: number) => `/swap/v5.2/${chainId}/tokens`,
   tokensCustom: (chainId: number) => `/token/v1.2/${chainId}/custom`,
@@ -37,6 +39,7 @@ export interface SwapApiControllerState {
   hasAllowance: boolean
   loading?: boolean
   tokens?: Record<string, TokenInfo>
+  popularTokens?: Record<string, TokenInfo>
   foundTokens?: TokenInfo[]
   myTokensWithBalance?: Record<string, TokenInfoWithBalance>
   tokensPriceMap: Record<string, string>
@@ -116,12 +119,14 @@ const state = proxy<SwapApiControllerState>({
   initialLoading: false,
   loading: false,
   tokens: undefined,
+  popularTokens: undefined,
   foundTokens: undefined,
   myTokensWithBalance: undefined,
   tokensPriceMap: {},
   swapErrorMessage: undefined,
   isTransactionPending: false,
-  loadingPrices: false
+  loadingPrices: false,
+  swapTransaction: undefined
 })
 
 // -- Controller ---------------------------------------- //
@@ -146,6 +151,7 @@ export const SwapApiController = {
       paths: {
         approveTransaction: OneInchAPIEndpoints.approveTransaction(chainId),
         approveAllowance: OneInchAPIEndpoints.approveAllowance(chainId),
+        gasPrice: OneInchAPIEndpoints.gasPrice(chainId),
         swap: OneInchAPIEndpoints.swap(chainId),
         tokens: OneInchAPIEndpoints.tokens(chainId),
         tokensCustom: OneInchAPIEndpoints.tokensCustom(chainId),
@@ -247,6 +253,33 @@ export const SwapApiController = {
     return this.formatNumberToLocalString(tokenPriceNumber * amountNumber)
   },
 
+  async getGasPrice() {
+    const { api, paths } = this._get1inchApi()
+
+    const gasPrices = await api.get<Record<string, string>>({
+      path: paths.gasPrice,
+      headers: { 'content-type': 'application/json' }
+    })
+
+    return gasPrices
+  },
+
+  async getCurrentNetworkTokenPrice() {
+    const { api, paths } = this._get1inchApi()
+    const prices = await api.post<Record<string, string>>({
+      path: paths.tokenPrices,
+      body: { tokens: [CURRENT_CHAIN_ADDRESS], currency: 'USD' },
+      headers: {
+        'content-type': 'application/json'
+      }
+    })
+
+    const priceString = prices?.[CURRENT_CHAIN_ADDRESS] || '0'
+    const price = parseFloat(priceString)
+
+    return price
+  },
+
   async getSwapCalldata() {
     const { api, paths } = this._get1inchApi()
     const { fromAddress, slippage, sourceTokenAddress, sourceTokenAmount, toTokenAddress } =
@@ -345,7 +378,8 @@ export const SwapApiController = {
 
     const res = await api.get<TokenList>({ path: paths.tokens })
 
-    state.tokens = Object.entries(res.tokens)
+    state.tokens = res.tokens
+    state.popularTokens = Object.entries(res.tokens)
       .sort(([, aTokenInfo], [, bTokenInfo]) => {
         if (aTokenInfo.symbol < bTokenInfo.symbol) {
           return -1
