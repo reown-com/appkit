@@ -1,9 +1,12 @@
 import { customElement } from '@web3modal/ui'
-import { RouterController } from '@web3modal/core'
+import { ConnectorController, RouterController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 
 @customElement('w3m-upgrade-to-smart-account-view')
 export class W3mUpgradeToSmartAccountView extends LitElement {
+  // -- State & Properties -------------------------------- //
+  private emailConnector = ConnectorController.getEmailConnector()
+
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
@@ -57,8 +60,23 @@ export class W3mUpgradeToSmartAccountView extends LitElement {
       >
         Do it later
       </wui-button>
-      <wui-button size="lg" borderRadius="xs"> Continue </wui-button>
+      <wui-button size="lg" borderRadius="xs" @click=${this.setPreferSmartAccount.bind(this)}
+        >Continue
+      </wui-button>
     </wui-flex>`
+  }
+
+  private setPreferSmartAccount = async () => {
+    if (this.emailConnector) {
+      try {
+        await this.emailConnector.provider.setPreferredAccount('smartAccount')
+        await this.emailConnector.provider.initSmartAccount()
+        RouterController.push('Account')
+      } catch (e) {
+        // Show error message?
+        console.log('Upgrade Error')
+      }
+    }
   }
 }
 
