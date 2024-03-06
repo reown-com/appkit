@@ -77,6 +77,6 @@ export const AccountController = {
     state.profileName = undefined
     state.profileImage = undefined
     state.addressExplorerUrl = undefined
-    state.smartAccountDeployed = undefined
+    state.smartAccountDeployed = false
   }
 }
