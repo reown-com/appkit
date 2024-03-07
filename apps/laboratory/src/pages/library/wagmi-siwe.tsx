@@ -8,7 +8,7 @@ import { ThemeStore } from '../../utils/StoreUtil'
 import { WagmiConstantsUtil } from '../../utils/WagmiConstants'
 import { SiweData } from '../../components/Siwe/SiweData'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
-import { siweConfig } from '../../utils/SiweUtils'
+import { useMemo } from 'react'
 
 const queryClient = new QueryClient()
 
@@ -19,19 +19,22 @@ export const wagmiConfig = defaultWagmiConfig({
   ssr: true
 })
 
-const modal = createWeb3Modal({
-  wagmiConfig,
-  projectId: ConstantsUtil.ProjectId,
-  enableAnalytics: true,
-  metadata: ConstantsUtil.Metadata,
-  siweConfig,
-  enableOnramp: true,
-  customWallets: ConstantsUtil.CustomWallets
-})
-
-ThemeStore.setModal(modal)
-
 export default function Wagmi() {
+  useMemo(async () => {
+    const { siweConfig } = await import('../../utils/SiweUtils')
+    const modal = createWeb3Modal({
+      wagmiConfig,
+      projectId: ConstantsUtil.ProjectId,
+      enableAnalytics: true,
+      metadata: ConstantsUtil.Metadata,
+      siweConfig,
+      enableOnramp: true,
+      customWallets: ConstantsUtil.CustomWallets
+    })
+
+    ThemeStore.setModal(modal)
+  }, [])
+
   return (
     <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
