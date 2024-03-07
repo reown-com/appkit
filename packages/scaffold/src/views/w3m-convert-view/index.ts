@@ -1,4 +1,4 @@
-import { customElement } from '@web3modal/ui'
+import { customElement, formatNumberToLocalString } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
@@ -20,6 +20,10 @@ export class W3mConvertView extends LitElement {
   private unsubscribe: ((() => void) | undefined)[] = []
 
   // -- State & Properties -------------------------------- //
+  @state() private detailsOpen = false
+
+  @state() private caipNetworkId = NetworkController.state.caipNetwork?.id
+
   @state() private initialLoading = SwapApiController.state.initialLoading
 
   @state() private isTransactionPending = SwapApiController.state.isTransactionPending
@@ -30,19 +34,25 @@ export class W3mConvertView extends LitElement {
 
   @state() private sourceToken = SwapApiController.state.sourceToken
 
+  @state() private sourceTokenAmount = SwapApiController.state.sourceTokenAmount
+
+  @state() private sourceTokenPriceInUSD = SwapApiController.state.sourceTokenPriceInUSD
+
   @state() private toToken = SwapApiController.state.toToken
 
-  @state() private swapErrorMessage = SwapApiController.state.swapErrorMessage
+  @state() private toTokenAmount = SwapApiController.state.toTokenAmount
+
+  @state() private toTokenPriceInUSD = SwapApiController.state.toTokenPriceInUSD
 
   @state() private hasAllowance = SwapApiController.state.hasAllowance
 
-  @state() private sourceTokenAmount = SwapApiController.state.sourceTokenAmount ?? ''
+  @state() private gasPriceInUSD = SwapApiController.state.gasPriceInUSD
 
-  @state() private toTokenAmount = SwapApiController.state.toTokenAmount ?? ''
+  @state() private gasPriceInETH = SwapApiController.state.gasPriceInETH
 
-  @state() private caipNetworkId = NetworkController.state.caipNetwork?.id
+  @state() private valueDifference = SwapApiController.state.valueDifference
 
-  @state() private detailsOpen = false
+  @state() private swapErrorMessage = SwapApiController.state.swapErrorMessage
 
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
@@ -68,28 +78,21 @@ export class W3mConvertView extends LitElement {
           this.toToken = newToToken
         }),
         SwapApiController.subscribe(newState => {
-          if (this.loading !== newState.loading) {
-            this.loading = newState.loading
-          }
-          if (this.loadingPrices !== newState.loadingPrices) {
-            this.loadingPrices = newState.loadingPrices
-          }
-          if (this.initialLoading !== newState.initialLoading) {
-            this.initialLoading = newState.initialLoading
-          }
+          this.initialLoading = newState.initialLoading
           this.isTransactionPending = newState.isTransactionPending
-          if (this.sourceTokenAmount !== newState.sourceTokenAmount) {
-            this.sourceTokenAmount = newState.sourceTokenAmount ?? ''
-          }
-          if (this.toTokenAmount !== newState.toTokenAmount) {
-            this.toTokenAmount = newState.toTokenAmount ?? ''
-          }
-          if (this.swapErrorMessage !== newState.swapErrorMessage) {
-            this.swapErrorMessage = newState.swapErrorMessage
-          }
-          if (this.hasAllowance !== newState.hasAllowance) {
-            this.hasAllowance = newState.hasAllowance
-          }
+          this.loading = newState.loading
+          this.loadingPrices = newState.loadingPrices
+          this.sourceToken = newState.sourceToken
+          this.sourceTokenAmount = newState.sourceTokenAmount
+          this.sourceTokenPriceInUSD = newState.sourceTokenPriceInUSD
+          this.toToken = newState.toToken
+          this.toTokenAmount = newState.toTokenAmount
+          this.toTokenPriceInUSD = newState.toTokenPriceInUSD
+          this.hasAllowance = newState.hasAllowance
+          this.gasPriceInUSD = newState.gasPriceInUSD
+          this.gasPriceInETH = newState.gasPriceInETH
+          this.valueDifference = newState.valueDifference
+          this.swapErrorMessage = newState.swapErrorMessage
         })
       ]
     )
@@ -118,8 +121,6 @@ export class W3mConvertView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private templateSwap() {
-    const haveNoTokenSelected = !this.toToken || !this.sourceToken
-
     return html`
       <wui-flex flexDirection="column" gap="s">
         <wui-flex
@@ -131,28 +132,23 @@ export class W3mConvertView extends LitElement {
           ${this.templateTokenInput('sourceToken', this.sourceToken)}
           ${this.templateTokenInput('toToken', this.toToken)} ${this.templateReplaceTokensButton()}
         </wui-flex>
-        <wui-flex flexDirection="column" alignItems="center" gap="xs" class="details-container">
-          ${this.templateDetails()}
-        </wui-flex>
-        <wui-flex gap="xs">
-          <wui-button
-            class="action-button"
-            ?fullWidth=${true}
-            size="lg"
-            borderRadius="xs"
-            variant=${!this.hasAllowance || haveNoTokenSelected ? 'shade' : 'fill'}
-            .loading=${this.loadingPrices}
-            .disabled=${!this.hasAllowance || haveNoTokenSelected || this.swapErrorMessage}
-            @click=${this.onConvertPreview}
-          >
-            ${this.actionButtonLabel()}
-          </wui-button>
-        </wui-flex>
+        ${this.templateDetails()} ${this.templateActionButton()}
       </wui-flex>
     `
   }
 
   private actionButtonLabel(): string {
+    const myToken = SwapApiController.state.myTokensWithBalance?.[this.sourceToken?.address ?? '']
+    const myTokenAmount = myToken
+      ? parseFloat(
+          ConnectionController.formatUnits(BigInt(myToken.balance), myToken.decimals)
+        ).toFixed(3)
+      : 0
+
+    if (myTokenAmount === 0) {
+      return 'Insufficient funds'
+    }
+
     if (this.swapErrorMessage) {
       if (this.swapErrorMessage?.includes('insufficient funds')) {
         return 'Insufficient funds'
@@ -215,24 +211,16 @@ export class W3mConvertView extends LitElement {
         ?border=${true}
         borderColor="wui-color-bg-125"
       ></wui-icon-box>
-      <wui-text align="center" variant="paragraph-500" color="fg-100"
-        >${this.isTransactionPending ? 'Pending' : 'Loading'}</wui-text
-      >
+
       <wui-loading-hexagon></wui-loading-hexagon>
     </wui-flex>`
   }
 
   private templateTokenInput(target: Target, token?: TokenInfo) {
     const myToken = SwapApiController.state.myTokensWithBalance?.[token?.address ?? '']
-    const price = SwapApiController.state.tokensPriceMap?.[token?.address ?? '']
-
-    const inputValue = target === 'toToken' ? this.toTokenAmount : this.sourceTokenAmount
-    const marketValue = price
-      ? (parseFloat(price) * parseFloat(inputValue)).toLocaleString('en-US', {
-          maximumFractionDigits: 2,
-          minimumFractionDigits: 2
-        })
-      : 0
+    const amount = target === 'toToken' ? this.toTokenAmount : this.sourceTokenAmount
+    const price = target === 'toToken' ? this.toTokenPriceInUSD : this.sourceTokenPriceInUSD
+    const value = parseFloat(amount) * price
 
     return html`<wui-convert-input
       .value=${target === 'toToken' ? this.toTokenAmount : this.sourceTokenAmount}
@@ -241,76 +229,35 @@ export class W3mConvertView extends LitElement {
       target=${target}
       .token=${token}
       .balance=${myToken?.balance}
-      .marketValue=${marketValue}
+      .marketValue=${formatNumberToLocalString(value)}
       amount=${myToken
-        ? parseFloat(
-            ConnectionController.formatUnits(BigInt(myToken.balance), myToken.decimals)
-          ).toFixed(3)
+        ? formatNumberToLocalString(
+            ConnectionController.formatUnits(BigInt(myToken.balance), myToken.decimals),
+            3
+          )
         : 0}
     ></wui-convert-input>`
   }
 
   private templateDetails() {
-    const sourceTokenPrice = parseFloat(
-      SwapApiController.state.tokensPriceMap?.[this.sourceToken?.address ?? ''] || '0'
-    )
-    const sourceTokenPriceString = parseFloat(
-      SwapApiController.state.tokensPriceMap?.[this.sourceToken?.address ?? ''] || '0'
-    ).toLocaleString('en-US', {
-      maximumFractionDigits: 2,
-      minimumFractionDigits: 2
-    })
-    const toTokenPrice = parseFloat(
-      SwapApiController.state.tokensPriceMap?.[this.toToken?.address ?? ''] || '0'
-    )
-    const sourceTokenEquivalent = (
-      sourceTokenPrice && toTokenPrice ? (1 / toTokenPrice) * sourceTokenPrice : 0
-    ).toLocaleString('en-US', {
-      maximumFractionDigits: 4,
-      minimumFractionDigits: 4
-    })
+    const toTokenConvertedAmount =
+      this.sourceTokenPriceInUSD && this.toTokenPriceInUSD
+        ? (1 / this.toTokenPriceInUSD) * this.sourceTokenPriceInUSD
+        : 0
 
     return html`
-      <wui-flex flexDirection="column" class="details-accordion">
-        <button @click=${this.toggleDetails.bind(this)}>
-          <wui-flex justifyContent="space-between" .padding=${['0', 'xs', '0', 'xs']}>
-            <wui-flex justifyContent="flex-start" flexGrow="1" gap="xs">
-              <wui-text variant="small-400" color="fg-100"
-                >1 ${this.sourceToken?.symbol} = ${sourceTokenEquivalent}
-                ${this.toToken?.symbol}</wui-text
-              >
-              <wui-text variant="small-400" color="fg-200">$${sourceTokenPriceString}</wui-text>
-            </wui-flex>
-            <wui-icon name="chevronBottom"></wui-icon>
-          </wui-flex>
-        </button>
-        ${this.detailsOpen
-          ? html`<wui-flex flexDirection="column" gap="xs" class="details-content-container">
-              <wui-flex flexDirection="column" gap="xs">
-                <wui-flex justifyContent="space-between" class="details-row">
-                  <wui-text variant="small-400" color="fg-150">Network cost</wui-text>
-                  <wui-text variant="small-400" color="fg-100">$-</wui-text>
-                </wui-flex>
-              </wui-flex>
-              <wui-flex flexDirection="column" gap="xs">
-                <wui-flex justifyContent="space-between" class="details-row">
-                  <wui-text variant="small-400" color="fg-150">Service fee</wui-text>
-                  <wui-flex>
-                    <wui-text variant="small-400" color="fg-200">Free</wui-text>
-                  </wui-flex>
-                </wui-flex>
-              </wui-flex>
-              <wui-flex flexDirection="column" gap="xs">
-                <wui-flex justifyContent="space-between" class="details-row">
-                  <wui-text variant="small-400" color="fg-150">
-                    Fee is paid to Ethereum Network to process your transaction. This must be paid
-                    in ETH. Learn more
-                  </wui-text>
-                </wui-flex>
-              </wui-flex>
-            </wui-flex>`
-          : null}
-      </wui-flex>
+      <wui-convert-details
+        defaultOpen=${false}
+        sourceTokenSymbol=${this.sourceToken?.symbol}
+        sourceTokenPrice=${this.sourceTokenPriceInUSD}
+        toTokenSymbol=${this.toToken?.symbol}
+        toTokenConvertedAmount=${toTokenConvertedAmount}
+        gasPriceInETH=${this.gasPriceInETH}
+        gasPriceInUSD=${this.gasPriceInUSD}
+        .valueDifference=${this.valueDifference}
+        slippageRate=${0.5}
+        slippageValue=${this.gasPriceInETH}
+      ></wui-convert-details>
     `
   }
 
@@ -322,6 +269,26 @@ export class W3mConvertView extends LitElement {
     }
     SwapApiController.clearError()
     this.onDebouncedGetSwapCalldata()
+  }
+
+  private templateActionButton() {
+    const haveNoTokenSelected = !this.toToken || !this.sourceToken
+    const loading = this.loadingPrices || this.loading
+
+    return html` <wui-flex gap="xs">
+      <wui-button
+        class="action-button"
+        ?fullWidth=${true}
+        size="lg"
+        borderRadius="xs"
+        variant=${!this.hasAllowance || haveNoTokenSelected ? 'shade' : 'fill'}
+        .loading=${loading}
+        .disabled=${loading || !this.hasAllowance || haveNoTokenSelected || this.swapErrorMessage}
+        @click=${this.onConvertPreview}
+      >
+        ${this.actionButtonLabel()}
+      </wui-button>
+    </wui-flex>`
   }
 
   private onDebouncedGetSwapCalldata = CoreHelperUtil.debounce(async () => {

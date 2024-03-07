@@ -24,15 +24,22 @@ const OneInchAPIEndpoints = {
 }
 
 // -- Types --------------------------------------------- //
+type PriceDifferenceDirection = 'up' | 'down' | 'none'
+
 export interface SwapApiControllerState {
   initialLoading?: boolean
   isTransactionPending?: boolean
   sourceToken?: TokenInfo
+  sourceTokenAmount: string
+  sourceTokenPriceInUSD: number
   toToken?: TokenInfo
-  toTokenAmount?: string
+  toTokenAmount: string
+  toTokenPriceInUSD: number
+  ethPrice: string
+  gasPriceInUSD?: number
+  gasPriceInETH?: number
   swapTransaction?: TransactionData
   swapApproval?: SwapApprovalData
-  sourceTokenAmount?: string
   slippage?: number
   disableEstimate?: boolean
   allowPartialFill?: boolean
@@ -45,6 +52,10 @@ export interface SwapApiControllerState {
   tokensPriceMap: Record<string, string>
   swapErrorMessage?: string
   loadingPrices: boolean
+  valueDifference: {
+    percentage: number
+    direction: PriceDifferenceDirection
+  }
 }
 
 export interface TokenInfo {
@@ -111,9 +122,14 @@ type StateKey = keyof SwapApiControllerState
 // -- State --------------------------------------------- //
 const state = proxy<SwapApiControllerState>({
   hasAllowance: false,
-  toTokenAmount: undefined,
-  sourceTokenAmount: undefined,
-  slippage: 1,
+  toTokenAmount: '',
+  sourceTokenAmount: '',
+  sourceTokenPriceInUSD: 0,
+  toTokenPriceInUSD: 0,
+  ethPrice: '0',
+  gasPriceInUSD: 0,
+  gasPriceInETH: 0,
+  slippage: 0.5,
   disableEstimate: false,
   allowPartialFill: false,
   initialLoading: false,
@@ -126,7 +142,11 @@ const state = proxy<SwapApiControllerState>({
   swapErrorMessage: undefined,
   isTransactionPending: false,
   loadingPrices: false,
-  swapTransaction: undefined
+  swapTransaction: undefined,
+  valueDifference: {
+    percentage: 0,
+    direction: 'none'
+  }
 })
 
 // -- Controller ---------------------------------------- //
@@ -186,6 +206,8 @@ export const SwapApiController = {
 
   setSourceTokenAmount(amount: string) {
     state.sourceTokenAmount = amount
+    const price = state.tokensPriceMap[state.sourceToken?.address ?? '']
+    state.sourceTokenPriceInUSD = price ? parseFloat(price) : 0
   },
 
   setToTokenAmount(amount: string) {
@@ -234,25 +256,6 @@ export const SwapApiController = {
     state.swapErrorMessage = undefined
   },
 
-  formatNumberToLocalString(number: number) {
-    return number.toLocaleString('en-US', {
-      maximumFractionDigits: 2,
-      minimumFractionDigits: 2
-    })
-  },
-
-  getPriceOfTokenAmount(amount: string | undefined, tokenAddress: `0x${string}` | undefined) {
-    const tokenPrice = state.tokensPriceMap?.[tokenAddress || ''] || '0'
-    const tokenPriceNumber = parseFloat(tokenPrice)
-    const amountNumber = amount ? parseFloat(amount) : 0
-
-    if (!tokenPriceNumber) {
-      return 0
-    }
-
-    return this.formatNumberToLocalString(tokenPriceNumber * amountNumber)
-  },
-
   async getGasPrice() {
     const { api, paths } = this._get1inchApi()
 
@@ -264,83 +267,31 @@ export const SwapApiController = {
     return gasPrices
   },
 
-  async getCurrentNetworkTokenPrice() {
-    const { api, paths } = this._get1inchApi()
-    const prices = await api.post<Record<string, string>>({
-      path: paths.tokenPrices,
-      body: { tokens: [CURRENT_CHAIN_ADDRESS], currency: 'USD' },
-      headers: {
-        'content-type': 'application/json'
+  calculatePriceDifference() {
+    const sourceTokenValue = parseFloat(state.sourceTokenAmount) * state.sourceTokenPriceInUSD
+    const toTokenValue = parseFloat(state.toTokenAmount) * state.toTokenPriceInUSD
+
+    if (!sourceTokenValue || !toTokenValue) {
+      return {
+        percentage: 0,
+        direction: 'none' as PriceDifferenceDirection
       }
-    })
-
-    const priceString = prices?.[CURRENT_CHAIN_ADDRESS] || '0'
-    const price = parseFloat(priceString)
-
-    return price
-  },
-
-  async getSwapCalldata() {
-    const { api, paths } = this._get1inchApi()
-    const { fromAddress, slippage, sourceTokenAddress, sourceTokenAmount, toTokenAddress } =
-      this._getSwapParams()
-
-    if (!sourceTokenAmount || !state.sourceToken?.address || !state.toToken?.address) {
-      return
-    }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const swapTransactionRes = await api.get<any>({
-      path: paths.swap,
-      params: {
-        src: sourceTokenAddress,
-        dst: toTokenAddress,
-        slippage,
-        from: fromAddress,
-        amount: ConnectionController.parseUnits(
-          sourceTokenAmount,
-          state.sourceToken?.decimals
-        ).toString()
-      }
-    })
-
-    if (swapTransactionRes.error) {
-      state.toTokenAmount = undefined
-      state.swapTransaction = undefined
-
-      const swapTransaction: SwapRequestError = swapTransactionRes
-      state.swapErrorMessage = swapTransaction.description
-    } else {
-      state.swapErrorMessage = undefined
-
-      const swapTransaction: SwapResponse = swapTransactionRes
-      state.swapTransaction = swapTransaction.tx
-      state.toTokenAmount = ConnectionController.formatUnits(
-        BigInt(swapTransaction.toAmount),
-        state.toToken.decimals
-      )
-    }
-  },
-
-  async getSwapApprovalCalldata() {
-    const { api, paths } = this._get1inchApi()
-    const { sourceTokenAddress, sourceTokenAmount } = this._getSwapParams()
-
-    if (!sourceTokenAmount || !state.sourceToken?.decimals) {
-      return
     }
 
-    const res = await api.get<SwapApprovalData>({
-      path: paths.approveTransaction,
-      params: {
-        tokenAddress: sourceTokenAddress,
-        amount: ConnectionController.parseUnits(
-          sourceTokenAmount,
-          state.sourceToken.decimals
-        ).toString()
-      }
-    })
+    const priceChange = sourceTokenValue - toTokenValue
+    const changeInPercentage = (priceChange / toTokenValue) * 100
+    let direction: PriceDifferenceDirection = 'none'
 
-    state.swapApproval = res
+    if (changeInPercentage > 0) {
+      direction = 'up'
+    } else if (changeInPercentage < 0) {
+      direction = 'down'
+    }
+
+    return {
+      percentage: changeInPercentage,
+      direction
+    }
   },
 
   async getTokenAllowance() {
@@ -370,9 +321,10 @@ export const SwapApiController = {
     if (state.tokens && !options?.forceRefetch) {
       return state.tokens
     }
-    state.initialLoading = true
 
     const { api, paths } = this._get1inchApi()
+    state.initialLoading = true
+
     await this.getMyTokensWithBalance({ forceRefetch: true })
 
     const res = await api.get<TokenList>({ path: paths.tokens })
@@ -418,9 +370,9 @@ export const SwapApiController = {
       return state.myTokensWithBalance
     }
 
-    state.initialLoading = true
-
     const { balances, tokenAddresses } = await this.getBalances()
+
+    state.initialLoading = true
 
     if (!tokenAddresses?.length) {
       state.initialLoading = false
@@ -436,7 +388,6 @@ export const SwapApiController = {
     const mergedTokensWithBalances = this.mergeTokenWithBalances(tokens, balances, tokensPrice)
 
     state.myTokensWithBalance = mergedTokensWithBalances
-
     state.initialLoading = false
 
     return mergedTokensWithBalances
@@ -485,6 +436,15 @@ export const SwapApiController = {
       }
     })
 
+    const chainId = CoreHelperUtil.getEvmChainId(NetworkController.state.caipNetwork?.id)
+    const isMainnet = chainId === 1
+
+    if (isMainnet) {
+      state.ethPrice = prices[CURRENT_CHAIN_ADDRESS] || '0'
+    } else {
+      state.ethPrice = '0'
+    }
+
     Object.entries(prices).forEach(([tokenAddress, price]) => {
       state.tokensPriceMap[tokenAddress] = price
     })
@@ -516,10 +476,26 @@ export const SwapApiController = {
     )
   },
 
+  calculateGasPriceInETH(gas: number, gasPrice: string) {
+    const gasPriceNumber = BigInt(gasPrice)
+    const totalGasCostInWei = gasPriceNumber * BigInt(gas)
+    const totalGasCostInEther = Number(totalGasCostInWei) / 1e18
+
+    return totalGasCostInEther
+  },
+
+  calculateGasPriceInUSD(gas: number, gasPrice: string) {
+    const totalGasCostInEther = this.calculateGasPriceInETH(gas, gasPrice)
+    const ethPriceNumber = Number(state.ethPrice)
+    const totalCostInUSD = totalGasCostInEther * ethPriceNumber
+
+    return totalCostInUSD
+  },
+
   async getTokenSwapInfo() {
-    try {
-      if (state.sourceToken?.address && state.toToken?.address) {
-        state.loading = true
+    if (state.sourceToken?.address && state.toToken?.address) {
+      state.loading = true
+      try {
         const hasAllowance = await SwapApiController.getTokenAllowance()
 
         if (hasAllowance) {
@@ -527,14 +503,87 @@ export const SwapApiController = {
         } else {
           await SwapApiController.getSwapApprovalCalldata()
         }
+      } catch (error) {
+        if (error instanceof Error) {
+          state.swapErrorMessage = error.message
+        }
+      } finally {
+        state.loading = false
       }
-    } catch (error) {
-      if (error instanceof Error) {
-        state.swapErrorMessage = error.message
-      }
-    } finally {
-      state.loading = false
     }
+  },
+
+  async getSwapCalldata() {
+    const { api, paths } = this._get1inchApi()
+    const { fromAddress, slippage, sourceTokenAddress, sourceTokenAmount, toTokenAddress } =
+      this._getSwapParams()
+
+    if (!sourceTokenAmount || !state.sourceToken?.address || !state.toToken?.address) {
+      return
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const swapTransactionRes = await api.get<any>({
+      path: paths.swap,
+      params: {
+        src: sourceTokenAddress,
+        dst: toTokenAddress,
+        slippage,
+        from: fromAddress,
+        amount: ConnectionController.parseUnits(
+          sourceTokenAmount,
+          state.sourceToken?.decimals
+        ).toString()
+      }
+    })
+
+    if (swapTransactionRes.error) {
+      state.toTokenAmount = ''
+      state.swapTransaction = undefined
+      const swapTransaction: SwapRequestError = swapTransactionRes
+      state.swapErrorMessage = swapTransaction.description
+    } else {
+      state.swapErrorMessage = undefined
+
+      const swapTransaction: SwapResponse = swapTransactionRes
+      state.swapTransaction = swapTransaction.tx
+      state.gasPriceInUSD = this.calculateGasPriceInUSD(
+        swapTransaction.tx.gas,
+        swapTransaction.tx.gasPrice
+      )
+      state.gasPriceInETH = this.calculateGasPriceInETH(
+        swapTransaction.tx.gas,
+        swapTransaction.tx.gasPrice
+      )
+      state.toTokenAmount = ConnectionController.formatUnits(
+        BigInt(swapTransaction.toAmount),
+        state.toToken.decimals
+      )
+      const toTokenPrice = state.tokensPriceMap[state.toToken.address] || '0'
+      state.toTokenPriceInUSD = parseFloat(toTokenPrice)
+      state.valueDifference = this.calculatePriceDifference()
+    }
+  },
+
+  async getSwapApprovalCalldata() {
+    const { api, paths } = this._get1inchApi()
+    const { sourceTokenAddress, sourceTokenAmount } = this._getSwapParams()
+
+    if (!sourceTokenAmount || !state.sourceToken?.decimals) {
+      return
+    }
+
+    const res = await api.get<SwapApprovalData>({
+      path: paths.approveTransaction,
+      params: {
+        tokenAddress: sourceTokenAddress,
+        amount: ConnectionController.parseUnits(
+          sourceTokenAmount,
+          state.sourceToken.decimals
+        ).toString()
+      }
+    })
+
+    state.swapApproval = res
   },
 
   async swapTokens() {

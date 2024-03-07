@@ -1,15 +1,13 @@
-import { customElement } from '@web3modal/ui'
+import { customElement, formatNumberToLocalString } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
 import {
   AccountController,
-  AssetUtil,
   NetworkController,
   RouterController,
   SwapApiController
 } from '@web3modal/core'
 import { state } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('w3m-convert-preview-view')
 export class W3mConvertPreviewView extends LitElement {
@@ -18,19 +16,33 @@ export class W3mConvertPreviewView extends LitElement {
   private unsubscribe: ((() => void) | undefined)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() private sourceTokenAmount = SwapApiController.state.sourceTokenAmount
+  @state() private sourceToken = SwapApiController.state.sourceToken
 
-  @state() private toTokenAmount = SwapApiController.state.toTokenAmount
+  @state() private sourceTokenAmount = SwapApiController.state.sourceTokenAmount ?? ''
+
+  @state() private sourceTokenPriceInUSD = SwapApiController.state.sourceTokenPriceInUSD
 
   @state() private toToken = SwapApiController.state.toToken
 
-  @state() private sourceToken = SwapApiController.state.sourceToken
+  @state() private toTokenAmount = SwapApiController.state.toTokenAmount ?? ''
+
+  @state() private toTokenPriceInUSD = SwapApiController.state.toTokenPriceInUSD
 
   @state() private caipNetwork = NetworkController.state.caipNetwork
 
   @state() private isTransactionPending = SwapApiController.state.isTransactionPending
 
   @state() private balanceSymbol = AccountController.state.balanceSymbol
+
+  @state() private detailsOpen = true
+
+  @state() private gasPriceInUSD = SwapApiController.state.gasPriceInUSD
+
+  @state() private gasPriceInETH = SwapApiController.state.gasPriceInETH
+
+  @state() private valueDifference = SwapApiController.state.valueDifference
+
+  @state() private swapErrorMessage = SwapApiController.state.swapErrorMessage
 
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
@@ -51,10 +63,18 @@ export class W3mConvertPreviewView extends LitElement {
         }),
         SwapApiController.subscribe(newState => {
           this.sourceToken = newState.sourceToken
+          this.gasPriceInUSD = newState.gasPriceInUSD
           this.toToken = newState.toToken
-          this.sourceTokenAmount = newState.sourceTokenAmount
-          this.toTokenAmount = newState.toTokenAmount
           this.isTransactionPending = newState.isTransactionPending
+          this.valueDifference = newState.valueDifference
+          this.gasPriceInUSD = newState.gasPriceInUSD
+          this.isTransactionPending = newState.isTransactionPending
+          this.toTokenPriceInUSD = newState.toTokenPriceInUSD
+          this.valueDifference = newState.valueDifference
+          this.gasPriceInETH = newState.gasPriceInETH
+          this.sourceTokenAmount = newState.sourceTokenAmount ?? ''
+          this.toTokenAmount = newState.toTokenAmount ?? ''
+          this.swapErrorMessage = newState.swapErrorMessage
         })
       ]
     )
@@ -69,25 +89,15 @@ export class W3mConvertPreviewView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private templateSwap() {
-    const sourceTokenText = `${
-      this.sourceTokenAmount
-        ? SwapApiController.formatNumberToLocalString(parseFloat(this.sourceTokenAmount))
-        : ''
-    } ${this.sourceToken?.symbol}`
-    const toTokenText = `${
-      this.toTokenAmount
-        ? SwapApiController.formatNumberToLocalString(parseFloat(this.toTokenAmount))
-        : ''
-    } ${this.toToken?.symbol}`
+    const sourceTokenText = `${formatNumberToLocalString(parseFloat(this.sourceTokenAmount))} ${this
+      .sourceToken?.symbol}`
+    const toTokenText = `${formatNumberToLocalString(parseFloat(this.toTokenAmount))} ${this.toToken
+      ?.symbol}`
 
-    const sentPrice = SwapApiController.getPriceOfTokenAmount(
-      this.sourceTokenAmount,
-      this.sourceToken?.address
-    )
-    const receivePrice = SwapApiController.getPriceOfTokenAmount(
-      this.toTokenAmount,
-      this.toToken?.address
-    )
+    const sourceTokenValue = parseFloat(this.sourceTokenAmount) * this.sourceTokenPriceInUSD
+    const toTokenValue = parseFloat(this.toTokenAmount) * this.toTokenPriceInUSD
+    const sentPrice = formatNumberToLocalString(sourceTokenValue)
+    const receivePrice = formatNumberToLocalString(toTokenValue)
 
     return html`
       <wui-flex flexDirection="column" alignItems="center" gap="l">
@@ -144,38 +154,7 @@ export class W3mConvertPreviewView extends LitElement {
           </wui-flex>
         </wui-flex>
 
-        <wui-flex class="details-container" flexDirection="column" alignItems="center" gap="xs">
-          <wui-flex justifyContent="space-between" alignItems="center" class="details-row">
-            <wui-text variant="paragraph-400" color="fg-200">Network cost</wui-text>
-            <wui-text variant="small-400" color="fg-100">$-</wui-text>
-          </wui-flex>
-
-          <wui-flex justifyContent="space-between" class="details-row">
-            <wui-text variant="paragraph-500" color="fg-200">Network</wui-text>
-            <wui-flex alignItems="center" gap="xs">
-              <wui-text variant="paragraph-400" color="fg-200">${this.caipNetwork?.name}</wui-text>
-              <wui-image
-                class="token-image"
-                src=${ifDefined(AssetUtil.getNetworkImage(this.caipNetwork))}
-              ></wui-image>
-            </wui-flex>
-          </wui-flex>
-
-          <wui-flex justifyContent="space-between" class="details-row">
-            <wui-text variant="paragraph-400" color="fg-200">Network cost</wui-text>
-            <wui-flex flexDirection="column" gap="4xs" alignItems="flex-end">
-              <wui-text variant="small-400" color="fg-100">15.4007 1INCH</wui-text>
-              <wui-text variant="small-400" color="fg-200">$5.3836</wui-text>
-            </wui-flex>
-          </wui-flex>
-
-          <wui-flex justifyContent="space-between" class="details-row">
-            <wui-text variant="paragraph-400" color="fg-200">Provider fee</wui-text>
-            <wui-flex alignItems="center" justifyContent="center" class="free-badge">
-              <wui-text variant="micro-700" color="success-100">Free</wui-text>
-            </wui-flex>
-          </wui-flex>
-        </wui-flex>
+        ${this.templateDetails()}
 
         <wui-flex flexDirection="row" alignItems="center" justifyContent="center" gap="xs">
           <wui-icon size="sm" color="fg-200" name="infoCircle"></wui-icon>
@@ -210,12 +189,38 @@ export class W3mConvertPreviewView extends LitElement {
     `
   }
 
+  private templateDetails() {
+    const toTokenConvertedAmount =
+      this.sourceTokenPriceInUSD && this.toTokenPriceInUSD
+        ? (1 / this.toTokenPriceInUSD) * this.sourceTokenPriceInUSD
+        : 0
+
+    return html`
+      <wui-convert-details
+        defaultOpen=${true}
+        sourceTokenSymbol=${this.sourceToken?.symbol}
+        sourceTokenPrice=${this.sourceTokenPriceInUSD}
+        toTokenSymbol=${this.toToken?.symbol}
+        toTokenConvertedAmount=${toTokenConvertedAmount}
+        gasPriceInETH=${this.gasPriceInETH}
+        gasPriceInUSD=${this.gasPriceInUSD}
+        .valueDifference=${this.valueDifference}
+        slippageRate=${0.5}
+        slippageValue=${this.gasPriceInETH}
+      ></wui-convert-details>
+    `
+  }
+
   private onCancelTransaction() {
     RouterController.goBack()
   }
 
   private async onSendTransaction() {
     await SwapApiController.swapTokens()
+  }
+
+  private toggleDetails() {
+    this.detailsOpen = !this.detailsOpen
   }
 }
 
