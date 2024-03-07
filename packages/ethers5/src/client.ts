@@ -268,8 +268,12 @@ export class Web3Modal extends Web3ModalScaffold {
         const providerType = EthersStoreUtil.state.providerType
         localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
         EthersStoreUtil.reset()
+        console.log(
+          'connectionControllerClient:disconnect - signOutOnDisconnect',
+          siweConfig?.options?.signOutOnDisconnect
+        )
         if (siweConfig?.options?.signOutOnDisconnect) {
-          await siweConfig.signOut()
+          await SIWEController.signOut()
         }
         if (providerType === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
           const WalletConnectProvider = provider

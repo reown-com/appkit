@@ -46,8 +46,10 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
             throw new Error('SiweMessage is undefined')
           }
           const { message, signature } = credentials
-          const address = message.match(/0x[a-fA-F0-9]{40}/)?.[0] || ''
-          const chainId = `eip155:${credentials.message.match(/Chain ID: (\d+)/)?.[1] || 1}`
+          const address = message.match(/0x[a-fA-F0-9]{40}/u)?.[0] || ''
+          const chainId = `eip155:${
+            credentials.message.match(/Chain ID: (?<temp1>\d+)/u)?.[1] || 1
+          }`
           let isValid = isValidEip191Signature(address, message, signature)
           if (!isValid) {
             isValid = await isValidEip1271Signature(address, message, signature, chainId, projectId)

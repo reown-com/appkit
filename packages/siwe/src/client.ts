@@ -32,6 +32,7 @@ export class Web3ModalSIWEClient {
       signOutOnAccountChange = true,
       signOutOnDisconnect = true,
       signOutOnNetworkChange = true,
+      messageParams,
       ...siweConfigMethods
     } = siweConfig
 
@@ -43,7 +44,7 @@ export class Web3ModalSIWEClient {
       signOutOnDisconnect,
       signOutOnAccountChange,
       signOutOnNetworkChange,
-      messageParams: siweConfig.messageParams
+      messageParams
     }
 
     this.methods = siweConfigMethods
