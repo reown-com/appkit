@@ -2,16 +2,13 @@ import { getCsrfToken, signIn, signOut, getSession } from 'next-auth/react'
 import type { SIWEVerifyMessageArgs, SIWECreateMessageArgs, SIWESession } from '@web3modal/siwe'
 import { createSIWEConfig } from '@web3modal/siwe'
 import { formatMessage } from '@walletconnect/utils'
+import { WagmiConstantsUtil } from '../utils/WagmiConstants'
 
 export const siweConfig = createSIWEConfig({
   messageParams: {
-    domain: 'lab.web3modal.com',
-    uri: 'https://lab.web3modal.com',
-    chains: [1, 56],
-    resources: [
-      'https://siwe.dev',
-      'urn:recap:eyJhdHQiOnsiaHR0cHM6Ly93ZWIzaW5ib3guY29tIjp7InB1c2gvYWxlcnRzIjpbe31dLCJwdXNoL25vdGlmaWNhdGlvbnMiOlt7fV19fX0='
-    ],
+    domain: window.location.host,
+    uri: window.location.origin,
+    chains: WagmiConstantsUtil.chains.map(chain => chain.id),
     statement: 'Please sign with your account'
   },
   createMessage: (args: SIWECreateMessageArgs) => formatMessage({ ...args }, args.address),

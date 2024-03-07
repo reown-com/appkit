@@ -15,6 +15,7 @@ import { Web3ModalScaffold } from '@web3modal/scaffold'
 import { SIWEController, type Web3ModalSIWEClient } from '@web3modal/siwe'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
 import EthereumProvider, { OPTIONAL_METHODS } from '@walletconnect/ethereum-provider'
+import { getDidChainId, getDidAddress } from '@walletconnect/utils'
 import type {
   Address,
   Metadata,
@@ -179,22 +180,25 @@ export class Web3Modal extends Web3ModalScaffold {
             methods: OPTIONAL_METHODS,
             ...siweConfig.options.messageParams
           })
+          // Auths is an array of signed CACAO objects https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-74.md
           if (result?.auths?.[0]) {
-            const chainId = parseInt(result.auths[0].p.chainId?.split(':')?.[1] || '', 10)
-            const address = result.auths[0]?.p.iss.split(':')[2] || ''
-            SIWEController.setSession({
-              address,
-              chainId
-            })
-
+            const { p, s } = result.auths[0]
+            const chainId = getDidChainId(p.iss)
+            const address = getDidAddress(p.iss)
+            if (address && chainId) {
+              SIWEController.setSession({
+                address,
+                chainId: parseInt(chainId, 10)
+              })
+            }
             // Kicks off verifyMessage and populates external states
             const message = WalletConnectProvider.signer.client.formatAuthMessage({
-              request: result.auths[0].p,
-              iss: result.auths[0].p.iss
+              request: p,
+              iss: p.iss
             })
             SIWEController.verifyMessage({
               message,
-              signature: result.auths[0].s.s
+              signature: s.s
             })
           }
         } else {
