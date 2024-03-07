@@ -1,5 +1,14 @@
 # @examples/react-ethers5
 
+## 4.0.14-b3fbdad8.0
+
+### Patch Changes
+
+- Smart accounts creation and swap flow
+
+- Updated dependencies []:
+  - @web3modal/ethers5@4.0.14-b3fbdad8.0
+
 ## 4.0.13
 
 ### Patch Changes

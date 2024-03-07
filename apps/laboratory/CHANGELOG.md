@@ -1,5 +1,16 @@
 # @apps/laboratory
 
+## 4.0.14-b3fbdad8.0
+
+### Patch Changes
+
+- Smart accounts creation and swap flow
+
+- Updated dependencies []:
+  - @web3modal/ethers@4.0.14-b3fbdad8.0
+  - @web3modal/wagmi@4.0.14-b3fbdad8.0
+  - @web3modal/siwe@4.0.14-b3fbdad8.0
+
 ## 4.0.13
 
 ### Patch Changes

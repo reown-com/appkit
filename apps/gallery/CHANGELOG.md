@@ -1,5 +1,15 @@
 # @apps/gallery
 
+## 4.0.14-b3fbdad8.0
+
+### Patch Changes
+
+- Smart accounts creation and swap flow
+
+- Updated dependencies []:
+  - @web3modal/ui@4.0.14-b3fbdad8.0
+  - @web3modal/common@4.0.14-b3fbdad8.0
+
 ## 4.0.13
 
 ### Patch Changes

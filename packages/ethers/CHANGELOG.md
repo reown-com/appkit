@@ -1,5 +1,19 @@
 # @web3modal/ethers
 
+## 4.0.14-b3fbdad8.0
+
+### Patch Changes
+
+- Smart accounts creation and swap flow
+
+- Updated dependencies []:
+  - @web3modal/scaffold@4.0.14-b3fbdad8.0
+  - @web3modal/polyfills@4.0.14-b3fbdad8.0
+  - @web3modal/scaffold-react@4.0.14-b3fbdad8.0
+  - @web3modal/scaffold-utils@4.0.14-b3fbdad8.0
+  - @web3modal/scaffold-vue@4.0.14-b3fbdad8.0
+  - @web3modal/siwe@4.0.14-b3fbdad8.0
+
 ## 4.0.13
 
 ### Patch Changes

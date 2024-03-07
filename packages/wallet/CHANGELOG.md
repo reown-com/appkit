@@ -1,5 +1,11 @@
 # @web3modal/wallet
 
+## 4.0.14-b3fbdad8.0
+
+### Patch Changes
+
+- Smart accounts creation and swap flow
+
 ## 4.0.13
 
 ### Patch Changes
