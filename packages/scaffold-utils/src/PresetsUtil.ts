@@ -127,6 +127,8 @@ export const PresetsUtil = {
     // ZkSync Era Mainnet
     324,
     // ZkSync Era Testnet
-    280
+    280,
+    // Optimism Sepolia
+    11155420
   ]
 }
