@@ -72,23 +72,23 @@ export function WagmiSendUSDCTest() {
 
   return chain?.id === sepolia.id && status === 'connected' ? (
     <Stack direction={['column', 'column', 'row']}>
+      <Spacer />
+      <Input placeholder="0xf34ffa..." onChange={e => setAddress(e.target.value)} value={address} />
+      <Input
+        placeholder="Units (1000000000 for 1 USDC)"
+        onChange={e => setAmount(e.target.value)}
+        value={amount}
+        type="number"
+      />
       <Button
         data-test-id="sign-transaction-button"
         onClick={onSendTransaction}
         disabled={!writeContract}
         isDisabled={isLoading}
+        width="80%"
       >
         Send USDC
       </Button>
-
-      <Spacer />
-      <Input placeholder="0xf34ffa..." onChange={e => setAddress(e.target.value)} value={address} />
-      <Input
-        placeholder="Enter an amount"
-        onChange={e => setAmount(e.target.value)}
-        value={amount}
-        type="number"
-      />
       <Link isExternal href="https://faucet.circle.com">
         <Button variant="outline" colorScheme="blue" isDisabled={isLoading}>
           USDC Faucet
