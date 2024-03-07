@@ -77,7 +77,7 @@ export const FrameUpdateEmailSecondaryOtpResolver = z.object({ newEmail: z.strin
 export const FrameGetSmartAccountEnabledNetworksResponse = z.object({
   smartAccountEnabledNetworks: z.array(z.number())
 })
-export const FrameSetPreferredAccountResponse = z.object({ type: z.string() })
+export const FrameSetPreferredAccountResponse = z.object({ type: z.string(), address: z.string() })
 
 export const RpcResponse = z.any()
 

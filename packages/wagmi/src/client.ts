@@ -432,6 +432,14 @@ export class Web3Modal extends Web3ModalScaffold {
       provider.onGetSmartAccountEnabledNetworks(networks => {
         this.setSmartAccountEnabledNetworks(networks)
       })
+
+      provider.onSetPreferredAccount(({ address }) => {
+        if (!address) {
+          return
+        }
+        const chainId = HelpersUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
+        this.syncAccount({ address: address as `0x${string}`, chainId, isConnected: true })
+      })
     }
   }
 

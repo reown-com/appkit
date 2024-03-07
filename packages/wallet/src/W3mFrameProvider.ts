@@ -380,7 +380,9 @@ export class W3mFrameProvider {
     })
   }
 
-  public onSetPreferredAccount(callback: ({ type }: { type: string }) => void) {
+  public onSetPreferredAccount(
+    callback: ({ type, address }: { type: string; address?: string }) => void
+  ) {
     this.w3mFrame.events.onFrameEvent(event => {
       if (event.type === W3mFrameConstants.FRAME_SET_PREFERRED_ACCOUNT_SUCCESS) {
         callback(event.payload)

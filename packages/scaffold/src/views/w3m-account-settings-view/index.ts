@@ -16,6 +16,7 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
+import { W3mFrameHelpers } from '@web3modal/wallet'
 
 @customElement('w3m-account-settings-view')
 export class W3mAccountSettingsView extends LitElement {
@@ -125,6 +126,7 @@ export class W3mAccountSettingsView extends LitElement {
               ${this.network?.name ?? 'Unknown'}
             </wui-text>
           </wui-list-item>
+          ${this.togglePreferredAccountBtnTemplate()}
           <wui-list-item
             variant="icon"
             iconVariant="overlay"
@@ -181,6 +183,45 @@ export class W3mAccountSettingsView extends LitElement {
         <wui-text variant="paragraph-500" color="fg-100">${email}</wui-text>
       </wui-list-item>
     `
+  }
+
+  private togglePreferredAccountBtnTemplate() {
+    const smartAccountEnabled = NetworkController.checkIfSmartAccountEnabled()
+    const type = StorageUtil.getConnectedConnector()
+    const emailConnector = ConnectorController.getEmailConnector()
+    if (!emailConnector || type !== 'EMAIL' || !smartAccountEnabled) {
+      return null
+    }
+
+    const preferredAccountType = W3mFrameHelpers.getPreferredAccountType()
+    const text =
+      preferredAccountType === 'smartAccount'
+        ? 'Switch to your EOA'
+        : 'Switch to your smart account'
+
+    return html`
+      <wui-list-item
+        variant="icon"
+        iconVariant="overlay"
+        icon="swapHorizontalBold"
+        iconSize="sm"
+        ?chevron=${true}
+        @click=${this.changePreferredAccountType.bind(this)}
+      >
+        <wui-text variant="paragraph-500" color="fg-100">${text}</wui-text>
+      </wui-list-item>
+    `
+  }
+
+  private async changePreferredAccountType() {
+    const preferredAccountType = W3mFrameHelpers.getPreferredAccountType()
+    const accountTypeTarget = preferredAccountType === 'smartAccount' ? 'eoa' : 'smartAccount'
+    const emailConnector = ConnectorController.getEmailConnector()
+    if (!emailConnector) {
+      return
+    }
+    await emailConnector?.provider.setPreferredAccount(accountTypeTarget)
+    this.requestUpdate()
   }
 
   private onGoToUpdateEmail(email: string) {

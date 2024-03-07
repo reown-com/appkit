@@ -103,14 +103,16 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   private activateAccountTemplate() {
     const preferredAccountType = W3mFrameHelpers.getPreferredAccountType()
     const smartAccountEnabled = NetworkController.checkIfSmartAccountEnabled()
-    if (!smartAccountEnabled || preferredAccountType === 'smartAccount') {
+    if (
+      !smartAccountEnabled ||
+      preferredAccountType === 'smartAccount' ||
+      this.smartAccountDeployed
+    ) {
       return null
     }
 
-    const text = this.smartAccountDeployed ? 'Switch to your account' : 'Activate your account'
-
     return html` <wui-promo
-      text=${text}
+      text=${'Activate your account'}
       @click=${() => RouterController.push('UpgradeToSmartAccount')}
     ></wui-promo>`
   }
