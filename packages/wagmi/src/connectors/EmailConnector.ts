@@ -64,6 +64,7 @@ export function emailConnector(parameters: EmailParameters) {
       const provider = await this.getProvider()
       const preferredAccountType = W3mFrameHelpers.getPreferredAccountType()
       const { address } = await provider.connect({ preferredAccountType })
+      config.emitter.emit('change', { accounts: [address as Address] })
 
       return [address as Address]
     },
