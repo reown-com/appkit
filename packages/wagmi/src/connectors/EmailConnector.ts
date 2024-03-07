@@ -33,13 +33,13 @@ export function emailConnector(parameters: EmailParameters) {
 
     async connect(options: ConnectOptions = {}) {
       const provider = await this.getProvider()
-      const preferredAccountType = W3mFrameHelpers.getPreferredAccountType()
+      const preferredAccountType = W3mFrameHelpers.getPreferredAccountType(
+        Boolean(parameters.options.enableSmartAccounts)
+      )
       const [{ address, chainId }] = await Promise.all([
         provider.connect({
           chainId: options.chainId,
-          preferredAccountType: parameters.options.enableSmartAccounts
-            ? preferredAccountType
-            : 'eoa'
+          preferredAccountType
         }),
         provider.getSmartAccountEnabledNetworks()
       ])
@@ -62,7 +62,9 @@ export function emailConnector(parameters: EmailParameters) {
 
     async getAccounts() {
       const provider = await this.getProvider()
-      const preferredAccountType = W3mFrameHelpers.getPreferredAccountType()
+      const preferredAccountType = W3mFrameHelpers.getPreferredAccountType(
+        Boolean(parameters.options.enableSmartAccounts)
+      )
       const { address } = await provider.connect({ preferredAccountType })
       config.emitter.emit('change', { accounts: [address as Address] })
 

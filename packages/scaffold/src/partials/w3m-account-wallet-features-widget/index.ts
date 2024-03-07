@@ -101,8 +101,8 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
   // -- Private ------------------------------------------- //
   private activateAccountTemplate() {
-    const preferredAccountType = W3mFrameHelpers.getPreferredAccountType()
     const smartAccountEnabled = NetworkController.checkIfSmartAccountEnabled()
+    const preferredAccountType = W3mFrameHelpers.getPreferredAccountType(smartAccountEnabled)
     if (
       !smartAccountEnabled ||
       preferredAccountType === 'smartAccount' ||
