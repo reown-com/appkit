@@ -2,9 +2,7 @@ const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
 if (!projectId) {
   throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
 }
-export const WALLET_URL =
-  process.env['WALLET_URL'] ||
-  'https://react-wallet-v2-git-fix-solana-chain-ids-walletconnect1.vercel.app/walletconnect'
+export const WALLET_URL = process.env['WALLET_URL'] || 'https://react-wallet.walletconnect.com/'
 
 export const ConstantsUtil = {
   SigningSucceededToastTitle: 'Signing Succeeded',
