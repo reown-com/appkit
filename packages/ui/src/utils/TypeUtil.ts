@@ -19,6 +19,7 @@ export type TextType =
   | 'medium-title-600'
   | 'micro-600'
   | 'micro-700'
+  | 'mini-700'
   | 'paragraph-400'
   | 'paragraph-500'
   | 'paragraph-600'

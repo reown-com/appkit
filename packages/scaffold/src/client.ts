@@ -145,6 +145,10 @@ export class Web3ModalScaffold {
     AccountController.setBalance(balance, balanceSymbol)
   }
 
+  protected fetchTokenBalance = () => {
+    AccountController.fetchTokenBalance()
+  }
+
   protected setProfileName: (typeof AccountController)['setProfileName'] = profileName => {
     AccountController.setProfileName(profileName)
   }

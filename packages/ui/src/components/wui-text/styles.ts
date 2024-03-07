@@ -6,6 +6,7 @@ export default css`
   }
 
   slot {
+    width: 100%;
     display: inline-block;
     font-style: normal;
     font-family: var(--wui-font-family);
@@ -29,6 +30,12 @@ export default css`
   .wui-font-medium-title-600 {
     font-size: var(--wui-font-size-medium-title);
     letter-spacing: var(--wui-letter-spacing-medium-title);
+  }
+
+  .wui-font-mini-700 {
+    font-size: var(--wui-font-size-mini);
+    letter-spacing: var(--wui-letter-spacing-mini);
+    text-transform: uppercase;
   }
 
   .wui-font-large-500,
@@ -82,7 +89,8 @@ export default css`
 
   .wui-font-large-700,
   .wui-font-paragraph-700,
-  .wui-font-micro-700 {
+  .wui-font-micro-700,
+  .wui-font-mini-700 {
     font-weight: var(--wui-font-weight-bold);
   }
 

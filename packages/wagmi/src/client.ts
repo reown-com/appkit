@@ -245,6 +245,7 @@ export class Web3Modal extends Web3ModalScaffold {
       await Promise.all([
         this.syncProfile(address, chainId),
         this.syncBalance(address, chainId),
+        this.fetchTokenBalance(),
         this.getApprovedCaipNetworksData()
       ])
       this.hasSyncedConnectedAccount = true

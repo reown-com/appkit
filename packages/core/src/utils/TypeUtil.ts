@@ -1,5 +1,5 @@
 import type { W3mFrameProvider } from '@web3modal/wallet'
-import type { Transaction } from '@web3modal/common'
+import type { Balance, Transaction } from '@web3modal/common'
 
 export type CaipAddress = `${string}:${string}:${string}`
 
@@ -145,6 +145,10 @@ export interface BlockchainApiTransactionsRequest {
 export interface BlockchainApiTransactionsResponse {
   data: Transaction[]
   next: string | null
+}
+
+export interface BlockchainApiBalanceResponse {
+  balances: Balance[]
 }
 
 // -- OptionsController Types ---------------------------------------------------
