@@ -165,7 +165,6 @@ export class Web3Modal extends Web3ModalScaffold {
     } as ScaffoldOptions)
 
     this.chains = chains
-    SolStoreUtil.state.chains = chains
     this.syncRequestedNetworks(chains, chainImages)
 
     const chain = SolHelpersUtil.getChainFromCaip(
@@ -187,6 +186,7 @@ export class Web3Modal extends Web3ModalScaffold {
         icons: ['https://avatars.githubusercontent.com/u/37784886'],
         url: 'https://web3modal.com'
       },
+      chains,
       autoconnect: false,
       qrcode: true
     })

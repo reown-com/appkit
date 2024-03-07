@@ -1,13 +1,13 @@
 import base58 from 'bs58'
 import { PublicKey, Transaction, VersionedTransaction } from '@solana/web3.js'
-import { BaseConnector } from './BaseConnector'
+import type UniversalProvider from '@walletconnect/universal-provider'
+import { OptionsController } from '@web3modal/core'
 
+import type { Connector } from './BaseConnector'
+import type { Chain } from '../utils/scaffold'
 import { SolStoreUtil } from '../utils/scaffold'
 import { UniversalProviderFactory } from './universalProvider'
-
-import type UniversalProvider from '@walletconnect/universal-provider'
-import type { Connector } from './BaseConnector'
-import { OptionsController } from '@web3modal/core'
+import { BaseConnector } from './BaseConnector'
 
 export interface WalletConnectAppMetadata {
   name: string
@@ -20,6 +20,8 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
   id = 'WalletConnect'
   name = 'WalletConnect'
   ready = true
+  chains: Chain[]
+
   protected provider: UniversalProvider | undefined
   protected qrcode: boolean
 
@@ -27,14 +29,17 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
     relayerRegion,
     metadata,
     qrcode,
-    autoconnect
+    autoconnect,
+    chains
   }: {
     relayerRegion: string
     metadata: WalletConnectAppMetadata
     qrcode?: boolean
     autoconnect?: boolean
+    chains: Chain[]
   }) {
     super()
+    this.chains = chains
     this.qrcode = Boolean(qrcode)
     UniversalProviderFactory.setSettings({
       projectId: OptionsController.state.projectId,
@@ -174,7 +179,7 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
    * QRCode.
    */
   public generateNamespaces(chainId: string) {
-    const rpcs = SolStoreUtil.state.chains.reduce<Record<string, string>>((acc, chain) => {
+    const rpcs = this.chains.reduce<Record<string, string>>((acc, chain) => {
       acc[chain.chainId] = chain.rpcUrl
 
       return acc
