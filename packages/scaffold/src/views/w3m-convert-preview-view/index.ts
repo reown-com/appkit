@@ -34,15 +34,11 @@ export class W3mConvertPreviewView extends LitElement {
 
   @state() private balanceSymbol = AccountController.state.balanceSymbol
 
-  @state() private detailsOpen = true
-
   @state() private gasPriceInUSD = SwapApiController.state.gasPriceInUSD
 
   @state() private gasPriceInETH = SwapApiController.state.gasPriceInETH
 
   @state() private valueDifference = SwapApiController.state.valueDifference
-
-  @state() private swapErrorMessage = SwapApiController.state.swapErrorMessage
 
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
@@ -74,7 +70,6 @@ export class W3mConvertPreviewView extends LitElement {
           this.gasPriceInETH = newState.gasPriceInETH
           this.sourceTokenAmount = newState.sourceTokenAmount ?? ''
           this.toTokenAmount = newState.toTokenAmount ?? ''
-          this.swapErrorMessage = newState.swapErrorMessage
         })
       ]
     )
@@ -217,10 +212,6 @@ export class W3mConvertPreviewView extends LitElement {
 
   private async onSendTransaction() {
     await SwapApiController.swapTokens()
-  }
-
-  private toggleDetails() {
-    this.detailsOpen = !this.detailsOpen
   }
 }
 

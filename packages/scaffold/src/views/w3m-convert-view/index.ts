@@ -20,8 +20,6 @@ export class W3mConvertView extends LitElement {
   private unsubscribe: ((() => void) | undefined)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() private detailsOpen = false
-
   @state() private caipNetworkId = NetworkController.state.caipNetwork?.id
 
   @state() private initialLoading = SwapApiController.state.initialLoading
@@ -301,10 +299,6 @@ export class W3mConvertView extends LitElement {
 
   private onConvertPreview() {
     RouterController.push('ConvertPreview')
-  }
-
-  private toggleDetails() {
-    this.detailsOpen = !this.detailsOpen
   }
 }
 
