@@ -62,6 +62,7 @@ function createRootStyles(themeVariables?: ThemeVariables) {
 
         --wui-font-family: var(--w3m-font-family);
 
+        --wui-font-size-mini: calc(var(--w3m-font-size-master) * 0.8);
         --wui-font-size-micro: var(--w3m-font-size-master);
         --wui-font-size-tiny: calc(var(--w3m-font-size-master) * 1.2);
         --wui-font-size-small: calc(var(--w3m-font-size-master) * 1.4);
@@ -94,6 +95,7 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-letter-spacing-small: -0.56px;
         --wui-letter-spacing-tiny: -0.48px;
         --wui-letter-spacing-micro: -0.2px;
+        --wui-letter-spacing-mini: -0.16px;
 
         --wui-spacing-0: 0px;
         --wui-spacing-4xs: 2px;

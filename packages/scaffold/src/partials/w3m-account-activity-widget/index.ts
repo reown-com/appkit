@@ -3,22 +3,18 @@ import { LitElement, html } from 'lit'
 
 import styles from './styles.js'
 
-@customElement('w3m-transactions-view')
-export class W3mTransactionsView extends LitElement {
+@customElement('w3m-account-activity-widget')
+export class W3mAccountActivityWidget extends LitElement {
   public static override styles = styles
 
   // -- Render -------------------------------------------- //
   public override render() {
-    return html`
-      <wui-flex flexDirection="column" gap="s">
-        <w3m-activity-list page="activity"></w3m-activity-list>
-      </wui-flex>
-    `
+    return html`<w3m-activity-list page="account"></w3m-activity-list>`
   }
 }
 
 declare global {
   interface HTMLElementTagNameMap {
-    'w3m-transactions-view': W3mTransactionsView
+    'w3m-account-activity-widget': W3mAccountActivityWidget
   }
 }
