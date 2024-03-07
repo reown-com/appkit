@@ -18,6 +18,7 @@ export interface AccountControllerState {
   profileImage?: string | null
   addressExplorerUrl?: string
   smartAccountDeployed?: boolean
+  smartAccountEnabled?: boolean
   tokenBalance?: Balance[]
 }
 
@@ -83,6 +84,10 @@ export const AccountController = {
     if (tokenBalance) {
       state.tokenBalance = ref(tokenBalance)
     }
+  },
+
+  setSmartAccountEnabled(isEnabled: boolean) {
+    state.smartAccountEnabled = isEnabled
   },
 
   async fetchTokenBalance() {

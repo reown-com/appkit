@@ -329,6 +329,9 @@ export class Web3Modal extends Web3ModalScaffold {
     if (ethersConfig.coinbase) {
       this.checkActiveCoinbaseProvider(ethersConfig)
     }
+    if (options.enableSmartAccounts) {
+      this.setSmartAccountEnabled(true)
+    }
   }
 
   // -- Public ------------------------------------------------------------------
@@ -594,7 +597,17 @@ export class Web3Modal extends Web3ModalScaffold {
     window?.localStorage.setItem(EthersConstantsUtil.WALLET_ID, ConstantsUtil.EMAIL_CONNECTOR_ID)
 
     if (this.emailProvider) {
-      const { address, chainId, smartAccountDeployed } = await this.emailProvider.connect()
+      const preferredAccountType = W3mFrameHelpers.getPreferredAccountType(
+        Boolean(this.options?.enableSmartAccounts)
+      )
+      const [{ address, chainId, smartAccountDeployed }, { smartAccountEnabledNetworks }] =
+        await Promise.all([
+          this.emailProvider.connect({
+            chainId: this.getChainId(),
+            preferredAccountType
+          }),
+          this.emailProvider.getSmartAccountEnabledNetworks()
+        ])
       super.setLoading(false)
       if (address && chainId) {
         EthersStoreUtil.setChainId(chainId)
@@ -603,6 +616,7 @@ export class Web3Modal extends Web3ModalScaffold {
         EthersStoreUtil.setIsConnected(true)
         EthersStoreUtil.setAddress(address as Address)
         this.setSmartAccountDeployed(smartAccountDeployed)
+        this.setSmartAccountEnabledNetworks(smartAccountEnabledNetworks)
 
         this.watchEmail()
         this.watchModal()
@@ -782,7 +796,19 @@ export class Web3Modal extends Web3ModalScaffold {
         super.setLoading(false)
       })
       this.emailProvider.onIsConnected(() => {
+        this.setIsConnected(true)
         super.setLoading(false)
+      })
+
+      this.emailProvider.onSetPreferredAccount(({ address }) => {
+        if (!address) {
+          return
+        }
+        const chainId = HelpersUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
+        EthersStoreUtil.setAddress(address as Address)
+        EthersStoreUtil.setChainId(chainId)
+        EthersStoreUtil.setIsConnected(true)
+        this.syncAccount()
       })
     }
   }

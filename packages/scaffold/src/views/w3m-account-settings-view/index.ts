@@ -38,6 +38,8 @@ export class W3mAccountSettingsView extends LitElement {
 
   @state() private disconnecting = false
 
+  @state() private smartAccountEnabled = AccountController.state.smartAccountEnabled
+
   public constructor() {
     super()
     this.usubscribe.push(
@@ -47,6 +49,7 @@ export class W3mAccountSettingsView extends LitElement {
             this.address = val.address
             this.profileImage = val.profileImage
             this.profileName = val.profileName
+            this.smartAccountEnabled = val.smartAccountEnabled
           } else {
             ModalController.close()
           }
@@ -186,14 +189,15 @@ export class W3mAccountSettingsView extends LitElement {
   }
 
   private togglePreferredAccountBtnTemplate() {
-    const smartAccountEnabled = NetworkController.checkIfSmartAccountEnabled()
+    const networkEnabled = NetworkController.checkIfSmartAccountEnabled()
     const type = StorageUtil.getConnectedConnector()
     const emailConnector = ConnectorController.getEmailConnector()
-    if (!emailConnector || type !== 'EMAIL' || !smartAccountEnabled) {
+
+    if (!emailConnector || type !== 'EMAIL' || !this.smartAccountEnabled || !networkEnabled) {
       return null
     }
 
-    const preferredAccountType = W3mFrameHelpers.getPreferredAccountType(smartAccountEnabled)
+    const preferredAccountType = W3mFrameHelpers.getPreferredAccountType(networkEnabled)
     const text =
       preferredAccountType === 'smartAccount'
         ? 'Switch to your EOA'

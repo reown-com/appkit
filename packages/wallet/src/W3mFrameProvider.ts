@@ -402,10 +402,6 @@ export class W3mFrameProvider {
     })
   }
 
-  public setSmartAccountEnabled(enabled: boolean) {
-    W3mFrameStorage.set(W3mFrameConstants.SMART_ACCOUNT_ENABLED, String(enabled))
-  }
-
   // -- Promise Handlers ------------------------------------------------
   private onConnectEmailSuccess(
     event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/CONNECT_EMAIL_SUCCESS' }>

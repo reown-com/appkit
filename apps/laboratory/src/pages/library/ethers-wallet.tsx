@@ -20,7 +20,8 @@ const modal = createWeb3Modal({
   privacyPolicyUrl: 'https://walletconnect.com/privacy',
   enableOnramp: true,
   customWallets: ConstantsUtil.CustomWallets,
-  enableWalletFeatures: true
+  enableWalletFeatures: true,
+  enableSmartAccounts: true
 })
 
 ThemeStore.setModal(modal)
