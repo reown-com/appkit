@@ -2,9 +2,7 @@ import type { SIWESession } from '@web3modal/siwe'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import nextAuth from 'next-auth'
 import credentialsProvider from 'next-auth/providers/credentials'
-import { getCsrfToken } from 'next-auth/react'
-import { SiweMessage } from 'siwe'
-import { ethers } from 'ethers'
+import { isValidEip191Signature, isValidEip1271Signature } from '@walletconnect/utils'
 
 declare module 'next-auth' {
   interface Session extends SIWESession {
@@ -47,22 +45,17 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
           if (!credentials?.message) {
             throw new Error('SiweMessage is undefined')
           }
-          const siwe = new SiweMessage(credentials.message)
-          const provider = new ethers.JsonRpcProvider(
-            `https://rpc.walletconnect.com/v1?chainId=eip155:${siwe.chainId}&projectId=${projectId}`
-          )
-          const nonce = await getCsrfToken({ req: { headers: req.headers } })
-          const result = await siwe.verify(
-            {
-              signature: credentials?.signature || '',
-              nonce
-            },
-            { provider }
-          )
+          const { message, signature } = credentials
+          const address = message.match(/0x[a-fA-F0-9]{40}/)?.[0] || ''
+          const chainId = `eip155:${credentials.message.match(/Chain ID: (\d+)/)?.[1] || 1}`
+          let isValid = isValidEip191Signature(address, message, signature)
+          if (!isValid) {
+            isValid = await isValidEip1271Signature(address, message, signature, chainId, projectId)
+          }
 
-          if (result.success) {
+          if (isValid) {
             return {
-              id: `eip155:${siwe.chainId}:${siwe.address}`
+              id: `${chainId}:${address}`
             }
           }
 

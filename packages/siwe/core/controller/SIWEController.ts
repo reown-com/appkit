@@ -140,8 +140,5 @@ export const SIWEController = {
 
   setSession(session: SIWEControllerClientState['session']) {
     state.session = session
-    OptionsController.setSiweSession({
-      accounts: session?.address ? [session.address] : []
-    })
   }
 }

@@ -1,7 +1,7 @@
-import { SiweMessage } from 'siwe'
 import { getCsrfToken, signIn, signOut, getSession } from 'next-auth/react'
 import type { SIWEVerifyMessageArgs, SIWECreateMessageArgs, SIWESession } from '@web3modal/siwe'
 import { createSIWEConfig } from '@web3modal/siwe'
+import { formatMessage } from '@walletconnect/utils'
 
 export const siweConfig = createSIWEConfig({
   messageParams: {
@@ -12,9 +12,9 @@ export const siweConfig = createSIWEConfig({
       'https://siwe.dev',
       'urn:recap:eyJhdHQiOnsiaHR0cHM6Ly93ZWIzaW5ib3guY29tIjp7InB1c2gvYWxlcnRzIjpbe31dLCJwdXNoL25vdGlmaWNhdGlvbnMiOlt7fV19fX0='
     ],
-    statement: 'Test statement'
+    statement: 'Please sign with your account'
   },
-  createMessage: (args: SIWECreateMessageArgs) => new SiweMessage({ ...args }).prepareMessage(),
+  createMessage: (args: SIWECreateMessageArgs) => formatMessage({ ...args }, args.address),
   getNonce: async () => {
     const nonce = await getCsrfToken()
     if (!nonce) {

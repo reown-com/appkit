@@ -93,8 +93,9 @@ export class Web3ModalSIWEClient {
     if (!chainId) {
       throw new Error('A chainId is required to create a SIWE message.')
     }
+    console.log('chainId', chainId, address)
     const message = this.methods.createMessage({
-      address,
+      address: `eip155:${chainId}:${address}`,
       chainId,
       nonce,
       version: '1',
