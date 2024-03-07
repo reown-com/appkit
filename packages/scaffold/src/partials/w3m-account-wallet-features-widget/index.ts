@@ -46,10 +46,8 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
           }
         })
       ],
-      NetworkController.subscribeKey('caipNetwork', val => {
-        if (val?.id) {
-          this.network = val
-        }
+      NetworkController.subscribe(val => {
+        this.network = val.caipNetwork
       })
     )
   }
@@ -103,22 +101,16 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
   // -- Private ------------------------------------------- //
   private activateAccountTemplate() {
-    const networkId = NetworkController.state.caipNetwork?.id
-    const smartAccountsEnabled = W3mFrameHelpers.checkIfSmartAccountEnabled(
-      networkId?.split(':')?.[1]
-    )
     const preferredAccountType = W3mFrameHelpers.getPreferredAccountType()
-
-    if (
-      !smartAccountsEnabled ||
-      this.smartAccountDeployed ||
-      preferredAccountType === 'smartAccount'
-    ) {
+    const smartAccountEnabled = NetworkController.checkIfSmartAccountEnabled()
+    if (!smartAccountEnabled || preferredAccountType === 'smartAccount') {
       return null
     }
 
+    const text = this.smartAccountDeployed ? 'Switch to your account' : 'Activate your account'
+
     return html` <wui-promo
-      text="Activate your account"
+      text=${text}
       @click=${() => RouterController.push('UpgradeToSmartAccount')}
     ></wui-promo>`
   }

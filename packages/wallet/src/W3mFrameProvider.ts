@@ -390,6 +390,16 @@ export class W3mFrameProvider {
     })
   }
 
+  public onGetSmartAccountEnabledNetworks(callback: (networks: number[]) => void) {
+    this.w3mFrame.events.onFrameEvent(event => {
+      if (event.type === W3mFrameConstants.FRAME_GET_SMART_ACCOUNT_ENABLED_NETWORKS_SUCCESS) {
+        callback(event.payload.smartAccountEnabledNetworks)
+      } else if (event.type === W3mFrameConstants.FRAME_GET_SMART_ACCOUNT_ENABLED_NETWORKS_ERROR) {
+        callback([])
+      }
+    })
+  }
+
   public setSmartAccountEnabled(enabled: boolean) {
     W3mFrameStorage.set(W3mFrameConstants.SMART_ACCOUNT_ENABLED, String(enabled))
   }

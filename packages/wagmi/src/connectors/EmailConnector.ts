@@ -34,10 +34,15 @@ export function emailConnector(parameters: EmailParameters) {
     async connect(options: ConnectOptions = {}) {
       const provider = await this.getProvider()
       const preferredAccountType = W3mFrameHelpers.getPreferredAccountType()
-      const { address, chainId } = await provider.connect({
-        chainId: options.chainId,
-        preferredAccountType
-      })
+      const [{ address, chainId }] = await Promise.all([
+        provider.connect({
+          chainId: options.chainId,
+          preferredAccountType: parameters.options.enableSmartAccounts
+            ? preferredAccountType
+            : 'eoa'
+        }),
+        provider.getSmartAccountEnabledNetworks()
+      ])
 
       return {
         accounts: [address as Address],

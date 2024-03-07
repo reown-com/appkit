@@ -428,6 +428,10 @@ export class Web3Modal extends Web3ModalScaffold {
         this.setSmartAccountDeployed(req.smartAccountDeployed)
         super.setLoading(false)
       })
+
+      provider.onGetSmartAccountEnabledNetworks(networks => {
+        this.setSmartAccountEnabledNetworks(networks)
+      })
     }
   }
 

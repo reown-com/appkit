@@ -10,7 +10,6 @@ import {
   AccountController
 } from '@web3modal/core'
 import { state } from 'lit/decorators.js'
-import { W3mFrameHelpers } from '@web3modal/wallet'
 
 @customElement('w3m-email-verify-otp-view')
 export class W3mEmailVerifyOtpView extends W3mEmailOtpWidget {
@@ -18,16 +17,12 @@ export class W3mEmailVerifyOtpView extends W3mEmailOtpWidget {
   private unsubscribe: (() => void)[] = []
 
   // -- State ------------------------------------------- //
-  @state() private network = NetworkController.state.caipNetwork
   @state() private smartAccountDeployed = AccountController.state.smartAccountDeployed
 
   public constructor() {
     super()
 
     this.unsubscribe.push(
-      NetworkController.subscribeKey('caipNetwork', val => {
-        this.network = val
-      }),
       AccountController.subscribeKey('smartAccountDeployed', val => {
         this.smartAccountDeployed = val
       })
@@ -47,8 +42,8 @@ export class W3mEmailVerifyOtpView extends W3mEmailOtpWidget {
           properties: { method: 'email', name: this.emailConnector.name || 'Unknown' }
         })
 
-        const networkId = this.network?.id?.split(':')?.[1]
-        if (W3mFrameHelpers.checkIfSmartAccountEnabled(networkId) && !this.smartAccountDeployed) {
+        const smartAccountEnabled = NetworkController.checkIfSmartAccountEnabled()
+        if (smartAccountEnabled && !this.smartAccountDeployed) {
           RouterController.push('UpgradeToSmartAccount')
         } else {
           ModalController.close()

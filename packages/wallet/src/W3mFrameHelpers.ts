@@ -73,21 +73,6 @@ export const W3mFrameHelpers = {
     return W3mFrameRpcConstants.SAFE_RPC_METHODS.includes(method)
   },
 
-  // Smart Accounts
-  getSmartAccountEnabledNetworks() {
-    return W3mFrameStorage.get(W3mFrameConstants.SMART_ACCOUNT_ENABLED_NETWORKS)?.split(',') || []
-  },
-
-  checkIfSmartAccountEnabled(networkId?: string): boolean {
-    const smartAccountEnabledNetworks = this.getSmartAccountEnabledNetworks()
-
-    return Boolean(
-      networkId &&
-        smartAccountEnabledNetworks?.includes(networkId) &&
-        Boolean(W3mFrameStorage.get(W3mFrameConstants.SMART_ACCOUNT_ENABLED))
-    )
-  },
-
   getPreferredAccountType(): 'eoa' | 'smartAccount' {
     return (
       (W3mFrameStorage.get(W3mFrameConstants.PREFERRED_ACCOUNT_TYPE) as 'eoa' | 'smartAccount') ||
