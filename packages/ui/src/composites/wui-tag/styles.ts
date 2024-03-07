@@ -2,9 +2,16 @@ import { css } from 'lit'
 
 export default css`
   :host {
-    display: block;
-    padding: 3.5px 5px !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: var(--wui-spacing-m);
+    padding: 0 var(--wui-spacing-3xs) !important;
     border-radius: var(--wui-border-radius-5xs);
+  }
+
+  :host > wui-text {
+    transform: translateY(5%);
   }
 
   :host([data-variant='main']) {

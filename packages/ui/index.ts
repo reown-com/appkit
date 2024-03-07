@@ -56,6 +56,8 @@ export * from './src/composites/wui-profile-button/index.js'
 export * from './src/composites/wui-chip-button/index.js'
 export * from './src/composites/wui-compatible-network/index.js'
 export * from './src/composites/wui-banner/index.js'
+export * from './src/composites/wui-list-token/index.js'
+export * from './src/composites/wui-list-description/index.js'
 
 export * from './src/layout/wui-flex/index.js'
 export * from './src/layout/wui-grid/index.js'
