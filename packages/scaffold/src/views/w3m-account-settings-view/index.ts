@@ -38,8 +38,6 @@ export class W3mAccountSettingsView extends LitElement {
 
   @state() private disconnecting = false
 
-  @state() private smartAccountEnabled = AccountController.state.smartAccountEnabled
-
   public constructor() {
     super()
     this.usubscribe.push(
