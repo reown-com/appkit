@@ -181,8 +181,9 @@ export class Web3Modal extends Web3ModalScaffold {
             ...siweConfig.options.messageParams
           })
           // Auths is an array of signed CACAO objects https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-74.md
-          if (result?.auths?.[0]) {
-            const { p, s } = result.auths[0]
+          const signedCacao = result?.auths?.[0]
+          if (signedCacao) {
+            const { p, s } = signedCacao
             const chainId = getDidChainId(p.iss)
             const address = getDidAddress(p.iss)
             if (address && chainId) {
