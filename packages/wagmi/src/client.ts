@@ -183,6 +183,7 @@ export class Web3Modal extends Web3ModalScaffold {
             value: data.value,
             gas: data.gas,
             gasPrice: data.gasPrice,
+            data: data.data,
             type: 'legacy'
           })
 
@@ -192,7 +193,8 @@ export class Web3Modal extends Web3ModalScaffold {
             value: data.value,
             gas: data.gas,
             gasPrice: data.gasPrice,
-            type: 'legacy'
+            type: 'legacy',
+            data: data.data
           })
 
           await waitForTransactionReceipt(this.wagmiConfig, { hash: tx, timeout: 25000 })

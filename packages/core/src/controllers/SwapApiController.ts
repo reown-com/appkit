@@ -6,6 +6,7 @@ import { FetchUtil } from '../utils/FetchUtil.js'
 import { AccountController } from './AccountController.js'
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { ConnectionController } from './ConnectionController.js'
+import { RouterController } from './RouterController.js'
 
 const ONEINCH_API_BASE_URL = 'https://1inch-swap-proxy.walletconnect-v1-bridge.workers.dev'
 const CURRENT_CHAIN_ADDRESS = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
@@ -246,6 +247,19 @@ export const SwapApiController = {
 
   clearTokens() {
     state.tokens = undefined
+  },
+
+  resetState() {
+    state.tokens = undefined
+    state.myTokensWithBalance = undefined
+    state.sourceToken = undefined
+    state.toToken = undefined
+    state.sourceTokenAmount = '0'
+    state.toTokenAmount = '0'
+    state.sourceTokenPriceInUSD = 0
+    state.toTokenPriceInUSD = 0
+    state.gasPriceInETH = 0
+    state.gasPriceInUSD = 0
   },
 
   clearMyTokens() {
@@ -603,6 +617,9 @@ export const SwapApiController = {
           gasPrice: BigInt(state.swapTransaction.gasPrice),
           value: BigInt(state.swapTransaction.value)
         })
+
+        this.resetState()
+        RouterController.replace('Transactions')
 
         await this.getMyTokensWithBalance({ forceRefetch: true })
       } catch (error: unknown) {
