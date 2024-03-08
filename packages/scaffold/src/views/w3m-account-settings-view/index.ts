@@ -49,7 +49,6 @@ export class W3mAccountSettingsView extends LitElement {
             this.address = val.address
             this.profileImage = val.profileImage
             this.profileName = val.profileName
-            this.smartAccountEnabled = val.smartAccountEnabled
           } else {
             ModalController.close()
           }
@@ -193,7 +192,7 @@ export class W3mAccountSettingsView extends LitElement {
     const type = StorageUtil.getConnectedConnector()
     const emailConnector = ConnectorController.getEmailConnector()
 
-    if (!emailConnector || type !== 'EMAIL' || !this.smartAccountEnabled || !networkEnabled) {
+    if (!emailConnector || type !== 'EMAIL' || !networkEnabled) {
       return null
     }
 

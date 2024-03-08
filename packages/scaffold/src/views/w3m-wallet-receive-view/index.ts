@@ -103,12 +103,11 @@ export class W3mWalletReceiveView extends LitElement {
     const networks = NetworkController.getRequestedCaipNetworks()
     const isNetworkEnabledForSmartAccounts = NetworkController.checkIfSmartAccountEnabled()
     const caipNetwork = NetworkController.state.caipNetwork
-    const isEnabled = AccountController.state.smartAccountEnabled
     const preferredAccountType = W3mFrameHelpers.getPreferredAccountType(
-      Boolean(isEnabled && isNetworkEnabledForSmartAccounts)
+      Boolean(isNetworkEnabledForSmartAccounts)
     )
 
-    if (isEnabled && preferredAccountType === 'smartAccount') {
+    if (preferredAccountType === 'smartAccount') {
       if (!caipNetwork) {
         return null
       }
