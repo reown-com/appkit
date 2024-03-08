@@ -11,7 +11,7 @@ export const siweConfig = createSIWEConfig({
     chains: WagmiConstantsUtil.chains.map(chain => chain.id),
     statement: 'Please sign with your account'
   },
-  createMessage: (args: SIWECreateMessageArgs) => formatMessage({ ...args }, args.address),
+  createMessage: ({ address, ...args }: SIWECreateMessageArgs) => formatMessage(args, address),
   getNonce: async () => {
     const nonce = await getCsrfToken()
     if (!nonce) {
