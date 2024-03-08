@@ -44,6 +44,7 @@ export const colorOptions: ColorType[] = [
 export const textOptions: TextType[] = [
   'micro-700',
   'micro-600',
+  'mini-700',
   'tiny-500',
   'tiny-600',
   'small-500',

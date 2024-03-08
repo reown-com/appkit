@@ -9,7 +9,8 @@ import type {
   GetQuoteArgs,
   OnrampQuote,
   PaymentCurrency,
-  PurchaseCurrency
+  PurchaseCurrency,
+  BlockchainApiBalanceResponse
 } from '../utils/TypeUtil.js'
 import { OptionsController } from './OptionsController.js'
 
@@ -119,6 +120,16 @@ export const BlockchainApiController = {
       }`,
       params: queryParams,
       signal
+    })
+  },
+
+  async getBalance(address: string) {
+    return api.get<BlockchainApiBalanceResponse>({
+      path: `/v1/account/${address}/balance`,
+      params: {
+        currency: 'usd',
+        projectId: OptionsController.state.projectId
+      }
     })
   },
 
