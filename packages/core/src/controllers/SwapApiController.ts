@@ -40,7 +40,6 @@ export interface SwapApiControllerState {
   networkPrice: string
   networkAddress: string | undefined
   gasPriceInUSD?: number
-  gasPriceInETH?: number
   swapTransaction?: TransactionData
   swapApproval?: SwapApprovalData
   slippage: number
@@ -130,7 +129,6 @@ const state = proxy<SwapApiControllerState>({
   networkPrice: '0',
   networkAddress: CURRENT_CHAIN_ADDRESS,
   gasPriceInUSD: 0,
-  gasPriceInETH: 0,
   slippage: DEFAULT_SLIPPAGE_TOLERANCE,
   disableEstimate: false,
   allowPartialFill: false,
@@ -259,7 +257,6 @@ export const SwapApiController = {
     state.toTokenAmount = '0'
     state.sourceTokenPriceInUSD = 0
     state.toTokenPriceInUSD = 0
-    state.gasPriceInETH = 0
     state.gasPriceInUSD = 0
   },
 
@@ -492,7 +489,7 @@ export const SwapApiController = {
     )
   },
 
-  calculateGasPriceInETH(gas: number, gasPrice: string) {
+  calculateGasPriceInEther(gas: number, gasPrice: string) {
     const gasPriceNumber = BigInt(gasPrice)
     const totalGasCostInWei = gasPriceNumber * BigInt(gas)
     const totalGasCostInEther = Number(totalGasCostInWei) / 1e18
@@ -501,7 +498,7 @@ export const SwapApiController = {
   },
 
   calculateGasPriceInUSD(gas: number, gasPrice: string) {
-    const totalGasCostInEther = this.calculateGasPriceInETH(gas, gasPrice)
+    const totalGasCostInEther = this.calculateGasPriceInEther(gas, gasPrice)
     const networkPriceNumber = parseFloat(state.networkPrice)
     const totalCostInUSD = totalGasCostInEther * networkPriceNumber
     console.log('>>> networkPriceNumber', networkPriceNumber, totalGasCostInEther, totalCostInUSD)
@@ -595,7 +592,6 @@ export const SwapApiController = {
       state.priceImpact = this.calculatePriceImpact(state.toTokenAmount)
       state.maxSlippage = this.calculateMaxSlippage()
       state.gasPriceInUSD = this.calculateGasPriceInUSD(transaction.gas, transaction.gasPrice)
-      state.gasPriceInETH = this.calculateGasPriceInETH(transaction.gas, transaction.gasPrice)
     }
   },
 

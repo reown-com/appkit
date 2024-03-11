@@ -47,8 +47,6 @@ export class W3mConvertView extends LitElement {
 
   @state() private gasPriceInUSD = SwapApiController.state.gasPriceInUSD
 
-  @state() private gasPriceInETH = SwapApiController.state.gasPriceInETH
-
   @state() private priceImpact = SwapApiController.state.priceImpact
 
   @state() private maxSlippage = SwapApiController.state.maxSlippage
@@ -101,7 +99,6 @@ export class W3mConvertView extends LitElement {
           this.toTokenPriceInUSD = newState.toTokenPriceInUSD
           this.hasAllowance = newState.hasAllowance
           this.gasPriceInUSD = newState.gasPriceInUSD
-          this.gasPriceInETH = newState.gasPriceInETH
           this.swapErrorMessage = newState.swapErrorMessage
           this.priceImpact = newState.priceImpact
           this.maxSlippage = newState.maxSlippage
@@ -268,7 +265,6 @@ export class W3mConvertView extends LitElement {
         sourceTokenPrice=${this.sourceTokenPriceInUSD}
         toTokenSymbol=${this.toToken?.symbol}
         toTokenConvertedAmount=${toTokenConvertedAmount}
-        gasPriceInETH=${this.gasPriceInETH}
         gasPriceInUSD=${this.gasPriceInUSD}
         .priceImpact=${this.priceImpact}
         slippageRate=${0.5}

@@ -22,8 +22,6 @@ export class WuiConvertDetails extends LitElement {
 
   @property() public toTokenConvertedAmount?: number
 
-  @property() public gasPriceInETH?: number
-
   @property() public gasPriceInUSD?: number
 
   @property() public priceImpact?: number

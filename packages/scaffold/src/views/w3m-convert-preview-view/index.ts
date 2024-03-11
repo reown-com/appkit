@@ -36,9 +36,9 @@ export class W3mConvertPreviewView extends LitElement {
 
   @state() private gasPriceInUSD = SwapApiController.state.gasPriceInUSD
 
-  @state() private gasPriceInETH = SwapApiController.state.gasPriceInETH
-
   @state() private priceImpact = SwapApiController.state.priceImpact
+
+  @state() private maxSlippage = SwapApiController.state.maxSlippage
 
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
@@ -65,10 +65,10 @@ export class W3mConvertPreviewView extends LitElement {
           this.gasPriceInUSD = newState.gasPriceInUSD
           this.isTransactionPending = newState.isTransactionPending
           this.toTokenPriceInUSD = newState.toTokenPriceInUSD
-          this.gasPriceInETH = newState.gasPriceInETH
           this.sourceTokenAmount = newState.sourceTokenAmount ?? ''
           this.toTokenAmount = newState.toTokenAmount ?? ''
           this.priceImpact = newState.priceImpact
+          this.maxSlippage = newState.maxSlippage
         })
       ]
     )
@@ -196,11 +196,10 @@ export class W3mConvertPreviewView extends LitElement {
         sourceTokenPrice=${this.sourceTokenPriceInUSD}
         toTokenSymbol=${this.toToken?.symbol}
         toTokenConvertedAmount=${toTokenConvertedAmount}
-        gasPriceInETH=${this.gasPriceInETH}
         gasPriceInUSD=${formatNumberToLocalString(this.gasPriceInUSD, 3)}
         .priceImpact=${this.priceImpact}
         slippageRate=${0.5}
-        slippageValue=${this.gasPriceInETH}
+        .maxSlippage=${this.maxSlippage}
       ></wui-convert-details>
     `
   }
