@@ -1,6 +1,6 @@
 import { Connection } from '@solana/web3.js'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
-import { OptionsController } from '@web3modal/core'
+import { AssetController, OptionsController } from '@web3modal/core'
 import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@web3modal/scaffold-utils'
 
 import { WalletConnectConnector } from './connectors/WalletConnectConnector'
@@ -206,6 +206,10 @@ export class Web3Modal extends Web3ModalScaffold {
       this.syncNetwork(chainImages)
     })
 
+    AssetController.subscribeNetworkImages(() => {
+      this.syncNetwork(chainImages)
+    })
+
     if (typeof window === 'object') {
       this.checkActiveProviders()
       this.syncConnectors()
@@ -367,7 +371,6 @@ export class Web3Modal extends Web3ModalScaffold {
     const providerType = SolStoreUtil.state.providerType
 
     const chain = SolHelpersUtil.getChainFromCaip(this.chains, caipChainId ?? '')
-
     if (this.chains) {
       if (chain) {
         SolStoreUtil.setCaipChainId(`solana:${chain.chainId}`)

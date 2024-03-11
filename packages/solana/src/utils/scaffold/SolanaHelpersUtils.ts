@@ -32,11 +32,16 @@ export const SolHelpersUtil = {
     if (selectedChain) {
       return {
         ...selectedChain,
-        id: `solana:${chainId}`
+        id: `solana:${chainId}`,
+        imageId: PresetsUtil.EIP155NetworkImageIds[chainId]
       }
     }
 
-    return { ...SolConstantsUtil.DEFAULT_CHAIN, id: `solana:${chainId}` }
+    return {
+      ...SolConstantsUtil.DEFAULT_CHAIN,
+      id: `solana:${chainId}`,
+      imageId: PresetsUtil.EIP155NetworkImageIds[chainId]
+    }
   },
 
   getCaipDefaultChain(chain?: Chain) {
