@@ -55,6 +55,9 @@ export type { EventsControllerState } from './src/controllers/EventsController.j
 export { TransactionsController } from './src/controllers/TransactionsController.js'
 export type { TransactionsControllerState } from './src/controllers/TransactionsController.js'
 
+export { SendController } from './src/controllers/SendController.js'
+export type { SendControllerState } from './src/controllers/SendController.js'
+
 // -- Utils -------------------------------------------------------------------
 export { AssetUtil } from './src/utils/AssetUtil.js'
 export { ConstantsUtil } from './src/utils/ConstantsUtil.js'

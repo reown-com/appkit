@@ -57,6 +57,7 @@ import type { WuiBanner } from '../composites/wui-banner/index.js'
 import type { WuiCompatibleNetwork } from '../composites/wui-compatible-network/index.js'
 import type { WuiListToken } from '../composites/wui-list-token/index.js'
 import type { WuiListDescription } from '../composites/wui-list-description/index.js'
+import type { WuiPreviewItem } from '../composites/wui-preview-item/index.js'
 
 import type { WuiFlex } from '../layout/wui-flex/index.js'
 import type { WuiGrid } from '../layout/wui-grid/index.js'
@@ -129,6 +130,7 @@ declare global {
       'wui-compatible-network': CustomElement<WuiCompatibleNetwork>
       'wui-list-token': CustomElement<WuiListToken>
       'wui-list-description': CustomElement<WuiListDescription>
+      'wui-preview-item': CustomElement<WuiPreviewItem>
     }
   }
 }
