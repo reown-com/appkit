@@ -73,7 +73,6 @@ export class WuiConvertInput extends LitElement {
 
   // -- Private ------------------------------------------- //
   private handleKeydown(event: KeyboardEvent) {
-    console.log('>>> keypress', event)
     const allowedKeys = [
       'Backspace',
       'Meta',

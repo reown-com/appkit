@@ -6,13 +6,21 @@
  * @returns
  */
 export function interpolate(inputRange: number[], outputRange: number[], value: number) {
-  const originalRangeMin = inputRange[0] as number
-  const originalRangeMax = inputRange[1] as number
-  const newRangeMin = outputRange[0] as number
-  const newRangeMax = outputRange[1] as number
+  if (inputRange.length !== 2 || outputRange.length !== 2) {
+    throw new Error('inputRange and outputRange must be an array of length 2')
+  }
 
-  if (value < originalRangeMin) return newRangeMin
-  if (value > originalRangeMax) return newRangeMax
+  const originalRangeMin = inputRange[0] || 0
+  const originalRangeMax = inputRange[1] || 0
+  const newRangeMin = outputRange[0] || 0
+  const newRangeMax = outputRange[1] || 0
+
+  if (value < originalRangeMin) {
+    return newRangeMin
+  }
+  if (value > originalRangeMax) {
+    return newRangeMax
+  }
 
   return (
     ((newRangeMax - newRangeMin) / (originalRangeMax - originalRangeMin)) *

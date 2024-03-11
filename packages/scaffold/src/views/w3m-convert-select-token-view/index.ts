@@ -116,6 +116,7 @@ export class W3mConvertSelectTokenView extends LitElement {
                   const selected =
                     tokenInfo.symbol === this.sourceToken?.symbol ||
                     tokenInfo.symbol === this.toToken?.symbol
+
                   return html`
                     <wui-token-list-item
                       ?disabled=${selected}
@@ -128,7 +129,9 @@ export class W3mConvertSelectTokenView extends LitElement {
                       )}
                       imageSrc=${tokenInfo.logoURI}
                       @click=${() => {
-                        if (!selected) this.onSelectToken(tokenInfo)
+                        if (!selected) {
+                          this.onSelectToken(tokenInfo)
+                        }
                       }}
                     >
                     </wui-token-list-item>

@@ -501,7 +501,6 @@ export const SwapApiController = {
     const totalGasCostInEther = this.calculateGasPriceInEther(gas, gasPrice)
     const networkPriceNumber = parseFloat(state.networkPrice)
     const totalCostInUSD = totalGasCostInEther * networkPriceNumber
-    console.log('>>> networkPriceNumber', networkPriceNumber, totalGasCostInEther, totalCostInUSD)
 
     return totalCostInUSD
   },
