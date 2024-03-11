@@ -109,6 +109,9 @@ export class W3mWalletSendPreviewView extends LitElement {
 
   private onSendClick() {
     RouterController.push('Account')
+    setTimeout(() => {
+      SendController.resetSend()
+    }, 200)
   }
 
   private onCancelClick() {

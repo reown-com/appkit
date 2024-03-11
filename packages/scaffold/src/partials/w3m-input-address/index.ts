@@ -21,6 +21,9 @@ export class W3mInputAddress extends LitElement {
   @state() private instructionHidden = Boolean(this.receiverAddress)
 
   protected override firstUpdated() {
+    if (this.receiverAddress) {
+      this.instructionHidden = true
+    }
     this.checkHidden()
   }
 
