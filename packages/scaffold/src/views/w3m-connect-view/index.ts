@@ -104,10 +104,12 @@ export class W3mConnectView extends LitElement {
     if (!connector) {
       return null
     }
+
     const { featured } = ApiController.state
     if (!featured.length) {
       return null
     }
+
     const wallets = this.filterOutDuplicateWallets(featured)
 
     return wallets.map(
@@ -284,7 +286,18 @@ export class W3mConnectView extends LitElement {
   private filterOutDuplicateWallets(wallets: WcWallet[]) {
     const recent = StorageUtil.getRecentWallets()
     const recentIds = recent.map(wallet => wallet.id)
-    const filtered = wallets.filter(wallet => !recentIds.includes(wallet.id))
+    const connectorIds = this.connectors.map(connector => connector.id)
+    const allIds = recentIds.concat(connectorIds)
+
+    const connectorRDNSs = this.connectors
+      .map(connector => connector.info?.rdns)
+      .filter(Boolean) as string[]
+    const recentRDNSs = recent.map(wallet => wallet.rdns).filter(Boolean) as string[]
+    const allRDNSs = connectorRDNSs.concat(recentRDNSs)
+
+    const filtered = wallets.filter(
+      wallet => !allIds.includes(String(wallet.rdns)) && !allRDNSs.includes(String(wallet?.rdns))
+    )
 
     return filtered
   }
