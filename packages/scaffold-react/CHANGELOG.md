@@ -1,5 +1,16 @@
 # @web3modal/scaffold-react
 
+## 4.1.0
+
+### Minor Changes
+
+- Email Stable release
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @web3modal/scaffold@4.1.0
+
 ## 4.0.13
 
 ### Patch Changes
