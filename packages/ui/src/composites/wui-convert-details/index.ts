@@ -26,11 +26,11 @@ export class WuiConvertDetails extends LitElement {
 
   @property() public gasPriceInUSD?: number
 
-  @property() public valueDifference = { percentage: 0, value: 0 }
+  @property() public priceImpact?: number
 
   @property() public slippageRate = 0.5
 
-  @property() public slippageValue?: number
+  @property() public maxSlippage?: number
 
   // -- Render -------------------------------------------- //
   public override render() {
@@ -56,37 +56,57 @@ export class WuiConvertDetails extends LitElement {
             ? html`
                 <wui-flex flexDirection="column" gap="xs" class="details-content-container">
                   <wui-flex flexDirection="column" gap="xs">
-                    <wui-flex justifyContent="space-between" class="details-row">
+                    <wui-flex
+                      justifyContent="space-between"
+                      alignItems="center"
+                      class="details-row"
+                    >
                       <wui-text variant="small-400" color="fg-150">Network cost</wui-text>
                       <wui-text variant="small-400" color="fg-100">
-                        $${formatNumberToLocalString(this.gasPriceInUSD)}
+                        $${formatNumberToLocalString(this.gasPriceInUSD, 3)}
                       </wui-text>
                     </wui-flex>
                   </wui-flex>
+                  ${this.priceImpact
+                    ? html` <wui-flex flexDirection="column" gap="xs">
+                        <wui-flex
+                          justifyContent="space-between"
+                          alignItems="center"
+                          class="details-row"
+                        >
+                          <wui-text variant="small-400" color="fg-150">Price impact</wui-text>
+                          <wui-flex>
+                            <wui-text variant="small-400" color="fg-200">
+                              ${formatNumberToLocalString(this.priceImpact, 3)}%
+                            </wui-text>
+                          </wui-flex>
+                        </wui-flex>
+                      </wui-flex>`
+                    : null}
+                  ${this.maxSlippage && this.sourceTokenSymbol
+                    ? html`<wui-flex flexDirection="column" gap="xs">
+                        <wui-flex
+                          justifyContent="space-between"
+                          alignItems="center"
+                          class="details-row"
+                        >
+                          <wui-text variant="small-400" color="fg-150">Max. slippage</wui-text>
+                          <wui-flex>
+                            <wui-text variant="small-400" color="fg-200">
+                              ${formatNumberToLocalString(this.maxSlippage, 6)}
+                              ${this.sourceTokenSymbol} ${this.slippageRate}%
+                            </wui-text>
+                          </wui-flex>
+                        </wui-flex>
+                      </wui-flex>`
+                    : null}
                   <wui-flex flexDirection="column" gap="xs">
-                    <wui-flex justifyContent="space-between" class="details-row">
-                      <wui-text variant="small-400" color="fg-150">Price impact</wui-text>
-                      <wui-flex>
-                        <wui-text variant="small-400" color="fg-200">
-                          %${formatNumberToLocalString(this.valueDifference.percentage)}
-                        </wui-text>
-                      </wui-flex>
-                    </wui-flex>
-                  </wui-flex>
-                  <wui-flex flexDirection="column" gap="xs">
-                    <wui-flex justifyContent="space-between" class="details-row">
-                      <wui-text variant="small-400" color="fg-150">Max. slippage</wui-text>
-                      <wui-flex>
-                        <wui-text variant="small-400" color="fg-200">
-                          ${formatNumberToLocalString(this.slippageValue, 6)} ETH
-                          ${this.slippageRate}%
-                        </wui-text>
-                      </wui-flex>
-                    </wui-flex>
-                  </wui-flex>
-                  <wui-flex flexDirection="column" gap="xs">
-                    <wui-flex justifyContent="space-between" class="details-row provider-free-row">
-                      <wui-text variant="small-400" color="fg-150">Provider free</wui-text>
+                    <wui-flex
+                      justifyContent="space-between"
+                      alignItems="center"
+                      class="details-row provider-free-row"
+                    >
+                      <wui-text variant="small-400" color="fg-150">Provider fee</wui-text>
                       <wui-flex alignItems="center" justifyContent="center" class="free-badge">
                         <wui-text variant="micro-700" color="success-100">Free</wui-text>
                       </wui-flex>

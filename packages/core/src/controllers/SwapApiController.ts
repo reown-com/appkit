@@ -10,6 +10,7 @@ import { RouterController } from './RouterController.js'
 
 const ONEINCH_API_BASE_URL = 'https://1inch-swap-proxy.walletconnect-v1-bridge.workers.dev'
 const CURRENT_CHAIN_ADDRESS = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+export const DEFAULT_SLIPPAGE_TOLERANCE = 0.5
 
 const OneInchAPIEndpoints = {
   approveTransaction: (chainId: number) => `/swap/v5.2/${chainId}/approve/transaction`,
@@ -36,12 +37,13 @@ export interface SwapApiControllerState {
   toToken?: TokenInfo
   toTokenAmount: string
   toTokenPriceInUSD: number
-  ethPrice: string
+  networkPrice: string
+  networkAddress: string | undefined
   gasPriceInUSD?: number
   gasPriceInETH?: number
   swapTransaction?: TransactionData
   swapApproval?: SwapApprovalData
-  slippage?: number
+  slippage: number
   disableEstimate?: boolean
   allowPartialFill?: boolean
   hasAllowance: boolean
@@ -53,10 +55,8 @@ export interface SwapApiControllerState {
   tokensPriceMap: Record<string, string>
   swapErrorMessage?: string
   loadingPrices: boolean
-  valueDifference: {
-    percentage: number
-    direction: PriceDifferenceDirection
-  }
+  priceImpact: number | undefined
+  maxSlippage: number | undefined
 }
 
 export interface TokenInfo {
@@ -127,10 +127,11 @@ const state = proxy<SwapApiControllerState>({
   sourceTokenAmount: '',
   sourceTokenPriceInUSD: 0,
   toTokenPriceInUSD: 0,
-  ethPrice: '0',
+  networkPrice: '0',
+  networkAddress: CURRENT_CHAIN_ADDRESS,
   gasPriceInUSD: 0,
   gasPriceInETH: 0,
-  slippage: 0.5,
+  slippage: DEFAULT_SLIPPAGE_TOLERANCE,
   disableEstimate: false,
   allowPartialFill: false,
   initialLoading: false,
@@ -144,10 +145,8 @@ const state = proxy<SwapApiControllerState>({
   isTransactionPending: false,
   loadingPrices: false,
   swapTransaction: undefined,
-  valueDifference: {
-    percentage: 0,
-    direction: 'none'
-  }
+  priceImpact: undefined,
+  maxSlippage: undefined
 })
 
 // -- Controller ---------------------------------------- //
@@ -200,6 +199,8 @@ export const SwapApiController = {
 
   setSourceToken(sourceToken?: TokenInfo) {
     state.sourceToken = sourceToken
+    state.sourceTokenAmount = ''
+    state.toTokenAmount = ''
     if (sourceToken?.address && !state.tokensPriceMap[sourceToken?.address]) {
       this.getTokenPriceWithAddresses([sourceToken?.address])
     }
@@ -335,15 +336,17 @@ export const SwapApiController = {
     if (state.tokens && !options?.forceRefetch) {
       return state.tokens
     }
+    const networkTokenSymbol = AccountController.state.balanceSymbol
 
     const { api, paths } = this._get1inchApi()
     state.initialLoading = true
-
-    await this.getMyTokensWithBalance({ forceRefetch: true })
-
     const res = await api.get<TokenList>({ path: paths.tokens })
 
     state.tokens = res.tokens
+    state.networkAddress =
+      Object.keys(res.tokens).find(address => res.tokens[address]?.symbol === networkTokenSymbol) ||
+      undefined
+
     state.popularTokens = Object.entries(res.tokens)
       .sort(([, aTokenInfo], [, bTokenInfo]) => {
         if (aTokenInfo.symbol < bTokenInfo.symbol) {
@@ -362,6 +365,8 @@ export const SwapApiController = {
 
         return limitedTokens
       }, {})
+
+    await this.getMyTokensWithBalance({ forceRefetch: true })
 
     state.initialLoading = false
 
@@ -394,9 +399,13 @@ export const SwapApiController = {
       return undefined
     }
 
+    const addresses = state.networkAddress
+      ? [...tokenAddresses, state.networkAddress]
+      : tokenAddresses
+
     const [tokens, tokensPrice] = await Promise.all([
-      this.getTokenInfoWithAddresses(tokenAddresses),
-      this.getTokenPriceWithAddresses(tokenAddresses)
+      this.getTokenInfoWithAddresses(addresses),
+      this.getTokenPriceWithAddresses(addresses)
     ])
 
     const mergedTokensWithBalances = this.mergeTokenWithBalances(tokens, balances, tokensPrice)
@@ -450,14 +459,7 @@ export const SwapApiController = {
       }
     })
 
-    const chainId = CoreHelperUtil.getEvmChainId(NetworkController.state.caipNetwork?.id)
-    const isMainnet = chainId === 1
-
-    if (isMainnet) {
-      state.ethPrice = prices[CURRENT_CHAIN_ADDRESS] || '0'
-    } else {
-      state.ethPrice = '0'
-    }
+    state.networkPrice = state.networkAddress ? prices[state.networkAddress] || '0' : '0'
 
     Object.entries(prices).forEach(([tokenAddress, price]) => {
       state.tokensPriceMap[tokenAddress] = price
@@ -500,10 +502,31 @@ export const SwapApiController = {
 
   calculateGasPriceInUSD(gas: number, gasPrice: string) {
     const totalGasCostInEther = this.calculateGasPriceInETH(gas, gasPrice)
-    const ethPriceNumber = Number(state.ethPrice)
-    const totalCostInUSD = totalGasCostInEther * ethPriceNumber
+    const networkPriceNumber = parseFloat(state.networkPrice)
+    const totalCostInUSD = totalGasCostInEther * networkPriceNumber
+    console.log('>>> networkPriceNumber', networkPriceNumber, totalGasCostInEther, totalCostInUSD)
 
     return totalCostInUSD
+  },
+
+  calculatePriceImpact(_toTokenAmount: string) {
+    const sourceTokenAmount = parseFloat(state.sourceTokenAmount)
+    const toTokenAmount = parseFloat(_toTokenAmount)
+    const sourceTokenPrice = state.sourceTokenPriceInUSD
+    const toTokenPrice = state.toTokenPriceInUSD
+
+    const effectivePrice = (sourceTokenAmount * sourceTokenPrice) / toTokenAmount
+    const priceImpact = ((effectivePrice - toTokenPrice) / toTokenPrice) * 100
+
+    return priceImpact
+  },
+
+  calculateMaxSlippage() {
+    const fromTokenAmount = parseFloat(state.sourceTokenAmount)
+    const slippageToleranceDecimal = state.slippage / 100
+    const maxSlippageAmount = fromTokenAmount * slippageToleranceDecimal
+
+    return maxSlippageAmount
   },
 
   async getTokenSwapInfo() {
@@ -560,21 +583,19 @@ export const SwapApiController = {
 
       const swapTransaction: SwapResponse = swapTransactionRes
       state.swapTransaction = swapTransaction.tx
-      state.gasPriceInUSD = this.calculateGasPriceInUSD(
-        swapTransaction.tx.gas,
-        swapTransaction.tx.gasPrice
-      )
-      state.gasPriceInETH = this.calculateGasPriceInETH(
-        swapTransaction.tx.gas,
-        swapTransaction.tx.gasPrice
-      )
+      const transaction = swapTransaction.tx
+
       state.toTokenAmount = ConnectionController.formatUnits(
         BigInt(swapTransaction.toAmount),
         state.toToken.decimals
       )
       const toTokenPrice = state.tokensPriceMap[state.toToken.address] || '0'
       state.toTokenPriceInUSD = parseFloat(toTokenPrice)
-      state.valueDifference = this.calculatePriceDifference()
+
+      state.priceImpact = this.calculatePriceImpact(state.toTokenAmount)
+      state.maxSlippage = this.calculateMaxSlippage()
+      state.gasPriceInUSD = this.calculateGasPriceInUSD(transaction.gas, transaction.gasPrice)
+      state.gasPriceInETH = this.calculateGasPriceInETH(transaction.gas, transaction.gasPrice)
     }
   },
 

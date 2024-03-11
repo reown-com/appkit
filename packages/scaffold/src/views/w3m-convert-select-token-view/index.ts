@@ -9,11 +9,27 @@ import { state } from 'lit/decorators.js'
 export class W3mConvertSelectTokenView extends LitElement {
   public static override styles = styles
 
+  private unsubscribe: ((() => void) | undefined)[] = []
+
+  // -- State & Properties -------------------------------- //
   @state() private targetToken = RouterController.state.data?.target
+
+  @state() private sourceToken = SwapApiController.state.sourceToken
+
+  @state() private toToken = SwapApiController.state.toToken
 
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
+
+    this.unsubscribe.push(
+      ...[
+        SwapApiController.subscribe(newState => {
+          this.sourceToken = newState.sourceToken
+          this.toToken = newState.toToken
+        })
+      ]
+    )
   }
 
   private onSelectToken(token: TokenInfo) {
@@ -63,34 +79,42 @@ export class W3mConvertSelectTokenView extends LitElement {
   private templateTokens() {
     return html`
       <wui-flex class="tokens-container">
-        <wui-flex class="tokens scroll-start" flexDirection="column">
-          ${SwapApiController.state.myTokensWithBalance &&
-          html`<wui-flex justifyContent="flex-start" padding="s">
-            <wui-text variant="paragraph-500" color="fg-200">Your tokens</wui-text>
-          </wui-flex>`}
-
-          <wui-flex flexDirection="column" gap="xs">
-            ${SwapApiController.state.myTokensWithBalance &&
-            Object.values(SwapApiController.state.myTokensWithBalance).map(
-              tokenInfo => html`
-                <wui-token-list-item
-                  name=${tokenInfo.name}
-                  symbol=${tokenInfo.symbol}
-                  price=${tokenInfo.price}
-                  amount=${ConnectionController.formatUnits(
-                    BigInt(tokenInfo.balance),
-                    tokenInfo.decimals
-                  )}
-                  imageSrc=${tokenInfo.logoURI}
-                  @click=${() => this.onSelectToken(tokenInfo)}
-                >
-                </wui-token-list-item>
+        <wui-flex class="tokens" flexDirection="column">
+          ${SwapApiController.state.myTokensWithBalance
+            ? html`
+                <wui-flex justifyContent="flex-start" padding="s">
+                  <wui-text variant="paragraph-500" color="fg-200">Your tokens</wui-text>
+                </wui-flex>
+                <wui-flex flexDirection="column" gap="xs"> </wui-flex>
+                ${Object.values(SwapApiController.state.myTokensWithBalance).map(tokenInfo => {
+                  const selected =
+                    tokenInfo.symbol === this.sourceToken?.symbol ||
+                    tokenInfo.symbol === this.toToken?.symbol
+                  return html`
+                    <wui-token-list-item
+                      ?disabled=${selected}
+                      name=${tokenInfo.name}
+                      symbol=${tokenInfo.symbol}
+                      price=${tokenInfo.price}
+                      amount=${ConnectionController.formatUnits(
+                        BigInt(tokenInfo.balance),
+                        tokenInfo.decimals
+                      )}
+                      imageSrc=${tokenInfo.logoURI}
+                      @click=${() => {
+                        if (!selected) this.onSelectToken(tokenInfo)
+                      }}
+                    >
+                    </wui-token-list-item>
+                  `
+                })}
               `
-            )}
-          </wui-flex>
+            : null}
+
           <wui-flex justifyContent="flex-start" padding="s">
             <wui-text variant="paragraph-500" color="fg-200">Popular tokens</wui-text>
           </wui-flex>
+
           <wui-flex flexDirection="column" gap="1xs">
             ${SwapApiController.state.popularTokens &&
             Object.values(SwapApiController.state.popularTokens).map(
@@ -120,7 +144,7 @@ export class W3mConvertSelectTokenView extends LitElement {
     }
 
     return html`
-      <wui-flex class="suggested-tokens-container scroll-start" gap="xs">
+      <wui-flex class="suggested-tokens-container" gap="xs">
         ${tokens.map(
           tokenInfo => html`
             <wui-token-button
@@ -135,6 +159,22 @@ export class W3mConvertSelectTokenView extends LitElement {
     `
   }
 
+  private interpolate(inputRange: number[], outputRange: number[], value: number) {
+    const originalRangeMin = inputRange[0] as number
+    const originalRangeMax = inputRange[1] as number
+    const newRangeMin = outputRange[0] as number
+    const newRangeMax = outputRange[1] as number
+
+    if (value < originalRangeMin) return newRangeMin
+    if (value > originalRangeMax) return newRangeMax
+
+    return (
+      ((newRangeMax - newRangeMin) / (originalRangeMax - originalRangeMin)) *
+        (value - originalRangeMin) +
+      newRangeMin
+    )
+  }
+
   private handleSuggestedTokensScroll() {
     const container = this.renderRoot?.querySelector('.suggested-tokens-container') as
       | HTMLElement
@@ -144,20 +184,18 @@ export class W3mConvertSelectTokenView extends LitElement {
       return
     }
 
-    const scrollStart = container.scrollLeft === 0
-    const scrollEnd =
-      Math.abs(Math.round(container.scrollLeft + container.offsetWidth) - container.scrollWidth) < 2
-
-    if (scrollStart) {
-      container.classList.add('scroll-start')
-      container.classList.remove('scroll-end')
-    } else if (scrollEnd) {
-      container.classList.add('scroll-end')
-      container.classList.remove('scroll-start')
-    } else {
-      container.classList.remove('scroll-start')
-      container.classList.remove('scroll-end')
-    }
+    container.style.setProperty(
+      '--suggested-tokens-scroll--left-opacity',
+      this.interpolate([0, 100], [0, 1], container.scrollLeft).toString()
+    )
+    container.style.setProperty(
+      '--suggested-tokens-scroll--right-opacity',
+      this.interpolate(
+        [0, 100],
+        [0, 1],
+        container.scrollWidth - container.scrollLeft - container.offsetWidth
+      ).toString()
+    )
   }
 
   private handleTokenListScroll() {
@@ -167,21 +205,18 @@ export class W3mConvertSelectTokenView extends LitElement {
       return
     }
 
-    const scrollStart = container.scrollTop === 0
-    const scrollEnd =
-      Math.abs(Math.round(container.scrollTop + container.offsetHeight) - container.scrollHeight) <
-      2
-
-    if (scrollStart) {
-      container.classList.add('scroll-start')
-      container.classList.remove('scroll-end')
-    } else if (scrollEnd) {
-      container.classList.add('scroll-end')
-      container.classList.remove('scroll-start')
-    } else {
-      container.classList.remove('scroll-start')
-      container.classList.remove('scroll-end')
-    }
+    container.style.setProperty(
+      '--tokens-scroll--top-opacity',
+      this.interpolate([0, 100], [0, 1], container.scrollTop).toString()
+    )
+    container.style.setProperty(
+      '--tokens-scroll--bottom-opacity',
+      this.interpolate(
+        [0, 100],
+        [0, 1],
+        container.scrollHeight - container.scrollTop - container.offsetHeight
+      ).toString()
+    )
   }
 
   public override disconnectedCallback() {

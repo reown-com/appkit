@@ -46,7 +46,7 @@ export default css`
   :host > wui-flex .swap-input input {
     background: none;
     border: none;
-    height: 48px;
+    height: 42px;
     width: 100%;
     font-size: 32px;
     font-style: normal;
@@ -98,5 +98,9 @@ export default css`
     border: none;
     cursor: pointer;
     color: var(--wui-gray-glass-020);
+  }
+
+  .market-value {
+    min-height: 18px;
   }
 `

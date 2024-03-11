@@ -13,10 +13,14 @@ export default css`
   }
 
   .search-input-container,
-  .suggested-tokens-container,
-  .tokens-container {
+  .suggested-tokens-container {
     padding-left: var(--wui-spacing-s);
     padding-right: var(--wui-spacing-s);
+  }
+
+  .tokens-container .tokens {
+    padding: 0px var(--wui-spacing-s);
+    padding-bottom: var(--wui-spacing-s);
   }
 
   .search-input-container {
@@ -25,19 +29,16 @@ export default css`
 
   .suggested-tokens-container {
     overflow-x: auto;
-    -webkit-mask-image: linear-gradient(
-      to right,
-      transparent 0px,
-      black 44px,
-      black calc(100% - 44px),
-      transparent 100%
-    );
     mask-image: linear-gradient(
       to right,
-      transparent 0px,
-      black 44px,
-      black calc(100% - 44px),
-      transparent 100%
+      rgba(0, 0, 0, calc(1 - var(--suggested-tokens-scroll--left-opacity))) 0px,
+      rgba(200, 200, 200, calc(1 - var(--suggested-tokens-scroll--left-opacity))) 1px,
+      black 50px,
+      black 90px,
+      black calc(100% - 90px),
+      black calc(100% - 50px),
+      rgba(155, 155, 155, calc(1 - var(--suggested-tokens-scroll--right-opacity))) calc(100% - 1px),
+      rgba(0, 0, 0, calc(1 - var(--suggested-tokens-scroll--right-opacity))) 100%
     );
   }
 
@@ -45,52 +46,26 @@ export default css`
     display: none;
   }
 
-  .suggested-tokens-container.scroll-start {
-    -webkit-mask-image: linear-gradient(
-      to right,
-      black 0px,
-      black calc(100% - 44px),
-      transparent 100%
-    );
-    mask-image: linear-gradient(to right, black 0px, black calc(100% - 44px), transparent 100%);
-  }
-
-  .suggested-tokens-container.scroll-end {
-    -webkit-mask-image: linear-gradient(to right, transparent 0px, black 44px, black 100%);
-    mask-image: linear-gradient(to right, transparent 0px, black 44px, black 100%);
-  }
-
   .tokens-container {
     border-top: 1px solid var(--wui-gray-glass-005);
     height: 100%;
-    max-height: calc(512px);
+    max-height: 390px;
   }
 
   .tokens {
     width: 100%;
     overflow-y: auto;
-    -webkit-mask-image: linear-gradient(
-      transparent 0px,
-      black 44px,
-      black calc(100% - 44px),
-      transparent 100%
-    );
     mask-image: linear-gradient(
-      transparent 0px,
-      black 44px,
-      black calc(100% - 44px),
-      transparent 100%
+      to bottom,
+      rgba(0, 0, 0, calc(1 - var(--tokens-scroll--top-opacity))) 0px,
+      rgba(200, 200, 200, calc(1 - var(--tokens-scroll--top-opacity))) 1px,
+      black 50px,
+      black 90px,
+      black calc(100% - 90px),
+      black calc(100% - 50px),
+      rgba(155, 155, 155, calc(1 - var(--tokens-scroll--bottom-opacity))) calc(100% - 1px),
+      rgba(0, 0, 0, calc(1 - var(--tokens-scroll--bottom-opacity))) 100%
     );
-  }
-
-  .tokens.scroll-start {
-    -webkit-mask-image: linear-gradient(black 0px, black calc(100% - 44px), transparent 100%);
-    mask-image: linear-gradient(black 0px, black calc(100% - 44px), transparent 100%);
-  }
-
-  .tokens.scroll-end {
-    -webkit-mask-image: linear-gradient(transparent 0px, black 44px, black 100%);
-    mask-image: linear-gradient(transparent 0px, black 44px, black 100%);
   }
 
   .network-search-input,

@@ -7,7 +7,8 @@ import {
   RouterController,
   CoreHelperUtil,
   NetworkController,
-  ConnectionController
+  ConnectionController,
+  ModalController
 } from '@web3modal/core'
 import type { TokenInfo } from '@web3modal/core/src/controllers/SwapApiController.js'
 
@@ -48,7 +49,9 @@ export class W3mConvertView extends LitElement {
 
   @state() private gasPriceInETH = SwapApiController.state.gasPriceInETH
 
-  @state() private valueDifference = SwapApiController.state.valueDifference
+  @state() private priceImpact = SwapApiController.state.priceImpact
+
+  @state() private maxSlippage = SwapApiController.state.maxSlippage
 
   @state() private swapErrorMessage = SwapApiController.state.swapErrorMessage
 
@@ -69,6 +72,16 @@ export class W3mConvertView extends LitElement {
 
     this.unsubscribe.push(
       ...[
+        ModalController.subscribeKey('open', isOpen => {
+          if (!isOpen) {
+            SwapApiController.resetState()
+          }
+        }),
+        RouterController.subscribeKey('view', newRoute => {
+          if (!newRoute.includes('Convert')) {
+            SwapApiController.resetState()
+          }
+        }),
         SwapApiController.subscribeKey('sourceToken', newSourceToken => {
           this.sourceToken = newSourceToken
         }),
@@ -89,8 +102,9 @@ export class W3mConvertView extends LitElement {
           this.hasAllowance = newState.hasAllowance
           this.gasPriceInUSD = newState.gasPriceInUSD
           this.gasPriceInETH = newState.gasPriceInETH
-          this.valueDifference = newState.valueDifference
           this.swapErrorMessage = newState.swapErrorMessage
+          this.priceImpact = newState.priceImpact
+          this.maxSlippage = newState.maxSlippage
         })
       ]
     )
@@ -227,7 +241,7 @@ export class W3mConvertView extends LitElement {
       target=${target}
       .token=${token}
       .balance=${myToken?.balance}
-      .marketValue=${formatNumberToLocalString(value)}
+      .marketValue=${isNaN(value) ? '' : formatNumberToLocalString(value)}
       amount=${myToken
         ? formatNumberToLocalString(
             ConnectionController.formatUnits(BigInt(myToken.balance), myToken.decimals),
@@ -238,6 +252,10 @@ export class W3mConvertView extends LitElement {
   }
 
   private templateDetails() {
+    if (!this.sourceToken || !this.toToken || !this.sourceTokenAmount || !this.toTokenAmount) {
+      return null
+    }
+
     const toTokenConvertedAmount =
       this.sourceTokenPriceInUSD && this.toTokenPriceInUSD
         ? (1 / this.toTokenPriceInUSD) * this.sourceTokenPriceInUSD
@@ -252,9 +270,9 @@ export class W3mConvertView extends LitElement {
         toTokenConvertedAmount=${toTokenConvertedAmount}
         gasPriceInETH=${this.gasPriceInETH}
         gasPriceInUSD=${this.gasPriceInUSD}
-        .valueDifference=${this.valueDifference}
+        .priceImpact=${this.priceImpact}
         slippageRate=${0.5}
-        slippageValue=${this.gasPriceInETH}
+        .maxSlippage=${this.maxSlippage}
       ></wui-convert-details>
     `
   }

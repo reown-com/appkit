@@ -17,6 +17,14 @@ export default css`
     background-color: var(--wui-gray-glass-002);
   }
 
+  :host([disabled]) > wui-flex {
+    opacity: 0.6;
+  }
+
+  :host([disabled]) > wui-flex:hover {
+    background-color: transparent;
+  }
+
   :host > wui-flex > wui-flex {
     flex: 1;
   }

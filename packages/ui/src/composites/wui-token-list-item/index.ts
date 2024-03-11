@@ -9,6 +9,7 @@ import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import '../wui-icon-box/index.js'
 import styles from './styles.js'
+import { formatNumberToLocalString } from '../../utils/NumberUtil.js'
 
 @customElement('wui-token-list-item')
 export class WuiTokenListItem extends LitElement {
@@ -42,7 +43,9 @@ export class WuiTokenListItem extends LitElement {
           <wui-flex justifyContent="space-between">
             <wui-text variant="small-400" color="fg-200">${this.symbol}</wui-text>
             ${this.amount &&
-            html`<wui-text variant="small-400" color="fg-200">${this.amount}</wui-text>`}
+            html`<wui-text variant="small-400" color="fg-200"
+              >${formatNumberToLocalString(this.amount, 4)}</wui-text
+            >`}
           </wui-flex>
         </wui-flex>
       </wui-flex>
@@ -50,7 +53,7 @@ export class WuiTokenListItem extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
-  public visualTemplate() {
+  private visualTemplate() {
     if (this.imageSrc) {
       return html`<wui-image width="40" height="40" src=${this.imageSrc}></wui-image>`
     }

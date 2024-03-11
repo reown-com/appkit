@@ -62,9 +62,9 @@ export class WuiConvertInput extends LitElement {
             @keydown=${this.handleKeydown}
             placeholder="0"
           />
-          ${this.value
-            ? html`<wui-text variant="small-400" color="fg-200">$${this.marketValue}</wui-text>`
-            : null}
+          <wui-text class="market-value" variant="small-400" color="fg-200">
+            ${this.marketValue ? `$${this.marketValue}` : ''}
+          </wui-text>
         </wui-flex>
         ${this.templateTokenSelectButton()}
       </wui-flex>
@@ -73,7 +73,18 @@ export class WuiConvertInput extends LitElement {
 
   // -- Private ------------------------------------------- //
   private handleKeydown(event: KeyboardEvent) {
-    const allowedKeys = ['Backspace', 'ArrowLeft', 'ArrowRight', 'Tab']
+    console.log('>>> keypress', event)
+    const allowedKeys = [
+      'Backspace',
+      'Meta',
+      'Ctrl',
+      'a',
+      'c',
+      'v',
+      'ArrowLeft',
+      'ArrowRight',
+      'Tab'
+    ]
     const isComma = event.key === ','
     const isDot = event.key === '.'
     const isNumericKey = event.key >= '0' && event.key <= '9'
@@ -140,14 +151,14 @@ export class WuiConvertInput extends LitElement {
           ${tokenElement}
           <wui-text variant="paragraph-600" color="fg-100">${this.token.symbol}</wui-text>
         </button>
-        ${this.target === 'sourceToken' && this.amount && parseFloat(this.amount)
-          ? html`<wui-flex alignItems="center" gap="xxs">
-              <wui-text variant="small-400" color="fg-200">${this.amount}</wui-text>
-              <button class="max-value-button" @click=${this.setMaxValueToInput.bind(this)}>
-                <wui-text variant="small-600">Max</wui-text>
-              </button>
-            </wui-flex>`
-          : null}
+        <wui-flex alignItems="center" gap="xxs">
+          <wui-text variant="small-400" color="fg-200">${this.amount}</wui-text>
+          ${this.target === 'sourceToken'
+            ? html` <button class="max-value-button" @click=${this.setMaxValueToInput.bind(this)}>
+                <wui-text color="accent-100" variant="small-600">Max</wui-text>
+              </button>`
+            : null}
+        </wui-flex>
       </wui-flex>
     `
   }

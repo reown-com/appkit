@@ -36,13 +36,15 @@ export default css`
 
   .details-row {
     width: 100%;
-    padding: var(--wui-spacing-s) var(--wui-spacing-xl);
+    padding: var(--wui-spacing-s);
+    padding-left: var(--wui-spacing-s);
+    padding-right: calc(2px + var(--wui-spacing-xs));
     border-radius: var(--wui-border-radius-xxs);
     background: var(--wui-gray-glass-002);
   }
 
   .details-row.provider-free-row {
-    padding: var(--wui-spacing-xs);
+    padding-right: var(--wui-spacing-xs);
   }
 
   .free-badge {
