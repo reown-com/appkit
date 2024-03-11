@@ -54,7 +54,6 @@ export class W3mEmailLoginWidget extends LitElement {
     }
 
     return html`
-      ${this.betaWarningTemplate()}
       <form ${ref(this.formRef)} @submit=${this.onSubmitEmail.bind(this)}>
         <wui-email-input
           @focus=${this.onFocusEvent.bind(this)}
@@ -73,18 +72,6 @@ export class W3mEmailLoginWidget extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
-  private betaWarningTemplate() {
-    const showBetaWarning = true
-
-    return showBetaWarning
-      ? html`
-          <wui-flex class="betaBanner" gap="xs" alignItems="center" justifyContent="center">
-            <wui-text variant="small-400" color="accent-100">Email login is in beta</wui-text>
-          </wui-flex>
-        `
-      : null
-  }
-
   private submitButtonTemplate() {
     const showSubmit = !this.loading && this.email.length > 3
 
