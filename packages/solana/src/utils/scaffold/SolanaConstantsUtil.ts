@@ -18,12 +18,9 @@ export const SolConstantsUtil = {
    * The reverse look up class
    */
   REVERSE_LOOKUP_CLASS: new PublicKey('33m47vH6Eav6jr5Ry86XjhRft2jRBLDnDgPSHoquXi2Z'),
-  TOKEN_PROGRAM_ID: new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'),
   /**
    * Mainnet program ID
    */
-  NAME_TOKENIZER_ID: new PublicKey('nftD3vbNkNqfj2Sd3HZwbpw4BxxKWr4AjGb9X38JeZk'),
-  MINT_PREFIX: Buffer.from('tokenized_name'),
   WALLET_ID: '@w3m/solana_wallet',
   CAIP_CHAIN_ID: '@w3m/solana_caip_chain',
   ERROR_CODE_UNRECOGNIZED_CHAIN_ID: 4902,
