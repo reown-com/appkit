@@ -2,7 +2,7 @@ import { UiHelperUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
 import { state } from 'lit/decorators.js'
-import { RouterController, SendController } from '@web3modal/core'
+import { NetworkController, RouterController, SendController } from '@web3modal/core'
 
 @customElement('w3m-wallet-send-preview-view')
 export class W3mWalletSendPreviewView extends LitElement {
@@ -18,6 +18,8 @@ export class W3mWalletSendPreviewView extends LitElement {
 
   @state() private receiverAddress = SendController.state.receiverAddress
 
+  @state() private caipNetwork = NetworkController.state.caipNetwork
+
   public constructor() {
     super()
     this.unsubscribe.push(
@@ -26,7 +28,8 @@ export class W3mWalletSendPreviewView extends LitElement {
           this.token = val.token
           this.sendTokenAmount = val.sendTokenAmount
           this.receiverAddress = val.receiverAddress
-        })
+        }),
+        NetworkController.subscribeKey('caipNetwork', val => (this.caipNetwork = val))
       ]
     )
   }
@@ -66,7 +69,10 @@ export class W3mWalletSendPreviewView extends LitElement {
         </wui-flex>
       </wui-flex>
       <wui-flex flexDirection="column" .padding=${['xxl', '0', '0', '0'] as const}>
-        <w3m-wallet-send-details .receiverAddress=${this.receiverAddress}></w3m-wallet-send-details>
+        <w3m-wallet-send-details
+          .caipNetwork=${this.caipNetwork}
+          .receiverAddress=${this.receiverAddress}
+        ></w3m-wallet-send-details>
         <wui-flex justifyContent="center" gap="xxs" .padding=${['s', '0', '0', '0'] as const}>
           <wui-icon size="sm" color="fg-200" name="warningCircle"></wui-icon>
           <wui-text variant="small-400" color="fg-200">Review transaction carefully</wui-text>

@@ -2,6 +2,8 @@ import { UiHelperUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
 import { property } from 'lit/decorators.js'
+import { AssetUtil, RouterController, type CaipNetwork } from '@web3modal/core'
+import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('w3m-wallet-send-details')
 export class W3mWalletSendDetails extends LitElement {
@@ -9,6 +11,8 @@ export class W3mWalletSendDetails extends LitElement {
 
   // -- State & Properties -------------------------------- //
   @property() public receiverAddress?: string
+
+  @property({ type: Object }) public caipNetwork?: CaipNetwork
 
   // -- Render -------------------------------------------- //
   public override render() {
@@ -25,10 +29,30 @@ export class W3mWalletSendDetails extends LitElement {
           })}
         >
         </wui-list-content>
+        ${this.networkTemplate()}
       </wui-flex>`
   }
-}
 
+  // -- Private ------------------------------------------- //
+  private networkTemplate() {
+    if (this.caipNetwork?.name) {
+      return html` <wui-list-content
+        @click=${() => this.onNetworkClick(this.caipNetwork)}
+        class="network"
+        textTitle="Network"
+        imageSrc=${ifDefined(AssetUtil.getNetworkImage(this.caipNetwork))}
+      ></wui-list-content>`
+    }
+
+    return null
+  }
+
+  private onNetworkClick(network?: CaipNetwork) {
+    if (network) {
+      RouterController.push('Networks', { network })
+    }
+  }
+}
 declare global {
   interface HTMLElementTagNameMap {
     'w3m-wallet-send-details': W3mWalletSendDetails
