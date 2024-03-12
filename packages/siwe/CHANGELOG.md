@@ -1,5 +1,17 @@
 # @web3modal/siwe
 
+## 4.1.0
+
+### Minor Changes
+
+- Email Stable release
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @web3modal/core@4.1.0
+  - @web3modal/scaffold-utils@4.1.0
+
 ## 4.0.13
 
 ### Patch Changes
