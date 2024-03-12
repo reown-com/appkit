@@ -1,5 +1,16 @@
 # @examples/html-wagmi
 
+## 4.1.0
+
+### Minor Changes
+
+- Email Stable release
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @web3modal/wagmi@4.1.0
+
 ## 4.0.13
 
 ### Patch Changes
