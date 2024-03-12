@@ -129,7 +129,7 @@ export function SolanaSignTransactionTest() {
       >
         Sign Transaction
       </Button>
-      {supportV0Transactions && (
+      {supportV0Transactions ? (
         <Button
           data-test-id="sign-transaction-button"
           onClick={onSignVersionedTransaction}
@@ -137,7 +137,7 @@ export function SolanaSignTransactionTest() {
         >
           Sign Versioned Transaction
         </Button>
-      )}
+      ) : null}
       <Spacer />
 
       <Link isExternal href="https://solfaucet.com/">
