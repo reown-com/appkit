@@ -3,11 +3,11 @@ import { PublicKey, Transaction, VersionedTransaction } from '@solana/web3.js'
 import type UniversalProvider from '@walletconnect/universal-provider'
 import { OptionsController } from '@web3modal/core'
 
-import type { Connector } from './BaseConnector'
+import type { Connector } from './baseConnector'
 import type { Chain } from '../utils/scaffold'
 import { SolStoreUtil } from '../utils/scaffold'
 import { UniversalProviderFactory } from './universalProvider'
-import { BaseConnector } from './BaseConnector'
+import { BaseConnector } from './baseConnector'
 
 export interface WalletConnectAppMetadata {
   name: string
@@ -74,8 +74,6 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
     try {
       await provider.disconnect()
     } finally {
-      // (TODO update typing for provider)
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       delete provider.session?.namespaces['solana']
     }
 
@@ -108,8 +106,11 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
   }
 
   public async signVersionedTransaction(transaction: VersionedTransaction) {
+    if (!SolStoreUtil.state.address) {
+      throw new Error('No signer connected')
+    }
     const transactionParams = {
-      feePayer: new PublicKey(SolStoreUtil.state.address ?? '').toBase58(),
+      feePayer: new PublicKey(SolStoreUtil.state.address).toBase58(),
       instructions: transaction.message.compiledInstructions.map(instruction => ({
         ...instruction,
         data: base58.encode(instruction.data)
