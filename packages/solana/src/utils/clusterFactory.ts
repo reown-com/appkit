@@ -35,7 +35,7 @@ export async function setSocket() {
     }
 
     /*
-     * If request is a subscribtion init notification
+     * If the request is a subscription init notification
      * Copy data to new ID (request ID -> Subscribtion ID)
      */
     if (data.id) {
