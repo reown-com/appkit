@@ -33,4 +33,12 @@ export default css`
     background-color: var(--wui-icon-box-bg-error-100);
     color: var(--wui-color-error-100);
   }
+
+  :host([data-size='lg']) {
+    padding: 9px 5px !important;
+  }
+
+  :host([data-size='lg']) > wui-text {
+    transform: translateY(2%);
+  }
 `
