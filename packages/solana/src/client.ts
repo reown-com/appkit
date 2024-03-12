@@ -3,13 +3,13 @@ import { Web3ModalScaffold } from '@web3modal/scaffold'
 import { AssetController, OptionsController } from '@web3modal/core'
 import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@web3modal/scaffold-utils'
 
-import { WalletConnectConnector } from './connectors/walletConnectConnector'
 import {
   createWalletAdapters,
   type AdapterKey,
   syncInjectedWallets
 } from './connectors/walletAdapters'
 import { SolStoreUtil, SolHelpersUtil, SolConstantsUtil } from './utils/scaffold'
+import { WalletConnectConnector } from './connectors/walletConnectConnector'
 
 import type { BaseWalletAdapter } from '@solana/wallet-adapter-base'
 import type { PublicKey } from '@solana/web3.js'

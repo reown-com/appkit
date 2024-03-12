@@ -1,7 +1,6 @@
 import UniversalProvider from '@walletconnect/universal-provider'
 
 import { SolStoreUtil } from '../utils/scaffold'
-
 import type { WalletConnectAppMetadata } from './walletConnectConnector'
 
 const DEFAULT_LOGGER = 'error'
