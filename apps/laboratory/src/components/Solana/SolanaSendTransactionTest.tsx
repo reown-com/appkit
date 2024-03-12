@@ -142,7 +142,7 @@ export function SolanaSendTransactionTest() {
       >
         Sign and Send Transaction
       </Button>
-      {supportV0Transactions && (
+      {supportV0Transactions ? (
         <Button
           data-test-id="sign-transaction-button"
           onClick={onSendVersionedTransaction}
@@ -150,7 +150,7 @@ export function SolanaSendTransactionTest() {
         >
           Sign and Send Versioned Transaction
         </Button>
-      )}
+      ) : null}
       <Spacer />
 
       <Link isExternal href="https://solfaucet.com/">
