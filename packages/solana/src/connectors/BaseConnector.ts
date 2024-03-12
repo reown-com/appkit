@@ -56,7 +56,6 @@ export interface Connector {
     transactionSignature: string,
     callback: (params: unknown) => void
   ) => Promise<() => void>
-  getSolDomainsFromPublicKey: (address: string) => Promise<string[]>
   getAddressFromDomain: (address: string) => Promise<string | null>
   getBlock: (slot: number) => Promise<BlockResult | null>
   getFeeForMessage: <Type extends TransactionType>(
@@ -64,6 +63,8 @@ export interface Connector {
     params: TransactionArgs[Type]['params']
   ) => Promise<number>
 }
+
+type Currency = 'lamports' | 'sol'
 
 export class BaseConnector {
   public getConnectorName() {
@@ -159,13 +160,6 @@ export class BaseConnector {
     return transactionV0
   }
 
-  /*
-   * Public async sendTransaction(encodedTransaction: string) {
-   * const signature = await this.requestCluster('sendTransaction', [encodedTransaction])
-   * return signature
-   * }
-   */
-
   public async getTransaction(transactionSignature: string) {
     const transaction = await this.requestCluster('getTransaction', [
       transactionSignature,
@@ -182,22 +176,23 @@ export class BaseConnector {
     return this.subscribeToCluster('signatureSubscribe', [transactionSignature], callback)
   }
 
-  public async getBalance(requestedAddress: string, currency: 'lamports' | 'sol' = 'sol') {
+  public async getBalance(requestedAddress: string, currency: Currency = 'sol') {
     try {
       const address = requestedAddress ?? SolStoreUtil.state.address
       const balance = await this.requestCluster('getBalance', [
         address,
         { commitment: 'processed' }
       ])
+      const BALANCE_VALUE_DECIMAL_DIVIDER = 1000000000
       const formatted =
         currency === 'lamports'
           ? `${balance?.value || 0} lamports`
-          : `${(balance?.value || 0) / 1000000000} sol`
+          : `${(balance?.value || 0) / BALANCE_VALUE_DECIMAL_DIVIDER} sol`
 
       return {
         value: new BN(balance.value),
         formatted,
-        decimals: balance.value / 1000000000,
+        decimals: balance.value / BALANCE_VALUE_DECIMAL_DIVIDER,
         symbol: currency
       }
     } catch (err) {
@@ -277,43 +272,6 @@ export class BaseConnector {
     const { value: nameAccount } = response
 
     return nameAccount
-  }
-
-  public async performReverseLookup(address: string) {
-    const hashedReverseLookup = getHashedName(address)
-    const reverseLookupAccount = await getNameAccountKey(
-      hashedReverseLookup,
-      SolConstantsUtil.REVERSE_LOOKUP_CLASS
-    )
-
-    const account = await this.getAccount(reverseLookupAccount.toBase58(), 'base64')
-
-    if (account) {
-      const dataBuffer = Buffer.from(String(account.data[0]), 'base64')
-      const deserialized = borsh.deserializeUnchecked(
-        NameRegistry.schema,
-        NameRegistry,
-        dataBuffer
-      ) as { data: any }
-
-      deserialized.data = dataBuffer.slice(96)
-
-      const nameLength = new BN(deserialized.data.slice(0, 4), 'le').toNumber()
-      const name = `${deserialized.data.slice(4, 4 + nameLength).toString()}.sol`
-
-      return name
-    }
-
-    throw new Error(`Failed to perform reverse lookup on ${address}`)
-  }
-
-  public async getSolDomainsFromPublicKey(address: string): Promise<string[]> {
-    const allDomainKeys = await this.getAllDomains(address)
-    const allDomainNames = await Promise.all(
-      allDomainKeys.map(async (key: string) => this.performReverseLookup(key))
-    )
-
-    return allDomainNames
   }
 
   public async getBlock(slot: number) {

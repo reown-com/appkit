@@ -3,7 +3,7 @@ import { Web3ModalScaffold } from '@web3modal/scaffold'
 import { AssetController, OptionsController } from '@web3modal/core'
 import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@web3modal/scaffold-utils'
 
-import { WalletConnectConnector } from './connectors/WalletConnectConnector'
+import { WalletConnectConnector } from './connectors/walletConnectConnector'
 import {
   createWalletAdapters,
   type AdapterKey,
