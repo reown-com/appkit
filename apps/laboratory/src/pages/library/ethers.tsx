@@ -19,6 +19,7 @@ const modal = createWeb3Modal({
   privacyPolicyUrl: 'https://walletconnect.com/privacy',
   customWallets: ConstantsUtil.CustomWallets,
   enableOnramp: true,
+  // Metamask wallet id
   featuredWalletIds: ['c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96']
 })
 
