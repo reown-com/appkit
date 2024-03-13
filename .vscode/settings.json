@@ -1,0 +1,25 @@
+{
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.tabSize": 2,
+  "editor.wordWrapColumn": 100,
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+  "explorer.sortOrder": "type",
+  "extensions.ignoreRecommendations": true,
+  "files.autoSave": "onWindowChange",
+  "files.exclude": {
+    "**/.DS_Store": true,
+    "**/.git": true,
+    "**/node_modules": true,
+    "**/out": true,
+    "**/dist": true,
+    "**/.turbo": true,
+    "**/playwright-report": true,
+    "**/coverage": true
+  },
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "css.lint.unknownAtRules": "ignore",
+  "css.validate": true
+}
