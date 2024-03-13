@@ -1,10 +1,16 @@
 # @web3modal/wallet
 
-## 4.0.14-b3fbdad8.0
+## 4.1.1
 
 ### Patch Changes
 
-- Smart accounts creation and swap flow
+- Fix siwe version
+
+## 4.1.0
+
+### Minor Changes
+
+- Email Stable release
 
 ## 4.0.13
 

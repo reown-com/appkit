@@ -1,16 +1,31 @@
 # @web3modal/scaffold
 
-## 4.0.14-b3fbdad8.0
+## 4.1.1
 
 ### Patch Changes
 
-- Smart accounts creation and swap flow
+- Fix siwe version
 
 - Updated dependencies []:
-  - @web3modal/core@4.0.14-b3fbdad8.0
-  - @web3modal/ui@4.0.14-b3fbdad8.0
-  - @web3modal/common@4.0.14-b3fbdad8.0
-  - @web3modal/siwe@4.0.14-b3fbdad8.0
+  - @web3modal/siwe@4.1.1
+  - @web3modal/common@4.1.1
+  - @web3modal/core@4.1.1
+  - @web3modal/ui@4.1.1
+  - @web3modal/wallet@4.1.1
+
+## 4.1.0
+
+### Minor Changes
+
+- Email Stable release
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @web3modal/common@4.1.0
+  - @web3modal/core@4.1.0
+  - @web3modal/siwe@4.1.0
+  - @web3modal/ui@4.1.0
 
 ## 4.0.13
 
