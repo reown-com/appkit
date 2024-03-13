@@ -19,9 +19,7 @@ const modal = createWeb3Modal({
   termsConditionsUrl: 'https://walletconnect.com/terms',
   privacyPolicyUrl: 'https://walletconnect.com/privacy',
   enableOnramp: true,
-  customWallets: ConstantsUtil.CustomWallets,
-  // Metamask wallet id
-  featuredWalletIds: ['c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96']
+  customWallets: ConstantsUtil.CustomWallets
 })
 
 ThemeStore.setModal(modal)
