@@ -242,19 +242,17 @@ export class Web3Modal extends Web3ModalScaffold {
   private syncConnectors() {
     const w3mConnectors: Connector[] = []
 
-    const connectorType =
-      PresetsUtil.ConnectorTypesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID] ?? 'WALLET_CONNECT'
-    w3mConnectors.push({
-      id: ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID,
-      explorerId: PresetsUtil.ConnectorExplorerIds[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID],
-      type: connectorType,
-      imageUrl: 'https://avatars.githubusercontent.com/u/37784886',
-      name: this.WalletConnectConnector.name,
-      provider: this.WalletConnectConnector.getProvider(),
-      info: {
-        rdns: ''
-      }
-    })
+    const connectorType = PresetsUtil.ConnectorTypesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID]
+    if (connectorType) {
+      w3mConnectors.push({
+        id: ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID,
+        explorerId: PresetsUtil.ConnectorExplorerIds[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID],
+        type: connectorType,
+        imageUrl: 'https://avatars.githubusercontent.com/u/37784886',
+        name: this.WalletConnectConnector.name,
+        provider: this.WalletConnectConnector.getProvider()
+      })
+    }
 
     syncInjectedWallets(w3mConnectors, this.walletAdapters)
 

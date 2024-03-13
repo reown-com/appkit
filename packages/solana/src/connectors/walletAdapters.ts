@@ -29,10 +29,7 @@ export function syncInjectedWallets(
         type: 'ANNOUNCED',
         imageUrl: adapters[wallet].icon,
         name: adapters[wallet].name,
-        provider: adapters[wallet],
-        info: {
-          rdns: adapters[wallet].publicKey?.toString()
-        }
+        provider: adapters[wallet]
       })
     }
   })
