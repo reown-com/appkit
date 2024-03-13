@@ -56,5 +56,9 @@ export const ConnectorController = {
 
   getConnectors() {
     return state.connectors
+  },
+
+  getConnector(id: string, rdns?: string | null) {
+    return state.connectors.find(c => c.explorerId === id || c.info?.rdns === rdns)
   }
 }

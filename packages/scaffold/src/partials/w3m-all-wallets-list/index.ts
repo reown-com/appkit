@@ -144,12 +144,7 @@ export class W3mAllWalletsList extends LitElement {
   }
 
   private onConnectWallet(wallet: WcWallet) {
-    const { connectors } = ConnectorController.state
-
-    const connector = connectors.find(
-      ({ explorerId, info, id }) =>
-        explorerId === wallet.id || info?.rdns === wallet.rdns || wallet.rdns === id
-    )
+    const connector = ConnectorController.getConnector(wallet.id, wallet.rdns)
     if (connector) {
       RouterController.push('ConnectingExternal', { connector })
     } else {
