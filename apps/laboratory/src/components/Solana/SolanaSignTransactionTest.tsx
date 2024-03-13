@@ -118,7 +118,7 @@ export function SolanaSignTransactionTest() {
     )
   }
 
-  const supportV0Transactions = walletProvider.name !== 'WalletConnect'
+  const supportV0Transactions = walletProvider?.name !== 'WalletConnect'
 
   return (
     <Stack direction={['column', 'column', 'row']}>

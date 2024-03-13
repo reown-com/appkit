@@ -29,13 +29,11 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
     relayerRegion,
     metadata,
     qrcode,
-    autoconnect,
     chains
   }: {
     relayerRegion: string
     metadata: WalletConnectAppMetadata
     qrcode?: boolean
-    autoconnect?: boolean
     chains: Chain[]
   }) {
     super()
@@ -53,17 +51,6 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
         delete provider.session?.namespaces['solana']
       })
     })
-
-    if (autoconnect) {
-      UniversalProviderFactory.getProvider().then(provider => {
-        if (provider.session?.namespaces['solana']?.accounts?.length) {
-          const [defaultAccount] = provider.session.namespaces['solana'].accounts
-          const address = defaultAccount?.split(':')[2] ?? ''
-          SolStoreUtil.setIsConnected(true)
-          SolStoreUtil.setAddress(address)
-        }
-      })
-    }
   }
 
   public static readonly connectorName = 'walletconnect'
@@ -214,6 +201,7 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
       provider
         .connect({
           pairingTopic: undefined,
+          namespaces: solanaNamespace,
           optionalNamespaces: solanaNamespace
         })
         .then(providerResult => {

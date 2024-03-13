@@ -50,6 +50,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
   public constructor(options: Web3ModalClientOptions) {
     const { solanaConfig, chains, tokens, _sdkVersion, chainImages, ...w3mOptions } = options
+    const { metadata } = solanaConfig
 
     if (!solanaConfig) {
       throw new Error('web3modal:constructor - solanaConfig is undefined')
@@ -180,14 +181,8 @@ export class Web3Modal extends Web3ModalScaffold {
     this.walletAdapters = createWalletAdapters()
     this.WalletConnectConnector = new WalletConnectConnector({
       relayerRegion: 'wss://relay.walletconnect.com',
-      metadata: {
-        description: 'Solana in Wallet Connect',
-        name: 'Wallet Connect',
-        icons: ['https://avatars.githubusercontent.com/u/37784886'],
-        url: 'https://web3modal.com'
-      },
+      metadata,
       chains,
-      autoconnect: false,
       qrcode: true
     })
     SolStoreUtil.setConnection(

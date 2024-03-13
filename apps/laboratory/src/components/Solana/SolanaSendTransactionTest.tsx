@@ -131,7 +131,7 @@ export function SolanaSendTransactionTest() {
     )
   }
 
-  const supportV0Transactions = walletProvider.name !== 'WalletConnect'
+  const supportV0Transactions = walletProvider?.name !== 'WalletConnect'
 
   return (
     <Stack direction={['column', 'column', 'row']}>
