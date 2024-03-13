@@ -1,5 +1,3 @@
-import { expect } from '@playwright/test'
-import { SECURE_WEBSITE_URL } from './shared/constants'
 import { testMSAccount } from './shared/fixtures/w3m-smart-account-fixture'
 
 testMSAccount.beforeEach(async ({ modalValidator }) => {
