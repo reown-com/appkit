@@ -1,5 +1,15 @@
 # @web3modal/scaffold-utils
 
+## 4.1.1
+
+### Patch Changes
+
+- Fix siwe version
+
+- Updated dependencies []:
+  - @web3modal/core@4.1.1
+  - @web3modal/polyfills@4.1.1
+
 ## 4.1.0
 
 ### Minor Changes

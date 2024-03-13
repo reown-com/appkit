@@ -1,5 +1,14 @@
 # @examples/vue-ethers5
 
+## 4.1.1
+
+### Patch Changes
+
+- Fix siwe version
+
+- Updated dependencies []:
+  - @web3modal/ethers5@4.1.1
+
 ## 4.1.0
 
 ### Minor Changes
