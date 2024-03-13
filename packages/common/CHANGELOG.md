@@ -1,5 +1,11 @@
 # @web3modal/common
 
+## 4.1.1
+
+### Patch Changes
+
+- Fix siwe version
+
 ## 4.1.0
 
 ### Minor Changes
