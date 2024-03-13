@@ -198,6 +198,7 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
           resolve(uri)
         }
       })
+      // Without namespaces provider.enable() will not work (reconnect flow)
       provider
         .connect({
           pairingTopic: undefined,
