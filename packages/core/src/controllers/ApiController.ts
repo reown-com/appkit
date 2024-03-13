@@ -138,17 +138,6 @@ export const ApiController = {
     }
   },
 
-  getChain() {
-    const { caipNetwork } = NetworkController.state
-
-    if (CoreHelperUtil.checkCaipNetwork(caipNetwork, 'solana')) {
-      // Because solana has same chain ids for devnet and testnet
-      return `solana:${caipNetwork?.id.split(':')[1]}`
-    }
-
-    return caipNetwork?.id
-  },
-
   async fetchRecommendedWallets() {
     const { includeWalletIds, excludeWalletIds, featuredWalletIds } = OptionsController.state
     const exclude = [...(excludeWalletIds ?? []), ...(featuredWalletIds ?? [])].filter(Boolean)
@@ -157,7 +146,7 @@ export const ApiController = {
       headers: ApiController._getApiHeaders(),
       params: {
         page: '1',
-        chains: this.getChain(),
+        chains: NetworkController.state.caipNetwork?.id,
         entries: recommendedEntries,
         include: includeWalletIds?.join(','),
         exclude: exclude?.join(',')
@@ -189,7 +178,7 @@ export const ApiController = {
       params: {
         page: String(page),
         entries,
-        chains: this.getChain(),
+        chains: NetworkController.state.caipNetwork?.id,
         include: includeWalletIds?.join(','),
         exclude: exclude.join(',')
       }
@@ -214,7 +203,7 @@ export const ApiController = {
         page: '1',
         entries: '100',
         search,
-        chains: this.getChain(),
+        chains: NetworkController.state.caipNetwork?.id,
         include: includeWalletIds?.join(','),
         exclude: excludeWalletIds?.join(',')
       }
