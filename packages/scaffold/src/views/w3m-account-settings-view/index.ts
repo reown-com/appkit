@@ -194,7 +194,7 @@ export class W3mAccountSettingsView extends LitElement {
       return null
     }
 
-    const preferredAccountType = W3mFrameHelpers.getPreferredAccountType(networkEnabled)
+    const preferredAccountType = W3mFrameHelpers.getPreferredAccountType()
     const text =
       preferredAccountType === 'smartAccount'
         ? 'Switch to your EOA'
@@ -216,8 +216,9 @@ export class W3mAccountSettingsView extends LitElement {
 
   private async changePreferredAccountType() {
     const smartAccountEnabled = NetworkController.checkIfSmartAccountEnabled()
-    const preferredAccountType = W3mFrameHelpers.getPreferredAccountType(smartAccountEnabled)
-    const accountTypeTarget = preferredAccountType === 'smartAccount' ? 'eoa' : 'smartAccount'
+    const preferredAccountType = W3mFrameHelpers.getPreferredAccountType()
+    const accountTypeTarget =
+      preferredAccountType === 'smartAccount' || !smartAccountEnabled ? 'eoa' : 'smartAccount'
     const emailConnector = ConnectorController.getEmailConnector()
     if (!emailConnector) {
       return

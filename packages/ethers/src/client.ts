@@ -47,7 +47,6 @@ export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultCha
   chainImages?: Record<number, string>
   connectorImages?: Record<string, string>
   tokens?: Record<number, Token>
-  enableSmartAccounts?: boolean
 }
 
 export type Web3ModalOptions = Omit<Web3ModalClientOptions, '_sdkVersion'>
@@ -329,9 +328,6 @@ export class Web3Modal extends Web3ModalScaffold {
     if (ethersConfig.coinbase) {
       this.checkActiveCoinbaseProvider(ethersConfig)
     }
-    if (options.enableSmartAccounts) {
-      this.setSmartAccountEnabled(true)
-    }
   }
 
   // -- Public ------------------------------------------------------------------
@@ -597,9 +593,7 @@ export class Web3Modal extends Web3ModalScaffold {
     window?.localStorage.setItem(EthersConstantsUtil.WALLET_ID, ConstantsUtil.EMAIL_CONNECTOR_ID)
 
     if (this.emailProvider) {
-      const preferredAccountType = W3mFrameHelpers.getPreferredAccountType(
-        Boolean(this.options?.enableSmartAccounts)
-      )
+      const preferredAccountType = W3mFrameHelpers.getPreferredAccountType()
       const [{ address, chainId, smartAccountDeployed }, { smartAccountEnabledNetworks }] =
         await Promise.all([
           this.emailProvider.connect({

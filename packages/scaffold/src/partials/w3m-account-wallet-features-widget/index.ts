@@ -140,7 +140,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
   private activateAccountTemplate() {
     const smartAccountEnabled = NetworkController.checkIfSmartAccountEnabled()
-    const preferredAccountType = W3mFrameHelpers.getPreferredAccountType(smartAccountEnabled)
+    const preferredAccountType = W3mFrameHelpers.getPreferredAccountType()
     if (
       !smartAccountEnabled ||
       preferredAccountType === 'smartAccount' ||
