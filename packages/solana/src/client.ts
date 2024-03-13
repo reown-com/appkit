@@ -110,20 +110,6 @@ export class Web3Modal extends Web3ModalScaffold {
         )
       },
 
-      checkInstalled(ids) {
-        if (!ids) {
-          return Boolean(window.solana)
-        }
-
-        if (solanaConfig.injected) {
-          if (!window?.originalSolana) {
-            return false
-          }
-        }
-
-        return false
-      },
-
       disconnect: async () => {
         const provider = SolStoreUtil.state.provider as Provider
         const providerType = SolStoreUtil.state.providerType
