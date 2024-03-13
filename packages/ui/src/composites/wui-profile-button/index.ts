@@ -30,7 +30,7 @@ export class WuiProfileButton extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html` <button ontouchstart>
-      <wui-flex gap="xs" alignItems="center">
+      <wui-flex gap="xs" alignItems="center" data-testid="wui-profile-button">
         <wui-avatar
           .imageSrc=${this.avatarSrc}
           alt=${this.address}

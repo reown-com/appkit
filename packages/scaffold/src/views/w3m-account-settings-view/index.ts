@@ -121,6 +121,7 @@ export class W3mAccountSettingsView extends LitElement {
             imageSrc=${ifDefined(networkImage)}
             ?chevron=${this.isAllowedNetworkSwitch()}
             @click=${this.onNetworks.bind(this)}
+            data-testid="account-switch-network-button"
           >
             <wui-text variant="paragraph-500" color="fg-100">
               ${this.network?.name ?? 'Unknown'}
@@ -208,6 +209,7 @@ export class W3mAccountSettingsView extends LitElement {
         iconSize="sm"
         ?chevron=${true}
         @click=${this.changePreferredAccountType.bind(this)}
+        data-testid="toggle-preferred-account-type"
       >
         <wui-text variant="paragraph-500" color="fg-100">${text}</wui-text>
       </wui-list-item>
