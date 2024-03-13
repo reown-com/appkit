@@ -97,16 +97,12 @@ export class Web3Modal extends Web3ModalScaffold {
       },
 
       connectExternal: async ({ id }) => {
-        const adapter =
-          id.toLocaleLowerCase() === 'Trust'
-            ? 'trustWallet'
-            : (id.toLocaleLowerCase() as AdapterKey)
-
-        await this.walletAdapters[adapter].connect()
-        const address = this.walletAdapters[adapter].publicKey?.toString()
+        const adapterId = this.transformWalletId(id)
+        await this.walletAdapters[adapterId].connect()
+        const address = this.walletAdapters[adapterId].publicKey?.toString()
         this.setInjectedProvider(
-          this.walletAdapters[adapter] as unknown as Provider,
-          adapter,
+          this.walletAdapters[adapterId] as unknown as Provider,
+          adapterId,
           address
         )
       },
@@ -115,13 +111,13 @@ export class Web3Modal extends Web3ModalScaffold {
         const provider = SolStoreUtil.state.provider as Provider
         const providerType = SolStoreUtil.state.providerType
         localStorage.removeItem(SolConstantsUtil.WALLET_ID)
-        SolStoreUtil.reset()
         if (providerType === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
           const WalletConnectProvider = provider
           await (WalletConnectProvider as unknown as UniversalProvider).disconnect()
         } else if (provider) {
           provider.emit('disconnect')
         }
+        SolStoreUtil.reset()
       },
 
       signMessage: async (message: string) => {
@@ -238,6 +234,12 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   // -- Private -----------------------------------------------------------------
+  private transformWalletId(walletId: string) {
+    return walletId.toLocaleLowerCase() === 'Trust'
+      ? 'trustWallet'
+      : (walletId.toLocaleLowerCase() as AdapterKey)
+  }
+
   private syncConnectors() {
     const w3mConnectors: Connector[] = []
 
@@ -269,7 +271,6 @@ export class Web3Modal extends Web3ModalScaffold {
       const caipAddress: CaipAddress = `${ConstantsUtil.INJECTED_CONNECTOR_ID}:${chainId}:${address}`
       this.setIsConnected(isConnected)
       this.setCaipAddress(caipAddress)
-      this.syncProfile(address)
       await Promise.all([this.syncBalance(address)])
 
       this.hasSyncedConnectedAccount = true
@@ -277,11 +278,6 @@ export class Web3Modal extends Web3ModalScaffold {
       this.resetWcConnection()
       this.resetNetwork()
     }
-  }
-
-  private syncProfile(_address: string) {
-    this.setProfileName(null)
-    this.setProfileImage(null)
   }
 
   private async syncNetwork(chainImages?: Web3ModalClientOptions['chainImages']) {
@@ -308,7 +304,6 @@ export class Web3Modal extends Web3ModalScaffold {
             this.setAddressExplorerUrl(undefined)
           }
           if (this.hasSyncedConnectedAccount) {
-            this.syncProfile(address)
             await this.syncBalance(address)
           }
         }
@@ -355,10 +350,7 @@ export class Web3Modal extends Web3ModalScaffold {
         SolStoreUtil.setCurrentChain(chain)
         localStorage.setItem(SolConstantsUtil.CAIP_CHAIN_ID, `solana:${chain.chainId}`)
         if (providerType?.includes(ConstantsUtil.INJECTED_CONNECTOR_ID)) {
-          const wallet =
-            providerType.split('_')[1] === 'Trust'
-              ? 'trustWallet'
-              : (providerType.split('_')[1] as AdapterKey)
+          const wallet = this.transformWalletId(providerType)
           SolStoreUtil.setConnection(
             new Connection(
               SolHelpersUtil.detectRpcUrl(chain, OptionsController.state.projectId),
@@ -411,11 +403,7 @@ export class Web3Modal extends Web3ModalScaffold {
       SolConstantsUtil.WALLET_ID,
       ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID
     )
-    await Promise.all([
-      this.syncProfile(address),
-      this.syncBalance(address),
-      this.getApprovedCaipNetworksData()
-    ])
+    await Promise.all([this.syncBalance(address), this.getApprovedCaipNetworksData()])
   }
 
   private setInjectedProvider(provider: Provider, adapter: AdapterKey, address = '') {
