@@ -163,6 +163,10 @@ export class ModalPage {
     await this.page.getByTestId('tab-desktop').click()
   }
 
+  async openAccount() {
+    await this.page.getByTestId('account-button').click()
+  }
+
   async closeModal() {
     await this.page.getByTestId('w3m-header-close')?.click?.()
   }

@@ -152,6 +152,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
     return html` <wui-promo
       text=${'Activate your account'}
       @click=${() => RouterController.push('UpgradeToSmartAccount')}
+      data-testid="activate-smart-account-promo"
     ></wui-promo>`
   }
 

@@ -1028,8 +1028,18 @@ export class Web3Modal extends Web3ModalScaffold {
       } else if (providerType === ConstantsUtil.EMAIL_CONNECTOR_ID) {
         if (this.emailProvider && chain?.chainId) {
           try {
-            await this.emailProvider?.switchNetwork(chain?.chainId)
+            await this.emailProvider.switchNetwork(chain?.chainId)
             EthersStoreUtil.setChainId(chain.chainId)
+
+            this.emailProvider
+              .connect({
+                chainId: chain?.chainId,
+                preferredAccountType: W3mFrameHelpers.getPreferredAccountType()
+              })
+              .then(({ address }) => {
+                EthersStoreUtil.setAddress(address as Address)
+                this.syncAccount()
+              })
           } catch {
             throw new Error('Switching chain failed')
           }

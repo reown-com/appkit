@@ -1,9 +1,9 @@
 import { test as base } from '@playwright/test'
 import type { ModalFixture } from './w3m-fixture'
-import { ModalValidator } from '../validators/ModalValidator'
 import { DeviceRegistrationPage } from '../pages/DeviceRegistrationPage'
 import { Email } from '../utils/email'
 import { ModalWalletPage } from '../pages/ModalWalletPage'
+import { ModalWalletValidator } from '../validators/ModalWalletValidator'
 
 const mailsacApiKey = process.env['MAILSAC_API_KEY']
 if (!mailsacApiKey) {
@@ -11,7 +11,7 @@ if (!mailsacApiKey) {
 }
 
 // Test Modal + Smart Account
-export const testMSAccount = base.extend<ModalFixture>({
+export const testModalSmartAccount = base.extend<ModalFixture>({
   library: ['wagmi', { option: true }],
   modalPage: async ({ page, library, context }, use) => {
     const modalPage = new ModalWalletPage(page, library)
@@ -57,7 +57,7 @@ export const testMSAccount = base.extend<ModalFixture>({
     await use(modalPage)
   },
   modalValidator: async ({ modalPage }, use) => {
-    const modalValidator = new ModalValidator(modalPage.page)
+    const modalValidator = new ModalWalletValidator(modalPage.page)
     await use(modalValidator)
   }
 })

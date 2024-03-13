@@ -86,7 +86,7 @@ export class W3mAccountSettingsView extends LitElement {
         ></wui-avatar>
         <wui-flex flexDirection="column" alignItems="center">
           <wui-flex gap="3xs" alignItems="center" justifyContent="center">
-            <wui-text variant="large-600" color="fg-100">
+            <wui-text variant="large-600" color="fg-100" data-testid="account-settings-address">
               ${this.profileName
                 ? UiHelperUtil.getTruncateString({
                     string: this.profileName,
@@ -209,7 +209,7 @@ export class W3mAccountSettingsView extends LitElement {
         iconSize="sm"
         ?chevron=${true}
         @click=${this.changePreferredAccountType.bind(this)}
-        data-testid="toggle-preferred-account-type"
+        data-testid="account-toggle-preferred-account-type"
       >
         <wui-text variant="paragraph-500" color="fg-100">${text}</wui-text>
       </wui-list-item>

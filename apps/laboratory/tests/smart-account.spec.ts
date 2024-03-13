@@ -1,37 +1,49 @@
-import { testMSAccount } from './shared/fixtures/w3m-smart-account-fixture'
+import { testModalSmartAccount } from './shared/fixtures/w3m-smart-account-fixture'
+import type { ModalWalletPage } from './shared/pages/ModalWalletPage'
+import type { ModalWalletValidator } from './shared/validators/ModalWalletValidator'
 
-testMSAccount.beforeEach(async ({ modalValidator }) => {
+testModalSmartAccount.beforeEach(async ({ modalValidator }) => {
   await modalValidator.expectConnected()
 })
 
-testMSAccount('it should sign', async ({ modalPage, modalValidator }) => {
+testModalSmartAccount('it should sign with eoa', async ({ modalPage, modalValidator }) => {
   await modalPage.sign()
   await modalPage.approveSign()
   await modalValidator.expectAcceptedSign()
 })
 
-testMSAccount('it should reject sign', async ({ modalPage, modalValidator }) => {
-  await modalPage.sign()
-  await modalPage.rejectSign()
-  await modalValidator.expectRejectedSign()
+testModalSmartAccount('switch to its smart account', async ({ modalPage, modalValidator }) => {
+  const walletModalPage = modalPage as ModalWalletPage
+  const walletModalValidator = modalValidator as ModalWalletValidator
+
+  await walletModalPage.togglePreferredAccountType()
+  await walletModalPage.openSettings()
+  await walletModalValidator.expectSmartAccountAddress()
 })
 
-testMSAccount('it should switch network and sign', async ({ modalPage, modalValidator }) => {
-  let targetChain = 'Polygon'
-  await modalPage.switchNetwork(targetChain)
-  await modalValidator.expectNetwork(targetChain)
-  await modalPage.page.waitForTimeout(1500)
-  await modalPage.sign()
-  await modalPage.approveSign()
-  await modalValidator.expectAcceptedSign()
+testModalSmartAccount(
+  'it should sign with its smart account',
+  async ({ modalPage, modalValidator }) => {
+    const walletModalPage = modalPage as ModalWalletPage
+    const walletModalValidator = modalValidator as ModalWalletValidator
 
-  await modalPage.page.waitForTimeout(2000)
+    await walletModalPage.togglePreferredAccountType()
 
-  targetChain = 'Ethereum'
-  await modalPage.switchNetwork(targetChain)
-  await modalValidator.expectNetwork(targetChain)
-  await modalPage.page.waitForTimeout(1500)
-  await modalPage.sign()
-  await modalPage.approveSign()
-  await modalValidator.expectAcceptedSign()
-})
+    await walletModalPage.sign()
+    await walletModalPage.approveSign()
+    await walletModalValidator.expectAcceptedSign()
+  }
+)
+
+testModalSmartAccount(
+  'it should return to an eoa when switching to a non supported network',
+  async ({ modalPage, modalValidator }) => {
+    const walletModalPage = modalPage as ModalWalletPage
+    const walletModalValidator = modalValidator as ModalWalletValidator
+
+    await walletModalPage.togglePreferredAccountType()
+    await walletModalPage.switchNetwork('Polygon')
+    await walletModalPage.openSettings()
+    await walletModalValidator.expectEoaAddress()
+  }
+)

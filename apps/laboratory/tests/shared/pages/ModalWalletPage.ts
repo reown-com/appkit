@@ -10,11 +10,23 @@ export class ModalWalletPage extends ModalPage {
     super(page, library, 'wallet')
   }
 
-  override async switchNetwork(network: string) {
+  async openSettings() {
     await this.page.getByTestId('account-button').click()
     await this.page.getByTestId('wui-profile-button').click()
+  }
+
+  override async switchNetwork(network: string) {
+    await this.openSettings()
     await this.page.getByTestId('account-switch-network-button').click()
     await this.page.getByTestId(`w3m-network-switch-${network}`).click()
     await this.page.getByTestId('w3m-header-close').click()
+    await this.page.waitForTimeout(2000)
+  }
+
+  async togglePreferredAccountType() {
+    await this.openSettings()
+    await this.page.getByTestId('account-toggle-preferred-account-type').click()
+    await this.page.getByTestId('w3m-header-close').click()
+    await this.page.waitForTimeout(2000)
   }
 }
