@@ -173,8 +173,7 @@ export class Web3Modal extends Web3ModalScaffold {
     })
     SolStoreUtil.setConnection(
       new Connection(
-        SolHelpersUtil.detectRpcUrl(chain, OptionsController.state.projectId) ??
-          'https://api.devnet.solana.com',
+        SolHelpersUtil.detectRpcUrl(chain, OptionsController.state.projectId),
         'recent'
       )
     )
@@ -362,8 +361,7 @@ export class Web3Modal extends Web3ModalScaffold {
               : (providerType.split('_')[1] as AdapterKey)
           SolStoreUtil.setConnection(
             new Connection(
-              SolHelpersUtil.detectRpcUrl(chain, OptionsController.state.projectId) ??
-                'https://api.devnet.solana.com',
+              SolHelpersUtil.detectRpcUrl(chain, OptionsController.state.projectId),
               'recent'
             )
           )
@@ -378,8 +376,7 @@ export class Web3Modal extends Web3ModalScaffold {
           const namespaces = this.WalletConnectConnector.generateNamespaces(chain.chainId)
           SolStoreUtil.setConnection(
             new Connection(
-              SolHelpersUtil.detectRpcUrl(chain, OptionsController.state.projectId) ??
-                'https://api.devnet.solana.com',
+              SolHelpersUtil.detectRpcUrl(chain, OptionsController.state.projectId),
               'recent'
             )
           )
