@@ -23,6 +23,7 @@ function headings() {
 
   return {
     Connect: `Connect ${isEmail ? 'Email' : ''} Wallet`,
+    ChooseAccountName: undefined,
     Account: undefined,
     AccountSettings: undefined,
     ConnectingExternal: name ?? 'Connect Wallet',

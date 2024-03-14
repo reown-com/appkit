@@ -11,6 +11,7 @@ export interface RouterControllerState {
     | 'ApproveTransaction'
     | 'BuyInProgress'
     | 'WalletCompatibleNetworks'
+    | 'ChooseAccountName'
     | 'Connect'
     | 'ConnectingExternal'
     | 'ConnectingWalletConnect'
