@@ -24,20 +24,20 @@ export class W3mOnRampProvidersFooter extends LitElement {
         gap="s"
       >
         <wui-text color="fg-250" variant="small-400" align="center">
-          We work with the best providers to fit your buyer needs, region, and to get you the lowest
-          fees
+          We work with the best providers to give you the lowest fees and best support. More options
+          coming soon!
         </wui-text>
 
-        ${this.whatIsBuyTemplate()}
+        ${this.howDoesItWorkTemplate()}
       </wui-flex>
     `
   }
 
   // -- Private ------------------------------------------- //
-  private whatIsBuyTemplate() {
+  private howDoesItWorkTemplate() {
     return html` <wui-link @click=${this.onWhatIsBuy.bind(this)}>
       <wui-icon size="xs" color="accent-100" slot="iconLeft" name="helpCircle"></wui-icon>
-      What is Buy
+      How does it work?
     </wui-link>`
   }
 
