@@ -8,6 +8,7 @@ import { motion } from 'framer-motion'
 import { VARIANTS } from '@/utils/constants'
 
 export default function Home() {
+  // Web3Modal Demo
   return (
     <motion.main
       variants={VARIANTS}
