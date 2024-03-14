@@ -2,6 +2,7 @@ export type ColorType =
   | 'accent-100'
   | 'error-100'
   | 'fg-100'
+  | 'fg-150'
   | 'fg-200'
   | 'fg-250'
   | 'fg-300'
@@ -15,6 +16,7 @@ export type TextType =
   | 'large-500'
   | 'large-600'
   | 'large-700'
+  | 'medium-400'
   | 'medium-600'
   | 'medium-title-600'
   | 'micro-600'
@@ -296,4 +298,16 @@ export type TruncateOptions = {
   charsStart: number
   charsEnd: number
   truncate: TruncateType
+}
+
+export interface TokenInfo {
+  address: `0x${string}`
+  symbol: string
+  name: string
+  decimals: number
+  logoURI: string
+  domainVersion?: string
+  eip2612?: boolean
+  isFoT?: boolean
+  tags?: string[]
 }
