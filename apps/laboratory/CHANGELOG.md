@@ -1,5 +1,16 @@
 # @apps/laboratory
 
+## 4.1.1
+
+### Patch Changes
+
+- Fix siwe version
+
+- Updated dependencies []:
+  - @web3modal/ethers@4.1.1
+  - @web3modal/siwe@4.1.1
+  - @web3modal/wagmi@4.1.1
+
 ## 4.1.0
 
 ### Minor Changes

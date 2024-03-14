@@ -1,5 +1,14 @@
 # @examples/next-wagmi
 
+## 4.1.1
+
+### Patch Changes
+
+- Fix siwe version
+
+- Updated dependencies []:
+  - @web3modal/wagmi@4.1.1
+
 ## 4.1.0
 
 ### Minor Changes
