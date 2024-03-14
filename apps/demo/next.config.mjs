@@ -9,7 +9,11 @@ const nextConfig = {
       )
     }
     return config
-  }
+  },
+  reactStrictMode: true,
+  trailingSlash: true,
+  distDir: 'out',
+  cleanDistDir: true
 }
 
 export default nextConfig
