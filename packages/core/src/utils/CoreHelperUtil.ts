@@ -262,5 +262,14 @@ export const CoreHelperUtil = {
     const [dollars, pennies] = roundedNumber.split('.')
 
     return { dollars, pennies }
+  },
+  isAddress(address: string): boolean {
+    if (!/^(?:0x)?[0-9a-f]{40}$/iu.test(address)) {
+      return false
+    } else if (/^(?:0x)?[0-9a-f]{40}$/iu.test(address) || /^(?:0x)?[0-9A-F]{40}$/iu.test(address)) {
+      return true
+    }
+
+    return false
   }
 }

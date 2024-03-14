@@ -51,7 +51,7 @@ export class WuiListDescription extends LitElement {
     if (this.tag) {
       return html` <wui-flex alignItems="center" gap="xxs"
         ><wui-text variant="paragraph-500" color="fg-100">${this.text}</wui-text
-        ><wui-tag tagType="main">${this.tag}</wui-tag>
+        ><wui-tag tagType="main" size="md">${this.tag}</wui-tag>
       </wui-flex>`
     }
 
