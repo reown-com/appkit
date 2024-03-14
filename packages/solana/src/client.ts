@@ -1,6 +1,11 @@
 import { Connection } from '@solana/web3.js'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
-import { AssetController, OptionsController } from '@web3modal/core'
+import {
+  ApiController,
+  AssetController,
+  NetworkController,
+  OptionsController
+} from '@web3modal/core'
 import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@web3modal/scaffold-utils'
 
 import {
@@ -186,6 +191,15 @@ export class Web3Modal extends Web3ModalScaffold {
       this.syncNetwork(chainImages)
     })
 
+    NetworkController.subscribeKey('caipNetwork', () => {
+      if (NetworkController.state.caipNetwork && !SolStoreUtil.state.isConnected) {
+        SolStoreUtil.setCaipChainId(`solana:${chain.chainId}`)
+        SolStoreUtil.setCurrentChain(chain)
+        localStorage.setItem(SolConstantsUtil.CAIP_CHAIN_ID, `solana:${chain.chainId}`)
+        ApiController.reFetchWallets()
+      }
+    })
+
     if (typeof window === 'object') {
       this.checkActiveProviders()
       this.syncConnectors()
@@ -280,37 +294,6 @@ export class Web3Modal extends Web3ModalScaffold {
     }
   }
 
-  private async syncNetwork(chainImages?: Web3ModalClientOptions['chainImages']) {
-    const address = SolStoreUtil.state.address
-    const storeChainId = SolStoreUtil.state.caipChainId
-    const isConnected = SolStoreUtil.state.isConnected
-
-    if (this.chains) {
-      const chain = SolHelpersUtil.getChainFromCaip(this.chains, storeChainId)
-      if (chain) {
-        const caipChainId: CaipNetworkId = `solana:${chain.chainId}`
-
-        this.setCaipNetwork({
-          id: caipChainId,
-          name: chain.name,
-          imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId],
-          imageUrl: chainImages?.[chain.chainId]
-        })
-        if (isConnected && address) {
-          if (chain.explorerUrl) {
-            const url = `${chain.explorerUrl}/account/${address}`
-            this.setAddressExplorerUrl(url)
-          } else {
-            this.setAddressExplorerUrl(undefined)
-          }
-          if (this.hasSyncedConnectedAccount) {
-            await this.syncBalance(address)
-          }
-        }
-      }
-    }
-  }
-
   private async syncBalance(address: string) {
     const caipChainId = SolStoreUtil.state.caipChainId
     if (caipChainId && this.chains) {
@@ -343,7 +326,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
     const providerType = SolStoreUtil.state.providerType
 
-    const chain = SolHelpersUtil.getChainFromCaip(this.chains, caipChainId ?? '')
+    const chain = SolHelpersUtil.getChainFromCaip(this.chains, caipChainId)
     if (this.chains) {
       if (chain) {
         SolStoreUtil.setCaipChainId(`solana:${chain.chainId}`)
@@ -374,6 +357,37 @@ export class Web3Modal extends Web3ModalScaffold {
           )
           universalProvider.connect({ namespaces, pairingTopic: undefined })
           await this.syncAccount()
+        }
+      }
+    }
+  }
+
+  private async syncNetwork(chainImages?: Web3ModalClientOptions['chainImages']) {
+    const address = SolStoreUtil.state.address
+    const storeChainId = SolStoreUtil.state.caipChainId
+    const isConnected = SolStoreUtil.state.isConnected
+
+    if (this.chains) {
+      const chain = SolHelpersUtil.getChainFromCaip(this.chains, storeChainId)
+      if (chain) {
+        const caipChainId: CaipNetworkId = `solana:${chain.chainId}`
+
+        this.setCaipNetwork({
+          id: caipChainId,
+          name: chain.name,
+          imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId],
+          imageUrl: chainImages?.[chain.chainId]
+        })
+        if (isConnected && address) {
+          if (chain.explorerUrl) {
+            const url = `${chain.explorerUrl}/account/${address}`
+            this.setAddressExplorerUrl(url)
+          } else {
+            this.setAddressExplorerUrl(undefined)
+          }
+          if (this.hasSyncedConnectedAccount) {
+            await this.syncBalance(address)
+          }
         }
       }
     }

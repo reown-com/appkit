@@ -97,9 +97,6 @@ export class W3mNetworksView extends LitElement {
         RouterController.push('SwitchNetwork', { ...data, network })
       }
     } else if (!isConnected) {
-      if (CoreHelperUtil.checkCaipNetwork(network, 'solana')) {
-        await NetworkController.switchActiveNetwork(network)
-      }
       NetworkController.setCaipNetwork(network)
       RouterController.push('Connect')
     }
