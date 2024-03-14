@@ -4,6 +4,7 @@ import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 import { createRef, ref } from 'lit/directives/ref.js'
+import { numbersRegex, specialCharactersRegex } from '../../utils/ConstantsUtil.js'
 
 @customElement('wui-input-amount')
 export class WuiInputAmount extends LitElement {
@@ -40,12 +41,11 @@ export class WuiInputAmount extends LitElement {
 
   // -- Private ------------------------------------------- //
   private dispatchInputChangeEvent(e: InputEvent) {
-    const regex = /[0-9,.]/u
     const inputChar = e.data
     if (inputChar) {
-      if (!regex.test(inputChar) && this.inputElementRef?.value) {
+      if (!numbersRegex.test(inputChar) && this.inputElementRef?.value) {
         this.inputElementRef.value.value = this.value.replace(
-          new RegExp(inputChar.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&'), 'gu'),
+          new RegExp(inputChar.replace(specialCharactersRegex, '\\$&'), 'gu'),
           ''
         )
       }

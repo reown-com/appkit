@@ -45,23 +45,7 @@ export class W3mWalletSendView extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    if (this.token) {
-      if (this.sendTokenAmount) {
-        if (this.sendTokenAmount > Number(this.token.quantity.numeric)) {
-          this.message = 'Insufficient Funds'
-        } else if (this.receiverAddress) {
-          this.message = CoreHelperUtil.isAddress(this.receiverAddress)
-            ? 'Preview Send'
-            : 'Invalid Address'
-        } else {
-          this.message = 'Add Address'
-        }
-      } else {
-        this.message = 'Add Amount'
-      }
-    } else {
-      this.message = 'Select Token'
-    }
+    this.getMessage()
 
     return html` <wui-flex flexDirection="column" .padding=${['s', 'l', 'l', 'l'] as const}>
       <wui-flex class="inputContainer" gap="xs" flexDirection="column">
@@ -96,6 +80,34 @@ export class W3mWalletSendView extends LitElement {
   // -- Private ------------------------------------------- //
   private onButtonClick() {
     RouterController.push('WalletSendPreview')
+  }
+
+  private getMessage() {
+    this.message = 'Preview Send'
+
+    if (this.receiverAddress && !CoreHelperUtil.isAddress(this.receiverAddress)) {
+      this.message = 'Invalid Address'
+    }
+
+    if (!this.receiverAddress) {
+      this.message = 'Add Address'
+    }
+
+    if (
+      this.sendTokenAmount &&
+      this.token &&
+      this.sendTokenAmount > Number(this.token.quantity.numeric)
+    ) {
+      this.message = 'Insufficient Funds'
+    }
+
+    if (!this.sendTokenAmount) {
+      this.message = 'Add Amount'
+    }
+
+    if (!this.token) {
+      this.message = 'Select Token'
+    }
   }
 }
 

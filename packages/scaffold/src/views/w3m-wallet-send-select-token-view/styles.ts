@@ -6,4 +6,10 @@ export default css`
     overflow: scroll;
     scrollbar-width: none;
   }
+
+  wui-icon-box {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--wui-border-radius-xxs);
+  }
 `

@@ -31,7 +31,7 @@ export class WuiPreviewItem extends LitElement {
   // -- Private ------------------------------------------- //
   private imageTemplate() {
     if (this.isAddress) {
-      return html`<wui-avatar src=${this.address} .imageSrc=${this.imageSrc}></wui-avatar>`
+      return html`<wui-avatar address=${this.address} .imageSrc=${this.imageSrc}></wui-avatar>`
     } else if (this.imageSrc) {
       return html`<wui-image src=${this.imageSrc}></wui-image>`
     }

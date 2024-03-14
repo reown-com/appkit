@@ -71,11 +71,7 @@ ${this.receiverAddress ?? ''}</textarea
   private async focusInput() {
     if (this.instructionElementRef.value) {
       this.instructionHidden = true
-      await this.instructionElementRef.value.animate([{ opacity: 1 }, { opacity: 0 }], {
-        duration: 100,
-        easing: 'ease',
-        fill: 'forwards'
-      }).finished
+      await this.toggleInstructionFocus(false)
       this.instructionElementRef.value.style.pointerEvents = 'none'
       this.inputElementRef.value?.focus()
       if (this.inputElementRef.value) {
@@ -89,13 +85,22 @@ ${this.receiverAddress ?? ''}</textarea
   private async focusInstruction() {
     if (this.instructionElementRef.value) {
       this.instructionHidden = false
-      await this.instructionElementRef.value.animate([{ opacity: 0 }, { opacity: 1 }], {
-        duration: 100,
-        easing: 'ease',
-        fill: 'forwards'
-      }).finished
+      await this.toggleInstructionFocus(true)
       this.instructionElementRef.value.style.pointerEvents = 'auto'
       this.inputElementRef.value?.blur()
+    }
+  }
+
+  private async toggleInstructionFocus(focus: boolean) {
+    if (this.instructionElementRef.value) {
+      await this.instructionElementRef.value.animate(
+        [{ opacity: focus ? 0 : 1 }, { opacity: focus ? 1 : 0 }],
+        {
+          duration: 100,
+          easing: 'ease',
+          fill: 'forwards'
+        }
+      ).finished
     }
   }
 

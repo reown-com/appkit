@@ -64,6 +64,7 @@ export class W3mWalletSendPreviewView extends LitElement {
               charsEnd: 4,
               truncate: 'middle'
             })}
+            address=${this.receiverAddress ?? ''}
             .isAddress=${true}
           ></wui-preview-item>
         </wui-flex>
@@ -114,7 +115,7 @@ export class W3mWalletSendPreviewView extends LitElement {
   }
 
   private onSendClick() {
-    RouterController.push('Account')
+    RouterController.reset('Account')
     setTimeout(() => {
       SendController.resetSend()
     }, 200)
