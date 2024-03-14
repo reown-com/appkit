@@ -83,6 +83,8 @@ export class W3mRouter extends LitElement {
         return html`<w3m-email-verify-device-view></w3m-email-verify-device-view>`
       case 'Networks':
         return html`<w3m-networks-view></w3m-networks-view>`
+      case 'RegisterAccountName':
+        return html`<w3m-register-account-name-view></w3m-register-account-name-view>`
       case 'SwitchNetwork':
         return html`<w3m-network-switch-view></w3m-network-switch-view>`
       case 'GetWallet':

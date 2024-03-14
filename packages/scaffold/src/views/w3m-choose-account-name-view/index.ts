@@ -1,5 +1,5 @@
 import { customElement } from '@web3modal/ui'
-import { ConnectorController, RouterController, SnackController } from '@web3modal/core'
+import { RouterController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
@@ -9,8 +9,6 @@ export class W3mChooseAccountNameView extends LitElement {
   public static override styles = styles
 
   // -- State & Properties -------------------------------- //
-  @state() private emailConnector = ConnectorController.getEmailConnector()
-
   @state() private loading = false
 
   // -- Render -------------------------------------------- //
@@ -65,24 +63,10 @@ export class W3mChooseAccountNameView extends LitElement {
         .loading=${this.loading}
         size="lg"
         borderRadius="xs"
-        @click=${this.setPreferSmartAccount.bind(this)}
+        @click=${() => RouterController.push('RegisterAccountName')}
         >Choose name
       </wui-button>
     </wui-flex>`
-  }
-
-  private setPreferSmartAccount = async () => {
-    if (this.emailConnector) {
-      try {
-        this.loading = true
-        await this.emailConnector.provider.setPreferredAccount('smartAccount')
-        await this.emailConnector.provider.connect({ preferredAccountType: 'smartAccount' })
-        this.loading = false
-        RouterController.push('Account')
-      } catch (e) {
-        SnackController.showError('Error upgrading to smart account')
-      }
-    }
   }
 }
 

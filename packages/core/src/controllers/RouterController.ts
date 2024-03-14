@@ -25,6 +25,7 @@ export interface RouterControllerState {
     | 'OnRampFiatSelect'
     | 'OnRampProviders'
     | 'OnRampTokenSelect'
+    | 'RegisterAccountName'
     | 'SwitchNetwork'
     | 'Transactions'
     | 'UnsupportedChain'

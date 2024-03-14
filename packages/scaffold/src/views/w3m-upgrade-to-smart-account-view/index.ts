@@ -1,12 +1,11 @@
 import { customElement } from '@web3modal/ui'
-import { ConnectorController, RouterController, SnackController } from '@web3modal/core'
+import { RouterController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
 @customElement('w3m-upgrade-to-smart-account-view')
 export class W3mUpgradeToSmartAccountView extends LitElement {
   // -- State & Properties -------------------------------- //
-  @state() private emailConnector = ConnectorController.getEmailConnector()
 
   @state() private loading = false
 
@@ -73,19 +72,7 @@ export class W3mUpgradeToSmartAccountView extends LitElement {
     </wui-flex>`
   }
 
-  private onActivateAccount = async () => {
-    if (this.emailConnector) {
-      try {
-        this.loading = true
-        await this.emailConnector.provider.setPreferredAccount('smartAccount')
-        await this.emailConnector.provider.connect({ preferredAccountType: 'smartAccount' })
-        this.loading = false
-        RouterController.push('ChooseAccountName')
-      } catch (e) {
-        SnackController.showError('Error upgrading to smart account')
-      }
-    }
-  }
+  private onActivateAccount = () => RouterController.push('ChooseAccountName')
 }
 
 declare global {

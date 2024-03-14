@@ -52,6 +52,7 @@ function headings() {
     BuyInProgress: 'Buy',
     OnRampTokenSelect: 'Select Token',
     OnRampFiatSelect: 'Select Currency',
+    RegisterAccountName: 'Choose name',
     WalletReceive: 'Receive',
     WalletCompatibleNetworks: 'Compatible Networks',
     WalletSend: 'Send',
@@ -153,7 +154,8 @@ export class W3mHeader extends LitElement {
   }
 
   private separatorTemplate() {
-    if (!this.heading) {
+    const shouldHideSeparator = RouterController.state.view === 'RegisterAccountName'
+    if (!this.heading || shouldHideSeparator) {
       return null
     }
 
