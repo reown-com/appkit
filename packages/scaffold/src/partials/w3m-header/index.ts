@@ -52,7 +52,10 @@ function headings() {
     OnRampTokenSelect: 'Select Token',
     OnRampFiatSelect: 'Select Currency',
     WalletReceive: 'Receive',
-    WalletCompatibleNetworks: 'Compatible Networks'
+    WalletCompatibleNetworks: 'Compatible Networks',
+    WalletSend: 'Send',
+    WalletSendPreview: 'Review send',
+    WalletSendSelectToken: 'Select Token'
   }
 }
 

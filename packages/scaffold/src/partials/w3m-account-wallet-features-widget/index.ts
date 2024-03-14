@@ -99,7 +99,11 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
           text="Receive"
           icon="arrowBottomCircle"
         ></wui-tooltip-select>
-        <wui-tooltip-select text="Send" icon="send"></wui-tooltip-select>
+        <wui-tooltip-select
+          @click=${this.onSendClick.bind(this)}
+          text="Send"
+          icon="send"
+        ></wui-tooltip-select>
       </wui-flex>
 
       <wui-tabs
@@ -170,6 +174,10 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
   private onReceiveClick() {
     RouterController.push('WalletReceive')
+  }
+
+  private onSendClick() {
+    RouterController.push('WalletSend')
   }
 }
 
