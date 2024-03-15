@@ -9,8 +9,20 @@
 ### Patch Changes
 
 - Updated dependencies []:
-  - @web3modal/core@4.2.0-dbbd8c44.0
-  - @web3modal/polyfills@4.2.0-dbbd8c44.0
+  - @web3modal/ui@4.2.0-dbbd8c44.0
+  - @web3modal/common@4.2.0-dbbd8c44.0
+
+## 4.2.0-500a38.0
+
+### Minor Changes
+
+- feat: solana integration
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @web3modal/core@4.2.0-500a38.0
+  - @web3modal/polyfills@4.2.0-500a38.0
 
 ## 4.1.1
 

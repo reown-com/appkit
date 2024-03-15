@@ -1,6 +1,6 @@
 {
   "mode": "exit",
-  "tag": "dbbd8c44",
+  "tag": "500a38",
   "initialVersions": {
     "@apps/gallery": "4.1.1",
     "@apps/laboratory": "4.1.1",
@@ -27,6 +27,6 @@
     "@web3modal/wallet": "4.1.1"
   },
   "changesets": [
-    "beige-bikes-press"
+    "chatty-icons-perform"
   ]
 }
