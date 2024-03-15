@@ -8,6 +8,7 @@ import type {
   LibraryOptions,
   NetworkControllerClient,
   PublicStateControllerState,
+  SendTransactionArgs,
   Token
 } from '@web3modal/scaffold'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
@@ -268,12 +269,34 @@ export class Web3Modal extends Web3ModalScaffold {
 
       formatUnits: (value: bigint, decimals: number) => ethers.utils.formatUnits(value, decimals),
 
-      sendTransaction: async () => {
-        // Mock await expression, will be implemented
-        // eslint-disable-next-line no-promise-executor-return
-        await new Promise(resolve => setTimeout(resolve, 0))
+      sendTransaction: async (data: SendTransactionArgs) => {
+        const provider = EthersStoreUtil.state.provider
+        const address = EthersStoreUtil.state.address
 
-        return '0x'
+        if (!provider) {
+          throw new Error('connectionControllerClient:sendTransaction - provider is undefined')
+        }
+
+        if (!address) {
+          throw new Error('connectionControllerClient:sendTransaction - address is undefined')
+        }
+
+        const txParams = {
+          to: data.to,
+          value: data.value,
+          gasLimit: data.gas,
+          gasPrice: data.gasPrice,
+          data: data.data,
+          type: 0
+        }
+
+        const browserProvider = new ethers.providers.Web3Provider(provider)
+        const signer = browserProvider.getSigner()
+
+        const txResponse = await signer.sendTransaction(txParams)
+        const txReceipt = await txResponse.wait()
+
+        return txReceipt?.blockHash || null
       }
     }
 

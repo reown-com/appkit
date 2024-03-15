@@ -7,10 +7,12 @@ import {
   getEnsAvatar,
   getEnsName,
   getAccount,
+  getGasPrice as wagmiGetGasPrice,
   switchChain,
   watchAccount,
   watchConnectors,
-  waitForTransactionReceipt
+  waitForTransactionReceipt,
+  estimateGas
 } from '@wagmi/core'
 import { mainnet } from 'viem/chains'
 import { prepareTransactionRequest, sendTransaction as wagmiSendTransaction } from '@wagmi/core'
@@ -28,7 +30,7 @@ import type {
   SendTransactionArgs,
   Token
 } from '@web3modal/scaffold'
-import { formatUnits, parseUnits } from 'viem'
+import { formatUnits, parseEther, parseGwei, parseUnits } from 'viem'
 import type { Hex } from 'viem'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
@@ -174,28 +176,38 @@ export class Web3Modal extends Web3ModalScaffold {
 
       signMessage: async message => signMessage(this.wagmiConfig, { message }),
 
-      sendTransaction: async (data: SendTransactionArgs) => {
-        // eslint-disable-next-line no-useless-catch
+      getGasPrice: async (chainId: number) =>
+        wagmiGetGasPrice(this.wagmiConfig, {
+          chainId
+        }),
+
+      getEstimatedGas: async args => {
         try {
-          await prepareTransactionRequest(this.wagmiConfig, {
+          return await estimateGas(this.wagmiConfig, {
+            account: args.address,
+            to: args.to,
+            data: args.data,
+            type: 'legacy'
+          })
+        } catch (error) {
+          return 0n
+        }
+      },
+
+      sendTransaction: async (data: SendTransactionArgs) => {
+        try {
+          const txParams = {
             account: data.address,
             to: data.to,
             value: data.value,
             gas: data.gas,
             gasPrice: data.gasPrice,
             data: data.data,
-            type: 'legacy'
-          })
+            type: 'legacy' as const
+          }
 
-          const tx = await wagmiSendTransaction(this.wagmiConfig, {
-            account: data.address,
-            to: data.to,
-            value: data.value,
-            gas: data.gas,
-            gasPrice: data.gasPrice,
-            type: 'legacy',
-            data: data.data
-          })
+          await prepareTransactionRequest(this.wagmiConfig, txParams)
+          const tx = await wagmiSendTransaction(this.wagmiConfig, txParams)
 
           await waitForTransactionReceipt(this.wagmiConfig, { hash: tx, timeout: 25000 })
 

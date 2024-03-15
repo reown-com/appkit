@@ -3,14 +3,13 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
 import {
-  SwapApiController,
+  ConvertController,
   RouterController,
   CoreHelperUtil,
   NetworkController,
-  ConnectionController,
   ModalController
 } from '@web3modal/core'
-import type { TokenInfo } from '@web3modal/core/src/controllers/SwapApiController.js'
+import type { TokenInfo } from '@web3modal/core/src/controllers/ConvertController.js'
 
 type Target = 'sourceToken' | 'toToken'
 
@@ -23,35 +22,38 @@ export class W3mConvertView extends LitElement {
   // -- State & Properties -------------------------------- //
   @state() private caipNetworkId = NetworkController.state.caipNetwork?.id
 
-  @state() private initialLoading = SwapApiController.state.initialLoading
+  @state() private approvalTransaction = ConvertController.state.approvalTransaction
 
-  @state() private isTransactionPending = SwapApiController.state.isTransactionPending
+  @state() private convertTransaction = ConvertController.state.convertTransaction
 
-  @state() private loading = SwapApiController.state.loading
+  @state() private initialized = ConvertController.state.initialized
 
-  @state() private loadingPrices = SwapApiController.state.loadingPrices
+  @state() private loading = ConvertController.state.loading
 
-  @state() private sourceToken = SwapApiController.state.sourceToken
+  @state() private loadingPrices = ConvertController.state.loadingPrices
 
-  @state() private sourceTokenAmount = SwapApiController.state.sourceTokenAmount
+  @state() private sourceToken = ConvertController.state.sourceToken
 
-  @state() private sourceTokenPriceInUSD = SwapApiController.state.sourceTokenPriceInUSD
+  @state() private sourceTokenAmount = ConvertController.state.sourceTokenAmount
 
-  @state() private toToken = SwapApiController.state.toToken
+  @state() private sourceTokenPriceInUSD = ConvertController.state.sourceTokenPriceInUSD
 
-  @state() private toTokenAmount = SwapApiController.state.toTokenAmount
+  @state() private toToken = ConvertController.state.toToken
 
-  @state() private toTokenPriceInUSD = SwapApiController.state.toTokenPriceInUSD
+  @state() private toTokenAmount = ConvertController.state.toTokenAmount
 
-  @state() private hasAllowance = SwapApiController.state.hasAllowance
+  @state() private toTokenPriceInUSD = ConvertController.state.toTokenPriceInUSD
 
-  @state() private gasPriceInUSD = SwapApiController.state.gasPriceInUSD
+  @state() private inputError = ConvertController.state.inputError
 
-  @state() private priceImpact = SwapApiController.state.priceImpact
+  @state() private gasPriceInUSD = ConvertController.state.gasPriceInUSD
 
-  @state() private maxSlippage = SwapApiController.state.maxSlippage
+  @state() private priceImpact = ConvertController.state.priceImpact
 
-  @state() private swapErrorMessage = SwapApiController.state.swapErrorMessage
+  @state() private maxSlippage = ConvertController.state.maxSlippage
+
+  @state() private transactionError = ConvertController.state.transactionError
+  @state() private transactionLoading = ConvertController.state.transactionLoading
 
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
@@ -60,11 +62,11 @@ export class W3mConvertView extends LitElement {
     NetworkController.subscribeKey('caipNetwork', newCaipNetwork => {
       if (this.caipNetworkId !== newCaipNetwork?.id) {
         this.caipNetworkId = newCaipNetwork?.id
-        SwapApiController.setSourceToken(undefined)
-        SwapApiController.setToToken(undefined)
-        SwapApiController.clearMyTokens()
-        SwapApiController.clearTokens()
-        SwapApiController.getTokenList({ forceRefetch: true })
+        ConvertController.setSourceToken(undefined)
+        ConvertController.setToToken(undefined)
+        ConvertController.clearMyTokens()
+        ConvertController.clearTokens()
+        ConvertController.getTokenList()
       }
     })
 
@@ -72,34 +74,36 @@ export class W3mConvertView extends LitElement {
       ...[
         ModalController.subscribeKey('open', isOpen => {
           if (!isOpen) {
-            SwapApiController.resetState()
+            ConvertController.resetState()
           }
         }),
         RouterController.subscribeKey('view', newRoute => {
           if (!newRoute.includes('Convert')) {
-            SwapApiController.resetState()
+            ConvertController.resetState()
           }
         }),
-        SwapApiController.subscribeKey('sourceToken', newSourceToken => {
+        ConvertController.subscribeKey('sourceToken', newSourceToken => {
           this.sourceToken = newSourceToken
         }),
-        SwapApiController.subscribeKey('toToken', newToToken => {
+        ConvertController.subscribeKey('toToken', newToToken => {
           this.toToken = newToToken
         }),
-        SwapApiController.subscribe(newState => {
-          this.initialLoading = newState.initialLoading
-          this.isTransactionPending = newState.isTransactionPending
+        ConvertController.subscribe(newState => {
+          this.initialized = newState.initialized
           this.loading = newState.loading
           this.loadingPrices = newState.loadingPrices
+          this.transactionError = newState.transactionError
+          this.transactionLoading = newState.transactionLoading
           this.sourceToken = newState.sourceToken
           this.sourceTokenAmount = newState.sourceTokenAmount
           this.sourceTokenPriceInUSD = newState.sourceTokenPriceInUSD
           this.toToken = newState.toToken
           this.toTokenAmount = newState.toTokenAmount
           this.toTokenPriceInUSD = newState.toTokenPriceInUSD
-          this.hasAllowance = newState.hasAllowance
+          this.approvalTransaction = newState.approvalTransaction
+          this.convertTransaction = newState.convertTransaction
+          this.inputError = newState.inputError
           this.gasPriceInUSD = newState.gasPriceInUSD
-          this.swapErrorMessage = newState.swapErrorMessage
           this.priceImpact = newState.priceImpact
           this.maxSlippage = newState.maxSlippage
         })
@@ -108,8 +112,8 @@ export class W3mConvertView extends LitElement {
   }
 
   public override firstUpdated() {
-    if (!this.initialLoading) {
-      SwapApiController.getTokenList()
+    if (!this.initialized) {
+      ConvertController.initializeState()
     }
   }
 
@@ -121,9 +125,7 @@ export class W3mConvertView extends LitElement {
   public override render() {
     return html`
       <wui-flex flexDirection="column" padding="s" gap="s">
-        ${this.initialLoading || this.isTransactionPending
-          ? this.templateLoading()
-          : this.templateSwap()}
+        ${!this.initialized ? this.templateLoading() : this.templateSwap()}
       </wui-flex>
     `
   }
@@ -147,34 +149,19 @@ export class W3mConvertView extends LitElement {
   }
 
   private actionButtonLabel(): string {
-    const myToken = SwapApiController.state.myTokensWithBalance?.[this.sourceToken?.address ?? '']
-    const myTokenAmount = myToken
-      ? parseFloat(
-          ConnectionController.formatUnits(BigInt(myToken.balance), myToken.decimals)
-        ).toFixed(3)
-      : 0
-
-    if (myTokenAmount === 0) {
-      return 'Insufficient funds'
+    if (this.inputError) {
+      return this.inputError
     }
 
-    if (this.swapErrorMessage) {
-      if (this.swapErrorMessage?.includes('insufficient funds')) {
-        return 'Insufficient funds'
-      }
-
-      return 'Error'
+    if (this.approvalTransaction) {
+      return 'Approve & Convert'
     }
 
-    if (!this.toToken || !this.sourceToken) {
-      return 'Select token'
+    if (this.loading || this.loadingPrices) {
+      return 'Loading...'
     }
 
-    if (!this.toTokenAmount || !this.sourceTokenAmount) {
-      return 'Enter amount'
-    }
-
-    return this.hasAllowance ? 'Review convert' : 'Not permitted'
+    return 'Convert'
   }
 
   private templateReplaceTokensButton() {
@@ -226,10 +213,14 @@ export class W3mConvertView extends LitElement {
   }
 
   private templateTokenInput(target: Target, token?: TokenInfo) {
-    const myToken = SwapApiController.state.myTokensWithBalance?.[token?.address ?? '']
+    const myToken = ConvertController.state.myTokensWithBalance?.[token?.address ?? '']
     const amount = target === 'toToken' ? this.toTokenAmount : this.sourceTokenAmount
     const price = target === 'toToken' ? this.toTokenPriceInUSD : this.sourceTokenPriceInUSD
-    const value = parseFloat(amount) * price
+    let value = parseFloat(amount) * price
+
+    if (target === 'toToken') {
+      value = value - (this.gasPriceInUSD || 0)
+    }
 
     return html`<wui-convert-input
       .value=${target === 'toToken' ? this.toTokenAmount : this.sourceTokenAmount}
@@ -239,16 +230,15 @@ export class W3mConvertView extends LitElement {
       .token=${token}
       .balance=${myToken?.balance}
       .marketValue=${isNaN(value) ? '' : formatNumberToLocalString(value)}
-      amount=${myToken
-        ? formatNumberToLocalString(
-            ConnectionController.formatUnits(BigInt(myToken.balance), myToken.decimals),
-            3
-          )
-        : 0}
+      amount=${myToken ? formatNumberToLocalString(myToken.balance, 3) : 0}
     ></wui-convert-input>`
   }
 
   private templateDetails() {
+    if (this.loading || this.inputError) {
+      return null
+    }
+
     if (!this.sourceToken || !this.toToken || !this.sourceTokenAmount || !this.toTokenAmount) {
       return null
     }
@@ -275,17 +265,18 @@ export class W3mConvertView extends LitElement {
 
   private handleChangeAmount(target: Target, value: string) {
     if (target === 'sourceToken') {
-      SwapApiController.setSourceTokenAmount(value)
+      ConvertController.setSourceTokenAmount(value)
     } else {
-      SwapApiController.setToTokenAmount(value)
+      ConvertController.setToTokenAmount(value)
     }
-    SwapApiController.clearError()
+    ConvertController.clearError()
     this.onDebouncedGetSwapCalldata()
   }
 
   private templateActionButton() {
     const haveNoTokenSelected = !this.toToken || !this.sourceToken
-    const loading = this.loadingPrices || this.loading
+    const empty = !this.toToken || !this.sourceToken
+    const loading = this.loading || this.loadingPrices || this.transactionLoading
 
     return html` <wui-flex gap="xs">
       <wui-button
@@ -293,9 +284,9 @@ export class W3mConvertView extends LitElement {
         ?fullWidth=${true}
         size="lg"
         borderRadius="xs"
-        variant=${!this.hasAllowance || haveNoTokenSelected ? 'shade' : 'fill'}
+        variant=${haveNoTokenSelected ? 'shade' : 'fill'}
         .loading=${loading}
-        .disabled=${loading || !this.hasAllowance || haveNoTokenSelected || this.swapErrorMessage}
+        .disabled=${loading || haveNoTokenSelected || this.inputError}
         @click=${this.onConvertPreview}
       >
         ${this.actionButtonLabel()}
@@ -304,15 +295,19 @@ export class W3mConvertView extends LitElement {
   }
 
   private onDebouncedGetSwapCalldata = CoreHelperUtil.debounce(async () => {
-    await SwapApiController.getTokenSwapInfo()
+    await ConvertController.convertTokens()
   }, 500)
 
   private onSwitchTokens() {
-    SwapApiController.switchTokens()
+    ConvertController.switchTokens()
   }
 
   private onConvertPreview() {
-    RouterController.push('ConvertPreview')
+    if (this.approvalTransaction) {
+      ConvertController.sendTransactionForApproval(this.approvalTransaction)
+    } else {
+      ConvertController.sendTransactionForConvert(this.convertTransaction)
+    }
   }
 }
 

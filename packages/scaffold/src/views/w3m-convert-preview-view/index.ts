@@ -5,7 +5,7 @@ import {
   AccountController,
   NetworkController,
   RouterController,
-  SwapApiController
+  ConvertController
 } from '@web3modal/core'
 import { state } from 'lit/decorators.js'
 
@@ -16,29 +16,29 @@ export class W3mConvertPreviewView extends LitElement {
   private unsubscribe: ((() => void) | undefined)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() private sourceToken = SwapApiController.state.sourceToken
+  @state() private sourceToken = ConvertController.state.sourceToken
 
-  @state() private sourceTokenAmount = SwapApiController.state.sourceTokenAmount ?? ''
+  @state() private sourceTokenAmount = ConvertController.state.sourceTokenAmount ?? ''
 
-  @state() private sourceTokenPriceInUSD = SwapApiController.state.sourceTokenPriceInUSD
+  @state() private sourceTokenPriceInUSD = ConvertController.state.sourceTokenPriceInUSD
 
-  @state() private toToken = SwapApiController.state.toToken
+  @state() private toToken = ConvertController.state.toToken
 
-  @state() private toTokenAmount = SwapApiController.state.toTokenAmount ?? ''
+  @state() private toTokenAmount = ConvertController.state.toTokenAmount ?? ''
 
-  @state() private toTokenPriceInUSD = SwapApiController.state.toTokenPriceInUSD
+  @state() private toTokenPriceInUSD = ConvertController.state.toTokenPriceInUSD
 
   @state() private caipNetwork = NetworkController.state.caipNetwork
 
-  @state() private isTransactionPending = SwapApiController.state.isTransactionPending
+  @state() private transactionLoading = ConvertController.state.transactionLoading
 
   @state() private balanceSymbol = AccountController.state.balanceSymbol
 
-  @state() private gasPriceInUSD = SwapApiController.state.gasPriceInUSD
+  @state() private gasPriceInUSD = ConvertController.state.gasPriceInUSD
 
-  @state() private priceImpact = SwapApiController.state.priceImpact
+  @state() private priceImpact = ConvertController.state.priceImpact
 
-  @state() private maxSlippage = SwapApiController.state.maxSlippage
+  @state() private maxSlippage = ConvertController.state.maxSlippage
 
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
@@ -57,13 +57,13 @@ export class W3mConvertPreviewView extends LitElement {
             this.caipNetwork = newCaipNetwork
           }
         }),
-        SwapApiController.subscribe(newState => {
+        ConvertController.subscribe(newState => {
           this.sourceToken = newState.sourceToken
           this.gasPriceInUSD = newState.gasPriceInUSD
           this.toToken = newState.toToken
-          this.isTransactionPending = newState.isTransactionPending
+          this.transactionLoading = newState.transactionLoading
           this.gasPriceInUSD = newState.gasPriceInUSD
-          this.isTransactionPending = newState.isTransactionPending
+          this.transactionLoading = newState.transactionLoading
           this.toTokenPriceInUSD = newState.toTokenPriceInUSD
           this.sourceTokenAmount = newState.sourceTokenAmount ?? ''
           this.toTokenAmount = newState.toTokenAmount ?? ''
@@ -164,17 +164,17 @@ export class W3mConvertPreviewView extends LitElement {
         >
           <button
             class="cancel-button"
-            ?disabled=${this.isTransactionPending}
+            ?disabled=${this.transactionLoading}
             @click=${this.onCancelTransaction.bind(this)}
           >
             <wui-text variant="paragraph-600" color="fg-200">Cancel</wui-text>
           </button>
           <button
             class="convert-button"
-            ?disabled=${this.isTransactionPending}
+            ?disabled=${this.transactionLoading}
             @click=${this.onSendTransaction.bind(this)}
           >
-            ${this.isTransactionPending
+            ${this.transactionLoading
               ? html`<wui-loading-spinner color="inverse-100"></wui-loading-spinner>`
               : html`<wui-text variant="paragraph-600" color="inverse-100">Convert</wui-text>`}
           </button>
@@ -209,7 +209,7 @@ export class W3mConvertPreviewView extends LitElement {
   }
 
   private async onSendTransaction() {
-    await SwapApiController.swapTokens()
+    await ConvertController.sendTransaction()
   }
 }
 

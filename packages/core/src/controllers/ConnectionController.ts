@@ -17,7 +17,9 @@ export interface ConnectionControllerClient {
   connectWalletConnect: (onUri: (uri: string) => void) => Promise<void>
   disconnect: () => Promise<void>
   signMessage: (message: string) => Promise<string>
-  sendTransaction: (args: SendTransactionArgs) => Promise<`0x${string}`>
+  sendTransaction: (args: SendTransactionArgs) => Promise<string | `0x${string}` | null>
+  getGasPrice: (chainId: number) => Promise<string | any>
+  getEstimatedGas: (args: any) => Promise<bigint>
   parseUnits: (value: string, decimals: number) => bigint
   formatUnits: (value: bigint, decimals: number) => string
   connectExternal?: (options: ConnectExternalOptions) => Promise<void>
@@ -96,6 +98,14 @@ export const ConnectionController = {
 
   async sendTransaction(args: SendTransactionArgs) {
     return this._getClient().sendTransaction(args)
+  },
+
+  async getGasPrice(chainId: number) {
+    return this._getClient().getGasPrice(chainId)
+  },
+
+  async getEstimatedGas(args: any) {
+    return this._getClient().getEstimatedGas(args)
   },
 
   checkInstalled(ids?: string[]) {

@@ -55,8 +55,11 @@ export type { EventsControllerState } from './src/controllers/EventsController.j
 export { TransactionsController } from './src/controllers/TransactionsController.js'
 export type { TransactionsControllerState } from './src/controllers/TransactionsController.js'
 
-export { SwapApiController } from './src/controllers/SwapApiController.js'
-export type { SwapApiControllerState } from './src/controllers/SwapApiController.js'
+export { ConvertApiController } from './src/controllers/ConvertApiController.js'
+export type { ConvertApiControllerState } from './src/controllers/ConvertApiController.js'
+
+export { ConvertController } from './src/controllers/ConvertController.js'
+export type { ConvertControllerState } from './src/controllers/ConvertController.js'
 
 // -- Utils -------------------------------------------------------------------
 export { AssetUtil } from './src/utils/AssetUtil.js'

@@ -1,8 +1,11 @@
 import { customElement, interpolate } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
-import { ConnectionController, RouterController, SwapApiController } from '@web3modal/core'
-import type { TokenInfo } from '@web3modal/core/src/controllers/SwapApiController.js'
+import { ConnectionController, RouterController, ConvertController } from '@web3modal/core'
+import type {
+  TokenInfo,
+  TokenInfoWithBalance
+} from '@web3modal/core/src/controllers/ConvertController.js'
 import { state } from 'lit/decorators.js'
 
 @customElement('w3m-convert-select-token-view')
@@ -14,9 +17,9 @@ export class W3mConvertSelectTokenView extends LitElement {
   // -- State & Properties -------------------------------- //
   @state() private targetToken = RouterController.state.data?.target
 
-  @state() private sourceToken = SwapApiController.state.sourceToken
+  @state() private sourceToken = ConvertController.state.sourceToken
 
-  @state() private toToken = SwapApiController.state.toToken
+  @state() private toToken = ConvertController.state.toToken
 
   @state() private searchValue = ''
 
@@ -26,7 +29,7 @@ export class W3mConvertSelectTokenView extends LitElement {
 
     this.unsubscribe.push(
       ...[
-        SwapApiController.subscribe(newState => {
+        ConvertController.subscribe(newState => {
           this.sourceToken = newState.sourceToken
           this.toToken = newState.toToken
         })
@@ -36,11 +39,10 @@ export class W3mConvertSelectTokenView extends LitElement {
 
   private onSelectToken(token: TokenInfo) {
     if (this.targetToken === 'sourceToken') {
-      SwapApiController.setSourceToken(token)
+      ConvertController.setSourceToken(token)
     } else {
-      SwapApiController.setToToken(token)
+      ConvertController.setToToken(token)
     }
-    SwapApiController.getTokenSwapInfo()
     RouterController.goBack()
   }
 
@@ -93,15 +95,17 @@ export class W3mConvertSelectTokenView extends LitElement {
   }
 
   private templateTokens() {
-    const yourTokens = SwapApiController.state.myTokensWithBalance
-      ? Object.values(SwapApiController.state.myTokensWithBalance)
+    const yourTokens = ConvertController.state.myTokensWithBalance
+      ? Object.values(ConvertController.state.myTokensWithBalance)
       : []
-    const tokens = SwapApiController.state.popularTokens
-      ? Object.values(SwapApiController.state.popularTokens)
+    const tokens = ConvertController.state.popularTokens
+      ? Object.values(ConvertController.state.popularTokens)
       : []
 
-    const filteredYourTokens = this.filterTokensWithText(yourTokens, this.searchValue)
-    const filteredTokens = this.filterTokensWithText(tokens, this.searchValue)
+    const filteredYourTokens: TokenInfoWithBalance[] = this.filterTokensWithText<
+      TokenInfoWithBalance[]
+    >(yourTokens, this.searchValue)
+    const filteredTokens = this.filterTokensWithText<TokenInfo[]>(tokens, this.searchValue)
 
     return html`
       <wui-flex class="tokens-container">
@@ -119,14 +123,10 @@ export class W3mConvertSelectTokenView extends LitElement {
 
                   return html`
                     <wui-token-list-item
-                      ?disabled=${selected}
                       name=${tokenInfo.name}
                       symbol=${tokenInfo.symbol}
-                      price=${tokenInfo.price}
-                      amount=${ConnectionController.formatUnits(
-                        BigInt(tokenInfo.balance),
-                        tokenInfo.decimals
-                      )}
+                      price=${tokenInfo?.price}
+                      amount=${tokenInfo?.balance}
                       imageSrc=${tokenInfo.logoURI}
                       @click=${() => {
                         if (!selected) {
@@ -165,8 +165,8 @@ export class W3mConvertSelectTokenView extends LitElement {
   }
 
   private templateSuggestedTokens() {
-    const tokens = SwapApiController.state.popularTokens
-      ? Object.values(SwapApiController.state.popularTokens).slice(0, 8)
+    const tokens = ConvertController.state.popularTokens
+      ? Object.values(ConvertController.state.popularTokens).slice(0, 8)
       : null
 
     if (!tokens) {
@@ -237,10 +237,10 @@ export class W3mConvertSelectTokenView extends LitElement {
     )
   }
 
-  private filterTokensWithText(tokens: TokenInfo[], text: string) {
+  private filterTokensWithText<T>(tokens: TokenInfo[], text: string) {
     return tokens.filter(token =>
       `${token.symbol} ${token.name} ${token.address}`.toLowerCase().includes(text.toLowerCase())
-    )
+    ) as T
   }
 }
 
