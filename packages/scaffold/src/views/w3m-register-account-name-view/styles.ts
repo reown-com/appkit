@@ -1,8 +1,13 @@
 import { css } from 'lit'
 
 export default css`
-  .continue-button-container {
+  wui-flex {
     width: 100%;
+  }
+
+  .suggestion {
+    background: var(--wui-gray-glass-002);
+    border-radius: var(--wui-border-radius-xs);
   }
 
   form {

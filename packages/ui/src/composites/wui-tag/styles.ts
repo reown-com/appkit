@@ -35,7 +35,7 @@ export default css`
   }
 
   :host([data-size='lg']) {
-    padding: 9px 5px !important;
+    padding: 11px 5px !important;
   }
 
   :host([data-size='lg']) > wui-text {

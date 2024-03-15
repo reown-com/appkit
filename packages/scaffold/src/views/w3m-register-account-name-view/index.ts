@@ -78,7 +78,14 @@ export class W3mRegisterAccountNameView extends LitElement {
 
   private templateSuggestions() {
     return html`<wui-flex flexDirection="column" gap="xxs" alignItems="center">
-      <wui-flex .padding=${['s', 'm', 's', 'm'] as const}>diane</wui-flex>
+      <wui-flex
+        .padding=${['m', 'm', 'm', 'm'] as const}
+        justifyContent="space-between"
+        class="suggestion"
+      >
+        <wui-text color="fg-100" variant="paragraph-400">diane</wui-text
+        ><wui-tag variant="success" size="lg">Available</wui-tag>
+      </wui-flex>
     </wui-flex>`
   }
 
