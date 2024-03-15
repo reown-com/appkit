@@ -226,7 +226,7 @@ export class W3mConvertPreviewView extends LitElement {
     RouterController.goBack()
   }
 
-  private async onSendTransaction() {
+  private onSendTransaction() {
     if (this.approvalTransaction) {
       ConvertController.sendTransactionForApproval(this.approvalTransaction)
     } else {

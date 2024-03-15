@@ -1,5 +1,3 @@
-import { subscribeKey as subKey } from 'valtio/utils'
-import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { NetworkController } from './NetworkController.js'
 import { FetchUtil } from '../utils/FetchUtil.js'
@@ -26,9 +24,6 @@ const OneInchAPIEndpoints = {
 }
 
 // -- Types --------------------------------------------- //
-// #region Types
-export interface ConvertApiControllerState {}
-
 export type TokenInfo = {
   address: `0x${string}`
   symbol: string
@@ -95,27 +90,8 @@ export type GetConvertDataResponse = {
   tx: TransactionData
 }
 
-type StateKey = keyof ConvertApiControllerState
-// #endregion
-
-// -- State --------------------------------------------- //
-const state = proxy<ConvertApiControllerState>({})
-
 // -- Controller ---------------------------------------- //
 export const ConvertApiController = {
-  state,
-
-  subscribe(callback: (newState: ConvertApiControllerState) => void) {
-    return sub(state, () => callback(state))
-  },
-
-  subscribeKey<K extends StateKey>(
-    key: K,
-    callback: (value: ConvertApiControllerState[K]) => void
-  ) {
-    return subKey(state, key, callback)
-  },
-
   get1InchAPI() {
     const api = new FetchUtil({ baseUrl: ONEINCH_API_BASE_URL })
     const chainId = CoreHelperUtil.getEvmChainId(NetworkController.state.caipNetwork?.id)
@@ -278,8 +254,8 @@ export const ConvertApiController = {
     tokensPrice: Record<string, string>
   ) {
     const mergedTokens = Object.entries(tokens).reduce<Record<string, TokenInfoWithBalance>>(
-      (mergedTokens, [tokenAddress, tokenInfo]) => {
-        mergedTokens[tokenAddress] = {
+      (_mergedTokens, [tokenAddress, tokenInfo]) => {
+        _mergedTokens[tokenAddress] = {
           ...tokenInfo,
           balance: ConnectionController.formatUnits(
             BigInt(balances[tokenAddress] ?? '0'),
@@ -288,7 +264,7 @@ export const ConvertApiController = {
           price: tokensPrice[tokenAddress] ?? '0'
         }
 
-        return mergedTokens
+        return _mergedTokens
       },
       {}
     )
@@ -306,7 +282,7 @@ export const ConvertApiController = {
   }: GetConvertDataParams): Promise<GetConvertDataResponse> {
     const { api, paths } = this.get1InchAPI()
 
-    return await api.get<any>({
+    return await api.get({
       path: paths.swap,
       params: {
         src: sourceTokenAddress,

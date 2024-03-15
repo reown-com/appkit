@@ -405,6 +405,11 @@ export interface SendTransactionArgs {
   value: bigint
   gas?: bigint
   gasPrice: bigint
-  chainId: number
   address: `0x${string}`
+}
+
+export interface EstimateGasTransactionArgs {
+  address: `0x${string}`
+  to: `0x${string}`
+  data: `0x${string}`
 }

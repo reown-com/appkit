@@ -296,7 +296,7 @@ export class Web3Modal extends Web3ModalScaffold {
         const txResponse = await signer.sendTransaction(txParams)
         const txReceipt = await txResponse.wait()
 
-        return txReceipt?.blockHash || null
+        return (txReceipt?.blockHash as `0x${string}`) || null
       }
     }
 

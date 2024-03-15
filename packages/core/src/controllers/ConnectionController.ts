@@ -2,7 +2,12 @@ import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy, ref } from 'valtio/vanilla'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
-import type { Connector, SendTransactionArgs, WcWallet } from '../utils/TypeUtil.js'
+import type {
+  Connector,
+  EstimateGasTransactionArgs,
+  SendTransactionArgs,
+  WcWallet
+} from '../utils/TypeUtil.js'
 import { TransactionsController } from './TransactionsController.js'
 
 // -- Types --------------------------------------------- //
@@ -17,9 +22,8 @@ export interface ConnectionControllerClient {
   connectWalletConnect: (onUri: (uri: string) => void) => Promise<void>
   disconnect: () => Promise<void>
   signMessage: (message: string) => Promise<string>
-  sendTransaction: (args: SendTransactionArgs) => Promise<string | `0x${string}` | null>
-  getGasPrice: (chainId: number) => Promise<string | any>
-  getEstimatedGas: (args: any) => Promise<bigint>
+  sendTransaction: (args: SendTransactionArgs) => Promise<`0x${string}` | null>
+  getEstimatedGas: (args: EstimateGasTransactionArgs) => Promise<bigint>
   parseUnits: (value: string, decimals: number) => bigint
   formatUnits: (value: bigint, decimals: number) => string
   connectExternal?: (options: ConnectExternalOptions) => Promise<void>
@@ -100,11 +104,7 @@ export const ConnectionController = {
     return this._getClient().sendTransaction(args)
   },
 
-  async getGasPrice(chainId: number) {
-    return this._getClient().getGasPrice(chainId)
-  },
-
-  async getEstimatedGas(args: any) {
+  async getEstimatedGas(args: EstimateGasTransactionArgs) {
     return this._getClient().getEstimatedGas(args)
   },
 

@@ -1,11 +1,9 @@
 import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy, subscribe as sub } from 'valtio/vanilla'
-import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
-import { NetworkController } from './NetworkController.js'
 import { AccountController } from './AccountController.js'
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { ConnectionController } from './ConnectionController.js'
-import { ConvertApiController, type TransactionData } from './ConvertApiController.js'
+import { ConvertApiController } from './ConvertApiController.js'
 import { SnackController } from './SnackController.js'
 import { RouterController } from './RouterController.js'
 
@@ -15,6 +13,24 @@ export const DEFAULT_SLIPPAGE_TOLERANCE = '0.5'
 // -- Types --------------------------------------------- //
 type PriceDifferenceDirection = 'up' | 'down' | 'none'
 
+type TransactionParams = {
+  data: `0x${string}`
+  to: `0x${string}`
+  gas: bigint
+  gasPrice: bigint
+  value: bigint
+}
+
+class TransactionError extends Error {
+  shortMessage?: string
+
+  constructor(message?: string, shortMessage?: string) {
+    super(message)
+    this.name = 'TransactionError'
+    this.shortMessage = shortMessage
+  }
+}
+
 export interface ConvertControllerState {
   // Loading states
   initialized: boolean
@@ -22,9 +38,9 @@ export interface ConvertControllerState {
   loading?: boolean
 
   // Approval & Convert transaction states
-  approvalTransaction: object | undefined
+  approvalTransaction: TransactionParams | undefined
   convertLoading: boolean
-  convertTransaction?: TransactionData
+  convertTransaction: TransactionParams | undefined
   transactionLoading?: boolean
   transactionError?: string
 
@@ -193,15 +209,15 @@ export const ConvertController = {
   },
 
   setToToken(toToken: TokenInfo | undefined) {
-    if (!toToken || !toToken.address) {
+    if (!toToken?.address) {
       return
     }
 
     state.toToken = toToken
-    if (!state.tokensPriceMap[toToken.address]) {
-      this.checkToTokenValues(toToken.address)
-    } else {
+    if (state.tokensPriceMap[toToken.address]) {
       state.toTokenPriceInUSD = parseFloat(state.tokensPriceMap[toToken.address] || '0')
+    } else {
+      this.checkToTokenValues(toToken.address)
     }
   },
 
@@ -215,8 +231,8 @@ export const ConvertController = {
   },
 
   switchTokens() {
-    const newSourceToken = state.toToken ? Object.assign({}, state.toToken) : undefined
-    const newToToken = state.sourceToken ? Object.assign({}, state.sourceToken) : undefined
+    const newSourceToken = state.toToken ? { ...state.toToken } : undefined
+    const newToToken = state.sourceToken ? { ...state.sourceToken } : undefined
 
     this.setSourceToken(newSourceToken)
     this.setToToken(newToToken)
@@ -321,6 +337,7 @@ export const ConvertController = {
     const prices = await ConvertApiController.getTokenPriceWithAddresses([address])
     const price = prices[address] || '0'
     state.tokensPriceMap[address] = price
+
     return parseFloat(price)
   },
 
@@ -332,6 +349,7 @@ export const ConvertController = {
     if (address === CURRENT_CHAIN_ADDRESS) {
       state.networkPrice = price
     }
+
     return price
   },
 
@@ -350,6 +368,7 @@ export const ConvertController = {
     state.tokensPriceMap = Object.entries(res).reduce<Record<string, string>>(
       (prices, [tokenAddress, tokenInfo]) => {
         prices[tokenAddress] = tokenInfo.price
+
         return prices
       },
       {}
@@ -357,19 +376,15 @@ export const ConvertController = {
     state.myTokensWithBalance = res
   },
 
-  async searchTokens(searchTerm: string) {
-    const response = await ConvertApiController.searchTokens(searchTerm)
-  },
+  calculateGasPriceInEther(gas: bigint, gasPrice: bigint) {
+    const totalGasCostInWei = gasPrice * gas
 
-  calculateGasPriceInEther(gas: number, gasPrice: string) {
-    const gasPriceNumber = BigInt(gasPrice)
-    const totalGasCostInWei = gasPriceNumber * BigInt(gas)
     const totalGasCostInEther = Number(totalGasCostInWei) / 1e18
 
     return totalGasCostInEther
   },
 
-  calculateGasPriceInUSD(gas: number, gasPrice: string) {
+  calculateGasPriceInUSD(gas: bigint, gasPrice: bigint) {
     try {
       const totalGasCostInEther = this.calculateGasPriceInEther(gas, gasPrice)
       const networkPriceNumber = parseFloat(state.networkPrice)
@@ -443,35 +458,39 @@ export const ConvertController = {
       sourceTokenDecimals
     })
 
-    if (!hasAllowance) {
-      const transaction = await this.createTokenAllowance()
-      state.approvalTransaction = transaction
-      const toTokenConvertedAmount =
-        state.sourceTokenPriceInUSD && state.toTokenPriceInUSD
-          ? (1 / state.toTokenPriceInUSD) * state.sourceTokenPriceInUSD
-          : 0
-      let floatNumber = toTokenConvertedAmount
-      let scaleFactor = 10000000000 // 10^10 to keep 10 decimal places
-      let scaledNumber = floatNumber * scaleFactor
-      let bigIntString = Math.round(scaledNumber).toString()
+    const toAmount = this.getToAmount()
 
-      this.setToTokenAmountValue(bigIntString, toTokenDecimals, toTokenAddress)
+    if (hasAllowance) {
+      state.approvalTransaction = undefined
+      const transaction = await this.createConvert()
+      state.convertTransaction = transaction
+
+      this.setToTokenAmountValue(toAmount, toTokenDecimals, toTokenAddress)
       this.setTransactionDetails(transaction.gas, transaction.gasPrice)
     } else {
-      state.approvalTransaction = undefined
-      const response = await this.createConvert()
+      const transaction = await this.createTokenAllowance()
+      state.approvalTransaction = transaction
 
-      if (response.tx) {
-        state.convertTransaction = response.tx
-        this.setToTokenAmountValue(response.toAmount, toTokenDecimals, toTokenAddress)
-        this.setTransactionDetails(response.tx.gas, response.tx.gasPrice)
-      }
+      this.setToTokenAmountValue(toAmount, toTokenDecimals, toTokenAddress)
+      this.setTransactionDetails(transaction.gas, transaction.gasPrice)
     }
 
     state.loading = false
   },
 
-  // 3.1.1 Create token allowance
+  getToAmount() {
+    const toTokenConvertedAmount =
+      state.sourceTokenPriceInUSD && state.toTokenPriceInUSD
+        ? (1 / state.toTokenPriceInUSD) * state.sourceTokenPriceInUSD
+        : 0
+    const floatNumber = toTokenConvertedAmount
+    const scaleFactor = 10000000000
+    const scaledNumber = floatNumber * scaleFactor
+    const bigIntString = Math.round(scaledNumber).toString()
+
+    return bigIntString
+  },
+
   async createTokenAllowance() {
     const { fromAddress, sourceTokenAddress } = this.getParams()
 
@@ -485,37 +504,42 @@ export const ConvertController = {
     })
 
     const gasLimit = await ConnectionController.getEstimatedGas({
-      ...transaction,
-      from: fromAddress
+      address: fromAddress,
+      to: transaction.to,
+      data: transaction.data
     })
 
     return {
       ...transaction,
-      gas: gasLimit
+      gas: gasLimit,
+      gasPrice: BigInt(transaction.gasPrice),
+      value: BigInt(transaction.value)
     }
   },
 
-  // 3.1.2 Request approval for token
-  async sendTransactionForApproval(data) {
+  async sendTransactionForApproval(data: TransactionParams) {
     const { fromAddress } = this.getParams()
     state.transactionLoading = true
 
     try {
       await ConnectionController.sendTransaction({
         address: fromAddress,
-        ...data
+        to: data.to,
+        data: data.data,
+        value: BigInt(data.value),
+        gasPrice: BigInt(data.gasPrice)
       })
 
       state.approvalTransaction = undefined
       state.transactionLoading = false
-    } catch (error) {
-      state.transactionError = error?.shortMessage
+    } catch (err) {
+      const error = err as TransactionError
+      state.transactionError = error?.shortMessage as unknown as string
       state.transactionLoading = false
       SnackController.showError(error?.shortMessage || 'Transaction errror')
     }
   },
 
-  // 3.2.1 Create convert
   async createConvert() {
     const {
       fromAddress,
@@ -529,17 +553,30 @@ export const ConvertController = {
       throw new Error('>>> createConvert: Invalid values to start converting')
     }
 
-    return await ConvertApiController.getConvertData({
+    const response = await ConvertApiController.getConvertData({
       fromAddress,
       sourceTokenAddress,
       sourceTokenAmount,
       toTokenAddress,
       decimals: sourceTokenDecimals
     })
+
+    const transaction = {
+      data: response.tx.data,
+      to: response.tx.to,
+      gas: BigInt(response.tx.gas),
+      gasPrice: BigInt(response.tx.gasPrice),
+      value: BigInt(response.tx.value)
+    }
+
+    return transaction
   },
 
-  // 3.2.2 Send convert transaction
-  async sendTransactionForConvert(data) {
+  async sendTransactionForConvert(data: TransactionParams | undefined) {
+    if (!data) {
+      return undefined
+    }
+
     const { fromAddress } = this.getParams()
 
     state.transactionLoading = true
@@ -550,28 +587,26 @@ export const ConvertController = {
         data: data.data,
         gas: data.gas,
         gasPrice: BigInt(data.gasPrice),
-        value: BigInt(data.value),
-        chainId: CoreHelperUtil.getEvmChainId(NetworkController.state.caipNetwork?.id)
+        value: BigInt(data.value)
       })
       state.transactionLoading = false
       RouterController.replace('Transactions')
       setTimeout(() => {
         this.resetState()
       }, 1000)
+
       return transactionHash
-    } catch (error) {
+    } catch (err) {
+      const error = err as TransactionError
       state.transactionError = error?.shortMessage
       state.transactionLoading = false
       SnackController.showError(error?.shortMessage || 'Transaction errror')
+
       return undefined
     }
   },
 
-  async setToTokenAmountValue(
-    toTokenAmount: string,
-    toTokenDecimals: number,
-    toTokenAddress: string
-  ) {
+  setToTokenAmountValue(toTokenAmount: string, toTokenDecimals: number, toTokenAddress: string) {
     if (!toTokenAddress || !toTokenAmount) {
       return
     }
@@ -587,7 +622,7 @@ export const ConvertController = {
     state.toTokenAmount = toTokenAmountValue.toString()
   },
 
-  async setTransactionDetails(gas: bigint, gasPrice: string) {
+  setTransactionDetails(gas: bigint, gasPrice: bigint) {
     const { toTokenAddress, toTokenAmount } = this.getParams()
 
     if (!toTokenAddress) {
@@ -597,7 +632,7 @@ export const ConvertController = {
     const toTokenPrice = state.tokensPriceMap[toTokenAddress] || '0'
     state.toTokenPriceInUSD = parseFloat(toTokenPrice)
 
-    state.gasPriceInUSD = this.calculateGasPriceInUSD(Number(gas), gasPrice)
+    state.gasPriceInUSD = this.calculateGasPriceInUSD(gas, gasPrice)
     state.priceImpact = this.calculatePriceImpact(toTokenAmount)
     state.maxSlippage = this.calculateMaxSlippage()
   }

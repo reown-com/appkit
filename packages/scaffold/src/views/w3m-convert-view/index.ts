@@ -50,7 +50,6 @@ export class W3mConvertView extends LitElement {
 
   @state() private maxSlippage = ConvertController.state.maxSlippage
 
-  @state() private transactionError = ConvertController.state.transactionError
   @state() private transactionLoading = ConvertController.state.transactionLoading
 
   // -- Lifecycle ----------------------------------------- //
@@ -90,7 +89,6 @@ export class W3mConvertView extends LitElement {
           this.initialized = newState.initialized
           this.loading = newState.loading
           this.loadingPrices = newState.loadingPrices
-          this.transactionError = newState.transactionError
           this.transactionLoading = newState.transactionLoading
           this.sourceToken = newState.sourceToken
           this.sourceTokenAmount = newState.sourceTokenAmount
@@ -98,8 +96,6 @@ export class W3mConvertView extends LitElement {
           this.toToken = newState.toToken
           this.toTokenAmount = newState.toTokenAmount
           this.toTokenPriceInUSD = newState.toTokenPriceInUSD
-          this.approvalTransaction = newState.approvalTransaction
-          this.convertTransaction = newState.convertTransaction
           this.inputError = newState.inputError
           this.gasPriceInUSD = newState.gasPriceInUSD
           this.priceImpact = newState.priceImpact
@@ -123,7 +119,7 @@ export class W3mConvertView extends LitElement {
   public override render() {
     return html`
       <wui-flex flexDirection="column" padding="s" gap="s">
-        ${!this.initialized ? this.templateLoading() : this.templateSwap()}
+        ${this.initialized ? this.templateSwap() : this.templateLoading()}
       </wui-flex>
     `
   }
@@ -209,7 +205,7 @@ export class W3mConvertView extends LitElement {
     let value = parseFloat(amount) * price
 
     if (target === 'toToken') {
-      value = value - (this.gasPriceInUSD || 0)
+      value -= this.gasPriceInUSD || 0
     }
 
     return html`<wui-convert-input
@@ -265,7 +261,6 @@ export class W3mConvertView extends LitElement {
 
   private templateActionButton() {
     const haveNoTokenSelected = !this.toToken || !this.sourceToken
-    const empty = !this.toToken || !this.sourceToken
     const loading = this.loading || this.loadingPrices || this.transactionLoading
 
     return html` <wui-flex gap="xs">

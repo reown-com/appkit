@@ -7,7 +7,6 @@ import {
   getEnsAvatar,
   getEnsName,
   getAccount,
-  getGasPrice as wagmiGetGasPrice,
   switchChain,
   watchAccount,
   watchConnectors,
@@ -30,7 +29,7 @@ import type {
   SendTransactionArgs,
   Token
 } from '@web3modal/scaffold'
-import { formatUnits, parseEther, parseGwei, parseUnits } from 'viem'
+import { formatUnits, parseUnits } from 'viem'
 import type { Hex } from 'viem'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
@@ -176,11 +175,6 @@ export class Web3Modal extends Web3ModalScaffold {
 
       signMessage: async message => signMessage(this.wagmiConfig, { message }),
 
-      getGasPrice: async (chainId: number) =>
-        wagmiGetGasPrice(this.wagmiConfig, {
-          chainId
-        }),
-
       getEstimatedGas: async args => {
         try {
           return await estimateGas(this.wagmiConfig, {
@@ -195,6 +189,8 @@ export class Web3Modal extends Web3ModalScaffold {
       },
 
       sendTransaction: async (data: SendTransactionArgs) => {
+        const { chainId } = getAccount(this.wagmiConfig)
+
         try {
           const txParams = {
             account: data.address,
@@ -203,6 +199,7 @@ export class Web3Modal extends Web3ModalScaffold {
             gas: data.gas,
             gasPrice: data.gasPrice,
             data: data.data,
+            chainId,
             type: 'legacy' as const
           }
 
@@ -213,7 +210,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
           return tx
         } catch (error) {
-          throw error
+          return `0x`
         }
       },
 

@@ -11,7 +11,7 @@ import type {
   SendTransactionArgs,
   Token
 } from '@web3modal/scaffold'
-import { AccountController, Web3ModalScaffold } from '@web3modal/scaffold'
+import { Web3ModalScaffold } from '@web3modal/scaffold'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
 import EthereumProvider from '@walletconnect/ethereum-provider'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
@@ -29,8 +29,7 @@ import {
   InfuraProvider,
   getAddress as getOriginalAddress,
   parseUnits,
-  formatUnits,
-  parseEther
+  formatUnits
 } from 'ethers'
 import {
   EthersConstantsUtil,
@@ -43,7 +42,6 @@ import { W3mFrameProvider, W3mFrameHelpers, W3mFrameRpcConstants } from '@web3mo
 import type { CombinedProvider } from '@web3modal/scaffold-utils/ethers'
 import { BrowserProvider } from 'ethers'
 import { JsonRpcSigner } from 'ethers'
-import type { JsonRpcApiProvider } from 'ethers'
 
 // -- Types ---------------------------------------------------------------------
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
@@ -288,9 +286,7 @@ export class Web3Modal extends Web3ModalScaffold {
         return signature as `0x${string}`
       },
 
-      parseUnits: (value: string, decimals: number) => {
-        return parseUnits(value, decimals)
-      },
+      parseUnits: (value: string, decimals: number) => parseUnits(value, decimals),
 
       formatUnits: (value: bigint, decimals: number) => formatUnits(value, decimals),
 
@@ -310,7 +306,6 @@ export class Web3Modal extends Web3ModalScaffold {
         const txParams = {
           from: data.address,
           to: data.to,
-          value: parseEther(data.value),
           data: data.data,
           type: 0
         }
@@ -349,7 +344,7 @@ export class Web3Modal extends Web3ModalScaffold {
         const txResponse = await signer.sendTransaction(txParams)
         const txReceipt = await txResponse.wait()
 
-        return txReceipt?.hash || null
+        return (txReceipt?.hash as `0x${string}`) || null
       }
     }
 

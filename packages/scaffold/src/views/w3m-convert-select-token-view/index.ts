@@ -1,7 +1,7 @@
 import { customElement, interpolate } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
-import { ConnectionController, RouterController, ConvertController } from '@web3modal/core'
+import { RouterController, ConvertController } from '@web3modal/core'
 import type {
   TokenInfo,
   TokenInfoWithBalance
