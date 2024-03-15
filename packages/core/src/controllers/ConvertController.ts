@@ -7,6 +7,7 @@ import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { ConnectionController } from './ConnectionController.js'
 import { ConvertApiController, type TransactionData } from './ConvertApiController.js'
 import { SnackController } from './SnackController.js'
+import { RouterController } from './RouterController.js'
 
 const CURRENT_CHAIN_ADDRESS = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
 export const DEFAULT_SLIPPAGE_TOLERANCE = '0.5'
@@ -192,14 +193,21 @@ export const ConvertController = {
   },
 
   setToToken(toToken: TokenInfo | undefined) {
-    if (!toToken) {
+    if (!toToken || !toToken.address) {
       return
     }
 
     state.toToken = toToken
-    if (toToken.address && !state.tokensPriceMap[toToken.address]) {
-      this.setTokenPriceToMap(toToken.address)
+    if (!state.tokensPriceMap[toToken.address]) {
+      this.checkToTokenValues(toToken.address)
+    } else {
+      state.toTokenPriceInUSD = parseFloat(state.tokensPriceMap[toToken.address] || '0')
     }
+  },
+
+  async checkToTokenValues(address: string) {
+    const price = await this.setTokenPriceToMap(address)
+    state.toTokenPriceInUSD = parseFloat(price)
   },
 
   setLoading(isLoading: boolean) {
@@ -264,16 +272,6 @@ export const ConvertController = {
     }
 
     const priceChange = sourceTokenValue - toTokenValue
-    console.log(
-      '>>> calculatePriceDifference',
-      priceChange,
-      toTokenValue,
-      sourceTokenValue,
-      state.sourceTokenAmount,
-      state.sourceTokenPriceInUSD,
-      state.toTokenAmount,
-      state.toTokenPriceInUSD
-    )
     const changeInPercentage = (priceChange / toTokenValue) * 100
     let direction: PriceDifferenceDirection = 'none'
 
@@ -330,9 +328,11 @@ export const ConvertController = {
     const prices = await ConvertApiController.getTokenPriceWithAddresses([address])
     const price = prices[address] || '0'
     state.tokensPriceMap[address] = price
+
     if (address === CURRENT_CHAIN_ADDRESS) {
       state.networkPrice = price
     }
+    return price
   },
 
   async getNetworkTokenPrice() {
@@ -446,6 +446,17 @@ export const ConvertController = {
     if (!hasAllowance) {
       const transaction = await this.createTokenAllowance()
       state.approvalTransaction = transaction
+      const toTokenConvertedAmount =
+        state.sourceTokenPriceInUSD && state.toTokenPriceInUSD
+          ? (1 / state.toTokenPriceInUSD) * state.sourceTokenPriceInUSD
+          : 0
+      let floatNumber = toTokenConvertedAmount
+      let scaleFactor = 10000000000 // 10^10 to keep 10 decimal places
+      let scaledNumber = floatNumber * scaleFactor
+      let bigIntString = Math.round(scaledNumber).toString()
+
+      this.setToTokenAmountValue(bigIntString, toTokenDecimals, toTokenAddress)
+      this.setTransactionDetails(transaction.gas, transaction.gasPrice)
     } else {
       state.approvalTransaction = undefined
       const response = await this.createConvert()
@@ -496,7 +507,7 @@ export const ConvertController = {
       })
 
       state.approvalTransaction = undefined
-      state.transactionLoading = true
+      state.transactionLoading = false
     } catch (error) {
       state.transactionError = error?.shortMessage
       state.transactionLoading = false
@@ -542,6 +553,11 @@ export const ConvertController = {
         value: BigInt(data.value),
         chainId: CoreHelperUtil.getEvmChainId(NetworkController.state.caipNetwork?.id)
       })
+      state.transactionLoading = false
+      RouterController.replace('Transactions')
+      setTimeout(() => {
+        this.resetState()
+      }, 1000)
       return transactionHash
     } catch (error) {
       state.transactionError = error?.shortMessage

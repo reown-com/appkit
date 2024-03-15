@@ -1,5 +1,5 @@
 import { html, LitElement } from 'lit'
-import { property, state } from 'lit/decorators.js'
+import { property } from 'lit/decorators.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import { resetStyles } from '../../utils/ThemeUtil.js'
 import styles from './styles.js'
@@ -10,9 +10,7 @@ export class WuiConvertDetails extends LitElement {
   public static override styles = [resetStyles, styles]
 
   // -- State & Properties -------------------------------- //
-  @property({ type: Boolean }) public defaultOpen = false
-
-  @state() public detailsOpen = this.defaultOpen
+  @property() public detailsOpen = false
 
   @property() public sourceTokenSymbol?: number
 

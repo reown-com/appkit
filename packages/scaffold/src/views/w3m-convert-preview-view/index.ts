@@ -16,6 +16,12 @@ export class W3mConvertPreviewView extends LitElement {
   private unsubscribe: ((() => void) | undefined)[] = []
 
   // -- State & Properties -------------------------------- //
+  @state() private detailsOpen = true
+
+  @state() private approvalTransaction = ConvertController.state.approvalTransaction
+
+  @state() private convertTransaction = ConvertController.state.convertTransaction
+
   @state() private sourceToken = ConvertController.state.sourceToken
 
   @state() private sourceTokenAmount = ConvertController.state.sourceTokenAmount ?? ''
@@ -58,6 +64,8 @@ export class W3mConvertPreviewView extends LitElement {
           }
         }),
         ConvertController.subscribe(newState => {
+          this.approvalTransaction = newState.approvalTransaction
+          this.convertTransaction = newState.convertTransaction
           this.sourceToken = newState.sourceToken
           this.gasPriceInUSD = newState.gasPriceInUSD
           this.toToken = newState.toToken
@@ -176,7 +184,9 @@ export class W3mConvertPreviewView extends LitElement {
           >
             ${this.transactionLoading
               ? html`<wui-loading-spinner color="inverse-100"></wui-loading-spinner>`
-              : html`<wui-text variant="paragraph-600" color="inverse-100">Convert</wui-text>`}
+              : html`<wui-text variant="paragraph-600" color="inverse-100"
+                  >${this.actionButtonLabel()}</wui-text
+                >`}
           </button>
         </wui-flex>
       </wui-flex>
@@ -191,7 +201,7 @@ export class W3mConvertPreviewView extends LitElement {
 
     return html`
       <wui-convert-details
-        defaultOpen=${true}
+        detailsOpen=${this.detailsOpen}
         sourceTokenSymbol=${this.sourceToken?.symbol}
         sourceTokenPrice=${this.sourceTokenPriceInUSD}
         toTokenSymbol=${this.toToken?.symbol}
@@ -204,12 +214,24 @@ export class W3mConvertPreviewView extends LitElement {
     `
   }
 
+  private actionButtonLabel(): string {
+    if (this.approvalTransaction) {
+      return 'Approve'
+    }
+
+    return 'Convert'
+  }
+
   private onCancelTransaction() {
     RouterController.goBack()
   }
 
   private async onSendTransaction() {
-    await ConvertController.sendTransaction()
+    if (this.approvalTransaction) {
+      ConvertController.sendTransactionForApproval(this.approvalTransaction)
+    } else {
+      ConvertController.sendTransactionForConvert(this.convertTransaction)
+    }
   }
 }
 

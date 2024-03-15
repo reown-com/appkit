@@ -20,11 +20,9 @@ export class W3mConvertView extends LitElement {
   private unsubscribe: ((() => void) | undefined)[] = []
 
   // -- State & Properties -------------------------------- //
+  @state() private detailsOpen = false
+
   @state() private caipNetworkId = NetworkController.state.caipNetwork?.id
-
-  @state() private approvalTransaction = ConvertController.state.approvalTransaction
-
-  @state() private convertTransaction = ConvertController.state.convertTransaction
 
   @state() private initialized = ConvertController.state.initialized
 
@@ -153,15 +151,7 @@ export class W3mConvertView extends LitElement {
       return this.inputError
     }
 
-    if (this.approvalTransaction) {
-      return 'Approve & Convert'
-    }
-
-    if (this.loading || this.loadingPrices) {
-      return 'Loading...'
-    }
-
-    return 'Convert'
+    return 'Review convert'
   }
 
   private templateReplaceTokensButton() {
@@ -250,7 +240,7 @@ export class W3mConvertView extends LitElement {
 
     return html`
       <wui-convert-details
-        defaultOpen=${false}
+        .detailsOpen=${this.detailsOpen}
         sourceTokenSymbol=${this.sourceToken?.symbol}
         sourceTokenPrice=${this.sourceTokenPriceInUSD}
         toTokenSymbol=${this.toToken?.symbol}
@@ -303,11 +293,7 @@ export class W3mConvertView extends LitElement {
   }
 
   private onConvertPreview() {
-    if (this.approvalTransaction) {
-      ConvertController.sendTransactionForApproval(this.approvalTransaction)
-    } else {
-      ConvertController.sendTransactionForConvert(this.convertTransaction)
-    }
+    RouterController.push('ConvertPreview')
   }
 }
 
