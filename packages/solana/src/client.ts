@@ -13,7 +13,9 @@ import {
   type AdapterKey,
   syncInjectedWallets
 } from './connectors/walletAdapters'
-import { SolStoreUtil, SolHelpersUtil, SolConstantsUtil } from './utils/scaffold'
+import { SolConstantsUtil } from './utils/scaffold/SolanaConstantsUtil'
+import { SolHelpersUtil } from './utils/scaffold/SolanaHelpersUtils'
+import { SolStoreUtil } from './utils/scaffold/SolanaStoreUtil'
 import { WalletConnectConnector } from './connectors/walletConnectConnector'
 
 import type { BaseWalletAdapter } from '@solana/wallet-adapter-base'
@@ -31,7 +33,8 @@ import type {
   CaipNetwork
 } from '@web3modal/scaffold'
 
-import type { ProviderType, Chain, Provider, SolStoreUtilState } from './utils/scaffold'
+import type { ProviderType, Chain, Provider } from './utils/scaffold/SolanaTypesUtil'
+import type { SolStoreUtilState } from './utils/scaffold/SolanaStoreUtil'
 
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
   solanaConfig: ProviderType

@@ -2,7 +2,7 @@ import { sha256 } from '@ethersproject/sha2'
 import { Buffer } from 'buffer'
 import { PublicKey } from '@solana/web3.js'
 
-import { SolConstantsUtil } from './scaffold'
+import { SolConstantsUtil } from './scaffold/SolanaConstantsUtil'
 
 export function getHashedName(name: string): Buffer {
   const input = SolConstantsUtil.HASH_PREFIX + name

@@ -12,7 +12,8 @@ import borsh from 'borsh'
 import { Buffer } from 'buffer'
 
 import { registerListener, unregisterListener } from '../utils/clusterFactory'
-import { SolConstantsUtil, SolStoreUtil } from '../utils/scaffold'
+import { SolConstantsUtil } from '../utils/scaffold/SolanaConstantsUtil'
+import { SolStoreUtil } from '../utils/scaffold/SolanaStoreUtil'
 import { getHashedName, getNameAccountKey } from '../utils/hash'
 import { NameRegistry } from '../utils/nameService'
 
@@ -25,7 +26,7 @@ import type {
   RequestMethods,
   TransactionArgs,
   TransactionType
-} from '../utils/scaffold'
+} from '../utils/scaffold/SolanaTypesUtil'
 
 export interface Connector {
   id: string

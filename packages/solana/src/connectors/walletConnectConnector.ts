@@ -4,8 +4,8 @@ import type UniversalProvider from '@walletconnect/universal-provider'
 import { OptionsController } from '@web3modal/core'
 
 import type { Connector } from './baseConnector'
-import type { Chain } from '../utils/scaffold'
-import { SolStoreUtil } from '../utils/scaffold'
+import type { Chain } from '../utils/scaffold/SolanaTypesUtil'
+import { SolStoreUtil } from '../utils/scaffold/SolanaStoreUtil'
 import { UniversalProviderFactory } from './universalProvider'
 import { BaseConnector } from './baseConnector'
 

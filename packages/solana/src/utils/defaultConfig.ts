@@ -1,6 +1,6 @@
 import '@web3modal/polyfills'
 
-import type { Chain, Metadata, Provider, ProviderType } from './scaffold'
+import type { Chain, Metadata, Provider, ProviderType } from './scaffold/SolanaTypesUtil'
 
 declare global {
   interface Window {

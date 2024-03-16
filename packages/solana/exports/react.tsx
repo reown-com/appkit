@@ -4,11 +4,11 @@ import { useSnapshot } from 'valtio'
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
 import { getWeb3Modal } from '@web3modal/scaffold-react'
 
-import { SolStoreUtil } from '../src/utils/scaffold'
 import { Web3Modal } from '../src/client.js'
 
 import type { Web3ModalOptions } from '../src/client.js'
-import type { Provider } from '../src/utils/scaffold'
+import type { Provider } from '../src/utils/scaffold/SolanaTypesUtil'
+import { SolStoreUtil } from '../src/utils/scaffold/SolanaStoreUtil'
 
 // -- Setup -------------------------------------------------------------------
 let modal: Web3Modal | undefined = undefined
