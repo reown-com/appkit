@@ -1,5 +1,17 @@
 # @web3modal/scaffold-utils
 
+## 4.2.0-65f3d27d.0
+
+### Minor Changes
+
+- chore: new solana canary release
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @web3modal/core@4.2.0-65f3d27d.0
+  - @web3modal/polyfills@4.2.0-65f3d27d.0
+
 ## 4.1.1
 
 ### Patch Changes

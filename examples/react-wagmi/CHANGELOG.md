@@ -1,5 +1,16 @@
 # @examples/react-wagmi
 
+## 4.2.0-65f3d27d.0
+
+### Minor Changes
+
+- chore: new solana canary release
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @web3modal/wagmi@4.2.0-65f3d27d.0
+
 ## 4.1.1
 
 ### Patch Changes

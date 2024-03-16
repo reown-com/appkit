@@ -1,5 +1,11 @@
 # @web3modal/common
 
+## 4.2.0-65f3d27d.0
+
+### Minor Changes
+
+- chore: new solana canary release
+
 ## 4.1.1
 
 ### Patch Changes
