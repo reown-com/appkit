@@ -4,7 +4,7 @@ import { Transaction } from '@solana/web3.js'
 import { waitForOpenConnection } from './websocket'
 import { SolStoreUtil } from './scaffold/SolanaStoreUtil'
 
-import type { ClusterSubscribeRequestMethods } from './scaffold/SolanaTypesUtil'
+import type { ClusterSubscribeRequestMethods } from './scaffold/SolanaTypesUtil.js'
 
 type Listeners = Record<
   number,
