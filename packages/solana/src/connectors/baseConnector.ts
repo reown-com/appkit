@@ -11,11 +11,11 @@ import base58 from 'bs58'
 import borsh from 'borsh'
 import { Buffer } from 'buffer'
 
-import { registerListener, unregisterListener } from '../utils/clusterFactory'
+import { registerListener, unregisterListener } from '../utils/clusterFactory.js'
 import { SolConstantsUtil } from '../utils/scaffold/SolanaConstantsUtil.js'
 import { SolStoreUtil } from '../utils/scaffold/SolanaStoreUtil.js'
-import { getHashedName, getNameAccountKey } from '../utils/hash'
-import { NameRegistry } from '../utils/nameService'
+import { getHashedName, getNameAccountKey } from '../utils/hash.js'
+import { NameRegistry } from '../utils/nameService.js'
 
 import type {
   BlockResult,

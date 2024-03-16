@@ -5,9 +5,9 @@ import { OptionsController } from '@web3modal/core'
 
 import UniversalProvider from '@walletconnect/universal-provider'
 
-import type { Chain, CombinedProvider, Provider } from './SolanaTypesUtil'
-import { SolConstantsUtil } from './SolanaConstantsUtil'
-import { SolHelpersUtil } from './SolanaHelpersUtils'
+import type { Chain, CombinedProvider, Provider } from './SolanaTypesUtil.js'
+import { SolConstantsUtil } from './SolanaConstantsUtil.js'
+import { SolHelpersUtil } from './SolanaHelpersUtils.js'
 
 type StateKey = keyof SolStoreUtilState
 

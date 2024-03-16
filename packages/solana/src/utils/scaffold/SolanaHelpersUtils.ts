@@ -1,9 +1,9 @@
 import { PresetsUtil } from '@web3modal/scaffold-utils'
 
-import { SolConstantsUtil } from './SolanaConstantsUtil'
+import { SolConstantsUtil } from './SolanaConstantsUtil.js'
 
 import type { CaipNetwork } from '@web3modal/core'
-import type { Chain, Provider } from './SolanaTypesUtil'
+import type { Chain, Provider } from './SolanaTypesUtil.js'
 
 export const SolHelpersUtil = {
   detectRpcUrl(chain: Chain, projectId: string) {

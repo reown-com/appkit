@@ -12,7 +12,7 @@ import {
   createWalletAdapters,
   type AdapterKey,
   syncInjectedWallets
-} from './connectors/walletAdapters'
+} from './connectors/walletAdapters.js'
 import { SolConstantsUtil } from './utils/scaffold/SolanaConstantsUtil.js'
 import { SolHelpersUtil } from './utils/scaffold/SolanaHelpersUtils.js'
 import { SolStoreUtil } from './utils/scaffold/SolanaStoreUtil.js'

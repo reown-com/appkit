@@ -1,8 +1,8 @@
 import { proxy } from 'valtio/vanilla'
 import { Transaction } from '@solana/web3.js'
 
-import { waitForOpenConnection } from './websocket'
-import { SolStoreUtil } from './scaffold/SolanaStoreUtil'
+import { waitForOpenConnection } from './websocket.js'
+import { SolStoreUtil } from './scaffold/SolanaStoreUtil.js'
 
 import type { ClusterSubscribeRequestMethods } from './scaffold/SolanaTypesUtil.js'
 

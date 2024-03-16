@@ -1,7 +1,7 @@
 import UniversalProvider from '@walletconnect/universal-provider'
 
 import { SolStoreUtil } from '../utils/scaffold/SolanaStoreUtil.js'
-import type { WalletConnectAppMetadata } from './walletConnectConnector'
+import type { WalletConnectAppMetadata } from './walletConnectConnector.js'
 
 const DEFAULT_LOGGER = 'error'
 

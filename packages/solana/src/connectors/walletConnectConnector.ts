@@ -3,11 +3,11 @@ import { PublicKey, Transaction, VersionedTransaction } from '@solana/web3.js'
 import type UniversalProvider from '@walletconnect/universal-provider'
 import { OptionsController } from '@web3modal/core'
 
-import type { Connector } from './baseConnector'
+import type { Connector } from './baseConnector.js'
 import type { Chain } from '../utils/scaffold/SolanaTypesUtil.js'
 import { SolStoreUtil } from '../utils/scaffold/SolanaStoreUtil.js'
-import { UniversalProviderFactory } from './universalProvider'
-import { BaseConnector } from './baseConnector'
+import { UniversalProviderFactory } from './universalProvider.js'
+import { BaseConnector } from './baseConnector.js'
 
 export interface WalletConnectAppMetadata {
   name: string
