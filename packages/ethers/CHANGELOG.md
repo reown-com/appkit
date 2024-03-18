@@ -1,20 +1,20 @@
 # @web3modal/ethers
 
-## 4.2.0-65f3d27d.0
+## 5.0.0-dbbd8c44.0
 
 ### Minor Changes
 
-- chore: new solana canary release
+- refactor: add missing extensions on imports
 
 ### Patch Changes
 
 - Updated dependencies []:
-  - @web3modal/scaffold-utils@4.2.0-65f3d27d.0
-  - @web3modal/scaffold@4.2.0-65f3d27d.0
-  - @web3modal/polyfills@4.2.0-65f3d27d.0
-  - @web3modal/scaffold-react@4.2.0-65f3d27d.0
-  - @web3modal/scaffold-vue@4.2.0-65f3d27d.0
-  - @web3modal/siwe@4.2.0-65f3d27d.0
+  - @web3modal/scaffold-utils@4.2.0-dbbd8c44.0
+  - @web3modal/scaffold@5.0.0-dbbd8c44.0
+  - @web3modal/polyfills@4.2.0-dbbd8c44.0
+  - @web3modal/scaffold-react@4.2.0-dbbd8c44.0
+  - @web3modal/scaffold-vue@4.2.0-dbbd8c44.0
+  - @web3modal/siwe@4.2.0-dbbd8c44.0
 
 ## 4.1.1
 
