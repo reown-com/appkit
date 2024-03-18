@@ -1,16 +1,16 @@
 # @apps/gallery
 
-## 4.2.0-65f3d27d.0
+## 4.2.0-dbbd8c44.0
 
 ### Minor Changes
 
-- chore: new solana canary release
+- refactor: add missing extensions on imports
 
 ### Patch Changes
 
 - Updated dependencies []:
-  - @web3modal/ui@4.2.0-65f3d27d.0
-  - @web3modal/common@4.2.0-65f3d27d.0
+  - @web3modal/ui@4.2.0-dbbd8c44.0
+  - @web3modal/common@4.2.0-dbbd8c44.0
 
 ## 4.1.1
 
