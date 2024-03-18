@@ -342,13 +342,13 @@ export class Web3Modal extends Web3ModalScaffold {
 
     // Check if coinbase injected connector is present
     const coinbaseConnector = filteredConnectors.find(
-      c => c.id === CoreConstants.CONNECTOR_RDNS_MAP[coinbaseSDKId]
+      c => c.id === CoreConstants.CONNECTOR_RDNS_MAP[ConstantsUtil.COINBASE_CONNECTOR_ID]
     )
 
     filteredConnectors.forEach(({ id, name, type, icon }) => {
       // If coinbase injected connector is present, skip coinbase sdk connector.
-      const shouldSkip =
-        (coinbaseConnector && id === coinbaseSDKId) || ConstantsUtil.EMAIL_CONNECTOR_ID === id
+      const isCoinbaseRepeated = coinbaseConnector && id === coinbaseSDKId
+      const shouldSkip = isCoinbaseRepeated || ConstantsUtil.EMAIL_CONNECTOR_ID === id
       if (!shouldSkip) {
         w3mConnectors.push({
           id,
@@ -356,7 +356,10 @@ export class Web3Modal extends Web3ModalScaffold {
           imageUrl: this.options?.connectorImages?.[id] ?? icon,
           name: PresetsUtil.ConnectorNamesMap[id] ?? name,
           imageId: PresetsUtil.ConnectorImageIds[id],
-          type: PresetsUtil.ConnectorTypesMap[type] ?? 'EXTERNAL'
+          type: PresetsUtil.ConnectorTypesMap[type] ?? 'EXTERNAL',
+          info: {
+            rdns: id
+          }
         })
       }
     })
