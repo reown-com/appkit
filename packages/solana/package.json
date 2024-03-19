@@ -18,12 +18,20 @@
       "types": "./dist/types/exports/react.d.ts",
       "import": "./dist/esm/exports/react.js",
       "default": "./dist/esm/exports/react.js"
+    },
+    "./chains": {
+      "types": "./dist/types/exports/chains.d.ts",
+      "import": "./dist/esm/exports/chains.js",
+      "default": "./dist/esm/exports/chains.js"
     }
   },
   "typesVersions": {
     "*": {
       "react": [
         "./dist/types/exports/react.d.ts"
+      ],
+      "chains": [
+        "./dist/types/exports/chains.d.ts"
       ]
     }
   },
