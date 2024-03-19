@@ -164,7 +164,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   private onSendClick() {
-    RouterController.push('WalletSend')
+    RouterController.push('WalletSendTest')
   }
 }
 
