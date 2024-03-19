@@ -43,16 +43,16 @@ const customProjectProperties: CustomProjectProperties = {
     testIgnore: 'email.spec.ts',
     useOptions: braveOptions
   },
-  'Desktop Firefox/ethers': {
+  'Desktop Chrome/wagmi': {
     testIgnore: 'email.spec.ts'
   },
   'Desktop Chrome/ethers': {
     testIgnore: 'email.spec.ts'
   },
-  'Desktop Chrome/wagmi': {
+  'Desktop Firefox/wagmi': {
     testIgnore: 'email.spec.ts'
   },
-  'Desktop Firefox/wagmi': {
+  'Desktop Firefox/ethers': {
     testIgnore: 'email.spec.ts'
   },
   // Exclude email.spec.ts, siwe.spec.ts, and canary.spec.ts from solana, not yet implemented
