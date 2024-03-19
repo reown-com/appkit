@@ -179,7 +179,7 @@ export class W3mConvertSelectTokenView extends LitElement {
           tokenInfo => html`
             <wui-token-button
               text=${tokenInfo.symbol}
-              logoURI=${tokenInfo.logoURI}
+              imageSrc=${tokenInfo.logoURI}
               @click=${() => this.onSelectToken(tokenInfo)}
             >
             </wui-token-button>
