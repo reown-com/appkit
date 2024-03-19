@@ -22,6 +22,12 @@ export default css`
     color: var(--local-color);
   }
 
+  .wui-font-medium-400 {
+    font-size: var(--wui-font-size-medium);
+    font-weight: var(--wui-font-weight-light);
+    letter-spacing: var(--wui-letter-spacing-medium);
+  }
+
   .wui-font-medium-600 {
     font-size: var(--wui-font-size-medium);
     letter-spacing: var(--wui-letter-spacing-medium);

@@ -57,6 +57,9 @@ function headings() {
     ConvertSelectToken: 'Select Token',
     ConvertSelectNetwork: 'Select Network',
     ConvertPreview: 'Preview Convert'
+    WalletSend: 'Send',
+    WalletSendPreview: 'Review send',
+    WalletSendSelectToken: 'Select Token'
   }
 }
 
