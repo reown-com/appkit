@@ -1,5 +1,5 @@
-import type { SocialProvider } from '@web3modal/scaffold'
 import type { W3mFrameProvider } from '@web3modal/wallet'
+import type { SocialProvider } from './TypeUtil.js'
 
 export interface IEthersConfig {
   providers: ProviderType

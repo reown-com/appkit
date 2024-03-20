@@ -33,7 +33,7 @@ export const AppSwitchNetworkRequest = z.object({ chainId: z.number() })
 export const AppConnectEmailRequest = z.object({ email: z.string().email() })
 export const AppConnectOtpRequest = z.object({ otp: z.string() })
 export const AppConnectSocialRequest = z.object({
-  provider: z.enum(['google', 'apple', 'facebook', 'x', 'github', 'discord'])
+  provider: z.enum(['google', 'apple', 'facebook', 'x', 'github', 'discord', 'twitch', 'telegram'])
 })
 export const AppGetUserRequest = z.object({ chainId: z.optional(z.number()) })
 export const AppUpdateEmailRequest = z.object({ email: z.string().email() })

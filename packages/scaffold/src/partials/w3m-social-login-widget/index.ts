@@ -1,4 +1,9 @@
-import { ConnectorController, RouterController, SnackController } from '@web3modal/core'
+import {
+  ConnectorController,
+  RouterController,
+  SnackController,
+  type SocialProvider
+} from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
@@ -64,7 +69,9 @@ export class W3mSocialLoginWidget extends LitElement {
     }
 
     return html` <wui-list-social
-      @click=${this.onSocialClick.bind(this, this.connector.socials[0])}
+      @click=${() => {
+        this.onSocialClick(this.connector?.socials?.[0])
+      }}
       logo=${ifDefined(this.connector.socials[0])}
       align="center"
       name=${`Continue with ${this.connector.socials[0]}`}
@@ -104,11 +111,11 @@ export class W3mSocialLoginWidget extends LitElement {
     RouterController.push('ConnectSocials')
   }
 
-  onSocialClick() {
+  onSocialClick(socialProvider?: SocialProvider) {
     const authConnector = ConnectorController.getAuthConnector()
     try {
-      if (authConnector) {
-        authConnector.provider.connectSocial({ provider: 'google' })
+      if (authConnector && socialProvider) {
+        authConnector.provider.connectSocial({ provider: socialProvider })
       }
     } catch (error) {
       SnackController.showError('Something went wrong')
