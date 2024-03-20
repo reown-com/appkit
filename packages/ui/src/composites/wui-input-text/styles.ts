@@ -98,6 +98,17 @@ export default css`
     left: var(--wui-spacing-l);
   }
 
+  .wui-size-mdl {
+    padding: 17.25px var(--wui-spacing-m) 17.25px var(--wui-spacing-m);
+  }
+  wui-icon + .wui-size-mdl,
+  wui-loading-spinner + .wui-size-mdl {
+    padding: 17.25px var(--wui-spacing-3xl) 17.25px 40px;
+  }
+  wui-icon[data-input='mdl'] {
+    left: var(--wui-spacing-m);
+  }
+
   input:placeholder-shown ~ ::slotted(wui-input-element),
   input:placeholder-shown ~ ::slotted(wui-icon) {
     opacity: 0;
