@@ -68,7 +68,6 @@ export function defaultWagmiConfig({
   // Dissabled by default
   if (auth?.email || auth?.socials) {
     connectors.push(
-      // @ts-expect-error Chain types overlap with core
       authConnector({
         chains: [...chains],
         options: { projectId, enableSmartAccounts },

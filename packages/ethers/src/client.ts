@@ -785,7 +785,7 @@ export class Web3Modal extends Web3ModalScaffold {
             super.open({ view: 'ApproveTransaction' })
           }
         } else {
-          this.emailProvider?.rejectRpcRequest()
+          this.frameProvider?.rejectRpcRequest()
           super.open()
           const method = W3mFrameHelpers.getRequestMethod(request)
           // eslint-disable-next-line no-console
@@ -798,21 +798,21 @@ export class Web3Modal extends Web3ModalScaffold {
       this.frameProvider.onRpcResponse(() => {
         super.close()
       })
-      this.emailProvider.onNotConnected(() => {
+      this.frameProvider.onNotConnected(() => {
         this.setIsConnected(false)
         super.setLoading(false)
       })
-      this.emailProvider.onIsConnected(() => {
+      this.frameProvider.onIsConnected(() => {
         super.setLoading(false)
       })
     }
   }
 
   private watchModal() {
-    if (this.emailProvider) {
+    if (this.frameProvider) {
       this.subscribeState(val => {
         if (!val.open) {
-          this.emailProvider?.rejectRpcRequest()
+          this.frameProvider?.rejectRpcRequest()
         }
       })
     }
