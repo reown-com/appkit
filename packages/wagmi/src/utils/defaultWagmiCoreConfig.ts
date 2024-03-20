@@ -5,7 +5,6 @@ import type { CreateConfigParameters, CreateConnectorFn } from '@wagmi/core'
 import { createConfig } from '@wagmi/core'
 import { coinbaseWallet, walletConnect, injected } from '@wagmi/connectors'
 import { getTransport } from './helpers.js'
-import { coinbaseWallet, walletConnect, injected } from '@wagmi/connectors'
 import type { SocialProvider } from '@web3modal/scaffold-utils'
 import { authConnector } from '../connectors/AuthConnector.js'
 
