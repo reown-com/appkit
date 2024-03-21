@@ -13,6 +13,7 @@ import {
 import { SolanaSignTransactionTest } from './SolanaSignTransactionTest'
 import { SolanaSendTransactionTest } from './SolanaSendTransactionTest'
 import { SolanaSignMessageTest } from './SolanaSignMessageTest'
+import { SolanaWriteContractTest } from './SolanaWriteContractTest'
 import { solana } from '../../utils/ChainsUtil'
 
 export function SolanaTests() {
@@ -50,6 +51,12 @@ export function SolanaTests() {
               Sign and Send Transaction
             </Heading>
             <SolanaSendTransactionTest />
+          </Box>
+          <Box>
+            <Heading size="xs" textTransform="uppercase" pb="2">
+              Counter Program Instruction
+            </Heading>
+            <SolanaWriteContractTest />
           </Box>
         </Stack>
       </CardBody>
