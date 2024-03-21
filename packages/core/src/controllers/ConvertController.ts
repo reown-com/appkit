@@ -66,6 +66,7 @@ export interface ConvertControllerState {
   tokensPriceMap: Record<string, string>
 
   // Calculations
+  gasFee: bigint
   gasPriceInUSD?: number
   priceImpact: number | undefined
   maxSlippage: number | undefined
@@ -130,6 +131,7 @@ const state = proxy<ConvertControllerState>({
   tokensPriceMap: {},
 
   // Calculations
+  gasFee: BigInt(0),
   gasPriceInUSD: 0,
   priceImpact: undefined,
   maxSlippage: undefined
@@ -376,9 +378,13 @@ export const ConvertController = {
     state.myTokensWithBalance = res
   },
 
+  async setGasFee() {
+    const res = await ConvertApiController.getGasPrice()
+    state.gasFee = BigInt(res.instant.maxFeePerGas)
+  },
+
   calculateGasPriceInEther(gas: bigint, gasPrice: bigint) {
     const totalGasCostInWei = gasPrice * gas
-
     const totalGasCostInEther = Number(totalGasCostInWei) / 1e18
 
     return totalGasCostInEther
@@ -396,16 +402,19 @@ export const ConvertController = {
     }
   },
 
-  calculatePriceImpact(_toTokenAmount: string) {
+  calculatePriceImpact(_toTokenAmount: string, _gasPriceInUSD: number = 0) {
     const sourceTokenAmount = parseFloat(state.sourceTokenAmount)
     const toTokenAmount = parseFloat(_toTokenAmount)
     const sourceTokenPrice = state.sourceTokenPriceInUSD
     const toTokenPrice = state.toTokenPriceInUSD
 
-    const effectivePrice = (sourceTokenAmount * sourceTokenPrice) / toTokenAmount
-    const priceImpact = ((effectivePrice - toTokenPrice) / toTokenPrice) * 100
+    const totalSourceCostUSD = sourceTokenAmount * sourceTokenPrice
+    const adjustedTotalSourceCostUSD = totalSourceCostUSD + _gasPriceInUSD
+    const effectivePriceIncludingGas = adjustedTotalSourceCostUSD / toTokenAmount
+    const priceImpactIncludingGas =
+      ((effectivePriceIncludingGas - toTokenPrice) / toTokenPrice) * 100
 
-    return priceImpact
+    return priceImpactIncludingGas
   },
 
   calculateMaxSlippage() {
@@ -553,6 +562,13 @@ export const ConvertController = {
       throw new Error('>>> createConvert: Invalid values to start converting')
     }
 
+    const gasLimit = await ConnectionController.getEstimatedGas({
+      address: fromAddress,
+      to: toTokenAddress,
+      data: '0x'
+    })
+    state.gasPriceInUSD = this.calculateGasPriceInUSD(BigInt(gasLimit), state.gasFee)
+
     const response = await ConvertApiController.getConvertData({
       fromAddress,
       sourceTokenAddress,
@@ -600,7 +616,7 @@ export const ConvertController = {
       const error = err as TransactionError
       state.transactionError = error?.shortMessage
       state.transactionLoading = false
-      SnackController.showError(error?.shortMessage || 'Transaction errror')
+      SnackController.showError(error?.shortMessage || 'Transaction error')
 
       return undefined
     }
@@ -633,7 +649,7 @@ export const ConvertController = {
     state.toTokenPriceInUSD = parseFloat(toTokenPrice)
 
     state.gasPriceInUSD = this.calculateGasPriceInUSD(gas, gasPrice)
-    state.priceImpact = this.calculatePriceImpact(toTokenAmount)
+    state.priceImpact = this.calculatePriceImpact(toTokenAmount, state.gasPriceInUSD)
     state.maxSlippage = this.calculateMaxSlippage()
   }
 }

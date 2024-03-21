@@ -20,6 +20,8 @@ export class W3mConvertView extends LitElement {
   private unsubscribe: ((() => void) | undefined)[] = []
 
   // -- State & Properties -------------------------------- //
+  @state() private gasFeeIntervalId?: NodeJS.Timeout
+
   @state() private detailsOpen = false
 
   @state() private caipNetworkId = NetworkController.state.caipNetwork?.id
@@ -103,6 +105,8 @@ export class W3mConvertView extends LitElement {
         })
       ]
     )
+
+    this.watchGasFee()
   }
 
   public override firstUpdated() {
@@ -113,6 +117,7 @@ export class W3mConvertView extends LitElement {
 
   public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe?.())
+    clearInterval(this.gasFeeIntervalId)
   }
 
   // -- Render -------------------------------------------- //
@@ -125,6 +130,10 @@ export class W3mConvertView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private watchGasFee() {
+    this.gasFeeIntervalId = setInterval(() => ConvertController.setGasFee(), 5000)
+  }
+
   private templateSwap() {
     return html`
       <wui-flex flexDirection="column" gap="s">
@@ -216,8 +225,30 @@ export class W3mConvertView extends LitElement {
       .token=${token}
       .balance=${myToken?.balance}
       .marketValue=${isNaN(value) ? '' : formatNumberToLocalString(value)}
-      amount=${myToken ? formatNumberToLocalString(myToken.balance, 3) : 0}
+      .onSetMaxValue=${this.onSetMaxValue.bind(this)}
     ></wui-convert-input>`
+  }
+
+  private onSetMaxValue(target: Target, balance: string | undefined) {
+    // Calculate the total cost of the gas in source tokens
+    let value = '0'
+
+    if (!balance) {
+      value = '0'
+      this.handleChangeAmount(target, value)
+      return
+    }
+
+    if (!this.gasPriceInUSD) {
+      value = balance
+      this.handleChangeAmount(target, value)
+      return
+    }
+
+    const amountOfTokenGasRequires = this.gasPriceInUSD / this.sourceTokenPriceInUSD
+    const maxValue = parseFloat(balance) - amountOfTokenGasRequires
+
+    this.handleChangeAmount(target, maxValue > 0 ? maxValue.toString() : '0')
   }
 
   private templateDetails() {

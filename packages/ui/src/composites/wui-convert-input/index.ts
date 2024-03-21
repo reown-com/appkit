@@ -6,6 +6,7 @@ import '../../components/wui-text/index.js'
 import '../wui-transaction-visual/index.js'
 import { EventsController, RouterController } from '@web3modal/core'
 import styles from './styles.js'
+import { formatNumberToLocalString } from '../../utils/NumberUtil.js'
 
 type Target = 'sourceToken' | 'toToken'
 
@@ -28,11 +29,11 @@ export class WuiConvertInput extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() public focused = false
 
+  @property() public balance: string | undefined
+
   @property() public value?: string
 
   @property() public marketValue?: string = '$1.0345,00'
-
-  @property() public amount?: string
 
   @property() public disabled?: boolean
 
@@ -41,6 +42,9 @@ export class WuiConvertInput extends LitElement {
   @property() public token?: TokenInfo
 
   @property() public onSetAmount: ((target: Target, value: string) => void) | null = null
+
+  @property() public onSetMaxValue: ((target: Target, balance: string | undefined) => void) | null =
+    null
 
   // -- Render -------------------------------------------- //
   public override render() {
@@ -116,9 +120,7 @@ export class WuiConvertInput extends LitElement {
   }
 
   private setMaxValueToInput() {
-    if (this.amount?.toString()) {
-      this.onSetAmount?.(this.target, this.amount?.toString())
-    }
+    this.onSetMaxValue?.(this.target, this.balance)
   }
 
   private templateTokenSelectButton() {
@@ -151,7 +153,11 @@ export class WuiConvertInput extends LitElement {
           <wui-text variant="paragraph-600" color="fg-100">${this.token.symbol}</wui-text>
         </button>
         <wui-flex alignItems="center" gap="xxs">
-          <wui-text variant="small-400" color="fg-200">${this.amount}</wui-text>
+          ${this.balance
+            ? html`<wui-text variant="small-400" color="fg-200">
+                ${formatNumberToLocalString(this.balance, 3)}
+              </wui-text>`
+            : null}
           ${this.target === 'sourceToken'
             ? html` <button class="max-value-button" @click=${this.setMaxValueToInput.bind(this)}>
                 <wui-text color="accent-100" variant="small-600">Max</wui-text>

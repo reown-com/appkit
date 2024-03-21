@@ -90,6 +90,26 @@ export type GetConvertDataResponse = {
   tx: TransactionData
 }
 
+export type GetGasPricesResponse = {
+  baseFree: string
+  low: {
+    maxPriorityFeePerGas: string
+    maxFeePerGas: string
+  }
+  medium: {
+    maxPriorityFeePerGas: string
+    maxFeePerGas: string
+  }
+  high: {
+    maxPriorityFeePerGas: string
+    maxFeePerGas: string
+  }
+  instant: {
+    maxPriorityFeePerGas: string
+    maxFeePerGas: string
+  }
+}
+
 // -- Controller ---------------------------------------- //
 export const ConvertApiController = {
   get1InchAPI() {
@@ -131,7 +151,7 @@ export const ConvertApiController = {
   async getGasPrice() {
     const { api, paths } = this.get1InchAPI()
 
-    const gasPrices = await api.get<Record<string, string>>({
+    const gasPrices = await api.get<GetGasPricesResponse>({
       path: paths.gasPrice,
       headers: { 'content-type': 'application/json' }
     })

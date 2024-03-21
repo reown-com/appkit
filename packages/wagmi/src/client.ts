@@ -191,27 +191,23 @@ export class Web3Modal extends Web3ModalScaffold {
       sendTransaction: async (data: SendTransactionArgs) => {
         const { chainId } = getAccount(this.wagmiConfig)
 
-        try {
-          const txParams = {
-            account: data.address,
-            to: data.to,
-            value: data.value,
-            gas: data.gas,
-            gasPrice: data.gasPrice,
-            data: data.data,
-            chainId,
-            type: 'legacy' as const
-          }
-
-          await prepareTransactionRequest(this.wagmiConfig, txParams)
-          const tx = await wagmiSendTransaction(this.wagmiConfig, txParams)
-
-          await waitForTransactionReceipt(this.wagmiConfig, { hash: tx, timeout: 25000 })
-
-          return tx
-        } catch (error) {
-          return `0x`
+        const txParams = {
+          account: data.address,
+          to: data.to,
+          value: data.value,
+          gas: data.gas,
+          gasPrice: data.gasPrice,
+          data: data.data,
+          chainId,
+          type: 'legacy' as const
         }
+
+        await prepareTransactionRequest(this.wagmiConfig, txParams)
+        const tx = await wagmiSendTransaction(this.wagmiConfig, txParams)
+
+        await waitForTransactionReceipt(this.wagmiConfig, { hash: tx, timeout: 25000 })
+
+        return tx
       },
 
       parseUnits,

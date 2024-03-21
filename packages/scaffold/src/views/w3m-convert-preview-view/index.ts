@@ -97,7 +97,8 @@ export class W3mConvertPreviewView extends LitElement {
       ?.symbol}`
 
     const sourceTokenValue = parseFloat(this.sourceTokenAmount) * this.sourceTokenPriceInUSD
-    const toTokenValue = parseFloat(this.toTokenAmount) * this.toTokenPriceInUSD
+    const toTokenValue =
+      parseFloat(this.toTokenAmount) * this.toTokenPriceInUSD - (this.gasPriceInUSD || 0)
     const sentPrice = formatNumberToLocalString(sourceTokenValue)
     const receivePrice = formatNumberToLocalString(toTokenValue)
 
