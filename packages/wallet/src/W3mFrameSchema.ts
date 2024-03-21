@@ -84,6 +84,12 @@ export const FrameSetPreferredAccountResponse = z.object({ type: z.string() })
 
 export const FrameGetSocialRedirectUriResponse = z.object({ uri: z.string() })
 
+export const FrameGetSocialUserResponse = z.object({
+  email: z.string(),
+  address: z.string(),
+  chainId: z.number()
+})
+
 export const RpcResponse = z.any()
 
 export const RpcEthAccountsRequest = z.object({
@@ -472,4 +478,10 @@ export const W3mFrameSchema = {
       })
     )
     .or(z.object({ type: zType('FRAME_SET_PREFERRED_ACCOUNT_ERROR'), payload: zError }))
+    .or(
+      z.object({
+        type: zType('FRAME_GET_SOCIAL_USER_SUCCESS'),
+        payload: FrameGetSocialUserResponse
+      })
+    )
 }

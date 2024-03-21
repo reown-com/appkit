@@ -1,5 +1,19 @@
 # @web3modal/common
 
+## 4.1.3-xaf31s.2
+
+### Patch Changes
+
+- Social login patch
+
+- Patch social
+
+## 4.1.3-aw214x.1
+
+### Patch Changes
+
+- Patch social login
+
 ## 4.1.3-xafeai01.0
 
 ### Patch Changes

@@ -1,5 +1,25 @@
 # @examples/react-wagmi
 
+## 4.1.3-xaf31s.2
+
+### Patch Changes
+
+- Social login patch
+
+- Patch social
+
+- Updated dependencies []:
+  - @web3modal/wagmi@4.1.3-xaf31s.2
+
+## 4.1.3-aw214x.1
+
+### Patch Changes
+
+- Patch social login
+
+- Updated dependencies []:
+  - @web3modal/wagmi@4.1.3-aw214x.1
+
 ## 4.1.3-xafeai01.0
 
 ### Patch Changes

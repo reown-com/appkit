@@ -1,5 +1,27 @@
 # @web3modal/core
 
+## 4.1.3-xaf31s.2
+
+### Patch Changes
+
+- Social login patch
+
+- Patch social
+
+- Updated dependencies []:
+  - @web3modal/common@4.1.3-xaf31s.2
+  - @web3modal/wallet@4.1.3-xaf31s.2
+
+## 4.1.3-aw214x.1
+
+### Patch Changes
+
+- Patch social login
+
+- Updated dependencies []:
+  - @web3modal/common@4.1.3-aw214x.1
+  - @web3modal/wallet@4.1.3-aw214x.1
+
 ## 4.1.3-xafeai01.0
 
 ### Patch Changes

@@ -34,6 +34,7 @@ export class W3mFrame {
       if (W3mFrameHelpers.isClient) {
         const iframe = document.createElement('iframe')
         iframe.id = 'w3m-iframe'
+        iframe.name = 'w3mFrame'
         iframe.src = `${W3mFrameConstants.SECURE_SITE_SDK}?projectId=${projectId}`
         iframe.style.position = 'fixed'
         iframe.style.zIndex = '999999'

@@ -152,6 +152,8 @@ export class W3mFrameProvider {
           return this.onPreferSmartAccountSuccess(event)
         case W3mFrameConstants.FRAME_SET_PREFERRED_ACCOUNT_ERROR:
           return this.onPreferSmartAccountError()
+        case W3mFrameConstants.FRAME_GET_SOCIAL_USER_SUCCESS:
+          return this.onGetSocialUserSuccess(event)
 
         default:
           return null
@@ -475,6 +477,12 @@ export class W3mFrameProvider {
     event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/GET_SOCIAL_REDIRECT_URI_ERROR' }>
   ) {
     this.getSocialRedirectUriResolver?.reject(event.payload.message)
+  }
+
+  private onGetSocialUserSuccess(
+    event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/GET_SOCIAL_USER_SUCCESS' }>
+  ) {
+    console.log(`W3M`, event.payload)
   }
 
   private onConnectSuccess(
