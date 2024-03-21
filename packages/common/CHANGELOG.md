@@ -1,5 +1,31 @@
 # @web3modal/common
 
+## 4.1.3-xafeai01.0
+
+### Patch Changes
+
+- Patch social
+
+## 4.1.2
+
+### Patch Changes
+
+- Patch social login
+
+- Canary release social login
+
+## 4.1.2-142149x.1
+
+### Patch Changes
+
+- Patch social login
+
+## 4.1.2-05d9e29.0
+
+### Patch Changes
+
+- Canary release social login
+
 ## 4.1.1
 
 ### Patch Changes

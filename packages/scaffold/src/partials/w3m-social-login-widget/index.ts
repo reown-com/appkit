@@ -1,5 +1,6 @@
 import {
   ConnectorController,
+  CoreHelperUtil,
   RouterController,
   SnackController,
   type SocialProvider
@@ -111,11 +112,15 @@ export class W3mSocialLoginWidget extends LitElement {
     RouterController.push('ConnectSocials')
   }
 
-  onSocialClick(socialProvider?: SocialProvider) {
+  async onSocialClick(socialProvider?: SocialProvider) {
     const authConnector = ConnectorController.getAuthConnector()
     try {
       if (authConnector && socialProvider) {
-        authConnector.provider.connectSocial({ provider: socialProvider })
+        const { uri } = await authConnector.provider.getSocialRedirectUri({
+          provider: socialProvider
+        })
+        console.log(uri, `uriii`)
+        CoreHelperUtil.openHref(uri, 'popupWindow', 'width=600,height=800,scrollbars=yes')
       }
     } catch (error) {
       SnackController.showError('Something went wrong')

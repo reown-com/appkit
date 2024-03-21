@@ -57,7 +57,8 @@ import {
   AppSyncDappDataRequest,
   FrameGetSmartAccountEnabledNetworksResponse,
   FrameInitSmartAccountResponse,
-  AppConnectSocialRequest
+  AppGetSocialRedirectUriRequest,
+  FrameGetSocialRedirectUriResponse
 } from './W3mFrameSchema.js'
 
 export namespace W3mFrameTypes {
@@ -68,7 +69,7 @@ export namespace W3mFrameTypes {
   export interface Requests {
     AppConnectEmailRequest: z.infer<typeof AppConnectEmailRequest>
     AppConnectOtpRequest: z.infer<typeof AppConnectOtpRequest>
-    AppConnectSocialRequest: z.infer<typeof AppConnectSocialRequest>
+    AppGetSocialRedirectUriRequest: z.infer<typeof AppGetSocialRedirectUriRequest>
     AppSwitchNetworkRequest: z.infer<typeof AppSwitchNetworkRequest>
     AppGetUserRequest: z.infer<typeof AppGetUserRequest>
     AppUpdateEmailRequest: z.infer<typeof AppUpdateEmailRequest>
@@ -89,6 +90,7 @@ export namespace W3mFrameTypes {
       typeof FrameGetSmartAccountEnabledNetworksResponse
     >
     FrameInitSmartAccountResponse: z.infer<typeof FrameInitSmartAccountResponse>
+    FrameGetSocialRedirectUriResponse: z.infer<typeof FrameGetSocialRedirectUriResponse>
   }
 
   export interface Network {

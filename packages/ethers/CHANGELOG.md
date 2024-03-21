@@ -1,5 +1,63 @@
 # @web3modal/ethers
 
+## 4.1.3-xafeai01.0
+
+### Patch Changes
+
+- Patch social
+
+- Updated dependencies []:
+  - @web3modal/scaffold-react@4.1.3-xafeai01.0
+  - @web3modal/scaffold-utils@4.1.3-xafeai01.0
+  - @web3modal/scaffold-vue@4.1.3-xafeai01.0
+  - @web3modal/polyfills@4.1.3-xafeai01.0
+  - @web3modal/scaffold@4.1.3-xafeai01.0
+  - @web3modal/siwe@4.1.3-xafeai01.0
+
+## 4.1.2
+
+### Patch Changes
+
+- Patch social login
+
+- Canary release social login
+
+- Updated dependencies []:
+  - @web3modal/scaffold-react@4.1.2
+  - @web3modal/scaffold-utils@4.1.2
+  - @web3modal/scaffold-vue@4.1.2
+  - @web3modal/polyfills@4.1.2
+  - @web3modal/scaffold@4.1.2
+  - @web3modal/siwe@4.1.2
+
+## 4.1.2-142149x.1
+
+### Patch Changes
+
+- Patch social login
+
+- Updated dependencies []:
+  - @web3modal/scaffold-react@4.1.2-142149x.1
+  - @web3modal/scaffold-utils@4.1.2-142149x.1
+  - @web3modal/scaffold-vue@4.1.2-142149x.1
+  - @web3modal/polyfills@4.1.2-142149x.1
+  - @web3modal/scaffold@4.1.2-142149x.1
+  - @web3modal/siwe@4.1.2-142149x.1
+
+## 4.1.2-05d9e29.0
+
+### Patch Changes
+
+- Canary release social login
+
+- Updated dependencies []:
+  - @web3modal/scaffold-utils@4.1.2-05d9e29.0
+  - @web3modal/scaffold@4.1.2-05d9e29.0
+  - @web3modal/polyfills@4.1.2-05d9e29.0
+  - @web3modal/scaffold-react@4.1.2-05d9e29.0
+  - @web3modal/scaffold-vue@4.1.2-05d9e29.0
+  - @web3modal/siwe@4.1.2-05d9e29.0
+
 ## 4.1.1
 
 ### Patch Changes

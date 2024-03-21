@@ -10,9 +10,11 @@ type ConnectEmailResolver = Resolver<W3mFrameTypes.Responses['FrameConnectEmailR
 type ConnectDeviceResolver = Resolver<undefined>
 type ConnectOtpResolver = Resolver<undefined>
 type ConnectResolver = Resolver<W3mFrameTypes.Responses['FrameGetUserResponse']>
-type ConnectSocialResolver = Resolver<undefined>
 type DisconnectResolver = Resolver<undefined>
 type IsConnectedResolver = Resolver<W3mFrameTypes.Responses['FrameIsConnectedResponse']>
+type GetSocialRedirectUriResolver = Resolver<
+  W3mFrameTypes.Responses['FrameGetSocialRedirectUriResponse']
+>
 type GetChainIdResolver = Resolver<W3mFrameTypes.Responses['FrameGetChainIdResponse']>
 type SwitchChainResolver = Resolver<W3mFrameTypes.Responses['FrameSwitchNetworkResponse']>
 type RpcRequestResolver = Resolver<W3mFrameTypes.RPCResponse>
@@ -39,7 +41,7 @@ export class W3mFrameProvider {
 
   private connectOtpResolver: ConnectOtpResolver | undefined = undefined
 
-  private connectSocialResolver: ConnectSocialResolver | undefined = undefined
+  private getSocialRedirectUriResolver: GetSocialRedirectUriResolver | undefined = undefined
 
   private connectResolver: ConnectResolver = undefined
 
@@ -88,10 +90,10 @@ export class W3mFrameProvider {
           return this.onConnectOtpSuccess()
         case W3mFrameConstants.FRAME_CONNECT_OTP_ERROR:
           return this.onConnectOtpError(event)
-        case W3mFrameConstants.FRAME_CONNECT_SOCIAL_SUCCESS:
-          return this.onConnectSocialSuccess()
-        case W3mFrameConstants.FRAME_CONNECT_SOCIAL_ERROR:
-          return this.onConnectSocialError(event)
+        case W3mFrameConstants.FRAME_GET_SOCIAL_REDIRECT_URI_SUCCESS:
+          return this.onGetSocialRedirectUriSuccess(event)
+        case W3mFrameConstants.FRAME_GET_SOCIAL_REDIRECT_URI_ERROR:
+          return this.onGetSocialRedirectUriError(event)
         case W3mFrameConstants.FRAME_GET_USER_SUCCESS:
           return this.onConnectSuccess(event)
         case W3mFrameConstants.FRAME_GET_USER_ERROR:
@@ -198,13 +200,20 @@ export class W3mFrameProvider {
     })
   }
 
-  public async connectSocial(payload: W3mFrameTypes.Requests['AppConnectSocialRequest']) {
+  public async getSocialRedirectUri(
+    payload: W3mFrameTypes.Requests['AppGetSocialRedirectUriRequest']
+  ) {
     await this.w3mFrame.frameLoadPromise
-    this.w3mFrame.events.postAppEvent({ type: W3mFrameConstants.APP_CONNECT_SOCIAL, payload })
-
-    return new Promise((resolve, reject) => {
-      this.connectSocialResolver = { resolve, reject }
+    this.w3mFrame.events.postAppEvent({
+      type: W3mFrameConstants.APP_GET_SOCIAL_REDIRECT_URI,
+      payload
     })
+
+    return new Promise<W3mFrameTypes.Responses['FrameGetSocialRedirectUriResponse']>(
+      (resolve, reject) => {
+        this.getSocialRedirectUriResolver = { resolve, reject }
+      }
+    )
   }
 
   public async isConnected() {
@@ -456,14 +465,16 @@ export class W3mFrameProvider {
     this.connectOtpResolver?.reject(event.payload.message)
   }
 
-  private onConnectSocialSuccess() {
-    this.connectSocialResolver?.resolve(undefined)
+  private onGetSocialRedirectUriSuccess(
+    event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/GET_SOCIAL_REDIRECT_URI_SUCCESS' }>
+  ) {
+    this.getSocialRedirectUriResolver?.resolve(event.payload)
   }
 
-  private onConnectSocialError(
-    event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/CONNECT_SOCIAL_ERROR' }>
+  private onGetSocialRedirectUriError(
+    event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/GET_SOCIAL_REDIRECT_URI_ERROR' }>
   ) {
-    this.connectSocialResolver?.reject(event.payload.message)
+    this.getSocialRedirectUriResolver?.reject(event.payload.message)
   }
 
   private onConnectSuccess(
