@@ -60,6 +60,7 @@ export interface ConvertControllerState {
 
   // Tokens
   tokens?: Record<string, TokenInfo>
+  suggestedTokens?: Record<string, TokenInfo>
   popularTokens?: Record<string, TokenInfo>
   foundTokens?: TokenInfo[]
   myTokensWithBalance?: Record<string, TokenInfoWithBalance>
@@ -125,6 +126,7 @@ const state = proxy<ConvertControllerState>({
   // Tokens
   tokens: undefined,
   popularTokens: undefined,
+  suggestedTokens: undefined,
   foundTokens: undefined,
   myTokensWithBalance: undefined,
   tokensPriceMap: {},
@@ -293,6 +295,15 @@ export const ConvertController = {
         }
         return limitedTokens
       }, {})
+    state.suggestedTokens = Object.entries(res.tokens).reduce<Record<string, TokenInfo>>(
+      (limitedTokens, [tokenAddress, tokenInfo]) => {
+        if (ConstantsUtil.POPULAR_TOKENS.includes(tokenInfo.symbol)) {
+          limitedTokens[tokenAddress] = tokenInfo
+        }
+        return limitedTokens
+      },
+      {}
+    )
 
     return state.tokens
   },

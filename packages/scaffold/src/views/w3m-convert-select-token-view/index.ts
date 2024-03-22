@@ -123,6 +123,7 @@ export class W3mConvertSelectTokenView extends LitElement {
                   return html`
                     <wui-token-list-item
                       name=${tokenInfo.name}
+                      ?disabled=${selected}
                       symbol=${tokenInfo.symbol}
                       price=${tokenInfo?.price}
                       amount=${tokenInfo?.balance}
@@ -162,8 +163,8 @@ export class W3mConvertSelectTokenView extends LitElement {
   }
 
   private templateSuggestedTokens() {
-    const tokens = ConvertController.state.popularTokens
-      ? Object.values(ConvertController.state.popularTokens).slice(0, 8)
+    const tokens = ConvertController.state.suggestedTokens
+      ? Object.values(ConvertController.state.suggestedTokens).slice(0, 8)
       : null
 
     if (!tokens) {
