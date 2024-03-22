@@ -293,6 +293,7 @@ export const ConvertController = {
         if (ConstantsUtil.POPULAR_TOKENS.includes(tokenInfo.symbol)) {
           limitedTokens[tokenAddress] = tokenInfo
         }
+
         return limitedTokens
       }, {})
     state.suggestedTokens = Object.entries(res.tokens).reduce<Record<string, TokenInfo>>(
@@ -300,6 +301,7 @@ export const ConvertController = {
         if (ConstantsUtil.POPULAR_TOKENS.includes(tokenInfo.symbol)) {
           limitedTokens[tokenAddress] = tokenInfo
         }
+
         return limitedTokens
       },
       {}
@@ -376,7 +378,7 @@ export const ConvertController = {
   async refreshConvertValues() {
     const { fromAddress, toTokenDecimals, toTokenAddress } = this.getParams()
 
-    if (fromAddress && toTokenAddress && toTokenDecimals) {
+    if (fromAddress && toTokenAddress && toTokenDecimals && !state.loading) {
       const transaction = await this.getTransaction()
       this.setTransactionDetails(transaction)
     }
@@ -484,6 +486,7 @@ export const ConvertController = {
       transaction = await this.createTokenAllowance()
       state.approvalTransaction = transaction
     }
+
     return transaction
   },
 
@@ -524,7 +527,7 @@ export const ConvertController = {
       gas: gasLimit,
       gasPrice: BigInt(transaction.gasPrice),
       value: BigInt(transaction.value),
-      toAmount: toAmount
+      toAmount
     }
   },
 

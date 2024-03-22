@@ -230,18 +230,19 @@ export class W3mConvertView extends LitElement {
   }
 
   private onSetMaxValue(target: Target, balance: string | undefined) {
-    // Calculate the total cost of the gas in source tokens
     let value = '0'
 
     if (!balance) {
       value = '0'
       this.handleChangeAmount(target, value)
+
       return
     }
 
     if (!this.gasPriceInUSD) {
       value = balance
       this.handleChangeAmount(target, value)
+
       return
     }
 

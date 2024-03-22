@@ -36,7 +36,7 @@ export class WuiConvertInput extends LitElement {
 
   @property() public value?: string
 
-  @property() public price: number = 0
+  @property() public price = 0
 
   @property() public marketValue?: string = '$1.0345,00'
 
@@ -162,24 +162,37 @@ export class WuiConvertInput extends LitElement {
           ${tokenElement}
           <wui-text variant="paragraph-600" color="fg-100">${this.token.symbol}</wui-text>
         </button>
-        <wui-flex alignItems="center" gap="xxs">
-          ${haveBalance
-            ? html`<wui-text variant="small-400" color="fg-200">
-                ${formatNumberToLocalString(this.balance, 3)}
-              </wui-text>`
-            : null}
-          ${this.target === 'sourceToken'
-            ? haveBalance
-              ? html` <button class="max-value-button" @click=${this.setMaxValueToInput.bind(this)}>
-                  <wui-text color="accent-100" variant="small-600">Max</wui-text>
-                </button>`
-              : html` <button class="max-value-button" @click=${this.onBuyToken.bind(this)}>
-                  <wui-text color="accent-100" variant="small-600">Buy</wui-text>
-                </button>`
-            : null}
-        </wui-flex>
+        <wui-flex alignItems="center" gap="xxs"> ${this.tokenBalanceTemplate()} </wui-flex>
       </wui-flex>
     `
+  }
+
+  private tokenBalanceTemplate() {
+    const balanceValueInUSD = NumberUtil.multiply(this.balance, this.price)
+    const haveBalance = balanceValueInUSD
+      ? balanceValueInUSD?.isGreaterThan(MINIMUM_USD_VALUE_TO_CONVERT)
+      : false
+
+    return html`
+      ${haveBalance
+        ? html`<wui-text variant="small-400" color="fg-200">
+            ${formatNumberToLocalString(this.balance, 3)}
+          </wui-text>`
+        : null}
+      ${this.target === 'sourceToken' ? this.tokenActionButtonTemplate(haveBalance) : null}
+    `
+  }
+
+  private tokenActionButtonTemplate(_haveBalance: boolean) {
+    if (_haveBalance) {
+      return html` <button class="max-value-button" @click=${this.setMaxValueToInput.bind(this)}>
+        <wui-text color="accent-100" variant="small-600">Max</wui-text>
+      </button>`
+    }
+
+    return html` <button class="max-value-button" @click=${this.onBuyToken.bind(this)}>
+      <wui-text color="accent-100" variant="small-600">Buy</wui-text>
+    </button>`
   }
 
   private onFocusChange(state: boolean) {

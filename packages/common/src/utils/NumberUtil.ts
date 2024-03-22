@@ -37,6 +37,7 @@ export const NumberUtil = {
    */
   multiply(a: BigNumber.Value | undefined, b: BigNumber.Value | undefined) {
     if (a === undefined || b === undefined) {
+      // eslint-disable-next-line new-cap
       return BigNumber(0)
     }
 

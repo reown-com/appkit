@@ -56,7 +56,7 @@ function headings() {
     Convert: 'Convert',
     ConvertSelectToken: 'Select Token',
     ConvertSelectNetwork: 'Select Network',
-    ConvertPreview: 'Preview Convert'
+    ConvertPreview: 'Preview Convert',
     WalletSend: 'Send',
     WalletSendPreview: 'Review send',
     WalletSendSelectToken: 'Select Token'
