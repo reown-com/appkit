@@ -40,7 +40,6 @@ export interface ConvertControllerState {
 
   // Approval & Convert transaction states
   approvalTransaction: TransactionParams | undefined
-  convertLoading: boolean
   convertTransaction: TransactionParams | undefined
   transactionLoading?: boolean
   transactionError?: string
@@ -105,7 +104,6 @@ const state = proxy<ConvertControllerState>({
 
   // Approval & Convert transaction states
   approvalTransaction: undefined,
-  convertLoading: false,
   convertTransaction: undefined,
   transactionError: undefined,
   transactionLoading: false,
@@ -392,20 +390,26 @@ export const ConvertController = {
     }
   },
 
-  calculatePriceImpact(_toTokenAmount: string, _gasPriceInUSD: number = 0) {
-    const toTokenAmount = NumberUtil.bigNumber(_toTokenAmount)
-    const sourceTokenPrice = state.sourceTokenPriceInUSD
-    const toTokenPrice = state.toTokenPriceInUSD
+  calculatePriceImpact(_toTokenAmount: string, _gasPriceInUSD = 0) {
+    const { toTokenDecimals } = this.getParams()
+    const decimals = toTokenDecimals || 18
 
-    const totalSourceCostUSD = NumberUtil.multiply(state.sourceTokenAmount, sourceTokenPrice)
+    const toTokenAmount = NumberUtil.bigNumber(_toTokenAmount).dividedBy(10 ** decimals)
+
+    const totalSourceCostUSD = NumberUtil.bigNumber(state.sourceTokenAmount).multipliedBy(
+      state.sourceTokenPriceInUSD
+    )
     const adjustedTotalSourceCostUSD = totalSourceCostUSD.plus(_gasPriceInUSD)
-    const effectivePriceIncludingGas = adjustedTotalSourceCostUSD.dividedBy(toTokenAmount)
-    const priceImpactIncludingGas = effectivePriceIncludingGas
-      .minus(toTokenPrice)
-      .dividedBy(toTokenPrice)
+    const effectivePricePerTargetToken = adjustedTotalSourceCostUSD.dividedBy(
+      toTokenAmount.toString()
+    )
+
+    const priceImpact = effectivePricePerTargetToken
+      .minus(state.toTokenPriceInUSD)
+      .dividedBy(state.toTokenPriceInUSD)
       .multipliedBy(100)
 
-    return priceImpactIncludingGas.toNumber()
+    return priceImpact.toNumber()
   },
 
   calculateMaxSlippage() {
@@ -422,7 +426,6 @@ export const ConvertController = {
       return
     }
 
-    state.convertLoading = true
     await this.makeChecks()
   },
 

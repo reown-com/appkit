@@ -73,7 +73,7 @@ export class WuiConvertDetails extends LitElement {
                           <wui-text variant="small-400" color="fg-150">Price impact</wui-text>
                           <wui-flex>
                             <wui-text variant="small-400" color="fg-200">
-                              ${formatNumberToLocalString(this.priceImpact, 4)}%
+                              ${formatNumberToLocalString(this.priceImpact, 3)}%
                             </wui-text>
                           </wui-flex>
                         </wui-flex>
