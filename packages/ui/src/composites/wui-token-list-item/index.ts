@@ -29,7 +29,7 @@ export class WuiTokenListItem extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const value = NumberUtil.multiply(this.price, this.amount, 3)?.toFixed(3)
+    const value = NumberUtil.multiply(this.price, this.amount)?.toFixed(3)
 
     return html`
       <wui-flex alignItems="center">

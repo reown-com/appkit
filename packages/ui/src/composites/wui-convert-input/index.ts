@@ -135,11 +135,6 @@ export class WuiConvertInput extends LitElement {
       </wui-button>`
     }
 
-    const balanceValueInUSD = NumberUtil.multiply(this.balance, this.price)
-    const haveBalance = balanceValueInUSD
-      ? balanceValueInUSD?.isGreaterThan(MINIMUM_USD_VALUE_TO_CONVERT)
-      : false
-
     const tokenElement = this.token.logoURI
       ? html`<wui-image src=${this.token.logoURI}></wui-image>`
       : html`
