@@ -10,6 +10,7 @@ import { customElement } from '../../utils/WebComponentsUtil.js'
 import '../wui-icon-box/index.js'
 import styles from './styles.js'
 import { formatNumberToLocalString } from '../../utils/NumberUtil.js'
+import { NumberUtil } from '@web3modal/common'
 
 @customElement('wui-token-list-item')
 export class WuiTokenListItem extends LitElement {
@@ -28,17 +29,21 @@ export class WuiTokenListItem extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    const value = NumberUtil.multiply(this.price, this.amount, 3)?.toFixed(3)
+
     return html`
       <wui-flex alignItems="center">
         ${this.visualTemplate()}
         <wui-flex flexDirection="column" gap="3xs">
           <wui-flex justifyContent="space-between">
             <wui-text variant="paragraph-500" color="fg-100">${this.name}</wui-text>
-            ${this.price &&
-            this.amount &&
-            html`<wui-text variant="paragraph-500" color="fg-100"
-              >$${(parseFloat(this.price) * parseFloat(this.amount)).toFixed(2)}</wui-text
-            >`}
+            ${value
+              ? html`
+                  <wui-text variant="paragraph-500" color="fg-100">
+                    $${formatNumberToLocalString(value, 3)}
+                  </wui-text>
+                `
+              : null}
           </wui-flex>
           <wui-flex justifyContent="space-between">
             <wui-text variant="small-400" color="fg-200">${this.symbol}</wui-text>

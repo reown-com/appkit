@@ -7,6 +7,9 @@ import '../wui-transaction-visual/index.js'
 import { EventsController, RouterController } from '@web3modal/core'
 import styles from './styles.js'
 import { formatNumberToLocalString } from '../../utils/NumberUtil.js'
+import { NumberUtil } from '@web3modal/common'
+
+const MINIMUM_USD_VALUE_TO_CONVERT = 0.00005
 
 type Target = 'sourceToken' | 'toToken'
 
@@ -32,6 +35,8 @@ export class WuiConvertInput extends LitElement {
   @property() public balance: string | undefined
 
   @property() public value?: string
+
+  @property() public price: number = 0
 
   @property() public marketValue?: string = '$1.0345,00'
 
@@ -130,6 +135,11 @@ export class WuiConvertInput extends LitElement {
       </wui-button>`
     }
 
+    const balanceValueInUSD = NumberUtil.multiply(this.balance, this.price)
+    const haveBalance = balanceValueInUSD
+      ? balanceValueInUSD?.isGreaterThan(MINIMUM_USD_VALUE_TO_CONVERT)
+      : false
+
     const tokenElement = this.token.logoURI
       ? html`<wui-image src=${this.token.logoURI}></wui-image>`
       : html`
@@ -153,15 +163,19 @@ export class WuiConvertInput extends LitElement {
           <wui-text variant="paragraph-600" color="fg-100">${this.token.symbol}</wui-text>
         </button>
         <wui-flex alignItems="center" gap="xxs">
-          ${this.balance
+          ${haveBalance
             ? html`<wui-text variant="small-400" color="fg-200">
                 ${formatNumberToLocalString(this.balance, 3)}
               </wui-text>`
             : null}
           ${this.target === 'sourceToken'
-            ? html` <button class="max-value-button" @click=${this.setMaxValueToInput.bind(this)}>
-                <wui-text color="accent-100" variant="small-600">Max</wui-text>
-              </button>`
+            ? haveBalance
+              ? html` <button class="max-value-button" @click=${this.setMaxValueToInput.bind(this)}>
+                  <wui-text color="accent-100" variant="small-600">Max</wui-text>
+                </button>`
+              : html` <button class="max-value-button" @click=${this.onBuyToken.bind(this)}>
+                  <wui-text color="accent-100" variant="small-600">Buy</wui-text>
+                </button>`
             : null}
         </wui-flex>
       </wui-flex>
@@ -177,6 +191,10 @@ export class WuiConvertInput extends LitElement {
     RouterController.push('ConvertSelectToken', {
       target: this.target
     })
+  }
+
+  private onBuyToken() {
+    RouterController.push('OnRampProviders')
   }
 }
 

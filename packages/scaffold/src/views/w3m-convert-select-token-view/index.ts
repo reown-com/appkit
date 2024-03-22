@@ -115,7 +115,6 @@ export class W3mConvertSelectTokenView extends LitElement {
                 <wui-flex justifyContent="flex-start" padding="s">
                   <wui-text variant="paragraph-500" color="fg-200">Your tokens</wui-text>
                 </wui-flex>
-                <wui-flex flexDirection="column" gap="xs"> </wui-flex>
                 ${filteredYourTokens.map(tokenInfo => {
                   const selected =
                     tokenInfo.symbol === this.sourceToken?.symbol ||
@@ -144,21 +143,19 @@ export class W3mConvertSelectTokenView extends LitElement {
             <wui-text variant="paragraph-500" color="fg-200">Popular tokens</wui-text>
           </wui-flex>
 
-          <wui-flex flexDirection="column" gap="1xs">
-            ${filteredTokens?.length > 0
-              ? filteredTokens.map(
-                  tokenInfo => html`
-                    <wui-token-list-item
-                      name=${tokenInfo.name}
-                      symbol=${tokenInfo.symbol}
-                      imageSrc=${tokenInfo.logoURI}
-                      @click=${() => this.onSelectToken(tokenInfo)}
-                    >
-                    </wui-token-list-item>
-                  `
-                )
-              : null}
-          </wui-flex>
+          ${filteredTokens?.length > 0
+            ? filteredTokens.map(
+                tokenInfo => html`
+                  <wui-token-list-item
+                    name=${tokenInfo.name}
+                    symbol=${tokenInfo.symbol}
+                    imageSrc=${tokenInfo.logoURI}
+                    @click=${() => this.onSelectToken(tokenInfo)}
+                  >
+                  </wui-token-list-item>
+                `
+              )
+            : null}
         </wui-flex>
       </wui-flex>
     `

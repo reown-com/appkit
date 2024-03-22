@@ -10,6 +10,7 @@ import {
   ModalController
 } from '@web3modal/core'
 import type { TokenInfo } from '@web3modal/core/src/controllers/ConvertController.js'
+import { NumberUtil } from '@web3modal/common'
 
 type Target = 'sourceToken' | 'toToken'
 
@@ -61,11 +62,9 @@ export class W3mConvertView extends LitElement {
     NetworkController.subscribeKey('caipNetwork', newCaipNetwork => {
       if (this.caipNetworkId !== newCaipNetwork?.id) {
         this.caipNetworkId = newCaipNetwork?.id
-        ConvertController.setSourceToken(undefined)
-        ConvertController.setToToken(undefined)
-        ConvertController.clearMyTokens()
-        ConvertController.clearTokens()
-        ConvertController.getTokenList()
+        ConvertController.resetTokens()
+        ConvertController.resetValues()
+        ConvertController.initializeState()
       }
     })
 
@@ -73,12 +72,12 @@ export class W3mConvertView extends LitElement {
       ...[
         ModalController.subscribeKey('open', isOpen => {
           if (!isOpen) {
-            ConvertController.resetState()
+            ConvertController.resetValues()
           }
         }),
         RouterController.subscribeKey('view', newRoute => {
           if (!newRoute.includes('Convert')) {
-            ConvertController.resetState()
+            ConvertController.resetValues()
           }
         }),
         ConvertController.subscribeKey('sourceToken', newSourceToken => {
@@ -106,7 +105,7 @@ export class W3mConvertView extends LitElement {
       ]
     )
 
-    this.watchGasFee()
+    this.watchConvertValues()
   }
 
   public override firstUpdated() {
@@ -130,8 +129,8 @@ export class W3mConvertView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
-  private watchGasFee() {
-    this.gasFeeIntervalId = setInterval(() => ConvertController.setGasFee(), 5000)
+  private watchConvertValues() {
+    this.gasFeeIntervalId = setInterval(() => ConvertController.refreshConvertValues(), 5000)
   }
 
   private templateSwap() {
@@ -224,6 +223,7 @@ export class W3mConvertView extends LitElement {
       target=${target}
       .token=${token}
       .balance=${myToken?.balance}
+      .price=${this.sourceTokenPriceInUSD}
       .marketValue=${isNaN(value) ? '' : formatNumberToLocalString(value)}
       .onSetMaxValue=${this.onSetMaxValue.bind(this)}
     ></wui-convert-input>`
@@ -246,9 +246,9 @@ export class W3mConvertView extends LitElement {
     }
 
     const amountOfTokenGasRequires = this.gasPriceInUSD / this.sourceTokenPriceInUSD
-    const maxValue = parseFloat(balance) - amountOfTokenGasRequires
+    const maxValue = NumberUtil.bigNumber(balance).minus(amountOfTokenGasRequires)
 
-    this.handleChangeAmount(target, maxValue > 0 ? maxValue.toString() : '0')
+    this.handleChangeAmount(target, maxValue.isGreaterThan(0) ? maxValue.toFixed(20) : '0')
   }
 
   private templateDetails() {
@@ -281,12 +281,12 @@ export class W3mConvertView extends LitElement {
   }
 
   private handleChangeAmount(target: Target, value: string) {
+    ConvertController.clearError()
     if (target === 'sourceToken') {
       ConvertController.setSourceTokenAmount(value)
     } else {
       ConvertController.setToTokenAmount(value)
     }
-    ConvertController.clearError()
     this.onDebouncedGetSwapCalldata()
   }
 
