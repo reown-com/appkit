@@ -37,6 +37,8 @@ import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider'
 import type { Eip1193Provider } from 'ethers'
 import { W3mFrameProvider, W3mFrameHelpers, W3mFrameRpcConstants } from '@web3modal/wallet'
 import type { CombinedProvider } from '@web3modal/scaffold-utils/ethers'
+import { createPimlicoPaymasterClient } from 'permissionless/clients/pimlico'
+import { http } from 'viem'
 
 // -- Types ---------------------------------------------------------------------
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
@@ -48,6 +50,9 @@ export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultCha
   connectorImages?: Record<string, string>
   tokens?: Record<number, Token>
   enableSmartAccounts?: boolean
+  smartAccount?: {
+    bundlerUrl: string
+  }
 }
 
 export type Web3ModalOptions = Omit<Web3ModalClientOptions, '_sdkVersion'>
@@ -435,6 +440,22 @@ export class Web3Modal extends Web3ModalScaffold {
         description: this.metadata ? this.metadata.description : '',
         url: this.metadata ? this.metadata.url : '',
         icons: this.metadata ? this.metadata.icons : ['']
+      },
+      optionalMethods: ['eth_signUserOperation'],
+      smartAccountConfig: {
+        bundlerUrl:
+          // 'https://api.pimlico.io/v2/sepolia/rpc?apikey=7fcebd0d-53e8-411c-9c88-5af50c9959bf',
+          'https://api-staging.pimlico.io/v2/sepolia/rpc?apikey=a1ddf855-1258-438d-925b-903301301e2e',
+        paymasterMiddleware: (entryPoint, userOperation) => {
+          const paymasterClient = createPimlicoPaymasterClient({
+            transport: http(
+              // 'https://api.pimlico.io/v2/sepolia/rpc?apikey=7fcebd0d-53e8-411c-9c88-5af50c9959bf'
+              'https://api-staging.pimlico.io/v2/sepolia/rpc?apikey=a1ddf855-1258-438d-925b-903301301e2e'
+            )
+          })
+
+          return paymasterClient.sponsorUserOperation({ userOperation, entryPoint })
+        }
       }
     }
 
