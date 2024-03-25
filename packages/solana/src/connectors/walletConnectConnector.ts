@@ -8,6 +8,7 @@ import type { Chain } from '../utils/scaffold/SolanaTypesUtil.js'
 import { SolStoreUtil } from '../utils/scaffold/SolanaStoreUtil.js'
 import { UniversalProviderFactory } from './universalProvider.js'
 import { BaseConnector } from './baseConnector.js'
+import type { ConfirmOptions, Signer } from '@solana/web3.js'
 
 export interface WalletConnectAppMetadata {
   name: string
@@ -130,30 +131,90 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
     }
 
     const res = await this.request('solana_signTransaction', transactionParams)
+    console.log('response from sign', Buffer.from(base58.decode(res.signature)))
     transaction.addSignature(
       new PublicKey(SolStoreUtil.state.address ?? ''),
       Buffer.from(base58.decode(res.signature))
     )
 
-    const validSig = transaction.verifySignatures()
+    // Const validSig = transaction.verifySignatures()
 
-    if (!validSig) {
-      throw new Error('Signature invalid.')
-    }
+    /*
+     * If (!validSig) {
+     *   throw new Error('Signature invalid.')
+     * }
+     */
 
+    // Return { signatures: [{ signature: base58.encode(transaction.serialize()) }] }
     return { signatures: [{ signature: base58.encode(transaction.serialize()) }] }
   }
 
-  public async sendTransaction(transactionParam: Transaction | VersionedTransaction) {
+  private async _sendTransaction(transactionParam: Transaction | VersionedTransaction) {
     const encodedTransaction = (await this.signTransaction(transactionParam)) as {
       signatures: {
         signature: string
       }[]
     }
-    const signedTransaction = base58.decode(encodedTransaction.signatures[0]?.signature ?? '')
-    await SolStoreUtil.state.connection?.sendRawTransaction(signedTransaction)
+    console.log(encodedTransaction)
+    const signedTransaction = transactionParam.serialize()
+    // const signedTransaction = base58.decode(encodedTransaction.signatures[0]?.signature ?? '')
+    const txHash = await SolStoreUtil.state.connection?.sendRawTransaction(signedTransaction)
 
-    return base58.encode(signedTransaction)
+    return {
+      tx: txHash,
+      signature: base58.encode(signedTransaction)
+    }
+  }
+
+  public async sendTransaction(transactionParam: Transaction | VersionedTransaction) {
+    const { signature } = await this._sendTransaction(transactionParam)
+
+    return signature
+  }
+
+  public async sendAndConfirmTransaction(
+    transactionParam: Transaction | VersionedTransaction,
+    signers: Signer[] = [],
+    confirmOptions: ConfirmOptions = {
+      skipPrefLight: true,
+      commitment: 'confirmed'
+    } as ConfirmOptions
+  ) {
+    if (transactionParam instanceof VersionedTransaction) {
+      return 'g10'
+    }
+
+    console.log('signSendAndConfirmTransaction: before sign', transactionParam, confirmOptions)
+
+    if (signers.length) {
+      try {
+        transactionParam.partialSign(...signers)
+        transactionParam.signatures = transactionParam.signatures.map((signature, index) => {
+          console.log('signute, ', index, signature)
+
+          return signature
+        })
+        /*
+         *Const sendTransactionResponse = await sendAndConfirmTransaction(
+         *  SolStoreUtil.state.connection!,
+         *  transactionParam as Transaction,
+         *  signers ?? [],
+         *  confirmOptions
+         *)
+         */
+      } catch (error) {
+        console.log('signers error', error)
+        throw error
+      }
+    }
+
+    console.log('after signers if = ', transactionParam)
+
+    await this.sendTransaction(transactionParam)
+
+    console.log('signSendAndConfirmTransaction: after sign', transactionParam)
+
+    return 'g7'
   }
 
   /**

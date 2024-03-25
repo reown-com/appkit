@@ -7,7 +7,7 @@ import { getWeb3Modal } from '@web3modal/scaffold-react'
 import { Web3Modal } from '../src/client.js'
 
 import type { Web3ModalOptions } from '../src/client.js'
-import type { Provider } from '../src/utils/scaffold/SolanaTypesUtil.js'
+import type { Provider, Connection } from '../src/utils/scaffold/SolanaTypesUtil.js'
 import { SolStoreUtil } from '../src/utils/scaffold/SolanaStoreUtil.js'
 
 // -- Setup -------------------------------------------------------------------
@@ -32,7 +32,7 @@ export function useWeb3ModalProvider() {
   return {
     walletProvider: provider as Provider,
     walletProviderType: providerType,
-    connection
+    connection: connection as Connection
   }
 }
 

@@ -11,6 +11,8 @@ import base58 from 'bs58'
 import borsh from 'borsh'
 import { Buffer } from 'buffer'
 
+import type { ConfirmOptions, Signer } from '@solana/web3.js'
+
 import { registerListener, unregisterListener } from '../utils/clusterFactory.js'
 import { SolConstantsUtil } from '../utils/scaffold/SolanaConstantsUtil.js'
 import { SolStoreUtil } from '../utils/scaffold/SolanaStoreUtil.js'
@@ -25,7 +27,7 @@ import type {
   FilterObject,
   RequestMethods,
   TransactionArgs,
-  TransactionType
+  TransactionType,
 } from '../utils/scaffold/SolanaTypesUtil.js'
 
 export interface Connector {
@@ -40,6 +42,11 @@ export interface Connector {
     transaction: Transaction | VersionedTransaction
   ) => Promise<{ signatures: { signature: string }[] }>
   sendTransaction: (transaction: Transaction | VersionedTransaction) => Promise<string>
+  sendAndConfirmTransaction: (
+    transaction: Transaction | VersionedTransaction,
+    signers: Signer[],
+    confirmOptions: ConfirmOptions
+  ) => Promise<string>
   getAccount: (
     requestedAddress?: string,
     encoding?: 'base58' | 'base64' | 'jsonParsed'

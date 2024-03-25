@@ -1,29 +1,23 @@
 import React from 'react'
 import { Button, useToast } from '@chakra-ui/react'
 import {
-  Connection,
   SystemProgram,
   PublicKey,
   Keypair,
   Transaction,
-  TransactionInstruction,
-  sendAndConfirmTransaction,
-  LAMPORTS_PER_SOL
+  TransactionInstruction
 } from '@solana/web3.js'
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/solana/react'
 
-import type { Connection, Signer } from '@solana/web3.js'
+import type { Connection, Signer, LAMPORTS_PER_SOL } from '@solana/web3.js'
 
 /*
  * Hypothetical Program ID for the counter program; replace with your actual program ID
  * export const PROGRAM_ID = new PublicKey('Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS')
  * export const PROGRAM_ID = new PublicKey('p1exdMJcjVao65QdewkaZRUnU6VPSXhus9n2GzWfh98')
  */
-/*
- * Export const PROGRAM_ID = new PublicKey('GobzzzFQsFAHPvmwT42rLockfUCeV3iutEkK218BxT8K')
- * Export const PROGRAM_ID = new PublicKey('11111111111111111111111111111111')
- */
-export const PROGRAM_ID = new PublicKey('Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS')
+export const PROGRAM_ID = new PublicKey('GobzzzFQsFAHPvmwT42rLockfUCeV3iutEkK218BxT8K')
+// Export const PROGRAM_ID = new PublicKey('11111111111111111111111111111111')
 export const COUNTER_ACCOUNT_SIZE = 8
 
 const PHANTOM_DEVNET_ADDRESS = '7qPFiUY5wEUceShpXSSYcMzUWHpjqXwFJ3GBdCP4eWQE'
@@ -39,27 +33,10 @@ export function SolanaWriteContractTest() {
 
   const toast = useToast()
   const { address } = useWeb3ModalAccount()
-  const { walletProvider } = useWeb3ModalProvider()
-
-  const connection = new Connection('http://localhost:8899')
+  const { walletProvider, connection } = useWeb3ModalProvider()
 
   const counterKeypair = Keypair.generate()
   const counter = counterKeypair.publicKey
-
-  // Randomly generate our wallet
-  const payerKeypair = Keypair.fromSecretKey(
-    Uint8Array.from([
-      96, 253, 34, 232, 54, 114, 153, 128, 49, 238, 144, 203, 183, 83, 244, 198, 102, 80, 119, 196,
-      233, 68, 20, 128, 197, 10, 158, 222, 94, 230, 117, 225, 178, 24, 103, 254, 242, 147, 28, 48,
-      17, 55, 166, 55, 31, 235, 231, 205, 44, 154, 60, 111, 47, 33, 131, 26, 171, 214, 45, 217, 66,
-      41, 187, 37
-    ])
-  )
-  const payer = payerKeypair.publicKey
-
-  console.log(payer)
-
-  //
 
   async function onIncrementCounter() {
     try {
@@ -71,26 +48,20 @@ export function SolanaWriteContractTest() {
         throw new Error('No connection set')
       }
 
-      /*
-       * Randomly generate the account key
-       * to sign for setting up the Counter state
-       */
+      const balance = await connection.getBalance(walletProvider.publicKey)
+      if (balance < amountInLamports) {
+        throw Error('Not enough SOL in wallet')
+      }
 
-      console.log('onIncrementCounter')
-      /*
-       * Airdrop our wallet 1 Sol
-       * await connection.requestAirdrop(payer, LAMPORTS_PER_SOL)
-       */
-      // await connection.requestAirdrop(payer, LAMPORTS_PER_SOL)
       // Create a TransactionInstruction to interact with our counter program
       const allocIx: TransactionInstruction = SystemProgram.createAccount({
-        fromPubkey: payer,
+        fromPubkey: walletProvider.publicKey,
         newAccountPubkey: counter,
         lamports: await connection.getMinimumBalanceForRentExemption(COUNTER_ACCOUNT_SIZE),
         space: COUNTER_ACCOUNT_SIZE,
         programId: PROGRAM_ID
       })
-      console.log('TX allocIx')
+
       const incrementIx: TransactionInstruction = new TransactionInstruction({
         programId: PROGRAM_ID,
         keys: [
@@ -102,33 +73,69 @@ export function SolanaWriteContractTest() {
         ],
         data: Buffer.from([0x0])
       })
-      console.log('TX incrementIx')
 
+      ///createIncrementInstruction({ counter }, {});
       const tx = new Transaction().add(allocIx).add(incrementIx)
-      console.log('TX transaction')
 
       // Explicitly set the feePayer to be our wallet (this is set to first signer by default)
-      tx.feePayer = payer
+      tx.feePayer = walletProvider.publicKey
+
+      // Fetch a "timestamp" so validators know this is a recent transaction
+      tx.recentBlockhash = (await connection.getLatestBlockhash('confirmed')).blockhash
 
       /*
-       * Fetch a "timestamp" so validators know this is a recent transaction
-       * tx.recentBlockhash = (await connection.getLatestBlockhash('confirmed')).blockhash
+       * Send transaction to network (local network)
+       * await sendAndConfirmTransaction(connection, tx, [payerKeypair, counterKeypair], {
+       *   skipPreflight: true,
+       *   commitment: 'confirmed'
+       * })
        */
-      console.log('TX recentBlockhash')
-      // Send transaction to network (local network)
-      await sendAndConfirmTransaction(connection, tx, [payerKeypair, counterKeypair])
-      console.log('TX sendAndConfirmTransaction')
+      const responseTransaction = await walletProvider.sendAndConfirmTransaction(
+        tx,
+        [counterKeypair],
+        {
+          skipPreflight: true,
+          commitment: 'confirmed'
+        }
+      )
 
-      // Get the counter account info from network
-      const counterAccountInfo = await connection.getAccountInfo(counter, {
-        commitment: 'confirmed'
-      })
-      assert(counterAccountInfo, 'Expected counter account to have been created')
+      console.log('responseTransaction', responseTransaction)
 
-      // Deserialize the counter & check count has been incremented
-      const counterAccount = deserializeCounterAccount(counterAccountInfo.data)
-      assert(counterAccount.count.toNumber() === 1, 'Expected count to have been 1')
-      console.log(`[alloc+increment] count is: ${counterAccount.count.toNumber()}`)
+      /*
+       * Create a new transaction
+       * const transaction = new Transaction().add(
+       *   SystemProgram.transfer({
+       *     fromPubkey: walletProvider.publicKey,
+       *     toPubkey: recipientAddress,
+       *     lamports: amountInLamports
+       *   })
+       * )
+       */
+
+      /*
+       * Const allocIx: TransactionInstruction = SystemProgram.createAccount({
+       *   fromPubkey: walletProvider.publicKey,
+       *   newAccountPubkey: counter,
+       *   lamports: await connection.getMinimumBalanceForRentExemption(COUNTER_ACCOUNT_SIZE),
+       *   space: COUNTER_ACCOUNT_SIZE,
+       *   programId: PROGRAM_ID
+       * })
+       *
+       * transaction.feePayer = walletProvider.publicKey
+       */
+
+      // Const { blockhash } = await connection.getLatestBlockhash()
+
+      // Transaction.recentBlockhash = blockhash
+
+      // Console.log('test counter:', transaction)
+
+      /*
+       * TODO: implement program instruction calling
+       * const tx = await walletProvider.signSendAndConfirmTransaction(transaction, [counterKeypair])
+       *
+       * console.log('after counter:', transaction, tx)
+       */
 
       toast({ title: 'Succcess', description: tx.signature, status: 'success', isClosable: true })
     } catch (err) {

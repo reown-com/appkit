@@ -1,13 +1,16 @@
 import { W3mFrameProvider } from '@web3modal/wallet'
 
 import type {
-  Connection,
+  Connection as SolanaConnection,
   PublicKey,
   Transaction as SolanaWeb3Transaction,
   TransactionSignature,
   VersionedTransaction
 } from '@solana/web3.js'
 import type { SendTransactionOptions } from '@solana/wallet-adapter-base'
+import type { ConfirmOptions, Signer } from '@solana/web3.js'
+
+export type Connection = SolanaConnection
 
 export interface ISolConfig {
   providers: ProviderType
@@ -55,6 +58,16 @@ export interface Provider {
     transaction: SolanaWeb3Transaction | VersionedTransaction,
     connection: Connection,
     options?: SendTransactionOptions
+  ) => Promise<TransactionSignature>
+  sendAndConfirm: (
+    transaction: SolanaWeb3Transaction | VersionedTransaction,
+    connection: Connection,
+    options?: SendTransactionOptions
+  ) => Promise<TransactionSignature>
+  sendAndConfirmTransaction: (
+    transaction: Transaction | VersionedTransaction,
+    signers: Signer[],
+    confirmOptions: ConfirmOptions
   ) => Promise<TransactionSignature>
 }
 
