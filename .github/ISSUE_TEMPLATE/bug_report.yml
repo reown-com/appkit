@@ -11,7 +11,7 @@ body:
         You should also test your issue against the latest NPM package version(s) to ensure that it hasn't already been resolved.
         Sharing a link to a GitHub repository or preview deployment are best. Include any instructions to run the project in the README or the summary field below.
 
-        Don't available repo/preview to share? You can create online with our [StackBlitz template](https://stackblitz.com/edit/web3modal-next-template) quickly.
+        Don't have an available repo/preview to share? You can create online with our [StackBlitz template](https://stackblitz.com/edit/web3modal-next-template) quickly.
 
         IF A REPRODUCIBLE DEMO IS NOT PROVIDED, YOUR ISSUE WILL BE CLOSED.
         [Learn more about creating a minimal reproducible example](https://stackoverflow.com/help/mcve).
