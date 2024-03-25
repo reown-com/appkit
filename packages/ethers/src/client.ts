@@ -443,14 +443,11 @@ export class Web3Modal extends Web3ModalScaffold {
       },
       optionalMethods: ['eth_signUserOperation'],
       smartAccountConfig: {
-        bundlerUrl:
-          // 'https://api.pimlico.io/v2/sepolia/rpc?apikey=7fcebd0d-53e8-411c-9c88-5af50c9959bf',
-          'https://api-staging.pimlico.io/v2/sepolia/rpc?apikey=a1ddf855-1258-438d-925b-903301301e2e',
+        bundlerUrl: `https://api.pimlico.io/v2/sepolia/rpc?apikey=${process.env['NEXT_PUBLIC_PIMLICO_API_KEY']}`,
         paymasterMiddleware: (entryPoint, userOperation) => {
           const paymasterClient = createPimlicoPaymasterClient({
             transport: http(
-              // 'https://api.pimlico.io/v2/sepolia/rpc?apikey=7fcebd0d-53e8-411c-9c88-5af50c9959bf'
-              'https://api-staging.pimlico.io/v2/sepolia/rpc?apikey=a1ddf855-1258-438d-925b-903301301e2e'
+              `https://api.pimlico.io/v2/sepolia/rpc?apikey=${process.env['NEXT_PUBLIC_PIMLICO_API_KEY']}`
             )
           })
 
