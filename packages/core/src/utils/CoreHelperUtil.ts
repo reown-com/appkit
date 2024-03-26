@@ -1,3 +1,4 @@
+import type { Balance } from '@web3modal/common'
 import { ConstantsUtil } from './ConstantsUtil.js'
 import type { CaipAddress, LinkingRecord, CaipNetwork } from './TypeUtil.js'
 
@@ -242,5 +243,28 @@ export const CoreHelperUtil = {
     }
 
     return requestedNetworks
+  },
+  calculateBalance(array: Balance[]) {
+    let sum = 0
+    for (const item of array) {
+      sum += item.value
+    }
+
+    return sum
+  },
+  formatTokenBalance(number: number) {
+    const roundedNumber = number.toFixed(2)
+    const [dollars, pennies] = roundedNumber.split('.')
+
+    return { dollars, pennies }
+  },
+  isAddress(address: string): boolean {
+    if (!/^(?:0x)?[0-9a-f]{40}$/iu.test(address)) {
+      return false
+    } else if (/^(?:0x)?[0-9a-f]{40}$/iu.test(address) || /^(?:0x)?[0-9A-F]{40}$/iu.test(address)) {
+      return true
+    }
+
+    return false
   }
 }

@@ -75,7 +75,7 @@ export class W3mEmailOtpWidget extends LitElement {
           <wui-text variant="paragraph-500" color="fg-100">${this.email}</wui-text>
         </wui-flex>
 
-        <wui-text variant="small-400" color="fg-200">The code expires in 10 minutes</wui-text>
+        <wui-text variant="small-400" color="fg-200">The code expires in 20 minutes</wui-text>
 
         ${this.loading
           ? html`<wui-loading-spinner size="xl" color="accent-100"></wui-loading-spinner>`

@@ -9,16 +9,21 @@ type Component = Meta<WuiTag>
 export default {
   title: 'Composites/wui-tag',
   args: {
-    variant: 'main'
+    variant: 'main',
+    size: 'lg'
   },
   argTypes: {
     variant: {
       options: tagOptions,
+      control: { type: 'select' }
+    },
+    size: {
+      options: ['lg', 'md'],
       control: { type: 'select' }
     }
   }
 } as Component
 
 export const Default: Component = {
-  render: args => html`<wui-tag variant=${args.variant}>Recent</wui-tag>`
+  render: args => html`<wui-tag size=${args.size} variant=${args.variant}>Recent</wui-tag>`
 }

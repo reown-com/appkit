@@ -1,5 +1,17 @@
 # @web3modal/polyfills
 
+## 4.1.1
+
+### Patch Changes
+
+- Fix siwe version
+
+## 4.1.0
+
+### Minor Changes
+
+- Email Stable release
+
 ## 4.0.13
 
 ### Patch Changes
