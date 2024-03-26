@@ -12,7 +12,7 @@ import type {
   Token
 } from '@web3modal/scaffold'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
-import { SIWEController, type Web3ModalSIWEClient } from '@web3modal/siwe'
+import type { Web3ModalSIWEClient } from '@web3modal/siwe'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
 import EthereumProvider, { OPTIONAL_METHODS } from '@walletconnect/ethereum-provider'
 import { getDidChainId, getDidAddress } from '@walletconnect/utils'
@@ -140,7 +140,6 @@ export class Web3Modal extends Web3ModalScaffold {
               )
             }
             const ns = provider.signer?.session?.namespaces
-            console.log('WalletConnectProvider ns', ns)
             const nsMethods = ns?.[ConstantsUtil.EIP155]?.methods
             const nsChains = ns?.[ConstantsUtil.EIP155]?.chains
 
@@ -171,10 +170,9 @@ export class Web3Modal extends Web3ModalScaffold {
         WalletConnectProvider.on('display_uri', (uri: string) => {
           onUri(uri)
         })
-        console.log('SIWEController', SIWEController, siweConfig)
-        console.log('WalletConnectProvider init opts', options)
 
         if (siweConfig?.options?.enabled) {
+          const { SIWEController } = await import('@web3modal/siwe')
           const result = await WalletConnectProvider.authenticate({
             nonce: await siweConfig.getNonce(),
             methods: OPTIONAL_METHODS,
@@ -278,6 +276,7 @@ export class Web3Modal extends Web3ModalScaffold {
           siweConfig?.options?.signOutOnDisconnect
         )
         if (siweConfig?.options?.signOutOnDisconnect) {
+          const { SIWEController } = await import('@web3modal/siwe')
           await SIWEController.signOut()
         }
         if (providerType === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
