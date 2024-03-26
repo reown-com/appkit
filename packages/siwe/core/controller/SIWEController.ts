@@ -61,9 +61,9 @@ export const SIWEController = {
     return state._client
   },
 
-  async getNonce() {
+  async getNonce(address?: string) {
     const client = this._getClient()
-    const nonce = await client.getNonce()
+    const nonce = await client.getNonce(address)
     this.setNonce(nonce)
 
     return nonce

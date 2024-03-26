@@ -23,10 +23,12 @@ export class WuiListToken extends LitElement {
 
   @property() public tokenCurrency = ''
 
+  @property({ type: Boolean }) public clickable = false
+
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <button ontouchstart>
+      <button data-clickable=${String(this.clickable)} ontouchstart>
         <wui-flex gap="s" alignItems="center">
           <wui-image alt=${this.tokenName} src=${this.tokenImageUrl}></wui-image>
           <wui-flex flexDirection="column" justifyContent="spaceBetween">
