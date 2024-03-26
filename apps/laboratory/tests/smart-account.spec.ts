@@ -12,14 +12,17 @@ testModalSmartAccount('it should sign with eoa', async ({ modalPage, modalValida
   await modalValidator.expectAcceptedSign()
 })
 
-testModalSmartAccount('switch to its smart account', async ({ modalPage, modalValidator }) => {
-  const walletModalPage = modalPage as ModalWalletPage
-  const walletModalValidator = modalValidator as ModalWalletValidator
+testModalSmartAccount(
+  'switch to its smart account',
+  async ({ modalPage, modalValidator }, testInfo) => {
+    const walletModalPage = modalPage as ModalWalletPage
+    const walletModalValidator = modalValidator as ModalWalletValidator
 
-  await walletModalPage.togglePreferredAccountType()
-  await walletModalPage.openSettings()
-  await walletModalValidator.expectSmartAccountAddress()
-})
+    await walletModalPage.togglePreferredAccountType()
+    await walletModalPage.openSettings()
+    await walletModalValidator.expectSmartAccountAddress(testInfo.parallelIndex)
+  }
+)
 
 testModalSmartAccount(
   'it should sign with its smart account',
@@ -37,13 +40,13 @@ testModalSmartAccount(
 
 testModalSmartAccount(
   'it should return to an eoa when switching to a non supported network',
-  async ({ modalPage, modalValidator }) => {
+  async ({ modalPage, modalValidator }, testInfo) => {
     const walletModalPage = modalPage as ModalWalletPage
     const walletModalValidator = modalValidator as ModalWalletValidator
 
     await walletModalPage.togglePreferredAccountType()
     await walletModalPage.switchNetwork('Polygon')
     await walletModalPage.openSettings()
-    await walletModalValidator.expectEoaAddress()
+    await walletModalValidator.expectEoaAddress(testInfo.parallelIndex)
   }
 )
