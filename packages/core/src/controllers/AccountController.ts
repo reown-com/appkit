@@ -99,6 +99,7 @@ export const AccountController = {
 
   resetAccount() {
     state.isConnected = false
+    state.currentTab = 0
     state.caipAddress = undefined
     state.address = undefined
     state.balance = undefined
@@ -107,6 +108,6 @@ export const AccountController = {
     state.profileImage = undefined
     state.addressExplorerUrl = undefined
     state.smartAccountDeployed = undefined
-    state.currentTab = 0
+    state.tokenBalance = []
   }
 }
