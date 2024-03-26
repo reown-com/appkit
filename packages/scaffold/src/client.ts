@@ -47,6 +47,7 @@ export interface LibraryOptions {
   enableAnalytics?: OptionsControllerState['enableAnalytics']
   metadata?: OptionsControllerState['metadata']
   enableOnramp?: OptionsControllerState['enableOnramp']
+  enableWalletFeatures?: OptionsControllerState['enableWalletFeatures']
   allowUnsupportedChain?: NetworkControllerState['allowUnsupportedChain']
   _sdkVersion: OptionsControllerState['sdkVersion']
 }
@@ -144,6 +145,10 @@ export class Web3ModalScaffold {
     AccountController.setBalance(balance, balanceSymbol)
   }
 
+  protected fetchTokenBalance = () => {
+    AccountController.fetchTokenBalance()
+  }
+
   protected setProfileName: (typeof AccountController)['setProfileName'] = profileName => {
     AccountController.setProfileName(profileName)
   }
@@ -197,6 +202,10 @@ export class Web3ModalScaffold {
       AccountController.setAddressExplorerUrl(addressExplorerUrl)
     }
 
+  protected setSmartAccountDeployed: (typeof AccountController)['setSmartAccountDeployed'] =
+    isDeployed => {
+      AccountController.setSmartAccountDeployed(isDeployed)
+    }
   // -- Private ------------------------------------------------------------------
   private async initControllers(options: ScaffoldOptions) {
     NetworkController.setClient(options.networkControllerClient)
@@ -236,6 +245,10 @@ export class Web3ModalScaffold {
 
     if (options.enableOnramp) {
       OptionsController.setOnrampEnabled(Boolean(options.enableOnramp))
+    }
+
+    if (options.enableWalletFeatures) {
+      OptionsController.setWalletFeaturesEnabled(Boolean(options.enableWalletFeatures))
     }
 
     if (options.allowUnsupportedChain) {

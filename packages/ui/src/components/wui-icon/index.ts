@@ -69,6 +69,7 @@ import { recycleHorizontalSvg } from '../../assets/svg/recycle-horizontal.js'
 import { bankSvg } from '../../assets/svg/bank.js'
 import { cardSvg } from '../../assets/svg/card.js'
 import { plusSvg } from '../../assets/svg/plus.js'
+import { cursorTransparentSvg } from '../../assets/svg/cursor-transparent.js'
 
 const svgOptions: Record<IconType, TemplateResult<2>> = {
   add: addSvg,
@@ -95,6 +96,7 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   coinPlaceholder: coinPlaceholderSvg,
   copy: copySvg,
   cursor: cursorSvg,
+  cursorTransparent: cursorTransparentSvg,
   desktop: desktopSvg,
   disconnect: disconnectSvg,
   discord: discordSvg,

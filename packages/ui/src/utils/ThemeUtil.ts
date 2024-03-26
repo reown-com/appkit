@@ -62,10 +62,12 @@ function createRootStyles(themeVariables?: ThemeVariables) {
 
         --wui-font-family: var(--w3m-font-family);
 
+        --wui-font-size-mini: calc(var(--w3m-font-size-master) * 0.8);
         --wui-font-size-micro: var(--w3m-font-size-master);
         --wui-font-size-tiny: calc(var(--w3m-font-size-master) * 1.2);
         --wui-font-size-small: calc(var(--w3m-font-size-master) * 1.4);
         --wui-font-size-paragraph: calc(var(--w3m-font-size-master) * 1.6);
+        --wui-font-size-medium: calc(var(--w3m-font-size-master) * 1.8);
         --wui-font-size-large: calc(var(--w3m-font-size-master) * 2);
         --wui-font-size-medium-title: calc(var(--w3m-font-size-master) * 2.4);
         --wui-font-size-2xl: calc(var(--w3m-font-size-master) * 4);
@@ -88,10 +90,12 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-letter-spacing-2xl: -1.6px;
         --wui-letter-spacing-medium-title: -0.96px;
         --wui-letter-spacing-large: -0.8px;
+        --wui-letter-spacing-medium: -0.72px;
         --wui-letter-spacing-paragraph: -0.64px;
         --wui-letter-spacing-small: -0.56px;
         --wui-letter-spacing-tiny: -0.48px;
         --wui-letter-spacing-micro: -0.2px;
+        --wui-letter-spacing-mini: -0.16px;
 
         --wui-spacing-0: 0px;
         --wui-spacing-4xs: 2px;
@@ -172,6 +176,7 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-height-network-md: 54px;
         --wui-height-network-lg: 96px;
 
+        --wui-icon-size-network-xs: 12px;
         --wui-icon-size-network-sm: 16px;
         --wui-icon-size-network-md: 24px;
         --wui-icon-size-network-lg: 42px;
@@ -536,6 +541,7 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-gray-glass-030: rgba(255, 255, 255, 0.3);
         --wui-gray-glass-060: rgba(255, 255, 255, 0.6);
         --wui-gray-glass-080: rgba(255, 255, 255, 0.8);
+        --wui-gray-glass-090: rgba(255, 255, 255, 0.9);
       }
     `,
     dark: css`
@@ -626,6 +632,7 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-gray-glass-030: rgba(0, 0, 0, 0.3);
         --wui-gray-glass-060: rgba(0, 0, 0, 0.6);
         --wui-gray-glass-080: rgba(0, 0, 0, 0.8);
+        --wui-gray-glass-090: rgba(0, 0, 0, 0.9);
       }
     `
   }

@@ -40,6 +40,7 @@ function headings() {
     ApproveTransaction: 'Approve Transaction',
     Transactions: 'Activity',
     UpgradeEmailWallet: 'Upgrade your Wallet',
+    UpgradeToSmartAccount: undefined,
     UpdateEmailWallet: 'Edit Email',
     UpdateEmailPrimaryOtp: 'Confirm Current Email',
     UpdateEmailSecondaryOtp: 'Confirm New Email',
@@ -49,7 +50,12 @@ function headings() {
     WhatIsABuy: 'What is Buy?',
     BuyInProgress: 'Buy',
     OnRampTokenSelect: 'Select Token',
-    OnRampFiatSelect: 'Select Currency'
+    OnRampFiatSelect: 'Select Currency',
+    WalletReceive: 'Receive',
+    WalletCompatibleNetworks: 'Compatible Networks',
+    WalletSend: 'Send',
+    WalletSendPreview: 'Review send',
+    WalletSendSelectToken: 'Select Token'
   }
 }
 
@@ -124,8 +130,11 @@ export class W3mHeader extends LitElement {
     const { view } = RouterController.state
     const isConnectHelp = view === 'Connect'
     const isApproveTransaction = view === 'ApproveTransaction'
+    const isUpgradeToSmartAccounts = view === 'UpgradeToSmartAccount'
 
-    if (this.showBack && !isApproveTransaction) {
+    const shouldHideBack = isApproveTransaction || isUpgradeToSmartAccounts
+
+    if (this.showBack && !shouldHideBack) {
       return html`<wui-icon-link
         id="dynamic"
         icon="chevronLeft"
