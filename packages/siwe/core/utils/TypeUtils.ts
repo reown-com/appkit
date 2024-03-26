@@ -15,7 +15,7 @@ export interface SIWEVerifyMessageArgs {
 }
 
 export interface SIWEClientMethods {
-  getNonce: () => Promise<string>
+  getNonce: (address?: string) => Promise<string>
   createMessage: (args: SIWECreateMessageArgs) => string
   verifyMessage: (args: SIWEVerifyMessageArgs) => Promise<boolean>
   getSession: () => Promise<SIWESession | null>
