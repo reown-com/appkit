@@ -22,7 +22,7 @@ export function EthersWriteContractTest() {
       const signer = new JsonRpcSigner(provider, address)
       const contract = new ethers.Contract(donutAddress, abi, signer)
       // @ts-expect-error ethers types are correct
-      const tx = await contract.purchase(1, { value: ethers.parseEther('0.0003') })
+      const tx = await contract.purchase(1, { value: ethers.parseEther('0.0001') })
       toast({ title: 'Succcess', description: tx.hash, status: 'success', isClosable: true })
     } catch {
       toast({
