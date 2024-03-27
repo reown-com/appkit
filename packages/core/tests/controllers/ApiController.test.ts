@@ -126,7 +126,7 @@ describe('ApiController', () => {
     expect(fetchSpy).toHaveBeenCalledTimes(2)
   })
 
-  it('should fetch network images', async () => {
+  it('should only fetch network images for networks with imageIds', async () => {
     NetworkController.setRequestedCaipNetworks([
       {
         id: '155:1',
@@ -236,7 +236,7 @@ describe('ApiController', () => {
     expect(fetchImageSpy).not.toHaveBeenCalled()
   })
 
-  // Recommended wllets
+  // Recommended wallets
   it('should fetch recommended wallets with configured recommended wallets', async () => {
     const includeWalletIds = ['12341', '12342']
     const excludeWalletIds = ['12343']
