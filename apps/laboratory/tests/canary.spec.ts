@@ -13,7 +13,7 @@ testConnectedMW.afterEach(async ({ browserName }, testInfo) => {
   if (browserName === 'firefox') {
     return
   }
-  
+
   if (ENV !== 'dev') {
     const duration: number = testInfo.duration
     await uploadCanaryResultsToCloudWatch(
