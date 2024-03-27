@@ -11,6 +11,7 @@
   "scripts": {
     "build:clean": "rm -rf dist",
     "build:core": "tsc --build",
+    "pack": "npm pack --pack-destination ../../packed",
     "watch": "tsc --watch",
     "typecheck": "tsc --noEmit",
     "test": "vitest run --dir tests --coverage.enabled --reporter=junit --coverage.reporter=json-summary --coverage.reporter=html",

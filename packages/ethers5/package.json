@@ -39,6 +39,7 @@
     "build:clean": "rm -rf dist",
     "build": "tsc --build",
     "watch": "tsc --watch",
+    "pack": "npm pack --pack-destination ../../packed",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },

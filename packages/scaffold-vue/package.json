@@ -11,6 +11,7 @@
   "scripts": {
     "build:clean": "rm -rf dist",
     "build:scaffold-vue": "tsc --build",
+    "pack": "npm pack --pack-destination ../../packed",
     "watch": "tsc --watch",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"

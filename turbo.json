@@ -66,6 +66,10 @@
       ],
       "cache": false
     },
+    "pack": {
+      "outputs": ["../../packed/**"],
+      "cache": false
+    },
     "watch": {
       "dependsOn": ["^build"],
       "cache": false,
