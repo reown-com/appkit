@@ -11,7 +11,7 @@ const profileImage = 'https://ipfs.com/0x123.png'
 // -- Tests --------------------------------------------------------------------
 describe('AccountController', () => {
   it('should have valid default state', () => {
-    expect(AccountController.state).toEqual({ isConnected: false })
+    expect(AccountController.state).toEqual({ isConnected: false, tokenBalance: [], currentTab: 0 })
   })
 
   it('should update state correctly on setIsConnected()', () => {
@@ -43,6 +43,18 @@ describe('AccountController', () => {
 
   it('should update state correctly on resetAccount()', () => {
     AccountController.resetAccount()
-    expect(AccountController.state).toEqual({ isConnected: false })
+    expect(AccountController.state).toEqual({
+      isConnected: false,
+      currentTab: 0,
+      caipAddress: undefined,
+      address: undefined,
+      balance: undefined,
+      balanceSymbol: undefined,
+      profileName: undefined,
+      profileImage: undefined,
+      addressExplorerUrl: undefined,
+      smartAccountDeployed: undefined,
+      tokenBalance: []
+    })
   })
 })

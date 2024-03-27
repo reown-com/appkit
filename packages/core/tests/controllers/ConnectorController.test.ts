@@ -9,7 +9,10 @@ const metamaskConnector = {
   type: 'INJECTED',
   info: { rdns: 'io.metamask.com' }
 } as const
-
+const zerionConnector = {
+  id: 'ecc4036f814562b41a5268adc86270fba1365471402006302e70169465b7ac18',
+  type: 'INJECTED'
+} as const
 // -- Tests --------------------------------------------------------------------
 describe('ConnectorController', () => {
   it('should have valid default state', () => {
@@ -37,8 +40,10 @@ describe('ConnectorController', () => {
   })
 
   it('should return the correct connector on getConnector', () => {
-    expect(ConnectorController.getConnector('walletConnect', '')).toBe(walletConnectConnector)
+    ConnectorController.addConnector(zerionConnector)
+    expect(ConnectorController.getConnector('walletConnect', '')).toBe(undefined)
     expect(ConnectorController.getConnector('', 'io.metamask.com')).toBe(metamaskConnector)
+    expect(ConnectorController.getConnector(zerionConnector.id, '')).toBeUndefined()
     expect(ConnectorController.getConnector('unknown', '')).toBeUndefined()
   })
 })
