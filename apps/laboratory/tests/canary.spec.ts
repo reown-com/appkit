@@ -1,4 +1,4 @@
-// eslint-disable-file no-console
+/* eslint no-console: 0 */
 
 import { testConnectedMW } from './shared/fixtures/w3m-wallet-fixture'
 import { uploadCanaryResultsToCloudWatch } from './shared/utils/metrics'
