@@ -37,6 +37,11 @@ const mockDappData = {
   projectId: '1234',
   sdkVersion: 'react-wagmi-4.0.13' as SdkVersion
 }
+const metamaskConnector = {
+  id: 'metamask',
+  type: 'INJECTED',
+  info: { rdns: 'io.metamask.com' }
+} as const
 
 // -- Tests --------------------------------------------------------------------
 describe('ConnectorController', () => {
@@ -55,6 +60,19 @@ describe('ConnectorController', () => {
       walletConnectConnector,
       externalConnector
     ])
+
+    ConnectorController.addConnector(metamaskConnector)
+    expect(ConnectorController.state.connectors).toEqual([
+      walletConnectConnector,
+      externalConnector,
+      metamaskConnector
+    ])
+  })
+
+  it('should return the correct connector on getConnector', () => {
+    expect(ConnectorController.getConnector('walletConnect', '')).toBe(walletConnectConnector)
+    expect(ConnectorController.getConnector('', 'io.metamask.com')).toBe(metamaskConnector)
+    expect(ConnectorController.getConnector('unknown', '')).toBeUndefined()
   })
 
   it('getEmailConnector() should not throw when email connector is not set', () => {
