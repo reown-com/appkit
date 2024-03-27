@@ -75,7 +75,6 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
       alignItems="center"
       gap="m"
     >
-      ${this.activateAccountTemplate()}
       <wui-profile-button
         @click=${this.onProfileButtonClick.bind(this)}
         address=${ifDefined(this.address)}
@@ -138,13 +137,6 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
     }
 
     return html`<wui-balance dollars="0" pennies="00"></wui-balance>`
-  }
-
-  private activateAccountTemplate() {
-    // eslint-disable-next-line no-warning-comments
-    // Todo: Check if SA is deployed
-
-    return html` <wui-promo text="Activate your account"></wui-promo>`
   }
 
   private onTabChange(index: number) {
