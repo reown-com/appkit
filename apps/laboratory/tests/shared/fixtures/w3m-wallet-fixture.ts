@@ -14,10 +14,22 @@ interface ModalWalletFixture {
 // MW -> test Modal + Wallet
 export const testConnectedMW = base.extend<ModalWalletFixture>({
   walletPage: async ({ context, modalPage }, use) => {
-    const page = await doActionAndWaitForNewPage(modalPage.clickWalletDeeplink(), context)
-    const walletPage = new WalletPage(page)
-    await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
-    await use(walletPage)
+    if (modalPage.library === 'solana') {
+      // Because solana doesn't support react-wallet-v2
+      const walletPage = new WalletPage(await context.newPage())
+      await walletPage.load()
+      const walletValidator = new WalletValidator(walletPage.page)
+      const uri = await modalPage.getConnectUri()
+      await walletPage.connectWithUri(uri)
+      await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
+      await walletValidator.expectConnected()
+      await use(walletPage)
+    } else {
+      const page = await doActionAndWaitForNewPage(modalPage.clickWalletDeeplink(), context)
+      const walletPage = new WalletPage(page)
+      await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
+      await use(walletPage)
+    }
   },
   walletValidator: async ({ walletPage }, use) => {
     const walletValidator = new WalletValidator(walletPage.page)

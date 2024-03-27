@@ -238,4 +238,31 @@ describe('TransactionsController', () => {
       }
     })
   })
+
+  it('should clear cursor correctly', async () => {
+    // Mock fetch transactions
+    const fetchTransactions = vi
+      .spyOn(BlockchainApiController, 'fetchTransactions')
+      .mockResolvedValue({
+        data: [],
+        next: 'cursor'
+      })
+
+    // Fetch transactions
+    await TransactionsController.fetchTransactions('0x123')
+    expect(TransactionsController.state.next).toBe('cursor')
+
+    TransactionsController.clearCursor()
+    expect(TransactionsController.state.next).toBeUndefined()
+
+    // Fetch transactions again
+    await TransactionsController.fetchTransactions('0x123')
+    expect(fetchTransactions).toHaveBeenCalledWith({
+      account: '0x123',
+      projectId,
+      cursor: undefined,
+      onramp: undefined
+    })
+    expect(TransactionsController.state.next).toBe('cursor')
+  })
 })
