@@ -283,11 +283,11 @@ async function checkClientPackages() {
   for (const f of wagmi_files) {
     const diff = await diffForFile(f)
 
-    if (diff?.added.includes('@web3modal/core')) {
+    if (diff?.added.includes("from '@web3modal/core")) {
       fail(`${f} is not allowed to import from @web3modal/core`)
     }
 
-    if (diff?.added.includes('@web3modal/ui')) {
+    if (diff?.added.includes("from '@web3modal/ui")) {
       fail(`${f} is not allowed to import from @web3modal/ui`)
     }
   }
