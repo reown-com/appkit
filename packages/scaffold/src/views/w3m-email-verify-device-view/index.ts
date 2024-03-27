@@ -98,6 +98,7 @@ export class W3mEmailVerifyDeviceView extends LitElement {
         }
         this.loading = true
         await this.emailConnector.provider.connectEmail({ email: this.email })
+        this.listenForDeviceApproval()
         SnackController.showSuccess('Code email resent')
       }
     } catch (error) {
