@@ -4,8 +4,7 @@ import type {
   SIWEClientMethods,
   SIWESession,
   SIWECreateMessageArgs,
-  SIWEVerifyMessageArgs,
-  SIWEMessageArgs
+  SIWEVerifyMessageArgs
 } from '../utils/TypeUtils.js'
 import { OptionsController } from '@web3modal/core'
 
@@ -19,7 +18,6 @@ export interface SIWEControllerClient extends SIWEClientMethods {
     signOutOnDisconnect: boolean
     signOutOnAccountChange: boolean
     signOutOnNetworkChange: boolean
-    messageParams: SIWEMessageArgs
   }
 }
 

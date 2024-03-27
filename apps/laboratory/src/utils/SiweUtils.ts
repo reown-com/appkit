@@ -5,12 +5,14 @@ import { formatMessage } from '@walletconnect/utils'
 import { WagmiConstantsUtil } from '../utils/WagmiConstants'
 
 export const siweConfig = createSIWEConfig({
-  messageParams: {
+  // We don't require any async action to populate params but other apps might
+  // eslint-disable-next-line @typescript-eslint/require-await
+  getMessageParams: async () => ({
     domain: window.location.host,
     uri: window.location.origin,
     chains: WagmiConstantsUtil.chains.map(chain => chain.id),
     statement: 'Please sign with your account'
-  },
+  }),
   createMessage: ({ address, ...args }: SIWECreateMessageArgs) => formatMessage(args, address),
   getNonce: async () => {
     const nonce = await getCsrfToken()

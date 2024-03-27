@@ -34,6 +34,7 @@ export interface SIWEVerifyMessageArgs {
 
 export interface SIWEClientMethods {
   getNonce: (address?: string) => Promise<string>
+  getMessageParams: () => Promise<SIWEMessageArgs>
   createMessage: (args: SIWECreateMessageArgs) => string
   verifyMessage: (args: SIWEVerifyMessageArgs) => Promise<boolean>
   getSession: () => Promise<SIWESession | null>
@@ -55,5 +56,4 @@ export interface SIWEConfig extends SIWEClientMethods {
   signOutOnAccountChange?: boolean
   // Defaults to true
   signOutOnNetworkChange?: boolean
-  messageParams: SIWEMessageArgs
 }

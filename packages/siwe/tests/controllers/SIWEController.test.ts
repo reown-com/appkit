@@ -11,19 +11,20 @@ const client = {
     sessionRefetchIntervalMs: 120000,
     signOutOnDisconnect: true,
     signOutOnAccountChange: true,
-    signOutOnNetworkChange: true,
-    messageParams: {
-      chains: [1],
-      domain: 'mock-domain',
-      uri: 'mock-uri',
-      nonce: 'mock-nonce'
-    }
+    signOutOnNetworkChange: true
   },
   getNonce: async () => Promise.resolve('mock-nonce'),
   createMessage: () => 'mock-message',
   verifyMessage: async () => Promise.resolve(true),
   getSession: async () => Promise.resolve(session),
-  signOut: async () => Promise.resolve(true)
+  signOut: async () => Promise.resolve(true),
+  getMessageParams: () =>
+    Promise.resolve({
+      chains: [1],
+      domain: 'mock-domain',
+      uri: 'mock-uri',
+      nonce: 'mock-nonce'
+    })
 }
 
 // -- Tests --------------------------------------------------------------------

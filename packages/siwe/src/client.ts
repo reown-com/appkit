@@ -32,7 +32,6 @@ export class Web3ModalSIWEClient {
       signOutOnAccountChange = true,
       signOutOnDisconnect = true,
       signOutOnNetworkChange = true,
-      messageParams,
       ...siweConfigMethods
     } = siweConfig
 
@@ -43,8 +42,7 @@ export class Web3ModalSIWEClient {
       sessionRefetchIntervalMs,
       signOutOnDisconnect,
       signOutOnAccountChange,
-      signOutOnNetworkChange,
-      messageParams
+      signOutOnNetworkChange
     }
 
     this.methods = siweConfigMethods
@@ -57,6 +55,12 @@ export class Web3ModalSIWEClient {
     }
 
     return nonce
+  }
+
+  async getMessageParams() {
+    const params = await this.methods.getMessageParams()
+
+    return params || {}
   }
 
   createMessage(args: SIWECreateMessageArgs) {
@@ -94,13 +98,13 @@ export class Web3ModalSIWEClient {
     if (!chainId) {
       throw new Error('A chainId is required to create a SIWE message.')
     }
-    console.log('chainId', chainId, address)
+    const messageParams = await this.getMessageParams()
     const message = this.methods.createMessage({
       address: `eip155:${chainId}:${address}`,
       chainId,
       nonce,
       version: '1',
-      ...this.options.messageParams
+      ...messageParams
     })
     const signature = await ConnectionController.signMessage(message)
     const isValid = await this.methods.verifyMessage({ message, signature })
