@@ -21,7 +21,7 @@ testConnectedMW.afterEach(async ({ browserName }, testInfo) => {
       REGION,
       'https://lab.web3modal.com/',
       'HappyPath.sign',
-      true,
+      testInfo.status === 'passed',
       duration
     )
   }
