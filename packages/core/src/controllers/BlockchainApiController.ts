@@ -10,7 +10,8 @@ import type {
   OnrampQuote,
   PaymentCurrency,
   PurchaseCurrency,
-  BlockchainApiBalanceResponse
+  BlockchainApiBalanceResponse,
+  BlockchainApiLookupEnsNameResponse
 } from '../utils/TypeUtil.js'
 import { OptionsController } from './OptionsController.js'
 
@@ -130,6 +131,12 @@ export const BlockchainApiController = {
         currency: 'usd',
         projectId: OptionsController.state.projectId
       }
+    })
+  },
+
+  async lookupEnsName(name: string) {
+    return api.get<BlockchainApiLookupEnsNameResponse>({
+      path: `/v1/profile/account/${name}?projectId=${OptionsController.state.projectId}`
     })
   },
 

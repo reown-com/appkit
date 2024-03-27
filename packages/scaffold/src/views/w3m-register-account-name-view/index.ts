@@ -21,6 +21,8 @@ export class W3mRegisterAccountNameView extends LitElement {
 
   @state() private error = ''
 
+  @state() private suggestions: string[] = []
+
   // -- Lifecycle ----------------------------------------- //
   public override firstUpdated() {
     this.formRef.value?.addEventListener('keydown', event => {
@@ -77,6 +79,10 @@ export class W3mRegisterAccountNameView extends LitElement {
   }
 
   private templateSuggestions() {
+    if (!this.name) {
+      return null
+    }
+
     return html`<wui-flex flexDirection="column" gap="xxs" alignItems="center">
       <wui-flex
         .padding=${['m', 'm', 'm', 'm'] as const}

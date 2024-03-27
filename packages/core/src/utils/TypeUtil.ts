@@ -151,6 +151,28 @@ export interface BlockchainApiBalanceResponse {
   balances: Balance[]
 }
 
+export interface BlockchainApiLookupEnsNameResponse {
+  name: string
+  registered: number
+  updated: number
+  addresses: Record<
+    string,
+    {
+      address: string
+      created: string
+    }
+  >[]
+  attributes: {
+    avatar?: string
+    bio?: string
+  }[]
+}
+
+export interface BlockchainApiEnsError extends BaseError {
+  status: string
+  reasons: { name: string; description: string }[]
+}
+
 // -- OptionsController Types ---------------------------------------------------
 export interface Token {
   address: string
