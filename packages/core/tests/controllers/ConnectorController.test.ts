@@ -15,13 +15,17 @@ const emailProvider = {
   syncTheme: (_args: { themeMode: ThemeMode; themeVariables: ThemeVariables }) => Promise.resolve()
 }
 
-const walletConnectConnector = { id: 'walletConnect', type: 'WALLET_CONNECT' } as const
+const walletConnectConnector = {
+  id: 'walletConnect',
+  explorerId: 'walletConnect',
+  type: 'WALLET_CONNECT'
+} as const
 const externalConnector = { id: 'external', type: 'EXTERNAL' } as const
 const emailConnector = { id: 'w3mEmail', type: 'EMAIL', provider: emailProvider } as const
 const announcedConnector = {
-  id: 'metamask',
+  id: 'announced',
   type: 'ANNOUNCED',
-  info: { rdns: 'metamask.io' }
+  info: { rdns: 'announced.io' }
 } as const
 
 const syncDappDataSpy = vi.spyOn(emailProvider, 'syncDappData')
@@ -88,6 +92,7 @@ describe('ConnectorController', () => {
     expect(ConnectorController.state.connectors).toEqual([
       walletConnectConnector,
       externalConnector,
+      metamaskConnector,
       emailConnector
     ])
 
@@ -105,13 +110,14 @@ describe('ConnectorController', () => {
 
   it('getAnnouncedConnectorRdns() should return corresponding info array', () => {
     ConnectorController.addConnector(announcedConnector)
-    expect(ConnectorController.getAnnouncedConnectorRdns()).toEqual(['metamask.io'])
+    expect(ConnectorController.getAnnouncedConnectorRdns()).toEqual(['announced.io'])
   })
 
   it('getConnnectors() should return all connectors', () => {
     expect(ConnectorController.getConnectors()).toEqual([
       walletConnectConnector,
       externalConnector,
+      metamaskConnector,
       emailConnector,
       announcedConnector
     ])

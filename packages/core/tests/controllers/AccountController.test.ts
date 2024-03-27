@@ -12,7 +12,12 @@ const explorerUrl = 'https://some.explorer.com/explore'
 // -- Tests --------------------------------------------------------------------
 describe('AccountController', () => {
   it('should have valid default state', () => {
-    expect(AccountController.state).toEqual({ isConnected: false })
+    expect(AccountController.state).toEqual({
+      isConnected: false,
+      smartAccountDeployed: false,
+      currentTab: 0,
+      tokenBalance: []
+    })
   })
 
   it('should update state correctly on setIsConnected()', () => {
@@ -54,6 +59,18 @@ describe('AccountController', () => {
 
   it('should update state correctly on resetAccount()', () => {
     AccountController.resetAccount()
-    expect(AccountController.state).toEqual({ isConnected: false, smartAccountDeployed: false })
+    expect(AccountController.state).toEqual({
+      isConnected: false,
+      smartAccountDeployed: false,
+      currentTab: 0,
+      caipAddress: undefined,
+      address: undefined,
+      balance: undefined,
+      balanceSymbol: undefined,
+      profileName: undefined,
+      profileImage: undefined,
+      addressExplorerUrl: undefined,
+      tokenBalance: []
+    })
   })
 })
