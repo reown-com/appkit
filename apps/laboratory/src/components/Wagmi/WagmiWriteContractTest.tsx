@@ -7,7 +7,7 @@ import { abi, address } from '../../utils/DonutContract'
 
 export function WagmiWriteContractTest() {
   const toast = useToast()
-  const { status, chain } = useAccount()
+  const { status, chain, address: accountAddress } = useAccount()
   const {
     data: donutsOwned,
     refetch: fetchDonutsOwned,
@@ -16,13 +16,14 @@ export function WagmiWriteContractTest() {
   } = useReadContract({
     abi,
     address,
-    functionName: 'getBalance'
+    functionName: 'getBalance',
+    args: [accountAddress]
   })
   const { data: simulateData, error: simulateError } = useSimulateContract({
     abi,
     address,
     functionName: 'purchase',
-    value: parseEther('0.0003'),
+    value: parseEther('0.0001'),
     args: [1]
   })
   const { writeContract, reset, data, error, isPending } = useWriteContract()
