@@ -11,6 +11,9 @@ declare module 'next-auth' {
   }
 }
 
+const ETH_ADDRESS_PATTERN = /0x[a-fA-F0-9]{40}/u
+const ETH_CHAIN_ID_IN_SIWE_PATTERN = /Chain ID: (?<temp1>\d+)/u
+
 /*
  * For more information on each option (and a full list of options) go to
  * https://next-auth.js.org/configuration/options
@@ -46,9 +49,9 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
             throw new Error('SiweMessage is undefined')
           }
           const { message, signature } = credentials
-          const address = message.match(/0x[a-fA-F0-9]{40}/u)?.[0] || ''
+          const address = message.match(ETH_ADDRESS_PATTERN)?.[0] || ''
           const chainId = `eip155:${
-            credentials.message.match(/Chain ID: (?<temp1>\d+)/u)?.[1] || 1
+            credentials.message.match(ETH_CHAIN_ID_IN_SIWE_PATTERN)?.[1] || 1
           }`
           let isValid = isValidEip191Signature(address, message, signature)
           if (!isValid) {
