@@ -42,6 +42,7 @@ export class W3mActivityList extends LitElement {
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
+    TransactionsController.clearCursor()
     this.unsubscribe.push(
       ...[
         AccountController.subscribe(val => {

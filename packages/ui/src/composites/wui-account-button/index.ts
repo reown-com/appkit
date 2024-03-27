@@ -30,6 +30,8 @@ export class WuiAccountButton extends LitElement {
 
   @property() public address = ''
 
+  @property() public profileName = ''
+
   @property() public charsStart = 4
 
   @property() public charsEnd = 6
@@ -50,7 +52,7 @@ export class WuiAccountButton extends LitElement {
           ></wui-avatar>
           <wui-text variant="paragraph-600" color="inherit">
             ${UiHelperUtil.getTruncateString({
-              string: this.address,
+              string: this.isProfileName ? this.profileName : this.address,
               charsStart: this.isProfileName ? 18 : this.charsStart,
               charsEnd: this.isProfileName ? 0 : this.charsEnd,
               truncate: this.isProfileName ? 'end' : 'middle'
