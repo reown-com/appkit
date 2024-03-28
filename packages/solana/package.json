@@ -77,11 +77,6 @@
       "optional": true
     }
   },
-  "optionalDependencies": {
-    "react": ">=17",
-    "react-dom": ">=17",
-    "vue": ">=3"
-  },
   "keywords": [
     "web3",
     "crypto",

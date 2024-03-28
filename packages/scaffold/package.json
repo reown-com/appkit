@@ -30,9 +30,6 @@
       "optional": true
     }
   },
-  "optionalDependencies": {
-    "@web3modal/siwe": "4.2.0-4b5257b4.1"
-  },
   "keywords": [
     "web3",
     "crypto",

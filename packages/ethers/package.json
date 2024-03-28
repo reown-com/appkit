@@ -78,12 +78,6 @@
       "optional": true
     }
   },
-  "optionalDependencies": {
-    "@web3modal/siwe": "4.2.0-4b5257b4.1",
-    "react": ">=17",
-    "react-dom": ">=17",
-    "vue": ">=3"
-  },
   "keywords": [
     "web3",
     "crypto",

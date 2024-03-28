@@ -27,12 +27,19 @@
     },
     "build:scaffold": {
       "outputs": ["dist/**"],
-      "dependsOn": ["^build:common", "^build:core", "^build:ui", "^build:wallet", "^build:siwe"],
+      "dependsOn": [
+        "^build:common",
+        "^build:core",
+        "^build:ui",
+        "^build:wallet",
+        "^build:siwe",
+        "^build:scaffold-utils"
+      ],
       "cache": false
     },
     "build:scaffold-utils": {
       "outputs": ["dist/**"],
-      "dependsOn": ["^build:polyfills", "^build:scaffold"],
+      "dependsOn": ["^build:polyfills", "^build:core"],
       "cache": false
     },
     "build:scaffold-react": {
