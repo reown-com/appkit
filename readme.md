@@ -76,7 +76,13 @@ npm run changeset version
 
 This will apply changes based off `pre.json` (if available) and the previously created changeset file.
 
-## 3. Remove changeset files
+## 3. Exit pre release mode
+
+```sh
+npm run changeset pre exit
+```
+
+## 4. Remove changeset files
 
 `rm .changeset/pre.json && rm .changeset/<random name>`
 
