@@ -52,7 +52,7 @@ export class W3mAccountDefaultWidget extends LitElement {
             this.profileName = val.profileName
             this.balance = val.balance
             this.balanceSymbol = val.balanceSymbol
-          } else {
+          } else if (!this.disconnecting) {
             SnackController.showError('Account not found')
           }
         })

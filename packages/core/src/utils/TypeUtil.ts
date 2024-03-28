@@ -59,6 +59,7 @@ export type SdkVersion =
   | `${'html' | 'react' | 'vue'}-wagmi-${string}`
   | `${'html' | 'react' | 'vue'}-ethers5-${string}`
   | `${'html' | 'react' | 'vue'}-ethers-${string}`
+  | `${'html' | 'react' | 'vue'}-solana-${string}`
 
 export interface BaseError {
   message?: string

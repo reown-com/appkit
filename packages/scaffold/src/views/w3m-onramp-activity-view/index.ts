@@ -49,6 +49,7 @@ export class W3mOnRampActivityView extends LitElement {
         })
       ]
     )
+    TransactionsController.clearCursor()
     this.fetchTransactions()
   }
 
