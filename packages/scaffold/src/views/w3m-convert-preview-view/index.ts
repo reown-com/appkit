@@ -5,7 +5,8 @@ import {
   AccountController,
   NetworkController,
   RouterController,
-  ConvertController
+  ConvertController,
+  ModalController
 } from '@web3modal/core'
 import { state } from 'lit/decorators.js'
 
@@ -228,6 +229,7 @@ export class W3mConvertPreviewView extends LitElement {
   }
 
   private onSendTransaction() {
+    ModalController.close()
     if (this.approvalTransaction) {
       ConvertController.sendTransactionForApproval(this.approvalTransaction)
     } else {

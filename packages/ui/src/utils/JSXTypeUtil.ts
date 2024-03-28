@@ -17,6 +17,8 @@ import type { WuiCardSelect } from '../composites/wui-card-select/index.js'
 import type { WuiChip } from '../composites/wui-chip/index.js'
 import type { WuiConnectButton } from '../composites/wui-connect-button/index.js'
 import type { WuiCtaButton } from '../composites/wui-cta-button/index.js'
+import type { WuiDetailsGroup } from '../composites/wui-details-group/index.js'
+import type { WuiDetailsGroupItem } from '../composites/wui-details-group-item/index.js'
 import type { WuiEmailInput } from '../composites/wui-email-input/index.js'
 import type { WuiIconBox } from '../composites/wui-icon-box/index.js'
 import type { WuiIconLink } from '../composites/wui-icon-link/index.js'
@@ -87,6 +89,8 @@ declare global {
       'wui-chip': CustomElement<WuiChip>
       'wui-connect-button': CustomElement<WuiConnectButton>
       'wui-cta-button': CustomElement<WuiCtaButton>
+      'wui-details-group': CustomElement<WuiDetailsGroup>
+      'wui-details-group-item': CustomElement<WuiDetailsGroupItem>
       'wui-email-input': CustomElement<WuiEmailInput>
       'wui-icon-box': CustomElement<WuiIconBox>
       'wui-icon-link': CustomElement<WuiIconLink>
