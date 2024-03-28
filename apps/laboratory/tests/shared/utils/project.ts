@@ -5,7 +5,7 @@ import { getLocalBravePath, BRAVE_LINUX_PATH } from '../constants/browsers'
 
 const availableDevices = getAvailableDevices()
 
-const LIBRARIES = ['wagmi', 'ethers'] as const
+const LIBRARIES = ['ethers', 'wagmi', 'solana'] as const
 
 const PERMUTATIONS = availableDevices.flatMap(device =>
   LIBRARIES.map(library => ({ device, library }))
@@ -21,6 +21,7 @@ interface CustomProperties {
   testIgnore?: string
   testMatch?: string
   useOptions?: UseOptions
+  grep?: RegExp
 }
 
 export type CustomProjectProperties = {
@@ -45,8 +46,27 @@ const customProjectProperties: CustomProjectProperties = {
   'Desktop Chrome/wagmi': {
     testIgnore: 'email.spec.ts'
   },
+  'Desktop Chrome/ethers': {
+    testIgnore: 'email.spec.ts'
+  },
   'Desktop Firefox/wagmi': {
     testIgnore: 'email.spec.ts'
+  },
+  'Desktop Firefox/ethers': {
+    testIgnore: 'email.spec.ts'
+  },
+  // Exclude email.spec.ts, siwe.spec.ts, and canary.spec.ts from solana, not yet implemented
+  'Desktop Chrome/solana': {
+    grep: /^(?!.*(?:email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts|wallet\.spec\.ts)).*$/u
+  },
+  'Desktop Brave/solana': {
+    grep: /^(?!.*(?:email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts|wallet\.spec\.ts)).*$/u
+  },
+  'Desktop Firefox/solana': {
+    grep: /^(?!.*(?:email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts|wallet\.spec\.ts)).*$/u
+  },
+  'Desktop Safari/solana': {
+    grep: /^(?!.*(?:email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts|wallet\.spec\.ts)).*$/u
   }
 }
 

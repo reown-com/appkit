@@ -146,6 +146,7 @@ export const ApiController = {
       headers: ApiController._getApiHeaders(),
       params: {
         page: '1',
+        chains: NetworkController.state.caipNetwork?.id,
         entries: recommendedEntries,
         include: includeWalletIds?.join(','),
         exclude: exclude?.join(',')
@@ -165,6 +166,7 @@ export const ApiController = {
 
   async fetchWallets({ page }: Pick<ApiGetWalletsRequest, 'page'>) {
     const { includeWalletIds, excludeWalletIds, featuredWalletIds } = OptionsController.state
+
     const exclude = [
       ...state.recommended.map(({ id }) => id),
       ...(excludeWalletIds ?? []),
@@ -176,6 +178,7 @@ export const ApiController = {
       params: {
         page: String(page),
         entries,
+        chains: NetworkController.state.caipNetwork?.id,
         include: includeWalletIds?.join(','),
         exclude: exclude.join(',')
       }
@@ -200,6 +203,7 @@ export const ApiController = {
         page: '1',
         entries: '100',
         search,
+        chains: NetworkController.state.caipNetwork?.id,
         include: includeWalletIds?.join(','),
         exclude: excludeWalletIds?.join(',')
       }
@@ -210,6 +214,13 @@ export const ApiController = {
       CoreHelperUtil.wait(300)
     ])
     state.search = data
+  },
+
+  async reFetchWallets() {
+    state.page = 1
+    state.wallets = []
+    await ApiController.fetchFeaturedWallets()
+    await ApiController.fetchRecommendedWallets()
   },
 
   prefetch() {
