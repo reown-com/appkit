@@ -84,7 +84,7 @@ npm run changeset pre exit
 
 ## 4. Remove changeset files
 
-`rm .changeset/pre.json && rm .changeset/<random name>`
+`rm .changeset/pre.json && rm .changeset/<random name>.json`
 
 This files are not to be preserved.
 
