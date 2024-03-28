@@ -30,7 +30,7 @@ export const wagmiSdkOptions = [
     description: 'Configuration usign wagmi and implementing sign in with ethereum'
   },
   {
-    title: 'Email',
+    title: 'Email & Social',
     link: '/library/wagmi-email/',
     description: 'Configuration usign wagmi and implementing email login'
   },

@@ -119,7 +119,6 @@ export class W3mSocialLoginWidget extends LitElement {
         const { uri } = await authConnector.provider.getSocialRedirectUri({
           provider: socialProvider
         })
-        console.log(uri, `uriii`)
         CoreHelperUtil.openHref(uri, 'popupWindow', 'width=600,height=800,scrollbars=yes')
       }
     } catch (error) {
