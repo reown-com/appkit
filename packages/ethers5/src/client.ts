@@ -245,7 +245,7 @@ export class Web3Modal extends Web3ModalScaffold {
           const WalletConnectProvider = provider
           await (WalletConnectProvider as unknown as EthereumProvider).disconnect()
         } else if (provider) {
-          provider.emit('disconnect')
+          provider?.emit('disconnect')
         }
       },
 

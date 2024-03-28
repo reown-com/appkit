@@ -11,6 +11,7 @@ export interface OptionsControllerState {
   featuredWalletIds?: string[]
   includeWalletIds?: string[]
   excludeWalletIds?: string[]
+  forceWalletOrder?: string[];
   tokens?: Tokens
   customWallets?: CustomWallet[]
   termsConditionsUrl?: string
@@ -57,6 +58,10 @@ export const OptionsController = {
 
   setFeaturedWalletIds(featuredWalletIds: OptionsControllerState['featuredWalletIds']) {
     state.featuredWalletIds = featuredWalletIds
+  },
+
+  setForceWalletOrder(forceWalletIds: OptionsControllerState['forceWalletOrder']) {
+    state.forceWalletOrder = forceWalletIds
   },
 
   setTokens(tokens: OptionsControllerState['tokens']) {

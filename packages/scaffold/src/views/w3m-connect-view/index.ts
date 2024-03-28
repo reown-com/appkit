@@ -40,6 +40,20 @@ export class W3mConnectView extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    const { forceWalletOrder } = OptionsController.state
+
+    if (forceWalletOrder) {
+      return html`
+        <wui-flex flexDirection="column" padding="s" gap="xs">
+          <w3m-email-login-widget></w3m-email-login-widget>
+
+          ${this.forceWalletOrderTemplate()}
+          ${this.allWalletsTemplate()}
+        </wui-flex>
+        <w3m-legal-footer></w3m-legal-footer>
+      `
+    }
+
     return html`
       <wui-flex flexDirection="column" padding="s" gap="xs">
         <w3m-email-login-widget></w3m-email-login-widget>
@@ -205,6 +219,86 @@ export class W3mConnectView extends LitElement {
     })
   }
 
+  private forceWalletOrderTemplate() {
+    // eslint-disable-next-line no-console
+    console.log('debugger: forceWalletOrderTemplate')
+    const connector = this.connectors.find(c => c.type === 'WALLET_CONNECT')
+    if (!connector) {
+      return null
+    }
+
+    const { forceWalletOrder } = OptionsController.state
+    const { featured } = ApiController.state
+    const { customWallets } = OptionsController.state
+
+    return forceWalletOrder?.map(id => {
+      if (id === 'INJECTED') {
+        const injectedConnector =  this.connectors.find(
+          c => c.type === 'INJECTED' && ConnectionController.checkInstalled()
+        )
+
+        if (!injectedConnector) {
+          return null
+        }
+
+        return html`
+          <wui-list-wallet
+            imageSrc=${ifDefined(AssetUtil.getConnectorImage(injectedConnector))}
+            .installed=${true}
+            name=${injectedConnector.name ?? 'Unknown'}
+            @click=${() => this.onConnector(injectedConnector)}
+          >
+          </wui-list-wallet>
+        `
+      }
+
+      if (id === 'WALLET_CONNECT') {
+        if (CoreHelperUtil.isMobile()) {
+          return null
+        }
+
+        return html`
+          <wui-list-wallet
+            imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
+            name=${connector.name ?? 'Unknown'}
+            @click=${() => this.onConnector(connector)}
+            tagLabel="qr code"
+            tagVariant="main"
+            data-testid="wallet-selector-walletconnect"
+          >
+          </wui-list-wallet>
+        `
+      }
+
+      const featuredWallet = featured?.find(wallet => wallet.id === id);
+      if (featuredWallet) {
+        return html`
+          <wui-list-wallet
+            imageSrc=${ifDefined(AssetUtil.getWalletImage(featuredWallet))}
+            name=${featuredWallet.name ?? 'Unknown'}
+            @click=${() => this.onConnectWallet(featuredWallet)}
+          >
+          </wui-list-wallet>
+        `
+      }
+
+      const customWallet = customWallets?.find(wallet => wallet.id === id);
+      if (customWallet) {
+        return html`
+          <wui-list-wallet
+            imageSrc=${ifDefined(AssetUtil.getWalletImage(customWallet))}
+            name=${customWallet.name ?? 'Unknown'}
+            @click=${() => this.onConnectWallet(customWallet)}
+            data-testid=${`wallet-selector-${customWallet.id}`}
+          >
+          </wui-list-wallet>
+        `
+      }
+
+      return null
+    })
+  }
+
   private allWalletsTemplate() {
     const connector = this.connectors.find(c => c.type === 'WALLET_CONNECT')
     const { allWallets } = OptionsController.state
@@ -303,7 +397,12 @@ export class W3mConnectView extends LitElement {
   }
 
   private onConnectWallet(wallet: WcWallet) {
-    RouterController.push('ConnectingWalletConnect', { wallet })
+    const connector = ConnectorController.getConnector(wallet.id, wallet.rdns)
+    if (connector) {
+      RouterController.push('ConnectingExternal', { connector })
+    } else {
+      RouterController.push('ConnectingWalletConnect', { wallet })
+    }
   }
 }
 
