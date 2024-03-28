@@ -22,7 +22,7 @@ export const ConstantsUtil = {
       homepage: WALLET_URL,
       mobile_link: WALLET_URL,
       desktop_link: WALLET_URL,
-      webapp_link: WALLET_URL
+      webapp_link: 'https://react-wallet-v2-git-feat-disable-deeplinks-walletconnect1.vercel.app/'
     }
   ],
   ProjectId: projectId
