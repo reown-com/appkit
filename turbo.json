@@ -32,7 +32,7 @@
         "^build:core",
         "^build:ui",
         "^build:wallet",
-        "^build:siwe",
+        "@web3modal/siwe#build:siwe",
         "^build:scaffold-utils"
       ],
       "cache": false
@@ -44,12 +44,12 @@
     },
     "build:scaffold-react": {
       "outputs": ["dist/**"],
-      "dependsOn": ["^build:scaffold-utils", "^build:scaffold", "^build:siwe"],
+      "dependsOn": ["^build:scaffold-utils", "^build:scaffold"],
       "cache": false
     },
     "build:scaffold-vue": {
       "outputs": ["dist/**"],
-      "dependsOn": ["^build:scaffold-utils", "^build:scaffold", "^build:siwe"],
+      "dependsOn": ["^build:scaffold-utils", "^build:scaffold"],
       "cache": false
     },
     "build:siwe": {
