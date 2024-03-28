@@ -1,5 +1,18 @@
 # @web3modal/scaffold
 
+## 4.1.3-8e039e.0
+
+### Patch Changes
+
+- feat: update optional dependencies
+
+- Updated dependencies []:
+  - @web3modal/common@4.1.3-8e039e.0
+  - @web3modal/wallet@4.1.3-8e039e.0
+  - @web3modal/core@4.1.3-8e039e.0
+  - @web3modal/siwe@4.1.3-8e039e.0
+  - @web3modal/ui@4.1.3-8e039e.0
+
 ## 4.1.2
 
 ### Patch Changes
