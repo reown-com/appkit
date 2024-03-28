@@ -30,31 +30,13 @@ VITE_PROJECT_ID="your_project_id"
 
 # Releasing new versions
 
-### Choose the packages you want to update and add a summary.
-
-```sh
-npm run changeset
-```
-
-### Version your latest change(s)
-
-```sh
-npm run changeset version
-```
-
-### Enter prelease mode
-
-```sh
-npm run changeset pre enter [tag]
-```
-
-### Steps
+## General Steps
 
 1. Run `npm outdated` and update dependencies
 2. Run `npm install` and verify if everything still works correctly
 3. Merge your feature branch into `V4`
 4. Create a new branch from `V4` and name it with the version tag
-5. Run `npm changeset` and set new custom version, enter prelease mode first if you want to add a tag to the version.
+5. Generate a changeset (see below) and set new custom version, enter prelease mode first if you want to add a tag to the version.
 6. Update version in `ConstantsUtil` in `@web3modal/scaffold-utils` to the correct version
 7. Create a new `PR` with Release Notes and merge into `V4`
 8. Checkout `V4` and run `npm run publish:latest`
@@ -63,6 +45,42 @@ npm run changeset pre enter [tag]
 11. Check `Set as the last release` and publish release.
 12. Update Web3Modal for https://web3modal.com/ (https://github.com/WalletConnect/www-web3modal) and create a PR
 13. Update Web3Modal for https://app.web3inbox.com (https://github.com/WalletConnect/web3inbox) and create a PR
+
+## Preparing changesets
+
+### 0. If you need to do a pre-release, enter pre mode
+
+We generally use the short-hash for last commit of the release as tag
+
+```sh
+npm run changeset pre enter [tag]
+```
+
+This will generate `.changeset/pre.json` persisting original package information
+
+### 1. Choose the packages you want to update and add a summary
+
+Select the packages you need and the type of version update (major, minor, patch) you want to apply
+
+```sh
+npm run changeset
+```
+
+This will generate `.changeset/<random name>.json` persisting changeset information
+
+## 2. Apply the changes
+
+```sh
+npm run changeset version
+```
+
+This will apply changes based off `pre.json` (if available) and the previously created changeset file.
+
+## 3. Remove changeset files
+
+`rm .changeset/pre.json && rm .changeset/<random name>`
+
+This files are not to be preserved.
 
 ### Running tests
 
