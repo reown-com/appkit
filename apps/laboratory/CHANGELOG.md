@@ -1,5 +1,17 @@
 # @apps/laboratory
 
+## 4.1.3-8e039e.0
+
+### Patch Changes
+
+- feat: update optional dependencies
+
+- Updated dependencies []:
+  - @web3modal/ethers@4.1.3-8e039e.0
+  - @web3modal/solana@4.1.3-8e039e.0
+  - @web3modal/wagmi@4.1.3-8e039e.0
+  - @web3modal/siwe@4.1.3-8e039e.0
+
 ## 4.1.2
 
 ### Patch Changes
