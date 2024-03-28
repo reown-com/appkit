@@ -21,6 +21,14 @@
   "peerDependencies": {
     "vue": ">=3"
   },
+  "devDependencies": {
+    "vue": "3.4.3"
+  },
+  "peerDependenciesMeta": {
+    "vue": {
+      "optional": true
+    }
+  },
   "keywords": [
     "web3",
     "crypto",
