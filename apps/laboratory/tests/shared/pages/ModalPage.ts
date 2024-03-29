@@ -97,7 +97,7 @@ export class ModalPage {
     await accountBtn.click({ force: true })
     const disconnectBtn = this.page.getByTestId('disconnect-button')
     await expect(disconnectBtn, 'Disconnect button should be visible').toBeVisible()
-    await expect(disconnectBtn, 'Disconnect button should be visible').toBeEnabled()
+    await expect(disconnectBtn, 'Disconnect button should be enabled').toBeEnabled()
     await disconnectBtn.click({ force: true })
   }
 

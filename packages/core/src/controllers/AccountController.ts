@@ -27,7 +27,8 @@ type StateKey = keyof AccountControllerState
 const state = proxy<AccountControllerState>({
   isConnected: false,
   currentTab: 0,
-  tokenBalance: []
+  tokenBalance: [],
+  smartAccountDeployed: false
 })
 
 // -- Controller ---------------------------------------- //
@@ -99,6 +100,8 @@ export const AccountController = {
 
   resetAccount() {
     state.isConnected = false
+    state.smartAccountDeployed = false
+    state.currentTab = 0
     state.caipAddress = undefined
     state.address = undefined
     state.balance = undefined
@@ -106,7 +109,6 @@ export const AccountController = {
     state.profileName = undefined
     state.profileImage = undefined
     state.addressExplorerUrl = undefined
-    state.smartAccountDeployed = undefined
-    state.currentTab = 0
+    state.tokenBalance = []
   }
 }

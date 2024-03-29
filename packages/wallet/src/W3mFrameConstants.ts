@@ -1,6 +1,6 @@
 export const W3mFrameConstants = {
   SECURE_SITE_SDK:
-    'https://secure-web3modal-git-feat-init-smart-accont-walletconnect1.vercel.app/sdk',
+    process.env['NEXT_PUBLIC_SECURE_SITE_SDK_URL'] || 'https://secure.walletconnect.com/sdk',
   APP_EVENT_KEY: '@w3m-app/',
   FRAME_EVENT_KEY: '@w3m-frame/',
   RPC_METHOD_KEY: 'RPC_',
