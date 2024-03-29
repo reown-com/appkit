@@ -238,7 +238,7 @@ export class Web3Modal extends Web3ModalScaffold {
     chainId
   }: Pick<GetAccountReturnType, 'address' | 'isConnected' | 'chainId'>) {
     this.resetAccount()
-    this.syncNetwork()
+    this.syncNetwork(address, chainId, isConnected)
     if (isConnected && address && chainId) {
       const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`
       this.setIsConnected(isConnected)
@@ -256,8 +256,7 @@ export class Web3Modal extends Web3ModalScaffold {
     }
   }
 
-  private async syncNetwork() {
-    const { address, isConnected, chainId } = getAccount(this.wagmiConfig)
+  private async syncNetwork(address?: Hex, chainId?: number, isConnected?: boolean) {
     const chain = this.wagmiConfig.chains.find((c: Chain) => c.id === chainId)
 
     if (chain || chainId) {

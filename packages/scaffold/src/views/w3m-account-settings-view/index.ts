@@ -38,6 +38,8 @@ export class W3mAccountSettingsView extends LitElement {
 
   @state() private disconnecting = false
 
+  @state() private loading = false
+
   public constructor() {
     super()
     this.usubscribe.push(
@@ -208,6 +210,7 @@ export class W3mAccountSettingsView extends LitElement {
         icon="swapHorizontalBold"
         iconSize="sm"
         ?chevron=${true}
+        ?loading=${this.loading}
         @click=${this.changePreferredAccountType.bind(this)}
         data-testid="account-toggle-preferred-account-type"
       >
@@ -225,7 +228,10 @@ export class W3mAccountSettingsView extends LitElement {
     if (!emailConnector) {
       return
     }
+
+    this.loading = true
     await emailConnector?.provider.setPreferredAccount(accountTypeTarget)
+    this.loading = false
     this.requestUpdate()
   }
 
