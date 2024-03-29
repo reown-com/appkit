@@ -20,6 +20,7 @@ export interface OptionsControllerState {
   metadata?: Metadata
   enableOnramp?: boolean
   enableWalletFeatures?: boolean
+  hasMultipleAddresses?: boolean
 }
 
 type StateKey = keyof OptionsControllerState
@@ -97,5 +98,10 @@ export const OptionsController = {
 
   setWalletFeaturesEnabled(enableWalletFeatures: OptionsControllerState['enableWalletFeatures']) {
     state.enableWalletFeatures = enableWalletFeatures
+  },
+
+  setHasMultipleAddresses(hasMultipleAddresses: OptionsControllerState['hasMultipleAddresses']) {
+    console.log('@options hasMultipleAddresses', hasMultipleAddresses)
+    state.hasMultipleAddresses = hasMultipleAddresses
   }
 }

@@ -525,6 +525,7 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private async setWalletConnectProvider() {
+    console.log('setWalletConnectProvider')
     window?.localStorage.setItem(
       EthersConstantsUtil.WALLET_ID,
       ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID
@@ -535,6 +536,8 @@ export class Web3Modal extends Web3ModalScaffold {
       EthersStoreUtil.setProviderType('walletConnect')
       EthersStoreUtil.setProvider(WalletConnectProvider as unknown as Provider)
       EthersStoreUtil.setIsConnected(true)
+      console.log('WalletConnectProvider.accounts', WalletConnectProvider.accounts)
+      this.setAddresses(WalletConnectProvider.accounts)
       this.setAddress(WalletConnectProvider.accounts?.[0])
       this.watchWalletConnect()
     }
@@ -829,9 +832,8 @@ export class Web3Modal extends Web3ModalScaffold {
       const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`
 
       this.setIsConnected(isConnected)
-
+      console.log('@ethers syncAccount', caipAddress)
       this.setCaipAddress(caipAddress)
-
       await Promise.all([
         this.syncProfile(address),
         this.syncBalance(address),

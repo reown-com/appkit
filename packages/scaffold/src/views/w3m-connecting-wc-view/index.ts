@@ -57,6 +57,7 @@ export class W3mConnectingWcView extends LitElement {
   // -- Private ------------------------------------------- //
   private async initializeConnection(retry = false) {
     try {
+      console.log('ConnectionController', ConnectionController)
       const { wcPairingExpiry } = ConnectionController.state
       if (retry || CoreHelperUtil.isPairingExpired(wcPairingExpiry)) {
         ConnectionController.connectWalletConnect()
@@ -76,6 +77,7 @@ export class W3mConnectingWcView extends LitElement {
 
         await ConnectionController.state.wcPromise
         this.finalizeConnection()
+        console.log('finalizeConnection', StorageUtil.getConnectedConnector())
         if (OptionsController.state.isSiweEnabled) {
           RouterController.push('ConnectingSiwe')
         } else {

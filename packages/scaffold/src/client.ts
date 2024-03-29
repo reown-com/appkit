@@ -138,7 +138,15 @@ export class Web3ModalScaffold {
   }
 
   protected setCaipAddress: (typeof AccountController)['setCaipAddress'] = caipAddress => {
+    console.log('@scaffold setCaipAddress', caipAddress)
     AccountController.setCaipAddress(caipAddress)
+  }
+
+  protected setAddresses: (typeof AccountController)['setAddresses'] = (addresses = []) => {
+    console.log('@scaffold setAddresses', addresses)
+    AccountController.setAddresses(addresses)
+    console.log('@scaffold setHasMultipleAddresses', addresses?.length > 1)
+    OptionsController.setHasMultipleAddresses(addresses?.length > 1)
   }
 
   protected setBalance: (typeof AccountController)['setBalance'] = (balance, balanceSymbol) => {

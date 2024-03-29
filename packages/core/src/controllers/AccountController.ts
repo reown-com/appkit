@@ -12,6 +12,7 @@ export interface AccountControllerState {
   currentTab: number
   caipAddress?: CaipAddress
   address?: string
+  addresses?: string[]
   balance?: string
   balanceSymbol?: string
   profileName?: string | null
@@ -50,6 +51,10 @@ export const AccountController = {
   setCaipAddress(caipAddress: AccountControllerState['caipAddress']) {
     state.caipAddress = caipAddress
     state.address = caipAddress ? CoreHelperUtil.getPlainAddress(caipAddress) : undefined
+  },
+
+  setAddresses(addresses: AccountControllerState['addresses']) {
+    state.addresses = addresses
   },
 
   setBalance(
