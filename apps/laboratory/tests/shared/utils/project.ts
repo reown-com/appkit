@@ -18,7 +18,7 @@ interface UseOptions {
 }
 
 interface CustomProperties {
-  testIgnore?: string
+  testIgnore?: RegExp | string
   testMatch?: string
   useOptions?: UseOptions
   grep?: RegExp
@@ -36,32 +36,30 @@ const braveOptions: UseOptions = {
 
 const customProjectProperties: CustomProjectProperties = {
   'Desktop Brave/wagmi': {
-    testIgnore: 'email.spec.ts',
+    testIgnore: /^email\.spec\.ts|smart-account\.spec\.ts*$/u,
     useOptions: braveOptions
   },
   'Desktop Brave/ethers': {
-    testIgnore: 'email.spec.ts',
     useOptions: braveOptions
   },
   'Desktop Chrome/wagmi': {
-    testIgnore: 'email.spec.ts'
+    testIgnore: /^email\.spec\.ts|smart-account\.spec\.ts*$/u
   },
   'Desktop Firefox/wagmi': {
-    testIgnore: 'email.spec.ts'
+    testIgnore: /^email\.spec\.ts|smart-account\.spec\.ts*$/u
   },
   // Exclude email.spec.ts, siwe.spec.ts, and canary.spec.ts from solana, not yet implemented
   'Desktop Chrome/solana': {
-    grep: /^(?!.*(?:email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts)).*$/u
+    testIgnore: /^email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts|smart-account\.spec\.ts.*$/u
   },
   'Desktop Brave/solana': {
-    useOptions: braveOptions,
-    grep: /^(?!.*(?:email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts)).*$/u
+    testIgnore: /^email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts|smart-account\.spec\.ts.*$/u
   },
   'Desktop Firefox/solana': {
-    grep: /^(?!.*(?:email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts)).*$/u
+    testIgnore: /^email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts|smart-account\.spec\.ts.*$/u
   },
   'Desktop Safari/solana': {
-    grep: /^(?!.*(?:email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts)).*$/u
+    testIgnore: /^email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts|smart-account\.spec\.ts.*$/u
   }
 }
 
