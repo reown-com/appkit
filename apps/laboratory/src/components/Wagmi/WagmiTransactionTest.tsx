@@ -7,7 +7,7 @@ import { optimism, optimismSepolia, sepolia } from 'wagmi/chains'
 
 const TEST_TX = {
   to: vitalikEthAddress as Address,
-  value: parseGwei('0.3')
+  value: parseGwei('0.001')
 }
 
 export function WagmiTransactionTest() {

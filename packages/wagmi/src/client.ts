@@ -430,7 +430,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
       provider.onIsConnected(req => {
         this.setIsConnected(true)
-        this.setSmartAccountDeployed(req.smartAccountDeployed)
+        this.setSmartAccountDeployed(Boolean(req.smartAccountDeployed))
         super.setLoading(false)
       })
 

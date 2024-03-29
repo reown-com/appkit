@@ -609,7 +609,7 @@ export class Web3Modal extends Web3ModalScaffold {
         EthersStoreUtil.setProvider(this.emailProvider as unknown as CombinedProvider)
         EthersStoreUtil.setIsConnected(true)
         EthersStoreUtil.setAddress(address as Address)
-        this.setSmartAccountDeployed(smartAccountDeployed)
+        this.setSmartAccountDeployed(Boolean(smartAccountDeployed))
         this.setSmartAccountEnabledNetworks(smartAccountEnabledNetworks)
 
         this.watchEmail()
