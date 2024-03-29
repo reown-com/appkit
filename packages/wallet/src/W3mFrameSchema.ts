@@ -32,7 +32,10 @@ export const GetTransactionByHashResponse = z.object({
 export const AppSwitchNetworkRequest = z.object({ chainId: z.number() })
 export const AppConnectEmailRequest = z.object({ email: z.string().email() })
 export const AppConnectOtpRequest = z.object({ otp: z.string() })
-export const AppGetUserRequest = z.object({ chainId: z.optional(z.number()) })
+export const AppGetUserRequest = z.object({
+  chainId: z.optional(z.number()),
+  preferredAccountType: z.optional(z.string())
+})
 export const AppUpdateEmailRequest = z.object({ email: z.string().email() })
 export const AppUpdateEmailPrimaryOtpRequest = z.object({ otp: z.string() })
 export const AppUpdateEmailSecondaryOtpRequest = z.object({ otp: z.string() })
@@ -65,7 +68,8 @@ export const FrameConnectEmailResponse = z.object({
 export const FrameGetUserResponse = z.object({
   email: z.string().email(),
   address: z.string(),
-  chainId: z.number()
+  chainId: z.number(),
+  smartAccountDeployed: z.boolean().optional()
 })
 export const FrameIsConnectedResponse = z.object({ isConnected: z.boolean() })
 export const FrameGetChainIdResponse = z.object({ chainId: z.number() })
@@ -74,11 +78,7 @@ export const FrameUpdateEmailSecondaryOtpResolver = z.object({ newEmail: z.strin
 export const FrameGetSmartAccountEnabledNetworksResponse = z.object({
   smartAccountEnabledNetworks: z.array(z.number())
 })
-export const FrameInitSmartAccountResponse = z.object({
-  address: z.string(),
-  isDeployed: z.boolean()
-})
-export const FrameSetPreferredAccountResponse = z.object({ type: z.string() })
+export const FrameSetPreferredAccountResponse = z.object({ type: z.string(), address: z.string() })
 
 export const RpcResponse = z.any()
 
@@ -285,8 +285,6 @@ export const W3mFrameSchema = {
 
     .or(z.object({ type: zType('APP_GET_SMART_ACCOUNT_ENABLED_NETWORKS') }))
 
-    .or(z.object({ type: zType('APP_INIT_SMART_ACCOUNT') }))
-
     .or(
       z.object({ type: zType('APP_SET_PREFERRED_ACCOUNT'), payload: AppSetPreferredAccountRequest })
     )
@@ -437,14 +435,6 @@ export const W3mFrameSchema = {
         payload: zError
       })
     )
-
-    .or(
-      z.object({
-        type: zType('FRAME_INIT_SMART_ACCOUNT_SUCCESS'),
-        payload: FrameInitSmartAccountResponse
-      })
-    )
-    .or(z.object({ type: zType('FRAME_INIT_SMART_ACCOUNT_ERROR'), payload: zError }))
     .or(
       z.object({
         type: zType('FRAME_SET_PREFERRED_ACCOUNT_SUCCESS'),
