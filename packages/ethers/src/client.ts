@@ -12,6 +12,7 @@ import type {
 } from '@web3modal/scaffold'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
+import { AccountController } from '@web3modal/core'
 import EthereumProvider from '@walletconnect/ethereum-provider'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
 import type {
@@ -307,6 +308,13 @@ export class Web3Modal extends Web3ModalScaffold {
 
     EthersStoreUtil.subscribeKey('chainId', () => {
       this.syncNetwork(chainImages)
+    })
+
+    AccountController.subscribeKey('shouldUpdateToAddress', (address?: string) => {
+      console.log('shouldUpdateToAddress', address)
+      if (!address) return
+      console.log('shouldUpdateToAddress', address)
+      EthersStoreUtil.setAddress(getOriginalAddress(address) as Address)
     })
 
     this.syncRequestedNetworks(chains, chainImages)

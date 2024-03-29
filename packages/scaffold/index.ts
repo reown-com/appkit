@@ -66,6 +66,7 @@ export * from './src/partials/w3m-activity-list/index.js'
 export * from './src/partials/w3m-input-token/index.js'
 export * from './src/partials/w3m-input-address/index.js'
 export * from './src/partials/w3m-wallet-send-details/index.js'
+export * from './src/views/w3m-select-addresses-view/index.js'
 
 export { Web3ModalScaffold } from './src/client.js'
 export type { LibraryOptions, ScaffoldOptions } from './src/client.js'

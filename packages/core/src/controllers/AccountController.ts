@@ -20,6 +20,7 @@ export interface AccountControllerState {
   addressExplorerUrl?: string
   smartAccountDeployed?: boolean
   tokenBalance?: Balance[]
+  shouldUpdateToAddress?: string
 }
 
 type StateKey = keyof AccountControllerState
@@ -90,6 +91,9 @@ export const AccountController = {
       state.tokenBalance = ref(tokenBalance)
     }
   },
+  setShouldUpdateToAddres(address: string) {
+    state.shouldUpdateToAddress = address
+  },
 
   async fetchTokenBalance() {
     try {
@@ -115,5 +119,6 @@ export const AccountController = {
     state.profileImage = undefined
     state.addressExplorerUrl = undefined
     state.tokenBalance = []
+    state.shouldUpdateToAddress = undefined
   }
 }

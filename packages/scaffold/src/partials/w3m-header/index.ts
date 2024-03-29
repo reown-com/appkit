@@ -28,6 +28,7 @@ function headings() {
     ConnectingExternal: name ?? 'Connect Wallet',
     ConnectingWalletConnect: name ?? 'WalletConnect',
     ConnectingSiwe: 'Sign In',
+    SelectAddresses: 'Select accounts',
     Networks: 'Choose Network',
     SwitchNetwork: networkName ?? 'Switch Network',
     AllWallets: 'All Wallets',

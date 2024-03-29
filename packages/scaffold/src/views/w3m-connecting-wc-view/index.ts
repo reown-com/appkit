@@ -78,7 +78,10 @@ export class W3mConnectingWcView extends LitElement {
         await ConnectionController.state.wcPromise
         this.finalizeConnection()
         console.log('finalizeConnection', StorageUtil.getConnectedConnector())
-        if (OptionsController.state.isSiweEnabled) {
+        if (OptionsController.state.hasMultipleAddresses) {
+          console.log('naving to SelectAddresses')
+          RouterController.push('SelectAddresses')
+        } else if (OptionsController.state.isSiweEnabled) {
           RouterController.push('ConnectingSiwe')
         } else {
           ModalController.close()

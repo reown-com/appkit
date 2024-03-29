@@ -7,6 +7,7 @@ export interface RouterControllerState {
   view:
     | 'Account'
     | 'AccountSettings'
+    | 'SelectAddresses'
     | 'AllWallets'
     | 'ApproveTransaction'
     | 'BuyInProgress'
