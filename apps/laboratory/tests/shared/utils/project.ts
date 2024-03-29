@@ -36,30 +36,17 @@ const braveOptions: UseOptions = {
 
 const customProjectProperties: CustomProjectProperties = {
   'Desktop Brave/wagmi': {
-    testIgnore: 'email.spec.ts',
     useOptions: braveOptions
   },
   'Desktop Brave/ethers': {
-    testIgnore: 'email.spec.ts',
     useOptions: braveOptions
-  },
-  'Desktop Chrome/wagmi': {
-    testIgnore: 'email.spec.ts'
-  },
-  'Desktop Chrome/ethers': {
-    testIgnore: 'email.spec.ts'
-  },
-  'Desktop Firefox/wagmi': {
-    testIgnore: 'email.spec.ts'
-  },
-  'Desktop Firefox/ethers': {
-    testIgnore: 'email.spec.ts'
   },
   // Exclude email.spec.ts, siwe.spec.ts, and canary.spec.ts from solana, not yet implemented
   'Desktop Chrome/solana': {
     grep: /^(?!.*(?:email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts|wallet\.spec\.ts)).*$/u
   },
   'Desktop Brave/solana': {
+    useOptions: braveOptions,
     grep: /^(?!.*(?:email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts|wallet\.spec\.ts)).*$/u
   },
   'Desktop Firefox/solana': {
