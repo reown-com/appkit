@@ -1,5 +1,11 @@
 # @web3modal/wallet
 
+## 4.1.3-5f2ae345.1
+
+### Patch Changes
+
+- canary: test imports
+
 ## 4.1.3-8e039e.0
 
 ### Patch Changes

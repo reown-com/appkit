@@ -1,5 +1,19 @@
 # @web3modal/ethers
 
+## 4.1.3-5f2ae345.1
+
+### Patch Changes
+
+- canary: test imports
+
+- Updated dependencies []:
+  - @web3modal/scaffold-react@4.1.3-5f2ae345.1
+  - @web3modal/scaffold-utils@4.1.3-5f2ae345.1
+  - @web3modal/scaffold-vue@4.1.3-5f2ae345.1
+  - @web3modal/polyfills@4.1.3-5f2ae345.1
+  - @web3modal/scaffold@4.1.3-5f2ae345.1
+  - @web3modal/siwe@4.1.3-5f2ae345.1
+
 ## 4.1.3-8e039e.0
 
 ### Patch Changes

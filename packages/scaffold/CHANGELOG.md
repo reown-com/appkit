@@ -1,5 +1,18 @@
 # @web3modal/scaffold
 
+## 4.1.3-5f2ae345.1
+
+### Patch Changes
+
+- canary: test imports
+
+- Updated dependencies []:
+  - @web3modal/common@4.1.3-5f2ae345.1
+  - @web3modal/wallet@4.1.3-5f2ae345.1
+  - @web3modal/core@4.1.3-5f2ae345.1
+  - @web3modal/siwe@4.1.3-5f2ae345.1
+  - @web3modal/ui@4.1.3-5f2ae345.1
+
 ## 4.1.3-8e039e.0
 
 ### Patch Changes
