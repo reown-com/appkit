@@ -1,5 +1,14 @@
 # @web3modal/scaffold-react
 
+## 4.1.3
+
+### Patch Changes
+
+- feat: release new schema for secure site
+
+- Updated dependencies []:
+  - @web3modal/scaffold@4.1.3
+
 ## 4.1.3-c46ed093.0
 
 ### Patch Changes

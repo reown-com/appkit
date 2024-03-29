@@ -1,5 +1,17 @@
 # @apps/laboratory
 
+## 4.1.3
+
+### Patch Changes
+
+- feat: release new schema for secure site
+
+- Updated dependencies []:
+  - @web3modal/ethers@4.1.3
+  - @web3modal/siwe@4.1.3
+  - @web3modal/solana@4.1.3
+  - @web3modal/wagmi@4.1.3
+
 ## 4.1.3-c46ed093.0
 
 ### Patch Changes
