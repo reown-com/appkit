@@ -78,6 +78,10 @@ export const FrameUpdateEmailSecondaryOtpResolver = z.object({ newEmail: z.strin
 export const FrameGetSmartAccountEnabledNetworksResponse = z.object({
   smartAccountEnabledNetworks: z.array(z.number())
 })
+export const FrameInitSmartAccountResponse = z.object({
+  address: z.string(),
+  isDeployed: z.boolean()
+})
 export const FrameSetPreferredAccountResponse = z.object({ type: z.string(), address: z.string() })
 
 export const RpcResponse = z.any()
@@ -285,6 +289,8 @@ export const W3mFrameSchema = {
 
     .or(z.object({ type: zType('APP_GET_SMART_ACCOUNT_ENABLED_NETWORKS') }))
 
+    .or(z.object({ type: zType('APP_INIT_SMART_ACCOUNT') }))
+
     .or(
       z.object({ type: zType('APP_SET_PREFERRED_ACCOUNT'), payload: AppSetPreferredAccountRequest })
     )
@@ -435,6 +441,14 @@ export const W3mFrameSchema = {
         payload: zError
       })
     )
+
+    .or(
+      z.object({
+        type: zType('FRAME_INIT_SMART_ACCOUNT_SUCCESS'),
+        payload: FrameInitSmartAccountResponse
+      })
+    )
+    .or(z.object({ type: zType('FRAME_INIT_SMART_ACCOUNT_ERROR'), payload: zError }))
     .or(
       z.object({
         type: zType('FRAME_SET_PREFERRED_ACCOUNT_SUCCESS'),
