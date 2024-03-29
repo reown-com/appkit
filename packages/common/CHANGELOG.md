@@ -1,5 +1,11 @@
 # @web3modal/common
 
+## 4.1.3-c46ed093.0
+
+### Patch Changes
+
+- canary: test secure site types
+
 ## 4.1.2
 
 ### Patch Changes
