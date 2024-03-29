@@ -1,5 +1,17 @@
 # @web3modal/common
 
+## 4.1.3
+
+### Patch Changes
+
+- feat: release new schema for secure site
+
+## 4.1.3-c46ed093.0
+
+### Patch Changes
+
+- canary: test secure site types
+
 ## 4.1.2
 
 ### Patch Changes

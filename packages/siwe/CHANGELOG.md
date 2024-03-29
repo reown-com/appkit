@@ -1,5 +1,25 @@
 # @web3modal/siwe
 
+## 4.1.3
+
+### Patch Changes
+
+- feat: release new schema for secure site
+
+- Updated dependencies []:
+  - @web3modal/core@4.1.3
+  - @web3modal/scaffold-utils@4.1.3
+
+## 4.1.3-c46ed093.0
+
+### Patch Changes
+
+- canary: test secure site types
+
+- Updated dependencies []:
+  - @web3modal/core@4.1.3-c46ed093.0
+  - @web3modal/scaffold-utils@4.1.3-c46ed093.0
+
 ## 4.1.2
 
 ### Patch Changes
