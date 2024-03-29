@@ -57,16 +57,16 @@ const customProjectProperties: CustomProjectProperties = {
   },
   // Exclude email.spec.ts, siwe.spec.ts, and canary.spec.ts from solana, not yet implemented
   'Desktop Chrome/solana': {
-    grep: /^(?!.*(?:email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts|wallet\.spec\.ts)).*$/u
+    grep: /^(?!.*(?:email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts)).*$/u
   },
   'Desktop Brave/solana': {
-    grep: /^(?!.*(?:email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts|wallet\.spec\.ts)).*$/u
+    grep: /^(?!.*(?:email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts)).*$/u
   },
   'Desktop Firefox/solana': {
-    grep: /^(?!.*(?:email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts|wallet\.spec\.ts)).*$/u
+    grep: /^(?!.*(?:email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts)).*$/u
   },
   'Desktop Safari/solana': {
-    grep: /^(?!.*(?:email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts|wallet\.spec\.ts)).*$/u
+    grep: /^(?!.*(?:email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts)).*$/u
   }
 }
 
