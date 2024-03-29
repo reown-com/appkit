@@ -6,7 +6,6 @@ import {
   getBalance,
   getEnsAvatar,
   getEnsName,
-  getAccount,
   switchChain,
   watchAccount,
   watchConnectors
