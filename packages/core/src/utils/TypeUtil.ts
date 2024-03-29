@@ -151,7 +151,7 @@ export interface BlockchainApiBalanceResponse {
   balances: Balance[]
 }
 
-export interface BlockchainApiLookupEnsNameResponse {
+export interface BlockchainApiLookupEnsName {
   name: string
   registered: number
   updated: number

@@ -46,7 +46,28 @@ export const EnsController = {
     } catch (e) {
       const error = e as BlockchainApiEnsError
       const errorMessage = error?.reasons?.[0]?.description || 'Error resolving ENS name'
-      SnackController.showError(errorMessage)
+      state.error = errorMessage
+
+      return null
+    }
+  },
+
+  async isNameRegistered(name: string) {
+    try {
+      await BlockchainApiController.lookupEnsName(name)
+
+      return true
+    } catch {
+      return false
+    }
+  },
+
+  async getNamesForAddress(address: string) {
+    try {
+      return await BlockchainApiController.reverseLookupEnsName(address)
+    } catch (e) {
+      const error = e as BlockchainApiEnsError
+      const errorMessage = error?.reasons?.[0]?.description || 'Error resolving address to ENS name'
       state.error = errorMessage
 
       return null

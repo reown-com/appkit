@@ -21,8 +21,6 @@ export class W3mRegisterAccountNameView extends LitElement {
 
   @state() private error = ''
 
-  @state() private suggestions: string[] = []
-
   // -- Lifecycle ----------------------------------------- //
   public override firstUpdated() {
     this.formRef.value?.addEventListener('keydown', event => {

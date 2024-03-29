@@ -1,9 +1,4 @@
-import {
-  BlockchainApiController,
-  EnsController,
-  OptionsController,
-  StorageUtil
-} from '@web3modal/core'
+import { EnsController, OptionsController, StorageUtil } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 
@@ -13,6 +8,7 @@ export class W3mAccountView extends LitElement {
 
   public override firstUpdated(): void {
     EnsController.resolveName('rocky.wc.ink').then(console.log)
+    EnsController.getNamesForAddress('0x13302Eb0aD9Af2F847119dC4Ac632fFe196d0B0f').then(console.log)
   }
 
   public override render() {

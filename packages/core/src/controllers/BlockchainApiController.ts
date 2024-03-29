@@ -11,7 +11,7 @@ import type {
   PaymentCurrency,
   PurchaseCurrency,
   BlockchainApiBalanceResponse,
-  BlockchainApiLookupEnsNameResponse
+  BlockchainApiLookupEnsName
 } from '../utils/TypeUtil.js'
 import { OptionsController } from './OptionsController.js'
 
@@ -135,8 +135,14 @@ export const BlockchainApiController = {
   },
 
   async lookupEnsName(name: string) {
-    return api.get<BlockchainApiLookupEnsNameResponse>({
+    return api.get<BlockchainApiLookupEnsName>({
       path: `/v1/profile/account/${name}?projectId=${OptionsController.state.projectId}`
+    })
+  },
+
+  async reverseLookupEnsName(address: string) {
+    return api.get<BlockchainApiLookupEnsName>({
+      path: `/v1/profile/reverse/${address}?projectId=${OptionsController.state.projectId}`
     })
   },
 
