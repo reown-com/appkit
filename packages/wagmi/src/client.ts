@@ -333,11 +333,11 @@ export class Web3Modal extends Web3ModalScaffold {
 
   private async syncConnectedWalletInfo(connector: GetAccountReturnType['connector']) {
     if (!connector) {
-      throw new Error('syncConnectedWalletInfo - connector is undefined')
+      throw Error('syncConnectedWalletInfo - connector is undefined')
     }
 
-    if (connector.id === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
-      const walletConnectProvider = (await connector?.getProvider()) as Awaited<
+    if (connector.id === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID && connector.getProvider) {
+      const walletConnectProvider = (await connector.getProvider()) as Awaited<
         ReturnType<(typeof EthereumProvider)['init']>
       >
       if (walletConnectProvider.session) {
