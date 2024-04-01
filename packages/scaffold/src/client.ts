@@ -221,6 +221,11 @@ export class Web3ModalScaffold {
       AccountController.setConnectedWalletInfo(connectedWalletInfo)
     }
 
+  protected setSmartAccountEnabledNetworks: (typeof NetworkController)['setSmartAccountEnabledNetworks'] =
+    smartAccountEnabledNetworks => {
+      NetworkController.setSmartAccountEnabledNetworks(smartAccountEnabledNetworks)
+    }
+
   // -- Private ------------------------------------------------------------------
   private async initControllers(options: ScaffoldOptions) {
     NetworkController.setClient(options.networkControllerClient)

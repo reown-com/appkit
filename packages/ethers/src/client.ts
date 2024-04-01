@@ -37,6 +37,7 @@ import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider'
 import type { Eip1193Provider } from 'ethers'
 import { W3mFrameProvider, W3mFrameHelpers, W3mFrameRpcConstants } from '@web3modal/wallet'
 import type { CombinedProvider } from '@web3modal/scaffold-utils/ethers'
+import { NetworkUtil } from '@web3modal/common'
 
 // -- Types ---------------------------------------------------------------------
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
@@ -47,7 +48,6 @@ export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultCha
   chainImages?: Record<number, string>
   connectorImages?: Record<string, string>
   tokens?: Record<number, Token>
-  enableSmartAccounts?: boolean
 }
 
 export type Web3ModalOptions = Omit<Web3ModalClientOptions, '_sdkVersion'>
@@ -121,7 +121,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
     const networkControllerClient: NetworkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
-        const chainId = HelpersUtil.caipNetworkIdToNumber(caipNetwork?.id)
+        const chainId = NetworkUtil.caipNetworkIdToNumber(caipNetwork?.id)
         if (chainId) {
           try {
             EthersStoreUtil.setError(undefined)
@@ -334,7 +334,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
     return {
       ...state,
-      selectedNetworkId: HelpersUtil.caipNetworkIdToNumber(state.selectedNetworkId)
+      selectedNetworkId: NetworkUtil.caipNetworkIdToNumber(state.selectedNetworkId)
     }
   }
 
@@ -343,7 +343,7 @@ export class Web3Modal extends Web3ModalScaffold {
     return super.subscribeState(state =>
       callback({
         ...state,
-        selectedNetworkId: HelpersUtil.caipNetworkIdToNumber(state.selectedNetworkId)
+        selectedNetworkId: NetworkUtil.caipNetworkIdToNumber(state.selectedNetworkId)
       })
     )
   }
@@ -585,40 +585,28 @@ export class Web3Modal extends Web3ModalScaffold {
     }
   }
 
-  private async initSmartAccount(
-    chainId: number
-  ): Promise<{ isDeployed: boolean; address?: string }> {
-    if (!this.emailProvider || !this.options?.enableSmartAccounts) {
-      return { isDeployed: false }
-    }
-    const { smartAccountEnabledNetworks } =
-      await this.emailProvider.getSmartAccountEnabledNetworks()
-
-    if (!smartAccountEnabledNetworks.includes(chainId)) {
-      return { isDeployed: false }
-    }
-
-    return await this.emailProvider.initSmartAccount()
-  }
-
   private async setEmailProvider() {
     window?.localStorage.setItem(EthersConstantsUtil.WALLET_ID, ConstantsUtil.EMAIL_CONNECTOR_ID)
 
     if (this.emailProvider) {
-      const { address, chainId } = await this.emailProvider.connect()
+      const preferredAccountType = W3mFrameHelpers.getPreferredAccountType()
+      const [{ address, chainId, smartAccountDeployed }, { smartAccountEnabledNetworks }] =
+        await Promise.all([
+          this.emailProvider.connect({
+            chainId: this.getChainId(),
+            preferredAccountType
+          }),
+          this.emailProvider.getSmartAccountEnabledNetworks()
+        ])
       super.setLoading(false)
       if (address && chainId) {
         EthersStoreUtil.setChainId(chainId)
         EthersStoreUtil.setProviderType(ConstantsUtil.EMAIL_CONNECTOR_ID as 'w3mEmail')
         EthersStoreUtil.setProvider(this.emailProvider as unknown as CombinedProvider)
         EthersStoreUtil.setIsConnected(true)
-        const { isDeployed, address: smartAccountAddress } = await this.initSmartAccount(chainId)
-        this.setSmartAccountDeployed(isDeployed)
-        if (isDeployed && smartAccountAddress) {
-          EthersStoreUtil.setAddress(smartAccountAddress as Address)
-        } else {
-          EthersStoreUtil.setAddress(address as Address)
-        }
+        EthersStoreUtil.setAddress(address as Address)
+        this.setSmartAccountDeployed(Boolean(smartAccountDeployed))
+        this.setSmartAccountEnabledNetworks(smartAccountEnabledNetworks)
 
         this.watchEmail()
         this.watchModal()
@@ -798,7 +786,19 @@ export class Web3Modal extends Web3ModalScaffold {
         super.setLoading(false)
       })
       this.emailProvider.onIsConnected(() => {
+        this.setIsConnected(true)
         super.setLoading(false)
+      })
+
+      this.emailProvider.onSetPreferredAccount(({ address }) => {
+        if (!address) {
+          return
+        }
+        const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
+        EthersStoreUtil.setAddress(address as Address)
+        EthersStoreUtil.setChainId(chainId)
+        EthersStoreUtil.setIsConnected(true)
+        this.syncAccount()
       })
     }
   }
@@ -1057,8 +1057,18 @@ export class Web3Modal extends Web3ModalScaffold {
       } else if (providerType === ConstantsUtil.EMAIL_CONNECTOR_ID) {
         if (this.emailProvider && chain?.chainId) {
           try {
-            await this.emailProvider?.switchNetwork(chain?.chainId)
+            await this.emailProvider.switchNetwork(chain?.chainId)
             EthersStoreUtil.setChainId(chain.chainId)
+
+            this.emailProvider
+              .connect({
+                chainId: chain?.chainId,
+                preferredAccountType: W3mFrameHelpers.getPreferredAccountType()
+              })
+              .then(({ address }) => {
+                EthersStoreUtil.setAddress(address as Address)
+                this.syncAccount()
+              })
           } catch {
             throw new Error('Switching chain failed')
           }
