@@ -322,8 +322,8 @@ async function checkLaboratory() {
   const lab_files = modified_files.filter(f => f.includes('/laboratory/'))
   for (const f of lab_files) {
     const diff = await diffForFile(f)
-    if (f.includes('project') && diff?.removed.includes('spec')) {
-      warn('Testing spec changed. Some tests were removed')
+    if (f.includes('project') && (diff?.removed.includes('spec') || diff?.added.includes('spec'))) {
+      warn('Testing spec changed')
     }
   }
 }
