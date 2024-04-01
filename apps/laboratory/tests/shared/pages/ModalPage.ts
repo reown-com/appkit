@@ -65,10 +65,18 @@ export class ModalPage {
     await expect(
       this.page.getByText(email),
       `Expected current email: ${email} to be visible on the notification screen`
-    ).toBeVisible()
+    ).toBeVisible({
+      timeout: 10_000
+    })
   }
 
   async enterOTP(otp: string) {
+    await expect(this.page.getByText('Confirm Email')).toBeVisible({
+      timeout: 10_000
+    })
+    await expect(this.page.getByText('Enter the code we sent')).toBeVisible({
+      timeout: 10_000
+    })
     const splitted = otp.split('')
     // Remove empy space in OTP code 111 111
     splitted.splice(3, 1)
