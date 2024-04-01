@@ -62,6 +62,10 @@ export class ModalPage {
     await this.page.getByTestId('wui-email-input').locator('input').focus()
     await this.page.getByTestId('wui-email-input').locator('input').fill(email)
     await this.page.getByTestId('wui-email-input').locator('input').press('Enter')
+    await expect(
+      this.page.getByText(email),
+      `Expected current email: ${email} to be visible on the notification screen`
+    ).toBeVisible()
   }
 
   async enterOTP(otp: string) {
