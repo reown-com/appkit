@@ -1,6 +1,6 @@
 import type { Balance } from '@web3modal/common'
 import { ConstantsUtil } from './ConstantsUtil.js'
-import type { CaipAddress, LinkingRecord, CaipNetwork } from './TypeUtil.js'
+import type { CaipAddress, LinkingRecord, CaipNetwork, CaipNetworkId } from './TypeUtil.js'
 
 export const CoreHelperUtil = {
   isMobile() {
@@ -271,5 +271,8 @@ export const CoreHelperUtil = {
     }
 
     return false
+  },
+  caipNetworkIdToNumber(caipnetworkId?: CaipNetworkId) {
+    return caipnetworkId ? Number(caipnetworkId.split(':')[1]) : undefined
   }
 }

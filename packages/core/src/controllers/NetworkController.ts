@@ -126,7 +126,10 @@ export const NetworkController = {
   },
 
   checkIfSmartAccountEnabled() {
-    const networkId = Number(state.caipNetwork?.id?.split(':')?.[1])
+    const networkId = CoreHelperUtil.caipNetworkIdToNumber(state.caipNetwork?.id)
+    if (!networkId) {
+      return false
+    }
 
     return Boolean(state.smartAccountEnabledNetworks?.includes(networkId))
   },
