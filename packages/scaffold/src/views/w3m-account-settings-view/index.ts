@@ -228,6 +228,7 @@ export class W3mAccountSettingsView extends LitElement {
         ? W3mFrameRpcConstants.ACCOUNT_TYPES.EOA
         : W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
     const emailConnector = ConnectorController.getEmailConnector()
+
     if (!emailConnector) {
       return
     }

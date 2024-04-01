@@ -58,7 +58,7 @@ export class W3mUpgradeToSmartAccountView extends LitElement {
     return html`<wui-flex .padding=${['0', '2l', '0', '2l'] as const} gap="s">
       <wui-button
         variant="accentBg"
-        @click=${() => RouterController.push('Account')}
+        @click=${this.redirectToAccount.bind(this)}
         size="lg"
         borderRadius="xs"
       >
@@ -90,6 +90,10 @@ export class W3mUpgradeToSmartAccountView extends LitElement {
         SnackController.showError('Error upgrading to smart account')
       }
     }
+  }
+
+  private redirectToAccount() {
+    RouterController.push('Account')
   }
 }
 
