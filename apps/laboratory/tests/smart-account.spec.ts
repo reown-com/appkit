@@ -13,7 +13,7 @@ testModalSmartAccount('it should sign with eoa', async ({ modalPage, modalValida
 })
 
 testModalSmartAccount(
-  'switch to its smart account',
+  'it should switch to its smart account',
   async ({ modalPage, modalValidator }, testInfo) => {
     const walletModalPage = modalPage as ModalWalletPage
     const walletModalValidator = modalValidator as ModalWalletValidator
