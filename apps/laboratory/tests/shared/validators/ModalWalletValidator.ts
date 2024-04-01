@@ -1,6 +1,7 @@
 import { expect } from '@playwright/test'
 import { ModalValidator } from './ModalValidator'
 
+// Each entry corresponds to web3modal${index} email address EOA
 const testEmailsEOAAddresses = [
   '0x6DAa039A2bFBb48dE6c02E3333a30856C047D73f',
   '0x804642811117f5063594D0Db0273EA3C1959AE2C',
