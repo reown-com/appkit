@@ -35,8 +35,8 @@ export default css`
     width: 100%;
     padding: var(--wui-spacing-s);
     padding-left: var(--wui-spacing-s);
-    padding-right: calc(2px + var(--wui-spacing-xs));
-    border-radius: var(--wui-border-radius-4xs);
+    padding-right: var(--wui-spacing-1xs);
+    border-radius: calc(var(--wui-border-radius-5xs) + var(--wui-border-radius-4xs));
     background: var(--wui-gray-glass-002);
   }
 
