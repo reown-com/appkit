@@ -1,5 +1,5 @@
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
-import { subscribeKey as subKey } from 'valtio/utils'
+import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { Connection } from '@solana/web3.js'
 import { OptionsController } from '@web3modal/core'
 

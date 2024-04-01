@@ -1,24 +1,24 @@
 # @apps/gallery
 
-## 4.1.3
+## 4.1.3-5f2ae345.1
 
 ### Patch Changes
 
-- feat: release new schema for secure site
+- canary: test imports
 
 - Updated dependencies []:
-  - @web3modal/common@4.1.3
-  - @web3modal/ui@4.1.3
+  - @web3modal/common@4.1.3-5f2ae345.1
+  - @web3modal/ui@4.1.3-5f2ae345.1
 
-## 4.1.3-c46ed093.0
+## 4.1.3-8e039e.0
 
 ### Patch Changes
 
-- canary: test secure site types
+- feat: update optional dependencies
 
 - Updated dependencies []:
-  - @web3modal/common@4.1.3-c46ed093.0
-  - @web3modal/ui@4.1.3-c46ed093.0
+  - @web3modal/common@4.1.3-8e039e.0
+  - @web3modal/ui@4.1.3-8e039e.0
 
 ## 4.1.2
 
