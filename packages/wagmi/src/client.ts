@@ -35,7 +35,7 @@ import {
 } from './utils/helpers.js'
 import { W3mFrameHelpers, W3mFrameRpcConstants } from '@web3modal/wallet'
 import type { W3mFrameProvider } from '@web3modal/wallet'
-import { ConstantsUtil as CoreConstants, CoreHelperUtil } from '@web3modal/core'
+import { NetworkUtil } from '@web3modal/common'
 import type { defaultWagmiConfig as coreConfig } from './utils/defaultWagmiCoreConfig.js'
 import type { defaultWagmiConfig as reactConfig } from './utils/defaultWagmiReactConfig.js'
 
@@ -82,7 +82,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
     const networkControllerClient: NetworkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
-        const chainId = CoreHelperUtil.caipNetworkIdToNumber(caipNetwork?.id)
+        const chainId = NetworkUtil.caipNetworkIdToNumber(caipNetwork?.id)
 
         if (chainId) {
           await switchChain(this.wagmiConfig, { chainId })
@@ -124,7 +124,7 @@ export class Web3Modal extends Web3ModalScaffold {
           onUri(data)
         })
 
-        const chainId = CoreHelperUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
+        const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
 
         await connect(this.wagmiConfig, { connector, chainId })
       },
@@ -138,7 +138,7 @@ export class Web3Modal extends Web3ModalScaffold {
           // @ts-expect-error Exists on EIP6963Connector
           connector.setEip6963Wallet?.({ provider, info })
         }
-        const chainId = CoreHelperUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
+        const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
 
         await connect(this.wagmiConfig, { connector, chainId })
       },
@@ -203,7 +203,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
     return {
       ...state,
-      selectedNetworkId: CoreHelperUtil.caipNetworkIdToNumber(state.selectedNetworkId)
+      selectedNetworkId: NetworkUtil.caipNetworkIdToNumber(state.selectedNetworkId)
     }
   }
 
@@ -212,7 +212,7 @@ export class Web3Modal extends Web3ModalScaffold {
     return super.subscribeState(state =>
       callback({
         ...state,
-        selectedNetworkId: CoreHelperUtil.caipNetworkIdToNumber(state.selectedNetworkId)
+        selectedNetworkId: NetworkUtil.caipNetworkIdToNumber(state.selectedNetworkId)
       })
     )
   }
@@ -344,7 +344,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
     // Check if coinbase injected connector is present
     const coinbaseConnector = filteredConnectors.find(
-      c => c.id === CoreConstants.CONNECTOR_RDNS_MAP[ConstantsUtil.COINBASE_CONNECTOR_ID]
+      c => c.id === ConstantsUtil.CONNECTOR_RDNS_MAP[ConstantsUtil.COINBASE_CONNECTOR_ID]
     )
 
     filteredConnectors.forEach(({ id, name, type, icon }) => {
@@ -440,7 +440,7 @@ export class Web3Modal extends Web3ModalScaffold {
         if (!address) {
           return
         }
-        const chainId = CoreHelperUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
+        const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
         this.syncAccount({ address: address as `0x${string}`, chainId, isConnected: true })
       })
     }

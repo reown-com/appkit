@@ -29,7 +29,7 @@ import {
   EthersStoreUtil
 } from '@web3modal/scaffold-utils/ethers'
 import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider'
-import { CoreHelperUtil } from '@web3modal/core'
+import { NetworkUtil } from '@web3modal/common'
 
 // -- Types ---------------------------------------------------------------------
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
@@ -116,7 +116,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
     const networkControllerClient: NetworkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
-        const chainId = CoreHelperUtil.caipNetworkIdToNumber(caipNetwork?.id)
+        const chainId = NetworkUtil.caipNetworkIdToNumber(caipNetwork?.id)
         if (chainId) {
           try {
             EthersStoreUtil.setError(undefined)
@@ -318,7 +318,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
     return {
       ...state,
-      selectedNetworkId: CoreHelperUtil.caipNetworkIdToNumber(state.selectedNetworkId)
+      selectedNetworkId: NetworkUtil.caipNetworkIdToNumber(state.selectedNetworkId)
     }
   }
 
@@ -327,7 +327,7 @@ export class Web3Modal extends Web3ModalScaffold {
     return super.subscribeState(state =>
       callback({
         ...state,
-        selectedNetworkId: CoreHelperUtil.caipNetworkIdToNumber(state.selectedNetworkId)
+        selectedNetworkId: NetworkUtil.caipNetworkIdToNumber(state.selectedNetworkId)
       })
     )
   }

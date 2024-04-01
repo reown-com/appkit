@@ -5,6 +5,7 @@ import { PublicStateController } from './PublicStateController.js'
 import { EventsController } from './EventsController.js'
 import { ModalController } from './ModalController.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
+import { NetworkUtil } from '@web3modal/common'
 
 // -- Types --------------------------------------------- //
 export interface NetworkControllerClient {
@@ -126,7 +127,7 @@ export const NetworkController = {
   },
 
   checkIfSmartAccountEnabled() {
-    const networkId = CoreHelperUtil.caipNetworkIdToNumber(state.caipNetwork?.id)
+    const networkId = NetworkUtil.caipNetworkIdToNumber(state.caipNetwork?.id)
     if (!networkId) {
       return false
     }
