@@ -1,6 +1,6 @@
 import { expect, type Page } from '@playwright/test'
 
-const LOGIN_APPROVED_SUCCESS_TEXT = 'Login Approved'
+const LOGIN_APPROVED_SUCCESS_TEXT = 'approved'
 
 export class DeviceRegistrationPage {
   constructor(
