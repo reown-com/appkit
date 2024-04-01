@@ -48,6 +48,7 @@ export const testMEmail = base.extend<ModalFixture>({
       }
     }
     if (otp.length !== 7) {
+      // eslint-disable-next-line no-console
       console.log('Getting the OTP code from body', { previousOtp: otp })
       otp = email.getOtpCodeFromBody(emailBody)
     }
