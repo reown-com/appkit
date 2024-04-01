@@ -16,7 +16,7 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
-import { W3mFrameHelpers } from '@web3modal/wallet'
+import { W3mFrameHelpers, W3mFrameRpcConstants } from '@web3modal/wallet'
 
 @customElement('w3m-account-settings-view')
 export class W3mAccountSettingsView extends LitElement {
@@ -199,7 +199,7 @@ export class W3mAccountSettingsView extends LitElement {
 
     const preferredAccountType = W3mFrameHelpers.getPreferredAccountType()
     const text =
-      preferredAccountType === 'smartAccount'
+      preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
         ? 'Switch to your EOA'
         : 'Switch to your smart account'
 
@@ -223,7 +223,10 @@ export class W3mAccountSettingsView extends LitElement {
     const smartAccountEnabled = NetworkController.checkIfSmartAccountEnabled()
     const preferredAccountType = W3mFrameHelpers.getPreferredAccountType()
     const accountTypeTarget =
-      preferredAccountType === 'smartAccount' || !smartAccountEnabled ? 'eoa' : 'smartAccount'
+      preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT ||
+      !smartAccountEnabled
+        ? W3mFrameRpcConstants.ACCOUNT_TYPES.EOA
+        : W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
     const emailConnector = ConnectorController.getEmailConnector()
     if (!emailConnector) {
       return

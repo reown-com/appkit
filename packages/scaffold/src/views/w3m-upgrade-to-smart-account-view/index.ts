@@ -2,6 +2,7 @@ import { customElement } from '@web3modal/ui'
 import { ConnectorController, RouterController, SnackController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
+import { W3mFrameRpcConstants } from '@web3modal/wallet'
 
 @customElement('w3m-upgrade-to-smart-account-view')
 export class W3mUpgradeToSmartAccountView extends LitElement {
@@ -77,8 +78,12 @@ export class W3mUpgradeToSmartAccountView extends LitElement {
     if (this.emailConnector) {
       try {
         this.loading = true
-        await this.emailConnector.provider.setPreferredAccount('smartAccount')
-        await this.emailConnector.provider.connect({ preferredAccountType: 'smartAccount' })
+        await this.emailConnector.provider.setPreferredAccount(
+          W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+        )
+        await this.emailConnector.provider.connect({
+          preferredAccountType: W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+        })
         this.loading = false
         RouterController.push('Account')
       } catch (e) {
