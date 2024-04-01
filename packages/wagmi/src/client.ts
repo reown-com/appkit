@@ -232,8 +232,9 @@ export class Web3Modal extends Web3ModalScaffold {
     this.setRequestedCaipNetworks(requestedCaipNetworks ?? [])
   }
 
-  private async syncAccount({ address, isConnected, chainId }: GetAccountReturnType) {
+  private async syncAccount({ address, isConnected, chainId, connector }: GetAccountReturnType) {
     this.resetAccount()
+
     // TOD0: Check with Sven. Now network is synced when acc is synced.
     this.syncNetwork()
     if (isConnected && address && chainId) {
@@ -243,6 +244,7 @@ export class Web3Modal extends Web3ModalScaffold {
       await Promise.all([
         this.syncProfile(address, chainId),
         this.syncBalance(address, chainId),
+        this.syncConnectedWalletInfo(connector),
         this.fetchTokenBalance(),
         this.getApprovedCaipNetworksData()
       ])
@@ -327,6 +329,27 @@ export class Web3Modal extends Web3ModalScaffold {
       return
     }
     this.setBalance(undefined, undefined)
+  }
+
+  private async syncConnectedWalletInfo(connector: GetAccountReturnType['connector']) {
+    if (!connector) {
+      throw Error('syncConnectedWalletInfo - connector is undefined')
+    }
+
+    if (connector.id === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID && connector.getProvider) {
+      const walletConnectProvider = (await connector.getProvider()) as Awaited<
+        ReturnType<(typeof EthereumProvider)['init']>
+      >
+      if (walletConnectProvider.session) {
+        this.setConnectedWalletInfo({
+          ...walletConnectProvider.session.peer.metadata,
+          name: walletConnectProvider.session.peer.metadata.name,
+          icon: walletConnectProvider.session.peer.metadata.icons?.[0]
+        })
+      }
+    } else {
+      this.setConnectedWalletInfo({ name: connector.name, icon: connector.icon })
+    }
   }
 
   private syncConnectors(
