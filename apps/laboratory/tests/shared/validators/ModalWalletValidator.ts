@@ -14,6 +14,7 @@ const testEmailsEOAAddresses = [
   '0xbC6996C993d358989743bC74082B046da9d4d8fb',
   '0x1216ff6012bcFcBaDFb4691cF586702Af9482F8C'
 ]
+
 function formatAddress(address: string) {
   return `${address.slice(0, 4)}...${address.slice(-6)}`
 }
