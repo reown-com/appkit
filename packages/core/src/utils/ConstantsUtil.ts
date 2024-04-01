@@ -94,7 +94,9 @@ export const ConstantsUtil = {
     'ENS',
     'MATIC',
     'OP'
-  ]
+  ],
+
+  NATIVE_TOKEN_ADDRESS: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
 }
 
 export type CoinbasePaySDKChainNameValues =

@@ -3,9 +3,9 @@ import { NetworkController } from './NetworkController.js'
 import { FetchUtil } from '../utils/FetchUtil.js'
 import { AccountController } from './AccountController.js'
 import { ConnectionController } from './ConnectionController.js'
+import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 
 const ONEINCH_API_BASE_URL = 'https://1inch-swap-proxy.walletconnect-v1-bridge.workers.dev'
-const CURRENT_CHAIN_ADDRESS = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
 export const DEFAULT_SLIPPAGE_TOLERANCE = '0.5'
 
 const OneInchAPIEndpoints = {
@@ -207,7 +207,7 @@ export const ConvertApiController = {
       return undefined
     }
 
-    const addresses = [...tokenAddresses, CURRENT_CHAIN_ADDRESS]
+    const addresses = [...tokenAddresses, ConstantsUtil.NATIVE_TOKEN_ADDRESS]
 
     const [tokenInfos, tokensPrices] = await Promise.all([
       this.getTokenInfoWithAddresses(addresses),
@@ -322,6 +322,28 @@ export const ConvertApiController = {
       path: paths.approveTransaction,
       params: {
         tokenAddress: sourceTokenAddress
+      }
+    })
+  },
+
+  // --- /swap/v5.2/${chainId}/approve/transaction
+  async getQuoteApprovalData({
+    sourceTokenAddress,
+    toTokenAddress,
+    sourceTokenAmount,
+    fromAddress,
+    decimals = 9
+  }: GetConvertDataParams): Promise<GetConvertDataResponse> {
+    const { api, paths } = this.get1InchAPI()
+
+    return await api.get({
+      path: paths.quote,
+      params: {
+        src: sourceTokenAddress,
+        dst: toTokenAddress,
+        slippage: DEFAULT_SLIPPAGE_TOLERANCE,
+        from: fromAddress,
+        amount: ConnectionController.parseUnits(sourceTokenAmount, decimals).toString()
       }
     })
   }

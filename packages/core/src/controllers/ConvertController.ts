@@ -8,7 +8,6 @@ import { SnackController } from './SnackController.js'
 import { RouterController } from './RouterController.js'
 import { NumberUtil } from '@web3modal/common'
 
-const CURRENT_CHAIN_ADDRESS = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
 export const DEFAULT_SLIPPAGE_TOLERANCE = '0.5'
 const INITIAL_GAS_LIMIT = 150000
 
@@ -52,7 +51,7 @@ export interface ConvertControllerState {
   toTokenAmount: string
   toTokenPriceInUSD: number
   networkPrice: string
-  networkAddress: string | undefined
+  networkBalanceInUSD: string
   inputError: string | undefined
 
   // Request values
@@ -117,7 +116,7 @@ const state = proxy<ConvertControllerState>({
   toTokenAmount: '',
   toTokenPriceInUSD: 0,
   networkPrice: '0',
-  networkAddress: CURRENT_CHAIN_ADDRESS,
+  networkBalanceInUSD: '0',
   inputError: undefined,
 
   // Request values
@@ -168,13 +167,17 @@ export const ConvertController = {
     }
   },
 
+  setLoading(loading: boolean) {
+    ConvertController.state.loading = loading
+  },
+
   setSourceToken(sourceToken: TokenInfo | undefined) {
     if (!sourceToken) {
       return
     }
 
     state.sourceToken = sourceToken
-    this.setTokenValues(sourceToken.address, state.sourceTokenAmount, 'sourceToken')
+    this.setTokenValues(sourceToken.address, 'sourceToken')
   },
 
   setSourceTokenAmount(amount: string) {
@@ -183,7 +186,7 @@ export const ConvertController = {
     state.sourceTokenAmount = amount
 
     if (sourceTokenAddress) {
-      this.setTokenValues(sourceTokenAddress, amount, 'sourceToken')
+      this.setTokenValues(sourceTokenAddress, 'sourceToken')
     }
   },
 
@@ -195,7 +198,7 @@ export const ConvertController = {
     }
 
     state.toToken = toToken
-    this.setTokenValues(toToken.address, state.toTokenAmount, 'toToken')
+    this.setTokenValues(toToken.address, 'toToken')
 
     if (sourceTokenAddress && sourceTokenAmount) {
       this.makeChecks()
@@ -208,28 +211,17 @@ export const ConvertController = {
     state.toTokenAmount = amount
 
     if (toTokenAddress) {
-      this.setTokenValues(toTokenAddress, amount, 'toToken')
+      this.setTokenValues(toTokenAddress, 'toToken')
     }
   },
 
-  async setTokenValues(address: string, amount: string, target: 'sourceToken' | 'toToken') {
-    const balance = state.myTokensWithBalance?.[address]?.balance || '0'
+  async setTokenValues(address: string, target: 'sourceToken' | 'toToken') {
     const price = await this.getAddressPrice(address)
-
-    const balancePriceInUSD = NumberUtil.multiply(balance, price)
-    const amountPriceInUSD = NumberUtil.multiply(amount, price)
-    const insufficientBalance = amountPriceInUSD?.isGreaterThan(balancePriceInUSD)
 
     if (target === 'sourceToken') {
       state.sourceTokenPriceInUSD = price
     } else if (target === 'toToken') {
       state.toTokenPriceInUSD = price
-    }
-
-    state.inputError = insufficientBalance ? 'Insufficient balance' : undefined
-    if (insufficientBalance) {
-      state.toTokenAmount = '0'
-      state.toTokenPriceInUSD = 0
     }
   },
 
@@ -240,19 +232,19 @@ export const ConvertController = {
     this.setSourceToken(newSourceToken)
     this.setToToken(newToToken)
 
-    this.setSourceTokenAmount(state.toTokenAmount)
+    this.setSourceTokenAmount(state.toTokenAmount || '0')
     ConvertController.convertTokens()
   },
 
   resetTokens() {
     state.tokens = undefined
     state.popularTokens = undefined
+    state.myTokensWithBalance = undefined
     state.initialized = false
   },
 
   resetValues() {
     state.sourceToken = undefined
-    state.myTokensWithBalance = undefined
     state.toToken = undefined
     state.sourceTokenAmount = '0'
     state.toTokenAmount = '0'
@@ -306,6 +298,8 @@ export const ConvertController = {
       },
       {}
     )
+    const networkToken = res.tokens[ConstantsUtil.NATIVE_TOKEN_ADDRESS]
+    this.setSourceToken(networkToken)
 
     return state.tokens
   },
@@ -322,28 +316,12 @@ export const ConvertController = {
     return parseFloat(price)
   },
 
-  async setTokenPriceToMap(address: string, target: 'sourceToken' | 'toToken') {
-    const prices = await ConvertApiController.getTokenPriceWithAddresses([address])
-    const price = prices[address] || '0'
-    state.tokensPriceMap[address] = price
-
-    if (target === 'sourceToken') {
-      state.sourceTokenPriceInUSD = parseFloat(price)
-    } else if (target === 'toToken') {
-      state.toTokenPriceInUSD = parseFloat(price)
-    }
-
-    if (address === CURRENT_CHAIN_ADDRESS) {
-      state.networkPrice = price
-    }
-
-    return price
-  },
-
   async getNetworkTokenPrice() {
-    const prices = await ConvertApiController.getTokenPriceWithAddresses([CURRENT_CHAIN_ADDRESS])
-    const price = prices[CURRENT_CHAIN_ADDRESS] || '0'
-    state.tokensPriceMap[CURRENT_CHAIN_ADDRESS] = price
+    const prices = await ConvertApiController.getTokenPriceWithAddresses([
+      ConstantsUtil.NATIVE_TOKEN_ADDRESS
+    ])
+    const price = prices[ConstantsUtil.NATIVE_TOKEN_ADDRESS] || '0'
+    state.tokensPriceMap[ConstantsUtil.NATIVE_TOKEN_ADDRESS] = price
     state.networkPrice = price
   },
 
@@ -356,6 +334,8 @@ export const ConvertController = {
 
     await this.getInitialGasPrice()
 
+    const networkToken = res[ConstantsUtil.NATIVE_TOKEN_ADDRESS]
+
     state.tokensPriceMap = Object.entries(res).reduce<Record<string, string>>(
       (prices, [tokenAddress, tokenInfo]) => {
         prices[tokenAddress] = tokenInfo.price
@@ -365,11 +345,16 @@ export const ConvertController = {
       {}
     )
     state.myTokensWithBalance = res
+    state.networkBalanceInUSD = networkToken
+      ? NumberUtil.multiply(networkToken.balance, networkToken.price).toString()
+      : '0'
   },
 
   async getInitialGasPrice() {
     const res = await ConvertApiController.getGasPrice()
-    const gasFee = BigInt(res.instant.maxFeePerGas)
+    const instant = res.instant
+    const value = typeof instant === 'object' ? res.instant.maxFeePerGas : instant
+    const gasFee = BigInt(value)
     const gasLimit = BigInt(INITIAL_GAS_LIMIT)
     const gasPrice = this.calculateGasPriceInUSD(gasLimit, gasFee)
     state.gasPriceInUSD = gasPrice
@@ -404,17 +389,14 @@ export const ConvertController = {
   },
 
   calculatePriceImpact(_toTokenAmount: string, _gasPriceInUSD = 0) {
-    const { toTokenDecimals } = this.getParams()
-    const decimals = toTokenDecimals || 18
-
-    const toTokenAmount = NumberUtil.bigNumber(_toTokenAmount).dividedBy(10 ** decimals)
+    const toTokenAmount = NumberUtil.bigNumber(_toTokenAmount)
 
     const totalSourceCostUSD = NumberUtil.bigNumber(state.sourceTokenAmount).multipliedBy(
       state.sourceTokenPriceInUSD
     )
     const adjustedTotalSourceCostUSD = totalSourceCostUSD.plus(_gasPriceInUSD)
     const effectivePricePerTargetToken = adjustedTotalSourceCostUSD.dividedBy(
-      toTokenAmount.toString()
+      toTokenAmount.toFixed(4)
     )
 
     const priceImpact = effectivePricePerTargetToken
@@ -491,16 +473,19 @@ export const ConvertController = {
   },
 
   getToAmount() {
-    const toTokenConvertedAmount =
-      state.sourceTokenPriceInUSD && state.toTokenPriceInUSD
-        ? NumberUtil.bigNumber(1)
-            .dividedBy(state.toTokenPriceInUSD)
-            .multipliedBy(state.sourceTokenPriceInUSD)
-        : NumberUtil.bigNumber(0)
-    const scaleFactor = 10000000000
-    const scaledNumber = toTokenConvertedAmount.multipliedBy(scaleFactor)
+    const { sourceTokenDecimals } = this.getParams()
+    const decimals = sourceTokenDecimals || 18
+    const multiplyer = 10 ** decimals
 
-    return scaledNumber.toFixed(20)
+    const toTokenConvertedAmount =
+      state.sourceTokenPriceInUSD && state.toTokenPriceInUSD && state.sourceTokenAmount
+        ? NumberUtil.bigNumber(state.sourceTokenAmount)
+            .multipliedBy(state.sourceTokenPriceInUSD)
+            .dividedBy(state.toTokenPriceInUSD)
+        : NumberUtil.bigNumber(0)
+
+    // return toTokenConvertedAmount with 18 decimals
+    return toTokenConvertedAmount.multipliedBy(multiplyer).toString()
   },
 
   async createTokenAllowance() {
@@ -535,6 +520,11 @@ export const ConvertController = {
     const { fromAddress } = this.getParams()
     state.transactionLoading = true
 
+    RouterController.pushTransactionSuccessView({
+      view: null,
+      goBack: true
+    })
+
     try {
       await ConnectionController.sendTransaction({
         address: fromAddress,
@@ -546,6 +536,7 @@ export const ConvertController = {
 
       state.approvalTransaction = undefined
       state.transactionLoading = false
+      this.makeChecks()
     } catch (err) {
       const error = err as TransactionError
       state.transactionError = error?.shortMessage as unknown as string
@@ -564,7 +555,7 @@ export const ConvertController = {
     } = this.getParams()
 
     if (!sourceTokenAmount || !sourceTokenAddress || !toTokenAddress || !sourceTokenDecimals) {
-      throw new Error('>>> createConvert: Invalid values to start converting')
+      return null
     }
 
     try {
@@ -604,6 +595,14 @@ export const ConvertController = {
     const { fromAddress } = this.getParams()
 
     state.transactionLoading = true
+    RouterController.pushTransactionSuccessView({
+      view: 'Account',
+      goBack: false,
+      callback: () => {
+        ConvertController.resetValues()
+      }
+    })
+
     try {
       const transactionHash = await ConnectionController.sendTransaction({
         address: fromAddress,
@@ -611,12 +610,13 @@ export const ConvertController = {
         data: data.data,
         gas: data.gas,
         gasPrice: BigInt(data.gasPrice),
-        value: BigInt(data.value)
+        value: data.value
       })
       state.transactionLoading = false
-      RouterController.replace('Transactions')
+
       setTimeout(() => {
         this.resetValues()
+        this.getMyTokensWithBalance()
       }, 1000)
 
       return transactionHash
@@ -630,35 +630,32 @@ export const ConvertController = {
     }
   },
 
-  setToTokenAmountValue(toTokenAmount: string, toTokenAddress: string) {
-    if (!toTokenAddress || !toTokenAmount) {
-      return
-    }
-
-    const sourceTokenAmount = NumberUtil.bigNumber(state.sourceTokenAmount)
-    const sourceTokenPrice = state.sourceTokenPriceInUSD
-    const toTokenPrice = NumberUtil.bigNumber(state.tokensPriceMap[toTokenAddress] || '0')
-    const toTokenAmountValue = sourceTokenAmount
-      .multipliedBy(sourceTokenPrice)
-      .dividedBy(toTokenPrice)
-
-    state.toTokenAmount = NumberUtil.bigNumber(toTokenAmount).toFixed(20)
-    state.toTokenPriceInUSD = toTokenPrice.toNumber()
-    state.toTokenAmount = toTokenAmountValue.toFixed(20)
-  },
-
   setTransactionDetails(transaction: TransactionParams | null) {
-    const { toTokenAddress, toTokenDecimals } = this.getParams()
+    const { sourceTokenAddress, toTokenAddress, toTokenDecimals } = this.getParams()
 
     if (!transaction || !toTokenAddress || !toTokenDecimals) {
       return
     }
 
-    this.setToTokenAmountValue(transaction.toAmount, toTokenAddress)
-
     const toTokenPrice = state.tokensPriceMap[toTokenAddress] || '0'
+    state.toTokenAmount = NumberUtil.bigNumber(transaction.toAmount)
+      .dividedBy(10 ** toTokenDecimals)
+      .toFixed(20)
     state.toTokenPriceInUSD = NumberUtil.bigNumber(toTokenPrice).toNumber()
     state.gasPriceInUSD = this.calculateGasPriceInUSD(transaction.gas, transaction.gasPrice)
+
+    const isSourceTokenIsNetworkToken = sourceTokenAddress === ConstantsUtil.NATIVE_TOKEN_ADDRESS
+    const totalNativeTokenCostInUSD = isSourceTokenIsNetworkToken
+      ? NumberUtil.bigNumber(state.sourceTokenPriceInUSD).plus(state.gasPriceInUSD)
+      : state.gasPriceInUSD
+    const insufficientBalance = NumberUtil.bigNumber(totalNativeTokenCostInUSD).isGreaterThan(
+      state.networkBalanceInUSD
+    )
+
+    if (insufficientBalance) {
+      state.inputError = insufficientBalance ? 'Insufficient balance' : undefined
+    }
+
     state.priceImpact = this.calculatePriceImpact(transaction.toAmount, state.gasPriceInUSD)
     state.maxSlippage = this.calculateMaxSlippage()
   }
