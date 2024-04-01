@@ -4,7 +4,7 @@ import { expect } from '@playwright/test'
 import { BASE_URL } from '../constants'
 import { doActionAndWaitForNewPage } from '../utils/actions'
 
-export type ModalFlavor = 'default' | 'siwe' | 'email'
+export type ModalFlavor = 'default' | 'siwe' | 'email' | 'wallet'
 
 export class ModalPage {
   private readonly baseURL = BASE_URL
@@ -62,9 +62,21 @@ export class ModalPage {
     await this.page.getByTestId('wui-email-input').locator('input').focus()
     await this.page.getByTestId('wui-email-input').locator('input').fill(email)
     await this.page.getByTestId('wui-email-input').locator('input').press('Enter')
+    await expect(
+      this.page.getByText(email),
+      `Expected current email: ${email} to be visible on the notification screen`
+    ).toBeVisible({
+      timeout: 10_000
+    })
   }
 
   async enterOTP(otp: string) {
+    await expect(this.page.getByText('Confirm Email')).toBeVisible({
+      timeout: 10_000
+    })
+    await expect(this.page.getByText('Enter the code we sent')).toBeVisible({
+      timeout: 10_000
+    })
     const splitted = otp.split('')
     // Remove empy space in OTP code 111 111
     splitted.splice(3, 1)
@@ -154,12 +166,20 @@ export class ModalPage {
     await this.page.getByTestId('account-button').click()
     await this.page.getByTestId('w3m-account-select-network').click()
     await this.page.getByTestId(`w3m-network-switch-${network}`).click()
-    await this.page.getByTestId(`w3m-header-close`).click()
+    await this.page.getByTestId('w3m-header-close').click()
   }
 
   async clickWalletDeeplink() {
     await this.connectButton.click()
     await this.page.getByTestId('wallet-selector-react-wallet-v2').click()
     await this.page.getByTestId('tab-desktop').click()
+  }
+
+  async openAccount() {
+    await this.page.getByTestId('account-button').click()
+  }
+
+  async closeModal() {
+    await this.page.getByTestId('w3m-header-close')?.click?.()
   }
 }

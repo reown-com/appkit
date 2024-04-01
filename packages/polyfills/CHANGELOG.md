@@ -1,5 +1,23 @@
 # @web3modal/polyfills
 
+## 4.1.3-5f2ae345.1
+
+### Patch Changes
+
+- canary: test imports
+
+## 4.1.3-8e039e.0
+
+### Patch Changes
+
+- feat: update optional dependencies
+
+## 4.1.2
+
+### Patch Changes
+
+- 4.1.2 release
+
 ## 4.2.0-4b5257b4.1
 
 ### Minor Changes

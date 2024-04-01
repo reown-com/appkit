@@ -4,7 +4,6 @@ import {
   AssetUtil,
   ConnectionController,
   ConnectorController,
-  ConstantsUtil,
   CoreHelperUtil,
   EventsController,
   OptionsController,
@@ -16,6 +15,7 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
+import { ConstantsUtil } from '@web3modal/scaffold-utils'
 
 @customElement('w3m-connect-view')
 export class W3mConnectView extends LitElement {
