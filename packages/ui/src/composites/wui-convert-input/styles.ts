@@ -6,8 +6,6 @@ export default css`
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    background: var(--wui-gray-glass-002);
-    border: 1px solid var(--wui-gray-glass-005);
     border-radius: var(--wui-border-radius-s);
     padding: var(--wui-spacing-xl);
     padding-right: var(--wui-spacing-s);
@@ -15,11 +13,35 @@ export default css`
     height: 100px;
     box-sizing: border-box;
     position: relative;
-    transition: background 0.2s linear;
   }
 
-  :host > wui-flex.focus {
-    background: var(--wui-gray-glass-005);
+  :host > wui-flex > svg.input_mask {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+  }
+
+  :host wui-flex .input_mask__border,
+  :host wui-flex .input_mask__background {
+    transition: fill var(--wui-duration-md) var(--wui-ease-out-power-1);
+    will-change: fill;
+  }
+
+  :host wui-flex .input_mask__border {
+    fill: var(--wui-gray-glass-005);
+  }
+
+  :host wui-flex .input_mask__background {
+    fill: var(--wui-gray-glass-002);
+  }
+
+  :host wui-flex.focus .input_mask__border {
+    fill: var(--wui-gray-glass-020);
+  }
+
+  :host > wui-flex .swap-input,
+  :host > wui-flex .swap-token-button {
+    z-index: 10;
   }
 
   :host > wui-flex .swap-input {
@@ -54,6 +76,7 @@ export default css`
     line-height: 130%;
     letter-spacing: -1.28px;
     outline: none;
+    caret-color: var(--wui-color-accent-100);
   }
 
   :host > wui-flex .swap-input input:focus-visible {

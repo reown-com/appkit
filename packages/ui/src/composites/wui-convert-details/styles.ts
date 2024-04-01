@@ -16,15 +16,12 @@ export default css`
     background: none;
     padding: var(--wui-spacing-s);
     border-radius: var(--wui-border-radius-xxs);
-    transition: background 0.2s linear;
-  }
-
-  .details-container > wui-flex > button:hover {
-    background: var(--wui-gray-glass-002);
+    cursor: pointer;
   }
 
   .details-content-container {
     padding: var(--wui-spacing-1xs);
+    padding-top: 0px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -39,7 +36,7 @@ export default css`
     padding: var(--wui-spacing-s);
     padding-left: var(--wui-spacing-s);
     padding-right: calc(2px + var(--wui-spacing-xs));
-    border-radius: var(--wui-border-radius-xxs);
+    border-radius: var(--wui-border-radius-4xs);
     background: var(--wui-gray-glass-002);
   }
 

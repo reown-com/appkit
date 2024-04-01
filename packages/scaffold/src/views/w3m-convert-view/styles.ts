@@ -24,23 +24,15 @@ export default css`
     position: relative;
   }
 
-  .replace-tokens-button-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: var(--wui-color-modal-bg);
-    border-radius: calc(var(--wui-border-radius-s) - 2px);
-    padding: 5px;
-  }
-
   .replace-tokens-button {
     display: flex;
     justify-content: center;
     align-items: center;
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     gap: var(--wui-spacing-1xs);
     height: 40px;
     width: 40px;
@@ -48,11 +40,13 @@ export default css`
     border: none;
     border-radius: var(--wui-border-radius-xxs);
     background: var(--wui-gray-glass-005);
+    transition: background-color var(--wui-duration-md) var(--wui-ease-out-power-1);
+    will-change: background-color;
+    z-index: 20;
   }
 
   .replace-tokens-button:hover {
     background: var(--wui-gray-glass-010);
-    cursor: pointer;
   }
 
   .details-container > wui-flex {

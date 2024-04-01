@@ -1,6 +1,13 @@
 import { css } from 'lit'
 
 export default css`
+  :host {
+    --tokens-scroll--top-opacity: 0;
+    --tokens-scroll--bottom-opacity: 1;
+    --suggested-tokens-scroll--left-opacity: 0;
+    --suggested-tokens-scroll--right-opacity: 1;
+  }
+
   :host > wui-flex:first-child {
     overflow-y: hidden;
     overflow-x: hidden;

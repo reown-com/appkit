@@ -54,9 +54,9 @@ function headings() {
     WalletReceive: 'Receive',
     WalletCompatibleNetworks: 'Compatible Networks',
     Convert: 'Convert',
-    ConvertSelectToken: 'Select Token',
-    ConvertSelectNetwork: 'Select Network',
-    ConvertPreview: 'Preview Convert',
+    ConvertSelectToken: 'Select token',
+    ConvertSelectNetwork: 'Select network',
+    ConvertPreview: 'Preview convert',
     WalletSend: 'Send',
     WalletSendPreview: 'Review send',
     WalletSendSelectToken: 'Select Token'

@@ -31,7 +31,7 @@ export class WuiConvertDetails extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex flexDirection="column" alignItems="center" gap="xs" class="details-container">
+      <wui-flex flexDirection="column" alignItems="center" gap="1xs" class="details-container">
         <wui-flex flexDirection="column">
           <button @click=${this.toggleDetails.bind(this)}>
             <wui-flex justifyContent="space-between" .padding=${['0', 'xs', '0', 'xs']}>

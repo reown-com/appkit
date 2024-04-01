@@ -74,6 +74,11 @@ export default css`
     cursor: not-allowed;
   }
 
+  .cancel-button:hover,
+  .convert-button:hover {
+    cursor: pointer;
+  }
+
   .action-buttons-container > button.cancel-button {
     flex: 2;
   }

@@ -7,10 +7,11 @@ import {
   RouterController,
   CoreHelperUtil,
   NetworkController,
-  ModalController
+  ModalController,
+  ConstantsUtil
 } from '@web3modal/core'
-import type { TokenInfo } from '@web3modal/core/src/controllers/ConvertController.js'
 import { NumberUtil } from '@web3modal/common'
+import type { TokenInfo } from '@web3modal/core/src/controllers/ConvertApiController.js'
 
 type Target = 'sourceToken' | 'toToken'
 
@@ -115,6 +116,7 @@ export class W3mConvertView extends LitElement {
   }
 
   public override disconnectedCallback() {
+    ConvertController.setLoading(false)
     this.unsubscribe.forEach(unsubscribe => unsubscribe?.())
     clearInterval(this.gasFeeIntervalId)
   }
@@ -122,7 +124,7 @@ export class W3mConvertView extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex flexDirection="column" padding="s" gap="s">
+      <wui-flex flexDirection="column" padding="l" gap="s">
         ${this.initialized ? this.templateSwap() : this.templateLoading()}
       </wui-flex>
     `
@@ -135,7 +137,7 @@ export class W3mConvertView extends LitElement {
 
   private templateSwap() {
     return html`
-      <wui-flex flexDirection="column" gap="s">
+      <wui-flex flexDirection="column" gap="l">
         <wui-flex
           flexDirection="column"
           alignItems="center"
@@ -160,26 +162,9 @@ export class W3mConvertView extends LitElement {
 
   private templateReplaceTokensButton() {
     return html`
-      <div class="replace-tokens-button-container" @click=${this.onSwitchTokens.bind(this)}>
-        <button class="replace-tokens-button">
-          <svg
-            width="20"
-            height="20"
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            viewBox="0 0 20 20"
-            fill="none"
-          >
-            <path
-              fill-rule="evenodd"
-              clip-rule="evenodd"
-              d="M8.30713 0.292893C8.69766 0.683417 8.69766 1.31658 8.30713 1.70711L6.41424 3.6H11.3404C13.8369 3.6 16.0533 5.1975 16.8427 7.56588L16.9487 7.88377C17.1234 8.40772 16.8402 8.97404 16.3163 9.14868C15.7923 9.32333 15.226 9.04017 15.0513 8.51623L14.9454 8.19834C14.4281 6.64664 12.976 5.6 11.3404 5.6H6.41424L8.30713 7.49289C8.69766 7.88342 8.69766 8.51658 8.30713 8.90711C7.91661 9.29763 7.28344 9.29763 6.89292 8.90711L3.29292 5.30711C2.9024 4.91658 2.9024 4.28342 3.29292 3.89289L6.89292 0.292893C7.28344 -0.0976311 7.91661 -0.0976311 8.30713 0.292893ZM3.6838 10.8513C4.20774 10.6767 4.77406 10.9598 4.94871 11.4838L5.05467 11.8017C5.57191 13.3534 7.02404 14.4 8.65967 14.4L13.5858 14.4L11.6929 12.5071C11.3024 12.1166 11.3024 11.4834 11.6929 11.0929C12.0834 10.7024 12.7166 10.7024 13.1071 11.0929L16.7071 14.6929C17.0977 15.0834 17.0977 15.7166 16.7071 16.1071L13.1071 19.7071C12.7166 20.0976 12.0834 20.0976 11.6929 19.7071C11.3024 19.3166 11.3024 18.6834 11.6929 18.2929L13.5858 16.4L8.65967 16.4C6.16317 16.4 3.94677 14.8025 3.15731 12.4341L3.05134 12.1162C2.8767 11.5923 3.15986 11.026 3.6838 10.8513Z"
-              fill="#788181"
-            />
-          </svg>
-        </button>
-      </div>
+      <button class="replace-tokens-button" @click=${this.onSwitchTokens.bind(this)}>
+        <wui-icon name="recycleHorizontal" color="fg-250" size="lg"></wui-icon>
+      </button>
     `
   }
 
@@ -229,7 +214,10 @@ export class W3mConvertView extends LitElement {
     ></wui-convert-input>`
   }
 
-  private onSetMaxValue(target: Target, balance: string | undefined) {
+  private onSetMaxValue(target: Target, balance: string | undefined, address: string | undefined) {
+    const token = target === 'sourceToken' ? this.sourceToken : this.toToken
+    const isNetworkToken = token?.address === ConstantsUtil.NATIVE_TOKEN_ADDRESS
+
     let value = '0'
 
     if (!balance) {
@@ -246,8 +234,12 @@ export class W3mConvertView extends LitElement {
       return
     }
 
-    const amountOfTokenGasRequires = this.gasPriceInUSD / this.sourceTokenPriceInUSD
-    const maxValue = NumberUtil.bigNumber(balance).minus(amountOfTokenGasRequires)
+    const amountOfTokenGasRequires = NumberUtil.bigNumber(this.gasPriceInUSD.toFixed(5)).dividedBy(
+      this.sourceTokenPriceInUSD
+    )
+    const maxValue = isNetworkToken
+      ? NumberUtil.bigNumber(balance).minus(amountOfTokenGasRequires)
+      : NumberUtil.bigNumber(balance)
 
     this.handleChangeAmount(target, maxValue.isGreaterThan(0) ? maxValue.toFixed(20) : '0')
   }

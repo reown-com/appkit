@@ -41,7 +41,7 @@ import {
 } from './utils/helpers.js'
 import { W3mFrameHelpers, W3mFrameRpcConstants } from '@web3modal/wallet'
 import type { W3mFrameProvider } from '@web3modal/wallet'
-import { ConstantsUtil as CoreConstants } from '@web3modal/core'
+import { ConstantsUtil as CoreConstants, ModalController, RouterController } from '@web3modal/core'
 import type { defaultWagmiConfig as coreConfig } from './utils/defaultWagmiCoreConfig.js'
 import type { defaultWagmiConfig as reactConfig } from './utils/defaultWagmiReactConfig.js'
 
@@ -448,9 +448,17 @@ export class Web3Modal extends Web3ModalScaffold {
       })
 
       provider.onRpcRequest(request => {
+        console.log('>>> [onRpcRequest]: ', request, RouterController.state.transactionSuccessStack)
+
         if (W3mFrameHelpers.checkIfRequestExists(request)) {
           if (!W3mFrameHelpers.checkIfRequestIsAllowed(request)) {
-            super.open({ view: 'ApproveTransaction' })
+            if (ModalController.state.open) {
+              if (RouterController.state.transactionSuccessStack?.length > 0) {
+                RouterController.push('ApproveTransaction')
+              }
+            } else {
+              super.open({ view: 'ApproveTransaction' })
+            }
           }
         } else {
           super.open()
@@ -464,8 +472,24 @@ export class Web3Modal extends Web3ModalScaffold {
         }
       })
 
-      provider.onRpcResponse(() => {
-        super.close()
+      provider.onRpcResponse(receive => {
+        console.log('>>> [onRpcResponse]: ', receive)
+        // @ts-ignore
+        const payload = receive?.payload
+        // @ts-ignore
+        const isError = receive?.type === '@w3m-frame/RPC_REQUEST_ERROR'
+
+        if (isError) {
+          RouterController.popTransactionSuccessAction()
+        }
+
+        const isPayloadString = typeof payload === 'string'
+        const isAddress = isPayloadString ? payload?.startsWith('0x') : false
+        const isCompleted = isAddress && payload?.length > 10
+
+        if (isCompleted && RouterController.state.transactionSuccessStack?.length > 0) {
+          RouterController.popTransactionSuccessAction()
+        }
       })
 
       provider.onNotConnected(() => {
