@@ -47,7 +47,9 @@ export const testMEmail = base.extend<ModalFixture>({
         otp = email.getOtpCodeFromBody(emailBody)
       }
     }
-    if (otp.length !== 6) {
+    if (otp.length !== 7) {
+      // eslint-disable-next-line no-console
+      console.log('Getting the OTP code from body', { previousOtp: otp })
       otp = email.getOtpCodeFromBody(emailBody)
     }
     await modalPage.enterOTP(otp)
