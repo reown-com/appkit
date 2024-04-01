@@ -234,8 +234,9 @@ export class Web3Modal extends Web3ModalScaffold {
   private async syncAccount({
     address,
     isConnected,
-    chainId
-  }: Pick<GetAccountReturnType, 'address' | 'isConnected' | 'chainId'>) {
+    chainId,
+    connector
+  }: Pick<GetAccountReturnType, 'address' | 'isConnected' | 'chainId' | 'connector'>) {
     this.resetAccount()
     this.syncNetwork(address, chainId, isConnected)
     if (isConnected && address && chainId) {
@@ -245,6 +246,7 @@ export class Web3Modal extends Web3ModalScaffold {
       await Promise.all([
         this.syncProfile(address, chainId),
         this.syncBalance(address, chainId),
+        this.syncConnectedWalletInfo(connector),
         this.fetchTokenBalance(),
         this.getApprovedCaipNetworksData()
       ])
@@ -328,6 +330,27 @@ export class Web3Modal extends Web3ModalScaffold {
       return
     }
     this.setBalance(undefined, undefined)
+  }
+
+  private async syncConnectedWalletInfo(connector: GetAccountReturnType['connector']) {
+    if (!connector) {
+      throw Error('syncConnectedWalletInfo - connector is undefined')
+    }
+
+    if (connector.id === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID && connector.getProvider) {
+      const walletConnectProvider = (await connector.getProvider()) as Awaited<
+        ReturnType<(typeof EthereumProvider)['init']>
+      >
+      if (walletConnectProvider.session) {
+        this.setConnectedWalletInfo({
+          ...walletConnectProvider.session.peer.metadata,
+          name: walletConnectProvider.session.peer.metadata.name,
+          icon: walletConnectProvider.session.peer.metadata.icons?.[0]
+        })
+      }
+    } else {
+      this.setConnectedWalletInfo({ name: connector.name, icon: connector.icon })
+    }
   }
 
   private syncConnectors(
@@ -441,7 +464,12 @@ export class Web3Modal extends Web3ModalScaffold {
           return
         }
         const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
-        this.syncAccount({ address: address as `0x${string}`, chainId, isConnected: true })
+        this.syncAccount({
+          address: address as `0x${string}`,
+          chainId,
+          isConnected: true,
+          connector
+        })
       })
     }
   }

@@ -8,7 +8,8 @@ import type {
   ThemeControllerState,
   ThemeMode,
   ThemeVariables,
-  ModalControllerState
+  ModalControllerState,
+  ConnectedWalletInfo
 } from '@web3modal/core'
 import {
   AccountController,
@@ -108,6 +109,14 @@ export class Web3ModalScaffold {
     return ThemeController.subscribe(callback)
   }
 
+  public getWalletInfo() {
+    return AccountController.state.connectedWalletInfo
+  }
+
+  public subscribeWalletInfo(callback: (newState: ConnectedWalletInfo) => void) {
+    return AccountController.subscribeKey('connectedWalletInfo', callback)
+  }
+
   public getState() {
     return { ...PublicStateController.state }
   }
@@ -205,6 +214,11 @@ export class Web3ModalScaffold {
   protected setSmartAccountDeployed: (typeof AccountController)['setSmartAccountDeployed'] =
     isDeployed => {
       AccountController.setSmartAccountDeployed(isDeployed)
+    }
+
+  protected setConnectedWalletInfo: (typeof AccountController)['setConnectedWalletInfo'] =
+    connectedWalletInfo => {
+      AccountController.setConnectedWalletInfo(connectedWalletInfo)
     }
 
   protected setSmartAccountEnabledNetworks: (typeof NetworkController)['setSmartAccountEnabledNetworks'] =

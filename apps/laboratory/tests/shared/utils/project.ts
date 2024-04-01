@@ -53,7 +53,8 @@ const customProjectProperties: CustomProjectProperties = {
     testIgnore: /^email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts|smart-account\.spec\.ts.*$/u
   },
   'Desktop Brave/solana': {
-    testIgnore: /^email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts|smart-account\.spec\.ts.*$/u
+    testIgnore: /^email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts|smart-account\.spec\.ts.*$/u,
+    useOptions: braveOptions
   },
   'Desktop Firefox/solana': {
     testIgnore: /^email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts|smart-account\.spec\.ts.*$/u
