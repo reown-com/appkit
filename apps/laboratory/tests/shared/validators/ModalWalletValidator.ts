@@ -1,7 +1,7 @@
 import { expect } from '@playwright/test'
 import { ModalValidator } from './ModalValidator'
 
-const emailAccountAddresses = [
+const testEmailsEOAAddresses = [
   '0x6DAa039A2bFBb48dE6c02E3333a30856C047D73f',
   '0x804642811117f5063594D0Db0273EA3C1959AE2C',
   '0x871f447Cc32EA3F28Ea09910BE124c451CCcAE4c',
@@ -29,7 +29,7 @@ export class ModalWalletValidator extends ModalValidator {
     const address = this.page.getByTestId('account-settings-address')
 
     await expect(address, 'Smart account sepolia address should be present').not.toHaveText(
-      formatAddress(emailAccountAddresses[index] || '')
+      formatAddress(testEmailsEOAAddresses[index] || '')
     )
   }
 
@@ -37,7 +37,7 @@ export class ModalWalletValidator extends ModalValidator {
     const address = this.page.getByTestId('account-settings-address')
 
     await expect(address, 'EOA address should be present').toHaveText(
-      formatAddress(emailAccountAddresses[index] || '')
+      formatAddress(testEmailsEOAAddresses[index] || '')
     )
   }
 }
