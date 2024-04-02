@@ -102,5 +102,5 @@ jobs:
         if: always()
         with:
           name: screenshots
-          path: ./apps/laboratory/screenshots/
+          path: ./apps/laboratory/test-results/
           retention-days: 7
