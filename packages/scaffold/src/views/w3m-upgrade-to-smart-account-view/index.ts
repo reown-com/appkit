@@ -1,11 +1,14 @@
 import { customElement } from '@web3modal/ui'
-import { RouterController } from '@web3modal/core'
+import { ConnectorController, RouterController, SnackController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
+import { W3mFrameRpcConstants } from '@web3modal/wallet'
 
 @customElement('w3m-upgrade-to-smart-account-view')
 export class W3mUpgradeToSmartAccountView extends LitElement {
   // -- State & Properties -------------------------------- //
+  @state() private emailConnector = ConnectorController.getEmailConnector()
+
   @state() private loading = false
 
   // -- Render -------------------------------------------- //
@@ -55,7 +58,7 @@ export class W3mUpgradeToSmartAccountView extends LitElement {
     return html`<wui-flex .padding=${['0', '2l', '0', '2l'] as const} gap="s">
       <wui-button
         variant="accentBg"
-        @click=${this.onRedirectToAccount.bind(this)}
+        @click=${this.redirectToAccount.bind(this)}
         size="lg"
         borderRadius="xs"
       >
@@ -65,14 +68,33 @@ export class W3mUpgradeToSmartAccountView extends LitElement {
         .loading=${this.loading}
         size="lg"
         borderRadius="xs"
-        @click=${this.onActivateAccount.bind(this)}
+        @click=${this.setPreferSmartAccount.bind(this)}
         >Continue
       </wui-button>
     </wui-flex>`
   }
 
-  private onActivateAccount = () => RouterController.push('ChooseAccountName')
-  private onRedirectToAccount = () => RouterController.push('Account')
+  private setPreferSmartAccount = async () => {
+    if (this.emailConnector) {
+      try {
+        this.loading = true
+        await this.emailConnector.provider.setPreferredAccount(
+          W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+        )
+        await this.emailConnector.provider.connect({
+          preferredAccountType: W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+        })
+        this.loading = false
+        RouterController.push('Account')
+      } catch (e) {
+        SnackController.showError('Error upgrading to smart account')
+      }
+    }
+  }
+
+  private redirectToAccount() {
+    RouterController.push('Account')
+  }
 }
 
 declare global {
