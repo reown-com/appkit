@@ -1,5 +1,33 @@
 # @web3modal/scaffold
 
+## 4.1.4
+
+### Patch Changes
+
+- feat: wallet info hook
+
+- Updated dependencies []:
+  - @web3modal/common@4.1.4
+  - @web3modal/wallet@4.1.4
+  - @web3modal/core@4.1.4
+  - @web3modal/siwe@4.1.4
+  - @web3modal/ui@4.1.4
+
+## 4.1.3
+
+### Patch Changes
+
+- feat: wallet info hook
+
+- feat: reset version to 4.1.3
+
+- Updated dependencies []:
+  - @web3modal/common@4.1.3
+  - @web3modal/core@4.1.3
+  - @web3modal/siwe@4.1.3
+  - @web3modal/ui@4.1.3
+  - @web3modal/wallet@4.1.3
+
 ## 4.1.3-5f2ae345.1
 
 ### Patch Changes

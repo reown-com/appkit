@@ -1,5 +1,25 @@
 # @apps/demo
 
+## 4.1.4
+
+### Patch Changes
+
+- feat: wallet info hook
+
+- Updated dependencies []:
+  - @web3modal/wagmi@4.1.4
+
+## 4.1.3
+
+### Patch Changes
+
+- feat: wallet info hook
+
+- feat: reset version to 4.1.3
+
+- Updated dependencies []:
+  - @web3modal/wagmi@4.1.3
+
 ## 4.1.3-5f2ae345.1
 
 ### Patch Changes
