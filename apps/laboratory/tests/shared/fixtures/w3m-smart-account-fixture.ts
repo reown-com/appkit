@@ -21,7 +21,7 @@ export const testModalSmartAccount = base.extend<ModalFixture & { slowModalPage:
       const email = new Email(mailsacApiKey)
       const tempEmail = email.getEmailAddressToUse(testInfo.parallelIndex)
 
-      await modalPage.emailFlow(tempEmail, context)
+      await modalPage.emailFlow(tempEmail, context, mailsacApiKey)
       await modalPage.switchNetwork('Sepolia')
       await modalPage.page.waitForTimeout(1500)
       await use(modalPage)
