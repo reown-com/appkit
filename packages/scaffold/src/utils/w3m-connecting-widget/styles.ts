@@ -33,7 +33,10 @@ export default css`
     bottom: calc(var(--wui-spacing-3xs) * -1);
     opacity: 0;
     transform: scale(0.5);
-    transition: all var(--wui-ease-out-power-2) var(--wui-duration-lg);
+    transition-property: opacity, transform;
+    transition-duration: var(--wui-duration-lg);
+    transition-timing-function: var(--wui-ease-out-power-2);
+    will-change: opacity, transform;
   }
 
   wui-text[align='center'] {
