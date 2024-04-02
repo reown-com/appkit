@@ -41,11 +41,8 @@ export function WagmiTransactionTest() {
 
   const onSendTransaction = useCallback(() => {
     if (prepareError) {
-      toast({
-        title: 'Error',
-        description: 'Not enough funds for transaction',
-        status: 'error',
-        isClosable: true
+      toast.error('Error', {
+        description: 'Not enough funds for transaction'
       })
     } else {
       setLoading(true)
