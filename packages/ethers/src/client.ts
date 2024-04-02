@@ -259,7 +259,6 @@ export class Web3Modal extends Web3ModalScaffold {
         } else {
           await this.emailProvider?.disconnect()
         }
-        provider?.emit('disconnect')
       },
 
       signMessage: async (message: string) => {
