@@ -1,4 +1,5 @@
 /* eslint-disable no-await-in-loop */
+import { expect } from '@playwright/test'
 import type { Page } from '@playwright/test'
 import { ModalPage } from './ModalPage'
 
@@ -28,5 +29,13 @@ export class ModalWalletPage extends ModalPage {
     await this.page.getByTestId('account-toggle-preferred-account-type').click()
     await this.page.getByTestId('w3m-header-close').click()
     await this.page.waitForTimeout(2000)
+  }
+
+  override async disconnect(): Promise<void> {
+    this.openSettings()
+    const disconnectBtn = this.page.getByTestId('disconnect-button')
+    await expect(disconnectBtn, 'Disconnect button should be visible').toBeVisible()
+    await expect(disconnectBtn, 'Disconnect button should be enabled').toBeEnabled()
+    await disconnectBtn.click({ force: true })
   }
 }

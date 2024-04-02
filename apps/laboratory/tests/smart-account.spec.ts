@@ -2,6 +2,8 @@ import { testModalSmartAccount } from './shared/fixtures/w3m-smart-account-fixtu
 import type { ModalWalletPage } from './shared/pages/ModalWalletPage'
 import type { ModalWalletValidator } from './shared/validators/ModalWalletValidator'
 
+const NOT_ENABLED_SMART_ACCOUNT_INDEX = 10
+
 testModalSmartAccount.beforeEach(async ({ modalValidator }) => {
   await modalValidator.expectConnected()
 })
@@ -45,8 +47,26 @@ testModalSmartAccount(
     const walletModalValidator = modalValidator as ModalWalletValidator
 
     await walletModalPage.togglePreferredAccountType()
-    await walletModalPage.switchNetwork('Polygon')
+    await walletModalPage.switchNetwork('Avalanche')
     await walletModalPage.openSettings()
     await walletModalValidator.expectEoaAddress(testInfo.parallelIndex)
+  }
+)
+
+testModalSmartAccount(
+  'it should use an eoa when disconnecting and connecting to a not enabled address',
+  async ({ modalPage, modalValidator, context }) => {
+    const walletModalPage = modalPage as ModalWalletPage
+    const walletModalValidator = modalValidator as ModalWalletValidator
+
+    await walletModalPage.togglePreferredAccountType()
+    await walletModalPage.disconnect()
+    await walletModalPage.page.waitForTimeout(2500)
+
+    await walletModalPage.emailFlow('web3modal-smart-account@mailsac.com', context)
+    await walletModalPage.switchNetwork('Sepolia')
+    await walletModalPage.openSettings()
+
+    await walletModalValidator.expectEoaAddress(NOT_ENABLED_SMART_ACCOUNT_INDEX)
   }
 )
