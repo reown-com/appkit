@@ -74,4 +74,7 @@
   body {
     @apply bg-background text-foreground;
   }
+  w3m-onramp-widget {
+    width: 100%;
+  }
 }
