@@ -10,7 +10,8 @@ import {
   watchAccount,
   watchConnectors,
   waitForTransactionReceipt,
-  estimateGas
+  estimateGas,
+  getAccount
 } from '@wagmi/core'
 import { mainnet } from 'viem/chains'
 import { prepareTransactionRequest, sendTransaction as wagmiSendTransaction } from '@wagmi/core'
@@ -509,6 +510,7 @@ export class Web3Modal extends Web3ModalScaffold {
         const isCompleted = isAddress && payload?.length > 10
 
         if (isCompleted && RouterController.state.transactionSuccessStack?.length > 0) {
+          console.log('>>> [onRpcResponse]: RouterController.popTransactionSuccessAction()')
           RouterController.popTransactionSuccessAction()
         }
       })
