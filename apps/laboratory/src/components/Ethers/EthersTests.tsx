@@ -1,4 +1,3 @@
-import { useWeb3ModalAccount } from '@web3modal/ethers/react'
 import { EthersSignMessageTest } from './EthersSignMessageTest'
 import { EthersSignTypedDataTest } from './EthersSignTypedDataTest'
 import { EthersTransactionTest } from './EthersTransactionTest'
@@ -8,9 +7,7 @@ import { Column } from '@/components/ui/column'
 import { Span } from '@/components/ui/typography'
 
 export function EthersTests() {
-  const { isConnected } = useWeb3ModalAccount()
-
-  return isConnected ? (
+  return (
     <Card className="mb-6">
       <CardHeader className="border-b border-muted bg-muted/20 px-6 py-4">
         <CardTitle className="text-lg">Test Interactions</CardTitle>
@@ -34,5 +31,5 @@ export function EthersTests() {
         </Column>
       </CardContent>
     </Card>
-  ) : null
+  )
 }

@@ -21,7 +21,7 @@ export function Web3ModalButtons() {
           </Column>
           <Column className="py-4 first:pt-0 last:pb-0 items-start gap-4">
             <Span className="text-sm uppercase">Onramp Widget</Span>
-            <w3m-onramp-widget />
+            <w3m-onramp-widget className="w-full" />
           </Column>
         </Column>
       </CardContent>
