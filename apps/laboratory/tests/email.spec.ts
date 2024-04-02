@@ -43,3 +43,8 @@ testMEmail('it should switch network and sign', async ({ modalPage, modalValidat
   await modalPage.approveSign()
   await modalValidator.expectAcceptedSign()
 })
+
+testMEmail('it should disconnect correctly', async ({ modalPage, modalValidator }) => {
+  await modalPage.disconnect()
+  await modalValidator.expectDisconnected()
+})
