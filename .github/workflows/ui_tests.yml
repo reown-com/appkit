@@ -28,6 +28,11 @@ on:
         default: false
         required: false
         type: boolean
+      secure-site-url:
+        description: 'Secure site SDK url'
+        default: 'https://secure.walletconnect.com/sdk'
+        required: false
+        type: string
     secrets:
       NEXT_PUBLIC_PROJECT_ID:
         required: true
@@ -83,6 +88,7 @@ jobs:
           SKIP_PLAYWRIGHT_WEBSERVER: ${{ inputs.skip-playwright-webserver }}
           NEXTAUTH_SECRET: ${{ secrets.TESTS_NEXTAUTH_SECRET }}
           MAILSAC_API_KEY: ${{ secrets.TESTS_MAILSEC_API_KEY }}
+          NEXT_PUBLIC_SECURE_SITE_SDK_URL: ${{ inputs.secure-site-url }}
           CI: true
         working-directory: ./apps/laboratory/
         run: npm run ${{ inputs.command }}
