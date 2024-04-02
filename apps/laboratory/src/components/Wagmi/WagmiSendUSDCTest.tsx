@@ -1,7 +1,13 @@
-import { Button, useToast, Stack, Link, Text, Spacer, Input } from '@chakra-ui/react'
+import { toast } from 'sonner'
 import { useAccount, useWriteContract } from 'wagmi'
 import { useCallback, useState } from 'react'
 import { optimism, sepolia } from 'wagmi/chains'
+import { Button, buttonVariants } from '@/components/ui/button'
+import { Span } from '@/components/ui/typography'
+import { Column } from '@/components/ui/column'
+import { Input } from '@/components/ui/input'
+import Link from 'next/link'
+import { cn } from '@/lib/utils'
 
 const minTokenAbi = [
   {
@@ -35,26 +41,19 @@ export function WagmiSendUSDCTest() {
   const [address, setAddress] = useState('')
   const [amount, setAmount] = useState('')
   const { status, chain } = useAccount()
-  const toast = useToast()
 
   const { writeContract } = useWriteContract({
     mutation: {
       onSuccess: hash => {
         setLoading(false)
-        toast({
-          title: 'Transaction Success',
-          description: hash,
-          status: 'success',
-          isClosable: true
+        toast.success('Transaction Success', {
+          description: hash
         })
       },
       onError: () => {
         setLoading(false)
-        toast({
-          title: 'Error',
-          description: 'Failed to send transaction',
-          status: 'error',
-          isClosable: true
+        toast.error('Error', {
+          description: 'Failed to send transaction'
         })
       }
     }
@@ -73,8 +72,7 @@ export function WagmiSendUSDCTest() {
   const allowedChains = [sepolia.id, optimism.id] as number[]
 
   return allowedChains.includes(Number(chain?.id)) && status === 'connected' ? (
-    <Stack direction={['column', 'column', 'row']}>
-      <Spacer />
+    <Column className="sm:flex-row sm:items-center w-full gap-4 justify-between">
       <Input placeholder="0xf34ffa..." onChange={e => setAddress(e.target.value)} value={address} />
       <Input
         placeholder="Units (1000000000 for 1 USDC)"
@@ -83,23 +81,27 @@ export function WagmiSendUSDCTest() {
         type="number"
       />
       <Button
+        className="w-4/6"
         data-test-id="sign-transaction-button"
         onClick={onSendTransaction}
         disabled={!writeContract}
-        isDisabled={isLoading}
-        width="80%"
+        aria-disabled={isLoading}
+        variant="default"
       >
         Send USDC
       </Button>
-      <Link isExternal href="https://faucet.circle.com">
-        <Button variant="outline" colorScheme="blue" isDisabled={isLoading}>
-          USDC Faucet
-        </Button>
+      <Link
+        aria-disabled={isLoading}
+        className={cn(buttonVariants({ variant: 'outline' }))}
+        target="_blank"
+        href="https://faucet.circle.com"
+      >
+        USDC Faucet
       </Link>
-    </Stack>
+    </Column>
   ) : (
-    <Text fontSize="md" color="yellow">
+    <Span className="text-red-700 dark:text-red-400">
       Switch to Sepolia or OP to test this feature
-    </Text>
+    </Span>
   )
 }
