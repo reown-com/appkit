@@ -6,11 +6,6 @@ import { doActionAndWaitForNewPage } from '../utils/actions'
 import { Email } from '../utils/email'
 import { DeviceRegistrationPage } from './DeviceRegistrationPage'
 
-const mailsacApiKey = process.env['MAILSAC_API_KEY'] || ''
-if (!mailsacApiKey) {
-  throw new Error('MAILSAC_API_KEY is not set')
-}
-
 export type ModalFlavor = 'default' | 'siwe' | 'email' | 'wallet'
 
 export class ModalPage {
@@ -59,7 +54,11 @@ export class ModalPage {
     return this.assertDefined(await qrCode.getAttribute('uri'))
   }
 
-  async emailFlow(emailAddress: string, context: BrowserContext): Promise<void> {
+  async emailFlow(
+    emailAddress: string,
+    context: BrowserContext,
+    mailsacApiKey: string
+  ): Promise<void> {
     await this.load()
 
     const email = new Email(mailsacApiKey)

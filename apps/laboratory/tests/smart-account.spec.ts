@@ -4,6 +4,11 @@ import type { ModalWalletValidator } from './shared/validators/ModalWalletValida
 
 const NOT_ENABLED_SMART_ACCOUNT_INDEX = 10
 
+const mailsacApiKey = process.env['MAILSAC_API_KEY']
+if (!mailsacApiKey) {
+  throw new Error('MAILSAC_API_KEY is not set')
+}
+
 testModalSmartAccount.beforeEach(async ({ modalValidator }) => {
   await modalValidator.expectConnected()
 })
@@ -63,7 +68,7 @@ testModalSmartAccount(
     await walletModalPage.disconnect()
     await walletModalPage.page.waitForTimeout(2500)
 
-    await walletModalPage.emailFlow('web3modal-smart-account@mailsac.com', context)
+    await walletModalPage.emailFlow('web3modal-smart-account@mailsac.com', context, mailsacApiKey)
     await walletModalPage.switchNetwork('Sepolia')
     await walletModalPage.openSettings()
 

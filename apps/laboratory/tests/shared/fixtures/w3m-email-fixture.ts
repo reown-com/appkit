@@ -18,7 +18,7 @@ export const testMEmail = base.extend<ModalFixture>({
     const email = new Email(mailsacApiKey)
     const tempEmail = email.getEmailAddressToUse(testInfo.parallelIndex)
 
-    await modalPage.emailFlow(tempEmail, context)
+    await modalPage.emailFlow(tempEmail, context, mailsacApiKey)
     await use(modalPage)
   },
   modalValidator: async ({ modalPage }, use) => {
