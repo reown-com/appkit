@@ -2,7 +2,6 @@ import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import type { BlockchainApiEnsError } from '../utils/TypeUtil.js'
-import { SnackController } from './SnackController.js'
 // -- Types --------------------------------------------- //
 
 export interface EnsControllerState {

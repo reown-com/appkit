@@ -62,9 +62,21 @@ export class ModalPage {
     await this.page.getByTestId('wui-email-input').locator('input').focus()
     await this.page.getByTestId('wui-email-input').locator('input').fill(email)
     await this.page.getByTestId('wui-email-input').locator('input').press('Enter')
+    await expect(
+      this.page.getByText(email),
+      `Expected current email: ${email} to be visible on the notification screen`
+    ).toBeVisible({
+      timeout: 10_000
+    })
   }
 
   async enterOTP(otp: string) {
+    await expect(this.page.getByText('Confirm Email')).toBeVisible({
+      timeout: 10_000
+    })
+    await expect(this.page.getByText('Enter the code we sent')).toBeVisible({
+      timeout: 10_000
+    })
     const splitted = otp.split('')
     // Remove empy space in OTP code 111 111
     splitted.splice(3, 1)
@@ -97,7 +109,7 @@ export class ModalPage {
     await accountBtn.click({ force: true })
     const disconnectBtn = this.page.getByTestId('disconnect-button')
     await expect(disconnectBtn, 'Disconnect button should be visible').toBeVisible()
-    await expect(disconnectBtn, 'Disconnect button should be visible').toBeEnabled()
+    await expect(disconnectBtn, 'Disconnect button should be enabled').toBeEnabled()
     await disconnectBtn.click({ force: true })
   }
 

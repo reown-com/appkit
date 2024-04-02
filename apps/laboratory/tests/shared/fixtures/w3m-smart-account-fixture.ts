@@ -13,13 +13,13 @@ if (!mailsacApiKey) {
 // Test Modal + Smart Account
 export const testModalSmartAccount = base.extend<ModalFixture>({
   library: ['wagmi', { option: true }],
-  modalPage: async ({ page, library, context }, use) => {
+  modalPage: async ({ page, library, context }, use, testInfo) => {
     const modalPage = new ModalWalletPage(page, library)
     await modalPage.load()
 
     const email = new Email(mailsacApiKey)
 
-    const tempEmail = email.getSmartAccountEnabledEmail()
+    const tempEmail = email.getEmailAddressToUse(testInfo.parallelIndex)
 
     await email.deleteAllMessages(tempEmail)
     await modalPage.loginWithEmail(tempEmail)

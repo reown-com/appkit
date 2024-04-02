@@ -5,6 +5,7 @@ import { PublicStateController } from './PublicStateController.js'
 import { EventsController } from './EventsController.js'
 import { ModalController } from './ModalController.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
+import { NetworkUtil } from '@web3modal/common'
 
 // -- Types --------------------------------------------- //
 export interface NetworkControllerClient {
@@ -104,6 +105,7 @@ export const NetworkController = {
 
   async switchActiveNetwork(network: NetworkControllerState['caipNetwork']) {
     await this._getClient().switchCaipNetwork(network)
+
     state.caipNetwork = network
     if (network) {
       EventsController.sendEvent({
@@ -125,7 +127,10 @@ export const NetworkController = {
   },
 
   checkIfSmartAccountEnabled() {
-    const networkId = Number(state.caipNetwork?.id?.split(':')?.[1])
+    const networkId = NetworkUtil.caipNetworkIdToNumber(state.caipNetwork?.id)
+    if (!networkId) {
+      return false
+    }
 
     return Boolean(state.smartAccountEnabledNetworks?.includes(networkId))
   },

@@ -37,6 +37,7 @@ import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider'
 import type { Eip1193Provider } from 'ethers'
 import { W3mFrameProvider, W3mFrameHelpers, W3mFrameRpcConstants } from '@web3modal/wallet'
 import type { CombinedProvider } from '@web3modal/scaffold-utils/ethers'
+import { NetworkUtil } from '@web3modal/common'
 
 // -- Types ---------------------------------------------------------------------
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
@@ -69,13 +70,8 @@ interface Info {
   rdns: string
 }
 
-interface Wallet {
+interface EIP6963ProviderDetail {
   info: Info
-  provider: Provider
-}
-
-interface IEIP6963Provider {
-  name: string
   provider: Provider
 }
 
@@ -87,7 +83,7 @@ interface ExternalProvider extends EthereumProvider {
 export class Web3Modal extends Web3ModalScaffold {
   private hasSyncedConnectedAccount = false
 
-  private EIP6963Providers: IEIP6963Provider[] = []
+  private EIP6963Providers: EIP6963ProviderDetail[] = []
 
   private walletConnectProvider?: EthereumProvider
 
@@ -125,7 +121,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
     const networkControllerClient: NetworkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
-        const chainId = HelpersUtil.caipNetworkIdToNumber(caipNetwork?.id)
+        const chainId = NetworkUtil.caipNetworkIdToNumber(caipNetwork?.id)
         if (chainId) {
           try {
             EthersStoreUtil.setError(undefined)
@@ -338,7 +334,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
     return {
       ...state,
-      selectedNetworkId: HelpersUtil.caipNetworkIdToNumber(state.selectedNetworkId)
+      selectedNetworkId: NetworkUtil.caipNetworkIdToNumber(state.selectedNetworkId)
     }
   }
 
@@ -347,7 +343,7 @@ export class Web3Modal extends Web3ModalScaffold {
     return super.subscribeState(state =>
       callback({
         ...state,
-        selectedNetworkId: HelpersUtil.caipNetworkIdToNumber(state.selectedNetworkId)
+        selectedNetworkId: NetworkUtil.caipNetworkIdToNumber(state.selectedNetworkId)
       })
     )
   }
@@ -515,10 +511,10 @@ export class Web3Modal extends Web3ModalScaffold {
     const currentActiveWallet = window?.localStorage.getItem(EthersConstantsUtil.WALLET_ID)
     if (currentActiveWallet) {
       const currentProvider = this.EIP6963Providers.find(
-        provider => provider.name === currentActiveWallet
+        provider => provider.info.name === currentActiveWallet
       )
       if (currentProvider) {
-        this.setEIP6963Provider(currentProvider.provider, currentProvider.name)
+        this.setEIP6963Provider(currentProvider.provider, currentProvider.info.name)
       }
     }
   }
@@ -609,7 +605,7 @@ export class Web3Modal extends Web3ModalScaffold {
         EthersStoreUtil.setProvider(this.emailProvider as unknown as CombinedProvider)
         EthersStoreUtil.setIsConnected(true)
         EthersStoreUtil.setAddress(address as Address)
-        this.setSmartAccountDeployed(smartAccountDeployed)
+        this.setSmartAccountDeployed(Boolean(smartAccountDeployed))
         this.setSmartAccountEnabledNetworks(smartAccountEnabledNetworks)
 
         this.watchEmail()
@@ -798,7 +794,7 @@ export class Web3Modal extends Web3ModalScaffold {
         if (!address) {
           return
         }
-        const chainId = HelpersUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
+        const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
         EthersStoreUtil.setAddress(address as Address)
         EthersStoreUtil.setChainId(chainId)
         EthersStoreUtil.setIsConnected(true)
@@ -830,7 +826,7 @@ export class Web3Modal extends Web3ModalScaffold {
       this.setIsConnected(isConnected)
 
       this.setCaipAddress(caipAddress)
-
+      this.syncConnectedWalletInfo()
       await Promise.all([
         this.syncProfile(address),
         this.syncBalance(address),
@@ -920,6 +916,39 @@ export class Web3Modal extends Web3ModalScaffold {
           this.setBalance(formattedBalance, chain.currency)
         }
       }
+    }
+  }
+
+  private syncConnectedWalletInfo() {
+    const currentActiveWallet = window?.localStorage.getItem(EthersConstantsUtil.WALLET_ID)
+    const providerType = EthersStoreUtil.state.providerType
+
+    if (providerType === ConstantsUtil.EIP6963_CONNECTOR_ID) {
+      if (currentActiveWallet) {
+        const currentProvider = this.EIP6963Providers.find(
+          provider => provider.info.name === currentActiveWallet
+        )
+
+        if (currentProvider) {
+          this.setConnectedWalletInfo({
+            ...currentProvider.info
+          })
+        }
+      }
+    } else if (providerType === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
+      const provider = EthersStoreUtil.state.provider as unknown as EthereumProvider
+
+      if (provider.session) {
+        this.setConnectedWalletInfo({
+          ...provider.session.peer.metadata,
+          name: provider.session.peer.metadata.name,
+          icon: provider.session.peer.metadata.icons?.[0]
+        })
+      }
+    } else if (currentActiveWallet) {
+      this.setConnectedWalletInfo({
+        name: currentActiveWallet
+      })
     }
   }
 
@@ -1116,11 +1145,12 @@ export class Web3Modal extends Web3ModalScaffold {
     }
   }
 
-  private eip6963EventHandler(event: CustomEventInit<Wallet>) {
+  private eip6963EventHandler(event: CustomEventInit<EIP6963ProviderDetail>) {
     if (event.detail) {
       const { info, provider } = event.detail
       const connectors = this.getConnectors()
       const existingConnector = connectors.find(c => c.name === info.name)
+
       if (!existingConnector) {
         const type = PresetsUtil.ConnectorTypesMap[ConstantsUtil.EIP6963_CONNECTOR_ID]
         if (type) {
@@ -1135,8 +1165,8 @@ export class Web3Modal extends Web3ModalScaffold {
           })
 
           const eip6963ProviderObj = {
-            name: info.name,
-            provider
+            provider,
+            info
           }
 
           this.EIP6963Providers.push(eip6963ProviderObj)

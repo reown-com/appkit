@@ -33,6 +33,7 @@ export class W3mEmailVerifyOtpView extends W3mEmailOtpWidget {
   override onOtpSubmit: OnOtpSubmitFn = async otp => {
     try {
       if (this.emailConnector) {
+        const smartAccountEnabled = NetworkController.checkIfSmartAccountEnabled()
         await this.emailConnector.provider.connectOtp({ otp })
         EventsController.sendEvent({ type: 'track', event: 'EMAIL_VERIFICATION_CODE_PASS' })
         await ConnectionController.connectExternal(this.emailConnector)
@@ -42,7 +43,6 @@ export class W3mEmailVerifyOtpView extends W3mEmailOtpWidget {
           properties: { method: 'email', name: this.emailConnector.name || 'Unknown' }
         })
 
-        const smartAccountEnabled = NetworkController.checkIfSmartAccountEnabled()
         if (smartAccountEnabled && !this.smartAccountDeployed) {
           RouterController.push('UpgradeToSmartAccount')
         } else {

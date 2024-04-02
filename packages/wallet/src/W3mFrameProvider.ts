@@ -276,7 +276,7 @@ export class W3mFrameProvider {
     )
   }
 
-  public async setPreferredAccount(type: 'eoa' | 'smartAccount') {
+  public async setPreferredAccount(type: W3mFrameTypes.AccountType) {
     await this.w3mFrame.frameLoadPromise
     this.w3mFrame.events.postAppEvent({
       type: W3mFrameConstants.APP_SET_PREFERRED_ACCOUNT,
@@ -387,7 +387,7 @@ export class W3mFrameProvider {
       if (event.type === W3mFrameConstants.FRAME_SET_PREFERRED_ACCOUNT_SUCCESS) {
         callback(event.payload)
       } else if (event.type === W3mFrameConstants.FRAME_SET_PREFERRED_ACCOUNT_ERROR) {
-        callback({ type: 'eoa' })
+        callback({ type: W3mFrameRpcConstants.ACCOUNT_TYPES.EOA })
       }
     })
   }
@@ -607,7 +607,7 @@ export class W3mFrameProvider {
   private onPreferSmartAccountSuccess(
     event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/SET_PREFERRED_ACCOUNT_SUCCESS' }>
   ) {
-    this.persistPreferredAccount(event.payload.type as 'eoa' | 'smartAccount')
+    this.persistPreferredAccount(event.payload.type as W3mFrameTypes.AccountType)
     this.setPreferredAccountResolver?.resolve(undefined)
   }
 
@@ -640,7 +640,7 @@ export class W3mFrameProvider {
     return Number(W3mFrameStorage.get(W3mFrameConstants.LAST_USED_CHAIN_KEY))
   }
 
-  private persistPreferredAccount(type: 'eoa' | 'smartAccount') {
+  private persistPreferredAccount(type: W3mFrameTypes.AccountType) {
     W3mFrameStorage.set(W3mFrameConstants.PREFERRED_ACCOUNT_TYPE, type)
   }
 

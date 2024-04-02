@@ -1,6 +1,6 @@
 export const W3mFrameConstants = {
   SECURE_SITE_SDK:
-    'https://secure-web3modal-git-feat-init-smart-accont-walletconnect1.vercel.app/sdk',
+    process.env['NEXT_PUBLIC_SECURE_SITE_SDK_URL'] || 'https://secure.walletconnect.com/sdk',
   APP_EVENT_KEY: '@w3m-app/',
   FRAME_EVENT_KEY: '@w3m-frame/',
   RPC_METHOD_KEY: 'RPC_',
@@ -113,5 +113,9 @@ export const W3mFrameRpcConstants = {
   NOT_SAFE_RPC_METHODS: ['personal_sign', 'eth_signTypedData_v4', 'eth_sendTransaction'],
   GET_CHAIN_ID: 'eth_chainId',
   RPC_METHOD_NOT_ALLOWED_MESSAGE: 'Requested RPC call is not allowed',
-  RPC_METHOD_NOT_ALLOWED_UI_MESSAGE: 'Action not allowed'
+  RPC_METHOD_NOT_ALLOWED_UI_MESSAGE: 'Action not allowed',
+  ACCOUNT_TYPES: {
+    EOA: 'eoa',
+    SMART_ACCOUNT: 'smartAccount'
+  } as const
 }

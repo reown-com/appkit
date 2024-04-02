@@ -11,7 +11,7 @@ import { UiHelperUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
 import { state } from 'lit/decorators.js'
-import { W3mFrameHelpers } from '@web3modal/wallet'
+import { W3mFrameHelpers, W3mFrameRpcConstants } from '@web3modal/wallet'
 
 @customElement('w3m-wallet-receive-view')
 export class W3mWalletReceiveView extends LitElement {
@@ -105,7 +105,10 @@ export class W3mWalletReceiveView extends LitElement {
     const caipNetwork = NetworkController.state.caipNetwork
     const preferredAccountType = W3mFrameHelpers.getPreferredAccountType()
 
-    if (preferredAccountType === 'smartAccount' && isNetworkEnabledForSmartAccounts) {
+    if (
+      preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT &&
+      isNetworkEnabledForSmartAccounts
+    ) {
       if (!caipNetwork) {
         return null
       }

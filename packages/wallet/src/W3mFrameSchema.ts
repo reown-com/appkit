@@ -56,6 +56,7 @@ export const AppSyncDappDataRequest = z.object({
     | `${'html' | 'react' | 'vue'}-wagmi-${string}`
     | `${'html' | 'react' | 'vue'}-ethers5-${string}`
     | `${'html' | 'react' | 'vue'}-ethers-${string}`
+    | `${'html' | 'react' | 'vue'}-solana-${string}`
   >,
   projectId: z.string()
 })
@@ -68,7 +69,7 @@ export const FrameGetUserResponse = z.object({
   email: z.string().email(),
   address: z.string(),
   chainId: z.number(),
-  smartAccountDeployed: z.boolean()
+  smartAccountDeployed: z.optional(z.boolean())
 })
 export const FrameIsConnectedResponse = z.object({ isConnected: z.boolean() })
 export const FrameGetChainIdResponse = z.object({ chainId: z.number() })
@@ -76,6 +77,10 @@ export const FrameSwitchNetworkResponse = z.object({ chainId: z.number() })
 export const FrameUpdateEmailSecondaryOtpResolver = z.object({ newEmail: z.string().email() })
 export const FrameGetSmartAccountEnabledNetworksResponse = z.object({
   smartAccountEnabledNetworks: z.array(z.number())
+})
+export const FrameInitSmartAccountResponse = z.object({
+  address: z.string(),
+  isDeployed: z.boolean()
 })
 export const FrameSetPreferredAccountResponse = z.object({ type: z.string(), address: z.string() })
 
