@@ -86,7 +86,7 @@ export function WagmiSendUSDCTest() {
         onClick={onSendTransaction}
         disabled={!writeContract}
         aria-disabled={isLoading}
-        variant={'default'}
+        variant="default"
       >
         Send USDC
       </Button>

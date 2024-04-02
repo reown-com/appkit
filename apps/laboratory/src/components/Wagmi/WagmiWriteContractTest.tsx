@@ -67,7 +67,7 @@ export function WagmiWriteContractTest() {
           data-test-id="sign-transaction-button"
           onClick={onSendTransaction}
           disabled={isPending || !isConnected}
-          variant={'secondary'}
+          variant="secondary"
         >
           Purchase crypto donut
         </Button>

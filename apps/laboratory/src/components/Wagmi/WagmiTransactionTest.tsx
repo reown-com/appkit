@@ -61,7 +61,7 @@ export function WagmiTransactionTest() {
         data-test-id="sign-transaction-button"
         onClick={onSendTransaction}
         disabled={isLoading || !isConnected}
-        variant={'secondary'}
+        variant="secondary"
       >
         Send Transaction to Vitalik
       </Button>

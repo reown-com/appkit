@@ -28,7 +28,7 @@ export default function HomePage() {
                     <P className="!mt-0 text-base text-muted-foreground">{option.description}</P>
                   </Column>
                   <Link href={option.link}>
-                    <Button variant={'outline'}>
+                    <Button variant="outline">
                       Go <ArrowRightIcon className="ml-2" />
                     </Button>
                   </Link>
@@ -54,7 +54,7 @@ export default function HomePage() {
                     <P className="!mt-0 text-base text-muted-foreground">{option.description}</P>
                   </Column>
                   <Link href={option.link}>
-                    <Button variant={'outline'}>
+                    <Button variant="outline">
                       Go <ArrowRightIcon className="ml-2" />
                     </Button>
                   </Link>
@@ -80,7 +80,7 @@ export default function HomePage() {
                     <P className="!mt-0 text-base text-muted-foreground">{option.description}</P>
                   </Column>
                   <Link href={option.link}>
-                    <Button variant={'outline'}>
+                    <Button variant="outline">
                       Go <ArrowRightIcon className="ml-2" />
                     </Button>
                   </Link>

@@ -60,7 +60,7 @@ export function WagmiSignTypedDataTest() {
       data-testid="sign-typed-data-button"
       onClick={onSignTypedData}
       disabled={!isConnected}
-      variant={'secondary'}
+      variant="secondary"
     >
       Sign Typed Data
     </Button>
