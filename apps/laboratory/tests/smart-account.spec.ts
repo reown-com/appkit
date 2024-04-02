@@ -3,6 +3,7 @@ import type { ModalWalletPage } from './shared/pages/ModalWalletPage'
 import type { ModalWalletValidator } from './shared/validators/ModalWalletValidator'
 
 const NOT_ENABLED_SMART_ACCOUNT_INDEX = 10
+const NOT_ENABLED_SMART_ACCOUNT = 'web3modal-smart-account@mailsac.com'
 
 const mailsacApiKey = process.env['MAILSAC_API_KEY']
 if (!mailsacApiKey) {
@@ -68,7 +69,7 @@ testModalSmartAccount(
     await walletModalPage.disconnect()
     await walletModalPage.page.waitForTimeout(2500)
 
-    await walletModalPage.emailFlow('web3modal-smart-account@mailsac.com', context, mailsacApiKey)
+    await walletModalPage.emailFlow(NOT_ENABLED_SMART_ACCOUNT, context, mailsacApiKey)
     await walletModalPage.switchNetwork('Sepolia')
     await walletModalPage.openSettings()
 
