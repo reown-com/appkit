@@ -1,7 +1,8 @@
-import { Button, useToast } from '@chakra-ui/react'
+import { useToast } from '@chakra-ui/react'
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers/react'
 import { BrowserProvider, JsonRpcSigner } from 'ethers'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
+import { Button } from '@/components/ui/button'
 
 export function EthersSignMessageTest() {
   const toast = useToast()
@@ -33,7 +34,7 @@ export function EthersSignMessageTest() {
   }
 
   return (
-    <Button data-testid="sign-message-button" onClick={onSignMessage}>
+    <Button data-testid="sign-message-button" onClick={onSignMessage} variant={'secondary'}>
       Sign Message
     </Button>
   )

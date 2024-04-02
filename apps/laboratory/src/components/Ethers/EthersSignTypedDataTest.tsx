@@ -1,4 +1,5 @@
-import { Button, useToast } from '@chakra-ui/react'
+import { Button } from '@/components/ui/button'
+import { useToast } from '@chakra-ui/react'
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers/react'
 import { BrowserProvider, JsonRpcSigner } from 'ethers'
 import type { TypedDataField } from 'ethers'
@@ -60,7 +61,7 @@ export function EthersSignTypedDataTest() {
   }
 
   return (
-    <Button data-testid="sign-typed-data-button" onClick={onSignTypedData}>
+    <Button data-testid="sign-typed-data-button" onClick={onSignTypedData} variant={'secondary'}>
       Sign Typed Data
     </Button>
   )

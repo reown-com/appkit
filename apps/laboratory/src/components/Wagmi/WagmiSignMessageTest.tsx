@@ -1,6 +1,7 @@
-import { Button, useToast } from '@chakra-ui/react'
 import { useSignMessage, useAccount } from 'wagmi'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
+import { Button } from '@/components/ui/button'
+import { useToast } from '@chakra-ui/react'
 
 export function WagmiSignMessageTest() {
   const toast = useToast()
@@ -28,7 +29,12 @@ export function WagmiSignMessageTest() {
   }
 
   return (
-    <Button data-testid="sign-message-button" onClick={onSignMessage} isDisabled={!isConnected}>
+    <Button
+      data-testid="sign-message-button"
+      onClick={onSignMessage}
+      disabled={!isConnected}
+      variant={'secondary'}
+    >
       Sign Message
     </Button>
   )

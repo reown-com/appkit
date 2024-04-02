@@ -1,8 +1,9 @@
-import { Button, useToast } from '@chakra-ui/react'
+import { useToast } from '@chakra-ui/react'
 
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/solana/react'
 
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
+import { Button } from '@/components/ui/button'
 
 export function SolanaSignMessageTest() {
   const toast = useToast()
@@ -46,7 +47,7 @@ export function SolanaSignMessageTest() {
   }
 
   return (
-    <Button data-testid="sign-message-button" onClick={onSignMessage}>
+    <Button data-testid="sign-message-button" onClick={onSignMessage} variant={'secondary'}>
       Sign Message
     </Button>
   )

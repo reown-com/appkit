@@ -1,4 +1,5 @@
-import { Button, useToast } from '@chakra-ui/react'
+import { Button } from '@/components/ui/button'
+import { useToast } from '@chakra-ui/react'
 import { useAccount, useSignTypedData } from 'wagmi'
 
 // Example data
@@ -62,7 +63,8 @@ export function WagmiSignTypedDataTest() {
     <Button
       data-testid="sign-typed-data-button"
       onClick={onSignTypedData}
-      isDisabled={!isConnected}
+      disabled={!isConnected}
+      variant={'secondary'}
     >
       Sign Typed Data
     </Button>

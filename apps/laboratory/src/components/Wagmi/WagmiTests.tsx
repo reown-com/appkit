@@ -1,53 +1,43 @@
 import { WagmiTransactionTest } from './WagmiTransactionTest'
 import { WagmiSignMessageTest } from './WagmiSignMessageTest'
 import { WagmiSignTypedDataTest } from './WagmiSignTypedDataTest'
-import { StackDivider, Card, CardHeader, Heading, CardBody, Box, Stack } from '@chakra-ui/react'
 import { WagmiWriteContractTest } from './WagmiWriteContractTest'
 import { WagmiSendUSDCTest } from './WagmiSendUSDCTest'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Span } from '@/components/ui/typography'
+import { Column } from '@/components/ui/column'
 
 export function WagmiTests() {
   return (
-    <Card marginTop={10} marginBottom={10}>
-      <CardHeader>
-        <Heading size="md">Test Interactions</Heading>
+    <Card className="mb-6">
+      <CardHeader className="border-b border-muted bg-muted/20 px-6 py-4">
+        <CardTitle className="text-lg">Test Interactions</CardTitle>
       </CardHeader>
-
-      <CardBody>
-        <Stack divider={<StackDivider />} spacing="4">
-          <Box>
-            <Heading size="xs" textTransform="uppercase" pb="2">
-              Sign Message
-            </Heading>
+      <CardContent className="p-6">
+        <Column className="divide-y divide-muted items-start">
+          <Column className="py-4 first:pt-0 last:pb-0 items-start gap-4 w-full">
+            <Span className="text-sm uppercase">Sign Message</Span>
             <WagmiSignMessageTest />
-          </Box>
-
-          <Box>
-            <Heading size="xs" textTransform="uppercase" pb="2">
-              Sign Typed Data
-            </Heading>
+          </Column>
+          <Column className="py-4 first:pt-0 last:pb-0 items-start gap-4 w-full">
+            <Span className="text-sm uppercase">Sign Typed Data</Span>
             <WagmiSignTypedDataTest />
-          </Box>
+          </Column>
 
-          <Box>
-            <Heading size="xs" textTransform="uppercase" pb="2">
-              Sign Transaction
-            </Heading>
+          <Column className="py-4 first:pt-0 last:pb-0 items-start gap-4 w-full">
+            <Span className="text-sm uppercase">Sign Transaction</Span>
             <WagmiTransactionTest />
-          </Box>
-          <Box>
-            <Heading size="xs" textTransform="uppercase" pb="2">
-              Contract Write
-            </Heading>
+          </Column>
+          <Column className="py-4 first:pt-0 last:pb-0 items-start gap-4 w-full">
+            <Span className="text-sm uppercase">Contract Write</Span>
             <WagmiWriteContractTest />
-          </Box>
-          <Box>
-            <Heading size="xs" textTransform="uppercase" pb="2">
-              USDC Send
-            </Heading>
+          </Column>
+          <Column className="py-4 first:pt-0 last:pb-0 items-start gap-4 w-full">
+            <Span className="text-sm uppercase">USDC Send</Span>
             <WagmiSendUSDCTest />
-          </Box>
-        </Stack>
-      </CardBody>
+          </Column>
+        </Column>
+      </CardContent>
     </Card>
   )
 }

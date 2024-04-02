@@ -1,9 +1,15 @@
-import { Button, useToast, Stack, Link, Text, Spacer } from '@chakra-ui/react'
+import { useToast } from '@chakra-ui/react'
 import { parseGwei, type Address } from 'viem'
 import { useEstimateGas, useSendTransaction, useAccount } from 'wagmi'
 import { vitalikEthAddress } from '../../utils/DataUtil'
 import { useCallback, useState } from 'react'
 import { optimism, optimismSepolia, sepolia } from 'wagmi/chains'
+import { Span } from '@/components/ui/typography'
+import { Row } from '@/components/ui/row'
+import { cn } from '@/lib/utils'
+import { Button, buttonVariants } from '@/components/ui/button'
+import { Column } from '@/components/ui/column'
+import Link from 'next/link'
 
 const TEST_TX = {
   to: vitalikEthAddress as Address,
@@ -59,33 +65,36 @@ export function WagmiTransactionTest() {
   const allowedChains = [sepolia.id, optimism.id, optimismSepolia.id] as number[]
 
   return allowedChains.includes(Number(chain?.id)) && status === 'connected' ? (
-    <Stack direction={['column', 'column', 'row']}>
+    <Column className="sm:flex-row sm:items-center w-full gap-4 justify-between">
       <Button
         data-test-id="sign-transaction-button"
         onClick={onSendTransaction}
         disabled={!sendTransaction}
-        isDisabled={isLoading || !isConnected}
+        variant={'secondary'}
       >
         Send Transaction to Vitalik
       </Button>
 
-      <Spacer />
-
-      <Link isExternal href="https://sepoliafaucet.com">
-        <Button variant="outline" colorScheme="blue" isDisabled={isLoading}>
+      <Row className="gap-2">
+        <Link
+          className={cn(buttonVariants({ variant: 'outline' }))}
+          target="_blank"
+          href="https://sepoliafaucet.com"
+        >
           Sepolia Faucet 1
-        </Button>
-      </Link>
-
-      <Link isExternal href="https://www.infura.io/faucet/sepolia">
-        <Button variant="outline" colorScheme="orange" isDisabled={isLoading}>
+        </Link>
+        <Link
+          className={cn(buttonVariants({ variant: 'outline' }))}
+          target="_blank"
+          href="https://www.infura.io/faucet/sepolia"
+        >
           Sepolia Faucet 2
-        </Button>
-      </Link>
-    </Stack>
+        </Link>
+      </Row>
+    </Column>
   ) : (
-    <Text fontSize="md" color="yellow">
+    <Span className="text-red-700 dark:text-red-400">
       Switch to Sepolia or OP to test this feature
-    </Text>
+    </Span>
   )
 }

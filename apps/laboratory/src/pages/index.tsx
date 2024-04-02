@@ -1,104 +1,95 @@
-import {
-  Heading,
-  Card,
-  CardHeader,
-  CardBody,
-  Stack,
-  StackDivider,
-  Box,
-  Text,
-  Button,
-  Link
-} from '@chakra-ui/react'
-import { IoArrowForward } from 'react-icons/io5'
 import { wagmiSdkOptions, ethersSdkOptions, solanaSdkOptions } from '../utils/DataUtil'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Column } from '@/components/ui/column'
+import { Row } from '@/components/ui/row'
+import { P, Span } from '@/components/ui/typography'
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import { ArrowRightIcon } from '@radix-ui/react-icons'
+import WagmiIcon from '@/components/icons/wagmi'
+import EthersIcon from '@/components/icons/ethers'
+import SolanaIcon from '@/components/icons/solana'
 
 export default function HomePage() {
   return (
-    <>
-      <Card marginTop={20}>
-        <CardHeader>
-          <Heading size="md">Wagmi</Heading>
+    <Column className="gap-4 mt-8 md:mt-16">
+      <Card>
+        <CardHeader className="border-b border-muted bg-muted/20 px-6 py-4 flex flex-row items-center justify-start gap-2">
+          <WagmiIcon className="w-8 h-8 inline-block text-primary" />
+          <CardTitle className="text-lg !mt-0">Wagmi</CardTitle>
         </CardHeader>
-
-        <CardBody>
-          <Stack divider={<StackDivider />} spacing="4">
+        <CardContent className="p-6">
+          <Column className="divide-y divide-muted/50">
             {wagmiSdkOptions.map(option => (
-              <Box key={option.link}>
-                <Stack direction="row" justifyContent="space-between" alignItems="center">
-                  <Box>
-                    <Heading size="xs" textTransform="uppercase">
-                      {option.title}
-                    </Heading>
-                    <Text pt="2" fontSize="sm">
-                      {option.description}
-                    </Text>
-                  </Box>
+              <Row key={option.link} className="py-4 first:pt-0 last:pb-0">
+                <Column className="flex-row gap-6 sm:flex-row sm:items-center sm:justify-between w-full">
+                  <Column className="items-start gap-2">
+                    <Span className="text-base">{option.title}</Span>
+                    <P className="!mt-0 text-base text-muted-foreground">{option.description}</P>
+                  </Column>
                   <Link href={option.link}>
-                    <Button rightIcon={<IoArrowForward />}>Go</Button>
+                    <Button variant={'outline'}>
+                      Go <ArrowRightIcon className="ml-2" />
+                    </Button>
                   </Link>
-                </Stack>
-              </Box>
+                </Column>
+              </Row>
             ))}
-          </Stack>
-        </CardBody>
+          </Column>
+        </CardContent>
       </Card>
 
-      <Card marginTop={10} marginBottom={10}>
-        <CardHeader>
-          <Heading size="md">Ethers</Heading>
+      <Card>
+        <CardHeader className="border-b border-muted bg-muted/20 px-6 py-4 flex flex-row items-center justify-start gap-2">
+          <EthersIcon className="w-8 h-8 inline-block text-primary" />
+          <CardTitle className="text-lg !mt-0">Ethers</CardTitle>
         </CardHeader>
-
-        <CardBody>
-          <Stack divider={<StackDivider />} spacing="4">
+        <CardContent className="p-6">
+          <Column className="divide-y divide-muted/50">
             {ethersSdkOptions.map(option => (
-              <Box key={option.link}>
-                <Stack direction="row" justifyContent="space-between" alignItems="center">
-                  <Box>
-                    <Heading size="xs" textTransform="uppercase">
-                      {option.title}
-                    </Heading>
-                    <Text pt="2" fontSize="sm">
-                      {option.description}
-                    </Text>
-                  </Box>
+              <Row key={option.link} className="py-4 first:pt-0 last:pb-0">
+                <Column className="flex-row gap-6 sm:flex-row sm:items-center sm:justify-between w-full">
+                  <Column className="items-start gap-2">
+                    <Span className="text-base">{option.title}</Span>
+                    <P className="!mt-0 text-base text-muted-foreground">{option.description}</P>
+                  </Column>
                   <Link href={option.link}>
-                    <Button rightIcon={<IoArrowForward />}>Go</Button>
+                    <Button variant={'outline'}>
+                      Go <ArrowRightIcon className="ml-2" />
+                    </Button>
                   </Link>
-                </Stack>
-              </Box>
+                </Column>
+              </Row>
             ))}
-          </Stack>
-        </CardBody>
+          </Column>
+        </CardContent>
       </Card>
 
-      <Card marginTop={10} marginBottom={10}>
-        <CardHeader>
-          <Heading size="md">Solana</Heading>
+      <Card>
+        <CardHeader className="border-b border-muted bg-muted/20 px-6 py-4 flex flex-row items-center justify-start gap-2">
+          <SolanaIcon className="w-8 h-8 inline-block text-primary" />
+          <CardTitle className="text-lg !mt-0">Solana</CardTitle>
         </CardHeader>
-
-        <CardBody>
-          <Stack divider={<StackDivider />} spacing="4">
+        <CardContent className="p-6">
+          <Column className="divide-y divide-muted/50">
             {solanaSdkOptions.map(option => (
-              <Box key={option.link}>
-                <Stack direction="row" justifyContent="space-between" alignItems="center">
-                  <Box>
-                    <Heading size="xs" textTransform="uppercase">
-                      {option.title}
-                    </Heading>
-                    <Text pt="2" fontSize="sm">
-                      {option.description}
-                    </Text>
-                  </Box>
+              <Row key={option.link} className="py-4 first:pt-0 last:pb-0">
+                <Column className="flex-row gap-6 sm:flex-row sm:items-center sm:justify-between w-full">
+                  <Column className="items-start gap-2">
+                    <Span className="text-base">{option.title}</Span>
+                    <P className="!mt-0 text-base text-muted-foreground">{option.description}</P>
+                  </Column>
                   <Link href={option.link}>
-                    <Button rightIcon={<IoArrowForward />}>Go</Button>
+                    <Button variant={'outline'}>
+                      Go <ArrowRightIcon className="ml-2" />
+                    </Button>
                   </Link>
-                </Stack>
-              </Box>
+                </Column>
+              </Row>
             ))}
-          </Stack>
-        </CardBody>
+          </Column>
+        </CardContent>
       </Card>
-    </>
+    </Column>
   )
 }
