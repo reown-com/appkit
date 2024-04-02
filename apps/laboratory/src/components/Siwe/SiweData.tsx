@@ -23,7 +23,9 @@ export function SiweData() {
         <Column className="divide-y divide-muted">
           <Column className="py-4 first:pt-0 last:pb-0 items-start gap-4">
             <Span className="text-sm uppercase">Session Status</Span>
-            <Span className="text-muted-foreground">{status}</Span>
+            <Span data-testid="w3m-authentication-status" className="text-muted-foreground">
+              {status}
+            </Span>
           </Column>
 
           <Column className="py-4 first:pt-0 last:pb-0 items-start gap-4">
