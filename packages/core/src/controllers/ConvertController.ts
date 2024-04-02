@@ -291,7 +291,7 @@ export const ConvertController = {
       }, {})
     state.suggestedTokens = Object.entries(res.tokens).reduce<Record<string, TokenInfo>>(
       (limitedTokens, [tokenAddress, tokenInfo]) => {
-        if (ConstantsUtil.POPULAR_TOKENS.includes(tokenInfo.symbol)) {
+        if (ConstantsUtil.SUGGESTED_TOKENS.includes(tokenInfo.symbol)) {
           limitedTokens[tokenAddress] = tokenInfo
         }
 

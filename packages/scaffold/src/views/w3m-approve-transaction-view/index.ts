@@ -57,7 +57,7 @@ export class W3mApproveTransactionView extends LitElement {
       this.iframe.style.width = `${PAGE_WIDTH}px`
       this.iframe.style.height = `${PAGE_HEIGHT}px`
       this.iframe.style.left = `calc(50% - ${PAGE_WIDTH / 2}px)`
-      this.iframe.style.top = `calc(50% - ${PAGE_HEIGHT / 2} + ${HEADER_HEIGHT / 2}px)`
+      this.iframe.style.top = `calc(50% - ${PAGE_HEIGHT / 2}px + ${HEADER_HEIGHT / 2}px)`
       this.ready = true
     })
     this.bodyObserver.observe(window.document.body)
