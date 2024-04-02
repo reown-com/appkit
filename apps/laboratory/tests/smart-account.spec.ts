@@ -61,10 +61,12 @@ testModalSmartAccount(
 
     await walletModalPage.togglePreferredAccountType()
     await walletModalPage.disconnect()
-    await walletModalPage.page.waitForTimeout(1500)
+    await walletModalPage.page.waitForTimeout(2500)
+
     await walletModalPage.emailFlow('web3modal-smart-account@mailsac.com', context)
     await walletModalPage.switchNetwork('Sepolia')
     await walletModalPage.openSettings()
+
     await walletModalValidator.expectEoaAddress(NOT_ENABLED_SMART_ACCOUNT_INDEX)
   }
 )
