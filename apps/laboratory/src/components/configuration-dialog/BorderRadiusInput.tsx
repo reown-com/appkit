@@ -11,7 +11,6 @@ export default function BorderRadiusInput() {
   return (
     <>
       <Span className="text-lg">Border Radius</Span>
-
       <Row className="items-center gap-4">
         <Slider
           defaultValue={[2]}

@@ -14,7 +14,6 @@ export function Web3ModalButtons() {
             <Span className="text-sm uppercase">Connect / Account Button</Span>
             <w3m-button />
           </Column>
-
           <Column className="py-4 first:pt-0 last:pb-0 items-start gap-4">
             <Span className="text-sm uppercase">Network Button</Span>
             <w3m-network-button />
