@@ -1,49 +1,38 @@
 import { useWeb3ModalAccount } from '@web3modal/ethers/react'
 import { EthersSignMessageTest } from './EthersSignMessageTest'
 import { EthersSignTypedDataTest } from './EthersSignTypedDataTest'
-import { StackDivider, Card, CardHeader, Heading, CardBody, Box, Stack } from '@chakra-ui/react'
 import { EthersTransactionTest } from './EthersTransactionTest'
 import { EthersWriteContractTest } from './EthersWriteContractTest'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Column } from '@/components/ui/column'
+import { Span } from '@/components/ui/typography'
 
 export function EthersTests() {
   const { isConnected } = useWeb3ModalAccount()
 
   return isConnected ? (
-    <Card marginTop={10} marginBottom={10}>
-      <CardHeader>
-        <Heading size="md">Test Interactions</Heading>
+    <Card className="mb-6">
+      <CardHeader className="border-b border-muted bg-muted/20 px-6 py-4">
+        <CardTitle className="text-lg">Test Interactions</CardTitle>
       </CardHeader>
-
-      <CardBody>
-        <Stack divider={<StackDivider />} spacing="4">
-          <Box>
-            <Heading size="xs" textTransform="uppercase" pb="2">
-              Sign Message
-            </Heading>
-            <EthersSignMessageTest />
-          </Box>
-
-          <Box>
-            <Heading size="xs" textTransform="uppercase" pb="2">
-              Sign Typed Data
-            </Heading>
-            <EthersSignTypedDataTest />
-          </Box>
-
-          <Box>
-            <Heading size="xs" textTransform="uppercase" pb="2">
-              Sign Transaction
-            </Heading>
-            <EthersTransactionTest />
-          </Box>
-          <Box>
-            <Heading size="xs" textTransform="uppercase" pb="2">
-              Contract Write
-            </Heading>
-            <EthersWriteContractTest />
-          </Box>
-        </Stack>
-      </CardBody>
+      <CardContent className="p-6 divide-y divide-muted">
+        <Column className="py-4 first:pt-0 last:pb-0 items-start gap-4">
+          <Span className="text-sm uppercase">Sign Message</Span>
+          <EthersSignMessageTest />
+        </Column>
+        <Column className="py-4 first:pt-0 last:pb-0 items-start gap-4">
+          <Span className="text-sm uppercase">Sign Typed Data</Span>
+          <EthersSignTypedDataTest />
+        </Column>
+        <Column className="py-4 first:pt-0 last:pb-0 items-start gap-4">
+          <Span className="text-sm uppercase">Sign Transaction</Span>
+          <EthersTransactionTest />
+        </Column>
+        <Column className="py-4 first:pt-0 last:pb-0 items-start gap-4">
+          <Span className="text-sm uppercase">Contract Write</Span>
+          <EthersWriteContractTest />
+        </Column>
+      </CardContent>
     </Card>
   ) : null
 }
