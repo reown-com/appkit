@@ -26,6 +26,7 @@ export default function AccentColorInput() {
       <Grid templateColumns="repeat(15, 1fr)" gap={2} {...group}>
         {colors.map(value => {
           const radio = getRadioProps({ value })
+
           return (
             <RadioColor key={value} {...radio}>
               {value}
