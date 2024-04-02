@@ -3,6 +3,13 @@ import type { BrowserContext, Locator, Page } from '@playwright/test'
 import { expect } from '@playwright/test'
 import { BASE_URL } from '../constants'
 import { doActionAndWaitForNewPage } from '../utils/actions'
+import { Email } from '../utils/email'
+import { DeviceRegistrationPage } from './DeviceRegistrationPage'
+
+const mailsacApiKey = process.env['MAILSAC_API_KEY'] || ''
+if (!mailsacApiKey) {
+  throw new Error('MAILSAC_API_KEY is not set')
+}
 
 export type ModalFlavor = 'default' | 'siwe' | 'email' | 'wallet'
 
@@ -50,6 +57,44 @@ export class ModalPage {
     await expect(qrCode).toBeVisible()
 
     return this.assertDefined(await qrCode.getAttribute('uri'))
+  }
+
+  async emailFlow(emailAddress: string, context: BrowserContext): Promise<void> {
+    await this.load()
+
+    const email = new Email(mailsacApiKey)
+
+    await email.deleteAllMessages(emailAddress)
+    await this.loginWithEmail(emailAddress)
+
+    let messageId = await email.getLatestMessageId(emailAddress)
+
+    if (!messageId) {
+      throw new Error('No messageId found')
+    }
+    let emailBody = await email.getEmailBody(emailAddress, messageId)
+    let otp = ''
+    if (email.isApproveEmail(emailBody)) {
+      const url = email.getApproveUrlFromBody(emailBody)
+
+      await email.deleteAllMessages(emailAddress)
+
+      const drp = new DeviceRegistrationPage(await context.newPage(), url)
+      drp.load()
+      await drp.approveDevice()
+      await drp.close()
+
+      messageId = await email.getLatestMessageId(emailAddress)
+
+      emailBody = await email.getEmailBody(emailAddress, messageId)
+      if (!email.isApproveEmail(emailBody)) {
+        otp = email.getOtpCodeFromBody(emailBody)
+      }
+    }
+    if (otp.replace(' ', '').length !== 6) {
+      otp = email.getOtpCodeFromBody(emailBody)
+    }
+    await this.enterOTP(otp)
   }
 
   async loginWithEmail(email: string) {
