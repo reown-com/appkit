@@ -1,5 +1,35 @@
 # @web3modal/ethers
 
+## 4.1.4
+
+### Patch Changes
+
+- feat: wallet info hook
+
+- Updated dependencies []:
+  - @web3modal/scaffold-react@4.1.4
+  - @web3modal/scaffold-utils@4.1.4
+  - @web3modal/scaffold-vue@4.1.4
+  - @web3modal/polyfills@4.1.4
+  - @web3modal/scaffold@4.1.4
+  - @web3modal/siwe@4.1.4
+
+## 4.1.3
+
+### Patch Changes
+
+- feat: wallet info hook
+
+- feat: reset version to 4.1.3
+
+- Updated dependencies []:
+  - @web3modal/polyfills@4.1.3
+  - @web3modal/scaffold@4.1.3
+  - @web3modal/scaffold-react@4.1.3
+  - @web3modal/scaffold-utils@4.1.3
+  - @web3modal/scaffold-vue@4.1.3
+  - @web3modal/siwe@4.1.3
+
 ## 4.1.3-5f2ae345.1
 
 ### Patch Changes
