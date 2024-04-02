@@ -20,7 +20,7 @@ export default function BorderRadiusInput() {
           step={1}
           className={cn('w-[60%]')}
           onValueChange={value => {
-            ThemeStore.setBorderRadius(`${value}px`)
+            ThemeStore.setBorderRadius(`${value[0] || 0}px`)
           }}
         />
         <Span className="mt-0">{state.borderRadius}</Span>
