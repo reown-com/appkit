@@ -30,7 +30,11 @@ export function ConfigurationDialog() {
       </DialogTrigger>
       <DialogContent
         className={cn(
-          'overflow-hidden !rounded-r-none origin-center max-w-[600px] Row flex-col items-start fixed right-0 top-[50%] left-[100%] w-full h-[100dvh] -translate-y-1/2 -translate-x-full border focus:outline-none',
+          'flex flex-col items-start',
+          'max-w-[600px] w-full h-[100dvh]',
+          'fixed right-0 top-[50%] left-[100%] -translate-y-1/2 -translate-x-full origin-center',
+          'border focus:outline-none',
+          'overflow-hidden !rounded-r-none',
           'data-[state=closed]:!slide-out-to-top-[50%] data-[state=open]:!slide-in-from-top-[50%] data-[state=closed]:!zoom-out-100 data-[state=open]:!zoom-in-100'
         )}
       >
