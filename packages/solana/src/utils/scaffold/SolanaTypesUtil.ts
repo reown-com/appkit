@@ -67,7 +67,7 @@ export interface Provider {
   sendAndConfirmTransaction: (
     transaction: Transaction | VersionedTransaction,
     signers: Signer[],
-    confirmOptions: ConfirmOptions
+    confirmOptions?: ConfirmOptions
   ) => Promise<TransactionSignature>
 }
 

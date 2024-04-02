@@ -1,15 +1,14 @@
 import React from 'react'
-import { Box, Button, useToast } from '@chakra-ui/react'
+import { Button, useToast } from '@chakra-ui/react'
 import {
-  Connection,
   SystemProgram,
   PublicKey,
   Keypair,
   Transaction,
   TransactionInstruction,
-  sendAndConfirmTransaction,
   LAMPORTS_PER_SOL
 } from '@solana/web3.js'
+import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/solana/react'
 
 export const PROGRAM_ID = new PublicKey('Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS')
 export const COUNTER_ACCOUNT_SIZE = 8
@@ -24,39 +23,31 @@ function deserializeCounterAccount(data?: Buffer): any {
   }
 }
 
-export function SolanaWriteContractTest() {
+export function SolanaWriteContractTestWithSign() {
   const toast = useToast()
+  const { address } = useWeb3ModalAccount()
+  const { walletProvider, connection } = useWeb3ModalProvider()
 
   async function onIncrementCounter() {
     try {
-      // Use your localhost rpc connection
-      const connection = new Connection('http://localhost:8899', 'confirmed')
+      if (!walletProvider || !address) {
+        throw new Error('User is disconnected')
+      }
 
       if (!connection) {
         throw new Error('No connection set')
       }
 
-      // Randomly generate our account wallet
       const counterKeypair = Keypair.generate()
       const counter = counterKeypair.publicKey
 
-      // Randomly generate our payer wallet
-      const payerKeypair = Keypair.generate()
-      const payer = payerKeypair.publicKey
-
-      const signature = await connection.requestAirdrop(payer, LAMPORTS_PER_SOL)
-
-      const latestBlockHash = await connection.getLatestBlockhash()
-      await connection.confirmTransaction({
-        blockhash: latestBlockHash.blockhash,
-        lastValidBlockHeight: latestBlockHash.lastValidBlockHeight,
-        signature
-      })
-
-      console.log('balance after airdrop:', await connection.getBalance(payer))
+      const balance = await connection.getBalance(walletProvider.publicKey)
+      if (balance < LAMPORTS_PER_SOL) {
+        throw Error('Not enough SOL in wallet')
+      }
 
       const allocIx: TransactionInstruction = SystemProgram.createAccount({
-        fromPubkey: payer,
+        fromPubkey: walletProvider.publicKey,
         newAccountPubkey: counter,
         lamports: await connection.getMinimumBalanceForRentExemption(COUNTER_ACCOUNT_SIZE),
         space: COUNTER_ACCOUNT_SIZE,
@@ -77,13 +68,11 @@ export function SolanaWriteContractTest() {
 
       const tx = new Transaction().add(allocIx).add(incrementIx)
 
-      // Explicitly set the feePayer to be our wallet (this is set to first signer by default)
-      tx.feePayer = payer
+      tx.feePayer = walletProvider.publicKey
+      tx.recentBlockhash = (await connection.getLatestBlockhash('confirmed')).blockhash
 
-      // Send transaction to network (local network)
-      await sendAndConfirmTransaction(connection, tx, [payerKeypair, counterKeypair])
+      await walletProvider.sendAndConfirmTransaction(tx, [counterKeypair])
 
-      // Get the counter account info from network
       const counterAccountInfo = await connection.getAccountInfo(counter, {
         commitment: 'confirmed'
       })
@@ -92,7 +81,6 @@ export function SolanaWriteContractTest() {
         throw new Error('Expected counter account to have been created')
       }
 
-      // Deserialize the counter & check count has been incremented
       const counterAccount = deserializeCounterAccount(counterAccountInfo?.data)
 
       if (counterAccount.count !== 1) {
@@ -106,6 +94,7 @@ export function SolanaWriteContractTest() {
         isClosable: true
       })
     } catch (err) {
+      console.error(err)
       toast({
         title: 'Transaction failed',
         description: 'Failed to increment counter',
@@ -116,10 +105,8 @@ export function SolanaWriteContractTest() {
   }
 
   return (
-    <Box>
-      <Button data-testid="sign-message-button" onClick={onIncrementCounter}>
-        Increment Counter
-      </Button>
-    </Box>
+    <Button data-testid="sign-message-button" onClick={onIncrementCounter}>
+      Increment Counter With Sign
+    </Button>
   )
 }

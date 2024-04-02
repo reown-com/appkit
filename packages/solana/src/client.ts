@@ -13,9 +13,7 @@ import {
   type AdapterKey,
   syncInjectedWallets
 } from './connectors/walletAdapters.js'
-import { SolConstantsUtil } from './utils/scaffold/SolanaConstantsUtil.js'
-import { SolHelpersUtil } from './utils/scaffold/SolanaHelpersUtils.js'
-import { SolStoreUtil } from './utils/scaffold/SolanaStoreUtil.js'
+import { SolConstantsUtil, SolHelpersUtil, SolStoreUtil } from './utils/scaffold'
 import { WalletConnectConnector } from './connectors/walletConnectConnector.js'
 
 import type { BaseWalletAdapter } from '@solana/wallet-adapter-base'
@@ -178,7 +176,7 @@ export class Web3Modal extends Web3ModalScaffold {
     SolStoreUtil.setConnection(
       new Connection(
         SolHelpersUtil.detectRpcUrl(chain, OptionsController.state.projectId),
-        'recent'
+        'confirmed'
       )
     )
 
@@ -340,7 +338,7 @@ export class Web3Modal extends Web3ModalScaffold {
           SolStoreUtil.setConnection(
             new Connection(
               SolHelpersUtil.detectRpcUrl(chain, OptionsController.state.projectId),
-              'recent'
+              'confirmed'
             )
           )
           this.setAddress(this.walletAdapters[wallet].publicKey?.toString())
@@ -355,7 +353,7 @@ export class Web3Modal extends Web3ModalScaffold {
           SolStoreUtil.setConnection(
             new Connection(
               SolHelpersUtil.detectRpcUrl(chain, OptionsController.state.projectId),
-              'recent'
+              'confirmed'
             )
           )
           universalProvider.connect({ namespaces, pairingTopic: undefined })

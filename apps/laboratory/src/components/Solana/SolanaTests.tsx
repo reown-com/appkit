@@ -14,6 +14,8 @@ import { SolanaSignTransactionTest } from './SolanaSignTransactionTest'
 import { SolanaSendTransactionTest } from './SolanaSendTransactionTest'
 import { SolanaSignMessageTest } from './SolanaSignMessageTest'
 import { SolanaWriteContractTest } from './SolanaWriteContractTest'
+import { SolanaWriteContractTestWithoutSign } from './SolanaWriteContractTestWithoutSign'
+import { SolanaWriteContractTestWithSign } from './SolanaWriteContractTestWithSign'
 import { solana } from '../../utils/ChainsUtil'
 
 export function SolanaTests() {
@@ -57,6 +59,18 @@ export function SolanaTests() {
               Counter Program Instruction
             </Heading>
             <SolanaWriteContractTest />
+          </Box>
+          <Box>
+            <Heading size="xs" textTransform="uppercase" pb="2">
+              Counter Program Instruction Without Sign
+            </Heading>
+            <SolanaWriteContractTestWithoutSign />
+          </Box>
+          <Box>
+            <Heading size="xs" textTransform="uppercase" pb="2">
+              Counter Program Instruction With Sign
+            </Heading>
+            <SolanaWriteContractTestWithSign />
           </Box>
         </Stack>
       </CardBody>
