@@ -17,7 +17,7 @@ const emailProvider = {
 
 const walletConnectConnector = {
   id: 'walletConnect',
-  explorerId: 'walletConnect',
+  explorerId: 'walletConnectId',
   type: 'WALLET_CONNECT'
 } as const
 const externalConnector = { id: 'external', type: 'EXTERNAL' } as const
@@ -78,7 +78,7 @@ describe('ConnectorController', () => {
 
   it('should return the correct connector on getConnector', () => {
     ConnectorController.addConnector(zerionConnector)
-    expect(ConnectorController.getConnector('walletConnect', '')).toBe(undefined)
+    expect(ConnectorController.getConnector('walletConnectId', '')).toBe(walletConnectConnector)
     expect(ConnectorController.getConnector('', 'io.metamask.com')).toBe(metamaskConnector)
     expect(ConnectorController.getConnector(zerionConnector.id, '')).toBeUndefined()
     expect(ConnectorController.getConnector('unknown', '')).toBeUndefined()
@@ -98,6 +98,7 @@ describe('ConnectorController', () => {
       walletConnectConnector,
       externalConnector,
       metamaskConnector,
+      zerionConnector,
       emailConnector
     ])
 
@@ -123,6 +124,7 @@ describe('ConnectorController', () => {
       walletConnectConnector,
       externalConnector,
       metamaskConnector,
+      zerionConnector,
       emailConnector,
       announcedConnector
     ])
