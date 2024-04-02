@@ -1,10 +1,7 @@
-import type { CaipNetworkId, Tokens } from '@web3modal/core'
+import type { Tokens } from '@web3modal/core'
 import { ConstantsUtil } from './ConstantsUtil.js'
 
 export const HelpersUtil = {
-  caipNetworkIdToNumber(caipnetworkId?: CaipNetworkId) {
-    return caipnetworkId ? Number(caipnetworkId.split(':')[1]) : undefined
-  },
   getCaipTokens(tokens?: Tokens) {
     if (!tokens) {
       return undefined

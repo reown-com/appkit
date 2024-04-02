@@ -81,7 +81,8 @@ export {
   useWeb3ModalTheme,
   useWeb3Modal,
   useWeb3ModalState,
-  useWeb3ModalEvents
+  useWeb3ModalEvents,
+  useWalletInfo
 } from '@web3modal/scaffold-react'
 
 // -- Universal Exports -------------------------------------------------------
