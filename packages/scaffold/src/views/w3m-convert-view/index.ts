@@ -214,7 +214,7 @@ export class W3mConvertView extends LitElement {
     ></wui-convert-input>`
   }
 
-  private onSetMaxValue(target: Target, balance: string | undefined, address: string | undefined) {
+  private onSetMaxValue(target: Target, balance: string | undefined) {
     const token = target === 'sourceToken' ? this.sourceToken : this.toToken
     const isNetworkToken = token?.address === ConstantsUtil.NATIVE_TOKEN_ADDRESS
 

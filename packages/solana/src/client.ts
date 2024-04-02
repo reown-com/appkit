@@ -90,6 +90,7 @@ export class Web3Modal extends Web3ModalScaffold {
         })
     }
 
+    // @ts-ignore
     const connectionControllerClient: ConnectionControllerClient = {
       connectWalletConnect: async onUri => {
         const WalletConnectProvider = await this.WalletConnectConnector.getProvider()
