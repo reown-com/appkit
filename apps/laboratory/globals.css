@@ -72,7 +72,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background/70 text-foreground;
   }
   w3m-onramp-widget {
     width: 100%;
