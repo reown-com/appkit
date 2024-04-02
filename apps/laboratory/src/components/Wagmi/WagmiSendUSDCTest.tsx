@@ -1,4 +1,4 @@
-import { useToast } from '@chakra-ui/react'
+import { toast } from 'sonner'
 import { useAccount, useWriteContract } from 'wagmi'
 import { useCallback, useState } from 'react'
 import { optimism, sepolia } from 'wagmi/chains'
@@ -41,26 +41,19 @@ export function WagmiSendUSDCTest() {
   const [address, setAddress] = useState('')
   const [amount, setAmount] = useState('')
   const { status, chain } = useAccount()
-  const toast = useToast()
 
   const { writeContract } = useWriteContract({
     mutation: {
       onSuccess: hash => {
         setLoading(false)
-        toast({
-          title: 'Transaction Success',
-          description: hash,
-          status: 'success',
-          isClosable: true
+        toast.success('Transaction Success', {
+          description: hash
         })
       },
       onError: () => {
         setLoading(false)
-        toast({
-          title: 'Error',
-          description: 'Failed to send transaction',
-          status: 'error',
-          isClosable: true
+        toast.error('Error', {
+          description: 'Failed to send transaction'
         })
       }
     }

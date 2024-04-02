@@ -8,11 +8,8 @@ import { GitHubLogoIcon, MixIcon, ReaderIcon } from '@radix-ui/react-icons'
 import { ModeToggle } from '@/components/theme-toggle'
 import { Span } from '@/components/ui/typography'
 import { ConfigurationDialog } from '@/components/configuration-dialog'
-import { useDisclosure } from '@chakra-ui/react'
 
 export function LayoutHeader() {
-  const controls = useDisclosure()
-
   return (
     <Column className="gap-6 items-center py-6 flex-wrap md:flex-row md:justify-between md:items-center">
       <Link href="/">
@@ -49,7 +46,7 @@ export function LayoutHeader() {
 
         <ModeToggle />
 
-        <ConfigurationDialog controls={controls} />
+        <ConfigurationDialog />
       </Row>
     </Column>
   )

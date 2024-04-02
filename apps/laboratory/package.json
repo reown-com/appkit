@@ -5,6 +5,7 @@
   "scripts": {
     "dev:laboratory": "next dev",
     "build:laboratory": "next build",
+    "format": "prettier --write .",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "playwright:start": "npm run dev:laboratory",
     "playwright:install": "playwright install --with-deps",
@@ -47,6 +48,7 @@
     "next-themes": "0.3.0",
     "react-icons": "4.12.0",
     "siwe": "2.1.4",
+    "sonner": "^1.4.41",
     "tailwindcss-animate": "1.0.7",
     "valtio": "1.11.2",
     "viem": "2.9.3",

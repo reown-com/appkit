@@ -161,7 +161,10 @@ const DropdownMenuSeparator = React.forwardRef<
 ))
 DropdownMenuSeparator.displayName = DropdownMenuPrimitive.Separator.displayName
 
-const DropdownMenuShortcut = ({ className, ...props }: React.HTMLAttributes<HTMLSpanElement>) => {
+interface DropdownMenuShortcutProps extends React.HTMLAttributes<HTMLSpanElement> {
+  className?: string
+}
+function DropdownMenuShortcut({ className, ...props }: DropdownMenuShortcutProps) {
   return <span className={cn('ml-auto text-xs tracking-widest opacity-60', className)} {...props} />
 }
 DropdownMenuShortcut.displayName = 'DropdownMenuShortcut'

@@ -13,7 +13,7 @@ import { buttonVariants } from '@/components/ui/button'
 import { Span } from '@/components/ui/typography'
 import { useTheme } from 'next-themes'
 
-export const ConfigurationDialog = () => {
+export function ConfigurationDialog() {
   const { theme } = useTheme()
 
   React.useEffect(() => {
