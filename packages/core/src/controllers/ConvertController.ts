@@ -244,7 +244,8 @@ export const ConvertController = {
   },
 
   resetValues() {
-    state.sourceToken = undefined
+    const networkToken = state.tokens?.[ConstantsUtil.NATIVE_TOKEN_ADDRESS]
+    this.setSourceToken(networkToken)
     state.toToken = undefined
     state.sourceTokenAmount = '0'
     state.toTokenAmount = '0'
@@ -622,6 +623,7 @@ export const ConvertController = {
       return transactionHash
     } catch (err) {
       const error = err as TransactionError
+      console.log('>>> sendTransactionForConvert - error', error)
       state.transactionError = error?.shortMessage
       state.transactionLoading = false
       SnackController.showError(error?.shortMessage || 'Transaction error')
