@@ -4,14 +4,15 @@ import { Column } from '@/components/ui/column'
 import { Dialog, DialogContent } from '@/components/ui/dialog'
 import { cn } from '@/lib/utils'
 import { ThemeStore } from '@/utils/StoreUtil'
-import MixColorInput from '@/components/Theming/MixColorInput'
-import AccentColorInput from '@/components/Theming/AccentColorInput'
-import BorderRadiusInput from '@/components/Theming/BorderRadiusInput'
 import { GearIcon } from '@radix-ui/react-icons'
 import { DialogTrigger } from '@radix-ui/react-dialog'
 import { buttonVariants } from '@/components/ui/button'
 import { Span } from '@/components/ui/typography'
 import { useTheme } from 'next-themes'
+
+import MixColorInput from './MixColorInput'
+import AccentColorInput from './AccentColorInput'
+import BorderRadiusInput from './BorderRadiusInput'
 
 export function ConfigurationDialog() {
   const { theme } = useTheme()
