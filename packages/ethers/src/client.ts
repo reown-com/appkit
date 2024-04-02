@@ -545,7 +545,7 @@ export class Web3Modal extends Web3ModalScaffold {
       EthersStoreUtil.setProvider(WalletConnectProvider as unknown as Provider)
       EthersStoreUtil.setIsConnected(true)
       console.log('WalletConnectProvider.accounts', WalletConnectProvider.accounts)
-      this.setAddresses(WalletConnectProvider.accounts)
+      this.setAllAddresses(WalletConnectProvider.accounts)
       this.setAddress(WalletConnectProvider.accounts?.[0])
       this.watchWalletConnect()
     }

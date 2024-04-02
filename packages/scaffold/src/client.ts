@@ -145,6 +145,11 @@ export class Web3ModalScaffold {
   protected setAddresses: (typeof AccountController)['setAddresses'] = (addresses = []) => {
     console.log('@scaffold setAddresses', addresses)
     AccountController.setAddresses(addresses)
+  }
+
+  protected setAllAddresses: (typeof AccountController)['setAllAddresses'] = (addresses = []) => {
+    console.log('@scaffold setAllAddresses', addresses)
+    AccountController.setAllAddresses(addresses)
     console.log('@scaffold setHasMultipleAddresses', addresses?.length > 1)
     OptionsController.setHasMultipleAddresses(addresses?.length > 1)
   }

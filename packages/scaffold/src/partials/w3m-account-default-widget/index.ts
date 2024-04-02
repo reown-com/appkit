@@ -90,7 +90,11 @@ export class W3mAccountDefaultWidget extends LitElement {
         ></wui-avatar>
         <wui-flex flexDirection="column" alignItems="center">
           <wui-flex gap="3xs" alignItems="center" justifyContent="center">
-            <wui-text variant="medium-title-600" color="fg-100">
+            <wui-text
+              variant="medium-title-600"
+              color="fg-100"
+              @click=${this.handleSwitchAccountsView}
+            >
               ${this.profileName
                 ? UiHelperUtil.getTruncateString({
                     string: this.profileName,
@@ -196,6 +200,10 @@ export class W3mAccountDefaultWidget extends LitElement {
         data-testid="w3m-wallet-upgrade-card"
       ></wui-notice-card>
     `
+  }
+
+  private handleSwitchAccountsView() {
+    RouterController.push('SwitchAddress')
   }
 
   private handleClickPay() {

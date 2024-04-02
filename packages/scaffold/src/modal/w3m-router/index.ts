@@ -75,6 +75,8 @@ export class W3mRouter extends LitElement {
         return html`<w3m-account-settings-view></w3m-account-settings-view>`
       case 'SelectAddresses':
         return html`<w3m-select-addresses-view></w3m-select-addresses-view>`
+      case 'SwitchAddress':
+        return html`<w3m-switch-address-view></w3m-switch-address-view>`
       case 'WhatIsAWallet':
         return html`<w3m-what-is-a-wallet-view></w3m-what-is-a-wallet-view>`
       case 'WhatIsANetwork':

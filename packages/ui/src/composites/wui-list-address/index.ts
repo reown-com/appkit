@@ -15,8 +15,9 @@ export class WuiListAddress extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() public address = ''
 
-  @property() public addressTitle = ''
+  @property() public addressDescription = ''
 
+  // TODO fetch balance from the blockchain
   @property({ type: Number }) public balance = 23.18
 
   @property({ type: Boolean }) public clickable = false
@@ -45,7 +46,7 @@ export class WuiListAddress extends LitElement {
               })}</wui-text
             >
             <wui-text class="address-description" variant="small-400"
-              >${this.addressTitle}</wui-text
+              >${this.addressDescription}</wui-text
             ></wui-flex
           >
         </wui-flex>

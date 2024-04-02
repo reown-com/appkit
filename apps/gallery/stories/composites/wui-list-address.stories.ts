@@ -11,7 +11,7 @@ export default {
   title: 'Composites/wui-list-address',
   args: {
     address: 'Ethereum',
-    addressTitle: 'some ens',
+    addressDescription: 'some ens',
     logo: networkImageSrc
   }
 } as Component
@@ -21,7 +21,7 @@ export const Default: Component = {
     html` <gallery-container width="336">
       <wui-list-address
         address=${args.address}
-        addressTitle=${args.addressTitle}
+        addressDescription=${args.addressDescription}
         logo=${args.logo}
       ></wui-list-address>
     </gallery-container>`

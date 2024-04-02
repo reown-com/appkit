@@ -26,6 +26,7 @@ export interface RouterControllerState {
     | 'OnRampProviders'
     | 'OnRampTokenSelect'
     | 'SwitchNetwork'
+    | 'SwitchAddress'
     | 'Transactions'
     | 'UnsupportedChain'
     | 'UpdateEmailWallet'

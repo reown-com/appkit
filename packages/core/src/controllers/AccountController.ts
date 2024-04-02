@@ -13,6 +13,7 @@ export interface AccountControllerState {
   caipAddress?: CaipAddress
   address?: string
   addresses?: string[]
+  allAddresses: string[]
   balance?: string
   balanceSymbol?: string
   profileName?: string | null
@@ -30,7 +31,8 @@ const state = proxy<AccountControllerState>({
   isConnected: false,
   currentTab: 0,
   tokenBalance: [],
-  smartAccountDeployed: false
+  smartAccountDeployed: false,
+  allAddresses: []
 })
 
 // -- Controller ---------------------------------------- //
@@ -91,8 +93,13 @@ export const AccountController = {
       state.tokenBalance = ref(tokenBalance)
     }
   },
-  setShouldUpdateToAddres(address: string) {
+  setShouldUpdateToAddress(address: string) {
     state.shouldUpdateToAddress = address
+  },
+
+  setAllAddresses(addresses: string[]) {
+    console.log('@AccountController setAllAddresses', addresses)
+    state.allAddresses = addresses
   },
 
   async fetchTokenBalance() {
