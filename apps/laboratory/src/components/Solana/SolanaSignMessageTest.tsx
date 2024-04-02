@@ -37,7 +37,7 @@ export function SolanaSignMessageTest() {
   }
 
   return (
-    <Button data-testid="sign-message-button" onClick={onSignMessage} variant={'secondary'}>
+    <Button data-testid="sign-message-button" onClick={onSignMessage} variant="secondary">
       Sign Message
     </Button>
   )

@@ -26,7 +26,7 @@ export function WagmiSignMessageTest() {
       data-testid="sign-message-button"
       onClick={onSignMessage}
       disabled={!isConnected}
-      variant={'secondary'}
+      variant="secondary"
     >
       Sign Message
     </Button>

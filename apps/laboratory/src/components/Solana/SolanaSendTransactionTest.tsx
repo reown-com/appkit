@@ -136,7 +136,7 @@ export function SolanaSendTransactionTest() {
         data-test-id="sign-transaction-button"
         onClick={onSendTransaction}
         disabled={loading}
-        variant={'secondary'}
+        variant="secondary"
       >
         Sign and Send Transaction
       </Button>

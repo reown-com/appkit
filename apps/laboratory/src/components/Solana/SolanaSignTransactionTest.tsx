@@ -123,7 +123,7 @@ export function SolanaSignTransactionTest() {
         data-test-id="sign-transaction-button"
         onClick={onSignTransaction}
         disabled={loading}
-        variant={'secondary'}
+        variant="secondary"
       >
         Sign Transaction
       </Button>
@@ -132,7 +132,7 @@ export function SolanaSignTransactionTest() {
           data-test-id="sign-transaction-button"
           onClick={onSignVersionedTransaction}
           disabled={loading}
-          variant={'secondary'}
+          variant="secondary"
         >
           Sign Versioned Transaction
         </Button>

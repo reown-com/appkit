@@ -57,7 +57,7 @@ export function EthersSignTypedDataTest() {
   }
 
   return (
-    <Button data-testid="sign-typed-data-button" onClick={onSignTypedData} variant={'secondary'}>
+    <Button data-testid="sign-typed-data-button" onClick={onSignTypedData} variant="secondary">
       Sign Typed Data
     </Button>
   )

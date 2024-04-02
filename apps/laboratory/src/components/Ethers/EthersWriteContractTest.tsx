@@ -45,7 +45,7 @@ export function EthersWriteContractTest() {
         data-test-id="sign-transaction-button"
         onClick={onSendTransaction}
         disabled={loading}
-        variant={'secondary'}
+        variant="secondary"
       >
         Purchase crypto donut
       </Button>

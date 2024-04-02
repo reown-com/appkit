@@ -46,7 +46,7 @@ export function EthersTransactionTest() {
         data-test-id="sign-transaction-button"
         onClick={onSendTransaction}
         disabled={loading}
-        variant={'secondary'}
+        variant="secondary"
       >
         Send Transaction to Vitalik
       </Button>
