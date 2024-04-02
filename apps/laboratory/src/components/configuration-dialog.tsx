@@ -9,7 +9,7 @@ import AccentColorInput from '@/components/Theming/AccentColorInput'
 import BorderRadiusInput from '@/components/Theming/BorderRadiusInput'
 import { GearIcon } from '@radix-ui/react-icons'
 import { DialogTrigger } from '@radix-ui/react-dialog'
-import { Button, buttonVariants } from '@/components/ui/button'
+import { buttonVariants } from '@/components/ui/button'
 import { Span } from '@/components/ui/typography'
 import { useTheme } from 'next-themes'
 

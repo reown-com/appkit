@@ -46,7 +46,7 @@ export default function MixColorInput() {
           step={1}
           className={cn('w-[60%]')}
           onValueChange={value => {
-            ThemeStore.setMixColorStrength(value)
+            ThemeStore.setMixColorStrength(value[0] || 0)
           }}
         />
         <Span className="mt-0">{state.mixColorStrength}%</Span>
