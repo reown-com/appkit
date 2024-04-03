@@ -74,9 +74,7 @@ export class W3mConnectingSiweView extends LitElement {
   // -- Private ------------------------------------------- //
 
   private onRender() {
-    console.log('onRender')
     if (SIWEController.state.session) {
-      console.log('session exist, closing..', SIWEController.state.session)
       ModalController.close()
     }
   }
