@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import type { WcWallet, ConnectorType } from './TypeUtil.js'
 
 // -- Helpers -----------------------------------------------------------------
