@@ -84,14 +84,12 @@ export function WagmiSendUSDCTest() {
         className="w-4/6"
         data-test-id="sign-transaction-button"
         onClick={onSendTransaction}
-        disabled={!writeContract}
-        aria-disabled={isLoading}
+        disabled={!writeContract || isLoading}
         variant="default"
       >
         Send USDC
       </Button>
       <Link
-        aria-disabled={isLoading}
         className={cn(buttonVariants({ variant: 'outline' }))}
         target="_blank"
         href="https://faucet.circle.com"
