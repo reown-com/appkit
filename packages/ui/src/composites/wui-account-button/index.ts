@@ -30,6 +30,8 @@ export class WuiAccountButton extends LitElement {
 
   @property() public address = ''
 
+  @property() public profileName = ''
+
   @property() public charsStart = 4
 
   @property() public charsEnd = 6
@@ -49,12 +51,14 @@ export class WuiAccountButton extends LitElement {
             address=${this.address}
           ></wui-avatar>
           <wui-text variant="paragraph-600" color="inherit">
-            ${UiHelperUtil.getTruncateString({
-              string: this.address,
-              charsStart: this.isProfileName ? 18 : this.charsStart,
-              charsEnd: this.isProfileName ? 0 : this.charsEnd,
-              truncate: this.isProfileName ? 'end' : 'middle'
-            })}
+            ${this.address
+              ? UiHelperUtil.getTruncateString({
+                  string: this.isProfileName ? this.profileName : this.address,
+                  charsStart: this.isProfileName ? 18 : this.charsStart,
+                  charsEnd: this.isProfileName ? 0 : this.charsEnd,
+                  truncate: this.isProfileName ? 'end' : 'middle'
+                })
+              : null}
           </wui-text>
         </wui-flex>
       </button>
@@ -86,7 +90,7 @@ export class WuiAccountButton extends LitElement {
 
       return html`
         ${networkElement}
-        <wui-text variant="paragraph-600" color="inherit"> ${this.balance} </wui-text>
+        <wui-text variant="paragraph-600" color="inherit"> ${this.balance}</wui-text>
       `
     }
 

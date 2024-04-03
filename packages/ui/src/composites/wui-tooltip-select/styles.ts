@@ -4,6 +4,7 @@ export default css`
   :host {
     position: relative;
   }
+
   button {
     display: flex;
     justify-content: center;
@@ -13,6 +14,8 @@ export default css`
     background-color: var(--wui-accent-glass-010);
     border-radius: var(--wui-border-radius-xs);
     border: 1px solid var(--wui-accent-glass-010);
+    transition: background-color var(--wui-ease-out-power-1) var(--wui-duration-md);
+    will-change: background-color;
   }
 
   wui-tooltip {
@@ -31,7 +34,6 @@ export default css`
 
     button:active:enabled {
       background-color: var(--wui-accent-glass-020);
-      transition: all var(--wui-ease-out-power-2) var(--wui-duration-sm);
     }
   }
 `

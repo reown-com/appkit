@@ -34,7 +34,6 @@ export default css`
     opacity: 0;
     transform: scale(0.5);
     z-index: 1;
-    transition: all var(--wui-ease-out-power-2) var(--wui-duration-lg);
   }
 
   wui-button {

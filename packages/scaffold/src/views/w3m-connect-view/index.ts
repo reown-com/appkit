@@ -4,7 +4,6 @@ import {
   AssetUtil,
   ConnectionController,
   ConnectorController,
-  ConstantsUtil,
   CoreHelperUtil,
   EventsController,
   OptionsController,
@@ -16,6 +15,7 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
+import { ConstantsUtil } from '@web3modal/scaffold-utils'
 
 @customElement('w3m-connect-view')
 export class W3mConnectView extends LitElement {
@@ -26,11 +26,13 @@ export class W3mConnectView extends LitElement {
 
   // -- State & Properties -------------------------------- //
   @state() private connectors = ConnectorController.state.connectors
+  @state() private count = ApiController.state.count
 
   public constructor() {
     super()
     this.unsubscribe.push(
-      ConnectorController.subscribeKey('connectors', val => (this.connectors = val))
+      ConnectorController.subscribeKey('connectors', val => (this.connectors = val)),
+      ApiController.subscribeKey('count', val => (this.count = val))
     )
   }
 
@@ -217,9 +219,8 @@ export class W3mConnectView extends LitElement {
       return null
     }
 
-    const count = ApiController.state.count
     const featuredCount = ApiController.state.featured.length
-    const rawCount = count + featuredCount
+    const rawCount = this.count + featuredCount
     const roundedCount = rawCount < 10 ? rawCount : Math.floor(rawCount / 10) * 10
     const tagLabel = roundedCount < rawCount ? `${roundedCount}+` : `${roundedCount}`
 

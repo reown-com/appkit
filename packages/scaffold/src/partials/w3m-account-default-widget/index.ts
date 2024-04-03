@@ -27,7 +27,7 @@ export class W3mAccountDefaultWidget extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() private address = AccountController.state.address
+  @state() public address = AccountController.state.address
 
   @state() private profileImage = AccountController.state.profileImage
 
@@ -52,7 +52,7 @@ export class W3mAccountDefaultWidget extends LitElement {
             this.profileName = val.profileName
             this.balance = val.balance
             this.balanceSymbol = val.balanceSymbol
-          } else {
+          } else if (!this.disconnecting) {
             SnackController.showError('Account not found')
           }
         })
