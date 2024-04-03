@@ -42,6 +42,8 @@ import type { WuiSearchBar } from '../composites/wui-search-bar/index.js'
 import type { WuiSnackbar } from '../composites/wui-snackbar/index.js'
 import type { WuiTabs } from '../composites/wui-tabs/index.js'
 import type { WuiTag } from '../composites/wui-tag/index.js'
+import type { WuiTokenButton } from '../composites/wui-token-button/index.js'
+import type { WuiTokenListItem } from '../composites/wui-token-list-item/index.js'
 import type { WuiTooltip } from '../composites/wui-tooltip/index.js'
 import type { WuiTransactionVisual } from '../composites/wui-transaction-visual/index.js'
 import type { WuiVisualThumbnail } from '../composites/wui-visual-thumbnail/index.js'
@@ -116,6 +118,8 @@ declare global {
       'wui-snackbar': CustomElement<WuiSnackbar>
       'wui-tabs': CustomElement<WuiTabs>
       'wui-tag': CustomElement<WuiTag>
+      'wui-token-button': CustomElement<WuiTokenButton>
+      'wui-token-list-item': CustomElement<WuiTokenListItem>
       'wui-tooltip': CustomElement<WuiTooltip>
       'wui-transaction-visual': CustomElement<WuiTransactionVisual>
       'wui-visual-thumbnail': CustomElement<WuiVisualThumbnail>
