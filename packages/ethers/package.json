@@ -73,9 +73,6 @@
     },
     "vue": {
       "optional": true
-    },
-    "@web3modal/siwe": {
-      "optional": true
     }
   },
   "keywords": [

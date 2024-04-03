@@ -69,9 +69,6 @@
     "react": {
       "optional": true
     },
-    "@web3modal/siwe": {
-      "optional": true
-    },
     "react-dom": {
       "optional": true
     },
