@@ -103,7 +103,7 @@ declare global {
       'wui-email-input': CustomElement<WuiEmailInput>
       'wui-icon-box': CustomElement<WuiIconBox>
       'wui-icon-link': CustomElement<WuiIconLink>
-      'wui-icon-amount': CustomElement<WuiInputAmount>
+      'wui-input-amount': CustomElement<WuiInputAmount>
       'wui-input-element': CustomElement<WuiInputElement>
       'wui-input-numeric': CustomElement<WuiInputNumeric>
       'wui-input-text': CustomElement<WuiInputText>
