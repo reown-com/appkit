@@ -470,8 +470,6 @@ export class Web3Modal extends Web3ModalScaffold {
       }
 
       provider.onRpcRequest(request => {
-        console.log('>>> [onRpcRequest]: ', request, RouterController.state.transactionSuccessStack)
-
         if (W3mFrameHelpers.checkIfRequestExists(request)) {
           if (!W3mFrameHelpers.checkIfRequestIsAllowed(request)) {
             if (ModalController.state.open) {
@@ -495,7 +493,6 @@ export class Web3Modal extends Web3ModalScaffold {
       })
 
       provider.onRpcResponse(receive => {
-        console.log('>>> [onRpcResponse]: ', receive)
         // @ts-ignore
         const payload = receive?.payload
         // @ts-ignore
@@ -510,7 +507,6 @@ export class Web3Modal extends Web3ModalScaffold {
         const isCompleted = isAddress && payload?.length > 10
 
         if (isCompleted && RouterController.state.transactionSuccessStack?.length > 0) {
-          console.log('>>> [onRpcResponse]: RouterController.popTransactionSuccessAction()')
           RouterController.popTransactionSuccessAction()
         }
       })

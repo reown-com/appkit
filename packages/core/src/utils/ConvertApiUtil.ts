@@ -1,8 +1,8 @@
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
-import { NetworkController } from './NetworkController.js'
+import { NetworkController } from '../controllers/NetworkController.js'
 import { FetchUtil } from '../utils/FetchUtil.js'
-import { AccountController } from './AccountController.js'
-import { ConnectionController } from './ConnectionController.js'
+import { AccountController } from '../controllers/AccountController.js'
+import { ConnectionController } from '../controllers/ConnectionController.js'
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 
 const ONEINCH_API_BASE_URL = 'https://1inch-swap-proxy.walletconnect-v1-bridge.workers.dev'
