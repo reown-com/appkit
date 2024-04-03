@@ -1,5 +1,15 @@
 # @apps/gallery
 
+## 4.1.5
+
+### Patch Changes
+
+- release: v4.1.5
+
+- Updated dependencies []:
+  - @web3modal/common@4.1.5
+  - @web3modal/ui@4.1.5
+
 ## 4.1.5-93c81127.0
 
 ### Patch Changes
