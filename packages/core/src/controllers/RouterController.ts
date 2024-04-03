@@ -46,7 +46,6 @@ export interface RouterControllerState {
     | 'WhatIsABuy'
     | 'Convert'
     | 'ConvertSelectToken'
-    | 'ConvertSelectNetwork'
     | 'ConvertPreview'
   history: RouterControllerState['view'][]
   data?: {

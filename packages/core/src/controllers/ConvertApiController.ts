@@ -8,19 +8,20 @@ import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 const ONEINCH_API_BASE_URL = 'https://1inch-swap-proxy.walletconnect-v1-bridge.workers.dev'
 export const DEFAULT_SLIPPAGE_TOLERANCE = '0.5'
 
-const OneInchAPIEndpoints = {
-  approveTransaction: (chainId: number) => `/swap/v5.2/${chainId}/approve/transaction`,
-  approveAllowance: (chainId: number) => `/swap/v5.2/${chainId}/approve/allowance`,
-  gas: (chainId: number) => `/gas-price/v1.5/${chainId}`,
-  gasPrice: (chainId: number) => `/gas-price/v1.5/${chainId}`,
-  swap: (chainId: number) => `/swap/v5.2/${chainId}/swap`,
-  tokens: (chainId: number) => `/swap/v5.2/${chainId}/tokens`,
-  tokensCustom: (chainId: number) => `/token/v1.2/${chainId}/custom`,
-  tokensPrices: (chainId: number) => `/price/v1.1/${chainId}`,
-  search: (chainId: number) => `/token/v1.2/${chainId}/search`,
-  balance: (chainId: number, address: string | undefined) =>
-    `/balance/v1.2/${chainId}/balances/${address}`,
-  quote: (chainId: number) => `/swap/v6.0/${chainId}/quote`
+function get1InchEndpoints(chainId: number, address: string | undefined) {
+  return {
+    approveTransaction: `/swap/v5.2/${chainId}/approve/transaction`,
+    approveAllowance: `/swap/v5.2/${chainId}/approve/allowance`,
+    gas: `/gas-price/v1.5/${chainId}`,
+    gasPrice: `/gas-price/v1.5/${chainId}`,
+    swap: `/swap/v5.2/${chainId}/swap`,
+    tokens: `/swap/v5.2/${chainId}/tokens`,
+    tokensCustom: `/token/v1.2/${chainId}/custom`,
+    tokensPrices: `/price/v1.1/${chainId}`,
+    search: `/token/v1.2/${chainId}/search`,
+    balance: `/balance/v1.2/${chainId}/balances/${address}`,
+    quote: `/swap/v6.0/${chainId}/quote`
+  }
 }
 
 // -- Types --------------------------------------------- //
@@ -117,37 +118,26 @@ export const ConvertApiController = {
     const chainId = CoreHelperUtil.getEvmChainId(NetworkController.state.caipNetwork?.id)
     const { address } = AccountController.state
 
+    const endpoints = get1InchEndpoints(chainId, address)
+
     return {
       api,
       paths: {
-        approveTransaction: OneInchAPIEndpoints.approveTransaction(chainId),
-        approveAllowance: OneInchAPIEndpoints.approveAllowance(chainId),
-        gas: OneInchAPIEndpoints.gasPrice(chainId),
-        gasPrice: OneInchAPIEndpoints.gasPrice(chainId),
-        swap: OneInchAPIEndpoints.swap(chainId),
-        tokens: OneInchAPIEndpoints.tokens(chainId),
-        tokensCustom: OneInchAPIEndpoints.tokensCustom(chainId),
-        tokenPrices: OneInchAPIEndpoints.tokensPrices(chainId),
-        search: OneInchAPIEndpoints.search(chainId),
-        balance: OneInchAPIEndpoints.balance(chainId, address),
-        quote: OneInchAPIEndpoints.quote(chainId)
+        approveTransaction: endpoints.approveTransaction,
+        approveAllowance: endpoints.approveAllowance,
+        gas: endpoints.gasPrice,
+        gasPrice: endpoints.gasPrice,
+        swap: endpoints.swap,
+        tokens: endpoints.tokens,
+        tokensCustom: endpoints.tokensCustom,
+        tokenPrices: endpoints.tokensPrices,
+        search: endpoints.search,
+        balance: endpoints.balance,
+        quote: endpoints.quote
       }
     }
   },
 
-  _getSwapParams() {
-    const { address } = AccountController.state
-    if (!address) {
-      throw new Error('No address found to swap the tokens from.')
-    }
-
-    return {
-      fromAddress: address as `0x${string}`,
-      slippage: DEFAULT_SLIPPAGE_TOLERANCE
-    }
-  },
-
-  // /gas-price/v1.5/${chainId}
   async getGasPrice() {
     const { api, paths } = this.get1InchAPI()
 
@@ -159,7 +149,6 @@ export const ConvertApiController = {
     return gasPrices
   },
 
-  // - /swap/v5.2/${chainId}/approve/allowance
   async checkConvertAllowance({
     fromAddress,
     sourceTokenAddress,
@@ -183,14 +172,12 @@ export const ConvertApiController = {
     return false
   },
 
-  // - /swap/v5.2/${chainId}/tokens
   async getTokenList() {
     const { api, paths } = this.get1InchAPI()
 
     return await api.get<TokenList>({ path: paths.tokens })
   },
 
-  // - /token/v1.2/${chainId}/search
   async searchTokens(searchTerm: string) {
     const { api, paths } = this.get1InchAPI()
 
@@ -223,7 +210,6 @@ export const ConvertApiController = {
     return mergedTokensWithBalances
   },
 
-  // - /balance/v1.2/${chainId}/balances/${address}
   async getBalances() {
     const { api, paths } = this.get1InchAPI()
 
@@ -245,7 +231,6 @@ export const ConvertApiController = {
     return { balances: nonEmptyBalances, tokenAddresses: Object.keys(nonEmptyBalances) }
   },
 
-  // - /token/v1.2/${chainId}/custom
   async getTokenInfoWithAddresses(addresses: string[]) {
     const { api, paths } = this.get1InchAPI()
 
@@ -255,7 +240,6 @@ export const ConvertApiController = {
     })
   },
 
-  // - /price/v1.1/${chainId}
   async getTokenPriceWithAddresses(addresses: string[]) {
     const { api, paths } = this.get1InchAPI()
 
@@ -292,7 +276,6 @@ export const ConvertApiController = {
     return mergedTokens
   },
 
-  // --- /swap/v5.2/${chainId}/swap
   async getConvertData({
     sourceTokenAddress,
     toTokenAddress,
@@ -314,7 +297,6 @@ export const ConvertApiController = {
     })
   },
 
-  // --- /swap/v5.2/${chainId}/approve/transaction
   async getConvertApprovalData({ sourceTokenAddress }: GetApprovalParams) {
     const { api, paths } = this.get1InchAPI()
 
@@ -326,7 +308,6 @@ export const ConvertApiController = {
     })
   },
 
-  // --- /swap/v5.2/${chainId}/approve/transaction
   async getQuoteApprovalData({
     sourceTokenAddress,
     toTokenAddress,

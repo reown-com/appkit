@@ -121,8 +121,6 @@ export class W3mRouter extends LitElement {
         return html`<w3m-convert-view></w3m-convert-view>`
       case 'ConvertSelectToken':
         return html`<w3m-convert-select-token-view></w3m-convert-select-token-view>`
-      case 'ConvertSelectNetwork':
-        return html`<w3m-convert-select-network-view></w3m-convert-select-network-view>`
       case 'ConvertPreview':
         return html`<w3m-convert-preview-view></w3m-convert-preview-view>`
       case 'WalletSend':

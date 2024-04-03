@@ -378,15 +378,11 @@ export const ConvertController = {
   },
 
   calculateGasPriceInUSD(gas: bigint, gasPrice: bigint) {
-    try {
-      const totalGasCostInEther = this.calculateGasPriceInEther(gas, gasPrice)
-      const networkPriceNumber = NumberUtil.bigNumber(state.networkPrice)
-      const totalCostInUSD = networkPriceNumber.multipliedBy(totalGasCostInEther)
+    const totalGasCostInEther = this.calculateGasPriceInEther(gas, gasPrice)
+    const networkPriceInUSD = NumberUtil.bigNumber(state.networkPrice)
+    const gasCostInUSD = networkPriceInUSD.multipliedBy(totalGasCostInEther)
 
-      return totalCostInUSD.toNumber()
-    } catch (error) {
-      return 0
-    }
+    return gasCostInUSD.toNumber()
   },
 
   calculatePriceImpact(_toTokenAmount: string, _gasPriceInUSD = 0) {

@@ -277,12 +277,6 @@ export const CoreHelperUtil = {
     return { dollars, pennies }
   },
 
-  get1inchApiUrl(chainId: number) {
-    return CoreHelperUtil.isRestrictedRegion()
-      ? `https://swap.walletconnect.org/${chainId}`
-      : `https://swap.walletconnect.com/${chainId}`
-  },
-
   isAddress(address: string): boolean {
     if (!/^(?:0x)?[0-9a-f]{40}$/iu.test(address)) {
       return false
