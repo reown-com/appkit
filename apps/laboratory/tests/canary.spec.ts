@@ -1,6 +1,7 @@
 /* eslint no-console: 0 */
 
 import { testConnectedMW } from './shared/fixtures/w3m-wallet-fixture'
+import { timeEnd, timeStart } from './shared/utils/logs'
 import { uploadCanaryResultsToCloudWatch } from './shared/utils/metrics'
 import { expectConnection } from './shared/utils/validation'
 
@@ -8,9 +9,9 @@ const ENV = process.env['ENVIRONMENT'] || 'dev'
 const REGION = process.env['REGION'] || 'eu-central-1'
 
 testConnectedMW.beforeEach(async ({ modalValidator, walletValidator }) => {
-  console.time('beforeEach expectConnection')
+  timeStart('beforeEach expectConnection')
   await expectConnection(modalValidator, walletValidator)
-  console.timeEnd('beforeEach expectConnection')
+  timeEnd('beforeEach expectConnection')
 })
 
 testConnectedMW.afterEach(async ({ browserName }, testInfo) => {
@@ -19,7 +20,7 @@ testConnectedMW.afterEach(async ({ browserName }, testInfo) => {
   }
 
   if (ENV !== 'dev') {
-    console.time('uploadCanaryResultsToCloudWatch')
+    timeStart('uploadCanaryResultsToCloudWatch')
     const duration: number = testInfo.duration
     await uploadCanaryResultsToCloudWatch(
       ENV,
@@ -29,33 +30,33 @@ testConnectedMW.afterEach(async ({ browserName }, testInfo) => {
       testInfo.status === 'passed',
       duration
     )
-    console.timeEnd('uploadCanaryResultsToCloudWatch')
+    timeEnd('uploadCanaryResultsToCloudWatch')
   }
 })
 
 testConnectedMW(
   'it should sign',
   async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
-    console.time('modalPage.sign()')
+    timeStart('modalPage.sign()')
     await modalPage.sign()
-    console.timeEnd('modalPage.sign()')
-    console.time('walletValidator.expectReceivedSign')
+    timeEnd('modalPage.sign()')
+    timeStart('walletValidator.expectReceivedSign')
     await walletValidator.expectReceivedSign({})
-    console.timeEnd('walletValidator.expectReceivedSign')
-    console.time('walletPage.handleRequest')
+    timeEnd('walletValidator.expectReceivedSign')
+    timeStart('walletPage.handleRequest')
     await walletPage.handleRequest({ accept: true })
-    console.timeEnd('walletPage.handleRequest')
-    console.time('modalValidator.expectAcceptedSign')
+    timeEnd('walletPage.handleRequest')
+    timeStart('modalValidator.expectAcceptedSign')
     await modalValidator.expectAcceptedSign()
-    console.timeEnd('modalValidator.expectAcceptedSign')
-    console.time('modalPage.disconnect')
+    timeEnd('modalValidator.expectAcceptedSign')
+    timeStart('modalPage.disconnect')
     await modalPage.disconnect()
-    console.timeEnd('modalPage.disconnect')
-    console.time('modalValidator.expectDisconnected')
+    timeEnd('modalPage.disconnect')
+    timeStart('modalValidator.expectDisconnected')
     await modalValidator.expectDisconnected()
-    console.timeEnd('modalValidator.expectDisconnected')
-    console.time('walletValidator.expectDisconnected')
+    timeEnd('modalValidator.expectDisconnected')
+    timeStart('walletValidator.expectDisconnected')
     await walletValidator.expectDisconnected()
-    console.timeEnd('walletValidator.expectDisconnected')
+    timeEnd('walletValidator.expectDisconnected')
   }
 )
