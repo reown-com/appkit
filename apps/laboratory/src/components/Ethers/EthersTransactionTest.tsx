@@ -1,17 +1,12 @@
-import { toast } from 'sonner'
+import { Button, useToast, Stack, Link, Text, Spacer } from '@chakra-ui/react'
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers/react'
 import { BrowserProvider, JsonRpcSigner, ethers } from 'ethers'
 import { sepolia, optimism } from '../../utils/ChainsUtil'
 import { useState } from 'react'
 import { vitalikEthAddress } from '../../utils/DataUtil'
-import { Button, buttonVariants } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
-import { Row } from '@/components/ui/row'
-import { Column } from '@/components/ui/column'
-import { Span } from '@/components/ui/typography'
-import Link from 'next/link'
 
 export function EthersTransactionTest() {
+  const toast = useToast()
   const { address, chainId } = useWeb3ModalAccount()
   const { walletProvider } = useWeb3ModalProvider()
   const [loading, setLoading] = useState(false)
@@ -28,10 +23,13 @@ export function EthersTransactionTest() {
         to: vitalikEthAddress,
         value: ethers.parseUnits('0.0001', 'gwei')
       })
-      toast.success('Success', { description: tx.hash })
+      toast({ title: 'Succcess', description: tx.hash, status: 'success', isClosable: true })
     } catch {
-      toast.error('Error', {
-        description: 'Failed to sign transaction'
+      toast({
+        title: 'Error',
+        description: 'Failed to sign transaction',
+        status: 'error',
+        isClosable: true
       })
     } finally {
       setLoading(false)
@@ -41,37 +39,32 @@ export function EthersTransactionTest() {
   const allowedChains = [sepolia.chainId, optimism.chainId]
 
   return allowedChains.includes(Number(chainId)) && address ? (
-    <Column className="sm:flex-row sm:items-center w-full gap-4 justify-between">
+    <Stack direction={['column', 'column', 'row']}>
       <Button
         data-test-id="sign-transaction-button"
         onClick={onSendTransaction}
-        disabled={loading}
-        variant="secondary"
+        isDisabled={loading}
       >
         Send Transaction to Vitalik
       </Button>
 
-      <Row className="gap-2">
-        <Link
-          className={cn(buttonVariants({ variant: 'outline' }))}
-          target="_blank"
-          href="https://sepoliafaucet.com"
-        >
-          Sepolia Faucet 1
-        </Link>
+      <Spacer />
 
-        <Link
-          className={cn(buttonVariants({ variant: 'outline' }))}
-          target="_blank"
-          href="https://www.infura.io/faucet/sepolia"
-        >
+      <Link isExternal href="https://sepoliafaucet.com">
+        <Button variant="outline" colorScheme="blue" isDisabled={loading}>
+          Sepolia Faucet 1
+        </Button>
+      </Link>
+
+      <Link isExternal href="https://www.infura.io/faucet/sepolia">
+        <Button variant="outline" colorScheme="orange" isDisabled={loading}>
           Sepolia Faucet 2
-        </Link>
-      </Row>
-    </Column>
+        </Button>
+      </Link>
+    </Stack>
   ) : (
-    <Span className="text-red-700 dark:text-red-400">
+    <Text fontSize="md" color="yellow">
       Switch to Sepolia or OP to test this feature
-    </Span>
+    </Text>
   )
 }

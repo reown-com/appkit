@@ -1,13 +1,18 @@
-import { Grid, useRadioGroup } from '@chakra-ui/react'
+import {
+  Grid,
+  Heading,
+  Slider,
+  SliderFilledTrack,
+  SliderMark,
+  SliderThumb,
+  SliderTrack,
+  useRadioGroup
+} from '@chakra-ui/react'
 import { colors } from '../../utils/DataUtil'
 import RadioColor from './RadioColor'
 
 import { ThemeStore } from '../../utils/StoreUtil'
 import { useProxy } from 'valtio/utils'
-import { Span } from '@/components/ui/typography'
-import { Slider } from '@/components/ui/slider'
-import { cn } from '@/lib/utils'
-import { Row } from '@/components/ui/row'
 
 export default function MixColorInput() {
   const state = useProxy(ThemeStore.state)
@@ -26,7 +31,9 @@ export default function MixColorInput() {
 
   return (
     <>
-      <Span className="text-lg">Mix Color</Span>
+      <Heading size="sm" fontWeight="400" as="h2">
+        Mix Color
+      </Heading>
       <Grid templateColumns="repeat(15, 1fr)" gap={2} {...group}>
         {colors.map(value => {
           const radio = getRadioProps({ value })
@@ -38,20 +45,31 @@ export default function MixColorInput() {
           )
         })}
       </Grid>
-
-      <Row className="items-center gap-4">
-        <Slider
-          defaultValue={[10]}
-          min={0}
-          max={50}
-          step={1}
-          className={cn('w-[60%]')}
-          onValueChange={value => {
-            ThemeStore.setMixColorStrength(value[0] || 0)
-          }}
-        />
-        <Span className="mt-0">{state.mixColorStrength}%</Span>
-      </Row>
+      <Slider
+        min={0}
+        max={50}
+        value={state.mixColorStrength}
+        onChange={val => {
+          ThemeStore.setMixColorStrength(val)
+        }}
+      >
+        <SliderMark
+          value={state.mixColorStrength}
+          textAlign="center"
+          bg="blackAlpha.700"
+          color="white"
+          mt="3"
+          ml="-5"
+          borderRadius="base"
+          w="12"
+        >
+          {state.mixColorStrength}%
+        </SliderMark>
+        <SliderTrack>
+          <SliderFilledTrack />
+        </SliderTrack>
+        <SliderThumb />
+      </Slider>
     </>
   )
 }

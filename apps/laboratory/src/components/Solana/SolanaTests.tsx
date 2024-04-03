@@ -1,42 +1,58 @@
 import { useWeb3ModalAccount } from '@web3modal/solana/react'
+import {
+  StackDivider,
+  Card,
+  CardHeader,
+  Heading,
+  CardBody,
+  Box,
+  Stack,
+  Text
+} from '@chakra-ui/react'
 
 import { SolanaSignTransactionTest } from './SolanaSignTransactionTest'
 import { SolanaSendTransactionTest } from './SolanaSendTransactionTest'
+import { SolanaSignMessageTest } from './SolanaSignMessageTest'
 import { solana } from '../../utils/ChainsUtil'
-
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Span } from '@/components/ui/typography'
-import { Column } from '@/components/ui/column'
 
 export function SolanaTests() {
   const { isConnected, currentChain } = useWeb3ModalAccount()
 
   return isConnected ? (
-    <Card className="mb-6">
-      <CardHeader className="border-b border-muted bg-muted/20 px-6 py-4">
-        <CardTitle className="text-lg">Test Interactions</CardTitle>
+    <Card marginTop={10} marginBottom={10}>
+      <CardHeader>
+        <Heading size="md">Test Interactions</Heading>
       </CardHeader>
-      <CardContent className="p-6">
-        <Column className="divide-y divide-muted items-start">
-          <Column className="py-4 first:pt-0 last:pb-0 items-start gap-4 w-full">
-            <Span className="text-sm uppercase">Sign Message</Span>
-            {currentChain?.chainId !== solana.chainId && (
-              <Span className="text-red-700 dark:text-red-400">
-                Please ensure your wallet is connected to the {currentChain?.name}
-              </Span>
-            )}
-          </Column>
 
-          <Column className="py-4 first:pt-0 last:pb-0 items-start gap-4 w-full">
-            <Span className="text-sm uppercase">Sign Transaction</Span>
+      <CardBody>
+        <Stack divider={<StackDivider />} spacing="4">
+          <Box>
+            <Heading size="xs" textTransform="uppercase" pb="2">
+              Sign Message
+            </Heading>
+            <SolanaSignMessageTest />
+          </Box>
+          {currentChain?.chainId !== solana.chainId && (
+            <Box>
+              <Text fontSize="md" color="yellow">
+                Please ensure your wallet is connected to the {currentChain?.name}
+              </Text>
+            </Box>
+          )}
+          <Box>
+            <Heading size="xs" textTransform="uppercase" pb="2">
+              Sign Transaction
+            </Heading>
             <SolanaSignTransactionTest />
-          </Column>
-          <Column className="py-4 first:pt-0 last:pb-0 items-start gap-4 w-full">
-            <Span className="text-sm uppercase">Sign and Send Transaction</Span>
+          </Box>
+          <Box>
+            <Heading size="xs" textTransform="uppercase" pb="2">
+              Sign and Send Transaction
+            </Heading>
             <SolanaSendTransactionTest />
-          </Column>
-        </Column>
-      </CardContent>
+          </Box>
+        </Stack>
+      </CardBody>
     </Card>
   ) : null
 }

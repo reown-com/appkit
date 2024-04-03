@@ -1,6 +1,5 @@
 import { useState } from 'react'
-import { Stack, Text, Spacer } from '@chakra-ui/react'
-import { toast } from 'sonner'
+import { Button, useToast, Stack, Text, Spacer, Link } from '@chakra-ui/react'
 import {
   PublicKey,
   Transaction,
@@ -12,15 +11,13 @@ import {
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/solana/react'
 
 import { solana } from '../../utils/ChainsUtil'
-import { Button, buttonVariants } from '@/components/ui/button'
-import Link from 'next/link'
-import { cn } from '@/lib/utils'
 
 const PHANTOM_DEVNET_ADDRESS = 'EmT8r4E8ZjoQgt8sXGbaWBRMKfUXsVT1wonoSnJZ4nBn'
 const recipientAddress = new PublicKey(PHANTOM_DEVNET_ADDRESS)
 const amountInLamports = 100000000
 
 export function SolanaSignTransactionTest() {
+  const toast = useToast()
   const { address, chainId } = useWeb3ModalAccount()
   const { walletProvider, connection } = useWeb3ModalProvider()
   const [loading, setLoading] = useState(false)
@@ -51,10 +48,13 @@ export function SolanaSignTransactionTest() {
       const tx = await walletProvider.signTransaction(transaction)
       const signature = tx.signatures[0]?.signature
 
-      toast.success('Success', { description: signature })
+      toast({ title: 'Succcess', description: signature, status: 'success', isClosable: true })
     } catch (err) {
-      toast.success('Error', {
-        description: 'Failed to sign transaction'
+      toast({
+        title: 'Error',
+        description: 'Failed to sign transaction',
+        status: 'error',
+        isClosable: true
       })
     } finally {
       setLoading(false)
@@ -93,10 +93,13 @@ export function SolanaSignTransactionTest() {
       const tx = await walletProvider.signTransaction(transactionV0)
       const signature = tx.signatures[0]?.signature
 
-      toast.success('Success', { description: signature })
+      toast({ title: 'Succcess', description: signature, status: 'success', isClosable: true })
     } catch (err) {
-      toast.success('Error', {
-        description: 'Failed to sign transaction'
+      toast({
+        title: 'Error',
+        description: 'Failed to sign transaction',
+        status: 'error',
+        isClosable: true
       })
     } finally {
       setLoading(false)
@@ -122,8 +125,7 @@ export function SolanaSignTransactionTest() {
       <Button
         data-test-id="sign-transaction-button"
         onClick={onSignTransaction}
-        disabled={loading}
-        variant="secondary"
+        isDisabled={loading}
       >
         Sign Transaction
       </Button>
@@ -131,20 +133,17 @@ export function SolanaSignTransactionTest() {
         <Button
           data-test-id="sign-transaction-button"
           onClick={onSignVersionedTransaction}
-          disabled={loading}
-          variant="secondary"
+          isDisabled={loading}
         >
           Sign Versioned Transaction
         </Button>
       ) : null}
       <Spacer />
 
-      <Link
-        className={cn(buttonVariants({ variant: 'outline' }))}
-        target="_blank"
-        href="https://solfaucet.com/"
-      >
-        Solana Faucet
+      <Link isExternal href="https://solfaucet.com/">
+        <Button variant="outline" colorScheme="blue">
+          Solana Faucet
+        </Button>
       </Link>
     </Stack>
   )

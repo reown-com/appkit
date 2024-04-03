@@ -1,10 +1,10 @@
-import { toast } from 'sonner'
+import { Button, useToast } from '@chakra-ui/react'
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers/react'
 import { BrowserProvider, JsonRpcSigner } from 'ethers'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
-import { Button } from '@/components/ui/button'
 
 export function EthersSignMessageTest() {
+  const toast = useToast()
   const { address, chainId } = useWeb3ModalAccount()
   const { walletProvider } = useWeb3ModalProvider()
 
@@ -16,18 +16,24 @@ export function EthersSignMessageTest() {
       const provider = new BrowserProvider(walletProvider, chainId)
       const signer = new JsonRpcSigner(provider, address)
       const signature = await signer?.signMessage('Hello Web3Modal Ethers')
-      toast.success(ConstantsUtil.SigningSucceededToastTitle, {
-        description: signature
+      toast({
+        title: ConstantsUtil.SigningSucceededToastTitle,
+        description: signature,
+        status: 'success',
+        isClosable: true
       })
     } catch {
-      toast.error(ConstantsUtil.SigningFailedToastTitle, {
-        description: 'Failed to sign message'
+      toast({
+        title: ConstantsUtil.SigningFailedToastTitle,
+        description: 'Failed to sign message',
+        status: 'error',
+        isClosable: true
       })
     }
   }
 
   return (
-    <Button data-testid="sign-message-button" onClick={onSignMessage} variant="secondary">
+    <Button data-testid="sign-message-button" onClick={onSignMessage}>
       Sign Message
     </Button>
   )

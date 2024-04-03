@@ -1,7 +1,6 @@
 import { useState } from 'react'
-import { Stack, Text, Spacer } from '@chakra-ui/react'
+import { Button, useToast, Stack, Text, Spacer, Link } from '@chakra-ui/react'
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/solana/react'
-import { toast } from 'sonner'
 import {
   PublicKey,
   Transaction,
@@ -12,15 +11,13 @@ import {
 } from '@solana/web3.js'
 
 import { solana } from '../../utils/ChainsUtil'
-import { Button, buttonVariants } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
-import Link from 'next/link'
 
 const PHANTOM_TESTNET_ADDRESS = 'EmT8r4E8ZjoQgt8sXGbaWBRMKfUXsVT1wonoSnJZ4nBn'
 const recipientAddress = new PublicKey(PHANTOM_TESTNET_ADDRESS)
 const amountInLamports = 100000000
 
 export function SolanaSendTransactionTest() {
+  const toast = useToast()
   const { address, chainId } = useWeb3ModalAccount()
   const { walletProvider, connection } = useWeb3ModalProvider()
   const [loading, setLoading] = useState(false)
@@ -56,10 +53,13 @@ export function SolanaSendTransactionTest() {
       transaction.recentBlockhash = blockhash
 
       const signature = await walletProvider.sendTransaction(transaction, connection as Connection)
-      toast.success('Success', { description: signature })
+      toast({ title: 'Succcess', description: signature, status: 'success', isClosable: true })
     } catch (err) {
-      toast.error('Success', {
-        description: (err as Error).message
+      toast({
+        title: 'Error',
+        description: (err as Error).message,
+        status: 'error',
+        isClosable: true
       })
     } finally {
       setLoading(false)
@@ -106,10 +106,13 @@ export function SolanaSendTransactionTest() {
         transactionV0,
         connection as Connection
       )
-      toast.success('Success', { description: signature })
+      toast({ title: 'Succcess', description: signature, status: 'success', isClosable: true })
     } catch (err) {
-      toast.error('Error', {
-        description: (err as Error).message
+      toast({
+        title: 'Error',
+        description: (err as Error).message,
+        status: 'error',
+        isClosable: true
       })
     } finally {
       setLoading(false)
@@ -135,29 +138,25 @@ export function SolanaSendTransactionTest() {
       <Button
         data-test-id="sign-transaction-button"
         onClick={onSendTransaction}
-        disabled={loading}
-        variant="secondary"
+        isDisabled={loading}
       >
         Sign and Send Transaction
       </Button>
-
       {supportV0Transactions ? (
         <Button
           data-test-id="sign-transaction-button"
           onClick={onSendVersionedTransaction}
-          disabled={loading}
+          isDisabled={loading}
         >
           Sign and Send Versioned Transaction
         </Button>
       ) : null}
       <Spacer />
 
-      <Link
-        className={cn(buttonVariants({ variant: 'outline' }))}
-        target="_blank"
-        href="https://solfaucet.com/"
-      >
-        Solana Faucet
+      <Link isExternal href="https://solfaucet.com/">
+        <Button variant="outline" colorScheme="blue">
+          Solana Faucet
+        </Button>
       </Link>
     </Stack>
   )

@@ -456,16 +456,16 @@ function createRootStyles(themeVariables?: ThemeVariables) {
     light: css`
       :root {
         --w3m-color-mix: ${unsafeCSS(themeVariables?.['--w3m-color-mix'] || '#fff')};
-        --w3m-accent: ${unsafeCSS(themeVariables?.['--w3m-accent'] || 'hsla(230, 100%, 67%, 1)')};
+        --w3m-accent: ${unsafeCSS(themeVariables?.['--w3m-accent'] || '#47a1ff')};
         --w3m-default: #fff;
 
-        --wui-color-modal-bg-base: #121313;
+        --wui-color-modal-bg-base: #191a1a;
 
         --wui-color-blue-base-100: #47a1ff;
 
         --wui-color-accent-base-100: var(--w3m-accent);
-        --wui-color-accent-base-090: hsla(231, 76%, 61%, 1);
-        --wui-color-accent-base-080: hsla(230, 59%, 55%, 1);
+        --wui-color-accent-base-090: #59aaff;
+        --wui-color-accent-base-080: #6cb4ff;
 
         --wui-accent-glass-base-090: rgba(71, 161, 255, 0.9);
         --wui-accent-glass-base-080: rgba(71, 161, 255, 0.8);
@@ -547,7 +547,7 @@ function createRootStyles(themeVariables?: ThemeVariables) {
     dark: css`
       :root {
         --w3m-color-mix: ${unsafeCSS(themeVariables?.['--w3m-color-mix'] || '#000')};
-        --w3m-accent: ${unsafeCSS(themeVariables?.['--w3m-accent'] || 'hsla(231, 100%, 70%, 1)')};
+        --w3m-accent: ${unsafeCSS(themeVariables?.['--w3m-accent'] || '#3396ff')};
         --w3m-default: #000;
 
         --wui-color-modal-bg-base: #fff;
@@ -555,8 +555,8 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-color-blue-base-100: #3396ff;
 
         --wui-color-accent-base-100: var(--w3m-accent);
-        --wui-color-accent-base-090: hsla(231, 97%, 72%, 1);
-        --wui-color-accent-base-080: hsla(231, 92%, 74%, 1);
+        --wui-color-accent-base-090: #2d7dd2;
+        --wui-color-accent-base-080: #2978cc;
 
         --wui-accent-glass-base-090: rgba(51, 150, 255, 0.9);
         --wui-accent-glass-base-080: rgba(51, 150, 255, 0.8);

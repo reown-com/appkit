@@ -1,5 +1,4 @@
-import { Button } from '@/components/ui/button'
-import { toast } from 'sonner'
+import { Button, useToast } from '@chakra-ui/react'
 import { useAccount, useSignTypedData } from 'wagmi'
 
 // Example data
@@ -28,6 +27,7 @@ const message = {
 } as const
 
 export function WagmiSignTypedDataTest() {
+  const toast = useToast()
   const { chain, status } = useAccount()
   const domain = {
     name: 'Ether Mail',
@@ -47,10 +47,13 @@ export function WagmiSignTypedDataTest() {
         primaryType: 'Mail',
         types
       })
-      toast.success('Success', { description: signature })
+      toast({ title: 'Success', description: signature, status: 'success', isClosable: true })
     } catch {
-      toast.error('Error', {
-        description: 'Failed to sign message'
+      toast({
+        title: 'Error',
+        description: 'Failed to sign message',
+        status: 'error',
+        isClosable: true
       })
     }
   }
@@ -59,8 +62,7 @@ export function WagmiSignTypedDataTest() {
     <Button
       data-testid="sign-typed-data-button"
       onClick={onSignTypedData}
-      disabled={!isConnected}
-      variant="secondary"
+      isDisabled={!isConnected}
     >
       Sign Typed Data
     </Button>

@@ -1,15 +1,9 @@
-import { toast } from 'sonner'
+import { Button, useToast, Stack, Link, Text, Spacer } from '@chakra-ui/react'
 import { parseGwei, type Address } from 'viem'
 import { useEstimateGas, useSendTransaction, useAccount } from 'wagmi'
 import { vitalikEthAddress } from '../../utils/DataUtil'
 import { useCallback, useState } from 'react'
 import { optimism, optimismSepolia, sepolia } from 'wagmi/chains'
-import { Span } from '@/components/ui/typography'
-import { Row } from '@/components/ui/row'
-import { cn } from '@/lib/utils'
-import { Button, buttonVariants } from '@/components/ui/button'
-import { Column } from '@/components/ui/column'
-import Link from 'next/link'
 
 const TEST_TX = {
   to: vitalikEthAddress as Address,
@@ -17,23 +11,29 @@ const TEST_TX = {
 }
 
 export function WagmiTransactionTest() {
+  const toast = useToast()
   const { status, chain } = useAccount()
   const { data: gas, error: prepareError } = useEstimateGas(TEST_TX)
   const [isLoading, setLoading] = useState(false)
   const isConnected = status === 'connected'
-
   const { sendTransaction } = useSendTransaction({
     mutation: {
       onSuccess: hash => {
         setLoading(false)
-        toast.success('Transaction Success', {
-          description: hash
+        toast({
+          title: 'Transaction Success',
+          description: hash,
+          status: 'success',
+          isClosable: true
         })
       },
       onError: () => {
         setLoading(false)
-        toast.error('Error', {
-          description: 'Failed to send transaction'
+        toast({
+          title: 'Error',
+          description: 'Failed to send transaction',
+          status: 'error',
+          isClosable: true
         })
       }
     }
@@ -41,8 +41,11 @@ export function WagmiTransactionTest() {
 
   const onSendTransaction = useCallback(() => {
     if (prepareError) {
-      toast.error('Error', {
-        description: 'Not enough funds for transaction'
+      toast({
+        title: 'Error',
+        description: 'Not enough funds for transaction',
+        status: 'error',
+        isClosable: true
       })
     } else {
       setLoading(true)
@@ -56,36 +59,33 @@ export function WagmiTransactionTest() {
   const allowedChains = [sepolia.id, optimism.id, optimismSepolia.id] as number[]
 
   return allowedChains.includes(Number(chain?.id)) && status === 'connected' ? (
-    <Column className="sm:flex-row sm:items-center w-full gap-4 justify-between">
+    <Stack direction={['column', 'column', 'row']}>
       <Button
         data-test-id="sign-transaction-button"
         onClick={onSendTransaction}
-        disabled={isLoading || !isConnected}
-        variant="secondary"
+        disabled={!sendTransaction}
+        isDisabled={isLoading || !isConnected}
       >
         Send Transaction to Vitalik
       </Button>
 
-      <Row className="gap-2">
-        <Link
-          className={cn(buttonVariants({ variant: 'outline' }))}
-          target="_blank"
-          href="https://sepoliafaucet.com"
-        >
+      <Spacer />
+
+      <Link isExternal href="https://sepoliafaucet.com">
+        <Button variant="outline" colorScheme="blue" isDisabled={isLoading}>
           Sepolia Faucet 1
-        </Link>
-        <Link
-          className={cn(buttonVariants({ variant: 'outline' }))}
-          target="_blank"
-          href="https://www.infura.io/faucet/sepolia"
-        >
+        </Button>
+      </Link>
+
+      <Link isExternal href="https://www.infura.io/faucet/sepolia">
+        <Button variant="outline" colorScheme="orange" isDisabled={isLoading}>
           Sepolia Faucet 2
-        </Link>
-      </Row>
-    </Column>
+        </Button>
+      </Link>
+    </Stack>
   ) : (
-    <Span className="text-red-700 dark:text-red-400">
+    <Text fontSize="md" color="yellow">
       Switch to Sepolia or OP to test this feature
-    </Span>
+    </Text>
   )
 }
