@@ -19,8 +19,9 @@ testConnectedMW.afterEach(async ({ modalPage, modalValidator, walletValidator, b
 testConnectedMW(
   'it should sign',
   async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
+    const chainName = modalPage.library === 'solana' ? 'Solana' : DEFAULT_CHAIN_NAME
     await modalPage.sign()
-    await walletValidator.expectReceivedSign({ chainName: DEFAULT_CHAIN_NAME })
+    await walletValidator.expectReceivedSign({ chainName })
     await walletPage.handleRequest({ accept: true })
     await modalValidator.expectAcceptedSign()
   }
@@ -29,8 +30,9 @@ testConnectedMW(
 testConnectedMW(
   'it should reject sign',
   async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
+    const chainName = modalPage.library === 'solana' ? 'Solana' : DEFAULT_CHAIN_NAME
     await modalPage.sign()
-    await walletValidator.expectReceivedSign({ chainName: DEFAULT_CHAIN_NAME })
+    await walletValidator.expectReceivedSign({ chainName })
     await walletPage.handleRequest({ accept: false })
     await modalValidator.expectRejectedSign()
   }
@@ -39,19 +41,25 @@ testConnectedMW(
 testConnectedMW(
   'it should switch networks and sign',
   async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
-    let targetChain = 'Polygon'
-    await modalPage.switchNetwork(targetChain)
-    await modalPage.sign()
-    await walletValidator.expectReceivedSign({ chainName: targetChain })
-    await walletPage.handleRequest({ accept: true })
-    await modalValidator.expectAcceptedSign()
+    const chains = modalPage.library === 'solana' ? ['Solana'] : ['Polygon', 'Ethereum']
 
-    // Switch to Ethereum
-    targetChain = 'Ethereum'
-    await modalPage.switchNetwork(targetChain)
-    await modalPage.sign()
-    await walletValidator.expectReceivedSign({ chainName: targetChain })
-    await walletPage.handleRequest({ accept: true })
-    await modalValidator.expectAcceptedSign()
+    // Run them one after another
+    async function processChain(index: number) {
+      if (index >= chains.length) {
+        return
+      }
+
+      const chainName = chains[index] ?? DEFAULT_CHAIN_NAME
+      await modalPage.switchNetwork(chainName)
+      await modalPage.sign()
+      await walletValidator.expectReceivedSign({ chainName })
+      await walletPage.handleRequest({ accept: true })
+      await modalValidator.expectAcceptedSign()
+
+      await processChain(index + 1)
+    }
+
+    // Start processing from the first chain
+    await processChain(0)
   }
 )
