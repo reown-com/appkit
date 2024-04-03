@@ -262,9 +262,8 @@ export class Web3Modal extends Web3ModalScaffold {
         } else if (providerType !== ConstantsUtil.EMAIL_CONNECTOR_ID) {
           provider?.emit('disconnect')
         } else {
-          this.emailProvider?.disconnect()
+          await this.emailProvider?.disconnect()
         }
-        provider?.emit('disconnect')
       },
 
       signMessage: async (message: string) => {

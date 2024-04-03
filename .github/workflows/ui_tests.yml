@@ -92,6 +92,12 @@ jobs:
           CI: true
         working-directory: ./apps/laboratory/
         run: npm run ${{ inputs.command }}
+      - name: Run canary with minimal environment config
+        env:
+          NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
+          CI: true
+        working-directory: ./apps/laboratory/
+        run: npm run playwright:test:canary
       - uses: actions/upload-artifact@v3
         if: always()
         with:
@@ -102,5 +108,5 @@ jobs:
         if: always()
         with:
           name: screenshots
-          path: ./apps/laboratory/screenshots/
+          path: ./apps/laboratory/test-results/
           retention-days: 7
