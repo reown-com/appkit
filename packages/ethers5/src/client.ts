@@ -266,7 +266,7 @@ export class Web3Modal extends Web3ModalScaffold {
         const provider = EthersStoreUtil.state.provider
         const providerType = EthersStoreUtil.state.providerType
         localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
-        EthersStoreUtil.reset())
+        EthersStoreUtil.reset()
         if (siweConfig?.options?.signOutOnDisconnect) {
           const { SIWEController } = await import('@web3modal/siwe')
           await SIWEController.signOut()
