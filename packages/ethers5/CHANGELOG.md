@@ -1,5 +1,19 @@
 # @web3modal/ethers5
 
+## 4.1.5-93c81127.0
+
+### Patch Changes
+
+- fix: polyfill process in wallet package
+
+- Updated dependencies []:
+  - @web3modal/polyfills@4.1.5-93c81127.0
+  - @web3modal/scaffold@4.1.5-93c81127.0
+  - @web3modal/scaffold-react@4.1.5-93c81127.0
+  - @web3modal/scaffold-utils@4.1.5-93c81127.0
+  - @web3modal/scaffold-vue@4.1.5-93c81127.0
+  - @web3modal/siwe@4.1.5-93c81127.0
+
 ## 4.1.4
 
 ### Patch Changes

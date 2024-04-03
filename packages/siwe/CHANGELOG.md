@@ -1,5 +1,15 @@
 # @web3modal/siwe
 
+## 4.1.5-93c81127.0
+
+### Patch Changes
+
+- fix: polyfill process in wallet package
+
+- Updated dependencies []:
+  - @web3modal/core@4.1.5-93c81127.0
+  - @web3modal/scaffold-utils@4.1.5-93c81127.0
+
 ## 4.1.4
 
 ### Patch Changes

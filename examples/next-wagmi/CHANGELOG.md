@@ -1,5 +1,14 @@
 # @examples/next-wagmi
 
+## 4.1.5-93c81127.0
+
+### Patch Changes
+
+- fix: polyfill process in wallet package
+
+- Updated dependencies []:
+  - @web3modal/wagmi@4.1.5-93c81127.0
+
 ## 4.1.4
 
 ### Patch Changes
