@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /* eslint-disable max-depth */
 import type {
   CaipAddress,
