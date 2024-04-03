@@ -9,7 +9,8 @@ import type {
   ThemeMode,
   ThemeVariables,
   ModalControllerState,
-  ConnectedWalletInfo
+  ConnectedWalletInfo,
+  RouterControllerState
 } from '@web3modal/core'
 import {
   AccountController,
@@ -23,7 +24,8 @@ import {
   OptionsController,
   PublicStateController,
   ThemeController,
-  SnackController
+  SnackController,
+  RouterController
 } from '@web3modal/core'
 import { setColorTheme, setThemeVariables } from '@web3modal/ui'
 import type { SIWEControllerClient } from '@web3modal/siwe'
@@ -81,6 +83,22 @@ export class Web3ModalScaffold {
   public async close() {
     await this.initOrContinue()
     ModalController.close()
+  }
+
+  public redirect(route: RouterControllerState['view']) {
+    RouterController.push(route)
+  }
+
+  public popTransactionStack(cancel?: boolean) {
+    RouterController.popTransactionStack(cancel)
+  }
+
+  public isOpen() {
+    return ModalController.state.open
+  }
+
+  public isTransactionStackEmpty() {
+    return RouterController.state.transactionStack.length === 0
   }
 
   public setLoading(loading: ModalControllerState['loading']) {

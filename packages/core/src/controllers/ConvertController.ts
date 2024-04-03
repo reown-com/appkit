@@ -384,20 +384,18 @@ export const ConvertController = {
     return gasCostInUSD.toNumber()
   },
 
-  calculatePriceImpact(_toTokenAmount: string, _gasPriceInUSD = 0) {
-    const toTokenAmount = NumberUtil.bigNumber(_toTokenAmount)
+  calculatePriceImpact(toTokenAmount: string, gasPriceInUSD: number) {
+    const sourceTokenAmount = state.sourceTokenAmount
+    const sourceTokenPrice = state.sourceTokenPriceInUSD
+    const toTokenPrice = state.toTokenPriceInUSD
 
-    const totalSourceCostUSD = NumberUtil.bigNumber(state.sourceTokenAmount).multipliedBy(
-      state.sourceTokenPriceInUSD
-    )
-    const adjustedTotalSourceCostUSD = totalSourceCostUSD.plus(_gasPriceInUSD)
-    const effectivePricePerTargetToken = adjustedTotalSourceCostUSD.dividedBy(
-      toTokenAmount.toFixed(4)
-    )
-
-    const priceImpact = effectivePricePerTargetToken
-      .minus(state.toTokenPriceInUSD)
-      .dividedBy(state.toTokenPriceInUSD)
+    const totalCostInUSD = NumberUtil.bigNumber(sourceTokenAmount)
+      .multipliedBy(sourceTokenPrice)
+      .plus(gasPriceInUSD)
+    const effectivePricePerToToken = totalCostInUSD.dividedBy(toTokenAmount)
+    const priceImpact = effectivePricePerToToken
+      .minus(toTokenPrice)
+      .dividedBy(toTokenPrice)
       .multipliedBy(100)
 
     return priceImpact.toNumber()
@@ -515,7 +513,7 @@ export const ConvertController = {
     const { fromAddress } = this.getParams()
     state.transactionLoading = true
 
-    RouterController.pushTransactionSuccessView({
+    RouterController.pushTransactionStack({
       view: null,
       goBack: true
     })
@@ -590,7 +588,8 @@ export const ConvertController = {
     const { fromAddress } = this.getParams()
 
     state.transactionLoading = true
-    RouterController.pushTransactionSuccessView({
+
+    RouterController.pushTransactionStack({
       view: 'Account',
       goBack: false,
       callback: () => {
@@ -651,7 +650,7 @@ export const ConvertController = {
       state.inputError = insufficientBalance ? 'Insufficient balance' : undefined
     }
 
-    state.priceImpact = this.calculatePriceImpact(transaction.toAmount, state.gasPriceInUSD)
+    state.priceImpact = this.calculatePriceImpact(state.toTokenAmount, state.gasPriceInUSD)
     state.maxSlippage = this.calculateMaxSlippage()
   }
 }

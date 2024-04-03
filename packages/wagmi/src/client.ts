@@ -41,7 +41,6 @@ import {
 } from './utils/helpers.js'
 import { W3mFrameHelpers, W3mFrameRpcConstants } from '@web3modal/wallet'
 import type { W3mFrameProvider } from '@web3modal/wallet'
-import { ModalController, RouterController } from '@web3modal/core'
 import { NetworkUtil } from '@web3modal/common'
 import type { defaultWagmiConfig as coreConfig } from './utils/defaultWagmiCoreConfig.js'
 import type { defaultWagmiConfig as reactConfig } from './utils/defaultWagmiReactConfig.js'
@@ -481,9 +480,9 @@ export class Web3Modal extends Web3ModalScaffold {
       provider.onRpcRequest(request => {
         if (W3mFrameHelpers.checkIfRequestExists(request)) {
           if (!W3mFrameHelpers.checkIfRequestIsAllowed(request)) {
-            if (ModalController.state.open) {
-              if (RouterController.state.transactionSuccessStack?.length > 0) {
-                RouterController.push('ApproveTransaction')
+            if (super.isOpen()) {
+              if (!super.isTransactionStackEmpty()) {
+                super.redirect('ApproveTransaction')
               }
             } else {
               super.open({ view: 'ApproveTransaction' })
@@ -509,16 +508,24 @@ export class Web3Modal extends Web3ModalScaffold {
         // @ts-ignore
         const isError = receive?.type === '@w3m-frame/RPC_REQUEST_ERROR'
 
-        if (isError) {
-          RouterController.popTransactionSuccessAction()
+        if (isError && super.isOpen()) {
+          if (super.isTransactionStackEmpty()) {
+            super.close()
+          } else {
+            super.popTransactionStack(true)
+          }
         }
 
         const isPayloadString = typeof payload === 'string'
         const isAddress = isPayloadString ? payload?.startsWith('0x') : false
         const isCompleted = isAddress && payload?.length > 10
 
-        if (isCompleted && RouterController.state.transactionSuccessStack?.length > 0) {
-          RouterController.popTransactionSuccessAction()
+        if (isCompleted) {
+          if (super.isTransactionStackEmpty()) {
+            super.close()
+          } else {
+            super.popTransactionStack()
+          }
         }
       })
 

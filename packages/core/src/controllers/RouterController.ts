@@ -3,9 +3,10 @@ import { proxy } from 'valtio/vanilla'
 import type { CaipNetwork, Connector, WcWallet } from '../utils/TypeUtil.js'
 
 // -- Types --------------------------------------------- //
-type TransactionSuccessAction = {
+type TransactionAction = {
   goBack: boolean
   view: RouterControllerState['view'] | null
+  close?: boolean
   callback?: () => void
 }
 export interface RouterControllerState {
@@ -56,14 +57,14 @@ export interface RouterControllerState {
     newEmail?: string
     target?: 'sourceToken' | 'toToken'
   }
-  transactionSuccessStack: TransactionSuccessAction[]
+  transactionStack: TransactionAction[]
 }
 
 // -- State --------------------------------------------- //
 const state = proxy<RouterControllerState>({
   view: 'Connect',
   history: ['Connect'],
-  transactionSuccessStack: []
+  transactionStack: []
 })
 
 type StateKey = keyof RouterControllerState
@@ -76,14 +77,19 @@ export const RouterController = {
     return subKey(state, key, callback)
   },
 
-  pushTransactionSuccessView(action: TransactionSuccessAction) {
-    state.transactionSuccessStack.push(action)
+  pushTransactionStack(action: TransactionAction) {
+    state.transactionStack.push(action)
   },
 
-  popTransactionSuccessAction() {
-    const action = state.transactionSuccessStack.pop()
+  popTransactionStack(cancel?: boolean) {
+    const action = state.transactionStack.pop()
 
     if (!action) {
+      return
+    }
+
+    if (cancel) {
+      this.goBack()
       return
     }
 
