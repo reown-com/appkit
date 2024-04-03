@@ -24,7 +24,8 @@ export default css`
     background-color: var(--wui-gray-glass-002);
     box-shadow: inset 0 0 0 1px var(--wui-gray-glass-002);
     transform: translateX(calc(var(--local-tab) * var(--local-tab-width)));
-    transition: transform var(--wui-ease-out-power-2) var(--wui-duration-lg);
+    transition: transform var(--wui-ease-out-power-1) var(--wui-duration-md);
+    will-change: background-color, opacity;
   }
 
   :host([data-type='flex'])::before {
@@ -72,11 +73,14 @@ export default css`
   button > wui-icon,
   button > wui-text {
     pointer-events: none;
-    transition: all var(--wui-ease-out-power-2) var(--wui-duration-lg);
+    transition: color var(--wui-e ase-out-power-1) var(--wui-duration-md);
+    will-change: color;
   }
 
   button {
     width: var(--local-tab-width);
+    transition: background-color var(--wui-ease-out-power-1) var(--wui-duration-md);
+    will-change: background-color;
   }
 
   :host([data-type='flex']) > button {

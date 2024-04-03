@@ -1,5 +1,31 @@
 # @web3modal/polyfills
 
+## 4.1.5
+
+### Patch Changes
+
+- release: v4.1.5
+
+## 4.1.5-93c81127.0
+
+### Patch Changes
+
+- fix: polyfill process in wallet package
+
+## 4.1.4
+
+### Patch Changes
+
+- feat: wallet info hook
+
+## 4.1.3
+
+### Patch Changes
+
+- feat: wallet info hook
+
+- feat: reset version to 4.1.3
+
 ## 4.1.3-5f2ae345.1
 
 ### Patch Changes

@@ -665,7 +665,11 @@ export const elementStyles = css`
     justify-content: center;
     align-items: center;
     position: relative;
-    transition: all var(--wui-ease-out-power-1) var(--wui-duration-lg);
+    transition:
+      background-color var(--wui-ease-inout-power-1) var(--wui-duration-md),
+      color var(--wui-ease-inout-power-1) var(--wui-duration-md),
+      box-shadow var(--wui-ease-inout-power-1) var(--wui-duration-md);
+    will-change: background-color, color;
     outline: none;
     border: 1px solid transparent;
     column-gap: var(--wui-spacing-3xs);
@@ -679,7 +683,6 @@ export const elementStyles = css`
     }
 
     button:active:enabled {
-      transition: all var(--wui-ease-out-power-2) var(--wui-duration-sm);
       background-color: var(--wui-gray-glass-010);
     }
 
