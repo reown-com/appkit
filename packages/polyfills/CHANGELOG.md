@@ -1,5 +1,11 @@
 # @web3modal/polyfills
 
+## 4.1.5
+
+### Patch Changes
+
+- release: v4.1.5
+
 ## 4.1.5-93c81127.0
 
 ### Patch Changes
