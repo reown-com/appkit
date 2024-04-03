@@ -3,7 +3,7 @@ import { css } from 'lit'
 export default css`
   :host > wui-flex {
     cursor: pointer;
-    display: block;
+    display: flex;
     column-gap: var(--wui-spacing-s);
     padding: var(--wui-spacing-xs);
     padding-right: var(--wui-spacing-l);
