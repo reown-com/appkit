@@ -246,7 +246,7 @@ export class Web3ModalScaffold {
     ConnectionController.setClient(options.connectionControllerClient)
 
     if (options.siweControllerClient) {
-      const { SIWEController } = await import('@web3modal/siwe')
+      const { SIWEController } = await import('@web3modal/siwe').catch()
 
       SIWEController.setSIWEClient(options.siweControllerClient)
     }

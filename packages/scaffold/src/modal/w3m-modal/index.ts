@@ -74,7 +74,7 @@ export class W3mModal extends LitElement {
 
   private async handleClose() {
     if (this.isSiweEnabled) {
-      const { SIWEController } = await import('@web3modal/siwe')
+      const { SIWEController } = await import('@web3modal/siwe').catch()
 
       if (SIWEController.state.status !== 'success') {
         await ConnectionController.disconnect()
@@ -164,7 +164,7 @@ export class W3mModal extends LitElement {
     const { isConnected, caipAddress: newCaipAddress } = newState
 
     if (this.isSiweEnabled) {
-      const { SIWEController } = await import('@web3modal/siwe')
+      const { SIWEController } = await import('@web3modal/siwe').catch()
 
       if (isConnected && !this.caipAddress) {
         this.caipAddress = newCaipAddress
