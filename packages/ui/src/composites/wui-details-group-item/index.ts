@@ -10,7 +10,7 @@ export class WuiDetailsGroupItem extends LitElement {
   public static override styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
-  @property() public name: string = ''
+  @property() public name = ''
 
   // -- Render -------------------------------------------- //
   public override render() {

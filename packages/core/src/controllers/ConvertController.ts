@@ -480,7 +480,6 @@ export const ConvertController = {
             .dividedBy(state.toTokenPriceInUSD)
         : NumberUtil.bigNumber(0)
 
-    // return toTokenConvertedAmount with 18 decimals
     return toTokenConvertedAmount.multipliedBy(multiplyer).toString()
   },
 
@@ -618,7 +617,6 @@ export const ConvertController = {
       return transactionHash
     } catch (err) {
       const error = err as TransactionError
-      console.log('>>> sendTransactionForConvert - error', error)
       state.transactionError = error?.shortMessage
       state.transactionLoading = false
       SnackController.showError(error?.shortMessage || 'Transaction error')

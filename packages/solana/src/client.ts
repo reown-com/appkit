@@ -143,11 +143,11 @@ export class Web3Modal extends Web3ModalScaffold {
       },
 
       sendTransaction: async () => {
-        return '0x'
+        return await Promise.resolve('0x')
       },
 
       getEstimatedGas: async () => {
-        return BigInt(0)
+        return await Promise.resolve(BigInt(0))
       },
 
       parseUnits: () => BigInt(0),

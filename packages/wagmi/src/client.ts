@@ -493,8 +493,10 @@ export class Web3Modal extends Web3ModalScaffold {
       })
 
       provider.onRpcResponse(receive => {
+        // eslint-disable-next-line @typescript-eslint/prefer-ts-expect-error, @typescript-eslint/ban-ts-comment
         // @ts-ignore
         const payload = receive?.payload
+        // eslint-disable-next-line @typescript-eslint/prefer-ts-expect-error, @typescript-eslint/ban-ts-comment
         // @ts-ignore
         const isError = receive?.type === '@w3m-frame/RPC_REQUEST_ERROR'
 
