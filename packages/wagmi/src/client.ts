@@ -203,6 +203,8 @@ export class Web3Modal extends Web3ModalScaffold {
           type: 'legacy' as const
         }
 
+        // eslint-disable-next-line @typescript-eslint/prefer-ts-expect-error, @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         await prepareTransactionRequest(this.wagmiConfig, txParams)
         const tx = await wagmiSendTransaction(this.wagmiConfig, txParams)
 
