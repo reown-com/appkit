@@ -592,7 +592,7 @@ export const ConvertController = {
     RouterController.pushTransactionStack({
       view: 'Account',
       goBack: false,
-      callback: () => {
+      onSuccess() {
         ConvertController.resetValues()
       }
     })

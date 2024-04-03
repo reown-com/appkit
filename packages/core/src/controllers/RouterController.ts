@@ -7,7 +7,8 @@ type TransactionAction = {
   goBack: boolean
   view: RouterControllerState['view'] | null
   close?: boolean
-  callback?: () => void
+  onSuccess?: () => void
+  onCancel?: () => void
 }
 export interface RouterControllerState {
   view:
@@ -90,15 +91,15 @@ export const RouterController = {
 
     if (cancel) {
       this.goBack()
-      return
+      action?.onCancel?.()
+    } else {
+      if (action.goBack) {
+        this.goBack()
+      } else if (action.view) {
+        this.reset(action.view)
+      }
+      action?.onSuccess?.()
     }
-
-    if (action.goBack) {
-      this.goBack()
-    } else if (action.view) {
-      this.reset(action.view)
-    }
-    action.callback?.()
   },
 
   push(view: RouterControllerState['view'], data?: RouterControllerState['data']) {
