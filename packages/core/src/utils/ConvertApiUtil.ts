@@ -6,7 +6,6 @@ import { ConnectionController } from '../controllers/ConnectionController.js'
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 
 const ONEINCH_API_BASE_URL = 'https://1inch-swap-proxy.walletconnect-v1-bridge.workers.dev'
-export const DEFAULT_SLIPPAGE_TOLERANCE = '0.5'
 
 function get1InchEndpoints(chainId: number, address: string | undefined) {
   return {
@@ -290,7 +289,7 @@ export const ConvertApiUtil = {
       params: {
         src: sourceTokenAddress,
         dst: toTokenAddress,
-        slippage: DEFAULT_SLIPPAGE_TOLERANCE,
+        slippage: ConstantsUtil.CONVERT_SLIPPAGE_TOLERANCE,
         from: fromAddress,
         amount: ConnectionController.parseUnits(sourceTokenAmount, decimals).toString()
       }
@@ -322,7 +321,7 @@ export const ConvertApiUtil = {
       params: {
         src: sourceTokenAddress,
         dst: toTokenAddress,
-        slippage: DEFAULT_SLIPPAGE_TOLERANCE,
+        slippage: ConstantsUtil.CONVERT_SLIPPAGE_TOLERANCE,
         from: fromAddress,
         amount: ConnectionController.parseUnits(sourceTokenAmount, decimals).toString()
       }

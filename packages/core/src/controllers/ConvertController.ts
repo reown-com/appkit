@@ -8,7 +8,6 @@ import { SnackController } from './SnackController.js'
 import { RouterController } from './RouterController.js'
 import { NumberUtil } from '@web3modal/common'
 
-export const DEFAULT_SLIPPAGE_TOLERANCE = '0.5'
 const INITIAL_GAS_LIMIT = 150000
 
 // -- Types --------------------------------------------- //
@@ -120,7 +119,7 @@ const state = proxy<ConvertControllerState>({
   inputError: undefined,
 
   // Request values
-  slippage: DEFAULT_SLIPPAGE_TOLERANCE,
+  slippage: ConstantsUtil.CONVERT_SLIPPAGE_TOLERANCE,
 
   // Tokens
   tokens: undefined,

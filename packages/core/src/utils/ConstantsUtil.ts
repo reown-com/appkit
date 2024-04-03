@@ -153,7 +153,9 @@ export const ConstantsUtil = {
     'WNT'
   ],
 
-  NATIVE_TOKEN_ADDRESS: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+  NATIVE_TOKEN_ADDRESS: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+
+  CONVERT_SLIPPAGE_TOLERANCE: '0.5'
 }
 
 export type CoinbasePaySDKChainNameValues =
