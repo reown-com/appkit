@@ -1,14 +1,14 @@
 import type { Meta } from '@storybook/web-components'
 import '@web3modal/ui/src/composites/wui-list-token'
-import type { WuiListAddress } from '@web3modal/ui/src/composites/wui-list-address'
+import type { WuiListAccount } from '@web3modal/ui/src/composites/wui-list-account'
 import { html } from 'lit'
 import '../../components/gallery-container'
 import { networkImageSrc } from '../../utils/PresetUtils'
 
-type Component = Meta<WuiListAddress>
+type Component = Meta<WuiListAccount>
 
 export default {
-  title: 'Composites/wui-list-address',
+  title: 'Composites/wui-list-account',
   args: {
     address: 'Ethereum',
     addressDescription: 'some ens',
@@ -19,10 +19,10 @@ export default {
 export const Default: Component = {
   render: args =>
     html` <gallery-container width="336">
-      <wui-list-address
+      <wui-list-account
         address=${args.address}
         addressDescription=${args.addressDescription}
         logo=${args.logo}
-      ></wui-list-address>
+      ></wui-list-account>
     </gallery-container>`
 }

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import type {
   ConnectionControllerClient,
   EventsControllerState,
@@ -156,9 +157,9 @@ export class Web3ModalScaffold {
     AccountController.setAddresses(addresses)
   }
 
-  protected setAllAddresses: (typeof AccountController)['setAllAddresses'] = (addresses = []) => {
-    console.log('@scaffold setAllAddresses', addresses)
-    AccountController.setAllAddresses(addresses)
+  protected setAllAccounts: (typeof AccountController)['setAllAccounts'] = (addresses = []) => {
+    console.log('@scaffold setAllAccounts', addresses)
+    AccountController.setAllAccounts(addresses)
     console.log('@scaffold setHasMultipleAddresses', addresses?.length > 1)
     OptionsController.setHasMultipleAddresses(addresses?.length > 1)
   }

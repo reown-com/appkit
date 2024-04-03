@@ -67,7 +67,7 @@ export class W3mNetworkButton extends LitElement {
   private onClick() {
     if (!this.loading) {
       EventsController.sendEvent({ type: 'track', event: 'CLICK_NETWORKS' })
-      ModalController.open({ view: 'SwitchAddress' })
+      ModalController.open({ view: 'SelectAddresses' })
     }
   }
 }

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable max-depth */
 import type {
   CaipAddress,
@@ -12,7 +13,7 @@ import type {
 } from '@web3modal/scaffold'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
-import { AccountController } from '@web3modal/core'
+import { AccountController, NetworkController } from '@web3modal/core'
 import EthereumProvider from '@walletconnect/ethereum-provider'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
 import type {
@@ -123,6 +124,7 @@ export class Web3Modal extends Web3ModalScaffold {
     const networkControllerClient: NetworkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
         const chainId = NetworkUtil.caipNetworkIdToNumber(caipNetwork?.id)
+        console.log('switchCaipNetwork', chainId)
         if (chainId) {
           try {
             EthersStoreUtil.setError(undefined)
@@ -224,7 +226,7 @@ export class Web3Modal extends Web3ModalScaffold {
             EthersStoreUtil.setError(error)
           }
         } else if (id === ConstantsUtil.EMAIL_CONNECTOR_ID) {
-          this.setEmailProvider()
+          await this.setEmailProvider()
         }
       },
 
@@ -304,6 +306,19 @@ export class Web3Modal extends Web3ModalScaffold {
     EthersStoreUtil.subscribeKey('chainId', () => {
       this.syncNetwork(chainImages)
     })
+
+    /*
+     * When the client is loaded, this.getChainId stays undefined even if the user switches networks via w3modal <networks> button.
+     * This subscribes to the network change and sets the chainId in the store so it can be used when connecting.
+     * Especially important for email connector where correct chainId dictates which account is available e.g. smart account, eoa.
+     */
+    NetworkController.subscribeKey('caipNetwork', network => {
+      if (!this.getChainId() && network) {
+        EthersStoreUtil.setChainId(NetworkUtil.caipNetworkIdToNumber(network.id))
+      }
+    })
+
+    // Console.log('@ethers, NetworkController caipNetwork', network)
 
     AccountController.subscribeKey('shouldUpdateToAddress', (address?: string) => {
       console.log('shouldUpdateToAddress', address)
@@ -542,7 +557,8 @@ export class Web3Modal extends Web3ModalScaffold {
       EthersStoreUtil.setProvider(WalletConnectProvider as unknown as Provider)
       EthersStoreUtil.setIsConnected(true)
       console.log('WalletConnectProvider.accounts', WalletConnectProvider.accounts)
-      this.setAllAddresses(WalletConnectProvider.accounts)
+      this.setAllAccounts(WalletConnectProvider.accounts.map(address => ({ address, type: 'eoa' })))
+
       this.setAddress(WalletConnectProvider.accounts?.[0])
       this.watchWalletConnect()
     }
@@ -602,17 +618,22 @@ export class Web3Modal extends Web3ModalScaffold {
     window?.localStorage.setItem(EthersConstantsUtil.WALLET_ID, ConstantsUtil.EMAIL_CONNECTOR_ID)
 
     if (this.emailProvider) {
+      console.log('connecting with emailProvider, chain', this.getChainId())
       const preferredAccountType = W3mFrameHelpers.getPreferredAccountType()
-      const [{ address, chainId, smartAccountDeployed }, { smartAccountEnabledNetworks }] =
-        await Promise.all([
-          this.emailProvider.connect({
-            chainId: this.getChainId(),
-            preferredAccountType
-          }),
-          this.emailProvider.getSmartAccountEnabledNetworks()
-        ])
+      const [
+        { address, chainId, smartAccountDeployed, accounts },
+        { smartAccountEnabledNetworks }
+      ] = await Promise.all([
+        this.emailProvider.connect({
+          chainId: this.getChainId(),
+          preferredAccountType
+        }),
+        this.emailProvider.getSmartAccountEnabledNetworks()
+      ])
       super.setLoading(false)
+      console.log('emailProvider.connect', { address, chainId, smartAccountDeployed, accounts })
       if (address && chainId) {
+        this.setAllAccounts(accounts)
         EthersStoreUtil.setChainId(chainId)
         EthersStoreUtil.setProviderType(ConstantsUtil.EMAIL_CONNECTOR_ID as 'w3mEmail')
         EthersStoreUtil.setProvider(this.emailProvider as unknown as CombinedProvider)
@@ -968,6 +989,7 @@ export class Web3Modal extends Web3ModalScaffold {
   public async switchNetwork(chainId: number) {
     const provider = EthersStoreUtil.state.provider
     const providerType = EthersStoreUtil.state.providerType
+    console.log('switchNetwork', chainId)
     if (this.chains) {
       const chain = this.chains.find(c => c.chainId === chainId)
 

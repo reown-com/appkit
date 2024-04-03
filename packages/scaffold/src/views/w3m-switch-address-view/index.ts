@@ -1,13 +1,11 @@
 import {
   AccountController,
-  ConnectionController,
   ModalController,
   OptionsController,
-  RouterController
+  type AccountType
 } from '@web3modal/core'
 import { UiHelperUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
 import styles from './styles.js'
 
 @customElement('w3m-switch-address-view')
@@ -15,7 +13,7 @@ export class W3mSwitchAddressView extends LitElement {
   public static override styles = styles
   // -- Members ------------------------------------------- //
   private readonly metadata = OptionsController.state.metadata
-  public readonly addresses: string[] = AccountController.state.allAddresses || []
+  public readonly addresses: AccountType[] = AccountController.state.allAccounts || []
   public readonly currentAddress: string = AccountController.state.address || ''
 
   // -- Render -------------------------------------------- //
@@ -27,7 +25,7 @@ export class W3mSwitchAddressView extends LitElement {
       </wui-flex>
       <wui-flex flexDirection="column" gap="xxl" .padding=${['l', 'xl', 'xl', 'xl'] as const}>
         ${this.addresses.map(address => {
-          return this.getAddressTemplate(address)
+          return this.getAddressTemplate(address.address)
         })}
       </wui-flex>
     `
@@ -53,8 +51,9 @@ export class W3mSwitchAddressView extends LitElement {
           >
         </wui-flex>
         <wui-flex gap="s" alignItems="center">
-          ${address !== this.currentAddress
-            ? html`
+          ${address === this.currentAddress
+            ? ''
+            : html`
                 <wui-button
                   textVariant="small-600"
                   size="sm"
@@ -62,8 +61,7 @@ export class W3mSwitchAddressView extends LitElement {
                   @click=${() => this.onSwitchAddress(address)}
                   >Switch to</wui-button
                 >
-              `
-            : ''}
+              `}
         </wui-flex>
       </wui-flex>
     `

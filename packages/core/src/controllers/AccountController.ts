@@ -1,7 +1,7 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
-import type { CaipAddress, ConnectedWalletInfo } from '../utils/TypeUtil.js'
+import type { AccountType, CaipAddress, ConnectedWalletInfo } from '../utils/TypeUtil.js'
 import type { Balance } from '@web3modal/common'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { SnackController } from './SnackController.js'
@@ -13,7 +13,7 @@ export interface AccountControllerState {
   caipAddress?: CaipAddress
   address?: string
   addresses?: string[]
-  allAddresses: string[]
+  allAccounts: AccountType[]
   balance?: string
   balanceSymbol?: string
   profileName?: string | null
@@ -33,7 +33,7 @@ const state = proxy<AccountControllerState>({
   currentTab: 0,
   tokenBalance: [],
   smartAccountDeployed: false,
-  allAddresses: []
+  allAccounts: []
 })
 
 // -- Controller ---------------------------------------- //
@@ -98,9 +98,9 @@ export const AccountController = {
     state.shouldUpdateToAddress = address
   },
 
-  setAllAddresses(addresses: string[]) {
-    console.log('@AccountController setAllAddresses', addresses)
-    state.allAddresses = addresses
+  setAllAccounts(accounts: AccountType[]) {
+    console.log('@AccountController setAllAccounts', accounts)
+    state.allAccounts = accounts
   },
 
   setConnectedWalletInfo(connectedWalletInfo: AccountControllerState['connectedWalletInfo']) {

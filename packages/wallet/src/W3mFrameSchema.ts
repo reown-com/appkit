@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { W3mFrameConstants } from './W3mFrameConstants.js'
+import { W3mFrameConstants, W3mFrameRpcConstants } from './W3mFrameConstants.js'
 
 // -- Helpers ----------------------------------------------------------------
 const zError = z.object({ message: z.string() })
@@ -69,7 +69,16 @@ export const FrameGetUserResponse = z.object({
   email: z.string().email(),
   address: z.string(),
   chainId: z.number(),
-  smartAccountDeployed: z.optional(z.boolean())
+  smartAccountDeployed: z.optional(z.boolean()),
+  accounts: z.array(
+    z.object({
+      address: z.string(),
+      type: z.enum([
+        W3mFrameRpcConstants.ACCOUNT_TYPES.EOA,
+        W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+      ])
+    })
+  )
 })
 export const FrameIsConnectedResponse = z.object({ isConnected: z.boolean() })
 export const FrameGetChainIdResponse = z.object({ chainId: z.number() })

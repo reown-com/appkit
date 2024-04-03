@@ -1,9 +1,11 @@
+/* eslint-disable no-console */
 import {
   AccountController,
   ConnectionController,
   ModalController,
   OptionsController,
-  RouterController
+  RouterController,
+  type AccountType
 } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -15,29 +17,29 @@ export class W3mSelectAddressesView extends LitElement {
   public static override styles = styles
   // -- Members ------------------------------------------- //
   private readonly metadata = OptionsController.state.metadata
-  public readonly allAddresses: string[] = AccountController.state.allAddresses
-  private selectedAddresses: string[] = []
-  // private selectAll = false
+  public readonly allAccounts: AccountType[] = AccountController.state.allAccounts
+  private selectedAccounts: AccountType[] = []
+  // Private selectAll = false
 
   @state() private isSigning = false
   constructor() {
     super()
     console.log('W3mSelectAddressesView')
     console.log('metadata', this.metadata)
-    console.log('selectedAddresses', this.selectedAddresses)
+    console.log('selectedAccounts', this.selectedAccounts)
   }
 
   onSelectAll = (event: Event) => {
     console.log('onSelectAll', event)
   }
 
-  onSelect = (address: string, add: boolean) => {
+  onSelect = (account: AccountType, add: boolean) => {
     if (add) {
-      this.selectedAddresses.push(address)
+      this.selectedAccounts.push(account)
     } else {
-      this.selectedAddresses = this.selectedAddresses.filter(a => a !== address)
+      this.selectedAccounts = this.selectedAccounts.filter(a => a.address !== account.address)
     }
-    console.log('selectedAddresses', this.selectedAddresses)
+    console.log('selectedAccounts', this.selectedAccounts)
   }
 
   // -- Render -------------------------------------------- //
@@ -53,13 +55,14 @@ export class W3mSelectAddressesView extends LitElement {
       </wui-flex>
 
       <wui-flex flexDirection="column" gap="xs" .padding=${['l', 'xl', 'xl', 'xl'] as const}>
-        ${this.allAddresses.map((address, i) => {
-          return html` <wui-list-address
-            address="${address}"
-            addressDescription="Account ${i + 1}"
-            .selected="${this.selectedAddresses.includes(address)}"
-            .onSelect="${(address: string, add: boolean) => this.onSelect(address, add)}"
-          ></wui-list-address>`
+        ${this.allAccounts.map(account => {
+          return html` <wui-list-account
+            accountAddress="${account.address}"
+            accountType="${account.type}"
+            .selected="${this.selectedAccounts.includes(account)}"
+            @onSelect="${(selectedAccount: AccountType, add: boolean) =>
+              this.onSelect(selectedAccount, add)}"
+          ></wui-list-account>`
         })}
       </wui-flex>
       <wui-flex .padding=${['l', 'xl', 'xl', 'xl'] as const} gap="s" justifyContent="space-between">
@@ -91,8 +94,8 @@ export class W3mSelectAddressesView extends LitElement {
   private async onContinue() {
     this.isSigning = true
     await new Promise(resolve => setTimeout(resolve, 2000))
-    AccountController.setAddresses(this.selectedAddresses)
-    AccountController.setShouldUpdateToAddress(this.selectedAddresses[0] ?? '')
+    AccountController.setAllAccounts(this.selectedAccounts)
+    AccountController.setShouldUpdateToAddress(this.selectedAccounts[0]?.address ?? '')
     this.isSigning = false
     ModalController.close()
   }

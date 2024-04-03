@@ -56,7 +56,7 @@ import type { WuiProfileButton } from '../composites/wui-profile-button/index.js
 import type { WuiBanner } from '../composites/wui-banner/index.js'
 import type { WuiCompatibleNetwork } from '../composites/wui-compatible-network/index.js'
 import type { WuiListToken } from '../composites/wui-list-token/index.js'
-import type { WuiListAddress } from '../composites/wui-list-address/index.js'
+import type { WuiListAccount } from '../composites/wui-list-account/index.js'
 import type { WuiListDescription } from '../composites/wui-list-description/index.js'
 import type { WuiPreviewItem } from '../composites/wui-preview-item/index.js'
 
@@ -132,7 +132,7 @@ declare global {
       'wui-list-token': CustomElement<WuiListToken>
       'wui-list-description': CustomElement<WuiListDescription>
       'wui-preview-item': CustomElement<WuiPreviewItem>
-      'wui-list-address': CustomElement<WuiListAddress>
+      'wui-list-account': CustomElement<WuiListAccount>
     }
   }
 }

@@ -39,4 +39,10 @@ export default css`
   .address-description {
     color: var(--wui-color-fg-base-200);
   }
+
+  wui-icon-box {
+    position: relative;
+    right: 25px;
+    top: 15px;
+  }
 `
