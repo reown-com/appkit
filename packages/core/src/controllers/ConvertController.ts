@@ -3,7 +3,7 @@ import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { AccountController } from './AccountController.js'
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { ConnectionController } from './ConnectionController.js'
-import { ConvertApiController } from './ConvertApiController.js'
+import { ConvertApiUtil } from '../utils/ConvertApiUtil.js'
 import { SnackController } from './SnackController.js'
 import { RouterController } from './RouterController.js'
 import { NumberUtil } from '@web3modal/common'
@@ -268,7 +268,7 @@ export const ConvertController = {
   },
 
   async getTokenList() {
-    const res = await ConvertApiController.getTokenList()
+    const res = await ConvertApiUtil.getTokenList()
 
     state.tokens = res.tokens
     state.popularTokens = Object.entries(res.tokens)
@@ -310,7 +310,7 @@ export const ConvertController = {
     if (existPrice) {
       return parseFloat(existPrice)
     }
-    const prices = await ConvertApiController.getTokenPriceWithAddresses([address])
+    const prices = await ConvertApiUtil.getTokenPriceWithAddresses([address])
     const price = prices[address] || '0'
     state.tokensPriceMap[address] = price
 
@@ -318,7 +318,7 @@ export const ConvertController = {
   },
 
   async getNetworkTokenPrice() {
-    const prices = await ConvertApiController.getTokenPriceWithAddresses([
+    const prices = await ConvertApiUtil.getTokenPriceWithAddresses([
       ConstantsUtil.NATIVE_TOKEN_ADDRESS
     ])
     const price = prices[ConstantsUtil.NATIVE_TOKEN_ADDRESS] || '0'
@@ -327,7 +327,7 @@ export const ConvertController = {
   },
 
   async getMyTokensWithBalance() {
-    const res = await ConvertApiController.getMyTokensWithBalance()
+    const res = await ConvertApiUtil.getMyTokensWithBalance()
 
     if (!res) {
       return
@@ -352,7 +352,7 @@ export const ConvertController = {
   },
 
   async getInitialGasPrice() {
-    const res = await ConvertApiController.getGasPrice()
+    const res = await ConvertApiUtil.getGasPrice()
     const instant = res.instant
     const value = typeof instant === 'object' ? res.instant.maxFeePerGas : instant
     const gasFee = BigInt(value)
@@ -447,7 +447,7 @@ export const ConvertController = {
       return null
     }
 
-    const hasAllowance = await ConvertApiController.checkConvertAllowance({
+    const hasAllowance = await ConvertApiUtil.checkConvertAllowance({
       fromAddress,
       sourceTokenAddress,
       sourceTokenAmount,
@@ -492,7 +492,7 @@ export const ConvertController = {
       throw new Error('>>> createTokenAllowance - No source token address found.')
     }
 
-    const transaction = await ConvertApiController.getConvertApprovalData({
+    const transaction = await ConvertApiUtil.getConvertApprovalData({
       sourceTokenAddress
     })
 
@@ -556,7 +556,7 @@ export const ConvertController = {
     }
 
     try {
-      const response = await ConvertApiController.getConvertData({
+      const response = await ConvertApiUtil.getConvertData({
         fromAddress,
         sourceTokenAddress,
         sourceTokenAmount,

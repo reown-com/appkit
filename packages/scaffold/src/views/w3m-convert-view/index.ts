@@ -11,7 +11,7 @@ import {
   ConstantsUtil
 } from '@web3modal/core'
 import { NumberUtil } from '@web3modal/common'
-import type { TokenInfo } from '@web3modal/core/src/controllers/ConvertApiController.js'
+import type { TokenInfo } from '@web3modal/core/src/controllers/ConvertApiUtil.js'
 
 type Target = 'sourceToken' | 'toToken'
 

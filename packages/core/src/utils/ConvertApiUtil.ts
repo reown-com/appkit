@@ -112,7 +112,7 @@ export type GetGasPricesResponse = {
 }
 
 // -- Controller ---------------------------------------- //
-export const ConvertApiController = {
+export const ConvertApiUtil = {
   get1InchAPI() {
     const api = new FetchUtil({ baseUrl: ONEINCH_API_BASE_URL })
     const chainId = CoreHelperUtil.getEvmChainId(NetworkController.state.caipNetwork?.id)
