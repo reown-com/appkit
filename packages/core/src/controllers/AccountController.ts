@@ -1,7 +1,7 @@
-import { subscribeKey as subKey } from 'valtio/utils'
+import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
-import type { CaipAddress, SocialProvider } from '../utils/TypeUtil.js'
+import type { CaipAddress, ConnectedWalletInfo, SocialProvider } from '../utils/TypeUtil.js'
 import type { Balance } from '@web3modal/common'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { SnackController } from './SnackController.js'
@@ -20,6 +20,7 @@ export interface AccountControllerState {
   smartAccountDeployed?: boolean
   tokenBalance?: Balance[]
   socialProvider?: SocialProvider
+  connectedWalletInfo?: ConnectedWalletInfo
 }
 
 type StateKey = keyof AccountControllerState
@@ -28,7 +29,8 @@ type StateKey = keyof AccountControllerState
 const state = proxy<AccountControllerState>({
   isConnected: false,
   currentTab: 0,
-  tokenBalance: []
+  tokenBalance: [],
+  smartAccountDeployed: false
 })
 
 // -- Controller ---------------------------------------- //
@@ -92,6 +94,10 @@ export const AccountController = {
     }
   },
 
+  setConnectedWalletInfo(connectedWalletInfo: AccountControllerState['connectedWalletInfo']) {
+    state.connectedWalletInfo = connectedWalletInfo
+  },
+
   async fetchTokenBalance() {
     try {
       if (state.address) {
@@ -106,6 +112,8 @@ export const AccountController = {
 
   resetAccount() {
     state.isConnected = false
+    state.smartAccountDeployed = false
+    state.currentTab = 0
     state.caipAddress = undefined
     state.address = undefined
     state.balance = undefined
@@ -113,8 +121,8 @@ export const AccountController = {
     state.profileName = undefined
     state.profileImage = undefined
     state.addressExplorerUrl = undefined
-    state.smartAccountDeployed = undefined
-    state.currentTab = 0
+    state.tokenBalance = []
+    state.connectedWalletInfo = undefined
     state.socialProvider = undefined
   }
 }

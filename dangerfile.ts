@@ -179,6 +179,11 @@ async function checkCorePackage() {
     f.includes('core/tests/controllers')
   )
 
+  const modified_core_controllers = modified_files.filter(f => f.includes('core/src/controllers'))
+  const modified_core_controllers_tests = modified_files.filter(f =>
+    f.includes('core/tests/controllers')
+  )
+
   for (const f of created_core_controllers) {
     const diff = await diffForFile(f)
 
@@ -213,6 +218,13 @@ async function checkCorePackage() {
 
   if (created_core_controllers.length && !created_core_controllers_tests.length) {
     fail('New controllers were added, but no tests were created')
+  }
+
+  if (modified_core_controllers.length && !modified_core_controllers_tests) {
+    message(`
+      The following controllers were modified, but not tests were changed:
+      ${modified_core_controllers.join('\n')}
+    `)
   }
 }
 checkCorePackage()
@@ -271,11 +283,11 @@ async function checkClientPackages() {
   for (const f of wagmi_files) {
     const diff = await diffForFile(f)
 
-    if (diff?.added.includes('@web3modal/core')) {
+    if (diff?.added.includes("from '@web3modal/core")) {
       fail(`${f} is not allowed to import from @web3modal/core`)
     }
 
-    if (diff?.added.includes('@web3modal/ui')) {
+    if (diff?.added.includes("from '@web3modal/ui")) {
       fail(`${f} is not allowed to import from @web3modal/ui`)
     }
   }
@@ -303,6 +315,21 @@ async function checkWallet() {
 }
 
 checkWallet()
+
+// -- Check laboratory ------------------------------------------------------------
+
+async function checkLaboratory() {
+  const lab_files = modified_files.filter(f => f.includes('/laboratory/'))
+  for (const f of lab_files) {
+    const diff = await diffForFile(f)
+    if (f.includes('project') && (diff?.removed.includes('spec') || diff?.added.includes('spec'))) {
+      warn('Testing spec changed')
+    }
+  }
+}
+
+checkLaboratory()
+
 // -- Check left over development constants ---------------------------------------
 async function checkDevelopmentConstants() {
   for (const f of updated_files) {

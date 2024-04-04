@@ -1,10 +1,11 @@
 import { subscribeKey as subKey } from 'valtio/utils'
-import { proxy, ref } from 'valtio/vanilla'
+import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
 import type { CaipNetwork, CaipNetworkId } from '../utils/TypeUtil.js'
 import { PublicStateController } from './PublicStateController.js'
 import { EventsController } from './EventsController.js'
 import { ModalController } from './ModalController.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
+import { NetworkUtil } from '@web3modal/common'
 
 // -- Types --------------------------------------------- //
 export interface NetworkControllerClient {
@@ -24,6 +25,7 @@ export interface NetworkControllerState {
   requestedCaipNetworks?: CaipNetwork[]
   approvedCaipNetworkIds?: CaipNetworkId[]
   allowUnsupportedChain?: boolean
+  smartAccountEnabledNetworks?: number[]
 }
 
 type StateKey = keyof NetworkControllerState
@@ -31,12 +33,17 @@ type StateKey = keyof NetworkControllerState
 // -- State --------------------------------------------- //
 const state = proxy<NetworkControllerState>({
   supportsAllNetworks: true,
-  isDefaultCaipNetwork: false
+  isDefaultCaipNetwork: false,
+  smartAccountEnabledNetworks: []
 })
 
 // -- Controller ---------------------------------------- //
 export const NetworkController = {
   state,
+
+  subscribe(callback: (newState: NetworkControllerState) => void) {
+    return sub(state, () => callback(state))
+  },
 
   subscribeKey<K extends StateKey>(key: K, callback: (value: NetworkControllerState[K]) => void) {
     return subKey(state, key, callback)
@@ -76,6 +83,12 @@ export const NetworkController = {
     state.allowUnsupportedChain = allowUnsupportedChain
   },
 
+  setSmartAccountEnabledNetworks(
+    smartAccountEnabledNetworks: NetworkControllerState['smartAccountEnabledNetworks']
+  ) {
+    state.smartAccountEnabledNetworks = smartAccountEnabledNetworks
+  },
+
   getRequestedCaipNetworks() {
     const { approvedCaipNetworkIds, requestedCaipNetworks } = state
 
@@ -93,6 +106,7 @@ export const NetworkController = {
 
   async switchActiveNetwork(network: NetworkControllerState['caipNetwork']) {
     await this._getClient().switchCaipNetwork(network)
+
     state.caipNetwork = network
     if (network) {
       EventsController.sendEvent({
@@ -113,12 +127,22 @@ export const NetworkController = {
     }
   },
 
+  checkIfSmartAccountEnabled() {
+    const networkId = NetworkUtil.caipNetworkIdToNumber(state.caipNetwork?.id)
+    if (!networkId) {
+      return false
+    }
+
+    return Boolean(state.smartAccountEnabledNetworks?.includes(networkId))
+  },
+
   resetNetwork() {
     if (!state.isDefaultCaipNetwork) {
       state.caipNetwork = undefined
     }
     state.approvedCaipNetworkIds = undefined
     state.supportsAllNetworks = true
+    state.smartAccountEnabledNetworks = []
   },
 
   showUnsupportedChainUI() {

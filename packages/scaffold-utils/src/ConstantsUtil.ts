@@ -11,5 +11,8 @@ export const ConstantsUtil = {
   ADD_CHAIN_METHOD: 'wallet_addEthereumChain',
   EIP6963_ANNOUNCE_EVENT: 'eip6963:announceProvider',
   EIP6963_REQUEST_EVENT: 'eip6963:requestProvider',
-  VERSION: '4.1.3-xaf31s.2'
+  CONNECTOR_RDNS_MAP: {
+    coinbaseWallet: 'com.coinbase.wallet'
+  } as Record<string, string>,
+  VERSION: '4.1.5'
 }

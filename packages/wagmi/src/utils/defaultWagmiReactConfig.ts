@@ -70,7 +70,7 @@ export function defaultWagmiConfig({
     connectors.push(
       authConnector({
         chains: [...chains],
-        options: { projectId, enableSmartAccounts },
+        options: { projectId },
         socials: auth.socials,
         email: auth.email
       })

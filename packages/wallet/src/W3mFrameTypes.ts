@@ -55,12 +55,13 @@ import {
   RpcEthChainId,
   FrameSwitchNetworkResponse,
   AppSyncDappDataRequest,
-  FrameGetSmartAccountEnabledNetworksResponse,
   FrameInitSmartAccountResponse,
   AppGetSocialRedirectUriRequest,
   FrameGetSocialRedirectUriResponse,
-  FrameConnectSocialResponse
+  FrameConnectSocialResponse,
+  FrameGetSmartAccountEnabledNetworksResponse
 } from './W3mFrameSchema.js'
+import type { W3mFrameRpcConstants } from './W3mFrameConstants.js'
 
 export namespace W3mFrameTypes {
   export type AppEvent = z.infer<typeof W3mFrameSchema.appEvent>
@@ -152,4 +153,7 @@ export namespace W3mFrameTypes {
     | 'discord'
     | 'twitch'
     | 'telegram'
+
+  export type AccountType =
+    (typeof W3mFrameRpcConstants.ACCOUNT_TYPES)[keyof typeof W3mFrameRpcConstants.ACCOUNT_TYPES]
 }

@@ -20,6 +20,14 @@ export interface CaipNetwork {
   imageUrl?: string
 }
 
+export type ConnectedWalletInfo =
+  | {
+      name?: string
+      icon?: string
+      [key: string]: unknown
+    }
+  | undefined
+
 export interface LinkingRecord {
   redirect: string
   href: string
@@ -48,7 +56,12 @@ export type Connector = {
   imageId?: string
   explorerId?: string
   imageUrl?: string
-  info?: { rdns?: string }
+  info?: {
+    uuid?: string
+    name?: string
+    icon?: string
+    rdns?: string
+  }
   provider?: unknown
   email?: boolean
   socials?: SocialProvider[]
@@ -73,6 +86,7 @@ export type SdkVersion =
   | `${'html' | 'react' | 'vue'}-wagmi-${string}`
   | `${'html' | 'react' | 'vue'}-ethers5-${string}`
   | `${'html' | 'react' | 'vue'}-ethers-${string}`
+  | `${'html' | 'react' | 'vue'}-solana-${string}`
 
 export interface BaseError {
   message?: string

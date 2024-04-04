@@ -22,7 +22,8 @@ export default css`
 
   .network {
     cursor: pointer;
-    transition: all var(--wui-ease-out-power-1) var(--wui-duration-lg);
+    transition: background-color var(--wui-ease-out-power-1) var(--wui-duration-lg);
+    will-change: background-color;
   }
 
   .network:focus-visible {
@@ -38,7 +39,6 @@ export default css`
   }
 
   .network:active {
-    transition: all var(--wui-ease-out-power-2) var(--wui-duration-sm);
     background-color: var(--wui-gray-glass-010);
   }
 `

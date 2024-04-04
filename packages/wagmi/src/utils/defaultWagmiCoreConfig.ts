@@ -67,12 +67,11 @@ export function defaultWagmiConfig({
   }
 
   // Dissabled by default
-
   if (auth?.email || auth?.socials) {
     connectors.push(
       authConnector({
         chains: [...chains],
-        options: { projectId, enableSmartAccounts },
+        options: { projectId },
         socials: auth.socials,
         email: auth.email
       })

@@ -25,10 +25,10 @@ export const ThemeController = {
   setThemeMode(themeMode: ThemeControllerState['themeMode']) {
     state.themeMode = themeMode
     try {
-      const emailConnector = ConnectorController.getAuthConnector()
+      const authConnector = ConnectorController.getAuthConnector()
 
-      if (emailConnector) {
-        emailConnector.provider.syncTheme({
+      if (authConnector) {
+        authConnector.provider.syncTheme({
           themeMode: ThemeController.getSnapshot().themeMode
         })
       }
@@ -41,9 +41,9 @@ export const ThemeController = {
   setThemeVariables(themeVariables: ThemeControllerState['themeVariables']) {
     state.themeVariables = { ...state.themeVariables, ...themeVariables }
     try {
-      const emailConnector = ConnectorController.getAuthConnector()
-      if (emailConnector) {
-        emailConnector.provider.syncTheme({
+      const authConnector = ConnectorController.getAuthConnector()
+      if (authConnector) {
+        authConnector.provider.syncTheme({
           themeVariables: ThemeController.getSnapshot().themeVariables
         })
       }

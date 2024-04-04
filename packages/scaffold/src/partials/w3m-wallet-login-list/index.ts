@@ -4,7 +4,6 @@ import {
   AssetUtil,
   ConnectionController,
   ConnectorController,
-  ConstantsUtil,
   CoreHelperUtil,
   EventsController,
   OptionsController,
@@ -14,6 +13,7 @@ import {
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
+import { ConstantsUtil } from '@web3modal/scaffold-utils'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
 @customElement('w3m-wallet-login-list')

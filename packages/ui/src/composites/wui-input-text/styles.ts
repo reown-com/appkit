@@ -16,7 +16,11 @@ export default css`
     font-size: var(--wui-font-size-paragraph);
     letter-spacing: var(--wui-letter-spacing-paragraph);
     color: var(--wui-color-fg-100);
-    transition: all var(--wui-ease-inout-power-1) var(--wui-duration-lg);
+    transition:
+      background-color var(--wui-ease-inout-power-1) var(--wui-duration-md),
+      border-color var(--wui-ease-inout-power-1) var(--wui-duration-md),
+      box-shadow var(--wui-ease-inout-power-1) var(--wui-duration-md);
+    will-change: background-color, border-color, box-shadow;
     caret-color: var(--wui-color-accent-100);
   }
 
@@ -35,7 +39,6 @@ export default css`
   }
 
   input:focus:enabled {
-    transition: all var(--wui-ease-out-power-2) var(--wui-duration-sm);
     background-color: var(--wui-gray-glass-010);
     border: 1px solid var(--wui-color-accent-100);
     -webkit-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
@@ -130,7 +133,6 @@ export default css`
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    transition: all var(--wui-ease-in-power-2) var(--wui-duration-md);
   }
 
   ::slotted(wui-input-element) {

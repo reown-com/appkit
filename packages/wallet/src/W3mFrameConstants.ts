@@ -1,5 +1,6 @@
 export const W3mFrameConstants = {
-  SECURE_SITE_SDK: 'http://localhost:3010/sdk',
+  SECURE_SITE_SDK:
+    process.env['NEXT_PUBLIC_SECURE_SITE_SDK_URL'] || 'https://secure.walletconnect.com/sdk',
   APP_EVENT_KEY: '@w3m-app/',
   FRAME_EVENT_KEY: '@w3m-frame/',
   RPC_METHOD_KEY: 'RPC_',
@@ -11,6 +12,8 @@ export const W3mFrameConstants = {
   LAST_EMAIL_LOGIN_TIME: 'LAST_EMAIL_LOGIN_TIME',
   EMAIL: 'EMAIL',
   PREFERRED_ACCOUNT_TYPE: 'PREFERRED_ACCOUNT_TYPE',
+  SMART_ACCOUNT_ENABLED: 'SMART_ACCOUNT_ENABLED',
+  SMART_ACCOUNT_ENABLED_NETWORKS: 'SMART_ACCOUNT_ENABLED_NETWORKS',
 
   APP_SWITCH_NETWORK: '@w3m-app/SWITCH_NETWORK',
   APP_CONNECT_EMAIL: '@w3m-app/CONNECT_EMAIL',
@@ -116,5 +119,9 @@ export const W3mFrameRpcConstants = {
   NOT_SAFE_RPC_METHODS: ['personal_sign', 'eth_signTypedData_v4', 'eth_sendTransaction'],
   GET_CHAIN_ID: 'eth_chainId',
   RPC_METHOD_NOT_ALLOWED_MESSAGE: 'Requested RPC call is not allowed',
-  RPC_METHOD_NOT_ALLOWED_UI_MESSAGE: 'Action not allowed'
+  RPC_METHOD_NOT_ALLOWED_UI_MESSAGE: 'Action not allowed',
+  ACCOUNT_TYPES: {
+    EOA: 'eoa',
+    SMART_ACCOUNT: 'smartAccount'
+  } as const
 }

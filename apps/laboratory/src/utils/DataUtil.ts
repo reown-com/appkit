@@ -22,12 +22,12 @@ export const wagmiSdkOptions = [
   {
     title: 'Default',
     link: '/library/wagmi',
-    description: 'Basic configuration usign wagmi as a driving library'
+    description: 'Basic configuration using wagmi as a driving library'
   },
   {
     title: 'SIWE',
     link: '/library/wagmi-siwe/',
-    description: 'Configuration usign wagmi and implementing sign in with ethereum'
+    description: 'Configuration using wagmi and implementing sign in with ethereum'
   },
   {
     title: 'Email & Social',
@@ -37,7 +37,7 @@ export const wagmiSdkOptions = [
   {
     title: 'Wallet',
     link: '/library/wagmi-wallet/',
-    description: 'Configuration usign wagmi and implementing email wallet'
+    description: 'Configuration using wagmi and implementing email wallet'
   }
 ]
 
@@ -45,12 +45,12 @@ export const ethersSdkOptions = [
   {
     title: 'Default',
     link: '/library/ethers',
-    description: 'Basic configuration usign ethers as a driving library'
+    description: 'Basic configuration using ethers as a driving library'
   },
   {
     title: 'SIWE',
     link: '/library/ethers-siwe/',
-    description: 'Configuration usign ethers and implementing sign in with ethereum'
+    description: 'Configuration using ethers and implementing sign in with ethereum'
   },
   {
     title: 'Email & Social',
@@ -60,6 +60,14 @@ export const ethersSdkOptions = [
   {
     title: 'Wallet',
     link: '/library/ethers-wallet/',
-    description: 'Configuration usign ethers and implementing email wallet'
+    description: 'Configuration using ethers and implementing email wallet'
+  }
+]
+
+export const solanaSdkOptions = [
+  {
+    title: 'Default',
+    link: '/library/solana',
+    description: 'Basic configuration using solana as a driving library'
   }
 ]

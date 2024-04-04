@@ -27,22 +27,29 @@
     },
     "build:scaffold": {
       "outputs": ["dist/**"],
-      "dependsOn": ["^build:common", "^build:core", "^build:ui", "^build:wallet", "^build:siwe"],
+      "dependsOn": [
+        "^build:common",
+        "^build:core",
+        "^build:ui",
+        "^build:wallet",
+        "@web3modal/siwe#build:siwe",
+        "^build:scaffold-utils"
+      ],
       "cache": false
     },
     "build:scaffold-utils": {
       "outputs": ["dist/**"],
-      "dependsOn": ["^build:polyfills", "^build:scaffold"],
+      "dependsOn": ["^build:polyfills", "^build:core"],
       "cache": false
     },
     "build:scaffold-react": {
       "outputs": ["dist/**"],
-      "dependsOn": ["^build:scaffold-utils", "^build:scaffold", "^build:siwe"],
+      "dependsOn": ["^build:scaffold-utils", "^build:scaffold"],
       "cache": false
     },
     "build:scaffold-vue": {
       "outputs": ["dist/**"],
-      "dependsOn": ["^build:scaffold-utils", "^build:scaffold", "^build:siwe"],
+      "dependsOn": ["^build:scaffold-utils", "^build:scaffold"],
       "cache": false
     },
     "build:siwe": {
@@ -86,6 +93,11 @@
       "dependsOn": ["^build"],
       "cache": false
     },
+    "build:demo": {
+      "outputs": ["out/**", ".next/**", "!.next/cache/**"],
+      "dependsOn": ["^build"],
+      "cache": false
+    },
     "typecheck": {
       "cache": false
     },
@@ -102,6 +114,9 @@
       "cache": false
     },
     "dev:gallery": {
+      "cache": false
+    },
+    "dev:demo": {
       "cache": false
     },
     "dev:example": {

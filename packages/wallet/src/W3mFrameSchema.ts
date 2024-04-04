@@ -35,7 +35,10 @@ export const AppConnectOtpRequest = z.object({ otp: z.string() })
 export const AppGetSocialRedirectUriRequest = z.object({
   provider: z.enum(['google', 'apple', 'facebook', 'x', 'github', 'discord', 'twitch', 'telegram'])
 })
-export const AppGetUserRequest = z.object({ chainId: z.optional(z.number()) })
+export const AppGetUserRequest = z.object({
+  chainId: z.optional(z.number()),
+  preferredAccountType: z.optional(z.string())
+})
 export const AppUpdateEmailRequest = z.object({ email: z.string().email() })
 export const AppUpdateEmailPrimaryOtpRequest = z.object({ otp: z.string() })
 export const AppUpdateEmailSecondaryOtpRequest = z.object({ otp: z.string() })
@@ -56,6 +59,7 @@ export const AppSyncDappDataRequest = z.object({
     | `${'html' | 'react' | 'vue'}-wagmi-${string}`
     | `${'html' | 'react' | 'vue'}-ethers5-${string}`
     | `${'html' | 'react' | 'vue'}-ethers-${string}`
+    | `${'html' | 'react' | 'vue'}-solana-${string}`
   >,
   projectId: z.string()
 })
@@ -67,7 +71,8 @@ export const FrameConnectEmailResponse = z.object({
 export const FrameGetUserResponse = z.object({
   email: z.string().email(),
   address: z.string(),
-  chainId: z.number()
+  chainId: z.number(),
+  smartAccountDeployed: z.optional(z.boolean())
 })
 export const FrameIsConnectedResponse = z.object({ isConnected: z.boolean() })
 export const FrameGetChainIdResponse = z.object({ chainId: z.number() })
@@ -80,7 +85,7 @@ export const FrameInitSmartAccountResponse = z.object({
   address: z.string(),
   isDeployed: z.boolean()
 })
-export const FrameSetPreferredAccountResponse = z.object({ type: z.string() })
+export const FrameSetPreferredAccountResponse = z.object({ type: z.string(), address: z.string() })
 
 export const FrameGetSocialRedirectUriResponse = z.object({ uri: z.string() })
 
@@ -463,13 +468,6 @@ export const W3mFrameSchema = {
       z.object({
         type: zType('FRAME_GET_SMART_ACCOUNT_ENABLED_NETWORKS_ERROR'),
         payload: zError
-      })
-    )
-
-    .or(
-      z.object({
-        type: zType('FRAME_INIT_SMART_ACCOUNT_SUCCESS'),
-        payload: FrameInitSmartAccountResponse
       })
     )
     .or(z.object({ type: zType('FRAME_INIT_SMART_ACCOUNT_ERROR'), payload: zError }))

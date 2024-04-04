@@ -16,7 +16,8 @@ export const wagmiConfig = defaultWagmiConfig({
   projectId: ConstantsUtil.ProjectId,
   metadata: ConstantsUtil.Metadata,
   auth: {
-    email: true
+    email: true,
+    socials: ['google']
   },
   ssr: true
 })

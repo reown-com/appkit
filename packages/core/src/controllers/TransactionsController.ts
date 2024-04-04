@@ -86,6 +86,7 @@ export const TransactionsController = {
       SnackController.showError('Failed to fetch transactions')
       state.loading = false
       state.empty = true
+      state.next = undefined
     }
   },
 
@@ -123,6 +124,10 @@ export const TransactionsController = {
 
       return !isAllSpam
     })
+  },
+
+  clearCursor() {
+    state.next = undefined
   },
 
   resetTransactions() {

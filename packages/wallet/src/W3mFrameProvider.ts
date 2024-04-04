@@ -29,7 +29,6 @@ type SyncDappDataResolver = Resolver<undefined>
 type SmartAccountEnabledNetworksResolver = Resolver<
   W3mFrameTypes.Responses['FrameGetSmartAccountEnabledNetworksResponse']
 >
-type InitSmartAccountResolver = Resolver<W3mFrameTypes.Responses['FrameInitSmartAccountResponse']>
 type SetPreferredAccountResolver = Resolver<undefined>
 
 // -- Provider --------------------------------------------------------
@@ -69,8 +68,6 @@ export class W3mFrameProvider {
   private syncDappDataResolver: SyncDappDataResolver = undefined
 
   private smartAccountEnabledNetworksResolver: SmartAccountEnabledNetworksResolver = undefined
-
-  private initSmartAccountResolver: InitSmartAccountResolver = undefined
 
   private setPreferredAccountResolver: SetPreferredAccountResolver = undefined
 
@@ -147,10 +144,6 @@ export class W3mFrameProvider {
           return this.onSmartAccountEnabledNetworksSuccess(event)
         case W3mFrameConstants.FRAME_GET_SMART_ACCOUNT_ENABLED_NETWORKS_ERROR:
           return this.onSmartAccountEnabledNetworksError(event)
-        case W3mFrameConstants.FRAME_INIT_SMART_ACCOUNT_SUCCESS:
-          return this.onInitSmartAccountSuccess(event)
-        case W3mFrameConstants.FRAME_INIT_SMART_ACCOUNT_ERROR:
-          return this.onInitSmartAccountError(event)
         case W3mFrameConstants.FRAME_SET_PREFERRED_ACCOUNT_SUCCESS:
           return this.onPreferSmartAccountSuccess(event)
         case W3mFrameConstants.FRAME_SET_PREFERRED_ACCOUNT_ERROR:
@@ -314,18 +307,7 @@ export class W3mFrameProvider {
     )
   }
 
-  public async initSmartAccount() {
-    await this.w3mFrame.frameLoadPromise
-    this.w3mFrame.events.postAppEvent({ type: W3mFrameConstants.APP_INIT_SMART_ACCOUNT })
-
-    return new Promise<W3mFrameTypes.Responses['FrameInitSmartAccountResponse']>(
-      (resolve, reject) => {
-        this.initSmartAccountResolver = { resolve, reject }
-      }
-    )
-  }
-
-  public async setPreferredAccount(type: 'eoa' | 'smartAccount') {
+  public async setPreferredAccount(type: W3mFrameTypes.AccountType) {
     await this.w3mFrame.frameLoadPromise
     this.w3mFrame.events.postAppEvent({
       type: W3mFrameConstants.APP_SET_PREFERRED_ACCOUNT,
@@ -343,7 +325,7 @@ export class W3mFrameProvider {
     await this.w3mFrame.frameLoadPromise
     this.w3mFrame.events.postAppEvent({
       type: W3mFrameConstants.APP_GET_USER,
-      payload: { chainId }
+      payload: { chainId, preferredAccountType: payload?.preferredAccountType }
     })
 
     return new Promise<W3mFrameTypes.Responses['FrameGetUserResponse']>((resolve, reject) => {
@@ -415,10 +397,12 @@ export class W3mFrameProvider {
     })
   }
 
-  public onIsConnected(callback: () => void) {
+  public onIsConnected(
+    callback: (request: W3mFrameTypes.Responses['FrameGetUserResponse']) => void
+  ) {
     this.w3mFrame.events.onFrameEvent(event => {
       if (event.type === W3mFrameConstants.FRAME_GET_USER_SUCCESS) {
-        callback()
+        callback(event.payload)
       }
     })
   }
@@ -437,12 +421,24 @@ export class W3mFrameProvider {
     })
   }
 
-  public onInitSmartAccount(callback: (isDeployed: boolean) => void) {
+  public onSetPreferredAccount(
+    callback: ({ type, address }: { type: string; address?: string }) => void
+  ) {
     this.w3mFrame.events.onFrameEvent(event => {
-      if (event.type === W3mFrameConstants.FRAME_INIT_SMART_ACCOUNT_SUCCESS) {
-        callback(event.payload.isDeployed)
-      } else if (event.type === W3mFrameConstants.FRAME_INIT_SMART_ACCOUNT_ERROR) {
-        callback(false)
+      if (event.type === W3mFrameConstants.FRAME_SET_PREFERRED_ACCOUNT_SUCCESS) {
+        callback(event.payload)
+      } else if (event.type === W3mFrameConstants.FRAME_SET_PREFERRED_ACCOUNT_ERROR) {
+        callback({ type: W3mFrameRpcConstants.ACCOUNT_TYPES.EOA })
+      }
+    })
+  }
+
+  public onGetSmartAccountEnabledNetworks(callback: (networks: number[]) => void) {
+    this.w3mFrame.events.onFrameEvent(event => {
+      if (event.type === W3mFrameConstants.FRAME_GET_SMART_ACCOUNT_ENABLED_NETWORKS_SUCCESS) {
+        callback(event.payload.smartAccountEnabledNetworks)
+      } else if (event.type === W3mFrameConstants.FRAME_GET_SMART_ACCOUNT_ENABLED_NETWORKS_ERROR) {
+        callback([])
       }
     })
   }
@@ -659,6 +655,7 @@ export class W3mFrameProvider {
       { type: '@w3m-frame/GET_SMART_ACCOUNT_ENABLED_NETWORKS_SUCCESS' }
     >
   ) {
+    this.persistSmartAccountEnabledNetworks(event.payload.smartAccountEnabledNetworks)
     this.smartAccountEnabledNetworksResolver?.resolve(event.payload)
   }
 
@@ -668,25 +665,14 @@ export class W3mFrameProvider {
       { type: '@w3m-frame/GET_SMART_ACCOUNT_ENABLED_NETWORKS_ERROR' }
     >
   ) {
+    this.persistSmartAccountEnabledNetworks([])
     this.smartAccountEnabledNetworksResolver?.reject(event.payload.message)
-  }
-
-  private onInitSmartAccountSuccess(
-    event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/INIT_SMART_ACCOUNT_SUCCESS' }>
-  ) {
-    this.initSmartAccountResolver?.resolve(event.payload)
-  }
-
-  private onInitSmartAccountError(
-    event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/INIT_SMART_ACCOUNT_ERROR' }>
-  ) {
-    this.initSmartAccountResolver?.reject(event.payload.message)
   }
 
   private onPreferSmartAccountSuccess(
     event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/SET_PREFERRED_ACCOUNT_SUCCESS' }>
   ) {
-    this.persistPreferredAccount(event.payload.type as 'eoa' | 'smartAccount')
+    this.persistPreferredAccount(event.payload.type as W3mFrameTypes.AccountType)
     this.setPreferredAccountResolver?.resolve(undefined)
   }
 
@@ -719,7 +705,11 @@ export class W3mFrameProvider {
     return Number(W3mFrameStorage.get(W3mFrameConstants.LAST_USED_CHAIN_KEY))
   }
 
-  private persistPreferredAccount(type: 'eoa' | 'smartAccount') {
+  private persistPreferredAccount(type: W3mFrameTypes.AccountType) {
     W3mFrameStorage.set(W3mFrameConstants.PREFERRED_ACCOUNT_TYPE, type)
+  }
+
+  private persistSmartAccountEnabledNetworks(networks: number[]) {
+    W3mFrameStorage.set(W3mFrameConstants.SMART_ACCOUNT_ENABLED_NETWORKS, networks.join(','))
   }
 }

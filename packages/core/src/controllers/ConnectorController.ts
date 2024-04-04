@@ -1,4 +1,4 @@
-import { subscribeKey as subKey } from 'valtio/utils'
+import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, ref, snapshot } from 'valtio/vanilla'
 import type { Connector, AuthConnector } from '../utils/TypeUtil.js'
 import { OptionsController } from './OptionsController.js'
@@ -28,18 +28,18 @@ export const ConnectorController = {
     state.connectors = connectors.map(c => ref(c))
   },
 
-  addConnector(connector: Connector) {
+  addConnector(connector: Connector | AuthConnector) {
     state.connectors.push(ref(connector))
 
     if (connector.id === 'w3mAuth') {
-      const emailConnector = connector as AuthConnector
+      const authConnector = connector as AuthConnector
       const optionsState = snapshot(OptionsController.state) as typeof OptionsController.state
-      emailConnector?.provider?.syncDappData?.({
+      authConnector?.provider?.syncDappData?.({
         metadata: optionsState.metadata,
         sdkVersion: optionsState.sdkVersion,
         projectId: optionsState.projectId
       })
-      emailConnector.provider.syncTheme({
+      authConnector.provider.syncTheme({
         themeMode: ThemeController.getSnapshot().themeMode,
         themeVariables: ThemeController.getSnapshot().themeVariables
       })
