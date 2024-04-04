@@ -1,5 +1,14 @@
 # @apps/demo
 
+## 4.1.6-canary-sl-001.0
+
+### Patch Changes
+
+- Add social login
+
+- Updated dependencies []:
+  - @web3modal/wagmi@4.1.6-canary-sl-001.0
+
 ## 4.1.5
 
 ### Patch Changes

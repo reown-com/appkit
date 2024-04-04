@@ -1,5 +1,11 @@
 # @web3modal/common
 
+## 4.1.6-canary-sl-001.0
+
+### Patch Changes
+
+- Add social login
+
 ## 4.1.5
 
 ### Patch Changes

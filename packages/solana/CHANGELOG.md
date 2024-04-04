@@ -1,5 +1,18 @@
 # @web3modal/solana
 
+## 4.1.6-canary-sl-001.0
+
+### Patch Changes
+
+- Add social login
+
+- Updated dependencies []:
+  - @web3modal/scaffold-react@4.1.6-canary-sl-001.0
+  - @web3modal/scaffold-utils@4.1.6-canary-sl-001.0
+  - @web3modal/scaffold-vue@4.1.6-canary-sl-001.0
+  - @web3modal/polyfills@4.1.6-canary-sl-001.0
+  - @web3modal/scaffold@4.1.6-canary-sl-001.0
+
 ## 4.1.5
 
 ### Patch Changes

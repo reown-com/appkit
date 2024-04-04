@@ -1,5 +1,18 @@
 # @web3modal/scaffold
 
+## 4.1.6-canary-sl-001.0
+
+### Patch Changes
+
+- Add social login
+
+- Updated dependencies []:
+  - @web3modal/common@4.1.6-canary-sl-001.0
+  - @web3modal/wallet@4.1.6-canary-sl-001.0
+  - @web3modal/core@4.1.6-canary-sl-001.0
+  - @web3modal/siwe@4.1.6-canary-sl-001.0
+  - @web3modal/ui@4.1.6-canary-sl-001.0
+
 ## 4.1.5
 
 ### Patch Changes

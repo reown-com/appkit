@@ -15,12 +15,14 @@
 '@apps/laboratory': patch
 '@web3modal/common': patch
 '@web3modal/ethers': patch
+'@web3modal/solana': patch
 '@web3modal/wallet': patch
 '@web3modal/wagmi': patch
 '@web3modal/core': patch
 '@web3modal/siwe': patch
 '@apps/gallery': patch
 '@web3modal/ui': patch
+'@apps/demo': patch
 ---
 
-Social login patch
+Add social login
