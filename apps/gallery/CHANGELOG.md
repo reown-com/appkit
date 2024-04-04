@@ -1,5 +1,15 @@
 # @apps/gallery
 
+## 4.1.6-a0733f5.0
+
+### Patch Changes
+
+- chore: canary release for siwe dependency
+
+- Updated dependencies []:
+  - @web3modal/common@4.1.6-a0733f5.0
+  - @web3modal/ui@4.1.6-a0733f5.0
+
 ## 4.1.5
 
 ### Patch Changes

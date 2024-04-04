@@ -1,5 +1,15 @@
 # @web3modal/scaffold-utils
 
+## 4.1.6-a0733f5.0
+
+### Patch Changes
+
+- chore: canary release for siwe dependency
+
+- Updated dependencies []:
+  - @web3modal/core@4.1.6-a0733f5.0
+  - @web3modal/polyfills@4.1.6-a0733f5.0
+
 ## 4.1.5
 
 ### Patch Changes

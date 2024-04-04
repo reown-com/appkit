@@ -1,5 +1,11 @@
 # @web3modal/common
 
+## 4.1.6-a0733f5.0
+
+### Patch Changes
+
+- chore: canary release for siwe dependency
+
 ## 4.1.5
 
 ### Patch Changes
