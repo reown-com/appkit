@@ -1134,7 +1134,7 @@ export class Web3Modal extends Web3ModalScaffold {
       super.setLoading(true)
       const isLoginEmailUsed = this.emailProvider.getLoginEmailUsed()
       super.setLoading(isLoginEmailUsed)
-      const isConnected = await this.emailProvider.isConnected()
+      const { isConnected } = await this.emailProvider.isConnected()
 
       if (isConnected) {
         this.setEmailProvider()
