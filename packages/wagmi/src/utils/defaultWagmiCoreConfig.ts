@@ -15,7 +15,6 @@ export type ConfigOptions = Partial<CreateConfigParameters> & {
   enableEIP6963?: boolean
   enableCoinbase?: boolean
   enableWalletConnect?: boolean
-  enableSmartAccounts?: boolean
   auth?: {
     email?: boolean
     socials?: SocialProvider[]
@@ -36,7 +35,6 @@ export function defaultWagmiConfig({
   enableCoinbase,
   enableWalletConnect,
   enableEIP6963,
-  enableSmartAccounts,
   auth,
   ...wagmiConfig
 }: ConfigOptions) {
