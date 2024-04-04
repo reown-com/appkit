@@ -435,7 +435,13 @@ export class Web3Modal extends Web3ModalScaffold {
       provider.onRpcRequest(request => {
         if (W3mFrameHelpers.checkIfRequestExists(request)) {
           if (!W3mFrameHelpers.checkIfRequestIsAllowed(request)) {
-            super.open({ view: 'ApproveTransaction' })
+            if (super.isOpen()) {
+              if (!super.isTransactionStackEmpty()) {
+                super.redirect('ApproveTransaction')
+              }
+            } else {
+              super.open({ view: 'ApproveTransaction' })
+            }
           }
         } else {
           super.open()
@@ -449,8 +455,33 @@ export class Web3Modal extends Web3ModalScaffold {
         }
       })
 
-      provider.onRpcResponse(() => {
-        super.close()
+      provider.onRpcResponse(receive => {
+        // eslint-disable-next-line @typescript-eslint/prefer-ts-expect-error, @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        const payload = receive?.payload
+        // eslint-disable-next-line @typescript-eslint/prefer-ts-expect-error, @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        const isError = receive?.type === '@w3m-frame/RPC_REQUEST_ERROR'
+
+        if (isError && super.isOpen()) {
+          if (super.isTransactionStackEmpty()) {
+            super.close()
+          } else {
+            super.popTransactionStack(true)
+          }
+        }
+
+        const isPayloadString = typeof payload === 'string'
+        const isAddress = isPayloadString ? payload?.startsWith('0x') : false
+        const isCompleted = isAddress && payload?.length > 10
+
+        if (isCompleted) {
+          if (super.isTransactionStackEmpty()) {
+            super.close()
+          } else {
+            super.popTransactionStack()
+          }
+        }
       })
 
       provider.onNotConnected(() => {

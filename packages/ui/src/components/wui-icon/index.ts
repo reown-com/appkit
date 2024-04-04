@@ -70,6 +70,7 @@ import { bankSvg } from '../../assets/svg/bank.js'
 import { cardSvg } from '../../assets/svg/card.js'
 import { plusSvg } from '../../assets/svg/plus.js'
 import { cursorTransparentSvg } from '../../assets/svg/cursor-transparent.js'
+import { idSvg } from '../../assets/svg/id.js'
 
 const svgOptions: Record<IconType, TemplateResult<2>> = {
   add: addSvg,
@@ -108,6 +109,7 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   github: githubSvg,
   google: googleSvg,
   helpCircle: helpCircleSvg,
+  id: idSvg,
   infoCircle: infoCircleSvg,
   mail: mailSvg,
   mobile: mobileSvg,

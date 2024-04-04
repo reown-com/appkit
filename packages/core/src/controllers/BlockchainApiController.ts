@@ -11,7 +11,10 @@ import type {
   PaymentCurrency,
   PurchaseCurrency,
   BlockchainApiBalanceResponse,
-  BlockchainApiLookupEnsName
+  BlockchainApiLookupEnsName,
+  BlockchainApiSuggestionResponse,
+  BlockchainApiRegisterNameParams,
+  BlockchainApiEnsError
 } from '../utils/TypeUtil.js'
 import { OptionsController } from './OptionsController.js'
 
@@ -135,14 +138,35 @@ export const BlockchainApiController = {
   },
 
   async lookupEnsName(name: string) {
-    return api.get<BlockchainApiLookupEnsName>({
-      path: `/v1/profile/account/${name}?projectId=${OptionsController.state.projectId}`
+    return api.get<BlockchainApiLookupEnsName | BlockchainApiEnsError>({
+      path: `/v1/profile/account/${name}.wc.ink?projectId=${OptionsController.state.projectId}`
     })
   },
 
   async reverseLookupEnsName(address: string) {
     return api.get<BlockchainApiLookupEnsName>({
       path: `/v1/profile/reverse/${address}?projectId=${OptionsController.state.projectId}`
+    })
+  },
+
+  async getEnsNameSuggestions(name: string) {
+    return api.get<BlockchainApiSuggestionResponse[]>({
+      path: `/v1/profile/suggestion/${name}.wc.ink?projectId=${OptionsController.state.projectId}`
+    })
+  },
+
+  async registerEnsName({
+    coin_type,
+    address,
+    message,
+    signature
+  }: BlockchainApiRegisterNameParams) {
+    return api.post({
+      path: `/v1/profile/account`,
+      body: { coin_type, address, message, signature },
+      headers: {
+        'Content-Type': 'application/json'
+      }
     })
   },
 

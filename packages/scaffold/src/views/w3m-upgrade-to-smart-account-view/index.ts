@@ -85,7 +85,7 @@ export class W3mUpgradeToSmartAccountView extends LitElement {
           preferredAccountType: W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
         })
         this.loading = false
-        RouterController.push('Account')
+        RouterController.push('ChooseAccountName')
       } catch (e) {
         SnackController.showError('Error upgrading to smart account')
       }

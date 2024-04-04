@@ -182,6 +182,18 @@ export interface BlockchainApiLookupEnsName {
   }[]
 }
 
+export interface BlockchainApiRegisterNameParams {
+  coin_type: number
+  message: string
+  signature: string
+  address: `0x${string}`
+}
+
+export interface BlockchainApiSuggestionResponse {
+  name: string
+  registered: boolean
+}
+
 export interface BlockchainApiEnsError extends BaseError {
   status: string
   reasons: { name: string; description: string }[]

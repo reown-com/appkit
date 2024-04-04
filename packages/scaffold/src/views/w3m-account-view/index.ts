@@ -7,7 +7,7 @@ export class W3mAccountView extends LitElement {
   // -- Render -------------------------------------------- //
 
   public override firstUpdated(): void {
-    EnsController.resolveName('rocky.wc.ink').then(console.log)
+    EnsController.resolveName('rocky').then(console.log)
     EnsController.getNamesForAddress('0x13302Eb0aD9Af2F847119dC4Ac632fFe196d0B0f').then(console.log)
   }
 

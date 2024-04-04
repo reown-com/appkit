@@ -15,7 +15,7 @@ export class WuiNetworkImage extends LitElement {
   public static override styles = [resetStyles, styles]
 
   // -- State & Properties -------------------------------- //
-  @property() public size: Exclude<SizeType, 'inherit' | 'xl' | 'xs' | 'mdl' | 'xxs'> = 'md'
+  @property() public size: Exclude<SizeType, 'inherit' | 'xxl' | 'xl' | 'xs' | 'mdl' | 'xxs'> = 'md'
 
   @property() public name = 'uknown'
 

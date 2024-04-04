@@ -2,7 +2,17 @@ import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
-import { ModalController, ConnectorController, ThemeController } from '@web3modal/core'
+import {
+  ModalController,
+  ConnectorController,
+  ThemeController,
+  RouterController
+} from '@web3modal/core'
+
+// -- Variables ------------------------------------------- //
+const PAGE_HEIGHT = 400
+const PAGE_WIDTH = 360
+const HEADER_HEIGHT = 64
 
 @customElement('w3m-approve-transaction-view')
 export class W3mApproveTransactionView extends LitElement {
@@ -21,33 +31,33 @@ export class W3mApproveTransactionView extends LitElement {
   public constructor() {
     super()
     this.unsubscribe.push(
-      ModalController.subscribeKey('open', val => {
-        if (!val) {
-          this.onHideIframe()
-        }
-      })
+      ...[
+        ModalController.subscribeKey('open', isOpen => {
+          if (!isOpen) {
+            this.onHideIframe()
+            RouterController.popTransactionStack()
+          }
+        })
+      ]
     )
   }
 
   public override disconnectedCallback() {
+    this.onHideIframe()
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
     this.bodyObserver?.unobserve(window.document.body)
   }
 
   public override async firstUpdated() {
-    const verticalPadding = 10
-
     await this.syncTheme()
 
     this.iframe.style.display = 'block'
-    const blueprint = this.renderRoot.querySelector('div')
+
     this.bodyObserver = new ResizeObserver(() => {
-      const data = blueprint?.getBoundingClientRect()
-      const dimensions = data ?? { left: 0, top: 0, width: 0, height: 0 }
-      this.iframe.style.width = `360px`
-      this.iframe.style.height = `${dimensions.height - verticalPadding}px`
-      this.iframe.style.left = 'calc(50% - 180px)'
-      this.iframe.style.top = `${dimensions.top + verticalPadding / 2}px`
+      this.iframe.style.width = `${PAGE_WIDTH}px`
+      this.iframe.style.height = `${PAGE_HEIGHT}px`
+      this.iframe.style.left = `calc(50% - ${PAGE_WIDTH / 2}px)`
+      this.iframe.style.top = `calc(50% - ${PAGE_HEIGHT / 2}px + ${HEADER_HEIGHT / 2}px)`
       this.ready = true
     })
     this.bodyObserver.observe(window.document.body)
@@ -75,12 +85,12 @@ export class W3mApproveTransactionView extends LitElement {
   }
 
   private async onHideIframe() {
+    this.iframe.style.display = 'none'
     await this.iframe.animate([{ opacity: 1 }, { opacity: 0 }], {
       duration: 200,
       easing: 'ease',
       fill: 'forwards'
     }).finished
-    this.iframe.style.display = 'none'
   }
 
   private async syncTheme() {

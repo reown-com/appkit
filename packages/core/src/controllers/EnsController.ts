@@ -2,12 +2,21 @@ import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import type { BlockchainApiEnsError } from '../utils/TypeUtil.js'
+import { AccountController } from './AccountController.js'
+import { ConnectorController } from './ConnectorController.js'
+import { RouterController } from './RouterController.js'
+import { ConnectionController } from './ConnectionController.js'
 // -- Types --------------------------------------------- //
+type Suggestion = {
+  name: string
+  registered: boolean
+}
 
 export interface EnsControllerState {
   name: string
-  suggestions: string[]
+  suggestions: Suggestion[]
   error: string
+  loading: boolean
 }
 
 type StateKey = keyof EnsControllerState
@@ -16,7 +25,8 @@ type StateKey = keyof EnsControllerState
 const state = proxy<EnsControllerState>({
   name: '',
   suggestions: [],
-  error: ''
+  error: '',
+  loading: false
 })
 
 // -- Controller ---------------------------------------- //
@@ -33,10 +43,6 @@ export const EnsController = {
 
   setName(name: EnsControllerState['name']) {
     state.name = name
-  },
-
-  setSuggestions(suggestions: EnsControllerState['suggestions']) {
-    state.suggestions = suggestions
   },
 
   async resolveName(name: string) {
@@ -61,6 +67,35 @@ export const EnsController = {
     }
   },
 
+  async getSuggestions(name: string) {
+    try {
+      state.loading = true
+      state.suggestions = []
+      const suggestions = await BlockchainApiController.getEnsNameSuggestions(name)
+      state.suggestions = suggestions
+      state.error = ''
+      state.loading = false
+
+      return suggestions
+    } catch (e) {
+      state.loading = false
+      const error = e as BlockchainApiEnsError
+      const errorMessage = error?.reasons?.[0]?.description || 'Error resolving suggestions'
+      state.error = errorMessage
+
+      const mockSuggestions = [
+        { name, registered: true },
+        { name: 'rocky+1', registered: false },
+        { name: 'rocky+2', registered: false },
+        { name: 'rocky+3', registered: false },
+        { name: 'rocky+4', registered: false }
+      ]
+      state.suggestions = mockSuggestions
+
+      return mockSuggestions
+    }
+  },
+
   async getNamesForAddress(address: string) {
     try {
       return await BlockchainApiController.reverseLookupEnsName(address)
@@ -70,6 +105,45 @@ export const EnsController = {
       state.error = errorMessage
 
       return null
+    }
+  },
+
+  async registerName(name: string) {
+    try {
+      const address = AccountController.state.address
+      const emailConnector = ConnectorController.getEmailConnector()
+      if (!address || !emailConnector) {
+        throw new Error('Address or email connector not found')
+      }
+      const message = JSON.stringify({
+        name: `${name}.wc.ink`,
+        attributes: {},
+        timestamp: Math.floor(Date.now() / 1000)
+      })
+      state.loading = true
+
+      RouterController.pushTransactionStack({
+        view: 'Account', // TODO: new view
+        goBack: false,
+        onSuccess() {
+          state.loading = false
+        }
+      })
+
+      const signature = await ConnectionController.signMessage(message)
+
+      await BlockchainApiController.registerEnsName({
+        coin_type: 60,
+        address: address as `0x${string}`,
+        signature,
+        message
+      })
+      state.loading = false
+    } catch (e) {
+      state.loading = false
+      const error = e as BlockchainApiEnsError
+      const errorMessage = error?.reasons?.[0]?.description || 'Error registering ENS name'
+      state.error = errorMessage
     }
   }
 }

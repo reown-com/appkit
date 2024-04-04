@@ -38,7 +38,12 @@ export class W3mChooseAccountNameView extends LitElement {
       .padding=${['0', 'xxl', '0', 'xxl'] as const}
     >
       <wui-flex gap="s" alignItems="center" justifyContent="center">
-        <wui-visual name="profile"></wui-visual>
+        <wui-icon-box
+          icon="id"
+          size="xl"
+          iconColor="fg-200"
+          backgroundColor="fg-200"
+        ></wui-icon-box>
       </wui-flex>
       <wui-flex flexDirection="column" alignItems="center" gap="s">
         <wui-text align="center" variant="medium-600" color="fg-100">

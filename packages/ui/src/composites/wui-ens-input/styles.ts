@@ -30,7 +30,7 @@ export default css`
     color: var(--wui-color-fg-100);
     transition: all var(--wui-ease-inout-power-1) var(--wui-duration-lg);
     caret-color: var(--wui-color-accent-100);
-    padding: 14px 52% var(--wui-spacing-l) var(--wui-spacing-m);
+    padding: 14px 30% var(--wui-spacing-l) var(--wui-spacing-m);
     outline: none;
   }
 

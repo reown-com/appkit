@@ -10,6 +10,18 @@ export default css`
     border-radius: var(--wui-border-radius-xs);
   }
 
+  .suggestion:hover {
+    background-color: var(--wui-gray-glass-005);
+    cursor: pointer;
+  }
+
+  .suggested-name {
+    max-width: 220px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
   form {
     width: 100%;
   }
