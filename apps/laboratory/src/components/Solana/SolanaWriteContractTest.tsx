@@ -118,7 +118,7 @@ export function SolanaWriteContractTest() {
   return (
     <Box>
       <Button data-testid="sign-message-button" onClick={onIncrementCounter}>
-        Increment Counter
+        Increment Counter Without WC Connection
       </Button>
     </Box>
   )

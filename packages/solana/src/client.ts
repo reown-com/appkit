@@ -176,7 +176,7 @@ export class Web3Modal extends Web3ModalScaffold {
     SolStoreUtil.setConnection(
       new Connection(
         SolHelpersUtil.detectRpcUrl(chain, OptionsController.state.projectId),
-        'confirmed'
+        'recent'
       )
     )
 
@@ -338,7 +338,7 @@ export class Web3Modal extends Web3ModalScaffold {
           SolStoreUtil.setConnection(
             new Connection(
               SolHelpersUtil.detectRpcUrl(chain, OptionsController.state.projectId),
-              'confirmed'
+              'recent'
             )
           )
           this.setAddress(this.walletAdapters[wallet].publicKey?.toString())
@@ -353,7 +353,7 @@ export class Web3Modal extends Web3ModalScaffold {
           SolStoreUtil.setConnection(
             new Connection(
               SolHelpersUtil.detectRpcUrl(chain, OptionsController.state.projectId),
-              'confirmed'
+              'recent'
             )
           )
           universalProvider.connect({ namespaces, pairingTopic: undefined })

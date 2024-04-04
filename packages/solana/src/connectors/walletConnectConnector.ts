@@ -1,5 +1,5 @@
 import base58 from 'bs58'
-import { Connection, PublicKey, Transaction, VersionedTransaction } from '@solana/web3.js'
+import { PublicKey, Transaction, VersionedTransaction } from '@solana/web3.js'
 import type UniversalProvider from '@walletconnect/universal-provider'
 import { OptionsController } from '@web3modal/core'
 
@@ -190,17 +190,12 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
       transactionParam.partialSign(...signers)
     }
 
-    console.log('after signers if = ', transactionParam)
-    const connection = new Connection('http://localhost:8899/')
-
     const { tx } = await this._sendTransaction(transactionParam)
-
-    console.log('after wallet sign = ', transactionParam)
 
     if (tx) {
       const latestBlockHash = await SolStoreUtil.state.connection?.getLatestBlockhash()
       if (latestBlockHash?.blockhash) {
-        await connection?.confirmTransaction({
+        await SolStoreUtil.state.connection?.confirmTransaction({
           blockhash: latestBlockHash.blockhash,
           lastValidBlockHeight: latestBlockHash.lastValidBlockHeight,
           signature: tx
