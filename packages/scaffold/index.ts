@@ -41,6 +41,7 @@ export * from './src/views/w3m-wallet-send-select-token-view/index.js'
 export * from './src/views/w3m-wallet-send-preview-view/index.js'
 export * from './src/views/w3m-connect-wallets-view/index.js'
 export * from './src/views/w3m-connect-socials-view/index.js'
+export * from './src/views/w3m-connecting-social-view/index.js'
 
 export * from './src/partials/w3m-all-wallets-list/index.js'
 export * from './src/partials/w3m-all-wallets-search/index.js'

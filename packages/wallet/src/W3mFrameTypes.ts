@@ -59,7 +59,7 @@ import {
   FrameInitSmartAccountResponse,
   AppGetSocialRedirectUriRequest,
   FrameGetSocialRedirectUriResponse,
-  FrameGetSocialUserResponse
+  FrameConnectSocialResponse
 } from './W3mFrameSchema.js'
 
 export namespace W3mFrameTypes {
@@ -92,7 +92,7 @@ export namespace W3mFrameTypes {
     >
     FrameInitSmartAccountResponse: z.infer<typeof FrameInitSmartAccountResponse>
     FrameGetSocialRedirectUriResponse: z.infer<typeof FrameGetSocialRedirectUriResponse>
-    FrameGetSocialUserResponse: z.infer<typeof FrameGetSocialUserResponse>
+    FrameConnectSocialResponse: z.infer<typeof FrameConnectSocialResponse>
   }
 
   export interface Network {

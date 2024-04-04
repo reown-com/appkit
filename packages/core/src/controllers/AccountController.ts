@@ -1,7 +1,7 @@
 import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
-import type { CaipAddress } from '../utils/TypeUtil.js'
+import type { CaipAddress, SocialProvider } from '../utils/TypeUtil.js'
 import type { Balance } from '@web3modal/common'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { SnackController } from './SnackController.js'
@@ -19,6 +19,7 @@ export interface AccountControllerState {
   addressExplorerUrl?: string
   smartAccountDeployed?: boolean
   tokenBalance?: Balance[]
+  socialProvider?: SocialProvider
 }
 
 type StateKey = keyof AccountControllerState
@@ -85,6 +86,12 @@ export const AccountController = {
     }
   },
 
+  setSocialProvider(socialProvider: AccountControllerState['socialProvider']) {
+    if (socialProvider) {
+      state.socialProvider = socialProvider
+    }
+  },
+
   async fetchTokenBalance() {
     try {
       if (state.address) {
@@ -108,5 +115,6 @@ export const AccountController = {
     state.addressExplorerUrl = undefined
     state.smartAccountDeployed = undefined
     state.currentTab = 0
+    state.socialProvider = undefined
   }
 }

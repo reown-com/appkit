@@ -2,7 +2,9 @@ import { css } from 'lit'
 
 export default css`
   :host {
-    display: block;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 40px;
     height: 40px;
     border-radius: var(--wui-border-radius-3xl);

@@ -1,4 +1,5 @@
 import {
+  AccountController,
   ConnectorController,
   CoreHelperUtil,
   RouterController,
@@ -119,7 +120,9 @@ export class W3mSocialLoginWidget extends LitElement {
         const { uri } = await authConnector.provider.getSocialRedirectUri({
           provider: socialProvider
         })
+        AccountController.setSocialProvider(socialProvider)
         CoreHelperUtil.openHref(uri, 'popupWindow', 'width=600,height=800,scrollbars=yes')
+        RouterController.push('ConnectingSocial')
       }
     } catch (error) {
       SnackController.showError('Something went wrong')

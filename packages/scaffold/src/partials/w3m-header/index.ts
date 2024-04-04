@@ -1,5 +1,6 @@
 import type { RouterControllerState } from '@web3modal/core'
 import {
+  AccountController,
   ConnectionController,
   ConnectorController,
   EventsController,
@@ -7,7 +8,7 @@ import {
   OptionsController,
   RouterController
 } from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+import { UiHelperUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
@@ -57,7 +58,10 @@ function headings() {
     WalletSendPreview: 'Review send',
     WalletSendSelectToken: 'Select Token',
     ConnectWallets: 'Connect wallet',
-    ConnectSocials: 'All socials'
+    ConnectSocials: 'All socials',
+    ConnectingSocial: AccountController.state.socialProvider
+      ? UiHelperUtil.capitalizeFirstLetter(AccountController.state.socialProvider)
+      : 'Connect Social'
   }
 }
 

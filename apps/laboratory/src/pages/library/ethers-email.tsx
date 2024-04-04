@@ -12,7 +12,7 @@ const modal = createWeb3Modal({
     rpcUrl: 'https://cloudflare-eth.com',
     auth: {
       email: true,
-      socials: ['google', 'apple', 'telegram', 'x', 'discord', 'facebook', 'github', 'twitch']
+      socials: ['google']
     }
   }),
   chains: EthersConstants.chains,
