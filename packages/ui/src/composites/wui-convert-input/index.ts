@@ -265,7 +265,6 @@ export class WuiConvertInput extends LitElement {
 
   private onSelectToken() {
     EventsController.sendEvent({ type: 'track', event: 'CLICK_SELECT_TOKEN_TO_SWAP' })
-    // TODO: redirect to ConvertSelectTokenPage
   }
 
   private onBuyToken() {
