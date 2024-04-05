@@ -8,11 +8,12 @@ import {
   TransactionInstruction,
   LAMPORTS_PER_SOL,
   sendAndConfirmTransaction,
-  Connection
+  Connection as SolanaConnection
 } from '@solana/web3.js'
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/solana/react'
+import { solanaLocalNet } from '../../utils/ChainsUtil'
+import { SolanaConstantsUtil } from '../../utils/SolanaConstants'
 
-export const PROGRAM_ID = new PublicKey('Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS')
 export const COUNTER_ACCOUNT_SIZE = 8
 
 function deserializeCounterAccount(data?: Buffer): any {
@@ -29,6 +30,7 @@ export function SolanaWriteContractTestWithoutSign() {
   const toast = useToast()
   const { address } = useWeb3ModalAccount()
   const { walletProvider, connection } = useWeb3ModalProvider()
+  const PROGRAM_ID = new PublicKey(SolanaConstantsUtil.programIds.localNet)
 
   async function onIncrementCounter() {
     try {
@@ -40,7 +42,7 @@ export function SolanaWriteContractTestWithoutSign() {
         throw new Error('No connection set')
       }
 
-      const airdropConnection = new Connection('http://localhost:8899', 'confirmed')
+      const airdropConnection = new SolanaConnection(solanaLocalNet.rpcUrl, 'confirmed')
 
       const counterKeypair = Keypair.generate()
       const counter = counterKeypair.publicKey
@@ -59,13 +61,13 @@ export function SolanaWriteContractTestWithoutSign() {
       })
 
       const balance = await connection.getBalance(payer)
-      console.log('balance', balance)
-      if (balance < LAMPORTS_PER_SOL) {
+
+      if (balance < LAMPORTS_PER_SOL / 100) {
         throw Error('Not enough SOL in wallet')
       }
 
       const allocIx: TransactionInstruction = SystemProgram.createAccount({
-        fromPubkey: walletProvider.publicKey,
+        fromPubkey: payer,
         newAccountPubkey: counter,
         lamports: await connection.getMinimumBalanceForRentExemption(COUNTER_ACCOUNT_SIZE),
         space: COUNTER_ACCOUNT_SIZE,

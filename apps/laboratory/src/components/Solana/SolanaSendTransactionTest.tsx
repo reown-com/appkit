@@ -7,7 +7,6 @@ import {
   TransactionMessage,
   VersionedTransaction,
   SystemProgram,
-  Connection
 } from '@solana/web3.js'
 
 import { solana } from '../../utils/ChainsUtil'
@@ -78,7 +77,7 @@ export function SolanaSendTransactionTest() {
       }
 
       const balance = await connection.getBalance(walletProvider.publicKey)
-      if (balance < amountInLamports) {
+      if (balance < amountInLamports / 100) {
         throw Error('Not enough SOL in wallet')
       }
 
@@ -102,10 +101,7 @@ export function SolanaSendTransactionTest() {
       // Make a versioned transaction
       const transactionV0 = new VersionedTransaction(messageV0)
 
-      const signature = await walletProvider.sendTransaction(
-        transactionV0,
-        connection as Connection
-      )
+      const signature = await walletProvider.sendTransaction(transactionV0, connection)
       toast({ title: 'Succcess', description: signature, status: 'success', isClosable: true })
     } catch (err) {
       toast({

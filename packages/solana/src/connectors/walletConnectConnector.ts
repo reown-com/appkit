@@ -142,13 +142,7 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
     if (!validSig) {
       throw new Error('Signature invalid.')
     }
-    /*
-     * If (!validSig) {
-     *   throw new Error('Signature invalid.')
-     * }
-     */
 
-    // Return { signatures: [{ signature: base58.encode(transaction.serialize()) }] }
     return { signatures: [{ signature: base58.encode(transaction.serialize()) }] }
   }
 
@@ -175,7 +169,7 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
     return signature
   }
 
-  public async sendAndConfirmTransaction(
+  public async signAndSendTransaction(
     transactionParam: Transaction | VersionedTransaction,
     signers: Signer[],
     confirmOptions?: ConfirmOptions

@@ -1,17 +1,18 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Box, Button, useToast } from '@chakra-ui/react'
 import {
   Connection,
   SystemProgram,
-  PublicKey,
   Keypair,
   Transaction,
   TransactionInstruction,
   sendAndConfirmTransaction,
-  LAMPORTS_PER_SOL
+  LAMPORTS_PER_SOL,
+  PublicKey
 } from '@solana/web3.js'
+import { SolanaConstantsUtil } from '../../utils/SolanaConstants'
+import { solanaLocalNet } from '../../utils/ChainsUtil'
 
-export const PROGRAM_ID = new PublicKey('Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS')
 export const COUNTER_ACCOUNT_SIZE = 8
 
 function deserializeCounterAccount(data?: Buffer): any {
@@ -26,11 +27,16 @@ function deserializeCounterAccount(data?: Buffer): any {
 
 export function SolanaWriteContractTest() {
   const toast = useToast()
+  const [loading, setLoading] = useState(false)
 
   async function onIncrementCounter() {
+    setLoading(true)
+
+    const PROGRAM_ID = new PublicKey(SolanaConstantsUtil.programIds.localNet)
+
     try {
       // Use your localhost rpc connection
-      const connection = new Connection('http://localhost:8899', 'confirmed')
+      const connection = new Connection(solanaLocalNet.rpcUrl, 'confirmed')
 
       if (!connection) {
         throw new Error('No connection set')
@@ -53,7 +59,7 @@ export function SolanaWriteContractTest() {
         signature
       })
 
-      console.log('balance after airdrop:', await connection.getBalance(payer))
+      console.log('balance', await connection.getBalance(payer))
 
       const allocIx: TransactionInstruction = SystemProgram.createAccount({
         fromPubkey: payer,
@@ -112,12 +118,14 @@ export function SolanaWriteContractTest() {
         status: 'error',
         isClosable: true
       })
+    } finally {
+      setLoading(false)
     }
   }
 
   return (
     <Box>
-      <Button data-testid="sign-message-button" onClick={onIncrementCounter}>
+      <Button isDisabled={loading} data-testid="sign-message-button" onClick={onIncrementCounter}>
         Increment Counter Without WC Connection
       </Button>
     </Box>

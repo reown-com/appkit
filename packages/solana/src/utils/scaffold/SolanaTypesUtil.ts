@@ -8,7 +8,6 @@ import type {
   VersionedTransaction
 } from '@solana/web3.js'
 import type { SendTransactionOptions } from '@solana/wallet-adapter-base'
-import type { ConfirmOptions, Signer } from '@solana/web3.js'
 
 export type Connection = SolanaConnection
 
@@ -63,11 +62,6 @@ export interface Provider {
     transaction: SolanaWeb3Transaction | VersionedTransaction,
     connection: Connection,
     options?: SendTransactionOptions
-  ) => Promise<TransactionSignature>
-  sendAndConfirmTransaction: (
-    transaction: Transaction | VersionedTransaction,
-    signers: Signer[],
-    confirmOptions?: ConfirmOptions
   ) => Promise<TransactionSignature>
 }
 

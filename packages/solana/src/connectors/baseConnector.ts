@@ -27,7 +27,7 @@ import type {
   FilterObject,
   RequestMethods,
   TransactionArgs,
-  TransactionType,
+  TransactionType
 } from '../utils/scaffold/SolanaTypesUtil.js'
 
 export interface Connector {
@@ -42,7 +42,7 @@ export interface Connector {
     transaction: Transaction | VersionedTransaction
   ) => Promise<{ signatures: { signature: string }[] }>
   sendTransaction: (transaction: Transaction | VersionedTransaction) => Promise<string>
-  sendAndConfirmTransaction: (
+  signAndSendTransaction: (
     transaction: Transaction | VersionedTransaction,
     signers: Signer[],
     confirmOptions: ConfirmOptions

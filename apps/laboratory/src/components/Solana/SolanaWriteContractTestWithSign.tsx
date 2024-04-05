@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Button, useToast } from '@chakra-ui/react'
 import {
   SystemProgram,
@@ -6,12 +6,14 @@ import {
   Keypair,
   Transaction,
   TransactionInstruction,
-  LAMPORTS_PER_SOL
+  LAMPORTS_PER_SOL,
+  Connection
 } from '@solana/web3.js'
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/solana/react'
+import { solanaLocalNet } from '../../utils/ChainsUtil'
+import { SolanaConstantsUtil } from '../../utils/SolanaConstants'
 
-export const PROGRAM_ID = new PublicKey('Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS')
-export const COUNTER_ACCOUNT_SIZE = 8
+const COUNTER_ACCOUNT_SIZE = 8
 
 function deserializeCounterAccount(data?: Buffer): any {
   if (data?.byteLength !== 8) {
@@ -27,8 +29,13 @@ export function SolanaWriteContractTestWithSign() {
   const toast = useToast()
   const { address } = useWeb3ModalAccount()
   const { walletProvider, connection } = useWeb3ModalProvider()
+  const [loading, setLoading] = useState(false)
+
+  const PROGRAM_ID = new PublicKey(SolanaConstantsUtil.programIds.devNet)
 
   async function onIncrementCounter() {
+    setLoading(true)
+
     try {
       if (!walletProvider || !address) {
         throw new Error('User is disconnected')
@@ -42,7 +49,19 @@ export function SolanaWriteContractTestWithSign() {
       const counter = counterKeypair.publicKey
 
       const balance = await connection.getBalance(walletProvider.publicKey)
-      if (balance < LAMPORTS_PER_SOL) {
+      if (balance < LAMPORTS_PER_SOL / 100) {
+        const airdropConnection = new Connection(solanaLocalNet.rpcUrl)
+        const signature = await airdropConnection.requestAirdrop(
+          walletProvider.publicKey,
+          LAMPORTS_PER_SOL
+        )
+
+        const latestBlockHash = await connection.getLatestBlockhash()
+        await airdropConnection.confirmTransaction({
+          blockhash: latestBlockHash.blockhash,
+          lastValidBlockHeight: latestBlockHash.lastValidBlockHeight,
+          signature
+        })
         throw Error('Not enough SOL in wallet')
       }
 
@@ -71,7 +90,7 @@ export function SolanaWriteContractTestWithSign() {
       tx.feePayer = walletProvider.publicKey
       tx.recentBlockhash = (await connection.getLatestBlockhash('confirmed')).blockhash
 
-      await walletProvider.sendAndConfirmTransaction(tx, [counterKeypair])
+      await walletProvider.signAndSendTransaction(tx, [counterKeypair])
 
       const counterAccountInfo = await connection.getAccountInfo(counter, {
         commitment: 'confirmed'
@@ -101,11 +120,13 @@ export function SolanaWriteContractTestWithSign() {
         status: 'error',
         isClosable: true
       })
+    } finally {
+      setLoading(false)
     }
   }
 
   return (
-    <Button data-testid="sign-message-button" onClick={onIncrementCounter}>
+    <Button isDisabled={loading} data-testid="sign-message-button" onClick={onIncrementCounter}>
       Increment Counter With Sign
     </Button>
   )
