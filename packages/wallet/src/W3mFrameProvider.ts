@@ -333,9 +333,10 @@ export class W3mFrameProvider {
     })
   }
 
-  public async connectSocial() {
+  public async connectSocial(uri: string) {
     this.w3mFrame.events.postAppEvent({
-      type: W3mFrameConstants.APP_CONNECT_SOCIAL
+      type: W3mFrameConstants.APP_CONNECT_SOCIAL,
+      payload: { uri }
     })
 
     return new Promise<W3mFrameTypes.Responses['FrameGetUserResponse']>((resolve, reject) => {

@@ -65,6 +65,8 @@ export const AppSyncDappDataRequest = z.object({
 })
 export const AppSetPreferredAccountRequest = z.object({ type: z.string() })
 
+export const AppConnectSocialRequest = z.object({ uri: z.string() })
+
 export const FrameConnectEmailResponse = z.object({
   action: z.enum(['VERIFY_DEVICE', 'VERIFY_OTP'])
 })
@@ -313,7 +315,7 @@ export const W3mFrameSchema = {
       z.object({ type: zType('APP_SET_PREFERRED_ACCOUNT'), payload: AppSetPreferredAccountRequest })
     )
 
-    .or(z.object({ type: zType('APP_CONNECT_SOCIAL') }))
+    .or(z.object({ type: zType('APP_CONNECT_SOCIAL'), payload: AppConnectSocialRequest }))
 
     .or(
       z.object({

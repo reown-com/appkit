@@ -93,16 +93,24 @@ export class W3mConnectingSocialView extends LitElement {
     return html`<wui-loading-thumbnail radius=${radius * 9}></wui-loading-thumbnail>`
   }
 
-  private async connectSocial() {
-    if (this.authConnector) {
-      try {
-        await this.authConnector?.provider.connectSocial()
-        await ConnectionController.connectExternal(this.authConnector)
-        ModalController.close()
-      } catch (error) {
-        this.error = true
+  private connectSocial() {
+    const handleSocialConnection = async (event: MessageEvent) => {
+      if (event.data?.resultUri) {
+        try {
+          if (this.authConnector) {
+            const uri = event.data.resultUri as string
+
+            await this.authConnector.provider.connectSocial(uri)
+            await ConnectionController.connectExternal(this.authConnector)
+            ModalController.close()
+          }
+        } catch (error) {
+          this.error = true
+        }
       }
     }
+
+    window.addEventListener('message', handleSocialConnection, false)
   }
 }
 
