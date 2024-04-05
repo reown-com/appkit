@@ -1,13 +1,11 @@
 import { html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
-import { customElement } from '../../utils/WebComponentsUtil.js'
-import { resetStyles } from '../../utils/ThemeUtil.js'
 import styles from './styles.js'
-import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
+import { UiHelperUtil, customElement } from '@web3modal/ui'
 
-@customElement('wui-convert-details')
+@customElement('w3m-convert-details')
 export class WuiConvertDetails extends LitElement {
-  public static override styles = [resetStyles, styles]
+  public static override styles = [styles]
 
   // -- State & Properties -------------------------------- //
   @property() public detailsOpen = false
@@ -124,6 +122,6 @@ export class WuiConvertDetails extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'wui-convert-details': WuiConvertDetails
+    'wui-w3m-details': WuiConvertDetails
   }
 }

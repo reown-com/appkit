@@ -20,8 +20,6 @@ import type { WuiChip } from '../composites/wui-chip/index.js'
 import type { WuiCompatibleNetwork } from '../composites/wui-compatible-network/index.js'
 import type { WuiChipButton } from '../composites/wui-chip-button/index.js'
 import type { WuiConnectButton } from '../composites/wui-connect-button/index.js'
-import type { WuiConvertDetails } from '../composites/wui-convert-details/index.js'
-import type { WuiConvertInput } from '../composites/wui-convert-input/index.js'
 import type { WuiCtaButton } from '../composites/wui-cta-button/index.js'
 import type { WuiDetailsGroup } from '../composites/wui-details-group/index.js'
 import type { WuiDetailsGroupItem } from '../composites/wui-details-group-item/index.js'
@@ -100,8 +98,6 @@ declare global {
       'wui-chip': CustomElement<WuiChip>
       'wui-compatible-network': CustomElement<WuiCompatibleNetwork>
       'wui-connect-button': CustomElement<WuiConnectButton>
-      'wui-convert-details': CustomElement<WuiConvertDetails>
-      'wui-convert-input': CustomElement<WuiConvertInput>
       'wui-cta-button': CustomElement<WuiCtaButton>
       'wui-details-group-item': CustomElement<WuiDetailsGroupItem>
       'wui-details-group': CustomElement<WuiDetailsGroup>

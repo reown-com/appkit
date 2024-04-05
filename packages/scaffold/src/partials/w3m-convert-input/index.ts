@@ -1,15 +1,14 @@
 import { html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
-import { customElement } from '../../utils/WebComponentsUtil.js'
-import { resetStyles } from '../../utils/ThemeUtil.js'
-import '../../components/wui-text/index.js'
-import '../wui-transaction-visual/index.js'
-import { convertInputMaskTopSvg } from '../../assets/svg/convert-input-mask-top.js'
-import { convertInputMaskBottomSvg } from '../../assets/svg/convert-input-mask-bottom.js'
 import { EventsController, RouterController } from '@web3modal/core'
-import styles from './styles.js'
-import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
 import { NumberUtil } from '@web3modal/common'
+import {
+  UiHelperUtil,
+  customElement,
+  convertInputMaskBottomSvg,
+  convertInputMaskTopSvg
+} from '@web3modal/ui'
+import styles from './styles.js'
 
 const MINIMUM_USD_VALUE_TO_CONVERT = 0.00005
 
@@ -27,9 +26,9 @@ interface TokenInfo {
   tags?: string[]
 }
 
-@customElement('wui-convert-input')
-export class WuiConvertInput extends LitElement {
-  public static override styles = [resetStyles, styles]
+@customElement('w3m-convert-input')
+export class W3mConvertInput extends LitElement {
+  public static override styles = [styles]
 
   // -- State & Properties -------------------------------- //
   @property() public focused = false
@@ -222,6 +221,6 @@ export class WuiConvertInput extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'wui-convert-input': WuiConvertInput
+    'w3m-convert-input': W3mConvertInput
   }
 }
