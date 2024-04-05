@@ -13,8 +13,7 @@ import type {
   BlockchainApiBalanceResponse,
   BlockchainApiLookupEnsName,
   BlockchainApiSuggestionResponse,
-  BlockchainApiRegisterNameParams,
-  BlockchainApiEnsError
+  BlockchainApiRegisterNameParams
 } from '../utils/TypeUtil.js'
 import { OptionsController } from './OptionsController.js'
 
@@ -138,7 +137,7 @@ export const BlockchainApiController = {
   },
 
   async lookupEnsName(name: string) {
-    return api.get<BlockchainApiLookupEnsName | BlockchainApiEnsError>({
+    return api.get<BlockchainApiLookupEnsName>({
       path: `/v1/profile/account/${name}.wc.ink?projectId=${OptionsController.state.projectId}`
     })
   },

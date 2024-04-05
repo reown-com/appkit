@@ -9,8 +9,7 @@ import {
   RouterController,
   SnackController,
   StorageUtil,
-  ConnectorController,
-  EnsController
+  ConnectorController
 } from '@web3modal/core'
 import { UiHelperUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -237,9 +236,6 @@ export class W3mAccountSettingsView extends LitElement {
   }
 
   private onChooseName() {
-    if (EnsController.state.name) {
-      return
-    }
     RouterController.push('ChooseAccountName')
   }
 

@@ -13,7 +13,6 @@ type Suggestion = {
 }
 
 export interface EnsControllerState {
-  name: string
   suggestions: Suggestion[]
   error: string
   loading: boolean
@@ -23,7 +22,6 @@ type StateKey = keyof EnsControllerState
 
 // -- State --------------------------------------------- //
 const state = proxy<EnsControllerState>({
-  name: '',
   suggestions: [],
   error: '',
   loading: false
@@ -39,10 +37,6 @@ export const EnsController = {
 
   subscribeKey<K extends StateKey>(key: K, callback: (value: EnsControllerState[K]) => void) {
     return subKey(state, key, callback)
-  },
-
-  setName(name: EnsControllerState['name']) {
-    state.name = name
   },
 
   async resolveName(name: string) {
