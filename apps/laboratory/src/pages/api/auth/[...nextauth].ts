@@ -1,8 +1,12 @@
-import type { SIWESession } from '@web3modal/siwe'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import nextAuth from 'next-auth'
 import credentialsProvider from 'next-auth/providers/credentials'
-import { isValidEip191Signature, isValidEip1271Signature } from '@walletconnect/utils'
+import {
+  type SIWESession,
+  verifySignature,
+  getChainIdFromMessage,
+  getAddressFromMessage
+} from '@web3modal/siwe'
 
 declare module 'next-auth' {
   interface Session extends SIWESession {
@@ -10,10 +14,6 @@ declare module 'next-auth' {
     chainId: number
   }
 }
-
-const ETH_ADDRESS_PATTERN = /0x[a-fA-F0-9]{40}/u
-const ETH_CHAIN_ID_IN_SIWE_PATTERN = /Chain ID: (?<temp1>\d+)/u
-
 /*
  * For more information on each option (and a full list of options) go to
  * https://next-auth.js.org/configuration/options
@@ -49,14 +49,10 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
             throw new Error('SiweMessage is undefined')
           }
           const { message, signature } = credentials
-          const address = message.match(ETH_ADDRESS_PATTERN)?.[0] || ''
-          const chainId = `eip155:${
-            credentials.message.match(ETH_CHAIN_ID_IN_SIWE_PATTERN)?.[1] || 1
-          }`
-          let isValid = isValidEip191Signature(address, message, signature)
-          if (!isValid) {
-            isValid = await isValidEip1271Signature(address, message, signature, chainId, projectId)
-          }
+          const address = getAddressFromMessage(message)
+          const chainId = getChainIdFromMessage(message)
+
+          const isValid = await verifySignature({ address, message, signature, chainId, projectId })
 
           if (isValid) {
             return {
