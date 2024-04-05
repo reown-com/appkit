@@ -52,7 +52,7 @@ describe('EnsController', () => {
     expect(EnsController.state.loading).toBe(false)
     expect(name).toEqual(TEST_NAME)
 
-    await expect(EnsController.resolveName('invalid'))
+    await EnsController.resolveName('invalid')
     expect(EnsController.state.error).toBe(errorMessage)
   })
 })
