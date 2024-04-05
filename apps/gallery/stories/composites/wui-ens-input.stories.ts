@@ -17,6 +17,9 @@ export default {
 export const Default: Component = {
   render: args =>
     html`<gallery-container width="336"
-      ><wui-email-input .errorMessage=${args.errorMessage}></wui-email-input
+      ><wui-email-input
+        .errorMessage=${args.errorMessage}
+        .disabled=${args.disabled}
+      ></wui-email-input
     ></gallery-container>`
 }
