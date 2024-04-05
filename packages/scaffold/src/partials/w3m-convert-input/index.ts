@@ -194,8 +194,8 @@ export class W3mConvertInput extends LitElement {
     `
   }
 
-  private tokenActionButtonTemplate(_haveBalance: boolean) {
-    if (_haveBalance) {
+  private tokenActionButtonTemplate(haveBalance: boolean) {
+    if (haveBalance) {
       return html` <button class="max-value-button" @click=${this.setMaxValueToInput.bind(this)}>
         <wui-text color="accent-100" variant="small-600">Max</wui-text>
       </button>`
