@@ -71,12 +71,16 @@ export const EnsController = {
     try {
       state.loading = true
       state.suggestions = []
-      const suggestions = await BlockchainApiController.getEnsNameSuggestions(name)
-      state.suggestions = suggestions
+      const response = await BlockchainApiController.getEnsNameSuggestions(name)
+      state.suggestions =
+        response.suggestions.map(suggestion => ({
+          ...suggestion,
+          name: suggestion.name.replace('.wc.ink', '')
+        })) || []
       state.error = ''
       state.loading = false
 
-      return suggestions
+      return state.suggestions
     } catch (e) {
       state.loading = false
       const error = e as BlockchainApiEnsError
@@ -104,7 +108,7 @@ export const EnsController = {
       const errorMessage = error?.reasons?.[0]?.description || 'Error resolving address to ENS name'
       state.error = errorMessage
 
-      return null
+      return []
     }
   },
 
@@ -123,7 +127,7 @@ export const EnsController = {
       state.loading = true
 
       RouterController.pushTransactionStack({
-        view: 'Account', // TODO: new view
+        view: 'Account',
         goBack: false,
         onSuccess() {
           state.loading = false

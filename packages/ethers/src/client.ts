@@ -880,8 +880,11 @@ export class Web3Modal extends Web3ModalScaffold {
 
   private async syncProfile(address: Address) {
     const chainId = EthersStoreUtil.state.chainId
-
-    if (chainId === 1) {
+    const registeredWcNames = await this.getWalletConnectName(address)
+    if (registeredWcNames[0]) {
+      const wcName = registeredWcNames[0]
+      this.setProfileName(wcName.name)
+    } else if (chainId === 1) {
       const ensProvider = new InfuraProvider('mainnet')
       const name = await ensProvider.lookupAddress(address)
       const avatar = await ensProvider.getAvatar(address)

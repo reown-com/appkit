@@ -190,8 +190,10 @@ export interface BlockchainApiRegisterNameParams {
 }
 
 export interface BlockchainApiSuggestionResponse {
-  name: string
-  registered: boolean
+  suggestions: {
+    name: string
+    registered: boolean
+  }[]
 }
 
 export interface BlockchainApiEnsError extends BaseError {

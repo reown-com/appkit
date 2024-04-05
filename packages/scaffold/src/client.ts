@@ -25,7 +25,8 @@ import {
   PublicStateController,
   ThemeController,
   SnackController,
-  RouterController
+  RouterController,
+  EnsController
 } from '@web3modal/core'
 import { setColorTheme, setThemeVariables } from '@web3modal/ui'
 import type { SIWEControllerClient } from '@web3modal/siwe'
@@ -243,6 +244,10 @@ export class Web3ModalScaffold {
     smartAccountEnabledNetworks => {
       NetworkController.setSmartAccountEnabledNetworks(smartAccountEnabledNetworks)
     }
+
+  protected getWalletConnectName: (typeof EnsController)['getNamesForAddress'] = address => {
+    return EnsController.getNamesForAddress(address)
+  }
 
   // -- Private ------------------------------------------------------------------
   private async initControllers(options: ScaffoldOptions) {

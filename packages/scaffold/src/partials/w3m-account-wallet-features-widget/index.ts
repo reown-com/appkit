@@ -81,10 +81,11 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
       <wui-profile-button
         @click=${this.onProfileButtonClick.bind(this)}
         address=${ifDefined(this.address)}
+        profileName=${ifDefined(this.profileName)}
         networkSrc=${ifDefined(networkImage)}
         icon="chevronBottom"
         avatarSrc=${ifDefined(this.profileImage ? this.profileImage : undefined)}
-        ?isprofilename=${Boolean(this.profileName)}
+        ?isProfileName=${Boolean(this.profileName)}
       ></wui-profile-button>
       ${this.tokenBalanceTemplate()}
       <wui-flex gap="s">

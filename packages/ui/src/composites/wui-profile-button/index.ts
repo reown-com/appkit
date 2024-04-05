@@ -25,6 +25,8 @@ export class WuiProfileButton extends LitElement {
 
   @property() public address = ''
 
+  @property() public profileName?: string = undefined
+
   @property() public icon: IconType = 'chevronBottom'
 
   // -- Render -------------------------------------------- //
@@ -40,10 +42,10 @@ export class WuiProfileButton extends LitElement {
         <wui-flex gap="xs" alignItems="center">
           <wui-text variant="large-600" color="fg-100">
             ${UiHelperUtil.getTruncateString({
-              string: this.address,
-              charsStart: this.isProfileName ? 18 : 4,
-              charsEnd: this.isProfileName ? 0 : 4,
-              truncate: this.isProfileName ? 'end' : 'middle'
+              string: this.profileName ?? this.address,
+              charsStart: this.profileName ? 18 : 4,
+              charsEnd: this.profileName ? 0 : 4,
+              truncate: this.profileName ? 'end' : 'middle'
             })}
           </wui-text>
           <wui-icon size="sm" color="fg-200" name=${this.icon}></wui-icon>

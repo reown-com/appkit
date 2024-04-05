@@ -144,14 +144,14 @@ export const BlockchainApiController = {
   },
 
   async reverseLookupEnsName(address: string) {
-    return api.get<BlockchainApiLookupEnsName>({
+    return api.get<BlockchainApiLookupEnsName[]>({
       path: `/v1/profile/reverse/${address}?projectId=${OptionsController.state.projectId}`
     })
   },
 
   async getEnsNameSuggestions(name: string) {
-    return api.get<BlockchainApiSuggestionResponse[]>({
-      path: `/v1/profile/suggestion/${name}.wc.ink?projectId=${OptionsController.state.projectId}`
+    return api.get<BlockchainApiSuggestionResponse>({
+      path: `/v1/profile/suggestions/${name}?projectId=${OptionsController.state.projectId}`
     })
   },
 
