@@ -142,6 +142,8 @@ export const EnsController = {
         signature,
         message
       })
+
+      AccountController.setProfileName(`${name}.wc.ink`)
       state.loading = false
     } catch (e) {
       state.loading = false

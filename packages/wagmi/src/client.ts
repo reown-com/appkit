@@ -289,7 +289,13 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private async syncProfile(address: Hex, chainId: Chain['id']) {
-    if (chainId !== mainnet.id) {
+    const registeredWcNames = await this.getWalletConnectName(address)
+    if (registeredWcNames[0]) {
+      const wcName = registeredWcNames[0]
+      this.setProfileName(wcName.name)
+
+      return
+    } else if (chainId !== mainnet.id) {
       this.setProfileName(null)
       this.setProfileImage(null)
 

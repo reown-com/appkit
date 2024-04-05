@@ -90,19 +90,12 @@ export class W3mAccountSettingsView extends LitElement {
         <wui-flex flexDirection="column" alignItems="center">
           <wui-flex gap="3xs" alignItems="center" justifyContent="center">
             <wui-text variant="large-600" color="fg-100" data-testid="account-settings-address">
-              ${this.profileName
-                ? UiHelperUtil.getTruncateString({
-                    string: this.profileName,
-                    charsStart: 20,
-                    charsEnd: 0,
-                    truncate: 'end'
-                  })
-                : UiHelperUtil.getTruncateString({
-                    string: this.address,
-                    charsStart: 4,
-                    charsEnd: 6,
-                    truncate: 'middle'
-                  })}
+              ${UiHelperUtil.getTruncateString({
+                string: this.address,
+                charsStart: 4,
+                charsEnd: 6,
+                truncate: 'middle'
+              })}
             </wui-text>
             <wui-icon-link
               size="md"
@@ -152,7 +145,7 @@ export class W3mAccountSettingsView extends LitElement {
     const type = StorageUtil.getConnectedConnector()
     const emailConnector = ConnectorController.getEmailConnector()
 
-    if (!emailConnector || type !== 'EMAIL' || EnsController.state.name) {
+    if (!emailConnector || type !== 'EMAIL' || this.profileName) {
       return null
     }
 
