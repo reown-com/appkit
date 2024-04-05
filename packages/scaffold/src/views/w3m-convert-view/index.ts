@@ -132,7 +132,10 @@ export class W3mConvertView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private watchConvertValues() {
-    this.gasFeeIntervalId = setInterval(() => ConvertController.refreshConvertValues(), 5000)
+    this.gasFeeIntervalId = setInterval(() => {
+      ConvertController.fetchTokens()
+      ConvertController.refreshConvertValues()
+    }, 5000)
   }
 
   private templateSwap() {
