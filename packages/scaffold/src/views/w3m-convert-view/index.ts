@@ -22,7 +22,7 @@ export class W3mConvertView extends LitElement {
   private unsubscribe: ((() => void) | undefined)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() private gasFeeIntervalId?: NodeJS.Timeout
+  @state() private interval?: NodeJS.Timeout
 
   @state() private detailsOpen = false
 
@@ -106,7 +106,7 @@ export class W3mConvertView extends LitElement {
       ]
     )
 
-    this.watchConvertValues()
+    this.watchTokensAndValues()
   }
 
   public override firstUpdated() {
@@ -118,7 +118,7 @@ export class W3mConvertView extends LitElement {
   public override disconnectedCallback() {
     ConvertController.setLoading(false)
     this.unsubscribe.forEach(unsubscribe => unsubscribe?.())
-    clearInterval(this.gasFeeIntervalId)
+    clearInterval(this.interval)
   }
 
   // -- Render -------------------------------------------- //
@@ -131,9 +131,10 @@ export class W3mConvertView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
-  private watchConvertValues() {
-    this.gasFeeIntervalId = setInterval(() => {
-      ConvertController.fetchTokens()
+  private watchTokensAndValues() {
+    this.interval = setInterval(() => {
+      ConvertController.getNetworkTokenPrice()
+      ConvertController.getMyTokensWithBalance()
       ConvertController.refreshConvertValues()
     }, 5000)
   }

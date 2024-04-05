@@ -15,6 +15,8 @@ export class W3mConvertSelectTokenView extends LitElement {
   private unsubscribe: ((() => void) | undefined)[] = []
 
   // -- State & Properties -------------------------------- //
+  @state() private interval?: NodeJS.Timeout
+
   @state() private targetToken = RouterController.state.data?.target
 
   @state() private sourceToken = ConvertController.state.sourceToken
@@ -35,15 +37,8 @@ export class W3mConvertSelectTokenView extends LitElement {
         })
       ]
     )
-  }
 
-  private onSelectToken(token: TokenInfo) {
-    if (this.targetToken === 'sourceToken') {
-      ConvertController.setSourceToken(token)
-    } else {
-      ConvertController.setToToken(token)
-    }
-    RouterController.goBack()
+    this.watchTokens()
   }
 
   public override updated() {
@@ -67,6 +62,7 @@ export class W3mConvertSelectTokenView extends LitElement {
       this.handleSuggestedTokensScroll.bind(this)
     )
     tokensList?.removeEventListener('scroll', this.handleTokenListScroll.bind(this))
+    clearInterval(this.interval)
   }
 
   // -- Render -------------------------------------------- //
@@ -79,6 +75,22 @@ export class W3mConvertSelectTokenView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private watchTokens() {
+    this.interval = setInterval(() => {
+      ConvertController.getNetworkTokenPrice()
+      ConvertController.getMyTokensWithBalance()
+    }, 5000)
+  }
+
+  private onSelectToken(token: TokenInfo) {
+    if (this.targetToken === 'sourceToken') {
+      ConvertController.setSourceToken(token)
+    } else {
+      ConvertController.setToToken(token)
+    }
+    RouterController.goBack()
+  }
+
   private templateSearchInput() {
     return html`
       <wui-flex class="search-input-container" gap="xs">
