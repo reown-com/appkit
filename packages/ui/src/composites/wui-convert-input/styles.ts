@@ -14,6 +14,7 @@ export default css`
     box-sizing: border-box;
     position: relative;
   }
+
   :host > wui-flex > svg.input_mask {
     position: absolute;
     inset: 0;
@@ -76,6 +77,7 @@ export default css`
     letter-spacing: -1.28px;
     outline: none;
     caret-color: var(--wui-color-accent-100);
+    color: var(--wui-color-fg-200);
   }
 
   :host > wui-flex .swap-input input:focus-visible {

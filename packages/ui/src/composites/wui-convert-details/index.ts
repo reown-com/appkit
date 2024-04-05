@@ -12,11 +12,11 @@ export class WuiConvertDetails extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() public detailsOpen = false
 
-  @property() public sourceTokenSymbol?: number
+  @property() public sourceTokenSymbol?: string
 
   @property() public sourceTokenPrice?: number
 
-  @property() public toTokenSymbol?: number
+  @property() public toTokenSymbol?: string
 
   @property() public toTokenConvertedAmount?: number
 
