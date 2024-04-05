@@ -87,16 +87,7 @@ export const EnsController = {
       const errorMessage = error?.reasons?.[0]?.description || 'Error resolving suggestions'
       state.error = errorMessage
 
-      const mockSuggestions = [
-        { name, registered: true },
-        { name: 'rocky+1', registered: false },
-        { name: 'rocky+2', registered: false },
-        { name: 'rocky+3', registered: false },
-        { name: 'rocky+4', registered: false }
-      ]
-      state.suggestions = mockSuggestions
-
-      return mockSuggestions
+      return []
     }
   },
 
