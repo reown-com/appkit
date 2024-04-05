@@ -128,6 +128,7 @@ export const EnsController = {
       const signature = await ConnectionController.signMessage(message)
 
       await BlockchainApiController.registerEnsName({
+        // TOD0: Add coin type calculation when ready on BE.
         coin_type: 60,
         address: address as `0x${string}`,
         signature,
