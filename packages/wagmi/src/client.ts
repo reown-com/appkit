@@ -1,4 +1,5 @@
-import { EthereumProvider } from '@walletconnect/ethereum-provider'
+/* eslint-disable no-console */
+import { EthereumProvider, OPTIONAL_METHODS } from '@walletconnect/ethereum-provider'
 import {
   connect,
   disconnect,
@@ -28,6 +29,7 @@ import type { Hex } from 'viem'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
+import { getDidChainId, getDidAddress } from '@walletconnect/utils'
 import {
   getCaipDefaultChain,
   getEmailCaipNetworks,
@@ -120,13 +122,54 @@ export class Web3Modal extends Web3ModalScaffold {
           ReturnType<(typeof EthereumProvider)['init']>
         >
 
+        console.log('@wagmi provider', {
+          provider,
+          connector,
+          wagmiConfig
+        })
+        // Provider.authenticate({})
         provider.on('display_uri', data => {
           onUri(data)
         })
 
         const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
 
+        if (siweConfig?.options?.enabled) {
+          console.log('@wagmi siweConfig authenticate')
+          const { SIWEController } = await import('@web3modal/siwe')
+          const result = await provider.authenticate({
+            nonce: await siweConfig.getNonce(),
+            methods: [...OPTIONAL_METHODS, 'wallet_addEthereumChain', 'wallet_switchEthereumChain'],
+            ...(await siweConfig.getMessageParams())
+          })
+          console.log('@wagmi result', result)
+          // Auths is an array of signed CACAO objects https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-74.md
+          const signedCacao = result?.auths?.[0]
+          if (signedCacao) {
+            const { p, s } = signedCacao
+            const cacaoChainId = getDidChainId(p.iss) || ''
+            const address = getDidAddress(p.iss)
+            if (address && chainId) {
+              SIWEController.setSession({
+                address,
+                chainId: parseInt(cacaoChainId, 10)
+              })
+            }
+            // Kicks off verifyMessage and populates external states
+            const message = provider.signer.client.formatAuthMessage({
+              request: p,
+              iss: p.iss
+            })
+            SIWEController.verifyMessage({
+              message,
+              signature: s.s
+            })
+          }
+          console.log('@wagmi SIWEController DONE authenticate')
+        }
+        console.log('@wagmi connectWalletConnect', { chainId })
         await connect(this.wagmiConfig, { connector, chainId })
+        console.log('@wagmi connectWalletConnect DONE')
       },
 
       connectExternal: async ({ id, provider, info }) => {
