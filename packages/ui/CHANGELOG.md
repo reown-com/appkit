@@ -1,5 +1,11 @@
 # @web3modal/ui
 
+## 4.1.6-canary-sl-001.1
+
+### Patch Changes
+
+- Add postmessage approach
+
 ## 4.1.6-canary-sl-001.0
 
 ### Patch Changes

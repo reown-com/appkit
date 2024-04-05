@@ -1,5 +1,17 @@
 # @apps/laboratory
 
+## 4.1.6-canary-sl-001.1
+
+### Patch Changes
+
+- Add postmessage approach
+
+- Updated dependencies []:
+  - @web3modal/ethers@4.1.6-canary-sl-001.1
+  - @web3modal/solana@4.1.6-canary-sl-001.1
+  - @web3modal/wagmi@4.1.6-canary-sl-001.1
+  - @web3modal/siwe@4.1.6-canary-sl-001.1
+
 ## 4.1.6-canary-sl-001.0
 
 ### Patch Changes

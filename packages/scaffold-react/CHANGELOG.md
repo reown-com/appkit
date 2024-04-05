@@ -1,5 +1,14 @@
 # @web3modal/scaffold-react
 
+## 4.1.6-canary-sl-001.1
+
+### Patch Changes
+
+- Add postmessage approach
+
+- Updated dependencies []:
+  - @web3modal/scaffold@4.1.6-canary-sl-001.1
+
 ## 4.1.6-canary-sl-001.0
 
 ### Patch Changes
