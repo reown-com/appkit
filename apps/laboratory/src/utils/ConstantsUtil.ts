@@ -28,7 +28,7 @@ export const ConstantsUtil = {
       id: 'kotlin-web3wallet',
       name: 'kotlin-web3wallet',
       homepage: 'https://walletconnect.com',
-      mobile_link: 'kotlin-web3wallet'
+      mobile_link: 'kotlin-web3wallet://wc'
     },
     {
       id: 'swift-web3wallet',
