@@ -23,7 +23,8 @@ import {
   OptionsController,
   PublicStateController,
   ThemeController,
-  SnackController
+  SnackController,
+  PluginsController
 } from '@web3modal/core'
 import { setColorTheme, setThemeVariables } from '@web3modal/ui'
 import type { SIWEControllerClient } from '@web3modal/siwe'
@@ -246,9 +247,7 @@ export class Web3ModalScaffold {
     ConnectionController.setClient(options.connectionControllerClient)
 
     if (options.siweControllerClient) {
-      const { SIWEController } = await import('@web3modal/siwe')
-
-      SIWEController.setSIWEClient(options.siweControllerClient)
+      PluginsController.SIWEPlugin?.setSIWEClient(options.siweControllerClient)
     }
 
     if (options.metadata) {

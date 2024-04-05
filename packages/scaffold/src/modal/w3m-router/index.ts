@@ -1,5 +1,5 @@
 import type { RouterControllerState } from '@web3modal/core'
-import { RouterController } from '@web3modal/core'
+import { PluginsController, RouterController } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
@@ -62,7 +62,7 @@ export class W3mRouter extends LitElement {
       case 'ConnectingExternal':
         return html`<w3m-connecting-external-view></w3m-connecting-external-view>`
       case 'ConnectingSiwe':
-        return html`<w3m-connecting-siwe-view></w3m-connecting-siwe-view>`
+        return PluginsController.SIWEPlugin.scaffold.connectingSIWEView
       case 'AllWallets':
         return html`<w3m-all-wallets-view></w3m-all-wallets-view>`
       case 'Networks':

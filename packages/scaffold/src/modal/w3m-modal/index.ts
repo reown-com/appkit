@@ -5,6 +5,7 @@ import {
   EventsController,
   ModalController,
   OptionsController,
+  PluginsController,
   RouterController,
   SnackController,
   ThemeController
@@ -74,9 +75,7 @@ export class W3mModal extends LitElement {
 
   private async handleClose() {
     if (this.isSiweEnabled) {
-      const { SIWEController } = await import('@web3modal/siwe')
-
-      if (SIWEController.state.status !== 'success') {
+      if (PluginsController.SIWEPlugin?.state.status !== 'success') {
         await ConnectionController.disconnect()
       }
     }
@@ -164,21 +163,19 @@ export class W3mModal extends LitElement {
     const { isConnected, caipAddress: newCaipAddress } = newState
 
     if (this.isSiweEnabled) {
-      const { SIWEController } = await import('@web3modal/siwe')
-
       if (isConnected && !this.caipAddress) {
         this.caipAddress = newCaipAddress
       }
       if (isConnected && newCaipAddress && this.caipAddress !== newCaipAddress) {
-        await SIWEController.signOut()
+        await PluginsController.SIWEPlugin?.signOut()
         this.onSiweNavigation()
         this.caipAddress = newCaipAddress
       }
 
       try {
-        const session = await SIWEController.getSession()
+        const session = await PluginsController.SIWEPlugin?.getSession()
         if (session && !isConnected) {
-          await SIWEController.signOut()
+          await PluginsController.SIWEPlugin?.signOut()
         } else if (isConnected && !session) {
           this.onSiweNavigation()
         }

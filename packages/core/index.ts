@@ -5,6 +5,8 @@ export type {
   ModalControllerState
 } from './src/controllers/ModalController.js'
 
+export { PluginsController } from './src/controllers/PluginsController.js'
+
 export { RouterController } from './src/controllers/RouterController.js'
 export type { RouterControllerState } from './src/controllers/RouterController.js'
 
