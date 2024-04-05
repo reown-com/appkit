@@ -11,7 +11,7 @@ export default {
   args: {
     value: '',
     disabled: false,
-    target: 'sourceToken', // or 'toToken
+    target: 'sourceToken',
     balance: '11.43',
     token: undefined,
     price: 1.2,

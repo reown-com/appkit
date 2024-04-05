@@ -77,6 +77,7 @@ type CustomElement<E> = Partial<E & { children?: any; onClick: any }>
 declare global {
   namespace JSX {
     interface IntrinsicElements {
+      // -- Components ------------------------------------------- //
       'wui-card': CustomElement<WuiCard>
       'wui-icon': CustomElement<WuiIcon>
       'wui-image': CustomElement<WuiImage>
@@ -86,20 +87,24 @@ declare global {
       'wui-shimmer': CustomElement<WuiShimmer>
       'wui-text': CustomElement<WuiText>
       'wui-visual': CustomElement<WuiVisual>
+      // -- Composites ------------------------------------------- //
       'wui-account-button': CustomElement<WuiAccountButton>
       'wui-all-wallets-image': CustomElement<WuiAllWalletsImage>
       'wui-avatar': CustomElement<WuiAvatar>
+      'wui-balance': CustomElement<WuiBalance>
+      'wui-banner': CustomElement<WuiBanner>
       'wui-button': CustomElement<WuiButton>
       'wui-card-select-loader': CustomElement<WuiCardSelectLoader>
       'wui-card-select': CustomElement<WuiCardSelect>
-      'wui-chip': CustomElement<WuiChip>
       'wui-chip-button': CustomElement<WuiChipButton>
-      'wui-convert-input': CustomElement<WuiConvertInput>
-      'wui-convert-details': CustomElement<WuiConvertDetails>
+      'wui-chip': CustomElement<WuiChip>
+      'wui-compatible-network': CustomElement<WuiCompatibleNetwork>
       'wui-connect-button': CustomElement<WuiConnectButton>
+      'wui-convert-details': CustomElement<WuiConvertDetails>
+      'wui-convert-input': CustomElement<WuiConvertInput>
       'wui-cta-button': CustomElement<WuiCtaButton>
-      'wui-details-group': CustomElement<WuiDetailsGroup>
       'wui-details-group-item': CustomElement<WuiDetailsGroupItem>
+      'wui-details-group': CustomElement<WuiDetailsGroup>
       'wui-email-input': CustomElement<WuiEmailInput>
       'wui-icon-box': CustomElement<WuiIconBox>
       'wui-icon-link': CustomElement<WuiIconLink>
@@ -108,15 +113,25 @@ declare global {
       'wui-input-numeric': CustomElement<WuiInputNumeric>
       'wui-input-text': CustomElement<WuiInputText>
       'wui-link': CustomElement<WuiLink>
+      'wui-list-accordion': CustomElement<WuiListAccordion>
+      'wui-list-content': CustomElement<WuiListContent>
+      'wui-list-description': CustomElement<WuiListDescription>
       'wui-list-item': CustomElement<WuiListItem>
-      'wui-transaction-list-item': CustomElement<WuiTransactionListItem>
-      'wui-transaction-list-item-loader': CustomElement<WuiTransactionListItemLoader>
+      'wui-list-network': CustomElement<WuiListNetwork>
+      'wui-list-token': CustomElement<WuiListToken>
+      'wui-list-wallet-transaction': CustomElement<WuiListWalletTransaction>
       'wui-list-wallet': CustomElement<WuiListWallet>
       'wui-logo-select': CustomElement<WuiLogoSelect>
       'wui-logo': CustomElement<WuiLogo>
       'wui-network-button': CustomElement<WuiNetworkButton>
       'wui-network-image': CustomElement<WuiNetworkImage>
+      'wui-notice-card': CustomElement<WuiNoticeCard>
+      'wui-onramp-activity-item': CustomElement<WuiOnRampActivityItem>
+      'wui-onramp-provider-item': CustomElement<WuiOnRampProviderItem>
       'wui-otp': CustomElement<WuiOtp>
+      'wui-preview-item': CustomElement<WuiPreviewItem>
+      'wui-profile-button': CustomElement<WuiProfileButton>
+      'wui-promo': CustomElement<WuiPromo>
       'wui-qr-code': CustomElement<WuiQrCode>
       'wui-search-bar': CustomElement<WuiSearchBar>
       'wui-snackbar': CustomElement<WuiSnackbar>
@@ -124,29 +139,17 @@ declare global {
       'wui-tag': CustomElement<WuiTag>
       'wui-token-button': CustomElement<WuiTokenButton>
       'wui-token-list-item': CustomElement<WuiTokenListItem>
+      'wui-tooltip-select': CustomElement<WuiTooltipSelect>
       'wui-tooltip': CustomElement<WuiTooltip>
+      'wui-transaction-list-item-loader': CustomElement<WuiTransactionListItemLoader>
+      'wui-transaction-list-item': CustomElement<WuiTransactionListItem>
       'wui-transaction-visual': CustomElement<WuiTransactionVisual>
       'wui-visual-thumbnail': CustomElement<WuiVisualThumbnail>
       'wui-wallet-image': CustomElement<WuiWalletImage>
+      // -- Layout ------------------------------------------- //
       'wui-flex': CustomElement<WuiFlex>
       'wui-grid': CustomElement<WuiGrid>
       'wui-separator': CustomElement<WuiSeparator>
-      'wui-notice-card': CustomElement<WuiNoticeCard>
-      'wui-list-accordion': CustomElement<WuiListAccordion>
-      'wui-list-content': CustomElement<WuiListContent>
-      'wui-list-network': CustomElement<WuiListNetwork>
-      'wui-list-wallet-transaction': CustomElement<WuiListWalletTransaction>
-      'wui-onramp-activity-item': CustomElement<WuiOnRampActivityItem>
-      'wui-onramp-provider-item': CustomElement<WuiOnRampProviderItem>
-      'wui-promo': CustomElement<WuiPromo>
-      'wui-tooltip-select': CustomElement<WuiTooltipSelect>
-      'wui-balance': CustomElement<WuiBalance>
-      'wui-profile-button': CustomElement<WuiProfileButton>
-      'wui-banner': CustomElement<WuiBanner>
-      'wui-compatible-network': CustomElement<WuiCompatibleNetwork>
-      'wui-list-token': CustomElement<WuiListToken>
-      'wui-list-description': CustomElement<WuiListDescription>
-      'wui-preview-item': CustomElement<WuiPreviewItem>
     }
   }
 }
