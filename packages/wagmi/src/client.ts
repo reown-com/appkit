@@ -122,12 +122,6 @@ export class Web3Modal extends Web3ModalScaffold {
           ReturnType<(typeof EthereumProvider)['init']>
         >
 
-        console.log('@wagmi provider', {
-          provider,
-          connector,
-          wagmiConfig
-        })
-        // Provider.authenticate({})
         provider.on('display_uri', data => {
           onUri(data)
         })
@@ -135,14 +129,16 @@ export class Web3Modal extends Web3ModalScaffold {
         const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
 
         if (siweConfig?.options?.enabled) {
-          console.log('@wagmi siweConfig authenticate')
           const { SIWEController } = await import('@web3modal/siwe')
+          const siweParams = await siweConfig.getMessageParams()
+          // @ts-expect-error - setting requested chains beforehand avoids wagmi auto disconnecting the session when `connect` is called
+          await connector.setRequestedChainsIds(siweParams.chains)
+
           const result = await provider.authenticate({
             nonce: await siweConfig.getNonce(),
-            methods: [...OPTIONAL_METHODS, 'wallet_addEthereumChain', 'wallet_switchEthereumChain'],
-            ...(await siweConfig.getMessageParams())
+            methods: [...OPTIONAL_METHODS],
+            ...siweParams
           })
-          console.log('@wagmi result', result)
           // Auths is an array of signed CACAO objects https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-74.md
           const signedCacao = result?.auths?.[0]
           if (signedCacao) {
@@ -165,11 +161,8 @@ export class Web3Modal extends Web3ModalScaffold {
               signature: s.s
             })
           }
-          console.log('@wagmi SIWEController DONE authenticate')
         }
-        console.log('@wagmi connectWalletConnect', { chainId })
         await connect(this.wagmiConfig, { connector, chainId })
-        console.log('@wagmi connectWalletConnect DONE')
       },
 
       connectExternal: async ({ id, provider, info }) => {
