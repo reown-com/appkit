@@ -358,6 +358,8 @@ export const ConvertController = {
     const gasLimit = BigInt(INITIAL_GAS_LIMIT)
     const gasPrice = this.calculateGasPriceInUSD(gasLimit, gasFee)
     state.gasPriceInUSD = gasPrice
+
+    return { gasPrice: gasFee, gasPriceInUsd: state.gasPriceInUSD }
   },
 
   async refreshConvertValues() {
@@ -380,6 +382,15 @@ export const ConvertController = {
     const totalGasCostInEther = this.calculateGasPriceInEther(gas, gasPrice)
     const networkPriceInUSD = NumberUtil.bigNumber(state.networkPrice)
     const gasCostInUSD = networkPriceInUSD.multipliedBy(totalGasCostInEther)
+
+    console.log(
+      totalGasCostInEther,
+      networkPriceInUSD,
+      gasCostInUSD,
+      gas,
+      gasPrice,
+      'calculateGasPriceInUSD'
+    )
 
     return gasCostInUSD.toNumber()
   },

@@ -2,7 +2,14 @@ import { UiHelperUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
 import { state } from 'lit/decorators.js'
-import { NetworkController, RouterController, SendController } from '@web3modal/core'
+import {
+  AccountController,
+  ConnectionController,
+  ConvertController,
+  NetworkController,
+  RouterController,
+  SendController
+} from '@web3modal/core'
 
 @customElement('w3m-wallet-send-preview-view')
 export class W3mWalletSendPreviewView extends LitElement {
@@ -20,8 +27,13 @@ export class W3mWalletSendPreviewView extends LitElement {
 
   @state() private caipNetwork = NetworkController.state.caipNetwork
 
+  @state() private gasPrice?: bigint
+
+  @state() private gasPriceInUsd?: number
+
   public constructor() {
     super()
+    this.fetchNetworkPrice()
     this.unsubscribe.push(
       ...[
         SendController.subscribe(val => {
@@ -73,6 +85,7 @@ export class W3mWalletSendPreviewView extends LitElement {
         <w3m-wallet-send-details
           .caipNetwork=${this.caipNetwork}
           .receiverAddress=${this.receiverAddress}
+          .networkFee=${this.gasPriceInUsd}
         ></w3m-wallet-send-details>
         <wui-flex justifyContent="center" gap="xxs" .padding=${['s', '0', '0', '0'] as const}>
           <wui-icon size="sm" color="fg-200" name="warningCircle"></wui-icon>
@@ -101,6 +114,12 @@ export class W3mWalletSendPreviewView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private async fetchNetworkPrice() {
+    await ConvertController.getNetworkTokenPrice()
+    const gas = await ConvertController.getInitialGasPrice()
+    this.gasPrice = gas.gasPrice
+    this.gasPriceInUsd = gas.gasPriceInUsd
+  }
   private sendValueTemplate() {
     if (this.token && this.sendTokenAmount) {
       const price = this.token.price
@@ -114,11 +133,27 @@ export class W3mWalletSendPreviewView extends LitElement {
     return null
   }
 
-  private onSendClick() {
-    RouterController.reset('Account')
-    setTimeout(() => {
-      SendController.resetSend()
-    }, 200)
+  private async onSendClick() {
+    // RouterController.reset('Account')
+    if (this.receiverAddress && this.sendTokenAmount && this.gasPrice) {
+      RouterController.pushTransactionStack({
+        view: null,
+        goBack: true
+      })
+
+      const to = this.receiverAddress as `0x${string}`
+      const address = AccountController.state.address as `0x${string}`
+      const value = ConnectionController.parseUnits(this.sendTokenAmount.toString(), 18)
+      const data = '0x'
+
+      await ConnectionController.sendTransaction({
+        to,
+        address,
+        data,
+        value,
+        gasPrice: this.gasPrice
+      })
+    }
   }
 
   private onCancelClick() {

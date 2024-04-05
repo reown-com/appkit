@@ -13,6 +13,15 @@ export interface SendControllerState {
 
 type StateKey = keyof SendControllerState
 
+type TransactionParams = {
+  data: `0x${string}`
+  to: `0x${string}`
+  gas: bigint
+  gasPrice: bigint
+  value: bigint
+  toAmount: string
+}
+
 // -- State --------------------------------------------- //
 const state = proxy<SendControllerState>({})
 
@@ -51,6 +60,8 @@ export const SendController = {
   setReceiverProfileName(receiverProfileName: SendControllerState['receiverProfileName']) {
     state.receiverProfileName = receiverProfileName
   },
+
+  sendTransaction(tx: TransactionParams) {},
 
   resetSend() {
     state.token = undefined
