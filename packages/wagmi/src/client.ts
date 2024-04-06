@@ -289,13 +289,6 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private async syncProfile(address: Hex, chainId: Chain['id']) {
-    if (chainId !== mainnet.id) {
-      this.setProfileName(null)
-      this.setProfileImage(null)
-
-      return
-    }
-
     try {
       const { name, avatar } = await this.fetchIdentity({
         address
@@ -303,16 +296,21 @@ export class Web3Modal extends Web3ModalScaffold {
       this.setProfileName(name)
       this.setProfileImage(avatar)
     } catch {
-      const profileName = await getEnsName(this.wagmiConfig, { address, chainId })
-      if (profileName) {
-        this.setProfileName(profileName)
-        const profileImage = await getEnsAvatar(this.wagmiConfig, {
-          name: profileName,
-          chainId
-        })
-        if (profileImage) {
-          this.setProfileImage(profileImage)
+      if (chainId === mainnet.id) {
+        const profileName = await getEnsName(this.wagmiConfig, { address, chainId })
+        if (profileName) {
+          this.setProfileName(profileName)
+          const profileImage = await getEnsAvatar(this.wagmiConfig, {
+            name: profileName,
+            chainId
+          })
+          if (profileImage) {
+            this.setProfileImage(profileImage)
+          }
         }
+      } else {
+        this.setProfileName(null)
+        this.setProfileImage(null)
       }
     }
   }
