@@ -298,7 +298,6 @@ export class Web3Modal extends Web3ModalScaffold {
 
     try {
       const { name, avatar } = await this.fetchIdentity({
-        caipChainId: `${ConstantsUtil.EIP155}:${chainId}`,
         address
       })
       this.setProfileName(name)
