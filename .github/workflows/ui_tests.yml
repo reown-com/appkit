@@ -47,8 +47,7 @@ jobs:
     runs-on:
       group: ubuntu-runners
     permissions:
-      checks: write
-      contents: read
+      pull-requests: write
     timeout-minutes: 15
     steps:
       - name: checkout

@@ -67,8 +67,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     permissions:
-      checks: write
-      contents: read
+      pull-requests: write
     steps:
       - name: checkout
         uses: actions/checkout@v3
@@ -105,6 +104,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   ui-test:
+    permissions:
+      pull-requests: write
     uses: ./.github/workflows/ui_tests.yml
     secrets: inherit
     with:
