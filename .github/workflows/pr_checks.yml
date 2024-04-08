@@ -66,6 +66,9 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    permissions:
+      checks: write
+      contents: read
     steps:
       - name: checkout
         uses: actions/checkout@v3
@@ -98,6 +101,8 @@ jobs:
           path: |
             packages/core/coverage/
             packages/common/coverage/
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   ui-test:
     uses: ./.github/workflows/ui_tests.yml
