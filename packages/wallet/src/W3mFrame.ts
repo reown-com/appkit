@@ -86,7 +86,6 @@ export class W3mFrame {
           if (!data.type?.includes(W3mFrameConstants.APP_EVENT_KEY)) {
             return
           }
-          console.log('>>>> parse', data)
           const appEvent = W3mFrameSchema.appEvent.parse(data)
           callback(appEvent)
         })
