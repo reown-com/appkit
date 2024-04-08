@@ -8,7 +8,7 @@ import { SnackController } from './SnackController.js'
 import { RouterController } from './RouterController.js'
 import { NumberUtil } from '@web3modal/common'
 
-const INITIAL_GAS_LIMIT = 150000
+export const INITIAL_GAS_LIMIT = 150000
 
 // -- Types --------------------------------------------- //
 type TransactionParams = {
@@ -167,7 +167,7 @@ export const ConvertController = {
   },
 
   setLoading(loading: boolean) {
-    ConvertController.state.loading = loading
+    state.loading = loading
   },
 
   setSourceToken(sourceToken: TokenInfo | undefined) {
@@ -215,7 +215,11 @@ export const ConvertController = {
   },
 
   async setTokenValues(address: string, target: 'sourceToken' | 'toToken') {
-    const price = await this.getAddressPrice(address)
+    let price = parseFloat(state.tokensPriceMap[address] || '0')
+
+    if (!price) {
+      price = await this.getAddressPrice(address)
+    }
 
     if (target === 'sourceToken') {
       state.sourceTokenPriceInUSD = price
@@ -628,32 +632,56 @@ export const ConvertController = {
     }
   },
 
+  getToTokenValues(amountBigInt: string, decimals: number) {
+    const { toTokenAddress } = this.getParams()
+
+    if (!toTokenAddress) {
+      return {
+        toTokenAmount: '0',
+        toTokenPriceInUSD: 0
+      }
+    }
+
+    const toTokenAmount = NumberUtil.bigNumber(amountBigInt)
+      .dividedBy(10 ** decimals)
+      .toFixed(20)
+    const toTokenPrice = state.tokensPriceMap[toTokenAddress] || '0'
+    const toTokenPriceInUSD = NumberUtil.bigNumber(toTokenPrice).toNumber()
+
+    return {
+      toTokenAmount,
+      toTokenPriceInUSD
+    }
+  },
+
+  isInsufficientNetworkTokenForGas() {
+    return NumberUtil.bigNumber(NumberUtil.bigNumber(state.gasPriceInUSD || '0')).isGreaterThan(
+      state.networkBalanceInUSD
+    )
+  },
+
   setTransactionDetails(transaction: TransactionParams | null) {
-    const { sourceTokenAddress, toTokenAddress, toTokenDecimals } = this.getParams()
+    const { toTokenAddress, toTokenDecimals } = this.getParams()
 
     if (!transaction || !toTokenAddress || !toTokenDecimals) {
       return
     }
 
-    const toTokenPrice = state.tokensPriceMap[toTokenAddress] || '0'
-    state.toTokenAmount = NumberUtil.bigNumber(transaction.toAmount)
-      .dividedBy(10 ** toTokenDecimals)
-      .toFixed(20)
-    state.toTokenPriceInUSD = NumberUtil.bigNumber(toTokenPrice).toNumber()
-    state.gasPriceInUSD = this.calculateGasPriceInUSD(transaction.gas, transaction.gasPrice)
+    const insufficientNetworkToken = this.isInsufficientNetworkTokenForGas()
 
-    const isSourceTokenIsNetworkToken = sourceTokenAddress === ConstantsUtil.NATIVE_TOKEN_ADDRESS
-    const totalNativeTokenCostInUSD = isSourceTokenIsNetworkToken
-      ? NumberUtil.bigNumber(state.sourceTokenPriceInUSD).plus(state.gasPriceInUSD)
-      : state.gasPriceInUSD
-    const insufficientBalance = NumberUtil.bigNumber(totalNativeTokenCostInUSD).isGreaterThan(
-      state.networkBalanceInUSD
-    )
-
-    if (insufficientBalance) {
-      state.inputError = insufficientBalance ? 'Insufficient balance' : undefined
+    if (insufficientNetworkToken) {
+      state.inputError = 'Insufficient balance'
+    } else {
+      state.inputError = undefined
     }
 
+    const { toTokenAmount, toTokenPriceInUSD } = this.getToTokenValues(
+      transaction.toAmount,
+      toTokenDecimals
+    )
+    state.toTokenAmount = toTokenAmount
+    state.toTokenPriceInUSD = toTokenPriceInUSD
+    state.gasPriceInUSD = this.calculateGasPriceInUSD(transaction.gas, transaction.gasPrice)
     state.priceImpact = this.calculatePriceImpact(state.toTokenAmount, state.gasPriceInUSD)
     state.maxSlippage = this.calculateMaxSlippage()
   }
