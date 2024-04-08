@@ -10,7 +10,7 @@ export default css`
     padding: var(--wui-spacing-xs);
     padding-right: var(--wui-spacing-1xs);
     height: 40px;
-    border-radius: var(--wui-border-radius-3xl);
+    border-width: 0px;
     background: var(--wui-gray-glass-002);
     box-shadow: inset 0 0 0 1px var(--wui-gray-glass-002);
   }

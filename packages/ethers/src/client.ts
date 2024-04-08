@@ -252,7 +252,6 @@ export class Web3Modal extends Web3ModalScaffold {
         if (providerType === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
           const WalletConnectProvider = provider
           await (WalletConnectProvider as unknown as EthereumProvider).disconnect()
-          provider?.emit('disconnect')
           // eslint-disable-next-line no-negated-condition
         } else if (providerType !== ConstantsUtil.EMAIL_CONNECTOR_ID) {
           provider?.emit('disconnect')
