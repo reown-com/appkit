@@ -186,7 +186,7 @@ export class W3mConvertPreviewView extends LitElement {
         : 0
 
     return html`
-      <wui-convert-details
+      <w3m-convert-details
         detailsOpen=${this.detailsOpen}
         sourceTokenSymbol=${this.sourceToken?.symbol}
         sourceTokenPrice=${this.sourceTokenPriceInUSD}
@@ -196,7 +196,7 @@ export class W3mConvertPreviewView extends LitElement {
         .priceImpact=${this.priceImpact}
         slippageRate=${0.5}
         .maxSlippage=${this.maxSlippage}
-      ></wui-convert-details>
+      ></w3m-convert-details>
     `
   }
 
