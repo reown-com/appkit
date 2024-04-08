@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { CaipNetwork, CaipNetworkId, NetworkControllerClient } from '../../index.js'
-import { NetworkController } from '../../index.js'
+import { EventsController, NetworkController } from '../../index.js'
 
 // -- Setup --------------------------------------------------------------------
 const caipNetwork = { id: 'eip155:1', name: 'Ethereum' } as const
@@ -10,6 +10,11 @@ const requestedCaipNetworks = [
   { id: 'eip155:43114', name: 'Avalanche C-Chain' }
 ] as CaipNetwork[]
 const approvedCaipNetworkIds = ['eip155:1', 'eip155:42161'] as CaipNetworkId[]
+const switchNetworkEvent = {
+  type: 'track',
+  event: 'SWITCH_NETWORK',
+  properties: { network: caipNetwork.id }
+} as const
 
 const client: NetworkControllerClient = {
   switchCaipNetwork: async _caipNetwork => Promise.resolve(),
@@ -29,7 +34,8 @@ describe('NetworkController', () => {
     expect(NetworkController.state).toEqual({
       _client: NetworkController._getClient(),
       supportsAllNetworks: true,
-      isDefaultCaipNetwork: false
+      isDefaultCaipNetwork: false,
+      smartAccountEnabledNetworks: []
     })
   })
 
@@ -41,6 +47,7 @@ describe('NetworkController', () => {
   it('should update state correctly on switchCaipNetwork()', async () => {
     await NetworkController.switchActiveNetwork(caipNetwork)
     expect(NetworkController.state.caipNetwork).toEqual(caipNetwork)
+    expect(EventsController.state.data).toEqual(switchNetworkEvent)
   })
 
   it('should update state correctly on setCaipNetwork()', () => {
@@ -58,6 +65,7 @@ describe('NetworkController', () => {
     expect(NetworkController.state.caipNetwork).toEqual(undefined)
     expect(NetworkController.state.approvedCaipNetworkIds).toEqual(undefined)
     expect(NetworkController.state.requestedCaipNetworks).toEqual(requestedCaipNetworks)
+    expect(NetworkController.state.smartAccountEnabledNetworks).toEqual([])
   })
 
   it('should update state correctly on setDefaultCaipNetwork()', () => {
@@ -71,5 +79,16 @@ describe('NetworkController', () => {
     expect(NetworkController.state.caipNetwork).toEqual(caipNetwork)
     expect(NetworkController.state.approvedCaipNetworkIds).toEqual(undefined)
     expect(NetworkController.state.requestedCaipNetworks).toEqual(requestedCaipNetworks)
+  })
+
+  it('should check correctly if smart accounts are enabled on the network', () => {
+    NetworkController.setSmartAccountEnabledNetworks([1])
+    expect(NetworkController.checkIfSmartAccountEnabled()).toEqual(true)
+    NetworkController.setSmartAccountEnabledNetworks([])
+    expect(NetworkController.checkIfSmartAccountEnabled()).toEqual(false)
+    NetworkController.setSmartAccountEnabledNetworks([2])
+    expect(NetworkController.checkIfSmartAccountEnabled()).toEqual(false)
+    NetworkController.setCaipNetwork({ id: 'eip155:2', name: 'Ethereum' })
+    expect(NetworkController.checkIfSmartAccountEnabled()).toEqual(true)
   })
 })

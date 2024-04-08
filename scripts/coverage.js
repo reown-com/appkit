@@ -12,15 +12,17 @@ const __dirname = path.dirname(__filename)
 /**
  * Reads the coverage-summary.{XXX}.json file and returns the parsed JSON object
  * @param {*} pathToReport
- * @returns
+ * @returns {Object} parsed JSON object
  */
 function readPreviousCoverageSummary(pathToReport) {
   if (!pathToReport) {
     console.warn('Previous coverage results were not provided.')
-    return
+
+    return {}
   }
   // Read the JSON file
   const prevCoverage = JSON.parse(fs.readFileSync(pathToReport, 'utf8'))
+
   return prevCoverage
 }
 
@@ -29,7 +31,8 @@ function readPreviousCoverageSummary(pathToReport) {
  * an object with the paths to the coverage-summary.json files
  * @param {*} pathToReport
  * @returns
- * */
+ *
+ */
 function getAllPathsForPackagesSummaries() {
   const getDirectories = source =>
     fs
@@ -40,22 +43,24 @@ function getAllPathsForPackagesSummaries() {
   const appsPath = path.join(__dirname, '..', 'apps')
   const appsNames = getDirectories(appsPath)
 
-  const appsSummaries = appsNames.reduce((summary, appName) => {
-    return {
+  const appsSummaries = appsNames.reduce(
+    (summary, appName) => ({
       ...summary,
       [appName]: path.join(appsPath, appName, 'coverage', 'coverage-summary.json')
-    }
-  }, {})
+    }),
+    {}
+  )
 
   const packagesPath = path.join(__dirname, '..', 'packages')
   const packageNames = getDirectories(packagesPath)
 
-  const packagesSummaries = packageNames.reduce((summary, packageName) => {
-    return {
+  const packagesSummaries = packageNames.reduce(
+    (summary, packageName) => ({
       ...summary,
       [packageName]: path.join(packagesPath, packageName, 'coverage', 'coverage-summary.json')
-    }
-  }, {})
+    }),
+    {}
+  )
 
   return { ...appsSummaries, ...packagesSummaries }
 }
@@ -65,7 +70,8 @@ function getAllPathsForPackagesSummaries() {
  * an object with the total coverage for each package and the total coverage
  * @param {*} packagesSummaryPaths
  * @returns
- * */
+ *
+ */
 function readSummaryPerPackageAndCreateJoinedSummaryReportWithTotal(packagesSummaryPaths) {
   return Object.keys(packagesSummaryPaths).reduce(
     (summary, packageName) => {
@@ -75,17 +81,18 @@ function readSummaryPerPackageAndCreateJoinedSummaryReportWithTotal(packagesSumm
 
         const { total } = summary
 
-        Object.keys(report.total).forEach(key => {
+        Object.keys(report?.total).forEach(key => {
           if (total[key]) {
-            total[key].total += report.total[key].total
-            total[key].covered += report.total[key].covered
-            total[key].skipped += report.total[key].skipped
-            total[key].pct = Number(((total[key].covered / total[key].total) * 100).toFixed(2))
+            total[key].total += report?.total?.[key]?.total
+            total[key].covered += report?.total?.[key]?.covered
+            total[key].skipped += report?.total?.[key]?.skipped
+            total[key].pct = Number(((total[key]?.covered / total[key]?.total) * 100).toFixed(2))
           } else {
             total[key] = { ...report.total[key] }
           }
         })
-        return { ...summary, [packageName]: report.total, total }
+
+        return { ...summary, [packageName]: report?.total, total }
       }
 
       return summary
@@ -99,7 +106,8 @@ function readSummaryPerPackageAndCreateJoinedSummaryReportWithTotal(packagesSumm
  * an object with the additional field pctDiff
  * @param {*} packagesSummaryPaths
  * @returns
- * */
+ *
+ */
 function creteDiffCoverageReport(currCoverage, prevCoverage = {}) {
   return Object.keys(currCoverage).reduce((summary, packageName) => {
     const currPackageCoverage = currCoverage[packageName]
@@ -116,6 +124,7 @@ function creteDiffCoverageReport(currCoverage, prevCoverage = {}) {
         }
       })
     }
+
     return { ...summary, [packageName]: currPackageCoverage }
   }, {})
 }
@@ -132,6 +141,7 @@ function appendDiff(ptc, ptcDiff) {
   if (!ptcDiff || ptcDiff === ptc) {
     return ptc
   }
+
   return `${ptc} (${ptcDiff > 0 ? '+' : ''}${ptcDiff}%)`
 }
 
@@ -141,17 +151,19 @@ function appendDiff(ptc, ptcDiff) {
  * for the visual representation in a console table
  * @param {*} coverageReport
  * @returns
- * */
+ *
+ */
 function createCoverageReportForVisualRepresentation(coverageReport) {
   return Object.keys(coverageReport).reduce((report, packageName) => {
     const { lines, statements, functions, branches } = coverageReport[packageName]
+
     return {
       ...report,
       [packageName]: {
-        lines: formatPtcWithDiff(lines.pct, lines.pctDiff),
-        statements: formatPtcWithDiff(statements.pct, statements.pctDiff),
-        functions: formatPtcWithDiff(functions.pct, functions.pctDiff),
-        branches: formatPtcWithDiff(branches.pct, branches.pctDiff)
+        lines: formatPtcWithDiff(lines?.pct, lines?.pctDiff),
+        statements: formatPtcWithDiff(statements?.pct, statements?.pctDiff),
+        functions: formatPtcWithDiff(functions?.pct, functions?.pctDiff),
+        branches: formatPtcWithDiff(branches?.pct, branches?.pctDiff)
       }
     }
   }, {})
@@ -160,6 +172,7 @@ function createCoverageReportForVisualRepresentation(coverageReport) {
 function writeCoverageReportToFile(coverageReport) {
   function createDateTimeSuffix() {
     const date = new Date()
+
     return `${date.getFullYear()}-${
       date.getMonth() + 1
     }-${date.getDate()}_${date.getHours()}-${date.getMinutes()}`
@@ -177,8 +190,10 @@ function writeCoverageReportToFile(coverageReport) {
   )
 }
 
-// Execution Stages
-// 0. Read previous coverage-total.{XXX}.json file
+/*
+ * Execution Stages
+ * 0. Read previous coverage-total.{XXX}.json file
+ */
 const prevCoverageReport = readPreviousCoverageSummary(pathToPreviousReport)
 // 1. Read all coverage-total.json files && Merge them into one object
 const packagesSummaryPaths = getAllPathsForPackagesSummaries()

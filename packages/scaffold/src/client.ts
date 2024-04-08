@@ -1,6 +1,5 @@
 import type {
   ConnectionControllerClient,
-  SIWEControllerClient,
   EventsControllerState,
   NetworkControllerClient,
   NetworkControllerState,
@@ -9,8 +8,8 @@ import type {
   ThemeControllerState,
   ThemeMode,
   ThemeVariables,
-  SIWEControllerClientState,
-  ModalControllerState
+  ModalControllerState,
+  ConnectedWalletInfo
 } from '@web3modal/core'
 import {
   AccountController,
@@ -24,9 +23,10 @@ import {
   OptionsController,
   PublicStateController,
   ThemeController,
-  SIWEController
+  SnackController
 } from '@web3modal/core'
 import { setColorTheme, setThemeVariables } from '@web3modal/ui'
+import type { SIWEControllerClient } from '@web3modal/siwe'
 
 // -- Helpers -------------------------------------------------------------------
 let isInitialized = false
@@ -36,6 +36,7 @@ export interface LibraryOptions {
   projectId: OptionsControllerState['projectId']
   themeMode?: ThemeMode
   themeVariables?: ThemeVariables
+  allWallets?: OptionsControllerState['allWallets']
   includeWalletIds?: OptionsControllerState['includeWalletIds']
   excludeWalletIds?: OptionsControllerState['excludeWalletIds']
   featuredWalletIds?: OptionsControllerState['featuredWalletIds']
@@ -46,6 +47,9 @@ export interface LibraryOptions {
   customWallets?: OptionsControllerState['customWallets']
   enableAnalytics?: OptionsControllerState['enableAnalytics']
   metadata?: OptionsControllerState['metadata']
+  enableOnramp?: OptionsControllerState['enableOnramp']
+  enableWalletFeatures?: OptionsControllerState['enableWalletFeatures']
+  allowUnsupportedChain?: NetworkControllerState['allowUnsupportedChain']
   _sdkVersion: OptionsControllerState['sdkVersion']
 }
 
@@ -56,7 +60,7 @@ export interface ScaffoldOptions extends LibraryOptions {
 }
 
 export interface OpenOptions {
-  view: 'Account' | 'Connect' | 'Networks' | 'ApproveTransaction'
+  view: 'Account' | 'Connect' | 'Networks' | 'ApproveTransaction' | 'OnRampProviders'
 }
 
 // -- Client --------------------------------------------------------------------
@@ -94,37 +98,23 @@ export class Web3ModalScaffold {
   public setThemeMode(themeMode: ThemeControllerState['themeMode']) {
     ThemeController.setThemeMode(themeMode)
     setColorTheme(ThemeController.state.themeMode)
-    try {
-      const emailConnector = ConnectorController.getEmailConnector()
-      if (emailConnector) {
-        emailConnector.provider.syncTheme({
-          themeMode: ThemeController.getSnapshot().themeMode
-        })
-      }
-    } catch {
-      // eslint-disable-next-line no-console
-      console.info('Unable to sync theme to email connector')
-    }
   }
 
   public setThemeVariables(themeVariables: ThemeControllerState['themeVariables']) {
     ThemeController.setThemeVariables(themeVariables)
     setThemeVariables(ThemeController.state.themeVariables)
-    try {
-      const emailConnector = ConnectorController.getEmailConnector()
-      if (emailConnector) {
-        emailConnector.provider.syncTheme({
-          themeVariables: ThemeController.getSnapshot().themeVariables
-        })
-      }
-    } catch {
-      // eslint-disable-next-line no-console
-      console.info('Unable to sync theme to email connector')
-    }
   }
 
   public subscribeTheme(callback: (newState: ThemeControllerState) => void) {
     return ThemeController.subscribe(callback)
+  }
+
+  public getWalletInfo() {
+    return AccountController.state.connectedWalletInfo
+  }
+
+  public subscribeWalletInfo(callback: (newState: ConnectedWalletInfo) => void) {
+    return AccountController.subscribeKey('connectedWalletInfo', callback)
   }
 
   public getState() {
@@ -133,6 +123,14 @@ export class Web3ModalScaffold {
 
   public subscribeState(callback: (newState: PublicStateControllerState) => void) {
     return PublicStateController.subscribe(callback)
+  }
+
+  public showErrorMessage(message: string) {
+    SnackController.showError(message)
+  }
+
+  public showSuccessMessage(message: string) {
+    SnackController.showSuccess(message)
   }
 
   public getEvent() {
@@ -154,6 +152,10 @@ export class Web3ModalScaffold {
 
   protected setBalance: (typeof AccountController)['setBalance'] = (balance, balanceSymbol) => {
     AccountController.setBalance(balance, balanceSymbol)
+  }
+
+  protected fetchTokenBalance = () => {
+    AccountController.fetchTokenBalance()
   }
 
   protected setProfileName: (typeof AccountController)['setProfileName'] = profileName => {
@@ -209,32 +211,28 @@ export class Web3ModalScaffold {
       AccountController.setAddressExplorerUrl(addressExplorerUrl)
     }
 
-  protected setSIWENonce: (typeof SIWEController)['setNonce'] = nonce => {
-    SIWEController.setNonce(nonce)
-  }
+  protected setSmartAccountDeployed: (typeof AccountController)['setSmartAccountDeployed'] =
+    isDeployed => {
+      AccountController.setSmartAccountDeployed(isDeployed)
+    }
 
-  protected setSIWESession: (typeof SIWEController)['setSession'] = session => {
-    SIWEController.setSession(session)
-  }
+  protected setConnectedWalletInfo: (typeof AccountController)['setConnectedWalletInfo'] =
+    connectedWalletInfo => {
+      AccountController.setConnectedWalletInfo(connectedWalletInfo)
+    }
 
-  protected setSIWEStatus: (typeof SIWEController)['setStatus'] = status => {
-    SIWEController.setStatus(status)
-  }
-
-  protected setSIWEMessage: (typeof SIWEController)['setMessage'] = message => {
-    SIWEController.setMessage(message)
-  }
-
-  public subscribeSIWEState(callback: (newState: SIWEControllerClientState) => void) {
-    return SIWEController.subscribe(callback)
-  }
+  protected setSmartAccountEnabledNetworks: (typeof NetworkController)['setSmartAccountEnabledNetworks'] =
+    smartAccountEnabledNetworks => {
+      NetworkController.setSmartAccountEnabledNetworks(smartAccountEnabledNetworks)
+    }
 
   // -- Private ------------------------------------------------------------------
-  private initControllers(options: ScaffoldOptions) {
+  private async initControllers(options: ScaffoldOptions) {
     NetworkController.setClient(options.networkControllerClient)
     NetworkController.setDefaultCaipNetwork(options.defaultChain)
 
     OptionsController.setProjectId(options.projectId)
+    OptionsController.setAllWallets(options.allWallets)
     OptionsController.setIncludeWalletIds(options.includeWalletIds)
     OptionsController.setExcludeWalletIds(options.excludeWalletIds)
     OptionsController.setFeaturedWalletIds(options.featuredWalletIds)
@@ -248,8 +246,9 @@ export class Web3ModalScaffold {
     ConnectionController.setClient(options.connectionControllerClient)
 
     if (options.siweControllerClient) {
-      const siweClient = options.siweControllerClient
-      SIWEController.setSIWEClient(siweClient)
+      const { SIWEController } = await import('@web3modal/siwe')
+
+      SIWEController.setSIWEClient(options.siweControllerClient)
     }
 
     if (options.metadata) {
@@ -262,6 +261,18 @@ export class Web3ModalScaffold {
 
     if (options.themeVariables) {
       ThemeController.setThemeVariables(options.themeVariables)
+    }
+
+    if (options.enableOnramp) {
+      OptionsController.setOnrampEnabled(Boolean(options.enableOnramp))
+    }
+
+    if (options.enableWalletFeatures) {
+      OptionsController.setWalletFeaturesEnabled(Boolean(options.enableWalletFeatures))
+    }
+
+    if (options.allowUnsupportedChain) {
+      NetworkController.setAllowUnsupportedChain(options.allowUnsupportedChain)
     }
   }
 

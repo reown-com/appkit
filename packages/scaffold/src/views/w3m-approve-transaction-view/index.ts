@@ -2,7 +2,7 @@ import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
-import { ModalController } from '@web3modal/core'
+import { ModalController, ConnectorController, ThemeController } from '@web3modal/core'
 
 @customElement('w3m-approve-transaction-view')
 export class W3mApproveTransactionView extends LitElement {
@@ -34,17 +34,19 @@ export class W3mApproveTransactionView extends LitElement {
     this.bodyObserver?.unobserve(window.document.body)
   }
 
-  public override firstUpdated() {
+  public override async firstUpdated() {
     const verticalPadding = 10
+
+    await this.syncTheme()
 
     this.iframe.style.display = 'block'
     const blueprint = this.renderRoot.querySelector('div')
     this.bodyObserver = new ResizeObserver(() => {
       const data = blueprint?.getBoundingClientRect()
       const dimensions = data ?? { left: 0, top: 0, width: 0, height: 0 }
-      this.iframe.style.width = `${dimensions.width}px`
+      this.iframe.style.width = `360px`
       this.iframe.style.height = `${dimensions.height - verticalPadding}px`
-      this.iframe.style.left = `${dimensions.left}px`
+      this.iframe.style.left = 'calc(50% - 180px)'
       this.iframe.style.top = `${dimensions.top + verticalPadding / 2}px`
       this.ready = true
     })
@@ -68,7 +70,7 @@ export class W3mApproveTransactionView extends LitElement {
         { opacity: 0, transform: isMobile ? 'translateY(50px)' : 'scale(.95)' },
         { opacity: 1, transform: isMobile ? 'translateY(0)' : 'scale(1)' }
       ],
-      { duration: 200, easing: 'ease', fill: 'forwards', delay: 300 }
+      { duration: 200, easing: 'ease', fill: 'forwards' }
     )
   }
 
@@ -79,6 +81,15 @@ export class W3mApproveTransactionView extends LitElement {
       fill: 'forwards'
     }).finished
     this.iframe.style.display = 'none'
+  }
+
+  private async syncTheme() {
+    const emailConnector = ConnectorController.getEmailConnector()
+    if (emailConnector) {
+      await emailConnector.provider.syncTheme({
+        themeVariables: ThemeController.getSnapshot().themeVariables
+      })
+    }
   }
 }
 

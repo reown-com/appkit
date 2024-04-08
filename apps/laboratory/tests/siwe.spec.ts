@@ -1,19 +1,14 @@
 import { DEFAULT_SESSION_PARAMS } from './shared/constants'
 import { testMWSiwe } from './shared/fixtures/w3m-wallet-fixture'
 
-testMWSiwe.beforeEach(async ({ modalPage, walletPage, browserName }) => {
-  // Webkit cannot use clipboard.
-  if (browserName === 'webkit') {
-    return
-  }
-  await modalPage.copyConnectUriToClipboard()
-  await walletPage.connect()
+testMWSiwe.beforeEach(async ({ modalPage, walletPage }) => {
+  const uri = await modalPage.getConnectUri()
+  await walletPage.connectWithUri(uri)
   await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
 })
 
 testMWSiwe.afterEach(async ({ modalValidator, walletValidator, browserName }) => {
-  // Webkit cannot use clipboard.
-  if (browserName === 'webkit') {
+  if (browserName === 'firefox') {
     return
   }
   await modalValidator.expectDisconnected()

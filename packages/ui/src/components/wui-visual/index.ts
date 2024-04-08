@@ -15,8 +15,16 @@ import { nounSvg } from '../../assets/visual/noun.js'
 import { profileSvg } from '../../assets/visual/profile.js'
 import { systemSvg } from '../../assets/visual/system.js'
 import { resetStyles } from '../../utils/ThemeUtil.js'
-import type { VisualType } from '../../utils/TypeUtil.js'
+import type { VisualSize, VisualType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
+import { coinbaseSvg } from '../../assets/visual/coinbase.js'
+import { moonpaySvg } from '../../assets/visual/moonpay.js'
+import { stripeSvg } from '../../assets/visual/stripe.js'
+import { paypalSvg } from '../../assets/visual/paypal.js'
+import { onrampCardSvg } from '../../assets/visual/onramp-card.js'
+import { googleSvg } from '../../assets/visual/google.js'
+import { pencilSvg } from '../../assets/visual/pencil.js'
+import { lightbulbSvg } from '../../assets/visual/lightbulb.js'
 import styles from './styles.js'
 
 // -- Svg's-------------------------------- //
@@ -33,7 +41,15 @@ const svgOptions: Record<VisualType, TemplateResult<2>> = {
   nft: nftSvg,
   noun: nounSvg,
   profile: profileSvg,
-  system: systemSvg
+  system: systemSvg,
+  coinbase: coinbaseSvg,
+  onrampCard: onrampCardSvg,
+  moonpay: moonpaySvg,
+  stripe: stripeSvg,
+  paypal: paypalSvg,
+  google: googleSvg,
+  pencil: pencilSvg,
+  lightbulb: lightbulbSvg
 }
 
 @customElement('wui-visual')
@@ -43,8 +59,14 @@ export class WuiVisual extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() public name: VisualType = 'browser'
 
+  @property() public size: VisualSize = 'md'
+
   // -- Render -------------------------------------------- //
   public override render() {
+    this.style.cssText = `
+       --local-size: var(--wui-visual-size-${this.size});
+   `
+
     return html`${svgOptions[this.name]}`
   }
 }

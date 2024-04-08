@@ -17,7 +17,9 @@ const modal = createWeb3Modal({
   projectId: ConstantsUtil.ProjectId,
   enableAnalytics: true,
   metadata: ConstantsUtil.Metadata,
-  siweConfig
+  siweConfig,
+  enableOnramp: true,
+  customWallets: ConstantsUtil.CustomWallets
 })
 
 ThemeStore.setModal(modal)

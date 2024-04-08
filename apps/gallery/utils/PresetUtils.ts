@@ -33,6 +33,7 @@ export const colorOptions: ColorType[] = [
   'accent-100',
   'error-100',
   'fg-100',
+  'fg-150',
   'fg-200',
   'fg-300',
   'inherit',
@@ -44,17 +45,20 @@ export const colorOptions: ColorType[] = [
 export const textOptions: TextType[] = [
   'micro-700',
   'micro-600',
+  'mini-700',
   'tiny-500',
   'tiny-600',
   'small-500',
   'small-600',
+  'medium-400',
   'paragraph-400',
   'paragraph-500',
   'paragraph-600',
   'paragraph-700',
   'large-500',
   'large-600',
-  'large-700'
+  'large-700',
+  '2xl-500'
 ]
 
 export const textAlignOptions: TextAlign[] = ['center', 'left', 'right']
@@ -132,6 +136,14 @@ export const walletImageSrc =
 export const networkImageSrc =
   'https://explorer-api.walletconnect.com/w3m/v1/getAssetImage/692ed6ba-e569-459a-556a-776476829e00?projectId=c1781fc385454899a2b1385a2b83df3b'
 
+export const networkImages = [
+  'https://explorer-api.walletconnect.com/w3m/v1/getAssetImage/692ed6ba-e569-459a-556a-776476829e00?projectId=c1781fc385454899a2b1385a2b83df3b',
+  'https://explorer-api.walletconnect.com/w3m/v1/getAssetImage/30c46e53-e989-45fb-4549-be3bd4eb3b00?projectId=c1781fc385454899a2b1385a2b83df3b',
+  'https://explorer-api.walletconnect.com/w3m/v1/getAssetImage/93564157-2e8e-4ce7-81df-b264dbee9b00?projectId=c1781fc385454899a2b1385a2b83df3b',
+  'https://explorer-api.walletconnect.com/w3m/v1/getAssetImage/ab9c186a-c52f-464b-2906-ca59d760a400?projectId=c1781fc385454899a2b1385a2b83df3b',
+  'https://explorer-api.walletconnect.com/w3m/v1/getAssetImage/41d04d42-da3b-4453-8506-668cc0727900?projectId=c1781fc385454899a2b1385a2b83df3b'
+]
+
 export const avatarImageSrc =
   'https://i.seadn.io/gcs/files/007a5af0d93d561f87c8d026ddd5179e.png?auto=format&dpr=1&w=1000'
 
@@ -178,6 +190,7 @@ export const iconOptions: IconType[] = [
   'compass',
   'copy',
   'cursor',
+  'cursorTransparent',
   'desktop',
   'disconnect',
   'discord',
@@ -225,7 +238,11 @@ export const visualOptions: VisualType[] = [
   'nft',
   'noun',
   'profile',
-  'system'
+  'system',
+  'coinbase',
+  'stripe',
+  'moonpay',
+  'paypal'
 ]
 
 export const logoOptions: LogoType[] = [
@@ -241,7 +258,14 @@ export const logoOptions: LogoType[] = [
 
 export const placementOptions: PlacementType[] = ['top', 'right', 'bottom', 'left']
 
-export const chipOptions: ChipType[] = ['fill', 'transparent', 'shade', 'success', 'shadeSmall']
+export const chipOptions: ChipType[] = [
+  'fill',
+  'transparent',
+  'shade',
+  'success',
+  'shadeSmall',
+  'error'
+]
 
 export const buttonOptions: ButtonType[] = ['fill', 'accent', 'shade', 'fullWidth', 'accentBg']
 

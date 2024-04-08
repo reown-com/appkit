@@ -31,21 +31,24 @@ export class W3mFrame {
       this.frameLoadPromise = new Promise((resolve, reject) => {
         this.frameLoadPromiseResolver = { resolve, reject }
       })
-      const iframe = document.createElement('iframe')
-      iframe.id = 'w3m-iframe'
-      iframe.src = `${W3mFrameConstants.SECURE_SITE_SDK}?projectId=${projectId}`
-      iframe.style.position = 'fixed'
-      iframe.style.zIndex = '999999'
-      iframe.style.display = 'none'
-      iframe.style.opacity = '0'
-      iframe.style.borderRadius = `clamp(0px, var(--wui-border-radius-l), 44px)`
-      document.body.appendChild(iframe)
-      this.iframe = iframe
-      this.iframe.onload = () => {
-        this.frameLoadPromiseResolver?.resolve(undefined)
-      }
-      this.iframe.onerror = () => {
-        this.frameLoadPromiseResolver?.reject('Unable to load email login dependency')
+      if (W3mFrameHelpers.isClient) {
+        const iframe = document.createElement('iframe')
+        iframe.id = 'w3m-iframe'
+        iframe.src = `${W3mFrameConstants.SECURE_SITE_SDK}?projectId=${projectId}`
+        iframe.style.position = 'fixed'
+        iframe.style.zIndex = '999999'
+        iframe.style.display = 'none'
+        iframe.style.opacity = '0'
+        iframe.style.borderBottomLeftRadius = `clamp(0px, var(--wui-border-radius-l), 44px)`
+        iframe.style.borderBottomRightRadius = `clamp(0px, var(--wui-border-radius-l), 44px)`
+        document.body.appendChild(iframe)
+        this.iframe = iframe
+        this.iframe.onload = () => {
+          this.frameLoadPromiseResolver?.resolve(undefined)
+        }
+        this.iframe.onerror = () => {
+          this.frameLoadPromiseResolver?.reject('Unable to load email login dependency')
+        }
       }
     }
   }
@@ -68,40 +71,48 @@ export class W3mFrame {
   // -- Events ----------------------------------------------------------------
   public events = {
     onFrameEvent: (callback: (event: W3mFrameTypes.FrameEvent) => void) => {
-      window.addEventListener('message', ({ data }) => {
-        if (!data.type?.includes(W3mFrameConstants.FRAME_EVENT_KEY)) {
-          return
-        }
-        const frameEvent = W3mFrameSchema.frameEvent.parse(data)
-        callback(frameEvent)
-      })
+      if (W3mFrameHelpers.isClient) {
+        window.addEventListener('message', ({ data }) => {
+          if (!data.type?.includes(W3mFrameConstants.FRAME_EVENT_KEY)) {
+            return
+          }
+          const frameEvent = W3mFrameSchema.frameEvent.parse(data)
+          callback(frameEvent)
+        })
+      }
     },
 
     onAppEvent: (callback: (event: W3mFrameTypes.AppEvent) => void) => {
-      window.addEventListener('message', ({ data }) => {
-        if (!data.type?.includes(W3mFrameConstants.APP_EVENT_KEY)) {
-          return
-        }
-        const appEvent = W3mFrameSchema.appEvent.parse(data)
-        callback(appEvent)
-      })
+      if (W3mFrameHelpers.isClient) {
+        window.addEventListener('message', ({ data }) => {
+          if (!data.type?.includes(W3mFrameConstants.APP_EVENT_KEY)) {
+            return
+          }
+          const appEvent = W3mFrameSchema.appEvent.parse(data)
+          callback(appEvent)
+        })
+      }
     },
 
     postAppEvent: (event: W3mFrameTypes.AppEvent) => {
-      if (!this.iframe?.contentWindow) {
-        throw new Error('W3mFrame: iframe is not set')
+      if (W3mFrameHelpers.isClient) {
+        if (!this.iframe?.contentWindow) {
+          throw new Error('W3mFrame: iframe is not set')
+        }
+        W3mFrameSchema.appEvent.parse(event)
+        window.postMessage(event)
+        this.iframe.contentWindow.postMessage(event, '*')
       }
-      W3mFrameSchema.appEvent.parse(event)
-      window.postMessage(event)
-      this.iframe.contentWindow.postMessage(event, '*')
     },
 
     postFrameEvent: (event: W3mFrameTypes.FrameEvent) => {
-      if (!parent) {
-        throw new Error('W3mFrame: parent is not set')
+      if (W3mFrameHelpers.isClient) {
+        if (!parent) {
+          throw new Error('W3mFrame: parent is not set')
+        }
+        W3mFrameSchema.frameEvent.parse(event)
+        parent.postMessage(event, '*')
       }
-      W3mFrameSchema.frameEvent.parse(event)
-      parent.postMessage(event, '*')
     }
   }
 }

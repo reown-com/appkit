@@ -28,6 +28,11 @@ on:
         default: false
         required: false
         type: boolean
+      secure-site-url:
+        description: 'Secure site SDK url'
+        default: 'https://secure.walletconnect.com/sdk'
+        required: false
+        type: string
     secrets:
       NEXT_PUBLIC_PROJECT_ID:
         required: true
@@ -39,7 +44,8 @@ on:
 jobs:
   ui_tests:
     name: 'Playwright Tests'
-    runs-on: ubuntu-latest
+    runs-on:
+      group: ubuntu-runners
     timeout-minutes: 15
     steps:
       - name: checkout
@@ -56,13 +62,16 @@ jobs:
       - name: Get installed Playwright version
         id: playwright-version
         run: echo "PLAYWRIGHT_VERSION=$(node -e "console.log(require('./package-lock.json').packages['apps/laboratory']['devDependencies']['@playwright/test'])")" >> $GITHUB_ENV
+      - name: Install Brave Browser
+        working-directory: ./apps/laboratory/
+        run: sudo ./scripts/install-brave-browser.sh
       - name: Cache playwright binaries
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: playwright-cache
         with:
           path: |
             ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}
+          key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}-${{ hashFiles('apps/laboratory/tests/shared/constants/devices.ts') }}
       - name: install
         run: npm ci
       - name: build
@@ -79,9 +88,16 @@ jobs:
           SKIP_PLAYWRIGHT_WEBSERVER: ${{ inputs.skip-playwright-webserver }}
           NEXTAUTH_SECRET: ${{ secrets.TESTS_NEXTAUTH_SECRET }}
           MAILSAC_API_KEY: ${{ secrets.TESTS_MAILSEC_API_KEY }}
+          NEXT_PUBLIC_SECURE_SITE_SDK_URL: ${{ inputs.secure-site-url }}
           CI: true
         working-directory: ./apps/laboratory/
         run: npm run ${{ inputs.command }}
+      - name: Run canary with minimal environment config
+        env:
+          NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
+          CI: true
+        working-directory: ./apps/laboratory/
+        run: npm run playwright:test:canary
       - uses: actions/upload-artifact@v3
         if: always()
         with:
@@ -92,5 +108,5 @@ jobs:
         if: always()
         with:
           name: screenshots
-          path: ./apps/laboratory/screenshots/
+          path: ./apps/laboratory/test-results/
           retention-days: 7

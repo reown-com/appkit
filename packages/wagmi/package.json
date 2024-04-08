@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/wagmi",
-  "version": "3.5.7",
+  "version": "4.1.5",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -15,9 +15,14 @@
       "default": "./dist/esm/exports/index.js"
     },
     "./react": {
-      "types": "./dist/types/exports/react.d.ts",
-      "import": "./dist/esm/exports/react.js",
-      "default": "./dist/esm/exports/react.js"
+      "types": "./dist/types/exports/react/index.d.ts",
+      "import": "./dist/esm/exports/react/index.js",
+      "default": "./dist/esm/exports/react/index.js"
+    },
+    "./react/config": {
+      "types": "./dist/types/exports/react/config.d.ts",
+      "import": "./dist/esm/exports/react/config.js",
+      "default": "./dist/esm/exports/react/config.js"
     },
     "./vue": {
       "types": "./dist/types/exports/vue.d.ts",
@@ -28,7 +33,10 @@
   "typesVersions": {
     "*": {
       "react": [
-        "./dist/types/exports/react.d.ts"
+        "./dist/types/exports/react/index.d.ts"
+      ],
+      "react/config": [
+        "./dist/types/exports/react/config.d.ts"
       ],
       "vue": [
         "./dist/types/exports/vue.d.ts"
@@ -43,21 +51,27 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@web3modal/polyfills": "3.5.7",
-    "@web3modal/scaffold": "3.5.7",
-    "@web3modal/scaffold-react": "3.5.7",
-    "@web3modal/scaffold-utils": "3.5.7",
-    "@web3modal/scaffold-vue": "3.5.7"
+    "@web3modal/polyfills": "4.1.5",
+    "@web3modal/scaffold": "4.1.5",
+    "@web3modal/scaffold-react": "4.1.5",
+    "@web3modal/scaffold-utils": "4.1.5",
+    "@web3modal/scaffold-vue": "4.1.5",
+    "@web3modal/siwe": "4.1.5"
   },
   "devDependencies": {
-    "@web3modal/siwe": "*"
+    "@wagmi/connectors": "4.1.14",
+    "@wagmi/core": "2.6.5",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "viem": "2.7.13",
+    "vue": "3.4.3"
   },
   "peerDependencies": {
-    "@wagmi/core": ">=1 <2",
-    "@web3modal/siwe": "*",
+    "@wagmi/connectors": ">=4.0.0",
+    "@wagmi/core": ">=2.0.0",
     "react": ">=17",
     "react-dom": ">=17",
-    "viem": ">=1 <2",
+    "viem": ">=2.0.0",
     "vue": ">=3"
   },
   "peerDependenciesMeta": {
@@ -69,16 +83,7 @@
     },
     "vue": {
       "optional": true
-    },
-    "@web3modal/siwe": {
-      "optional": true
     }
-  },
-  "optionalDependencies": {
-    "@web3modal/siwe": "3.5.7",
-    "react": ">=17",
-    "react-dom": ">=17",
-    "vue": ">=3"
   },
   "keywords": [
     "web3",

@@ -1,4 +1,4 @@
-import { subscribeKey as subKey } from 'valtio/utils'
+import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { AccountController } from './AccountController.js'
 import { ApiController } from './ApiController.js'
@@ -41,23 +41,32 @@ export const ModalController = {
 
   async open(options?: ModalControllerArguments['open']) {
     await ApiController.state.prefetchPromise
-
+    const connected = AccountController.state.isConnected
     if (options?.view) {
       RouterController.reset(options.view)
-    } else if (AccountController.state.isConnected) {
+    } else if (connected) {
       RouterController.reset('Account')
     } else {
       RouterController.reset('Connect')
     }
     state.open = true
     PublicStateController.set({ open: true })
-    EventsController.sendEvent({ type: 'track', event: 'MODAL_OPEN' })
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'MODAL_OPEN',
+      properties: { connected }
+    })
   },
 
   close() {
+    const connected = AccountController.state.isConnected
     state.open = false
     PublicStateController.set({ open: false })
-    EventsController.sendEvent({ type: 'track', event: 'MODAL_CLOSE' })
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'MODAL_CLOSE',
+      properties: { connected }
+    })
   },
 
   setLoading(loading: ModalControllerState['loading']) {

@@ -2,9 +2,16 @@ import { css } from 'lit'
 
 export default css`
   :host {
-    display: block;
-    padding: 3.5px 5px !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: var(--wui-spacing-m);
+    padding: 0 var(--wui-spacing-3xs) !important;
     border-radius: var(--wui-border-radius-5xs);
+  }
+
+  :host > wui-text {
+    transform: translateY(5%);
   }
 
   :host([data-variant='main']) {
@@ -25,5 +32,13 @@ export default css`
   :host([data-variant='error']) {
     background-color: var(--wui-icon-box-bg-error-100);
     color: var(--wui-color-error-100);
+  }
+
+  :host([data-size='lg']) {
+    padding: 9px 5px !important;
+  }
+
+  :host([data-size='lg']) > wui-text {
+    transform: translateY(2%);
   }
 `

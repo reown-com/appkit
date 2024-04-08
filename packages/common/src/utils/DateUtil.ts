@@ -35,5 +35,9 @@ export const DateUtil = {
 
   getRelativeDateFromNow(date: string | number) {
     return dayjs(date).locale('en-web3-modal').fromNow(true)
+  },
+
+  formatDate(date: string | number, format = 'DD MMM') {
+    return dayjs(date).format(format)
   }
 }

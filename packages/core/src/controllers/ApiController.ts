@@ -1,9 +1,14 @@
-import { subscribeKey as subKey } from 'valtio/utils'
+import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy } from 'valtio/vanilla'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { FetchUtil } from '../utils/FetchUtil.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
-import type { ApiGetWalletsRequest, ApiGetWalletsResponse, WcWallet } from '../utils/TypeUtil.js'
+import type {
+  ApiGetAnalyticsConfigResponse,
+  ApiGetWalletsRequest,
+  ApiGetWalletsResponse,
+  WcWallet
+} from '../utils/TypeUtil.js'
 import { AssetController } from './AssetController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { NetworkController } from './NetworkController.js'
@@ -11,7 +16,7 @@ import { OptionsController } from './OptionsController.js'
 
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getApiUrl()
-const api = new FetchUtil({ baseUrl })
+export const api = new FetchUtil({ baseUrl })
 const entries = '40'
 const recommendedEntries = '4'
 
@@ -24,6 +29,7 @@ export interface ApiControllerState {
   recommended: WcWallet[]
   wallets: WcWallet[]
   search: WcWallet[]
+  isAnalyticsEnabled: boolean
 }
 
 type StateKey = keyof ApiControllerState
@@ -35,7 +41,8 @@ const state = proxy<ApiControllerState>({
   featured: [],
   recommended: [],
   wallets: [],
-  search: []
+  search: [],
+  isAnalyticsEnabled: false
 })
 
 // -- Controller ---------------------------------------- //
@@ -74,6 +81,18 @@ export const ApiController = {
     AssetController.setConnectorImage(imageId, URL.createObjectURL(blob))
   },
 
+  async _fetchCurrencyImage(countryCode: string) {
+    const imageUrl = `${api.baseUrl}/public/getCurrencyImage/${countryCode}`
+    const blob = await api.getBlob({ path: imageUrl, headers: ApiController._getApiHeaders() })
+    AssetController.setCurrencyImage(countryCode, URL.createObjectURL(blob))
+  },
+
+  async _fetchTokenImage(symbol: string) {
+    const imageUrl = `${api.baseUrl}/public/getTokenImage/${symbol}`
+    const blob = await api.getBlob({ path: imageUrl, headers: ApiController._getApiHeaders() })
+    AssetController.setTokenImage(symbol, URL.createObjectURL(blob))
+  },
+
   async fetchNetworkImages() {
     const { requestedCaipNetworks } = NetworkController.state
     const ids = requestedCaipNetworks?.map(({ imageId }) => imageId).filter(Boolean)
@@ -86,6 +105,16 @@ export const ApiController = {
     const { connectors } = ConnectorController.state
     const ids = connectors.map(({ imageId }) => imageId).filter(Boolean)
     await Promise.allSettled((ids as string[]).map(id => ApiController._fetchConnectorImage(id)))
+  },
+
+  async fetchCurrencyImages(currencies: string[] = []) {
+    await Promise.allSettled(
+      currencies.map(currency => ApiController._fetchCurrencyImage(currency))
+    )
+  },
+
+  async fetchTokenImages(tokens: string[] = []) {
+    await Promise.allSettled(tokens.map(token => ApiController._fetchTokenImage(token)))
   },
 
   async fetchFeaturedWallets() {
@@ -117,6 +146,7 @@ export const ApiController = {
       headers: ApiController._getApiHeaders(),
       params: {
         page: '1',
+        chains: NetworkController.state.caipNetwork?.id,
         entries: recommendedEntries,
         include: includeWalletIds?.join(','),
         exclude: exclude?.join(',')
@@ -136,6 +166,7 @@ export const ApiController = {
 
   async fetchWallets({ page }: Pick<ApiGetWalletsRequest, 'page'>) {
     const { includeWalletIds, excludeWalletIds, featuredWalletIds } = OptionsController.state
+
     const exclude = [
       ...state.recommended.map(({ id }) => id),
       ...(excludeWalletIds ?? []),
@@ -147,6 +178,7 @@ export const ApiController = {
       params: {
         page: String(page),
         entries,
+        chains: NetworkController.state.caipNetwork?.id,
         include: includeWalletIds?.join(','),
         exclude: exclude.join(',')
       }
@@ -171,6 +203,7 @@ export const ApiController = {
         page: '1',
         entries: '100',
         search,
+        chains: NetworkController.state.caipNetwork?.id,
         include: includeWalletIds?.join(','),
         exclude: excludeWalletIds?.join(',')
       }
@@ -183,15 +216,31 @@ export const ApiController = {
     state.search = data
   },
 
+  async reFetchWallets() {
+    state.page = 1
+    state.wallets = []
+    await ApiController.fetchFeaturedWallets()
+    await ApiController.fetchRecommendedWallets()
+  },
+
   prefetch() {
-    state.prefetchPromise = Promise.race([
-      Promise.allSettled([
-        ApiController.fetchFeaturedWallets(),
-        ApiController.fetchRecommendedWallets(),
-        ApiController.fetchNetworkImages(),
-        ApiController.fetchConnectorImages()
-      ]),
-      CoreHelperUtil.wait(3000)
-    ])
+    const promises = [
+      ApiController.fetchFeaturedWallets(),
+      ApiController.fetchRecommendedWallets(),
+      ApiController.fetchNetworkImages(),
+      ApiController.fetchConnectorImages()
+    ]
+    if (OptionsController.state.enableAnalytics === undefined) {
+      promises.push(ApiController.fetchAnalyticsConfig())
+    }
+    state.prefetchPromise = Promise.race([Promise.allSettled(promises), CoreHelperUtil.wait(3000)])
+  },
+
+  async fetchAnalyticsConfig() {
+    const { isAnalyticsEnabled } = await api.get<ApiGetAnalyticsConfigResponse>({
+      path: '/getAnalyticsConfig',
+      headers: ApiController._getApiHeaders()
+    })
+    OptionsController.setEnableAnalytics(isAnalyticsEnabled)
   }
 }

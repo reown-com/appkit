@@ -1,5 +1,6 @@
 import { W3mFrameStorage } from './W3mFrameStorage.js'
-import { W3mFrameConstants } from './W3mFrameConstants.js'
+import { W3mFrameConstants, W3mFrameRpcConstants } from './W3mFrameConstants.js'
+import type { W3mFrameTypes } from './W3mFrameTypes.js'
 
 const RESTRICTED_TIMEZONES = [
   'ASIA/SHANGHAI',
@@ -51,5 +52,34 @@ export const W3mFrameHelpers = {
     }
 
     return 0
-  }
+  },
+
+  checkIfRequestExists(request: unknown) {
+    const method = this.getRequestMethod(request)
+
+    return (
+      W3mFrameRpcConstants.NOT_SAFE_RPC_METHODS.includes(method) ||
+      W3mFrameRpcConstants.SAFE_RPC_METHODS.includes(method)
+    )
+  },
+
+  getRequestMethod(request: unknown) {
+    return (request as { payload: W3mFrameTypes.RPCRequest })?.payload?.method
+  },
+
+  checkIfRequestIsAllowed(request: unknown) {
+    const method = this.getRequestMethod(request)
+
+    return W3mFrameRpcConstants.SAFE_RPC_METHODS.includes(method)
+  },
+
+  getPreferredAccountType(): W3mFrameTypes.AccountType {
+    const storedType = W3mFrameStorage.get(
+      W3mFrameConstants.PREFERRED_ACCOUNT_TYPE
+    ) as W3mFrameTypes.AccountType
+
+    return storedType || W3mFrameRpcConstants.ACCOUNT_TYPES.EOA
+  },
+
+  isClient: typeof window !== 'undefined'
 }

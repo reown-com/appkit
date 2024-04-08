@@ -1,4 +1,4 @@
-import type { ConnectorType } from '@web3modal/scaffold'
+import type { ConnectorType } from '@web3modal/core'
 import { ConstantsUtil } from './ConstantsUtil.js'
 
 export const PresetsUtil = {
@@ -15,7 +15,7 @@ export const PresetsUtil = {
     // Ethereum
     1: '692ed6ba-e569-459a-556a-776476829e00',
     // Arbitrum
-    42161: '600a9a04-c1b9-42ca-6785-9b4b6ff85200',
+    42161: '3bff954d-5cb0-47a0-9a23-d20192e74600',
     // Avalanche
     43114: '30c46e53-e989-45fb-4549-be3bd4eb3b00',
     // Binance Smart Chain
@@ -49,11 +49,20 @@ export const PresetsUtil = {
     // Base
     8453: '7289c336-3981-4081-c5f4-efc26ac64a00',
     // Aurora
-    1313161554: '3ff73439-a619-4894-9262-4470c773a100'
+    1313161554: '3ff73439-a619-4894-9262-4470c773a100',
+    // Ronin Mainnet
+    2020: 'b8101fc0-9c19-4b6f-ec65-f6dfff106e00',
+    // Saigon Testnet (a.k.a. Ronin)
+    2021: 'b8101fc0-9c19-4b6f-ec65-f6dfff106e00',
+    // Solana chains
+    '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': 'a1b58899-f671-4276-6a5e-56ca5bd59700',
+    '4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z': 'a1b58899-f671-4276-6a5e-56ca5bd59700',
+    EtWTRABZaYq6iMfeYKouRu166VU2xqa1: 'a1b58899-f671-4276-6a5e-56ca5bd59700'
   } as Record<string, string>,
 
   ConnectorImageIds: {
     [ConstantsUtil.COINBASE_CONNECTOR_ID]: '0c2840c3-5b04-4c44-9661-fbd4b49e1800',
+    [ConstantsUtil.COINBASE_SDK_CONNECTOR_ID]: '0c2840c3-5b04-4c44-9661-fbd4b49e1800',
     [ConstantsUtil.SAFE_CONNECTOR_ID]: '461db637-8616-43ce-035a-d89b8a1d5800',
     [ConstantsUtil.LEDGER_CONNECTOR_ID]: '54a1aa77-d202-4f8d-0fb2-5d2bb6db0300',
     [ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID]: 'ef1a1fcf-7fe8-4d69-bd6d-fda1345b4400',
@@ -64,6 +73,7 @@ export const PresetsUtil = {
     [ConstantsUtil.INJECTED_CONNECTOR_ID]: 'Browser Wallet',
     [ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID]: 'WalletConnect',
     [ConstantsUtil.COINBASE_CONNECTOR_ID]: 'Coinbase',
+    [ConstantsUtil.COINBASE_SDK_CONNECTOR_ID]: 'Coinbase',
     [ConstantsUtil.LEDGER_CONNECTOR_ID]: 'Ledger',
     [ConstantsUtil.SAFE_CONNECTOR_ID]: 'Safe'
   } as Record<string, string>,

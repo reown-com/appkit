@@ -2,6 +2,7 @@ export type ColorType =
   | 'accent-100'
   | 'error-100'
   | 'fg-100'
+  | 'fg-150'
   | 'fg-200'
   | 'fg-250'
   | 'fg-300'
@@ -10,13 +11,18 @@ export type ColorType =
   | 'inverse-100'
   | 'success-100'
   | 'glass-005'
+  | 'glass-020'
 
 export type TextType =
   | 'large-500'
   | 'large-600'
   | 'large-700'
+  | 'medium-400'
+  | 'medium-600'
+  | 'medium-title-600'
   | 'micro-600'
   | 'micro-700'
+  | 'mini-700'
   | 'paragraph-400'
   | 'paragraph-500'
   | 'paragraph-600'
@@ -24,8 +30,10 @@ export type TextType =
   | 'small-400'
   | 'small-500'
   | 'small-600'
+  | 'tiny-400'
   | 'tiny-500'
   | 'tiny-600'
+  | '2xl-500'
 
 export type TextAlign = 'center' | 'left' | 'right'
 
@@ -48,7 +56,7 @@ export type SpacingType =
   | 'xxl'
   | 'xxs'
 
-export type BorderRadiusType = Exclude<SpacingType, 'xl' | 'xxl'>
+export type BorderRadiusType = Exclude<SpacingType, '1xs' | 'xl' | 'xxl'> | 'xs'
 
 export type FlexDirectionType = 'column-reverse' | 'column' | 'row-reverse' | 'row'
 
@@ -87,8 +95,9 @@ export type GridContentType =
 export type GridItemsType = 'center' | 'end' | 'start' | 'stretch'
 
 export type IconType =
+  | 'add'
   | 'allWallets'
-  | 'alpha'
+  | 'arrowBottomCircle'
   | 'appStore'
   | 'chromeStore'
   | 'apple'
@@ -96,8 +105,11 @@ export type IconType =
   | 'arrowLeft'
   | 'arrowRight'
   | 'arrowTop'
+  | 'bank'
   | 'browser'
+  | 'card'
   | 'checkmark'
+  | 'checkmarkBold'
   | 'chevronBottom'
   | 'chevronLeft'
   | 'chevronRight'
@@ -108,6 +120,7 @@ export type IconType =
   | 'compass'
   | 'copy'
   | 'cursor'
+  | 'cursorTransparent'
   | 'desktop'
   | 'disconnect'
   | 'discord'
@@ -126,11 +139,16 @@ export type IconType =
   | 'nftPlaceholder'
   | 'off'
   | 'playStore'
+  | 'plus'
   | 'qrCode'
+  | 'recycleHorizontal'
   | 'refresh'
   | 'search'
+  | 'send'
   | 'swapHorizontal'
   | 'swapHorizontalBold'
+  | 'swapHorizontalMedium'
+  | 'swapHorizontalRoundedBold'
   | 'swapVertical'
   | 'telegram'
   | 'twitch'
@@ -145,18 +163,28 @@ export type IconType =
 
 export type VisualType =
   | 'browser'
+  | 'coinbase'
   | 'dao'
   | 'defi'
   | 'defiAlt'
   | 'eth'
+  | 'google'
   | 'layers'
+  | 'lightbulb'
   | 'lock'
   | 'login'
   | 'network'
   | 'nft'
   | 'noun'
+  | 'onrampCard'
   | 'profile'
   | 'system'
+  | 'moonpay'
+  | 'stripe'
+  | 'paypal'
+  | 'pencil'
+
+export type VisualSize = 'sm' | 'md' | 'lg'
 
 export type LogoType =
   | 'apple'
@@ -170,7 +198,7 @@ export type LogoType =
 
 export type PlacementType = 'bottom' | 'left' | 'right' | 'top'
 
-export type ChipType = 'fill' | 'shade' | 'shadeSmall' | 'transparent' | 'success'
+export type ChipType = 'fill' | 'shade' | 'shadeSmall' | 'transparent' | 'success' | 'error'
 
 export type ButtonType = 'accent' | 'fill' | 'shade' | 'fullWidth' | 'accentBg'
 
@@ -276,4 +304,16 @@ export type TruncateOptions = {
   charsStart: number
   charsEnd: number
   truncate: TruncateType
+}
+
+export interface TokenInfo {
+  address: `0x${string}`
+  symbol: string
+  name: string
+  decimals: number
+  logoURI: string
+  domainVersion?: string
+  eip2612?: boolean
+  isFoT?: boolean
+  tags?: string[]
 }

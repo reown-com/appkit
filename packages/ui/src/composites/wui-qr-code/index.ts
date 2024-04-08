@@ -23,9 +23,12 @@ export class WuiQrCode extends LitElement {
 
   @property() public alt?: string = undefined
 
+  @property({ type: Boolean }) public arenaClear?: boolean = undefined
+
   // -- Render -------------------------------------------- //
   public override render() {
     this.dataset['theme'] = this.theme
+    this.dataset['clear'] = String(this.arenaClear)
     this.style.cssText = `--local-size: ${this.size}px`
 
     return html`${this.templateVisual()} ${this.templateSvg()}`
@@ -37,7 +40,7 @@ export class WuiQrCode extends LitElement {
 
     return svg`
       <svg height=${size} width=${size}>
-        ${QrCodeUtil.generate(this.uri, size, size / 4)}
+        ${QrCodeUtil.generate(this.uri, size, this.arenaClear ? 0 : size / 4)}
       </svg>
     `
   }

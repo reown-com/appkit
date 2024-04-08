@@ -50,7 +50,6 @@ export class WuiTransactionVisual extends LitElement {
     const [firstImage, secondImage] = this.images
     const firstImageType = firstImage?.type
     const haveTwoImages = this.images.length === 2
-
     if (haveTwoImages && (firstImage?.url || secondImage?.url)) {
       return html`<div class="swap-images-container">
         ${firstImage?.url

@@ -6,7 +6,8 @@
     "eslint:all",
     "plugin:@typescript-eslint/stylistic-type-checked",
     "plugin:@typescript-eslint/strict-type-checked",
-    "prettier"
+    "prettier",
+    "plugin:prettier/recommended"
   ],
   "parserOptions": {
     "project": ["tsconfig.json"]
@@ -20,7 +21,9 @@
     ".next",
     ".turbo",
     "examples",
-    "coverage"
+    "coverage",
+    ".changeset",
+    "playwright-report"
   ],
   "rules": {
     // Core

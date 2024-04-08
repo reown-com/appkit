@@ -1,10 +1,15 @@
+export type CoinbaseTransactionStatus =
+  | 'ONRAMP_TRANSACTION_STATUS_SUCCESS'
+  | 'ONRAMP_TRANSACTION_STATUS_IN_PROGRESS'
+  | 'ONRAMP_TRANSACTION_STATUS_FAILED'
+
 export type TransactionStatus = 'confirmed' | 'failed' | 'pending'
 
 export type TransactionDirection = 'in' | 'out' | 'self'
 
 export type TransactionImage = {
   type: 'FUNGIBLE' | 'NFT' | undefined
-  url: string
+  url: string | undefined
 }
 
 export interface Transaction {
@@ -19,8 +24,9 @@ export interface TransactionMetadata {
   minedAt: string
   sentFrom: string
   sentTo: string
-  status: TransactionStatus
+  status: TransactionStatus | CoinbaseTransactionStatus
   nonce: number
+  chain?: string
 }
 
 export interface TransactionTransfer {
@@ -64,5 +70,20 @@ export interface TransactionDetail {
 }
 
 export interface TransactionQuantity {
+  numeric: string
+}
+
+export interface Balance {
+  name: string
+  symbol: string
+  chainId: string
+  value: number
+  price: number
+  quantity: BalanceQuantity
+  iconUrl: string
+}
+
+type BalanceQuantity = {
+  decimals: string
   numeric: string
 }

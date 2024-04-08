@@ -8,6 +8,7 @@ import styles from './styles.js'
 
 // -- Svg's-------------------------------- //
 import { allWalletsSvg } from '../../assets/svg/all-wallets.js'
+import { arrowBottomCircleSvg } from '../../assets/svg/arrow-bottom-circle.js'
 import { appStoreSvg } from '../../assets/svg/app-store.js'
 import { appleSvg } from '../../assets/svg/apple.js'
 import { arrowBottomSvg } from '../../assets/svg/arrow-bottom.js'
@@ -26,6 +27,7 @@ import { closeSvg } from '../../assets/svg/close.js'
 import { coinPlaceholderSvg } from '../../assets/svg/coinPlaceholder.js'
 import { compassSvg } from '../../assets/svg/compass.js'
 import { copySvg } from '../../assets/svg/copy.js'
+import { addSvg } from '../../assets/svg/add.js'
 import { cursorSvg } from '../../assets/svg/cursor.js'
 import { desktopSvg } from '../../assets/svg/desktop.js'
 import { disconnectSvg } from '../../assets/svg/disconnect.js'
@@ -48,8 +50,11 @@ import { playStoreSvg } from '../../assets/svg/play-store.js'
 import { qrCodeIcon } from '../../assets/svg/qr-code.js'
 import { refreshSvg } from '../../assets/svg/refresh.js'
 import { searchSvg } from '../../assets/svg/search.js'
+import { sendSvg } from '../../assets/svg/send.js'
 import { swapHorizontalSvg } from '../../assets/svg/swapHorizontal.js'
 import { swapHorizontalBoldSvg } from '../../assets/svg/swapHorizontalBold.js'
+import { swapHorizontalMediumSvg } from '../../assets/svg/swapHorizontalMedium.js'
+import { swapHorizontalRoundedBoldSvg } from '../../assets/svg/swapHorizontalRoundedBold.js'
 import { swapVerticalSvg } from '../../assets/svg/swapVertical.js'
 import { telegramSvg } from '../../assets/svg/telegram.js'
 import { twitchSvg } from '../../assets/svg/twitch.js'
@@ -61,30 +66,40 @@ import { walletPlaceholderSvg } from '../../assets/svg/wallet-placeholder.js'
 import { walletSvg } from '../../assets/svg/wallet.js'
 import { walletConnectSvg } from '../../assets/svg/walletconnect.js'
 import { warningCircleSvg } from '../../assets/svg/warning-circle.js'
-import { alphaSvg } from '../../assets/svg/alpha.js'
+import { recycleHorizontalSvg } from '../../assets/svg/recycle-horizontal.js'
+import { bankSvg } from '../../assets/svg/bank.js'
+import { cardSvg } from '../../assets/svg/card.js'
+import { plusSvg } from '../../assets/svg/plus.js'
+import { cursorTransparentSvg } from '../../assets/svg/cursor-transparent.js'
+import { checkmarkBoldSvg } from '../../assets/svg/checkmark-bold.js'
 
 const svgOptions: Record<IconType, TemplateResult<2>> = {
+  add: addSvg,
   allWallets: allWalletsSvg,
-  alpha: alphaSvg,
+  arrowBottomCircle: arrowBottomCircleSvg,
   appStore: appStoreSvg,
-  chromeStore: chromeStoreSvg,
   apple: appleSvg,
   arrowBottom: arrowBottomSvg,
   arrowLeft: arrowLeftSvg,
   arrowRight: arrowRightSvg,
   arrowTop: arrowTopSvg,
+  bank: bankSvg,
   browser: browserSvg,
+  card: cardSvg,
   checkmark: checkmarkSvg,
   chevronBottom: chevronBottomSvg,
+  checkmarkBold: checkmarkBoldSvg,
   chevronLeft: chevronLeftSvg,
   chevronRight: chevronRightSvg,
   chevronTop: chevronTopSvg,
+  chromeStore: chromeStoreSvg,
   clock: clockSvg,
   close: closeSvg,
   compass: compassSvg,
   coinPlaceholder: coinPlaceholderSvg,
   copy: copySvg,
   cursor: cursorSvg,
+  cursorTransparent: cursorTransparentSvg,
   desktop: desktopSvg,
   disconnect: disconnectSvg,
   discord: discordSvg,
@@ -103,12 +118,17 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   nftPlaceholder: nftPlaceholderSvg,
   off: offSvg,
   playStore: playStoreSvg,
+  plus: plusSvg,
   qrCode: qrCodeIcon,
+  recycleHorizontal: recycleHorizontalSvg,
   refresh: refreshSvg,
   search: searchSvg,
+  send: sendSvg,
   swapHorizontal: swapHorizontalSvg,
+  swapHorizontalMedium: swapHorizontalMediumSvg,
   swapHorizontalBold: swapHorizontalBoldSvg,
   swapVertical: swapVerticalSvg,
+  swapHorizontalRoundedBold: swapHorizontalRoundedBoldSvg,
   telegram: telegramSvg,
   twitch: twitchSvg,
   twitter: twitterSvg,

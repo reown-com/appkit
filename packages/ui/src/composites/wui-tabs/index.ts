@@ -2,6 +2,7 @@ import { html, LitElement } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import type { IconType } from '../../utils/TypeUtil.js'
+import '../../components/wui-icon/index.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
@@ -10,7 +11,7 @@ export class WuiTabs extends LitElement {
   public static override styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
-  @property({ type: Array }) public tabs: { icon: IconType; label: string }[] = []
+  @property({ type: Array }) public tabs: { icon?: IconType; label: string }[] = []
 
   @property() public onTabChange: (index: number) => void = () => null
 
@@ -18,9 +19,9 @@ export class WuiTabs extends LitElement {
 
   @property({ type: Boolean }) public disabled = false
 
-  @state() public activeTab = 0
+  @property() public localTabWidth = '100px'
 
-  @state() public localTabWidth = '100px'
+  @state() public activeTab = 0
 
   @state() public isDense = false
 
@@ -43,8 +44,9 @@ export class WuiTabs extends LitElement {
           ?disabled=${this.disabled}
           @click=${() => this.onTabClick(index)}
           data-active=${isActive}
+          data-testid="tab-${tab.label?.toLowerCase()}"
         >
-          <wui-icon size="xs" color="inherit" name=${tab.icon}></wui-icon>
+          ${this.iconTemplate(tab)}
           <wui-text variant="small-600" color="inherit"> ${tab.label} </wui-text>
         </button>
       `
@@ -61,6 +63,13 @@ export class WuiTabs extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private iconTemplate(tab: { icon?: IconType; label: string }) {
+    if (tab.icon) {
+      return html`<wui-icon size="xs" color="inherit" name=${tab.icon}></wui-icon>`
+    }
+
+    return null
+  }
   private onTabClick(index: number) {
     if (this.buttons) {
       this.animateTabs(index, false)

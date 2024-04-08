@@ -1,61 +1,70 @@
 import { Button, useToast, Stack, Link, Text, Spacer } from '@chakra-ui/react'
-import { parseEther, parseGwei } from 'viem'
-import { usePrepareSendTransaction, useSendTransaction, useNetwork, useAccount } from 'wagmi'
+import { parseGwei, type Address } from 'viem'
+import { useEstimateGas, useSendTransaction, useAccount } from 'wagmi'
 import { vitalikEthAddress } from '../../utils/DataUtil'
-import { useCallback, useEffect } from 'react'
-import { sepolia } from 'wagmi/chains'
+import { useCallback, useState } from 'react'
+import { optimism, optimismSepolia, sepolia } from 'wagmi/chains'
+
+const TEST_TX = {
+  to: vitalikEthAddress as Address,
+  value: parseGwei('0.001')
+}
 
 export function WagmiTransactionTest() {
   const toast = useToast()
-  const { chain } = useNetwork()
-  const { status } = useAccount()
-  const { config, error: prepareError } = usePrepareSendTransaction({
-    to: vitalikEthAddress,
-    value: parseEther('0.0001'),
-    maxFeePerGas: parseGwei('200'),
-    maxPriorityFeePerGas: parseGwei('200')
+  const { status, chain } = useAccount()
+  const { data: gas, error: prepareError } = useEstimateGas(TEST_TX)
+  const [isLoading, setLoading] = useState(false)
+  const isConnected = status === 'connected'
+  const { sendTransaction } = useSendTransaction({
+    mutation: {
+      onSuccess: hash => {
+        setLoading(false)
+        toast({
+          title: 'Transaction Success',
+          description: hash,
+          status: 'success',
+          isClosable: true
+        })
+      },
+      onError: () => {
+        setLoading(false)
+        toast({
+          title: 'Error',
+          description: 'Failed to send transaction',
+          status: 'error',
+          isClosable: true
+        })
+      }
+    }
   })
-  const { sendTransaction, data, error, reset, isLoading } = useSendTransaction(config)
 
   const onSendTransaction = useCallback(() => {
     if (prepareError) {
       toast({
         title: 'Error',
-        description: 'Not enough funds to send transaction',
+        description: 'Not enough funds for transaction',
         status: 'error',
         isClosable: true
       })
     } else {
-      sendTransaction?.()
+      setLoading(true)
+      sendTransaction({
+        ...TEST_TX,
+        gas
+      })
     }
   }, [sendTransaction, prepareError])
 
-  useEffect(() => {
-    if (data) {
-      toast({
-        title: 'Transaction Success',
-        description: data.hash,
-        status: 'success',
-        isClosable: true
-      })
-    } else if (error) {
-      toast({
-        title: 'Error',
-        description: 'Failed to send transaction',
-        status: 'error',
-        isClosable: true
-      })
-    }
-    reset()
-  }, [data, error])
+  const allowedChains = [sepolia.id, optimism.id, optimismSepolia.id] as number[]
 
-  return chain?.id === sepolia.id && status === 'connected' ? (
+  return allowedChains.includes(Number(chain?.id)) && status === 'connected' ? (
     <Stack direction={['column', 'column', 'row']}>
       <Button
         data-test-id="sign-transaction-button"
         onClick={onSendTransaction}
         disabled={!sendTransaction}
-        isDisabled={isLoading}
+        isDisabled={isLoading || !isConnected}
       >
         Send Transaction to Vitalik
       </Button>
@@ -76,7 +85,7 @@ export function WagmiTransactionTest() {
     </Stack>
   ) : (
     <Text fontSize="md" color="yellow">
-      Switch to Sepolia Ethereum Testnet to test this feature
+      Switch to Sepolia or OP to test this feature
     </Text>
   )
 }

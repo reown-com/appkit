@@ -43,7 +43,9 @@ const modal = createWeb3Modal({
       homepage: 'https://walletconnect.com',
       mobile_link: 'wcflutterwallet'
     }
-  ]
+  ],
+  customWallets: ConstantsUtil.CustomWallets,
+  enableOnramp: true
 })
 
 ThemeStore.setModal(modal)

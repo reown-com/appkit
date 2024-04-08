@@ -11,7 +11,9 @@ import {
   polygon,
   zkSync,
   zora,
-  sepolia
+  sepolia,
+  optimismSepolia,
+  type Chain
 } from 'wagmi/chains'
 
 export const WagmiConstantsUtil = {
@@ -28,6 +30,7 @@ export const WagmiConstantsUtil = {
     base,
     celo,
     aurora,
-    sepolia
-  ]
+    sepolia,
+    optimismSepolia
+  ] as [Chain, ...Chain[]]
 }

@@ -14,7 +14,7 @@ export class W3mUpdateEmailWalletView extends LitElement {
   // -- Members ------------------------------------------- //
   private formRef: Ref<HTMLFormElement> = createRef()
 
-  private initialValue = RouterController.state.data?.email ?? ''
+  private initialEmail = RouterController.state.data?.email ?? ''
 
   // -- State & Properties -------------------------------- //
   @state() private email = ''
@@ -31,13 +31,13 @@ export class W3mUpdateEmailWalletView extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const showSubmit = !this.loading && this.email.length > 3 && this.email !== this.initialValue
+    const showSubmit = !this.loading && this.email.length > 3 && this.email !== this.initialEmail
 
     return html`
       <wui-flex flexDirection="column" padding="m" gap="m">
         <form ${ref(this.formRef)} @submit=${this.onSubmitEmail.bind(this)}>
           <wui-email-input
-            value=${this.initialValue}
+            value=${this.initialEmail}
             .disabled=${this.loading}
             @inputChange=${this.onEmailInputChange.bind(this)}
           >
@@ -86,7 +86,10 @@ export class W3mUpdateEmailWalletView extends LitElement {
 
       await emailConnector.provider.updateEmail({ email: this.email })
       EventsController.sendEvent({ type: 'track', event: 'EMAIL_EDIT' })
-      RouterController.replace('UpdateEmailWalletWaiting', { email: this.email })
+      RouterController.replace('UpdateEmailPrimaryOtp', {
+        email: this.initialEmail,
+        newEmail: this.email
+      })
     } catch (error) {
       SnackController.showError(error)
       this.loading = false

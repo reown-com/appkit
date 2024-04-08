@@ -1,30 +1,26 @@
 import '@web3modal/polyfills'
 
-import type { Chain, Connector } from '@wagmi/core'
-import { configureChains, createConfig } from '@wagmi/core'
-import { CoinbaseWalletConnector } from '@wagmi/core/connectors/coinbaseWallet'
-import { InjectedConnector } from '@wagmi/core/connectors/injected'
-import { WalletConnectConnector } from '@wagmi/core/connectors/walletConnect'
-import { publicProvider } from '@wagmi/core/providers/public'
-import { EIP6963Connector } from '../connectors/EIP6963Connector.js'
-import { EmailConnector } from '../connectors/EmailConnector.js'
-import { walletConnectProvider } from './provider.js'
+import type { CreateConfigParameters, CreateConnectorFn } from '@wagmi/core'
+import { createConfig } from '@wagmi/core'
+import { coinbaseWallet, walletConnect, injected } from '@wagmi/connectors'
 
-export interface ConfigOptions {
+import { emailConnector } from '../connectors/EmailConnector.js'
+import { getTransport } from './helpers.js'
+
+export type ConfigOptions = Partial<CreateConfigParameters> & {
+  chains: CreateConfigParameters['chains']
   projectId: string
-  chains: Chain[]
-  metadata?: {
-    name?: string
-    description?: string
-    url?: string
-    icons?: string[]
-    verifyUrl?: string
-  }
   enableInjected?: boolean
   enableEIP6963?: boolean
   enableCoinbase?: boolean
   enableEmail?: boolean
   enableWalletConnect?: boolean
+  metadata: {
+    name: string
+    description: string
+    url: string
+    icons: string[]
+  }
 }
 
 export function defaultWagmiConfig({
@@ -33,46 +29,47 @@ export function defaultWagmiConfig({
   metadata,
   enableInjected,
   enableCoinbase,
-  enableEIP6963,
   enableEmail,
-  enableWalletConnect
+  enableWalletConnect,
+  enableEIP6963,
+  ...wagmiConfig
 }: ConfigOptions) {
-  const { publicClient } = configureChains(chains, [
-    walletConnectProvider({ projectId }),
-    publicProvider()
+  const connectors: CreateConnectorFn[] = []
+  const transportsArr = chains.map(chain => [
+    chain.id,
+    getTransport({ chainId: chain.id, projectId })
   ])
-
-  const connectors: Connector[] = []
+  const transports = Object.fromEntries(transportsArr)
 
   // Enabled by default
   if (enableWalletConnect !== false) {
-    connectors.push(
-      new WalletConnectConnector({ chains, options: { projectId, showQrModal: false, metadata } })
-    )
+    connectors.push(walletConnect({ projectId, metadata, showQrModal: false }))
   }
 
   if (enableInjected !== false) {
-    connectors.push(new InjectedConnector({ chains, options: { shimDisconnect: true } }))
-  }
-
-  if (enableEIP6963 !== false) {
-    connectors.push(new EIP6963Connector({ chains }))
+    connectors.push(injected({ shimDisconnect: true }))
   }
 
   if (enableCoinbase !== false) {
     connectors.push(
-      new CoinbaseWalletConnector({ chains, options: { appName: metadata?.name ?? 'Unknown' } })
+      coinbaseWallet({
+        appName: metadata?.name ?? 'Unknown',
+        appLogoUrl: metadata?.icons[0] ?? 'Unknown',
+        enableMobileWalletLink: true
+      })
     )
   }
 
   // Dissabled by default
   if (enableEmail === true) {
-    connectors.push(new EmailConnector({ chains, options: { projectId } }))
+    connectors.push(emailConnector({ chains: [...chains], options: { projectId } }))
   }
 
   return createConfig({
-    autoConnect: true,
-    connectors,
-    publicClient
+    chains,
+    multiInjectedProviderDiscovery: enableEIP6963 !== false,
+    transports,
+    ...wagmiConfig,
+    connectors
   })
 }

@@ -17,17 +17,14 @@ export type {
   NetworkControllerState
 } from './src/controllers/NetworkController.js'
 
+export { OnRampController } from './src/controllers/OnRampController.js'
+export type { OnRampControllerState, OnRampProvider } from './src/controllers/OnRampController.js'
+
 export { ConnectionController } from './src/controllers/ConnectionController.js'
 export type {
   ConnectionControllerClient,
   ConnectionControllerState
 } from './src/controllers/ConnectionController.js'
-
-export { SIWEController } from './src/controllers/SIWEController.js'
-export type {
-  SIWEControllerClient,
-  SIWEControllerClientState
-} from './src/controllers/SIWEController.js'
 
 export { ConnectorController } from './src/controllers/ConnectorController.js'
 export type { ConnectorControllerState } from './src/controllers/ConnectorController.js'
@@ -57,6 +54,9 @@ export type { EventsControllerState } from './src/controllers/EventsController.j
 
 export { TransactionsController } from './src/controllers/TransactionsController.js'
 export type { TransactionsControllerState } from './src/controllers/TransactionsController.js'
+
+export { SendController } from './src/controllers/SendController.js'
+export type { SendControllerState } from './src/controllers/SendController.js'
 
 // -- Utils -------------------------------------------------------------------
 export { AssetUtil } from './src/utils/AssetUtil.js'

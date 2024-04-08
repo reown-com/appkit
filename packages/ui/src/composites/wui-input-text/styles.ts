@@ -17,7 +17,11 @@ export default css`
     font-weight: var(--wui-font-weight-light);
     letter-spacing: var(--wui-letter-spacing-paragraph);
     color: var(--wui-color-fg-100);
-    transition: all var(--wui-ease-inout-power-1) var(--wui-duration-lg);
+    transition:
+      background-color var(--wui-ease-inout-power-1) var(--wui-duration-md),
+      border-color var(--wui-ease-inout-power-1) var(--wui-duration-md),
+      box-shadow var(--wui-ease-inout-power-1) var(--wui-duration-md);
+    will-change: background-color, border-color, box-shadow;
     caret-color: var(--wui-color-accent-100);
   }
 
@@ -36,7 +40,6 @@ export default css`
   }
 
   input:focus:enabled {
-    transition: all var(--wui-ease-out-power-2) var(--wui-duration-sm);
     background-color: var(--wui-gray-glass-010);
     border: 1px solid var(--wui-color-accent-100);
     -webkit-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
@@ -80,10 +83,39 @@ export default css`
     left: var(--wui-spacing-l);
   }
 
+  .wui-size-lg {
+    padding: var(--wui-spacing-s) var(--wui-spacing-s) var(--wui-spacing-s) var(--wui-spacing-l);
+    letter-spacing: var(--wui-letter-spacing-medium-title);
+    font-size: var(--wui-font-size-medium-title);
+    font-weight: var(--wui-font-weight-light);
+    line-height: 130%;
+    color: var(--wui-color-fg-100);
+    height: 64px;
+  }
+
+  wui-icon + .wui-size-lg,
+  wui-loading-spinner + .wui-size-lg {
+    padding-left: 50px;
+  }
+
+  wui-icon[data-input='lg'] {
+    left: var(--wui-spacing-l);
+  }
+
   input:placeholder-shown ~ ::slotted(wui-input-element),
   input:placeholder-shown ~ ::slotted(wui-icon) {
     opacity: 0;
     pointer-events: none;
+  }
+
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  input[type='number'] {
+    -moz-appearance: textfield;
   }
 
   ::slotted(wui-input-element),
@@ -91,7 +123,6 @@ export default css`
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    transition: all var(--wui-ease-in-power-2) var(--wui-duration-md);
   }
 
   ::slotted(wui-input-element) {

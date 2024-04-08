@@ -39,4 +39,8 @@ describe('DateUtil', () => {
 
     expect(DateUtil.getRelativeDateFromNow(fakeDateTimeOneSecondAgo.getTime())).toEqual('30 sec')
   })
+
+  it('should format date correctly', () => {
+    expect(DateUtil.formatDate(fakeDateTime.toDateString())).toEqual('01 Feb')
+  })
 })

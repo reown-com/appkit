@@ -58,15 +58,19 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --w3m-border-radius-master: ${unsafeCSS(
           themeVariables?.['--w3m-border-radius-master'] || '4px'
         )};
-        --w3m-z-index: ${unsafeCSS(themeVariables?.['--w3m-z-index'] || 100)};
+        --w3m-z-index: ${unsafeCSS(themeVariables?.['--w3m-z-index'] || 999)};
 
         --wui-font-family: var(--w3m-font-family);
 
+        --wui-font-size-mini: calc(var(--w3m-font-size-master) * 0.8);
         --wui-font-size-micro: var(--w3m-font-size-master);
         --wui-font-size-tiny: calc(var(--w3m-font-size-master) * 1.2);
         --wui-font-size-small: calc(var(--w3m-font-size-master) * 1.4);
         --wui-font-size-paragraph: calc(var(--w3m-font-size-master) * 1.6);
+        --wui-font-size-medium: calc(var(--w3m-font-size-master) * 1.8);
         --wui-font-size-large: calc(var(--w3m-font-size-master) * 2);
+        --wui-font-size-medium-title: calc(var(--w3m-font-size-master) * 2.4);
+        --wui-font-size-2xl: calc(var(--w3m-font-size-master) * 4);
 
         --wui-border-radius-5xs: var(--w3m-border-radius-master);
         --wui-border-radius-4xs: calc(var(--w3m-border-radius-master) * 1.5);
@@ -83,11 +87,15 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-font-weight-medium: 600;
         --wui-font-weight-bold: 700;
 
+        --wui-letter-spacing-2xl: -1.6px;
+        --wui-letter-spacing-medium-title: -0.96px;
         --wui-letter-spacing-large: -0.8px;
+        --wui-letter-spacing-medium: -0.72px;
         --wui-letter-spacing-paragraph: -0.64px;
         --wui-letter-spacing-small: -0.56px;
         --wui-letter-spacing-tiny: -0.48px;
         --wui-letter-spacing-micro: -0.2px;
+        --wui-letter-spacing-mini: -0.16px;
 
         --wui-spacing-0: 0px;
         --wui-spacing-4xs: 2px;
@@ -127,6 +135,11 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-wallet-image-size-md: 56px;
         --wui-wallet-image-size-lg: 80px;
 
+        --wui-visual-size-size-inherit: inherit;
+        --wui-visual-size-sm: 40px;
+        --wui-visual-size-md: 55px;
+        --wui-visual-size-lg: 80px;
+
         --wui-box-size-md: 100px;
         --wui-box-size-lg: 120px;
 
@@ -143,13 +156,30 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-duration-md: 125ms;
         --wui-duration-sm: 75ms;
 
-        --wui-path-network: path(
+        --wui-path-network-sm: path(
+          'M15.4 2.1a5.21 5.21 0 0 1 5.2 0l11.61 6.7a5.21 5.21 0 0 1 2.61 4.52v13.4c0 1.87-1 3.59-2.6 4.52l-11.61 6.7c-1.62.93-3.6.93-5.22 0l-11.6-6.7a5.21 5.21 0 0 1-2.61-4.51v-13.4c0-1.87 1-3.6 2.6-4.52L15.4 2.1Z'
+        );
+
+        --wui-path-network-md: path(
           'M43.4605 10.7248L28.0485 1.61089C25.5438 0.129705 22.4562 0.129705 19.9515 1.61088L4.53951 10.7248C2.03626 12.2051 0.5 14.9365 0.5 17.886V36.1139C0.5 39.0635 2.03626 41.7949 4.53951 43.2752L19.9515 52.3891C22.4562 53.8703 25.5438 53.8703 28.0485 52.3891L43.4605 43.2752C45.9637 41.7949 47.5 39.0635 47.5 36.114V17.8861C47.5 14.9365 45.9637 12.2051 43.4605 10.7248Z'
         );
 
         --wui-path-network-lg: path(
           'M78.3244 18.926L50.1808 2.45078C45.7376 -0.150261 40.2624 -0.150262 35.8192 2.45078L7.6756 18.926C3.23322 21.5266 0.5 26.3301 0.5 31.5248V64.4752C0.5 69.6699 3.23322 74.4734 7.6756 77.074L35.8192 93.5492C40.2624 96.1503 45.7376 96.1503 50.1808 93.5492L78.3244 77.074C82.7668 74.4734 85.5 69.6699 85.5 64.4752V31.5248C85.5 26.3301 82.7668 21.5266 78.3244 18.926Z'
         );
+
+        --wui-width-network-sm: 36px;
+        --wui-width-network-md: 48px;
+        --wui-width-network-lg: 86px;
+
+        --wui-height-network-sm: 40px;
+        --wui-height-network-md: 54px;
+        --wui-height-network-lg: 96px;
+
+        --wui-icon-size-network-xs: 12px;
+        --wui-icon-size-network-sm: 16px;
+        --wui-icon-size-network-md: 24px;
+        --wui-icon-size-network-lg: 42px;
 
         --wui-color-inherit: inherit;
 
@@ -479,9 +509,20 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-success-glass-060: rgba(38, 217, 98, 0.6);
         --wui-success-glass-080: rgba(38, 217, 98, 0.8);
 
+        --wui-error-glass-001: rgba(242, 90, 103, 0.01);
+        --wui-error-glass-002: rgba(242, 90, 103, 0.02);
+        --wui-error-glass-005: rgba(242, 90, 103, 0.05);
+        --wui-error-glass-010: rgba(242, 90, 103, 0.1);
+        --wui-error-glass-015: rgba(242, 90, 103, 0.15);
+        --wui-error-glass-020: rgba(242, 90, 103, 0.2);
+        --wui-error-glass-025: rgba(242, 90, 103, 0.25);
+        --wui-error-glass-030: rgba(242, 90, 103, 0.3);
+        --wui-error-glass-060: rgba(242, 90, 103, 0.6);
+        --wui-error-glass-080: rgba(242, 90, 103, 0.8);
+
         --wui-icon-box-bg-error-base-100: #3c2426;
         --wui-icon-box-bg-blue-base-100: #20303f;
-        --wui-icon-box-bg-success-base-100: var(--wui-success-glass-015);
+        --wui-icon-box-bg-success-base-100: #1f3a28;
         --wui-icon-box-bg-inverse-base-100: #243240;
 
         --wui-all-wallets-bg-base-100: #222b35;
@@ -500,6 +541,7 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-gray-glass-030: rgba(255, 255, 255, 0.3);
         --wui-gray-glass-060: rgba(255, 255, 255, 0.6);
         --wui-gray-glass-080: rgba(255, 255, 255, 0.8);
+        --wui-gray-glass-090: rgba(255, 255, 255, 0.9);
       }
     `,
     dark: css`
@@ -558,6 +600,17 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-success-glass-060: rgba(38, 181, 98, 0.6);
         --wui-success-glass-080: rgba(38, 181, 98, 0.8);
 
+        --wui-error-glass-001: rgba(240, 81, 66, 0.01);
+        --wui-error-glass-002: rgba(240, 81, 66, 0.02);
+        --wui-error-glass-005: rgba(240, 81, 66, 0.05);
+        --wui-error-glass-010: rgba(240, 81, 66, 0.1);
+        --wui-error-glass-015: rgba(240, 81, 66, 0.15);
+        --wui-error-glass-020: rgba(240, 81, 66, 0.2);
+        --wui-error-glass-025: rgba(240, 81, 66, 0.25);
+        --wui-error-glass-030: rgba(240, 81, 66, 0.3);
+        --wui-error-glass-060: rgba(240, 81, 66, 0.6);
+        --wui-error-glass-080: rgba(240, 81, 66, 0.8);
+
         --wui-icon-box-bg-error-base-100: #f4dfdd;
         --wui-icon-box-bg-blue-base-100: #d9ecfb;
         --wui-icon-box-bg-success-base-100: #daf0e4;
@@ -579,6 +632,7 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-gray-glass-030: rgba(0, 0, 0, 0.3);
         --wui-gray-glass-060: rgba(0, 0, 0, 0.6);
         --wui-gray-glass-080: rgba(0, 0, 0, 0.8);
+        --wui-gray-glass-090: rgba(0, 0, 0, 0.9);
       }
     `
   }
@@ -611,7 +665,11 @@ export const elementStyles = css`
     justify-content: center;
     align-items: center;
     position: relative;
-    transition: all var(--wui-ease-out-power-1) var(--wui-duration-lg);
+    transition:
+      background-color var(--wui-ease-inout-power-1) var(--wui-duration-md),
+      color var(--wui-ease-inout-power-1) var(--wui-duration-md),
+      box-shadow var(--wui-ease-inout-power-1) var(--wui-duration-md);
+    will-change: background-color, color;
     outline: none;
     border: 1px solid transparent;
     column-gap: var(--wui-spacing-3xs);
@@ -625,7 +683,6 @@ export const elementStyles = css`
     }
 
     button:active:enabled {
-      transition: all var(--wui-ease-out-power-2) var(--wui-duration-sm);
       background-color: var(--wui-gray-glass-010);
     }
 

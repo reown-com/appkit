@@ -2,6 +2,7 @@ import type { CaipNetwork } from '@web3modal/core'
 import {
   AccountController,
   AssetUtil,
+  CoreHelperUtil,
   EventsController,
   NetworkController,
   RouterController,
@@ -63,31 +64,13 @@ export class W3mNetworksView extends LitElement {
   private networksTemplate() {
     const { approvedCaipNetworkIds, requestedCaipNetworks, supportsAllNetworks } =
       NetworkController.state
-    const approvedIds = approvedCaipNetworkIds
-    const requestedNetworks = requestedCaipNetworks
-    const approvedIndexMap: Record<string, number> = {}
-    if (requestedNetworks && approvedIds) {
-      approvedIds.forEach((id, index) => {
-        approvedIndexMap[id] = index
-      })
 
-      requestedNetworks.sort((a, b) => {
-        const indexA = approvedIndexMap[a.id]
-        const indexB = approvedIndexMap[b.id]
+    const sortedNetworks = CoreHelperUtil.sortRequestedNetworks(
+      approvedCaipNetworkIds,
+      requestedCaipNetworks
+    )
 
-        if (indexA !== undefined && indexB !== undefined) {
-          return indexA - indexB
-        } else if (indexA !== undefined) {
-          return -1
-        } else if (indexB !== undefined) {
-          return 1
-        }
-
-        return 0
-      })
-    }
-
-    return requestedNetworks?.map(
+    return sortedNetworks?.map(
       network => html`
         <wui-card-select
           .selected=${this.caipNetwork?.id === network.id}
@@ -95,7 +78,7 @@ export class W3mNetworksView extends LitElement {
           type="network"
           name=${network.name ?? network.id}
           @click=${() => this.onSwitchNetwork(network)}
-          .disabled=${!supportsAllNetworks && !approvedIds?.includes(network.id)}
+          .disabled=${!supportsAllNetworks && !approvedCaipNetworkIds?.includes(network.id)}
           data-testid=${`w3m-network-switch-${network.name ?? network.id}`}
         ></wui-card-select>
       `

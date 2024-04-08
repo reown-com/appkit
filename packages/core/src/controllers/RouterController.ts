@@ -1,4 +1,4 @@
-import { subscribeKey as subKey } from 'valtio/utils'
+import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy } from 'valtio/vanilla'
 import type { CaipNetwork, Connector, WcWallet } from '../utils/TypeUtil.js'
 
@@ -6,30 +6,46 @@ import type { CaipNetwork, Connector, WcWallet } from '../utils/TypeUtil.js'
 export interface RouterControllerState {
   view:
     | 'Account'
+    | 'AccountSettings'
+    | 'AllWallets'
+    | 'ApproveTransaction'
+    | 'BuyInProgress'
+    | 'WalletCompatibleNetworks'
     | 'Connect'
     | 'ConnectingExternal'
     | 'ConnectingWalletConnect'
     | 'ConnectingSiwe'
-    | 'Networks'
-    | 'SwitchNetwork'
-    | 'AllWallets'
-    | 'WhatIsAWallet'
-    | 'WhatIsANetwork'
-    | 'GetWallet'
     | 'Downloads'
     | 'EmailVerifyOtp'
     | 'EmailVerifyDevice'
-    | 'ApproveTransaction'
+    | 'GetWallet'
+    | 'Networks'
+    | 'OnRampActivity'
+    | 'OnRampFiatSelect'
+    | 'OnRampProviders'
+    | 'OnRampTokenSelect'
+    | 'SwitchNetwork'
     | 'Transactions'
-    | 'UpgradeEmailWallet'
+    | 'UnsupportedChain'
     | 'UpdateEmailWallet'
-    | 'UpdateEmailWalletWaiting'
+    | 'UpdateEmailPrimaryOtp'
+    | 'UpdateEmailSecondaryOtp'
+    | 'UpgradeEmailWallet'
+    | 'UpgradeToSmartAccount'
+    | 'WalletReceive'
+    | 'WalletSend'
+    | 'WalletSendPreview'
+    | 'WalletSendSelectToken'
+    | 'WhatIsANetwork'
+    | 'WhatIsAWallet'
+    | 'WhatIsABuy'
   history: RouterControllerState['view'][]
   data?: {
     connector?: Connector
     wallet?: WcWallet
     network?: CaipNetwork
     email?: string
+    newEmail?: string
   }
 }
 

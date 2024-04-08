@@ -5,9 +5,15 @@ We use Playwright as our functional test runner. It's configured to try multiple
 - Browsers: Chromium/Firefox
 - Modal flavors: default/SIWE/email
 
+## Setup
+
+- Make sure your `.env.local` is set up (see `.env.example` for reference)
+- Run `npm run playwright:install` to install the browsers required to run the tests
+- Build Web3Modal by running `npm run build` in the root directory
+
 ## Running Tests
 
-- `npx playwright test` to run in default mode (make sure your `.env` is set up)
+- `npm run playwright:test` to run in default mode.
 - `npm run playwright:debug` to step by step see what the tests are doing
 
 ## Debugging

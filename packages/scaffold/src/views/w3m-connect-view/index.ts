@@ -8,14 +8,14 @@ import {
   EventsController,
   OptionsController,
   RouterController,
-  StorageUtil,
-  ConstantsUtil
+  StorageUtil
 } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
+import { ConstantsUtil } from '@web3modal/scaffold-utils'
 
 @customElement('w3m-connect-view')
 export class W3mConnectView extends LitElement {
@@ -26,11 +26,13 @@ export class W3mConnectView extends LitElement {
 
   // -- State & Properties -------------------------------- //
   @state() private connectors = ConnectorController.state.connectors
+  @state() private count = ApiController.state.count
 
   public constructor() {
     super()
     this.unsubscribe.push(
-      ConnectorController.subscribeKey('connectors', val => (this.connectors = val))
+      ConnectorController.subscribeKey('connectors', val => (this.connectors = val)),
+      ApiController.subscribeKey('count', val => (this.count = val))
     )
   }
 
@@ -46,7 +48,7 @@ export class W3mConnectView extends LitElement {
 
         ${this.walletConnectConnectorTemplate()} ${this.recentTemplate()}
         ${this.announcedTemplate()} ${this.injectedTemplate()} ${this.featuredTemplate()}
-        ${this.customTemplate()} ${this.recommendedTemplate()} ${this.connectorsTemplate()}
+        ${this.customTemplate()} ${this.recommendedTemplate()} ${this.externalTemplate()}
         ${this.allWalletsTemplate()}
       </wui-flex>
       <w3m-legal-footer></w3m-legal-footer>
@@ -79,9 +81,11 @@ export class W3mConnectView extends LitElement {
 
   private customTemplate() {
     const { customWallets } = OptionsController.state
+
     if (!customWallets?.length) {
       return null
     }
+
     const wallets = this.filterOutDuplicateWallets(customWallets)
 
     return wallets.map(
@@ -90,6 +94,7 @@ export class W3mConnectView extends LitElement {
           imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
           name=${wallet.name ?? 'Unknown'}
           @click=${() => this.onConnectWallet(wallet)}
+          data-testid=${`wallet-selector-${wallet.id}`}
         >
         </wui-list-wallet>
       `
@@ -101,10 +106,12 @@ export class W3mConnectView extends LitElement {
     if (!connector) {
       return null
     }
+
     const { featured } = ApiController.state
     if (!featured.length) {
       return null
     }
+
     const wallets = this.filterOutDuplicateWallets(featured)
 
     return wallets.map(
@@ -156,8 +163,6 @@ export class W3mConnectView extends LitElement {
   }
 
   private injectedTemplate() {
-    const announced = this.connectors.find(c => c.type === 'ANNOUNCED')
-
     return this.connectors.map(connector => {
       if (connector.type !== 'INJECTED') {
         return null
@@ -170,7 +175,7 @@ export class W3mConnectView extends LitElement {
       return html`
         <wui-list-wallet
           imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
-          .installed=${Boolean(announced)}
+          .installed=${true}
           name=${connector.name ?? 'Unknown'}
           @click=${() => this.onConnector(connector)}
         >
@@ -179,7 +184,7 @@ export class W3mConnectView extends LitElement {
     })
   }
 
-  private connectorsTemplate() {
+  private externalTemplate() {
     const announcedRdns = ConnectorController.getAnnouncedConnectorRdns()
 
     return this.connectors.map(connector => {
@@ -204,13 +209,18 @@ export class W3mConnectView extends LitElement {
 
   private allWalletsTemplate() {
     const connector = this.connectors.find(c => c.type === 'WALLET_CONNECT')
-    if (!connector) {
+    const { allWallets } = OptionsController.state
+
+    if (!connector || allWallets === 'HIDE') {
       return null
     }
 
-    const count = ApiController.state.count
+    if (allWallets === 'ONLY_MOBILE' && !CoreHelperUtil.isMobile()) {
+      return null
+    }
+
     const featuredCount = ApiController.state.featured.length
-    const rawCount = count + featuredCount
+    const rawCount = this.count + featuredCount
     const roundedCount = rawCount < 10 ? rawCount : Math.floor(rawCount / 10) * 10
     const tagLabel = roundedCount < rawCount ? `${roundedCount}+` : `${roundedCount}`
 
@@ -236,13 +246,17 @@ export class W3mConnectView extends LitElement {
     const { customWallets, featuredWalletIds } = OptionsController.state
     const { connectors } = ConnectorController.state
     const recent = StorageUtil.getRecentWallets()
-    const eip6963 = connectors.filter(c => c.type === 'ANNOUNCED')
+    const injected = connectors.filter(c => c.type === 'INJECTED')
+    const filteredInjected = injected.filter(i => i.name !== 'Browser Wallet')
+
     if (featuredWalletIds || customWallets || !recommended.length) {
       return null
     }
 
-    const overrideLength = eip6963.length + recent.length
+    const overrideLength = filteredInjected.length + recent.length
+
     const maxRecommended = Math.max(0, 2 - overrideLength)
+
     const wallets = this.filterOutDuplicateWallets(recommended).slice(0, maxRecommended)
 
     return wallets.map(
@@ -271,13 +285,15 @@ export class W3mConnectView extends LitElement {
   }
 
   private filterOutDuplicateWallets(wallets: WcWallet[]) {
-    const { connectors } = ConnectorController.state
     const recent = StorageUtil.getRecentWallets()
-    const recentIds = recent.map(wallet => wallet.id)
-    const rdnsIds = connectors.map(c => c.info?.rdns).filter(Boolean)
-    const filtered = wallets.filter(
-      wallet => !recentIds.includes(wallet.id) && !rdnsIds.includes(wallet.rdns ?? undefined)
-    )
+
+    const connectorRDNSs = this.connectors
+      .map(connector => connector.info?.rdns)
+      .filter(Boolean) as string[]
+    const recentRDNSs = recent.map(wallet => wallet.rdns).filter(Boolean) as string[]
+    const allRDNSs = connectorRDNSs.concat(recentRDNSs)
+
+    const filtered = wallets.filter(wallet => !allRDNSs.includes(String(wallet?.rdns)))
 
     return filtered
   }

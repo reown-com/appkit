@@ -1,5 +1,6 @@
 export const W3mFrameConstants = {
-  SECURE_SITE_SDK: 'https://secure.web3modal.com/sdk',
+  SECURE_SITE_SDK:
+    process.env['NEXT_PUBLIC_SECURE_SITE_SDK_URL'] || 'https://secure.walletconnect.com/sdk',
   APP_EVENT_KEY: '@w3m-app/',
   FRAME_EVENT_KEY: '@w3m-frame/',
   RPC_METHOD_KEY: 'RPC_',
@@ -10,6 +11,9 @@ export const W3mFrameConstants = {
   LAST_USED_CHAIN_KEY: 'LAST_USED_CHAIN_KEY',
   LAST_EMAIL_LOGIN_TIME: 'LAST_EMAIL_LOGIN_TIME',
   EMAIL: 'EMAIL',
+  PREFERRED_ACCOUNT_TYPE: 'PREFERRED_ACCOUNT_TYPE',
+  SMART_ACCOUNT_ENABLED: 'SMART_ACCOUNT_ENABLED',
+  SMART_ACCOUNT_ENABLED_NETWORKS: 'SMART_ACCOUNT_ENABLED_NETWORKS',
 
   APP_SWITCH_NETWORK: '@w3m-app/SWITCH_NETWORK',
   APP_CONNECT_EMAIL: '@w3m-app/CONNECT_EMAIL',
@@ -21,9 +25,14 @@ export const W3mFrameConstants = {
   APP_GET_CHAIN_ID: '@w3m-app/GET_CHAIN_ID',
   APP_RPC_REQUEST: '@w3m-app/RPC_REQUEST',
   APP_UPDATE_EMAIL: '@w3m-app/UPDATE_EMAIL',
+  APP_UPDATE_EMAIL_PRIMARY_OTP: '@w3m-app/UPDATE_EMAIL_PRIMARY_OTP',
+  APP_UPDATE_EMAIL_SECONDARY_OTP: '@w3m-app/UPDATE_EMAIL_SECONDARY_OTP',
   APP_AWAIT_UPDATE_EMAIL: '@w3m-app/AWAIT_UPDATE_EMAIL',
   APP_SYNC_THEME: '@w3m-app/SYNC_THEME',
   APP_SYNC_DAPP_DATA: '@w3m-app/SYNC_DAPP_DATA',
+  APP_GET_SMART_ACCOUNT_ENABLED_NETWORKS: '@w3m-app/GET_SMART_ACCOUNT_ENABLED_NETWORKS',
+  APP_INIT_SMART_ACCOUNT: '@w3m-app/INIT_SMART_ACCOUNT',
+  APP_SET_PREFERRED_ACCOUNT: '@w3m-app/SET_PREFERRED_ACCOUNT',
 
   FRAME_SWITCH_NETWORK_ERROR: '@w3m-frame/SWITCH_NETWORK_ERROR',
   FRAME_SWITCH_NETWORK_SUCCESS: '@w3m-frame/SWITCH_NETWORK_SUCCESS',
@@ -46,15 +55,67 @@ export const W3mFrameConstants = {
   FRAME_SESSION_UPDATE: '@w3m-frame/SESSION_UPDATE',
   FRAME_UPDATE_EMAIL_SUCCESS: '@w3m-frame/UPDATE_EMAIL_SUCCESS',
   FRAME_UPDATE_EMAIL_ERROR: '@w3m-frame/UPDATE_EMAIL_ERROR',
-  FRAME_AWAIT_UPDATE_EMAIL_SUCCESS: '@w3m-frame/AWAIT_UPDATE_EMAIL_SUCCESS',
-  FRAME_AWAIT_UPDATE_EMAIL_ERROR: '@w3m-frame/AWAIT_UPDATE_EMAIL_ERROR',
+  FRAME_UPDATE_EMAIL_PRIMARY_OTP_SUCCESS: '@w3m-frame/UPDATE_EMAIL_PRIMARY_OTP_SUCCESS',
+  FRAME_UPDATE_EMAIL_PRIMARY_OTP_ERROR: '@w3m-frame/UPDATE_EMAIL_PRIMARY_OTP_ERROR',
+  FRAME_UPDATE_EMAIL_SECONDARY_OTP_SUCCESS: '@w3m-frame/UPDATE_EMAIL_SECONDARY_OTP_SUCCESS',
+  FRAME_UPDATE_EMAIL_SECONDARY_OTP_ERROR: '@w3m-frame/UPDATE_EMAIL_SECONDARY_OTP_ERROR',
   FRAME_SYNC_THEME_SUCCESS: '@w3m-frame/SYNC_THEME_SUCCESS',
   FRAME_SYNC_THEME_ERROR: '@w3m-frame/SYNC_THEME_ERROR',
   FRAME_SYNC_DAPP_DATA_SUCCESS: '@w3m-frame/SYNC_DAPP_DATA_SUCCESS',
-  FRAME_SYNC_DAPP_DATA_ERROR: '@w3m-frame/SYNC_DAPP_DATA_ERROR'
+  FRAME_SYNC_DAPP_DATA_ERROR: '@w3m-frame/SYNC_DAPP_DATA_ERROR',
+  FRAME_GET_SMART_ACCOUNT_ENABLED_NETWORKS_SUCCESS:
+    '@w3m-frame/GET_SMART_ACCOUNT_ENABLED_NETWORKS_SUCCESS',
+  FRAME_GET_SMART_ACCOUNT_ENABLED_NETWORKS_ERROR:
+    '@w3m-frame/GET_SMART_ACCOUNT_ENABLED_NETWORKS_ERROR',
+  FRAME_INIT_SMART_ACCOUNT_SUCCESS: '@w3m-frame/INIT_SMART_ACCOUNT_SUCCESS',
+  FRAME_INIT_SMART_ACCOUNT_ERROR: '@w3m-frame/INIT_SMART_ACCOUNT_ERROR',
+  FRAME_SET_PREFERRED_ACCOUNT_SUCCESS: '@w3m-frame/SET_PREFERRED_ACCOUNT_SUCCESS',
+  FRAME_SET_PREFERRED_ACCOUNT_ERROR: '@w3m-frame/SET_PREFERRED_ACCOUNT_ERROR'
 } as const
 
 export const W3mFrameRpcConstants = {
-  SAFE_RPC_METHODS: ['eth_blockNumber', 'eth_estimateGas', 'eth_getTransactionByHash'],
-  GET_CHAIN_ID: 'eth_chainId'
+  SAFE_RPC_METHODS: [
+    'eth_accounts',
+    'eth_blockNumber',
+    'eth_call',
+    'eth_chainId',
+    'eth_estimateGas',
+    'eth_feeHistory',
+    'eth_gasPrice',
+    'eth_getAccount',
+    'eth_getBalance',
+    'eth_getBlockByHash',
+    'eth_getBlockByNumber',
+    'eth_getBlockReceipts',
+    'eth_getBlockTransactionCountByHash',
+    'eth_getBlockTransactionCountByNumber',
+    'eth_getCode',
+    'eth_getFilterChanges',
+    'eth_getFilterLogs',
+    'eth_getLogs',
+    'eth_getProof',
+    'eth_getStorageAt',
+    'eth_getTransactionByBlockHashAndIndex',
+    'eth_getTransactionByBlockNumberAndIndex',
+    'eth_getTransactionByHash',
+    'eth_getTransactionCount',
+    'eth_getTransactionReceipt',
+    'eth_getUncleCountByBlockHash',
+    'eth_getUncleCountByBlockNumber',
+    'eth_maxPriorityFeePerGas',
+    'eth_newBlockFilter',
+    'eth_newFilter',
+    'eth_newPendingTransactionFilter',
+    'eth_sendRawTransaction',
+    'eth_syncing',
+    'eth_uninstallFilter'
+  ],
+  NOT_SAFE_RPC_METHODS: ['personal_sign', 'eth_signTypedData_v4', 'eth_sendTransaction'],
+  GET_CHAIN_ID: 'eth_chainId',
+  RPC_METHOD_NOT_ALLOWED_MESSAGE: 'Requested RPC call is not allowed',
+  RPC_METHOD_NOT_ALLOWED_UI_MESSAGE: 'Action not allowed',
+  ACCOUNT_TYPES: {
+    EOA: 'eoa',
+    SMART_ACCOUNT: 'smartAccount'
+  } as const
 }

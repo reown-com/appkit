@@ -1,5 +1,6 @@
+import type { Balance } from '@web3modal/common'
 import { ConstantsUtil } from './ConstantsUtil.js'
-import type { CaipAddress, LinkingRecord } from './TypeUtil.js'
+import type { CaipAddress, LinkingRecord, CaipNetwork } from './TypeUtil.js'
 
 export const CoreHelperUtil = {
   isMobile() {
@@ -11,6 +12,10 @@ export const CoreHelperUtil = {
     }
 
     return false
+  },
+
+  checkCaipNetwork(network: CaipNetwork | undefined, networkName = '') {
+    return network?.id.toLocaleLowerCase().includes(networkName.toLowerCase())
   },
 
   isAndroid() {
@@ -63,6 +68,7 @@ export const CoreHelperUtil = {
       function next() {
         func(...args)
       }
+
       if (timer) {
         clearTimeout(timer)
       }
@@ -110,8 +116,8 @@ export const CoreHelperUtil = {
     }
   },
 
-  openHref(href: string, target: '_blank' | '_self') {
-    window.open(href, target, 'noreferrer noopener')
+  openHref(href: string, target: '_blank' | '_self' | 'popupWindow', features?: string) {
+    window.open(href, target, features || 'noreferrer noopener')
   },
 
   async preloadImage(src: string) {
@@ -138,7 +144,26 @@ export const CoreHelperUtil = {
       }
     }
 
-    return formattedBalance ? `${formattedBalance} ${symbol}` : `0.000 ${symbol}`
+    return formattedBalance ? `${formattedBalance} ${symbol ?? ''}` : `0.000 ${symbol ?? ''}`
+  },
+
+  formatBalance2(balance: string | undefined, symbol: string | undefined) {
+    let formattedBalance = undefined
+
+    if (balance === '0') {
+      formattedBalance = '0'
+    } else if (typeof balance === 'string') {
+      const number = Number(balance)
+      if (number) {
+        formattedBalance = number.toString().match(/^-?\d+(?:\.\d{0,3})?/u)?.[0]
+      }
+    }
+
+    return {
+      value: formattedBalance ?? '0',
+      rest: formattedBalance === '0' ? '000' : '',
+      symbol
+    }
   },
 
   isRestrictedRegion() {
@@ -194,5 +219,57 @@ export const CoreHelperUtil = {
     }
 
     return 'Unknown error'
+  },
+  sortRequestedNetworks(
+    approvedIds: `${string}:${string}`[] | undefined,
+    requestedNetworks: CaipNetwork[] = []
+  ): CaipNetwork[] {
+    const approvedIndexMap: Record<string, number> = {}
+
+    if (requestedNetworks && approvedIds) {
+      approvedIds.forEach((id, index) => {
+        approvedIndexMap[id] = index
+      })
+
+      requestedNetworks.sort((a, b) => {
+        const indexA = approvedIndexMap[a.id]
+        const indexB = approvedIndexMap[b.id]
+
+        if (indexA !== undefined && indexB !== undefined) {
+          return indexA - indexB
+        } else if (indexA !== undefined) {
+          return -1
+        } else if (indexB !== undefined) {
+          return 1
+        }
+
+        return 0
+      })
+    }
+
+    return requestedNetworks
+  },
+  calculateBalance(array: Balance[]) {
+    let sum = 0
+    for (const item of array) {
+      sum += item.value
+    }
+
+    return sum
+  },
+  formatTokenBalance(number: number) {
+    const roundedNumber = number.toFixed(2)
+    const [dollars, pennies] = roundedNumber.split('.')
+
+    return { dollars, pennies }
+  },
+  isAddress(address: string): boolean {
+    if (!/^(?:0x)?[0-9a-f]{40}$/iu.test(address)) {
+      return false
+    } else if (/^(?:0x)?[0-9a-f]{40}$/iu.test(address) || /^(?:0x)?[0-9A-F]{40}$/iu.test(address)) {
+      return true
+    }
+
+    return false
   }
 }

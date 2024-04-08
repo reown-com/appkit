@@ -14,7 +14,8 @@
     "**/out": true,
     "**/dist": true,
     "**/.turbo": true,
-    "**/playwright-report": true
+    "**/playwright-report": true,
+    "**/coverage": true
   },
   "javascript.updateImportsOnFileMove.enabled": "always",
   "typescript.tsdk": "node_modules/typescript/lib",

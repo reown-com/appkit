@@ -1,10 +1,13 @@
-import { subscribeKey as subKey } from 'valtio/utils'
+import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy } from 'valtio/vanilla'
 import type { CustomWallet, Metadata, ProjectId, SdkVersion, Tokens } from '../utils/TypeUtil.js'
 
 // -- Types --------------------------------------------- //
 export interface OptionsControllerState {
   projectId: ProjectId
+  sdkType: 'w3m'
+  sdkVersion: SdkVersion
+  allWallets?: 'SHOW' | 'HIDE' | 'ONLY_MOBILE'
   featuredWalletIds?: string[]
   includeWalletIds?: string[]
   excludeWalletIds?: string[]
@@ -12,10 +15,11 @@ export interface OptionsControllerState {
   customWallets?: CustomWallet[]
   termsConditionsUrl?: string
   privacyPolicyUrl?: string
+  isSiweEnabled?: boolean
   enableAnalytics?: boolean
   metadata?: Metadata
-  sdkType: 'w3m'
-  sdkVersion: SdkVersion
+  enableOnramp?: boolean
+  enableWalletFeatures?: boolean
 }
 
 type StateKey = keyof OptionsControllerState
@@ -37,6 +41,10 @@ export const OptionsController = {
 
   setProjectId(projectId: OptionsControllerState['projectId']) {
     state.projectId = projectId
+  },
+
+  setAllWallets(allWallets: OptionsControllerState['allWallets']) {
+    state.allWallets = allWallets
   },
 
   setIncludeWalletIds(includeWalletIds: OptionsControllerState['includeWalletIds']) {
@@ -67,6 +75,10 @@ export const OptionsController = {
     state.customWallets = customWallets
   },
 
+  setIsSiweEnabled(isSiweEnabled: OptionsControllerState['isSiweEnabled']) {
+    state.isSiweEnabled = isSiweEnabled
+  },
+
   setEnableAnalytics(enableAnalytics: OptionsControllerState['enableAnalytics']) {
     state.enableAnalytics = enableAnalytics
   },
@@ -77,5 +89,13 @@ export const OptionsController = {
 
   setMetadata(metadata: OptionsControllerState['metadata']) {
     state.metadata = metadata
+  },
+
+  setOnrampEnabled(enableOnramp: OptionsControllerState['enableOnramp']) {
+    state.enableOnramp = enableOnramp
+  },
+
+  setWalletFeaturesEnabled(enableWalletFeatures: OptionsControllerState['enableWalletFeatures']) {
+    state.enableWalletFeatures = enableWalletFeatures
   }
 }

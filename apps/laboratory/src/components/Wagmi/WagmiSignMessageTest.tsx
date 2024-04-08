@@ -1,14 +1,16 @@
 import { Button, useToast } from '@chakra-ui/react'
-import { useSignMessage } from 'wagmi'
+import { useSignMessage, useAccount } from 'wagmi'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 
 export function WagmiSignMessageTest() {
   const toast = useToast()
-  const { signMessageAsync } = useSignMessage({ message: 'Hello Web3Modal!' })
+  const { signMessageAsync } = useSignMessage()
+  const { status } = useAccount()
+  const isConnected = status === 'connected'
 
   async function onSignMessage() {
     try {
-      const signature = await signMessageAsync()
+      const signature = await signMessageAsync({ message: 'Hello Web3Modal!' })
       toast({
         title: ConstantsUtil.SigningSucceededToastTitle,
         description: signature,
@@ -26,7 +28,7 @@ export function WagmiSignMessageTest() {
   }
 
   return (
-    <Button data-testid="sign-message-button" onClick={onSignMessage}>
+    <Button data-testid="sign-message-button" onClick={onSignMessage} isDisabled={!isConnected}>
       Sign Message
     </Button>
   )
