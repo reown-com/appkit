@@ -46,7 +46,7 @@ describe('ConvertController', () => {
     expect(ConvertController.state.sourceToken?.address).toEqual(sourceToken.address)
   })
 
-  it('should calculate gas price in Ether and USD as expected', async () => {
+  it('should calculate gas price in Ether and USD as expected', () => {
     const gasPriceInEther = ConvertController.calculateGasPriceInEther(gasLimit, gasFee)
     const gasPriceInUSD = ConvertController.calculateGasPriceInUSD(gasLimit, gasFee)
 
@@ -54,17 +54,17 @@ describe('ConvertController', () => {
     expect(gasPriceInUSD).toEqual(0.06395499714651795)
   })
 
-  it('should return insufficient balance as expected', async () => {
+  it('should return insufficient balance as expected', () => {
     ConvertController.state.networkBalanceInUSD = '0'
     expect(ConvertController.isInsufficientNetworkTokenForGas()).toEqual(true)
   })
 
-  it('should calculate convert values as expected', async () => {
+  it('should calculate convert values as expected', () => {
     expect(ConvertController.state.toTokenAmount).toEqual('0.07942958313582482619')
     expect(ConvertController.state.toTokenPriceInUSD).toEqual(11.772471201328177)
   })
 
-  it('should calculate the price impact as expected', async () => {
+  it('should calculate the price impact as expected', () => {
     const priceImpact = ConvertController.calculatePriceImpact(
       ConvertController.state.toTokenAmount,
       ConvertController.calculateGasPriceInUSD(gasLimit, gasFee)
@@ -72,7 +72,7 @@ describe('ConvertController', () => {
     expect(priceImpact).equal(6.839503307400001)
   })
 
-  it('should calculate the maximum slippage as expected', async () => {
+  it('should calculate the maximum slippage as expected', () => {
     const maxSlippage = ConvertController.calculateMaxSlippage()
     expect(maxSlippage).toEqual(0.005)
   })
