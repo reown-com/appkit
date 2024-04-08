@@ -186,6 +186,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
     this.syncRequestedNetworks([...wagmiConfig.chains])
     this.syncConnectors([...wagmiConfig.connectors])
+    this.initEmailConnectorListeners([...wagmiConfig.connectors])
 
     watchConnectors(this.wagmiConfig, {
       onChange: connectors => this.syncConnectors(connectors)
@@ -404,8 +405,16 @@ export class Web3Modal extends Web3ModalScaffold {
         name: 'Email',
         provider
       })
-      this.listenEmailConnector(emailConnector)
-      this.listenModal(emailConnector)
+    }
+  }
+
+  private async initEmailConnectorListeners(
+    connectors: Web3ModalClientOptions<CoreConfig>['wagmiConfig']['connectors']
+  ) {
+    const emailConnector = connectors.find(({ id }) => id === ConstantsUtil.EMAIL_CONNECTOR_ID)
+    if (emailConnector) {
+      await this.listenEmailConnector(emailConnector)
+      await this.listenModal(emailConnector)
     }
   }
 

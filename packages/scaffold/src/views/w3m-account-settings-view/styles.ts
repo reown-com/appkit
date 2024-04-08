@@ -31,7 +31,8 @@ export default css`
     border-radius: var(--XS, 16px);
     border: 1px solid var(--dark-accent-glass-010, rgba(71, 161, 255, 0.1));
     background: var(--dark-accent-glass-010, rgba(71, 161, 255, 0.1));
-    transition: background 0.2s linear;
+    transition: background-color var(--wui-ease-out-power-1) var(--wui-duration-md);
+    will-change: background-color;
   }
 
   .account-links wui-flex:hover {
