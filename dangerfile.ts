@@ -130,11 +130,7 @@ async function checkUiPackage() {
     fail('New layout components were added, but not exported in ui/index.ts')
   }
 
-  if (
-    created_ui_components_index_ts.length &&
-    !jsx_index_diff?.added.includes('../components') &&
-    !jsx_index_diff?.diff.includes('../components')
-  ) {
+  if (created_ui_components_index_ts.length && !jsx_index_diff?.added.includes('../components')) {
     fail(
       `New components were added, but not exported in ui/utils/JSXTypeUtil.ts: ${created_ui_components.join(
         ', '
@@ -142,19 +138,11 @@ async function checkUiPackage() {
     )
   }
 
-  if (
-    created_ui_composites_index_ts.length &&
-    !jsx_index_diff?.added.includes('../composites') &&
-    !jsx_index_diff?.diff.includes('../composites')
-  ) {
+  if (created_ui_composites_index_ts.length && !jsx_index_diff?.added.includes('../composites')) {
     fail('New composites were added, but not exported in ui/utils/JSXTypeUtil.ts')
   }
 
-  if (
-    created_ui_layout_index_ts.length &&
-    !jsx_index_diff?.added.includes('../layout') &&
-    !jsx_index_diff?.diff.includes('../layout')
-  ) {
+  if (created_ui_layout_index_ts.length && !jsx_index_diff?.added.includes('../layout')) {
     fail('New layout components were added, but not exported in ui/utils/JSXTypeUtil.ts')
   }
 

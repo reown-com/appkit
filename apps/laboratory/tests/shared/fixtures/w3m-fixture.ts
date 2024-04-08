@@ -3,6 +3,7 @@
 import { test as base } from '@playwright/test'
 import { ModalPage } from '../pages/ModalPage'
 import { ModalValidator } from '../validators/ModalValidator'
+import { timeStart, timeEnd } from '../utils/logs'
 
 // Declare the types of fixtures to use
 export interface ModalFixture {
@@ -15,18 +16,18 @@ export interface ModalFixture {
 export const testM = base.extend<ModalFixture>({
   library: ['wagmi', { option: true }],
   modalPage: async ({ page, library }, use) => {
-    console.time('new ModalPage')
+    timeStart('new ModalPage')
     const modalPage = new ModalPage(page, library, 'default')
-    console.timeEnd('new ModalPage')
-    console.time('modalPage.load')
+    timeEnd('new ModalPage')
+    timeStart('modalPage.load')
     await modalPage.load()
-    console.timeEnd('modalPage.load')
+    timeEnd('modalPage.load')
     await use(modalPage)
   },
   modalValidator: async ({ modalPage }, use) => {
-    console.time('new ModalValidator')
+    timeStart('new ModalValidator')
     const modalValidator = new ModalValidator(modalPage.page)
-    console.timeEnd('new ModalValidator')
+    timeEnd('new ModalValidator')
     await use(modalValidator)
   }
 })

@@ -1,5 +1,23 @@
 # @web3modal/scaffold-react
 
+## 4.1.5
+
+### Patch Changes
+
+- release: v4.1.5
+
+- Updated dependencies []:
+  - @web3modal/scaffold@4.1.5
+
+## 4.1.5-93c81127.0
+
+### Patch Changes
+
+- fix: polyfill process in wallet package
+
+- Updated dependencies []:
+  - @web3modal/scaffold@4.1.5-93c81127.0
+
 ## 4.1.4
 
 ### Patch Changes
