@@ -38,9 +38,9 @@ export class ModalValidator {
 
   async expectDisconnected() {
     await expect(
-      this.page.getByTestId('account-button'),
-      'Account button should not be present'
-    ).not.toBeVisible({
+      this.page.getByTestId('connect-button'),
+      'Connect button should be present'
+    ).toBeVisible({
       timeout: MAX_WAIT
     })
   }
