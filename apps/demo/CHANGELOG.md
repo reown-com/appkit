@@ -1,5 +1,14 @@
 # @apps/demo
 
+## 4.1.6
+
+### Patch Changes
+
+- Fix modal default height. Fix ethers email connection lag. Fix ethers + rc relay disconnect issue. Adds new wui-components for secure site.
+
+- Updated dependencies []:
+  - @web3modal/wagmi@4.1.6
+
 ## 4.1.5
 
 ### Patch Changes
