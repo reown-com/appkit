@@ -1,22 +1,20 @@
 import { html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
-import { customElement } from '../../utils/WebComponentsUtil.js'
-import { resetStyles } from '../../utils/ThemeUtil.js'
 import styles from './styles.js'
-import { formatNumberToLocalString } from '../../utils/NumberUtil.js'
+import { UiHelperUtil, customElement } from '@web3modal/ui'
 
-@customElement('wui-convert-details')
+@customElement('w3m-convert-details')
 export class WuiConvertDetails extends LitElement {
-  public static override styles = [resetStyles, styles]
+  public static override styles = [styles]
 
   // -- State & Properties -------------------------------- //
   @property() public detailsOpen = false
 
-  @property() public sourceTokenSymbol?: number
+  @property() public sourceTokenSymbol?: string
 
   @property() public sourceTokenPrice?: number
 
-  @property() public toTokenSymbol?: number
+  @property() public toTokenSymbol?: string
 
   @property() public toTokenConvertedAmount?: number
 
@@ -38,11 +36,11 @@ export class WuiConvertDetails extends LitElement {
               <wui-flex justifyContent="flex-start" flexGrow="1" gap="xs">
                 <wui-text variant="small-400" color="fg-100"
                   >1 ${this.sourceTokenSymbol} =
-                  ${formatNumberToLocalString(this.toTokenConvertedAmount, 3)}
+                  ${UiHelperUtil.formatNumberToLocalString(this.toTokenConvertedAmount, 3)}
                   ${this.toTokenSymbol}</wui-text
                 >
                 <wui-text variant="small-400" color="fg-200">
-                  $${formatNumberToLocalString(this.sourceTokenPrice)}
+                  $${UiHelperUtil.formatNumberToLocalString(this.sourceTokenPrice)}
                 </wui-text>
               </wui-flex>
               <wui-icon name="chevronBottom"></wui-icon>
@@ -59,7 +57,7 @@ export class WuiConvertDetails extends LitElement {
                     >
                       <wui-text variant="small-400" color="fg-150">Network cost</wui-text>
                       <wui-text variant="small-400" color="fg-100">
-                        $${formatNumberToLocalString(this.gasPriceInUSD, 3)}
+                        $${UiHelperUtil.formatNumberToLocalString(this.gasPriceInUSD, 3)}
                       </wui-text>
                     </wui-flex>
                   </wui-flex>
@@ -73,7 +71,7 @@ export class WuiConvertDetails extends LitElement {
                           <wui-text variant="small-400" color="fg-150">Price impact</wui-text>
                           <wui-flex>
                             <wui-text variant="small-400" color="fg-200">
-                              ${formatNumberToLocalString(this.priceImpact, 3)}%
+                              ${UiHelperUtil.formatNumberToLocalString(this.priceImpact, 3)}%
                             </wui-text>
                           </wui-flex>
                         </wui-flex>
@@ -89,7 +87,7 @@ export class WuiConvertDetails extends LitElement {
                           <wui-text variant="small-400" color="fg-150">Max. slippage</wui-text>
                           <wui-flex>
                             <wui-text variant="small-400" color="fg-200">
-                              ${formatNumberToLocalString(this.maxSlippage, 6)}
+                              ${UiHelperUtil.formatNumberToLocalString(this.maxSlippage, 6)}
                               ${this.sourceTokenSymbol} ${this.slippageRate}%
                             </wui-text>
                           </wui-flex>
@@ -124,6 +122,6 @@ export class WuiConvertDetails extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'wui-convert-details': WuiConvertDetails
+    'wui-w3m-details': WuiConvertDetails
   }
 }

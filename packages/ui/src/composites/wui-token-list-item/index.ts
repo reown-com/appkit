@@ -9,7 +9,7 @@ import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import '../wui-icon-box/index.js'
 import styles from './styles.js'
-import { formatNumberToLocalString } from '../../utils/NumberUtil.js'
+import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
 import { NumberUtil } from '@web3modal/common'
 
 @customElement('wui-token-list-item')
@@ -40,7 +40,7 @@ export class WuiTokenListItem extends LitElement {
             ${value
               ? html`
                   <wui-text variant="paragraph-500" color="fg-100">
-                    $${formatNumberToLocalString(value, 3)}
+                    $${UiHelperUtil.formatNumberToLocalString(value, 3)}
                   </wui-text>
                 `
               : null}
@@ -49,7 +49,7 @@ export class WuiTokenListItem extends LitElement {
             <wui-text variant="small-400" color="fg-200">${this.symbol}</wui-text>
             ${this.amount &&
             html`<wui-text variant="small-400" color="fg-200"
-              >${formatNumberToLocalString(this.amount, 4)}</wui-text
+              >${UiHelperUtil.formatNumberToLocalString(this.amount, 4)}</wui-text
             >`}
           </wui-flex>
         </wui-flex>

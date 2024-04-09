@@ -259,11 +259,15 @@ export const ConvertController = {
 
   async initializeState() {
     if (!state.initialized) {
-      await this.getTokenList()
-      await this.getNetworkTokenPrice()
-      await this.getMyTokensWithBalance()
+      await this.fetchTokens()
       state.initialized = true
     }
+  },
+
+  async fetchTokens() {
+    await this.getTokenList()
+    await this.getNetworkTokenPrice()
+    await this.getMyTokensWithBalance()
   },
 
   async getTokenList() {
