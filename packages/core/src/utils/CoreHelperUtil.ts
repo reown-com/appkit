@@ -285,5 +285,14 @@ export const CoreHelperUtil = {
     }
 
     return false
+  },
+
+  extractEthereumAddress(address: string) {
+    const addressParts = address.split(':')
+    if (addressParts.length === 3 && addressParts[0] === 'eip155') {
+      return addressParts[2]
+    }
+
+    return null
   }
 }

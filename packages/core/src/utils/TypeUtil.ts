@@ -422,6 +422,13 @@ export interface SendTransactionArgs {
   address: `0x${string}`
 }
 
+export interface WriteContractArgs {
+  receiverAddress: `0x${string}`
+  tokenAmount: bigint
+  tokenAddress: `0x${string}`
+  fromAddress: `0x${string}`
+}
+
 export interface EstimateGasTransactionArgs {
   address: `0x${string}`
   to: `0x${string}`

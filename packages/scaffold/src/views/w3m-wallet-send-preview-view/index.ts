@@ -5,10 +5,11 @@ import { state } from 'lit/decorators.js'
 import {
   AccountController,
   ConnectionController,
-  ConvertController,
+  CoreHelperUtil,
   NetworkController,
   RouterController,
-  SendController
+  SendController,
+  SnackController
 } from '@web3modal/core'
 
 @customElement('w3m-wallet-send-preview-view')
@@ -25,21 +26,22 @@ export class W3mWalletSendPreviewView extends LitElement {
 
   @state() private receiverAddress = SendController.state.receiverAddress
 
+  @state() private gasPrice = SendController.state.gasPric
+
+  @state() private gasPriceInUsd = SendController.state.gasPriceInUsd
+
   @state() private caipNetwork = NetworkController.state.caipNetwork
-
-  @state() private gasPrice?: bigint
-
-  @state() private gasPriceInUsd?: number
 
   public constructor() {
     super()
-    this.fetchNetworkPrice()
     this.unsubscribe.push(
       ...[
         SendController.subscribe(val => {
           this.token = val.token
           this.sendTokenAmount = val.sendTokenAmount
           this.receiverAddress = val.receiverAddress
+          this.gasPrice = val.gasPric
+          this.gasPriceInUsd = val.gasPriceInUsd
         }),
         NetworkController.subscribeKey('caipNetwork', val => (this.caipNetwork = val))
       ]
@@ -60,7 +62,7 @@ export class W3mWalletSendPreviewView extends LitElement {
             ${this.sendValueTemplate()}
           </wui-flex>
           <wui-preview-item
-            text="${Number(this.token?.quantity.numeric).toFixed(2)} ${this.token?.symbol}"
+            text="${this.sendTokenAmount} ${this.token?.symbol}"
             .imageSrc=${this.token?.iconUrl}
           ></wui-preview-item>
         </wui-flex>
@@ -114,12 +116,6 @@ export class W3mWalletSendPreviewView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
-  private async fetchNetworkPrice() {
-    await ConvertController.getNetworkTokenPrice()
-    const gas = await ConvertController.getInitialGasPrice()
-    this.gasPrice = gas.gasPrice
-    this.gasPriceInUsd = gas.gasPriceInUsd
-  }
   private sendValueTemplate() {
     if (this.token && this.sendTokenAmount) {
       const price = this.token.price
@@ -134,8 +130,39 @@ export class W3mWalletSendPreviewView extends LitElement {
   }
 
   private async onSendClick() {
-    // RouterController.reset('Account')
-    if (this.receiverAddress && this.sendTokenAmount && this.gasPrice) {
+    if (this.token?.address && this.sendTokenAmount) {
+      RouterController.pushTransactionStack({
+        view: 'Account',
+        goBack: false
+      })
+
+      const amount = ConnectionController.parseUnits(
+        this.sendTokenAmount.toString(),
+        Number(this.token.quantity.decimals)
+      )
+
+      try {
+        if (
+          AccountController.state.address &&
+          this.sendTokenAmount &&
+          this.receiverAddress &&
+          this.token.address
+        ) {
+          await ConnectionController.writeContract({
+            fromAddress: AccountController.state.address as `0x${string}`,
+            tokenAddress: CoreHelperUtil.extractEthereumAddress(
+              this.token.address
+            ) as `0x${string}`,
+            receiverAddress: this.receiverAddress as `0x${string}`,
+            tokenAmount: amount
+          })
+          RouterController.replace('Account')
+          SnackController.showSuccess('Transaction Succesfull')
+        }
+      } catch (error) {
+        SnackController.showError('Something went wrong...')
+      }
+    } else if (this.receiverAddress && this.sendTokenAmount && this.gasPrice) {
       RouterController.pushTransactionStack({
         view: null,
         goBack: true
@@ -154,8 +181,10 @@ export class W3mWalletSendPreviewView extends LitElement {
           value,
           gasPrice: this.gasPrice
         })
+        RouterController.replace('Account')
+        SnackController.showSuccess('Transaction Succesfull')
       } catch (error) {
-        console.log(error)
+        SnackController.showError('Something went wrong...')
       }
     }
   }

@@ -11,7 +11,8 @@ import {
   watchConnectors,
   waitForTransactionReceipt,
   estimateGas,
-  getAccount
+  getAccount,
+  writeContract
 } from '@wagmi/core'
 import { mainnet } from 'viem/chains'
 import { prepareTransactionRequest, sendTransaction as wagmiSendTransaction } from '@wagmi/core'
@@ -27,7 +28,8 @@ import type {
   NetworkControllerClient,
   PublicStateControllerState,
   SendTransactionArgs,
-  Token
+  Token,
+  WriteContractArgs
 } from '@web3modal/scaffold'
 import { formatUnits, parseUnits } from 'viem'
 import type { Hex } from 'viem'
@@ -44,6 +46,7 @@ import type { W3mFrameProvider } from '@web3modal/wallet'
 import { NetworkUtil } from '@web3modal/common'
 import type { defaultWagmiConfig as coreConfig } from './utils/defaultWagmiCoreConfig.js'
 import type { defaultWagmiConfig as reactConfig } from './utils/defaultWagmiReactConfig.js'
+import erc20ABI from '../src/abi/erc20.json'
 
 // -- Types ---------------------------------------------------------------------
 export type CoreConfig = ReturnType<typeof coreConfig>
@@ -187,6 +190,20 @@ export class Web3Modal extends Web3ModalScaffold {
         } catch (error) {
           return 0n
         }
+      },
+
+      writeContract: async (data: WriteContractArgs) => {
+        const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
+
+        const tx = await writeContract(wagmiConfig, {
+          chainId,
+          address: data.tokenAddress,
+          abi: erc20ABI,
+          functionName: 'transfer',
+          args: [data.receiverAddress, data.tokenAmount]
+        })
+
+        return tx
       },
 
       sendTransaction: async (data: SendTransactionArgs) => {

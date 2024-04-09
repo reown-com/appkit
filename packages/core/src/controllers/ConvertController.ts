@@ -383,15 +383,6 @@ export const ConvertController = {
     const networkPriceInUSD = NumberUtil.bigNumber(state.networkPrice)
     const gasCostInUSD = networkPriceInUSD.multipliedBy(totalGasCostInEther)
 
-    console.log(
-      totalGasCostInEther,
-      networkPriceInUSD,
-      gasCostInUSD,
-      gas,
-      gasPrice,
-      'calculateGasPriceInUSD'
-    )
-
     return gasCostInUSD.toNumber()
   },
 

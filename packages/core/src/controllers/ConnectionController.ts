@@ -6,7 +6,8 @@ import type {
   Connector,
   EstimateGasTransactionArgs,
   SendTransactionArgs,
-  WcWallet
+  WcWallet,
+  WriteContractArgs
 } from '../utils/TypeUtil.js'
 import { TransactionsController } from './TransactionsController.js'
 
@@ -23,6 +24,7 @@ export interface ConnectionControllerClient {
   disconnect: () => Promise<void>
   signMessage: (message: string) => Promise<string>
   sendTransaction: (args: SendTransactionArgs) => Promise<`0x${string}` | null>
+  writeContract: (args: WriteContractArgs) => Promise<`0x${string}` | null>
   getEstimatedGas: (args: EstimateGasTransactionArgs) => Promise<bigint>
   parseUnits: (value: string, decimals: number) => bigint
   formatUnits: (value: bigint, decimals: number) => string
@@ -102,6 +104,10 @@ export const ConnectionController = {
 
   async sendTransaction(args: SendTransactionArgs) {
     return this._getClient().sendTransaction(args)
+  },
+
+  async writeContract(args: WriteContractArgs) {
+    return this._getClient().writeContract(args)
   },
 
   async getEstimatedGas(args: EstimateGasTransactionArgs) {

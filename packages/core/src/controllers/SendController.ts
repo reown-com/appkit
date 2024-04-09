@@ -9,18 +9,11 @@ export interface SendControllerState {
   receiverAddress?: string
   receiverProfileName?: string
   receiverProfileImageUrl?: string
+  gasPric?: bigint
+  gasPriceInUsd?: number
 }
 
 type StateKey = keyof SendControllerState
-
-type TransactionParams = {
-  data: `0x${string}`
-  to: `0x${string}`
-  gas: bigint
-  gasPrice: bigint
-  value: bigint
-  toAmount: string
-}
 
 // -- State --------------------------------------------- //
 const state = proxy<SendControllerState>({})
@@ -61,7 +54,13 @@ export const SendController = {
     state.receiverProfileName = receiverProfileName
   },
 
-  sendTransaction(tx: TransactionParams) {},
+  setGasPrice(gasPric: SendControllerState['gasPric']) {
+    state.gasPric = gasPric
+  },
+
+  setGasPriceInUsd(gasPriceInUsd: SendControllerState['gasPriceInUsd']) {
+    state.gasPriceInUsd = gasPriceInUsd
+  },
 
   resetSend() {
     state.token = undefined

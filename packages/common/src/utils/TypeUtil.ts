@@ -74,6 +74,7 @@ export interface TransactionQuantity {
 }
 
 export interface Balance {
+  address?: `0x${string}`
   name: string
   symbol: string
   chainId: string
