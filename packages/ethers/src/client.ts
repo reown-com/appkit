@@ -329,7 +329,12 @@ export class Web3Modal extends Web3ModalScaffold {
         const browserProvider = new BrowserProvider(provider, chainId)
         const signer = new JsonRpcSigner(browserProvider, address)
         const contract = new ethers.Contract(data.tokenAddress, erc20ABI, signer)
-        const tx = await contract.transfer(data.receiverAddress, data.tokenAmount)
+
+        if (!contract || typeof contract['transfer'] !== 'function') {
+          throw new Error('Contract or transfer method is undefined')
+        }
+
+        const tx = await contract['transfer'](data.receiverAddress, data.tokenAmount)
 
         return tx
       },
