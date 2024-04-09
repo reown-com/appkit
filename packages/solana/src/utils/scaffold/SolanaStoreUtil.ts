@@ -12,7 +12,7 @@ import { SolHelpersUtil } from './SolanaHelpersUtils.js'
 type StateKey = keyof SolStoreUtilState
 
 export interface SolStoreUtilState {
-  provider?: Provider | CombinedProvider | UniversalProvider
+  provider?: CombinedProvider | UniversalProvider | Provider
   providerType?: 'walletConnect' | `injected_${string}`
   address?: string
   chainId?: string
