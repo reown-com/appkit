@@ -1,5 +1,19 @@
 # @web3modal/ethers
 
+## 4.1.6
+
+### Patch Changes
+
+- Fix modal default height. Fix ethers email connection lag. Fix ethers + rc relay disconnect issue. Adds new wui-components for secure site.
+
+- Updated dependencies []:
+  - @web3modal/polyfills@4.1.6
+  - @web3modal/scaffold@4.1.6
+  - @web3modal/scaffold-react@4.1.6
+  - @web3modal/scaffold-utils@4.1.6
+  - @web3modal/scaffold-vue@4.1.6
+  - @web3modal/siwe@4.1.6
+
 ## 4.1.5
 
 ### Patch Changes
