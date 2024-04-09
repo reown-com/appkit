@@ -146,13 +146,17 @@ export class W3mWalletSendPreviewView extends LitElement {
       const value = ConnectionController.parseUnits(this.sendTokenAmount.toString(), 18)
       const data = '0x'
 
-      await ConnectionController.sendTransaction({
-        to,
-        address,
-        data,
-        value,
-        gasPrice: this.gasPrice
-      })
+      try {
+        await ConnectionController.sendTransaction({
+          to,
+          address,
+          data,
+          value,
+          gasPrice: this.gasPrice
+        })
+      } catch (error) {
+        console.log(error)
+      }
     }
   }
 
