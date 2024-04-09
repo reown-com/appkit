@@ -82,6 +82,6 @@ export class Email {
       )
     }
 
-    return `web3modal${index}@mailsac.com`
+    return `tests-${index}@web3modal.msdc.co`
   }
 }
