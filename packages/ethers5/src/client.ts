@@ -14,7 +14,6 @@ import { Web3ModalScaffold } from '@web3modal/scaffold'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
 import EthereumProvider, { OPTIONAL_METHODS } from '@walletconnect/ethereum-provider'
-import { getDidChainId, getDidAddress } from '@walletconnect/utils'
 import type {
   Address,
   Metadata,
@@ -167,7 +166,7 @@ export class Web3Modal extends Web3ModalScaffold {
         })
 
         if (siweConfig?.options?.enabled) {
-          const { SIWEController } = await import('@web3modal/siwe')
+          const { SIWEController, getDidChainId, getDidAddress } = await import('@web3modal/siwe')
           const result = await WalletConnectProvider.authenticate({
             nonce: await siweConfig.getNonce(),
             methods: OPTIONAL_METHODS,

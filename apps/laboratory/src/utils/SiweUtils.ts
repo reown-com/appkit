@@ -1,7 +1,6 @@
 import { getCsrfToken, signIn, signOut, getSession } from 'next-auth/react'
 import type { SIWEVerifyMessageArgs, SIWECreateMessageArgs, SIWESession } from '@web3modal/siwe'
-import { createSIWEConfig } from '@web3modal/siwe'
-import { formatMessage } from '@walletconnect/utils'
+import { createSIWEConfig, formatMessage } from '@web3modal/siwe'
 import { WagmiConstantsUtil } from '../utils/WagmiConstants'
 
 export const siweConfig = createSIWEConfig({

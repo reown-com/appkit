@@ -29,7 +29,6 @@ import type { Hex } from 'viem'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
-import { getDidChainId, getDidAddress } from '@walletconnect/utils'
 import {
   getCaipDefaultChain,
   getEmailCaipNetworks,
@@ -129,7 +128,7 @@ export class Web3Modal extends Web3ModalScaffold {
         const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
 
         if (siweConfig?.options?.enabled) {
-          const { SIWEController } = await import('@web3modal/siwe')
+          const { SIWEController, getDidChainId, getDidAddress } = await import('@web3modal/siwe')
           const siweParams = await siweConfig.getMessageParams()
           // @ts-expect-error - setting requested chains beforehand avoids wagmi auto disconnecting the session when `connect` is called
           await connector.setRequestedChainsIds(siweParams.chains)
