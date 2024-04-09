@@ -40,7 +40,7 @@ export const ConstantsUtil = {
       id: 'flutter-web3wallet',
       name: 'flutter-web3wallet',
       homepage: 'https://walletconnect.com',
-      mobile_link: 'wcflutterwallet://wc?uri='
+      mobile_link: 'wcflutterwallet://wc'
     }
   ],
   ProjectId: projectId
