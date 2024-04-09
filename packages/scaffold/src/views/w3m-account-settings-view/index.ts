@@ -16,6 +16,7 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
+import { W3mFrameHelpers, W3mFrameRpcConstants } from '@web3modal/wallet'
 
 @customElement('w3m-account-settings-view')
 export class W3mAccountSettingsView extends LitElement {
@@ -36,6 +37,8 @@ export class W3mAccountSettingsView extends LitElement {
   @state() private network = NetworkController.state.caipNetwork
 
   @state() private disconnecting = false
+
+  @state() private loading = false
 
   public constructor() {
     super()
@@ -85,7 +88,7 @@ export class W3mAccountSettingsView extends LitElement {
         ></wui-avatar>
         <wui-flex flexDirection="column" alignItems="center">
           <wui-flex gap="3xs" alignItems="center" justifyContent="center">
-            <wui-text variant="large-600" color="fg-100">
+            <wui-text variant="large-600" color="fg-100" data-testid="account-settings-address">
               ${this.profileName
                 ? UiHelperUtil.getTruncateString({
                     string: this.profileName,
@@ -120,11 +123,13 @@ export class W3mAccountSettingsView extends LitElement {
             imageSrc=${ifDefined(networkImage)}
             ?chevron=${this.isAllowedNetworkSwitch()}
             @click=${this.onNetworks.bind(this)}
+            data-testid="account-switch-network-button"
           >
             <wui-text variant="paragraph-500" color="fg-100">
               ${this.network?.name ?? 'Unknown'}
             </wui-text>
           </wui-list-item>
+          ${this.togglePreferredAccountBtnTemplate()}
           <wui-list-item
             variant="icon"
             iconVariant="overlay"
@@ -181,6 +186,57 @@ export class W3mAccountSettingsView extends LitElement {
         <wui-text variant="paragraph-500" color="fg-100">${email}</wui-text>
       </wui-list-item>
     `
+  }
+
+  private togglePreferredAccountBtnTemplate() {
+    const networkEnabled = NetworkController.checkIfSmartAccountEnabled()
+    const type = StorageUtil.getConnectedConnector()
+    const emailConnector = ConnectorController.getEmailConnector()
+
+    if (!emailConnector || type !== 'EMAIL' || !networkEnabled) {
+      return null
+    }
+
+    const preferredAccountType = W3mFrameHelpers.getPreferredAccountType()
+    const text =
+      preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+        ? 'Switch to your EOA'
+        : 'Switch to your smart account'
+
+    return html`
+      <wui-list-item
+        variant="icon"
+        iconVariant="overlay"
+        icon="swapHorizontalBold"
+        iconSize="sm"
+        ?chevron=${true}
+        ?loading=${this.loading}
+        @click=${this.changePreferredAccountType.bind(this)}
+        data-testid="account-toggle-preferred-account-type"
+      >
+        <wui-text variant="paragraph-500" color="fg-100">${text}</wui-text>
+      </wui-list-item>
+    `
+  }
+
+  private async changePreferredAccountType() {
+    const smartAccountEnabled = NetworkController.checkIfSmartAccountEnabled()
+    const preferredAccountType = W3mFrameHelpers.getPreferredAccountType()
+    const accountTypeTarget =
+      preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT ||
+      !smartAccountEnabled
+        ? W3mFrameRpcConstants.ACCOUNT_TYPES.EOA
+        : W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+    const emailConnector = ConnectorController.getEmailConnector()
+
+    if (!emailConnector) {
+      return
+    }
+
+    this.loading = true
+    await emailConnector?.provider.setPreferredAccount(accountTypeTarget)
+    this.loading = false
+    this.requestUpdate()
   }
 
   private onGoToUpdateEmail(email: string) {

@@ -51,12 +51,14 @@ export default css`
   }
 
   ::slotted(*) {
-    transition: opacity 200ms ease-in-out;
+    transition: opacity var(--wui-ease-out-power-1) var(--wui-duration-md);
+    will-change: opacity;
     opacity: var(--local-opacity-100);
   }
 
   button > wui-text {
-    transition: opacity 200ms ease-in-out;
+    transition: opacity var(--wui-ease-out-power-1) var(--wui-duration-md);
+    will-change: opacity;
     opacity: var(--local-opacity-100);
     color: var(--wui-color-inverse-100);
   }

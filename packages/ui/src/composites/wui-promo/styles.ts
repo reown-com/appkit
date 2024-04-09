@@ -9,6 +9,8 @@ export default css`
     background-color: var(--wui-gray-glass-090);
     border-radius: var(--wui-border-radius-3xl);
     border: 1px solid var(--wui-gray-glass-060);
+    transition: background-color var(--wui-duration-md) var(--wui-ease-inout-power-1);
+    will-change: background-color;
   }
 
   @media (hover: hover) and (pointer: fine) {
@@ -17,7 +19,6 @@ export default css`
     }
 
     button:active:enabled {
-      transition: all var(--wui-ease-out-power-2) var(--wui-duration-sm);
       background-color: var(--wui-gray-glass-060);
     }
   }

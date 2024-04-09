@@ -3,6 +3,7 @@ import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
+import { W3mFrameHelpers, W3mFrameRpcConstants } from '@web3modal/wallet'
 
 @customElement('w3m-wallet-compatible-networks-view')
 export class W3mWalletCompatibleNetworksView extends LitElement {
@@ -25,12 +26,25 @@ export class W3mWalletCompatibleNetworksView extends LitElement {
 
   // -- Private ------------------------------------------- //
   networkTemplate() {
-    const { approvedCaipNetworkIds, requestedCaipNetworks } = NetworkController.state
+    const { approvedCaipNetworkIds, requestedCaipNetworks, caipNetwork } = NetworkController.state
+    const isNetworkEnabledForSmartAccounts = NetworkController.checkIfSmartAccountEnabled()
+    const preferredAccountType = W3mFrameHelpers.getPreferredAccountType()
 
-    const sortedNetworks = CoreHelperUtil.sortRequestedNetworks(
+    let sortedNetworks = CoreHelperUtil.sortRequestedNetworks(
       approvedCaipNetworkIds,
       requestedCaipNetworks
     )
+
+    // For now, each network has a unique account
+    if (
+      isNetworkEnabledForSmartAccounts &&
+      preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+    ) {
+      if (!caipNetwork) {
+        return null
+      }
+      sortedNetworks = [caipNetwork]
+    }
 
     return sortedNetworks.map(
       network => html`

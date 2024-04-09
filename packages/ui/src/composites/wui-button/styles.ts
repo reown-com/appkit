@@ -10,6 +10,7 @@ export default css`
     border: 1px solid var(--wui-gray-glass-010);
     border-radius: var(--local-border-radius);
     width: var(--local-width);
+    white-space: nowrap;
   }
 
   button:disabled {
@@ -71,12 +72,14 @@ export default css`
   }
 
   button > wui-text {
-    transition: opacity 200ms ease-in-out;
+    transition: opacity var(--wui-ease-out-power-1) var(--wui-duration-md);
+    will-change: opacity;
     opacity: var(--local-opacity-100);
   }
 
   ::slotted(*) {
-    transition: opacity 200ms ease-in-out;
+    transition: opacity var(--wui-ease-out-power-1) var(--wui-duration-md);
+    will-change: opacity;
     opacity: var(--local-opacity-100);
   }
 
@@ -84,7 +87,6 @@ export default css`
     position: absolute;
     left: 50%;
     top: 50%;
-    transition: all 200ms ease-in-out;
     transform: translate(-50%, -50%);
     opacity: var(--local-opacity-000);
   }

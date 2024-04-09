@@ -1,5 +1,55 @@
 # @web3modal/ui
 
+## 4.1.6
+
+### Patch Changes
+
+- Fix modal default height. Fix ethers email connection lag. Fix ethers + rc relay disconnect issue. Adds new wui-components for secure site.
+
+## 4.1.5
+
+### Patch Changes
+
+- release: v4.1.5
+
+## 4.1.5-93c81127.0
+
+### Patch Changes
+
+- fix: polyfill process in wallet package
+
+## 4.1.4
+
+### Patch Changes
+
+- feat: wallet info hook
+
+## 4.1.3
+
+### Patch Changes
+
+- feat: wallet info hook
+
+- feat: reset version to 4.1.3
+
+## 4.1.3-5f2ae345.1
+
+### Patch Changes
+
+- canary: test imports
+
+## 4.1.3-8e039e.0
+
+### Patch Changes
+
+- feat: update optional dependencies
+
+## 4.1.2
+
+### Patch Changes
+
+- 4.1.2 release
+
 ## 4.2.0-4b5257b4.1
 
 ### Minor Changes
