@@ -146,6 +146,10 @@ export class Web3Modal extends Web3ModalScaffold {
         return await Promise.resolve('0x')
       },
 
+      writeContract: async () => {
+        return await Promise.resolve('0x')
+      },
+
       getEstimatedGas: async () => {
         return await Promise.resolve(BigInt(0))
       },
