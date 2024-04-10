@@ -78,8 +78,7 @@ describe('AccountController', () => {
       profileName: undefined,
       profileImage: undefined,
       addressExplorerUrl: undefined,
-      tokenBalance: [],
-      preferredAccountType: undefined
+      tokenBalance: []
     })
   })
 })
