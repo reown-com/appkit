@@ -112,6 +112,7 @@ export class Web3ModalSIWEClient {
 
   async signOut() {
     this.methods.onSignOut?.()
+
     return this.methods.signOut()
   }
 }
