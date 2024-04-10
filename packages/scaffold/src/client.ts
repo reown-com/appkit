@@ -226,6 +226,11 @@ export class Web3ModalScaffold {
       NetworkController.setSmartAccountEnabledNetworks(smartAccountEnabledNetworks)
     }
 
+  protected setPreferredAccountType: (typeof AccountController)['setPreferredAccountType'] =
+    preferredAccountType => {
+      AccountController.setPreferredAccountType(preferredAccountType)
+    }
+
   // -- Private ------------------------------------------------------------------
   private async initControllers(options: ScaffoldOptions) {
     NetworkController.setClient(options.networkControllerClient)

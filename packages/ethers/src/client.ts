@@ -38,6 +38,7 @@ import type { Eip1193Provider } from 'ethers'
 import { W3mFrameProvider, W3mFrameHelpers, W3mFrameRpcConstants } from '@web3modal/wallet'
 import type { CombinedProvider } from '@web3modal/scaffold-utils/ethers'
 import { NetworkUtil } from '@web3modal/common'
+import type { W3mFrameTypes } from '@web3modal/wallet'
 
 // -- Types ---------------------------------------------------------------------
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
@@ -784,10 +785,11 @@ export class Web3Modal extends Web3ModalScaffold {
         super.setLoading(false)
       })
 
-      this.emailProvider.onSetPreferredAccount(({ address }) => {
+      this.emailProvider.onSetPreferredAccount(({ address, type }) => {
         if (!address) {
           return
         }
+        this.setPreferredAccountType(type as W3mFrameTypes.AccountType)
         const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
         EthersStoreUtil.setAddress(address as Address)
         EthersStoreUtil.setChainId(chainId)
