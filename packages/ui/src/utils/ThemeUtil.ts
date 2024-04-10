@@ -58,7 +58,7 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --w3m-border-radius-master: ${unsafeCSS(
           themeVariables?.['--w3m-border-radius-master'] || '4px'
         )};
-        --w3m-z-index: ${unsafeCSS(themeVariables?.['--w3m-z-index'] || 100)};
+        --w3m-z-index: ${unsafeCSS(themeVariables?.['--w3m-z-index'] || 999)};
 
         --wui-font-family: var(--w3m-font-family);
 
@@ -665,7 +665,11 @@ export const elementStyles = css`
     justify-content: center;
     align-items: center;
     position: relative;
-    transition: all var(--wui-ease-out-power-1) var(--wui-duration-lg);
+    transition:
+      background-color var(--wui-ease-inout-power-1) var(--wui-duration-md),
+      color var(--wui-ease-inout-power-1) var(--wui-duration-md),
+      box-shadow var(--wui-ease-inout-power-1) var(--wui-duration-md);
+    will-change: background-color, color;
     outline: none;
     border: 1px solid transparent;
     column-gap: var(--wui-spacing-3xs);
@@ -679,7 +683,6 @@ export const elementStyles = css`
     }
 
     button:active:enabled {
-      transition: all var(--wui-ease-out-power-2) var(--wui-duration-sm);
       background-color: var(--wui-gray-glass-010);
     }
 

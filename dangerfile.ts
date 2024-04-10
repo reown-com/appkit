@@ -11,6 +11,9 @@ const RENDER_COMMENT = `// -- Render -------------------------------------------
 const STATE_PROPERTIES_COMMENT = `// -- State & Properties -------------------------------- //`
 const PRIVATE_COMMENT = `// -- Private ------------------------------------------- //`
 const PACKAGE_VERSION = ConstantsUtil.VERSION
+const RELATIVE_IMPORT_SAME_DIR = `'./`
+const RELATIVE_IMPORT_PARENT_DIR = `'../`
+const RELATIVE_IMPORT_EXTENSION = `.js'`
 
 // -- Data --------------------------------------------------------------------
 const { modified_files, created_files, deleted_files, diffForFile } = danger.git
@@ -130,11 +133,7 @@ async function checkUiPackage() {
     fail('New layout components were added, but not exported in ui/index.ts')
   }
 
-  if (
-    created_ui_components_index_ts.length &&
-    !jsx_index_diff?.added.includes('../components') &&
-    !jsx_index_diff?.diff.includes('../components')
-  ) {
+  if (created_ui_components_index_ts.length && !jsx_index_diff?.added.includes('../components')) {
     fail(
       `New components were added, but not exported in ui/utils/JSXTypeUtil.ts: ${created_ui_components.join(
         ', '
@@ -142,19 +141,11 @@ async function checkUiPackage() {
     )
   }
 
-  if (
-    created_ui_composites_index_ts.length &&
-    !jsx_index_diff?.added.includes('../composites') &&
-    !jsx_index_diff?.diff.includes('../composites')
-  ) {
+  if (created_ui_composites_index_ts.length && !jsx_index_diff?.added.includes('../composites')) {
     fail('New composites were added, but not exported in ui/utils/JSXTypeUtil.ts')
   }
 
-  if (
-    created_ui_layout_index_ts.length &&
-    !jsx_index_diff?.added.includes('../layout') &&
-    !jsx_index_diff?.diff.includes('../layout')
-  ) {
+  if (created_ui_layout_index_ts.length && !jsx_index_diff?.added.includes('../layout')) {
     fail('New layout components were added, but not exported in ui/utils/JSXTypeUtil.ts')
   }
 
@@ -277,18 +268,35 @@ async function checkScaffoldHtmlPackage() {
 checkScaffoldHtmlPackage()
 
 // -- Client(s) Package Checks ----------------------------------------------------
-async function checkClientPackages() {
-  const wagmi_files = modified_files.filter(f => f.includes('/wagmi/'))
+// -- Helper functions
+const isRelativeImport = (addition: string | undefined) => {
+  const sameDir = addition?.includes(RELATIVE_IMPORT_SAME_DIR)
+  const parentDir = addition?.includes(RELATIVE_IMPORT_PARENT_DIR)
+  return sameDir || parentDir
+}
+const containsRelativeImportWithoutJSExtension = (addition: string | undefined) => {
+  const hasImportStatement = addition?.includes('import')
+  const lacksJSExtension = !addition?.includes(RELATIVE_IMPORT_EXTENSION)
+  const hasRelativePath = isRelativeImport(addition)
 
-  for (const f of wagmi_files) {
+  return hasImportStatement && lacksJSExtension && hasRelativePath
+}
+async function checkClientPackages() {
+  const client_files = modified_files.filter(f => /\/(wagmi|solana|ethers|ethers5)\//.test(f))
+
+  for (const f of client_files) {
     const diff = await diffForFile(f)
 
-    if (diff?.added.includes('@web3modal/core')) {
+    if (diff?.added.includes("from '@web3modal/core")) {
       fail(`${f} is not allowed to import from @web3modal/core`)
     }
 
-    if (diff?.added.includes('@web3modal/ui')) {
+    if (diff?.added.includes("from '@web3modal/ui")) {
       fail(`${f} is not allowed to import from @web3modal/ui`)
+    }
+
+    if (containsRelativeImportWithoutJSExtension(diff?.added)) {
+      fail(`${f} contains relative imports without .js extension`)
     }
   }
 }
@@ -315,6 +323,21 @@ async function checkWallet() {
 }
 
 checkWallet()
+
+// -- Check laboratory ------------------------------------------------------------
+
+async function checkLaboratory() {
+  const lab_files = modified_files.filter(f => f.includes('/laboratory/'))
+  for (const f of lab_files) {
+    const diff = await diffForFile(f)
+    if (f.includes('project') && (diff?.removed.includes('spec') || diff?.added.includes('spec'))) {
+      warn('Testing spec changed')
+    }
+  }
+}
+
+checkLaboratory()
+
 // -- Check left over development constants ---------------------------------------
 async function checkDevelopmentConstants() {
   for (const f of updated_files) {

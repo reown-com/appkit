@@ -13,8 +13,8 @@ import {
   RouterUtil
 } from '@web3modal/core'
 
+import { NetworkUtil } from '@web3modal/common'
 import { ConstantsUtil } from '../core/utils/ConstantsUtil.js'
-import { HelpersUtil } from '@web3modal/scaffold-utils'
 
 // -- Client -------------------------------------------------------------------- //
 export class Web3ModalSIWEClient {
@@ -86,7 +86,7 @@ export class Web3ModalSIWEClient {
     if (!address) {
       throw new Error('An address is required to create a SIWE message.')
     }
-    const chainId = HelpersUtil.caipNetworkIdToNumber(NetworkController.state.caipNetwork?.id)
+    const chainId = NetworkUtil.caipNetworkIdToNumber(NetworkController.state.caipNetwork?.id)
     if (!chainId) {
       throw new Error('A chainId is required to create a SIWE message.')
     }

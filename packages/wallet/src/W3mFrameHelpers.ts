@@ -73,5 +73,13 @@ export const W3mFrameHelpers = {
     return W3mFrameRpcConstants.SAFE_RPC_METHODS.includes(method)
   },
 
+  getPreferredAccountType(): W3mFrameTypes.AccountType {
+    const storedType = W3mFrameStorage.get(
+      W3mFrameConstants.PREFERRED_ACCOUNT_TYPE
+    ) as W3mFrameTypes.AccountType
+
+    return storedType || W3mFrameRpcConstants.ACCOUNT_TYPES.EOA
+  },
+
   isClient: typeof window !== 'undefined'
 }
