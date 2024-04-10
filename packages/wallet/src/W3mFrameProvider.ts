@@ -607,7 +607,7 @@ export class W3mFrameProvider {
   private onPreferSmartAccountSuccess(
     event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/SET_PREFERRED_ACCOUNT_SUCCESS' }>
   ) {
-    this.persistPreferredAccount(event.payload.type as W3mFrameTypes.AccountType)
+    W3mFrameHelpers.setPreferredAccountType(event.payload.type as W3mFrameTypes.AccountType)
     this.setPreferredAccountResolver?.resolve(undefined)
   }
 
@@ -638,10 +638,6 @@ export class W3mFrameProvider {
 
   private getLastUsedChainId() {
     return Number(W3mFrameStorage.get(W3mFrameConstants.LAST_USED_CHAIN_KEY))
-  }
-
-  private persistPreferredAccount(type: W3mFrameTypes.AccountType) {
-    W3mFrameStorage.set(W3mFrameConstants.PREFERRED_ACCOUNT_TYPE, type)
   }
 
   private persistSmartAccountEnabledNetworks(networks: number[]) {
