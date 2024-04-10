@@ -59,15 +59,15 @@
     "@web3modal/siwe": "4.1.6"
   },
   "devDependencies": {
-    "@wagmi/connectors": "0.0.0-20240408211951",
-    "@wagmi/core": "2.6.5",
+    "@wagmi/connectors": "0.0.0-20240410210101",
+    "@wagmi/core": "2.6.13",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "viem": "2.7.13",
     "vue": "3.4.3"
   },
   "peerDependencies": {
-    "@wagmi/connectors": ">=4.0.0",
+    "@wagmi/connectors": "0.0.0-20240410210101",
     "@wagmi/core": ">=2.0.0",
     "react": ">=17",
     "react-dom": ">=17",
