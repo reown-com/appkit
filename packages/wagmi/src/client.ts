@@ -461,6 +461,7 @@ export class Web3Modal extends Web3ModalScaffold {
       provider.onIsConnected(req => {
         this.setIsConnected(true)
         this.setSmartAccountDeployed(Boolean(req.smartAccountDeployed))
+        this.setPreferredAccountType(req.preferredAccountType as W3mFrameTypes.AccountType)
         super.setLoading(false)
       })
 

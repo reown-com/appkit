@@ -780,9 +780,10 @@ export class Web3Modal extends Web3ModalScaffold {
         this.setIsConnected(false)
         super.setLoading(false)
       })
-      this.emailProvider.onIsConnected(() => {
+      this.emailProvider.onIsConnected(({ preferredAccountType }) => {
         this.setIsConnected(true)
         super.setLoading(false)
+        this.setPreferredAccountType(preferredAccountType as W3mFrameTypes.AccountType)
       })
 
       this.emailProvider.onSetPreferredAccount(({ address, type }) => {

@@ -133,9 +133,9 @@ export class W3mFrameProvider {
         case W3mFrameConstants.FRAME_GET_SMART_ACCOUNT_ENABLED_NETWORKS_ERROR:
           return this.onSmartAccountEnabledNetworksError(event)
         case W3mFrameConstants.FRAME_SET_PREFERRED_ACCOUNT_SUCCESS:
-          return this.onPreferSmartAccountSuccess(event)
+          return this.onSetPreferredAccountSuccess()
         case W3mFrameConstants.FRAME_SET_PREFERRED_ACCOUNT_ERROR:
-          return this.onPreferSmartAccountError()
+          return this.onSetPreferredAccountError()
 
         default:
           return null
@@ -441,9 +441,7 @@ export class W3mFrameProvider {
   ) {
     this.setEmailLoginSuccess(event.payload.email)
     this.setLastUsedChainId(event.payload.chainId)
-    W3mFrameHelpers.setPreferredAccountType(
-      event.payload.preferredAccountType as W3mFrameTypes.AccountType
-    )
+
     this.connectResolver?.resolve(event.payload)
   }
 
@@ -607,14 +605,11 @@ export class W3mFrameProvider {
     this.smartAccountEnabledNetworksResolver?.reject(event.payload.message)
   }
 
-  private onPreferSmartAccountSuccess(
-    event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/SET_PREFERRED_ACCOUNT_SUCCESS' }>
-  ) {
-    W3mFrameHelpers.setPreferredAccountType(event.payload.type as W3mFrameTypes.AccountType)
+  private onSetPreferredAccountSuccess() {
     this.setPreferredAccountResolver?.resolve(undefined)
   }
 
-  private onPreferSmartAccountError() {
+  private onSetPreferredAccountError() {
     this.setPreferredAccountResolver?.reject()
   }
 
