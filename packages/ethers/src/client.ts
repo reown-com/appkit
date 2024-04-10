@@ -588,24 +588,28 @@ export class Web3Modal extends Web3ModalScaffold {
     window?.localStorage.setItem(EthersConstantsUtil.WALLET_ID, ConstantsUtil.EMAIL_CONNECTOR_ID)
 
     if (this.emailProvider) {
-      const [{ address, chainId, smartAccountDeployed }, { smartAccountEnabledNetworks }] =
-        await Promise.all([
-          this.emailProvider.connect({ chainId: this.getChainId() }),
-          this.emailProvider.getSmartAccountEnabledNetworks()
-        ])
-      super.setLoading(false)
+      const [
+        { address, chainId, smartAccountDeployed, preferredAccountType },
+        { smartAccountEnabledNetworks }
+      ] = await Promise.all([
+        this.emailProvider.connect({ chainId: this.getChainId() }),
+        this.emailProvider.getSmartAccountEnabledNetworks()
+      ])
+
       if (address && chainId) {
         EthersStoreUtil.setChainId(chainId)
         EthersStoreUtil.setProviderType(ConstantsUtil.EMAIL_CONNECTOR_ID as 'w3mEmail')
         EthersStoreUtil.setProvider(this.emailProvider as unknown as CombinedProvider)
         EthersStoreUtil.setIsConnected(true)
         EthersStoreUtil.setAddress(address as Address)
+        EthersStoreUtil.setPreferredAccountType(preferredAccountType as W3mFrameTypes.AccountType)
         this.setSmartAccountDeployed(Boolean(smartAccountDeployed))
         this.setSmartAccountEnabledNetworks(smartAccountEnabledNetworks)
 
         this.watchEmail()
         this.watchModal()
       }
+      super.setLoading(false)
     }
   }
 
@@ -783,18 +787,18 @@ export class Web3Modal extends Web3ModalScaffold {
       this.emailProvider.onIsConnected(({ preferredAccountType }) => {
         this.setIsConnected(true)
         super.setLoading(false)
-        this.setPreferredAccountType(preferredAccountType as W3mFrameTypes.AccountType)
+        EthersStoreUtil.setPreferredAccountType(preferredAccountType as W3mFrameTypes.AccountType)
       })
 
       this.emailProvider.onSetPreferredAccount(({ address, type }) => {
         if (!address) {
           return
         }
-        this.setPreferredAccountType(type as W3mFrameTypes.AccountType)
         const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
         EthersStoreUtil.setAddress(address as Address)
         EthersStoreUtil.setChainId(chainId)
         EthersStoreUtil.setIsConnected(true)
+        EthersStoreUtil.setPreferredAccountType(type as W3mFrameTypes.AccountType)
         this.syncAccount()
       })
     }
@@ -814,6 +818,7 @@ export class Web3Modal extends Web3ModalScaffold {
     const address = EthersStoreUtil.state.address
     const chainId = EthersStoreUtil.state.chainId
     const isConnected = EthersStoreUtil.state.isConnected
+    const preferredAccountType = EthersStoreUtil.state.preferredAccountType
 
     this.resetAccount()
 
@@ -821,7 +826,7 @@ export class Web3Modal extends Web3ModalScaffold {
       const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`
 
       this.setIsConnected(isConnected)
-
+      this.setPreferredAccountType(preferredAccountType)
       this.setCaipAddress(caipAddress)
       this.syncConnectedWalletInfo()
       await Promise.all([
@@ -1057,10 +1062,14 @@ export class Web3Modal extends Web3ModalScaffold {
             await this.emailProvider.switchNetwork(chain?.chainId)
             EthersStoreUtil.setChainId(chain.chainId)
 
-            this.emailProvider.connect({ chainId: chain?.chainId }).then(({ address }) => {
-              EthersStoreUtil.setAddress(address as Address)
-              this.syncAccount()
+            const { address, preferredAccountType } = await this.emailProvider.connect({
+              chainId: chain?.chainId
             })
+            EthersStoreUtil.setAddress(address as Address)
+            EthersStoreUtil.setPreferredAccountType(
+              preferredAccountType as W3mFrameTypes.AccountType
+            )
+            await this.syncAccount()
           } catch {
             throw new Error('Switching chain failed')
           }
@@ -1130,7 +1139,7 @@ export class Web3Modal extends Web3ModalScaffold {
       const { isConnected } = await this.emailProvider.isConnected()
 
       if (isConnected) {
-        this.setEmailProvider()
+        await this.setEmailProvider()
       } else {
         super.setLoading(false)
       }

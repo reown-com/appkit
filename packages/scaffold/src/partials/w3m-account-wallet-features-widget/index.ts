@@ -149,7 +149,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
     const smartAccountEnabled = NetworkController.checkIfSmartAccountEnabled()
     if (
       !smartAccountEnabled ||
-      this.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT ||
+      this.preferredAccountType !== W3mFrameRpcConstants.ACCOUNT_TYPES.EOA ||
       this.smartAccountDeployed
     ) {
       return null
