@@ -31,11 +31,11 @@ export class Email {
       if (messages.data.length > 0) {
         const message = messages.data[0]
         if (!message) {
-          throw new Error('No message found')
+          throw new Error(`No message found for address ${email}`)
         }
         const id = message._id
         if (!id) {
-          throw new Error('Message ID not present')
+          throw new Error(`Message id not present for address ${email}`)
         }
 
         return id
@@ -43,7 +43,7 @@ export class Email {
       await this.timeout(EMAIL_CHECK_TIMEOUT)
       checks += 1
     }
-    throw new Error('No email found')
+    throw new Error(`No email found for address ${email}`)
   }
 
   async getEmailBody(email: string, messageId: string): Promise<string> {
