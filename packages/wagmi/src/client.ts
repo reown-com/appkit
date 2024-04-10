@@ -473,14 +473,13 @@ export class Web3Modal extends Web3ModalScaffold {
         if (!address) {
           return
         }
-        this.setPreferredAccountType(type as W3mFrameTypes.AccountType)
         const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
         this.syncAccount({
           address: address as `0x${string}`,
           chainId,
           isConnected: true,
           connector
-        })
+        }).then(() => this.setPreferredAccountType(type as W3mFrameTypes.AccountType))
       })
     }
   }
