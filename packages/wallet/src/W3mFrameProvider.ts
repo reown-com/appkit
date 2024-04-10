@@ -294,7 +294,7 @@ export class W3mFrameProvider {
     await this.w3mFrame.frameLoadPromise
     this.w3mFrame.events.postAppEvent({
       type: W3mFrameConstants.APP_GET_USER,
-      payload: { chainId, preferredAccountType: payload?.preferredAccountType }
+      payload: { chainId }
     })
 
     return new Promise<W3mFrameTypes.Responses['FrameGetUserResponse']>((resolve, reject) => {
@@ -441,6 +441,9 @@ export class W3mFrameProvider {
   ) {
     this.setEmailLoginSuccess(event.payload.email)
     this.setLastUsedChainId(event.payload.chainId)
+    W3mFrameHelpers.setPreferredAccountType(
+      event.payload.preferredAccountType as W3mFrameTypes.AccountType
+    )
     this.connectResolver?.resolve(event.payload)
   }
 

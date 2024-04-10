@@ -587,13 +587,9 @@ export class Web3Modal extends Web3ModalScaffold {
     window?.localStorage.setItem(EthersConstantsUtil.WALLET_ID, ConstantsUtil.EMAIL_CONNECTOR_ID)
 
     if (this.emailProvider) {
-      const preferredAccountType = W3mFrameHelpers.getPreferredAccountType()
       const [{ address, chainId, smartAccountDeployed }, { smartAccountEnabledNetworks }] =
         await Promise.all([
-          this.emailProvider.connect({
-            chainId: this.getChainId(),
-            preferredAccountType
-          }),
+          this.emailProvider.connect({ chainId: this.getChainId() }),
           this.emailProvider.getSmartAccountEnabledNetworks()
         ])
       super.setLoading(false)
@@ -1058,15 +1054,10 @@ export class Web3Modal extends Web3ModalScaffold {
             await this.emailProvider.switchNetwork(chain?.chainId)
             EthersStoreUtil.setChainId(chain.chainId)
 
-            this.emailProvider
-              .connect({
-                chainId: chain?.chainId,
-                preferredAccountType: W3mFrameHelpers.getPreferredAccountType()
-              })
-              .then(({ address }) => {
-                EthersStoreUtil.setAddress(address as Address)
-                this.syncAccount()
-              })
+            this.emailProvider.connect({ chainId: chain?.chainId }).then(({ address }) => {
+              EthersStoreUtil.setAddress(address as Address)
+              this.syncAccount()
+            })
           } catch {
             throw new Error('Switching chain failed')
           }
