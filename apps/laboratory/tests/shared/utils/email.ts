@@ -5,6 +5,7 @@ const EMAIL_APPROVE_BUTTON_TEXT = 'Approve this login'
 const APPROVE_URL_REGEX = /https:\/\/register.*/u
 const OTP_CODE_REGEX = /\d{3}\s?\d{3}/u
 const AVAILABLE_MAILSAC_ADDRESSES = 10
+const EMAIL_DOMAIN = 'web3modal.msdc.co'
 
 export class Email {
   // eslint-disable-next-line  @typescript-eslint/no-explicit-any
@@ -82,6 +83,6 @@ export class Email {
       )
     }
 
-    return `tests-${index}@web3modal.msdc.co`
+    return `tests-${index}@${EMAIL_DOMAIN}`
   }
 }
