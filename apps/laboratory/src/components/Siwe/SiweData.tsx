@@ -1,16 +1,9 @@
-import {
-  StackDivider,
-  Card,
-  CardHeader,
-  Heading,
-  CardBody,
-  Box,
-  Stack,
-  Text
-} from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import type { SIWESession } from '@web3modal/siwe'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Column } from '@/components/ui/column'
+import { Span } from '@/components/ui/typography'
 
 export function SiweData() {
   const [ready, setReady] = useState(false)
@@ -22,41 +15,29 @@ export function SiweData() {
   }, [])
 
   return ready ? (
-    <Card marginTop={10}>
-      <CardHeader>
-        <Heading size="md">SIWE Session Details</Heading>
+    <Card className="mb-6">
+      <CardHeader className="border-b border-muted bg-muted/20 px-6 py-4">
+        <CardTitle className="text-lg">SIWE Session Details</CardTitle>
       </CardHeader>
-
-      <CardBody>
-        <Stack divider={<StackDivider />} spacing="4">
-          <Box>
-            <Heading size="xs" textTransform="uppercase">
-              Session Status
-            </Heading>
-            <Text data-testid="w3m-authentication-status" pt="2" fontSize="sm">
+      <CardContent className="p-6">
+        <Column className="divide-y divide-muted">
+          <Column className="py-4 first:pt-0 last:pb-0 items-start gap-4">
+            <Span className="text-sm uppercase">Session Status</Span>
+            <Span data-testid="w3m-authentication-status" className="text-muted-foreground">
               {status}
-            </Text>
-          </Box>
+            </Span>
+          </Column>
 
-          <Box>
-            <Heading size="xs" textTransform="uppercase">
-              Session Network
-            </Heading>
-            <Text pt="2" fontSize="sm">
-              {`eip155:${session?.chainId}`}
-            </Text>
-          </Box>
-
-          <Box>
-            <Heading size="xs" textTransform="uppercase">
-              Session Network Address
-            </Heading>
-            <Text isTruncated pt="2" fontSize="sm">
-              {session?.address}
-            </Text>
-          </Box>
-        </Stack>
-      </CardBody>
+          <Column className="py-4 first:pt-0 last:pb-0 items-start gap-4">
+            <Span className="text-sm uppercase">Session Network</Span>
+            <Span className="text-muted-foreground">{`eip155:${session?.chainId}`}</Span>
+          </Column>
+          <Column className="py-4 first:pt-0 last:pb-0 items-start gap-4">
+            <Span className="text-sm uppercase">Session Network Address</Span>
+            <Span className="text-muted-foreground">{session?.address || '-'}</Span>
+          </Column>
+        </Column>
+      </CardContent>
     </Card>
   ) : null
 }

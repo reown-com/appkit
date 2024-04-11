@@ -39,8 +39,6 @@ export class W3mFrame {
         iframe.style.zIndex = '999999'
         iframe.style.display = 'none'
         iframe.style.opacity = '0'
-        iframe.style.borderBottomLeftRadius = `clamp(0px, var(--wui-border-radius-l), 44px)`
-        iframe.style.borderBottomRightRadius = `clamp(0px, var(--wui-border-radius-l), 44px)`
         document.body.appendChild(iframe)
         this.iframe = iframe
         this.iframe.onload = () => {

@@ -1,4 +1,5 @@
-import { Box, useRadio, type RadioProps } from '@chakra-ui/react'
+import { Column } from '@/components/ui/column'
+import { useRadio, type RadioProps } from '@chakra-ui/react'
 
 export default function RadioColor(props: RadioProps) {
   const { getInputProps, getRadioProps } = useRadio(props)
@@ -9,21 +10,13 @@ export default function RadioColor(props: RadioProps) {
   const backgroundColor = typeof props.children === 'string' ? props.children : 'transparent'
 
   return (
-    <Box as="label">
+    <Column className="w-full">
       <input {...input} />
-      <Box
+      <Column
         {...checkbox}
+        className="cursor-pointer rounded-full aspect-square w-full checked:ring-2"
         style={{ backgroundColor }}
-        cursor="pointer"
-        borderRadius="full"
-        width="100%"
-        aspectRatio="1/1"
-        borderWidth="2px"
-        borderColor="transparent"
-        _checked={{
-          borderColor: 'gray.900'
-        }}
-      ></Box>
-    </Box>
+      ></Column>
+    </Column>
   )
 }

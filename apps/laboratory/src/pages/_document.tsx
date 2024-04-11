@@ -1,12 +1,11 @@
 import { Html, Head, Main, NextScript } from 'next/document'
-import { ColorModeScript } from '@chakra-ui/react'
+import { cn } from '@/lib/utils'
 
 export default function Document() {
   return (
     <Html lang="en">
       <Head />
-      <body>
-        <ColorModeScript initialColorMode="system" />
+      <body className={cn('selection:bg-foreground/10')}>
         <Main />
         <NextScript />
       </body>
