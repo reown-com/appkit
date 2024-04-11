@@ -13,6 +13,13 @@ export class ModalValidator {
     await expect(accountButton, 'Account button should be present').toBeAttached({
       timeout: MAX_WAIT
     })
+    await expect(
+      this.page.getByTestId('connect-button'),
+      'Connect button should not be present'
+    ).toBeHidden({
+      timeout: MAX_WAIT
+    })
+    await this.page.waitForTimeout(500)
   }
 
   async expectAuthenticated() {
