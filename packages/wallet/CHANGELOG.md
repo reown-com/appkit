@@ -1,5 +1,14 @@
 # @web3modal/wallet
 
+## 4.1.7
+
+### Patch Changes
+
+- Hotfix for inccorect state of w3m-button when email is enabled
+
+- Updated dependencies []:
+  - @web3modal/polyfills@4.1.7
+
 ## 4.1.6
 
 ### Patch Changes
