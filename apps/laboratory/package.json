@@ -41,7 +41,7 @@
     "@walletconnect/utils": "2.12.0",
     "valtio": "1.11.2",
     "viem": "2.9.3",
-    "wagmi": "0.0.0-20240410210101"
+    "wagmi": "2.5.19"
   },
   "devDependencies": {
     "@aws-sdk/client-cloudwatch": "3.509.0",
