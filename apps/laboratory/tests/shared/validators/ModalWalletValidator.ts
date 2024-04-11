@@ -14,7 +14,7 @@ const testEmailsEOAAddresses = [
   '0x774Ef09E6d93DB7ffE31A836610EDB6202752687',
   '0x3A24983B0527442d8249DE97cFAFabb379c9A938',
   // Non-smart account enabled address
-  '0x26760E9EbAcD6f4C47c095E7fd544C5AC093a4E3'
+  '0x63e6966E615C3852587d892B57eA6Dae27bac66D'
 ]
 
 function formatAddress(address: string) {
