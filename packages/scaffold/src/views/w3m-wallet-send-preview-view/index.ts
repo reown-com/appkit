@@ -157,7 +157,7 @@ export class W3mWalletSendPreviewView extends LitElement {
             tokenAmount: amount
           })
           RouterController.replace('Account')
-          SnackController.showSuccess('Transaction Succesfull')
+          SnackController.showSuccess('Transaction Successful')
         }
       } catch (error) {
         SnackController.showError('Something went wrong...')
@@ -182,7 +182,7 @@ export class W3mWalletSendPreviewView extends LitElement {
           gasPrice: this.gasPrice
         })
         RouterController.replace('Account')
-        SnackController.showSuccess('Transaction Succesfull')
+        SnackController.showSuccess('Transaction Successful')
       } catch (error) {
         SnackController.showError('Something went wrong...')
       }
