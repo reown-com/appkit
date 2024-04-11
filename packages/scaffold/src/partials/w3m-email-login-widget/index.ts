@@ -95,7 +95,7 @@ export class W3mEmailLoginWidget extends LitElement {
   }
 
   private onEmailInputChange(event: CustomEvent<string>) {
-    this.email = event.detail
+    this.email = event.detail.trim()
     this.error = ''
   }
 
