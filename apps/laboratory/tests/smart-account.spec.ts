@@ -3,7 +3,7 @@ import type { ModalWalletPage } from './shared/pages/ModalWalletPage'
 import type { ModalWalletValidator } from './shared/validators/ModalWalletValidator'
 
 const NOT_ENABLED_SMART_ACCOUNT_INDEX = 10
-const NOT_ENABLED_SMART_ACCOUNT = 'web3modal-smart-account@mailsac.com'
+const NOT_ENABLED_SMART_ACCOUNT = 'test@w3ma.msdc.co'
 
 const mailsacApiKey = process.env['MAILSAC_API_KEY']
 if (!mailsacApiKey) {
