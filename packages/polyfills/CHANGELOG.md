@@ -1,5 +1,17 @@
 # @web3modal/polyfills
 
+## 4.1.7
+
+### Patch Changes
+
+- Hotfix for inccorect state of w3m-button when email is enabled
+
+## 4.1.6
+
+### Patch Changes
+
+- Fix modal default height. Fix ethers email connection lag. Fix ethers + rc relay disconnect issue. Adds new wui-components for secure site.
+
 ## 4.1.5
 
 ### Patch Changes
