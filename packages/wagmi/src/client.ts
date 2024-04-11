@@ -454,7 +454,7 @@ export class Web3Modal extends Web3ModalScaffold {
       })
 
       provider.onNotConnected(() => {
-        const isConnected = this.getIsConnected()
+        const isConnected = this.getIsConnectedState()
         if (!isConnected) {
           this.setIsConnected(false)
           super.setLoading(false)
