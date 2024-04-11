@@ -146,6 +146,8 @@ export class Web3ModalScaffold {
     AccountController.setIsConnected(isConnected)
   }
 
+  protected getIsConnected = () => AccountController.state.isConnected
+
   protected setCaipAddress: (typeof AccountController)['setCaipAddress'] = caipAddress => {
     AccountController.setCaipAddress(caipAddress)
   }
