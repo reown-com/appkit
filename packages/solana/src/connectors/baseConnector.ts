@@ -11,14 +11,13 @@ import base58 from 'bs58'
 import borsh from 'borsh'
 import { Buffer } from 'buffer'
 
-import type { ConfirmOptions, Signer } from '@solana/web3.js'
-
 import { registerListener, unregisterListener } from '../utils/clusterFactory.js'
 import { SolConstantsUtil } from '../utils/scaffold/SolanaConstantsUtil.js'
 import { SolStoreUtil } from '../utils/scaffold/SolanaStoreUtil.js'
 import { getHashedName, getNameAccountKey } from '../utils/hash.js'
 import { NameRegistry } from '../utils/nameService.js'
 
+import type { ConfirmOptions, Signer, TransactionSignature } from '@solana/web3.js'
 import type {
   BlockResult,
   AccountInfo,
@@ -45,8 +44,8 @@ export interface Connector {
   signAndSendTransaction: (
     transaction: Transaction | VersionedTransaction,
     signers: Signer[],
-    confirmOptions: ConfirmOptions
-  ) => Promise<string>
+    confirmOptions?: ConfirmOptions
+  ) => Promise<TransactionSignature>
   getAccount: (
     requestedAddress?: string,
     encoding?: 'base58' | 'base64' | 'jsonParsed'
