@@ -68,17 +68,20 @@ testModalSmartAccount(
 
     await walletModalPage.openAccount()
     await walletModalPage.openSettings()
+
     const originalAddress = await walletModalPage.getAddress()
 
     await walletModalPage.togglePreferredAccountType()
     await walletModalValidator.expectChangePreferredAccountToShow(EOA)
     await walletModalPage.switchNetwork('Avalanche')
     await walletModalValidator.expectTogglePreferredTypeVisible(false)
-    await walletModalValidator.expectAddress(originalAddress)
 
     await walletModalPage.closeModal()
     await walletModalPage.openAccount()
     await walletModalValidator.expectActivateSmartAccountPromoVisible(false)
+
+    await walletModalPage.openSettings()
+    await walletModalValidator.expectAddress(originalAddress)
   }
 )
 
