@@ -34,10 +34,11 @@ export class ModalWalletPage extends ModalPage {
     await disconnectBtn.click({ force: true })
   }
 
-  async getAddress() {
+  async getAddress(): Promise<string> {
     const address = await this.page.getByTestId('account-settings-address').textContent()
     expect(address, 'Address should be present').toBeTruthy()
 
-    return address as string
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return address!
   }
 }
