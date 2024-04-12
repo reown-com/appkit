@@ -10,7 +10,7 @@ import {
   Connection
 } from '@solana/web3.js'
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/solana/react'
-import { solanaLocalNet } from '../../utils/ChainsUtil'
+
 import { COUNTER_ACCOUNT_SIZE } from '../../utils/SolanaConstants'
 import { deserializeCounterAccount, detectProgramId } from '../../utils/SolanaUtil'
 
@@ -40,7 +40,7 @@ export function SolanaWriteContractTest() {
 
       const balance = await connection.getBalance(walletProvider.publicKey)
       if (balance < LAMPORTS_PER_SOL / 100) {
-        const airdropConnection = new Connection(solanaLocalNet.rpcUrl)
+        const airdropConnection = new Connection(currentChain?.rpcUrl ?? '')
         const signature = await airdropConnection.requestAirdrop(
           walletProvider.publicKey,
           LAMPORTS_PER_SOL
