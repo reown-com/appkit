@@ -23,7 +23,7 @@ export function SolanaWriteContractTest() {
   async function onIncrementCounter() {
     setLoading(true)
 
-    const PROGRAM_ID = new PublicKey(detectProgramId(currentChain.chainId))
+    const PROGRAM_ID = new PublicKey(detectProgramId(currentChain?.chainId ?? ''))
     /* Add your program id */
 
     try {
