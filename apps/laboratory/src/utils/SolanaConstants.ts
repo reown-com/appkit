@@ -1,4 +1,4 @@
-import { solana, solanaDevnet, solanaTestnet, solanaLocalNet } from './ChainsUtil'
+import { solana, solanaDevnet, solanaTestnet } from './ChainsUtil'
 
 export const COUNTER_ACCOUNT_SIZE = 8
 
@@ -13,10 +13,6 @@ export const SolanaConstantsUtil = {
     {
       chainId: solanaTestnet.chainId,
       programId: 'FZn4xQoKKvcxDADDRdqNAAPnVv9qYCbUTbP3y4Rn1BBr'
-    },
-    {
-      chainId: solanaLocalNet.chainId,
-      programId: 'Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS'
     }
   ]
 }
