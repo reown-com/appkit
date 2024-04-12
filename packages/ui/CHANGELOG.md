@@ -1,5 +1,11 @@
 # @web3modal/ui
 
+## 4.1.8-e70037c1.0
+
+### Patch Changes
+
+- chore: secure site schema update
+
 ## 4.1.7
 
 ### Patch Changes

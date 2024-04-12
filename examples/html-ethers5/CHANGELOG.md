@@ -1,5 +1,14 @@
 # @examples/html-ethers5
 
+## 4.1.8-e70037c1.0
+
+### Patch Changes
+
+- chore: secure site schema update
+
+- Updated dependencies []:
+  - @web3modal/ethers5@4.1.8-e70037c1.0
+
 ## 4.1.7
 
 ### Patch Changes
