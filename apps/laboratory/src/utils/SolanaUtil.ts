@@ -1,4 +1,4 @@
-import { SolanaConstantsUtil } from "./SolanaConstants";
+import { SolanaConstantsUtil } from './SolanaConstants'
 
 export function deserializeCounterAccount(data?: Buffer): { count: number } {
   if (data?.byteLength !== 8) {

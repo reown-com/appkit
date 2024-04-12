@@ -125,11 +125,3 @@ export const solanaDevnet = {
   explorerUrl: 'https://explorer.solana.com/?cluster=devnet',
   rpcUrl: 'https://api.devnet.solana.com'
 }
-
-export const solanaLocalNet = {
-  chainId: 'your-local-id',
-  name: 'Solana LocalNet',
-  currency: 'SOL',
-  explorerUrl: 'https://explorer.solana.com/?cluster=devnet',
-  rpcUrl: 'http://localhost:8899/'
-}
