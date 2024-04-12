@@ -5,11 +5,6 @@ import { EOA, SMART_ACCOUNT } from './shared/validators/ModalWalletValidator'
 import type { ModalWalletValidator } from './shared/validators/ModalWalletValidator'
 
 const NOT_ENABLED_EMAIL = 'test@w3ma.msdc.co'
-const NOT_ENABLED_EMAIL_EOA = '0x63e6966E615C3852587d892B57eA6Dae27bac66D'
-const FORMATTED_NOT_ENABLED_EMAIL_EOA = `${NOT_ENABLED_EMAIL_EOA.slice(
-  0,
-  4
-)}...${NOT_ENABLED_EMAIL_EOA.slice(-6)}`
 
 const mailsacApiKey = process.env['MAILSAC_API_KEY']
 if (!mailsacApiKey) {
@@ -75,8 +70,9 @@ testModalSmartAccount(
     await walletModalValidator.expectChangePreferredAccountToShow(EOA)
     await walletModalPage.switchNetwork('Avalanche')
     await walletModalValidator.expectTogglePreferredTypeVisible(false)
-
     await walletModalPage.closeModal()
+    await walletModalPage.page.waitForTimeout(1000)
+
     await walletModalPage.openAccount()
     await walletModalValidator.expectActivateSmartAccountPromoVisible(false)
 
@@ -101,9 +97,9 @@ testModalSmartAccount(
     await walletModalPage.openAccount()
     await walletModalPage.openSettings()
     await walletModalPage.switchNetwork('Sepolia')
-
-    await walletModalValidator.expectAddress(FORMATTED_NOT_ENABLED_EMAIL_EOA)
+    await walletModalValidator.expectTogglePreferredTypeVisible(false)
     await walletModalPage.closeModal()
+    await walletModalPage.page.waitForTimeout(1000)
 
     await walletModalPage.openAccount()
     await walletModalValidator.expectActivateSmartAccountPromoVisible(false)
