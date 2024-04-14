@@ -13,7 +13,7 @@
     "playwright:test:email": "playwright test --grep 'email.spec.ts'",
     "playwright:test:siwe": "playwright test --grep siwe.spec.ts",
     "playwright:test:sa": "playwright test --grep smart-account.spec.ts",
-    "playwright:test:canary": "playwright test --retries=0 --grep canary.spec.ts --project='Desktop Chrome/wagmi'",
+    "playwright:test:canary": "playwright test --retries=0 --grep canary.spec.ts --project='Desktop Firefox/ethers'",
     "playwright:debug": "npm run playwright:test -- --debug",
     "playwright:debug:wallet": "npm run playwright:test:wallet -- --debug",
     "playwright:debug:email": "npm run playwright:test:email -- --debug",
@@ -39,7 +39,7 @@
     "next-auth": "4.24.5",
     "react-icons": "4.12.0",
     "siwe": "2.1.4",
-    "sonner": "^1.4.41",
+    "sonner": "1.4.41",
     "valtio": "1.11.2",
     "viem": "2.9.3",
     "wagmi": "2.5.7"
