@@ -20,17 +20,8 @@ export function SolanaSignMessageTest() {
 
       // Backpack has specific signature format now
       if ((signature as { signature: Uint8Array }).signature) {
-        toast({
-          position: 'bottom-left',
-          render: () => (
-            <Box color="white" p={3} bg="blue.500">
-              {ConstantsUtil.SigningSucceededToastTitle}
-            </Box>
-          ),
-          title: ConstantsUtil.SigningSucceededToastTitle,
-          description: (signature as { signature: Uint8Array }).signature,
-          status: 'success',
-          isClosable: true
+        toast(ConstantsUtil.SigningSucceededToastTitle, {
+          description: (signature as { signature: Uint8Array }).signature
         })
         toast.success('Success', {
           description: (signature as { signature: Uint8Array }).signature

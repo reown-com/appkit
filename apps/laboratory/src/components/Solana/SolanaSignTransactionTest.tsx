@@ -90,19 +90,10 @@ export function SolanaSignTransactionTest() {
       const tx = await walletProvider.signTransaction(transactionV0)
       const signature = tx.signatures[0]?.signature
 
-      toast({ title: 'Succcess', description: signature, status: 'success', isClosable: true })
+      toast.success('Success', { description: signature })
     } catch (err) {
-      toast({
-        position: 'bottom-left',
-        render: () => (
-          <Box color="white" p={3} bg="blue.500">
-            Error
-          </Box>
-        ),
-        title: 'Error',
-        description: 'Failed to sign transaction',
-        status: 'error',
-        isClosable: true
+      toast.error('Error', {
+        description: 'Failed to sign transaction'
       })
     } finally {
       setLoading(false)
