@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Button, useToast, Stack, Text, Spacer, Link } from '@chakra-ui/react'
+import { Button, Box, Stack, Text, Spacer, Link } from '@chakra-ui/react'
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/solana/react'
 import {
   PublicKey,
@@ -11,13 +11,13 @@ import {
 } from '@solana/web3.js'
 
 import { solana } from '../../utils/ChainsUtil'
+import { toast } from 'sonner'
 
 const PHANTOM_TESTNET_ADDRESS = 'EmT8r4E8ZjoQgt8sXGbaWBRMKfUXsVT1wonoSnJZ4nBn'
 const recipientAddress = new PublicKey(PHANTOM_TESTNET_ADDRESS)
 const amountInLamports = 100000000
 
 export function SolanaSendTransactionTest() {
-  const toast = useToast()
   const { address, chainId } = useWeb3ModalAccount()
   const { walletProvider, connection } = useWeb3ModalProvider()
   const [loading, setLoading] = useState(false)
@@ -53,13 +53,10 @@ export function SolanaSendTransactionTest() {
       transaction.recentBlockhash = blockhash
 
       const signature = await walletProvider.sendTransaction(transaction, connection as Connection)
-      toast({ title: 'Succcess', description: signature, status: 'success', isClosable: true })
+      toast.success('Success', { description: signature })
     } catch (err) {
-      toast({
-        title: 'Error',
-        description: (err as Error).message,
-        status: 'error',
-        isClosable: true
+      toast.error('Error', {
+        description: (err as Error).message
       })
     } finally {
       setLoading(false)
@@ -106,13 +103,10 @@ export function SolanaSendTransactionTest() {
         transactionV0,
         connection as Connection
       )
-      toast({ title: 'Succcess', description: signature, status: 'success', isClosable: true })
+      toast.success('Success', { description: signature })
     } catch (err) {
-      toast({
-        title: 'Error',
-        description: (err as Error).message,
-        status: 'error',
-        isClosable: true
+      toast.error('Error', {
+        description: (err as Error).message
       })
     } finally {
       setLoading(false)

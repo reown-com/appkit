@@ -1,12 +1,12 @@
-import { Button, useToast, Stack, Link, Text, Spacer } from '@chakra-ui/react'
+import { Button, Stack, Link, Text, Spacer } from '@chakra-ui/react'
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers/react'
 import { BrowserProvider, JsonRpcSigner, ethers } from 'ethers'
 import { sepolia, optimism } from '../../utils/ChainsUtil'
 import { useState } from 'react'
 import { vitalikEthAddress } from '../../utils/DataUtil'
+import { toast } from 'sonner'
 
 export function EthersTransactionTest() {
-  const toast = useToast()
   const { address, chainId } = useWeb3ModalAccount()
   const { walletProvider } = useWeb3ModalProvider()
   const [loading, setLoading] = useState(false)
@@ -23,13 +23,10 @@ export function EthersTransactionTest() {
         to: vitalikEthAddress,
         value: ethers.parseUnits('0.0001', 'gwei')
       })
-      toast({ title: 'Succcess', description: tx.hash, status: 'success', isClosable: true })
+      toast.success('Success', { description: tx.hash })
     } catch {
-      toast({
-        title: 'Error',
-        description: 'Failed to sign transaction',
-        status: 'error',
-        isClosable: true
+      toast.error('Error', {
+        description: 'Failed to sign transaction'
       })
     } finally {
       setLoading(false)

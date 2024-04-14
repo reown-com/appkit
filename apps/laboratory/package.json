@@ -39,6 +39,7 @@
     "next-auth": "4.24.5",
     "react-icons": "4.12.0",
     "siwe": "2.1.4",
+    "sonner": "^1.4.41",
     "valtio": "1.11.2",
     "viem": "2.9.3",
     "wagmi": "2.5.7"

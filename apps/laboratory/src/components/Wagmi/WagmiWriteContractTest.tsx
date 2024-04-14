@@ -1,4 +1,6 @@
-import { Button, useToast, Stack, Link, Text, Spacer, Flex } from '@chakra-ui/react'
+import { Button, Box, Stack, Link, Text, Spacer, Flex } from '@chakra-ui/react'
+import { toast } from 'sonner'
+
 import { parseEther } from 'viem'
 import { useAccount, useSimulateContract, useWriteContract, useReadContract } from 'wagmi'
 import { useCallback, useEffect } from 'react'
@@ -6,7 +8,6 @@ import { optimism, sepolia } from 'wagmi/chains'
 import { abi, address } from '../../utils/DonutContract'
 
 export function WagmiWriteContractTest() {
-  const toast = useToast()
   const { status, chain, address: accountAddress } = useAccount()
   const {
     data: donutsOwned,
@@ -31,11 +32,8 @@ export function WagmiWriteContractTest() {
 
   const onSendTransaction = useCallback(async () => {
     if (simulateError || !simulateData?.request) {
-      toast({
-        title: 'Error',
-        description: 'Not able to execute this transaction. Check your balance.',
-        status: 'error',
-        isClosable: true
+      toast.error('Error', {
+        description: 'Not able to execute this transaction. Check your balance.'
       })
     } else {
       writeContract(simulateData?.request)
@@ -45,18 +43,12 @@ export function WagmiWriteContractTest() {
 
   useEffect(() => {
     if (data) {
-      toast({
-        title: 'Donut Purchase Success!',
-        description: data,
-        status: 'success',
-        isClosable: true
+      toast.success('Error', {
+        description: 'Donut Purchase Success!'
       })
     } else if (error) {
-      toast({
-        title: 'Error',
-        description: 'Failed to purchase donut',
-        status: 'error',
-        isClosable: true
+      toast.error('Error', {
+        description: 'Failed to purchase donut'
       })
     }
     reset()

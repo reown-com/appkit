@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { Button, useToast, Stack, Text, Spacer, Link } from '@chakra-ui/react'
+import { Button, Box, Stack, Text, Spacer, Link } from '@chakra-ui/react'
+import { toast } from 'sonner'
 import {
   PublicKey,
   Transaction,
@@ -17,7 +18,6 @@ const recipientAddress = new PublicKey(PHANTOM_DEVNET_ADDRESS)
 const amountInLamports = 100000000
 
 export function SolanaSignTransactionTest() {
-  const toast = useToast()
   const { address, chainId } = useWeb3ModalAccount()
   const { walletProvider, connection } = useWeb3ModalProvider()
   const [loading, setLoading] = useState(false)
@@ -48,13 +48,10 @@ export function SolanaSignTransactionTest() {
       const tx = await walletProvider.signTransaction(transaction)
       const signature = tx.signatures[0]?.signature
 
-      toast({ title: 'Succcess', description: signature, status: 'success', isClosable: true })
+      toast.success('Success', { description: signature })
     } catch (err) {
-      toast({
-        title: 'Error',
-        description: 'Failed to sign transaction',
-        status: 'error',
-        isClosable: true
+      toast.error('Error', {
+        description: 'Failed to sign transaction'
       })
     } finally {
       setLoading(false)
@@ -96,6 +93,12 @@ export function SolanaSignTransactionTest() {
       toast({ title: 'Succcess', description: signature, status: 'success', isClosable: true })
     } catch (err) {
       toast({
+        position: 'bottom-left',
+        render: () => (
+          <Box color="white" p={3} bg="blue.500">
+            Error
+          </Box>
+        ),
         title: 'Error',
         description: 'Failed to sign transaction',
         status: 'error',

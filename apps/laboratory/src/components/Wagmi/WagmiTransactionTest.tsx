@@ -1,4 +1,6 @@
-import { Button, useToast, Stack, Link, Text, Spacer } from '@chakra-ui/react'
+import { Button, Box, Stack, Link, Text, Spacer } from '@chakra-ui/react'
+import { toast } from 'sonner'
+
 import { parseGwei, type Address } from 'viem'
 import { useEstimateGas, useSendTransaction, useAccount } from 'wagmi'
 import { vitalikEthAddress } from '../../utils/DataUtil'
@@ -11,7 +13,6 @@ const TEST_TX = {
 }
 
 export function WagmiTransactionTest() {
-  const toast = useToast()
   const { status, chain } = useAccount()
   const { data: gas, error: prepareError } = useEstimateGas(TEST_TX)
   const [isLoading, setLoading] = useState(false)
@@ -20,20 +21,12 @@ export function WagmiTransactionTest() {
     mutation: {
       onSuccess: hash => {
         setLoading(false)
-        toast({
-          title: 'Transaction Success',
-          description: hash,
-          status: 'success',
-          isClosable: true
-        })
+        toast.success('Transaction Success', { description: hash })
       },
       onError: () => {
         setLoading(false)
-        toast({
-          title: 'Error',
-          description: 'Failed to send transaction',
-          status: 'error',
-          isClosable: true
+        toast.error('Error', {
+          description: 'Failed to send transaction'
         })
       }
     }
@@ -42,6 +35,12 @@ export function WagmiTransactionTest() {
   const onSendTransaction = useCallback(() => {
     if (prepareError) {
       toast({
+        position: 'bottom-left',
+        render: () => (
+          <Box color="white" p={3} bg="blue.500">
+            Error
+          </Box>
+        ),
         title: 'Error',
         description: 'Not enough funds for transaction',
         status: 'error',

@@ -1,7 +1,8 @@
-import { Button, useToast } from '@chakra-ui/react'
+import { Button, Box } from '@chakra-ui/react'
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers/react'
 import { BrowserProvider, JsonRpcSigner } from 'ethers'
 import type { TypedDataField } from 'ethers'
+import { toast } from 'sonner'
 
 const types: Record<string, TypedDataField[]> = {
   Person: [
@@ -28,7 +29,6 @@ const message = {
 } as const
 
 export function EthersSignTypedDataTest() {
-  const toast = useToast()
   const { address, chainId } = useWeb3ModalAccount()
   const { walletProvider } = useWeb3ModalProvider()
 
@@ -48,13 +48,10 @@ export function EthersSignTypedDataTest() {
 
       const signature = await signer?.signTypedData(domain, types, message)
 
-      toast({ title: 'Succcess', description: signature, status: 'success', isClosable: true })
+      toast.success('Success', { description: signature })
     } catch {
-      toast({
-        title: 'Error',
-        description: 'Failed to sign message',
-        status: 'error',
-        isClosable: true
+      toast.error('Error', {
+        description: 'Failed to sign message'
       })
     }
   }
