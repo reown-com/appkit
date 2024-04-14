@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Button, Box, Stack, Text, Spacer, Link } from '@chakra-ui/react'
+import { Button, Stack, Text, Spacer, Link } from '@chakra-ui/react'
 import { toast } from 'sonner'
 import {
   PublicKey,

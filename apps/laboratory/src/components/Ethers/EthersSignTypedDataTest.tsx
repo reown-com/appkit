@@ -1,4 +1,4 @@
-import { Button, Box } from '@chakra-ui/react'
+import { Button } from '@chakra-ui/react'
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers/react'
 import { BrowserProvider, JsonRpcSigner } from 'ethers'
 import type { TypedDataField } from 'ethers'

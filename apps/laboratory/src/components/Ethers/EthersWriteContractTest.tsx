@@ -1,4 +1,4 @@
-import { Button, Box, Stack, Link, Text, Spacer } from '@chakra-ui/react'
+import { Button, Stack, Link, Text, Spacer } from '@chakra-ui/react'
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers/react'
 import { BrowserProvider, JsonRpcSigner, ethers } from 'ethers'
 import { optimism, sepolia } from '../../utils/ChainsUtil'

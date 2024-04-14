@@ -1,4 +1,4 @@
-import { Button, Box, Stack, Link, Text, Spacer } from '@chakra-ui/react'
+import { Button, Stack, Link, Text, Spacer } from '@chakra-ui/react'
 import { toast } from 'sonner'
 
 import { parseGwei, type Address } from 'viem'
