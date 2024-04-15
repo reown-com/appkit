@@ -87,13 +87,13 @@ export class W3mUpdateEmailWalletView extends LitElement {
       const response = await emailConnector.provider.updateEmail({ email: this.email })
       EventsController.sendEvent({ type: 'track', event: 'EMAIL_EDIT' })
 
-      if (response.action === 'VERIFY_PRIMARY_OTP') {
-        RouterController.push('UpdateEmailPrimaryOtp', {
+      if (response.action === 'VERIFY_SECONDARY_OTP') {
+        RouterController.push('UpdateEmailSecondaryOtp', {
           email: this.initialEmail,
           newEmail: this.email
         })
-      } else if (response.action === 'VERIFY_SECONDARY_OTP') {
-        RouterController.push('UpdateEmailSecondaryOtp', {
+      } else {
+        RouterController.push('UpdateEmailPrimaryOtp', {
           email: this.initialEmail,
           newEmail: this.email
         })
