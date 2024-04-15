@@ -16,7 +16,7 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
-import { W3mFrameRpcConstants } from '@web3modal/wallet'
+import { W3mFrameHelpers, W3mFrameRpcConstants } from '@web3modal/wallet'
 
 @customElement('w3m-account-settings-view')
 export class W3mAccountSettingsView extends LitElement {
@@ -34,8 +34,6 @@ export class W3mAccountSettingsView extends LitElement {
 
   @state() private profileName = AccountController.state.profileName
 
-  @state() private preferredAccountType = AccountController.state.preferredAccountType
-
   @state() private network = NetworkController.state.caipNetwork
 
   @state() private disconnecting = false
@@ -51,7 +49,6 @@ export class W3mAccountSettingsView extends LitElement {
             this.address = val.address
             this.profileImage = val.profileImage
             this.profileName = val.profileName
-            this.preferredAccountType = val.preferredAccountType
           } else {
             ModalController.close()
           }
@@ -195,13 +192,14 @@ export class W3mAccountSettingsView extends LitElement {
     const networkEnabled = NetworkController.checkIfSmartAccountEnabled()
     const type = StorageUtil.getConnectedConnector()
     const emailConnector = ConnectorController.getEmailConnector()
+    const preferredAccountType = W3mFrameHelpers.getPreferredAccountType()
 
     if (!emailConnector || type !== 'EMAIL' || !networkEnabled) {
       return null
     }
 
     const text =
-      this.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+      preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
         ? 'Switch to your EOA'
         : 'Switch to your smart account'
 
@@ -223,8 +221,9 @@ export class W3mAccountSettingsView extends LitElement {
 
   private async changePreferredAccountType() {
     const smartAccountEnabled = NetworkController.checkIfSmartAccountEnabled()
+    const preferredAccountType = W3mFrameHelpers.getPreferredAccountType()
     const accountTypeTarget =
-      this.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT ||
+      preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT ||
       !smartAccountEnabled
         ? W3mFrameRpcConstants.ACCOUNT_TYPES.EOA
         : W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT

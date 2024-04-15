@@ -133,7 +133,7 @@ export class W3mFrameProvider {
         case W3mFrameConstants.FRAME_GET_SMART_ACCOUNT_ENABLED_NETWORKS_ERROR:
           return this.onSmartAccountEnabledNetworksError(event)
         case W3mFrameConstants.FRAME_SET_PREFERRED_ACCOUNT_SUCCESS:
-          return this.onSetPreferredAccountSuccess()
+          return this.onSetPreferredAccountSuccess(event)
         case W3mFrameConstants.FRAME_SET_PREFERRED_ACCOUNT_ERROR:
           return this.onSetPreferredAccountError()
 
@@ -361,6 +361,11 @@ export class W3mFrameProvider {
   ) {
     this.w3mFrame.events.onFrameEvent(event => {
       if (event.type === W3mFrameConstants.FRAME_GET_USER_SUCCESS) {
+        if (event.payload.preferredAccountType) {
+          W3mFrameHelpers.setPreferredAccountType(
+            event.payload.preferredAccountType as W3mFrameTypes.AccountType
+          )
+        }
         callback(event.payload)
       }
     })
@@ -605,7 +610,10 @@ export class W3mFrameProvider {
     this.smartAccountEnabledNetworksResolver?.reject(event.payload.message)
   }
 
-  private onSetPreferredAccountSuccess() {
+  private onSetPreferredAccountSuccess(
+    event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/SET_PREFERRED_ACCOUNT_SUCCESS' }>
+  ) {
+    W3mFrameHelpers.setPreferredAccountType(event.payload.type as W3mFrameTypes.AccountType)
     this.setPreferredAccountResolver?.resolve(undefined)
   }
 

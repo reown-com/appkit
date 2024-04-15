@@ -1,31 +1,13 @@
-import { AccountController, AssetUtil, CoreHelperUtil, NetworkController } from '@web3modal/core'
+import { AssetUtil, CoreHelperUtil, NetworkController } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
-import { W3mFrameRpcConstants } from '@web3modal/wallet'
-import { state } from 'lit/decorators.js'
+import { W3mFrameHelpers, W3mFrameRpcConstants } from '@web3modal/wallet'
 
 @customElement('w3m-wallet-compatible-networks-view')
 export class W3mWalletCompatibleNetworksView extends LitElement {
   public static override styles = styles
-
-  // -- Members ------------------------------------------- //
-  private unsubscribe: (() => void)[] = []
-
-  // -- State & Properties -------------------------------- //
-  @state() private preferredAccountType = AccountController.state.preferredAccountType
-
-  public constructor() {
-    super()
-    this.unsubscribe.push(
-      ...[
-        AccountController.subscribe(val => {
-          this.preferredAccountType = val.preferredAccountType
-        })
-      ]
-    )
-  }
 
   // -- Render -------------------------------------------- //
   public override render() {
@@ -46,6 +28,7 @@ export class W3mWalletCompatibleNetworksView extends LitElement {
   networkTemplate() {
     const { approvedCaipNetworkIds, requestedCaipNetworks, caipNetwork } = NetworkController.state
     const isNetworkEnabledForSmartAccounts = NetworkController.checkIfSmartAccountEnabled()
+    const preferredAccountType = W3mFrameHelpers.getPreferredAccountType()
 
     let sortedNetworks = CoreHelperUtil.sortRequestedNetworks(
       approvedCaipNetworkIds,
@@ -55,7 +38,7 @@ export class W3mWalletCompatibleNetworksView extends LitElement {
     // For now, each network has a unique account
     if (
       isNetworkEnabledForSmartAccounts &&
-      this.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+      preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
     ) {
       if (!caipNetwork) {
         return null

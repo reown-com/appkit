@@ -12,7 +12,7 @@ import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
 import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
-import { W3mFrameRpcConstants } from '@web3modal/wallet'
+import { W3mFrameHelpers, W3mFrameRpcConstants } from '@web3modal/wallet'
 
 @customElement('w3m-account-wallet-features-widget')
 export class W3mAccountWalletFeaturesWidget extends LitElement {
@@ -29,8 +29,6 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   @state() private profileName = AccountController.state.profileName
 
   @state() private smartAccountDeployed = AccountController.state.smartAccountDeployed
-
-  @state() private preferredAccountType = AccountController.state.preferredAccountType
 
   @state() private network = NetworkController.state.caipNetwork
 
@@ -50,7 +48,6 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
             this.currentTab = val.currentTab
             this.tokenBalance = val.tokenBalance
             this.smartAccountDeployed = val.smartAccountDeployed
-            this.preferredAccountType = val.preferredAccountType
           } else {
             ModalController.close()
           }
@@ -147,9 +144,10 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
   private activateAccountTemplate() {
     const smartAccountEnabled = NetworkController.checkIfSmartAccountEnabled()
+    const preferredAccountType = W3mFrameHelpers.getPreferredAccountType()
     if (
       !smartAccountEnabled ||
-      this.preferredAccountType !== W3mFrameRpcConstants.ACCOUNT_TYPES.EOA ||
+      preferredAccountType !== W3mFrameRpcConstants.ACCOUNT_TYPES.EOA ||
       this.smartAccountDeployed
     ) {
       return null
