@@ -542,7 +542,6 @@ export const ConvertController = {
       const error = err as TransactionError
       state.transactionError = error?.shortMessage as unknown as string
       state.transactionLoading = false
-      SnackController.showError(error?.shortMessage || 'Transaction error')
     }
   },
 
