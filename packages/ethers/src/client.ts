@@ -1131,13 +1131,11 @@ export class Web3Modal extends Web3ModalScaffold {
       const isLoginEmailUsed = this.emailProvider.getLoginEmailUsed()
       super.setLoading(isLoginEmailUsed)
       const { isConnected } = await this.emailProvider.isConnected()
-
+      const { smartAccountEnabledNetworks } =
+        await this.emailProvider.getSmartAccountEnabledNetworks()
+      this.setSmartAccountEnabledNetworks(smartAccountEnabledNetworks)
       if (isConnected) {
-        const [{ smartAccountEnabledNetworks }] = await Promise.all([
-          this.emailProvider.getSmartAccountEnabledNetworks(),
-          this.setEmailProvider()
-        ])
-        this.setSmartAccountEnabledNetworks(smartAccountEnabledNetworks)
+        await this.setEmailProvider()
       } else {
         super.setLoading(false)
       }
