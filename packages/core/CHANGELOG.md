@@ -1,5 +1,15 @@
 # @web3modal/core
 
+## 4.1.8
+
+### Patch Changes
+
+- Hotfix for redundant tokenbalance calls
+
+- Updated dependencies []:
+  - @web3modal/common@4.1.8
+  - @web3modal/wallet@4.1.8
+
 ## 4.1.7
 
 ### Patch Changes
