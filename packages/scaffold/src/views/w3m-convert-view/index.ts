@@ -205,7 +205,7 @@ export class W3mConvertView extends LitElement {
       value -= this.gasPriceInUSD || 0
     }
 
-    return html`<wui-convert-input
+    return html`<w3m-convert-input
       .value=${target === 'toToken' ? this.toTokenAmount : this.sourceTokenAmount}
       ?disabled=${this.loading && target === 'toToken'}
       .onSetAmount=${this.handleChangeAmount.bind(this)}
@@ -215,7 +215,7 @@ export class W3mConvertView extends LitElement {
       .price=${this.sourceTokenPriceInUSD}
       .marketValue=${isNaN(value) ? '' : formatNumberToLocalString(value)}
       .onSetMaxValue=${this.onSetMaxValue.bind(this)}
-    ></wui-convert-input>`
+    ></w3m-convert-input>`
   }
 
   private onSetMaxValue(target: Target, balance: string | undefined) {
@@ -263,7 +263,7 @@ export class W3mConvertView extends LitElement {
         : 0
 
     return html`
-      <wui-convert-details
+      <w3m-convert-details
         .detailsOpen=${this.detailsOpen}
         sourceTokenSymbol=${this.sourceToken?.symbol}
         sourceTokenPrice=${this.sourceTokenPriceInUSD}
@@ -273,7 +273,7 @@ export class W3mConvertView extends LitElement {
         .priceImpact=${this.priceImpact}
         slippageRate=${0.5}
         .maxSlippage=${this.maxSlippage}
-      ></wui-convert-details>
+      ></w3m-convert-details>
     `
   }
 
