@@ -13,7 +13,7 @@ export function SolanaTests() {
 
   return isConnected ? (
     <Card className="mb-6">
-      <CardHeader className="border-b border-muted bg-muted/20 px-6 py-4">
+      <CardHeader className="border-b border-muted bg-muted dark:bg-muted/20 rounded-t-md px-6 py-4">
         <CardTitle className="text-lg">Test Interactions</CardTitle>
       </CardHeader>
       <CardContent className="p-6">

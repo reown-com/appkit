@@ -14,9 +14,9 @@ export default function HomePage() {
   return (
     <Column className="gap-4 mt-8 md:mt-16">
       <Card>
-        <CardHeader className="border-b border-muted bg-muted/20 px-6 py-4 flex flex-row items-center justify-start gap-2">
+        <CardHeader className="border-b border-muted bg-muted dark:bg-muted/20 rounded-t-md px-6 py-4 flex flex-row items-center justify-start gap-2">
           <WagmiIcon className="w-8 h-8 inline-block text-primary" />
-          <CardTitle className="text-lg !mt-0">Wagmi</CardTitle>
+          <CardTitle className="text-lg !mt-0">Wagmi2</CardTitle>
         </CardHeader>
         <CardContent className="p-6">
           <Column className="divide-y divide-muted/50">
@@ -40,7 +40,7 @@ export default function HomePage() {
       </Card>
 
       <Card>
-        <CardHeader className="border-b border-muted bg-muted/20 px-6 py-4 flex flex-row items-center justify-start gap-2">
+        <CardHeader className="border-b border-muted bg-muted dark:bg-muted/20 rounded-t-md px-6 py-4 flex flex-row items-center justify-start gap-2">
           <EthersIcon className="w-8 h-8 inline-block text-primary" />
           <CardTitle className="text-lg !mt-0">Ethers</CardTitle>
         </CardHeader>
@@ -66,7 +66,7 @@ export default function HomePage() {
       </Card>
 
       <Card>
-        <CardHeader className="border-b border-muted bg-muted/20 px-6 py-4 flex flex-row items-center justify-start gap-2">
+        <CardHeader className="border-b border-muted bg-muted dark:bg-muted/20 rounded-t-md px-6 py-4 flex flex-row items-center justify-start gap-2">
           <SolanaIcon className="w-8 h-8 inline-block text-primary" />
           <CardTitle className="text-lg !mt-0">Solana</CardTitle>
         </CardHeader>
