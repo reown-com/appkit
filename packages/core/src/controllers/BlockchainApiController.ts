@@ -124,6 +124,8 @@ export const BlockchainApiController = {
   },
 
   async getBalance(address: string) {
+    console.log(`get balance`)
+
     return api.get<BlockchainApiBalanceResponse>({
       path: `/v1/account/${address}/balance`,
       params: {
