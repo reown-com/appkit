@@ -26,7 +26,7 @@ export class W3mWalletSendPreviewView extends LitElement {
 
   @state() private receiverAddress = SendController.state.receiverAddress
 
-  @state() private gasPrice = SendController.state.gasPric
+  @state() private gasPrice = SendController.state.gasPrice
 
   @state() private gasPriceInUsd = SendController.state.gasPriceInUsd
 
@@ -40,7 +40,7 @@ export class W3mWalletSendPreviewView extends LitElement {
           this.token = val.token
           this.sendTokenAmount = val.sendTokenAmount
           this.receiverAddress = val.receiverAddress
-          this.gasPrice = val.gasPric
+          this.gasPrice = val.gasPrice
           this.gasPriceInUsd = val.gasPriceInUsd
         }),
         NetworkController.subscribeKey('caipNetwork', val => (this.caipNetwork = val))
