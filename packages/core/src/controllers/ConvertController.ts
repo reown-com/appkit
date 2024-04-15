@@ -7,6 +7,7 @@ import { ConvertApiUtil } from '../utils/ConvertApiUtil.js'
 import { SnackController } from './SnackController.js'
 import { RouterController } from './RouterController.js'
 import { NumberUtil } from '@web3modal/common'
+import type { ConvertToken } from '../utils/TypeUtil.js'
 
 export const INITIAL_GAS_LIMIT = 150000
 
@@ -18,6 +19,15 @@ type TransactionParams = {
   gasPrice: bigint
   value: bigint
   toAmount: string
+}
+
+export type ConvertTokenWithBalance = ConvertToken & {
+  quantity?: {
+    numeric: string
+    decimals: string
+  }
+  price?: number
+  value?: number
 }
 
 class TransactionError extends Error {
@@ -43,10 +53,10 @@ export interface ConvertControllerState {
   transactionError?: string
 
   // Input values
-  sourceToken?: TokenInfo
+  sourceToken?: ConvertTokenWithBalance
   sourceTokenAmount: string
   sourceTokenPriceInUSD: number
-  toToken?: TokenInfo
+  toToken?: ConvertTokenWithBalance
   toTokenAmount: string
   toTokenPriceInUSD: number
   networkPrice: string
@@ -57,12 +67,12 @@ export interface ConvertControllerState {
   slippage: string
 
   // Tokens
-  tokens?: Record<string, TokenInfo>
-  suggestedTokens?: Record<string, TokenInfo>
-  popularTokens?: Record<string, TokenInfo>
-  foundTokens?: TokenInfo[]
-  myTokensWithBalance?: Record<string, TokenInfoWithBalance>
-  tokensPriceMap: Record<string, string>
+  tokens?: ConvertTokenWithBalance[]
+  suggestedTokens?: ConvertTokenWithBalance[]
+  popularTokens?: ConvertTokenWithBalance[]
+  foundTokens?: ConvertTokenWithBalance[]
+  myTokensWithBalance?: ConvertTokenWithBalance[]
+  tokensPriceMap: Record<string, number>
 
   // Calculations
   gasFee: bigint
@@ -170,7 +180,7 @@ export const ConvertController = {
     state.loading = loading
   },
 
-  setSourceToken(sourceToken: TokenInfo | undefined) {
+  setSourceToken(sourceToken: ConvertTokenWithBalance | undefined) {
     if (!sourceToken) {
       return
     }
@@ -189,7 +199,7 @@ export const ConvertController = {
     }
   },
 
-  setToToken(toToken: TokenInfo | undefined) {
+  setToToken(toToken: ConvertTokenWithBalance | undefined) {
     const { sourceTokenAddress, sourceTokenAmount } = this.getParams()
 
     if (!toToken) {
@@ -215,7 +225,7 @@ export const ConvertController = {
   },
 
   async setTokenValues(address: string, target: 'sourceToken' | 'toToken') {
-    let price = parseFloat(state.tokensPriceMap[address] || '0')
+    let price = state.tokensPriceMap[address] || 0
 
     if (!price) {
       price = await this.getAddressPrice(address)
@@ -247,7 +257,9 @@ export const ConvertController = {
   },
 
   resetValues() {
-    const networkToken = state.tokens?.[ConstantsUtil.NATIVE_TOKEN_ADDRESS]
+    const networkToken = state.tokens?.find(
+      token => token.address === ConstantsUtil.NATIVE_TOKEN_ADDRESS
+    )
     this.setSourceToken(networkToken)
     state.toToken = undefined
     state.sourceTokenAmount = '0'
@@ -278,8 +290,8 @@ export const ConvertController = {
     const res = await ConvertApiUtil.getTokenList()
 
     state.tokens = res.tokens
-    state.popularTokens = Object.entries(res.tokens)
-      .sort(([, aTokenInfo], [, bTokenInfo]) => {
+    state.popularTokens = res.tokens
+      .sort((aTokenInfo, bTokenInfo) => {
         if (aTokenInfo.symbol < bTokenInfo.symbol) {
           return -1
         }
@@ -289,25 +301,26 @@ export const ConvertController = {
 
         return 0
       })
-      .reduce<Record<string, TokenInfo>>((limitedTokens, [tokenAddress, tokenInfo]) => {
-        if (ConstantsUtil.POPULAR_TOKENS.includes(tokenInfo.symbol)) {
-          limitedTokens[tokenAddress] = tokenInfo
+      .filter(token => {
+        if (ConstantsUtil.POPULAR_TOKENS.includes(token.symbol)) {
+          return true
         }
 
-        return limitedTokens
+        return false
       }, {})
-    state.suggestedTokens = Object.entries(res.tokens).reduce<Record<string, TokenInfo>>(
-      (limitedTokens, [tokenAddress, tokenInfo]) => {
-        if (ConstantsUtil.SUGGESTED_TOKENS.includes(tokenInfo.symbol)) {
-          limitedTokens[tokenAddress] = tokenInfo
-        }
+    state.suggestedTokens = res.tokens.filter(token => {
+      if (ConstantsUtil.SUGGESTED_TOKENS.includes(token.symbol)) {
+        return true
+      }
 
-        return limitedTokens
-      },
-      {}
+      return false
+    }, {})
+    const networkToken = res.tokens.find(
+      token => token.address === ConstantsUtil.NATIVE_TOKEN_ADDRESS
     )
-    const networkToken = res.tokens[ConstantsUtil.NATIVE_TOKEN_ADDRESS]
-    this.setSourceToken(networkToken)
+    if (networkToken) {
+      this.setSourceToken(networkToken)
+    }
 
     return state.tokens
   },
@@ -315,11 +328,11 @@ export const ConvertController = {
   async getAddressPrice(address: string) {
     const existPrice = state.tokensPriceMap[address]
     if (existPrice) {
-      return parseFloat(existPrice)
+      return existPrice
     }
     const prices = await ConvertApiUtil.getTokenPriceWithAddresses([address])
     const price = prices[address] || '0'
-    state.tokensPriceMap[address] = price
+    state.tokensPriceMap[address] = parseFloat(price)
 
     return parseFloat(price)
   },
@@ -329,32 +342,29 @@ export const ConvertController = {
       ConstantsUtil.NATIVE_TOKEN_ADDRESS
     ])
     const price = prices[ConstantsUtil.NATIVE_TOKEN_ADDRESS] || '0'
-    state.tokensPriceMap[ConstantsUtil.NATIVE_TOKEN_ADDRESS] = price
+    state.tokensPriceMap[ConstantsUtil.NATIVE_TOKEN_ADDRESS] = parseFloat(price)
     state.networkPrice = price
   },
 
   async getMyTokensWithBalance() {
-    const res = await ConvertApiUtil.getMyTokensWithBalance()
+    const balances = await ConvertApiUtil.getMyTokensWithBalance()
 
-    if (!res) {
+    if (!balances) {
       return
     }
 
     await this.getInitialGasPrice()
 
-    const networkToken = res[ConstantsUtil.NATIVE_TOKEN_ADDRESS]
-
-    state.tokensPriceMap = Object.entries(res).reduce<Record<string, string>>(
-      (prices, [tokenAddress, tokenInfo]) => {
-        prices[tokenAddress] = tokenInfo.price
-
-        return prices
-      },
-      {}
+    const networkToken = balances.find(
+      token => token.address === ConstantsUtil.NATIVE_TOKEN_ADDRESS
     )
-    state.myTokensWithBalance = res
+
+    balances.map(token => {
+      state.tokensPriceMap[token.address] = token.price
+    })
+    state.myTokensWithBalance = balances as ConvertTokenWithBalance[]
     state.networkBalanceInUSD = networkToken
-      ? NumberUtil.multiply(networkToken.balance, networkToken.price).toString()
+      ? NumberUtil.multiply(networkToken.quantity.numeric, networkToken.price).toString()
       : '0'
   },
 

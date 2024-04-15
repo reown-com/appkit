@@ -8,10 +8,10 @@ import {
   CoreHelperUtil,
   NetworkController,
   ModalController,
-  ConstantsUtil
+  ConstantsUtil,
+  type ConvertToken
 } from '@web3modal/core'
 import { NumberUtil } from '@web3modal/common'
-import type { TokenInfo } from '@web3modal/core/src/utils/ConvertApiUtil.js'
 
 type Target = 'sourceToken' | 'toToken'
 
@@ -195,8 +195,10 @@ export class W3mConvertView extends LitElement {
     </wui-flex>`
   }
 
-  private templateTokenInput(target: Target, token?: TokenInfo) {
-    const myToken = ConvertController.state.myTokensWithBalance?.[token?.address ?? '']
+  private templateTokenInput(target: Target, token?: ConvertToken) {
+    const myToken = ConvertController.state.myTokensWithBalance?.find(
+      ct => ct?.address === token?.address
+    )
     const amount = target === 'toToken' ? this.toTokenAmount : this.sourceTokenAmount
     const price = target === 'toToken' ? this.toTokenPriceInUSD : this.sourceTokenPriceInUSD
     let value = parseFloat(amount) * price
@@ -211,7 +213,7 @@ export class W3mConvertView extends LitElement {
       .onSetAmount=${this.handleChangeAmount.bind(this)}
       target=${target}
       .token=${token}
-      .balance=${myToken?.balance}
+      .balance=${myToken?.quantity?.numeric}
       .price=${this.sourceTokenPriceInUSD}
       .marketValue=${isNaN(value) ? '' : formatNumberToLocalString(value)}
       .onSetMaxValue=${this.onSetMaxValue.bind(this)}

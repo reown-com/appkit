@@ -4,6 +4,8 @@ import { FetchUtil } from '../utils/FetchUtil.js'
 import { AccountController } from '../controllers/AccountController.js'
 import { ConnectionController } from '../controllers/ConnectionController.js'
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
+import { BlockchainApiController } from '../controllers/BlockchainApiController.js'
+import { OptionsController } from '../controllers/OptionsController.js'
 
 const ONEINCH_API_BASE_URL = 'https://1inch-swap-proxy.walletconnect-v1-bridge.workers.dev'
 
@@ -172,9 +174,12 @@ export const ConvertApiUtil = {
   },
 
   async getTokenList() {
-    const { api, paths } = this.get1InchAPI()
+    const response = await BlockchainApiController.fetchConvertTokens({
+      chainId: NetworkController.state.caipNetwork?.id,
+      projectId: OptionsController.state.projectId
+    })
 
-    return await api.get<TokenList>({ path: paths.tokens })
+    return response
   },
 
   async searchTokens(searchTerm: string) {
@@ -187,48 +192,49 @@ export const ConvertApiUtil = {
   },
 
   async getMyTokensWithBalance() {
-    const { balances, tokenAddresses } = await this.getBalances()
-
-    if (!tokenAddresses?.length) {
-      return undefined
-    }
-
-    const addresses = [...tokenAddresses, ConstantsUtil.NATIVE_TOKEN_ADDRESS]
-
-    const [tokenInfos, tokensPrices] = await Promise.all([
-      this.getTokenInfoWithAddresses(addresses),
-      this.getTokenPriceWithAddresses(addresses)
-    ])
-
-    const mergedTokensWithBalances = this.mergeTokensWithBalanceAndPrice(
-      tokenInfos,
-      balances,
-      tokensPrices
+    const response = await BlockchainApiController.getBalance(
+      // @ts-ignore
+      AccountController.state.address,
+      NetworkController.state.caipNetwork?.id
     )
+    const balances = response.balances
+    //     name - Token name.
+    // symbol - Token symbol.
+    // address - Contract address of the token in CAIP-10 format.
+    // decimals - Number of decimals for amount supported by a given token.
+    // logoUri - URL of the token icon.
+    // eip2612 - (Optional for ERC-20 tokens) value is true if the token supports eip-2612
 
-    return mergedTokensWithBalances
-  },
-
-  async getBalances() {
-    const { api, paths } = this.get1InchAPI()
-
-    const balances = await api.get<Record<string, string>>({
-      path: paths.balance
+    const tokens = balances.map(balance => {
+      return {
+        address: balance.address,
+        symbol: balance.symbol,
+        name: balance.name,
+        decimals: parseInt(balance.quantity.decimals),
+        logoUri: balance.iconUrl,
+        eip2612: false,
+        // balance fields
+        quantity: {
+          numeric: balance.quantity.numeric,
+          decimals: balance.quantity.decimals
+        },
+        price: balance.price,
+        value: balance.value
+      }
     })
 
-    const nonEmptyBalances = Object.entries(balances).reduce<Record<string, string>>(
-      (filteredBalances, [tokenAddress, balance]) => {
-        if (balance !== '0') {
-          filteredBalances[tokenAddress] = balance
-        }
+    // const nonEmptyBalances = balances.filter(balance => {
+    //   if (balance.quantity.numeric !== '0') {
+    //     return true
+    //   }
 
-        return filteredBalances
-      },
-      {}
-    )
+    //   return false
+    // })
 
-    return { balances: nonEmptyBalances, tokenAddresses: Object.keys(nonEmptyBalances) }
+    return tokens
   },
+
+  async getBalances() {},
 
   async getTokenInfoWithAddresses(addresses: string[]) {
     const { api, paths } = this.get1InchAPI()

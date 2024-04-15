@@ -1,6 +1,6 @@
 import { html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
-import { EventsController, RouterController } from '@web3modal/core'
+import { EventsController, RouterController, type ConvertToken } from '@web3modal/core'
 import { NumberUtil } from '@web3modal/common'
 import {
   UiHelperUtil,
@@ -13,18 +13,6 @@ import styles from './styles.js'
 const MINIMUM_USD_VALUE_TO_CONVERT = 0.00005
 
 type Target = 'sourceToken' | 'toToken'
-
-interface TokenInfo {
-  address: `0x${string}`
-  symbol: string
-  name: string
-  decimals: number
-  logoURI: string
-  domainVersion?: string
-  eip2612?: boolean
-  isFoT?: boolean
-  tags?: string[]
-}
 
 @customElement('w3m-convert-input')
 export class W3mConvertInput extends LitElement {
@@ -45,7 +33,7 @@ export class W3mConvertInput extends LitElement {
 
   @property() public target: Target = 'sourceToken'
 
-  @property() public token?: TokenInfo
+  @property() public token?: ConvertToken
 
   @property() public onSetAmount: ((target: Target, value: string) => void) | null = null
 
@@ -145,8 +133,8 @@ export class W3mConvertInput extends LitElement {
       </wui-button>`
     }
 
-    const tokenElement = this.token.logoURI
-      ? html`<wui-image src=${this.token.logoURI}></wui-image>`
+    const tokenElement = this.token.logoUri
+      ? html`<wui-image src=${this.token.logoUri}></wui-image>`
       : html`
           <wui-icon-box
             size="sm"

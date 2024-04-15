@@ -118,7 +118,7 @@ export class W3mConvertPreviewView extends LitElement {
             <wui-token-button
               flexDirection="row-reverse"
               text=${sourceTokenText}
-              imageSrc=${this.sourceToken?.logoURI}
+              imageSrc=${this.sourceToken?.logoUri}
             >
             </wui-token-button>
           </wui-flex>
@@ -136,7 +136,7 @@ export class W3mConvertPreviewView extends LitElement {
             <wui-token-button
               flexDirection="row-reverse"
               text=${toTokenText}
-              imageSrc=${this.toToken?.logoURI}
+              imageSrc=${this.toToken?.logoUri}
             >
             </wui-token-button>
           </wui-flex>

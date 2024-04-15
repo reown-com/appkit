@@ -161,6 +161,24 @@ export interface BlockchainApiTransactionsResponse {
   next: string | null
 }
 
+export type ConvertToken = {
+  name: string
+  symbol: string
+  address: string
+  decimals: number
+  logoUri: string
+  eip2612?: boolean
+}
+
+export interface BlockchainApiConvertTokensRequest {
+  projectId: string
+  chainId?: string
+}
+
+export interface BlockchainApiConvertTokensResponse {
+  tokens: ConvertToken[]
+}
+
 export interface BlockchainApiBalanceResponse {
   balances: Balance[]
 }

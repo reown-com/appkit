@@ -3,6 +3,8 @@ import { FetchUtil } from '../utils/FetchUtil.js'
 import type {
   BlockchainApiTransactionsRequest,
   BlockchainApiTransactionsResponse,
+  BlockchainApiConvertTokensRequest,
+  BlockchainApiConvertTokensResponse,
   BlockchainApiIdentityRequest,
   BlockchainApiIdentityResponse,
   GenerateOnRampUrlArgs,
@@ -123,12 +125,19 @@ export const BlockchainApiController = {
     })
   },
 
-  async getBalance(address: string) {
+  fetchConvertTokens({ projectId, chainId }: BlockchainApiConvertTokensRequest) {
+    return api.get<BlockchainApiConvertTokensResponse>({
+      path: `/v1/convert/tokens?projectId=${projectId}&chainId=${chainId}`
+    })
+  },
+
+  async getBalance(address: string, chainId?: string) {
     return api.get<BlockchainApiBalanceResponse>({
       path: `/v1/account/${address}/balance`,
       params: {
         currency: 'usd',
-        projectId: OptionsController.state.projectId
+        projectId: OptionsController.state.projectId,
+        chainId
       }
     })
   },

@@ -1,12 +1,10 @@
 import { customElement, interpolate } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
-import { RouterController, ConvertController } from '@web3modal/core'
-import type {
-  TokenInfo,
-  TokenInfoWithBalance
-} from '@web3modal/core/src/controllers/ConvertController.js'
+import { RouterController, ConvertController, type ConvertToken } from '@web3modal/core'
 import { state } from 'lit/decorators.js'
+import type { Balance } from '@web3modal/common'
+import type { ConvertTokenWithBalance } from '@web3modal/core/src/controllers/ConvertController.js'
 
 @customElement('w3m-convert-select-token-view')
 export class W3mConvertSelectTokenView extends LitElement {
@@ -82,7 +80,7 @@ export class W3mConvertSelectTokenView extends LitElement {
     }, 5000)
   }
 
-  private onSelectToken(token: TokenInfo) {
+  private onSelectToken(token: ConvertToken) {
     if (this.targetToken === 'sourceToken') {
       ConvertController.setSourceToken(token)
     } else {
@@ -111,13 +109,16 @@ export class W3mConvertSelectTokenView extends LitElement {
       ? Object.values(ConvertController.state.myTokensWithBalance)
       : []
     const tokens = ConvertController.state.popularTokens
-      ? Object.values(ConvertController.state.popularTokens)
+      ? ConvertController.state.popularTokens
       : []
 
-    const filteredYourTokens: TokenInfoWithBalance[] = this.filterTokensWithText<
-      TokenInfoWithBalance[]
+    const filteredYourTokens: ConvertTokenWithBalance[] = this.filterTokensWithText<
+      ConvertTokenWithBalance[]
     >(yourTokens, this.searchValue)
-    const filteredTokens = this.filterTokensWithText<TokenInfo[]>(tokens, this.searchValue)
+    const filteredTokens = this.filterTokensWithText<ConvertTokenWithBalance[]>(
+      tokens,
+      this.searchValue
+    )
 
     return html`
       <wui-flex class="tokens-container">
@@ -127,22 +128,22 @@ export class W3mConvertSelectTokenView extends LitElement {
                 <wui-flex justifyContent="flex-start" padding="s">
                   <wui-text variant="paragraph-500" color="fg-200">Your tokens</wui-text>
                 </wui-flex>
-                ${filteredYourTokens.map(tokenInfo => {
+                ${filteredYourTokens.map(token => {
                   const selected =
-                    tokenInfo.symbol === this.sourceToken?.symbol ||
-                    tokenInfo.symbol === this.toToken?.symbol
+                    token.symbol === this.sourceToken?.symbol ||
+                    token.symbol === this.toToken?.symbol
 
                   return html`
                     <wui-token-list-item
-                      name=${tokenInfo.name}
+                      name=${token.name}
                       ?disabled=${selected}
-                      symbol=${tokenInfo.symbol}
-                      price=${tokenInfo?.price}
-                      amount=${tokenInfo?.balance}
-                      imageSrc=${tokenInfo.logoURI}
+                      symbol=${token.symbol}
+                      price=${token?.price}
+                      amount=${token?.quantity?.numeric}
+                      imageSrc=${token.logoUri}
                       @click=${() => {
                         if (!selected) {
-                          this.onSelectToken(tokenInfo)
+                          this.onSelectToken(token)
                         }
                       }}
                     >
@@ -158,12 +159,12 @@ export class W3mConvertSelectTokenView extends LitElement {
 
           ${filteredTokens?.length > 0
             ? filteredTokens.map(
-                tokenInfo => html`
+                token => html`
                   <wui-token-list-item
-                    name=${tokenInfo.name}
-                    symbol=${tokenInfo.symbol}
-                    imageSrc=${tokenInfo.logoURI}
-                    @click=${() => this.onSelectToken(tokenInfo)}
+                    name=${token.name}
+                    symbol=${token.symbol}
+                    imageSrc=${token.logoUri}
+                    @click=${() => this.onSelectToken(token)}
                   >
                   </wui-token-list-item>
                 `
@@ -176,7 +177,7 @@ export class W3mConvertSelectTokenView extends LitElement {
 
   private templateSuggestedTokens() {
     const tokens = ConvertController.state.suggestedTokens
-      ? Object.values(ConvertController.state.suggestedTokens).slice(0, 8)
+      ? ConvertController.state.suggestedTokens.slice(0, 8)
       : null
 
     if (!tokens) {
@@ -186,11 +187,11 @@ export class W3mConvertSelectTokenView extends LitElement {
     return html`
       <wui-flex class="suggested-tokens-container" gap="xs">
         ${tokens.map(
-          tokenInfo => html`
+          token => html`
             <wui-token-button
-              text=${tokenInfo.symbol}
-              imageSrc=${tokenInfo.logoURI}
-              @click=${() => this.onSelectToken(tokenInfo)}
+              text=${token.symbol}
+              imageSrc=${token.logoUri}
+              @click=${() => this.onSelectToken(token)}
             >
             </wui-token-button>
           `
@@ -247,7 +248,7 @@ export class W3mConvertSelectTokenView extends LitElement {
     )
   }
 
-  private filterTokensWithText<T>(tokens: TokenInfo[], text: string) {
+  private filterTokensWithText<T>(tokens: Balance[] | ConvertToken[], text: string) {
     return tokens.filter(token =>
       `${token.symbol} ${token.name} ${token.address}`.toLowerCase().includes(text.toLowerCase())
     ) as T
