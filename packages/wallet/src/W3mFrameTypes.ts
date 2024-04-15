@@ -146,13 +146,13 @@ export namespace W3mFrameTypes {
 
   export type SocialProvider =
     | 'google'
+    | 'github'
     | 'apple'
     | 'facebook'
-    | 'x'
-    | 'github'
+    | 'linkedin'
+    | 'twitter'
     | 'discord'
     | 'twitch'
-    | 'telegram'
 
   export type AccountType =
     (typeof W3mFrameRpcConstants.ACCOUNT_TYPES)[keyof typeof W3mFrameRpcConstants.ACCOUNT_TYPES]

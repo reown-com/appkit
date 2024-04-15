@@ -49,6 +49,7 @@ export class W3mSocialLoginWidget extends LitElement {
     }
 
     return html`
+      <wui-separator text="or"></wui-separator>
       <wui-flex flexDirection="column" gap="xs">
         ${this.topViewTemplate()}${this.bottomViewTemplate()}
       </wui-flex>
@@ -64,9 +65,15 @@ export class W3mSocialLoginWidget extends LitElement {
 
     if (this.connector.socials.length === 2) {
       return html` <wui-flex gap="xs">
-        ${this.connector.socials
-          .slice(0, MAX_TOP_VIEW)
-          .map(social => html`<wui-logo-select logo=${social}></wui-logo-select>`)}
+        ${this.connector.socials.slice(0, MAX_TOP_VIEW).map(
+          social =>
+            html`<wui-logo-select
+              @click=${() => {
+                this.onSocialClick(social)
+              }}
+              logo=${social}
+            ></wui-logo-select>`
+        )}
       </wui-flex>`
     }
 
@@ -85,7 +92,7 @@ export class W3mSocialLoginWidget extends LitElement {
       return null
     }
 
-    if (this.connector?.socials.length < MAX_TOP_VIEW) {
+    if (this.connector?.socials.length <= MAX_TOP_VIEW) {
       return null
     }
 
@@ -94,17 +101,29 @@ export class W3mSocialLoginWidget extends LitElement {
       this.connector?.socials.length > MAXIMUM_LENGTH
     ) {
       return html`<wui-flex gap="xs">
-        ${this.connector.socials
-          .slice(1, MAXIMUM_LENGTH - 1)
-          .map(social => html`<wui-logo-select logo=${social}></wui-logo-select>`)}
+        ${this.connector.socials.slice(1, MAXIMUM_LENGTH - 1).map(
+          social =>
+            html`<wui-logo-select
+              @click=${() => {
+                this.onSocialClick(social)
+              }}
+              logo=${social}
+            ></wui-logo-select>`
+        )}
         <wui-logo-select logo="more" @click=${this.onMoreSocialsClick.bind(this)}></wui-logo-select>
       </wui-flex>`
     }
 
     return html`<wui-flex gap="xs">
-      ${this.connector.socials
-        .slice(1, this.connector.socials.length)
-        .map(social => html`<wui-logo-select logo=${social}></wui-logo-select>`)}
+      ${this.connector.socials.slice(1, this.connector.socials.length).map(
+        social =>
+          html`<wui-logo-select
+            @click=${() => {
+              this.onSocialClick(social)
+            }}
+            logo=${social}
+          ></wui-logo-select>`
+      )}
     </wui-flex>`
   }
 

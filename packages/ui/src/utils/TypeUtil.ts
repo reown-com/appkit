@@ -150,6 +150,7 @@ export type IconType =
   | 'swapVertical'
   | 'telegram'
   | 'twitch'
+  | 'twitter'
   | 'twitterIcon'
   | 'verify'
   | 'verifyFilled'

@@ -41,13 +41,13 @@ export type ConnectorType = 'EXTERNAL' | 'WALLET_CONNECT' | 'INJECTED' | 'ANNOUN
 
 export type SocialProvider =
   | 'google'
+  | 'github'
   | 'apple'
   | 'facebook'
-  | 'x'
-  | 'github'
+  | 'linkedin'
+  | 'twitter'
   | 'discord'
   | 'twitch'
-  | 'telegram'
 
 export type Connector = {
   id: string

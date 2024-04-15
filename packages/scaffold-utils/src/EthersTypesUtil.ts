@@ -12,8 +12,8 @@ export type Address = `0x${string}`
 export type ProviderType = {
   injected?: Provider
   coinbase?: Provider
+  email?: boolean
   auth?: {
-    email?: boolean
     socials?: SocialProvider[]
   }
   EIP6963?: boolean

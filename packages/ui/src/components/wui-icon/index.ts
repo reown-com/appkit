@@ -129,6 +129,7 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   swapVertical: swapVerticalSvg,
   telegram: telegramSvg,
   twitch: twitchSvg,
+  twitter: xSvg,
   twitterIcon: twitterIconSvg,
   verify: verifySvg,
   verifyFilled: verifyFilledSvg,

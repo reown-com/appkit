@@ -7,8 +7,8 @@ export interface ConfigOptions {
   enableEIP6963?: boolean
   enableInjected?: boolean
   enableCoinbase?: boolean
+  enableEmail?: boolean
   auth?: {
-    email?: boolean
     socials?: SocialProvider[]
   }
   rpcUrl?: string
@@ -21,6 +21,7 @@ export function defaultConfig(options: ConfigOptions) {
     enableEIP6963 = true,
     enableInjected = true,
     enableCoinbase = true,
+    enableEmail = false,
     auth,
     metadata,
     rpcUrl,
@@ -84,6 +85,10 @@ export function defaultConfig(options: ConfigOptions) {
 
   if (enableEIP6963) {
     providers.EIP6963 = true
+  }
+
+  if (enableEmail) {
+    providers.email = true
   }
 
   if (auth) {

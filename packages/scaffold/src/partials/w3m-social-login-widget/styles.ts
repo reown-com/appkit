@@ -2,7 +2,7 @@ import { css } from 'lit'
 
 export default css`
   wui-flex:first-child {
-    margin-top: var(--wui-spacing-s);
+    margin-top: var(--wui-spacing-xxs);
   }
 
   wui-separator {

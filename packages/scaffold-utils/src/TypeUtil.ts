@@ -1,9 +1,9 @@
 export type SocialProvider =
   | 'google'
+  | 'github'
   | 'apple'
   | 'facebook'
-  | 'x'
-  | 'github'
+  | 'linkedin'
+  | 'twitter'
   | 'discord'
   | 'twitch'
-  | 'telegram'

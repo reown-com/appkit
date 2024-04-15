@@ -23,6 +23,8 @@ export class W3mConnectingSocialView extends LitElement {
 
   @state() protected error = false
 
+  @state() protected connecting = false
+
   public authConnector = ConnectorController.getAuthConnector()
 
   public constructor() {
@@ -97,7 +99,10 @@ export class W3mConnectingSocialView extends LitElement {
     const handleSocialConnection = async (event: MessageEvent) => {
       if (event.data?.resultUri) {
         try {
-          if (this.authConnector) {
+          if (this.authConnector && !this.connecting) {
+            console.log(`connect???`)
+
+            this.connecting = true
             const uri = event.data.resultUri as string
 
             await this.authConnector.provider.connectSocial(uri)

@@ -11,9 +11,9 @@ const modal = createWeb3Modal({
     defaultChainId: 1,
     rpcUrl: 'https://cloudflare-eth.com',
     auth: {
-      email: true,
       socials: ['google']
-    }
+    },
+    enableEmail: true
   }),
   chains: EthersConstants.chains,
   projectId: ConstantsUtil.ProjectId,

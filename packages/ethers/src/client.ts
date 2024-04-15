@@ -313,8 +313,8 @@ export class Web3Modal extends Web3ModalScaffold {
       }
     }
 
-    if (ethersConfig.auth) {
-      this.syncAuthConnector(w3mOptions.projectId, ethersConfig.auth)
+    if (ethersConfig.auth || ethersConfig.email) {
+      this.syncAuthConnector(w3mOptions.projectId, ethersConfig.auth, ethersConfig.email)
     }
 
     if (ethersConfig.injected) {
@@ -1120,7 +1120,11 @@ export class Web3Modal extends Web3ModalScaffold {
     this.setConnectors(w3mConnectors)
   }
 
-  private async syncAuthConnector(projectId: string, auth: ProviderType['auth']) {
+  private async syncAuthConnector(
+    projectId: string,
+    auth: ProviderType['auth'],
+    email: ProviderType['email']
+  ) {
     if (typeof window !== 'undefined') {
       this.frameProvider = new W3mFrameProvider(projectId)
 
@@ -1129,7 +1133,7 @@ export class Web3Modal extends Web3ModalScaffold {
         type: 'AUTH',
         name: 'Auth',
         provider: this.frameProvider,
-        email: auth?.email,
+        email,
         socials: auth?.socials
       })
 
