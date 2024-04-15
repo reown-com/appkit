@@ -1,5 +1,11 @@
 # @web3modal/common
 
+## 4.1.8
+
+### Patch Changes
+
+- Hotfix for redundant tokenbalance calls
+
 ## 4.1.7
 
 ### Patch Changes
