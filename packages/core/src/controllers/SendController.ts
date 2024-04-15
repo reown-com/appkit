@@ -9,7 +9,7 @@ export interface SendControllerState {
   receiverAddress?: string
   receiverProfileName?: string
   receiverProfileImageUrl?: string
-  gasPric?: bigint
+  gasPrice?: bigint
   gasPriceInUsd?: number
 }
 
@@ -54,8 +54,8 @@ export const SendController = {
     state.receiverProfileName = receiverProfileName
   },
 
-  setGasPrice(gasPric: SendControllerState['gasPric']) {
-    state.gasPric = gasPric
+  setGasPrice(gasPrice: SendControllerState['gasPrice']) {
+    state.gasPrice = gasPrice
   },
 
   setGasPriceInUsd(gasPriceInUsd: SendControllerState['gasPriceInUsd']) {
