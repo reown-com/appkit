@@ -828,7 +828,6 @@ export class Web3Modal extends Web3ModalScaffold {
       await Promise.all([
         this.syncProfile(address),
         this.syncBalance(address),
-        this.fetchTokenBalance(),
         this.getApprovedCaipNetworksData()
       ])
 
