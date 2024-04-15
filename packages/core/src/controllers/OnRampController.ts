@@ -1,4 +1,4 @@
-import { subscribeKey as subKey } from 'valtio/utils'
+import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { ONRAMP_PROVIDERS } from '../utils/ConstantsUtil.js'
 import type { PurchaseCurrency, PaymentCurrency } from '../utils/TypeUtil.js'

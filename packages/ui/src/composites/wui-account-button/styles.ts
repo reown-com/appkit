@@ -44,7 +44,6 @@ export default css`
 
   wui-flex > wui-text {
     color: var(--wui-color-fg-200);
-    transition: all var(--wui-ease-out-power-1) var(--wui-duration-lg);
   }
 
   wui-image,

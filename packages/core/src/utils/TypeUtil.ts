@@ -1,5 +1,5 @@
 import type { W3mFrameProvider } from '@web3modal/wallet'
-import type { Transaction } from '@web3modal/common'
+import type { Balance, Transaction } from '@web3modal/common'
 
 export type CaipAddress = `${string}:${string}:${string}`
 
@@ -20,6 +20,14 @@ export interface CaipNetwork {
   imageUrl?: string
 }
 
+export type ConnectedWalletInfo =
+  | {
+      name?: string
+      icon?: string
+      [key: string]: unknown
+    }
+  | undefined
+
 export interface LinkingRecord {
   redirect: string
   href: string
@@ -38,7 +46,12 @@ export type Connector = {
   imageId?: string
   explorerId?: string
   imageUrl?: string
-  info?: { rdns?: string }
+  info?: {
+    uuid?: string
+    name?: string
+    icon?: string
+    rdns?: string
+  }
   provider?: unknown
 }
 
@@ -59,6 +72,7 @@ export type SdkVersion =
   | `${'html' | 'react' | 'vue'}-wagmi-${string}`
   | `${'html' | 'react' | 'vue'}-ethers5-${string}`
   | `${'html' | 'react' | 'vue'}-ethers-${string}`
+  | `${'html' | 'react' | 'vue'}-solana-${string}`
 
 export interface BaseError {
   message?: string
@@ -145,6 +159,10 @@ export interface BlockchainApiTransactionsRequest {
 export interface BlockchainApiTransactionsResponse {
   data: Transaction[]
   next: string | null
+}
+
+export interface BlockchainApiBalanceResponse {
+  balances: Balance[]
 }
 
 // -- OptionsController Types ---------------------------------------------------
@@ -320,6 +338,18 @@ export type Event =
       properties: {
         network: string
       }
+    }
+  | {
+      type: 'track'
+      event: 'CLICK_CONVERT'
+    }
+  | {
+      type: 'track'
+      event: 'CLICK_SELECT_TOKEN_TO_SWAP'
+    }
+  | {
+      type: 'track'
+      event: 'CLICK_SELECT_NETWORK_TO_SWAP'
     }
 
 // Onramp Types

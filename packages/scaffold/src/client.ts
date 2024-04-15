@@ -8,7 +8,8 @@ import type {
   ThemeControllerState,
   ThemeMode,
   ThemeVariables,
-  ModalControllerState
+  ModalControllerState,
+  ConnectedWalletInfo
 } from '@web3modal/core'
 import {
   AccountController,
@@ -59,7 +60,7 @@ export interface ScaffoldOptions extends LibraryOptions {
 }
 
 export interface OpenOptions {
-  view: 'Account' | 'Connect' | 'Networks' | 'ApproveTransaction'
+  view: 'Account' | 'Connect' | 'Networks' | 'ApproveTransaction' | 'OnRampProviders'
 }
 
 // -- Client --------------------------------------------------------------------
@@ -108,6 +109,14 @@ export class Web3ModalScaffold {
     return ThemeController.subscribe(callback)
   }
 
+  public getWalletInfo() {
+    return AccountController.state.connectedWalletInfo
+  }
+
+  public subscribeWalletInfo(callback: (newState: ConnectedWalletInfo) => void) {
+    return AccountController.subscribeKey('connectedWalletInfo', callback)
+  }
+
   public getState() {
     return { ...PublicStateController.state }
   }
@@ -136,6 +145,8 @@ export class Web3ModalScaffold {
   protected setIsConnected: (typeof AccountController)['setIsConnected'] = isConnected => {
     AccountController.setIsConnected(isConnected)
   }
+
+  protected getIsConnectedState = () => AccountController.state.isConnected
 
   protected setCaipAddress: (typeof AccountController)['setCaipAddress'] = caipAddress => {
     AccountController.setCaipAddress(caipAddress)
@@ -202,6 +213,17 @@ export class Web3ModalScaffold {
     isDeployed => {
       AccountController.setSmartAccountDeployed(isDeployed)
     }
+
+  protected setConnectedWalletInfo: (typeof AccountController)['setConnectedWalletInfo'] =
+    connectedWalletInfo => {
+      AccountController.setConnectedWalletInfo(connectedWalletInfo)
+    }
+
+  protected setSmartAccountEnabledNetworks: (typeof NetworkController)['setSmartAccountEnabledNetworks'] =
+    smartAccountEnabledNetworks => {
+      NetworkController.setSmartAccountEnabledNetworks(smartAccountEnabledNetworks)
+    }
+
   // -- Private ------------------------------------------------------------------
   private async initControllers(options: ScaffoldOptions) {
     NetworkController.setClient(options.networkControllerClient)

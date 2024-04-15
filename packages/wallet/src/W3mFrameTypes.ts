@@ -55,9 +55,9 @@ import {
   RpcEthChainId,
   FrameSwitchNetworkResponse,
   AppSyncDappDataRequest,
-  FrameGetSmartAccountEnabledNetworksResponse,
-  FrameInitSmartAccountResponse
+  FrameGetSmartAccountEnabledNetworksResponse
 } from './W3mFrameSchema.js'
+import type { W3mFrameRpcConstants } from './W3mFrameConstants.js'
 
 export namespace W3mFrameTypes {
   export type AppEvent = z.infer<typeof W3mFrameSchema.appEvent>
@@ -86,7 +86,6 @@ export namespace W3mFrameTypes {
     FrameGetSmartAccountEnabledNetworksResponse: z.infer<
       typeof FrameGetSmartAccountEnabledNetworksResponse
     >
-    FrameInitSmartAccountResponse: z.infer<typeof FrameInitSmartAccountResponse>
   }
 
   export interface Network {
@@ -136,4 +135,6 @@ export namespace W3mFrameTypes {
   export type RPCResponse = z.infer<typeof RpcResponse>
 
   export type FrameSessionType = z.infer<typeof FrameSession>
+  export type AccountType =
+    (typeof W3mFrameRpcConstants.ACCOUNT_TYPES)[keyof typeof W3mFrameRpcConstants.ACCOUNT_TYPES]
 }

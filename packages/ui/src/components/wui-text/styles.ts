@@ -6,6 +6,7 @@ export default css`
   }
 
   slot {
+    width: 100%;
     display: inline-block;
     font-style: normal;
     font-family: var(--wui-font-family);
@@ -21,6 +22,12 @@ export default css`
     color: var(--local-color);
   }
 
+  .wui-font-medium-400 {
+    font-size: var(--wui-font-size-medium);
+    font-weight: var(--wui-font-weight-light);
+    letter-spacing: var(--wui-letter-spacing-medium);
+  }
+
   .wui-font-medium-600 {
     font-size: var(--wui-font-size-medium);
     letter-spacing: var(--wui-letter-spacing-medium);
@@ -29,6 +36,12 @@ export default css`
   .wui-font-medium-title-600 {
     font-size: var(--wui-font-size-medium-title);
     letter-spacing: var(--wui-letter-spacing-medium-title);
+  }
+
+  .wui-font-mini-700 {
+    font-size: var(--wui-font-size-mini);
+    letter-spacing: var(--wui-letter-spacing-mini);
+    text-transform: uppercase;
   }
 
   .wui-font-large-500,
@@ -45,6 +58,7 @@ export default css`
     letter-spacing: var(--wui-letter-spacing-2xl);
   }
 
+  .wui-font-paragraph-400,
   .wui-font-paragraph-500,
   .wui-font-paragraph-600,
   .wui-font-paragraph-700 {
@@ -81,7 +95,8 @@ export default css`
 
   .wui-font-large-700,
   .wui-font-paragraph-700,
-  .wui-font-micro-700 {
+  .wui-font-micro-700,
+  .wui-font-mini-700 {
     font-weight: var(--wui-font-weight-bold);
   }
 

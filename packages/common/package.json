@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/common",
-  "version": "4.0.13",
+  "version": "4.1.8",
   "type": "module",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
@@ -17,6 +17,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
+    "bignumber.js": "9.1.2",
     "dayjs": "1.11.10"
   },
   "keywords": [

@@ -54,6 +54,7 @@ import { sendSvg } from '../../assets/svg/send.js'
 import { swapHorizontalSvg } from '../../assets/svg/swapHorizontal.js'
 import { swapHorizontalBoldSvg } from '../../assets/svg/swapHorizontalBold.js'
 import { swapHorizontalMediumSvg } from '../../assets/svg/swapHorizontalMedium.js'
+import { swapHorizontalRoundedBoldSvg } from '../../assets/svg/swapHorizontalRoundedBold.js'
 import { swapVerticalSvg } from '../../assets/svg/swapVertical.js'
 import { telegramSvg } from '../../assets/svg/telegram.js'
 import { twitchSvg } from '../../assets/svg/twitch.js'
@@ -70,6 +71,7 @@ import { bankSvg } from '../../assets/svg/bank.js'
 import { cardSvg } from '../../assets/svg/card.js'
 import { plusSvg } from '../../assets/svg/plus.js'
 import { cursorTransparentSvg } from '../../assets/svg/cursor-transparent.js'
+import { checkmarkBoldSvg } from '../../assets/svg/checkmark-bold.js'
 
 const svgOptions: Record<IconType, TemplateResult<2>> = {
   add: addSvg,
@@ -86,6 +88,7 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   card: cardSvg,
   checkmark: checkmarkSvg,
   chevronBottom: chevronBottomSvg,
+  checkmarkBold: checkmarkBoldSvg,
   chevronLeft: chevronLeftSvg,
   chevronRight: chevronRightSvg,
   chevronTop: chevronTopSvg,
@@ -125,6 +128,7 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   swapHorizontalMedium: swapHorizontalMediumSvg,
   swapHorizontalBold: swapHorizontalBoldSvg,
   swapVertical: swapVerticalSvg,
+  swapHorizontalRoundedBold: swapHorizontalRoundedBoldSvg,
   telegram: telegramSvg,
   twitch: twitchSvg,
   twitter: twitterSvg,

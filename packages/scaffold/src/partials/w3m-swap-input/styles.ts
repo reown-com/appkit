@@ -16,7 +16,6 @@ export default css`
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    transition: all var(--wui-ease-in-power-2) var(--wui-duration-md);
     right: var(--wui-spacing-1xs);
     height: 40px;
     padding: var(--wui-spacing-xs) var(--wui-spacing-1xs) var(--wui-spacing-xs)

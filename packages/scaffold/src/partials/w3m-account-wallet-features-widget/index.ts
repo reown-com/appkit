@@ -3,7 +3,8 @@ import {
   ModalController,
   NetworkController,
   AssetUtil,
-  RouterController
+  RouterController,
+  CoreHelperUtil
 } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -11,6 +12,7 @@ import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
 import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
+import { W3mFrameHelpers, W3mFrameRpcConstants } from '@web3modal/wallet'
 
 @customElement('w3m-account-wallet-features-widget')
 export class W3mAccountWalletFeaturesWidget extends LitElement {
@@ -26,7 +28,13 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
   @state() private profileName = AccountController.state.profileName
 
+  @state() private smartAccountDeployed = AccountController.state.smartAccountDeployed
+
   @state() private network = NetworkController.state.caipNetwork
+
+  @state() private currentTab = AccountController.state.currentTab
+
+  @state() private tokenBalance = AccountController.state.tokenBalance
 
   public constructor() {
     super()
@@ -37,15 +45,16 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
             this.address = val.address
             this.profileImage = val.profileImage
             this.profileName = val.profileName
+            this.currentTab = val.currentTab
+            this.tokenBalance = val.tokenBalance
+            this.smartAccountDeployed = val.smartAccountDeployed
           } else {
             ModalController.close()
           }
         })
       ],
-      NetworkController.subscribeKey('caipNetwork', val => {
-        if (val?.id) {
-          this.network = val
-        }
+      NetworkController.subscribe(val => {
+        this.network = val.caipNetwork
       })
     )
   }
@@ -66,7 +75,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
       flexDirection="column"
       .padding=${['0', 'xl', 'm', 'xl'] as const}
       alignItems="center"
-      gap="l"
+      gap="m"
     >
       ${this.activateAccountTemplate()}
       <wui-profile-button
@@ -77,7 +86,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
         avatarSrc=${ifDefined(this.profileImage ? this.profileImage : undefined)}
         ?isprofilename=${Boolean(this.profileName)}
       ></wui-profile-button>
-      <wui-balance dollars="0" pennies="00"></wui-balance>
+      ${this.tokenBalanceTemplate()}
       <wui-flex gap="s">
         <wui-tooltip-select
           @click=${this.onBuyClick.bind(this)}
@@ -90,20 +99,69 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
           text="Receive"
           icon="arrowBottomCircle"
         ></wui-tooltip-select>
-        <wui-tooltip-select text="Send" icon="send"></wui-tooltip-select>
+        <wui-tooltip-select
+          @click=${this.onSendClick.bind(this)}
+          text="Send"
+          icon="send"
+        ></wui-tooltip-select>
       </wui-flex>
 
-      <wui-tabs localTabWidth="120px" .tabs=${ConstantsUtil.ACCOUNT_TABS}></wui-tabs>
+      <wui-tabs
+        .onTabChange=${this.onTabChange.bind(this)}
+        .activeTab=${this.currentTab}
+        localTabWidth="104px"
+        .tabs=${ConstantsUtil.ACCOUNT_TABS}
+      ></wui-tabs>
+      ${this.listContentTemplate()}
     </wui-flex>`
   }
 
   // -- Private ------------------------------------------- //
+  private listContentTemplate() {
+    if (this.currentTab === 0) {
+      return html`<w3m-account-tokens-widget></w3m-account-tokens-widget>`
+    }
+    if (this.currentTab === 1) {
+      return html`<w3m-account-nfts-widget></w3m-account-nfts-widget>`
+    }
+    if (this.currentTab === 2) {
+      return html`<w3m-account-activity-widget></w3m-account-activity-widget>`
+    }
+
+    return html`<w3m-account-tokens-widget></w3m-account-tokens-widget>`
+  }
+
+  private tokenBalanceTemplate() {
+    if (this.tokenBalance && this.tokenBalance?.length >= 0) {
+      const value = CoreHelperUtil.calculateBalance(this.tokenBalance)
+      const { dollars = '0', pennies = '00' } = CoreHelperUtil.formatTokenBalance(value)
+
+      return html`<wui-balance dollars=${dollars} pennies=${pennies}></wui-balance>`
+    }
+
+    return html`<wui-balance dollars="0" pennies="00"></wui-balance>`
+  }
 
   private activateAccountTemplate() {
-    // eslint-disable-next-line no-warning-comments
-    // Todo: Check if SA is deployed
+    const smartAccountEnabled = NetworkController.checkIfSmartAccountEnabled()
+    const preferredAccountType = W3mFrameHelpers.getPreferredAccountType()
+    if (
+      !smartAccountEnabled ||
+      preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT ||
+      this.smartAccountDeployed
+    ) {
+      return null
+    }
 
-    return html` <wui-promo text="Activate your account"></wui-promo>`
+    return html` <wui-promo
+      text=${'Activate your account'}
+      @click=${this.onUpdateToSmartAccount.bind(this)}
+      data-testid="activate-smart-account-promo"
+    ></wui-promo>`
+  }
+
+  private onTabChange(index: number) {
+    AccountController.setCurrentTab(index)
   }
 
   private onProfileButtonClick() {
@@ -116,6 +174,14 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
   private onReceiveClick() {
     RouterController.push('WalletReceive')
+  }
+
+  private onSendClick() {
+    RouterController.push('WalletSend')
+  }
+
+  private onUpdateToSmartAccount() {
+    RouterController.push('UpgradeToSmartAccount')
   }
 }
 

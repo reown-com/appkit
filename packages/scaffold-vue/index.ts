@@ -85,6 +85,24 @@ export function useWeb3Modal() {
   })
 }
 
+export function useWalletInfo() {
+  if (!modal) {
+    throw new Error('Please call "createWeb3Modal" before using "useWeb3Modal" composable')
+  }
+
+  const walletInfo = ref(modal.getWalletInfo())
+
+  const unsubscribe = modal.subscribeWalletInfo(newValue => {
+    walletInfo.value = newValue
+  })
+
+  onUnmounted(() => {
+    unsubscribe?.()
+  })
+
+  return { walletInfo }
+}
+
 export function useWeb3ModalState() {
   if (!modal) {
     throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalState" composable')

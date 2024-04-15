@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/ethers5",
-  "version": "4.0.13",
+  "version": "4.1.8",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -45,23 +45,22 @@
   "dependencies": {
     "@coinbase/wallet-sdk": "3.9.1",
     "@walletconnect/ethereum-provider": "2.11.1",
-    "@web3modal/polyfills": "4.0.13",
-    "@web3modal/scaffold": "4.0.13",
-    "@web3modal/scaffold-react": "4.0.13",
-    "@web3modal/scaffold-utils": "4.0.13",
-    "@web3modal/scaffold-vue": "4.0.13",
+    "@web3modal/polyfills": "4.1.8",
+    "@web3modal/scaffold": "4.1.8",
+    "@web3modal/scaffold-react": "4.1.8",
+    "@web3modal/scaffold-utils": "4.1.8",
+    "@web3modal/scaffold-vue": "4.1.8",
+    "@web3modal/siwe": "4.1.8",
     "valtio": "1.11.2"
   },
   "devDependencies": {
-    "@web3modal/siwe": "4.0.13",
     "ethers": "5.7.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "vue": "3.4.3"
   },
   "peerDependencies": {
-    "@web3modal/siwe": "4.0.13",
-    "ethers": ">=5.0.0 <6.0.0",
+    "ethers": ">=4.1.0 <6.0.0",
     "react": ">=17",
     "react-dom": ">=17",
     "vue": ">=3"
@@ -70,21 +69,12 @@
     "react": {
       "optional": true
     },
-    "@web3modal/siwe": {
-      "optional": true
-    },
     "react-dom": {
       "optional": true
     },
     "vue": {
       "optional": true
     }
-  },
-  "optionalDependencies": {
-    "@web3modal/siwe": "4.0.13",
-    "react": ">=17",
-    "react-dom": ">=17",
-    "vue": ">=3"
   },
   "keywords": [
     "web3",

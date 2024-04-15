@@ -1,4 +1,4 @@
-import { subscribeKey as subKey } from 'valtio/utils'
+import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, ref, snapshot } from 'valtio/vanilla'
 import type { Connector, EmailConnector } from '../utils/TypeUtil.js'
 import { OptionsController } from './OptionsController.js'
@@ -56,5 +56,9 @@ export const ConnectorController = {
 
   getConnectors() {
     return state.connectors
+  },
+
+  getConnector(id: string, rdns?: string | null) {
+    return state.connectors.find(c => c.explorerId === id || c.info?.rdns === rdns)
   }
 }

@@ -1,0 +1,99 @@
+{
+  "name": "@web3modal/solana",
+  "version": "4.1.8",
+  "type": "module",
+  "main": "./dist/esm/exports/index.js",
+  "types": "./dist/types/exports/index.d.ts",
+  "files": [
+    "dist",
+    "!tsconfig.tsbuildinfo"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/types/exports/index.d.ts",
+      "import": "./dist/esm/exports/index.js",
+      "default": "./dist/esm/exports/index.js"
+    },
+    "./react": {
+      "types": "./dist/types/exports/react.d.ts",
+      "import": "./dist/esm/exports/react.js",
+      "default": "./dist/esm/exports/react.js"
+    },
+    "./chains": {
+      "types": "./dist/types/exports/chains.d.ts",
+      "import": "./dist/esm/exports/chains.js",
+      "default": "./dist/esm/exports/chains.js"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "react": [
+        "./dist/types/exports/react.d.ts"
+      ],
+      "chains": [
+        "./dist/types/exports/chains.d.ts"
+      ]
+    }
+  },
+  "scripts": {
+    "build:clean": "rm -rf dist",
+    "build": "tsc --build",
+    "watch": "tsc --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+  },
+  "dependencies": {
+    "@ethersproject/sha2": "5.7.0",
+    "@solana/web3.js": "1.91.1",
+    "@solana/wallet-adapter-backpack": "0.1.14",
+    "@solana/wallet-adapter-base": "0.9.23",
+    "@solana/wallet-adapter-phantom": "0.9.24",
+    "@solana/wallet-adapter-solflare": "0.6.28",
+    "@solana/wallet-adapter-trust": "0.1.13",
+    "@solana/wallet-adapter-walletconnect": "0.1.16",
+    "@walletconnect/universal-provider": "2.11.2",
+    "@web3modal/polyfills": "4.1.8",
+    "@web3modal/scaffold": "4.1.8",
+    "@web3modal/scaffold-react": "4.1.8",
+    "@web3modal/scaffold-utils": "4.1.8",
+    "@web3modal/scaffold-vue": "4.1.8",
+    "bn.js": "5.2.1",
+    "bs58": "5.0.0"
+  },
+  "devDependencies": {
+    "@types/bn.js": "5.1.5"
+  },
+  "peerDependencies": {
+    "react": ">=17",
+    "react-dom": ">=17",
+    "vue": ">=3"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "react-dom": {
+      "optional": true
+    },
+    "vue": {
+      "optional": true
+    }
+  },
+  "keywords": [
+    "web3",
+    "crypto",
+    "solana",
+    "web3modal",
+    "walletconnect"
+  ],
+  "author": "WalletConnect <walletconnect.com>",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/web3modal/web3modal",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/web3modal/web3modal.git"
+  },
+  "bugs": {
+    "url": "https://github.com/web3modal/web3modal/issues"
+  }
+}

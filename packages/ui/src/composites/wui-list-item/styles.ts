@@ -8,6 +8,10 @@ export default css`
     background-color: var(--wui-gray-glass-002);
     border-radius: var(--wui-border-radius-xs);
     color: var(--wui-color-fg-250);
+    transition:
+      color var(--wui-ease-out-power-1) var(--wui-duration-md),
+      background-color var(--wui-ease-out-power-1) var(--wui-duration-md);
+    will-change: color, background-color;
   }
 
   button[data-iconvariant='square'],
@@ -29,6 +33,8 @@ export default css`
   button > wui-icon {
     width: 36px;
     height: 36px;
+    transition: opacity var(--wui-ease-out-power-1) var(--wui-duration-md);
+    will-change: opacity;
   }
 
   button > wui-icon-box[data-variant='blue'] {
@@ -70,7 +76,6 @@ export default css`
   }
 
   button[data-loading='true'] > wui-icon {
-    transition: opacity 200ms ease-in-out;
     opacity: 0;
   }
 

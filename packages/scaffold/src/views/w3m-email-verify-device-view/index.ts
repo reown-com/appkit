@@ -59,7 +59,7 @@ export class W3mEmailVerifyDeviceView extends LitElement {
           </wui-flex>
 
           <wui-text variant="small-400" color="fg-200" align="center">
-            The code expires in 10 minutes
+            The code expires in 20 minutes
           </wui-text>
 
           <wui-flex alignItems="center" id="w3m-resend-section">
@@ -98,6 +98,7 @@ export class W3mEmailVerifyDeviceView extends LitElement {
         }
         this.loading = true
         await this.emailConnector.provider.connectEmail({ email: this.email })
+        this.listenForDeviceApproval()
         SnackController.showSuccess('Code email resent')
       }
     } catch (error) {
