@@ -126,8 +126,8 @@ export class Web3Modal extends Web3ModalScaffold {
         })
 
         const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
-
-        if (siweConfig?.options?.enabled) {
+        // Make sure client uses ethereum provider version that supports `authenticate`
+        if (siweConfig?.options?.enabled && typeof provider?.authenticate === 'function') {
           const { SIWEController, getDidChainId, getDidAddress } = await import('@web3modal/siwe')
           const siweParams = await siweConfig.getMessageParams()
           // @ts-expect-error - setting requested chains beforehand avoids wagmi auto disconnecting the session when `connect` is called
@@ -138,6 +138,7 @@ export class Web3Modal extends Web3ModalScaffold {
             methods: [...OPTIONAL_METHODS],
             ...siweParams
           })
+
           // Auths is an array of signed CACAO objects https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-74.md
           const signedCacao = result?.auths?.[0]
           if (signedCacao) {
