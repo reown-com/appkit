@@ -122,6 +122,7 @@ export default css`
     border: none;
     cursor: pointer;
     color: var(--wui-gray-glass-020);
+    padding-left: 0px;
   }
 
   .market-value {
