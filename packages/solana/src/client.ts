@@ -235,6 +235,10 @@ export class Web3Modal extends Web3ModalScaffold {
     return SolStoreUtil.state.providerType
   }
 
+  public getWalletConnection() {
+    return SolStoreUtil.state.connection
+  }
+
   public async checkActiveProviders() {
     const walletId = localStorage.getItem(SolConstantsUtil.WALLET_ID)
 
