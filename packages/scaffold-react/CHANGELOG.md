@@ -1,5 +1,14 @@
 # @web3modal/scaffold-react
 
+## 4.1.9
+
+### Patch Changes
+
+- Blockchain API fix
+
+- Updated dependencies []:
+  - @web3modal/scaffold@4.1.9
+
 ## 4.1.8
 
 ### Patch Changes
