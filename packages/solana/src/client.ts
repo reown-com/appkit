@@ -227,6 +227,14 @@ export class Web3Modal extends Web3ModalScaffold {
     return address ? SolStoreUtil.state.address : address
   }
 
+  public getWalletProvider() {
+    return SolStoreUtil.state.provider
+  }
+
+  public getWalletProviderType() {
+    return SolStoreUtil.state.providerType
+  }
+
   public async checkActiveProviders() {
     const walletId = localStorage.getItem(SolConstantsUtil.WALLET_ID)
 
