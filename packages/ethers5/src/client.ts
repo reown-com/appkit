@@ -797,20 +797,28 @@ export class Web3Modal extends Web3ModalScaffold {
   private async syncProfile(address: Address) {
     const chainId = EthersStoreUtil.state.chainId
 
-    if (chainId === 1) {
-      const ensProvider = new ethers.providers.InfuraProvider('mainnet')
-      const name = await ensProvider.lookupAddress(address)
-      const avatar = await ensProvider.getAvatar(address)
+    try {
+      const { name, avatar } = await this.fetchIdentity({
+        address
+      })
+      this.setProfileName(name)
+      this.setProfileImage(avatar)
+    } catch {
+      if (chainId === 1) {
+        const ensProvider = new ethers.providers.InfuraProvider('mainnet')
+        const name = await ensProvider.lookupAddress(address)
+        const avatar = await ensProvider.getAvatar(address)
 
-      if (name) {
-        this.setProfileName(name)
+        if (name) {
+          this.setProfileName(name)
+        }
+        if (avatar) {
+          this.setProfileImage(avatar)
+        }
+      } else {
+        this.setProfileName(null)
+        this.setProfileImage(null)
       }
-      if (avatar) {
-        this.setProfileImage(avatar)
-      }
-    } else {
-      this.setProfileName(null)
-      this.setProfileImage(null)
     }
   }
 
