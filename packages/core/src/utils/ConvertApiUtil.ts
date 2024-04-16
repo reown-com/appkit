@@ -5,7 +5,6 @@ import { AccountController } from '../controllers/AccountController.js'
 import { ConnectionController } from '../controllers/ConnectionController.js'
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { BlockchainApiController } from '../controllers/BlockchainApiController.js'
-import { OptionsController } from '../controllers/OptionsController.js'
 
 const ONEINCH_API_BASE_URL = 'https://1inch-swap-proxy.walletconnect-v1-bridge.workers.dev'
 
@@ -173,24 +172,6 @@ export const ConvertApiUtil = {
     return false
   },
 
-  async getTokenList() {
-    const response = await BlockchainApiController.fetchConvertTokens({
-      chainId: NetworkController.state.caipNetwork?.id,
-      projectId: OptionsController.state.projectId
-    })
-
-    return response
-  },
-
-  async searchTokens(searchTerm: string) {
-    const { api, paths } = this.get1InchAPI()
-
-    return await api.get<TokenInfo[]>({
-      path: paths.search,
-      params: { query: searchTerm }
-    })
-  },
-
   async getMyTokensWithBalance() {
     const response = await BlockchainApiController.getBalance(
       // @ts-ignore
@@ -198,63 +179,46 @@ export const ConvertApiUtil = {
       NetworkController.state.caipNetwork?.id
     )
     const balances = response.balances
-    //     name - Token name.
-    // symbol - Token symbol.
-    // address - Contract address of the token in CAIP-10 format.
-    // decimals - Number of decimals for amount supported by a given token.
-    // logoUri - URL of the token icon.
-    // eip2612 - (Optional for ERC-20 tokens) value is true if the token supports eip-2612
 
-    const tokens = balances.map(balance => {
+    const tokens = balances.map(token => {
       return {
-        address: balance.address,
-        symbol: balance.symbol,
-        name: balance.name,
-        decimals: parseInt(balance.quantity.decimals),
-        logoUri: balance.iconUrl,
+        symbol: token.symbol,
+        name: token.name,
+        address: !!token.address
+          ? token.address
+          : `${NetworkController.state.caipNetwork?.id}:${ConstantsUtil.NATIVE_TOKEN_ADDRESS}`,
+        decimals: parseInt(token.quantity.decimals),
+        logoUri: token.iconUrl,
         eip2612: false,
-        // balance fields
         quantity: {
-          numeric: balance.quantity.numeric,
-          decimals: balance.quantity.decimals
+          numeric: token.quantity.numeric,
+          decimals: token.quantity.decimals
         },
-        price: balance.price,
-        value: balance.value
+        price: token.price,
+        value: token.value
       }
     })
 
-    // const nonEmptyBalances = balances.filter(balance => {
-    //   if (balance.quantity.numeric !== '0') {
-    //     return true
-    //   }
-
-    //   return false
-    // })
-
     return tokens
-  },
-
-  async getBalances() {},
-
-  async getTokenInfoWithAddresses(addresses: string[]) {
-    const { api, paths } = this.get1InchAPI()
-
-    return api.get<Record<string, TokenInfo>>({
-      path: paths.tokensCustom,
-      params: { addresses: addresses.join(',') }
-    })
   },
 
   async getTokenPriceWithAddresses(addresses: string[]) {
     const { api, paths } = this.get1InchAPI()
 
-    return await api.post<Record<string, string>>({
+    const values = await api.post<Record<string, string>>({
       path: paths.tokenPrices,
       body: { tokens: addresses, currency: 'USD' },
       headers: {
         'content-type': 'application/json'
       }
     })
+
+    // return same values but update the keys with `eip155:137:` prefix to mimic blockchain api response
+    return Object.entries(values).reduce<Record<string, string>>((_values, [key, value]) => {
+      _values[`${NetworkController.state.caipNetwork?.id}:${key}`] = value
+
+      return _values
+    }, {})
   },
 
   mergeTokensWithBalanceAndPrice(
@@ -279,58 +243,5 @@ export const ConvertApiUtil = {
     )
 
     return mergedTokens
-  },
-
-  async getConvertData({
-    sourceTokenAddress,
-    toTokenAddress,
-    sourceTokenAmount,
-    fromAddress,
-    decimals = 9
-  }: GetConvertDataParams): Promise<GetConvertDataResponse> {
-    const { api, paths } = this.get1InchAPI()
-
-    return await api.get({
-      path: paths.swap,
-      params: {
-        src: sourceTokenAddress,
-        dst: toTokenAddress,
-        slippage: ConstantsUtil.CONVERT_SLIPPAGE_TOLERANCE,
-        from: fromAddress,
-        amount: ConnectionController.parseUnits(sourceTokenAmount, decimals).toString()
-      }
-    })
-  },
-
-  async getConvertApprovalData({ sourceTokenAddress }: GetApprovalParams) {
-    const { api, paths } = this.get1InchAPI()
-
-    return await api.get<SwapApprovalData>({
-      path: paths.approveTransaction,
-      params: {
-        tokenAddress: sourceTokenAddress
-      }
-    })
-  },
-
-  async getQuoteApprovalData({
-    sourceTokenAddress,
-    toTokenAddress,
-    sourceTokenAmount,
-    fromAddress,
-    decimals = 9
-  }: GetConvertDataParams): Promise<GetConvertDataResponse> {
-    const { api, paths } = this.get1InchAPI()
-
-    return await api.get({
-      path: paths.quote,
-      params: {
-        src: sourceTokenAddress,
-        dst: toTokenAddress,
-        slippage: ConstantsUtil.CONVERT_SLIPPAGE_TOLERANCE,
-        from: fromAddress,
-        amount: ConnectionController.parseUnits(sourceTokenAmount, decimals).toString()
-      }
-    })
   }
 }

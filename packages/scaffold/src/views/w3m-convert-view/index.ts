@@ -106,7 +106,8 @@ export class W3mConvertView extends LitElement {
       ]
     )
 
-    this.watchTokensAndValues()
+    // TODO: handle watching tokens
+    // this.watchTokensAndValues()
   }
 
   public override firstUpdated() {
@@ -273,7 +274,7 @@ export class W3mConvertView extends LitElement {
         toTokenConvertedAmount=${toTokenConvertedAmount}
         gasPriceInUSD=${this.gasPriceInUSD}
         .priceImpact=${this.priceImpact}
-        slippageRate=${0.5}
+        slippageRate=${ConstantsUtil.CONVERT_SLIPPAGE_TOLERANCE}
         .maxSlippage=${this.maxSlippage}
       ></w3m-convert-details>
     `

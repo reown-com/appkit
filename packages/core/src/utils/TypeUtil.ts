@@ -164,7 +164,7 @@ export interface BlockchainApiTransactionsResponse {
 export type ConvertToken = {
   name: string
   symbol: string
-  address: string
+  address: `${string}:${string}:${string}`
   decimals: number
   logoUri: string
   eip2612?: boolean
@@ -177,6 +177,68 @@ export interface BlockchainApiConvertTokensRequest {
 
 export interface BlockchainApiConvertTokensResponse {
   tokens: ConvertToken[]
+}
+
+export interface BlockchainApiTokenPriceRequest {
+  projectId: string
+  currency?: 'usd' | 'eur' | 'gbp' | 'aud' | 'cad' | 'inr' | 'jpy' | 'btc' | 'eth'
+  addresses: string[]
+}
+
+export interface BlockchainApiTokenPriceResponse {
+  fungibles: {
+    address: string
+    name: string
+    symbol: string
+    iconUrl: string
+    price: string
+  }[]
+}
+
+export interface BlockchainApiGenerateConvertCalldataRequest {
+  projectId: string
+  userAddress: string
+  from: string
+  to: string
+  amount: number
+  eip155?: {
+    slippage: string
+    permit?: string
+  }
+}
+
+export interface BlockchainApiGenerateConvertCalldataResponse {
+  tx: {
+    from: string
+    to: `0x${string}`
+    data: `0x${string}`
+    amount: string
+    eip155: {
+      gas: string
+      gasPrice: string
+    }
+  }
+}
+
+export interface BlockchainApiGenerateApproveCalldataRequest {
+  projectId: string
+  userAddress: string
+  from: string
+  to: string
+  amount: number
+}
+
+export interface BlockchainApiGenerateApproveCalldataResponse {
+  tx: {
+    from: string
+    to: `0x${string}`
+    data: `0x${string}`
+    value: string
+    eip155: {
+      gas: number
+      gasPrice: string
+    }
+  }
 }
 
 export interface BlockchainApiBalanceResponse {

@@ -1,3 +1,4 @@
+import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { FetchUtil } from '../utils/FetchUtil.js'
 import type {
@@ -5,6 +6,12 @@ import type {
   BlockchainApiTransactionsResponse,
   BlockchainApiConvertTokensRequest,
   BlockchainApiConvertTokensResponse,
+  BlockchainApiGenerateConvertCalldataRequest,
+  BlockchainApiGenerateConvertCalldataResponse,
+  BlockchainApiGenerateApproveCalldataRequest,
+  BlockchainApiGenerateApproveCalldataResponse,
+  BlockchainApiTokenPriceRequest,
+  BlockchainApiTokenPriceResponse,
   BlockchainApiIdentityRequest,
   BlockchainApiIdentityResponse,
   GenerateOnRampUrlArgs,
@@ -131,9 +138,69 @@ export const BlockchainApiController = {
     })
   },
 
+  fetchTokenPrice({ projectId, addresses }: BlockchainApiTokenPriceRequest) {
+    return api.post<BlockchainApiTokenPriceResponse>({
+      path: `/v1/fungible/price`,
+      body: {
+        projectId,
+        currency: 'usd',
+        addresses
+      },
+      headers: {
+        'content-type': 'text/json'
+      }
+    })
+  },
+
+  generateConvertCalldata({
+    amount,
+    from,
+    projectId,
+    to,
+    userAddress
+  }: BlockchainApiGenerateConvertCalldataRequest) {
+    return api.post<BlockchainApiGenerateConvertCalldataResponse>({
+      path: '/v1/convert/build-transaction',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: {
+        amount,
+        eip155: {
+          slippage: ConstantsUtil.CONVERT_SLIPPAGE_TOLERANCE
+        },
+        from,
+        projectId,
+        to,
+        userAddress
+      }
+    })
+  },
+
+  generateApproveCalldata({
+    amount,
+    from,
+    projectId,
+    to,
+    userAddress
+  }: BlockchainApiGenerateApproveCalldataRequest) {
+    return api.get<BlockchainApiGenerateApproveCalldataResponse>({
+      path: `/v1/convert/build-approve?projectId=${projectId}&userAddress=${userAddress}&from=${from}&amount=${amount}&to=${to}`,
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+  },
+
   async getBalance(address: string, chainId?: string) {
+    const { sdkType, sdkVersion } = OptionsController.state
+
     return api.get<BlockchainApiBalanceResponse>({
       path: `/v1/account/${address}/balance`,
+      headers: {
+        'x-sdk-type': sdkType,
+        'x-sdk-version': sdkVersion
+      },
       params: {
         currency: 'usd',
         projectId: OptionsController.state.projectId,

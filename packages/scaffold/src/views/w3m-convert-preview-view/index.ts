@@ -5,7 +5,8 @@ import {
   AccountController,
   NetworkController,
   RouterController,
-  ConvertController
+  ConvertController,
+  ConstantsUtil
 } from '@web3modal/core'
 import { state } from 'lit/decorators.js'
 
@@ -194,7 +195,7 @@ export class W3mConvertPreviewView extends LitElement {
         toTokenConvertedAmount=${toTokenConvertedAmount}
         gasPriceInUSD=${formatNumberToLocalString(this.gasPriceInUSD, 3)}
         .priceImpact=${this.priceImpact}
-        slippageRate=${0.5}
+        slippageRate=${ConstantsUtil.CONVERT_SLIPPAGE_TOLERANCE}
         .maxSlippage=${this.maxSlippage}
       ></w3m-convert-details>
     `
