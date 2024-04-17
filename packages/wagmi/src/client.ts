@@ -163,9 +163,6 @@ export class Web3Modal extends Web3ModalScaffold {
 
       disconnect: async () => {
         await disconnect(this.wagmiConfig)
-        if (siweConfig?.options?.signOutOnDisconnect) {
-          await siweConfig.signOut()
-        }
       },
 
       signMessage: async message => signMessage(this.wagmiConfig, { message })
