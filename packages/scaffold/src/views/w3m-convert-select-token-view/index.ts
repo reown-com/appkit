@@ -1,10 +1,8 @@
 import { customElement, interpolate } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
-import { RouterController, ConvertController, type ConvertToken } from '@web3modal/core'
+import { RouterController, ConvertController, type ConvertTokenWithBalance } from '@web3modal/core'
 import { state } from 'lit/decorators.js'
-import type { Balance } from '@web3modal/common'
-import type { ConvertTokenWithBalance } from '@web3modal/core/src/controllers/ConvertController.js'
 
 @customElement('w3m-convert-select-token-view')
 export class W3mConvertSelectTokenView extends LitElement {
@@ -80,7 +78,7 @@ export class W3mConvertSelectTokenView extends LitElement {
     }, 5000)
   }
 
-  private onSelectToken(token: ConvertToken) {
+  private onSelectToken(token: ConvertTokenWithBalance) {
     if (this.targetToken === 'sourceToken') {
       ConvertController.setSourceToken(token)
     } else {
@@ -248,7 +246,7 @@ export class W3mConvertSelectTokenView extends LitElement {
     )
   }
 
-  private filterTokensWithText<T>(tokens: Balance[] | ConvertToken[], text: string) {
+  private filterTokensWithText<T>(tokens: ConvertTokenWithBalance[], text: string) {
     return tokens.filter(token =>
       `${token.symbol} ${token.name} ${token.address}`.toLowerCase().includes(text.toLowerCase())
     ) as T

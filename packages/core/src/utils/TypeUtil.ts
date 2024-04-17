@@ -170,6 +170,15 @@ export type ConvertToken = {
   eip2612?: boolean
 }
 
+export type ConvertTokenWithBalance = ConvertToken & {
+  quantity: {
+    decimals: string
+    numeric: string
+  }
+  price: number
+  value: number
+}
+
 export interface BlockchainApiConvertTokensRequest {
   projectId: string
   chainId?: string

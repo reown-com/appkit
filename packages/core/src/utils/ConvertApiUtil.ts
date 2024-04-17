@@ -5,6 +5,8 @@ import { AccountController } from '../controllers/AccountController.js'
 import { ConnectionController } from '../controllers/ConnectionController.js'
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { BlockchainApiController } from '../controllers/BlockchainApiController.js'
+import type { ConvertTokenWithBalance } from './TypeUtil.js'
+import { OptionsController } from '../controllers/OptionsController.js'
 
 const ONEINCH_API_BASE_URL = 'https://1inch-swap-proxy.walletconnect-v1-bridge.workers.dev'
 
@@ -138,6 +140,28 @@ export const ConvertApiUtil = {
     }
   },
 
+  async getTokenList() {
+    const response = await await BlockchainApiController.fetchConvertTokens({
+      chainId: NetworkController.state.caipNetwork?.id,
+      projectId: OptionsController.state.projectId
+    })
+
+    const tokens = response.tokens.map(token => {
+      return {
+        ...token,
+        eip2612: false,
+        quantity: {
+          decimals: '0',
+          numeric: '0'
+        },
+        price: 0,
+        value: 0
+      } as ConvertTokenWithBalance
+    })
+
+    return tokens
+  },
+
   async getGasPrice() {
     const { api, paths } = this.get1InchAPI()
 
@@ -190,13 +214,10 @@ export const ConvertApiUtil = {
         decimals: parseInt(token.quantity.decimals),
         logoUri: token.iconUrl,
         eip2612: false,
-        quantity: {
-          numeric: token.quantity.numeric,
-          decimals: token.quantity.decimals
-        },
+        quantity: token.quantity,
         price: token.price,
         value: token.value
-      }
+      } as ConvertTokenWithBalance
     })
 
     return tokens

@@ -106,8 +106,7 @@ export class W3mConvertView extends LitElement {
       ]
     )
 
-    // TODO: handle watching tokens
-    // this.watchTokensAndValues()
+    this.watchTokensAndValues()
   }
 
   public override firstUpdated() {
@@ -137,7 +136,7 @@ export class W3mConvertView extends LitElement {
       ConvertController.getNetworkTokenPrice()
       ConvertController.getMyTokensWithBalance()
       ConvertController.refreshConvertValues()
-    }, 5000)
+    }, 20000)
   }
 
   private templateSwap() {
