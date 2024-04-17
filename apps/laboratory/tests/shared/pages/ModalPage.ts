@@ -13,6 +13,7 @@ export class ModalPage {
 
   private readonly connectButton: Locator
   private readonly url: string
+  private emailAddress = ''
 
   constructor(
     public readonly page: Page,
@@ -61,6 +62,8 @@ export class ModalPage {
   ): Promise<void> {
     await this.load()
 
+    this.emailAddress = emailAddress
+
     const email = new Email(mailsacApiKey)
 
     await email.deleteAllMessages(emailAddress)
@@ -93,7 +96,8 @@ export class ModalPage {
     if (otp.replace(' ', '').length !== 6) {
       otp = email.getOtpCodeFromBody(emailBody)
     }
-    await this.enterOTP(otp)
+    // Remove empy space in OTP code 111 111
+    await this.enterOTP(otp.replace(' ', ''))
   }
 
   async loginWithEmail(email: string) {
@@ -114,16 +118,14 @@ export class ModalPage {
     })
   }
 
-  async enterOTP(otp: string) {
-    await expect(this.page.getByText('Confirm Email')).toBeVisible({
+  async enterOTP(otp: string, headerTitle = 'Confirm Email') {
+    await expect(this.page.getByText(headerTitle)).toBeVisible({
       timeout: 10_000
     })
     await expect(this.page.getByText('Enter the code we sent')).toBeVisible({
       timeout: 10_000
     })
     const splitted = otp.split('')
-    // Remove empy space in OTP code 111 111
-    splitted.splice(3, 1)
 
     // eslint-disable-next-line no-plusplus
     for (let i = 0; i < splitted.length; i++) {
@@ -143,7 +145,7 @@ export class ModalPage {
       await input.fill(digit)
     }
 
-    await expect(this.page.getByText('Confirm Email')).not.toBeVisible()
+    await expect(this.page.getByText(headerTitle)).not.toBeVisible()
   }
 
   async disconnect() {
@@ -225,5 +227,52 @@ export class ModalPage {
 
   async closeModal() {
     await this.page.getByTestId('w3m-header-close')?.click?.()
+  }
+
+  async updateEmail(mailsacApiKey: string) {
+    const email = new Email(mailsacApiKey)
+    const newEmailAddress = email.getNewEmailAddress(this.emailAddress)
+
+    await this.page.getByTestId('account-button').click()
+    await this.page.getByTestId('w3m-account-email-update').click()
+    await this.page.getByTestId('wui-email-input').locator('input').focus()
+    await this.page.getByTestId('wui-email-input').locator('input').fill(newEmailAddress)
+
+    // Clear messages before putting new email
+    await email.deleteAllMessages(this.emailAddress)
+    await this.page.getByTestId('wui-email-input').locator('input').press('Enter')
+
+    // Wait until the next screen appears
+    await expect(this.page.getByText('Enter the code we sent')).toBeVisible({
+      timeout: 10_000
+    })
+    const confirmCurrentEmail = await this.page.getByText(this.emailAddress).isVisible()
+    if (confirmCurrentEmail) {
+      await this.updateOtpFlow(this.emailAddress, mailsacApiKey, 'Confirm Current Email')
+    }
+
+    // The new OTP will arrive in the same email address as we are using the same email +new
+    await this.updateOtpFlow(this.emailAddress, mailsacApiKey, 'Confirm New Email')
+
+    expect(
+      this.page.getByTestId('w3m-account-email-update'),
+      `Expected to go to the account screen after the update`
+    ).toBeVisible()
+  }
+
+  async updateOtpFlow(emailAddress: string, mailsacApiKey: string, headerTitle: string) {
+    const email = new Email(mailsacApiKey)
+
+    const messageId = await email.getLatestMessageId(emailAddress)
+
+    if (!messageId) {
+      throw new Error('No messageId found')
+    }
+    const emailBody = await email.getEmailBody(emailAddress, messageId)
+    const otp = email.getOtpCodeFromBody(emailBody).replace(' ', '')
+
+    // Clear messages before putting OTP
+    email.deleteAllMessages(emailAddress)
+    await this.enterOTP(otp, headerTitle)
   }
 }
