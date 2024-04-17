@@ -1,5 +1,47 @@
 # @web3modal/ethers
 
+## 4.1.9
+
+### Patch Changes
+
+- Blockchain API fix
+
+- Updated dependencies []:
+  - @web3modal/polyfills@4.1.9
+  - @web3modal/scaffold@4.1.9
+  - @web3modal/scaffold-react@4.1.9
+  - @web3modal/scaffold-utils@4.1.9
+  - @web3modal/scaffold-vue@4.1.9
+  - @web3modal/siwe@4.1.9
+
+## 4.1.8
+
+### Patch Changes
+
+- Hotfix for redundant tokenbalance calls
+
+- Updated dependencies []:
+  - @web3modal/scaffold@4.1.8
+  - @web3modal/polyfills@4.1.8
+  - @web3modal/scaffold-react@4.1.8
+  - @web3modal/scaffold-utils@4.1.8
+  - @web3modal/scaffold-vue@4.1.8
+  - @web3modal/siwe@4.1.8
+
+## 4.1.7
+
+### Patch Changes
+
+- Hotfix for inccorect state of w3m-button when email is enabled
+
+- Updated dependencies []:
+  - @web3modal/scaffold@4.1.7
+  - @web3modal/polyfills@4.1.7
+  - @web3modal/scaffold-react@4.1.7
+  - @web3modal/scaffold-utils@4.1.7
+  - @web3modal/scaffold-vue@4.1.7
+  - @web3modal/siwe@4.1.7
+
 ## 4.1.6
 
 ### Patch Changes

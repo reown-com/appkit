@@ -69,7 +69,8 @@ export const FrameGetUserResponse = z.object({
   email: z.string().email(),
   address: z.string(),
   chainId: z.number(),
-  smartAccountDeployed: z.optional(z.boolean())
+  smartAccountDeployed: z.optional(z.boolean()),
+  preferredAccountType: z.optional(z.string())
 })
 export const FrameIsConnectedResponse = z.object({ isConnected: z.boolean() })
 export const FrameGetChainIdResponse = z.object({ chainId: z.number() })
