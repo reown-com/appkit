@@ -22,7 +22,7 @@ testModalSmartAccount('it should sign with eoa', async ({ modalPage, modalValida
 })
 
 testModalSmartAccount(
-  'it should switch to its smart account',
+  'it should switch to its smart account and sign',
   async ({ modalPage, modalValidator }) => {
     const walletModalPage = modalPage as ModalWalletPage
     const walletModalValidator = modalValidator as ModalWalletValidator
@@ -34,18 +34,7 @@ testModalSmartAccount(
     await walletModalValidator.expectChangePreferredAccountToShow(SMART_ACCOUNT)
     await walletModalPage.togglePreferredAccountType()
     await walletModalValidator.expectChangePreferredAccountToShow(EOA)
-  }
-)
 
-testModalSmartAccount(
-  'it should sign with its smart account',
-  async ({ modalPage, modalValidator }) => {
-    const walletModalPage = modalPage as ModalWalletPage
-    const walletModalValidator = modalValidator as ModalWalletValidator
-
-    await walletModalPage.openAccount()
-    await walletModalPage.openSettings()
-    await walletModalPage.togglePreferredAccountType()
     await walletModalPage.closeModal()
     await walletModalPage.page.waitForTimeout(1000)
 
