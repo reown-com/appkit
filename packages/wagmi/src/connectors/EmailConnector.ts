@@ -32,10 +32,7 @@ export function emailConnector(parameters: EmailParameters) {
 
     async connect(options: ConnectOptions = {}) {
       const provider = await this.getProvider()
-      const [{ address, chainId }] = await Promise.all([
-        provider.connect({ chainId: options.chainId }),
-        provider.getSmartAccountEnabledNetworks()
-      ])
+      const { address, chainId } = await provider.connect({ chainId: options.chainId })
 
       return {
         accounts: [address as Address],
