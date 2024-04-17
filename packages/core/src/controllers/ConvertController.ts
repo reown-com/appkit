@@ -532,23 +532,25 @@ export const ConvertController = {
       to: toTokenAddress,
       userAddress: fromCaipAddress
     })
-    const transaction = response.tx
 
     const gasLimit = await ConnectionController.getEstimatedGas({
       address: fromAddress as `0x${string}`,
-      to: transaction.to as `0x${string}`,
-      data: transaction.data
+      to: CoreHelperUtil.getPlainAddress(response.tx.to) as `0x${string}`,
+      data: response.tx.data
     })
 
     const toAmount = this.getToAmount()
 
-    return {
-      ...transaction,
+    const transaction = {
+      data: response.tx.data,
+      to: CoreHelperUtil.getPlainAddress(response.tx.from),
       gas: gasLimit,
-      gasPrice: BigInt(transaction.eip155?.gasPrice),
-      value: BigInt(transaction.value),
+      gasPrice: BigInt(response.tx.eip155.gasPrice),
+      value: BigInt(response.tx.value),
       toAmount
     }
+
+    return transaction
   },
 
   async sendTransactionForApproval(data: TransactionParams) {
@@ -617,7 +619,7 @@ export const ConvertController = {
 
       const transaction = {
         data: response.tx.data,
-        to: response.tx.to,
+        to: CoreHelperUtil.getPlainAddress(response.tx.to),
         gas,
         gasPrice,
         value: BigInt(amount),
@@ -650,6 +652,7 @@ export const ConvertController = {
     })
 
     try {
+      console.log('>>> data', data, fromAddress)
       const transactionHash = await ConnectionController.sendTransaction({
         address: fromAddress as `0x${string}`,
         to: data.to as `0x${string}`,
@@ -670,6 +673,7 @@ export const ConvertController = {
       const error = err as TransactionError
       state.transactionError = error?.shortMessage
       state.transactionLoading = false
+      console.log('>>> error', err)
       SnackController.showError(error?.shortMessage || 'Transaction error')
 
       return undefined

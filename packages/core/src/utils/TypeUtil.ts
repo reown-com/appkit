@@ -218,8 +218,8 @@ export interface BlockchainApiGenerateConvertCalldataRequest {
 
 export interface BlockchainApiGenerateConvertCalldataResponse {
   tx: {
-    from: string
-    to: `0x${string}`
+    from: `${string}:${string}:${string}`
+    to: `${string}:${string}:${string}`
     data: `0x${string}`
     amount: string
     eip155: {
@@ -239,8 +239,8 @@ export interface BlockchainApiGenerateApproveCalldataRequest {
 
 export interface BlockchainApiGenerateApproveCalldataResponse {
   tx: {
-    from: string
-    to: `0x${string}`
+    from: `${string}:${string}:${string}`
+    to: `${string}:${string}:${string}`
     data: `0x${string}`
     value: string
     eip155: {
