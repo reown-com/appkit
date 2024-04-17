@@ -1,5 +1,15 @@
 # @web3modal/core
 
+## 4.1.9
+
+### Patch Changes
+
+- Blockchain API fix
+
+- Updated dependencies []:
+  - @web3modal/common@4.1.9
+  - @web3modal/wallet@4.1.9
+
 ## 4.1.8
 
 ### Patch Changes

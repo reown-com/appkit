@@ -1,5 +1,17 @@
 # @apps/laboratory
 
+## 4.1.9
+
+### Patch Changes
+
+- Blockchain API fix
+
+- Updated dependencies []:
+  - @web3modal/ethers@4.1.9
+  - @web3modal/siwe@4.1.9
+  - @web3modal/solana@4.1.9
+  - @web3modal/wagmi@4.1.9
+
 ## 4.1.8
 
 ### Patch Changes
