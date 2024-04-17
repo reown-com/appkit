@@ -1,5 +1,41 @@
 # @web3modal/scaffold-vue
 
+## 4.1.9
+
+### Patch Changes
+
+- Blockchain API fix
+
+- Updated dependencies []:
+  - @web3modal/scaffold@4.1.9
+
+## 4.1.8
+
+### Patch Changes
+
+- Hotfix for redundant tokenbalance calls
+
+- Updated dependencies []:
+  - @web3modal/scaffold@4.1.8
+
+## 4.1.7
+
+### Patch Changes
+
+- Hotfix for inccorect state of w3m-button when email is enabled
+
+- Updated dependencies []:
+  - @web3modal/scaffold@4.1.7
+
+## 4.1.6
+
+### Patch Changes
+
+- Fix modal default height. Fix ethers email connection lag. Fix ethers + rc relay disconnect issue. Adds new wui-components for secure site.
+
+- Updated dependencies []:
+  - @web3modal/scaffold@4.1.6
+
 ## 4.1.5
 
 ### Patch Changes

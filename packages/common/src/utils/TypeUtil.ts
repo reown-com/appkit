@@ -77,7 +77,7 @@ export interface Balance {
   name: string
   symbol: string
   chainId: string
-  value: number
+  value?: number
   price: number
   quantity: BalanceQuantity
   iconUrl: string
