@@ -32,6 +32,7 @@ export class WuiTooltipSelect extends LitElement {
   private onMouseEnter() {
     const element = this.shadowRoot?.querySelector('wui-tooltip')
     if (element) {
+      element.style.display = 'flex'
       element?.animate([{ opacity: 0 }, { opacity: 1 }], {
         fill: 'forwards',
         easing: 'ease',
@@ -43,6 +44,7 @@ export class WuiTooltipSelect extends LitElement {
   private onMouseLeave() {
     const element = this.shadowRoot?.querySelector('wui-tooltip')
     if (element) {
+      element.style.display = 'none'
       element?.animate([{ opacity: 1 }, { opacity: 0 }], {
         fill: 'forwards',
         easing: 'ease',
