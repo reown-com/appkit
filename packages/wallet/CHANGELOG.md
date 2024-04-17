@@ -1,5 +1,14 @@
 # @web3modal/wallet
 
+## 4.1.9
+
+### Patch Changes
+
+- Blockchain API fix
+
+- Updated dependencies []:
+  - @web3modal/polyfills@4.1.9
+
 ## 4.1.8
 
 ### Patch Changes

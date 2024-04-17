@@ -1,5 +1,14 @@
 # @examples/react-ethers5
 
+## 4.1.9
+
+### Patch Changes
+
+- Blockchain API fix
+
+- Updated dependencies []:
+  - @web3modal/ethers5@4.1.9
+
 ## 4.1.8
 
 ### Patch Changes
