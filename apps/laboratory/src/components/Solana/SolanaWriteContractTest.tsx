@@ -24,7 +24,6 @@ export function SolanaWriteContractTest() {
     setLoading(true)
 
     const PROGRAM_ID = new PublicKey(detectProgramId(currentChain?.chainId ?? ''))
-    /* Add your program id */
 
     try {
       if (!walletProvider || !address) {
