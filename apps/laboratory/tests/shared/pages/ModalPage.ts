@@ -246,7 +246,7 @@ export class ModalPage {
     await expect(this.page.getByText('Enter the code we sent')).toBeVisible({
       timeout: 10_000
     })
-    const confirmCurrentEmail = await this.page.getByText(this.emailAddress).isVisible()
+    const confirmCurrentEmail = await this.page.getByText('Confirm Current Email').isVisible()
     if (confirmCurrentEmail) {
       await this.updateOtpFlow(this.emailAddress, mailsacApiKey, 'Confirm Current Email')
     }
