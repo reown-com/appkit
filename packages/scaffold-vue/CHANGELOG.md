@@ -1,5 +1,23 @@
 # @web3modal/scaffold-vue
 
+## 4.1.9
+
+### Patch Changes
+
+- Blockchain API fix
+
+- Updated dependencies []:
+  - @web3modal/scaffold@4.1.9
+
+## 4.1.8
+
+### Patch Changes
+
+- Hotfix for redundant tokenbalance calls
+
+- Updated dependencies []:
+  - @web3modal/scaffold@4.1.8
+
 ## 4.1.7
 
 ### Patch Changes

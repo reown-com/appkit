@@ -136,7 +136,7 @@ export class Web3ModalScaffold {
   }
 
   public getState() {
-    return { ...PublicStateController.state }
+    return PublicStateController.state
   }
 
   public subscribeState(callback: (newState: PublicStateControllerState) => void) {
