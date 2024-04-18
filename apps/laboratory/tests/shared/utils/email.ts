@@ -69,8 +69,7 @@ export class Email {
   getOtpCodeFromBody(body: string): string {
     const match = body.match(OTP_CODE_REGEX)
     if (match) {
-      // Remove empty space in OTP code 111 111
-      return match[0].replace(' ', '')
+      return match[0]
     }
 
     throw new Error(`No code found in email: ${body}`)
