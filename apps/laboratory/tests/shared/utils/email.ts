@@ -1,10 +1,11 @@
 import { Mailsac } from '@mailsac/api'
+import { randomBytes } from 'crypto'
 const EMAIL_CHECK_TIMEOUT = 1000
 const MAX_EMAIL_CHECK = 16
 const EMAIL_APPROVE_BUTTON_TEXT = 'Approve this login'
 const APPROVE_URL_REGEX = /https:\/\/register.*/u
 const OTP_CODE_REGEX = /\d{3}\s?\d{3}/u
-const AVAILABLE_MAILSAC_ADDRESSES = 10
+const EMAIL_DOMAIN = 'web3modal.msdc.co'
 
 export class Email {
   // eslint-disable-next-line  @typescript-eslint/no-explicit-any
@@ -31,11 +32,11 @@ export class Email {
       if (messages.data.length > 0) {
         const message = messages.data[0]
         if (!message) {
-          throw new Error('No message found')
+          throw new Error(`No message found for address ${email}`)
         }
         const id = message._id
         if (!id) {
-          throw new Error('Message ID not present')
+          throw new Error(`Message id not present for address ${email}`)
         }
 
         return id
@@ -43,7 +44,7 @@ export class Email {
       await this.timeout(EMAIL_CHECK_TIMEOUT)
       checks += 1
     }
-    throw new Error('No email found')
+    throw new Error(`No email found for address ${email}`)
   }
 
   async getEmailBody(email: string, messageId: string): Promise<string> {
@@ -75,14 +76,9 @@ export class Email {
   }
 
   getEmailAddressToUse(index: number): string {
-    const maxIndex = AVAILABLE_MAILSAC_ADDRESSES - 1
-    if (index > maxIndex) {
-      throw new Error(
-        `No available Mailsac address. Requested index ${index}, maximum: ${maxIndex}`
-      )
-    }
+    const prefix = randomBytes(12).toString('hex')
 
-    return `web3modal${index}@mailsac.com`
+    return `${prefix}-w${index}@${EMAIL_DOMAIN}`
   }
 
   getSmartAccountEnabledEmail(): string {
