@@ -13,12 +13,16 @@ export class WuiTag extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() public variant: TagType = 'main'
 
+  @property() public size: 'lg' | 'md' = 'lg'
+
   // -- Render -------------------------------------------- //
   public override render() {
     this.dataset['variant'] = this.variant
+    this.dataset['size'] = this.size
+    const textVariant = this.size === 'md' ? 'mini-700' : 'micro-700'
 
     return html`
-      <wui-text data-variant=${this.variant} variant="micro-700" color="inherit">
+      <wui-text data-variant=${this.variant} variant=${textVariant} color="inherit">
         <slot></slot>
       </wui-text>
     `

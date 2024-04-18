@@ -27,7 +27,6 @@ export default css`
 
   svg {
     animation: rotate 2s linear infinite;
-    transition: all var(--wui-ease-in-power-3) var(--wui-duration-lg);
   }
 
   circle {

@@ -1,7 +1,8 @@
-import { subscribeKey as subKey } from 'valtio/utils'
+import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, ref, snapshot } from 'valtio/vanilla'
 import type { Connector, EmailConnector } from '../utils/TypeUtil.js'
 import { OptionsController } from './OptionsController.js'
+import { ThemeController } from './ThemeController.js'
 
 // -- Types --------------------------------------------- //
 export interface ConnectorControllerState {
@@ -38,6 +39,10 @@ export const ConnectorController = {
         sdkVersion: optionsState.sdkVersion,
         projectId: optionsState.projectId
       })
+      emailConnector.provider.syncTheme({
+        themeMode: ThemeController.getSnapshot().themeMode,
+        themeVariables: ThemeController.getSnapshot().themeVariables
+      })
     }
   },
 
@@ -51,5 +56,9 @@ export const ConnectorController = {
 
   getConnectors() {
     return state.connectors
+  },
+
+  getConnector(id: string, rdns?: string | null) {
+    return state.connectors.find(c => c.explorerId === id || c.info?.rdns === rdns)
   }
 }

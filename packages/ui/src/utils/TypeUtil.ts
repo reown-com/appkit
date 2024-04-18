@@ -2,6 +2,7 @@ export type ColorType =
   | 'accent-100'
   | 'error-100'
   | 'fg-100'
+  | 'fg-150'
   | 'fg-200'
   | 'fg-250'
   | 'fg-300'
@@ -10,14 +11,18 @@ export type ColorType =
   | 'inverse-100'
   | 'success-100'
   | 'glass-005'
+  | 'glass-020'
 
 export type TextType =
   | 'large-500'
   | 'large-600'
   | 'large-700'
+  | 'medium-400'
+  | 'medium-600'
   | 'medium-title-600'
   | 'micro-600'
   | 'micro-700'
+  | 'mini-700'
   | 'paragraph-400'
   | 'paragraph-500'
   | 'paragraph-600'
@@ -51,7 +56,7 @@ export type SpacingType =
   | 'xxl'
   | 'xxs'
 
-export type BorderRadiusType = Exclude<SpacingType, 'xl' | 'xxl'>
+export type BorderRadiusType = Exclude<SpacingType, '1xs' | 'xl' | 'xxl'> | 'xs'
 
 export type FlexDirectionType = 'column-reverse' | 'column' | 'row-reverse' | 'row'
 
@@ -104,6 +109,7 @@ export type IconType =
   | 'browser'
   | 'card'
   | 'checkmark'
+  | 'checkmarkBold'
   | 'chevronBottom'
   | 'chevronLeft'
   | 'chevronRight'
@@ -114,6 +120,7 @@ export type IconType =
   | 'compass'
   | 'copy'
   | 'cursor'
+  | 'cursorTransparent'
   | 'desktop'
   | 'disconnect'
   | 'discord'
@@ -141,6 +148,7 @@ export type IconType =
   | 'swapHorizontal'
   | 'swapHorizontalBold'
   | 'swapHorizontalMedium'
+  | 'swapHorizontalRoundedBold'
   | 'swapVertical'
   | 'telegram'
   | 'twitch'
@@ -160,7 +168,9 @@ export type VisualType =
   | 'defi'
   | 'defiAlt'
   | 'eth'
+  | 'google'
   | 'layers'
+  | 'lightbulb'
   | 'lock'
   | 'login'
   | 'network'
@@ -172,6 +182,7 @@ export type VisualType =
   | 'moonpay'
   | 'stripe'
   | 'paypal'
+  | 'pencil'
 
 export type VisualSize = 'sm' | 'md' | 'lg'
 
@@ -187,7 +198,7 @@ export type LogoType =
 
 export type PlacementType = 'bottom' | 'left' | 'right' | 'top'
 
-export type ChipType = 'fill' | 'shade' | 'shadeSmall' | 'transparent' | 'success'
+export type ChipType = 'fill' | 'shade' | 'shadeSmall' | 'transparent' | 'success' | 'error'
 
 export type ButtonType = 'accent' | 'fill' | 'shade' | 'fullWidth' | 'accentBg'
 
@@ -293,4 +304,16 @@ export type TruncateOptions = {
   charsStart: number
   charsEnd: number
   truncate: TruncateType
+}
+
+export interface TokenInfo {
+  address: `0x${string}`
+  symbol: string
+  name: string
+  decimals: number
+  logoURI: string
+  domainVersion?: string
+  eip2612?: boolean
+  isFoT?: boolean
+  tags?: string[]
 }

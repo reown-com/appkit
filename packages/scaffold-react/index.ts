@@ -1,10 +1,11 @@
-import type { Web3ModalScaffold } from '@web3modal/scaffold'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useSyncExternalStore } from 'react'
 import type {
   W3mAccountButton,
   W3mButton,
   W3mConnectButton,
-  W3mNetworkButton
+  W3mNetworkButton,
+  W3mOnrampWidget,
+  Web3ModalScaffold
 } from '@web3modal/scaffold'
 
 type OpenOptions = Parameters<Web3ModalScaffold['open']>[0]
@@ -20,6 +21,7 @@ declare global {
       'w3m-account-button': Pick<W3mAccountButton, 'disabled' | 'balance'>
       'w3m-button': Pick<W3mButton, 'size' | 'label' | 'loadingLabel' | 'disabled' | 'balance'>
       'w3m-network-button': Pick<W3mNetworkButton, 'disabled'>
+      'w3m-onramp-widget': Pick<W3mOnrampWidget, 'disabled'>
     }
   }
 }
@@ -82,6 +84,20 @@ export function useWeb3Modal() {
   }
 
   return { open, close }
+}
+
+export function useWalletInfo() {
+  if (!modal) {
+    throw new Error('Please call "createWeb3Modal" before using "useWeb3Modal" hook')
+  }
+
+  const walletInfo = useSyncExternalStore(
+    modal.subscribeWalletInfo,
+    modal.getWalletInfo,
+    modal.getWalletInfo
+  )
+
+  return { walletInfo }
 }
 
 export function useWeb3ModalState() {

@@ -1,6 +1,5 @@
-import { createConnector, normalizeChainId } from '@wagmi/core'
-import type { Chain } from '@wagmi/core/chains'
-import { W3mFrameProvider } from '@web3modal/wallet'
+import { createConnector, normalizeChainId, type CreateConfigParameters } from '@wagmi/core'
+import { W3mFrameHelpers, W3mFrameProvider } from '@web3modal/wallet'
 import { SwitchChainError, getAddress } from 'viem'
 import type { Address } from 'viem'
 
@@ -16,7 +15,7 @@ interface ConnectOptions {
 }
 
 export type EmailParameters = {
-  chains?: Chain[]
+  chains?: CreateConfigParameters['chains']
   options: W3mFrameProviderOptions
 }
 
@@ -33,7 +32,14 @@ export function emailConnector(parameters: EmailParameters) {
 
     async connect(options: ConnectOptions = {}) {
       const provider = await this.getProvider()
-      const { address, chainId } = await provider.connect({ chainId: options.chainId })
+      const preferredAccountType = W3mFrameHelpers.getPreferredAccountType()
+      const [{ address, chainId }] = await Promise.all([
+        provider.connect({
+          chainId: options.chainId,
+          preferredAccountType
+        }),
+        provider.getSmartAccountEnabledNetworks()
+      ])
 
       return {
         accounts: [address as Address],
@@ -45,16 +51,21 @@ export function emailConnector(parameters: EmailParameters) {
         }
       }
     },
+
     async disconnect() {
       const provider = await this.getProvider()
       await provider.disconnect()
     },
+
     async getAccounts() {
       const provider = await this.getProvider()
-      const { address } = await provider.connect()
+      const preferredAccountType = W3mFrameHelpers.getPreferredAccountType()
+      const { address } = await provider.connect({ preferredAccountType })
+      config.emitter.emit('change', { accounts: [address as Address] })
 
       return [address as Address]
     },
+
     async getProvider() {
       if (!this.provider) {
         this.provider = new W3mFrameProvider(parameters.options.projectId)
@@ -62,12 +73,14 @@ export function emailConnector(parameters: EmailParameters) {
 
       return Promise.resolve(this.provider)
     },
+
     async getChainId() {
       const provider: W3mFrameProvider = await this.getProvider()
       const { chainId } = await provider.getChainId()
 
       return chainId
     },
+
     async isAuthorized() {
       const provider = await this.getProvider()
       const { isConnected } = await provider.isConnected()
@@ -93,6 +106,7 @@ export function emailConnector(parameters: EmailParameters) {
         throw error
       }
     },
+
     onAccountsChanged(accounts) {
       if (accounts.length === 0) {
         this.onDisconnect()
@@ -100,10 +114,12 @@ export function emailConnector(parameters: EmailParameters) {
         config.emitter.emit('change', { accounts: accounts.map(getAddress) })
       }
     },
+
     onChainChanged(chain) {
       const chainId = normalizeChainId(chain)
       config.emitter.emit('change', { chainId })
     },
+
     async onConnect(connectInfo) {
       const chainId = normalizeChainId(connectInfo.chainId)
       const accounts = await this.getAccounts()

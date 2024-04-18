@@ -3,26 +3,15 @@ import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { OptionsController } from './OptionsController.js'
 import { EventsController } from './EventsController.js'
 import { SnackController } from './SnackController.js'
-import type { CoinbaseTransaction } from '../utils/TypeUtil.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
 
-export type GroupedTransaction =
-  | {
-      type: 'zerion'
-      value: Transaction
-    }
-  | {
-      type: 'coinbase'
-      value: CoinbaseTransaction
-    }
-
 // -- Types --------------------------------------------- //
-type TransactionByMonthMap = Record<number, GroupedTransaction[]>
+type TransactionByMonthMap = Record<number, Transaction[]>
 type TransactionByYearMap = Record<number, TransactionByMonthMap>
 
 export interface TransactionsControllerState {
   transactions: Transaction[]
-  coinbaseTransactions: CoinbaseTransaction[]
+  coinbaseTransactions: TransactionByYearMap
   transactionsByYear: TransactionByYearMap
   loading: boolean
   empty: boolean
@@ -32,7 +21,7 @@ export interface TransactionsControllerState {
 // -- State --------------------------------------------- //
 const state = proxy<TransactionsControllerState>({
   transactions: [],
-  coinbaseTransactions: [],
+  coinbaseTransactions: {},
   transactionsByYear: {},
   loading: false,
   empty: false,
@@ -47,7 +36,7 @@ export const TransactionsController = {
     return sub(state, () => callback(state))
   },
 
-  async fetchTransactions(accountAddress?: string) {
+  async fetchTransactions(accountAddress?: string, onramp?: 'coinbase') {
     const { projectId } = OptionsController.state
 
     if (!projectId || !accountAddress) {
@@ -60,18 +49,28 @@ export const TransactionsController = {
       const response = await BlockchainApiController.fetchTransactions({
         account: accountAddress,
         projectId,
-        cursor: state.next
+        cursor: state.next,
+        onramp
       })
 
       const nonSpamTransactions = this.filterSpamTransactions(response.data)
       const filteredTransactions = [...state.transactions, ...nonSpamTransactions]
 
       state.loading = false
-      state.transactions = filteredTransactions
-      state.transactionsByYear = this.groupTransactionsByYearAndMonth(
-        state.transactionsByYear,
-        nonSpamTransactions
-      )
+
+      if (onramp === 'coinbase') {
+        state.coinbaseTransactions = this.groupTransactionsByYearAndMonth(
+          state.coinbaseTransactions,
+          response.data
+        )
+      } else {
+        state.transactions = filteredTransactions
+        state.transactionsByYear = this.groupTransactionsByYearAndMonth(
+          state.transactionsByYear,
+          nonSpamTransactions
+        )
+      }
+
       state.empty = filteredTransactions.length === 0
       state.next = response.next ? response.next : undefined
     } catch (error) {
@@ -87,6 +86,7 @@ export const TransactionsController = {
       SnackController.showError('Failed to fetch transactions')
       state.loading = false
       state.empty = true
+      state.next = undefined
     }
   },
 
@@ -94,38 +94,22 @@ export const TransactionsController = {
     transactionsMap: TransactionByYearMap = {},
     transactions: Transaction[] = []
   ) {
-    const grouped: TransactionByYearMap = transactionsMap
-
+    const grouped = transactionsMap
     transactions.forEach(transaction => {
       const year = new Date(transaction.metadata.minedAt).getFullYear()
       const month = new Date(transaction.metadata.minedAt).getMonth()
+
       const yearTransactions = grouped[year] ?? {}
       const monthTransactions = yearTransactions[month] ?? []
 
-      grouped[year] = {
-        ...yearTransactions,
-        [month]: [...monthTransactions, { type: 'zerion', value: transaction }]
-      }
-    })
-
-    return grouped
-  },
-
-  groupCoinbaseTransactionsByYearAndMonth(
-    transactionsMap: TransactionByYearMap = {},
-    transactions: CoinbaseTransaction[] = []
-  ) {
-    const grouped: TransactionByYearMap = transactionsMap
-
-    transactions.forEach(transaction => {
-      const year = new Date(transaction.created_at).getFullYear()
-      const month = new Date(transaction.created_at).getMonth()
-      const yearTransactions = grouped[year] ?? {}
-      const monthTransactions = yearTransactions[month] ?? []
+      // If there's a transaction with the same id, remove the old one
+      const newMonthTransactions = monthTransactions.filter(tx => tx.id !== transaction.id)
 
       grouped[year] = {
         ...yearTransactions,
-        [month]: [...monthTransactions, { type: 'coinbase', value: transaction }]
+        [month]: [...newMonthTransactions, transaction].sort(
+          (a, b) => new Date(b.metadata.minedAt).getTime() - new Date(a.metadata.minedAt).getTime()
+        )
       }
     })
 
@@ -140,6 +124,10 @@ export const TransactionsController = {
 
       return !isAllSpam
     })
+  },
+
+  clearCursor() {
+    state.next = undefined
   },
 
   resetTransactions() {

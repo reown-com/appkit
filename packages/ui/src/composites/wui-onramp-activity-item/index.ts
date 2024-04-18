@@ -6,6 +6,7 @@ import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import type { ColorType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
+import { ApiController } from '@web3modal/core'
 
 @customElement('wui-onramp-activity-item')
 export class WuiOnRampActivityItem extends LitElement {
@@ -32,16 +33,24 @@ export class WuiOnRampActivityItem extends LitElement {
 
   @property() public onClick: (() => void) | null = null
 
-  @property() public icon = 'https://avatar.vercel.sh/andrew.svg?size=50&text=USDC'
+  @property() public symbol = ''
+
+  @property() public icon?: string
 
   // -- Render -------------------------------------------- //
+  public override firstUpdated() {
+    if (!this.icon) {
+      this.fetchTokenImage()
+    }
+  }
+
   public override render() {
     return html`
       <wui-flex>
         ${this.imageTemplate()}
         <wui-flex flexDirection="column" gap="4xs" flexGrow="1">
           <wui-flex gap="xxs" alignItems="center" justifyContent="flex-start">
-            ${this.completed ? this.boughtIconTemplate() : null}
+            ${this.statusIconTemplate()}
             <wui-text variant="paragraph-500" color="fg-100"> ${this.label}</wui-text>
           </wui-flex>
           <wui-text variant="small-400" color="fg-200">
@@ -56,10 +65,34 @@ export class WuiOnRampActivityItem extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private async fetchTokenImage() {
+    await ApiController._fetchTokenImage(this.purchaseCurrency)
+  }
+
+  private statusIconTemplate() {
+    if (this.inProgress) {
+      return null
+    }
+
+    return this.completed ? this.boughtIconTemplate() : this.errorIconTemplate()
+  }
+
+  private errorIconTemplate() {
+    return html`<wui-icon-box
+      size="xxs"
+      iconColor="error-100"
+      backgroundColor="error-100"
+      background="opaque"
+      icon="close"
+      borderColor="wui-color-bg-125"
+    ></wui-icon-box>`
+  }
+
   private imageTemplate() {
+    const icon = this.icon || `https://avatar.vercel.sh/andrew.svg?size=50&text=${this.symbol}`
+
     return html`<wui-flex class="purchase-image-container">
-      <wui-image src=${this.icon}></wui-image>
-      ${this.completed ? null : this.boughtIconTemplate()}
+      <wui-image src=${icon}></wui-image>
     </wui-flex>`
   }
 
@@ -70,7 +103,6 @@ export class WuiOnRampActivityItem extends LitElement {
       backgroundColor="success-100"
       background="opaque"
       icon="arrowBottom"
-      ?border=${true}
       borderColor="wui-color-bg-125"
     ></wui-icon-box>`
   }

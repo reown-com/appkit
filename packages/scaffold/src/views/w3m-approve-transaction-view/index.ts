@@ -44,9 +44,9 @@ export class W3mApproveTransactionView extends LitElement {
     this.bodyObserver = new ResizeObserver(() => {
       const data = blueprint?.getBoundingClientRect()
       const dimensions = data ?? { left: 0, top: 0, width: 0, height: 0 }
-      this.iframe.style.width = `${dimensions.width}px`
+      this.iframe.style.width = `360px`
       this.iframe.style.height = `${dimensions.height - verticalPadding}px`
-      this.iframe.style.left = `${dimensions.left}px`
+      this.iframe.style.left = 'calc(50% - 180px)'
       this.iframe.style.top = `${dimensions.top + verticalPadding / 2}px`
       this.ready = true
     })
@@ -70,7 +70,7 @@ export class W3mApproveTransactionView extends LitElement {
         { opacity: 0, transform: isMobile ? 'translateY(50px)' : 'scale(.95)' },
         { opacity: 1, transform: isMobile ? 'translateY(0)' : 'scale(1)' }
       ],
-      { duration: 200, easing: 'ease', fill: 'forwards', delay: 300 }
+      { duration: 200, easing: 'ease', fill: 'forwards' }
     )
   }
 

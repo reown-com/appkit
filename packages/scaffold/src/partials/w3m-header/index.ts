@@ -4,8 +4,8 @@ import {
   ConnectorController,
   EventsController,
   ModalController,
-  RouterController,
-  SIWEController
+  OptionsController,
+  RouterController
 } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -40,6 +40,7 @@ function headings() {
     ApproveTransaction: 'Approve Transaction',
     Transactions: 'Activity',
     UpgradeEmailWallet: 'Upgrade your Wallet',
+    UpgradeToSmartAccount: undefined,
     UpdateEmailWallet: 'Edit Email',
     UpdateEmailPrimaryOtp: 'Confirm Current Email',
     UpdateEmailSecondaryOtp: 'Confirm New Email',
@@ -47,7 +48,14 @@ function headings() {
     OnRampProviders: 'Choose Provider',
     OnRampActivity: 'Activity',
     WhatIsABuy: 'What is Buy?',
-    BuyInProgress: 'Buy'
+    BuyInProgress: 'Buy',
+    OnRampTokenSelect: 'Select Token',
+    OnRampFiatSelect: 'Select Currency',
+    WalletReceive: 'Receive',
+    WalletCompatibleNetworks: 'Compatible Networks',
+    WalletSend: 'Send',
+    WalletSendPreview: 'Review send',
+    WalletSendSelectToken: 'Select Token'
   }
 }
 
@@ -105,8 +113,11 @@ export class W3mHeader extends LitElement {
   }
 
   private async onClose() {
-    if (SIWEController.state.isSiweEnabled && SIWEController.state.status !== 'success') {
-      await ConnectionController.disconnect()
+    if (OptionsController.state.isSiweEnabled) {
+      const { SIWEController } = await import('@web3modal/siwe')
+      if (SIWEController.state.status !== 'success') {
+        await ConnectionController.disconnect()
+      }
     }
     ModalController.close()
   }
@@ -119,8 +130,11 @@ export class W3mHeader extends LitElement {
     const { view } = RouterController.state
     const isConnectHelp = view === 'Connect'
     const isApproveTransaction = view === 'ApproveTransaction'
+    const isUpgradeToSmartAccounts = view === 'UpgradeToSmartAccount'
 
-    if (this.showBack && !isApproveTransaction) {
+    const shouldHideBack = isApproveTransaction || isUpgradeToSmartAccounts
+
+    if (this.showBack && !shouldHideBack) {
       return html`<wui-icon-link
         id="dynamic"
         icon="chevronLeft"

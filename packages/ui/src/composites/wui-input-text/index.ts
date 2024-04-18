@@ -16,7 +16,7 @@ export class WuiInputText extends LitElement {
   public inputElementRef = createRef<HTMLInputElement>()
 
   // -- State & Properties -------------------------------- //
-  @property() public size: Exclude<SizeType, 'inherit' | 'xl' | 'lg' | 'xs' | 'xxs'> = 'md'
+  @property() public size: Exclude<SizeType, 'inherit' | 'xl' | 'xs' | 'xxs'> = 'md'
 
   @property() public icon?: IconType
 
@@ -28,7 +28,7 @@ export class WuiInputText extends LitElement {
 
   @property() public keyHint?: HTMLInputElement['enterKeyHint']
 
-  @property() public value?: string
+  @property() public value?: string = ''
 
   // -- Render -------------------------------------------- //
   public override render() {
@@ -43,7 +43,7 @@ export class WuiInputText extends LitElement {
         ?disabled=${this.disabled}
         placeholder=${this.placeholder}
         @input=${this.dispatchInputChangeEvent.bind(this)}
-        value=${ifDefined(this.value)}
+        .value=${this.value || ''}
       />
       <slot></slot>`
   }
@@ -53,7 +53,7 @@ export class WuiInputText extends LitElement {
     if (this.icon) {
       return html`<wui-icon
         data-input=${this.size}
-        size="sm"
+        size=${this.size}
         color="inherit"
         name=${this.icon}
       ></wui-icon>`

@@ -11,7 +11,6 @@ let modal: Web3Modal | undefined = undefined
 
 export function createWeb3Modal(options: Web3ModalOptions<ReactConfig>) {
   if (!modal) {
-    // @ts-expect-error Types Overlap
     modal = new Web3Modal({ ...options, _sdkVersion: `react-wagmi-${ConstantsUtil.VERSION}` })
     getWeb3Modal(modal)
   }
@@ -24,5 +23,6 @@ export {
   useWeb3ModalTheme,
   useWeb3Modal,
   useWeb3ModalState,
-  useWeb3ModalEvents
+  useWeb3ModalEvents,
+  useWalletInfo
 } from '@web3modal/scaffold-react'

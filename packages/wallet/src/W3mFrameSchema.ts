@@ -32,7 +32,10 @@ export const GetTransactionByHashResponse = z.object({
 export const AppSwitchNetworkRequest = z.object({ chainId: z.number() })
 export const AppConnectEmailRequest = z.object({ email: z.string().email() })
 export const AppConnectOtpRequest = z.object({ otp: z.string() })
-export const AppGetUserRequest = z.object({ chainId: z.optional(z.number()) })
+export const AppGetUserRequest = z.object({
+  chainId: z.optional(z.number()),
+  preferredAccountType: z.optional(z.string())
+})
 export const AppUpdateEmailRequest = z.object({ email: z.string().email() })
 export const AppUpdateEmailPrimaryOtpRequest = z.object({ otp: z.string() })
 export const AppUpdateEmailSecondaryOtpRequest = z.object({ otp: z.string() })
@@ -53,59 +56,212 @@ export const AppSyncDappDataRequest = z.object({
     | `${'html' | 'react' | 'vue'}-wagmi-${string}`
     | `${'html' | 'react' | 'vue'}-ethers5-${string}`
     | `${'html' | 'react' | 'vue'}-ethers-${string}`
+    | `${'html' | 'react' | 'vue'}-solana-${string}`
   >,
   projectId: z.string()
 })
+export const AppSetPreferredAccountRequest = z.object({ type: z.string() })
+
 export const FrameConnectEmailResponse = z.object({
   action: z.enum(['VERIFY_DEVICE', 'VERIFY_OTP'])
 })
 export const FrameGetUserResponse = z.object({
   email: z.string().email(),
   address: z.string(),
-  chainId: z.number()
+  chainId: z.number(),
+  smartAccountDeployed: z.optional(z.boolean()),
+  preferredAccountType: z.optional(z.string())
 })
 export const FrameIsConnectedResponse = z.object({ isConnected: z.boolean() })
 export const FrameGetChainIdResponse = z.object({ chainId: z.number() })
 export const FrameSwitchNetworkResponse = z.object({ chainId: z.number() })
 export const FrameUpdateEmailSecondaryOtpResolver = z.object({ newEmail: z.string().email() })
+export const FrameGetSmartAccountEnabledNetworksResponse = z.object({
+  smartAccountEnabledNetworks: z.array(z.number())
+})
+export const FrameInitSmartAccountResponse = z.object({
+  address: z.string(),
+  isDeployed: z.boolean()
+})
+export const FrameSetPreferredAccountResponse = z.object({ type: z.string(), address: z.string() })
+
 export const RpcResponse = z.any()
-export const RpcPersonalSignRequest = z.object({
-  method: z.literal('personal_sign'),
-  params: z.array(z.any())
-})
-export const RpcEthSendTransactionRequest = z.object({
-  method: z.literal('eth_sendTransaction'),
-  params: z.array(z.any())
-})
+
 export const RpcEthAccountsRequest = z.object({
   method: z.literal('eth_accounts')
 })
-export const RpcGetBalance = z.object({
-  method: z.literal('eth_getBalance'),
+export const RpcEthBlockNumber = z.object({
+  method: z.literal('eth_blockNumber')
+})
+
+export const RpcEthCall = z.object({
+  method: z.literal('eth_call'),
   params: z.array(z.any())
 })
+
+export const RpcEthChainId = z.object({
+  method: z.literal('eth_chainId')
+})
+
 export const RpcEthEstimateGas = z.object({
   method: z.literal('eth_estimateGas'),
   params: z.array(z.any())
 })
+
+export const RpcEthFeeHistory = z.object({
+  method: z.literal('eth_feeHistory'),
+  params: z.array(z.any())
+})
+
 export const RpcEthGasPrice = z.object({
   method: z.literal('eth_gasPrice')
 })
-export const RpcEthSignTypedDataV4 = z.object({
-  method: z.literal('eth_signTypedData_v4'),
+
+export const RpcEthGetAccount = z.object({
+  method: z.literal('eth_getAccount'),
   params: z.array(z.any())
 })
+
+export const RpcEthGetBalance = z.object({
+  method: z.literal('eth_getBalance'),
+  params: z.array(z.any())
+})
+
+export const RpcEthGetBlockyByHash = z.object({
+  method: z.literal('eth_getBlockByHash'),
+  params: z.array(z.any())
+})
+
+export const RpcEthGetBlockByNumber = z.object({
+  method: z.literal('eth_getBlockByNumber'),
+  params: z.array(z.any())
+})
+
+export const RpcEthGetBlockReceipts = z.object({
+  method: z.literal('eth_getBlockReceipts'),
+  params: z.array(z.any())
+})
+
+export const RcpEthGetBlockTransactionCountByHash = z.object({
+  method: z.literal('eth_getBlockTransactionCountByHash'),
+  params: z.array(z.any())
+})
+
+export const RcpEthGetBlockTransactionCountByNumber = z.object({
+  method: z.literal('eth_getBlockTransactionCountByNumber'),
+  params: z.array(z.any())
+})
+
+export const RpcEthGetCode = z.object({
+  method: z.literal('eth_getCode'),
+  params: z.array(z.any())
+})
+
+export const RpcEthGetFilter = z.object({
+  method: z.literal('eth_getFilterChanges'),
+  params: z.array(z.any())
+})
+
+export const RpcEthGetFilterLogs = z.object({
+  method: z.literal('eth_getFilterLogs'),
+  params: z.array(z.any())
+})
+
+export const RpcEthGetLogs = z.object({
+  method: z.literal('eth_getLogs'),
+  params: z.array(z.any())
+})
+
+export const RpcEthGetProof = z.object({
+  method: z.literal('eth_getProof'),
+  params: z.array(z.any())
+})
+
+export const RpcEthGetStorageAt = z.object({
+  method: z.literal('eth_getStorageAt'),
+  params: z.array(z.any())
+})
+
+export const RpcEthGetTransactionByBlockHashAndIndex = z.object({
+  method: z.literal('eth_getTransactionByBlockHashAndIndex'),
+  params: z.array(z.any())
+})
+
+export const RpcEthGetTransactionByBlockNumberAndIndex = z.object({
+  method: z.literal('eth_getTransactionByBlockNumberAndIndex'),
+  params: z.array(z.any())
+})
+
 export const RpcEthGetTransactionByHash = z.object({
   method: z.literal('eth_getTransactionByHash'),
   params: z.array(z.any())
 })
 
-export const RpcEthBlockNumber = z.object({
-  method: z.literal('eth_blockNumber')
+export const RpcEthGetTransactionCount = z.object({
+  method: z.literal('eth_getTransactionCount'),
+  params: z.array(z.any())
 })
 
-export const RpcEthChainId = z.object({
-  method: z.literal('eth_chainId')
+export const RpcEthGetTransactionReceipt = z.object({
+  method: z.literal('eth_getTransactionReceipt'),
+  params: z.array(z.any())
+})
+
+export const RpcEthGetUncleCountByBlockHash = z.object({
+  method: z.literal('eth_getUncleCountByBlockHash'),
+  params: z.array(z.any())
+})
+
+export const RpcEthGetUncleCountByBlockNumber = z.object({
+  method: z.literal('eth_getUncleCountByBlockNumber'),
+  params: z.array(z.any())
+})
+
+export const RpcEthMaxPriorityFeePerGas = z.object({
+  method: z.literal('eth_maxPriorityFeePerGas')
+})
+
+export const RpcEthNewBlockFilter = z.object({
+  method: z.literal('eth_newBlockFilter')
+})
+
+export const RpcEthNewFilter = z.object({
+  method: z.literal('eth_newFilter'),
+  params: z.array(z.any())
+})
+
+export const RpcEthNewPendingTransactionFilter = z.object({
+  method: z.literal('eth_newPendingTransactionFilter')
+})
+
+export const RpcEthSendRawTransaction = z.object({
+  method: z.literal('eth_sendRawTransaction'),
+  params: z.array(z.any())
+})
+
+export const RpcEthSyncing = z.object({
+  method: z.literal('eth_syncing'),
+  params: z.array(z.any())
+})
+
+export const RpcUnistallFilter = z.object({
+  method: z.literal('eth_uninstallFilter'),
+  params: z.array(z.any())
+})
+
+export const RpcPersonalSignRequest = z.object({
+  method: z.literal('personal_sign'),
+  params: z.array(z.any())
+})
+
+export const RpcEthSignTypedDataV4 = z.object({
+  method: z.literal('eth_signTypedData_v4'),
+  params: z.array(z.any())
+})
+
+export const RpcEthSendTransactionRequest = z.object({
+  method: z.literal('eth_sendTransaction'),
+  params: z.array(z.any())
 })
 
 export const FrameSession = z.object({
@@ -132,18 +288,55 @@ export const W3mFrameSchema = {
 
     .or(z.object({ type: zType('APP_GET_CHAIN_ID') }))
 
+    .or(z.object({ type: zType('APP_GET_SMART_ACCOUNT_ENABLED_NETWORKS') }))
+
+    .or(z.object({ type: zType('APP_INIT_SMART_ACCOUNT') }))
+
+    .or(
+      z.object({ type: zType('APP_SET_PREFERRED_ACCOUNT'), payload: AppSetPreferredAccountRequest })
+    )
+
     .or(
       z.object({
         type: zType('APP_RPC_REQUEST'),
         payload: RpcPersonalSignRequest.or(RpcEthSendTransactionRequest)
           .or(RpcEthAccountsRequest)
-          .or(RpcGetBalance)
-          .or(RpcEthEstimateGas)
-          .or(RpcEthGasPrice)
-          .or(RpcEthSignTypedDataV4)
           .or(RpcEthBlockNumber)
+          .or(RpcEthCall)
           .or(RpcEthChainId)
+          .or(RpcEthEstimateGas)
+          .or(RpcEthFeeHistory)
+          .or(RpcEthGasPrice)
+          .or(RpcEthGetAccount)
+          .or(RpcEthGetBalance)
+          .or(RpcEthGetBlockyByHash)
+          .or(RpcEthGetBlockByNumber)
+          .or(RpcEthGetBlockReceipts)
+          .or(RcpEthGetBlockTransactionCountByHash)
+          .or(RcpEthGetBlockTransactionCountByNumber)
+          .or(RpcEthGetCode)
+          .or(RpcEthGetFilter)
+          .or(RpcEthGetFilterLogs)
+          .or(RpcEthGetLogs)
+          .or(RpcEthGetProof)
+          .or(RpcEthGetStorageAt)
+          .or(RpcEthGetTransactionByBlockHashAndIndex)
+          .or(RpcEthGetTransactionByBlockNumberAndIndex)
           .or(RpcEthGetTransactionByHash)
+          .or(RpcEthGetTransactionCount)
+          .or(RpcEthGetTransactionReceipt)
+          .or(RpcEthGetUncleCountByBlockHash)
+          .or(RpcEthGetUncleCountByBlockNumber)
+          .or(RpcEthMaxPriorityFeePerGas)
+          .or(RpcEthNewBlockFilter)
+          .or(RpcEthNewFilter)
+          .or(RpcEthNewPendingTransactionFilter)
+          .or(RpcEthSendRawTransaction)
+          .or(RpcEthSyncing)
+          .or(RpcUnistallFilter)
+          .or(RpcPersonalSignRequest)
+          .or(RpcEthSignTypedDataV4)
+          .or(RpcEthSendTransactionRequest)
       })
     )
 
@@ -235,4 +428,26 @@ export const W3mFrameSchema = {
     .or(z.object({ type: zType('FRAME_SYNC_DAPP_DATA_ERROR'), payload: zError }))
 
     .or(z.object({ type: zType('FRAME_SYNC_DAPP_DATA_SUCCESS') }))
+
+    .or(
+      z.object({
+        type: zType('FRAME_GET_SMART_ACCOUNT_ENABLED_NETWORKS_SUCCESS'),
+        payload: FrameGetSmartAccountEnabledNetworksResponse
+      })
+    )
+
+    .or(
+      z.object({
+        type: zType('FRAME_GET_SMART_ACCOUNT_ENABLED_NETWORKS_ERROR'),
+        payload: zError
+      })
+    )
+    .or(z.object({ type: zType('FRAME_INIT_SMART_ACCOUNT_ERROR'), payload: zError }))
+    .or(
+      z.object({
+        type: zType('FRAME_SET_PREFERRED_ACCOUNT_SUCCESS'),
+        payload: FrameSetPreferredAccountResponse
+      })
+    )
+    .or(z.object({ type: zType('FRAME_SET_PREFERRED_ACCOUNT_ERROR'), payload: zError }))
 }

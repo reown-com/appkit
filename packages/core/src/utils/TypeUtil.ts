@@ -1,5 +1,5 @@
 import type { W3mFrameProvider } from '@web3modal/wallet'
-import type { Transaction } from '@web3modal/common'
+import type { Balance, Transaction } from '@web3modal/common'
 
 export type CaipAddress = `${string}:${string}:${string}`
 
@@ -20,6 +20,14 @@ export interface CaipNetwork {
   imageUrl?: string
 }
 
+export type ConnectedWalletInfo =
+  | {
+      name?: string
+      icon?: string
+      [key: string]: unknown
+    }
+  | undefined
+
 export interface LinkingRecord {
   redirect: string
   href: string
@@ -27,14 +35,7 @@ export interface LinkingRecord {
 
 export type ProjectId = string
 
-export type Platform =
-  | 'mobile'
-  | 'desktop'
-  | 'browser'
-  | 'web'
-  | 'qrcode'
-  | 'unsupported'
-  | 'external'
+export type Platform = 'mobile' | 'desktop' | 'browser' | 'web' | 'qrcode' | 'unsupported'
 
 export type ConnectorType = 'EXTERNAL' | 'WALLET_CONNECT' | 'INJECTED' | 'ANNOUNCED' | 'EMAIL'
 
@@ -45,7 +46,12 @@ export type Connector = {
   imageId?: string
   explorerId?: string
   imageUrl?: string
-  info?: { rdns?: string }
+  info?: {
+    uuid?: string
+    name?: string
+    icon?: string
+    rdns?: string
+  }
   provider?: unknown
 }
 
@@ -66,6 +72,7 @@ export type SdkVersion =
   | `${'html' | 'react' | 'vue'}-wagmi-${string}`
   | `${'html' | 'react' | 'vue'}-ethers5-${string}`
   | `${'html' | 'react' | 'vue'}-ethers-${string}`
+  | `${'html' | 'react' | 'vue'}-solana-${string}`
 
 export interface BaseError {
   message?: string
@@ -132,7 +139,6 @@ export interface ThemeVariables {
 
 // -- BlockchainApiController Types ---------------------------------------------
 export interface BlockchainApiIdentityRequest {
-  caipChainId: CaipNetworkId
   address: string
 }
 
@@ -154,33 +160,8 @@ export interface BlockchainApiTransactionsResponse {
   next: string | null
 }
 
-export interface CoinbaseApiTransactionsRequest {
-  pageSize: number
-  pageKey: string
-  accountAddress: string
-}
-
-export interface CoinbaseApiTransactionsResponse {
-  transactions: CoinbaseTransaction[]
-  next_page_key: string
-  total_count: number
-}
-
-export interface CoinbaseAmount {
-  value: string
-  currency: string
-}
-
-export interface CoinbaseTransaction {
-  status: string
-  purchaseCurrency: string
-  purchase_network: string
-  payment_total: CoinbaseAmount
-  payment_subtotal: CoinbaseAmount
-  purchase_amount: CoinbaseAmount
-  created_at: string
-  purchase_currency: string
-  transaction_id: string
+export interface BlockchainApiBalanceResponse {
+  balances: Balance[]
 }
 
 // -- OptionsController Types ---------------------------------------------------
@@ -245,7 +226,8 @@ export type Event =
       type: 'track'
       event: 'CONNECT_SUCCESS'
       properties: {
-        method: 'qrcode' | 'mobile' | 'external' | 'browser' | 'email'
+        method: 'qrcode' | 'mobile' | 'browser' | 'email'
+        name: string
       }
     }
   | {
@@ -356,46 +338,76 @@ export type Event =
         network: string
       }
     }
+  | {
+      type: 'track'
+      event: 'CLICK_CONVERT'
+    }
+  | {
+      type: 'track'
+      event: 'CLICK_SELECT_TOKEN_TO_SWAP'
+    }
+  | {
+      type: 'track'
+      event: 'CLICK_SELECT_NETWORK_TO_SWAP'
+    }
 
-// -- SIWEController Types ---------------------------------------------------
-
-export interface SIWESession {
+// Onramp Types
+export type DestinationWallet = {
   address: string
-  chainId: number
+  blockchains: string[]
+  assets: string[]
 }
 
-export interface SIWECreateMessageArgs {
-  nonce: string
-  address: string
-  chainId: number
+export type GenerateOnRampUrlArgs = {
+  destinationWallets: DestinationWallet[]
+  partnerUserId: string
+  defaultNetwork?: string
+  purchaseAmount?: number
+  paymentAmount?: number
 }
 
-export interface SIWEVerifyMessageArgs {
-  message: string
-  signature: string
+export type CoinbaseNetwork = {
+  name: string
+  display_name: string
+  chain_id: string
+  contract_address: string
 }
 
-export interface SIWEClientMethods {
-  getNonce: () => Promise<string>
-  createMessage: (args: SIWECreateMessageArgs) => string
-  verifyMessage: (args: SIWEVerifyMessageArgs) => Promise<boolean>
-  getSession: () => Promise<SIWESession | null>
-  signOut: () => Promise<boolean>
-  onSignIn?: (session?: SIWESession) => void
-  onSignOut?: () => void
+export type PaymentLimits = {
+  id: string
+  min: string
+  max: string
 }
 
-export interface SIWEConfig extends SIWEClientMethods {
-  // Defaults to true
-  enabled?: boolean
-  // In milliseconds, defaults to 5 minutes
-  nonceRefetchIntervalMs?: number
-  // In milliseconds, defaults to 5 minutes
-  sessionRefetchIntervalMs?: number
-  // Defaults to true
-  signOutOnDisconnect?: boolean
-  // Defaults to true
-  signOutOnAccountChange?: boolean
-  // Defaults to true
-  signOutOnNetworkChange?: boolean
+export type PaymentCurrency = {
+  id: string
+  payment_method_limits: PaymentLimits[]
+}
+
+export type QuoteAmount = {
+  amount: string
+  currency: string
+}
+
+export type PurchaseCurrency = {
+  id: string
+  name: string
+  symbol: string
+  networks: CoinbaseNetwork[]
+}
+
+export type OnrampQuote = {
+  paymentTotal: QuoteAmount
+  paymentSubtotal: QuoteAmount
+  purchaseAmount: QuoteAmount
+  coinbaseFee: QuoteAmount
+  networkFee: QuoteAmount
+  quoteId: string
+}
+
+export type GetQuoteArgs = {
+  purchaseCurrency: PurchaseCurrency
+  paymentCurrency: PaymentCurrency
+  amount: string
+  network: string
 }

@@ -1,4 +1,4 @@
-import { subscribeKey as subKey } from 'valtio/utils'
+import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy } from 'valtio/vanilla'
 import type { CaipNetwork, Connector, WcWallet } from '../utils/TypeUtil.js'
 
@@ -10,6 +10,7 @@ export interface RouterControllerState {
     | 'AllWallets'
     | 'ApproveTransaction'
     | 'BuyInProgress'
+    | 'WalletCompatibleNetworks'
     | 'Connect'
     | 'ConnectingExternal'
     | 'ConnectingWalletConnect'
@@ -19,8 +20,10 @@ export interface RouterControllerState {
     | 'EmailVerifyDevice'
     | 'GetWallet'
     | 'Networks'
-    | 'OnRampProviders'
     | 'OnRampActivity'
+    | 'OnRampFiatSelect'
+    | 'OnRampProviders'
+    | 'OnRampTokenSelect'
     | 'SwitchNetwork'
     | 'Transactions'
     | 'UnsupportedChain'
@@ -28,9 +31,14 @@ export interface RouterControllerState {
     | 'UpdateEmailPrimaryOtp'
     | 'UpdateEmailSecondaryOtp'
     | 'UpgradeEmailWallet'
-    | 'WhatIsABuy'
+    | 'UpgradeToSmartAccount'
+    | 'WalletReceive'
+    | 'WalletSend'
+    | 'WalletSendPreview'
+    | 'WalletSendSelectToken'
     | 'WhatIsANetwork'
     | 'WhatIsAWallet'
+    | 'WhatIsABuy'
   history: RouterControllerState['view'][]
   data?: {
     connector?: Connector
