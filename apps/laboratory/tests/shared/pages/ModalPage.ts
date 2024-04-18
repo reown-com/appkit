@@ -231,7 +231,7 @@ export class ModalPage {
 
   async updateEmail(mailsacApiKey: string) {
     const email = new Email(mailsacApiKey)
-    const newEmailAddress = email.getNewEmailAddress(this.emailAddress)
+    const newEmailAddress = email.getEmailAddressToUse(1)
 
     await this.page.getByTestId('account-button').click()
     await this.page.getByTestId('w3m-account-email-update').click()
@@ -251,8 +251,7 @@ export class ModalPage {
       await this.updateOtpFlow(this.emailAddress, mailsacApiKey, 'Confirm Current Email')
     }
 
-    // The new OTP will arrive in the same email address as we are using the same email +new
-    await this.updateOtpFlow(this.emailAddress, mailsacApiKey, 'Confirm New Email')
+    await this.updateOtpFlow(newEmailAddress, mailsacApiKey, 'Confirm New Email')
 
     expect(
       this.page.getByTestId('w3m-account-email-update'),
@@ -271,8 +270,6 @@ export class ModalPage {
     const emailBody = await email.getEmailBody(emailAddress, messageId)
     const otp = email.getOtpCodeFromBody(emailBody).replace(' ', '')
 
-    // Clear messages before putting OTP
-    email.deleteAllMessages(emailAddress)
     await this.enterOTP(otp, headerTitle)
   }
 }

@@ -80,10 +80,4 @@ export class Email {
 
     return `${prefix}-w${index}@${EMAIL_DOMAIN}`
   }
-
-  getNewEmailAddress(emailAddress: string): string {
-    const emailIndex = emailAddress.match(/\d{1}/u)
-
-    return emailAddress.replace(`tests-${emailIndex}`, `tests-${emailIndex}+${Date.now()}`)
-  }
 }
