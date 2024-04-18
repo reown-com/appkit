@@ -139,7 +139,6 @@ export interface ThemeVariables {
 
 // -- BlockchainApiController Types ---------------------------------------------
 export interface BlockchainApiIdentityRequest {
-  caipChainId: CaipNetworkId
   address: string
 }
 

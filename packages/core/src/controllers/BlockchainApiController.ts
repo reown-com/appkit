@@ -100,15 +100,15 @@ const DEFAULT_OPTIONS = {
 
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getBlockchainApiUrl()
+
 const api = new FetchUtil({ baseUrl })
 
 // -- Controller ---------------------------------------- //
 export const BlockchainApiController = {
-  fetchIdentity({ caipChainId, address }: BlockchainApiIdentityRequest) {
+  fetchIdentity({ address }: BlockchainApiIdentityRequest) {
     return api.get<BlockchainApiIdentityResponse>({
       path: `/v1/identity/${address}`,
       params: {
-        chainId: caipChainId,
         projectId: OptionsController.state.projectId
       }
     })
