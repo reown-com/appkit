@@ -93,11 +93,12 @@ export class ModalPage {
         otp = email.getOtpCodeFromBody(emailBody)
       }
     }
-    if (otp.replace(' ', '').length !== 6) {
+
+    if (otp === '') {
       otp = email.getOtpCodeFromBody(emailBody)
     }
-    // Remove empy space in OTP code 111 111
-    await this.enterOTP(otp.replace(' ', ''))
+
+    await this.enterOTP(otp)
   }
 
   async loginWithEmail(email: string) {
@@ -125,6 +126,7 @@ export class ModalPage {
     await expect(this.page.getByText('Enter the code we sent')).toBeVisible({
       timeout: 10_000
     })
+
     const splitted = otp.split('')
 
     // eslint-disable-next-line no-plusplus
@@ -268,7 +270,7 @@ export class ModalPage {
       throw new Error('No messageId found')
     }
     const emailBody = await email.getEmailBody(emailAddress, messageId)
-    const otp = email.getOtpCodeFromBody(emailBody).replace(' ', '')
+    const otp = email.getOtpCodeFromBody(emailBody)
 
     await this.enterOTP(otp, headerTitle)
   }
