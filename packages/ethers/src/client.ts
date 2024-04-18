@@ -13,7 +13,7 @@ import type {
   WriteContractArgs
 } from '@web3modal/scaffold'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
-import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
+import { ConstantsUtil, PresetsUtil, HelpersUtil, erc20ABI } from '@web3modal/scaffold-utils'
 import EthereumProvider from '@walletconnect/ethereum-provider'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
 import type {
@@ -45,7 +45,6 @@ import type { CombinedProvider } from '@web3modal/scaffold-utils/ethers'
 import { BrowserProvider } from 'ethers'
 import { JsonRpcSigner } from 'ethers'
 import { NetworkUtil } from '@web3modal/common'
-import erc20ABI from '../src/abi/erc20.json'
 
 // -- Types ---------------------------------------------------------------------
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {

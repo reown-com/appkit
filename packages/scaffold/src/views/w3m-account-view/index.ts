@@ -9,7 +9,7 @@ export class W3mAccountView extends LitElement {
     const type = StorageUtil.getConnectedConnector()
 
     return html`
-      ${OptionsController.state.enableWalletFeatures && type === 'EMAIL'
+      ${!OptionsController.state.enableWalletFeatures
         ? this.walletFeaturesTemplate()
         : this.defaultTemplate()}
     `

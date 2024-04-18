@@ -35,7 +35,7 @@ import { formatUnits, parseUnits } from 'viem'
 import type { Hex } from 'viem'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
-import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
+import { ConstantsUtil, PresetsUtil, HelpersUtil, erc20ABI } from '@web3modal/scaffold-utils'
 import {
   getCaipDefaultChain,
   getEmailCaipNetworks,
@@ -46,7 +46,6 @@ import type { W3mFrameProvider } from '@web3modal/wallet'
 import { NetworkUtil } from '@web3modal/common'
 import type { defaultWagmiConfig as coreConfig } from './utils/defaultWagmiCoreConfig.js'
 import type { defaultWagmiConfig as reactConfig } from './utils/defaultWagmiReactConfig.js'
-import erc20ABI from '../src/abi/erc20.json'
 
 // -- Types ---------------------------------------------------------------------
 export type CoreConfig = ReturnType<typeof coreConfig>
