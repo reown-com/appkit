@@ -588,6 +588,10 @@ export class Web3Modal extends Web3ModalScaffold {
       const { address, chainId, smartAccountDeployed, preferredAccountType } =
         await this.emailProvider.connect({ chainId: this.getChainId() })
 
+      const { smartAccountEnabledNetworks } =
+        await this.emailProvider.getSmartAccountEnabledNetworks()
+
+      this.setSmartAccountEnabledNetworks(smartAccountEnabledNetworks)
       if (address && chainId) {
         EthersStoreUtil.setChainId(chainId)
         EthersStoreUtil.setProviderType(ConstantsUtil.EMAIL_CONNECTOR_ID as 'w3mEmail')
@@ -1064,10 +1068,6 @@ export class Web3Modal extends Web3ModalScaffold {
               chainId: chain?.chainId
             })
 
-            const { smartAccountEnabledNetworks } =
-              await this.emailProvider.getSmartAccountEnabledNetworks()
-
-            this.setSmartAccountEnabledNetworks(smartAccountEnabledNetworks)
             EthersStoreUtil.setAddress(address as Address)
             EthersStoreUtil.setPreferredAccountType(
               preferredAccountType as W3mFrameTypes.AccountType
