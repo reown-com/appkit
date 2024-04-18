@@ -4,7 +4,9 @@ import { EOA, SMART_ACCOUNT } from './shared/validators/ModalWalletValidator'
 
 import type { ModalWalletValidator } from './shared/validators/ModalWalletValidator'
 
-const NOT_ENABLED_EMAIL = 'test@w3ma.msdc.co'
+function getNotEnabledEmail(parallelIndex: number) {
+  return `test-${parallelIndex}@w3ma.msdc.co`
+}
 
 const mailsacApiKey = process.env['MAILSAC_API_KEY']
 if (!mailsacApiKey) {
@@ -72,7 +74,7 @@ testModalSmartAccount(
 
 testModalSmartAccount(
   'it should use an eoa and not propose flow when disconnecting and connecting to a not enabled address',
-  async ({ modalPage, modalValidator, context }) => {
+  async ({ modalPage, modalValidator, context }, { parallelIndex }) => {
     const walletModalPage = modalPage as ModalWalletPage
     const walletModalValidator = modalValidator as ModalWalletValidator
 
@@ -82,7 +84,7 @@ testModalSmartAccount(
     await walletModalPage.disconnect()
     await walletModalPage.page.waitForTimeout(2500)
 
-    await walletModalPage.emailFlow(NOT_ENABLED_EMAIL, context, mailsacApiKey)
+    await walletModalPage.emailFlow(getNotEnabledEmail(parallelIndex), context, mailsacApiKey)
     await walletModalPage.openAccount()
     await walletModalPage.openSettings()
     await walletModalPage.switchNetwork('Sepolia')

@@ -1063,6 +1063,11 @@ export class Web3Modal extends Web3ModalScaffold {
             const { address, preferredAccountType } = await this.emailProvider.connect({
               chainId: chain?.chainId
             })
+
+            const { smartAccountEnabledNetworks } =
+              await this.emailProvider.getSmartAccountEnabledNetworks()
+
+            this.setSmartAccountEnabledNetworks(smartAccountEnabledNetworks)
             EthersStoreUtil.setAddress(address as Address)
             EthersStoreUtil.setPreferredAccountType(
               preferredAccountType as W3mFrameTypes.AccountType
@@ -1135,9 +1140,6 @@ export class Web3Modal extends Web3ModalScaffold {
       const isLoginEmailUsed = this.emailProvider.getLoginEmailUsed()
       super.setLoading(isLoginEmailUsed)
       const { isConnected } = await this.emailProvider.isConnected()
-      const { smartAccountEnabledNetworks } =
-        await this.emailProvider.getSmartAccountEnabledNetworks()
-      this.setSmartAccountEnabledNetworks(smartAccountEnabledNetworks)
       if (isConnected) {
         await this.setEmailProvider()
       } else {

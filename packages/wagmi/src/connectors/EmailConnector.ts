@@ -33,6 +33,7 @@ export function emailConnector(parameters: EmailParameters) {
     async connect(options: ConnectOptions = {}) {
       const provider = await this.getProvider()
       const { address, chainId } = await provider.connect({ chainId: options.chainId })
+      await provider.getSmartAccountEnabledNetworks()
 
       return {
         accounts: [address as Address],

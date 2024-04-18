@@ -419,9 +419,6 @@ export class Web3Modal extends Web3ModalScaffold {
       const provider = (await connector.getProvider()) as W3mFrameProvider
       const isLoginEmailUsed = provider.getLoginEmailUsed()
 
-      const { smartAccountEnabledNetworks } = await provider.getSmartAccountEnabledNetworks()
-      this.setSmartAccountEnabledNetworks(smartAccountEnabledNetworks)
-
       super.setLoading(isLoginEmailUsed)
 
       if (isLoginEmailUsed) {
