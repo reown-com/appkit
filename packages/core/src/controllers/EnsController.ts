@@ -100,7 +100,17 @@ export const EnsController = {
 
   async getNamesForAddress(address: string) {
     try {
-      return await BlockchainApiController.reverseLookupEnsName(address)
+      const network = NetworkController.state.caipNetwork
+      if (!network) {
+        state.error = 'No network selected'
+
+        return []
+      }
+      const coinType = convertEVMChainIdToCoinType(
+        NetworkUtil.caipNetworkIdToNumber(network.id) as number
+      )
+
+      return await BlockchainApiController.reverseLookupEnsName({ address, coinType })
     } catch (e) {
       const error = e as BlockchainApiEnsError
       const errorMessage = error?.reasons?.[0]?.description || 'Error resolving address to ENS name'

@@ -148,9 +148,9 @@ export const BlockchainApiController = {
     })
   },
 
-  async reverseLookupEnsName(address: string) {
+  async reverseLookupEnsName({ address, coinType }: { address: string; coinType: number }) {
     return api.get<BlockchainApiLookupEnsName[]>({
-      path: `/v1/profile/reverse/${address}?projectId=${OptionsController.state.projectId}`
+      path: `/v1/profile/reverse/${coinType}/${address}?projectId=${OptionsController.state.projectId}`
     })
   },
 
