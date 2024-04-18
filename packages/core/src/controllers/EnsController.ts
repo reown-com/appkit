@@ -6,6 +6,19 @@ import { AccountController } from './AccountController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { RouterController } from './RouterController.js'
 import { ConnectionController } from './ConnectionController.js'
+import { NetworkController } from './NetworkController.js'
+import { NetworkUtil } from '@web3modal/common'
+
+const SLIP44_MSB = 0x80000000
+
+function convertEVMChainIdToCoinType(chainId: number): number {
+  if (chainId >= SLIP44_MSB) {
+    throw new Error('Invalid chainId')
+  }
+
+  return (SLIP44_MSB | chainId) >>> 0
+}
+
 // -- Types --------------------------------------------- //
 type Suggestion = {
   name: string
@@ -98,6 +111,12 @@ export const EnsController = {
   },
 
   async registerName(name: string) {
+    const network = NetworkController.state.caipNetwork
+    if (!network) {
+      state.error = 'No network selected'
+
+      return
+    }
     try {
       const address = AccountController.state.address
       const emailConnector = ConnectorController.getEmailConnector()
@@ -123,7 +142,9 @@ export const EnsController = {
 
       await BlockchainApiController.registerEnsName({
         // TOD0: Add coin type calculation when ready on BE.
-        coin_type: 60,
+        coin_type: convertEVMChainIdToCoinType(
+          NetworkUtil.caipNetworkIdToNumber(network.id) as number
+        ),
         address: address as `0x${string}`,
         signature,
         message
