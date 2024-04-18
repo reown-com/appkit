@@ -173,7 +173,7 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
     signers: Signer[]
   ) {
     if (transactionParam instanceof VersionedTransaction) {
-      return 'it doesnt work with versioned transaction'
+      throw Error('it doesnt work with versioned transaction')
     }
 
     if (signers.length) {
