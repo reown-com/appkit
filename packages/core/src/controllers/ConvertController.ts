@@ -251,10 +251,10 @@ export const ConvertController = {
 
     const networkToken = state.tokens?.find(token => token.address === networkAddress)
     this.setSourceToken(networkToken)
-    state.toToken = undefined
+    state.sourceTokenPriceInUSD = state.tokensPriceMap[networkAddress] || 0
     state.sourceTokenAmount = '0'
+    state.toToken = undefined
     state.toTokenAmount = '0'
-    state.sourceTokenPriceInUSD = 0
     state.toTokenPriceInUSD = 0
     state.gasPriceInUSD = 0
   },
@@ -317,22 +317,24 @@ export const ConvertController = {
 
   async getAddressPrice(address: string) {
     const existPrice = state.tokensPriceMap[address]
+
     if (existPrice) {
       return existPrice
     }
-    // TODO: replace with blockchain api
+
     const response = await BlockchainApiController.fetchTokenPrice({
       projectId: OptionsController.state.projectId,
       addresses: [address]
     })
     const fungibles = response.fungibles || []
-    const alltokens = [...(state.tokens || []), ...(state.myTokensWithBalance || [])]
-    const symbol = alltokens?.find(t => t.address === address)?.symbol
-    // TODO: expect blockchain API to return address in fungibles objects
+    const allTokens = [...(state.tokens || []), ...(state.myTokensWithBalance || [])]
+    const symbol = allTokens?.find(token => token.address === address)?.symbol
     const price = fungibles.find(p => p.symbol === symbol)?.price || '0'
-    state.tokensPriceMap[address] = parseFloat(price)
+    const priceAsFloat = parseFloat(price)
 
-    return parseFloat(price)
+    state.tokensPriceMap[address] = priceAsFloat
+
+    return priceAsFloat
   },
 
   async getNetworkTokenPrice() {
@@ -349,7 +351,6 @@ export const ConvertController = {
   },
 
   async getMyTokensWithBalance() {
-    const { networkAddress } = this.getParams()
     const balances = await ConvertApiUtil.getMyTokensWithBalance()
 
     if (!balances) {
@@ -357,13 +358,18 @@ export const ConvertController = {
     }
 
     await this.getInitialGasPrice()
+    this.setBalances(balances)
+  },
+
+  setBalances(balances: ConvertTokenWithBalance[]) {
+    const { networkAddress } = this.getParams()
 
     const networkToken = balances.find(token => token.address === networkAddress)
 
     balances.forEach(token => {
       state.tokensPriceMap[token.address] = token.price || 0
     })
-    state.myTokensWithBalance = balances as ConvertTokenWithBalance[]
+    state.myTokensWithBalance = balances
     state.networkBalanceInUSD = networkToken
       ? NumberUtil.multiply(networkToken.quantity.numeric, networkToken.price).toString()
       : '0'
@@ -371,10 +377,16 @@ export const ConvertController = {
 
   async getInitialGasPrice() {
     const res = await ConvertApiUtil.fetchGasPrice()
+
+    if (!res) {
+      return
+    }
+
     const value = res.instant
     const gasFee = BigInt(value)
     const gasLimit = BigInt(INITIAL_GAS_LIMIT)
     const gasPrice = this.calculateGasPriceInUSD(gasLimit, gasFee)
+
     state.gasPriceInUSD = gasPrice
   },
 
@@ -454,6 +466,7 @@ export const ConvertController = {
       this.getParams()
 
     if (
+      !fromCaipAddress ||
       !sourceTokenAddress ||
       !sourceTokenAmount ||
       parseFloat(sourceTokenAmount) === 0 ||
@@ -462,7 +475,6 @@ export const ConvertController = {
       return undefined
     }
 
-    // TODO: replace with blockchain api
     const hasAllowance = await ConvertApiUtil.fetchConvertAllowance({
       userAddress: fromCaipAddress,
       tokenAddress: sourceTokenAddress,
@@ -528,7 +540,7 @@ export const ConvertController = {
 
     const transaction = {
       data: response.tx.data,
-      to: CoreHelperUtil.getPlainAddress(response.tx.from),
+      to: CoreHelperUtil.getPlainAddress(response.tx.from) as `0x${string}`,
       gas: gasLimit,
       gasPrice: BigInt(response.tx.eip155.gasPrice),
       value: BigInt(response.tx.value),
@@ -568,6 +580,7 @@ export const ConvertController = {
 
   async createConvert() {
     const {
+      networkAddress,
       fromCaipAddress,
       sourceTokenAddress,
       sourceTokenDecimals,
@@ -599,17 +612,19 @@ export const ConvertController = {
         amount
       })
 
+      const isSourceTokenIsNetworkToken = sourceTokenAddress === networkAddress
+
       const toAmount = this.getToAmount()
       const gas = BigInt(response.tx.eip155.gas)
       const gasPrice = BigInt(response.tx.eip155.gasPrice)
 
       const transaction = {
         data: response.tx.data,
-        to: CoreHelperUtil.getPlainAddress(response.tx.to),
+        to: CoreHelperUtil.getPlainAddress(response.tx.to) as `0x${string}`,
         gas,
         gasPrice,
-        value: BigInt(amount),
-        toAmount: toAmount
+        value: isSourceTokenIsNetworkToken ? BigInt(amount) : BigInt('0'),
+        toAmount
       }
 
       state.gasPriceInUSD = this.calculateGasPriceInUSD(gas, gasPrice)
@@ -658,7 +673,6 @@ export const ConvertController = {
       const error = err as TransactionError
       state.transactionError = error?.shortMessage
       state.transactionLoading = false
-      console.log('>>> error', err)
       SnackController.showError(error?.shortMessage || 'Transaction error')
 
       return undefined

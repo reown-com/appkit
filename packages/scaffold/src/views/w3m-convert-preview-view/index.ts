@@ -72,7 +72,6 @@ export class W3mConvertPreviewView extends LitElement {
           this.toToken = newState.toToken
           this.transactionLoading = newState.transactionLoading
           this.gasPriceInUSD = newState.gasPriceInUSD
-          this.transactionLoading = newState.transactionLoading
           this.toTokenPriceInUSD = newState.toTokenPriceInUSD
           this.sourceTokenAmount = newState.sourceTokenAmount ?? ''
           this.toTokenAmount = newState.toTokenAmount ?? ''

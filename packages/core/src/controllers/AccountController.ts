@@ -5,6 +5,8 @@ import type { CaipAddress, ConnectedWalletInfo } from '../utils/TypeUtil.js'
 import type { Balance } from '@web3modal/common'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { SnackController } from './SnackController.js'
+import { ConvertController } from './ConvertController.js'
+import { ConvertApiUtil } from '../utils/ConvertApiUtil.js'
 
 // -- Types --------------------------------------------- //
 export interface AccountControllerState {
@@ -97,6 +99,7 @@ export const AccountController = {
         const response = await BlockchainApiController.getBalance(state.address)
 
         this.setTokenBalance(response.balances)
+        ConvertController.setBalances(ConvertApiUtil.mapBalancesToConvertTokens(response.balances))
       }
     } catch (error) {
       SnackController.showError('Failed to fetch token balance')

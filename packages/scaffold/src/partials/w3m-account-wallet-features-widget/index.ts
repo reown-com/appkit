@@ -19,6 +19,8 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   public static override styles = styles
 
   // -- Members ------------------------------------------- //
+  @state() private watchTokenBalance?: NodeJS.Timeout
+
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
@@ -57,10 +59,16 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
         this.network = val.caipNetwork
       })
     )
+    this.watchConvertValues()
   }
 
   public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
+    clearInterval(this.watchTokenBalance)
+  }
+
+  public override firstUpdated() {
+    AccountController.fetchTokenBalance()
   }
 
   // -- Render -------------------------------------------- //
@@ -121,6 +129,10 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private watchConvertValues() {
+    this.watchTokenBalance = setInterval(() => AccountController.fetchTokenBalance(), 10000)
+  }
+
   private listContentTemplate() {
     if (this.currentTab === 0) {
       return html`<w3m-account-tokens-widget></w3m-account-tokens-widget>`
