@@ -249,20 +249,15 @@ export class Web3Modal extends Web3ModalScaffold {
         const providerType = EthersStoreUtil.state.providerType
         localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
         EthersStoreUtil.reset()
-        if (siweConfig?.options?.signOutOnDisconnect) {
-          await siweConfig.signOut()
-        }
         if (providerType === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
           const WalletConnectProvider = provider
           await (WalletConnectProvider as unknown as EthereumProvider).disconnect()
-          provider?.emit('disconnect')
           // eslint-disable-next-line no-negated-condition
         } else if (providerType !== ConstantsUtil.EMAIL_CONNECTOR_ID) {
           provider?.emit('disconnect')
         } else {
-          this.emailProvider?.disconnect()
+          await this.emailProvider?.disconnect()
         }
-        provider?.emit('disconnect')
       },
 
       signMessage: async (message: string) => {
@@ -864,7 +859,6 @@ export class Web3Modal extends Web3ModalScaffold {
       await Promise.all([
         this.syncProfile(address),
         this.syncBalance(address),
-        this.fetchTokenBalance(),
         this.getApprovedCaipNetworksData()
       ])
 
@@ -916,20 +910,28 @@ export class Web3Modal extends Web3ModalScaffold {
   private async syncProfile(address: Address) {
     const chainId = EthersStoreUtil.state.chainId
 
-    if (chainId === 1) {
-      const ensProvider = new InfuraProvider('mainnet')
-      const name = await ensProvider.lookupAddress(address)
-      const avatar = await ensProvider.getAvatar(address)
+    try {
+      const { name, avatar } = await this.fetchIdentity({
+        address
+      })
+      this.setProfileName(name)
+      this.setProfileImage(avatar)
+    } catch {
+      if (chainId === 1) {
+        const ensProvider = new InfuraProvider('mainnet')
+        const name = await ensProvider.lookupAddress(address)
+        const avatar = await ensProvider.getAvatar(address)
 
-      if (name) {
-        this.setProfileName(name)
+        if (name) {
+          this.setProfileName(name)
+        }
+        if (avatar) {
+          this.setProfileImage(avatar)
+        }
+      } else {
+        this.setProfileName(null)
+        this.setProfileImage(null)
       }
-      if (avatar) {
-        this.setProfileImage(avatar)
-      }
-    } else {
-      this.setProfileName(null)
-      this.setProfileImage(null)
     }
   }
 
@@ -1170,7 +1172,7 @@ export class Web3Modal extends Web3ModalScaffold {
       super.setLoading(true)
       const isLoginEmailUsed = this.emailProvider.getLoginEmailUsed()
       super.setLoading(isLoginEmailUsed)
-      const isConnected = await this.emailProvider.isConnected()
+      const { isConnected } = await this.emailProvider.isConnected()
 
       if (isConnected) {
         this.setEmailProvider()

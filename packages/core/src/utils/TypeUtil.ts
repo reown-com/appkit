@@ -139,7 +139,6 @@ export interface ThemeVariables {
 
 // -- BlockchainApiController Types ---------------------------------------------
 export interface BlockchainApiIdentityRequest {
-  caipChainId: CaipNetworkId
   address: string
 }
 
@@ -338,6 +337,18 @@ export type Event =
       properties: {
         network: string
       }
+    }
+  | {
+      type: 'track'
+      event: 'CLICK_CONVERT'
+    }
+  | {
+      type: 'track'
+      event: 'CLICK_SELECT_TOKEN_TO_SWAP'
+    }
+  | {
+      type: 'track'
+      event: 'CLICK_SELECT_NETWORK_TO_SWAP'
     }
 
 // Onramp Types

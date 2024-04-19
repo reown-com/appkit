@@ -240,6 +240,7 @@ export class W3mAccountDefaultWidget extends LitElement {
         iconVariant="overlay"
         icon="mail"
         iconSize="sm"
+        data-testid="w3m-account-email-update"
         ?chevron=${true}
         @click=${() => this.onGoToUpdateEmail(email)}
       >

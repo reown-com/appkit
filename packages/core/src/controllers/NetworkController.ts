@@ -33,7 +33,8 @@ type StateKey = keyof NetworkControllerState
 // -- State --------------------------------------------- //
 const state = proxy<NetworkControllerState>({
   supportsAllNetworks: true,
-  isDefaultCaipNetwork: false
+  isDefaultCaipNetwork: false,
+  smartAccountEnabledNetworks: []
 })
 
 // -- Controller ---------------------------------------- //
@@ -141,6 +142,7 @@ export const NetworkController = {
     }
     state.approvedCaipNetworkIds = undefined
     state.supportsAllNetworks = true
+    state.smartAccountEnabledNetworks = []
   },
 
   showUnsupportedChainUI() {
