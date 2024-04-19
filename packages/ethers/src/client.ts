@@ -842,7 +842,7 @@ export class Web3Modal extends Web3ModalScaffold {
           }, 300)
         }
       })
-      this.emailProvider.onRpcResponse(() => {
+      this.emailProvider.onRpcResponse(receive => {
         // eslint-disable-next-line @typescript-eslint/prefer-ts-expect-error, @typescript-eslint/ban-ts-comment
         // @ts-ignore
         const payload = receive?.payload
