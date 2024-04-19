@@ -158,7 +158,8 @@ export class Web3Modal extends Web3ModalScaffold {
             })
             SIWEController.verifyMessage({
               message,
-              signature: s.s
+              signature: s.s,
+              cacao: signedCacao
             })
           }
         }

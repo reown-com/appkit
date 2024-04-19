@@ -31,8 +31,15 @@ export const siweConfig = createSIWEConfig({
 
     return { address, chainId }
   },
-  verifyMessage: async ({ message, signature }: SIWEVerifyMessageArgs) => {
+  verifyMessage: async ({ message, signature, cacao }: SIWEVerifyMessageArgs) => {
     try {
+      /*
+       * Signed Cacao (CAIP-74) will be available for further validations if the wallet supports caip-222 signing
+       * When personal_sign fallback is used, cacao will be undefined
+       */
+      if (cacao) {
+        // Do something
+      }
       const success = await signIn('credentials', {
         message,
         redirect: false,
