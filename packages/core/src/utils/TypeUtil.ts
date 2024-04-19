@@ -174,7 +174,7 @@ export interface BlockchainApiLookupEnsName {
       address: string
       created: string
     }
-  >[]
+  >
   attributes: {
     avatar?: string
     bio?: string

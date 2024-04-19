@@ -110,7 +110,12 @@ export const EnsController = {
         NetworkUtil.caipNetworkIdToNumber(network.id) as number
       )
 
-      return await BlockchainApiController.reverseLookupEnsName({ address, coinType })
+      const response = await BlockchainApiController.reverseLookupEnsName({ address })
+
+      // For now we filter this way until BlockchainApi has fixed the /coinType endpoint
+      const names = response.filter(name => name.addresses[coinType]?.address === address)
+
+      return names
     } catch (e) {
       const error = e as BlockchainApiEnsError
       const errorMessage = error?.reasons?.[0]?.description || 'Error resolving address to ENS name'
