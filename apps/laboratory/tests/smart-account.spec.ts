@@ -1,12 +1,9 @@
 import { testModalSmartAccount } from './shared/fixtures/w3m-smart-account-fixture'
 import type { ModalWalletPage } from './shared/pages/ModalWalletPage'
 import { EOA, SMART_ACCOUNT } from './shared/validators/ModalWalletValidator'
+import { Email, NOT_ENABLED_DOMAIN } from './shared/utils/email'
 
 import type { ModalWalletValidator } from './shared/validators/ModalWalletValidator'
-
-function getNotEnabledEmail(parallelIndex: number) {
-  return `test-${parallelIndex}@w3ma.msdc.co`
-}
 
 const mailsacApiKey = process.env['MAILSAC_API_KEY']
 if (!mailsacApiKey) {
@@ -78,13 +75,19 @@ testModalSmartAccount(
     const walletModalPage = modalPage as ModalWalletPage
     const walletModalValidator = modalValidator as ModalWalletValidator
 
+    const email = new Email(mailsacApiKey)
+
     await walletModalPage.openAccount()
     await walletModalPage.openSettings()
     await walletModalPage.togglePreferredAccountType()
     await walletModalPage.disconnect()
     await walletModalPage.page.waitForTimeout(1500)
 
-    await walletModalPage.emailFlow(getNotEnabledEmail(parallelIndex), context, mailsacApiKey)
+    await walletModalPage.emailFlow(
+      email.getEmailAddressToUse(parallelIndex, NOT_ENABLED_DOMAIN),
+      context,
+      mailsacApiKey
+    )
     await walletModalPage.page.waitForTimeout(1500)
     await walletModalPage.openAccount()
     await walletModalPage.openSettings()
