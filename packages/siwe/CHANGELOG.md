@@ -1,5 +1,15 @@
 # @web3modal/siwe
 
+## 4.1.10
+
+### Patch Changes
+
+- Fix activity list styling issue
+
+- Updated dependencies []:
+  - @web3modal/core@4.1.10
+  - @web3modal/scaffold-utils@4.1.10
+
 ## 4.1.9
 
 ### Patch Changes
