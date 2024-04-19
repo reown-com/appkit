@@ -13,7 +13,7 @@
     "build:common": "tsc --build",
     "watch": "tsc --watch",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run --dir tests --coverage.enabled=true --coverage.provider=istanbul --coverage.all=true --coverage.reporter=json --coverage.reporter=json-summary --coverage.reportOnFailure=true",
+    "test": "vitest run --dir tests --coverage.enabled=true --coverage.all=true --coverage.reporter=json --coverage.reporter=json-summary --coverage.reportOnFailure=true",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
