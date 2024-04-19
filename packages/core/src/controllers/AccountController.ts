@@ -7,6 +7,7 @@ import { BlockchainApiController } from './BlockchainApiController.js'
 import { SnackController } from './SnackController.js'
 import { ConvertController } from './ConvertController.js'
 import { ConvertApiUtil } from '../utils/ConvertApiUtil.js'
+import type { W3mFrameTypes } from '@web3modal/wallet'
 
 // -- Types --------------------------------------------- //
 export interface AccountControllerState {
@@ -22,6 +23,7 @@ export interface AccountControllerState {
   smartAccountDeployed?: boolean
   tokenBalance?: Balance[]
   connectedWalletInfo?: ConnectedWalletInfo
+  preferredAccountType?: W3mFrameTypes.AccountType
 }
 
 type StateKey = keyof AccountControllerState
@@ -93,6 +95,10 @@ export const AccountController = {
     state.connectedWalletInfo = connectedWalletInfo
   },
 
+  setPreferredAccountType(preferredAccountType: AccountControllerState['preferredAccountType']) {
+    state.preferredAccountType = preferredAccountType
+  },
+
   async fetchTokenBalance() {
     try {
       if (state.address) {
@@ -119,5 +125,6 @@ export const AccountController = {
     state.addressExplorerUrl = undefined
     state.tokenBalance = []
     state.connectedWalletInfo = undefined
+    state.preferredAccountType = undefined
   }
 }

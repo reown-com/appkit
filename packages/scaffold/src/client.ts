@@ -120,7 +120,7 @@ export class Web3ModalScaffold {
   }
 
   public getState() {
-    return { ...PublicStateController.state }
+    return PublicStateController.state
   }
 
   public subscribeState(callback: (newState: PublicStateControllerState) => void) {
@@ -240,6 +240,11 @@ export class Web3ModalScaffold {
   protected setSmartAccountEnabledNetworks: (typeof NetworkController)['setSmartAccountEnabledNetworks'] =
     smartAccountEnabledNetworks => {
       NetworkController.setSmartAccountEnabledNetworks(smartAccountEnabledNetworks)
+    }
+
+  protected setPreferredAccountType: (typeof AccountController)['setPreferredAccountType'] =
+    preferredAccountType => {
+      AccountController.setPreferredAccountType(preferredAccountType)
     }
 
   // -- Private ------------------------------------------------------------------
