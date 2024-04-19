@@ -84,24 +84,9 @@ jobs:
       - name: test
         id: test
         run: npm run test
-      - name: summary
-        id: summary
-        run: echo "COVERAGE_SUMMARY=$(npm run coverage:summary | tail -n 1)" >> "$GITHUB_OUTPUT"
-      - uses: LouisBrunner/checks-action@v1.6.1
+      - name: report
         if: always()
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          name: coverage
-          conclusion: ${{ job.status }}
-          output: |
-            {"summary":"${{ steps.summary.outputs.COVERAGE_SUMMARY }}"}
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: coverage
-          path: |
-            packages/core/coverage/
-            packages/common/coverage/
+        uses: davelosert/vitest-coverage-report-action@v2
 
   ui-test:
     uses: ./.github/workflows/ui_tests.yml
