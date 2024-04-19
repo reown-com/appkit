@@ -184,6 +184,7 @@ export class W3mActivityList extends LitElement {
 
   private emptyStateActivity() {
     return html`<wui-flex
+      class="emptyContainer"
       flexGrow="1"
       flexDirection="column"
       justifyContent="center"
