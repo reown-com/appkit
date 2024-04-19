@@ -82,9 +82,10 @@ testModalSmartAccount(
     await walletModalPage.openSettings()
     await walletModalPage.togglePreferredAccountType()
     await walletModalPage.disconnect()
-    await walletModalPage.page.waitForTimeout(2500)
+    await walletModalPage.page.waitForTimeout(1500)
 
     await walletModalPage.emailFlow(getNotEnabledEmail(parallelIndex), context, mailsacApiKey)
+    await walletModalPage.page.waitForTimeout(1500)
     await walletModalPage.openAccount()
     await walletModalPage.openSettings()
     await walletModalPage.switchNetwork('Sepolia')
