@@ -60,7 +60,7 @@ export class Web3Modal extends Web3ModalScaffold {
       tokens,
       _sdkVersion,
       chainImages,
-      connectionSettings = 're',
+      connectionSettings = 'confirmed',
       ...w3mOptions
     } = options
     const { metadata } = solanaConfig
