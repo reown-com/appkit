@@ -12,7 +12,7 @@ import type {
   Token
 } from '@web3modal/scaffold'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
-import { ConstantsUtil, PresetsUtil, HelpersUtil, RegexUtil } from '@web3modal/scaffold-utils'
+import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
 import EthereumProvider from '@walletconnect/ethereum-provider'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
 import type {
@@ -38,7 +38,12 @@ import {
 } from '@web3modal/scaffold-utils/ethers'
 import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider'
 import type { Eip1193Provider } from 'ethers'
-import { W3mFrameProvider, W3mFrameHelpers, W3mFrameRpcConstants } from '@web3modal/wallet'
+import {
+  W3mFrameProvider,
+  W3mFrameHelpers,
+  W3mFrameRpcConstants,
+  W3mFrameConstants
+} from '@web3modal/wallet'
 import type { CombinedProvider } from '@web3modal/scaffold-utils/ethers'
 import { BrowserProvider } from 'ethers'
 import { JsonRpcSigner } from 'ethers'
@@ -842,32 +847,32 @@ export class Web3Modal extends Web3ModalScaffold {
           }, 300)
         }
       })
-      this.emailProvider.onRpcResponse(receive => {
-        // eslint-disable-next-line @typescript-eslint/prefer-ts-expect-error, @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        const payload = receive?.payload
-        // eslint-disable-next-line @typescript-eslint/prefer-ts-expect-error, @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        const isError = receive?.type === '@w3m-frame/RPC_REQUEST_ERROR'
+      this.emailProvider.onRpcResponse(response => {
+        const responseType = W3mFrameHelpers.getResponseType(response)
 
-        if (isError && super.isOpen()) {
-          if (super.isTransactionStackEmpty()) {
-            super.close()
-          } else {
-            super.popTransactionStack(true)
+        switch (responseType) {
+          case W3mFrameConstants.RPC_RESPONSE_TYPE_ERROR: {
+            const isModalOpen = super.isOpen()
+
+            if (isModalOpen) {
+              if (super.isTransactionStackEmpty()) {
+                super.close()
+              } else {
+                super.popTransactionStack(true)
+              }
+            }
+            break
           }
-        }
-
-        const isPayloadString = typeof payload === 'string'
-        const isAddress = isPayloadString ? payload?.startsWith('0x') : false
-        const isCompleted = isAddress && payload?.match(RegexUtil.transactionHashRegex)
-
-        if (isCompleted) {
-          if (super.isTransactionStackEmpty()) {
-            super.close()
-          } else {
-            super.popTransactionStack()
+          case W3mFrameConstants.RPC_RESPONSE_TYPE_TX: {
+            if (super.isTransactionStackEmpty()) {
+              super.close()
+            } else {
+              super.popTransactionStack()
+            }
+            break
           }
+          default:
+            break
         }
       })
       this.emailProvider.onNotConnected(() => {

@@ -33,13 +33,13 @@ import { formatUnits, parseUnits } from 'viem'
 import type { Hex } from 'viem'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
-import { ConstantsUtil, PresetsUtil, HelpersUtil, RegexUtil } from '@web3modal/scaffold-utils'
+import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
 import {
   getCaipDefaultChain,
   getEmailCaipNetworks,
   getWalletConnectCaipNetworks
 } from './utils/helpers.js'
-import { W3mFrameHelpers, W3mFrameRpcConstants } from '@web3modal/wallet'
+import { W3mFrameConstants, W3mFrameHelpers, W3mFrameRpcConstants } from '@web3modal/wallet'
 import type { W3mFrameProvider, W3mFrameTypes } from '@web3modal/wallet'
 import { NetworkUtil } from '@web3modal/common'
 import type { defaultWagmiConfig as coreConfig } from './utils/defaultWagmiCoreConfig.js'
@@ -493,32 +493,32 @@ export class Web3Modal extends Web3ModalScaffold {
         }
       })
 
-      provider.onRpcResponse(receive => {
-        // eslint-disable-next-line @typescript-eslint/prefer-ts-expect-error, @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        const payload = receive?.payload
-        // eslint-disable-next-line @typescript-eslint/prefer-ts-expect-error, @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        const isError = receive?.type === '@w3m-frame/RPC_REQUEST_ERROR'
+      provider.onRpcResponse(response => {
+        const responseType = W3mFrameHelpers.getResponseType(response)
 
-        if (isError && super.isOpen()) {
-          if (super.isTransactionStackEmpty()) {
-            super.close()
-          } else {
-            super.popTransactionStack(true)
+        switch (responseType) {
+          case W3mFrameConstants.RPC_RESPONSE_TYPE_ERROR: {
+            const isModalOpen = super.isOpen()
+
+            if (isModalOpen) {
+              if (super.isTransactionStackEmpty()) {
+                super.close()
+              } else {
+                super.popTransactionStack(true)
+              }
+            }
+            break
           }
-        }
-
-        const isPayloadString = typeof payload === 'string'
-        const isAddress = isPayloadString ? payload?.startsWith('0x') : false
-        const isCompleted = isAddress && payload?.match(RegexUtil.transactionHashRegex)
-
-        if (isCompleted) {
-          if (super.isTransactionStackEmpty()) {
-            super.close()
-          } else {
-            super.popTransactionStack()
+          case W3mFrameConstants.RPC_RESPONSE_TYPE_TX: {
+            if (super.isTransactionStackEmpty()) {
+              super.close()
+            } else {
+              super.popTransactionStack()
+            }
+            break
           }
+          default:
+            break
         }
       })
 
