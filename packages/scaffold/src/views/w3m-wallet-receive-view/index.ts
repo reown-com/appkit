@@ -11,7 +11,7 @@ import { UiHelperUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
 import { state } from 'lit/decorators.js'
-import { W3mFrameHelpers, W3mFrameRpcConstants } from '@web3modal/wallet'
+import { W3mFrameRpcConstants } from '@web3modal/wallet'
 
 @customElement('w3m-wallet-receive-view')
 export class W3mWalletReceiveView extends LitElement {
@@ -27,6 +27,8 @@ export class W3mWalletReceiveView extends LitElement {
 
   @state() private network = NetworkController.state.caipNetwork
 
+  @state() private preferredAccountType = AccountController.state.preferredAccountType
+
   public constructor() {
     super()
     this.unsubscribe.push(
@@ -35,6 +37,7 @@ export class W3mWalletReceiveView extends LitElement {
           if (val.address) {
             this.address = val.address
             this.profileName = val.profileName
+            this.preferredAccountType = val.preferredAccountType
           } else {
             SnackController.showError('Account not found')
           }
@@ -103,10 +106,9 @@ export class W3mWalletReceiveView extends LitElement {
     const networks = NetworkController.getRequestedCaipNetworks()
     const isNetworkEnabledForSmartAccounts = NetworkController.checkIfSmartAccountEnabled()
     const caipNetwork = NetworkController.state.caipNetwork
-    const preferredAccountType = W3mFrameHelpers.getPreferredAccountType()
 
     if (
-      preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT &&
+      this.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT &&
       isNetworkEnabledForSmartAccounts
     ) {
       if (!caipNetwork) {

@@ -243,6 +243,11 @@ export class Web3ModalScaffold {
       NetworkController.setSmartAccountEnabledNetworks(smartAccountEnabledNetworks)
     }
 
+  protected setPreferredAccountType: (typeof AccountController)['setPreferredAccountType'] =
+    preferredAccountType => {
+      AccountController.setPreferredAccountType(preferredAccountType)
+    }
+
   protected getWalletConnectName: (typeof EnsController)['getNamesForAddress'] = address => {
     return EnsController.getNamesForAddress(address)
   }

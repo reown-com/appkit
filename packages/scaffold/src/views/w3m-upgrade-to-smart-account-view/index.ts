@@ -81,9 +81,7 @@ export class W3mUpgradeToSmartAccountView extends LitElement {
         await this.emailConnector.provider.setPreferredAccount(
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
         )
-        await this.emailConnector.provider.connect({
-          preferredAccountType: W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
-        })
+        await this.emailConnector.provider.connect()
         this.loading = false
         RouterController.push('ChooseAccountName')
       } catch (e) {
