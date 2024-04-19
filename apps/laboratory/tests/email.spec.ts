@@ -28,7 +28,7 @@ testMEmail('it should switch network and sign', async ({ modalPage, modalValidat
   let targetChain = 'Polygon'
   await modalPage.switchNetwork(targetChain)
   await modalValidator.expectNetwork(targetChain)
-  await modalPage.page.waitForTimeout(1500)
+  await modalPage.page.waitForTimeout(3500)
   await modalPage.sign()
   await modalPage.approveSign()
   await modalValidator.expectAcceptedSign()
@@ -38,7 +38,7 @@ testMEmail('it should switch network and sign', async ({ modalPage, modalValidat
   targetChain = 'Ethereum'
   await modalPage.switchNetwork(targetChain)
   await modalValidator.expectNetwork(targetChain)
-  await modalPage.page.waitForTimeout(1500)
+  await modalPage.page.waitForTimeout(3500)
   await modalPage.sign()
   await modalPage.approveSign()
   await modalValidator.expectAcceptedSign()
