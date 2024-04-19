@@ -6,10 +6,10 @@ import { getWeb3Modal } from '@web3modal/scaffold-react'
 
 import { Web3Modal } from '../src/client.js'
 
-import { SolStoreUtil } from '../src/utils/scaffold/SolanaStoreUtil.js'
+import { SolStoreUtil } from '../src/utils/scaffold/index.js'
 
 import type { Web3ModalOptions } from '../src/client.js'
-import type { Provider } from '../src/utils/scaffold/SolanaTypesUtil.js'
+import type { Provider } from '../src/utils/scaffold/index.js'
 
 // -- Setup -------------------------------------------------------------------
 let modal: Web3Modal | undefined = undefined
