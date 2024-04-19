@@ -55,7 +55,8 @@ import {
   RpcEthChainId,
   FrameSwitchNetworkResponse,
   AppSyncDappDataRequest,
-  FrameGetSmartAccountEnabledNetworksResponse
+  FrameGetSmartAccountEnabledNetworksResponse,
+  FrameUpdateEmailResponse
 } from './W3mFrameSchema.js'
 import type { W3mFrameRpcConstants } from './W3mFrameConstants.js'
 
@@ -86,6 +87,7 @@ export namespace W3mFrameTypes {
     FrameGetSmartAccountEnabledNetworksResponse: z.infer<
       typeof FrameGetSmartAccountEnabledNetworksResponse
     >
+    FrameUpdateEmailResponse: z.infer<typeof FrameUpdateEmailResponse>
   }
 
   export interface Network {

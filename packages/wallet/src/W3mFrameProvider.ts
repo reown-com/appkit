@@ -15,7 +15,7 @@ type IsConnectedResolver = Resolver<W3mFrameTypes.Responses['FrameIsConnectedRes
 type GetChainIdResolver = Resolver<W3mFrameTypes.Responses['FrameGetChainIdResponse']>
 type SwitchChainResolver = Resolver<W3mFrameTypes.Responses['FrameSwitchNetworkResponse']>
 type RpcRequestResolver = Resolver<W3mFrameTypes.RPCResponse>
-type UpdateEmailResolver = Resolver<undefined>
+type UpdateEmailResolver = Resolver<W3mFrameTypes.Responses['FrameUpdateEmailResponse']>
 type UpdateEmailPrimaryOtpResolver = Resolver<undefined>
 type UpdateEmailSecondaryOtpResolver = Resolver<
   W3mFrameTypes.Responses['FrameUpdateEmailSecondaryOtpResolver']
@@ -109,7 +109,7 @@ export class W3mFrameProvider {
         case W3mFrameConstants.FRAME_SESSION_UPDATE:
           return this.onSessionUpdate(event)
         case W3mFrameConstants.FRAME_UPDATE_EMAIL_SUCCESS:
-          return this.onUpdateEmailSuccess()
+          return this.onUpdateEmailSuccess(event)
         case W3mFrameConstants.FRAME_UPDATE_EMAIL_ERROR:
           return this.onUpdateEmailError(event)
         case W3mFrameConstants.FRAME_UPDATE_EMAIL_PRIMARY_OTP_SUCCESS:
@@ -210,7 +210,7 @@ export class W3mFrameProvider {
     W3mFrameHelpers.checkIfAllowedToTriggerEmail()
     this.w3mFrame.events.postAppEvent({ type: W3mFrameConstants.APP_UPDATE_EMAIL, payload })
 
-    return new Promise((resolve, reject) => {
+    return new Promise<W3mFrameTypes.Responses['FrameUpdateEmailResponse']>((resolve, reject) => {
       this.updateEmailResolver = { resolve, reject }
     })
   }
@@ -523,8 +523,10 @@ export class W3mFrameProvider {
     }
   }
 
-  private onUpdateEmailSuccess() {
-    this.updateEmailResolver?.resolve(undefined)
+  private onUpdateEmailSuccess(
+    event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/UPDATE_EMAIL_SUCCESS' }>
+  ) {
+    this.updateEmailResolver?.resolve(event.payload)
     this.setNewLastEmailLoginTime()
   }
 
