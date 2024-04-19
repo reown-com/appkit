@@ -6,8 +6,7 @@ import {
   Keypair,
   Transaction,
   TransactionInstruction,
-  LAMPORTS_PER_SOL,
-  Connection
+  LAMPORTS_PER_SOL
 } from '@solana/web3.js'
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/solana/react'
 
@@ -39,23 +38,7 @@ export function SolanaWriteContractTest() {
 
       const balance = await connection.getBalance(walletProvider.publicKey)
       if (balance < LAMPORTS_PER_SOL / 100) {
-        const airdropConnection = new Connection(currentChain?.rpcUrl ?? '')
-        const signature = await airdropConnection.requestAirdrop(
-          walletProvider.publicKey,
-          LAMPORTS_PER_SOL
-        )
-
-        const latestBlockHash = await connection.getLatestBlockhash()
-        await airdropConnection.confirmTransaction({
-          blockhash: latestBlockHash.blockhash,
-          lastValidBlockHeight: latestBlockHash.lastValidBlockHeight,
-          signature
-        })
-        const airDroppedBalance = await connection.getBalance(walletProvider.publicKey)
-
-        if (airDroppedBalance < LAMPORTS_PER_SOL / 100) {
-          throw Error('Not enough SOL in wallet')
-        }
+        throw Error('Not enough SOL in wallet')
       }
 
       const allocIx: TransactionInstruction = SystemProgram.createAccount({
