@@ -34,7 +34,7 @@ import {
   getWalletConnectCaipNetworks
 } from './utils/helpers.js'
 import { W3mFrameHelpers, W3mFrameRpcConstants } from '@web3modal/wallet'
-import type { W3mFrameProvider } from '@web3modal/wallet'
+import type { W3mFrameProvider, W3mFrameTypes } from '@web3modal/wallet'
 import { NetworkUtil } from '@web3modal/common'
 import type { defaultWagmiConfig as coreConfig } from './utils/defaultWagmiCoreConfig.js'
 import type { defaultWagmiConfig as reactConfig } from './utils/defaultWagmiReactConfig.js'
@@ -416,11 +416,11 @@ export class Web3Modal extends Web3ModalScaffold {
   ) {
     if (typeof window !== 'undefined' && connector) {
       super.setLoading(true)
-
       const provider = (await connector.getProvider()) as W3mFrameProvider
       const isLoginEmailUsed = provider.getLoginEmailUsed()
 
       super.setLoading(isLoginEmailUsed)
+
       if (isLoginEmailUsed) {
         this.setIsConnected(false)
       }
@@ -457,6 +457,7 @@ export class Web3Modal extends Web3ModalScaffold {
       provider.onIsConnected(req => {
         this.setIsConnected(true)
         this.setSmartAccountDeployed(Boolean(req.smartAccountDeployed))
+        this.setPreferredAccountType(req.preferredAccountType as W3mFrameTypes.AccountType)
         super.setLoading(false)
       })
 
@@ -464,7 +465,7 @@ export class Web3Modal extends Web3ModalScaffold {
         this.setSmartAccountEnabledNetworks(networks)
       })
 
-      provider.onSetPreferredAccount(({ address }) => {
+      provider.onSetPreferredAccount(({ address, type }) => {
         if (!address) {
           return
         }
@@ -474,7 +475,7 @@ export class Web3Modal extends Web3ModalScaffold {
           chainId,
           isConnected: true,
           connector
-        })
+        }).then(() => this.setPreferredAccountType(type as W3mFrameTypes.AccountType))
       })
     }
   }
