@@ -1,6 +1,11 @@
 import { html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
-import { EventsController, RouterController, type ConvertToken } from '@web3modal/core'
+import {
+  EventsController,
+  RouterController,
+  type ConvertToken,
+  type ConvertInputTarget
+} from '@web3modal/core'
 import { NumberUtil } from '@web3modal/common'
 import {
   UiHelperUtil,
@@ -11,8 +16,6 @@ import {
 import styles from './styles.js'
 
 const MINIMUM_USD_VALUE_TO_CONVERT = 0.00005
-
-type Target = 'sourceToken' | 'toToken'
 
 @customElement('w3m-convert-input')
 export class W3mConvertInput extends LitElement {
@@ -31,14 +34,16 @@ export class W3mConvertInput extends LitElement {
 
   @property() public disabled?: boolean
 
-  @property() public target: Target = 'sourceToken'
+  @property() public target: ConvertInputTarget = 'sourceToken'
 
   @property() public token?: ConvertToken
 
-  @property() public onSetAmount: ((target: Target, value: string) => void) | null = null
-
-  @property() public onSetMaxValue: ((target: Target, balance: string | undefined) => void) | null =
+  @property() public onSetAmount: ((target: ConvertInputTarget, value: string) => void) | null =
     null
+
+  @property() public onSetMaxValue:
+    | ((target: ConvertInputTarget, balance: string | undefined) => void)
+    | null = null
 
   // -- Render -------------------------------------------- //
   public override render() {

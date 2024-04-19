@@ -17,6 +17,8 @@ import { OptionsController } from './OptionsController.js'
 export const INITIAL_GAS_LIMIT = 150000
 
 // -- Types --------------------------------------------- //
+export type ConvertInputTarget = 'sourceToken' | 'toToken'
+
 type TransactionParams = {
   data: string
   to: string
@@ -214,7 +216,7 @@ export const ConvertController = {
     }
   },
 
-  async setTokenValues(address: string, target: 'sourceToken' | 'toToken') {
+  async setTokenValues(address: string, target: ConvertInputTarget) {
     let price = state.tokensPriceMap[address] || 0
 
     if (!price) {

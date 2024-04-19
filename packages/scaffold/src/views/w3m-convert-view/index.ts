@@ -9,11 +9,10 @@ import {
   NetworkController,
   ModalController,
   ConstantsUtil,
-  type ConvertToken
+  type ConvertToken,
+  type ConvertInputTarget
 } from '@web3modal/core'
 import { NumberUtil } from '@web3modal/common'
-
-type Target = 'sourceToken' | 'toToken'
 
 @customElement('w3m-convert-view')
 export class W3mConvertView extends LitElement {
@@ -80,12 +79,6 @@ export class W3mConvertView extends LitElement {
           if (!newRoute.includes('Convert')) {
             ConvertController.resetValues()
           }
-        }),
-        ConvertController.subscribeKey('sourceToken', newSourceToken => {
-          this.sourceToken = newSourceToken
-        }),
-        ConvertController.subscribeKey('toToken', newToToken => {
-          this.toToken = newToToken
         }),
         ConvertController.subscribe(newState => {
           this.initialized = newState.initialized
@@ -195,7 +188,7 @@ export class W3mConvertView extends LitElement {
     </wui-flex>`
   }
 
-  private templateTokenInput(target: Target, token?: ConvertToken) {
+  private templateTokenInput(target: ConvertInputTarget, token?: ConvertToken) {
     const myToken = ConvertController.state.myTokensWithBalance?.find(
       ct => ct?.address === token?.address
     )
@@ -220,7 +213,7 @@ export class W3mConvertView extends LitElement {
     ></w3m-convert-input>`
   }
 
-  private onSetMaxValue(target: Target, balance: string | undefined) {
+  private onSetMaxValue(target: ConvertInputTarget, balance: string | undefined) {
     const token = target === 'sourceToken' ? this.sourceToken : this.toToken
     const isNetworkToken = token?.address === ConstantsUtil.NATIVE_TOKEN_ADDRESS
 
@@ -279,7 +272,7 @@ export class W3mConvertView extends LitElement {
     `
   }
 
-  private handleChangeAmount(target: Target, value: string) {
+  private handleChangeAmount(target: ConvertInputTarget, value: string) {
     ConvertController.clearError()
     if (target === 'sourceToken') {
       ConvertController.setSourceTokenAmount(value)
