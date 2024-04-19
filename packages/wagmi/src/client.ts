@@ -10,7 +10,7 @@ import {
   watchAccount,
   watchConnectors,
   waitForTransactionReceipt,
-  estimateGas,
+  estimateGas as wagmiEstimateGas,
   getAccount
 } from '@wagmi/core'
 import { mainnet } from 'viem/chains'
@@ -175,7 +175,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
       estimateGas: async args => {
         try {
-          return await estimateGas(this.wagmiConfig, {
+          return await wagmiEstimateGas(this.wagmiConfig, {
             account: args.address,
             to: args.to,
             data: args.data,
