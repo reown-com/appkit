@@ -154,7 +154,6 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
         signature: string
       }[]
     }
-    // Const signedTransaction = transactionParam.serialize()
     const signedTransaction = base58.decode(encodedTransaction.signatures[0]?.signature ?? '')
     const txHash = await SolStoreUtil.state.connection?.sendRawTransaction(signedTransaction)
 
