@@ -13,7 +13,7 @@
     "build:common": "tsc --build",
     "watch": "tsc --watch",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run --dir tests  --coverage.enabled=true --coverage.provider=v8 --reporter=junit --coverage.reporter=json-summary --coverage.reporter=json --coverage.reportOnFailure=true",
+    "test": "vitest run --dir tests",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
