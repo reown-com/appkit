@@ -33,7 +33,16 @@ export const AppSwitchNetworkRequest = z.object({ chainId: z.number() })
 export const AppConnectEmailRequest = z.object({ email: z.string().email() })
 export const AppConnectOtpRequest = z.object({ otp: z.string() })
 export const AppGetSocialRedirectUriRequest = z.object({
-  provider: z.enum(['google', 'apple', 'facebook', 'x', 'github', 'discord', 'twitch', 'telegram'])
+  provider: z.enum([
+    'google',
+    'github',
+    'apple',
+    'facebook',
+    'linkedin',
+    'twitter',
+    'discord',
+    'twitch'
+  ])
 })
 export const AppGetUserRequest = z.object({
   chainId: z.optional(z.number()),
@@ -74,7 +83,8 @@ export const FrameGetUserResponse = z.object({
   email: z.string().email(),
   address: z.string(),
   chainId: z.number(),
-  smartAccountDeployed: z.optional(z.boolean())
+  smartAccountDeployed: z.optional(z.boolean()),
+  preferredAccountType: z.optional(z.string())
 })
 export const FrameIsConnectedResponse = z.object({ isConnected: z.boolean() })
 export const FrameGetChainIdResponse = z.object({ chainId: z.number() })

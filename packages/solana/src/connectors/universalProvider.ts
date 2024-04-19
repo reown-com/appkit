@@ -1,11 +1,10 @@
-import UniversalProvider from '@walletconnect/universal-provider'
+import { UniversalProvider as Provider } from '@walletconnect/universal-provider'
 
 import { SolStoreUtil } from '../utils/scaffold/SolanaStoreUtil.js'
 import type { WalletConnectAppMetadata } from './walletConnectConnector.js'
-
+import type UniversalProvider from '@walletconnect/universal-provider'
 const DEFAULT_LOGGER = 'error'
 
-/* eslint-disable @typescript-eslint/no-extraneous-class */
 export class UniversalProviderFactory {
   protected static provider: UniversalProvider | undefined
   protected static relayerRegion: string | undefined
@@ -23,19 +22,8 @@ export class UniversalProviderFactory {
     UniversalProviderFactory.metadata = params.metadata
   }
 
-  public static async getProvider() {
-    if (!UniversalProviderFactory.provider) {
-      await UniversalProviderFactory.init()
-    }
-    if (!UniversalProviderFactory.provider) {
-      throw new Error('Failed to initialize universal provider')
-    }
-
-    return UniversalProviderFactory.provider
-  }
-
   public static async init() {
-    UniversalProviderFactory.provider = await UniversalProvider.init({
+    UniversalProviderFactory.provider = await Provider.init({
       logger: DEFAULT_LOGGER,
       relayUrl: UniversalProviderFactory.relayerRegion,
       projectId: UniversalProviderFactory.projectId,
@@ -47,5 +35,16 @@ export class UniversalProviderFactory {
       delete UniversalProviderFactory.provider?.session?.namespaces['solana']
       SolStoreUtil.setAddress('')
     })
+  }
+
+  public static async getProvider() {
+    if (!UniversalProviderFactory.provider) {
+      await UniversalProviderFactory.init()
+    }
+    if (!UniversalProviderFactory.provider) {
+      throw new Error('Failed to initialize universal provider')
+    }
+
+    return UniversalProviderFactory.provider
   }
 }

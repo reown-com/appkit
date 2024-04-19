@@ -33,11 +33,10 @@ export class WuiListToken extends LitElement {
           <wui-image alt=${this.tokenName} src=${this.tokenImageUrl}></wui-image>
           <wui-flex flexDirection="column" justifyContent="spaceBetween">
             <wui-text variant="paragraph-500" color="fg-100">${this.tokenName}</wui-text>
-            <wui-text variant="small-400" color="fg-200"
-              >${UiHelperUtil.roundNumber(Number(this.tokenAmount), 6, 5)}
-              ${this.tokenCurrency}</wui-text
-            ></wui-flex
-          >
+            <wui-text variant="small-400" color="fg-200">
+              ${UiHelperUtil.formatNumberToLocalString(this.tokenAmount, 4)} ${this.tokenCurrency}
+            </wui-text>
+          </wui-flex>
         </wui-flex>
         <wui-text variant="paragraph-500" color="fg-100">$${this.tokenValue.toFixed(2)}</wui-text>
       </button>

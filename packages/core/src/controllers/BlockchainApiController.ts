@@ -91,15 +91,15 @@ const DEFAULT_OPTIONS = {
 
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getBlockchainApiUrl()
+
 const api = new FetchUtil({ baseUrl })
 
 // -- Controller ---------------------------------------- //
 export const BlockchainApiController = {
-  fetchIdentity({ caipChainId, address }: BlockchainApiIdentityRequest) {
+  fetchIdentity({ address }: BlockchainApiIdentityRequest) {
     return api.get<BlockchainApiIdentityResponse>({
       path: `/v1/identity/${address}`,
       params: {
-        chainId: caipChainId,
         projectId: OptionsController.state.projectId
       }
     })
@@ -124,8 +124,14 @@ export const BlockchainApiController = {
   },
 
   async getBalance(address: string) {
+    const { sdkType, sdkVersion } = OptionsController.state
+
     return api.get<BlockchainApiBalanceResponse>({
       path: `/v1/account/${address}/balance`,
+      headers: {
+        'x-sdk-type': sdkType,
+        'x-sdk-version': sdkVersion
+      },
       params: {
         currency: 'usd',
         projectId: OptionsController.state.projectId

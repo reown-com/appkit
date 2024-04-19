@@ -100,8 +100,6 @@ export class W3mConnectingSocialView extends LitElement {
       if (event.data?.resultUri) {
         try {
           if (this.authConnector && !this.connecting) {
-            console.log(`connect???`)
-
             this.connecting = true
             const uri = event.data.resultUri as string
 
