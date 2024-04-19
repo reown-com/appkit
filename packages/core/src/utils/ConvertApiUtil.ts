@@ -7,6 +7,7 @@ import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { BlockchainApiController } from '../controllers/BlockchainApiController.js'
 import type { ConvertTokenWithBalance } from './TypeUtil.js'
 import { OptionsController } from '../controllers/OptionsController.js'
+import type { BlockchainApiConvertAllowanceRequest } from '../utils/TypeUtil.js'
 
 const ONEINCH_API_BASE_URL = 'https://1inch-swap-proxy.walletconnect-v1-bridge.workers.dev'
 
@@ -39,46 +40,6 @@ export type TokenInfo = {
   tags?: string[]
 }
 
-export interface TokenInfoWithPrice extends TokenInfo {
-  price: string
-}
-
-export interface TokenInfoWithBalance extends TokenInfo {
-  balance: string
-  price: string
-}
-
-export type SwapApprovalData = {
-  data: `0x${string}`
-  to: `0x${string}`
-  gasPrice: string
-  value: string
-}
-
-export type TokenList = {
-  tokens: Record<string, TokenInfo>
-}
-
-export type GetAllowanceParams = {
-  fromAddress: string
-  sourceTokenAddress: string
-  sourceTokenAmount: string
-  sourceTokenDecimals: number
-}
-
-export type GetApprovalParams = {
-  sourceTokenAddress: string
-  sourceTokenAmount?: string
-}
-
-export type GetConvertDataParams = {
-  sourceTokenAddress: string
-  toTokenAddress: string
-  sourceTokenAmount: string
-  fromAddress: string
-  decimals: number
-}
-
 export type TransactionData = {
   from: string
   to: `0x${string}`
@@ -86,31 +47,6 @@ export type TransactionData = {
   value: string
   gas: bigint
   gasPrice: string
-}
-
-export type GetConvertDataResponse = {
-  toAmount: string
-  tx: TransactionData
-}
-
-export type GetGasPricesResponse = {
-  baseFree: string
-  low: {
-    maxPriorityFeePerGas: string
-    maxFeePerGas: string
-  }
-  medium: {
-    maxPriorityFeePerGas: string
-    maxFeePerGas: string
-  }
-  high: {
-    maxPriorityFeePerGas: string
-    maxFeePerGas: string
-  }
-  instant: {
-    maxPriorityFeePerGas: string
-    maxFeePerGas: string
-  }
 }
 
 // -- Controller ---------------------------------------- //
@@ -141,7 +77,7 @@ export const ConvertApiUtil = {
   },
 
   async getTokenList() {
-    const response = await await BlockchainApiController.fetchConvertTokens({
+    const response = await BlockchainApiController.fetchConvertTokens({
       chainId: NetworkController.state.caipNetwork?.id,
       projectId: OptionsController.state.projectId
     })
@@ -162,33 +98,31 @@ export const ConvertApiUtil = {
     return tokens
   },
 
-  async getGasPrice() {
-    const { api, paths } = this.get1InchAPI()
-
-    const gasPrices = await api.get<GetGasPricesResponse>({
-      path: paths.gasPrice,
-      headers: { 'content-type': 'application/json' }
+  async fetchGasPrice() {
+    return await BlockchainApiController.fetchGasPrice({
+      projectId: OptionsController.state.projectId,
+      chainId: NetworkController.state.caipNetwork?.id
     })
-
-    return gasPrices
   },
 
-  async checkConvertAllowance({
-    fromAddress,
-    sourceTokenAddress,
+  async fetchConvertAllowance({
+    tokenAddress,
+    userAddress,
     sourceTokenAmount,
     sourceTokenDecimals
-  }: GetAllowanceParams) {
-    const { api, paths } = this.get1InchAPI()
-
-    const res = await api.get<{ allowance: string }>({
-      path: paths.approveAllowance,
-      params: { tokenAddress: sourceTokenAddress, walletAddress: fromAddress }
+  }: Pick<BlockchainApiConvertAllowanceRequest, 'tokenAddress' | 'userAddress'> & {
+    sourceTokenAmount: string
+    sourceTokenDecimals: number
+  }) {
+    const response = await BlockchainApiController.fetchConvertAllowance({
+      projectId: OptionsController.state.projectId,
+      tokenAddress: tokenAddress,
+      userAddress: userAddress
     })
 
-    if (res?.allowance && sourceTokenAmount && sourceTokenDecimals) {
+    if (response?.allowance && sourceTokenAmount && sourceTokenDecimals) {
       const parsedValue = ConnectionController.parseUnits(sourceTokenAmount, sourceTokenDecimals)
-      const hasAllowance = BigInt(res.allowance) >= parsedValue
+      const hasAllowance = BigInt(response.allowance) >= parsedValue
 
       return hasAllowance
     }
@@ -208,7 +142,7 @@ export const ConvertApiUtil = {
       return {
         symbol: token.symbol,
         name: token.name,
-        address: !!token.address
+        address: !!token?.address
           ? token.address
           : `${NetworkController.state.caipNetwork?.id}:${ConstantsUtil.NATIVE_TOKEN_ADDRESS}`,
         decimals: parseInt(token.quantity.decimals),
@@ -240,29 +174,5 @@ export const ConvertApiUtil = {
 
       return _values
     }, {})
-  },
-
-  mergeTokensWithBalanceAndPrice(
-    tokens: Record<string, TokenInfo>,
-    balances: Record<string, string>,
-    tokensPrice: Record<string, string>
-  ) {
-    const mergedTokens = Object.entries(tokens).reduce<Record<string, TokenInfoWithBalance>>(
-      (_mergedTokens, [tokenAddress, tokenInfo]) => {
-        _mergedTokens[tokenAddress] = {
-          ...tokenInfo,
-          balance: ConnectionController.formatUnits(
-            BigInt(balances[tokenAddress] ?? '0'),
-            tokenInfo.decimals
-          ),
-          price: tokensPrice[tokenAddress] ?? '0'
-        }
-
-        return _mergedTokens
-      },
-      {}
-    )
-
-    return mergedTokens
   }
 }

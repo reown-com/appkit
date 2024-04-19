@@ -195,7 +195,6 @@ export interface BlockchainApiTokenPriceRequest {
 
 export interface BlockchainApiTokenPriceResponse {
   fungibles: {
-    address: string
     name: string
     symbol: string
     iconUrl: string
@@ -203,12 +202,33 @@ export interface BlockchainApiTokenPriceResponse {
   }[]
 }
 
+export interface BlockchainApiConvertAllowanceRequest {
+  projectId: string
+  tokenAddress: string
+  userAddress: string
+}
+
+export interface BlockchainApiConvertAllowanceResponse {
+  allowance: string
+}
+
+export interface BlockchainApiGasPriceRequest {
+  projectId: string
+  chainId: string
+}
+
+export interface BlockchainApiGasPriceResponse {
+  standard: string
+  fast: string
+  instant: string
+}
+
 export interface BlockchainApiGenerateConvertCalldataRequest {
   projectId: string
   userAddress: string
   from: string
   to: string
-  amount: number
+  amount: string
   eip155?: {
     slippage: string
     permit?: string
@@ -233,7 +253,7 @@ export interface BlockchainApiGenerateApproveCalldataRequest {
   userAddress: string
   from: string
   to: string
-  amount: number
+  amount?: number
 }
 
 export interface BlockchainApiGenerateApproveCalldataResponse {

@@ -40,7 +40,7 @@ export class W3mAccountTokensWidget extends LitElement {
 
   // -- Private ------------------------------------------- //
   private watchConvertValues() {
-    this.watchTokenBalance = setInterval(() => AccountController.fetchTokenBalance(), 1000)
+    this.watchTokenBalance = setInterval(() => AccountController.fetchTokenBalance(), 10000)
   }
 
   private tokenTemplate() {

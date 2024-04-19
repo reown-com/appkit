@@ -13,6 +13,7 @@ import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { OptionsController } from './OptionsController.js'
 
+// -- Constants ---------------------------------------- //
 export const INITIAL_GAS_LIMIT = 150000
 
 // -- Types --------------------------------------------- //
@@ -86,15 +87,6 @@ export interface TokenInfo {
   eip2612?: boolean
   isFoT?: boolean
   tags?: string[]
-}
-
-export interface TokenInfoWithPrice extends TokenInfo {
-  price: string
-}
-
-export interface TokenInfoWithBalance extends TokenInfo {
-  balance: string
-  price: string
 }
 
 type StateKey = keyof ConvertControllerState
@@ -223,7 +215,7 @@ export const ConvertController = {
   },
 
   async setTokenValues(address: string, target: 'sourceToken' | 'toToken') {
-    let price = state.tokensPriceMap[`${NetworkController.state.caipNetwork?.id}:${address}`] || 0
+    let price = state.tokensPriceMap[address] || 0
 
     if (!price) {
       price = await this.getAddressPrice(address)
@@ -329,14 +321,15 @@ export const ConvertController = {
       return existPrice
     }
     // TODO: replace with blockchain api
-    // const response = await BlockchainApiController.fetchTokenPrice({
-    //   projectId: OptionsController.state.projectId,
-    //   addresses: [address]
-    // })
-    // const prices = response.fungibles
-    // const price = prices.find(p => p.address === address)?.price || '0'
-    const prices = await ConvertApiUtil.getTokenPriceWithAddresses([address])
-    const price = prices[address] || '0'
+    const response = await BlockchainApiController.fetchTokenPrice({
+      projectId: OptionsController.state.projectId,
+      addresses: [address]
+    })
+    const fungibles = response.fungibles || []
+    const alltokens = [...(state.tokens || []), ...(state.myTokensWithBalance || [])]
+    const symbol = alltokens?.find(t => t.address === address)?.symbol
+    // TODO: expect blockchain API to return address in fungibles objects
+    const price = fungibles.find(p => p.symbol === symbol)?.price || '0'
     state.tokensPriceMap[address] = parseFloat(price)
 
     return parseFloat(price)
@@ -345,17 +338,12 @@ export const ConvertController = {
   async getNetworkTokenPrice() {
     const { networkAddress } = this.getParams()
 
-    // TODO: replace with blockchain api
-    // const response = await BlockchainApiController.fetchTokenPrice({
-    //   projectId: OptionsController.state.projectId,
-    //   addresses: [networkAddress]
-    // })
-    // const prices = response.fungibles
-    // const price = prices.find(p => p.address === networkAddress)?.price || '0'
-    const prices = await ConvertApiUtil.getTokenPriceWithAddresses([
-      ConstantsUtil.NATIVE_TOKEN_ADDRESS
-    ])
-    const price = prices[networkAddress] || '0'
+    const response = await BlockchainApiController.fetchTokenPrice({
+      projectId: OptionsController.state.projectId,
+      addresses: [networkAddress]
+    })
+    const token = response.fungibles?.[0]
+    const price = token?.price || '0'
     state.tokensPriceMap[networkAddress] = parseFloat(price)
     state.networkPrice = price
   },
@@ -382,9 +370,8 @@ export const ConvertController = {
   },
 
   async getInitialGasPrice() {
-    const res = await ConvertApiUtil.getGasPrice()
-    const instant = res.instant
-    const value = typeof instant === 'object' ? res.instant.maxFeePerGas : instant
+    const res = await ConvertApiUtil.fetchGasPrice()
+    const value = res.instant
     const gasFee = BigInt(value)
     const gasLimit = BigInt(INITIAL_GAS_LIMIT)
     const gasPrice = this.calculateGasPriceInUSD(gasLimit, gasFee)
@@ -463,7 +450,7 @@ export const ConvertController = {
   },
 
   async getTransaction() {
-    const { fromAddress, sourceTokenAddress, sourceTokenAmount, sourceTokenDecimals } =
+    const { fromCaipAddress, sourceTokenAddress, sourceTokenAmount, sourceTokenDecimals } =
       this.getParams()
 
     if (
@@ -476,9 +463,9 @@ export const ConvertController = {
     }
 
     // TODO: replace with blockchain api
-    const hasAllowance = await ConvertApiUtil.checkConvertAllowance({
-      fromAddress,
-      sourceTokenAddress: CoreHelperUtil.getPlainAddress(sourceTokenAddress) as string,
+    const hasAllowance = await ConvertApiUtil.fetchConvertAllowance({
+      userAddress: fromCaipAddress,
+      tokenAddress: sourceTokenAddress,
       sourceTokenAmount,
       sourceTokenDecimals
     })
@@ -514,8 +501,7 @@ export const ConvertController = {
   },
 
   async createTokenAllowance() {
-    const { fromCaipAddress, fromAddress, sourceTokenAddress, sourceTokenAmount, toTokenAddress } =
-      this.getParams()
+    const { fromCaipAddress, fromAddress, sourceTokenAddress, toTokenAddress } = this.getParams()
 
     if (!fromCaipAddress || !toTokenAddress) {
       return undefined
@@ -528,7 +514,6 @@ export const ConvertController = {
     const response = await BlockchainApiController.generateApproveCalldata({
       projectId: OptionsController.state.projectId,
       from: sourceTokenAddress,
-      amount: parseInt(sourceTokenAmount), // Todo: this is not used right now but we should update find the best way/format to set it
       to: toTokenAddress,
       userAddress: fromCaipAddress
     })
@@ -601,9 +586,10 @@ export const ConvertController = {
     }
 
     try {
-      const amount = parseInt(
-        ConnectionController.parseUnits(sourceTokenAmount, sourceTokenDecimals).toString()
-      )
+      const amount = ConnectionController.parseUnits(
+        sourceTokenAmount,
+        sourceTokenDecimals
+      ).toString()
 
       const response = await BlockchainApiController.generateConvertCalldata({
         projectId: OptionsController.state.projectId,
@@ -614,7 +600,7 @@ export const ConvertController = {
       })
 
       const toAmount = this.getToAmount()
-      const gas = BigInt(parseInt(response.tx.eip155.gas))
+      const gas = BigInt(response.tx.eip155.gas)
       const gasPrice = BigInt(response.tx.eip155.gasPrice)
 
       const transaction = {
@@ -652,7 +638,6 @@ export const ConvertController = {
     })
 
     try {
-      console.log('>>> data', data, fromAddress)
       const transactionHash = await ConnectionController.sendTransaction({
         address: fromAddress as `0x${string}`,
         to: data.to as `0x${string}`,
