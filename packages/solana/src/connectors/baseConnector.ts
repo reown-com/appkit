@@ -12,12 +12,12 @@ import borsh from 'borsh'
 import { Buffer } from 'buffer'
 
 import { registerListener, unregisterListener } from '../utils/clusterFactory.js'
-import { SolConstantsUtil } from '../utils/scaffold/SolanaConstantsUtil.js'
-import { SolStoreUtil } from '../utils/scaffold/SolanaStoreUtil.js'
+import { SolConstantsUtil, SolStoreUtil } from '../utils/scaffold/index.js'
 import { getHashedName, getNameAccountKey } from '../utils/hash.js'
 import { NameRegistry } from '../utils/nameService.js'
 
 import type { ConfirmOptions, Signer, TransactionSignature } from '@solana/web3.js'
+
 import type {
   BlockResult,
   AccountInfo,
@@ -27,7 +27,7 @@ import type {
   RequestMethods,
   TransactionArgs,
   TransactionType
-} from '../utils/scaffold/SolanaTypesUtil.js'
+} from '../utils/scaffold/index.js'
 
 export interface Connector {
   id: string
