@@ -16,7 +16,7 @@ export class PhantomWalletAdapter extends SolanaPhantomWalletAdapter {
     }
 
     if (transactionParam instanceof VersionedTransaction) {
-      throw Error('it doesnt work with versioned transaction')
+      throw Error('Versioned transactions are not supported')
     }
 
     if (signers.length) {

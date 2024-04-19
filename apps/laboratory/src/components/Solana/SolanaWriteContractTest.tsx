@@ -51,7 +51,11 @@ export function SolanaWriteContractTest() {
           lastValidBlockHeight: latestBlockHash.lastValidBlockHeight,
           signature
         })
-        throw Error('Not enough SOL in wallet')
+        const airDroppedBalance = await connection.getBalance(walletProvider.publicKey)
+
+        if (airDroppedBalance < LAMPORTS_PER_SOL / 100) {
+          throw Error('Not enough SOL in wallet')
+        }
       }
 
       const allocIx: TransactionInstruction = SystemProgram.createAccount({
