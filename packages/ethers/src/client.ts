@@ -12,7 +12,7 @@ import type {
   Token
 } from '@web3modal/scaffold'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
-import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
+import { ConstantsUtil, PresetsUtil, HelpersUtil, RegexUtil } from '@web3modal/scaffold-utils'
 import EthereumProvider from '@walletconnect/ethereum-provider'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
 import type {
@@ -822,13 +822,17 @@ export class Web3Modal extends Web3ModalScaffold {
   private watchEmail() {
     if (this.emailProvider) {
       this.emailProvider.onRpcRequest(request => {
-        // We only open the modal if it's not a safe (auto-approve)
         if (W3mFrameHelpers.checkIfRequestExists(request)) {
           if (!W3mFrameHelpers.checkIfRequestIsAllowed(request)) {
-            super.open({ view: 'ApproveTransaction' })
+            if (super.isOpen()) {
+              if (!super.isTransactionStackEmpty()) {
+                super.redirect('ApproveTransaction')
+              }
+            } else {
+              super.open({ view: 'ApproveTransaction' })
+            }
           }
         } else {
-          this.emailProvider?.rejectRpcRequest()
           super.open()
           const method = W3mFrameHelpers.getRequestMethod(request)
           // eslint-disable-next-line no-console
@@ -839,7 +843,32 @@ export class Web3Modal extends Web3ModalScaffold {
         }
       })
       this.emailProvider.onRpcResponse(() => {
-        super.close()
+        // eslint-disable-next-line @typescript-eslint/prefer-ts-expect-error, @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        const payload = receive?.payload
+        // eslint-disable-next-line @typescript-eslint/prefer-ts-expect-error, @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        const isError = receive?.type === '@w3m-frame/RPC_REQUEST_ERROR'
+
+        if (isError && super.isOpen()) {
+          if (super.isTransactionStackEmpty()) {
+            super.close()
+          } else {
+            super.popTransactionStack(true)
+          }
+        }
+
+        const isPayloadString = typeof payload === 'string'
+        const isAddress = isPayloadString ? payload?.startsWith('0x') : false
+        const isCompleted = isAddress && payload?.match(RegexUtil.transactionHashRegex)
+
+        if (isCompleted) {
+          if (super.isTransactionStackEmpty()) {
+            super.close()
+          } else {
+            super.popTransactionStack()
+          }
+        }
       })
       this.emailProvider.onNotConnected(() => {
         this.setIsConnected(false)

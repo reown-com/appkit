@@ -33,7 +33,7 @@ import { formatUnits, parseUnits } from 'viem'
 import type { Hex } from 'viem'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
-import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
+import { ConstantsUtil, PresetsUtil, HelpersUtil, RegexUtil } from '@web3modal/scaffold-utils'
 import {
   getCaipDefaultChain,
   getEmailCaipNetworks,
@@ -511,7 +511,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
         const isPayloadString = typeof payload === 'string'
         const isAddress = isPayloadString ? payload?.startsWith('0x') : false
-        const isCompleted = isAddress && payload?.length > 10
+        const isCompleted = isAddress && payload?.match(RegexUtil.transactionHashRegex)
 
         if (isCompleted) {
           if (super.isTransactionStackEmpty()) {
