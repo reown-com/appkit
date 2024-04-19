@@ -195,6 +195,9 @@ export const ConvertController = {
     const { sourceTokenAddress, sourceTokenAmount } = this.getParams()
 
     if (!toToken) {
+      state.toTokenAmount = '0'
+      state.toTokenPriceInUSD = 0
+
       return
     }
 
@@ -255,9 +258,7 @@ export const ConvertController = {
     this.setSourceToken(networkToken)
     state.sourceTokenPriceInUSD = state.tokensPriceMap[networkAddress] || 0
     state.sourceTokenAmount = '0'
-    state.toToken = undefined
-    state.toTokenAmount = '0'
-    state.toTokenPriceInUSD = 0
+    this.setToToken(undefined)
     state.gasPriceInUSD = 0
   },
 
@@ -532,7 +533,7 @@ export const ConvertController = {
       userAddress: fromCaipAddress
     })
 
-    const gasLimit = await ConnectionController.getEstimatedGas({
+    const gasLimit = await ConnectionController.estimateGas({
       address: fromAddress as `0x${string}`,
       to: CoreHelperUtil.getPlainAddress(response.tx.to) as `0x${string}`,
       data: response.tx.data

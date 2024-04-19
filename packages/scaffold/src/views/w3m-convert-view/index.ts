@@ -1,4 +1,4 @@
-import { customElement, formatNumberToLocalString } from '@web3modal/ui'
+import { UiHelperUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
@@ -208,7 +208,7 @@ export class W3mConvertView extends LitElement {
       .token=${token}
       .balance=${myToken?.quantity?.numeric}
       .price=${this.sourceTokenPriceInUSD}
-      .marketValue=${isNaN(value) ? '' : formatNumberToLocalString(value)}
+      .marketValue=${isNaN(value) ? '' : UiHelperUtil.formatNumberToLocalString(value)}
       .onSetMaxValue=${this.onSetMaxValue.bind(this)}
     ></w3m-convert-input>`
   }

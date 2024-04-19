@@ -1,4 +1,4 @@
-import { customElement, formatNumberToLocalString } from '@web3modal/ui'
+import { UiHelperUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
 import {
@@ -91,16 +91,18 @@ export class W3mConvertPreviewView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private templateSwap() {
-    const sourceTokenText = `${formatNumberToLocalString(parseFloat(this.sourceTokenAmount))} ${this
-      .sourceToken?.symbol}`
-    const toTokenText = `${formatNumberToLocalString(parseFloat(this.toTokenAmount))} ${this.toToken
-      ?.symbol}`
+    const sourceTokenText = `${UiHelperUtil.formatNumberToLocalString(
+      parseFloat(this.sourceTokenAmount)
+    )} ${this.sourceToken?.symbol}`
+    const toTokenText = `${UiHelperUtil.formatNumberToLocalString(
+      parseFloat(this.toTokenAmount)
+    )} ${this.toToken?.symbol}`
 
     const sourceTokenValue = parseFloat(this.sourceTokenAmount) * this.sourceTokenPriceInUSD
     const toTokenValue =
       parseFloat(this.toTokenAmount) * this.toTokenPriceInUSD - (this.gasPriceInUSD || 0)
-    const sentPrice = formatNumberToLocalString(sourceTokenValue)
-    const receivePrice = formatNumberToLocalString(toTokenValue)
+    const sentPrice = UiHelperUtil.formatNumberToLocalString(sourceTokenValue)
+    const receivePrice = UiHelperUtil.formatNumberToLocalString(toTokenValue)
 
     return html`
       <wui-flex flexDirection="column" alignItems="center" gap="l">
@@ -192,7 +194,7 @@ export class W3mConvertPreviewView extends LitElement {
         sourceTokenPrice=${this.sourceTokenPriceInUSD}
         toTokenSymbol=${this.toToken?.symbol}
         toTokenConvertedAmount=${toTokenConvertedAmount}
-        gasPriceInUSD=${formatNumberToLocalString(this.gasPriceInUSD, 3)}
+        gasPriceInUSD=${UiHelperUtil.formatNumberToLocalString(this.gasPriceInUSD, 3)}
         .priceImpact=${this.priceImpact}
         slippageRate=${ConstantsUtil.CONVERT_SLIPPAGE_TOLERANCE}
         .maxSlippage=${this.maxSlippage}

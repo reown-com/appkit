@@ -280,7 +280,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
       formatUnits: (value: bigint, decimals: number) => formatUnits(value, decimals),
 
-      async getEstimatedGas(data) {
+      async estimateGas(data) {
         const chainId = EthersStoreUtil.state.chainId
         const provider = EthersStoreUtil.state.provider
         const address = EthersStoreUtil.state.address

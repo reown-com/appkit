@@ -23,7 +23,7 @@ export interface ConnectionControllerClient {
   disconnect: () => Promise<void>
   signMessage: (message: string) => Promise<string>
   sendTransaction: (args: SendTransactionArgs) => Promise<`0x${string}` | null>
-  getEstimatedGas: (args: EstimateGasTransactionArgs) => Promise<bigint>
+  estimateGas: (args: EstimateGasTransactionArgs) => Promise<bigint>
   parseUnits: (value: string, decimals: number) => bigint
   formatUnits: (value: bigint, decimals: number) => string
   connectExternal?: (options: ConnectExternalOptions) => Promise<void>
@@ -104,8 +104,8 @@ export const ConnectionController = {
     return this._getClient().sendTransaction(args)
   },
 
-  async getEstimatedGas(args: EstimateGasTransactionArgs) {
-    return this._getClient().getEstimatedGas(args)
+  async estimateGas(args: EstimateGasTransactionArgs) {
+    return this._getClient().estimateGas(args)
   },
 
   checkInstalled(ids?: string[]) {

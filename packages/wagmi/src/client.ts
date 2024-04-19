@@ -173,7 +173,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
       signMessage: async message => signMessage(this.wagmiConfig, { message }),
 
-      getEstimatedGas: async args => {
+      estimateGas: async args => {
         try {
           return await estimateGas(this.wagmiConfig, {
             account: args.address,
@@ -200,8 +200,6 @@ export class Web3Modal extends Web3ModalScaffold {
           type: 'legacy' as const
         }
 
-        // eslint-disable-next-line @typescript-eslint/prefer-ts-expect-error, @typescript-eslint/ban-ts-comment
-        // @ts-ignore
         await prepareTransactionRequest(this.wagmiConfig, txParams)
         const tx = await wagmiSendTransaction(this.wagmiConfig, txParams)
 

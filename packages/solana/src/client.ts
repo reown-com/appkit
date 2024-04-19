@@ -142,7 +142,7 @@ export class Web3Modal extends Web3ModalScaffold {
         return signature as string
       },
 
-      getEstimatedGas: async () => {
+      estimateGas: async () => {
         return await Promise.resolve(BigInt(0))
       },
 

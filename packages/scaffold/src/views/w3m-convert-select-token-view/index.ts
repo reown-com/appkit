@@ -1,4 +1,4 @@
-import { customElement, interpolate } from '@web3modal/ui'
+import { customElement, MathUtil } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
 import { RouterController, ConvertController, type ConvertTokenWithBalance } from '@web3modal/core'
@@ -213,11 +213,11 @@ export class W3mConvertSelectTokenView extends LitElement {
 
     container.style.setProperty(
       '--suggested-tokens-scroll--left-opacity',
-      interpolate([0, 100], [0, 1], container.scrollLeft).toString()
+      MathUtil.interpolate([0, 100], [0, 1], container.scrollLeft).toString()
     )
     container.style.setProperty(
       '--suggested-tokens-scroll--right-opacity',
-      interpolate(
+      MathUtil.interpolate(
         [0, 100],
         [0, 1],
         container.scrollWidth - container.scrollLeft - container.offsetWidth
@@ -234,11 +234,11 @@ export class W3mConvertSelectTokenView extends LitElement {
 
     container.style.setProperty(
       '--tokens-scroll--top-opacity',
-      interpolate([0, 100], [0, 1], container.scrollTop).toString()
+      MathUtil.interpolate([0, 100], [0, 1], container.scrollTop).toString()
     )
     container.style.setProperty(
       '--tokens-scroll--bottom-opacity',
-      interpolate(
+      MathUtil.interpolate(
         [0, 100],
         [0, 1],
         container.scrollHeight - container.scrollTop - container.offsetHeight
