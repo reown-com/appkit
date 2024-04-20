@@ -121,7 +121,9 @@ function mergeCoverageReports() {
   mergedSummaryReport.total = totalSummary
 
   const finalOutputFilePath = path.join(__dirname, '..', 'coverage', 'coverage-merged-final.json')
+  fs.mkdirSync(path.dirname(finalOutputFilePath), { recursive: true })
   fs.writeFileSync(finalOutputFilePath, JSON.stringify(mergedReport, null, 2))
+
   const summaryOutputFilePath = path.join(
     __dirname,
     '..',
