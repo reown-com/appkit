@@ -83,8 +83,6 @@ jobs:
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
       - name: test
         run: npm run test
-      - name: merge coverage reports
-        run: npm run coverage:merge
       - name: report
         if: always()
         uses: davelosert/vitest-coverage-report-action@v2
