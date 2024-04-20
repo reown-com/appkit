@@ -82,11 +82,16 @@ jobs:
         env:
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
       - name: test
-        id: test
         run: npm run test
+      - name: merge coverage reports
+        run: npm run coverage:merge
       - name: report
         if: always()
         uses: davelosert/vitest-coverage-report-action@v2
+        with:
+          name: Coverage
+          json-final-path: ${working-directory}/coverage/coverage-merged-final.json
+          json-summary-path: ${working-directory}/coverage/coverage-merged-summary.json
 
   ui-test:
     uses: ./.github/workflows/ui_tests.yml
