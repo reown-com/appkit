@@ -5,7 +5,6 @@ import { PublicStateController } from '../../index.js'
 describe('PublicStateController', () => {
   it('should have valid default state', () => {
     expect(PublicStateController.state).toEqual({
-      loading: false,
       open: false,
       selectedNetworkId: undefined
     })

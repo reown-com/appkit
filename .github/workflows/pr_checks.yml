@@ -81,9 +81,11 @@ jobs:
         run: npm run build
         env:
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
-      - name: test
+      - name: Test
         run: npm run test
-      - name: report
+      - name: Merge Coverage Reports
+        run: npm run coverage:merge
+      - name: Report
         if: always()
         uses: davelosert/vitest-coverage-report-action@v2
         with:
