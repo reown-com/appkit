@@ -66,6 +66,7 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    continue-on-error: true
     steps:
       - name: checkout
         uses: actions/checkout@v3
@@ -82,7 +83,6 @@ jobs:
         env:
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
       - name: Test
-        continue-on-error: true
         run: npm run test
       - name: Merge Coverage Reports
         run: npm run coverage:merge
