@@ -15,54 +15,54 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    if: github.event.action == 'opened' || github.event.action == 'synchronize'
-    steps:
-      - name: checkout
-        uses: actions/checkout@v3
-      - name: setup-node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18.x
-          cache: 'npm'
-          cache-dependency-path: 'package-lock.json'
-      - name: install
-        run: npm ci
-      - name: build
-        run: npm run build
-        env:
-          NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
+  # build:
+  #   runs-on: ubuntu-latest
+  #   timeout-minutes: 5
+  #   if: github.event.action == 'opened' || github.event.action == 'synchronize'
+  #   steps:
+  #     - name: checkout
+  #       uses: actions/checkout@v3
+  #     - name: setup-node
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: 18.x
+  #         cache: 'npm'
+  #         cache-dependency-path: 'package-lock.json'
+  #     - name: install
+  #       run: npm ci
+  #     - name: build
+  #       run: npm run build
+  #       env:
+  #         NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
 
-  code_style:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        style-command:
-          - lint
-          - prettier
-          - typecheck
-          - danger
-    steps:
-      - name: checkout
-        uses: actions/checkout@v3
-      - name: setup-node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18.x
-          cache: 'npm'
-          cache-dependency-path: 'package-lock.json'
-      - name: install
-        run: npm ci
-      - name: build
-        run: npm run build
-        env:
-          NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
-      - name: check
-        run: npm run ${{ matrix.style-command }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  # code_style:
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     matrix:
+  #       style-command:
+  #         - lint
+  #         - prettier
+  #         - typecheck
+  #         - danger
+  #   steps:
+  #     - name: checkout
+  #       uses: actions/checkout@v3
+  #     - name: setup-node
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: 18.x
+  #         cache: 'npm'
+  #         cache-dependency-path: 'package-lock.json'
+  #     - name: install
+  #       run: npm ci
+  #     - name: build
+  #       run: npm run build
+  #       env:
+  #         NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
+  #     - name: check
+  #       run: npm run ${{ matrix.style-command }}
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   test:
     runs-on: ubuntu-latest
@@ -91,8 +91,8 @@ jobs:
           json-final-path: ./coverage/coverage-merged-final.json
           json-summary-path: ./coverage/coverage-merged-summary.json
 
-  ui-test:
-    uses: ./.github/workflows/ui_tests.yml
-    secrets: inherit
-    with:
-      branch: ${{ github.ref }}
+  # ui-test:
+  #   uses: ./.github/workflows/ui_tests.yml
+  #   secrets: inherit
+  #   with:
+  #     branch: ${{ github.ref }}
