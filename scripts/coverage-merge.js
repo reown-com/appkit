@@ -1,4 +1,3 @@
-// Loosely copied from https://gist.github.com/musatov/4fc2cdf6d3a8d984d4de6c233aee1836
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
@@ -51,7 +50,7 @@ function mergeCoverageReports() {
   }, {})
 
   const mergedSummaryReport = {}
-  // Calculate the total values including all files
+
   const totalSummary = {
     lines: {
       total: 0,
@@ -88,6 +87,7 @@ function mergeCoverageReports() {
   coverageSummaryReports.forEach(summary => {
     Object.keys(summary).forEach(key => {
       if (key === 'total') {
+        // Calculate the total values of all files
         totalSummary.lines.total += summary.total.lines.total
         totalSummary.lines.covered += summary.total.lines.covered
         totalSummary.lines.skipped += summary.total.lines.skipped
