@@ -85,6 +85,7 @@ jobs:
       - name: Test
         run: npm run test
       - name: Merge Coverage Reports
+        if: always()
         run: npm run coverage:merge
       - name: Report
         if: always()
