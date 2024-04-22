@@ -348,7 +348,7 @@ describe('ApiController', () => {
     expect(ApiController.state.wallets).toEqual(data)
   })
 
-  // Search Wallet with full name
+  // Wallet search with exact wallet name
   it('should search wallet with search term', async () => {
     const includeWalletIds = ['12341', '12342']
     const excludeWalletIds = ['12343']
@@ -383,11 +383,11 @@ describe('ApiController', () => {
     expect(ApiController.state.search).toEqual(data)
   })
 
-  // Search Wallet with unoptimized name
+  // Wallet search with whitespace and multiple words
   it('should search wallet with search term', async () => {
     const includeWalletIds = ['12341', '12342']
     const excludeWalletIds = ['12343']
-    const data = [
+    let data = [
       {
         id: '12341',
         name: 'MetaMask',
@@ -397,11 +397,11 @@ describe('ApiController', () => {
     OptionsController.setIncludeWalletIds(includeWalletIds)
     OptionsController.setExcludeWalletIds(excludeWalletIds)
 
-    const fetchSpy = vi.spyOn(api, 'get').mockResolvedValue({ data })
+    let fetchSpy = vi.spyOn(api, 'get').mockResolvedValue({ data })
     const fetchImageSpy = vi.spyOn(ApiController, '_fetchWalletImage').mockResolvedValue()
 
     // Whitespace
-    await ApiController.searchWallet({ search: 'MetaMask ' })
+    await ApiController.searchWallet({ search: 'MetaMask    ' })
 
     expect(fetchSpy).toHaveBeenCalledWith({
       path: '/getWallets',
@@ -414,8 +414,30 @@ describe('ApiController', () => {
         exclude: '12343'
       }
     })
-    expect(1).toEqual(2)
     expect(fetchImageSpy).toHaveBeenCalledOnce()
+    expect(ApiController.state.search).toEqual(data)
+
+    data = [
+      {
+        id: '12341',
+        name: 'Safe Wallet',
+        image_id: '12341'
+      }
+    ]
+    fetchSpy = vi.spyOn(api, 'get').mockResolvedValue({ data })
+    await ApiController.searchWallet({ search: 'Safe Wallet' })
+
+    expect(fetchSpy).toHaveBeenCalledWith({
+      path: '/getWallets',
+      headers: ApiController._getApiHeaders(),
+      params: {
+        page: '1',
+        entries: '100',
+        search: 'Safe Wallet',
+        include: '12341,12342',
+        exclude: '12343'
+      }
+    })
     expect(ApiController.state.search).toEqual(data)
   })
 
