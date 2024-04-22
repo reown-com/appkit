@@ -51,6 +51,7 @@ testConnectedMW(
 
       const chainName = chains[index] ?? DEFAULT_CHAIN_NAME
       await modalPage.switchNetwork(chainName)
+      await modalPage.closeModal()
       await modalPage.sign()
       await walletValidator.expectReceivedSign({ chainName })
       await walletPage.handleRequest({ accept: true })
