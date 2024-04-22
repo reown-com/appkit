@@ -87,7 +87,7 @@ export const W3mFrameHelpers = {
     const isPayloadString = typeof payload === 'string'
     const isTransactionHash =
       isPayloadString &&
-      (payload.match(RegexUtil.transactionHash) || payload.match(RegexUtil.transactionHashLong))
+      (payload.match(RegexUtil.transactionHash) || payload.match(RegexUtil.signedMessage))
 
     if (isTransactionHash) {
       return W3mFrameConstants.RPC_RESPONSE_TYPE_TX
