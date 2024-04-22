@@ -1,6 +1,7 @@
+export const SECURE_SITE_SDK =
+  process.env['NEXT_PUBLIC_SECURE_SITE_SDK_URL'] || 'https://secure.walletconnect.com/sdk'
+
 export const W3mFrameConstants = {
-  SECURE_SITE_SDK:
-    process.env['NEXT_PUBLIC_SECURE_SITE_SDK_URL'] || 'https://secure.walletconnect.com/sdk',
   APP_EVENT_KEY: '@w3m-app/',
   FRAME_EVENT_KEY: '@w3m-frame/',
   RPC_METHOD_KEY: 'RPC_',
@@ -70,8 +71,14 @@ export const W3mFrameConstants = {
   FRAME_INIT_SMART_ACCOUNT_SUCCESS: '@w3m-frame/INIT_SMART_ACCOUNT_SUCCESS',
   FRAME_INIT_SMART_ACCOUNT_ERROR: '@w3m-frame/INIT_SMART_ACCOUNT_ERROR',
   FRAME_SET_PREFERRED_ACCOUNT_SUCCESS: '@w3m-frame/SET_PREFERRED_ACCOUNT_SUCCESS',
-  FRAME_SET_PREFERRED_ACCOUNT_ERROR: '@w3m-frame/SET_PREFERRED_ACCOUNT_ERROR'
+  FRAME_SET_PREFERRED_ACCOUNT_ERROR: '@w3m-frame/SET_PREFERRED_ACCOUNT_ERROR',
+
+  RPC_RESPONSE_TYPE_ERROR: 'RPC_RESPONSE_ERROR',
+  RPC_RESPONSE_TYPE_TX: 'RPC_RESPONSE_TRANSACTION_HASH',
+  RPC_RESPONSE_TYPE_OBJECT: 'RPC_RESPONSE_OBJECT'
 } as const
+
+export type W3mFrameConstantValue = (typeof W3mFrameConstants)[keyof typeof W3mFrameConstants]
 
 export const W3mFrameRpcConstants = {
   SAFE_RPC_METHODS: [

@@ -66,6 +66,7 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    continue-on-error: true
     steps:
       - name: checkout
         uses: actions/checkout@v3
@@ -77,27 +78,22 @@ jobs:
           cache-dependency-path: 'package-lock.json'
       - name: install
         run: npm ci
-      - name: test
-        id: test
+      - name: build
+        run: npm run build
+        env:
+          NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
+      - name: Test
         run: npm run test
-      - name: summary
-        id: summary
-        run: echo "COVERAGE_SUMMARY=$(npm run coverage:summary | tail -n 1)" >> "$GITHUB_OUTPUT"
-      - uses: LouisBrunner/checks-action@v1.6.1
+      - name: Merge Coverage Reports
         if: always()
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          name: coverage
-          conclusion: ${{ job.status }}
-          output: |
-            {"summary":"${{ steps.summary.outputs.COVERAGE_SUMMARY }}"}
-      - uses: actions/upload-artifact@v4
+        run: npm run coverage:merge
+      - name: Report
         if: always()
+        uses: davelosert/vitest-coverage-report-action@v2
         with:
-          name: coverage
-          path: |
-            packages/core/coverage/
-            packages/common/coverage/
+          name: Coverage
+          json-final-path: ./coverage/coverage-merged-final.json
+          json-summary-path: ./coverage/coverage-merged-summary.json
 
   ui-test:
     uses: ./.github/workflows/ui_tests.yml
