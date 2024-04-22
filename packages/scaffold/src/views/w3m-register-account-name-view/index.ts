@@ -97,12 +97,10 @@ export class W3mRegisterAccountNameView extends LitElement {
       EnsController.isNameRegistered(value).then(registered => {
         this.registered = registered
       })
+    } else if (value.length < 4) {
+      this.error = 'Name must be at least 4 characters long'
     } else {
-      if (value.length < 4) {
-        this.error = 'Name must be at least 4 characters long'
-      }
-
-      this.error = 'Names can only contain letters, numbers and - characters'
+      this.error = 'Can only contain letters, numbers and - characters'
     }
   })
 

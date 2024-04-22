@@ -224,8 +224,6 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-color-bg-275: var(--wui-color-bg-base-275);
         --wui-color-bg-300: var(--wui-color-bg-base-300);
 
-        --wui-color-glass-005: var(--wui-gray-glass-005);
-
         --wui-color-success-100: var(--wui-color-success-base-100);
         --wui-color-error-100: var(--wui-color-error-base-100);
 

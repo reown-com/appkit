@@ -7,7 +7,7 @@ import '../../components/gallery-container'
 type Component = Meta<WuiEnsInput>
 
 export default {
-  title: 'Composites/wui-email-input',
+  title: 'Composites/wui-ens-input',
   args: {
     errorMessage: '',
     disabled: false
@@ -17,9 +17,6 @@ export default {
 export const Default: Component = {
   render: args =>
     html`<gallery-container width="336"
-      ><wui-email-input
-        .errorMessage=${args.errorMessage}
-        .disabled=${args.disabled}
-      ></wui-email-input
+      ><wui-ens-input .errorMessage=${args.errorMessage} .disabled=${args.disabled}></wui-ens-input
     ></gallery-container>`
 }
