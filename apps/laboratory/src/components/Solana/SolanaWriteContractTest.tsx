@@ -101,7 +101,11 @@ export function SolanaWriteContractTest() {
   }
 
   return (
-    <Button isDisabled={loading} data-testid="sign-message-button" onClick={onIncrementCounter}>
+    <Button
+      isDisabled={loading}
+      data-testid="increment-counter-with-sign-button"
+      onClick={onIncrementCounter}
+    >
       Increment Counter With Sign
     </Button>
   )
