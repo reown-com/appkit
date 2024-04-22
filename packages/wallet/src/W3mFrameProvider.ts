@@ -133,9 +133,9 @@ export class W3mFrameProvider {
         case W3mFrameConstants.FRAME_GET_SMART_ACCOUNT_ENABLED_NETWORKS_ERROR:
           return this.onSmartAccountEnabledNetworksError(event)
         case W3mFrameConstants.FRAME_SET_PREFERRED_ACCOUNT_SUCCESS:
-          return this.onPreferSmartAccountSuccess(event)
+          return this.onSetPreferredAccountSuccess()
         case W3mFrameConstants.FRAME_SET_PREFERRED_ACCOUNT_ERROR:
-          return this.onPreferSmartAccountError()
+          return this.onSetPreferredAccountError()
 
         default:
           return null
@@ -294,7 +294,7 @@ export class W3mFrameProvider {
     await this.w3mFrame.frameLoadPromise
     this.w3mFrame.events.postAppEvent({
       type: W3mFrameConstants.APP_GET_USER,
-      payload: { chainId, preferredAccountType: payload?.preferredAccountType }
+      payload: { chainId }
     })
 
     return new Promise<W3mFrameTypes.Responses['FrameGetUserResponse']>((resolve, reject) => {
@@ -441,6 +441,7 @@ export class W3mFrameProvider {
   ) {
     this.setEmailLoginSuccess(event.payload.email)
     this.setLastUsedChainId(event.payload.chainId)
+
     this.connectResolver?.resolve(event.payload)
   }
 
@@ -606,14 +607,11 @@ export class W3mFrameProvider {
     this.smartAccountEnabledNetworksResolver?.reject(event.payload.message)
   }
 
-  private onPreferSmartAccountSuccess(
-    event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/SET_PREFERRED_ACCOUNT_SUCCESS' }>
-  ) {
-    this.persistPreferredAccount(event.payload.type as W3mFrameTypes.AccountType)
+  private onSetPreferredAccountSuccess() {
     this.setPreferredAccountResolver?.resolve(undefined)
   }
 
-  private onPreferSmartAccountError() {
+  private onSetPreferredAccountError() {
     this.setPreferredAccountResolver?.reject()
   }
 
@@ -640,10 +638,6 @@ export class W3mFrameProvider {
 
   private getLastUsedChainId() {
     return Number(W3mFrameStorage.get(W3mFrameConstants.LAST_USED_CHAIN_KEY))
-  }
-
-  private persistPreferredAccount(type: W3mFrameTypes.AccountType) {
-    W3mFrameStorage.set(W3mFrameConstants.PREFERRED_ACCOUNT_TYPE, type)
   }
 
   private persistSmartAccountEnabledNetworks(networks: number[]) {
