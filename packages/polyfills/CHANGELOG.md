@@ -1,5 +1,14 @@
 # @web3modal/polyfills
 
+## 4.1.11
+
+### Patch Changes
+
+- refactor: Solana exported helper methods and proram instruction improvements
+- refactor: email and smart account improvements
+- refactor: unit test CI check improvements
+- feat: convert
+
 ## 4.1.10
 
 ### Patch Changes
