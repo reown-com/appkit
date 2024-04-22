@@ -39,20 +39,7 @@ describe('EnsController', () => {
   it('should have valid default state', () => {
     expect(EnsController.state).toEqual({
       suggestions: [],
-      error: '',
       loading: false
     })
-  })
-
-  it('should update state correctly on name resolution', async () => {
-    const errorMessage = 'Error resolving ENS name'
-
-    const name = await EnsController.resolveName('test')
-    expect(EnsController.state.error).toBe('')
-    expect(EnsController.state.loading).toBe(false)
-    expect(name).toEqual(TEST_NAME)
-
-    await EnsController.resolveName('invalid')
-    expect(EnsController.state.error).toBe(errorMessage)
   })
 })

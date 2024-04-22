@@ -90,15 +90,19 @@ export class W3mRegisterAccountNameView extends LitElement {
   }
 
   private onDebouncedNameInputChange = CoreHelperUtil.debounce((value: string) => {
-    if (value.length < 3) {
-      this.error = 'Name must be at least 3 characters long'
-    } else {
+    if (EnsController.validateName(value)) {
       this.error = ''
       this.name = value
       EnsController.getSuggestions(value)
       EnsController.isNameRegistered(value).then(registered => {
         this.registered = registered
       })
+    } else {
+      if (value.length < 4) {
+        this.error = 'Name must be at least 4 characters long'
+      }
+
+      this.error = 'Names can only contain letters, numbers and - characters'
     }
   })
 
@@ -168,7 +172,7 @@ export class W3mRegisterAccountNameView extends LitElement {
       event.preventDefault()
       await EnsController.registerName(this.name)
     } catch (error) {
-      SnackController.showError('An error occurred, please try again later')
+      SnackController.showError((error as Error).message)
     }
   }
 }

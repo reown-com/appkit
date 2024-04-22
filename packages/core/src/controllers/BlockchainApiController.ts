@@ -162,14 +162,14 @@ export const BlockchainApiController = {
   },
 
   async registerEnsName({
-    coin_type,
+    coinType,
     address,
     message,
     signature
   }: BlockchainApiRegisterNameParams) {
     return api.post({
       path: `/v1/profile/account`,
-      body: { coin_type, address, message, signature },
+      body: { coin_type: coinType, address, message, signature },
       headers: {
         'Content-Type': 'application/json'
       }

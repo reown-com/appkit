@@ -8,16 +8,9 @@ import { RouterController } from './RouterController.js'
 import { ConnectionController } from './ConnectionController.js'
 import { NetworkController } from './NetworkController.js'
 import { NetworkUtil } from '@web3modal/common'
+import { EnsUtil } from '../utils/EnsUtil.js'
 
-const SLIP44_MSB = 0x80000000
-
-function convertEVMChainIdToCoinType(chainId: number): number {
-  if (chainId >= SLIP44_MSB) {
-    throw new Error('Invalid chainId')
-  }
-
-  return (SLIP44_MSB | chainId) >>> 0
-}
+const WC_NAME_SUFFIX = '.wc.ink'
 
 // -- Types --------------------------------------------- //
 type Suggestion = {
@@ -27,7 +20,6 @@ type Suggestion = {
 
 export interface EnsControllerState {
   suggestions: Suggestion[]
-  error: string
   loading: boolean
 }
 
@@ -36,7 +28,6 @@ type StateKey = keyof EnsControllerState
 // -- State --------------------------------------------- //
 const state = proxy<EnsControllerState>({
   suggestions: [],
-  error: '',
   loading: false
 })
 
@@ -57,10 +48,7 @@ export const EnsController = {
       return await BlockchainApiController.lookupEnsName(name)
     } catch (e) {
       const error = e as BlockchainApiEnsError
-      const errorMessage = error?.reasons?.[0]?.description || 'Error resolving ENS name'
-      state.error = errorMessage
-
-      return null
+      throw new Error(error?.reasons?.[0]?.description || 'Error resolving name')
     }
   },
 
@@ -82,19 +70,15 @@ export const EnsController = {
       state.suggestions =
         response.suggestions.map(suggestion => ({
           ...suggestion,
-          name: suggestion.name.replace('.wc.ink', '')
+          name: suggestion.name.replace(WC_NAME_SUFFIX, '')
         })) || []
-      state.error = ''
       state.loading = false
 
       return state.suggestions
     } catch (e) {
       state.loading = false
-      const error = e as BlockchainApiEnsError
-      const errorMessage = error?.reasons?.[0]?.description || 'Error resolving suggestions'
-      state.error = errorMessage
-
-      return []
+      const errorMessage = this.parseEnsApiError(e, 'Error fetching name suggestions')
+      throw new Error(errorMessage)
     }
   },
 
@@ -102,12 +86,10 @@ export const EnsController = {
     try {
       const network = NetworkController.state.caipNetwork
       if (!network) {
-        state.error = 'No network selected'
-
         return []
       }
-      const coinType = convertEVMChainIdToCoinType(
-        NetworkUtil.caipNetworkIdToNumber(network.id) as number
+      const coinType = EnsUtil.convertEVMChainIdToCoinType(
+        NetworkUtil.caipNetworkIdToNumber(network.id)!
       )
 
       const response = await BlockchainApiController.reverseLookupEnsName({ address })
@@ -117,49 +99,51 @@ export const EnsController = {
 
       return names
     } catch (e) {
-      const error = e as BlockchainApiEnsError
-      const errorMessage = error?.reasons?.[0]?.description || 'Error resolving address to ENS name'
-      state.error = errorMessage
-
-      return []
+      const errorMessage = this.parseEnsApiError(e, 'Error fetching names for address')
+      throw new Error(errorMessage)
     }
   },
 
   async registerName(name: string) {
     const network = NetworkController.state.caipNetwork
     if (!network) {
-      state.error = 'No network selected'
-
-      return
+      throw new Error('Network not found')
     }
-    try {
-      const address = AccountController.state.address
-      const emailConnector = ConnectorController.getEmailConnector()
-      if (!address || !emailConnector) {
-        throw new Error('Address or email connector not found')
-      }
-      const message = JSON.stringify({
-        name: `${name}.wc.ink`,
-        attributes: {},
-        timestamp: Math.floor(Date.now() / 1000)
-      })
-      state.loading = true
+    const address = AccountController.state.address
+    const emailConnector = ConnectorController.getEmailConnector()
+    if (!address || !emailConnector) {
+      throw new Error('Address or email connector not found')
+    }
+    state.loading = true
+    const message = JSON.stringify({
+      name: `${name}.wc.ink`,
+      attributes: {},
+      timestamp: Math.floor(Date.now() / 1000)
+    })
 
+    try {
       RouterController.pushTransactionStack({
         view: 'Account',
         goBack: false,
         onSuccess() {
           state.loading = false
+        },
+        onCancel() {
+          state.loading = false
         }
       })
 
       const signature = await ConnectionController.signMessage(message)
+      const networkId = NetworkUtil.caipNetworkIdToNumber(network.id)
 
+      if (!networkId) {
+        throw new Error('Network not found')
+      }
+
+      const coinType = EnsUtil.convertEVMChainIdToCoinType(networkId)
       await BlockchainApiController.registerEnsName({
         // TOD0: Add coin type calculation when ready on BE.
-        coin_type: convertEVMChainIdToCoinType(
-          NetworkUtil.caipNetworkIdToNumber(network.id) as number
-        ),
+        coinType,
         address: address as `0x${string}`,
         signature,
         message
@@ -169,9 +153,15 @@ export const EnsController = {
       state.loading = false
     } catch (e) {
       state.loading = false
-      const error = e as BlockchainApiEnsError
-      const errorMessage = error?.reasons?.[0]?.description || 'Error registering ENS name'
-      state.error = errorMessage
+      const errorMessage = this.parseEnsApiError(e, `Error registering name ${name}`)
+      throw new Error(errorMessage)
     }
+  },
+  validateName(name: string) {
+    return /^[a-zA-Z0-9-]{4,}$/u.test(name)
+  },
+  parseEnsApiError(error: unknown, defaultError: string) {
+    const ensError = error as BlockchainApiEnsError
+    return ensError?.reasons?.[0]?.description || defaultError
   }
 }

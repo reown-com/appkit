@@ -876,11 +876,15 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private async syncWalletConnectName(address: Address) {
-    const registeredWcNames = await this.getWalletConnectName(address)
-    if (registeredWcNames[0]) {
-      const wcName = registeredWcNames[0]
-      this.setProfileName(wcName.name)
-    } else {
+    try {
+      const registeredWcNames = await this.getWalletConnectName(address)
+      if (registeredWcNames[0]) {
+        const wcName = registeredWcNames[0]
+        this.setProfileName(wcName.name)
+      } else {
+        this.setProfileName(null)
+      }
+    } catch {
       this.setProfileName(null)
     }
   }

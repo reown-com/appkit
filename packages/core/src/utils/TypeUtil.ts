@@ -182,7 +182,7 @@ export interface BlockchainApiLookupEnsName {
 }
 
 export interface BlockchainApiRegisterNameParams {
-  coin_type: number
+  coinType: number
   message: string
   signature: string
   address: `0x${string}`
