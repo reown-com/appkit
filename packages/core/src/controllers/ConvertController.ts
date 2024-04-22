@@ -503,7 +503,7 @@ export const ConvertController = {
   getToAmount() {
     const { sourceTokenDecimals } = this.getParams()
     const decimals = sourceTokenDecimals || 18
-    const multiplyer = 10 ** decimals
+    const multiplier = 10 ** decimals
 
     const toTokenConvertedAmount =
       state.sourceTokenPriceInUSD && state.toTokenPriceInUSD && state.sourceTokenAmount
@@ -512,7 +512,7 @@ export const ConvertController = {
             .dividedBy(state.toTokenPriceInUSD)
         : NumberUtil.bigNumber(0)
 
-    return toTokenConvertedAmount.multipliedBy(multiplyer).toString()
+    return toTokenConvertedAmount.multipliedBy(multiplier).toString()
   },
 
   async createTokenAllowance() {
