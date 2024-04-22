@@ -385,7 +385,7 @@ export const ConvertController = {
       return
     }
 
-    const value = res.instant
+    const value = res.standard
     const gasFee = BigInt(value)
     const gasLimit = BigInt(INITIAL_GAS_LIMIT)
     const gasPrice = this.calculateGasPriceInUSD(gasLimit, gasFee)
