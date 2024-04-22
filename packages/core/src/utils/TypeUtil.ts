@@ -541,4 +541,5 @@ export interface WriteContractArgs {
   tokenAmount: bigint
   tokenAddress: `0x${string}`
   fromAddress: `0x${string}`
+  method?: 'send' | 'transfer' | 'call'
 }

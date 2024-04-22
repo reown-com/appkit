@@ -393,7 +393,7 @@ export const ConvertController = {
     state.gasPriceInUSD = gasPrice
 
     // eslint-disable-next-line consistent-return
-    return { gasPrice: gasFee, gasPriceInUsd: state.gasPriceInUSD }
+    return { gasPrice: gasFee, gasPriceInUSD: state.gasPriceInUSD }
   },
 
   async refreshConvertValues() {

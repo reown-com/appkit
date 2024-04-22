@@ -54,16 +54,6 @@ export const CoreHelperUtil = {
     return caipAddress.split(':')[2]
   },
 
-  getEvmChainId(caipNetworkId?: `${string}:${string}`) {
-    const strChainId = caipNetworkId?.split(':')?.[1]
-    if (!strChainId) {
-      // Default to Ethereum mainnet
-      return 1
-    }
-
-    return parseInt(strChainId, 10)
-  },
-
   async wait(milliseconds: number) {
     return new Promise(resolve => {
       setTimeout(resolve, milliseconds)
@@ -285,14 +275,5 @@ export const CoreHelperUtil = {
     }
 
     return false
-  },
-
-  extractEthereumAddress(address: string) {
-    const addressParts = address.split(':')
-    if (addressParts.length === 3 && addressParts[0] === 'eip155') {
-      return addressParts[2]
-    }
-
-    return null
   }
 }

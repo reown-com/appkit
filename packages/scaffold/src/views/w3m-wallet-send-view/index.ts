@@ -23,7 +23,7 @@ export class W3mWalletSendView extends LitElement {
 
   @state() private receiverAddress = SendController.state.receiverAddress
 
-  @state() private gasPriceInUsd = SendController.state.gasPriceInUsd
+  @state() private gasPriceInUSD = SendController.state.gasPriceInUSD
 
   @state() private message:
     | 'Preview Send'
@@ -42,7 +42,7 @@ export class W3mWalletSendView extends LitElement {
           this.token = val.token
           this.sendTokenAmount = val.sendTokenAmount
           this.receiverAddress = val.receiverAddress
-          this.gasPriceInUsd = val.gasPriceInUsd
+          this.gasPriceInUSD = val.gasPriceInUSD
         })
       ]
     )
@@ -61,7 +61,7 @@ export class W3mWalletSendView extends LitElement {
         <w3m-input-token
           .token=${this.token}
           .sendTokenAmount=${this.sendTokenAmount}
-          .gasPriceInUsd=${this.gasPriceInUsd}
+          .gasPriceInUSD=${this.gasPriceInUSD}
         ></w3m-input-token>
         <wui-icon-box
           size="inherit"
@@ -94,7 +94,7 @@ export class W3mWalletSendView extends LitElement {
     const gas = await ConvertController.getInitialGasPrice()
     if (gas) {
       SendController.setGasPrice(gas.gasPrice)
-      SendController.setGasPriceInUsd(gas.gasPriceInUsd)
+      SendController.setGasPriceInUsd(gas.gasPriceInUSD)
     }
   }
 

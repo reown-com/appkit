@@ -10,7 +10,7 @@ export interface SendControllerState {
   receiverProfileName?: string
   receiverProfileImageUrl?: string
   gasPrice?: bigint
-  gasPriceInUsd?: number
+  gasPriceInUSD?: number
 }
 
 type StateKey = keyof SendControllerState
@@ -58,8 +58,8 @@ export const SendController = {
     state.gasPrice = gasPrice
   },
 
-  setGasPriceInUsd(gasPriceInUsd: SendControllerState['gasPriceInUsd']) {
-    state.gasPriceInUsd = gasPriceInUsd
+  setGasPriceInUsd(gasPriceInUSD: SendControllerState['gasPriceInUSD']) {
+    state.gasPriceInUSD = gasPriceInUSD
   },
 
   resetSend() {

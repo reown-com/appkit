@@ -289,9 +289,7 @@ export class Web3Modal extends Web3ModalScaffold {
       formatUnits: (value: bigint, decimals: number) => formatUnits(value, decimals),
 
       async estimateGas(data) {
-        const chainId = EthersStoreUtil.state.chainId
-        const provider = EthersStoreUtil.state.provider
-        const address = EthersStoreUtil.state.address
+        const { chainId, provider, address } = EthersStoreUtil.state
 
         if (!provider) {
           throw new Error('connectionControllerClient:sendTransaction - provider is undefined')
@@ -316,9 +314,7 @@ export class Web3Modal extends Web3ModalScaffold {
       },
 
       sendTransaction: async (data: SendTransactionArgs) => {
-        const chainId = EthersStoreUtil.state.chainId
-        const provider = EthersStoreUtil.state.provider
-        const address = EthersStoreUtil.state.address
+        const { chainId, provider, address } = EthersStoreUtil.state
 
         if (!provider) {
           throw new Error('connectionControllerClient:sendTransaction - provider is undefined')
@@ -346,9 +342,7 @@ export class Web3Modal extends Web3ModalScaffold {
       },
 
       writeContract: async (data: WriteContractArgs) => {
-        const chainId = EthersStoreUtil.state.chainId
-        const provider = EthersStoreUtil.state.provider
-        const address = EthersStoreUtil.state.address
+        const { chainId, provider, address } = EthersStoreUtil.state
 
         if (!provider) {
           throw new Error('connectionControllerClient:sendTransaction - provider is undefined')
@@ -362,13 +356,18 @@ export class Web3Modal extends Web3ModalScaffold {
         const signer = new JsonRpcSigner(browserProvider, address)
         const contract = new Contract(data.tokenAddress, erc20ABI, signer)
 
-        if (!contract || typeof contract['transfer'] !== 'function') {
-          throw new Error('Contract or transfer method is undefined')
+        if (!contract || !data.method) {
+          throw new Error('Contract method is undefined')
         }
 
-        const tx = await contract['transfer'](data.receiverAddress, data.tokenAmount)
+        const method = contract[data.method]
+        if (method) {
+          const tx = await method(data.receiverAddress, data.tokenAmount)
 
-        return tx
+          return tx
+        }
+
+        throw new Error('Contract method is undefined')
       }
     }
 

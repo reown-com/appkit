@@ -28,7 +28,7 @@ export class W3mWalletSendPreviewView extends LitElement {
 
   @state() private gasPrice = SendController.state.gasPrice
 
-  @state() private gasPriceInUsd = SendController.state.gasPriceInUsd
+  @state() private gasPriceInUSD = SendController.state.gasPriceInUSD
 
   @state() private caipNetwork = NetworkController.state.caipNetwork
 
@@ -41,7 +41,7 @@ export class W3mWalletSendPreviewView extends LitElement {
           this.sendTokenAmount = val.sendTokenAmount
           this.receiverAddress = val.receiverAddress
           this.gasPrice = val.gasPrice
-          this.gasPriceInUsd = val.gasPriceInUsd
+          this.gasPriceInUSD = val.gasPriceInUSD
         }),
         NetworkController.subscribeKey('caipNetwork', val => (this.caipNetwork = val))
       ]
@@ -87,7 +87,7 @@ export class W3mWalletSendPreviewView extends LitElement {
         <w3m-wallet-send-details
           .caipNetwork=${this.caipNetwork}
           .receiverAddress=${this.receiverAddress}
-          .networkFee=${this.gasPriceInUsd}
+          .networkFee=${this.gasPriceInUSD}
         ></w3m-wallet-send-details>
         <wui-flex justifyContent="center" gap="xxs" .padding=${['s', '0', '0', '0'] as const}>
           <wui-icon size="sm" color="fg-200" name="warningCircle"></wui-icon>
@@ -150,13 +150,13 @@ export class W3mWalletSendPreviewView extends LitElement {
         ) {
           await ConnectionController.writeContract({
             fromAddress: AccountController.state.address as `0x${string}`,
-            tokenAddress: CoreHelperUtil.extractEthereumAddress(
-              this.token.address
+            tokenAddress: CoreHelperUtil.getPlainAddress(
+              this.token.address as `${string}:${string}:${string}`
             ) as `0x${string}`,
             receiverAddress: this.receiverAddress as `0x${string}`,
-            tokenAmount: amount
+            tokenAmount: amount,
+            method: 'transfer'
           })
-          RouterController.replace('Account')
           SnackController.showSuccess('Transaction Successful')
         }
       } catch (error) {
@@ -164,8 +164,8 @@ export class W3mWalletSendPreviewView extends LitElement {
       }
     } else if (this.receiverAddress && this.sendTokenAmount && this.gasPrice) {
       RouterController.pushTransactionStack({
-        view: null,
-        goBack: true
+        view: 'Account',
+        goBack: false
       })
 
       const to = this.receiverAddress as `0x${string}`
@@ -181,7 +181,6 @@ export class W3mWalletSendPreviewView extends LitElement {
           value,
           gasPrice: this.gasPrice
         })
-        RouterController.replace('Account')
         SnackController.showSuccess('Transaction Successful')
       } catch (error) {
         SnackController.showError('Something went wrong...')

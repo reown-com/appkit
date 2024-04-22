@@ -15,7 +15,7 @@ export class W3mInputToken extends LitElement {
 
   @property({ type: Number }) public sendTokenAmount?: number
 
-  @property({ type: Number }) public gasPriceInUsd?: number
+  @property({ type: Number }) public gasPriceInUSD?: number
 
   // -- Render -------------------------------------------- //
   public override render() {
@@ -109,9 +109,9 @@ export class W3mInputToken extends LitElement {
 
   private onMaxClick() {
     if (this.token) {
-      if (this.gasPriceInUsd) {
+      if (this.gasPriceInUSD) {
         const amountOfTokenGasRequires = NumberUtil.bigNumber(
-          this.gasPriceInUsd.toFixed(5)
+          this.gasPriceInUSD.toFixed(5)
         ).dividedBy(this.token.price)
 
         const isNetworkToken = this.token.address === undefined
