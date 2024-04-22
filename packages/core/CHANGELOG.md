@@ -1,5 +1,18 @@
 # @web3modal/core
 
+## 4.1.11
+
+### Patch Changes
+
+- refactor: Solana exported helper methods and proram instruction improvements
+- refactor: email and smart account improvements
+- refactor: unit test CI check improvements
+- feat: convert
+
+- Updated dependencies []:
+  - @web3modal/common@4.1.11
+  - @web3modal/wallet@4.1.11
+
 ## 4.1.10
 
 ### Patch Changes
