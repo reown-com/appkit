@@ -19,6 +19,8 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   public static override styles = styles
 
   // -- Members ------------------------------------------- //
+  @state() private watchTokenBalance?: NodeJS.Timeout
+
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
@@ -60,10 +62,16 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
         this.network = val.caipNetwork
       })
     )
+    this.watchConvertValues()
   }
 
   public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
+    clearInterval(this.watchTokenBalance)
+  }
+
+  public override firstUpdated() {
+    AccountController.fetchTokenBalance()
   }
 
   // -- Render -------------------------------------------- //
@@ -96,7 +104,11 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
           text="Buy"
           icon="card"
         ></wui-tooltip-select>
-        <wui-tooltip-select text="Convert" icon="recycleHorizontal"></wui-tooltip-select>
+        <wui-tooltip-select
+          @click=${this.onConvertClick.bind(this)}
+          text="Convert"
+          icon="recycleHorizontal"
+        ></wui-tooltip-select>
         <wui-tooltip-select
           @click=${this.onReceiveClick.bind(this)}
           text="Receive"
@@ -120,6 +132,10 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private watchConvertValues() {
+    this.watchTokenBalance = setInterval(() => AccountController.fetchTokenBalance(), 10000)
+  }
+
   private listContentTemplate() {
     if (this.currentTab === 0) {
       return html`<w3m-account-tokens-widget></w3m-account-tokens-widget>`
@@ -173,6 +189,10 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
   private onBuyClick() {
     RouterController.push('OnRampProviders')
+  }
+
+  private onConvertClick() {
+    RouterController.push('Convert')
   }
 
   private onReceiveClick() {

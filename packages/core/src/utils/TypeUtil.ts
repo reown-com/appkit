@@ -160,6 +160,115 @@ export interface BlockchainApiTransactionsResponse {
   next: string | null
 }
 
+export type ConvertToken = {
+  name: string
+  symbol: string
+  address: `${string}:${string}:${string}`
+  decimals: number
+  logoUri: string
+  eip2612?: boolean
+}
+
+export type ConvertTokenWithBalance = ConvertToken & {
+  quantity: {
+    decimals: string
+    numeric: string
+  }
+  price: number
+  value: number
+}
+
+export interface BlockchainApiConvertTokensRequest {
+  projectId: string
+  chainId?: string
+}
+
+export interface BlockchainApiConvertTokensResponse {
+  tokens: ConvertToken[]
+}
+
+export interface BlockchainApiTokenPriceRequest {
+  projectId: string
+  currency?: 'usd' | 'eur' | 'gbp' | 'aud' | 'cad' | 'inr' | 'jpy' | 'btc' | 'eth'
+  addresses: string[]
+}
+
+export interface BlockchainApiTokenPriceResponse {
+  fungibles: {
+    name: string
+    symbol: string
+    iconUrl: string
+    price: string
+  }[]
+}
+
+export interface BlockchainApiConvertAllowanceRequest {
+  projectId: string
+  tokenAddress: string
+  userAddress: string
+}
+
+export interface BlockchainApiConvertAllowanceResponse {
+  allowance: string
+}
+
+export interface BlockchainApiGasPriceRequest {
+  projectId: string
+  chainId: string
+}
+
+export interface BlockchainApiGasPriceResponse {
+  standard: string
+  fast: string
+  instant: string
+}
+
+export interface BlockchainApiGenerateConvertCalldataRequest {
+  projectId: string
+  userAddress: string
+  from: string
+  to: string
+  amount: string
+  eip155?: {
+    slippage: string
+    permit?: string
+  }
+}
+
+export interface BlockchainApiGenerateConvertCalldataResponse {
+  tx: {
+    from: `${string}:${string}:${string}`
+    to: `${string}:${string}:${string}`
+    data: `0x${string}`
+    amount: string
+    eip155: {
+      gas: string
+      gasPrice: string
+    }
+  }
+}
+
+export interface BlockchainApiGenerateApproveCalldataRequest {
+  projectId: string
+  userAddress: string
+  from: string
+  to: string
+  amount?: number
+}
+
+export interface BlockchainApiGenerateApproveCalldataResponse {
+  tx: {
+    from: `${string}:${string}:${string}`
+    to: `${string}:${string}:${string}`
+    data: `0x${string}`
+    value: string
+    eip155: {
+      gas: number
+      gasPrice: string
+    }
+  }
+}
+
 export interface BlockchainApiBalanceResponse {
   balances: Balance[]
 }
@@ -410,4 +519,19 @@ export type GetQuoteArgs = {
   paymentCurrency: PaymentCurrency
   amount: string
   network: string
+}
+
+export interface SendTransactionArgs {
+  to: `0x${string}`
+  data: `0x${string}`
+  value: bigint
+  gas?: bigint
+  gasPrice: bigint
+  address: `0x${string}`
+}
+
+export interface EstimateGasTransactionArgs {
+  address: `0x${string}`
+  to: `0x${string}`
+  data: `0x${string}`
 }
