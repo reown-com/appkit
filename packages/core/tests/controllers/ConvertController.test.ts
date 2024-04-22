@@ -30,6 +30,7 @@ beforeAll(() => {
   ConvertController.state.networkBalanceInUSD = '2'
   ConvertController.state.gasPriceInUSD = ConvertController.calculateGasPriceInUSD(gasLimit, gasFee)
   ConvertController.setSourceToken(sourceToken)
+  ConvertController.state.sourceTokenPriceInUSD = sourceToken.price
   ConvertController.setToToken(toToken)
   setSourceTokenAmount('1')
 })
@@ -58,8 +59,8 @@ describe('ConvertController', () => {
   })
 
   it('should calculate convert values as expected', () => {
-    expect(ConvertController.state.toTokenAmount).toEqual('0.07942958313582482619')
-    expect(ConvertController.state.toTokenPriceInUSD).toEqual(11.772471201328177)
+    expect(ConvertController.state.toTokenAmount).toEqual('6.77656269188470721788')
+    expect(ConvertController.state.toTokenPriceInUSD).toEqual(0.10315220553291868)
   })
 
   it('should calculate the price impact as expected', () => {
@@ -67,11 +68,11 @@ describe('ConvertController', () => {
       ConvertController.state.toTokenAmount,
       ConvertController.calculateGasPriceInUSD(gasLimit, gasFee)
     )
-    expect(priceImpact).equal(6.839503307400001)
+    expect(priceImpact).equal(9.14927128867287)
   })
 
   it('should calculate the maximum slippage as expected', () => {
     const maxSlippage = ConvertController.calculateMaxSlippage()
-    expect(maxSlippage).toEqual(0.005)
+    expect(maxSlippage).toEqual(0.01)
   })
 })
