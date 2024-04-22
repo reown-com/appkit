@@ -130,6 +130,7 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-icon-size-mdl: 18px;
         --wui-icon-size-lg: 20px;
         --wui-icon-size-xl: 24px;
+        --wui-icon-size-xxl: 28px;
 
         --wui-wallet-image-size-inherit: inherit;
         --wui-wallet-image-size-sm: 40px;
