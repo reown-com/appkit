@@ -13,20 +13,6 @@ export const tokenInfo = [
     logoUri: 'https://token-icons.s3.amazonaws.com/0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0.png'
   },
   {
-    name: 'Tether USD',
-    symbol: 'USDT',
-    chainId: 'eip155:137',
-    address: 'eip155:137:0xc2132d05d31c914a87c6611c10748aeb04b58e8f',
-    value: 0.8888156632489365,
-    price: 1.0000570041,
-    decimals: 6,
-    quantity: {
-      numeric: '0.888765',
-      decimals: '6'
-    },
-    logoUri: 'https://token-icons.s3.amazonaws.com/0xdac17f958d2ee523a2206206994597c13d831ec7.png'
-  },
-  {
     name: 'ShapeShift FOX',
     symbol: 'FOX',
     chainId: 'eip155:137',
