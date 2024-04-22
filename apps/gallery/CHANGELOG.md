@@ -1,5 +1,28 @@
 # @apps/gallery
 
+## 4.1.11
+
+### Patch Changes
+
+- refactor: Solana exported helper methods and proram instruction improvements
+- refactor: email and smart account improvements
+- refactor: unit test CI check improvements
+- feat: convert
+
+- Updated dependencies []:
+  - @web3modal/common@4.1.11
+  - @web3modal/ui@4.1.11
+
+## 4.1.10
+
+### Patch Changes
+
+- Fix activity list styling issue
+
+- Updated dependencies []:
+  - @web3modal/common@4.1.10
+  - @web3modal/ui@4.1.10
+
 ## 4.1.9
 
 ### Patch Changes

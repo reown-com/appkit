@@ -1,5 +1,5 @@
 import { createConnector, normalizeChainId, type CreateConfigParameters } from '@wagmi/core'
-import { W3mFrameHelpers, W3mFrameProvider } from '@web3modal/wallet'
+import { W3mFrameProvider } from '@web3modal/wallet'
 import { SwitchChainError, getAddress } from 'viem'
 import type { Address } from 'viem'
 
@@ -32,14 +32,8 @@ export function emailConnector(parameters: EmailParameters) {
 
     async connect(options: ConnectOptions = {}) {
       const provider = await this.getProvider()
-      const preferredAccountType = W3mFrameHelpers.getPreferredAccountType()
-      const [{ address, chainId }] = await Promise.all([
-        provider.connect({
-          chainId: options.chainId,
-          preferredAccountType
-        }),
-        provider.getSmartAccountEnabledNetworks()
-      ])
+      const { address, chainId } = await provider.connect({ chainId: options.chainId })
+      await provider.getSmartAccountEnabledNetworks()
 
       return {
         accounts: [address as Address],
@@ -59,8 +53,7 @@ export function emailConnector(parameters: EmailParameters) {
 
     async getAccounts() {
       const provider = await this.getProvider()
-      const preferredAccountType = W3mFrameHelpers.getPreferredAccountType()
-      const { address } = await provider.connect({ preferredAccountType })
+      const { address } = await provider.connect()
       config.emitter.emit('change', { accounts: [address as Address] })
 
       return [address as Address]

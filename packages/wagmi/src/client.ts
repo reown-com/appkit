@@ -8,9 +8,13 @@ import {
   getEnsName,
   switchChain,
   watchAccount,
-  watchConnectors
+  watchConnectors,
+  waitForTransactionReceipt,
+  estimateGas as wagmiEstimateGas,
+  getAccount
 } from '@wagmi/core'
 import { mainnet } from 'viem/chains'
+import { prepareTransactionRequest, sendTransaction as wagmiSendTransaction } from '@wagmi/core'
 import type { Chain } from '@wagmi/core/chains'
 import type { GetAccountReturnType } from '@wagmi/core'
 import type {
@@ -22,8 +26,10 @@ import type {
   LibraryOptions,
   NetworkControllerClient,
   PublicStateControllerState,
+  SendTransactionArgs,
   Token
 } from '@web3modal/scaffold'
+import { formatUnits, parseUnits } from 'viem'
 import type { Hex } from 'viem'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
@@ -33,8 +39,8 @@ import {
   getEmailCaipNetworks,
   getWalletConnectCaipNetworks
 } from './utils/helpers.js'
-import { W3mFrameHelpers, W3mFrameRpcConstants } from '@web3modal/wallet'
-import type { W3mFrameProvider } from '@web3modal/wallet'
+import { W3mFrameConstants, W3mFrameHelpers, W3mFrameRpcConstants } from '@web3modal/wallet'
+import type { W3mFrameProvider, W3mFrameTypes } from '@web3modal/wallet'
 import { NetworkUtil } from '@web3modal/common'
 import type { defaultWagmiConfig as coreConfig } from './utils/defaultWagmiCoreConfig.js'
 import type { defaultWagmiConfig as reactConfig } from './utils/defaultWagmiReactConfig.js'
@@ -165,7 +171,46 @@ export class Web3Modal extends Web3ModalScaffold {
         await disconnect(this.wagmiConfig)
       },
 
-      signMessage: async message => signMessage(this.wagmiConfig, { message })
+      signMessage: async message => signMessage(this.wagmiConfig, { message }),
+
+      estimateGas: async args => {
+        try {
+          return await wagmiEstimateGas(this.wagmiConfig, {
+            account: args.address,
+            to: args.to,
+            data: args.data,
+            type: 'legacy'
+          })
+        } catch (error) {
+          return 0n
+        }
+      },
+
+      sendTransaction: async (data: SendTransactionArgs) => {
+        const { chainId } = getAccount(this.wagmiConfig)
+
+        const txParams = {
+          account: data.address,
+          to: data.to,
+          value: data.value,
+          gas: data.gas,
+          gasPrice: data.gasPrice,
+          data: data.data,
+          chainId,
+          type: 'legacy' as const
+        }
+
+        await prepareTransactionRequest(this.wagmiConfig, txParams)
+        const tx = await wagmiSendTransaction(this.wagmiConfig, txParams)
+
+        await waitForTransactionReceipt(this.wagmiConfig, { hash: tx, timeout: 25000 })
+
+        return tx
+      },
+
+      parseUnits,
+
+      formatUnits
     }
 
     super({
@@ -416,11 +461,11 @@ export class Web3Modal extends Web3ModalScaffold {
   ) {
     if (typeof window !== 'undefined' && connector) {
       super.setLoading(true)
-
       const provider = (await connector.getProvider()) as W3mFrameProvider
       const isLoginEmailUsed = provider.getLoginEmailUsed()
 
       super.setLoading(isLoginEmailUsed)
+
       if (isLoginEmailUsed) {
         this.setIsConnected(false)
       }
@@ -428,7 +473,13 @@ export class Web3Modal extends Web3ModalScaffold {
       provider.onRpcRequest(request => {
         if (W3mFrameHelpers.checkIfRequestExists(request)) {
           if (!W3mFrameHelpers.checkIfRequestIsAllowed(request)) {
-            super.open({ view: 'ApproveTransaction' })
+            if (super.isOpen()) {
+              if (!super.isTransactionStackEmpty()) {
+                super.redirect('ApproveTransaction')
+              }
+            } else {
+              super.open({ view: 'ApproveTransaction' })
+            }
           }
         } else {
           super.open()
@@ -442,8 +493,33 @@ export class Web3Modal extends Web3ModalScaffold {
         }
       })
 
-      provider.onRpcResponse(() => {
-        super.close()
+      provider.onRpcResponse(response => {
+        const responseType = W3mFrameHelpers.getResponseType(response)
+
+        switch (responseType) {
+          case W3mFrameConstants.RPC_RESPONSE_TYPE_ERROR: {
+            const isModalOpen = super.isOpen()
+
+            if (isModalOpen) {
+              if (super.isTransactionStackEmpty()) {
+                super.close()
+              } else {
+                super.popTransactionStack(true)
+              }
+            }
+            break
+          }
+          case W3mFrameConstants.RPC_RESPONSE_TYPE_TX: {
+            if (super.isTransactionStackEmpty()) {
+              super.close()
+            } else {
+              super.popTransactionStack()
+            }
+            break
+          }
+          default:
+            break
+        }
       })
 
       provider.onNotConnected(() => {
@@ -457,6 +533,7 @@ export class Web3Modal extends Web3ModalScaffold {
       provider.onIsConnected(req => {
         this.setIsConnected(true)
         this.setSmartAccountDeployed(Boolean(req.smartAccountDeployed))
+        this.setPreferredAccountType(req.preferredAccountType as W3mFrameTypes.AccountType)
         super.setLoading(false)
       })
 
@@ -464,7 +541,7 @@ export class Web3Modal extends Web3ModalScaffold {
         this.setSmartAccountEnabledNetworks(networks)
       })
 
-      provider.onSetPreferredAccount(({ address }) => {
+      provider.onSetPreferredAccount(({ address, type }) => {
         if (!address) {
           return
         }
@@ -474,7 +551,7 @@ export class Web3Modal extends Web3ModalScaffold {
           chainId,
           isConnected: true,
           connector
-        })
+        }).then(() => this.setPreferredAccountType(type as W3mFrameTypes.AccountType))
       })
     }
   }
