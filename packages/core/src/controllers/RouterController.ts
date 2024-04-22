@@ -1,6 +1,7 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy } from 'valtio/vanilla'
 import type { CaipNetwork, Connector, WcWallet } from '../utils/TypeUtil.js'
+import type { ConvertInputTarget } from './ConvertController.js'
 
 // -- Types --------------------------------------------- //
 type TransactionAction = {
@@ -10,7 +11,6 @@ type TransactionAction = {
   onSuccess?: () => void
   onCancel?: () => void
 }
-
 export interface RouterControllerState {
   view:
     | 'Account'
@@ -49,6 +49,9 @@ export interface RouterControllerState {
     | 'WhatIsANetwork'
     | 'WhatIsAWallet'
     | 'WhatIsABuy'
+    | 'Convert'
+    | 'ConvertSelectToken'
+    | 'ConvertPreview'
   history: RouterControllerState['view'][]
   data?: {
     connector?: Connector
@@ -56,6 +59,7 @@ export interface RouterControllerState {
     network?: CaipNetwork
     email?: string
     newEmail?: string
+    target?: ConvertInputTarget
   }
   transactionStack: TransactionAction[]
 }
@@ -75,6 +79,30 @@ export const RouterController = {
 
   subscribeKey<K extends StateKey>(key: K, callback: (value: RouterControllerState[K]) => void) {
     return subKey(state, key, callback)
+  },
+
+  pushTransactionStack(action: TransactionAction) {
+    state.transactionStack.push(action)
+  },
+
+  popTransactionStack(cancel?: boolean) {
+    const action = state.transactionStack.pop()
+
+    if (!action) {
+      return
+    }
+
+    if (cancel) {
+      this.goBack()
+      action?.onCancel?.()
+    } else {
+      if (action.goBack) {
+        this.goBack()
+      } else if (action.view) {
+        this.reset(action.view)
+      }
+      action?.onSuccess?.()
+    }
   },
 
   push(view: RouterControllerState['view'], data?: RouterControllerState['data']) {
@@ -115,29 +143,6 @@ export const RouterController = {
       if (last) {
         state.view = last
       }
-    }
-  },
-  pushTransactionStack(action: TransactionAction) {
-    state.transactionStack.push(action)
-  },
-
-  popTransactionStack(cancel?: boolean) {
-    const action = state.transactionStack.pop()
-
-    if (!action) {
-      return
-    }
-
-    if (cancel) {
-      this.goBack()
-      action?.onCancel?.()
-    } else {
-      if (action.goBack) {
-        this.goBack()
-      } else if (action.view) {
-        this.reset(action.view)
-      }
-      action?.onSuccess?.()
     }
   }
 }

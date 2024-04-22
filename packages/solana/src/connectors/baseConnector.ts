@@ -12,10 +12,11 @@ import borsh from 'borsh'
 import { Buffer } from 'buffer'
 
 import { registerListener, unregisterListener } from '../utils/clusterFactory.js'
-import { SolConstantsUtil } from '../utils/scaffold/SolanaConstantsUtil.js'
-import { SolStoreUtil } from '../utils/scaffold/SolanaStoreUtil.js'
+import { SolConstantsUtil, SolStoreUtil } from '../utils/scaffold/index.js'
 import { getHashedName, getNameAccountKey } from '../utils/hash.js'
 import { NameRegistry } from '../utils/nameService.js'
+
+import type { ConfirmOptions, Signer, TransactionSignature } from '@solana/web3.js'
 
 import type {
   BlockResult,
@@ -26,7 +27,7 @@ import type {
   RequestMethods,
   TransactionArgs,
   TransactionType
-} from '../utils/scaffold/SolanaTypesUtil.js'
+} from '../utils/scaffold/index.js'
 
 export interface Connector {
   id: string
@@ -40,6 +41,11 @@ export interface Connector {
     transaction: Transaction | VersionedTransaction
   ) => Promise<{ signatures: { signature: string }[] }>
   sendTransaction: (transaction: Transaction | VersionedTransaction) => Promise<string>
+  signAndSendTransaction: (
+    transaction: Transaction | VersionedTransaction,
+    signers: Signer[],
+    confirmOptions?: ConfirmOptions
+  ) => Promise<TransactionSignature>
   getAccount: (
     requestedAddress?: string,
     encoding?: 'base58' | 'base64' | 'jsonParsed'

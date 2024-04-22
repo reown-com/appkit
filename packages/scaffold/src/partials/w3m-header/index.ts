@@ -55,6 +55,9 @@ function headings() {
     RegisterAccountName: 'Choose name',
     WalletReceive: 'Receive',
     WalletCompatibleNetworks: 'Compatible Networks',
+    Convert: 'Convert',
+    ConvertSelectToken: 'Select token',
+    ConvertPreview: 'Preview convert',
     WalletSend: 'Send',
     WalletSendPreview: 'Review send',
     WalletSendSelectToken: 'Select Token'

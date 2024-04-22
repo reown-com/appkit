@@ -30,6 +30,7 @@ export class W3mApproveTransactionView extends LitElement {
 
   public constructor() {
     super()
+
     this.unsubscribe.push(
       ...[
         ModalController.subscribeKey('open', isOpen => {
@@ -52,7 +53,6 @@ export class W3mApproveTransactionView extends LitElement {
     await this.syncTheme()
 
     this.iframe.style.display = 'block'
-
     this.bodyObserver = new ResizeObserver(() => {
       this.iframe.style.width = `${PAGE_WIDTH}px`
       this.iframe.style.height = `${PAGE_HEIGHT}px`

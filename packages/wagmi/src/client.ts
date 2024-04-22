@@ -8,9 +8,13 @@ import {
   getEnsName,
   switchChain,
   watchAccount,
-  watchConnectors
+  watchConnectors,
+  waitForTransactionReceipt,
+  estimateGas as wagmiEstimateGas,
+  getAccount
 } from '@wagmi/core'
 import { mainnet } from 'viem/chains'
+import { prepareTransactionRequest, sendTransaction as wagmiSendTransaction } from '@wagmi/core'
 import type { Chain } from '@wagmi/core/chains'
 import type { GetAccountReturnType } from '@wagmi/core'
 import type {
@@ -22,8 +26,10 @@ import type {
   LibraryOptions,
   NetworkControllerClient,
   PublicStateControllerState,
+  SendTransactionArgs,
   Token
 } from '@web3modal/scaffold'
+import { formatUnits, parseUnits } from 'viem'
 import type { Hex } from 'viem'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
@@ -33,7 +39,7 @@ import {
   getEmailCaipNetworks,
   getWalletConnectCaipNetworks
 } from './utils/helpers.js'
-import { W3mFrameHelpers, W3mFrameRpcConstants } from '@web3modal/wallet'
+import { W3mFrameConstants, W3mFrameHelpers, W3mFrameRpcConstants } from '@web3modal/wallet'
 import type { W3mFrameProvider, W3mFrameTypes } from '@web3modal/wallet'
 import { NetworkUtil } from '@web3modal/common'
 import type { defaultWagmiConfig as coreConfig } from './utils/defaultWagmiCoreConfig.js'
@@ -165,7 +171,46 @@ export class Web3Modal extends Web3ModalScaffold {
         await disconnect(this.wagmiConfig)
       },
 
-      signMessage: async message => signMessage(this.wagmiConfig, { message })
+      signMessage: async message => signMessage(this.wagmiConfig, { message }),
+
+      estimateGas: async args => {
+        try {
+          return await wagmiEstimateGas(this.wagmiConfig, {
+            account: args.address,
+            to: args.to,
+            data: args.data,
+            type: 'legacy'
+          })
+        } catch (error) {
+          return 0n
+        }
+      },
+
+      sendTransaction: async (data: SendTransactionArgs) => {
+        const { chainId } = getAccount(this.wagmiConfig)
+
+        const txParams = {
+          account: data.address,
+          to: data.to,
+          value: data.value,
+          gas: data.gas,
+          gasPrice: data.gasPrice,
+          data: data.data,
+          chainId,
+          type: 'legacy' as const
+        }
+
+        await prepareTransactionRequest(this.wagmiConfig, txParams)
+        const tx = await wagmiSendTransaction(this.wagmiConfig, txParams)
+
+        await waitForTransactionReceipt(this.wagmiConfig, { hash: tx, timeout: 25000 })
+
+        return tx
+      },
+
+      parseUnits,
+
+      formatUnits
     }
 
     super({
@@ -469,32 +514,32 @@ export class Web3Modal extends Web3ModalScaffold {
         }
       })
 
-      provider.onRpcResponse(receive => {
-        // eslint-disable-next-line @typescript-eslint/prefer-ts-expect-error, @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        const payload = receive?.payload
-        // eslint-disable-next-line @typescript-eslint/prefer-ts-expect-error, @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        const isError = receive?.type === '@w3m-frame/RPC_REQUEST_ERROR'
+      provider.onRpcResponse(response => {
+        const responseType = W3mFrameHelpers.getResponseType(response)
 
-        if (isError && super.isOpen()) {
-          if (super.isTransactionStackEmpty()) {
-            super.close()
-          } else {
-            super.popTransactionStack(true)
+        switch (responseType) {
+          case W3mFrameConstants.RPC_RESPONSE_TYPE_ERROR: {
+            const isModalOpen = super.isOpen()
+
+            if (isModalOpen) {
+              if (super.isTransactionStackEmpty()) {
+                super.close()
+              } else {
+                super.popTransactionStack(true)
+              }
+            }
+            break
           }
-        }
-
-        const isPayloadString = typeof payload === 'string'
-        const isAddress = isPayloadString ? payload?.startsWith('0x') : false
-        const isCompleted = isAddress && payload?.length > 10
-
-        if (isCompleted) {
-          if (super.isTransactionStackEmpty()) {
-            super.close()
-          } else {
-            super.popTransactionStack()
+          case W3mFrameConstants.RPC_RESPONSE_TYPE_TX: {
+            if (super.isTransactionStackEmpty()) {
+              super.close()
+            } else {
+              super.popTransactionStack()
+            }
+            break
           }
+          default:
+            break
         }
       })
 

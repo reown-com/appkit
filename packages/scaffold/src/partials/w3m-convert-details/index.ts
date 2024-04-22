@@ -22,7 +22,7 @@ export class WuiConvertDetails extends LitElement {
 
   @property() public priceImpact?: number
 
-  @property() public slippageRate = 0.5
+  @property() public slippageRate = 1
 
   @property() public maxSlippage?: number
 
