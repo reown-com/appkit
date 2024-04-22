@@ -417,6 +417,38 @@ describe('ApiController', () => {
     expect(fetchImageSpy).toHaveBeenCalledOnce()
     expect(ApiController.state.search).toEqual(data)
 
+    // Leading Whitespace
+    await ApiController.searchWallet({ search: ' Metamask' })
+
+    expect(fetchSpy).toHaveBeenCalledWith({
+      path: '/getWallets',
+      headers: ApiController._getApiHeaders(),
+      params: {
+        page: '1',
+        entries: '100',
+        search: 'MetaMask',
+        include: '12341,12342',
+        exclude: '12343'
+      }
+    })
+    expect(ApiController.state.search).toEqual(data)
+
+    // Leading and Trailing Whitespace
+    await ApiController.searchWallet({ search: ' Metamask  ' })
+
+    expect(fetchSpy).toHaveBeenCalledWith({
+      path: '/getWallets',
+      headers: ApiController._getApiHeaders(),
+      params: {
+        page: '1',
+        entries: '100',
+        search: 'MetaMask',
+        include: '12341,12342',
+        exclude: '12343'
+      }
+    })
+    expect(ApiController.state.search).toEqual(data)
+
     data = [
       {
         id: '12341',
