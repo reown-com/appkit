@@ -39,6 +39,18 @@
 
 - Fix modal default height. Fix ethers email connection lag. Fix ethers + rc relay disconnect issue. Adds new wui-components for secure site.
 
+## 4.1.6-a0733f5.0
+
+### Patch Changes
+
+- chore: canary release for siwe dependency
+
+- Updated dependencies []:
+  - @web3modal/ethers@4.1.6-a0733f5.0
+  - @web3modal/siwe@4.1.6-a0733f5.0
+  - @web3modal/solana@4.1.6-a0733f5.0
+  - @web3modal/wagmi@4.1.6-a0733f5.0
+
 ## 4.1.5
 
 ### Patch Changes
