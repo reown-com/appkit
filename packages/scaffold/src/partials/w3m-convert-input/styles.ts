@@ -77,7 +77,7 @@ export default css`
     letter-spacing: -1.28px;
     outline: none;
     caret-color: var(--wui-color-accent-100);
-    color: var(--wui-color-fg-200);
+    color: var(--wui-color-fg-100);
   }
 
   :host > wui-flex .swap-input input:focus-visible {
@@ -122,6 +122,7 @@ export default css`
     border: none;
     cursor: pointer;
     color: var(--wui-gray-glass-020);
+    padding-left: 0px;
   }
 
   .market-value {

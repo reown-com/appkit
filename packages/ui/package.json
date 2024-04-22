@@ -12,6 +12,7 @@
     "build:clean": "rm -rf dist",
     "build:ui": "tsc --build",
     "watch": "tsc --watch",
+    "test": "vitest run --dir tests --coverage.enabled --reporter=junit --coverage.reporter=json-summary --coverage.reporter=html",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
