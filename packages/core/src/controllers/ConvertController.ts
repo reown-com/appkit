@@ -309,13 +309,15 @@ export const ConvertController = {
 
         return false
       }, {})
-    state.suggestedTokens = tokens.filter(token => {
-      if (ConstantsUtil.SUGGESTED_TOKENS.includes(token.symbol)) {
-        return true
-      }
+    state.suggestedTokens = tokens
+      .filter(token => {
+        if (ConstantsUtil.SUGGESTED_TOKENS.includes(token.symbol)) {
+          return true
+        }
 
-      return false
-    }, {})
+        return false
+      }, {})
+      .slice(0, 8)
   },
 
   async getAddressPrice(address: string) {

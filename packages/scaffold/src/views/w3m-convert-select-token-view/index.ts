@@ -175,10 +175,8 @@ export class W3mConvertSelectTokenView extends LitElement {
 
   private templateSuggestedTokens() {
     const tokens = ConvertController.state.suggestedTokens
-      ? ConvertController.state.suggestedTokens.slice(0, 8)
-      : null
 
-    if (!tokens) {
+    if (!tokens || tokens.length === 0) {
       return null
     }
 
