@@ -6,15 +6,11 @@ import { resetStyles } from '../../utils/ThemeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import '../wui-input-text/index.js'
 import styles from './styles.js'
-import { createRef, ref } from 'lit/directives/ref.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('wui-ens-input')
 export class WuiEnsInput extends LitElement {
   public static override styles = [resetStyles, styles]
-
-  // -- Members ------------------------------------------- //
-  public inputElementRef = createRef<HTMLInputElement>()
 
   // -- State & Properties -------------------------------- //
   @property() public errorMessage?: string
@@ -28,14 +24,15 @@ export class WuiEnsInput extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <input
-        ${ref(this.inputElementRef)}
-        ?disabled=${this.disabled}
-        @input=${this.dispatchInputChangeEvent.bind(this)}
+      <wui-input-text
         value=${ifDefined(this.value)}
+        ?disabled=${this.disabled}
         .value=${this.value || ''}
-      />
-      ${this.baseNameTemplate()} ${this.errorTemplate()}${this.loadingTemplate()}
+        data-testId="wui-ens-input"
+        inputRightPadding="5xl"
+      >
+        ${this.baseNameTemplate()} ${this.errorTemplate()}${this.loadingTemplate()}
+      </wui-input-text>
     `
   }
 
@@ -60,16 +57,6 @@ export class WuiEnsInput extends LitElement {
     }
 
     return null
-  }
-
-  private dispatchInputChangeEvent() {
-    this.dispatchEvent(
-      new CustomEvent('inputChange', {
-        detail: this.inputElementRef.value?.value,
-        bubbles: true,
-        composed: true
-      })
-    )
   }
 }
 

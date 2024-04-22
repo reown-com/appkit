@@ -45,6 +45,7 @@ export type SpacingType =
   | '2xl'
   | '3xl'
   | '4xl'
+  | '5xl'
   | '3xs'
   | '4xs'
   | 'l'

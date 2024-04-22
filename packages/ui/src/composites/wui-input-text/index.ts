@@ -2,9 +2,10 @@ import { html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import { createRef, ref } from 'lit/directives/ref.js'
+import { classMap } from 'lit/directives/class-map.js'
 import '../../components/wui-icon/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { IconType, InputType, SizeType } from '../../utils/TypeUtil.js'
+import type { IconType, InputType, SizeType, SpacingType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
@@ -30,14 +31,21 @@ export class WuiInputText extends LitElement {
 
   @property() public value?: string = ''
 
+  @property() public inputRightPadding?: SpacingType
+
   // -- Render -------------------------------------------- //
   public override render() {
+    const inputClass = `wui-padding-right-${this.inputRightPadding}`
     const sizeClass = `wui-size-${this.size}`
+    const classes = {
+      [sizeClass]: true,
+      [inputClass]: Boolean(this.inputRightPadding)
+    }
 
-    return html` ${this.templateIcon()}
+    return html`${this.templateIcon()}
       <input
         ${ref(this.inputElementRef)}
-        class=${sizeClass}
+        class=${classMap(classes)}
         type=${this.type}
         enterkeyhint=${ifDefined(this.enterKeyHint)}
         ?disabled=${this.disabled}
