@@ -5,11 +5,6 @@ import { ModalWalletPage } from '../pages/ModalWalletPage'
 import { ModalWalletValidator } from '../validators/ModalWalletValidator'
 import type { ModalPage } from '../pages/ModalPage'
 
-const mailsacApiKey = process.env['MAILSAC_API_KEY']
-if (!mailsacApiKey) {
-  throw new Error('MAILSAC_API_KEY is not set')
-}
-
 // Test Modal + Smart Account
 export const testModalSmartAccount = base.extend<ModalFixture & { slowModalPage: ModalPage }>({
   library: ['wagmi', { option: true }],
@@ -18,6 +13,10 @@ export const testModalSmartAccount = base.extend<ModalFixture & { slowModalPage:
       const modalPage = new ModalWalletPage(page, library)
       await modalPage.load()
 
+      const mailsacApiKey = process.env['MAILSAC_API_KEY']
+      if (!mailsacApiKey) {
+        throw new Error('MAILSAC_API_KEY is not set')
+      }
       const email = new Email(mailsacApiKey)
       const tempEmail = email.getEmailAddressToUse(testInfo.parallelIndex)
 
