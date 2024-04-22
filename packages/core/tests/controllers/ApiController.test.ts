@@ -348,7 +348,7 @@ describe('ApiController', () => {
     expect(ApiController.state.wallets).toEqual(data)
   })
 
-  // Search Wallet
+  // Search Wallet with full name
   it('should search wallet with search term', async () => {
     const includeWalletIds = ['12341', '12342']
     const excludeWalletIds = ['12343']
@@ -379,6 +379,42 @@ describe('ApiController', () => {
       }
     })
 
+    expect(fetchImageSpy).toHaveBeenCalledOnce()
+    expect(ApiController.state.search).toEqual(data)
+  })
+
+  // Search Wallet with unoptimized name
+  it('should search wallet with search term', async () => {
+    const includeWalletIds = ['12341', '12342']
+    const excludeWalletIds = ['12343']
+    const data = [
+      {
+        id: '12341',
+        name: 'MetaMask',
+        image_id: '12341'
+      }
+    ]
+    OptionsController.setIncludeWalletIds(includeWalletIds)
+    OptionsController.setExcludeWalletIds(excludeWalletIds)
+
+    const fetchSpy = vi.spyOn(api, 'get').mockResolvedValue({ data })
+    const fetchImageSpy = vi.spyOn(ApiController, '_fetchWalletImage').mockResolvedValue()
+
+    // Whitespace
+    await ApiController.searchWallet({ search: 'MetaMask ' })
+
+    expect(fetchSpy).toHaveBeenCalledWith({
+      path: '/getWallets',
+      headers: ApiController._getApiHeaders(),
+      params: {
+        page: '1',
+        entries: '100',
+        search: 'MetaMask',
+        include: '12341,12342',
+        exclude: '12343'
+      }
+    })
+    expect(1).toEqual(2)
     expect(fetchImageSpy).toHaveBeenCalledOnce()
     expect(ApiController.state.search).toEqual(data)
   })
