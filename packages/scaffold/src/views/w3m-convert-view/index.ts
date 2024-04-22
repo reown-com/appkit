@@ -1,4 +1,4 @@
-import { customElement, formatNumberToLocalString } from '@web3modal/ui'
+import { UiHelperUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
@@ -8,12 +8,11 @@ import {
   CoreHelperUtil,
   NetworkController,
   ModalController,
-  ConstantsUtil
+  ConstantsUtil,
+  type ConvertToken,
+  type ConvertInputTarget
 } from '@web3modal/core'
 import { NumberUtil } from '@web3modal/common'
-import type { TokenInfo } from '@web3modal/core/src/utils/ConvertApiUtil.js'
-
-type Target = 'sourceToken' | 'toToken'
 
 @customElement('w3m-convert-view')
 export class W3mConvertView extends LitElement {
@@ -81,12 +80,6 @@ export class W3mConvertView extends LitElement {
             ConvertController.resetValues()
           }
         }),
-        ConvertController.subscribeKey('sourceToken', newSourceToken => {
-          this.sourceToken = newSourceToken
-        }),
-        ConvertController.subscribeKey('toToken', newToToken => {
-          this.toToken = newToToken
-        }),
         ConvertController.subscribe(newState => {
           this.initialized = newState.initialized
           this.loading = newState.loading
@@ -136,7 +129,7 @@ export class W3mConvertView extends LitElement {
       ConvertController.getNetworkTokenPrice()
       ConvertController.getMyTokensWithBalance()
       ConvertController.refreshConvertValues()
-    }, 5000)
+    }, 20000)
   }
 
   private templateSwap() {
@@ -195,8 +188,10 @@ export class W3mConvertView extends LitElement {
     </wui-flex>`
   }
 
-  private templateTokenInput(target: Target, token?: TokenInfo) {
-    const myToken = ConvertController.state.myTokensWithBalance?.[token?.address ?? '']
+  private templateTokenInput(target: ConvertInputTarget, token?: ConvertToken) {
+    const myToken = ConvertController.state.myTokensWithBalance?.find(
+      ct => ct?.address === token?.address
+    )
     const amount = target === 'toToken' ? this.toTokenAmount : this.sourceTokenAmount
     const price = target === 'toToken' ? this.toTokenPriceInUSD : this.sourceTokenPriceInUSD
     let value = parseFloat(amount) * price
@@ -211,14 +206,14 @@ export class W3mConvertView extends LitElement {
       .onSetAmount=${this.handleChangeAmount.bind(this)}
       target=${target}
       .token=${token}
-      .balance=${myToken?.balance}
+      .balance=${myToken?.quantity?.numeric}
       .price=${this.sourceTokenPriceInUSD}
-      .marketValue=${isNaN(value) ? '' : formatNumberToLocalString(value)}
+      .marketValue=${isNaN(value) ? '' : UiHelperUtil.formatNumberToLocalString(value)}
       .onSetMaxValue=${this.onSetMaxValue.bind(this)}
     ></w3m-convert-input>`
   }
 
-  private onSetMaxValue(target: Target, balance: string | undefined) {
+  private onSetMaxValue(target: ConvertInputTarget, balance: string | undefined) {
     const token = target === 'sourceToken' ? this.sourceToken : this.toToken
     const isNetworkToken = token?.address === ConstantsUtil.NATIVE_TOKEN_ADDRESS
 
@@ -271,13 +266,13 @@ export class W3mConvertView extends LitElement {
         toTokenConvertedAmount=${toTokenConvertedAmount}
         gasPriceInUSD=${this.gasPriceInUSD}
         .priceImpact=${this.priceImpact}
-        slippageRate=${0.5}
+        slippageRate=${ConstantsUtil.CONVERT_SLIPPAGE_TOLERANCE}
         .maxSlippage=${this.maxSlippage}
       ></w3m-convert-details>
     `
   }
 
-  private handleChangeAmount(target: Target, value: string) {
+  private handleChangeAmount(target: ConvertInputTarget, value: string) {
     ConvertController.clearError()
     if (target === 'sourceToken') {
       ConvertController.setSourceTokenAmount(value)

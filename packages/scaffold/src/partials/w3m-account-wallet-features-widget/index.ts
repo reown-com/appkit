@@ -12,13 +12,15 @@ import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
 import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
-import { W3mFrameHelpers, W3mFrameRpcConstants } from '@web3modal/wallet'
+import { W3mFrameRpcConstants } from '@web3modal/wallet'
 
 @customElement('w3m-account-wallet-features-widget')
 export class W3mAccountWalletFeaturesWidget extends LitElement {
   public static override styles = styles
 
   // -- Members ------------------------------------------- //
+  @state() private watchTokenBalance?: NodeJS.Timeout
+
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
@@ -36,6 +38,8 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
   @state() private tokenBalance = AccountController.state.tokenBalance
 
+  @state() private preferredAccountType = AccountController.state.preferredAccountType
+
   public constructor() {
     super()
     this.unsubscribe.push(
@@ -48,6 +52,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
             this.currentTab = val.currentTab
             this.tokenBalance = val.tokenBalance
             this.smartAccountDeployed = val.smartAccountDeployed
+            this.preferredAccountType = val.preferredAccountType
           } else {
             ModalController.close()
           }
@@ -57,10 +62,16 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
         this.network = val.caipNetwork
       })
     )
+    this.watchConvertValues()
   }
 
   public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
+    clearInterval(this.watchTokenBalance)
+  }
+
+  public override firstUpdated() {
+    AccountController.fetchTokenBalance()
   }
 
   // -- Render -------------------------------------------- //
@@ -121,6 +132,10 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private watchConvertValues() {
+    this.watchTokenBalance = setInterval(() => AccountController.fetchTokenBalance(), 10000)
+  }
+
   private listContentTemplate() {
     if (this.currentTab === 0) {
       return html`<w3m-account-tokens-widget></w3m-account-tokens-widget>`
@@ -148,10 +163,10 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
   private activateAccountTemplate() {
     const smartAccountEnabled = NetworkController.checkIfSmartAccountEnabled()
-    const preferredAccountType = W3mFrameHelpers.getPreferredAccountType()
+
     if (
       !smartAccountEnabled ||
-      preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT ||
+      this.preferredAccountType !== W3mFrameRpcConstants.ACCOUNT_TYPES.EOA ||
       this.smartAccountDeployed
     ) {
       return null

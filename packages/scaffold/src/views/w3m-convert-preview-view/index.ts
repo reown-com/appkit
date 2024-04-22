@@ -1,11 +1,12 @@
-import { customElement, formatNumberToLocalString } from '@web3modal/ui'
+import { UiHelperUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
 import {
   AccountController,
   NetworkController,
   RouterController,
-  ConvertController
+  ConvertController,
+  ConstantsUtil
 } from '@web3modal/core'
 import { state } from 'lit/decorators.js'
 
@@ -71,7 +72,6 @@ export class W3mConvertPreviewView extends LitElement {
           this.toToken = newState.toToken
           this.transactionLoading = newState.transactionLoading
           this.gasPriceInUSD = newState.gasPriceInUSD
-          this.transactionLoading = newState.transactionLoading
           this.toTokenPriceInUSD = newState.toTokenPriceInUSD
           this.sourceTokenAmount = newState.sourceTokenAmount ?? ''
           this.toTokenAmount = newState.toTokenAmount ?? ''
@@ -91,16 +91,18 @@ export class W3mConvertPreviewView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private templateSwap() {
-    const sourceTokenText = `${formatNumberToLocalString(parseFloat(this.sourceTokenAmount))} ${this
-      .sourceToken?.symbol}`
-    const toTokenText = `${formatNumberToLocalString(parseFloat(this.toTokenAmount))} ${this.toToken
-      ?.symbol}`
+    const sourceTokenText = `${UiHelperUtil.formatNumberToLocalString(
+      parseFloat(this.sourceTokenAmount)
+    )} ${this.sourceToken?.symbol}`
+    const toTokenText = `${UiHelperUtil.formatNumberToLocalString(
+      parseFloat(this.toTokenAmount)
+    )} ${this.toToken?.symbol}`
 
     const sourceTokenValue = parseFloat(this.sourceTokenAmount) * this.sourceTokenPriceInUSD
     const toTokenValue =
       parseFloat(this.toTokenAmount) * this.toTokenPriceInUSD - (this.gasPriceInUSD || 0)
-    const sentPrice = formatNumberToLocalString(sourceTokenValue)
-    const receivePrice = formatNumberToLocalString(toTokenValue)
+    const sentPrice = UiHelperUtil.formatNumberToLocalString(sourceTokenValue)
+    const receivePrice = UiHelperUtil.formatNumberToLocalString(toTokenValue)
 
     return html`
       <wui-flex flexDirection="column" alignItems="center" gap="l">
@@ -118,7 +120,7 @@ export class W3mConvertPreviewView extends LitElement {
             <wui-token-button
               flexDirection="row-reverse"
               text=${sourceTokenText}
-              imageSrc=${this.sourceToken?.logoURI}
+              imageSrc=${this.sourceToken?.logoUri}
             >
             </wui-token-button>
           </wui-flex>
@@ -136,7 +138,7 @@ export class W3mConvertPreviewView extends LitElement {
             <wui-token-button
               flexDirection="row-reverse"
               text=${toTokenText}
-              imageSrc=${this.toToken?.logoURI}
+              imageSrc=${this.toToken?.logoUri}
             >
             </wui-token-button>
           </wui-flex>
@@ -192,9 +194,9 @@ export class W3mConvertPreviewView extends LitElement {
         sourceTokenPrice=${this.sourceTokenPriceInUSD}
         toTokenSymbol=${this.toToken?.symbol}
         toTokenConvertedAmount=${toTokenConvertedAmount}
-        gasPriceInUSD=${formatNumberToLocalString(this.gasPriceInUSD, 3)}
+        gasPriceInUSD=${UiHelperUtil.formatNumberToLocalString(this.gasPriceInUSD, 3)}
         .priceImpact=${this.priceImpact}
-        slippageRate=${0.5}
+        slippageRate=${ConstantsUtil.CONVERT_SLIPPAGE_TOLERANCE}
         .maxSlippage=${this.maxSlippage}
       ></w3m-convert-details>
     `

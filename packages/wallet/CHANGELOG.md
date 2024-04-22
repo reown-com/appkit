@@ -1,5 +1,14 @@
 # @web3modal/wallet
 
+## 4.1.10
+
+### Patch Changes
+
+- Fix activity list styling issue
+
+- Updated dependencies []:
+  - @web3modal/polyfills@4.1.10
+
 ## 4.1.9
 
 ### Patch Changes

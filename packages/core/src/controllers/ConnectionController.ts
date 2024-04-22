@@ -24,12 +24,12 @@ export interface ConnectionControllerClient {
   disconnect: () => Promise<void>
   signMessage: (message: string) => Promise<string>
   sendTransaction: (args: SendTransactionArgs) => Promise<`0x${string}` | null>
-  writeContract: (args: WriteContractArgs) => Promise<`0x${string}` | null>
-  getEstimatedGas: (args: EstimateGasTransactionArgs) => Promise<bigint>
+  estimateGas: (args: EstimateGasTransactionArgs) => Promise<bigint>
   parseUnits: (value: string, decimals: number) => bigint
   formatUnits: (value: bigint, decimals: number) => string
   connectExternal?: (options: ConnectExternalOptions) => Promise<void>
   checkInstalled?: (ids?: string[]) => boolean
+  writeContract: (args: WriteContractArgs) => Promise<`0x${string}` | null>
 }
 
 export interface ConnectionControllerState {
@@ -106,12 +106,12 @@ export const ConnectionController = {
     return this._getClient().sendTransaction(args)
   },
 
-  async writeContract(args: WriteContractArgs) {
-    return this._getClient().writeContract(args)
+  async estimateGas(args: EstimateGasTransactionArgs) {
+    return this._getClient().estimateGas(args)
   },
 
-  async getEstimatedGas(args: EstimateGasTransactionArgs) {
-    return this._getClient().getEstimatedGas(args)
+  async writeContract(args: WriteContractArgs) {
+    return this._getClient().writeContract(args)
   },
 
   checkInstalled(ids?: string[]) {

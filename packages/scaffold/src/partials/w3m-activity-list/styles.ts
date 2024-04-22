@@ -2,7 +2,7 @@ import { css } from 'lit'
 
 export default css`
   :host {
-    height: 100%;
+    min-height: 100%;
   }
 
   .contentContainer {
@@ -17,5 +17,9 @@ export default css`
 
   .contentContainer > .textContent {
     width: 65%;
+  }
+
+  .emptyContainer {
+    height: 100%;
   }
 `

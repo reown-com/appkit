@@ -77,7 +77,7 @@ export default css`
     letter-spacing: -1.28px;
     outline: none;
     caret-color: var(--wui-color-accent-100);
-    color: var(--wui-color-fg-200);
+    color: var(--wui-color-fg-100);
   }
 
   :host > wui-flex .swap-input input:focus-visible {

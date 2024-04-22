@@ -1,45 +1,64 @@
-export const tokenInfo = {
-  '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee': {
-    address: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
-    chainId: 137,
-    decimals: 18,
-    name: 'MATIC',
+export const tokenInfo = [
+  {
+    name: 'Matic Token',
     symbol: 'MATIC',
-    providers: ['1inch', 'Curve Token List'],
-    logoURI: 'https://tokens.1inch.io/0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0.png',
-    tags: ['native']
-  },
-  '0xb33eaad8d922b1083446dc23f610c2567fb5180f': {
-    address: '0xb33eaad8d922b1083446dc23f610c2567fb5180f',
-    chainId: 137,
+    chainId: 'eip155:137',
+    value: 15.945686877137186,
+    price: 0.6990173876,
     decimals: 18,
-    name: 'Uniswap',
-    symbol: 'UNI',
-    providers: [
-      '1inch',
-      'CoinGecko',
-      'Kleros Tokens',
-      'Quickswap Token List',
-      'Trust Wallet Assets',
-      'Uniswap Labs Default'
-    ],
-    logoURI: 'https://tokens.1inch.io/0x1f9840a85d5af5bf1d1762f925bdaddc4201f984.png',
-    tags: ['tokens']
+    quantity: {
+      numeric: '22.811574018044047908',
+      decimals: '18'
+    },
+    logoUri: 'https://token-icons.s3.amazonaws.com/0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0.png'
+  },
+  {
+    name: 'Tether USD',
+    symbol: 'USDT',
+    chainId: 'eip155:137',
+    address: 'eip155:137:0xc2132d05d31c914a87c6611c10748aeb04b58e8f',
+    value: 0.8888156632489365,
+    price: 1.0000570041,
+    decimals: 6,
+    quantity: {
+      numeric: '0.888765',
+      decimals: '6'
+    },
+    logoUri: 'https://token-icons.s3.amazonaws.com/0xdac17f958d2ee523a2206206994597c13d831ec7.png'
+  },
+  {
+    name: 'ShapeShift FOX',
+    symbol: 'FOX',
+    chainId: 'eip155:137',
+    address: 'eip155:137:0x65a05db8322701724c197af82c9cae41195b0aa8',
+    value: 0.818151429070586,
+    price: 0.0875161861,
+    decimals: 18,
+    quantity: {
+      numeric: '9.348572710146769370',
+      decimals: '18'
+    },
+    logoUri: 'https://token-icons.s3.amazonaws.com/0xc770eefad204b5180df6a14ee197d99d808ee52d.png'
+  },
+  {
+    name: 'SMARTMALL TOKEN',
+    symbol: 'SMT',
+    chainId: 'eip155:137',
+    address: 'eip155:137:0x658cda444ac43b0a7da13d638700931319b64014',
+    price: 0,
+    decimals: 18,
+    quantity: {
+      numeric: '0.110019000000000000',
+      decimals: '18'
+    },
+    logoUri: ''
   }
-}
-
-export const balance = {
-  '0x65a05db8322701724c197af82c9cae41195b0aa8': '9348572710146769370',
-  '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee': '4960248983278245480',
-  '0xb33eaad8d922b1083446dc23f610c2567fb5180f': '564297973603949455',
-  '0xc2132d05d31c914a87c6611c10748aeb04b58e8f': '888765',
-  '0x2c89bbc92bd86f8075d1decc58c7f4e0107f286b': '219869721034228067'
-}
+]
 
 export const prices = {
-  '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee': '0.93508248',
-  '0x65a05db8322701724c197af82c9cae41195b0aa8': '0.10315220553291868',
-  '0xb33eaad8d922b1083446dc23f610c2567fb5180f': '11.772471201328177',
-  '0xc2132d05d31c914a87c6611c10748aeb04b58e8f': '0.9995840116762155',
-  '0x2c89bbc92bd86f8075d1decc58c7f4e0107f286b': '52.09209274652567'
+  'eip155:137:0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee': 0.93508248,
+  'eip155:137:0x65a05db8322701724c197af82c9cae41195b0aa8': 0.10315220553291868,
+  'eip155:137:0xb33eaad8d922b1083446dc23f610c2567fb5180f': 11.772471201328177,
+  'eip155:137:0xc2132d05d31c914a87c6611c10748aeb04b58e8f': 0.9995840116762155,
+  'eip155:137:0x2c89bbc92bd86f8075d1decc58c7f4e0107f286b': 52.0920927465256
 }

@@ -155,7 +155,7 @@ export const ConstantsUtil = {
 
   NATIVE_TOKEN_ADDRESS: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
 
-  CONVERT_SLIPPAGE_TOLERANCE: '0.5'
+  CONVERT_SLIPPAGE_TOLERANCE: 1
 }
 
 export type CoinbasePaySDKChainNameValues =

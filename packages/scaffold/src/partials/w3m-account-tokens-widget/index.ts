@@ -9,8 +9,6 @@ export class W3mAccountTokensWidget extends LitElement {
   public static override styles = styles
 
   // -- Members ------------------------------------------- //
-  @state() private watchTokenBalance?: NodeJS.Timeout
-
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
@@ -25,12 +23,10 @@ export class W3mAccountTokensWidget extends LitElement {
         })
       ]
     )
-    this.watchConvertValues()
   }
 
   public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
-    clearInterval(this.watchTokenBalance)
   }
 
   // -- Render -------------------------------------------- //
@@ -39,10 +35,6 @@ export class W3mAccountTokensWidget extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
-  private watchConvertValues() {
-    this.watchTokenBalance = setInterval(() => AccountController.fetchTokenBalance(), 1000)
-  }
-
   private tokenTemplate() {
     if (this.tokenBalance && this.tokenBalance?.length > 0) {
       return html`<wui-flex class="contentContainer" flexDirection="column" gap="xs">

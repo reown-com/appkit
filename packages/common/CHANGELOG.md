@@ -1,5 +1,11 @@
 # @web3modal/common
 
+## 4.1.10
+
+### Patch Changes
+
+- Fix activity list styling issue
+
 ## 4.1.9
 
 ### Patch Changes

@@ -1,7 +1,6 @@
 import { beforeAll, describe, expect, it } from 'vitest'
-import { AccountController, ConvertController } from '../../index.js'
+import { AccountController, ConvertController, type ConvertTokenWithBalance } from '../../index.js'
 import { prices, tokenInfo } from '../mocks/ConvertController.js'
-import type { TokenInfo } from '../../src/utils/ConvertApiUtil.js'
 import { INITIAL_GAS_LIMIT } from '../../src/controllers/ConvertController.js'
 
 // - Mocks ---------------------------------------------------------------------
@@ -9,17 +8,16 @@ const caipAddress = 'eip155:1:0x123'
 const gasLimit = BigInt(INITIAL_GAS_LIMIT)
 const gasFee = BigInt(455966887160)
 
-const sourceTokenAddress = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
-const toTokenAddress = '0xb33eaad8d922b1083446dc23f610c2567fb5180f'
+const sourceTokenAddress = 'eip155:137:0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
 
-const sourceToken = tokenInfo[sourceTokenAddress] as TokenInfo
-const toToken = tokenInfo[toTokenAddress] as TokenInfo
+const sourceToken = tokenInfo[0] as ConvertTokenWithBalance
+const toToken = tokenInfo[1] as ConvertTokenWithBalance
 
 // - Helpers
 function setSourceTokenAmount(value: string) {
   ConvertController.setSourceTokenAmount(value)
   const toTokenAmount = ConvertController.getToAmount()
-  const toTokenValues = ConvertController.getToTokenValues(toTokenAmount, toToken.decimals)
+  const toTokenValues = ConvertController.getToTokenValues(toTokenAmount, toToken?.decimals)
   ConvertController.state.toTokenAmount = toTokenValues.toTokenAmount
   ConvertController.state.toTokenPriceInUSD = toTokenValues.toTokenPriceInUSD
 }
@@ -28,7 +26,7 @@ function setSourceTokenAmount(value: string) {
 beforeAll(() => {
   AccountController.setCaipAddress(caipAddress)
   ConvertController.state.tokensPriceMap = prices
-  ConvertController.state.networkPrice = prices[sourceTokenAddress]
+  ConvertController.state.networkPrice = prices[sourceTokenAddress].toString()
   ConvertController.state.networkBalanceInUSD = '2'
   ConvertController.state.gasPriceInUSD = ConvertController.calculateGasPriceInUSD(gasLimit, gasFee)
   ConvertController.setSourceToken(sourceToken)

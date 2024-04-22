@@ -10,9 +10,9 @@ import {
   watchAccount,
   watchConnectors,
   waitForTransactionReceipt,
-  estimateGas,
-  getAccount,
-  writeContract
+  estimateGas as wagmiEstimateGas,
+  writeContract as wagmiWriteContract,
+  getAccount
 } from '@wagmi/core'
 import { mainnet } from 'viem/chains'
 import { prepareTransactionRequest, sendTransaction as wagmiSendTransaction } from '@wagmi/core'
@@ -41,8 +41,8 @@ import {
   getEmailCaipNetworks,
   getWalletConnectCaipNetworks
 } from './utils/helpers.js'
-import { W3mFrameHelpers, W3mFrameRpcConstants } from '@web3modal/wallet'
-import type { W3mFrameProvider } from '@web3modal/wallet'
+import { W3mFrameConstants, W3mFrameHelpers, W3mFrameRpcConstants } from '@web3modal/wallet'
+import type { W3mFrameProvider, W3mFrameTypes } from '@web3modal/wallet'
 import { NetworkUtil } from '@web3modal/common'
 import type { defaultWagmiConfig as coreConfig } from './utils/defaultWagmiCoreConfig.js'
 import type { defaultWagmiConfig as reactConfig } from './utils/defaultWagmiReactConfig.js'
@@ -175,9 +175,9 @@ export class Web3Modal extends Web3ModalScaffold {
 
       signMessage: async message => signMessage(this.wagmiConfig, { message }),
 
-      getEstimatedGas: async args => {
+      estimateGas: async args => {
         try {
-          return await estimateGas(this.wagmiConfig, {
+          return await wagmiEstimateGas(this.wagmiConfig, {
             account: args.address,
             to: args.to,
             data: args.data,
@@ -186,20 +186,6 @@ export class Web3Modal extends Web3ModalScaffold {
         } catch (error) {
           return 0n
         }
-      },
-
-      writeContract: async (data: WriteContractArgs) => {
-        const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
-
-        const tx = await writeContract(wagmiConfig, {
-          chainId,
-          address: data.tokenAddress,
-          abi: erc20ABI,
-          functionName: 'transfer',
-          args: [data.receiverAddress, data.tokenAmount]
-        })
-
-        return tx
       },
 
       sendTransaction: async (data: SendTransactionArgs) => {
@@ -216,12 +202,24 @@ export class Web3Modal extends Web3ModalScaffold {
           type: 'legacy' as const
         }
 
-        // eslint-disable-next-line @typescript-eslint/prefer-ts-expect-error, @typescript-eslint/ban-ts-comment
-        // @ts-ignore
         await prepareTransactionRequest(this.wagmiConfig, txParams)
         const tx = await wagmiSendTransaction(this.wagmiConfig, txParams)
 
         await waitForTransactionReceipt(this.wagmiConfig, { hash: tx, timeout: 25000 })
+
+        return tx
+      },
+
+      writeContract: async (data: WriteContractArgs) => {
+        const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
+
+        const tx = await wagmiWriteContract(wagmiConfig, {
+          chainId,
+          address: data.tokenAddress,
+          abi: erc20ABI,
+          functionName: 'transfer',
+          args: [data.receiverAddress, data.tokenAmount]
+        })
 
         return tx
       },
@@ -479,11 +477,11 @@ export class Web3Modal extends Web3ModalScaffold {
   ) {
     if (typeof window !== 'undefined' && connector) {
       super.setLoading(true)
-
       const provider = (await connector.getProvider()) as W3mFrameProvider
       const isLoginEmailUsed = provider.getLoginEmailUsed()
 
       super.setLoading(isLoginEmailUsed)
+
       if (isLoginEmailUsed) {
         this.setIsConnected(false)
       }
@@ -511,32 +509,32 @@ export class Web3Modal extends Web3ModalScaffold {
         }
       })
 
-      provider.onRpcResponse(receive => {
-        // eslint-disable-next-line @typescript-eslint/prefer-ts-expect-error, @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        const payload = receive?.payload
-        // eslint-disable-next-line @typescript-eslint/prefer-ts-expect-error, @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        const isError = receive?.type === '@w3m-frame/RPC_REQUEST_ERROR'
+      provider.onRpcResponse(response => {
+        const responseType = W3mFrameHelpers.getResponseType(response)
 
-        if (isError && super.isOpen()) {
-          if (super.isTransactionStackEmpty()) {
-            super.close()
-          } else {
-            super.popTransactionStack(true)
+        switch (responseType) {
+          case W3mFrameConstants.RPC_RESPONSE_TYPE_ERROR: {
+            const isModalOpen = super.isOpen()
+
+            if (isModalOpen) {
+              if (super.isTransactionStackEmpty()) {
+                super.close()
+              } else {
+                super.popTransactionStack(true)
+              }
+            }
+            break
           }
-        }
-
-        const isPayloadString = typeof payload === 'string'
-        const isAddress = isPayloadString ? payload?.startsWith('0x') : false
-        const isCompleted = isAddress && payload?.length > 10
-
-        if (isCompleted) {
-          if (super.isTransactionStackEmpty()) {
-            super.close()
-          } else {
-            super.popTransactionStack()
+          case W3mFrameConstants.RPC_RESPONSE_TYPE_TX: {
+            if (super.isTransactionStackEmpty()) {
+              super.close()
+            } else {
+              super.popTransactionStack()
+            }
+            break
           }
+          default:
+            break
         }
       })
 
@@ -551,6 +549,7 @@ export class Web3Modal extends Web3ModalScaffold {
       provider.onIsConnected(req => {
         this.setIsConnected(true)
         this.setSmartAccountDeployed(Boolean(req.smartAccountDeployed))
+        this.setPreferredAccountType(req.preferredAccountType as W3mFrameTypes.AccountType)
         super.setLoading(false)
       })
 
@@ -558,7 +557,7 @@ export class Web3Modal extends Web3ModalScaffold {
         this.setSmartAccountEnabledNetworks(networks)
       })
 
-      provider.onSetPreferredAccount(({ address }) => {
+      provider.onSetPreferredAccount(({ address, type }) => {
         if (!address) {
           return
         }
@@ -568,7 +567,7 @@ export class Web3Modal extends Web3ModalScaffold {
           chainId,
           isConnected: true,
           connector
-        })
+        }).then(() => this.setPreferredAccountType(type as W3mFrameTypes.AccountType))
       })
     }
   }

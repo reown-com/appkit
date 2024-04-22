@@ -85,22 +85,6 @@ export class Web3ModalScaffold {
     ModalController.close()
   }
 
-  public redirect(route: RouterControllerState['view']) {
-    RouterController.push(route)
-  }
-
-  public popTransactionStack(cancel?: boolean) {
-    RouterController.popTransactionStack(cancel)
-  }
-
-  public isOpen() {
-    return ModalController.state.open
-  }
-
-  public isTransactionStackEmpty() {
-    return RouterController.state.transactionStack.length === 0
-  }
-
   public setLoading(loading: ModalControllerState['loading']) {
     ModalController.setLoading(loading)
   }
@@ -160,6 +144,22 @@ export class Web3ModalScaffold {
   }
 
   // -- Protected ----------------------------------------------------------------
+  protected redirect(route: RouterControllerState['view']) {
+    RouterController.push(route)
+  }
+
+  protected popTransactionStack(cancel?: boolean) {
+    RouterController.popTransactionStack(cancel)
+  }
+
+  protected isOpen() {
+    return ModalController.state.open
+  }
+
+  protected isTransactionStackEmpty() {
+    return RouterController.state.transactionStack.length === 0
+  }
+
   protected setIsConnected: (typeof AccountController)['setIsConnected'] = isConnected => {
     AccountController.setIsConnected(isConnected)
   }
@@ -240,6 +240,11 @@ export class Web3ModalScaffold {
   protected setSmartAccountEnabledNetworks: (typeof NetworkController)['setSmartAccountEnabledNetworks'] =
     smartAccountEnabledNetworks => {
       NetworkController.setSmartAccountEnabledNetworks(smartAccountEnabledNetworks)
+    }
+
+  protected setPreferredAccountType: (typeof AccountController)['setPreferredAccountType'] =
+    preferredAccountType => {
+      AccountController.setPreferredAccountType(preferredAccountType)
     }
 
   // -- Private ------------------------------------------------------------------
