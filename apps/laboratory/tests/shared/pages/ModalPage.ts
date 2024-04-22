@@ -214,7 +214,8 @@ export class ModalPage {
     await this.page.getByTestId('account-button').click()
     await this.page.getByTestId('w3m-account-select-network').click()
     await this.page.getByTestId(`w3m-network-switch-${network}`).click()
-    await this.page.getByTestId('w3m-header-close').click()
+    // Network switch might take a second or two
+    await this.page.waitForTimeout(2000)
   }
 
   async clickWalletDeeplink() {
