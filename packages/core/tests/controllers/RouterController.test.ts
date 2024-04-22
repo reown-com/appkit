@@ -6,7 +6,8 @@ describe('RouterController', () => {
   it('should have valid default state', () => {
     expect(RouterController.state).toEqual({
       view: 'Connect',
-      history: ['Connect']
+      history: ['Connect'],
+      transactionStack: []
     })
   })
 
@@ -14,7 +15,8 @@ describe('RouterController', () => {
     RouterController.push('Account')
     expect(RouterController.state).toEqual({
       view: 'Account',
-      history: ['Connect', 'Account']
+      history: ['Connect', 'Account'],
+      transactionStack: []
     })
   })
 
@@ -22,7 +24,8 @@ describe('RouterController', () => {
     RouterController.push('Account')
     expect(RouterController.state).toEqual({
       view: 'Account',
-      history: ['Connect', 'Account']
+      history: ['Connect', 'Account'],
+      transactionStack: []
     })
   })
 
@@ -30,7 +33,8 @@ describe('RouterController', () => {
     RouterController.goBack()
     expect(RouterController.state).toEqual({
       view: 'Connect',
-      history: ['Connect']
+      history: ['Connect'],
+      transactionStack: []
     })
   })
 
@@ -38,7 +42,8 @@ describe('RouterController', () => {
     RouterController.goBack()
     expect(RouterController.state).toEqual({
       view: 'Connect',
-      history: ['Connect']
+      history: ['Connect'],
+      transactionStack: []
     })
   })
 
@@ -46,7 +51,8 @@ describe('RouterController', () => {
     RouterController.reset('Account')
     expect(RouterController.state).toEqual({
       view: 'Account',
-      history: ['Account']
+      history: ['Account'],
+      transactionStack: []
     })
   })
 
@@ -55,7 +61,8 @@ describe('RouterController', () => {
     RouterController.replace('Networks')
     expect(RouterController.state).toEqual({
       view: 'Networks',
-      history: ['Account', 'Networks']
+      history: ['Account', 'Networks'],
+      transactionStack: []
     })
   })
 
@@ -68,7 +75,8 @@ describe('RouterController', () => {
       history: ['Account', 'Networks', 'ConnectingExternal'],
       data: {
         connector: { id: 'test', type: 'WALLET_CONNECT' }
-      }
+      },
+      transactionStack: []
     })
   })
 })

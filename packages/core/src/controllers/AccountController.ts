@@ -5,6 +5,9 @@ import type { AccountType, CaipAddress, ConnectedWalletInfo } from '../utils/Typ
 import type { Balance } from '@web3modal/common'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { SnackController } from './SnackController.js'
+import { ConvertController } from './ConvertController.js'
+import { ConvertApiUtil } from '../utils/ConvertApiUtil.js'
+import type { W3mFrameTypes } from '@web3modal/wallet'
 
 // -- Types --------------------------------------------- //
 export interface AccountControllerState {
@@ -23,6 +26,7 @@ export interface AccountControllerState {
   tokenBalance?: Balance[]
   shouldUpdateToAddress?: string
   connectedWalletInfo?: ConnectedWalletInfo
+  preferredAccountType?: W3mFrameTypes.AccountType
 }
 
 type StateKey = keyof AccountControllerState
@@ -107,12 +111,17 @@ export const AccountController = {
     state.connectedWalletInfo = connectedWalletInfo
   },
 
+  setPreferredAccountType(preferredAccountType: AccountControllerState['preferredAccountType']) {
+    state.preferredAccountType = preferredAccountType
+  },
+
   async fetchTokenBalance() {
     try {
       if (state.address) {
         const response = await BlockchainApiController.getBalance(state.address)
 
         this.setTokenBalance(response.balances)
+        ConvertController.setBalances(ConvertApiUtil.mapBalancesToConvertTokens(response.balances))
       }
     } catch (error) {
       SnackController.showError('Failed to fetch token balance')
@@ -133,5 +142,6 @@ export const AccountController = {
     state.tokenBalance = []
     state.shouldUpdateToAddress = undefined
     state.connectedWalletInfo = undefined
+    state.preferredAccountType = undefined
   }
 }
