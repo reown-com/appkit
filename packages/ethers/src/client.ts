@@ -8,6 +8,7 @@ import type {
   LibraryOptions,
   NetworkControllerClient,
   PublicStateControllerState,
+  SendTransactionArgs,
   Token
 } from '@web3modal/scaffold'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
@@ -26,7 +27,9 @@ import {
   formatEther,
   JsonRpcProvider,
   InfuraProvider,
-  getAddress as getOriginalAddress
+  getAddress as getOriginalAddress,
+  parseUnits,
+  formatUnits
 } from 'ethers'
 import {
   EthersConstantsUtil,
@@ -35,8 +38,15 @@ import {
 } from '@web3modal/scaffold-utils/ethers'
 import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider'
 import type { Eip1193Provider } from 'ethers'
-import { W3mFrameProvider, W3mFrameHelpers, W3mFrameRpcConstants } from '@web3modal/wallet'
+import {
+  W3mFrameProvider,
+  W3mFrameHelpers,
+  W3mFrameRpcConstants,
+  W3mFrameConstants
+} from '@web3modal/wallet'
 import type { CombinedProvider } from '@web3modal/scaffold-utils/ethers'
+import { BrowserProvider } from 'ethers'
+import { JsonRpcSigner } from 'ethers'
 import { NetworkUtil } from '@web3modal/common'
 import type { W3mFrameTypes } from '@web3modal/wallet'
 
@@ -270,6 +280,67 @@ export class Web3Modal extends Web3ModalScaffold {
         })
 
         return signature as `0x${string}`
+      },
+
+      parseUnits: (value: string, decimals: number) => parseUnits(value, decimals),
+
+      formatUnits: (value: bigint, decimals: number) => formatUnits(value, decimals),
+
+      async estimateGas(data) {
+        const chainId = EthersStoreUtil.state.chainId
+        const provider = EthersStoreUtil.state.provider
+        const address = EthersStoreUtil.state.address
+
+        if (!provider) {
+          throw new Error('connectionControllerClient:sendTransaction - provider is undefined')
+        }
+
+        if (!address) {
+          throw new Error('connectionControllerClient:sendTransaction - address is undefined')
+        }
+
+        const txParams = {
+          from: data.address,
+          to: data.to,
+          data: data.data,
+          type: 0
+        }
+
+        const browserProvider = new BrowserProvider(provider, chainId)
+        const signer = new JsonRpcSigner(browserProvider, address)
+        const gas = await signer.estimateGas(txParams)
+
+        return gas
+      },
+
+      sendTransaction: async (data: SendTransactionArgs) => {
+        const chainId = EthersStoreUtil.state.chainId
+        const provider = EthersStoreUtil.state.provider
+        const address = EthersStoreUtil.state.address
+
+        if (!provider) {
+          throw new Error('connectionControllerClient:sendTransaction - provider is undefined')
+        }
+
+        if (!address) {
+          throw new Error('connectionControllerClient:sendTransaction - address is undefined')
+        }
+
+        const txParams = {
+          to: data.to,
+          value: data.value,
+          gasLimit: data.gas,
+          gasPrice: data.gasPrice,
+          data: data.data,
+          type: 0
+        }
+
+        const browserProvider = new BrowserProvider(provider, chainId)
+        const signer = new JsonRpcSigner(browserProvider, address)
+        const txResponse = await signer.sendTransaction(txParams)
+        const txReceipt = await txResponse.wait()
+
+        return (txReceipt?.hash as `0x${string}`) || null
       }
     }
 
@@ -756,13 +827,17 @@ export class Web3Modal extends Web3ModalScaffold {
   private watchEmail() {
     if (this.emailProvider) {
       this.emailProvider.onRpcRequest(request => {
-        // We only open the modal if it's not a safe (auto-approve)
         if (W3mFrameHelpers.checkIfRequestExists(request)) {
           if (!W3mFrameHelpers.checkIfRequestIsAllowed(request)) {
-            super.open({ view: 'ApproveTransaction' })
+            if (super.isOpen()) {
+              if (!super.isTransactionStackEmpty()) {
+                super.redirect('ApproveTransaction')
+              }
+            } else {
+              super.open({ view: 'ApproveTransaction' })
+            }
           }
         } else {
-          this.emailProvider?.rejectRpcRequest()
           super.open()
           const method = W3mFrameHelpers.getRequestMethod(request)
           // eslint-disable-next-line no-console
@@ -772,8 +847,33 @@ export class Web3Modal extends Web3ModalScaffold {
           }, 300)
         }
       })
-      this.emailProvider.onRpcResponse(() => {
-        super.close()
+      this.emailProvider.onRpcResponse(response => {
+        const responseType = W3mFrameHelpers.getResponseType(response)
+
+        switch (responseType) {
+          case W3mFrameConstants.RPC_RESPONSE_TYPE_ERROR: {
+            const isModalOpen = super.isOpen()
+
+            if (isModalOpen) {
+              if (super.isTransactionStackEmpty()) {
+                super.close()
+              } else {
+                super.popTransactionStack(true)
+              }
+            }
+            break
+          }
+          case W3mFrameConstants.RPC_RESPONSE_TYPE_TX: {
+            if (super.isTransactionStackEmpty()) {
+              super.close()
+            } else {
+              super.popTransactionStack()
+            }
+            break
+          }
+          default:
+            break
+        }
       })
       this.emailProvider.onNotConnected(() => {
         this.setIsConnected(false)
