@@ -123,11 +123,8 @@ export const EnsController = {
 
     try {
       RouterController.pushTransactionStack({
-        view: 'Account',
+        view: 'RegisterAccountNameSuccess',
         goBack: false,
-        onSuccess() {
-          state.loading = false
-        },
         onCancel() {
           state.loading = false
         }
@@ -150,10 +147,12 @@ export const EnsController = {
       })
 
       AccountController.setProfileName(`${name}.wc.ink`)
+      RouterController.replace('RegisterAccountNameSuccess')
       state.loading = false
     } catch (e) {
       state.loading = false
       const errorMessage = this.parseEnsApiError(e, `Error registering name ${name}`)
+      RouterController.replace('RegisterAccountName')
       throw new Error(errorMessage)
     }
   },
@@ -162,6 +161,7 @@ export const EnsController = {
   },
   parseEnsApiError(error: unknown, defaultError: string) {
     const ensError = error as BlockchainApiEnsError
+
     return ensError?.reasons?.[0]?.description || defaultError
   }
 }

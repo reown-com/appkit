@@ -53,6 +53,7 @@ function headings() {
     OnRampTokenSelect: 'Select Token',
     OnRampFiatSelect: 'Select Currency',
     RegisterAccountName: 'Choose name',
+    RegisterAccountNameSuccess: '',
     WalletReceive: 'Receive',
     WalletCompatibleNetworks: 'Compatible Networks',
     Convert: 'Convert',

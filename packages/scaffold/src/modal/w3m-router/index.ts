@@ -85,6 +85,8 @@ export class W3mRouter extends LitElement {
         return html`<w3m-networks-view></w3m-networks-view>`
       case 'RegisterAccountName':
         return html`<w3m-register-account-name-view></w3m-register-account-name-view>`
+      case 'RegisterAccountNameSuccess':
+        return html`<w3m-register-account-name-success-view></w3m-register-account-name-success-view>`
       case 'SwitchNetwork':
         return html`<w3m-network-switch-view></w3m-network-switch-view>`
       case 'GetWallet':
@@ -133,6 +135,7 @@ export class W3mRouter extends LitElement {
         return html`<w3m-what-is-a-network-view></w3m-what-is-a-network-view>`
       case 'WhatIsAWallet':
         return html`<w3m-what-is-a-wallet-view></w3m-what-is-a-wallet-view>`
+
       default:
         return html`<w3m-connect-view></w3m-connect-view>`
     }

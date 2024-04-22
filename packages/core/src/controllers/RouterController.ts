@@ -34,6 +34,7 @@ export interface RouterControllerState {
     | 'OnRampProviders'
     | 'OnRampTokenSelect'
     | 'RegisterAccountName'
+    | 'RegisterAccountNameSuccess'
     | 'SwitchNetwork'
     | 'Transactions'
     | 'UnsupportedChain'
@@ -119,7 +120,7 @@ export const RouterController = {
   },
 
   replace(view: RouterControllerState['view'], data?: RouterControllerState['data']) {
-    if (state.history.length > 1 && state.history.at(-1) !== view) {
+    if (state.history.length > 0 && state.history.at(-1) !== view) {
       state.view = view
       state.history[state.history.length - 1] = view
       state.data = data

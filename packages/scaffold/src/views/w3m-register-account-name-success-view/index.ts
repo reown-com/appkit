@@ -1,15 +1,11 @@
 import { customElement } from '@web3modal/ui'
 import { RouterController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
 import styles from './styles.js'
 
-@customElement('w3m-choose-account-name-view')
-export class W3mChooseAccountNameView extends LitElement {
+@customElement('w3m-register-account-name-success-view')
+export class W3mRegisterAccountNameSuccess extends LitElement {
   public static override styles = styles
-
-  // -- State & Properties -------------------------------- //
-  @state() private loading = false
 
   // -- Render -------------------------------------------- //
   public override render() {
@@ -22,7 +18,7 @@ export class W3mChooseAccountNameView extends LitElement {
       >
         ${this.onboardingTemplate()} ${this.buttonsTemplate()}
         <wui-link>
-          Learn more about names
+          Learn more
           <wui-icon color="inherit" slot="iconRight" name="externalLink"></wui-icon>
         </wui-link>
       </wui-flex>
@@ -39,20 +35,19 @@ export class W3mChooseAccountNameView extends LitElement {
     >
       <wui-flex gap="s" alignItems="center" justifyContent="center">
         <wui-icon-box
-          icon="id"
           size="xl"
-          iconSize="xxl"
-          iconColor="fg-200"
-          backgroundColor="fg-200"
+          iconcolor="success-100"
+          backgroundcolor="success-100"
+          icon="checkmark"
+          background="opaque"
         ></wui-icon-box>
       </wui-flex>
       <wui-flex flexDirection="column" alignItems="center" gap="s">
         <wui-text align="center" variant="medium-600" color="fg-100">
-          Choose your account name
+          Account name chosen successfully
         </wui-text>
         <wui-text align="center" variant="paragraph-400" color="fg-100">
-          Finally say goodbye to 0x addresses, name your account to make it easier to exchange
-          assets
+          You can now fund your account and trade crypto
         </wui-text>
       </wui-flex>
     </wui-flex>`
@@ -64,20 +59,19 @@ export class W3mChooseAccountNameView extends LitElement {
       gap="s"
       class="continue-button-container"
     >
-      <wui-button
-        fullWidth
-        .loading=${this.loading}
-        size="lg"
-        borderRadius="xs"
-        @click=${() => RouterController.push('RegisterAccountName')}
-        >Choose name
+      <wui-button fullWidth size="lg" borderRadius="xs" @click=${this.redirectToAccount.bind(this)}
+        >Let's Go!
       </wui-button>
     </wui-flex>`
+  }
+
+  private redirectToAccount() {
+    RouterController.replace('Account')
   }
 }
 
 declare global {
   interface HTMLElementTagNameMap {
-    'w3m-choose-account-name-view': W3mChooseAccountNameView
+    'w3m-register-account-name-success-view': W3mRegisterAccountNameSuccess
   }
 }
