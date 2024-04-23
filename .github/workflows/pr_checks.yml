@@ -67,7 +67,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     permissions:
-      pull-requests: write
+      pull-requests: read
     continue-on-error: true
     steps:
       - name: checkout
@@ -99,7 +99,7 @@ jobs:
 
   ui-test:
     permissions:
-      pull-requests: write
+      pull-requests: read
     uses: ./.github/workflows/ui_tests.yml
     secrets: inherit
     with:
