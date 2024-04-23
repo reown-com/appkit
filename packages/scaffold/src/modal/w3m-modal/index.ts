@@ -89,7 +89,7 @@ export class W3mModal extends LitElement {
     initializeTheming(themeVariables, defaultThemeMode)
   }
 
-  private async onClose() {
+  private onClose() {
     this.open = false
     this.classList.remove('open')
     this.onScrollUnlock()
@@ -97,7 +97,7 @@ export class W3mModal extends LitElement {
     this.onRemoveKeyboardListener()
   }
 
-  private async onOpen() {
+  private onOpen() {
     this.open = true
     this.classList.add('open')
     this.onScrollLock()
