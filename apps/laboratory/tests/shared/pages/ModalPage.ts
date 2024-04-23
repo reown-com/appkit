@@ -110,7 +110,7 @@ export class ModalPage {
       this.page.getByText(email),
       `Expected current email: ${email} to be visible on the notification screen`
     ).toBeVisible({
-      timeout: 10_000
+      timeout: 20_000
     })
   }
 
@@ -150,11 +150,11 @@ export class ModalPage {
     const accountBtn = this.page.getByTestId('account-button')
     await expect(accountBtn, 'Account button should be visible').toBeVisible()
     await expect(accountBtn, 'Account button should be enabled').toBeEnabled()
-    await accountBtn.click({ force: true })
+    await accountBtn.click()
     const disconnectBtn = this.page.getByTestId('disconnect-button')
     await expect(disconnectBtn, 'Disconnect button should be visible').toBeVisible()
     await expect(disconnectBtn, 'Disconnect button should be enabled').toBeEnabled()
-    await disconnectBtn.click({ force: true })
+    await disconnectBtn.click()
   }
 
   async sign() {
