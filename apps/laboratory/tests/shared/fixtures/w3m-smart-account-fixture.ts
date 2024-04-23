@@ -26,7 +26,6 @@ export const testModalSmartAccount = base.extend<ModalFixture & { slowModalPage:
       await modalPage.openSettings()
       await modalPage.switchNetwork('Sepolia')
       await modalPage.closeModal()
-      await modalPage.page.waitForTimeout(1500)
       await use(modalPage)
     },
     { timeout: 90_000 }
