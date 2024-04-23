@@ -111,10 +111,8 @@ export function alphaWalletConnect(parameters: WalletConnectParameters) {
     async setup() {
       const provider = await this.getProvider().catch(() => null)
       if (!provider) return
-      if (!connect) {
-        connect = this.onConnect.bind(this)
-        provider.on('connect', connect)
-      }
+      connect = this.onConnect.bind(this)
+      provider.on('connect', connect)
       if (!sessionDelete) {
         sessionDelete = this.onSessionDelete.bind(this)
         provider.on('session_delete', sessionDelete)
@@ -391,10 +389,8 @@ export function alphaWalletConnect(parameters: WalletConnectParameters) {
         provider.removeListener('session_delete', sessionDelete)
         sessionDelete = undefined
       }
-      if (!connect) {
-        connect = this.onConnect.bind(this)
-        provider.on('connect', connect)
-      }
+      connect = this.onConnect.bind(this)
+      provider.on('connect', connect)
     },
     onDisplayUri(uri) {
       config.emitter.emit('message', { type: 'display_uri', data: uri })
