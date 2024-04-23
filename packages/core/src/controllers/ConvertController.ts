@@ -382,7 +382,7 @@ export const ConvertController = {
     const res = await ConvertApiUtil.fetchGasPrice()
 
     if (!res) {
-      return
+      return { gasPrice: null, gasPriceInUsd: null }
     }
 
     const value = res.standard
@@ -392,7 +392,6 @@ export const ConvertController = {
 
     state.gasPriceInUSD = gasPrice
 
-    // eslint-disable-next-line consistent-return
     return { gasPrice: gasFee, gasPriceInUSD: state.gasPriceInUSD }
   },
 

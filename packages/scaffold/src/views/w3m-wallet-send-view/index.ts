@@ -92,7 +92,7 @@ export class W3mWalletSendView extends LitElement {
   private async fetchNetworkPrice() {
     await ConvertController.getNetworkTokenPrice()
     const gas = await ConvertController.getInitialGasPrice()
-    if (gas) {
+    if (gas?.gasPrice && gas?.gasPriceInUSD) {
       SendController.setGasPrice(gas.gasPrice)
       SendController.setGasPriceInUsd(gas.gasPriceInUSD)
     }

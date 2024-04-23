@@ -35,7 +35,7 @@ import { formatUnits, parseUnits } from 'viem'
 import type { Hex } from 'viem'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
-import { ConstantsUtil, PresetsUtil, HelpersUtil, erc20ABI } from '@web3modal/scaffold-utils'
+import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
 import {
   getCaipDefaultChain,
   getEmailCaipNetworks,
@@ -216,8 +216,8 @@ export class Web3Modal extends Web3ModalScaffold {
         const tx = await wagmiWriteContract(wagmiConfig, {
           chainId,
           address: data.tokenAddress,
-          abi: erc20ABI,
-          functionName: 'transfer',
+          abi: data.abi,
+          functionName: data.method,
           args: [data.receiverAddress, data.tokenAmount]
         })
 

@@ -11,6 +11,7 @@ import {
   SendController,
   SnackController
 } from '@web3modal/core'
+import { erc20ABI } from '@web3modal/scaffold-utils'
 
 @customElement('w3m-wallet-send-preview-view')
 export class W3mWalletSendPreviewView extends LitElement {
@@ -155,7 +156,8 @@ export class W3mWalletSendPreviewView extends LitElement {
             ) as `0x${string}`,
             receiverAddress: this.receiverAddress as `0x${string}`,
             tokenAmount: amount,
-            method: 'transfer'
+            method: 'transfer',
+            abi: erc20ABI
           })
           SnackController.showSuccess('Transaction Successful')
         }

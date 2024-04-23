@@ -13,7 +13,7 @@ import type {
   WriteContractArgs
 } from '@web3modal/scaffold'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
-import { ConstantsUtil, PresetsUtil, HelpersUtil, erc20ABI } from '@web3modal/scaffold-utils'
+import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
 import EthereumProvider from '@walletconnect/ethereum-provider'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
 import type {
@@ -51,7 +51,6 @@ import {
 import type { CombinedProvider } from '@web3modal/scaffold-utils/ethers'
 import { NetworkUtil } from '@web3modal/common'
 import type { W3mFrameTypes } from '@web3modal/wallet'
-
 // -- Types ---------------------------------------------------------------------
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
   ethersConfig: ProviderType
@@ -354,7 +353,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
         const browserProvider = new BrowserProvider(provider, chainId)
         const signer = new JsonRpcSigner(browserProvider, address)
-        const contract = new Contract(data.tokenAddress, erc20ABI, signer)
+        const contract = new Contract(data.tokenAddress, data.abi, signer)
 
         if (!contract || !data.method) {
           throw new Error('Contract method is undefined')
