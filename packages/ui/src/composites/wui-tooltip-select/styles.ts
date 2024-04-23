@@ -25,6 +25,7 @@ export default css`
     left: 50%;
     transform: translate(-50%, -100%);
     opacity: 0;
+    display: none;
   }
 
   @media (hover: hover) and (pointer: fine) {

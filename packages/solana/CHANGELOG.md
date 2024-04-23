@@ -1,5 +1,73 @@
 # @web3modal/solana
 
+## 4.1.11
+
+### Patch Changes
+
+- refactor: Solana exported helper methods and proram instruction improvements
+- refactor: email and smart account improvements
+- refactor: unit test CI check improvements
+- feat: convert
+
+- Updated dependencies []:
+  - @web3modal/polyfills@4.1.11
+  - @web3modal/scaffold@4.1.11
+  - @web3modal/scaffold-react@4.1.11
+  - @web3modal/scaffold-utils@4.1.11
+  - @web3modal/scaffold-vue@4.1.11
+
+## 4.1.10
+
+### Patch Changes
+
+- Fix activity list styling issue
+
+- Updated dependencies []:
+  - @web3modal/scaffold@4.1.10
+  - @web3modal/polyfills@4.1.10
+  - @web3modal/scaffold-react@4.1.10
+  - @web3modal/scaffold-utils@4.1.10
+  - @web3modal/scaffold-vue@4.1.10
+
+## 4.1.9
+
+### Patch Changes
+
+- Blockchain API fix
+
+- Updated dependencies []:
+  - @web3modal/polyfills@4.1.9
+  - @web3modal/scaffold@4.1.9
+  - @web3modal/scaffold-react@4.1.9
+  - @web3modal/scaffold-utils@4.1.9
+  - @web3modal/scaffold-vue@4.1.9
+
+## 4.1.8
+
+### Patch Changes
+
+- Hotfix for redundant tokenbalance calls
+
+- Updated dependencies []:
+  - @web3modal/scaffold@4.1.8
+  - @web3modal/polyfills@4.1.8
+  - @web3modal/scaffold-react@4.1.8
+  - @web3modal/scaffold-utils@4.1.8
+  - @web3modal/scaffold-vue@4.1.8
+
+## 4.1.7
+
+### Patch Changes
+
+- Hotfix for inccorect state of w3m-button when email is enabled
+
+- Updated dependencies []:
+  - @web3modal/scaffold@4.1.7
+  - @web3modal/polyfills@4.1.7
+  - @web3modal/scaffold-react@4.1.7
+  - @web3modal/scaffold-utils@4.1.7
+  - @web3modal/scaffold-vue@4.1.7
+
 ## 4.1.6
 
 ### Patch Changes
@@ -12,6 +80,18 @@
   - @web3modal/scaffold-react@4.1.6
   - @web3modal/scaffold-utils@4.1.6
   - @web3modal/scaffold-vue@4.1.6
+
+## 4.1.6-a0733f5.0
+
+### Patch Changes
+
+- chore: canary release for siwe dependency
+
+- Updated dependencies []:
+  - @web3modal/ethers@4.1.6-a0733f5.0
+  - @web3modal/siwe@4.1.6-a0733f5.0
+  - @web3modal/solana@4.1.6-a0733f5.0
+  - @web3modal/wagmi@4.1.6-a0733f5.0
 
 ## 4.1.5
 

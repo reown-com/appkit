@@ -8,6 +8,7 @@ import type {
   LibraryOptions,
   NetworkControllerClient,
   PublicStateControllerState,
+  SendTransactionArgs,
   Token
 } from '@web3modal/scaffold'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
@@ -234,9 +235,6 @@ export class Web3Modal extends Web3ModalScaffold {
         const providerType = EthersStoreUtil.state.providerType
         localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
         EthersStoreUtil.reset()
-        if (siweConfig?.options?.signOutOnDisconnect) {
-          await siweConfig.signOut()
-        }
         if (providerType === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
           const WalletConnectProvider = provider
           await (WalletConnectProvider as unknown as EthereumProvider).disconnect()
@@ -257,6 +255,41 @@ export class Web3Modal extends Web3ModalScaffold {
         })
 
         return signature as `0x${string}`
+      },
+
+      parseUnits: (value: string, decimals: number) =>
+        ethers.utils.parseUnits(value, decimals).toBigInt(),
+
+      formatUnits: (value: bigint, decimals: number) => ethers.utils.formatUnits(value, decimals),
+
+      sendTransaction: async (data: SendTransactionArgs) => {
+        const provider = EthersStoreUtil.state.provider
+        const address = EthersStoreUtil.state.address
+
+        if (!provider) {
+          throw new Error('connectionControllerClient:sendTransaction - provider is undefined')
+        }
+
+        if (!address) {
+          throw new Error('connectionControllerClient:sendTransaction - address is undefined')
+        }
+
+        const txParams = {
+          to: data.to,
+          value: data.value,
+          gasLimit: data.gas,
+          gasPrice: data.gasPrice,
+          data: data.data,
+          type: 0
+        }
+
+        const browserProvider = new ethers.providers.Web3Provider(provider)
+        const signer = browserProvider.getSigner()
+
+        const txResponse = await signer.sendTransaction(txParams)
+        const txReceipt = await txResponse.wait()
+
+        return (txReceipt?.blockHash as `0x${string}`) || null
       }
     }
 
@@ -765,20 +798,28 @@ export class Web3Modal extends Web3ModalScaffold {
   private async syncProfile(address: Address) {
     const chainId = EthersStoreUtil.state.chainId
 
-    if (chainId === 1) {
-      const ensProvider = new ethers.providers.InfuraProvider('mainnet')
-      const name = await ensProvider.lookupAddress(address)
-      const avatar = await ensProvider.getAvatar(address)
+    try {
+      const { name, avatar } = await this.fetchIdentity({
+        address
+      })
+      this.setProfileName(name)
+      this.setProfileImage(avatar)
+    } catch {
+      if (chainId === 1) {
+        const ensProvider = new ethers.providers.InfuraProvider('mainnet')
+        const name = await ensProvider.lookupAddress(address)
+        const avatar = await ensProvider.getAvatar(address)
 
-      if (name) {
-        this.setProfileName(name)
+        if (name) {
+          this.setProfileName(name)
+        }
+        if (avatar) {
+          this.setProfileImage(avatar)
+        }
+      } else {
+        this.setProfileName(null)
+        this.setProfileImage(null)
       }
-      if (avatar) {
-        this.setProfileImage(avatar)
-      }
-    } else {
-      this.setProfileName(null)
-      this.setProfileImage(null)
     }
   }
 

@@ -1,11 +1,12 @@
 import { Mailsac } from '@mailsac/api'
+import { randomBytes } from 'crypto'
 const EMAIL_CHECK_TIMEOUT = 1000
 const MAX_EMAIL_CHECK = 16
 const EMAIL_APPROVE_BUTTON_TEXT = 'Approve this login'
 const APPROVE_URL_REGEX = /https:\/\/register.*/u
 const OTP_CODE_REGEX = /\d{3}\s?\d{3}/u
-const AVAILABLE_MAILSAC_ADDRESSES = 10
 const EMAIL_DOMAIN = 'web3modal.msdc.co'
+export const NOT_ENABLED_DOMAIN = 'w3ma.msdc.co'
 
 export class Email {
   // eslint-disable-next-line  @typescript-eslint/no-explicit-any
@@ -75,14 +76,9 @@ export class Email {
     throw new Error(`No code found in email: ${body}`)
   }
 
-  getEmailAddressToUse(index: number): string {
-    const maxIndex = AVAILABLE_MAILSAC_ADDRESSES - 1
-    if (index > maxIndex) {
-      throw new Error(
-        `No available Mailsac address. Requested index ${index}, maximum: ${maxIndex}`
-      )
-    }
+  getEmailAddressToUse(index: number, domain = EMAIL_DOMAIN): string {
+    const prefix = randomBytes(12).toString('hex')
 
-    return `tests-${index}@${EMAIL_DOMAIN}`
+    return `${prefix}-w${index}@${domain}`
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/common",
-  "version": "4.1.6",
+  "version": "4.1.11",
   "type": "module",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
@@ -13,7 +13,7 @@
     "build:common": "tsc --build",
     "watch": "tsc --watch",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run --dir tests --coverage.enabled --reporter=junit --coverage.reporter=json-summary --coverage.reporter=html",
+    "test": "vitest run --dir tests --coverage.enabled=true --coverage.reporter=json --coverage.reporter=json-summary --coverage.reportOnFailure=true",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
