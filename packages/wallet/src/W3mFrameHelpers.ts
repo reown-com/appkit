@@ -1,6 +1,11 @@
 import { W3mFrameStorage } from './W3mFrameStorage.js'
-import { W3mFrameConstants, W3mFrameRpcConstants } from './W3mFrameConstants.js'
+import {
+  W3mFrameConstants,
+  W3mFrameRpcConstants,
+  type W3mFrameConstantValue
+} from './W3mFrameConstants.js'
 import type { W3mFrameTypes } from './W3mFrameTypes.js'
+import { RegexUtil } from './RegexUtil.js'
 
 const RESTRICTED_TIMEZONES = [
   'ASIA/SHANGHAI',
@@ -65,6 +70,30 @@ export const W3mFrameHelpers = {
 
   getRequestMethod(request: unknown) {
     return (request as { payload: W3mFrameTypes.RPCRequest })?.payload?.method
+  },
+
+  getResponseType(response: unknown) {
+    const { type, payload } = response as {
+      type: W3mFrameConstantValue
+      payload: W3mFrameTypes.RPCResponse
+    }
+
+    const isError = type === W3mFrameConstants.FRAME_RPC_REQUEST_ERROR
+
+    if (isError) {
+      return W3mFrameConstants.RPC_RESPONSE_TYPE_ERROR
+    }
+
+    const isPayloadString = typeof payload === 'string'
+    const isTransactionHash =
+      isPayloadString &&
+      (payload.match(RegexUtil.transactionHash) || payload.match(RegexUtil.signedMessage))
+
+    if (isTransactionHash) {
+      return W3mFrameConstants.RPC_RESPONSE_TYPE_TX
+    }
+
+    return W3mFrameConstants.RPC_RESPONSE_TYPE_OBJECT
   },
 
   checkIfRequestIsAllowed(request: unknown) {
