@@ -379,6 +379,10 @@ export class Web3Modal extends Web3ModalScaffold {
     return EthersStoreUtil.state.chainId
   }
 
+  public getStatus() {
+    return EthersStoreUtil.state.status
+  }
+
   public getIsConnected() {
     return EthersStoreUtil.state.isConnected
   }
@@ -479,6 +483,9 @@ export class Web3Modal extends Web3ModalScaffold {
         await this.setWalletConnectProvider()
       }
     }
+
+    const isConnected = EthersStoreUtil.state.isConnected
+    EthersStoreUtil.setStatus(isConnected ? 'connected' : 'disconnected')
   }
 
   private checkActiveInjectedProvider(config: ProviderType) {
