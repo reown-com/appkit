@@ -29,18 +29,14 @@ testMEmail('it should switch network and sign', async ({ modalPage, modalValidat
   await modalPage.switchNetwork(targetChain)
   await modalValidator.expectNetwork(targetChain)
   await modalPage.closeModal()
-  await modalPage.page.waitForTimeout(1500)
   await modalPage.sign()
   await modalPage.approveSign()
   await modalValidator.expectAcceptedSign()
-
-  await modalPage.page.waitForTimeout(2000)
 
   targetChain = 'Ethereum'
   await modalPage.switchNetwork(targetChain)
   await modalValidator.expectNetwork(targetChain)
   await modalPage.closeModal()
-  await modalPage.page.waitForTimeout(1500)
   await modalPage.sign()
   await modalPage.approveSign()
   await modalValidator.expectAcceptedSign()
