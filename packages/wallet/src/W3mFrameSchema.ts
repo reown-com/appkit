@@ -56,6 +56,7 @@ export const AppSyncDappDataRequest = z.object({
     | `${'html' | 'react' | 'vue'}-wagmi-${string}`
     | `${'html' | 'react' | 'vue'}-ethers5-${string}`
     | `${'html' | 'react' | 'vue'}-ethers-${string}`
+    | `${'html' | 'react' | 'vue'}-web3-${string}`
     | `${'html' | 'react' | 'vue'}-solana-${string}`
   >,
   projectId: z.string()

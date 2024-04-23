@@ -5,7 +5,7 @@ import { getLocalBravePath, BRAVE_LINUX_PATH } from '../constants/browsers'
 
 const availableDevices = getAvailableDevices()
 
-const LIBRARIES = ['ethers', 'wagmi', 'solana'] as const
+const LIBRARIES = ['ethers', 'web3', 'wagmi', 'solana'] as const
 
 const PERMUTATIONS = availableDevices.flatMap(device =>
   LIBRARIES.map(library => ({ device, library }))
@@ -40,6 +40,10 @@ const customProjectProperties: CustomProjectProperties = {
     useOptions: braveOptions
   },
   'Desktop Brave/ethers': {
+    testIgnore: /(?:email\.spec\.ts|smart-account\.spec\.ts).*$/u,
+    useOptions: braveOptions
+  },
+  'Desktop Brave/web3': {
     testIgnore: /(?:email\.spec\.ts|smart-account\.spec\.ts).*$/u,
     useOptions: braveOptions
   },

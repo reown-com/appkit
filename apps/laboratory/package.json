@@ -41,7 +41,8 @@
     "siwe": "2.1.4",
     "valtio": "1.11.2",
     "viem": "2.9.3",
-    "wagmi": "2.5.7"
+    "wagmi": "2.5.7",
+    "web3": "^4.8.0"
   },
   "devDependencies": {
     "@aws-sdk/client-cloudwatch": "3.509.0",

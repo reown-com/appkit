@@ -64,6 +64,29 @@ export const ethersSdkOptions = [
   }
 ]
 
+export const web3SdkOptions = [
+  {
+    title: 'Default',
+    link: '/library/web3',
+    description: 'Basic configuration using web3 as a driving library'
+  },
+  {
+    title: 'SIWE',
+    link: '/library/web3-siwe/',
+    description: 'Configuration using web3 and implementing sign in with ethereum'
+  },
+  {
+    title: 'Email',
+    link: '/library/web3-email/',
+    description: 'Configuration using web3 and implementing email login'
+  },
+  {
+    title: 'Wallet',
+    link: '/library/web3-wallet/',
+    description: 'Configuration using web3 and implementing email wallet'
+  }
+]
+
 export const solanaSdkOptions = [
   {
     title: 'Default',
