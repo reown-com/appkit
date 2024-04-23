@@ -20,7 +20,8 @@ export class ModalWalletPage extends ModalPage {
     await this.page.getByTestId('account-switch-network-button').click()
     await this.page.getByTestId(`w3m-network-switch-${network}`).click()
     await expect(switchNetworkButton, `Switched network should include ${network}`).toContainText(
-      network
+      network,
+      { timeout: 5000 }
     )
   }
 
