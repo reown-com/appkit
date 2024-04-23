@@ -98,8 +98,6 @@ jobs:
           json-summary-path: ./coverage/coverage-merged-summary.json
 
   ui-test:
-    permissions:
-      pull-requests: read
     uses: ./.github/workflows/ui_tests.yml
     secrets: inherit
     with:
