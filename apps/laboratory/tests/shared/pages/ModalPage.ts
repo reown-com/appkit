@@ -28,6 +28,7 @@ export class ModalPage {
   }
 
   async load() {
+    await this.page.waitForTimeout(500)
     await this.page.goto(this.url)
   }
 
@@ -39,6 +40,7 @@ export class ModalPage {
   }
 
   async getConnectUri(): Promise<string> {
+    await this.page.waitForTimeout(500)
     await this.page.goto(this.url)
     await this.connectButton.click()
     const connect = this.page.getByTestId('wallet-selector-walletconnect')
@@ -102,6 +104,7 @@ export class ModalPage {
   }
 
   async loginWithEmail(email: string) {
+    await this.page.waitForTimeout(500)
     await this.page.goto(this.url)
     // Connect Button doesn't have a proper `disabled` attribute so we need to wait for the button to change the text
     await this.page
