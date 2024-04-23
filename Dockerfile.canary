@@ -16,4 +16,4 @@ ENV CI=true
 ENV SKIP_PLAYWRIGHT_WEBSERVER=true
 ENV BASE_URL=https://lab.web3modal.com/
 
-CMD ["./docker-canary.sh"]
+CMD ["bash", "./docker-canary.sh"]
