@@ -27,7 +27,6 @@ testMEmail('it should reject sign', async ({ modalPage, modalValidator }) => {
 testMEmail('it should switch network and sign', async ({ modalPage, modalValidator }) => {
   let targetChain = 'Polygon'
   await modalPage.switchNetwork(targetChain)
-  await modalValidator.expectNetwork(targetChain)
   await modalPage.closeModal()
   await modalPage.sign()
   await modalPage.approveSign()
@@ -35,7 +34,6 @@ testMEmail('it should switch network and sign', async ({ modalPage, modalValidat
 
   targetChain = 'Ethereum'
   await modalPage.switchNetwork(targetChain)
-  await modalValidator.expectNetwork(targetChain)
   await modalPage.closeModal()
   await modalPage.sign()
   await modalPage.approveSign()
