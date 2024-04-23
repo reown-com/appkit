@@ -115,7 +115,7 @@ export class ModalPage {
       this.page.getByText(email),
       `Expected current email: ${email} to be visible on the notification screen`
     ).toBeVisible({
-      timeout: 20_000
+      timeout: 10_000
     })
   }
 
@@ -211,9 +211,13 @@ export class ModalPage {
   }
 
   async switchNetwork(network: string) {
+    const switchNetworkButton = this.page.getByTestId('w3m-account-select-network')
     await this.page.getByTestId('account-button').click()
     await this.page.getByTestId('w3m-account-select-network').click()
     await this.page.getByTestId(`w3m-network-switch-${network}`).click()
+    await expect(switchNetworkButton, `Switched network should include ${network}`).toContainText(
+      network
+    )
   }
 
   async clickWalletDeeplink() {
