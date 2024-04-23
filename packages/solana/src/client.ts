@@ -147,19 +147,14 @@ export class Web3Modal extends Web3ModalScaffold {
         return signature as string
       },
 
-      estimateGas: async () => {
-        return await Promise.resolve(BigInt(0))
-      },
-
+      estimateGas: async () => await Promise.resolve(BigInt(0)),
       // -- Transaction methods ---------------------------------------------------
       /**
        *
        * These methods are supported only on `wagmi` and `ethers` since the Solana SDK does not support them in the same way.
        * These function definition is to have a type parity between the clients. Currently not in use.
        */
-      sendTransaction: async () => {
-        return await Promise.resolve('0x')
-      },
+      sendTransaction: async () => await Promise.resolve('0x'),
 
       parseUnits: () => BigInt(0),
 
