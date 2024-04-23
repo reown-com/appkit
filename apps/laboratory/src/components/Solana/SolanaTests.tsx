@@ -13,7 +13,8 @@ import {
 import { SolanaSignTransactionTest } from './SolanaSignTransactionTest'
 import { SolanaSendTransactionTest } from './SolanaSendTransactionTest'
 import { SolanaSignMessageTest } from './SolanaSignMessageTest'
-import { solana } from '../../utils/ChainsUtil'
+import { SolanaWriteContractTest } from './SolanaWriteContractTest'
+import { solana, solanaDevnet, solanaTestnet } from '../../utils/ChainsUtil'
 
 export function SolanaTests() {
   const { isConnected, currentChain } = useWeb3ModalAccount()
@@ -51,6 +52,17 @@ export function SolanaTests() {
             </Heading>
             <SolanaSendTransactionTest />
           </Box>
+          {(currentChain?.chainId === solanaTestnet.chainId ||
+            currentChain?.chainId === solanaDevnet.chainId) && (
+            <Stack divider={<StackDivider />} spacing="4">
+              <Box>
+                <Heading size="xs" textTransform="uppercase" pb="2">
+                  Counter Program Instruction
+                </Heading>
+                <SolanaWriteContractTest />
+              </Box>
+            </Stack>
+          )}
         </Stack>
       </CardBody>
     </Card>

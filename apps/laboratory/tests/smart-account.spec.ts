@@ -1,9 +1,9 @@
 import { testModalSmartAccount } from './shared/fixtures/w3m-smart-account-fixture'
 import type { ModalWalletPage } from './shared/pages/ModalWalletPage'
-import type { ModalWalletValidator } from './shared/validators/ModalWalletValidator'
+import { EOA, SMART_ACCOUNT } from './shared/validators/ModalWalletValidator'
+import { Email, NOT_ENABLED_DOMAIN } from './shared/utils/email'
 
-const NOT_ENABLED_SMART_ACCOUNT_INDEX = 10
-const NOT_ENABLED_SMART_ACCOUNT = 'web3modal-smart-account@mailsac.com'
+import type { ModalWalletValidator } from './shared/validators/ModalWalletValidator'
 
 const mailsacApiKey = process.env['MAILSAC_API_KEY']
 if (!mailsacApiKey) {
@@ -21,24 +21,21 @@ testModalSmartAccount('it should sign with eoa', async ({ modalPage, modalValida
 })
 
 testModalSmartAccount(
-  'it should switch to its smart account',
-  async ({ modalPage, modalValidator }, testInfo) => {
-    const walletModalPage = modalPage as ModalWalletPage
-    const walletModalValidator = modalValidator as ModalWalletValidator
-
-    await walletModalPage.togglePreferredAccountType()
-    await walletModalPage.openSettings()
-    await walletModalValidator.expectSmartAccountAddress(testInfo.parallelIndex)
-  }
-)
-
-testModalSmartAccount(
-  'it should sign with its smart account',
+  'it should switch to its smart account and sign',
   async ({ modalPage, modalValidator }) => {
     const walletModalPage = modalPage as ModalWalletPage
     const walletModalValidator = modalValidator as ModalWalletValidator
 
+    await walletModalPage.openAccount()
+    await walletModalValidator.expectActivateSmartAccountPromoVisible(true)
+
+    await walletModalPage.openSettings()
+    await walletModalValidator.expectChangePreferredAccountToShow(SMART_ACCOUNT)
     await walletModalPage.togglePreferredAccountType()
+    await walletModalValidator.expectChangePreferredAccountToShow(EOA)
+
+    await walletModalPage.closeModal()
+    await walletModalPage.page.waitForTimeout(1000)
 
     await walletModalPage.sign()
     await walletModalPage.approveSign()
@@ -48,31 +45,58 @@ testModalSmartAccount(
 
 testModalSmartAccount(
   'it should return to an eoa when switching to a non supported network',
-  async ({ modalPage, modalValidator }, testInfo) => {
+  async ({ modalPage, modalValidator }) => {
     const walletModalPage = modalPage as ModalWalletPage
     const walletModalValidator = modalValidator as ModalWalletValidator
 
-    await walletModalPage.togglePreferredAccountType()
-    await walletModalPage.switchNetwork('Avalanche')
+    await walletModalPage.openAccount()
     await walletModalPage.openSettings()
-    await walletModalValidator.expectEoaAddress(testInfo.parallelIndex)
+
+    const originalAddress = await walletModalPage.getAddress()
+
+    await walletModalPage.togglePreferredAccountType()
+    await walletModalValidator.expectChangePreferredAccountToShow(EOA)
+    await walletModalPage.switchNetwork('Avalanche')
+    await walletModalValidator.expectTogglePreferredTypeVisible(false)
+    await walletModalPage.closeModal()
+    await walletModalPage.page.waitForTimeout(1000)
+
+    await walletModalPage.openAccount()
+    await walletModalValidator.expectActivateSmartAccountPromoVisible(false)
+
+    await walletModalPage.openSettings()
+    await walletModalValidator.expectAddress(originalAddress)
   }
 )
 
 testModalSmartAccount(
-  'it should use an eoa when disconnecting and connecting to a not enabled address',
-  async ({ modalPage, modalValidator, context }) => {
+  'it should use an eoa and not propose flow when disconnecting and connecting to a not enabled address',
+  async ({ modalPage, modalValidator, context }, { parallelIndex }) => {
     const walletModalPage = modalPage as ModalWalletPage
     const walletModalValidator = modalValidator as ModalWalletValidator
 
+    const email = new Email(mailsacApiKey)
+
+    await walletModalPage.openAccount()
+    await walletModalPage.openSettings()
     await walletModalPage.togglePreferredAccountType()
     await walletModalPage.disconnect()
-    await walletModalPage.page.waitForTimeout(2500)
+    await walletModalPage.page.waitForTimeout(1500)
 
-    await walletModalPage.emailFlow(NOT_ENABLED_SMART_ACCOUNT, context, mailsacApiKey)
-    await walletModalPage.switchNetwork('Sepolia')
+    await walletModalPage.emailFlow(
+      email.getEmailAddressToUse(parallelIndex, NOT_ENABLED_DOMAIN),
+      context,
+      mailsacApiKey
+    )
+    await walletModalPage.page.waitForTimeout(1500)
+    await walletModalPage.openAccount()
     await walletModalPage.openSettings()
+    await walletModalPage.switchNetwork('Sepolia')
+    await walletModalValidator.expectTogglePreferredTypeVisible(false)
+    await walletModalPage.closeModal()
+    await walletModalPage.page.waitForTimeout(1000)
 
-    await walletModalValidator.expectEoaAddress(NOT_ENABLED_SMART_ACCOUNT_INDEX)
+    await walletModalPage.openAccount()
+    await walletModalValidator.expectActivateSmartAccountPromoVisible(false)
   }
 )

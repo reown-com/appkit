@@ -13,6 +13,13 @@ export class ModalValidator {
     await expect(accountButton, 'Account button should be present').toBeAttached({
       timeout: MAX_WAIT
     })
+    await expect(
+      this.page.getByTestId('connect-button'),
+      'Connect button should not be present'
+    ).toBeHidden({
+      timeout: MAX_WAIT
+    })
+    await this.page.waitForTimeout(500)
   }
 
   async expectAuthenticated() {
@@ -46,7 +53,7 @@ export class ModalValidator {
   }
 
   async expectNetwork(network: string) {
-    const networkButton = this.page.locator('wui-network-button')
+    const networkButton = this.page.getByTestId('w3m-account-select-network')
     await expect(networkButton, `Network button should contain text ${network}`).toHaveText(
       network,
       {
