@@ -216,7 +216,8 @@ export class ModalPage {
     await this.page.getByTestId('w3m-account-select-network').click()
     await this.page.getByTestId(`w3m-network-switch-${network}`).click()
     await expect(switchNetworkButton, `Switched network should include ${network}`).toContainText(
-      network
+      network,
+      { timeout: 5000 }
     )
   }
 
