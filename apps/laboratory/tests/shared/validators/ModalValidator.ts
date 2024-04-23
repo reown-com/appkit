@@ -53,7 +53,7 @@ export class ModalValidator {
   }
 
   async expectNetwork(network: string) {
-    const networkButton = this.page.locator('wui-network-button')
+    const networkButton = this.page.getByTestId('w3m-account-select-network')
     await expect(networkButton, `Network button should contain text ${network}`).toHaveText(
       network,
       {
