@@ -2,16 +2,7 @@ import { UiHelperUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
 import { state } from 'lit/decorators.js'
-import {
-  AccountController,
-  ConnectionController,
-  CoreHelperUtil,
-  NetworkController,
-  RouterController,
-  SendController,
-  SnackController
-} from '@web3modal/core'
-import { erc20ABI } from '@web3modal/scaffold-utils'
+import { NetworkController, RouterController, SendController } from '@web3modal/core'
 
 @customElement('w3m-wallet-send-preview-view')
 export class W3mWalletSendPreviewView extends LitElement {
@@ -130,63 +121,26 @@ export class W3mWalletSendPreviewView extends LitElement {
     return null
   }
 
-  private async onSendClick() {
-    if (this.token?.address && this.sendTokenAmount) {
-      RouterController.pushTransactionStack({
-        view: 'Account',
-        goBack: false
+  onSendClick() {
+    if (this.token?.address && this.sendTokenAmount && this.receiverAddress) {
+      SendController.sendERC20Token({
+        receiverAddress: this.receiverAddress,
+        tokenAddress: this.token.address,
+        sendTokenAmount: this.sendTokenAmount,
+        decimals: this.token.quantity.decimals
       })
-
-      const amount = ConnectionController.parseUnits(
-        this.sendTokenAmount.toString(),
-        Number(this.token.quantity.decimals)
-      )
-
-      try {
-        if (
-          AccountController.state.address &&
-          this.sendTokenAmount &&
-          this.receiverAddress &&
-          this.token.address
-        ) {
-          await ConnectionController.writeContract({
-            fromAddress: AccountController.state.address as `0x${string}`,
-            tokenAddress: CoreHelperUtil.getPlainAddress(
-              this.token.address as `${string}:${string}:${string}`
-            ) as `0x${string}`,
-            receiverAddress: this.receiverAddress as `0x${string}`,
-            tokenAmount: amount,
-            method: 'transfer',
-            abi: erc20ABI
-          })
-          SnackController.showSuccess('Transaction Successful')
-        }
-      } catch (error) {
-        SnackController.showError('Something went wrong...')
-      }
-    } else if (this.receiverAddress && this.sendTokenAmount && this.gasPrice) {
-      RouterController.pushTransactionStack({
-        view: 'Account',
-        goBack: false
+    } else if (
+      this.receiverAddress &&
+      this.sendTokenAmount &&
+      this.gasPrice &&
+      this.token?.quantity.decimals
+    ) {
+      SendController.sendNativeToken({
+        receiverAddress: this.receiverAddress,
+        sendTokenAmount: this.sendTokenAmount,
+        gasPrice: this.gasPrice,
+        decimals: this.token.quantity.decimals
       })
-
-      const to = this.receiverAddress as `0x${string}`
-      const address = AccountController.state.address as `0x${string}`
-      const value = ConnectionController.parseUnits(this.sendTokenAmount.toString(), 18)
-      const data = '0x'
-
-      try {
-        await ConnectionController.sendTransaction({
-          to,
-          address,
-          data,
-          value,
-          gasPrice: this.gasPrice
-        })
-        SnackController.showSuccess('Transaction Successful')
-      } catch (error) {
-        SnackController.showError('Something went wrong...')
-      }
     }
   }
 
