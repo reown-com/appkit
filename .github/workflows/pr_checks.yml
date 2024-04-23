@@ -66,8 +66,6 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-    permissions:
-      pull-requests: read
     continue-on-error: true
     steps:
       - name: checkout
@@ -98,8 +96,6 @@ jobs:
           json-summary-path: ./coverage/coverage-merged-summary.json
 
   ui-test:
-    permissions:
-      pull-requests: write
     uses: ./.github/workflows/ui_tests.yml
     secrets: inherit
     with:
