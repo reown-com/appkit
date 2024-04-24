@@ -87,6 +87,18 @@
   - @web3modal/scaffold-vue@4.1.6
   - @web3modal/siwe@4.1.6
 
+## 4.1.6-a0733f5.0
+
+### Patch Changes
+
+- chore: canary release for siwe dependency
+
+- Updated dependencies []:
+  - @web3modal/ethers@4.1.6-a0733f5.0
+  - @web3modal/siwe@4.1.6-a0733f5.0
+  - @web3modal/solana@4.1.6-a0733f5.0
+  - @web3modal/wagmi@4.1.6-a0733f5.0
+
 ## 4.1.5
 
 ### Patch Changes
