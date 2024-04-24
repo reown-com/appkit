@@ -9,7 +9,8 @@ import type {
   NetworkControllerClient,
   PublicStateControllerState,
   SendTransactionArgs,
-  Token
+  Token,
+  WriteContractArgs
 } from '@web3modal/scaffold'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
@@ -29,7 +30,10 @@ import {
   InfuraProvider,
   getAddress as getOriginalAddress,
   parseUnits,
-  formatUnits
+  formatUnits,
+  JsonRpcSigner,
+  BrowserProvider,
+  Contract
 } from 'ethers'
 import {
   EthersConstantsUtil,
@@ -45,11 +49,8 @@ import {
   W3mFrameConstants
 } from '@web3modal/wallet'
 import type { CombinedProvider } from '@web3modal/scaffold-utils/ethers'
-import { BrowserProvider } from 'ethers'
-import { JsonRpcSigner } from 'ethers'
 import { NetworkUtil } from '@web3modal/common'
 import type { W3mFrameTypes } from '@web3modal/wallet'
-
 // -- Types ---------------------------------------------------------------------
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
   ethersConfig: ProviderType
@@ -287,9 +288,7 @@ export class Web3Modal extends Web3ModalScaffold {
       formatUnits: (value: bigint, decimals: number) => formatUnits(value, decimals),
 
       async estimateGas(data) {
-        const chainId = EthersStoreUtil.state.chainId
-        const provider = EthersStoreUtil.state.provider
-        const address = EthersStoreUtil.state.address
+        const { chainId, provider, address } = EthersStoreUtil.state
 
         if (!provider) {
           throw new Error('connectionControllerClient:sendTransaction - provider is undefined')
@@ -314,9 +313,7 @@ export class Web3Modal extends Web3ModalScaffold {
       },
 
       sendTransaction: async (data: SendTransactionArgs) => {
-        const chainId = EthersStoreUtil.state.chainId
-        const provider = EthersStoreUtil.state.provider
-        const address = EthersStoreUtil.state.address
+        const { chainId, provider, address } = EthersStoreUtil.state
 
         if (!provider) {
           throw new Error('connectionControllerClient:sendTransaction - provider is undefined')
@@ -341,6 +338,35 @@ export class Web3Modal extends Web3ModalScaffold {
         const txReceipt = await txResponse.wait()
 
         return (txReceipt?.hash as `0x${string}`) || null
+      },
+
+      writeContract: async (data: WriteContractArgs) => {
+        const { chainId, provider, address } = EthersStoreUtil.state
+
+        if (!provider) {
+          throw new Error('connectionControllerClient:sendTransaction - provider is undefined')
+        }
+
+        if (!address) {
+          throw new Error('connectionControllerClient:sendTransaction - address is undefined')
+        }
+
+        const browserProvider = new BrowserProvider(provider, chainId)
+        const signer = new JsonRpcSigner(browserProvider, address)
+        const contract = new Contract(data.tokenAddress, data.abi, signer)
+
+        if (!contract || !data.method) {
+          throw new Error('Contract method is undefined')
+        }
+
+        const method = contract[data.method]
+        if (method) {
+          const tx = await method(data.receiverAddress, data.tokenAmount)
+
+          return tx
+        }
+
+        throw new Error('Contract method is undefined')
       }
     }
 

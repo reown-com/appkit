@@ -6,7 +6,8 @@ import type {
   Connector,
   EstimateGasTransactionArgs,
   SendTransactionArgs,
-  WcWallet
+  WcWallet,
+  WriteContractArgs
 } from '../utils/TypeUtil.js'
 import { TransactionsController } from './TransactionsController.js'
 
@@ -28,6 +29,7 @@ export interface ConnectionControllerClient {
   formatUnits: (value: bigint, decimals: number) => string
   connectExternal?: (options: ConnectExternalOptions) => Promise<void>
   checkInstalled?: (ids?: string[]) => boolean
+  writeContract: (args: WriteContractArgs) => Promise<`0x${string}` | null>
 }
 
 export interface ConnectionControllerState {
@@ -106,6 +108,10 @@ export const ConnectionController = {
 
   async estimateGas(args: EstimateGasTransactionArgs) {
     return this._getClient().estimateGas(args)
+  },
+
+  async writeContract(args: WriteContractArgs) {
+    return this._getClient().writeContract(args)
   },
 
   checkInstalled(ids?: string[]) {

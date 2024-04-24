@@ -1,7 +1,7 @@
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
-import { CoreHelperUtil, RouterController, SendController } from '@web3modal/core'
+import { SwapController, CoreHelperUtil, RouterController, SendController } from '@web3modal/core'
 import { state } from 'lit/decorators.js'
 
 @customElement('w3m-wallet-send-view')
@@ -18,6 +18,8 @@ export class W3mWalletSendView extends LitElement {
 
   @state() private receiverAddress = SendController.state.receiverAddress
 
+  @state() private gasPriceInUSD = SendController.state.gasPriceInUSD
+
   @state() private message:
     | 'Preview Send'
     | 'Select Token'
@@ -28,12 +30,14 @@ export class W3mWalletSendView extends LitElement {
 
   public constructor() {
     super()
+    this.fetchNetworkPrice()
     this.unsubscribe.push(
       ...[
         SendController.subscribe(val => {
           this.token = val.token
           this.sendTokenAmount = val.sendTokenAmount
           this.receiverAddress = val.receiverAddress
+          this.gasPriceInUSD = val.gasPriceInUSD
         })
       ]
     )
@@ -52,6 +56,7 @@ export class W3mWalletSendView extends LitElement {
         <w3m-input-token
           .token=${this.token}
           .sendTokenAmount=${this.sendTokenAmount}
+          .gasPriceInUSD=${this.gasPriceInUSD}
         ></w3m-input-token>
         <wui-icon-box
           size="inherit"
@@ -78,6 +83,16 @@ export class W3mWalletSendView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+
+  private async fetchNetworkPrice() {
+    await SwapController.getNetworkTokenPrice()
+    const gas = await SwapController.getInitialGasPrice()
+    if (gas?.gasPrice && gas?.gasPriceInUSD) {
+      SendController.setGasPrice(gas.gasPrice)
+      SendController.setGasPriceInUsd(gas.gasPriceInUSD)
+    }
+  }
+
   private onButtonClick() {
     RouterController.push('WalletSendPreview')
   }

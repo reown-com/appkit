@@ -18,6 +18,10 @@ export class W3mWalletSendPreviewView extends LitElement {
 
   @state() private receiverAddress = SendController.state.receiverAddress
 
+  @state() private gasPrice = SendController.state.gasPrice
+
+  @state() private gasPriceInUSD = SendController.state.gasPriceInUSD
+
   @state() private caipNetwork = NetworkController.state.caipNetwork
 
   public constructor() {
@@ -28,6 +32,8 @@ export class W3mWalletSendPreviewView extends LitElement {
           this.token = val.token
           this.sendTokenAmount = val.sendTokenAmount
           this.receiverAddress = val.receiverAddress
+          this.gasPrice = val.gasPrice
+          this.gasPriceInUSD = val.gasPriceInUSD
         }),
         NetworkController.subscribeKey('caipNetwork', val => (this.caipNetwork = val))
       ]
@@ -48,7 +54,7 @@ export class W3mWalletSendPreviewView extends LitElement {
             ${this.sendValueTemplate()}
           </wui-flex>
           <wui-preview-item
-            text="${Number(this.token?.quantity.numeric).toFixed(2)} ${this.token?.symbol}"
+            text="${this.sendTokenAmount} ${this.token?.symbol}"
             .imageSrc=${this.token?.iconUrl}
           ></wui-preview-item>
         </wui-flex>
@@ -73,6 +79,7 @@ export class W3mWalletSendPreviewView extends LitElement {
         <w3m-wallet-send-details
           .caipNetwork=${this.caipNetwork}
           .receiverAddress=${this.receiverAddress}
+          .networkFee=${this.gasPriceInUSD}
         ></w3m-wallet-send-details>
         <wui-flex justifyContent="center" gap="xxs" .padding=${['s', '0', '0', '0'] as const}>
           <wui-icon size="sm" color="fg-200" name="warningCircle"></wui-icon>
@@ -114,11 +121,27 @@ export class W3mWalletSendPreviewView extends LitElement {
     return null
   }
 
-  private onSendClick() {
-    RouterController.reset('Account')
-    setTimeout(() => {
-      SendController.resetSend()
-    }, 200)
+  onSendClick() {
+    if (this.token?.address && this.sendTokenAmount && this.receiverAddress) {
+      SendController.sendERC20Token({
+        receiverAddress: this.receiverAddress,
+        tokenAddress: this.token.address,
+        sendTokenAmount: this.sendTokenAmount,
+        decimals: this.token.quantity.decimals
+      })
+    } else if (
+      this.receiverAddress &&
+      this.sendTokenAmount &&
+      this.gasPrice &&
+      this.token?.quantity.decimals
+    ) {
+      SendController.sendNativeToken({
+        receiverAddress: this.receiverAddress,
+        sendTokenAmount: this.sendTokenAmount,
+        gasPrice: this.gasPrice,
+        decimals: this.token.quantity.decimals
+      })
+    }
   }
 
   private onCancelClick() {

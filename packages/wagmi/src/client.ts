@@ -11,6 +11,7 @@ import {
   watchConnectors,
   waitForTransactionReceipt,
   estimateGas as wagmiEstimateGas,
+  writeContract as wagmiWriteContract,
   getAccount
 } from '@wagmi/core'
 import { mainnet } from 'viem/chains'
@@ -27,7 +28,8 @@ import type {
   NetworkControllerClient,
   PublicStateControllerState,
   SendTransactionArgs,
-  Token
+  Token,
+  WriteContractArgs
 } from '@web3modal/scaffold'
 import { formatUnits, parseUnits } from 'viem'
 import type { Hex } from 'viem'
@@ -204,6 +206,20 @@ export class Web3Modal extends Web3ModalScaffold {
         const tx = await wagmiSendTransaction(this.wagmiConfig, txParams)
 
         await waitForTransactionReceipt(this.wagmiConfig, { hash: tx, timeout: 25000 })
+
+        return tx
+      },
+
+      writeContract: async (data: WriteContractArgs) => {
+        const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
+
+        const tx = await wagmiWriteContract(wagmiConfig, {
+          chainId,
+          address: data.tokenAddress,
+          abi: data.abi,
+          functionName: data.method,
+          args: [data.receiverAddress, data.tokenAmount]
+        })
 
         return tx
       },

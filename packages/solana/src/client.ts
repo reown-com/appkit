@@ -161,6 +161,10 @@ export class Web3Modal extends Web3ModalScaffold {
         return await Promise.resolve('0x')
       },
 
+      writeContract: async () => {
+        return await Promise.resolve('0x')
+      },
+
       parseUnits: () => BigInt(0),
 
       formatUnits: () => ''

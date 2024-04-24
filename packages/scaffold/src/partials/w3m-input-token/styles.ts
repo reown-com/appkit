@@ -25,4 +25,16 @@ export default css`
     display: flex;
     justify-content: flex-end;
   }
+
+  wui-input-amount {
+    mask-image: linear-gradient(
+      270deg,
+      transparent 0px,
+      transparent 8px,
+      black 24px,
+      black 25px,
+      black 32px,
+      black 100%
+    );
+  }
 `
