@@ -47,7 +47,7 @@
 
 ### Patch Changes
 
-- Hotfix for inccorect state of w3m-button when email is enabled
+- Hotfix for incorrect state of w3m-button when email is enabled
 
 - Updated dependencies []:
   - @web3modal/common@4.1.7
