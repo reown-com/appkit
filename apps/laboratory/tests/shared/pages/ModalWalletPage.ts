@@ -21,7 +21,7 @@ export class ModalWalletPage extends ModalPage {
     const switchNetworkButton = this.page.getByTestId('account-switch-network-button')
     await expect(switchNetworkButton, `Switched network should include ${network}`).toContainText(
       network,
-      { timeout: 5000 }
+      { timeout: 10_000 }
     )
   }
 

@@ -13,7 +13,7 @@ export function WagmiSignMessageTest() {
       const signature = await signMessageAsync({ message: 'Hello Web3Modal!' })
       toast({
         title: ConstantsUtil.SigningSucceededToastTitle,
-        description: signature,
+        description: signature.slice(0, 90) + '...',
         status: 'success',
         isClosable: true
       })

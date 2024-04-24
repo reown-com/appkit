@@ -9,7 +9,6 @@ export class DeviceRegistrationPage {
   ) {}
 
   async load() {
-    await this.page.waitForTimeout(500)
     await this.page.goto(this.url)
     await this.page.waitForLoadState()
   }
