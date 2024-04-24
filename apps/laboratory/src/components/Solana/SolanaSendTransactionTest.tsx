@@ -53,7 +53,12 @@ export function SolanaSendTransactionTest() {
       transaction.recentBlockhash = blockhash
 
       const signature = await walletProvider.sendTransaction(transaction, connection as Connection)
-      toast({ title: 'Succcess', description: signature, status: 'success', isClosable: true })
+      toast({
+        title: 'Succcess',
+        description: `${signature.slice(0, 90)}...`,
+        status: 'success',
+        isClosable: true
+      })
     } catch (err) {
       toast({
         title: 'Error',
@@ -106,7 +111,12 @@ export function SolanaSendTransactionTest() {
         transactionV0,
         connection as Connection
       )
-      toast({ title: 'Succcess', description: signature, status: 'success', isClosable: true })
+      toast({
+        title: 'Success',
+        description: `${signature.slice(0, 90)}...`,
+        status: 'success',
+        isClosable: true
+      })
     } catch (err) {
       toast({
         title: 'Error',

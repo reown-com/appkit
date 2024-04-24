@@ -48,7 +48,12 @@ export function EthersSignTypedDataTest() {
 
       const signature = await signer?.signTypedData(domain, types, message)
 
-      toast({ title: 'Succcess', description: signature, status: 'success', isClosable: true })
+      toast({
+        title: 'Success',
+        description: `${signature.slice(0, 90)}...`,
+        status: 'success',
+        isClosable: true
+      })
     } catch {
       toast({
         title: 'Error',

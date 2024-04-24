@@ -48,7 +48,12 @@ export function SolanaSignTransactionTest() {
       const tx = await walletProvider.signTransaction(transaction)
       const signature = tx.signatures[0]?.signature
 
-      toast({ title: 'Succcess', description: signature, status: 'success', isClosable: true })
+      toast({
+        title: 'Success',
+        description: signature ? `${signature.slice(0, 90)}...` : '',
+        status: 'success',
+        isClosable: true
+      })
     } catch (err) {
       toast({
         title: 'Error',
@@ -93,7 +98,12 @@ export function SolanaSignTransactionTest() {
       const tx = await walletProvider.signTransaction(transactionV0)
       const signature = tx.signatures[0]?.signature
 
-      toast({ title: 'Succcess', description: signature, status: 'success', isClosable: true })
+      toast({
+        title: 'Success',
+        description: signature ? `${signature.slice(0, 90)}...` : '',
+        status: 'success',
+        isClosable: true
+      })
     } catch (err) {
       toast({
         title: 'Error',

@@ -18,7 +18,7 @@ export function EthersSignMessageTest() {
       const signature = await signer?.signMessage('Hello Web3Modal Ethers')
       toast({
         title: ConstantsUtil.SigningSucceededToastTitle,
-        description: signature,
+        description: `${signature.slice(0, 90)}...`,
         status: 'success',
         isClosable: true
       })

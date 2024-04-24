@@ -47,7 +47,12 @@ export function WagmiSignTypedDataTest() {
         primaryType: 'Mail',
         types
       })
-      toast({ title: 'Success', description: signature, status: 'success', isClosable: true })
+      toast({
+        title: 'Success',
+        description: `${signature.slice(0, 90)}...`,
+        status: 'success',
+        isClosable: true
+      })
     } catch {
       toast({
         title: 'Error',
