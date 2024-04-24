@@ -7,6 +7,8 @@ import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
+import type { W3mFrameTypes } from '@web3modal/wallet'
+import { AccountController } from '@web3modal/core'
 
 @customElement('wui-list-account')
 export class WuiListAccount extends LitElement {
@@ -15,7 +17,7 @@ export class WuiListAccount extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() public accountAddress = ''
 
-  @property() public accountType = ''
+  @property() public accountType = AccountController.state.preferredAccountType
 
   // Fetch balance from the blockchain
   @property({ type: Number }) public balance = 23.18
@@ -24,15 +26,15 @@ export class WuiListAccount extends LitElement {
 
   @property({ type: Boolean }) public selected = false
 
-  @property({ type: Function }) public onSelect?: () => void
+  @property() public onSelect?: (
+    params: { address: string; type?: W3mFrameTypes.AccountType },
+    checked: boolean
+  ) => void
 
   handleClick = (event: Event) => {
+    const target = event.target as HTMLInputElement
     console.log('handleClick', event, this.onSelect)
-    // @ts-expect-error
-    this.onSelect?.(
-      { address: this.accountAddress, type: this.accountType },
-      event?.target?.checked
-    )
+    this.onSelect?.({ address: this.accountAddress, type: this.accountType }, target?.checked)
   }
   // -- Render -------------------------------------------- //
   public override render() {
@@ -68,7 +70,7 @@ export class WuiListAccount extends LitElement {
           <wui-text variant="small-400">$${this.balance.toFixed(2)}</wui-text>
           <input
             type="checkbox"
-            ${this.selected ? 'checked' : ''}
+            ?checked=${this.selected}
             @click="${(event: Event) => this.handleClick(event)}"
           />
         </wui-flex>
