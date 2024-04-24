@@ -20,6 +20,8 @@ export class W3mInputAddress extends LitElement {
 
   @state() private instructionHidden = Boolean(this.receiverAddress)
 
+  @state() private pasting = false
+
   protected override firstUpdated() {
     if (this.receiverAddress) {
       this.instructionHidden = true
@@ -111,7 +113,7 @@ ${this.receiverAddress ?? ''}</textarea
   }
 
   private onBlur() {
-    if (!this.receiverAddress && this.instructionHidden) {
+    if (!this.receiverAddress && this.instructionHidden && !this.pasting) {
       this.focusInstruction()
     }
   }
@@ -123,11 +125,15 @@ ${this.receiverAddress ?? ''}</textarea
   }
 
   private async onPasteClick() {
+    this.pasting = true
+
     const text = await navigator.clipboard.readText()
     SendController.setReceiverAddress(text)
   }
 
   private onInputChange(e: InputEvent) {
+    this.pasting = false
+
     const element = e.target as HTMLInputElement
 
     if (element.value && !this.instructionHidden) {
