@@ -3,7 +3,8 @@ import {
   CoreHelperUtil,
   ModalController,
   RouterController,
-  SnackController
+  SnackController,
+  type AccountType
 } from '@web3modal/core'
 
 import { UiHelperUtil, customElement } from '@web3modal/ui'
@@ -26,11 +27,12 @@ export class W3mProfileView extends LitElement {
 
   @state() private profileName = AccountController.state.profileName
 
+  @state() private accounts = AccountController.state.allAccounts
+
   public constructor() {
     super()
     this.usubscribe.push(
       AccountController.subscribe(val => {
-        console.log('profile - address', val.address)
         if (val.address) {
           this.address = val.address
           this.profileImage = val.profileImage
@@ -89,7 +91,6 @@ export class W3mProfileView extends LitElement {
             </wui-flex>
           </wui-flex>
         </wui-flex>
-        ${'' /* SO FAR SO GOOD */}
         <wui-flex
           justifyContent="center"
           alignItems="center"
@@ -98,11 +99,28 @@ export class W3mProfileView extends LitElement {
         >
           <wui-text variant="paragraph-500" color="fg-100">Account Settings</wui-text>
         </wui-flex>
+        ${this.accountsTemplate()}
       </wui-flex>
     `
   }
 
   // -- Private ------------------------------------------- //
+  private accountsTemplate() {
+    return html`<wui-flex flexDirection="column">
+      <wui-flex .padding=${['3xs', 'm', 's', 's'] as const}>
+        <wui-text color="fg-200" variant="paragraph-400">Your accounts</wui-text>
+      </wui-flex>
+      <wui-flex flexDirection="column" gap="xxs">
+        ${this.accounts.map(account => this.accountTemplate(account))}
+      </wui-flex>
+    </wui-flex>`
+  }
+
+  private accountTemplate(account: AccountType) {
+    return html`<wui-list-account accountAddress=${account.address} accountType=${account.type}>
+    </wui-list-account>`
+  }
+
   private onCopyAddress() {
     try {
       if (this.profileName) {

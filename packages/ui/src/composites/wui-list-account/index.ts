@@ -7,8 +7,7 @@ import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
-import type { W3mFrameTypes } from '@web3modal/wallet'
-import { AccountController } from '@web3modal/core'
+import { W3mFrameRpcConstants } from '@web3modal/wallet'
 
 @customElement('wui-list-account')
 export class WuiListAccount extends LitElement {
@@ -17,40 +16,32 @@ export class WuiListAccount extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() public accountAddress = ''
 
-  @property() public accountType = AccountController.state.preferredAccountType
+  @property() public accountType = ''
 
   // Fetch balance from the blockchain
   @property({ type: Number }) public balance = 23.18
 
-  @property({ type: Boolean }) public clickable = false
-
-  @property({ type: Boolean }) public selected = false
-
-  @property() public onSelect?: (
-    params: { address: string; type?: W3mFrameTypes.AccountType },
-    checked: boolean
-  ) => void
-
-  handleClick = (event: Event) => {
-    const target = event.target as HTMLInputElement
-    console.log('handleClick', event, this.onSelect)
-    this.onSelect?.({ address: this.accountAddress, type: this.accountType }, target?.checked)
-  }
   // -- Render -------------------------------------------- //
   public override render() {
     console.log('WuiListAccount', this.accountAddress)
 
     return html`
-      <wui-flex flexDirection="row" justifyContent="space-between">
+      <wui-flex
+        flexDirection="row"
+        justifyContent="space-between"
+        .padding=${['s', 'xs', 's', '1xs'] as const}
+      >
         <wui-flex gap="s" alignItems="center">
           <wui-avatar address=${this.accountAddress}></wui-avatar>
           <wui-icon-box
             size="sm"
-            iconColor="fg-300"
-            icon="mail"
-            backgroundColor="fg-150"
+            iconcolor="fg-200"
+            backgroundcolor="glass-002"
             background="gray"
-            border=""
+            icon=${this.accountType === W3mFrameRpcConstants.ACCOUNT_TYPES.EOA
+              ? 'mail'
+              : 'lightbulb'}
+            ?border=${true}
           ></wui-icon-box>
           <wui-flex flexDirection="column">
             <wui-text class="address" variant="paragraph-500" color="fg-100"
@@ -68,11 +59,7 @@ export class WuiListAccount extends LitElement {
         </wui-flex>
         <wui-flex gap="s" alignItems="center">
           <wui-text variant="small-400">$${this.balance.toFixed(2)}</wui-text>
-          <input
-            type="checkbox"
-            ?checked=${this.selected}
-            @click="${(event: Event) => this.handleClick(event)}"
-          />
+          <slot name="action"></slot>
         </wui-flex>
       </wui-flex>
     `

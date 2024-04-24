@@ -10,6 +10,7 @@ import {
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
 
 @customElement('w3m-select-addresses-view')
@@ -46,23 +47,29 @@ export class W3mSelectAddressesView extends LitElement {
   public override render() {
     return html`
       <wui-flex justifyContent="center" .padding=${['xl', '0', 'xl', '0'] as const}>
-        <wui-banner icon="${this.metadata?.icons[0]}" text="${this.metadata?.url}"></wui-banner>
+        <wui-banner
+          icon=${ifDefined(this.metadata?.icons[0])}
+          text=${ifDefined(this.metadata?.url)}
+        ></wui-banner>
       </wui-flex>
-      <wui-flex .padding=${['0', 'xl', '0', 'xl'] as const} justifyContent="space-between">
-        <wui-text variant="paragraph-400" color="fg-base-200">Select all</wui-text>
-        
-          <input type="checkbox" @click=${(event: Event) => this.onSelectAll(event)}></input>
-      </wui-flex>
+      <wui-flex .padding=${['0', '2xl', '0', 'xl'] as const} justifyContent="space-between">
+        <wui-text variant="paragraph-400" color="fg-200">Select all</wui-text>
 
+        <input type="checkbox" @click=${this.onSelectAll.bind(this)} />
+      </wui-flex>
       <wui-flex flexDirection="column" gap="xs" .padding=${['l', 'xl', 'xl', 'xl'] as const}>
         ${this.allAccounts.map(account => {
           return html` <wui-list-account
             accountAddress="${account.address}"
             accountType="${account.type}"
-            .selected="${this.selectedAccounts.includes(account)}"
-            .onSelect="${(selectedAccount: AccountType, add: boolean) =>
-              this.onSelect(selectedAccount, add)}"
-          ></wui-list-account>`
+          >
+            <input
+              slot="action"
+              type="checkbox"
+              ?checked=${this.selectedAccounts.includes(account)}
+              @click="${this.handleClick(account)}"
+            />
+          </wui-list-account>`
         })}
       </wui-flex>
       <wui-flex .padding=${['l', 'xl', 'xl', 'xl'] as const} gap="s" justifyContent="space-between">
@@ -90,6 +97,12 @@ export class W3mSelectAddressesView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+
+  private handleClick = (account: AccountType) => (event: Event) => {
+    const target = event.target as HTMLInputElement
+    console.log('handleClick', event, this.onSelect)
+    this.onSelect?.({ ...account }, target?.checked)
+  }
 
   private async onContinue() {
     this.isSigning = true

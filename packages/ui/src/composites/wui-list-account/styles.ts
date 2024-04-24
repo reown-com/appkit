@@ -21,13 +21,6 @@ export default css`
     border-radius: var(--wui-border-radius-3xl);
   }
 
-  input[type='checkbox'] {
-    all: revert;
-    width: var(--wui-spacing-xl);
-    height: var(--wui-spacing-xl);
-    accent-color: var(--wui-color-accent-100);
-  }
-
   wui-avatar {
     width: var(--wui-spacing-3xl);
     height: var(--wui-spacing-3xl);
