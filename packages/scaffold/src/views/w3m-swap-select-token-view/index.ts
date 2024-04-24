@@ -152,7 +152,6 @@ export class W3mSwapSelectTokenView extends LitElement {
           <wui-flex justifyContent="flex-start" padding="s">
             <wui-text variant="paragraph-500" color="fg-200">Popular tokens</wui-text>
           </wui-flex>
-
           ${filteredTokens?.length > 0
             ? filteredTokens.map(
                 token => html`
