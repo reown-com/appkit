@@ -70,6 +70,7 @@ export class ModalValidator {
     const closeButton = this.page.locator('button[aria-label="Close"]')
     await expect(closeButton).toBeVisible()
     await closeButton.click()
+    await this.page.waitForTimeout(200)
   }
 
   async expectRejectedSign() {
