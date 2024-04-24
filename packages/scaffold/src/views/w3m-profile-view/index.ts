@@ -18,8 +18,8 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
 import { W3mFrameRpcConstants } from '@web3modal/wallet'
 
-@customElement('w3m-account-settings-view')
-export class W3mAccountSettingsView extends LitElement {
+@customElement('w3m-profile-view')
+export class W3mProfileView extends LitElement {
   public static override styles = styles
 
   // -- Members -------------------------------------------- //
@@ -72,7 +72,7 @@ export class W3mAccountSettingsView extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     if (!this.address) {
-      throw new Error('w3m-account-settings-view: No account provided')
+      throw new Error('w3m-profile-view: No account provided')
     }
 
     const networkImage = this.networkImages[this.network?.imageId ?? '']
@@ -272,6 +272,6 @@ export class W3mAccountSettingsView extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'w3m-account-settings-view': W3mAccountSettingsView
+    'w3m-profile-view': W3mProfileView
   }
 }

@@ -72,7 +72,7 @@ export class W3mRouter extends LitElement {
       case 'Account':
         return html`<w3m-account-view></w3m-account-view>`
       case 'AccountSettings':
-        return html`<w3m-account-settings-view></w3m-account-settings-view>`
+        return html`<w3m-profile-view></w3m-profile-view>`
       case 'SelectAddresses':
         return html`<w3m-select-addresses-view></w3m-select-addresses-view>`
       case 'SwitchAddress':
