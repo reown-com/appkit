@@ -35,7 +35,6 @@ testModalSmartAccount(
     await walletModalValidator.expectChangePreferredAccountToShow(EOA)
 
     await walletModalPage.closeModal()
-    await walletModalPage.page.waitForTimeout(1000)
 
     await walletModalPage.sign()
     await walletModalPage.approveSign()
@@ -59,7 +58,6 @@ testModalSmartAccount(
     await walletModalPage.switchNetwork('Avalanche')
     await walletModalValidator.expectTogglePreferredTypeVisible(false)
     await walletModalPage.closeModal()
-    await walletModalPage.page.waitForTimeout(1000)
 
     await walletModalPage.openAccount()
     await walletModalValidator.expectActivateSmartAccountPromoVisible(false)
@@ -94,7 +92,6 @@ testModalSmartAccount(
     await walletModalPage.switchNetwork('Sepolia')
     await walletModalValidator.expectTogglePreferredTypeVisible(false)
     await walletModalPage.closeModal()
-    await walletModalPage.page.waitForTimeout(1000)
 
     await walletModalPage.openAccount()
     await walletModalValidator.expectActivateSmartAccountPromoVisible(false)
