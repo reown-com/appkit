@@ -55,6 +55,8 @@ export class W3mRouter extends LitElement {
   // -- Private ------------------------------------------- //
   private viewTemplate() {
     switch (this.view) {
+      case 'AccountSettings':
+        return html`<w3m-account-settings-view></w3m-account-settings-view>`
       case 'Connect':
         return html`<w3m-connect-view></w3m-connect-view>`
       case 'ConnectingWalletConnect':
@@ -71,7 +73,7 @@ export class W3mRouter extends LitElement {
         return html`<w3m-network-switch-view></w3m-network-switch-view>`
       case 'Account':
         return html`<w3m-account-view></w3m-account-view>`
-      case 'AccountSettings':
+      case 'Profile':
         return html`<w3m-profile-view></w3m-profile-view>`
       case 'SelectAddresses':
         return html`<w3m-select-addresses-view></w3m-select-addresses-view>`

@@ -20,7 +20,7 @@ export class WuiButton extends LitElement {
   public static override styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
-  @property() public size: Exclude<SizeType, 'inherit' | 'xl' | 'xxs'> = 'md'
+  @property() public size: Exclude<SizeType, 'inherit' | '2lg' | 'xl' | 'xxs'> = 'md'
 
   @property({ type: Boolean }) public disabled = false
 

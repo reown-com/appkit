@@ -33,6 +33,7 @@ export interface RouterControllerState {
     | 'OnRampFiatSelect'
     | 'OnRampProviders'
     | 'OnRampTokenSelect'
+    | 'Profile'
     | 'SwitchNetwork'
     | 'SwitchAddress'
     | 'Transactions'

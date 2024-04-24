@@ -184,7 +184,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   private onProfileButtonClick() {
-    RouterController.push('AccountSettings')
+    RouterController.push('Profile')
   }
 
   private onBuyClick() {
