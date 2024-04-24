@@ -60,7 +60,7 @@ export class W3mSelectAddressesView extends LitElement {
             accountAddress="${account.address}"
             accountType="${account.type}"
             .selected="${this.selectedAccounts.includes(account)}"
-            @onSelect="${(selectedAccount: AccountType, add: boolean) =>
+            .onSelect="${(selectedAccount: AccountType, add: boolean) =>
               this.onSelect(selectedAccount, add)}"
           ></wui-list-account>`
         })}

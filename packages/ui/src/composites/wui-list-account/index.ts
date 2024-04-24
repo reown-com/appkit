@@ -24,11 +24,15 @@ export class WuiListAccount extends LitElement {
 
   @property({ type: Boolean }) public selected = false
 
-  @property() onSelect?: Function
+  @property({ type: Function }) public onSelect?: () => void
 
   handleClick = (event: Event) => {
+    console.log('handleClick', event, this.onSelect)
     // @ts-expect-error
-    this.onSelect?.(this.account, event?.target?.checked)
+    this.onSelect?.(
+      { address: this.accountAddress, type: this.accountType },
+      event?.target?.checked
+    )
   }
   // -- Render -------------------------------------------- //
   public override render() {

@@ -13,7 +13,7 @@ export class W3mSwitchAddressView extends LitElement {
   public static override styles = styles
   // -- Members ------------------------------------------- //
   private readonly metadata = OptionsController.state.metadata
-  public readonly addresses: AccountType[] = AccountController.state.allAccounts || []
+  public readonly allAccounts: AccountType[] = AccountController.state.allAccounts || []
   public readonly currentAddress: string = AccountController.state.address || ''
 
   // -- Render -------------------------------------------- //
@@ -24,8 +24,8 @@ export class W3mSwitchAddressView extends LitElement {
           ?.url}" size="sm"></wui-banner>
       </wui-flex>
       <wui-flex flexDirection="column" gap="xxl" .padding=${['l', 'xl', 'xl', 'xl'] as const}>
-        ${this.addresses.map(address => {
-          return this.getAddressTemplate(address.address)
+        ${this.allAccounts.map(account => {
+          return this.getAddressTemplate(account.address)
         })}
       </wui-flex>
     `
@@ -34,6 +34,8 @@ export class W3mSwitchAddressView extends LitElement {
   // -- Private ------------------------------------------- //
 
   private getAddressTemplate(address: string) {
+    console.log('getAddressTemplate', address, this.allAccounts)
+
     return html`
       <wui-flex flexDirection="row" justifyContent="space-between">
         <wui-flex gap="s" alignItems="center">
