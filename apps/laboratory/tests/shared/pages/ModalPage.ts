@@ -214,10 +214,10 @@ export class ModalPage {
   }
 
   async switchNetwork(network: string) {
-    const switchNetworkButton = this.page.getByTestId('w3m-account-select-network')
     await this.page.getByTestId('account-button').click()
     await this.page.getByTestId('w3m-account-select-network').click()
     await this.page.getByTestId(`w3m-network-switch-${network}`).click()
+    const switchNetworkButton = this.page.getByTestId('w3m-account-select-network')
     await expect(switchNetworkButton, `Switched network should include ${network}`).toContainText(
       network,
       { timeout: 5000 }
@@ -255,7 +255,7 @@ export class ModalPage {
 
     // Wait until the next screen appears
     await expect(this.page.getByText('Enter the code we sent')).toBeVisible({
-      timeout: 10_000
+      timeout: 20_000
     })
     const confirmCurrentEmail = await this.page.getByText('Confirm Current Email').isVisible()
     if (confirmCurrentEmail) {
