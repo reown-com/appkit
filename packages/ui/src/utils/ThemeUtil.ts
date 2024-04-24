@@ -459,7 +459,7 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --w3m-accent: ${unsafeCSS(themeVariables?.['--w3m-accent'] || 'hsla(230, 100%, 67%, 1)')};
         --w3m-default: #fff;
 
-        --wui-color-modal-bg-base: #191a1a;
+        --wui-color-modal-bg-base: #121313;
 
         --wui-color-blue-base-100: hsla(230, 100%, 67%, 1);
 
