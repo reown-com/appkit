@@ -74,8 +74,8 @@ jobs:
           key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}-${{ hashFiles('apps/laboratory/tests/shared/constants/devices.ts') }}
       - name: install
         run: npm ci
-      - name: build
-        run: npm run build
+      - name: build packaged and lab
+        run: npm run build:laboratory
       - name: Install Playwright Browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         working-directory: ./apps/laboratory/

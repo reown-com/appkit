@@ -4,9 +4,10 @@
   "private": true,
   "scripts": {
     "dev:laboratory": "next dev",
+    "start:laboratory": "next start",
     "build:laboratory": "next build",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "playwright:start": "npm run dev:laboratory",
+    "playwright:start": "npm run start:laboratory",
     "playwright:install": "playwright install --with-deps",
     "playwright:test": "playwright test",
     "playwright:test:wallet": "playwright test --grep 'connect-qr.spec.ts|wallet.spec.ts'",
