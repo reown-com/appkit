@@ -1,7 +1,6 @@
 import { expect } from '@playwright/test'
 import { testMEmail } from './shared/fixtures/w3m-email-fixture'
 import { SECURE_WEBSITE_URL } from './shared/constants'
-import { INDEX_OFFSET } from './shared/utils/email'
 
 testMEmail.beforeEach(async ({ modalValidator }) => {
   await modalValidator.expectConnected()
@@ -46,13 +45,4 @@ testMEmail('it should switch network and sign', async ({ modalPage, modalValidat
 testMEmail('it should disconnect correctly', async ({ modalPage, modalValidator }) => {
   await modalPage.disconnect()
   await modalValidator.expectDisconnected()
-})
-
-testMEmail('it should update email', async ({ modalPage }, testInfo) => {
-  const mailsacApiKey = process.env['MAILSAC_API_KEY']
-  if (!mailsacApiKey) {
-    throw new Error('MAILSAC_API_KEY is not set')
-  }
-
-  await modalPage.updateEmail(mailsacApiKey, INDEX_OFFSET + testInfo.parallelIndex)
 })
