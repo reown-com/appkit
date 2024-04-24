@@ -21,6 +21,7 @@ export type TextType =
   | 'medium-600'
   | 'medium-title-600'
   | 'micro-600'
+  | 'title-6-600'
   | 'micro-700'
   | 'mini-700'
   | 'paragraph-400'
@@ -37,7 +38,7 @@ export type TextType =
 
 export type TextAlign = 'center' | 'left' | 'right'
 
-export type SizeType = 'inherit' | 'xl' | 'lg' | 'md' | 'mdl' | 'sm' | 'xs' | 'xxs'
+export type SizeType = 'inherit' | 'xl' | '2lg' | 'lg' | 'md' | 'mdl' | 'sm' | 'xs' | 'xxs'
 
 export type SpacingType =
   | '0'
