@@ -41,7 +41,7 @@ testConnectedMW(
 testConnectedMW(
   'it should switch networks and sign',
   async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
-    const chains = modalPage.library === 'solana' ? ['Solana Devnet'] : ['Polygon', 'Ethereum']
+    const chains = modalPage.library === 'solana' ? ['Solana Testnet'] : ['Polygon', 'Ethereum']
 
     // Run them one after another
     async function processChain(index: number) {
