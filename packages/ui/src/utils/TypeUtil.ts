@@ -152,6 +152,7 @@ export type IconType =
   | 'swapHorizontalRoundedBold'
   | 'swapVertical'
   | 'telegram'
+  | 'threeDots'
   | 'twitch'
   | 'twitter'
   | 'twitterIcon'

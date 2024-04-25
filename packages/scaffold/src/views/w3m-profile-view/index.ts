@@ -116,9 +116,37 @@ export class W3mProfileView extends LitElement {
     </wui-flex>`
   }
 
+  private onSwitchAddress(address: string) {
+    console.log('onSwitchAddress', address)
+    AccountController.setShouldUpdateToAddress(address)
+  }
+
   private accountTemplate(account: AccountType) {
+    // const actions = [
+    //   {
+    //     label: 'Copy Address',
+    //     icon: 'copy',
+    //     onClick: () => CoreHelperUtil.copyToClopboard(account.address)
+    //   },
+    //   {
+    //     label: 'Account Settings',
+    //     icon: 'copy',
+    //     onClick: () => RouterController.push('AccountSettings')
+    //   }
+    // ]
+
     return html`<wui-list-account accountAddress=${account.address} accountType=${account.type}>
-    </wui-list-account>`
+      ${account.address === this.address
+        ? ''
+        : html`<wui-button
+            slot="action"
+            textVariant="small-600"
+            size="sm"
+            variant="accent"
+            @click=${() => this.onSwitchAddress(account.address)}
+            >Switch</wui-button
+          >`}
+    </wui-list-account> `
   }
 
   private onCopyAddress() {

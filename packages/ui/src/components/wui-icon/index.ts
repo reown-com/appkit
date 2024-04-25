@@ -57,6 +57,7 @@ import { swapHorizontalMediumSvg } from '../../assets/svg/swapHorizontalMedium.j
 import { swapHorizontalRoundedBoldSvg } from '../../assets/svg/swapHorizontalRoundedBold.js'
 import { swapVerticalSvg } from '../../assets/svg/swapVertical.js'
 import { telegramSvg } from '../../assets/svg/telegram.js'
+import { threeDotsSvg } from '../../assets/svg/three-dots.js'
 import { twitchSvg } from '../../assets/svg/twitch.js'
 import { twitterSvg } from '../../assets/svg/twitter.js'
 import { twitterIconSvg } from '../../assets/svg/twitterIcon.js'
@@ -130,6 +131,7 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   swapHorizontalRoundedBold: swapHorizontalRoundedBoldSvg,
   swapVertical: swapVerticalSvg,
   telegram: telegramSvg,
+  threeDots: threeDotsSvg,
   twitch: twitchSvg,
   twitter: twitterSvg,
   twitterIcon: twitterIconSvg,
