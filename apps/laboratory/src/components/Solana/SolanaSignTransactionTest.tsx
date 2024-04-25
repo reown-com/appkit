@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Button, useToast, Stack, Text, Spacer, Link } from '@chakra-ui/react'
+import { Button, Stack, Text, Spacer, Link } from '@chakra-ui/react'
 import {
   PublicKey,
   Transaction,
@@ -11,13 +11,14 @@ import {
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/solana/react'
 
 import { solana } from '../../utils/ChainsUtil'
+import { useChakraToast } from '../Toast'
 
 const PHANTOM_DEVNET_ADDRESS = 'EmT8r4E8ZjoQgt8sXGbaWBRMKfUXsVT1wonoSnJZ4nBn'
 const recipientAddress = new PublicKey(PHANTOM_DEVNET_ADDRESS)
 const amountInLamports = 100000000
 
 export function SolanaSignTransactionTest() {
-  const toast = useToast()
+  const toast = useChakraToast()
   const { address, chainId } = useWeb3ModalAccount()
   const { walletProvider, connection } = useWeb3ModalProvider()
   const [loading, setLoading] = useState(false)
@@ -48,13 +49,16 @@ export function SolanaSignTransactionTest() {
       const tx = await walletProvider.signTransaction(transaction)
       const signature = tx.signatures[0]?.signature
 
-      toast({ title: 'Succcess', description: signature, status: 'success', isClosable: true })
+      toast({
+        title: 'Success',
+        description: signature,
+        type: 'success'
+      })
     } catch (err) {
       toast({
         title: 'Error',
         description: 'Failed to sign transaction',
-        status: 'error',
-        isClosable: true
+        type: 'error'
       })
     } finally {
       setLoading(false)
@@ -93,13 +97,16 @@ export function SolanaSignTransactionTest() {
       const tx = await walletProvider.signTransaction(transactionV0)
       const signature = tx.signatures[0]?.signature
 
-      toast({ title: 'Succcess', description: signature, status: 'success', isClosable: true })
+      toast({
+        title: 'Success',
+        description: signature,
+        type: 'success'
+      })
     } catch (err) {
       toast({
         title: 'Error',
         description: 'Failed to sign transaction',
-        status: 'error',
-        isClosable: true
+        type: 'error'
       })
     } finally {
       setLoading(false)

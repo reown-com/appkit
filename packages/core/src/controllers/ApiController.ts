@@ -202,7 +202,7 @@ export const ApiController = {
       params: {
         page: '1',
         entries: '100',
-        search,
+        search: search?.trim(),
         chains: NetworkController.state.caipNetwork?.id,
         include: includeWalletIds?.join(','),
         exclude: excludeWalletIds?.join(',')
