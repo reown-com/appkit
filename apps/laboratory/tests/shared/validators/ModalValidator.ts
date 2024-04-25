@@ -53,7 +53,7 @@ export class ModalValidator {
   }
 
   async expectNetwork(network: string) {
-    const networkButton = this.page.locator('wui-network-button')
+    const networkButton = this.page.getByTestId('w3m-account-select-network')
     await expect(networkButton, `Network button should contain text ${network}`).toHaveText(
       network,
       {
@@ -67,10 +67,21 @@ export class ModalValidator {
     await expect(this.page.getByText(ConstantsUtil.SigningSucceededToastTitle)).toBeVisible({
       timeout: 30 * 1000
     })
+    const closeButton = this.page.locator('#toast-close-button')
+    await expect(closeButton).toBeVisible()
+    await closeButton.click()
   }
 
   async expectRejectedSign() {
     // We use Chakra Toast and it's not quite straightforward to set the `data-testid` attribute on the toast element.
     await expect(this.page.getByText(ConstantsUtil.SigningFailedToastTitle)).toBeVisible()
+  }
+
+  async expectSwitchedNetwork(network: string) {
+    const switchNetworkButton = this.page.getByTestId('w3m-account-select-network')
+    await expect(switchNetworkButton).toBeVisible()
+    await expect(switchNetworkButton, `Switched network should include ${network}`).toContainText(
+      network
+    )
   }
 }

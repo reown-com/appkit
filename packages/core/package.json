@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/core",
-  "version": "4.1.9",
+  "version": "4.1.11",
   "type": "module",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
@@ -13,12 +13,12 @@
     "build:core": "tsc --build",
     "watch": "tsc --watch",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run --dir tests --coverage.enabled --reporter=junit --coverage.reporter=json-summary --coverage.reporter=html",
+    "test": "vitest run --dir tests --coverage.enabled=true --coverage.reporter=json --coverage.reporter=json-summary --coverage.reportOnFailure=true",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@web3modal/common": "4.1.9",
-    "@web3modal/wallet": "4.1.9",
+    "@web3modal/common": "4.1.11",
+    "@web3modal/wallet": "4.1.11",
     "valtio": "1.11.2"
   },
   "devDependencies": {

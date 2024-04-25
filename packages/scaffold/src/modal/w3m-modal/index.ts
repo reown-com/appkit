@@ -89,26 +89,18 @@ export class W3mModal extends LitElement {
     initializeTheming(themeVariables, defaultThemeMode)
   }
 
-  private async onClose() {
-    this.onScrollUnlock()
-    await this.animate([{ opacity: 1 }, { opacity: 0 }], {
-      duration: 200,
-      easing: 'ease',
-      fill: 'forwards'
-    }).finished
-    SnackController.hide()
+  private onClose() {
     this.open = false
+    this.classList.remove('open')
+    this.onScrollUnlock()
+    SnackController.hide()
     this.onRemoveKeyboardListener()
   }
 
-  private async onOpen() {
-    this.onScrollLock()
+  private onOpen() {
     this.open = true
-    await this.animate([{ opacity: 0 }, { opacity: 1 }], {
-      duration: 200,
-      easing: 'ease',
-      fill: 'forwards'
-    }).finished
+    this.classList.add('open')
+    this.onScrollLock()
     this.onAddKeyboardListener()
   }
 

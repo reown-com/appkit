@@ -4,6 +4,7 @@ import { SendController } from '../../index.js'
 // -- Setup --------------------------------------------------------------------
 const token = {
   name: 'Optimism',
+  address: 'eip155:10:0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
   symbol: 'OP',
   chainId: 'eip155:10',
   value: 6.05441523113072,
