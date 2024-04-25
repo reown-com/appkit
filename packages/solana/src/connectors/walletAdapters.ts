@@ -1,8 +1,9 @@
-import { SolflareWalletAdapter } from '@solana/wallet-adapter-solflare'
-import { TrustWalletAdapter } from '@solana/wallet-adapter-trust'
-import { BackpackWalletAdapter } from '@solana/wallet-adapter-backpack'
-
-import { PhantomWalletAdapter } from './walletAdapters/index.js'
+import {
+  PhantomWalletAdapter,
+  BackpackWalletAdapter,
+  SolflareWalletAdapter,
+  TrustWalletAdapter
+} from './walletAdapters/index.js'
 
 import type { BaseWalletAdapter } from '@solana/wallet-adapter-base'
 import type { Connector } from '@web3modal/scaffold'
