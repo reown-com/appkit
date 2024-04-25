@@ -27,7 +27,7 @@ testMEmail('it should reject sign', async ({ modalPage, modalValidator }) => {
 testMEmail('it should switch network and sign', async ({ modalPage, modalValidator }) => {
   let targetChain = 'Polygon'
   await modalPage.switchNetwork(targetChain)
-  await modalValidator.expectNetwork(targetChain)
+  await modalValidator.expectSwitchedNetwork(targetChain)
   await modalPage.closeModal()
   await modalPage.sign()
   await modalPage.approveSign()
@@ -35,7 +35,7 @@ testMEmail('it should switch network and sign', async ({ modalPage, modalValidat
 
   targetChain = 'Ethereum'
   await modalPage.switchNetwork(targetChain)
-  await modalValidator.expectNetwork(targetChain)
+  await modalValidator.expectSwitchedNetwork(targetChain)
   await modalPage.closeModal()
   await modalPage.sign()
   await modalPage.approveSign()
@@ -45,4 +45,13 @@ testMEmail('it should switch network and sign', async ({ modalPage, modalValidat
 testMEmail('it should disconnect correctly', async ({ modalPage, modalValidator }) => {
   await modalPage.disconnect()
   await modalValidator.expectDisconnected()
+})
+
+testMEmail('it should update email', async ({ modalPage }) => {
+  const mailsacApiKey = process.env['MAILSAC_API_KEY']
+  if (!mailsacApiKey) {
+    throw new Error('MAILSAC_API_KEY is not set')
+  }
+
+  await modalPage.updateEmail(mailsacApiKey)
 })
