@@ -9,8 +9,9 @@ import type { ModalPage } from '../pages/ModalPage'
 export const testModalSmartAccount = base.extend<ModalFixture & { slowModalPage: ModalPage }>({
   library: ['wagmi', { option: true }],
   modalPage: [
-    async ({ page, modalValidator, library, context }, use, testInfo) => {
+    async ({ page, library, context }, use, testInfo) => {
       const modalPage = new ModalWalletPage(page, library)
+      const modalValidator = new ModalWalletValidator(page)
       await modalPage.load()
 
       const mailsacApiKey = process.env['MAILSAC_API_KEY']
