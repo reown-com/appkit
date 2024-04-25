@@ -35,7 +35,6 @@ export class ModalWalletPage extends ModalPage {
     await expect(disconnectBtn, 'Disconnect button should be enabled').toBeEnabled()
     await disconnectBtn.click()
     await this.page.getByTestId('connect-button').waitFor({ state: 'visible', timeout: 5000 })
-    await this.page.waitForTimeout(2000)
   }
 
   async getAddress(): Promise<string> {
