@@ -12,15 +12,19 @@ export class WuiBannerImg extends LitElement {
 
   // -- State & Properties -------------------------------- //
 
-  @property() public imageSrc: string = ''
+  @property() public imageSrc = ''
 
   @property() public text = ''
 
+  @property() public size = ''
+
   // -- Render -------------------------------------------- //
   public override render() {
+    console.log('WuiBannerImg', this.imageSrc, this.text, this.size)
+
     return html`
       <wui-flex gap="1xs" alignItems="center">
-        <wui-avatar imageSrc=${this.imageSrc}></wui-avatar>
+        <wui-avatar size=${this.size} imageSrc=${this.imageSrc}></wui-avatar>
         <wui-text variant="small-400" color="fg-200">${this.text}</wui-text>
       </wui-flex>
     `

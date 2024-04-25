@@ -6,4 +6,11 @@ export default css`
     height: var(--wui-spacing-3xl);
     box-shadow: 0 0 0 0;
   }
+
+  wui-icon-box {
+    position: relative;
+    right: 25px;
+    top: 15px;
+    background-color: var(--wui-color-bg-base-125);
+  }
 `

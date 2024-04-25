@@ -40,6 +40,14 @@ export class W3mSwitchAddressView extends LitElement {
       <wui-flex flexDirection="row" justifyContent="space-between">
         <wui-flex gap="s" alignItems="center">
           <wui-avatar address=${address}></wui-avatar>
+          <wui-icon-box
+            size="sm"
+            iconcolor="fg-200"
+            backgroundcolor="glass-002"
+            background="gray"
+            icon="mail"
+            ?border=${true}
+          ></wui-icon-box>
           <wui-flex flexDirection="column">
             <wui-text class="address" variant="paragraph-500" color="fg-100"
               >${UiHelperUtil.getTruncateString({
