@@ -1,5 +1,6 @@
 import {
   AccountController,
+  ConnectorController,
   CoreHelperUtil,
   ModalController,
   RouterController,
@@ -116,9 +117,16 @@ export class W3mProfileView extends LitElement {
     </wui-flex>`
   }
 
-  private onSwitchAddress(address: string) {
-    console.log('onSwitchAddress', address)
-    AccountController.setShouldUpdateToAddress(address)
+  private async onSwitchAccount(account: AccountType) {
+    console.log('onSwitchAccount', account.address)
+    AccountController.setShouldUpdateToAddress(account.address)
+    const emailConnector = ConnectorController.getEmailConnector()
+    if (!emailConnector) {
+      return
+    }
+
+    await emailConnector.provider.setPreferredAccount(account.type)
+    await emailConnector.provider.connect()
   }
 
   private accountTemplate(account: AccountType) {
@@ -143,7 +151,7 @@ export class W3mProfileView extends LitElement {
             textVariant="small-600"
             size="sm"
             variant="accent"
-            @click=${() => this.onSwitchAddress(account.address)}
+            @click=${() => this.onSwitchAccount(account)}
             >Switch</wui-button
           >`}
     </wui-list-account> `
