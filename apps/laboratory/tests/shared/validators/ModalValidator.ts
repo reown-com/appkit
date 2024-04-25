@@ -67,10 +67,9 @@ export class ModalValidator {
     await expect(this.page.getByText(ConstantsUtil.SigningSucceededToastTitle)).toBeVisible({
       timeout: 30 * 1000
     })
-    const closeButton = this.page.locator('button[aria-label="Close"]')
+    const closeButton = this.page.locator('#toast-close-button')
     await expect(closeButton).toBeVisible()
     await closeButton.click()
-    await this.page.waitForTimeout(200)
   }
 
   async expectRejectedSign() {
