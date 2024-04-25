@@ -79,12 +79,15 @@ export class W3mHeader extends LitElement {
 
   @state() private showBack = false
 
+  @state() private view = RouterController.state.view
+
   public constructor() {
     super()
     this.unsubscribe.push(
       RouterController.subscribeKey('view', val => {
         this.onViewChange(val)
         this.onHistoryChange()
+        this.view = val
       }),
       ConnectionController.subscribeKey('buffering', val => (this.buffering = val))
     )
@@ -133,12 +136,21 @@ export class W3mHeader extends LitElement {
   }
 
   private dynamicButtonTemplate() {
-    const { view } = RouterController.state
-    const isConnectHelp = view === 'Connect'
-    const isApproveTransaction = view === 'ApproveTransaction'
-    const isUpgradeToSmartAccounts = view === 'UpgradeToSmartAccount'
-
+    const isConnectHelp = this.view === 'Connect'
+    const isApproveTransaction = this.view === 'ApproveTransaction'
+    const isUpgradeToSmartAccounts = this.view === 'UpgradeToSmartAccount'
+    const isWalletAccountView =
+      this.view === 'Account' && OptionsController.state.enableWalletFeatures
     const shouldHideBack = isApproveTransaction || isUpgradeToSmartAccounts
+
+    if (isWalletAccountView) {
+      return html`<w3m-network-button
+        @click=${() => RouterController.push('Networks')}
+        label=${' '}
+      >
+        <wui-icon name="chevronBottom" size="sm"></wui-icon>
+      </w3m-network-button>`
+    }
 
     if (this.showBack && !shouldHideBack) {
       return html`<wui-icon-link
