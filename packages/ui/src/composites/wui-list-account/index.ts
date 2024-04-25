@@ -8,6 +8,7 @@ import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
 import { W3mFrameRpcConstants } from '@web3modal/wallet'
+import { OptionsController, StorageUtil } from '@web3modal/core'
 
 @customElement('wui-list-account')
 export class WuiListAccount extends LitElement {
@@ -21,9 +22,17 @@ export class WuiListAccount extends LitElement {
   // Fetch balance from the blockchain
   @property({ type: Number }) public balance = 23.18
 
+  private readonly connectedConnector = StorageUtil.getConnectedConnector()
+  private readonly enableWalletFeatures = OptionsController.state.enableWalletFeatures
+
   // -- Render -------------------------------------------- //
   public override render() {
-    console.log('WuiListAccount', this.accountAddress)
+    console.log('WuiListAccount', this.accountAddress, this.accountType)
+
+    let type = 'EO'
+    if (this.enableWalletFeatures && this.connectedConnector === 'EMAIL') {
+      type = this.accountType === 'eoa' ? 'Email' : 'Smart'
+    }
 
     return html`
       <wui-flex
@@ -53,7 +62,7 @@ export class WuiListAccount extends LitElement {
               })}</wui-text
             >
             <wui-text class="address-description" variant="small-400"
-              >${this.accountType === 'eoa' ? 'Email' : 'Smart'} Account</wui-text
+              >${type} Account</wui-text
             ></wui-flex
           >
         </wui-flex>

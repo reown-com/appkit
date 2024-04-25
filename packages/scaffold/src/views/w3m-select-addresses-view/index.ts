@@ -46,17 +46,15 @@ export class W3mSelectAddressesView extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex justifyContent="center" .padding=${['xl', '0', 'xl', '0'] as const}>
-        <wui-banner
-          icon=${ifDefined(this.metadata?.icons[0])}
-          text=${ifDefined(this.metadata?.url)}
-        ></wui-banner>
-      </wui-flex>
-      <wui-flex .padding=${['0', '2xl', '0', 'xl'] as const} justifyContent="space-between">
+    <wui-flex justifyContent="center" .padding=${['xl', '0', 'xl', '0'] as const}>
+      <wui-banner-img imageSrc="${ifDefined(this.metadata?.icons[0])}" text="${ifDefined(
+        this.metadata?.url
+      )}" size="sm"></wui-banner>
+    </wui-flex>
+    <wui-flex .padding=${['0', '2xl', '0', 'xl'] as const} justifyContent="space-between">
         <wui-text variant="paragraph-400" color="fg-200">Select all</wui-text>
-
         <input type="checkbox" @click=${this.onSelectAll.bind(this)} />
-      </wui-flex>
+    </wui-flex>
       <wui-flex flexDirection="column" gap="xs" .padding=${['l', 'xl', 'xl', 'xl'] as const}>
         ${this.allAccounts.map(account => {
           return html` <wui-list-account

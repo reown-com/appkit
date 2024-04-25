@@ -37,5 +37,6 @@ export default css`
     position: relative;
     right: 25px;
     top: 15px;
+    background-color: var(--wui-color-bg-base-125);
   }
 `
