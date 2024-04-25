@@ -37,6 +37,8 @@ jobs:
 
   code_style:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     strategy:
       matrix:
         style-command:
