@@ -30,7 +30,7 @@ export class W3mAllWalletsSearch extends LitElement {
 
   // Private Methods ------------------------------------- //
   private async onSearch() {
-    if (this.query !== this.prevQuery) {
+    if (this.query.trim() !== this.prevQuery.trim()) {
       this.prevQuery = this.query
       this.loading = true
       await ApiController.searchWallet({ search: this.query })
