@@ -134,6 +134,7 @@ export type IconType =
   | 'google'
   | 'helpCircle'
   | 'infoCircle'
+  | 'lightbulb'
   | 'mail'
   | 'mobile'
   | 'networkPlaceholder'

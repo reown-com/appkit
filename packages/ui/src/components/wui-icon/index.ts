@@ -73,6 +73,7 @@ import { cardSvg } from '../../assets/svg/card.js'
 import { plusSvg } from '../../assets/svg/plus.js'
 import { cursorTransparentSvg } from '../../assets/svg/cursor-transparent.js'
 import { checkmarkBoldSvg } from '../../assets/svg/checkmark-bold.js'
+import { lightbulbSvg } from '../../assets/svg/lightbulb.js'
 
 const svgOptions: Record<IconType, TemplateResult<2>> = {
   add: addSvg,
@@ -113,6 +114,7 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   google: googleSvg,
   helpCircle: helpCircleSvg,
   infoCircle: infoCircleSvg,
+  lightbulb: lightbulbSvg,
   mail: mailSvg,
   mobile: mobileSvg,
   networkPlaceholder: networkPlaceholderSvg,
