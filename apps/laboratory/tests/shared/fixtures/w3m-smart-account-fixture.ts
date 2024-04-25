@@ -5,19 +5,19 @@ import { ModalWalletPage } from '../pages/ModalWalletPage'
 import { ModalWalletValidator } from '../validators/ModalWalletValidator'
 import type { ModalPage } from '../pages/ModalPage'
 
-const mailsacApiKey = process.env['MAILSAC_API_KEY']
-if (!mailsacApiKey) {
-  throw new Error('MAILSAC_API_KEY is not set')
-}
-
 // Test Modal + Smart Account
 export const testModalSmartAccount = base.extend<ModalFixture & { slowModalPage: ModalPage }>({
   library: ['wagmi', { option: true }],
   modalPage: [
     async ({ page, library, context }, use, testInfo) => {
       const modalPage = new ModalWalletPage(page, library)
+      const modalValidator = new ModalWalletValidator(page)
       await modalPage.load()
 
+      const mailsacApiKey = process.env['MAILSAC_API_KEY']
+      if (!mailsacApiKey) {
+        throw new Error('MAILSAC_API_KEY is not set')
+      }
       const email = new Email(mailsacApiKey)
       const tempEmail = email.getEmailAddressToUse(testInfo.parallelIndex)
 
@@ -25,8 +25,8 @@ export const testModalSmartAccount = base.extend<ModalFixture & { slowModalPage:
       await modalPage.openAccount()
       await modalPage.openSettings()
       await modalPage.switchNetwork('Sepolia')
+      await modalValidator.expectSwitchedNetwork('Sepolia')
       await modalPage.closeModal()
-      await modalPage.page.waitForTimeout(1500)
       await use(modalPage)
     },
     { timeout: 90_000 }

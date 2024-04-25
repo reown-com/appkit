@@ -23,6 +23,24 @@ export const ConstantsUtil = {
       mobile_link: WALLET_URL,
       desktop_link: WALLET_URL,
       webapp_link: WALLET_URL
+    },
+    {
+      id: 'kotlin-web3wallet',
+      name: 'kotlin-web3wallet',
+      homepage: 'https://walletconnect.com',
+      mobile_link: 'kotlin-web3wallet://wc'
+    },
+    {
+      id: 'swift-web3wallet',
+      name: 'swift-web3wallet',
+      homepage: 'https://walletconnect.com',
+      mobile_link: 'walletapp://wc'
+    },
+    {
+      id: 'flutter-web3wallet',
+      name: 'flutter-web3wallet',
+      homepage: 'https://walletconnect.com',
+      mobile_link: 'wcflutterwallet://wc'
     }
   ],
   ProjectId: projectId
