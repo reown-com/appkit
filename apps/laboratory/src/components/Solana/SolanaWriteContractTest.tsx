@@ -91,7 +91,7 @@ export function SolanaWriteContractTest() {
     } catch (err) {
       toast({
         title: 'Transaction failed',
-        description: 'Failed to increment counter',
+        description: (err as Error).message,
         status: 'error',
         isClosable: true
       })
