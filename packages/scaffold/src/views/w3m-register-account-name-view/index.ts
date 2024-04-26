@@ -42,7 +42,9 @@ export class W3mRegisterAccountNameView extends LitElement {
   public override firstUpdated() {
     this.formRef.value?.addEventListener('keydown', event => {
       if (event.key === 'Enter') {
-        this.onSubmitName(event)
+        if (this.isAllowedToSubmit()) {
+          this.onSubmitName()
+        }
       }
     })
   }
@@ -74,7 +76,7 @@ export class W3mRegisterAccountNameView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private submitButtonTemplate() {
-    const showSubmit = !this.loading && this.name.length >= 3
+    const showSubmit = this.isAllowedToSubmit()
 
     return showSubmit
       ? html`
@@ -139,35 +141,44 @@ export class W3mRegisterAccountNameView extends LitElement {
         justifyContent="space-between"
         class="suggestion"
       >
-        <wui-text color="fg-100" variant="paragraph-400" class="suggested-name"
-          >${this.name}</wui-text
+        <wui-text
+          color="fg-100"
+          variant="paragraph-400"
+          class="suggested-name"
+          @click=${this.onSubmitName.bind(this)}
+        >
+          ${this.name}</wui-text
         >${this.nameSuggestionTagTemplate()}
       </wui-flex>
       ${suggestions
         .filter(s => s.name !== this.name)
-        .map(
-          suggestion =>
-            html` <wui-flex
-              .padding=${['m', 'm', 'm', 'm'] as const}
-              justifyContent="space-between"
-              class="suggestion"
-              @click=${this.onSelectSuggestion(suggestion.name)}
-            >
-              <wui-text color="fg-100" variant="paragraph-400" class="suggested-name">
-                ${suggestion.name}
-              </wui-text>
-              <wui-tag variant="success" size="lg">Available</wui-tag>
-            </wui-flex>`
-        )}
+        .map(suggestion => this.availableNameTemplate(suggestion.name))}
     </wui-flex>`
   }
 
-  private async onSubmitName(event: Event) {
+  private availableNameTemplate(suggestion: string) {
+    return html` <wui-flex
+      .padding=${['m', 'm', 'm', 'm'] as const}
+      justifyContent="space-between"
+      class="suggestion"
+      @click=${this.onSelectSuggestion(suggestion)}
+    >
+      <wui-text color="fg-100" variant="paragraph-400" class="suggested-name">
+        ${suggestion}
+      </wui-text>
+      <wui-tag variant="success" size="lg">Available</wui-tag>
+    </wui-flex>`
+  }
+
+  private isAllowedToSubmit() {
+    return !this.loading && !this.registered && !this.error && EnsController.validateName(this.name)
+  }
+
+  private async onSubmitName() {
     try {
-      if (this.loading) {
+      if (!this.isAllowedToSubmit()) {
         return
       }
-      event.preventDefault()
       await EnsController.registerName(this.name)
     } catch (error) {
       SnackController.showError((error as Error).message)
