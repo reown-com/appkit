@@ -1,9 +1,12 @@
-import { Button, useToast } from '@chakra-ui/react'
+import * as React from 'react'
+import { Button } from '@chakra-ui/react'
 import { useSignMessage, useAccount } from 'wagmi'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
+import { useChakraToast } from '../Toast'
 
 export function WagmiSignMessageTest() {
-  const toast = useToast()
+  const toast = useChakraToast()
+
   const { signMessageAsync } = useSignMessage()
   const { status } = useAccount()
   const isConnected = status === 'connected'
@@ -14,15 +17,13 @@ export function WagmiSignMessageTest() {
       toast({
         title: ConstantsUtil.SigningSucceededToastTitle,
         description: signature,
-        status: 'success',
-        isClosable: true
+        type: 'success'
       })
     } catch {
       toast({
         title: ConstantsUtil.SigningFailedToastTitle,
         description: 'Failed to sign message',
-        status: 'error',
-        isClosable: true
+        type: 'error'
       })
     }
   }

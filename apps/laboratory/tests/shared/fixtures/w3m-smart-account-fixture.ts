@@ -11,6 +11,7 @@ export const testModalSmartAccount = base.extend<ModalFixture & { slowModalPage:
   modalPage: [
     async ({ page, library, context }, use, testInfo) => {
       const modalPage = new ModalWalletPage(page, library)
+      const modalValidator = new ModalWalletValidator(page)
       await modalPage.load()
 
       const mailsacApiKey = process.env['MAILSAC_API_KEY']
@@ -24,6 +25,7 @@ export const testModalSmartAccount = base.extend<ModalFixture & { slowModalPage:
       await modalPage.openAccount()
       await modalPage.openSettings()
       await modalPage.switchNetwork('Sepolia')
+      await modalValidator.expectSwitchedNetwork('Sepolia')
       await modalPage.closeModal()
       await use(modalPage)
     },

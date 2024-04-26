@@ -1,3 +1,4 @@
+import * as React from 'react'
 import { useWeb3ModalAccount } from '@web3modal/ethers/react'
 import { EthersSignMessageTest } from './EthersSignMessageTest'
 import { EthersSignTypedDataTest } from './EthersSignTypedDataTest'
@@ -6,7 +7,16 @@ import { EthersTransactionTest } from './EthersTransactionTest'
 import { EthersWriteContractTest } from './EthersWriteContractTest'
 
 export function EthersTests() {
+  const [ready, setReady] = React.useState(false)
   const { isConnected } = useWeb3ModalAccount()
+
+  React.useEffect(() => {
+    setReady(true)
+  }, [])
+
+  if (!ready) {
+    return null
+  }
 
   return isConnected ? (
     <Card marginTop={10} marginBottom={10}>
