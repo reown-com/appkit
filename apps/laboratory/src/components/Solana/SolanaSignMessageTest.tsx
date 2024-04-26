@@ -1,11 +1,12 @@
-import { Button, useToast } from '@chakra-ui/react'
+import { Button } from '@chakra-ui/react'
 
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/solana/react'
 
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
+import { useChakraToast } from '../Toast'
 
 export function SolanaSignMessageTest() {
-  const toast = useToast()
+  const toast = useChakraToast()
   const { address } = useWeb3ModalAccount()
   const { walletProvider } = useWeb3ModalProvider()
 
@@ -23,8 +24,7 @@ export function SolanaSignMessageTest() {
         toast({
           title: ConstantsUtil.SigningSucceededToastTitle,
           description: (signature as { signature: Uint8Array }).signature,
-          status: 'success',
-          isClosable: true
+          type: 'success'
         })
 
         return
@@ -32,15 +32,13 @@ export function SolanaSignMessageTest() {
       toast({
         title: ConstantsUtil.SigningSucceededToastTitle,
         description: signature as Uint8Array,
-        status: 'success',
-        isClosable: true
+        type: 'success'
       })
     } catch (err) {
       toast({
         title: ConstantsUtil.SigningFailedToastTitle,
         description: 'Failed to sign message',
-        status: 'error',
-        isClosable: true
+        type: 'error'
       })
     }
   }
