@@ -8,6 +8,7 @@ import {
   ThemeController,
   RouterController
 } from '@web3modal/core'
+import { getCommonThemeVariables } from '@web3modal/common'
 
 // -- Variables ------------------------------------------- //
 const PAGE_HEIGHT = 400
@@ -97,7 +98,8 @@ export class W3mApproveTransactionView extends LitElement {
     const emailConnector = ConnectorController.getEmailConnector()
     if (emailConnector) {
       await emailConnector.provider.syncTheme({
-        themeVariables: ThemeController.getSnapshot().themeVariables
+        themeVariables: ThemeController.getSnapshot().themeVariables,
+        w3mThemeVariables: getCommonThemeVariables(ThemeController.getSnapshot().themeVariables)
       })
     }
   }

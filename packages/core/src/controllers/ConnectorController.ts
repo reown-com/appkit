@@ -1,6 +1,7 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, ref, snapshot } from 'valtio/vanilla'
 import type { Connector, EmailConnector } from '../utils/TypeUtil.js'
+import { getCommonThemeVariables } from '@web3modal/common'
 import { OptionsController } from './OptionsController.js'
 import { ThemeController } from './ThemeController.js'
 
@@ -41,7 +42,11 @@ export const ConnectorController = {
       })
       emailConnector.provider.syncTheme({
         themeMode: ThemeController.getSnapshot().themeMode,
-        themeVariables: ThemeController.getSnapshot().themeVariables
+        themeVariables: ThemeController.getSnapshot().themeVariables,
+        w3mThemeVariables: getCommonThemeVariables(
+          ThemeController.getSnapshot().themeVariables,
+          ThemeController.getSnapshot().themeMode
+        )
       })
     }
   },

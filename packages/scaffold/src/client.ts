@@ -12,6 +12,7 @@ import type {
   ConnectedWalletInfo,
   RouterControllerState
 } from '@web3modal/core'
+import type { W3mThemeVariables } from '@web3modal/common'
 import {
   AccountController,
   BlockchainApiController,
@@ -38,6 +39,7 @@ export interface LibraryOptions {
   projectId: OptionsControllerState['projectId']
   themeMode?: ThemeMode
   themeVariables?: ThemeVariables
+  w3mThemeVariables?: W3mThemeVariables
   allWallets?: OptionsControllerState['allWallets']
   includeWalletIds?: OptionsControllerState['includeWalletIds']
   excludeWalletIds?: OptionsControllerState['excludeWalletIds']
