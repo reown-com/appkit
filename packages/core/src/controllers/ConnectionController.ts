@@ -28,6 +28,7 @@ export interface ConnectionControllerClient {
   parseUnits: (value: string, decimals: number) => bigint
   formatUnits: (value: bigint, decimals: number) => string
   connectExternal?: (options: ConnectExternalOptions) => Promise<void>
+  reconnectExternal?: (options: ConnectExternalOptions) => Promise<void>
   checkInstalled?: (ids?: string[]) => boolean
   writeContract: (args: WriteContractArgs) => Promise<`0x${string}` | null>
 }
@@ -87,6 +88,11 @@ export const ConnectionController = {
 
   async connectExternal(options: ConnectExternalOptions) {
     await this._getClient().connectExternal?.(options)
+    StorageUtil.setConnectedConnector(options.type)
+  },
+
+  async reconnectExternal(options: ConnectExternalOptions) {
+    await this._getClient().reconnectExternal?.(options)
     StorageUtil.setConnectedConnector(options.type)
   },
 

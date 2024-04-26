@@ -12,7 +12,8 @@ import {
   waitForTransactionReceipt,
   estimateGas as wagmiEstimateGas,
   writeContract as wagmiWriteContract,
-  getAccount
+  getAccount,
+  reconnect
 } from '@wagmi/core'
 import { mainnet } from 'viem/chains'
 import { prepareTransactionRequest, sendTransaction as wagmiSendTransaction } from '@wagmi/core'
@@ -149,6 +150,16 @@ export class Web3Modal extends Web3ModalScaffold {
         const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
 
         await connect(this.wagmiConfig, { connector, chainId })
+      },
+
+      reconnectExternal: async ({ id }) => {
+        const connector = wagmiConfig.connectors.find(c => c.id === id)
+
+        if (!connector) {
+          throw new Error('connectionControllerClient:connectExternal - connector is undefined')
+        }
+
+        await reconnect(this.wagmiConfig, { connectors: [connector] })
       },
 
       checkInstalled: ids => {

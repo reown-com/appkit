@@ -237,6 +237,7 @@ export class W3mAccountSettingsView extends LitElement {
 
     this.loading = true
     await emailConnector?.provider.setPreferredAccount(accountTypeTarget)
+    await ConnectionController.reconnectExternal(emailConnector)
     SendController.resetSend()
     this.loading = false
     this.requestUpdate()
