@@ -40,7 +40,7 @@ export function setThemeVariables(themeVariables: ThemeVariables) {
   }
 }
 
-export function createRootStyles(themeVariables?: ThemeVariables) {
+function createRootStyles(themeVariables?: ThemeVariables) {
   return {
     core: css`
       @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
