@@ -33,7 +33,6 @@ export const ThemeController = {
       const emailConnector = ConnectorController.getEmailConnector()
 
       if (emailConnector) {
-        const themeMode = ThemeController.getSnapshot().themeMode
         const themeVariables = ThemeController.getSnapshot().themeVariables
 
         emailConnector.provider.syncTheme({
