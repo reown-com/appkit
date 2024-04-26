@@ -129,7 +129,7 @@ export class W3mRegisterAccountNameView extends LitElement {
   }
 
   private templateSuggestions() {
-    if (!this.name || this.name.length < 4) {
+    if (!this.name || this.name.length < 4 || this.error) {
       return null
     }
 
