@@ -28,7 +28,7 @@ export class W3mAccountSettingsView extends LitElement {
 
   private readonly networkImages = AssetController.state.networkImages
 
-  private text: string = ''
+  private text = ''
 
   // -- State & Properties --------------------------------- //
   @state() private address = AccountController.state.address
