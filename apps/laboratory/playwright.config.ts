@@ -28,8 +28,8 @@ export default defineConfig<ModalFixture>({
     /* Take a screenshot when the test fails */
     screenshot: 'only-on-failure',
 
-    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: 'on-first-retry',
+    /* Collect trace regardless so we can debug latency regressions. See https://playwright.dev/docs/trace-viewer */
+    trace: 'on',
 
     video: 'retain-on-failure'
   },
