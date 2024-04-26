@@ -68,6 +68,7 @@ export class ModalValidator {
       timeout: 30 * 1000
     })
     const closeButton = this.page.locator('#toast-close-button')
+
     await expect(closeButton).toBeVisible()
     await closeButton.click()
   }
