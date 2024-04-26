@@ -31,6 +31,7 @@ export class W3mWalletSendView extends LitElement {
     | 'Add Address'
     | 'Add Amount'
     | 'Insufficient Funds'
+    | 'Incorrect Value'
     | 'Invalid Address' = 'Preview Send'
 
   public constructor() {
@@ -123,6 +124,13 @@ export class W3mWalletSendView extends LitElement {
 
     if (!this.sendTokenAmount) {
       this.message = 'Add Amount'
+    }
+
+    if (this.sendTokenAmount && this.token?.price) {
+      const value = this.sendTokenAmount * this.token.price
+      if (!value) {
+        this.message = 'Incorrect Value'
+      }
     }
 
     if (!this.token) {

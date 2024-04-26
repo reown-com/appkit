@@ -37,4 +37,8 @@ export default css`
       black 100%
     );
   }
+
+  .totalValue {
+    width: 100%;
+  }
 `

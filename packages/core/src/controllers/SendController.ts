@@ -104,6 +104,7 @@ export const SendController = {
         gasPrice: params.gasPrice
       })
       SnackController.showSuccess('Transaction started')
+      this.resetSend()
     } catch (error) {
       SnackController.showError('Something went wrong')
     }
@@ -138,6 +139,7 @@ export const SendController = {
           abi: erc20ABI
         })
         SnackController.showSuccess('Transaction started')
+        this.resetSend()
       }
     } catch (error) {
       SnackController.showError('Something went wrong')

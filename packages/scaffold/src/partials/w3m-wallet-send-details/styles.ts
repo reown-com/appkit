@@ -3,7 +3,7 @@ import { css } from 'lit'
 export default css`
   :host {
     display: flex;
-    width: 100%;
+    width: auto;
     flex-direction: column;
     gap: var(--wui-border-radius-1xs);
     border-radius: var(--wui-border-radius-s);

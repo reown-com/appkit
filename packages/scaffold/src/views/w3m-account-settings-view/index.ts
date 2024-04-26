@@ -9,7 +9,8 @@ import {
   RouterController,
   SnackController,
   StorageUtil,
-  ConnectorController
+  ConnectorController,
+  SendController
 } from '@web3modal/core'
 import { UiHelperUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -236,6 +237,7 @@ export class W3mAccountSettingsView extends LitElement {
 
     this.loading = true
     await emailConnector?.provider.setPreferredAccount(accountTypeTarget)
+    SendController.resetSend()
     this.loading = false
     this.requestUpdate()
   }

@@ -54,7 +54,9 @@ export class W3mWalletSendPreviewView extends LitElement {
             ${this.sendValueTemplate()}
           </wui-flex>
           <wui-preview-item
-            text="${this.sendTokenAmount} ${this.token?.symbol}"
+            text="${this.sendTokenAmount
+              ? UiHelperUtil.roundNumber(this.sendTokenAmount, 6, 5)
+              : 'unknown'} ${this.token?.symbol}"
             .imageSrc=${this.token?.iconUrl}
           ></wui-preview-item>
         </wui-flex>
