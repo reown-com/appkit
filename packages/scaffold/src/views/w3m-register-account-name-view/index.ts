@@ -129,7 +129,7 @@ export class W3mRegisterAccountNameView extends LitElement {
   }
 
   private templateSuggestions() {
-    if (!this.name) {
+    if (!this.name || this.name.length < 4) {
       return null
     }
 
@@ -141,12 +141,7 @@ export class W3mRegisterAccountNameView extends LitElement {
         justifyContent="space-between"
         class="suggestion"
       >
-        <wui-text
-          color="fg-100"
-          variant="paragraph-400"
-          class="suggested-name"
-          @click=${this.onSubmitName.bind(this)}
-        >
+        <wui-text color="fg-100" variant="paragraph-400" class="suggested-name">
           ${this.name}</wui-text
         >${this.nameSuggestionTagTemplate()}
       </wui-flex>
