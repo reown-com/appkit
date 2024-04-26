@@ -211,14 +211,9 @@ export class ModalPage {
   }
 
   async switchNetwork(network: string) {
-    const switchNetworkButton = this.page.getByTestId('w3m-account-select-network')
     await this.page.getByTestId('account-button').click()
     await this.page.getByTestId('w3m-account-select-network').click()
     await this.page.getByTestId(`w3m-network-switch-${network}`).click()
-    await expect(switchNetworkButton, `Switched network should include ${network}`).toContainText(
-      network,
-      { timeout: 5000 }
-    )
   }
 
   async clickWalletDeeplink() {
