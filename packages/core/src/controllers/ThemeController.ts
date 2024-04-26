@@ -37,6 +37,7 @@ export const ThemeController = {
 
         emailConnector.provider.syncTheme({
           themeMode,
+          themeVariables,
           w3mThemeVariables: getW3mThemeVariables(themeVariables, themeMode)
         })
       }
@@ -53,7 +54,10 @@ export const ThemeController = {
       const emailConnector = ConnectorController.getEmailConnector()
 
       if (emailConnector) {
+        const themeVariablesSnapshot = ThemeController.getSnapshot().themeVariables
+
         emailConnector.provider.syncTheme({
+          themeVariables: themeVariablesSnapshot,
           w3mThemeVariables: getW3mThemeVariables(state.themeVariables, state.themeMode)
         })
       }
