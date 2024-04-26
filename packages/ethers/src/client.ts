@@ -194,16 +194,27 @@ export class Web3Modal extends Web3ModalScaffold {
                 chainId: parseInt(chainId, 10)
               })
             }
-            // Kicks off verifyMessage and populates external states
-            const message = WalletConnectProvider.signer.client.formatAuthMessage({
-              request: p,
-              iss: p.iss
-            })
-            SIWEController.verifyMessage({
-              message,
-              signature: s.s,
-              cacao: signedCacao
-            })
+            try {
+              // Kicks off verifyMessage and populates external states
+              const message = WalletConnectProvider.signer.client.formatAuthMessage({
+                request: p,
+                iss: p.iss
+              })
+
+              await SIWEController.verifyMessage({
+                message,
+                signature: s.s,
+                cacao: signedCacao
+              })
+            } catch (error) {
+              // eslint-disable-next-line no-console
+              console.error('Error verifying message', error)
+              // eslint-disable-next-line no-console
+              await WalletConnectProvider.disconnect().catch(console.error)
+              // eslint-disable-next-line no-console
+              await SIWEController.signOut().catch(console.error)
+              throw error
+            }
           }
         } else {
           await WalletConnectProvider.connect()

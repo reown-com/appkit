@@ -145,22 +145,33 @@ export class Web3Modal extends Web3ModalScaffold {
             const { p, s } = signedCacao
             const cacaoChainId = getDidChainId(p.iss) || ''
             const address = getDidAddress(p.iss)
-            if (address && chainId) {
+            if (address && cacaoChainId) {
               SIWEController.setSession({
                 address,
                 chainId: parseInt(cacaoChainId, 10)
               })
             }
-            // Kicks off verifyMessage and populates external states
-            const message = provider.signer.client.formatAuthMessage({
-              request: p,
-              iss: p.iss
-            })
-            SIWEController.verifyMessage({
-              message,
-              signature: s.s,
-              cacao: signedCacao
-            })
+            try {
+              // Kicks off verifyMessage and populates external states
+              const message = provider.signer.client.formatAuthMessage({
+                request: p,
+                iss: p.iss
+              })
+
+              await SIWEController.verifyMessage({
+                message,
+                signature: s.s,
+                cacao: signedCacao
+              })
+            } catch (error) {
+              // eslint-disable-next-line no-console
+              console.error('Error verifying message', error)
+              // eslint-disable-next-line no-console
+              await provider.disconnect().catch(console.error)
+              // eslint-disable-next-line no-console
+              await SIWEController.signOut().catch(console.error)
+              throw error
+            }
           }
         }
         await connect(this.wagmiConfig, { connector, chainId })
