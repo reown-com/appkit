@@ -1,14 +1,5 @@
 import { expect } from '@playwright/test'
 import { ModalValidator } from './ModalValidator'
-import { createPublicClient, http } from 'viem'
-
-function getTransport({ chainId }: { chainId: number }) {
-  const RPC_URL = 'https://rpc.walletconnect.com'
-
-  return http(
-    `${RPC_URL}/v1/?chainId=eip155:${chainId}&projectId=${process.env['NEXT_PUBLIC_PROJECT_ID']}`
-  )
-}
 
 export const EOA = 'EOA'
 export const SMART_ACCOUNT = 'smart account'
@@ -41,34 +32,11 @@ export class ModalWalletValidator extends ModalValidator {
     ).toContainText(type)
   }
 
-  async expectAddress(expectedAddress: string) {
-    const address = this.page.getByTestId('w3m-address')
-
-    await expect(address, 'Correct address should be present').toHaveText(expectedAddress)
-  }
-
   override async expectSwitchedNetwork(network: string) {
     const switchNetworkButton = this.page.getByTestId('account-switch-network-button')
     await expect(switchNetworkButton).toBeVisible()
     await expect(switchNetworkButton, `Switched network should include ${network}`).toContainText(
       network
     )
-  }
-
-  async expectValid6492Signature(
-    signature: `0x${string}`,
-    address: `0x${string}`,
-    chainId: number
-  ) {
-    const publicClient = createPublicClient({
-      transport: getTransport({ chainId })
-    })
-    const isVerified = await publicClient.verifyMessage({
-      message: 'Hello Web3Modal!',
-      address,
-      signature
-    })
-
-    expect(isVerified).toBe(true)
   }
 }

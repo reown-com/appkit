@@ -117,6 +117,6 @@ testModalSmartAccount(
     const signature = await walletModalPage.getSignature()
     const address = await walletModalPage.getAddress()
     const chainId = await walletModalPage.getChainId()
-    await walletModalValidator.expectValid6492Signature(signature, address, chainId)
+    await walletModalValidator.expectValidSignature(signature, address, chainId)
   }
 )
