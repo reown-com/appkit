@@ -454,11 +454,11 @@ export function createRootStyles(themeVariables?: ThemeVariables) {
     light: css`
       :root {
         --w3m-color-mix: ${unsafeCSS(themeVariables?.['--w3m-color-mix'] || '#fff')};
-        --w3m-accent: ${unsafeCSS(getW3mThemeVariables(themeVariables, 'light')['--w3m-accent'])};
+        --w3m-accent: ${unsafeCSS(getW3mThemeVariables(themeVariables, 'dark')['--w3m-accent'])};
         --w3m-default: #fff;
 
         --wui-color-modal-bg-base: ${unsafeCSS(
-          getW3mThemeVariables(themeVariables, 'light')['--w3m-background']
+          getW3mThemeVariables(themeVariables, 'dark')['--w3m-background']
         )};
         --wui-color-accent-base-100: var(--w3m-accent);
 
@@ -542,11 +542,11 @@ export function createRootStyles(themeVariables?: ThemeVariables) {
     dark: css`
       :root {
         --w3m-color-mix: ${unsafeCSS(themeVariables?.['--w3m-color-mix'] || '#000')};
-        --w3m-accent: ${unsafeCSS(getW3mThemeVariables(themeVariables, 'dark')['--w3m-accent'])};
+        --w3m-accent: ${unsafeCSS(getW3mThemeVariables(themeVariables, 'light')['--w3m-accent'])};
         --w3m-default: #000;
 
         --wui-color-modal-bg-base: ${unsafeCSS(
-          getW3mThemeVariables(themeVariables, 'dark')['--w3m-background']
+          getW3mThemeVariables(themeVariables, 'light')['--w3m-background']
         )};
         --wui-color-accent-base-100: var(--w3m-accent);
 

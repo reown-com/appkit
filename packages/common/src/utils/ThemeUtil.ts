@@ -18,7 +18,7 @@ export interface W3mThemeVariables {
 
 // -- Utilities ---------------------------------------------------------------
 export function getW3mThemeVariables(themeVariables?: ThemeVariables, themeType?: ThemeType) {
-  if (themeType === 'dark') {
+  if (themeType === 'light') {
     return {
       '--w3m-accent': themeVariables?.['--w3m-accent'] || '#5773ff',
       '--w3m-background': '#fff'

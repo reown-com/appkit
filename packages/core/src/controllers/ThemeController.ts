@@ -48,15 +48,13 @@ export const ThemeController = {
 
   setThemeVariables(themeVariables: ThemeControllerState['themeVariables']) {
     state.themeVariables = { ...state.themeVariables, ...themeVariables }
-    const themeVariablesSnapshot = ThemeController.getSnapshot().themeVariables
 
     try {
       const emailConnector = ConnectorController.getEmailConnector()
 
       if (emailConnector) {
         emailConnector.provider.syncTheme({
-          themeVariables: themeVariablesSnapshot,
-          w3mThemeVariables: getW3mThemeVariables(themeVariablesSnapshot, state.themeMode)
+          w3mThemeVariables: getW3mThemeVariables(state.themeVariables, state.themeMode)
         })
       }
     } catch {
