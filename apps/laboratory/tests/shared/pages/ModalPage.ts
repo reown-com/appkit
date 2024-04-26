@@ -232,9 +232,9 @@ export class ModalPage {
     await this.page.waitForTimeout(300)
   }
 
-  async updateEmail(mailsacApiKey: string) {
+  async updateEmail(mailsacApiKey: string, index: number) {
     const email = new Email(mailsacApiKey)
-    const newEmailAddress = email.getEmailAddressToUse(1)
+    const newEmailAddress = email.getEmailAddressToUse(index)
 
     await this.page.getByTestId('account-button').click()
     await this.page.getByTestId('w3m-account-email-update').click()
