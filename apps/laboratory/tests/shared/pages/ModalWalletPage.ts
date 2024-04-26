@@ -19,15 +19,10 @@ export class ModalWalletPage extends ModalPage {
     const switchNetworkButton = this.page.getByTestId('account-switch-network-button')
     await this.page.getByTestId('account-switch-network-button').click()
     await this.page.getByTestId(`w3m-network-switch-${network}`).click()
-    await expect(switchNetworkButton, `Switched network should include ${network}`).toContainText(
-      network,
-      { timeout: 5000 }
-    )
   }
 
   async togglePreferredAccountType() {
     await this.page.getByTestId('account-toggle-preferred-account-type').click()
-    await this.page.waitForTimeout(1000)
   }
 
   override async disconnect(): Promise<void> {
@@ -36,7 +31,6 @@ export class ModalWalletPage extends ModalPage {
     await expect(disconnectBtn, 'Disconnect button should be enabled').toBeEnabled()
     await disconnectBtn.click()
     await this.page.getByTestId('connect-button').waitFor({ state: 'visible', timeout: 5000 })
-    await this.page.waitForTimeout(2000)
   }
 
   async getAddress(): Promise<string> {

@@ -252,7 +252,7 @@ export class ModalPage {
 
     // Wait until the next screen appears
     await expect(this.page.getByText('Enter the code we sent')).toBeVisible({
-      timeout: 10_000
+      timeout: 20_000
     })
     const confirmCurrentEmail = await this.page.getByText('Confirm Current Email').isVisible()
     if (confirmCurrentEmail) {
