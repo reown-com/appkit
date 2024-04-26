@@ -8,18 +8,12 @@ import {
 } from '@web3modal/core'
 import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@web3modal/scaffold-utils'
 
-import {
-  createWalletAdapters,
-  type AdapterKey,
-  syncInjectedWallets
-} from './connectors/walletAdapters.js'
-import { SolConstantsUtil } from './utils/scaffold/SolanaConstantsUtil.js'
-import { SolHelpersUtil } from './utils/scaffold/SolanaHelpersUtils.js'
-import { SolStoreUtil } from './utils/scaffold/SolanaStoreUtil.js'
+import { createWalletAdapters, syncInjectedWallets } from './connectors/walletAdapters.js'
+import { SolConstantsUtil, SolHelpersUtil, SolStoreUtil } from './utils/scaffold/index.js'
 import { WalletConnectConnector } from './connectors/walletConnectConnector.js'
 
 import type { BaseWalletAdapter } from '@solana/wallet-adapter-base'
-import type { PublicKey } from '@solana/web3.js'
+import type { PublicKey, Commitment, ConnectionConfig } from '@solana/web3.js'
 import type UniversalProvider from '@walletconnect/universal-provider'
 import type {
   CaipNetworkId,
@@ -33,12 +27,13 @@ import type {
   CaipNetwork
 } from '@web3modal/scaffold'
 
-import type { ProviderType, Chain, Provider } from './utils/scaffold/SolanaTypesUtil.js'
-import type { SolStoreUtilState } from './utils/scaffold/SolanaStoreUtil.js'
+import type { AdapterKey } from './connectors/walletAdapters.js'
+import type { ProviderType, Chain, Provider, SolStoreUtilState } from './utils/scaffold/index.js'
 
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
   solanaConfig: ProviderType
   chains: Chain[]
+  connectionSettings?: Commitment | ConnectionConfig
   defaultChain?: Chain
   chainImages?: Record<number | string, string>
   connectorImages?: Record<string, string>
@@ -56,8 +51,18 @@ export class Web3Modal extends Web3ModalScaffold {
 
   private chains: Chain[]
 
+  public connectionSettings: Commitment | ConnectionConfig
+
   public constructor(options: Web3ModalClientOptions) {
-    const { solanaConfig, chains, tokens, _sdkVersion, chainImages, ...w3mOptions } = options
+    const {
+      solanaConfig,
+      chains,
+      tokens,
+      _sdkVersion,
+      chainImages,
+      connectionSettings = 'confirmed',
+      ...w3mOptions
+    } = options
     const { metadata } = solanaConfig
 
     if (!solanaConfig) {
@@ -140,7 +145,25 @@ export class Web3Modal extends Web3ModalScaffold {
         })
 
         return signature as string
-      }
+      },
+
+      estimateGas: async () => {
+        return await Promise.resolve(BigInt(0))
+      },
+
+      // -- Transaction methods ---------------------------------------------------
+      /**
+       *
+       * These methods are supported only on `wagmi` and `ethers` since the Solana SDK does not support them in the same way.
+       * These function definition is to have a type parity between the clients. Currently not in use.
+       */
+      sendTransaction: async () => {
+        return await Promise.resolve('0x')
+      },
+
+      parseUnits: () => BigInt(0),
+
+      formatUnits: () => ''
     }
 
     super({
@@ -156,6 +179,7 @@ export class Web3Modal extends Web3ModalScaffold {
     } as ScaffoldOptions)
 
     this.chains = chains
+    this.connectionSettings = connectionSettings
     this.syncRequestedNetworks(chains, chainImages)
 
     const chain = SolHelpersUtil.getChainFromCaip(
@@ -178,7 +202,7 @@ export class Web3Modal extends Web3ModalScaffold {
     SolStoreUtil.setConnection(
       new Connection(
         SolHelpersUtil.detectRpcUrl(chain, OptionsController.state.projectId),
-        'recent'
+        this.connectionSettings
       )
     )
 
@@ -225,6 +249,18 @@ export class Web3Modal extends Web3ModalScaffold {
     const { address } = SolStoreUtil.state
 
     return address ? SolStoreUtil.state.address : address
+  }
+
+  public getWalletProvider() {
+    return SolStoreUtil.state.provider
+  }
+
+  public getWalletProviderType() {
+    return SolStoreUtil.state.providerType
+  }
+
+  public getWalletConnection() {
+    return SolStoreUtil.state.connection
   }
 
   public async checkActiveProviders() {
@@ -340,7 +376,7 @@ export class Web3Modal extends Web3ModalScaffold {
           SolStoreUtil.setConnection(
             new Connection(
               SolHelpersUtil.detectRpcUrl(chain, OptionsController.state.projectId),
-              'recent'
+              this.connectionSettings
             )
           )
           this.setAddress(this.walletAdapters[wallet].publicKey?.toString())
@@ -355,7 +391,7 @@ export class Web3Modal extends Web3ModalScaffold {
           SolStoreUtil.setConnection(
             new Connection(
               SolHelpersUtil.detectRpcUrl(chain, OptionsController.state.projectId),
-              'recent'
+              this.connectionSettings
             )
           )
           universalProvider.connect({ namespaces, pairingTopic: undefined })

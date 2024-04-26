@@ -13,6 +13,7 @@ export default {
     size: 'md',
     variant: 'fill',
     disabled: false,
+    fullWidth: false,
     iconLeft: undefined,
     iconRight: undefined,
     loading: false

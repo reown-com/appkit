@@ -1,5 +1,26 @@
 # @examples/vue-wagmi
 
+## 4.1.11
+
+### Patch Changes
+
+- refactor: Solana exported helper methods and proram instruction improvements
+- refactor: email and smart account improvements
+- refactor: unit test CI check improvements
+- feat: convert
+
+- Updated dependencies []:
+  - @web3modal/wagmi@4.1.11
+
+## 4.1.10
+
+### Patch Changes
+
+- Fix activity list styling issue
+
+- Updated dependencies []:
+  - @web3modal/wagmi@4.1.10
+
 ## 4.1.9
 
 ### Patch Changes
@@ -35,6 +56,18 @@
 
 - Updated dependencies []:
   - @web3modal/wagmi@4.1.6
+
+## 4.1.6-a0733f5.0
+
+### Patch Changes
+
+- chore: canary release for siwe dependency
+
+- Updated dependencies []:
+  - @web3modal/ethers@4.1.6-a0733f5.0
+  - @web3modal/siwe@4.1.6-a0733f5.0
+  - @web3modal/solana@4.1.6-a0733f5.0
+  - @web3modal/wagmi@4.1.6-a0733f5.0
 
 ## 4.1.5
 
