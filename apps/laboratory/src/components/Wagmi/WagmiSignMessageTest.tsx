@@ -36,7 +36,6 @@ export function WagmiSignMessageTest() {
         Sign Message
       </Button>
       <div data-testid="w3m-signature" hidden>
-        {' '}
         {signature}
       </div>
     </>
