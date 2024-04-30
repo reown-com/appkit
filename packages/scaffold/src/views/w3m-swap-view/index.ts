@@ -1,4 +1,4 @@
-import { UiHelperUtil, customElement } from '@web3modal/ui'
+import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
@@ -161,26 +161,15 @@ export class W3mSwapView extends LitElement {
   }
 
   private templateLoading() {
-    return html`<wui-flex
-      flexGrow="1"
-      flexDirection="column"
-      justifyContent="center"
-      alignItems="center"
-      .padding=${['3xl', 'xl', '3xl', 'xl'] as const}
-      gap="xl"
-    >
-      <wui-icon-box
-        backgroundColor="glass-005"
-        background="gray"
-        iconColor="fg-200"
-        icon="swapHorizontalRoundedBold"
-        size="lg"
-        ?border=${true}
-        borderColor="wui-color-bg-125"
-      ></wui-icon-box>
-
-      <wui-loading-hexagon></wui-loading-hexagon>
-    </wui-flex>`
+    return html`
+      <wui-flex flexDirection="column" gap="l">
+        <wui-flex flexDirection="column" alignItems="center" gap="xs" class="swap-inputs-container">
+          <w3m-swap-input-skeleton target="sourceToken"></w3m-swap-input-skeleton>
+          <w3m-swap-input-skeleton target="toToken"></w3m-swap-input-skeleton>
+          ${this.templateReplaceTokensButton()}
+        </wui-flex>
+      </wui-flex>
+    `
   }
 
   private templateTokenInput(target: SwapInputTarget, token?: SwapToken) {
@@ -203,7 +192,7 @@ export class W3mSwapView extends LitElement {
       .token=${token}
       .balance=${myToken?.quantity?.numeric}
       .price=${this.sourceTokenPriceInUSD}
-      .marketValue=${isNaN(value) ? '' : UiHelperUtil.formatNumberToLocalString(value)}
+      .marketValue=${value}
       .onSetMaxValue=${this.onSetMaxValue.bind(this)}
     ></w3m-swap-input>`
   }
@@ -280,6 +269,7 @@ export class W3mSwapView extends LitElement {
   private templateActionButton() {
     const haveNoTokenSelected = !this.toToken || !this.sourceToken
     const loading = this.loading || this.loadingPrices || this.transactionLoading
+    const disabled = loading || haveNoTokenSelected || !!this.inputError
 
     return html` <wui-flex gap="xs">
       <wui-button
@@ -289,7 +279,7 @@ export class W3mSwapView extends LitElement {
         borderRadius="xs"
         variant=${haveNoTokenSelected ? 'shade' : 'fill'}
         .loading=${loading}
-        .disabled=${loading || haveNoTokenSelected || this.inputError}
+        .disabled=${disabled}
         @click=${this.onSwapPreview}
       >
         ${this.actionButtonLabel()}

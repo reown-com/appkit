@@ -14,7 +14,7 @@ export class W3mSwapInputSkeleton extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex class="${this.focused ? 'focus' : ''}" justifyContent="space-between">
+      <wui-flex justifyContent="space-between">
         ${this.target === 'sourceToken' ? swapInputMaskTopSvg : swapInputMaskBottomSvg}
         <wui-flex
           flex="1"

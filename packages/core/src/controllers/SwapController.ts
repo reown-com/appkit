@@ -364,7 +364,7 @@ export const SwapController = {
     const caipNetwork = NetworkController.state.caipNetwork
 
     if (!caipNetwork) {
-      return null
+      return
     }
 
     const networkToken = balances.find(token => token.address === networkAddress)
@@ -452,13 +452,13 @@ export const SwapController = {
     }
 
     if (state.loadingPrices) {
-      await new Promise(resolve => {
+      await new Promise<void>(resolve => {
         const interval = setInterval(() => {
           if (!state.loadingPrices) {
             clearInterval(interval)
             resolve()
           }
-        }, 100)
+        }, 500)
       })
     }
 
@@ -472,6 +472,10 @@ export const SwapController = {
   async getTransaction() {
     const { fromCaipAddress, sourceTokenAddress, sourceTokenAmount, sourceTokenDecimals } =
       this.getParams()
+
+    if (!fromCaipAddress || !sourceTokenAddress || !sourceTokenAmount || !sourceTokenDecimals) {
+      return undefined
+    }
 
     const isInsufficientSourceTokenForSwap = this.isInsufficientSourceTokenForSwap()
     const insufficientNetworkTokenForGas = this.isInsufficientNetworkTokenForGas()
@@ -508,7 +512,9 @@ export const SwapController = {
   getToAmount() {
     const { sourceTokenDecimals, toTokenDecimals } = this.getParams()
 
-    if (!toTokenDecimals || !sourceTokenDecimals) {
+    const isToTokenPriceInvalid = state.toTokenPriceInUSD <= 0
+
+    if (!toTokenDecimals || !sourceTokenDecimals || isToTokenPriceInvalid) {
       return '0'
     }
 
