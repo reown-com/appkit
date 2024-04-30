@@ -3,12 +3,13 @@ import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
 import type { W3mFrameTypes } from '@web3modal/wallet'
 import type { Chain, CombinedProvider, Provider } from './EthersTypesUtil.js'
 import { getAddress } from 'ethers'
+import type { ConnectorType } from '@web3modal/core'
 
 // -- Types --------------------------------------------- //
 
 export interface EthersStoreUtilState {
   provider?: Provider | CombinedProvider
-  providerType?: 'walletConnect' | 'injected' | 'coinbaseWallet' | 'eip6963' | 'w3mEmail'
+  providerType?: ConnectorType
   address?: string | undefined
   chainId?: number
   supportedChains: Chain[]

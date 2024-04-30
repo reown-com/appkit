@@ -1,27 +1,89 @@
 import { EthersConstantsUtil } from '../utils/EthersConstantsUtil.js'
 import { EthersHelpersUtil } from '../utils/EthersHelpersUtil.js'
-import { EthersStoreUtil, type EthersStoreUtilState } from '../utils/EthersStoreUtil.js'
+import { EthersStoreUtil } from '../utils/EthersStoreUtil.js'
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
+import type { ConnectorType } from '@web3modal/core'
 import type { Provider } from '../utils/EthersTypesUtil.js'
-import type { Connector } from './types.js'
 
-export function injected({
-  type,
-  id
-}: { type?: EthersStoreUtilState['providerType']; id?: string } = {}): Connector {
-  const connectorType = type ?? 'injected'
-  const connectorId = id ?? ConstantsUtil.INJECTED_CONNECTOR_ID
+export type InjectedOptions = {
+  id?: string
+  type?: ConnectorType
+  getProvider?: () => Provider | undefined
+}
 
-  function getProvider() {
-    if (typeof window !== 'undefined') {
-      return window.ethereum as Provider | undefined
+export class Injected {
+  id: string
+  type: ConnectorType
+  getProvider: () => Provider | undefined
+
+  constructor({ type, id, getProvider }: InjectedOptions = {}) {
+    this.id = id ?? ConstantsUtil.INJECTED_CONNECTOR_ID
+    this.type = type ?? 'INJECTED'
+    if (getProvider) {
+      this.getProvider = getProvider
+    } else {
+      this.getProvider = () => {
+        if (typeof window !== 'undefined') {
+          return window.ethereum as Provider | undefined
+        }
+
+        return undefined
+      }
     }
-
-    return undefined
   }
 
-  function watch() {
-    const provider = getProvider()
+  checkActive() {
+    const provider = this.getProvider()
+    const walletId = localStorage.getItem(EthersConstantsUtil.WALLET_ID)
+
+    if (provider) {
+      if (walletId === this.id) {
+        this.setProvider(provider)
+        this.watch()
+      }
+    }
+  }
+
+  async setProvider(provider: Provider) {
+    window?.localStorage.setItem(EthersConstantsUtil.WALLET_ID, this.id)
+
+    if (provider) {
+      const { address, chainId } = await EthersHelpersUtil.getUserInfo(provider)
+      if (address && chainId) {
+        EthersStoreUtil.setChainId(chainId)
+        EthersStoreUtil.setProviderType(this.type)
+        EthersStoreUtil.setProvider(provider)
+        EthersStoreUtil.setIsConnected(true)
+        EthersStoreUtil.setAddress(address)
+      }
+    }
+  }
+
+  async connect() {
+    const provider = this.getProvider()
+    if (!provider) {
+      throw new Error('provider is undefined')
+    }
+    try {
+      EthersStoreUtil.setError(undefined)
+      await provider.request({ method: 'eth_requestAccounts' })
+      this.setProvider(provider)
+    } catch (error) {
+      EthersStoreUtil.setError(error)
+    }
+  }
+
+  disconnect() {
+    const provider = this.getProvider()
+
+    localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
+    EthersStoreUtil.reset()
+
+    provider?.emit('disconnect')
+  }
+
+  watch() {
+    const provider = this.getProvider()
 
     function disconnectHandler() {
       localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
@@ -55,58 +117,8 @@ export function injected({
     }
   }
 
-  async function setProvider(provider: Provider) {
-    window?.localStorage.setItem(EthersConstantsUtil.WALLET_ID, connectorId)
-
-    if (provider) {
-      const { address, chainId } = await EthersHelpersUtil.getUserInfo(provider)
-      if (address && chainId) {
-        EthersStoreUtil.setChainId(chainId)
-        EthersStoreUtil.setProviderType(connectorType)
-        EthersStoreUtil.setProvider(provider)
-        EthersStoreUtil.setIsConnected(true)
-        EthersStoreUtil.setAddress(address)
-      }
-    }
-  }
-
-  function checkActive() {
-    const provider = getProvider()
-    const walletId = localStorage.getItem(EthersConstantsUtil.WALLET_ID)
-
-    if (provider) {
-      if (walletId === id) {
-        setProvider(provider)
-        watch()
-      }
-    }
-  }
-
-  async function connect() {
-    const provider = getProvider()
-    if (!provider) {
-      throw new Error('provider is undefined')
-    }
-    try {
-      EthersStoreUtil.setError(undefined)
-      await provider.request({ method: 'eth_requestAccounts' })
-      setProvider(provider)
-    } catch (error) {
-      EthersStoreUtil.setError(error)
-    }
-  }
-
-  function disconnect() {
-    const provider = getProvider()
-
-    localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
-    EthersStoreUtil.reset()
-
-    provider?.emit('disconnect')
-  }
-
-  async function switchNetwork(chainId: number) {
-    const provider = getProvider()
+  async switchNetwork(chainId: number) {
+    const provider = this.getProvider()
     const chains = EthersStoreUtil.state.supportedChains
     const chain = chains.find(c => c.chainId === chainId)
 
@@ -133,17 +145,5 @@ export function injected({
     } else if (!chain) {
       throw new Error('Chain is not supported')
     }
-  }
-
-  return {
-    id: connectorId,
-    type: connectorType,
-    getProvider,
-    watch,
-    checkActive,
-    setProvider,
-    connect,
-    disconnect,
-    switchNetwork
   }
 }

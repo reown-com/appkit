@@ -43,7 +43,6 @@
     "packages/wallet",
     "packages/siwe",
     "packages/wagmi",
-    "packages/ethers",
     "packages/solana",
     "apps/*",
     "examples/*"

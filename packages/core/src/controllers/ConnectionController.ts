@@ -83,7 +83,7 @@ export const ConnectionController = {
     StorageUtil.setConnectedConnector('WALLET_CONNECT')
   },
 
-  async connectExternal(options: ConnectExternalOptions) {
+  async connectExternal(options: Connector) {
     await this._getClient().connectExternal?.(options)
     StorageUtil.setConnectedConnector(options.type)
   },

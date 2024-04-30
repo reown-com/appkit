@@ -52,6 +52,8 @@ export type Connector = {
     icon?: string
     rdns?: string
   }
+  //prettier-ignore
+  connect?: ()=>(Promise<void> | void)
   provider?: unknown
 }
 
@@ -99,13 +101,6 @@ export interface WcWallet {
   app_store?: string | null
   play_store?: string | null
   chrome_store?: string | null
-  rdns?: string | null
-  injected?:
-    | {
-        namespace?: string
-        injected_id?: string
-      }[]
-    | null
 }
 
 export interface ApiGetWalletsRequest {
