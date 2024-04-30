@@ -45,6 +45,9 @@
     "viem": "2.9.3",
     "wagmi": "2.5.7"
   },
+  "overrides": {
+    "@coinbase/wallet-sdk": "4.0.0-beta.2"
+  },
   "devDependencies": {
     "@aws-sdk/client-cloudwatch": "3.509.0",
     "@mailsac/api": "1.0.5",

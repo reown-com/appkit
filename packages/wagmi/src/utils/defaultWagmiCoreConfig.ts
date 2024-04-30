@@ -2,10 +2,11 @@ import '@web3modal/polyfills'
 
 import type { CreateConfigParameters, CreateConnectorFn } from '@wagmi/core'
 import { createConfig } from '@wagmi/core'
-import { coinbaseWallet, walletConnect, injected } from '@wagmi/connectors'
+import { walletConnect, injected } from '@wagmi/connectors'
 
 import { emailConnector } from '../connectors/EmailConnector.js'
 import { getTransport } from './helpers.js'
+import { coinbaseWallet } from '../connectors/coinbase.js'
 
 export type ConfigOptions = Partial<CreateConfigParameters> & {
   chains: CreateConfigParameters['chains']
@@ -54,8 +55,7 @@ export function defaultWagmiConfig({
     connectors.push(
       coinbaseWallet({
         appName: metadata?.name ?? 'Unknown',
-        appLogoUrl: metadata?.icons[0] ?? 'Unknown',
-        enableMobileWalletLink: true
+        appLogoUrl: metadata?.icons[0] ?? 'Unknown'
       })
     )
   }
