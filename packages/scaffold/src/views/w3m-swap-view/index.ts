@@ -269,7 +269,7 @@ export class W3mSwapView extends LitElement {
   private templateActionButton() {
     const haveNoTokenSelected = !this.toToken || !this.sourceToken
     const loading = this.loading || this.loadingPrices || this.transactionLoading
-    const disabled = loading || haveNoTokenSelected || !!this.inputError
+    const disabled = loading || haveNoTokenSelected || this.inputError
 
     return html` <wui-flex gap="xs">
       <wui-button

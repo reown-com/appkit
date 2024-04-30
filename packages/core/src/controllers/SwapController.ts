@@ -189,7 +189,7 @@ export const SwapController = {
     state.sourceTokenAmount = amount
   },
 
-  async setToToken(toToken: SwapTokenWithBalance | undefined) {
+  setToToken(toToken: SwapTokenWithBalance | undefined) {
     if (!toToken) {
       state.toToken = toToken
       state.toTokenAmount = ''
@@ -202,7 +202,7 @@ export const SwapController = {
     this.setTokenPrice(toToken.address, 'toToken')
   },
 
-  async setToTokenAmount(amount: string) {
+  setToTokenAmount(amount: string) {
     state.toTokenAmount = amount
   },
 
@@ -482,10 +482,11 @@ export const SwapController = {
 
     if (insufficientNetworkTokenForGas || isInsufficientSourceTokenForSwap) {
       state.inputError = 'Insufficient balance'
+
       return undefined
-    } else {
-      state.inputError = undefined
     }
+
+    state.inputError = undefined
 
     const hasAllowance = await SwapApiUtil.fetchSwapAllowance({
       userAddress: fromCaipAddress,
