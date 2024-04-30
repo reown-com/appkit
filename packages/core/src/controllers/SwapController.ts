@@ -164,7 +164,11 @@ export const SwapController = {
       toTokenAmount: state.toTokenAmount,
       toTokenDecimals: state.toToken?.decimals,
       sourceTokenAmount: state.sourceTokenAmount,
-      sourceTokenDecimals: state.sourceToken?.decimals
+      sourceTokenDecimals: state.sourceToken?.decimals,
+      invalidToToken: !state.toToken?.address || !state.toToken?.decimals,
+      invalidSourceToken: !state.sourceToken?.address || !state.sourceToken?.decimals,
+      invalidSourceTokenAmount:
+        !state.sourceTokenAmount || parseFloat(state.sourceTokenAmount) === 0
     }
   },
 
@@ -178,51 +182,35 @@ export const SwapController = {
     }
 
     state.sourceToken = sourceToken
-    this.setTokenValues(sourceToken.address, 'sourceToken')
+    this.setTokenPrice(sourceToken.address, 'sourceToken')
   },
 
   setSourceTokenAmount(amount: string) {
-    const { sourceTokenAddress } = this.getParams()
-
     state.sourceTokenAmount = amount
-
-    if (sourceTokenAddress) {
-      this.setTokenValues(sourceTokenAddress, 'sourceToken')
-    }
   },
 
-  setToToken(toToken: SwapTokenWithBalance | undefined) {
-    const { sourceTokenAddress, sourceTokenAmount } = this.getParams()
-
+  async setToToken(toToken: SwapTokenWithBalance | undefined) {
     if (!toToken) {
-      state.toTokenAmount = '0'
+      state.toToken = toToken
+      state.toTokenAmount = ''
       state.toTokenPriceInUSD = 0
 
       return
     }
 
     state.toToken = toToken
-    this.setTokenValues(toToken.address, 'toToken')
-
-    if (sourceTokenAddress && sourceTokenAmount) {
-      this.makeChecks()
-    }
+    this.setTokenPrice(toToken.address, 'toToken')
   },
 
-  setToTokenAmount(amount: string) {
-    const { toTokenAddress } = this.getParams()
-
+  async setToTokenAmount(amount: string) {
     state.toTokenAmount = amount
-
-    if (toTokenAddress) {
-      this.setTokenValues(toTokenAddress, 'toToken')
-    }
   },
 
-  async setTokenValues(address: string, target: SwapInputTarget) {
+  async setTokenPrice(address: string, target: SwapInputTarget) {
     let price = state.tokensPriceMap[address] || 0
 
     if (!price) {
+      state.loadingPrices = true
       price = await this.getAddressPrice(address)
     }
 
@@ -231,17 +219,20 @@ export const SwapController = {
     } else if (target === 'toToken') {
       state.toTokenPriceInUSD = price
     }
+    state.loadingPrices = false
   },
 
   switchTokens() {
     const newSourceToken = state.toToken ? { ...state.toToken } : undefined
     const newToToken = state.sourceToken ? { ...state.sourceToken } : undefined
+    const newSourceTokenAmount = state.toTokenAmount
 
     this.setSourceToken(newSourceToken)
     this.setToToken(newToToken)
 
-    this.setSourceTokenAmount(state.toTokenAmount || '0')
-    SwapController.swapTokens()
+    this.setSourceTokenAmount(newSourceTokenAmount)
+    this.setToTokenAmount('')
+    this.swapTokens()
   },
 
   resetTokens() {
@@ -249,6 +240,8 @@ export const SwapController = {
     state.popularTokens = undefined
     state.myTokensWithBalance = undefined
     state.initialized = false
+    state.networkPrice = '0'
+    state.networkBalanceInUSD = '0'
   },
 
   resetValues() {
@@ -257,9 +250,10 @@ export const SwapController = {
     const networkToken = state.tokens?.find(token => token.address === networkAddress)
     this.setSourceToken(networkToken)
     state.sourceTokenPriceInUSD = state.tokensPriceMap[networkAddress] || 0
-    state.sourceTokenAmount = '0'
+    state.sourceTokenAmount = ''
     this.setToToken(undefined)
     state.gasPriceInUSD = 0
+    state.initialized = false
   },
 
   clearError() {
@@ -284,6 +278,7 @@ export const SwapController = {
 
     if (networkToken) {
       this.setSourceToken(networkToken)
+      this.setSourceTokenAmount('1')
     }
   },
 
@@ -366,13 +361,18 @@ export const SwapController = {
 
   setBalances(balances: SwapTokenWithBalance[]) {
     const { networkAddress } = this.getParams()
+    const caipNetwork = NetworkController.state.caipNetwork
+
+    if (!caipNetwork) {
+      return null
+    }
 
     const networkToken = balances.find(token => token.address === networkAddress)
 
     balances.forEach(token => {
       state.tokensPriceMap[token.address] = token.price || 0
     })
-    state.myTokensWithBalance = balances
+    state.myTokensWithBalance = balances.filter(token => token.address.startsWith(caipNetwork.id))
     state.networkBalanceInUSD = networkToken
       ? NumberUtil.multiply(networkToken.quantity.numeric, networkToken.price).toString()
       : '0'
@@ -402,6 +402,7 @@ export const SwapController = {
     }
   },
 
+  // -- Calculations -------------------------------------- //
   calculateGasPriceInEther(gas: bigint, gasPrice: bigint) {
     const totalGasCostInWei = gasPrice * gas
     const totalGasCostInEther = Number(totalGasCostInWei) / 1e18
@@ -441,24 +442,28 @@ export const SwapController = {
     return maxSlippageAmount.toNumber()
   },
 
+  // -- Transactions -------------------------------------- //
   async swapTokens() {
-    const { sourceTokenAddress, toTokenAddress } = this.getParams()
+    const { fromCaipAddress, invalidSourceToken, invalidSourceTokenAmount, invalidToToken } =
+      this.getParams()
 
-    if (!sourceTokenAddress || !toTokenAddress) {
+    if (!fromCaipAddress || invalidSourceToken || invalidSourceTokenAmount || invalidToToken) {
       return
     }
 
-    await this.makeChecks()
-  },
-
-  async makeChecks() {
-    const { toTokenDecimals, toTokenAddress } = this.getParams()
-
-    if (!toTokenDecimals || !toTokenAddress) {
-      return
+    if (state.loadingPrices) {
+      await new Promise(resolve => {
+        const interval = setInterval(() => {
+          if (!state.loadingPrices) {
+            clearInterval(interval)
+            resolve()
+          }
+        }, 100)
+      })
     }
 
     state.loading = true
+    state.toTokenAmount = this.getToAmount()
     const transaction = await this.getTransaction()
     this.setTransactionDetails(transaction)
     state.loading = false
@@ -468,14 +473,14 @@ export const SwapController = {
     const { fromCaipAddress, sourceTokenAddress, sourceTokenAmount, sourceTokenDecimals } =
       this.getParams()
 
-    if (
-      !fromCaipAddress ||
-      !sourceTokenAddress ||
-      !sourceTokenAmount ||
-      parseFloat(sourceTokenAmount) === 0 ||
-      !sourceTokenDecimals
-    ) {
+    const isInsufficientSourceTokenForSwap = this.isInsufficientSourceTokenForSwap()
+    const insufficientNetworkTokenForGas = this.isInsufficientNetworkTokenForGas()
+
+    if (insufficientNetworkTokenForGas || isInsufficientSourceTokenForSwap) {
+      state.inputError = 'Insufficient balance'
       return undefined
+    } else {
+      state.inputError = undefined
     }
 
     const hasAllowance = await SwapApiUtil.fetchSwapAllowance({
@@ -501,18 +506,29 @@ export const SwapController = {
   },
 
   getToAmount() {
-    const { sourceTokenDecimals } = this.getParams()
-    const decimals = sourceTokenDecimals || 18
-    const multiplier = 10 ** decimals
+    const { sourceTokenDecimals, toTokenDecimals } = this.getParams()
 
-    const toTokenSwapedAmount =
-      state.sourceTokenPriceInUSD && state.toTokenPriceInUSD && state.sourceTokenAmount
-        ? NumberUtil.bigNumber(state.sourceTokenAmount)
-            .multipliedBy(state.sourceTokenPriceInUSD)
-            .dividedBy(state.toTokenPriceInUSD)
-        : NumberUtil.bigNumber(0)
+    if (!toTokenDecimals || !sourceTokenDecimals) {
+      return '0'
+    }
 
-    return toTokenSwapedAmount.multipliedBy(multiplier).toString()
+    const decimalDifference = sourceTokenDecimals - toTokenDecimals
+    const sourceAmountInSmallestUnit = NumberUtil.bigNumber(state.sourceTokenAmount).multipliedBy(
+      NumberUtil.bigNumber(10).pow(sourceTokenDecimals)
+    )
+    const priceRatio = NumberUtil.bigNumber(state.sourceTokenPriceInUSD).dividedBy(
+      state.toTokenPriceInUSD
+    )
+    const toTokenAmountInSmallestUnit = sourceAmountInSmallestUnit
+      .multipliedBy(priceRatio)
+      .dividedBy(NumberUtil.bigNumber(10).pow(decimalDifference))
+
+    const toTokenAmount = toTokenAmountInSmallestUnit.dividedBy(
+      NumberUtil.bigNumber(10).pow(toTokenDecimals)
+    )
+    const amount = toTokenAmount.toFixed(toTokenDecimals).toString()
+
+    return amount
   },
 
   async createTokenAllowance() {
@@ -539,15 +555,13 @@ export const SwapController = {
       data: response.tx.data
     })
 
-    const toAmount = this.getToAmount()
-
     const transaction = {
       data: response.tx.data,
       to: CoreHelperUtil.getPlainAddress(response.tx.from) as `0x${string}`,
       gas: gasLimit,
       gasPrice: BigInt(response.tx.eip155.gasPrice),
       value: BigInt(response.tx.value),
-      toAmount
+      toAmount: state.toTokenAmount
     }
 
     return transaction
@@ -573,7 +587,7 @@ export const SwapController = {
 
       state.approvalTransaction = undefined
       state.transactionLoading = false
-      this.makeChecks()
+      this.swapTokens()
     } catch (err) {
       const error = err as TransactionError
       state.transactionError = error?.shortMessage as unknown as string
@@ -617,7 +631,6 @@ export const SwapController = {
 
       const isSourceTokenIsNetworkToken = sourceTokenAddress === networkAddress
 
-      const toAmount = this.getToAmount()
       const gas = BigInt(response.tx.eip155.gas)
       const gasPrice = BigInt(response.tx.eip155.gasPrice)
 
@@ -627,7 +640,7 @@ export const SwapController = {
         gas,
         gasPrice,
         value: isSourceTokenIsNetworkToken ? BigInt(amount) : BigInt('0'),
-        toAmount
+        toAmount: state.toTokenAmount
       }
 
       state.gasPriceInUSD = this.calculateGasPriceInUSD(gas, gasPrice)
@@ -666,10 +679,8 @@ export const SwapController = {
       })
       state.transactionLoading = false
 
-      setTimeout(() => {
-        this.resetValues()
-        this.getMyTokensWithBalance()
-      }, 1000)
+      SwapController.resetValues()
+      SwapController.getMyTokensWithBalance()
 
       return transactionHash
     } catch (err) {
@@ -682,8 +693,8 @@ export const SwapController = {
     }
   },
 
-  getToTokenValues(amountBigInt: string, decimals: number) {
-    const { toTokenAddress } = this.getParams()
+  getToTokenValues() {
+    const { toTokenAddress, toTokenAmount } = this.getParams()
 
     if (!toTokenAddress) {
       return {
@@ -692,9 +703,6 @@ export const SwapController = {
       }
     }
 
-    const toTokenAmount = NumberUtil.bigNumber(amountBigInt)
-      .dividedBy(10 ** decimals)
-      .toFixed(20)
     const toTokenPrice = state.tokensPriceMap[toTokenAddress] || '0'
     const toTokenPriceInUSD = NumberUtil.bigNumber(toTokenPrice).toNumber()
 
@@ -705,9 +713,27 @@ export const SwapController = {
   },
 
   isInsufficientNetworkTokenForGas() {
+    if (NumberUtil.bigNumber(state.networkBalanceInUSD).isZero()) {
+      return true
+    }
+
     return NumberUtil.bigNumber(NumberUtil.bigNumber(state.gasPriceInUSD || '0')).isGreaterThan(
       state.networkBalanceInUSD
     )
+  },
+
+  isInsufficientSourceTokenForSwap() {
+    const { sourceTokenAmount, sourceTokenAddress } = this.getParams()
+
+    const sourceTokenBalance = state.myTokensWithBalance?.find(
+      token => token.address === sourceTokenAddress
+    )?.quantity?.numeric
+
+    const isInSufficientBalance = NumberUtil.bigNumber(sourceTokenBalance || '0').isLessThan(
+      sourceTokenAmount
+    )
+
+    return isInSufficientBalance
   },
 
   setTransactionDetails(transaction: TransactionParams | undefined) {
@@ -717,18 +743,8 @@ export const SwapController = {
       return
     }
 
-    const insufficientNetworkToken = this.isInsufficientNetworkTokenForGas()
+    const { toTokenAmount, toTokenPriceInUSD } = this.getToTokenValues()
 
-    if (insufficientNetworkToken) {
-      state.inputError = 'Insufficient balance'
-    } else {
-      state.inputError = undefined
-    }
-
-    const { toTokenAmount, toTokenPriceInUSD } = this.getToTokenValues(
-      transaction.toAmount,
-      toTokenDecimals
-    )
     state.toTokenAmount = toTokenAmount
     state.toTokenPriceInUSD = toTokenPriceInUSD
     state.gasPriceInUSD = this.calculateGasPriceInUSD(transaction.gas, transaction.gasPrice)

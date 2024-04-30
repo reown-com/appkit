@@ -84,10 +84,4 @@ export default css`
     border-radius: var(--wui-border-radius-xxs);
     background: var(--wui-gray-glass-002);
   }
-
-  .free-badge {
-    background: rgba(38, 217, 98, 0.15);
-    border-radius: var(--wui-border-radius-4xs);
-    padding: 4.5px 6px;
-  }
 `

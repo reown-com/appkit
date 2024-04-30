@@ -17,6 +17,8 @@ export class W3mSwapSelectTokenView extends LitElement {
 
   @state() private sourceToken = SwapController.state.sourceToken
 
+  @state() private sourceTokenAmount = SwapController.state.sourceTokenAmount
+
   @state() private toToken = SwapController.state.toToken
 
   @state() private searchValue = ''
@@ -83,6 +85,9 @@ export class W3mSwapSelectTokenView extends LitElement {
       SwapController.setSourceToken(token)
     } else {
       SwapController.setToToken(token)
+      if (this.sourceToken && this.sourceTokenAmount) {
+        SwapController.swapTokens()
+      }
     }
     RouterController.goBack()
   }

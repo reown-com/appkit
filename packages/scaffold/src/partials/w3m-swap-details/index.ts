@@ -101,8 +101,8 @@ export class WuiSwapDetails extends LitElement {
                       class="details-row provider-free-row"
                     >
                       <wui-text variant="small-400" color="fg-150">Provider fee</wui-text>
-                      <wui-flex alignItems="center" justifyContent="center" class="free-badge">
-                        <wui-text variant="micro-700" color="success-100">Free</wui-text>
+                      <wui-flex>
+                        <wui-text variant="small-400" color="fg-200">0.75%</wui-text>
                       </wui-flex>
                     </wui-flex>
                   </wui-flex>
