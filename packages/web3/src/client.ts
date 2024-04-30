@@ -31,7 +31,12 @@ import { Web3HelpersUtil } from './scaffold-utils/Web3HelpersUtil.js'
 import { Web3StoreUtil } from './scaffold-utils/Web3StoreUtil.js'
 import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider'
 import type { Eip1193Compatible } from 'web3'
-import { W3mFrameProvider, W3mFrameHelpers, W3mFrameRpcConstants } from '@web3modal/wallet'
+import {
+  W3mFrameProvider,
+  W3mFrameHelpers,
+  W3mFrameRpcConstants,
+  type W3mFrameTypes
+} from '@web3modal/wallet'
 import { Web3Wallet } from './utils/web3Wallet.js'
 import { NetworkUtil } from '@web3modal/common'
 // -- Types ---------------------------------------------------------------------
@@ -1011,8 +1016,8 @@ export class Web3Modal extends Web3ModalScaffold {
               switchError.code === Web3ConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
               switchError.code === Web3ConstantsUtil.ERROR_CODE_DEFAULT ||
               switchError?.data?.originalError?.code ===
-                Web3ConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID||
-                switchError?.innerError?.code === Web3ConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
+                Web3ConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
+              switchError?.innerError?.code === Web3ConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
             ) {
               await this.web3Wallet.web3.addEthereumChain({
                 ...chain,
@@ -1038,8 +1043,8 @@ export class Web3Modal extends Web3ModalScaffold {
               switchError.code === Web3ConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
               switchError.code === Web3ConstantsUtil.ERROR_CODE_DEFAULT ||
               switchError?.data?.originalError?.code ===
-                Web3ConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID||
-                switchError?.innerError?.code === Web3ConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
+                Web3ConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
+              switchError?.innerError?.code === Web3ConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
             ) {
               await this.web3Wallet.web3.addEthereumChain({
                 ...chain,
@@ -1065,8 +1070,8 @@ export class Web3Modal extends Web3ModalScaffold {
               switchError.code === Web3ConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
               switchError.code === Web3ConstantsUtil.ERROR_CODE_DEFAULT ||
               switchError?.data?.originalError?.code ===
-                Web3ConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID||
-                switchError?.innerError?.code === Web3ConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
+                Web3ConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
+              switchError?.innerError?.code === Web3ConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
             ) {
               await this.web3Wallet.web3.addEthereumChain({
                 ...chain,
@@ -1092,8 +1097,8 @@ export class Web3Modal extends Web3ModalScaffold {
               switchError.code === Web3ConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
               switchError.code === Web3ConstantsUtil.ERROR_CODE_DEFAULT ||
               switchError?.data?.originalError?.code ===
-                Web3ConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID||
-                switchError?.innerError?.code === Web3ConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
+                Web3ConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
+              switchError?.innerError?.code === Web3ConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
             ) {
               await this.web3Wallet.web3.addEthereumChain({
                 ...chain,
@@ -1111,15 +1116,13 @@ export class Web3Modal extends Web3ModalScaffold {
             await this.emailProvider.switchNetwork(chain?.chainId)
             Web3StoreUtil.setChainId(chain.chainId)
 
-            this.emailProvider
-              .connect({
-                chainId: chain?.chainId,
-                preferredAccountType: W3mFrameHelpers.getPreferredAccountType()
-              })
-              .then(({ address }) => {
-                Web3StoreUtil.setAddress(address as Address)
-                this.syncAccount()
-              })
+            const { address, preferredAccountType } = await this.emailProvider.connect({
+              chainId: chain?.chainId
+            })
+
+            Web3StoreUtil.setAddress(address as Address)
+            Web3StoreUtil.setPreferredAccountType(preferredAccountType as W3mFrameTypes.AccountType)
+            await this.syncAccount()
           } catch {
             throw new Error('Switching chain failed')
           }

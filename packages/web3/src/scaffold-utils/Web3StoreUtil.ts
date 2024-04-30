@@ -3,6 +3,7 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
 import type { Address, CombinedProvider, Provider } from './Web3TypesUtil.js'
+import type { W3mFrameTypes } from '@web3modal/wallet'
 
 // -- Types --------------------------------------------- //
 
@@ -12,6 +13,7 @@ export interface Web3StoreUtilState {
   address?: Address
   chainId?: number
   error?: unknown
+  preferredAccountType?: W3mFrameTypes.AccountType
   isConnected: boolean
 }
 
@@ -51,6 +53,10 @@ export const Web3StoreUtil = {
   setAddress(address: Web3StoreUtilState['address']) {
     state.address = address
   },
+  
+  setPreferredAccountType(preferredAccountType: Web3StoreUtilState['preferredAccountType']) {
+    state.preferredAccountType = preferredAccountType
+  },
 
   setChainId(chainId: Web3StoreUtilState['chainId']) {
     state.chainId = chainId
@@ -71,5 +77,6 @@ export const Web3StoreUtil = {
     state.providerType = undefined
     state.isConnected = false
     state.error = undefined
+    state.preferredAccountType = undefined
   }
 }
