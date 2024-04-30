@@ -46,7 +46,7 @@
     "wagmi": "2.5.7"
   },
   "overrides": {
-    "@coinbase/wallet-sdk": "4.0.0-beta.2"
+    "@coinbase/wallet-sdk": "4.0.0-beta.12"
   },
   "devDependencies": {
     "@aws-sdk/client-cloudwatch": "3.509.0",

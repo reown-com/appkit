@@ -57,10 +57,10 @@
     "@web3modal/scaffold-utils": "4.1.12-910a844.0",
     "@web3modal/scaffold-vue": "4.1.12-910a844.0",
     "@web3modal/siwe": "4.1.12-910a844.0",
-    "@coinbase/wallet-sdk": "4.0.0-beta.2"
+    "@coinbase/wallet-sdk": "4.0.0-beta.12"
   },
   "overrides": {
-    "@coinbase/wallet-sdk": "4.0.0-beta.2"
+    "@coinbase/wallet-sdk": "4.0.0-beta.12"
   },
   "devDependencies": {
     "@wagmi/connectors": "4.1.14",
