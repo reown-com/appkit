@@ -35,6 +35,7 @@
     "@web3modal/siwe": "4.1.12-910a844.0",
     "@web3modal/solana": "4.1.12-910a844.0",
     "@web3modal/wagmi": "4.1.12-910a844.0",
+    "@web3modal/web3": "4.1.12",
     "ethers": "6.9.0",
     "framer-motion": "10.17.9",
     "next": "14.0.4",
