@@ -3,19 +3,19 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
 import {
-  ConvertController,
+  SwapController,
   RouterController,
   CoreHelperUtil,
   NetworkController,
   ModalController,
   ConstantsUtil,
-  type ConvertToken,
-  type ConvertInputTarget
+  type SwapToken,
+  type SwapInputTarget
 } from '@web3modal/core'
 import { NumberUtil } from '@web3modal/common'
 
-@customElement('w3m-convert-view')
-export class W3mConvertView extends LitElement {
+@customElement('w3m-swap-view')
+export class W3mSwapView extends LitElement {
   public static override styles = styles
 
   private unsubscribe: ((() => void) | undefined)[] = []
@@ -27,33 +27,33 @@ export class W3mConvertView extends LitElement {
 
   @state() private caipNetworkId = NetworkController.state.caipNetwork?.id
 
-  @state() private initialized = ConvertController.state.initialized
+  @state() private initialized = SwapController.state.initialized
 
-  @state() private loading = ConvertController.state.loading
+  @state() private loading = SwapController.state.loading
 
-  @state() private loadingPrices = ConvertController.state.loadingPrices
+  @state() private loadingPrices = SwapController.state.loadingPrices
 
-  @state() private sourceToken = ConvertController.state.sourceToken
+  @state() private sourceToken = SwapController.state.sourceToken
 
-  @state() private sourceTokenAmount = ConvertController.state.sourceTokenAmount
+  @state() private sourceTokenAmount = SwapController.state.sourceTokenAmount
 
-  @state() private sourceTokenPriceInUSD = ConvertController.state.sourceTokenPriceInUSD
+  @state() private sourceTokenPriceInUSD = SwapController.state.sourceTokenPriceInUSD
 
-  @state() private toToken = ConvertController.state.toToken
+  @state() private toToken = SwapController.state.toToken
 
-  @state() private toTokenAmount = ConvertController.state.toTokenAmount
+  @state() private toTokenAmount = SwapController.state.toTokenAmount
 
-  @state() private toTokenPriceInUSD = ConvertController.state.toTokenPriceInUSD
+  @state() private toTokenPriceInUSD = SwapController.state.toTokenPriceInUSD
 
-  @state() private inputError = ConvertController.state.inputError
+  @state() private inputError = SwapController.state.inputError
 
-  @state() private gasPriceInUSD = ConvertController.state.gasPriceInUSD
+  @state() private gasPriceInUSD = SwapController.state.gasPriceInUSD
 
-  @state() private priceImpact = ConvertController.state.priceImpact
+  @state() private priceImpact = SwapController.state.priceImpact
 
-  @state() private maxSlippage = ConvertController.state.maxSlippage
+  @state() private maxSlippage = SwapController.state.maxSlippage
 
-  @state() private transactionLoading = ConvertController.state.transactionLoading
+  @state() private transactionLoading = SwapController.state.transactionLoading
 
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
@@ -62,9 +62,9 @@ export class W3mConvertView extends LitElement {
     NetworkController.subscribeKey('caipNetwork', newCaipNetwork => {
       if (this.caipNetworkId !== newCaipNetwork?.id) {
         this.caipNetworkId = newCaipNetwork?.id
-        ConvertController.resetTokens()
-        ConvertController.resetValues()
-        ConvertController.initializeState()
+        SwapController.resetTokens()
+        SwapController.resetValues()
+        SwapController.initializeState()
       }
     })
 
@@ -72,15 +72,15 @@ export class W3mConvertView extends LitElement {
       ...[
         ModalController.subscribeKey('open', isOpen => {
           if (!isOpen) {
-            ConvertController.resetValues()
+            SwapController.resetValues()
           }
         }),
         RouterController.subscribeKey('view', newRoute => {
-          if (!newRoute.includes('Convert')) {
-            ConvertController.resetValues()
+          if (!newRoute.includes('Swap')) {
+            SwapController.resetValues()
           }
         }),
-        ConvertController.subscribe(newState => {
+        SwapController.subscribe(newState => {
           this.initialized = newState.initialized
           this.loading = newState.loading
           this.loadingPrices = newState.loadingPrices
@@ -104,12 +104,12 @@ export class W3mConvertView extends LitElement {
 
   public override firstUpdated() {
     if (!this.initialized) {
-      ConvertController.initializeState()
+      SwapController.initializeState()
     }
   }
 
   public override disconnectedCallback() {
-    ConvertController.setLoading(false)
+    SwapController.setLoading(false)
     this.unsubscribe.forEach(unsubscribe => unsubscribe?.())
     clearInterval(this.interval)
   }
@@ -126,21 +126,16 @@ export class W3mConvertView extends LitElement {
   // -- Private ------------------------------------------- //
   private watchTokensAndValues() {
     this.interval = setInterval(() => {
-      ConvertController.getNetworkTokenPrice()
-      ConvertController.getMyTokensWithBalance()
-      ConvertController.refreshConvertValues()
+      SwapController.getNetworkTokenPrice()
+      SwapController.getMyTokensWithBalance()
+      SwapController.refreshSwapValues()
     }, 20000)
   }
 
   private templateSwap() {
     return html`
       <wui-flex flexDirection="column" gap="l">
-        <wui-flex
-          flexDirection="column"
-          alignItems="center"
-          gap="xs"
-          class="convert-inputs-container"
-        >
+        <wui-flex flexDirection="column" alignItems="center" gap="xs" class="swap-inputs-container">
           ${this.templateTokenInput('sourceToken', this.sourceToken)}
           ${this.templateTokenInput('toToken', this.toToken)} ${this.templateReplaceTokensButton()}
         </wui-flex>
@@ -154,7 +149,7 @@ export class W3mConvertView extends LitElement {
       return this.inputError
     }
 
-    return 'Review convert'
+    return 'Review swap'
   }
 
   private templateReplaceTokensButton() {
@@ -188,8 +183,8 @@ export class W3mConvertView extends LitElement {
     </wui-flex>`
   }
 
-  private templateTokenInput(target: ConvertInputTarget, token?: ConvertToken) {
-    const myToken = ConvertController.state.myTokensWithBalance?.find(
+  private templateTokenInput(target: SwapInputTarget, token?: SwapToken) {
+    const myToken = SwapController.state.myTokensWithBalance?.find(
       ct => ct?.address === token?.address
     )
     const amount = target === 'toToken' ? this.toTokenAmount : this.sourceTokenAmount
@@ -200,7 +195,7 @@ export class W3mConvertView extends LitElement {
       value -= this.gasPriceInUSD || 0
     }
 
-    return html`<w3m-convert-input
+    return html`<w3m-swap-input
       .value=${target === 'toToken' ? this.toTokenAmount : this.sourceTokenAmount}
       ?disabled=${this.loading && target === 'toToken'}
       .onSetAmount=${this.handleChangeAmount.bind(this)}
@@ -210,10 +205,10 @@ export class W3mConvertView extends LitElement {
       .price=${this.sourceTokenPriceInUSD}
       .marketValue=${isNaN(value) ? '' : UiHelperUtil.formatNumberToLocalString(value)}
       .onSetMaxValue=${this.onSetMaxValue.bind(this)}
-    ></w3m-convert-input>`
+    ></w3m-swap-input>`
   }
 
-  private onSetMaxValue(target: ConvertInputTarget, balance: string | undefined) {
+  private onSetMaxValue(target: SwapInputTarget, balance: string | undefined) {
     const token = target === 'sourceToken' ? this.sourceToken : this.toToken
     const isNetworkToken = token?.address === ConstantsUtil.NATIVE_TOKEN_ADDRESS
 
@@ -252,32 +247,32 @@ export class W3mConvertView extends LitElement {
       return null
     }
 
-    const toTokenConvertedAmount =
+    const toTokenSwapedAmount =
       this.sourceTokenPriceInUSD && this.toTokenPriceInUSD
         ? (1 / this.toTokenPriceInUSD) * this.sourceTokenPriceInUSD
         : 0
 
     return html`
-      <w3m-convert-details
+      <w3m-swap-details
         .detailsOpen=${this.detailsOpen}
         sourceTokenSymbol=${this.sourceToken?.symbol}
         sourceTokenPrice=${this.sourceTokenPriceInUSD}
         toTokenSymbol=${this.toToken?.symbol}
-        toTokenConvertedAmount=${toTokenConvertedAmount}
+        toTokenSwapedAmount=${toTokenSwapedAmount}
         gasPriceInUSD=${this.gasPriceInUSD}
         .priceImpact=${this.priceImpact}
         slippageRate=${ConstantsUtil.CONVERT_SLIPPAGE_TOLERANCE}
         .maxSlippage=${this.maxSlippage}
-      ></w3m-convert-details>
+      ></w3m-swap-details>
     `
   }
 
-  private handleChangeAmount(target: ConvertInputTarget, value: string) {
-    ConvertController.clearError()
+  private handleChangeAmount(target: SwapInputTarget, value: string) {
+    SwapController.clearError()
     if (target === 'sourceToken') {
-      ConvertController.setSourceTokenAmount(value)
+      SwapController.setSourceTokenAmount(value)
     } else {
-      ConvertController.setToTokenAmount(value)
+      SwapController.setToTokenAmount(value)
     }
     this.onDebouncedGetSwapCalldata()
   }
@@ -295,7 +290,7 @@ export class W3mConvertView extends LitElement {
         variant=${haveNoTokenSelected ? 'shade' : 'fill'}
         .loading=${loading}
         .disabled=${loading || haveNoTokenSelected || this.inputError}
-        @click=${this.onConvertPreview}
+        @click=${this.onSwapPreview}
       >
         ${this.actionButtonLabel()}
       </wui-button>
@@ -303,20 +298,20 @@ export class W3mConvertView extends LitElement {
   }
 
   private onDebouncedGetSwapCalldata = CoreHelperUtil.debounce(async () => {
-    await ConvertController.convertTokens()
+    await SwapController.swapTokens()
   }, 500)
 
   private onSwitchTokens() {
-    ConvertController.switchTokens()
+    SwapController.switchTokens()
   }
 
-  private onConvertPreview() {
-    RouterController.push('ConvertPreview')
+  private onSwapPreview() {
+    RouterController.push('SwapPreview')
   }
 }
 
 declare global {
   interface HTMLElementTagNameMap {
-    'w3m-convert-view': W3mConvertView
+    'w3m-swap-view': W3mSwapView
   }
 }

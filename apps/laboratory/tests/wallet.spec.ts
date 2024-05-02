@@ -41,7 +41,7 @@ testConnectedMW(
 testConnectedMW(
   'it should switch networks and sign',
   async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
-    const chains = modalPage.library === 'solana' ? ['Solana Devnet'] : ['Polygon', 'Ethereum']
+    const chains = modalPage.library === 'solana' ? ['Solana Testnet'] : ['Polygon', 'Ethereum']
 
     // Run them one after another
     async function processChain(index: number) {
@@ -53,7 +53,7 @@ testConnectedMW(
       // For Solana, even though we switch to Solana Devnet, the chain name on the wallet page is still Solana
       const chainNameOnWalletPage = modalPage.library === 'solana' ? 'Solana' : chainName
       await modalPage.switchNetwork(chainName)
-      await modalValidator.expectNetwork(chainName)
+      await modalValidator.expectSwitchedNetwork(chainName)
       await modalPage.closeModal()
       await modalPage.sign()
       await walletValidator.expectReceivedSign({ chainName: chainNameOnWalletPage })
