@@ -1,5 +1,11 @@
 # @web3modal/common
 
+## 4.1.12-sign-2.5.2
+
+### Patch Changes
+
+- fix: Email transaction approval
+
 ## 4.1.11
 
 ### Patch Changes

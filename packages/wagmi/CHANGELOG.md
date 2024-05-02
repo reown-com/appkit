@@ -1,5 +1,19 @@
 # @web3modal/wagmi
 
+## 4.1.12-sign-2.5.2
+
+### Patch Changes
+
+- fix: Email transaction approval
+
+- Updated dependencies []:
+  - @web3modal/siwe@4.1.12-sign-2.5.2
+  - @web3modal/polyfills@4.1.12-sign-2.5.2
+  - @web3modal/scaffold@4.1.12-sign-2.5.2
+  - @web3modal/scaffold-react@4.1.12-sign-2.5.2
+  - @web3modal/scaffold-utils@4.1.12-sign-2.5.2
+  - @web3modal/scaffold-vue@4.1.12-sign-2.5.2
+
 ## 4.1.11
 
 ### Patch Changes

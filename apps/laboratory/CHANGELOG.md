@@ -1,5 +1,17 @@
 # @apps/laboratory
 
+## 4.1.12-sign-2.5.2
+
+### Patch Changes
+
+- fix: Email transaction approval
+
+- Updated dependencies []:
+  - @web3modal/ethers@4.1.12-sign-2.5.2
+  - @web3modal/wagmi@4.1.12-sign-2.5.2
+  - @web3modal/siwe@4.1.12-sign-2.5.2
+  - @web3modal/solana@4.1.12-sign-2.5.2
+
 ## 4.1.11
 
 ### Patch Changes
