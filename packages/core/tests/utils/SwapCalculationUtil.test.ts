@@ -91,4 +91,9 @@ describe('SwapCalculationUtil', () => {
     const maxSlippage = SwapCalculationUtil.getMaxSlippage(1, '1')
     expect(maxSlippage).toEqual(0.01)
   })
+
+  it('should calculate the provider fee as expected', () => {
+    const providerFee = SwapCalculationUtil.getProviderFee(sourceTokenAmount)
+    expect(providerFee).toEqual(0.0075)
+  })
 })

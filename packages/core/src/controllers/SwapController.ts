@@ -41,6 +41,7 @@ class TransactionError extends Error {
 
 export interface SwapControllerState {
   // Loading states
+  initializing: boolean
   initialized: boolean
   loadingPrices: boolean
   loading?: boolean
@@ -78,6 +79,7 @@ export interface SwapControllerState {
   gasPriceInUSD?: number
   priceImpact: number | undefined
   maxSlippage: number | undefined
+  providerFee: string | undefined
 }
 
 export interface TokenInfo {
@@ -95,8 +97,9 @@ export interface TokenInfo {
 type StateKey = keyof SwapControllerState
 
 // -- State --------------------------------------------- //
-const state = proxy<SwapControllerState>({
+const initialState: SwapControllerState = {
   // Loading states
+  initializing: false,
   initialized: false,
   loading: false,
   loadingPrices: false,
@@ -133,8 +136,11 @@ const state = proxy<SwapControllerState>({
   gasFee: BigInt(0),
   gasPriceInUSD: 0,
   priceImpact: undefined,
-  maxSlippage: undefined
-})
+  maxSlippage: undefined,
+  providerFee: undefined
+}
+
+const state = proxy<SwapControllerState>(initialState)
 
 // -- Controller ---------------------------------------- //
 export const SwapController = {
@@ -159,8 +165,7 @@ export const SwapController = {
     const caipAddress = AccountController.state.caipAddress
     const invalidToToken = !state.toToken?.address || !state.toToken?.decimals
     const invalidSourceToken = !state.sourceToken?.address || !state.sourceToken?.decimals
-    const invalidSourceTokenAmount =
-      !state.sourceTokenAmount || parseFloat(state.sourceTokenAmount) === 0
+    const invalidSourceTokenAmount = !state.sourceTokenAmount
 
     return {
       networkAddress,
@@ -250,13 +255,19 @@ export const SwapController = {
     this.swapTokens()
   },
 
-  resetTokens() {
-    state.tokens = undefined
-    state.popularTokens = undefined
-    state.myTokensWithBalance = undefined
-    state.initialized = false
-    state.networkPrice = '0'
-    state.networkBalanceInUSD = '0'
+  resetState() {
+    state.myTokensWithBalance = initialState.myTokensWithBalance
+    state.tokensPriceMap = initialState.tokensPriceMap
+    state.initialized = initialState.initialized
+    state.sourceToken = initialState.sourceToken
+    state.sourceTokenAmount = initialState.sourceTokenAmount
+    state.sourceTokenPriceInUSD = initialState.sourceTokenPriceInUSD
+    state.toToken = initialState.toToken
+    state.toTokenAmount = initialState.toTokenAmount
+    state.toTokenPriceInUSD = initialState.toTokenPriceInUSD
+    state.networkPrice = initialState.networkPrice
+    state.networkBalanceInUSD = initialState.networkBalanceInUSD
+    state.inputError = initialState.inputError
   },
 
   resetValues() {
@@ -264,11 +275,7 @@ export const SwapController = {
 
     const networkToken = state.tokens?.find(token => token.address === networkAddress)
     this.setSourceToken(networkToken)
-    state.sourceTokenPriceInUSD = state.tokensPriceMap[networkAddress] || 0
-    state.sourceTokenAmount = ''
     this.setToToken(undefined)
-    state.gasPriceInUSD = 0
-    state.initialized = false
   },
 
   clearError() {
@@ -276,10 +283,22 @@ export const SwapController = {
   },
 
   async initializeState() {
-    if (!state.initialized) {
-      await this.fetchTokens()
-      state.initialized = true
+    if (state.initializing) {
+      return
     }
+
+    state.initializing = true
+    if (!state.initialized) {
+      try {
+        await this.fetchTokens()
+        state.initialized = true
+      } catch (error) {
+        state.initialized = false
+        SnackController.showError('Failed to initialize swap')
+        RouterController.goBack()
+      }
+    }
+    state.initializing = false
   },
 
   async fetchTokens() {
@@ -313,14 +332,14 @@ export const SwapController = {
         return 0
       })
       .filter(token => {
-        if (ConstantsUtil.POPULAR_TOKENS.includes(token.symbol)) {
+        if (ConstantsUtil.SWAP_POPULAR_TOKENS.includes(token.symbol)) {
           return true
         }
 
         return false
       }, {})
     state.suggestedTokens = tokens.filter(token => {
-      if (ConstantsUtil.SUGGESTED_TOKENS.includes(token.symbol)) {
+      if (ConstantsUtil.SWAP_SUGGESTED_TOKENS.includes(token.symbol)) {
         return true
       }
 
@@ -342,7 +361,8 @@ export const SwapController = {
     const fungibles = response.fungibles || []
     const allTokens = [...(state.tokens || []), ...(state.myTokensWithBalance || [])]
     const symbol = allTokens?.find(token => token.address === address)?.symbol
-    const price = fungibles.find(p => p.symbol === symbol)?.price || '0'
+    const price =
+      fungibles.find(p => p.symbol.toLowerCase() === symbol?.toLowerCase())?.price || '0'
     const priceAsFloat = parseFloat(price)
 
     state.tokensPriceMap[address] = priceAsFloat
@@ -619,7 +639,7 @@ export const SwapController = {
       view: 'Account',
       goBack: false,
       onSuccess() {
-        SwapController.resetValues()
+        SwapController.resetState()
       }
     })
 
@@ -634,7 +654,7 @@ export const SwapController = {
       })
       state.transactionLoading = false
 
-      SwapController.resetValues()
+      SwapController.resetState()
       SwapController.getMyTokensWithBalance()
 
       return transactionHash
@@ -691,5 +711,6 @@ export const SwapController = {
       gasPriceInUSD: state.gasPriceInUSD
     })
     state.maxSlippage = SwapCalculationUtil.getMaxSlippage(state.slippage, state.sourceTokenAmount)
+    state.providerFee = SwapCalculationUtil.getProviderFee(state.sourceTokenAmount)
   }
 }

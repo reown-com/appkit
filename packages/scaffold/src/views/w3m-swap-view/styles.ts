@@ -45,6 +45,22 @@ export default css`
     z-index: 20;
   }
 
+  .replace-tokens-button-shimmer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 40px;
+    width: 40px;
+    border: 1ps solid var(--wui-gray-glass-020);
+    border-radius: var(--wui-border-radius-xxs);
+    z-index: 20;
+  }
+
   .replace-tokens-button:hover {
     background: var(--wui-gray-glass-010);
   }

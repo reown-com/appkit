@@ -4,7 +4,8 @@ import {
   NetworkController,
   AssetUtil,
   RouterController,
-  CoreHelperUtil
+  CoreHelperUtil,
+  ConstantsUtil as CoreConstantsUtil
 } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -186,7 +187,13 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   private onSwapClick() {
-    RouterController.push('Swap')
+    if (this.network?.id && !CoreConstantsUtil.SWAP_SUPPORTED_NETWORKS.includes(this.network?.id)) {
+      RouterController.push('UnsupportedChain', {
+        swapUnsupportedChain: true
+      })
+    } else {
+      RouterController.push('Swap')
+    }
   }
 
   private onReceiveClick() {

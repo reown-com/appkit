@@ -47,6 +47,8 @@ export class W3mSwapPreviewView extends LitElement {
 
   @state() private maxSlippage = SwapController.state.maxSlippage
 
+  @state() private providerFee = SwapController.state.providerFee
+
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
@@ -77,6 +79,7 @@ export class W3mSwapPreviewView extends LitElement {
           this.toTokenAmount = newState.toTokenAmount ?? ''
           this.priceImpact = newState.priceImpact
           this.maxSlippage = newState.maxSlippage
+          this.providerFee = newState.providerFee
         })
       ]
     )
@@ -198,6 +201,7 @@ export class W3mSwapPreviewView extends LitElement {
         .priceImpact=${this.priceImpact}
         slippageRate=${ConstantsUtil.CONVERT_SLIPPAGE_TOLERANCE}
         .maxSlippage=${this.maxSlippage}
+        providerFee=${this.providerFee}
       ></w3m-swap-details>
     `
   }

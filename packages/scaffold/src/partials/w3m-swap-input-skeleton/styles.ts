@@ -36,14 +36,10 @@ export default css`
   }
 
   :host wui-flex .input_mask__border {
-    fill: var(--wui-gray-glass-005);
+    fill: var(--wui-gray-glass-020);
   }
 
   :host wui-flex .input_mask__background {
     fill: var(--wui-gray-glass-002);
-  }
-
-  :host wui-flex.focus .input_mask__border {
-    fill: var(--wui-gray-glass-020);
   }
 `

@@ -53,26 +53,25 @@ export class W3mSwapView extends LitElement {
 
   @state() private maxSlippage = SwapController.state.maxSlippage
 
+  @state() private providerFee = SwapController.state.providerFee
+
   @state() private transactionLoading = SwapController.state.transactionLoading
 
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
-
     NetworkController.subscribeKey('caipNetwork', newCaipNetwork => {
       if (this.caipNetworkId !== newCaipNetwork?.id) {
         this.caipNetworkId = newCaipNetwork?.id
-        SwapController.resetTokens()
-        SwapController.resetValues()
+        SwapController.resetState()
         SwapController.initializeState()
       }
     })
-
     this.unsubscribe.push(
       ...[
         ModalController.subscribeKey('open', isOpen => {
           if (!isOpen) {
-            SwapController.resetValues()
+            SwapController.resetState()
           }
         }),
         RouterController.subscribeKey('view', newRoute => {
@@ -95,21 +94,20 @@ export class W3mSwapView extends LitElement {
           this.gasPriceInUSD = newState.gasPriceInUSD
           this.priceImpact = newState.priceImpact
           this.maxSlippage = newState.maxSlippage
+          this.providerFee = newState.providerFee
         })
       ]
     )
-
-    this.watchTokensAndValues()
   }
 
   public override firstUpdated() {
-    if (!this.initialized) {
-      SwapController.initializeState()
-    }
+    SwapController.initializeState()
+    setTimeout(() => {
+      this.watchTokensAndValues()
+    }, 10_000)
   }
 
   public override disconnectedCallback() {
-    SwapController.setLoading(false)
     this.unsubscribe.forEach(unsubscribe => unsubscribe?.())
     clearInterval(this.interval)
   }
@@ -129,7 +127,7 @@ export class W3mSwapView extends LitElement {
       SwapController.getNetworkTokenPrice()
       SwapController.getMyTokensWithBalance()
       SwapController.refreshSwapValues()
-    }, 20000)
+    }, 10_000)
   }
 
   private templateSwap() {
@@ -166,7 +164,15 @@ export class W3mSwapView extends LitElement {
         <wui-flex flexDirection="column" alignItems="center" gap="xs" class="swap-inputs-container">
           <w3m-swap-input-skeleton target="sourceToken"></w3m-swap-input-skeleton>
           <w3m-swap-input-skeleton target="toToken"></w3m-swap-input-skeleton>
-          ${this.templateReplaceTokensButton()}
+          <wui-shimmer
+            class="replace-tokens-button-shimmer"
+            width="40px"
+            height="40px"
+            borderRadius="xxs"
+            variant="light"
+          >
+            <wui-icon name="recycleHorizontal" color="fg-250" size="lg"></wui-icon>
+          </wui-shimmer>
         </wui-flex>
       </wui-flex>
     `
@@ -252,6 +258,7 @@ export class W3mSwapView extends LitElement {
         .priceImpact=${this.priceImpact}
         slippageRate=${ConstantsUtil.CONVERT_SLIPPAGE_TOLERANCE}
         .maxSlippage=${this.maxSlippage}
+        providerFee=${this.providerFee}
       ></w3m-swap-details>
     `
   }
@@ -289,7 +296,7 @@ export class W3mSwapView extends LitElement {
 
   private onDebouncedGetSwapCalldata = CoreHelperUtil.debounce(async () => {
     await SwapController.swapTokens()
-  }, 500)
+  }, 200)
 
   private onSwitchTokens() {
     SwapController.switchTokens()

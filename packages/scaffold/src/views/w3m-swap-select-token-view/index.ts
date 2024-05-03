@@ -21,6 +21,10 @@ export class W3mSwapSelectTokenView extends LitElement {
 
   @state() private toToken = SwapController.state.toToken
 
+  @state() private myTokensWithBalance = SwapController.state.myTokensWithBalance
+
+  @state() private popularTokens = SwapController.state.popularTokens
+
   @state() private searchValue = ''
 
   // -- Lifecycle ----------------------------------------- //
@@ -32,11 +36,10 @@ export class W3mSwapSelectTokenView extends LitElement {
         SwapController.subscribe(newState => {
           this.sourceToken = newState.sourceToken
           this.toToken = newState.toToken
+          this.myTokensWithBalance = newState.myTokensWithBalance
         })
       ]
     )
-
-    this.watchTokens()
   }
 
   public override updated() {
@@ -73,13 +76,6 @@ export class W3mSwapSelectTokenView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
-  private watchTokens() {
-    this.interval = setInterval(() => {
-      SwapController.getNetworkTokenPrice()
-      SwapController.getMyTokensWithBalance()
-    }, 5000)
-  }
-
   private onSelectToken(token: SwapTokenWithBalance) {
     if (this.targetToken === 'sourceToken') {
       SwapController.setSourceToken(token)
@@ -108,10 +104,8 @@ export class W3mSwapSelectTokenView extends LitElement {
   }
 
   private templateTokens() {
-    const yourTokens = SwapController.state.myTokensWithBalance
-      ? Object.values(SwapController.state.myTokensWithBalance)
-      : []
-    const tokens = SwapController.state.popularTokens ? SwapController.state.popularTokens : []
+    const yourTokens = this.myTokensWithBalance ? Object.values(this.myTokensWithBalance) : []
+    const tokens = this.popularTokens ? this.popularTokens : []
 
     const filteredYourTokens: SwapTokenWithBalance[] = this.filterTokensWithText<
       SwapTokenWithBalance[]

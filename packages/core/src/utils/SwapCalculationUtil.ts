@@ -52,6 +52,12 @@ export const SwapCalculationUtil = {
     return maxSlippageAmount.toNumber()
   },
 
+  getProviderFee(sourceTokenAmount: string, feePercentage = 0.0075) {
+    const providerFee = NumberUtil.bigNumber(sourceTokenAmount).multipliedBy(feePercentage)
+
+    return providerFee.toString()
+  },
+
   isInsufficientNetworkTokenForGas(networkBalanceInUSD: string, gasPriceInUSD: number | undefined) {
     const gasPrice = gasPriceInUSD || '0'
 
@@ -90,6 +96,10 @@ export const SwapCalculationUtil = {
     toTokenPrice: number
     sourceTokenAmount: string
   }) {
+    if (sourceTokenAmount === '0') {
+      return '0'
+    }
+
     if (!sourceToken || !toToken) {
       return '0'
     }
@@ -103,11 +113,20 @@ export const SwapCalculationUtil = {
       return '0'
     }
 
-    const decimalDifference = sourceTokenDecimals - toTokenDecimals
-    const sourceAmountInSmallestUnit = NumberUtil.bigNumber(sourceTokenAmount).multipliedBy(
+    // Calculate the provider fee (0.75% of the source token amount)
+    const providerFee = NumberUtil.bigNumber(sourceTokenAmount).multipliedBy(0.0075)
+
+    // Adjust the source token amount by subtracting the provider fee
+    const adjustedSourceTokenAmount = NumberUtil.bigNumber(sourceTokenAmount).minus(providerFee)
+
+    // Proceed with conversion using the adjusted source token amount
+    const sourceAmountInSmallestUnit = adjustedSourceTokenAmount.multipliedBy(
       NumberUtil.bigNumber(10).pow(sourceTokenDecimals)
     )
+
     const priceRatio = NumberUtil.bigNumber(sourceTokenPriceInUSD).dividedBy(toTokenPriceInUSD)
+
+    const decimalDifference = sourceTokenDecimals - toTokenDecimals
     const toTokenAmountInSmallestUnit = sourceAmountInSmallestUnit
       .multipliedBy(priceRatio)
       .dividedBy(NumberUtil.bigNumber(10).pow(decimalDifference))
@@ -115,6 +134,7 @@ export const SwapCalculationUtil = {
     const toTokenAmount = toTokenAmountInSmallestUnit.dividedBy(
       NumberUtil.bigNumber(10).pow(toTokenDecimals)
     )
+
     const amount = toTokenAmount.toFixed(toTokenDecimals).toString()
 
     return amount

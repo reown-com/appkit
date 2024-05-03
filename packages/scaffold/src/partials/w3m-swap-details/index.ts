@@ -26,6 +26,8 @@ export class WuiSwapDetails extends LitElement {
 
   @property() public maxSlippage?: number
 
+  @property() public providerFee?: string
+
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
@@ -102,7 +104,13 @@ export class WuiSwapDetails extends LitElement {
                     >
                       <wui-text variant="small-400" color="fg-150">Provider fee</wui-text>
                       <wui-flex>
-                        <wui-text variant="small-400" color="fg-200">0.75%</wui-text>
+                        ${this.providerFee
+                          ? html`
+                              <wui-text variant="small-400" color="fg-200">
+                                ${this.providerFee} ${this.sourceTokenSymbol}
+                              </wui-text>
+                            `
+                          : null}
                       </wui-flex>
                     </wui-flex>
                   </wui-flex>
