@@ -60,10 +60,10 @@ describe('SwapCalculationUtil', () => {
       toTokenAmount,
       toTokenPriceInUSD: toToken.price
     })
-    expect(priceImpact).equal(9.14927128867287)
+    expect(priceImpact).equal(9.974076865161582)
   })
 
-  it('should get to token amount with same decimals as expected', () => {
+  it('should get to token amount with same decimals including provider fee as expected', () => {
     const toTokenAmount = SwapCalculationUtil.getToTokenAmount({
       sourceToken,
       sourceTokenAmount,
@@ -71,10 +71,10 @@ describe('SwapCalculationUtil', () => {
       toToken,
       toTokenPrice: toToken.price
     })
-    expect(toTokenAmount).equal('6.776562691884707218')
+    expect(toTokenAmount).equal('6.725738471695571914')
   })
 
-  it('should get to token amount with different decimals as expected', () => {
+  it('should get to token amount with different decimals including provider fee as expected', () => {
     const newToToken = tokenInfo[2] as SwapTokenWithBalance
 
     const toTokenAmount = SwapCalculationUtil.getToTokenAmount({
@@ -84,7 +84,7 @@ describe('SwapCalculationUtil', () => {
       toToken: newToToken,
       toTokenPrice: newToToken.price
     })
-    expect(toTokenAmount).equal('0.699308')
+    expect(toTokenAmount).equal('0.694063')
   })
 
   it('should calculate the maximum slippage as expected', () => {
@@ -94,6 +94,6 @@ describe('SwapCalculationUtil', () => {
 
   it('should calculate the provider fee as expected', () => {
     const providerFee = SwapCalculationUtil.getProviderFee(sourceTokenAmount)
-    expect(providerFee).toEqual(0.0075)
+    expect(providerFee).toEqual('0.0075')
   })
 })

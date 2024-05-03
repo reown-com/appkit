@@ -59,7 +59,7 @@ describe('SwapController', () => {
   })
 
   it('should calculate swap values as expected', () => {
-    expect(SwapController.state.toTokenAmount).toEqual('6.776562691884707218')
+    expect(SwapController.state.toTokenAmount).toEqual('6.725738471695571914')
     expect(SwapController.state.toTokenPriceInUSD).toEqual(0.10315220553291868)
   })
 
