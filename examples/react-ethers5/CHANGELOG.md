@@ -1,5 +1,298 @@
 # @examples/react-ethers5
 
+## 4.1.12-910a844.0
+
+### Patch Changes
+
+- refactor: sync theme with secure site
+
+- Updated dependencies []:
+  - @web3modal/ethers5@4.1.12-910a844.0
+
+## 4.1.11
+
+### Patch Changes
+
+- refactor: Solana exported helper methods and proram instruction improvements
+- refactor: email and smart account improvements
+- refactor: unit test CI check improvements
+- feat: convert
+
+- Updated dependencies []:
+  - @web3modal/ethers5@4.1.11
+
+## 4.1.10
+
+### Patch Changes
+
+- Fix activity list styling issue
+
+- Updated dependencies []:
+  - @web3modal/ethers5@4.1.10
+
+## 4.1.9
+
+### Patch Changes
+
+- Blockchain API fix
+
+- Updated dependencies []:
+  - @web3modal/ethers5@4.1.9
+
+## 4.1.8
+
+### Patch Changes
+
+- Hotfix for redundant tokenbalance calls
+
+- Updated dependencies []:
+  - @web3modal/ethers5@4.1.8
+
+## 4.1.7
+
+### Patch Changes
+
+- Hotfix for inccorect state of w3m-button when email is enabled
+
+- Updated dependencies []:
+  - @web3modal/ethers5@4.1.7
+
+## 4.1.6
+
+### Patch Changes
+
+- Fix modal default height. Fix ethers email connection lag. Fix ethers + rc relay disconnect issue. Adds new wui-components for secure site.
+
+- Updated dependencies []:
+  - @web3modal/ethers5@4.1.6
+
+## 4.1.6-a0733f5.0
+
+### Patch Changes
+
+- chore: canary release for siwe dependency
+
+- Updated dependencies []:
+  - @web3modal/ethers@4.1.6-a0733f5.0
+  - @web3modal/siwe@4.1.6-a0733f5.0
+  - @web3modal/solana@4.1.6-a0733f5.0
+  - @web3modal/wagmi@4.1.6-a0733f5.0
+
+## 4.1.5
+
+### Patch Changes
+
+- release: v4.1.5
+
+- Updated dependencies []:
+  - @web3modal/ethers5@4.1.5
+
+## 4.1.5-93c81127.0
+
+### Patch Changes
+
+- fix: polyfill process in wallet package
+
+- Updated dependencies []:
+  - @web3modal/ethers5@4.1.5-93c81127.0
+
+## 4.1.4
+
+### Patch Changes
+
+- feat: wallet info hook
+
+- Updated dependencies []:
+  - @web3modal/ethers5@4.1.4
+
+## 4.1.3
+
+### Patch Changes
+
+- feat: wallet info hook
+
+- feat: reset version to 4.1.3
+
+- Updated dependencies []:
+  - @web3modal/ethers5@4.1.3
+
+## 4.1.3-5f2ae345.1
+
+### Patch Changes
+
+- canary: test imports
+
+- Updated dependencies []:
+  - @web3modal/ethers5@4.1.3-5f2ae345.1
+
+## 4.1.3-8e039e.0
+
+### Patch Changes
+
+- feat: update optional dependencies
+
+- Updated dependencies []:
+  - @web3modal/ethers5@4.1.3-8e039e.0
+
+## 4.1.2
+
+### Patch Changes
+
+- 4.1.2 release
+
+- Updated dependencies []:
+  - @web3modal/ethers5@4.1.2
+
+## 4.2.0-4b5257b4.1
+
+### Minor Changes
+
+- [#2052](https://github.com/WalletConnect/web3modal/pull/2052) [`1b90376`](https://github.com/WalletConnect/web3modal/commit/1b903765a675f0f1b9ea0a44bcf84e2dad6b4436) Thanks [@enesozturk](https://github.com/enesozturk)! - refactor: add missing extensions on imports
+
+- feat: export solana chains from the solana package
+
+- [#2052](https://github.com/WalletConnect/web3modal/pull/2052) [`729313f`](https://github.com/WalletConnect/web3modal/commit/729313fe9dfb402ca694cbd77f49cc61895e2d07) Thanks [@enesozturk](https://github.com/enesozturk)! - chore: new solana canary release
+
+### Patch Changes
+
+- Updated dependencies [[`1b90376`](https://github.com/WalletConnect/web3modal/commit/1b903765a675f0f1b9ea0a44bcf84e2dad6b4436), [`729313f`](https://github.com/WalletConnect/web3modal/commit/729313fe9dfb402ca694cbd77f49cc61895e2d07)]:
+  - @web3modal/ethers5@4.2.0-4b5257b4.1
+
+## 4.2.0-dbbd8c44.0
+
+### Minor Changes
+
+- refactor: add missing extensions on imports
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @web3modal/ui@4.2.0-dbbd8c44.0
+  - @web3modal/common@4.2.0-dbbd8c44.0
+
+## 4.2.0-500a38.0
+
+### Minor Changes
+
+- feat: solana integration
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @web3modal/ethers5@4.2.0-500a38.0
+
+## 4.1.1
+
+### Patch Changes
+
+- Fix siwe version
+
+- Updated dependencies []:
+  - @web3modal/ethers5@4.1.1
+
+## 4.1.0
+
+### Minor Changes
+
+- Email Stable release
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @web3modal/ethers5@4.1.0
+
+## 4.0.13
+
+### Patch Changes
+
+- Fix secure site url
+
+- Updated dependencies []:
+  - @web3modal/ethers5@4.0.13
+
+## 4.0.12
+
+### Patch Changes
+
+- [#2014](https://github.com/WalletConnect/web3modal/pull/2014) [`95b35e1`](https://github.com/WalletConnect/web3modal/commit/95b35e1ebaf261a56a29cd9254d85b7c1430bfc0) Thanks [@tomiir](https://github.com/tomiir)! - Smart Account RPC handler canary
+
+- Smart Account initialization and feature flag
+
+- Updated dependencies [[`95b35e1`](https://github.com/WalletConnect/web3modal/commit/95b35e1ebaf261a56a29cd9254d85b7c1430bfc0)]:
+  - @web3modal/ethers5@4.0.12
+
+## 4.0.12-0c59f84f.0
+
+### Patch Changes
+
+- Smart Account RPC handler canary
+
+- Updated dependencies []:
+  - @web3modal/ethers5@4.0.12-0c59f84f.0
+
+## 4.0.11
+
+### Patch Changes
+
+- Analytics connection event improvements. Unsupported chain flag. Siwe package refactor. RPC improvements. UI improvements'
+
+- Updated dependencies []:
+  - @web3modal/ethers5@4.0.11
+
+## 4.0.10
+
+### Patch Changes
+
+- Add error state to wui-chip composite
+
+- Updated dependencies []:
+  - @web3modal/ethers5@4.0.10
+
+## 4.0.9
+
+### Patch Changes
+
+- Add all rpc methods + auto reject when modal closes
+
+- Updated dependencies []:
+  - @web3modal/ethers5@4.0.9
+
+## 4.0.8
+
+### Patch Changes
+
+- [#1954](https://github.com/WalletConnect/web3modal/pull/1954) [`c3366e7`](https://github.com/WalletConnect/web3modal/commit/c3366e7211dba2f5c6d3377c9d9a77da5a52c0d8) Thanks [@tomiir](https://github.com/tomiir)! - Add support for eth_getBlockByNumber
+
+- Updated dependencies [[`c3366e7`](https://github.com/WalletConnect/web3modal/commit/c3366e7211dba2f5c6d3377c9d9a77da5a52c0d8)]:
+  - @web3modal/ethers5@4.0.8
+
+## 4.0.8-f1845392.0
+
+### Patch Changes
+
+- [#1954](https://github.com/WalletConnect/web3modal/pull/1954) [`4755109`](https://github.com/WalletConnect/web3modal/commit/475510962a92ea9f4388db1d08c979d99da18e54) Thanks [@tomiir](https://github.com/tomiir)! - Add support for eth_getBlockByNumber
+
+- Updated dependencies [[`4755109`](https://github.com/WalletConnect/web3modal/commit/475510962a92ea9f4388db1d08c979d99da18e54)]:
+  - @web3modal/ethers5@4.0.8-f1845392.0
+
+## 4.0.7
+
+### Patch Changes
+
+- Add eth_getBalance to list of allowed methods
+
+- Updated dependencies []:
+  - @web3modal/ethers5@4.0.7
+
+## 4.0.6
+
+### Patch Changes
+
+- Email stability fixes
+
+- Updated dependencies []:
+  - @web3modal/ethers5@4.0.6
+
 ## 4.0.5
 
 ### Patch Changes

@@ -54,6 +54,7 @@ import { sendSvg } from '../../assets/svg/send.js'
 import { swapHorizontalSvg } from '../../assets/svg/swapHorizontal.js'
 import { swapHorizontalBoldSvg } from '../../assets/svg/swapHorizontalBold.js'
 import { swapHorizontalMediumSvg } from '../../assets/svg/swapHorizontalMedium.js'
+import { swapHorizontalRoundedBoldSvg } from '../../assets/svg/swapHorizontalRoundedBold.js'
 import { swapVerticalSvg } from '../../assets/svg/swapVertical.js'
 import { telegramSvg } from '../../assets/svg/telegram.js'
 import { twitchSvg } from '../../assets/svg/twitch.js'
@@ -69,6 +70,8 @@ import { recycleHorizontalSvg } from '../../assets/svg/recycle-horizontal.js'
 import { bankSvg } from '../../assets/svg/bank.js'
 import { cardSvg } from '../../assets/svg/card.js'
 import { plusSvg } from '../../assets/svg/plus.js'
+import { cursorTransparentSvg } from '../../assets/svg/cursor-transparent.js'
+import { checkmarkBoldSvg } from '../../assets/svg/checkmark-bold.js'
 
 const svgOptions: Record<IconType, TemplateResult<2>> = {
   add: addSvg,
@@ -84,6 +87,7 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   browser: browserSvg,
   card: cardSvg,
   checkmark: checkmarkSvg,
+  checkmarkBold: checkmarkBoldSvg,
   chevronBottom: chevronBottomSvg,
   chevronLeft: chevronLeftSvg,
   chevronRight: chevronRightSvg,
@@ -95,6 +99,7 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   coinPlaceholder: coinPlaceholderSvg,
   copy: copySvg,
   cursor: cursorSvg,
+  cursorTransparent: cursorTransparentSvg,
   desktop: desktopSvg,
   disconnect: disconnectSvg,
   discord: discordSvg,
@@ -122,6 +127,7 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   swapHorizontal: swapHorizontalSvg,
   swapHorizontalMedium: swapHorizontalMediumSvg,
   swapHorizontalBold: swapHorizontalBoldSvg,
+  swapHorizontalRoundedBold: swapHorizontalRoundedBoldSvg,
   swapVertical: swapVerticalSvg,
   telegram: telegramSvg,
   twitch: twitchSvg,

@@ -1,61 +1,62 @@
-import { DEFAULT_SESSION_PARAMS } from './shared/constants'
-import { testMW } from './shared/fixtures/w3m-wallet-fixture'
-import { uploadCanaryResultsToCloudWatch } from './shared/utils/metrics'
+/* eslint no-console: 0 */
 
-const ENV = process.env['ENV'] || 'dev'
+import { testConnectedMW } from './shared/fixtures/w3m-wallet-fixture'
+import { timeEnd, timeStart } from './shared/utils/logs'
+import { uploadCanaryResultsToCloudWatch } from './shared/utils/metrics'
+import { expectConnection } from './shared/utils/validation'
+
+const ENV = process.env['ENVIRONMENT'] || 'dev'
 const REGION = process.env['REGION'] || 'eu-central-1'
 
-let startTime = 0
-
-testMW.beforeEach(
-  async ({ modalPage, walletPage, modalValidator, walletValidator, browserName }) => {
-    startTime = Date.now()
-    // Canary doesn't need all platforms
-    if (browserName !== 'chromium' || modalPage.library !== 'ethers') {
-      return
-    }
-    await modalPage.copyConnectUriToClipboard()
-    await walletPage.connect()
-    await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
-    await modalValidator.expectConnected()
-    await walletValidator.expectConnected()
-  }
-)
-
-testMW.afterEach(async ({ modalPage, modalValidator, walletValidator, browserName }) => {
-  // Canary doesn't need all platforms
-  if (browserName !== 'chromium' || modalPage.library !== 'ethers') {
-    return
-  }
-  await modalPage.disconnect()
-  await modalValidator.expectDisconnected()
-  await walletValidator.expectDisconnected()
+testConnectedMW.beforeEach(async ({ modalValidator, walletValidator }) => {
+  timeStart('beforeEach expectConnection')
+  await expectConnection(modalValidator, walletValidator)
+  timeEnd('beforeEach expectConnection')
 })
 
-testMW(
+testConnectedMW.afterEach(async ({ browserName }, testInfo) => {
+  if (browserName === 'firefox') {
+    return
+  }
+
+  if (ENV !== 'dev') {
+    timeStart('uploadCanaryResultsToCloudWatch')
+    const duration: number = testInfo.duration
+    await uploadCanaryResultsToCloudWatch(
+      ENV,
+      REGION,
+      'https://lab.web3modal.com/',
+      'HappyPath.sign',
+      testInfo.status === 'passed',
+      duration
+    )
+    timeEnd('uploadCanaryResultsToCloudWatch')
+  }
+})
+
+testConnectedMW(
   'it should sign',
-  async ({ modalPage, walletPage, modalValidator, walletValidator, browserName }) => {
-    // Canary doesn't need all platforms
-    if (browserName !== 'chromium' || modalPage.library !== 'ethers') {
-      testMW.skip()
-
-      return
-    }
+  async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
+    timeStart('modalPage.sign()')
     await modalPage.sign()
+    timeEnd('modalPage.sign()')
+    timeStart('walletValidator.expectReceivedSign')
     await walletValidator.expectReceivedSign({})
+    timeEnd('walletValidator.expectReceivedSign')
+    timeStart('walletPage.handleRequest')
     await walletPage.handleRequest({ accept: true })
+    timeEnd('walletPage.handleRequest')
+    timeStart('modalValidator.expectAcceptedSign')
     await modalValidator.expectAcceptedSign()
-
-    if (ENV !== 'dev') {
-      const duration: number = Date.now() - startTime
-      await uploadCanaryResultsToCloudWatch(
-        ENV,
-        REGION,
-        'https://lab.web3modal.com/',
-        'HappyPath.sign',
-        true,
-        duration
-      )
-    }
+    timeEnd('modalValidator.expectAcceptedSign')
+    timeStart('modalPage.disconnect')
+    await modalPage.disconnect()
+    timeEnd('modalPage.disconnect')
+    timeStart('modalValidator.expectDisconnected')
+    await modalValidator.expectDisconnected()
+    timeEnd('modalValidator.expectDisconnected')
+    timeStart('walletValidator.expectDisconnected')
+    await walletValidator.expectDisconnected()
+    timeEnd('walletValidator.expectDisconnected')
   }
 )

@@ -1,20 +1,23 @@
-import { Button, useToast, Stack, Link, Text, Spacer } from '@chakra-ui/react'
+import { Button, Stack, Link, Text, Spacer } from '@chakra-ui/react'
 import { parseGwei, type Address } from 'viem'
 import { useEstimateGas, useSendTransaction, useAccount } from 'wagmi'
 import { vitalikEthAddress } from '../../utils/DataUtil'
 import { useCallback, useState } from 'react'
-import { sepolia } from 'wagmi/chains'
+import { optimism, optimismSepolia, sepolia } from 'wagmi/chains'
+import { useChakraToast } from '../Toast'
 
 const TEST_TX = {
   to: vitalikEthAddress as Address,
-  value: parseGwei('0.0002')
+  value: parseGwei('0.001')
 }
 
 export function WagmiTransactionTest() {
-  const toast = useToast()
+  const toast = useChakraToast()
   const { status, chain } = useAccount()
   const { data: gas, error: prepareError } = useEstimateGas(TEST_TX)
   const [isLoading, setLoading] = useState(false)
+  const isConnected = status === 'connected'
+
   const { sendTransaction } = useSendTransaction({
     mutation: {
       onSuccess: hash => {
@@ -22,17 +25,15 @@ export function WagmiTransactionTest() {
         toast({
           title: 'Transaction Success',
           description: hash,
-          status: 'success',
-          isClosable: true
+          type: 'success'
         })
       },
       onError: () => {
         setLoading(false)
         toast({
           title: 'Error',
-          description: 'Failed to send transaction',
-          status: 'error',
-          isClosable: true
+          description: 'Failed to sign transaction',
+          type: 'error'
         })
       }
     }
@@ -43,8 +44,7 @@ export function WagmiTransactionTest() {
       toast({
         title: 'Error',
         description: 'Not enough funds for transaction',
-        status: 'error',
-        isClosable: true
+        type: 'error'
       })
     } else {
       setLoading(true)
@@ -55,13 +55,15 @@ export function WagmiTransactionTest() {
     }
   }, [sendTransaction, prepareError])
 
-  return chain?.id === sepolia.id && status === 'connected' ? (
+  const allowedChains = [sepolia.id, optimism.id, optimismSepolia.id] as number[]
+
+  return allowedChains.includes(Number(chain?.id)) && status === 'connected' ? (
     <Stack direction={['column', 'column', 'row']}>
       <Button
         data-test-id="sign-transaction-button"
         onClick={onSendTransaction}
         disabled={!sendTransaction}
-        isDisabled={isLoading}
+        isDisabled={isLoading || !isConnected}
       >
         Send Transaction to Vitalik
       </Button>
@@ -82,7 +84,7 @@ export function WagmiTransactionTest() {
     </Stack>
   ) : (
     <Text fontSize="md" color="yellow">
-      Switch to Sepolia Ethereum Testnet to test this feature
+      Switch to Sepolia or OP to test this feature
     </Text>
   )
 }

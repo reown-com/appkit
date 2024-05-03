@@ -1,13 +1,14 @@
-import { Button, useToast, Stack, Link, Text, Spacer } from '@chakra-ui/react'
+import { Button, Stack, Link, Text, Spacer } from '@chakra-ui/react'
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers/react'
 import { BrowserProvider, JsonRpcSigner, ethers } from 'ethers'
-import { sepolia } from '../../utils/ChainsUtil'
+import { optimism, sepolia } from '../../utils/ChainsUtil'
 import { useState } from 'react'
 
 import { abi, address as donutAddress } from '../../utils/DonutContract'
+import { useChakraToast } from '../Toast'
 
 export function EthersWriteContractTest() {
-  const toast = useToast()
+  const toast = useChakraToast()
   const { address, chainId } = useWeb3ModalAccount()
   const { walletProvider } = useWeb3ModalProvider()
   const [loading, setLoading] = useState(false)
@@ -22,21 +23,25 @@ export function EthersWriteContractTest() {
       const signer = new JsonRpcSigner(provider, address)
       const contract = new ethers.Contract(donutAddress, abi, signer)
       // @ts-expect-error ethers types are correct
-      const tx = await contract.purchase(1, { value: ethers.parseEther('0.0003') })
-      toast({ title: 'Succcess', description: tx.hash, status: 'success', isClosable: true })
+      const tx = await contract.purchase(1, { value: ethers.parseEther('0.0001') })
+      toast({
+        title: 'Success',
+        description: tx.hash,
+        type: 'success'
+      })
     } catch {
       toast({
         title: 'Error',
         description: 'Failed to sign transaction',
-        status: 'error',
-        isClosable: true
+        type: 'error'
       })
     } finally {
       setLoading(false)
     }
   }
+  const allowedChains = [sepolia.chainId, optimism.chainId]
 
-  return chainId === sepolia.chainId && address ? (
+  return allowedChains.includes(Number(chainId)) && address ? (
     <Stack direction={['column', 'column', 'row']}>
       <Button
         data-test-id="sign-transaction-button"
@@ -62,7 +67,7 @@ export function EthersWriteContractTest() {
     </Stack>
   ) : (
     <Text fontSize="md" color="yellow">
-      Switch to Sepolia Ethereum Testnet to test this feature
+      Switch to Sepolia or OP to test this feature
     </Text>
   )
 }

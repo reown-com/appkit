@@ -1,4 +1,4 @@
-import { subscribeKey as subKey } from 'valtio/utils'
+import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy } from 'valtio/vanilla'
 import type { CustomWallet, Metadata, ProjectId, SdkVersion, Tokens } from '../utils/TypeUtil.js'
 
@@ -15,9 +15,11 @@ export interface OptionsControllerState {
   customWallets?: CustomWallet[]
   termsConditionsUrl?: string
   privacyPolicyUrl?: string
+  isSiweEnabled?: boolean
   enableAnalytics?: boolean
   metadata?: Metadata
   enableOnramp?: boolean
+  enableWalletFeatures?: boolean
 }
 
 type StateKey = keyof OptionsControllerState
@@ -73,6 +75,10 @@ export const OptionsController = {
     state.customWallets = customWallets
   },
 
+  setIsSiweEnabled(isSiweEnabled: OptionsControllerState['isSiweEnabled']) {
+    state.isSiweEnabled = isSiweEnabled
+  },
+
   setEnableAnalytics(enableAnalytics: OptionsControllerState['enableAnalytics']) {
     state.enableAnalytics = enableAnalytics
   },
@@ -87,5 +93,9 @@ export const OptionsController = {
 
   setOnrampEnabled(enableOnramp: OptionsControllerState['enableOnramp']) {
     state.enableOnramp = enableOnramp
+  },
+
+  setWalletFeaturesEnabled(enableWalletFeatures: OptionsControllerState['enableWalletFeatures']) {
+    state.enableWalletFeatures = enableWalletFeatures
   }
 }

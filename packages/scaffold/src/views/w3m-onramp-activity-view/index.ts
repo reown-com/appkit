@@ -49,6 +49,7 @@ export class W3mOnRampActivityView extends LitElement {
         })
       ]
     )
+    TransactionsController.clearCursor()
     this.fetchTransactions()
   }
 
@@ -158,6 +159,7 @@ export class W3mOnRampActivityView extends LitElement {
   private refetchLoadingTransactions() {
     const today = new Date()
     const currentMonthTxs = this.coinbaseTransactions[today.getFullYear()]?.[today.getMonth()] || []
+
     const loadingTransactions = currentMonthTxs.filter(
       transaction => transaction.metadata.status === 'ONRAMP_TRANSACTION_STATUS_IN_PROGRESS'
     )

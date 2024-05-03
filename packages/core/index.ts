@@ -26,12 +26,6 @@ export type {
   ConnectionControllerState
 } from './src/controllers/ConnectionController.js'
 
-export { SIWEController } from './src/controllers/SIWEController.js'
-export type {
-  SIWEControllerClient,
-  SIWEControllerClientState
-} from './src/controllers/SIWEController.js'
-
 export { ConnectorController } from './src/controllers/ConnectorController.js'
 export type { ConnectorControllerState } from './src/controllers/ConnectorController.js'
 
@@ -60,6 +54,12 @@ export type { EventsControllerState } from './src/controllers/EventsController.j
 
 export { TransactionsController } from './src/controllers/TransactionsController.js'
 export type { TransactionsControllerState } from './src/controllers/TransactionsController.js'
+
+export { SwapController } from './src/controllers/SwapController.js'
+export type { SwapControllerState, SwapInputTarget } from './src/controllers/SwapController.js'
+
+export { SendController } from './src/controllers/SendController.js'
+export type { SendControllerState } from './src/controllers/SendController.js'
 
 // -- Utils -------------------------------------------------------------------
 export { AssetUtil } from './src/utils/AssetUtil.js'

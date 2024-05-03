@@ -1,19 +1,14 @@
 import { DEFAULT_SESSION_PARAMS } from './shared/constants'
 import { testMWSiwe } from './shared/fixtures/w3m-wallet-fixture'
 
-testMWSiwe.beforeEach(async ({ modalPage, walletPage, browserName }) => {
-  // Webkit cannot use clipboard.
-  if (browserName === 'webkit') {
-    return
-  }
-  await modalPage.copyConnectUriToClipboard()
-  await walletPage.connect()
+testMWSiwe.beforeEach(async ({ modalPage, walletPage }) => {
+  const uri = await modalPage.getConnectUri()
+  await walletPage.connectWithUri(uri)
   await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
 })
 
 testMWSiwe.afterEach(async ({ modalValidator, walletValidator, browserName }) => {
-  // Webkit cannot use clipboard.
-  if (browserName === 'webkit') {
+  if (browserName === 'firefox') {
     return
   }
   await modalValidator.expectDisconnected()
@@ -22,13 +17,7 @@ testMWSiwe.afterEach(async ({ modalValidator, walletValidator, browserName }) =>
 
 testMWSiwe(
   'it should sign in with ethereum',
-  async ({ modalPage, walletPage, modalValidator, walletValidator, browserName }) => {
-    // Webkit cannot use clipboard.
-    if (browserName === 'webkit') {
-      testMWSiwe.skip()
-
-      return
-    }
+  async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
     await modalPage.promptSiwe()
     await walletValidator.expectReceivedSign({})
     await walletPage.handleRequest({ accept: true })
@@ -41,13 +30,7 @@ testMWSiwe(
 
 testMWSiwe(
   'it should reject sign in with ethereum',
-  async ({ modalPage, walletPage, modalValidator, walletValidator, browserName }) => {
-    // Webkit cannot use clipboard.
-    if (browserName === 'webkit') {
-      testMWSiwe.skip()
-
-      return
-    }
+  async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
     await modalPage.promptSiwe()
     await walletValidator.expectReceivedSign({})
     await walletPage.handleRequest({ accept: false })

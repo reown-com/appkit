@@ -30,7 +30,7 @@ export class W3mAllWalletsSearch extends LitElement {
 
   // Private Methods ------------------------------------- //
   private async onSearch() {
-    if (this.query !== this.prevQuery) {
+    if (this.query.trim() !== this.prevQuery.trim()) {
       this.prevQuery = this.query
       this.loading = true
       await ApiController.searchWallet({ search: this.query })
@@ -80,8 +80,7 @@ export class W3mAllWalletsSearch extends LitElement {
   }
 
   private onConnectWallet(wallet: WcWallet) {
-    const { connectors } = ConnectorController.state
-    const connector = connectors.find(({ explorerId }) => explorerId === wallet.id)
+    const connector = ConnectorController.getConnector(wallet.id, wallet.rdns)
     if (connector) {
       RouterController.push('ConnectingExternal', { connector })
     } else {

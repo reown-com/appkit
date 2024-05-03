@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/scaffold-utils",
-  "version": "4.0.5",
+  "version": "4.1.12-910a844.0",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -18,6 +18,11 @@
       "types": "./dist/types/exports/ethers.d.ts",
       "import": "./dist/esm/exports/ethers.js",
       "default": "./dist/esm/exports/ethers.js"
+    },
+    "./solana": {
+      "types": "./dist/types/exports/solana.d.ts",
+      "import": "./dist/esm/exports/solana.js",
+      "default": "./dist/esm/exports/solana.js"
     }
   },
   "typesVersions": {
@@ -35,8 +40,8 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@web3modal/polyfills": "4.0.5",
-    "@web3modal/scaffold": "4.0.5",
+    "@web3modal/core": "4.1.12-910a844.0",
+    "@web3modal/polyfills": "4.1.12-910a844.0",
     "valtio": "1.11.2"
   },
   "keywords": [

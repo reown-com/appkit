@@ -7,13 +7,16 @@ import {
   ModalController,
   NetworkController,
   RouterController,
-  SnackController
+  SnackController,
+  StorageUtil,
+  ConnectorController
 } from '@web3modal/core'
 import { UiHelperUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
+import { W3mFrameRpcConstants } from '@web3modal/wallet'
 
 @customElement('w3m-account-settings-view')
 export class W3mAccountSettingsView extends LitElement {
@@ -31,13 +34,13 @@ export class W3mAccountSettingsView extends LitElement {
 
   @state() private profileName = AccountController.state.profileName
 
-  @state() private balance = AccountController.state.balance
-
-  @state() private balanceSymbol = AccountController.state.balanceSymbol
-
   @state() private network = NetworkController.state.caipNetwork
 
+  @state() private preferredAccountType = AccountController.state.preferredAccountType
+
   @state() private disconnecting = false
+
+  @state() private loading = false
 
   public constructor() {
     super()
@@ -48,8 +51,7 @@ export class W3mAccountSettingsView extends LitElement {
             this.address = val.address
             this.profileImage = val.profileImage
             this.profileName = val.profileName
-            this.balance = val.balance
-            this.balanceSymbol = val.balanceSymbol
+            this.preferredAccountType = val.preferredAccountType
           } else {
             ModalController.close()
           }
@@ -89,7 +91,7 @@ export class W3mAccountSettingsView extends LitElement {
         ></wui-avatar>
         <wui-flex flexDirection="column" alignItems="center">
           <wui-flex gap="3xs" alignItems="center" justifyContent="center">
-            <wui-text variant="large-600" color="fg-100">
+            <wui-text variant="large-600" color="fg-100" data-testid="account-settings-address">
               ${this.profileName
                 ? UiHelperUtil.getTruncateString({
                     string: this.profileName,
@@ -111,17 +113,12 @@ export class W3mAccountSettingsView extends LitElement {
               @click=${this.onCopyAddress}
             ></wui-icon-link>
           </wui-flex>
-          <wui-flex gap="s" flexDirection="column" alignItems="center">
-            <wui-text variant="paragraph-500" color="fg-200">
-              ${CoreHelperUtil.formatBalance(this.balance, this.balanceSymbol)}
-            </wui-text>
-            ${this.explorerBtnTemplate()}
-          </wui-flex>
         </wui-flex>
       </wui-flex>
 
       <wui-flex flexDirection="column" gap="m">
-        <wui-flex flexDirection="column" gap="xs" .padding=${['0', 'xl', 'xl', 'xl'] as const}>
+        <wui-flex flexDirection="column" gap="xs" .padding=${['0', 'xl', 'm', 'xl'] as const}>
+          ${this.emailBtnTemplate()}
           <wui-list-item
             .variant=${networkImage ? 'image' : 'icon'}
             iconVariant="overlay"
@@ -129,21 +126,13 @@ export class W3mAccountSettingsView extends LitElement {
             imageSrc=${ifDefined(networkImage)}
             ?chevron=${this.isAllowedNetworkSwitch()}
             @click=${this.onNetworks.bind(this)}
+            data-testid="account-switch-network-button"
           >
             <wui-text variant="paragraph-500" color="fg-100">
               ${this.network?.name ?? 'Unknown'}
             </wui-text>
           </wui-list-item>
-
-          <wui-list-item
-            iconVariant="blue"
-            icon="swapHorizontalBold"
-            iconSize="sm"
-            ?chevron=${true}
-            @click=${this.onTransactions.bind(this)}
-          >
-            <wui-text variant="paragraph-500" color="fg-100">Activity</wui-text>
-          </wui-list-item>
+          ${this.togglePreferredAccountBtnTemplate()}
           <wui-list-item
             variant="icon"
             iconVariant="overlay"
@@ -161,27 +150,6 @@ export class W3mAccountSettingsView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
-  private onTransactions() {
-    EventsController.sendEvent({ type: 'track', event: 'CLICK_TRANSACTIONS' })
-    RouterController.push('Transactions')
-  }
-
-  private explorerBtnTemplate() {
-    const { addressExplorerUrl } = AccountController.state
-
-    if (!addressExplorerUrl) {
-      return null
-    }
-
-    return html`
-      <wui-button size="sm" variant="shade" @click=${this.onExplorer.bind(this)}>
-        <wui-icon size="sm" color="inherit" slot="iconLeft" name="compass"></wui-icon>
-        Block Explorer
-        <wui-icon size="sm" color="inherit" slot="iconRight" name="externalLink"></wui-icon>
-      </wui-button>
-    `
-  }
-
   private isAllowedNetworkSwitch() {
     const { requestedCaipNetworks } = NetworkController.state
     const isMultiNetwork = requestedCaipNetworks ? requestedCaipNetworks.length > 1 : false
@@ -201,6 +169,81 @@ export class W3mAccountSettingsView extends LitElement {
     }
   }
 
+  private emailBtnTemplate() {
+    const type = StorageUtil.getConnectedConnector()
+    const emailConnector = ConnectorController.getEmailConnector()
+    if (!emailConnector || type !== 'EMAIL') {
+      return null
+    }
+    const email = emailConnector.provider.getEmail() ?? ''
+
+    return html`
+      <wui-list-item
+        variant="icon"
+        iconVariant="overlay"
+        icon="mail"
+        iconSize="sm"
+        ?chevron=${true}
+        @click=${() => this.onGoToUpdateEmail(email)}
+      >
+        <wui-text variant="paragraph-500" color="fg-100">${email}</wui-text>
+      </wui-list-item>
+    `
+  }
+
+  private togglePreferredAccountBtnTemplate() {
+    const networkEnabled = NetworkController.checkIfSmartAccountEnabled()
+    const type = StorageUtil.getConnectedConnector()
+    const emailConnector = ConnectorController.getEmailConnector()
+
+    if (!emailConnector || type !== 'EMAIL' || !networkEnabled) {
+      return null
+    }
+
+    const text =
+      this.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+        ? 'Switch to your EOA'
+        : 'Switch to your smart account'
+
+    return html`
+      <wui-list-item
+        variant="icon"
+        iconVariant="overlay"
+        icon="swapHorizontalBold"
+        iconSize="sm"
+        ?chevron=${true}
+        ?loading=${this.loading}
+        @click=${this.changePreferredAccountType.bind(this)}
+        data-testid="account-toggle-preferred-account-type"
+      >
+        <wui-text variant="paragraph-500" color="fg-100">${text}</wui-text>
+      </wui-list-item>
+    `
+  }
+
+  private async changePreferredAccountType() {
+    const smartAccountEnabled = NetworkController.checkIfSmartAccountEnabled()
+    const accountTypeTarget =
+      this.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT ||
+      !smartAccountEnabled
+        ? W3mFrameRpcConstants.ACCOUNT_TYPES.EOA
+        : W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+    const emailConnector = ConnectorController.getEmailConnector()
+
+    if (!emailConnector) {
+      return
+    }
+
+    this.loading = true
+    await emailConnector?.provider.setPreferredAccount(accountTypeTarget)
+    this.loading = false
+    this.requestUpdate()
+  }
+
+  private onGoToUpdateEmail(email: string) {
+    RouterController.push('UpdateEmailWallet', { email })
+  }
+
   private onNetworks() {
     if (this.isAllowedNetworkSwitch()) {
       RouterController.push('Networks')
@@ -218,13 +261,6 @@ export class W3mAccountSettingsView extends LitElement {
       SnackController.showError('Failed to disconnect')
     } finally {
       this.disconnecting = false
-    }
-  }
-
-  private onExplorer() {
-    const { addressExplorerUrl } = AccountController.state
-    if (addressExplorerUrl) {
-      CoreHelperUtil.openHref(addressExplorerUrl, '_blank')
     }
   }
 }

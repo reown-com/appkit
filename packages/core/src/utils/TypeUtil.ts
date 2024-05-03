@@ -1,5 +1,5 @@
 import type { W3mFrameProvider } from '@web3modal/wallet'
-import type { Transaction } from '@web3modal/common'
+import type { Balance, Transaction } from '@web3modal/common'
 
 export type CaipAddress = `${string}:${string}:${string}`
 
@@ -20,6 +20,14 @@ export interface CaipNetwork {
   imageUrl?: string
 }
 
+export type ConnectedWalletInfo =
+  | {
+      name?: string
+      icon?: string
+      [key: string]: unknown
+    }
+  | undefined
+
 export interface LinkingRecord {
   redirect: string
   href: string
@@ -27,14 +35,7 @@ export interface LinkingRecord {
 
 export type ProjectId = string
 
-export type Platform =
-  | 'mobile'
-  | 'desktop'
-  | 'browser'
-  | 'web'
-  | 'qrcode'
-  | 'unsupported'
-  | 'external'
+export type Platform = 'mobile' | 'desktop' | 'browser' | 'web' | 'qrcode' | 'unsupported'
 
 export type ConnectorType = 'EXTERNAL' | 'WALLET_CONNECT' | 'INJECTED' | 'ANNOUNCED' | 'EMAIL'
 
@@ -45,7 +46,12 @@ export type Connector = {
   imageId?: string
   explorerId?: string
   imageUrl?: string
-  info?: { rdns?: string }
+  info?: {
+    uuid?: string
+    name?: string
+    icon?: string
+    rdns?: string
+  }
   provider?: unknown
 }
 
@@ -66,6 +72,7 @@ export type SdkVersion =
   | `${'html' | 'react' | 'vue'}-wagmi-${string}`
   | `${'html' | 'react' | 'vue'}-ethers5-${string}`
   | `${'html' | 'react' | 'vue'}-ethers-${string}`
+  | `${'html' | 'react' | 'vue'}-solana-${string}`
 
 export interface BaseError {
   message?: string
@@ -132,7 +139,6 @@ export interface ThemeVariables {
 
 // -- BlockchainApiController Types ---------------------------------------------
 export interface BlockchainApiIdentityRequest {
-  caipChainId: CaipNetworkId
   address: string
 }
 
@@ -152,6 +158,119 @@ export interface BlockchainApiTransactionsRequest {
 export interface BlockchainApiTransactionsResponse {
   data: Transaction[]
   next: string | null
+}
+
+export type SwapToken = {
+  name: string
+  symbol: string
+  address: `${string}:${string}:${string}`
+  decimals: number
+  logoUri: string
+  eip2612?: boolean
+}
+
+export type SwapTokenWithBalance = SwapToken & {
+  quantity: {
+    decimals: string
+    numeric: string
+  }
+  price: number
+  value: number
+}
+
+export interface BlockchainApiSwapTokensRequest {
+  projectId: string
+  chainId?: string
+}
+
+export interface BlockchainApiSwapTokensResponse {
+  tokens: SwapToken[]
+}
+
+export interface BlockchainApiTokenPriceRequest {
+  projectId: string
+  currency?: 'usd' | 'eur' | 'gbp' | 'aud' | 'cad' | 'inr' | 'jpy' | 'btc' | 'eth'
+  addresses: string[]
+}
+
+export interface BlockchainApiTokenPriceResponse {
+  fungibles: {
+    name: string
+    symbol: string
+    iconUrl: string
+    price: string
+  }[]
+}
+
+export interface BlockchainApiSwapAllowanceRequest {
+  projectId: string
+  tokenAddress: string
+  userAddress: string
+}
+
+export interface BlockchainApiSwapAllowanceResponse {
+  allowance: string
+}
+
+export interface BlockchainApiGasPriceRequest {
+  projectId: string
+  chainId: string
+}
+
+export interface BlockchainApiGasPriceResponse {
+  standard: string
+  fast: string
+  instant: string
+}
+
+export interface BlockchainApiGenerateSwapCalldataRequest {
+  projectId: string
+  userAddress: string
+  from: string
+  to: string
+  amount: string
+  eip155?: {
+    slippage: string
+    permit?: string
+  }
+}
+
+export interface BlockchainApiGenerateSwapCalldataResponse {
+  tx: {
+    from: `${string}:${string}:${string}`
+    to: `${string}:${string}:${string}`
+    data: `0x${string}`
+    amount: string
+    eip155: {
+      gas: string
+      gasPrice: string
+    }
+  }
+}
+
+export interface BlockchainApiGenerateApproveCalldataRequest {
+  projectId: string
+  userAddress: string
+  from: string
+  to: string
+  amount?: number
+}
+
+export interface BlockchainApiGenerateApproveCalldataResponse {
+  tx: {
+    from: `${string}:${string}:${string}`
+    to: `${string}:${string}:${string}`
+    data: `0x${string}`
+    value: string
+    eip155: {
+      gas: number
+      gasPrice: string
+    }
+  }
+}
+
+export interface BlockchainApiBalanceResponse {
+  balances: Balance[]
 }
 
 // -- OptionsController Types ---------------------------------------------------
@@ -216,7 +335,8 @@ export type Event =
       type: 'track'
       event: 'CONNECT_SUCCESS'
       properties: {
-        method: 'qrcode' | 'mobile' | 'external' | 'browser' | 'email'
+        method: 'qrcode' | 'mobile' | 'browser' | 'email'
+        name: string
       }
     }
   | {
@@ -327,49 +447,18 @@ export type Event =
         network: string
       }
     }
-
-// -- SIWEController Types ---------------------------------------------------
-
-export interface SIWESession {
-  address: string
-  chainId: number
-}
-
-export interface SIWECreateMessageArgs {
-  nonce: string
-  address: string
-  chainId: number
-}
-
-export interface SIWEVerifyMessageArgs {
-  message: string
-  signature: string
-}
-
-export interface SIWEClientMethods {
-  getNonce: () => Promise<string>
-  createMessage: (args: SIWECreateMessageArgs) => string
-  verifyMessage: (args: SIWEVerifyMessageArgs) => Promise<boolean>
-  getSession: () => Promise<SIWESession | null>
-  signOut: () => Promise<boolean>
-  onSignIn?: (session?: SIWESession) => void
-  onSignOut?: () => void
-}
-
-export interface SIWEConfig extends SIWEClientMethods {
-  // Defaults to true
-  enabled?: boolean
-  // In milliseconds, defaults to 5 minutes
-  nonceRefetchIntervalMs?: number
-  // In milliseconds, defaults to 5 minutes
-  sessionRefetchIntervalMs?: number
-  // Defaults to true
-  signOutOnDisconnect?: boolean
-  // Defaults to true
-  signOutOnAccountChange?: boolean
-  // Defaults to true
-  signOutOnNetworkChange?: boolean
-}
+  | {
+      type: 'track'
+      event: 'CLICK_CONVERT'
+    }
+  | {
+      type: 'track'
+      event: 'CLICK_SELECT_TOKEN_TO_SWAP'
+    }
+  | {
+      type: 'track'
+      event: 'CLICK_SELECT_NETWORK_TO_SWAP'
+    }
 
 // Onramp Types
 export type DestinationWallet = {
@@ -430,4 +519,19 @@ export type GetQuoteArgs = {
   paymentCurrency: PaymentCurrency
   amount: string
   network: string
+}
+
+export interface SendTransactionArgs {
+  to: `0x${string}`
+  data: `0x${string}`
+  value: bigint
+  gas?: bigint
+  gasPrice: bigint
+  address: `0x${string}`
+}
+
+export interface EstimateGasTransactionArgs {
+  address: `0x${string}`
+  to: `0x${string}`
+  data: `0x${string}`
 }

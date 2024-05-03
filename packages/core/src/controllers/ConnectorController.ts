@@ -1,6 +1,7 @@
-import { subscribeKey as subKey } from 'valtio/utils'
+import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, ref, snapshot } from 'valtio/vanilla'
 import type { Connector, EmailConnector } from '../utils/TypeUtil.js'
+import { getW3mThemeVariables } from '@web3modal/common'
 import { OptionsController } from './OptionsController.js'
 import { ThemeController } from './ThemeController.js'
 
@@ -34,14 +35,18 @@ export const ConnectorController = {
     if (connector.id === 'w3mEmail') {
       const emailConnector = connector as EmailConnector
       const optionsState = snapshot(OptionsController.state) as typeof OptionsController.state
+      const themeMode = ThemeController.getSnapshot().themeMode
+      const themeVariables = ThemeController.getSnapshot().themeVariables
+
       emailConnector?.provider?.syncDappData?.({
         metadata: optionsState.metadata,
         sdkVersion: optionsState.sdkVersion,
         projectId: optionsState.projectId
       })
       emailConnector.provider.syncTheme({
-        themeMode: ThemeController.getSnapshot().themeMode,
-        themeVariables: ThemeController.getSnapshot().themeVariables
+        themeMode,
+        themeVariables,
+        w3mThemeVariables: getW3mThemeVariables(themeVariables, themeMode)
       })
     }
   },
@@ -56,5 +61,9 @@ export const ConnectorController = {
 
   getConnectors() {
     return state.connectors
+  },
+
+  getConnector(id: string, rdns?: string | null) {
+    return state.connectors.find(c => c.explorerId === id || c.info?.rdns === rdns)
   }
 }

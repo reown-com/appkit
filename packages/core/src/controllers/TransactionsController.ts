@@ -21,7 +21,7 @@ export interface TransactionsControllerState {
 // -- State --------------------------------------------- //
 const state = proxy<TransactionsControllerState>({
   transactions: [],
-  coinbaseTransactions: [],
+  coinbaseTransactions: {},
   transactionsByYear: {},
   loading: false,
   empty: false,
@@ -86,6 +86,7 @@ export const TransactionsController = {
       SnackController.showError('Failed to fetch transactions')
       state.loading = false
       state.empty = true
+      state.next = undefined
     }
   },
 
@@ -93,27 +94,20 @@ export const TransactionsController = {
     transactionsMap: TransactionByYearMap = {},
     transactions: Transaction[] = []
   ) {
-    const grouped: TransactionByYearMap = transactionsMap
-
+    const grouped = transactionsMap
     transactions.forEach(transaction => {
       const year = new Date(transaction.metadata.minedAt).getFullYear()
       const month = new Date(transaction.metadata.minedAt).getMonth()
+
       const yearTransactions = grouped[year] ?? {}
       const monthTransactions = yearTransactions[month] ?? []
 
-      if (
-        monthTransactions.find(
-          t =>
-            t.metadata.hash === transaction.metadata.hash &&
-            t.metadata.status === transaction.metadata.status
-        )
-      ) {
-        return
-      }
+      // If there's a transaction with the same id, remove the old one
+      const newMonthTransactions = monthTransactions.filter(tx => tx.id !== transaction.id)
 
       grouped[year] = {
         ...yearTransactions,
-        [month]: [...monthTransactions, transaction].sort(
+        [month]: [...newMonthTransactions, transaction].sort(
           (a, b) => new Date(b.metadata.minedAt).getTime() - new Date(a.metadata.minedAt).getTime()
         )
       }
@@ -130,6 +124,10 @@ export const TransactionsController = {
 
       return !isAllSpam
     })
+  },
+
+  clearCursor() {
+    state.next = undefined
   },
 
   resetTransactions() {

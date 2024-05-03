@@ -35,9 +35,6 @@ export const ConstantsUtil = {
     'ASIA/HARBIN'
   ],
 
-  CONNECTOR_RDNS_MAP: {
-    coinbaseWallet: 'com.coinbase.wallet'
-  } as Record<string, string>,
   /**
    * Network name to Coinbase Pay SDK chain name map object
    * @see supported chain names on Coinbase for Pay SDK: https://github.com/coinbase/cbpay-js/blob/d4bda2c05c4d5917c8db6a05476b603546046394/src/types/onramp.ts
@@ -48,7 +45,8 @@ export const ConstantsUtil = {
     'polygon',
     'avalanche-c-chain',
     'optimism',
-    'celo'
+    'celo',
+    'base'
   ],
 
   WC_COINBASE_PAY_SDK_FALLBACK_CHAIN: 'ethereum',
@@ -59,10 +57,105 @@ export const ConstantsUtil = {
     Polygon: 'polygon',
     Avalanche: 'avalanche-c-chain',
     'OP Mainnet': 'optimism',
-    Celo: 'celo'
+    Celo: 'celo',
+    Base: 'base'
   },
 
-  WC_COINBASE_ONRAMP_APP_ID: 'bf18c88d-495a-463b-b249-0b9d3656cf5e'
+  WC_COINBASE_ONRAMP_APP_ID: 'bf18c88d-495a-463b-b249-0b9d3656cf5e',
+
+  SUGGESTED_TOKENS: [
+    'ETH',
+    'UNI',
+    '1INCH',
+    'AAVE',
+    'SOL',
+    'ADA',
+    'AVAX',
+    'DOT',
+    'LINK',
+    'NITRO',
+    'GAIA',
+    'MILK',
+    'TRX',
+    'NEAR',
+    'GNO',
+    'WBTC',
+    'DAI',
+    'WETH',
+    'USDC',
+    'USDT',
+    'ARB',
+    'BAL',
+    'BICO',
+    'CRV',
+    'ENS',
+    'MATIC',
+    'OP'
+  ],
+
+  POPULAR_TOKENS: [
+    'ETH',
+    'UNI',
+    '1INCH',
+    'AAVE',
+    'SOL',
+    'ADA',
+    'AVAX',
+    'DOT',
+    'LINK',
+    'NITRO',
+    'GAIA',
+    'MILK',
+    'TRX',
+    'NEAR',
+    'GNO',
+    'WBTC',
+    'DAI',
+    'WETH',
+    'USDC',
+    'USDT',
+    'ARB',
+    'BAL',
+    'BICO',
+    'CRV',
+    'ENS',
+    'MATIC',
+    'OP',
+    // Some Polygon tokens
+    'DAI',
+    'CHAMP',
+    'WOLF',
+    'SALE',
+    'BAL',
+    'BUSD',
+    'MUST',
+    'BTCpx',
+    'ROUTE',
+    'HEX',
+    'WELT',
+    'amDAI',
+    'VSQ',
+    'VISION',
+    'AURUM',
+    'pSP',
+    'SNX',
+    'VC',
+    'LINK',
+    'CHP',
+    'amUSDT',
+    'SPHERE',
+    'FOX',
+    'GIDDY',
+    'GFC',
+    'OMEN',
+    'OX_OLD',
+    'DE',
+    'WNT'
+  ],
+
+  NATIVE_TOKEN_ADDRESS: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+
+  CONVERT_SLIPPAGE_TOLERANCE: 1
 }
 
 export type CoinbasePaySDKChainNameValues =

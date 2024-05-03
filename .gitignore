@@ -2,11 +2,11 @@ dist
 node_modules
 .DS_Store
 .env
+.idea
 .next
 out
 lerna-debug.log
 .env.local
-.env
 .turbo
 playwright-report/
 screenshots/
