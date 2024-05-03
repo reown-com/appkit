@@ -1,6 +1,6 @@
 import { svg } from 'lit'
 
-export const convertInputMaskBottomSvg = svg`<svg class="input_mask" width="328" height="100" viewBox="0 0 328 100" fill="none">
+export const swapInputMaskBottomSvg = svg`<svg class="input_mask" width="328" height="100" viewBox="0 0 328 100" fill="none">
   <mask id="path-1-inside-1_18299_4189">
     <path
       class="input_mask__border"

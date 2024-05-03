@@ -3,8 +3,8 @@ import { property } from 'lit/decorators.js'
 import styles from './styles.js'
 import { UiHelperUtil, customElement } from '@web3modal/ui'
 
-@customElement('w3m-convert-details')
-export class WuiConvertDetails extends LitElement {
+@customElement('w3m-swap-details')
+export class WuiSwapDetails extends LitElement {
   public static override styles = [styles]
 
   // -- State & Properties -------------------------------- //
@@ -16,7 +16,7 @@ export class WuiConvertDetails extends LitElement {
 
   @property() public toTokenSymbol?: string
 
-  @property() public toTokenConvertedAmount?: number
+  @property() public toTokenSwapedAmount?: number
 
   @property() public gasPriceInUSD?: number
 
@@ -36,7 +36,7 @@ export class WuiConvertDetails extends LitElement {
               <wui-flex justifyContent="flex-start" flexGrow="1" gap="xs">
                 <wui-text variant="small-400" color="fg-100"
                   >1 ${this.sourceTokenSymbol} =
-                  ${UiHelperUtil.formatNumberToLocalString(this.toTokenConvertedAmount, 3)}
+                  ${UiHelperUtil.formatNumberToLocalString(this.toTokenSwapedAmount, 3)}
                   ${this.toTokenSymbol}</wui-text
                 >
                 <wui-text variant="small-400" color="fg-200">
@@ -122,6 +122,6 @@ export class WuiConvertDetails extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'wui-w3m-details': WuiConvertDetails
+    'wui-w3m-details': WuiSwapDetails
   }
 }

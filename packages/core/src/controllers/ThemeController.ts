@@ -1,17 +1,21 @@
 import { proxy, subscribe as sub, snapshot } from 'valtio/vanilla'
 import type { ThemeMode, ThemeVariables } from '../utils/TypeUtil.js'
 import { ConnectorController } from './ConnectorController.js'
+import { getW3mThemeVariables } from '@web3modal/common'
+import type { W3mThemeVariables } from '@web3modal/common'
 
 // -- Types --------------------------------------------- //
 export interface ThemeControllerState {
   themeMode: ThemeMode
   themeVariables: ThemeVariables
+  w3mThemeVariables: W3mThemeVariables | undefined
 }
 
 // -- State --------------------------------------------- //
 const state = proxy<ThemeControllerState>({
   themeMode: 'dark',
-  themeVariables: {}
+  themeVariables: {},
+  w3mThemeVariables: undefined
 })
 
 // -- Controller ---------------------------------------- //
@@ -24,12 +28,17 @@ export const ThemeController = {
 
   setThemeMode(themeMode: ThemeControllerState['themeMode']) {
     state.themeMode = themeMode
+
     try {
       const emailConnector = ConnectorController.getEmailConnector()
 
       if (emailConnector) {
+        const themeVariables = ThemeController.getSnapshot().themeVariables
+
         emailConnector.provider.syncTheme({
-          themeMode: ThemeController.getSnapshot().themeMode
+          themeMode,
+          themeVariables,
+          w3mThemeVariables: getW3mThemeVariables(themeVariables, themeMode)
         })
       }
     } catch {
@@ -40,11 +49,16 @@ export const ThemeController = {
 
   setThemeVariables(themeVariables: ThemeControllerState['themeVariables']) {
     state.themeVariables = { ...state.themeVariables, ...themeVariables }
+
     try {
       const emailConnector = ConnectorController.getEmailConnector()
+
       if (emailConnector) {
+        const themeVariablesSnapshot = ThemeController.getSnapshot().themeVariables
+
         emailConnector.provider.syncTheme({
-          themeVariables: ThemeController.getSnapshot().themeVariables
+          themeVariables: themeVariablesSnapshot,
+          w3mThemeVariables: getW3mThemeVariables(state.themeVariables, state.themeMode)
         })
       }
     } catch {

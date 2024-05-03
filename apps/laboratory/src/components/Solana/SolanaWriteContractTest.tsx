@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Button, useToast } from '@chakra-ui/react'
+import { Button } from '@chakra-ui/react'
 import {
   SystemProgram,
   PublicKey,
@@ -12,9 +12,10 @@ import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/solana/rea
 
 import { COUNTER_ACCOUNT_SIZE } from '../../utils/SolanaConstants'
 import { deserializeCounterAccount, detectProgramId } from '../../utils/SolanaUtil'
+import { useChakraToast } from '../Toast'
 
 export function SolanaWriteContractTest() {
-  const toast = useToast()
+  const toast = useChakraToast()
   const { address, currentChain } = useWeb3ModalAccount()
   const { walletProvider, connection } = useWeb3ModalProvider()
   const [loading, setLoading] = useState(false)
@@ -83,17 +84,15 @@ export function SolanaWriteContractTest() {
       }
 
       toast({
-        title: 'Succcess',
+        title: 'Success',
         description: `[alloc+increment] count is: ${counterAccount.count}`,
-        status: 'success',
-        isClosable: true
+        type: 'success'
       })
     } catch (err) {
       toast({
-        title: 'Transaction failed',
+        title: 'Error',
         description: (err as Error).message,
-        status: 'error',
-        isClosable: true
+        type: 'error'
       })
     } finally {
       setLoading(false)
