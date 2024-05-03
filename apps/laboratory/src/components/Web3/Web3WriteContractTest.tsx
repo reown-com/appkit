@@ -1,4 +1,4 @@
-import { Button, useToast, Stack, Link, Text, Spacer } from '@chakra-ui/react'
+import { Button, Stack, Link, Text, Spacer } from '@chakra-ui/react'
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/web3/react'
 import {
   utils as web3Utils,
@@ -9,9 +9,10 @@ import { optimism, sepolia } from '../../utils/ChainsUtil'
 import { useState } from 'react'
 
 import { constAbi, address as donutAddress } from '../../utils/DonutContract'
+import { useChakraToast } from '../Toast'
 
 export function Web3WriteContractTest() {
-  const toast = useToast()
+  const toast = useChakraToast()
   const { address, chainId } = useWeb3ModalAccount()
   const { walletProvider } = useWeb3ModalProvider()
   const [loading, setLoading] = useState(false)
@@ -31,17 +32,15 @@ export function Web3WriteContractTest() {
         .send({ from: address })
 
       toast({
-        title: 'Succcess',
+        title: 'Success',
         description: tx.transactionHash,
-        status: 'success',
-        isClosable: true
+        type: 'success'
       })
     } catch {
       toast({
         title: 'Error',
         description: 'Failed to sign transaction',
-        status: 'error',
-        isClosable: true
+        type: 'error'
       })
     } finally {
       setLoading(false)

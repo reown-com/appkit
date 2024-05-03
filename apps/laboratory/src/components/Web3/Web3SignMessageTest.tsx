@@ -1,13 +1,14 @@
-import { Button, useToast } from '@chakra-ui/react'
+import { Button } from '@chakra-ui/react'
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/web3/react'
 import {
   // @TODO consider using this code instead of the next line: utils, eth, Web3Context, ETH_DATA_FORMAT,
   Web3
 } from 'web3'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
+import { useChakraToast } from '../Toast'
 
 export function Web3SignMessageTest() {
-  const toast = useToast()
+  const toast = useChakraToast()
   const { address, chainId } = useWeb3ModalAccount()
   const { walletProvider } = useWeb3ModalProvider()
 
@@ -29,21 +30,20 @@ export function Web3SignMessageTest() {
 
       const web3 = new Web3({ provider: walletProvider, config: { defaultNetworkId: chainId } })
 
-      const message = web3.utils.utf8ToHex('Hello Web3Modal Web3 Signer!') // sign only takes hexstrings, so turn message to hexstring
-      const signedMessage = await web3.eth.personal.sign(message, address, '')
+      // Sign only takes hexstrings, so turn message to hexstring
+      const message = web3.utils.utf8ToHex('Hello Web3Modal Web3 Signer!')
+      const signature = await web3.eth.personal.sign(message, address, '')
 
       toast({
         title: ConstantsUtil.SigningSucceededToastTitle,
-        description: signedMessage,
-        status: 'success',
-        isClosable: true
+        description: signature,
+        type: 'success'
       })
     } catch {
       toast({
         title: ConstantsUtil.SigningFailedToastTitle,
         description: 'Failed to sign message',
-        status: 'error',
-        isClosable: true
+        type: 'error'
       })
     }
   }

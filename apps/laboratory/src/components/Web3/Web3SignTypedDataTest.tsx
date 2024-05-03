@@ -1,9 +1,11 @@
-import { Button, useToast } from '@chakra-ui/react'
+import { Button } from '@chakra-ui/react'
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/web3/react'
 import {
   // @TODO consider using this code instead of the next line: utils, eth, Web3Context, ETH_DATA_FORMAT,
   Web3
 } from 'web3'
+
+import { useChakraToast } from '../Toast'
 
 const types = {
   EIP712Domain: [
@@ -48,7 +50,7 @@ const message = {
 }
 
 export function Web3SignTypedDataTest() {
-  const toast = useToast()
+  const toast = useChakraToast()
   const { address, chainId } = useWeb3ModalAccount()
   const { walletProvider } = useWeb3ModalProvider()
 
@@ -72,13 +74,16 @@ export function Web3SignTypedDataTest() {
         message
       })
 
-      toast({ title: 'Succcess', description: signature, status: 'success', isClosable: true })
+      toast({
+        title: 'Success',
+        description: signature,
+        type: 'success'
+      })
     } catch {
       toast({
         title: 'Error',
         description: 'Failed to sign message',
-        status: 'error',
-        isClosable: true
+        type: 'error'
       })
     }
   }
