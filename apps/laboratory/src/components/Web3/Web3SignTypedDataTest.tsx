@@ -1,9 +1,7 @@
 import { Button } from '@chakra-ui/react'
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/web3/react'
-import {
-  // @TODO consider using this code instead of the next line: utils, eth, Web3Context, ETH_DATA_FORMAT,
-  Web3
-} from 'web3'
+
+import { Web3Eth } from 'web3-eth'
 
 import { useChakraToast } from '../Toast'
 
@@ -66,8 +64,21 @@ export function Web3SignTypedDataTest() {
         verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC'
       } as const
 
-      const web3 = new Web3({ provider: walletProvider, config: { defaultNetworkId: chainId } })
-      const signature = await web3.eth.signTypedData(address, {
+      const web3Eth = new Web3Eth({
+        provider: walletProvider,
+        config: { defaultNetworkId: chainId }
+      })
+      /**
+       * Alternative to the above you can use the following:
+       * ```
+       * import { Web3 } from 'web3'
+       * ...
+       * const web3 = new Web3({ provider: walletProvider, config: { defaultNetworkId: chainId } })
+       * ```
+       * And later in the code: you can use `web3.eth` instead of `web3Eth`.
+       */
+
+      const signature = await web3Eth.signTypedData(address, {
         primaryType: 'Mail',
         domain,
         types,

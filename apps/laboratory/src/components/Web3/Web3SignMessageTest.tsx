@@ -1,9 +1,9 @@
 import { Button } from '@chakra-ui/react'
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/web3/react'
-import {
-  // @TODO consider using this code instead of the next line: utils, eth, Web3Context, ETH_DATA_FORMAT,
-  Web3
-} from 'web3'
+
+import { Personal } from 'web3-eth-personal'
+import { utf8ToHex } from 'web3-utils'
+
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { useChakraToast } from '../Toast'
 
@@ -18,21 +18,23 @@ export function Web3SignMessageTest() {
         throw Error('user is disconnected')
       }
 
-      /*
-       * @TODO consider using this code instead of the next line:
-       *   const signatureObject = await eth.sign(
-       *     new Web3Context({ provider: walletProvider, config: { defaultNetworkId: chainId } }),
-       *    utils.utf8ToHex('Hello Web3Modal Web3 Signer!'),
-       *    address,
-       *     ETH_DATA_FORMAT
-       *   )
+      const personal = new Personal({
+        provider: walletProvider,
+        config: { defaultNetworkId: chainId }
+      })
+      /**
+       * Alternative to the above you can use the following:
+       * ```
+       * import { Web3 } from 'web3'
+       * ...
+       * const web3 = new Web3({ provider: walletProvider, config: { defaultNetworkId: chainId } })
+       * ```
+       * And later in the code: you can use `web3.eth.personal` instead of `personal`, and `web3.utils.utf8ToHex(...)` instead of `utf8ToHex(...)`.
        */
 
-      const web3 = new Web3({ provider: walletProvider, config: { defaultNetworkId: chainId } })
-
       // Sign only takes hexstrings, so turn message to hexstring
-      const message = web3.utils.utf8ToHex('Hello Web3Modal Web3 Signer!')
-      const signature = await web3.eth.personal.sign(message, address, '')
+      const message = utf8ToHex('Hello Web3Modal Web3 Signer!')
+      const signature = await personal.sign(message, address, '')
 
       toast({
         title: ConstantsUtil.SigningSucceededToastTitle,

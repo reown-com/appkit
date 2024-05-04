@@ -1,10 +1,7 @@
 import { Button, Stack, Link, Text, Spacer } from '@chakra-ui/react'
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/web3/react'
-import {
-  utils as web3Utils,
-  // @TODO consider using this code instead of the next line: eth, Web3Context, ETH_DATA_FORMAT,
-  Web3
-} from 'web3'
+import { Contract } from 'web3-eth-contract'
+import { toWei } from 'web3-utils'
 import { optimism, sepolia } from '../../utils/ChainsUtil'
 import { useState } from 'react'
 
@@ -24,11 +21,23 @@ export function Web3WriteContractTest() {
         throw Error('user is disconnected')
       }
 
-      const web3 = new Web3({ provider: walletProvider, config: { defaultNetworkId: chainId } })
-      const contract = new web3.eth.Contract(constAbi, donutAddress)
+      const contract = new Contract(constAbi, donutAddress, {
+        provider: walletProvider,
+        config: { defaultNetworkId: chainId }
+      })
+      /**
+       * Alternative to the above you can use the following:
+       * ```
+       * import { Web3 } from 'web3'
+       * ...
+       *  const web3 = new Web3({ provider: walletProvider, config: { defaultNetworkId: chainId } })
+       *  const contract = new web3.eth.Contract(constAbi, donutAddress)
+       * ```
+       * And later in the code: you may use `web3.utils.toWei(...)` instead of `toWei(...)`
+       */
 
       const tx = await contract.methods
-        .purchase(1, { value: web3Utils.toWei('0.0001', 'ether') })
+        .purchase(1, { value: toWei('0.0001', 'ether') })
         .send({ from: address })
 
       toast({
