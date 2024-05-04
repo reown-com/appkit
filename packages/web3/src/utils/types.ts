@@ -1,4 +1,4 @@
-import type { Web3APISpec, EIP1193Provider } from 'web3'
+import type { Web3APISpec, EIP1193Provider } from 'web3-types'
 
 export type Address = `0x${string}`
 

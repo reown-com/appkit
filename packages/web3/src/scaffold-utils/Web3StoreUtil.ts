@@ -53,7 +53,7 @@ export const Web3StoreUtil = {
   setAddress(address: Web3StoreUtilState['address']) {
     state.address = address
   },
-  
+
   setPreferredAccountType(preferredAccountType: Web3StoreUtilState['preferredAccountType']) {
     state.preferredAccountType = preferredAccountType
   },

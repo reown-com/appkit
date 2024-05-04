@@ -1,6 +1,6 @@
 import '@web3modal/polyfills'
-import type { Metadata, Provider, ProviderType } from '@web3modal/scaffold-utils/ethers'
 import { CoinbaseWalletSDK } from '@coinbase/wallet-sdk'
+import type { Metadata, Provider, ProviderType } from '../scaffold-utils/Web3TypesUtil.js'
 
 export interface ConfigOptions {
   enableEIP6963?: boolean

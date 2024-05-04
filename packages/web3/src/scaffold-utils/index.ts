@@ -1,4 +1,4 @@
-// export objects similar to: packages/scaffold-utils/exports/ethers.ts
+// Exports objects similar to: packages/scaffold-utils/exports/ethers.ts
 
 export { Web3ConstantsUtil } from './Web3ConstantsUtil.js'
 export { Web3HelpersUtil } from './Web3HelpersUtil.js'

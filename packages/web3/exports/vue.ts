@@ -3,7 +3,7 @@ import { Web3Modal } from '../src/client.js'
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
 import { getWeb3Modal } from '@web3modal/scaffold-vue'
 import { onUnmounted, ref } from 'vue'
-import type { EIP1193Provider, EthExecutionAPI } from 'web3'
+import type { EIP1193Provider, EthExecutionAPI } from 'web3-types'
 // -- Types -------------------------------------------------------------------
 export type { Web3ModalOptions } from '../src/client.js'
 

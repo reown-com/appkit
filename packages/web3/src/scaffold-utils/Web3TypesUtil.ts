@@ -6,8 +6,10 @@ export interface IWeb3Config {
   provider: ProviderType
   metadata: Metadata
 
-  //  defaultChain?: number
-  //  SSR?: boolean
+  /*
+   *  DefaultChain?: number
+   *  SSR?: boolean
+   */
 }
 
 export type Address = `0x${string}`
@@ -41,9 +43,10 @@ export type Metadata = {
 
 export type CombinedProvider = W3mFrameProvider & Provider
 
-// Note: the type below is the one used with ethers. The one next is the one used with viem.
-// We want to support both. But we recommend using `Chain` instead of `SimpleChain`.
-
+/**
+ * Note: the type below is the one used with ethers. The one next is the one used with viem.
+ * web3.js have both types supported (SimpleChain and Chain). But we recommend using `Chain` instead of `SimpleChain`.
+ */
 export type SimpleChain = {
   rpcUrl: string
   explorerUrl: string
@@ -66,7 +69,7 @@ export type Chain = {
 }
 
 export function ensureChainType(chains: Chain[] | SimpleChain[]): Chain[] {
-  let consolidatedChains = chains.map(ch => {
+  const consolidatedChains = chains.map(ch => {
     const asSimpleChain: Partial<SimpleChain> = ch as SimpleChain
     const chain = ch as Chain
     if (asSimpleChain.currency) {
@@ -89,7 +92,9 @@ export function ensureChainType(chains: Chain[] | SimpleChain[]): Chain[] {
       chain.chainName = asSimpleChain.name
       delete asSimpleChain.name
     }
+
     return chain
   })
-  return consolidatedChains as Chain[]
+
+  return consolidatedChains
 }

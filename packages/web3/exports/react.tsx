@@ -6,7 +6,7 @@ import { ConstantsUtil } from '@web3modal/scaffold-utils'
 import { Web3StoreUtil } from '../src/scaffold-utils/Web3StoreUtil.js'
 import { getWeb3Modal } from '@web3modal/scaffold-react'
 import { useSnapshot } from 'valtio'
-import type { EIP1193Provider } from 'web3'
+import type { EIP1193Provider, Web3APISpec } from 'web3-types'
 
 // -- Types -------------------------------------------------------------------
 export type { Web3ModalOptions } from '../src/client.js'
@@ -30,7 +30,7 @@ export function createWeb3Modal(options: Web3ModalOptions) {
 export function useWeb3ModalProvider() {
   const { provider, providerType } = useSnapshot(Web3StoreUtil.state)
 
-  const walletProvider = provider as EIP1193Provider<any> | undefined
+  const walletProvider = provider as EIP1193Provider<Web3APISpec> | undefined
   const walletProviderType = providerType
 
   return {

@@ -57,7 +57,11 @@
     "react": ">=17",
     "react-dom": ">=17",
     "vue": ">=3",
-    "web3": ">=4.0.0"
+    "web3-eth": ">=4.0.0",
+    "web3-eth-contract": ">=4.0.0",
+    "web3-eth-ens": ">=4.0.0",
+    "web3-types": ">=1.0.0",
+    "web3-utils": ">=4.0.0"
   },
   "devDependencies": {
     "react": "18.2.0",
@@ -77,6 +81,7 @@
   },
   "keywords": [
     "web3",
+    "web3.js",
     "crypto",
     "ethereum",
     "web3modal",
