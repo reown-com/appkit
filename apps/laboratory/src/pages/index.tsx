@@ -23,6 +23,32 @@ export default function HomePage() {
     <>
       <Card marginTop={20}>
         <CardHeader>
+          <Heading size="md">Testing</Heading>
+        </CardHeader>
+
+        <CardBody>
+          <Stack divider={<StackDivider />} spacing="4">
+            <Box>
+              <Stack direction="row" justifyContent="space-between" alignItems="center">
+                <Box>
+                  <Heading size="xs" textTransform="uppercase">
+                    Testing
+                  </Heading>
+                  <Text pt="2" fontSize="sm">
+                    Configuration with all features enabled and randomly using ethers or wagmi
+                  </Text>
+                </Box>
+                <Link href={Math.random() > 0.5 ? '/library/wagmi-all' : '/library/ethers-all'}>
+                  <Button rightIcon={<IoArrowForward />}>Go</Button>
+                </Link>
+              </Stack>
+            </Box>
+          </Stack>
+        </CardBody>
+      </Card>
+
+      <Card marginTop={20}>
+        <CardHeader>
           <Heading size="md">Wagmi</Heading>
         </CardHeader>
 
