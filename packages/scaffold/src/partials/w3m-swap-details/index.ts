@@ -112,7 +112,8 @@ export class WuiSwapDetails extends LitElement {
                         ${this.providerFee
                           ? html`
                               <wui-text variant="small-400" color="fg-200">
-                                ${this.providerFee} ${this.sourceTokenSymbol}
+                                ${UiHelperUtil.formatNumberToLocalString(this.providerFee, 6)}
+                                ${this.sourceTokenSymbol}
                               </wui-text>
                             `
                           : null}
