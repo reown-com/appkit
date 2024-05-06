@@ -4,6 +4,7 @@ import {
   BlockchainApiController,
   NetworkController,
   SwapController,
+  type CaipNetworkId,
   type NetworkControllerClient
 } from '../../index.js'
 import {
@@ -25,6 +26,7 @@ const mockTransaction = {
   value: BigInt(1)
 }
 const caipNetwork = { id: 'eip155:137', name: 'Polygon' } as const
+const approvedCaipNetworkIds = ['eip155:1', 'eip155:137'] as CaipNetworkId[]
 const client: NetworkControllerClient = {
   switchCaipNetwork: async _caipNetwork => Promise.resolve(),
   getApprovedCaipNetworksData: async () =>
