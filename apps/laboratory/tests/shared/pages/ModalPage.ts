@@ -6,7 +6,7 @@ import { doActionAndWaitForNewPage } from '../utils/actions'
 import { Email } from '../utils/email'
 import { DeviceRegistrationPage } from './DeviceRegistrationPage'
 
-export type ModalFlavor = 'default' | 'siwe' | 'email' | 'wallet'
+export type ModalFlavor = 'default' | 'siwe' | 'email' | 'wallet' | 'all'
 
 export class ModalPage {
   private readonly baseURL = BASE_URL
@@ -162,6 +162,8 @@ export class ModalPage {
   }
 
   async sign() {
+    const signButton = this.page.getByTestId('sign-transaction-button')
+    await expect(signButton, 'Sign button should be visible').toBeVisible()
     await this.page.getByTestId('sign-message-button').click()
   }
 
@@ -202,6 +204,9 @@ export class ModalPage {
 
   async promptSiwe() {
     const siweSign = this.page.getByTestId('w3m-connecting-siwe-sign')
+    await expect(siweSign, 'Siwe prompt sign button should be visible').toBeVisible({
+      timeout: 10_000
+    })
     await expect(siweSign, 'Siwe prompt sign button should be enabled').toBeEnabled()
     await siweSign.click()
   }

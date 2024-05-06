@@ -4,6 +4,7 @@ import { testMSiwe as siwe } from './w3m-fixture'
 import { ModalPage } from '../pages/ModalPage'
 import { ModalValidator } from '../validators/ModalValidator'
 import { Email } from '../utils/email'
+import { ModalWalletValidator } from '../validators/ModalWalletValidator'
 
 export const testMEmail = base.extend<ModalFixture>({
   library: ['wagmi', { option: true }],
@@ -29,7 +30,7 @@ export const testMEmail = base.extend<ModalFixture>({
 
 export const testMEmailSiwe = siwe.extend<ModalFixture>({
   modalPage: async ({ page, library, context }, use, testInfo) => {
-    const modalPage = new ModalPage(page, library, 'email')
+    const modalPage = new ModalPage(page, library, 'all')
     await modalPage.load()
 
     const mailsacApiKey = process.env['MAILSAC_API_KEY']
@@ -40,8 +41,13 @@ export const testMEmailSiwe = siwe.extend<ModalFixture>({
     const tempEmail = email.getEmailAddressToUse(testInfo.parallelIndex)
 
     await modalPage.emailFlow(tempEmail, context, mailsacApiKey)
+    await modalPage.page.waitForTimeout(1000)
     await modalPage.promptSiwe()
     await modalPage.approveSign()
     await use(modalPage)
+  },
+  modalValidator: async ({ modalPage }, use) => {
+    const modalValidator = new ModalWalletValidator(modalPage.page)
+    await use(modalValidator)
   }
 })

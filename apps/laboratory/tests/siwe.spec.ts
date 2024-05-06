@@ -1,16 +1,11 @@
 import { DEFAULT_SESSION_PARAMS } from './shared/constants'
 import { testMWSiwe } from './shared/fixtures/w3m-wallet-fixture'
-import { testMEmailSiwe } from './shared/fixtures/w3m-email-fixture'
 
 // Setup
 testMWSiwe.beforeEach(async ({ modalPage, walletPage }) => {
   const uri = await modalPage.getConnectUri()
   await walletPage.connectWithUri(uri)
   await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
-})
-
-testMEmailSiwe.beforeEach(async ({ modalValidator }) => {
-  await modalValidator.expectConnected()
 })
 
 // Cleanup
@@ -46,39 +41,3 @@ testMWSiwe(
     await modalValidator.expectUnauthenticated()
   }
 )
-
-// Email Tests
-testMEmailSiwe('it should sign in with email', async ({ modalPage, modalValidator }) => {
-  await modalPage.sign()
-  await modalPage.approveSign()
-  await modalValidator.expectAcceptedSign()
-})
-
-testMEmailSiwe('it should reject sign in with email', async ({ modalPage, modalValidator }) => {
-  await modalPage.sign()
-  await modalPage.rejectSign()
-  await modalValidator.expectRejectedSign()
-})
-
-testMEmailSiwe('it should switch network and sign', async ({ modalPage, modalValidator }) => {
-  let targetChain = 'Polygon'
-  await modalPage.switchNetwork(targetChain)
-  await modalValidator.expectSwitchedNetwork(targetChain)
-  await modalPage.closeModal()
-  await modalPage.sign()
-  await modalPage.approveSign()
-  await modalValidator.expectAcceptedSign()
-
-  targetChain = 'Ethereum'
-  await modalPage.switchNetwork(targetChain)
-  await modalValidator.expectSwitchedNetwork(targetChain)
-  await modalPage.closeModal()
-  await modalPage.sign()
-  await modalPage.approveSign()
-  await modalValidator.expectAcceptedSign()
-})
-
-testMEmailSiwe('it should disconnect correctly', async ({ modalPage, modalValidator }) => {
-  await modalPage.disconnect()
-  await modalValidator.expectDisconnected()
-})
