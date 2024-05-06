@@ -25,6 +25,7 @@
     "prettier:format": "prettier --write .",
     "clean": "rm -rf `find . -type d -name node_modules -o -name dist -o -name .next -o -name out`; rm package-lock.json",
     "changeset:pre": "changeset pre enter",
+    "changeset:pre:exit": "changeset pre exit",
     "changeset": "changeset; changeset version",
     "publish:latest": "npm install; npm run build; changeset publish",
     "publish:alpha": "npm install; npm run build; changeset publish --tag alpha",

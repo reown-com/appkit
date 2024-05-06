@@ -20,7 +20,7 @@ export default css`
     border-color: 1px solid var(--wui-gray-glass-005);
   }
 
-  .convert-inputs-container {
+  .swap-inputs-container {
     position: relative;
   }
 
