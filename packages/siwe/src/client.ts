@@ -10,7 +10,9 @@ import {
   AccountController,
   NetworkController,
   ConnectionController,
-  RouterUtil
+  RouterUtil,
+  StorageUtil,
+  RouterController
 } from '@web3modal/core'
 
 import { NetworkUtil } from '@web3modal/common'
@@ -91,6 +93,10 @@ export class Web3ModalSIWEClient {
       throw new Error('A chainId is required to create a SIWE message.')
     }
     const message = this.methods.createMessage({ address, nonce, chainId })
+    const type = StorageUtil.getConnectedConnector()
+    if (type === 'EMAIL') {
+      RouterController.push('ApproveTransaction')
+    }
     const signature = await ConnectionController.signMessage(message)
     const isValid = await this.methods.verifyMessage({ message, signature })
     if (!isValid) {
