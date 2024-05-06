@@ -75,7 +75,7 @@ export default css`
   }
 
   .cancel-button:hover,
-  .convert-button:hover {
+  .swap-button:hover {
     cursor: pointer;
   }
 
@@ -83,12 +83,12 @@ export default css`
     flex: 2;
   }
 
-  .action-buttons-container > button.convert-button {
+  .action-buttons-container > button.swap-button {
     flex: 4;
     background-color: var(--wui-color-accent-090);
   }
 
-  .action-buttons-container > button.convert-button > wui-text {
+  .action-buttons-container > button.swap-button > wui-text {
     color: white;
   }
 
