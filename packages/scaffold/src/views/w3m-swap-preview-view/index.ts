@@ -5,13 +5,13 @@ import {
   AccountController,
   NetworkController,
   RouterController,
-  ConvertController,
+  SwapController,
   ConstantsUtil
 } from '@web3modal/core'
 import { state } from 'lit/decorators.js'
 
-@customElement('w3m-convert-preview-view')
-export class W3mConvertPreviewView extends LitElement {
+@customElement('w3m-swap-preview-view')
+export class W3mSwapPreviewView extends LitElement {
   public static override styles = styles
 
   private unsubscribe: ((() => void) | undefined)[] = []
@@ -19,33 +19,33 @@ export class W3mConvertPreviewView extends LitElement {
   // -- State & Properties -------------------------------- //
   @state() private detailsOpen = true
 
-  @state() private approvalTransaction = ConvertController.state.approvalTransaction
+  @state() private approvalTransaction = SwapController.state.approvalTransaction
 
-  @state() private convertTransaction = ConvertController.state.convertTransaction
+  @state() private swapTransaction = SwapController.state.swapTransaction
 
-  @state() private sourceToken = ConvertController.state.sourceToken
+  @state() private sourceToken = SwapController.state.sourceToken
 
-  @state() private sourceTokenAmount = ConvertController.state.sourceTokenAmount ?? ''
+  @state() private sourceTokenAmount = SwapController.state.sourceTokenAmount ?? ''
 
-  @state() private sourceTokenPriceInUSD = ConvertController.state.sourceTokenPriceInUSD
+  @state() private sourceTokenPriceInUSD = SwapController.state.sourceTokenPriceInUSD
 
-  @state() private toToken = ConvertController.state.toToken
+  @state() private toToken = SwapController.state.toToken
 
-  @state() private toTokenAmount = ConvertController.state.toTokenAmount ?? ''
+  @state() private toTokenAmount = SwapController.state.toTokenAmount ?? ''
 
-  @state() private toTokenPriceInUSD = ConvertController.state.toTokenPriceInUSD
+  @state() private toTokenPriceInUSD = SwapController.state.toTokenPriceInUSD
 
   @state() private caipNetwork = NetworkController.state.caipNetwork
 
-  @state() private transactionLoading = ConvertController.state.transactionLoading
+  @state() private transactionLoading = SwapController.state.transactionLoading
 
   @state() private balanceSymbol = AccountController.state.balanceSymbol
 
-  @state() private gasPriceInUSD = ConvertController.state.gasPriceInUSD
+  @state() private gasPriceInUSD = SwapController.state.gasPriceInUSD
 
-  @state() private priceImpact = ConvertController.state.priceImpact
+  @state() private priceImpact = SwapController.state.priceImpact
 
-  @state() private maxSlippage = ConvertController.state.maxSlippage
+  @state() private maxSlippage = SwapController.state.maxSlippage
 
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
@@ -64,9 +64,9 @@ export class W3mConvertPreviewView extends LitElement {
             this.caipNetwork = newCaipNetwork
           }
         }),
-        ConvertController.subscribe(newState => {
+        SwapController.subscribe(newState => {
           this.approvalTransaction = newState.approvalTransaction
-          this.convertTransaction = newState.convertTransaction
+          this.swapTransaction = newState.swapTransaction
           this.sourceToken = newState.sourceToken
           this.gasPriceInUSD = newState.gasPriceInUSD
           this.toToken = newState.toToken
@@ -166,7 +166,7 @@ export class W3mConvertPreviewView extends LitElement {
             <wui-text variant="paragraph-600" color="fg-200">Cancel</wui-text>
           </button>
           <button
-            class="convert-button"
+            class="swap-button"
             ?disabled=${this.transactionLoading}
             @click=${this.onSendTransaction.bind(this)}
           >
@@ -182,23 +182,23 @@ export class W3mConvertPreviewView extends LitElement {
   }
 
   private templateDetails() {
-    const toTokenConvertedAmount =
+    const toTokenSwapedAmount =
       this.sourceTokenPriceInUSD && this.toTokenPriceInUSD
         ? (1 / this.toTokenPriceInUSD) * this.sourceTokenPriceInUSD
         : 0
 
     return html`
-      <w3m-convert-details
+      <w3m-swap-details
         detailsOpen=${this.detailsOpen}
         sourceTokenSymbol=${this.sourceToken?.symbol}
         sourceTokenPrice=${this.sourceTokenPriceInUSD}
         toTokenSymbol=${this.toToken?.symbol}
-        toTokenConvertedAmount=${toTokenConvertedAmount}
+        toTokenSwapedAmount=${toTokenSwapedAmount}
         gasPriceInUSD=${UiHelperUtil.formatNumberToLocalString(this.gasPriceInUSD, 3)}
         .priceImpact=${this.priceImpact}
         slippageRate=${ConstantsUtil.CONVERT_SLIPPAGE_TOLERANCE}
         .maxSlippage=${this.maxSlippage}
-      ></w3m-convert-details>
+      ></w3m-swap-details>
     `
   }
 
@@ -207,7 +207,7 @@ export class W3mConvertPreviewView extends LitElement {
       return 'Approve'
     }
 
-    return 'Convert'
+    return 'Swap'
   }
 
   private onCancelTransaction() {
@@ -216,15 +216,15 @@ export class W3mConvertPreviewView extends LitElement {
 
   private onSendTransaction() {
     if (this.approvalTransaction) {
-      ConvertController.sendTransactionForApproval(this.approvalTransaction)
+      SwapController.sendTransactionForApproval(this.approvalTransaction)
     } else {
-      ConvertController.sendTransactionForConvert(this.convertTransaction)
+      SwapController.sendTransactionForSwap(this.swapTransaction)
     }
   }
 }
 
 declare global {
   interface HTMLElementTagNameMap {
-    'w3m-convert-preview-view': W3mConvertPreviewView
+    'w3m-swap-preview-view': W3mSwapPreviewView
   }
 }

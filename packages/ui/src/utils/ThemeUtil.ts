@@ -1,8 +1,8 @@
 import { css, unsafeCSS } from 'lit'
-import type { ThemeType, ThemeVariables } from './TypeUtil.js'
+import { getW3mThemeVariables } from '@web3modal/common'
+import type { ThemeVariables, ThemeType } from '@web3modal/common'
 
 // -- Utilities ---------------------------------------------------------------
-
 let themeTag: HTMLStyleElement | undefined = undefined
 let darkModeTag: HTMLStyleElement | undefined = undefined
 let lightModeTag: HTMLStyleElement | undefined = undefined
@@ -189,8 +189,6 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-cover: rgba(20, 20, 20, 0.8);
 
         --wui-color-modal-bg: var(--wui-color-modal-bg-base);
-
-        --wui-color-blue-100: var(--wui-color-blue-base-100);
 
         --wui-color-accent-100: var(--wui-color-accent-base-100);
         --wui-color-accent-090: var(--wui-color-accent-base-090);
@@ -456,16 +454,13 @@ function createRootStyles(themeVariables?: ThemeVariables) {
     light: css`
       :root {
         --w3m-color-mix: ${unsafeCSS(themeVariables?.['--w3m-color-mix'] || '#fff')};
-        --w3m-accent: ${unsafeCSS(themeVariables?.['--w3m-accent'] || '#47a1ff')};
+        --w3m-accent: ${unsafeCSS(getW3mThemeVariables(themeVariables, 'dark')['--w3m-accent'])};
         --w3m-default: #fff;
 
-        --wui-color-modal-bg-base: #191a1a;
-
-        --wui-color-blue-base-100: #47a1ff;
-
+        --wui-color-modal-bg-base: ${unsafeCSS(
+          getW3mThemeVariables(themeVariables, 'dark')['--w3m-background']
+        )};
         --wui-color-accent-base-100: var(--w3m-accent);
-        --wui-color-accent-base-090: #59aaff;
-        --wui-color-accent-base-080: #6cb4ff;
 
         --wui-accent-glass-base-090: rgba(71, 161, 255, 0.9);
         --wui-accent-glass-base-080: rgba(71, 161, 255, 0.8);
@@ -547,16 +542,13 @@ function createRootStyles(themeVariables?: ThemeVariables) {
     dark: css`
       :root {
         --w3m-color-mix: ${unsafeCSS(themeVariables?.['--w3m-color-mix'] || '#000')};
-        --w3m-accent: ${unsafeCSS(themeVariables?.['--w3m-accent'] || '#3396ff')};
+        --w3m-accent: ${unsafeCSS(getW3mThemeVariables(themeVariables, 'light')['--w3m-accent'])};
         --w3m-default: #000;
 
-        --wui-color-modal-bg-base: #fff;
-
-        --wui-color-blue-base-100: #3396ff;
-
+        --wui-color-modal-bg-base: ${unsafeCSS(
+          getW3mThemeVariables(themeVariables, 'light')['--w3m-background']
+        )};
         --wui-color-accent-base-100: var(--w3m-accent);
-        --wui-color-accent-base-090: #2d7dd2;
-        --wui-color-accent-base-080: #2978cc;
 
         --wui-accent-glass-base-090: rgba(51, 150, 255, 0.9);
         --wui-accent-glass-base-080: rgba(51, 150, 255, 0.8);
