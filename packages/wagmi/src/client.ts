@@ -244,7 +244,11 @@ export class Web3Modal extends Web3ModalScaffold {
             chainId: 1
           })
 
-          return address as string
+          if (address) {
+            return address
+          }
+
+          return false
         } catch (error) {
           return false
         }
@@ -257,7 +261,11 @@ export class Web3Modal extends Web3ModalScaffold {
             chainId: 1
           })
 
-          return avatar as string
+          if (avatar) {
+            return avatar
+          }
+
+          return false
         } catch (error) {
           return false
         }
