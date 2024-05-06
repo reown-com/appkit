@@ -61,6 +61,7 @@ export interface SwapControllerState {
   toTokenPriceInUSD: number
   networkPrice: string
   networkBalanceInUSD: string
+  networkTokenSymbol: string
   inputError: string | undefined
 
   // Request values
@@ -119,6 +120,7 @@ const initialState: SwapControllerState = {
   toTokenPriceInUSD: 0,
   networkPrice: '0',
   networkBalanceInUSD: '0',
+  networkTokenSymbol: '',
   inputError: undefined,
 
   // Request values
@@ -266,6 +268,7 @@ export const SwapController = {
     state.toTokenAmount = initialState.toTokenAmount
     state.toTokenPriceInUSD = initialState.toTokenPriceInUSD
     state.networkPrice = initialState.networkPrice
+    state.networkTokenSymbol = initialState.networkTokenSymbol
     state.networkBalanceInUSD = initialState.networkBalanceInUSD
     state.inputError = initialState.inputError
   },
@@ -311,6 +314,7 @@ export const SwapController = {
     const networkToken = state.tokens?.find(token => token.address === networkAddress)
 
     if (networkToken) {
+      state.networkTokenSymbol = networkToken.symbol
       this.setSourceToken(networkToken)
       this.setSourceTokenAmount('1')
     }
@@ -380,6 +384,7 @@ export const SwapController = {
     const token = response.fungibles?.[0]
     const price = token?.price || '0'
     state.tokensPriceMap[networkAddress] = parseFloat(price)
+    state.networkTokenSymbol = token?.symbol || ''
     state.networkPrice = price
   },
 

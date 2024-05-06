@@ -104,17 +104,13 @@ export const SwapApiUtil = {
     return (
       balances?.map(token => {
         return {
-          symbol: token.symbol,
-          name: token.name,
+          ...token,
           address: token?.address
             ? token.address
             : `${token.chainId}:${ConstantsUtil.NATIVE_TOKEN_ADDRESS}`,
           decimals: parseInt(token.quantity.decimals, 10),
           logoUri: token.iconUrl,
-          eip2612: false,
-          quantity: token.quantity,
-          price: token.price,
-          value: token.value
+          eip2612: false
         } as SwapTokenWithBalance
       }) || []
     )

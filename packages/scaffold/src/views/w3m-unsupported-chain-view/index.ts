@@ -70,16 +70,15 @@ export class W3mUnsupportedChainView extends LitElement {
     if (this.swapUnsupportedChain) {
       return html`
         <wui-text variant="small-400" color="fg-200" align="center">
-          The swap feature doesn’t support your current network. Switch to an available option
-          following to continue.
+          The swap feature doesn’t support your current network. Switch to an available option to
+          continue.
         </wui-text>
       `
     }
 
     return html`
       <wui-text variant="small-400" color="fg-200" align="center">
-        This app doesn’t support your current network. Switch to an available option following to
-        continue.
+        This app doesn’t support your current network. Switch to an available option to continue.
       </wui-text>
     `
   }

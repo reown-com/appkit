@@ -57,6 +57,8 @@ export class W3mSwapView extends LitElement {
 
   @state() private transactionLoading = SwapController.state.transactionLoading
 
+  @state() private networkTokenSymbol = SwapController.state.networkTokenSymbol
+
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
@@ -260,6 +262,7 @@ export class W3mSwapView extends LitElement {
         slippageRate=${ConstantsUtil.CONVERT_SLIPPAGE_TOLERANCE}
         .maxSlippage=${this.maxSlippage}
         providerFee=${this.providerFee}
+        networkTokenSymbol=${this.networkTokenSymbol}
       ></w3m-swap-details>
     `
   }

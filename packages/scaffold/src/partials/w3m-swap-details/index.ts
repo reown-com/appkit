@@ -3,12 +3,15 @@ import { property } from 'lit/decorators.js'
 import styles from './styles.js'
 import { UiHelperUtil, customElement } from '@web3modal/ui'
 import { NumberUtil } from '@web3modal/common'
+import { NetworkController } from '@web3modal/core'
 
 @customElement('w3m-swap-details')
 export class WuiSwapDetails extends LitElement {
   public static override styles = [styles]
 
   // -- State & Properties -------------------------------- //
+  @property() public networkName = NetworkController.state.caipNetwork?.name
+
   @property() public detailsOpen = false
 
   @property() public sourceTokenSymbol?: string
@@ -30,6 +33,8 @@ export class WuiSwapDetails extends LitElement {
   @property() public maxSlippage?: number
 
   @property() public providerFee?: string
+
+  @property() public networkTokenSymbol?: string
 
   // -- Render -------------------------------------------- //
   public override render() {
@@ -65,7 +70,16 @@ export class WuiSwapDetails extends LitElement {
                       alignItems="center"
                       class="details-row"
                     >
-                      <wui-text variant="small-400" color="fg-150">Network cost</wui-text>
+                      <wui-flex alignItems="center" gap="xs">
+                        <wui-text class="details-row-title" variant="small-400" color="fg-150">
+                          Network cost
+                        </wui-text>
+                        <w3m-tooltip-trigger
+                          text=${`Network cost is paid in ${this.networkTokenSymbol} on the ${this.networkName} network in order to execute transaction.`}
+                        >
+                          <wui-icon size="xs" color="fg-250" name="infoCircle"></wui-icon>
+                        </w3m-tooltip-trigger>
+                      </wui-flex>
                       <wui-text variant="small-400" color="fg-100">
                         $${UiHelperUtil.formatNumberToLocalString(this.gasPriceInUSD, 3)}
                       </wui-text>
