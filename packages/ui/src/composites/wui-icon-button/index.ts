@@ -7,8 +7,8 @@ import '../../components/wui-icon/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import type { IconType } from '../../utils/TypeUtil.js'
 
-@customElement('wui-wallet-feature-button')
-export class WuiWalletFeatureButton extends LitElement {
+@customElement('wui-icon-button')
+export class WuiIconButton extends LitElement {
   public static override styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
@@ -26,6 +26,6 @@ export class WuiWalletFeatureButton extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'wui-wallet-feature-button': WuiWalletFeatureButton
+    'wui-icon-button': WuiIconButton
   }
 }

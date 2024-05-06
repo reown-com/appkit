@@ -100,23 +100,18 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
       ${this.tokenBalanceTemplate()}
       <wui-flex gap="s">
         <w3m-tooltip-trigger text="Buy">
-          <wui-wallet-feature-button @click=${this.onBuyClick.bind(this)} icon="card">
-          </wui-wallet-feature-button>
+          <wui-icon-button @click=${this.onBuyClick.bind(this)} icon="card"></wui-icon-button>
         </w3m-tooltip-trigger>
         <w3m-tooltip-trigger text="Swap">
-          <wui-wallet-feature-button @click=${this.onSwapClick.bind(this)} icon="recycleHorizontal">
-          </wui-wallet-feature-button>
+          <wui-icon-button @click=${this.onSwapClick.bind(this)} icon="recycleHorizontal">
+          </wui-icon-button>
         </w3m-tooltip-trigger>
         <w3m-tooltip-trigger text="Receive">
-          <wui-wallet-feature-button
-            @click=${this.onReceiveClick.bind(this)}
-            icon="arrowBottomCircle"
-          >
-          </wui-wallet-feature-button>
+          <wui-icon-button @click=${this.onReceiveClick.bind(this)} icon="arrowBottomCircle">
+          </wui-icon-button>
         </w3m-tooltip-trigger>
         <w3m-tooltip-trigger text="Send">
-          <wui-wallet-feature-button @click=${this.onSendClick.bind(this)} icon="send">
-          </wui-wallet-feature-button>
+          <wui-icon-button @click=${this.onSendClick.bind(this)} icon="send"></wui-icon-button>
         </w3m-tooltip-trigger>
       </wui-flex>
 

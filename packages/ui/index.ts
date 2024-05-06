@@ -68,7 +68,7 @@ export * from './src/composites/wui-list-description/index.js'
 export * from './src/composites/wui-input-amount/index.js'
 export * from './src/composites/wui-token-button/index.js'
 export * from './src/composites/wui-preview-item/index.js'
-export * from './src/composites/wui-wallet-feature-button/index.js'
+export * from './src/composites/wui-icon-button/index.js'
 
 export * from './src/layout/wui-flex/index.js'
 export * from './src/layout/wui-grid/index.js'

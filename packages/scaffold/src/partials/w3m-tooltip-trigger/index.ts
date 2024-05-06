@@ -1,15 +1,43 @@
 import { html, LitElement } from 'lit'
-import { property } from 'lit/decorators.js'
+import { property, state } from 'lit/decorators.js'
 import { customElement } from '@web3modal/ui'
 import styles from './styles.js'
-import { TooltipController } from '@web3modal/core'
+import { ModalController, RouterController, TooltipController } from '@web3modal/core'
 
 @customElement('w3m-tooltip-trigger')
 export class WuiTooltipTrigger extends LitElement {
   public static override styles = [styles]
 
+  // -- Members ------------------------------------------- //
+  private unsubscribe: (() => void)[] = []
+
   // -- State & Properties -------------------------------- //
   @property() text = ''
+
+  @state() open = TooltipController.state.open
+
+  public constructor() {
+    super()
+    this.unsubscribe.push(
+      RouterController.subscribeKey('view', () => {
+        TooltipController.hide()
+      }),
+      ModalController.subscribeKey('open', modalOpen => {
+        if (!modalOpen) {
+          TooltipController.hide()
+        }
+      }),
+      TooltipController.subscribeKey('open', tooltipOpen => {
+        this.open = tooltipOpen
+      })
+    )
+  }
+
+  // -- Lifecycle ----------------------------------------- //
+  public override disconnectedCallback() {
+    this.unsubscribe.forEach(unsubscribe => unsubscribe())
+    TooltipController.hide()
+  }
 
   // -- Render -------------------------------------------- //
   public override render() {
@@ -30,16 +58,18 @@ export class WuiTooltipTrigger extends LitElement {
   // -- Private ------------------------------------------- //
   private onMouseEnter() {
     const rect = this.getBoundingClientRect()
-    TooltipController.showTooltip({
-      message: this.text,
-      triggerRect: {
-        width: rect.width,
-        height: rect.height,
-        left: rect.left,
-        top: rect.top
-      },
-      variant: 'shade'
-    })
+    if (!this.open) {
+      TooltipController.showTooltip({
+        message: this.text,
+        triggerRect: {
+          width: rect.width,
+          height: rect.height,
+          left: rect.left,
+          top: rect.top
+        },
+        variant: 'shade'
+      })
+    }
   }
 
   private onMouseLeave(event: MouseEvent) {

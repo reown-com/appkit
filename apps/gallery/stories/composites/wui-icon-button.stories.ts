@@ -1,14 +1,14 @@
 import type { Meta } from '@storybook/web-components'
-import '@web3modal/ui/src/composites/wui-wallet-feature-button'
-import type { WuiWalletFeatureButton } from '@web3modal/ui/src/composites/wui-wallet-feature-button'
+import '@web3modal/ui/src/composites/wui-icon-button'
+import type { WuiIconButton } from '@web3modal/ui/src/composites/wui-icon-button'
 import { html } from 'lit'
 import '../../components/gallery-container'
 import { iconOptions } from '../../utils/PresetUtils'
 
-type Component = Meta<WuiWalletFeatureButton>
+type Component = Meta<WuiIconButton>
 
 export default {
-  title: 'Composites/wui-wallet-feature-button',
+  title: 'Composites/wui-icon-button',
   args: {
     icon: 'card',
     text: 'Buy'
@@ -24,7 +24,7 @@ export default {
 export const Default: Component = {
   render: args => html`
     <gallery-container width="120">
-      <wui-wallet-feature-button icon=${args.icon} text=${args.text}></wui-wallet-feature-button>
+      <wui-icon-button icon=${args.icon} text=${args.text}></wui-icon-button>
     </gallery-container>
   `
 }
