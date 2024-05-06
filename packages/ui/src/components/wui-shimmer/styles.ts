@@ -18,6 +18,20 @@ export default css`
     animation: shimmer 3s linear infinite reverse;
   }
 
+  :host([variant='light']) {
+    background: linear-gradient(
+      120deg,
+      var(--wui-color-bg-150) 5%,
+      var(--wui-color-bg-150) 48%,
+      var(--wui-color-bg-200) 55%,
+      var(--wui-color-bg-200) 60%,
+      var(--wui-color-bg-200) calc(60% + 10px),
+      var(--wui-color-bg-150) calc(60% + 12px),
+      var(--wui-color-bg-150) 100%
+    );
+    background-size: 250%;
+  }
+
   @keyframes shimmer {
     from {
       background-position: -250% 0;
