@@ -47,6 +47,8 @@ export class W3mSwapPreviewView extends LitElement {
 
   @state() private maxSlippage = SwapController.state.maxSlippage
 
+  @state() private providerFee = SwapController.state.providerFee
+
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
@@ -77,6 +79,7 @@ export class W3mSwapPreviewView extends LitElement {
           this.toTokenAmount = newState.toTokenAmount ?? ''
           this.priceImpact = newState.priceImpact
           this.maxSlippage = newState.maxSlippage
+          this.providerFee = newState.providerFee
         })
       ]
     )
@@ -182,7 +185,7 @@ export class W3mSwapPreviewView extends LitElement {
   }
 
   private templateDetails() {
-    const toTokenSwapedAmount =
+    const toTokenSwappedAmount =
       this.sourceTokenPriceInUSD && this.toTokenPriceInUSD
         ? (1 / this.toTokenPriceInUSD) * this.sourceTokenPriceInUSD
         : 0
@@ -193,11 +196,13 @@ export class W3mSwapPreviewView extends LitElement {
         sourceTokenSymbol=${this.sourceToken?.symbol}
         sourceTokenPrice=${this.sourceTokenPriceInUSD}
         toTokenSymbol=${this.toToken?.symbol}
-        toTokenSwapedAmount=${toTokenSwapedAmount}
+        toTokenSwappedAmount=${toTokenSwappedAmount}
+        toTokenAmount=${this.toTokenAmount}
         gasPriceInUSD=${UiHelperUtil.formatNumberToLocalString(this.gasPriceInUSD, 3)}
         .priceImpact=${this.priceImpact}
         slippageRate=${ConstantsUtil.CONVERT_SLIPPAGE_TOLERANCE}
         .maxSlippage=${this.maxSlippage}
+        providerFee=${this.providerFee}
       ></w3m-swap-details>
     `
   }
