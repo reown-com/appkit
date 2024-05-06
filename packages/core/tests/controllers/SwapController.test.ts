@@ -1,78 +1,85 @@
-import { beforeAll, describe, expect, it } from 'vitest'
-import { AccountController, SwapController, type SwapTokenWithBalance } from '../../index.js'
-import { prices, tokenInfo } from '../mocks/SwapController.js'
+import { beforeAll, describe, expect, it, vi } from 'vitest'
+import {
+  AccountController,
+  BlockchainApiController,
+  NetworkController,
+  SwapController,
+  type CaipNetworkId,
+  type NetworkControllerClient
+} from '../../index.js'
+import {
+  balanceResponse,
+  gasPriceResponse,
+  networkTokenPriceResponse,
+  tokensResponse
+} from '../mocks/SwapController.js'
 import { INITIAL_GAS_LIMIT } from '../../src/controllers/SwapController.js'
+import { SwapApiUtil } from '../../src/utils/SwapApiUtil.js'
 
 // - Mocks ---------------------------------------------------------------------
-const caipAddress = 'eip155:1:0x123'
-const gasLimit = BigInt(INITIAL_GAS_LIMIT)
-const gasFee = BigInt(455966887160)
-
-const sourceTokenAddress = 'eip155:137:0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
-
-const sourceToken = tokenInfo[0] as SwapTokenWithBalance
-const toToken = tokenInfo[1] as SwapTokenWithBalance
-
-// - Helpers
-function setSourceTokenAmount(value: string) {
-  SwapController.setSourceTokenAmount(value)
-  const toTokenAmount = SwapController.getToAmount()
-  const toTokenValues = SwapController.getToTokenValues(toTokenAmount, toToken?.decimals)
-  SwapController.state.toTokenAmount = toTokenValues.toTokenAmount
-  SwapController.state.toTokenPriceInUSD = toTokenValues.toTokenPriceInUSD
+const mockTransaction = {
+  data: '0x11111',
+  gas: BigInt(INITIAL_GAS_LIMIT),
+  gasPrice: BigInt(10000000000),
+  to: '0x222',
+  toAmount: '1',
+  value: BigInt(1)
 }
+const caipNetwork = { id: 'eip155:137', name: 'Polygon' } as const
+const approvedCaipNetworkIds = ['eip155:1', 'eip155:137'] as CaipNetworkId[]
+const client: NetworkControllerClient = {
+  switchCaipNetwork: async _caipNetwork => Promise.resolve(),
+  getApprovedCaipNetworksData: async () =>
+    Promise.resolve({ approvedCaipNetworkIds, supportsAllNetworks: false })
+}
+const caipAddress = 'eip155:1:0x123'
+// MATIC
+const networkTokenAddress = 'eip155:137:0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+// AVAX
+const toTokenAddress = 'eip155:137:0x2c89bbc92bd86f8075d1decc58c7f4e0107f286b'
 
 // - Setup ---------------------------------------------------------------------
-beforeAll(() => {
+beforeAll(async () => {
+  //  -- Set Account and
+  NetworkController.setClient(client)
+  await NetworkController.switchActiveNetwork(caipNetwork)
   AccountController.setCaipAddress(caipAddress)
-  SwapController.state.tokensPriceMap = prices
-  SwapController.state.networkPrice = prices[sourceTokenAddress].toString()
-  SwapController.state.networkBalanceInUSD = '2'
-  SwapController.state.gasPriceInUSD = SwapController.calculateGasPriceInUSD(gasLimit, gasFee)
-  SwapController.setSourceToken(sourceToken)
-  SwapController.state.sourceTokenPriceInUSD = sourceToken.price
+
+  vi.spyOn(BlockchainApiController, 'getBalance').mockResolvedValue(balanceResponse)
+  vi.spyOn(BlockchainApiController, 'fetchTokenPrice').mockResolvedValue(networkTokenPriceResponse)
+  vi.spyOn(SwapApiUtil, 'getTokenList').mockResolvedValue(tokensResponse)
+  vi.spyOn(SwapApiUtil, 'fetchGasPrice').mockResolvedValue(gasPriceResponse)
+  vi.spyOn(SwapController, 'getTransaction').mockResolvedValue(mockTransaction)
+
+  await SwapController.initializeState()
+
+  const toToken = SwapController.state.myTokensWithBalance?.[1]
   SwapController.setToToken(toToken)
-  setSourceTokenAmount('1')
 })
 
 // -- Tests --------------------------------------------------------------------
 describe('SwapController', () => {
-  it('should set toToken as expected', () => {
-    expect(SwapController.state.toToken?.address).toEqual(toToken.address)
-  })
-
   it('should set sourceToken as expected', () => {
-    expect(SwapController.state.sourceToken?.address).toEqual(sourceToken.address)
+    expect(SwapController.state.sourceToken?.address).toEqual(networkTokenAddress)
   })
 
-  it('should calculate gas price in Ether and USD as expected', () => {
-    const gasPriceInEther = SwapController.calculateGasPriceInEther(gasLimit, gasFee)
-    const gasPriceInUSD = SwapController.calculateGasPriceInUSD(gasLimit, gasFee)
-
-    expect(gasPriceInEther).toEqual(0.068395033074)
-    expect(gasPriceInUSD).toEqual(0.06395499714651795)
+  it('should set toToken as expected', () => {
+    expect(SwapController.state.toToken?.address).toEqual(toTokenAddress)
+    expect(SwapController.state.toTokenPriceInUSD).toEqual(38.0742530944)
   })
 
-  it('should return insufficient balance as expected', () => {
-    SwapController.state.networkBalanceInUSD = '0'
-    expect(SwapController.isInsufficientNetworkTokenForGas()).toEqual(true)
+  it('should calculate swap values as expected', async () => {
+    await SwapController.swapTokens()
+
+    expect(SwapController.state.gasPriceInUSD).toEqual(0.0010485260814)
+    expect(SwapController.state.priceImpact).toEqual(0.898544263592072)
+    expect(SwapController.state.maxSlippage).toEqual(0.00019274639331006023)
   })
 
-  it('should calculate swap values as expected', () => {
-    expect(SwapController.state.toTokenAmount).toEqual('6.77656269188470721788')
-    expect(SwapController.state.toTokenPriceInUSD).toEqual(0.10315220553291868)
-  })
-
-  it('should calculate the price impact as expected', () => {
-    const priceImpact = SwapController.calculatePriceImpact(
-      SwapController.state.toTokenAmount,
-      SwapController.calculateGasPriceInUSD(gasLimit, gasFee)
-    )
-    expect(priceImpact).equal(9.14927128867287)
-  })
-
-  it('should calculate the maximum slippage as expected', () => {
-    const maxSlippage = SwapController.calculateMaxSlippage()
-    expect(maxSlippage).toEqual(0.01)
+  it('should reset values as expected', () => {
+    SwapController.resetValues()
+    expect(SwapController.state.toToken).toEqual(undefined)
+    expect(SwapController.state.toTokenAmount).toEqual('')
+    expect(SwapController.state.toTokenPriceInUSD).toEqual(0)
   })
 })
