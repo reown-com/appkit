@@ -1,5 +1,5 @@
-export * from './src/assets/svg/convert-input-mask-bottom.js'
-export * from './src/assets/svg/convert-input-mask-top.js'
+export * from './src/assets/svg/swap-input-mask-bottom.js'
+export * from './src/assets/svg/swap-input-mask-top.js'
 
 export * from './src/components/wui-card/index.js'
 export * from './src/components/wui-icon/index.js'

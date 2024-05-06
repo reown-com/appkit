@@ -62,7 +62,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
         this.network = val.caipNetwork
       })
     )
-    this.watchConvertValues()
+    this.watchSwapValues()
   }
 
   public override disconnectedCallback() {
@@ -105,8 +105,8 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
           icon="card"
         ></wui-tooltip-select>
         <wui-tooltip-select
-          @click=${this.onConvertClick.bind(this)}
-          text="Convert"
+          @click=${this.onSwapClick.bind(this)}
+          text="Swap"
           icon="recycleHorizontal"
         ></wui-tooltip-select>
         <wui-tooltip-select
@@ -132,7 +132,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
-  private watchConvertValues() {
+  private watchSwapValues() {
     this.watchTokenBalance = setInterval(() => AccountController.fetchTokenBalance(), 10000)
   }
 
@@ -191,8 +191,8 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
     RouterController.push('OnRampProviders')
   }
 
-  private onConvertClick() {
-    RouterController.push('Convert')
+  private onSwapClick() {
+    RouterController.push('Swap')
   }
 
   private onReceiveClick() {

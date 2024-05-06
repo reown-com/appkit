@@ -55,11 +55,8 @@ export type { EventsControllerState } from './src/controllers/EventsController.j
 export { TransactionsController } from './src/controllers/TransactionsController.js'
 export type { TransactionsControllerState } from './src/controllers/TransactionsController.js'
 
-export { ConvertController } from './src/controllers/ConvertController.js'
-export type {
-  ConvertControllerState,
-  ConvertInputTarget
-} from './src/controllers/ConvertController.js'
+export { SwapController } from './src/controllers/SwapController.js'
+export type { SwapControllerState, SwapInputTarget } from './src/controllers/SwapController.js'
 
 export { SendController } from './src/controllers/SendController.js'
 export type { SendControllerState } from './src/controllers/SendController.js'
