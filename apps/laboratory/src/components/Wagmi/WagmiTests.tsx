@@ -4,6 +4,7 @@ import { WagmiSignTypedDataTest } from './WagmiSignTypedDataTest'
 import { StackDivider, Card, CardHeader, Heading, CardBody, Box, Stack } from '@chakra-ui/react'
 import { WagmiWriteContractTest } from './WagmiWriteContractTest'
 import { WagmiSendUSDCTest } from './WagmiSendUSDCTest'
+import { WagmiSendCallsTest } from './WagmiSendCallsTest'
 
 export function WagmiTests() {
   return (
@@ -45,6 +46,13 @@ export function WagmiTests() {
               USDC Send
             </Heading>
             <WagmiSendUSDCTest />
+          </Box>
+
+          <Box>
+            <Heading size="xs" textTransform="uppercase" pb="2">
+              Send Calls
+            </Heading>
+            <WagmiSendCallsTest />
           </Box>
         </Stack>
       </CardBody>
