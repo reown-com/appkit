@@ -234,7 +234,7 @@ export class W3mSwapView extends LitElement {
   }
 
   private templateDetails() {
-    if (this.loading || this.inputError) {
+    if (this.inputError) {
       return null
     }
 
@@ -242,7 +242,7 @@ export class W3mSwapView extends LitElement {
       return null
     }
 
-    const toTokenSwapedAmount =
+    const toTokenSwappedAmount =
       this.sourceTokenPriceInUSD && this.toTokenPriceInUSD
         ? (1 / this.toTokenPriceInUSD) * this.sourceTokenPriceInUSD
         : 0
@@ -253,7 +253,7 @@ export class W3mSwapView extends LitElement {
         sourceTokenSymbol=${this.sourceToken?.symbol}
         sourceTokenPrice=${this.sourceTokenPriceInUSD}
         toTokenSymbol=${this.toToken?.symbol}
-        toTokenSwapedAmount=${toTokenSwapedAmount}
+        toTokenSwappedAmount=${toTokenSwappedAmount}
         gasPriceInUSD=${this.gasPriceInUSD}
         .priceImpact=${this.priceImpact}
         slippageRate=${ConstantsUtil.CONVERT_SLIPPAGE_TOLERANCE}

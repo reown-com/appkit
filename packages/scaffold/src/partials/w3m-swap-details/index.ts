@@ -16,7 +16,7 @@ export class WuiSwapDetails extends LitElement {
 
   @property() public toTokenSymbol?: string
 
-  @property() public toTokenSwapedAmount?: number
+  @property() public toTokenSwappedAmount?: number
 
   @property() public gasPriceInUSD?: number
 
@@ -38,7 +38,7 @@ export class WuiSwapDetails extends LitElement {
               <wui-flex justifyContent="flex-start" flexGrow="1" gap="xs">
                 <wui-text variant="small-400" color="fg-100"
                   >1 ${this.sourceTokenSymbol} =
-                  ${UiHelperUtil.formatNumberToLocalString(this.toTokenSwapedAmount, 3)}
+                  ${UiHelperUtil.formatNumberToLocalString(this.toTokenSwappedAmount, 3)}
                   ${this.toTokenSymbol}</wui-text
                 >
                 <wui-text variant="small-400" color="fg-200">
@@ -86,7 +86,12 @@ export class WuiSwapDetails extends LitElement {
                           alignItems="center"
                           class="details-row"
                         >
-                          <wui-text variant="small-400" color="fg-150">Max. slippage</wui-text>
+                          <wui-flex alignItems="center" gap="xs">
+                            <wui-text variant="small-400" color="fg-150">Max. slippage</wui-text>
+                            <w3m-tooltip-trigger text="this is test">
+                              <wui-icon size="xs" color="inherit" name="infoCircle"></wui-icon>
+                            </w3m-tooltip-trigger>
+                          </wui-flex>
                           <wui-flex>
                             <wui-text variant="small-400" color="fg-200">
                               ${UiHelperUtil.formatNumberToLocalString(this.maxSlippage, 6)}

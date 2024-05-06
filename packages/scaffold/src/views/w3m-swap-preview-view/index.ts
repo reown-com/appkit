@@ -185,7 +185,7 @@ export class W3mSwapPreviewView extends LitElement {
   }
 
   private templateDetails() {
-    const toTokenSwapedAmount =
+    const toTokenSwappedAmount =
       this.sourceTokenPriceInUSD && this.toTokenPriceInUSD
         ? (1 / this.toTokenPriceInUSD) * this.sourceTokenPriceInUSD
         : 0
@@ -196,7 +196,7 @@ export class W3mSwapPreviewView extends LitElement {
         sourceTokenSymbol=${this.sourceToken?.symbol}
         sourceTokenPrice=${this.sourceTokenPriceInUSD}
         toTokenSymbol=${this.toToken?.symbol}
-        toTokenSwapedAmount=${toTokenSwapedAmount}
+        toTokenSwappedAmount=${toTokenSwappedAmount}
         gasPriceInUSD=${UiHelperUtil.formatNumberToLocalString(this.gasPriceInUSD, 3)}
         .priceImpact=${this.priceImpact}
         slippageRate=${ConstantsUtil.CONVERT_SLIPPAGE_TOLERANCE}
