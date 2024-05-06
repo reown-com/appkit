@@ -40,9 +40,7 @@ export class W3mModal extends LitElement {
     ApiController.prefetch()
     this.unsubscribe.push(
       ModalController.subscribeKey('open', val => (val ? this.onOpen() : this.onClose())),
-      AccountController.subscribe(
-        async newAccountState => await this.onNewAccountState(newAccountState)
-      )
+      AccountController.subscribe(newAccountState => this.onNewAccountState(newAccountState))
     )
     EventsController.sendEvent({ type: 'track', event: 'MODAL_LOADED' })
   }

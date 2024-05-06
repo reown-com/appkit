@@ -44,6 +44,8 @@ export const testMEmailSiwe = siwe.extend<ModalFixture>({
     await modalPage.page.waitForTimeout(1000)
     await modalPage.promptSiwe()
     await modalPage.approveSign()
+    await modalPage.page.waitForTimeout(1000)
+
     await use(modalPage)
   },
   modalValidator: async ({ modalPage }, use) => {

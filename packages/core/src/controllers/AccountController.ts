@@ -40,8 +40,8 @@ const state = proxy<AccountControllerState>({
 export const AccountController = {
   state,
 
-  subscribe(callback: (newState: AccountControllerState) => Promise<void>) {
-    return sub(state, async () => await callback(state))
+  subscribe(callback: (newState: AccountControllerState) => void) {
+    return sub(state, () => callback(state))
   },
 
   subscribeKey<K extends StateKey>(key: K, callback: (value: AccountControllerState[K]) => void) {
