@@ -61,6 +61,7 @@ export class W3mModal extends LitElement {
               <w3m-snackbar></w3m-snackbar>
             </wui-card>
           </wui-flex>
+          <w3m-tooltip></w3m-tooltip>
         `
       : null
   }

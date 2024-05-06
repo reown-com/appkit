@@ -1,5 +1,15 @@
 # @apps/gallery
 
+## 4.1.12-910a844.0
+
+### Patch Changes
+
+- refactor: sync theme with secure site
+
+- Updated dependencies []:
+  - @web3modal/common@4.1.12-910a844.0
+  - @web3modal/ui@4.1.12-910a844.0
+
 ## 4.1.11
 
 ### Patch Changes
@@ -47,7 +57,7 @@
 
 ### Patch Changes
 
-- Hotfix for inccorect state of w3m-button when email is enabled
+- Hotfix for incorrect state of w3m-button when email is enabled
 
 - Updated dependencies []:
   - @web3modal/common@4.1.7

@@ -317,11 +317,11 @@ export class Web3Modal extends Web3ModalScaffold {
         const { chainId, provider, address } = EthersStoreUtil.state
 
         if (!provider) {
-          throw new Error('connectionControllerClient:sendTransaction - provider is undefined')
+          throw new Error('ethersClient:sendTransaction - provider is undefined')
         }
 
         if (!address) {
-          throw new Error('connectionControllerClient:sendTransaction - address is undefined')
+          throw new Error('ethersClient:sendTransaction - address is undefined')
         }
 
         const txParams = {
@@ -345,11 +345,11 @@ export class Web3Modal extends Web3ModalScaffold {
         const { chainId, provider, address } = EthersStoreUtil.state
 
         if (!provider) {
-          throw new Error('connectionControllerClient:sendTransaction - provider is undefined')
+          throw new Error('ethersClient:writeContract - provider is undefined')
         }
 
         if (!address) {
-          throw new Error('connectionControllerClient:sendTransaction - address is undefined')
+          throw new Error('ethersClient:writeContract - address is undefined')
         }
 
         const browserProvider = new BrowserProvider(provider, chainId)

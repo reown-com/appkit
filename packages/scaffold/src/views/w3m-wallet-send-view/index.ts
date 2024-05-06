@@ -1,12 +1,7 @@
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
-import {
-  ConvertController,
-  CoreHelperUtil,
-  RouterController,
-  SendController
-} from '@web3modal/core'
+import { SwapController, CoreHelperUtil, RouterController, SendController } from '@web3modal/core'
 import { state } from 'lit/decorators.js'
 
 @customElement('w3m-wallet-send-view')
@@ -91,8 +86,8 @@ export class W3mWalletSendView extends LitElement {
   // -- Private ------------------------------------------- //
 
   private async fetchNetworkPrice() {
-    await ConvertController.getNetworkTokenPrice()
-    const gas = await ConvertController.getInitialGasPrice()
+    await SwapController.getNetworkTokenPrice()
+    const gas = await SwapController.getInitialGasPrice()
     if (gas?.gasPrice && gas?.gasPriceInUSD) {
       SendController.setGasPrice(gas.gasPrice)
       SendController.setGasPriceInUsd(gas.gasPriceInUSD)

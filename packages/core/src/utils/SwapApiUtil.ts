@@ -1,14 +1,11 @@
 import { NetworkController } from '../controllers/NetworkController.js'
 import { AccountController } from '../controllers/AccountController.js'
 import { ConnectionController } from '../controllers/ConnectionController.js'
-import { ConstantsUtil } from '../utils/ConstantsUtil.js'
+import { ConstantsUtil } from './ConstantsUtil.js'
 import { BlockchainApiController } from '../controllers/BlockchainApiController.js'
-import type { ConvertTokenWithBalance } from './TypeUtil.js'
+import type { SwapTokenWithBalance } from './TypeUtil.js'
 import { OptionsController } from '../controllers/OptionsController.js'
-import type {
-  BlockchainApiConvertAllowanceRequest,
-  BlockchainApiBalanceResponse
-} from '../utils/TypeUtil.js'
+import type { BlockchainApiSwapAllowanceRequest, BlockchainApiBalanceResponse } from './TypeUtil.js'
 
 // -- Types --------------------------------------------- //
 export type TokenInfo = {
@@ -24,9 +21,9 @@ export type TokenInfo = {
 }
 
 // -- Controller ---------------------------------------- //
-export const ConvertApiUtil = {
+export const SwapApiUtil = {
   async getTokenList() {
-    const response = await BlockchainApiController.fetchConvertTokens({
+    const response = await BlockchainApiController.fetchSwapTokens({
       chainId: NetworkController.state.caipNetwork?.id,
       projectId: OptionsController.state.projectId
     })
@@ -41,7 +38,7 @@ export const ConvertApiUtil = {
         },
         price: 0,
         value: 0
-      } as ConvertTokenWithBalance
+      } as SwapTokenWithBalance
     })
 
     return tokens
@@ -61,18 +58,18 @@ export const ConvertApiUtil = {
     })
   },
 
-  async fetchConvertAllowance({
+  async fetchSwapAllowance({
     tokenAddress,
     userAddress,
     sourceTokenAmount,
     sourceTokenDecimals
-  }: Pick<BlockchainApiConvertAllowanceRequest, 'tokenAddress' | 'userAddress'> & {
+  }: Pick<BlockchainApiSwapAllowanceRequest, 'tokenAddress' | 'userAddress'> & {
     sourceTokenAmount: string
     sourceTokenDecimals: number
   }) {
     const projectId = OptionsController.state.projectId
 
-    const response = await BlockchainApiController.fetchConvertAllowance({
+    const response = await BlockchainApiController.fetchSwapAllowance({
       projectId,
       tokenAddress,
       userAddress
@@ -99,10 +96,10 @@ export const ConvertApiUtil = {
     const response = await BlockchainApiController.getBalance(address, caipNetwork.id)
     const balances = response.balances
 
-    return this.mapBalancesToConvertTokens(balances)
+    return this.mapBalancesToSwapTokens(balances)
   },
 
-  mapBalancesToConvertTokens(balances: BlockchainApiBalanceResponse['balances']) {
+  mapBalancesToSwapTokens(balances: BlockchainApiBalanceResponse['balances']) {
     return balances.map(token => {
       return {
         symbol: token.symbol,
@@ -116,7 +113,7 @@ export const ConvertApiUtil = {
         quantity: token.quantity,
         price: token.price,
         value: token.value
-      } as ConvertTokenWithBalance
+      } as SwapTokenWithBalance
     })
   }
 }
