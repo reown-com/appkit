@@ -16,7 +16,7 @@ interface ModalWalletFixture {
 
 // MW -> test Modal + Wallet
 export const testConnectedMW = base.extend<ModalWalletFixture>({
-  walletPage: async ({ context, modalPage }, use) => {
+  walletPage: async ({ context, modalPage, timingRecords }, use) => {
     if (modalPage.library === 'solana') {
       // Because solana doesn't support react-wallet-v2
       timeStart('new WalletPage')
@@ -29,14 +29,20 @@ export const testConnectedMW = base.extend<ModalWalletFixture>({
       const walletValidator = new WalletValidator(walletPage.page)
       timeEnd('walletPage.connectWithUri')
       timeStart('modalPage.getConnectUri')
-      const uri = await modalPage.getConnectUri()
+      const uri = await modalPage.getConnectUri(timingRecords)
       timeEnd('modalPage.getConnectUri')
       timeStart('walletPage.connectWithUri')
       await walletPage.connectWithUri(uri)
       timeEnd('walletPage.connectWithUri')
+      const connectionInitiated = new Date()
       timeStart('walletPage.handleSessionProposal')
       await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
       timeEnd('walletPage.handleSessionProposal')
+      const proposalReceived = new Date()
+      timingRecords.push({
+        item: 'receiveSessionProposal',
+        timeMs: proposalReceived.getTime() - connectionInitiated.getTime()
+      })
       timeStart('walletValidator.expectConnected')
       await walletValidator.expectConnected()
       timeEnd('walletValidator.expectConnected')
