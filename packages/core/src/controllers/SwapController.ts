@@ -3,11 +3,11 @@ import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { AccountController } from './AccountController.js'
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { ConnectionController } from './ConnectionController.js'
-import { ConvertApiUtil } from '../utils/ConvertApiUtil.js'
+import { SwapApiUtil } from '../utils/SwapApiUtil.js'
 import { SnackController } from './SnackController.js'
 import { RouterController } from './RouterController.js'
 import { NumberUtil } from '@web3modal/common'
-import type { ConvertTokenWithBalance } from '../utils/TypeUtil.js'
+import type { SwapTokenWithBalance } from '../utils/TypeUtil.js'
 import { NetworkController } from './NetworkController.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
@@ -17,7 +17,7 @@ import { OptionsController } from './OptionsController.js'
 export const INITIAL_GAS_LIMIT = 150000
 
 // -- Types --------------------------------------------- //
-export type ConvertInputTarget = 'sourceToken' | 'toToken'
+export type SwapInputTarget = 'sourceToken' | 'toToken'
 
 type TransactionParams = {
   data: string
@@ -38,23 +38,23 @@ class TransactionError extends Error {
   }
 }
 
-export interface ConvertControllerState {
+export interface SwapControllerState {
   // Loading states
   initialized: boolean
   loadingPrices: boolean
   loading?: boolean
 
-  // Approval & Convert transaction states
+  // Approval & Swap transaction states
   approvalTransaction: TransactionParams | undefined
-  convertTransaction: TransactionParams | undefined
+  swapTransaction: TransactionParams | undefined
   transactionLoading?: boolean
   transactionError?: string
 
   // Input values
-  sourceToken?: ConvertTokenWithBalance
+  sourceToken?: SwapTokenWithBalance
   sourceTokenAmount: string
   sourceTokenPriceInUSD: number
-  toToken?: ConvertTokenWithBalance
+  toToken?: SwapTokenWithBalance
   toTokenAmount: string
   toTokenPriceInUSD: number
   networkPrice: string
@@ -65,11 +65,11 @@ export interface ConvertControllerState {
   slippage: number
 
   // Tokens
-  tokens?: ConvertTokenWithBalance[]
-  suggestedTokens?: ConvertTokenWithBalance[]
-  popularTokens?: ConvertTokenWithBalance[]
-  foundTokens?: ConvertTokenWithBalance[]
-  myTokensWithBalance?: ConvertTokenWithBalance[]
+  tokens?: SwapTokenWithBalance[]
+  suggestedTokens?: SwapTokenWithBalance[]
+  popularTokens?: SwapTokenWithBalance[]
+  foundTokens?: SwapTokenWithBalance[]
+  myTokensWithBalance?: SwapTokenWithBalance[]
   tokensPriceMap: Record<string, number>
 
   // Calculations
@@ -91,18 +91,18 @@ export interface TokenInfo {
   tags?: string[]
 }
 
-type StateKey = keyof ConvertControllerState
+type StateKey = keyof SwapControllerState
 
 // -- State --------------------------------------------- //
-const state = proxy<ConvertControllerState>({
+const state = proxy<SwapControllerState>({
   // Loading states
   initialized: false,
   loading: false,
   loadingPrices: false,
 
-  // Approval & Convert transaction states
+  // Approval & Swap transaction states
   approvalTransaction: undefined,
-  convertTransaction: undefined,
+  swapTransaction: undefined,
   transactionError: undefined,
   transactionLoading: false,
 
@@ -136,14 +136,14 @@ const state = proxy<ConvertControllerState>({
 })
 
 // -- Controller ---------------------------------------- //
-export const ConvertController = {
+export const SwapController = {
   state,
 
-  subscribe(callback: (newState: ConvertControllerState) => void) {
+  subscribe(callback: (newState: SwapControllerState) => void) {
     return sub(state, () => callback(state))
   },
 
-  subscribeKey<K extends StateKey>(key: K, callback: (value: ConvertControllerState[K]) => void) {
+  subscribeKey<K extends StateKey>(key: K, callback: (value: SwapControllerState[K]) => void) {
     return subKey(state, key, callback)
   },
 
@@ -172,7 +172,7 @@ export const ConvertController = {
     state.loading = loading
   },
 
-  setSourceToken(sourceToken: ConvertTokenWithBalance | undefined) {
+  setSourceToken(sourceToken: SwapTokenWithBalance | undefined) {
     if (!sourceToken) {
       return
     }
@@ -191,7 +191,7 @@ export const ConvertController = {
     }
   },
 
-  setToToken(toToken: ConvertTokenWithBalance | undefined) {
+  setToToken(toToken: SwapTokenWithBalance | undefined) {
     const { sourceTokenAddress, sourceTokenAmount } = this.getParams()
 
     if (!toToken) {
@@ -219,7 +219,7 @@ export const ConvertController = {
     }
   },
 
-  async setTokenValues(address: string, target: ConvertInputTarget) {
+  async setTokenValues(address: string, target: SwapInputTarget) {
     let price = state.tokensPriceMap[address] || 0
 
     if (!price) {
@@ -241,7 +241,7 @@ export const ConvertController = {
     this.setToToken(newToToken)
 
     this.setSourceTokenAmount(state.toTokenAmount || '0')
-    ConvertController.convertTokens()
+    SwapController.swapTokens()
   },
 
   resetTokens() {
@@ -288,7 +288,7 @@ export const ConvertController = {
   },
 
   async getTokenList() {
-    const tokens = await ConvertApiUtil.getTokenList()
+    const tokens = await SwapApiUtil.getTokenList()
 
     state.tokens = tokens
     state.popularTokens = tokens
@@ -354,7 +354,7 @@ export const ConvertController = {
   },
 
   async getMyTokensWithBalance() {
-    const balances = await ConvertApiUtil.getMyTokensWithBalance()
+    const balances = await SwapApiUtil.getMyTokensWithBalance()
 
     if (!balances) {
       return
@@ -364,7 +364,7 @@ export const ConvertController = {
     this.setBalances(balances)
   },
 
-  setBalances(balances: ConvertTokenWithBalance[]) {
+  setBalances(balances: SwapTokenWithBalance[]) {
     const { networkAddress } = this.getParams()
 
     const networkToken = balances.find(token => token.address === networkAddress)
@@ -379,7 +379,7 @@ export const ConvertController = {
   },
 
   async getInitialGasPrice() {
-    const res = await ConvertApiUtil.fetchGasPrice()
+    const res = await SwapApiUtil.fetchGasPrice()
 
     if (!res) {
       return
@@ -393,7 +393,7 @@ export const ConvertController = {
     state.gasPriceInUSD = gasPrice
   },
 
-  async refreshConvertValues() {
+  async refreshSwapValues() {
     const { fromAddress, toTokenDecimals, toTokenAddress } = this.getParams()
 
     if (fromAddress && toTokenAddress && toTokenDecimals && !state.loading) {
@@ -441,7 +441,7 @@ export const ConvertController = {
     return maxSlippageAmount.toNumber()
   },
 
-  async convertTokens() {
+  async swapTokens() {
     const { sourceTokenAddress, toTokenAddress } = this.getParams()
 
     if (!sourceTokenAddress || !toTokenAddress) {
@@ -478,7 +478,7 @@ export const ConvertController = {
       return undefined
     }
 
-    const hasAllowance = await ConvertApiUtil.fetchConvertAllowance({
+    const hasAllowance = await SwapApiUtil.fetchSwapAllowance({
       userAddress: fromCaipAddress,
       tokenAddress: sourceTokenAddress,
       sourceTokenAmount,
@@ -489,10 +489,10 @@ export const ConvertController = {
 
     if (hasAllowance) {
       state.approvalTransaction = undefined
-      transaction = await this.createConvert()
-      state.convertTransaction = transaction
+      transaction = await this.createSwap()
+      state.swapTransaction = transaction
     } else {
-      state.convertTransaction = undefined
+      state.swapTransaction = undefined
       transaction = await this.createTokenAllowance()
       state.approvalTransaction = transaction
     }
@@ -505,14 +505,14 @@ export const ConvertController = {
     const decimals = sourceTokenDecimals || 18
     const multiplier = 10 ** decimals
 
-    const toTokenConvertedAmount =
+    const toTokenSwapedAmount =
       state.sourceTokenPriceInUSD && state.toTokenPriceInUSD && state.sourceTokenAmount
         ? NumberUtil.bigNumber(state.sourceTokenAmount)
             .multipliedBy(state.sourceTokenPriceInUSD)
             .dividedBy(state.toTokenPriceInUSD)
         : NumberUtil.bigNumber(0)
 
-    return toTokenConvertedAmount.multipliedBy(multiplier).toString()
+    return toTokenSwapedAmount.multipliedBy(multiplier).toString()
   },
 
   async createTokenAllowance() {
@@ -581,7 +581,7 @@ export const ConvertController = {
     }
   },
 
-  async createConvert() {
+  async createSwap() {
     const {
       networkAddress,
       fromCaipAddress,
@@ -607,7 +607,7 @@ export const ConvertController = {
         sourceTokenDecimals
       ).toString()
 
-      const response = await BlockchainApiController.generateConvertCalldata({
+      const response = await BlockchainApiController.generateSwapCalldata({
         projectId: OptionsController.state.projectId,
         userAddress: fromCaipAddress,
         from: sourceTokenAddress,
@@ -638,7 +638,7 @@ export const ConvertController = {
     }
   },
 
-  async sendTransactionForConvert(data: TransactionParams | undefined) {
+  async sendTransactionForSwap(data: TransactionParams | undefined) {
     if (!data) {
       return undefined
     }
@@ -651,7 +651,7 @@ export const ConvertController = {
       view: 'Account',
       goBack: false,
       onSuccess() {
-        ConvertController.resetValues()
+        SwapController.resetValues()
       }
     })
 

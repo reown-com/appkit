@@ -1,5 +1,17 @@
 # @web3modal/polyfills
 
+## 4.1.12-sign-2.5.2
+
+### Patch Changes
+
+- fix: Email transaction approval
+
+## 4.1.12-910a844.0
+
+### Patch Changes
+
+- refactor: sync theme with secure site
+
 ## 4.1.11
 
 ### Patch Changes

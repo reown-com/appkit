@@ -11,7 +11,9 @@ import {
   AccountController,
   NetworkController,
   ConnectionController,
-  RouterUtil
+  RouterUtil,
+  RouterController,
+  StorageUtil
 } from '@web3modal/core'
 
 import { NetworkUtil } from '@web3modal/common'
@@ -105,6 +107,10 @@ export class Web3ModalSIWEClient {
       version: '1',
       ...messageParams
     })
+    const type = StorageUtil.getConnectedConnector()
+    if (type === 'EMAIL') {
+      RouterController.push('ApproveTransaction')
+    }
     const signature = await ConnectionController.signMessage(message)
     const isValid = await this.methods.verifyMessage({ message, signature })
     if (!isValid) {
