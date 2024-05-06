@@ -1,4 +1,4 @@
-import { Button, Stack, Link, Text, Spacer,} from '@chakra-ui/react'
+import { Button, Stack, Link, Text, Spacer } from '@chakra-ui/react'
 import { useAccount } from 'wagmi'
 import { useSendCalls } from 'wagmi/experimental'
 import { useCallback, useState } from 'react'
@@ -13,7 +13,7 @@ const TEST_TX_1 = {
 }
 const TEST_TX_2 = {
   to: vitalikEthAddress as Address,
-  data: '0xdeadbeef' as `0x${string}`,
+  data: '0xdeadbeef' as `0x${string}`
 }
 
 export function WagmiSendCallsTest() {
@@ -46,10 +46,7 @@ export function WagmiSendCallsTest() {
   const onSendCalls = useCallback(() => {
     setLoading(true)
     sendCalls({
-      calls: [
-        TEST_TX_1,
-        TEST_TX_2
-      ]
+      calls: [TEST_TX_1, TEST_TX_2]
     })
   }, [sendCalls])
 
@@ -57,7 +54,7 @@ export function WagmiSendCallsTest() {
 
   return allowedChains.includes(Number(chain?.id)) && status === 'connected' ? (
     <Stack direction={['column', 'column', 'row']}>
-       <Button
+      <Button
         data-test-id="sign-transaction-button"
         onClick={onSendCalls}
         disabled={!sendCalls}
@@ -65,7 +62,7 @@ export function WagmiSendCallsTest() {
       >
         Send Batch Calls to Vitalik
       </Button>
-      
+
       <Spacer />
 
       <Link isExternal href="https://sepoliafaucet.com">
