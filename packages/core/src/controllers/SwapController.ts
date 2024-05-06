@@ -710,7 +710,7 @@ export const SwapController = {
       toTokenAmount: state.toTokenAmount,
       gasPriceInUSD: state.gasPriceInUSD
     })
-    state.maxSlippage = SwapCalculationUtil.getMaxSlippage(state.slippage, state.sourceTokenAmount)
+    state.maxSlippage = SwapCalculationUtil.getMaxSlippage(state.slippage, state.toTokenAmount)
     state.providerFee = SwapCalculationUtil.getProviderFee(state.sourceTokenAmount)
   }
 }

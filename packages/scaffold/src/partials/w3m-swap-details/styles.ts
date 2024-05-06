@@ -40,6 +40,10 @@ export default css`
     background: var(--wui-gray-glass-002);
   }
 
+  .details-row-title {
+    white-space: nowrap;
+  }
+
   .details-row.provider-free-row {
     padding-right: var(--wui-spacing-xs);
   }

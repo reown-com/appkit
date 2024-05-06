@@ -2,6 +2,7 @@ import { html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
 import styles from './styles.js'
 import { UiHelperUtil, customElement } from '@web3modal/ui'
+import { NumberUtil } from '@web3modal/common'
 
 @customElement('w3m-swap-details')
 export class WuiSwapDetails extends LitElement {
@@ -15,6 +16,8 @@ export class WuiSwapDetails extends LitElement {
   @property() public sourceTokenPrice?: number
 
   @property() public toTokenSymbol?: string
+
+  @property() public toTokenAmount?: string
 
   @property() public toTokenSwappedAmount?: number
 
@@ -30,6 +33,11 @@ export class WuiSwapDetails extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    const minReceivedAmount =
+      this.toTokenAmount && this.maxSlippage
+        ? NumberUtil.bigNumber(this.toTokenAmount).minus(this.maxSlippage).toString()
+        : null
+
     return html`
       <wui-flex flexDirection="column" alignItems="center" gap="1xs" class="details-container">
         <wui-flex flexDirection="column">
@@ -70,7 +78,16 @@ export class WuiSwapDetails extends LitElement {
                           alignItems="center"
                           class="details-row"
                         >
-                          <wui-text variant="small-400" color="fg-150">Price impact</wui-text>
+                          <wui-flex alignItems="center" gap="xs">
+                            <wui-text class="details-row-title" variant="small-400" color="fg-150">
+                              Price impact
+                            </wui-text>
+                            <w3m-tooltip-trigger
+                              text="Price impact reflects the change in market price due to your trade"
+                            >
+                              <wui-icon size="xs" color="fg-250" name="infoCircle"></wui-icon>
+                            </w3m-tooltip-trigger>
+                          </wui-flex>
                           <wui-flex>
                             <wui-text variant="small-400" color="fg-200">
                               ${UiHelperUtil.formatNumberToLocalString(this.priceImpact, 3)}%
@@ -87,15 +104,26 @@ export class WuiSwapDetails extends LitElement {
                           class="details-row"
                         >
                           <wui-flex alignItems="center" gap="xs">
-                            <wui-text variant="small-400" color="fg-150">Max. slippage</wui-text>
-                            <w3m-tooltip-trigger text="this is test">
-                              <wui-icon size="xs" color="inherit" name="infoCircle"></wui-icon>
+                            <wui-text class="details-row-title" variant="small-400" color="fg-150">
+                              Max. slippage
+                            </wui-text>
+                            <w3m-tooltip-trigger
+                              text=${`Max slippage sets the minimum amount you must receive for the transaction to proceed. ${
+                                minReceivedAmount
+                                  ? `Transaction will be reversed if you receive less than ${UiHelperUtil.formatNumberToLocalString(
+                                      minReceivedAmount,
+                                      6
+                                    )} ${this.toTokenSymbol} due to price changes.`
+                                  : ''
+                              }`}
+                            >
+                              <wui-icon size="xs" color="fg-250" name="infoCircle"></wui-icon>
                             </w3m-tooltip-trigger>
                           </wui-flex>
                           <wui-flex>
                             <wui-text variant="small-400" color="fg-200">
                               ${UiHelperUtil.formatNumberToLocalString(this.maxSlippage, 6)}
-                              ${this.sourceTokenSymbol} ${this.slippageRate}%
+                              ${this.toTokenSymbol} ${this.slippageRate}%
                             </wui-text>
                           </wui-flex>
                         </wui-flex>
@@ -107,7 +135,11 @@ export class WuiSwapDetails extends LitElement {
                       alignItems="center"
                       class="details-row provider-free-row"
                     >
-                      <wui-text variant="small-400" color="fg-150">Provider fee</wui-text>
+                      <wui-flex alignItems="center" gap="xs">
+                        <wui-text class="details-row-title" variant="small-400" color="fg-150">
+                          Provider fee (0.75%)
+                        </wui-text>
+                      </wui-flex>
                       <wui-flex>
                         ${this.providerFee
                           ? html`

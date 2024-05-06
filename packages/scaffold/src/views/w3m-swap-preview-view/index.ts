@@ -197,6 +197,7 @@ export class W3mSwapPreviewView extends LitElement {
         sourceTokenPrice=${this.sourceTokenPriceInUSD}
         toTokenSymbol=${this.toToken?.symbol}
         toTokenSwappedAmount=${toTokenSwappedAmount}
+        toTokenAmount=${this.toTokenAmount}
         gasPriceInUSD=${UiHelperUtil.formatNumberToLocalString(this.gasPriceInUSD, 3)}
         .priceImpact=${this.priceImpact}
         slippageRate=${ConstantsUtil.CONVERT_SLIPPAGE_TOLERANCE}
