@@ -14,6 +14,7 @@ const PACKAGE_VERSION = ConstantsUtil.VERSION
 const RELATIVE_IMPORT_SAME_DIR = `'./`
 const RELATIVE_IMPORT_PARENT_DIR = `'../`
 const RELATIVE_IMPORT_EXTENSION = `.js'`
+const PRIVATE_FUNCTION_REGEX = /private\s+(\w+)\s*\(\s*\)/g
 
 // -- Data --------------------------------------------------------------------
 const { modified_files, created_files, deleted_files, diffForFile } = danger.git
@@ -84,10 +85,9 @@ async function checkUiPackage() {
       fail(`${f} is missing \`${STATE_PROPERTIES_COMMENT}\` comment`)
     }
 
-    const privateFunctionRegex = /private\s+(\w+)\s*\(\s*\)/g
-    const privateFunctions = diff?.added.match(privateFunctionRegex)
+    const privateFunctionsAdded = diff?.added.match(PRIVATE_FUNCTION_REGEX)?.length
 
-    if (privateFunctions && !diff?.added.includes(PRIVATE_COMMENT)) {
+    if (privateFunctionsAdded && !diff?.added.includes(PRIVATE_COMMENT)) {
       message(
         `${f} is missing \`${PRIVATE_COMMENT}\` comment, but seems to have private members. Check if this is correct`
       )
@@ -255,7 +255,9 @@ async function checkScaffoldHtmlPackage() {
       fail(`${f} is missing \`${STATE_PROPERTIES_COMMENT}\` comment`)
     }
 
-    if (diff?.added.includes('private ') && !diff.added.includes(PRIVATE_COMMENT)) {
+    const privateFunctionsAdded = diff?.added.match(PRIVATE_FUNCTION_REGEX)?.length
+
+    if (privateFunctionsAdded && !diff?.added.includes(PRIVATE_COMMENT)) {
       message(
         `${f} is missing \`${PRIVATE_COMMENT}\` comment, but seems to have private members. Check if this is correct`
       )
