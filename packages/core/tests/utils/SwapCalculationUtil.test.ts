@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { SwapCalculationUtil } from '../../src/utils/SwapCalculationUtil.js'
 import { INITIAL_GAS_LIMIT } from '../../src/controllers/SwapController.js'
-import { prices, tokenInfo } from '../mocks/SwapController.js'
+import { networkTokenPriceResponse, tokensResponse } from '../mocks/SwapController.js'
 import type { SwapTokenWithBalance } from '../../src/utils/TypeUtil.js'
 import { NumberUtil } from '@web3modal/common'
 
@@ -9,13 +9,11 @@ import { NumberUtil } from '@web3modal/common'
 const gasLimit = BigInt(INITIAL_GAS_LIMIT)
 const gasFee = BigInt(455966887160)
 
-const sourceTokenAddress = 'eip155:137:0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
-
-const sourceToken = tokenInfo[0] as SwapTokenWithBalance
+const sourceToken = tokensResponse[0] as SwapTokenWithBalance
 const sourceTokenAmount = '1'
-const toToken = tokenInfo[1] as SwapTokenWithBalance
+const toToken = tokensResponse[1] as SwapTokenWithBalance
 
-const networkPrice = prices[sourceTokenAddress].toString()
+const networkPrice = networkTokenPriceResponse.fungibles[0]?.price || '0'
 
 // -- Tests --------------------------------------------------------------------
 describe('SwapCalculationUtil', () => {
@@ -24,7 +22,7 @@ describe('SwapCalculationUtil', () => {
     const gasPriceInUSD = SwapCalculationUtil.getGasPriceInUSD(networkPrice, gasLimit, gasFee)
 
     expect(gasPriceInEther).toEqual(0.068395033074)
-    expect(gasPriceInUSD).toEqual(0.06395499714651795)
+    expect(gasPriceInUSD).toEqual(0.04780931734420308)
   })
 
   it('should return insufficient balance as expected', () => {
@@ -60,7 +58,7 @@ describe('SwapCalculationUtil', () => {
       toTokenAmount,
       toTokenPriceInUSD: toToken.price
     })
-    expect(priceImpact).equal(9.974076865161582)
+    expect(priceImpact).equal(7.646854717783376)
   })
 
   it('should get to token amount with same decimals including provider fee as expected', () => {
@@ -75,7 +73,7 @@ describe('SwapCalculationUtil', () => {
   })
 
   it('should get to token amount with different decimals including provider fee as expected', () => {
-    const newToToken = tokenInfo[2] as SwapTokenWithBalance
+    const newToToken = tokensResponse[2] as SwapTokenWithBalance
 
     const toTokenAmount = SwapCalculationUtil.getToTokenAmount({
       sourceToken,

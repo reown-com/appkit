@@ -673,25 +673,6 @@ export const SwapController = {
     }
   },
 
-  getToTokenValues() {
-    const { toTokenAddress, toTokenAmount } = this.getParams()
-
-    if (!toTokenAddress) {
-      return {
-        toTokenAmount: '0',
-        toTokenPriceInUSD: 0
-      }
-    }
-
-    const toTokenPrice = state.tokensPriceMap[toTokenAddress] || '0'
-    const toTokenPriceInUSD = NumberUtil.bigNumber(toTokenPrice).toNumber()
-
-    return {
-      toTokenAmount,
-      toTokenPriceInUSD
-    }
-  },
-
   setTransactionDetails(transaction: TransactionParams | undefined) {
     const { toTokenAddress, toTokenDecimals } = this.getParams()
 
@@ -699,10 +680,6 @@ export const SwapController = {
       return
     }
 
-    const { toTokenAmount, toTokenPriceInUSD } = this.getToTokenValues()
-
-    state.toTokenAmount = toTokenAmount
-    state.toTokenPriceInUSD = toTokenPriceInUSD
     state.gasPriceInUSD = SwapCalculationUtil.getGasPriceInUSD(
       state.networkPrice,
       transaction.gas,
