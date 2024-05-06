@@ -61,6 +61,9 @@ export type { SwapControllerState, SwapInputTarget } from './src/controllers/Swa
 export { SendController } from './src/controllers/SendController.js'
 export type { SendControllerState } from './src/controllers/SendController.js'
 
+export { TooltipController } from './src/controllers/TooltipController.js'
+export type { TooltipControllerState } from './src/controllers/TooltipController.js'
+
 // -- Utils -------------------------------------------------------------------
 export { AssetUtil } from './src/utils/AssetUtil.js'
 export { ConstantsUtil } from './src/utils/ConstantsUtil.js'
