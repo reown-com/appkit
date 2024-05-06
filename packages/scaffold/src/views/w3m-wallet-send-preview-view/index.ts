@@ -18,6 +18,10 @@ export class W3mWalletSendPreviewView extends LitElement {
 
   @state() private receiverAddress = SendController.state.receiverAddress
 
+  @state() private receiverProfileName = SendController.state.receiverProfileName
+
+  @state() private receiverProfileImageUrl = SendController.state.receiverProfileImageUrl
+
   @state() private gasPrice = SendController.state.gasPrice
 
   @state() private gasPriceInUSD = SendController.state.gasPriceInUSD
@@ -34,6 +38,8 @@ export class W3mWalletSendPreviewView extends LitElement {
           this.receiverAddress = val.receiverAddress
           this.gasPrice = val.gasPrice
           this.gasPriceInUSD = val.gasPriceInUSD
+          this.receiverProfileName = val.receiverProfileName
+          this.receiverProfileImageUrl = val.receiverProfileImageUrl
         }),
         NetworkController.subscribeKey('caipNetwork', val => (this.caipNetwork = val))
       ]
@@ -66,13 +72,21 @@ export class W3mWalletSendPreviewView extends LitElement {
         <wui-flex alignItems="center" justifyContent="space-between">
           <wui-text variant="small-400" color="fg-150">To</wui-text>
           <wui-preview-item
-            text=${UiHelperUtil.getTruncateString({
-              string: this.receiverAddress ?? '',
-              charsStart: 4,
-              charsEnd: 4,
-              truncate: 'middle'
-            })}
+            text="${this.receiverProfileName
+              ? UiHelperUtil.getTruncateString({
+                  string: this.receiverProfileName,
+                  charsStart: 20,
+                  charsEnd: 0,
+                  truncate: 'end'
+                })
+              : UiHelperUtil.getTruncateString({
+                  string: this.receiverAddress ? this.receiverAddress : '',
+                  charsStart: 4,
+                  charsEnd: 4,
+                  truncate: 'middle'
+                })}"
             address=${this.receiverAddress ?? ''}
+            .imageSrc=${this.receiverProfileImageUrl ?? undefined}
             .isAddress=${true}
           ></wui-preview-item>
         </wui-flex>

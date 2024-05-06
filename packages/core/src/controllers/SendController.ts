@@ -30,12 +30,15 @@ export interface SendControllerState {
   receiverProfileImageUrl?: string
   gasPrice?: bigint
   gasPriceInUSD?: number
+  loading: boolean
 }
 
 type StateKey = keyof SendControllerState
 
 // -- State --------------------------------------------- //
-const state = proxy<SendControllerState>({})
+const state = proxy<SendControllerState>({
+  loading: false
+})
 
 // -- Controller ---------------------------------------- //
 export const SendController = {
@@ -79,6 +82,10 @@ export const SendController = {
 
   setGasPriceInUsd(gasPriceInUSD: SendControllerState['gasPriceInUSD']) {
     state.gasPriceInUSD = gasPriceInUSD
+  },
+
+  setLoading(loading: SendControllerState['loading']) {
+    state.loading = loading
   },
 
   async sendNativeToken(params: TxParams) {
@@ -152,5 +159,6 @@ export const SendController = {
     state.receiverAddress = undefined
     state.receiverProfileImageUrl = undefined
     state.receiverProfileName = undefined
+    state.loading = false
   }
 }

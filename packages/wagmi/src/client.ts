@@ -4,7 +4,7 @@ import {
   disconnect,
   signMessage,
   getBalance,
-  getEnsAvatar,
+  getEnsAvatar as wagmiGetEnsAvatar,
   getEnsName,
   switchChain,
   watchAccount,
@@ -13,6 +13,7 @@ import {
   estimateGas as wagmiEstimateGas,
   writeContract as wagmiWriteContract,
   getAccount,
+  getEnsAddress as wagmiGetEnsAddress,
   reconnect
 } from '@wagmi/core'
 import { mainnet } from 'viem/chains'
@@ -47,6 +48,7 @@ import type { W3mFrameProvider, W3mFrameTypes } from '@web3modal/wallet'
 import { NetworkUtil } from '@web3modal/common'
 import type { defaultWagmiConfig as coreConfig } from './utils/defaultWagmiCoreConfig.js'
 import type { defaultWagmiConfig as reactConfig } from './utils/defaultWagmiReactConfig.js'
+import { normalize } from 'viem/ens'
 
 // -- Types ---------------------------------------------------------------------
 export type CoreConfig = ReturnType<typeof coreConfig>
@@ -235,6 +237,32 @@ export class Web3Modal extends Web3ModalScaffold {
         return tx
       },
 
+      getEnsAddress: async (value: string) => {
+        try {
+          const address = await wagmiGetEnsAddress(this.wagmiConfig, {
+            name: normalize(value),
+            chainId: 1
+          })
+
+          return address as string
+        } catch (error) {
+          return false
+        }
+      },
+
+      getEnsAvatar: async (value: string) => {
+        try {
+          const avatar = await wagmiGetEnsAvatar(this.wagmiConfig, {
+            name: normalize(value),
+            chainId: 1
+          })
+
+          return avatar as string
+        } catch (error) {
+          return false
+        }
+      },
+
       parseUnits,
 
       formatUnits
@@ -368,7 +396,7 @@ export class Web3Modal extends Web3ModalScaffold {
         const profileName = await getEnsName(this.wagmiConfig, { address, chainId })
         if (profileName) {
           this.setProfileName(profileName)
-          const profileImage = await getEnsAvatar(this.wagmiConfig, {
+          const profileImage = await wagmiGetEnsAvatar(this.wagmiConfig, {
             name: profileName,
             chainId
           })

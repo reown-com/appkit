@@ -368,6 +368,29 @@ export class Web3Modal extends Web3ModalScaffold {
         }
 
         throw new Error('Contract method is undefined')
+      },
+
+      getEnsAddress: async (value: string) => {
+        const ensProvider = new InfuraProvider('mainnet')
+
+        const name = await ensProvider.resolveName(value)
+        if (name) {
+          return name
+        }
+
+        return false
+      },
+
+      getEnsAvatar: async (value: string) => {
+        const ensProvider = new InfuraProvider('mainnet')
+
+        const avatar = await ensProvider.getAvatar(value)
+
+        if (avatar) {
+          return avatar
+        }
+
+        return false
       }
     }
 
