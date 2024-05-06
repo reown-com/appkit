@@ -58,7 +58,8 @@ import type { WuiTag } from '../composites/wui-tag/index.js'
 import type { WuiTokenButton } from '../composites/wui-token-button/index.js'
 import type { WuiTokenListItem } from '../composites/wui-token-list-item/index.js'
 import type { WuiTooltip } from '../composites/wui-tooltip/index.js'
-import type { WuiTooltipSelect } from '../composites/wui-tooltip-select/index.js'
+import type { WuiWalletFeatureButton } from '../composites/wui-wallet-feature-button/index.js'
+import type { WuiTooltipTrigger } from '../composites/wui-tooltip-trigger/index.js'
 import type { WuiTransactionListItem } from '../composites/wui-transaction-list-item/index.js'
 import type { WuiTransactionListItemLoader } from '../composites/wui-transaction-list-item-loader/index.js'
 import type { WuiTransactionVisual } from '../composites/wui-transaction-visual/index.js'
@@ -135,7 +136,8 @@ declare global {
       'wui-tag': CustomElement<WuiTag>
       'wui-token-button': CustomElement<WuiTokenButton>
       'wui-token-list-item': CustomElement<WuiTokenListItem>
-      'wui-tooltip-select': CustomElement<WuiTooltipSelect>
+      'wui-wallet-feature-button': CustomElement<WuiWalletFeatureButton>
+      'wui-tooltip-trigger': CustomElement<WuiTooltipTrigger>
       'wui-tooltip': CustomElement<WuiTooltip>
       'wui-transaction-list-item-loader': CustomElement<WuiTransactionListItemLoader>
       'wui-transaction-list-item': CustomElement<WuiTransactionListItem>
