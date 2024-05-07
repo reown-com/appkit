@@ -21,7 +21,7 @@ export class W3mWalletSendDetails extends LitElement {
     return html` <wui-text variant="small-400" color="fg-200">Details</wui-text>
       <wui-flex flexDirection="column" gap="xxs">
         <wui-list-content textTitle="Network cost" textValue="$${ifDefined(
-          this.networkFee?.toFixed(2).toString()
+          UiHelperUtil.formatNumberToLocalString(this.networkFee, 2)
         )}"></wui-list-content></wui-list-content>
         <wui-list-content
           textTitle="Address"

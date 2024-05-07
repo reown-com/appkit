@@ -22,8 +22,6 @@ export class W3mWalletSendPreviewView extends LitElement {
 
   @state() private receiverProfileImageUrl = SendController.state.receiverProfileImageUrl
 
-  @state() private gasPrice = SendController.state.gasPrice
-
   @state() private gasPriceInUSD = SendController.state.gasPriceInUSD
 
   @state() private caipNetwork = NetworkController.state.caipNetwork
@@ -36,7 +34,6 @@ export class W3mWalletSendPreviewView extends LitElement {
           this.token = val.token
           this.sendTokenAmount = val.sendTokenAmount
           this.receiverAddress = val.receiverAddress
-          this.gasPrice = val.gasPrice
           this.gasPriceInUSD = val.gasPriceInUSD
           this.receiverProfileName = val.receiverProfileName
           this.receiverProfileImageUrl = val.receiverProfileImageUrl
@@ -138,26 +135,7 @@ export class W3mWalletSendPreviewView extends LitElement {
   }
 
   onSendClick() {
-    if (this.token?.address && this.sendTokenAmount && this.receiverAddress) {
-      SendController.sendERC20Token({
-        receiverAddress: this.receiverAddress,
-        tokenAddress: this.token.address,
-        sendTokenAmount: this.sendTokenAmount,
-        decimals: this.token.quantity.decimals
-      })
-    } else if (
-      this.receiverAddress &&
-      this.sendTokenAmount &&
-      this.gasPrice &&
-      this.token?.quantity.decimals
-    ) {
-      SendController.sendNativeToken({
-        receiverAddress: this.receiverAddress,
-        sendTokenAmount: this.sendTokenAmount,
-        gasPrice: this.gasPrice,
-        decimals: this.token.quantity.decimals
-      })
-    }
+    SendController.sendToken()
   }
 
   private onCancelClick() {

@@ -371,23 +371,33 @@ export class Web3Modal extends Web3ModalScaffold {
       },
 
       getEnsAddress: async (value: string) => {
-        const ensProvider = new InfuraProvider('mainnet')
+        const { chainId } = EthersStoreUtil.state
+        if (chainId && chainId === 1) {
+          const ensProvider = new InfuraProvider('mainnet')
 
-        const name = await ensProvider.resolveName(value)
-        if (name) {
-          return name
+          const name = await ensProvider.resolveName(value)
+          if (name) {
+            return name
+          }
+
+          return false
         }
 
         return false
       },
 
       getEnsAvatar: async (value: string) => {
-        const ensProvider = new InfuraProvider('mainnet')
+        const { chainId } = EthersStoreUtil.state
+        if (chainId && chainId === 1) {
+          const ensProvider = new InfuraProvider('mainnet')
 
-        const avatar = await ensProvider.getAvatar(value)
+          const avatar = await ensProvider.getAvatar(value)
 
-        if (avatar) {
-          return avatar
+          if (avatar) {
+            return avatar
+          }
+
+          return false
         }
 
         return false

@@ -70,7 +70,9 @@ export class W3mInputToken extends LitElement {
       const totalValue = price * this.sendTokenAmount
 
       return html`<wui-text class="totalValue" variant="small-400" color="fg-200"
-        >${totalValue ? `$${totalValue.toFixed(2)}` : 'Incorrect value'}</wui-text
+        >${totalValue
+          ? `$${UiHelperUtil.formatNumberToLocalString(totalValue, 2)}`
+          : 'Incorrect value'}</wui-text
       >`
     }
 
@@ -110,20 +112,18 @@ export class W3mInputToken extends LitElement {
   }
 
   private onMaxClick() {
-    if (this.token) {
-      if (this.gasPriceInUSD) {
-        const amountOfTokenGasRequires = NumberUtil.bigNumber(
-          this.gasPriceInUSD.toFixed(5)
-        ).dividedBy(this.token.price)
+    if (this.token && this.gasPriceInUSD) {
+      const amountOfTokenGasRequires = NumberUtil.bigNumber(
+        this.gasPriceInUSD.toFixed(5)
+      ).dividedBy(this.token.price)
 
-        const isNetworkToken = this.token.address === undefined
+      const isNetworkToken = this.token.address === undefined
 
-        const maxValue = isNetworkToken
-          ? NumberUtil.bigNumber(this.token.quantity.numeric).minus(amountOfTokenGasRequires)
-          : NumberUtil.bigNumber(this.token.quantity.numeric)
+      const maxValue = isNetworkToken
+        ? NumberUtil.bigNumber(this.token.quantity.numeric).minus(amountOfTokenGasRequires)
+        : NumberUtil.bigNumber(this.token.quantity.numeric)
 
-        SendController.setTokenAmount(Number(maxValue.toFixed(20)))
-      }
+      SendController.setTokenAmount(Number(maxValue.toFixed(20)))
     }
   }
 

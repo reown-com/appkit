@@ -88,6 +88,29 @@ export const SendController = {
     state.loading = loading
   },
 
+  sendToken() {
+    if (this.state.token?.address && this.state.sendTokenAmount && this.state.receiverAddress) {
+      SendController.sendERC20Token({
+        receiverAddress: this.state.receiverAddress,
+        tokenAddress: this.state.token.address,
+        sendTokenAmount: this.state.sendTokenAmount,
+        decimals: this.state.token.quantity.decimals
+      })
+    } else if (
+      this.state.receiverAddress &&
+      this.state.sendTokenAmount &&
+      this.state.gasPrice &&
+      this.state.token?.quantity.decimals
+    ) {
+      SendController.sendNativeToken({
+        receiverAddress: this.state.receiverAddress,
+        sendTokenAmount: this.state.sendTokenAmount,
+        gasPrice: this.state.gasPrice,
+        decimals: this.state.token.quantity.decimals
+      })
+    }
+  },
+
   async sendNativeToken(params: TxParams) {
     RouterController.pushTransactionStack({
       view: 'Account',

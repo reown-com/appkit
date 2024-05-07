@@ -238,37 +238,33 @@ export class Web3Modal extends Web3ModalScaffold {
       },
 
       getEnsAddress: async (value: string) => {
-        try {
-          const address = await wagmiGetEnsAddress(this.wagmiConfig, {
-            name: normalize(value),
-            chainId: 1
-          })
+        const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
 
-          if (address) {
-            return address
-          }
-
-          return false
-        } catch (error) {
+        if (chainId !== mainnet.id) {
           return false
         }
+
+        const address = await wagmiGetEnsAddress(this.wagmiConfig, {
+          name: normalize(value),
+          chainId
+        })
+
+        return address || false
       },
 
       getEnsAvatar: async (value: string) => {
-        try {
-          const avatar = await wagmiGetEnsAvatar(this.wagmiConfig, {
-            name: normalize(value),
-            chainId: 1
-          })
+        const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
 
-          if (avatar) {
-            return avatar
-          }
-
-          return false
-        } catch (error) {
+        if (chainId !== mainnet.id) {
           return false
         }
+
+        const avatar = await wagmiGetEnsAvatar(this.wagmiConfig, {
+          name: normalize(value),
+          chainId
+        })
+
+        return avatar || false
       },
 
       parseUnits,
