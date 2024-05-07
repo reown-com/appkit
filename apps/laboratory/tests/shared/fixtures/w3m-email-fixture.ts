@@ -42,7 +42,6 @@ export const testMEmailSiwe = siwe.extend<ModalFixture>({
     const tempEmail = email.getEmailAddressToUse(testInfo.parallelIndex)
 
     await modalPage.emailFlow(tempEmail, context, mailsacApiKey)
-    await modalPage.page.waitForTimeout(1000)
     await modalPage.promptSiwe()
     await modalPage.approveSign()
     await modalPage.page.waitForTimeout(1000)
