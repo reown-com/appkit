@@ -3,11 +3,30 @@ import { ConstantsUtil } from './ConstantsUtil.js'
 import type { CaipAddress, LinkingRecord, CaipNetwork } from './TypeUtil.js'
 
 export const CoreHelperUtil = {
-  isMobile() {
+  isInAppBrowser() {
+    if (typeof window !== 'undefined') {
+      return Boolean(/WebKit|(wv)|MetaMaskMobile|Phantom|/u.test(navigator.userAgent))
+    }
+
+    return false
+  },
+
+  isMobileDevice() {
     if (typeof window !== 'undefined') {
       return Boolean(
-        window.matchMedia('(pointer:coarse)').matches ||
-          /Android|webOS|iPhone|iPad|iPod|BlackBerry|Opera Mini/u.test(navigator.userAgent)
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|Opera Mini/u.test(navigator.userAgent)
+      )
+    }
+
+    return false
+  },
+
+  isMobile() {
+    if (typeof window !== 'undefined') {
+      return (
+        this.isInAppBrowser() ||
+        this.isMobileDevice() ||
+        Boolean(window.matchMedia('(pointer:coarse)').matches)
       )
     }
 
