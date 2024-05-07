@@ -145,7 +145,7 @@ export class W3mConnectView extends LitElement {
 
   private announcedTemplate() {
     return this.connectors.map(connector => {
-      if (connector.type !== 'ANNOUNCED') {
+      if (connector.type !== 'ANNOUNCED' || CoreHelperUtil.isMobile()) {
         return null
       }
 
@@ -164,7 +164,7 @@ export class W3mConnectView extends LitElement {
 
   private injectedTemplate() {
     return this.connectors.map(connector => {
-      if (connector.type !== 'INJECTED') {
+      if (connector.type !== 'INJECTED' || CoreHelperUtil.isMobile()) {
         return null
       }
 
