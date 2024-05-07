@@ -23,7 +23,11 @@ export const CoreHelperUtil = {
 
   isMobile() {
     if (typeof window !== 'undefined') {
-      return this.isMobileDevice() || Boolean(window.matchMedia('(pointer:coarse)').matches)
+      return (
+        this.isInAppBrowser() ||
+        this.isMobileDevice() ||
+        Boolean(window.matchMedia('(pointer:coarse)').matches)
+      )
     }
 
     return false
