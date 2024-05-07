@@ -4,14 +4,17 @@ import {
   disconnect,
   signMessage,
   getBalance,
-  getEnsAvatar,
+  getEnsAvatar as wagmiGetEnsAvatar,
   getEnsName,
   switchChain,
   watchAccount,
   watchConnectors,
   waitForTransactionReceipt,
   estimateGas as wagmiEstimateGas,
-  getAccount
+  writeContract as wagmiWriteContract,
+  getAccount,
+  getEnsAddress as wagmiGetEnsAddress,
+  reconnect
 } from '@wagmi/core'
 import { mainnet } from 'viem/chains'
 import { prepareTransactionRequest, sendTransaction as wagmiSendTransaction } from '@wagmi/core'
@@ -27,7 +30,8 @@ import type {
   NetworkControllerClient,
   PublicStateControllerState,
   SendTransactionArgs,
-  Token
+  Token,
+  WriteContractArgs
 } from '@web3modal/scaffold'
 import { formatUnits, parseUnits } from 'viem'
 import type { Hex } from 'viem'
@@ -44,6 +48,7 @@ import type { W3mFrameProvider, W3mFrameTypes } from '@web3modal/wallet'
 import { NetworkUtil } from '@web3modal/common'
 import type { defaultWagmiConfig as coreConfig } from './utils/defaultWagmiCoreConfig.js'
 import type { defaultWagmiConfig as reactConfig } from './utils/defaultWagmiReactConfig.js'
+import { normalize } from 'viem/ens'
 
 // -- Types ---------------------------------------------------------------------
 export type CoreConfig = ReturnType<typeof coreConfig>
@@ -149,6 +154,16 @@ export class Web3Modal extends Web3ModalScaffold {
         await connect(this.wagmiConfig, { connector, chainId })
       },
 
+      reconnectExternal: async ({ id }) => {
+        const connector = wagmiConfig.connectors.find(c => c.id === id)
+
+        if (!connector) {
+          throw new Error('connectionControllerClient:connectExternal - connector is undefined')
+        }
+
+        await reconnect(this.wagmiConfig, { connectors: [connector] })
+      },
+
       checkInstalled: ids => {
         const injectedConnector = this.getConnectors().find(c => c.type === 'INJECTED')
 
@@ -206,6 +221,50 @@ export class Web3Modal extends Web3ModalScaffold {
         await waitForTransactionReceipt(this.wagmiConfig, { hash: tx, timeout: 25000 })
 
         return tx
+      },
+
+      writeContract: async (data: WriteContractArgs) => {
+        const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
+
+        const tx = await wagmiWriteContract(wagmiConfig, {
+          chainId,
+          address: data.tokenAddress,
+          abi: data.abi,
+          functionName: data.method,
+          args: [data.receiverAddress, data.tokenAmount]
+        })
+
+        return tx
+      },
+
+      getEnsAddress: async (value: string) => {
+        const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
+
+        if (chainId !== mainnet.id) {
+          return false
+        }
+
+        const address = await wagmiGetEnsAddress(this.wagmiConfig, {
+          name: normalize(value),
+          chainId
+        })
+
+        return address || false
+      },
+
+      getEnsAvatar: async (value: string) => {
+        const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
+
+        if (chainId !== mainnet.id) {
+          return false
+        }
+
+        const avatar = await wagmiGetEnsAvatar(this.wagmiConfig, {
+          name: normalize(value),
+          chainId
+        })
+
+        return avatar || false
       },
 
       parseUnits,
@@ -341,7 +400,7 @@ export class Web3Modal extends Web3ModalScaffold {
         const profileName = await getEnsName(this.wagmiConfig, { address, chainId })
         if (profileName) {
           this.setProfileName(profileName)
-          const profileImage = await getEnsAvatar(this.wagmiConfig, {
+          const profileImage = await wagmiGetEnsAvatar(this.wagmiConfig, {
             name: profileName,
             chainId
           })

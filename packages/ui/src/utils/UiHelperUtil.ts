@@ -116,7 +116,8 @@ export const UiHelperUtil = {
     return ['0', '00']
   },
   roundNumber(number: number, threshold: number, fixed: number) {
-    const roundedNumber = Math.abs(number) >= threshold ? Number(number.toFixed(fixed)) : number
+    const roundedNumber =
+      number.toString().length >= threshold ? Number(number.toFixed(fixed)) : number
 
     return roundedNumber
   },
