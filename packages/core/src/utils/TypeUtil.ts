@@ -535,3 +535,13 @@ export interface EstimateGasTransactionArgs {
   to: `0x${string}`
   data: `0x${string}`
 }
+
+export interface WriteContractArgs {
+  receiverAddress: `0x${string}`
+  tokenAmount: bigint
+  tokenAddress: `0x${string}`
+  fromAddress: `0x${string}`
+  method: 'send' | 'transfer' | 'call'
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  abi: any
+}

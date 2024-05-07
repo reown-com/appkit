@@ -42,14 +42,18 @@ export class WuiInputAmount extends LitElement {
   // -- Private ------------------------------------------- //
   private dispatchInputChangeEvent(e: InputEvent) {
     const inputChar = e.data
-    if (inputChar) {
-      if (!numbersRegex.test(inputChar) && this.inputElementRef?.value) {
+
+    if (inputChar && this.inputElementRef?.value) {
+      if (inputChar === ',') {
+        this.inputElementRef.value.value = this.value.replace(',', '')
+      } else if (!numbersRegex.test(inputChar)) {
         this.inputElementRef.value.value = this.value.replace(
           new RegExp(inputChar.replace(specialCharactersRegex, '\\$&'), 'gu'),
           ''
         )
       }
     }
+
     this.dispatchEvent(
       new CustomEvent('inputChange', {
         detail: this.inputElementRef.value?.value,
