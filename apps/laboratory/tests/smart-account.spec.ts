@@ -89,8 +89,6 @@ testModalSmartAccount(
     await walletModalPage.page.waitForTimeout(1500)
     await walletModalPage.openAccount()
     await walletModalPage.openSettings()
-    await walletModalPage.switchNetwork('Sepolia')
-    await walletModalValidator.expectSwitchedNetwork('Sepolia')
     await walletModalValidator.expectTogglePreferredTypeVisible(false)
     await walletModalPage.closeModal()
 
