@@ -109,7 +109,10 @@ export class Web3ModalSIWEClient {
     })
     const type = StorageUtil.getConnectedConnector()
     if (type === 'EMAIL') {
-      RouterController.push('ApproveTransaction')
+      RouterController.pushTransactionStack({
+        view: null,
+        goBack: true
+      })
     }
     const signature = await ConnectionController.signMessage(message)
     const isValid = await this.methods.verifyMessage({ message, signature })
