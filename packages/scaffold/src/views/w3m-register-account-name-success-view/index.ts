@@ -1,5 +1,5 @@
 import { customElement } from '@web3modal/ui'
-import { RouterController } from '@web3modal/core'
+import { CoreHelperUtil, RouterController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
 
@@ -17,7 +17,11 @@ export class W3mRegisterAccountNameSuccess extends LitElement {
         .padding=${['0', '0', 'l', '0'] as const}
       >
         ${this.onboardingTemplate()} ${this.buttonsTemplate()}
-        <wui-link>
+        <wui-link
+          @click=${() => {
+            CoreHelperUtil.openHref('https://walletconnect.com/faq', '_blank')
+          }}
+        >
           Learn more
           <wui-icon color="inherit" slot="iconRight" name="externalLink"></wui-icon>
         </wui-link>

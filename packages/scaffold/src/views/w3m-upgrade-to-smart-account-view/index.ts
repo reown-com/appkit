@@ -1,5 +1,10 @@
 import { customElement } from '@web3modal/ui'
-import { ConnectorController, RouterController, SnackController } from '@web3modal/core'
+import {
+  ConnectorController,
+  CoreHelperUtil,
+  RouterController,
+  SnackController
+} from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { W3mFrameRpcConstants } from '@web3modal/wallet'
@@ -21,7 +26,11 @@ export class W3mUpgradeToSmartAccountView extends LitElement {
         .padding=${['0', '0', 'l', '0'] as const}
       >
         ${this.onboardingTemplate()} ${this.buttonsTemplate()}
-        <wui-link>
+        <wui-link
+          @click=${() => {
+            CoreHelperUtil.openHref('https://walletconnect.com/faq', '_blank')
+          }}
+        >
           Learn more
           <wui-icon color="inherit" slot="iconRight" name="externalLink"></wui-icon>
         </wui-link>
