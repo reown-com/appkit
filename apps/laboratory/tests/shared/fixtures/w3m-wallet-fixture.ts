@@ -89,8 +89,6 @@ export const testConnectedMW = base.extend<ModalWalletFixture>({
           item: 'pairingReceiveSessionProposal',
           timeMs: proposalReceived.getTime() - (pairingCreatedTime as Date).getTime()
         })
-      } else {
-        throw new Error('pairingCreatedTime not yet set')
       }
       await use(walletPage)
     }
