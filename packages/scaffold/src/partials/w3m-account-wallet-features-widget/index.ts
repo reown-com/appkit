@@ -4,7 +4,8 @@ import {
   NetworkController,
   AssetUtil,
   RouterController,
-  CoreHelperUtil
+  CoreHelperUtil,
+  ConstantsUtil as CoreConstantsUtil
 } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -62,7 +63,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
         this.network = val.caipNetwork
       })
     )
-    this.watchConvertValues()
+    this.watchSwapValues()
   }
 
   public override disconnectedCallback() {
@@ -99,26 +100,20 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
       ></wui-profile-button>
       ${this.tokenBalanceTemplate()}
       <wui-flex gap="s">
-        <wui-tooltip-select
-          @click=${this.onBuyClick.bind(this)}
-          text="Buy"
-          icon="card"
-        ></wui-tooltip-select>
-        <wui-tooltip-select
-          @click=${this.onConvertClick.bind(this)}
-          text="Convert"
-          icon="recycleHorizontal"
-        ></wui-tooltip-select>
-        <wui-tooltip-select
-          @click=${this.onReceiveClick.bind(this)}
-          text="Receive"
-          icon="arrowBottomCircle"
-        ></wui-tooltip-select>
-        <wui-tooltip-select
-          @click=${this.onSendClick.bind(this)}
-          text="Send"
-          icon="send"
-        ></wui-tooltip-select>
+        <w3m-tooltip-trigger text="Buy">
+          <wui-icon-button @click=${this.onBuyClick.bind(this)} icon="card"></wui-icon-button>
+        </w3m-tooltip-trigger>
+        <w3m-tooltip-trigger text="Swap">
+          <wui-icon-button @click=${this.onSwapClick.bind(this)} icon="recycleHorizontal">
+          </wui-icon-button>
+        </w3m-tooltip-trigger>
+        <w3m-tooltip-trigger text="Receive">
+          <wui-icon-button @click=${this.onReceiveClick.bind(this)} icon="arrowBottomCircle">
+          </wui-icon-button>
+        </w3m-tooltip-trigger>
+        <w3m-tooltip-trigger text="Send">
+          <wui-icon-button @click=${this.onSendClick.bind(this)} icon="send"></wui-icon-button>
+        </w3m-tooltip-trigger>
       </wui-flex>
 
       <wui-tabs
@@ -132,7 +127,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
-  private watchConvertValues() {
+  private watchSwapValues() {
     this.watchTokenBalance = setInterval(() => AccountController.fetchTokenBalance(), 10000)
   }
 
@@ -191,8 +186,14 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
     RouterController.push('OnRampProviders')
   }
 
-  private onConvertClick() {
-    RouterController.push('Convert')
+  private onSwapClick() {
+    if (this.network?.id && !CoreConstantsUtil.SWAP_SUPPORTED_NETWORKS.includes(this.network?.id)) {
+      RouterController.push('UnsupportedChain', {
+        swapUnsupportedChain: true
+      })
+    } else {
+      RouterController.push('Swap')
+    }
   }
 
   private onReceiveClick() {

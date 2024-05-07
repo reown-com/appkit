@@ -37,4 +37,12 @@ export class ModalWalletValidator extends ModalValidator {
 
     await expect(address, 'Correct address should be present').toHaveText(expectedAddress)
   }
+
+  override async expectSwitchedNetwork(network: string) {
+    const switchNetworkButton = this.page.getByTestId('account-switch-network-button')
+    await expect(switchNetworkButton).toBeVisible()
+    await expect(switchNetworkButton, `Switched network should include ${network}`).toContainText(
+      network
+    )
+  }
 }

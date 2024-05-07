@@ -35,7 +35,6 @@ testModalSmartAccount(
     await walletModalValidator.expectChangePreferredAccountToShow(EOA)
 
     await walletModalPage.closeModal()
-    await walletModalPage.page.waitForTimeout(1000)
 
     await walletModalPage.sign()
     await walletModalPage.approveSign()
@@ -57,9 +56,9 @@ testModalSmartAccount(
     await walletModalPage.togglePreferredAccountType()
     await walletModalValidator.expectChangePreferredAccountToShow(EOA)
     await walletModalPage.switchNetwork('Avalanche')
+    await modalValidator.expectSwitchedNetwork('Avalanche')
     await walletModalValidator.expectTogglePreferredTypeVisible(false)
     await walletModalPage.closeModal()
-    await walletModalPage.page.waitForTimeout(1000)
 
     await walletModalPage.openAccount()
     await walletModalValidator.expectActivateSmartAccountPromoVisible(false)
@@ -81,7 +80,6 @@ testModalSmartAccount(
     await walletModalPage.openSettings()
     await walletModalPage.togglePreferredAccountType()
     await walletModalPage.disconnect()
-    await walletModalPage.page.waitForTimeout(1500)
 
     await walletModalPage.emailFlow(
       email.getEmailAddressToUse(parallelIndex, NOT_ENABLED_DOMAIN),
@@ -92,9 +90,9 @@ testModalSmartAccount(
     await walletModalPage.openAccount()
     await walletModalPage.openSettings()
     await walletModalPage.switchNetwork('Sepolia')
+    await walletModalValidator.expectSwitchedNetwork('Sepolia')
     await walletModalValidator.expectTogglePreferredTypeVisible(false)
     await walletModalPage.closeModal()
-    await walletModalPage.page.waitForTimeout(1000)
 
     await walletModalPage.openAccount()
     await walletModalValidator.expectActivateSmartAccountPromoVisible(false)

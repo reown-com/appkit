@@ -5,6 +5,7 @@ import { BASE_URL } from '../constants'
 import { doActionAndWaitForNewPage } from '../utils/actions'
 import { Email } from '../utils/email'
 import { DeviceRegistrationPage } from './DeviceRegistrationPage'
+import type { TimingRecords } from '../fixtures/timing-fixture'
 
 export type ModalFlavor = 'default' | 'siwe' | 'email' | 'wallet'
 
@@ -13,6 +14,7 @@ export class ModalPage {
 
   private readonly connectButton: Locator
   private readonly url: string
+  private emailAddress = ''
 
   constructor(
     public readonly page: Page,
@@ -37,7 +39,7 @@ export class ModalPage {
     return value!
   }
 
-  async getConnectUri(): Promise<string> {
+  async getConnectUri(timingRecords?: TimingRecords): Promise<string> {
     await this.page.goto(this.url)
     await this.connectButton.click()
     const connect = this.page.getByTestId('wallet-selector-walletconnect')
@@ -46,12 +48,22 @@ export class ModalPage {
       timeout: 5000
     })
     await connect.click()
+    const qrLoadInitiatedTime = new Date()
 
     // Using getByTestId() doesn't work on my machine, I'm guessing because this element is inside of a <slot>
     const qrCode = this.page.locator('wui-qr-code')
     await expect(qrCode).toBeVisible()
 
-    return this.assertDefined(await qrCode.getAttribute('uri'))
+    const uri = this.assertDefined(await qrCode.getAttribute('uri'))
+    const qrLoadedTime = new Date()
+    if (timingRecords) {
+      timingRecords.push({
+        item: 'qrLoad',
+        timeMs: qrLoadedTime.getTime() - qrLoadInitiatedTime.getTime()
+      })
+    }
+
+    return uri
   }
 
   async emailFlow(
@@ -60,6 +72,8 @@ export class ModalPage {
     mailsacApiKey: string
   ): Promise<void> {
     await this.load()
+
+    this.emailAddress = emailAddress
 
     const email = new Email(mailsacApiKey)
 
@@ -90,9 +104,11 @@ export class ModalPage {
         otp = email.getOtpCodeFromBody(emailBody)
       }
     }
-    if (otp.replace(' ', '').length !== 6) {
+
+    if (otp === '') {
       otp = email.getOtpCodeFromBody(emailBody)
     }
+
     await this.enterOTP(otp)
   }
 
@@ -114,16 +130,15 @@ export class ModalPage {
     })
   }
 
-  async enterOTP(otp: string) {
-    await expect(this.page.getByText('Confirm Email')).toBeVisible({
+  async enterOTP(otp: string, headerTitle = 'Confirm Email') {
+    await expect(this.page.getByText(headerTitle)).toBeVisible({
       timeout: 10_000
     })
     await expect(this.page.getByText('Enter the code we sent')).toBeVisible({
       timeout: 10_000
     })
+
     const splitted = otp.split('')
-    // Remove empy space in OTP code 111 111
-    splitted.splice(3, 1)
 
     // eslint-disable-next-line no-plusplus
     for (let i = 0; i < splitted.length; i++) {
@@ -143,18 +158,18 @@ export class ModalPage {
       await input.fill(digit)
     }
 
-    await expect(this.page.getByText('Confirm Email')).not.toBeVisible()
+    await expect(this.page.getByText(headerTitle)).not.toBeVisible()
   }
 
   async disconnect() {
     const accountBtn = this.page.getByTestId('account-button')
     await expect(accountBtn, 'Account button should be visible').toBeVisible()
     await expect(accountBtn, 'Account button should be enabled').toBeEnabled()
-    await accountBtn.click({ force: true })
+    await accountBtn.click()
     const disconnectBtn = this.page.getByTestId('disconnect-button')
     await expect(disconnectBtn, 'Disconnect button should be visible').toBeVisible()
     await expect(disconnectBtn, 'Disconnect button should be enabled').toBeEnabled()
-    await disconnectBtn.click({ force: true })
+    await disconnectBtn.click()
   }
 
   async sign() {
@@ -210,8 +225,6 @@ export class ModalPage {
     await this.page.getByTestId('account-button').click()
     await this.page.getByTestId('w3m-account-select-network').click()
     await this.page.getByTestId(`w3m-network-switch-${network}`).click()
-    // Network switch might take a second or two
-    await this.page.waitForTimeout(2000)
   }
 
   async clickWalletDeeplink() {
@@ -226,5 +239,51 @@ export class ModalPage {
 
   async closeModal() {
     await this.page.getByTestId('w3m-header-close')?.click?.()
+    // Wait for the modal fade out animation
+    await this.page.waitForTimeout(300)
+  }
+
+  async updateEmail(mailsacApiKey: string, index: number) {
+    const email = new Email(mailsacApiKey)
+    const newEmailAddress = email.getEmailAddressToUse(index)
+
+    await this.page.getByTestId('account-button').click()
+    await this.page.getByTestId('w3m-account-email-update').click()
+    await this.page.getByTestId('wui-email-input').locator('input').focus()
+    await this.page.getByTestId('wui-email-input').locator('input').fill(newEmailAddress)
+
+    // Clear messages before putting new email
+    await email.deleteAllMessages(this.emailAddress)
+    await this.page.getByTestId('wui-email-input').locator('input').press('Enter')
+
+    // Wait until the next screen appears
+    await expect(this.page.getByText('Enter the code we sent')).toBeVisible({
+      timeout: 20_000
+    })
+    const confirmCurrentEmail = await this.page.getByText('Confirm Current Email').isVisible()
+    if (confirmCurrentEmail) {
+      await this.updateOtpFlow(this.emailAddress, mailsacApiKey, 'Confirm Current Email')
+    }
+
+    await this.updateOtpFlow(newEmailAddress, mailsacApiKey, 'Confirm New Email')
+
+    expect(
+      this.page.getByTestId('w3m-account-email-update'),
+      `Expected to go to the account screen after the update`
+    ).toBeVisible()
+  }
+
+  async updateOtpFlow(emailAddress: string, mailsacApiKey: string, headerTitle: string) {
+    const email = new Email(mailsacApiKey)
+
+    const messageId = await email.getLatestMessageId(emailAddress)
+
+    if (!messageId) {
+      throw new Error('No messageId found')
+    }
+    const emailBody = await email.getEmailBody(emailAddress, messageId)
+    const otp = email.getOtpCodeFromBody(emailBody)
+
+    await this.enterOTP(otp, headerTitle)
   }
 }
