@@ -173,9 +173,9 @@ export class ModalPage {
   }
 
   async sign() {
-    const signButton = this.page.getByRole('button', { name: 'Sign Message' })
-    await expect(signButton, 'Sign button should be visible').toBeVisible()
-    await this.page.getByTestId('sign-message-button').click()
+    const signButton = this.page.getByTestId('sign-message-button')
+    await signButton.scrollIntoViewIfNeeded()
+    await signButton.click()
   }
 
   async signatureRequestFrameShouldVisible() {
