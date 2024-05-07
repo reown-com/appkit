@@ -8,6 +8,7 @@ import { SnackController } from './SnackController.js'
 import { SwapController } from './SwapController.js'
 import { SwapApiUtil } from '../utils/SwapApiUtil.js'
 import type { W3mFrameTypes } from '@web3modal/wallet'
+import { NetworkController } from './NetworkController.js'
 
 // -- Types --------------------------------------------- //
 export interface AccountControllerState {
@@ -100,9 +101,11 @@ export const AccountController = {
   },
 
   async fetchTokenBalance() {
+    const chainId = NetworkController.state.caipNetwork?.id
+
     try {
-      if (state.address) {
-        const response = await BlockchainApiController.getBalance(state.address)
+      if (state.address && chainId) {
+        const response = await BlockchainApiController.getBalance(state.address, chainId)
 
         this.setTokenBalance(response.balances)
         SwapController.setBalances(SwapApiUtil.mapBalancesToSwapTokens(response.balances))

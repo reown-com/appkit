@@ -9,11 +9,12 @@ import type {
   NetworkControllerClient,
   PublicStateControllerState,
   SendTransactionArgs,
-  Token
+  Token,
+  WriteContractArgs
 } from '@web3modal/scaffold'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
-import EthereumProvider from '@walletconnect/ethereum-provider'
+import EthereumProvider, { OPTIONAL_METHODS } from '@walletconnect/ethereum-provider'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
 import type {
   Address,
@@ -29,7 +30,10 @@ import {
   InfuraProvider,
   getAddress as getOriginalAddress,
   parseUnits,
-  formatUnits
+  formatUnits,
+  JsonRpcSigner,
+  BrowserProvider,
+  Contract
 } from 'ethers'
 import {
   EthersConstantsUtil,
@@ -45,11 +49,8 @@ import {
   W3mFrameConstants
 } from '@web3modal/wallet'
 import type { CombinedProvider } from '@web3modal/scaffold-utils/ethers'
-import { BrowserProvider } from 'ethers'
-import { JsonRpcSigner } from 'ethers'
 import { NetworkUtil } from '@web3modal/common'
 import type { W3mFrameTypes } from '@web3modal/wallet'
-
 // -- Types ---------------------------------------------------------------------
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
   ethersConfig: ProviderType
@@ -186,7 +187,51 @@ export class Web3Modal extends Web3ModalScaffold {
           onUri(uri)
         })
 
-        await WalletConnectProvider.connect()
+        if (siweConfig?.options?.enabled) {
+          const { SIWEController, getDidChainId, getDidAddress } = await import('@web3modal/siwe')
+          const result = await WalletConnectProvider.authenticate({
+            nonce: await siweConfig.getNonce(),
+            methods: OPTIONAL_METHODS,
+            ...(await siweConfig.getMessageParams())
+          })
+          // Auths is an array of signed CACAO objects https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-74.md
+          const signedCacao = result?.auths?.[0]
+          if (signedCacao) {
+            const { p, s } = signedCacao
+            const chainId = getDidChainId(p.iss)
+            const address = getDidAddress(p.iss)
+            if (address && chainId) {
+              SIWEController.setSession({
+                address,
+                chainId: parseInt(chainId, 10)
+              })
+            }
+            try {
+              // Kicks off verifyMessage and populates external states
+              const message = WalletConnectProvider.signer.client.formatAuthMessage({
+                request: p,
+                iss: p.iss
+              })
+
+              await SIWEController.verifyMessage({
+                message,
+                signature: s.s,
+                cacao: signedCacao
+              })
+            } catch (error) {
+              // eslint-disable-next-line no-console
+              console.error('Error verifying message', error)
+              // eslint-disable-next-line no-console
+              await WalletConnectProvider.disconnect().catch(console.error)
+              // eslint-disable-next-line no-console
+              await SIWEController.signOut().catch(console.error)
+              throw error
+            }
+          }
+        } else {
+          await WalletConnectProvider.connect()
+        }
+
         await this.setWalletConnectProvider()
       },
 
@@ -255,7 +300,12 @@ export class Web3Modal extends Web3ModalScaffold {
       disconnect: async () => {
         const provider = EthersStoreUtil.state.provider
         const providerType = EthersStoreUtil.state.providerType
-
+        localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
+        EthersStoreUtil.reset()
+        if (siweConfig?.options?.signOutOnDisconnect) {
+          const { SIWEController } = await import('@web3modal/siwe')
+          await SIWEController.signOut()
+        }
         if (providerType === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
           const WalletConnectProvider = provider
           await (WalletConnectProvider as unknown as EthereumProvider).disconnect()
@@ -288,9 +338,7 @@ export class Web3Modal extends Web3ModalScaffold {
       formatUnits: (value: bigint, decimals: number) => formatUnits(value, decimals),
 
       async estimateGas(data) {
-        const chainId = EthersStoreUtil.state.chainId
-        const provider = EthersStoreUtil.state.provider
-        const address = EthersStoreUtil.state.address
+        const { chainId, provider, address } = EthersStoreUtil.state
 
         if (!provider) {
           throw new Error('connectionControllerClient:sendTransaction - provider is undefined')
@@ -315,16 +363,14 @@ export class Web3Modal extends Web3ModalScaffold {
       },
 
       sendTransaction: async (data: SendTransactionArgs) => {
-        const chainId = EthersStoreUtil.state.chainId
-        const provider = EthersStoreUtil.state.provider
-        const address = EthersStoreUtil.state.address
+        const { chainId, provider, address } = EthersStoreUtil.state
 
         if (!provider) {
-          throw new Error('connectionControllerClient:sendTransaction - provider is undefined')
+          throw new Error('ethersClient:sendTransaction - provider is undefined')
         }
 
         if (!address) {
-          throw new Error('connectionControllerClient:sendTransaction - address is undefined')
+          throw new Error('ethersClient:sendTransaction - address is undefined')
         }
 
         const txParams = {
@@ -342,6 +388,68 @@ export class Web3Modal extends Web3ModalScaffold {
         const txReceipt = await txResponse.wait()
 
         return (txReceipt?.hash as `0x${string}`) || null
+      },
+
+      writeContract: async (data: WriteContractArgs) => {
+        const { chainId, provider, address } = EthersStoreUtil.state
+
+        if (!provider) {
+          throw new Error('ethersClient:writeContract - provider is undefined')
+        }
+
+        if (!address) {
+          throw new Error('ethersClient:writeContract - address is undefined')
+        }
+
+        const browserProvider = new BrowserProvider(provider, chainId)
+        const signer = new JsonRpcSigner(browserProvider, address)
+        const contract = new Contract(data.tokenAddress, data.abi, signer)
+
+        if (!contract || !data.method) {
+          throw new Error('Contract method is undefined')
+        }
+
+        const method = contract[data.method]
+        if (method) {
+          const tx = await method(data.receiverAddress, data.tokenAmount)
+
+          return tx
+        }
+
+        throw new Error('Contract method is undefined')
+      },
+
+      getEnsAddress: async (value: string) => {
+        const { chainId } = EthersStoreUtil.state
+        if (chainId && chainId === 1) {
+          const ensProvider = new InfuraProvider('mainnet')
+
+          const name = await ensProvider.resolveName(value)
+          if (name) {
+            return name
+          }
+
+          return false
+        }
+
+        return false
+      },
+
+      getEnsAvatar: async (value: string) => {
+        const { chainId } = EthersStoreUtil.state
+        if (chainId && chainId === 1) {
+          const ensProvider = new InfuraProvider('mainnet')
+
+          const avatar = await ensProvider.getAvatar(value)
+
+          if (avatar) {
+            return avatar
+          }
+
+          return false
+        }
+
+        return false
       }
     }
 
