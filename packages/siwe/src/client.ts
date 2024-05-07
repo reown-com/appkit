@@ -2,7 +2,8 @@ import type {
   SIWECreateMessageArgs,
   SIWEVerifyMessageArgs,
   SIWEConfig,
-  SIWEClientMethods
+  SIWEClientMethods,
+  SIWESession
 } from '../core/utils/TypeUtils.js'
 import type { SIWEControllerClient } from '../core/controller/SIWEController.js'
 
@@ -11,8 +12,8 @@ import {
   NetworkController,
   ConnectionController,
   RouterUtil,
-  StorageUtil,
-  RouterController
+  RouterController,
+  StorageUtil
 } from '@web3modal/core'
 
 import { NetworkUtil } from '@web3modal/common'
@@ -57,6 +58,12 @@ export class Web3ModalSIWEClient {
     return nonce
   }
 
+  async getMessageParams() {
+    const params = await this.methods.getMessageParams()
+
+    return params || {}
+  }
+
   createMessage(args: SIWECreateMessageArgs) {
     const message = this.methods.createMessage(args)
 
@@ -82,7 +89,7 @@ export class Web3ModalSIWEClient {
     return session
   }
 
-  async signIn() {
+  async signIn(): Promise<SIWESession> {
     const { address } = AccountController.state
     const nonce = await this.methods.getNonce(address)
     if (!address) {
@@ -92,7 +99,14 @@ export class Web3ModalSIWEClient {
     if (!chainId) {
       throw new Error('A chainId is required to create a SIWE message.')
     }
-    const message = this.methods.createMessage({ address, nonce, chainId })
+    const messageParams = await this.getMessageParams()
+    const message = this.methods.createMessage({
+      address: `eip155:${chainId}:${address}`,
+      chainId,
+      nonce,
+      version: '1',
+      ...messageParams
+    })
     const type = StorageUtil.getConnectedConnector()
     if (type === 'EMAIL') {
       RouterController.pushTransactionStack({

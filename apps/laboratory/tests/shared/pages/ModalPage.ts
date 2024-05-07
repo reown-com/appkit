@@ -71,8 +71,6 @@ export class ModalPage {
     context: BrowserContext,
     mailsacApiKey: string
   ): Promise<void> {
-    await this.load()
-
     this.emailAddress = emailAddress
 
     const email = new Email(mailsacApiKey)
@@ -113,7 +111,6 @@ export class ModalPage {
   }
 
   async loginWithEmail(email: string) {
-    await this.page.goto(this.url)
     // Connect Button doesn't have a proper `disabled` attribute so we need to wait for the button to change the text
     await this.page
       .getByTestId('connect-button')

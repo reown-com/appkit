@@ -2,6 +2,15 @@ import { expect } from '@playwright/test'
 import type { Page } from '@playwright/test'
 import { ConstantsUtil } from '../../../src/utils/ConstantsUtil'
 import { getMaximumWaitConnections } from '../utils/timeouts'
+import { createPublicClient, http } from 'viem'
+
+function getTransport({ chainId }: { chainId: number }) {
+  const RPC_URL = 'https://rpc.walletconnect.com'
+
+  return http(
+    `${RPC_URL}/v1/?chainId=eip155:${chainId}&projectId=${process.env['NEXT_PUBLIC_PROJECT_ID']}`
+  )
+}
 
 const MAX_WAIT = getMaximumWaitConnections()
 
@@ -52,6 +61,12 @@ export class ModalValidator {
     })
   }
 
+  async expectAddress(expectedAddress: string) {
+    const address = this.page.getByTestId('w3m-address')
+
+    await expect(address, 'Correct address should be present').toHaveText(expectedAddress)
+  }
+
   async expectNetwork(network: string) {
     const networkButton = this.page.getByTestId('w3m-account-select-network')
     await expect(networkButton, `Network button should contain text ${network}`).toHaveText(
@@ -68,6 +83,7 @@ export class ModalValidator {
       timeout: 30 * 1000
     })
     const closeButton = this.page.locator('#toast-close-button')
+
     await expect(closeButton).toBeVisible()
     await closeButton.click()
   }
@@ -83,5 +99,18 @@ export class ModalValidator {
     await expect(switchNetworkButton, `Switched network should include ${network}`).toContainText(
       network
     )
+  }
+
+  async expectValidSignature(signature: `0x${string}`, address: `0x${string}`, chainId: number) {
+    const publicClient = createPublicClient({
+      transport: getTransport({ chainId })
+    })
+    const isVerified = await publicClient.verifyMessage({
+      message: 'Hello Web3Modal!',
+      address,
+      signature
+    })
+
+    expect(isVerified).toBe(true)
   }
 }
