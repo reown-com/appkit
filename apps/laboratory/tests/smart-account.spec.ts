@@ -80,6 +80,7 @@ testModalSmartAccount(
     await walletModalPage.openSettings()
     await walletModalPage.togglePreferredAccountType()
     await walletModalPage.disconnect()
+    await walletModalPage.page.waitForTimeout(500)
 
     await walletModalPage.emailFlow(
       email.getEmailAddressToUse(parallelIndex, NOT_ENABLED_DOMAIN),
