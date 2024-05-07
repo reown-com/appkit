@@ -161,6 +161,18 @@ export class Web3Modal extends Web3ModalScaffold {
         return await Promise.resolve('0x')
       },
 
+      writeContract: async () => {
+        return await Promise.resolve('0x')
+      },
+
+      getEnsAddress: async (value: string) => {
+        return await Promise.resolve(value)
+      },
+
+      getEnsAvatar: async (value: string) => {
+        return await Promise.resolve(value)
+      },
+
       parseUnits: () => BigInt(0),
 
       formatUnits: () => ''

@@ -20,7 +20,10 @@ const client: ConnectionControllerClient = {
   checkInstalled: _id => true,
   parseUnits: value => BigInt(value),
   formatUnits: value => value.toString(),
-  sendTransaction: () => Promise.resolve('0x')
+  sendTransaction: () => Promise.resolve('0x'),
+  writeContract: () => Promise.resolve('0x'),
+  getEnsAddress: async (value: string) => Promise.resolve(value),
+  getEnsAvatar: async (value: string) => Promise.resolve(value)
 }
 
 const clientConnectExternalSpy = vi.spyOn(client, 'connectExternal')
@@ -33,7 +36,10 @@ const partialClient: ConnectionControllerClient = {
   signMessage: async (message: string) => Promise.resolve(message),
   parseUnits: value => BigInt(value),
   formatUnits: value => value.toString(),
-  sendTransaction: () => Promise.resolve('0x')
+  sendTransaction: () => Promise.resolve('0x'),
+  writeContract: () => Promise.resolve('0x'),
+  getEnsAddress: async (value: string) => Promise.resolve(value),
+  getEnsAvatar: async (value: string) => Promise.resolve(value)
 }
 
 // -- Tests --------------------------------------------------------------------
