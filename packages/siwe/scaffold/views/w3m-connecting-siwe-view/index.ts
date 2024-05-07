@@ -21,6 +21,8 @@ export class W3mConnectingSiweView extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    this.onRender()
+
     return html`
       <wui-flex justifyContent="center" .padding=${['2xl', '0', 'xxl', '0'] as const}>
         <w3m-connecting-siwe></w3m-connecting-siwe>
@@ -69,6 +71,13 @@ export class W3mConnectingSiweView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+
+  private onRender() {
+    if (SIWEController.state.session) {
+      ModalController.close()
+    }
+  }
+
   private async onSign() {
     this.isSigning = true
     EventsController.sendEvent({
