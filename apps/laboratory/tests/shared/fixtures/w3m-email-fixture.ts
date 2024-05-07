@@ -5,6 +5,7 @@ import { ModalValidator } from '../validators/ModalValidator'
 import { Email } from '../utils/email'
 import { ModalWalletValidator } from '../validators/ModalWalletValidator'
 import { timingFixture } from './timing-fixture'
+import { ModalWalletPage } from '../pages/ModalWalletPage'
 
 export const testMEmail = timingFixture.extend<ModalFixture>({
   library: ['wagmi', { option: true }],
@@ -30,7 +31,7 @@ export const testMEmail = timingFixture.extend<ModalFixture>({
 
 export const testMEmailSiwe = siwe.extend<ModalFixture>({
   modalPage: async ({ page, library, context }, use, testInfo) => {
-    const modalPage = new ModalPage(page, library, 'all')
+    const modalPage = new ModalWalletPage(page, library, 'all')
     await modalPage.load()
 
     const mailsacApiKey = process.env['MAILSAC_API_KEY']

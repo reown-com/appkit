@@ -6,7 +6,7 @@ testMEmailSiwe.beforeEach(async ({ modalValidator }) => {
   await modalWaletValidator.expectConnected()
 })
 
-testMEmailSiwe('it should sign in with email', async ({ modalPage, modalValidator }) => {
+testMEmailSiwe('it should sign with email', async ({ modalPage, modalValidator }) => {
   const modalWaletValidator = modalValidator as ModalWalletValidator
   await modalPage.sign()
   await modalPage.approveSign()
