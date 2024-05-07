@@ -5,7 +5,7 @@ import type { CaipAddress, LinkingRecord, CaipNetwork } from './TypeUtil.js'
 export const CoreHelperUtil = {
   isInAppBrowser() {
     if (typeof window !== 'undefined') {
-      return Boolean(/WebKit|wv|MetaMaskMobile|Phantom|/u.test(navigator.userAgent))
+      return Boolean(/WebKit|wv|MetaMaskMobile|Phantom/u.test(navigator.userAgent))
     }
 
     return false
