@@ -4,14 +4,14 @@ import { FetchUtil } from '../utils/FetchUtil.js'
 import type {
   BlockchainApiTransactionsRequest,
   BlockchainApiTransactionsResponse,
-  BlockchainApiConvertTokensRequest,
-  BlockchainApiConvertTokensResponse,
-  BlockchainApiGenerateConvertCalldataRequest,
-  BlockchainApiGenerateConvertCalldataResponse,
+  BlockchainApiSwapTokensRequest,
+  BlockchainApiSwapTokensResponse,
+  BlockchainApiGenerateSwapCalldataRequest,
+  BlockchainApiGenerateSwapCalldataResponse,
   BlockchainApiGenerateApproveCalldataRequest,
   BlockchainApiGenerateApproveCalldataResponse,
-  BlockchainApiConvertAllowanceRequest,
-  BlockchainApiConvertAllowanceResponse,
+  BlockchainApiSwapAllowanceRequest,
+  BlockchainApiSwapAllowanceResponse,
   BlockchainApiGasPriceRequest,
   BlockchainApiGasPriceResponse,
   BlockchainApiTokenPriceRequest,
@@ -139,8 +139,8 @@ export const BlockchainApiController = {
     })
   },
 
-  fetchConvertTokens({ projectId, chainId }: BlockchainApiConvertTokensRequest) {
-    return api.get<BlockchainApiConvertTokensResponse>({
+  fetchSwapTokens({ projectId, chainId }: BlockchainApiSwapTokensRequest) {
+    return api.get<BlockchainApiSwapTokensResponse>({
       path: `/v1/convert/tokens?projectId=${projectId}&chainId=${chainId}`
     })
   },
@@ -159,14 +159,10 @@ export const BlockchainApiController = {
     })
   },
 
-  fetchConvertAllowance({
-    projectId,
-    tokenAddress,
-    userAddress
-  }: BlockchainApiConvertAllowanceRequest) {
+  fetchSwapAllowance({ projectId, tokenAddress, userAddress }: BlockchainApiSwapAllowanceRequest) {
     const { sdkType, sdkVersion } = OptionsController.state
 
-    return api.get<BlockchainApiConvertAllowanceResponse>({
+    return api.get<BlockchainApiSwapAllowanceResponse>({
       path: `/v1/convert/allowance?projectId=${projectId}&tokenAddress=${tokenAddress}&userAddress=${userAddress}`,
       headers: {
         'Content-Type': 'application/json',
@@ -189,14 +185,14 @@ export const BlockchainApiController = {
     })
   },
 
-  generateConvertCalldata({
+  generateSwapCalldata({
     amount,
     from,
     projectId,
     to,
     userAddress
-  }: BlockchainApiGenerateConvertCalldataRequest) {
-    return api.post<BlockchainApiGenerateConvertCalldataResponse>({
+  }: BlockchainApiGenerateSwapCalldataRequest) {
+    return api.post<BlockchainApiGenerateSwapCalldataResponse>({
       path: '/v1/convert/build-transaction',
       headers: {
         'Content-Type': 'application/json'

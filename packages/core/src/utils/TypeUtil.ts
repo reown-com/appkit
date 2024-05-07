@@ -160,7 +160,7 @@ export interface BlockchainApiTransactionsResponse {
   next: string | null
 }
 
-export type ConvertToken = {
+export type SwapToken = {
   name: string
   symbol: string
   address: `${string}:${string}:${string}`
@@ -169,7 +169,7 @@ export type ConvertToken = {
   eip2612?: boolean
 }
 
-export type ConvertTokenWithBalance = ConvertToken & {
+export type SwapTokenWithBalance = SwapToken & {
   quantity: {
     decimals: string
     numeric: string
@@ -178,13 +178,13 @@ export type ConvertTokenWithBalance = ConvertToken & {
   value: number
 }
 
-export interface BlockchainApiConvertTokensRequest {
+export interface BlockchainApiSwapTokensRequest {
   projectId: string
   chainId?: string
 }
 
-export interface BlockchainApiConvertTokensResponse {
-  tokens: ConvertToken[]
+export interface BlockchainApiSwapTokensResponse {
+  tokens: SwapToken[]
 }
 
 export interface BlockchainApiTokenPriceRequest {
@@ -202,13 +202,13 @@ export interface BlockchainApiTokenPriceResponse {
   }[]
 }
 
-export interface BlockchainApiConvertAllowanceRequest {
+export interface BlockchainApiSwapAllowanceRequest {
   projectId: string
   tokenAddress: string
   userAddress: string
 }
 
-export interface BlockchainApiConvertAllowanceResponse {
+export interface BlockchainApiSwapAllowanceResponse {
   allowance: string
 }
 
@@ -223,7 +223,7 @@ export interface BlockchainApiGasPriceResponse {
   instant: string
 }
 
-export interface BlockchainApiGenerateConvertCalldataRequest {
+export interface BlockchainApiGenerateSwapCalldataRequest {
   projectId: string
   userAddress: string
   from: string
@@ -235,7 +235,7 @@ export interface BlockchainApiGenerateConvertCalldataRequest {
   }
 }
 
-export interface BlockchainApiGenerateConvertCalldataResponse {
+export interface BlockchainApiGenerateSwapCalldataResponse {
   tx: {
     from: `${string}:${string}:${string}`
     to: `${string}:${string}:${string}`
@@ -570,4 +570,14 @@ export interface EstimateGasTransactionArgs {
   address: `0x${string}`
   to: `0x${string}`
   data: `0x${string}`
+}
+
+export interface WriteContractArgs {
+  receiverAddress: `0x${string}`
+  tokenAmount: bigint
+  tokenAddress: `0x${string}`
+  fromAddress: `0x${string}`
+  method: 'send' | 'transfer' | 'call'
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  abi: any
 }

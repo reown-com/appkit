@@ -1,10 +1,19 @@
 # @apps/demo
 
+## 4.1.12-910a844.0
+
+### Patch Changes
+
+- refactor: sync theme with secure site
+
+- Updated dependencies []:
+  - @web3modal/wagmi@4.1.12-910a844.0
+
 ## 4.1.11
 
 ### Patch Changes
 
-- refactor: Solana exported helper methods and proram instruction improvements
+- refactor: Solana exported helper methods and program instruction improvements
 - refactor: email and smart account improvements
 - refactor: unit test CI check improvements
 - feat: convert
@@ -43,7 +52,7 @@
 
 ### Patch Changes
 
-- Hotfix for inccorect state of w3m-button when email is enabled
+- Hotfix for incorrect state of w3m-button when email is enabled
 
 - Updated dependencies []:
   - @web3modal/wagmi@4.1.7
