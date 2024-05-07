@@ -271,7 +271,6 @@ export class Web3ModalScaffold {
     }
 
     if (options.metadata) {
-      console.log('Setting metadata', options.metadata)
       OptionsController.setMetadata(options.metadata)
     }
 

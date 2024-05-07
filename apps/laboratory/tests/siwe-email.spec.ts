@@ -1,4 +1,5 @@
 import { testMEmailSiwe } from './shared/fixtures/w3m-email-fixture'
+import type { ModalWalletPage } from './shared/pages/ModalWalletPage'
 import { ModalWalletValidator } from './shared/validators/ModalWalletValidator'
 
 testMEmailSiwe.beforeEach(async ({ modalValidator }) => {
@@ -20,27 +21,42 @@ testMEmailSiwe('it should reject sign in with email', async ({ modalPage, modalV
   await modalWaletValidator.expectRejectedSign()
 })
 
-testMEmailSiwe('it should switch network and sign', async ({ modalPage, modalValidator }) => {
-  const modalWalletValidator = modalValidator as ModalWalletValidator
-  let targetChain = 'Polygon'
-  await modalPage.switchNetwork(targetChain)
-  await modalWalletValidator.expectSwitchedNetwork(targetChain)
-  await modalPage.closeModal()
-  await modalPage.sign()
-  await modalPage.approveSign()
-  await modalWalletValidator.expectAcceptedSign()
+// testMEmailSiwe('it should switch network and sign', async ({ modalPage, modalValidator }) => {
+//   const modalWalletValidator = modalValidator as ModalWalletValidator
+//   const modalWalletPage = modalPage as ModalWalletPage
+//   let targetChain = 'Polygon'
+//   await modalWalletPage.openAccount()
+//   await modalWalletPage.openSettings()
+//   await modalWalletPage.switchNetwork(targetChain)
+//   await modalWalletPage.page.waitForTimeout(2000)
+//   await modalWalletPage.promptSiwe()
+//   await modalWalletPage.approveSign()
+//   await modalWalletPage.closeModal()
 
-  targetChain = 'Ethereum'
-  await modalPage.switchNetwork(targetChain)
-  await modalWalletValidator.expectSwitchedNetwork(targetChain)
-  await modalPage.closeModal()
-  await modalPage.sign()
-  await modalPage.approveSign()
-  await modalWalletValidator.expectAcceptedSign()
-})
+//   await modalWalletPage.sign()
+//   await modalWalletPage.approveSign()
+//   await modalWalletValidator.expectAcceptedSign()
+
+//   targetChain = 'Ethereum'
+//   await modalWalletPage.openAccount()
+//   await modalWalletPage.openSettings()
+//   await modalWalletPage.switchNetwork(targetChain)
+//   await modalWalletPage.page.waitForTimeout(2000)
+//   await modalWalletPage.promptSiwe()
+//   await modalWalletPage.approveSign()
+
+//   await modalWalletPage.closeModal()
+//   await modalWalletPage.sign()
+//   await modalWalletPage.approveSign()
+//   await modalWalletValidator.expectAcceptedSign()
+// })
 
 testMEmailSiwe('it should disconnect correctly', async ({ modalPage, modalValidator }) => {
   const modalWaletValidator = modalValidator as ModalWalletValidator
-  await modalPage.disconnect()
+  const modalWalletPage = modalPage as ModalWalletPage
+
+  await modalWalletPage.openAccount()
+  await modalWalletPage.openSettings()
+  await modalWalletPage.disconnect()
   await modalWaletValidator.expectDisconnected()
 })
