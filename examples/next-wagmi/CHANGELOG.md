@@ -1,14 +1,5 @@
 # @examples/next-wagmi
 
-## 4.1.12-sign-2.5.2
-
-### Patch Changes
-
-- fix: Email transaction approval
-
-- Updated dependencies []:
-  - @web3modal/wagmi@4.1.12-sign-2.5.2
-
 ## 4.1.12-910a844.0
 
 ### Patch Changes

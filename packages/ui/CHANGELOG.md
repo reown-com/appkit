@@ -1,11 +1,5 @@
 # @web3modal/ui
 
-## 4.1.12-sign-2.5.2
-
-### Patch Changes
-
-- fix: Email transaction approval
-
 ## 4.1.12-910a844.0
 
 ### Patch Changes

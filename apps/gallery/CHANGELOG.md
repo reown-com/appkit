@@ -1,15 +1,5 @@
 # @apps/gallery
 
-## 4.1.12-sign-2.5.2
-
-### Patch Changes
-
-- fix: Email transaction approval
-
-- Updated dependencies []:
-  - @web3modal/common@4.1.12-sign-2.5.2
-  - @web3modal/ui@4.1.12-sign-2.5.2
-
 ## 4.1.12-910a844.0
 
 ### Patch Changes
@@ -67,7 +57,7 @@
 
 ### Patch Changes
 
-- Hotfix for inccorect state of w3m-button when email is enabled
+- Hotfix for incorrect state of w3m-button when email is enabled
 
 - Updated dependencies []:
   - @web3modal/common@4.1.7

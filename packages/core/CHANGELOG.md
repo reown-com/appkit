@@ -1,15 +1,5 @@
 # @web3modal/core
 
-## 4.1.12-sign-2.5.2
-
-### Patch Changes
-
-- fix: Email transaction approval
-
-- Updated dependencies []:
-  - @web3modal/common@4.1.12-sign-2.5.2
-  - @web3modal/wallet@4.1.12-sign-2.5.2
-
 ## 4.1.12-910a844.0
 
 ### Patch Changes

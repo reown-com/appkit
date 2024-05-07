@@ -27,19 +27,20 @@ export const SwapApiUtil = {
       chainId: NetworkController.state.caipNetwork?.id,
       projectId: OptionsController.state.projectId
     })
-
-    const tokens = response.tokens.map(token => {
-      return {
-        ...token,
-        eip2612: false,
-        quantity: {
-          decimals: '0',
-          numeric: '0'
-        },
-        price: 0,
-        value: 0
-      } as SwapTokenWithBalance
-    })
+    const tokens =
+      response?.tokens?.map(
+        token =>
+          ({
+            ...token,
+            eip2612: false,
+            quantity: {
+              decimals: '0',
+              numeric: '0'
+            },
+            price: 0,
+            value: 0
+          }) as SwapTokenWithBalance
+      ) || []
 
     return tokens
   },
@@ -100,20 +101,19 @@ export const SwapApiUtil = {
   },
 
   mapBalancesToSwapTokens(balances: BlockchainApiBalanceResponse['balances']) {
-    return balances.map(token => {
-      return {
-        symbol: token.symbol,
-        name: token.name,
-        address: token?.address
-          ? token.address
-          : `${NetworkController.state.caipNetwork?.id}:${ConstantsUtil.NATIVE_TOKEN_ADDRESS}`,
-        decimals: parseInt(token.quantity.decimals, 10),
-        logoUri: token.iconUrl,
-        eip2612: false,
-        quantity: token.quantity,
-        price: token.price,
-        value: token.value
-      } as SwapTokenWithBalance
-    })
+    return (
+      balances?.map(
+        token =>
+          ({
+            ...token,
+            address: token?.address
+              ? token.address
+              : `${token.chainId}:${ConstantsUtil.NATIVE_TOKEN_ADDRESS}`,
+            decimals: parseInt(token.quantity.decimals, 10),
+            logoUri: token.iconUrl,
+            eip2612: false
+          }) as SwapTokenWithBalance
+      ) || []
+    )
   }
 }
