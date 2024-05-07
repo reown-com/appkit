@@ -4,7 +4,6 @@ import { CoinbaseWalletSDK } from '@coinbase/wallet-sdk'
 
 export interface ConfigOptions {
   enableEIP6963?: boolean
-  enableInjected?: boolean
   enableCoinbase?: boolean
   rpcUrl?: string
   defaultChainId?: number
@@ -12,38 +11,11 @@ export interface ConfigOptions {
 }
 
 export function defaultConfig(options: ConfigOptions) {
-  const {
-    enableEIP6963 = true,
-    enableInjected = true,
-    enableCoinbase = true,
-    metadata,
-    rpcUrl,
-    defaultChainId
-  } = options
+  const { enableEIP6963 = true, enableCoinbase = true, metadata, rpcUrl, defaultChainId } = options
 
-  let injectedProvider: Provider | undefined = undefined
   let coinbaseProvider: Provider | undefined = undefined
 
   const providers: ProviderType = { metadata }
-
-  function getInjectedProvider() {
-    if (injectedProvider) {
-      return injectedProvider
-    }
-
-    if (typeof window === 'undefined') {
-      return undefined
-    }
-
-    if (!window.ethereum) {
-      return undefined
-    }
-
-    //  @ts-expect-error window.ethereum satisfies Provider
-    injectedProvider = window.ethereum
-
-    return injectedProvider
-  }
 
   function getCoinbaseProvider() {
     if (coinbaseProvider) {
@@ -64,10 +36,6 @@ export function defaultConfig(options: ConfigOptions) {
     coinbaseProvider = coinbaseWallet.makeWeb3Provider(rpcUrl, defaultChainId)
 
     return coinbaseProvider
-  }
-
-  if (enableInjected) {
-    providers.injected = getInjectedProvider()
   }
 
   if (enableCoinbase && rpcUrl && defaultChainId) {
