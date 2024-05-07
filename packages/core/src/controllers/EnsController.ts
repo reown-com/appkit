@@ -10,7 +10,7 @@ import { NetworkController } from './NetworkController.js'
 import { NetworkUtil } from '@web3modal/common'
 import { EnsUtil } from '../utils/EnsUtil.js'
 
-const WC_NAME_SUFFIX = '.wc.ink'
+const WC_NAME_SUFFIX = '.wcn.id'
 
 // -- Types --------------------------------------------- //
 type Suggestion = {
@@ -116,7 +116,7 @@ export const EnsController = {
     }
     state.loading = true
     const message = JSON.stringify({
-      name: `${name}.wc.ink`,
+      name: `${name}.wcn.id`,
       attributes: {},
       timestamp: Math.floor(Date.now() / 1000)
     })
@@ -146,7 +146,7 @@ export const EnsController = {
         message
       })
 
-      AccountController.setProfileName(`${name}.wc.ink`)
+      AccountController.setProfileName(`${name}.wcn.id`)
       RouterController.replace('RegisterAccountNameSuccess')
       state.loading = false
     } catch (e) {

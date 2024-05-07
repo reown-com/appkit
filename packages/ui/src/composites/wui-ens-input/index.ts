@@ -39,7 +39,7 @@ export class WuiEnsInput extends LitElement {
   // -- Private ------------------------------------------- //
   private baseNameTemplate() {
     return html`<wui-text variant="paragraph-400" color="fg-200" class="base-name">
-      .wc.ink
+      .wcn.id
     </wui-text>`
   }
 
