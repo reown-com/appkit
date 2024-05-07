@@ -422,15 +422,17 @@ export const SwapController = {
     const res = await SwapApiUtil.fetchGasPrice()
 
     if (!res) {
-      return
+      return { gasPrice: null, gasPriceInUsd: null }
     }
 
-    const value = res.instant
+    const value = res.standard
     const gasFee = BigInt(value)
     const gasLimit = BigInt(INITIAL_GAS_LIMIT)
     const gasPrice = SwapCalculationUtil.getGasPriceInUSD(state.networkPrice, gasLimit, gasFee)
 
     state.gasPriceInUSD = gasPrice
+
+    return { gasPrice: gasFee, gasPriceInUSD: state.gasPriceInUSD }
   },
 
   async refreshSwapValues() {
