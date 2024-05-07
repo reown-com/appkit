@@ -5,6 +5,7 @@ import { BASE_URL } from '../constants'
 import { doActionAndWaitForNewPage } from '../utils/actions'
 import { Email } from '../utils/email'
 import { DeviceRegistrationPage } from './DeviceRegistrationPage'
+import type { TimingRecords } from '../fixtures/timing-fixture'
 
 export type ModalFlavor = 'default' | 'siwe' | 'email' | 'wallet' | 'all'
 
@@ -38,7 +39,7 @@ export class ModalPage {
     return value!
   }
 
-  async getConnectUri(): Promise<string> {
+  async getConnectUri(timingRecords?: TimingRecords): Promise<string> {
     await this.page.goto(this.url)
     await this.connectButton.click()
     const connect = this.page.getByTestId('wallet-selector-walletconnect')
@@ -47,12 +48,22 @@ export class ModalPage {
       timeout: 5000
     })
     await connect.click()
+    const qrLoadInitiatedTime = new Date()
 
     // Using getByTestId() doesn't work on my machine, I'm guessing because this element is inside of a <slot>
     const qrCode = this.page.locator('wui-qr-code')
     await expect(qrCode).toBeVisible()
 
-    return this.assertDefined(await qrCode.getAttribute('uri'))
+    const uri = this.assertDefined(await qrCode.getAttribute('uri'))
+    const qrLoadedTime = new Date()
+    if (timingRecords) {
+      timingRecords.push({
+        item: 'qrLoad',
+        timeMs: qrLoadedTime.getTime() - qrLoadInitiatedTime.getTime()
+      })
+    }
+
+    return uri
   }
 
   async emailFlow(

@@ -1,12 +1,12 @@
-import { test as base } from '@playwright/test'
 import type { ModalFixture } from './w3m-fixture'
 import { testMSiwe as siwe } from './w3m-fixture'
 import { ModalPage } from '../pages/ModalPage'
 import { ModalValidator } from '../validators/ModalValidator'
 import { Email } from '../utils/email'
 import { ModalWalletValidator } from '../validators/ModalWalletValidator'
+import { timingFixture } from './timing-fixture'
 
-export const testMEmail = base.extend<ModalFixture>({
+export const testMEmail = timingFixture.extend<ModalFixture>({
   library: ['wagmi', { option: true }],
   modalPage: async ({ page, library, context }, use, testInfo) => {
     const modalPage = new ModalPage(page, library, 'email')

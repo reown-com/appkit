@@ -1,12 +1,14 @@
-import { test as base } from '@playwright/test'
 import type { ModalFixture } from './w3m-fixture'
 import { Email } from '../utils/email'
 import { ModalWalletPage } from '../pages/ModalWalletPage'
 import { ModalWalletValidator } from '../validators/ModalWalletValidator'
 import type { ModalPage } from '../pages/ModalPage'
+import { timingFixture } from './timing-fixture'
 
 // Test Modal + Smart Account
-export const testModalSmartAccount = base.extend<ModalFixture & { slowModalPage: ModalPage }>({
+export const testModalSmartAccount = timingFixture.extend<
+  ModalFixture & { slowModalPage: ModalPage }
+>({
   library: ['wagmi', { option: true }],
   modalPage: [
     async ({ page, library, context }, use, testInfo) => {
