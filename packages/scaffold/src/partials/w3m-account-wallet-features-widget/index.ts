@@ -4,7 +4,8 @@ import {
   NetworkController,
   AssetUtil,
   RouterController,
-  CoreHelperUtil
+  CoreHelperUtil,
+  ConstantsUtil as CoreConstantsUtil
 } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -13,6 +14,10 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
 import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
 import { W3mFrameRpcConstants } from '@web3modal/wallet'
+
+const TABS = 3
+const TABS_PADDING = 48
+const MODAL_MOBILE_VIEW_PX = 430
 
 @customElement('w3m-account-wallet-features-widget')
 export class W3mAccountWalletFeaturesWidget extends LitElement {
@@ -118,7 +123,9 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
       <wui-tabs
         .onTabChange=${this.onTabChange.bind(this)}
         .activeTab=${this.currentTab}
-        localTabWidth="104px"
+        localTabWidth=${CoreHelperUtil.isMobile() && window.innerWidth < MODAL_MOBILE_VIEW_PX
+          ? `${(window.innerWidth - TABS_PADDING) / TABS}px`
+          : '104px'}
         .tabs=${ConstantsUtil.ACCOUNT_TABS}
       ></wui-tabs>
       ${this.listContentTemplate()}
@@ -186,7 +193,13 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   private onSwapClick() {
-    RouterController.push('Swap')
+    if (this.network?.id && !CoreConstantsUtil.SWAP_SUPPORTED_NETWORKS.includes(this.network?.id)) {
+      RouterController.push('UnsupportedChain', {
+        swapUnsupportedChain: true
+      })
+    } else {
+      RouterController.push('Swap')
+    }
   }
 
   private onReceiveClick() {

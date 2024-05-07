@@ -1,0 +1,19 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "W5R8AG9K22.com.walletconnect.dapp",
+        "paths": ["/dapp*"]
+      },
+      {
+        "appID": "W5R8AG9K22.com.walletconnect.walletapp",
+        "paths": ["/wallet*"]
+      },
+      {
+        "appID": "W5R8AG9K22.com.walletconnect.universal-link-test",
+        "paths": ["/test*"]
+      }
+    ]
+  }
+}
