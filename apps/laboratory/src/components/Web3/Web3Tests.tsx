@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useWeb3ModalAccount } from '@web3modal/web3/react'
+import { useWeb3ModalAccount } from 'web3modal-web3js/react'
 import { Web3SignMessageTest } from './Web3SignMessageTest'
 import { Web3SignTypedDataTest } from './Web3SignTypedDataTest'
 import { StackDivider, Card, CardHeader, Heading, CardBody, Box, Stack } from '@chakra-ui/react'

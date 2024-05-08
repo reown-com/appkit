@@ -1,4 +1,4 @@
-# @web3modal/web3
+# web3modal-web3js
 
 ## 0.1.0
 

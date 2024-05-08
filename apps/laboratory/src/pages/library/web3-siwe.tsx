@@ -1,7 +1,7 @@
 import { SiweData } from '../../components/Siwe/SiweData'
 import { Web3Tests } from '../../components/Web3/Web3Tests'
 import { Web3ModalButtons } from '../../components/Web3ModalButtons'
-import { createWeb3Modal, defaultConfig } from '@web3modal/web3/react'
+import { createWeb3Modal, defaultConfig } from 'web3modal-web3js/react'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { Web3Constants } from '../../utils/Web3Constants'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'

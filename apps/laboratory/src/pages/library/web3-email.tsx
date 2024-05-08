@@ -1,4 +1,4 @@
-import { createWeb3Modal, defaultConfig } from '@web3modal/web3/react'
+import { createWeb3Modal, defaultConfig } from 'web3modal-web3js/react'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { Web3Constants } from '../../utils/Web3Constants'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'

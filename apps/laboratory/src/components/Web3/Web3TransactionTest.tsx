@@ -1,5 +1,5 @@
 import { Button, Stack, Link, Text, Spacer } from '@chakra-ui/react'
-import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/web3/react'
+import { useWeb3ModalAccount, useWeb3ModalProvider } from 'web3modal-web3js/react'
 
 import { Web3Eth } from 'web3-eth'
 import { toWei } from 'web3-utils'

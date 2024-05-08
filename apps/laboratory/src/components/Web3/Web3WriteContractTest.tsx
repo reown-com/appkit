@@ -1,5 +1,5 @@
 import { Button, Stack, Link, Text, Spacer } from '@chakra-ui/react'
-import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/web3/react'
+import { useWeb3ModalAccount, useWeb3ModalProvider } from 'web3modal-web3js/react'
 import { Contract } from 'web3-eth-contract'
 import { toWei } from 'web3-utils'
 import { optimism, sepolia } from '../../utils/ChainsUtil'

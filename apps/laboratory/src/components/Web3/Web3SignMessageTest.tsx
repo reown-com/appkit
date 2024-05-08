@@ -1,5 +1,5 @@
 import { Button } from '@chakra-ui/react'
-import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/web3/react'
+import { useWeb3ModalAccount, useWeb3ModalProvider } from 'web3modal-web3js/react'
 
 import { Personal } from 'web3-eth-personal'
 import { utf8ToHex } from 'web3-utils'
