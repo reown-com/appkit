@@ -1,5 +1,16 @@
 # @examples/react-ethers5
 
+## 4.1.0-cf64cc0f.0
+
+### Minor Changes
+
+- feat: wallet features release. deprecate injected connector. sign2.5 release.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @web3modal/ethers@4.2.0-cf64cc0f.1
+
 ## 4.0.5
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @web3modal/common
 
+## 4.2.0-cf64cc0f.1
+
+### Minor Changes
+
+- feat: wallet features release. deprecate injected connector. sign2.5 release.
+
 ## 4.1.12-910a844.0
 
 ### Patch Changes
