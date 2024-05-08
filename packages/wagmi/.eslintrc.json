@@ -1,4 +1,5 @@
 {
   "extends": ["plugin:require-extensions/recommended", "../../.eslintrc.json"],
-  "plugins": ["require-extensions"]
+  "plugins": ["require-extensions"],
+  "ignorePatterns": ["alphaWalletConnect.ts"]
 }
