@@ -24,8 +24,13 @@ export const CoreHelperUtil = {
   isMobile() {
     if (typeof window !== 'undefined') {
       return (
-        this.isInAppBrowser() ||
-        this.isMobileDevice() ||
+        // In app browser
+        Boolean(/WebKit|wv|MetaMaskMobile|Phantom/u.test(navigator.userAgent)) ||
+        // Mobile device
+        Boolean(
+          /Android|webOS|iPhone|iPad|iPod|BlackBerry|Opera Mini/u.test(navigator.userAgent)
+        ) ||
+        // Touch screen
         Boolean(window.matchMedia('(pointer:coarse)').matches)
       )
     }
