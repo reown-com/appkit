@@ -17,9 +17,13 @@ export const UiHelperUtil = {
   },
 
   getHostName(url: string) {
-    const newUrl = new URL(url)
+    try {
+      const newUrl = new URL(url)
 
-    return newUrl.hostname
+      return newUrl.hostname
+    } catch (error) {
+      return ''
+    }
   },
 
   getTruncateString({ string, charsStart, charsEnd, truncate }: TruncateOptions) {

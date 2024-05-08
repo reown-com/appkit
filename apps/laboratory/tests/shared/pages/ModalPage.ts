@@ -7,7 +7,7 @@ import { Email } from '../utils/email'
 import { DeviceRegistrationPage } from './DeviceRegistrationPage'
 import type { TimingRecords } from '../fixtures/timing-fixture'
 
-export type ModalFlavor = 'default' | 'siwe' | 'email' | 'wallet'
+export type ModalFlavor = 'default' | 'siwe' | 'email' | 'wallet' | 'all'
 
 export class ModalPage {
   private readonly baseURL = BASE_URL
@@ -170,7 +170,9 @@ export class ModalPage {
   }
 
   async sign() {
-    await this.page.getByTestId('sign-message-button').click()
+    const signButton = this.page.getByTestId('sign-message-button')
+    await signButton.scrollIntoViewIfNeeded()
+    await signButton.click()
   }
 
   async signatureRequestFrameShouldVisible() {
@@ -210,6 +212,9 @@ export class ModalPage {
 
   async promptSiwe() {
     const siweSign = this.page.getByTestId('w3m-connecting-siwe-sign')
+    await expect(siweSign, 'Siwe prompt sign button should be visible').toBeVisible({
+      timeout: 10_000
+    })
     await expect(siweSign, 'Siwe prompt sign button should be enabled').toBeEnabled()
     await siweSign.click()
   }

@@ -6,9 +6,10 @@ import { ModalPage } from './ModalPage'
 export class ModalWalletPage extends ModalPage {
   constructor(
     public override readonly page: Page,
-    public override readonly library: string
+    public override readonly library: string,
+    public override readonly flavor: 'wallet' | 'all' = 'wallet'
   ) {
-    super(page, library, 'wallet')
+    super(page, library, flavor)
   }
 
   async openSettings() {
