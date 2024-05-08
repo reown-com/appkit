@@ -20,13 +20,16 @@ export function EthersGetCallsStatusTest() {
       if (!walletProvider || !address) {
         throw Error('user is disconnected')
       }
-      if (!chainId) throw Error('chain not selected')
-      if (!batchCallId) throw Error('call tx hash not valid')
+      if (!chainId) {
+        throw Error('chain not selected')
+      }
+      if (!batchCallId) {
+        throw Error('call id not valid')
+      }
       const provider = new BrowserProvider(walletProvider, chainId)
       const batchCallsStatus = await provider.send('wallet_getCallsStatus', [
         batchCallId as GetCallsStatusParams
       ])
-
       toast({
         title: 'Success',
         description: JSON.stringify(batchCallsStatus),
@@ -35,7 +38,7 @@ export function EthersGetCallsStatusTest() {
     } catch {
       toast({
         title: 'Error',
-        description: 'Failed to sign transaction',
+        description: 'Failed to get call status',
         type: 'error'
       })
     } finally {
