@@ -13,6 +13,8 @@ export default css`
     border-radius: var(--wui-border-radius-s);
     padding: var(--wui-spacing-xl);
     padding-right: var(--wui-spacing-s);
+    background-color: var(--wui-gray-glass-002);
+    box-shadow: inset 0px 0px 0px 1px var(--wui-gray-glass-002);
     width: 100%;
     height: 100px;
     box-sizing: border-box;

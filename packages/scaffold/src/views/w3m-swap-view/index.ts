@@ -104,9 +104,7 @@ export class W3mSwapView extends LitElement {
 
   public override firstUpdated() {
     SwapController.initializeState()
-    setTimeout(() => {
-      this.watchTokensAndValues()
-    }, 10_000)
+    this.watchTokensAndValues()
   }
 
   public override disconnectedCallback() {
@@ -145,6 +143,10 @@ export class W3mSwapView extends LitElement {
   }
 
   private actionButtonLabel(): string {
+    if (!this.initialized) {
+      return 'Swap'
+    }
+
     if (this.inputError) {
       return this.inputError
     }
@@ -154,9 +156,11 @@ export class W3mSwapView extends LitElement {
 
   private templateReplaceTokensButton() {
     return html`
-      <button class="replace-tokens-button" @click=${this.onSwitchTokens.bind(this)}>
-        <wui-icon name="recycleHorizontal" color="fg-250" size="lg"></wui-icon>
-      </button>
+      <wui-flex class="replace-tokens-button-container">
+        <button @click=${this.onSwitchTokens.bind(this)}>
+          <wui-icon name="recycleHorizontal" color="fg-250" size="lg"></wui-icon>
+        </button>
+      </wui-flex>
     `
   }
 
@@ -166,16 +170,9 @@ export class W3mSwapView extends LitElement {
         <wui-flex flexDirection="column" alignItems="center" gap="xs" class="swap-inputs-container">
           <w3m-swap-input-skeleton target="sourceToken"></w3m-swap-input-skeleton>
           <w3m-swap-input-skeleton target="toToken"></w3m-swap-input-skeleton>
-          <wui-shimmer
-            class="replace-tokens-button-shimmer"
-            width="40px"
-            height="40px"
-            borderRadius="xxs"
-            variant="light"
-          >
-            <wui-icon name="recycleHorizontal" color="fg-250" size="lg"></wui-icon>
-          </wui-shimmer>
+          ${this.templateReplaceTokensButton()}
         </wui-flex>
+        ${this.templateActionButton()}
       </wui-flex>
     `
   }
@@ -199,7 +196,7 @@ export class W3mSwapView extends LitElement {
       target=${target}
       .token=${token}
       .balance=${myToken?.quantity?.numeric}
-      .price=${this.sourceTokenPriceInUSD}
+      .price=${myToken?.price}
       .marketValue=${value}
       .onSetMaxValue=${this.onSetMaxValue.bind(this)}
     ></w3m-swap-input>`

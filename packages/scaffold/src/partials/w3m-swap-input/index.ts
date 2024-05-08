@@ -51,7 +51,6 @@ export class W3mSwapInput extends LitElement {
 
     return html`
       <wui-flex class="${this.focused ? 'focus' : ''}" justifyContent="space-between">
-        ${this.target === 'sourceToken' ? swapInputMaskTopSvg : swapInputMaskBottomSvg}
         <wui-flex
           flex="1"
           flexDirection="column"
