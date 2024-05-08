@@ -46,6 +46,9 @@ jobs:
     name: 'Playwright Tests'
     runs-on:
       group: ubuntu-runners
+    permissions:
+      contents: write
+      pull-requests: write
     timeout-minutes: 15
     steps:
       - name: checkout
