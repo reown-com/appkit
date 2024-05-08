@@ -32,6 +32,7 @@ export function EthersSendCallsTest() {
         },
         {
           to: vitalikEthAddress as Address,
+          value: '0x00',
           data: '0xdeadbeef'
         }
       ]
