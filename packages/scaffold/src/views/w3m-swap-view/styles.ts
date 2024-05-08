@@ -45,6 +45,22 @@ export default css`
     z-index: 20;
   }
 
+  .replace-tokens-button-shimmer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 40px;
+    width: 40px;
+    border: 1ps solid var(--wui-gray-glass-020);
+    border-radius: var(--wui-border-radius-xxs);
+    z-index: 20;
+  }
+
   .replace-tokens-button:hover {
     background: var(--wui-gray-glass-010);
   }
@@ -83,11 +99,5 @@ export default css`
     padding: var(--wui-spacing-s) var(--wui-spacing-xl);
     border-radius: var(--wui-border-radius-xxs);
     background: var(--wui-gray-glass-002);
-  }
-
-  .free-badge {
-    background: rgba(38, 217, 98, 0.15);
-    border-radius: var(--wui-border-radius-4xs);
-    padding: 4.5px 6px;
   }
 `

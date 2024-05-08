@@ -41,7 +41,7 @@ export default css`
   }
 
   wui-card {
-    max-width: 360px;
+    max-width: var(--w3m-modal-width);
     width: 100%;
     position: relative;
     animation-duration: 0.2s;

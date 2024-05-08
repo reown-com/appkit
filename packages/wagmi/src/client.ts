@@ -1,17 +1,21 @@
-import { EthereumProvider } from '@walletconnect/ethereum-provider'
+/* eslint-disable no-console */
+import { EthereumProvider, OPTIONAL_METHODS } from '@walletconnect/ethereum-provider'
 import {
   connect,
   disconnect,
   signMessage,
   getBalance,
-  getEnsAvatar,
+  getEnsAvatar as wagmiGetEnsAvatar,
   getEnsName,
   switchChain,
   watchAccount,
   watchConnectors,
   waitForTransactionReceipt,
   estimateGas as wagmiEstimateGas,
-  getAccount
+  writeContract as wagmiWriteContract,
+  getAccount,
+  getEnsAddress as wagmiGetEnsAddress,
+  reconnect
 } from '@wagmi/core'
 import { mainnet } from 'viem/chains'
 import { prepareTransactionRequest, sendTransaction as wagmiSendTransaction } from '@wagmi/core'
@@ -27,7 +31,8 @@ import type {
   NetworkControllerClient,
   PublicStateControllerState,
   SendTransactionArgs,
-  Token
+  Token,
+  WriteContractArgs
 } from '@web3modal/scaffold'
 import { formatUnits, parseUnits } from 'viem'
 import type { Hex } from 'viem'
@@ -44,6 +49,7 @@ import type { W3mFrameProvider, W3mFrameTypes } from '@web3modal/wallet'
 import { NetworkUtil } from '@web3modal/common'
 import type { defaultWagmiConfig as coreConfig } from './utils/defaultWagmiCoreConfig.js'
 import type { defaultWagmiConfig as reactConfig } from './utils/defaultWagmiReactConfig.js'
+import { normalize } from 'viem/ens'
 
 // -- Types ---------------------------------------------------------------------
 export type CoreConfig = ReturnType<typeof coreConfig>
@@ -131,7 +137,60 @@ export class Web3Modal extends Web3ModalScaffold {
         })
 
         const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
+        // Make sure client uses ethereum provider version that supports `authenticate`
+        if (siweConfig?.options?.enabled && typeof provider?.authenticate === 'function') {
+          const { SIWEController, getDidChainId, getDidAddress } = await import('@web3modal/siwe')
+          const siweParams = await siweConfig.getMessageParams()
+          // @ts-expect-error - setting requested chains beforehand avoids wagmi auto disconnecting the session when `connect` is called because it things chains are stale
+          await connector.setRequestedChainsIds(siweParams.chains)
 
+          const result = await provider.authenticate({
+            nonce: await siweConfig.getNonce(),
+            methods: [...OPTIONAL_METHODS],
+            ...siweParams
+          })
+
+          // Auths is an array of signed CACAO objects https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-74.md
+          const signedCacao = result?.auths?.[0]
+          if (signedCacao) {
+            const { p, s } = signedCacao
+            const cacaoChainId = getDidChainId(p.iss) || ''
+            const address = getDidAddress(p.iss)
+            if (address && cacaoChainId) {
+              SIWEController.setSession({
+                address,
+                chainId: parseInt(cacaoChainId, 10)
+              })
+            }
+            try {
+              // Kicks off verifyMessage and populates external states
+              const message = provider.signer.client.formatAuthMessage({
+                request: p,
+                iss: p.iss
+              })
+
+              await SIWEController.verifyMessage({
+                message,
+                signature: s.s,
+                cacao: signedCacao
+              })
+            } catch (error) {
+              // eslint-disable-next-line no-console
+              console.error('Error verifying message', error)
+              // eslint-disable-next-line no-console
+              await provider.disconnect().catch(console.error)
+              // eslint-disable-next-line no-console
+              await SIWEController.signOut().catch(console.error)
+              throw error
+            }
+            /*
+             * Unassign the connector from the wagmiConfig and allow connect() to reassign it in the next step
+             * this avoids case where wagmi throws because the connector is already connected
+             * what we need connect() to do is to only setup internal event listeners
+             */
+            this.wagmiConfig.state.current = ''
+          }
+        }
         await connect(this.wagmiConfig, { connector, chainId })
       },
 
@@ -147,6 +206,16 @@ export class Web3Modal extends Web3ModalScaffold {
         const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
 
         await connect(this.wagmiConfig, { connector, chainId })
+      },
+
+      reconnectExternal: async ({ id }) => {
+        const connector = wagmiConfig.connectors.find(c => c.id === id)
+
+        if (!connector) {
+          throw new Error('connectionControllerClient:connectExternal - connector is undefined')
+        }
+
+        await reconnect(this.wagmiConfig, { connectors: [connector] })
       },
 
       checkInstalled: ids => {
@@ -206,6 +275,50 @@ export class Web3Modal extends Web3ModalScaffold {
         await waitForTransactionReceipt(this.wagmiConfig, { hash: tx, timeout: 25000 })
 
         return tx
+      },
+
+      writeContract: async (data: WriteContractArgs) => {
+        const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
+
+        const tx = await wagmiWriteContract(wagmiConfig, {
+          chainId,
+          address: data.tokenAddress,
+          abi: data.abi,
+          functionName: data.method,
+          args: [data.receiverAddress, data.tokenAmount]
+        })
+
+        return tx
+      },
+
+      getEnsAddress: async (value: string) => {
+        const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
+
+        if (chainId !== mainnet.id) {
+          return false
+        }
+
+        const address = await wagmiGetEnsAddress(this.wagmiConfig, {
+          name: normalize(value),
+          chainId
+        })
+
+        return address || false
+      },
+
+      getEnsAvatar: async (value: string) => {
+        const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
+
+        if (chainId !== mainnet.id) {
+          return false
+        }
+
+        const avatar = await wagmiGetEnsAvatar(this.wagmiConfig, {
+          name: normalize(value),
+          chainId
+        })
+
+        return avatar || false
       },
 
       parseUnits,
@@ -341,7 +454,7 @@ export class Web3Modal extends Web3ModalScaffold {
         const profileName = await getEnsName(this.wagmiConfig, { address, chainId })
         if (profileName) {
           this.setProfileName(profileName)
-          const profileImage = await getEnsAvatar(this.wagmiConfig, {
+          const profileImage = await wagmiGetEnsAvatar(this.wagmiConfig, {
             name: profileName,
             chainId
           })

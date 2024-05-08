@@ -9,7 +9,8 @@ import {
   RouterController,
   SnackController,
   StorageUtil,
-  ConnectorController
+  ConnectorController,
+  SendController
 } from '@web3modal/core'
 import { UiHelperUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -41,6 +42,10 @@ export class W3mAccountSettingsView extends LitElement {
   @state() private disconnecting = false
 
   @state() private loading = false
+
+  @state() private switched = false
+
+  @state() private text = ''
 
   public constructor() {
     super()
@@ -200,10 +205,12 @@ export class W3mAccountSettingsView extends LitElement {
       return null
     }
 
-    const text =
-      this.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
-        ? 'Switch to your EOA'
-        : 'Switch to your smart account'
+    if (!this.switched) {
+      this.text =
+        this.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+          ? 'Switch to your EOA'
+          : 'Switch to your smart account'
+    }
 
     return html`
       <wui-list-item
@@ -216,7 +223,7 @@ export class W3mAccountSettingsView extends LitElement {
         @click=${this.changePreferredAccountType.bind(this)}
         data-testid="account-toggle-preferred-account-type"
       >
-        <wui-text variant="paragraph-500" color="fg-100">${text}</wui-text>
+        <wui-text variant="paragraph-500" color="fg-100">${this.text}</wui-text>
       </wui-list-item>
     `
   }
@@ -236,6 +243,15 @@ export class W3mAccountSettingsView extends LitElement {
 
     this.loading = true
     await emailConnector?.provider.setPreferredAccount(accountTypeTarget)
+    await ConnectionController.reconnectExternal(emailConnector)
+
+    this.text =
+      this.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+        ? 'Switch to your smart account'
+        : 'Switch to your EOA '
+    this.switched = true
+
+    SendController.resetSend()
     this.loading = false
     this.requestUpdate()
   }
