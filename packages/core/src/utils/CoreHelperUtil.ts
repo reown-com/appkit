@@ -4,17 +4,14 @@ import type { CaipAddress, LinkingRecord, CaipNetwork } from './TypeUtil.js'
 
 export const CoreHelperUtil = {
   isInAppBrowser() {
-    if (typeof window !== 'undefined') {
-      return Boolean(/WebKit|wv|MetaMaskMobile|Phantom/u.test(navigator.userAgent))
-    }
-
     return false
   },
 
   isMobileDevice() {
     if (typeof window !== 'undefined') {
       return Boolean(
-        /Android|webOS|iPhone|iPad|iPod|BlackBerry|Opera Mini/u.test(navigator.userAgent)
+        window.matchMedia('(pointer:coarse)').matches ||
+          /Android|webOS|iPhone|iPad|iPod|BlackBerry|Opera Mini/u.test(navigator.userAgent)
       )
     }
 
