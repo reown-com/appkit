@@ -145,7 +145,7 @@ export class W3mConnectView extends LitElement {
 
   private announcedTemplate() {
     return this.connectors.map(connector => {
-      if (connector.type !== 'ANNOUNCED') {
+      if (connector.type !== 'ANNOUNCED' || CoreHelperUtil.isMobile()) {
         return null
       }
 
@@ -156,6 +156,7 @@ export class W3mConnectView extends LitElement {
           @click=${() => this.onConnector(connector)}
           tagVariant="success"
           tagLabel="installed"
+          data-testid=${`wallet-selector-${connector.id}`}
           .installed=${true}
         >
         </wui-list-wallet>
@@ -165,7 +166,7 @@ export class W3mConnectView extends LitElement {
 
   private injectedTemplate() {
     return this.connectors.map(connector => {
-      if (connector.type !== 'INJECTED') {
+      if (connector.type !== 'INJECTED' || CoreHelperUtil.isMobile()) {
         return null
       }
 
@@ -180,6 +181,7 @@ export class W3mConnectView extends LitElement {
           name=${connector.name ?? 'Unknown'}
           tagVariant="success"
           tagLabel="installed"
+          data-testid=${`wallet-selector-${connector.id}`}
           @click=${() => this.onConnector(connector)}
         >
         </wui-list-wallet>
