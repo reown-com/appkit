@@ -7,7 +7,8 @@ export interface ConfigOptions {
   enableCoinbase?: boolean
   enableEmail?: boolean
   /**
-   * @deprecated use enableEIP6963 to show all injected wallets
+   * Use enableEIP6963 to show all injected wallets
+   * @deprecated
    */
   enableInjected?: boolean
   rpcUrl?: string
@@ -20,6 +21,7 @@ export function defaultConfig(options: ConfigOptions) {
     enableEIP6963 = true,
     enableCoinbase = true,
     enableEmail = false,
+
     metadata,
     rpcUrl,
     defaultChainId

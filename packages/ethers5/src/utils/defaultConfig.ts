@@ -6,7 +6,8 @@ export interface ConfigOptions {
   enableEIP6963?: boolean
   enableCoinbase?: boolean
   /**
-   * @deprecated use enableEIP6963 to show all injected wallets
+   * Use enableEIP6963 to show all injected wallets
+   * @deprecated
    */
   enableInjected?: boolean
   rpcUrl?: string
