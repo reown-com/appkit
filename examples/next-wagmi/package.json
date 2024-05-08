@@ -21,6 +21,7 @@
     "@types/node": "20.11.5",
     "eslint": "8.56.0",
     "eslint-config-next": "14.1.0",
-    "typescript": "5.3.3"
+    "typescript": "5.3.3",
+    "esbuild": "0.21.1"
   }
 }
