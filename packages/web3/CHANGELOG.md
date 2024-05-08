@@ -1,5 +1,5 @@
 # @web3modal/web3
 
-## 4.x
+## 0.1.0
 
 The package has been created for web3.js
