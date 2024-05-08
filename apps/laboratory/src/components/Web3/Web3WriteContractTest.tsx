@@ -38,7 +38,7 @@ export function Web3WriteContractTest() {
 
       const tx = await contract.methods
         .purchase(1)
-        .send({ from: address, value: toWei('0.0001', 'ether')})
+        .send({ from: address, value: toWei('0.0001', 'ether') })
 
       toast({
         title: 'Success',
