@@ -2,7 +2,7 @@ import '@web3modal/polyfills'
 
 import type { CreateConfigParameters, CreateConnectorFn, Config } from 'wagmi'
 import { createConfig } from 'wagmi'
-import { coinbaseWallet, injected } from 'wagmi/connectors'
+import { coinbaseWallet } from 'wagmi/connectors'
 
 import { emailConnector } from '../connectors/EmailConnector.js'
 import { alphaWalletConnect } from '../connectors/alphaWalletConnect.js'
@@ -11,10 +11,14 @@ import { getTransport } from './helpers.js'
 export type ConfigOptions = Partial<CreateConfigParameters> & {
   chains: CreateConfigParameters['chains']
   projectId: string
-  enableInjected?: boolean
   enableEIP6963?: boolean
   enableCoinbase?: boolean
   enableEmail?: boolean
+  /**
+   * Use enableEIP6963 to show all injected wallets
+   * @deprecated
+   */
+  enableInjected?: boolean
   enableWalletConnect?: boolean
   metadata: {
     name: string
@@ -28,10 +32,10 @@ export function defaultWagmiConfig({
   projectId,
   chains,
   metadata,
-  enableInjected,
   enableCoinbase,
   enableEmail,
   enableWalletConnect,
+
   enableEIP6963,
   ...wagmiConfig
 }: ConfigOptions): Config {
@@ -45,10 +49,6 @@ export function defaultWagmiConfig({
   // Enabled by default
   if (enableWalletConnect !== false) {
     connectors.push(alphaWalletConnect({ projectId, metadata, showQrModal: false }))
-  }
-
-  if (enableInjected !== false) {
-    connectors.push(injected({ shimDisconnect: true }))
   }
 
   if (enableCoinbase !== false) {
