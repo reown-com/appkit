@@ -1,6 +1,6 @@
 {
-  "name": "@web3modal/web3",
-  "version": "0.1.0-alpha.0",
+  "name": "web3modal-web3js",
+  "version": "0.1.0-alpha.1",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -91,12 +91,12 @@
   ],
   "author": "WalletConnect <walletconnect.com>",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/web3modal/web3modal",
+  "homepage": "https://github.com/ChainSafe/web3modal/",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/web3modal/web3modal.git"
+    "url": "git+https://github.com/ChainSafe/web3modal.git"
   },
   "bugs": {
-    "url": "https://github.com/web3modal/web3modal/issues"
+    "url": "https://github.com/ChainSafe/web3modal/issues"
   }
 }
