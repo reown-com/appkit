@@ -1,6 +1,7 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
-import { erc20ABI, type Balance } from '@web3modal/common'
+import { type Balance } from '@web3modal/common'
+import { erc20ABI } from '@web3modal/common'
 import { RouterController } from './RouterController.js'
 import { AccountController } from './AccountController.js'
 import { ConnectionController } from './ConnectionController.js'
