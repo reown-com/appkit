@@ -5,6 +5,10 @@ import { CoinbaseWalletSDK } from '@coinbase/wallet-sdk'
 export interface ConfigOptions {
   enableEIP6963?: boolean
   enableCoinbase?: boolean
+  /**
+   * @deprecated use enableEIP6963 to show all injected wallets
+   */
+  enableInjected?: boolean
   rpcUrl?: string
   defaultChainId?: number
   metadata: Metadata
