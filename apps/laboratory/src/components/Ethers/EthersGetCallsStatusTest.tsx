@@ -3,9 +3,9 @@ import { useState } from 'react'
 import { sepolia } from '../../utils/ChainsUtil'
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers/react'
 import { useChakraToast } from '../Toast'
-import { BrowserProvider} from 'ethers'
+import { BrowserProvider } from 'ethers'
 
-export type GetCallsStatusParams = `0x${string}` 
+export type GetCallsStatusParams = `0x${string}`
 
 export function EthersGetCallsStatusTest() {
   const toast = useChakraToast()
@@ -17,14 +17,16 @@ export function EthersGetCallsStatusTest() {
   async function onGetCallsStatus() {
     try {
       setLoading(true)
-      if (!walletProvider || !address ) {
+      if (!walletProvider || !address) {
         throw Error('user is disconnected')
       }
-      if( !chainId) throw Error('chain not selected')
-      if( !batchCallId) throw Error('call tx hash not valid')
+      if (!chainId) throw Error('chain not selected')
+      if (!batchCallId) throw Error('call tx hash not valid')
       const provider = new BrowserProvider(walletProvider, chainId)
-      const batchCallsStatus = await provider.send("wallet_getCallsStatus", [batchCallId as GetCallsStatusParams]);
-      
+      const batchCallsStatus = await provider.send('wallet_getCallsStatus', [
+        batchCallId as GetCallsStatusParams
+      ])
+
       toast({
         title: 'Success',
         description: JSON.stringify(batchCallsStatus),
@@ -45,9 +47,11 @@ export function EthersGetCallsStatusTest() {
 
   return allowedChains.includes(Number(chainId)) && address ? (
     <Stack direction={['column', 'column', 'row']}>
-      <Input placeholder="0xf34ffa..." 
-       onChange={e => setBatchCallId(e.target.value)}
-      value={batchCallId} />
+      <Input
+        placeholder="0xf34ffa..."
+        onChange={e => setBatchCallId(e.target.value)}
+        value={batchCallId}
+      />
       <Button
         data-test-id="sign-transaction-button"
         onClick={onGetCallsStatus}
