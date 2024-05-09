@@ -117,7 +117,7 @@ export class W3mHeader extends LitElement {
   }
 
   private async onClose() {
-    if (OptionsController.state.isSiweEnabled && SIWEController.state.status === 'loading') {
+    if (OptionsController.state.isSiweEnabled && SIWEController.state.status !== 'success') {
       const { SIWEController } = await import('@web3modal/siwe')
       if (SIWEController.state.status !== 'success') {
         await ConnectionController.disconnect()
