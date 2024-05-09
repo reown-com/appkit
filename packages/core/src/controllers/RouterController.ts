@@ -8,6 +8,7 @@ type TransactionAction = {
   goBack: boolean
   view: RouterControllerState['view'] | null
   close?: boolean
+  replace?: boolean
   onSuccess?: () => void
   onCancel?: () => void
 }
