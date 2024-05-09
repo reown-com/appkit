@@ -1,7 +1,7 @@
 import { html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
 import { type SwapInputTarget } from '@web3modal/core'
-import { customElement, swapInputMaskBottomSvg, swapInputMaskTopSvg } from '@web3modal/ui'
+import { customElement } from '@web3modal/ui'
 import styles from './styles.js'
 
 @customElement('w3m-swap-input-skeleton')

@@ -59,6 +59,8 @@ export class W3mSwapView extends LitElement {
 
   @state() private networkTokenSymbol = SwapController.state.networkTokenSymbol
 
+  @state() private fetchError = SwapController.state.fetchError
+
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
@@ -97,6 +99,7 @@ export class W3mSwapView extends LitElement {
           this.priceImpact = newState.priceImpact
           this.maxSlippage = newState.maxSlippage
           this.providerFee = newState.providerFee
+          this.fetchError = newState.fetchError
         })
       ]
     )
@@ -126,7 +129,7 @@ export class W3mSwapView extends LitElement {
     this.interval = setInterval(() => {
       SwapController.getNetworkTokenPrice()
       SwapController.getMyTokensWithBalance()
-      SwapController.refreshSwapValues()
+      SwapController.swapTokens()
     }, 10_000)
   }
 
@@ -143,6 +146,18 @@ export class W3mSwapView extends LitElement {
   }
 
   private actionButtonLabel(): string {
+    if (this.fetchError) {
+      return 'Swap'
+    }
+
+    if (!this.sourceToken || !this.toToken) {
+      return 'Select token'
+    }
+
+    if (!this.sourceTokenAmount) {
+      return 'Enter amount'
+    }
+
     if (!this.initialized) {
       return 'Swap'
     }
@@ -276,13 +291,15 @@ export class W3mSwapView extends LitElement {
 
   private templateActionButton() {
     const haveNoTokenSelected = !this.toToken || !this.sourceToken
+    const haveNoAmount = !this.sourceTokenAmount
     const loading = this.loading || this.loadingPrices || this.transactionLoading
-    const disabled = loading || haveNoTokenSelected || this.inputError
+    const disabled = loading || haveNoTokenSelected || haveNoAmount || this.inputError
 
     return html` <wui-flex gap="xs">
       <wui-button
         class="action-button"
         ?fullWidth=${true}
+        fullWidth
         size="lg"
         borderRadius="xs"
         variant=${haveNoTokenSelected ? 'shade' : 'fill'}
@@ -304,6 +321,11 @@ export class W3mSwapView extends LitElement {
   }
 
   private onSwapPreview() {
+    if (this.fetchError) {
+      SwapController.swapTokens()
+      return
+    }
+
     RouterController.push('SwapPreview')
   }
 }
