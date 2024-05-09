@@ -7,7 +7,6 @@ import { SwapApiUtil } from '../utils/SwapApiUtil.js'
 import { SnackController } from './SnackController.js'
 import { RouterController } from './RouterController.js'
 import { NumberUtil } from '@web3modal/common'
-import { erc20ABI } from '@web3modal/common'
 import type { SwapTokenWithBalance } from '../utils/TypeUtil.js'
 import { NetworkController } from './NetworkController.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
@@ -524,6 +523,7 @@ export const SwapController = {
       state.approvalTransaction = undefined
       state.swapTransaction = undefined
       state.fetchError = true
+
       return undefined
     }
   },
@@ -563,12 +563,14 @@ export const SwapController = {
 
       state.swapTransaction = undefined
       state.approvalTransaction = transaction
+
       return transaction
     } catch (error) {
       SnackController.showError('Failed to create approval transaction')
       state.approvalTransaction = undefined
       state.swapTransaction = undefined
       state.fetchError = true
+
       return undefined
     }
   },
@@ -614,11 +616,13 @@ export const SwapController = {
 
       state.approvalTransaction = undefined
       state.swapTransaction = transaction
+
       return transaction
     } catch (error) {
       state.approvalTransaction = undefined
       state.swapTransaction = undefined
       state.fetchError = true
+
       return undefined
     }
   },

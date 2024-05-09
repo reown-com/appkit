@@ -323,6 +323,7 @@ export class W3mSwapView extends LitElement {
   private onSwapPreview() {
     if (this.fetchError) {
       SwapController.swapTokens()
+
       return
     }
 
