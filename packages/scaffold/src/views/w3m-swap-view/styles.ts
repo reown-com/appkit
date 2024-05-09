@@ -24,45 +24,37 @@ export default css`
     position: relative;
   }
 
-  .replace-tokens-button {
+  .replace-tokens-button-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    cursor: pointer;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     gap: var(--wui-spacing-1xs);
+    border-radius: var(--wui-border-radius-xs);
+    background-color: var(--wui-color-modal-bg-base);
+    padding: var(--wui-spacing-xxs);
+  }
+
+  .replace-tokens-button-container > button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     height: 40px;
     width: 40px;
     padding: var(--wui-spacing-xs);
     border: none;
     border-radius: var(--wui-border-radius-xxs);
-    background: var(--wui-gray-glass-005);
+    background: var(--wui-gray-glass-002);
     transition: background-color var(--wui-duration-md) var(--wui-ease-out-power-1);
     will-change: background-color;
     z-index: 20;
   }
 
-  .replace-tokens-button-shimmer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    height: 40px;
-    width: 40px;
-    border: 1ps solid var(--wui-gray-glass-020);
-    border-radius: var(--wui-border-radius-xxs);
-    z-index: 20;
-  }
-
-  .replace-tokens-button:hover {
-    background: var(--wui-gray-glass-010);
+  .replace-tokens-button-container > button:hover {
+    background: var(--wui-gray-glass-005);
   }
 
   .details-container > wui-flex {

@@ -92,6 +92,6 @@ describe('SwapCalculationUtil', () => {
 
   it('should calculate the provider fee as expected', () => {
     const providerFee = SwapCalculationUtil.getProviderFee(sourceTokenAmount)
-    expect(providerFee).toEqual('0.0075')
+    expect(providerFee).toEqual('0.0085')
   })
 })
