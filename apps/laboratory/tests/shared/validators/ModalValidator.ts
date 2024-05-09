@@ -2,15 +2,7 @@ import { expect } from '@playwright/test'
 import type { Page } from '@playwright/test'
 import { ConstantsUtil } from '../../../src/utils/ConstantsUtil'
 import { getMaximumWaitConnections } from '../utils/timeouts'
-import { createPublicClient, http } from 'viem'
-
-function getTransport({ chainId }: { chainId: number }) {
-  const RPC_URL = 'https://rpc.walletconnect.com'
-
-  return http(
-    `${RPC_URL}/v1/?chainId=eip155:${chainId}&projectId=${process.env['NEXT_PUBLIC_PROJECT_ID']}`
-  )
-}
+import { verifySignature } from '../../../src/utils/SignatureUtil'
 
 const MAX_WAIT = getMaximumWaitConnections()
 
@@ -102,13 +94,11 @@ export class ModalValidator {
   }
 
   async expectValidSignature(signature: `0x${string}`, address: `0x${string}`, chainId: number) {
-    const publicClient = createPublicClient({
-      transport: getTransport({ chainId })
-    })
-    const isVerified = await publicClient.verifyMessage({
-      message: 'Hello Web3Modal!',
+    const isVerified = await verifySignature({
       address,
-      signature
+      message: 'Hello Web3Modal!',
+      signature,
+      chainId
     })
 
     expect(isVerified).toBe(true)

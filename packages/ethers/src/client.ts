@@ -33,7 +33,9 @@ import {
   formatUnits,
   JsonRpcSigner,
   BrowserProvider,
-  Contract
+  Contract,
+  hexlify,
+  toUtf8Bytes
 } from 'ethers'
 import {
   EthersConstantsUtil,
@@ -303,13 +305,17 @@ export class Web3Modal extends Web3ModalScaffold {
 
       signMessage: async (message: string) => {
         const provider = EthersStoreUtil.state.provider
+        let hexedMessage = message
         if (!provider) {
           throw new Error('connectionControllerClient:signMessage - provider is undefined')
         }
 
+        if (!message.startsWith('0x')) {
+          hexedMessage = hexlify(toUtf8Bytes(message))
+        }
         const signature = await provider.request({
           method: 'personal_sign',
-          params: [message, this.getAddress()]
+          params: [hexedMessage, this.getAddress()]
         })
 
         return signature as `0x${string}`
