@@ -11,6 +11,7 @@ import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
+import { SIWEController } from '@web3modal/siwe'
 
 // -- Helpers ------------------------------------------- //
 function headings() {
@@ -116,7 +117,7 @@ export class W3mHeader extends LitElement {
   }
 
   private async onClose() {
-    if (OptionsController.state.isSiweEnabled) {
+    if (OptionsController.state.isSiweEnabled && SIWEController.state.status === 'loading') {
       const { SIWEController } = await import('@web3modal/siwe')
       if (SIWEController.state.status !== 'success') {
         await ConnectionController.disconnect()
