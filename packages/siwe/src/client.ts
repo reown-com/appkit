@@ -112,7 +112,10 @@ export class Web3ModalSIWEClient {
       RouterController.pushTransactionStack({
         view: null,
         goBack: false,
-        replace: true
+        replace: true,
+        onCancel() {
+          ConnectionController.disconnect()
+        }
       })
     }
     const signature = await ConnectionController.signMessage(message)
