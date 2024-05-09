@@ -135,8 +135,9 @@ export class W3mHeader extends LitElement {
     const isConnectHelp = view === 'Connect'
     const isApproveTransaction = view === 'ApproveTransaction'
     const isUpgradeToSmartAccounts = view === 'UpgradeToSmartAccount'
+    const isConnectingSIWEView = view === 'ConnectingSiwe'
 
-    const shouldHideBack = isApproveTransaction || isUpgradeToSmartAccounts
+    const shouldHideBack = isApproveTransaction || isUpgradeToSmartAccounts || isConnectingSIWEView
 
     if (this.showBack && !shouldHideBack) {
       return html`<wui-icon-link
@@ -220,11 +221,7 @@ export class W3mHeader extends LitElement {
   }
 
   private onGoBack() {
-    if (RouterController.state.view === 'ConnectingSiwe') {
-      RouterController.push('Connect')
-    } else {
-      RouterController.goBack()
-    }
+    RouterController.goBack()
   }
 }
 
