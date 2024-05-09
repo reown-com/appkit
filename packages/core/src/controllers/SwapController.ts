@@ -714,11 +714,7 @@ export const SwapController = {
       state.gasPriceInUSD
     )
 
-    if (insufficientNetworkTokenForGas || isInsufficientSourceTokenForSwap) {
-      return true
-    }
-
-    return false
+    return insufficientNetworkTokenForGas || isInsufficientSourceTokenForSwap
   },
 
   // -- Calculations -------------------------------------- //
