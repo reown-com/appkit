@@ -1,5 +1,5 @@
 import { customElement } from '@web3modal/ui'
-import { ConnectorController, RouterController, SnackController } from '@web3modal/core'
+import { ConnectorController, RouterController, RouterUtil, SnackController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { W3mFrameRpcConstants } from '@web3modal/wallet'
@@ -83,7 +83,7 @@ export class W3mUpgradeToSmartAccountView extends LitElement {
         )
         await this.emailConnector.provider.connect()
         this.loading = false
-        RouterController.push('Account')
+        RouterUtil.navigateAfterPreferredAccountTypeSelect()
       } catch (e) {
         SnackController.showError('Error upgrading to smart account')
       }
