@@ -219,11 +219,7 @@ export class W3mHeader extends LitElement {
   }
 
   private onGoBack() {
-    if (RouterController.state.view === 'ConnectingSiwe') {
-      RouterController.push('Connect')
-    } else {
-      RouterController.goBack()
-    }
+    RouterController.goBack()
   }
 }
 
