@@ -13,7 +13,8 @@ import {
   ConnectionController,
   RouterUtil,
   RouterController,
-  StorageUtil
+  StorageUtil,
+  ModalController
 } from '@web3modal/core'
 
 import { NetworkUtil } from '@web3modal/common'
@@ -114,7 +115,7 @@ export class Web3ModalSIWEClient {
         goBack: false,
         replace: true,
         onCancel() {
-          ConnectionController.disconnect()
+          ConnectionController.disconnect().then(() => ModalController.close())
         }
       })
     }
