@@ -33,6 +33,10 @@ export default css`
     transform: translateY(-50%);
   }
 
+  .paste {
+    display: inline-flex;
+  }
+
   textarea {
     background: transparent;
     width: 100%;

@@ -29,7 +29,7 @@ export class WuiInputAmount extends LitElement {
     return html`<input
       ${ref(this.inputElementRef)}
       type="text"
-      inputmode="numeric"
+      inputmode="decimal"
       pattern="[0-9,.]*"
       placeholder=${this.placeholder}
       ?disabled=${this.disabled}
