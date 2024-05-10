@@ -16,7 +16,8 @@ import {
   getAccount,
   getEnsAddress as wagmiGetEnsAddress,
   reconnect,
-  getConnectorClient
+  getConnectorClient,
+  getConnections
 } from '@wagmi/core'
 import { mainnet } from 'viem/chains'
 import { prepareTransactionRequest, sendTransaction as wagmiSendTransaction } from '@wagmi/core'
@@ -259,14 +260,8 @@ export class Web3Modal extends Web3ModalScaffold {
       sendTransaction: async (data: SendTransactionArgs) => {
         const { chainId } = getAccount(this.wagmiConfig)
 
-        const accountAddress = getAddress(data.address)
-        console.log(data.address)
-        console.log(accountAddress)
-
-        // console.log(accountAddress)
-
         const txParams = {
-          account: accountAddress,
+          account: data.address,
           to: data.to,
           value: data.value,
           gas: data.gas,

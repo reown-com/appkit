@@ -44,8 +44,8 @@
     "react-icons": "4.12.0",
     "@walletconnect/utils": "2.12.0",
     "valtio": "1.11.2",
-    "viem": "2.9.3",
-    "wagmi": "2.5.19"
+    "viem": "2.10.3",
+    "wagmi": "2.8.4"
   },
   "devDependencies": {
     "@aws-sdk/client-cloudwatch": "3.509.0",
