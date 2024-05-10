@@ -7,6 +7,10 @@ export default css`
     scrollbar-width: none;
   }
 
+  :host > wui-flex:first-child::-webkit-scrollbar {
+    display: none;
+  }
+
   .preview-container,
   .details-container {
     width: 100%;
