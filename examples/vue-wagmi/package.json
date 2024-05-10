@@ -7,8 +7,8 @@
     "build:examples": "vite build"
   },
   "dependencies": {
-    "@wagmi/connectors": "4.3.6",
-    "@wagmi/core": "2.9.4",
+    "@wagmi/connectors": "4.3.7",
+    "@wagmi/core": "2.9.5",
     "@web3modal/wagmi": "4.1.12-910a844.0"
   },
   "devDependencies": {

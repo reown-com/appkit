@@ -137,6 +137,7 @@ export const SendController = {
       SnackController.showSuccess('Transaction started')
       this.resetSend()
     } catch (error) {
+      console.log(error)
       SnackController.showError('Something went wrong')
     }
   },

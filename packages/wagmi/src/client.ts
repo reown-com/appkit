@@ -15,9 +15,7 @@ import {
   writeContract as wagmiWriteContract,
   getAccount,
   getEnsAddress as wagmiGetEnsAddress,
-  reconnect,
-  getConnectorClient,
-  getConnections
+  reconnect
 } from '@wagmi/core'
 import { mainnet } from 'viem/chains'
 import { prepareTransactionRequest, sendTransaction as wagmiSendTransaction } from '@wagmi/core'
@@ -36,7 +34,7 @@ import type {
   Token,
   WriteContractArgs
 } from '@web3modal/scaffold'
-import { formatUnits, getAddress, parseUnits } from 'viem'
+import { formatUnits, parseUnits } from 'viem'
 import type { Hex } from 'viem'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
