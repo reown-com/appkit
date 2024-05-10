@@ -525,7 +525,10 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   public getChainId() {
-    return EthersStoreUtil.state.chainId
+    const storeChainId = EthersStoreUtil.state.chainId
+    const networkControllerChainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
+
+    return storeChainId ?? networkControllerChainId
   }
 
   public getIsConnected() {
