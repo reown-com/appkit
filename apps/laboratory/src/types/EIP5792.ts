@@ -6,4 +6,3 @@ export type Capabilities = {
 }
 export type GetCapabilitiesResult = Record<string, Capabilities>
 export type GetCallsStatusParams = `0x${string}`
-
