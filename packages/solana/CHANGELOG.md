@@ -1,5 +1,20 @@
 # @web3modal/solana
 
+## 4.2.0-448f7f4.1
+
+### Minor Changes
+
+- refactor: improvements to all features (siwe, send, swaps, ui and ux)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @web3modal/scaffold@4.2.0-448f7f4.1
+  - @web3modal/polyfills@4.2.0-448f7f4.1
+  - @web3modal/scaffold-react@4.2.0-448f7f4.1
+  - @web3modal/scaffold-utils@4.2.0-448f7f4.1
+  - @web3modal/scaffold-vue@4.2.0-448f7f4.1
+
 ## 4.1.12-910a844.0
 
 ### Patch Changes

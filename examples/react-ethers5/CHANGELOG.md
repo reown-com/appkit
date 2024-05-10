@@ -1,5 +1,16 @@
 # @examples/react-ethers5
 
+## 4.2.0-448f7f4.1
+
+### Minor Changes
+
+- refactor: improvements to all features (siwe, send, swaps, ui and ux)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @web3modal/ethers5@4.2.0-448f7f4.1
+
 ## 4.1.12-910a844.0
 
 ### Patch Changes
