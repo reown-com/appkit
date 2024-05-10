@@ -103,13 +103,12 @@ export class W3mHeader extends LitElement {
           data-testid="w3m-header-close"
         ></wui-icon-link>
       </wui-flex>
-      ${this.separatorTemplate()}
     `
   }
 
   // -- Private ------------------------------------------- //
 
-  // Tempory added to test connecting with SIWE, replace with 'WhatIsAWallet' again when approved
+  // Temporarily added to test connecting with SIWE, replace with 'WhatIsAWallet' again when approved
   private onWalletHelp() {
     EventsController.sendEvent({ type: 'track', event: 'CLICK_WALLET_HELP' })
     RouterController.push('WhatIsAWallet')
