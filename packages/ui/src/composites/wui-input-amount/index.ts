@@ -45,8 +45,9 @@ export class WuiInputAmount extends LitElement {
 
     if (inputChar && this.inputElementRef?.value) {
       if (inputChar === ',') {
-        this.inputElementRef.value.value = this.inputElementRef.value.value.replace(',', '.')
-        this.value = `${this.value}${this.inputElementRef.value.value}`
+        const inputValue = this.inputElementRef.value.value.replace(',', '.')
+        this.inputElementRef.value.value =  inputValue
+        this.value = `${this.value}${inputValue}`
       } else if (!numbersRegex.test(inputChar)) {
         this.inputElementRef.value.value = this.value.replace(
           new RegExp(inputChar.replace(specialCharactersRegex, '\\$&'), 'gu'),
