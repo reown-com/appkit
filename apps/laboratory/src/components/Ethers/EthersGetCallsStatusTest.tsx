@@ -2,10 +2,11 @@ import { Button, Stack, Text, Input } from '@chakra-ui/react'
 import { useState } from 'react'
 import { sepolia } from '../../utils/ChainsUtil'
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers/react'
+import { EthereumProvider } from '@walletconnect/ethereum-provider'
 import { useChakraToast } from '../Toast'
 import { BrowserProvider } from 'ethers'
+import type { GetCallsStatusParams } from '../../types/EIP5792'
 
-export type GetCallsStatusParams = `0x${string}`
 
 export function EthersGetCallsStatusTest() {
   const toast = useChakraToast()
@@ -44,6 +45,21 @@ export function EthersGetCallsStatusTest() {
     } finally {
       setLoading(false)
     }
+  }
+
+  function isGetCallsStatusSupported(): boolean {
+    const provider = walletProvider as Awaited<ReturnType<typeof EthereumProvider['init']>>;
+    return Boolean(
+      provider?.signer?.session?.namespaces?.['eip155']?.methods?.includes('wallet_getCallsStatus')
+    );
+  }
+
+  if(!isGetCallsStatusSupported()) {
+    return (
+      <Text fontSize="md" color="yellow">
+        Wallet do not support this feature
+      </Text>
+    )
   }
 
   const allowedChains = [sepolia.chainId]

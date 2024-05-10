@@ -56,7 +56,7 @@ export function EthersTests() {
           </Box>
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">
-              Send Calls
+              Send Calls (Atomic Batch)
             </Heading>
             <EthersSendCallsTest />
           </Box>

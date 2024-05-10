@@ -1,18 +1,20 @@
-import { Button, Stack, Link, Text, Spacer } from '@chakra-ui/react'
+import { Button, Stack, Text, Spacer } from '@chakra-ui/react'
 import { useState } from 'react'
-import { sepolia } from '../../utils/ChainsUtil'
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers/react'
+import { EthereumProvider } from '@walletconnect/ethereum-provider'
 import { useChakraToast } from '../Toast'
 import { parseGwei, type Address } from 'viem'
 import { vitalikEthAddress } from '../../utils/DataUtil'
 import { BrowserProvider } from 'ethers'
+import type { GetCapabilitiesResult } from '../../types/EIP5792'
+import { getChain } from '../../utils/ChainsUtil'
+import { parseJSON } from '../../utils/CommonUtils'
 
 export function EthersSendCallsTest() {
   const toast = useChakraToast()
   const { address, chainId } = useWeb3ModalAccount()
   const { walletProvider } = useWeb3ModalProvider()
   const [loading, setLoading] = useState(false)
-
   async function onSendCalls() {
     try {
       setLoading(true)
@@ -59,31 +61,56 @@ export function EthersSendCallsTest() {
     }
   }
 
-  const allowedChains = [sepolia.chainId]
+  function isSendCallsSupported(): boolean {
+    const provider = walletProvider as Awaited<ReturnType<typeof EthereumProvider['init']>>;
+    return Boolean(
+      provider?.signer?.session?.namespaces?.['eip155']?.methods?.includes('wallet_sendCalls')
+    );
+  }
+ 
+  function getAtomicBatchAllowedChainInfo(): { chainIds: number[]; chainNames: string[] } {
+    const provider = walletProvider as Awaited<ReturnType<(typeof EthereumProvider)['init']>>
+    if (address && chainId && provider?.signer?.session?.sessionProperties) {
+      const walletCapabilitiesString = provider.signer.session.sessionProperties['capabilities']
+      const walletCapabilities = walletCapabilitiesString && parseJSON(walletCapabilitiesString)
+      const accountCapabilities = walletCapabilities[address] as GetCapabilitiesResult
+      const chainIds = Object.keys(accountCapabilities).map(chainIdAsHex => Number(chainIdAsHex))
+      const chainNames = chainIds.map(id => getChain(id)?.name ?? `Unknown Chain(${id})`)
 
-  return allowedChains.includes(Number(chainId)) && address ? (
+      return { chainIds, chainNames }
+    }
+
+    return { chainIds: [], chainNames: [] }
+  }
+
+  const allowedChains = getAtomicBatchAllowedChainInfo()
+
+  if(!isSendCallsSupported()) {
+    return (
+      <Text fontSize="md" color="yellow">
+        Wallet do not support this feature
+      </Text>
+    )
+  }
+
+  if (allowedChains.chainIds.length === 0) {
+    return (
+      <Text fontSize="md" color="yellow">
+        Account do not support this feature
+      </Text>
+    )
+  }
+
+  return allowedChains.chainIds.includes(Number(chainId)) && address ? (
     <Stack direction={['column', 'column', 'row']}>
       <Button data-test-id="sign-transaction-button" onClick={onSendCalls} isDisabled={loading}>
         Send Batch Calls to Vitalik
       </Button>
-
       <Spacer />
-
-      <Link isExternal href="https://sepoliafaucet.com">
-        <Button variant="outline" colorScheme="blue" isDisabled={loading}>
-          Sepolia Faucet 1
-        </Button>
-      </Link>
-
-      <Link isExternal href="https://www.infura.io/faucet/sepolia">
-        <Button variant="outline" colorScheme="orange" isDisabled={loading}>
-          Sepolia Faucet 2
-        </Button>
-      </Link>
     </Stack>
   ) : (
     <Text fontSize="md" color="yellow">
-      Switch to Sepolia to test this feature
+      Switch to {allowedChains.chainNames} to test this feature
     </Text>
   )
 }
