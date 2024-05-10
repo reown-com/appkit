@@ -154,14 +154,6 @@ export class W3mHeader extends LitElement {
     ></wui-icon-link>`
   }
 
-  private separatorTemplate() {
-    if (!this.heading) {
-      return null
-    }
-
-    return html`<wui-separator></wui-separator>`
-  }
-
   private getPadding() {
     if (this.heading) {
       return ['l', '2l', 'l', '2l'] as const
