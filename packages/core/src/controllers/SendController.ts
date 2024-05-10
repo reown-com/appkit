@@ -91,7 +91,7 @@ export const SendController = {
 
   sendToken() {
     if (this.state.token?.address && this.state.sendTokenAmount && this.state.receiverAddress) {
-      SendController.sendERC20Token({
+      this.sendERC20Token({
         receiverAddress: this.state.receiverAddress,
         tokenAddress: this.state.token.address,
         sendTokenAmount: this.state.sendTokenAmount,
@@ -103,7 +103,7 @@ export const SendController = {
       this.state.gasPrice &&
       this.state.token?.quantity.decimals
     ) {
-      SendController.sendNativeToken({
+      this.sendNativeToken({
         receiverAddress: this.state.receiverAddress,
         sendTokenAmount: this.state.sendTokenAmount,
         gasPrice: this.state.gasPrice,
@@ -137,6 +137,7 @@ export const SendController = {
       SnackController.showSuccess('Transaction started')
       this.resetSend()
     } catch (error) {
+      console.log(error)
       SnackController.showError('Something went wrong')
     }
   },
