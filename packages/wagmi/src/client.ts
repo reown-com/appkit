@@ -15,7 +15,8 @@ import {
   writeContract as wagmiWriteContract,
   getAccount,
   getEnsAddress as wagmiGetEnsAddress,
-  reconnect
+  reconnect,
+  getConnectorClient
 } from '@wagmi/core'
 import { mainnet } from 'viem/chains'
 import { prepareTransactionRequest, sendTransaction as wagmiSendTransaction } from '@wagmi/core'
@@ -34,7 +35,7 @@ import type {
   Token,
   WriteContractArgs
 } from '@web3modal/scaffold'
-import { formatUnits, parseUnits } from 'viem'
+import { formatUnits, getAddress, parseUnits } from 'viem'
 import type { Hex } from 'viem'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
@@ -258,8 +259,14 @@ export class Web3Modal extends Web3ModalScaffold {
       sendTransaction: async (data: SendTransactionArgs) => {
         const { chainId } = getAccount(this.wagmiConfig)
 
+        const accountAddress = getAddress(data.address)
+        console.log(data.address)
+        console.log(accountAddress)
+
+        // console.log(accountAddress)
+
         const txParams = {
-          account: data.address,
+          account: accountAddress,
           to: data.to,
           value: data.value,
           gas: data.gas,
