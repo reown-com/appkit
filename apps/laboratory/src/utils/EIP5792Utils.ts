@@ -3,6 +3,11 @@ import type { GetCapabilitiesResult } from '../types/EIP5792'
 import { getChain } from './ChainsUtil'
 import { parseJSON } from './CommonUtils'
 
+export const EIP_5792_RPC_METHODS = {
+  WALLET_GET_CALLS_STATUS: 'wallet_getCallsStatus',
+  WALLET_SEND_CALLS: 'wallet_sendCalls'
+}
+
 export function getAtomicBatchSupportedChainInfo(
   provider: Awaited<ReturnType<(typeof EthereumProvider)['init']>>,
   address: string
@@ -17,6 +22,7 @@ export function getAtomicBatchSupportedChainInfo(
     const chainIds = Object.keys(accountCapabilities).map(chainIdAsHex => Number(chainIdAsHex))
     const chainInfo = chainIds.map(id => {
       const chain = getChain(id)
+
       return {
         chainId: id,
         chainName: chain?.name ?? `Unknown Chain(${id})`

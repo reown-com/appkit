@@ -6,14 +6,14 @@ import { useChakraToast } from '../Toast'
 import { parseGwei, type Address } from 'viem'
 import { vitalikEthAddress } from '../../utils/DataUtil'
 import { BrowserProvider } from 'ethers'
-import type { GetCapabilitiesResult } from '../../types/EIP5792'
-import { getChain } from '../../utils/ChainsUtil'
-import { parseJSON } from '../../utils/CommonUtils'
+import { EIP_5792_RPC_METHODS, getAtomicBatchSupportedChainInfo } from '../../utils/EIP5792Utils'
 
 export function EthersSendCallsTest() {
   const toast = useChakraToast()
   const { address, chainId } = useWeb3ModalAccount()
   const { walletProvider } = useWeb3ModalProvider()
+  const ethereumProvider =
+    walletProvider && (walletProvider as Awaited<ReturnType<(typeof EthereumProvider)['init']>>)
   const [loading, setLoading] = useState(false)
   async function onSendCalls() {
     try {
@@ -44,7 +44,9 @@ export function EthersSendCallsTest() {
         from: address,
         calls
       }
-      const batchCallHash = await provider.send('wallet_sendCalls', [sendCallsParams])
+      const batchCallHash = await provider.send(EIP_5792_RPC_METHODS.WALLET_SEND_CALLS, [
+        sendCallsParams
+      ])
       toast({
         title: 'Success',
         description: batchCallHash,
@@ -62,30 +64,22 @@ export function EthersSendCallsTest() {
   }
 
   function isSendCallsSupported(): boolean {
-    const provider = walletProvider as Awaited<ReturnType<typeof EthereumProvider['init']>>;
     return Boolean(
-      provider?.signer?.session?.namespaces?.['eip155']?.methods?.includes('wallet_sendCalls')
-    );
-  }
- 
-  function getAtomicBatchAllowedChainInfo(): { chainIds: number[]; chainNames: string[] } {
-    const provider = walletProvider as Awaited<ReturnType<(typeof EthereumProvider)['init']>>
-    if (address && chainId && provider?.signer?.session?.sessionProperties) {
-      const walletCapabilitiesString = provider.signer.session.sessionProperties['capabilities']
-      const walletCapabilities = walletCapabilitiesString && parseJSON(walletCapabilitiesString)
-      const accountCapabilities = walletCapabilities[address] as GetCapabilitiesResult
-      const chainIds = Object.keys(accountCapabilities).map(chainIdAsHex => Number(chainIdAsHex))
-      const chainNames = chainIds.map(id => getChain(id)?.name ?? `Unknown Chain(${id})`)
-
-      return { chainIds, chainNames }
-    }
-
-    return { chainIds: [], chainNames: [] }
+      ethereumProvider?.signer?.session?.namespaces?.['eip155']?.methods?.includes(
+        EIP_5792_RPC_METHODS.WALLET_SEND_CALLS
+      )
+    )
   }
 
-  const allowedChains = getAtomicBatchAllowedChainInfo()
+  if (!address || !ethereumProvider) {
+    return (
+      <Text fontSize="md" color="yellow">
+        Wallet not connected
+      </Text>
+    )
+  }
 
-  if(!isSendCallsSupported()) {
+  if (!isSendCallsSupported()) {
     return (
       <Text fontSize="md" color="yellow">
         Wallet do not support this feature
@@ -93,7 +87,9 @@ export function EthersSendCallsTest() {
     )
   }
 
-  if (allowedChains.chainIds.length === 0) {
+  const allowedChains = getAtomicBatchSupportedChainInfo(ethereumProvider, address)
+
+  if (allowedChains.length === 0) {
     return (
       <Text fontSize="md" color="yellow">
         Account do not support this feature
@@ -101,7 +97,7 @@ export function EthersSendCallsTest() {
     )
   }
 
-  return allowedChains.chainIds.includes(Number(chainId)) && address ? (
+  return allowedChains.find(chainInfo => chainInfo.chainId === Number(chainId)) && address ? (
     <Stack direction={['column', 'column', 'row']}>
       <Button data-test-id="sign-transaction-button" onClick={onSendCalls} isDisabled={loading}>
         Send Batch Calls to Vitalik
@@ -110,7 +106,7 @@ export function EthersSendCallsTest() {
     </Stack>
   ) : (
     <Text fontSize="md" color="yellow">
-      Switch to {allowedChains.chainNames} to test this feature
+      Switch to {allowedChains.map(ci => ci.chainName).join(', ')} to test this feature
     </Text>
   )
 }

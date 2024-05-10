@@ -4,7 +4,7 @@ import { EthereumProvider } from '@walletconnect/ethereum-provider'
 import { useCallsStatus } from 'wagmi/experimental'
 import { useCallback, useState, useEffect } from 'react'
 import { useChakraToast } from '../Toast'
-import { getAtomicBatchSupportedChainInfo } from '../../utils/EIP5792Utils'
+import { EIP_5792_RPC_METHODS, getAtomicBatchSupportedChainInfo } from '../../utils/EIP5792Utils'
 
 export function WagmiGetCallsStatusTest() {
   const [provider, setProvider] = useState<Awaited<ReturnType<(typeof EthereumProvider)['init']>>>()
@@ -39,22 +39,24 @@ export function WagmiGetCallsStatusTest() {
 
   function isGetCallsStatusSupported(): boolean {
     return Boolean(
-      provider?.signer?.session?.namespaces?.['eip155']?.methods?.includes('wallet_getCallsStatus')
+      provider?.signer?.session?.namespaces?.['eip155']?.methods?.includes(
+        EIP_5792_RPC_METHODS.WALLET_GET_CALLS_STATUS
+      )
     )
   }
 
   useEffect(() => {
-    const fetchProvider = async () => {
-      if (!connection || !connection[0]) return
-      const connector = connection[0].connector
-      if (!connector) return
-      const provider = (await connector?.getProvider()) as Awaited<
+    async function fetchProvider() {
+      const connectedProvider = await connection?.[0]?.connector?.getProvider()
+      const ethereumProvider = connectedProvider as Awaited<
         ReturnType<(typeof EthereumProvider)['init']>
       >
-      setProvider(provider)
+      setProvider(ethereumProvider)
     }
 
-    status === 'connected' && fetchProvider()
+    if (status === 'connected') {
+      fetchProvider()
+    }
   }, [status, connection])
 
   if (status !== 'connected' || !provider) {
