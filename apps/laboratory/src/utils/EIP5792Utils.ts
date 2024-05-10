@@ -18,7 +18,9 @@ export function getAtomicBatchSupportedChainInfo(
     const walletCapabilitiesString = provider.signer.session.sessionProperties['capabilities']
     const walletCapabilities = walletCapabilitiesString && parseJSON(walletCapabilitiesString)
     const accountCapabilities = walletCapabilities[address]
-    const chainIds = accountCapabilities ? Object.keys(accountCapabilities).map(chainIdAsHex => Number(chainIdAsHex)):[]
+    const chainIds = accountCapabilities
+      ? Object.keys(accountCapabilities).map(chainIdAsHex => Number(chainIdAsHex))
+      : []
     const chainInfo = chainIds.map(id => {
       const chain = getChain(id)
 

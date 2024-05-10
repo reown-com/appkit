@@ -77,14 +77,14 @@ export function WagmiGetCallsStatusTest() {
 
   const allowedChains = getAtomicBatchSupportedChainInfo(provider, address)
 
-  if( allowedChains.length === 0) {
+  if (allowedChains.length === 0) {
     return (
       <Text fontSize="md" color="yellow">
         Account do not support this feature
       </Text>
     )
   }
-  
+
   return allowedChains.find(chainInfo => chainInfo.chainId === Number(chain?.id)) &&
     status === 'connected' ? (
     <Stack direction={['column', 'column', 'row']}>
