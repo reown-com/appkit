@@ -1,8 +1,8 @@
 import '@web3modal/polyfills'
 
-import type { CreateConfigParameters, CreateConnectorFn, Config } from 'wagmi'
-import { createConfig } from 'wagmi'
-import { coinbaseWallet } from 'wagmi/connectors'
+import type { CreateConfigParameters, CreateConnectorFn, Config } from '@wagmi/core'
+import { createConfig } from '@wagmi/core'
+import { coinbaseWallet } from '@wagmi/connectors'
 
 import { emailConnector } from '../connectors/EmailConnector.js'
 import { alphaWalletConnect } from '../connectors/alphaWalletConnect.js'

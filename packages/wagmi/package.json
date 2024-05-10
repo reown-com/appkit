@@ -60,11 +60,11 @@
     "@web3modal/siwe": "4.1.12-910a844.0"
   },
   "devDependencies": {
-    "@wagmi/connectors": "4.1.25",
-    "@wagmi/core": "2.6.16",
+    "@wagmi/connectors": "4.3.6",
+    "@wagmi/core": "2.9.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "viem": "2.7.13",
+    "viem": "2.9.31",
     "vue": "3.4.3"
   },
   "peerDependencies": {
