@@ -7,12 +7,7 @@ import {
   type SwapInputTarget
 } from '@web3modal/core'
 import { NumberUtil } from '@web3modal/common'
-import {
-  UiHelperUtil,
-  customElement,
-  swapInputMaskBottomSvg,
-  swapInputMaskTopSvg
-} from '@web3modal/ui'
+import { UiHelperUtil, customElement } from '@web3modal/ui'
 import styles from './styles.js'
 
 const MINIMUM_USD_VALUE_TO_CONVERT = 0.00005
@@ -51,7 +46,6 @@ export class W3mSwapInput extends LitElement {
 
     return html`
       <wui-flex class="${this.focused ? 'focus' : ''}" justifyContent="space-between">
-        ${this.target === 'sourceToken' ? swapInputMaskTopSvg : swapInputMaskBottomSvg}
         <wui-flex
           flex="1"
           flexDirection="column"

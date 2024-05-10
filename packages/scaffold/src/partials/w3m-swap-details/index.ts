@@ -151,7 +151,7 @@ export class WuiSwapDetails extends LitElement {
                     >
                       <wui-flex alignItems="center" gap="xs">
                         <wui-text class="details-row-title" variant="small-400" color="fg-150">
-                          Provider fee (0.75%)
+                          Provider fee (0.85%)
                         </wui-text>
                       </wui-flex>
                       <wui-flex>

@@ -8,6 +8,7 @@ type TransactionAction = {
   goBack: boolean
   view: RouterControllerState['view'] | null
   close?: boolean
+  replace?: boolean
   onSuccess?: () => void
   onCancel?: () => void
 }
@@ -118,7 +119,7 @@ export const RouterController = {
   },
 
   replace(view: RouterControllerState['view'], data?: RouterControllerState['data']) {
-    if (state.history.length > 1 && state.history.at(-1) !== view) {
+    if (state.history.length >= 1 && state.history.at(-1) !== view) {
       state.view = view
       state.history[state.history.length - 1] = view
       state.data = data

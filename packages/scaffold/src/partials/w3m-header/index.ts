@@ -11,6 +11,7 @@ import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
+import { SIWEController } from '@web3modal/siwe'
 
 // -- Helpers ------------------------------------------- //
 function headings() {
@@ -116,7 +117,7 @@ export class W3mHeader extends LitElement {
   }
 
   private async onClose() {
-    if (OptionsController.state.isSiweEnabled) {
+    if (OptionsController.state.isSiweEnabled && SIWEController.state.status !== 'success') {
       const { SIWEController } = await import('@web3modal/siwe')
       if (SIWEController.state.status !== 'success') {
         await ConnectionController.disconnect()
@@ -134,8 +135,9 @@ export class W3mHeader extends LitElement {
     const isConnectHelp = view === 'Connect'
     const isApproveTransaction = view === 'ApproveTransaction'
     const isUpgradeToSmartAccounts = view === 'UpgradeToSmartAccount'
+    const isConnectingSIWEView = view === 'ConnectingSiwe'
 
-    const shouldHideBack = isApproveTransaction || isUpgradeToSmartAccounts
+    const shouldHideBack = isApproveTransaction || isUpgradeToSmartAccounts || isConnectingSIWEView
 
     if (this.showBack && !shouldHideBack) {
       return html`<wui-icon-link
@@ -219,11 +221,7 @@ export class W3mHeader extends LitElement {
   }
 
   private onGoBack() {
-    if (RouterController.state.view === 'ConnectingSiwe') {
-      RouterController.push('Connect')
-    } else {
-      RouterController.goBack()
-    }
+    RouterController.goBack()
   }
 }
 
