@@ -246,9 +246,9 @@ export class W3mAccountSettingsView extends LitElement {
     await ConnectionController.reconnectExternal(emailConnector)
 
     this.text =
-      this.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
-        ? 'Switch to your smart account'
-        : 'Switch to your EOA '
+      accountTypeTarget === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+        ? 'Switch to your EOA'
+        : 'Switch to your smart account'
     this.switched = true
 
     SendController.resetSend()

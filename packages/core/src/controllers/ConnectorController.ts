@@ -37,6 +37,7 @@ export const ConnectorController = {
       const optionsState = snapshot(OptionsController.state) as typeof OptionsController.state
       const themeMode = ThemeController.getSnapshot().themeMode
       const themeVariables = ThemeController.getSnapshot().themeVariables
+
       emailConnector?.provider?.syncDappData?.({
         metadata: optionsState.metadata,
         sdkVersion: optionsState.sdkVersion,
