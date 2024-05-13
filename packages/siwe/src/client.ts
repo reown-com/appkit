@@ -20,6 +20,7 @@ import {
 
 import { NetworkUtil } from '@web3modal/common'
 import { ConstantsUtil } from '../core/utils/ConstantsUtil.js'
+import { W3mFrameRpcConstants } from '@web3modal/wallet'
 
 // -- Client -------------------------------------------------------------------- //
 export class Web3ModalSIWEClient {
@@ -125,7 +126,10 @@ export class Web3ModalSIWEClient {
       const isValid = await this.methods.verifyMessage({ message, signature })
       if (!isValid) {
         let errorMessage = 'Error verifying SIWE signature'
-        if (AccountController.state.preferredAccountType === 'smartAccount') {
+        if (
+          AccountController.state.preferredAccountType ===
+          W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+        ) {
           errorMessage = 'This application might not support Smart Account connections'
         }
 
