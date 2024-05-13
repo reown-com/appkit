@@ -40,13 +40,11 @@ export default css`
     background: var(--wui-gray-glass-002);
   }
 
-  .details-row.provider-free-row {
-    padding-right: var(--wui-spacing-xs);
+  .details-row-title {
+    white-space: nowrap;
   }
 
-  .free-badge {
-    background: rgba(38, 217, 98, 0.15);
-    border-radius: var(--wui-border-radius-4xs);
-    padding: 4.5px 6px;
+  .details-row.provider-free-row {
+    padding-right: var(--wui-spacing-xs);
   }
 `
