@@ -1,5 +1,21 @@
 # @web3modal/ethers5
 
+## 4.2.0-03e4f4a8.1
+
+### Minor Changes
+
+- fix: wagmi not disconnecting siwe. blank modal bug after signature verification fail
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @web3modal/scaffold@4.2.0-03e4f4a8.1
+  - @web3modal/siwe@4.2.0-03e4f4a8.1
+  - @web3modal/polyfills@4.2.0-03e4f4a8.1
+  - @web3modal/scaffold-react@4.2.0-03e4f4a8.1
+  - @web3modal/scaffold-utils@4.2.0-03e4f4a8.1
+  - @web3modal/scaffold-vue@4.2.0-03e4f4a8.1
+
 ## 4.1.12-910a844.0
 
 ### Patch Changes

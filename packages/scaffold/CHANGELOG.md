@@ -1,5 +1,20 @@
 # @web3modal/scaffold
 
+## 4.2.0-03e4f4a8.1
+
+### Minor Changes
+
+- fix: wagmi not disconnecting siwe. blank modal bug after signature verification fail
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @web3modal/common@4.2.0-03e4f4a8.1
+  - @web3modal/core@4.2.0-03e4f4a8.1
+  - @web3modal/siwe@4.2.0-03e4f4a8.1
+  - @web3modal/ui@4.2.0-03e4f4a8.1
+  - @web3modal/wallet@4.2.0-03e4f4a8.1
+
 ## 4.1.12-910a844.0
 
 ### Patch Changes

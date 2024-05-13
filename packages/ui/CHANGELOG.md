@@ -1,5 +1,11 @@
 # @web3modal/ui
 
+## 4.2.0-03e4f4a8.1
+
+### Minor Changes
+
+- fix: wagmi not disconnecting siwe. blank modal bug after signature verification fail
+
 ## 4.1.12-910a844.0
 
 ### Patch Changes

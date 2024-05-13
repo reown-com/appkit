@@ -1,5 +1,16 @@
 # @examples/react-ethers5
 
+## 4.2.0-03e4f4a8.1
+
+### Minor Changes
+
+- fix: wagmi not disconnecting siwe. blank modal bug after signature verification fail
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @web3modal/ethers@4.2.0-03e4f4a8.1
+
 ## 4.0.5
 
 ### Patch Changes
