@@ -1,5 +1,15 @@
 # @web3modal/core
 
+## 4.2.0-alpha.0
+
+### Patch Changes
+
+- feat: 4.2.0-alpha release
+
+- Updated dependencies []:
+  - @web3modal/common@4.2.0-alpha.0
+  - @web3modal/wallet@4.2.0-alpha.0
+
 ## 4.2.0-03e4f4a8.2
 
 ### Patch Changes

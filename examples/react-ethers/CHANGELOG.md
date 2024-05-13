@@ -1,5 +1,14 @@
 # @examples/react-ethers5
 
+## 4.1.0-alpha.2
+
+### Patch Changes
+
+- feat: 4.2.0-alpha release
+
+- Updated dependencies []:
+  - @web3modal/ethers@4.2.0-alpha.0
+
 ## 4.1.0-03e4f4a8.1
 
 ### Patch Changes
