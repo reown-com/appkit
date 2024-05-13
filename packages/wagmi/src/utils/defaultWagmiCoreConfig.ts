@@ -5,7 +5,6 @@ import { createConfig } from '@wagmi/core'
 import { coinbaseWallet, walletConnect } from '@wagmi/connectors'
 
 import { emailConnector } from '../connectors/EmailConnector.js'
-import { alphaWalletConnect } from '../connectors/alphaWalletConnect.js'
 import { getTransport } from './helpers.js'
 
 export type ConfigOptions = Partial<CreateConfigParameters> & {
