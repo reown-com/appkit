@@ -54,6 +54,9 @@ export type Connector = {
   }
   //prettier-ignore
   connect?: ()=>(Promise<void> | void)
+  disconnect?: () => void
+  //prettier-ignore
+  getProvider?: <T>()=>(Promise<T> | T)
   provider?: unknown
 }
 
@@ -101,6 +104,7 @@ export interface WcWallet {
   app_store?: string | null
   play_store?: string | null
   chrome_store?: string | null
+  rdns?: string | null
 }
 
 export interface ApiGetWalletsRequest {

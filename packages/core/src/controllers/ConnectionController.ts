@@ -20,7 +20,7 @@ export interface ConnectExternalOptions {
 
 export interface ConnectionControllerClient {
   connectWalletConnect: (onUri: (uri: string) => void) => Promise<void>
-  disconnect: () => Promise<void>
+  disconnect: () => void
   signMessage: (message: string) => Promise<string>
   sendTransaction: (args: SendTransactionArgs) => Promise<`0x${string}` | null>
   estimateGas: (args: EstimateGasTransactionArgs) => Promise<bigint>

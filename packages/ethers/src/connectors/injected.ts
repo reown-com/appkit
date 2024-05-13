@@ -2,7 +2,7 @@ import { EthersConstantsUtil } from '../utils/EthersConstantsUtil.js'
 import { EthersHelpersUtil } from '../utils/EthersHelpersUtil.js'
 import { EthersStoreUtil } from '../utils/EthersStoreUtil.js'
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
-import type { ConnectorType } from '@web3modal/core'
+import type { ConnectorType } from '@web3modal/scaffold'
 import type { Provider } from '../utils/EthersTypesUtil.js'
 
 export type InjectedOptions = {
@@ -14,11 +14,12 @@ export type InjectedOptions = {
 export class Injected {
   id: string
   type: ConnectorType
-  getProvider: () => Provider | undefined
+  getProvider: (() => Provider | undefined) | (() => Promise<Provider | undefined>)
 
   constructor({ type, id, getProvider }: InjectedOptions = {}) {
     this.id = id ?? ConstantsUtil.INJECTED_CONNECTOR_ID
     this.type = type ?? 'INJECTED'
+
     if (getProvider) {
       this.getProvider = getProvider
     } else {
@@ -32,8 +33,8 @@ export class Injected {
     }
   }
 
-  checkActive() {
-    const provider = this.getProvider()
+  async checkActive() {
+    const provider = await this.getProvider()
     const walletId = localStorage.getItem(EthersConstantsUtil.WALLET_ID)
 
     if (provider) {
@@ -60,7 +61,7 @@ export class Injected {
   }
 
   async connect() {
-    const provider = this.getProvider()
+    const provider = await this.getProvider()
     if (!provider) {
       throw new Error('provider is undefined')
     }
@@ -73,8 +74,8 @@ export class Injected {
     }
   }
 
-  disconnect() {
-    const provider = this.getProvider()
+  async disconnect() {
+    const provider = await this.getProvider()
 
     localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
     EthersStoreUtil.reset()
@@ -82,8 +83,8 @@ export class Injected {
     provider?.emit('disconnect')
   }
 
-  watch() {
-    const provider = this.getProvider()
+  async watch() {
+    const provider = await this.getProvider()
 
     function disconnectHandler() {
       localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
@@ -118,7 +119,7 @@ export class Injected {
   }
 
   async switchNetwork(chainId: number) {
-    const provider = this.getProvider()
+    const provider = await this.getProvider()
     const chains = EthersStoreUtil.state.supportedChains
     const chain = chains.find(c => c.chainId === chainId)
 
