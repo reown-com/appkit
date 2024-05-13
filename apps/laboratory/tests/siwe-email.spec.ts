@@ -1,5 +1,5 @@
 import { testMEmailSiwe } from './shared/fixtures/w3m-email-fixture'
-import type { ModalWalletPage } from './shared/pages/ModalWalletPage'
+import { ModalWalletPage } from './shared/pages/ModalWalletPage'
 import { ModalWalletValidator } from './shared/validators/ModalWalletValidator'
 
 testMEmailSiwe.beforeEach(async ({ modalValidator }) => {
