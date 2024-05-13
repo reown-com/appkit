@@ -13,14 +13,11 @@ import {
   ConnectionController,
   RouterUtil,
   RouterController,
-  StorageUtil,
-  ModalController,
-  SnackController
+  StorageUtil
 } from '@web3modal/core'
 
 import { NetworkUtil } from '@web3modal/common'
 import { ConstantsUtil } from '../core/utils/ConstantsUtil.js'
-import { W3mFrameRpcConstants } from '@web3modal/wallet'
 
 // -- Client -------------------------------------------------------------------- //
 export class Web3ModalSIWEClient {
@@ -117,42 +114,27 @@ export class Web3ModalSIWEClient {
         goBack: false,
         replace: true,
         onCancel() {
-          ConnectionController.disconnect().then(() => ModalController.close())
+          RouterController.replace('ConnectingSiwe')
         }
       })
     }
-    try {
-      const signature = await ConnectionController.signMessage(message)
-      const isValid = await this.methods.verifyMessage({ message, signature })
-      if (!isValid) {
-        let errorMessage = 'Error verifying SIWE signature'
-        if (
-          AccountController.state.preferredAccountType ===
-          W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
-        ) {
-          errorMessage = 'This application might not support Smart Account connections'
-        }
-
-        throw new Error(errorMessage)
-      }
-
-      const session = await this.methods.getSession()
-      if (!session) {
-        throw new Error('Error verifying SIWE signature')
-      }
-      if (this.methods.onSignIn) {
-        this.methods.onSignIn(session)
-      }
-
-      RouterUtil.navigateAfterNetworkSwitch()
-
-      return session
-    } catch (error) {
-      SnackController.showError((error as Error).message)
-      await ConnectionController.disconnect()
-      ModalController.close()
-      throw error
+    const signature = await ConnectionController.signMessage(message)
+    const isValid = await this.methods.verifyMessage({ message, signature })
+    if (!isValid) {
+      throw new Error('Error verifying SIWE signature')
     }
+
+    const session = await this.methods.getSession()
+    if (!session) {
+      throw new Error('Error verifying SIWE signature')
+    }
+    if (this.methods.onSignIn) {
+      this.methods.onSignIn(session)
+    }
+
+    RouterUtil.navigateAfterNetworkSwitch()
+
+    return session
   }
 
   async signOut() {
