@@ -5,6 +5,10 @@ import type { CaipAddress, ConnectedWalletInfo, SocialProvider } from '../utils/
 import type { Balance } from '@web3modal/common'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { SnackController } from './SnackController.js'
+import { SwapController } from './SwapController.js'
+import { SwapApiUtil } from '../utils/SwapApiUtil.js'
+import type { W3mFrameTypes } from '@web3modal/wallet'
+import { NetworkController } from './NetworkController.js'
 
 // -- Types --------------------------------------------- //
 export interface AccountControllerState {
@@ -21,6 +25,7 @@ export interface AccountControllerState {
   tokenBalance?: Balance[]
   socialProvider?: SocialProvider
   connectedWalletInfo?: ConnectedWalletInfo
+  preferredAccountType?: W3mFrameTypes.AccountType
 }
 
 type StateKey = keyof AccountControllerState
@@ -98,12 +103,19 @@ export const AccountController = {
     state.connectedWalletInfo = connectedWalletInfo
   },
 
+  setPreferredAccountType(preferredAccountType: AccountControllerState['preferredAccountType']) {
+    state.preferredAccountType = preferredAccountType
+  },
+
   async fetchTokenBalance() {
+    const chainId = NetworkController.state.caipNetwork?.id
+
     try {
-      if (state.address) {
-        const response = await BlockchainApiController.getBalance(state.address)
+      if (state.address && chainId) {
+        const response = await BlockchainApiController.getBalance(state.address, chainId)
 
         this.setTokenBalance(response.balances)
+        SwapController.setBalances(SwapApiUtil.mapBalancesToSwapTokens(response.balances))
       }
     } catch (error) {
       SnackController.showError('Failed to fetch token balance')
@@ -124,5 +136,6 @@ export const AccountController = {
     state.tokenBalance = []
     state.connectedWalletInfo = undefined
     state.socialProvider = undefined
+    state.preferredAccountType = undefined
   }
 }

@@ -1,8 +1,21 @@
+import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { FetchUtil } from '../utils/FetchUtil.js'
 import type {
   BlockchainApiTransactionsRequest,
   BlockchainApiTransactionsResponse,
+  BlockchainApiSwapTokensRequest,
+  BlockchainApiSwapTokensResponse,
+  BlockchainApiGenerateSwapCalldataRequest,
+  BlockchainApiGenerateSwapCalldataResponse,
+  BlockchainApiGenerateApproveCalldataRequest,
+  BlockchainApiGenerateApproveCalldataResponse,
+  BlockchainApiSwapAllowanceRequest,
+  BlockchainApiSwapAllowanceResponse,
+  BlockchainApiGasPriceRequest,
+  BlockchainApiGasPriceResponse,
+  BlockchainApiTokenPriceRequest,
+  BlockchainApiTokenPriceResponse,
   BlockchainApiIdentityRequest,
   BlockchainApiIdentityResponse,
   GenerateOnRampUrlArgs,
@@ -123,7 +136,96 @@ export const BlockchainApiController = {
     })
   },
 
-  async getBalance(address: string) {
+  fetchSwapTokens({ projectId, chainId }: BlockchainApiSwapTokensRequest) {
+    return api.get<BlockchainApiSwapTokensResponse>({
+      path: `/v1/convert/tokens?projectId=${projectId}&chainId=${chainId}`
+    })
+  },
+
+  fetchTokenPrice({ projectId, addresses }: BlockchainApiTokenPriceRequest) {
+    return api.post<BlockchainApiTokenPriceResponse>({
+      path: '/v1/fungible/price',
+      body: {
+        projectId,
+        currency: 'usd',
+        addresses
+      },
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+  },
+
+  fetchSwapAllowance({ projectId, tokenAddress, userAddress }: BlockchainApiSwapAllowanceRequest) {
+    const { sdkType, sdkVersion } = OptionsController.state
+
+    return api.get<BlockchainApiSwapAllowanceResponse>({
+      path: `/v1/convert/allowance?projectId=${projectId}&tokenAddress=${tokenAddress}&userAddress=${userAddress}`,
+      headers: {
+        'Content-Type': 'application/json',
+        'x-sdk-type': sdkType,
+        'x-sdk-version': sdkVersion
+      }
+    })
+  },
+
+  fetchGasPrice({ projectId, chainId }: BlockchainApiGasPriceRequest) {
+    const { sdkType, sdkVersion } = OptionsController.state
+
+    return api.get<BlockchainApiGasPriceResponse>({
+      path: `/v1/convert/gas-price?projectId=${projectId}&chainId=${chainId}`,
+      headers: {
+        'Content-Type': 'application/json',
+        'x-sdk-type': sdkType,
+        'x-sdk-version': sdkVersion
+      }
+    })
+  },
+
+  generateSwapCalldata({
+    amount,
+    from,
+    projectId,
+    to,
+    userAddress
+  }: BlockchainApiGenerateSwapCalldataRequest) {
+    return api.post<BlockchainApiGenerateSwapCalldataResponse>({
+      path: '/v1/convert/build-transaction',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: {
+        amount,
+        eip155: {
+          slippage: ConstantsUtil.CONVERT_SLIPPAGE_TOLERANCE
+        },
+        from,
+        projectId,
+        to,
+        userAddress
+      }
+    })
+  },
+
+  generateApproveCalldata({
+    from,
+    projectId,
+    to,
+    userAddress
+  }: BlockchainApiGenerateApproveCalldataRequest) {
+    const { sdkType, sdkVersion } = OptionsController.state
+
+    return api.get<BlockchainApiGenerateApproveCalldataResponse>({
+      path: `/v1/convert/build-approve?projectId=${projectId}&userAddress=${userAddress}&from=${from}&to=${to}`,
+      headers: {
+        'Content-Type': 'application/json',
+        'x-sdk-type': sdkType,
+        'x-sdk-version': sdkVersion
+      }
+    })
+  },
+
+  async getBalance(address: string, chainId?: string) {
     const { sdkType, sdkVersion } = OptionsController.state
 
     return api.get<BlockchainApiBalanceResponse>({
@@ -134,7 +236,8 @@ export const BlockchainApiController = {
       },
       params: {
         currency: 'usd',
-        projectId: OptionsController.state.projectId
+        projectId: OptionsController.state.projectId,
+        chainId
       }
     })
   },

@@ -33,16 +33,7 @@ export const AppSwitchNetworkRequest = z.object({ chainId: z.number() })
 export const AppConnectEmailRequest = z.object({ email: z.string().email() })
 export const AppConnectOtpRequest = z.object({ otp: z.string() })
 export const AppGetSocialRedirectUriRequest = z.object({
-  provider: z.enum([
-    'google',
-    'github',
-    'apple',
-    'facebook',
-    'linkedin',
-    'twitter',
-    'discord',
-    'twitch'
-  ])
+  provider: z.enum(['google', 'github', 'apple', 'facebook', 'twitter', 'discord'])
 })
 export const AppGetUserRequest = z.object({
   chainId: z.optional(z.number()),
@@ -53,7 +44,8 @@ export const AppUpdateEmailPrimaryOtpRequest = z.object({ otp: z.string() })
 export const AppUpdateEmailSecondaryOtpRequest = z.object({ otp: z.string() })
 export const AppSyncThemeRequest = z.object({
   themeMode: z.optional(z.enum(['light', 'dark'])),
-  themeVariables: z.optional(z.record(z.string(), z.string().or(z.number())))
+  themeVariables: z.optional(z.record(z.string(), z.string().or(z.number()))),
+  w3mThemeVariables: z.record(z.string(), z.string())
 })
 export const AppSyncDappDataRequest = z.object({
   metadata: z
@@ -78,6 +70,9 @@ export const AppConnectSocialRequest = z.object({ uri: z.string() })
 
 export const FrameConnectEmailResponse = z.object({
   action: z.enum(['VERIFY_DEVICE', 'VERIFY_OTP'])
+})
+export const FrameUpdateEmailResponse = z.object({
+  action: z.enum(['VERIFY_PRIMARY_OTP', 'VERIFY_SECONDARY_OTP'])
 })
 export const FrameGetUserResponse = z.object({
   email: z.string().email(),
@@ -446,7 +441,7 @@ export const W3mFrameSchema = {
 
     .or(z.object({ type: zType('FRAME_UPDATE_EMAIL_ERROR'), payload: zError }))
 
-    .or(z.object({ type: zType('FRAME_UPDATE_EMAIL_SUCCESS') }))
+    .or(z.object({ type: zType('FRAME_UPDATE_EMAIL_SUCCESS'), payload: FrameUpdateEmailResponse }))
 
     .or(z.object({ type: zType('FRAME_UPDATE_EMAIL_PRIMARY_OTP_ERROR'), payload: zError }))
 

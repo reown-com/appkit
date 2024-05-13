@@ -40,9 +40,10 @@ export class UniversalProviderFactory {
   public static async getProvider() {
     if (!UniversalProviderFactory.provider) {
       await UniversalProviderFactory.init()
-    }
-    if (!UniversalProviderFactory.provider) {
-      throw new Error('Failed to initialize universal provider')
+
+      if (!UniversalProviderFactory.provider) {
+        throw new Error('Failed to initialize universal provider')
+      }
     }
 
     return UniversalProviderFactory.provider

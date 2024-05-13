@@ -60,7 +60,7 @@ import type { WuiListButton } from '../composites/wui-list-button/index.js'
 import type { WuiListSocial } from '../composites/wui-list-social/index.js'
 import type { WuiTokenListItem } from '../composites/wui-token-list-item/index.js'
 import type { WuiTooltip } from '../composites/wui-tooltip/index.js'
-import type { WuiTooltipSelect } from '../composites/wui-tooltip-select/index.js'
+import type { WuiIconButton } from '../composites/wui-icon-button/index.js'
 import type { WuiTransactionListItem } from '../composites/wui-transaction-list-item/index.js'
 import type { WuiTransactionListItemLoader } from '../composites/wui-transaction-list-item-loader/index.js'
 import type { WuiTransactionVisual } from '../composites/wui-transaction-visual/index.js'
@@ -139,7 +139,7 @@ declare global {
       'wui-tag': CustomElement<WuiTag>
       'wui-token-button': CustomElement<WuiTokenButton>
       'wui-token-list-item': CustomElement<WuiTokenListItem>
-      'wui-tooltip-select': CustomElement<WuiTooltipSelect>
+      'wui-icon-button': CustomElement<WuiIconButton>
       'wui-tooltip': CustomElement<WuiTooltip>
       'wui-transaction-list-item-loader': CustomElement<WuiTransactionListItemLoader>
       'wui-transaction-list-item': CustomElement<WuiTransactionListItem>

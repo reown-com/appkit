@@ -7,6 +7,7 @@ import {
   type ThemeMode,
   type ThemeVariables
 } from '../../index.js'
+import { getW3mThemeVariables } from '@web3modal/common'
 
 // -- Setup --------------------------------------------------------------------
 const frameProvider = {
@@ -103,7 +104,11 @@ describe('ConnectorController', () => {
     ])
 
     expect(syncDappDataSpy).toHaveBeenCalledWith(mockDappData)
-    expect(syncThemeSpy).toHaveBeenCalledWith({ themeMode: 'dark', themeVariables: {} })
+    expect(syncThemeSpy).toHaveBeenCalledWith({
+      themeMode: 'dark',
+      themeVariables: {},
+      w3mThemeVariables: getW3mThemeVariables({}, 'dark')
+    })
   })
 
   it('getAuthConnector() should return authConnector when already added', () => {

@@ -1,13 +1,43 @@
 # @apps/demo
 
-## 4.1.10-sl.0
+## 4.1.12-cn-sl-13.1
 
 ### Patch Changes
 
-- Canary social login
+- Canary sl
 
 - Updated dependencies []:
-  - @web3modal/wagmi@4.1.10-sl.0
+  - @web3modal/wagmi@4.1.12-cn-sl-13.1
+
+## 4.1.12-910a844.0
+
+### Patch Changes
+
+- refactor: sync theme with secure site
+
+- Updated dependencies []:
+  - @web3modal/wagmi@4.1.12-910a844.0
+
+## 4.1.11
+
+### Patch Changes
+
+- refactor: Solana exported helper methods and program instruction improvements
+- refactor: email and smart account improvements
+- refactor: unit test CI check improvements
+- feat: convert
+
+- Updated dependencies []:
+  - @web3modal/wagmi@4.1.11
+
+## 4.1.10
+
+### Patch Changes
+
+- Fix activity list styling issue
+
+- Updated dependencies []:
+  - @web3modal/wagmi@4.1.10
 
 ## 4.1.9
 
@@ -31,7 +61,7 @@
 
 ### Patch Changes
 
-- Hotfix for inccorect state of w3m-button when email is enabled
+- Hotfix for incorrect state of w3m-button when email is enabled
 
 - Updated dependencies []:
   - @web3modal/wagmi@4.1.7
@@ -44,6 +74,18 @@
 
 - Updated dependencies []:
   - @web3modal/wagmi@4.1.6
+
+## 4.1.6-a0733f5.0
+
+### Patch Changes
+
+- chore: canary release for siwe dependency
+
+- Updated dependencies []:
+  - @web3modal/ethers@4.1.6-a0733f5.0
+  - @web3modal/siwe@4.1.6-a0733f5.0
+  - @web3modal/solana@4.1.6-a0733f5.0
+  - @web3modal/wagmi@4.1.6-a0733f5.0
 
 ## 4.1.5
 

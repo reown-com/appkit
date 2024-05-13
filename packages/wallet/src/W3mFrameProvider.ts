@@ -19,7 +19,7 @@ type GetSocialRedirectUriResolver = Resolver<
 type GetChainIdResolver = Resolver<W3mFrameTypes.Responses['FrameGetChainIdResponse']>
 type SwitchChainResolver = Resolver<W3mFrameTypes.Responses['FrameSwitchNetworkResponse']>
 type RpcRequestResolver = Resolver<W3mFrameTypes.RPCResponse>
-type UpdateEmailResolver = Resolver<undefined>
+type UpdateEmailResolver = Resolver<W3mFrameTypes.Responses['FrameUpdateEmailResponse']>
 type UpdateEmailPrimaryOtpResolver = Resolver<undefined>
 type UpdateEmailSecondaryOtpResolver = Resolver<
   W3mFrameTypes.Responses['FrameUpdateEmailSecondaryOtpResolver']
@@ -121,7 +121,7 @@ export class W3mFrameProvider {
         case W3mFrameConstants.FRAME_SESSION_UPDATE:
           return this.onSessionUpdate(event)
         case W3mFrameConstants.FRAME_UPDATE_EMAIL_SUCCESS:
-          return this.onUpdateEmailSuccess()
+          return this.onUpdateEmailSuccess(event)
         case W3mFrameConstants.FRAME_UPDATE_EMAIL_ERROR:
           return this.onUpdateEmailError(event)
         case W3mFrameConstants.FRAME_UPDATE_EMAIL_PRIMARY_OTP_SUCCESS:
@@ -145,9 +145,9 @@ export class W3mFrameProvider {
         case W3mFrameConstants.FRAME_GET_SMART_ACCOUNT_ENABLED_NETWORKS_ERROR:
           return this.onSmartAccountEnabledNetworksError(event)
         case W3mFrameConstants.FRAME_SET_PREFERRED_ACCOUNT_SUCCESS:
-          return this.onPreferSmartAccountSuccess(event)
+          return this.onSetPreferredAccountSuccess()
         case W3mFrameConstants.FRAME_SET_PREFERRED_ACCOUNT_ERROR:
-          return this.onPreferSmartAccountError()
+          return this.onSetPreferredAccountError()
         case W3mFrameConstants.FRAME_CONNECT_SOCIAL_SUCCESS:
           return this.onConnectSocialSuccess(event)
         case W3mFrameConstants.FRAME_CONNECT_SOCIAL_ERROR:
@@ -203,6 +203,7 @@ export class W3mFrameProvider {
     payload: W3mFrameTypes.Requests['AppGetSocialRedirectUriRequest']
   ) {
     await this.w3mFrame.frameLoadPromise
+
     this.w3mFrame.events.postAppEvent({
       type: W3mFrameConstants.APP_GET_SOCIAL_REDIRECT_URI,
       payload
@@ -241,7 +242,7 @@ export class W3mFrameProvider {
     W3mFrameHelpers.checkIfAllowedToTriggerEmail()
     this.w3mFrame.events.postAppEvent({ type: W3mFrameConstants.APP_UPDATE_EMAIL, payload })
 
-    return new Promise((resolve, reject) => {
+    return new Promise<W3mFrameTypes.Responses['FrameUpdateEmailResponse']>((resolve, reject) => {
       this.updateEmailResolver = { resolve, reject }
     })
   }
@@ -325,7 +326,7 @@ export class W3mFrameProvider {
     await this.w3mFrame.frameLoadPromise
     this.w3mFrame.events.postAppEvent({
       type: W3mFrameConstants.APP_GET_USER,
-      payload: { chainId, preferredAccountType: payload?.preferredAccountType }
+      payload: { chainId }
     })
 
     return new Promise<W3mFrameTypes.Responses['FrameGetUserResponse']>((resolve, reject) => {
@@ -507,6 +508,7 @@ export class W3mFrameProvider {
   ) {
     this.setEmailLoginSuccess(event.payload.email)
     this.setLastUsedChainId(event.payload.chainId)
+
     this.connectResolver?.resolve(event.payload)
   }
 
@@ -589,8 +591,10 @@ export class W3mFrameProvider {
     }
   }
 
-  private onUpdateEmailSuccess() {
-    this.updateEmailResolver?.resolve(undefined)
+  private onUpdateEmailSuccess(
+    event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/UPDATE_EMAIL_SUCCESS' }>
+  ) {
+    this.updateEmailResolver?.resolve(event.payload)
     this.setNewLastEmailLoginTime()
   }
 
@@ -670,14 +674,11 @@ export class W3mFrameProvider {
     this.smartAccountEnabledNetworksResolver?.reject(event.payload.message)
   }
 
-  private onPreferSmartAccountSuccess(
-    event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/SET_PREFERRED_ACCOUNT_SUCCESS' }>
-  ) {
-    this.persistPreferredAccount(event.payload.type as W3mFrameTypes.AccountType)
+  private onSetPreferredAccountSuccess() {
     this.setPreferredAccountResolver?.resolve(undefined)
   }
 
-  private onPreferSmartAccountError() {
+  private onSetPreferredAccountError() {
     this.setPreferredAccountResolver?.reject()
   }
 
@@ -704,10 +705,6 @@ export class W3mFrameProvider {
 
   private getLastUsedChainId() {
     return Number(W3mFrameStorage.get(W3mFrameConstants.LAST_USED_CHAIN_KEY))
-  }
-
-  private persistPreferredAccount(type: W3mFrameTypes.AccountType) {
-    W3mFrameStorage.set(W3mFrameConstants.PREFERRED_ACCOUNT_TYPE, type)
   }
 
   private persistSmartAccountEnabledNetworks(networks: number[]) {

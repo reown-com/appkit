@@ -1,12 +1,14 @@
 import { DEFAULT_SESSION_PARAMS } from './shared/constants'
 import { testMWSiwe } from './shared/fixtures/w3m-wallet-fixture'
 
+// Setup
 testMWSiwe.beforeEach(async ({ modalPage, walletPage }) => {
   const uri = await modalPage.getConnectUri()
   await walletPage.connectWithUri(uri)
   await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
 })
 
+// Cleanup
 testMWSiwe.afterEach(async ({ modalValidator, walletValidator, browserName }) => {
   if (browserName === 'firefox') {
     return

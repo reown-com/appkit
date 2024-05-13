@@ -1,6 +1,7 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, ref, snapshot } from 'valtio/vanilla'
 import type { Connector, AuthConnector } from '../utils/TypeUtil.js'
+import { getW3mThemeVariables } from '@web3modal/common'
 import { OptionsController } from './OptionsController.js'
 import { ThemeController } from './ThemeController.js'
 
@@ -34,14 +35,17 @@ export const ConnectorController = {
     if (connector.id === 'w3mAuth') {
       const authConnector = connector as AuthConnector
       const optionsState = snapshot(OptionsController.state) as typeof OptionsController.state
+      const themeMode = ThemeController.getSnapshot().themeMode
+      const themeVariables = ThemeController.getSnapshot().themeVariables
       authConnector?.provider?.syncDappData?.({
         metadata: optionsState.metadata,
         sdkVersion: optionsState.sdkVersion,
         projectId: optionsState.projectId
       })
       authConnector.provider.syncTheme({
-        themeMode: ThemeController.getSnapshot().themeMode,
-        themeVariables: ThemeController.getSnapshot().themeVariables
+        themeMode,
+        themeVariables,
+        w3mThemeVariables: getW3mThemeVariables(themeVariables, themeMode)
       })
     }
   },

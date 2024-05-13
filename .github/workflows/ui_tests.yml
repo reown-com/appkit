@@ -74,8 +74,13 @@ jobs:
           key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}-${{ hashFiles('apps/laboratory/tests/shared/constants/devices.ts') }}
       - name: install
         run: npm ci
-      - name: build
-        run: npm run build
+      - name: build packages and lab
+        run: npm run build:laboratory
+        env:
+          NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
+          NEXTAUTH_SECRET: ${{ secrets.TESTS_NEXTAUTH_SECRET }}
+          MAILSAC_API_KEY: ${{ secrets.TESTS_MAILSEC_API_KEY }}
+          NEXT_PUBLIC_SECURE_SITE_SDK_URL: ${{ inputs.secure-site-url }}
       - name: Install Playwright Browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         working-directory: ./apps/laboratory/

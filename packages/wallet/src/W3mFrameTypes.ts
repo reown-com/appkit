@@ -59,7 +59,8 @@ import {
   AppGetSocialRedirectUriRequest,
   FrameGetSocialRedirectUriResponse,
   FrameConnectSocialResponse,
-  FrameGetSmartAccountEnabledNetworksResponse
+  FrameGetSmartAccountEnabledNetworksResponse,
+  FrameUpdateEmailResponse
 } from './W3mFrameSchema.js'
 import type { W3mFrameRpcConstants } from './W3mFrameConstants.js'
 
@@ -91,9 +92,11 @@ export namespace W3mFrameTypes {
     FrameGetSmartAccountEnabledNetworksResponse: z.infer<
       typeof FrameGetSmartAccountEnabledNetworksResponse
     >
+
     FrameInitSmartAccountResponse: z.infer<typeof FrameInitSmartAccountResponse>
     FrameGetSocialRedirectUriResponse: z.infer<typeof FrameGetSocialRedirectUriResponse>
     FrameConnectSocialResponse: z.infer<typeof FrameConnectSocialResponse>
+    FrameUpdateEmailResponse: z.infer<typeof FrameUpdateEmailResponse>
   }
 
   export interface Network {
@@ -144,15 +147,7 @@ export namespace W3mFrameTypes {
 
   export type FrameSessionType = z.infer<typeof FrameSession>
 
-  export type SocialProvider =
-    | 'google'
-    | 'github'
-    | 'apple'
-    | 'facebook'
-    | 'linkedin'
-    | 'twitter'
-    | 'discord'
-    | 'twitch'
+  export type SocialProvider = 'google' | 'github' | 'apple' | 'facebook' | 'twitter' | 'discord'
 
   export type AccountType =
     (typeof W3mFrameRpcConstants.ACCOUNT_TYPES)[keyof typeof W3mFrameRpcConstants.ACCOUNT_TYPES]

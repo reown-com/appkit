@@ -1,11 +1,11 @@
 import { Mailsac } from '@mailsac/api'
-import { randomBytes } from 'crypto'
 const EMAIL_CHECK_TIMEOUT = 1000
 const MAX_EMAIL_CHECK = 16
 const EMAIL_APPROVE_BUTTON_TEXT = 'Approve this login'
 const APPROVE_URL_REGEX = /https:\/\/register.*/u
 const OTP_CODE_REGEX = /\d{3}\s?\d{3}/u
 const EMAIL_DOMAIN = 'web3modal.msdc.co'
+export const NOT_ENABLED_DOMAIN = 'w3ma.msdc.co'
 
 export class Email {
   // eslint-disable-next-line  @typescript-eslint/no-explicit-any
@@ -69,15 +69,14 @@ export class Email {
   getOtpCodeFromBody(body: string): string {
     const match = body.match(OTP_CODE_REGEX)
     if (match) {
-      return match[0]
+      // Remove empty space in OTP code 111 111
+      return match[0].replace(' ', '')
     }
 
     throw new Error(`No code found in email: ${body}`)
   }
 
-  getEmailAddressToUse(index: number): string {
-    const prefix = randomBytes(12).toString('hex')
-
-    return `${prefix}-w${index}@${EMAIL_DOMAIN}`
+  getEmailAddressToUse(index: number, domain = EMAIL_DOMAIN): string {
+    return `w3m-w${index}@${domain}`
   }
 }

@@ -35,6 +35,11 @@ export class W3mConnectingSocialView extends LitElement {
           if (val.socialProvider) {
             this.socialProvider = val.socialProvider
           }
+          if (val.address) {
+            if (ModalController.state.open) {
+              ModalController.close()
+            }
+          }
         })
       ]
     )
@@ -105,7 +110,6 @@ export class W3mConnectingSocialView extends LitElement {
 
             await this.authConnector.provider.connectSocial(uri)
             await ConnectionController.connectExternal(this.authConnector)
-            ModalController.close()
           }
         } catch (error) {
           this.error = true

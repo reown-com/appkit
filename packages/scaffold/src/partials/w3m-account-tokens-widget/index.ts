@@ -29,10 +29,6 @@ export class W3mAccountTokensWidget extends LitElement {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
   }
 
-  public override firstUpdated() {
-    AccountController.fetchTokenBalance()
-  }
-
   // -- Render -------------------------------------------- //
   public override render() {
     return html`${this.tokenTemplate()}`
