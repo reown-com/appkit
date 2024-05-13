@@ -1,5 +1,14 @@
 # @examples/react-ethers5
 
+## 4.1.0-03e4f4a8.1
+
+### Patch Changes
+
+- fix: Issue with SIWE + Wagmi sign out. Fixes issue where signature verification fail resulted in empty open modal'
+
+- Updated dependencies []:
+  - @web3modal/ethers@4.2.0-03e4f4a8.2
+
 ## 4.1.0-448f7f4.0
 
 ### Minor Changes

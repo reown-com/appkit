@@ -1,5 +1,19 @@
 # @web3modal/ethers
 
+## 4.2.0-03e4f4a8.2
+
+### Patch Changes
+
+- fix: Issue with SIWE + Wagmi sign out. Fixes issue where signature verification fail resulted in empty open modal'
+
+- Updated dependencies []:
+  - @web3modal/scaffold-react@4.2.0-03e4f4a8.2
+  - @web3modal/scaffold-utils@4.2.0-03e4f4a8.2
+  - @web3modal/scaffold-vue@4.2.0-03e4f4a8.2
+  - @web3modal/polyfills@4.2.0-03e4f4a8.2
+  - @web3modal/scaffold@4.2.0-03e4f4a8.2
+  - @web3modal/siwe@4.2.0-03e4f4a8.2
+
 ## 4.2.0-448f7f4.1
 
 ### Minor Changes
