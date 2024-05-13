@@ -1,5 +1,11 @@
 # @web3modal/ui
 
+## 4.2.0-448f7f4.1
+
+### Minor Changes
+
+- refactor: improvements to all features (siwe, send, swaps, ui and ux)
+
 ## 4.1.12-910a844.0
 
 ### Patch Changes
