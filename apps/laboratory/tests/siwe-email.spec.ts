@@ -1,5 +1,5 @@
 import { testMEmailSiwe } from './shared/fixtures/w3m-email-fixture'
-import type { ModalWalletPage } from './shared/pages/ModalWalletPage'
+import { ModalWalletPage } from './shared/pages/ModalWalletPage'
 import { ModalWalletValidator } from './shared/validators/ModalWalletValidator'
 
 testMEmailSiwe.beforeEach(async ({ modalValidator }) => {
@@ -60,3 +60,30 @@ testMEmailSiwe('it should disconnect correctly', async ({ modalPage, modalValida
   await modalWalletPage.disconnect()
   await modalWaletValidator.expectDisconnected()
 })
+
+// Smart Accounts
+testMEmailSiwe(
+  'it should switch to smart account and sign in',
+  async ({ modalPage, modalValidator }) => {
+    const modalWalletPage = modalPage as ModalWalletPage
+    const modalWaletValidator = modalValidator as ModalWalletValidator
+
+    // Switch to supported network
+    await modalWalletPage.openAccount()
+    await modalWalletPage.openSettings()
+    await modalWalletPage.switchNetwork('Polygon')
+    await modalWalletPage.promptSiwe()
+    await modalWalletPage.approveSign()
+    await modalWaletValidator.expectSwitchedNetwork('Polygon')
+
+    // Switch to smart account
+    await modalWalletPage.togglePreferredAccountType()
+    await modalWalletPage.promptSiwe()
+    await modalWalletPage.approveSign()
+
+    await modalWalletPage.openAccount()
+    await modalWaletValidator.expectActivateSmartAccountPromoVisible(false)
+    await modalWalletPage.openSettings()
+    await modalWaletValidator.expectChangePreferredAccountToShow('EOA')
+  }
+)
