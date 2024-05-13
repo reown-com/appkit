@@ -1,5 +1,14 @@
 # @examples/vue-wagmi
 
+## 4.2.0-03e4f4a8.2
+
+### Patch Changes
+
+- fix: Issue with SIWE + Wagmi sign out. Fixes issue where signature verification fail resulted in empty open modal'
+
+- Updated dependencies []:
+  - @web3modal/wagmi@4.2.0-03e4f4a8.2
+
 ## 4.2.0-448f7f4.1
 
 ### Minor Changes
