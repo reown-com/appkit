@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/ethers",
-  "version": "4.2.0-448f7f4.1",
+  "version": "4.2.0-03e4f4a8.2",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -45,12 +45,12 @@
   "dependencies": {
     "@coinbase/wallet-sdk": "3.9.1",
     "@walletconnect/ethereum-provider": "2.13.0",
-    "@web3modal/polyfills": "4.2.0-448f7f4.1",
-    "@web3modal/scaffold": "4.2.0-448f7f4.1",
-    "@web3modal/scaffold-react": "4.2.0-448f7f4.1",
-    "@web3modal/scaffold-utils": "4.2.0-448f7f4.1",
-    "@web3modal/scaffold-vue": "4.2.0-448f7f4.1",
-    "@web3modal/siwe": "4.2.0-448f7f4.1",
+    "@web3modal/polyfills": "4.2.0-03e4f4a8.2",
+    "@web3modal/scaffold": "4.2.0-03e4f4a8.2",
+    "@web3modal/scaffold-react": "4.2.0-03e4f4a8.2",
+    "@web3modal/scaffold-utils": "4.2.0-03e4f4a8.2",
+    "@web3modal/scaffold-vue": "4.2.0-03e4f4a8.2",
+    "@web3modal/siwe": "4.2.0-03e4f4a8.2",
     "valtio": "1.11.2"
   },
   "peerDependencies": {
