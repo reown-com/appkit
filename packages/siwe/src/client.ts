@@ -14,7 +14,8 @@ import {
   RouterUtil,
   RouterController,
   StorageUtil,
-  ModalController
+  ModalController,
+  SnackController
 } from '@web3modal/core'
 
 import { NetworkUtil } from '@web3modal/common'
@@ -119,23 +120,35 @@ export class Web3ModalSIWEClient {
         }
       })
     }
-    const signature = await ConnectionController.signMessage(message)
-    const isValid = await this.methods.verifyMessage({ message, signature })
-    if (!isValid) {
-      throw new Error('Error verifying SIWE signature')
-    }
+    try {
+      const signature = await ConnectionController.signMessage(message)
+      const isValid = await this.methods.verifyMessage({ message, signature })
+      if (!isValid) {
+        let errorMessage = 'Error verifying SIWE signature'
+        if (AccountController.state.preferredAccountType === 'smartAccount') {
+          errorMessage = 'This application might not support Smart Account connections'
+        }
 
-    const session = await this.methods.getSession()
-    if (!session) {
-      throw new Error('Error verifying SIWE signature')
-    }
-    if (this.methods.onSignIn) {
-      this.methods.onSignIn(session)
-    }
+        throw new Error(errorMessage)
+      }
 
-    RouterUtil.navigateAfterNetworkSwitch()
+      const session = await this.methods.getSession()
+      if (!session) {
+        throw new Error('Error verifying SIWE signature')
+      }
+      if (this.methods.onSignIn) {
+        this.methods.onSignIn(session)
+      }
 
-    return session
+      RouterUtil.navigateAfterNetworkSwitch()
+
+      return session
+    } catch (error) {
+      SnackController.showError((error as Error).message)
+      await ConnectionController.disconnect()
+      ModalController.close()
+      throw error
+    }
   }
 
   async signOut() {
