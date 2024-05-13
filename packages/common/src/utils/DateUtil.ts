@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import englishLocale from 'dayjs/locale/en'
+import englishLocale from 'dayjs/locale/en.js'
 import relativeTime from 'dayjs/plugin/relativeTime.js'
 import updateLocale from 'dayjs/plugin/updateLocale.js'
 
