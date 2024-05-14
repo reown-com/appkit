@@ -11,6 +11,7 @@ export default css`
     justify-content: center;
     align-items: center;
   }
+
   button:disabled {
     background-color: var(--wui-gray-glass-015);
     color: var(--wui-gray-glass-015);

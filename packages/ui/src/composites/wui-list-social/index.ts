@@ -31,7 +31,7 @@ export class WuiListSocial extends LitElement {
           variant="paragraph-500"
           color="inherit"
           align=${this.align}
-          >${UiHelperUtil.capitalizeFirstLetter(this.name)}</wui-text
+          >${this.name}</wui-text
         >
         ${this.templatePlacement()}
       </button>

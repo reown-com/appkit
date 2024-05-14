@@ -194,10 +194,10 @@ export type LogoType =
   | 'facebook'
   | 'github'
   | 'google'
+  | 'more'
   | 'telegram'
   | 'twitch'
   | 'x'
-  | 'more'
 
 export type PlacementType = 'bottom' | 'left' | 'right' | 'top'
 

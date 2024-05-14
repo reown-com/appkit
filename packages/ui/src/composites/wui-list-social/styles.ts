@@ -10,22 +10,27 @@ export default css`
     border-radius: var(--wui-border-radius-xs);
     color: var(--wui-color-fg-100);
   }
-  wui-text::first-letter {
-    text-transform: uppercase;
+
+  wui-text {
+    text-transform: capitalize;
   }
+
   wui-text[data-align='left'] {
     display: flex;
     flex: 1;
   }
+
   wui-text[data-align='center'] {
     display: flex;
     flex: 1;
     justify-content: center;
   }
+
   .invisible {
     opacity: 0;
     pointer-events: none;
   }
+
   button:disabled {
     background-color: var(--wui-gray-glass-015);
     color: var(--wui-gray-glass-015);
