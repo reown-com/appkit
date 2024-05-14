@@ -72,8 +72,8 @@ describe('SwapController', () => {
     await SwapController.swapTokens()
 
     expect(SwapController.state.gasPriceInUSD).toEqual(0.0010485260814)
-    expect(SwapController.state.priceImpact).toEqual(0.898544263592072)
-    expect(SwapController.state.maxSlippage).toEqual(0.00019274639331006023)
+    expect(SwapController.state.priceImpact).toEqual(1.0003077978972612)
+    expect(SwapController.state.maxSlippage).toEqual(0.00019255219039488635)
   })
 
   it('should reset values as expected', () => {

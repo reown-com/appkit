@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/wagmi",
-  "version": "4.1.12-910a844.0",
+  "version": "4.2.0-alpha.0",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -52,19 +52,19 @@
   },
   "dependencies": {
     "@walletconnect/ethereum-provider": "2.13.0",
-    "@web3modal/polyfills": "4.1.12-910a844.0",
-    "@web3modal/scaffold": "4.1.12-910a844.0",
-    "@web3modal/scaffold-react": "4.1.12-910a844.0",
-    "@web3modal/scaffold-utils": "4.1.12-910a844.0",
-    "@web3modal/scaffold-vue": "4.1.12-910a844.0",
-    "@web3modal/siwe": "4.1.12-910a844.0"
+    "@web3modal/polyfills": "4.2.0-alpha.0",
+    "@web3modal/scaffold": "4.2.0-alpha.0",
+    "@web3modal/scaffold-react": "4.2.0-alpha.0",
+    "@web3modal/scaffold-utils": "4.2.0-alpha.0",
+    "@web3modal/scaffold-vue": "4.2.0-alpha.0",
+    "@web3modal/siwe": "4.2.0-alpha.0"
   },
   "devDependencies": {
-    "@wagmi/connectors": "4.1.25",
-    "@wagmi/core": "2.6.16",
+    "@wagmi/connectors": "4.3.9",
+    "@wagmi/core": "2.9.7",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "viem": "2.7.13",
+    "viem": "2.10.3",
     "vue": "3.4.3"
   },
   "peerDependencies": {

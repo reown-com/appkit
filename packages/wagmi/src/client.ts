@@ -238,6 +238,10 @@ export class Web3Modal extends Web3ModalScaffold {
 
       disconnect: async () => {
         await disconnect(this.wagmiConfig)
+        if (siweConfig?.options?.signOutOnDisconnect) {
+          const { SIWEController } = await import('@web3modal/siwe')
+          await SIWEController.signOut()
+        }
       },
 
       signMessage: async message => signMessage(this.wagmiConfig, { message }),
@@ -587,7 +591,12 @@ export class Web3Modal extends Web3ModalScaffold {
         if (W3mFrameHelpers.checkIfRequestExists(request)) {
           if (!W3mFrameHelpers.checkIfRequestIsAllowed(request)) {
             if (super.isOpen()) {
-              if (!super.isTransactionStackEmpty()) {
+              if (super.isTransactionStackEmpty()) {
+                return
+              }
+              if (super.isTransactionShouldReplaceView()) {
+                super.replace('ApproveTransaction')
+              } else {
                 super.redirect('ApproveTransaction')
               }
             } else {

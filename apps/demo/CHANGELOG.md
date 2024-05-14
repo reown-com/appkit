@@ -1,5 +1,34 @@
 # @apps/demo
 
+## 4.2.0-alpha.0
+
+### Patch Changes
+
+- feat: 4.2.0-alpha release
+
+- Updated dependencies []:
+  - @web3modal/wagmi@4.2.0-alpha.0
+
+## 4.2.0-03e4f4a8.2
+
+### Patch Changes
+
+- fix: Issue with SIWE + Wagmi sign out. Fixes issue where signature verification fail resulted in empty open modal'
+
+- Updated dependencies []:
+  - @web3modal/wagmi@4.2.0-03e4f4a8.2
+
+## 4.2.0-448f7f4.1
+
+### Minor Changes
+
+- refactor: improvements to all features (siwe, send, swaps, ui and ux)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @web3modal/wagmi@4.2.0-448f7f4.1
+
 ## 4.1.12-910a844.0
 
 ### Patch Changes

@@ -15,6 +15,10 @@ export default css`
     scrollbar-height: none;
   }
 
+  :host > wui-flex:first-child::-webkit-scrollbar {
+    display: none;
+  }
+
   wui-loading-hexagon {
     position: absolute;
   }
