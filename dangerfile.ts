@@ -135,7 +135,7 @@ async function checkUiPackage() {
     fail('New components were added, but not exported in ui/index.ts')
   }
 
-  if (is_new_composites_added && !ui_index_diff?.added.includes('src/composites')) {
+  if (is_new_composites_added && !jsx_index_diff?.added.includes('../composites')) {
     fail('New composites were added, but not exported in ui/index.ts')
   }
 
