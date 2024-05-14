@@ -1,7 +1,7 @@
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
-import { CoreHelperUtil, RouterController, SendController } from '@web3modal/core'
+import { SwapController, CoreHelperUtil, RouterController, SendController } from '@web3modal/core'
 import { state } from 'lit/decorators.js'
 
 @customElement('w3m-wallet-send-view')
@@ -18,22 +18,33 @@ export class W3mWalletSendView extends LitElement {
 
   @state() private receiverAddress = SendController.state.receiverAddress
 
+  @state() private receiverProfileName = SendController.state.receiverProfileName
+
+  @state() private loading = SendController.state.loading
+
+  @state() private gasPriceInUSD = SendController.state.gasPriceInUSD
+
   @state() private message:
     | 'Preview Send'
     | 'Select Token'
     | 'Add Address'
     | 'Add Amount'
     | 'Insufficient Funds'
+    | 'Incorrect Value'
     | 'Invalid Address' = 'Preview Send'
 
   public constructor() {
     super()
+    this.fetchNetworkPrice()
     this.unsubscribe.push(
       ...[
         SendController.subscribe(val => {
           this.token = val.token
           this.sendTokenAmount = val.sendTokenAmount
           this.receiverAddress = val.receiverAddress
+          this.gasPriceInUSD = val.gasPriceInUSD
+          this.receiverProfileName = val.receiverProfileName
+          this.loading = val.loading
         })
       ]
     )
@@ -52,6 +63,7 @@ export class W3mWalletSendView extends LitElement {
         <w3m-input-token
           .token=${this.token}
           .sendTokenAmount=${this.sendTokenAmount}
+          .gasPriceInUSD=${this.gasPriceInUSD}
         ></w3m-input-token>
         <wui-icon-box
           size="inherit"
@@ -61,7 +73,9 @@ export class W3mWalletSendView extends LitElement {
           background="opaque"
           icon="arrowBottom"
         ></wui-icon-box>
-        <w3m-input-address .receiverAddress=${this.receiverAddress}></w3m-input-address>
+        <w3m-input-address
+          .value=${this.receiverProfileName ? this.receiverProfileName : this.receiverAddress}
+        ></w3m-input-address>
       </wui-flex>
       <wui-flex .margin=${['l', '0', '0', '0'] as const}>
         <wui-button
@@ -69,6 +83,7 @@ export class W3mWalletSendView extends LitElement {
           ?disabled=${!this.message.startsWith('Preview Send')}
           size="lg"
           variant="fill"
+          ?loading=${this.loading}
           fullWidth
         >
           ${this.message}
@@ -78,6 +93,16 @@ export class W3mWalletSendView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+
+  private async fetchNetworkPrice() {
+    await SwapController.getNetworkTokenPrice()
+    const gas = await SwapController.getInitialGasPrice()
+    if (gas?.gasPrice && gas?.gasPriceInUSD) {
+      SendController.setGasPrice(gas.gasPrice)
+      SendController.setGasPriceInUsd(gas.gasPriceInUSD)
+    }
+  }
+
   private onButtonClick() {
     RouterController.push('WalletSendPreview')
   }
@@ -103,6 +128,13 @@ export class W3mWalletSendView extends LitElement {
 
     if (!this.sendTokenAmount) {
       this.message = 'Add Amount'
+    }
+
+    if (this.sendTokenAmount && this.token?.price) {
+      const value = this.sendTokenAmount * this.token.price
+      if (!value) {
+        this.message = 'Incorrect Value'
+      }
     }
 
     if (!this.token) {
