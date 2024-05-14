@@ -7,7 +7,7 @@ import { Email } from '../utils/email'
 import { DeviceRegistrationPage } from './DeviceRegistrationPage'
 import type { TimingRecords } from '../fixtures/timing-fixture'
 
-export type ModalFlavor = 'default' | 'siwe' | 'email' | 'wallet'
+export type ModalFlavor = 'default' | 'siwe' | 'email' | 'wallet' | 'all'
 
 export class ModalPage {
   private readonly baseURL = BASE_URL
@@ -71,8 +71,6 @@ export class ModalPage {
     context: BrowserContext,
     mailsacApiKey: string
   ): Promise<void> {
-    await this.load()
-
     this.emailAddress = emailAddress
 
     const email = new Email(mailsacApiKey)
@@ -113,7 +111,6 @@ export class ModalPage {
   }
 
   async loginWithEmail(email: string) {
-    await this.page.goto(this.url)
     // Connect Button doesn't have a proper `disabled` attribute so we need to wait for the button to change the text
     await this.page
       .getByTestId('connect-button')
@@ -173,7 +170,9 @@ export class ModalPage {
   }
 
   async sign() {
-    await this.page.getByTestId('sign-message-button').click()
+    const signButton = this.page.getByTestId('sign-message-button')
+    await signButton.scrollIntoViewIfNeeded()
+    await signButton.click()
   }
 
   async signatureRequestFrameShouldVisible() {
@@ -213,6 +212,9 @@ export class ModalPage {
 
   async promptSiwe() {
     const siweSign = this.page.getByTestId('w3m-connecting-siwe-sign')
+    await expect(siweSign, 'Siwe prompt sign button should be visible').toBeVisible({
+      timeout: 10_000
+    })
     await expect(siweSign, 'Siwe prompt sign button should be enabled').toBeEnabled()
     await siweSign.click()
   }
