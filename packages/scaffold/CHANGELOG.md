@@ -1,5 +1,18 @@
 # @web3modal/scaffold
 
+## 4.2.0
+
+### Patch Changes
+
+- release: 4.2.0 version release
+
+- Updated dependencies []:
+  - @web3modal/common@4.2.0
+  - @web3modal/core@4.2.0
+  - @web3modal/siwe@4.2.0
+  - @web3modal/ui@4.2.0
+  - @web3modal/wallet@4.2.0
+
 ## 4.2.0-alpha.0
 
 ### Patch Changes
