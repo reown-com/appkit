@@ -6,7 +6,6 @@ import { customElement } from '../../utils/WebComponentsUtil.js'
 import '../wui-logo/index.js'
 import styles from './styles.js'
 import type { LogoType } from '../../utils/TypeUtil.js'
-import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
 
 @customElement('wui-list-social')
 export class WuiListSocial extends LitElement {
