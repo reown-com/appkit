@@ -159,12 +159,6 @@ export class Web3Modal extends Web3ModalScaffold {
        */
       sendTransaction: async () => await Promise.resolve('0x'),
 
-      writeContract: async () => await Promise.resolve('0x'),
-
-      getEnsAddress: async (value: string) => await Promise.resolve(value),
-
-      getEnsAvatar: async (value: string) => await Promise.resolve(value),
-
       parseUnits: () => BigInt(0),
 
       formatUnits: () => ''
@@ -234,7 +228,8 @@ export class Web3Modal extends Web3ModalScaffold {
     EventsController.subscribe(state => {
       if (state.data.event === 'SELECT_WALLET' && state.data.properties?.name === 'Phantom') {
         const isMobile = CoreHelperUtil.isMobile()
-        if (isMobile && typeof window !== 'undefined' && !window.phantom) {
+        const isClient = CoreHelperUtil.isClient()
+        if (isMobile && isClient && !window.phantom) {
           const href = window.location.href
           const protocol = href.startsWith('https') ? 'https' : 'http'
           const host = href.split('/')[2]
