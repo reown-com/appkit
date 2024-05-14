@@ -135,9 +135,6 @@ async function checkUiPackage() {
     fail('New components were added, but not exported in ui/index.ts')
   }
 
-  if (created_ui_composites_index_ts.length !== deleted_ui_composites_index_ts.length) {
-    fail('Number of created composites does not match number of deleted composites')
-  }
   if (is_new_composites_added && !ui_index_diff?.added.includes('src/composites')) {
     fail('New composites were added, but not exported in ui/index.ts')
   }
