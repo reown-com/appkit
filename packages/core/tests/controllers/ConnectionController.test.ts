@@ -15,8 +15,15 @@ const client: ConnectionControllerClient = {
   },
   disconnect: async () => Promise.resolve(),
   signMessage: async (message: string) => Promise.resolve(message),
+  estimateGas: async () => Promise.resolve(BigInt(0)),
   connectExternal: async _id => Promise.resolve(),
-  checkInstalled: _id => true
+  checkInstalled: _id => true,
+  parseUnits: value => BigInt(value),
+  formatUnits: value => value.toString(),
+  sendTransaction: () => Promise.resolve('0x'),
+  writeContract: () => Promise.resolve('0x'),
+  getEnsAddress: async (value: string) => Promise.resolve(value),
+  getEnsAvatar: async (value: string) => Promise.resolve(value)
 }
 
 const clientConnectExternalSpy = vi.spyOn(client, 'connectExternal')
@@ -25,7 +32,14 @@ const clientCheckInstalledSpy = vi.spyOn(client, 'checkInstalled')
 const partialClient: ConnectionControllerClient = {
   connectWalletConnect: async () => Promise.resolve(),
   disconnect: async () => Promise.resolve(),
-  signMessage: async (message: string) => Promise.resolve(message)
+  estimateGas: async () => Promise.resolve(BigInt(0)),
+  signMessage: async (message: string) => Promise.resolve(message),
+  parseUnits: value => BigInt(value),
+  formatUnits: value => value.toString(),
+  sendTransaction: () => Promise.resolve('0x'),
+  writeContract: () => Promise.resolve('0x'),
+  getEnsAddress: async (value: string) => Promise.resolve(value),
+  getEnsAvatar: async (value: string) => Promise.resolve(value)
 }
 
 // -- Tests --------------------------------------------------------------------

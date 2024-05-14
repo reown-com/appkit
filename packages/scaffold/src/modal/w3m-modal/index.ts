@@ -13,7 +13,7 @@ import { UiHelperUtil, customElement, initializeTheming } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
-import type { AccountControllerState } from '@web3modal/core'
+import type { CaipAddress } from '@web3modal/core'
 
 // -- Helpers --------------------------------------------- //
 const SCROLL_LOCK = 'scroll-lock'
@@ -34,13 +34,16 @@ export class W3mModal extends LitElement {
 
   @state() private isSiweEnabled = OptionsController.state.isSiweEnabled
 
+  @state() private connected = AccountController.state.isConnected
+
   public constructor() {
     super()
     this.initializeTheming()
     ApiController.prefetch()
     this.unsubscribe.push(
       ModalController.subscribeKey('open', val => (val ? this.onOpen() : this.onClose())),
-      AccountController.subscribe(newAccountState => this.onNewAccountState(newAccountState))
+      AccountController.subscribeKey('isConnected', val => (this.connected = val)),
+      AccountController.subscribeKey('caipAddress', val => this.onNewAddress(val))
     )
     EventsController.sendEvent({ type: 'track', event: 'MODAL_LOADED' })
   }
@@ -61,6 +64,7 @@ export class W3mModal extends LitElement {
               <w3m-snackbar></w3m-snackbar>
             </wui-card>
           </wui-flex>
+          <w3m-tooltip></w3m-tooltip>
         `
       : null
   }
@@ -89,26 +93,18 @@ export class W3mModal extends LitElement {
     initializeTheming(themeVariables, defaultThemeMode)
   }
 
-  private async onClose() {
-    this.onScrollUnlock()
-    await this.animate([{ opacity: 1 }, { opacity: 0 }], {
-      duration: 200,
-      easing: 'ease',
-      fill: 'forwards'
-    }).finished
-    SnackController.hide()
+  private onClose() {
     this.open = false
+    this.classList.remove('open')
+    this.onScrollUnlock()
+    SnackController.hide()
     this.onRemoveKeyboardListener()
   }
 
-  private async onOpen() {
-    this.onScrollLock()
+  private onOpen() {
     this.open = true
-    await this.animate([{ opacity: 0 }, { opacity: 1 }], {
-      duration: 200,
-      easing: 'ease',
-      fill: 'forwards'
-    }).finished
+    this.classList.add('open')
+    this.onScrollLock()
     this.onAddKeyboardListener()
   }
 
@@ -160,30 +156,28 @@ export class W3mModal extends LitElement {
     this.abortController = undefined
   }
 
-  private async onNewAccountState(newState: AccountControllerState) {
-    const { isConnected, caipAddress: newCaipAddress } = newState
-
+  private async onNewAddress(caipAddress?: CaipAddress) {
     if (this.isSiweEnabled) {
       const { SIWEController } = await import('@web3modal/siwe')
 
-      if (isConnected && !this.caipAddress) {
-        this.caipAddress = newCaipAddress
+      if (this.connected && !this.caipAddress) {
+        this.caipAddress = caipAddress
       }
-      if (isConnected && newCaipAddress && this.caipAddress !== newCaipAddress) {
+      if (this.connected && caipAddress && this.caipAddress !== caipAddress) {
         await SIWEController.signOut()
         this.onSiweNavigation()
-        this.caipAddress = newCaipAddress
+        this.caipAddress = caipAddress
       }
 
       try {
         const session = await SIWEController.getSession()
-        if (session && !isConnected) {
+        if (session && !this.connected) {
           await SIWEController.signOut()
-        } else if (isConnected && !session) {
+        } else if (this.connected && !session) {
           this.onSiweNavigation()
         }
       } catch (error) {
-        if (isConnected) {
+        if (this.connected) {
           this.onSiweNavigation()
         }
       }

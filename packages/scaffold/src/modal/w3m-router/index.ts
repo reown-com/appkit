@@ -1,5 +1,5 @@
 import type { RouterControllerState } from '@web3modal/core'
-import { RouterController } from '@web3modal/core'
+import { RouterController, TooltipController } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
@@ -121,6 +121,12 @@ export class W3mRouter extends LitElement {
         return html`<w3m-wallet-receive-view></w3m-wallet-receive-view>`
       case 'WalletCompatibleNetworks':
         return html`<w3m-wallet-compatible-networks-view></w3m-wallet-compatible-networks-view>`
+      case 'Swap':
+        return html`<w3m-swap-view></w3m-swap-view>`
+      case 'SwapSelectToken':
+        return html`<w3m-swap-select-token-view></w3m-swap-select-token-view>`
+      case 'SwapPreview':
+        return html`<w3m-swap-preview-view></w3m-swap-preview-view>`
       case 'WalletSend':
         return html`<w3m-wallet-send-view></w3m-wallet-send-view>`
       case 'WalletSendSelectToken':
@@ -133,6 +139,8 @@ export class W3mRouter extends LitElement {
   }
 
   private async onViewChange(newView: RouterControllerState['view']) {
+    TooltipController.hide()
+
     const { history } = RouterController.state
     let xOut = -10
     let xIn = 10

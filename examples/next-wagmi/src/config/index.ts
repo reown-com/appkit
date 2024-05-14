@@ -17,7 +17,6 @@ export const config = defaultWagmiConfig({
     url: 'https://myapp.com',
     icons: ['https://myapp.com/favicon.ico']
   },
-  enableInjected: true,
   enableWalletConnect: true,
   enableEIP6963: true,
   enableCoinbase: true,

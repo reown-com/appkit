@@ -1,9 +1,11 @@
 import {
   AssetUtil,
+  ConnectorController,
   NetworkController,
   OptionsController,
   RouterController,
-  RouterUtil
+  RouterUtil,
+  StorageUtil
 } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -44,10 +46,8 @@ export class W3mNetworkSwitchView extends LitElement {
     }
 
     this.onShowRetry()
-    const label = this.error ? 'Switch declined' : 'Approve in wallet'
-    const subLabel = this.error
-      ? 'Switch can be declined if chain is not supported by a wallet or previous request is still active'
-      : 'Accept connection request in your wallet'
+    const label = this.getLabel()
+    const subLabel = this.getSubLabel()
 
     return html`
       <wui-flex
@@ -95,6 +95,28 @@ export class W3mNetworkSwitchView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private getSubLabel() {
+    const type = StorageUtil.getConnectedConnector()
+    const emailConnector = ConnectorController.getEmailConnector()
+    if (emailConnector && type === 'EMAIL') {
+      return ''
+    }
+
+    return this.error
+      ? 'Switch can be declined if chain is not supported by a wallet or previous request is still active'
+      : 'Accept connection request in your wallet'
+  }
+
+  private getLabel() {
+    const type = StorageUtil.getConnectedConnector()
+    const emailConnector = ConnectorController.getEmailConnector()
+    if (emailConnector && type === 'EMAIL') {
+      return `Switching to ${this.network?.name ?? 'Unknown'} network...`
+    }
+
+    return this.error ? 'Switch declined' : 'Approve in wallet'
+  }
+
   private onShowRetry() {
     if (this.error && !this.showRetry) {
       this.showRetry = true

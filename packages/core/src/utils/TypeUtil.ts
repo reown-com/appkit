@@ -160,6 +160,115 @@ export interface BlockchainApiTransactionsResponse {
   next: string | null
 }
 
+export type SwapToken = {
+  name: string
+  symbol: string
+  address: `${string}:${string}:${string}`
+  decimals: number
+  logoUri: string
+  eip2612?: boolean
+}
+
+export type SwapTokenWithBalance = SwapToken & {
+  quantity: {
+    decimals: string
+    numeric: string
+  }
+  price: number
+  value: number
+}
+
+export interface BlockchainApiSwapTokensRequest {
+  projectId: string
+  chainId?: string
+}
+
+export interface BlockchainApiSwapTokensResponse {
+  tokens: SwapToken[]
+}
+
+export interface BlockchainApiTokenPriceRequest {
+  projectId: string
+  currency?: 'usd' | 'eur' | 'gbp' | 'aud' | 'cad' | 'inr' | 'jpy' | 'btc' | 'eth'
+  addresses: string[]
+}
+
+export interface BlockchainApiTokenPriceResponse {
+  fungibles: {
+    name: string
+    symbol: string
+    iconUrl: string
+    price: string
+  }[]
+}
+
+export interface BlockchainApiSwapAllowanceRequest {
+  projectId: string
+  tokenAddress: string
+  userAddress: string
+}
+
+export interface BlockchainApiSwapAllowanceResponse {
+  allowance: string
+}
+
+export interface BlockchainApiGasPriceRequest {
+  projectId: string
+  chainId: string
+}
+
+export interface BlockchainApiGasPriceResponse {
+  standard: string
+  fast: string
+  instant: string
+}
+
+export interface BlockchainApiGenerateSwapCalldataRequest {
+  projectId: string
+  userAddress: string
+  from: string
+  to: string
+  amount: string
+  eip155?: {
+    slippage: string
+    permit?: string
+  }
+}
+
+export interface BlockchainApiGenerateSwapCalldataResponse {
+  tx: {
+    from: `${string}:${string}:${string}`
+    to: `${string}:${string}:${string}`
+    data: `0x${string}`
+    amount: string
+    eip155: {
+      gas: string
+      gasPrice: string
+    }
+  }
+}
+
+export interface BlockchainApiGenerateApproveCalldataRequest {
+  projectId: string
+  userAddress: string
+  from: string
+  to: string
+  amount?: number
+}
+
+export interface BlockchainApiGenerateApproveCalldataResponse {
+  tx: {
+    from: `${string}:${string}:${string}`
+    to: `${string}:${string}:${string}`
+    data: `0x${string}`
+    value: string
+    eip155: {
+      gas: number
+      gasPrice: string
+    }
+  }
+}
+
 export interface BlockchainApiBalanceResponse {
   balances: Balance[]
 }
@@ -415,4 +524,28 @@ export type GetQuoteArgs = {
 export type AccountType = {
   address: string
   type: 'eoa' | 'smartAccount'
+}
+export interface SendTransactionArgs {
+  to: `0x${string}`
+  data: `0x${string}`
+  value: bigint
+  gas?: bigint
+  gasPrice: bigint
+  address: `0x${string}`
+}
+
+export interface EstimateGasTransactionArgs {
+  address: `0x${string}`
+  to: `0x${string}`
+  data: `0x${string}`
+}
+
+export interface WriteContractArgs {
+  receiverAddress: `0x${string}`
+  tokenAmount: bigint
+  tokenAddress: `0x${string}`
+  fromAddress: `0x${string}`
+  method: 'send' | 'transfer' | 'call'
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  abi: any
 }

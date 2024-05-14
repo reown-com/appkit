@@ -2,9 +2,9 @@ import { proxy } from 'valtio/vanilla'
 import { Transaction } from '@solana/web3.js'
 
 import { waitForOpenConnection } from './websocket.js'
-import { SolStoreUtil } from './scaffold/SolanaStoreUtil.js'
+import { SolStoreUtil } from './scaffold/index.js'
 
-import type { ClusterSubscribeRequestMethods } from './scaffold/SolanaTypesUtil.js'
+import type { ClusterSubscribeRequestMethods } from './scaffold/index.js'
 
 type Listeners = Record<
   number,
@@ -62,7 +62,7 @@ export function unregisterListener(id: number) {
   const unsubscribeMethod = method.replace('Subscribe', 'Unsubscribe')
 
   if (!socket) {
-    throw new Error('Socket not initalized')
+    throw new Error('Socket not initialized')
   }
 
   socket.send(

@@ -12,10 +12,11 @@
     "demo": "turbo run dev:demo",
     "examples": "turbo run dev:example",
     "build:gallery": "turbo run build:clean; turbo run build:gallery",
-    "build:laboratory": "turbo run build:clean; turbo run build:laboratory",
+    "build:laboratory": "turbo run build:clean; turbo run build; turbo run build:laboratory",
     "build:demo": "turbo run build:clean; turbo run build:demo",
     "build:examples": "turbo run build:clean; turbo run build:examples",
-    "test": "turbo run test; node ./scripts/coverage.js",
+    "test": "turbo run test",
+    "coverage:merge": "node ./scripts/coverage-merge.js",
     "coverage:summary": "node ./scripts/coverage-summary.js",
     "typecheck": "turbo run typecheck",
     "lint": "turbo run lint",
@@ -24,6 +25,7 @@
     "prettier:format": "prettier --write .",
     "clean": "rm -rf `find . -type d -name node_modules -o -name dist -o -name .next -o -name out`; rm package-lock.json",
     "changeset:pre": "changeset pre enter",
+    "changeset:pre:exit": "changeset pre exit",
     "changeset": "changeset; changeset version",
     "publish:latest": "npm install; npm run build; changeset publish",
     "publish:alpha": "npm install; npm run build; changeset publish --tag alpha",
@@ -61,6 +63,6 @@
     "prettier": "3.1.1",
     "turbo": "1.11.3",
     "typescript": "5.3.3",
-    "vitest": "1.1.1"
+    "vitest": "1.5.0"
   }
 }
