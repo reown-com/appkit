@@ -232,7 +232,7 @@ export class Web3Modal extends Web3ModalScaffold {
     EventsController.subscribe(state => {
       if (state.data.event === 'SELECT_WALLET' && state.data.properties?.name === 'Phantom') {
         const isMobile = CoreHelperUtil.isMobile()
-        if (isMobile && !window.phantom) {
+        if (isMobile && typeof window !== 'undefined' && !window.phantom) {
           const href = window.location.href
           const ref = `${href.startsWith('https') ? 'https' : 'http'}://${href.split('/')[2]}`
           window.location.href = `https://phantom.app/ul/browse/${href}?ref=${ref}`
