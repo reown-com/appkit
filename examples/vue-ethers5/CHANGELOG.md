@@ -1,5 +1,14 @@
 # @examples/vue-ethers5
 
+## 4.2.0-alpha.0
+
+### Patch Changes
+
+- feat: 4.2.0-alpha release
+
+- Updated dependencies []:
+  - @web3modal/ethers5@4.2.0-alpha.0
+
 ## 4.2.0-03e4f4a8.2
 
 ### Patch Changes
