@@ -7,6 +7,10 @@ export default css`
     scrollbar-width: none;
   }
 
+  :host > wui-flex:first-child::-webkit-scrollbar {
+    display: none;
+  }
+
   .preview-container,
   .details-container {
     width: 100%;
@@ -75,20 +79,19 @@ export default css`
   }
 
   .cancel-button:hover,
-  .swap-button:hover {
+  .action-button:hover {
     cursor: pointer;
   }
 
-  .action-buttons-container > button.cancel-button {
+  .action-buttons-container > wui-button.cancel-button {
     flex: 2;
   }
 
-  .action-buttons-container > button.swap-button {
+  .action-buttons-container > wui-button.action-button {
     flex: 4;
-    background-color: var(--wui-color-accent-090);
   }
 
-  .action-buttons-container > button.swap-button > wui-text {
+  .action-buttons-container > button.action-button > wui-text {
     color: white;
   }
 

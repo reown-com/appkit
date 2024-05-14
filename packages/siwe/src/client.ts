@@ -111,7 +111,11 @@ export class Web3ModalSIWEClient {
     if (type === 'EMAIL') {
       RouterController.pushTransactionStack({
         view: null,
-        goBack: true
+        goBack: false,
+        replace: true,
+        onCancel() {
+          RouterController.replace('ConnectingSiwe')
+        }
       })
     }
     const signature = await ConnectionController.signMessage(message)
