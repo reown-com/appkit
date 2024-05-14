@@ -234,7 +234,9 @@ export class Web3Modal extends Web3ModalScaffold {
         const isMobile = CoreHelperUtil.isMobile()
         if (isMobile && typeof window !== 'undefined' && !window.phantom) {
           const href = window.location.href
-          const ref = `${href.startsWith('https') ? 'https' : 'http'}://${href.split('/')[2]}`
+          const protocol = href.startsWith('https') ? 'https' : 'http'
+          const host = href.split('/')[2]
+          const ref = `${protocol}://${host}`
           window.location.href = `https://phantom.app/ul/browse/${href}?ref=${ref}`
         }
       }
