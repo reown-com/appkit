@@ -120,8 +120,8 @@ async function checkUiPackage() {
 
   const ui_index = modified_files.find(f => f.includes('ui/index.ts'))
   const ui_index_diff = ui_index ? await diffForFile(ui_index) : undefined
-  const jsx_index = modified_files.find(f => f.includes('ui/utils/JSXTypesUtil.ts'))
-  const jsx_index_diff = jsx_index ? await diffForFile(jsx_index) : undefined
+  const types_util_index = modified_files.find(f => f.includes('ui/src/utils/JSXTypeUtil.ts'))
+  const types_util_diff = types_util_index ? await diffForFile(types_util_index) : undefined
   const created_ui_components_index_ts = created_ui_components.filter(f => f.endsWith('index.ts'))
   const created_ui_composites_index_ts = created_ui_composites.filter(f => f.endsWith('index.ts'))
   const deleted_ui_composites_index_ts = deleted_ui_composites.filter(f => f.endsWith('index.ts'))
@@ -135,7 +135,11 @@ async function checkUiPackage() {
     fail('New components were added, but not exported in ui/index.ts')
   }
 
-  if (is_new_composites_added && !jsx_index_diff?.added.includes('../composites')) {
+  if (is_new_composites_added && !types_util_diff) {
+    fail('New composites were added, but JSXTypeUtil.ts is not modified')
+  }
+
+  if (is_new_composites_added && !types_util_diff?.added.includes('../composites')) {
     fail('New composites were added, but not exported in ui/index.ts')
   }
 
@@ -143,7 +147,7 @@ async function checkUiPackage() {
     fail('New layout components were added, but not exported in ui/index.ts')
   }
 
-  if (created_ui_components_index_ts.length && !jsx_index_diff?.added.includes('../components')) {
+  if (created_ui_components_index_ts.length && !types_util_diff?.added.includes('../components')) {
     fail(
       `New components were added, but not exported in ui/utils/JSXTypeUtil.ts: ${created_ui_components.join(
         ', '
@@ -151,11 +155,11 @@ async function checkUiPackage() {
     )
   }
 
-  if (is_new_composites_added && !jsx_index_diff?.added.includes('../composites')) {
+  if (is_new_composites_added && !types_util_diff?.added.includes('../composites')) {
     fail('New composites were added, but not exported in ui/utils/JSXTypeUtil.ts')
   }
 
-  if (is_new_layout_added && !jsx_index_diff?.added.includes('../layout')) {
+  if (is_new_layout_added && !types_util_diff?.added.includes('../layout')) {
     fail('New layout components were added, but not exported in ui/utils/JSXTypeUtil.ts')
   }
 
