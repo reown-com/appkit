@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/scaffold-utils",
-  "version": "4.2.0-alpha.0",
+  "version": "4.2.0",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -40,8 +40,8 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@web3modal/core": "4.2.0-alpha.0",
-    "@web3modal/polyfills": "4.2.0-alpha.0",
+    "@web3modal/core": "4.2.0",
+    "@web3modal/polyfills": "4.2.0",
     "valtio": "1.11.2"
   },
   "keywords": [

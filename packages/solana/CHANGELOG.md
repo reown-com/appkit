@@ -1,5 +1,18 @@
 # @web3modal/solana
 
+## 4.2.0
+
+### Patch Changes
+
+- release: 4.2.0 version release
+
+- Updated dependencies []:
+  - @web3modal/polyfills@4.2.0
+  - @web3modal/scaffold@4.2.0
+  - @web3modal/scaffold-react@4.2.0
+  - @web3modal/scaffold-utils@4.2.0
+  - @web3modal/scaffold-vue@4.2.0
+
 ## 4.2.0-alpha.0
 
 ### Patch Changes

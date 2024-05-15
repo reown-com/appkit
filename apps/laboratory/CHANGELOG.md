@@ -1,5 +1,17 @@
 # @apps/laboratory
 
+## 4.2.0
+
+### Patch Changes
+
+- release: 4.2.0 version release
+
+- Updated dependencies []:
+  - @web3modal/ethers@4.2.0
+  - @web3modal/siwe@4.2.0
+  - @web3modal/solana@4.2.0
+  - @web3modal/wagmi@4.2.0
+
 ## 4.2.0-alpha.0
 
 ### Patch Changes

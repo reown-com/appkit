@@ -1,5 +1,11 @@
 # @web3modal/common
 
+## 4.2.0
+
+### Patch Changes
+
+- release: 4.2.0 version release
+
 ## 4.2.0-alpha.0
 
 ### Patch Changes

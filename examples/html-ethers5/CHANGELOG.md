@@ -1,5 +1,14 @@
 # @examples/html-ethers5
 
+## 4.2.0
+
+### Patch Changes
+
+- release: 4.2.0 version release
+
+- Updated dependencies []:
+  - @web3modal/ethers5@4.2.0
+
 ## 4.2.0-alpha.0
 
 ### Patch Changes
