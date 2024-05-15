@@ -47,6 +47,7 @@ export class W3mEmailLoginWidget extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     const connector = this.connectors.find(c => c.type === 'AUTH')
+    const multipleConnectors = this.connectors.length > 1
 
     if (!connector?.email) {
       return null
@@ -66,7 +67,9 @@ export class W3mEmailLoginWidget extends LitElement {
         <input type="submit" hidden />
       </form>
 
-      ${connector.socials ? null : html`<wui-separator text="or"></wui-separator>`}
+      ${connector.socials || !multipleConnectors
+        ? null
+        : html`<wui-separator text="or"></wui-separator>`}
     `
   }
 

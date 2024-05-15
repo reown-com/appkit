@@ -96,10 +96,7 @@ export class W3mSocialLoginWidget extends LitElement {
       return null
     }
 
-    if (
-      this.connector?.socials.length > MAX_TOP_VIEW &&
-      this.connector?.socials.length > MAXIMUM_LENGTH
-    ) {
+    if (this.connector?.socials.length > MAXIMUM_LENGTH) {
       return html`<wui-flex gap="xs">
         ${this.connector.socials.slice(1, MAXIMUM_LENGTH - 1).map(
           social =>

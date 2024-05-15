@@ -3,6 +3,8 @@ import {
   ConnectionController,
   ConnectorController,
   ModalController,
+  RouterController,
+  SnackController,
   ThemeController
 } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
@@ -50,6 +52,8 @@ export class W3mConnectingSocialView extends LitElement {
 
   public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
+
+    window.addEventListener('message', this.handleSocialConnection, false)
   }
 
   // -- Render -------------------------------------------- //
@@ -96,24 +100,27 @@ export class W3mConnectingSocialView extends LitElement {
     return html`<wui-loading-thumbnail radius=${radius * 9}></wui-loading-thumbnail>`
   }
 
-  private connectSocial() {
-    const handleSocialConnection = async (event: MessageEvent) => {
-      if (event.data?.resultUri) {
-        try {
-          if (this.authConnector && !this.connecting) {
-            this.connecting = true
-            const uri = event.data.resultUri as string
+  private handleSocialConnection = async (event: MessageEvent) => {
+    if (event.data?.resultUri && event.origin === 'https://secure.walletconnect.com/') {
+      try {
+        if (this.authConnector && !this.connecting) {
+          this.connecting = true
+          const uri = event.data.resultUri as string
 
-            await this.authConnector.provider.connectSocial(uri)
-            await ConnectionController.connectExternal(this.authConnector)
-          }
-        } catch (error) {
-          this.error = true
+          await this.authConnector.provider.connectSocial(uri)
+          await ConnectionController.connectExternal(this.authConnector)
         }
+      } catch (error) {
+        this.error = true
       }
+    } else {
+      RouterController.goBack()
+      SnackController.showError('Untrusted origin')
     }
+  }
 
-    window.addEventListener('message', handleSocialConnection, false)
+  private connectSocial() {
+    window.addEventListener('message', this.handleSocialConnection, false)
   }
 }
 
