@@ -236,6 +236,8 @@ export class Web3Modal extends Web3ModalScaffold {
         const isMobile = CoreHelperUtil.isMobile()
         const isClient = CoreHelperUtil.isClient()
 
+        // eslint-disable-next-line no-alert
+        window.alert(`isClient ${isClient}`)
         if (isMobile && isClient && !window.phantom) {
           const href = window.location.href
           const protocol = href.startsWith('https') ? 'https' : 'http'
