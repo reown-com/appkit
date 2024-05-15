@@ -37,7 +37,9 @@ export type ProjectId = string
 
 export type Platform = 'mobile' | 'desktop' | 'browser' | 'web' | 'qrcode' | 'unsupported'
 
-export type ConnectorType = 'EXTERNAL' | 'WALLET_CONNECT' | 'INJECTED' | 'ANNOUNCED' | 'EMAIL'
+export type ConnectorType = 'EXTERNAL' | 'WALLET_CONNECT' | 'INJECTED' | 'ANNOUNCED' | 'AUTH'
+
+export type SocialProvider = 'google' | 'github' | 'apple' | 'facebook' | 'x' | 'discord'
 
 export type Connector = {
   id: string
@@ -53,10 +55,14 @@ export type Connector = {
     rdns?: string
   }
   provider?: unknown
+  email?: boolean
+  socials?: SocialProvider[]
 }
 
-export interface EmailConnector extends Connector {
+export interface AuthConnector extends Connector {
   provider: W3mFrameProvider
+  socials?: SocialProvider[]
+  email?: boolean
 }
 
 export type CaipNamespaces = Record<

@@ -1,5 +1,11 @@
 import { customElement } from '@web3modal/ui'
-import { ConnectorController, RouterController, SnackController } from '@web3modal/core'
+import {
+  ConnectionController,
+  ConnectorController,
+  RouterController,
+  RouterUtil,
+  SnackController
+} from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { W3mFrameRpcConstants } from '@web3modal/wallet'
@@ -7,7 +13,7 @@ import { W3mFrameRpcConstants } from '@web3modal/wallet'
 @customElement('w3m-upgrade-to-smart-account-view')
 export class W3mUpgradeToSmartAccountView extends LitElement {
   // -- State & Properties -------------------------------- //
-  @state() private emailConnector = ConnectorController.getEmailConnector()
+  @state() private authConnector = ConnectorController.getAuthConnector()
 
   @state() private loading = false
 
@@ -75,15 +81,15 @@ export class W3mUpgradeToSmartAccountView extends LitElement {
   }
 
   private setPreferSmartAccount = async () => {
-    if (this.emailConnector) {
+    if (this.authConnector) {
       try {
         this.loading = true
-        await this.emailConnector.provider.setPreferredAccount(
+        await this.authConnector.provider.setPreferredAccount(
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
         )
-        await this.emailConnector.provider.connect()
+        await ConnectionController.reconnectExternal(this.authConnector)
         this.loading = false
-        RouterController.push('Account')
+        RouterUtil.navigateAfterPreferredAccountTypeSelect()
       } catch (e) {
         SnackController.showError('Error upgrading to smart account')
       }
