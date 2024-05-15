@@ -6,7 +6,11 @@ import { useCallback, useState, useEffect } from 'react'
 import { useChakraToast } from '../Toast'
 import { parseGwei, type Address } from 'viem'
 import { vitalikEthAddress } from '../../utils/DataUtil'
-import { EIP_5792_RPC_METHODS, getCapabilitySupportedChainInfoForViem } from '../../utils/EIP5792Utils'
+import {
+  WALLET_CAPABILITY_NAMES,
+  EIP_5792_RPC_METHODS,
+  getCapabilitySupportedChainInfoForViem
+} from '../../utils/EIP5792Utils'
 
 const TEST_TX_1 = {
   to: vitalikEthAddress as Address,
@@ -105,7 +109,10 @@ export function WagmiSendCallsWithPaymasterServiceTest() {
   }
 
   const paymasterServiceSupportedChains = availableCapabilities
-    ? getCapabilitySupportedChainInfoForViem('paymasterService', availableCapabilities)
+    ? getCapabilitySupportedChainInfoForViem(
+        WALLET_CAPABILITY_NAMES.PAYMASTER_SERVICE,
+        availableCapabilities
+      )
     : []
 
   if (paymasterServiceSupportedChains.length === 0) {

@@ -8,8 +8,13 @@ export const EIP_5792_RPC_METHODS = {
   WALLET_SEND_CALLS: 'wallet_sendCalls'
 }
 
+export const WALLET_CAPABILITY_NAMES = {
+  ATOMIC_BATCH: 'atomicBatch',
+  PAYMASTER_SERVICE: 'paymasterService'
+}
+
 export function getCapabilitySupportedChainInfoForEthers(
-  capability:string,
+  capability: string,
   provider: Awaited<ReturnType<(typeof EthereumProvider)['init']>>,
   address: string
 ): {
@@ -21,9 +26,11 @@ export function getCapabilitySupportedChainInfoForEthers(
     const walletCapabilities = walletCapabilitiesString && parseJSON(walletCapabilitiesString)
     const accountCapabilities = walletCapabilities[address]
     const chainIds = accountCapabilities
-      ? Object.keys(accountCapabilities).filter( chainIdAsHex =>
-         (accountCapabilities[chainIdAsHex]?.[capability]?.supported === true)
-      ).map(chainIdAsHex => Number(chainIdAsHex))
+      ? Object.keys(accountCapabilities)
+          .filter(
+            chainIdAsHex => accountCapabilities[chainIdAsHex]?.[capability]?.supported === true
+          )
+          .map(chainIdAsHex => Number(chainIdAsHex))
       : []
     const chainInfo = chainIds.map(id => {
       const chain = getChain(id)

@@ -4,10 +4,13 @@ import { useAccount, useConnections } from 'wagmi'
 import { useCapabilities, useSendCalls } from 'wagmi/experimental'
 import { useCallback, useState, useEffect } from 'react'
 import { useChakraToast } from '../Toast'
-import { parseGwei, type Address, type WalletCapabilities } from 'viem'
+import { parseGwei, type Address } from 'viem'
 import { vitalikEthAddress } from '../../utils/DataUtil'
-import { EIP_5792_RPC_METHODS } from '../../utils/EIP5792Utils'
-import { getChain } from '../../utils/ChainsUtil'
+import {
+  WALLET_CAPABILITY_NAMES,
+  EIP_5792_RPC_METHODS,
+  getCapabilitySupportedChainInfoForViem
+} from '../../utils/EIP5792Utils'
 
 const TEST_TX_1 = {
   to: vitalikEthAddress as Address,
@@ -66,29 +69,6 @@ export function WagmiSendCallsTest() {
     )
   }
 
-  function getAtomicBatchSupportedChainInfo(capabilities: Record<number, WalletCapabilities>): {
-    chainId: number
-    chainName: string
-  }[] {
-    const chainIds = Object.keys(capabilities)
-    const chainInfo = chainIds
-      .filter(chainId => {
-        const capabilitiesPerChain = capabilities[parseInt(chainId, 10)]
-
-        return capabilitiesPerChain?.['atomicBatch']?.supported === true
-      })
-      .map(chainId => {
-        const capabilityChain = getChain(parseInt(chainId, 10))
-
-        return {
-          chainId: parseInt(chainId, 10),
-          chainName: capabilityChain?.name ?? `Unknown Chain(${chainId})`
-        }
-      })
-
-    return chainInfo
-  }
-
   async function fetchProvider() {
     const connectedProvider = await connection?.[0]?.connector?.getProvider()
     if (connectedProvider instanceof EthereumProvider) {
@@ -118,7 +98,10 @@ export function WagmiSendCallsTest() {
   }
 
   const atomicBatchSupportedChains = availableCapabilities
-    ? getAtomicBatchSupportedChainInfo(availableCapabilities)
+    ? getCapabilitySupportedChainInfoForViem(
+        WALLET_CAPABILITY_NAMES.ATOMIC_BATCH,
+        availableCapabilities
+      )
     : []
 
   if (atomicBatchSupportedChains.length === 0) {

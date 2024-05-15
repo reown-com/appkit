@@ -18,7 +18,8 @@ export async function POST(r: Request) {
     })
 
     return Response.json({ result })
-  } else if (method === 'pm_getPaymasterData') {
+  }
+  if (method === 'pm_getPaymasterData') {
     const result = await paymasterClient.getPaymasterData({
       userOperation: userOp
     })

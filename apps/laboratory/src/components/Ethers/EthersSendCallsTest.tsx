@@ -6,7 +6,11 @@ import { useChakraToast } from '../Toast'
 import { parseGwei, type Address } from 'viem'
 import { vitalikEthAddress } from '../../utils/DataUtil'
 import { BrowserProvider } from 'ethers'
-import { EIP_5792_RPC_METHODS, getCapabilitySupportedChainInfoForEthers } from '../../utils/EIP5792Utils'
+import {
+  WALLET_CAPABILITY_NAMES,
+  EIP_5792_RPC_METHODS,
+  getCapabilitySupportedChainInfoForEthers
+} from '../../utils/EIP5792Utils'
 
 export function EthersSendCallsTest() {
   const toast = useChakraToast()
@@ -91,7 +95,11 @@ export function EthersSendCallsTest() {
 
   const allowedChains =
     walletProvider instanceof EthereumProvider
-      ? getAtomicBatchSupportedChainInfo(walletProvider, address)
+      ? getCapabilitySupportedChainInfoForEthers(
+          WALLET_CAPABILITY_NAMES.ATOMIC_BATCH,
+          walletProvider,
+          address
+        )
       : []
 
   if (allowedChains.length === 0) {
