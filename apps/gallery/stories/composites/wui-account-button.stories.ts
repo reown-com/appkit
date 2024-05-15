@@ -14,7 +14,7 @@ export default {
     avatarSrc: avatarImageSrc,
     address,
     balance: '0.527 ETH',
-    profileName: 'enesozturk.eth',
+    profileName: 'johndoe.eth',
     charsStart: 4,
     charsEnd: 6
   },

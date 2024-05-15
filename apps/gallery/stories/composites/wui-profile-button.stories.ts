@@ -12,7 +12,7 @@ export default {
     networkSrc: networkImageSrc,
     avatarSrc: avatarImageSrc,
     address,
-    profileName: 'enesozturk.eth'
+    profileName: 'johndoe.eth'
   },
   argTypes: {
     profileName: {
