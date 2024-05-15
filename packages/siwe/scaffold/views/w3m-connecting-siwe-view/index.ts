@@ -50,8 +50,8 @@ export class W3mConnectingSiweView extends LitElement {
       <wui-flex .padding=${['l', 'xl', 'xl', 'xl'] as const} gap="s" justifyContent="space-between">
         <wui-button
           size="md"
-          ?fullwidth=${true}
-          variant="shade"
+          fullWidth
+          variant="neutral"
           @click=${this.onCancel.bind(this)}
           data-testid="w3m-connecting-siwe-cancel"
         >
@@ -60,7 +60,7 @@ export class W3mConnectingSiweView extends LitElement {
         <wui-button
           size="md"
           ?fullwidth=${true}
-          variant="fill"
+          variant="main"
           @click=${this.onSign.bind(this)}
           ?loading=${this.isSigning}
           data-testid="w3m-connecting-siwe-sign"

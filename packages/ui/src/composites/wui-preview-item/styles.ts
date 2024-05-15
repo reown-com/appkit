@@ -5,8 +5,8 @@ export default css`
     display: flex;
     gap: var(--wui-spacing-xs);
     border-radius: var(--wui-border-radius-3xl);
-    border: 1px solid var(--wui-gray-glass-002);
-    background: var(--wui-gray-glass-002);
+    border: 1px solid var(--wui-color-gray-glass-002);
+    background: var(--wui-color-gray-glass-002);
     padding: var(--wui-spacing-2xs) var(--wui-spacing-xs) var(--wui-spacing-2xs)
       var(--wui-spacing-s);
     align-items: center;
@@ -17,8 +17,8 @@ export default css`
   wui-image {
     width: 32px;
     height: 32px;
-    border: 1px solid var(--wui-gray-glass-002);
+    border: 1px solid var(--wui-color-gray-glass-002);
     border-radius: var(--wui-border-radius-3xl);
-    box-shadow: 0 0 0 2px var(--wui-gray-glass-002);
+    box-shadow: 0 0 0 2px var(--wui-color-gray-glass-002);
   }
 `

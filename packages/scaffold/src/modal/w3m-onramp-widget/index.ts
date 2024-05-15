@@ -99,7 +99,7 @@ export class W3mOnrampWidget extends LitElement {
     return this.connected
       ? html`<wui-button
           @click=${this.getQuotes.bind(this)}
-          variant="fill"
+          variant="main"
           fullWidth
           size="lg"
           borderRadius="xs"
@@ -108,7 +108,7 @@ export class W3mOnrampWidget extends LitElement {
         </wui-button>`
       : html`<wui-button
           @click=${this.openModal.bind(this)}
-          variant="accentBg"
+          variant="accent"
           fullWidth
           size="lg"
           borderRadius="xs"

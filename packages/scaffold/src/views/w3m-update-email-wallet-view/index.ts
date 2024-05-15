@@ -52,7 +52,7 @@ export class W3mUpdateEmailWalletView extends LitElement {
 
           <wui-button
             size="md"
-            variant="fill"
+            variant="main"
             fullWidth
             @click=${this.onSubmitEmail.bind(this)}
             .disabled=${!showSubmit}

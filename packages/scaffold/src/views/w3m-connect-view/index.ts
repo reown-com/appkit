@@ -43,7 +43,7 @@ export class W3mConnectView extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex flexDirection="column" padding="s" gap="xs">
+      <wui-flex flexDirection="column" .padding=${['3xs', 's', 's', 's']} gap="xs">
         <w3m-email-login-widget></w3m-email-login-widget>
 
         ${this.walletConnectConnectorTemplate()} ${this.recentTemplate()}
