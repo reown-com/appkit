@@ -235,6 +235,8 @@ export class Web3Modal extends Web3ModalScaffold {
       if (state.data.event === 'SELECT_WALLET' && state.data.properties?.name === 'Phantom') {
         const isMobile = CoreHelperUtil.isMobile()
         const isClient = CoreHelperUtil.isClient()
+        // eslint-disable-next-line no-alert
+        window.prompt('window.phantom', window.phantom?.toString())
         if (isMobile && isClient && !window.phantom) {
           const href = window.location.href
           const protocol = href.startsWith('https') ? 'https' : 'http'
