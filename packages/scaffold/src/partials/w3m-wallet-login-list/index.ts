@@ -25,11 +25,13 @@ export class W3mWalletLoginList extends LitElement {
 
   // -- State & Properties -------------------------------- //
   @state() private connectors = ConnectorController.state.connectors
+  @state() private count = ApiController.state.count
 
   public constructor() {
     super()
     this.unsubscribe.push(
-      ConnectorController.subscribeKey('connectors', val => (this.connectors = val))
+      ConnectorController.subscribeKey('connectors', val => (this.connectors = val)),
+      ApiController.subscribeKey('count', val => (this.count = val))
     )
   }
 
