@@ -250,7 +250,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
     if (CoreHelperUtil.isClient()) {
       // eslint-disable-next-line no-alert
-      window.alert(`window.phantom ${window.phantom?.toString()}`)
+      window.alert(`w.phantom ${JSON.stringify(window.phantom)}`)
       this.checkActiveProviders()
       this.syncConnectors()
     }
