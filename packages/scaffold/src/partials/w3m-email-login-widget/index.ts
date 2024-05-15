@@ -46,7 +46,6 @@ export class W3mEmailLoginWidget extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const multipleConnectors = this.connectors.length > 1
     const connector = this.connectors.find(c => c.type === 'AUTH')
 
     if (!connector?.email) {
