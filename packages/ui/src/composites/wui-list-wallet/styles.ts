@@ -15,8 +15,8 @@ export default css`
     flex: 1;
   }
 
-  wui-icon {
-    color: var(--wui-color-fg-200) !important;
+  button:hover:enabled {
+    background-color: var(--wui-color-gray-glass-005);
   }
 
   button:disabled {
@@ -27,5 +27,9 @@ export default css`
   button:disabled > wui-tag {
     background-color: var(--wui-color-gray-glass-010);
     color: var(--wui-color-fg-300);
+  }
+
+  wui-icon {
+    color: var(--wui-color-fg-200) !important;
   }
 `
