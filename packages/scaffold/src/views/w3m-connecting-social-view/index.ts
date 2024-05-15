@@ -12,6 +12,7 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
+import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
 
 @customElement('w3m-connecting-social-view')
 export class W3mConnectingSocialView extends LitElement {
@@ -101,21 +102,23 @@ export class W3mConnectingSocialView extends LitElement {
   }
 
   private handleSocialConnection = async (event: MessageEvent) => {
-    if (event.data?.resultUri && event.origin === 'https://secure.walletconnect.com/') {
-      try {
-        if (this.authConnector && !this.connecting) {
-          this.connecting = true
-          const uri = event.data.resultUri as string
+    if (event.data?.resultUri) {
+      if (event.origin === ConstantsUtil.SECURE_SITE_ORIGIN) {
+        try {
+          if (this.authConnector && !this.connecting) {
+            this.connecting = true
+            const uri = event.data.resultUri as string
 
-          await this.authConnector.provider.connectSocial(uri)
-          await ConnectionController.connectExternal(this.authConnector)
+            await this.authConnector.provider.connectSocial(uri)
+            await ConnectionController.connectExternal(this.authConnector)
+          }
+        } catch (error) {
+          this.error = true
         }
-      } catch (error) {
-        this.error = true
+      } else {
+        RouterController.goBack()
+        SnackController.showError('Untrusted Origin')
       }
-    } else {
-      RouterController.goBack()
-      SnackController.showError('Untrusted origin')
     }
   }
 
