@@ -5,7 +5,7 @@ import { EthereumProvider } from '@walletconnect/ethereum-provider'
 import { useChakraToast } from '../Toast'
 import { BrowserProvider } from 'ethers'
 import { type GetCallsStatusParams } from '../../types/EIP5792'
-import { EIP_5792_RPC_METHODS, getAtomicBatchSupportedChainInfo } from '../../utils/EIP5792Utils'
+import { EIP_5792_RPC_METHODS, getCapabilitySupportedChainInfoForEthers } from '../../utils/EIP5792Utils'
 
 export function EthersGetCallsStatusTest() {
   const toast = useChakraToast()
@@ -72,7 +72,7 @@ export function EthersGetCallsStatusTest() {
     )
   }
 
-  const allowedChains = getAtomicBatchSupportedChainInfo(ethereumProvider, address)
+  const allowedChains = getCapabilitySupportedChainInfoForEthers('atomicBatch',ethereumProvider, address)
 
   if (allowedChains.length === 0) {
     return (

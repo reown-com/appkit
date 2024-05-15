@@ -1,15 +1,12 @@
 import { Button, Menu, MenuButton, MenuItem, MenuList, Stack, Text } from '@chakra-ui/react'
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
 import { useAccount, useConnections } from 'wagmi'
-import { useSendCalls } from 'wagmi/experimental'
+import { useCapabilities, useSendCalls } from 'wagmi/experimental'
 import { useCallback, useState, useEffect } from 'react'
 import { useChakraToast } from '../Toast'
 import { parseGwei, type Address } from 'viem'
 import { vitalikEthAddress } from '../../utils/DataUtil'
-import {
-  EIP_5792_RPC_METHODS,
-  getPaymasterServiceSupportedChainInfo
-} from '../../utils/EIP5792Utils'
+import { EIP_5792_RPC_METHODS, getCapabilitySupportedChainInfoForViem } from '../../utils/EIP5792Utils'
 
 const TEST_TX_1 = {
   to: vitalikEthAddress as Address,
@@ -20,16 +17,20 @@ const TEST_TX_2 = {
   data: '0xdeadbeef' as `0x${string}`
 }
 
-const paymasterOptions: {
+const paymasterServiceOptions: {
   value: string
   label: string
-}[] = [{ value: 'http://localhost:3000/api/paymaster', label: 'Web3Modal Lab Paymaster' }]
+}[] = [{ value: 'http://localhost:3000/api/paymaster/pimlico', label: 'Pimlico Paymaster' }]
 
-export function WagmiSendCallsWithGasSponsorTest() {
-  const [provider, setProvider] = useState<Awaited<ReturnType<(typeof EthereumProvider)['init']>>>()
+export function WagmiSendCallsWithPaymasterServiceTest() {
+  const [ethereumProvider, setEthereumProvider] =
+    useState<Awaited<ReturnType<(typeof EthereumProvider)['init']>>>()
   const [isLoading, setLoading] = useState(false)
-  const [selectedOption, setSelectedOption] = useState<{ value: string; label: string }>()
   const { status, chain, address } = useAccount()
+  const { data: availableCapabilities } = useCapabilities({
+    account: address
+  })
+  const [selectedOption, setSelectedOption] = useState<{ value: string; label: string }>()
   const connection = useConnections()
   const isConnected = status === 'connected'
   const toast = useChakraToast()
@@ -39,7 +40,7 @@ export function WagmiSendCallsWithGasSponsorTest() {
       onSuccess: hash => {
         setLoading(false)
         toast({
-          title: 'Transaction Success',
+          title: 'SendCalls Success',
           description: hash,
           type: 'success'
         })
@@ -48,7 +49,7 @@ export function WagmiSendCallsWithGasSponsorTest() {
         setLoading(false)
         toast({
           title: 'Error',
-          description: 'Failed to sign transaction',
+          description: 'Failed to send calls',
           type: 'error'
         })
       }
@@ -69,27 +70,25 @@ export function WagmiSendCallsWithGasSponsorTest() {
 
   function isSendCallsSupported(): boolean {
     return Boolean(
-      provider?.signer?.session?.namespaces?.['eip155']?.methods?.includes(
+      ethereumProvider?.signer?.session?.namespaces?.['eip155']?.methods?.includes(
         EIP_5792_RPC_METHODS.WALLET_SEND_CALLS
       )
     )
   }
 
-  useEffect(() => {
-    async function fetchProvider() {
-      const connectedProvider = await connection?.[0]?.connector?.getProvider()
-      const ethereumProvider = connectedProvider as Awaited<
-        ReturnType<(typeof EthereumProvider)['init']>
-      >
-      setProvider(ethereumProvider)
+  async function fetchProvider() {
+    const connectedProvider = await connection?.[0]?.connector?.getProvider()
+    if (connectedProvider instanceof EthereumProvider) {
+      setEthereumProvider(connectedProvider)
     }
-
-    if (status === 'connected') {
+  }
+  useEffect(() => {
+    if (isConnected) {
       fetchProvider()
     }
-  }, [status, connection])
+  }, [isConnected])
 
-  if (status !== 'connected' || !provider) {
+  if (!isConnected || !ethereumProvider || !address) {
     return (
       <Text fontSize="md" color="yellow">
         Wallet not connected
@@ -100,29 +99,33 @@ export function WagmiSendCallsWithGasSponsorTest() {
   if (!isSendCallsSupported()) {
     return (
       <Text fontSize="md" color="yellow">
-        Wallet do not support this feature
+        Wallet does not support wallet_sendCalls rpc method
       </Text>
     )
   }
 
-  const allowedChains = getPaymasterServiceSupportedChainInfo(provider, address)
+  const paymasterServiceSupportedChains = availableCapabilities
+    ? getCapabilitySupportedChainInfoForViem('paymasterService', availableCapabilities)
+    : []
 
-  if (allowedChains.length === 0) {
+  if (paymasterServiceSupportedChains.length === 0) {
     return (
       <Text fontSize="md" color="yellow">
-        Account do not support this feature
+        Account does not support paymaster service feature
       </Text>
     )
   }
 
-  return allowedChains.find(chainInfo => chainInfo.chainId === Number(chain?.id)) && address ? (
+  return paymasterServiceSupportedChains.find(
+    chainInfo => chainInfo.chainId === Number(chain?.id)
+  ) ? (
     <Stack direction={['column', 'column', 'row']}>
       <Menu>
         <MenuButton as={Button} colorScheme="blue">
           {selectedOption?.label || 'Select Paymaster'}
         </MenuButton>
         <MenuList>
-          {paymasterOptions.map((option, i) => (
+          {paymasterServiceOptions.map((option, i) => (
             <MenuItem key={i} onClick={() => setSelectedOption(option)}>
               {option.label}
             </MenuItem>
@@ -131,17 +134,18 @@ export function WagmiSendCallsWithGasSponsorTest() {
       </Menu>
 
       <Button
-        data-test-id="sign-transaction-button"
+        data-test-id="send-calls-paymaster-service-button"
         onClick={onSendCalls}
         disabled={!sendCalls}
-        isDisabled={isLoading || !isConnected || !selectedOption}
+        isDisabled={isLoading || !selectedOption}
       >
-        SendCalls to Vitalik With GasSponsor
+        SendCalls to Vitalik With Paymaster Service
       </Button>
     </Stack>
   ) : (
     <Text fontSize="md" color="yellow">
-      Switch to {allowedChains.map(ci => ci.chainName).join(', ')} to test this feature
+      Switch to {paymasterServiceSupportedChains.map(ci => ci.chainName).join(', ')} to test this
+      feature
     </Text>
   )
 }

@@ -6,7 +6,7 @@ import { WagmiWriteContractTest } from './WagmiWriteContractTest'
 import { WagmiSendUSDCTest } from './WagmiSendUSDCTest'
 import { WagmiSendCallsTest } from './WagmiSendCallsTest'
 import { WagmiGetCallsStatusTest } from './WagmiGetCallsStatusTest'
-import { WagmiSendCallsWithGasSponsorTest } from './WagmiSendCallsWithGasSponsorTest'
+import { WagmiSendCallsWithPaymasterServiceTest } from './WagmiSendCallsWithPaymasterServiceTest'
 
 export function WagmiTests() {
   return (
@@ -63,9 +63,9 @@ export function WagmiTests() {
           </Box>
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">
-              Send Calls With Gas Sponsor
+              Send Calls (Paymaster Service)
             </Heading>
-            <WagmiSendCallsWithGasSponsorTest />
+            <WagmiSendCallsWithPaymasterServiceTest />
           </Box>
         </Stack>
       </CardBody>

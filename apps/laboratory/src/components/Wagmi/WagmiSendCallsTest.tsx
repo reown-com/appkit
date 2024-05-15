@@ -6,7 +6,7 @@ import { useCallback, useState, useEffect } from 'react'
 import { useChakraToast } from '../Toast'
 import { parseGwei, type Address } from 'viem'
 import { vitalikEthAddress } from '../../utils/DataUtil'
-import { EIP_5792_RPC_METHODS, getAtomicBatchSupportedChainInfo } from '../../utils/EIP5792Utils'
+import { EIP_5792_RPC_METHODS, getCapabilitySupportedChainInfoForEthers } from '../../utils/EIP5792Utils'
 
 const TEST_TX_1 = {
   to: vitalikEthAddress as Address,
@@ -91,7 +91,7 @@ export function WagmiSendCallsTest() {
     )
   }
 
-  const allowedChains = getAtomicBatchSupportedChainInfo(provider, address)
+  const allowedChains = getCapabilitySupportedChainInfoForEthers('atomicBatch',provider, address)
 
   if (allowedChains.length === 0) {
     return (
