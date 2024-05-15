@@ -150,9 +150,9 @@ export class W3mAccountSettingsView extends LitElement {
   // -- Private ------------------------------------------- //
   private chooseNameButtonTemplate() {
     const type = StorageUtil.getConnectedConnector()
-    const emailConnector = ConnectorController.getEmailConnector()
+    const authConnector = ConnectorController.getAuthConnector()
 
-    if (!emailConnector || type !== 'EMAIL' || this.profileName) {
+    if (!authConnector || type !== 'AUTH' || this.profileName) {
       return null
     }
 
@@ -192,11 +192,11 @@ export class W3mAccountSettingsView extends LitElement {
 
   private emailBtnTemplate() {
     const type = StorageUtil.getConnectedConnector()
-    const emailConnector = ConnectorController.getEmailConnector()
-    if (!emailConnector || type !== 'EMAIL') {
+    const authConnector = ConnectorController.getAuthConnector()
+    if (!authConnector || type !== 'AUTH') {
       return null
     }
-    const email = emailConnector.provider.getEmail() ?? ''
+    const email = authConnector.provider.getEmail() ?? ''
 
     return html`
       <wui-list-item
@@ -215,9 +215,9 @@ export class W3mAccountSettingsView extends LitElement {
   private togglePreferredAccountBtnTemplate() {
     const networkEnabled = NetworkController.checkIfSmartAccountEnabled()
     const type = StorageUtil.getConnectedConnector()
-    const emailConnector = ConnectorController.getEmailConnector()
+    const authConnector = ConnectorController.getAuthConnector()
 
-    if (!emailConnector || type !== 'EMAIL' || !networkEnabled) {
+    if (!authConnector || type !== 'AUTH' || !networkEnabled) {
       return null
     }
 
@@ -255,20 +255,20 @@ export class W3mAccountSettingsView extends LitElement {
       !smartAccountEnabled
         ? W3mFrameRpcConstants.ACCOUNT_TYPES.EOA
         : W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
-    const emailConnector = ConnectorController.getEmailConnector()
+    const authConnector = ConnectorController.getAuthConnector()
 
-    if (!emailConnector) {
+    if (!authConnector) {
       return
     }
 
     this.loading = true
-    await emailConnector?.provider.setPreferredAccount(accountTypeTarget)
-    await ConnectionController.reconnectExternal(emailConnector)
+    await authConnector?.provider.setPreferredAccount(accountTypeTarget)
+    await ConnectionController.reconnectExternal(authConnector)
 
     this.text =
-      this.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
-        ? 'Switch to your smart account'
-        : 'Switch to your EOA '
+      accountTypeTarget === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+        ? 'Switch to your EOA'
+        : 'Switch to your smart account'
     this.switched = true
 
     SendController.resetSend()

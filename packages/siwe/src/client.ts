@@ -108,10 +108,14 @@ export class Web3ModalSIWEClient {
       ...messageParams
     })
     const type = StorageUtil.getConnectedConnector()
-    if (type === 'EMAIL') {
+    if (type === 'AUTH') {
       RouterController.pushTransactionStack({
         view: null,
-        goBack: true
+        goBack: false,
+        replace: true,
+        onCancel() {
+          RouterController.replace('ConnectingSiwe')
+        }
       })
     }
     const signature = await ConnectionController.signMessage(message)
@@ -134,6 +138,8 @@ export class Web3ModalSIWEClient {
   }
 
   async signOut() {
+    this.methods.onSignOut?.()
+
     return this.methods.signOut()
   }
 }

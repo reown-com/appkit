@@ -78,13 +78,13 @@ export class W3mUpdateEmailWalletView extends LitElement {
 
       this.loading = true
       event.preventDefault()
-      const emailConnector = ConnectorController.getEmailConnector()
+      const authConnector = ConnectorController.getAuthConnector()
 
-      if (!emailConnector) {
-        throw new Error('w3m-update-email-wallet: Email connector not found')
+      if (!authConnector) {
+        throw new Error('w3m-update-email-wallet: Auth connector not found')
       }
 
-      const response = await emailConnector.provider.updateEmail({ email: this.email })
+      const response = await authConnector.provider.updateEmail({ email: this.email })
       EventsController.sendEvent({ type: 'track', event: 'EMAIL_EDIT' })
 
       if (response.action === 'VERIFY_SECONDARY_OTP') {

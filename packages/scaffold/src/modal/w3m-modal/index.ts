@@ -157,29 +157,20 @@ export class W3mModal extends LitElement {
   }
 
   private async onNewAddress(caipAddress?: CaipAddress) {
+    if (!this.connected) {
+      return
+    }
+    const hasNetworkChanged = this.caipAddress && this.caipAddress !== caipAddress
+    this.caipAddress = caipAddress
     if (this.isSiweEnabled) {
       const { SIWEController } = await import('@web3modal/siwe')
+      const session = await SIWEController.getSession()
 
-      if (this.connected && !this.caipAddress) {
-        this.caipAddress = caipAddress
-      }
-      if (this.connected && caipAddress && this.caipAddress !== caipAddress) {
+      if (session && hasNetworkChanged) {
         await SIWEController.signOut()
         this.onSiweNavigation()
-        this.caipAddress = caipAddress
-      }
-
-      try {
-        const session = await SIWEController.getSession()
-        if (session && !this.connected) {
-          await SIWEController.signOut()
-        } else if (this.connected && !session) {
-          this.onSiweNavigation()
-        }
-      } catch (error) {
-        if (this.connected) {
-          this.onSiweNavigation()
-        }
+      } else {
+        this.onSiweNavigation()
       }
     }
   }

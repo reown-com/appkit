@@ -2,19 +2,25 @@ import '@web3modal/polyfills'
 
 import type { CreateConfigParameters, CreateConnectorFn, Config } from 'wagmi'
 import { createConfig } from 'wagmi'
-import { coinbaseWallet, injected } from 'wagmi/connectors'
-
-import { emailConnector } from '../connectors/EmailConnector.js'
-import { alphaWalletConnect } from '../connectors/alphaWalletConnect.js'
+import { coinbaseWallet, walletConnect } from 'wagmi/connectors'
+import { authConnector } from '../connectors/AuthConnector.js'
 import { getTransport } from './helpers.js'
+import type { SocialProvider } from '@web3modal/scaffold-utils'
 
 export type ConfigOptions = Partial<CreateConfigParameters> & {
   chains: CreateConfigParameters['chains']
   projectId: string
-  enableInjected?: boolean
   enableEIP6963?: boolean
   enableCoinbase?: boolean
   enableEmail?: boolean
+  auth?: {
+    socials?: SocialProvider[]
+  }
+  /**
+   * Use enableEIP6963 to show all injected wallets
+   * @deprecated
+   */
+  enableInjected?: boolean
   enableWalletConnect?: boolean
   metadata: {
     name: string
@@ -28,9 +34,9 @@ export function defaultWagmiConfig({
   projectId,
   chains,
   metadata,
-  enableInjected,
   enableCoinbase,
   enableEmail,
+  auth,
   enableWalletConnect,
   enableEIP6963,
   ...wagmiConfig
@@ -44,11 +50,7 @@ export function defaultWagmiConfig({
 
   // Enabled by default
   if (enableWalletConnect !== false) {
-    connectors.push(alphaWalletConnect({ projectId, metadata, showQrModal: false }))
-  }
-
-  if (enableInjected !== false) {
-    connectors.push(injected({ shimDisconnect: true }))
+    connectors.push(walletConnect({ projectId, metadata, showQrModal: false }))
   }
 
   if (enableCoinbase !== false) {
@@ -62,8 +64,15 @@ export function defaultWagmiConfig({
   }
 
   // Dissabled by default
-  if (enableEmail === true) {
-    connectors.push(emailConnector({ chains: [...chains], options: { projectId } }))
+  if (enableEmail || auth?.socials) {
+    connectors.push(
+      authConnector({
+        chains: [...chains],
+        options: { projectId },
+        socials: auth?.socials,
+        email: enableEmail
+      })
+    )
   }
 
   return createConfig({
