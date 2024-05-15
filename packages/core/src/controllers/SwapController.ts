@@ -79,7 +79,7 @@ export interface SwapControllerState {
   tokensPriceMap: Record<string, number>
 
   // Calculations
-  gasFee: bigint
+  gasFee: string
   gasPriceInUSD?: number
   priceImpact: number | undefined
   maxSlippage: number | undefined
@@ -231,7 +231,7 @@ export const SwapController = {
   },
 
   setToTokenAmount(amount: string) {
-    state.toTokenAmount = amount
+    state.toTokenAmount = amount ? NumberUtil.formatNumberToLocalString(amount, 6) : ''
   },
 
   async setTokenPrice(address: string, target: SwapInputTarget) {
@@ -448,13 +448,15 @@ export const SwapController = {
     const gasLimit = BigInt(INITIAL_GAS_LIMIT)
     const gasPrice = SwapCalculationUtil.getGasPriceInUSD(state.networkPrice, gasLimit, gasFee)
 
+    state.gasFee = value
     state.gasPriceInUSD = gasPrice
 
     return { gasPrice: gasFee, gasPriceInUSD: state.gasPriceInUSD }
   },
 
-  // -- Swap -------------------------------------- //
+  // -- Transactions -------------------------------------- //
   async swapTokens() {
+    const address = AccountController.state.address
     const sourceToken = state.sourceToken
     const toToken = state.toToken
     const haveSourceTokenAmount = NumberUtil.bigNumber(state.sourceTokenAmount).isGreaterThan(0)
@@ -464,13 +466,27 @@ export const SwapController = {
     }
 
     state.loading = true
-    state.toTokenAmount = SwapCalculationUtil.getToTokenAmount({
-      sourceToken: state.sourceToken,
-      toToken: state.toToken,
-      sourceTokenPrice: state.sourceTokenPriceInUSD,
-      toTokenPrice: state.toTokenPriceInUSD,
-      sourceTokenAmount: state.sourceTokenAmount
-    })
+
+    // TODO(enes): This will be replaced with blockchain API endpoint
+    const quoteResponse = await SwapApiUtil.getQuote(
+      CoreHelperUtil.getPlainAddress(sourceToken.address)!,
+      CoreHelperUtil.getPlainAddress(toToken.address)!,
+      NumberUtil.bigNumber(state.sourceTokenAmount)
+        .multipliedBy(10 ** sourceToken.decimals)
+        .toString(),
+      address ? CoreHelperUtil.getPlainAddress(address)! : '',
+      state.gasFee
+    )
+
+    if (!quoteResponse?.dstAmount) {
+      return
+    }
+
+    const toTokenAmount = NumberUtil.bigNumber(quoteResponse?.dstAmount)
+      .dividedBy(10 ** toToken.decimals)
+      .toString()
+
+    this.setToTokenAmount(toTokenAmount)
 
     const isInsufficientToken = this.hasInsufficientToken(
       state.sourceTokenAmount,
