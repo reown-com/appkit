@@ -77,7 +77,22 @@ export class W3mSwapInput extends LitElement {
 
   // -- Private ------------------------------------------- //
   private handleKeydown(event: KeyboardEvent) {
-    const allowedKeys = ['Backspace', 'Meta', 'Ctrl', 'ArrowLeft', 'ArrowRight', 'Tab']
+    const allowedKeys = [
+      'Backspace',
+      'Meta',
+      'Ctrl',
+      'a',
+      'A',
+      'c',
+      'C',
+      'x',
+      'X',
+      'v',
+      'V',
+      'ArrowLeft',
+      'ArrowRight',
+      'Tab'
+    ]
     const controlPressed = event.metaKey || event.ctrlKey
     const selectAll = event.key === 'a' || event.key === 'A'
     const copyKey = event.key === 'c' || event.key === 'C'
