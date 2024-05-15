@@ -5,7 +5,7 @@ import { ConnectionController, ConstantsUtil, StorageUtil } from '../../index.js
 // -- Setup --------------------------------------------------------------------
 const walletConnectUri = 'wc://uri?=123'
 const externalId = 'coinbaseWallet'
-const type = 'EMAIL' as ConnectorType
+const type = 'AUTH' as ConnectorType
 const storageSpy = vi.spyOn(StorageUtil, 'setConnectedConnector')
 
 const client: ConnectionControllerClient = {
