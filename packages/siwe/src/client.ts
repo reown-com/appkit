@@ -108,7 +108,7 @@ export class Web3ModalSIWEClient {
       ...messageParams
     })
     const type = StorageUtil.getConnectedConnector()
-    if (type === 'EMAIL') {
+    if (type === 'AUTH') {
       RouterController.pushTransactionStack({
         view: null,
         goBack: false,
