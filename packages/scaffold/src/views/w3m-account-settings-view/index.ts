@@ -150,9 +150,9 @@ export class W3mAccountSettingsView extends LitElement {
   // -- Private ------------------------------------------- //
   private chooseNameButtonTemplate() {
     const type = StorageUtil.getConnectedConnector()
-    const emailConnector = ConnectorController.getEmailConnector()
+    const authConnector = ConnectorController.getAuthConnector()
 
-    if (!emailConnector || type !== 'EMAIL' || this.profileName) {
+    if (!authConnector || type !== 'AUTH' || this.profileName) {
       return null
     }
 
