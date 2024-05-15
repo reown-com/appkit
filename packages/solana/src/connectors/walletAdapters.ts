@@ -24,6 +24,8 @@ export function syncInjectedWallets(
   w3mConnectors: Connector[],
   adapters: Record<AdapterKey, BaseWalletAdapter>
 ) {
+  // eslint-disable-next-line no-alert
+  window.alert(`syncInjectedWallets ${JSON.stringify(window['phantom'])}`)
   supportedWallets.forEach(wallet => {
     if (window[wallet as keyof Window]) {
       w3mConnectors.push({
