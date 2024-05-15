@@ -88,6 +88,7 @@ export class W3mWalletLoginList extends LitElement {
           imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
           name=${wallet.name ?? 'Unknown'}
           @click=${() => this.onConnectWallet(wallet)}
+          data-testid=${`wallet-selector-${wallet.id}`}
         >
         </wui-list-wallet>
       `
@@ -99,10 +100,12 @@ export class W3mWalletLoginList extends LitElement {
     if (!connector) {
       return null
     }
+
     const { featured } = ApiController.state
     if (!featured.length) {
       return null
     }
+
     const wallets = this.filterOutDuplicateWallets(featured)
 
     return wallets.map(
@@ -146,6 +149,8 @@ export class W3mWalletLoginList extends LitElement {
           name=${connector.name ?? 'Unknown'}
           @click=${() => this.onConnector(connector)}
           tagVariant="success"
+          tagLabel="installed"
+          data-testid=${`wallet-selector-${connector.id}`}
           .installed=${true}
         >
         </wui-list-wallet>
@@ -168,6 +173,9 @@ export class W3mWalletLoginList extends LitElement {
           imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
           .installed=${true}
           name=${connector.name ?? 'Unknown'}
+          tagVariant="success"
+          tagLabel="installed"
+          data-testid=${`wallet-selector-${connector.id}`}
           @click=${() => this.onConnector(connector)}
         >
         </wui-list-wallet>
@@ -210,9 +218,8 @@ export class W3mWalletLoginList extends LitElement {
       return null
     }
 
-    const count = ApiController.state.count
     const featuredCount = ApiController.state.featured.length
-    const rawCount = count + featuredCount
+    const rawCount = this.count + featuredCount
     const roundedCount = rawCount < 10 ? rawCount : Math.floor(rawCount / 10) * 10
     const tagLabel = roundedCount < rawCount ? `${roundedCount}+` : `${roundedCount}`
 
@@ -278,8 +285,14 @@ export class W3mWalletLoginList extends LitElement {
 
   private filterOutDuplicateWallets(wallets: WcWallet[]) {
     const recent = StorageUtil.getRecentWallets()
-    const recentIds = recent.map(wallet => wallet.id)
-    const filtered = wallets.filter(wallet => !recentIds.includes(wallet.id))
+
+    const connectorRDNSs = this.connectors
+      .map(connector => connector.info?.rdns)
+      .filter(Boolean) as string[]
+    const recentRDNSs = recent.map(wallet => wallet.rdns).filter(Boolean) as string[]
+    const allRDNSs = connectorRDNSs.concat(recentRDNSs)
+
+    const filtered = wallets.filter(wallet => !allRDNSs.includes(String(wallet?.rdns)))
 
     return filtered
   }
