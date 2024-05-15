@@ -28,6 +28,10 @@ export default css`
     scrollbar-width: none;
   }
 
+  .tab-content-container::-webkit-scrollbar {
+    display: none;
+  }
+
   .account-button {
     width: auto;
     border: none;

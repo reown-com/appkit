@@ -4,14 +4,15 @@ import { EthereumProvider } from '@walletconnect/ethereum-provider'
 import { getCallsStatus } from '@wagmi/core/experimental'
 import { useCallback, useState, useEffect } from 'react'
 import { useChakraToast } from '../Toast'
-import { EIP_5792_RPC_METHODS, getCapabilitySupportedChainInfoForEthers } from '../../utils/EIP5792Utils'
+import { EIP_5792_RPC_METHODS } from '../../utils/EIP5792Utils'
 import { wagmiConfig } from '../../pages/library/wagmi'
 import { bigIntReplacer } from '../../utils/CommonUtils'
 
 export function WagmiGetCallsStatusTest() {
-  const [provider, setProvider] = useState<Awaited<ReturnType<(typeof EthereumProvider)['init']>>>()
+  const [ethereumProvider, setEthereumProvider] =
+    useState<Awaited<ReturnType<(typeof EthereumProvider)['init']>>>()
   const [isLoading, setLoading] = useState(false)
-  const { status, chain, address } = useAccount()
+  const { status, address } = useAccount()
   const connection = useConnections()
   const isConnected = status === 'connected'
   const toast = useChakraToast()
@@ -39,27 +40,25 @@ export function WagmiGetCallsStatusTest() {
 
   function isGetCallsStatusSupported(): boolean {
     return Boolean(
-      provider?.signer?.session?.namespaces?.['eip155']?.methods?.includes(
+      ethereumProvider?.signer?.session?.namespaces?.['eip155']?.methods?.includes(
         EIP_5792_RPC_METHODS.WALLET_GET_CALLS_STATUS
       )
     )
   }
 
-  useEffect(() => {
-    async function fetchProvider() {
-      const connectedProvider = await connection?.[0]?.connector?.getProvider()
-      const ethereumProvider = connectedProvider as Awaited<
-        ReturnType<(typeof EthereumProvider)['init']>
-      >
-      setProvider(ethereumProvider)
+  async function fetchProvider() {
+    const connectedProvider = await connection?.[0]?.connector?.getProvider()
+    if (connectedProvider instanceof EthereumProvider) {
+      setEthereumProvider(connectedProvider)
     }
-
-    if (status === 'connected') {
+  }
+  useEffect(() => {
+    if (isConnected) {
       fetchProvider()
     }
-  }, [status, connection])
+  }, [isConnected])
 
-  if (status !== 'connected' || !provider) {
+  if (!isConnected || !ethereumProvider || !address) {
     return (
       <Text fontSize="md" color="yellow">
         Wallet not connected
@@ -70,40 +69,26 @@ export function WagmiGetCallsStatusTest() {
   if (!isGetCallsStatusSupported()) {
     return (
       <Text fontSize="md" color="yellow">
-        Wallet do not support this feature
+        Wallet does not support wallet_getCallsStatus rpc method
       </Text>
     )
   }
 
-  const allowedChains = getCapabilitySupportedChainInfoForEthers('atomicBatch',provider, address)
-
-  if (allowedChains.length === 0) {
-    return (
-      <Text fontSize="md" color="yellow">
-        Account do not support this feature
-      </Text>
-    )
-  }
-
-  return allowedChains.find(chainInfo => chainInfo.chainId === Number(chain?.id)) &&
-    status === 'connected' ? (
+  return (
     <Stack direction={['column', 'column', 'row']}>
       <Input
         placeholder="0xf34ffa..."
         onChange={e => setBatchCallId(e.target.value)}
         value={batchCallId}
+        isDisabled={isLoading}
       />
       <Button
-        data-test-id="sign-transaction-button"
+        data-test-id="get-calls-status-button"
         onClick={onGetCallsStatus}
-        isDisabled={isLoading || !isConnected}
+        isDisabled={isLoading}
       >
         Get Calls Status
       </Button>
     </Stack>
-  ) : (
-    <Text fontSize="md" color="yellow">
-      Switch to {allowedChains.map(ci => ci.chainName).join(', ')} to test this feature
-    </Text>
   )
 }

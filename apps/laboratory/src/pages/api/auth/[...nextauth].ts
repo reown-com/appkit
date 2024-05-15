@@ -1,12 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import nextAuth from 'next-auth'
 import credentialsProvider from 'next-auth/providers/credentials'
-import {
-  type SIWESession,
-  verifySignature,
-  getChainIdFromMessage,
-  getAddressFromMessage
-} from '@web3modal/siwe'
+import { type SIWESession, getChainIdFromMessage, getAddressFromMessage } from '@web3modal/siwe'
+import { verifySignature } from '../../../utils/SignatureUtil'
 
 declare module 'next-auth' {
   interface Session extends SIWESession {
@@ -51,8 +47,12 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
           const { message, signature } = credentials
           const address = getAddressFromMessage(message)
           const chainId = getChainIdFromMessage(message)
-
-          const isValid = await verifySignature({ address, message, signature, chainId, projectId })
+          const isValid = await verifySignature({
+            address,
+            message,
+            signature,
+            chainId: Number(chainId.split(':')[1])
+          })
 
           if (isValid) {
             return {

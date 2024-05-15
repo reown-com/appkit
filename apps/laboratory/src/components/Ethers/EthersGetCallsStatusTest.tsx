@@ -5,15 +5,13 @@ import { EthereumProvider } from '@walletconnect/ethereum-provider'
 import { useChakraToast } from '../Toast'
 import { BrowserProvider } from 'ethers'
 import { type GetCallsStatusParams } from '../../types/EIP5792'
-import { EIP_5792_RPC_METHODS, getCapabilitySupportedChainInfoForEthers } from '../../utils/EIP5792Utils'
+import { EIP_5792_RPC_METHODS } from '../../utils/EIP5792Utils'
 
 export function EthersGetCallsStatusTest() {
   const toast = useChakraToast()
-  const { address, chainId } = useWeb3ModalAccount()
+  const { address, chainId, isConnected } = useWeb3ModalAccount()
   const { walletProvider } = useWeb3ModalProvider()
-  const [loading, setLoading] = useState(false)
-  const ethereumProvider =
-    walletProvider && (walletProvider as Awaited<ReturnType<(typeof EthereumProvider)['init']>>)
+  const [isLoading, setLoading] = useState(false)
   const [batchCallId, setBatchCallId] = useState('')
 
   async function onGetCallsStatus() {
@@ -49,14 +47,18 @@ export function EthersGetCallsStatusTest() {
   }
 
   function isGetCallsStatusSupported(): boolean {
-    return Boolean(
-      ethereumProvider?.signer?.session?.namespaces?.['eip155']?.methods?.includes(
-        EIP_5792_RPC_METHODS.WALLET_GET_CALLS_STATUS
+    if (walletProvider instanceof EthereumProvider) {
+      return Boolean(
+        walletProvider?.signer?.session?.namespaces?.['eip155']?.methods?.includes(
+          EIP_5792_RPC_METHODS.WALLET_GET_CALLS_STATUS
+        )
       )
-    )
+    }
+
+    return false
   }
 
-  if (!address || !ethereumProvider) {
+  if (!isConnected || !address || !walletProvider) {
     return (
       <Text fontSize="md" color="yellow">
         Wallet not connected
@@ -67,39 +69,26 @@ export function EthersGetCallsStatusTest() {
   if (!isGetCallsStatusSupported()) {
     return (
       <Text fontSize="md" color="yellow">
-        Wallet do not support this feature
+        Wallet does not support wallet_getCallsStatus rpc method
       </Text>
     )
   }
 
-  const allowedChains = getCapabilitySupportedChainInfoForEthers('atomicBatch',ethereumProvider, address)
-
-  if (allowedChains.length === 0) {
-    return (
-      <Text fontSize="md" color="yellow">
-        Account do not support this feature
-      </Text>
-    )
-  }
-
-  return allowedChains.find(chainInfo => chainInfo.chainId === Number(chainId)) && address ? (
+  return (
     <Stack direction={['column', 'column', 'row']}>
       <Input
         placeholder="0xf34ffa..."
         onChange={e => setBatchCallId(e.target.value)}
         value={batchCallId}
+        isDisabled={isLoading}
       />
       <Button
-        data-test-id="sign-transaction-button"
+        data-test-id="get-calls-status-button"
         onClick={onGetCallsStatus}
-        isDisabled={loading}
+        isDisabled={isLoading}
       >
         Get Calls Status
       </Button>
     </Stack>
-  ) : (
-    <Text fontSize="md" color="yellow">
-      Switch to {allowedChains.map(ci => ci.chainName).join(', ')} to test this feature
-    </Text>
   )
 }

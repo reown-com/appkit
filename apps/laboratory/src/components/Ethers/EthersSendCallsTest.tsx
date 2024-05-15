@@ -10,10 +10,8 @@ import { EIP_5792_RPC_METHODS, getCapabilitySupportedChainInfoForEthers } from '
 
 export function EthersSendCallsTest() {
   const toast = useChakraToast()
-  const { address, chainId } = useWeb3ModalAccount()
+  const { address, chainId, isConnected } = useWeb3ModalAccount()
   const { walletProvider } = useWeb3ModalProvider()
-  const ethereumProvider =
-    walletProvider && (walletProvider as Awaited<ReturnType<(typeof EthereumProvider)['init']>>)
   const [loading, setLoading] = useState(false)
   async function onSendCalls() {
     try {
@@ -64,14 +62,18 @@ export function EthersSendCallsTest() {
   }
 
   function isSendCallsSupported(): boolean {
-    return Boolean(
-      ethereumProvider?.signer?.session?.namespaces?.['eip155']?.methods?.includes(
-        EIP_5792_RPC_METHODS.WALLET_SEND_CALLS
+    if (walletProvider instanceof EthereumProvider) {
+      return Boolean(
+        walletProvider?.signer?.session?.namespaces?.['eip155']?.methods?.includes(
+          EIP_5792_RPC_METHODS.WALLET_SEND_CALLS
+        )
       )
-    )
+    }
+
+    return false
   }
 
-  if (!address || !ethereumProvider) {
+  if (!isConnected || !walletProvider || !address) {
     return (
       <Text fontSize="md" color="yellow">
         Wallet not connected
@@ -82,24 +84,27 @@ export function EthersSendCallsTest() {
   if (!isSendCallsSupported()) {
     return (
       <Text fontSize="md" color="yellow">
-        Wallet do not support this feature
+        Wallet does not support this feature
       </Text>
     )
   }
 
-  const allowedChains = getCapabilitySupportedChainInfoForEthers('atomicBatch',ethereumProvider, address)
+  const allowedChains =
+    walletProvider instanceof EthereumProvider
+      ? getAtomicBatchSupportedChainInfo(walletProvider, address)
+      : []
 
   if (allowedChains.length === 0) {
     return (
       <Text fontSize="md" color="yellow">
-        Account do not support this feature
+        Account does not support this feature
       </Text>
     )
   }
 
-  return allowedChains.find(chainInfo => chainInfo.chainId === Number(chainId)) && address ? (
+  return allowedChains.find(chainInfo => chainInfo.chainId === Number(chainId)) ? (
     <Stack direction={['column', 'column', 'row']}>
-      <Button data-test-id="sign-transaction-button" onClick={onSendCalls} isDisabled={loading}>
+      <Button data-test-id="send-calls-button" onClick={onSendCalls} isDisabled={loading}>
         Send Batch Calls to Vitalik
       </Button>
       <Spacer />
