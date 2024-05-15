@@ -46,6 +46,7 @@
     "valtio": "1.11.2",
     "viem": "2.10.5",
     "wagmi": "2.8.7",
+    "permissionless": "0.1.29",
     "@wagmi/core": "2.9.7"
   },
   "devDependencies": {

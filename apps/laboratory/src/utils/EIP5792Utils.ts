@@ -35,3 +35,40 @@ export function getAtomicBatchSupportedChainInfo(
 
   return []
 }
+
+export function getPaymasterServiceSupportedChainInfo(
+  provider: Awaited<ReturnType<(typeof EthereumProvider)['init']>>,
+  address: string
+): {
+  chainId: number
+  chainName: string
+}[] {
+  if (address && provider?.signer?.session?.sessionProperties) {
+    const walletCapabilitiesString = provider.signer.session.sessionProperties['capabilities']
+    const walletCapabilities = walletCapabilitiesString && parseJSON(walletCapabilitiesString)
+    const accountCapabilities = walletCapabilities?.[address]
+
+    if (accountCapabilities && typeof accountCapabilities === 'object') {
+      const chainIds = Object.keys(accountCapabilities)
+        .filter(chainIdAsHex => {
+          const capabilities = accountCapabilities[chainIdAsHex]
+
+          return capabilities?.paymasterService?.supported
+        })
+        .map(chainIdAsHex => Number(chainIdAsHex))
+
+      const chainInfo = chainIds.map(id => {
+        const chain = getChain(id)
+
+        return {
+          chainId: id,
+          chainName: chain?.name ?? `Unknown Chain(${id})`
+        }
+      })
+
+      return chainInfo
+    }
+  }
+
+  return []
+}
