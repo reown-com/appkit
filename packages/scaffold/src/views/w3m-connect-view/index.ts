@@ -193,7 +193,7 @@ export class W3mConnectView extends LitElement {
     const announcedRdns = ConnectorController.getAnnouncedConnectorRdns()
 
     return this.connectors.map(connector => {
-      if (['WALLET_CONNECT', 'INJECTED', 'ANNOUNCED', 'EMAIL'].includes(connector.type)) {
+      if (['WALLET_CONNECT', 'INJECTED', 'ANNOUNCED', 'AUTH'].includes(connector.type)) {
         return null
       }
 
