@@ -81,7 +81,6 @@ export class W3mAccountButton extends LitElement {
         .isUnsupportedChain=${this.isUnsupportedChain}
         address=${ifDefined(this.address)}
         profileName=${ifDefined(this.profileName)}
-        ?isProfileName=${Boolean(this.profileName)}
         networkSrc=${ifDefined(networkImage)}
         avatarSrc=${ifDefined(this.profileImage)}
         balance=${showBalance
