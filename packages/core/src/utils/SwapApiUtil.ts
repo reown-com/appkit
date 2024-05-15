@@ -26,14 +26,19 @@ export type TokenInfo = {
 
 // -- Controller ---------------------------------------- //
 export const SwapApiUtil = {
-  // TODO(enes): This will be replaced by the blockchain API endpoint
-  async getQuote(
-    fromTokenAddress: string,
-    toTokenAddress: string,
-    amount: string,
-    accountAddress: string,
+  async getQuote({
+    fromTokenAddress,
+    toTokenAddress,
+    amount,
+    accountAddress,
+    gasPrice
+  }: {
+    fromTokenAddress: string
+    toTokenAddress: string
+    amount: string
+    accountAddress: string
     gasPrice: string
-  ) {
+  }) {
     const apiUrl = new URL(`${ONEINCH_API_BASE_URL}/swap/v6.0/137/quote`)
 
     apiUrl.searchParams.append('fromTokenAddress', fromTokenAddress)

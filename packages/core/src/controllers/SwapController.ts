@@ -141,7 +141,7 @@ const initialState: SwapControllerState = {
   tokensPriceMap: {},
 
   // Calculations
-  gasFee: BigInt(0),
+  gasFee: '0',
   gasPriceInUSD: 0,
   priceImpact: undefined,
   maxSlippage: undefined,
@@ -456,7 +456,7 @@ export const SwapController = {
 
   // -- Transactions -------------------------------------- //
   async swapTokens() {
-    const address = AccountController.state.address
+    const address = AccountController.state.address as `${string}:${string}:${string}`
     const sourceToken = state.sourceToken
     const toToken = state.toToken
     const haveSourceTokenAmount = NumberUtil.bigNumber(state.sourceTokenAmount).isGreaterThan(0)
@@ -467,16 +467,17 @@ export const SwapController = {
 
     state.loading = true
 
-    // TODO(enes): This will be replaced with blockchain API endpoint
-    const quoteResponse = await SwapApiUtil.getQuote(
-      CoreHelperUtil.getPlainAddress(sourceToken.address)!,
-      CoreHelperUtil.getPlainAddress(toToken.address)!,
-      NumberUtil.bigNumber(state.sourceTokenAmount)
+    const fromAddress = CoreHelperUtil.getPlainAddress(address) || ''
+
+    const quoteResponse = await SwapApiUtil.getQuote({
+      fromTokenAddress: CoreHelperUtil.getPlainAddress(sourceToken.address),
+      toTokenAddress: CoreHelperUtil.getPlainAddress(toToken.address),
+      amount: NumberUtil.bigNumber(state.sourceTokenAmount)
         .multipliedBy(10 ** sourceToken.decimals)
         .toString(),
-      address ? CoreHelperUtil.getPlainAddress(address)! : '',
-      state.gasFee
-    )
+      accountAddress: fromAddress,
+      gasPrice: state.gasFee
+    })
 
     if (!quoteResponse?.dstAmount) {
       return

@@ -24,8 +24,7 @@ export const SwapCalculationUtil = {
     sourceTokenAmount,
     sourceTokenPriceInUSD,
     toTokenPriceInUSD,
-    toTokenAmount,
-    gasPriceInUSD
+    toTokenAmount
   }: {
     sourceTokenAmount: string
     sourceTokenPriceInUSD: number
