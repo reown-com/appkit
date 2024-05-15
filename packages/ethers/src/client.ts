@@ -192,10 +192,11 @@ export class Web3Modal extends Web3ModalScaffold {
 
         if (siweConfig?.options?.enabled) {
           const { SIWEController, getDidChainId, getDidAddress } = await import('@web3modal/siwe')
+          const messageParams = await siweConfig.getMessageParams()
           const result = await WalletConnectProvider.authenticate({
             nonce: await siweConfig.getNonce(),
             methods: OPTIONAL_METHODS,
-            ...(await siweConfig.getMessageParams())
+            ...messageParams
           })
           // Auths is an array of signed CACAO objects https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-74.md
           const signedCacao = result?.auths?.[0]

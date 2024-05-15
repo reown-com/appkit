@@ -59,7 +59,7 @@ export class Web3ModalSIWEClient {
   }
 
   async getMessageParams() {
-    const params = await this.methods.getMessageParams()
+    const params = await this.methods.getMessageParams?.()
 
     return params || {}
   }
