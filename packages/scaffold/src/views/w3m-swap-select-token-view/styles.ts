@@ -23,21 +23,6 @@ export default css`
     position: absolute;
   }
 
-  .search-input-container,
-  .suggested-tokens-container {
-    padding-left: var(--wui-spacing-s);
-    padding-right: var(--wui-spacing-s);
-  }
-
-  .tokens-container .tokens {
-    padding: 0px var(--wui-spacing-s);
-    padding-bottom: var(--wui-spacing-s);
-  }
-
-  .search-input-container {
-    padding-top: var(--wui-spacing-s);
-  }
-
   .suggested-tokens-container {
     overflow-x: auto;
     mask-image: linear-gradient(
