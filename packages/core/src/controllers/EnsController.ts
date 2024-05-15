@@ -88,16 +88,10 @@ export const EnsController = {
       if (!network) {
         return []
       }
-      const coinType = EnsUtil.convertEVMChainIdToCoinType(
-        NetworkUtil.caipNetworkIdToNumber(network.id)!
-      )
 
       const response = await BlockchainApiController.reverseLookupEnsName({ address })
 
-      // For now we filter this way until BlockchainApi has fixed the /coinType endpoint
-      const names = response.filter(name => name.addresses[coinType]?.address === address)
-
-      return names
+      return response
     } catch (e) {
       const errorMessage = this.parseEnsApiError(e, 'Error fetching names for address')
       throw new Error(errorMessage)
@@ -125,6 +119,7 @@ export const EnsController = {
       RouterController.pushTransactionStack({
         view: 'RegisterAccountNameSuccess',
         goBack: false,
+        replace: true,
         onCancel() {
           state.loading = false
         }
@@ -139,7 +134,6 @@ export const EnsController = {
 
       const coinType = EnsUtil.convertEVMChainIdToCoinType(networkId)
       await BlockchainApiController.registerEnsName({
-        // TOD0: Add coin type calculation when ready on BE.
         coinType,
         address: address as `0x${string}`,
         signature,
