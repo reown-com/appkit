@@ -161,15 +161,22 @@ export class W3mSwapPreviewView extends LitElement {
           justifyContent="space-between"
           gap="xs"
         >
-          <button
+          <wui-button
             class="cancel-button"
-            ?disabled=${this.transactionLoading}
+            fullWidth
+            size="lg"
+            borderRadius="xs"
+            variant="shade"
             @click=${this.onCancelTransaction.bind(this)}
           >
             <wui-text variant="paragraph-600" color="fg-200">Cancel</wui-text>
-          </button>
-          <button
-            class="swap-button"
+          </wui-button>
+          <wui-button
+            class="action-button"
+            fullWidth
+            size="lg"
+            borderRadius="xs"
+            variant="fill"
             ?disabled=${this.transactionLoading}
             @click=${this.onSendTransaction.bind(this)}
           >
@@ -178,7 +185,7 @@ export class W3mSwapPreviewView extends LitElement {
               : html`<wui-text variant="paragraph-600" color="inverse-100">
                   ${this.actionButtonLabel()}
                 </wui-text>`}
-          </button>
+          </wui-button>
         </wui-flex>
       </wui-flex>
     `

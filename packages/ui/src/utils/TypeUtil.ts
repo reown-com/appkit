@@ -137,6 +137,7 @@ export type IconType =
   | 'infoCircle'
   | 'mail'
   | 'mobile'
+  | 'more'
   | 'networkPlaceholder'
   | 'nftPlaceholder'
   | 'off'
@@ -162,6 +163,7 @@ export type IconType =
   | 'walletConnect'
   | 'walletPlaceholder'
   | 'warningCircle'
+  | 'x'
 
 export type VisualType =
   | 'browser'
@@ -194,9 +196,10 @@ export type LogoType =
   | 'facebook'
   | 'github'
   | 'google'
+  | 'more'
   | 'telegram'
   | 'twitch'
-  | 'twitter'
+  | 'x'
 
 export type PlacementType = 'bottom' | 'left' | 'right' | 'top'
 

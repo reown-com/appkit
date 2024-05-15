@@ -1,6 +1,7 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
-import { erc20ABI, type Balance } from '@web3modal/common'
+import { type Balance } from '@web3modal/common'
+import { erc20ABI } from '@web3modal/common'
 import { RouterController } from './RouterController.js'
 import { AccountController } from './AccountController.js'
 import { ConnectionController } from './ConnectionController.js'
@@ -90,7 +91,7 @@ export const SendController = {
 
   sendToken() {
     if (this.state.token?.address && this.state.sendTokenAmount && this.state.receiverAddress) {
-      SendController.sendERC20Token({
+      this.sendERC20Token({
         receiverAddress: this.state.receiverAddress,
         tokenAddress: this.state.token.address,
         sendTokenAmount: this.state.sendTokenAmount,
@@ -102,7 +103,7 @@ export const SendController = {
       this.state.gasPrice &&
       this.state.token?.quantity.decimals
     ) {
-      SendController.sendNativeToken({
+      this.sendNativeToken({
         receiverAddress: this.state.receiverAddress,
         sendTokenAmount: this.state.sendTokenAmount,
         gasPrice: this.state.gasPrice,

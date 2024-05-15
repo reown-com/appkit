@@ -7,36 +7,20 @@ export default css`
     justify-content: space-between;
     align-items: center;
     border-radius: var(--wui-border-radius-s);
+    background-color: var(--wui-gray-glass-002);
     padding: var(--wui-spacing-xl);
     padding-right: var(--wui-spacing-s);
     width: 100%;
     height: 100px;
     box-sizing: border-box;
+    box-shadow: inset 0px 0px 0px 1px var(--wui-gray-glass-002);
     position: relative;
+    transition: box-shadow var(--wui-ease-out-power-1) var(--wui-duration-lg);
+    will-change: background-color;
   }
 
-  :host > wui-flex > svg.input_mask {
-    position: absolute;
-    inset: 0;
-    z-index: 5;
-  }
-
-  :host wui-flex .input_mask__border,
-  :host wui-flex .input_mask__background {
-    transition: fill var(--wui-duration-md) var(--wui-ease-out-power-1);
-    will-change: fill;
-  }
-
-  :host wui-flex .input_mask__border {
-    fill: var(--wui-gray-glass-005);
-  }
-
-  :host wui-flex .input_mask__background {
-    fill: var(--wui-gray-glass-002);
-  }
-
-  :host wui-flex.focus .input_mask__border {
-    fill: var(--wui-gray-glass-020);
+  :host wui-flex.focus {
+    box-shadow: inset 0px 0px 0px 1px var(--wui-gray-glass-005);
   }
 
   :host > wui-flex .swap-input,

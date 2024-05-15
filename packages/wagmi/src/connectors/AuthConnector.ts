@@ -1,10 +1,9 @@
-import { createConnector, normalizeChainId, type CreateConfigParameters } from '@wagmi/core'
+import { createConnector, type CreateConfigParameters } from '@wagmi/core'
 import { W3mFrameProvider } from '@web3modal/wallet'
 import { SwitchChainError, getAddress } from 'viem'
 import type { Address } from 'viem'
-
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
-
+import type { SocialProvider } from '@web3modal/scaffold-utils'
 // -- Types ----------------------------------------------------------------------------------------
 interface W3mFrameProviderOptions {
   projectId: string
@@ -14,21 +13,25 @@ interface ConnectOptions {
   chainId?: number
 }
 
-export type EmailParameters = {
+export type AuthParameters = {
   chains?: CreateConfigParameters['chains']
   options: W3mFrameProviderOptions
+  socials?: SocialProvider[]
+  email?: boolean
 }
 
 // -- Connector ------------------------------------------------------------------------------------
-export function emailConnector(parameters: EmailParameters) {
+export function authConnector(parameters: AuthParameters) {
   type Properties = {
     provider?: W3mFrameProvider
   }
 
   return createConnector<W3mFrameProvider, Properties>(config => ({
-    id: ConstantsUtil.EMAIL_CONNECTOR_ID,
-    name: 'Web3Modal Email',
-    type: 'w3mEmail',
+    id: ConstantsUtil.AUTH_CONNECTOR_ID,
+    name: 'Web3Modal Auth',
+    type: 'w3mAuth',
+    socials: parameters.socials,
+    email: parameters.email,
 
     async connect(options: ConnectOptions = {}) {
       const provider = await this.getProvider()
@@ -89,7 +92,7 @@ export function emailConnector(parameters: EmailParameters) {
         }
         const provider = await this.getProvider()
         await provider.switchNetwork(chainId)
-        config.emitter.emit('change', { chainId: normalizeChainId(chainId) })
+        config.emitter.emit('change', { chainId: Number(chainId) })
 
         return chain
       } catch (error) {
@@ -109,12 +112,12 @@ export function emailConnector(parameters: EmailParameters) {
     },
 
     onChainChanged(chain) {
-      const chainId = normalizeChainId(chain)
+      const chainId = Number(chain)
       config.emitter.emit('change', { chainId })
     },
 
     async onConnect(connectInfo) {
-      const chainId = normalizeChainId(connectInfo.chainId)
+      const chainId = Number(connectInfo.chainId)
       const accounts = await this.getAccounts()
       config.emitter.emit('connect', { accounts, chainId })
     },

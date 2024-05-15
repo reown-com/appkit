@@ -52,7 +52,7 @@ export const SwapCalculationUtil = {
     return maxSlippageAmount.toNumber()
   },
 
-  getProviderFee(sourceTokenAmount: string, feePercentage = 0.0075) {
+  getProviderFee(sourceTokenAmount: string, feePercentage = 0.0085) {
     const providerFee = NumberUtil.bigNumber(sourceTokenAmount).multipliedBy(feePercentage)
 
     return providerFee.toString()
@@ -113,8 +113,8 @@ export const SwapCalculationUtil = {
       return '0'
     }
 
-    // Calculate the provider fee (0.75% of the source token amount)
-    const providerFee = NumberUtil.bigNumber(sourceTokenAmount).multipliedBy(0.0075)
+    // Calculate the provider fee (0.85% of the source token amount)
+    const providerFee = NumberUtil.bigNumber(sourceTokenAmount).multipliedBy(0.0085)
 
     // Adjust the source token amount by subtracting the provider fee
     const adjustedSourceTokenAmount = NumberUtil.bigNumber(sourceTokenAmount).minus(providerFee)
