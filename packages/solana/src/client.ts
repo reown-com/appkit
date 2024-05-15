@@ -3,6 +3,8 @@ import { Web3ModalScaffold } from '@web3modal/scaffold'
 import {
   ApiController,
   AssetController,
+  CoreHelperUtil,
+  EventsController,
   NetworkController,
   OptionsController
 } from '@web3modal/core'
@@ -155,13 +157,13 @@ export class Web3Modal extends Web3ModalScaffold {
        * These methods are supported only on `wagmi` and `ethers` since the Solana SDK does not support them in the same way.
        * These function definition is to have a type parity between the clients. Currently not in use.
        */
-      sendTransaction: async () => await Promise.resolve('0x'),
-
-      writeContract: async () => await Promise.resolve('0x'),
+      getEnsAvatar: async (value: string) => await Promise.resolve(value),
 
       getEnsAddress: async (value: string) => await Promise.resolve(value),
 
-      getEnsAvatar: async (value: string) => await Promise.resolve(value),
+      writeContract: async () => await Promise.resolve('0x'),
+
+      sendTransaction: async () => await Promise.resolve('0x'),
 
       parseUnits: () => BigInt(0),
 
@@ -226,6 +228,20 @@ export class Web3Modal extends Web3ModalScaffold {
         SolStoreUtil.setCurrentChain(chain)
         localStorage.setItem(SolConstantsUtil.CAIP_CHAIN_ID, `solana:${chain.chainId}`)
         ApiController.reFetchWallets()
+      }
+    })
+
+    EventsController.subscribe(state => {
+      if (state.data.event === 'SELECT_WALLET' && state.data.properties?.name === 'Phantom') {
+        const isMobile = CoreHelperUtil.isMobile()
+        const isClient = CoreHelperUtil.isClient()
+        if (isMobile && isClient && !window.phantom) {
+          const href = window.location.href
+          const protocol = href.startsWith('https') ? 'https' : 'http'
+          const host = href.split('/')[2]
+          const ref = `${protocol}://${host}`
+          window.location.href = `https://phantom.app/ul/browse/${href}?ref=${ref}`
+        }
       }
     })
 

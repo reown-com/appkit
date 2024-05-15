@@ -35,7 +35,8 @@ import {
   BrowserProvider,
   Contract,
   hexlify,
-  toUtf8Bytes
+  toUtf8Bytes,
+  isHexString
 } from 'ethers'
 import {
   EthersConstantsUtil,
@@ -309,13 +310,10 @@ export class Web3Modal extends Web3ModalScaffold {
         if (!provider) {
           throw new Error('connectionControllerClient:signMessage - provider is undefined')
         }
-
-        if (!message.startsWith('0x')) {
-          hexedMessage = hexlify(toUtf8Bytes(message))
-        }
+        const hexMessage = isHexString(message) ? message : hexlify(toUtf8Bytes(message))
         const signature = await provider.request({
           method: 'personal_sign',
-          params: [hexedMessage, this.getAddress()]
+          params: [hexMessage, this.getAddress()]
         })
 
         return signature as `0x${string}`

@@ -40,14 +40,17 @@ const customProjectProperties: CustomProjectProperties = {
     useOptions: braveOptions
   },
   'Desktop Brave/wagmi': {
-    testIgnore: /(?:email\.spec\.ts|smart-account\.spec\.ts|siwe-email\.spec\.ts).*$/u,
+    testIgnore:
+      /(?:email\.spec\.ts|smart-account\.spec\.ts|siwe-email\.spec\.ts|siwe-smart-account\.spec\.ts).*$/u,
     useOptions: braveOptions
   },
   'Desktop Chrome/wagmi': {
-    testIgnore: /(?:email\.spec\.ts|smart-account\.spec\.ts|siwe-email\.spec\.ts).*$/u
+    testIgnore:
+      /(?:email\.spec\.ts|smart-account\.spec\.ts|siwe-email\.spec\.ts|siwe-smart-account\.spec\.ts).*$/u
   },
   'Desktop Firefox/wagmi': {
-    testIgnore: /(?:email\.spec\.ts|smart-account\.spec\.ts|siwe-email\.spec\.ts).*$/u
+    testIgnore:
+      /(?:email\.spec\.ts|smart-account\.spec\.ts|siwe-email\.spec\.ts|siwe-smart-account\.spec\.ts).*$/u
   },
   // Exclude email.spec.ts, siwe.spec.ts, and canary.spec.ts from solana, not yet implemented
   'Desktop Chrome/solana': {

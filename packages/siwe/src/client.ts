@@ -115,7 +115,7 @@ export class Web3ModalSIWEClient {
         goBack: false,
         replace: true,
         onCancel() {
-          ConnectionController.disconnect().then(() => ModalController.close())
+          RouterController.replace('ConnectingSiwe')
         }
       })
     }

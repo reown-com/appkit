@@ -14,7 +14,6 @@ export default css`
     border: 1px solid var(--wui-gray-glass-005);
     background: var(--wui-gray-glass-005);
     font-size: var(--wui-font-size-paragraph);
-    font-weight: var(--wui-font-weight-light);
     letter-spacing: var(--wui-letter-spacing-paragraph);
     color: var(--wui-color-fg-100);
     transition:
@@ -76,7 +75,7 @@ export default css`
 
   wui-icon + .wui-size-md,
   wui-loading-spinner + .wui-size-md {
-    padding: 10.5px var(--wui-spacing-3xl) 10.5px 40px;
+    padding: 10.5px var(--wui-spacing-3xl) 10.5px var(--wui-spacing-3xl);
   }
 
   wui-icon[data-input='md'] {
@@ -100,6 +99,17 @@ export default css`
 
   wui-icon[data-input='lg'] {
     left: var(--wui-spacing-l);
+  }
+
+  .wui-size-mdl {
+    padding: 17.25px var(--wui-spacing-m) 17.25px var(--wui-spacing-m);
+  }
+  wui-icon + .wui-size-mdl,
+  wui-loading-spinner + .wui-size-mdl {
+    padding: 17.25px var(--wui-spacing-3xl) 17.25px 40px;
+  }
+  wui-icon[data-input='mdl'] {
+    left: var(--wui-spacing-m);
   }
 
   input:placeholder-shown ~ ::slotted(wui-input-element),

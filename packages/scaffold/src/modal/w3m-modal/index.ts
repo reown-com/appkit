@@ -164,20 +164,12 @@ export class W3mModal extends LitElement {
     this.caipAddress = caipAddress
     if (this.isSiweEnabled) {
       const { SIWEController } = await import('@web3modal/siwe')
+      const session = await SIWEController.getSession()
 
-      try {
-        const session = await SIWEController.getSession()
-
-        if (session) {
-          if (hasNetworkChanged) {
-            await SIWEController.signOut()
-            this.onSiweNavigation()
-          }
-        } else {
-          this.onSiweNavigation()
-        }
-      } catch (error) {
+      if (session && hasNetworkChanged) {
         await SIWEController.signOut()
+        this.onSiweNavigation()
+      } else {
         this.onSiweNavigation()
       }
     }
