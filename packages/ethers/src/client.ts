@@ -306,7 +306,6 @@ export class Web3Modal extends Web3ModalScaffold {
 
       signMessage: async (message: string) => {
         const provider = EthersStoreUtil.state.provider
-        let hexedMessage = message
         if (!provider) {
           throw new Error('connectionControllerClient:signMessage - provider is undefined')
         }

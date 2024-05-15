@@ -13,8 +13,7 @@ import {
   ConnectionController,
   RouterUtil,
   RouterController,
-  StorageUtil,
-  ModalController
+  StorageUtil
 } from '@web3modal/core'
 
 import { NetworkUtil } from '@web3modal/common'
