@@ -628,44 +628,6 @@ export const elementStyles = css`
     text-decoration: none;
   }
 
-  @media (hover: hover) and (pointer: fine) {
-    button[data-variant='main']:focus-visible:enabled,
-    button[data-variant='main']:hover:enabled {
-      background-color: var(--wui-color-accent-090);
-    }
-
-    button[data-variant='main']:active:enabled {
-      background-color: var(--wui-color-accent-080);
-    }
-
-    button[data-variant='inverse']:focus-visible:enabled,
-    button[data-variant='inverse']:hover:enabled {
-      background-color: var(--wui-color-inverse-100);
-    }
-
-    button[data-variant='accent']:focus-visible:enabled,
-    button[data-variant='accent']:hover:enabled {
-      background-color: var(--wui-color-accent-glass-010);
-    }
-
-    button[data-variant='accent-error']:focus-visible:enabled,
-    button[data-variant='accent-error']:hover:enabled {
-      background: var(--wui-color-error-glass-015);
-      color: var(--wui-color-error-100);
-    }
-
-    button[data-variant='accent-success']:focus-visible:enabled,
-    button[data-variant='accent-success']:hover:enabled {
-      background: var(--wui-color-success-glass-015);
-      color: var(--wui-color-success-100);
-    }
-
-    button[data-variant='neutral']:hover:enabled,
-    button[data-variant='neutral']:focus-visible:enabled {
-      background: var(--wui-color-gray-glass-005);
-    }
-  }
-
   button:disabled > wui-wallet-image,
   button:disabled > wui-all-wallets-image,
   button:disabled > wui-network-image,
@@ -674,78 +636,6 @@ export const elementStyles = css`
   button:disabled > wui-transaction-visual,
   button:disabled > wui-logo {
     filter: grayscale(1);
-  }
-
-  button:focus-visible,
-  a:focus-visible {
-    border: 1px solid var(--wui-color-accent-100);
-    background-color: var(--wui-color-gray-glass-005);
-    -webkit-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
-    -moz-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
-    box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
-  }
-
-  button[data-variant='main'] {
-    background-color: var(--wui-color-accent-100);
-    color: var(--wui-color-inverse-100);
-    border: none;
-    box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-010);
-  }
-
-  button[data-variant='inverse'] {
-    background-color: var(--wui-color-inverse-100);
-    color: var(--wui-color-inverse-000);
-    border: none;
-    box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-010);
-  }
-
-  button[data-variant='accent'] {
-    background-color: var(--wui-color-accent-glass-010);
-    color: var(--wui-color-accent-100);
-    border: none;
-    box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-005);
-  }
-
-  button[data-variant='accent-error'] {
-    background: var(--wui-color-error-glass-015);
-    color: var(--wui-color-error-100);
-    border: none;
-    box-shadow: inset 0 0 0 1px var(--wui-color-error-glass-010);
-  }
-
-  button[data-variant='accent-success'] {
-    background: var(--wui-color-success-glass-015);
-    color: var(--wui-color-success-100);
-    border: none;
-    box-shadow: inset 0 0 0 1px var(--wui-color-success-glass-010);
-  }
-
-  button[data-variant='neutral'] {
-    background: transparent;
-    color: var(--wui-color-fg-100);
-    border: none;
-    box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-005);
-  }
-
-  button[data-variant='fullWidth'] {
-    width: 100%;
-    border-radius: var(--wui-border-radius-xs);
-    height: 56px;
-    border: none;
-    background-color: var(--wui-color-gray-glass-002);
-    color: var(--wui-color-fg-200);
-    gap: var(--wui-spacing-xs);
-  }
-
-  button:active:enabled {
-    background-color: var(--wui-color-gray-glass-010);
-  }
-
-  button:disabled {
-    background-color: var(--wui-color-gray-glass-002);
-    cursor: not-allowed;
-    color: var(--wui-color-gray-glass-020);
-    box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-002);
   }
 
   input {

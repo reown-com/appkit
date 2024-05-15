@@ -43,13 +43,14 @@ export class W3mConnectView extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex flexDirection="column" .padding=${['3xs', 's', 's', 's']} gap="xs">
+      <wui-flex flexDirection="column" .padding=${['3xs', 's', 's', 's']}>
         <w3m-email-login-widget></w3m-email-login-widget>
-
-        ${this.walletConnectConnectorTemplate()} ${this.recentTemplate()}
-        ${this.announcedTemplate()} ${this.injectedTemplate()} ${this.featuredTemplate()}
-        ${this.customTemplate()} ${this.recommendedTemplate()} ${this.externalTemplate()}
-        ${this.allWalletsTemplate()}
+        <wui-flex flexDirection="column" gap="xs">
+          ${this.walletConnectConnectorTemplate()} ${this.recentTemplate()}
+          ${this.announcedTemplate()} ${this.injectedTemplate()} ${this.featuredTemplate()}
+          ${this.customTemplate()} ${this.recommendedTemplate()} ${this.externalTemplate()}
+          ${this.allWalletsTemplate()}
+        </wui-flex>
       </wui-flex>
       <w3m-legal-footer></w3m-legal-footer>
     `

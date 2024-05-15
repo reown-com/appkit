@@ -59,7 +59,7 @@ export class W3mConnectingSiweView extends LitElement {
         </wui-button>
         <wui-button
           size="md"
-          ?fullwidth=${true}
+          fullWidth
           variant="main"
           @click=${this.onSign.bind(this)}
           ?loading=${this.isSigning}

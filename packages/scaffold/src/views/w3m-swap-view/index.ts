@@ -298,7 +298,6 @@ export class W3mSwapView extends LitElement {
     return html` <wui-flex gap="xs">
       <wui-button
         class="action-button"
-        ?fullWidth=${true}
         fullWidth
         size="lg"
         borderRadius="xs"
