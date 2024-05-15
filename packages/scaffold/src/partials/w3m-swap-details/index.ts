@@ -1,40 +1,66 @@
 import { html, LitElement } from 'lit'
-import { property } from 'lit/decorators.js'
+import { property, state } from 'lit/decorators.js'
 import styles from './styles.js'
 import { UiHelperUtil, customElement } from '@web3modal/ui'
 import { NumberUtil } from '@web3modal/common'
-import { NetworkController } from '@web3modal/core'
+import { ConstantsUtil, NetworkController, SwapController } from '@web3modal/core'
+
+// -- Constants ----------------------------------------- //
+const slippageRate = ConstantsUtil.CONVERT_SLIPPAGE_TOLERANCE
 
 @customElement('w3m-swap-details')
 export class WuiSwapDetails extends LitElement {
   public static override styles = [styles]
 
+  private unsubscribe: ((() => void) | undefined)[] = []
+
   // -- State & Properties -------------------------------- //
-  @property() public networkName = NetworkController.state.caipNetwork?.name
+  @state() public networkName = NetworkController.state.caipNetwork?.name
 
   @property() public detailsOpen = false
 
-  @property() public sourceTokenSymbol?: string
+  @state() public sourceToken = SwapController.state.sourceToken
 
-  @property() public sourceTokenPrice?: number
+  @state() public sourceTokenPrice = SwapController.state.sourceTokenPrice
 
-  @property() public toTokenSymbol?: string
+  @state() public toToken = SwapController.state.toToken
 
-  @property() public toTokenAmount?: string
+  @state() public toTokenAmount = SwapController.state.toTokenAmount
 
-  @property() public toTokenSwappedAmount?: number
+  @state() public sourceTokenPriceInUSD = SwapController.state.sourceTokenPriceInUSD
 
-  @property() public gasPriceInUSD?: number
+  @state() public toTokenPriceInUSD = SwapController.state.toTokenPriceInUSD
 
-  @property() public priceImpact?: number
+  @state() public gasPriceInUSD = SwapController.state.gasPriceInUSD
 
-  @property() public slippageRate = 1
+  @state() public priceImpact = SwapController.state.priceImpact
 
-  @property() public maxSlippage?: number
+  @state() public maxSlippage = SwapController.state.maxSlippage
 
-  @property() public providerFee?: string
+  @state() public networkTokenSymbol = SwapController.state.networkTokenSymbol
 
-  @property() public networkTokenSymbol?: string
+  @state() public inputError = SwapController.state.inputError
+
+  // -- Lifecycle ----------------------------------------- //
+  public constructor() {
+    super()
+
+    this.unsubscribe.push(
+      ...[
+        SwapController.subscribe(newState => {
+          this.sourceToken = newState.sourceToken
+          this.toToken = newState.toToken
+          this.toTokenAmount = newState.toTokenAmount
+          this.gasPriceInUSD = newState.gasPriceInUSD
+          this.priceImpact = newState.priceImpact
+          this.maxSlippage = newState.maxSlippage
+          this.sourceTokenPriceInUSD = newState.sourceTokenPriceInUSD
+          this.toTokenPriceInUSD = newState.toTokenPriceInUSD
+          this.inputError = newState.inputError
+        })
+      ]
+    )
+  }
 
   // -- Render -------------------------------------------- //
   public override render() {
@@ -43,19 +69,28 @@ export class WuiSwapDetails extends LitElement {
         ? NumberUtil.bigNumber(this.toTokenAmount).minus(this.maxSlippage).toString()
         : null
 
+    if (!this.sourceToken || !this.toToken || this.inputError) {
+      return null
+    }
+
+    const toTokenSwappedAmount =
+      this.sourceTokenPriceInUSD && this.toTokenPriceInUSD
+        ? (1 / this.toTokenPriceInUSD) * this.sourceTokenPriceInUSD
+        : 0
+
     return html`
       <wui-flex flexDirection="column" alignItems="center" gap="1xs" class="details-container">
         <wui-flex flexDirection="column">
           <button @click=${this.toggleDetails.bind(this)}>
             <wui-flex justifyContent="space-between" .padding=${['0', 'xs', '0', 'xs']}>
               <wui-flex justifyContent="flex-start" flexGrow="1" gap="xs">
-                <wui-text variant="small-400" color="fg-100"
-                  >1 ${this.sourceTokenSymbol} =
-                  ${UiHelperUtil.formatNumberToLocalString(this.toTokenSwappedAmount, 3)}
-                  ${this.toTokenSymbol}</wui-text
-                >
+                <wui-text variant="small-400" color="fg-100">
+                  1 ${this.sourceToken.symbol} =
+                  ${UiHelperUtil.formatNumberToLocalString(toTokenSwappedAmount, 3)}
+                  ${this.toToken.symbol}
+                </wui-text>
                 <wui-text variant="small-400" color="fg-200">
-                  $${UiHelperUtil.formatNumberToLocalString(this.sourceTokenPrice)}
+                  $${UiHelperUtil.formatNumberToLocalString(this.sourceTokenPriceInUSD)}
                 </wui-text>
               </wui-flex>
               <wui-icon name="chevronBottom"></wui-icon>
@@ -110,7 +145,7 @@ export class WuiSwapDetails extends LitElement {
                         </wui-flex>
                       </wui-flex>`
                     : null}
-                  ${this.maxSlippage && this.sourceTokenSymbol
+                  ${this.maxSlippage && this.sourceToken.symbol
                     ? html`<wui-flex flexDirection="column" gap="xs">
                         <wui-flex
                           justifyContent="space-between"
@@ -127,7 +162,7 @@ export class WuiSwapDetails extends LitElement {
                                   ? `Transaction will be reversed if you receive less than ${UiHelperUtil.formatNumberToLocalString(
                                       minReceivedAmount,
                                       6
-                                    )} ${this.toTokenSymbol} due to price changes.`
+                                    )} ${this.toToken.symbol} due to price changes.`
                                   : ''
                               }`}
                             >
@@ -137,7 +172,7 @@ export class WuiSwapDetails extends LitElement {
                           <wui-flex>
                             <wui-text variant="small-400" color="fg-200">
                               ${UiHelperUtil.formatNumberToLocalString(this.maxSlippage, 6)}
-                              ${this.toTokenSymbol} ${this.slippageRate}%
+                              ${this.toToken.symbol} ${slippageRate}%
                             </wui-text>
                           </wui-flex>
                         </wui-flex>
@@ -151,18 +186,11 @@ export class WuiSwapDetails extends LitElement {
                     >
                       <wui-flex alignItems="center" gap="xs">
                         <wui-text class="details-row-title" variant="small-400" color="fg-150">
-                          Provider fee (0.85%)
+                          Provider fee
                         </wui-text>
                       </wui-flex>
                       <wui-flex>
-                        ${this.providerFee
-                          ? html`
-                              <wui-text variant="small-400" color="fg-200">
-                                ${UiHelperUtil.formatNumberToLocalString(this.providerFee, 6)}
-                                ${this.sourceTokenSymbol}
-                              </wui-text>
-                            `
-                          : null}
+                        <wui-text variant="small-400" color="fg-200">0.85%</wui-text>
                       </wui-flex>
                     </wui-flex>
                   </wui-flex>

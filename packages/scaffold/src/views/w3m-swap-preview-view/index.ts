@@ -5,8 +5,7 @@ import {
   AccountController,
   NetworkController,
   RouterController,
-  SwapController,
-  ConstantsUtil
+  SwapController
 } from '@web3modal/core'
 import { state } from 'lit/decorators.js'
 
@@ -43,12 +42,6 @@ export class W3mSwapPreviewView extends LitElement {
 
   @state() private gasPriceInUSD = SwapController.state.gasPriceInUSD
 
-  @state() private priceImpact = SwapController.state.priceImpact
-
-  @state() private maxSlippage = SwapController.state.maxSlippage
-
-  @state() private providerFee = SwapController.state.providerFee
-
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
@@ -77,9 +70,6 @@ export class W3mSwapPreviewView extends LitElement {
           this.toTokenPriceInUSD = newState.toTokenPriceInUSD
           this.sourceTokenAmount = newState.sourceTokenAmount ?? ''
           this.toTokenAmount = newState.toTokenAmount ?? ''
-          this.priceImpact = newState.priceImpact
-          this.maxSlippage = newState.maxSlippage
-          this.providerFee = newState.providerFee
         })
       ]
     )
@@ -192,26 +182,11 @@ export class W3mSwapPreviewView extends LitElement {
   }
 
   private templateDetails() {
-    const toTokenSwappedAmount =
-      this.sourceTokenPriceInUSD && this.toTokenPriceInUSD
-        ? (1 / this.toTokenPriceInUSD) * this.sourceTokenPriceInUSD
-        : 0
+    if (!this.sourceToken || !this.toToken || this.inputError) {
+      return null
+    }
 
-    return html`
-      <w3m-swap-details
-        detailsOpen=${this.detailsOpen}
-        sourceTokenSymbol=${this.sourceToken?.symbol}
-        sourceTokenPrice=${this.sourceTokenPriceInUSD}
-        toTokenSymbol=${this.toToken?.symbol}
-        toTokenSwappedAmount=${toTokenSwappedAmount}
-        toTokenAmount=${this.toTokenAmount}
-        gasPriceInUSD=${UiHelperUtil.formatNumberToLocalString(this.gasPriceInUSD, 3)}
-        .priceImpact=${this.priceImpact}
-        slippageRate=${ConstantsUtil.CONVERT_SLIPPAGE_TOLERANCE}
-        .maxSlippage=${this.maxSlippage}
-        providerFee=${this.providerFee}
-      ></w3m-swap-details>
-    `
+    return html`<w3m-swap-details .detailsOpen=${this.detailsOpen}></w3m-swap-details>`
   }
 
   private actionButtonLabel(): string {
