@@ -109,7 +109,7 @@ export class W3mEmailLoginWidget extends LitElement {
       const authConnector = ConnectorController.getAuthConnector()
 
       if (!authConnector) {
-        throw new Error('w3m-email-login-widget: Email connector not found')
+        throw new Error('w3m-email-login-widget: Auth connector not found')
       }
       const { action } = await authConnector.provider.connectEmail({ email: this.email })
       EventsController.sendEvent({ type: 'track', event: 'EMAIL_SUBMITTED' })

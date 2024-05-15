@@ -110,9 +110,9 @@ export const EnsController = {
       throw new Error('Network not found')
     }
     const address = AccountController.state.address
-    const emailConnector = ConnectorController.getEmailConnector()
+    const emailConnector = ConnectorController.getAuthConnector()
     if (!address || !emailConnector) {
-      throw new Error('Address or email connector not found')
+      throw new Error('Address or auth connector not found')
     }
     state.loading = true
     const message = JSON.stringify({

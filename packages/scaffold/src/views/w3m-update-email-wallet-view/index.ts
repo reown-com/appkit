@@ -81,7 +81,7 @@ export class W3mUpdateEmailWalletView extends LitElement {
       const authConnector = ConnectorController.getAuthConnector()
 
       if (!authConnector) {
-        throw new Error('w3m-update-email-wallet: Email connector not found')
+        throw new Error('w3m-update-email-wallet: Auth connector not found')
       }
 
       const response = await authConnector.provider.updateEmail({ email: this.email })
