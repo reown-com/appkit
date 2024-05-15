@@ -67,7 +67,7 @@ export class W3mEmailLoginWidget extends LitElement {
         <input type="submit" hidden />
       </form>
 
-      ${multipleConnectors ? html`<wui-separator text="or"></wui-separator>` : null}
+      ${connector.socials ? null : html`<wui-separator text="or"></wui-separator>`}
     `
   }
 

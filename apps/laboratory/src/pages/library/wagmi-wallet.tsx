@@ -17,7 +17,10 @@ export const wagmiConfig = defaultWagmiConfig({
   projectId: ConstantsUtil.ProjectId,
   metadata: ConstantsUtil.Metadata,
   enableEmail: true,
-  ssr: true
+  ssr: true,
+  auth: {
+    socials: ['google', 'x', 'discord']
+  }
 })
 
 const modal = createWeb3Modal({
