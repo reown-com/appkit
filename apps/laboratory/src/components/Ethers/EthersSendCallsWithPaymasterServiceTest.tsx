@@ -1,9 +1,9 @@
-import { Button, Stack, Text, Menu, MenuButton, MenuList, MenuItem } from '@chakra-ui/react'
+import { Button, Stack, Text, Input, Tooltip } from '@chakra-ui/react'
 import { useState } from 'react'
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers/react'
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
 import { useChakraToast } from '../Toast'
-import { parseGwei, type Address } from 'viem'
+import { parseGwei } from 'viem'
 import { vitalikEthAddress } from '../../utils/DataUtil'
 import { BrowserProvider } from 'ethers'
 import {
@@ -12,16 +12,11 @@ import {
   getCapabilitySupportedChainInfoForEthers
 } from '../../utils/EIP5792Utils'
 
-const paymasterServiceOptions: {
-  value: string
-  label: string
-}[] = [{ value: 'http://localhost:3000/api/paymaster/pimlico', label: 'Pimlico Paymaster' }]
-
 export function EthersSendCallsWithPaymasterServiceTest() {
   const toast = useChakraToast()
   const { address, chainId, isConnected } = useWeb3ModalAccount()
   const { walletProvider } = useWeb3ModalProvider()
-  const [selectedOption, setSelectedOption] = useState<{ value: string; label: string }>()
+  const [paymasterServiceUrl, setPaymasterServiceUrl] = useState<string>('')
   const [isLoading, setLoading] = useState(false)
   async function onSendCalls() {
     try {
@@ -36,13 +31,11 @@ export function EthersSendCallsWithPaymasterServiceTest() {
       const amountToSend = parseGwei('0.001').toString(16)
       const calls = [
         {
-          to: vitalikEthAddress as `0x${string}`,
-          data: '0x' as `0x${string}`,
+          to: vitalikEthAddress,
           value: `0x${amountToSend}`
         },
         {
-          to: vitalikEthAddress as Address,
-          value: '0x00',
+          to: vitalikEthAddress,
           data: '0xdeadbeef'
         }
       ]
@@ -50,7 +43,12 @@ export function EthersSendCallsWithPaymasterServiceTest() {
         version: '1.0',
         chainId: `0x${BigInt(chainId).toString(16)}`,
         from: address,
-        calls
+        calls,
+        capabilities: {
+          paymasterService: {
+            url: paymasterServiceUrl
+          }
+        }
       }
       const batchCallHash = await provider.send(EIP_5792_RPC_METHODS.WALLET_SEND_CALLS, [
         sendCallsParams
@@ -119,26 +117,25 @@ export function EthersSendCallsWithPaymasterServiceTest() {
   return paymasterServiceSupportedChains.find(
     chainInfo => chainInfo.chainId === Number(chainId)
   ) ? (
-    <Stack direction={['column', 'column', 'row']}>
-      <Menu>
-        <MenuButton as={Button} colorScheme="blue">
-          {selectedOption?.label || 'Select Paymaster'}
-        </MenuButton>
-        <MenuList>
-          {paymasterServiceOptions.map((option, i) => (
-            <MenuItem key={i} onClick={() => setSelectedOption(option)}>
-              {option.label}
-            </MenuItem>
-          ))}
-        </MenuList>
-      </Menu>
-
+    <Stack direction={['column', 'column', 'column']}>
+      <Tooltip label="Paymaster Service URL should be ERC7677 complaint">
+        <Input
+          placeholder="http://api.pimlico.io/v2/sepolia/rpc?apikey=..."
+          onChange={e => setPaymasterServiceUrl(e.target.value)}
+          value={paymasterServiceUrl}
+          isDisabled={isLoading}
+          whiteSpace="nowrap"
+          textOverflow="ellipsis"
+        />
+      </Tooltip>
       <Button
+        width={'fit-content'}
+        colorScheme="cyan"
         data-test-id="send-calls-paymaster-service-button"
         onClick={onSendCalls}
-        isDisabled={isLoading || !selectedOption}
+        isDisabled={isLoading || !paymasterServiceUrl}
       >
-        SendCalls to Vitalik With Paymaster Service
+        SendCalls W/ Paymaster Service
       </Button>
     </Stack>
   ) : (

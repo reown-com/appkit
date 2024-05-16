@@ -1,4 +1,4 @@
-import { Button, Menu, MenuButton, MenuItem, MenuList, Stack, Text } from '@chakra-ui/react'
+import { Button, Input, Stack, Text, Tooltip } from '@chakra-ui/react'
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
 import { useAccount, useConnections } from 'wagmi'
 import { useCapabilities, useSendCalls } from 'wagmi/experimental'
@@ -21,11 +21,6 @@ const TEST_TX_2 = {
   data: '0xdeadbeef' as `0x${string}`
 }
 
-const paymasterServiceOptions: {
-  value: string
-  label: string
-}[] = [{ value: 'http://localhost:3000/api/paymaster/pimlico', label: 'Pimlico Paymaster' }]
-
 export function WagmiSendCallsWithPaymasterServiceTest() {
   const [ethereumProvider, setEthereumProvider] =
     useState<Awaited<ReturnType<(typeof EthereumProvider)['init']>>>()
@@ -34,7 +29,7 @@ export function WagmiSendCallsWithPaymasterServiceTest() {
   const { data: availableCapabilities } = useCapabilities({
     account: address
   })
-  const [selectedOption, setSelectedOption] = useState<{ value: string; label: string }>()
+  const [paymasterServiceUrl, setPaymasterServiceUrl] = useState<string>('')
   const connection = useConnections()
   const isConnected = status === 'connected'
   const toast = useChakraToast()
@@ -66,7 +61,7 @@ export function WagmiSendCallsWithPaymasterServiceTest() {
       calls: [TEST_TX_1, TEST_TX_2],
       capabilities: {
         paymasterService: {
-          url: selectedOption?.value
+          url: paymasterServiceUrl
         }
       }
     })
@@ -126,27 +121,26 @@ export function WagmiSendCallsWithPaymasterServiceTest() {
   return paymasterServiceSupportedChains.find(
     chainInfo => chainInfo.chainId === Number(chain?.id)
   ) ? (
-    <Stack direction={['column', 'column', 'row']}>
-      <Menu>
-        <MenuButton as={Button} colorScheme="blue">
-          {selectedOption?.label || 'Select Paymaster'}
-        </MenuButton>
-        <MenuList>
-          {paymasterServiceOptions.map((option, i) => (
-            <MenuItem key={i} onClick={() => setSelectedOption(option)}>
-              {option.label}
-            </MenuItem>
-          ))}
-        </MenuList>
-      </Menu>
-
+    <Stack direction={['column', 'column', 'column']}>
+      <Tooltip label="Paymaster Service URL should be ERC7677 complaint">
+        <Input
+          placeholder="http://api.pimlico.io/v2/sepolia/rpc?apikey=..."
+          onChange={e => setPaymasterServiceUrl(e.target.value)}
+          value={paymasterServiceUrl}
+          isDisabled={isLoading}
+          whiteSpace="nowrap"
+          textOverflow="ellipsis"
+        />
+      </Tooltip>
       <Button
+        width={'fit-content'}
+        colorScheme="cyan"
         data-test-id="send-calls-paymaster-service-button"
         onClick={onSendCalls}
         disabled={!sendCalls}
-        isDisabled={isLoading || !selectedOption}
+        isDisabled={isLoading || !paymasterServiceUrl}
       >
-        SendCalls to Vitalik With Paymaster Service
+        SendCalls W/ Paymaster Service
       </Button>
     </Stack>
   ) : (

@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers/react'
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
 import { useChakraToast } from '../Toast'
-import { parseGwei, type Address } from 'viem'
+import { parseGwei } from 'viem'
 import { vitalikEthAddress } from '../../utils/DataUtil'
 import { BrowserProvider } from 'ethers'
 import {
@@ -30,13 +30,11 @@ export function EthersSendCallsTest() {
       const amountToSend = parseGwei('0.001').toString(16)
       const calls = [
         {
-          to: vitalikEthAddress as `0x${string}`,
-          data: '0x' as `0x${string}`,
+          to: vitalikEthAddress,
           value: `0x${amountToSend}`
         },
         {
-          to: vitalikEthAddress as Address,
-          value: '0x00',
+          to: vitalikEthAddress,
           data: '0xdeadbeef'
         }
       ]
