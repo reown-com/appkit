@@ -24,11 +24,12 @@ export function syncInjectedWallets(
   w3mConnectors: Connector[],
   adapters: Record<AdapterKey, BaseWalletAdapter>
 ) {
-  // eslint-disable-next-line no-alert
-  window.alert(`window.phantom?.solana.isPhantom ${window.phantom?.solana.isPhantom}`)
-
   supportedWallets.forEach(wallet => {
     if (window[wallet as keyof Window]) {
+      // eslint-disable-next-line no-alert
+      window.alert(`window.${wallet} ${window[wallet as keyof Window].solana.isPhantom}`)
+      // eslint-disable-next-line no-alert
+      window.alert(`adapters[wallet] ${JSON.stringify(adapters[wallet])}`)
       w3mConnectors.push({
         id: adapters[wallet].name,
         type: 'ANNOUNCED',
