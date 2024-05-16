@@ -1,10 +1,5 @@
 import { testMSocial } from './shared/fixtures/w3m-social-fixture'
 
-const mailsacApiKey = process.env['MAILSAC_API_KEY']
-if (!mailsacApiKey) {
-  throw new Error('MAILSAC_API_KEY is not set')
-}
-
 testMSocial.beforeEach(async ({ modalValidator }) => {
   await modalValidator.expectConnected()
 })
