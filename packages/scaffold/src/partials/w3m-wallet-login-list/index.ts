@@ -141,7 +141,7 @@ export class W3mWalletLoginList extends LitElement {
 
   private announcedTemplate() {
     return this.connectors.map(connector => {
-      if (connector.type !== 'ANNOUNCED' || CoreHelperUtil.isMobile()) {
+      if (connector.type !== 'ANNOUNCED') {
         return null
       }
 
@@ -162,7 +162,11 @@ export class W3mWalletLoginList extends LitElement {
 
   private injectedTemplate() {
     return this.connectors.map(connector => {
-      if (connector.type !== 'INJECTED' || CoreHelperUtil.isMobile()) {
+      if (connector.type !== 'INJECTED') {
+        return null
+      }
+
+      if (!CoreHelperUtil.isMobile() && connector.name === 'Browser Wallet') {
         return null
       }
 
@@ -247,14 +251,15 @@ export class W3mWalletLoginList extends LitElement {
     const { customWallets, featuredWalletIds } = OptionsController.state
     const { connectors } = ConnectorController.state
     const recent = StorageUtil.getRecentWallets()
-    const injected = connectors.filter(c => c.type === 'INJECTED')
-    const filteredInjected = injected.filter(i => i.name !== 'Browser Wallet')
+
+    const injected = connectors.filter(c => c.type === 'INJECTED' || c.type === 'ANNOUNCED')
+    const injectedWallets = injected.filter(i => i.name !== 'Browser Wallet')
 
     if (featuredWalletIds || customWallets || !recommended.length) {
       return null
     }
 
-    const overrideLength = filteredInjected.length + recent.length
+    const overrideLength = injectedWallets.length + recent.length
 
     const maxRecommended = Math.max(0, 2 - overrideLength)
 
@@ -291,9 +296,13 @@ export class W3mWalletLoginList extends LitElement {
     const connectorRDNSs = this.connectors
       .map(connector => connector.info?.rdns)
       .filter(Boolean) as string[]
+
     const recentRDNSs = recent.map(wallet => wallet.rdns).filter(Boolean) as string[]
     const allRDNSs = connectorRDNSs.concat(recentRDNSs)
-
+    if (allRDNSs.includes('io.metamask.mobile') && CoreHelperUtil.isMobile()) {
+      const index = allRDNSs.indexOf('io.metamask.mobile')
+      allRDNSs[index] = 'io.metamask'
+    }
     const filtered = wallets.filter(wallet => !allRDNSs.includes(String(wallet?.rdns)))
 
     return filtered

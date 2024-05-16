@@ -1,5 +1,15 @@
 # @web3modal/core
 
+## 4.2.1
+
+### Patch Changes
+
+- Hotfix to support injected and announced wallets in in app browsers
+
+- Updated dependencies []:
+  - @web3modal/common@4.2.1
+  - @web3modal/wallet@4.2.1
+
 ## 4.2.0
 
 ### Patch Changes
