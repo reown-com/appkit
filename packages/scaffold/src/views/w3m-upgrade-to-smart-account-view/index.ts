@@ -63,7 +63,7 @@ export class W3mUpgradeToSmartAccountView extends LitElement {
   private buttonsTemplate() {
     return html`<wui-flex .padding=${['0', '2l', '0', '2l'] as const} gap="s">
       <wui-button
-        variant="accentBg"
+        variant="accent"
         @click=${this.redirectToAccount.bind(this)}
         size="lg"
         borderRadius="xs"
