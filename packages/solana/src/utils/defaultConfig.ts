@@ -9,7 +9,7 @@ declare global {
     solflare?: { solana: Provider }
     backpack?: { solana: Provider }
     trustWallet?: { solana: Provider }
-    phantom?: { solana: Provider }
+    phantom?: { solana: Provider & { isPhantom: boolean } }
     getHashedName: (name: string) => Buffer
   }
 }

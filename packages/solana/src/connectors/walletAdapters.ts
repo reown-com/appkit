@@ -25,7 +25,8 @@ export function syncInjectedWallets(
   adapters: Record<AdapterKey, BaseWalletAdapter>
 ) {
   // eslint-disable-next-line no-alert
-  window.alert(`window.phantom?.solana ${window.phantom?.solana}`)
+  window.alert(`window.phantom?.solana.isPhantom ${window.phantom?.solana.isPhantom}`)
+
   supportedWallets.forEach(wallet => {
     if (window[wallet as keyof Window]) {
       w3mConnectors.push({

@@ -236,8 +236,6 @@ export class Web3Modal extends Web3ModalScaffold {
         const isMobile = CoreHelperUtil.isMobile()
         const isClient = CoreHelperUtil.isClient()
 
-        // eslint-disable-next-line no-alert
-        window.alert(`isClient ${isClient}`)
         if (isMobile && isClient && !window.phantom) {
           const href = window.location.href
           const protocol = href.startsWith('https') ? 'https' : 'http'
@@ -249,8 +247,6 @@ export class Web3Modal extends Web3ModalScaffold {
     })
 
     if (CoreHelperUtil.isClient()) {
-      // eslint-disable-next-line no-alert
-      window.alert(`w.phantom ${JSON.stringify(window.phantom)}`)
       this.checkActiveProviders()
       this.syncConnectors()
     }
@@ -319,6 +315,8 @@ export class Web3Modal extends Web3ModalScaffold {
   private syncConnectors() {
     const w3mConnectors: Connector[] = []
 
+    syncInjectedWallets(w3mConnectors, this.walletAdapters)
+
     const connectorType = PresetsUtil.ConnectorTypesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID]
     if (connectorType) {
       w3mConnectors.push({
@@ -330,8 +328,6 @@ export class Web3Modal extends Web3ModalScaffold {
         provider: this.WalletConnectConnector.getProvider()
       })
     }
-
-    syncInjectedWallets(w3mConnectors, this.walletAdapters)
 
     this.setConnectors(w3mConnectors)
   }
