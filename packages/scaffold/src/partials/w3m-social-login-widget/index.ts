@@ -141,7 +141,7 @@ export class W3mSocialLoginWidget extends LitElement {
           provider: socialProvider
         })
         AccountController.setSocialProvider(socialProvider)
-        // window.open doesn't work on ios withing an async function, wrapping it in a setTimeout fixes this
+        // Window.open doesn't work on ios withing an async function, wrapping it in a setTimeout fixes this
         setTimeout(() => {
           CoreHelperUtil.openHref(uri, 'popupWindow', 'width=600,height=800,scrollbars=yes')
         })
