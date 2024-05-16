@@ -15,8 +15,8 @@ export class W3mAllWalletsView extends LitElement {
     return html`
       <wui-flex .padding=${['0', 's', 's', 's']} gap="s">
         <wui-search-bar @inputChange=${this.onInputChange.bind(this)}></wui-search-bar>
+        ${this.qrButtonTemplate()}
       </wui-flex>
-      ${this.qrButtonTemplate()}
       ${isSearch
         ? html`<w3m-all-wallets-search query=${this.search}></w3m-all-wallets-search>`
         : html`<w3m-all-wallets-list></w3m-all-wallets-list>`}
