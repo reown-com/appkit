@@ -1,5 +1,17 @@
 # @apps/laboratory
 
+## 4.2.1
+
+### Patch Changes
+
+- Hotfix to support injected and announced wallets in in app browsers
+
+- Updated dependencies []:
+  - @web3modal/ethers@4.2.1
+  - @web3modal/wagmi@4.2.1
+  - @web3modal/siwe@4.2.1
+  - @web3modal/solana@4.2.1
+
 ## 4.2.0
 
 ### Patch Changes
