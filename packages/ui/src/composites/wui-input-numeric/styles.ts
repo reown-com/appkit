@@ -9,9 +9,9 @@ export default css`
   input {
     width: 50px;
     height: 50px;
-    background: var(--wui-gray-glass-010);
+    background: var(--wui-color-gray-glass-010);
     border-radius: var(--wui-border-radius-xs);
-    border: 1px solid var(--wui-gray-glass-005);
+    border: 1px solid var(--wui-color-gray-glass-005);
     font-family: var(--wui-font-family);
     font-size: var(--wui-font-size-large);
     font-weight: var(--wui-font-weight-regular);
@@ -42,12 +42,12 @@ export default css`
 
   input:disabled {
     cursor: not-allowed;
-    border: 1px solid var(--wui-gray-glass-010);
-    background: var(--wui-gray-glass-005);
+    border: 1px solid var(--wui-color-gray-glass-010);
+    background: var(--wui-color-gray-glass-005);
   }
 
   input:focus:enabled {
-    background-color: var(--wui-gray-glass-015);
+    background-color: var(--wui-color-gray-glass-015);
     border: 1px solid var(--wui-color-accent-100);
     -webkit-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
     -moz-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
@@ -56,7 +56,7 @@ export default css`
 
   @media (hover: hover) and (pointer: fine) {
     input:hover:enabled {
-      background-color: var(--wui-gray-glass-015);
+      background-color: var(--wui-color-gray-glass-015);
     }
   }
 `

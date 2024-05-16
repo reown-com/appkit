@@ -65,20 +65,21 @@ export class W3mWalletReceiveView extends LitElement {
 
     return html` <wui-flex
       flexDirection="column"
-      .padding=${['xl', 'l', 'l', 'l'] as const}
+      .padding=${['0', 'l', 'l', 'l'] as const}
       alignItems="center"
     >
       <wui-chip-button
         @click=${this.onCopyClick.bind(this)}
         text=${UiHelperUtil.getTruncateString({
-          string: this.address ?? '',
+          string: this.profileName || this.address || '',
           charsStart: this.profileName ? 18 : 4,
           charsEnd: this.profileName ? 0 : 4,
           truncate: this.profileName ? 'end' : 'middle'
         })}
         icon="copy"
+        size="sm"
         imageSrc=${networkImage ? networkImage : ''}
-        variant="shadeSmall"
+        variant="gray"
       ></wui-chip-button>
       <wui-flex
         flexDirection="column"

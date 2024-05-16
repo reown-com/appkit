@@ -8,24 +8,24 @@ export default css`
 
   button {
     background: var(--wui-color-accent-100);
-    border: 1px solid var(--wui-gray-glass-010);
+    border: 1px solid var(--wui-color-gray-glass-010);
     border-radius: var(--wui-border-radius-m);
     gap: var(--wui-spacing-xs);
   }
 
   button.loading {
-    background: var(--wui-gray-glass-010);
-    border: 1px solid var(--wui-gray-glass-010);
+    background: var(--wui-color-gray-glass-010);
+    border: 1px solid var(--wui-color-gray-glass-010);
     pointer-events: none;
   }
 
   button:disabled {
-    background-color: var(--wui-gray-glass-015);
-    border: 1px solid var(--wui-gray-glass-010);
+    background-color: var(--wui-color-gray-glass-015);
+    border: 1px solid var(--wui-color-gray-glass-010);
   }
 
   button:disabled > wui-text {
-    color: var(--wui-gray-glass-015);
+    color: var(--wui-color-gray-glass-015);
   }
 
   @media (hover: hover) and (pointer: fine) {
@@ -39,7 +39,7 @@ export default css`
   }
 
   button:focus-visible {
-    border: 1px solid var(--wui-gray-glass-010);
+    border: 1px solid var(--wui-color-gray-glass-010);
     background-color: var(--wui-color-accent-090);
     -webkit-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
     -moz-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
