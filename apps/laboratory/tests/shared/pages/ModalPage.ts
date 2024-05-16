@@ -141,8 +141,7 @@ export class ModalPage {
     await googlePopup.fill('#password >> input[type="password"]', socialPass)
     await googlePopup.locator('button >> nth=1').click()
     await googlePopup.context().storageState({ path: authFile })
-    await googlePopup.waitForEvent('close')
-    await this.page.waitForTimeout(5000)
+    await this.page.waitForTimeout(10000)
   }
 
   async enterOTP(otp: string, headerTitle = 'Confirm Email') {
