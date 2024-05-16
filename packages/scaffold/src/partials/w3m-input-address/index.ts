@@ -47,8 +47,8 @@ export class W3mInputAddress extends LitElement {
         Type or
         <wui-button
           class="paste"
-          size="sm"
-          variant="shade"
+          size="md"
+          variant="neutral"
           iconLeft="copy"
           @click=${this.onPasteClick.bind(this)}
         >

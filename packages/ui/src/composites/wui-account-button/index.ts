@@ -26,8 +26,6 @@ export class WuiAccountButton extends LitElement {
 
   @property({ type: Boolean }) public disabled = false
 
-  @property({ type: Boolean }) public isProfileName = false
-
   @property() public address = ''
 
   @property() public profileName = ''
@@ -53,10 +51,10 @@ export class WuiAccountButton extends LitElement {
           <wui-text variant="paragraph-600" color="inherit">
             ${this.address
               ? UiHelperUtil.getTruncateString({
-                  string: this.isProfileName ? this.profileName : this.address,
-                  charsStart: this.isProfileName ? 18 : this.charsStart,
-                  charsEnd: this.isProfileName ? 0 : this.charsEnd,
-                  truncate: this.isProfileName ? 'end' : 'middle'
+                  string: this.profileName || this.address,
+                  charsStart: this.profileName ? 18 : this.charsStart,
+                  charsEnd: this.profileName ? 0 : this.charsEnd,
+                  truncate: this.profileName ? 'end' : 'middle'
                 })
               : null}
           </wui-text>

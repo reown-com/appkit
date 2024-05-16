@@ -46,13 +46,13 @@ export class W3mUpdateEmailWalletView extends LitElement {
         </form>
 
         <wui-flex gap="s">
-          <wui-button size="md" variant="shade" fullWidth @click=${RouterController.goBack}>
+          <wui-button size="md" variant="neutral" fullWidth @click=${RouterController.goBack}>
             Cancel
           </wui-button>
 
           <wui-button
             size="md"
-            variant="fill"
+            variant="main"
             fullWidth
             @click=${this.onSubmitEmail.bind(this)}
             .disabled=${!showSubmit}

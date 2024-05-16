@@ -1,5 +1,14 @@
 # @examples/react-ethers5
 
+## 4.1.1
+
+### Patch Changes
+
+- Hotfix to support injected and announced wallets in in app browsers
+
+- Updated dependencies []:
+  - @web3modal/ethers@4.2.1
+
 ## 4.1.0
 
 ### Patch Changes

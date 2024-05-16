@@ -90,7 +90,7 @@ export class W3mSwapSelectTokenView extends LitElement {
 
   private templateSearchInput() {
     return html`
-      <wui-flex class="search-input-container" gap="xs">
+      <wui-flex .padding=${['0', 's', '0', 's']} gap="xs">
         <wui-input-text
           class="network-search-input"
           size="sm"
@@ -117,7 +117,7 @@ export class W3mSwapSelectTokenView extends LitElement {
 
     return html`
       <wui-flex class="tokens-container">
-        <wui-flex class="tokens" flexDirection="column">
+        <wui-flex class="tokens" .padding=${['0', 's', 's', 's']} flexDirection="column">
           ${filteredYourTokens?.length > 0
             ? html`
                 <wui-flex justifyContent="flex-start" padding="s">
@@ -179,7 +179,7 @@ export class W3mSwapSelectTokenView extends LitElement {
     }
 
     return html`
-      <wui-flex class="suggested-tokens-container" gap="xs">
+      <wui-flex class="suggested-tokens-container" .padding=${['0', 's', '0', 's']} gap="xs">
         ${tokens.map(
           token => html`
             <wui-token-button
