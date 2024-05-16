@@ -27,6 +27,10 @@ export function EthersSendCallsWithPaymasterServiceTest() {
       if (!chainId) {
         throw Error('chain not selected')
       }
+
+      if (!paymasterServiceUrl) {
+        throw Error('paymasterServiceUrl not set')
+      }
       const provider = new BrowserProvider(walletProvider, chainId)
       const amountToSend = parseGwei('0.001').toString(16)
       const calls = [
@@ -118,7 +122,7 @@ export function EthersSendCallsWithPaymasterServiceTest() {
     chainInfo => chainInfo.chainId === Number(chainId)
   ) ? (
     <Stack direction={['column', 'column', 'column']}>
-      <Tooltip label="Paymaster Service URL should be ERC7677 complaint">
+      <Tooltip label="Paymaster Service URL should be of ERC-7677 paymaster service proxy">
         <Input
           placeholder="http://api.pimlico.io/v2/sepolia/rpc?apikey=..."
           onChange={e => setPaymasterServiceUrl(e.target.value)}

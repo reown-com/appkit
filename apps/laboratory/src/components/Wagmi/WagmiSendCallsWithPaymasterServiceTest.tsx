@@ -57,6 +57,9 @@ export function WagmiSendCallsWithPaymasterServiceTest() {
 
   const onSendCalls = useCallback(() => {
     setLoading(true)
+    if (!paymasterServiceUrl) {
+      throw Error('paymasterServiceUrl not set')
+    }
     sendCalls({
       calls: [TEST_TX_1, TEST_TX_2],
       capabilities: {
@@ -65,7 +68,7 @@ export function WagmiSendCallsWithPaymasterServiceTest() {
         }
       }
     })
-  }, [sendCalls])
+  }, [sendCalls, paymasterServiceUrl])
 
   function isSendCallsSupported(): boolean {
     return Boolean(
@@ -122,7 +125,7 @@ export function WagmiSendCallsWithPaymasterServiceTest() {
     chainInfo => chainInfo.chainId === Number(chain?.id)
   ) ? (
     <Stack direction={['column', 'column', 'column']}>
-      <Tooltip label="Paymaster Service URL should be ERC7677 complaint">
+      <Tooltip label="Paymaster Service URL should be of ERC-7677 paymaster service proxy">
         <Input
           placeholder="http://api.pimlico.io/v2/sepolia/rpc?apikey=..."
           onChange={e => setPaymasterServiceUrl(e.target.value)}
