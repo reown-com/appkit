@@ -133,15 +133,16 @@ export class ModalPage {
       .getByTestId('connect-button')
       .getByRole('button', { name: 'Connect Wallet' })
       .click()
-    const popupPromise = this.page.waitForEvent('popup')
+    const googlePopupPromise = this.page.waitForEvent('popup')
     await this.page.getByTestId('social-selector-google').click()
-    const popup = await popupPromise
-
-    await popup.fill('#identifierId', socialMail)
-    await popup.locator('#identifierNext >> button').click()
-    await popup.fill('#password >> input[type="password"]', socialPass)
-    await popup.locator('button >> nth=1').click()
-    await popup.context().storageState({ path: authFile })
+    const googlePopup = await googlePopupPromise
+    await googlePopup.fill('#identifierId', socialMail)
+    await googlePopup.locator('#identifierNext >> button').click()
+    await googlePopup.fill('#password >> input[type="password"]', socialPass)
+    await googlePopup.locator('button >> nth=1').click()
+    await googlePopup.context().storageState({ path: authFile })
+    await googlePopup.waitForEvent('close')
+    await this.page.waitForTimeout(5000)
   }
 
   async enterOTP(otp: string, headerTitle = 'Confirm Email') {
@@ -193,8 +194,9 @@ export class ModalPage {
   }
 
   async signatureRequestFrameShouldVisible() {
+    const frame = this.page.frameLocator('#w3m-iframe')
     await expect(
-      this.page.frameLocator('#w3m-iframe').getByText('requests a signature'),
+      frame.getByText('requests a signature'),
       'Web3Modal iframe should be visible'
     ).toBeVisible({
       timeout: 10000
