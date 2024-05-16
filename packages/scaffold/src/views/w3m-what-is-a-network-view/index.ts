@@ -28,8 +28,8 @@ export class W3mWhatIsANetworkView extends LitElement {
       >
         <w3m-help-widget .data=${data}></w3m-help-widget>
         <wui-button
-          variant="fill"
-          size="sm"
+          variant="main"
+          size="md"
           @click=${() => {
             CoreHelperUtil.openHref('https://ethereum.org/en/developers/docs/networks/', '_blank')
           }}

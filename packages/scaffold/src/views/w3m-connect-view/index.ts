@@ -43,13 +43,14 @@ export class W3mConnectView extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex flexDirection="column" padding="s" gap="xs">
+      <wui-flex flexDirection="column" .padding=${['3xs', 's', 's', 's']}>
         <w3m-email-login-widget></w3m-email-login-widget>
-
-        ${this.walletConnectConnectorTemplate()} ${this.recentTemplate()}
-        ${this.announcedTemplate()} ${this.injectedTemplate()} ${this.featuredTemplate()}
-        ${this.customTemplate()} ${this.recommendedTemplate()} ${this.externalTemplate()}
-        ${this.allWalletsTemplate()}
+        <wui-flex flexDirection="column" gap="xs">
+          ${this.walletConnectConnectorTemplate()} ${this.recentTemplate()}
+          ${this.announcedTemplate()} ${this.injectedTemplate()} ${this.featuredTemplate()}
+          ${this.customTemplate()} ${this.recommendedTemplate()} ${this.externalTemplate()}
+          ${this.allWalletsTemplate()}
+        </wui-flex>
       </wui-flex>
       <w3m-legal-footer></w3m-legal-footer>
     `
@@ -145,7 +146,7 @@ export class W3mConnectView extends LitElement {
 
   private announcedTemplate() {
     return this.connectors.map(connector => {
-      if (connector.type !== 'ANNOUNCED' || CoreHelperUtil.isMobile()) {
+      if (connector.type !== 'ANNOUNCED') {
         return null
       }
 
@@ -166,7 +167,11 @@ export class W3mConnectView extends LitElement {
 
   private injectedTemplate() {
     return this.connectors.map(connector => {
-      if (connector.type !== 'INJECTED' || CoreHelperUtil.isMobile()) {
+      if (connector.type !== 'INJECTED') {
+        return null
+      }
+
+      if (!CoreHelperUtil.isMobile() && connector.name === 'Browser Wallet') {
         return null
       }
 
@@ -251,14 +256,15 @@ export class W3mConnectView extends LitElement {
     const { customWallets, featuredWalletIds } = OptionsController.state
     const { connectors } = ConnectorController.state
     const recent = StorageUtil.getRecentWallets()
-    const injected = connectors.filter(c => c.type === 'INJECTED')
-    const filteredInjected = injected.filter(i => i.name !== 'Browser Wallet')
+
+    const injected = connectors.filter(c => c.type === 'INJECTED' || c.type === 'ANNOUNCED')
+    const injectedWallets = injected.filter(i => i.name !== 'Browser Wallet')
 
     if (featuredWalletIds || customWallets || !recommended.length) {
       return null
     }
 
-    const overrideLength = filteredInjected.length + recent.length
+    const overrideLength = injectedWallets.length + recent.length
 
     const maxRecommended = Math.max(0, 2 - overrideLength)
 
@@ -295,9 +301,13 @@ export class W3mConnectView extends LitElement {
     const connectorRDNSs = this.connectors
       .map(connector => connector.info?.rdns)
       .filter(Boolean) as string[]
+
     const recentRDNSs = recent.map(wallet => wallet.rdns).filter(Boolean) as string[]
     const allRDNSs = connectorRDNSs.concat(recentRDNSs)
-
+    if (allRDNSs.includes('io.metamask.mobile') && CoreHelperUtil.isMobile()) {
+      const index = allRDNSs.indexOf('io.metamask.mobile')
+      allRDNSs[index] = 'io.metamask'
+    }
     const filtered = wallets.filter(wallet => !allRDNSs.includes(String(wallet?.rdns)))
 
     return filtered

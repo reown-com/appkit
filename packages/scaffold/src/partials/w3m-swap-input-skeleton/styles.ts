@@ -13,8 +13,8 @@ export default css`
     border-radius: var(--wui-border-radius-s);
     padding: var(--wui-spacing-xl);
     padding-right: var(--wui-spacing-s);
-    background-color: var(--wui-gray-glass-002);
-    box-shadow: inset 0px 0px 0px 1px var(--wui-gray-glass-002);
+    background-color: var(--wui-color-gray-glass-002);
+    box-shadow: inset 0px 0px 0px 1px var(--wui-color-gray-glass-002);
     width: 100%;
     height: 100px;
     box-sizing: border-box;
@@ -38,10 +38,10 @@ export default css`
   }
 
   :host wui-flex .input_mask__border {
-    fill: var(--wui-gray-glass-020);
+    fill: var(--wui-color-gray-glass-020);
   }
 
   :host wui-flex .input_mask__background {
-    fill: var(--wui-gray-glass-002);
+    fill: var(--wui-color-gray-glass-002);
   }
 `

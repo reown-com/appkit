@@ -118,7 +118,7 @@ export class W3mSwapView extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex flexDirection="column" padding="l" gap="s">
+      <wui-flex flexDirection="column" .padding=${['0', 'l', 'l', 'l']} gap="s">
         ${this.initialized ? this.templateSwap() : this.templateLoading()}
       </wui-flex>
     `
@@ -298,11 +298,10 @@ export class W3mSwapView extends LitElement {
     return html` <wui-flex gap="xs">
       <wui-button
         class="action-button"
-        ?fullWidth=${true}
         fullWidth
         size="lg"
         borderRadius="xs"
-        variant=${haveNoTokenSelected ? 'shade' : 'fill'}
+        variant=${haveNoTokenSelected ? 'neutral' : 'main'}
         .loading=${loading}
         .disabled=${disabled}
         @click=${this.onSwapPreview}

@@ -21,7 +21,7 @@ export default css`
   }
 
   .action-button:disabled {
-    border-color: 1px solid var(--wui-gray-glass-005);
+    border-color: 1px solid var(--wui-color-gray-glass-005);
   }
 
   .swap-inputs-container {
@@ -51,18 +51,18 @@ export default css`
     padding: var(--wui-spacing-xs);
     border: none;
     border-radius: var(--wui-border-radius-xxs);
-    background: var(--wui-gray-glass-002);
+    background: var(--wui-color-gray-glass-002);
     transition: background-color var(--wui-duration-md) var(--wui-ease-out-power-1);
     will-change: background-color;
     z-index: 20;
   }
 
   .replace-tokens-button-container > button:hover {
-    background: var(--wui-gray-glass-005);
+    background: var(--wui-color-gray-glass-005);
   }
 
   .details-container > wui-flex {
-    background: var(--wui-gray-glass-002);
+    background: var(--wui-color-gray-glass-002);
     border-radius: var(--wui-border-radius-xxs);
     width: 100%;
   }
@@ -76,7 +76,7 @@ export default css`
   }
 
   .details-container > wui-flex > button:hover {
-    background: var(--wui-gray-glass-002);
+    background: var(--wui-color-gray-glass-002);
   }
 
   .details-content-container {
@@ -94,6 +94,6 @@ export default css`
     width: 100%;
     padding: var(--wui-spacing-s) var(--wui-spacing-xl);
     border-radius: var(--wui-border-radius-xxs);
-    background: var(--wui-gray-glass-002);
+    background: var(--wui-color-gray-glass-002);
   }
 `

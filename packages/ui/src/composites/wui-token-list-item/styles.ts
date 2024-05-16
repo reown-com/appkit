@@ -15,7 +15,7 @@ export default css`
   }
 
   :host > wui-flex:hover {
-    background-color: var(--wui-gray-glass-002);
+    background-color: var(--wui-color-gray-glass-002);
   }
 
   :host([disabled]) > wui-flex {
@@ -41,7 +41,7 @@ export default css`
     position: absolute;
     content: '';
     inset: 0;
-    box-shadow: inset 0 0 0 1px var(--wui-gray-glass-010);
+    box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-010);
     border-radius: var(--wui-border-radius-l);
   }
 
