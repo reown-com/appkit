@@ -1,5 +1,11 @@
 # @web3modal/common
 
+## 4.2.1
+
+### Patch Changes
+
+- Hotfix to support injected and announced wallets in in app browsers
+
 ## 4.2.0
 
 ### Patch Changes

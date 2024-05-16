@@ -2,7 +2,7 @@ import '@web3modal/polyfills'
 
 import type { CreateConfigParameters, CreateConnectorFn, Config } from 'wagmi'
 import { createConfig } from 'wagmi'
-import { coinbaseWallet, walletConnect } from 'wagmi/connectors'
+import { coinbaseWallet, walletConnect, injected } from 'wagmi/connectors'
 import { authConnector } from '../connectors/AuthConnector.js'
 import { getTransport } from './helpers.js'
 import type { SocialProvider } from '@web3modal/scaffold-utils'
@@ -16,10 +16,6 @@ export type ConfigOptions = Partial<CreateConfigParameters> & {
   auth?: {
     socials?: SocialProvider[]
   }
-  /**
-   * Use enableEIP6963 to show all injected wallets
-   * @deprecated
-   */
   enableInjected?: boolean
   enableWalletConnect?: boolean
   metadata: {
@@ -36,6 +32,7 @@ export function defaultWagmiConfig({
   metadata,
   enableCoinbase,
   enableEmail,
+  enableInjected,
   auth,
   enableWalletConnect,
   enableEIP6963,
@@ -51,6 +48,10 @@ export function defaultWagmiConfig({
   // Enabled by default
   if (enableWalletConnect !== false) {
     connectors.push(walletConnect({ projectId, metadata, showQrModal: false }))
+  }
+
+  if (enableInjected !== false) {
+    connectors.push(injected({ shimDisconnect: true }))
   }
 
   if (enableCoinbase !== false) {
