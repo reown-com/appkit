@@ -1,0 +1,15 @@
+{
+  "name": "@examples/vue-web3",
+  "private": true,
+  "version": "4.1.11",
+  "scripts": {
+    "dev:example": "vite --port 3003",
+    "build:examples": "vite build"
+  },
+  "dependencies": {
+    "web3modal-web3js": "^0.1.0-alpha.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "5.0.2"
+  }
+}
