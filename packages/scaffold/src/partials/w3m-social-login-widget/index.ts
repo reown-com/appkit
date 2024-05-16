@@ -68,6 +68,7 @@ export class W3mSocialLoginWidget extends LitElement {
         ${this.connector.socials.slice(0, MAX_TOP_VIEW).map(
           social =>
             html`<wui-logo-select
+              data-testid=${`social-selector-${social}`}
               @click=${() => {
                 this.onSocialClick(social)
               }}
@@ -78,6 +79,7 @@ export class W3mSocialLoginWidget extends LitElement {
     }
 
     return html` <wui-list-social
+      data-testid=${`social-selector-${this.connector?.socials?.[0]}`}
       @click=${() => {
         this.onSocialClick(this.connector?.socials?.[0])
       }}
@@ -101,6 +103,7 @@ export class W3mSocialLoginWidget extends LitElement {
         ${this.connector.socials.slice(1, MAXIMUM_LENGTH - 1).map(
           social =>
             html`<wui-logo-select
+              data-testid=${`social-selector-${social}`}
               @click=${() => {
                 this.onSocialClick(social)
               }}
@@ -115,6 +118,7 @@ export class W3mSocialLoginWidget extends LitElement {
       ${this.connector.socials.slice(1, this.connector.socials.length).map(
         social =>
           html`<wui-logo-select
+            data-testid=${`social-selector-${social}`}
             @click=${() => {
               this.onSocialClick(social)
             }}
@@ -137,7 +141,11 @@ export class W3mSocialLoginWidget extends LitElement {
           provider: socialProvider
         })
         AccountController.setSocialProvider(socialProvider)
-        CoreHelperUtil.openHref(uri, 'popupWindow', 'width=600,height=800,scrollbars=yes')
+        // window.open doesn't work on ios withing an async function, wrapping it in a setTimeout fixes this
+        setTimeout(() => {
+          CoreHelperUtil.openHref(uri, 'popupWindow', 'width=600,height=800,scrollbars=yes')
+        })
+
         RouterController.push('ConnectingSocial')
       }
     } catch (error) {
