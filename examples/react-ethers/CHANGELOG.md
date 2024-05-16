@@ -1,5 +1,52 @@
 # @examples/react-ethers5
 
+## 4.1.1
+
+### Patch Changes
+
+- Hotfix to support injected and announced wallets in in app browsers
+
+- Updated dependencies []:
+  - @web3modal/ethers@4.2.1
+
+## 4.1.0
+
+### Patch Changes
+
+- release: 4.2.0 version release
+
+- Updated dependencies []:
+  - @web3modal/ethers@4.2.0
+
+## 4.1.0-alpha.2
+
+### Patch Changes
+
+- feat: 4.2.0-alpha release
+
+- Updated dependencies []:
+  - @web3modal/ethers@4.2.0-alpha.0
+
+## 4.1.0-03e4f4a8.1
+
+### Patch Changes
+
+- fix: Issue with SIWE + Wagmi sign out. Fixes issue where signature verification fail resulted in empty open modal'
+
+- Updated dependencies []:
+  - @web3modal/ethers@4.2.0-03e4f4a8.2
+
+## 4.1.0-448f7f4.0
+
+### Minor Changes
+
+- refactor: improvements to all features (siwe, send, swaps, ui and ux)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @web3modal/ethers@4.2.0-448f7f4.1
+
 ## 4.0.5
 
 ### Patch Changes

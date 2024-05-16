@@ -224,7 +224,19 @@ export class Web3Modal extends Web3ModalScaffold {
         info: Info
         provider: Provider
       }) => {
-        if (id === ConstantsUtil.EIP6963_CONNECTOR_ID && info && provider) {
+        if (id === ConstantsUtil.INJECTED_CONNECTOR_ID) {
+          const InjectedProvider = ethersConfig.injected
+          if (!InjectedProvider) {
+            throw new Error('connectionControllerClient:connectInjected - provider is undefined')
+          }
+          try {
+            EthersStoreUtil.setError(undefined)
+            await InjectedProvider.request({ method: 'eth_requestAccounts' })
+            this.setInjectedProvider(ethersConfig)
+          } catch (error) {
+            EthersStoreUtil.setError(error)
+          }
+        } else if (id === ConstantsUtil.EIP6963_CONNECTOR_ID && info && provider) {
           try {
             EthersStoreUtil.setError(undefined)
             await provider.request({ method: 'eth_requestAccounts' })
@@ -253,6 +265,12 @@ export class Web3Modal extends Web3ModalScaffold {
           return Boolean(window.ethereum)
         }
 
+        if (ethersConfig.injected) {
+          if (!window?.ethereum) {
+            return false
+          }
+        }
+
         return ids.some(id => Boolean(window.ethereum?.[String(id)]))
       },
 
@@ -278,10 +296,12 @@ export class Web3Modal extends Web3ModalScaffold {
         if (!provider) {
           throw new Error('connectionControllerClient:signMessage - provider is undefined')
         }
-
+        const hexMessage = utils.isHexString(message)
+          ? message
+          : utils.hexlify(utils.toUtf8Bytes(message))
         const signature = await provider.request({
           method: 'personal_sign',
-          params: [message, this.getAddress()]
+          params: [hexMessage, this.getAddress()]
         })
 
         return signature as `0x${string}`
@@ -352,6 +372,10 @@ export class Web3Modal extends Web3ModalScaffold {
 
     this.syncRequestedNetworks(chains, chainImages)
     this.syncConnectors(ethersConfig)
+
+    if (ethersConfig.injected) {
+      this.checkActiveInjectedProvider(ethersConfig)
+    }
 
     if (ethersConfig.EIP6963) {
       if (typeof window !== 'undefined') {
@@ -427,7 +451,7 @@ export class Web3Modal extends Web3ModalScaffold {
     localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
     EthersStoreUtil.reset()
 
-    if (providerType === 'eip6963') {
+    if (providerType === 'injected' || providerType === 'eip6963') {
       provider?.emit('disconnect')
     } else {
       await (provider as unknown as EthereumProvider).disconnect()
@@ -508,6 +532,18 @@ export class Web3Modal extends Web3ModalScaffold {
     }
   }
 
+  private checkActiveInjectedProvider(config: ProviderType) {
+    const InjectedProvider = config.injected
+    const walletId = localStorage.getItem(EthersConstantsUtil.WALLET_ID)
+
+    if (InjectedProvider) {
+      if (walletId === ConstantsUtil.INJECTED_CONNECTOR_ID) {
+        this.setInjectedProvider(config)
+        this.watchInjected(config)
+      }
+    }
+  }
+
   private checkActiveCoinbaseProvider(config: ProviderType) {
     const CoinbaseProvider = config.coinbase as unknown as ExternalProvider
     const walletId = localStorage.getItem(EthersConstantsUtil.WALLET_ID)
@@ -569,6 +605,23 @@ export class Web3Modal extends Web3ModalScaffold {
     }
   }
 
+  private async setInjectedProvider(config: ProviderType) {
+    window?.localStorage.setItem(EthersConstantsUtil.WALLET_ID, ConstantsUtil.INJECTED_CONNECTOR_ID)
+    const InjectedProvider = config.injected
+
+    if (InjectedProvider) {
+      const { address, chainId } = await EthersHelpersUtil.getUserInfo(InjectedProvider)
+      if (address && chainId) {
+        EthersStoreUtil.setChainId(chainId)
+        EthersStoreUtil.setProviderType('injected')
+        EthersStoreUtil.setProvider(config.injected)
+        EthersStoreUtil.setIsConnected(true)
+        this.setAddress(address)
+        this.watchCoinbase(config)
+      }
+    }
+  }
+
   private async setCoinbaseProvider(config: ProviderType) {
     window?.localStorage.setItem(EthersConstantsUtil.WALLET_ID, ConstantsUtil.COINBASE_CONNECTOR_ID)
     const CoinbaseProvider = config.coinbase
@@ -615,6 +668,45 @@ export class Web3Modal extends Web3ModalScaffold {
       WalletConnectProvider.on('disconnect', disconnectHandler)
       WalletConnectProvider.on('accountsChanged', accountsChangedHandler)
       WalletConnectProvider.on('chainChanged', chainChangedHandler)
+    }
+  }
+
+  private watchInjected(config: ProviderType) {
+    const InjectedProvider = config.injected
+
+    function disconnectHandler() {
+      localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
+      EthersStoreUtil.reset()
+
+      InjectedProvider?.removeListener('disconnect', disconnectHandler)
+      InjectedProvider?.removeListener('accountsChanged', accountsChangedHandler)
+      InjectedProvider?.removeListener('chainChanged', chainChangedHandler)
+    }
+
+    function accountsChangedHandler(accounts: string[]) {
+      const currentAccount = accounts?.[0]
+      if (currentAccount) {
+        EthersStoreUtil.setAddress(utils.getAddress(currentAccount) as Address)
+      } else {
+        localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
+        EthersStoreUtil.reset()
+      }
+    }
+
+    function chainChangedHandler(chainId: string) {
+      if (chainId) {
+        const chain =
+          typeof chainId === 'string'
+            ? EthersHelpersUtil.hexStringToNumber(chainId)
+            : Number(chainId)
+        EthersStoreUtil.setChainId(chain)
+      }
+    }
+
+    if (InjectedProvider) {
+      InjectedProvider.on('disconnect', disconnectHandler)
+      InjectedProvider.on('accountsChanged', accountsChangedHandler)
+      InjectedProvider.on('chainChanged', chainChangedHandler)
     }
   }
 
@@ -930,6 +1022,21 @@ export class Web3Modal extends Web3ModalScaffold {
         name: PresetsUtil.ConnectorNamesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID],
         type: connectorType
       })
+    }
+
+    if (config.injected) {
+      const injectedConnectorType =
+        PresetsUtil.ConnectorTypesMap[ConstantsUtil.INJECTED_CONNECTOR_ID]
+      if (injectedConnectorType) {
+        w3mConnectors.push({
+          id: ConstantsUtil.INJECTED_CONNECTOR_ID,
+          explorerId: PresetsUtil.ConnectorExplorerIds[ConstantsUtil.INJECTED_CONNECTOR_ID],
+          imageId: PresetsUtil.ConnectorImageIds[ConstantsUtil.INJECTED_CONNECTOR_ID],
+          imageUrl: this.options?.connectorImages?.[ConstantsUtil.INJECTED_CONNECTOR_ID],
+          name: PresetsUtil.ConnectorNamesMap[ConstantsUtil.INJECTED_CONNECTOR_ID],
+          type: injectedConnectorType
+        })
+      }
     }
 
     if (config.coinbase) {

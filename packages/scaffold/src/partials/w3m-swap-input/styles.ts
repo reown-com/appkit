@@ -7,36 +7,20 @@ export default css`
     justify-content: space-between;
     align-items: center;
     border-radius: var(--wui-border-radius-s);
+    background-color: var(--wui-color-gray-glass-002);
     padding: var(--wui-spacing-xl);
     padding-right: var(--wui-spacing-s);
     width: 100%;
     height: 100px;
     box-sizing: border-box;
+    box-shadow: inset 0px 0px 0px 1px var(--wui-color-gray-glass-002);
     position: relative;
+    transition: box-shadow var(--wui-ease-out-power-1) var(--wui-duration-lg);
+    will-change: background-color;
   }
 
-  :host > wui-flex > svg.input_mask {
-    position: absolute;
-    inset: 0;
-    z-index: 5;
-  }
-
-  :host wui-flex .input_mask__border,
-  :host wui-flex .input_mask__background {
-    transition: fill var(--wui-duration-md) var(--wui-ease-out-power-1);
-    will-change: fill;
-  }
-
-  :host wui-flex .input_mask__border {
-    fill: var(--wui-gray-glass-005);
-  }
-
-  :host wui-flex .input_mask__background {
-    fill: var(--wui-gray-glass-002);
-  }
-
-  :host wui-flex.focus .input_mask__border {
-    fill: var(--wui-gray-glass-020);
+  :host wui-flex.focus {
+    box-shadow: inset 0px 0px 0px 1px var(--wui-color-gray-glass-005);
   }
 
   :host > wui-flex .swap-input,
@@ -90,38 +74,11 @@ export default css`
     margin: 0;
   }
 
-  .token-select-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--wui-spacing-xxs);
-    padding: var(--wui-spacing-xs);
-    padding-right: var(--wui-spacing-1xs);
-    height: 40px;
-    border: none;
-    border-radius: 80px;
-    background: var(--wui-gray-glass-002);
-    box-shadow: inset 0 0 0 1px var(--wui-gray-glass-002);
-    cursor: pointer;
-    transition: background 0.2s linear;
-  }
-
-  .token-select-button:hover {
-    background: var(--wui-gray-glass-005);
-  }
-
-  .token-select-button wui-image {
-    width: 24px;
-    height: 24px;
-    border-radius: var(--wui-border-radius-s);
-    box-shadow: inset 0 0 0 1px var(--wui-gray-glass-010);
-  }
-
   .max-value-button {
     background-color: transparent;
     border: none;
     cursor: pointer;
-    color: var(--wui-gray-glass-020);
+    color: var(--wui-color-gray-glass-020);
     padding-left: 0px;
   }
 

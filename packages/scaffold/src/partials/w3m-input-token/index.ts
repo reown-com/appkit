@@ -48,13 +48,13 @@ export class W3mInputToken extends LitElement {
         text=${this.token.symbol}
         imageSrc=${this.token.iconUrl}
         @click=${this.handleSelectButtonClick.bind(this)}
-        >Select token</wui-token-button
-      >`
+      >
+      </wui-token-button>`
     }
 
     return html`<wui-button
       size="md"
-      variant="accentBg"
+      variant="accent"
       @click=${this.handleSelectButtonClick.bind(this)}
       >Select token</wui-button
     >`

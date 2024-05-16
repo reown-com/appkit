@@ -181,9 +181,9 @@ export class W3mAccountDefaultWidget extends LitElement {
 
   private emailCardTemplate() {
     const type = StorageUtil.getConnectedConnector()
-    const emailConnector = ConnectorController.getEmailConnector()
+    const authConnector = ConnectorController.getAuthConnector()
     const { origin } = location
-    if (!emailConnector || type !== 'EMAIL' || origin.includes(ConstantsUtil.SECURE_SITE)) {
+    if (!authConnector || type !== 'AUTH' || origin.includes(ConstantsUtil.SECURE_SITE)) {
       return null
     }
 
@@ -210,7 +210,7 @@ export class W3mAccountDefaultWidget extends LitElement {
     }
 
     return html`
-      <wui-button size="sm" variant="shade" @click=${this.onExplorer.bind(this)}>
+      <wui-button size="md" variant="neutral" @click=${this.onExplorer.bind(this)}>
         <wui-icon size="sm" color="inherit" slot="iconLeft" name="compass"></wui-icon>
         Block Explorer
         <wui-icon size="sm" color="inherit" slot="iconRight" name="externalLink"></wui-icon>
@@ -220,11 +220,11 @@ export class W3mAccountDefaultWidget extends LitElement {
 
   private emailBtnTemplate() {
     const type = StorageUtil.getConnectedConnector()
-    const emailConnector = ConnectorController.getEmailConnector()
-    if (!emailConnector || type !== 'EMAIL') {
+    const authConnector = ConnectorController.getAuthConnector()
+    if (!authConnector || type !== 'AUTH') {
       return null
     }
-    const email = emailConnector.provider.getEmail() ?? ''
+    const email = authConnector.provider.getEmail() ?? ''
 
     return html`
       <wui-list-item

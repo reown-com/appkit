@@ -5,7 +5,7 @@ export default css`
     display: flex;
     gap: var(--wui-spacing-xl);
     width: 100%;
-    background-color: var(--wui-gray-glass-002);
+    background-color: var(--wui-color-gray-glass-002);
     border-radius: var(--wui-border-radius-xxs);
     padding: var(--wui-spacing-m) var(--wui-spacing-s);
   }
@@ -24,7 +24,7 @@ export default css`
     border-radius: calc(var(--wui-spacing-2l) / 2);
     overflow: hidden;
     box-shadow:
-      0 0 0 3px var(--wui-gray-glass-002),
+      0 0 0 3px var(--wui-color-gray-glass-002),
       0 0 0 3px var(--wui-color-modal-bg);
   }
 `

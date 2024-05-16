@@ -6,20 +6,20 @@ export default css`
     gap: var(--wui-spacing-3xs);
     align-items: center;
     padding: 6.25px var(--wui-spacing-xs) 7.25px var(--wui-spacing-s);
-    background-color: var(--wui-gray-glass-090);
+    background-color: var(--wui-color-gray-glass-090);
     border-radius: var(--wui-border-radius-3xl);
-    border: 1px solid var(--wui-gray-glass-060);
+    border: 1px solid var(--wui-color-gray-glass-060);
     transition: background-color var(--wui-duration-md) var(--wui-ease-inout-power-1);
     will-change: background-color;
   }
 
   @media (hover: hover) and (pointer: fine) {
     button:hover:enabled {
-      background-color: var(--wui-gray-glass-080);
+      background-color: var(--wui-color-gray-glass-080);
     }
 
     button:active:enabled {
-      background-color: var(--wui-gray-glass-060);
+      background-color: var(--wui-color-gray-glass-060);
     }
   }
 `

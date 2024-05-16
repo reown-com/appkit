@@ -193,7 +193,7 @@ export class W3mActivityList extends LitElement {
       gap="xl"
     >
       <wui-icon-box
-        backgroundColor="glass-005"
+        backgroundColor="gray-glass-005"
         background="gray"
         iconColor="fg-200"
         icon="wallet"

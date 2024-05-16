@@ -46,6 +46,9 @@ export interface SwapControllerState {
   loadingPrices: boolean
   loading?: boolean
 
+  // Error states
+  fetchError: boolean
+
   // Approval & Swap transaction states
   approvalTransaction: TransactionParams | undefined
   swapTransaction: TransactionParams | undefined
@@ -104,6 +107,9 @@ const initialState: SwapControllerState = {
   initialized: false,
   loading: false,
   loadingPrices: false,
+
+  // Error states
+  fetchError: false,
 
   // Approval & Swap transaction states
   approvalTransaction: undefined,
@@ -166,7 +172,10 @@ export const SwapController = {
 
     const caipAddress = AccountController.state.caipAddress
     const invalidToToken = !state.toToken?.address || !state.toToken?.decimals
-    const invalidSourceToken = !state.sourceToken?.address || !state.sourceToken?.decimals
+    const invalidSourceToken =
+      !state.sourceToken?.address ||
+      !state.sourceToken?.decimals ||
+      !NumberUtil.bigNumber(state.sourceTokenAmount).isGreaterThan(0)
     const invalidSourceTokenAmount = !state.sourceTokenAmount
 
     return {
@@ -193,6 +202,10 @@ export const SwapController = {
 
   setSourceToken(sourceToken: SwapTokenWithBalance | undefined) {
     if (!sourceToken) {
+      state.sourceToken = sourceToken
+      state.sourceTokenAmount = ''
+      state.sourceTokenPriceInUSD = 0
+
       return
     }
 
@@ -245,9 +258,14 @@ export const SwapController = {
   },
 
   switchTokens() {
+    if (state.initializing || !state.initialized) {
+      return
+    }
+
     const newSourceToken = state.toToken ? { ...state.toToken } : undefined
     const newToToken = state.sourceToken ? { ...state.sourceToken } : undefined
-    const newSourceTokenAmount = state.toTokenAmount
+    const newSourceTokenAmount =
+      newSourceToken && state.toTokenAmount === '' ? '1' : state.toTokenAmount
 
     this.setSourceToken(newSourceToken)
     this.setToToken(newToToken)
@@ -435,20 +453,13 @@ export const SwapController = {
     return { gasPrice: gasFee, gasPriceInUSD: state.gasPriceInUSD }
   },
 
-  async refreshSwapValues() {
-    const { fromAddress, toTokenDecimals, toTokenAddress } = this.getParams()
-
-    if (fromAddress && toTokenAddress && toTokenDecimals && !state.loading) {
-      const transaction = await this.getTransaction()
-      this.setTransactionDetails(transaction)
-    }
-  },
-
-  // -- Transactions -------------------------------------- //
+  // -- Swap -------------------------------------- //
   async swapTokens() {
-    const { availableToSwap } = this.getParams()
+    const sourceToken = state.sourceToken
+    const toToken = state.toToken
+    const haveSourceTokenAmount = NumberUtil.bigNumber(state.sourceTokenAmount).isGreaterThan(0)
 
-    if (!availableToSwap || state.loadingPrices) {
+    if (!toToken || !sourceToken || state.loadingPrices || !haveSourceTokenAmount) {
       return
     }
 
@@ -460,60 +471,64 @@ export const SwapController = {
       toTokenPrice: state.toTokenPriceInUSD,
       sourceTokenAmount: state.sourceTokenAmount
     })
-    const transaction = await this.getTransaction()
-    this.setTransactionDetails(transaction)
+
+    const isInsufficientToken = this.hasInsufficientToken(
+      state.sourceTokenAmount,
+      sourceToken.address
+    )
+
+    if (isInsufficientToken) {
+      state.inputError = 'Insufficient balance'
+    } else {
+      state.inputError = undefined
+      const transaction = await this.getTransaction()
+      this.setTransactionDetails(transaction)
+    }
+
     state.loading = false
   },
 
+  // -- Create Transactions -------------------------------------- //
   async getTransaction() {
-    const { fromCaipAddress, sourceTokenAddress, sourceTokenAmount, sourceTokenDecimals } =
-      this.getParams()
+    const { fromCaipAddress, availableToSwap } = this.getParams()
+    const sourceToken = state.sourceToken
+    const toToken = state.toToken
 
-    if (!fromCaipAddress || !sourceTokenAddress || !sourceTokenAmount || !sourceTokenDecimals) {
+    if (!fromCaipAddress || !availableToSwap || !sourceToken || !toToken || !state.loading) {
       return undefined
     }
 
-    const isInsufficientSourceTokenForSwap = SwapCalculationUtil.isInsufficientSourceTokenForSwap(
-      sourceTokenAmount,
-      sourceTokenAddress,
-      state.myTokensWithBalance
-    )
-    const insufficientNetworkTokenForGas = SwapCalculationUtil.isInsufficientNetworkTokenForGas(
-      state.networkBalanceInUSD,
-      state.gasPriceInUSD
-    )
+    try {
+      state.loading = true
+      const hasAllowance = await SwapApiUtil.fetchSwapAllowance({
+        userAddress: fromCaipAddress,
+        tokenAddress: sourceToken.address,
+        sourceTokenAmount: state.sourceTokenAmount,
+        sourceTokenDecimals: sourceToken.decimals
+      })
 
-    if (insufficientNetworkTokenForGas || isInsufficientSourceTokenForSwap) {
-      state.inputError = 'Insufficient balance'
+      let transaction: TransactionParams | undefined = undefined
 
-      return undefined
-    }
+      if (hasAllowance) {
+        transaction = await this.createSwapTransaction()
+      } else {
+        transaction = await this.createAllowanceTransaction()
+      }
+      state.loading = false
+      state.fetchError = false
 
-    state.inputError = undefined
-
-    const hasAllowance = await SwapApiUtil.fetchSwapAllowance({
-      userAddress: fromCaipAddress,
-      tokenAddress: sourceTokenAddress,
-      sourceTokenAmount,
-      sourceTokenDecimals
-    })
-
-    let transaction: TransactionParams | undefined = undefined
-
-    if (hasAllowance) {
+      return transaction
+    } catch (error) {
+      SnackController.showError('Failed to check allowance')
       state.approvalTransaction = undefined
-      transaction = await this.createSwap()
-      state.swapTransaction = transaction
-    } else {
       state.swapTransaction = undefined
-      transaction = await this.createTokenAllowance()
-      state.approvalTransaction = transaction
-    }
+      state.fetchError = true
 
-    return transaction
+      return undefined
+    }
   },
 
-  async createTokenAllowance() {
+  async createAllowanceTransaction() {
     const { fromCaipAddress, fromAddress, sourceTokenAddress, toTokenAddress } = this.getParams()
 
     if (!fromCaipAddress || !toTokenAddress) {
@@ -521,34 +536,98 @@ export const SwapController = {
     }
 
     if (!sourceTokenAddress) {
-      throw new Error('>>> createTokenAllowance - No source token address found.')
+      throw new Error('>>> createAllowanceTransaction - No source token address found.')
     }
 
-    const response = await BlockchainApiController.generateApproveCalldata({
-      projectId: OptionsController.state.projectId,
-      from: sourceTokenAddress,
-      to: toTokenAddress,
-      userAddress: fromCaipAddress
-    })
+    try {
+      const response = await BlockchainApiController.generateApproveCalldata({
+        projectId: OptionsController.state.projectId,
+        from: sourceTokenAddress,
+        to: toTokenAddress,
+        userAddress: fromCaipAddress
+      })
+      const gasLimit = await ConnectionController.estimateGas({
+        address: fromAddress as `0x${string}`,
+        to: CoreHelperUtil.getPlainAddress(response.tx.to) as `0x${string}`,
+        data: response.tx.data
+      })
 
-    const gasLimit = await ConnectionController.estimateGas({
-      address: fromAddress as `0x${string}`,
-      to: CoreHelperUtil.getPlainAddress(response.tx.to) as `0x${string}`,
-      data: response.tx.data
-    })
+      const transaction = {
+        data: response.tx.data,
+        to: CoreHelperUtil.getPlainAddress(response.tx.from) as `0x${string}`,
+        gas: gasLimit,
+        gasPrice: BigInt(response.tx.eip155.gasPrice),
+        value: BigInt(response.tx.value),
+        toAmount: state.toTokenAmount
+      }
 
-    const transaction = {
-      data: response.tx.data,
-      to: CoreHelperUtil.getPlainAddress(response.tx.from) as `0x${string}`,
-      gas: gasLimit,
-      gasPrice: BigInt(response.tx.eip155.gasPrice),
-      value: BigInt(response.tx.value),
-      toAmount: state.toTokenAmount
+      state.swapTransaction = undefined
+      state.approvalTransaction = transaction
+
+      return transaction
+    } catch (error) {
+      SnackController.showError('Failed to create approval transaction')
+      state.approvalTransaction = undefined
+      state.swapTransaction = undefined
+      state.fetchError = true
+
+      return undefined
     }
-
-    return transaction
   },
 
+  async createSwapTransaction() {
+    const { networkAddress, fromCaipAddress, sourceTokenAmount } = this.getParams()
+    const sourceToken = state.sourceToken
+    const toToken = state.toToken
+
+    if (!fromCaipAddress || !sourceTokenAmount || !sourceToken || !toToken) {
+      return undefined
+    }
+
+    const amount = ConnectionController.parseUnits(
+      sourceTokenAmount,
+      sourceToken.decimals
+    ).toString()
+
+    try {
+      const response = await BlockchainApiController.generateSwapCalldata({
+        projectId: OptionsController.state.projectId,
+        userAddress: fromCaipAddress,
+        from: sourceToken.address,
+        to: toToken.address,
+        amount
+      })
+
+      const isSourceTokenIsNetworkToken = sourceToken.address === networkAddress
+
+      const gas = BigInt(response.tx.eip155.gas)
+      const gasPrice = BigInt(response.tx.eip155.gasPrice)
+
+      const transaction = {
+        data: response.tx.data,
+        to: CoreHelperUtil.getPlainAddress(response.tx.to) as `0x${string}`,
+        gas,
+        gasPrice,
+        value: isSourceTokenIsNetworkToken ? BigInt(amount) : BigInt('0'),
+        toAmount: state.toTokenAmount
+      }
+
+      state.gasPriceInUSD = SwapCalculationUtil.getGasPriceInUSD(state.networkPrice, gas, gasPrice)
+
+      state.approvalTransaction = undefined
+      state.swapTransaction = transaction
+
+      return transaction
+    } catch (error) {
+      state.approvalTransaction = undefined
+      state.swapTransaction = undefined
+      state.fetchError = true
+
+      return undefined
+    }
+  },
+
+  // -- Send Transactions --------------------------------- //
   async sendTransactionForApproval(data: TransactionParams) {
     const { fromAddress } = this.getParams()
     state.transactionLoading = true
@@ -577,68 +656,12 @@ export const SwapController = {
     }
   },
 
-  async createSwap() {
-    const {
-      networkAddress,
-      fromCaipAddress,
-      sourceTokenAddress,
-      sourceTokenDecimals,
-      sourceTokenAmount,
-      toTokenAddress
-    } = this.getParams()
-
-    if (
-      !fromCaipAddress ||
-      !sourceTokenAmount ||
-      !sourceTokenAddress ||
-      !toTokenAddress ||
-      !sourceTokenDecimals
-    ) {
-      return undefined
-    }
-
-    try {
-      const amount = ConnectionController.parseUnits(
-        sourceTokenAmount,
-        sourceTokenDecimals
-      ).toString()
-
-      const response = await BlockchainApiController.generateSwapCalldata({
-        projectId: OptionsController.state.projectId,
-        userAddress: fromCaipAddress,
-        from: sourceTokenAddress,
-        to: toTokenAddress,
-        amount
-      })
-
-      const isSourceTokenIsNetworkToken = sourceTokenAddress === networkAddress
-
-      const gas = BigInt(response.tx.eip155.gas)
-      const gasPrice = BigInt(response.tx.eip155.gasPrice)
-
-      const transaction = {
-        data: response.tx.data,
-        to: CoreHelperUtil.getPlainAddress(response.tx.to) as `0x${string}`,
-        gas,
-        gasPrice,
-        value: isSourceTokenIsNetworkToken ? BigInt(amount) : BigInt('0'),
-        toAmount: state.toTokenAmount
-      }
-
-      state.gasPriceInUSD = SwapCalculationUtil.getGasPriceInUSD(state.networkPrice, gas, gasPrice)
-
-      return transaction
-    } catch (error) {
-      return undefined
-    }
-  },
-
   async sendTransactionForSwap(data: TransactionParams | undefined) {
     if (!data) {
       return undefined
     }
 
-    const { fromAddress } = this.getParams()
+    const { fromAddress, toTokenAmount } = this.getParams()
 
     state.transactionLoading = true
 
@@ -651,6 +674,9 @@ export const SwapController = {
     })
 
     try {
+      const successMessage = `Swapped ${state.sourceToken
+        ?.symbol} to ${NumberUtil.formatNumberToLocalString(toTokenAmount, 3)} ${state.toToken
+        ?.symbol}!`
       const transactionHash = await ConnectionController.sendTransaction({
         address: fromAddress as `0x${string}`,
         to: data.to as `0x${string}`,
@@ -661,6 +687,7 @@ export const SwapController = {
       })
       state.transactionLoading = false
 
+      SnackController.showSuccess(successMessage)
       SwapController.resetState()
       SwapController.getMyTokensWithBalance()
 
@@ -675,6 +702,22 @@ export const SwapController = {
     }
   },
 
+  // -- Checks -------------------------------------------- //
+  hasInsufficientToken(sourceTokenAmount: string, sourceTokenAddress: string) {
+    const isInsufficientSourceTokenForSwap = SwapCalculationUtil.isInsufficientSourceTokenForSwap(
+      sourceTokenAmount,
+      sourceTokenAddress,
+      state.myTokensWithBalance
+    )
+    const insufficientNetworkTokenForGas = SwapCalculationUtil.isInsufficientNetworkTokenForGas(
+      state.networkBalanceInUSD,
+      state.gasPriceInUSD
+    )
+
+    return insufficientNetworkTokenForGas || isInsufficientSourceTokenForSwap
+  },
+
+  // -- Calculations -------------------------------------- //
   setTransactionDetails(transaction: TransactionParams | undefined) {
     const { toTokenAddress, toTokenDecimals } = this.getParams()
 

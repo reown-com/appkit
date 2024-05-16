@@ -7,6 +7,10 @@ export default css`
     scrollbar-width: none;
   }
 
+  :host > wui-flex:first-child::-webkit-scrollbar {
+    display: none;
+  }
+
   .preview-container,
   .details-container {
     width: 100%;
@@ -15,7 +19,7 @@ export default css`
   .token-image {
     width: 24px;
     height: 24px;
-    box-shadow: 0 0 0 2px var(--wui-gray-glass-005);
+    box-shadow: 0 0 0 2px var(--wui-color-gray-glass-005);
     border-radius: 12px;
   }
 
@@ -32,14 +36,14 @@ export default css`
     height: 40px;
     border: none;
     border-radius: 80px;
-    background: var(--wui-gray-glass-002);
-    box-shadow: inset 0 0 0 1px var(--wui-gray-glass-002);
+    background: var(--wui-color-gray-glass-002);
+    box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-002);
     cursor: pointer;
     transition: background 0.2s linear;
   }
 
   .token-item:hover {
-    background: var(--wui-gray-glass-005);
+    background: var(--wui-color-gray-glass-005);
   }
 
   .preview-token-details-container {
@@ -50,7 +54,7 @@ export default css`
     width: 100%;
     padding: var(--wui-spacing-s) var(--wui-spacing-xl);
     border-radius: var(--wui-border-radius-xxs);
-    background: var(--wui-gray-glass-002);
+    background: var(--wui-color-gray-glass-002);
   }
 
   .action-buttons-container {
@@ -66,7 +70,7 @@ export default css`
     height: 48px;
     border-radius: var(--wui-border-radius-xs);
     border: none;
-    box-shadow: inset 0 0 0 1px var(--wui-gray-glass-010);
+    box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-010);
   }
 
   .action-buttons-container > button:disabled {
@@ -75,25 +79,24 @@ export default css`
   }
 
   .cancel-button:hover,
-  .swap-button:hover {
+  .action-button:hover {
     cursor: pointer;
   }
 
-  .action-buttons-container > button.cancel-button {
+  .action-buttons-container > wui-button.cancel-button {
     flex: 2;
   }
 
-  .action-buttons-container > button.swap-button {
+  .action-buttons-container > wui-button.action-button {
     flex: 4;
-    background-color: var(--wui-color-accent-090);
   }
 
-  .action-buttons-container > button.swap-button > wui-text {
+  .action-buttons-container > button.action-button > wui-text {
     color: white;
   }
 
   .details-container > wui-flex {
-    background: var(--wui-gray-glass-002);
+    background: var(--wui-color-gray-glass-002);
     border-radius: var(--wui-border-radius-xxs);
     width: 100%;
   }
@@ -107,7 +110,7 @@ export default css`
   }
 
   .details-container > wui-flex > button:hover {
-    background: var(--wui-gray-glass-002);
+    background: var(--wui-color-gray-glass-002);
   }
 
   .details-content-container {
@@ -125,6 +128,6 @@ export default css`
     width: 100%;
     padding: var(--wui-spacing-s) var(--wui-spacing-xl);
     border-radius: var(--wui-border-radius-xxs);
-    background: var(--wui-gray-glass-002);
+    background: var(--wui-color-gray-glass-002);
   }
 `
