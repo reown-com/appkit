@@ -48,6 +48,11 @@ const customProjectProperties: CustomProjectProperties = {
       /(?:email\.spec\.ts|smart-account\.spec\.ts|siwe-email\.spec\.ts|siwe-smart-account\.spec\.ts).*$/u,
     useOptions: braveOptions
   },
+  'Desktop Brave/wagmi': {
+    testIgnore:
+      /(?:email\.spec\.ts|smart-account\.spec\.ts|siwe-email\.spec\.ts|siwe-smart-account\.spec\.ts).*$/u,
+    useOptions: braveOptions
+  },
   'Desktop Chrome/wagmi': {
     testIgnore:
       /(?:email\.spec\.ts|smart-account\.spec\.ts|siwe-email\.spec\.ts|siwe-smart-account\.spec\.ts).*$/u
