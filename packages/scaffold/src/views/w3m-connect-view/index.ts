@@ -145,7 +145,7 @@ export class W3mConnectView extends LitElement {
 
   private announcedTemplate() {
     return this.connectors.map(connector => {
-      if (connector.type !== 'ANNOUNCED' || CoreHelperUtil.isMobile()) {
+      if (connector.type !== 'ANNOUNCED') {
         return null
       }
 
