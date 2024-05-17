@@ -59,7 +59,6 @@ export function CustomWallet({ controls }: Props) {
         </Text>
         <DrawerBody>
           <Stack spacing={4}>
-            Name
             <Input
               name="name"
               value={customWallet.name}
@@ -67,37 +66,33 @@ export function CustomWallet({ controls }: Props) {
               variant="outline"
               placeholder="Name"
             />
-            Image URL
             <Input
               name="image_url"
-              value={customWallet.image}
+              value={customWallet.image_url}
               onChange={handleChange}
               variant="outline"
               placeholder="Image URL"
             />
-            Mobile Linking (Optional)
             <Input
               name="mobile_link"
-              value={customWallet.mobile}
+              value={customWallet.mobile_link}
               onChange={handleChange}
               variant="outline"
-              placeholder="Mobile Linking"
+              placeholder="Mobile Linking (Optional)"
             />
-            Desktop Linking (Optional)
             <Input
               name="desktop_link"
-              value={customWallet.desktop}
+              value={customWallet.desktop_link}
               onChange={handleChange}
               variant="outline"
-              placeholder="Desktop Linking"
+              placeholder="Desktop Linking (Optional)"
             />
-            Webapp Linking (Optional)
             <Input
               name="webapp_link"
-              value={customWallet.webapp}
+              value={customWallet.webapp_link}
               onChange={handleChange}
               variant="outline"
-              placeholder="Webapp Linking"
+              placeholder="Webapp Linking (Optional)"
             />
             <Button onClick={handleCustomWallet}>Add Wallet</Button>
           </Stack>
