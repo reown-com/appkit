@@ -35,6 +35,9 @@ const braveOptions: UseOptions = {
 }
 
 const customProjectProperties: CustomProjectProperties = {
+  'Desktop Chrome/ethers': {
+    testIgnore: /(?:social\.spec\.ts).*$/u
+  },
   'Desktop Brave/ethers': {
     testIgnore: /(?:email\.spec\.ts|smart-account\.spec\.ts|social\.spec\.ts).*$/u,
     useOptions: braveOptions
