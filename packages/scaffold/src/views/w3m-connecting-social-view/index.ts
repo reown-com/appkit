@@ -2,7 +2,6 @@ import {
   AccountController,
   ConnectionController,
   ConnectorController,
-  CoreHelperUtil,
   ModalController,
   RouterController,
   SnackController,
@@ -124,12 +123,7 @@ export class W3mConnectingSocialView extends LitElement {
   }
 
   private connectSocial() {
-    const eventListenerTarget: EventTarget = CoreHelperUtil.isIos() ? document : window
-    eventListenerTarget.addEventListener(
-      'message',
-      (event: Event) => this.handleSocialConnection(event as MessageEvent),
-      false
-    )
+    window.addEventListener('message', this.handleSocialConnection, false)
   }
 }
 
