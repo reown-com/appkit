@@ -4,13 +4,10 @@ import { useAccount, useConnections } from 'wagmi'
 import { useCapabilities, useSendCalls } from 'wagmi/experimental'
 import { useCallback, useState, useEffect } from 'react'
 import { useChakraToast } from '../Toast'
-import { parseGwei, type Address } from 'viem'
+import { parseGwei, type Address, type WalletCapabilities } from 'viem'
 import { vitalikEthAddress } from '../../utils/DataUtil'
-import {
-  WALLET_CAPABILITY_NAMES,
-  EIP_5792_RPC_METHODS,
-  getCapabilitySupportedChainInfoForViem
-} from '../../utils/EIP5792Utils'
+import { EIP_5792_RPC_METHODS } from '../../utils/EIP5792Utils'
+import { getChain } from '../../utils/ChainsUtil'
 
 const TEST_TX_1 = {
   to: vitalikEthAddress as Address,
@@ -25,14 +22,30 @@ export function WagmiSendCallsTest() {
   const [ethereumProvider, setEthereumProvider] =
     useState<Awaited<ReturnType<(typeof EthereumProvider)['init']>>>()
   const [isLoading, setLoading] = useState(false)
+
   const { status, chain, address } = useAccount()
   const { data: availableCapabilities } = useCapabilities({
     account: address
   })
   const connection = useConnections()
-  const isConnected = status === 'connected'
   const toast = useChakraToast()
 
+  const isConnected = status === 'connected'
+  const atomicBatchSupportedChains = availableCapabilities
+    ? getAtomicBatchSupportedChainInfo(availableCapabilities)
+    : []
+  const atomicBatchSupportedChainsName = atomicBatchSupportedChains
+    .map(ci => ci.chainName)
+    .join(', ')
+  const currentChainsInfo = atomicBatchSupportedChains.find(
+    chainInfo => chainInfo.chainId === Number(chain?.id)
+  )
+
+  useEffect(() => {
+    if (isConnected) {
+      fetchProvider()
+    }
+  }, [isConnected])
   const { sendCalls } = useSendCalls({
     mutation: {
       onSuccess: hash => {
@@ -53,7 +66,6 @@ export function WagmiSendCallsTest() {
       }
     }
   })
-
   const onSendCalls = useCallback(() => {
     setLoading(true)
     sendCalls({
@@ -61,6 +73,12 @@ export function WagmiSendCallsTest() {
     })
   }, [sendCalls])
 
+  async function fetchProvider() {
+    const connectedProvider = await connection?.[0]?.connector?.getProvider()
+    if (connectedProvider instanceof EthereumProvider) {
+      setEthereumProvider(connectedProvider)
+    }
+  }
   function isSendCallsSupported(): boolean {
     return Boolean(
       ethereumProvider?.signer?.session?.namespaces?.['eip155']?.methods?.includes(
@@ -68,18 +86,28 @@ export function WagmiSendCallsTest() {
       )
     )
   }
+  function getAtomicBatchSupportedChainInfo(capabilities: Record<number, WalletCapabilities>): {
+    chainId: number
+    chainName: string
+  }[] {
+    const chainIds = Object.keys(capabilities)
+    const chainInfo = chainIds
+      .filter(chainId => {
+        const capabilitiesPerChain = capabilities[parseInt(chainId, 10)]
 
-  async function fetchProvider() {
-    const connectedProvider = await connection?.[0]?.connector?.getProvider()
-    if (connectedProvider instanceof EthereumProvider) {
-      setEthereumProvider(connectedProvider)
-    }
+        return capabilitiesPerChain?.['atomicBatch']?.supported === true
+      })
+      .map(chainId => {
+        const capabilityChain = getChain(parseInt(chainId, 10))
+
+        return {
+          chainId: parseInt(chainId, 10),
+          chainName: capabilityChain?.name ?? `Unknown Chain(${chainId})`
+        }
+      })
+
+    return chainInfo
   }
-  useEffect(() => {
-    if (isConnected) {
-      fetchProvider()
-    }
-  }, [isConnected])
 
   if (!isConnected || !ethereumProvider || !address) {
     return (
@@ -88,7 +116,6 @@ export function WagmiSendCallsTest() {
       </Text>
     )
   }
-
   if (!isSendCallsSupported()) {
     return (
       <Text fontSize="md" color="yellow">
@@ -96,14 +123,6 @@ export function WagmiSendCallsTest() {
       </Text>
     )
   }
-
-  const atomicBatchSupportedChains = availableCapabilities
-    ? getCapabilitySupportedChainInfoForViem(
-        WALLET_CAPABILITY_NAMES.ATOMIC_BATCH,
-        availableCapabilities
-      )
-    : []
-
   if (atomicBatchSupportedChains.length === 0) {
     return (
       <Text fontSize="md" color="yellow">
@@ -112,7 +131,7 @@ export function WagmiSendCallsTest() {
     )
   }
 
-  return atomicBatchSupportedChains.find(chainInfo => chainInfo.chainId === Number(chain?.id)) ? (
+  return currentChainsInfo ? (
     <Stack direction={['column', 'column', 'row']}>
       <Button
         data-test-id="send-calls-button"
@@ -125,7 +144,7 @@ export function WagmiSendCallsTest() {
     </Stack>
   ) : (
     <Text fontSize="md" color="yellow">
-      Switch to {atomicBatchSupportedChains.map(ci => ci.chainName).join(', ')} to test this feature
+      Switch to {atomicBatchSupportedChainsName} to test this feature
     </Text>
   )
 }

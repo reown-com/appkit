@@ -18,6 +18,7 @@ export type AuthParameters = {
   options: W3mFrameProviderOptions
   socials?: SocialProvider[]
   email?: boolean
+  showWallets?: boolean
 }
 
 // -- Connector ------------------------------------------------------------------------------------
@@ -32,6 +33,7 @@ export function authConnector(parameters: AuthParameters) {
     type: 'w3mAuth',
     socials: parameters.socials,
     email: parameters.email,
+    showWallets: parameters.showWallets,
 
     async connect(options: ConnectOptions = {}) {
       const provider = await this.getProvider()

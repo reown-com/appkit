@@ -12,11 +12,13 @@ export function WagmiGetCallsStatusTest() {
   const [ethereumProvider, setEthereumProvider] =
     useState<Awaited<ReturnType<(typeof EthereumProvider)['init']>>>()
   const [isLoading, setLoading] = useState(false)
+  const [batchCallId, setBatchCallId] = useState('')
+
   const { status, address } = useAccount()
   const connection = useConnections()
-  const isConnected = status === 'connected'
   const toast = useChakraToast()
-  const [batchCallId, setBatchCallId] = useState('')
+
+  const isConnected = status === 'connected'
 
   const onGetCallsStatus = useCallback(async () => {
     setLoading(true)
@@ -37,6 +39,11 @@ export function WagmiGetCallsStatusTest() {
       setLoading(false)
     }
   }, [batchCallId, toast])
+  useEffect(() => {
+    if (isConnected) {
+      fetchProvider()
+    }
+  }, [isConnected])
 
   function isGetCallsStatusSupported(): boolean {
     return Boolean(
@@ -45,18 +52,12 @@ export function WagmiGetCallsStatusTest() {
       )
     )
   }
-
   async function fetchProvider() {
     const connectedProvider = await connection?.[0]?.connector?.getProvider()
     if (connectedProvider instanceof EthereumProvider) {
       setEthereumProvider(connectedProvider)
     }
   }
-  useEffect(() => {
-    if (isConnected) {
-      fetchProvider()
-    }
-  }, [isConnected])
 
   if (!isConnected || !ethereumProvider || !address) {
     return (
@@ -65,7 +66,6 @@ export function WagmiGetCallsStatusTest() {
       </Text>
     )
   }
-
   if (!isGetCallsStatusSupported()) {
     return (
       <Text fontSize="md" color="yellow">

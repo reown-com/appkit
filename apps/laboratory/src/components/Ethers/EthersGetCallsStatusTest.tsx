@@ -8,11 +8,12 @@ import { type GetCallsStatusParams } from '../../types/EIP5792'
 import { EIP_5792_RPC_METHODS } from '../../utils/EIP5792Utils'
 
 export function EthersGetCallsStatusTest() {
-  const toast = useChakraToast()
-  const { address, chainId, isConnected } = useWeb3ModalAccount()
-  const { walletProvider } = useWeb3ModalProvider()
   const [isLoading, setLoading] = useState(false)
   const [batchCallId, setBatchCallId] = useState('')
+
+  const { address, chainId, isConnected } = useWeb3ModalAccount()
+  const { walletProvider } = useWeb3ModalProvider()
+  const toast = useChakraToast()
 
   async function onGetCallsStatus() {
     try {
@@ -45,7 +46,6 @@ export function EthersGetCallsStatusTest() {
       setLoading(false)
     }
   }
-
   function isGetCallsStatusSupported(): boolean {
     if (walletProvider instanceof EthereumProvider) {
       return Boolean(
@@ -65,7 +65,6 @@ export function EthersGetCallsStatusTest() {
       </Text>
     )
   }
-
   if (!isGetCallsStatusSupported()) {
     return (
       <Text fontSize="md" color="yellow">

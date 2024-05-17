@@ -11,4 +11,8 @@ export default css`
   :host > wui-flex::-webkit-scrollbar {
     display: none;
   }
+
+  .all-wallets {
+    flex-flow: column;
+  }
 `

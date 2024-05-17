@@ -3,20 +3,29 @@ import { useState } from 'react'
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers/react'
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
 import { useChakraToast } from '../Toast'
-import { parseGwei } from 'viem'
+import { parseGwei, type Address } from 'viem'
 import { vitalikEthAddress } from '../../utils/DataUtil'
 import { BrowserProvider } from 'ethers'
-import {
-  WALLET_CAPABILITY_NAMES,
-  EIP_5792_RPC_METHODS,
-  getCapabilitySupportedChainInfoForEthers
-} from '../../utils/EIP5792Utils'
+import { EIP_5792_RPC_METHODS, getAtomicBatchSupportedChainInfo } from '../../utils/EIP5792Utils'
 
 export function EthersSendCallsTest() {
-  const toast = useChakraToast()
+  const [loading, setLoading] = useState(false)
+
   const { address, chainId, isConnected } = useWeb3ModalAccount()
   const { walletProvider } = useWeb3ModalProvider()
-  const [loading, setLoading] = useState(false)
+  const toast = useChakraToast()
+
+  const atomicBatchSupportedChains =
+    address && walletProvider instanceof EthereumProvider
+      ? getAtomicBatchSupportedChainInfo(walletProvider, address)
+      : []
+  const atomicBatchSupportedChainsNames = atomicBatchSupportedChains
+    .map(ci => ci.chainName)
+    .join(', ')
+  const currentChainsInfo = atomicBatchSupportedChains.find(
+    chainInfo => chainInfo.chainId === Number(chainId)
+  )
+
   async function onSendCalls() {
     try {
       setLoading(true)
@@ -30,11 +39,13 @@ export function EthersSendCallsTest() {
       const amountToSend = parseGwei('0.001').toString(16)
       const calls = [
         {
-          to: vitalikEthAddress,
+          to: vitalikEthAddress as `0x${string}`,
+          data: '0x' as `0x${string}`,
           value: `0x${amountToSend}`
         },
         {
-          to: vitalikEthAddress,
+          to: vitalikEthAddress as Address,
+          value: '0x00',
           data: '0xdeadbeef'
         }
       ]
@@ -62,7 +73,6 @@ export function EthersSendCallsTest() {
       setLoading(false)
     }
   }
-
   function isSendCallsSupported(): boolean {
     if (walletProvider instanceof EthereumProvider) {
       return Boolean(
@@ -82,7 +92,6 @@ export function EthersSendCallsTest() {
       </Text>
     )
   }
-
   if (!isSendCallsSupported()) {
     return (
       <Text fontSize="md" color="yellow">
@@ -90,17 +99,7 @@ export function EthersSendCallsTest() {
       </Text>
     )
   }
-
-  const allowedChains =
-    walletProvider instanceof EthereumProvider
-      ? getCapabilitySupportedChainInfoForEthers(
-          WALLET_CAPABILITY_NAMES.ATOMIC_BATCH,
-          walletProvider,
-          address
-        )
-      : []
-
-  if (allowedChains.length === 0) {
+  if (atomicBatchSupportedChains.length === 0) {
     return (
       <Text fontSize="md" color="yellow">
         Account does not support this feature
@@ -108,7 +107,7 @@ export function EthersSendCallsTest() {
     )
   }
 
-  return allowedChains.find(chainInfo => chainInfo.chainId === Number(chainId)) ? (
+  return currentChainsInfo ? (
     <Stack direction={['column', 'column', 'row']}>
       <Button data-test-id="send-calls-button" onClick={onSendCalls} isDisabled={loading}>
         Send Batch Calls to Vitalik
@@ -117,7 +116,7 @@ export function EthersSendCallsTest() {
     </Stack>
   ) : (
     <Text fontSize="md" color="yellow">
-      Switch to {allowedChains.map(ci => ci.chainName).join(', ')} to test this feature
+      Switch to {atomicBatchSupportedChainsNames} to test this feature
     </Text>
   )
 }
