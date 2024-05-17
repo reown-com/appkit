@@ -47,7 +47,7 @@ export function CustomWallet({ controls }: Props) {
         <DrawerCloseButton />
         <DrawerHeader>Add a Custom Wallet</DrawerHeader>
         <Text pt="2" fontSize="sm" padding={6}>
-          Add a custom wallets to the modal. This feature is for wallets that are under the Explorer
+          Add a custom wallet to the modal. This feature is for wallets that are under the Explorer
           submission process.{' '}
           <Link
             isExternal
