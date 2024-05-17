@@ -133,14 +133,15 @@ export class ModalPage {
       .getByTestId('connect-button')
       .getByRole('button', { name: 'Connect Wallet' })
       .click()
-    const popupPromise = this.page.waitForEvent('popup')
-    await this.page.getByTestId('social-selector-x').click()
-    const popup = await popupPromise
-    await popup.fill('#username_or_email', socialMail)
-    await popup.fill('#password', socialPass)
-    await popup.locator('#allow').click()
-    await popup.context().storageState({ path: authFile })
-    await popup.waitForEvent('close')
+    const googlePopupPromise = this.page.waitForEvent('popup')
+    await this.page.getByTestId('social-selector-google').click()
+    const googlePopup = await googlePopupPromise
+    await googlePopup.fill('#identifierId', socialMail)
+    await googlePopup.locator('#identifierNext >> button').click()
+    await googlePopup.fill('#password >> input[type="password"]', socialPass)
+    await googlePopup.locator('button >> nth=1').click()
+    await googlePopup.context().storageState({ path: authFile })
+    await googlePopup.waitForEvent('close')
   }
 
   async enterOTP(otp: string, headerTitle = 'Confirm Email') {
