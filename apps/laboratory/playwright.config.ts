@@ -30,7 +30,7 @@ export default defineConfig<ModalFixture>({
 
     /* Collect trace regardless so we can debug latency regressions. See https://playwright.dev/docs/trace-viewer */
     trace: 'on',
-    headless: true,
+    headless: false,
 
     video: 'retain-on-failure'
   },
