@@ -37,7 +37,7 @@ export function WagmiSendCallsTest() {
   const atomicBatchSupportedChainsName = atomicBatchSupportedChains
     .map(ci => ci.chainName)
     .join(', ')
-  const atomicBatchSupportedChainsInfo = atomicBatchSupportedChains.find(
+  const currentChainsInfo = atomicBatchSupportedChains.find(
     chainInfo => chainInfo.chainId === Number(chain?.id)
   )
 
@@ -131,7 +131,7 @@ export function WagmiSendCallsTest() {
     )
   }
 
-  return atomicBatchSupportedChainsInfo ? (
+  return currentChainsInfo ? (
     <Stack direction={['column', 'column', 'row']}>
       <Button
         data-test-id="send-calls-button"

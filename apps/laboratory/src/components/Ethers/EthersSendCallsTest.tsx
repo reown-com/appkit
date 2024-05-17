@@ -22,7 +22,7 @@ export function EthersSendCallsTest() {
   const atomicBatchSupportedChainsNames = atomicBatchSupportedChains
     .map(ci => ci.chainName)
     .join(', ')
-  const atomicBatchSupportedChainsInfo = atomicBatchSupportedChains.find(
+  const currentChainsInfo = atomicBatchSupportedChains.find(
     chainInfo => chainInfo.chainId === Number(chainId)
   )
 
@@ -107,7 +107,7 @@ export function EthersSendCallsTest() {
     )
   }
 
-  return atomicBatchSupportedChainsInfo ? (
+  return currentChainsInfo ? (
     <Stack direction={['column', 'column', 'row']}>
       <Button data-test-id="send-calls-button" onClick={onSendCalls} isDisabled={loading}>
         Send Batch Calls to Vitalik
