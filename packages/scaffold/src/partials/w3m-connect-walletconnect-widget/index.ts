@@ -27,11 +27,15 @@ export class W3mConnectWalletConnectWidget extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     if (CoreHelperUtil.isMobile()) {
+      this.style.cssText = `display: none`
+
       return null
     }
 
     const connector = this.connectors.find(c => c.type === 'WALLET_CONNECT')
     if (!connector) {
+      this.style.cssText = `display: none`
+
       return null
     }
 
