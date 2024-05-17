@@ -42,6 +42,20 @@ export class W3mConnectView extends LitElement {
     const authConnector = this.connectors.find(c => c.type === 'AUTH')
 
     if (authConnector?.socials) {
+      if (authConnector?.showWallets) {
+        return html`
+          <wui-flex flexDirection="column" gap="xs" .margin=${['xs', '0', '0', '0'] as const}>
+            <w3m-connect-walletconnect-widget></w3m-connect-walletconnect-widget>
+            <w3m-connect-recent-widget></w3m-connect-recent-widget>
+            <w3m-connect-announced-widget></w3m-connect-announced-widget>
+            <w3m-connect-injected-widget></w3m-connect-injected-widget>
+            <wui-flex class="all-wallets" .margin=${['xs', '0', '0', '0'] as const}>
+              <w3m-all-wallets-widget></w3m-all-wallets-widget>
+            </wui-flex>
+          </wui-flex>
+        `
+      }
+
       return html` <wui-list-button
         @click=${this.onContinueWalletClick.bind(this)}
         text="Continue with a wallet"

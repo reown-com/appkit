@@ -49,8 +49,7 @@ export class W3mSocialLoginWidget extends LitElement {
     }
 
     return html`
-      <wui-separator text="or"></wui-separator>
-      <wui-flex flexDirection="column" gap="xs">
+      <wui-flex flexDirection="column" gap="xs" .padding=${['0', '0', 'xs', '0'] as const}>
         ${this.topViewTemplate()}${this.bottomViewTemplate()}
       </wui-flex>
       <wui-separator text="or"></wui-separator>

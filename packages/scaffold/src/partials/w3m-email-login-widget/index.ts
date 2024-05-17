@@ -69,7 +69,9 @@ export class W3mEmailLoginWidget extends LitElement {
 
       ${connector.socials || !multipleConnectors
         ? null
-        : html`<wui-separator text="or"></wui-separator>`}
+        : html`<wui-flex .padding=${['xxs', '0', '0', '0'] as const}>
+            <wui-separator text="or"></wui-separator>
+          </wui-flex>`}
     `
   }
 

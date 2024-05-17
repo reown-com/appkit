@@ -19,7 +19,7 @@ export const wagmiConfig = defaultWagmiConfig({
   enableEmail: true,
   ssr: true,
   auth: {
-    socials: ['google', 'x', 'discord']
+    socials: ['google', 'x', 'discord', 'apple', 'github']
   }
 })
 
