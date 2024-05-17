@@ -36,7 +36,7 @@ const braveOptions: UseOptions = {
 
 const customProjectProperties: CustomProjectProperties = {
   'Desktop Brave/ethers': {
-    testIgnore: /(?:email\.spec\.ts|smart-account\.spec\.ts).*$/u,
+    testIgnore: /(?:email\.spec\.ts|smart-account\.spec\.ts|social\.spec\.ts).*$/u,
     useOptions: braveOptions
   },
   'Desktop Firefox/ethers': {
@@ -44,12 +44,12 @@ const customProjectProperties: CustomProjectProperties = {
   },
   'Desktop Brave/wagmi': {
     testIgnore:
-      /(?:email\.spec\.ts|smart-account\.spec\.ts|siwe-email\.spec\.ts|siwe-smart-account\.spec\.ts).*$/u,
+      /(?:email\.spec\.ts|smart-account\.spec\.ts|siwe-email\.spec\.ts|siwe-smart-account\.spec\.ts|social\.spec\.ts).*$/u,
     useOptions: braveOptions
   },
   'Desktop Chrome/wagmi': {
     testIgnore:
-      /(?:email\.spec\.ts|smart-account\.spec\.ts|siwe-email\.spec\.ts|siwe-smart-account\.spec\.ts).*$/u
+      /(?:email\.spec\.ts|smart-account\.spec\.ts|siwe-email\.spec\.ts|siwe-smart-account\.spec\.ts|social\.spec\.ts).*$/u
   },
   'Desktop Firefox/wagmi': {
     testIgnore:
