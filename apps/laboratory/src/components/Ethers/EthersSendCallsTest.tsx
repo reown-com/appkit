@@ -9,10 +9,18 @@ import { BrowserProvider } from 'ethers'
 import { EIP_5792_RPC_METHODS, getAtomicBatchSupportedChainInfo } from '../../utils/EIP5792Utils'
 
 export function EthersSendCallsTest() {
-  const toast = useChakraToast()
+  const [loading, setLoading] = useState(false)
+
   const { address, chainId, isConnected } = useWeb3ModalAccount()
   const { walletProvider } = useWeb3ModalProvider()
-  const [loading, setLoading] = useState(false)
+  const toast = useChakraToast()
+
+  const allowedChains =
+    walletProvider instanceof EthereumProvider
+      ? getAtomicBatchSupportedChainInfo(walletProvider, address)
+      : []
+  const allowedChainsName = allowedChains.map(ci => ci.chainName).join(', ')
+
   async function onSendCalls() {
     try {
       setLoading(true)
@@ -60,7 +68,6 @@ export function EthersSendCallsTest() {
       setLoading(false)
     }
   }
-
   function isSendCallsSupported(): boolean {
     if (walletProvider instanceof EthereumProvider) {
       return Boolean(
@@ -80,7 +87,6 @@ export function EthersSendCallsTest() {
       </Text>
     )
   }
-
   if (!isSendCallsSupported()) {
     return (
       <Text fontSize="md" color="yellow">
@@ -88,12 +94,6 @@ export function EthersSendCallsTest() {
       </Text>
     )
   }
-
-  const allowedChains =
-    walletProvider instanceof EthereumProvider
-      ? getAtomicBatchSupportedChainInfo(walletProvider, address)
-      : []
-
   if (allowedChains.length === 0) {
     return (
       <Text fontSize="md" color="yellow">
@@ -111,7 +111,7 @@ export function EthersSendCallsTest() {
     </Stack>
   ) : (
     <Text fontSize="md" color="yellow">
-      Switch to {allowedChains.map(ci => ci.chainName).join(', ')} to test this feature
+      Switch to {allowedChainsName} to test this feature
     </Text>
   )
 }

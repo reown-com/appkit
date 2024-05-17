@@ -22,14 +22,27 @@ export function WagmiSendCallsTest() {
   const [ethereumProvider, setEthereumProvider] =
     useState<Awaited<ReturnType<(typeof EthereumProvider)['init']>>>()
   const [isLoading, setLoading] = useState(false)
+
   const { status, chain, address } = useAccount()
   const { data: availableCapabilities } = useCapabilities({
     account: address
   })
   const connection = useConnections()
-  const isConnected = status === 'connected'
   const toast = useChakraToast()
 
+  const isConnected = status === 'connected'
+  const atomicBatchSupportedChains = availableCapabilities
+    ? getAtomicBatchSupportedChainInfo(availableCapabilities)
+    : []
+  const atomicBatchSupportedChainsName = atomicBatchSupportedChains
+    .map(ci => ci.chainName)
+    .join(', ')
+
+  useEffect(() => {
+    if (isConnected) {
+      fetchProvider()
+    }
+  }, [isConnected])
   const { sendCalls } = useSendCalls({
     mutation: {
       onSuccess: hash => {
@@ -50,7 +63,6 @@ export function WagmiSendCallsTest() {
       }
     }
   })
-
   const onSendCalls = useCallback(() => {
     setLoading(true)
     sendCalls({
@@ -58,6 +70,12 @@ export function WagmiSendCallsTest() {
     })
   }, [sendCalls])
 
+  async function fetchProvider() {
+    const connectedProvider = await connection?.[0]?.connector?.getProvider()
+    if (connectedProvider instanceof EthereumProvider) {
+      setEthereumProvider(connectedProvider)
+    }
+  }
   function isSendCallsSupported(): boolean {
     return Boolean(
       ethereumProvider?.signer?.session?.namespaces?.['eip155']?.methods?.includes(
@@ -65,7 +83,6 @@ export function WagmiSendCallsTest() {
       )
     )
   }
-
   function getAtomicBatchSupportedChainInfo(capabilities: Record<number, WalletCapabilities>): {
     chainId: number
     chainName: string
@@ -89,18 +106,6 @@ export function WagmiSendCallsTest() {
     return chainInfo
   }
 
-  async function fetchProvider() {
-    const connectedProvider = await connection?.[0]?.connector?.getProvider()
-    if (connectedProvider instanceof EthereumProvider) {
-      setEthereumProvider(connectedProvider)
-    }
-  }
-  useEffect(() => {
-    if (isConnected) {
-      fetchProvider()
-    }
-  }, [isConnected])
-
   if (!isConnected || !ethereumProvider || !address) {
     return (
       <Text fontSize="md" color="yellow">
@@ -108,7 +113,6 @@ export function WagmiSendCallsTest() {
       </Text>
     )
   }
-
   if (!isSendCallsSupported()) {
     return (
       <Text fontSize="md" color="yellow">
@@ -116,11 +120,6 @@ export function WagmiSendCallsTest() {
       </Text>
     )
   }
-
-  const atomicBatchSupportedChains = availableCapabilities
-    ? getAtomicBatchSupportedChainInfo(availableCapabilities)
-    : []
-
   if (atomicBatchSupportedChains.length === 0) {
     return (
       <Text fontSize="md" color="yellow">
@@ -142,7 +141,7 @@ export function WagmiSendCallsTest() {
     </Stack>
   ) : (
     <Text fontSize="md" color="yellow">
-      Switch to {atomicBatchSupportedChains.map(ci => ci.chainName).join(', ')} to test this feature
+      Switch to {atomicBatchSupportedChainsName} to test this feature
     </Text>
   )
 }

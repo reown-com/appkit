@@ -6,7 +6,8 @@ export function parseJSON(str: string) {
   }
 }
 
-export function bigIntReplacer(_key: string, value: bigint) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function bigIntReplacer(_key: string, value: any) {
   if (typeof value === 'bigint') {
     return value.toString()
   }
