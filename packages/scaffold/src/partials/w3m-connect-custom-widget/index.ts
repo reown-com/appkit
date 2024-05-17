@@ -27,6 +27,10 @@ export class W3mConnectCustomWidget extends LitElement {
     )
   }
 
+  public override disconnectedCallback() {
+    this.unsubscribe.forEach(unsubscribe => unsubscribe())
+  }
+
   // -- Render -------------------------------------------- //
   public override render() {
     const { customWallets } = OptionsController.state
