@@ -13,11 +13,27 @@ import {
 } from '../../utils/EIP5792Utils'
 
 export function EthersSendCallsWithPaymasterServiceTest() {
-  const toast = useChakraToast()
-  const { address, chainId, isConnected } = useWeb3ModalAccount()
-  const { walletProvider } = useWeb3ModalProvider()
   const [paymasterServiceUrl, setPaymasterServiceUrl] = useState<string>('')
   const [isLoading, setLoading] = useState(false)
+
+  const { address, chainId, isConnected } = useWeb3ModalAccount()
+  const { walletProvider } = useWeb3ModalProvider()
+  const toast = useChakraToast()
+
+  const paymasterServiceSupportedChains =
+    address && walletProvider instanceof EthereumProvider
+      ? getCapabilitySupportedChainInfoForEthers(
+          WALLET_CAPABILITY_NAMES.PAYMASTER_SERVICE,
+          walletProvider,
+          address
+        )
+      : []
+  const paymasterServiceSupportedChainNames = paymasterServiceSupportedChains
+    .map(ci => ci.chainName)
+    .join(', ')
+  const currentChainsInfo = paymasterServiceSupportedChains.find(
+    chainInfo => chainInfo.chainId === Number(chainId)
+  )
   async function onSendCalls() {
     try {
       setLoading(true)
@@ -92,7 +108,6 @@ export function EthersSendCallsWithPaymasterServiceTest() {
       </Text>
     )
   }
-
   if (!isSendCallsSupported()) {
     return (
       <Text fontSize="md" color="yellow">
@@ -100,16 +115,6 @@ export function EthersSendCallsWithPaymasterServiceTest() {
       </Text>
     )
   }
-
-  const paymasterServiceSupportedChains =
-    walletProvider instanceof EthereumProvider
-      ? getCapabilitySupportedChainInfoForEthers(
-          WALLET_CAPABILITY_NAMES.PAYMASTER_SERVICE,
-          walletProvider,
-          address
-        )
-      : []
-
   if (paymasterServiceSupportedChains.length === 0) {
     return (
       <Text fontSize="md" color="yellow">
@@ -118,9 +123,7 @@ export function EthersSendCallsWithPaymasterServiceTest() {
     )
   }
 
-  return paymasterServiceSupportedChains.find(
-    chainInfo => chainInfo.chainId === Number(chainId)
-  ) ? (
+  return currentChainsInfo ? (
     <Stack direction={['column', 'column', 'column']}>
       <Tooltip label="Paymaster Service URL should be of ERC-7677 paymaster service proxy">
         <Input
@@ -144,8 +147,7 @@ export function EthersSendCallsWithPaymasterServiceTest() {
     </Stack>
   ) : (
     <Text fontSize="md" color="yellow">
-      Switch to {paymasterServiceSupportedChains.map(ci => ci.chainName).join(', ')} to test this
-      feature
+      Switch to {paymasterServiceSupportedChainNames} to test this feature
     </Text>
   )
 }

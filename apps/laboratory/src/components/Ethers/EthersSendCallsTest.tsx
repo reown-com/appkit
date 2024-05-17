@@ -6,7 +6,11 @@ import { useChakraToast } from '../Toast'
 import { parseGwei, type Address } from 'viem'
 import { vitalikEthAddress } from '../../utils/DataUtil'
 import { BrowserProvider } from 'ethers'
-import { EIP_5792_RPC_METHODS, getAtomicBatchSupportedChainInfo } from '../../utils/EIP5792Utils'
+import {
+  EIP_5792_RPC_METHODS,
+  WALLET_CAPABILITY_NAMES,
+  getCapabilitySupportedChainInfoForEthers
+} from '../../utils/EIP5792Utils'
 
 export function EthersSendCallsTest() {
   const [loading, setLoading] = useState(false)
@@ -17,7 +21,11 @@ export function EthersSendCallsTest() {
 
   const atomicBatchSupportedChains =
     address && walletProvider instanceof EthereumProvider
-      ? getAtomicBatchSupportedChainInfo(walletProvider, address)
+      ? getCapabilitySupportedChainInfoForEthers(
+          WALLET_CAPABILITY_NAMES.ATOMIC_BATCH,
+          walletProvider,
+          address
+        )
       : []
   const atomicBatchSupportedChainsNames = atomicBatchSupportedChains
     .map(ci => ci.chainName)

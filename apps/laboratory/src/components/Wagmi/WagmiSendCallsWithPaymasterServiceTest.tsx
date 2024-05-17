@@ -25,15 +25,34 @@ export function WagmiSendCallsWithPaymasterServiceTest() {
   const [ethereumProvider, setEthereumProvider] =
     useState<Awaited<ReturnType<(typeof EthereumProvider)['init']>>>()
   const [isLoading, setLoading] = useState(false)
+  const [paymasterServiceUrl, setPaymasterServiceUrl] = useState<string>('')
+
   const { status, chain, address } = useAccount()
   const { data: availableCapabilities } = useCapabilities({
     account: address
   })
-  const [paymasterServiceUrl, setPaymasterServiceUrl] = useState<string>('')
   const connection = useConnections()
-  const isConnected = status === 'connected'
   const toast = useChakraToast()
 
+  const isConnected = status === 'connected'
+  const paymasterServiceSupportedChains = availableCapabilities
+    ? getCapabilitySupportedChainInfoForViem(
+        WALLET_CAPABILITY_NAMES.PAYMASTER_SERVICE,
+        availableCapabilities
+      )
+    : []
+  const paymasterServiceSupportedChainNames = paymasterServiceSupportedChains
+    .map(ci => ci.chainName)
+    .join(', ')
+  const currentChainsInfo = paymasterServiceSupportedChains.find(
+    chainInfo => chainInfo.chainId === Number(chain?.id)
+  )
+
+  useEffect(() => {
+    if (isConnected) {
+      fetchProvider()
+    }
+  }, [isConnected])
   const { sendCalls } = useSendCalls({
     mutation: {
       onSuccess: hash => {
@@ -77,18 +96,12 @@ export function WagmiSendCallsWithPaymasterServiceTest() {
       )
     )
   }
-
   async function fetchProvider() {
     const connectedProvider = await connection?.[0]?.connector?.getProvider()
     if (connectedProvider instanceof EthereumProvider) {
       setEthereumProvider(connectedProvider)
     }
   }
-  useEffect(() => {
-    if (isConnected) {
-      fetchProvider()
-    }
-  }, [isConnected])
 
   if (!isConnected || !ethereumProvider || !address) {
     return (
@@ -97,7 +110,6 @@ export function WagmiSendCallsWithPaymasterServiceTest() {
       </Text>
     )
   }
-
   if (!isSendCallsSupported()) {
     return (
       <Text fontSize="md" color="yellow">
@@ -105,14 +117,6 @@ export function WagmiSendCallsWithPaymasterServiceTest() {
       </Text>
     )
   }
-
-  const paymasterServiceSupportedChains = availableCapabilities
-    ? getCapabilitySupportedChainInfoForViem(
-        WALLET_CAPABILITY_NAMES.PAYMASTER_SERVICE,
-        availableCapabilities
-      )
-    : []
-
   if (paymasterServiceSupportedChains.length === 0) {
     return (
       <Text fontSize="md" color="yellow">
@@ -121,9 +125,7 @@ export function WagmiSendCallsWithPaymasterServiceTest() {
     )
   }
 
-  return paymasterServiceSupportedChains.find(
-    chainInfo => chainInfo.chainId === Number(chain?.id)
-  ) ? (
+  return currentChainsInfo ? (
     <Stack direction={['column', 'column', 'column']}>
       <Tooltip label="Paymaster Service URL should be of ERC-7677 paymaster service proxy">
         <Input
@@ -148,8 +150,7 @@ export function WagmiSendCallsWithPaymasterServiceTest() {
     </Stack>
   ) : (
     <Text fontSize="md" color="yellow">
-      Switch to {paymasterServiceSupportedChains.map(ci => ci.chainName).join(', ')} to test this
-      feature
+      Switch to {paymasterServiceSupportedChainNames} to test this feature
     </Text>
   )
 }
