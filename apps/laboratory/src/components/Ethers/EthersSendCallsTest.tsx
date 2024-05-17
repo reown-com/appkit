@@ -16,7 +16,7 @@ export function EthersSendCallsTest() {
   const toast = useChakraToast()
 
   const allowedChains =
-    walletProvider instanceof EthereumProvider
+    address && walletProvider instanceof EthereumProvider
       ? getAtomicBatchSupportedChainInfo(walletProvider, address)
       : []
   const allowedChainsName = allowedChains.map(ci => ci.chainName).join(', ')
