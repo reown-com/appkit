@@ -54,7 +54,7 @@ export class W3mConnectingSocialView extends LitElement {
   public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
 
-    // window.addEventListener('message', this.handleSocialConnection, false)
+    window.removeEventListener('message', this.handleSocialConnection, false)
   }
 
   // -- Render -------------------------------------------- //
@@ -104,6 +104,7 @@ export class W3mConnectingSocialView extends LitElement {
   private handleSocialConnection = async (event: MessageEvent) => {
     if (event.data?.resultUri) {
       if (event.origin === ConstantsUtil.SECURE_SITE_ORIGIN) {
+        window.removeEventListener('message', this.handleSocialConnection, false)
         try {
           if (this.authConnector && !this.connecting) {
             this.connecting = true
