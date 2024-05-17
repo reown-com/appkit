@@ -62,7 +62,7 @@ export class W3mAllWalletsWidget extends LitElement {
     `
   }
 
-  // -- Private Methods ----------------------------------- //
+  // -- Private ------------------------------------------- //
   private onAllWallets() {
     EventsController.sendEvent({ type: 'track', event: 'CLICK_ALL_WALLETS' })
     RouterController.push('AllWallets')
