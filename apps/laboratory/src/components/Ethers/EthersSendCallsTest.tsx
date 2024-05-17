@@ -27,7 +27,7 @@ export function EthersSendCallsTest() {
           address
         )
       : []
-  const atomicBatchSupportedChainsNames = atomicBatchSupportedChains
+  const atomicBatchSupportedChainNames = atomicBatchSupportedChains
     .map(ci => ci.chainName)
     .join(', ')
   const currentChainsInfo = atomicBatchSupportedChains.find(
@@ -124,7 +124,7 @@ export function EthersSendCallsTest() {
     </Stack>
   ) : (
     <Text fontSize="md" color="yellow">
-      Switch to {atomicBatchSupportedChainsNames} to test this feature
+      Switch to {atomicBatchSupportedChainNames} to test this feature
     </Text>
   )
 }

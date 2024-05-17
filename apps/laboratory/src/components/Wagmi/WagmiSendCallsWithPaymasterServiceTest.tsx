@@ -139,13 +139,12 @@ export function WagmiSendCallsWithPaymasterServiceTest() {
       </Tooltip>
       <Button
         width={'fit-content'}
-        colorScheme="cyan"
         data-test-id="send-calls-paymaster-service-button"
         onClick={onSendCalls}
         disabled={!sendCalls}
         isDisabled={isLoading || !paymasterServiceUrl}
       >
-        SendCalls W/ Paymaster Service
+        SendCalls w/ Paymaster Service
       </Button>
     </Stack>
   ) : (
