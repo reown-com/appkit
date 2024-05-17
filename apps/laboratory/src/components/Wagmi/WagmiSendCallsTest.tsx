@@ -37,6 +37,9 @@ export function WagmiSendCallsTest() {
   const atomicBatchSupportedChainsName = atomicBatchSupportedChains
     .map(ci => ci.chainName)
     .join(', ')
+  const atomicBatchSupportedChainsInfo = atomicBatchSupportedChains.find(
+    chainInfo => chainInfo.chainId === Number(chain?.id)
+  )
 
   useEffect(() => {
     if (isConnected) {
@@ -128,7 +131,7 @@ export function WagmiSendCallsTest() {
     )
   }
 
-  return atomicBatchSupportedChains.find(chainInfo => chainInfo.chainId === Number(chain?.id)) ? (
+  return atomicBatchSupportedChainsInfo ? (
     <Stack direction={['column', 'column', 'row']}>
       <Button
         data-test-id="send-calls-button"

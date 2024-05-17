@@ -15,11 +15,16 @@ export function EthersSendCallsTest() {
   const { walletProvider } = useWeb3ModalProvider()
   const toast = useChakraToast()
 
-  const allowedChains =
+  const atomicBatchSupportedChains =
     address && walletProvider instanceof EthereumProvider
       ? getAtomicBatchSupportedChainInfo(walletProvider, address)
       : []
-  const allowedChainsName = allowedChains.map(ci => ci.chainName).join(', ')
+  const atomicBatchSupportedChainsNames = atomicBatchSupportedChains
+    .map(ci => ci.chainName)
+    .join(', ')
+  const atomicBatchSupportedChainsInfo = atomicBatchSupportedChains.find(
+    chainInfo => chainInfo.chainId === Number(chainId)
+  )
 
   async function onSendCalls() {
     try {
@@ -94,7 +99,7 @@ export function EthersSendCallsTest() {
       </Text>
     )
   }
-  if (allowedChains.length === 0) {
+  if (atomicBatchSupportedChains.length === 0) {
     return (
       <Text fontSize="md" color="yellow">
         Account does not support this feature
@@ -102,7 +107,7 @@ export function EthersSendCallsTest() {
     )
   }
 
-  return allowedChains.find(chainInfo => chainInfo.chainId === Number(chainId)) ? (
+  return atomicBatchSupportedChainsInfo ? (
     <Stack direction={['column', 'column', 'row']}>
       <Button data-test-id="send-calls-button" onClick={onSendCalls} isDisabled={loading}>
         Send Batch Calls to Vitalik
@@ -111,7 +116,7 @@ export function EthersSendCallsTest() {
     </Stack>
   ) : (
     <Text fontSize="md" color="yellow">
-      Switch to {allowedChainsName} to test this feature
+      Switch to {atomicBatchSupportedChainsNames} to test this feature
     </Text>
   )
 }
