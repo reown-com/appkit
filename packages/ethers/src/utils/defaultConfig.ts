@@ -9,6 +9,7 @@ export interface ConfigOptions {
   enableEmail?: boolean
   auth?: {
     socials?: SocialProvider[]
+    showWallets?: boolean
   }
   enableInjected?: boolean
   rpcUrl?: string
