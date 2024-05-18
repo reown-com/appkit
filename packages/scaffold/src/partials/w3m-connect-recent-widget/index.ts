@@ -18,8 +18,8 @@ export class W3mConnectRecentWidget extends LitElement {
 
     return html`
       <wui-flex flexDirection="column" gap="xs">
-        ${recent.map(wallet => {
-          return html`
+        ${recent.map(
+          wallet => html`
             <wui-list-wallet
               imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
               name=${wallet.name ?? 'Unknown'}
@@ -29,7 +29,7 @@ export class W3mConnectRecentWidget extends LitElement {
             >
             </wui-list-wallet>
           `
-        })}
+        )}
       </wui-flex>
     `
   }
