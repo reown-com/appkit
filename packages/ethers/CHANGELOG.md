@@ -1,5 +1,19 @@
 # @web3modal/ethers
 
+## 4.2.1
+
+### Patch Changes
+
+- Hotfix to support injected and announced wallets in in app browsers
+
+- Updated dependencies []:
+  - @web3modal/scaffold@4.2.1
+  - @web3modal/polyfills@4.2.1
+  - @web3modal/scaffold-react@4.2.1
+  - @web3modal/scaffold-utils@4.2.1
+  - @web3modal/scaffold-vue@4.2.1
+  - @web3modal/siwe@4.2.1
+
 ## 4.2.0
 
 ### Patch Changes

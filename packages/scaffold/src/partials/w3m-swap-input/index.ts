@@ -126,23 +126,12 @@ export class W3mSwapInput extends LitElement {
       return html` <wui-button
         class="swap-token-button"
         size="md"
-        variant="accentBg"
+        variant="accent"
         @click=${this.onSelectToken.bind(this)}
       >
         Select token
       </wui-button>`
     }
-
-    const tokenElement = this.token.logoUri
-      ? html`<wui-image src=${this.token.logoUri}></wui-image>`
-      : html`
-          <wui-icon-box
-            size="sm"
-            iconColor="fg-200"
-            backgroundColor="fg-300"
-            icon="networkPlaceholder"
-          ></wui-icon-box>
-        `
 
     return html`
       <wui-flex
@@ -152,15 +141,12 @@ export class W3mSwapInput extends LitElement {
         justifyContent="center"
         gap="xxs"
       >
-        <button
-          size="sm"
-          variant="shade"
-          class="token-select-button"
+        <wui-token-button
+          text=${this.token.symbol}
+          imageSrc=${this.token.logoUri}
           @click=${this.onSelectToken.bind(this)}
         >
-          ${tokenElement}
-          <wui-text variant="paragraph-600" color="fg-100">${this.token.symbol}</wui-text>
-        </button>
+        </wui-token-button>
         <wui-flex alignItems="center" gap="xxs"> ${this.tokenBalanceTemplate()} </wui-flex>
       </wui-flex>
     `

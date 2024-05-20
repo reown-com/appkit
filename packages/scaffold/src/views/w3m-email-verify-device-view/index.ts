@@ -62,7 +62,7 @@ export class W3mEmailVerifyDeviceView extends LitElement {
             The code expires in 20 minutes
           </wui-text>
 
-          <wui-flex alignItems="center" id="w3m-resend-section">
+          <wui-flex alignItems="center" id="w3m-resend-section" gap="xs">
             <wui-text variant="small-400" color="fg-100" align="center">
               Didn't receive it?
             </wui-text>

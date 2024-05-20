@@ -1,5 +1,6 @@
 import type { RouterControllerState } from '@web3modal/core'
 import {
+  AccountController,
   ConnectionController,
   ConnectorController,
   EventsController,
@@ -61,7 +62,12 @@ function headings() {
     SwapPreview: 'Preview swap',
     WalletSend: 'Send',
     WalletSendPreview: 'Review send',
-    WalletSendSelectToken: 'Select Token'
+    WalletSendSelectToken: 'Select Token',
+    ConnectWallets: 'Connect wallet',
+    ConnectSocials: 'All socials',
+    ConnectingSocial: AccountController.state.socialProvider
+      ? AccountController.state.socialProvider
+      : 'Connect Social'
   }
 }
 

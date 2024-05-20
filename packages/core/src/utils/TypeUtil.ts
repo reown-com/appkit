@@ -57,6 +57,7 @@ export type Connector = {
   provider?: unknown
   email?: boolean
   socials?: SocialProvider[]
+  showWallets?: boolean
 }
 
 export interface AuthConnector extends Connector {

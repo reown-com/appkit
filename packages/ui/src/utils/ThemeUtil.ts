@@ -197,35 +197,8 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-color-accent-090: var(--wui-color-accent-base-090);
         --wui-color-accent-080: var(--wui-color-accent-base-080);
 
-        --wui-accent-glass-090: var(--wui-accent-glass-base-090);
-        --wui-accent-glass-080: var(--wui-accent-glass-base-080);
-        --wui-accent-glass-020: var(--wui-accent-glass-base-020);
-        --wui-accent-glass-015: var(--wui-accent-glass-base-015);
-        --wui-accent-glass-010: var(--wui-accent-glass-base-010);
-        --wui-accent-glass-005: var(--wui-accent-glass-base-005);
-        --wui-accent-glass-002: var(--wui-accent-glass-base-002);
-
-        --wui-color-fg-100: var(--wui-color-fg-base-100);
-        --wui-color-fg-125: var(--wui-color-fg-base-125);
-        --wui-color-fg-150: var(--wui-color-fg-base-150);
-        --wui-color-fg-175: var(--wui-color-fg-base-175);
-        --wui-color-fg-200: var(--wui-color-fg-base-200);
-        --wui-color-fg-225: var(--wui-color-fg-base-225);
-        --wui-color-fg-250: var(--wui-color-fg-base-250);
-        --wui-color-fg-275: var(--wui-color-fg-base-275);
-        --wui-color-fg-300: var(--wui-color-fg-base-300);
-
-        --wui-color-bg-100: var(--wui-color-bg-base-100);
-        --wui-color-bg-125: var(--wui-color-bg-base-125);
-        --wui-color-bg-150: var(--wui-color-bg-base-150);
-        --wui-color-bg-175: var(--wui-color-bg-base-175);
-        --wui-color-bg-200: var(--wui-color-bg-base-200);
-        --wui-color-bg-225: var(--wui-color-bg-base-225);
-        --wui-color-bg-250: var(--wui-color-bg-base-250);
-        --wui-color-bg-275: var(--wui-color-bg-base-275);
-        --wui-color-bg-300: var(--wui-color-bg-base-300);
-
         --wui-color-success-100: var(--wui-color-success-base-100);
+
         --wui-color-error-100: var(--wui-color-error-base-100);
 
         --wui-icon-box-bg-error-100: var(--wui-icon-box-bg-error-base-100);
@@ -233,13 +206,13 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-icon-box-bg-success-100: var(--wui-icon-box-bg-success-base-100);
         --wui-icon-box-bg-inverse-100: var(--wui-icon-box-bg-inverse-base-100);
 
-        --wui-all-wallets-bg-100: var(--wui-all-wallets-bg-base-100);
+        --wui-all-wallets-bg-100: var(--wui-all-wallets-bg-100);
 
         --wui-avatar-border: var(--wui-avatar-border-base);
 
         --wui-thumbnail-border: var(--wui-thumbnail-border-base);
 
-        --wui-box-shadow-blue: rgba(71, 161, 255, 0.16);
+        --wui-box-shadow-blue: var(--wui-color-accent-glass-020);
       }
 
       @supports (background: color-mix(in srgb, white 50%, black)) {
@@ -250,19 +223,13 @@ function createRootStyles(themeVariables?: ThemeVariables) {
             var(--wui-color-modal-bg-base)
           );
 
-          --wui-box-shadow-blue: color-mix(in srgb, var(--wui-color-accent-100) 16%, transparent);
+          --wui-box-shadow-blue: color-mix(in srgb, var(--wui-color-accent-100) 20%, transparent);
 
-          --wui-color-accent-090: color-mix(
+          --wui-color-accent-100: color-mix(
             in srgb,
-            var(--wui-color-accent-base-100) 90%,
-            var(--w3m-default)
+            var(--wui-color-accent-base-100) 100%,
+            transparent
           );
-          --wui-color-accent-080: color-mix(
-            in srgb,
-            var(--wui-color-accent-base-100) 80%,
-            var(--w3m-default)
-          );
-
           --wui-color-accent-090: color-mix(
             in srgb,
             var(--wui-color-accent-base-100) 90%,
@@ -273,33 +240,32 @@ function createRootStyles(themeVariables?: ThemeVariables) {
             var(--wui-color-accent-base-100) 80%,
             transparent
           );
-
-          --wui-accent-glass-090: color-mix(
+          --wui-color-accent-glass-090: color-mix(
             in srgb,
             var(--wui-color-accent-base-100) 90%,
             transparent
           );
-          --wui-accent-glass-080: color-mix(
+          --wui-color-accent-glass-080: color-mix(
             in srgb,
             var(--wui-color-accent-base-100) 80%,
             transparent
           );
-          --wui-accent-glass-020: color-mix(
+          --wui-color-accent-glass-020: color-mix(
             in srgb,
             var(--wui-color-accent-base-100) 20%,
             transparent
           );
-          --wui-accent-glass-015: color-mix(
+          --wui-color-accent-glass-015: color-mix(
             in srgb,
             var(--wui-color-accent-base-100) 15%,
             transparent
           );
-          --wui-accent-glass-010: color-mix(
+          --wui-color-accent-glass-010: color-mix(
             in srgb,
             var(--wui-color-accent-base-100) 10%,
             transparent
           );
-          --wui-accent-glass-005: color-mix(
+          --wui-color-accent-glass-005: color-mix(
             in srgb,
             var(--wui-color-accent-base-100) 5%,
             transparent
@@ -313,93 +279,93 @@ function createRootStyles(themeVariables?: ThemeVariables) {
           --wui-color-fg-100: color-mix(
             in srgb,
             var(--w3m-color-mix) var(--w3m-color-mix-strength),
-            var(--wui-color-fg-base-100)
+            var(--wui-color-fg-100)
           );
           --wui-color-fg-125: color-mix(
             in srgb,
             var(--w3m-color-mix) var(--w3m-color-mix-strength),
-            var(--wui-color-fg-base-125)
+            var(--wui-color-fg-125)
           );
           --wui-color-fg-150: color-mix(
             in srgb,
             var(--w3m-color-mix) var(--w3m-color-mix-strength),
-            var(--wui-color-fg-base-150)
+            var(--wui-color-fg-150)
           );
           --wui-color-fg-175: color-mix(
             in srgb,
             var(--w3m-color-mix) var(--w3m-color-mix-strength),
-            var(--wui-color-fg-base-175)
+            var(--wui-color-fg-175)
           );
           --wui-color-fg-200: color-mix(
             in srgb,
             var(--w3m-color-mix) var(--w3m-color-mix-strength),
-            var(--wui-color-fg-base-200)
+            var(--wui-color-fg-200)
           );
           --wui-color-fg-225: color-mix(
             in srgb,
             var(--w3m-color-mix) var(--w3m-color-mix-strength),
-            var(--wui-color-fg-base-225)
+            var(--wui-color-fg-225)
           );
           --wui-color-fg-250: color-mix(
             in srgb,
             var(--w3m-color-mix) var(--w3m-color-mix-strength),
-            var(--wui-color-fg-base-250)
+            var(--wui-color-fg-250)
           );
           --wui-color-fg-275: color-mix(
             in srgb,
             var(--w3m-color-mix) var(--w3m-color-mix-strength),
-            var(--wui-color-fg-base-275)
+            var(--wui-color-fg-275)
           );
           --wui-color-fg-300: color-mix(
             in srgb,
             var(--w3m-color-mix) var(--w3m-color-mix-strength),
-            var(--wui-color-fg-base-300)
+            var(--wui-color-fg-300)
           );
 
           --wui-color-bg-100: color-mix(
             in srgb,
             var(--w3m-color-mix) var(--w3m-color-mix-strength),
-            var(--wui-color-bg-base-100)
+            var(--wui-color-bg-100)
           );
           --wui-color-bg-125: color-mix(
             in srgb,
             var(--w3m-color-mix) var(--w3m-color-mix-strength),
-            var(--wui-color-bg-base-125)
+            var(--wui-color-bg-125)
           );
           --wui-color-bg-150: color-mix(
             in srgb,
             var(--w3m-color-mix) var(--w3m-color-mix-strength),
-            var(--wui-color-bg-base-150)
+            var(--wui-color-bg-150)
           );
           --wui-color-bg-175: color-mix(
             in srgb,
             var(--w3m-color-mix) var(--w3m-color-mix-strength),
-            var(--wui-color-bg-base-175)
+            var(--wui-color-bg-175)
           );
           --wui-color-bg-200: color-mix(
             in srgb,
             var(--w3m-color-mix) var(--w3m-color-mix-strength),
-            var(--wui-color-bg-base-200)
+            var(--wui-color-bg-200)
           );
           --wui-color-bg-225: color-mix(
             in srgb,
             var(--w3m-color-mix) var(--w3m-color-mix-strength),
-            var(--wui-color-bg-base-225)
+            var(--wui-color-bg-225)
           );
           --wui-color-bg-250: color-mix(
             in srgb,
             var(--w3m-color-mix) var(--w3m-color-mix-strength),
-            var(--wui-color-bg-base-250)
+            var(--wui-color-bg-250)
           );
           --wui-color-bg-275: color-mix(
             in srgb,
             var(--w3m-color-mix) var(--w3m-color-mix-strength),
-            var(--wui-color-bg-base-275)
+            var(--wui-color-bg-275)
           );
           --wui-color-bg-300: color-mix(
             in srgb,
             var(--w3m-color-mix) var(--w3m-color-mix-strength),
-            var(--wui-color-bg-base-300)
+            var(--wui-color-bg-300)
           );
 
           --wui-color-success-100: color-mix(
@@ -437,7 +403,7 @@ function createRootStyles(themeVariables?: ThemeVariables) {
           --wui-all-wallets-bg-100: color-mix(
             in srgb,
             var(--w3m-color-mix) var(--w3m-color-mix-strength),
-            var(--wui-all-wallets-bg-base-100)
+            var(--wui-all-wallets-bg-100)
           );
 
           --wui-avatar-border: color-mix(
@@ -465,81 +431,77 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         )};
         --wui-color-accent-base-100: var(--w3m-accent);
 
-        --wui-accent-glass-base-090: rgba(71, 161, 255, 0.9);
-        --wui-accent-glass-base-080: rgba(71, 161, 255, 0.8);
-        --wui-accent-glass-base-020: rgba(71, 161, 255, 0.2);
-        --wui-accent-glass-base-015: rgba(71, 161, 255, 0.15);
-        --wui-accent-glass-base-010: rgba(71, 161, 255, 0.1);
-        --wui-accent-glass-base-005: rgba(71, 161, 255, 0.05);
-        --wui-accent-glass-base-002: rgba(71, 161, 255, 0.02);
+        --wui-color-blueberry-100: hsla(230, 100%, 67%, 1);
+        --wui-color-blueberry-090: hsla(231, 76%, 61%, 1);
+        --wui-color-blueberry-080: hsla(230, 59%, 55%, 1);
 
-        --wui-color-fg-base-100: #e4e7e7;
-        --wui-color-fg-base-125: #d0d5d5;
-        --wui-color-fg-base-150: #a8b1b1;
-        --wui-color-fg-base-175: #a8b0b0;
-        --wui-color-fg-base-200: #949e9e;
-        --wui-color-fg-base-225: #868f8f;
-        --wui-color-fg-base-250: #788080;
-        --wui-color-fg-base-275: #788181;
-        --wui-color-fg-base-300: #6e7777;
+        --wui-color-fg-100: #e4e7e7;
+        --wui-color-fg-125: #d0d5d5;
+        --wui-color-fg-150: #a8b1b1;
+        --wui-color-fg-175: #a8b0b0;
+        --wui-color-fg-200: #949e9e;
+        --wui-color-fg-225: #868f8f;
+        --wui-color-fg-250: #788080;
+        --wui-color-fg-275: #788181;
+        --wui-color-fg-300: #6e7777;
 
-        --wui-color-bg-base-100: #141414;
-        --wui-color-bg-base-125: #191a1a;
-        --wui-color-bg-base-150: #1e1f1f;
-        --wui-color-bg-base-175: #222525;
-        --wui-color-bg-base-200: #272a2a;
-        --wui-color-bg-base-225: #2c3030;
-        --wui-color-bg-base-250: #313535;
-        --wui-color-bg-base-275: #363b3b;
-        --wui-color-bg-base-300: #3b4040;
+        --wui-color-bg-100: #141414;
+        --wui-color-bg-125: #191a1a;
+        --wui-color-bg-150: #1e1f1f;
+        --wui-color-bg-175: #222525;
+        --wui-color-bg-200: #272a2a;
+        --wui-color-bg-225: #2c3030;
+        --wui-color-bg-250: #313535;
+        --wui-color-bg-275: #363b3b;
+        --wui-color-bg-300: #3b4040;
 
         --wui-color-success-base-100: #26d962;
         --wui-color-error-base-100: #f25a67;
 
-        --wui-success-glass-001: rgba(38, 217, 98, 0.01);
-        --wui-success-glass-002: rgba(38, 217, 98, 0.02);
-        --wui-success-glass-005: rgba(38, 217, 98, 0.05);
-        --wui-success-glass-010: rgba(38, 217, 98, 0.1);
-        --wui-success-glass-015: rgba(38, 217, 98, 0.15);
-        --wui-success-glass-020: rgba(38, 217, 98, 0.2);
-        --wui-success-glass-025: rgba(38, 217, 98, 0.25);
-        --wui-success-glass-030: rgba(38, 217, 98, 0.3);
-        --wui-success-glass-060: rgba(38, 217, 98, 0.6);
-        --wui-success-glass-080: rgba(38, 217, 98, 0.8);
+        --wui-color-success-glass-001: rgba(38, 217, 98, 0.01);
+        --wui-color-success-glass-002: rgba(38, 217, 98, 0.02);
+        --wui-color-success-glass-005: rgba(38, 217, 98, 0.05);
+        --wui-color-success-glass-010: rgba(38, 217, 98, 0.1);
+        --wui-color-success-glass-015: rgba(38, 217, 98, 0.15);
+        --wui-color-success-glass-020: rgba(38, 217, 98, 0.2);
+        --wui-color-success-glass-025: rgba(38, 217, 98, 0.25);
+        --wui-color-success-glass-030: rgba(38, 217, 98, 0.3);
+        --wui-color-success-glass-060: rgba(38, 217, 98, 0.6);
+        --wui-color-success-glass-080: rgba(38, 217, 98, 0.8);
 
-        --wui-error-glass-001: rgba(242, 90, 103, 0.01);
-        --wui-error-glass-002: rgba(242, 90, 103, 0.02);
-        --wui-error-glass-005: rgba(242, 90, 103, 0.05);
-        --wui-error-glass-010: rgba(242, 90, 103, 0.1);
-        --wui-error-glass-015: rgba(242, 90, 103, 0.15);
-        --wui-error-glass-020: rgba(242, 90, 103, 0.2);
-        --wui-error-glass-025: rgba(242, 90, 103, 0.25);
-        --wui-error-glass-030: rgba(242, 90, 103, 0.3);
-        --wui-error-glass-060: rgba(242, 90, 103, 0.6);
-        --wui-error-glass-080: rgba(242, 90, 103, 0.8);
+        --wui-color-error-glass-001: rgba(242, 90, 103, 0.01);
+        --wui-color-error-glass-002: rgba(242, 90, 103, 0.02);
+        --wui-color-error-glass-005: rgba(242, 90, 103, 0.05);
+        --wui-color-error-glass-010: rgba(242, 90, 103, 0.1);
+        --wui-color-error-glass-015: rgba(242, 90, 103, 0.15);
+        --wui-color-error-glass-020: rgba(242, 90, 103, 0.2);
+        --wui-color-error-glass-025: rgba(242, 90, 103, 0.25);
+        --wui-color-error-glass-030: rgba(242, 90, 103, 0.3);
+        --wui-color-error-glass-060: rgba(242, 90, 103, 0.6);
+        --wui-color-error-glass-080: rgba(242, 90, 103, 0.8);
+
+        --wui-color-gray-glass-001: rgba(255, 255, 255, 0.01);
+        --wui-color-gray-glass-002: rgba(255, 255, 255, 0.02);
+        --wui-color-gray-glass-005: rgba(255, 255, 255, 0.05);
+        --wui-color-gray-glass-010: rgba(255, 255, 255, 0.1);
+        --wui-color-gray-glass-015: rgba(255, 255, 255, 0.15);
+        --wui-color-gray-glass-020: rgba(255, 255, 255, 0.2);
+        --wui-color-gray-glass-025: rgba(255, 255, 255, 0.25);
+        --wui-color-gray-glass-030: rgba(255, 255, 255, 0.3);
+        --wui-color-gray-glass-060: rgba(255, 255, 255, 0.6);
+        --wui-color-gray-glass-080: rgba(255, 255, 255, 0.8);
+        --wui-color-gray-glass-090: rgba(255, 255, 255, 0.9);
 
         --wui-icon-box-bg-error-base-100: #3c2426;
         --wui-icon-box-bg-blue-base-100: #20303f;
         --wui-icon-box-bg-success-base-100: #1f3a28;
         --wui-icon-box-bg-inverse-base-100: #243240;
 
-        --wui-all-wallets-bg-base-100: #222b35;
+        --wui-all-wallets-bg-100: #222b35;
 
         --wui-avatar-border-base: #252525;
 
         --wui-thumbnail-border-base: #252525;
-
-        --wui-gray-glass-001: rgba(255, 255, 255, 0.01);
-        --wui-gray-glass-002: rgba(255, 255, 255, 0.02);
-        --wui-gray-glass-005: rgba(255, 255, 255, 0.05);
-        --wui-gray-glass-010: rgba(255, 255, 255, 0.1);
-        --wui-gray-glass-015: rgba(255, 255, 255, 0.15);
-        --wui-gray-glass-020: rgba(255, 255, 255, 0.2);
-        --wui-gray-glass-025: rgba(255, 255, 255, 0.25);
-        --wui-gray-glass-030: rgba(255, 255, 255, 0.3);
-        --wui-gray-glass-060: rgba(255, 255, 255, 0.6);
-        --wui-gray-glass-080: rgba(255, 255, 255, 0.8);
-        --wui-gray-glass-090: rgba(255, 255, 255, 0.9);
       }
     `,
     dark: css`
@@ -553,81 +515,77 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         )};
         --wui-color-accent-base-100: var(--w3m-accent);
 
-        --wui-accent-glass-base-090: rgba(51, 150, 255, 0.9);
-        --wui-accent-glass-base-080: rgba(51, 150, 255, 0.8);
-        --wui-accent-glass-base-020: rgba(51, 150, 255, 0.2);
-        --wui-accent-glass-base-015: rgba(51, 150, 255, 0.15);
-        --wui-accent-glass-base-010: rgba(51, 150, 255, 0.1);
-        --wui-accent-glass-base-005: rgba(51, 150, 255, 0.05);
-        --wui-accent-glass-base-002: rgba(51, 150, 255, 0.02);
+        --wui-color-blueberry-100: hsla(231, 100%, 70%, 1);
+        --wui-color-blueberry-090: hsla(231, 97%, 72%, 1);
+        --wui-color-blueberry-080: hsla(231, 92%, 74%, 1);
 
-        --wui-color-fg-base-100: #141414;
-        --wui-color-fg-base-125: #2d3131;
-        --wui-color-fg-base-150: #474d4d;
-        --wui-color-fg-base-175: #636d6d;
-        --wui-color-fg-base-200: #798686;
-        --wui-color-fg-base-225: #828f8f;
-        --wui-color-fg-base-250: #8b9797;
-        --wui-color-fg-base-275: #95a0a0;
-        --wui-color-fg-base-300: #9ea9a9;
+        --wui-color-fg-100: #141414;
+        --wui-color-fg-125: #2d3131;
+        --wui-color-fg-150: #474d4d;
+        --wui-color-fg-175: #636d6d;
+        --wui-color-fg-200: #798686;
+        --wui-color-fg-225: #828f8f;
+        --wui-color-fg-250: #8b9797;
+        --wui-color-fg-275: #95a0a0;
+        --wui-color-fg-300: #9ea9a9;
 
-        --wui-color-bg-base-100: #ffffff;
-        --wui-color-bg-base-125: #f5fafa;
-        --wui-color-bg-base-150: #f3f8f8;
-        --wui-color-bg-base-175: #eef4f4;
-        --wui-color-bg-base-200: #eaf1f1;
-        --wui-color-bg-base-225: #e5eded;
-        --wui-color-bg-base-250: #e1e9e9;
-        --wui-color-bg-base-275: #dce7e7;
-        --wui-color-bg-base-300: #d8e3e3;
+        --wui-color-bg-100: #ffffff;
+        --wui-color-bg-125: #f5fafa;
+        --wui-color-bg-150: #f3f8f8;
+        --wui-color-bg-175: #eef4f4;
+        --wui-color-bg-200: #eaf1f1;
+        --wui-color-bg-225: #e5eded;
+        --wui-color-bg-250: #e1e9e9;
+        --wui-color-bg-275: #dce7e7;
+        --wui-color-bg-300: #d8e3e3;
 
         --wui-color-success-base-100: #26b562;
         --wui-color-error-base-100: #f05142;
 
-        --wui-success-glass-001: rgba(38, 181, 98, 0.01);
-        --wui-success-glass-002: rgba(38, 181, 98, 0.02);
-        --wui-success-glass-005: rgba(38, 181, 98, 0.05);
-        --wui-success-glass-010: rgba(38, 181, 98, 0.1);
-        --wui-success-glass-015: rgba(38, 181, 98, 0.15);
-        --wui-success-glass-020: rgba(38, 181, 98, 0.2);
-        --wui-success-glass-025: rgba(38, 181, 98, 0.25);
-        --wui-success-glass-030: rgba(38, 181, 98, 0.3);
-        --wui-success-glass-060: rgba(38, 181, 98, 0.6);
-        --wui-success-glass-080: rgba(38, 181, 98, 0.8);
+        --wui-color-success-glass-001: rgba(38, 181, 98, 0.01);
+        --wui-color-success-glass-002: rgba(38, 181, 98, 0.02);
+        --wui-color-success-glass-005: rgba(38, 181, 98, 0.05);
+        --wui-color-success-glass-010: rgba(38, 181, 98, 0.1);
+        --wui-color-success-glass-015: rgba(38, 181, 98, 0.15);
+        --wui-color-success-glass-020: rgba(38, 181, 98, 0.2);
+        --wui-color-success-glass-025: rgba(38, 181, 98, 0.25);
+        --wui-color-success-glass-030: rgba(38, 181, 98, 0.3);
+        --wui-color-success-glass-060: rgba(38, 181, 98, 0.6);
+        --wui-color-success-glass-080: rgba(38, 181, 98, 0.8);
 
-        --wui-error-glass-001: rgba(240, 81, 66, 0.01);
-        --wui-error-glass-002: rgba(240, 81, 66, 0.02);
-        --wui-error-glass-005: rgba(240, 81, 66, 0.05);
-        --wui-error-glass-010: rgba(240, 81, 66, 0.1);
-        --wui-error-glass-015: rgba(240, 81, 66, 0.15);
-        --wui-error-glass-020: rgba(240, 81, 66, 0.2);
-        --wui-error-glass-025: rgba(240, 81, 66, 0.25);
-        --wui-error-glass-030: rgba(240, 81, 66, 0.3);
-        --wui-error-glass-060: rgba(240, 81, 66, 0.6);
-        --wui-error-glass-080: rgba(240, 81, 66, 0.8);
+        --wui-color-error-glass-001: rgba(240, 81, 66, 0.01);
+        --wui-color-error-glass-002: rgba(240, 81, 66, 0.02);
+        --wui-color-error-glass-005: rgba(240, 81, 66, 0.05);
+        --wui-color-error-glass-010: rgba(240, 81, 66, 0.1);
+        --wui-color-error-glass-015: rgba(240, 81, 66, 0.15);
+        --wui-color-error-glass-020: rgba(240, 81, 66, 0.2);
+        --wui-color-error-glass-025: rgba(240, 81, 66, 0.25);
+        --wui-color-error-glass-030: rgba(240, 81, 66, 0.3);
+        --wui-color-error-glass-060: rgba(240, 81, 66, 0.6);
+        --wui-color-error-glass-080: rgba(240, 81, 66, 0.8);
 
         --wui-icon-box-bg-error-base-100: #f4dfdd;
         --wui-icon-box-bg-blue-base-100: #d9ecfb;
         --wui-icon-box-bg-success-base-100: #daf0e4;
         --wui-icon-box-bg-inverse-base-100: #dcecfc;
 
-        --wui-all-wallets-bg-base-100: #e8f1fa;
+        --wui-all-wallets-bg-100: #e8f1fa;
 
         --wui-avatar-border-base: #f3f4f4;
 
         --wui-thumbnail-border-base: #eaefef;
 
-        --wui-gray-glass-001: rgba(0, 0, 0, 0.01);
-        --wui-gray-glass-002: rgba(0, 0, 0, 0.02);
-        --wui-gray-glass-005: rgba(0, 0, 0, 0.05);
-        --wui-gray-glass-010: rgba(0, 0, 0, 0.1);
-        --wui-gray-glass-015: rgba(0, 0, 0, 0.15);
-        --wui-gray-glass-020: rgba(0, 0, 0, 0.2);
-        --wui-gray-glass-025: rgba(0, 0, 0, 0.25);
-        --wui-gray-glass-030: rgba(0, 0, 0, 0.3);
-        --wui-gray-glass-060: rgba(0, 0, 0, 0.6);
-        --wui-gray-glass-080: rgba(0, 0, 0, 0.8);
-        --wui-gray-glass-090: rgba(0, 0, 0, 0.9);
+        --wui-color-gray-glass-001: rgba(0, 0, 0, 0.01);
+        --wui-color-gray-glass-002: rgba(0, 0, 0, 0.02);
+        --wui-color-gray-glass-005: rgba(0, 0, 0, 0.05);
+        --wui-color-gray-glass-010: rgba(0, 0, 0, 0.1);
+        --wui-color-gray-glass-015: rgba(0, 0, 0, 0.15);
+        --wui-color-gray-glass-020: rgba(0, 0, 0, 0.2);
+        --wui-color-gray-glass-025: rgba(0, 0, 0, 0.25);
+        --wui-color-gray-glass-030: rgba(0, 0, 0, 0.3);
+        --wui-color-gray-glass-060: rgba(0, 0, 0, 0.6);
+        --wui-color-gray-glass-080: rgba(0, 0, 0, 0.8);
+        --wui-color-gray-glass-090: rgba(0, 0, 0, 0.9);
       }
     `
   }
@@ -666,45 +624,10 @@ export const elementStyles = css`
       box-shadow var(--wui-ease-inout-power-1) var(--wui-duration-md);
     will-change: background-color, color;
     outline: none;
-    border: 1px solid transparent;
+    border: none;
     column-gap: var(--wui-spacing-3xs);
     background-color: transparent;
     text-decoration: none;
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    button:hover:enabled {
-      background-color: var(--wui-gray-glass-005);
-    }
-
-    button:active:enabled {
-      background-color: var(--wui-gray-glass-010);
-    }
-
-    button[data-variant='fill']:hover:enabled {
-      background-color: var(--wui-color-accent-090);
-    }
-
-    button[data-variant='accentBg']:hover:enabled {
-      background: var(--wui-accent-glass-015);
-    }
-
-    button[data-variant='accentBg']:active:enabled {
-      background: var(--wui-accent-glass-020);
-    }
-  }
-
-  button:disabled {
-    cursor: not-allowed;
-    background-color: var(--wui-gray-glass-005);
-  }
-
-  button[data-variant='shade']:disabled,
-  button[data-variant='accent']:disabled,
-  button[data-variant='accentBg']:disabled {
-    background-color: var(--wui-gray-glass-010);
-    color: var(--wui-gray-glass-015);
-    filter: grayscale(1);
   }
 
   button:disabled > wui-wallet-image,
@@ -715,66 +638,6 @@ export const elementStyles = css`
   button:disabled > wui-transaction-visual,
   button:disabled > wui-logo {
     filter: grayscale(1);
-  }
-
-  button:focus-visible,
-  a:focus-visible {
-    border: 1px solid var(--wui-color-accent-100);
-    background-color: var(--wui-gray-glass-005);
-    -webkit-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
-    -moz-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
-    box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
-  }
-
-  button[data-variant='fill']:focus-visible {
-    background-color: var(--wui-color-accent-090);
-  }
-
-  button[data-variant='fill'] {
-    color: var(--wui-color-inverse-100);
-    background-color: var(--wui-color-accent-100);
-  }
-
-  button[data-variant='fill']:disabled {
-    color: var(--wui-gray-glass-015);
-    background-color: var(--wui-gray-glass-015);
-  }
-
-  button[data-variant='fill']:disabled > wui-icon {
-    color: var(--wui-gray-glass-015);
-  }
-
-  button[data-variant='shade'] {
-    color: var(--wui-color-fg-200);
-  }
-
-  button[data-variant='accent'],
-  button[data-variant='accentBg'] {
-    color: var(--wui-color-accent-100);
-  }
-
-  button[data-variant='accentBg'] {
-    background: var(--wui-accent-glass-010);
-    border: 1px solid var(--wui-accent-glass-010);
-  }
-
-  button[data-variant='fullWidth'] {
-    width: 100%;
-    border-radius: var(--wui-border-radius-xs);
-    height: 56px;
-    border: none;
-    background-color: var(--wui-gray-glass-002);
-    color: var(--wui-color-fg-200);
-    gap: var(--wui-spacing-xs);
-  }
-
-  button:active:enabled {
-    background-color: var(--wui-gray-glass-010);
-  }
-
-  button[data-variant='fill']:active:enabled {
-    background-color: var(--wui-color-accent-080);
-    border: 1px solid var(--wui-gray-glass-010);
   }
 
   input {

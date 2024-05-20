@@ -11,9 +11,9 @@ export default css`
     align-items: center;
     height: 48px;
     width: 100%;
-    background-color: var(--wui-accent-glass-010);
+    background-color: var(--wui-color-accent-glass-010);
     border-radius: var(--wui-border-radius-xs);
-    border: 1px solid var(--wui-accent-glass-010);
+    border: 1px solid var(--wui-color-accent-glass-010);
     transition: background-color var(--wui-ease-out-power-1) var(--wui-duration-md);
     will-change: background-color;
   }
@@ -30,11 +30,11 @@ export default css`
 
   @media (hover: hover) and (pointer: fine) {
     button:hover:enabled {
-      background-color: var(--wui-accent-glass-015);
+      background-color: var(--wui-color-accent-glass-015);
     }
 
     button:active:enabled {
-      background-color: var(--wui-accent-glass-020);
+      background-color: var(--wui-color-accent-glass-020);
     }
   }
 `

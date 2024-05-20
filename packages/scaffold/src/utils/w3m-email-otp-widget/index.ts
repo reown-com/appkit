@@ -95,7 +95,7 @@ export class W3mEmailOtpWidget extends LitElement {
                 : null}
             </wui-flex>`}
 
-        <wui-flex alignItems="center">
+        <wui-flex alignItems="center" gap="xs">
           <wui-text variant="small-400" color="fg-200">${footerLabels.title}</wui-text>
           <wui-link @click=${this.onResendCode.bind(this)} .disabled=${isResendDisabled}>
             ${footerLabels.action}

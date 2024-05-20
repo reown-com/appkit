@@ -11,8 +11,8 @@ export default css`
   input {
     width: 100%;
     border-radius: var(--wui-border-radius-xs);
-    border: 1px solid var(--wui-gray-glass-005);
-    background: var(--wui-gray-glass-005);
+    box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-002);
+    background: var(--wui-color-gray-glass-002);
     font-size: var(--wui-font-size-paragraph);
     letter-spacing: var(--wui-letter-spacing-paragraph);
     color: var(--wui-color-fg-100);
@@ -26,7 +26,7 @@ export default css`
 
   input:disabled {
     cursor: not-allowed;
-    border: 1px solid var(--wui-gray-glass-010);
+    border: 1px solid var(--wui-color-gray-glass-010);
   }
 
   input:disabled::placeholder,
@@ -39,15 +39,20 @@ export default css`
   }
 
   input:focus:enabled {
-    background-color: var(--wui-gray-glass-010);
-    border: 1px solid var(--wui-color-accent-100);
-    -webkit-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
-    -moz-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
-    box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
+    background-color: var(--wui-color-gray-glass-005);
+    -webkit-box-shadow:
+      inset 0 0 0 1px var(--wui-color-accent-100),
+      0px 0px 0px 4px var(--wui-box-shadow-blue);
+    -moz-box-shadow:
+      inset 0 0 0 1px var(--wui-color-accent-100),
+      0px 0px 0px 4px var(--wui-box-shadow-blue);
+    box-shadow:
+      inset 0 0 0 1px var(--wui-color-accent-100),
+      0px 0px 0px 4px var(--wui-box-shadow-blue);
   }
 
   input:hover:enabled {
-    background-color: var(--wui-gray-glass-010);
+    background-color: var(--wui-color-gray-glass-005);
   }
 
   wui-icon {

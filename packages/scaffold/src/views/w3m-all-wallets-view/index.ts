@@ -13,7 +13,7 @@ export class W3mAllWalletsView extends LitElement {
     const isSearch = this.search.length >= 2
 
     return html`
-      <wui-flex padding="s" gap="s">
+      <wui-flex .padding=${['0', 's', 's', 's']} gap="s">
         <wui-search-bar @inputChange=${this.onInputChange.bind(this)}></wui-search-bar>
         ${this.qrButtonTemplate()}
       </wui-flex>

@@ -578,6 +578,7 @@ export class Web3Modal extends Web3ModalScaffold {
     ) as unknown as Web3ModalClientOptions<CoreConfig>['wagmiConfig']['connectors'][0] & {
       email: boolean
       socials: SocialProvider[]
+      showWallets?: boolean
     }
     if (authConnector) {
       const provider = await authConnector.getProvider()
@@ -587,7 +588,8 @@ export class Web3Modal extends Web3ModalScaffold {
         name: 'Auth',
         provider,
         email: authConnector.email,
-        socials: authConnector.socials
+        socials: authConnector.socials,
+        showWallets: authConnector?.showWallets === undefined ? true : authConnector.showWallets
       })
     }
   }

@@ -9,11 +9,8 @@ export interface ConfigOptions {
   enableEmail?: boolean
   auth?: {
     socials?: SocialProvider[]
+    showWallets?: boolean
   }
-  /**
-   * Use enableEIP6963 to show all injected wallets
-   * @deprecated
-   */
   enableInjected?: boolean
   rpcUrl?: string
   defaultChainId?: number
@@ -24,6 +21,7 @@ export function defaultConfig(options: ConfigOptions) {
   const {
     enableEIP6963 = true,
     enableCoinbase = true,
+    enableInjected = true,
     enableEmail = false,
     auth,
     metadata,
@@ -31,10 +29,31 @@ export function defaultConfig(options: ConfigOptions) {
     defaultChainId
   } = options
 
+  let injectedProvider: Provider | undefined = undefined
+
   // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   let coinbaseProvider: Provider | undefined = undefined
 
   const providers: ProviderType = { metadata }
+
+  function getInjectedProvider() {
+    if (injectedProvider) {
+      return injectedProvider
+    }
+
+    if (typeof window === 'undefined') {
+      return undefined
+    }
+
+    if (!window.ethereum) {
+      return undefined
+    }
+
+    //  @ts-expect-error window.ethereum satisfies Provider
+    injectedProvider = window.ethereum
+
+    return injectedProvider
+  }
 
   function getCoinbaseProvider() {
     if (coinbaseProvider) {
@@ -55,6 +74,10 @@ export function defaultConfig(options: ConfigOptions) {
     coinbaseProvider = coinbaseWallet.makeWeb3Provider(rpcUrl, defaultChainId)
 
     return coinbaseProvider
+  }
+
+  if (enableInjected) {
+    providers.injected = getInjectedProvider()
   }
 
   if (enableCoinbase && rpcUrl && defaultChainId) {
