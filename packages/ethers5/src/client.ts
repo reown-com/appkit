@@ -8,12 +8,13 @@ import type {
   LibraryOptions,
   NetworkControllerClient,
   PublicStateControllerState,
+  SendTransactionArgs,
   Token
 } from '@web3modal/scaffold'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
-import EthereumProvider from '@walletconnect/ethereum-provider'
+import EthereumProvider, { OPTIONAL_METHODS } from '@walletconnect/ethereum-provider'
 import type {
   Address,
   Metadata,
@@ -165,7 +166,51 @@ export class Web3Modal extends Web3ModalScaffold {
           onUri(uri)
         })
 
-        await WalletConnectProvider.connect()
+        if (siweConfig?.options?.enabled) {
+          const { SIWEController, getDidChainId, getDidAddress } = await import('@web3modal/siwe')
+          const result = await WalletConnectProvider.authenticate({
+            nonce: await siweConfig.getNonce(),
+            methods: OPTIONAL_METHODS,
+            ...(await siweConfig.getMessageParams())
+          })
+          // Auths is an array of signed CACAO objects https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-74.md
+          const signedCacao = result?.auths?.[0]
+          if (signedCacao) {
+            const { p, s } = signedCacao
+            const chainId = getDidChainId(p.iss)
+            const address = getDidAddress(p.iss)
+            if (address && chainId) {
+              SIWEController.setSession({
+                address,
+                chainId: parseInt(chainId, 10)
+              })
+            }
+
+            try {
+              // Kicks off verifyMessage and populates external states
+              const message = WalletConnectProvider.signer.client.formatAuthMessage({
+                request: p,
+                iss: p.iss
+              })
+
+              await SIWEController.verifyMessage({
+                message,
+                signature: s.s,
+                cacao: signedCacao
+              })
+            } catch (error) {
+              // eslint-disable-next-line no-console
+              console.error('Error verifying message', error)
+              // eslint-disable-next-line no-console
+              await WalletConnectProvider.disconnect().catch(console.error)
+              // eslint-disable-next-line no-console
+              await SIWEController.signOut().catch(console.error)
+              throw error
+            }
+          }
+        } else {
+          await WalletConnectProvider.connect()
+        }
         await this.setWalletConnectProvider()
       },
 
@@ -215,7 +260,7 @@ export class Web3Modal extends Web3ModalScaffold {
         }
       },
 
-      checkInstalled(ids) {
+      checkInstalled: (ids?: string[]) => {
         if (!ids) {
           return Boolean(window.ethereum)
         }
@@ -234,6 +279,10 @@ export class Web3Modal extends Web3ModalScaffold {
         const providerType = EthersStoreUtil.state.providerType
         localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
         EthersStoreUtil.reset()
+        if (siweConfig?.options?.signOutOnDisconnect) {
+          const { SIWEController } = await import('@web3modal/siwe')
+          await SIWEController.signOut()
+        }
         if (providerType === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
           const WalletConnectProvider = provider
           await (WalletConnectProvider as unknown as EthereumProvider).disconnect()
@@ -247,13 +296,50 @@ export class Web3Modal extends Web3ModalScaffold {
         if (!provider) {
           throw new Error('connectionControllerClient:signMessage - provider is undefined')
         }
-
+        const hexMessage = utils.isHexString(message)
+          ? message
+          : utils.hexlify(utils.toUtf8Bytes(message))
         const signature = await provider.request({
           method: 'personal_sign',
-          params: [message, this.getAddress()]
+          params: [hexMessage, this.getAddress()]
         })
 
         return signature as `0x${string}`
+      },
+
+      parseUnits: (value: string, decimals: number) =>
+        ethers.utils.parseUnits(value, decimals).toBigInt(),
+
+      formatUnits: (value: bigint, decimals: number) => ethers.utils.formatUnits(value, decimals),
+
+      sendTransaction: async (data: SendTransactionArgs) => {
+        const provider = EthersStoreUtil.state.provider
+        const address = EthersStoreUtil.state.address
+
+        if (!provider) {
+          throw new Error('connectionControllerClient:sendTransaction - provider is undefined')
+        }
+
+        if (!address) {
+          throw new Error('connectionControllerClient:sendTransaction - address is undefined')
+        }
+
+        const txParams = {
+          to: data.to,
+          value: data.value,
+          gasLimit: data.gas,
+          gasPrice: data.gasPrice,
+          data: data.data,
+          type: 0
+        }
+
+        const browserProvider = new ethers.providers.Web3Provider(provider)
+        const signer = browserProvider.getSigner()
+
+        const txResponse = await signer.sendTransaction(txParams)
+        const txReceipt = await txResponse.wait()
+
+        return (txReceipt?.blockHash as `0x${string}`) || null
       }
     }
 
@@ -287,6 +373,10 @@ export class Web3Modal extends Web3ModalScaffold {
     this.syncRequestedNetworks(chains, chainImages)
     this.syncConnectors(ethersConfig)
 
+    if (ethersConfig.injected) {
+      this.checkActiveInjectedProvider(ethersConfig)
+    }
+
     if (ethersConfig.EIP6963) {
       if (typeof window !== 'undefined') {
         this.listenConnectors(ethersConfig.EIP6963)
@@ -294,9 +384,6 @@ export class Web3Modal extends Web3ModalScaffold {
       }
     }
 
-    if (ethersConfig.injected) {
-      this.checkActiveInjectedProvider(ethersConfig)
-    }
     if (ethersConfig.coinbase) {
       this.checkActiveCoinbaseProvider(ethersConfig)
     }
@@ -502,6 +589,22 @@ export class Web3Modal extends Web3ModalScaffold {
     }
   }
 
+  private async setEIP6963Provider(provider: Provider, name: string) {
+    window?.localStorage.setItem(EthersConstantsUtil.WALLET_ID, name)
+
+    if (provider) {
+      const { address, chainId } = await EthersHelpersUtil.getUserInfo(provider)
+      if (address && chainId) {
+        EthersStoreUtil.setChainId(chainId)
+        EthersStoreUtil.setProviderType('eip6963')
+        EthersStoreUtil.setProvider(provider)
+        EthersStoreUtil.setIsConnected(true)
+        this.setAddress(address)
+        this.watchEIP6963(provider)
+      }
+    }
+  }
+
   private async setInjectedProvider(config: ProviderType) {
     window?.localStorage.setItem(EthersConstantsUtil.WALLET_ID, ConstantsUtil.INJECTED_CONNECTOR_ID)
     const InjectedProvider = config.injected
@@ -515,22 +618,6 @@ export class Web3Modal extends Web3ModalScaffold {
         EthersStoreUtil.setIsConnected(true)
         this.setAddress(address)
         this.watchCoinbase(config)
-      }
-    }
-  }
-
-  private async setEIP6963Provider(provider: Provider, name: string) {
-    window?.localStorage.setItem(EthersConstantsUtil.WALLET_ID, name)
-
-    if (provider) {
-      const { address, chainId } = await EthersHelpersUtil.getUserInfo(provider)
-      if (address && chainId) {
-        EthersStoreUtil.setChainId(chainId)
-        EthersStoreUtil.setProviderType('eip6963')
-        EthersStoreUtil.setProvider(provider)
-        EthersStoreUtil.setIsConnected(true)
-        this.setAddress(address)
-        this.watchEIP6963(provider)
       }
     }
   }
@@ -868,29 +955,6 @@ export class Web3Modal extends Web3ModalScaffold {
                 WalletConnectProvider as unknown as Provider,
                 chain
               )
-            } else {
-              throw new Error('Chain is not supported')
-            }
-          }
-        }
-      } else if (providerType === ConstantsUtil.INJECTED_CONNECTOR_ID && chain) {
-        const InjectedProvider = provider
-        if (InjectedProvider) {
-          try {
-            await InjectedProvider.request({
-              method: 'wallet_switchEthereumChain',
-              params: [{ chainId: EthersHelpersUtil.numberToHexString(chain.chainId) }]
-            })
-            EthersStoreUtil.setChainId(chain.chainId)
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          } catch (switchError: any) {
-            if (
-              switchError.code === EthersConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
-              switchError.code === EthersConstantsUtil.ERROR_CODE_DEFAULT ||
-              switchError?.data?.originalError?.code ===
-                EthersConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
-            ) {
-              await EthersHelpersUtil.addEthereumChain(InjectedProvider, chain)
             } else {
               throw new Error('Chain is not supported')
             }

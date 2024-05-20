@@ -20,7 +20,7 @@
     "dist",
     ".next",
     ".turbo",
-    "exbamples",
+    "examples",
     "coverage",
     ".changeset",
     "playwright-report"

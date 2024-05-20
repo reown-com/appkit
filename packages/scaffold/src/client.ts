@@ -9,7 +9,8 @@ import type {
   ThemeMode,
   ThemeVariables,
   ModalControllerState,
-  ConnectedWalletInfo
+  ConnectedWalletInfo,
+  RouterControllerState
 } from '@web3modal/core'
 import {
   AccountController,
@@ -23,7 +24,8 @@ import {
   OptionsController,
   PublicStateController,
   ThemeController,
-  SnackController
+  SnackController,
+  RouterController
 } from '@web3modal/core'
 import { setColorTheme, setThemeVariables } from '@web3modal/ui'
 import type { SIWEControllerClient } from '@web3modal/siwe'
@@ -118,7 +120,7 @@ export class Web3ModalScaffold {
   }
 
   public getState() {
-    return { ...PublicStateController.state }
+    return PublicStateController.state
   }
 
   public subscribeState(callback: (newState: PublicStateControllerState) => void) {
@@ -142,6 +144,32 @@ export class Web3ModalScaffold {
   }
 
   // -- Protected ----------------------------------------------------------------
+  protected replace(route: RouterControllerState['view']) {
+    RouterController.replace(route)
+  }
+
+  protected redirect(route: RouterControllerState['view']) {
+    RouterController.push(route)
+  }
+
+  protected popTransactionStack(cancel?: boolean) {
+    RouterController.popTransactionStack(cancel)
+  }
+
+  protected isOpen() {
+    return ModalController.state.open
+  }
+
+  protected isTransactionStackEmpty() {
+    return RouterController.state.transactionStack.length === 0
+  }
+
+  protected isTransactionShouldReplaceView() {
+    return RouterController.state.transactionStack[
+      RouterController.state.transactionStack.length - 1
+    ]?.replace
+  }
+
   protected setIsConnected: (typeof AccountController)['setIsConnected'] = isConnected => {
     AccountController.setIsConnected(isConnected)
   }
@@ -224,6 +252,11 @@ export class Web3ModalScaffold {
       NetworkController.setSmartAccountEnabledNetworks(smartAccountEnabledNetworks)
     }
 
+  protected setPreferredAccountType: (typeof AccountController)['setPreferredAccountType'] =
+    preferredAccountType => {
+      AccountController.setPreferredAccountType(preferredAccountType)
+    }
+
   // -- Private ------------------------------------------------------------------
   private async initControllers(options: ScaffoldOptions) {
     NetworkController.setClient(options.networkControllerClient)
@@ -240,14 +273,6 @@ export class Web3ModalScaffold {
     OptionsController.setCustomWallets(options.customWallets)
     OptionsController.setEnableAnalytics(options.enableAnalytics)
     OptionsController.setSdkVersion(options._sdkVersion)
-
-    ConnectionController.setClient(options.connectionControllerClient)
-
-    if (options.siweControllerClient) {
-      const { SIWEController } = await import('@web3modal/siwe')
-
-      SIWEController.setSIWEClient(options.siweControllerClient)
-    }
 
     if (options.metadata) {
       OptionsController.setMetadata(options.metadata)
@@ -272,6 +297,14 @@ export class Web3ModalScaffold {
     if (options.allowUnsupportedChain) {
       NetworkController.setAllowUnsupportedChain(options.allowUnsupportedChain)
     }
+
+    if (options.siweControllerClient) {
+      const { SIWEController } = await import('@web3modal/siwe')
+
+      SIWEController.setSIWEClient(options.siweControllerClient)
+    }
+
+    ConnectionController.setClient(options.connectionControllerClient)
   }
 
   private async initOrContinue() {

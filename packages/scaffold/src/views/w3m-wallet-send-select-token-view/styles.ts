@@ -7,6 +7,10 @@ export default css`
     scrollbar-width: none;
   }
 
+  .contentContainer::-webkit-scrollbar {
+    display: none;
+  }
+
   wui-icon-box {
     width: 40px;
     height: 40px;

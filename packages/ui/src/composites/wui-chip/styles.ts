@@ -2,7 +2,7 @@ import { css } from 'lit'
 
 export default css`
   a {
-    border: 1px solid var(--wui-gray-glass-010);
+    border: 1px solid var(--wui-color-gray-glass-010);
     border-radius: var(--wui-border-radius-3xl);
   }
 
@@ -24,21 +24,21 @@ export default css`
   a[data-variant='shade'],
   a[data-variant='shadeSmall'] {
     background-color: transparent;
-    background-color: var(--wui-gray-glass-010);
+    background-color: var(--wui-color-gray-glass-010);
     color: var(--wui-color-fg-200);
   }
 
   a[data-variant='success'] {
     column-gap: var(--wui-spacing-xxs);
-    border: 1px solid var(--wui-success-glass-010);
-    background-color: var(--wui-success-glass-010);
+    border: 1px solid var(--wui-color-success-glass-010);
+    background-color: var(--wui-color-success-glass-010);
     color: var(--wui-color-success-100);
   }
 
   a[data-variant='error'] {
     column-gap: var(--wui-spacing-xxs);
-    border: 1px solid var(--wui-error-glass-010);
-    background-color: var(--wui-error-glass-010);
+    border: 1px solid var(--wui-color-error-glass-010);
+    background-color: var(--wui-color-error-glass-010);
     color: var(--wui-color-error-100);
   }
 
@@ -86,7 +86,7 @@ export default css`
 
   a[data-variant='shade'] > wui-image,
   a[data-variant='shadeSmall'] > wui-image {
-    box-shadow: inset 0 0 0 1px var(--wui-gray-glass-010);
+    box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-010);
   }
 
   a[data-variant='fill'] > wui-icon,
@@ -117,24 +117,24 @@ export default css`
 
   a[data-variant='shade']:focus-visible,
   a[data-variant='shadeSmall']:focus-visible {
-    background-color: var(--wui-gray-glass-015);
+    background-color: var(--wui-color-gray-glass-015);
   }
 
   a[data-variant='transparent']:focus-visible {
-    background-color: var(--wui-gray-glass-005);
+    background-color: var(--wui-color-gray-glass-005);
   }
 
   a[data-variant='success']:focus-visible {
-    background-color: var(--wui-success-glass-015);
+    background-color: var(--wui-color-success-glass-015);
   }
 
   a[data-variant='error']:focus-visible {
-    background-color: var(--wui-error-glass-015);
+    background-color: var(--wui-color-error-glass-015);
   }
 
   a.disabled {
-    color: var(--wui-gray-glass-015);
-    background-color: var(--wui-gray-glass-015);
+    color: var(--wui-color-gray-glass-015);
+    background-color: var(--wui-color-gray-glass-015);
     pointer-events: none;
   }
 
@@ -145,19 +145,19 @@ export default css`
 
     a[data-variant='shade']:hover,
     a[data-variant='shadeSmall']:hover {
-      background-color: var(--wui-gray-glass-015);
+      background-color: var(--wui-color-gray-glass-015);
     }
 
     a[data-variant='transparent']:hover {
-      background-color: var(--wui-gray-glass-005);
+      background-color: var(--wui-color-gray-glass-005);
     }
 
     a[data-variant='success']:hover {
-      background-color: var(--wui-success-glass-015);
+      background-color: var(--wui-color-success-glass-015);
     }
 
     a[data-variant='error']:hover {
-      background-color: var(--wui-error-glass-015);
+      background-color: var(--wui-color-error-glass-015);
     }
   }
 
@@ -167,18 +167,18 @@ export default css`
 
   a[data-variant='shade']:active,
   a[data-variant='shadeSmall']:active {
-    background-color: var(--wui-gray-glass-020);
+    background-color: var(--wui-color-gray-glass-020);
   }
 
   a[data-variant='transparent']:active {
-    background-color: var(--wui-gray-glass-010);
+    background-color: var(--wui-color-gray-glass-010);
   }
 
   a[data-variant='success']:active {
-    background-color: var(--wui-success-glass-020);
+    background-color: var(--wui-color-success-glass-020);
   }
 
   a[data-variant='error']:active {
-    background-color: var(--wui-error-glass-020);
+    background-color: var(--wui-color-error-glass-020);
   }
 `

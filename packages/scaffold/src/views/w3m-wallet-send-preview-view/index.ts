@@ -18,6 +18,12 @@ export class W3mWalletSendPreviewView extends LitElement {
 
   @state() private receiverAddress = SendController.state.receiverAddress
 
+  @state() private receiverProfileName = SendController.state.receiverProfileName
+
+  @state() private receiverProfileImageUrl = SendController.state.receiverProfileImageUrl
+
+  @state() private gasPriceInUSD = SendController.state.gasPriceInUSD
+
   @state() private caipNetwork = NetworkController.state.caipNetwork
 
   public constructor() {
@@ -28,6 +34,9 @@ export class W3mWalletSendPreviewView extends LitElement {
           this.token = val.token
           this.sendTokenAmount = val.sendTokenAmount
           this.receiverAddress = val.receiverAddress
+          this.gasPriceInUSD = val.gasPriceInUSD
+          this.receiverProfileName = val.receiverProfileName
+          this.receiverProfileImageUrl = val.receiverProfileImageUrl
         }),
         NetworkController.subscribeKey('caipNetwork', val => (this.caipNetwork = val))
       ]
@@ -40,7 +49,7 @@ export class W3mWalletSendPreviewView extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    return html` <wui-flex flexDirection="column" .padding=${['s', 'l', 'l', 'l'] as const}>
+    return html` <wui-flex flexDirection="column" .padding=${['0', 'l', 'l', 'l'] as const}>
       <wui-flex gap="xs" flexDirection="column" .padding=${['0', 'xs', '0', 'xs'] as const}>
         <wui-flex alignItems="center" justifyContent="space-between">
           <wui-flex flexDirection="column" gap="4xs">
@@ -48,7 +57,9 @@ export class W3mWalletSendPreviewView extends LitElement {
             ${this.sendValueTemplate()}
           </wui-flex>
           <wui-preview-item
-            text="${Number(this.token?.quantity.numeric).toFixed(2)} ${this.token?.symbol}"
+            text="${this.sendTokenAmount
+              ? UiHelperUtil.roundNumber(this.sendTokenAmount, 6, 5)
+              : 'unknown'} ${this.token?.symbol}"
             .imageSrc=${this.token?.iconUrl}
           ></wui-preview-item>
         </wui-flex>
@@ -58,13 +69,21 @@ export class W3mWalletSendPreviewView extends LitElement {
         <wui-flex alignItems="center" justifyContent="space-between">
           <wui-text variant="small-400" color="fg-150">To</wui-text>
           <wui-preview-item
-            text=${UiHelperUtil.getTruncateString({
-              string: this.receiverAddress ?? '',
-              charsStart: 4,
-              charsEnd: 4,
-              truncate: 'middle'
-            })}
+            text="${this.receiverProfileName
+              ? UiHelperUtil.getTruncateString({
+                  string: this.receiverProfileName,
+                  charsStart: 20,
+                  charsEnd: 0,
+                  truncate: 'end'
+                })
+              : UiHelperUtil.getTruncateString({
+                  string: this.receiverAddress ? this.receiverAddress : '',
+                  charsStart: 4,
+                  charsEnd: 4,
+                  truncate: 'middle'
+                })}"
             address=${this.receiverAddress ?? ''}
+            .imageSrc=${this.receiverProfileImageUrl ?? undefined}
             .isAddress=${true}
           ></wui-preview-item>
         </wui-flex>
@@ -73,6 +92,7 @@ export class W3mWalletSendPreviewView extends LitElement {
         <w3m-wallet-send-details
           .caipNetwork=${this.caipNetwork}
           .receiverAddress=${this.receiverAddress}
+          .networkFee=${this.gasPriceInUSD}
         ></w3m-wallet-send-details>
         <wui-flex justifyContent="center" gap="xxs" .padding=${['s', '0', '0', '0'] as const}>
           <wui-icon size="sm" color="fg-200" name="warningCircle"></wui-icon>
@@ -83,7 +103,7 @@ export class W3mWalletSendPreviewView extends LitElement {
             class="cancelButton"
             @click=${this.onCancelClick.bind(this)}
             size="lg"
-            variant="shade"
+            variant="neutral"
           >
             Cancel
           </wui-button>
@@ -91,7 +111,7 @@ export class W3mWalletSendPreviewView extends LitElement {
             class="sendButton"
             @click=${this.onSendClick.bind(this)}
             size="lg"
-            variant="fill"
+            variant="main"
           >
             Send
           </wui-button>
@@ -114,11 +134,8 @@ export class W3mWalletSendPreviewView extends LitElement {
     return null
   }
 
-  private onSendClick() {
-    RouterController.reset('Account')
-    setTimeout(() => {
-      SendController.resetSend()
-    }, 200)
+  onSendClick() {
+    SendController.sendToken()
   }
 
   private onCancelClick() {

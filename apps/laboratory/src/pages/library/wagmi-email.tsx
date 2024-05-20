@@ -8,6 +8,7 @@ import { WagmiTests } from '../../components/Wagmi/WagmiTests'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { WagmiConstantsUtil } from '../../utils/WagmiConstants'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
+import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
 
 const queryClient = new QueryClient()
 
@@ -16,6 +17,9 @@ export const wagmiConfig = defaultWagmiConfig({
   projectId: ConstantsUtil.ProjectId,
   metadata: ConstantsUtil.Metadata,
   enableEmail: true,
+  auth: {
+    socials: ['google', 'x', 'discord', 'apple', 'github']
+  },
   ssr: true
 })
 
@@ -43,6 +47,7 @@ export default function Wagmi() {
     <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <Web3ModalButtons />
+        <WagmiModalInfo />
         <WagmiTests />
       </QueryClientProvider>
     </WagmiProvider>

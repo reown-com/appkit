@@ -2,14 +2,15 @@ import type { Meta } from '@storybook/web-components'
 import '@web3modal/ui/src/composites/wui-chip-button'
 import type { WuiChipButton } from '@web3modal/ui/src/composites/wui-chip-button'
 import { html } from 'lit'
-import { chipOptions, iconOptions, walletImagesOptions } from '../../utils/PresetUtils'
+import { chipButtonVariants, iconOptions, walletImagesOptions } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiChipButton>
 
 export default {
   title: 'Composites/wui-chip-button',
   args: {
-    variant: 'fill',
+    variant: 'main',
+    size: 'md',
     disabled: false,
     icon: 'externalLink',
     imageSrc: walletImagesOptions[3]?.src,
@@ -17,7 +18,11 @@ export default {
   },
   argTypes: {
     variant: {
-      options: chipOptions,
+      options: chipButtonVariants,
+      control: { type: 'select' }
+    },
+    size: {
+      options: ['sm', 'md'],
       control: { type: 'select' }
     },
     icon: {
@@ -35,6 +40,7 @@ export const Default: Component = {
     html`<wui-chip-button
       icon=${args.icon}
       text=${args.text}
+      size=${args.size}
       variant=${args.variant}
       ?disabled=${args.disabled}
       .imageSrc=${args.imageSrc}

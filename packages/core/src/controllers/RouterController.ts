@@ -1,8 +1,17 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy } from 'valtio/vanilla'
 import type { CaipNetwork, Connector, WcWallet } from '../utils/TypeUtil.js'
+import type { SwapInputTarget } from './SwapController.js'
 
 // -- Types --------------------------------------------- //
+type TransactionAction = {
+  goBack: boolean
+  view: RouterControllerState['view'] | null
+  close?: boolean
+  replace?: boolean
+  onSuccess?: () => void
+  onCancel?: () => void
+}
 export interface RouterControllerState {
   view:
     | 'Account'
@@ -15,6 +24,9 @@ export interface RouterControllerState {
     | 'ConnectingExternal'
     | 'ConnectingWalletConnect'
     | 'ConnectingSiwe'
+    | 'ConnectingSocial'
+    | 'ConnectSocials'
+    | 'ConnectWallets'
     | 'Downloads'
     | 'EmailVerifyOtp'
     | 'EmailVerifyDevice'
@@ -39,6 +51,9 @@ export interface RouterControllerState {
     | 'WhatIsANetwork'
     | 'WhatIsAWallet'
     | 'WhatIsABuy'
+    | 'Swap'
+    | 'SwapSelectToken'
+    | 'SwapPreview'
   history: RouterControllerState['view'][]
   data?: {
     connector?: Connector
@@ -46,13 +61,17 @@ export interface RouterControllerState {
     network?: CaipNetwork
     email?: string
     newEmail?: string
+    target?: SwapInputTarget
+    swapUnsupportedChain?: boolean
   }
+  transactionStack: TransactionAction[]
 }
 
 // -- State --------------------------------------------- //
 const state = proxy<RouterControllerState>({
   view: 'Connect',
-  history: ['Connect']
+  history: ['Connect'],
+  transactionStack: []
 })
 
 type StateKey = keyof RouterControllerState
@@ -63,6 +82,30 @@ export const RouterController = {
 
   subscribeKey<K extends StateKey>(key: K, callback: (value: RouterControllerState[K]) => void) {
     return subKey(state, key, callback)
+  },
+
+  pushTransactionStack(action: TransactionAction) {
+    state.transactionStack.push(action)
+  },
+
+  popTransactionStack(cancel?: boolean) {
+    const action = state.transactionStack.pop()
+
+    if (!action) {
+      return
+    }
+
+    if (cancel) {
+      this.goBack()
+      action?.onCancel?.()
+    } else {
+      if (action.goBack) {
+        this.goBack()
+      } else if (action.view) {
+        this.reset(action.view)
+      }
+      action?.onSuccess?.()
+    }
   },
 
   push(view: RouterControllerState['view'], data?: RouterControllerState['data']) {
@@ -79,7 +122,7 @@ export const RouterController = {
   },
 
   replace(view: RouterControllerState['view'], data?: RouterControllerState['data']) {
-    if (state.history.length > 1 && state.history.at(-1) !== view) {
+    if (state.history.length >= 1 && state.history.at(-1) !== view) {
       state.view = view
       state.history[state.history.length - 1] = view
       state.data = data

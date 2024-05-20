@@ -1,15 +1,17 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
 import type { Address, CombinedProvider, Provider } from './EthersTypesUtil.js'
+import type { W3mFrameTypes } from '@web3modal/wallet'
 
 // -- Types --------------------------------------------- //
 
 export interface EthersStoreUtilState {
   provider?: Provider | CombinedProvider
-  providerType?: 'walletConnect' | 'injected' | 'coinbaseWallet' | 'eip6963' | 'w3mEmail'
+  providerType?: 'walletConnect' | 'injected' | 'coinbaseWallet' | 'eip6963' | 'w3mAuth'
   address?: Address
   chainId?: number
   error?: unknown
+  preferredAccountType?: W3mFrameTypes.AccountType
   isConnected: boolean
 }
 
@@ -50,6 +52,10 @@ export const EthersStoreUtil = {
     state.address = address
   },
 
+  setPreferredAccountType(preferredAccountType: EthersStoreUtilState['preferredAccountType']) {
+    state.preferredAccountType = preferredAccountType
+  },
+
   setChainId(chainId: EthersStoreUtilState['chainId']) {
     state.chainId = chainId
   },
@@ -69,5 +75,6 @@ export const EthersStoreUtil = {
     state.providerType = undefined
     state.isConnected = false
     state.error = undefined
+    state.preferredAccountType = undefined
   }
 }

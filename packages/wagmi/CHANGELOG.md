@@ -1,5 +1,122 @@
 # @web3modal/wagmi
 
+## 4.2.1
+
+### Patch Changes
+
+- Hotfix to support injected and announced wallets in in app browsers
+
+- Updated dependencies []:
+  - @web3modal/scaffold@4.2.1
+  - @web3modal/polyfills@4.2.1
+  - @web3modal/scaffold-react@4.2.1
+  - @web3modal/scaffold-utils@4.2.1
+  - @web3modal/scaffold-vue@4.2.1
+  - @web3modal/siwe@4.2.1
+
+## 4.2.0
+
+### Patch Changes
+
+- release: 4.2.0 version release
+
+- Updated dependencies []:
+  - @web3modal/polyfills@4.2.0
+  - @web3modal/scaffold@4.2.0
+  - @web3modal/scaffold-react@4.2.0
+  - @web3modal/scaffold-utils@4.2.0
+  - @web3modal/scaffold-vue@4.2.0
+  - @web3modal/siwe@4.2.0
+
+## 4.2.0-alpha.0
+
+### Patch Changes
+
+- feat: 4.2.0-alpha release
+
+- Updated dependencies []:
+  - @web3modal/scaffold-react@4.2.0-alpha.0
+  - @web3modal/scaffold-utils@4.2.0-alpha.0
+  - @web3modal/scaffold-vue@4.2.0-alpha.0
+  - @web3modal/polyfills@4.2.0-alpha.0
+  - @web3modal/scaffold@4.2.0-alpha.0
+  - @web3modal/siwe@4.2.0-alpha.0
+
+## 4.2.0-03e4f4a8.2
+
+### Patch Changes
+
+- fix: Issue with SIWE + Wagmi sign out. Fixes issue where signature verification fail resulted in empty open modal'
+
+- Updated dependencies []:
+  - @web3modal/scaffold-react@4.2.0-03e4f4a8.2
+  - @web3modal/scaffold-utils@4.2.0-03e4f4a8.2
+  - @web3modal/scaffold-vue@4.2.0-03e4f4a8.2
+  - @web3modal/polyfills@4.2.0-03e4f4a8.2
+  - @web3modal/scaffold@4.2.0-03e4f4a8.2
+  - @web3modal/siwe@4.2.0-03e4f4a8.2
+
+## 4.2.0-448f7f4.1
+
+### Minor Changes
+
+- refactor: improvements to all features (siwe, send, swaps, ui and ux)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @web3modal/scaffold@4.2.0-448f7f4.1
+  - @web3modal/siwe@4.2.0-448f7f4.1
+  - @web3modal/polyfills@4.2.0-448f7f4.1
+  - @web3modal/scaffold-react@4.2.0-448f7f4.1
+  - @web3modal/scaffold-utils@4.2.0-448f7f4.1
+  - @web3modal/scaffold-vue@4.2.0-448f7f4.1
+
+## 4.1.12-910a844.0
+
+### Patch Changes
+
+- refactor: sync theme with secure site
+
+- Updated dependencies []:
+  - @web3modal/scaffold@4.1.12-910a844.0
+  - @web3modal/polyfills@4.1.12-910a844.0
+  - @web3modal/scaffold-react@4.1.12-910a844.0
+  - @web3modal/scaffold-utils@4.1.12-910a844.0
+  - @web3modal/scaffold-vue@4.1.12-910a844.0
+  - @web3modal/siwe@4.1.12-910a844.0
+
+## 4.1.11
+
+### Patch Changes
+
+- refactor: Solana exported helper methods and proram instruction improvements
+- refactor: email and smart account improvements
+- refactor: unit test CI check improvements
+- feat: convert
+
+- Updated dependencies []:
+  - @web3modal/polyfills@4.1.11
+  - @web3modal/scaffold@4.1.11
+  - @web3modal/scaffold-react@4.1.11
+  - @web3modal/scaffold-utils@4.1.11
+  - @web3modal/scaffold-vue@4.1.11
+  - @web3modal/siwe@4.1.11
+
+## 4.1.10
+
+### Patch Changes
+
+- Fix activity list styling issue
+
+- Updated dependencies []:
+  - @web3modal/scaffold@4.1.10
+  - @web3modal/polyfills@4.1.10
+  - @web3modal/scaffold-react@4.1.10
+  - @web3modal/scaffold-utils@4.1.10
+  - @web3modal/scaffold-vue@4.1.10
+  - @web3modal/siwe@4.1.10
+
 ## 4.1.9
 
 ### Patch Changes
@@ -55,6 +172,18 @@
   - @web3modal/scaffold-utils@4.1.6
   - @web3modal/scaffold-vue@4.1.6
   - @web3modal/siwe@4.1.6
+
+## 4.1.6-a0733f5.0
+
+### Patch Changes
+
+- chore: canary release for siwe dependency
+
+- Updated dependencies []:
+  - @web3modal/ethers@4.1.6-a0733f5.0
+  - @web3modal/siwe@4.1.6-a0733f5.0
+  - @web3modal/solana@4.1.6-a0733f5.0
+  - @web3modal/wagmi@4.1.6-a0733f5.0
 
 ## 4.1.5
 

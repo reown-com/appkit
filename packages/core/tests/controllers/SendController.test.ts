@@ -4,6 +4,7 @@ import { SendController } from '../../index.js'
 // -- Setup --------------------------------------------------------------------
 const token = {
   name: 'Optimism',
+  address: 'eip155:10:0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
   symbol: 'OP',
   chainId: 'eip155:10',
   value: 6.05441523113072,
@@ -22,7 +23,7 @@ const receiverProfileImageUrl = 'https://ipfs.com/0x123.png'
 // -- Tests --------------------------------------------------------------------
 describe('SendController', () => {
   it('should have valid default state', () => {
-    expect(SendController.state).toEqual({})
+    expect(SendController.state).toEqual({ loading: false })
   })
 
   it('should update state correctly on setToken()', () => {
@@ -52,6 +53,6 @@ describe('SendController', () => {
 
   it('should update state correctly on resetSend()', () => {
     SendController.resetSend()
-    expect(SendController.state).toEqual({})
+    expect(SendController.state).toEqual({ loading: false })
   })
 })

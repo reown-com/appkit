@@ -1,13 +1,10 @@
 import { html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
-import '../../components/wui-icon/index.js'
 import '../../components/wui-image/index.js'
-import '../../components/wui-loading-spinner/index.js'
 import '../../components/wui-text/index.js'
 import '../../layout/wui-flex/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
-import '../wui-icon-box/index.js'
 import styles from './styles.js'
 import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
 import { NumberUtil } from '@web3modal/common'
@@ -29,7 +26,8 @@ export class WuiTokenListItem extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const value = NumberUtil.multiply(this.price, this.amount)?.toFixed(3)
+    const value =
+      this.amount && this.price ? NumberUtil.multiply(this.price, this.amount)?.toFixed(3) : null
 
     return html`
       <wui-flex alignItems="center">
@@ -47,10 +45,11 @@ export class WuiTokenListItem extends LitElement {
           </wui-flex>
           <wui-flex justifyContent="space-between">
             <wui-text variant="small-400" color="fg-200">${this.symbol}</wui-text>
-            ${this.amount &&
-            html`<wui-text variant="small-400" color="fg-200"
-              >${UiHelperUtil.formatNumberToLocalString(this.amount, 4)}</wui-text
-            >`}
+            ${this.amount
+              ? html`<wui-text variant="small-400" color="fg-200">
+                  ${UiHelperUtil.formatNumberToLocalString(this.amount, 4)}
+                </wui-text>`
+              : null}
           </wui-flex>
         </wui-flex>
       </wui-flex>

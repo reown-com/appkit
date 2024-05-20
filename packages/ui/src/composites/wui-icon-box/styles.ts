@@ -7,7 +7,7 @@ export default css`
     align-items: center;
     position: relative;
     overflow: hidden;
-    background-color: var(--wui-gray-glass-020);
+    background-color: var(--wui-color-gray-glass-020);
     border-radius: var(--local-border-radius);
     border: var(--local-border);
     box-sizing: content-box;

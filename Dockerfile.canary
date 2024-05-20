@@ -1,4 +1,5 @@
 FROM node:20-bookworm
+RUN apt update && apt install -y awscli
 
 WORKDIR /src
 
@@ -11,5 +12,8 @@ WORKDIR ./apps/laboratory/
 RUN npm run playwright:install
 
 ENV TIMING_LOGS=true
+ENV CI=true
+ENV SKIP_PLAYWRIGHT_WEBSERVER=true
+ENV BASE_URL=https://lab.web3modal.com/
 
-CMD ["npm", "run", "playwright:test:canary"]
+CMD ["timeout", "600", "./docker-canary.sh"]

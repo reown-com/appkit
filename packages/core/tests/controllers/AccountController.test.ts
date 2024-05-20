@@ -57,6 +57,14 @@ describe('AccountController', () => {
     expect(AccountController.state.smartAccountDeployed).toEqual(true)
   })
 
+  it('should update state correctly on setPreferredAccountType()', () => {
+    AccountController.setPreferredAccountType('eoa')
+    expect(AccountController.state.preferredAccountType).toEqual('eoa')
+
+    AccountController.setPreferredAccountType('smartAccount')
+    expect(AccountController.state.preferredAccountType).toEqual('smartAccount')
+  })
+
   it('should update state correctly on resetAccount()', () => {
     AccountController.resetAccount()
     expect(AccountController.state).toEqual({

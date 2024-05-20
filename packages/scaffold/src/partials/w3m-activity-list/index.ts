@@ -184,6 +184,7 @@ export class W3mActivityList extends LitElement {
 
   private emptyStateActivity() {
     return html`<wui-flex
+      class="emptyContainer"
       flexGrow="1"
       flexDirection="column"
       justifyContent="center"
@@ -192,7 +193,7 @@ export class W3mActivityList extends LitElement {
       gap="xl"
     >
       <wui-icon-box
-        backgroundColor="glass-005"
+        backgroundColor="gray-glass-005"
         background="gray"
         iconColor="fg-200"
         icon="wallet"
