@@ -72,13 +72,13 @@ export const EnsController = {
           ...suggestion,
           name: suggestion.name.replace(WC_NAME_SUFFIX, '')
         })) || []
-      state.loading = false
 
       return state.suggestions
     } catch (e) {
-      state.loading = false
       const errorMessage = this.parseEnsApiError(e, 'Error fetching name suggestions')
       throw new Error(errorMessage)
+    } finally {
+      state.loading = false
     }
   },
 
@@ -144,6 +144,7 @@ export const EnsController = {
       RouterController.replace('RegisterAccountNameSuccess')
       state.loading = false
     } catch (e) {
+      console.log('e', e)
       state.loading = false
       const errorMessage = this.parseEnsApiError(e, `Error registering name ${name}`)
       RouterController.replace('RegisterAccountName')
