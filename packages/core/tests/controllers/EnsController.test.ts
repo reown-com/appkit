@@ -6,6 +6,7 @@ import {
   EnsController,
   NetworkController
 } from '../../index.js'
+import { W3mFrameProvider } from '@web3modal/wallet'
 
 // -- Setup --------------------------------------------------------------------
 const TEST_NAME = {
@@ -139,7 +140,7 @@ describe('EnsController', () => {
     const getAuthConnectorSpy = vi
       .spyOn(ConnectorController, 'getAuthConnector')
       .mockResolvedValueOnce({
-        provider: {} as any,
+        provider: new W3mFrameProvider(''),
         id: 'w3mAuth',
         type: 'AUTH'
       })
