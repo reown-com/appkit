@@ -97,7 +97,6 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
       <wui-profile-button
         @click=${this.onProfileButtonClick.bind(this)}
         address=${ifDefined(this.address)}
-        profileName=${ifDefined(this.profileName)}
         networkSrc=${ifDefined(networkImage)}
         icon="chevronBottom"
         avatarSrc=${ifDefined(this.profileImage ? this.profileImage : undefined)}

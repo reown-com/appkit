@@ -16,7 +16,7 @@ export default css`
   }
 
   .suggested-name {
-    max-width: 220px;
+    max-width: 75%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
