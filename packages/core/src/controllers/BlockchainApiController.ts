@@ -252,7 +252,6 @@ export const BlockchainApiController = {
   },
 
   async reverseLookupEnsName({ address }: { address: string }) {
-    // Should add /coinType subroute once ready in BlockchainApi
     return api.get<BlockchainApiLookupEnsName[]>({
       path: `/v1/profile/reverse/${address}?projectId=${OptionsController.state.projectId}`
     })

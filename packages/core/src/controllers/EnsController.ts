@@ -108,14 +108,16 @@ export const EnsController = {
     if (!address || !emailConnector) {
       throw new Error('Address or auth connector not found')
     }
+
     state.loading = true
-    const message = JSON.stringify({
-      name: `${name}.wcn.id`,
-      attributes: {},
-      timestamp: Math.floor(Date.now() / 1000)
-    })
 
     try {
+      const message = JSON.stringify({
+        name: `${name}.wcn.id`,
+        attributes: {},
+        timestamp: Math.floor(Date.now() / 1000)
+      })
+
       RouterController.pushTransactionStack({
         view: 'RegisterAccountNameSuccess',
         goBack: false,
@@ -142,13 +144,12 @@ export const EnsController = {
 
       AccountController.setProfileName(`${name}.wcn.id`)
       RouterController.replace('RegisterAccountNameSuccess')
-      state.loading = false
     } catch (e) {
-      console.log('e', e)
-      state.loading = false
       const errorMessage = this.parseEnsApiError(e, `Error registering name ${name}`)
       RouterController.replace('RegisterAccountName')
       throw new Error(errorMessage)
+    } finally {
+      state.loading = false
     }
   },
   validateName(name: string) {
