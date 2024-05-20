@@ -5,7 +5,7 @@ import { getCallsStatus } from '@wagmi/core/experimental'
 import { useCallback, useState, useEffect } from 'react'
 import { useChakraToast } from '../Toast'
 import { EIP_5792_RPC_METHODS } from '../../utils/EIP5792Utils'
-import { wagmiConfig } from '../../pages/library/wagmi'
+import { wagmiConfig } from '../../utils/WagmiConstants'
 import { bigIntReplacer } from '../../utils/CommonUtils'
 
 export function WagmiGetCallsStatusTest() {

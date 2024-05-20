@@ -12,7 +12,7 @@ import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
 
 const queryClient = new QueryClient()
 
-export const wagmiConfig = defaultWagmiConfig({
+const wagmiConfig = defaultWagmiConfig({
   chains: WagmiConstantsUtil.chains,
   projectId: ConstantsUtil.ProjectId,
   metadata: ConstantsUtil.Metadata,
