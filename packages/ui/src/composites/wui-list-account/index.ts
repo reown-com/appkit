@@ -44,7 +44,7 @@ export class WuiListAccount extends LitElement {
   public override render() {
     console.log('WuiListAccount', this.accountAddress, this.accountType)
 
-    let type = 'EO'
+    let type = 'Externally Owned'
     if (this.enableWalletFeatures && this.connectedConnector === 'AUTH') {
       type = this.accountType === 'eoa' ? 'Email' : 'Smart'
     }
@@ -55,17 +55,16 @@ export class WuiListAccount extends LitElement {
         justifyContent="space-between"
         .padding=${['s', 'xs', 's', '1xs'] as const}
       >
-        <wui-flex gap="s" alignItems="center">
+        <wui-flex alignItems="center">
           <wui-avatar address=${this.accountAddress}></wui-avatar>
           <wui-icon-box
             size="sm"
             iconcolor="fg-200"
-            backgroundcolor="glass-002"
-            background="gray"
+            backgroundcolor="fg-300"
             icon=${this.accountType === W3mFrameRpcConstants.ACCOUNT_TYPES.EOA
               ? 'mail'
               : 'lightbulb'}
-            ?border=${true}
+            background="fg-300"
           ></wui-icon-box>
           <wui-flex flexDirection="column">
             <wui-text class="address" variant="paragraph-500" color="fg-100"

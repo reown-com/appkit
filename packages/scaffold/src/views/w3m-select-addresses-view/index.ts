@@ -22,7 +22,7 @@ export class W3mSelectAddressesView extends LitElement {
   private selectedAccounts: AccountType[] = []
   // Private selectAll = false
 
-  @state() private isSigning = false
+  @state() private isApproving = false
   constructor() {
     super()
     console.log('W3mSelectAddressesView')
@@ -55,7 +55,7 @@ export class W3mSelectAddressesView extends LitElement {
         <wui-text variant="paragraph-400" color="fg-200">Select all</wui-text>
         <input type="checkbox" @click=${this.onSelectAll.bind(this)} />
     </wui-flex>
-      <wui-flex flexDirection="column" gap="xs" .padding=${['l', 'xl', 'xl', 'xl'] as const}>
+      <wui-flex flexDirection="column" .padding=${['l', 'xl', 'xl', 'xl'] as const}>
         ${this.allAccounts.map(account => {
           return html` <wui-list-account
             accountAddress="${account.address}"
@@ -74,7 +74,7 @@ export class W3mSelectAddressesView extends LitElement {
         <wui-button
           size="md"
           ?fullwidth=${true}
-          variant="shade"
+          variant="neutral"
           @click=${this.onCancel.bind(this)}
           data-testid="w3m-connecting-siwe-cancel"
         >
@@ -83,12 +83,11 @@ export class W3mSelectAddressesView extends LitElement {
         <wui-button
           size="md"
           ?fullwidth=${true}
-          variant="fill"
+          variant="main"
           @click=${this.onContinue.bind(this)}
-          ?loading=${this.isSigning}
-          data-testid="w3m-connecting-siwe-sign"
+          ?loading=${this.isApproving}
         >
-          ${this.isSigning ? 'Signing...' : 'Continue'}
+          ${this.isApproving ? 'Signing...' : 'Continue'}
         </wui-button>
       </wui-flex>
     `
@@ -102,12 +101,13 @@ export class W3mSelectAddressesView extends LitElement {
     this.onSelect?.({ ...account }, target?.checked)
   }
 
-  private async onContinue() {
-    this.isSigning = true
-    await new Promise(resolve => setTimeout(resolve, 2000))
-    AccountController.setAllAccounts(this.selectedAccounts)
-    AccountController.setShouldUpdateToAddress(this.selectedAccounts[0]?.address ?? '')
-    this.isSigning = false
+  private onContinue() {
+    if (this.selectedAccounts.length !== 0) {
+      this.isApproving = true
+      AccountController.setAllAccounts(this.selectedAccounts)
+      AccountController.setShouldUpdateToAddress(this.selectedAccounts[0]?.address ?? '')
+      this.isApproving = false
+    }
     ModalController.close()
   }
 

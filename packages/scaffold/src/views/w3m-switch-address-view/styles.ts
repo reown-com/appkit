@@ -9,8 +9,9 @@ export default css`
 
   wui-icon-box {
     position: relative;
-    right: 25px;
+    right: 15px;
     top: 15px;
-    background-color: var(--wui-color-bg-base-125);
+    border: 2px solid var(--wui-color-bg-150);
+    background-color: var(--wui-color-bg-125);
   }
 `

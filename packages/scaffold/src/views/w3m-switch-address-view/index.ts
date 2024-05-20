@@ -38,7 +38,7 @@ export class W3mSwitchAddressView extends LitElement {
 
     return html`
       <wui-flex flexDirection="row" justifyContent="space-between">
-        <wui-flex gap="s" alignItems="center">
+        <wui-flex alignItems="center">
           <wui-avatar address=${address}></wui-avatar>
           <wui-icon-box
             size="sm"
@@ -66,7 +66,7 @@ export class W3mSwitchAddressView extends LitElement {
             : html`
                 <wui-button
                   textVariant="small-600"
-                  size="sm"
+                  size="md"
                   variant="accent"
                   @click=${() => this.onSwitchAddress(address)}
                   >Switch to</wui-button
