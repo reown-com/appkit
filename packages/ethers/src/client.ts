@@ -1360,7 +1360,8 @@ export class Web3Modal extends Web3ModalScaffold {
         name: 'Auth',
         provider: this.authProvider,
         email,
-        socials: auth?.socials
+        socials: auth?.socials,
+        showWallets: auth?.showWallets === undefined ? true : auth.showWallets
       })
 
       super.setLoading(true)

@@ -15,6 +15,7 @@ export type ConfigOptions = Partial<CreateConfigParameters> & {
   enableEmail?: boolean
   auth?: {
     socials?: SocialProvider[]
+    showWallets?: boolean
   }
   enableInjected?: boolean
   enableWalletConnect?: boolean
@@ -33,7 +34,9 @@ export function defaultWagmiConfig({
   enableCoinbase,
   enableEmail,
   enableInjected,
-  auth,
+  auth = {
+    showWallets: true
+  },
   enableWalletConnect,
   enableEIP6963,
   ...wagmiConfig
@@ -71,7 +74,8 @@ export function defaultWagmiConfig({
         chains: [...chains],
         options: { projectId },
         socials: auth?.socials,
-        email: enableEmail
+        email: enableEmail,
+        showWallets: auth.showWallets
       })
     )
   }

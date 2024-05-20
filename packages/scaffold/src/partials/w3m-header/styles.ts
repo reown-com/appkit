@@ -5,6 +5,10 @@ export default css`
     height: 64px;
   }
 
+  wui-text {
+    text-transform: capitalize;
+  }
+
   wui-icon-link[data-hidden='true'] {
     opacity: 0 !important;
     pointer-events: none;
