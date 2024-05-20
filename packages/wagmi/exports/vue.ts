@@ -1,7 +1,8 @@
 import { getWeb3Modal } from '@web3modal/scaffold-vue'
-import type { Web3ModalOptions, Config } from '../src/client.js'
+import type { Web3ModalOptions } from '../src/client.js'
 import { Web3Modal } from '../src/client.js'
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
+import type { Config } from '@wagmi/core'
 
 // -- Types -------------------------------------------------------------------
 export type { Web3ModalOptions } from '../src/client.js'
