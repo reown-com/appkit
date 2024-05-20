@@ -45,7 +45,7 @@ export class WuiListAccount extends LitElement {
     console.log('WuiListAccount', this.accountAddress, this.accountType)
 
     let type = 'EO'
-    if (this.enableWalletFeatures && this.connectedConnector === 'EMAIL') {
+    if (this.enableWalletFeatures && this.connectedConnector === 'AUTH') {
       type = this.accountType === 'eoa' ? 'Email' : 'Smart'
     }
 

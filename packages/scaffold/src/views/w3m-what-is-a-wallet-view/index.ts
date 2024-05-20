@@ -32,7 +32,7 @@ export class W3mWhatIsAWalletView extends LitElement {
         gap="xl"
       >
         <w3m-help-widget .data=${data}></w3m-help-widget>
-        <wui-button variant="fill" size="sm" @click=${this.onGetWallet.bind(this)}>
+        <wui-button variant="main" size="md" @click=${this.onGetWallet.bind(this)}>
           <wui-icon color="inherit" slot="iconLeft" name="wallet"></wui-icon>
           Get a wallet
         </wui-button>

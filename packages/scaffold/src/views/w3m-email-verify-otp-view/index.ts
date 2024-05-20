@@ -32,15 +32,15 @@ export class W3mEmailVerifyOtpView extends W3mEmailOtpWidget {
   // --  Private ------------------------------------------ //
   override onOtpSubmit: OnOtpSubmitFn = async otp => {
     try {
-      if (this.emailConnector) {
+      if (this.authConnector) {
         const smartAccountEnabled = NetworkController.checkIfSmartAccountEnabled()
-        await this.emailConnector.provider.connectOtp({ otp })
+        await this.authConnector.provider.connectOtp({ otp })
         EventsController.sendEvent({ type: 'track', event: 'EMAIL_VERIFICATION_CODE_PASS' })
-        await ConnectionController.connectExternal(this.emailConnector)
+        await ConnectionController.connectExternal(this.authConnector)
         EventsController.sendEvent({
           type: 'track',
           event: 'CONNECT_SUCCESS',
-          properties: { method: 'email', name: this.emailConnector.name || 'Unknown' }
+          properties: { method: 'email', name: this.authConnector.name || 'Unknown' }
         })
         console.log(
           'AccountController.state.allAccounts.length',
@@ -61,8 +61,8 @@ export class W3mEmailVerifyOtpView extends W3mEmailOtpWidget {
   }
 
   override onOtpResend: OnOtpResendFn = async email => {
-    if (this.emailConnector) {
-      await this.emailConnector.provider.connectEmail({ email })
+    if (this.authConnector) {
+      await this.authConnector.provider.connectEmail({ email })
       EventsController.sendEvent({ type: 'track', event: 'EMAIL_VERIFICATION_CODE_SENT' })
     }
   }

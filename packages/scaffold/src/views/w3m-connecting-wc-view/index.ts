@@ -82,7 +82,12 @@ export class W3mConnectingWcView extends LitElement {
           console.log('naving to SelectAddresses')
           RouterController.push('SelectAddresses')
         } else if (OptionsController.state.isSiweEnabled) {
-          RouterController.push('ConnectingSiwe')
+          const { SIWEController } = await import('@web3modal/siwe')
+          if (SIWEController.state.status === 'success') {
+            ModalController.close()
+          } else {
+            RouterController.push('ConnectingSiwe')
+          }
         } else {
           ModalController.close()
         }

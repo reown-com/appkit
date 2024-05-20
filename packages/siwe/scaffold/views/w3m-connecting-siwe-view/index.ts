@@ -11,6 +11,7 @@ import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { SIWEController } from '../../../core/controller/SIWEController.js'
+import { W3mFrameRpcConstants } from '@web3modal/wallet'
 
 @customElement('w3m-connecting-siwe-view')
 export class W3mConnectingSiweView extends LitElement {
@@ -49,8 +50,8 @@ export class W3mConnectingSiweView extends LitElement {
       <wui-flex .padding=${['l', 'xl', 'xl', 'xl'] as const} gap="s" justifyContent="space-between">
         <wui-button
           size="md"
-          ?fullwidth=${true}
-          variant="shade"
+          fullWidth
+          variant="neutral"
           @click=${this.onCancel.bind(this)}
           data-testid="w3m-connecting-siwe-cancel"
         >
@@ -58,8 +59,8 @@ export class W3mConnectingSiweView extends LitElement {
         </wui-button>
         <wui-button
           size="md"
-          ?fullwidth=${true}
-          variant="fill"
+          fullWidth
+          variant="main"
           @click=${this.onSign.bind(this)}
           ?loading=${this.isSigning}
           data-testid="w3m-connecting-siwe-sign"
@@ -95,8 +96,12 @@ export class W3mConnectingSiweView extends LitElement {
 
       return session
     } catch (error) {
-      SnackController.showError('Signature declined')
-
+      const preferredAccountType = AccountController.state.preferredAccountType
+      if (preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT) {
+        SnackController.showError('This application might not support Smart Accounts')
+      } else {
+        SnackController.showError('Signature declined')
+      }
       SIWEController.setStatus('error')
 
       return EventsController.sendEvent({

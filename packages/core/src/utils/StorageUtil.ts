@@ -74,6 +74,14 @@ export const StorageUtil = {
     }
   },
 
+  removeConnectedWalletImageUrl() {
+    try {
+      localStorage.removeItem(W3M_CONNECTED_WALLET_IMAGE_URL)
+    } catch {
+      console.info('Unable to remove Connected Wallet Image Url')
+    }
+  },
+
   getConnectedWalletImageUrl() {
     try {
       return localStorage.getItem(W3M_CONNECTED_WALLET_IMAGE_URL)

@@ -120,7 +120,7 @@ export class W3mProfileView extends LitElement {
   private async onSwitchAccount(account: AccountType) {
     console.log('onSwitchAccount', account.address)
     AccountController.setShouldUpdateToAddress(account.address)
-    const emailConnector = ConnectorController.getEmailConnector()
+    const emailConnector = ConnectorController.getAuthConnector()
     if (!emailConnector) {
       return
     }
@@ -130,18 +130,20 @@ export class W3mProfileView extends LitElement {
   }
 
   private accountTemplate(account: AccountType) {
-    // const actions = [
-    //   {
-    //     label: 'Copy Address',
-    //     icon: 'copy',
-    //     onClick: () => CoreHelperUtil.copyToClopboard(account.address)
-    //   },
-    //   {
-    //     label: 'Account Settings',
-    //     icon: 'copy',
-    //     onClick: () => RouterController.push('AccountSettings')
-    //   }
-    // ]
+    /*
+     * Const actions = [
+     *   {
+     *     label: 'Copy Address',
+     *     icon: 'copy',
+     *     onClick: () => CoreHelperUtil.copyToClopboard(account.address)
+     *   },
+     *   {
+     *     label: 'Account Settings',
+     *     icon: 'copy',
+     *     onClick: () => RouterController.push('AccountSettings')
+     *   }
+     * ]
+     */
 
     return html`<wui-list-account accountAddress=${account.address} accountType=${account.type}>
       ${account.address === this.address

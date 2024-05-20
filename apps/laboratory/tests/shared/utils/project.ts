@@ -35,33 +35,42 @@ const braveOptions: UseOptions = {
 }
 
 const customProjectProperties: CustomProjectProperties = {
+  'Desktop Chrome/ethers': {
+    testIgnore: /(?:social\.spec\.ts).*$/u
+  },
   'Desktop Brave/ethers': {
-    testIgnore: /(?:email\.spec\.ts|smart-account\.spec\.ts).*$/u,
+    testIgnore: /(?:email\.spec\.ts|smart-account\.spec\.ts|social\.spec\.ts).*$/u,
     useOptions: braveOptions
   },
+  'Desktop Firefox/ethers': {
+    testIgnore: /(?:social\.spec\.ts).*$/u
+  },
   'Desktop Brave/wagmi': {
-    testIgnore: /(?:email\.spec\.ts|smart-account\.spec\.ts|siwe-email\.spec\.ts).*$/u,
+    testIgnore:
+      /(?:email\.spec\.ts|smart-account\.spec\.ts|siwe-email\.spec\.ts|siwe-smart-account\.spec\.ts|social\.spec\.ts).*$/u,
     useOptions: braveOptions
   },
   'Desktop Chrome/wagmi': {
-    testIgnore: /(?:email\.spec\.ts|smart-account\.spec\.ts|siwe-email\.spec\.ts).*$/u
+    testIgnore:
+      /(?:email\.spec\.ts|smart-account\.spec\.ts|siwe-email\.spec\.ts|siwe-smart-account\.spec\.ts|social\.spec\.ts).*$/u
   },
   'Desktop Firefox/wagmi': {
-    testIgnore: /(?:email\.spec\.ts|smart-account\.spec\.ts|siwe-email\.spec\.ts).*$/u
+    testIgnore:
+      /(?:email\.spec\.ts|smart-account\.spec\.ts|siwe-email\.spec\.ts|siwe-smart-account\.spec\.ts|social\.spec\.ts).*$/u
   },
-  // Exclude email.spec.ts, siwe.spec.ts, and canary.spec.ts from solana, not yet implemented
+  // Exclude social.spec.ts, email.spec.ts, siwe.spec.ts, and canary.spec.ts from solana, not yet implemented
   'Desktop Chrome/solana': {
-    grep: /^(?!.*(?:email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts|smart-account\.spec\.ts)).*$/u
+    grep: /^(?!.*(?:email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts|smart-account\.spec\.ts|social\.spec\.ts)).*$/u
   },
   'Desktop Brave/solana': {
     useOptions: braveOptions,
-    grep: /^(?!.*(?:email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts|smart-account\.spec\.ts)).*$/u
+    grep: /^(?!.*(?:email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts|smart-account\.spec\.ts|social\.spec\.ts)).*$/u
   },
   'Desktop Firefox/solana': {
-    grep: /^(?!.*(?:email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts|smart-account\.spec\.ts)).*$/u
+    grep: /^(?!.*(?:email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts|smart-account\.spec\.ts|social\.spec\.ts)).*$/u
   },
   'Desktop Safari/solana': {
-    grep: /^(?!.*(?:email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts|smart-account\.spec\.ts)).*$/u
+    grep: /^(?!.*(?:email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts|smart-account\.spec\.ts|social\.spec\.ts)).*$/u
   }
 }
 
@@ -75,7 +84,8 @@ export function getProjects() {
     const deviceName = device === 'Desktop Brave' ? 'Desktop Chrome' : device
     let project = {
       name: `${device}/${library}`,
-      use: { ...devices[deviceName], library }
+      use: { ...devices[deviceName], library },
+      storageState: 'playwright/.auth/user.json'
     }
     const props = customProjectProperties[project.name]
     if (props) {

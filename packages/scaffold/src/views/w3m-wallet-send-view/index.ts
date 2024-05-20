@@ -58,7 +58,7 @@ export class W3mWalletSendView extends LitElement {
   public override render() {
     this.getMessage()
 
-    return html` <wui-flex flexDirection="column" .padding=${['s', 'l', 'l', 'l'] as const}>
+    return html` <wui-flex flexDirection="column" .padding=${['0', 'l', 'l', 'l'] as const}>
       <wui-flex class="inputContainer" gap="xs" flexDirection="column">
         <w3m-input-token
           .token=${this.token}
@@ -82,7 +82,7 @@ export class W3mWalletSendView extends LitElement {
           @click=${this.onButtonClick.bind(this)}
           ?disabled=${!this.message.startsWith('Preview Send')}
           size="lg"
-          variant="fill"
+          variant="main"
           ?loading=${this.loading}
           fullWidth
         >

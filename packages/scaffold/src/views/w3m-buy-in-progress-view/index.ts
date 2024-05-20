@@ -196,7 +196,7 @@ export class W3mBuyInProgressView extends LitElement {
       return null
     }
 
-    return html`<wui-button variant="accent" @click=${this.onTryAgain.bind(this)}>
+    return html`<wui-button size="md" variant="accent" @click=${this.onTryAgain.bind(this)}>
       <wui-icon color="inherit" slot="iconLeft" name="refresh"></wui-icon>
       Try again
     </wui-button>`

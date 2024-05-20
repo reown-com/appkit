@@ -29,7 +29,7 @@ export class WuiInputAmount extends LitElement {
     return html`<input
       ${ref(this.inputElementRef)}
       type="text"
-      inputmode="numeric"
+      inputmode="decimal"
       pattern="[0-9,.]*"
       placeholder=${this.placeholder}
       ?disabled=${this.disabled}
@@ -45,7 +45,9 @@ export class WuiInputAmount extends LitElement {
 
     if (inputChar && this.inputElementRef?.value) {
       if (inputChar === ',') {
-        this.inputElementRef.value.value = this.value.replace(',', '')
+        const inputValue = this.inputElementRef.value.value.replace(',', '.')
+        this.inputElementRef.value.value = inputValue
+        this.value = `${this.value}${inputValue}`
       } else if (!numbersRegex.test(inputChar)) {
         this.inputElementRef.value.value = this.value.replace(
           new RegExp(inputChar.replace(specialCharactersRegex, '\\$&'), 'gu'),

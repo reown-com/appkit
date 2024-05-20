@@ -1,13 +1,6 @@
 import { DEFAULT_SESSION_PARAMS } from './shared/constants'
 import { testMWSiwe } from './shared/fixtures/w3m-wallet-fixture'
 
-// Setup
-testMWSiwe.beforeEach(async ({ modalPage, walletPage }) => {
-  const uri = await modalPage.getConnectUri()
-  await walletPage.connectWithUri(uri)
-  await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
-})
-
 // Cleanup
 testMWSiwe.afterEach(async ({ modalValidator, walletValidator, browserName }) => {
   if (browserName === 'firefox') {
@@ -20,9 +13,9 @@ testMWSiwe.afterEach(async ({ modalValidator, walletValidator, browserName }) =>
 testMWSiwe(
   'it should sign in with ethereum',
   async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
-    await modalPage.promptSiwe()
-    await walletValidator.expectReceivedSign({})
-    await walletPage.handleRequest({ accept: true })
+    const uri = await modalPage.getConnectUri()
+    await walletPage.connectWithUri(uri)
+    await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
     await modalValidator.expectAuthenticated()
     await modalValidator.expectConnected()
     await walletValidator.expectConnected()
@@ -32,12 +25,10 @@ testMWSiwe(
 
 testMWSiwe(
   'it should reject sign in with ethereum',
-  async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
-    await modalPage.promptSiwe()
-    await walletValidator.expectReceivedSign({})
+  async ({ modalPage, walletPage, modalValidator }) => {
+    const uri = await modalPage.getConnectUri()
+    await walletPage.connectWithUri(uri)
     await walletPage.handleRequest({ accept: false })
-    await modalValidator.expectSignatureDeclined()
-    await modalPage.cancelSiwe()
     await modalValidator.expectUnauthenticated()
   }
 )
