@@ -133,7 +133,7 @@ export class W3mRegisterAccountNameView extends LitElement {
       return null
     }
 
-    const suggestions = this.registered ? this.suggestions : []
+    const suggestions = this.registered ? this.suggestions.filter(s => s.name !== this.name) : []
 
     return html`<wui-flex flexDirection="column" gap="xxs" alignItems="center">
       <wui-flex
@@ -145,9 +145,7 @@ export class W3mRegisterAccountNameView extends LitElement {
           ${this.name}</wui-text
         >${this.nameSuggestionTagTemplate()}
       </wui-flex>
-      ${suggestions
-        .filter(s => s.name !== this.name)
-        .map(suggestion => this.availableNameTemplate(suggestion.name))}
+      ${suggestions.map(suggestion => this.availableNameTemplate(suggestion.name))}
     </wui-flex>`
   }
 
