@@ -1,5 +1,3 @@
-import * as viemChains from 'viem/chains'
-
 export const mainnet = {
   chainId: 1,
   name: 'Ethereum',
@@ -126,10 +124,4 @@ export const solanaDevnet = {
   currency: 'SOL',
   explorerUrl: 'https://explorer.solana.com/?cluster=devnet',
   rpcUrl: 'https://api.devnet.solana.com'
-}
-
-export function getChain(id: number) {
-  const chains = Object.values(viemChains) as viemChains.Chain[]
-
-  return chains.find(x => x.id === id)
 }
