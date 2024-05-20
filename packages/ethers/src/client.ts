@@ -302,10 +302,7 @@ export class Web3Modal extends Web3ModalScaffold {
       },
 
       disconnect: async () => {
-        const provider = EthersStoreUtil.state.provider
-        const providerType = EthersStoreUtil.state.providerType
-        localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
-        EthersStoreUtil.reset()
+        const { provider, providerType } = EthersStoreUtil.state
         if (siweConfig?.options?.signOutOnDisconnect) {
           const { SIWEController } = await import('@web3modal/siwe')
           await SIWEController.signOut()
@@ -316,7 +313,38 @@ export class Web3Modal extends Web3ModalScaffold {
           // eslint-disable-next-line no-negated-condition
         } else if (providerType === ConstantsUtil.AUTH_CONNECTOR_ID) {
           await this.authProvider?.disconnect()
-        } else {
+        } else if (providerType === ConstantsUtil.EIP6963_CONNECTOR_ID && provider) {
+
+          const permissions = await provider.request({ method: 'wallet_getPermissions' }) as { parentCapability: string }[];
+          const ethAccountsPermission = permissions.find(
+            permission => permission.parentCapability === 'eth_accounts'
+          );
+
+          if (ethAccountsPermission) {
+            await provider.request({
+              method: 'wallet_revokePermissions',
+              params: [{ eth_accounts: {} }]
+            });
+          }
+          provider.emit('disconnect');
+        } else if (providerType === ConstantsUtil.INJECTED_CONNECTOR_ID) {
+          const InjectedProvider = ethersConfig.injected;
+          if (InjectedProvider) {
+            const permissions = await InjectedProvider.request({ method: 'wallet_getPermissions' }) as { parentCapability: string }[];
+            const ethAccountsPermission = permissions.find(
+              permission => permission.parentCapability === 'eth_accounts'
+            );
+
+            if (ethAccountsPermission) {
+              await InjectedProvider.request({
+                method: 'wallet_revokePermissions',
+                params: [{ eth_accounts: {} }]
+              });
+            }
+            InjectedProvider.emit('disconnect');
+          }
+        }
+        else {
           provider?.emit('disconnect')
         }
         localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
@@ -608,10 +636,10 @@ export class Web3Modal extends Web3ModalScaffold {
       showQrModal: false,
       rpcMap: this.chains
         ? this.chains.reduce<Record<number, string>>((map, chain) => {
-            map[chain.chainId] = chain.rpcUrl
+          map[chain.chainId] = chain.rpcUrl
 
-            return map
-          }, {})
+          return map
+        }, {})
         : ({} as Record<number, string>),
       optionalChains: [...this.chains.map(chain => chain.chainId)] as [number],
       metadata: {
@@ -1228,7 +1256,7 @@ export class Web3Modal extends Web3ModalScaffold {
               switchError.code === EthersConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
               switchError.code === EthersConstantsUtil.ERROR_CODE_DEFAULT ||
               switchError?.data?.originalError?.code ===
-                EthersConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
+              EthersConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
             ) {
               await EthersHelpersUtil.addEthereumChain(
                 WalletConnectProvider as unknown as Provider,
@@ -1254,7 +1282,7 @@ export class Web3Modal extends Web3ModalScaffold {
               switchError.code === EthersConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
               switchError.code === EthersConstantsUtil.ERROR_CODE_DEFAULT ||
               switchError?.data?.originalError?.code ===
-                EthersConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
+              EthersConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
             ) {
               await EthersHelpersUtil.addEthereumChain(InjectedProvider, chain)
             } else {
@@ -1278,7 +1306,7 @@ export class Web3Modal extends Web3ModalScaffold {
               switchError.code === EthersConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
               switchError.code === EthersConstantsUtil.ERROR_CODE_DEFAULT ||
               switchError?.data?.originalError?.code ===
-                EthersConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
+              EthersConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
             ) {
               await EthersHelpersUtil.addEthereumChain(EIP6963Provider, chain)
             } else {
@@ -1301,7 +1329,7 @@ export class Web3Modal extends Web3ModalScaffold {
               switchError.code === EthersConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
               switchError.code === EthersConstantsUtil.ERROR_CODE_DEFAULT ||
               switchError?.data?.originalError?.code ===
-                EthersConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
+              EthersConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
             ) {
               await EthersHelpersUtil.addEthereumChain(CoinbaseProvider, chain)
             }
