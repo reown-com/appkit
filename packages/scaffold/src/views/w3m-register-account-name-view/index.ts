@@ -40,13 +40,13 @@ export class W3mRegisterAccountNameView extends LitElement {
 
   // -- Lifecycle ----------------------------------------- //
   public override firstUpdated() {
-    this.formRef.value?.addEventListener('keydown', event => {
-      if (event.key === 'Enter') {
-        if (this.isAllowedToSubmit()) {
-          this.onSubmitName()
-        }
-      }
-    })
+    this.formRef.value?.addEventListener('keydown', this.onEnterKey.bind(this))
+  }
+
+  public override disconnectedCallback() {
+    super.disconnectedCallback()
+    this.usubscribe.forEach(unsub => unsub())
+    this.formRef.value?.removeEventListener('keydown', this.onEnterKey.bind(this))
   }
 
   // -- Render -------------------------------------------- //
@@ -177,6 +177,12 @@ export class W3mRegisterAccountNameView extends LitElement {
       await EnsController.registerName(this.name)
     } catch (error) {
       SnackController.showError((error as Error).message)
+    }
+  }
+
+  private onEnterKey(event: KeyboardEvent) {
+    if (event.key === 'Enter' && this.isAllowedToSubmit()) {
+      this.onSubmitName()
     }
   }
 }
