@@ -278,8 +278,6 @@ export class Web3ModalScaffold {
     OptionsController.setEnableAnalytics(options.enableAnalytics)
     OptionsController.setSdkVersion(options._sdkVersion)
 
-    ConnectionController.setClient(options.connectionControllerClient)
-
     if (options.siweControllerClient) {
       const { SIWEController } = await import('@web3modal/siwe')
 
@@ -309,6 +307,7 @@ export class Web3ModalScaffold {
     if (options.allowUnsupportedChain) {
       NetworkController.setAllowUnsupportedChain(options.allowUnsupportedChain)
     }
+    ConnectionController.setClient(options.connectionControllerClient)
   }
 
   private async initOrContinue() {

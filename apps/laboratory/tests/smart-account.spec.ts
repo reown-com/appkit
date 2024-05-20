@@ -48,21 +48,22 @@ testModalSmartAccount(
     const walletModalPage = modalPage as ModalWalletPage
     const walletModalValidator = modalValidator as ModalWalletValidator
 
+    const originalAddress = await walletModalPage.getAddress()
+
     await walletModalPage.openAccount()
     await walletModalPage.openSettings()
-
-    const originalAddress = await walletModalPage.getAddress()
 
     await walletModalPage.togglePreferredAccountType()
     await walletModalValidator.expectChangePreferredAccountToShow(EOA)
     await walletModalPage.switchNetwork('Avalanche')
+    await modalValidator.expectSwitchedNetwork('Avalanche')
     await walletModalValidator.expectTogglePreferredTypeVisible(false)
     await walletModalPage.closeModal()
 
     await walletModalPage.openAccount()
     await walletModalValidator.expectActivateSmartAccountPromoVisible(false)
+    await walletModalPage.closeModal()
 
-    await walletModalPage.openSettings()
     await walletModalValidator.expectAddress(originalAddress)
   }
 )
@@ -79,7 +80,7 @@ testModalSmartAccount(
     await walletModalPage.openSettings()
     await walletModalPage.togglePreferredAccountType()
     await walletModalPage.disconnect()
-    await walletModalPage.page.waitForTimeout(1500)
+    await walletModalPage.page.waitForTimeout(500)
 
     await walletModalPage.emailFlow(
       email.getEmailAddressToUse(parallelIndex, NOT_ENABLED_DOMAIN),
@@ -89,11 +90,32 @@ testModalSmartAccount(
     await walletModalPage.page.waitForTimeout(1500)
     await walletModalPage.openAccount()
     await walletModalPage.openSettings()
-    await walletModalPage.switchNetwork('Sepolia')
     await walletModalValidator.expectTogglePreferredTypeVisible(false)
     await walletModalPage.closeModal()
 
     await walletModalPage.openAccount()
     await walletModalValidator.expectActivateSmartAccountPromoVisible(false)
+  }
+)
+
+testModalSmartAccount(
+  'it should properly sign with a 6492 signature',
+  async ({ modalPage, modalValidator }) => {
+    const walletModalPage = modalPage as ModalWalletPage
+    const walletModalValidator = modalValidator as ModalWalletValidator
+
+    await walletModalPage.openAccount()
+    await walletModalPage.openSettings()
+    await walletModalPage.togglePreferredAccountType()
+    await walletModalValidator.expectChangePreferredAccountToShow(EOA)
+    await walletModalPage.closeModal()
+
+    await walletModalPage.sign()
+    await walletModalPage.approveSign()
+    await walletModalValidator.expectAcceptedSign()
+    const signature = await walletModalPage.getSignature()
+    const address = await walletModalPage.getAddress()
+    const chainId = await walletModalPage.getChainId()
+    await walletModalValidator.expectValidSignature(signature, address, chainId)
   }
 )

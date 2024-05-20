@@ -18,10 +18,6 @@ export default css`
     margin-top: var(--wui-spacing-2l);
   }
 
-  wui-tooltip-select {
-    width: 100%;
-  }
-
   wui-tabs {
     width: 100%;
   }

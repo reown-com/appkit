@@ -25,6 +25,21 @@ export class WuiListAccount extends LitElement {
   private readonly connectedConnector = StorageUtil.getConnectedConnector()
   private readonly enableWalletFeatures = OptionsController.state.enableWalletFeatures
 
+  @property({ type: Boolean }) public selected = false
+
+  @property({ type: Function }) public onSelect?: (
+    { address, type }: { address: string; type: string },
+    selected: boolean
+  ) => void
+
+  handleClick = (event: Event) => {
+    console.log('handleClick', event, this.onSelect)
+    this.onSelect?.(
+      { address: this.accountAddress, type: this.accountType },
+      // @ts-expect-error - checked is available on the event
+      event?.target?.checked
+    )
+  }
   // -- Render -------------------------------------------- //
   public override render() {
     console.log('WuiListAccount', this.accountAddress, this.accountType)

@@ -1,5 +1,14 @@
 # @web3modal/wallet
 
+## 4.1.12-910a844.0
+
+### Patch Changes
+
+- refactor: sync theme with secure site
+
+- Updated dependencies []:
+  - @web3modal/polyfills@4.1.12-910a844.0
+
 ## 4.1.11
 
 ### Patch Changes

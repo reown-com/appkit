@@ -1,5 +1,5 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
-import { proxy } from 'valtio/vanilla'
+import { proxy, snapshot } from 'valtio/vanilla'
 import type { CustomWallet, Metadata, ProjectId, SdkVersion, Tokens } from '../utils/TypeUtil.js'
 
 // -- Types --------------------------------------------- //
@@ -103,5 +103,9 @@ export const OptionsController = {
   setHasMultipleAddresses(hasMultipleAddresses: OptionsControllerState['hasMultipleAddresses']) {
     console.log('@options hasMultipleAddresses', hasMultipleAddresses)
     state.hasMultipleAddresses = hasMultipleAddresses
+  },
+
+  getSnapshot() {
+    return snapshot(state)
   }
 }

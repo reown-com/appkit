@@ -5,9 +5,10 @@ import type { AccountType, CaipAddress, ConnectedWalletInfo } from '../utils/Typ
 import type { Balance } from '@web3modal/common'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { SnackController } from './SnackController.js'
-import { ConvertController } from './ConvertController.js'
-import { ConvertApiUtil } from '../utils/ConvertApiUtil.js'
+import { SwapController } from './SwapController.js'
+import { SwapApiUtil } from '../utils/SwapApiUtil.js'
 import type { W3mFrameTypes } from '@web3modal/wallet'
+import { NetworkController } from './NetworkController.js'
 
 // -- Types --------------------------------------------- //
 export interface AccountControllerState {
@@ -116,12 +117,14 @@ export const AccountController = {
   },
 
   async fetchTokenBalance() {
+    const chainId = NetworkController.state.caipNetwork?.id
+
     try {
-      if (state.address) {
-        const response = await BlockchainApiController.getBalance(state.address)
+      if (state.address && chainId) {
+        const response = await BlockchainApiController.getBalance(state.address, chainId)
 
         this.setTokenBalance(response.balances)
-        ConvertController.setBalances(ConvertApiUtil.mapBalancesToConvertTokens(response.balances))
+        SwapController.setBalances(SwapApiUtil.mapBalancesToSwapTokens(response.balances))
       }
     } catch (error) {
       SnackController.showError('Failed to fetch token balance')
