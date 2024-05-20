@@ -30,14 +30,13 @@ export class WuiListToken extends LitElement {
     return html`
       <button data-clickable=${String(this.clickable)} ontouchstart>
         <wui-flex gap="s" alignItems="center">
-          <wui-image alt=${this.tokenName} src=${this.tokenImageUrl}></wui-image>
+          ${this.visualTemplate()}
           <wui-flex flexDirection="column" justifyContent="spaceBetween">
             <wui-text variant="paragraph-500" color="fg-100">${this.tokenName}</wui-text>
-            <wui-text variant="small-400" color="fg-200"
-              >${UiHelperUtil.roundNumber(Number(this.tokenAmount), 6, 5)}
-              ${this.tokenCurrency}</wui-text
-            ></wui-flex
-          >
+            <wui-text variant="small-400" color="fg-200">
+              ${UiHelperUtil.formatNumberToLocalString(this.tokenAmount, 4)} ${this.tokenCurrency}
+            </wui-text>
+          </wui-flex>
         </wui-flex>
         <wui-text variant="paragraph-500" color="fg-100">$${this.tokenValue.toFixed(2)}</wui-text>
       </button>
@@ -45,6 +44,13 @@ export class WuiListToken extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  public visualTemplate() {
+    if (this.tokenName && this.tokenImageUrl) {
+      return html`<wui-image alt=${this.tokenName} src=${this.tokenImageUrl}></wui-image>`
+    }
+
+    return html`<wui-icon name="coinPlaceholder" color="fg-100"></wui-icon>`
+  }
 }
 
 declare global {

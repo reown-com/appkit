@@ -56,8 +56,12 @@ import {
   FrameSwitchNetworkResponse,
   AppSyncDappDataRequest,
   FrameGetSmartAccountEnabledNetworksResponse,
-  FrameInitSmartAccountResponse
+  FrameUpdateEmailResponse,
+  AppGetSocialRedirectUriRequest,
+  FrameGetSocialRedirectUriResponse,
+  FrameConnectSocialResponse
 } from './W3mFrameSchema.js'
+import type { W3mFrameRpcConstants } from './W3mFrameConstants.js'
 
 export namespace W3mFrameTypes {
   export type AppEvent = z.infer<typeof W3mFrameSchema.appEvent>
@@ -67,6 +71,7 @@ export namespace W3mFrameTypes {
   export interface Requests {
     AppConnectEmailRequest: z.infer<typeof AppConnectEmailRequest>
     AppConnectOtpRequest: z.infer<typeof AppConnectOtpRequest>
+    AppGetSocialRedirectUriRequest: z.infer<typeof AppGetSocialRedirectUriRequest>
     AppSwitchNetworkRequest: z.infer<typeof AppSwitchNetworkRequest>
     AppGetUserRequest: z.infer<typeof AppGetUserRequest>
     AppUpdateEmailRequest: z.infer<typeof AppUpdateEmailRequest>
@@ -86,7 +91,9 @@ export namespace W3mFrameTypes {
     FrameGetSmartAccountEnabledNetworksResponse: z.infer<
       typeof FrameGetSmartAccountEnabledNetworksResponse
     >
-    FrameInitSmartAccountResponse: z.infer<typeof FrameInitSmartAccountResponse>
+    FrameUpdateEmailResponse: z.infer<typeof FrameUpdateEmailResponse>
+    FrameGetSocialRedirectUriResponse: z.infer<typeof FrameGetSocialRedirectUriResponse>
+    FrameConnectSocialResponse: z.infer<typeof FrameConnectSocialResponse>
   }
 
   export interface Network {
@@ -136,4 +143,8 @@ export namespace W3mFrameTypes {
   export type RPCResponse = z.infer<typeof RpcResponse>
 
   export type FrameSessionType = z.infer<typeof FrameSession>
+  export type AccountType =
+    (typeof W3mFrameRpcConstants.ACCOUNT_TYPES)[keyof typeof W3mFrameRpcConstants.ACCOUNT_TYPES]
+
+  export type SocialProvider = 'google' | 'github' | 'apple' | 'facebook' | 'x' | 'discord'
 }

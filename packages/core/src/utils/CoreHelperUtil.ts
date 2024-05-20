@@ -14,6 +14,10 @@ export const CoreHelperUtil = {
     return false
   },
 
+  checkCaipNetwork(network: CaipNetwork | undefined, networkName = '') {
+    return network?.id.toLocaleLowerCase().includes(networkName.toLowerCase())
+  },
+
   isAndroid() {
     const ua = window.navigator.userAgent.toLowerCase()
 
@@ -64,6 +68,7 @@ export const CoreHelperUtil = {
       function next() {
         func(...args)
       }
+
       if (timer) {
         clearTimeout(timer)
       }
@@ -215,6 +220,7 @@ export const CoreHelperUtil = {
 
     return 'Unknown error'
   },
+
   sortRequestedNetworks(
     approvedIds: `${string}:${string}`[] | undefined,
     requestedNetworks: CaipNetwork[] = []
@@ -244,20 +250,23 @@ export const CoreHelperUtil = {
 
     return requestedNetworks
   },
+
   calculateBalance(array: Balance[]) {
     let sum = 0
     for (const item of array) {
-      sum += item.value
+      sum += item.value ?? 0
     }
 
     return sum
   },
+
   formatTokenBalance(number: number) {
     const roundedNumber = number.toFixed(2)
     const [dollars, pennies] = roundedNumber.split('.')
 
     return { dollars, pennies }
   },
+
   isAddress(address: string): boolean {
     if (!/^(?:0x)?[0-9a-f]{40}$/iu.test(address)) {
       return false

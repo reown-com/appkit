@@ -1,12 +1,33 @@
-import { AssetUtil, CoreHelperUtil, NetworkController } from '@web3modal/core'
+import { AccountController, AssetUtil, CoreHelperUtil, NetworkController } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
+import { W3mFrameRpcConstants } from '@web3modal/wallet'
+import { state } from 'lit/decorators.js'
 
 @customElement('w3m-wallet-compatible-networks-view')
 export class W3mWalletCompatibleNetworksView extends LitElement {
   public static override styles = styles
+
+  // -- Members ------------------------------------------- //
+  private unsubscribe: (() => void)[] = []
+
+  // -- State & Properties -------------------------------- //
+  @state() private preferredAccountType = AccountController.state.preferredAccountType
+
+  public constructor() {
+    super()
+    this.unsubscribe.push(
+      AccountController.subscribeKey('preferredAccountType', val => {
+        this.preferredAccountType = val
+      })
+    )
+  }
+
+  public override disconnectedCallback() {
+    this.unsubscribe.forEach(unsubscribe => unsubscribe())
+  }
 
   // -- Render -------------------------------------------- //
   public override render() {
@@ -25,12 +46,24 @@ export class W3mWalletCompatibleNetworksView extends LitElement {
 
   // -- Private ------------------------------------------- //
   networkTemplate() {
-    const { approvedCaipNetworkIds, requestedCaipNetworks } = NetworkController.state
+    const { approvedCaipNetworkIds, requestedCaipNetworks, caipNetwork } = NetworkController.state
+    const isNetworkEnabledForSmartAccounts = NetworkController.checkIfSmartAccountEnabled()
 
-    const sortedNetworks = CoreHelperUtil.sortRequestedNetworks(
+    let sortedNetworks = CoreHelperUtil.sortRequestedNetworks(
       approvedCaipNetworkIds,
       requestedCaipNetworks
     )
+
+    // For now, each network has a unique account
+    if (
+      isNetworkEnabledForSmartAccounts &&
+      this.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+    ) {
+      if (!caipNetwork) {
+        return null
+      }
+      sortedNetworks = [caipNetwork]
+    }
 
     return sortedNetworks.map(
       network => html`

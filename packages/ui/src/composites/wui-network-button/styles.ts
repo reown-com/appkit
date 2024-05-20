@@ -11,24 +11,24 @@ export default css`
     gap: var(--wui-spacing-xs);
     padding: var(--wui-spacing-2xs) var(--wui-spacing-s) var(--wui-spacing-2xs)
       var(--wui-spacing-xs);
-    border: 1px solid var(--wui-gray-glass-010);
-    background-color: var(--wui-gray-glass-005);
+    border: 1px solid var(--wui-color-gray-glass-010);
+    background-color: var(--wui-color-gray-glass-005);
     color: var(--wui-color-fg-100);
   }
 
   button:disabled {
-    border: 1px solid var(--wui-gray-glass-005);
-    background-color: var(--wui-gray-glass-015);
-    color: var(--wui-gray-glass-015);
+    border: 1px solid var(--wui-color-gray-glass-005);
+    background-color: var(--wui-color-gray-glass-015);
+    color: var(--wui-color-gray-glass-015);
   }
 
   @media (hover: hover) and (pointer: fine) {
     button:hover:enabled {
-      background-color: var(--wui-gray-glass-010);
+      background-color: var(--wui-color-gray-glass-010);
     }
 
     button:active:enabled {
-      background-color: var(--wui-gray-glass-015);
+      background-color: var(--wui-color-gray-glass-015);
     }
   }
 
@@ -37,6 +37,6 @@ export default css`
     border-radius: var(--wui-border-radius-3xl);
     width: 24px;
     height: 24px;
-    box-shadow: 0 0 0 2px var(--wui-gray-glass-005);
+    box-shadow: 0 0 0 2px var(--wui-color-gray-glass-005);
   }
 `

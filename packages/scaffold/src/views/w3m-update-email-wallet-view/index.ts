@@ -46,13 +46,13 @@ export class W3mUpdateEmailWalletView extends LitElement {
         </form>
 
         <wui-flex gap="s">
-          <wui-button size="md" variant="shade" fullWidth @click=${RouterController.goBack}>
+          <wui-button size="md" variant="neutral" fullWidth @click=${RouterController.goBack}>
             Cancel
           </wui-button>
 
           <wui-button
             size="md"
-            variant="fill"
+            variant="main"
             fullWidth
             @click=${this.onSubmitEmail.bind(this)}
             .disabled=${!showSubmit}
@@ -78,18 +78,26 @@ export class W3mUpdateEmailWalletView extends LitElement {
 
       this.loading = true
       event.preventDefault()
-      const emailConnector = ConnectorController.getEmailConnector()
+      const authConnector = ConnectorController.getAuthConnector()
 
-      if (!emailConnector) {
+      if (!authConnector) {
         throw new Error('w3m-update-email-wallet: Email connector not found')
       }
 
-      await emailConnector.provider.updateEmail({ email: this.email })
+      const response = await authConnector.provider.updateEmail({ email: this.email })
       EventsController.sendEvent({ type: 'track', event: 'EMAIL_EDIT' })
-      RouterController.replace('UpdateEmailPrimaryOtp', {
-        email: this.initialEmail,
-        newEmail: this.email
-      })
+
+      if (response.action === 'VERIFY_SECONDARY_OTP') {
+        RouterController.push('UpdateEmailSecondaryOtp', {
+          email: this.initialEmail,
+          newEmail: this.email
+        })
+      } else {
+        RouterController.push('UpdateEmailPrimaryOtp', {
+          email: this.initialEmail,
+          newEmail: this.email
+        })
+      }
     } catch (error) {
       SnackController.showError(error)
       this.loading = false

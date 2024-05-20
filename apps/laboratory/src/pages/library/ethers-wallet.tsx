@@ -4,13 +4,17 @@ import { EthersConstants } from '../../utils/EthersConstants'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { EthersTests } from '../../components/Ethers/EthersTests'
 import { Web3ModalButtons } from '../../components/Web3ModalButtons'
+import { EthersModalInfo } from '../../components/Ethers/EthersModalInfo'
 
 const modal = createWeb3Modal({
   ethersConfig: defaultConfig({
     metadata: ConstantsUtil.Metadata,
     defaultChainId: 1,
     rpcUrl: 'https://cloudflare-eth.com',
-    enableEmail: true
+    enableEmail: true,
+    auth: {
+      socials: ['google', 'x', 'discord', 'apple', 'github']
+    }
   }),
   chains: EthersConstants.chains,
   projectId: ConstantsUtil.ProjectId,
@@ -29,6 +33,7 @@ export default function Ethers() {
   return (
     <>
       <Web3ModalButtons />
+      <EthersModalInfo />
       <EthersTests />
     </>
   )

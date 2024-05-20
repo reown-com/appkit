@@ -4,8 +4,8 @@ import { CoinbaseWalletSDK } from '@coinbase/wallet-sdk'
 
 export interface ConfigOptions {
   enableEIP6963?: boolean
-  enableInjected?: boolean
   enableCoinbase?: boolean
+  enableInjected?: boolean
   rpcUrl?: string
   defaultChainId?: number
   metadata: Metadata
@@ -66,12 +66,12 @@ export function defaultConfig(options: ConfigOptions) {
     return coinbaseProvider
   }
 
-  if (enableInjected) {
-    providers.injected = getInjectedProvider()
-  }
-
   if (enableCoinbase && rpcUrl && defaultChainId) {
     providers.coinbase = getCoinbaseProvider()
+  }
+
+  if (enableInjected) {
+    providers.injected = getInjectedProvider()
   }
 
   if (enableEIP6963) {

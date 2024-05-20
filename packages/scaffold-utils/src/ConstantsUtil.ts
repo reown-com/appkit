@@ -6,10 +6,13 @@ export const ConstantsUtil = {
   SAFE_CONNECTOR_ID: 'safe',
   LEDGER_CONNECTOR_ID: 'ledger',
   EIP6963_CONNECTOR_ID: 'eip6963',
-  EMAIL_CONNECTOR_ID: 'w3mEmail',
+  AUTH_CONNECTOR_ID: 'w3mAuth',
   EIP155: 'eip155',
   ADD_CHAIN_METHOD: 'wallet_addEthereumChain',
   EIP6963_ANNOUNCE_EVENT: 'eip6963:announceProvider',
   EIP6963_REQUEST_EVENT: 'eip6963:requestProvider',
-  VERSION: '4.1.1'
+  CONNECTOR_RDNS_MAP: {
+    coinbaseWallet: 'com.coinbase.wallet'
+  } as Record<string, string>,
+  VERSION: '4.2.1'
 }

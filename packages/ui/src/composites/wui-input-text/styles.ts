@@ -11,19 +11,22 @@ export default css`
   input {
     width: 100%;
     border-radius: var(--wui-border-radius-xs);
-    border: 1px solid var(--wui-gray-glass-005);
-    background: var(--wui-gray-glass-005);
+    box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-002);
+    background: var(--wui-color-gray-glass-002);
     font-size: var(--wui-font-size-paragraph);
-    font-weight: var(--wui-font-weight-light);
     letter-spacing: var(--wui-letter-spacing-paragraph);
     color: var(--wui-color-fg-100);
-    transition: all var(--wui-ease-inout-power-1) var(--wui-duration-lg);
+    transition:
+      background-color var(--wui-ease-inout-power-1) var(--wui-duration-md),
+      border-color var(--wui-ease-inout-power-1) var(--wui-duration-md),
+      box-shadow var(--wui-ease-inout-power-1) var(--wui-duration-md);
+    will-change: background-color, border-color, box-shadow;
     caret-color: var(--wui-color-accent-100);
   }
 
   input:disabled {
     cursor: not-allowed;
-    border: 1px solid var(--wui-gray-glass-010);
+    border: 1px solid var(--wui-color-gray-glass-010);
   }
 
   input:disabled::placeholder,
@@ -36,16 +39,20 @@ export default css`
   }
 
   input:focus:enabled {
-    transition: all var(--wui-ease-out-power-2) var(--wui-duration-sm);
-    background-color: var(--wui-gray-glass-010);
-    border: 1px solid var(--wui-color-accent-100);
-    -webkit-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
-    -moz-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
-    box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
+    background-color: var(--wui-color-gray-glass-005);
+    -webkit-box-shadow:
+      inset 0 0 0 1px var(--wui-color-accent-100),
+      0px 0px 0px 4px var(--wui-box-shadow-blue);
+    -moz-box-shadow:
+      inset 0 0 0 1px var(--wui-color-accent-100),
+      0px 0px 0px 4px var(--wui-box-shadow-blue);
+    box-shadow:
+      inset 0 0 0 1px var(--wui-color-accent-100),
+      0px 0px 0px 4px var(--wui-box-shadow-blue);
   }
 
   input:hover:enabled {
-    background-color: var(--wui-gray-glass-010);
+    background-color: var(--wui-color-gray-glass-005);
   }
 
   wui-icon {
@@ -73,7 +80,7 @@ export default css`
 
   wui-icon + .wui-size-md,
   wui-loading-spinner + .wui-size-md {
-    padding: 10.5px var(--wui-spacing-3xl) 10.5px 40px;
+    padding: 10.5px var(--wui-spacing-3xl) 10.5px var(--wui-spacing-3xl);
   }
 
   wui-icon[data-input='md'] {
@@ -99,6 +106,17 @@ export default css`
     left: var(--wui-spacing-l);
   }
 
+  .wui-size-mdl {
+    padding: 17.25px var(--wui-spacing-m) 17.25px var(--wui-spacing-m);
+  }
+  wui-icon + .wui-size-mdl,
+  wui-loading-spinner + .wui-size-mdl {
+    padding: 17.25px var(--wui-spacing-3xl) 17.25px 40px;
+  }
+  wui-icon[data-input='mdl'] {
+    left: var(--wui-spacing-m);
+  }
+
   input:placeholder-shown ~ ::slotted(wui-input-element),
   input:placeholder-shown ~ ::slotted(wui-icon) {
     opacity: 0;
@@ -120,7 +138,6 @@ export default css`
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    transition: all var(--wui-ease-in-power-2) var(--wui-duration-md);
   }
 
   ::slotted(wui-input-element) {

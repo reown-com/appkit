@@ -7,24 +7,24 @@ export default css`
 
   button {
     border-radius: var(--wui-border-radius-3xl);
-    background: var(--wui-gray-glass-002);
+    background: var(--wui-color-gray-glass-002);
     display: flex;
     gap: var(--wui-spacing-xs);
     padding: var(--wui-spacing-3xs) var(--wui-spacing-xs) var(--wui-spacing-3xs)
       var(--wui-spacing-xs);
-    border: 1px solid var(--wui-gray-glass-005);
+    border: 1px solid var(--wui-color-gray-glass-005);
   }
 
   button:disabled {
-    background: var(--wui-gray-glass-015);
+    background: var(--wui-color-gray-glass-015);
   }
 
   button:disabled > wui-text {
-    color: var(--wui-gray-glass-015);
+    color: var(--wui-color-gray-glass-015);
   }
 
   button:disabled > wui-flex > wui-text {
-    color: var(--wui-gray-glass-015);
+    color: var(--wui-color-gray-glass-015);
   }
 
   button:disabled > wui-image,
@@ -44,7 +44,6 @@ export default css`
 
   wui-flex > wui-text {
     color: var(--wui-color-fg-200);
-    transition: all var(--wui-ease-out-power-1) var(--wui-duration-lg);
   }
 
   wui-image,
@@ -52,13 +51,13 @@ export default css`
     border-radius: var(--wui-border-radius-3xl);
     width: 24px;
     height: 24px;
-    box-shadow: 0 0 0 2px var(--wui-gray-glass-005);
+    box-shadow: 0 0 0 2px var(--wui-color-gray-glass-005);
   }
 
   wui-flex {
     border-radius: var(--wui-border-radius-3xl);
-    border: 1px solid var(--wui-gray-glass-005);
-    background: var(--wui-gray-glass-005);
+    border: 1px solid var(--wui-color-gray-glass-005);
+    background: var(--wui-color-gray-glass-005);
     padding: 4px var(--wui-spacing-m) 4px var(--wui-spacing-xxs);
   }
 
@@ -71,7 +70,7 @@ export default css`
   wui-avatar {
     width: 20px;
     height: 20px;
-    box-shadow: 0 0 0 2px var(--wui-accent-glass-010);
+    box-shadow: 0 0 0 2px var(--wui-color-accent-glass-010);
   }
 
   @media (max-width: 500px) {

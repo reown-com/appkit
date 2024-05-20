@@ -32,13 +32,21 @@ export const GetTransactionByHashResponse = z.object({
 export const AppSwitchNetworkRequest = z.object({ chainId: z.number() })
 export const AppConnectEmailRequest = z.object({ email: z.string().email() })
 export const AppConnectOtpRequest = z.object({ otp: z.string() })
-export const AppGetUserRequest = z.object({ chainId: z.optional(z.number()) })
+export const AppConnectSocialRequest = z.object({ uri: z.string() })
+export const AppGetUserRequest = z.object({
+  chainId: z.optional(z.number()),
+  preferredAccountType: z.optional(z.string())
+})
+export const AppGetSocialRedirectUriRequest = z.object({
+  provider: z.enum(['google', 'github', 'apple', 'facebook', 'x', 'discord'])
+})
 export const AppUpdateEmailRequest = z.object({ email: z.string().email() })
 export const AppUpdateEmailPrimaryOtpRequest = z.object({ otp: z.string() })
 export const AppUpdateEmailSecondaryOtpRequest = z.object({ otp: z.string() })
 export const AppSyncThemeRequest = z.object({
   themeMode: z.optional(z.enum(['light', 'dark'])),
-  themeVariables: z.optional(z.record(z.string(), z.string().or(z.number())))
+  themeVariables: z.optional(z.record(z.string(), z.string().or(z.number()))),
+  w3mThemeVariables: z.record(z.string(), z.string())
 })
 export const AppSyncDappDataRequest = z.object({
   metadata: z
@@ -53,6 +61,7 @@ export const AppSyncDappDataRequest = z.object({
     | `${'html' | 'react' | 'vue'}-wagmi-${string}`
     | `${'html' | 'react' | 'vue'}-ethers5-${string}`
     | `${'html' | 'react' | 'vue'}-ethers-${string}`
+    | `${'html' | 'react' | 'vue'}-solana-${string}`
   >,
   projectId: z.string()
 })
@@ -61,11 +70,22 @@ export const AppSetPreferredAccountRequest = z.object({ type: z.string() })
 export const FrameConnectEmailResponse = z.object({
   action: z.enum(['VERIFY_DEVICE', 'VERIFY_OTP'])
 })
-export const FrameGetUserResponse = z.object({
-  email: z.string().email(),
+export const FrameConnectSocialResponse = z.object({
+  email: z.string(),
   address: z.string(),
   chainId: z.number()
 })
+export const FrameUpdateEmailResponse = z.object({
+  action: z.enum(['VERIFY_PRIMARY_OTP', 'VERIFY_SECONDARY_OTP'])
+})
+export const FrameGetUserResponse = z.object({
+  email: z.string().email(),
+  address: z.string(),
+  chainId: z.number(),
+  smartAccountDeployed: z.optional(z.boolean()),
+  preferredAccountType: z.optional(z.string())
+})
+export const FrameGetSocialRedirectUriResponse = z.object({ uri: z.string() })
 export const FrameIsConnectedResponse = z.object({ isConnected: z.boolean() })
 export const FrameGetChainIdResponse = z.object({ chainId: z.number() })
 export const FrameSwitchNetworkResponse = z.object({ chainId: z.number() })
@@ -77,7 +97,7 @@ export const FrameInitSmartAccountResponse = z.object({
   address: z.string(),
   isDeployed: z.boolean()
 })
-export const FrameSetPreferredAccountResponse = z.object({ type: z.string() })
+export const FrameSetPreferredAccountResponse = z.object({ type: z.string(), address: z.string() })
 
 export const RpcResponse = z.any()
 
@@ -274,7 +294,16 @@ export const W3mFrameSchema = {
 
     .or(z.object({ type: zType('APP_CONNECT_OTP'), payload: AppConnectOtpRequest }))
 
+    .or(z.object({ type: zType('APP_CONNECT_SOCIAL'), payload: AppConnectSocialRequest }))
+
     .or(z.object({ type: zType('APP_GET_USER'), payload: z.optional(AppGetUserRequest) }))
+
+    .or(
+      z.object({
+        type: zType('APP_GET_SOCIAL_REDIRECT_URI'),
+        payload: AppGetSocialRedirectUriRequest
+      })
+    )
 
     .or(z.object({ type: zType('APP_SIGN_OUT') }))
 
@@ -376,9 +405,31 @@ export const W3mFrameSchema = {
 
     .or(z.object({ type: zType('FRAME_CONNECT_DEVICE_SUCCESS') }))
 
+    .or(
+      z.object({
+        type: zType('FRAME_CONNECT_SOCIAL_SUCCESS'),
+        payload: FrameConnectSocialResponse
+      })
+    )
+    .or(
+      z.object({
+        type: zType('FRAME_CONNECT_SOCIAL_ERROR'),
+        payload: zError
+      })
+    )
+
     .or(z.object({ type: zType('FRAME_GET_USER_ERROR'), payload: zError }))
 
     .or(z.object({ type: zType('FRAME_GET_USER_SUCCESS'), payload: FrameGetUserResponse }))
+
+    .or(z.object({ type: zType('FRAME_GET_SOCIAL_REDIRECT_URI_ERROR'), payload: zError }))
+
+    .or(
+      z.object({
+        type: zType('FRAME_GET_SOCIAL_REDIRECT_URI_SUCCESS'),
+        payload: FrameGetSocialRedirectUriResponse
+      })
+    )
 
     .or(z.object({ type: zType('FRAME_SIGN_OUT_ERROR'), payload: zError }))
 
@@ -400,7 +451,7 @@ export const W3mFrameSchema = {
 
     .or(z.object({ type: zType('FRAME_UPDATE_EMAIL_ERROR'), payload: zError }))
 
-    .or(z.object({ type: zType('FRAME_UPDATE_EMAIL_SUCCESS') }))
+    .or(z.object({ type: zType('FRAME_UPDATE_EMAIL_SUCCESS'), payload: FrameUpdateEmailResponse }))
 
     .or(z.object({ type: zType('FRAME_UPDATE_EMAIL_PRIMARY_OTP_ERROR'), payload: zError }))
 
@@ -434,13 +485,6 @@ export const W3mFrameSchema = {
       z.object({
         type: zType('FRAME_GET_SMART_ACCOUNT_ENABLED_NETWORKS_ERROR'),
         payload: zError
-      })
-    )
-
-    .or(
-      z.object({
-        type: zType('FRAME_INIT_SMART_ACCOUNT_SUCCESS'),
-        payload: FrameInitSmartAccountResponse
       })
     )
     .or(z.object({ type: zType('FRAME_INIT_SMART_ACCOUNT_ERROR'), payload: zError }))

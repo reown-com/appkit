@@ -8,7 +8,7 @@ export default css`
     width: 76px;
     row-gap: var(--wui-spacing-xs);
     padding: var(--wui-spacing-xs) 10px;
-    background-color: var(--wui-gray-glass-002);
+    background-color: var(--wui-color-gray-glass-002);
     border-radius: clamp(0px, var(--wui-border-radius-xs), 20px);
     position: relative;
   }
@@ -27,7 +27,7 @@ export default css`
   }
 
   svg > path {
-    stroke: var(--wui-gray-glass-010);
+    stroke: var(--wui-color-gray-glass-010);
     stroke-width: 1px;
   }
 `

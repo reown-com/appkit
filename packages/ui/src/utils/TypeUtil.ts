@@ -10,7 +10,8 @@ export type ColorType =
   | 'inverse-000'
   | 'inverse-100'
   | 'success-100'
-  | 'glass-005'
+  | 'gray-glass-005'
+  | 'gray-glass-020'
 
 export type TextType =
   | 'large-500'
@@ -108,6 +109,7 @@ export type IconType =
   | 'browser'
   | 'card'
   | 'checkmark'
+  | 'checkmarkBold'
   | 'chevronBottom'
   | 'chevronLeft'
   | 'chevronRight'
@@ -133,6 +135,7 @@ export type IconType =
   | 'infoCircle'
   | 'mail'
   | 'mobile'
+  | 'more'
   | 'networkPlaceholder'
   | 'nftPlaceholder'
   | 'off'
@@ -146,6 +149,7 @@ export type IconType =
   | 'swapHorizontal'
   | 'swapHorizontalBold'
   | 'swapHorizontalMedium'
+  | 'swapHorizontalRoundedBold'
   | 'swapVertical'
   | 'telegram'
   | 'twitch'
@@ -157,6 +161,7 @@ export type IconType =
   | 'walletConnect'
   | 'walletPlaceholder'
   | 'warningCircle'
+  | 'x'
 
 export type VisualType =
   | 'browser'
@@ -165,7 +170,9 @@ export type VisualType =
   | 'defi'
   | 'defiAlt'
   | 'eth'
+  | 'google'
   | 'layers'
+  | 'lightbulb'
   | 'lock'
   | 'login'
   | 'network'
@@ -177,6 +184,7 @@ export type VisualType =
   | 'moonpay'
   | 'stripe'
   | 'paypal'
+  | 'pencil'
 
 export type VisualSize = 'sm' | 'md' | 'lg'
 
@@ -186,15 +194,26 @@ export type LogoType =
   | 'facebook'
   | 'github'
   | 'google'
+  | 'more'
   | 'telegram'
   | 'twitch'
-  | 'twitter'
+  | 'x'
 
 export type PlacementType = 'bottom' | 'left' | 'right' | 'top'
 
 export type ChipType = 'fill' | 'shade' | 'shadeSmall' | 'transparent' | 'success' | 'error'
 
-export type ButtonType = 'accent' | 'fill' | 'shade' | 'fullWidth' | 'accentBg'
+export type ChipButtonVariant = 'accent' | 'main' | 'shade' | 'gray'
+
+export type ButtonSize = 'lg' | 'md'
+
+export type ButtonVariant =
+  | 'main'
+  | 'inverse'
+  | 'accent'
+  | 'accent-error'
+  | 'accent-success'
+  | 'neutral'
 
 export type TransactionType =
   | 'approve'

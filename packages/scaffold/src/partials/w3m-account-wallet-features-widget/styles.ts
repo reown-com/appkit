@@ -11,11 +11,11 @@ export default css`
   }
 
   wui-profile-button {
-    margin-top: var(--wui-spacing-2l);
+    margin-top: calc(-1 * var(--wui-spacing-2l));
   }
 
-  wui-tooltip-select {
-    width: 100%;
+  wui-promo + wui-profile-button {
+    margin-top: var(--wui-spacing-2l);
   }
 
   wui-tabs {

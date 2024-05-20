@@ -14,6 +14,12 @@ export default css`
     pointer-events: none;
     opacity: 0;
     background-color: var(--wui-cover);
+    transition: opacity 0.2s var(--wui-ease-out-power-2);
+    will-change: opacity;
+  }
+
+  :host(.open) {
+    opacity: 1;
   }
 
   @keyframes zoom-in {
@@ -35,10 +41,9 @@ export default css`
   }
 
   wui-card {
-    max-width: 360px;
+    max-width: var(--w3m-modal-width);
     width: 100%;
     position: relative;
-    animation-delay: 0.3s;
     animation-duration: 0.2s;
     animation-name: zoom-in;
     animation-fill-mode: backwards;

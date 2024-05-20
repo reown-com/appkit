@@ -10,16 +10,17 @@ type Component = Meta<WuiButton & { iconLeft?: IconType; iconRight?: IconType }>
 export default {
   title: 'Composites/wui-button',
   args: {
-    size: 'md',
-    variant: 'fill',
+    size: 'lg',
+    variant: 'main',
     disabled: false,
+    fullWidth: false,
     iconLeft: undefined,
     iconRight: undefined,
     loading: false
   },
   argTypes: {
     size: {
-      options: ['sm', 'md', 'lg'],
+      options: ['lg', 'md'],
       control: { type: 'select' }
     },
     variant: {
@@ -49,6 +50,7 @@ export const Default: Component = {
       size=${args.size}
       ?loading=${args.loading}
       ?disabled=${args.disabled}
+      ?fullWidth=${args.fullWidth}
       variant=${args.variant}
     >
       ${args.iconLeft

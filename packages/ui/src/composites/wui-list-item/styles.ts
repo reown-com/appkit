@@ -5,9 +5,13 @@ export default css`
     column-gap: var(--wui-spacing-s);
     padding: 11px 18px 11px var(--wui-spacing-s);
     width: 100%;
-    background-color: var(--wui-gray-glass-002);
+    background-color: var(--wui-color-gray-glass-002);
     border-radius: var(--wui-border-radius-xs);
     color: var(--wui-color-fg-250);
+    transition:
+      color var(--wui-ease-out-power-1) var(--wui-duration-md),
+      background-color var(--wui-ease-out-power-1) var(--wui-duration-md);
+    will-change: color, background-color;
   }
 
   button[data-iconvariant='square'],
@@ -22,21 +26,23 @@ export default css`
   button > wui-image {
     width: 32px;
     height: 32px;
-    box-shadow: 0 0 0 2px var(--wui-gray-glass-005);
+    box-shadow: 0 0 0 2px var(--wui-color-gray-glass-005);
     border-radius: var(--wui-border-radius-3xl);
   }
 
   button > wui-icon {
     width: 36px;
     height: 36px;
+    transition: opacity var(--wui-ease-out-power-1) var(--wui-duration-md);
+    will-change: opacity;
   }
 
   button > wui-icon-box[data-variant='blue'] {
-    box-shadow: 0 0 0 2px var(--wui-accent-glass-005);
+    box-shadow: 0 0 0 2px var(--wui-color-accent-glass-005);
   }
 
   button > wui-icon-box[data-variant='overlay'] {
-    box-shadow: 0 0 0 2px var(--wui-gray-glass-005);
+    box-shadow: 0 0 0 2px var(--wui-color-gray-glass-005);
   }
 
   button > wui-icon-box[data-variant='square-blue'] {
@@ -55,7 +61,7 @@ export default css`
     left: 0;
     right: 0;
     border-radius: inherit;
-    border: 1px solid var(--wui-accent-glass-010);
+    border: 1px solid var(--wui-color-accent-glass-010);
     pointer-events: none;
   }
 
@@ -64,13 +70,16 @@ export default css`
     height: 14px;
   }
 
+  button:hover:enabled {
+    background-color: var(--wui-color-gray-glass-005);
+  }
+
   button:disabled {
-    background-color: var(--wui-gray-glass-015);
-    color: var(--wui-gray-glass-015);
+    background-color: var(--wui-color-gray-glass-015);
+    color: var(--wui-color-gray-glass-015);
   }
 
   button[data-loading='true'] > wui-icon {
-    transition: opacity 200ms ease-in-out;
     opacity: 0;
   }
 

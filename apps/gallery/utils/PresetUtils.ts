@@ -2,8 +2,9 @@ import type {
   AccountEntryType,
   BackgroundType,
   BorderRadiusType,
-  ButtonType,
+  ButtonVariant,
   CardSelectType,
+  ChipButtonVariant,
   ChipType,
   ColorType,
   FlexAlignItemsType,
@@ -253,12 +254,14 @@ export const logoOptions: LogoType[] = [
   'google',
   'telegram',
   'twitch',
-  'twitter'
+  'x'
 ]
 
 export const placementOptions: PlacementType[] = ['top', 'right', 'bottom', 'left']
 
-export const chipOptions: ChipType[] = [
+export const chipButtonVariants: ChipButtonVariant[] = ['main', 'accent', 'shade', 'gray', 'shade']
+
+export const chipVariants: ChipType[] = [
   'fill',
   'transparent',
   'shade',
@@ -267,7 +270,14 @@ export const chipOptions: ChipType[] = [
   'error'
 ]
 
-export const buttonOptions: ButtonType[] = ['fill', 'accent', 'shade', 'fullWidth', 'accentBg']
+export const buttonOptions: ButtonVariant[] = [
+  'main',
+  'accent',
+  'accent',
+  'accent-error',
+  'accent-success',
+  'neutral'
+]
 
 export const transactionTypeOptions: TransactionType[] = [
   'approve',

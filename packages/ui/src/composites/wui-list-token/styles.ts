@@ -7,7 +7,7 @@ export default css`
     justify-content: space-between;
     width: 100%;
     border-radius: var(--wui-border-radius-xs);
-    background-color: var(--wui-gray-glass-002);
+    background-color: var(--wui-color-gray-glass-002);
   }
 
   button[data-clickable='false'] {
@@ -15,9 +15,13 @@ export default css`
     background-color: transparent;
   }
 
-  wui-image {
+  wui-image,
+  wui-icon {
     width: var(--wui-spacing-3xl);
     height: var(--wui-spacing-3xl);
+  }
+
+  wui-image {
     border-radius: var(--wui-border-radius-3xl);
   }
 `

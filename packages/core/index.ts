@@ -55,8 +55,14 @@ export type { EventsControllerState } from './src/controllers/EventsController.j
 export { TransactionsController } from './src/controllers/TransactionsController.js'
 export type { TransactionsControllerState } from './src/controllers/TransactionsController.js'
 
+export { SwapController } from './src/controllers/SwapController.js'
+export type { SwapControllerState, SwapInputTarget } from './src/controllers/SwapController.js'
+
 export { SendController } from './src/controllers/SendController.js'
 export type { SendControllerState } from './src/controllers/SendController.js'
+
+export { TooltipController } from './src/controllers/TooltipController.js'
+export type { TooltipControllerState } from './src/controllers/TooltipController.js'
 
 // -- Utils -------------------------------------------------------------------
 export { AssetUtil } from './src/utils/AssetUtil.js'

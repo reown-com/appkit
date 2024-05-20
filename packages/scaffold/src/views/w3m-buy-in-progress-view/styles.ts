@@ -43,7 +43,7 @@ export default css`
     position: absolute;
     inset: 0;
     border-radius: calc(var(--wui-border-radius-5xs) * 9 - var(--wui-border-radius-xxs));
-    box-shadow: inset 0 0 0 1px var(--wui-gray-glass-005);
+    box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-005);
   }
 
   wui-icon-box {
@@ -52,7 +52,10 @@ export default css`
     bottom: calc(var(--wui-spacing-3xs) * -1);
     opacity: 0;
     transform: scale(0.5);
-    transition: all var(--wui-ease-out-power-2) var(--wui-duration-lg);
+    transition:
+      opacity var(--wui-ease-out-power-2) var(--wui-duration-lg),
+      transform var(--wui-ease-out-power-2) var(--wui-duration-lg);
+    will-change: opacity, transform;
   }
 
   wui-text[align='center'] {

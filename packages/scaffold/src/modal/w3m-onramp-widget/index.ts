@@ -64,22 +64,22 @@ export class W3mOnrampWidget extends LitElement {
     return html`
       <wui-flex flexDirection="column" justifyContent="center" alignItems="center">
         <wui-flex flexDirection="column" alignItems="center" gap="xs">
-          <w3m-swap-input
+          <w3m-onramp-input
             type="Fiat"
             @inputChange=${this.onPaymentAmountChange.bind(this)}
             .value=${this.paymentAmount || 0}
-          ></w3m-swap-input>
-          <w3m-swap-input
+          ></w3m-onramp-input>
+          <w3m-onramp-input
             type="Token"
             .value=${this.purchaseAmount || 0}
             .loading=${this.quoteLoading}
-          ></w3m-swap-input>
+          ></w3m-onramp-input>
           <wui-flex justifyContent="space-evenly" class="amounts-container" gap="xs">
             ${BUY_PRESET_AMOUNTS.map(
               amount =>
                 html`<wui-button
-                  variant=${this.paymentAmount === amount ? 'accentBg' : 'shade'}
-                  size="xs"
+                  variant=${this.paymentAmount === amount ? 'accent' : 'neutral'}
+                  size="md"
                   textVariant="paragraph-600"
                   fullWidth
                   @click=${() => this.selectPresetAmount(amount)}
@@ -99,7 +99,7 @@ export class W3mOnrampWidget extends LitElement {
     return this.connected
       ? html`<wui-button
           @click=${this.getQuotes.bind(this)}
-          variant="fill"
+          variant="main"
           fullWidth
           size="lg"
           borderRadius="xs"
@@ -108,7 +108,7 @@ export class W3mOnrampWidget extends LitElement {
         </wui-button>`
       : html`<wui-button
           @click=${this.openModal.bind(this)}
-          variant="accentBg"
+          variant="accent"
           fullWidth
           size="lg"
           borderRadius="xs"

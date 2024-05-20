@@ -11,6 +11,7 @@ import { UiHelperUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
 import { state } from 'lit/decorators.js'
+import { W3mFrameRpcConstants } from '@web3modal/wallet'
 
 @customElement('w3m-wallet-receive-view')
 export class W3mWalletReceiveView extends LitElement {
@@ -26,6 +27,8 @@ export class W3mWalletReceiveView extends LitElement {
 
   @state() private network = NetworkController.state.caipNetwork
 
+  @state() private preferredAccountType = AccountController.state.preferredAccountType
+
   public constructor() {
     super()
     this.unsubscribe.push(
@@ -34,6 +37,7 @@ export class W3mWalletReceiveView extends LitElement {
           if (val.address) {
             this.address = val.address
             this.profileName = val.profileName
+            this.preferredAccountType = val.preferredAccountType
           } else {
             SnackController.showError('Account not found')
           }
@@ -61,20 +65,21 @@ export class W3mWalletReceiveView extends LitElement {
 
     return html` <wui-flex
       flexDirection="column"
-      .padding=${['xl', 'l', 'l', 'l'] as const}
+      .padding=${['0', 'l', 'l', 'l'] as const}
       alignItems="center"
     >
       <wui-chip-button
         @click=${this.onCopyClick.bind(this)}
         text=${UiHelperUtil.getTruncateString({
-          string: this.address ?? '',
+          string: this.profileName || this.address || '',
           charsStart: this.profileName ? 18 : 4,
           charsEnd: this.profileName ? 0 : 4,
           truncate: this.profileName ? 'end' : 'middle'
         })}
         icon="copy"
+        size="sm"
         imageSrc=${networkImage ? networkImage : ''}
-        variant="shadeSmall"
+        variant="gray"
       ></wui-chip-button>
       <wui-flex
         flexDirection="column"
@@ -100,6 +105,23 @@ export class W3mWalletReceiveView extends LitElement {
   // -- Private ------------------------------------------- //
   networkTemplate() {
     const networks = NetworkController.getRequestedCaipNetworks()
+    const isNetworkEnabledForSmartAccounts = NetworkController.checkIfSmartAccountEnabled()
+    const caipNetwork = NetworkController.state.caipNetwork
+
+    if (
+      this.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT &&
+      isNetworkEnabledForSmartAccounts
+    ) {
+      if (!caipNetwork) {
+        return null
+      }
+
+      return html`<wui-compatible-network
+        @click=${this.onReceiveClick.bind(this)}
+        text="Only receive assets on this network"
+        .networkImages=${[AssetUtil.getNetworkImage(caipNetwork) ?? '']}
+      ></wui-compatible-network>`
+    }
     const slicedNetworks = networks?.filter(network => network?.imageId)?.slice(0, 5)
     const imagesArray = slicedNetworks.map(AssetUtil.getNetworkImage).filter(Boolean) as string[]
 

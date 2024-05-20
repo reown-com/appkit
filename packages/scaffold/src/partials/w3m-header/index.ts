@@ -1,5 +1,6 @@
 import type { RouterControllerState } from '@web3modal/core'
 import {
+  AccountController,
   ConnectionController,
   ConnectorController,
   EventsController,
@@ -53,9 +54,17 @@ function headings() {
     OnRampFiatSelect: 'Select Currency',
     WalletReceive: 'Receive',
     WalletCompatibleNetworks: 'Compatible Networks',
+    Swap: 'Swap',
+    SwapSelectToken: 'Select token',
+    SwapPreview: 'Preview swap',
     WalletSend: 'Send',
     WalletSendPreview: 'Review send',
-    WalletSendSelectToken: 'Select Token'
+    WalletSendSelectToken: 'Select Token',
+    ConnectWallets: 'Connect wallet',
+    ConnectSocials: 'All socials',
+    ConnectingSocial: AccountController.state.socialProvider
+      ? AccountController.state.socialProvider
+      : 'Connect Social'
   }
 }
 
@@ -100,13 +109,12 @@ export class W3mHeader extends LitElement {
           data-testid="w3m-header-close"
         ></wui-icon-link>
       </wui-flex>
-      ${this.separatorTemplate()}
     `
   }
 
   // -- Private ------------------------------------------- //
 
-  // Tempory added to test connecting with SIWE, replace with 'WhatIsAWallet' again when approved
+  // Temporarily added to test connecting with SIWE, replace with 'WhatIsAWallet' again when approved
   private onWalletHelp() {
     EventsController.sendEvent({ type: 'track', event: 'CLICK_WALLET_HELP' })
     RouterController.push('WhatIsAWallet')
@@ -131,8 +139,9 @@ export class W3mHeader extends LitElement {
     const isConnectHelp = view === 'Connect'
     const isApproveTransaction = view === 'ApproveTransaction'
     const isUpgradeToSmartAccounts = view === 'UpgradeToSmartAccount'
+    const isConnectingSIWEView = view === 'ConnectingSiwe'
 
-    const shouldHideBack = isApproveTransaction || isUpgradeToSmartAccounts
+    const shouldHideBack = isApproveTransaction || isUpgradeToSmartAccounts || isConnectingSIWEView
 
     if (this.showBack && !shouldHideBack) {
       return html`<wui-icon-link
@@ -149,14 +158,6 @@ export class W3mHeader extends LitElement {
       icon="helpCircle"
       @click=${this.onWalletHelp.bind(this)}
     ></wui-icon-link>`
-  }
-
-  private separatorTemplate() {
-    if (!this.heading) {
-      return null
-    }
-
-    return html`<wui-separator></wui-separator>`
   }
 
   private getPadding() {
@@ -216,11 +217,7 @@ export class W3mHeader extends LitElement {
   }
 
   private onGoBack() {
-    if (RouterController.state.view === 'ConnectingSiwe') {
-      RouterController.push('Connect')
-    } else {
-      RouterController.goBack()
-    }
+    RouterController.goBack()
   }
 }
 
