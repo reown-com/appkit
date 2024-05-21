@@ -17,7 +17,6 @@ import {
   type Chain
 } from 'wagmi/chains'
 import { ConstantsUtil } from './ConstantsUtil'
-import { defaultWagmiConfig } from '@web3modal/wagmi/react/config'
 
 export const WagmiConstantsUtil = {
   chains: [
