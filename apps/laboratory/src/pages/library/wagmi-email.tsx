@@ -7,12 +7,12 @@ import { WagmiTests } from '../../components/Wagmi/WagmiTests'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
-import { wagmiConfig } from '../../utils/WagmiConstants'
+import { CONFIGS } from '../../utils/WagmiConstants'
 
 const queryClient = new QueryClient()
 
 const modal = createWeb3Modal({
-  wagmiConfig,
+  wagmiConfig: CONFIGS.email,
   projectId: ConstantsUtil.ProjectId,
   enableAnalytics: true,
   metadata: ConstantsUtil.Metadata,
