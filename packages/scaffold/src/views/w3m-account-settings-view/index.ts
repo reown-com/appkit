@@ -242,8 +242,10 @@ export class W3mAccountSettingsView extends LitElement {
     }
 
     this.loading = true
+    ModalController.setLoading(true)
     await authConnector?.provider.setPreferredAccount(accountTypeTarget)
     await ConnectionController.reconnectExternal(authConnector)
+    ModalController.setLoading(false)
 
     this.text =
       accountTypeTarget === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT

@@ -21,6 +21,7 @@ export interface SIWECreateMessageArgs {
   requestId?: string
   resources?: string[]
   expiry?: number
+  iat?: string
 }
 export type SIWEMessageArgs = {
   chains: number[]
