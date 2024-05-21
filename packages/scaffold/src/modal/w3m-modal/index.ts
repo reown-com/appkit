@@ -36,12 +36,18 @@ export class W3mModal extends LitElement {
 
   @state() private connected = AccountController.state.isConnected
 
+  @state() private loading = ModalController.state.loading
+
   public constructor() {
     super()
     this.initializeTheming()
     ApiController.prefetch()
     this.unsubscribe.push(
       ModalController.subscribeKey('open', val => (val ? this.onOpen() : this.onClose())),
+      ModalController.subscribeKey('loading', val => {
+        this.loading = val
+        this.onNewAddress(AccountController.state.caipAddress)
+      }),
       AccountController.subscribeKey('isConnected', val => (this.connected = val)),
       AccountController.subscribeKey('caipAddress', val => this.onNewAddress(val)),
       OptionsController.subscribeKey('isSiweEnabled', val => (this.isSiweEnabled = val))
@@ -158,12 +164,17 @@ export class W3mModal extends LitElement {
   }
 
   private async onNewAddress(caipAddress?: CaipAddress) {
-    if (!this.connected) {
+    console.log('on new address loading', this.loading)
+    if (!this.connected || this.loading) {
       return
     }
+    console.log('prev caip address', this.caipAddress)
+    console.log('new caip address', caipAddress)
     const hasNetworkChanged = this.caipAddress && this.caipAddress !== caipAddress
+    console.log('has network changed', hasNetworkChanged)
     this.caipAddress = caipAddress
     if (this.isSiweEnabled) {
+      // Case 2: Siwe session exists and network has changed
       const { SIWEController } = await import('@web3modal/siwe')
       const session = await SIWEController.getSession()
 
