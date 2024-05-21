@@ -5,14 +5,16 @@ import { getCallsStatus } from '@wagmi/core/experimental'
 import { useCallback, useState, useEffect } from 'react'
 import { useChakraToast } from '../Toast'
 import { EIP_5792_RPC_METHODS } from '../../utils/EIP5792Utils'
-import { wagmiConfig } from '../../utils/WagmiConstants'
+import { CONFIGS } from '../../utils/WagmiConstants'
 import { bigIntReplacer } from '../../utils/CommonUtils'
+import { useRouter } from 'next/router'
 
 export function WagmiGetCallsStatusTest() {
   const [ethereumProvider, setEthereumProvider] =
     useState<Awaited<ReturnType<(typeof EthereumProvider)['init']>>>()
   const [isLoading, setLoading] = useState(false)
   const [batchCallId, setBatchCallId] = useState('')
+  const router = useRouter()
 
   const { status, address } = useAccount()
   const connection = useConnections()
@@ -23,7 +25,10 @@ export function WagmiGetCallsStatusTest() {
   const onGetCallsStatus = useCallback(async () => {
     setLoading(true)
     try {
-      const batchCallsStatus = await getCallsStatus(wagmiConfig, { id: batchCallId })
+      const configType = ['email', 'all', 'wallet'].some(type => router.asPath.includes(type))
+        ? 'email'
+        : 'default'
+      const batchCallsStatus = await getCallsStatus(CONFIGS[configType], { id: batchCallId })
       toast({
         title: 'Success',
         description: JSON.stringify(batchCallsStatus, bigIntReplacer),
