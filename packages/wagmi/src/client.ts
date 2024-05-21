@@ -20,7 +20,7 @@ import {
 import { mainnet } from 'viem/chains'
 import { prepareTransactionRequest, sendTransaction as wagmiSendTransaction } from '@wagmi/core'
 import type { Chain } from '@wagmi/core/chains'
-import type { GetAccountReturnType } from '@wagmi/core'
+import type { GetAccountReturnType, GetEnsAddressReturnType } from '@wagmi/core'
 import type {
   CaipAddress,
   CaipNetwork,
@@ -297,18 +297,29 @@ export class Web3Modal extends Web3ModalScaffold {
       },
 
       getEnsAddress: async (value: string) => {
-        const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
+        try {
+          const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
+          let ensName: boolean | GetEnsAddressReturnType = false
+          let wcName: boolean | string = false
 
-        if (chainId !== mainnet.id) {
+          if (value?.endsWith('wcn.id')) {
+            const trimmedName = value.replace('.wcn.id', '')
+            const wcNameAddress = await this.resolveWalletConnectName(trimmedName)
+            const networkNameAddresses = Object.values(wcNameAddress?.addresses) || []
+            wcName = networkNameAddresses[0]?.address || false
+          }
+
+          if (chainId === mainnet.id) {
+            ensName = await wagmiGetEnsAddress(this.wagmiConfig, {
+              name: normalize(value),
+              chainId
+            })
+          }
+
+          return ensName || wcName || false
+        } catch {
           return false
         }
-
-        const address = await wagmiGetEnsAddress(this.wagmiConfig, {
-          name: normalize(value),
-          chainId
-        })
-
-        return address || false
       },
 
       getEnsAvatar: async (value: string) => {

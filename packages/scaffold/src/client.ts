@@ -262,6 +262,10 @@ export class Web3ModalScaffold {
     return EnsController.getNamesForAddress(address)
   }
 
+  protected resolveWalletConnectName: (typeof EnsController)['resolveName'] = name => {
+    return EnsController.resolveName(name)
+  }
+
   // -- Private ------------------------------------------------------------------
   private async initControllers(options: ScaffoldOptions) {
     NetworkController.setClient(options.networkControllerClient)
