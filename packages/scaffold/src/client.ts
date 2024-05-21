@@ -120,6 +120,10 @@ export class Web3ModalScaffold {
     return AccountController.subscribeKey('connectedWalletInfo', callback)
   }
 
+  public subscribeShouldUpdateToAddress(callback: (newState?: string) => void) {
+    AccountController.subscribeKey('shouldUpdateToAddress', callback)
+  }
+
   public getState() {
     return PublicStateController.state
   }
@@ -192,6 +196,14 @@ export class Web3ModalScaffold {
     AccountController.setAllAccounts(addresses)
     console.log('@scaffold setHasMultipleAddresses', addresses?.length > 1)
     OptionsController.setHasMultipleAddresses(addresses?.length > 1)
+  }
+
+  protected addAddressLabel: (typeof AccountController)['addAddressLabel'] = (address, label) => {
+    AccountController.addAddressLabel(address, label)
+  }
+
+  protected removeAddressLabel: (typeof AccountController)['removeAddressLabel'] = address => {
+    AccountController.removeAddressLabel(address)
   }
 
   protected setBalance: (typeof AccountController)['setBalance'] = (balance, balanceSymbol) => {

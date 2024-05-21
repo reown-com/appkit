@@ -18,16 +18,20 @@ export class W3mSelectAddressesView extends LitElement {
   public static override styles = styles
   // -- Members ------------------------------------------- //
   private readonly metadata = OptionsController.state.metadata
-  public readonly allAccounts: AccountType[] = AccountController.state.allAccounts
+  public allAccounts: AccountType[] = AccountController.state.allAccounts
   private selectedAccounts: AccountType[] = []
   // Private selectAll = false
 
   @state() private isApproving = false
   constructor() {
     super()
+    AccountController.subscribeKey('allAccounts', allAccounts => {
+      this.allAccounts = allAccounts
+    })
     console.log('W3mSelectAddressesView')
     console.log('metadata', this.metadata)
     console.log('selectedAccounts', this.selectedAccounts)
+    console.log('allAccounts', this.allAccounts)
   }
 
   onSelectAll = (event: Event) => {

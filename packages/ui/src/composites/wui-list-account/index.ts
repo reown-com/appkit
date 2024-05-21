@@ -8,7 +8,7 @@ import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
 import { W3mFrameRpcConstants } from '@web3modal/wallet'
-import { OptionsController, StorageUtil } from '@web3modal/core'
+import { AccountController, OptionsController, StorageUtil } from '@web3modal/core'
 
 @customElement('wui-list-account')
 export class WuiListAccount extends LitElement {
@@ -24,6 +24,7 @@ export class WuiListAccount extends LitElement {
 
   private readonly connectedConnector = StorageUtil.getConnectedConnector()
   private readonly enableWalletFeatures = OptionsController.state.enableWalletFeatures
+  private readonly labels = AccountController.state.addressLabels
 
   @property({ type: Boolean }) public selected = false
 
@@ -42,11 +43,12 @@ export class WuiListAccount extends LitElement {
   }
   // -- Render -------------------------------------------- //
   public override render() {
-    console.log('WuiListAccount', this.accountAddress, this.accountType)
+    let label = this.labels?.get(this.accountAddress)
+    console.log('WuiListAccount', this.accountAddress, this.accountType, label)
 
-    let type = 'Externally Owned'
-    if (this.enableWalletFeatures && this.connectedConnector === 'AUTH') {
-      type = this.accountType === 'eoa' ? 'Email' : 'Smart'
+    // If there is no provided label, set one depending on the account type
+    if (!label && this.enableWalletFeatures && this.connectedConnector === 'AUTH') {
+      label = `${this.accountType === 'eoa' ? 'Email' : 'Smart'} Account`
     }
 
     return html`
@@ -75,9 +77,7 @@ export class WuiListAccount extends LitElement {
                 truncate: 'middle'
               })}</wui-text
             >
-            <wui-text class="address-description" variant="small-400"
-              >${type} Account</wui-text
-            ></wui-flex
+            <wui-text class="address-description" variant="small-400">${label}</wui-text></wui-flex
           >
         </wui-flex>
         <wui-flex gap="s" alignItems="center">

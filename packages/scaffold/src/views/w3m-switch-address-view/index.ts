@@ -13,8 +13,16 @@ export class W3mSwitchAddressView extends LitElement {
   public static override styles = styles
   // -- Members ------------------------------------------- //
   private readonly metadata = OptionsController.state.metadata
-  public readonly allAccounts: AccountType[] = AccountController.state.allAccounts || []
+  public allAccounts: AccountType[] = AccountController.state.allAccounts || []
+  public readonly labels = AccountController.state.addressLabels
   public readonly currentAddress: string = AccountController.state.address || ''
+
+  constructor() {
+    super()
+    AccountController.subscribeKey('allAccounts', allAccounts => {
+      this.allAccounts = allAccounts
+    })
+  }
 
   // -- Render -------------------------------------------- //
   public override render() {
@@ -34,7 +42,9 @@ export class W3mSwitchAddressView extends LitElement {
   // -- Private ------------------------------------------- //
 
   private getAddressTemplate(address: string) {
-    console.log('getAddressTemplate', address, this.allAccounts)
+    // If there is custom label for the address, use it
+    const label = this.labels?.get(address)
+    console.log('getAddressTemplate', address, this.allAccounts, label)
 
     return html`
       <wui-flex flexDirection="row" justifyContent="space-between">
@@ -50,12 +60,14 @@ export class W3mSwitchAddressView extends LitElement {
           ></wui-icon-box>
           <wui-flex flexDirection="column">
             <wui-text class="address" variant="paragraph-500" color="fg-100"
-              >${UiHelperUtil.getTruncateString({
-                string: address,
-                charsStart: 4,
-                charsEnd: 6,
-                truncate: 'middle'
-              })}</wui-text
+              >${label
+                ? label
+                : UiHelperUtil.getTruncateString({
+                    string: address,
+                    charsStart: 4,
+                    charsEnd: 6,
+                    truncate: 'middle'
+                  })}</wui-text
             >
             <wui-text class="address-description" variant="small-400">$20,23.43</wui-text></wui-flex
           >

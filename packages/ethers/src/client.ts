@@ -15,7 +15,7 @@ import type {
 } from '@web3modal/scaffold'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
-import { AccountController, NetworkController } from '@web3modal/core'
+import { NetworkController } from '@web3modal/core'
 import EthereumProvider, { OPTIONAL_METHODS } from '@walletconnect/ethereum-provider'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
 import type {
@@ -323,6 +323,7 @@ export class Web3Modal extends Web3ModalScaffold {
         }
         localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
         EthersStoreUtil.reset()
+        this.setAllAccounts([])
       },
 
       signMessage: async (message: string) => {
@@ -498,8 +499,7 @@ export class Web3Modal extends Web3ModalScaffold {
     })
 
     // Console.log('@ethers, NetworkController caipNetwork', network)
-
-    AccountController.subscribeKey('shouldUpdateToAddress', (address?: string) => {
+    this.subscribeShouldUpdateToAddress((address?: string) => {
       console.log('shouldUpdateToAddress', address)
       if (!address) {
         return
@@ -741,7 +741,15 @@ export class Web3Modal extends Web3ModalScaffold {
       EthersStoreUtil.setIsConnected(true)
       console.log('WalletConnectProvider.accounts', WalletConnectProvider.accounts)
       this.setAllAccounts(WalletConnectProvider.accounts.map(address => ({ address, type: 'eoa' })))
-
+      const session = WalletConnectProvider.signer?.session
+      console.log('session', session)
+      for (const address of WalletConnectProvider.accounts) {
+        const label = session?.sessionProperties?.[address]
+        if (label) {
+          console.log('addAddressLabel', address, label)
+          this.addAddressLabel(address, label)
+        }
+      }
       this.setAddress(WalletConnectProvider.accounts?.[0])
       this.watchWalletConnect()
     }

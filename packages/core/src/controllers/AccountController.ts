@@ -22,6 +22,7 @@ export interface AccountControllerState {
   caipAddress?: CaipAddress
   address?: string
   addresses?: string[]
+  addressLabels: Map<string, string>
   allAccounts: AccountType[]
   balance?: string
   balanceSymbol?: string
@@ -44,7 +45,8 @@ const state = proxy<AccountControllerState>({
   currentTab: 0,
   tokenBalance: [],
   smartAccountDeployed: false,
-  allAccounts: []
+  allAccounts: [],
+  addressLabels: new Map()
 })
 
 // -- Controller ---------------------------------------- //
@@ -114,6 +116,14 @@ export const AccountController = {
     state.allAccounts = accounts
   },
 
+  addAddressLabel(address: string, label: string) {
+    state.addressLabels.set(address, label)
+  },
+
+  removeAddressLabel(address: string) {
+    state.addressLabels.delete(address)
+  },
+
   setConnectedWalletInfo(connectedWalletInfo: AccountControllerState['connectedWalletInfo']) {
     state.connectedWalletInfo = connectedWalletInfo
   },
@@ -144,6 +154,7 @@ export const AccountController = {
   },
 
   resetAccount() {
+    console.log('@AccountController resetAccount')
     state.isConnected = false
     state.smartAccountDeployed = false
     state.currentTab = 0
