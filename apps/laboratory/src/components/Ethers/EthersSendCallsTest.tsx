@@ -8,8 +8,8 @@ import { vitalikEthAddress } from '../../utils/DataUtil'
 import { BrowserProvider } from 'ethers'
 import {
   EIP_5792_RPC_METHODS,
-  WALLET_CAPABILITY_NAMES,
-  getCapabilitySupportedChainInfoForEthers
+  WALLET_CAPABILITIES,
+  getCapabilitySupportedChainInfo
 } from '../../utils/EIP5792Utils'
 
 export function EthersSendCallsTest() {
@@ -21,12 +21,9 @@ export function EthersSendCallsTest() {
 
   const atomicBatchSupportedChains =
     address && walletProvider instanceof EthereumProvider
-      ? getCapabilitySupportedChainInfoForEthers(
-          WALLET_CAPABILITY_NAMES.ATOMIC_BATCH,
-          walletProvider,
-          address
-        )
+      ? getCapabilitySupportedChainInfo(WALLET_CAPABILITIES.ATOMIC_BATCH, walletProvider, address)
       : []
+
   const atomicBatchSupportedChainNames = atomicBatchSupportedChains
     .map(ci => ci.chainName)
     .join(', ')

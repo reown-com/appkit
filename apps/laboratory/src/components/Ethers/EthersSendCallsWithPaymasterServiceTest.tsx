@@ -7,9 +7,9 @@ import { parseGwei } from 'viem'
 import { vitalikEthAddress } from '../../utils/DataUtil'
 import { BrowserProvider } from 'ethers'
 import {
-  WALLET_CAPABILITY_NAMES,
   EIP_5792_RPC_METHODS,
-  getCapabilitySupportedChainInfoForEthers
+  WALLET_CAPABILITIES,
+  getCapabilitySupportedChainInfo
 } from '../../utils/EIP5792Utils'
 
 export function EthersSendCallsWithPaymasterServiceTest() {
@@ -22,8 +22,8 @@ export function EthersSendCallsWithPaymasterServiceTest() {
 
   const paymasterServiceSupportedChains =
     address && walletProvider instanceof EthereumProvider
-      ? getCapabilitySupportedChainInfoForEthers(
-          WALLET_CAPABILITY_NAMES.PAYMASTER_SERVICE,
+      ? getCapabilitySupportedChainInfo(
+          WALLET_CAPABILITIES.PAYMASTER_SERVICE,
           walletProvider,
           address
         )

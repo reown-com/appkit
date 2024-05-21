@@ -8,8 +8,8 @@ import { parseGwei, type Address } from 'viem'
 import { vitalikEthAddress } from '../../utils/DataUtil'
 import {
   EIP_5792_RPC_METHODS,
-  WALLET_CAPABILITY_NAMES,
-  getCapabilitySupportedChainInfoForViem
+  WALLET_CAPABILITIES,
+  getFilteredCapabilitySupportedChainInfo
 } from '../../utils/EIP5792Utils'
 
 const TEST_TX_1 = {
@@ -35,8 +35,8 @@ export function WagmiSendCallsTest() {
 
   const isConnected = status === 'connected'
   const atomicBatchSupportedChains = availableCapabilities
-    ? getCapabilitySupportedChainInfoForViem(
-        WALLET_CAPABILITY_NAMES.ATOMIC_BATCH,
+    ? getFilteredCapabilitySupportedChainInfo(
+        WALLET_CAPABILITIES.ATOMIC_BATCH,
         availableCapabilities
       )
     : []

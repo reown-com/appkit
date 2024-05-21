@@ -8,12 +8,12 @@ export const EIP_5792_RPC_METHODS = {
   WALLET_SEND_CALLS: 'wallet_sendCalls'
 }
 
-export const WALLET_CAPABILITY_NAMES = {
+export const WALLET_CAPABILITIES = {
   ATOMIC_BATCH: 'atomicBatch',
   PAYMASTER_SERVICE: 'paymasterService'
 }
 
-export function getCapabilitySupportedChainInfoForEthers(
+export function getCapabilitySupportedChainInfo(
   capability: string,
   provider: Awaited<ReturnType<(typeof EthereumProvider)['init']>>,
   address: string
@@ -21,33 +21,23 @@ export function getCapabilitySupportedChainInfoForEthers(
   chainId: number
   chainName: string
 }[] {
-  if (address && provider?.signer?.session?.sessionProperties) {
-    const walletCapabilitiesString = provider.signer.session.sessionProperties['capabilities']
-    const walletCapabilities = walletCapabilitiesString && parseJSON(walletCapabilitiesString)
-    const accountCapabilities = walletCapabilities[address]
-    const chainIds = accountCapabilities
-      ? Object.keys(accountCapabilities)
-          .filter(
-            chainIdAsHex => accountCapabilities[chainIdAsHex]?.[capability]?.supported === true
-          )
-          .map(chainIdAsHex => Number(chainIdAsHex))
-      : []
-    const chainInfo = chainIds.map(id => {
-      const chain = getChain(id)
-
-      return {
-        chainId: id,
-        chainName: chain?.name ?? `Unknown Chain(${id})`
-      }
-    })
-
-    return chainInfo
+  if (!(provider instanceof EthereumProvider) || !address) {
+    return []
   }
+  const walletCapabilitiesString = provider.signer?.session?.sessionProperties?.['capabilities']
+  if (!walletCapabilitiesString) {
+    return []
+  }
+  const walletCapabilities = parseJSON(walletCapabilitiesString)
+  const accountCapabilities = walletCapabilities[address]
+  if (!accountCapabilities) {
+    return []
+  }
+  const perChainCapabilities = convertCapabilitiesToRecord(accountCapabilities)
 
-  return []
+  return getFilteredCapabilitySupportedChainInfo(capability, perChainCapabilities)
 }
-
-export function getCapabilitySupportedChainInfoForViem(
+export function getFilteredCapabilitySupportedChainInfo(
   capability: string,
   capabilities: Record<number, WalletCapabilities>
 ): {
@@ -61,14 +51,25 @@ export function getCapabilitySupportedChainInfoForViem(
 
       return capabilitiesPerChain?.[capability]?.supported === true
     })
-    .map(chainId => {
-      const capabilityChain = getChain(parseInt(chainId, 10))
+    .map(cId => {
+      const chainId = parseInt(cId, 10)
+      const capabilityChain = getChain(chainId)
 
       return {
-        chainId: parseInt(chainId, 10),
+        chainId,
         chainName: capabilityChain?.name ?? `Unknown Chain(${chainId})`
       }
     })
 
   return chainInfo
 }
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+export function convertCapabilitiesToRecord(
+  accountCapabilities: Record<string, any>
+): Record<number, Record<string, any>> {
+  return Object.fromEntries(
+    Object.entries(accountCapabilities).map(([key, value]) => [parseInt(key, 16), value])
+  )
+}
+/* eslint-enable @typescript-eslint/no-explicit-any */

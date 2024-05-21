@@ -7,9 +7,9 @@ import { useChakraToast } from '../Toast'
 import { parseGwei, type Address } from 'viem'
 import { vitalikEthAddress } from '../../utils/DataUtil'
 import {
-  WALLET_CAPABILITY_NAMES,
+  getFilteredCapabilitySupportedChainInfo,
   EIP_5792_RPC_METHODS,
-  getCapabilitySupportedChainInfoForViem
+  WALLET_CAPABILITIES
 } from '../../utils/EIP5792Utils'
 
 const TEST_TX_1 = {
@@ -36,8 +36,8 @@ export function WagmiSendCallsWithPaymasterServiceTest() {
 
   const isConnected = status === 'connected'
   const paymasterServiceSupportedChains = availableCapabilities
-    ? getCapabilitySupportedChainInfoForViem(
-        WALLET_CAPABILITY_NAMES.PAYMASTER_SERVICE,
+    ? getFilteredCapabilitySupportedChainInfo(
+        WALLET_CAPABILITIES.PAYMASTER_SERVICE,
         availableCapabilities
       )
     : []
