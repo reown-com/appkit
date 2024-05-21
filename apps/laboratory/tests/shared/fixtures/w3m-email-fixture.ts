@@ -1,5 +1,4 @@
 import type { ModalFixture } from './w3m-fixture'
-import { testMSiwe as siwe } from './w3m-fixture'
 import { ModalPage } from '../pages/ModalPage'
 import { ModalValidator } from '../validators/ModalValidator'
 import { Email } from '../utils/email'
