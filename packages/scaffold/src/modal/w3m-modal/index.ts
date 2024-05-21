@@ -162,10 +162,8 @@ export class W3mModal extends LitElement {
       return
     }
     const hasNetworkChanged = this.caipAddress && this.caipAddress !== caipAddress
+    this.caipAddress = caipAddress
     if (this.isSiweEnabled) {
-      this.caipAddress = caipAddress
-
-      // Case 2: Siwe session exists and network has changed
       const { SIWEController } = await import('@web3modal/siwe')
       const session = await SIWEController.getSession()
 
