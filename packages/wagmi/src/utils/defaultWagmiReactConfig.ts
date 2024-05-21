@@ -60,9 +60,9 @@ export function defaultWagmiConfig({
   if (enableCoinbase !== false) {
     connectors.push(
       coinbaseWallet({
+        version: '4',
         appName: metadata?.name ?? 'Unknown',
-        appLogoUrl: metadata?.icons[0] ?? 'Unknown',
-        enableMobileWalletLink: true
+        appLogoUrl: metadata?.icons[0] ?? 'Unknown'
       })
     )
   }
