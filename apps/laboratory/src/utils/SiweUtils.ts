@@ -10,7 +10,8 @@ export const siweConfig = createSIWEConfig({
     domain: window.location.host,
     uri: window.location.origin,
     chains: WagmiConstantsUtil.chains.map(chain => chain.id),
-    statement: 'Please sign with your account'
+    statement: 'Please sign with your account',
+    iat: new Date().toISOString()
   }),
   createMessage: ({ address, ...args }: SIWECreateMessageArgs) => formatMessage(args, address),
   getNonce: async () => {

@@ -24,7 +24,7 @@
     "playwright:debug:social": "npm run playwright:test:social -- --debug",
     "playwright:debug:siwe": "npm run playwright:test:siwe -- --debug",
     "playwright:debug:siwe-email": "npm run playwright:test:siwe-email -- --debug",
-    "playwright:debug:siwe-sa": "npm run playwright:test:siwe-smart-account -- --debug",
+    "playwright:debug:siwe-sa": "npm run playwright:test:siwe-sa -- --debug",
     "playwright:debug:sa": "npm run playwright:test:sa -- --debug",
     "playwright:debug:canary": "npm run playwright:test:canary -- --debug"
   },
