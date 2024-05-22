@@ -97,7 +97,7 @@ export class W3mSwitchAddressView extends LitElement {
                   })}</wui-text
             >
             <wui-text class="address-description" variant="small-400">
-              ${this.balances[account.address]
+              ${typeof this.balances[account.address] === 'number'
                 ? `$${this.balances[account.address]?.toFixed(2)}`
                 : html`<wui-loading-spinner size="sm" color="accent-100"></wui-loading-spinner>`}
             </wui-text>
