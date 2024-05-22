@@ -14,6 +14,9 @@ export function signAndSendTransaction(adapter: Adapter) {
     if (!SolStoreUtil.state.connection) {
       throw Error('Not Connected')
     }
+    if (SolStoreUtil.state.currentChain?.name === 'Solana') {
+      throw Error('Not Connected')
+    }
 
     if (transactionParam instanceof VersionedTransaction) {
       throw Error('Versioned transactions are not supported')
