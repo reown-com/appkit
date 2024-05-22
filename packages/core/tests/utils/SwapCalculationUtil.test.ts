@@ -45,7 +45,6 @@ describe('SwapCalculationUtil', () => {
   })
 
   it('should get the price impact as expected', () => {
-    const gasPriceInUSD = SwapCalculationUtil.getGasPriceInUSD(networkPrice, gasLimit, gasFee)
     const toTokenAmount = SwapCalculationUtil.getToTokenAmount({
       sourceToken,
       sourceTokenAmount,
@@ -55,7 +54,6 @@ describe('SwapCalculationUtil', () => {
     })
 
     const priceImpact = SwapCalculationUtil.getPriceImpact({
-      gasPriceInUSD,
       sourceTokenAmount,
       sourceTokenPriceInUSD: sourceToken.price,
       toTokenAmount,
