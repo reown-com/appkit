@@ -323,7 +323,6 @@ export class Web3Modal extends Web3ModalScaffold {
         }
         localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
         EthersStoreUtil.reset()
-        this.setAllAccounts([])
       },
 
       signMessage: async (message: string) => {
@@ -760,13 +759,14 @@ export class Web3Modal extends Web3ModalScaffold {
     const InjectedProvider = config.injected
 
     if (InjectedProvider) {
-      const { address, chainId } = await EthersHelpersUtil.getUserInfo(InjectedProvider)
-      if (address && chainId) {
+      const { addresses, chainId } = await EthersHelpersUtil.getUserInfo(InjectedProvider)
+      if (addresses && chainId) {
         EthersStoreUtil.setChainId(chainId)
         EthersStoreUtil.setProviderType('injected')
         EthersStoreUtil.setProvider(config.injected)
         EthersStoreUtil.setIsConnected(true)
-        this.setAddress(address)
+        this.setAllAccounts(addresses.map(address => ({ address, type: 'eoa' })))
+        this.setAddress(addresses[0])
         this.watchCoinbase(config)
       }
     }
@@ -776,13 +776,15 @@ export class Web3Modal extends Web3ModalScaffold {
     window?.localStorage.setItem(EthersConstantsUtil.WALLET_ID, name)
 
     if (provider) {
-      const { address, chainId } = await EthersHelpersUtil.getUserInfo(provider)
-      if (address && chainId) {
+      const { addresses, chainId } = await EthersHelpersUtil.getUserInfo(provider)
+      console.log('setEIP6963Provider', addresses, chainId)
+      if (addresses?.[0] && chainId) {
         EthersStoreUtil.setChainId(chainId)
         EthersStoreUtil.setProviderType('eip6963')
         EthersStoreUtil.setProvider(provider)
         EthersStoreUtil.setIsConnected(true)
-        this.setAddress(address)
+        this.setAllAccounts(addresses.map(address => ({ address, type: 'eoa' })))
+        this.setAddress(addresses[0])
         this.watchEIP6963(provider)
       }
     }
@@ -793,13 +795,14 @@ export class Web3Modal extends Web3ModalScaffold {
     const CoinbaseProvider = config.coinbase
 
     if (CoinbaseProvider) {
-      const { address, chainId } = await EthersHelpersUtil.getUserInfo(CoinbaseProvider)
-      if (address && chainId) {
+      const { addresses, chainId } = await EthersHelpersUtil.getUserInfo(CoinbaseProvider)
+      if (addresses?.[0] && chainId) {
         EthersStoreUtil.setChainId(chainId)
         EthersStoreUtil.setProviderType('coinbaseWallet')
         EthersStoreUtil.setProvider(config.coinbase)
         EthersStoreUtil.setIsConnected(true)
-        this.setAddress(address)
+        this.setAllAccounts(addresses.map(address => ({ address, type: 'eoa' })))
+        this.setAddress(addresses[0])
         this.watchCoinbase(config)
       }
     }
@@ -837,10 +840,11 @@ export class Web3Modal extends Web3ModalScaffold {
   private async watchWalletConnect() {
     const provider = await this.getWalletConnectProvider()
 
-    function disconnectHandler() {
+    const disconnectHandler = () => {
+      console.log('disconnectHandler')
       localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
       EthersStoreUtil.reset()
-
+      this.setAllAccounts([])
       provider?.removeListener('disconnect', disconnectHandler)
       provider?.removeListener('accountsChanged', accountsChangedHandler)
       provider?.removeListener('chainChanged', chainChangedHandler)
@@ -906,20 +910,23 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private watchEIP6963(provider: Provider) {
-    function disconnectHandler() {
+    const disconnectHandler = () => {
       localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
       EthersStoreUtil.reset()
-
+      console.log('disconnectHandler')
+      this.setAllAccounts([])
       provider.removeListener('disconnect', disconnectHandler)
       provider.removeListener('accountsChanged', accountsChangedHandler)
       provider.removeListener('chainChanged', chainChangedHandler)
     }
 
-    function accountsChangedHandler(accounts: string[]) {
+    const accountsChangedHandler = (accounts: string[]) => {
       const currentAccount = accounts?.[0]
       if (currentAccount) {
         EthersStoreUtil.setAddress(getOriginalAddress(currentAccount) as Address)
+        this.setAllAccounts(accounts.map(address => ({ address, type: 'eoa' })))
       } else {
+        this.setAllAccounts([])
         localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
         EthersStoreUtil.reset()
       }

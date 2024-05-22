@@ -1,5 +1,6 @@
 import {
   AccountController,
+  BlockchainApiController,
   ModalController,
   OptionsController,
   type AccountType
@@ -16,12 +17,38 @@ export class W3mSwitchAddressView extends LitElement {
   public allAccounts: AccountType[] = AccountController.state.allAccounts || []
   public readonly labels = AccountController.state.addressLabels
   public readonly currentAddress: string = AccountController.state.address || ''
+  private balances: Record<string, number> = {}
 
   constructor() {
     super()
     AccountController.subscribeKey('allAccounts', allAccounts => {
       this.allAccounts = allAccounts
+      this.requestUpdate()
     })
+  }
+
+  public override connectedCallback() {
+    super.connectedCallback()
+    this.allAccounts.forEach(account => {
+      BlockchainApiController.getBalance(account.address).then(response => {
+        let total = this.balances[account.address] || 0
+        if (response.balances.length > 0) {
+          total = response.balances.reduce((acc, balance) => {
+            return acc + (balance?.value || 0)
+          }, 0)
+        }
+        this.balances[account.address] = total
+        this.requestUpdate()
+      })
+    })
+  }
+
+  public getAddressIcon(type: AccountType['type']) {
+    if (type === 'smartAccount') {
+      return 'lightbulb'
+    }
+
+    return 'mail'
   }
 
   // -- Render -------------------------------------------- //
@@ -33,7 +60,7 @@ export class W3mSwitchAddressView extends LitElement {
       </wui-flex>
       <wui-flex flexDirection="column" gap="xxl" .padding=${['l', 'xl', 'xl', 'xl'] as const}>
         ${this.allAccounts.map(account => {
-          return this.getAddressTemplate(account.address)
+          return this.getAddressTemplate(account)
         })}
       </wui-flex>
     `
@@ -41,21 +68,21 @@ export class W3mSwitchAddressView extends LitElement {
 
   // -- Private ------------------------------------------- //
 
-  private getAddressTemplate(address: string) {
+  private getAddressTemplate(account: AccountType) {
     // If there is custom label for the address, use it
-    const label = this.labels?.get(address)
-    console.log('getAddressTemplate', address, this.allAccounts, label)
+    const label = this.labels?.get(account.address)
+    console.log('getAddressTemplate', account.address, this.allAccounts, label)
 
     return html`
       <wui-flex flexDirection="row" justifyContent="space-between">
         <wui-flex alignItems="center">
-          <wui-avatar address=${address}></wui-avatar>
+          <wui-avatar address=${account.address}></wui-avatar>
           <wui-icon-box
             size="sm"
             iconcolor="fg-200"
             backgroundcolor="glass-002"
             background="gray"
-            icon="mail"
+            icon="${this.getAddressIcon(account.type)}"
             ?border=${true}
           ></wui-icon-box>
           <wui-flex flexDirection="column">
@@ -63,24 +90,28 @@ export class W3mSwitchAddressView extends LitElement {
               >${label
                 ? label
                 : UiHelperUtil.getTruncateString({
-                    string: address,
+                    string: account.address,
                     charsStart: 4,
                     charsEnd: 6,
                     truncate: 'middle'
                   })}</wui-text
             >
-            <wui-text class="address-description" variant="small-400">$20,23.43</wui-text></wui-flex
-          >
+            <wui-text class="address-description" variant="small-400">
+              ${this.balances[account.address]
+                ? `$${this.balances[account.address]?.toFixed(2)}`
+                : html`<wui-loading-spinner size="sm" color="accent-100"></wui-loading-spinner>`}
+            </wui-text>
+          </wui-flex>
         </wui-flex>
         <wui-flex gap="s" alignItems="center">
-          ${address === this.currentAddress
+          ${account.address?.toLowerCase() === this.currentAddress?.toLowerCase()
             ? ''
             : html`
                 <wui-button
                   textVariant="small-600"
                   size="md"
                   variant="accent"
-                  @click=${() => this.onSwitchAddress(address)}
+                  @click=${() => this.onSwitchAddress(account.address)}
                   >Switch to</wui-button
                 >
               `}

@@ -26,7 +26,9 @@ export class W3mSelectAddressesView extends LitElement {
   constructor() {
     super()
     AccountController.subscribeKey('allAccounts', allAccounts => {
+      console.log('W3mSelectAddressesView, allAccounts change', allAccounts)
       this.allAccounts = allAccounts
+      this.requestUpdate()
     })
     console.log('W3mSelectAddressesView')
     console.log('metadata', this.metadata)
@@ -61,7 +63,9 @@ export class W3mSelectAddressesView extends LitElement {
     </wui-flex>
       <wui-flex flexDirection="column" .padding=${['l', 'xl', 'xl', 'xl'] as const}>
         ${this.allAccounts.map(account => {
-          return html` <wui-list-account
+          console.log('account', account)
+
+          return html`<wui-list-account
             accountAddress="${account.address}"
             accountType="${account.type}"
           >
