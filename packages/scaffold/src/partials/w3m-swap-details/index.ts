@@ -21,8 +21,6 @@ export class WuiSwapDetails extends LitElement {
 
   @state() public sourceToken = SwapController.state.sourceToken
 
-  @state() public sourceTokenPrice = SwapController.state.sourceTokenPrice
-
   @state() public toToken = SwapController.state.toToken
 
   @state() public toTokenAmount = SwapController.state.toTokenAmount

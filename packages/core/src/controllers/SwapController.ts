@@ -54,6 +54,7 @@ export interface SwapControllerState {
   swapTransaction: TransactionParams | undefined
   transactionLoading?: boolean
   transactionError?: string
+  readyToCreateTransaction?: boolean
 
   // Input values
   sourceToken?: SwapTokenWithBalance
@@ -406,8 +407,8 @@ export const SwapController = {
     state.networkPrice = price
   },
 
-  async getMyTokensWithBalance() {
-    const balances = await SwapApiUtil.getMyTokensWithBalance()
+  async getMyTokensWithBalance(forceUpdate?: string) {
+    const balances = await SwapApiUtil.getMyTokensWithBalance(forceUpdate)
 
     if (!balances) {
       return
@@ -467,23 +468,24 @@ export const SwapController = {
 
     state.loading = true
 
-    const fromAddress = CoreHelperUtil.getPlainAddress(address) || ''
+    const amountDecimal = NumberUtil.bigNumber(state.sourceTokenAmount).multipliedBy(
+      10 ** sourceToken.decimals
+    )
 
-    const quoteResponse = await SwapApiUtil.getQuote({
-      fromTokenAddress: CoreHelperUtil.getPlainAddress(sourceToken.address),
-      toTokenAddress: CoreHelperUtil.getPlainAddress(toToken.address),
-      amount: NumberUtil.bigNumber(state.sourceTokenAmount)
-        .multipliedBy(10 ** sourceToken.decimals)
-        .toString(),
-      accountAddress: fromAddress,
-      gasPrice: state.gasFee
+    const quoteResponse = await BlockchainApiController.fetchSwapQuote({
+      userAddress: address,
+      projectId: OptionsController.state.projectId,
+      from: sourceToken.address,
+      to: toToken.address,
+      gasPrice: state.gasFee,
+      amount: amountDecimal.toString()
     })
 
-    if (!quoteResponse?.dstAmount) {
+    if (!quoteResponse?.quotes?.[0]) {
       return
     }
 
-    const toTokenAmount = NumberUtil.bigNumber(quoteResponse?.dstAmount)
+    const toTokenAmount = NumberUtil.bigNumber(quoteResponse?.quotes?.[0].toAmount)
       .dividedBy(10 ** toToken.decimals)
       .toString()
 
@@ -498,8 +500,7 @@ export const SwapController = {
       state.inputError = 'Insufficient balance'
     } else {
       state.inputError = undefined
-      const transaction = await this.getTransaction()
-      this.setTransactionDetails(transaction)
+      this.setTransactionDetails()
     }
 
     state.loading = false
@@ -511,7 +512,7 @@ export const SwapController = {
     const sourceToken = state.sourceToken
     const toToken = state.toToken
 
-    if (!fromCaipAddress || !availableToSwap || !sourceToken || !toToken || !state.loading) {
+    if (!fromCaipAddress || !availableToSwap || !sourceToken || !toToken || state.loading) {
       return undefined
     }
 
@@ -536,6 +537,7 @@ export const SwapController = {
 
       return transaction
     } catch (error) {
+      RouterController.goBack()
       SnackController.showError('Failed to check allowance')
       state.approvalTransaction = undefined
       state.swapTransaction = undefined
@@ -583,6 +585,7 @@ export const SwapController = {
 
       return transaction
     } catch (error) {
+      RouterController.goBack()
       SnackController.showError('Failed to create approval transaction')
       state.approvalTransaction = undefined
       state.swapTransaction = undefined
@@ -636,6 +639,8 @@ export const SwapController = {
 
       return transaction
     } catch (error) {
+      RouterController.goBack()
+      SnackController.showError('Failed to create transaction')
       state.approvalTransaction = undefined
       state.swapTransaction = undefined
       state.fetchError = true
@@ -694,6 +699,7 @@ export const SwapController = {
       const successMessage = `Swapped ${state.sourceToken
         ?.symbol} to ${NumberUtil.formatNumberToLocalString(toTokenAmount, 3)} ${state.toToken
         ?.symbol}!`
+      const forceUpdateAddresses = [state.sourceToken?.address, state.toToken?.address].join(',')
       const transactionHash = await ConnectionController.sendTransaction({
         address: fromAddress as `0x${string}`,
         to: data.to as `0x${string}`,
@@ -706,7 +712,7 @@ export const SwapController = {
 
       SnackController.showSuccess(successMessage)
       SwapController.resetState()
-      SwapController.getMyTokensWithBalance()
+      SwapController.getMyTokensWithBalance(forceUpdateAddresses)
 
       return transactionHash
     } catch (err) {
@@ -735,17 +741,17 @@ export const SwapController = {
   },
 
   // -- Calculations -------------------------------------- //
-  setTransactionDetails(transaction: TransactionParams | undefined) {
+  setTransactionDetails() {
     const { toTokenAddress, toTokenDecimals } = this.getParams()
 
-    if (!transaction || !toTokenAddress || !toTokenDecimals) {
+    if (!toTokenAddress || !toTokenDecimals) {
       return
     }
 
     state.gasPriceInUSD = SwapCalculationUtil.getGasPriceInUSD(
       state.networkPrice,
-      transaction.gas,
-      transaction.gasPrice
+      BigInt(state.gasFee),
+      BigInt(INITIAL_GAS_LIMIT)
     )
     state.priceImpact = SwapCalculationUtil.getPriceImpact({
       sourceTokenAmount: state.sourceTokenAmount,

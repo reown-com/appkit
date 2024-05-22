@@ -21,7 +21,7 @@ export class W3mSwapView extends LitElement {
   private unsubscribe: ((() => void) | undefined)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() private interval?: NodeJS.Timeout
+  @state() private interval?: ReturnType<typeof setInterval>
 
   @state() private detailsOpen = false
 
@@ -49,15 +49,7 @@ export class W3mSwapView extends LitElement {
 
   @state() private gasPriceInUSD = SwapController.state.gasPriceInUSD
 
-  @state() private priceImpact = SwapController.state.priceImpact
-
-  @state() private maxSlippage = SwapController.state.maxSlippage
-
-  @state() private providerFee = SwapController.state.providerFee
-
   @state() private transactionLoading = SwapController.state.transactionLoading
-
-  @state() private networkTokenSymbol = SwapController.state.networkTokenSymbol
 
   @state() private fetchError = SwapController.state.fetchError
 
@@ -96,9 +88,6 @@ export class W3mSwapView extends LitElement {
           this.toTokenPriceInUSD = newState.toTokenPriceInUSD
           this.inputError = newState.inputError
           this.gasPriceInUSD = newState.gasPriceInUSD
-          this.priceImpact = newState.priceImpact
-          this.maxSlippage = newState.maxSlippage
-          this.providerFee = newState.providerFee
           this.fetchError = newState.fetchError
         })
       ]

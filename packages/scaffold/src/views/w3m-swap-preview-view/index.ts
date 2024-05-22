@@ -16,6 +16,8 @@ export class W3mSwapPreviewView extends LitElement {
   private unsubscribe: ((() => void) | undefined)[] = []
 
   // -- State & Properties -------------------------------- //
+  @state() private interval?: ReturnType<typeof setInterval>
+
   @state() private detailsOpen = true
 
   @state() private approvalTransaction = SwapController.state.approvalTransaction
@@ -41,6 +43,10 @@ export class W3mSwapPreviewView extends LitElement {
   @state() private balanceSymbol = AccountController.state.balanceSymbol
 
   @state() private gasPriceInUSD = SwapController.state.gasPriceInUSD
+
+  @state() private inputError = SwapController.state.inputError
+
+  @state() private loading = SwapController.state.loading
 
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
@@ -70,9 +76,21 @@ export class W3mSwapPreviewView extends LitElement {
           this.toTokenPriceInUSD = newState.toTokenPriceInUSD
           this.sourceTokenAmount = newState.sourceTokenAmount ?? ''
           this.toTokenAmount = newState.toTokenAmount ?? ''
+          this.inputError = newState.inputError
+          this.loading = newState.loading
         })
       ]
     )
+  }
+
+  public override firstUpdated() {
+    SwapController.getTransaction()
+    this.refreshTransaction()
+  }
+
+  public override disconnectedCallback() {
+    this.unsubscribe.forEach(unsubscribe => unsubscribe?.())
+    clearInterval(this.interval)
   }
 
   // -- Render -------------------------------------------- //
@@ -85,6 +103,12 @@ export class W3mSwapPreviewView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private refreshTransaction() {
+    this.interval = setInterval(() => {
+      SwapController.getTransaction()
+    }, 10_000)
+  }
+
   private templateSwap() {
     const sourceTokenText = `${UiHelperUtil.formatNumberToLocalString(
       parseFloat(this.sourceTokenAmount)
@@ -169,6 +193,7 @@ export class W3mSwapPreviewView extends LitElement {
             size="lg"
             borderRadius="xs"
             variant="main"
+            ?loading=${this.loading}
             ?disabled=${this.transactionLoading}
             @click=${this.onSendTransaction.bind(this)}
           >

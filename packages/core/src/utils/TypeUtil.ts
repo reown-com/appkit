@@ -194,6 +194,26 @@ export interface BlockchainApiSwapTokensResponse {
   tokens: SwapToken[]
 }
 
+export interface BlockchainApiSwapQuoteRequest {
+  projectId: string
+  chainId?: string
+  amount: string
+  userAddress: string
+  from: string
+  to: string
+  gasPrice: string
+}
+
+export interface BlockchainApiSwapQuoteResponse {
+  quotes: {
+    id: string
+    fromAmount: string
+    fromAccount: string
+    toAmount: string
+    toAccount: string
+  }[]
+}
+
 export interface BlockchainApiTokenPriceRequest {
   projectId: string
   currency?: 'usd' | 'eur' | 'gbp' | 'aud' | 'cad' | 'inr' | 'jpy' | 'btc' | 'eth'
