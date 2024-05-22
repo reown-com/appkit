@@ -22,7 +22,7 @@ export function defaultConfig(options: ConfigOptions) {
     enableEIP6963 = true,
     enableCoinbase = true,
     enableInjected = true,
-    enableEmail = false,
+    enableEmail = true,
     auth,
     metadata,
     rpcUrl,

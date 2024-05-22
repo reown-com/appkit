@@ -67,14 +67,14 @@ export function defaultWagmiConfig({
     )
   }
 
-  // Dissabled by default
-  if (enableEmail || auth?.socials) {
+  const emailEnabled = enableEmail !== false
+  if (emailEnabled || auth?.socials) {
     connectors.push(
       authConnector({
         chains: [...chains],
         options: { projectId },
         socials: auth?.socials,
-        email: enableEmail,
+        email: emailEnabled,
         showWallets: auth.showWallets
       })
     )

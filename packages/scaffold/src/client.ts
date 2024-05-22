@@ -286,7 +286,8 @@ export class Web3ModalScaffold {
       ThemeController.setThemeVariables(options.themeVariables)
     }
 
-    if (options.enableOnramp) {
+    // Enabled by default
+    if (options.enableOnramp !== false) {
       OptionsController.setOnrampEnabled(Boolean(options.enableOnramp))
     }
 
