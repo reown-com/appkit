@@ -77,7 +77,7 @@ export class WuiListAccount extends LitElement {
       <wui-flex
         flexDirection="row"
         justifyContent="space-between"
-        .padding=${['s', 'xs', 's', '1xs'] as const}
+        .padding=${['0', '0', 's', '1xs'] as const}
       >
         <wui-flex alignItems="center">
           <wui-avatar address=${this.accountAddress}></wui-avatar>

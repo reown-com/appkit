@@ -20,7 +20,7 @@ export class W3mSelectAddressesView extends LitElement {
   private readonly metadata = OptionsController.state.metadata
   public allAccounts: AccountType[] = AccountController.state.allAccounts
   private selectedAccounts: AccountType[] = []
-  // Private selectAll = false
+  private selectAll = false
 
   @state() private isApproving = false
   constructor() {
@@ -30,6 +30,7 @@ export class W3mSelectAddressesView extends LitElement {
       this.allAccounts = allAccounts
       this.requestUpdate()
     })
+
     console.log('W3mSelectAddressesView')
     console.log('metadata', this.metadata)
     console.log('selectedAccounts', this.selectedAccounts)
@@ -38,6 +39,12 @@ export class W3mSelectAddressesView extends LitElement {
 
   onSelectAll = (event: Event) => {
     console.log('onSelectAll', event)
+    const checked = (event.target as HTMLInputElement).checked
+    this.selectAll = this.selectedAccounts.length === this.allAccounts.length
+    console.log('selectedAccounts', this.selectedAccounts)
+    this.allAccounts.forEach(account => {
+      this.onSelect(account, checked)
+    })
   }
 
   onSelect = (account: AccountType, add: boolean) => {
@@ -46,7 +53,10 @@ export class W3mSelectAddressesView extends LitElement {
     } else {
       this.selectedAccounts = this.selectedAccounts.filter(a => a.address !== account.address)
     }
-    console.log('selectedAccounts', this.selectedAccounts)
+    if (this.selectedAccounts.length > 0) {
+      this.selectAll = this.selectedAccounts.length === this.allAccounts.length
+    }
+    this.requestUpdate()
   }
 
   // -- Render -------------------------------------------- //
@@ -57,25 +67,17 @@ export class W3mSelectAddressesView extends LitElement {
         this.metadata?.url
       )}" size="sm"></wui-banner>
     </wui-flex>
-    <wui-flex .padding=${['0', '2xl', '0', 'xl'] as const} justifyContent="space-between">
+    <wui-flex .padding=${
+      ['0', 'xl', '0', 'xl'] as const
+    } flexDirection="row" justifyContent="space-between">
         <wui-text variant="paragraph-400" color="fg-200">Select all</wui-text>
-        <input type="checkbox" @click=${this.onSelectAll.bind(this)} />
+        <input type="checkbox" .checked=${this.selectAll}  @click=${this.onSelectAll.bind(this)} />
     </wui-flex>
       <wui-flex flexDirection="column" .padding=${['l', 'xl', 'xl', 'xl'] as const}>
         ${this.allAccounts.map(account => {
-          console.log('account', account)
+          console.log('account', account, this.selectedAccounts.includes(account))
 
-          return html`<wui-list-account
-            accountAddress="${account.address}"
-            accountType="${account.type}"
-          >
-            <input
-              slot="action"
-              type="checkbox"
-              ?checked=${this.selectedAccounts.includes(account)}
-              @click="${this.handleClick(account)}"
-            />
-          </wui-list-account>`
+          return this.getAddressTemplate(account)
         })}
       </wui-flex>
       <wui-flex .padding=${['l', 'xl', 'xl', 'xl'] as const} gap="s" justifyContent="space-between">
@@ -92,6 +94,7 @@ export class W3mSelectAddressesView extends LitElement {
           size="md"
           ?fullwidth=${true}
           variant="main"
+          .disabled=${this.selectedAccounts.length === 0}
           @click=${this.onContinue.bind(this)}
           ?loading=${this.isApproving}
         >
@@ -102,6 +105,21 @@ export class W3mSelectAddressesView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+
+  getAddressTemplate = (account: AccountType) => {
+    const checked = this.selectedAccounts.some(_account => _account.address === account.address)
+    console.log('checked', checked)
+
+    return html`<wui-list-account accountAddress="${account.address}" accountType="${account.type}">
+      <input
+        id="${account.address}"
+        slot="action"
+        type="checkbox"
+        .checked="${checked}"
+        @change="${this.handleClick(account)}"
+      />
+    </wui-list-account>`
+  }
 
   private handleClick = (account: AccountType) => (event: Event) => {
     const target = event.target as HTMLInputElement

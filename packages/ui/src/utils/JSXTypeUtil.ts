@@ -65,6 +65,7 @@ import type { WuiOnRampActivityItem } from '../composites/wui-onramp-activity-it
 import type { WuiOnRampProviderItem } from '../composites/wui-onramp-provider-item/index.js'
 import type { WuiPromo } from '../composites/wui-promo/index.js'
 import type { WuiProfileButton } from '../composites/wui-profile-button/index.js'
+import type { WuiProfileButtonV2 } from '../composites/wui-profile-button-v2/index.js'
 import type { WuiListAccount } from '../composites/wui-list-account/index.js'
 import type { WuiPreviewItem } from '../composites/wui-preview-item/index.js'
 import type { WuiFlex } from '../layout/wui-flex/index.js'
@@ -130,6 +131,7 @@ declare global {
       'wui-otp': CustomElement<WuiOtp>
       'wui-preview-item': CustomElement<WuiPreviewItem>
       'wui-profile-button': CustomElement<WuiProfileButton>
+      'wui-profile-button-v2': CustomElement<WuiProfileButtonV2>
       'wui-promo': CustomElement<WuiPromo>
       'wui-qr-code': CustomElement<WuiQrCode>
       'wui-search-bar': CustomElement<WuiSearchBar>
