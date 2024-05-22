@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - V4
+      - performance-analysis-before-17th-commits
 
 concurrency: ${{ github.workflow }}
 
@@ -46,7 +46,7 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: web3modal-canary
-          IMAGE_TAG: V4
+          IMAGE_TAG: performance-analysis-before-17th-commits
         with:
           context: .
           file: Dockerfile.canary
