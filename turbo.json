@@ -25,10 +25,15 @@
       "outputs": ["dist/**"],
       "cache": false
     },
+    "build:plugin-activity": {
+      "outputs": ["dist/**"],
+      "cache": false
+    },
     "build:scaffold": {
       "outputs": ["dist/**"],
       "dependsOn": [
         "^build:common",
+        "^build:plugin-activity",
         "^build:core",
         "^build:ui",
         "^build:wallet",
@@ -60,6 +65,7 @@
     "build": {
       "outputs": ["dist/**"],
       "dependsOn": [
+        "^build:plugin-activity",
         "^build:common",
         "^build:core",
         "^build:polyfills",

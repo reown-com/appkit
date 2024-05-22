@@ -1,5 +1,5 @@
 {
-  "name": "@web3modal/scaffold",
+  "name": "@web3modal/plugin-activity",
   "version": "4.2.1",
   "type": "module",
   "main": "./dist/esm/index.js",
@@ -8,9 +8,21 @@
     "dist",
     "!tsconfig.tsbuildinfo"
   ],
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js",
+      "types": "./dist/types/index.d.ts"
+    },
+    "./core": {
+      "import": "./dist/core/esm/core.js",
+      "require": "./dist/core/cjs/core.js",
+      "types": "./dist/core/types/core.d.ts"
+    }
+  },
   "scripts": {
     "build:clean": "rm -rf dist",
-    "build:scaffold": "tsc --build",
+    "build": "tsc --project tsconfig.json && tsc --project tsconfig.core.json",
     "watch": "tsc --watch",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
@@ -18,11 +30,10 @@
   "dependencies": {
     "@web3modal/common": "4.2.1",
     "@web3modal/core": "4.2.1",
+    "@web3modal/polyfills": "4.2.1",
     "@web3modal/ui": "4.2.1",
-    "@web3modal/plugin-activity": "4.2.1",
     "lit": "3.1.0",
-    "@web3modal/siwe": "4.2.1",
-    "@web3modal/wallet": "4.2.1"
+    "valtio": "1.11.2"
   },
   "keywords": [
     "web3",

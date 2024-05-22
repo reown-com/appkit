@@ -4,14 +4,14 @@ import {
   AccountController,
   EventsController,
   OptionsController,
-  RouterController,
-  TransactionsController
+  RouterController
 } from '@web3modal/core'
 import { TransactionUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import type { TransactionType } from '@web3modal/ui/src/utils/TypeUtil.js'
 import styles from './styles.js'
+import { ActivityController } from '../../controllers/ActivityController.js'
 
 // -- Helpers --------------------------------------------- //
 const PAGINATOR_ID = 'last-transaction'
@@ -31,30 +31,30 @@ export class W3mActivityList extends LitElement {
 
   @state() private address: string | undefined = AccountController.state.address
 
-  @state() private transactionsByYear = TransactionsController.state.transactionsByYear
+  @state() private transactionsByYear = ActivityController.state.transactionsByYear
 
-  @state() private loading = TransactionsController.state.loading
+  @state() private loading = ActivityController.state.loading
 
-  @state() private empty = TransactionsController.state.empty
+  @state() private empty = ActivityController.state.empty
 
-  @state() private next = TransactionsController.state.next
+  @state() private next = ActivityController.state.next
 
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
-    TransactionsController.clearCursor()
+    ActivityController.clearCursor()
     this.unsubscribe.push(
       ...[
         AccountController.subscribe(val => {
           if (val.isConnected) {
             if (this.address !== val.address) {
               this.address = val.address
-              TransactionsController.resetTransactions()
-              TransactionsController.fetchTransactions(val.address)
+              ActivityController.resetTransactions()
+              ActivityController.fetchTransactions(val.address)
             }
           }
         }),
-        TransactionsController.subscribe(val => {
+        ActivityController.subscribe(val => {
           this.transactionsByYear = val.transactionsByYear
           this.loading = val.loading
           this.empty = val.empty
@@ -65,7 +65,7 @@ export class W3mActivityList extends LitElement {
   }
 
   public override firstUpdated() {
-    TransactionsController.fetchTransactions(this.address)
+    ActivityController.fetchTransactions(this.address)
     this.createPaginationObserver()
   }
 
@@ -79,9 +79,11 @@ export class W3mActivityList extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    return html` ${this.empty ? null : this.templateTransactionsByYear()}
-    ${this.loading ? this.templateLoading() : null}
-    ${!this.loading && this.empty ? this.templateEmpty() : null}`
+    return html`
+      ${this.empty ? null : this.templateTransactionsByYear()}
+      ${this.loading ? this.templateLoading() : null}
+      ${!this.loading && this.empty ? this.templateEmpty() : null}
+    `
   }
 
   // -- Private ------------------------------------------- //
@@ -271,7 +273,7 @@ export class W3mActivityList extends LitElement {
 
     this.paginationObserver = new IntersectionObserver(([element]) => {
       if (element?.isIntersecting && !this.loading) {
-        TransactionsController.fetchTransactions(this.address)
+        ActivityController.fetchTransactions(this.address)
         EventsController.sendEvent({
           type: 'track',
           event: 'LOAD_MORE_TRANSACTIONS',

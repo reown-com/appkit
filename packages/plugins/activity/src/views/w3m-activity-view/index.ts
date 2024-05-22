@@ -3,8 +3,8 @@ import { LitElement, html } from 'lit'
 
 import styles from './styles.js'
 
-@customElement('w3m-transactions-view')
-export class W3mTransactionsView extends LitElement {
+@customElement('w3m-activity-view')
+export class W3mActivityView extends LitElement {
   public static override styles = styles
 
   // -- Render -------------------------------------------- //
@@ -19,6 +19,6 @@ export class W3mTransactionsView extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'w3m-transactions-view': W3mTransactionsView
+    'w3m-activity-view': W3mActivityView
   }
 }

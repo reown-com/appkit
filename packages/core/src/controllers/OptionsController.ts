@@ -1,5 +1,5 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
-import { proxy, snapshot } from 'valtio/vanilla'
+import { proxy, snapshot, subscribe as sub } from 'valtio/vanilla'
 import type { CustomWallet, Metadata, ProjectId, SdkVersion, Tokens } from '../utils/TypeUtil.js'
 
 // -- Types --------------------------------------------- //
@@ -34,6 +34,10 @@ const state = proxy<OptionsControllerState>({
 // -- Controller ---------------------------------------- //
 export const OptionsController = {
   state,
+
+  subscribe(callback: (newState: OptionsControllerState) => void) {
+    return sub(state, () => callback(state))
+  },
 
   subscribeKey<K extends StateKey>(key: K, callback: (value: OptionsControllerState[K]) => void) {
     return subKey(state, key, callback)

@@ -29,6 +29,8 @@ import {
 } from '@web3modal/core'
 import { setColorTheme, setThemeVariables } from '@web3modal/ui'
 import type { SIWEControllerClient } from '@web3modal/siwe'
+import { PluginController } from '@web3modal/core'
+import type { ActivityPlugin } from '@web3modal/core'
 
 // -- Helpers -------------------------------------------------------------------
 let isInitialized = false
@@ -258,7 +260,21 @@ export class Web3ModalScaffold {
     }
 
   // -- Private ------------------------------------------------------------------
+  private async loadPluginActivity() {
+    try {
+      return (await import('@web3modal/plugin-activity')) as unknown as ActivityPlugin
+    } catch (error) {
+      return undefined
+    }
+  }
+
   private async initControllers(options: ScaffoldOptions) {
+    const activityPlugin = await this.loadPluginActivity()
+
+    PluginController.initialize({
+      activityController: activityPlugin?.ActivityController
+    })
+
     NetworkController.setClient(options.networkControllerClient)
     NetworkController.setDefaultCaipNetwork(options.defaultChain)
 

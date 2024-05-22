@@ -1,43 +1,52 @@
 import type { Transaction } from '@web3modal/common'
 import { proxy, subscribe as sub } from 'valtio/vanilla'
-import { OptionsController } from './OptionsController.js'
-import { EventsController } from './EventsController.js'
-import { SnackController } from './SnackController.js'
-import { BlockchainApiController } from './BlockchainApiController.js'
+import {
+  OptionsController,
+  BlockchainApiController,
+  SnackController,
+  EventsController,
+  type ActivityPlugin
+} from '@web3modal/core'
 
 // -- Types --------------------------------------------- //
-type TransactionByMonthMap = Record<number, Transaction[]>
-type TransactionByYearMap = Record<number, TransactionByMonthMap>
-
-export interface TransactionsControllerState {
-  transactions: Transaction[]
-  coinbaseTransactions: TransactionByYearMap
-  transactionsByYear: TransactionByYearMap
-  loading: boolean
-  empty: boolean
-  next: string | undefined
-}
+export type ActivityController = ActivityPlugin['ActivityController']
+export type ActivityControllerState = ActivityPlugin['ActivityControllerState']
+type TransactionByYearMap = ActivityPlugin['TransactionByYearMap']
 
 // -- State --------------------------------------------- //
-const state = proxy<TransactionsControllerState>({
+const state = proxy<ActivityPlugin['ActivityControllerState']>({
   transactions: [],
   coinbaseTransactions: {},
   transactionsByYear: {},
   loading: false,
   empty: false,
-  next: undefined
+  next: undefined,
+  projectId: ''
 })
 
+// create a generic type for controller, it should have state, subscribe and initialize methods not-optional and other methods optional
+export type ControllerType<T> = {
+  state: T
+  subscribe: (callback: (newState: T) => void) => () => void
+  initialize: () => void
+}
+
 // -- Controller ---------------------------------------- //
-export const TransactionsController = {
+export const ActivityController: ActivityController = {
   state,
 
-  subscribe(callback: (newState: TransactionsControllerState) => void) {
+  subscribe(callback: (newState: ActivityControllerState) => void) {
     return sub(state, () => callback(state))
   },
 
+  initialize() {
+    OptionsController.subscribe(optionsState => {
+      state.projectId = optionsState.projectId
+    })
+  },
+
   async fetchTransactions(accountAddress?: string, onramp?: 'coinbase') {
-    const { projectId } = OptionsController.state
+    const projectId = state.projectId
 
     if (!projectId || !accountAddress) {
       throw new Error("Transactions can't be fetched without a projectId and an accountAddress")

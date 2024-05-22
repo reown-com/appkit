@@ -47,6 +47,7 @@
     "packages/ethers",
     "packages/ethers5",
     "packages/solana",
+    "packages/plugins/*",
     "apps/*",
     "examples/*"
   ],

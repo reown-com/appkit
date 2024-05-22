@@ -1,10 +1,11 @@
 import { describe, expect, it, vi } from 'vitest'
-import { BlockchainApiController, OptionsController, TransactionsController } from '../../index.js'
+import { BlockchainApiController, OptionsController } from '@web3modal/core'
 import {
   ONRAMP_TRANSACTIONS_RESPONSES_FEB,
   ONRAMP_TRANSACTIONS_RESPONSES_JAN
 } from '../constants/OnrampTransactions.js'
 import type { Transaction } from '@web3modal/common'
+import { ActivityController } from '../../src/controllers/ActivityController.js'
 
 // -- Constants ----------------------------------------------------------------
 const projectId = '123'
@@ -19,9 +20,9 @@ const defaultState = {
 }
 
 // -- Tests --------------------------------------------------------------------
-describe('TransactionsController', () => {
+describe('ActivityController', () => {
   it('should have valid default state', () => {
-    expect(TransactionsController.state).toEqual(defaultState)
+    expect(ActivityController.state).toEqual(defaultState)
   })
 
   it('should fetch onramp transactions and group them appropiately', async () => {
@@ -39,7 +40,7 @@ describe('TransactionsController', () => {
       .spyOn(BlockchainApiController, 'fetchTransactions')
       .mockResolvedValue(response)
 
-    await TransactionsController.fetchTransactions(accountAddress, 'coinbase')
+    await ActivityController.fetchTransactions(accountAddress, 'coinbase')
 
     expect(fetchTransactions).toHaveBeenCalledWith({
       account: accountAddress,
@@ -48,9 +49,9 @@ describe('TransactionsController', () => {
       cursor: undefined
     })
 
-    expect(TransactionsController.state.transactions).toEqual([])
-    expect(TransactionsController.state.transactionsByYear).toEqual({})
-    expect(TransactionsController.state.coinbaseTransactions).toEqual({
+    expect(ActivityController.state.transactions).toEqual([])
+    expect(ActivityController.state.transactionsByYear).toEqual({})
+    expect(ActivityController.state.coinbaseTransactions).toEqual({
       2024: {
         0: [ONRAMP_TRANSACTIONS_RESPONSES_JAN.SUCCESS],
         1: [ONRAMP_TRANSACTIONS_RESPONSES_FEB.FAILED]
@@ -63,7 +64,7 @@ describe('TransactionsController', () => {
     const accountAddress = SUCCESS.metadata.sentTo
 
     // Manually clear state - vitest hooks are wiping state prematurely
-    TransactionsController.state.coinbaseTransactions = {}
+    ActivityController.state.coinbaseTransactions = {}
 
     const pendingResponse = {
       data: [IN_PROGRESS] as Transaction[],
@@ -74,7 +75,7 @@ describe('TransactionsController', () => {
       .spyOn(BlockchainApiController, 'fetchTransactions')
       .mockResolvedValue(pendingResponse)
 
-    await TransactionsController.fetchTransactions(accountAddress, 'coinbase')
+    await ActivityController.fetchTransactions(accountAddress, 'coinbase')
 
     expect(fetchTransactions).toHaveBeenCalledWith({
       account: accountAddress,
@@ -83,9 +84,9 @@ describe('TransactionsController', () => {
       cursor: undefined
     })
 
-    expect(TransactionsController.state.transactions).toEqual([])
-    expect(TransactionsController.state.transactionsByYear).toEqual({})
-    expect(TransactionsController.state.coinbaseTransactions).toEqual({
+    expect(ActivityController.state.transactions).toEqual([])
+    expect(ActivityController.state.transactionsByYear).toEqual({})
+    expect(ActivityController.state.coinbaseTransactions).toEqual({
       2024: {
         1: [IN_PROGRESS]
       }
@@ -99,7 +100,7 @@ describe('TransactionsController', () => {
 
     fetchTransactions.mockResolvedValue(successResponse)
 
-    await TransactionsController.fetchTransactions(accountAddress, 'coinbase')
+    await ActivityController.fetchTransactions(accountAddress, 'coinbase')
 
     expect(fetchTransactions).toHaveBeenCalledWith({
       account: accountAddress,
@@ -109,9 +110,9 @@ describe('TransactionsController', () => {
     })
 
     // Transaction should be replaced
-    expect(TransactionsController.state.transactions).toEqual([])
-    expect(TransactionsController.state.transactionsByYear).toEqual({})
-    expect(TransactionsController.state.coinbaseTransactions).toEqual({
+    expect(ActivityController.state.transactions).toEqual([])
+    expect(ActivityController.state.transactionsByYear).toEqual({})
+    expect(ActivityController.state.coinbaseTransactions).toEqual({
       2024: {
         1: [SUCCESS]
       }
@@ -123,7 +124,7 @@ describe('TransactionsController', () => {
     const accountAddress = FAILED.metadata.sentTo
 
     // Manually clear state - vitest hooks are wiping state prematurely
-    TransactionsController.state.coinbaseTransactions = {}
+    ActivityController.state.coinbaseTransactions = {}
 
     const pendingResponse = {
       data: [IN_PROGRESS] as Transaction[],
@@ -134,7 +135,7 @@ describe('TransactionsController', () => {
       .spyOn(BlockchainApiController, 'fetchTransactions')
       .mockResolvedValue(pendingResponse)
 
-    await TransactionsController.fetchTransactions(accountAddress, 'coinbase')
+    await ActivityController.fetchTransactions(accountAddress, 'coinbase')
 
     expect(fetchTransactions).toHaveBeenCalledWith({
       account: accountAddress,
@@ -143,9 +144,9 @@ describe('TransactionsController', () => {
       cursor: undefined
     })
 
-    expect(TransactionsController.state.transactions).toEqual([])
-    expect(TransactionsController.state.transactionsByYear).toEqual({})
-    expect(TransactionsController.state.coinbaseTransactions).toEqual({
+    expect(ActivityController.state.transactions).toEqual([])
+    expect(ActivityController.state.transactionsByYear).toEqual({})
+    expect(ActivityController.state.coinbaseTransactions).toEqual({
       2024: {
         1: [IN_PROGRESS]
       }
@@ -159,7 +160,7 @@ describe('TransactionsController', () => {
 
     fetchTransactions.mockResolvedValue(successResponse)
 
-    await TransactionsController.fetchTransactions(accountAddress, 'coinbase')
+    await ActivityController.fetchTransactions(accountAddress, 'coinbase')
 
     expect(fetchTransactions).toHaveBeenCalledWith({
       account: accountAddress,
@@ -169,9 +170,9 @@ describe('TransactionsController', () => {
     })
 
     // Transaction should be replaced
-    expect(TransactionsController.state.transactions).toEqual([])
-    expect(TransactionsController.state.transactionsByYear).toEqual({})
-    expect(TransactionsController.state.coinbaseTransactions).toEqual({
+    expect(ActivityController.state.transactions).toEqual([])
+    expect(ActivityController.state.transactionsByYear).toEqual({})
+    expect(ActivityController.state.coinbaseTransactions).toEqual({
       2024: {
         1: [FAILED]
       }
@@ -183,7 +184,7 @@ describe('TransactionsController', () => {
     const accountAddress = SUCCESS.metadata.sentTo
 
     // Manually clear state - vitest hooks are wiping state prematurely
-    TransactionsController.state.coinbaseTransactions = {}
+    ActivityController.state.coinbaseTransactions = {}
 
     const pendingResponse = {
       data: [IN_PROGRESS] as Transaction[],
@@ -194,7 +195,7 @@ describe('TransactionsController', () => {
       .spyOn(BlockchainApiController, 'fetchTransactions')
       .mockResolvedValue(pendingResponse)
 
-    await TransactionsController.fetchTransactions(accountAddress, 'coinbase')
+    await ActivityController.fetchTransactions(accountAddress, 'coinbase')
 
     expect(fetchTransactions).toHaveBeenCalledWith({
       account: accountAddress,
@@ -203,9 +204,9 @@ describe('TransactionsController', () => {
       cursor: undefined
     })
 
-    expect(TransactionsController.state.transactions).toEqual([])
-    expect(TransactionsController.state.transactionsByYear).toEqual({})
-    expect(TransactionsController.state.coinbaseTransactions).toEqual({
+    expect(ActivityController.state.transactions).toEqual([])
+    expect(ActivityController.state.transactionsByYear).toEqual({})
+    expect(ActivityController.state.coinbaseTransactions).toEqual({
       2024: {
         0: [IN_PROGRESS]
       }
@@ -219,7 +220,7 @@ describe('TransactionsController', () => {
 
     fetchTransactions.mockResolvedValue(successResponse)
 
-    await TransactionsController.fetchTransactions(accountAddress, 'coinbase')
+    await ActivityController.fetchTransactions(accountAddress, 'coinbase')
 
     expect(fetchTransactions).toHaveBeenCalledWith({
       account: accountAddress,
@@ -229,9 +230,9 @@ describe('TransactionsController', () => {
     })
 
     // Transaction should be replaced
-    expect(TransactionsController.state.transactions).toEqual([])
-    expect(TransactionsController.state.transactionsByYear).toEqual({})
-    expect(TransactionsController.state.coinbaseTransactions).toEqual({
+    expect(ActivityController.state.transactions).toEqual([])
+    expect(ActivityController.state.transactionsByYear).toEqual({})
+    expect(ActivityController.state.coinbaseTransactions).toEqual({
       2024: {
         0: [SUCCESS],
         1: [ONRAMP_TRANSACTIONS_RESPONSES_FEB.IN_PROGRESS]
@@ -249,20 +250,20 @@ describe('TransactionsController', () => {
       })
 
     // Fetch transactions
-    await TransactionsController.fetchTransactions('0x123')
-    expect(TransactionsController.state.next).toBe('cursor')
+    await ActivityController.fetchTransactions('0x123')
+    expect(ActivityController.state.next).toBe('cursor')
 
-    TransactionsController.clearCursor()
-    expect(TransactionsController.state.next).toBeUndefined()
+    ActivityController.clearCursor()
+    expect(ActivityController.state.next).toBeUndefined()
 
     // Fetch transactions again
-    await TransactionsController.fetchTransactions('0x123')
+    await ActivityController.fetchTransactions('0x123')
     expect(fetchTransactions).toHaveBeenCalledWith({
       account: '0x123',
       projectId,
       cursor: undefined,
       onramp: undefined
     })
-    expect(TransactionsController.state.next).toBe('cursor')
+    expect(ActivityController.state.next).toBe('cursor')
   })
 })

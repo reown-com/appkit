@@ -4,7 +4,7 @@ import {
   AssetController,
   OnRampController,
   OptionsController,
-  TransactionsController
+  PluginController
 } from '@web3modal/core'
 import { TransactionUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -29,7 +29,8 @@ export class W3mOnRampActivityView extends LitElement {
 
   @state() protected loading = false
 
-  @state() private coinbaseTransactions = TransactionsController.state.coinbaseTransactions
+  @state() private coinbaseTransactions =
+    PluginController.activityController?.state.coinbaseTransactions
 
   @state() private tokenImages = AssetController.state.tokenImages
 
@@ -43,13 +44,17 @@ export class W3mOnRampActivityView extends LitElement {
         AssetController.subscribeKey('tokenImages', val => (this.tokenImages = val)),
         () => {
           clearTimeout(this.refetchTimeout)
-        },
-        TransactionsController.subscribe(val => {
-          this.coinbaseTransactions = { ...val.coinbaseTransactions }
-        })
+        }
       ]
     )
-    TransactionsController.clearCursor()
+    if (PluginController.activityController) {
+      this.unsubscribe.push(
+        PluginController.activityController.subscribe((val: any) => {
+          this.coinbaseTransactions = { ...val.coinbaseTransactions }
+        })
+      )
+      PluginController.activityController.clearCursor()
+    }
     this.fetchTransactions()
   }
 
@@ -92,7 +97,9 @@ export class W3mOnRampActivityView extends LitElement {
   }
 
   private templateTransactionsByYear() {
-    const sortedYearKeys = Object.keys(this.coinbaseTransactions).sort().reverse()
+    const sortedYearKeys = Object.keys(this.coinbaseTransactions || {})
+      .sort()
+      .reverse()
 
     return sortedYearKeys.map(year => {
       const yearInt = parseInt(year, 10)
@@ -104,7 +111,7 @@ export class W3mOnRampActivityView extends LitElement {
 
       return sortedMonthIndexes.map(month => {
         const groupTitle = TransactionUtil.getTransactionGroupTitle(yearInt, month)
-        const transactions = this.coinbaseTransactions[yearInt]?.[month]
+        const transactions = this.coinbaseTransactions?.[yearInt]?.[month]
 
         if (!transactions) {
           return null
@@ -150,7 +157,7 @@ export class W3mOnRampActivityView extends LitElement {
 
     this.loading = true
 
-    await TransactionsController.fetchTransactions(address, 'coinbase')
+    await PluginController.activityController?.fetchTransactions(address, 'coinbase')
 
     this.loading = false
     this.refetchLoadingTransactions()
@@ -158,10 +165,11 @@ export class W3mOnRampActivityView extends LitElement {
 
   private refetchLoadingTransactions() {
     const today = new Date()
-    const currentMonthTxs = this.coinbaseTransactions[today.getFullYear()]?.[today.getMonth()] || []
+    const currentMonthTxs =
+      this.coinbaseTransactions?.[today.getFullYear()]?.[today.getMonth()] || []
 
     const loadingTransactions = currentMonthTxs.filter(
-      transaction => transaction.metadata.status === 'ONRAMP_TRANSACTION_STATUS_IN_PROGRESS'
+      (transaction: any) => transaction.metadata.status === 'ONRAMP_TRANSACTION_STATUS_IN_PROGRESS'
     )
 
     if (loadingTransactions.length === 0) {
@@ -173,7 +181,7 @@ export class W3mOnRampActivityView extends LitElement {
     // Wait 2 seconds before refetching
     this.refetchTimeout = setTimeout(async () => {
       const address = AccountController.state.address
-      await TransactionsController.fetchTransactions(address, 'coinbase')
+      await PluginController.activityController?.fetchTransactions(address, 'coinbase')
       this.refetchLoadingTransactions()
     }, 3000)
   }

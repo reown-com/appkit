@@ -1,3 +1,6 @@
+// -- Types -------------------------------------------------------------------
+export type { ActivityPlugin } from './src/types/ActivityPlugin.js'
+
 // -- Controllers -------------------------------------------------------------
 export { ModalController } from './src/controllers/ModalController.js'
 export type {
@@ -52,8 +55,8 @@ export type { PublicStateControllerState } from './src/controllers/PublicStateCo
 export { EventsController } from './src/controllers/EventsController.js'
 export type { EventsControllerState } from './src/controllers/EventsController.js'
 
-export { TransactionsController } from './src/controllers/TransactionsController.js'
-export type { TransactionsControllerState } from './src/controllers/TransactionsController.js'
+export { PluginController } from './src/controllers/PluginController.js'
+export type { PluginControllerState } from './src/controllers/PluginController.js'
 
 export { SwapController } from './src/controllers/SwapController.js'
 export type { SwapControllerState, SwapInputTarget } from './src/controllers/SwapController.js'

@@ -9,7 +9,7 @@ import type {
   WcWallet,
   WriteContractArgs
 } from '../utils/TypeUtil.js'
-import { TransactionsController } from './TransactionsController.js'
+import { PluginController } from './PluginController.js'
 
 // -- Types --------------------------------------------- //
 export interface ConnectExternalOptions {
@@ -140,7 +140,7 @@ export const ConnectionController = {
     state.wcPromise = undefined
     state.wcLinking = undefined
     state.recentWallet = undefined
-    TransactionsController.resetTransactions()
+    PluginController.activityController?.resetTransactions()
     StorageUtil.deleteWalletConnectDeepLink()
   },
 
