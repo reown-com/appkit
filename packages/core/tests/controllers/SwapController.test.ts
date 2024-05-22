@@ -10,6 +10,7 @@ import {
   type NetworkControllerClient
 } from '../../index.js'
 import {
+  allowanceResponse,
   balanceResponse,
   gasPriceResponse,
   networkTokenPriceResponse,
@@ -20,22 +21,6 @@ import {
 import { SwapApiUtil } from '../../src/utils/SwapApiUtil.js'
 
 // - Mocks ---------------------------------------------------------------------
-
-const mockTX = {
-  tx: {
-    from: 'eip155:137:0xe8e0d27a1232ada1d76ac4032a100f8f9f3486b2',
-    to: 'eip155:137:0x111111125421ca6dc452d289314280a0f8842a65',
-    data: '0x07ed2379000000000000000000000000e37e799d5077682fa0a244d46e5649f71457bd09000000000000000000000000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee000000000000000000000000d6df932a45c0f255f85145f286ea0b292b21c90b000000000000000000000000e37e799d5077682fa0a244d46e5649f71457bd09000000000000000000000000e8e0d27a1232ada1d76ac4032a100f8f9f3486b20000000000000000000000000000000000000000000000000de0b6b3a7640000000000000000000000000000000000000000000000000000001a5256ff077cbc00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000120000000000000000000000000000000000000000000000000000000000000014900000000000000000000000000000000012b0000fd00006e00005400004e802026678dcd00000000000000000000000000000000000000003e26ca57697d2ad49edd5c3787256586d0b50525000000000000000000000000000000000000000000000000001e32b47897400000206b4be0b940410d500b1d8e8ef31e21c99d1db9a6444d3adf1270d0e30db00c200d500b1d8e8ef31e21c99d1db9a6444d3adf12707d88d931504d04bfbee6f9745297a93063cab24c6ae40711b8002dc6c07d88d931504d04bfbee6f9745297a93063cab24c111111125421ca6dc452d289314280a0f8842a65000000000000000000000000000000000000000000000000001a5256ff077cbc0d500b1d8e8ef31e21c99d1db9a6444d3adf12700020d6bdbf78d6df932a45c0f255f85145f286ea0b292b21c90b111111125421ca6dc452d289314280a0f8842a6500000000000000000000000000000000000000000000003bd94e2a',
-    amount: '7483720195780716',
-    eip155: {
-      gas: '253421',
-      gasPrice: '151168582876'
-    }
-  }
-}
-const mockAllowance = {
-  allowance: '115792089237316195423570985008687907853269984665640564039457584007913129639935'
-}
 const caipNetwork = { id: 'eip155:137', name: 'Polygon' } as const
 const approvedCaipNetworkIds = ['eip155:1', 'eip155:137'] as CaipNetworkId[]
 const client: NetworkControllerClient = {
@@ -61,7 +46,7 @@ beforeAll(async () => {
   vi.spyOn(BlockchainApiController, 'fetchSwapQuote').mockResolvedValue(swapQuoteResponse)
   vi.spyOn(BlockchainApiController, 'fetchTokenPrice').mockResolvedValue(networkTokenPriceResponse)
   vi.spyOn(BlockchainApiController, 'generateSwapCalldata').mockResolvedValue(swapCalldataResponse)
-  vi.spyOn(BlockchainApiController, 'fetchSwapAllowance').mockResolvedValue(mockAllowance)
+  vi.spyOn(BlockchainApiController, 'fetchSwapAllowance').mockResolvedValue(allowanceResponse)
   vi.spyOn(SwapApiUtil, 'fetchGasPrice').mockResolvedValue(gasPriceResponse)
   vi.spyOn(ConnectionController, 'parseUnits').mockResolvedValue(parseUnits('1', 18))
 

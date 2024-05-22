@@ -12,7 +12,8 @@ export const tokensResponse = {
     {
       name: 'Avalanche Token',
       symbol: 'AVAX',
-      address: 'eip155:137:0x2c89bbc92bd86f8075d1decc58c7f4e0107f286b',
+      address:
+        'eip155:137:0x2c89bbc92bd86f8075d1decc58c7f4e0107f286b' as `0x${string}:${string}:${string}`,
       decimals: 18,
       logoUri: 'https://tokens.1inch.io/0x2c89bbc92bd86f8075d1decc58c7f4e0107f286b.png',
       eip2612: false
@@ -88,6 +89,10 @@ export const balanceResponse = {
       iconUrl: 'https://token-icons.s3.amazonaws.com/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png'
     }
   ]
+}
+
+export const allowanceResponse = {
+  allowance: '115792089237316195423570985008687907853269984665640564039457584007913129639935'
 }
 
 export const swapQuoteResponse = {
