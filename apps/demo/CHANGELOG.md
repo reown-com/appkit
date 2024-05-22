@@ -1,5 +1,14 @@
 # @apps/demo
 
+## 4.2.1
+
+### Patch Changes
+
+- Hotfix to support injected and announced wallets in in app browsers
+
+- Updated dependencies []:
+  - @web3modal/wagmi@4.2.1
+
 ## 4.2.0
 
 ### Patch Changes

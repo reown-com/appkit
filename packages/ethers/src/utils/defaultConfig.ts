@@ -1,15 +1,16 @@
 import '@web3modal/polyfills'
 import type { Metadata, Provider, ProviderType } from '@web3modal/scaffold-utils/ethers'
 import { CoinbaseWalletSDK } from '@coinbase/wallet-sdk'
+import type { SocialProvider } from '@web3modal/scaffold-utils'
 
 export interface ConfigOptions {
   enableEIP6963?: boolean
   enableCoinbase?: boolean
   enableEmail?: boolean
-  /**
-   * Use enableEIP6963 to show all injected wallets
-   * @deprecated
-   */
+  auth?: {
+    socials?: SocialProvider[]
+    showWallets?: boolean
+  }
   enableInjected?: boolean
   rpcUrl?: string
   defaultChainId?: number
@@ -20,17 +21,39 @@ export function defaultConfig(options: ConfigOptions) {
   const {
     enableEIP6963 = true,
     enableCoinbase = true,
+    enableInjected = true,
     enableEmail = false,
-
+    auth,
     metadata,
     rpcUrl,
     defaultChainId
   } = options
 
+  let injectedProvider: Provider | undefined = undefined
+
   // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   let coinbaseProvider: Provider | undefined = undefined
 
   const providers: ProviderType = { metadata }
+
+  function getInjectedProvider() {
+    if (injectedProvider) {
+      return injectedProvider
+    }
+
+    if (typeof window === 'undefined') {
+      return undefined
+    }
+
+    if (!window.ethereum) {
+      return undefined
+    }
+
+    //  @ts-expect-error window.ethereum satisfies Provider
+    injectedProvider = window.ethereum
+
+    return injectedProvider
+  }
 
   function getCoinbaseProvider() {
     if (coinbaseProvider) {
@@ -53,6 +76,10 @@ export function defaultConfig(options: ConfigOptions) {
     return coinbaseProvider
   }
 
+  if (enableInjected) {
+    providers.injected = getInjectedProvider()
+  }
+
   if (enableCoinbase && rpcUrl && defaultChainId) {
     providers.coinbase = getCoinbaseProvider()
   }
@@ -63,6 +90,10 @@ export function defaultConfig(options: ConfigOptions) {
 
   if (enableEmail) {
     providers.email = true
+  }
+
+  if (auth) {
+    providers.auth = auth
   }
 
   return providers

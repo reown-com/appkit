@@ -2,7 +2,7 @@ import { css } from 'lit'
 
 export default css`
   wui-flex {
-    border-top: 1px solid var(--wui-gray-glass-005);
+    border-top: 1px solid var(--wui-color-gray-glass-005);
   }
 
   a {

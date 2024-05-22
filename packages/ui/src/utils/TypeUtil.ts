@@ -10,8 +10,8 @@ export type ColorType =
   | 'inverse-000'
   | 'inverse-100'
   | 'success-100'
-  | 'glass-005'
-  | 'glass-020'
+  | 'gray-glass-005'
+  | 'gray-glass-020'
 
 export type TextType =
   | 'large-500'
@@ -203,7 +203,17 @@ export type PlacementType = 'bottom' | 'left' | 'right' | 'top'
 
 export type ChipType = 'fill' | 'shade' | 'shadeSmall' | 'transparent' | 'success' | 'error'
 
-export type ButtonType = 'accent' | 'fill' | 'shade' | 'fullWidth' | 'accentBg'
+export type ChipButtonVariant = 'accent' | 'main' | 'shade' | 'gray'
+
+export type ButtonSize = 'lg' | 'md'
+
+export type ButtonVariant =
+  | 'main'
+  | 'inverse'
+  | 'accent'
+  | 'accent-error'
+  | 'accent-success'
+  | 'neutral'
 
 export type TransactionType =
   | 'approve'

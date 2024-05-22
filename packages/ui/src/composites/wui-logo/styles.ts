@@ -8,7 +8,7 @@ export default css`
     width: 40px;
     height: 40px;
     border-radius: var(--wui-border-radius-3xl);
-    border: 1px solid var(--wui-gray-glass-005);
+    border: 1px solid var(--wui-color-gray-glass-005);
     overflow: hidden;
   }
 

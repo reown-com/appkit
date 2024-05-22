@@ -78,7 +78,9 @@ export class W3mSwapPreviewView extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex flexDirection="column" padding="l" gap="s">${this.templateSwap()}</wui-flex>
+      <wui-flex flexDirection="column" .padding=${['0', 'l', 'l', 'l']} gap="s"
+        >${this.templateSwap()}</wui-flex
+      >
     `
   }
 
@@ -156,7 +158,7 @@ export class W3mSwapPreviewView extends LitElement {
             fullWidth
             size="lg"
             borderRadius="xs"
-            variant="shade"
+            variant="neutral"
             @click=${this.onCancelTransaction.bind(this)}
           >
             <wui-text variant="paragraph-600" color="fg-200">Cancel</wui-text>
@@ -166,7 +168,7 @@ export class W3mSwapPreviewView extends LitElement {
             fullWidth
             size="lg"
             borderRadius="xs"
-            variant="fill"
+            variant="main"
             ?disabled=${this.transactionLoading}
             @click=${this.onSendTransaction.bind(this)}
           >

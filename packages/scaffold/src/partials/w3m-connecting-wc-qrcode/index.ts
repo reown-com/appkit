@@ -29,7 +29,12 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
     this.onRenderProxy()
 
     return html`
-      <wui-flex padding="xl" flexDirection="column" gap="xl" alignItems="center">
+      <wui-flex
+        flexDirection="column"
+        alignItems="center"
+        .padding=${['0', 'xl', 'xl', 'xl']}
+        gap="xl"
+      >
         <wui-shimmer borderRadius="l" width="100%"> ${this.qrCodeTemplate()} </wui-shimmer>
 
         <wui-text variant="paragraph-500" color="fg-100">

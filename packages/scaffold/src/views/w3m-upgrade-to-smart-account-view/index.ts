@@ -2,6 +2,7 @@ import { customElement } from '@web3modal/ui'
 import {
   ConnectionController,
   ConnectorController,
+  ModalController,
   RouterController,
   RouterUtil,
   SnackController
@@ -13,7 +14,7 @@ import { W3mFrameRpcConstants } from '@web3modal/wallet'
 @customElement('w3m-upgrade-to-smart-account-view')
 export class W3mUpgradeToSmartAccountView extends LitElement {
   // -- State & Properties -------------------------------- //
-  @state() private emailConnector = ConnectorController.getEmailConnector()
+  @state() private authConnector = ConnectorController.getAuthConnector()
 
   @state() private loading = false
 
@@ -63,7 +64,7 @@ export class W3mUpgradeToSmartAccountView extends LitElement {
   private buttonsTemplate() {
     return html`<wui-flex .padding=${['0', '2l', '0', '2l'] as const} gap="s">
       <wui-button
-        variant="accentBg"
+        variant="accent"
         @click=${this.redirectToAccount.bind(this)}
         size="lg"
         borderRadius="xs"
@@ -81,13 +82,15 @@ export class W3mUpgradeToSmartAccountView extends LitElement {
   }
 
   private setPreferSmartAccount = async () => {
-    if (this.emailConnector) {
+    if (this.authConnector) {
       try {
         this.loading = true
-        await this.emailConnector.provider.setPreferredAccount(
+        ModalController.setLoading(true)
+        await this.authConnector.provider.setPreferredAccount(
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
         )
-        await ConnectionController.reconnectExternal(this.emailConnector)
+        await ConnectionController.reconnectExternal(this.authConnector)
+        ModalController.setLoading(false)
         this.loading = false
         RouterUtil.navigateAfterPreferredAccountTypeSelect()
       } catch (e) {

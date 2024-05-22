@@ -56,7 +56,7 @@ export class W3mOnRampActivityView extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex flexDirection="column" padding="s" gap="xs">
+      <wui-flex flexDirection="column" .padding=${['0', 's', 's', 's']} gap="xs">
         ${this.loading ? this.templateLoading() : this.templateTransactionsByYear()}
       </wui-flex>
     `
