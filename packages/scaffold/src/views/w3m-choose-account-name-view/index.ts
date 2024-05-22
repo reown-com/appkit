@@ -3,6 +3,7 @@ import { CoreHelperUtil, RouterController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
+import { NavigationUtil } from '@web3modal/common'
 
 @customElement('w3m-choose-account-name-view')
 export class W3mChooseAccountNameView extends LitElement {
@@ -23,7 +24,7 @@ export class W3mChooseAccountNameView extends LitElement {
         ${this.onboardingTemplate()} ${this.buttonsTemplate()}
         <wui-link
           @click=${() => {
-            CoreHelperUtil.openHref('https://walletconnect.com/faq', '_blank')
+            CoreHelperUtil.openHref(NavigationUtil.URLS.FAQ, '_blank')
           }}
         >
           Learn more about names

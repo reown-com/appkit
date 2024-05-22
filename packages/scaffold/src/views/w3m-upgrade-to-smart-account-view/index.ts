@@ -11,6 +11,7 @@ import {
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { W3mFrameRpcConstants } from '@web3modal/wallet'
+import { NavigationUtil } from '@web3modal/common'
 
 @customElement('w3m-upgrade-to-smart-account-view')
 export class W3mUpgradeToSmartAccountView extends LitElement {
@@ -31,7 +32,7 @@ export class W3mUpgradeToSmartAccountView extends LitElement {
         ${this.onboardingTemplate()} ${this.buttonsTemplate()}
         <wui-link
           @click=${() => {
-            CoreHelperUtil.openHref('https://walletconnect.com/faq', '_blank')
+            CoreHelperUtil.openHref(NavigationUtil.URLS.FAQ, '_blank')
           }}
         >
           Learn more

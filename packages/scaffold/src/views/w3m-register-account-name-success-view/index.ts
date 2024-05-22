@@ -2,6 +2,7 @@ import { customElement } from '@web3modal/ui'
 import { CoreHelperUtil, RouterController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
+import { NavigationUtil } from '@web3modal/common'
 
 @customElement('w3m-register-account-name-success-view')
 export class W3mRegisterAccountNameSuccess extends LitElement {
@@ -19,7 +20,7 @@ export class W3mRegisterAccountNameSuccess extends LitElement {
         ${this.onboardingTemplate()} ${this.buttonsTemplate()}
         <wui-link
           @click=${() => {
-            CoreHelperUtil.openHref('https://walletconnect.com/faq', '_blank')
+            CoreHelperUtil.openHref(NavigationUtil.URLS.FAQ, '_blank')
           }}
         >
           Learn more
