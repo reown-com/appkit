@@ -7,6 +7,7 @@ import { EthersTransactionTest } from './EthersTransactionTest'
 import { EthersWriteContractTest } from './EthersWriteContractTest'
 import { EthersSendCallsTest } from './EthersSendCallsTest'
 import { EthersGetCallsStatusTest } from './EthersGetCallsStatusTest'
+import { EthersSendCallsWithPaymasterServiceTest } from './EthersSendCallsWithPaymasterServiceTest'
 
 export function EthersTests() {
   const [ready, setReady] = React.useState(false)
@@ -65,6 +66,12 @@ export function EthersTests() {
               Get Calls Status
             </Heading>
             <EthersGetCallsStatusTest />
+          </Box>
+          <Box>
+            <Heading size="xs" textTransform="uppercase" pb="2">
+              Send Calls (Paymaster Service)
+            </Heading>
+            <EthersSendCallsWithPaymasterServiceTest />
           </Box>
         </Stack>
       </CardBody>
