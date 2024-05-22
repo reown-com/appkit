@@ -35,7 +35,7 @@ export class W3mBuyInProgressView extends LitElement {
 
   @state() private error = false
 
-  @state() private intervalId?: NodeJS.Timeout
+  @state() private intervalId?: ReturnType<typeof setInterval>
 
   @state() private startTime: number | null = null
 

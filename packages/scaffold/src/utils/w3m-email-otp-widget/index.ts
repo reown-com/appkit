@@ -31,7 +31,7 @@ export class W3mEmailOtpWidget extends LitElement {
 
   private otp = ''
 
-  private OTPTimeout: NodeJS.Timeout | undefined
+  private OTPTimeout: ReturnType<typeof setInterval> | undefined
 
   public email = RouterController.state.data?.email
 
@@ -48,7 +48,7 @@ export class W3mEmailOtpWidget extends LitElement {
   }
 
   public override disconnectedCallback() {
-    clearTimeout(this.OTPTimeout)
+    clearTimeout(this.OTPTimeout as NodeJS.Timeout)
   }
 
   public constructor() {

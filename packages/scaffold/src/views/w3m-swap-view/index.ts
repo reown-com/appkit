@@ -21,7 +21,7 @@ export class W3mSwapView extends LitElement {
   private unsubscribe: ((() => void) | undefined)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() private interval?: NodeJS.Timeout
+  @state() private interval?: ReturnType<typeof setInterval>
 
   @state() private detailsOpen = false
 

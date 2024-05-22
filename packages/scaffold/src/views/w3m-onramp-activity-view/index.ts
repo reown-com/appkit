@@ -22,7 +22,7 @@ export class W3mOnRampActivityView extends LitElement {
   // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
 
-  private refetchTimeout: NodeJS.Timeout | undefined = undefined
+  private refetchTimeout?: ReturnType<typeof setInterval>
 
   // -- State & Properties -------------------------------- //
   @state() protected selectedOnRampProvider = OnRampController.state.selectedProvider
