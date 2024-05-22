@@ -147,7 +147,18 @@ export const BlockchainApiController = {
     gasPrice
   }: BlockchainApiSwapQuoteRequest) {
     return api.get<BlockchainApiSwapQuoteResponse>({
-      path: `/v1/convert/quotes?projectId=${projectId}&amount=${amount}&userAddress=${userAddress}&from=${from}&to=${to}&gasPrice=${gasPrice}`
+      path: `/v1/convert/quotes`,
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      params: {
+        projectId,
+        amount,
+        userAddress,
+        from,
+        to,
+        gasPrice
+      }
     })
   },
 
