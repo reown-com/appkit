@@ -6,10 +6,6 @@ import { BlockchainApiController } from '../controllers/BlockchainApiController.
 import type { SwapTokenWithBalance } from './TypeUtil.js'
 import { OptionsController } from '../controllers/OptionsController.js'
 import type { BlockchainApiSwapAllowanceRequest, BlockchainApiBalanceResponse } from './TypeUtil.js'
-import { FetchUtil } from './FetchUtil.js'
-
-// -- Constants ----------------------------------------- //
-const ONEINCH_API_BASE_URL = '..'
 
 // -- Types --------------------------------------------- //
 export type TokenInfo = {
@@ -26,36 +22,6 @@ export type TokenInfo = {
 
 // -- Controller ---------------------------------------- //
 export const SwapApiUtil = {
-  async getQuote({
-    fromTokenAddress,
-    toTokenAddress,
-    amount,
-    accountAddress,
-    gasPrice
-  }: {
-    fromTokenAddress: string
-    toTokenAddress: string
-    amount: string
-    accountAddress: string
-    gasPrice: string
-  }) {
-    const apiUrl = new URL(`${ONEINCH_API_BASE_URL}/swap/v6.0/137/quote`)
-
-    apiUrl.searchParams.append('fromTokenAddress', fromTokenAddress)
-    apiUrl.searchParams.append('toTokenAddress', toTokenAddress)
-    apiUrl.searchParams.append('amount', amount)
-    apiUrl.searchParams.append('gasPrice', gasPrice)
-    apiUrl.searchParams.append('preset', 'maxReturnResult')
-    apiUrl.searchParams.append('walletAddress', accountAddress)
-
-    const api = new FetchUtil({ baseUrl: apiUrl.toString() })
-
-    return await api.get({
-      path: '',
-      headers: { 'content-type': 'application/json' }
-    })
-  },
-
   async getTokenList() {
     const response = await BlockchainApiController.fetchSwapTokens({
       chainId: NetworkController.state.caipNetwork?.id,

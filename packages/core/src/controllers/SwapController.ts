@@ -54,7 +54,6 @@ export interface SwapControllerState {
   swapTransaction: TransactionParams | undefined
   transactionLoading?: boolean
   transactionError?: string
-  readyToCreateTransaction?: boolean
 
   // Input values
   sourceToken?: SwapTokenWithBalance
@@ -454,7 +453,7 @@ export const SwapController = {
     return { gasPrice: gasFee, gasPriceInUSD: state.gasPriceInUSD }
   },
 
-  // -- Transactions -------------------------------------- //
+  // -- Swap -------------------------------------- //
   async swapTokens() {
     const address = AccountController.state.address as `${string}:${string}:${string}`
     const sourceToken = state.sourceToken
