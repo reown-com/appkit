@@ -262,8 +262,12 @@ export class Web3ModalScaffold {
     return EnsController.getNamesForAddress(address)
   }
 
-  protected resolveWalletConnectName: (typeof EnsController)['resolveName'] = name => {
-    return EnsController.resolveName(name)
+  protected resolveWalletConnectName = async (name: string) => {
+    const trimmedName = name.replace('.wcn.id', '')
+    const wcNameAddress = await EnsController.resolveName(trimmedName)
+    const networkNameAddresses = Object.values(wcNameAddress?.addresses) || []
+
+    return networkNameAddresses[0]?.address || false
   }
 
   // -- Private ------------------------------------------------------------------

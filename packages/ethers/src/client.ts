@@ -421,21 +421,26 @@ export class Web3Modal extends Web3ModalScaffold {
 
         throw new Error('Contract method is undefined')
       },
-
       getEnsAddress: async (value: string) => {
-        const { chainId } = EthersStoreUtil.state
-        if (chainId && chainId === 1) {
-          const ensProvider = new InfuraProvider('mainnet')
+        try {
+          const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
+          let ensName: string | null = null
+          let wcName: boolean | string = false
 
-          const name = await ensProvider.resolveName(value)
-          if (name) {
-            return name
+          if (value?.endsWith('wcn.id')) {
+            wcName = await this.resolveWalletConnectName(value)
           }
 
+          if (chainId === 1) {
+            const ensProvider = new InfuraProvider('mainnet')
+
+            ensName = await ensProvider.resolveName(value)
+          }
+
+          return ensName || wcName || false
+        } catch {
           return false
         }
-
-        return false
       },
 
       getEnsAvatar: async (value: string) => {

@@ -303,10 +303,7 @@ export class Web3Modal extends Web3ModalScaffold {
           let wcName: boolean | string = false
 
           if (value?.endsWith('wcn.id')) {
-            const trimmedName = value.replace('.wcn.id', '')
-            const wcNameAddress = await this.resolveWalletConnectName(trimmedName)
-            const networkNameAddresses = Object.values(wcNameAddress?.addresses) || []
-            wcName = networkNameAddresses[0]?.address || false
+            wcName = await this.resolveWalletConnectName(value)
           }
 
           if (chainId === mainnet.id) {
