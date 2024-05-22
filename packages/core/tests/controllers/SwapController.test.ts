@@ -1,7 +1,9 @@
 import { beforeAll, describe, expect, it, vi } from 'vitest'
+import { parseUnits } from 'viem'
 import {
   AccountController,
   BlockchainApiController,
+  ConnectionController,
   NetworkController,
   SwapController,
   type CaipNetworkId,
@@ -11,19 +13,28 @@ import {
   balanceResponse,
   gasPriceResponse,
   networkTokenPriceResponse,
+  swapCalldataResponse,
+  swapQuoteResponse,
   tokensResponse
 } from '../mocks/SwapController.js'
-import { INITIAL_GAS_LIMIT } from '../../src/controllers/SwapController.js'
 import { SwapApiUtil } from '../../src/utils/SwapApiUtil.js'
 
 // - Mocks ---------------------------------------------------------------------
-const mockTransaction = {
-  data: '0x11111',
-  gas: BigInt(INITIAL_GAS_LIMIT),
-  gasPrice: BigInt(10000000000),
-  to: '0x222',
-  toAmount: '1',
-  value: BigInt(1)
+
+const mockTX = {
+  tx: {
+    from: 'eip155:137:0xe8e0d27a1232ada1d76ac4032a100f8f9f3486b2',
+    to: 'eip155:137:0x111111125421ca6dc452d289314280a0f8842a65',
+    data: '0x07ed2379000000000000000000000000e37e799d5077682fa0a244d46e5649f71457bd09000000000000000000000000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee000000000000000000000000d6df932a45c0f255f85145f286ea0b292b21c90b000000000000000000000000e37e799d5077682fa0a244d46e5649f71457bd09000000000000000000000000e8e0d27a1232ada1d76ac4032a100f8f9f3486b20000000000000000000000000000000000000000000000000de0b6b3a7640000000000000000000000000000000000000000000000000000001a5256ff077cbc00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000120000000000000000000000000000000000000000000000000000000000000014900000000000000000000000000000000012b0000fd00006e00005400004e802026678dcd00000000000000000000000000000000000000003e26ca57697d2ad49edd5c3787256586d0b50525000000000000000000000000000000000000000000000000001e32b47897400000206b4be0b940410d500b1d8e8ef31e21c99d1db9a6444d3adf1270d0e30db00c200d500b1d8e8ef31e21c99d1db9a6444d3adf12707d88d931504d04bfbee6f9745297a93063cab24c6ae40711b8002dc6c07d88d931504d04bfbee6f9745297a93063cab24c111111125421ca6dc452d289314280a0f8842a65000000000000000000000000000000000000000000000000001a5256ff077cbc0d500b1d8e8ef31e21c99d1db9a6444d3adf12700020d6bdbf78d6df932a45c0f255f85145f286ea0b292b21c90b111111125421ca6dc452d289314280a0f8842a6500000000000000000000000000000000000000000000003bd94e2a',
+    amount: '7483720195780716',
+    eip155: {
+      gas: '253421',
+      gasPrice: '151168582876'
+    }
+  }
+}
+const mockAllowance = {
+  allowance: '115792089237316195423570985008687907853269984665640564039457584007913129639935'
 }
 const caipNetwork = { id: 'eip155:137', name: 'Polygon' } as const
 const approvedCaipNetworkIds = ['eip155:1', 'eip155:137'] as CaipNetworkId[]
@@ -45,11 +56,14 @@ beforeAll(async () => {
   await NetworkController.switchActiveNetwork(caipNetwork)
   AccountController.setCaipAddress(caipAddress)
 
+  vi.spyOn(BlockchainApiController, 'fetchSwapTokens').mockResolvedValue(tokensResponse)
   vi.spyOn(BlockchainApiController, 'getBalance').mockResolvedValue(balanceResponse)
+  vi.spyOn(BlockchainApiController, 'fetchSwapQuote').mockResolvedValue(swapQuoteResponse)
   vi.spyOn(BlockchainApiController, 'fetchTokenPrice').mockResolvedValue(networkTokenPriceResponse)
-  vi.spyOn(SwapApiUtil, 'getTokenList').mockResolvedValue(tokensResponse)
+  vi.spyOn(BlockchainApiController, 'generateSwapCalldata').mockResolvedValue(swapCalldataResponse)
+  vi.spyOn(BlockchainApiController, 'fetchSwapAllowance').mockResolvedValue(mockAllowance)
   vi.spyOn(SwapApiUtil, 'fetchGasPrice').mockResolvedValue(gasPriceResponse)
-  vi.spyOn(SwapController, 'getTransaction').mockResolvedValue(mockTransaction)
+  vi.spyOn(ConnectionController, 'parseUnits').mockResolvedValue(parseUnits('1', 18))
 
   await SwapController.initializeState()
 
@@ -65,15 +79,15 @@ describe('SwapController', () => {
 
   it('should set toToken as expected', () => {
     expect(SwapController.state.toToken?.address).toEqual(toTokenAddress)
-    expect(SwapController.state.toTokenPriceInUSD).toEqual(38.0742530944)
+    expect(SwapController.state.toTokenPriceInUSD).toEqual(40.101925674)
   })
 
   it('should calculate swap values as expected', async () => {
     await SwapController.swapTokens()
 
-    expect(SwapController.state.gasPriceInUSD).toEqual(0.0010485260814)
-    expect(SwapController.state.priceImpact).toEqual(1.0003077978972612)
-    expect(SwapController.state.maxSlippage).toEqual(0.00019255219039488635)
+    expect(SwapController.state.gasPriceInUSD).toEqual(0.00648630001383744)
+    expect(SwapController.state.priceImpact).toEqual(3.952736601951709)
+    expect(SwapController.state.maxSlippage).toEqual(0.0001726)
   })
 
   it('should reset values as expected', () => {

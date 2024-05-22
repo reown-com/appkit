@@ -206,7 +206,7 @@ export interface BlockchainApiSwapQuoteRequest {
 
 export interface BlockchainApiSwapQuoteResponse {
   quotes: {
-    id: string
+    id: string | null
     fromAmount: string
     fromAccount: string
     toAmount: string
@@ -225,7 +225,7 @@ export interface BlockchainApiTokenPriceResponse {
     name: string
     symbol: string
     iconUrl: string
-    price: string
+    price: number
   }[]
 }
 

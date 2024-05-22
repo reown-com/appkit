@@ -30,7 +30,6 @@ export const SwapCalculationUtil = {
     sourceTokenPriceInUSD: number
     toTokenPriceInUSD: number
     toTokenAmount: string
-    gasPriceInUSD: number
   }) {
     const inputValue = NumberUtil.bigNumber(sourceTokenAmount).multipliedBy(sourceTokenPriceInUSD)
     const outputValue = NumberUtil.bigNumber(toTokenAmount).multipliedBy(toTokenPriceInUSD)

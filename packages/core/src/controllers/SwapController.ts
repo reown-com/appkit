@@ -384,9 +384,8 @@ export const SwapController = {
     const fungibles = response.fungibles || []
     const allTokens = [...(state.tokens || []), ...(state.myTokensWithBalance || [])]
     const symbol = allTokens?.find(token => token.address === address)?.symbol
-    const price =
-      fungibles.find(p => p.symbol.toLowerCase() === symbol?.toLowerCase())?.price || '0'
-    const priceAsFloat = parseFloat(price)
+    const price = fungibles.find(p => p.symbol.toLowerCase() === symbol?.toLowerCase())?.price || 0
+    const priceAsFloat = parseFloat(price.toString())
 
     state.tokensPriceMap[address] = priceAsFloat
 
@@ -401,7 +400,7 @@ export const SwapController = {
       addresses: [networkAddress]
     })
     const token = response.fungibles?.[0]
-    const price = token?.price || '0'
+    const price = token?.price.toString() || '0'
     state.tokensPriceMap[networkAddress] = parseFloat(price)
     state.networkTokenSymbol = token?.symbol || ''
     state.networkPrice = price
@@ -532,6 +531,7 @@ export const SwapController = {
       } else {
         transaction = await this.createAllowanceTransaction()
       }
+
       state.loading = false
       state.fetchError = false
 
@@ -757,8 +757,7 @@ export const SwapController = {
       sourceTokenAmount: state.sourceTokenAmount,
       sourceTokenPriceInUSD: state.sourceTokenPriceInUSD,
       toTokenPriceInUSD: state.toTokenPriceInUSD,
-      toTokenAmount: state.toTokenAmount,
-      gasPriceInUSD: state.gasPriceInUSD
+      toTokenAmount: state.toTokenAmount
     })
     state.maxSlippage = SwapCalculationUtil.getMaxSlippage(state.slippage, state.toTokenAmount)
     state.providerFee = SwapCalculationUtil.getProviderFee(state.sourceTokenAmount)

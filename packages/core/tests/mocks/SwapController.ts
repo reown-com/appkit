@@ -1,55 +1,48 @@
-export const tokensResponse = [
-  {
-    name: 'Matic Token',
-    symbol: 'MATIC',
-    address:
-      'eip155:137:0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee' as `${string}:${string}:${string}`,
-    value: 15.945686877137186,
-    price: 0.6990173876,
-    decimals: 18,
-    quantity: {
-      numeric: '22.811574018044047908',
-      decimals: '18'
+export const tokensResponse = {
+  tokens: [
+    {
+      name: 'MATIC',
+      symbol: 'MATIC',
+      address:
+        'eip155:137:0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee' as `0x${string}:${string}:${string}`,
+      decimals: 18,
+      logoUri: 'https://tokens.1inch.io/0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0.png',
+      eip2612: false
     },
-    logoUri: 'https://token-icons.s3.amazonaws.com/0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0.png'
-  },
-  {
-    name: 'ShapeShift FOX',
-    symbol: 'FOX',
-    address:
-      'eip155:137:0x65a05db8322701724c197af82c9cae41195b0aa8' as `${string}:${string}:${string}`,
-    value: 0.818151429070586,
-    price: 0.10315220553291868,
-    decimals: 18,
-    quantity: {
-      numeric: '9.348572710146769370',
-      decimals: '18'
+    {
+      name: 'Avalanche Token',
+      symbol: 'AVAX',
+      address: 'eip155:137:0x2c89bbc92bd86f8075d1decc58c7f4e0107f286b',
+      decimals: 18,
+      logoUri: 'https://tokens.1inch.io/0x2c89bbc92bd86f8075d1decc58c7f4e0107f286b.png',
+      eip2612: false
     },
-    logoUri: 'https://token-icons.s3.amazonaws.com/0xc770eefad204b5180df6a14ee197d99d808ee52d.png'
-  },
-  {
-    name: 'Tether USD',
-    symbol: 'USDT',
-    address:
-      'eip155:137:0xc2132d05d31c914a87c6611c10748aeb04b58e8f' as `${string}:${string}:${string}`,
-    value: 0.8888156632489365,
-    price: 0.9995840116762155,
-    decimals: 6,
-    quantity: {
-      numeric: '0.888765',
-      decimals: '6'
-    },
-    logoUri: 'https://token-icons.s3.amazonaws.com/0xdac17f958d2ee523a2206206994597c13d831ec7.png'
-  }
-]
+    {
+      name: 'USD Coin',
+      symbol: 'USDC',
+      address:
+        'eip155:137:0x3c499c542cef5e3811e1192ce70d8cc03d5c3359' as `0x${string}:${string}:${string}`,
+      decimals: 6,
+      logoUri: 'https://tokens.1inch.io/0x3c499c542cef5e3811e1192ce70d8cc03d5c3359.png',
+      eip2612: false
+    }
+  ]
+}
 
 export const networkTokenPriceResponse = {
   fungibles: [
     {
-      name: 'Matic Token',
+      name: 'MATIC',
       symbol: 'MATIC',
-      price: '0.6990173876',
-      iconUrl: 'https://token-icons.s3.amazonaws.com/0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0.png'
+      iconUrl: 'https://tokens.1inch.io/0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0.png',
+      price: 0.7207
+    },
+    {
+      name: 'USD Coin',
+      symbol: 'USDC',
+      iconUrl:
+        'https://token-icons.s3.amazonaws.com/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png',
+      price: 1.0000718186
     }
   ]
 }
@@ -60,11 +53,11 @@ export const balanceResponse = {
       name: 'Matic Token',
       symbol: 'MATIC',
       chainId: 'eip155:137',
-      value: 10.667935172031754,
-      price: 0.7394130944,
+      value: 7.1523453459986115,
+      price: 0.7206444126000001,
       quantity: {
         decimals: '18',
-        numeric: '14.427571343848456409'
+        numeric: '9.924929994522253814'
       },
       iconUrl: 'https://token-icons.s3.amazonaws.com/0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0.png'
     },
@@ -73,28 +66,53 @@ export const balanceResponse = {
       symbol: 'AVAX',
       chainId: 'eip155:137',
       address: 'eip155:137:0x2c89bbc92bd86f8075d1decc58c7f4e0107f286b',
-      value: 3.751852120639868,
-      price: 38.0742530944,
+      value: 0.692163347318501,
+      price: 40.101925674,
       quantity: {
         decimals: '18',
-        numeric: '0.098540399764051957'
+        numeric: '0.017260102493463641'
       },
       iconUrl: 'https://token-icons.s3.amazonaws.com/0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7.png'
     },
     {
-      name: 'Tether USD',
-      symbol: 'USDT',
+      name: 'USD Coin',
+      symbol: 'USDC',
       chainId: 'eip155:137',
-      address: 'eip155:137:0xc2132d05d31c914a87c6611c10748aeb04b58e8f',
-      value: 2.3040319252130432,
-      price: 1.0010962048,
+      address: 'eip155:137:0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+      value: 2.711438769801216,
+      price: 0.999957504,
       quantity: {
         decimals: '6',
-        numeric: '2.301509'
+        numeric: '2.711554'
       },
-      iconUrl: 'https://token-icons.s3.amazonaws.com/0xdac17f958d2ee523a2206206994597c13d831ec7.png'
+      iconUrl: 'https://token-icons.s3.amazonaws.com/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png'
     }
   ]
+}
+
+export const swapQuoteResponse = {
+  quotes: [
+    {
+      id: null,
+      fromAmount: '1000000000000000000',
+      fromAccount: 'eip155:137:0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+      toAmount: '17259970548235021',
+      toAccount: 'eip155:137:0x2c89bbc92bd86f8075d1decc58c7f4e0107f286b'
+    }
+  ]
+}
+
+export const swapCalldataResponse = {
+  tx: {
+    from: 'eip155:137:0xe8e0d27a1232ada1d76ac4032a100f8f9f3486b2' as `${string}:${string}:${string}`,
+    to: 'eip155:137:0x111111125421ca6dc452d289314280a0f8842a65' as `${string}:${string}:${string}`,
+    data: '0x07ed2379000000000000000000000000e37e799d5077682fa0a244d46e5649f71457bd09000000000000000000000000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee000000000000000000000000d6df932a45c0f255f85145f286ea0b292b21c90b000000000000000000000000e37e799d5077682fa0a244d46e5649f71457bd09000000000000000000000000e8e0d27a1232ada1d76ac4032a100f8f9f3486b20000000000000000000000000000000000000000000000000de0b6b3a7640000000000000000000000000000000000000000000000000000001a5256ff077cbc00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000120000000000000000000000000000000000000000000000000000000000000014900000000000000000000000000000000012b0000fd00006e00005400004e802026678dcd00000000000000000000000000000000000000003e26ca57697d2ad49edd5c3787256586d0b50525000000000000000000000000000000000000000000000000001e32b47897400000206b4be0b940410d500b1d8e8ef31e21c99d1db9a6444d3adf1270d0e30db00c200d500b1d8e8ef31e21c99d1db9a6444d3adf12707d88d931504d04bfbee6f9745297a93063cab24c6ae40711b8002dc6c07d88d931504d04bfbee6f9745297a93063cab24c111111125421ca6dc452d289314280a0f8842a65000000000000000000000000000000000000000000000000001a5256ff077cbc0d500b1d8e8ef31e21c99d1db9a6444d3adf12700020d6bdbf78d6df932a45c0f255f85145f286ea0b292b21c90b111111125421ca6dc452d289314280a0f8842a6500000000000000000000000000000000000000000000003bd94e2a' as `0x${string}`,
+    amount: '7483720195780716',
+    eip155: {
+      gas: '253421',
+      gasPrice: '151168582876'
+    }
+  }
 }
 
 export const gasPriceResponse = {
