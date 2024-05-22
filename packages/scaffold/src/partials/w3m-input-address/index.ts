@@ -143,14 +143,11 @@ ${this.value ?? ''}</textarea
       this.focusInput()
     }
     SendController.setLoading(true)
-    console.log('input change', element.value)
     this.onDebouncedSearch(element.value)
   }
 
   private onDebouncedSearch = CoreHelperUtil.debounce(async (value: string) => {
-    console.log('debounced search', value)
     const address = await ConnectionController.getEnsAddress(value)
-    console.log('address', address)
     SendController.setLoading(false)
 
     if (address) {
