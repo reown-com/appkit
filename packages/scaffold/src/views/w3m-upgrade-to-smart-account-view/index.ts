@@ -2,6 +2,7 @@ import { customElement } from '@web3modal/ui'
 import {
   ConnectionController,
   ConnectorController,
+  ModalController,
   RouterController,
   RouterUtil,
   SnackController
@@ -84,10 +85,12 @@ export class W3mUpgradeToSmartAccountView extends LitElement {
     if (this.authConnector) {
       try {
         this.loading = true
+        ModalController.setLoading(true)
         await this.authConnector.provider.setPreferredAccount(
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
         )
         await ConnectionController.reconnectExternal(this.authConnector)
+        ModalController.setLoading(false)
         this.loading = false
         RouterUtil.navigateAfterPreferredAccountTypeSelect()
       } catch (e) {

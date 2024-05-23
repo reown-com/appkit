@@ -22,7 +22,10 @@ export class ModalWalletPage extends ModalPage {
   }
 
   async togglePreferredAccountType() {
-    await this.page.getByTestId('account-toggle-preferred-account-type').click()
+    const toggleButton = this.page.getByTestId('account-toggle-preferred-account-type')
+    await expect(toggleButton, 'Toggle button should be visible').toBeVisible()
+    await expect(toggleButton, 'Toggle button should be enabled').toBeEnabled()
+    await toggleButton.click()
   }
 
   override async disconnect(): Promise<void> {
