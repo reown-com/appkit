@@ -278,6 +278,28 @@ export const RpcEthSendTransactionRequest = z.object({
   params: z.array(z.any())
 })
 
+export const WalletSendCallsRequest = z.object({
+  method: z.literal('wallet_sendCalls'),
+  params: z.array(z.object({
+    calls: z.array(z.object({
+      to: z.string().startsWith('0x'),
+      data: z.string().startsWith('0x'),
+      value: z.bigint()
+    }))
+  }))
+})
+
+export const WalletGetCallsReceiptRequest = z.object({
+  method: z.literal('wallet_getCallsReceipt'),
+  params: z.array(z.object({
+    id: z.string()
+  }))
+})
+
+export const WalletGetCapabilitiesRequest = z.object({
+  method: z.literal('wallet_getCapabilities'),
+})
+
 export const FrameSession = z.object({
   token: z.string()
 })
@@ -360,6 +382,9 @@ export const W3mFrameSchema = {
           .or(RpcPersonalSignRequest)
           .or(RpcEthSignTypedDataV4)
           .or(RpcEthSendTransactionRequest)
+          .or(WalletGetCallsReceiptRequest)
+          .or(WalletSendCallsRequest)
+          .or(WalletGetCapabilitiesRequest)
       })
     )
 

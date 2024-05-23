@@ -424,6 +424,21 @@ export class W3mFrameProvider {
     })
   }
 
+  public async getCapabilities(): Promise<Record<number, any>> {
+    try {
+      const capabilities = await this.request({
+        method: 'wallet_getCapabilities'
+      })
+      console.log(">> capabilities", capabilities)
+
+      return capabilities;
+    }
+    catch (e) {
+      console.log(">> capabilities FAILED", e)
+      return {}
+    }
+  }
+
   public onSetPreferredAccount(
     callback: ({ type, address }: { type: string; address?: string }) => void
   ) {
