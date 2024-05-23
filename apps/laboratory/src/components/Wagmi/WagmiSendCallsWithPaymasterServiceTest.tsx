@@ -1,4 +1,4 @@
-import { Button, Stack, Text } from '@chakra-ui/react'
+import { Button, Input, Stack, Text, Tooltip } from '@chakra-ui/react'
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
 import { useAccount, useConnections } from 'wagmi'
 import { useCapabilities, useSendCalls } from 'wagmi/experimental'
@@ -7,9 +7,9 @@ import { useChakraToast } from '../Toast'
 import { parseGwei, type Address } from 'viem'
 import { vitalikEthAddress } from '../../utils/DataUtil'
 import {
+  getFilteredCapabilitySupportedChainInfo,
   EIP_5792_RPC_METHODS,
-  WALLET_CAPABILITIES,
-  getFilteredCapabilitySupportedChainInfo
+  WALLET_CAPABILITIES
 } from '../../utils/EIP5792Utils'
 
 const TEST_TX_1 = {
@@ -21,10 +21,11 @@ const TEST_TX_2 = {
   data: '0xdeadbeef' as `0x${string}`
 }
 
-export function WagmiSendCallsTest() {
+export function WagmiSendCallsWithPaymasterServiceTest() {
   const [ethereumProvider, setEthereumProvider] =
     useState<Awaited<ReturnType<(typeof EthereumProvider)['init']>>>()
   const [isLoading, setLoading] = useState(false)
+  const [paymasterServiceUrl, setPaymasterServiceUrl] = useState<string>('')
 
   const { status, chain, address } = useAccount()
   const { data: availableCapabilities } = useCapabilities({
@@ -34,16 +35,16 @@ export function WagmiSendCallsTest() {
   const toast = useChakraToast()
 
   const isConnected = status === 'connected'
-  const atomicBatchSupportedChains = availableCapabilities
+  const paymasterServiceSupportedChains = availableCapabilities
     ? getFilteredCapabilitySupportedChainInfo(
-        WALLET_CAPABILITIES.ATOMIC_BATCH,
+        WALLET_CAPABILITIES.PAYMASTER_SERVICE,
         availableCapabilities
       )
     : []
-  const atomicBatchSupportedChainsName = atomicBatchSupportedChains
+  const paymasterServiceSupportedChainNames = paymasterServiceSupportedChains
     .map(ci => ci.chainName)
     .join(', ')
-  const currentChainsInfo = atomicBatchSupportedChains.find(
+  const currentChainsInfo = paymasterServiceSupportedChains.find(
     chainInfo => chainInfo.chainId === Number(chain?.id)
   )
 
@@ -57,7 +58,7 @@ export function WagmiSendCallsTest() {
       onSuccess: hash => {
         setLoading(false)
         toast({
-          title: 'Transaction Success',
+          title: 'SendCalls Success',
           description: hash,
           type: 'success'
         })
@@ -66,31 +67,40 @@ export function WagmiSendCallsTest() {
         setLoading(false)
         toast({
           title: 'Error',
-          description: 'Failed to sign transaction',
+          description: 'Failed to send calls',
           type: 'error'
         })
       }
     }
   })
+
   const onSendCalls = useCallback(() => {
     setLoading(true)
-    sendCalls({
-      calls: [TEST_TX_1, TEST_TX_2]
-    })
-  }, [sendCalls])
-
-  async function fetchProvider() {
-    const connectedProvider = await connection?.[0]?.connector?.getProvider()
-    if (connectedProvider instanceof EthereumProvider) {
-      setEthereumProvider(connectedProvider)
+    if (!paymasterServiceUrl) {
+      throw Error('paymasterServiceUrl not set')
     }
-  }
+    sendCalls({
+      calls: [TEST_TX_1, TEST_TX_2],
+      capabilities: {
+        paymasterService: {
+          url: paymasterServiceUrl
+        }
+      }
+    })
+  }, [sendCalls, paymasterServiceUrl])
+
   function isSendCallsSupported(): boolean {
     return Boolean(
       ethereumProvider?.signer?.session?.namespaces?.['eip155']?.methods?.includes(
         EIP_5792_RPC_METHODS.WALLET_SEND_CALLS
       )
     )
+  }
+  async function fetchProvider() {
+    const connectedProvider = await connection?.[0]?.connector?.getProvider()
+    if (connectedProvider instanceof EthereumProvider) {
+      setEthereumProvider(connectedProvider)
+    }
   }
 
   if (!isConnected || !ethereumProvider || !address) {
@@ -107,28 +117,39 @@ export function WagmiSendCallsTest() {
       </Text>
     )
   }
-  if (atomicBatchSupportedChains.length === 0) {
+  if (paymasterServiceSupportedChains.length === 0) {
     return (
       <Text fontSize="md" color="yellow">
-        Account does not support atomic batch feature
+        Account does not support paymaster service feature
       </Text>
     )
   }
 
   return currentChainsInfo ? (
-    <Stack direction={['column', 'column', 'row']}>
+    <Stack direction={['column', 'column', 'column']}>
+      <Tooltip label="Paymaster Service URL should be of ERC-7677 paymaster service proxy">
+        <Input
+          placeholder="http://api.pimlico.io/v2/sepolia/rpc?apikey=..."
+          onChange={e => setPaymasterServiceUrl(e.target.value)}
+          value={paymasterServiceUrl}
+          isDisabled={isLoading}
+          whiteSpace="nowrap"
+          textOverflow="ellipsis"
+        />
+      </Tooltip>
       <Button
-        data-test-id="send-calls-button"
+        width={'fit-content'}
+        data-test-id="send-calls-paymaster-service-button"
         onClick={onSendCalls}
         disabled={!sendCalls}
-        isDisabled={isLoading}
+        isDisabled={isLoading || !paymasterServiceUrl}
       >
-        Send Batch Calls to Vitalik
+        SendCalls w/ Paymaster Service
       </Button>
     </Stack>
   ) : (
     <Text fontSize="md" color="yellow">
-      Switch to {atomicBatchSupportedChainsName} to test this feature
+      Switch to {paymasterServiceSupportedChainNames} to test this feature
     </Text>
   )
 }
