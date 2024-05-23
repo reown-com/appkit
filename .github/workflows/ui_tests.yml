@@ -50,8 +50,6 @@ jobs:
     name: 'Playwright Tests'
     container:
       image: mcr.microsoft.com/playwright:v1.34.3-jammy
-    if: ${{ !cancelled() }}
-    needs: [setup]
     runs-on:
       group: ubuntu-runners
     strategy:
