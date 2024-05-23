@@ -46,15 +46,8 @@ on:
         required: false
 
 jobs:
-  ui_tests:
-    name: 'Playwright Tests'
-    runs-on:
-      group: ubuntu-runners
-    strategy:
-      matrix:
-        shard: [1, 2, 3, 4]
-        shardTotal: [4]
-    timeout-minutes: 15
+  setup:
+    runs-on: ubuntu-latest
     steps:
       - name: checkout
         uses: actions/checkout@v4
@@ -95,6 +88,19 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         working-directory: ./apps/laboratory/
         run: npm run playwright:install
+
+  ui_tests:
+    name: 'Playwright Tests'
+    if: ${{ !cancelled() }}
+    needs: [ui_tests]
+    runs-on:
+      group: ubuntu-runners
+    strategy:
+      matrix:
+        shard: [1, 2, 3, 4]
+        shardTotal: [4]
+    timeout-minutes: 15
+    steps:
       - name: Run Playwright tests
         env:
           BASE_URL: ${{ inputs.base-url }}
@@ -108,7 +114,7 @@ jobs:
           SOCIAL_TEST_PASSWORD: ${{ secrets.TESTS_SOCIAL_PASSWORD }}
           CI: true
         working-directory: ./apps/laboratory/
-        run: npm run ${{ inputs.command }} --shard=${{ matrix.shard }}/${{ matrix.shardTotal }}
+        run: npm run ${{ inputs.command }} -- --shard=${{ matrix.shard }}/${{ matrix.shardTotal }}
       - name: Run canary with minimal environment config
         env:
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
@@ -118,7 +124,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         if: always()
         with:
-          name: playwright-report
+          name: playwright-report-${{ matrix.shardIndex }}
           path: ./apps/laboratory/playwright-report/
           retention-days: 7
       - uses: actions/upload-artifact@v3
@@ -126,4 +132,34 @@ jobs:
         with:
           name: screenshots-${{ matrix.shardIndex }}
           path: ./apps/laboratory/test-results/
+          retention-days: 7
+
+  merge-reports:
+    if: ${{ !cancelled() }}
+    needs: [ui_tests]
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download blob reports from GitHub Actions Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: all-blob-reports
+          pattern: blob-report-*
+          merge-multiple: true
+
+      - name: Merge into HTML Report
+        run: npx playwright merge-reports --reporter html ./all-blob-reports
+
+      - name: Upload HTML report
+        uses: actions/upload-artifact@v4
+        with:
+          name: html-report--attempt-${{ github.run_attempt }}
+          path: ./apps/laboratory/playwright-report/
           retention-days: 7
