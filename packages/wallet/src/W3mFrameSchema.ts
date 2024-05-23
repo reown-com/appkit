@@ -46,7 +46,7 @@ export const AppUpdateEmailSecondaryOtpRequest = z.object({ otp: z.string() })
 export const AppSyncThemeRequest = z.object({
   themeMode: z.optional(z.enum(['light', 'dark'])),
   themeVariables: z.optional(z.record(z.string(), z.string().or(z.number()))),
-  w3mThemeVariables: z.record(z.string(), z.string())
+  w3mThemeVariables: z.optional(z.record(z.string(), z.string()))
 })
 export const AppSyncDappDataRequest = z.object({
   metadata: z
