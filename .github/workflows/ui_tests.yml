@@ -130,6 +130,10 @@ jobs:
         with:
           name: playwright-browsers
           path: ~/.cache/ms-playwright
+
+      - name: Install dependencies
+        run: npm ci
+
       - name: Run Playwright tests
         env:
           BASE_URL: ${{ inputs.base-url }}
