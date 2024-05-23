@@ -1,5 +1,17 @@
 # @apps/laboratory
 
+## 4.2.2
+
+### Patch Changes
+
+- feat: social login refactor. wagmi sendCalls support. refactor theme variables
+
+- Updated dependencies []:
+  - @web3modal/ethers@4.2.2
+  - @web3modal/siwe@4.2.2
+  - @web3modal/solana@4.2.2
+  - @web3modal/wagmi@4.2.2
+
 ## 4.2.1
 
 ### Patch Changes
