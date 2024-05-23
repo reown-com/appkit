@@ -62,7 +62,8 @@ export function defaultWagmiConfig({
       coinbaseWallet({
         version: '4',
         appName: metadata?.name ?? 'Unknown',
-        appLogoUrl: metadata?.icons[0] ?? 'Unknown'
+        appLogoUrl: metadata?.icons[0] ?? 'Unknown',
+        preference: 'all'
       })
     )
   }
