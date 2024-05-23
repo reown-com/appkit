@@ -429,12 +429,10 @@ export class W3mFrameProvider {
       const capabilities = await this.request({
         method: 'wallet_getCapabilities'
       })
-      console.log(">> capabilities", capabilities)
 
       return capabilities;
     }
     catch (e) {
-      console.log(">> capabilities FAILED", e)
       return {}
     }
   }

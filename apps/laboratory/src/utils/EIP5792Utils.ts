@@ -2,7 +2,7 @@ import { EthereumProvider } from '@walletconnect/ethereum-provider'
 import { getChain } from './ChainsUtil'
 import { parseJSON } from './CommonUtils'
 import type { WalletCapabilities } from 'viem'
-import type { W3mFrameProvider } from '@web3modal/wallet'
+import { W3mFrameProvider } from '@web3modal/wallet'
 
 export const EIP_5792_RPC_METHODS = {
   WALLET_GET_CALLS_STATUS: 'wallet_getCallsStatus',
@@ -14,17 +14,32 @@ export const WALLET_CAPABILITIES = {
   PAYMASTER_SERVICE: 'paymasterService'
 }
 
-export function getCapabilitySupportedChainInfo(
+export async function getCapabilitySupportedChainInfo(
   capability: string,
   provider: Awaited<ReturnType<(typeof EthereumProvider)['init']>> | W3mFrameProvider,
   address: string
-): {
+): Promise<{
   chainId: number
   chainName: string
-}[] {
-  if (!(provider instanceof EthereumProvider) || !address) {
+}[]> {
+  if (!(provider instanceof EthereumProvider || provider instanceof W3mFrameProvider) || !address) {
     return []
   }
+
+  if (provider instanceof W3mFrameProvider) {
+    const rawCapabilities = await provider.getCapabilities()
+    console.log(">> rawCapabilities", rawCapabilities)
+    const mappedCapabilities = Object.entries(rawCapabilities).map(([chainId]) => {
+      const chain = getChain(parseInt(chainId));
+      
+      return { chainId: parseInt(chainId), chainName: chain?.name ?? `Unknown Chain (${chainId})` }
+    })
+
+    console.log(">> mappedCapabilities", mappedCapabilities)
+
+    return mappedCapabilities
+  }
+
   const walletCapabilitiesString = provider.signer?.session?.sessionProperties?.['capabilities']
   if (!walletCapabilitiesString) {
     return []

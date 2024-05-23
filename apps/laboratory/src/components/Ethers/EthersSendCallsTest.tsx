@@ -24,7 +24,7 @@ export function EthersSendCallsTest() {
 
   useEffect(() => {
     if(address && (walletProvider instanceof EthereumProvider || walletProvider instanceof W3mFrameProvider)) {
-      getCapabilitySupportedChainInfo(WALLET_CAPABILITIES.ATOMIC_BATCH, walletProvider, address)    }
+      getCapabilitySupportedChainInfo(WALLET_CAPABILITIES.ATOMIC_BATCH, walletProvider, address).then(setAtomicBatchSupportedChains)    }
     else setAtomicBatchSupportedChains([])
   }, [address, walletProvider])
 
@@ -64,6 +64,7 @@ export function EthersSendCallsTest() {
         from: address,
         calls
       }
+      console.log(">> sending", EIP_5792_RPC_METHODS.WALLET_SEND_CALLS)
       const batchCallHash = await provider.send(EIP_5792_RPC_METHODS.WALLET_SEND_CALLS, [
         sendCallsParams
       ])
@@ -72,7 +73,8 @@ export function EthersSendCallsTest() {
         description: batchCallHash,
         type: 'success'
       })
-    } catch {
+    } catch (e) {
+      console.log(">> sendCalls failed", e)
       toast({
         title: 'Error',
         description: 'Failed to send calls',
@@ -83,13 +85,10 @@ export function EthersSendCallsTest() {
     }
   }
   function isSendCallsSupported(): boolean {
-    console.log(">> walletProvider", walletProvider)
     if (walletProvider instanceof W3mFrameProvider) {
-      console.log(">> walletProvider is instance of w3mframeprovider")
       return true
     }
     if (walletProvider instanceof EthereumProvider) {
-    console.log(">> walletprovider session", walletProvider.signer.session)
       return Boolean(
         walletProvider?.signer?.session?.namespaces?.['eip155']?.methods?.includes(
           EIP_5792_RPC_METHODS.WALLET_SEND_CALLS
