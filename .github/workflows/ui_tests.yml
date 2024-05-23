@@ -46,8 +46,19 @@ on:
         required: false
 
 jobs:
-  setup:
-    runs-on: ubuntu-latest
+  ui_tests:
+    name: 'Playwright Tests'
+    container:
+      image: mcr.microsoft.com/playwright:v1.34.3-jammy
+    if: ${{ !cancelled() }}
+    needs: [setup]
+    runs-on:
+      group: ubuntu-runners
+    strategy:
+      matrix:
+        shard: [1, 2, 3, 4]
+        shardTotal: [4]
+    timeout-minutes: 15
     steps:
       - name: checkout
         uses: actions/checkout@v4
@@ -65,10 +76,6 @@ jobs:
       - name: Get installed Playwright version
         id: playwright-version
         run: echo "PLAYWRIGHT_VERSION=$(node -e "console.log(require('./package-lock.json').packages['apps/laboratory']['devDependencies']['@playwright/test'])")" >> $GITHUB_ENV
-
-      - name: Install Brave Browser
-        working-directory: ./apps/laboratory/
-        run: sudo ./scripts/install-brave-browser.sh
 
       - name: Cache playwright binaries
         uses: actions/cache@v4
@@ -90,48 +97,6 @@ jobs:
           NEXT_PUBLIC_SECURE_SITE_SDK_URL: ${{ inputs.secure-site-url }}
           SOCIAL_TEST_EMAIL: ${{ secrets.TESTS_SOCIAL_EMAIL }}
           SOCIAL_TEST_PASSWORD: ${{ secrets.TESTS_SOCIAL_PASSWORD }}
-
-      - name: Install Playwright Browsers
-        if: steps.playwright-cache.outputs.cache-hit != 'true'
-        working-directory: ./apps/laboratory/
-        run: npm run playwright:install
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: build-output
-          path: ./apps/laboratory/out/
-
-  ui_tests:
-    name: 'Playwright Tests'
-    container:
-      image: mcr.microsoft.com/playwright:v1.34.3-jammy
-    if: ${{ !cancelled() }}
-    needs: [setup]
-    runs-on:
-      group: ubuntu-runners
-    strategy:
-      matrix:
-        shard: [1, 2, 3, 4]
-        shardTotal: [4]
-    timeout-minutes: 15
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '18.x'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Download build artifacts
-        uses: actions/download-artifact@v2
-        with:
-          name: build-output
-          path: ./apps/laboratory/out/
 
       - name: Run Playwright tests
         env:
