@@ -108,6 +108,7 @@ jobs:
           SOCIAL_TEST_EMAIL: ${{ secrets.TESTS_SOCIAL_EMAIL }}
           SOCIAL_TEST_PASSWORD: ${{ secrets.TESTS_SOCIAL_PASSWORD }}
           CI: true
+          HOME: /root
         working-directory: ./apps/laboratory/
         run: npm run ${{ inputs.command }} -- --shard=${{ matrix.shard }}/${{ matrix.shardTotal }}
 
