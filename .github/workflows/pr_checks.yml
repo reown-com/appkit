@@ -5,6 +5,9 @@ on:
     branches:
       - V3
       - V4
+  push:
+    branches:
+      - testing-7904ba45a5c3ee7a928220da5e7749acbb846e4a
 
 concurrency:
   # Support push/pr as event types with different behaviors each:
