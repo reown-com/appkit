@@ -5,6 +5,9 @@ on:
     branches:
       - V3
       - V4
+  push:
+    branches:
+      - performance-analysis-before-17th-commits
 
 concurrency:
   # Support push/pr as event types with different behaviors each:
