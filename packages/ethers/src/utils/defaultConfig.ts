@@ -1,6 +1,6 @@
 import '@web3modal/polyfills'
 import type { Metadata, Provider, ProviderType } from '@web3modal/scaffold-utils/ethers'
-import { CoinbaseWalletSDK } from '@coinbase/wallet-sdk'
+import { CoinbaseWalletSDK, type ProviderInterface } from '@coinbase/wallet-sdk'
 import type { SocialProvider } from '@web3modal/scaffold-utils'
 
 export interface ConfigOptions {
@@ -32,7 +32,7 @@ export function defaultConfig(options: ConfigOptions) {
   let injectedProvider: Provider | undefined = undefined
 
   // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-  let coinbaseProvider: Provider | undefined = undefined
+  let coinbaseProvider: ProviderInterface | undefined = undefined
 
   const providers: ProviderType = { metadata }
 
@@ -66,12 +66,12 @@ export function defaultConfig(options: ConfigOptions) {
 
     const coinbaseWallet = new CoinbaseWalletSDK({
       appName: metadata.name,
-      appLogoUrl: metadata.icons[0],
-      darkMode: false,
-      enableMobileWalletLink: true
+      appLogoUrl: metadata.icons[0]
     })
 
-    coinbaseProvider = coinbaseWallet.makeWeb3Provider(rpcUrl, defaultChainId)
+    coinbaseProvider = coinbaseWallet.makeWeb3Provider({
+      options: 'all'
+    })
 
     return coinbaseProvider
   }
