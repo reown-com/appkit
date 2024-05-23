@@ -96,9 +96,9 @@ export class W3mSwapPreviewView extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex flexDirection="column" .padding=${['0', 'l', 'l', 'l']} gap="s"
-        >${this.templateSwap()}</wui-flex
-      >
+      <wui-flex flexDirection="column" .padding=${['0', 'l', 'l', 'l']} gap="s">
+        ${this.templateSwap()}
+      </wui-flex>
     `
   }
 

@@ -16,6 +16,7 @@ import { SwapCalculationUtil } from '../utils/SwapCalculationUtil.js'
 
 // -- Constants ---------------------------------------- //
 export const INITIAL_GAS_LIMIT = 150000
+export const TO_AMOUNT_DECIMALS = 6
 
 // -- Types --------------------------------------------- //
 export type SwapInputTarget = 'sourceToken' | 'toToken'
@@ -231,7 +232,9 @@ export const SwapController = {
   },
 
   setToTokenAmount(amount: string) {
-    state.toTokenAmount = amount ? NumberUtil.formatNumberToLocalString(amount, 6) : ''
+    state.toTokenAmount = amount
+      ? NumberUtil.formatNumberToLocalString(amount, TO_AMOUNT_DECIMALS)
+      : ''
   },
 
   async setTokenPrice(address: string, target: SwapInputTarget) {
@@ -479,11 +482,13 @@ export const SwapController = {
       amount: amountDecimal.toString()
     })
 
-    if (!quoteResponse?.quotes?.[0]) {
+    const quoteToAmount = quoteResponse?.quotes?.[0]?.toAmount
+
+    if (!quoteToAmount) {
       return
     }
 
-    const toTokenAmount = NumberUtil.bigNumber(quoteResponse?.quotes?.[0].toAmount)
+    const toTokenAmount = NumberUtil.bigNumber(quoteToAmount)
       .dividedBy(10 ** toToken.decimals)
       .toString()
 
