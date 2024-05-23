@@ -9,8 +9,7 @@ import { ConnectionController } from './ConnectionController.js'
 import { NetworkController } from './NetworkController.js'
 import { NetworkUtil } from '@web3modal/common'
 import { EnsUtil } from '../utils/EnsUtil.js'
-
-const WC_NAME_SUFFIX = '.wcn.id'
+import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 
 // -- Types --------------------------------------------- //
 type Suggestion = {
@@ -70,7 +69,7 @@ export const EnsController = {
       state.suggestions =
         response.suggestions.map(suggestion => ({
           ...suggestion,
-          name: suggestion.name.replace(WC_NAME_SUFFIX, '')
+          name: suggestion.name.replace(ConstantsUtil.WC_NAME_SUFFIX, '')
         })) || []
 
       return state.suggestions
@@ -113,7 +112,7 @@ export const EnsController = {
 
     try {
       const message = JSON.stringify({
-        name: `${name}.wcn.id`,
+        name: `${name}${ConstantsUtil.WC_NAME_SUFFIX}`,
         attributes: {},
         timestamp: Math.floor(Date.now() / 1000)
       })
@@ -142,7 +141,7 @@ export const EnsController = {
         message
       })
 
-      AccountController.setProfileName(`${name}.wcn.id`)
+      AccountController.setProfileName(`${name}${ConstantsUtil.WC_NAME_SUFFIX}`)
       RouterController.replace('RegisterAccountNameSuccess')
     } catch (e) {
       const errorMessage = this.parseEnsApiError(e, `Error registering name ${name}`)

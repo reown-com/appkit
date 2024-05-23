@@ -247,7 +247,7 @@ export const BlockchainApiController = {
 
   async lookupEnsName(name: string) {
     return api.get<BlockchainApiLookupEnsName>({
-      path: `/v1/profile/account/${name}.wcn.id?projectId=${OptionsController.state.projectId}`
+      path: `/v1/profile/account/${name}.${ConstantsUtil.WC_NAME_SUFFIX}?projectId=${OptionsController.state.projectId}`
     })
   },
 

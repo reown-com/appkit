@@ -7,6 +7,7 @@ import {
   NetworkController
 } from '../../index.js'
 import { W3mFrameProvider } from '@web3modal/wallet'
+import { ConstantsUtil } from '../../src/utils/ConstantsUtil.js'
 
 // -- Setup --------------------------------------------------------------------
 const TEST_NAME = {
@@ -40,10 +41,10 @@ vi.mock('../../src/controllers/BlockchainApiController.js', async importOriginal
       getEnsNameSuggestions: async (name: string) => {
         const suggestions = [`${name}1`, `${name}2`, `${name}Something`].map(val => ({
           registered: false,
-          name: `${val}.wcn.id`
+          name: `${val}${ConstantsUtil.WC_NAME_SUFFIX}`
         }))
         if (name === 'test') {
-          suggestions.push({ registered: false, name: `${name}.wcn.id` })
+          suggestions.push({ registered: false, name: `${name}${ConstantsUtil.WC_NAME_SUFFIX}` })
         }
 
         return Promise.resolve({ suggestions })
@@ -149,14 +150,14 @@ describe('EnsController', () => {
       .mockResolvedValueOnce('0x123123123')
 
     const message = JSON.stringify({
-      name: `newname.wcn.id`,
+      name: `newname${ConstantsUtil.WC_NAME_SUFFIX}`,
       attributes: {},
       timestamp: Math.floor(Date.now() / 1000)
     })
     await EnsController.registerName('newname')
     expect(getAuthConnectorSpy).toHaveBeenCalled()
     expect(signMessageSpy).toHaveBeenCalledWith(message)
-    expect(AccountController.state.profileName).toBe('newname.wcn.id')
+    expect(AccountController.state.profileName).toBe(`newname${ConstantsUtil.WC_NAME_SUFFIX}`)
     expect(EnsController.state.loading).toBe(false)
   })
 

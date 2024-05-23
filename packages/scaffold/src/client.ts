@@ -30,6 +30,7 @@ import {
 } from '@web3modal/core'
 import { setColorTheme, setThemeVariables } from '@web3modal/ui'
 import type { SIWEControllerClient } from '@web3modal/siwe'
+import { ConstantsUtil } from '@web3modal/core'
 
 // -- Helpers -------------------------------------------------------------------
 let isInitialized = false
@@ -263,7 +264,7 @@ export class Web3ModalScaffold {
   }
 
   protected resolveWalletConnectName = async (name: string) => {
-    const trimmedName = name.replace('.wcn.id', '')
+    const trimmedName = name.replace(ConstantsUtil.WC_NAME_SUFFIX, '')
     const wcNameAddress = await EnsController.resolveName(trimmedName)
     const networkNameAddresses = Object.values(wcNameAddress?.addresses) || []
 

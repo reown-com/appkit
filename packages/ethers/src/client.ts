@@ -14,6 +14,7 @@ import type {
 } from '@web3modal/scaffold'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
+import { ConstantsUtil as CoreConstantsUtil } from '@web3modal/core'
 import EthereumProvider, { OPTIONAL_METHODS } from '@walletconnect/ethereum-provider'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
 import type {
@@ -427,7 +428,7 @@ export class Web3Modal extends Web3ModalScaffold {
           let ensName: string | null = null
           let wcName: boolean | string = false
 
-          if (value?.endsWith('wcn.id')) {
+          if (value?.endsWith(CoreConstantsUtil.WC_NAME_SUFFIX)) {
             wcName = await this.resolveWalletConnectName(value)
           }
 

@@ -302,7 +302,7 @@ export class Web3Modal extends Web3ModalScaffold {
           let ensName: boolean | GetEnsAddressReturnType = false
           let wcName: boolean | string = false
 
-          if (value?.endsWith('wcn.id')) {
+          if (value?.endsWith('.wcn.id')) {
             wcName = await this.resolveWalletConnectName(value)
           }
 
