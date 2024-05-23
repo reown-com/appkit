@@ -92,7 +92,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: build-output
-          path: ./apps/laboratory/build/
+          path: ./apps/laboratory/out/
       - name: Upload Playwright browsers
         uses: actions/upload-artifact@v3
         with:
@@ -123,7 +123,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: build-output
-          path: ./apps/laboratory/build/
+          path: ./apps/laboratory/out/
 
       - name: Download Playwright browsers
         uses: actions/download-artifact@v2
