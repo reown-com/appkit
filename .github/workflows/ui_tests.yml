@@ -88,6 +88,16 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         working-directory: ./apps/laboratory/
         run: npm run playwright:install
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-output
+          path: ./apps/laboratory/build/
+      - name: Upload Playwright browsers
+        uses: actions/upload-artifact@v3
+        with:
+          name: playwright-browsers
+          path: ~/.cache/ms-playwright
 
   ui_tests:
     name: 'Playwright Tests'
@@ -101,6 +111,25 @@ jobs:
         shardTotal: [4]
     timeout-minutes: 15
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18.x'
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: build-output
+          path: ./apps/laboratory/build/
+
+      - name: Download Playwright browsers
+        uses: actions/download-artifact@v2
+        with:
+          name: playwright-browsers
+          path: ~/.cache/ms-playwright
       - name: Run Playwright tests
         env:
           BASE_URL: ${{ inputs.base-url }}
