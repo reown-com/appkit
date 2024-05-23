@@ -49,7 +49,7 @@ jobs:
   ui_tests:
     name: 'Playwright Tests'
     container:
-      image: mcr.microsoft.com/playwright:v1.34.3-jammy
+      image: mcr.microsoft.com/playwright:v1.40.1-jammy
     runs-on:
       group: ubuntu-runners
     strategy:
