@@ -286,7 +286,7 @@ export class Web3Modal extends Web3ModalScaffold {
         }
       },
 
-      checkInstalled(ids) {
+      checkInstalled: (ids?: string[]) => {
         if (!ids) {
           return Boolean(window.ethereum)
         }
@@ -772,6 +772,7 @@ export class Web3Modal extends Web3ModalScaffold {
     window?.localStorage.setItem(EthersConstantsUtil.WALLET_ID, ConstantsUtil.AUTH_CONNECTOR_ID)
 
     if (this.authProvider) {
+      super.setLoading(true)
       const { address, chainId, smartAccountDeployed, preferredAccountType } =
         await this.authProvider.connect({ chainId: this.getChainId() })
 
@@ -1010,12 +1011,13 @@ export class Web3Modal extends Web3ModalScaffold {
         if (!address) {
           return
         }
+        super.setLoading(true)
         const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
         EthersStoreUtil.setAddress(address as Address)
         EthersStoreUtil.setChainId(chainId)
         EthersStoreUtil.setIsConnected(true)
         EthersStoreUtil.setPreferredAccountType(type as W3mFrameTypes.AccountType)
-        this.syncAccount()
+        this.syncAccount().then(() => super.setLoading(false))
       })
     }
   }
@@ -1282,6 +1284,7 @@ export class Web3Modal extends Web3ModalScaffold {
       } else if (providerType === ConstantsUtil.AUTH_CONNECTOR_ID) {
         if (this.authProvider && chain?.chainId) {
           try {
+            super.setLoading(true)
             await this.authProvider.switchNetwork(chain?.chainId)
             EthersStoreUtil.setChainId(chain.chainId)
 
@@ -1296,6 +1299,8 @@ export class Web3Modal extends Web3ModalScaffold {
             await this.syncAccount()
           } catch {
             throw new Error('Switching chain failed')
+          } finally {
+            super.setLoading(false)
           }
         }
       }
