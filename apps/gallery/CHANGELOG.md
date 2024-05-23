@@ -1,5 +1,15 @@
 # @apps/gallery
 
+## 4.2.2
+
+### Patch Changes
+
+- feat: social login refactor. wagmi sendCalls support. refactor theme variables
+
+- Updated dependencies []:
+  - @web3modal/common@4.2.2
+  - @web3modal/ui@4.2.2
+
 ## 4.2.1
 
 ### Patch Changes
