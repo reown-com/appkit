@@ -23,6 +23,8 @@ export class W3mBuyInProgressView extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
+  @state() private intervalId?: ReturnType<typeof setInterval>
+
   @state() protected selectedOnRampProvider = OnRampController.state.selectedProvider
 
   @state() protected uri = ConnectionController.state.wcUri
@@ -34,8 +36,6 @@ export class W3mBuyInProgressView extends LitElement {
   @state() public buffering = false
 
   @state() private error = false
-
-  @state() private intervalId?: NodeJS.Timeout
 
   @state() private startTime: number | null = null
 
