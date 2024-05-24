@@ -950,7 +950,6 @@ export class Web3Modal extends Web3ModalScaffold {
   private watchAuth() {
     if (this.authProvider) {
       this.authProvider.onRpcRequest(request => {
-        console.log('>> authProvider > onRpcRequest', request)
         if (W3mFrameHelpers.checkIfRequestExists(request)) {
           if (!W3mFrameHelpers.checkIfRequestIsAllowed(request)) {
             if (super.isOpen()) {
