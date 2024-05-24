@@ -314,37 +314,45 @@ export class Web3Modal extends Web3ModalScaffold {
         } else if (providerType === ConstantsUtil.AUTH_CONNECTOR_ID) {
           await this.authProvider?.disconnect()
         } else if (providerType === ConstantsUtil.EIP6963_CONNECTOR_ID && provider) {
-          const permissions = (await provider.request({ method: 'wallet_getPermissions' })) as {
-            parentCapability: string
-          }[]
-          const ethAccountsPermission = permissions.find(
-            permission => permission.parentCapability === 'eth_accounts'
-          )
-
-          if (ethAccountsPermission) {
-            await provider.request({
-              method: 'wallet_revokePermissions',
-              params: [{ eth_accounts: {} }]
-            })
-          }
-          provider.emit('disconnect')
-        } else if (providerType === ConstantsUtil.INJECTED_CONNECTOR_ID) {
-          const InjectedProvider = ethersConfig.injected
-          if (InjectedProvider) {
-            const permissions = (await InjectedProvider.request({
-              method: 'wallet_getPermissions'
-            })) as { parentCapability: string }[]
+          try {
+            const permissions = (await provider.request({ method: 'wallet_getPermissions' })) as {
+              parentCapability: string
+            }[]
             const ethAccountsPermission = permissions.find(
               permission => permission.parentCapability === 'eth_accounts'
             )
 
             if (ethAccountsPermission) {
-              await InjectedProvider.request({
+              await provider.request({
                 method: 'wallet_revokePermissions',
                 params: [{ eth_accounts: {} }]
               })
             }
-            InjectedProvider.emit('disconnect')
+          } catch (error) {
+            console.error('Error revoking permissions:', error)
+          }
+          provider.emit('disconnect')
+        } else if (providerType === ConstantsUtil.INJECTED_CONNECTOR_ID) {
+          try {
+            const InjectedProvider = ethersConfig.injected
+            if (InjectedProvider) {
+              const permissions = (await InjectedProvider.request({
+                method: 'wallet_getPermissions'
+              })) as { parentCapability: string }[]
+              const ethAccountsPermission = permissions.find(
+                permission => permission.parentCapability === 'eth_accounts'
+              )
+
+              if (ethAccountsPermission) {
+                await InjectedProvider.request({
+                  method: 'wallet_revokePermissions',
+                  params: [{ eth_accounts: {} }]
+                })
+              }
+              InjectedProvider.emit('disconnect')
+            }
+          } catch (error) {
+            console.error('Error disconnecting injected provider:', error)
           }
         } else {
           provider?.emit('disconnect')
