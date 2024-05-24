@@ -310,9 +310,12 @@ export class Web3Modal extends Web3ModalScaffold {
           const { SIWEController } = await import('@web3modal/siwe')
           await SIWEController.signOut()
         }
-        if (providerType === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
-          const WalletConnectProvider = provider
-          await (WalletConnectProvider as unknown as EthereumProvider).disconnect()
+        if (
+          providerType === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID ||
+          providerType === 'coinbaseWalletSDK'
+        ) {
+          const ethProvider = provider
+          await (ethProvider as unknown as EthereumProvider).disconnect()
           // eslint-disable-next-line no-negated-condition
         } else if (providerType === ConstantsUtil.AUTH_CONNECTOR_ID) {
           await this.authProvider?.disconnect()
@@ -578,14 +581,16 @@ export class Web3Modal extends Web3ModalScaffold {
     localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
     EthersStoreUtil.reset()
 
-    if (providerType === 'injected' || providerType === 'eip6963') {
+    if (providerType === ConstantsUtil.AUTH_CONNECTOR_ID) {
+      await this.authProvider?.disconnect()
+    } else if (providerType === 'injected' || providerType === 'eip6963') {
       provider?.emit('disconnect')
-    } else {
-      const walletConnectProvider = provider as unknown as EthereumProvider
-      if (walletConnectProvider) {
+    } else if (providerType === 'walletConnect' || providerType === 'coinbaseWalletSDK') {
+      const ethereumProvider = provider as unknown as EthereumProvider
+      if (ethereumProvider) {
         try {
           EthersStoreUtil.setError(undefined)
-          await walletConnectProvider.disconnect()
+          await ethereumProvider.disconnect()
         } catch (error) {
           EthersStoreUtil.setError(error)
         }
