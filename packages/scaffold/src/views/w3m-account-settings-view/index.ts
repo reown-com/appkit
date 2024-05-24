@@ -60,13 +60,13 @@ export class W3mAccountSettingsView extends LitElement {
           } else {
             ModalController.close()
           }
+        }),
+        NetworkController.subscribeKey('caipNetwork', val => {
+          if (val?.id) {
+            this.network = val
+          }
         })
-      ],
-      NetworkController.subscribeKey('caipNetwork', val => {
-        if (val?.id) {
-          this.network = val
-        }
-      })
+      ]
     )
   }
 
@@ -92,24 +92,17 @@ export class W3mAccountSettingsView extends LitElement {
         <wui-avatar
           alt=${this.address}
           address=${this.address}
-          imageSrc=${ifDefined(this.profileImage)}
+          .imageSrc=${this.profileImage || ''}
         ></wui-avatar>
         <wui-flex flexDirection="column" alignItems="center">
           <wui-flex gap="3xs" alignItems="center" justifyContent="center">
             <wui-text variant="large-600" color="fg-100" data-testid="account-settings-address">
-              ${this.profileName
-                ? UiHelperUtil.getTruncateString({
-                    string: this.profileName,
-                    charsStart: 20,
-                    charsEnd: 0,
-                    truncate: 'end'
-                  })
-                : UiHelperUtil.getTruncateString({
-                    string: this.address,
-                    charsStart: 4,
-                    charsEnd: 6,
-                    truncate: 'middle'
-                  })}
+              ${UiHelperUtil.getTruncateString({
+                string: this.address,
+                charsStart: 4,
+                charsEnd: 6,
+                truncate: 'middle'
+              })}
             </wui-text>
             <wui-icon-link
               size="md"
@@ -137,7 +130,7 @@ export class W3mAccountSettingsView extends LitElement {
               ${this.network?.name ?? 'Unknown'}
             </wui-text>
           </wui-list-item>
-          ${this.togglePreferredAccountBtnTemplate()}
+          ${this.togglePreferredAccountBtnTemplate()} ${this.chooseNameButtonTemplate()}
           <wui-list-item
             variant="icon"
             iconVariant="overlay"
@@ -155,6 +148,29 @@ export class W3mAccountSettingsView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private chooseNameButtonTemplate() {
+    const type = StorageUtil.getConnectedConnector()
+    const authConnector = ConnectorController.getAuthConnector()
+
+    if (!authConnector || type !== 'AUTH' || this.profileName) {
+      return null
+    }
+
+    return html`
+      <wui-list-item
+        variant="icon"
+        iconVariant="overlay"
+        icon="id"
+        iconSize="sm"
+        ?chevron=${true}
+        @click=${this.onChooseName.bind(this)}
+        data-testid="account-choose-name-button"
+      >
+        <wui-text variant="paragraph-500" color="fg-100">Choose account name </wui-text>
+      </wui-list-item>
+    `
+  }
+
   private isAllowedNetworkSwitch() {
     const { requestedCaipNetworks } = NetworkController.state
     const isMultiNetwork = requestedCaipNetworks ? requestedCaipNetworks.length > 1 : false
@@ -226,6 +242,10 @@ export class W3mAccountSettingsView extends LitElement {
         <wui-text variant="paragraph-500" color="fg-100">${this.text}</wui-text>
       </wui-list-item>
     `
+  }
+
+  private onChooseName() {
+    RouterController.push('ChooseAccountName')
   }
 
   private async changePreferredAccountType() {
