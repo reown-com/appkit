@@ -72,11 +72,11 @@ export class W3mFrameProvider {
   private setPreferredAccountResolver: SetPreferredAccountResolver = undefined
 
   public constructor(projectId: string) {
+
     this.w3mFrame = new W3mFrame(projectId, true)
     this.w3mFrame.events.onFrameEvent(event => {
       // eslint-disable-next-line no-console
       console.log('💻 received', event)
-
       switch (event.type) {
         case W3mFrameConstants.FRAME_CONNECT_EMAIL_SUCCESS:
           return this.onConnectEmailSuccess(event)
@@ -169,6 +169,7 @@ export class W3mFrameProvider {
   }
 
   public rejectRpcRequest() {
+    console.log(">> rejectRpcRequest")
     this.rpcRequestResolver?.reject()
   }
 
@@ -370,23 +371,36 @@ export class W3mFrameProvider {
   public async request(req: W3mFrameTypes.RPCRequest) {
     await this.w3mFrame.frameLoadPromise
 
+    console.log(">> request > req: ", req)
+
     if (W3mFrameRpcConstants.GET_CHAIN_ID === req.method) {
       return this.getLastUsedChainId()
     }
+    console.log(">> request > postAppEvent: ", req)
 
     this.w3mFrame.events.postAppEvent({
       type: W3mFrameConstants.APP_RPC_REQUEST,
       payload: req
     })
 
+    console.log(">> request > posted event: ", req)
+
     return new Promise<W3mFrameTypes.RPCResponse>((resolve, reject) => {
-      this.rpcRequestResolver = { resolve, reject }
+      console.log(">> rpcRequestResolver > running");
+      this.rpcRequestResolver = { resolve: (v) => {
+	console.log(">> rpcRequestResolver > resolving", v);
+	return resolve(v)
+      }, reject: (e) => {
+	console.log(">> rpcRequestResolver > rejecting", e);
+	reject(e)
+      }}
     })
   }
 
   public onRpcRequest(callback: (request: unknown) => void) {
     this.w3mFrame.events.onAppEvent(event => {
       if (event.type.includes(W3mFrameConstants.RPC_METHOD_KEY)) {
+	console.log(">> onRpcRequest: ", event)
         callback(event)
       }
     })
@@ -593,6 +607,7 @@ export class W3mFrameProvider {
   private onRpcRequestError(
     event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/RPC_REQUEST_ERROR' }>
   ) {
+    console.log(">> onRpcRequestError", event)
     this.rpcRequestResolver?.reject(event.payload.message)
   }
 
