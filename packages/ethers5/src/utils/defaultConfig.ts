@@ -63,6 +63,14 @@ export function defaultConfig(options: ConfigOptions) {
     })
 
     coinbaseProvider = coinbaseWallet.makeWeb3Provider({
+      /**
+       * Determines which wallet options to display in Coinbase Wallet SDK.
+       * @property options
+       *   - `all`: Show both smart wallet and EOA options.
+       *   - `smartWalletOnly`: Show only smart wallet options.
+       *   - `eoaOnly`: Show only EOA options.
+       * @see https://www.smartwallet.dev/sdk/v3-to-v4-changes#parameters
+       */
       options: 'all'
     })
 
