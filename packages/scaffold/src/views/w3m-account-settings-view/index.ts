@@ -18,6 +18,7 @@ import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
 import { W3mFrameRpcConstants } from '@web3modal/wallet'
+import { ConstantsUtil } from '@web3modal/common'
 
 @customElement('w3m-account-settings-view')
 export class W3mAccountSettingsView extends LitElement {
@@ -151,8 +152,9 @@ export class W3mAccountSettingsView extends LitElement {
   private chooseNameButtonTemplate() {
     const type = StorageUtil.getConnectedConnector()
     const authConnector = ConnectorController.getAuthConnector()
-
-    if (!authConnector || type !== 'AUTH' || this.profileName) {
+    const email = authConnector?.provider.getEmail() || ''
+    const isAllowed = email && ConstantsUtil.WC_NAMES_ALLOWED_DOMAINS.includes(email.split('@')[1]!)
+    if (!authConnector || type !== 'AUTH' || this.profileName || !isAllowed) {
       return null
     }
 
