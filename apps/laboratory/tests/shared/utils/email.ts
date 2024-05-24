@@ -81,4 +81,8 @@ export class Email {
 
     return `w3m-w${index}${randIndex}@${domain}`
   }
+
+  getSmartAccountEnabledEmail(): string {
+    return 'web3modal-smart-account@mailsac.com'
+  }
 }

@@ -20,7 +20,7 @@ import {
 import { mainnet } from 'viem/chains'
 import { prepareTransactionRequest, sendTransaction as wagmiSendTransaction } from '@wagmi/core'
 import type { Chain } from '@wagmi/core/chains'
-import type { GetAccountReturnType } from '@wagmi/core'
+import type { GetAccountReturnType, GetEnsAddressReturnType } from '@wagmi/core'
 import type {
   CaipAddress,
   CaipNetwork,
@@ -40,6 +40,7 @@ import type { Hex } from 'viem'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
+import { ConstantsUtil as CommonConstants } from '@web3modal/common'
 import {
   getCaipDefaultChain,
   getEmailCaipNetworks,
@@ -297,18 +298,26 @@ export class Web3Modal extends Web3ModalScaffold {
       },
 
       getEnsAddress: async (value: string) => {
-        const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
+        try {
+          const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
+          let ensName: boolean | GetEnsAddressReturnType = false
+          let wcName: boolean | string = false
 
-        if (chainId !== mainnet.id) {
+          if (value?.endsWith(CommonConstants.WC_NAME_SUFFIX)) {
+            wcName = await this.resolveWalletConnectName(value)
+          }
+
+          if (chainId === mainnet.id) {
+            ensName = await wagmiGetEnsAddress(this.wagmiConfig, {
+              name: normalize(value),
+              chainId
+            })
+          }
+
+          return ensName || wcName || false
+        } catch {
           return false
         }
-
-        const address = await wagmiGetEnsAddress(this.wagmiConfig, {
-          name: normalize(value),
-          chainId
-        })
-
-        return address || false
       },
 
       getEnsAvatar: async (value: string) => {
@@ -447,6 +456,20 @@ export class Web3Modal extends Web3ModalScaffold {
     }
   }
 
+  private async syncWalletConnectName(address: Hex) {
+    try {
+      const registeredWcNames = await this.getWalletConnectName(address)
+      if (registeredWcNames[0]) {
+        const wcName = registeredWcNames[0]
+        this.setProfileName(wcName.name)
+      } else {
+        this.setProfileName(null)
+      }
+    } catch {
+      this.setProfileName(null)
+    }
+  }
+
   private async syncProfile(address: Hex, chainId: Chain['id']) {
     try {
       const { name, avatar } = await this.fetchIdentity({
@@ -454,6 +477,10 @@ export class Web3Modal extends Web3ModalScaffold {
       })
       this.setProfileName(name)
       this.setProfileImage(avatar)
+
+      if (!name) {
+        await this.syncWalletConnectName(address)
+      }
     } catch {
       if (chainId === mainnet.id) {
         const profileName = await getEnsName(this.wagmiConfig, { address, chainId })
@@ -466,9 +493,12 @@ export class Web3Modal extends Web3ModalScaffold {
           if (profileImage) {
             this.setProfileImage(profileImage)
           }
+        } else {
+          await this.syncWalletConnectName(address)
+          this.setProfileImage(null)
         }
       } else {
-        this.setProfileName(null)
+        await this.syncWalletConnectName(address)
         this.setProfileImage(null)
       }
     }

@@ -27,6 +27,7 @@ function headings() {
 
   return {
     Connect: `Connect ${isEmail ? 'Email' : ''} Wallet`,
+    ChooseAccountName: undefined,
     Account: undefined,
     AccountSettings: undefined,
     ConnectingExternal: name ?? 'Connect Wallet',
@@ -55,6 +56,8 @@ function headings() {
     BuyInProgress: 'Buy',
     OnRampTokenSelect: 'Select Token',
     OnRampFiatSelect: 'Select Currency',
+    RegisterAccountName: 'Choose name',
+    RegisterAccountNameSuccess: '',
     WalletReceive: 'Receive',
     WalletCompatibleNetworks: 'Compatible Networks',
     Swap: 'Swap',
