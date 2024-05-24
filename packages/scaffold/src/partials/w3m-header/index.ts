@@ -13,6 +13,9 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
 
+// -- Constants ----------------------------------------- //
+const BETA_SCREENS = ['Swap', 'SwapSelectToken', 'SwapPreview']
+
 // -- Helpers ------------------------------------------- //
 function headings() {
   const connectorName = RouterController.state.data?.connector?.name
@@ -24,6 +27,7 @@ function headings() {
 
   return {
     Connect: `Connect ${isEmail ? 'Email' : ''} Wallet`,
+    ChooseAccountName: undefined,
     Account: undefined,
     AccountSettings: undefined,
     ConnectingExternal: name ?? 'Connect Wallet',
@@ -52,6 +56,8 @@ function headings() {
     BuyInProgress: 'Buy',
     OnRampTokenSelect: 'Select Token',
     OnRampFiatSelect: 'Select Currency',
+    RegisterAccountName: 'Choose name',
+    RegisterAccountNameSuccess: '',
     WalletReceive: 'Receive',
     WalletCompatibleNetworks: 'Compatible Networks',
     Swap: 'Swap',
@@ -131,7 +137,14 @@ export class W3mHeader extends LitElement {
   }
 
   private titleTemplate() {
-    return html`<wui-text variant="paragraph-700" color="fg-100">${this.heading}</wui-text>`
+    const isBeta = BETA_SCREENS.includes(RouterController.state.view)
+
+    return html`
+      <wui-flex class="w3m-header-title" alignItems="center" gap="xs">
+        <wui-text variant="paragraph-700" color="fg-100">${this.heading}</wui-text>
+        ${isBeta ? html`<wui-tag variant="main">Beta</wui-tag>` : null}
+      </wui-flex>
+    `
   }
 
   private dynamicButtonTemplate() {
@@ -169,7 +182,8 @@ export class W3mHeader extends LitElement {
   }
 
   private async onViewChange(view: RouterControllerState['view']) {
-    const headingEl = this.shadowRoot?.querySelector('wui-text')
+    const headingEl = this.shadowRoot?.querySelector('wui-flex.w3m-header-title')
+
     if (headingEl) {
       const preset = headings()[view]
       await headingEl.animate([{ opacity: 1 }, { opacity: 0 }], {
