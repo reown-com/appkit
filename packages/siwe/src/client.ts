@@ -105,6 +105,7 @@ export class Web3ModalSIWEClient {
       chainId,
       nonce,
       version: '1',
+      iat: messageParams.iat || new Date().toISOString(),
       ...messageParams
     })
     const type = StorageUtil.getConnectedConnector()
