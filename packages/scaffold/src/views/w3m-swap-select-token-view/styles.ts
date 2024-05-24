@@ -15,23 +15,12 @@ export default css`
     scrollbar-height: none;
   }
 
+  :host > wui-flex:first-child::-webkit-scrollbar {
+    display: none;
+  }
+
   wui-loading-hexagon {
     position: absolute;
-  }
-
-  .search-input-container,
-  .suggested-tokens-container {
-    padding-left: var(--wui-spacing-s);
-    padding-right: var(--wui-spacing-s);
-  }
-
-  .tokens-container .tokens {
-    padding: 0px var(--wui-spacing-s);
-    padding-bottom: var(--wui-spacing-s);
-  }
-
-  .search-input-container {
-    padding-top: var(--wui-spacing-s);
   }
 
   .suggested-tokens-container {
@@ -54,7 +43,7 @@ export default css`
   }
 
   .tokens-container {
-    border-top: 1px solid var(--wui-gray-glass-005);
+    border-top: 1px solid var(--wui-color-gray-glass-005);
     height: 100%;
     max-height: 390px;
   }
@@ -87,7 +76,7 @@ export default css`
     align-items: center;
     justify-content: center;
     gap: var(--wui-spacing-xs);
-    box-shadow: inset 0 0 0 1px var(--wui-gray-glass-005);
+    box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-005);
     background-color: transparent;
     border-radius: var(--wui-border-radius-xxs);
     padding: var(--wui-spacing-xs);
@@ -96,13 +85,13 @@ export default css`
   }
 
   .select-network-button:hover {
-    background-color: var(--wui-gray-glass-002);
+    background-color: var(--wui-color-gray-glass-002);
   }
 
   .select-network-button > wui-image {
     width: 26px;
     height: 26px;
     border-radius: var(--wui-border-radius-xs);
-    box-shadow: inset 0 0 0 1px var(--wui-gray-glass-010);
+    box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-010);
   }
 `

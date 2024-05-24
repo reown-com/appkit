@@ -15,7 +15,7 @@ export class WuiNetworkImage extends LitElement {
   public static override styles = [resetStyles, styles]
 
   // -- State & Properties -------------------------------- //
-  @property() public size: Exclude<SizeType, 'inherit' | 'xl' | 'xs' | 'mdl' | 'xxs'> = 'md'
+  @property() public size: Exclude<SizeType, 'inherit' | 'xxl' | 'xl' | 'xs' | 'mdl' | 'xxs'> = 'md'
 
   @property() public name = 'uknown'
 
@@ -28,7 +28,7 @@ export class WuiNetworkImage extends LitElement {
     const networkImagesBySize = { sm: networkSvgSm, md: networkSvgMd, lg: networkSvgLg }
     this.style.cssText = `
       --local-stroke: ${
-        this.selected ? 'var(--wui-color-accent-100)' : 'var(--wui-gray-glass-010)'
+        this.selected ? 'var(--wui-color-accent-100)' : 'var(--wui-color-gray-glass-010)'
       };
       --local-path: var(--wui-path-network-${this.size});
       --local-width:  var(--wui-width-network-${this.size});

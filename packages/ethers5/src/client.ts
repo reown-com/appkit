@@ -260,7 +260,7 @@ export class Web3Modal extends Web3ModalScaffold {
         }
       },
 
-      checkInstalled(ids) {
+      checkInstalled: (ids?: string[]) => {
         if (!ids) {
           return Boolean(window.ethereum)
         }
@@ -296,10 +296,12 @@ export class Web3Modal extends Web3ModalScaffold {
         if (!provider) {
           throw new Error('connectionControllerClient:signMessage - provider is undefined')
         }
-
+        const hexMessage = utils.isHexString(message)
+          ? message
+          : utils.hexlify(utils.toUtf8Bytes(message))
         const signature = await provider.request({
           method: 'personal_sign',
-          params: [message, this.getAddress()]
+          params: [hexMessage, this.getAddress()]
         })
 
         return signature as `0x${string}`
@@ -371,6 +373,10 @@ export class Web3Modal extends Web3ModalScaffold {
     this.syncRequestedNetworks(chains, chainImages)
     this.syncConnectors(ethersConfig)
 
+    if (ethersConfig.injected) {
+      this.checkActiveInjectedProvider(ethersConfig)
+    }
+
     if (ethersConfig.EIP6963) {
       if (typeof window !== 'undefined') {
         this.listenConnectors(ethersConfig.EIP6963)
@@ -378,9 +384,6 @@ export class Web3Modal extends Web3ModalScaffold {
       }
     }
 
-    if (ethersConfig.injected) {
-      this.checkActiveInjectedProvider(ethersConfig)
-    }
     if (ethersConfig.coinbase) {
       this.checkActiveCoinbaseProvider(ethersConfig)
     }
@@ -586,6 +589,22 @@ export class Web3Modal extends Web3ModalScaffold {
     }
   }
 
+  private async setEIP6963Provider(provider: Provider, name: string) {
+    window?.localStorage.setItem(EthersConstantsUtil.WALLET_ID, name)
+
+    if (provider) {
+      const { address, chainId } = await EthersHelpersUtil.getUserInfo(provider)
+      if (address && chainId) {
+        EthersStoreUtil.setChainId(chainId)
+        EthersStoreUtil.setProviderType('eip6963')
+        EthersStoreUtil.setProvider(provider)
+        EthersStoreUtil.setIsConnected(true)
+        this.setAddress(address)
+        this.watchEIP6963(provider)
+      }
+    }
+  }
+
   private async setInjectedProvider(config: ProviderType) {
     window?.localStorage.setItem(EthersConstantsUtil.WALLET_ID, ConstantsUtil.INJECTED_CONNECTOR_ID)
     const InjectedProvider = config.injected
@@ -599,22 +618,6 @@ export class Web3Modal extends Web3ModalScaffold {
         EthersStoreUtil.setIsConnected(true)
         this.setAddress(address)
         this.watchCoinbase(config)
-      }
-    }
-  }
-
-  private async setEIP6963Provider(provider: Provider, name: string) {
-    window?.localStorage.setItem(EthersConstantsUtil.WALLET_ID, name)
-
-    if (provider) {
-      const { address, chainId } = await EthersHelpersUtil.getUserInfo(provider)
-      if (address && chainId) {
-        EthersStoreUtil.setChainId(chainId)
-        EthersStoreUtil.setProviderType('eip6963')
-        EthersStoreUtil.setProvider(provider)
-        EthersStoreUtil.setIsConnected(true)
-        this.setAddress(address)
-        this.watchEIP6963(provider)
       }
     }
   }
@@ -952,29 +955,6 @@ export class Web3Modal extends Web3ModalScaffold {
                 WalletConnectProvider as unknown as Provider,
                 chain
               )
-            } else {
-              throw new Error('Chain is not supported')
-            }
-          }
-        }
-      } else if (providerType === ConstantsUtil.INJECTED_CONNECTOR_ID && chain) {
-        const InjectedProvider = provider
-        if (InjectedProvider) {
-          try {
-            await InjectedProvider.request({
-              method: 'wallet_switchEthereumChain',
-              params: [{ chainId: EthersHelpersUtil.numberToHexString(chain.chainId) }]
-            })
-            EthersStoreUtil.setChainId(chain.chainId)
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          } catch (switchError: any) {
-            if (
-              switchError.code === EthersConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
-              switchError.code === EthersConstantsUtil.ERROR_CODE_DEFAULT ||
-              switchError?.data?.originalError?.code ===
-                EthersConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
-            ) {
-              await EthersHelpersUtil.addEthereumChain(InjectedProvider, chain)
             } else {
               throw new Error('Chain is not supported')
             }

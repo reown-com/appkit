@@ -3,7 +3,7 @@ import '@web3modal/ui/src/composites/wui-chip'
 import type { WuiChip } from '@web3modal/ui/src/composites/wui-chip'
 import { html } from 'lit'
 import {
-  chipOptions,
+  chipVariants,
   externalLink,
   iconOptions,
   walletImagesOptions
@@ -22,7 +22,7 @@ export default {
   },
   argTypes: {
     variant: {
-      options: chipOptions,
+      options: chipVariants,
       control: { type: 'select' }
     },
     icon: {

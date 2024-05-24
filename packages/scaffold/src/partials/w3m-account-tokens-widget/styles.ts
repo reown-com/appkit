@@ -14,4 +14,8 @@ export default css`
     overflow: scroll;
     scrollbar-width: none;
   }
+
+  .contentContainer::-webkit-scrollbar {
+    display: none;
+  }
 `

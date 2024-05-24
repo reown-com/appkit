@@ -36,14 +36,21 @@ export class W3mModal extends LitElement {
 
   @state() private connected = AccountController.state.isConnected
 
+  @state() private loading = ModalController.state.loading
+
   public constructor() {
     super()
     this.initializeTheming()
     ApiController.prefetch()
     this.unsubscribe.push(
       ModalController.subscribeKey('open', val => (val ? this.onOpen() : this.onClose())),
+      ModalController.subscribeKey('loading', val => {
+        this.loading = val
+        this.onNewAddress(AccountController.state.caipAddress)
+      }),
       AccountController.subscribeKey('isConnected', val => (this.connected = val)),
-      AccountController.subscribeKey('caipAddress', val => this.onNewAddress(val))
+      AccountController.subscribeKey('caipAddress', val => this.onNewAddress(val)),
+      OptionsController.subscribeKey('isSiweEnabled', val => (this.isSiweEnabled = val))
     )
     EventsController.sendEvent({ type: 'track', event: 'MODAL_LOADED' })
   }
@@ -157,29 +164,21 @@ export class W3mModal extends LitElement {
   }
 
   private async onNewAddress(caipAddress?: CaipAddress) {
+    if (!this.connected || this.loading) {
+      return
+    }
+    const hasNetworkChanged = this.caipAddress && this.caipAddress !== caipAddress
+
+    this.caipAddress = caipAddress
     if (this.isSiweEnabled) {
       const { SIWEController } = await import('@web3modal/siwe')
+      const session = await SIWEController.getSession()
 
-      if (this.connected && !this.caipAddress) {
-        this.caipAddress = caipAddress
-      }
-      if (this.connected && caipAddress && this.caipAddress !== caipAddress) {
+      if (session && hasNetworkChanged) {
         await SIWEController.signOut()
         this.onSiweNavigation()
-        this.caipAddress = caipAddress
-      }
-
-      try {
-        const session = await SIWEController.getSession()
-        if (session && !this.connected) {
-          await SIWEController.signOut()
-        } else if (this.connected && !session) {
-          this.onSiweNavigation()
-        }
-      } catch (error) {
-        if (this.connected) {
-          this.onSiweNavigation()
-        }
+      } else {
+        this.onSiweNavigation()
       }
     }
   }

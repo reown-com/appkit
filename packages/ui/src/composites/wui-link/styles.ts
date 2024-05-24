@@ -10,6 +10,10 @@ export default css`
 
   button:disabled {
     background-color: transparent;
-    color: var(--wui-gray-glass-015);
+    color: var(--wui-color-gray-glass-015);
+  }
+
+  button:hover {
+    background-color: var(--wui-color-gray-glass-005);
   }
 `

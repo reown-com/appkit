@@ -1,12 +1,17 @@
 import '@web3modal/polyfills'
 import type { Metadata, Provider, ProviderType } from '@web3modal/scaffold-utils/ethers'
 import { CoinbaseWalletSDK } from '@coinbase/wallet-sdk'
+import type { SocialProvider } from '@web3modal/scaffold-utils'
 
 export interface ConfigOptions {
   enableEIP6963?: boolean
-  enableInjected?: boolean
   enableCoinbase?: boolean
   enableEmail?: boolean
+  auth?: {
+    socials?: SocialProvider[]
+    showWallets?: boolean
+  }
+  enableInjected?: boolean
   rpcUrl?: string
   defaultChainId?: number
   metadata: Metadata
@@ -15,16 +20,17 @@ export interface ConfigOptions {
 export function defaultConfig(options: ConfigOptions) {
   const {
     enableEIP6963 = true,
-    enableInjected = true,
     enableCoinbase = true,
+    enableInjected = true,
     enableEmail = false,
+    auth,
     metadata,
     rpcUrl,
     defaultChainId
   } = options
 
-  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   let injectedProvider: Provider | undefined = undefined
+
   // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   let coinbaseProvider: Provider | undefined = undefined
 
@@ -84,6 +90,10 @@ export function defaultConfig(options: ConfigOptions) {
 
   if (enableEmail) {
     providers.email = true
+  }
+
+  if (auth) {
+    providers.auth = auth
   }
 
   return providers

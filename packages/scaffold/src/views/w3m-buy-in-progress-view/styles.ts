@@ -43,7 +43,7 @@ export default css`
     position: absolute;
     inset: 0;
     border-radius: calc(var(--wui-border-radius-5xs) * 9 - var(--wui-border-radius-xxs));
-    box-shadow: inset 0 0 0 1px var(--wui-gray-glass-005);
+    box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-005);
   }
 
   wui-icon-box {
