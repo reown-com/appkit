@@ -11,7 +11,7 @@ export default css`
   }
 
   wui-profile-button {
-    margin-top: calc(-1 * var(--wui-spacing-2l));
+    margin-top: calc(-1 * var(--wui-spacing-3xl));
   }
 
   wui-promo + wui-profile-button {
