@@ -44,7 +44,7 @@
   },
   "dependencies": {
     "@ethersproject/sha2": "5.7.0",
-    "@solana/web3.js": "1.91.1",
+    "@solana/web3.js": "1.91.7",
     "@solana/wallet-adapter-backpack": "0.1.14",
     "@solana/wallet-adapter-base": "0.9.23",
     "@solana/wallet-adapter-phantom": "0.9.24",
