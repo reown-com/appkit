@@ -1,5 +1,5 @@
 import '@web3modal/polyfills'
-import type { Metadata, Provider, ProviderType } from '@web3modal/scaffold-utils/ethers'
+import type { Chain, Metadata, Provider, ProviderType } from '@web3modal/scaffold-utils/ethers'
 import { CoinbaseWalletSDK, type ProviderInterface } from '@coinbase/wallet-sdk'
 import type { SocialProvider } from '@web3modal/scaffold-utils'
 
@@ -15,6 +15,7 @@ export interface ConfigOptions {
   rpcUrl?: string
   defaultChainId?: number
   metadata: Metadata
+  chains?: Chain[]
 }
 
 export function defaultConfig(options: ConfigOptions) {
@@ -67,7 +68,7 @@ export function defaultConfig(options: ConfigOptions) {
     const coinbaseWallet = new CoinbaseWalletSDK({
       appName: metadata.name,
       appLogoUrl: metadata.icons[0],
-      appChainIds: [1, 84532]
+      appChainIds: options.chains?.map(chain => chain.chainId) || [1, 84532]
     })
 
     coinbaseProvider = coinbaseWallet.makeWeb3Provider({

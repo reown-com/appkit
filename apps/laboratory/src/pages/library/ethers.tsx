@@ -10,7 +10,8 @@ const modal = createWeb3Modal({
   ethersConfig: defaultConfig({
     metadata: ConstantsUtil.Metadata,
     defaultChainId: 1,
-    rpcUrl: 'https://cloudflare-eth.com'
+    rpcUrl: 'https://cloudflare-eth.com',
+    chains: EthersConstants.chains
   }),
   chains: EthersConstants.chains,
   projectId: ConstantsUtil.ProjectId,

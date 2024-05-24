@@ -767,7 +767,7 @@ export class Web3Modal extends Web3ModalScaffold {
       const { address, chainId } = await EthersHelpersUtil.getUserInfo(CoinbaseProvider)
       if (address && chainId) {
         EthersStoreUtil.setChainId(chainId)
-        EthersStoreUtil.setProviderType('coinbaseWallet')
+        EthersStoreUtil.setProviderType('coinbaseWalletSDK')
         EthersStoreUtil.setProvider(config.coinbase)
         EthersStoreUtil.setIsConnected(true)
         this.setAddress(address)
@@ -1220,7 +1220,6 @@ export class Web3Modal extends Web3ModalScaffold {
               method: 'wallet_switchEthereumChain',
               params: [{ chainId: EthersHelpersUtil.numberToHexString(chain.chainId) }]
             })
-
             EthersStoreUtil.setChainId(chainId)
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
           } catch (switchError: any) {
@@ -1304,6 +1303,8 @@ export class Web3Modal extends Web3ModalScaffold {
                 EthersConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
             ) {
               await EthersHelpersUtil.addEthereumChain(CoinbaseProvider, chain)
+            } else {
+              throw new Error('Error switching network')
             }
           }
         }
