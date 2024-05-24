@@ -49,7 +49,7 @@ export function EthersGetCallsStatusTest() {
   }
   function isGetCallsStatusSupported(): boolean {
     if (walletProvider instanceof W3mFrameProvider) {
-      return true;
+      return true
     }
     if (walletProvider instanceof EthereumProvider) {
       return Boolean(

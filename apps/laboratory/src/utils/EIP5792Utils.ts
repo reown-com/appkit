@@ -18,24 +18,26 @@ export async function getCapabilitySupportedChainInfo(
   capability: string,
   provider: Awaited<ReturnType<(typeof EthereumProvider)['init']>> | W3mFrameProvider,
   address: string
-): Promise<{
-  chainId: number
-  chainName: string
-}[]> {
+): Promise<
+  {
+    chainId: number
+    chainName: string
+  }[]
+> {
   if (!(provider instanceof EthereumProvider || provider instanceof W3mFrameProvider) || !address) {
     return []
   }
 
   if (provider instanceof W3mFrameProvider) {
     const rawCapabilities = await provider.getCapabilities()
-    console.log(">> rawCapabilities", rawCapabilities)
+    console.log('>> rawCapabilities', rawCapabilities)
     const mappedCapabilities = Object.entries(rawCapabilities).map(([chainId]) => {
-      const chain = getChain(parseInt(chainId));
-      
+      const chain = getChain(parseInt(chainId))
+
       return { chainId: parseInt(chainId), chainName: chain?.name ?? `Unknown Chain (${chainId})` }
     })
 
-    console.log(">> mappedCapabilities", mappedCapabilities)
+    console.log('>> mappedCapabilities', mappedCapabilities)
 
     return mappedCapabilities
   }

@@ -20,12 +20,21 @@ export function EthersSendCallsTest() {
   const { walletProvider } = useWeb3ModalProvider()
   const toast = useChakraToast()
 
-  const [atomicBatchSupportedChains, setAtomicBatchSupportedChains] = useState<Awaited<ReturnType<typeof getCapabilitySupportedChainInfo>>>([])
+  const [atomicBatchSupportedChains, setAtomicBatchSupportedChains] = useState<
+    Awaited<ReturnType<typeof getCapabilitySupportedChainInfo>>
+  >([])
 
   useEffect(() => {
-    if(address && (walletProvider instanceof EthereumProvider || walletProvider instanceof W3mFrameProvider)) {
-      getCapabilitySupportedChainInfo(WALLET_CAPABILITIES.ATOMIC_BATCH, walletProvider, address).then(setAtomicBatchSupportedChains)    }
-    else setAtomicBatchSupportedChains([])
+    if (
+      address &&
+      (walletProvider instanceof EthereumProvider || walletProvider instanceof W3mFrameProvider)
+    ) {
+      getCapabilitySupportedChainInfo(
+        WALLET_CAPABILITIES.ATOMIC_BATCH,
+        walletProvider,
+        address
+      ).then(setAtomicBatchSupportedChains)
+    } else setAtomicBatchSupportedChains([])
   }, [address, walletProvider])
 
   const atomicBatchSupportedChainsNames = atomicBatchSupportedChains
@@ -64,7 +73,7 @@ export function EthersSendCallsTest() {
         from: address,
         calls
       }
-      console.log(">> sending", EIP_5792_RPC_METHODS.WALLET_SEND_CALLS)
+      console.log('>> sending', EIP_5792_RPC_METHODS.WALLET_SEND_CALLS)
       const batchCallHash = await provider.send(EIP_5792_RPC_METHODS.WALLET_SEND_CALLS, [
         sendCallsParams
       ])
@@ -74,7 +83,7 @@ export function EthersSendCallsTest() {
         type: 'success'
       })
     } catch (e) {
-      console.log(">> sendCalls failed", e)
+      console.log('>> sendCalls failed', e)
       toast({
         title: 'Error',
         description: 'Failed to send calls',

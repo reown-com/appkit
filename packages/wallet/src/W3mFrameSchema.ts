@@ -280,16 +280,20 @@ export const RpcEthSendTransactionRequest = z.object({
 
 export const WalletSendCallsRequest = z.object({
   method: z.literal('wallet_sendCalls'),
-  params: z.array(z.object({
-    chainId: z.string().optional(),
-    from: z.string().optional(),
-    version: z.string().optional(),
-    calls: z.array(z.object({
-      to: z.string().startsWith('0x'),
-      data: z.string().startsWith('0x'),
-      value: z.string()
-    }))
-  }))
+  params: z.array(
+    z.object({
+      chainId: z.string().optional(),
+      from: z.string().optional(),
+      version: z.string().optional(),
+      calls: z.array(
+        z.object({
+          to: z.string().startsWith('0x'),
+          data: z.string().startsWith('0x'),
+          value: z.string()
+        })
+      )
+    })
+  )
 })
 
 export const WalletGetCallsReceiptRequest = z.object({
@@ -298,7 +302,7 @@ export const WalletGetCallsReceiptRequest = z.object({
 })
 
 export const WalletGetCapabilitiesRequest = z.object({
-  method: z.literal('wallet_getCapabilities'),
+  method: z.literal('wallet_getCapabilities')
 })
 
 export const FrameSession = z.object({
