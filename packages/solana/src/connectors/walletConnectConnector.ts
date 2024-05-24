@@ -10,7 +10,7 @@ import type { Signer } from '@solana/web3.js'
 import type UniversalProvider from '@walletconnect/universal-provider'
 
 import type { Connector } from './baseConnector.js'
-import type { Chain } from '../utils/scaffold/index.js'
+import type { Chain } from '../utils/scaffold/SolanaTypesUtil.js'
 
 export interface WalletConnectAppMetadata {
   name: string
