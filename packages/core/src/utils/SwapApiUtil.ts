@@ -95,7 +95,7 @@ export const SwapApiUtil = {
     }
 
     const response = await BlockchainApiController.getBalance(address, caipNetwork.id, forceUpdate)
-    const balances = response.balances
+    const balances = response.balances.filter(balance => balance.quantity.decimals !== '0')
 
     AccountController.setTokenBalance(balances)
 
