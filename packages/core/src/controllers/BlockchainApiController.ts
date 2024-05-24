@@ -1,6 +1,7 @@
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { FetchUtil } from '../utils/FetchUtil.js'
+import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 import type {
   BlockchainApiTransactionsRequest,
   BlockchainApiTransactionsResponse,
@@ -247,7 +248,7 @@ export const BlockchainApiController = {
 
   async lookupEnsName(name: string) {
     return api.get<BlockchainApiLookupEnsName>({
-      path: `/v1/profile/account/${name}.${ConstantsUtil.WC_NAME_SUFFIX}?projectId=${OptionsController.state.projectId}`
+      path: `/v1/profile/account/${name}${CommonConstantsUtil.WC_NAME_SUFFIX}?projectId=${OptionsController.state.projectId}`
     })
   },
 

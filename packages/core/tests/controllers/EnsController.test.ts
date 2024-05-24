@@ -7,8 +7,7 @@ import {
   NetworkController
 } from '../../index.js'
 import { W3mFrameProvider } from '@web3modal/wallet'
-import { ConstantsUtil } from '../../src/utils/ConstantsUtil.js'
-
+import { ConstantsUtil } from '@web3modal/common'
 // -- Setup --------------------------------------------------------------------
 const TEST_NAME = {
   name: 'test',

@@ -183,8 +183,7 @@ export const ConstantsUtil = {
 
   NATIVE_TOKEN_ADDRESS: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
 
-  CONVERT_SLIPPAGE_TOLERANCE: 1,
-  WC_NAME_SUFFIX: '.wcn.id'
+  CONVERT_SLIPPAGE_TOLERANCE: 1
 }
 
 export type CoinbasePaySDKChainNameValues =

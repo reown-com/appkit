@@ -9,7 +9,7 @@ import { ConnectionController } from './ConnectionController.js'
 import { NetworkController } from './NetworkController.js'
 import { NetworkUtil } from '@web3modal/common'
 import { EnsUtil } from '../utils/EnsUtil.js'
-import { ConstantsUtil } from '../utils/ConstantsUtil.js'
+import { ConstantsUtil } from '@web3modal/common'
 
 // -- Types --------------------------------------------- //
 type Suggestion = {

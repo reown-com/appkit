@@ -40,6 +40,7 @@ import type { Hex } from 'viem'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
+import { ConstantsUtil as CommonConstants } from '@web3modal/common'
 import {
   getCaipDefaultChain,
   getEmailCaipNetworks,
@@ -302,7 +303,7 @@ export class Web3Modal extends Web3ModalScaffold {
           let ensName: boolean | GetEnsAddressReturnType = false
           let wcName: boolean | string = false
 
-          if (value?.endsWith('.wcn.id')) {
+          if (value?.endsWith(CommonConstants.WC_NAME_SUFFIX)) {
             wcName = await this.resolveWalletConnectName(value)
           }
 
