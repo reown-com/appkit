@@ -10,7 +10,8 @@ import {
   SnackController,
   StorageUtil,
   ConnectorController,
-  SendController
+  SendController,
+  EnsController
 } from '@web3modal/core'
 import { UiHelperUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -151,8 +152,8 @@ export class W3mAccountSettingsView extends LitElement {
   private chooseNameButtonTemplate() {
     const type = StorageUtil.getConnectedConnector()
     const authConnector = ConnectorController.getAuthConnector()
-
-    if (!authConnector || type !== 'AUTH' || this.profileName) {
+    const isAllowed = EnsController.isAllowedToRegisterName()
+    if (!authConnector || type !== 'AUTH' || this.profileName || !isAllowed) {
       return null
     }
 
