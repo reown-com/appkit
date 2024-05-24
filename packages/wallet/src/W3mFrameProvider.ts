@@ -446,8 +446,10 @@ export class W3mFrameProvider {
         method: 'wallet_getCapabilities'
       })
 
+      console.log(">> capabilities", capabilities)
       return capabilities
     } catch (e) {
+      console.log(">> failed capabilities", e)
       return {}
     }
   }

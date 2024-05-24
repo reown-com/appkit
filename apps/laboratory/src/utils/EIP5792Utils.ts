@@ -1,6 +1,6 @@
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
 import { getChain } from './ChainsUtil'
-import { parseJSON } from './CommonUtils'
+import { fromHex } from 'viem'
 import type { WalletCapabilities } from 'viem'
 import { W3mFrameProvider } from '@web3modal/wallet'
 
@@ -31,13 +31,15 @@ export async function getCapabilitySupportedChainInfo(
   if (provider instanceof W3mFrameProvider) {
     const rawCapabilities = await provider.getCapabilities()
     const mappedCapabilities = Object.entries(rawCapabilities).map(([chainId]) => {
-      const chain = getChain(parseInt(chainId, 10))
+      const chain = getChain(fromHex(chainId as `0x${string}`, 'number'))
 
       return {
-        chainId: parseInt(chainId, 10),
+        chainId: fromHex(chainId as `0x${string}`, 'number'),
         chainName: chain?.name ?? `Unknown Chain (${chainId})`
       }
     })
+
+    console.log(">> mappedCapabilities", mappedCapabilities, "raw: ", rawCapabilities)
 
     return mappedCapabilities
   }
@@ -46,7 +48,7 @@ export async function getCapabilitySupportedChainInfo(
   if (!walletCapabilitiesString) {
     return []
   }
-  const walletCapabilities = parseJSON(walletCapabilitiesString)
+  const walletCapabilities = JSON.parse(walletCapabilitiesString)
   const accountCapabilities = walletCapabilities[address]
   if (!accountCapabilities) {
     return []
