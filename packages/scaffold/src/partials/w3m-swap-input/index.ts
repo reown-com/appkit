@@ -6,7 +6,7 @@ import {
   type SwapToken,
   type SwapInputTarget
 } from '@web3modal/core'
-import { NumberUtil } from '@web3modal/common'
+import { InputUtil, NumberUtil } from '@web3modal/common'
 import { UiHelperUtil, customElement } from '@web3modal/ui'
 import styles from './styles.js'
 
@@ -61,6 +61,8 @@ export class W3mSwapInput extends LitElement {
             @input=${this.dispatchInputChangeEvent}
             @keydown=${this.handleKeydown}
             placeholder="0"
+            type="text"
+            inputmode="decimal"
           />
           <wui-text class="market-value" variant="small-400" color="fg-200">
             ${isMarketValueGreaterThanZero
@@ -75,31 +77,11 @@ export class W3mSwapInput extends LitElement {
 
   // -- Private ------------------------------------------- //
   private handleKeydown(event: KeyboardEvent) {
-    const allowedKeys = [
-      'Backspace',
-      'Meta',
-      'Ctrl',
-      'a',
-      'c',
-      'v',
-      'ArrowLeft',
-      'ArrowRight',
-      'Tab'
-    ]
-    const isComma = event.key === ','
-    const isDot = event.key === '.'
-    const isNumericKey = event.key >= '0' && event.key <= '9'
-    const currentValue = this.value
-
-    if (!isNumericKey && !allowedKeys.includes(event.key) && !isDot && !isComma) {
-      event.preventDefault()
-    }
-
-    if (isComma || isDot) {
-      if (currentValue?.includes('.') || currentValue?.includes(',')) {
-        event.preventDefault()
-      }
-    }
+    return InputUtil.numericInputKeyDown(
+      event,
+      this.value,
+      (value: string) => this.onSetAmount?.(this.target, value)
+    )
   }
 
   private dispatchInputChangeEvent(event: InputEvent) {
@@ -107,7 +89,8 @@ export class W3mSwapInput extends LitElement {
       return
     }
 
-    const value = (event.target as HTMLInputElement).value
+    const value = (event.target as HTMLInputElement).value.replace(/[^0-9.]/gu, '')
+
     if (value === ',' || value === '.') {
       this.onSetAmount(this.target, '0.')
     } else if (value.endsWith(',')) {

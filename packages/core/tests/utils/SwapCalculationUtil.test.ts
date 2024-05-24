@@ -1,19 +1,24 @@
 import { describe, expect, it } from 'vitest'
 import { SwapCalculationUtil } from '../../src/utils/SwapCalculationUtil.js'
 import { INITIAL_GAS_LIMIT } from '../../src/controllers/SwapController.js'
-import { networkTokenPriceResponse, tokensResponse } from '../mocks/SwapController.js'
+import { balanceResponse, networkTokenPriceResponse } from '../mocks/SwapController.js'
 import type { SwapTokenWithBalance } from '../../src/utils/TypeUtil.js'
 import { NumberUtil } from '@web3modal/common'
+import { SwapApiUtil } from '../../src/utils/SwapApiUtil.js'
 
 // - Mocks ---------------------------------------------------------------------
 const gasLimit = BigInt(INITIAL_GAS_LIMIT)
 const gasFee = BigInt(455966887160)
 
-const sourceToken = tokensResponse[0] as SwapTokenWithBalance
-const sourceTokenAmount = '1'
-const toToken = tokensResponse[1] as SwapTokenWithBalance
+const tokensWithBalance = SwapApiUtil.mapBalancesToSwapTokens(balanceResponse.balances)
 
-const networkPrice = networkTokenPriceResponse.fungibles[0]?.price || '0'
+// eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
+const sourceToken = tokensWithBalance[0] as SwapTokenWithBalance
+const sourceTokenAmount = '1'
+// eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
+const toToken = tokensWithBalance[1] as SwapTokenWithBalance
+
+const networkPrice = networkTokenPriceResponse.fungibles[0]?.price.toString() || '0'
 
 // -- Tests --------------------------------------------------------------------
 describe('SwapCalculationUtil', () => {
@@ -22,7 +27,7 @@ describe('SwapCalculationUtil', () => {
     const gasPriceInUSD = SwapCalculationUtil.getGasPriceInUSD(networkPrice, gasLimit, gasFee)
 
     expect(gasPriceInEther).toEqual(0.068395033074)
-    expect(gasPriceInUSD).toEqual(0.04780931734420308)
+    expect(gasPriceInUSD).toEqual(0.0492923003364318)
   })
 
   it('should return insufficient balance as expected', () => {
@@ -42,7 +47,6 @@ describe('SwapCalculationUtil', () => {
   })
 
   it('should get the price impact as expected', () => {
-    const gasPriceInUSD = SwapCalculationUtil.getGasPriceInUSD(networkPrice, gasLimit, gasFee)
     const toTokenAmount = SwapCalculationUtil.getToTokenAmount({
       sourceToken,
       sourceTokenAmount,
@@ -52,13 +56,12 @@ describe('SwapCalculationUtil', () => {
     })
 
     const priceImpact = SwapCalculationUtil.getPriceImpact({
-      gasPriceInUSD,
       sourceTokenAmount,
       sourceTokenPriceInUSD: sourceToken.price,
       toTokenAmount,
       toTokenPriceInUSD: toToken.price
     })
-    expect(priceImpact).equal(7.755424414926879)
+    expect(priceImpact).equal(0.8499999999999975)
   })
 
   it('should get to token amount with same decimals including provider fee as expected', () => {
@@ -69,11 +72,12 @@ describe('SwapCalculationUtil', () => {
       toToken,
       toTokenPrice: toToken.price
     })
-    expect(toTokenAmount).equal('6.718961909003687207')
+    expect(toTokenAmount).equal('0.017817571677266286')
   })
 
   it('should get to token amount with different decimals including provider fee as expected', () => {
-    const newToToken = tokensResponse[2] as SwapTokenWithBalance
+    // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
+    const newToToken = tokensWithBalance[2] as SwapTokenWithBalance
 
     const toTokenAmount = SwapCalculationUtil.getToTokenAmount({
       sourceToken,
@@ -82,7 +86,7 @@ describe('SwapCalculationUtil', () => {
       toToken: newToToken,
       toTokenPrice: newToToken.price
     })
-    expect(toTokenAmount).equal('0.693364')
+    expect(toTokenAmount).equal('0.714549')
   })
 
   it('should calculate the maximum slippage as expected', () => {

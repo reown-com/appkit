@@ -1,6 +1,7 @@
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { FetchUtil } from '../utils/FetchUtil.js'
+import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 import type {
   BlockchainApiTransactionsRequest,
   BlockchainApiTransactionsResponse,
@@ -10,6 +11,8 @@ import type {
   BlockchainApiGenerateSwapCalldataResponse,
   BlockchainApiGenerateApproveCalldataRequest,
   BlockchainApiGenerateApproveCalldataResponse,
+  BlockchainApiSwapQuoteRequest,
+  BlockchainApiSwapQuoteResponse,
   BlockchainApiSwapAllowanceRequest,
   BlockchainApiSwapAllowanceResponse,
   BlockchainApiGasPriceRequest,
@@ -23,7 +26,10 @@ import type {
   OnrampQuote,
   PaymentCurrency,
   PurchaseCurrency,
-  BlockchainApiBalanceResponse
+  BlockchainApiBalanceResponse,
+  BlockchainApiLookupEnsName,
+  BlockchainApiSuggestionResponse,
+  BlockchainApiRegisterNameParams
 } from '../utils/TypeUtil.js'
 import { OptionsController } from './OptionsController.js'
 
@@ -136,6 +142,30 @@ export const BlockchainApiController = {
     })
   },
 
+  fetchSwapQuote({
+    projectId,
+    amount,
+    userAddress,
+    from,
+    to,
+    gasPrice
+  }: BlockchainApiSwapQuoteRequest) {
+    return api.get<BlockchainApiSwapQuoteResponse>({
+      path: `/v1/convert/quotes`,
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      params: {
+        projectId,
+        amount,
+        userAddress,
+        from,
+        to,
+        gasPrice
+      }
+    })
+  },
+
   fetchSwapTokens({ projectId, chainId }: BlockchainApiSwapTokensRequest) {
     return api.get<BlockchainApiSwapTokensResponse>({
       path: `/v1/convert/tokens?projectId=${projectId}&chainId=${chainId}`
@@ -173,11 +203,15 @@ export const BlockchainApiController = {
     const { sdkType, sdkVersion } = OptionsController.state
 
     return api.get<BlockchainApiGasPriceResponse>({
-      path: `/v1/convert/gas-price?projectId=${projectId}&chainId=${chainId}`,
+      path: `/v1/convert/gas-price`,
       headers: {
         'Content-Type': 'application/json',
         'x-sdk-type': sdkType,
         'x-sdk-version': sdkVersion
+      },
+      params: {
+        projectId,
+        chainId
       }
     })
   },
@@ -216,16 +250,22 @@ export const BlockchainApiController = {
     const { sdkType, sdkVersion } = OptionsController.state
 
     return api.get<BlockchainApiGenerateApproveCalldataResponse>({
-      path: `/v1/convert/build-approve?projectId=${projectId}&userAddress=${userAddress}&from=${from}&to=${to}`,
+      path: `/v1/convert/build-approve`,
       headers: {
         'Content-Type': 'application/json',
         'x-sdk-type': sdkType,
         'x-sdk-version': sdkVersion
+      },
+      params: {
+        projectId,
+        userAddress,
+        from,
+        to
       }
     })
   },
 
-  async getBalance(address: string, chainId?: string) {
+  async getBalance(address: string, chainId?: string, forceUpdate?: string) {
     const { sdkType, sdkVersion } = OptionsController.state
 
     return api.get<BlockchainApiBalanceResponse>({
@@ -237,7 +277,41 @@ export const BlockchainApiController = {
       params: {
         currency: 'usd',
         projectId: OptionsController.state.projectId,
-        chainId
+        chainId,
+        forceUpdate
+      }
+    })
+  },
+
+  async lookupEnsName(name: string) {
+    return api.get<BlockchainApiLookupEnsName>({
+      path: `/v1/profile/account/${name}${CommonConstantsUtil.WC_NAME_SUFFIX}?projectId=${OptionsController.state.projectId}`
+    })
+  },
+
+  async reverseLookupEnsName({ address }: { address: string }) {
+    return api.get<BlockchainApiLookupEnsName[]>({
+      path: `/v1/profile/reverse/${address}?projectId=${OptionsController.state.projectId}`
+    })
+  },
+
+  async getEnsNameSuggestions(name: string) {
+    return api.get<BlockchainApiSuggestionResponse>({
+      path: `/v1/profile/suggestions/${name}?projectId=${OptionsController.state.projectId}`
+    })
+  },
+
+  async registerEnsName({
+    coinType,
+    address,
+    message,
+    signature
+  }: BlockchainApiRegisterNameParams) {
+    return api.post({
+      path: `/v1/profile/account`,
+      body: { coin_type: coinType, address, message, signature },
+      headers: {
+        'Content-Type': 'application/json'
       }
     })
   },
