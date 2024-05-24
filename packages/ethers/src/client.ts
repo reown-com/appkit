@@ -92,7 +92,7 @@ interface EIP6963ProviderDetail {
 }
 
 interface ExternalProvider extends EthereumProvider {
-  _addresses?: string[]
+  accounts: string[]
 }
 
 // -- Client --------------------------------------------------------------------
@@ -685,7 +685,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
     if (CoinbaseProvider) {
       if (walletId === ConstantsUtil.COINBASE_SDK_CONNECTOR_ID) {
-        if (CoinbaseProvider._addresses && CoinbaseProvider._addresses?.length > 0) {
+        if (CoinbaseProvider.accounts && CoinbaseProvider.accounts?.length > 0) {
           this.setCoinbaseProvider(config)
           this.watchCoinbase(config)
         } else {
@@ -915,7 +915,6 @@ export class Web3Modal extends Web3ModalScaffold {
   private watchCoinbase(config: ProviderType) {
     const provider = config.coinbase
     const walletId = localStorage.getItem(EthersConstantsUtil.WALLET_ID)
-
     function disconnectHandler() {
       localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
       EthersStoreUtil.reset()
@@ -1045,7 +1044,6 @@ export class Web3Modal extends Web3ModalScaffold {
     const chainId = EthersStoreUtil.state.chainId
     const isConnected = EthersStoreUtil.state.isConnected
     const preferredAccountType = EthersStoreUtil.state.preferredAccountType
-
     this.resetAccount()
 
     if (isConnected && address && chainId) {
