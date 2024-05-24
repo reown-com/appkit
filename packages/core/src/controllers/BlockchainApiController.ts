@@ -1,6 +1,7 @@
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { FetchUtil } from '../utils/FetchUtil.js'
+import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 import type {
   BlockchainApiTransactionsRequest,
   BlockchainApiTransactionsResponse,
@@ -23,7 +24,10 @@ import type {
   OnrampQuote,
   PaymentCurrency,
   PurchaseCurrency,
-  BlockchainApiBalanceResponse
+  BlockchainApiBalanceResponse,
+  BlockchainApiLookupEnsName,
+  BlockchainApiSuggestionResponse,
+  BlockchainApiRegisterNameParams
 } from '../utils/TypeUtil.js'
 import { OptionsController } from './OptionsController.js'
 
@@ -238,6 +242,39 @@ export const BlockchainApiController = {
         currency: 'usd',
         projectId: OptionsController.state.projectId,
         chainId
+      }
+    })
+  },
+
+  async lookupEnsName(name: string) {
+    return api.get<BlockchainApiLookupEnsName>({
+      path: `/v1/profile/account/${name}${CommonConstantsUtil.WC_NAME_SUFFIX}?projectId=${OptionsController.state.projectId}`
+    })
+  },
+
+  async reverseLookupEnsName({ address }: { address: string }) {
+    return api.get<BlockchainApiLookupEnsName[]>({
+      path: `/v1/profile/reverse/${address}?projectId=${OptionsController.state.projectId}`
+    })
+  },
+
+  async getEnsNameSuggestions(name: string) {
+    return api.get<BlockchainApiSuggestionResponse>({
+      path: `/v1/profile/suggestions/${name}?projectId=${OptionsController.state.projectId}`
+    })
+  },
+
+  async registerEnsName({
+    coinType,
+    address,
+    message,
+    signature
+  }: BlockchainApiRegisterNameParams) {
+    return api.post({
+      path: `/v1/profile/account`,
+      body: { coin_type: coinType, address, message, signature },
+      headers: {
+        'Content-Type': 'application/json'
       }
     })
   },

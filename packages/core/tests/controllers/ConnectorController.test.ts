@@ -89,7 +89,7 @@ describe('ConnectorController', () => {
     expect(ConnectorController.getAuthConnector()).toEqual(undefined)
   })
 
-  it('should trigger corresponding sync methods when adding email connector', () => {
+  it('should trigger corresponding sync methods when adding auth connector', () => {
     OptionsController.setMetadata(mockDappData.metadata)
     OptionsController.setSdkVersion(mockDappData.sdkVersion)
     OptionsController.setProjectId(mockDappData.projectId)

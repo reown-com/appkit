@@ -5,6 +5,7 @@ import { LitElement, html } from 'lit'
 @customElement('w3m-account-view')
 export class W3mAccountView extends LitElement {
   // -- Render -------------------------------------------- //
+
   public override render() {
     const type = StorageUtil.getConnectedConnector()
 

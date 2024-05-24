@@ -280,6 +280,42 @@ export interface BlockchainApiBalanceResponse {
   balances: Balance[]
 }
 
+export interface BlockchainApiLookupEnsName {
+  name: string
+  registered: number
+  updated: number
+  addresses: Record<
+    string,
+    {
+      address: string
+      created: string
+    }
+  >
+  attributes: {
+    avatar?: string
+    bio?: string
+  }[]
+}
+
+export interface BlockchainApiRegisterNameParams {
+  coinType: number
+  message: string
+  signature: string
+  address: `0x${string}`
+}
+
+export interface BlockchainApiSuggestionResponse {
+  suggestions: {
+    name: string
+    registered: boolean
+  }[]
+}
+
+export interface BlockchainApiEnsError extends BaseError {
+  status: string
+  reasons: { name: string; description: string }[]
+}
+
 // -- OptionsController Types ---------------------------------------------------
 export interface Token {
   address: string
