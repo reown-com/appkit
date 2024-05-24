@@ -97,6 +97,42 @@ export default css`
     height: 64px;
   }
 
+  .wui-padding-right-xs {
+    padding-right: var(--wui-spacing-xs);
+  }
+
+  .wui-padding-right-s {
+    padding-right: var(--wui-spacing-s);
+  }
+
+  .wui-padding-right-m {
+    padding-right: var(--wui-spacing-m);
+  }
+
+  .wui-padding-right-l {
+    padding-right: var(--wui-spacing-l);
+  }
+
+  .wui-padding-right-xl {
+    padding-right: var(--wui-spacing-xl);
+  }
+
+  .wui-padding-right-2xl {
+    padding-right: var(--wui-spacing-2xl);
+  }
+
+  .wui-padding-right-3xl {
+    padding-right: var(--wui-spacing-3xl);
+  }
+
+  .wui-padding-right-4xl {
+    padding-right: var(--wui-spacing-4xl);
+  }
+
+  .wui-padding-right-5xl {
+    padding-right: var(--wui-spacing-5xl);
+  }
+
   wui-icon + .wui-size-lg,
   wui-loading-spinner + .wui-size-lg {
     padding-left: 50px;

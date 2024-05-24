@@ -37,7 +37,7 @@ export type TextType =
 
 export type TextAlign = 'center' | 'left' | 'right'
 
-export type SizeType = 'inherit' | 'xl' | 'lg' | 'md' | 'mdl' | 'sm' | 'xs' | 'xxs'
+export type SizeType = 'inherit' | 'xl' | 'lg' | 'md' | 'mdl' | 'sm' | 'xs' | 'xxs' | 'xxl'
 
 export type SpacingType =
   | '0'
@@ -45,6 +45,7 @@ export type SpacingType =
   | '2xl'
   | '3xl'
   | '4xl'
+  | '5xl'
   | '3xs'
   | '4xs'
   | 'l'
@@ -132,6 +133,7 @@ export type IconType =
   | 'github'
   | 'google'
   | 'helpCircle'
+  | 'id'
   | 'infoCircle'
   | 'mail'
   | 'mobile'

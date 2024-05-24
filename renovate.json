@@ -9,22 +9,22 @@
   ],
   "packageRules": [
     {
-      "matchPackageNames": ["*"],
+      "matchPackagePatterns": ["*"],
       "enabled": false
     },
     {
       "matchPackageNames": [
         "@walletconnect/utils",
-        "@web3modal/*",
         "wagmi",
         "@wagmi/connectors",
         "viem",
         "ethers",
         "@solana/web3.js"
       ],
+      "matchPackagePrefixes": ["@web3modal/"],
       "enabled": true,
       "prPriority": 10
     }
   ],
-  "includePaths": ["apps/laboratory"]
+  "includePaths": ["apps/laboratory/package.json"]
 }
