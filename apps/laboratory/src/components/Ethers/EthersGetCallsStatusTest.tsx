@@ -4,7 +4,6 @@ import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers/rea
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
 import { useChakraToast } from '../Toast'
 import { BrowserProvider } from 'ethers'
-import { type GetCallsStatusParams } from '../../types/EIP5792'
 import { EIP_5792_RPC_METHODS } from '../../utils/EIP5792Utils'
 import { W3mFrameProvider } from '@web3modal/wallet'
 
@@ -30,7 +29,7 @@ export function EthersGetCallsStatusTest() {
       }
       const provider = new BrowserProvider(walletProvider, chainId)
       const batchCallsStatus = await provider.send(EIP_5792_RPC_METHODS.WALLET_GET_CALLS_STATUS, [
-        batchCallId as GetCallsStatusParams
+        batchCallId
       ])
       toast({
         title: 'Success',

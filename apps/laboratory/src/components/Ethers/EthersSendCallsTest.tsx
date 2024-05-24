@@ -33,16 +33,13 @@ export function EthersSendCallsTest() {
         WALLET_CAPABILITIES.ATOMIC_BATCH,
         walletProvider,
         address
-      ).then((capabilities) => {
-	console.log(">> SETTING capabilities", capabilities)
-	setAtomicBatchSupportedChains(capabilities)
+      ).then(capabilities => {
+        setAtomicBatchSupportedChains(capabilities)
       })
     } else {
       setAtomicBatchSupportedChains([])
     }
   }, [address, walletProvider])
-
-  console.log(">>", {atomicBatchSupportedChains})
 
   const atomicBatchSupportedChainsNames = atomicBatchSupportedChains
     .map(ci => ci.chainName)

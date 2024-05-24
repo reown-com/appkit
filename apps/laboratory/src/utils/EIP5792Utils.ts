@@ -39,8 +39,6 @@ export async function getCapabilitySupportedChainInfo(
       }
     })
 
-    console.log(">> mappedCapabilities", mappedCapabilities, "raw: ", rawCapabilities)
-
     return mappedCapabilities
   }
 
