@@ -34,7 +34,9 @@ export function EthersSendCallsTest() {
         walletProvider,
         address
       ).then(setAtomicBatchSupportedChains)
-    } else setAtomicBatchSupportedChains([])
+    } else {
+      setAtomicBatchSupportedChains([])
+    }
   }, [address, walletProvider])
 
   const atomicBatchSupportedChainsNames = atomicBatchSupportedChains
@@ -73,7 +75,6 @@ export function EthersSendCallsTest() {
         from: address,
         calls
       }
-      console.log('>> sending', EIP_5792_RPC_METHODS.WALLET_SEND_CALLS)
       const batchCallHash = await provider.send(EIP_5792_RPC_METHODS.WALLET_SEND_CALLS, [
         sendCallsParams
       ])
@@ -83,7 +84,6 @@ export function EthersSendCallsTest() {
         type: 'success'
       })
     } catch (e) {
-      console.log('>> sendCalls failed', e)
       toast({
         title: 'Error',
         description: 'Failed to send calls',

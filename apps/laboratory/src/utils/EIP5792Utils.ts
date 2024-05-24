@@ -30,14 +30,12 @@ export async function getCapabilitySupportedChainInfo(
 
   if (provider instanceof W3mFrameProvider) {
     const rawCapabilities = await provider.getCapabilities()
-    console.log('>> rawCapabilities', rawCapabilities)
     const mappedCapabilities = Object.entries(rawCapabilities).map(([chainId]) => {
-      const chain = getChain(parseInt(chainId))
+      const chain = getChain(parseInt(chainId, 10))
 
-      return { chainId: parseInt(chainId), chainName: chain?.name ?? `Unknown Chain (${chainId})` }
+      return { chainId: parseInt(chainId, 10), chainName: chain?.name ?? `Unknown Chain (${chainId})` }
     })
 
-    console.log('>> mappedCapabilities', mappedCapabilities)
 
     return mappedCapabilities
   }
