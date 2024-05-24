@@ -33,9 +33,11 @@ export async function getCapabilitySupportedChainInfo(
     const mappedCapabilities = Object.entries(rawCapabilities).map(([chainId]) => {
       const chain = getChain(parseInt(chainId, 10))
 
-      return { chainId: parseInt(chainId, 10), chainName: chain?.name ?? `Unknown Chain (${chainId})` }
+      return {
+        chainId: parseInt(chainId, 10),
+        chainName: chain?.name ?? `Unknown Chain (${chainId})`
+      }
     })
-
 
     return mappedCapabilities
   }
