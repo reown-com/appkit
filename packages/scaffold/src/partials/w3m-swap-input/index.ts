@@ -89,7 +89,7 @@ export class W3mSwapInput extends LitElement {
       return
     }
 
-    const value = (event.target as HTMLInputElement).value.replace(/[^0-9.]/g, '')
+    const value = (event.target as HTMLInputElement).value.replace(/[^0-9.]/gu, '')
 
     if (value === ',' || value === '.') {
       this.onSetAmount(this.target, '0.')

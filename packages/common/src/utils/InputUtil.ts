@@ -2,12 +2,12 @@ export const InputUtil = {
   /**
    * Custom key down event optimized for numeric inputs which is used on the swap
    * @param event
-   * @param onChange
    * @param value
+   * @param onChange
    */
   numericInputKeyDown(
     event: KeyboardEvent,
-    value: string | undefined,
+    currentValue: string | undefined,
     onChange: (value: string) => void
   ) {
     const allowedKeys = [
@@ -35,7 +35,6 @@ export const InputUtil = {
     const isComma = event.key === ','
     const isDot = event.key === '.'
     const isNumericKey = event.key >= '0' && event.key <= '9'
-    const currentValue = value
 
     // If command/ctrl key is not pressed, doesn't allow for a, c, v
     if (!controlPressed && (selectAll || copyKey || pasteKey || cutKey)) {

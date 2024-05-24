@@ -12,8 +12,10 @@ const gasFee = BigInt(455966887160)
 
 const tokensWithBalance = SwapApiUtil.mapBalancesToSwapTokens(balanceResponse.balances)
 
+// eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
 const sourceToken = tokensWithBalance[0] as SwapTokenWithBalance
 const sourceTokenAmount = '1'
+// eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
 const toToken = tokensWithBalance[1] as SwapTokenWithBalance
 
 const networkPrice = networkTokenPriceResponse.fungibles[0]?.price.toString() || '0'
@@ -74,6 +76,7 @@ describe('SwapCalculationUtil', () => {
   })
 
   it('should get to token amount with different decimals including provider fee as expected', () => {
+    // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
     const newToToken = tokensWithBalance[2] as SwapTokenWithBalance
 
     const toTokenAmount = SwapCalculationUtil.getToTokenAmount({
