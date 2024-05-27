@@ -78,7 +78,6 @@ export default css`
 
     wui-card {
       max-width: 100%;
-      max-height: 95%;
       border-bottom-left-radius: 0;
       border-bottom-right-radius: 0;
       border-bottom: none;
