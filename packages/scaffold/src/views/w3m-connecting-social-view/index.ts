@@ -1,3 +1,4 @@
+/* eslint-disable max-depth */
 import {
   AccountController,
   ConnectionController,
@@ -25,9 +26,13 @@ export class W3mConnectingSocialView extends LitElement {
   // -- State & Properties -------------------------------- //
   @state() private socialProvider = AccountController.state.socialProvider
 
+  @state() private socialWindow = AccountController.state.socialWindow
+
   @state() protected error = false
 
   @state() protected connecting = false
+
+  @state() protected message = 'Connect in the provider window'
 
   public authConnector = ConnectorController.getAuthConnector()
 
@@ -38,6 +43,9 @@ export class W3mConnectingSocialView extends LitElement {
         AccountController.subscribe(val => {
           if (val.socialProvider) {
             this.socialProvider = val.socialProvider
+          }
+          if (val.socialWindow) {
+            this.socialWindow = val.socialWindow
           }
           if (val.address) {
             if (ModalController.state.open) {
@@ -60,6 +68,8 @@ export class W3mConnectingSocialView extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    this.getMessage()
+
     return html`
       <wui-flex
         data-error=${ifDefined(this.error)}
@@ -87,7 +97,7 @@ export class W3mConnectingSocialView extends LitElement {
             <span class="capitalize">${this.socialProvider ?? 'Social'}</span></wui-text
           >
           <wui-text align="center" variant="small-400" color=${this.error ? 'error-100' : 'fg-200'}
-            >${this.error ? 'Something went wrong' : 'Connect in the provider window'}</wui-text
+            >${this.message}</wui-text
           ></wui-flex
         >
       </wui-flex>
@@ -108,17 +118,18 @@ export class W3mConnectingSocialView extends LitElement {
         window.removeEventListener('message', this.handleSocialConnection, false)
         try {
           if (this.authConnector && !this.connecting) {
+            if (this.socialWindow) {
+              this.socialWindow.close()
+            }
             this.connecting = true
             const uri = event.data.resultUri as string
 
             await this.authConnector.provider.connectSocial(uri)
-            // eslint-disable-next-line max-depth
-            if (AccountController.state.socialProvider) {
-              StorageUtil.setConnectedSocialProvider(AccountController.state.socialProvider)
+
+            if (this.socialProvider) {
+              StorageUtil.setConnectedSocialProvider(this.socialProvider)
             }
             await ConnectionController.connectExternal(this.authConnector)
-
-            // eslint-disable-next-line max-depth
           }
         } catch (error) {
           this.error = true
@@ -132,6 +143,16 @@ export class W3mConnectingSocialView extends LitElement {
 
   private connectSocial() {
     window.addEventListener('message', this.handleSocialConnection, false)
+  }
+
+  private getMessage() {
+    if (this.error) {
+      this.message = 'Something went wrong'
+    } else if (this.connecting) {
+      this.message = 'Retrieving user data'
+    } else {
+      this.message = 'Connect in the provider window'
+    }
   }
 }
 

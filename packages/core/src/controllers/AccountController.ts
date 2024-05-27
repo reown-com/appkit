@@ -26,6 +26,7 @@ export interface AccountControllerState {
   tokenBalance?: Balance[]
   connectedWalletInfo?: ConnectedWalletInfo
   preferredAccountType?: W3mFrameTypes.AccountType
+  socialWindow?: Window
 }
 
 type StateKey = keyof AccountControllerState
@@ -107,6 +108,12 @@ export const AccountController = {
     }
   },
 
+  setSocialWindow(socialWindow: AccountControllerState['socialWindow']) {
+    if (socialWindow) {
+      state.socialWindow = ref(socialWindow)
+    }
+  },
+
   async fetchTokenBalance() {
     const chainId = NetworkController.state.caipNetwork?.id
 
@@ -141,5 +148,6 @@ export const AccountController = {
     state.connectedWalletInfo = undefined
     state.preferredAccountType = undefined
     state.socialProvider = undefined
+    state.socialWindow = undefined
   }
 }
