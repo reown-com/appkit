@@ -11,7 +11,8 @@ import {
   ConnectionController,
   SnackController,
   ConstantsUtil,
-  OptionsController
+  OptionsController,
+  type SocialProvider
 } from '@web3modal/core'
 import { UiHelperUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -227,7 +228,7 @@ export class W3mAccountDefaultWidget extends LitElement {
     }
     const email = authConnector.provider.getEmail() ?? ''
 
-    const socialProvider = StorageUtil.getConnectedSocialProvider()
+    const socialProvider = StorageUtil.getConnectedSocialProvider() as SocialProvider | null
 
     return html`
       <wui-list-item
@@ -238,9 +239,7 @@ export class W3mAccountDefaultWidget extends LitElement {
         data-testid="w3m-account-email-update"
         ?chevron=${!socialProvider}
         @click=${() => {
-          if (!socialProvider) {
-            this.onGoToUpdateEmail(email)
-          }
+          this.onGoToUpdateEmail(email, socialProvider)
         }}
       >
         <wui-text variant="paragraph-500" color="fg-100">${email}</wui-text>
@@ -305,8 +304,10 @@ export class W3mAccountDefaultWidget extends LitElement {
     RouterController.push('UpgradeEmailWallet')
   }
 
-  private onGoToUpdateEmail(email: string) {
-    RouterController.push('UpdateEmailWallet', { email })
+  private onGoToUpdateEmail(email: string, socialProvider: SocialProvider | null) {
+    if (!socialProvider) {
+      RouterController.push('UpdateEmailWallet', { email })
+    }
   }
 }
 

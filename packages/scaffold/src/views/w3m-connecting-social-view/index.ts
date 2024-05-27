@@ -120,6 +120,7 @@ export class W3mConnectingSocialView extends LitElement {
           if (this.authConnector && !this.connecting) {
             if (this.socialWindow) {
               this.socialWindow.close()
+              AccountController.setSocialWindow(undefined)
             }
             this.connecting = true
             const uri = event.data.resultUri as string
