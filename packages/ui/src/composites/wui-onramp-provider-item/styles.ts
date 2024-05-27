@@ -4,7 +4,7 @@ export default css`
   button {
     padding: var(--wui-spacing-s);
     border-radius: var(--wui-border-radius-xs);
-    background-color: var(--wui-gray-glass-002);
+    background-color: var(--wui-color-gray-glass-002);
     width: 100%;
     display: flex;
     align-items: center;
@@ -15,7 +15,7 @@ export default css`
   }
 
   button:hover {
-    background-color: var(--wui-gray-glass-005);
+    background-color: var(--wui-color-gray-glass-005);
   }
 
   .provider-image {
@@ -35,7 +35,7 @@ export default css`
     position: absolute;
     inset: 0;
     border-radius: calc(var(--wui-border-radius-xs) - calc(var(--wui-spacing-s) / 2));
-    box-shadow: inset 0 0 0 1px var(--wui-gray-glass-005);
+    box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-005);
   }
 
   .network-icon {
@@ -44,7 +44,7 @@ export default css`
     border-radius: calc(var(--wui-spacing-m) / 2);
     overflow: hidden;
     box-shadow:
-      0 0 0 3px var(--wui-gray-glass-002),
+      0 0 0 3px var(--wui-color-gray-glass-002),
       0 0 0 3px var(--wui-color-modal-bg);
     transition: box-shadow var(--wui-ease-out-power-1) var(--wui-duration-md);
     will-change: box-shadow;
@@ -52,7 +52,7 @@ export default css`
 
   button:hover .network-icon {
     box-shadow:
-      0 0 0 3px var(--wui-gray-glass-005),
+      0 0 0 3px var(--wui-color-gray-glass-005),
       0 0 0 3px var(--wui-color-modal-bg);
   }
 `

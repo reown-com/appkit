@@ -15,12 +15,12 @@ export default css`
   }
 
   :host([data-variant='main']) {
-    background-color: var(--wui-accent-glass-015);
+    background-color: var(--wui-color-accent-glass-015);
     color: var(--wui-color-accent-100);
   }
 
   :host([data-variant='shade']) {
-    background-color: var(--wui-gray-glass-010);
+    background-color: var(--wui-color-gray-glass-010);
     color: var(--wui-color-fg-200);
   }
 
@@ -35,7 +35,7 @@ export default css`
   }
 
   :host([data-size='lg']) {
-    padding: 9px 5px !important;
+    padding: 11px 5px !important;
   }
 
   :host([data-size='lg']) > wui-text {

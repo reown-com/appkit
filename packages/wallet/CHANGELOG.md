@@ -1,5 +1,14 @@
 # @web3modal/wallet
 
+## 4.2.2
+
+### Patch Changes
+
+- feat: social login refactor. wagmi sendCalls support. refactor theme variables
+
+- Updated dependencies []:
+  - @web3modal/polyfills@4.2.2
+
 ## 4.2.1
 
 ### Patch Changes

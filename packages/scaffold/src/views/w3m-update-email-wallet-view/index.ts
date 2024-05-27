@@ -46,13 +46,13 @@ export class W3mUpdateEmailWalletView extends LitElement {
         </form>
 
         <wui-flex gap="s">
-          <wui-button size="md" variant="shade" fullWidth @click=${RouterController.goBack}>
+          <wui-button size="md" variant="neutral" fullWidth @click=${RouterController.goBack}>
             Cancel
           </wui-button>
 
           <wui-button
             size="md"
-            variant="fill"
+            variant="main"
             fullWidth
             @click=${this.onSubmitEmail.bind(this)}
             .disabled=${!showSubmit}
@@ -81,7 +81,7 @@ export class W3mUpdateEmailWalletView extends LitElement {
       const authConnector = ConnectorController.getAuthConnector()
 
       if (!authConnector) {
-        throw new Error('w3m-update-email-wallet: Email connector not found')
+        throw new Error('w3m-update-email-wallet: Auth connector not found')
       }
 
       const response = await authConnector.provider.updateEmail({ email: this.email })

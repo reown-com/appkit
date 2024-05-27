@@ -23,6 +23,8 @@ export class W3mEmailOtpWidget extends LitElement {
   public static override styles = styles
 
   // -- State & Properties -------------------------------- //
+  private OTPTimeout?: ReturnType<typeof setInterval>
+
   @state() private loading = false
 
   @state() private timeoutTimeLeft = W3mFrameHelpers.getTimeToNextEmailLogin()
@@ -30,8 +32,6 @@ export class W3mEmailOtpWidget extends LitElement {
   @state() private error = ''
 
   private otp = ''
-
-  private OTPTimeout: NodeJS.Timeout | undefined
 
   public email = RouterController.state.data?.email
 
@@ -95,7 +95,7 @@ export class W3mEmailOtpWidget extends LitElement {
                 : null}
             </wui-flex>`}
 
-        <wui-flex alignItems="center">
+        <wui-flex alignItems="center" gap="xs">
           <wui-text variant="small-400" color="fg-200">${footerLabels.title}</wui-text>
           <wui-link @click=${this.onResendCode.bind(this)} .disabled=${isResendDisabled}>
             ${footerLabels.action}

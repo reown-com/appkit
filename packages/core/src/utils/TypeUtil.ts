@@ -57,6 +57,7 @@ export type Connector = {
   provider?: unknown
   email?: boolean
   socials?: SocialProvider[]
+  showWallets?: boolean
 }
 
 export interface AuthConnector extends Connector {
@@ -193,6 +194,26 @@ export interface BlockchainApiSwapTokensResponse {
   tokens: SwapToken[]
 }
 
+export interface BlockchainApiSwapQuoteRequest {
+  projectId: string
+  chainId?: string
+  amount: string
+  userAddress: string
+  from: string
+  to: string
+  gasPrice: string
+}
+
+export interface BlockchainApiSwapQuoteResponse {
+  quotes: {
+    id: string | null
+    fromAmount: string
+    fromAccount: string
+    toAmount: string
+    toAccount: string
+  }[]
+}
+
 export interface BlockchainApiTokenPriceRequest {
   projectId: string
   currency?: 'usd' | 'eur' | 'gbp' | 'aud' | 'cad' | 'inr' | 'jpy' | 'btc' | 'eth'
@@ -204,7 +225,7 @@ export interface BlockchainApiTokenPriceResponse {
     name: string
     symbol: string
     iconUrl: string
-    price: string
+    price: number
   }[]
 }
 
@@ -277,6 +298,42 @@ export interface BlockchainApiGenerateApproveCalldataResponse {
 
 export interface BlockchainApiBalanceResponse {
   balances: Balance[]
+}
+
+export interface BlockchainApiLookupEnsName {
+  name: string
+  registered: number
+  updated: number
+  addresses: Record<
+    string,
+    {
+      address: string
+      created: string
+    }
+  >
+  attributes: {
+    avatar?: string
+    bio?: string
+  }[]
+}
+
+export interface BlockchainApiRegisterNameParams {
+  coinType: number
+  message: string
+  signature: string
+  address: `0x${string}`
+}
+
+export interface BlockchainApiSuggestionResponse {
+  suggestions: {
+    name: string
+    registered: boolean
+  }[]
+}
+
+export interface BlockchainApiEnsError extends BaseError {
+  status: string
+  reasons: { name: string; description: string }[]
 }
 
 // -- OptionsController Types ---------------------------------------------------

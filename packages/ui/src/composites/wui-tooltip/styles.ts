@@ -12,7 +12,7 @@ export default css`
 
   :host([data-variant='shade']) {
     background-color: var(--wui-color-bg-150);
-    border: 1px solid var(--wui-gray-glass-005);
+    border: 1px solid var(--wui-color-gray-glass-005);
   }
 
   :host([data-variant='shade']) > wui-text {

@@ -1,21 +1,8 @@
-import type { Connector, WcWallet } from '@web3modal/core'
-import {
-  ApiController,
-  AssetUtil,
-  ConnectionController,
-  ConnectorController,
-  CoreHelperUtil,
-  EventsController,
-  OptionsController,
-  RouterController,
-  StorageUtil
-} from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
-import { ConstantsUtil } from '@web3modal/scaffold-utils'
+import { ConnectorController, RouterController } from '@web3modal/core'
+import { state } from 'lit/decorators/state.js'
 
 @customElement('w3m-connect-view')
 export class W3mConnectView extends LitElement {
@@ -26,13 +13,11 @@ export class W3mConnectView extends LitElement {
 
   // -- State & Properties -------------------------------- //
   @state() private connectors = ConnectorController.state.connectors
-  @state() private count = ApiController.state.count
 
   public constructor() {
     super()
     this.unsubscribe.push(
-      ConnectorController.subscribeKey('connectors', val => (this.connectors = val)),
-      ApiController.subscribeKey('count', val => (this.count = val))
+      ConnectorController.subscribeKey('connectors', val => (this.connectors = val))
     )
   }
 
@@ -43,282 +28,48 @@ export class W3mConnectView extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex flexDirection="column" padding="s" gap="xs">
+      <wui-flex flexDirection="column" .padding=${['3xs', 's', 's', 's']}>
         <w3m-email-login-widget></w3m-email-login-widget>
-
-        ${this.walletConnectConnectorTemplate()} ${this.recentTemplate()}
-        ${this.announcedTemplate()} ${this.injectedTemplate()} ${this.featuredTemplate()}
-        ${this.customTemplate()} ${this.recommendedTemplate()} ${this.externalTemplate()}
-        ${this.allWalletsTemplate()}
+        <w3m-social-login-widget></w3m-social-login-widget>
+        ${this.walletListTemplate()}
       </wui-flex>
       <w3m-legal-footer></w3m-legal-footer>
     `
   }
 
   // -- Private ------------------------------------------- //
-  private walletConnectConnectorTemplate() {
-    if (CoreHelperUtil.isMobile()) {
-      return null
-    }
+  private walletListTemplate() {
+    const authConnector = this.connectors.find(c => c.type === 'AUTH')
 
-    const connector = this.connectors.find(c => c.type === 'WALLET_CONNECT')
-    if (!connector) {
-      return null
-    }
-
-    return html`
-      <wui-list-wallet
-        imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
-        name=${connector.name ?? 'Unknown'}
-        @click=${() => this.onConnector(connector)}
-        tagLabel="qr code"
-        tagVariant="main"
-        data-testid="wallet-selector-walletconnect"
-      >
-      </wui-list-wallet>
-    `
-  }
-
-  private customTemplate() {
-    const { customWallets } = OptionsController.state
-
-    if (!customWallets?.length) {
-      return null
-    }
-
-    const wallets = this.filterOutDuplicateWallets(customWallets)
-
-    return wallets.map(
-      wallet => html`
-        <wui-list-wallet
-          imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
-          name=${wallet.name ?? 'Unknown'}
-          @click=${() => this.onConnectWallet(wallet)}
-          data-testid=${`wallet-selector-${wallet.id}`}
-        >
-        </wui-list-wallet>
-      `
-    )
-  }
-
-  private featuredTemplate() {
-    const connector = this.connectors.find(c => c.type === 'WALLET_CONNECT')
-    if (!connector) {
-      return null
-    }
-
-    const { featured } = ApiController.state
-    if (!featured.length) {
-      return null
-    }
-
-    const wallets = this.filterOutDuplicateWallets(featured)
-
-    return wallets.map(
-      wallet => html`
-        <wui-list-wallet
-          imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
-          name=${wallet.name ?? 'Unknown'}
-          @click=${() => this.onConnectWallet(wallet)}
-        >
-        </wui-list-wallet>
-      `
-    )
-  }
-
-  private recentTemplate() {
-    const recent = StorageUtil.getRecentWallets()
-
-    return recent.map(
-      wallet => html`
-        <wui-list-wallet
-          imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
-          name=${wallet.name ?? 'Unknown'}
-          @click=${() => this.onConnectWallet(wallet)}
-          tagLabel="recent"
-          tagVariant="shade"
-        >
-        </wui-list-wallet>
-      `
-    )
-  }
-
-  private announcedTemplate() {
-    return this.connectors.map(connector => {
-      if (connector.type !== 'ANNOUNCED') {
-        return null
+    if (authConnector?.socials) {
+      if (authConnector?.showWallets) {
+        return html`
+          <wui-flex flexDirection="column" gap="xs" .margin=${['xs', '0', '0', '0'] as const}>
+            <w3m-connect-walletconnect-widget></w3m-connect-walletconnect-widget>
+            <w3m-connect-recent-widget></w3m-connect-recent-widget>
+            <w3m-connect-announced-widget></w3m-connect-announced-widget>
+            <w3m-connect-injected-widget></w3m-connect-injected-widget>
+            <w3m-connect-custom-widget></w3m-connect-custom-widget>
+            <w3m-connect-recommended-widget></w3m-connect-recommended-widget>
+            <wui-flex class="all-wallets" .margin=${['xs', '0', '0', '0'] as const}>
+              <w3m-all-wallets-widget></w3m-all-wallets-widget>
+            </wui-flex>
+          </wui-flex>
+        `
       }
 
-      return html`
-        <wui-list-wallet
-          imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
-          name=${connector.name ?? 'Unknown'}
-          @click=${() => this.onConnector(connector)}
-          tagVariant="success"
-          tagLabel="installed"
-          data-testid=${`wallet-selector-${connector.id}`}
-          .installed=${true}
-        >
-        </wui-list-wallet>
-      `
-    })
-  }
-
-  private injectedTemplate() {
-    return this.connectors.map(connector => {
-      if (connector.type !== 'INJECTED') {
-        return null
-      }
-
-      if (!CoreHelperUtil.isMobile() && connector.name === 'Browser Wallet') {
-        return null
-      }
-
-      if (!ConnectionController.checkInstalled()) {
-        return null
-      }
-
-      return html`
-        <wui-list-wallet
-          imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
-          .installed=${true}
-          name=${connector.name ?? 'Unknown'}
-          tagVariant="success"
-          tagLabel="installed"
-          data-testid=${`wallet-selector-${connector.id}`}
-          @click=${() => this.onConnector(connector)}
-        >
-        </wui-list-wallet>
-      `
-    })
-  }
-
-  private externalTemplate() {
-    const announcedRdns = ConnectorController.getAnnouncedConnectorRdns()
-
-    return this.connectors.map(connector => {
-      if (['WALLET_CONNECT', 'INJECTED', 'ANNOUNCED', 'AUTH'].includes(connector.type)) {
-        return null
-      }
-
-      if (announcedRdns.includes(ConstantsUtil.CONNECTOR_RDNS_MAP[connector.id])) {
-        return null
-      }
-
-      return html`
-        <wui-list-wallet
-          imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
-          name=${connector.name ?? 'Unknown'}
-          @click=${() => this.onConnector(connector)}
-        >
-        </wui-list-wallet>
-      `
-    })
-  }
-
-  private allWalletsTemplate() {
-    const connector = this.connectors.find(c => c.type === 'WALLET_CONNECT')
-    const { allWallets } = OptionsController.state
-
-    if (!connector || allWallets === 'HIDE') {
-      return null
+      return html` <wui-list-button
+        @click=${this.onContinueWalletClick.bind(this)}
+        text="Continue with a wallet"
+      ></wui-list-button>`
     }
 
-    if (allWallets === 'ONLY_MOBILE' && !CoreHelperUtil.isMobile()) {
-      return null
-    }
-
-    const featuredCount = ApiController.state.featured.length
-    const rawCount = this.count + featuredCount
-    const roundedCount = rawCount < 10 ? rawCount : Math.floor(rawCount / 10) * 10
-    const tagLabel = roundedCount < rawCount ? `${roundedCount}+` : `${roundedCount}`
-
-    return html`
-      <wui-list-wallet
-        name="All Wallets"
-        walletIcon="allWallets"
-        showAllWallets
-        @click=${this.onAllWallets.bind(this)}
-        tagLabel=${tagLabel}
-        tagVariant="shade"
-        data-testid="all-wallets"
-      ></wui-list-wallet>
-    `
-  }
-
-  private recommendedTemplate() {
-    const connector = this.connectors.find(c => c.type === 'WALLET_CONNECT')
-    if (!connector) {
-      return null
-    }
-    const { recommended } = ApiController.state
-    const { customWallets, featuredWalletIds } = OptionsController.state
-    const { connectors } = ConnectorController.state
-    const recent = StorageUtil.getRecentWallets()
-
-    const injected = connectors.filter(c => c.type === 'INJECTED' || c.type === 'ANNOUNCED')
-    const injectedWallets = injected.filter(i => i.name !== 'Browser Wallet')
-
-    if (featuredWalletIds || customWallets || !recommended.length) {
-      return null
-    }
-
-    const overrideLength = injectedWallets.length + recent.length
-
-    const maxRecommended = Math.max(0, 2 - overrideLength)
-
-    const wallets = this.filterOutDuplicateWallets(recommended).slice(0, maxRecommended)
-
-    return wallets.map(
-      wallet => html`
-        <wui-list-wallet
-          imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
-          name=${wallet?.name ?? 'Unknown'}
-          @click=${() => this.onConnectWallet(wallet)}
-        >
-        </wui-list-wallet>
-      `
-    )
+    return html`<w3m-wallet-login-list></w3m-wallet-login-list>`
   }
 
   // -- Private Methods ----------------------------------- //
-  private onConnector(connector: Connector) {
-    if (connector.type === 'WALLET_CONNECT') {
-      if (CoreHelperUtil.isMobile()) {
-        RouterController.push('AllWallets')
-      } else {
-        RouterController.push('ConnectingWalletConnect')
-      }
-    } else {
-      RouterController.push('ConnectingExternal', { connector })
-    }
-  }
-
-  private filterOutDuplicateWallets(wallets: WcWallet[]) {
-    const recent = StorageUtil.getRecentWallets()
-
-    const connectorRDNSs = this.connectors
-      .map(connector => connector.info?.rdns)
-      .filter(Boolean) as string[]
-
-    const recentRDNSs = recent.map(wallet => wallet.rdns).filter(Boolean) as string[]
-    const allRDNSs = connectorRDNSs.concat(recentRDNSs)
-    if (allRDNSs.includes('io.metamask.mobile') && CoreHelperUtil.isMobile()) {
-      const index = allRDNSs.indexOf('io.metamask.mobile')
-      allRDNSs[index] = 'io.metamask'
-    }
-    const filtered = wallets.filter(wallet => !allRDNSs.includes(String(wallet?.rdns)))
-
-    return filtered
-  }
-
-  private onAllWallets() {
-    EventsController.sendEvent({ type: 'track', event: 'CLICK_ALL_WALLETS' })
-    RouterController.push('AllWallets')
-  }
-
-  private onConnectWallet(wallet: WcWallet) {
-    RouterController.push('ConnectingWalletConnect', { wallet })
+  private onContinueWalletClick() {
+    RouterController.push('ConnectWallets')
   }
 }
 

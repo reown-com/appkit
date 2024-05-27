@@ -21,7 +21,7 @@ export class W3mSwapView extends LitElement {
   private unsubscribe: ((() => void) | undefined)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() private interval?: NodeJS.Timeout
+  @state() private interval?: ReturnType<typeof setInterval>
 
   @state() private detailsOpen = false
 
@@ -49,15 +49,7 @@ export class W3mSwapView extends LitElement {
 
   @state() private gasPriceInUSD = SwapController.state.gasPriceInUSD
 
-  @state() private priceImpact = SwapController.state.priceImpact
-
-  @state() private maxSlippage = SwapController.state.maxSlippage
-
-  @state() private providerFee = SwapController.state.providerFee
-
   @state() private transactionLoading = SwapController.state.transactionLoading
-
-  @state() private networkTokenSymbol = SwapController.state.networkTokenSymbol
 
   @state() private fetchError = SwapController.state.fetchError
 
@@ -96,9 +88,6 @@ export class W3mSwapView extends LitElement {
           this.toTokenPriceInUSD = newState.toTokenPriceInUSD
           this.inputError = newState.inputError
           this.gasPriceInUSD = newState.gasPriceInUSD
-          this.priceImpact = newState.priceImpact
-          this.maxSlippage = newState.maxSlippage
-          this.providerFee = newState.providerFee
           this.fetchError = newState.fetchError
         })
       ]
@@ -118,7 +107,7 @@ export class W3mSwapView extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex flexDirection="column" padding="l" gap="s">
+      <wui-flex flexDirection="column" .padding=${['0', 'l', 'l', 'l']} gap="s">
         ${this.initialized ? this.templateSwap() : this.templateLoading()}
       </wui-flex>
     `
@@ -135,7 +124,7 @@ export class W3mSwapView extends LitElement {
 
   private templateSwap() {
     return html`
-      <wui-flex flexDirection="column" gap="l">
+      <wui-flex flexDirection="column" gap="s">
         <wui-flex flexDirection="column" alignItems="center" gap="xs" class="swap-inputs-container">
           ${this.templateTokenInput('sourceToken', this.sourceToken)}
           ${this.templateTokenInput('toToken', this.toToken)} ${this.templateReplaceTokensButton()}
@@ -248,35 +237,11 @@ export class W3mSwapView extends LitElement {
   }
 
   private templateDetails() {
-    if (this.inputError) {
+    if (!this.sourceToken || !this.toToken || this.inputError) {
       return null
     }
 
-    if (!this.sourceToken || !this.toToken || !this.sourceTokenAmount || !this.toTokenAmount) {
-      return null
-    }
-
-    const toTokenSwappedAmount =
-      this.sourceTokenPriceInUSD && this.toTokenPriceInUSD
-        ? (1 / this.toTokenPriceInUSD) * this.sourceTokenPriceInUSD
-        : 0
-
-    return html`
-      <w3m-swap-details
-        .detailsOpen=${this.detailsOpen}
-        sourceTokenSymbol=${this.sourceToken?.symbol}
-        sourceTokenPrice=${this.sourceTokenPriceInUSD}
-        toTokenSymbol=${this.toToken?.symbol}
-        toTokenSwappedAmount=${toTokenSwappedAmount}
-        toTokenAmount=${this.toTokenAmount}
-        gasPriceInUSD=${this.gasPriceInUSD}
-        .priceImpact=${this.priceImpact}
-        slippageRate=${ConstantsUtil.CONVERT_SLIPPAGE_TOLERANCE}
-        .maxSlippage=${this.maxSlippage}
-        providerFee=${this.providerFee}
-        networkTokenSymbol=${this.networkTokenSymbol}
-      ></w3m-swap-details>
-    `
+    return html`<w3m-swap-details .detailsOpen=${this.detailsOpen}></w3m-swap-details>`
   }
 
   private handleChangeAmount(target: SwapInputTarget, value: string) {
@@ -298,11 +263,10 @@ export class W3mSwapView extends LitElement {
     return html` <wui-flex gap="xs">
       <wui-button
         class="action-button"
-        ?fullWidth=${true}
         fullWidth
         size="lg"
         borderRadius="xs"
-        variant=${haveNoTokenSelected ? 'shade' : 'fill'}
+        variant=${haveNoTokenSelected ? 'neutral' : 'main'}
         .loading=${loading}
         .disabled=${disabled}
         @click=${this.onSwapPreview}

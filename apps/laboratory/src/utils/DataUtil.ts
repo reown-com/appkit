@@ -37,7 +37,7 @@ export const wagmiSdkOptions = [
   {
     title: 'Wallet',
     link: '/library/wagmi-wallet/',
-    description: 'Configuration using wagmi and implementing email wallet'
+    description: 'Configuration using wagmi and implementing social wallet'
   }
 ]
 
@@ -60,7 +60,7 @@ export const ethersSdkOptions = [
   {
     title: 'Wallet',
     link: '/library/ethers-wallet/',
-    description: 'Configuration using ethers and implementing email wallet'
+    description: 'Configuration using ethers and implementing social wallet'
   }
 ]
 
