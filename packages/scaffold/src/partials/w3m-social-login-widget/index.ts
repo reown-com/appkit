@@ -52,7 +52,7 @@ export class W3mSocialLoginWidget extends LitElement {
       <wui-flex flexDirection="column" gap="xs" .padding=${['0', '0', 'xs', '0'] as const}>
         ${this.topViewTemplate()}${this.bottomViewTemplate()}
       </wui-flex>
-      <wui-separator text="or"></wui-separator>
+      ${this.separatorTemplate()}
     `
   }
 
@@ -125,6 +125,15 @@ export class W3mSocialLoginWidget extends LitElement {
           ></wui-logo-select>`
       )}
     </wui-flex>`
+  }
+
+  private separatorTemplate() {
+    const walletConnectConnector = this.connectors.find(c => c.type === 'WALLET_CONNECT')
+    if (walletConnectConnector) {
+      return html`<wui-separator text="or"></wui-separator>`
+    }
+
+    return null
   }
 
   // -- Private Methods ----------------------------------- //

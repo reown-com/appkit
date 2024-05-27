@@ -5,6 +5,7 @@ import {
   ModalController,
   RouterController,
   SnackController,
+  StorageUtil,
   ThemeController
 } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
@@ -111,7 +112,13 @@ export class W3mConnectingSocialView extends LitElement {
             const uri = event.data.resultUri as string
 
             await this.authConnector.provider.connectSocial(uri)
+            // eslint-disable-next-line max-depth
+            if (AccountController.state.socialProvider) {
+              StorageUtil.setConnectedSocialProvider(AccountController.state.socialProvider)
+            }
             await ConnectionController.connectExternal(this.authConnector)
+
+            // eslint-disable-next-line max-depth
           }
         } catch (error) {
           this.error = true

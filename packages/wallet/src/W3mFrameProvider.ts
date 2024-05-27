@@ -511,7 +511,7 @@ export class W3mFrameProvider {
     event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/IS_CONNECTED_SUCCESS' }>
   ) {
     if (!event.payload.isConnected) {
-      this.deleteEmailLoginCache()
+      this.deleteAuthLoginCache()
     }
     this.isConnectedResolver?.resolve(event.payload)
   }
@@ -549,7 +549,7 @@ export class W3mFrameProvider {
 
   private onSignOutSuccess() {
     this.disconnectResolver?.resolve(undefined)
-    this.deleteEmailLoginCache()
+    this.deleteAuthLoginCache()
   }
 
   private onSignOutError(
@@ -694,10 +694,11 @@ export class W3mFrameProvider {
     W3mFrameStorage.delete(W3mFrameConstants.LAST_EMAIL_LOGIN_TIME)
   }
 
-  private deleteEmailLoginCache() {
+  private deleteAuthLoginCache() {
     W3mFrameStorage.delete(W3mFrameConstants.EMAIL_LOGIN_USED_KEY)
     W3mFrameStorage.delete(W3mFrameConstants.EMAIL)
     W3mFrameStorage.delete(W3mFrameConstants.LAST_USED_CHAIN_KEY)
+    W3mFrameStorage.delete(W3mFrameConstants.SOCIAL, true)
   }
 
   private setLastUsedChainId(chainId: number) {

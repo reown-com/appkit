@@ -221,20 +221,27 @@ export class W3mAccountDefaultWidget extends LitElement {
   private emailBtnTemplate() {
     const type = StorageUtil.getConnectedConnector()
     const authConnector = ConnectorController.getAuthConnector()
+
     if (!authConnector || type !== 'AUTH') {
       return null
     }
     const email = authConnector.provider.getEmail() ?? ''
 
+    const socialProvider = StorageUtil.getConnectedSocialProvider()
+
     return html`
       <wui-list-item
         variant="icon"
         iconVariant="overlay"
-        icon="mail"
-        iconSize="sm"
+        icon=${socialProvider ?? 'mail'}
+        iconSize=${socialProvider ? 'xl' : 'sm'}
         data-testid="w3m-account-email-update"
-        ?chevron=${true}
-        @click=${() => this.onGoToUpdateEmail(email)}
+        ?chevron=${!socialProvider}
+        @click=${() => {
+          if (!socialProvider) {
+            this.onGoToUpdateEmail(email)
+          }
+        }}
       >
         <wui-text variant="paragraph-500" color="fg-100">${email}</wui-text>
       </wui-list-item>
