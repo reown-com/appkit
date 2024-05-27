@@ -2,13 +2,16 @@ import { customElement } from '@web3modal/ui'
 import {
   ConnectionController,
   ConnectorController,
+  ModalController,
   RouterController,
+  CoreHelperUtil,
   RouterUtil,
   SnackController
 } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { W3mFrameRpcConstants } from '@web3modal/wallet'
+import { NavigationUtil } from '@web3modal/common'
 
 @customElement('w3m-upgrade-to-smart-account-view')
 export class W3mUpgradeToSmartAccountView extends LitElement {
@@ -27,7 +30,11 @@ export class W3mUpgradeToSmartAccountView extends LitElement {
         .padding=${['0', '0', 'l', '0'] as const}
       >
         ${this.onboardingTemplate()} ${this.buttonsTemplate()}
-        <wui-link>
+        <wui-link
+          @click=${() => {
+            CoreHelperUtil.openHref(NavigationUtil.URLS.FAQ, '_blank')
+          }}
+        >
           Learn more
           <wui-icon color="inherit" slot="iconRight" name="externalLink"></wui-icon>
         </wui-link>
@@ -84,10 +91,12 @@ export class W3mUpgradeToSmartAccountView extends LitElement {
     if (this.authConnector) {
       try {
         this.loading = true
+        ModalController.setLoading(true)
         await this.authConnector.provider.setPreferredAccount(
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
         )
         await ConnectionController.reconnectExternal(this.authConnector)
+        ModalController.setLoading(false)
         this.loading = false
         RouterUtil.navigateAfterPreferredAccountTypeSelect()
       } catch (e) {

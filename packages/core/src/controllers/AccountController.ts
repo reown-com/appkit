@@ -114,7 +114,11 @@ export const AccountController = {
       if (state.address && chainId) {
         const response = await BlockchainApiController.getBalance(state.address, chainId)
 
-        this.setTokenBalance(response.balances)
+        const filteredBalances = response.balances.filter(
+          balance => balance.quantity.decimals !== '0'
+        )
+
+        this.setTokenBalance(filteredBalances)
         SwapController.setBalances(SwapApiUtil.mapBalancesToSwapTokens(response.balances))
       }
     } catch (error) {

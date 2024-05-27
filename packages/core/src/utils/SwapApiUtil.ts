@@ -86,7 +86,7 @@ export const SwapApiUtil = {
     return false
   },
 
-  async getMyTokensWithBalance() {
+  async getMyTokensWithBalance(forceUpdate?: string) {
     const address = AccountController.state.address
     const caipNetwork = NetworkController.state.caipNetwork
 
@@ -94,8 +94,10 @@ export const SwapApiUtil = {
       return []
     }
 
-    const response = await BlockchainApiController.getBalance(address, caipNetwork.id)
-    const balances = response.balances
+    const response = await BlockchainApiController.getBalance(address, caipNetwork.id, forceUpdate)
+    const balances = response.balances.filter(balance => balance.quantity.decimals !== '0')
+
+    AccountController.setTokenBalance(balances)
 
     return this.mapBalancesToSwapTokens(balances)
   },
