@@ -12,7 +12,7 @@ if (typeof window !== 'undefined') {
   storedCustomWallet = localStorage.getItem(CUSTOM_WALLET)
 }
 
-const customWallet = storedCustomWallet ? JSON.parse(storedCustomWallet) : undefined
+const customWallet = storedCustomWallet ? [JSON.parse(storedCustomWallet)] : []
 
 export const ConstantsUtil = {
   SigningSucceededToastTitle: 'Signing Succeeded',
@@ -26,7 +26,7 @@ export const ConstantsUtil = {
     verifyUrl: ''
   },
   CustomWallets: [
-    customWallet,
+    ...customWallet,
     {
       id: 'react-wallet-v2',
       name: 'react-wallet-v2',
