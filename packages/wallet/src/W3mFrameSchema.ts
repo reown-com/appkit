@@ -73,7 +73,8 @@ export const FrameConnectEmailResponse = z.object({
 export const FrameConnectSocialResponse = z.object({
   email: z.string(),
   address: z.string(),
-  chainId: z.number()
+  chainId: z.number(),
+  userName: z.string().optional()
 })
 export const FrameUpdateEmailResponse = z.object({
   action: z.enum(['VERIFY_PRIMARY_OTP', 'VERIFY_SECONDARY_OTP'])

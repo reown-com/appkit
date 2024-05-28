@@ -93,6 +93,7 @@ export * from './src/partials/w3m-connect-recent-widget/index.js'
 export * from './src/partials/w3m-connect-recommended-widget/index.js'
 export * from './src/partials/w3m-connect-walletconnect-widget/index.js'
 export * from './src/partials/w3m-all-wallets-widget/index.js'
+export * from './src/partials/w3m-account-auth-button/index.js'
 
 export { Web3ModalScaffold } from './src/client.js'
 export type { LibraryOptions, ScaffoldOptions } from './src/client.js'

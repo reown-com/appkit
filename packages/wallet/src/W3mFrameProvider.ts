@@ -498,6 +498,9 @@ export class W3mFrameProvider {
   private onConnectSocialSuccess(
     event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/CONNECT_SOCIAL_SUCCESS' }>
   ) {
+    if (event.payload.userName) {
+      this.setSocialLoginSuccess(event.payload.userName)
+    }
     this.connectSocialResolver?.resolve(event.payload)
   }
 
@@ -688,6 +691,10 @@ export class W3mFrameProvider {
     W3mFrameStorage.set(W3mFrameConstants.LAST_EMAIL_LOGIN_TIME, Date.now().toString())
   }
 
+  private setSocialLoginSuccess(username: string) {
+    W3mFrameStorage.set(W3mFrameConstants.SOCIAL_USERNAME, username)
+  }
+
   private setEmailLoginSuccess(email: string) {
     W3mFrameStorage.set(W3mFrameConstants.EMAIL, email)
     W3mFrameStorage.set(W3mFrameConstants.EMAIL_LOGIN_USED_KEY, 'true')
@@ -698,6 +705,7 @@ export class W3mFrameProvider {
     W3mFrameStorage.delete(W3mFrameConstants.EMAIL_LOGIN_USED_KEY)
     W3mFrameStorage.delete(W3mFrameConstants.EMAIL)
     W3mFrameStorage.delete(W3mFrameConstants.LAST_USED_CHAIN_KEY)
+    W3mFrameStorage.delete(W3mFrameConstants.SOCIAL_USERNAME)
     W3mFrameStorage.delete(W3mFrameConstants.SOCIAL, true)
   }
 

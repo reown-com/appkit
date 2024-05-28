@@ -121,7 +121,7 @@ export class W3mAccountDefaultWidget extends LitElement {
       </wui-flex>
 
       <wui-flex flexDirection="column" gap="xs" .padding=${['0', 's', 's', 's'] as const}>
-        ${this.emailCardTemplate()} ${this.emailBtnTemplate()}
+        ${this.emailCardTemplate()} <w3m-account-auth-button></w3m-account-auth-button>
 
         <wui-list-item
           .variant=${networkImage ? 'image' : 'icon'}
@@ -219,34 +219,6 @@ export class W3mAccountDefaultWidget extends LitElement {
     `
   }
 
-  private emailBtnTemplate() {
-    const type = StorageUtil.getConnectedConnector()
-    const authConnector = ConnectorController.getAuthConnector()
-
-    if (!authConnector || type !== 'AUTH') {
-      return null
-    }
-    const email = authConnector.provider.getEmail() ?? ''
-
-    const socialProvider = StorageUtil.getConnectedSocialProvider() as SocialProvider | null
-
-    return html`
-      <wui-list-item
-        variant="icon"
-        iconVariant="overlay"
-        icon=${socialProvider ?? 'mail'}
-        iconSize=${socialProvider ? 'xl' : 'sm'}
-        data-testid="w3m-account-email-update"
-        ?chevron=${!socialProvider}
-        @click=${() => {
-          this.onGoToUpdateEmail(email, socialProvider)
-        }}
-      >
-        <wui-text variant="paragraph-500" color="fg-100">${email}</wui-text>
-      </wui-list-item>
-    `
-  }
-
   private isAllowedNetworkSwitch() {
     const { requestedCaipNetworks } = NetworkController.state
     const isMultiNetwork = requestedCaipNetworks ? requestedCaipNetworks.length > 1 : false
@@ -302,12 +274,6 @@ export class W3mAccountDefaultWidget extends LitElement {
   private onGoToUpgradeView() {
     EventsController.sendEvent({ type: 'track', event: 'EMAIL_UPGRADE_FROM_MODAL' })
     RouterController.push('UpgradeEmailWallet')
-  }
-
-  private onGoToUpdateEmail(email: string, socialProvider: SocialProvider | null) {
-    if (!socialProvider) {
-      RouterController.push('UpdateEmailWallet', { email })
-    }
   }
 }
 
