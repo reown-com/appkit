@@ -1,5 +1,11 @@
 # @web3modal/common
 
+## 4.2.3-cn-social.0
+
+### Patch Changes
+
+- Social Login version for secure site
+
 ## 4.2.2
 
 ### Patch Changes

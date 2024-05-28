@@ -11,8 +11,7 @@ import {
   ConnectionController,
   SnackController,
   ConstantsUtil,
-  OptionsController,
-  type SocialProvider
+  OptionsController
 } from '@web3modal/core'
 import { UiHelperUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'

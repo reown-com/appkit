@@ -1,5 +1,14 @@
 # @examples/react-ethers5
 
+## 4.2.3-cn-social.0
+
+### Patch Changes
+
+- Social Login version for secure site
+
+- Updated dependencies []:
+  - @web3modal/ethers@4.2.3-cn-social.0
+
 ## 4.1.2
 
 ### Patch Changes

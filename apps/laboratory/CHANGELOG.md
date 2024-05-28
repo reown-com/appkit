@@ -1,5 +1,17 @@
 # @apps/laboratory
 
+## 4.2.3-cn-social.0
+
+### Patch Changes
+
+- Social Login version for secure site
+
+- Updated dependencies []:
+  - @web3modal/siwe@4.2.3-cn-social.0
+  - @web3modal/ethers@4.2.3-cn-social.0
+  - @web3modal/solana@4.2.3-cn-social.0
+  - @web3modal/wagmi@4.2.3-cn-social.0
+
 ## 4.2.2
 
 ### Patch Changes

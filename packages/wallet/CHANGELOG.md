@@ -1,5 +1,14 @@
 # @web3modal/wallet
 
+## 4.2.3-cn-social.0
+
+### Patch Changes
+
+- Social Login version for secure site
+
+- Updated dependencies []:
+  - @web3modal/polyfills@4.2.3-cn-social.0
+
 ## 4.2.2
 
 ### Patch Changes
