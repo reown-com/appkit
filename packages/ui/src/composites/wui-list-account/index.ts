@@ -23,6 +23,7 @@ export class WuiListAccount extends LitElement {
   private labels = AccountController.state.addressLabels
   private balance = 0
   private fetchingBalance = true
+  private shouldShowIcon = false
   @property({ type: Boolean }) public selected = false
 
   @property({ type: Function }) public onSelect?: (
@@ -71,6 +72,8 @@ export class WuiListAccount extends LitElement {
       label = 'EOA'
     }
 
+    // Only show icon for AUTH accounts
+    this.shouldShowIcon = this.connectedConnector === 'AUTH'
     console.log('label', label, this.connectedConnector)
 
     return html`
@@ -79,17 +82,19 @@ export class WuiListAccount extends LitElement {
         justifyContent="space-between"
         .padding=${['0', '0', 's', '1xs'] as const}
       >
-        <wui-flex alignItems="center">
+        <wui-flex gap="md" alignItems="center">
           <wui-avatar address=${this.accountAddress}></wui-avatar>
-          <wui-icon-box
-            size="sm"
-            iconcolor="fg-200"
-            backgroundcolor="fg-300"
-            icon=${this.accountType === W3mFrameRpcConstants.ACCOUNT_TYPES.EOA
-              ? 'mail'
-              : 'lightbulb'}
-            background="fg-300"
-          ></wui-icon-box>
+          ${this.shouldShowIcon
+            ? html`<wui-icon-box
+                size="sm"
+                iconcolor="fg-200"
+                backgroundcolor="fg-300"
+                icon=${this.accountType === W3mFrameRpcConstants.ACCOUNT_TYPES.EOA
+                  ? 'mail'
+                  : 'lightbulb'}
+                background="fg-300"
+              ></wui-icon-box>`
+            : html`<wui-flex .padding="${['0', '0', '0', 's'] as const}"></wui-flex>`}
           <wui-flex flexDirection="column">
             <wui-text class="address" variant="paragraph-500" color="fg-100"
               >${UiHelperUtil.getTruncateString({

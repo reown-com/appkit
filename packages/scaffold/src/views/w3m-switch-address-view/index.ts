@@ -3,6 +3,7 @@ import {
   BlockchainApiController,
   ModalController,
   OptionsController,
+  StorageUtil,
   type AccountType
 } from '@web3modal/core'
 import { UiHelperUtil, customElement } from '@web3modal/ui'
@@ -18,6 +19,9 @@ export class W3mSwitchAddressView extends LitElement {
   public readonly labels = AccountController.state.addressLabels
   public readonly currentAddress: string = AccountController.state.address || ''
   private balances: Record<string, number> = {}
+  private connectedConnector = StorageUtil.getConnectedConnector()
+  // Only show icon for AUTH accounts
+  private shouldShowIcon = this.connectedConnector === 'AUTH'
 
   constructor() {
     super()
@@ -77,14 +81,16 @@ export class W3mSwitchAddressView extends LitElement {
       <wui-flex flexDirection="row" justifyContent="space-between">
         <wui-flex alignItems="center">
           <wui-avatar address=${account.address}></wui-avatar>
-          <wui-icon-box
-            size="sm"
-            iconcolor="fg-200"
-            backgroundcolor="glass-002"
-            background="gray"
-            icon="${this.getAddressIcon(account.type)}"
-            ?border=${true}
-          ></wui-icon-box>
+          ${this.shouldShowIcon
+            ? html`<wui-icon-box
+                size="sm"
+                iconcolor="fg-200"
+                backgroundcolor="glass-002"
+                background="gray"
+                icon="${this.getAddressIcon(account.type)}"
+                ?border=${true}
+              ></wui-icon-box>`
+            : html`<wui-flex .padding="${['0', '0', '0', 's'] as const}"></wui-flex>`}
           <wui-flex flexDirection="column">
             <wui-text class="address" variant="paragraph-500" color="fg-100"
               >${label

@@ -11,6 +11,7 @@ import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 import type { IconType } from '../../utils/TypeUtil.js'
 import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
+import { StorageUtil } from '@web3modal/core'
 
 @customElement('wui-profile-button-v2')
 export class WuiProfileButtonV2 extends LitElement {
@@ -29,6 +30,10 @@ export class WuiProfileButtonV2 extends LitElement {
 
   @property() public onCopyClick?: (event: Event) => void
 
+  private connectedConnector = StorageUtil.getConnectedConnector()
+
+  private shouldShowIcon = this.connectedConnector === 'AUTH'
+
   // -- Render -------------------------------------------- //
   public override render() {
     return html`<button ontouchstart data-testid="wui-profile-button" @click=${this.handleClick}>
@@ -38,7 +43,7 @@ export class WuiProfileButtonV2 extends LitElement {
           alt=${this.address}
           address=${this.address}
         ></wui-avatar>
-        ${this.getIconTemplate(this.icon)}
+        ${this.shouldShowIcon ? this.getIconTemplate(this.icon) : ''}
         <wui-flex gap="xs" alignItems="center">
           <wui-text variant="large-600" color="fg-100">
             ${UiHelperUtil.getTruncateString({

@@ -19,8 +19,8 @@ export class W3mSelectAddressesView extends LitElement {
   // -- Members ------------------------------------------- //
   private readonly metadata = OptionsController.state.metadata
   public allAccounts: AccountType[] = AccountController.state.allAccounts
-  private selectedAccounts: AccountType[] = []
-  private selectAll = false
+  private selectedAccounts: AccountType[] = AccountController.state.allAccounts
+  private selectAll = true
 
   @state() private isApproving = false
   constructor() {
@@ -30,7 +30,6 @@ export class W3mSelectAddressesView extends LitElement {
       this.allAccounts = allAccounts
       this.requestUpdate()
     })
-
     console.log('W3mSelectAddressesView')
     console.log('metadata', this.metadata)
     console.log('selectedAccounts', this.selectedAccounts)
