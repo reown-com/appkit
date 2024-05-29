@@ -52,6 +52,8 @@ export class SolanaWeb3JsClient {
   public networkControllerClient: NetworkControllerClient
   public connectionControllerClient: ConnectionControllerClient
   private scaffold: Web3ModalScaffold | undefined
+  public protocol: 'evm' | 'solana' | 'bitcoin'
+  public options: ScaffoldOptions | undefined = undefined
 
   private chains: Chain[]
 
@@ -66,7 +68,6 @@ export class SolanaWeb3JsClient {
       ...w3mOptions
     } = options
     const { metadata } = solanaConfig
-
     if (!solanaConfig) {
       throw new Error('web3modal:constructor - solanaConfig is undefined')
     }
@@ -74,7 +75,7 @@ export class SolanaWeb3JsClient {
     if (!w3mOptions.projectId) {
       throw new Error('web3modal:constructor - projectId is undefined')
     }
-
+    this.protocol = 'solana'
     this.networkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
         if (caipNetwork) {
@@ -172,7 +173,6 @@ export class SolanaWeb3JsClient {
 
     this.chains = chains
     this.connectionSettings = connectionSettings
-    this.syncRequestedNetworks(chains, chainImages)
 
     const chain = SolHelpersUtil.getChainFromCaip(
       chains,
@@ -182,7 +182,6 @@ export class SolanaWeb3JsClient {
       SolStoreUtil.setCurrentChain(chain)
       SolStoreUtil.setCaipChainId(`solana:${chain.chainId}`)
     }
-    this.syncNetwork(chainImages)
 
     this.walletAdapters = createWalletAdapters()
     this.WalletConnectConnector = new WalletConnectConnector({
@@ -232,6 +231,13 @@ export class SolanaWeb3JsClient {
         }
       }
     })
+  }
+
+  public initialize(scaffold: Web3ModalScaffold, options: ScaffoldOptions) {
+    this.scaffold = scaffold
+    this.options = options
+    this.syncRequestedNetworks(this.chains, options.chainImages)
+    this.syncNetwork(options.chainImages)
 
     if (typeof window === 'object') {
       this.checkActiveProviders()
