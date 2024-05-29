@@ -25,6 +25,7 @@ export type ConfigOptions = Partial<CreateConfigParameters> & {
     url: string
     icons: string[]
   }
+  coinbasePreference?: 'all' | 'smartWalletOnly' | 'eoaOnly'
 }
 
 export function defaultWagmiConfig({
@@ -60,9 +61,10 @@ export function defaultWagmiConfig({
   if (enableCoinbase !== false) {
     connectors.push(
       coinbaseWallet({
+        version: '4',
         appName: metadata?.name ?? 'Unknown',
         appLogoUrl: metadata?.icons[0] ?? 'Unknown',
-        enableMobileWalletLink: true
+        preference: wagmiConfig.coinbasePreference || 'all'
       })
     )
   }

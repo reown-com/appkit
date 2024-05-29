@@ -50,8 +50,12 @@ export const CoreHelperUtil = {
     return Date.now() + ConstantsUtil.FOUR_MINUTES_MS
   },
 
-  getPlainAddress(caipAddress: CaipAddress) {
-    return caipAddress.split(':')[2]
+  getNetworkId(caipAddress: CaipAddress | undefined) {
+    return caipAddress?.split(':')[1]
+  },
+
+  getPlainAddress(caipAddress: CaipAddress | undefined) {
+    return caipAddress?.split(':')[2]
   },
 
   async wait(milliseconds: number) {
@@ -118,6 +122,10 @@ export const CoreHelperUtil = {
 
   openHref(href: string, target: '_blank' | '_self' | 'popupWindow', features?: string) {
     window.open(href, target, features || 'noreferrer noopener')
+  },
+
+  returnOpenHref(href: string, target: '_blank' | '_self' | 'popupWindow', features?: string) {
+    return window.open(href, target, features || 'noreferrer noopener')
   },
 
   async preloadImage(src: string) {
