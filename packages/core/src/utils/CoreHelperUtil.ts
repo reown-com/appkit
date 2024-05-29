@@ -124,6 +124,10 @@ export const CoreHelperUtil = {
     window.open(href, target, features || 'noreferrer noopener')
   },
 
+  returnOpenHref(href: string, target: '_blank' | '_self' | 'popupWindow', features?: string) {
+    return window.open(href, target, features || 'noreferrer noopener')
+  },
+
   async preloadImage(src: string) {
     const imagePromise = new Promise((resolve, reject) => {
       const image = new Image()
