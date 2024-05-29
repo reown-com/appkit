@@ -1105,6 +1105,12 @@ export class Web3Modal extends Web3ModalScaffold {
       this.setPreferredAccountType(preferredAccountType)
       this.setCaipAddress(caipAddress)
       this.syncConnectedWalletInfo()
+
+      const chain = this.chains.find(c => c.chainId === chainId)
+      if (chain?.explorerUrl) {
+        this.setAddressExplorerUrl(`${chain.explorerUrl}/address/${address}`)
+      }
+
       await Promise.all([
         this.syncProfile(address),
         this.syncBalance(address),
