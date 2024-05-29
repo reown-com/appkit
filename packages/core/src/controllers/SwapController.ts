@@ -345,24 +345,16 @@ export const SwapController = {
     const tokens = await SwapApiUtil.getTokenList()
 
     state.tokens = tokens
-    state.popularTokens = tokens
-      .sort((aTokenInfo, bTokenInfo) => {
-        if (aTokenInfo.symbol < bTokenInfo.symbol) {
-          return -1
-        }
-        if (aTokenInfo.symbol > bTokenInfo.symbol) {
-          return 1
-        }
+    state.popularTokens = tokens.sort((aTokenInfo, bTokenInfo) => {
+      if (aTokenInfo.symbol < bTokenInfo.symbol) {
+        return -1
+      }
+      if (aTokenInfo.symbol > bTokenInfo.symbol) {
+        return 1
+      }
 
-        return 0
-      })
-      .filter(token => {
-        if (ConstantsUtil.SWAP_POPULAR_TOKENS.includes(token.symbol)) {
-          return true
-        }
-
-        return false
-      }, {})
+      return 0
+    })
     state.suggestedTokens = tokens.filter(token => {
       if (ConstantsUtil.SWAP_SUGGESTED_TOKENS.includes(token.symbol)) {
         return true
