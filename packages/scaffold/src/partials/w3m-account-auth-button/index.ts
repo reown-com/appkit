@@ -16,6 +16,8 @@ export class W3mAccountAuthButton extends LitElement {
     const authConnector = ConnectorController.getAuthConnector()
 
     if (!authConnector || type !== 'AUTH') {
+      this.style.cssText = `display: none`
+
       return null
     }
     const email = authConnector.provider.getEmail() ?? ''

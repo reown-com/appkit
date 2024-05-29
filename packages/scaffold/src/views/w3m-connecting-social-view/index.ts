@@ -68,8 +68,6 @@ export class W3mConnectingSocialView extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    this.getMessage()
-
     return html`
       <wui-flex
         data-error=${ifDefined(this.error)}
@@ -123,6 +121,7 @@ export class W3mConnectingSocialView extends LitElement {
               AccountController.setSocialWindow(undefined)
             }
             this.connecting = true
+            this.updateMessage()
             const uri = event.data.resultUri as string
 
             await this.authConnector.provider.connectSocial(uri)
@@ -134,6 +133,7 @@ export class W3mConnectingSocialView extends LitElement {
           }
         } catch (error) {
           this.error = true
+          this.updateMessage()
         }
       } else {
         RouterController.goBack()
@@ -146,7 +146,7 @@ export class W3mConnectingSocialView extends LitElement {
     window.addEventListener('message', this.handleSocialConnection, false)
   }
 
-  private getMessage() {
+  private updateMessage() {
     if (this.error) {
       this.message = 'Something went wrong'
     } else if (this.connecting) {
