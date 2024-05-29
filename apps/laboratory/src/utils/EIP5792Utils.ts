@@ -75,9 +75,10 @@ export function getCapabilitySupportedChainInfo(
   chainId: number
   chainName: string
 }[] {
-  const perChainCapabilities = getProviderCachedCapabilities(address,provider)
+  const perChainCapabilities = getProviderCachedCapabilities(address, provider)
   if (!perChainCapabilities) {
     return []
   }
+
   return getFilteredCapabilitySupportedChainInfo(capability, perChainCapabilities)
 }
