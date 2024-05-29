@@ -100,14 +100,14 @@ export function EthersSendCallsTest() {
   if (!isSendCallsSupported()) {
     return (
       <Text fontSize="md" color="yellow">
-        Wallet does not support this feature
+        Wallet does not support wallet_sendCalls rpc
       </Text>
     )
   }
   if (atomicBatchSupportedChains.length === 0) {
     return (
       <Text fontSize="md" color="yellow">
-        Account does not support this feature
+        Account does not support atomic batch feature
       </Text>
     )
   }
@@ -121,7 +121,7 @@ export function EthersSendCallsTest() {
     </Stack>
   ) : (
     <Text fontSize="md" color="yellow">
-      Switch to {atomicBatchSupportedChainNames} to test this feature
+      Switch to {atomicBatchSupportedChainNames} to test atomic batch feature
     </Text>
   )
 }

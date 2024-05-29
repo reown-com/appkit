@@ -111,7 +111,7 @@ export function EthersSendCallsWithPaymasterServiceTest() {
   if (!isSendCallsSupported()) {
     return (
       <Text fontSize="md" color="yellow">
-        Wallet does not support this feature
+        Wallet does not support wallet_sendCalls rpc
       </Text>
     )
   }
@@ -146,7 +146,7 @@ export function EthersSendCallsWithPaymasterServiceTest() {
     </Stack>
   ) : (
     <Text fontSize="md" color="yellow">
-      Switch to {paymasterServiceSupportedChainNames} to test this feature
+      Switch to {paymasterServiceSupportedChainNames} to test paymaster service feature
     </Text>
   )
 }
