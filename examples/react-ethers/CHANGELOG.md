@@ -1,5 +1,14 @@
 # @examples/react-ethers5
 
+## 4.2.3
+
+### Patch Changes
+
+- feat: - feat: restricted ens names. fix: iat set automatically if not present in messageParams. Adds siwe config handlers
+
+- Updated dependencies []:
+  - @web3modal/ethers@4.2.3
+
 ## 4.2.3-alpha.0
 
 ### Patch Changes
