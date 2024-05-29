@@ -7,5 +7,5 @@
     "declarationMap": true
   },
   "extends": "../../tsconfig.json",
-  "include": ["index.ts", "src"]
+  "include": ["index.ts", "evm", "solana"]
 }

@@ -104,22 +104,20 @@ export class EVMWagmiClient {
       },
 
       getApprovedCaipNetworksData: async () => {
-        const wagmiConfig = this.wagmiConfig
-
-        if (!wagmiConfig) {
+        if (!this.wagmiConfig) {
           throw new Error(
             'networkControllerClient:getApprovedCaipNetworksData - wagmiConfig is undefined'
           )
         }
 
         return new Promise(resolve => {
-          const connections = new Map(wagmiConfig.state.connections)
-          const connection = connections.get(wagmiConfig.state.current || '')
+          const connections = new Map(this.wagmiConfig.state.connections)
+          const connection = connections.get(this.wagmiConfig.state.current || '')
 
           if (connection?.connector?.id === ConstantsUtil.AUTH_CONNECTOR_ID) {
             resolve(getEmailCaipNetworks())
           } else if (connection?.connector?.id === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
-            const connector = wagmiConfig.connectors.find(
+            const connector = this.wagmiConfig.connectors.find(
               c => c.id === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID
             )
 
@@ -133,16 +131,15 @@ export class EVMWagmiClient {
 
     this.connectionControllerClient = {
       connectWalletConnect: async onUri => {
-        const wagmiConfig = this.wagmiConfig
         const siweConfig = this.options?.siweConfig
 
-        if (!wagmiConfig) {
+        if (!this.wagmiConfig) {
           throw new Error(
             'networkControllerClient:getApprovedCaipNetworksData - wagmiConfig is undefined'
           )
         }
 
-        const connector = wagmiConfig.connectors.find(
+        const connector = this.wagmiConfig.connectors.find(
           c => c.id === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID
         )
         if (!connector) {
@@ -215,15 +212,13 @@ export class EVMWagmiClient {
       },
 
       connectExternal: async ({ id, provider, info }) => {
-        const wagmiConfig = this.wagmiConfig
-
-        if (!wagmiConfig) {
+        if (!this.wagmiConfig) {
           throw new Error(
             'networkControllerClient:getApprovedCaipNetworksData - wagmiConfig is undefined'
           )
         }
 
-        const connector = wagmiConfig.connectors.find(c => c.id === id)
+        const connector = this.wagmiConfig.connectors.find(c => c.id === id)
 
         if (!connector) {
           throw new Error('connectionControllerClient:connectExternal - connector is undefined')
@@ -238,15 +233,13 @@ export class EVMWagmiClient {
       },
 
       reconnectExternal: async ({ id }) => {
-        const wagmiConfig = this.wagmiConfig
-
-        if (!wagmiConfig) {
+        if (!this.wagmiConfig) {
           throw new Error(
             'networkControllerClient:getApprovedCaipNetworksData - wagmiConfig is undefined'
           )
         }
 
-        const connector = wagmiConfig.connectors.find(c => c.id === id)
+        const connector = this.wagmiConfig.connectors.find(c => c.id === id)
 
         if (!connector) {
           throw new Error('connectionControllerClient:connectExternal - connector is undefined')
@@ -259,17 +252,14 @@ export class EVMWagmiClient {
         const injectedConnector = this.scaffold?.getConnectors().find(c => c.type === 'INJECTED')
 
         if (!ids) {
-          // @ts-ignore
           return Boolean(window.ethereum)
         }
 
         if (injectedConnector) {
-          // @ts-ignore
           if (!window?.ethereum) {
             return false
           }
 
-          // @ts-ignore
           return ids.some(id => Boolean(window.ethereum?.[String(id)]))
         }
 
@@ -324,9 +314,7 @@ export class EVMWagmiClient {
       },
 
       writeContract: async (data: WriteContractArgs) => {
-        const wagmiConfig = this.wagmiConfig
-
-        if (!wagmiConfig) {
+        if (!this.wagmiConfig) {
           throw new Error(
             'networkControllerClient:getApprovedCaipNetworksData - wagmiConfig is undefined'
           )
@@ -334,7 +322,7 @@ export class EVMWagmiClient {
 
         const chainId = NetworkUtil.caipNetworkIdToNumber(this.scaffold?.getCaipNetwork()?.id)
 
-        const tx = await wagmiWriteContract(wagmiConfig, {
+        const tx = await wagmiWriteContract(this.wagmiConfig, {
           chainId,
           address: data.tokenAddress,
           abi: data.abi,
@@ -347,9 +335,7 @@ export class EVMWagmiClient {
 
       getEnsAddress: async (value: string) => {
         try {
-          const wagmiConfig = this.wagmiConfig
-
-          if (!wagmiConfig) {
+          if (!this.wagmiConfig) {
             throw new Error(
               'networkControllerClient:getApprovedCaipNetworksData - wagmiConfig is undefined'
             )
@@ -524,7 +510,7 @@ export class EVMWagmiClient {
     }
 
     try {
-      const { name, avatar } = await this.scaffold?.fetchIdentity({
+      const { name, avatar } = await this.scaffold.fetchIdentity({
         address
       })
       this.scaffold?.setProfileName(name)
@@ -669,7 +655,6 @@ export class EVMWagmiClient {
   private async listenAuthConnector(
     connector: Web3ModalClientOptions<CoreConfig>['wagmiConfig']['connectors'][number]
   ) {
-    // @ts-ignore
     if (typeof window !== 'undefined' && connector) {
       this.scaffold?.setLoading(true)
       const provider = (await connector.getProvider()) as W3mFrameProvider

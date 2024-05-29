@@ -1,7 +1,13 @@
 import '@web3modal/polyfills'
 
-export { EVMWagmiClient } from './src/client.js'
-export type { CoreConfig, ReactConfig, Web3ModalClientOptions } from './src/client.js'
+export { EVMWagmiClient } from './evm/EVMWagmiAdapter/client.js'
+export type {
+  CoreConfig,
+  ReactConfig,
+  Web3ModalClientOptions
+} from './evm/EVMWagmiAdapter/client.js'
 
 // -- Utils
-export { defaultWagmiConfig } from './src/utils/defaultWagmiCoreConfig.js'
+export { defaultWagmiConfig } from './evm/EVMWagmiAdapter/utils/defaultWagmiCoreConfig.js'
+
+export { SolanaWeb3JsClient } from './solana/SolanaWeb3JsAdapter/client.js'

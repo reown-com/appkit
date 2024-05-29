@@ -8,5 +8,5 @@
     "declarationMap": true
   },
   "extends": "../../tsconfig.json",
-  "include": ["wagmi.ts", "evm/wagmi/**/*.ts"]
+  "include": ["wagmi.ts", "evm", "solana"]
 }
