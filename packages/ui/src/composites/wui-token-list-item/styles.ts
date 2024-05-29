@@ -3,6 +3,7 @@ import { css } from 'lit'
 export default css`
   :host {
     height: 60px;
+    min-height: 60px;
   }
 
   :host > wui-flex {

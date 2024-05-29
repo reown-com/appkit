@@ -38,7 +38,8 @@ export class WuiTokenListItem extends LitElement {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
             this.visible = true
-            this.observer.disconnect()
+          } else {
+            this.visible = false
           }
         })
       },
@@ -50,8 +51,16 @@ export class WuiTokenListItem extends LitElement {
     this.observer.observe(this)
   }
 
+  public override disconnectedCallback() {
+    this.observer.disconnect()
+  }
+
   // -- Render -------------------------------------------- //
   public override render() {
+    if (!this.visible) {
+      return null
+    }
+
     const value =
       this.amount && this.price ? NumberUtil.multiply(this.price, this.amount)?.toFixed(3) : null
 
@@ -84,7 +93,7 @@ export class WuiTokenListItem extends LitElement {
 
   // -- Private ------------------------------------------- //
   private visualTemplate() {
-    if (!this.visible || this.imageError) {
+    if (this.imageError) {
       return html`<wui-flex class="token-item-image-placeholder">
         <wui-icon name="image" color="inherit"></wui-icon>
       </wui-flex>`
