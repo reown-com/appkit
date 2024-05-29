@@ -1,15 +1,16 @@
 import { Button, Input, Stack, Text, Tooltip } from '@chakra-ui/react'
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
-import { useAccount, useConnections } from 'wagmi'
-import { useCapabilities, useSendCalls } from 'wagmi/experimental'
+import { useAccount, type Connector } from 'wagmi'
+import { useSendCalls } from 'wagmi/experimental'
 import { useCallback, useState, useEffect } from 'react'
 import { useChakraToast } from '../Toast'
-import { parseGwei, type Address } from 'viem'
+import { parseGwei, type Address, type Chain, type WalletCapabilities } from 'viem'
 import { vitalikEthAddress } from '../../utils/DataUtil'
 import {
   getFilteredCapabilitySupportedChainInfo,
   EIP_5792_RPC_METHODS,
-  WALLET_CAPABILITIES
+  WALLET_CAPABILITIES,
+  getProviderCachedCapabilities
 } from '../../utils/EIP5792Utils'
 
 const TEST_TX_1 = {
@@ -24,20 +25,15 @@ const TEST_TX_2 = {
 export function WagmiSendCallsWithPaymasterServiceTest() {
   const [ethereumProvider, setEthereumProvider] =
     useState<Awaited<ReturnType<(typeof EthereumProvider)['init']>>>()
-  const [isLoading, setLoading] = useState(false)
+  const [availableCapabilities, setAvailableCapabilities] = useState<
+    Record<number, WalletCapabilities> | undefined
+  >()
   const [paymasterServiceUrl, setPaymasterServiceUrl] = useState<string>('')
-
-  const { status, chain, address } = useAccount()
-  const isConnected = status === 'connected'
-  const { data: availableCapabilities } = useCapabilities({
-    account: address,
-    query: {
-      enabled: isConnected
-    }
-  })
-  const connection = useConnections()
+  const [isLoading, setLoading] = useState(false)
+  const { status, chain, address, connector } = useAccount()
   const toast = useChakraToast()
 
+  const isConnected = status === 'connected'
   const paymasterServiceSupportedChains = availableCapabilities
     ? getFilteredCapabilitySupportedChainInfo(
         WALLET_CAPABILITIES.PAYMASTER_SERVICE,
@@ -52,10 +48,10 @@ export function WagmiSendCallsWithPaymasterServiceTest() {
   )
 
   useEffect(() => {
-    if (isConnected) {
-      fetchProvider()
+    if (isConnected && connector && address && chain) {
+      fetchProviderAndAccountCapabilities(address, connector, chain)
     }
-  }, [isConnected])
+  }, [isConnected, connector, address])
   const { sendCalls } = useSendCalls({
     mutation: {
       onSuccess: hash => {
@@ -99,10 +95,20 @@ export function WagmiSendCallsWithPaymasterServiceTest() {
       )
     )
   }
-  async function fetchProvider() {
-    const connectedProvider = await connection?.[0]?.connector?.getProvider()
+
+  async function fetchProviderAndAccountCapabilities(
+    connectedAccount: `0x${string}`,
+    connectedConnector: Connector,
+    connectedChain: Chain
+  ) {
+    const connectedProvider = await connectedConnector.getProvider({
+      chainId: connectedChain.id
+    })
     if (connectedProvider instanceof EthereumProvider) {
       setEthereumProvider(connectedProvider)
+      let walletCapabilities = undefined
+      walletCapabilities = getProviderCachedCapabilities(connectedAccount, connectedProvider)
+      setAvailableCapabilities(walletCapabilities)
     }
   }
 

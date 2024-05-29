@@ -13,30 +13,6 @@ export const WALLET_CAPABILITIES = {
   PAYMASTER_SERVICE: 'paymasterService'
 }
 
-export function getCapabilitySupportedChainInfo(
-  capability: string,
-  provider: Awaited<ReturnType<(typeof EthereumProvider)['init']>>,
-  address: string
-): {
-  chainId: number
-  chainName: string
-}[] {
-  if (!(provider instanceof EthereumProvider) || !address) {
-    return []
-  }
-  const walletCapabilitiesString = provider.signer?.session?.sessionProperties?.['capabilities']
-  if (!walletCapabilitiesString) {
-    return []
-  }
-  const walletCapabilities = parseJSON(walletCapabilitiesString)
-  const accountCapabilities = walletCapabilities[address]
-  if (!accountCapabilities) {
-    return []
-  }
-  const perChainCapabilities = convertCapabilitiesToRecord(accountCapabilities)
-
-  return getFilteredCapabilitySupportedChainInfo(capability, perChainCapabilities)
-}
 export function getFilteredCapabilitySupportedChainInfo(
   capability: string,
   capabilities: Record<number, WalletCapabilities>
@@ -67,9 +43,26 @@ export function getFilteredCapabilitySupportedChainInfo(
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export function convertCapabilitiesToRecord(
   accountCapabilities: Record<string, any>
-): Record<number, Record<string, any>> {
+): Record<number, WalletCapabilities> {
   return Object.fromEntries(
     Object.entries(accountCapabilities).map(([key, value]) => [parseInt(key, 16), value])
   )
 }
 /* eslint-enable @typescript-eslint/no-explicit-any */
+
+export function getProviderCachedCapabilities(
+  address: string,
+  provider: Awaited<ReturnType<(typeof EthereumProvider)['init']>>
+) {
+  const walletCapabilitiesString = provider.signer?.session?.sessionProperties?.['capabilities']
+  if (!walletCapabilitiesString) {
+    return undefined
+  }
+  const walletCapabilities = parseJSON(walletCapabilitiesString)
+  const accountCapabilities = walletCapabilities[address]
+  if (!accountCapabilities) {
+    return undefined
+  }
+
+  return convertCapabilitiesToRecord(accountCapabilities)
+}
