@@ -1,5 +1,25 @@
 # @apps/gallery
 
+## 4.2.3
+
+### Patch Changes
+
+- feat: - feat: restricted ens names. fix: iat set automatically if not present in messageParams. Adds siwe config handlers
+
+- Updated dependencies []:
+  - @web3modal/common@4.2.3
+  - @web3modal/ui@4.2.3
+
+## 4.2.3-alpha.0
+
+### Patch Changes
+
+- feat: add support for coinbase smart accounts
+
+- Updated dependencies []:
+  - @web3modal/common@4.2.3-alpha.0
+  - @web3modal/ui@4.2.3-alpha.0
+
 ## 4.2.2
 
 ### Patch Changes
