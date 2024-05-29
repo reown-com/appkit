@@ -21,6 +21,7 @@ export class W3mSelectAddressesView extends LitElement {
   public allAccounts: AccountType[] = AccountController.state.allAccounts
   private selectedAccounts: AccountType[] = AccountController.state.allAccounts
   private selectAll = true
+  private approved = false
 
   @state() private isApproving = false
   constructor() {
@@ -127,13 +128,16 @@ export class W3mSelectAddressesView extends LitElement {
   }
 
   private onContinue() {
-    if (this.selectedAccounts.length !== 0) {
+    if (this.selectedAccounts.length > 0) {
       this.isApproving = true
       AccountController.setAllAccounts(this.selectedAccounts)
       AccountController.setShouldUpdateToAddress(this.selectedAccounts[0]?.address ?? '')
+      this.approved = true
       this.isApproving = false
+      ModalController.close()
+    } else {
+      this.onCancel()
     }
-    ModalController.close()
   }
 
   private async onCancel() {
@@ -143,6 +147,12 @@ export class W3mSelectAddressesView extends LitElement {
       ModalController.close()
     } else {
       RouterController.push('Connect')
+    }
+  }
+  public override disconnectedCallback() {
+    super.disconnectedCallback()
+    if (!this.approved) {
+      this.onCancel()
     }
   }
 }
