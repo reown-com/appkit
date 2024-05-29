@@ -90,7 +90,7 @@ export class W3mSwapSelectTokenView extends LitElement {
 
   private templateSearchInput() {
     return html`
-      <wui-flex .padding=${['0', 's', '0', 's']} gap="xs">
+      <wui-flex .padding=${['3xs', 's', '0', 's']} gap="xs">
         <wui-input-text
           class="network-search-input"
           size="sm"
