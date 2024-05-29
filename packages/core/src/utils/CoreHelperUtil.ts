@@ -50,8 +50,12 @@ export const CoreHelperUtil = {
     return Date.now() + ConstantsUtil.FOUR_MINUTES_MS
   },
 
-  getPlainAddress(caipAddress: CaipAddress) {
-    return caipAddress.split(':')[2]
+  getNetworkId(caipAddress: CaipAddress | undefined) {
+    return caipAddress?.split(':')[1]
+  },
+
+  getPlainAddress(caipAddress: CaipAddress | undefined) {
+    return caipAddress?.split(':')[2]
   },
 
   async wait(milliseconds: number) {
