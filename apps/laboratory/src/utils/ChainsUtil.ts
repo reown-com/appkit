@@ -1,3 +1,5 @@
+import * as viemChains from 'viem/chains'
+
 export const mainnet = {
   chainId: 1,
   name: 'Ethereum',
@@ -132,4 +134,10 @@ export const baseSepolia = {
   currency: 'BASE',
   explorerUrl: 'https://sepolia.basescan.org',
   rpcUrl: 'https://sepolia.base.org'
+}
+
+export function getChain(id: number) {
+  const chains = Object.values(viemChains) as viemChains.Chain[]
+
+  return chains.find(x => x.id === id)
 }
