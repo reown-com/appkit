@@ -25,6 +25,7 @@ export type ConfigOptions = Partial<CreateConfigParameters> & {
     url: string
     icons: string[]
   }
+  coinbasePreference?: 'all' | 'smartWalletOnly' | 'eoaOnly'
 }
 
 export function defaultWagmiConfig({
@@ -63,15 +64,7 @@ export function defaultWagmiConfig({
         version: '4',
         appName: metadata?.name ?? 'Unknown',
         appLogoUrl: metadata?.icons[0] ?? 'Unknown',
-        /**
-         * Determines which wallet options to display in Coinbase Wallet SDK.
-         * @property preference
-         *   - `all`: Show both smart wallet and EOA options.
-         *   - `smartWalletOnly`: Show only smart wallet options.
-         *   - `eoaOnly`: Show only EOA options.
-         * @see https://www.smartwallet.dev/sdk/v3-to-v4-changes#parameters
-         */
-        preference: 'all'
+        preference: wagmiConfig.coinbasePreference || 'all'
       })
     )
   }

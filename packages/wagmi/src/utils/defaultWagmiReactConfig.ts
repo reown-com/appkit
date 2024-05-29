@@ -25,6 +25,7 @@ export type ConfigOptions = Partial<CreateConfigParameters> & {
     url: string
     icons: string[]
   }
+  coinbasePreference?: 'all' | 'smartWalletOnly' | 'eoaOnly'
 }
 
 export function defaultWagmiConfig({
@@ -71,7 +72,7 @@ export function defaultWagmiConfig({
          *   - `eoaOnly`: Show only EOA options.
          * @see https://www.smartwallet.dev/sdk/v3-to-v4-changes#parameters
          */
-        preference: 'all'
+        preference: wagmiConfig.coinbasePreference || 'all'
       })
     )
   }

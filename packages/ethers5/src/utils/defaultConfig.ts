@@ -10,6 +10,7 @@ export interface ConfigOptions {
   defaultChainId?: number
   metadata: Metadata
   chains?: Chain[]
+  coinbasePreference?: 'all' | 'smartWalletOnly' | 'eoaOnly'
 }
 
 export function defaultConfig(options: ConfigOptions) {
@@ -71,7 +72,7 @@ export function defaultConfig(options: ConfigOptions) {
        *   - `eoaOnly`: Show only EOA options.
        * @see https://www.smartwallet.dev/sdk/v3-to-v4-changes#parameters
        */
-      options: 'all'
+      options: options.coinbasePreference || 'all'
     })
 
     return coinbaseProvider
