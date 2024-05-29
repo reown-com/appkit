@@ -185,6 +185,7 @@ export class W3mModal extends LitElement {
           await SIWEController.signOut()
           this.onSiweNavigation()
         }
+
         return
       }
 
@@ -194,6 +195,7 @@ export class W3mModal extends LitElement {
           await SIWEController.signOut()
           this.onSiweNavigation()
         }
+
         return
       }
 
