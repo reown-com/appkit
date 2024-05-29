@@ -6,6 +6,6 @@
     "declaration": true,
     "declarationMap": true
   },
-  "extends": "../../../tsconfig.json",
+  "extends": "../../tsconfig.json",
   "include": ["index.ts", "src"]
 }

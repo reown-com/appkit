@@ -1,5 +1,5 @@
 {
-  "name": "@web3modal/protocol-evm-wagmi",
+  "name": "@web3modal/adapters",
   "version": "4.2.2",
   "type": "module",
   "main": "./dist/esm/index.js",
@@ -8,22 +8,17 @@
     "dist",
     "!tsconfig.tsbuildinfo"
   ],
-  "exports": {
-    ".": {
-      "import": "./dist/esm/index.js",
-      "require": "./dist/cjs/index.js",
-      "types": "./dist/types/index.d.ts"
-    }
-  },
   "scripts": {
     "build:clean": "rm -rf dist",
-    "build": "tsc --project tsconfig.json && tsc --project tsconfig.core.json",
+    "build": "tsc --project tsconfig.json",
     "watch": "tsc --watch",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
     "@web3modal/scaffold": "4.2.2",
+    "@web3modal/scaffold-utils": "4.2.2",
+    "@web3modal/siwe": "4.2.2",
     "@web3modal/common": "4.2.2",
     "@web3modal/polyfills": "4.2.2",
     "valtio": "1.11.2"
