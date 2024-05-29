@@ -61,8 +61,11 @@ export class W3mSwitchAddressView extends LitElement {
   public override render() {
     return html`
       <wui-flex justifyContent="center" .padding=${['xl', '0', 'xl', '0'] as const}>
-        <wui-banner-img imageSrc="${this.metadata?.icons[0]}" text="${this.metadata
-          ?.url}" size="sm"></wui-banner>
+        <wui-banner-img
+          imageSrc="${this.metadata?.icons[0]}"
+          text="${this.metadata?.url}"
+          size="sm"
+        ></wui-banner-img>
       </wui-flex>
       <wui-flex flexDirection="column" gap="xxl" .padding=${['l', 'xl', 'xl', 'xl'] as const}>
         ${this.allAccounts.map(account => {
