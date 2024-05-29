@@ -125,3 +125,11 @@ export const solanaDevnet = {
   explorerUrl: 'https://explorer.solana.com/?cluster=devnet',
   rpcUrl: 'https://api.devnet.solana.com'
 }
+
+export const baseSepolia = {
+  chainId: 84532,
+  name: 'Base Sepolia',
+  currency: 'BASE',
+  explorerUrl: 'https://sepolia.basescan.org',
+  rpcUrl: 'https://sepolia.base.org'
+}
