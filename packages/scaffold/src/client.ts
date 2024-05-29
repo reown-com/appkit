@@ -10,7 +10,8 @@ import type {
   ModalControllerState,
   ConnectedWalletInfo,
   RouterControllerState,
-  Token
+  Token,
+  ConnectionControllerClient
 } from '@web3modal/core'
 import {
   AccountController,
@@ -29,14 +30,14 @@ import {
   EnsController
 } from '@web3modal/core'
 import { setColorTheme, setThemeVariables } from '@web3modal/ui'
-import type { Web3ModalSIWEClient } from '@web3modal/siwe'
+import type { SIWEControllerClient } from '@web3modal/siwe'
 import { ConstantsUtil } from '@web3modal/common'
 
 // -- Helpers -------------------------------------------------------------------
 let isInitialized = false
 
 // -- Types ---------------------------------------------------------------------
-export interface LibraryOptions {
+export interface ScaffoldOptions {
   projectId: OptionsControllerState['projectId']
   themeMode?: ThemeMode
   themeVariables?: ThemeVariables
@@ -54,12 +55,12 @@ export interface LibraryOptions {
   enableOnramp?: OptionsControllerState['enableOnramp']
   enableWalletFeatures?: OptionsControllerState['enableWalletFeatures']
   allowUnsupportedChain?: NetworkControllerState['allowUnsupportedChain']
-}
+  siweConfig?: SIWEControllerClient
 
-export interface ScaffoldOptions extends LibraryOptions {
-  // networkControllerClient: NetworkControllerClient
-  // connectionControllerClient: ConnectionControllerClient
-  // siweControllerClient?: SIWEControllerClient
+  // ---
+  chainImages?: Record<number, string>
+  connectorImages?: Record<string, string>
+  adapters: Adapter[]
 }
 
 export interface OpenOptions {
@@ -272,7 +273,9 @@ export class Web3ModalScaffold {
 
   // -- Private ------------------------------------------------------------------
   private async initControllers(options: ScaffoldOptions) {
-    // NetworkController.setAdapter(defaultAdapter)
+    const defaultAdapter = options.adapters[0]
+
+    NetworkController.setAdapter(defaultAdapter)
     NetworkController.setDefaultCaipNetwork(options.defaultChain)
 
     OptionsController.setProjectId(options.projectId)
@@ -285,7 +288,13 @@ export class Web3ModalScaffold {
     OptionsController.setPrivacyPolicyUrl(options.privacyPolicyUrl)
     OptionsController.setCustomWallets(options.customWallets)
     OptionsController.setEnableAnalytics(options.enableAnalytics)
-    OptionsController.setSdkVersion(options._sdkVersion)
+    // OptionsController.setSdkVersion(options._sdkVersion)
+
+    // set scaffold to adapters
+    options.adapters.forEach(adapter => {
+      adapter.setScaffold(this)
+      adapter.setOptions(options)
+    })
 
     if (options.metadata) {
       OptionsController.setMetadata(options.metadata)
@@ -309,6 +318,16 @@ export class Web3ModalScaffold {
 
     if (options.allowUnsupportedChain) {
       NetworkController.setAllowUnsupportedChain(options.allowUnsupportedChain)
+    }
+
+    if (options.siweConfig) {
+      const { SIWEController } = await import('@web3modal/siwe')
+
+      SIWEController.setSIWEClient(options.siweConfig)
+    }
+
+    if (defaultAdapter?.connectionControllerClient) {
+      ConnectionController.setClient(defaultAdapter?.connectionControllerClient)
     }
   }
 
@@ -334,33 +353,16 @@ export class Web3ModalScaffold {
 
 export interface Adapter {
   protocol: 'evm' | 'solana' | 'polkadot' | 'bitcoin'
-  client: {
-    networkControllerClient: NetworkControllerClient
-  }
+  networkControllerClient: NetworkControllerClient
+  connectionControllerClient: ConnectionControllerClient
   setScaffold(scaffold: Web3ModalScaffold): void
+  setOptions(options: ScaffoldOptions): void
 }
 
 export interface AppkitOptions
-  extends Omit<LibraryOptions, 'defaultChain' | 'tokens' | '_sdkVersion'> {
-  siweConfig?: Web3ModalSIWEClient
+  extends Omit<ScaffoldOptions, 'defaultChain' | 'tokens' | '_sdkVersion'> {
   chainImages?: Record<number, string>
   connectorImages?: Record<string, string>
   tokens?: Record<number, Token>
   adapters: Adapter[]
-}
-
-export class Appkit extends Web3ModalScaffold {
-  public constructor(options: AppkitOptions) {
-    const { siweConfig, chainImages, connectorImages, tokens, adapters, ...w3mOptions } = options
-
-    if (!w3mOptions.projectId) {
-      throw new Error('web3modal:constructor - projectId is undefined')
-    }
-
-    super(w3mOptions)
-
-    adapters.forEach(adapter => {
-      adapter.setScaffold(this)
-    })
-  }
 }

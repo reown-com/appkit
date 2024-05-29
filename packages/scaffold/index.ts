@@ -94,15 +94,15 @@ export * from './src/partials/w3m-connect-recommended-widget/index.js'
 export * from './src/partials/w3m-connect-walletconnect-widget/index.js'
 export * from './src/partials/w3m-all-wallets-widget/index.js'
 
-export { Web3ModalScaffold, Appkit } from './src/client.js'
-export type { LibraryOptions, ScaffoldOptions, AppkitOptions } from './src/client.js'
+export { Web3ModalScaffold } from './src/client.js'
+export type { ScaffoldOptions, AppkitOptions } from './src/client.js'
 
 export type * from '@web3modal/core'
 export { CoreHelperUtil } from '@web3modal/core'
 
-import { Appkit } from './src/client.js'
+import { Web3ModalScaffold } from './src/client.js'
 import type { AppkitOptions } from './src/client.js'
 
 export function createAppkit(options: AppkitOptions) {
-  return new Appkit({ ...options })
+  return new Web3ModalScaffold({ ...options })
 }

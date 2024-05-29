@@ -26,10 +26,7 @@ export interface NetworkControllerState {
   approvedCaipNetworkIds?: CaipNetworkId[]
   allowUnsupportedChain?: boolean
   smartAccountEnabledNetworks?: number[]
-  adapter: {
-    switchCaipNetwork: any
-    getApprovedCaipNetworksData: any
-  }
+  adapter: any
 }
 
 type StateKey = keyof NetworkControllerState

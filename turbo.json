@@ -57,9 +57,21 @@
       "dependsOn": ["^build:core", "^build:scaffold-utils"],
       "cache": false
     },
+    "build:adapters": {
+      "outputs": ["dist/**"],
+      "dependsOn": [
+        "^build:scaffold",
+        "^build:scaffold-utils",
+        "^build:siwe",
+        "^build:common",
+        "^build:polyfills"
+      ],
+      "cache": false
+    },
     "build": {
       "outputs": ["dist/**"],
       "dependsOn": [
+        "^build:adapters",
         "^build:common",
         "^build:core",
         "^build:polyfills",
