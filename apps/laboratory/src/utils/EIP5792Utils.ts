@@ -66,3 +66,19 @@ export function getProviderCachedCapabilities(
 
   return convertCapabilitiesToRecord(accountCapabilities)
 }
+
+export function getCapabilitySupportedChainInfo(
+  capability: string,
+  provider: Awaited<ReturnType<(typeof EthereumProvider)['init']>>,
+  address: string
+): {
+  chainId: number
+  chainName: string
+}[] {
+  const perChainCapabilities = getProviderCachedCapabilities(address, provider)
+  if (!perChainCapabilities) {
+    return []
+  }
+
+  return getFilteredCapabilitySupportedChainInfo(capability, perChainCapabilities)
+}
