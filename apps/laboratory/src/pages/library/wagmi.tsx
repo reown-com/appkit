@@ -1,4 +1,4 @@
-import { createWeb3Modal } from '@web3modal/wagmi/react'
+import { createAppkit } from '@web3modal/scaffold'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
 import { Web3ModalButtons } from '../../components/Web3ModalButtons'
@@ -12,15 +12,15 @@ const queryClient = new QueryClient()
 
 const wagmiConfig = CONFIGS.default
 
-const modal = createWeb3Modal({
-  wagmiConfig,
+const modal = createAppkit({
   projectId: ConstantsUtil.ProjectId,
   enableAnalytics: true,
   metadata: ConstantsUtil.Metadata,
   termsConditionsUrl: 'https://walletconnect.com/terms',
   privacyPolicyUrl: 'https://walletconnect.com/privacy',
   customWallets: ConstantsUtil.CustomWallets,
-  enableOnramp: true
+  enableOnramp: true,
+  adapters: []
 })
 
 ThemeStore.setModal(modal)

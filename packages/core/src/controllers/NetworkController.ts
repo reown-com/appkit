@@ -26,6 +26,10 @@ export interface NetworkControllerState {
   approvedCaipNetworkIds?: CaipNetworkId[]
   allowUnsupportedChain?: boolean
   smartAccountEnabledNetworks?: number[]
+  adapter: {
+    switchCaipNetwork: any
+    getApprovedCaipNetworksData: any
+  }
 }
 
 type StateKey = keyof NetworkControllerState
@@ -34,7 +38,11 @@ type StateKey = keyof NetworkControllerState
 const state = proxy<NetworkControllerState>({
   supportsAllNetworks: true,
   isDefaultCaipNetwork: false,
-  smartAccountEnabledNetworks: []
+  smartAccountEnabledNetworks: [],
+  adapter: {
+    switchCaipNetwork: () => {},
+    getApprovedCaipNetworksData: () => {}
+  }
 })
 
 // -- Controller ---------------------------------------- //
@@ -59,6 +67,10 @@ export const NetworkController = {
 
   setClient(client: NetworkControllerClient) {
     state._client = ref(client)
+  },
+
+  setAdapter(adapter: any) {
+    state.adapter = adapter
   },
 
   setCaipNetwork(caipNetwork: NetworkControllerState['caipNetwork']) {
@@ -105,7 +117,7 @@ export const NetworkController = {
   },
 
   async switchActiveNetwork(network: NetworkControllerState['caipNetwork']) {
-    await this._getClient().switchCaipNetwork(network)
+    await state.adapter.switchCaipNetwork(network)
 
     state.caipNetwork = network
     if (network) {
