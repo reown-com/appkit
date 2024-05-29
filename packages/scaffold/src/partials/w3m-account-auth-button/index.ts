@@ -29,7 +29,7 @@ export class W3mAccountAuthButton extends LitElement {
         variant="icon"
         iconVariant="overlay"
         icon=${socialProvider ?? 'mail'}
-        iconSize=${socialProvider ? 'xl' : 'sm'}
+        iconSize=${socialProvider ? 'xxl' : 'sm'}
         data-testid="w3m-account-email-update"
         ?chevron=${!socialProvider}
         @click=${() => {

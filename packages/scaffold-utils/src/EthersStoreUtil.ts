@@ -7,7 +7,13 @@ import type { W3mFrameTypes } from '@web3modal/wallet'
 
 export interface EthersStoreUtilState {
   provider?: Provider | CombinedProvider
-  providerType?: 'walletConnect' | 'injected' | 'coinbaseWallet' | 'eip6963' | 'w3mAuth'
+  providerType?:
+    | 'walletConnect'
+    | 'injected'
+    | 'coinbaseWallet'
+    | 'eip6963'
+    | 'w3mAuth'
+    | 'coinbaseWalletSDK'
   address?: Address
   chainId?: number
   error?: unknown

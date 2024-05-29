@@ -1,5 +1,5 @@
 {
-  "mode": "pre",
+  "mode": "exit",
   "tag": "cn-social",
   "initialVersions": {
     "@apps/demo": "4.2.2",

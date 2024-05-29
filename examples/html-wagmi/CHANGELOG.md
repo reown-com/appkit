@@ -1,13 +1,13 @@
 # @examples/html-wagmi
 
-## 4.2.3-cn-social.0
+## 4.2.3-alpha.0
 
 ### Patch Changes
 
-- Social Login version for secure site
+- feat: add support for coinbase smart accounts
 
 - Updated dependencies []:
-  - @web3modal/wagmi@4.2.3-cn-social.0
+  - @web3modal/wagmi@4.2.3-alpha.0
 
 ## 4.2.2
 
