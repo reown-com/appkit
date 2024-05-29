@@ -14,5 +14,5 @@ export const ConstantsUtil = {
   CONNECTOR_RDNS_MAP: {
     coinbaseWallet: 'com.coinbase.wallet'
   } as Record<string, string>,
-  VERSION: '4.2.2'
+  VERSION: '4.2.3'
 }

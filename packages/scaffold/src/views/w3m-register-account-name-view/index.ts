@@ -60,7 +60,6 @@ export class W3mRegisterAccountNameView extends LitElement {
       >
         <form ${ref(this.formRef)} @submit=${this.onSubmitName.bind(this)}>
           <wui-ens-input
-            .disabled=${this.loading}
             @inputChange=${this.onNameInputChange.bind(this)}
             .errorMessage=${this.error}
             .value=${this.name}

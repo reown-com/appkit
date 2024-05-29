@@ -128,6 +128,14 @@ export const solanaDevnet = {
   rpcUrl: 'https://api.devnet.solana.com'
 }
 
+export const baseSepolia = {
+  chainId: 84532,
+  name: 'Base Sepolia',
+  currency: 'BASE',
+  explorerUrl: 'https://sepolia.basescan.org',
+  rpcUrl: 'https://sepolia.base.org'
+}
+
 export function getChain(id: number) {
   const chains = Object.values(viemChains) as viemChains.Chain[]
 
