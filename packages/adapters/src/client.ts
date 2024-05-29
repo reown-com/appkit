@@ -93,10 +93,6 @@ export class EVMWagmiClient {
     this.options = undefined
     this.wagmiConfig = wagmiConfig
 
-    this.syncRequestedNetworks([...wagmiConfig.chains])
-    this.syncConnectors([...wagmiConfig.connectors])
-    this.initAuthConnectorListeners([...wagmiConfig.connectors])
-
     // #region set clients
     this.networkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
@@ -409,19 +405,20 @@ export class EVMWagmiClient {
     })
   }
 
+  public initialize(scaffold: Web3ModalScaffold, options: ScaffoldOptions) {
+    this.scaffold = scaffold
+    this.options = options
+
+    this.syncRequestedNetworks([...this.wagmiConfig.chains])
+    this.syncConnectors([...this.wagmiConfig.connectors])
+    this.initAuthConnectorListeners([...this.wagmiConfig.connectors])
+  }
+
   public tokens = HelpersUtil.getCaipTokens(this.options?.tokens)
 
   public getCaipDefaultChain = this.options?.defaultChain
 
   public siweControllerClient = this.options?.siweConfig
-
-  public setScaffold(scaffold: Web3ModalScaffold) {
-    this.scaffold = scaffold
-  }
-
-  public setOptions(options: ScaffoldOptions) {
-    this.options = options
-  }
 
   // @ts-expect-error: Overriden state type is correct
   public override subscribeState(callback: (state: Web3ModalState) => void) {
@@ -444,6 +441,7 @@ export class EVMWagmiClient {
           imageUrl: this.options?.chainImages?.[chain.id]
         }) as CaipNetwork
     )
+    console.log('>>> setRequestedCaipNetworks', requestedCaipNetworks)
     this.scaffold?.setRequestedCaipNetworks(requestedCaipNetworks ?? [])
   }
 

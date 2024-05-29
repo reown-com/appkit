@@ -4,13 +4,26 @@ import { WagmiProvider } from 'wagmi'
 import { Web3ModalButtons } from '../../components/Web3ModalButtons'
 import { WagmiTests } from '../../components/Wagmi/WagmiTests'
 import { ThemeStore } from '../../utils/StoreUtil'
-import { CONFIGS } from '../../utils/WagmiConstants'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
+import { EVMWagmiClient, defaultWagmiConfig } from '@web3modal/adapters'
 
 const queryClient = new QueryClient()
 
-const wagmiConfig = CONFIGS.default
+import '@web3modal/polyfills'
+
+import { mainnet, sepolia } from 'wagmi/chains'
+
+const config = defaultWagmiConfig({
+  chains: [mainnet, sepolia],
+  projectId: ConstantsUtil.ProjectId,
+  metadata: ConstantsUtil.Metadata,
+  ssr: true
+})
+
+const wagmiAdapter = new EVMWagmiClient({
+  wagmiConfig: config
+})
 
 const modal = createAppkit({
   projectId: ConstantsUtil.ProjectId,
@@ -20,14 +33,14 @@ const modal = createAppkit({
   privacyPolicyUrl: 'https://walletconnect.com/privacy',
   customWallets: ConstantsUtil.CustomWallets,
   enableOnramp: true,
-  adapters: []
+  adapters: [wagmiAdapter]
 })
 
 ThemeStore.setModal(modal)
 
 export default function Wagmi() {
   return (
-    <WagmiProvider config={wagmiConfig}>
+    <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
         <Web3ModalButtons />
         <WagmiModalInfo />

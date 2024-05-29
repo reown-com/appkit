@@ -275,6 +275,10 @@ export class Web3ModalScaffold {
   private async initControllers(options: ScaffoldOptions) {
     const defaultAdapter = options.adapters[0]
 
+    options.adapters.forEach(adapter => {
+      adapter.initialize(this)
+    })
+
     NetworkController.setAdapter(defaultAdapter)
     NetworkController.setDefaultCaipNetwork(options.defaultChain)
 
@@ -289,12 +293,6 @@ export class Web3ModalScaffold {
     OptionsController.setCustomWallets(options.customWallets)
     OptionsController.setEnableAnalytics(options.enableAnalytics)
     // OptionsController.setSdkVersion(options._sdkVersion)
-
-    // set scaffold to adapters
-    options.adapters.forEach(adapter => {
-      adapter.setScaffold(this)
-      adapter.setOptions(options)
-    })
 
     if (options.metadata) {
       OptionsController.setMetadata(options.metadata)
@@ -329,6 +327,10 @@ export class Web3ModalScaffold {
     if (defaultAdapter?.connectionControllerClient) {
       ConnectionController.setClient(defaultAdapter?.connectionControllerClient)
     }
+
+    if (defaultAdapter?.networkControllerClient) {
+      NetworkController.setClient(defaultAdapter?.networkControllerClient)
+    }
   }
 
   private async initOrContinue() {
@@ -355,8 +357,7 @@ export interface Adapter {
   protocol: 'evm' | 'solana' | 'polkadot' | 'bitcoin'
   networkControllerClient: NetworkControllerClient
   connectionControllerClient: ConnectionControllerClient
-  setScaffold(scaffold: Web3ModalScaffold): void
-  setOptions(options: ScaffoldOptions): void
+  initialize(scaffold: Web3ModalScaffold): void
 }
 
 export interface AppkitOptions

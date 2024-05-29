@@ -37,7 +37,6 @@
   },
   "scripts": {
     "build:clean": "rm -rf dist",
-    "watch": "tsc --watch",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
