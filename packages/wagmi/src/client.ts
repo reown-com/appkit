@@ -27,7 +27,7 @@ import type {
   CaipNetworkId,
   ConnectionControllerClient,
   Connector,
-  LibraryOptions,
+  ScaffoldOptions,
   NetworkControllerClient,
   PublicStateControllerState,
   SendTransactionArgs,
@@ -59,7 +59,7 @@ export type ReactConfig = ReturnType<typeof reactConfig>
 type Config = CoreConfig | ReactConfig
 
 export interface Web3ModalClientOptions<C extends Config>
-  extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
+  extends Omit<ScaffoldOptions, 'defaultChain' | 'tokens'> {
   wagmiConfig: C
   siweConfig?: Web3ModalSIWEClient
   defaultChain?: Chain

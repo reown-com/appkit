@@ -20,7 +20,6 @@ import type UniversalProvider from '@walletconnect/universal-provider'
 import type {
   CaipNetworkId,
   ConnectionControllerClient,
-  LibraryOptions,
   NetworkControllerClient,
   Token,
   ScaffoldOptions,
@@ -32,7 +31,7 @@ import type {
 import type { AdapterKey } from './connectors/walletAdapters.js'
 import type { ProviderType, Chain, Provider, SolStoreUtilState } from './utils/scaffold/index.js'
 
-export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
+export interface Web3ModalClientOptions extends Omit<ScaffoldOptions, 'defaultChain' | 'tokens'> {
   solanaConfig: ProviderType
   chains: Chain[]
   connectionSettings?: Commitment | ConnectionConfig
@@ -60,7 +59,6 @@ export class Web3Modal extends Web3ModalScaffold {
       solanaConfig,
       chains,
       tokens,
-      _sdkVersion,
       chainImages,
       connectionSettings = 'confirmed',
       ...w3mOptions
@@ -171,14 +169,11 @@ export class Web3Modal extends Web3ModalScaffold {
     }
 
     super({
-      networkControllerClient,
-      connectionControllerClient,
       defaultChain: SolHelpersUtil.getChainFromCaip(
         chains,
         typeof window === 'object' ? localStorage.getItem(SolConstantsUtil.CAIP_CHAIN_ID) : ''
       ) as CaipNetwork,
       tokens: HelpersUtil.getCaipTokens(tokens),
-      _sdkVersion: _sdkVersion ?? `html-solana-${ConstantsUtil.VERSION}`,
       ...w3mOptions
     } as ScaffoldOptions)
 
