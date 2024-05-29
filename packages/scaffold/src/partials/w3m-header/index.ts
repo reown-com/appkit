@@ -13,6 +13,9 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
 
+// -- Constants ----------------------------------------- //
+const BETA_SCREENS = ['Swap', 'SwapSelectToken', 'SwapPreview']
+
 // -- Helpers ------------------------------------------- //
 function headings() {
   const connectorName = RouterController.state.data?.connector?.name
@@ -23,12 +26,13 @@ function headings() {
   const isEmail = connectors.length === 1 && connectors[0]?.id === 'w3m-email'
 
   return {
+    Connect: `Connect ${isEmail ? 'Email' : ''} Wallet`,
+    ChooseAccountName: undefined,
     Account: undefined,
     AccountSettings: undefined,
     AllWallets: 'All Wallets',
     ApproveTransaction: 'Approve Transaction',
     BuyInProgress: 'Buy',
-    Connect: `Connect ${isEmail ? 'Email' : ''} Wallet`,
     ConnectingExternal: name ?? 'Connect Wallet',
     ConnectingWalletConnect: name ?? 'WalletConnect',
     ConnectingSiwe: 'Sign In',
@@ -55,6 +59,9 @@ function headings() {
     UpdateEmailWallet: 'Edit Email',
     UpdateEmailPrimaryOtp: 'Confirm Current Email',
     UpdateEmailSecondaryOtp: 'Confirm New Email',
+    WhatIsABuy: 'What is Buy?',
+    RegisterAccountName: 'Choose name',
+    RegisterAccountNameSuccess: '',
     WalletReceive: 'Receive',
     WalletCompatibleNetworks: 'Compatible Networks',
     Swap: 'Swap',
@@ -63,7 +70,6 @@ function headings() {
     WalletSend: 'Send',
     WalletSendPreview: 'Review send',
     WalletSendSelectToken: 'Select Token',
-    WhatIsABuy: 'What is Buy?',
     WhatIsANetwork: 'What is a network?',
     WhatIsAWallet: 'What is a wallet?',
     ConnectWallets: 'Connect wallet',
@@ -137,7 +143,14 @@ export class W3mHeader extends LitElement {
   }
 
   private titleTemplate() {
-    return html`<wui-text variant="paragraph-700" color="fg-100">${this.heading}</wui-text>`
+    const isBeta = BETA_SCREENS.includes(RouterController.state.view)
+
+    return html`
+      <wui-flex class="w3m-header-title" alignItems="center" gap="xs">
+        <wui-text variant="paragraph-700" color="fg-100">${this.heading}</wui-text>
+        ${isBeta ? html`<wui-tag variant="main">Beta</wui-tag>` : null}
+      </wui-flex>
+    `
   }
 
   private dynamicButtonTemplate() {
@@ -184,7 +197,8 @@ export class W3mHeader extends LitElement {
   }
 
   private async onViewChange(view: RouterControllerState['view']) {
-    const headingEl = this.shadowRoot?.querySelector('wui-text')
+    const headingEl = this.shadowRoot?.querySelector('wui-flex.w3m-header-title')
+
     if (headingEl) {
       const preset = headings()[view]
       await headingEl.animate([{ opacity: 1 }, { opacity: 0 }], {

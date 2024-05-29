@@ -24,7 +24,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   public static override styles = styles
 
   // -- Members ------------------------------------------- //
-  @state() private watchTokenBalance?: NodeJS.Timeout
+  @state() private watchTokenBalance?: ReturnType<typeof setInterval>
 
   private unsubscribe: (() => void)[] = []
 

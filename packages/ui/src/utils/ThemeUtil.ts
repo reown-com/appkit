@@ -116,6 +116,7 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-spacing-2xl: 32px;
         --wui-spacing-3xl: 40px;
         --wui-spacing-4xl: 90px;
+        --wui-spacing-5xl: 95px;
 
         --wui-icon-box-size-xxs: 14px;
         --wui-icon-box-size-xs: 20px;
@@ -133,6 +134,7 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-icon-size-mdl: 18px;
         --wui-icon-size-lg: 20px;
         --wui-icon-size-xl: 24px;
+        --wui-icon-size-xxl: 28px;
 
         --wui-wallet-image-size-inherit: inherit;
         --wui-wallet-image-size-sm: 40px;

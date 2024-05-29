@@ -24,23 +24,16 @@ export const SwapCalculationUtil = {
     sourceTokenAmount,
     sourceTokenPriceInUSD,
     toTokenPriceInUSD,
-    toTokenAmount,
-    gasPriceInUSD
+    toTokenAmount
   }: {
     sourceTokenAmount: string
     sourceTokenPriceInUSD: number
     toTokenPriceInUSD: number
     toTokenAmount: string
-    gasPriceInUSD: number
   }) {
-    const totalCostInUSD = NumberUtil.bigNumber(sourceTokenAmount)
-      .multipliedBy(sourceTokenPriceInUSD)
-      .plus(gasPriceInUSD)
-    const effectivePricePerToToken = totalCostInUSD.dividedBy(toTokenAmount)
-    const priceImpact = effectivePricePerToToken
-      .minus(toTokenPriceInUSD)
-      .dividedBy(toTokenPriceInUSD)
-      .multipliedBy(100)
+    const inputValue = NumberUtil.bigNumber(sourceTokenAmount).multipliedBy(sourceTokenPriceInUSD)
+    const outputValue = NumberUtil.bigNumber(toTokenAmount).multipliedBy(toTokenPriceInUSD)
+    const priceImpact = inputValue.minus(outputValue).dividedBy(inputValue).multipliedBy(100)
 
     return priceImpact.toNumber()
   },

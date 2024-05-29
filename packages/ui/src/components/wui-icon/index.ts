@@ -74,6 +74,7 @@ import { walletSvg } from '../../assets/svg/wallet.js'
 import { walletConnectSvg } from '../../assets/svg/walletconnect.js'
 import { warningCircleSvg } from '../../assets/svg/warning-circle.js'
 import { lightbulbSvg } from '../../assets/svg/lightbulb.js'
+import { idSvg } from '../../assets/svg/id.js'
 import { xSvg } from '../../assets/svg/x.js'
 
 const svgOptions: Record<IconType, TemplateResult<2>> = {
@@ -114,6 +115,7 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   github: githubSvg,
   google: googleSvg,
   helpCircle: helpCircleSvg,
+  id: idSvg,
   infoCircle: infoCircleSvg,
   lightbulb: lightbulbSvg,
   mail: mailSvg,

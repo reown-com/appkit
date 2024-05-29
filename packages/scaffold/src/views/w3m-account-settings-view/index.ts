@@ -10,7 +10,8 @@ import {
   SnackController,
   StorageUtil,
   ConnectorController,
-  SendController
+  SendController,
+  EnsController
 } from '@web3modal/core'
 import { UiHelperUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -60,13 +61,13 @@ export class W3mAccountSettingsView extends LitElement {
           } else {
             ModalController.close()
           }
+        }),
+        NetworkController.subscribeKey('caipNetwork', val => {
+          if (val?.id) {
+            this.network = val
+          }
         })
-      ],
-      NetworkController.subscribeKey('caipNetwork', val => {
-        if (val?.id) {
-          this.network = val
-        }
-      })
+      ]
     )
   }
 
@@ -138,7 +139,7 @@ export class W3mAccountSettingsView extends LitElement {
               ${this.network?.name ?? 'Unknown'}
             </wui-text>
           </wui-list-item>
-          ${this.togglePreferredAccountBtnTemplate()}
+          ${this.togglePreferredAccountBtnTemplate()} ${this.chooseNameButtonTemplate()}
           <wui-list-item
             variant="icon"
             iconVariant="overlay"
@@ -156,6 +157,29 @@ export class W3mAccountSettingsView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private chooseNameButtonTemplate() {
+    const type = StorageUtil.getConnectedConnector()
+    const authConnector = ConnectorController.getAuthConnector()
+    const isAllowed = EnsController.isAllowedToRegisterName()
+    if (!authConnector || type !== 'AUTH' || this.profileName || !isAllowed) {
+      return null
+    }
+
+    return html`
+      <wui-list-item
+        variant="icon"
+        iconVariant="overlay"
+        icon="id"
+        iconSize="sm"
+        ?chevron=${true}
+        @click=${this.onChooseName.bind(this)}
+        data-testid="account-choose-name-button"
+      >
+        <wui-text variant="paragraph-500" color="fg-100">Choose account name </wui-text>
+      </wui-list-item>
+    `
+  }
+
   private isAllowedNetworkSwitch() {
     const { requestedCaipNetworks } = NetworkController.state
     const isMultiNetwork = requestedCaipNetworks ? requestedCaipNetworks.length > 1 : false
@@ -232,6 +256,10 @@ export class W3mAccountSettingsView extends LitElement {
     `
   }
 
+  private onChooseName() {
+    RouterController.push('ChooseAccountName')
+  }
+
   private async changePreferredAccountType() {
     const smartAccountEnabled = NetworkController.checkIfSmartAccountEnabled()
     const accountTypeTarget =
@@ -246,8 +274,10 @@ export class W3mAccountSettingsView extends LitElement {
     }
 
     this.loading = true
+    ModalController.setLoading(true)
     await authConnector?.provider.setPreferredAccount(accountTypeTarget)
     await ConnectionController.reconnectExternal(authConnector)
+    ModalController.setLoading(false)
 
     this.text =
       accountTypeTarget === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
