@@ -2,6 +2,7 @@ import {
   AccountController,
   BlockchainApiController,
   ModalController,
+  NetworkController,
   OptionsController,
   StorageUtil,
   type AccountType
@@ -22,6 +23,7 @@ export class W3mSwitchAddressView extends LitElement {
   private connectedConnector = StorageUtil.getConnectedConnector()
   // Only show icon for AUTH accounts
   private shouldShowIcon = this.connectedConnector === 'AUTH'
+  private caipNetwork = NetworkController.state.caipNetwork
 
   constructor() {
     super()
@@ -34,7 +36,7 @@ export class W3mSwitchAddressView extends LitElement {
   public override connectedCallback() {
     super.connectedCallback()
     this.allAccounts.forEach(account => {
-      BlockchainApiController.getBalance(account.address).then(response => {
+      BlockchainApiController.getBalance(account.address, this.caipNetwork?.id).then(response => {
         let total = this.balances[account.address] || 0
         if (response.balances.length > 0) {
           total = response.balances.reduce((acc, balance) => {

@@ -8,7 +8,12 @@ import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
 import { W3mFrameRpcConstants } from '@web3modal/wallet'
-import { AccountController, BlockchainApiController, StorageUtil } from '@web3modal/core'
+import {
+  AccountController,
+  BlockchainApiController,
+  NetworkController,
+  StorageUtil
+} from '@web3modal/core'
 
 @customElement('wui-list-account')
 export class WuiListAccount extends LitElement {
@@ -24,6 +29,7 @@ export class WuiListAccount extends LitElement {
   private balance = 0
   private fetchingBalance = true
   private shouldShowIcon = false
+  private caipNetwork = NetworkController.state.caipNetwork
   @property({ type: Boolean }) public selected = false
 
   @property({ type: Function }) public onSelect?: (
@@ -42,7 +48,7 @@ export class WuiListAccount extends LitElement {
 
   public override connectedCallback() {
     super.connectedCallback()
-    BlockchainApiController.getBalance(this.accountAddress).then(response => {
+    BlockchainApiController.getBalance(this.accountAddress, this.caipNetwork?.id).then(response => {
       let total = this.balance
       if (response.balances.length > 0) {
         total = response.balances.reduce((acc, balance) => {
