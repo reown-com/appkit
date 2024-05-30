@@ -431,7 +431,7 @@ export class EVMWagmiClient {
           imageUrl: this.options?.chainImages?.[chain.id]
         }) as CaipNetwork
     )
-    this.scaffold?.setRequestedCaipNetworks(requestedCaipNetworks ?? [])
+    this.scaffold?.setRequestedCaipNetworks(requestedCaipNetworks ?? [], this.protocol)
   }
 
   private async syncAccount({
@@ -455,7 +455,7 @@ export class EVMWagmiClient {
       this.hasSyncedConnectedAccount = true
     } else if (!isConnected && this.hasSyncedConnectedAccount) {
       this.scaffold?.resetWcConnection()
-      this.scaffold?.resetNetwork()
+      this.scaffold?.resetNetwork(this.protocol)
     }
   }
 

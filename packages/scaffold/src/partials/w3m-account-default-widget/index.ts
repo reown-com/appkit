@@ -242,7 +242,11 @@ export class W3mAccountDefaultWidget extends LitElement {
   }
 
   private isAllowedNetworkSwitch() {
-    const { requestedCaipNetworks } = NetworkController.state
+    if (!NetworkController.state.activeProtocol) {
+      return false
+    }
+    const { requestedCaipNetworks } =
+      NetworkController.state.networks[NetworkController.state.activeProtocol]
     const isMultiNetwork = requestedCaipNetworks ? requestedCaipNetworks.length > 1 : false
     const isValidNetwork = requestedCaipNetworks?.find(({ id }) => id === this.network?.id)
 

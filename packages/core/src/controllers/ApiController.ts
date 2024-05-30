@@ -94,7 +94,11 @@ export const ApiController = {
   },
 
   async fetchNetworkImages() {
-    const { requestedCaipNetworks } = NetworkController.state
+    if (!NetworkController.state.activeProtocol) {
+      return
+    }
+    const { requestedCaipNetworks } =
+      NetworkController.state.networks[NetworkController.state.activeProtocol]
     const ids = requestedCaipNetworks?.map(({ imageId }) => imageId).filter(Boolean)
     if (ids) {
       await Promise.allSettled((ids as string[]).map(id => ApiController._fetchNetworkImage(id)))

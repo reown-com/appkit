@@ -62,8 +62,11 @@ export class W3mNetworksView extends LitElement {
   }
 
   private networksTemplate() {
-    const { approvedCaipNetworkIds, requestedCaipNetworks, supportsAllNetworks } =
-      NetworkController.state
+    const { supportsAllNetworks, networks, activeProtocol } = NetworkController.state
+    if (!activeProtocol) {
+      return null
+    }
+    const { approvedCaipNetworkIds, requestedCaipNetworks } = networks[activeProtocol]
 
     const sortedNetworks = CoreHelperUtil.sortRequestedNetworks(
       approvedCaipNetworkIds,
@@ -87,7 +90,11 @@ export class W3mNetworksView extends LitElement {
 
   private async onSwitchNetwork(network: CaipNetwork) {
     const { isConnected } = AccountController.state
-    const { approvedCaipNetworkIds, supportsAllNetworks, caipNetwork } = NetworkController.state
+    const { networks, activeProtocol, supportsAllNetworks, caipNetwork } = NetworkController.state
+    if (!activeProtocol) {
+      return
+    }
+    const { approvedCaipNetworkIds } = networks[activeProtocol]
     const { data } = RouterController.state
     if (isConnected && caipNetwork?.id !== network.id) {
       if (approvedCaipNetworkIds?.includes(network.id)) {

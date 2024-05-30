@@ -104,7 +104,12 @@ export class W3mWalletReceiveView extends LitElement {
 
   // -- Private ------------------------------------------- //
   networkTemplate() {
-    const networks = NetworkController.getRequestedCaipNetworks()
+    if (!NetworkController.state.activeProtocol) {
+      return null
+    }
+    const networks = NetworkController.getRequestedCaipNetworks(
+      NetworkController.state.activeProtocol
+    )
     const isNetworkEnabledForSmartAccounts = NetworkController.checkIfSmartAccountEnabled()
     const caipNetwork = NetworkController.state.caipNetwork
 

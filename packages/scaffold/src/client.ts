@@ -204,16 +204,18 @@ export class Web3ModalScaffold {
 
   public getCaipNetwork = () => NetworkController.state.caipNetwork
 
-  public setRequestedCaipNetworks: (typeof NetworkController)['setRequestedCaipNetworks'] =
-    requestedCaipNetworks => {
-      NetworkController.setRequestedCaipNetworks(requestedCaipNetworks)
-    }
+  public setRequestedCaipNetworks: (typeof NetworkController)['setRequestedCaipNetworks'] = (
+    requestedCaipNetworks,
+    protocol
+  ) => {
+    NetworkController.setRequestedCaipNetworks(requestedCaipNetworks, protocol)
+  }
 
   public getApprovedCaipNetworksData: (typeof NetworkController)['getApprovedCaipNetworksData'] =
     () => NetworkController.getApprovedCaipNetworksData()
 
   public resetNetwork: (typeof NetworkController)['resetNetwork'] = () => {
-    NetworkController.resetNetwork()
+    NetworkController.resetNetwork(NetworkController.state.activeProtocol || 'evm')
   }
 
   public setConnectors: (typeof ConnectorController)['setConnectors'] = connectors => {
@@ -274,13 +276,20 @@ export class Web3ModalScaffold {
   // -- Private ------------------------------------------------------------------
   private async initControllers(options: ScaffoldOptions) {
     const defaultAdapter = options.adapters[0]
+    NetworkController.setAdapters(options.adapters || [])
+    if (defaultAdapter) {
+      defaultAdapter.initialize(this, options)
+      NetworkController.switchProtocol(defaultAdapter.protocol)
+      const { connectionControllerClient, networkControllerClient } = defaultAdapter
 
-    options.adapters.forEach(adapter => {
-      adapter.initialize(this)
-    })
-
-    NetworkController.setAdapter(defaultAdapter)
-    NetworkController.setDefaultCaipNetwork(options.defaultChain)
+      if (connectionControllerClient) {
+        ConnectionController.setClient(connectionControllerClient)
+      }
+      if (networkControllerClient) {
+        NetworkController.setClient(networkControllerClient)
+      }
+      NetworkController.setDefaultCaipNetwork(options.defaultChain)
+    }
 
     OptionsController.setProjectId(options.projectId)
     OptionsController.setAllWallets(options.allWallets)
@@ -323,14 +332,6 @@ export class Web3ModalScaffold {
 
       SIWEController.setSIWEClient(options.siweConfig)
     }
-
-    if (defaultAdapter?.connectionControllerClient) {
-      ConnectionController.setClient(defaultAdapter?.connectionControllerClient)
-    }
-
-    if (defaultAdapter?.networkControllerClient) {
-      NetworkController.setClient(defaultAdapter?.networkControllerClient)
-    }
   }
 
   private async initOrContinue() {
@@ -351,13 +352,13 @@ export class Web3ModalScaffold {
 /**
  *  Library spesific props & types
  *  - defaultChain: default chain to connect to
- * */
+ */
 
 export interface Adapter {
-  protocol: 'evm' | 'solana' | 'polkadot' | 'bitcoin'
+  protocol: 'evm' | 'solana' | 'bitcoin'
   networkControllerClient: NetworkControllerClient
   connectionControllerClient: ConnectionControllerClient
-  initialize(scaffold: Web3ModalScaffold): void
+  initialize(scaffold: Web3ModalScaffold, options?: ScaffoldOptions): void
 }
 
 export interface AppkitOptions

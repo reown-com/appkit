@@ -56,7 +56,12 @@ export class WuiOnRampProviderItem extends LitElement {
 
   // -- Private ------------------------------------------- //
   private networksTemplate() {
-    const networks = NetworkController.getRequestedCaipNetworks()
+    if (!NetworkController.state.activeProtocol) {
+      return null
+    }
+    const networks = NetworkController.getRequestedCaipNetworks(
+      NetworkController.state.activeProtocol
+    )
     const slicedNetworks = networks?.filter(network => network?.imageId)?.slice(0, 5)
 
     return html`

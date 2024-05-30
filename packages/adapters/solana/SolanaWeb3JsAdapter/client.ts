@@ -335,7 +335,7 @@ export class SolanaWeb3JsClient {
       this.hasSyncedConnectedAccount = true
     } else if (!isConnected && this.hasSyncedConnectedAccount) {
       this.scaffold?.resetWcConnection()
-      this.scaffold?.resetNetwork()
+      this.scaffold?.resetNetwork(this.protocol)
     }
   }
 
@@ -363,7 +363,7 @@ export class SolanaWeb3JsClient {
           imageUrl: chainImages?.[chain.chainId]
         }) as CaipNetwork
     )
-    this.scaffold?.setRequestedCaipNetworks(requestedCaipNetworks ?? [])
+    this.scaffold?.setRequestedCaipNetworks(requestedCaipNetworks ?? [], this.protocol)
   }
 
   public async switchNetwork(caipNetwork: CaipNetwork) {

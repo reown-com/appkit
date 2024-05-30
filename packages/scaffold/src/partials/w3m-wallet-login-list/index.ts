@@ -2,12 +2,15 @@ import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 
 import styles from './styles.js'
+import { NetworkController } from '@web3modal/core'
 @customElement('w3m-wallet-login-list')
 export class W3mWalletLoginList extends LitElement {
   public static override styles = styles
 
   // -- Render -------------------------------------------- //
   public override render() {
+    console.log(NetworkController.state.networks)
+
     return html`
       <wui-flex flexDirection="column" gap="xs">
         <w3m-connect-walletconnect-widget></w3m-connect-walletconnect-widget>
