@@ -29,17 +29,20 @@ export function EthersSendCallsTest() {
       address &&
       (walletProvider instanceof EthereumProvider || walletProvider instanceof W3mFrameProvider)
     ) {
+      console.log(">> calling and setting capability")
       getCapabilitySupportedChainInfo(
         WALLET_CAPABILITIES.ATOMIC_BATCH,
         walletProvider,
         address
       ).then(capabilities => {
+	console.log(">> setting capabilities>", capabilities)
         setAtomicBatchSupportedChains(capabilities)
       })
+
     } else {
       setAtomicBatchSupportedChains([])
     }
-  }, [address, walletProvider])
+  }, [address, walletProvider, isConnected])
 
   const atomicBatchSupportedChainsNames = atomicBatchSupportedChains
     .map(ci => ci.chainName)

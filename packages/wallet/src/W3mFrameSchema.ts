@@ -285,6 +285,7 @@ export const WalletSendCallsRequest = z.object({
       chainId: z.string().optional(),
       from: z.string().optional(),
       version: z.string().optional(),
+      capabilities: z.any().optional(),
       calls: z.array(
         z.object({
           to: z.string().startsWith('0x'),

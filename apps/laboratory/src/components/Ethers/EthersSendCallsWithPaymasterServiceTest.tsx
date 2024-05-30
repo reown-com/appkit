@@ -34,7 +34,11 @@ export function EthersSendCallsWithPaymasterServiceTest() {
         WALLET_CAPABILITIES.PAYMASTER_SERVICE,
         walletProvider,
         address
-      ).then(setPaymasterServiceSupportedChains)
+      ).then((capabilities) => {
+	console.log(">> paymaster capabilities", capabilities)
+	setPaymasterServiceSupportedChains(capabilities)
+      })
+
     } else {
       setPaymasterServiceSupportedChains([])
     }
@@ -107,6 +111,12 @@ export function EthersSendCallsWithPaymasterServiceTest() {
         walletProvider?.signer?.session?.namespaces?.['eip155']?.methods?.includes(
           EIP_5792_RPC_METHODS.WALLET_SEND_CALLS
         )
+      )
+    }
+
+    if (walletProvider instanceof W3mFrameProvider) {
+      return Boolean(
+	true
       )
     }
 

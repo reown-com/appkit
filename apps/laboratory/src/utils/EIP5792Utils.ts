@@ -29,16 +29,17 @@ export async function getCapabilitySupportedChainInfo(
   }
 
   if (provider instanceof W3mFrameProvider) {
-    const rawCapabilities = await provider.getCapabilities()
+    const rawCapabilities = await provider.getCapabilities();
     const mappedCapabilities = Object.entries(rawCapabilities).map(([chainId]) => {
       const chain = getChain(fromHex(chainId as `0x${string}`, 'number'))
-
+      
       return {
         chainId: fromHex(chainId as `0x${string}`, 'number'),
         chainName: chain?.name ?? `Unknown Chain (${chainId})`
       }
     })
-
+    console.log(">> mappedCapabilities", mappedCapabilities)
+    
     return mappedCapabilities
   }
 

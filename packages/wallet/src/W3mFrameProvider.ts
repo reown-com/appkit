@@ -71,6 +71,8 @@ export class W3mFrameProvider {
 
   private setPreferredAccountResolver: SetPreferredAccountResolver = undefined
 
+  public capabilities: Record<string, any> = {}
+
   public constructor(projectId: string) {
     this.w3mFrame = new W3mFrame(projectId, true)
     this.w3mFrame.events.onFrameEvent(event => {
@@ -155,7 +157,9 @@ export class W3mFrameProvider {
         default:
           return null
       }
+
     })
+    this.getCapabilities().then(capabilities => this.capabilities = capabilities);
   }
 
   // -- Extended Methods ------------------------------------------------
