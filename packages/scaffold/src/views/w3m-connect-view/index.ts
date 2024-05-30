@@ -34,12 +34,21 @@ export class W3mConnectView extends LitElement {
   public constructor() {
     super()
     this.unsubscribe.push(
-      ConnectorController.subscribeKey('connectors', val => (this.connectors = val))
+      ConnectorController.subscribeKey('connectors', val => (this.connectors = val)),
+      NetworkController.subscribeKey('activeProtocol', val => {
+        this.currentTab = this.protocolTabs.findIndex(tab => tab.label === val)
+      })
     )
   }
 
   public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
+  }
+
+  public override firstUpdated() {
+    const protocol = NetworkController.state.activeProtocol
+    const index = this.protocolTabs.findIndex(tab => tab.label === protocol)
+    this.currentTab = index
   }
 
   // -- Render -------------------------------------------- //
@@ -67,7 +76,6 @@ export class W3mConnectView extends LitElement {
   private onProtocolChange(value: number) {
     const protocol = this.protocolTabs[value]?.label || 'evm'
     const newAdapter = NetworkController.state.adaptersV2?.find(a => a.protocol === protocol)
-    console.log('>>> new adapter', newAdapter)
 
     if (newAdapter) {
       this.currentTab = value

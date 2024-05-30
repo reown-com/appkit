@@ -35,7 +35,7 @@ export class W3mConnectExternalWidget extends LitElement {
 
       return null
     }
-
+    this.style.cssText = `display: block`
     return html`
       <wui-flex flexDirection="column" gap="xs">
         ${externalConnectors.map(

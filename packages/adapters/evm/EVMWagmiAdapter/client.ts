@@ -102,7 +102,6 @@ export class EVMWagmiClient {
       },
 
       getApprovedCaipNetworksData: async () => {
-        console.log('getting approved caipNetworks')
         if (!this.wagmiConfig) {
           throw new Error(
             'networkControllerClient:getApprovedCaipNetworksData - wagmiConfig is undefined'
@@ -391,7 +390,6 @@ export class EVMWagmiClient {
   }
 
   public construct(scaffold: Web3ModalScaffold, options: OptionsControllerState) {
-    console.log('>>> construct()', scaffold)
     if (!options.projectId) {
       throw new Error('web3modal:initialize - projectId is undefined')
     }
@@ -618,7 +616,6 @@ export class EVMWagmiClient {
         })
       }
     })
-    console.log('>>> syncConnectors', this.scaffold, w3mConnectors)
     this.scaffold?.setConnectors(w3mConnectors)
     this.syncAuthConnector(filteredConnectors)
   }

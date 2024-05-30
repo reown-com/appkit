@@ -23,7 +23,6 @@ export class W3mConnectInjectedWidget extends LitElement {
     super()
     this.unsubscribe.push(
       ConnectorController.subscribeKey('connectors', val => {
-        console.log('>>> ConnectorController.subscribeKey', val)
         this.connectors = val
       })
     )
@@ -36,7 +35,6 @@ export class W3mConnectInjectedWidget extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     const injectedConnectors = this.connectors.filter(connector => connector.type === 'INJECTED')
-
     if (
       !injectedConnectors?.length ||
       (injectedConnectors.length === 1 &&
@@ -47,6 +45,7 @@ export class W3mConnectInjectedWidget extends LitElement {
 
       return null
     }
+    this.style.cssText = `display: block`
 
     return html`
       <wui-flex flexDirection="column" gap="xs">

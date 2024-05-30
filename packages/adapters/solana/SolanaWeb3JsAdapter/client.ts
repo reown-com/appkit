@@ -231,7 +231,6 @@ export class SolanaWeb3JsClient {
   }
 
   public construct(scaffold: Web3ModalScaffold, options: OptionsControllerState) {
-    console.log('>>> construct()', scaffold)
     if (!options.projectId) {
       throw new Error('web3modal:initialize - projectId is undefined')
     }
@@ -326,7 +325,6 @@ export class SolanaWeb3JsClient {
 
     syncInjectedWallets(w3mConnectors, this.walletAdapters)
 
-    console.log('>>> syncConnectors', this.scaffold, w3mConnectors)
     this.scaffold?.setConnectors(w3mConnectors)
   }
 

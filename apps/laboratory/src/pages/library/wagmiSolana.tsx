@@ -50,7 +50,6 @@ const modal = createAppkit({
   metadata: ConstantsUtil.Metadata,
   termsConditionsUrl: 'https://walletconnect.com/terms',
   privacyPolicyUrl: 'https://walletconnect.com/privacy',
-  customWallets: ConstantsUtil.CustomWallets,
   enableOnramp: true,
   adapters: [wagmiAdapter, solanaWeb3JsAdapter]
 })
