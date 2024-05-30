@@ -43,8 +43,8 @@ export class W3mConnectCustomWidget extends LitElement {
     const wallets = this.filterOutDuplicateWallets(customWallets)
 
     return html`<wui-flex flexDirection="column" gap="xs">
-      ${wallets.map(wallet => {
-        return html`
+      ${wallets.map(
+        wallet => html`
           <wui-list-wallet
             imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
             name=${wallet.name ?? 'Unknown'}
@@ -53,7 +53,7 @@ export class W3mConnectCustomWidget extends LitElement {
           >
           </wui-list-wallet>
         `
-      })}
+      )}
     </wui-flex>`
   }
 

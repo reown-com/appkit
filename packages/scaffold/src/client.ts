@@ -259,9 +259,8 @@ export class Web3ModalScaffold {
       AccountController.setPreferredAccountType(preferredAccountType)
     }
 
-  protected getWalletConnectName: (typeof EnsController)['getNamesForAddress'] = address => {
-    return EnsController.getNamesForAddress(address)
-  }
+  protected getWalletConnectName: (typeof EnsController)['getNamesForAddress'] = address =>
+    EnsController.getNamesForAddress(address)
 
   protected resolveWalletConnectName = async (name: string) => {
     const trimmedName = name.replace(ConstantsUtil.WC_NAME_SUFFIX, '')
