@@ -7,7 +7,8 @@ import type {
   ModalControllerState,
   ConnectedWalletInfo,
   RouterControllerState,
-  ConnectionControllerClient
+  ConnectionControllerClient,
+  AdapterCore
 } from '@web3modal/core'
 import {
   AccountController,
@@ -22,7 +23,8 @@ import {
   ThemeController,
   SnackController,
   RouterController,
-  EnsController
+  EnsController,
+  OptionsController
 } from '@web3modal/core'
 import { setColorTheme, setThemeVariables } from '@web3modal/ui'
 import { ConstantsUtil } from '@web3modal/common'
@@ -38,12 +40,13 @@ export interface OpenOptions {
 export class Web3ModalScaffold {
   private static instance?: Web3ModalScaffold
 
+  public adapters?: AdapterCore[]
+
   private initPromise?: Promise<void> = undefined
 
-  public static init(options: OptionsControllerState) {
-    this.instance = new Web3ModalScaffold()
-    Web3ModalScaffold.instance?.initControllers(options)
-    Web3ModalScaffold.instance?.initOrContinue()
+  public constructor(options: OptionsControllerState) {
+    this.initControllers(options)
+    this.initOrContinue()
   }
 
   public static getInstance() {
@@ -249,12 +252,38 @@ export class Web3ModalScaffold {
 
   // -- Private ------------------------------------------------------------------
   private async initControllers(options: OptionsControllerState) {
+    options.adapters?.forEach(adapter => {
+      adapter.construct(this, options)
+    })
+
     NetworkController.setAdapters(options.adapters || [])
 
-    options.adapters?.forEach(adapter => {
-      console.log('>>> call construct')
-      adapter.construct.bind(Web3ModalScaffold.getInstance(), options)
-    })
+    const defaultAdapter = options.adapters?.[0]
+
+    if (defaultAdapter) {
+      NetworkController.setAdapter(defaultAdapter)
+      NetworkController.setDefaultCaipNetwork(options.defaultChain)
+    }
+
+    OptionsController.setOptions(options)
+
+    if (options.themeMode) {
+      ThemeController.setThemeMode(options.themeMode)
+    }
+
+    if (options.themeVariables) {
+      ThemeController.setThemeVariables(options.themeVariables)
+    }
+
+    if (options.allowUnsupportedChain) {
+      NetworkController.setAllowUnsupportedChain(options.allowUnsupportedChain)
+    }
+
+    if (options.siweConfig) {
+      const { SIWEController } = await import('@web3modal/siwe')
+
+      SIWEController.setSIWEClient(options.siweConfig)
+    }
   }
 
   private async initOrContinue() {

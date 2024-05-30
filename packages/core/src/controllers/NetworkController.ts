@@ -82,7 +82,6 @@ export const NetworkController = {
   },
 
   setAdapter(adapter: AdapterCore) {
-    console.log('>>> setAdapter', adapter)
     state.activeProtocol = adapter.protocol
     state.adapter = adapter
 

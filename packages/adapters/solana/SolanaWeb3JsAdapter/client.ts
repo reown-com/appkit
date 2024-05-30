@@ -75,7 +75,6 @@ export class SolanaWeb3JsClient {
     this.protocol = 'solana'
     this.networkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
-        console.log('>>> set solana network controller client')
         if (caipNetwork) {
           try {
             await this.switchNetwork(caipNetwork)

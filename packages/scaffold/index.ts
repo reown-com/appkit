@@ -103,9 +103,5 @@ import type { OptionsControllerState } from '@web3modal/core'
 import { Web3ModalScaffold } from './src/client.js'
 
 export function createAppkit(options: OptionsControllerState) {
-  Web3ModalScaffold.init(options)
-  const instance = Web3ModalScaffold.getInstance()
-
-  console.log('>>> createAppkit', instance)
-  return instance
+  return new Web3ModalScaffold({ ...options })
 }

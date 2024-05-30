@@ -586,7 +586,6 @@ export class EVMWagmiClient {
   private syncConnectors(
     connectors: Web3ModalClientOptions<CoreConfig>['wagmiConfig']['connectors']
   ) {
-    console.log('>>> syncConnectors', connectors)
     const uniqueIds = new Set()
     const filteredConnectors = connectors.filter(
       item => !uniqueIds.has(item.id) && uniqueIds.add(item.id)
