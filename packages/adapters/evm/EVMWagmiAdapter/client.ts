@@ -104,6 +104,7 @@ export class EVMWagmiClient {
       },
 
       getApprovedCaipNetworksData: async () => {
+        console.log('getting approved caipNetworks')
         if (!this.wagmiConfig) {
           throw new Error(
             'networkControllerClient:getApprovedCaipNetworksData - wagmiConfig is undefined'
@@ -430,7 +431,6 @@ export class EVMWagmiClient {
           imageUrl: this.options?.chainImages?.[chain.id]
         }) as CaipNetwork
     )
-    console.log('>>> setRequestedCaipNetworks', requestedCaipNetworks)
     this.scaffold?.setRequestedCaipNetworks(requestedCaipNetworks ?? [])
   }
 
