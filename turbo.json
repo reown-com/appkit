@@ -32,7 +32,7 @@
         "^build:core",
         "^build:ui",
         "^build:wallet",
-        "@web3modal/siwe#build:siwe",
+        "^build:siwe",
         "^build:scaffold-utils"
       ],
       "cache": false

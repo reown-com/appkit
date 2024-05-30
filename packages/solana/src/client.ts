@@ -161,7 +161,6 @@ export class Web3Modal extends Web3ModalScaffold {
       },
 
       estimateGas: async () => await Promise.resolve(BigInt(0)),
-
       // -- Transaction methods ---------------------------------------------------
       /**
        *
