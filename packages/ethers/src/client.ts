@@ -318,9 +318,9 @@ export class Web3Modal extends Web3ModalScaffold {
           await this.authProvider?.disconnect()
         } else if (providerType === ConstantsUtil.EIP6963_CONNECTOR_ID && provider) {
           try {
-            const permissions = (await provider.request({ method: 'wallet_getPermissions' })) as {
-              parentCapability: string
-            }[]
+            const permissions: { parentCapability: string }[] = await provider.request({
+              method: 'wallet_getPermissions'
+            })
             const ethAccountsPermission = permissions.find(
               permission => permission.parentCapability === 'eth_accounts'
             )
@@ -332,16 +332,16 @@ export class Web3Modal extends Web3ModalScaffold {
               })
             }
           } catch (error) {
-            console.error('Error revoking permissions:', error)
+            throw new Error('Error revoking permissions:')
           }
           provider.emit('disconnect')
         } else if (providerType === ConstantsUtil.INJECTED_CONNECTOR_ID) {
           try {
             const InjectedProvider = ethersConfig.injected
             if (InjectedProvider) {
-              const permissions = (await InjectedProvider.request({
+              const permissions: { parentCapability: string }[] = await InjectedProvider.request({
                 method: 'wallet_getPermissions'
-              })) as { parentCapability: string }[]
+              })
               const ethAccountsPermission = permissions.find(
                 permission => permission.parentCapability === 'eth_accounts'
               )
@@ -355,7 +355,7 @@ export class Web3Modal extends Web3ModalScaffold {
               InjectedProvider.emit('disconnect')
             }
           } catch (error) {
-            console.error('Error disconnecting injected provider:', error)
+            throw new Error('Error revoking permissions:')
           }
         } else {
           provider?.emit('disconnect')
