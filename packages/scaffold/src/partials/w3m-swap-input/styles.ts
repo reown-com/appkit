@@ -62,6 +62,7 @@ export default css`
     outline: none;
     caret-color: var(--wui-color-accent-100);
     color: var(--wui-color-fg-100);
+    padding: 0px;
   }
 
   :host > wui-flex .swap-input input:focus-visible {

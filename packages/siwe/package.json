@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/siwe",
-  "version": "4.2.2",
+  "version": "4.2.3",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -17,8 +17,8 @@
   },
   "dependencies": {
     "@walletconnect/utils": "2.12.0",
-    "@web3modal/core": "4.2.2",
-    "@web3modal/scaffold-utils": "4.2.2",
+    "@web3modal/core": "4.2.3",
+    "@web3modal/scaffold-utils": "4.2.3",
     "valtio": "1.11.2",
     "lit": "3.1.0"
   },

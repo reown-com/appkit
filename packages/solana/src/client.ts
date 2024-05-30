@@ -79,6 +79,17 @@ export class Web3Modal extends Web3ModalScaffold {
       switchCaipNetwork: async caipNetwork => {
         if (caipNetwork) {
           try {
+            // Update chain for Solflare
+            this.walletAdapters = createWalletAdapters(caipNetwork?.id.split(':')[1])
+            const walletId = localStorage.getItem(SolConstantsUtil.WALLET_ID)
+            const wallet = walletId?.split('_')[1] as AdapterKey
+            if (wallet === 'solflare' && window[wallet as keyof Window]) {
+              const adapter = this.walletAdapters[wallet]
+              await adapter.connect()
+              const address = adapter.publicKey?.toString()
+              this.setInjectedProvider(adapter as unknown as Provider, wallet, address)
+            }
+
             await this.switchNetwork(caipNetwork)
           } catch (error) {
             SolStoreUtil.setError(error)
@@ -196,7 +207,7 @@ export class Web3Modal extends Web3ModalScaffold {
     }
     this.syncNetwork(chainImages)
 
-    this.walletAdapters = createWalletAdapters()
+    this.walletAdapters = createWalletAdapters(chain?.chainId)
     this.WalletConnectConnector = new WalletConnectConnector({
       relayerRegion: 'wss://relay.walletconnect.com',
       metadata,

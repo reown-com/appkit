@@ -102,10 +102,15 @@ export const EnsController = {
     if (!network) {
       throw new Error('Network not found')
     }
+
     const address = AccountController.state.address
     const emailConnector = ConnectorController.getAuthConnector()
     if (!address || !emailConnector) {
       throw new Error('Address or auth connector not found')
+    }
+
+    if (!this.isAllowedToRegisterName()) {
+      throw new Error('Not allowed to register name')
     }
 
     state.loading = true
@@ -158,5 +163,12 @@ export const EnsController = {
     const ensError = error as BlockchainApiEnsError
 
     return ensError?.reasons?.[0]?.description || defaultError
+  },
+  isAllowedToRegisterName() {
+    const emailConnector = ConnectorController.getAuthConnector()
+    const email = emailConnector?.provider.getEmail() || ''
+    const domain = email.split('@')?.[1]
+
+    return domain && ConstantsUtil.WC_NAMES_ALLOWED_DOMAINS.includes(domain)
   }
 }
