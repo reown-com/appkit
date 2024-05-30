@@ -392,6 +392,9 @@ export class EVMWagmiClient {
   }
 
   public initialize(scaffold: Web3ModalScaffold, options: ScaffoldOptions) {
+    if (!options.projectId) {
+      throw new Error('web3modal:initialize - projectId is undefined')
+    }
     this.scaffold = scaffold
     this.options = options
 

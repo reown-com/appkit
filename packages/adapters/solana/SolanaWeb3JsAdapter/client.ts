@@ -31,7 +31,7 @@ import type {
 import type { AdapterKey } from './connectors/walletAdapters.js'
 import type { ProviderType, Chain, Provider, SolStoreUtilState } from './utils/scaffold/index.js'
 
-export interface Web3ModalClientOptions extends Omit<ScaffoldOptions, 'defaultChain' | 'tokens'> {
+export interface Web3ModalClientOptions {
   solanaConfig: ProviderType
   chains: Chain[]
   connectionSettings?: Commitment | ConnectionConfig
@@ -60,21 +60,12 @@ export class SolanaWeb3JsClient {
   public connectionSettings: Commitment | ConnectionConfig
 
   public constructor(options: Web3ModalClientOptions) {
-    const {
-      solanaConfig,
-      chains,
-      chainImages,
-      connectionSettings = 'confirmed',
-      ...w3mOptions
-    } = options
+    const { solanaConfig, chains, chainImages, connectionSettings = 'confirmed' } = options
     const { metadata } = solanaConfig
     if (!solanaConfig) {
       throw new Error('web3modal:constructor - solanaConfig is undefined')
     }
 
-    if (!w3mOptions.projectId) {
-      throw new Error('web3modal:constructor - projectId is undefined')
-    }
     this.protocol = 'solana'
     this.networkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
@@ -234,6 +225,9 @@ export class SolanaWeb3JsClient {
   }
 
   public initialize(scaffold: Web3ModalScaffold, options: ScaffoldOptions) {
+    if (!options.projectId) {
+      throw new Error('web3modal:initialize - projectId is undefined')
+    }
     this.scaffold = scaffold
     this.options = options
     this.syncRequestedNetworks(this.chains, options.chainImages)
