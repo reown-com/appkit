@@ -24,6 +24,7 @@ import type { WuiCtaButton } from '../composites/wui-cta-button/index.js'
 import type { WuiDetailsGroup } from '../composites/wui-details-group/index.js'
 import type { WuiDetailsGroupItem } from '../composites/wui-details-group-item/index.js'
 import type { WuiEmailInput } from '../composites/wui-email-input/index.js'
+import type { WuiEnsInput } from '../composites/wui-ens-input/index.js'
 import type { WuiIconBox } from '../composites/wui-icon-box/index.js'
 import type { WuiIconLink } from '../composites/wui-icon-link/index.js'
 import type { WuiInputAmount } from '../composites/wui-input-amount/index.js'
@@ -32,11 +33,13 @@ import type { WuiInputNumeric } from '../composites/wui-input-numeric/index.js'
 import type { WuiInputText } from '../composites/wui-input-text/index.js'
 import type { WuiLink } from '../composites/wui-link/index.js'
 import type { WuiListAccordion } from '../composites/wui-list-accordion/index.js'
+import type { WuiListButton } from '../composites/wui-list-button/index.js'
 import type { WuiListContent } from '../composites/wui-list-content/index.js'
 import type { WuiListDescription } from '../composites/wui-list-description/index.js'
 import type { WuiListItem } from '../composites/wui-list-item/index.js'
 import type { WuiListNetwork } from '../composites/wui-list-network/index.js'
 import type { WuiListToken } from '../composites/wui-list-token/index.js'
+import type { WuiListSocial } from '../composites/wui-list-social/index.js'
 import type { WuiListWallet } from '../composites/wui-list-wallet/index.js'
 import type { WuiListWalletTransaction } from '../composites/wui-list-wallet-transaction/index.js'
 import type { WuiLogo } from '../composites/wui-logo/index.js'
@@ -102,6 +105,7 @@ declare global {
       'wui-details-group-item': CustomElement<WuiDetailsGroupItem>
       'wui-details-group': CustomElement<WuiDetailsGroup>
       'wui-email-input': CustomElement<WuiEmailInput>
+      'wui-ens-input': CustomElement<WuiEnsInput>
       'wui-icon-box': CustomElement<WuiIconBox>
       'wui-icon-link': CustomElement<WuiIconLink>
       'wui-input-amount': CustomElement<WuiInputAmount>
@@ -110,10 +114,12 @@ declare global {
       'wui-input-text': CustomElement<WuiInputText>
       'wui-link': CustomElement<WuiLink>
       'wui-list-accordion': CustomElement<WuiListAccordion>
+      'wui-list-button': CustomElement<WuiListButton>
       'wui-list-content': CustomElement<WuiListContent>
       'wui-list-description': CustomElement<WuiListDescription>
       'wui-list-item': CustomElement<WuiListItem>
       'wui-list-network': CustomElement<WuiListNetwork>
+      'wui-list-social': CustomElement<WuiListSocial>
       'wui-list-token': CustomElement<WuiListToken>
       'wui-list-wallet-transaction': CustomElement<WuiListWalletTransaction>
       'wui-list-wallet': CustomElement<WuiListWallet>

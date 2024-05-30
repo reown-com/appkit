@@ -46,8 +46,9 @@ export class W3mInputAddress extends LitElement {
       >
         Type or
         <wui-button
-          size="sm"
-          variant="shade"
+          class="paste"
+          size="md"
+          variant="neutral"
           iconLeft="copy"
           @click=${this.onPasteClick.bind(this)}
         >
@@ -57,6 +58,7 @@ export class W3mInputAddress extends LitElement {
         address
       </wui-text>
       <textarea
+        spellcheck="false"
         ?disabled=${!this.instructionHidden}
         ${ref(this.inputElementRef)}
         @input=${this.onInputChange.bind(this)}
@@ -129,6 +131,7 @@ ${this.value ?? ''}</textarea
 
     const text = await navigator.clipboard.readText()
     SendController.setReceiverAddress(text)
+    this.focusInput()
   }
 
   private onInputChange(e: InputEvent) {

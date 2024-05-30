@@ -105,13 +105,18 @@ export class Web3ModalSIWEClient {
       chainId,
       nonce,
       version: '1',
+      iat: messageParams.iat || new Date().toISOString(),
       ...messageParams
     })
     const type = StorageUtil.getConnectedConnector()
-    if (type === 'EMAIL') {
+    if (type === 'AUTH') {
       RouterController.pushTransactionStack({
         view: null,
-        goBack: true
+        goBack: false,
+        replace: true,
+        onCancel() {
+          RouterController.replace('ConnectingSiwe')
+        }
       })
     }
     const signature = await ConnectionController.signMessage(message)

@@ -163,6 +163,8 @@ export const ConnectionController = {
 
   async disconnect() {
     await this._getClient().disconnect()
+    StorageUtil.removeConnectedWalletImageUrl()
+
     this.resetWcConnection()
   }
 }

@@ -3,6 +3,8 @@ import { Web3ModalScaffold } from '@web3modal/scaffold'
 import {
   ApiController,
   AssetController,
+  CoreHelperUtil,
+  EventsController,
   NetworkController,
   OptionsController
 } from '@web3modal/core'
@@ -77,6 +79,17 @@ export class Web3Modal extends Web3ModalScaffold {
       switchCaipNetwork: async caipNetwork => {
         if (caipNetwork) {
           try {
+            // Update chain for Solflare
+            this.walletAdapters = createWalletAdapters(caipNetwork?.id.split(':')[1])
+            const walletId = localStorage.getItem(SolConstantsUtil.WALLET_ID)
+            const wallet = walletId?.split('_')[1] as AdapterKey
+            if (wallet === 'solflare' && window[wallet as keyof Window]) {
+              const adapter = this.walletAdapters[wallet]
+              await adapter.connect()
+              const address = adapter.publicKey?.toString()
+              this.setInjectedProvider(adapter as unknown as Provider, wallet, address)
+            }
+
             await this.switchNetwork(caipNetwork)
           } catch (error) {
             SolStoreUtil.setError(error)
@@ -155,13 +168,13 @@ export class Web3Modal extends Web3ModalScaffold {
        * These methods are supported only on `wagmi` and `ethers` since the Solana SDK does not support them in the same way.
        * These function definition is to have a type parity between the clients. Currently not in use.
        */
-      sendTransaction: async () => await Promise.resolve('0x'),
-
-      writeContract: async () => await Promise.resolve('0x'),
+      getEnsAvatar: async (value: string) => await Promise.resolve(value),
 
       getEnsAddress: async (value: string) => await Promise.resolve(value),
 
-      getEnsAvatar: async (value: string) => await Promise.resolve(value),
+      writeContract: async () => await Promise.resolve('0x'),
+
+      sendTransaction: async () => await Promise.resolve('0x'),
 
       parseUnits: () => BigInt(0),
 
@@ -194,7 +207,7 @@ export class Web3Modal extends Web3ModalScaffold {
     }
     this.syncNetwork(chainImages)
 
-    this.walletAdapters = createWalletAdapters()
+    this.walletAdapters = createWalletAdapters(chain?.chainId)
     this.WalletConnectConnector = new WalletConnectConnector({
       relayerRegion: 'wss://relay.walletconnect.com',
       metadata,
@@ -226,6 +239,20 @@ export class Web3Modal extends Web3ModalScaffold {
         SolStoreUtil.setCurrentChain(chain)
         localStorage.setItem(SolConstantsUtil.CAIP_CHAIN_ID, `solana:${chain.chainId}`)
         ApiController.reFetchWallets()
+      }
+    })
+
+    EventsController.subscribe(state => {
+      if (state.data.event === 'SELECT_WALLET' && state.data.properties?.name === 'Phantom') {
+        const isMobile = CoreHelperUtil.isMobile()
+        const isClient = CoreHelperUtil.isClient()
+        if (isMobile && isClient && !window.phantom) {
+          const href = window.location.href
+          const protocol = href.startsWith('https') ? 'https' : 'http'
+          const host = href.split('/')[2]
+          const ref = `${protocol}://${host}`
+          window.location.href = `https://phantom.app/ul/browse/${href}?ref=${ref}`
+        }
       }
     })
 

@@ -22,7 +22,7 @@ export class W3mOnRampActivityView extends LitElement {
   // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
 
-  private refetchTimeout: NodeJS.Timeout | undefined = undefined
+  private refetchTimeout?: ReturnType<typeof setTimeout>
 
   // -- State & Properties -------------------------------- //
   @state() protected selectedOnRampProvider = OnRampController.state.selectedProvider
@@ -56,7 +56,7 @@ export class W3mOnRampActivityView extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex flexDirection="column" padding="s" gap="xs">
+      <wui-flex flexDirection="column" .padding=${['0', 's', 's', 's']} gap="xs">
         ${this.loading ? this.templateLoading() : this.templateTransactionsByYear()}
       </wui-flex>
     `

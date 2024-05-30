@@ -15,7 +15,9 @@ export class WuiLoadingSpinner extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    this.style.cssText = `--local-color: var(--wui-color-${this.color});`
+    this.style.cssText = `--local-color: ${
+      this.color === 'inherit' ? 'inherit' : `var(--wui-color-${this.color})`
+    }`
 
     this.dataset['size'] = this.size
 

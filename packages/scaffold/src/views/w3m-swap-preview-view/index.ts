@@ -5,8 +5,7 @@ import {
   AccountController,
   NetworkController,
   RouterController,
-  SwapController,
-  ConstantsUtil
+  SwapController
 } from '@web3modal/core'
 import { state } from 'lit/decorators.js'
 
@@ -17,6 +16,8 @@ export class W3mSwapPreviewView extends LitElement {
   private unsubscribe: ((() => void) | undefined)[] = []
 
   // -- State & Properties -------------------------------- //
+  @state() private interval?: ReturnType<typeof setInterval>
+
   @state() private detailsOpen = true
 
   @state() private approvalTransaction = SwapController.state.approvalTransaction
@@ -43,11 +44,9 @@ export class W3mSwapPreviewView extends LitElement {
 
   @state() private gasPriceInUSD = SwapController.state.gasPriceInUSD
 
-  @state() private priceImpact = SwapController.state.priceImpact
+  @state() private inputError = SwapController.state.inputError
 
-  @state() private maxSlippage = SwapController.state.maxSlippage
-
-  @state() private providerFee = SwapController.state.providerFee
+  @state() private loading = SwapController.state.loading
 
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
@@ -77,22 +76,39 @@ export class W3mSwapPreviewView extends LitElement {
           this.toTokenPriceInUSD = newState.toTokenPriceInUSD
           this.sourceTokenAmount = newState.sourceTokenAmount ?? ''
           this.toTokenAmount = newState.toTokenAmount ?? ''
-          this.priceImpact = newState.priceImpact
-          this.maxSlippage = newState.maxSlippage
-          this.providerFee = newState.providerFee
+          this.inputError = newState.inputError
+          this.loading = newState.loading
         })
       ]
     )
   }
 
+  public override firstUpdated() {
+    SwapController.getTransaction()
+    this.refreshTransaction()
+  }
+
+  public override disconnectedCallback() {
+    this.unsubscribe.forEach(unsubscribe => unsubscribe?.())
+    clearInterval(this.interval)
+  }
+
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex flexDirection="column" padding="l" gap="s">${this.templateSwap()}</wui-flex>
+      <wui-flex flexDirection="column" .padding=${['0', 'l', 'l', 'l']} gap="s">
+        ${this.templateSwap()}
+      </wui-flex>
     `
   }
 
   // -- Private ------------------------------------------- //
+  private refreshTransaction() {
+    this.interval = setInterval(() => {
+      SwapController.getTransaction()
+    }, 10_000)
+  }
+
   private templateSwap() {
     const sourceTokenText = `${UiHelperUtil.formatNumberToLocalString(
       parseFloat(this.sourceTokenAmount)
@@ -161,15 +177,23 @@ export class W3mSwapPreviewView extends LitElement {
           justifyContent="space-between"
           gap="xs"
         >
-          <button
+          <wui-button
             class="cancel-button"
-            ?disabled=${this.transactionLoading}
+            fullWidth
+            size="lg"
+            borderRadius="xs"
+            variant="neutral"
             @click=${this.onCancelTransaction.bind(this)}
           >
             <wui-text variant="paragraph-600" color="fg-200">Cancel</wui-text>
-          </button>
-          <button
-            class="swap-button"
+          </wui-button>
+          <wui-button
+            class="action-button"
+            fullWidth
+            size="lg"
+            borderRadius="xs"
+            variant="main"
+            ?loading=${this.loading}
             ?disabled=${this.transactionLoading}
             @click=${this.onSendTransaction.bind(this)}
           >
@@ -178,33 +202,18 @@ export class W3mSwapPreviewView extends LitElement {
               : html`<wui-text variant="paragraph-600" color="inverse-100">
                   ${this.actionButtonLabel()}
                 </wui-text>`}
-          </button>
+          </wui-button>
         </wui-flex>
       </wui-flex>
     `
   }
 
   private templateDetails() {
-    const toTokenSwappedAmount =
-      this.sourceTokenPriceInUSD && this.toTokenPriceInUSD
-        ? (1 / this.toTokenPriceInUSD) * this.sourceTokenPriceInUSD
-        : 0
+    if (!this.sourceToken || !this.toToken || this.inputError) {
+      return null
+    }
 
-    return html`
-      <w3m-swap-details
-        detailsOpen=${this.detailsOpen}
-        sourceTokenSymbol=${this.sourceToken?.symbol}
-        sourceTokenPrice=${this.sourceTokenPriceInUSD}
-        toTokenSymbol=${this.toToken?.symbol}
-        toTokenSwappedAmount=${toTokenSwappedAmount}
-        toTokenAmount=${this.toTokenAmount}
-        gasPriceInUSD=${UiHelperUtil.formatNumberToLocalString(this.gasPriceInUSD, 3)}
-        .priceImpact=${this.priceImpact}
-        slippageRate=${ConstantsUtil.CONVERT_SLIPPAGE_TOLERANCE}
-        .maxSlippage=${this.maxSlippage}
-        providerFee=${this.providerFee}
-      ></w3m-swap-details>
-    `
+    return html`<w3m-swap-details .detailsOpen=${this.detailsOpen}></w3m-swap-details>`
   }
 
   private actionButtonLabel(): string {

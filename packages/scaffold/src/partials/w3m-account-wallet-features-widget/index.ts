@@ -24,7 +24,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   public static override styles = styles
 
   // -- Members ------------------------------------------- //
-  @state() private watchTokenBalance?: NodeJS.Timeout
+  @state() private watchTokenBalance?: ReturnType<typeof setInterval>
 
   private unsubscribe: (() => void)[] = []
 
@@ -100,7 +100,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
         networkSrc=${ifDefined(networkImage)}
         icon="chevronBottom"
         avatarSrc=${ifDefined(this.profileImage ? this.profileImage : undefined)}
-        ?isprofilename=${Boolean(this.profileName)}
+        profileName=${this.profileName}
       ></wui-profile-button>
       ${this.tokenBalanceTemplate()}
       <wui-flex gap="s">

@@ -1,4 +1,6 @@
 import type { W3mFrameProvider } from '@web3modal/wallet'
+import type { ProviderInterface } from '@coinbase/wallet-sdk'
+import type { SocialProvider } from './TypeUtil.js'
 
 export interface IEthersConfig {
   providers: ProviderType
@@ -10,8 +12,12 @@ export type Address = `0x${string}`
 
 export type ProviderType = {
   injected?: Provider
-  coinbase?: Provider
+  coinbase?: ProviderInterface
   email?: boolean
+  auth?: {
+    socials?: SocialProvider[]
+    showWallets?: boolean
+  }
   EIP6963?: boolean
   metadata: Metadata
 }
@@ -21,9 +27,17 @@ export interface RequestArguments {
   readonly params?: readonly unknown[] | object
 }
 
+type ProviderEventListener = {
+  connect: (connectParams: { chainId: number }) => void
+  disconnect: (error: Error) => void
+  chainChanged: (chainId: string) => void
+  accountsChanged: (accounts: string[]) => void
+  message: (message: { type: string; data: unknown }) => void
+}
+
 export interface Provider {
   request: <T>(args: RequestArguments) => Promise<T>
-  on: <T>(event: string, listener: (data: T) => void) => void
+  on<T extends keyof ProviderEventListener>(event: T, listener: ProviderEventListener[T]): void
   removeListener: <T>(event: string, listener: (data: T) => void) => void
   emit: (event: string) => void
 }

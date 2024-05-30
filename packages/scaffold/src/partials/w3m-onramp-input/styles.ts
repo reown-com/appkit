@@ -22,8 +22,8 @@ export default css`
       var(--wui-spacing-xs);
     min-width: 95px;
     border-radius: var(--FULL, 1000px);
-    border: 1px solid var(--wui-gray-glass-002);
-    background: var(--wui-gray-glass-002);
+    border: 1px solid var(--wui-color-gray-glass-002);
+    background: var(--wui-color-gray-glass-002);
     cursor: pointer;
   }
 

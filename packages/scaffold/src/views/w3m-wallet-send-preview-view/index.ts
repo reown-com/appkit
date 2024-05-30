@@ -49,7 +49,7 @@ export class W3mWalletSendPreviewView extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    return html` <wui-flex flexDirection="column" .padding=${['s', 'l', 'l', 'l'] as const}>
+    return html` <wui-flex flexDirection="column" .padding=${['0', 'l', 'l', 'l'] as const}>
       <wui-flex gap="xs" flexDirection="column" .padding=${['0', 'xs', '0', 'xs'] as const}>
         <wui-flex alignItems="center" justifyContent="space-between">
           <wui-flex flexDirection="column" gap="4xs">
@@ -103,7 +103,7 @@ export class W3mWalletSendPreviewView extends LitElement {
             class="cancelButton"
             @click=${this.onCancelClick.bind(this)}
             size="lg"
-            variant="shade"
+            variant="neutral"
           >
             Cancel
           </wui-button>
@@ -111,7 +111,7 @@ export class W3mWalletSendPreviewView extends LitElement {
             class="sendButton"
             @click=${this.onSendClick.bind(this)}
             size="lg"
-            variant="fill"
+            variant="main"
           >
             Send
           </wui-button>
