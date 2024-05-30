@@ -35,7 +35,7 @@ export default css`
   }
 
   .placeholder-bg-color-blue {
-    background-color: #47a1ff;
+    background-color: #667dff;
   }
 
   .placeholder-margin {

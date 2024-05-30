@@ -8,7 +8,7 @@ export default css`
     align-items: center;
     justify-content: flex-start;
     padding: var(--wui-spacing-s) var(--wui-spacing-m) var(--wui-spacing-s) var(--wui-spacing-s);
-    background-color: var(--wui-gray-glass-002);
+    background-color: var(--wui-color-gray-glass-002);
     border-radius: var(--wui-border-radius-xs);
   }
 

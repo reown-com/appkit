@@ -68,14 +68,18 @@ export const SIWEController = {
   },
 
   async getSession() {
-    const client = this._getClient()
-    const session = await client.getSession()
-    if (session) {
-      this.setSession(session)
-      this.setStatus('success')
-    }
+    try {
+      const client = this._getClient()
+      const session = await client.getSession()
+      if (session) {
+        this.setSession(session)
+        this.setStatus('success')
+      }
 
-    return session
+      return session
+    } catch {
+      return undefined
+    }
   },
 
   createMessage(args: SIWECreateMessageArgs) {
@@ -138,5 +142,6 @@ export const SIWEController = {
 
   setSession(session: SIWEControllerClientState['session']) {
     state.session = session
+    state.status = session ? 'success' : 'ready'
   }
 }

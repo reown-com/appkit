@@ -20,13 +20,13 @@ export interface W3mThemeVariables {
 export function getW3mThemeVariables(themeVariables?: ThemeVariables, themeType?: ThemeType) {
   if (themeType === 'light') {
     return {
-      '--w3m-accent': themeVariables?.['--w3m-accent'] || '#5773ff',
+      '--w3m-accent': themeVariables?.['--w3m-accent'] || 'hsla(231, 100%, 70%, 1)',
       '--w3m-background': '#fff'
     }
   }
 
   return {
-    '--w3m-accent': themeVariables?.['--w3m-accent'] || '#667dff',
+    '--w3m-accent': themeVariables?.['--w3m-accent'] || 'hsla(230, 100%, 67%, 1)',
     '--w3m-background': '#121313'
   }
 }

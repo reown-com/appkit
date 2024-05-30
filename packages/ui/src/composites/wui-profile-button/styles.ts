@@ -2,9 +2,9 @@ import { css } from 'lit'
 
 export default css`
   button {
-    background-color: var(--wui-gray-glass-002);
+    background-color: var(--wui-color-gray-glass-002);
     border-radius: var(--wui-border-radius-3xl);
-    border: 1px solid var(--wui-gray-glass-002);
+    border: 1px solid var(--wui-color-gray-glass-002);
     padding: var(--wui-spacing-xs) var(--wui-spacing-s) var(--wui-spacing-xs) var(--wui-spacing-xs);
     position: relative;
   }
@@ -13,7 +13,7 @@ export default css`
     width: 32px;
     height: 32px;
     box-shadow: 0 0 0 0;
-    outline: 3px solid var(--wui-gray-glass-005);
+    outline: 3px solid var(--wui-color-gray-glass-005);
   }
 
   wui-icon-box,

@@ -16,6 +16,7 @@ import { Web3ModalScaffold } from '@web3modal/scaffold'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
 import EthereumProvider, { OPTIONAL_METHODS } from '@walletconnect/ethereum-provider'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
+import { ConstantsUtil as CommonConstants } from '@web3modal/common'
 import type {
   Address,
   Metadata,
@@ -91,7 +92,7 @@ interface EIP6963ProviderDetail {
 }
 
 interface ExternalProvider extends EthereumProvider {
-  _addresses?: string[]
+  accounts: string[]
 }
 
 // -- Client --------------------------------------------------------------------
@@ -112,7 +113,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
   private options: Web3ModalClientOptions | undefined = undefined
 
-  private emailProvider?: W3mFrameProvider
+  private authProvider?: W3mFrameProvider
 
   public constructor(options: Web3ModalClientOptions) {
     const {
@@ -248,7 +249,19 @@ export class Web3Modal extends Web3ModalScaffold {
         info: Info
         provider: Provider
       }) => {
-        if (id === ConstantsUtil.EIP6963_CONNECTOR_ID && info && provider) {
+        if (id === ConstantsUtil.INJECTED_CONNECTOR_ID) {
+          const InjectedProvider = ethersConfig.injected
+          if (!InjectedProvider) {
+            throw new Error('connectionControllerClient:connectInjected - provider is undefined')
+          }
+          try {
+            EthersStoreUtil.setError(undefined)
+            await InjectedProvider.request({ method: 'eth_requestAccounts' })
+            this.setInjectedProvider(ethersConfig)
+          } catch (error) {
+            EthersStoreUtil.setError(error)
+          }
+        } else if (id === ConstantsUtil.EIP6963_CONNECTOR_ID && info && provider) {
           try {
             EthersStoreUtil.setError(undefined)
             await provider.request({ method: 'eth_requestAccounts' })
@@ -256,7 +269,7 @@ export class Web3Modal extends Web3ModalScaffold {
           } catch (error) {
             EthersStoreUtil.setError(error)
           }
-        } else if (id === ConstantsUtil.COINBASE_CONNECTOR_ID) {
+        } else if (id === ConstantsUtil.COINBASE_SDK_CONNECTOR_ID) {
           const CoinbaseProvider = ethersConfig.coinbase
           if (!CoinbaseProvider) {
             throw new Error('connectionControllerClient:connectCoinbase - connector is undefined')
@@ -269,14 +282,20 @@ export class Web3Modal extends Web3ModalScaffold {
           } catch (error) {
             EthersStoreUtil.setError(error)
           }
-        } else if (id === ConstantsUtil.EMAIL_CONNECTOR_ID) {
-          this.setEmailProvider()
+        } else if (id === ConstantsUtil.AUTH_CONNECTOR_ID) {
+          this.setAuthProvider()
         }
       },
 
-      checkInstalled(ids) {
+      checkInstalled: (ids?: string[]) => {
         if (!ids) {
           return Boolean(window.ethereum)
+        }
+
+        if (ethersConfig.injected) {
+          if (!window?.ethereum) {
+            return false
+          }
         }
 
         return ids.some(id => Boolean(window.ethereum?.[String(id)]))
@@ -291,12 +310,15 @@ export class Web3Modal extends Web3ModalScaffold {
           const { SIWEController } = await import('@web3modal/siwe')
           await SIWEController.signOut()
         }
-        if (providerType === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
-          const WalletConnectProvider = provider
-          await (WalletConnectProvider as unknown as EthereumProvider).disconnect()
+        if (
+          providerType === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID ||
+          providerType === 'coinbaseWalletSDK'
+        ) {
+          const ethProvider = provider
+          await (ethProvider as unknown as EthereumProvider).disconnect()
           // eslint-disable-next-line no-negated-condition
-        } else if (providerType === ConstantsUtil.EMAIL_CONNECTOR_ID) {
-          await this.emailProvider?.disconnect()
+        } else if (providerType === ConstantsUtil.AUTH_CONNECTOR_ID) {
+          await this.authProvider?.disconnect()
         } else {
           provider?.emit('disconnect')
         }
@@ -403,21 +425,26 @@ export class Web3Modal extends Web3ModalScaffold {
 
         throw new Error('Contract method is undefined')
       },
-
       getEnsAddress: async (value: string) => {
-        const { chainId } = EthersStoreUtil.state
-        if (chainId && chainId === 1) {
-          const ensProvider = new InfuraProvider('mainnet')
+        try {
+          const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
+          let ensName: string | null = null
+          let wcName: boolean | string = false
 
-          const name = await ensProvider.resolveName(value)
-          if (name) {
-            return name
+          if (value?.endsWith(CommonConstants.WC_NAME_SUFFIX)) {
+            wcName = await this.resolveWalletConnectName(value)
           }
 
+          if (chainId === 1) {
+            const ensProvider = new InfuraProvider('mainnet')
+
+            ensName = await ensProvider.resolveName(value)
+          }
+
+          return ensName || wcName || false
+        } catch {
           return false
         }
-
-        return false
       },
 
       getEnsAvatar: async (value: string) => {
@@ -475,8 +502,12 @@ export class Web3Modal extends Web3ModalScaffold {
       }
     }
 
-    if (ethersConfig.email) {
-      this.syncEmailConnector(w3mOptions.projectId)
+    if (ethersConfig.injected) {
+      this.checkActiveInjectedProvider(ethersConfig)
+    }
+
+    if (ethersConfig.auth || ethersConfig.email) {
+      this.syncAuthConnector(w3mOptions.projectId, ethersConfig.auth, ethersConfig.email)
     }
 
     if (ethersConfig.coinbase) {
@@ -522,7 +553,10 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   public getChainId() {
-    return EthersStoreUtil.state.chainId
+    const storeChainId = EthersStoreUtil.state.chainId
+    const networkControllerChainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
+
+    return storeChainId ?? networkControllerChainId
   }
 
   public getIsConnected() {
@@ -547,14 +581,16 @@ export class Web3Modal extends Web3ModalScaffold {
     localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
     EthersStoreUtil.reset()
 
-    if (providerType === 'eip6963') {
+    if (providerType === ConstantsUtil.AUTH_CONNECTOR_ID) {
+      await this.authProvider?.disconnect()
+    } else if (providerType === 'injected' || providerType === 'eip6963') {
       provider?.emit('disconnect')
-    } else {
-      const walletConnectProvider = provider as unknown as EthereumProvider
-      if (walletConnectProvider) {
+    } else if (providerType === 'walletConnect' || providerType === 'coinbaseWalletSDK') {
+      const ethereumProvider = provider as unknown as EthereumProvider
+      if (ethereumProvider) {
         try {
           EthersStoreUtil.setError(undefined)
-          await walletConnectProvider.disconnect()
+          await ethereumProvider.disconnect()
         } catch (error) {
           EthersStoreUtil.setError(error)
         }
@@ -636,13 +672,25 @@ export class Web3Modal extends Web3ModalScaffold {
     }
   }
 
+  private checkActiveInjectedProvider(config: ProviderType) {
+    const InjectedProvider = config.injected
+    const walletId = localStorage.getItem(EthersConstantsUtil.WALLET_ID)
+
+    if (InjectedProvider) {
+      if (walletId === ConstantsUtil.INJECTED_CONNECTOR_ID) {
+        this.setInjectedProvider(config)
+        this.watchInjected(config)
+      }
+    }
+  }
+
   private checkActiveCoinbaseProvider(config: ProviderType) {
     const CoinbaseProvider = config.coinbase as unknown as ExternalProvider
     const walletId = localStorage.getItem(EthersConstantsUtil.WALLET_ID)
 
     if (CoinbaseProvider) {
-      if (walletId === ConstantsUtil.COINBASE_CONNECTOR_ID) {
-        if (CoinbaseProvider._addresses && CoinbaseProvider._addresses?.length > 0) {
+      if (walletId === ConstantsUtil.COINBASE_SDK_CONNECTOR_ID) {
+        if (CoinbaseProvider.accounts && CoinbaseProvider.accounts?.length > 0) {
           this.setCoinbaseProvider(config)
           this.watchCoinbase(config)
         } else {
@@ -681,6 +729,23 @@ export class Web3Modal extends Web3ModalScaffold {
     }
   }
 
+  private async setInjectedProvider(config: ProviderType) {
+    window?.localStorage.setItem(EthersConstantsUtil.WALLET_ID, ConstantsUtil.INJECTED_CONNECTOR_ID)
+    const InjectedProvider = config.injected
+
+    if (InjectedProvider) {
+      const { address, chainId } = await EthersHelpersUtil.getUserInfo(InjectedProvider)
+      if (address && chainId) {
+        EthersStoreUtil.setChainId(chainId)
+        EthersStoreUtil.setProviderType('injected')
+        EthersStoreUtil.setProvider(config.injected)
+        EthersStoreUtil.setIsConnected(true)
+        this.setAddress(address)
+        this.watchCoinbase(config)
+      }
+    }
+  }
+
   private async setEIP6963Provider(provider: Provider, name: string) {
     window?.localStorage.setItem(EthersConstantsUtil.WALLET_ID, name)
 
@@ -698,14 +763,16 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private async setCoinbaseProvider(config: ProviderType) {
-    window?.localStorage.setItem(EthersConstantsUtil.WALLET_ID, ConstantsUtil.COINBASE_CONNECTOR_ID)
+    window?.localStorage.setItem(
+      EthersConstantsUtil.WALLET_ID,
+      ConstantsUtil.COINBASE_SDK_CONNECTOR_ID
+    )
     const CoinbaseProvider = config.coinbase
-
     if (CoinbaseProvider) {
       const { address, chainId } = await EthersHelpersUtil.getUserInfo(CoinbaseProvider)
       if (address && chainId) {
         EthersStoreUtil.setChainId(chainId)
-        EthersStoreUtil.setProviderType('coinbaseWallet')
+        EthersStoreUtil.setProviderType('coinbaseWalletSDK')
         EthersStoreUtil.setProvider(config.coinbase)
         EthersStoreUtil.setIsConnected(true)
         this.setAddress(address)
@@ -714,27 +781,28 @@ export class Web3Modal extends Web3ModalScaffold {
     }
   }
 
-  private async setEmailProvider() {
-    window?.localStorage.setItem(EthersConstantsUtil.WALLET_ID, ConstantsUtil.EMAIL_CONNECTOR_ID)
+  private async setAuthProvider() {
+    window?.localStorage.setItem(EthersConstantsUtil.WALLET_ID, ConstantsUtil.AUTH_CONNECTOR_ID)
 
-    if (this.emailProvider) {
+    if (this.authProvider) {
+      super.setLoading(true)
       const { address, chainId, smartAccountDeployed, preferredAccountType } =
-        await this.emailProvider.connect({ chainId: this.getChainId() })
+        await this.authProvider.connect({ chainId: this.getChainId() })
 
       const { smartAccountEnabledNetworks } =
-        await this.emailProvider.getSmartAccountEnabledNetworks()
+        await this.authProvider.getSmartAccountEnabledNetworks()
 
       this.setSmartAccountEnabledNetworks(smartAccountEnabledNetworks)
       if (address && chainId) {
         EthersStoreUtil.setChainId(chainId)
-        EthersStoreUtil.setProviderType(ConstantsUtil.EMAIL_CONNECTOR_ID as 'w3mEmail')
-        EthersStoreUtil.setProvider(this.emailProvider as unknown as CombinedProvider)
+        EthersStoreUtil.setProviderType(ConstantsUtil.AUTH_CONNECTOR_ID as 'w3mAuth')
+        EthersStoreUtil.setProvider(this.authProvider as unknown as CombinedProvider)
         EthersStoreUtil.setIsConnected(true)
         EthersStoreUtil.setAddress(address as Address)
         EthersStoreUtil.setPreferredAccountType(preferredAccountType as W3mFrameTypes.AccountType)
         this.setSmartAccountDeployed(Boolean(smartAccountDeployed))
 
-        this.watchEmail()
+        this.watchAuth()
         this.watchModal()
       }
       super.setLoading(false)
@@ -763,6 +831,45 @@ export class Web3Modal extends Web3ModalScaffold {
     const accountsChangedHandler = async (accounts: string[]) => {
       if (accounts.length > 0) {
         await this.setWalletConnectProvider()
+      }
+    }
+
+    if (provider) {
+      provider.on('disconnect', disconnectHandler)
+      provider.on('accountsChanged', accountsChangedHandler)
+      provider.on('chainChanged', chainChangedHandler)
+    }
+  }
+
+  private watchInjected(config: ProviderType) {
+    const provider = config.injected
+
+    function disconnectHandler() {
+      localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
+      EthersStoreUtil.reset()
+
+      provider?.removeListener('disconnect', disconnectHandler)
+      provider?.removeListener('accountsChanged', accountsChangedHandler)
+      provider?.removeListener('chainChanged', chainChangedHandler)
+    }
+
+    function accountsChangedHandler(accounts: string[]) {
+      const currentAccount = accounts?.[0]
+      if (currentAccount) {
+        EthersStoreUtil.setAddress(getOriginalAddress(currentAccount) as Address)
+      } else {
+        localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
+        EthersStoreUtil.reset()
+      }
+    }
+
+    function chainChangedHandler(chainId: string) {
+      if (chainId) {
+        const chain =
+          typeof chainId === 'string'
+            ? EthersHelpersUtil.hexStringToNumber(chainId)
+            : Number(chainId)
+        EthersStoreUtil.setChainId(chain)
       }
     }
 
@@ -813,7 +920,6 @@ export class Web3Modal extends Web3ModalScaffold {
   private watchCoinbase(config: ProviderType) {
     const provider = config.coinbase
     const walletId = localStorage.getItem(EthersConstantsUtil.WALLET_ID)
-
     function disconnectHandler() {
       localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
       EthersStoreUtil.reset()
@@ -834,7 +940,7 @@ export class Web3Modal extends Web3ModalScaffold {
     }
 
     function chainChangedHandler(chainId: string) {
-      if (chainId && walletId === ConstantsUtil.COINBASE_CONNECTOR_ID) {
+      if (chainId && walletId === ConstantsUtil.COINBASE_SDK_CONNECTOR_ID) {
         const chain = Number(chainId)
         EthersStoreUtil.setChainId(chain)
       }
@@ -847,13 +953,18 @@ export class Web3Modal extends Web3ModalScaffold {
     }
   }
 
-  private watchEmail() {
-    if (this.emailProvider) {
-      this.emailProvider.onRpcRequest(request => {
+  private watchAuth() {
+    if (this.authProvider) {
+      this.authProvider.onRpcRequest(request => {
         if (W3mFrameHelpers.checkIfRequestExists(request)) {
           if (!W3mFrameHelpers.checkIfRequestIsAllowed(request)) {
             if (super.isOpen()) {
-              if (!super.isTransactionStackEmpty()) {
+              if (super.isTransactionStackEmpty()) {
+                return
+              }
+              if (super.isTransactionShouldReplaceView()) {
+                super.replace('ApproveTransaction')
+              } else {
                 super.redirect('ApproveTransaction')
               }
             } else {
@@ -870,7 +981,7 @@ export class Web3Modal extends Web3ModalScaffold {
           }, 300)
         }
       })
-      this.emailProvider.onRpcResponse(response => {
+      this.authProvider.onRpcResponse(response => {
         const responseType = W3mFrameHelpers.getResponseType(response)
 
         switch (responseType) {
@@ -898,35 +1009,36 @@ export class Web3Modal extends Web3ModalScaffold {
             break
         }
       })
-      this.emailProvider.onNotConnected(() => {
+      this.authProvider.onNotConnected(() => {
         this.setIsConnected(false)
         super.setLoading(false)
       })
-      this.emailProvider.onIsConnected(({ preferredAccountType }) => {
+      this.authProvider.onIsConnected(({ preferredAccountType }) => {
         this.setIsConnected(true)
         super.setLoading(false)
         EthersStoreUtil.setPreferredAccountType(preferredAccountType as W3mFrameTypes.AccountType)
       })
 
-      this.emailProvider.onSetPreferredAccount(({ address, type }) => {
+      this.authProvider.onSetPreferredAccount(({ address, type }) => {
         if (!address) {
           return
         }
+        super.setLoading(true)
         const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
         EthersStoreUtil.setAddress(address as Address)
         EthersStoreUtil.setChainId(chainId)
         EthersStoreUtil.setIsConnected(true)
         EthersStoreUtil.setPreferredAccountType(type as W3mFrameTypes.AccountType)
-        this.syncAccount()
+        this.syncAccount().then(() => super.setLoading(false))
       })
     }
   }
 
   private watchModal() {
-    if (this.emailProvider) {
+    if (this.authProvider) {
       this.subscribeState(val => {
         if (!val.open) {
-          this.emailProvider?.rejectRpcRequest()
+          this.authProvider?.rejectRpcRequest()
         }
       })
     }
@@ -937,7 +1049,6 @@ export class Web3Modal extends Web3ModalScaffold {
     const chainId = EthersStoreUtil.state.chainId
     const isConnected = EthersStoreUtil.state.isConnected
     const preferredAccountType = EthersStoreUtil.state.preferredAccountType
-
     this.resetAccount()
 
     if (isConnected && address && chainId) {
@@ -998,6 +1109,20 @@ export class Web3Modal extends Web3ModalScaffold {
     }
   }
 
+  private async syncWalletConnectName(address: Address) {
+    try {
+      const registeredWcNames = await this.getWalletConnectName(address)
+      if (registeredWcNames[0]) {
+        const wcName = registeredWcNames[0]
+        this.setProfileName(wcName.name)
+      } else {
+        this.setProfileName(null)
+      }
+    } catch {
+      this.setProfileName(null)
+    }
+  }
+
   private async syncProfile(address: Address) {
     const chainId = EthersStoreUtil.state.chainId
 
@@ -1007,6 +1132,10 @@ export class Web3Modal extends Web3ModalScaffold {
       })
       this.setProfileName(name)
       this.setProfileImage(avatar)
+
+      if (!name) {
+        await this.syncWalletConnectName(address)
+      }
     } catch {
       if (chainId === 1) {
         const ensProvider = new InfuraProvider('mainnet')
@@ -1015,12 +1144,14 @@ export class Web3Modal extends Web3ModalScaffold {
 
         if (name) {
           this.setProfileName(name)
+        } else {
+          await this.syncWalletConnectName(address)
         }
         if (avatar) {
           this.setProfileImage(avatar)
         }
       } else {
-        this.setProfileName(null)
+        await this.syncWalletConnectName(address)
         this.setProfileImage(null)
       }
     }
@@ -1094,7 +1225,6 @@ export class Web3Modal extends Web3ModalScaffold {
               method: 'wallet_switchEthereumChain',
               params: [{ chainId: EthersHelpersUtil.numberToHexString(chain.chainId) }]
             })
-
             EthersStoreUtil.setChainId(chainId)
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
           } catch (switchError: any) {
@@ -1108,6 +1238,29 @@ export class Web3Modal extends Web3ModalScaffold {
                 WalletConnectProvider as unknown as Provider,
                 chain
               )
+            } else {
+              throw new Error('Chain is not supported')
+            }
+          }
+        }
+      } else if (providerType === ConstantsUtil.INJECTED_CONNECTOR_ID && chain) {
+        const InjectedProvider = provider
+        if (InjectedProvider) {
+          try {
+            await InjectedProvider.request({
+              method: 'wallet_switchEthereumChain',
+              params: [{ chainId: EthersHelpersUtil.numberToHexString(chain.chainId) }]
+            })
+            EthersStoreUtil.setChainId(chain.chainId)
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          } catch (switchError: any) {
+            if (
+              switchError.code === EthersConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
+              switchError.code === EthersConstantsUtil.ERROR_CODE_DEFAULT ||
+              switchError?.data?.originalError?.code ===
+                EthersConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
+            ) {
+              await EthersHelpersUtil.addEthereumChain(InjectedProvider, chain)
             } else {
               throw new Error('Chain is not supported')
             }
@@ -1137,7 +1290,7 @@ export class Web3Modal extends Web3ModalScaffold {
             }
           }
         }
-      } else if (providerType === ConstantsUtil.COINBASE_CONNECTOR_ID && chain) {
+      } else if (providerType === ConstantsUtil.COINBASE_SDK_CONNECTOR_ID && chain) {
         const CoinbaseProvider = provider
         if (CoinbaseProvider) {
           try {
@@ -1155,16 +1308,19 @@ export class Web3Modal extends Web3ModalScaffold {
                 EthersConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
             ) {
               await EthersHelpersUtil.addEthereumChain(CoinbaseProvider, chain)
+            } else {
+              throw new Error('Error switching network')
             }
           }
         }
-      } else if (providerType === ConstantsUtil.EMAIL_CONNECTOR_ID) {
-        if (this.emailProvider && chain?.chainId) {
+      } else if (providerType === ConstantsUtil.AUTH_CONNECTOR_ID) {
+        if (this.authProvider && chain?.chainId) {
           try {
-            await this.emailProvider.switchNetwork(chain?.chainId)
+            super.setLoading(true)
+            await this.authProvider.switchNetwork(chain?.chainId)
             EthersStoreUtil.setChainId(chain.chainId)
 
-            const { address, preferredAccountType } = await this.emailProvider.connect({
+            const { address, preferredAccountType } = await this.authProvider.connect({
               chainId: chain?.chainId
             })
 
@@ -1175,6 +1331,8 @@ export class Web3Modal extends Web3ModalScaffold {
             await this.syncAccount()
           } catch {
             throw new Error('Switching chain failed')
+          } finally {
+            super.setLoading(false)
           }
         }
       }
@@ -1196,9 +1354,24 @@ export class Web3Modal extends Web3ModalScaffold {
       })
     }
 
+    if (config.injected) {
+      const injectedConnectorType =
+        PresetsUtil.ConnectorTypesMap[ConstantsUtil.INJECTED_CONNECTOR_ID]
+      if (injectedConnectorType) {
+        w3mConnectors.push({
+          id: ConstantsUtil.INJECTED_CONNECTOR_ID,
+          explorerId: PresetsUtil.ConnectorExplorerIds[ConstantsUtil.INJECTED_CONNECTOR_ID],
+          imageId: PresetsUtil.ConnectorImageIds[ConstantsUtil.INJECTED_CONNECTOR_ID],
+          imageUrl: this.options?.connectorImages?.[ConstantsUtil.INJECTED_CONNECTOR_ID],
+          name: PresetsUtil.ConnectorNamesMap[ConstantsUtil.INJECTED_CONNECTOR_ID],
+          type: injectedConnectorType
+        })
+      }
+    }
+
     if (config.coinbase) {
       w3mConnectors.push({
-        id: ConstantsUtil.COINBASE_CONNECTOR_ID,
+        id: ConstantsUtil.COINBASE_SDK_CONNECTOR_ID,
         explorerId: PresetsUtil.ConnectorExplorerIds[ConstantsUtil.COINBASE_CONNECTOR_ID],
         imageId: PresetsUtil.ConnectorImageIds[ConstantsUtil.COINBASE_CONNECTOR_ID],
         imageUrl: this.options?.connectorImages?.[ConstantsUtil.COINBASE_CONNECTOR_ID],
@@ -1210,23 +1383,30 @@ export class Web3Modal extends Web3ModalScaffold {
     this.setConnectors(w3mConnectors)
   }
 
-  private async syncEmailConnector(projectId: string) {
+  private async syncAuthConnector(
+    projectId: string,
+    auth: ProviderType['auth'],
+    email: ProviderType['email']
+  ) {
     if (typeof window !== 'undefined') {
-      this.emailProvider = new W3mFrameProvider(projectId)
+      this.authProvider = new W3mFrameProvider(projectId)
 
       this.addConnector({
-        id: ConstantsUtil.EMAIL_CONNECTOR_ID,
-        type: 'EMAIL',
-        name: 'Email',
-        provider: this.emailProvider
+        id: ConstantsUtil.AUTH_CONNECTOR_ID,
+        type: 'AUTH',
+        name: 'Auth',
+        provider: this.authProvider,
+        email,
+        socials: auth?.socials,
+        showWallets: auth?.showWallets === undefined ? true : auth.showWallets
       })
 
       super.setLoading(true)
-      const isLoginEmailUsed = this.emailProvider.getLoginEmailUsed()
+      const isLoginEmailUsed = this.authProvider.getLoginEmailUsed()
       super.setLoading(isLoginEmailUsed)
-      const { isConnected } = await this.emailProvider.isConnected()
+      const { isConnected } = await this.authProvider.isConnected()
       if (isConnected) {
-        await this.setEmailProvider()
+        await this.setAuthProvider()
       } else {
         super.setLoading(false)
       }

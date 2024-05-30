@@ -123,8 +123,25 @@ export class ModalPage {
       this.page.getByText(email),
       `Expected current email: ${email} to be visible on the notification screen`
     ).toBeVisible({
-      timeout: 10_000
+      timeout: 20_000
     })
+  }
+
+  async loginWithSocial(socialMail: string, socialPass: string) {
+    const authFile = 'playwright/.auth/user.json'
+    await this.page
+      .getByTestId('connect-button')
+      .getByRole('button', { name: 'Connect Wallet' })
+      .click()
+    const discordPopupPromise = this.page.waitForEvent('popup')
+    await this.page.getByTestId('social-selector-discord').click()
+    const discordPopup = await discordPopupPromise
+    await discordPopup.fill('#uid_8', socialMail)
+    await discordPopup.fill('#uid_10', socialPass)
+    await discordPopup.locator('[type=submit]').click()
+    await discordPopup.locator('.footer_b96583 button:nth-child(2)').click()
+    await discordPopup.context().storageState({ path: authFile })
+    await discordPopup.waitForEvent('close')
   }
 
   async enterOTP(otp: string, headerTitle = 'Confirm Email') {
@@ -184,6 +201,7 @@ export class ModalPage {
     })
     await this.page.waitForTimeout(2000)
   }
+
   async clickSignatureRequestButton(name: string) {
     await this.page.frameLocator('#w3m-iframe').getByRole('button', { name, exact: true }).click()
   }
@@ -273,6 +291,8 @@ export class ModalPage {
       this.page.getByTestId('w3m-account-email-update'),
       `Expected to go to the account screen after the update`
     ).toBeVisible()
+
+    await expect(this.page.getByText(newEmailAddress)).toBeVisible()
   }
 
   async updateOtpFlow(emailAddress: string, mailsacApiKey: string, headerTitle: string) {

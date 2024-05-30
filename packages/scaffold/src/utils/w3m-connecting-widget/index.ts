@@ -140,6 +140,7 @@ export class W3mConnectingWidget extends LitElement {
 
         <wui-button
           variant="accent"
+          size="md"
           ?disabled=${!this.error && this.buffering}
           @click=${this.onTryAgain.bind(this)}
         >

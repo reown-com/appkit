@@ -10,7 +10,7 @@ export class W3mGetWalletView extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex flexDirection="column" padding="s" gap="xs">
+      <wui-flex flexDirection="column" .padding=${['0', 's', 's', 's']} gap="xs">
         ${this.recommendedWalletsTemplate()}
         <wui-list-wallet
           name="Explore all"

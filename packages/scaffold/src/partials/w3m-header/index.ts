@@ -1,5 +1,6 @@
 import type { RouterControllerState } from '@web3modal/core'
 import {
+  AccountController,
   ConnectionController,
   ConnectorController,
   EventsController,
@@ -12,6 +13,9 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
 
+// -- Constants ----------------------------------------- //
+const BETA_SCREENS = ['Swap', 'SwapSelectToken', 'SwapPreview']
+
 // -- Helpers ------------------------------------------- //
 function headings() {
   const connectorName = RouterController.state.data?.connector?.name
@@ -23,6 +27,7 @@ function headings() {
 
   return {
     Connect: `Connect ${isEmail ? 'Email' : ''} Wallet`,
+    ChooseAccountName: undefined,
     Account: undefined,
     AccountSettings: undefined,
     ConnectingExternal: name ?? 'Connect Wallet',
@@ -51,6 +56,8 @@ function headings() {
     BuyInProgress: 'Buy',
     OnRampTokenSelect: 'Select Token',
     OnRampFiatSelect: 'Select Currency',
+    RegisterAccountName: 'Choose name',
+    RegisterAccountNameSuccess: '',
     WalletReceive: 'Receive',
     WalletCompatibleNetworks: 'Compatible Networks',
     Swap: 'Swap',
@@ -58,7 +65,12 @@ function headings() {
     SwapPreview: 'Preview swap',
     WalletSend: 'Send',
     WalletSendPreview: 'Review send',
-    WalletSendSelectToken: 'Select Token'
+    WalletSendSelectToken: 'Select Token',
+    ConnectWallets: 'Connect wallet',
+    ConnectSocials: 'All socials',
+    ConnectingSocial: AccountController.state.socialProvider
+      ? AccountController.state.socialProvider
+      : 'Connect Social'
   }
 }
 
@@ -103,13 +115,12 @@ export class W3mHeader extends LitElement {
           data-testid="w3m-header-close"
         ></wui-icon-link>
       </wui-flex>
-      ${this.separatorTemplate()}
     `
   }
 
   // -- Private ------------------------------------------- //
 
-  // Tempory added to test connecting with SIWE, replace with 'WhatIsAWallet' again when approved
+  // Temporarily added to test connecting with SIWE, replace with 'WhatIsAWallet' again when approved
   private onWalletHelp() {
     EventsController.sendEvent({ type: 'track', event: 'CLICK_WALLET_HELP' })
     RouterController.push('WhatIsAWallet')
@@ -126,7 +137,14 @@ export class W3mHeader extends LitElement {
   }
 
   private titleTemplate() {
-    return html`<wui-text variant="paragraph-700" color="fg-100">${this.heading}</wui-text>`
+    const isBeta = BETA_SCREENS.includes(RouterController.state.view)
+
+    return html`
+      <wui-flex class="w3m-header-title" alignItems="center" gap="xs">
+        <wui-text variant="paragraph-700" color="fg-100">${this.heading}</wui-text>
+        ${isBeta ? html`<wui-tag variant="main">Beta</wui-tag>` : null}
+      </wui-flex>
+    `
   }
 
   private dynamicButtonTemplate() {
@@ -134,8 +152,9 @@ export class W3mHeader extends LitElement {
     const isConnectHelp = view === 'Connect'
     const isApproveTransaction = view === 'ApproveTransaction'
     const isUpgradeToSmartAccounts = view === 'UpgradeToSmartAccount'
+    const isConnectingSIWEView = view === 'ConnectingSiwe'
 
-    const shouldHideBack = isApproveTransaction || isUpgradeToSmartAccounts
+    const shouldHideBack = isApproveTransaction || isUpgradeToSmartAccounts || isConnectingSIWEView
 
     if (this.showBack && !shouldHideBack) {
       return html`<wui-icon-link
@@ -154,14 +173,6 @@ export class W3mHeader extends LitElement {
     ></wui-icon-link>`
   }
 
-  private separatorTemplate() {
-    if (!this.heading) {
-      return null
-    }
-
-    return html`<wui-separator></wui-separator>`
-  }
-
   private getPadding() {
     if (this.heading) {
       return ['l', '2l', 'l', '2l'] as const
@@ -171,7 +182,8 @@ export class W3mHeader extends LitElement {
   }
 
   private async onViewChange(view: RouterControllerState['view']) {
-    const headingEl = this.shadowRoot?.querySelector('wui-text')
+    const headingEl = this.shadowRoot?.querySelector('wui-flex.w3m-header-title')
+
     if (headingEl) {
       const preset = headings()[view]
       await headingEl.animate([{ opacity: 1 }, { opacity: 0 }], {
@@ -219,11 +231,7 @@ export class W3mHeader extends LitElement {
   }
 
   private onGoBack() {
-    if (RouterController.state.view === 'ConnectingSiwe') {
-      RouterController.push('Connect')
-    } else {
-      RouterController.goBack()
-    }
+    RouterController.goBack()
   }
 }
 

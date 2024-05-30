@@ -120,7 +120,7 @@ export class W3mAccountDefaultWidget extends LitElement {
       </wui-flex>
 
       <wui-flex flexDirection="column" gap="xs" .padding=${['0', 's', 's', 's'] as const}>
-        ${this.emailCardTemplate()} ${this.emailBtnTemplate()}
+        ${this.emailCardTemplate()} <w3m-account-auth-button></w3m-account-auth-button>
 
         <wui-list-item
           .variant=${networkImage ? 'image' : 'icon'}
@@ -181,9 +181,9 @@ export class W3mAccountDefaultWidget extends LitElement {
 
   private emailCardTemplate() {
     const type = StorageUtil.getConnectedConnector()
-    const emailConnector = ConnectorController.getEmailConnector()
+    const authConnector = ConnectorController.getAuthConnector()
     const { origin } = location
-    if (!emailConnector || type !== 'EMAIL' || origin.includes(ConstantsUtil.SECURE_SITE)) {
+    if (!authConnector || type !== 'AUTH' || origin.includes(ConstantsUtil.SECURE_SITE)) {
       return null
     }
 
@@ -210,34 +210,11 @@ export class W3mAccountDefaultWidget extends LitElement {
     }
 
     return html`
-      <wui-button size="sm" variant="shade" @click=${this.onExplorer.bind(this)}>
+      <wui-button size="md" variant="neutral" @click=${this.onExplorer.bind(this)}>
         <wui-icon size="sm" color="inherit" slot="iconLeft" name="compass"></wui-icon>
         Block Explorer
         <wui-icon size="sm" color="inherit" slot="iconRight" name="externalLink"></wui-icon>
       </wui-button>
-    `
-  }
-
-  private emailBtnTemplate() {
-    const type = StorageUtil.getConnectedConnector()
-    const emailConnector = ConnectorController.getEmailConnector()
-    if (!emailConnector || type !== 'EMAIL') {
-      return null
-    }
-    const email = emailConnector.provider.getEmail() ?? ''
-
-    return html`
-      <wui-list-item
-        variant="icon"
-        iconVariant="overlay"
-        icon="mail"
-        iconSize="sm"
-        data-testid="w3m-account-email-update"
-        ?chevron=${true}
-        @click=${() => this.onGoToUpdateEmail(email)}
-      >
-        <wui-text variant="paragraph-500" color="fg-100">${email}</wui-text>
-      </wui-list-item>
     `
   }
 
@@ -296,10 +273,6 @@ export class W3mAccountDefaultWidget extends LitElement {
   private onGoToUpgradeView() {
     EventsController.sendEvent({ type: 'track', event: 'EMAIL_UPGRADE_FROM_MODAL' })
     RouterController.push('UpgradeEmailWallet')
-  }
-
-  private onGoToUpdateEmail(email: string) {
-    RouterController.push('UpdateEmailWallet', { email })
   }
 }
 
