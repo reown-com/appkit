@@ -7,9 +7,10 @@ import {
   type ThemeMode,
   type ThemeVariables
 } from '../../index.js'
+import { getW3mThemeVariables } from '@web3modal/common'
 
 // -- Setup --------------------------------------------------------------------
-const emailProvider = {
+const authProvider = {
   syncDappData: (_args: { metadata: Metadata; sdkVersion: SdkVersion; projectId: string }) =>
     Promise.resolve(),
   syncTheme: (_args: { themeMode: ThemeMode; themeVariables: ThemeVariables }) => Promise.resolve()
@@ -21,15 +22,15 @@ const walletConnectConnector = {
   type: 'WALLET_CONNECT'
 } as const
 const externalConnector = { id: 'external', type: 'EXTERNAL' } as const
-const emailConnector = { id: 'w3mEmail', type: 'EMAIL', provider: emailProvider } as const
+const authConnector = { id: 'w3mAuth', type: 'AUTH', provider: authProvider } as const
 const announcedConnector = {
   id: 'announced',
   type: 'ANNOUNCED',
   info: { rdns: 'announced.io' }
 } as const
 
-const syncDappDataSpy = vi.spyOn(emailProvider, 'syncDappData')
-const syncThemeSpy = vi.spyOn(emailProvider, 'syncTheme')
+const syncDappDataSpy = vi.spyOn(authProvider, 'syncDappData')
+const syncThemeSpy = vi.spyOn(authProvider, 'syncTheme')
 
 const mockDappData = {
   metadata: {
@@ -84,30 +85,34 @@ describe('ConnectorController', () => {
     expect(ConnectorController.getConnector('unknown', '')).toBeUndefined()
   })
 
-  it('getEmailConnector() should not throw when email connector is not set', () => {
-    expect(ConnectorController.getEmailConnector()).toEqual(undefined)
+  it('getAuthConnector() should not throw when auth connector is not set', () => {
+    expect(ConnectorController.getAuthConnector()).toEqual(undefined)
   })
 
-  it('should trigger corresponding sync methods when adding email connector', () => {
+  it('should trigger corresponding sync methods when adding auth connector', () => {
     OptionsController.setMetadata(mockDappData.metadata)
     OptionsController.setSdkVersion(mockDappData.sdkVersion)
     OptionsController.setProjectId(mockDappData.projectId)
 
-    ConnectorController.addConnector(emailConnector)
+    ConnectorController.addConnector(authConnector)
     expect(ConnectorController.state.connectors).toEqual([
       walletConnectConnector,
       externalConnector,
       metamaskConnector,
       zerionConnector,
-      emailConnector
+      authConnector
     ])
 
     expect(syncDappDataSpy).toHaveBeenCalledWith(mockDappData)
-    expect(syncThemeSpy).toHaveBeenCalledWith({ themeMode: 'dark', themeVariables: {} })
+    expect(syncThemeSpy).toHaveBeenCalledWith({
+      themeMode: 'dark',
+      themeVariables: {},
+      w3mThemeVariables: getW3mThemeVariables({}, 'dark')
+    })
   })
 
-  it('getEmailConnector() should return emailconnector when already added', () => {
-    expect(ConnectorController.getEmailConnector()).toEqual(emailConnector)
+  it('getAuthConnector() should return authconnector when already added', () => {
+    expect(ConnectorController.getAuthConnector()).toEqual(authConnector)
   })
 
   it('getAnnouncedConnectorRdns() should not throw when no announced connector is not set', () => {
@@ -125,7 +130,7 @@ describe('ConnectorController', () => {
       externalConnector,
       metamaskConnector,
       zerionConnector,
-      emailConnector,
+      authConnector,
       announcedConnector
     ])
   })

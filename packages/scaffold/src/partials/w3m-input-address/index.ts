@@ -2,7 +2,7 @@ import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
 import { property, state } from 'lit/decorators.js'
-import { SendController } from '@web3modal/core'
+import { ConnectionController, CoreHelperUtil, SendController } from '@web3modal/core'
 import { createRef, ref } from 'lit/directives/ref.js'
 import type { Ref } from 'lit/directives/ref.js'
 
@@ -16,12 +16,14 @@ export class W3mInputAddress extends LitElement {
   public instructionElementRef: Ref<HTMLElement> = createRef()
 
   // -- State & Properties -------------------------------- //
-  @property() public receiverAddress?: string
+  @property() public value?: string
 
-  @state() private instructionHidden = Boolean(this.receiverAddress)
+  @state() private instructionHidden = Boolean(this.value)
+
+  @state() private pasting = false
 
   protected override firstUpdated() {
-    if (this.receiverAddress) {
+    if (this.value) {
       this.instructionHidden = true
     }
     this.checkHidden()
@@ -44,8 +46,9 @@ export class W3mInputAddress extends LitElement {
       >
         Type or
         <wui-button
-          size="sm"
-          variant="shade"
+          class="paste"
+          size="md"
+          variant="neutral"
           iconLeft="copy"
           @click=${this.onPasteClick.bind(this)}
         >
@@ -55,14 +58,15 @@ export class W3mInputAddress extends LitElement {
         address
       </wui-text>
       <textarea
+        spellcheck="false"
         ?disabled=${!this.instructionHidden}
         ${ref(this.inputElementRef)}
         @input=${this.onInputChange.bind(this)}
         @blur=${this.onBlur.bind(this)}
-        .value=${this.receiverAddress ?? ''}
+        .value=${this.value ?? ''}
         autocomplete="off"
       >
-${this.receiverAddress ?? ''}</textarea
+${this.value ?? ''}</textarea
       >
     </wui-flex>`
   }
@@ -105,13 +109,13 @@ ${this.receiverAddress ?? ''}</textarea
   }
 
   private onBoxClick() {
-    if (!this.receiverAddress && !this.instructionHidden) {
+    if (!this.value && !this.instructionHidden) {
       this.focusInput()
     }
   }
 
   private onBlur() {
-    if (!this.receiverAddress && this.instructionHidden) {
+    if (!this.value && this.instructionHidden && !this.pasting) {
       this.focusInstruction()
     }
   }
@@ -123,19 +127,43 @@ ${this.receiverAddress ?? ''}</textarea
   }
 
   private async onPasteClick() {
+    this.pasting = true
+
     const text = await navigator.clipboard.readText()
     SendController.setReceiverAddress(text)
+    this.focusInput()
   }
 
   private onInputChange(e: InputEvent) {
+    this.pasting = false
+
     const element = e.target as HTMLInputElement
 
     if (element.value && !this.instructionHidden) {
       this.focusInput()
     }
-
-    SendController.setReceiverAddress(element.value)
+    SendController.setLoading(true)
+    this.onDebouncedSearch(element.value)
   }
+
+  private onDebouncedSearch = CoreHelperUtil.debounce(async (value: string) => {
+    const address = await ConnectionController.getEnsAddress(value)
+    SendController.setLoading(false)
+
+    if (address) {
+      SendController.setReceiverProfileName(value)
+      SendController.setReceiverAddress(address)
+      const avatar = await ConnectionController.getEnsAvatar(value)
+
+      if (avatar) {
+        SendController.setReceiverProfileImageUrl(avatar)
+      }
+    } else {
+      SendController.setReceiverAddress(value)
+      SendController.setReceiverProfileName(undefined)
+      SendController.setReceiverProfileImageUrl(undefined)
+    }
+  })
 }
 
 declare global {

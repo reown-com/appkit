@@ -12,11 +12,11 @@ export default {
     networkSrc: networkImageSrc,
     avatarSrc: avatarImageSrc,
     address,
-    isProfileName: false
+    profileName: 'johndoe.eth'
   },
   argTypes: {
-    isProfileName: {
-      control: { type: 'boolean' }
+    profileName: {
+      control: { type: 'text' }
     }
   }
 } as Component
@@ -24,7 +24,7 @@ export default {
 export const Default: Component = {
   render: args =>
     html`<wui-profile-button
-      ?isProfileName=${args.isProfileName}
+      profileName=${args.profileName}
       .networkSrc=${args.networkSrc}
       .avatarSrc=${args.avatarSrc}
       address=${args.address}

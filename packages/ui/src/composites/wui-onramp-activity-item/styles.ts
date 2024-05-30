@@ -17,7 +17,7 @@ export default css`
   }
 
   :host > wui-flex:hover {
-    background-color: var(--wui-gray-glass-002);
+    background-color: var(--wui-color-gray-glass-002);
   }
 
   .purchase-image-container {
@@ -44,7 +44,7 @@ export default css`
     position: absolute;
     inset: 0;
     border-radius: calc(var(--wui-icon-box-size-lg) / 2);
-    box-shadow: inset 0 0 0 1px var(--wui-gray-glass-005);
+    box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-005);
   }
 
   .purchase-image-container wui-icon-box {

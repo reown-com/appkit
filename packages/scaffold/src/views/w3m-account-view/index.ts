@@ -5,11 +5,12 @@ import { LitElement, html } from 'lit'
 @customElement('w3m-account-view')
 export class W3mAccountView extends LitElement {
   // -- Render -------------------------------------------- //
+
   public override render() {
     const type = StorageUtil.getConnectedConnector()
 
     return html`
-      ${OptionsController.state.enableWalletFeatures && type === 'EMAIL'
+      ${OptionsController.state.enableWalletFeatures && type === 'AUTH'
         ? this.walletFeaturesTemplate()
         : this.defaultTemplate()}
     `

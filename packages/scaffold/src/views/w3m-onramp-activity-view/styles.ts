@@ -13,6 +13,10 @@ export default css`
     justify-content: flex-start;
   }
 
+  :host > wui-flex::-webkit-scrollbar {
+    display: none;
+  }
+
   :host > wui-flex > wui-flex {
     width: 100%;
   }

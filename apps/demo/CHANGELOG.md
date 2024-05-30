@@ -1,10 +1,93 @@
 # @apps/demo
 
+## 4.2.3
+
+### Patch Changes
+
+- feat: - feat: restricted ens names. fix: iat set automatically if not present in messageParams. Adds siwe config handlers
+
+- Updated dependencies []:
+  - @web3modal/wagmi@4.2.3
+
+## 4.2.3-alpha.0
+
+### Patch Changes
+
+- feat: add support for coinbase smart accounts
+
+- Updated dependencies []:
+  - @web3modal/wagmi@4.2.3-alpha.0
+
+## 4.2.2
+
+### Patch Changes
+
+- feat: social login refactor. wagmi sendCalls support. refactor theme variables
+
+- Updated dependencies []:
+  - @web3modal/wagmi@4.2.2
+
+## 4.2.1
+
+### Patch Changes
+
+- Hotfix to support injected and announced wallets in in app browsers
+
+- Updated dependencies []:
+  - @web3modal/wagmi@4.2.1
+
+## 4.2.0
+
+### Patch Changes
+
+- release: 4.2.0 version release
+
+- Updated dependencies []:
+  - @web3modal/wagmi@4.2.0
+
+## 4.2.0-alpha.0
+
+### Patch Changes
+
+- feat: 4.2.0-alpha release
+
+- Updated dependencies []:
+  - @web3modal/wagmi@4.2.0-alpha.0
+
+## 4.2.0-03e4f4a8.2
+
+### Patch Changes
+
+- fix: Issue with SIWE + Wagmi sign out. Fixes issue where signature verification fail resulted in empty open modal'
+
+- Updated dependencies []:
+  - @web3modal/wagmi@4.2.0-03e4f4a8.2
+
+## 4.2.0-448f7f4.1
+
+### Minor Changes
+
+- refactor: improvements to all features (siwe, send, swaps, ui and ux)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @web3modal/wagmi@4.2.0-448f7f4.1
+
+## 4.1.12-910a844.0
+
+### Patch Changes
+
+- refactor: sync theme with secure site
+
+- Updated dependencies []:
+  - @web3modal/wagmi@4.1.12-910a844.0
+
 ## 4.1.11
 
 ### Patch Changes
 
-- refactor: Solana exported helper methods and proram instruction improvements
+- refactor: Solana exported helper methods and program instruction improvements
 - refactor: email and smart account improvements
 - refactor: unit test CI check improvements
 - feat: convert
@@ -43,7 +126,7 @@
 
 ### Patch Changes
 
-- Hotfix for inccorect state of w3m-button when email is enabled
+- Hotfix for incorrect state of w3m-button when email is enabled
 
 - Updated dependencies []:
   - @web3modal/wagmi@4.1.7

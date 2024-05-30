@@ -1,22 +1,26 @@
-import { EthereumProvider } from '@walletconnect/ethereum-provider'
+/* eslint-disable no-console */
+import { EthereumProvider, OPTIONAL_METHODS } from '@walletconnect/ethereum-provider'
 import {
   connect,
   disconnect,
   signMessage,
   getBalance,
-  getEnsAvatar,
+  getEnsAvatar as wagmiGetEnsAvatar,
   getEnsName,
   switchChain,
   watchAccount,
   watchConnectors,
   waitForTransactionReceipt,
   estimateGas as wagmiEstimateGas,
-  getAccount
+  writeContract as wagmiWriteContract,
+  getAccount,
+  getEnsAddress as wagmiGetEnsAddress,
+  reconnect
 } from '@wagmi/core'
 import { mainnet } from 'viem/chains'
 import { prepareTransactionRequest, sendTransaction as wagmiSendTransaction } from '@wagmi/core'
 import type { Chain } from '@wagmi/core/chains'
-import type { GetAccountReturnType } from '@wagmi/core'
+import type { GetAccountReturnType, GetEnsAddressReturnType } from '@wagmi/core'
 import type {
   CaipAddress,
   CaipNetwork,
@@ -27,13 +31,16 @@ import type {
   NetworkControllerClient,
   PublicStateControllerState,
   SendTransactionArgs,
-  Token
+  SocialProvider,
+  Token,
+  WriteContractArgs
 } from '@web3modal/scaffold'
 import { formatUnits, parseUnits } from 'viem'
 import type { Hex } from 'viem'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
+import { ConstantsUtil as CommonConstants } from '@web3modal/common'
 import {
   getCaipDefaultChain,
   getEmailCaipNetworks,
@@ -44,6 +51,7 @@ import type { W3mFrameProvider, W3mFrameTypes } from '@web3modal/wallet'
 import { NetworkUtil } from '@web3modal/common'
 import type { defaultWagmiConfig as coreConfig } from './utils/defaultWagmiCoreConfig.js'
 import type { defaultWagmiConfig as reactConfig } from './utils/defaultWagmiReactConfig.js'
+import { normalize } from 'viem/ens'
 
 // -- Types ---------------------------------------------------------------------
 export type CoreConfig = ReturnType<typeof coreConfig>
@@ -100,7 +108,7 @@ export class Web3Modal extends Web3ModalScaffold {
           const connections = new Map(wagmiConfig.state.connections)
           const connection = connections.get(wagmiConfig.state.current || '')
 
-          if (connection?.connector?.id === ConstantsUtil.EMAIL_CONNECTOR_ID) {
+          if (connection?.connector?.id === ConstantsUtil.AUTH_CONNECTOR_ID) {
             resolve(getEmailCaipNetworks())
           } else if (connection?.connector?.id === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
             const connector = wagmiConfig.connectors.find(
@@ -131,7 +139,60 @@ export class Web3Modal extends Web3ModalScaffold {
         })
 
         const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
+        // Make sure client uses ethereum provider version that supports `authenticate`
+        if (siweConfig?.options?.enabled && typeof provider?.authenticate === 'function') {
+          const { SIWEController, getDidChainId, getDidAddress } = await import('@web3modal/siwe')
+          const siweParams = await siweConfig.getMessageParams()
+          // @ts-expect-error - setting requested chains beforehand avoids wagmi auto disconnecting the session when `connect` is called because it things chains are stale
+          await connector.setRequestedChainsIds(siweParams.chains)
 
+          const result = await provider.authenticate({
+            nonce: await siweConfig.getNonce(),
+            methods: [...OPTIONAL_METHODS],
+            ...siweParams
+          })
+
+          // Auths is an array of signed CACAO objects https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-74.md
+          const signedCacao = result?.auths?.[0]
+          if (signedCacao) {
+            const { p, s } = signedCacao
+            const cacaoChainId = getDidChainId(p.iss) || ''
+            const address = getDidAddress(p.iss)
+            if (address && cacaoChainId) {
+              SIWEController.setSession({
+                address,
+                chainId: parseInt(cacaoChainId, 10)
+              })
+            }
+            try {
+              // Kicks off verifyMessage and populates external states
+              const message = provider.signer.client.formatAuthMessage({
+                request: p,
+                iss: p.iss
+              })
+
+              await SIWEController.verifyMessage({
+                message,
+                signature: s.s,
+                cacao: signedCacao
+              })
+            } catch (error) {
+              // eslint-disable-next-line no-console
+              console.error('Error verifying message', error)
+              // eslint-disable-next-line no-console
+              await provider.disconnect().catch(console.error)
+              // eslint-disable-next-line no-console
+              await SIWEController.signOut().catch(console.error)
+              throw error
+            }
+            /*
+             * Unassign the connector from the wagmiConfig and allow connect() to reassign it in the next step
+             * this avoids case where wagmi throws because the connector is already connected
+             * what we need connect() to do is to only setup internal event listeners
+             */
+            this.wagmiConfig.state.current = ''
+          }
+        }
         await connect(this.wagmiConfig, { connector, chainId })
       },
 
@@ -147,6 +208,16 @@ export class Web3Modal extends Web3ModalScaffold {
         const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
 
         await connect(this.wagmiConfig, { connector, chainId })
+      },
+
+      reconnectExternal: async ({ id }) => {
+        const connector = wagmiConfig.connectors.find(c => c.id === id)
+
+        if (!connector) {
+          throw new Error('connectionControllerClient:connectExternal - connector is undefined')
+        }
+
+        await reconnect(this.wagmiConfig, { connectors: [connector] })
       },
 
       checkInstalled: ids => {
@@ -169,6 +240,10 @@ export class Web3Modal extends Web3ModalScaffold {
 
       disconnect: async () => {
         await disconnect(this.wagmiConfig)
+        if (siweConfig?.options?.signOutOnDisconnect) {
+          const { SIWEController } = await import('@web3modal/siwe')
+          await SIWEController.signOut()
+        }
       },
 
       signMessage: async message => signMessage(this.wagmiConfig, { message }),
@@ -208,6 +283,58 @@ export class Web3Modal extends Web3ModalScaffold {
         return tx
       },
 
+      writeContract: async (data: WriteContractArgs) => {
+        const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
+
+        const tx = await wagmiWriteContract(wagmiConfig, {
+          chainId,
+          address: data.tokenAddress,
+          abi: data.abi,
+          functionName: data.method,
+          args: [data.receiverAddress, data.tokenAmount]
+        })
+
+        return tx
+      },
+
+      getEnsAddress: async (value: string) => {
+        try {
+          const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
+          let ensName: boolean | GetEnsAddressReturnType = false
+          let wcName: boolean | string = false
+
+          if (value?.endsWith(CommonConstants.WC_NAME_SUFFIX)) {
+            wcName = await this.resolveWalletConnectName(value)
+          }
+
+          if (chainId === mainnet.id) {
+            ensName = await wagmiGetEnsAddress(this.wagmiConfig, {
+              name: normalize(value),
+              chainId
+            })
+          }
+
+          return ensName || wcName || false
+        } catch {
+          return false
+        }
+      },
+
+      getEnsAvatar: async (value: string) => {
+        const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
+
+        if (chainId !== mainnet.id) {
+          return false
+        }
+
+        const avatar = await wagmiGetEnsAvatar(this.wagmiConfig, {
+          name: normalize(value),
+          chainId
+        })
+
+        return avatar || false
+      },
+
       parseUnits,
 
       formatUnits
@@ -228,7 +355,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
     this.syncRequestedNetworks([...wagmiConfig.chains])
     this.syncConnectors([...wagmiConfig.connectors])
-    this.initEmailConnectorListeners([...wagmiConfig.connectors])
+    this.initAuthConnectorListeners([...wagmiConfig.connectors])
 
     watchConnectors(this.wagmiConfig, {
       onChange: connectors => this.syncConnectors(connectors)
@@ -329,6 +456,20 @@ export class Web3Modal extends Web3ModalScaffold {
     }
   }
 
+  private async syncWalletConnectName(address: Hex) {
+    try {
+      const registeredWcNames = await this.getWalletConnectName(address)
+      if (registeredWcNames[0]) {
+        const wcName = registeredWcNames[0]
+        this.setProfileName(wcName.name)
+      } else {
+        this.setProfileName(null)
+      }
+    } catch {
+      this.setProfileName(null)
+    }
+  }
+
   private async syncProfile(address: Hex, chainId: Chain['id']) {
     try {
       const { name, avatar } = await this.fetchIdentity({
@@ -336,21 +477,28 @@ export class Web3Modal extends Web3ModalScaffold {
       })
       this.setProfileName(name)
       this.setProfileImage(avatar)
+
+      if (!name) {
+        await this.syncWalletConnectName(address)
+      }
     } catch {
       if (chainId === mainnet.id) {
         const profileName = await getEnsName(this.wagmiConfig, { address, chainId })
         if (profileName) {
           this.setProfileName(profileName)
-          const profileImage = await getEnsAvatar(this.wagmiConfig, {
+          const profileImage = await wagmiGetEnsAvatar(this.wagmiConfig, {
             name: profileName,
             chainId
           })
           if (profileImage) {
             this.setProfileImage(profileImage)
           }
+        } else {
+          await this.syncWalletConnectName(address)
+          this.setProfileImage(null)
         }
       } else {
-        this.setProfileName(null)
+        await this.syncWalletConnectName(address)
         this.setProfileImage(null)
       }
     }
@@ -405,14 +553,14 @@ export class Web3Modal extends Web3ModalScaffold {
     const coinbaseSDKId = ConstantsUtil.COINBASE_SDK_CONNECTOR_ID
 
     // Check if coinbase injected connector is present
-    const coinbaseConnector = filteredConnectors.find(
-      c => c.id === ConstantsUtil.CONNECTOR_RDNS_MAP[ConstantsUtil.COINBASE_CONNECTOR_ID]
-    )
+    const coinbaseConnector = filteredConnectors.find(c => c.id === coinbaseSDKId)
 
     filteredConnectors.forEach(({ id, name, type, icon }) => {
       // If coinbase injected connector is present, skip coinbase sdk connector.
-      const isCoinbaseRepeated = coinbaseConnector && id === coinbaseSDKId
-      const shouldSkip = isCoinbaseRepeated || ConstantsUtil.EMAIL_CONNECTOR_ID === id
+      const isCoinbaseRepeated =
+        coinbaseConnector &&
+        id === ConstantsUtil.CONNECTOR_RDNS_MAP[ConstantsUtil.COINBASE_CONNECTOR_ID]
+      const shouldSkip = isCoinbaseRepeated || ConstantsUtil.AUTH_CONNECTOR_ID === id
       if (!shouldSkip) {
         w3mConnectors.push({
           id,
@@ -428,35 +576,44 @@ export class Web3Modal extends Web3ModalScaffold {
       }
     })
     this.setConnectors(w3mConnectors)
-    this.syncEmailConnector(filteredConnectors)
+    this.syncAuthConnector(filteredConnectors)
   }
 
-  private async syncEmailConnector(
+  private async syncAuthConnector(
     connectors: Web3ModalClientOptions<CoreConfig>['wagmiConfig']['connectors']
   ) {
-    const emailConnector = connectors.find(({ id }) => id === ConstantsUtil.EMAIL_CONNECTOR_ID)
-    if (emailConnector) {
-      const provider = await emailConnector.getProvider()
+    const authConnector = connectors.find(
+      ({ id }) => id === ConstantsUtil.AUTH_CONNECTOR_ID
+    ) as unknown as Web3ModalClientOptions<CoreConfig>['wagmiConfig']['connectors'][0] & {
+      email: boolean
+      socials: SocialProvider[]
+      showWallets?: boolean
+    }
+    if (authConnector) {
+      const provider = await authConnector.getProvider()
       this.addConnector({
-        id: ConstantsUtil.EMAIL_CONNECTOR_ID,
-        type: 'EMAIL',
-        name: 'Email',
-        provider
+        id: ConstantsUtil.AUTH_CONNECTOR_ID,
+        type: 'AUTH',
+        name: 'Auth',
+        provider,
+        email: authConnector.email,
+        socials: authConnector.socials,
+        showWallets: authConnector?.showWallets === undefined ? true : authConnector.showWallets
       })
     }
   }
 
-  private async initEmailConnectorListeners(
+  private async initAuthConnectorListeners(
     connectors: Web3ModalClientOptions<CoreConfig>['wagmiConfig']['connectors']
   ) {
-    const emailConnector = connectors.find(({ id }) => id === ConstantsUtil.EMAIL_CONNECTOR_ID)
-    if (emailConnector) {
-      await this.listenEmailConnector(emailConnector)
-      await this.listenModal(emailConnector)
+    const authConnector = connectors.find(({ id }) => id === ConstantsUtil.AUTH_CONNECTOR_ID)
+    if (authConnector) {
+      await this.listenAuthConnector(authConnector)
+      await this.listenModal(authConnector)
     }
   }
 
-  private async listenEmailConnector(
+  private async listenAuthConnector(
     connector: Web3ModalClientOptions<CoreConfig>['wagmiConfig']['connectors'][number]
   ) {
     if (typeof window !== 'undefined' && connector) {
@@ -474,7 +631,12 @@ export class Web3Modal extends Web3ModalScaffold {
         if (W3mFrameHelpers.checkIfRequestExists(request)) {
           if (!W3mFrameHelpers.checkIfRequestIsAllowed(request)) {
             if (super.isOpen()) {
-              if (!super.isTransactionStackEmpty()) {
+              if (super.isTransactionStackEmpty()) {
+                return
+              }
+              if (super.isTransactionShouldReplaceView()) {
+                super.replace('ApproveTransaction')
+              } else {
                 super.redirect('ApproveTransaction')
               }
             } else {

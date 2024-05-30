@@ -3,17 +3,21 @@ import '@web3modal/polyfills'
 import type { CreateConfigParameters, CreateConnectorFn } from '@wagmi/core'
 import { createConfig } from '@wagmi/core'
 import { coinbaseWallet, walletConnect, injected } from '@wagmi/connectors'
-
-import { emailConnector } from '../connectors/EmailConnector.js'
+import { authConnector } from '../connectors/AuthConnector.js'
 import { getTransport } from './helpers.js'
+import type { SocialProvider } from '@web3modal/scaffold-utils'
 
 export type ConfigOptions = Partial<CreateConfigParameters> & {
   chains: CreateConfigParameters['chains']
   projectId: string
-  enableInjected?: boolean
   enableEIP6963?: boolean
   enableCoinbase?: boolean
   enableEmail?: boolean
+  auth?: {
+    socials?: SocialProvider[]
+    showWallets?: boolean
+  }
+  enableInjected?: boolean
   enableWalletConnect?: boolean
   metadata: {
     name: string
@@ -21,15 +25,19 @@ export type ConfigOptions = Partial<CreateConfigParameters> & {
     url: string
     icons: string[]
   }
+  coinbasePreference?: 'all' | 'smartWalletOnly' | 'eoaOnly'
 }
 
 export function defaultWagmiConfig({
   projectId,
   chains,
   metadata,
-  enableInjected,
   enableCoinbase,
   enableEmail,
+  enableInjected,
+  auth = {
+    showWallets: true
+  },
   enableWalletConnect,
   enableEIP6963,
   ...wagmiConfig
@@ -53,16 +61,25 @@ export function defaultWagmiConfig({
   if (enableCoinbase !== false) {
     connectors.push(
       coinbaseWallet({
+        version: '4',
         appName: metadata?.name ?? 'Unknown',
         appLogoUrl: metadata?.icons[0] ?? 'Unknown',
-        enableMobileWalletLink: true
+        preference: wagmiConfig.coinbasePreference || 'all'
       })
     )
   }
 
   // Dissabled by default
-  if (enableEmail === true) {
-    connectors.push(emailConnector({ chains: [...chains], options: { projectId } }))
+  if (enableEmail || auth?.socials) {
+    connectors.push(
+      authConnector({
+        chains: [...chains],
+        options: { projectId },
+        socials: auth?.socials,
+        email: enableEmail,
+        showWallets: auth.showWallets
+      })
+    )
   }
 
   return createConfig({

@@ -9,7 +9,13 @@ export type Status = 'reconnecting' | 'connected' | 'disconnected'
 
 export interface EthersStoreUtilState {
   provider?: Provider | CombinedProvider
-  providerType?: 'walletConnect' | 'injected' | 'coinbaseWallet' | 'eip6963' | 'w3mEmail'
+  providerType?:
+    | 'walletConnect'
+    | 'injected'
+    | 'coinbaseWallet'
+    | 'eip6963'
+    | 'w3mAuth'
+    | 'coinbaseWalletSDK'
   address?: Address
   chainId?: number
   error?: unknown

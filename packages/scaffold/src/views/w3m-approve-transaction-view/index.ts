@@ -8,6 +8,7 @@ import {
   ThemeController,
   RouterController
 } from '@web3modal/core'
+import { getW3mThemeVariables } from '@web3modal/common'
 
 // -- Variables ------------------------------------------- //
 const PAGE_HEIGHT = 400
@@ -53,11 +54,22 @@ export class W3mApproveTransactionView extends LitElement {
     await this.syncTheme()
 
     this.iframe.style.display = 'block'
-    this.bodyObserver = new ResizeObserver(() => {
-      this.iframe.style.width = `${PAGE_WIDTH}px`
+    this.bodyObserver = new ResizeObserver(entries => {
+      const contentBoxSize = entries?.[0]?.contentBoxSize
+      const width = contentBoxSize?.[0]?.inlineSize
+
       this.iframe.style.height = `${PAGE_HEIGHT}px`
-      this.iframe.style.left = `calc(50% - ${PAGE_WIDTH / 2}px)`
-      this.iframe.style.top = `calc(50% - ${PAGE_HEIGHT / 2}px + ${HEADER_HEIGHT / 2}px)`
+      if (width && width <= 430) {
+        this.iframe.style.width = '100%'
+        this.iframe.style.left = '0px'
+        this.iframe.style.bottom = '0px'
+        this.iframe.style.top = 'unset'
+      } else {
+        this.iframe.style.width = `${PAGE_WIDTH}px`
+        this.iframe.style.left = `calc(50% - ${PAGE_WIDTH / 2}px)`
+        this.iframe.style.top = `calc(50% - ${PAGE_HEIGHT / 2}px + ${HEADER_HEIGHT / 2}px)`
+        this.iframe.style.bottom = 'unset'
+      }
       this.ready = true
     })
     this.bodyObserver.observe(window.document.body)
@@ -94,10 +106,15 @@ export class W3mApproveTransactionView extends LitElement {
   }
 
   private async syncTheme() {
-    const emailConnector = ConnectorController.getEmailConnector()
-    if (emailConnector) {
-      await emailConnector.provider.syncTheme({
-        themeVariables: ThemeController.getSnapshot().themeVariables
+    const authConnector = ConnectorController.getAuthConnector()
+
+    if (authConnector) {
+      const themeMode = ThemeController.getSnapshot().themeMode
+      const themeVariables = ThemeController.getSnapshot().themeVariables
+
+      await authConnector.provider.syncTheme({
+        themeVariables,
+        w3mThemeVariables: getW3mThemeVariables(themeVariables, themeMode)
       })
     }
   }

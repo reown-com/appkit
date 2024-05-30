@@ -3,17 +3,21 @@ import '@web3modal/polyfills'
 import type { CreateConfigParameters, CreateConnectorFn, Config } from 'wagmi'
 import { createConfig } from 'wagmi'
 import { coinbaseWallet, walletConnect, injected } from 'wagmi/connectors'
-
-import { emailConnector } from '../connectors/EmailConnector.js'
+import { authConnector } from '../connectors/AuthConnector.js'
 import { getTransport } from './helpers.js'
+import type { SocialProvider } from '@web3modal/scaffold-utils'
 
 export type ConfigOptions = Partial<CreateConfigParameters> & {
   chains: CreateConfigParameters['chains']
   projectId: string
-  enableInjected?: boolean
   enableEIP6963?: boolean
   enableCoinbase?: boolean
   enableEmail?: boolean
+  auth?: {
+    socials?: SocialProvider[]
+    showWallets?: boolean
+  }
+  enableInjected?: boolean
   enableWalletConnect?: boolean
   metadata: {
     name: string
@@ -21,15 +25,19 @@ export type ConfigOptions = Partial<CreateConfigParameters> & {
     url: string
     icons: string[]
   }
+  coinbasePreference?: 'all' | 'smartWalletOnly' | 'eoaOnly'
 }
 
 export function defaultWagmiConfig({
   projectId,
   chains,
   metadata,
-  enableInjected,
   enableCoinbase,
   enableEmail,
+  enableInjected,
+  auth = {
+    showWallets: true
+  },
   enableWalletConnect,
   enableEIP6963,
   ...wagmiConfig
@@ -53,16 +61,33 @@ export function defaultWagmiConfig({
   if (enableCoinbase !== false) {
     connectors.push(
       coinbaseWallet({
+        version: '4',
         appName: metadata?.name ?? 'Unknown',
         appLogoUrl: metadata?.icons[0] ?? 'Unknown',
-        enableMobileWalletLink: true
+        /**
+         * Determines which wallet options to display in Coinbase Wallet SDK.
+         * @property preference
+         *   - `all`: Show both smart wallet and EOA options.
+         *   - `smartWalletOnly`: Show only smart wallet options.
+         *   - `eoaOnly`: Show only EOA options.
+         * @see https://www.smartwallet.dev/sdk/v3-to-v4-changes#parameters
+         */
+        preference: wagmiConfig.coinbasePreference || 'all'
       })
     )
   }
 
   // Dissabled by default
-  if (enableEmail === true) {
-    connectors.push(emailConnector({ chains: [...chains], options: { projectId } }))
+  if (enableEmail || auth?.socials) {
+    connectors.push(
+      authConnector({
+        chains: [...chains],
+        options: { projectId },
+        socials: auth?.socials,
+        email: enableEmail,
+        showWallets: auth.showWallets
+      })
+    )
   }
 
   return createConfig({

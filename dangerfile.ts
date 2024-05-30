@@ -14,6 +14,7 @@ const PACKAGE_VERSION = ConstantsUtil.VERSION
 const RELATIVE_IMPORT_SAME_DIR = `'./`
 const RELATIVE_IMPORT_PARENT_DIR = `'../`
 const RELATIVE_IMPORT_EXTENSION = `.js'`
+const PRIVATE_FUNCTION_REGEX = /private\s+(\w+)\s*\(\s*\)/g
 
 // -- Data --------------------------------------------------------------------
 const { modified_files, created_files, deleted_files, diffForFile } = danger.git
@@ -50,7 +51,9 @@ checkPackageJsons()
 async function checkUiPackage() {
   const created_ui_components = created_files.filter(f => f.includes('ui/src/components'))
   const created_ui_composites = created_files.filter(f => f.includes('ui/src/composites'))
+  const deleted_ui_composites = deleted_files.filter(f => f.includes('ui/src/composites'))
   const created_ui_layout = created_files.filter(f => f.includes('ui/src/layout'))
+  const deleted_ui_layout = deleted_files.filter(f => f.includes('ui/src/layout'))
   const created_ui_files = [
     ...created_ui_components,
     ...created_ui_composites,
@@ -82,7 +85,9 @@ async function checkUiPackage() {
       fail(`${f} is missing \`${STATE_PROPERTIES_COMMENT}\` comment`)
     }
 
-    if (diff?.added.includes('private ') && !diff.added.includes(PRIVATE_COMMENT)) {
+    const privateFunctionsAdded = diff?.added.match(PRIVATE_FUNCTION_REGEX)?.length
+
+    if (privateFunctionsAdded && !diff?.added.includes(PRIVATE_COMMENT)) {
       message(
         `${f} is missing \`${PRIVATE_COMMENT}\` comment, but seems to have private members. Check if this is correct`
       )
@@ -115,17 +120,26 @@ async function checkUiPackage() {
 
   const ui_index = modified_files.find(f => f.includes('ui/index.ts'))
   const ui_index_diff = ui_index ? await diffForFile(ui_index) : undefined
-  const jsx_index = modified_files.find(f => f.includes('ui/utils/JSXTypesUtil.ts'))
-  const jsx_index_diff = jsx_index ? await diffForFile(jsx_index) : undefined
+  const types_util_index = modified_files.find(f => f.includes('ui/src/utils/JSXTypeUtil.ts'))
+  const types_util_diff = types_util_index ? await diffForFile(types_util_index) : undefined
   const created_ui_components_index_ts = created_ui_components.filter(f => f.endsWith('index.ts'))
   const created_ui_composites_index_ts = created_ui_composites.filter(f => f.endsWith('index.ts'))
+  const deleted_ui_composites_index_ts = deleted_ui_composites.filter(f => f.endsWith('index.ts'))
+  const is_new_composites_added =
+    created_ui_composites_index_ts.length > deleted_ui_composites_index_ts.length
   const created_ui_layout_index_ts = created_ui_layout.filter(f => f.endsWith('index.ts'))
+  const deleted_ui_layout_index_ts = deleted_ui_layout.filter(f => f.endsWith('index.ts'))
+  const is_new_layout_added = created_ui_layout_index_ts.length > deleted_ui_layout_index_ts.length
 
   if (created_ui_components_index_ts.length && !ui_index_diff?.added.includes('src/components')) {
     fail('New components were added, but not exported in ui/index.ts')
   }
 
-  if (created_ui_composites_index_ts.length && !ui_index_diff?.added.includes('src/composites')) {
+  if (is_new_composites_added && !types_util_diff) {
+    fail('New composites were added, but JSXTypeUtil.ts is not modified')
+  }
+
+  if (is_new_composites_added && !types_util_diff?.added.includes('../composites')) {
     fail('New composites were added, but not exported in ui/index.ts')
   }
 
@@ -133,7 +147,7 @@ async function checkUiPackage() {
     fail('New layout components were added, but not exported in ui/index.ts')
   }
 
-  if (created_ui_components_index_ts.length && !jsx_index_diff?.added.includes('../components')) {
+  if (created_ui_components_index_ts.length && !types_util_diff?.added.includes('../components')) {
     fail(
       `New components were added, but not exported in ui/utils/JSXTypeUtil.ts: ${created_ui_components.join(
         ', '
@@ -141,11 +155,11 @@ async function checkUiPackage() {
     )
   }
 
-  if (created_ui_composites_index_ts.length && !jsx_index_diff?.added.includes('../composites')) {
+  if (is_new_composites_added && !types_util_diff?.added.includes('../composites')) {
     fail('New composites were added, but not exported in ui/utils/JSXTypeUtil.ts')
   }
 
-  if (created_ui_layout_index_ts.length && !jsx_index_diff?.added.includes('../layout')) {
+  if (is_new_layout_added && !types_util_diff?.added.includes('../layout')) {
     fail('New layout components were added, but not exported in ui/utils/JSXTypeUtil.ts')
   }
 
@@ -153,7 +167,7 @@ async function checkUiPackage() {
     fail('New components were added, but no stories were created')
   }
 
-  if (created_ui_composites.length && !created_ui_composites_stories.length) {
+  if (is_new_composites_added && !created_ui_composites_stories.length) {
     fail('New composites were added, but no stories were created')
   }
 
@@ -242,7 +256,9 @@ async function checkScaffoldHtmlPackage() {
       fail(`${f} is missing \`${STATE_PROPERTIES_COMMENT}\` comment`)
     }
 
-    if (diff?.added.includes('private ') && !diff.added.includes(PRIVATE_COMMENT)) {
+    const privateFunctionsAdded = diff?.added.match(PRIVATE_FUNCTION_REGEX)?.length
+
+    if (privateFunctionsAdded && !diff?.added.includes(PRIVATE_COMMENT)) {
       message(
         `${f} is missing \`${PRIVATE_COMMENT}\` comment, but seems to have private members. Check if this is correct`
       )

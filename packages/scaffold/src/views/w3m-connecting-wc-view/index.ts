@@ -77,7 +77,12 @@ export class W3mConnectingWcView extends LitElement {
         await ConnectionController.state.wcPromise
         this.finalizeConnection()
         if (OptionsController.state.isSiweEnabled) {
-          RouterController.push('ConnectingSiwe')
+          const { SIWEController } = await import('@web3modal/siwe')
+          if (SIWEController.state.status === 'success') {
+            ModalController.close()
+          } else {
+            RouterController.push('ConnectingSiwe')
+          }
         } else {
           ModalController.close()
         }

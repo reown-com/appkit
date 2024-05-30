@@ -7,6 +7,10 @@ export default css`
     padding: var(--local-padding);
   }
 
+  button:hover:enabled {
+    background-color: var(--wui-color-gray-glass-005);
+  }
+
   @media (max-width: 700px) {
     button {
       padding: var(--wui-spacing-s);

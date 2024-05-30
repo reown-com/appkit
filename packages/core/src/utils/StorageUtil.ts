@@ -1,11 +1,13 @@
 /* eslint-disable no-console */
-import type { WcWallet, ConnectorType } from './TypeUtil.js'
+import type { WcWallet, ConnectorType, SocialProvider } from './TypeUtil.js'
 
 // -- Helpers -----------------------------------------------------------------
 const WC_DEEPLINK = 'WALLETCONNECT_DEEPLINK_CHOICE'
 const W3M_RECENT = '@w3m/recent'
 const W3M_CONNECTED_WALLET_IMAGE_URL = '@w3m/connected_wallet_image_url'
 const W3M_CONNECTED_CONNECTOR = '@w3m/connected_connector'
+const W3M_CONNECTED_SOCIAL = '@w3m/connected_social'
+const W3M_CONNECTED_SOCIAL_USERNAME = '@w3m-storage/SOCIAL_USERNAME'
 
 // -- Utility -----------------------------------------------------------------
 export const StorageUtil = {
@@ -74,6 +76,14 @@ export const StorageUtil = {
     }
   },
 
+  removeConnectedWalletImageUrl() {
+    try {
+      localStorage.removeItem(W3M_CONNECTED_WALLET_IMAGE_URL)
+    } catch {
+      console.info('Unable to remove Connected Wallet Image Url')
+    }
+  },
+
   getConnectedWalletImageUrl() {
     try {
       return localStorage.getItem(W3M_CONNECTED_WALLET_IMAGE_URL)
@@ -97,6 +107,34 @@ export const StorageUtil = {
       return localStorage.getItem(W3M_CONNECTED_CONNECTOR) as ConnectorType
     } catch {
       console.info('Unable to get Connected Connector')
+    }
+
+    return undefined
+  },
+
+  setConnectedSocialProvider(socialProvider: SocialProvider) {
+    try {
+      localStorage.setItem(W3M_CONNECTED_SOCIAL, socialProvider)
+    } catch {
+      console.info('Unable to set Connected Social Provider')
+    }
+  },
+
+  getConnectedSocialProvider() {
+    try {
+      return localStorage.getItem(W3M_CONNECTED_SOCIAL)
+    } catch {
+      console.info('Unable to get Connected Social Provider')
+    }
+
+    return undefined
+  },
+
+  getConnectedSocialUsername() {
+    try {
+      return localStorage.getItem(W3M_CONNECTED_SOCIAL_USERNAME)
+    } catch {
+      console.info('Unable to get Connected Social Username')
     }
 
     return undefined

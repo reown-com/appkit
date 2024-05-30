@@ -5,8 +5,9 @@ import { BASE_URL } from '../constants'
 import { doActionAndWaitForNewPage } from '../utils/actions'
 import { Email } from '../utils/email'
 import { DeviceRegistrationPage } from './DeviceRegistrationPage'
+import type { TimingRecords } from '../fixtures/timing-fixture'
 
-export type ModalFlavor = 'default' | 'siwe' | 'email' | 'wallet'
+export type ModalFlavor = 'default' | 'siwe' | 'email' | 'wallet' | 'all'
 
 export class ModalPage {
   private readonly baseURL = BASE_URL
@@ -38,7 +39,7 @@ export class ModalPage {
     return value!
   }
 
-  async getConnectUri(): Promise<string> {
+  async getConnectUri(timingRecords?: TimingRecords): Promise<string> {
     await this.page.goto(this.url)
     await this.connectButton.click()
     const connect = this.page.getByTestId('wallet-selector-walletconnect')
@@ -47,12 +48,22 @@ export class ModalPage {
       timeout: 5000
     })
     await connect.click()
+    const qrLoadInitiatedTime = new Date()
 
     // Using getByTestId() doesn't work on my machine, I'm guessing because this element is inside of a <slot>
     const qrCode = this.page.locator('wui-qr-code')
     await expect(qrCode).toBeVisible()
 
-    return this.assertDefined(await qrCode.getAttribute('uri'))
+    const uri = this.assertDefined(await qrCode.getAttribute('uri'))
+    const qrLoadedTime = new Date()
+    if (timingRecords) {
+      timingRecords.push({
+        item: 'qrLoad',
+        timeMs: qrLoadedTime.getTime() - qrLoadInitiatedTime.getTime()
+      })
+    }
+
+    return uri
   }
 
   async emailFlow(
@@ -60,8 +71,6 @@ export class ModalPage {
     context: BrowserContext,
     mailsacApiKey: string
   ): Promise<void> {
-    await this.load()
-
     this.emailAddress = emailAddress
 
     const email = new Email(mailsacApiKey)
@@ -102,7 +111,6 @@ export class ModalPage {
   }
 
   async loginWithEmail(email: string) {
-    await this.page.goto(this.url)
     // Connect Button doesn't have a proper `disabled` attribute so we need to wait for the button to change the text
     await this.page
       .getByTestId('connect-button')
@@ -115,8 +123,25 @@ export class ModalPage {
       this.page.getByText(email),
       `Expected current email: ${email} to be visible on the notification screen`
     ).toBeVisible({
-      timeout: 10_000
+      timeout: 20_000
     })
+  }
+
+  async loginWithSocial(socialMail: string, socialPass: string) {
+    const authFile = 'playwright/.auth/user.json'
+    await this.page
+      .getByTestId('connect-button')
+      .getByRole('button', { name: 'Connect Wallet' })
+      .click()
+    const discordPopupPromise = this.page.waitForEvent('popup')
+    await this.page.getByTestId('social-selector-discord').click()
+    const discordPopup = await discordPopupPromise
+    await discordPopup.fill('#uid_8', socialMail)
+    await discordPopup.fill('#uid_10', socialPass)
+    await discordPopup.locator('[type=submit]').click()
+    await discordPopup.locator('.footer_b96583 button:nth-child(2)').click()
+    await discordPopup.context().storageState({ path: authFile })
+    await discordPopup.waitForEvent('close')
   }
 
   async enterOTP(otp: string, headerTitle = 'Confirm Email') {
@@ -154,15 +179,17 @@ export class ModalPage {
     const accountBtn = this.page.getByTestId('account-button')
     await expect(accountBtn, 'Account button should be visible').toBeVisible()
     await expect(accountBtn, 'Account button should be enabled').toBeEnabled()
-    await accountBtn.click({ force: true })
+    await accountBtn.click()
     const disconnectBtn = this.page.getByTestId('disconnect-button')
     await expect(disconnectBtn, 'Disconnect button should be visible').toBeVisible()
     await expect(disconnectBtn, 'Disconnect button should be enabled').toBeEnabled()
-    await disconnectBtn.click({ force: true })
+    await disconnectBtn.click()
   }
 
   async sign() {
-    await this.page.getByTestId('sign-message-button').click()
+    const signButton = this.page.getByTestId('sign-message-button')
+    await signButton.scrollIntoViewIfNeeded()
+    await signButton.click()
   }
 
   async signatureRequestFrameShouldVisible() {
@@ -174,6 +201,7 @@ export class ModalPage {
     })
     await this.page.waitForTimeout(2000)
   }
+
   async clickSignatureRequestButton(name: string) {
     await this.page.frameLocator('#w3m-iframe').getByRole('button', { name, exact: true }).click()
   }
@@ -202,6 +230,9 @@ export class ModalPage {
 
   async promptSiwe() {
     const siweSign = this.page.getByTestId('w3m-connecting-siwe-sign')
+    await expect(siweSign, 'Siwe prompt sign button should be visible').toBeVisible({
+      timeout: 10_000
+    })
     await expect(siweSign, 'Siwe prompt sign button should be enabled').toBeEnabled()
     await siweSign.click()
   }
@@ -232,9 +263,9 @@ export class ModalPage {
     await this.page.waitForTimeout(300)
   }
 
-  async updateEmail(mailsacApiKey: string) {
+  async updateEmail(mailsacApiKey: string, index: number) {
     const email = new Email(mailsacApiKey)
-    const newEmailAddress = email.getEmailAddressToUse(1)
+    const newEmailAddress = email.getEmailAddressToUse(index)
 
     await this.page.getByTestId('account-button').click()
     await this.page.getByTestId('w3m-account-email-update').click()
@@ -247,7 +278,7 @@ export class ModalPage {
 
     // Wait until the next screen appears
     await expect(this.page.getByText('Enter the code we sent')).toBeVisible({
-      timeout: 10_000
+      timeout: 20_000
     })
     const confirmCurrentEmail = await this.page.getByText('Confirm Current Email').isVisible()
     if (confirmCurrentEmail) {
@@ -260,6 +291,8 @@ export class ModalPage {
       this.page.getByTestId('w3m-account-email-update'),
       `Expected to go to the account screen after the update`
     ).toBeVisible()
+
+    await expect(this.page.getByText(newEmailAddress)).toBeVisible()
   }
 
   async updateOtpFlow(emailAddress: string, mailsacApiKey: string, headerTitle: string) {

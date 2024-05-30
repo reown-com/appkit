@@ -37,7 +37,9 @@ export type ProjectId = string
 
 export type Platform = 'mobile' | 'desktop' | 'browser' | 'web' | 'qrcode' | 'unsupported'
 
-export type ConnectorType = 'EXTERNAL' | 'WALLET_CONNECT' | 'INJECTED' | 'ANNOUNCED' | 'EMAIL'
+export type ConnectorType = 'EXTERNAL' | 'WALLET_CONNECT' | 'INJECTED' | 'ANNOUNCED' | 'AUTH'
+
+export type SocialProvider = 'google' | 'github' | 'apple' | 'facebook' | 'x' | 'discord'
 
 export type Connector = {
   id: string
@@ -53,10 +55,15 @@ export type Connector = {
     rdns?: string
   }
   provider?: unknown
+  email?: boolean
+  socials?: SocialProvider[]
+  showWallets?: boolean
 }
 
-export interface EmailConnector extends Connector {
+export interface AuthConnector extends Connector {
   provider: W3mFrameProvider
+  socials?: SocialProvider[]
+  email?: boolean
 }
 
 export type CaipNamespaces = Record<
@@ -160,7 +167,7 @@ export interface BlockchainApiTransactionsResponse {
   next: string | null
 }
 
-export type ConvertToken = {
+export type SwapToken = {
   name: string
   symbol: string
   address: `${string}:${string}:${string}`
@@ -169,7 +176,7 @@ export type ConvertToken = {
   eip2612?: boolean
 }
 
-export type ConvertTokenWithBalance = ConvertToken & {
+export type SwapTokenWithBalance = SwapToken & {
   quantity: {
     decimals: string
     numeric: string
@@ -178,13 +185,33 @@ export type ConvertTokenWithBalance = ConvertToken & {
   value: number
 }
 
-export interface BlockchainApiConvertTokensRequest {
+export interface BlockchainApiSwapTokensRequest {
   projectId: string
   chainId?: string
 }
 
-export interface BlockchainApiConvertTokensResponse {
-  tokens: ConvertToken[]
+export interface BlockchainApiSwapTokensResponse {
+  tokens: SwapToken[]
+}
+
+export interface BlockchainApiSwapQuoteRequest {
+  projectId: string
+  chainId?: string
+  amount: string
+  userAddress: string
+  from: string
+  to: string
+  gasPrice: string
+}
+
+export interface BlockchainApiSwapQuoteResponse {
+  quotes: {
+    id: string | null
+    fromAmount: string
+    fromAccount: string
+    toAmount: string
+    toAccount: string
+  }[]
 }
 
 export interface BlockchainApiTokenPriceRequest {
@@ -198,17 +225,17 @@ export interface BlockchainApiTokenPriceResponse {
     name: string
     symbol: string
     iconUrl: string
-    price: string
+    price: number
   }[]
 }
 
-export interface BlockchainApiConvertAllowanceRequest {
+export interface BlockchainApiSwapAllowanceRequest {
   projectId: string
   tokenAddress: string
   userAddress: string
 }
 
-export interface BlockchainApiConvertAllowanceResponse {
+export interface BlockchainApiSwapAllowanceResponse {
   allowance: string
 }
 
@@ -223,7 +250,7 @@ export interface BlockchainApiGasPriceResponse {
   instant: string
 }
 
-export interface BlockchainApiGenerateConvertCalldataRequest {
+export interface BlockchainApiGenerateSwapCalldataRequest {
   projectId: string
   userAddress: string
   from: string
@@ -235,7 +262,7 @@ export interface BlockchainApiGenerateConvertCalldataRequest {
   }
 }
 
-export interface BlockchainApiGenerateConvertCalldataResponse {
+export interface BlockchainApiGenerateSwapCalldataResponse {
   tx: {
     from: `${string}:${string}:${string}`
     to: `${string}:${string}:${string}`
@@ -271,6 +298,42 @@ export interface BlockchainApiGenerateApproveCalldataResponse {
 
 export interface BlockchainApiBalanceResponse {
   balances: Balance[]
+}
+
+export interface BlockchainApiLookupEnsName {
+  name: string
+  registered: number
+  updated: number
+  addresses: Record<
+    string,
+    {
+      address: string
+      created: string
+    }
+  >
+  attributes: {
+    avatar?: string
+    bio?: string
+  }[]
+}
+
+export interface BlockchainApiRegisterNameParams {
+  coinType: number
+  message: string
+  signature: string
+  address: `0x${string}`
+}
+
+export interface BlockchainApiSuggestionResponse {
+  suggestions: {
+    name: string
+    registered: boolean
+  }[]
+}
+
+export interface BlockchainApiEnsError extends BaseError {
+  status: string
+  reasons: { name: string; description: string }[]
 }
 
 // -- OptionsController Types ---------------------------------------------------
@@ -534,4 +597,14 @@ export interface EstimateGasTransactionArgs {
   address: `0x${string}`
   to: `0x${string}`
   data: `0x${string}`
+}
+
+export interface WriteContractArgs {
+  receiverAddress: `0x${string}`
+  tokenAmount: bigint
+  tokenAddress: `0x${string}`
+  fromAddress: `0x${string}`
+  method: 'send' | 'transfer' | 'call'
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  abi: any
 }

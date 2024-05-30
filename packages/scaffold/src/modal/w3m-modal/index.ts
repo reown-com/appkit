@@ -2,6 +2,7 @@ import {
   AccountController,
   ApiController,
   ConnectionController,
+  CoreHelperUtil,
   EventsController,
   ModalController,
   OptionsController,
@@ -13,7 +14,7 @@ import { UiHelperUtil, customElement, initializeTheming } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
-import type { AccountControllerState } from '@web3modal/core'
+import type { CaipAddress } from '@web3modal/core'
 
 // -- Helpers --------------------------------------------- //
 const SCROLL_LOCK = 'scroll-lock'
@@ -34,13 +35,23 @@ export class W3mModal extends LitElement {
 
   @state() private isSiweEnabled = OptionsController.state.isSiweEnabled
 
+  @state() private connected = AccountController.state.isConnected
+
+  @state() private loading = ModalController.state.loading
+
   public constructor() {
     super()
     this.initializeTheming()
     ApiController.prefetch()
     this.unsubscribe.push(
       ModalController.subscribeKey('open', val => (val ? this.onOpen() : this.onClose())),
-      AccountController.subscribe(newAccountState => this.onNewAccountState(newAccountState))
+      ModalController.subscribeKey('loading', val => {
+        this.loading = val
+        this.onNewAddress(AccountController.state.caipAddress)
+      }),
+      AccountController.subscribeKey('isConnected', val => (this.connected = val)),
+      AccountController.subscribeKey('caipAddress', val => this.onNewAddress(val)),
+      OptionsController.subscribeKey('isSiweEnabled', val => (this.isSiweEnabled = val))
     )
     EventsController.sendEvent({ type: 'track', event: 'MODAL_LOADED' })
   }
@@ -61,6 +72,7 @@ export class W3mModal extends LitElement {
               <w3m-snackbar></w3m-snackbar>
             </wui-card>
           </wui-flex>
+          <w3m-tooltip></w3m-tooltip>
         `
       : null
   }
@@ -89,26 +101,18 @@ export class W3mModal extends LitElement {
     initializeTheming(themeVariables, defaultThemeMode)
   }
 
-  private async onClose() {
-    this.onScrollUnlock()
-    await this.animate([{ opacity: 1 }, { opacity: 0 }], {
-      duration: 200,
-      easing: 'ease',
-      fill: 'forwards'
-    }).finished
-    SnackController.hide()
+  private onClose() {
     this.open = false
+    this.classList.remove('open')
+    this.onScrollUnlock()
+    SnackController.hide()
     this.onRemoveKeyboardListener()
   }
 
-  private async onOpen() {
-    this.onScrollLock()
+  private onOpen() {
     this.open = true
-    await this.animate([{ opacity: 0 }, { opacity: 1 }], {
-      duration: 200,
-      easing: 'ease',
-      fill: 'forwards'
-    }).finished
+    this.classList.add('open')
+    this.onScrollLock()
     this.onAddKeyboardListener()
   }
 
@@ -160,33 +164,42 @@ export class W3mModal extends LitElement {
     this.abortController = undefined
   }
 
-  private async onNewAccountState(newState: AccountControllerState) {
-    const { isConnected, caipAddress: newCaipAddress } = newState
+  private async onNewAddress(caipAddress?: CaipAddress) {
+    if (!this.connected || this.loading) {
+      return
+    }
+
+    const previousAddress = CoreHelperUtil.getPlainAddress(this.caipAddress)
+    const newAddress = CoreHelperUtil.getPlainAddress(caipAddress)
+    const previousNetworkId = CoreHelperUtil.getNetworkId(this.caipAddress)
+    const newNetworkId = CoreHelperUtil.getNetworkId(caipAddress)
+    this.caipAddress = caipAddress
 
     if (this.isSiweEnabled) {
       const { SIWEController } = await import('@web3modal/siwe')
+      const session = await SIWEController.getSession()
 
-      if (isConnected && !this.caipAddress) {
-        this.caipAddress = newCaipAddress
-      }
-      if (isConnected && newCaipAddress && this.caipAddress !== newCaipAddress) {
-        await SIWEController.signOut()
-        this.onSiweNavigation()
-        this.caipAddress = newCaipAddress
-      }
-
-      try {
-        const session = await SIWEController.getSession()
-        if (session && !isConnected) {
+      // If the address has changed and signOnAccountChange is enabled, sign out
+      if (session && previousAddress && newAddress && previousAddress !== newAddress) {
+        if (SIWEController.state._client?.options.signOutOnAccountChange) {
           await SIWEController.signOut()
-        } else if (isConnected && !session) {
           this.onSiweNavigation()
         }
-      } catch (error) {
-        if (isConnected) {
-          this.onSiweNavigation()
-        }
+
+        return
       }
+
+      // If the network has changed and signOnNetworkChange is enabled, sign out
+      if (session && previousNetworkId && newNetworkId && previousNetworkId !== newNetworkId) {
+        if (SIWEController.state._client?.options.signOutOnNetworkChange) {
+          await SIWEController.signOut()
+          this.onSiweNavigation()
+        }
+
+        return
+      }
+
+      this.onSiweNavigation()
     }
   }
 

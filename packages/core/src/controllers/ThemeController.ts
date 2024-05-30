@@ -1,17 +1,21 @@
 import { proxy, subscribe as sub, snapshot } from 'valtio/vanilla'
 import type { ThemeMode, ThemeVariables } from '../utils/TypeUtil.js'
 import { ConnectorController } from './ConnectorController.js'
+import { getW3mThemeVariables } from '@web3modal/common'
+import type { W3mThemeVariables } from '@web3modal/common'
 
 // -- Types --------------------------------------------- //
 export interface ThemeControllerState {
   themeMode: ThemeMode
   themeVariables: ThemeVariables
+  w3mThemeVariables: W3mThemeVariables | undefined
 }
 
 // -- State --------------------------------------------- //
 const state = proxy<ThemeControllerState>({
   themeMode: 'dark',
-  themeVariables: {}
+  themeVariables: {},
+  w3mThemeVariables: undefined
 })
 
 // -- Controller ---------------------------------------- //
@@ -24,32 +28,42 @@ export const ThemeController = {
 
   setThemeMode(themeMode: ThemeControllerState['themeMode']) {
     state.themeMode = themeMode
-    try {
-      const emailConnector = ConnectorController.getEmailConnector()
 
-      if (emailConnector) {
-        emailConnector.provider.syncTheme({
-          themeMode: ThemeController.getSnapshot().themeMode
+    try {
+      const authConnector = ConnectorController.getAuthConnector()
+
+      if (authConnector) {
+        const themeVariables = ThemeController.getSnapshot().themeVariables
+
+        authConnector.provider.syncTheme({
+          themeMode,
+          themeVariables,
+          w3mThemeVariables: getW3mThemeVariables(themeVariables, themeMode)
         })
       }
     } catch {
       // eslint-disable-next-line no-console
-      console.info('Unable to sync theme to email connector')
+      console.info('Unable to sync theme to auth connector')
     }
   },
 
   setThemeVariables(themeVariables: ThemeControllerState['themeVariables']) {
     state.themeVariables = { ...state.themeVariables, ...themeVariables }
+
     try {
-      const emailConnector = ConnectorController.getEmailConnector()
-      if (emailConnector) {
-        emailConnector.provider.syncTheme({
-          themeVariables: ThemeController.getSnapshot().themeVariables
+      const authConnector = ConnectorController.getAuthConnector()
+
+      if (authConnector) {
+        const themeVariablesSnapshot = ThemeController.getSnapshot().themeVariables
+
+        authConnector.provider.syncTheme({
+          themeVariables: themeVariablesSnapshot,
+          w3mThemeVariables: getW3mThemeVariables(state.themeVariables, state.themeMode)
         })
       }
     } catch {
       // eslint-disable-next-line no-console
-      console.info('Unable to sync theme to email connector')
+      console.info('Unable to sync theme to auth connector')
     }
   },
 

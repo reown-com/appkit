@@ -1,5 +1,5 @@
 import type { RouterControllerState } from '@web3modal/core'
-import { RouterController } from '@web3modal/core'
+import { RouterController, TooltipController } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
@@ -55,6 +55,18 @@ export class W3mRouter extends LitElement {
   // -- Private ------------------------------------------- //
   private viewTemplate() {
     switch (this.view) {
+      case 'Account':
+        return html`<w3m-account-view></w3m-account-view>`
+      case 'AccountSettings':
+        return html`<w3m-account-settings-view></w3m-account-settings-view>`
+      case 'AllWallets':
+        return html`<w3m-all-wallets-view></w3m-all-wallets-view>`
+      case 'ApproveTransaction':
+        return html`<w3m-approve-transaction-view></w3m-approve-transaction-view>`
+      case 'BuyInProgress':
+        return html`<w3m-buy-in-progress-view></w3m-buy-in-progress-view>`
+      case 'ChooseAccountName':
+        return html`<w3m-choose-account-name-view></w3m-choose-account-name-view>`
       case 'Connect':
         return html`<w3m-connect-view></w3m-connect-view>`
       case 'ConnectingWalletConnect':
@@ -63,32 +75,38 @@ export class W3mRouter extends LitElement {
         return html`<w3m-connecting-external-view></w3m-connecting-external-view>`
       case 'ConnectingSiwe':
         return html`<w3m-connecting-siwe-view></w3m-connecting-siwe-view>`
-      case 'AllWallets':
-        return html`<w3m-all-wallets-view></w3m-all-wallets-view>`
-      case 'Networks':
-        return html`<w3m-networks-view></w3m-networks-view>`
-      case 'SwitchNetwork':
-        return html`<w3m-network-switch-view></w3m-network-switch-view>`
-      case 'Account':
-        return html`<w3m-account-view></w3m-account-view>`
-      case 'AccountSettings':
-        return html`<w3m-account-settings-view></w3m-account-settings-view>`
-      case 'WhatIsAWallet':
-        return html`<w3m-what-is-a-wallet-view></w3m-what-is-a-wallet-view>`
-      case 'WhatIsANetwork':
-        return html`<w3m-what-is-a-network-view></w3m-what-is-a-network-view>`
-      case 'GetWallet':
-        return html`<w3m-get-wallet-view></w3m-get-wallet-view>`
+      case 'ConnectWallets':
+        return html`<w3m-connect-wallets-view></w3m-connect-wallets-view>`
+      case 'ConnectSocials':
+        return html`<w3m-connect-socials-view></w3m-connect-socials-view>`
+      case 'ConnectingSocial':
+        return html`<w3m-connecting-social-view></w3m-connecting-social-view>`
       case 'Downloads':
         return html`<w3m-downloads-view></w3m-downloads-view>`
       case 'EmailVerifyOtp':
         return html`<w3m-email-verify-otp-view></w3m-email-verify-otp-view>`
       case 'EmailVerifyDevice':
         return html`<w3m-email-verify-device-view></w3m-email-verify-device-view>`
-      case 'ApproveTransaction':
-        return html`<w3m-approve-transaction-view></w3m-approve-transaction-view>`
+      case 'Networks':
+        return html`<w3m-networks-view></w3m-networks-view>`
+      case 'RegisterAccountName':
+        return html`<w3m-register-account-name-view></w3m-register-account-name-view>`
+      case 'RegisterAccountNameSuccess':
+        return html`<w3m-register-account-name-success-view></w3m-register-account-name-success-view>`
+      case 'SwitchNetwork':
+        return html`<w3m-network-switch-view></w3m-network-switch-view>`
+      case 'GetWallet':
+        return html`<w3m-get-wallet-view></w3m-get-wallet-view>`
       case 'Transactions':
         return html`<w3m-transactions-view></w3m-transactions-view>`
+      case 'OnRampProviders':
+        return html`<w3m-onramp-providers-view></w3m-onramp-providers-view>`
+      case 'OnRampActivity':
+        return html`<w3m-onramp-activity-view></w3m-onramp-activity-view>`
+      case 'OnRampTokenSelect':
+        return html`<w3m-onramp-token-select-view></w3m-onramp-token-select-view>`
+      case 'OnRampFiatSelect':
+        return html`<w3m-onramp-fiat-select-view></w3m-onramp-fiat-select-view>`
       case 'UpgradeEmailWallet':
         return html`<w3m-upgrade-wallet-view></w3m-upgrade-wallet-view>`
       case 'UpgradeToSmartAccount':
@@ -101,40 +119,37 @@ export class W3mRouter extends LitElement {
         return html`<w3m-update-email-secondary-otp-view></w3m-update-email-secondary-otp-view>`
       case 'UnsupportedChain':
         return html`<w3m-unsupported-chain-view></w3m-unsupported-chain-view>`
-      case 'OnRampProviders':
-        return html`<w3m-onramp-providers-view></w3m-onramp-providers-view>`
-      case 'OnRampActivity':
-        return html`<w3m-onramp-activity-view></w3m-onramp-activity-view>`
-      case 'OnRampTokenSelect':
-        return html`<w3m-onramp-token-select-view></w3m-onramp-token-select-view>`
-      case 'OnRampFiatSelect':
-        return html`<w3m-onramp-fiat-select-view></w3m-onramp-fiat-select-view>`
-      case 'WhatIsABuy':
-        return html`<w3m-what-is-a-buy-view></w3m-what-is-a-buy-view>`
-      case 'BuyInProgress':
-        return html`<w3m-buy-in-progress-view></w3m-buy-in-progress-view>`
       case 'WalletReceive':
         return html`<w3m-wallet-receive-view></w3m-wallet-receive-view>`
       case 'WalletCompatibleNetworks':
         return html`<w3m-wallet-compatible-networks-view></w3m-wallet-compatible-networks-view>`
-      case 'Convert':
-        return html`<w3m-convert-view></w3m-convert-view>`
-      case 'ConvertSelectToken':
-        return html`<w3m-convert-select-token-view></w3m-convert-select-token-view>`
-      case 'ConvertPreview':
-        return html`<w3m-convert-preview-view></w3m-convert-preview-view>`
+      case 'Swap':
+        return html`<w3m-swap-view></w3m-swap-view>`
+      case 'SwapSelectToken':
+        return html`<w3m-swap-select-token-view></w3m-swap-select-token-view>`
+      case 'SwapPreview':
+        return html`<w3m-swap-preview-view></w3m-swap-preview-view>`
       case 'WalletSend':
         return html`<w3m-wallet-send-view></w3m-wallet-send-view>`
       case 'WalletSendSelectToken':
         return html`<w3m-wallet-send-select-token-view></w3m-wallet-send-select-token-view>`
       case 'WalletSendPreview':
         return html`<w3m-wallet-send-preview-view></w3m-wallet-send-preview-view>`
+      case 'WhatIsABuy':
+        return html`<w3m-what-is-a-buy-view></w3m-what-is-a-buy-view>`
+      case 'WhatIsANetwork':
+        return html`<w3m-what-is-a-network-view></w3m-what-is-a-network-view>`
+      case 'WhatIsAWallet':
+        return html`<w3m-what-is-a-wallet-view></w3m-what-is-a-wallet-view>`
+
       default:
         return html`<w3m-connect-view></w3m-connect-view>`
     }
   }
 
   private async onViewChange(newView: RouterControllerState['view']) {
+    TooltipController.hide()
+
     const { history } = RouterController.state
     let xOut = -10
     let xIn = 10

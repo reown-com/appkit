@@ -1,5 +1,4 @@
 import { Mailsac } from '@mailsac/api'
-import { randomBytes } from 'crypto'
 const EMAIL_CHECK_TIMEOUT = 1000
 const MAX_EMAIL_CHECK = 16
 const EMAIL_APPROVE_BUTTON_TEXT = 'Approve this login'
@@ -78,8 +77,12 @@ export class Email {
   }
 
   getEmailAddressToUse(index: number, domain = EMAIL_DOMAIN): string {
-    const prefix = randomBytes(12).toString('hex')
+    const randIndex = Math.floor(Math.random() * 10) % 9
 
-    return `${prefix}-w${index}@${domain}`
+    return `w3m-w${index}${randIndex}@${domain}`
+  }
+
+  getSmartAccountEnabledEmail(): string {
+    return 'web3modal-smart-account@mailsac.com'
   }
 }

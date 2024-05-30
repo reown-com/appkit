@@ -83,7 +83,8 @@ export class W3mNetworkSwitchView extends LitElement {
 
         <wui-button
           data-retry=${this.showRetry}
-          variant="fill"
+          variant="accent"
+          size="md"
           .disabled=${!this.error}
           @click=${this.onSwitchNetwork.bind(this)}
         >
@@ -97,8 +98,8 @@ export class W3mNetworkSwitchView extends LitElement {
   // -- Private ------------------------------------------- //
   private getSubLabel() {
     const type = StorageUtil.getConnectedConnector()
-    const emailConnector = ConnectorController.getEmailConnector()
-    if (emailConnector && type === 'EMAIL') {
+    const authConnector = ConnectorController.getAuthConnector()
+    if (authConnector && type === 'AUTH') {
       return ''
     }
 
@@ -109,8 +110,8 @@ export class W3mNetworkSwitchView extends LitElement {
 
   private getLabel() {
     const type = StorageUtil.getConnectedConnector()
-    const emailConnector = ConnectorController.getEmailConnector()
-    if (emailConnector && type === 'EMAIL') {
+    const authConnector = ConnectorController.getAuthConnector()
+    if (authConnector && type === 'AUTH') {
       return `Switching to ${this.network?.name ?? 'Unknown'} network...`
     }
 

@@ -7,4 +7,8 @@ export default css`
     overflow: scroll;
     scrollbar-width: none;
   }
+
+  :host::-webkit-scrollbar {
+    display: none;
+  }
 `
