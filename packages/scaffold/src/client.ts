@@ -1,16 +1,12 @@
 import type {
   EventsControllerState,
   NetworkControllerClient,
-  NetworkControllerState,
-  OptionsControllerState,
   PublicStateControllerState,
   ThemeControllerState,
-  ThemeMode,
-  ThemeVariables,
+  OptionsControllerState,
   ModalControllerState,
   ConnectedWalletInfo,
   RouterControllerState,
-  Token,
   ConnectionControllerClient
 } from '@web3modal/core'
 import {
@@ -22,7 +18,6 @@ import {
   EventsController,
   ModalController,
   NetworkController,
-  OptionsController,
   PublicStateController,
   ThemeController,
   SnackController,
@@ -30,38 +25,10 @@ import {
   EnsController
 } from '@web3modal/core'
 import { setColorTheme, setThemeVariables } from '@web3modal/ui'
-import type { SIWEControllerClient } from '@web3modal/siwe'
 import { ConstantsUtil } from '@web3modal/common'
 
 // -- Helpers -------------------------------------------------------------------
 let isInitialized = false
-
-// -- Types ---------------------------------------------------------------------
-export interface ScaffoldOptions {
-  projectId: OptionsControllerState['projectId']
-  themeMode?: ThemeMode
-  themeVariables?: ThemeVariables
-  allWallets?: OptionsControllerState['allWallets']
-  includeWalletIds?: OptionsControllerState['includeWalletIds']
-  excludeWalletIds?: OptionsControllerState['excludeWalletIds']
-  featuredWalletIds?: OptionsControllerState['featuredWalletIds']
-  defaultChain?: NetworkControllerState['caipNetwork']
-  tokens?: OptionsControllerState['tokens']
-  termsConditionsUrl?: OptionsControllerState['termsConditionsUrl']
-  privacyPolicyUrl?: OptionsControllerState['privacyPolicyUrl']
-  customWallets?: OptionsControllerState['customWallets']
-  enableAnalytics?: OptionsControllerState['enableAnalytics']
-  metadata?: OptionsControllerState['metadata']
-  enableOnramp?: OptionsControllerState['enableOnramp']
-  enableWalletFeatures?: OptionsControllerState['enableWalletFeatures']
-  allowUnsupportedChain?: NetworkControllerState['allowUnsupportedChain']
-  siweConfig?: SIWEControllerClient
-
-  // ---
-  chainImages?: Record<number, string>
-  connectorImages?: Record<string, string>
-  adapters: Adapter[]
-}
 
 export interface OpenOptions {
   view: 'Account' | 'Connect' | 'Networks' | 'ApproveTransaction' | 'OnRampProviders'
@@ -69,11 +36,18 @@ export interface OpenOptions {
 
 // -- Client --------------------------------------------------------------------
 export class Web3ModalScaffold {
+  private static instance?: Web3ModalScaffold
+
   private initPromise?: Promise<void> = undefined
 
-  public constructor(options: ScaffoldOptions) {
-    this.initControllers(options)
-    this.initOrContinue()
+  public static init(options: OptionsControllerState) {
+    this.instance = new Web3ModalScaffold()
+    Web3ModalScaffold.instance?.initControllers(options)
+    Web3ModalScaffold.instance?.initOrContinue()
+  }
+
+  public static getInstance() {
+    return this.instance
   }
 
   // -- Public -------------------------------------------------------------------
@@ -274,64 +248,13 @@ export class Web3ModalScaffold {
   }
 
   // -- Private ------------------------------------------------------------------
-  private async initControllers(options: ScaffoldOptions) {
-    const defaultAdapter = options.adapters[0]
+  private async initControllers(options: OptionsControllerState) {
     NetworkController.setAdapters(options.adapters || [])
-    if (defaultAdapter) {
-      defaultAdapter.initialize(this, options)
-      NetworkController.switchProtocol(defaultAdapter.protocol)
-      const { connectionControllerClient, networkControllerClient } = defaultAdapter
 
-      if (connectionControllerClient) {
-        ConnectionController.setClient(connectionControllerClient)
-      }
-      if (networkControllerClient) {
-        NetworkController.setClient(networkControllerClient)
-      }
-      NetworkController.setDefaultCaipNetwork(options.defaultChain)
-    }
-
-    OptionsController.setProjectId(options.projectId)
-    OptionsController.setAllWallets(options.allWallets)
-    OptionsController.setIncludeWalletIds(options.includeWalletIds)
-    OptionsController.setExcludeWalletIds(options.excludeWalletIds)
-    OptionsController.setFeaturedWalletIds(options.featuredWalletIds)
-    OptionsController.setTokens(options.tokens)
-    OptionsController.setTermsConditionsUrl(options.termsConditionsUrl)
-    OptionsController.setPrivacyPolicyUrl(options.privacyPolicyUrl)
-    OptionsController.setCustomWallets(options.customWallets)
-    OptionsController.setEnableAnalytics(options.enableAnalytics)
-    // OptionsController.setSdkVersion(options._sdkVersion)
-
-    if (options.metadata) {
-      OptionsController.setMetadata(options.metadata)
-    }
-
-    if (options.themeMode) {
-      ThemeController.setThemeMode(options.themeMode)
-    }
-
-    if (options.themeVariables) {
-      ThemeController.setThemeVariables(options.themeVariables)
-    }
-
-    if (options.enableOnramp) {
-      OptionsController.setOnrampEnabled(Boolean(options.enableOnramp))
-    }
-
-    if (options.enableWalletFeatures) {
-      OptionsController.setWalletFeaturesEnabled(Boolean(options.enableWalletFeatures))
-    }
-
-    if (options.allowUnsupportedChain) {
-      NetworkController.setAllowUnsupportedChain(options.allowUnsupportedChain)
-    }
-
-    if (options.siweConfig) {
-      const { SIWEController } = await import('@web3modal/siwe')
-
-      SIWEController.setSIWEClient(options.siweConfig)
-    }
+    options.adapters?.forEach(adapter => {
+      console.log('>>> call construct')
+      adapter.construct.bind(Web3ModalScaffold.getInstance(), options)
+    })
   }
 
   private async initOrContinue() {
@@ -358,13 +281,5 @@ export interface Adapter {
   protocol: 'evm' | 'solana' | 'bitcoin'
   networkControllerClient: NetworkControllerClient
   connectionControllerClient: ConnectionControllerClient
-  initialize(scaffold: Web3ModalScaffold, options?: ScaffoldOptions): void
-}
-
-export interface AppkitOptions
-  extends Omit<ScaffoldOptions, 'defaultChain' | 'tokens' | '_sdkVersion'> {
-  chainImages?: Record<number, string>
-  connectorImages?: Record<string, string>
-  tokens?: Record<number, Token>
-  adapters: Adapter[]
+  initialize(scaffold: Web3ModalScaffold, options?: OptionsControllerState): void
 }

@@ -22,7 +22,10 @@ export class W3mConnectInjectedWidget extends LitElement {
   public constructor() {
     super()
     this.unsubscribe.push(
-      ConnectorController.subscribeKey('connectors', val => (this.connectors = val))
+      ConnectorController.subscribeKey('connectors', val => {
+        console.log('>>> ConnectorController.subscribeKey', val)
+        this.connectors = val
+      })
     )
   }
 

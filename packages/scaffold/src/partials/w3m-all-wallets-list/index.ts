@@ -1,5 +1,11 @@
 import type { WcWallet } from '@web3modal/core'
-import { ApiController, AssetUtil, ConnectorController, RouterController } from '@web3modal/core'
+import {
+  ApiController,
+  AssetUtil,
+  ConnectorController,
+  NetworkController,
+  RouterController
+} from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'

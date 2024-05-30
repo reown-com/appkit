@@ -5,13 +5,13 @@ import type {
   CaipNetworkId,
   ConnectionControllerClient,
   Connector,
-  ScaffoldOptions,
   NetworkControllerClient,
   PublicStateControllerState,
   SendTransactionArgs,
   Token,
   WriteContractArgs
 } from '@web3modal/scaffold'
+import type { OptionsControllerState } from '@web3modal/core'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
 import EthereumProvider, { OPTIONAL_METHODS } from '@walletconnect/ethereum-provider'
@@ -56,7 +56,8 @@ import type { CombinedProvider } from '@web3modal/scaffold-utils/ethers'
 import { NetworkUtil } from '@web3modal/common'
 import type { W3mFrameTypes } from '@web3modal/wallet'
 // -- Types ---------------------------------------------------------------------
-export interface Web3ModalClientOptions extends Omit<ScaffoldOptions, 'defaultChain' | 'tokens'> {
+export interface Web3ModalClientOptions
+  extends Omit<OptionsControllerState, 'defaultChain' | 'tokens'> {
   ethersConfig: ProviderType
   chains: Chain[]
   siweConfig?: Web3ModalSIWEClient

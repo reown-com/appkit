@@ -8,6 +8,8 @@ import {
   NetworkController,
   OptionsController
 } from '@web3modal/core'
+import type { OptionsControllerState } from '@web3modal/core'
+
 import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@web3modal/scaffold-utils'
 
 import { createWalletAdapters, syncInjectedWallets } from './connectors/walletAdapters.js'
@@ -22,7 +24,6 @@ import type {
   ConnectionControllerClient,
   NetworkControllerClient,
   Token,
-  ScaffoldOptions,
   Connector,
   CaipAddress,
   CaipNetwork
@@ -31,7 +32,8 @@ import type {
 import type { AdapterKey } from './connectors/walletAdapters.js'
 import type { ProviderType, Chain, Provider, SolStoreUtilState } from './utils/scaffold/index.js'
 
-export interface Web3ModalClientOptions extends Omit<ScaffoldOptions, 'defaultChain' | 'tokens'> {
+export interface Web3ModalClientOptions
+  extends Omit<OptionsControllerState, 'defaultChain' | 'tokens'> {
   solanaConfig: ProviderType
   chains: Chain[]
   connectionSettings?: Commitment | ConnectionConfig
@@ -175,7 +177,7 @@ export class Web3Modal extends Web3ModalScaffold {
       ) as CaipNetwork,
       tokens: HelpersUtil.getCaipTokens(tokens),
       ...w3mOptions
-    } as ScaffoldOptions)
+    } as OptionsControllerState)
 
     this.chains = chains
     this.connectionSettings = connectionSettings

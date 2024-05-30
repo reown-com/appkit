@@ -1,5 +1,8 @@
 import type { W3mFrameProvider } from '@web3modal/wallet'
 import type { Balance, Transaction } from '@web3modal/common'
+import type { NetworkControllerClient } from '../controllers/NetworkController'
+import type { ConnectionControllerClient } from '../controllers/ConnectionController'
+import type { OptionsControllerState } from '../controllers/OptionsController'
 
 export type CaipAddress = `${string}:${string}:${string}`
 
@@ -607,4 +610,12 @@ export interface WriteContractArgs {
   method: 'send' | 'transfer' | 'call'
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   abi: any
+}
+
+export interface AdapterCore {
+  protocol: 'evm' | 'solana' | 'bitcoin'
+  networkControllerClient: NetworkControllerClient
+  connectionControllerClient: ConnectionControllerClient
+  construct(scaffold: any, options: OptionsControllerState): void
+  initialize(): void
 }

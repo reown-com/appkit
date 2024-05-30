@@ -5,7 +5,6 @@ import {
   ConnectorController,
   EventsController,
   ModalController,
-  NetworkController,
   OptionsController,
   RouterController
 } from '@web3modal/core'
@@ -116,18 +115,6 @@ export class W3mHeader extends LitElement {
             @click=${this.onClose.bind(this)}
             data-testid="w3m-header-close"
           ></wui-icon-link>
-          <wui-flex>
-            ${Object.keys(NetworkController.state.networks).map(
-              network =>
-                html`<wui-button @click=${() => console.log(network)}>${network}</wui-button>`
-            )}
-          </wui-flex>
-          <wui-flex>
-            ${Object.keys(NetworkController.state.networks).map(
-              network =>
-                html`<wui-button @click=${() => console.log(network)}>${network}</wui-button>`
-            )}
-          </wui-flex>
         </wui-flex>
       </wui-flex>
     `

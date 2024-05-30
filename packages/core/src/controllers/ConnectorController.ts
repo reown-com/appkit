@@ -26,6 +26,7 @@ export const ConnectorController = {
   },
 
   setConnectors(connectors: ConnectorControllerState['connectors']) {
+    console.log('>>> state.connectors', connectors)
     state.connectors = connectors.map(c => ref(c))
   },
 

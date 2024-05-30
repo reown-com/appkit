@@ -1,8 +1,18 @@
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
-import { ConnectorController, RouterController } from '@web3modal/core'
+import {
+  ConnectorController,
+  CoreHelperUtil,
+  NetworkController,
+  RouterController
+} from '@web3modal/core'
 import { state } from 'lit/decorators/state.js'
+
+// -- Constants ----------------------------------------- //
+const TABS = 3
+const TABS_PADDING = 48
+const MODAL_MOBILE_VIEW_PX = 430
 
 @customElement('w3m-connect-view')
 export class W3mConnectView extends LitElement {
@@ -13,6 +23,13 @@ export class W3mConnectView extends LitElement {
 
   // -- State & Properties -------------------------------- //
   @state() private connectors = ConnectorController.state.connectors
+
+  @state() private currentTab = 0
+
+  @state() private protocolTabs = Object.keys(NetworkController.state.networks).map(item => ({
+    icon: 'ethereum',
+    label: item
+  }))
 
   public constructor() {
     super()
@@ -29,6 +46,15 @@ export class W3mConnectView extends LitElement {
   public override render() {
     return html`
       <wui-flex flexDirection="column" .padding=${['3xs', 's', 's', 's']}>
+        <wui-tabs
+          style="min-height:36px;"
+          .onTabChange=${this.onProtocolChange.bind(this)}
+          .activeTab=${this.currentTab}
+          localTabWidth=${CoreHelperUtil.isMobile() && window.innerWidth < MODAL_MOBILE_VIEW_PX
+            ? `${(window.innerWidth - TABS_PADDING) / TABS}px`
+            : '104px'}
+          .tabs=${this.protocolTabs}
+        ></wui-tabs>
         <w3m-email-login-widget></w3m-email-login-widget>
         <w3m-social-login-widget></w3m-social-login-widget>
         ${this.walletListTemplate()}
@@ -38,6 +64,17 @@ export class W3mConnectView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private onProtocolChange(value: number) {
+    const protocol = this.protocolTabs[value]?.label || 'evm'
+    const newAdapter = NetworkController.state.adaptersV2?.find(a => a.protocol === protocol)
+    console.log('>>> new adapter', newAdapter)
+
+    if (newAdapter) {
+      this.currentTab = value
+      NetworkController.setAdapter(newAdapter)
+    }
+  }
+
   private walletListTemplate() {
     const authConnector = this.connectors.find(c => c.type === 'AUTH')
 

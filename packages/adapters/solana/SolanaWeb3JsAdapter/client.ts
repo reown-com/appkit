@@ -8,6 +8,7 @@ import {
   NetworkController,
   OptionsController
 } from '@web3modal/core'
+import type { OptionsControllerState } from '@web3modal/core'
 import { ConstantsUtil, PresetsUtil } from '@web3modal/scaffold-utils'
 
 import { createWalletAdapters, syncInjectedWallets } from './connectors/walletAdapters.js'
@@ -22,7 +23,6 @@ import type {
   ConnectionControllerClient,
   NetworkControllerClient,
   Token,
-  ScaffoldOptions,
   Connector,
   CaipAddress,
   CaipNetwork
@@ -48,12 +48,18 @@ export class SolanaWeb3JsClient {
   private hasSyncedConnectedAccount = false
 
   private WalletConnectConnector: WalletConnectConnector
+
   private walletAdapters: Record<AdapterKey, BaseWalletAdapter>
+
   public networkControllerClient: NetworkControllerClient
+
   public connectionControllerClient: ConnectionControllerClient
-  private scaffold: Web3ModalScaffold | undefined
+
+  private scaffold: Web3ModalScaffold | undefined = undefined
+
   public protocol: 'evm' | 'solana' | 'bitcoin'
-  public options: ScaffoldOptions | undefined = undefined
+
+  public options: OptionsControllerState | undefined = undefined
 
   private chains: Chain[]
 
@@ -69,6 +75,7 @@ export class SolanaWeb3JsClient {
     this.protocol = 'solana'
     this.networkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
+        console.log('>>> set solana network controller client')
         if (caipNetwork) {
           try {
             await this.switchNetwork(caipNetwork)
@@ -224,14 +231,18 @@ export class SolanaWeb3JsClient {
     })
   }
 
-  public initialize(scaffold: Web3ModalScaffold, options: ScaffoldOptions) {
+  public construct(scaffold: Web3ModalScaffold, options: OptionsControllerState) {
+    console.log('>>> construct()', scaffold)
     if (!options.projectId) {
       throw new Error('web3modal:initialize - projectId is undefined')
     }
     this.scaffold = scaffold
     this.options = options
-    this.syncRequestedNetworks(this.chains, options.chainImages)
-    this.syncNetwork(options.chainImages)
+  }
+
+  public initialize() {
+    this.syncRequestedNetworks(this.chains, this.options?.chainImages)
+    this.syncNetwork(this.options?.chainImages)
 
     if (typeof window === 'object') {
       this.checkActiveProviders()
@@ -316,6 +327,7 @@ export class SolanaWeb3JsClient {
 
     syncInjectedWallets(w3mConnectors, this.walletAdapters)
 
+    console.log('>>> syncConnectors', this.scaffold, w3mConnectors)
     this.scaffold?.setConnectors(w3mConnectors)
   }
 

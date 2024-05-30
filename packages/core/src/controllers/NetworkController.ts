@@ -1,11 +1,12 @@
 import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
-import type { CaipNetwork, CaipNetworkId } from '../utils/TypeUtil.js'
+import type { AdapterCore, CaipNetwork, CaipNetworkId } from '../utils/TypeUtil.js'
 import { PublicStateController } from './PublicStateController.js'
 import { EventsController } from './EventsController.js'
 import { ModalController } from './ModalController.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { NetworkUtil } from '@web3modal/common'
+import { ConnectionController } from './ConnectionController.js'
 
 // -- Types --------------------------------------------- //
 export interface NetworkControllerClient {
@@ -34,6 +35,7 @@ export interface NetworkControllerState {
   smartAccountEnabledNetworks?: number[]
   activeProtocol?: Protocol
   adapters?: Record<Protocol, any>
+  adaptersV2?: AdapterCore[]
   adapter?: any
 }
 
@@ -75,16 +77,27 @@ export const NetworkController = {
     state._client = ref(client)
   },
 
-  setAdapters(adapters: any[]) {
-    state.adapters = adapters.reduce(
-      (adapter, acum) => ({ ...acum, [adapter.protocol]: adapter }),
-      {}
-    )
+  setAdapters(adapters: AdapterCore[]) {
+    state.adaptersV2 = adapters
   },
 
-  switchProtocol(protocol: Protocol) {
-    state.activeProtocol = protocol
-    state.adapter = state.adapters?.[protocol]
+  setAdapter(adapter: AdapterCore) {
+    console.log('>>> setAdapter', adapter)
+    state.activeProtocol = adapter.protocol
+    state.adapter = adapter
+
+    // Update controller clients
+    const { connectionControllerClient, networkControllerClient } = adapter
+
+    if (connectionControllerClient) {
+      ConnectionController.setClient(connectionControllerClient)
+    }
+    if (networkControllerClient) {
+      NetworkController.setClient(networkControllerClient)
+    }
+
+    // Initialize adapter
+    adapter.initialize()
   },
 
   setCaipNetwork(caipNetwork: NetworkControllerState['caipNetwork']) {

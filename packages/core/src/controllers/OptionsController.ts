@@ -1,6 +1,16 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, snapshot } from 'valtio/vanilla'
-import type { CustomWallet, Metadata, ProjectId, SdkVersion, Tokens } from '../utils/TypeUtil.js'
+import type {
+  AdapterCore,
+  CustomWallet,
+  Metadata,
+  ProjectId,
+  SdkVersion,
+  ThemeMode,
+  Tokens
+} from '../utils/TypeUtil.js'
+import type { ThemeVariables } from '@web3modal/common'
+import type { NetworkControllerState } from './NetworkController.js'
 
 // -- Types --------------------------------------------- //
 export interface OptionsControllerState {
@@ -20,6 +30,14 @@ export interface OptionsControllerState {
   metadata?: Metadata
   enableOnramp?: boolean
   enableWalletFeatures?: boolean
+  themeMode?: ThemeMode
+  themeVariables?: ThemeVariables
+  defaultChain?: NetworkControllerState['caipNetwork']
+  allowUnsupportedChain?: NetworkControllerState['allowUnsupportedChain']
+  siweConfig?: any
+  chainImages?: Record<number | string, string>
+  connectorImages?: Record<string, string>
+  adapters?: AdapterCore[]
 }
 
 type StateKey = keyof OptionsControllerState
@@ -37,6 +55,10 @@ export const OptionsController = {
 
   subscribeKey<K extends StateKey>(key: K, callback: (value: OptionsControllerState[K]) => void) {
     return subKey(state, key, callback)
+  },
+
+  setOptions(options: OptionsControllerState) {
+    Object.assign(state, options)
   },
 
   setProjectId(projectId: OptionsControllerState['projectId']) {

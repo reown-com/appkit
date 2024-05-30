@@ -17,6 +17,7 @@ import {
   switchChain,
   waitForTransactionReceipt
 } from '@wagmi/core'
+import type { OptionsControllerState } from '@web3modal/core'
 import { mainnet } from 'viem/chains'
 import { prepareTransactionRequest, sendTransaction as wagmiSendTransaction } from '@wagmi/core'
 import type { Chain } from '@wagmi/core/chains'
@@ -27,7 +28,6 @@ import type {
   CaipNetworkId,
   ConnectionControllerClient,
   Connector,
-  ScaffoldOptions,
   NetworkControllerClient,
   PublicStateControllerState,
   SendTransactionArgs,
@@ -54,7 +54,7 @@ export type ReactConfig = ReturnType<typeof reactConfig>
 type Config = CoreConfig | ReactConfig
 
 export interface Web3ModalClientOptions<C extends Config>
-  extends Pick<ScaffoldOptions, 'siweConfig'> {
+  extends Pick<OptionsControllerState, 'siweConfig'> {
   wagmiConfig: C
 }
 
@@ -67,9 +67,9 @@ interface Web3ModalState extends PublicStateControllerState {
 
 // -- Client --------------------------------------------------------------------
 export class EVMWagmiClient {
-  private scaffold: Web3ModalScaffold | undefined
+  private scaffold: Web3ModalScaffold | undefined = undefined
 
-  public options: ScaffoldOptions | undefined = undefined
+  public options: OptionsControllerState | undefined = undefined
 
   private hasSyncedConnectedAccount = false
 
@@ -89,8 +89,6 @@ export class EVMWagmiClient {
     }
 
     this.protocol = 'evm'
-    this.scaffold = undefined
-    this.options = undefined
     this.wagmiConfig = wagmiConfig
 
     // #region set clients
@@ -392,13 +390,16 @@ export class EVMWagmiClient {
     })
   }
 
-  public initialize(scaffold: Web3ModalScaffold, options: ScaffoldOptions) {
+  public construct(scaffold: Web3ModalScaffold, options: OptionsControllerState) {
+    console.log('>>> construct()', scaffold)
     if (!options.projectId) {
       throw new Error('web3modal:initialize - projectId is undefined')
     }
     this.scaffold = scaffold
     this.options = options
+  }
 
+  public initialize() {
     this.syncRequestedNetworks([...this.wagmiConfig.chains])
     this.syncConnectors([...this.wagmiConfig.connectors])
     this.initAuthConnectorListeners([...this.wagmiConfig.connectors])
@@ -585,6 +586,7 @@ export class EVMWagmiClient {
   private syncConnectors(
     connectors: Web3ModalClientOptions<CoreConfig>['wagmiConfig']['connectors']
   ) {
+    console.log('>>> syncConnectors', connectors)
     const uniqueIds = new Set()
     const filteredConnectors = connectors.filter(
       item => !uniqueIds.has(item.id) && uniqueIds.add(item.id)
@@ -617,6 +619,7 @@ export class EVMWagmiClient {
         })
       }
     })
+    console.log('>>> syncConnectors', this.scaffold, w3mConnectors)
     this.scaffold?.setConnectors(w3mConnectors)
     this.syncAuthConnector(filteredConnectors)
   }
