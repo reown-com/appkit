@@ -4,13 +4,16 @@ import { createSIWEConfig, formatMessage } from '@web3modal/siwe'
 import { WagmiConstantsUtil } from '../utils/WagmiConstants'
 
 export const siweConfig = createSIWEConfig({
+  signOutOnAccountChange: true,
+  signOutOnNetworkChange: true,
   // We don't require any async action to populate params but other apps might
   // eslint-disable-next-line @typescript-eslint/require-await
   getMessageParams: async () => ({
     domain: window.location.host,
     uri: window.location.origin,
     chains: WagmiConstantsUtil.chains.map(chain => chain.id),
-    statement: 'Please sign with your account'
+    statement: 'Please sign with your account',
+    iat: new Date().toISOString()
   }),
   createMessage: ({ address, ...args }: SIWECreateMessageArgs) => formatMessage(args, address),
   getNonce: async () => {

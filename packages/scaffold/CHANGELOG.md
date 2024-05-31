@@ -1,5 +1,44 @@
 # @web3modal/scaffold
 
+## 4.2.3
+
+### Patch Changes
+
+- feat: - feat: restricted ens names. fix: iat set automatically if not present in messageParams. Adds siwe config handlers
+
+- Updated dependencies []:
+  - @web3modal/common@4.2.3
+  - @web3modal/core@4.2.3
+  - @web3modal/siwe@4.2.3
+  - @web3modal/ui@4.2.3
+  - @web3modal/wallet@4.2.3
+
+## 4.2.3-alpha.0
+
+### Patch Changes
+
+- feat: add support for coinbase smart accounts
+
+- Updated dependencies []:
+  - @web3modal/siwe@4.2.3-alpha.0
+  - @web3modal/common@4.2.3-alpha.0
+  - @web3modal/core@4.2.3-alpha.0
+  - @web3modal/ui@4.2.3-alpha.0
+  - @web3modal/wallet@4.2.3-alpha.0
+
+## 4.2.2
+
+### Patch Changes
+
+- feat: social login refactor. wagmi sendCalls support. refactor theme variables
+
+- Updated dependencies []:
+  - @web3modal/common@4.2.2
+  - @web3modal/core@4.2.2
+  - @web3modal/siwe@4.2.2
+  - @web3modal/ui@4.2.2
+  - @web3modal/wallet@4.2.2
+
 ## 4.2.1
 
 ### Patch Changes

@@ -25,10 +25,12 @@ import {
   PublicStateController,
   ThemeController,
   SnackController,
-  RouterController
+  RouterController,
+  EnsController
 } from '@web3modal/core'
 import { setColorTheme, setThemeVariables } from '@web3modal/ui'
 import type { SIWEControllerClient } from '@web3modal/siwe'
+import { ConstantsUtil } from '@web3modal/common'
 
 // -- Helpers -------------------------------------------------------------------
 let isInitialized = false
@@ -256,6 +258,17 @@ export class Web3ModalScaffold {
     preferredAccountType => {
       AccountController.setPreferredAccountType(preferredAccountType)
     }
+
+  protected getWalletConnectName: (typeof EnsController)['getNamesForAddress'] = address =>
+    EnsController.getNamesForAddress(address)
+
+  protected resolveWalletConnectName = async (name: string) => {
+    const trimmedName = name.replace(ConstantsUtil.WC_NAME_SUFFIX, '')
+    const wcNameAddress = await EnsController.resolveName(trimmedName)
+    const networkNameAddresses = Object.values(wcNameAddress?.addresses) || []
+
+    return networkNameAddresses[0]?.address || false
+  }
 
   // -- Private ------------------------------------------------------------------
   private async initControllers(options: ScaffoldOptions) {

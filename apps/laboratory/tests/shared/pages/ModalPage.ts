@@ -123,7 +123,7 @@ export class ModalPage {
       this.page.getByText(email),
       `Expected current email: ${email} to be visible on the notification screen`
     ).toBeVisible({
-      timeout: 10_000
+      timeout: 20_000
     })
   }
 
@@ -291,6 +291,8 @@ export class ModalPage {
       this.page.getByTestId('w3m-account-email-update'),
       `Expected to go to the account screen after the update`
     ).toBeVisible()
+
+    await expect(this.page.getByText(newEmailAddress)).toBeVisible()
   }
 
   async updateOtpFlow(emailAddress: string, mailsacApiKey: string, headerTitle: string) {

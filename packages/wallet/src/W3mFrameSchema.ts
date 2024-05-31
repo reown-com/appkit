@@ -46,7 +46,7 @@ export const AppUpdateEmailSecondaryOtpRequest = z.object({ otp: z.string() })
 export const AppSyncThemeRequest = z.object({
   themeMode: z.optional(z.enum(['light', 'dark'])),
   themeVariables: z.optional(z.record(z.string(), z.string().or(z.number()))),
-  w3mThemeVariables: z.record(z.string(), z.string())
+  w3mThemeVariables: z.optional(z.record(z.string(), z.string()))
 })
 export const AppSyncDappDataRequest = z.object({
   metadata: z
@@ -73,7 +73,8 @@ export const FrameConnectEmailResponse = z.object({
 export const FrameConnectSocialResponse = z.object({
   email: z.string(),
   address: z.string(),
-  chainId: z.number()
+  chainId: z.number(),
+  userName: z.string().optional()
 })
 export const FrameUpdateEmailResponse = z.object({
   action: z.enum(['VERIFY_PRIMARY_OTP', 'VERIFY_SECONDARY_OTP'])
