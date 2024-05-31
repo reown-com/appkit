@@ -1,17 +1,14 @@
 import { html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
 import { AssetUtil, NetworkController, type OnRampProvider } from '@web3modal/core'
-import '../../components/wui-icon/index.js'
-import '../../components/wui-text/index.js'
-import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { ColorType } from '../../utils/TypeUtil.js'
-import { customElement } from '../../utils/WebComponentsUtil.js'
-import styles from './styles.js'
+import { customElement } from '@web3modal/ui'
+import type { ColorType } from '@web3modal/ui'
 import { ifDefined } from 'lit/directives/if-defined.js'
+import styles from './styles.js'
 
-@customElement('wui-onramp-provider-item')
-export class WuiOnRampProviderItem extends LitElement {
-  public static override styles = [resetStyles, elementStyles, styles]
+@customElement('w3m-onramp-provider-item')
+export class W3mOnRampProviderItem extends LitElement {
+  public static override styles = [styles]
 
   // -- State & Properties -------------------------------- //
   @property({ type: Boolean }) public disabled = false
@@ -80,6 +77,6 @@ export class WuiOnRampProviderItem extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'wui-onramp-provider-item': WuiOnRampProviderItem
+    'w3m-onramp-provider-item': W3mOnRampProviderItem
   }
 }

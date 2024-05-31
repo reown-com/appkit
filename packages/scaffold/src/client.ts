@@ -1,13 +1,11 @@
 import type {
   EventsControllerState,
-  NetworkControllerClient,
   PublicStateControllerState,
   ThemeControllerState,
   OptionsControllerState,
   ModalControllerState,
   ConnectedWalletInfo,
   RouterControllerState,
-  ConnectionControllerClient,
   AdapterCore
 } from '@web3modal/core'
 import {
@@ -299,16 +297,4 @@ export class Web3ModalScaffold {
 
     return this.initPromise
   }
-}
-
-/**
- *  Library spesific props & types
- *  - defaultChain: default chain to connect to
- */
-
-export interface Adapter {
-  protocol: 'evm' | 'solana' | 'bitcoin'
-  networkControllerClient: NetworkControllerClient
-  connectionControllerClient: ConnectionControllerClient
-  initialize(scaffold: Web3ModalScaffold, options?: OptionsControllerState): void
 }

@@ -61,7 +61,7 @@ export class W3mOnRampProvidersView extends LitElement {
   private onRampProvidersTemplate() {
     return this.providers.map(
       provider => html`
-        <wui-onramp-provider-item
+        <w3m-onramp-provider-item
           label=${provider.label}
           name=${provider.name}
           feeRange=${provider.feeRange}
@@ -69,7 +69,7 @@ export class W3mOnRampProvidersView extends LitElement {
             this.onClickProvider(provider)
           }}
           ?disabled=${!provider.url}
-        ></wui-onramp-provider-item>
+        ></w3m-onramp-provider-item>
       `
     )
   }
