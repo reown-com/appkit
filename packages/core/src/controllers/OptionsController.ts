@@ -2,6 +2,7 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, snapshot } from 'valtio/vanilla'
 import type {
   AdapterCore,
+  CaipNetwork,
   CustomWallet,
   Metadata,
   ProjectId,
@@ -32,7 +33,7 @@ export interface OptionsControllerState {
   enableWalletFeatures?: boolean
   themeMode?: ThemeMode
   themeVariables?: ThemeVariables
-  defaultChain?: NetworkControllerState['caipNetwork']
+  defaultChain?: CaipNetwork
   allowUnsupportedChain?: NetworkControllerState['allowUnsupportedChain']
   siweConfig?: any
   chainImages?: Record<number | string, string>

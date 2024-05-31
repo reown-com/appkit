@@ -36,7 +36,7 @@ export class W3mSwapPreviewView extends LitElement {
 
   @state() private toTokenPriceInUSD = SwapController.state.toTokenPriceInUSD
 
-  @state() private caipNetwork = NetworkController.state.caipNetwork
+  @state() private caipNetwork = NetworkController.activeNetwork()
 
   @state() private transactionLoading = SwapController.state.transactionLoading
 
@@ -60,7 +60,8 @@ export class W3mSwapPreviewView extends LitElement {
             // Maybe reset state as well?
           }
         }),
-        NetworkController.subscribeKey('caipNetwork', newCaipNetwork => {
+        NetworkController.subscribe(() => {
+          const newCaipNetwork = NetworkController.activeNetwork()
           if (this.caipNetwork !== newCaipNetwork) {
             this.caipNetwork = newCaipNetwork
           }

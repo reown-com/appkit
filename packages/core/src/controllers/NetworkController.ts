@@ -10,7 +10,7 @@ import { ConnectionController } from './ConnectionController.js'
 
 // -- Types --------------------------------------------- //
 export interface NetworkControllerClient {
-  switchCaipNetwork: (network: NetworkControllerState['caipNetwork']) => Promise<void>
+  switchCaipNetwork: (network: ProtocolNetworks['caipNetwork']) => Promise<void>
   getApprovedCaipNetworksData: () => Promise<{
     approvedCaipNetworkIds: ProtocolNetworks['approvedCaipNetworkIds']
     supportsAllNetworks: NetworkControllerState['supportsAllNetworks']
@@ -22,10 +22,10 @@ type Protocol = 'evm' | 'solana' | 'bitcoin'
 type ProtocolNetworks = {
   requestedCaipNetworks?: CaipNetwork[]
   approvedCaipNetworkIds?: CaipNetworkId[]
+  caipNetwork?: CaipNetwork
 }
 
 export interface NetworkControllerState {
-  caipNetwork?: CaipNetwork
   supportsAllNetworks?: boolean
   isDefaultCaipNetwork: boolean
   isUnsupportedChain?: boolean
@@ -73,6 +73,14 @@ export const NetworkController = {
     return state._client
   },
 
+  activeNetwork() {
+    if (!state.activeProtocol) {
+      return undefined
+    }
+
+    return state.networks[state.activeProtocol].caipNetwork
+  },
+
   setClient(client: NetworkControllerClient) {
     state._client = ref(client)
   },
@@ -99,16 +107,16 @@ export const NetworkController = {
     adapter.initialize()
   },
 
-  setCaipNetwork(caipNetwork: NetworkControllerState['caipNetwork']) {
-    state.caipNetwork = caipNetwork
+  setCaipNetwork(caipNetwork: ProtocolNetworks['caipNetwork'], protocol: Protocol) {
+    state.networks[protocol].caipNetwork = caipNetwork
     PublicStateController.set({ selectedNetworkId: caipNetwork?.id })
     if (!this.state.allowUnsupportedChain) {
       this.checkIfSupportedNetwork()
     }
   },
 
-  setDefaultCaipNetwork(caipNetwork: NetworkControllerState['caipNetwork']) {
-    state.caipNetwork = caipNetwork
+  setDefaultCaipNetwork(caipNetwork: ProtocolNetworks['caipNetwork'], protocol: Protocol) {
+    state.networks[protocol].caipNetwork = caipNetwork
     PublicStateController.set({ selectedNetworkId: caipNetwork?.id })
     state.isDefaultCaipNetwork = true
   },
@@ -148,13 +156,13 @@ export const NetworkController = {
     state.networks[state.activeProtocol].approvedCaipNetworkIds = data.approvedCaipNetworkIds
   },
 
-  async switchActiveNetwork(network: NetworkControllerState['caipNetwork']) {
+  async switchActiveNetwork(network: ProtocolNetworks['caipNetwork']) {
     if (!state.adapter || !state.activeProtocol) {
       throw new Error('switchActiveNetwork - No active protocol')
     }
     await state.adapter.switchCaipNetwork(network)
 
-    state.caipNetwork = network
+    state.networks[state.activeProtocol].caipNetwork = network
     if (network) {
       EventsController.sendEvent({
         type: 'track',
@@ -169,12 +177,19 @@ export const NetworkController = {
       return
     }
     const requestedNetworks = state.networks[state.activeProtocol].requestedCaipNetworks || []
+
     state.isUnsupportedChain = !requestedNetworks.some(
       // @ts-ignore
-      network => network.id === state.caipNetwork?.id
+      network => network.id === this.activeNetwork()?.id
     )
-
-    if (state.isUnsupportedChain) {
+    console.log(
+      'isUnsupportedChain',
+      state.activeProtocol,
+      state.isUnsupportedChain,
+      this.activeNetwork()?.id,
+      requestedNetworks
+    )
+    if (state.isUnsupportedChain && this.activeNetwork()?.id) {
       this.showUnsupportedChainUI()
     }
   },
@@ -183,7 +198,7 @@ export const NetworkController = {
     if (!state.activeProtocol) {
       return false
     }
-    const networkId = NetworkUtil.caipNetworkIdToNumber(state.caipNetwork?.id)
+    const networkId = NetworkUtil.caipNetworkIdToNumber(this.activeNetwork()?.id)
     if (!networkId) {
       return false
     }
@@ -197,7 +212,7 @@ export const NetworkController = {
         approvedCaipNetworkIds: undefined
       }
       if (!state.isDefaultCaipNetwork) {
-        state.caipNetwork = undefined
+        state.networks[protocol].caipNetwork = undefined
       }
 
       state.networks[protocol] = defaultNetwork

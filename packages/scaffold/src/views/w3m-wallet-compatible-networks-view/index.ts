@@ -46,13 +46,13 @@ export class W3mWalletCompatibleNetworksView extends LitElement {
 
   // -- Private ------------------------------------------- //
   networkTemplate() {
-    const { networks, caipNetwork, activeProtocol } = NetworkController.state
+    const { networks, activeProtocol } = NetworkController.state
 
     if (!activeProtocol) {
       return null
     }
 
-    const { approvedCaipNetworkIds, requestedCaipNetworks } = networks[activeProtocol]
+    const { approvedCaipNetworkIds, requestedCaipNetworks, caipNetwork } = networks[activeProtocol]
     const isNetworkEnabledForSmartAccounts = NetworkController.checkIfSmartAccountEnabled()
 
     let sortedNetworks = CoreHelperUtil.sortRequestedNetworks(

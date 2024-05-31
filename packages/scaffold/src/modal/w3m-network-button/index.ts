@@ -22,7 +22,7 @@ export class W3mNetworkButton extends LitElement {
   // -- State & Properties -------------------------------- //
   @property({ type: Boolean }) public disabled?: WuiNetworkButton['disabled'] = false
 
-  @state() private network = NetworkController.state.caipNetwork
+  @state() private network = NetworkController.activeNetwork()
 
   @state() private connected = AccountController.state.isConnected
 
@@ -35,7 +35,7 @@ export class W3mNetworkButton extends LitElement {
     super()
     this.unsubscribe.push(
       ...[
-        NetworkController.subscribeKey('caipNetwork', val => (this.network = val)),
+        NetworkController.subscribe(() => (this.network = NetworkController.activeNetwork())),
         AccountController.subscribeKey('isConnected', val => (this.connected = val)),
         ModalController.subscribeKey('loading', val => (this.loading = val)),
         NetworkController.subscribeKey('isUnsupportedChain', val => (this.isUnsupportedChain = val))
@@ -49,6 +49,7 @@ export class W3mNetworkButton extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    console.log('network button', this.network)
     return html`
       <wui-network-button
         .disabled=${Boolean(this.disabled || this.loading)}

@@ -206,8 +206,13 @@ export class SolanaWeb3JsClient {
       this.syncNetwork(chainImages)
     })
 
-    NetworkController.subscribeKey('caipNetwork', () => {
-      if (NetworkController.state.caipNetwork && !SolStoreUtil.state.isConnected) {
+    NetworkController.subscribe(() => {
+      const caipNetwork = NetworkController.activeNetwork()
+      if (
+        caipNetwork &&
+        !SolStoreUtil.state.isConnected &&
+        NetworkController.state.activeProtocol === 'solana'
+      ) {
         SolStoreUtil.setCaipChainId(`solana:${chain.chainId}`)
         SolStoreUtil.setCurrentChain(chain)
         localStorage.setItem(SolConstantsUtil.CAIP_CHAIN_ID, `solana:${chain.chainId}`)
@@ -426,12 +431,15 @@ export class SolanaWeb3JsClient {
       if (chain) {
         const caipChainId: CaipNetworkId = `solana:${chain.chainId}`
 
-        this.scaffold?.setCaipNetwork({
-          id: caipChainId,
-          name: chain.name,
-          imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId],
-          imageUrl: chainImages?.[chain.chainId]
-        })
+        this.scaffold?.setCaipNetwork(
+          {
+            id: caipChainId,
+            name: chain.name,
+            imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId],
+            imageUrl: chainImages?.[chain.chainId]
+          },
+          this.protocol
+        )
         if (isConnected && address) {
           if (chain.explorerUrl) {
             const url = `${chain.explorerUrl}/account/${address}`

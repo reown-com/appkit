@@ -173,11 +173,11 @@ export class Web3ModalScaffold {
     AccountController.resetAccount()
   }
 
-  public setCaipNetwork: (typeof NetworkController)['setCaipNetwork'] = caipNetwork => {
-    NetworkController.setCaipNetwork(caipNetwork)
+  public setCaipNetwork: (typeof NetworkController)['setCaipNetwork'] = (caipNetwork, protocol) => {
+    NetworkController.setCaipNetwork(caipNetwork, protocol)
   }
 
-  public getCaipNetwork = () => NetworkController.state.caipNetwork
+  public getCaipNetwork = () => NetworkController.activeNetwork()
 
   public setRequestedCaipNetworks: (typeof NetworkController)['setRequestedCaipNetworks'] = (
     requestedCaipNetworks,
@@ -260,7 +260,7 @@ export class Web3ModalScaffold {
 
     if (defaultAdapter) {
       NetworkController.setAdapter(defaultAdapter)
-      NetworkController.setDefaultCaipNetwork(options.defaultChain)
+      NetworkController.setDefaultCaipNetwork(options.defaultChain, defaultAdapter.protocol)
     }
 
     OptionsController.setOptions(options)

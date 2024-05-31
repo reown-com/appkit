@@ -164,8 +164,9 @@ export const SwapController = {
   },
 
   getParams() {
+    const caipNetwork = NetworkController.activeNetwork()
     const { address } = AccountController.state
-    const networkAddress = `${NetworkController.state.caipNetwork?.id}:${ConstantsUtil.NATIVE_TOKEN_ADDRESS}`
+    const networkAddress = `${caipNetwork?.id}:${ConstantsUtil.NATIVE_TOKEN_ADDRESS}`
 
     if (!address) {
       throw new Error('No address found to swap the tokens from.')
@@ -413,7 +414,7 @@ export const SwapController = {
 
   setBalances(balances: SwapTokenWithBalance[]) {
     const { networkAddress } = this.getParams()
-    const caipNetwork = NetworkController.state.caipNetwork
+    const caipNetwork = NetworkController.activeNetwork()
 
     if (!caipNetwork) {
       return

@@ -33,7 +33,7 @@ export class W3mAccountDefaultWidget extends LitElement {
 
   @state() private profileName = AccountController.state.profileName
 
-  @state() private network = NetworkController.state.caipNetwork
+  @state() private network = NetworkController.activeNetwork()
 
   @state() private disconnecting = false
 
@@ -57,11 +57,10 @@ export class W3mAccountDefaultWidget extends LitElement {
           }
         })
       ],
-      NetworkController.subscribeKey('caipNetwork', val => {
-        if (val?.id) {
-          this.network = val
-        }
-      })
+      NetworkController.subscribeKey(
+        'networks',
+        () => (this.network = NetworkController.activeNetwork())
+      )
     )
   }
 

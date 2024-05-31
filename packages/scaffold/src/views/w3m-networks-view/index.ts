@@ -21,12 +21,15 @@ export class W3mNetworksView extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() public caipNetwork = NetworkController.state.caipNetwork
+  @state() public caipNetwork = NetworkController.activeNetwork()
 
   public constructor() {
     super()
     this.unsubscribe.push(
-      NetworkController.subscribeKey('caipNetwork', val => (this.caipNetwork = val))
+      NetworkController.subscribeKey(
+        'networks',
+        () => (this.caipNetwork = NetworkController.activeNetwork())
+      )
     )
   }
 
@@ -90,11 +93,11 @@ export class W3mNetworksView extends LitElement {
 
   private async onSwitchNetwork(network: CaipNetwork) {
     const { isConnected } = AccountController.state
-    const { networks, activeProtocol, supportsAllNetworks, caipNetwork } = NetworkController.state
+    const { networks, activeProtocol, supportsAllNetworks } = NetworkController.state
     if (!activeProtocol) {
       return
     }
-    const { approvedCaipNetworkIds } = networks[activeProtocol]
+    const { approvedCaipNetworkIds, caipNetwork } = networks[activeProtocol]
     const { data } = RouterController.state
     if (isConnected && caipNetwork?.id !== network.id) {
       if (approvedCaipNetworkIds?.includes(network.id)) {
@@ -104,7 +107,7 @@ export class W3mNetworksView extends LitElement {
         RouterController.push('SwitchNetwork', { ...data, network })
       }
     } else if (!isConnected) {
-      NetworkController.setCaipNetwork(network)
+      NetworkController.setCaipNetwork(network, activeProtocol)
       RouterController.push('Connect')
     }
   }

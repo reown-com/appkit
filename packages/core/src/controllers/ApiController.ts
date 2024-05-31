@@ -143,29 +143,33 @@ export const ApiController = {
   },
 
   async fetchRecommendedWallets() {
-    const { includeWalletIds, excludeWalletIds, featuredWalletIds } = OptionsController.state
-    const exclude = [...(excludeWalletIds ?? []), ...(featuredWalletIds ?? [])].filter(Boolean)
-    const { data, count } = await api.get<ApiGetWalletsResponse>({
-      path: '/getWallets',
-      headers: ApiController._getApiHeaders(),
-      params: {
-        page: '1',
-        chains: NetworkController.state.caipNetwork?.id,
-        entries: recommendedEntries,
-        include: includeWalletIds?.join(','),
-        exclude: exclude?.join(',')
-      }
-    })
-    const recent = StorageUtil.getRecentWallets()
-    const recommendedImages = data.map(d => d.image_id).filter(Boolean)
-    const recentImages = recent.map(r => r.image_id).filter(Boolean)
-    await Promise.allSettled(
-      ([...recommendedImages, ...recentImages] as string[]).map(id =>
-        ApiController._fetchWalletImage(id)
+    try {
+      const { includeWalletIds, excludeWalletIds, featuredWalletIds } = OptionsController.state
+      const exclude = [...(excludeWalletIds ?? []), ...(featuredWalletIds ?? [])].filter(Boolean)
+      const { data, count } = await api.get<ApiGetWalletsResponse>({
+        path: '/getWallets',
+        headers: ApiController._getApiHeaders(),
+        params: {
+          page: '1',
+          chains: NetworkController.activeNetwork()?.id,
+          entries: recommendedEntries,
+          include: includeWalletIds?.join(','),
+          exclude: exclude?.join(',')
+        }
+      })
+      const recent = StorageUtil.getRecentWallets()
+      const recommendedImages = data.map(d => d.image_id).filter(Boolean)
+      const recentImages = recent.map(r => r.image_id).filter(Boolean)
+      await Promise.allSettled(
+        ([...recommendedImages, ...recentImages] as string[]).map(id =>
+          ApiController._fetchWalletImage(id)
+        )
       )
-    )
-    state.recommended = data
-    state.count = count ?? 0
+      state.recommended = data
+      state.count = count ?? 0
+    } catch {
+      // Catch silently
+    }
   },
 
   async fetchWallets({ page }: Pick<ApiGetWalletsRequest, 'page'>) {
@@ -182,7 +186,7 @@ export const ApiController = {
       params: {
         page: String(page),
         entries,
-        chains: NetworkController.state.caipNetwork?.id,
+        chains: NetworkController.activeNetwork()?.id,
         include: includeWalletIds?.join(','),
         exclude: exclude.join(',')
       }
@@ -207,7 +211,7 @@ export const ApiController = {
         page: '1',
         entries: '100',
         search: search?.trim(),
-        chains: NetworkController.state.caipNetwork?.id,
+        chains: NetworkController.activeNetwork()?.id,
         include: includeWalletIds?.join(','),
         exclude: excludeWalletIds?.join(',')
       }

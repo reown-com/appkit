@@ -130,13 +130,13 @@ export class W3mUnsupportedChainView extends LitElement {
 
   private async onSwitchNetwork(network: CaipNetwork) {
     const { isConnected } = AccountController.state
-    const { supportsAllNetworks, caipNetwork, networks, activeProtocol } = NetworkController.state
+    const { supportsAllNetworks, networks, activeProtocol } = NetworkController.state
 
     if (!activeProtocol) {
       return
     }
 
-    const { approvedCaipNetworkIds } = networks[activeProtocol]
+    const { approvedCaipNetworkIds, caipNetwork } = networks[activeProtocol]
 
     const { data } = RouterController.state
 
@@ -148,7 +148,7 @@ export class W3mUnsupportedChainView extends LitElement {
         RouterController.push('SwitchNetwork', { ...data, network })
       }
     } else if (!isConnected) {
-      NetworkController.setCaipNetwork(network)
+      NetworkController.setCaipNetwork(network, activeProtocol)
       RouterController.push('Connect')
     }
   }

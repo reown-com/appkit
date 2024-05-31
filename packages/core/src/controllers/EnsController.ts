@@ -83,7 +83,7 @@ export const EnsController = {
 
   async getNamesForAddress(address: string) {
     try {
-      const network = NetworkController.state.caipNetwork
+      const network = NetworkController.activeNetwork()
       if (!network) {
         return []
       }
@@ -98,7 +98,7 @@ export const EnsController = {
   },
 
   async registerName(name: string) {
-    const network = NetworkController.state.caipNetwork
+    const network = NetworkController.activeNetwork()
     if (!network) {
       throw new Error('Network not found')
     }

@@ -23,8 +23,9 @@ export type TokenInfo = {
 // -- Controller ---------------------------------------- //
 export const SwapApiUtil = {
   async getTokenList() {
+    const caipNetwork = NetworkController.activeNetwork()
     const response = await BlockchainApiController.fetchSwapTokens({
-      chainId: NetworkController.state.caipNetwork?.id,
+      chainId: caipNetwork?.id,
       projectId: OptionsController.state.projectId
     })
     const tokens =
@@ -47,7 +48,7 @@ export const SwapApiUtil = {
 
   async fetchGasPrice() {
     const projectId = OptionsController.state.projectId
-    const caipNetwork = NetworkController.state.caipNetwork
+    const caipNetwork = NetworkController.activeNetwork()
 
     if (!caipNetwork) {
       return null
@@ -88,7 +89,7 @@ export const SwapApiUtil = {
 
   async getMyTokensWithBalance(forceUpdate?: string) {
     const address = AccountController.state.address
-    const caipNetwork = NetworkController.state.caipNetwork
+    const caipNetwork = NetworkController.activeNetwork()
 
     if (!address || !caipNetwork) {
       return []

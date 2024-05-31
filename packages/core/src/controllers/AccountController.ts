@@ -108,7 +108,7 @@ export const AccountController = {
   },
 
   async fetchTokenBalance() {
-    const chainId = NetworkController.state.caipNetwork?.id
+    const chainId = NetworkController.activeNetwork()?.id
 
     try {
       if (state.address && chainId) {

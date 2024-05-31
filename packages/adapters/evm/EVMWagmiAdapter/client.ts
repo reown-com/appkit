@@ -465,12 +465,15 @@ export class EVMWagmiClient {
       const name = chain?.name ?? chainId?.toString()
       const id = Number(chain?.id ?? chainId)
       const caipChainId: CaipNetworkId = `${ConstantsUtil.EIP155}:${id}`
-      this.scaffold?.setCaipNetwork({
-        id: caipChainId,
-        name,
-        imageId: PresetsUtil.EIP155NetworkImageIds[id],
-        imageUrl: this.options?.chainImages?.[id]
-      })
+      this.scaffold?.setCaipNetwork(
+        {
+          id: caipChainId,
+          name,
+          imageId: PresetsUtil.EIP155NetworkImageIds[id],
+          imageUrl: this.options?.chainImages?.[id]
+        },
+        this.protocol
+      )
       if (isConnected && address && chainId) {
         const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${id}:${address}`
         this.scaffold?.setCaipAddress(caipAddress)
