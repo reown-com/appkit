@@ -621,7 +621,24 @@ export class Web3Modal extends Web3ModalScaffold {
 
     if (providerType === ConstantsUtil.AUTH_CONNECTOR_ID) {
       await this.authProvider?.disconnect()
-    } else if (providerType === 'injected' || providerType === 'eip6963') {
+    } else if (provider && (providerType === 'injected' || providerType === 'eip6963')) {
+      try {
+        const permissions: { parentCapability: string }[] = await provider.request({
+          method: 'wallet_getPermissions'
+        })
+        const ethAccountsPermission = permissions.find(
+          permission => permission.parentCapability === 'eth_accounts'
+        )
+
+        if (ethAccountsPermission) {
+          await provider.request({
+            method: 'wallet_revokePermissions',
+            params: [{ eth_accounts: {} }]
+          })
+        }
+      } catch (error) {
+        throw new Error('Error revoking permissions:')
+      }
       provider?.emit('disconnect')
     } else if (providerType === 'walletConnect' || providerType === 'coinbaseWalletSDK') {
       const ethereumProvider = provider as unknown as EthereumProvider
