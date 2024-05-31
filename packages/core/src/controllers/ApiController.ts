@@ -58,8 +58,8 @@ export const ApiController = {
 
     return {
       'x-project-id': projectId,
-      'x-sdk-type': sdkType,
-      'x-sdk-version': sdkVersion
+      'x-sdk-type': sdkType || 'w3m',
+      'x-sdk-version': sdkVersion || 'html-wagmi-4.2.2'
     }
   },
 

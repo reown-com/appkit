@@ -193,8 +193,8 @@ export const BlockchainApiController = {
       path: `/v1/convert/allowance?projectId=${projectId}&tokenAddress=${tokenAddress}&userAddress=${userAddress}`,
       headers: {
         'Content-Type': 'application/json',
-        'x-sdk-type': sdkType,
-        'x-sdk-version': sdkVersion
+        'x-sdk-type': sdkType || 'w3m',
+        'x-sdk-version': sdkVersion || 'html-wagmi-4.2.2'
       }
     })
   },
@@ -206,8 +206,8 @@ export const BlockchainApiController = {
       path: `/v1/convert/gas-price`,
       headers: {
         'Content-Type': 'application/json',
-        'x-sdk-type': sdkType,
-        'x-sdk-version': sdkVersion
+        'x-sdk-type': sdkType || 'w3m',
+        'x-sdk-version': sdkVersion || 'html-wagmi-4.2.2'
       },
       params: {
         projectId,
@@ -253,8 +253,8 @@ export const BlockchainApiController = {
       path: `/v1/convert/build-approve`,
       headers: {
         'Content-Type': 'application/json',
-        'x-sdk-type': sdkType,
-        'x-sdk-version': sdkVersion
+        'x-sdk-type': sdkType || 'w3m',
+        'x-sdk-version': sdkVersion || 'html-wagmi-4.2.2'
       },
       params: {
         projectId,
@@ -271,8 +271,8 @@ export const BlockchainApiController = {
     return api.get<BlockchainApiBalanceResponse>({
       path: `/v1/account/${address}/balance`,
       headers: {
-        'x-sdk-type': sdkType,
-        'x-sdk-version': sdkVersion
+        'x-sdk-type': sdkType || 'w3m',
+        'x-sdk-version': sdkVersion || 'html-wagmi-4.2.2'
       },
       params: {
         currency: 'usd',
