@@ -41,19 +41,18 @@ export class W3mConnectingWcMobile extends W3mConnectingWidget {
     if (this.wallet?.mobile_link && this.uri) {
       try {
         this.error = false
-        const { mobile_link, link_mode, name } = this.wallet
-
-        let formattedUrl: { redirect: string; href: string } | undefined = undefined
-
-        if (OptionsController.state.enableUniversalLinks && link_mode) {
-          formattedUrl = CoreHelperUtil.formatNativeUrl(link_mode, this.uri)
-        } else {
-          formattedUrl = CoreHelperUtil.formatUniversalUrl(mobile_link, this.uri)
+        const { mobile_link: deep_link, link_mode: universal_link, name } = this.wallet
+        let link = deep_link
+        if (OptionsController.state.enableUniversalLinks) {
+          if (!universal_link) {
+            throw new Error('Universal Link is undefined.')
+          }
+          link = universal_link
         }
-
-        ConnectionController.setWcLinking({ name, href: formattedUrl.href })
+        const { redirect, href } = CoreHelperUtil.formatNativeUrl(link, this.uri)
+        ConnectionController.setWcLinking({ name, href })
         ConnectionController.setRecentWallet(this.wallet)
-        CoreHelperUtil.openHref(formattedUrl.redirect, '_self')
+        CoreHelperUtil.openHref(redirect, '_self')
       } catch {
         this.error = true
       }
