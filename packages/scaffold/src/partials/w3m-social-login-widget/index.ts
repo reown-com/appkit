@@ -23,6 +23,10 @@ export class W3mSocialLoginWidget extends LitElement {
   // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
 
+  private desktopWindow?: Window | null
+
+  private mobileWindow?: Window | null
+
   // -- State & Properties -------------------------------- //
   @state() private connectors = ConnectorController.state.connectors
 
@@ -142,24 +146,39 @@ export class W3mSocialLoginWidget extends LitElement {
   }
 
   async onSocialClick(socialProvider?: SocialProvider) {
+    if (socialProvider) {
+      AccountController.setSocialProvider(socialProvider)
+    }
     const authConnector = ConnectorController.getAuthConnector()
+    if (CoreHelperUtil.isMobile()) {
+      this.mobileWindow = CoreHelperUtil.returnOpenHref(
+        '',
+        'popupWindow',
+        'width=600,height=800,scrollbars=yes'
+      )
+    }
+
     try {
       if (authConnector && socialProvider) {
         const { uri } = await authConnector.provider.getSocialRedirectUri({
           provider: socialProvider
         })
-        AccountController.setSocialProvider(socialProvider)
-        // Window.open doesn't work on ios withing an async function, wrapping it in a setTimeout fixes this
-        setTimeout(() => {
-          const newWindow = CoreHelperUtil.returnOpenHref(
+
+        if (!CoreHelperUtil.isMobile()) {
+          this.desktopWindow = CoreHelperUtil.returnOpenHref(
             uri,
             'popupWindow',
             'width=600,height=800,scrollbars=yes'
           )
-          if (newWindow) {
-            AccountController.setSocialWindow(newWindow)
-          }
-        })
+        }
+        if (this.desktopWindow && uri) {
+          AccountController.setSocialWindow(this.desktopWindow)
+        } else if (this.mobileWindow && uri) {
+          this.mobileWindow.location.href = uri
+          AccountController.setSocialWindow(this.mobileWindow)
+        } else {
+          throw new Error('Something went wrong')
+        }
 
         RouterController.push('ConnectingSocial')
       }
