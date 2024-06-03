@@ -143,23 +143,22 @@ export class W3mSocialLoginWidget extends LitElement {
 
   async onSocialClick(socialProvider?: SocialProvider) {
     const authConnector = ConnectorController.getAuthConnector()
+    const newWindow = CoreHelperUtil.returnOpenHref(
+      '',
+      'popupWindow',
+      'width=600,height=800,scrollbars=yes'
+    )
     try {
       if (authConnector && socialProvider) {
         const { uri } = await authConnector.provider.getSocialRedirectUri({
           provider: socialProvider
         })
+
         AccountController.setSocialProvider(socialProvider)
-        // Window.open doesn't work on ios withing an async function, wrapping it in a setTimeout fixes this
-        setTimeout(() => {
-          const newWindow = CoreHelperUtil.returnOpenHref(
-            uri,
-            'popupWindow',
-            'width=600,height=800,scrollbars=yes'
-          )
-          if (newWindow) {
-            AccountController.setSocialWindow(newWindow)
-          }
-        })
+        if (newWindow) {
+          newWindow.location.href = uri
+          AccountController.setSocialWindow(newWindow)
+        }
 
         RouterController.push('ConnectingSocial')
       }
