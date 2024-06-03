@@ -317,45 +317,13 @@ export class Web3Modal extends Web3ModalScaffold {
         } else if (providerType === ConstantsUtil.AUTH_CONNECTOR_ID) {
           await this.authProvider?.disconnect()
         } else if (providerType === ConstantsUtil.EIP6963_CONNECTOR_ID && provider) {
-          try {
-            const permissions: { parentCapability: string }[] = await provider.request({
-              method: 'wallet_getPermissions'
-            })
-            const ethAccountsPermission = permissions.find(
-              permission => permission.parentCapability === 'eth_accounts'
-            )
-
-            if (ethAccountsPermission) {
-              await provider.request({
-                method: 'wallet_revokePermissions',
-                params: [{ eth_accounts: {} }]
-              })
-            }
-          } catch (error) {
-            throw new Error('Error revoking permissions:')
-          }
+          await this.disconnectProvider(provider)
           provider.emit('disconnect')
         } else if (providerType === ConstantsUtil.INJECTED_CONNECTOR_ID) {
-          try {
-            const InjectedProvider = ethersConfig.injected
-            if (InjectedProvider) {
-              const permissions: { parentCapability: string }[] = await InjectedProvider.request({
-                method: 'wallet_getPermissions'
-              })
-              const ethAccountsPermission = permissions.find(
-                permission => permission.parentCapability === 'eth_accounts'
-              )
-
-              if (ethAccountsPermission) {
-                await InjectedProvider.request({
-                  method: 'wallet_revokePermissions',
-                  params: [{ eth_accounts: {} }]
-                })
-              }
-              InjectedProvider.emit('disconnect')
-            }
-          } catch (error) {
-            throw new Error('Error revoking permissions:')
+          const InjectedProvider = ethersConfig.injected
+          if (InjectedProvider) {
+            await this.disconnectProvider(InjectedProvider)
+            InjectedProvider.emit('disconnect')
           }
         } else {
           provider?.emit('disconnect')
@@ -626,23 +594,7 @@ export class Web3Modal extends Web3ModalScaffold {
     if (providerType === ConstantsUtil.AUTH_CONNECTOR_ID) {
       await this.authProvider?.disconnect()
     } else if (provider && (providerType === 'injected' || providerType === 'eip6963')) {
-      try {
-        const permissions: { parentCapability: string }[] = await provider.request({
-          method: 'wallet_getPermissions'
-        })
-        const ethAccountsPermission = permissions.find(
-          permission => permission.parentCapability === 'eth_accounts'
-        )
-
-        if (ethAccountsPermission) {
-          await provider.request({
-            method: 'wallet_revokePermissions',
-            params: [{ eth_accounts: {} }]
-          })
-        }
-      } catch (error) {
-        throw new Error('Error revoking permissions:')
-      }
+      await this.disconnectProvider(provider)
       provider?.emit('disconnect')
     } else if (providerType === 'walletConnect' || providerType === 'coinbaseWalletSDK') {
       const ethereumProvider = provider as unknown as EthereumProvider
@@ -689,6 +641,26 @@ export class Web3Modal extends Web3ModalScaffold {
     this.walletConnectProvider = await EthereumProvider.init(walletConnectProviderOptions)
 
     await this.checkActiveWalletConnectProvider()
+  }
+
+  private async disconnectProvider(provider: Provider | CombinedProvider) {
+    try {
+      const permissions: { parentCapability: string }[] = await provider.request({
+        method: 'wallet_getPermissions'
+      })
+      const ethAccountsPermission = permissions.find(
+        permission => permission.parentCapability === 'eth_accounts'
+      )
+
+      if (ethAccountsPermission) {
+        await provider.request({
+          method: 'wallet_revokePermissions',
+          params: [{ eth_accounts: {} }]
+        })
+      }
+    } catch (error) {
+      throw new Error('Error revoking permissions:')
+    }
   }
 
   private async getWalletConnectProvider() {
