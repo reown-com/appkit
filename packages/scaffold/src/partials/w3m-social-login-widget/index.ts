@@ -146,6 +146,9 @@ export class W3mSocialLoginWidget extends LitElement {
   }
 
   async onSocialClick(socialProvider?: SocialProvider) {
+    if (socialProvider) {
+      AccountController.setSocialProvider(socialProvider)
+    }
     const authConnector = ConnectorController.getAuthConnector()
     if (CoreHelperUtil.isMobile()) {
       this.mobileWindow = CoreHelperUtil.returnOpenHref(
@@ -160,7 +163,7 @@ export class W3mSocialLoginWidget extends LitElement {
         const { uri } = await authConnector.provider.getSocialRedirectUri({
           provider: socialProvider
         })
-        AccountController.setSocialProvider(socialProvider)
+
         if (!CoreHelperUtil.isMobile()) {
           this.desktopWindow = CoreHelperUtil.returnOpenHref(
             uri,
