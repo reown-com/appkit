@@ -53,6 +53,7 @@ export interface LibraryOptions {
   metadata?: OptionsControllerState['metadata']
   enableOnramp?: OptionsControllerState['enableOnramp']
   enableWalletFeatures?: OptionsControllerState['enableWalletFeatures']
+  enableUniversalLinks?: OptionsControllerState['enableUniversalLinks']
   allowUnsupportedChain?: NetworkControllerState['allowUnsupportedChain']
   _sdkVersion: OptionsControllerState['sdkVersion']
 }
@@ -305,6 +306,10 @@ export class Web3ModalScaffold {
 
     if (options.enableWalletFeatures) {
       OptionsController.setWalletFeaturesEnabled(Boolean(options.enableWalletFeatures))
+    }
+
+    if (options.enableUniversalLinks) {
+      OptionsController.setUniversalLinksEnabled(Boolean(options.enableUniversalLinks))
     }
 
     if (options.allowUnsupportedChain) {

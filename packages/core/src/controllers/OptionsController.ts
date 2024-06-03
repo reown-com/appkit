@@ -20,6 +20,7 @@ export interface OptionsControllerState {
   metadata?: Metadata
   enableOnramp?: boolean
   enableWalletFeatures?: boolean
+  enableUniversalLinks?: boolean
 }
 
 type StateKey = keyof OptionsControllerState
@@ -97,6 +98,10 @@ export const OptionsController = {
 
   setWalletFeaturesEnabled(enableWalletFeatures: OptionsControllerState['enableWalletFeatures']) {
     state.enableWalletFeatures = enableWalletFeatures
+  },
+
+  setUniversalLinksEnabled(enableUniversalLinks: OptionsControllerState['enableUniversalLinks']) {
+    state.enableUniversalLinks = enableUniversalLinks
   },
 
   getSnapshot() {

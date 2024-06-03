@@ -1,4 +1,9 @@
-import { ConnectionController, CoreHelperUtil, EventsController } from '@web3modal/core'
+import {
+  ConnectionController,
+  CoreHelperUtil,
+  EventsController,
+  OptionsController
+} from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 
@@ -36,11 +41,19 @@ export class W3mConnectingWcMobile extends W3mConnectingWidget {
     if (this.wallet?.mobile_link && this.uri) {
       try {
         this.error = false
-        const { mobile_link, name } = this.wallet
-        const { redirect, href } = CoreHelperUtil.formatNativeUrl(mobile_link, this.uri)
-        ConnectionController.setWcLinking({ name, href })
+        const { mobile_link, link_mode, name } = this.wallet
+
+        let formattedUrl: { redirect: string; href: string } | undefined = undefined
+
+        if (OptionsController.state.enableUniversalLinks && link_mode) {
+          formattedUrl = CoreHelperUtil.formatNativeUrl(link_mode, this.uri)
+        } else {
+          formattedUrl = CoreHelperUtil.formatUniversalUrl(mobile_link, this.uri)
+        }
+
+        ConnectionController.setWcLinking({ name, href: formattedUrl.href })
         ConnectionController.setRecentWallet(this.wallet)
-        CoreHelperUtil.openHref(redirect, '_self')
+        CoreHelperUtil.openHref(formattedUrl.redirect, '_self')
       } catch {
         this.error = true
       }
