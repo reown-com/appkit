@@ -23,6 +23,10 @@ export class W3mSocialLoginWidget extends LitElement {
   // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
 
+  private desktopWindow?: Window | null
+
+  private mobileWindow?: Window | null
+
   // -- State & Properties -------------------------------- //
   @state() private connectors = ConnectorController.state.connectors
 
@@ -143,21 +147,34 @@ export class W3mSocialLoginWidget extends LitElement {
 
   async onSocialClick(socialProvider?: SocialProvider) {
     const authConnector = ConnectorController.getAuthConnector()
-    const newWindow = CoreHelperUtil.returnOpenHref(
-      '',
-      'popupWindow',
-      'width=600,height=800,scrollbars=yes'
-    )
+    if (CoreHelperUtil.isMobile()) {
+      this.mobileWindow = CoreHelperUtil.returnOpenHref(
+        '',
+        'popupWindow',
+        'width=600,height=800,scrollbars=yes'
+      )
+    }
+
     try {
       if (authConnector && socialProvider) {
         const { uri } = await authConnector.provider.getSocialRedirectUri({
           provider: socialProvider
         })
-
         AccountController.setSocialProvider(socialProvider)
-        if (newWindow) {
-          newWindow.location.href = uri
-          AccountController.setSocialWindow(newWindow)
+        if (!CoreHelperUtil.isMobile()) {
+          this.desktopWindow = CoreHelperUtil.returnOpenHref(
+            uri,
+            'popupWindow',
+            'width=600,height=800,scrollbars=yes'
+          )
+        }
+        if (this.desktopWindow && uri) {
+          AccountController.setSocialWindow(this.desktopWindow)
+        } else if (this.mobileWindow && uri) {
+          this.mobileWindow.location.href = uri
+          AccountController.setSocialWindow(this.mobileWindow)
+        } else {
+          throw new Error('Something went wrong')
         }
 
         RouterController.push('ConnectingSocial')
