@@ -11,8 +11,8 @@
         "paths": ["/wallet*"]
       },
       {
-        "appID": "W5R8AG9K22.com.walletconnect.universal-link-test",
-        "paths": ["/test*"]
+        "appID": "W5R8AG9K22.com.walletconnect.web3modal.sample",
+        "paths": ["/web3modal_example*"]
       }
     ]
   }

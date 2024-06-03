@@ -12,7 +12,8 @@ const modal = createWeb3Modal({
     metadata: ConstantsUtil.Metadata,
     defaultChainId: 1,
     rpcUrl: 'https://cloudflare-eth.com',
-    enableEmail: true
+    enableEmail: true,
+    coinbasePreference: 'smartWalletOnly'
   }),
   chains: EthersConstants.chains,
   projectId: ConstantsUtil.ProjectId,
