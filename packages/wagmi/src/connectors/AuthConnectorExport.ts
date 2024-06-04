@@ -1,21 +1,23 @@
 import type { CreateConfigParameters } from '@wagmi/core'
-import { authConnector } from './AuthConnector.js'
+import { authConnector as authConnectorWagmi } from './AuthConnector.js'
 import type { SocialProvider } from '@web3modal/scaffold-utils'
 
 interface W3mFrameProviderOptions {
   projectId: string
 }
 
-export type EmailParameters = {
+export type AuthParameters = {
   chains?: CreateConfigParameters['chains']
   options: W3mFrameProviderOptions
   socials?: SocialProvider[]
   showWallets?: boolean
+  email?: boolean
 }
 
-export function emailConnector(parameters: EmailParameters) {
-  return authConnector({
+export function authConnector(parameters: AuthParameters) {
+  return authConnectorWagmi({
     ...parameters,
-    email: true
+    email: true,
+    showWallets: true
   })
 }

@@ -1,7 +1,7 @@
 import { css } from 'lit'
 
 export default css`
-  wui-flex:first-child {
+  .container {
     margin-top: var(--wui-spacing-s);
   }
   wui-separator {

@@ -53,7 +53,12 @@ export class W3mSocialLoginWidget extends LitElement {
     }
 
     return html`
-      <wui-flex flexDirection="column" gap="xs" .padding=${['0', '0', 'xs', '0'] as const}>
+      <wui-flex
+        class="container"
+        flexDirection="column"
+        gap="xs"
+        .padding=${['0', '0', 'xs', '0'] as const}
+      >
         ${this.topViewTemplate()}${this.bottomViewTemplate()}
       </wui-flex>
       ${this.separatorTemplate()}
