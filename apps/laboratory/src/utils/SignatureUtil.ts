@@ -1,10 +1,9 @@
 import { createPublicClient, http } from 'viem'
+import { ConstantsUtil as CommonConstants } from '@web3modal/common'
 
 function getTransport({ chainId }: { chainId: number }) {
-  const RPC_URL = 'https://rpc.walletconnect.com'
-
   return http(
-    `${RPC_URL}/v1/?chainId=eip155:${chainId}&projectId=${process.env['NEXT_PUBLIC_PROJECT_ID']}`
+    `${CommonConstants.BLOCKCHAIN_API_RPC_URL}/v1/?chainId=eip155:${chainId}&projectId=${process.env['NEXT_PUBLIC_PROJECT_ID']}`
   )
 }
 
