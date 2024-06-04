@@ -14,6 +14,7 @@ import {
   zora,
   sepolia,
   optimismSepolia,
+  baseSepolia,
   type Chain
 } from 'wagmi/chains'
 import { ConstantsUtil } from './ConstantsUtil'
@@ -33,7 +34,8 @@ export const WagmiConstantsUtil = {
     celo,
     aurora,
     sepolia,
-    optimismSepolia
+    optimismSepolia,
+    baseSepolia
   ] as [Chain, ...Chain[]]
 }
 
@@ -48,7 +50,6 @@ export const CONFIGS = {
     chains: WagmiConstantsUtil.chains,
     projectId: ConstantsUtil.ProjectId,
     metadata: ConstantsUtil.Metadata,
-    enableEmail: true,
     auth: {
       socials: ['google', 'x', 'discord', 'apple', 'github']
     },
