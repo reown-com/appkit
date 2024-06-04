@@ -26,8 +26,6 @@ export const ConnectorController = {
   },
 
   setConnectors(connectors: ConnectorControllerState['connectors']) {
-    // eslint-disable-next-line no-console
-    console.log(`ConnectorController.setConnectors`, connectors);
     state.connectors = connectors.map(c => ref(c))
   },
 

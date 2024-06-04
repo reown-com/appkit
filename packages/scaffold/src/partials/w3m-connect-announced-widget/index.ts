@@ -28,8 +28,6 @@ export class W3mConnectAnnouncedWidget extends LitElement {
   public override render() {
     const announcedConnectors = this.connectors.filter(connector => connector.type === 'ANNOUNCED')
 
-    // eslint-disable-next-line no-console
-    console.log(`announcedConnectors`, announcedConnectors);
     if (!announcedConnectors?.length) {
       this.style.cssText = `display: none`
 
