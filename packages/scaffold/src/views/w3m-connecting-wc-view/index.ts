@@ -98,6 +98,8 @@ export class W3mConnectingWcView extends LitElement {
         SnackController.showError('Declined')
         this.lastRetry = Date.now()
         this.initializeConnection(true)
+      } else {
+        SnackController.showError('Connection error')
       }
     }
   }
