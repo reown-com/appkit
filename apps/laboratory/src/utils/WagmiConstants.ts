@@ -51,7 +51,7 @@ export const CONFIGS = {
     projectId: ConstantsUtil.ProjectId,
     metadata: ConstantsUtil.Metadata,
     auth: {
-      socials: ['google', 'x', 'discord', 'apple', 'githu']
+      socials: ['google', 'x', 'discord', 'apple', 'github']
     },
     ssr: true
   })
