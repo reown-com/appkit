@@ -3,6 +3,11 @@ import '@web3modal/polyfills'
 import type { Chain, Metadata, Provider, ProviderType } from './scaffold/index.js'
 
 declare global {
+  interface Navigator {
+    brave?: {
+      isBrave(): boolean;
+    };
+  }
   interface Window {
     originalSolana?: Record<string, unknown>
     solana?: Provider
