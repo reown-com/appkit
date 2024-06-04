@@ -18,6 +18,6 @@ export function authConnector(parameters: AuthParameters) {
   return authConnectorWagmi({
     email: true,
     showWallets: true,
-    ...parameters,
+    ...parameters
   })
 }
