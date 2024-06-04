@@ -1,7 +1,7 @@
 import { css } from 'lit'
 
 export default css`
-  .container {
+  :host > wui-flex:first-child {
     margin-top: var(--wui-spacing-s);
   }
   wui-separator {
