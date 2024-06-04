@@ -256,8 +256,11 @@ export class Web3Modal extends Web3ModalScaffold {
     })
 
     if (CoreHelperUtil.isClient()) {
-      let timer = 0;
-      if (window.navigator.brave !== undefined && window.navigator.brave.isBrave.name === "isBrave") {
+      let timer = 0
+      if (
+        window.navigator.brave !== undefined &&
+        window.navigator.brave.isBrave.name === 'isBrave'
+      ) {
         timer = 500
       }
 

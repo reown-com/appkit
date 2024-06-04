@@ -5,8 +5,8 @@ import type { Chain, Metadata, Provider, ProviderType } from './scaffold/index.j
 declare global {
   interface Navigator {
     brave?: {
-      isBrave(): boolean;
-    };
+      isBrave(): boolean
+    }
   }
   interface Window {
     originalSolana?: Record<string, unknown>
