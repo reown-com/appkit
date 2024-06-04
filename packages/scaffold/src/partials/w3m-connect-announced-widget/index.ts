@@ -28,6 +28,7 @@ export class W3mConnectAnnouncedWidget extends LitElement {
   public override render() {
     const announcedConnectors = this.connectors.filter(connector => connector.type === 'ANNOUNCED')
 
+    console.log(`announcedConnectors`, announcedConnectors);
     if (!announcedConnectors?.length) {
       this.style.cssText = `display: none`
 
@@ -37,7 +38,7 @@ export class W3mConnectAnnouncedWidget extends LitElement {
     return html`
       <wui-flex flexDirection="column" gap="xs">
         ${announcedConnectors.map(
-          connector => html`
+      connector => html`
             <wui-list-wallet
               imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
               name=${connector.name ?? 'Unknown'}
@@ -49,7 +50,7 @@ export class W3mConnectAnnouncedWidget extends LitElement {
             >
             </wui-list-wallet>
           `
-        )}
+    )}
       </wui-flex>
     `
   }

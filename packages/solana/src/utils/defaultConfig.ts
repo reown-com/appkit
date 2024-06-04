@@ -6,7 +6,7 @@ declare global {
   interface Window {
     originalSolana?: Record<string, unknown>
     solana?: Provider
-    solflare?: { solana: Provider }
+    solflare?: { solana: Provider & { isSoflare: boolean } }
     backpack?: { solana: Provider }
     trustWallet?: { solana: Provider }
     phantom?: { solana: Provider & { isPhantom: boolean } }
