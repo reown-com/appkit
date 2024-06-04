@@ -16,8 +16,8 @@ export type AuthParameters = {
 
 export function authConnector(parameters: AuthParameters) {
   return authConnectorWagmi({
-    ...parameters,
     email: true,
-    showWallets: true
+    showWallets: true,
+    ...parameters,
   })
 }
