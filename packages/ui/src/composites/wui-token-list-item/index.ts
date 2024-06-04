@@ -14,7 +14,7 @@ export class WuiTokenListItem extends LitElement {
   public static override styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
-  private observer = new IntersectionObserver(() => {})
+  private observer = new IntersectionObserver(() => undefined)
 
   @property() public imageSrc?: string = undefined
 

@@ -24,6 +24,7 @@ export class WuiText extends LitElement {
     const classes = {
       [`wui-font-${this.variant}`]: true,
       [`wui-color-${this.color}`]: true,
+      // eslint-disable-next-line no-unneeded-ternary
       [`wui-line-clamp-${this.lineClamp}`]: this.lineClamp ? true : false
     }
 
