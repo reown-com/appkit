@@ -256,15 +256,15 @@ export class Web3Modal extends Web3ModalScaffold {
     })
 
     if (CoreHelperUtil.isClient()) {
-      this.checkActiveProviders()
-      this.syncConnectors()
+      let timer = 0;
       if (window.navigator.brave !== undefined && window.navigator.brave.isBrave.name === "isBrave") {
-        setTimeout(() => {
-          // eslint-disable-next-line no-console
-          console.log(`In Brave window.soflare`, window.solflare);
-        }, 1000)
+        timer = 500
       }
 
+      setTimeout(() => {
+        this.checkActiveProviders()
+        this.syncConnectors()
+      }, timer)
     }
   }
 
