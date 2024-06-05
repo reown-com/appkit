@@ -3,6 +3,8 @@ import type { SIWEVerifyMessageArgs, SIWECreateMessageArgs, SIWESession } from '
 import { createSIWEConfig, formatMessage } from '@web3modal/siwe'
 
 export const siweConfig = createSIWEConfig({
+  signOutOnAccountChange: true,
+  signOutOnNetworkChange: true,
   // We don't require any async action to populate params but other apps might
   // eslint-disable-next-line @typescript-eslint/require-await
   getMessageParams: async () => ({

@@ -553,13 +553,13 @@ export class Web3Modal extends Web3ModalScaffold {
     const coinbaseSDKId = ConstantsUtil.COINBASE_SDK_CONNECTOR_ID
 
     // Check if coinbase injected connector is present
-    const coinbaseConnector = filteredConnectors.find(
-      c => c.id === ConstantsUtil.CONNECTOR_RDNS_MAP[ConstantsUtil.COINBASE_CONNECTOR_ID]
-    )
+    const coinbaseConnector = filteredConnectors.find(c => c.id === coinbaseSDKId)
 
     filteredConnectors.forEach(({ id, name, type, icon }) => {
       // If coinbase injected connector is present, skip coinbase sdk connector.
-      const isCoinbaseRepeated = coinbaseConnector && id === coinbaseSDKId
+      const isCoinbaseRepeated =
+        coinbaseConnector &&
+        id === ConstantsUtil.CONNECTOR_RDNS_MAP[ConstantsUtil.COINBASE_CONNECTOR_ID]
       const shouldSkip = isCoinbaseRepeated || ConstantsUtil.AUTH_CONNECTOR_ID === id
       if (!shouldSkip) {
         w3mConnectors.push({
@@ -589,6 +589,7 @@ export class Web3Modal extends Web3ModalScaffold {
       socials: SocialProvider[]
       showWallets?: boolean
     }
+
     if (authConnector) {
       const provider = await authConnector.getProvider()
       this.addConnector({
@@ -598,7 +599,7 @@ export class Web3Modal extends Web3ModalScaffold {
         provider,
         email: authConnector.email,
         socials: authConnector.socials,
-        showWallets: authConnector?.showWallets === undefined ? true : authConnector.showWallets
+        showWallets: authConnector.showWallets
       })
     }
   }

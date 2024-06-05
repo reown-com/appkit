@@ -75,10 +75,12 @@ export function useWeb3ModalAccount() {
 
   const address = ref(modal.getAddress())
   const isConnected = ref(modal.getIsConnected())
+  const status = ref(modal.getStatus())
   const chainId = ref(modal.getChainId())
 
   const unsubscribe = modal.subscribeProvider(state => {
-    address.value = state.address as string
+    status.value = state.status
+    address.value = state.address as string | undefined
     isConnected.value = state.isConnected
     chainId.value = state.chainId
   })
@@ -90,7 +92,8 @@ export function useWeb3ModalAccount() {
   return {
     address,
     isConnected,
-    chainId
+    chainId,
+    status
   }
 }
 

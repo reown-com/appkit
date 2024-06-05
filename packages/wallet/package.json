@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/wallet",
-  "version": "4.2.2",
+  "version": "4.2.3",
   "type": "module",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "zod": "3.22.4",
-    "@web3modal/polyfills": "4.2.2"
+    "@web3modal/polyfills": "4.2.3"
   },
   "keywords": [
     "web3",

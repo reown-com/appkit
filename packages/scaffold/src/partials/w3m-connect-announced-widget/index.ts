@@ -38,8 +38,8 @@ export class W3mConnectAnnouncedWidget extends LitElement {
 
     return html`
       <wui-flex flexDirection="column" gap="xs">
-        ${announcedConnectors.map(connector => {
-          return html`
+        ${announcedConnectors.map(
+          connector => html`
             <wui-list-wallet
               imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
               name=${connector.name ?? 'Unknown'}
@@ -51,7 +51,7 @@ export class W3mConnectAnnouncedWidget extends LitElement {
             >
             </wui-list-wallet>
           `
-        })}
+        )}
       </wui-flex>
     `
   }

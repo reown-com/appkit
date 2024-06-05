@@ -23,6 +23,10 @@ export class W3mSocialLoginWidget extends LitElement {
   // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
 
+  private desktopWindow?: Window | null
+
+  private mobileWindow?: Window | null
+
   // -- State & Properties -------------------------------- //
   @state() private connectors = ConnectorController.state.connectors
 
@@ -49,10 +53,15 @@ export class W3mSocialLoginWidget extends LitElement {
     }
 
     return html`
-      <wui-flex flexDirection="column" gap="xs" .padding=${['0', '0', 'xs', '0'] as const}>
+      <wui-flex
+        class="container"
+        flexDirection="column"
+        gap="xs"
+        .padding=${['0', '0', 'xs', '0'] as const}
+      >
         ${this.topViewTemplate()}${this.bottomViewTemplate()}
       </wui-flex>
-      <wui-separator text="or"></wui-separator>
+      ${this.separatorTemplate()}
     `
   }
 
@@ -127,25 +136,55 @@ export class W3mSocialLoginWidget extends LitElement {
     </wui-flex>`
   }
 
+  private separatorTemplate() {
+    const walletConnectConnector = this.connectors.find(c => c.type === 'WALLET_CONNECT')
+    if (walletConnectConnector) {
+      return html`<wui-separator text="or"></wui-separator>`
+    }
+
+    return null
+  }
+
   // -- Private Methods ----------------------------------- //
   onMoreSocialsClick() {
     RouterController.push('ConnectSocials')
   }
 
   async onSocialClick(socialProvider?: SocialProvider) {
+    if (socialProvider) {
+      AccountController.setSocialProvider(socialProvider)
+      RouterController.push('ConnectingSocial')
+    }
     const authConnector = ConnectorController.getAuthConnector()
+    if (CoreHelperUtil.isMobile()) {
+      this.mobileWindow = CoreHelperUtil.returnOpenHref(
+        '',
+        'popupWindow',
+        'width=600,height=800,scrollbars=yes'
+      )
+    }
+
     try {
       if (authConnector && socialProvider) {
         const { uri } = await authConnector.provider.getSocialRedirectUri({
           provider: socialProvider
         })
-        AccountController.setSocialProvider(socialProvider)
-        // Window.open doesn't work on ios withing an async function, wrapping it in a setTimeout fixes this
-        setTimeout(() => {
-          CoreHelperUtil.openHref(uri, 'popupWindow', 'width=600,height=800,scrollbars=yes')
-        })
 
-        RouterController.push('ConnectingSocial')
+        if (!CoreHelperUtil.isMobile()) {
+          this.desktopWindow = CoreHelperUtil.returnOpenHref(
+            uri,
+            'popupWindow',
+            'width=600,height=800,scrollbars=yes'
+          )
+        }
+        if (this.desktopWindow && uri) {
+          AccountController.setSocialWindow(this.desktopWindow)
+        } else if (this.mobileWindow && uri) {
+          this.mobileWindow.location.href = uri
+          AccountController.setSocialWindow(this.mobileWindow)
+        } else {
+          throw new Error('Something went wrong')
+        }
       }
     } catch (error) {
       SnackController.showError('Something went wrong')
