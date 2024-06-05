@@ -47,7 +47,6 @@ export class WuiOtp extends LitElement {
               @focus=${() => console.log('focus')}
               .disabled=${!this.shouldInputBeEnabled(index)}
               .value=${this.values[index] || ''}
-              autocomplete="one-time-code"
             >
             </wui-input-numeric>
           `
@@ -110,9 +109,9 @@ export class WuiOtp extends LitElement {
 
   private handleKeyDown = (e: KeyboardEvent, index: number) => {
     console.log('wui-otp - handleKeyDown', e, index)
+    const inputElement = e.target as HTMLElement
     const clipboardValue = navigator.clipboard.readText()
     console.log('clipboardValue', clipboardValue)
-    const inputElement = e.target as HTMLElement
     const input = this.getInputElement(inputElement)
     const keyArr = ['ArrowLeft', 'ArrowRight', 'Shift', 'Delete']
     if (!input) {
