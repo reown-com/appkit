@@ -283,5 +283,9 @@ export const CoreHelperUtil = {
     }
 
     return false
+  },
+
+  uniqueBy<T>(arr: T[], key: keyof T) {
+    return Array.from(new Map(arr.map(i => [i[key], i])).values())
   }
 }
