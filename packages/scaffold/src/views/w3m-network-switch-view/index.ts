@@ -36,6 +36,7 @@ export class W3mNetworkSwitchView extends LitElement {
   }
 
   public override firstUpdated() {
+    console.log('firstupdated triggered')
     this.onSwitchNetwork()
   }
 

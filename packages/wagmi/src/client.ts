@@ -97,7 +97,7 @@ export class Web3Modal extends Web3ModalScaffold {
     const networkControllerClient: NetworkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
         const chainId = NetworkUtil.caipNetworkIdToNumber(caipNetwork?.id)
-
+        console.log('wagmi: switching chain', chainId)
         if (chainId) {
           await switchChain(this.wagmiConfig, { chainId })
         }
