@@ -35,7 +35,7 @@ export class W3mModal extends LitElement {
 
   @state() private isSiweEnabled = OptionsController.state.isSiweEnabled
 
-  @state() private isConnected = AccountController.state.isConnected
+  @state() private connected = AccountController.state.isConnected
 
   @state() private loading = ModalController.state.loading
 
@@ -49,7 +49,7 @@ export class W3mModal extends LitElement {
         this.loading = val
         this.onNewAddress(AccountController.state.caipAddress)
       }),
-      AccountController.subscribeKey('isConnected', val => (this.isConnected = val)),
+      AccountController.subscribeKey('isConnected', val => (this.connected = val)),
       AccountController.subscribeKey('caipAddress', val => this.onNewAddress(val)),
       OptionsController.subscribeKey('isSiweEnabled', val => (this.isSiweEnabled = val))
     )
@@ -88,7 +88,7 @@ export class W3mModal extends LitElement {
     if (this.isSiweEnabled) {
       const { SIWEController } = await import('@web3modal/siwe')
 
-      if (SIWEController.state.status !== 'success' && this.isConnected) {
+      if (SIWEController.state.status !== 'success' && this.connected) {
         await ConnectionController.disconnect()
       }
     }
@@ -165,7 +165,7 @@ export class W3mModal extends LitElement {
   }
 
   private async onNewAddress(caipAddress?: CaipAddress) {
-    if (!this.isConnected || this.loading) {
+    if (!this.connected || this.loading) {
       return
     }
 
