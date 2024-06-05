@@ -6,6 +6,7 @@ import { EventsController } from './EventsController.js'
 import { ModalController } from './ModalController.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { NetworkUtil } from '@web3modal/common'
+import { SnackController } from './SnackController.js'
 
 // -- Types --------------------------------------------- //
 export interface NetworkControllerClient {
@@ -105,7 +106,11 @@ export const NetworkController = {
   },
 
   async switchActiveNetwork(network: NetworkControllerState['caipNetwork']) {
-    await this._getClient().switchCaipNetwork(network)
+    try {
+      await this._getClient().switchCaipNetwork(network)
+    } catch (error) {
+      SnackController.showError('Failed to switch network')
+    }
 
     state.caipNetwork = network
     if (network) {
