@@ -5,7 +5,7 @@ import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 // -- Types --------------------------------------------- //
 export interface SnackControllerState {
   message: string
-  variant: 'error' | 'success'
+  variant: 'error' | 'success' | 'loading'
   open: boolean
 }
 
@@ -24,6 +24,12 @@ export const SnackController = {
 
   subscribeKey<K extends StateKey>(key: K, callback: (value: SnackControllerState[K]) => void) {
     return subKey(state, key, callback)
+  },
+
+  showLoading(message: SnackControllerState['message']) {
+    state.message = message
+    state.variant = 'loading'
+    state.open = true
   },
 
   showSuccess(message: SnackControllerState['message']) {

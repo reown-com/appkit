@@ -38,15 +38,19 @@ export class W3mSwapPreviewView extends LitElement {
 
   @state() private caipNetwork = NetworkController.state.caipNetwork
 
-  @state() private transactionLoading = SwapController.state.transactionLoading
-
   @state() private balanceSymbol = AccountController.state.balanceSymbol
 
   @state() private gasPriceInUSD = SwapController.state.gasPriceInUSD
 
   @state() private inputError = SwapController.state.inputError
 
-  @state() private loading = SwapController.state.loading
+  @state() private loadingQuote = SwapController.state.loadingQuote
+
+  @state() private loadingApprovalTransaction = SwapController.state.loadingApprovalTransaction
+
+  @state() private loadingBuildTransaction = SwapController.state.loadingBuildTransaction
+
+  @state() private loadingTransaction = SwapController.state.loadingTransaction
 
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
@@ -71,13 +75,18 @@ export class W3mSwapPreviewView extends LitElement {
           this.sourceToken = newState.sourceToken
           this.gasPriceInUSD = newState.gasPriceInUSD
           this.toToken = newState.toToken
-          this.transactionLoading = newState.transactionLoading
           this.gasPriceInUSD = newState.gasPriceInUSD
           this.toTokenPriceInUSD = newState.toTokenPriceInUSD
           this.sourceTokenAmount = newState.sourceTokenAmount ?? ''
           this.toTokenAmount = newState.toTokenAmount ?? ''
           this.inputError = newState.inputError
-          this.loading = newState.loading
+          if (newState.inputError) {
+            RouterController.goBack()
+          }
+          this.loadingQuote = newState.loadingQuote
+          this.loadingApprovalTransaction = newState.loadingApprovalTransaction
+          this.loadingBuildTransaction = newState.loadingBuildTransaction
+          this.loadingTransaction = newState.loadingTransaction
         })
       ]
     )
@@ -105,7 +114,9 @@ export class W3mSwapPreviewView extends LitElement {
   // -- Private ------------------------------------------- //
   private refreshTransaction() {
     this.interval = setInterval(() => {
-      SwapController.getTransaction()
+      if (!SwapController.getApprovalLoadingState()) {
+        SwapController.getTransaction()
+      }
     }, 10_000)
   }
 
@@ -122,6 +133,12 @@ export class W3mSwapPreviewView extends LitElement {
       parseFloat(this.toTokenAmount) * this.toTokenPriceInUSD - (this.gasPriceInUSD || 0)
     const sentPrice = UiHelperUtil.formatNumberToLocalString(sourceTokenValue)
     const receivePrice = UiHelperUtil.formatNumberToLocalString(toTokenValue)
+
+    const loading =
+      this.loadingQuote ||
+      this.loadingBuildTransaction ||
+      this.loadingTransaction ||
+      this.loadingApprovalTransaction
 
     return html`
       <wui-flex flexDirection="column" alignItems="center" gap="l">
@@ -193,15 +210,13 @@ export class W3mSwapPreviewView extends LitElement {
             size="lg"
             borderRadius="xs"
             variant="main"
-            ?loading=${this.loading}
-            ?disabled=${this.transactionLoading}
+            ?loading=${loading}
+            ?disabled=${loading}
             @click=${this.onSendTransaction.bind(this)}
           >
-            ${this.transactionLoading
-              ? html`<wui-loading-spinner color="inverse-100"></wui-loading-spinner>`
-              : html`<wui-text variant="paragraph-600" color="inverse-100">
-                  ${this.actionButtonLabel()}
-                </wui-text>`}
+            <wui-text variant="paragraph-600" color="inverse-100">
+              ${this.actionButtonLabel()}
+            </wui-text>
           </wui-button>
         </wui-flex>
       </wui-flex>
@@ -217,6 +232,10 @@ export class W3mSwapPreviewView extends LitElement {
   }
 
   private actionButtonLabel(): string {
+    if (this.loadingApprovalTransaction) {
+      return 'Approving...'
+    }
+
     if (this.approvalTransaction) {
       return 'Approve'
     }
