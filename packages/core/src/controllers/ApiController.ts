@@ -94,11 +94,9 @@ export const ApiController = {
   },
 
   async fetchNetworkImages() {
-    if (!NetworkController.state.activeProtocol) {
-      return
-    }
-    const { requestedCaipNetworks } =
-      NetworkController.state.networks[NetworkController.state.activeProtocol]
+    // TODO(enes): add multi-chain capability
+    const { requestedCaipNetworks } = NetworkController.state
+
     const ids = requestedCaipNetworks?.map(({ imageId }) => imageId).filter(Boolean)
     if (ids) {
       await Promise.allSettled((ids as string[]).map(id => ApiController._fetchNetworkImage(id)))

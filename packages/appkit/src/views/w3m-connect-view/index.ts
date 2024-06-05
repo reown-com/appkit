@@ -4,7 +4,7 @@ import styles from './styles.js'
 import {
   ConnectorController,
   CoreHelperUtil,
-  NetworkController,
+  ChainController,
   RouterController
 } from '@web3modal/core'
 import { state } from 'lit/decorators/state.js'
@@ -26,7 +26,7 @@ export class W3mConnectView extends LitElement {
 
   @state() private currentTab = 0
 
-  @state() private protocolTabs = Object.keys(NetworkController.state.networks).map(item => ({
+  @state() private protocolTabs = Object.keys(ChainController.state.networks).map(item => ({
     icon: 'ethereum',
     label: item
   }))
@@ -35,7 +35,7 @@ export class W3mConnectView extends LitElement {
     super()
     this.unsubscribe.push(
       ConnectorController.subscribeKey('connectors', val => (this.connectors = val)),
-      NetworkController.subscribeKey('activeProtocol', val => {
+      ChainController.subscribeKey('activeProtocol', val => {
         this.currentTab = this.protocolTabs.findIndex(tab => tab.label === val)
       })
     )
@@ -46,7 +46,7 @@ export class W3mConnectView extends LitElement {
   }
 
   public override firstUpdated() {
-    const protocol = NetworkController.state.activeProtocol
+    const protocol = ChainController.state.activeProtocol
     const index = this.protocolTabs.findIndex(tab => tab.label === protocol)
     this.currentTab = index
   }
@@ -75,11 +75,11 @@ export class W3mConnectView extends LitElement {
   // -- Private ------------------------------------------- //
   private onProtocolChange(value: number) {
     const protocol = this.protocolTabs[value]?.label || 'evm'
-    const newAdapter = NetworkController.state.adaptersV2?.find(a => a.protocol === protocol)
+    const newAdapter = ChainController.state.adaptersV2?.find(a => a.protocol === protocol)
 
     if (newAdapter) {
       this.currentTab = value
-      NetworkController.setAdapter(newAdapter)
+      ChainController.setAdapter(newAdapter)
     }
   }
 

@@ -103,25 +103,22 @@ describe('ApiController', () => {
   })
 
   it('should fetch network images ', async () => {
-    NetworkController.setRequestedCaipNetworks(
-      [
-        {
-          id: '155:1',
-          name: 'Ethereum Mainnet',
-          imageId: '12341'
-        },
-        {
-          id: '155:4',
-          name: 'Ethereum Rinkeby',
-          imageId: '12342'
-        },
-        {
-          id: '155:42',
-          name: 'Ethereum Kovan'
-        }
-      ],
-      'evm'
-    )
+    NetworkController.setRequestedCaipNetworks([
+      {
+        id: '155:1',
+        name: 'Ethereum Mainnet',
+        imageId: '12341'
+      },
+      {
+        id: '155:4',
+        name: 'Ethereum Rinkeby',
+        imageId: '12342'
+      },
+      {
+        id: '155:42',
+        name: 'Ethereum Kovan'
+      }
+    ])
     const fetchSpy = vi.spyOn(ApiController, '_fetchNetworkImage').mockResolvedValue()
     await ApiController.fetchNetworkImages()
 
@@ -130,26 +127,23 @@ describe('ApiController', () => {
   })
 
   it('should only fetch network images for networks with imageIds', async () => {
-    NetworkController.setRequestedCaipNetworks(
-      [
-        {
-          id: '155:1',
-          name: 'Ethereum Mainnet',
-          imageId: '12341'
-        },
-        {
-          id: '155:4',
-          name: 'Ethereum Rinkeby',
-          imageId: '12342'
-        },
-        // Should not fetch this
-        {
-          id: '155:42',
-          name: 'Ethereum Kovan'
-        }
-      ],
-      'evm'
-    )
+    NetworkController.setRequestedCaipNetworks([
+      {
+        id: '155:1',
+        name: 'Ethereum Mainnet',
+        imageId: '12341'
+      },
+      {
+        id: '155:4',
+        name: 'Ethereum Rinkeby',
+        imageId: '12342'
+      },
+      // Should not fetch this
+      {
+        id: '155:42',
+        name: 'Ethereum Kovan'
+      }
+    ])
     const fetchSpy = vi.spyOn(ApiController, '_fetchNetworkImage').mockResolvedValue()
     await ApiController.fetchNetworkImages()
 

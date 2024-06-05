@@ -51,7 +51,7 @@ describe('NetworkController', () => {
   })
 
   it('should update state correctly on setCaipNetwork()', () => {
-    NetworkController.setCaipNetwork(caipNetwork, 'evm')
+    NetworkController.setCaipNetwork(caipNetwork)
     expect(NetworkController.activeNetwork()).toEqual(caipNetwork)
   })
 
@@ -61,7 +61,7 @@ describe('NetworkController', () => {
   })
 
   it('should reset state correctly on resetNetwork()', () => {
-    NetworkController.resetNetwork('evm')
+    NetworkController.resetNetwork()
     expect(NetworkController.activeNetwork()).toEqual(undefined)
     // expect(NetworkController.state.approvedCaipNetworkIds).toEqual(undefined)
     // expect(NetworkController.state.requestedCaipNetworks).toEqual(requestedCaipNetworks)
@@ -69,13 +69,13 @@ describe('NetworkController', () => {
   })
 
   it('should update state correctly on setDefaultCaipNetwork()', () => {
-    NetworkController.setDefaultCaipNetwork(caipNetwork, 'evm')
+    NetworkController.setDefaultCaipNetwork(caipNetwork)
     expect(NetworkController.activeNetwork()).toEqual(caipNetwork)
     expect(NetworkController.state.isDefaultCaipNetwork).toEqual(true)
   })
 
   it('should reset state correctly when default caip network is true', () => {
-    NetworkController.resetNetwork('evm')
+    NetworkController.resetNetwork()
     expect(NetworkController.activeNetwork()).toEqual(caipNetwork)
     // expect(NetworkController.state.approvedCaipNetworkIds).toEqual(undefined)
     // expect(NetworkController.state.requestedCaipNetworks).toEqual(requestedCaipNetworks)
@@ -88,7 +88,7 @@ describe('NetworkController', () => {
     expect(NetworkController.checkIfSmartAccountEnabled()).toEqual(false)
     NetworkController.setSmartAccountEnabledNetworks([2])
     expect(NetworkController.checkIfSmartAccountEnabled()).toEqual(false)
-    NetworkController.setCaipNetwork({ id: 'eip155:2', name: 'Ethereum' }, 'evm')
+    NetworkController.setCaipNetwork({ id: 'eip155:2', name: 'Ethereum' })
     expect(NetworkController.checkIfSmartAccountEnabled()).toEqual(true)
   })
 })

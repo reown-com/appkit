@@ -3,7 +3,7 @@ import { LitElement, html } from 'lit'
 import styles from './styles.js'
 import {
   AccountController,
-  NetworkController,
+  ChainController,
   RouterController,
   SwapController
 } from '@web3modal/core'
@@ -36,7 +36,7 @@ export class W3mSwapPreviewView extends LitElement {
 
   @state() private toTokenPriceInUSD = SwapController.state.toTokenPriceInUSD
 
-  @state() private caipNetwork = NetworkController.activeNetwork()
+  @state() private caipNetwork = ChainController.activeNetwork()
 
   @state() private balanceSymbol = AccountController.state.balanceSymbol
 
@@ -64,8 +64,8 @@ export class W3mSwapPreviewView extends LitElement {
             // Maybe reset state as well?
           }
         }),
-        NetworkController.subscribe(() => {
-          const newCaipNetwork = NetworkController.activeNetwork()
+        ChainController.subscribe(() => {
+          const newCaipNetwork = ChainController.activeNetwork()
           if (this.caipNetwork !== newCaipNetwork) {
             this.caipNetwork = newCaipNetwork
           }

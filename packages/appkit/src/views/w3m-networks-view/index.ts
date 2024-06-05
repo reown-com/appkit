@@ -4,7 +4,7 @@ import {
   AssetUtil,
   CoreHelperUtil,
   EventsController,
-  NetworkController,
+  ChainController,
   RouterController,
   RouterUtil
 } from '@web3modal/core'
@@ -21,14 +21,14 @@ export class W3mNetworksView extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() public caipNetwork = NetworkController.activeNetwork()
+  @state() public caipNetwork = ChainController.activeNetwork()
 
   public constructor() {
     super()
     this.unsubscribe.push(
-      NetworkController.subscribeKey(
+      ChainController.subscribeKey(
         'networks',
-        () => (this.caipNetwork = NetworkController.activeNetwork())
+        () => (this.caipNetwork = ChainController.activeNetwork())
       )
     )
   }
@@ -65,7 +65,7 @@ export class W3mNetworksView extends LitElement {
   }
 
   private networksTemplate() {
-    const { supportsAllNetworks, networks, activeProtocol } = NetworkController.state
+    const { supportsAllNetworks, networks, activeProtocol } = ChainController.state
     if (!activeProtocol) {
       return null
     }
@@ -93,7 +93,7 @@ export class W3mNetworksView extends LitElement {
 
   private async onSwitchNetwork(network: CaipNetwork) {
     const { isConnected } = AccountController.state
-    const { networks, activeProtocol, supportsAllNetworks } = NetworkController.state
+    const { networks, activeProtocol, supportsAllNetworks } = ChainController.state
     if (!activeProtocol) {
       return
     }
@@ -101,13 +101,13 @@ export class W3mNetworksView extends LitElement {
     const { data } = RouterController.state
     if (isConnected && caipNetwork?.id !== network.id) {
       if (approvedCaipNetworkIds?.includes(network.id)) {
-        await NetworkController.switchActiveNetwork(network)
+        await ChainController.switchActiveNetwork(network)
         RouterUtil.navigateAfterNetworkSwitch()
       } else if (supportsAllNetworks) {
         RouterController.push('SwitchNetwork', { ...data, network })
       }
     } else if (!isConnected) {
-      NetworkController.setCaipNetwork(network, activeProtocol)
+      ChainController.setCaipNetwork(network, activeProtocol)
       RouterController.push('Connect')
     }
   }

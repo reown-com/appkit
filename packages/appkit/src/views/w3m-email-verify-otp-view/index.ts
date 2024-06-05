@@ -5,7 +5,7 @@ import {
   EventsController,
   ConnectionController,
   ModalController,
-  NetworkController,
+  ChainController,
   RouterController,
   AccountController
 } from '@web3modal/core'
@@ -33,7 +33,7 @@ export class W3mEmailVerifyOtpView extends W3mEmailOtpWidget {
   override onOtpSubmit: OnOtpSubmitFn = async otp => {
     try {
       if (this.authConnector) {
-        const smartAccountEnabled = NetworkController.checkIfSmartAccountEnabled()
+        const smartAccountEnabled = ChainController.checkIfSmartAccountEnabled()
         await this.authConnector.provider.connectOtp({ otp })
         EventsController.sendEvent({ type: 'track', event: 'EMAIL_VERIFICATION_CODE_PASS' })
         await ConnectionController.connectExternal(this.authConnector)

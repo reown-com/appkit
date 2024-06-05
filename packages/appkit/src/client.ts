@@ -16,13 +16,14 @@ import {
   CoreHelperUtil,
   EventsController,
   ModalController,
-  NetworkController,
+  ChainController,
   PublicStateController,
   ThemeController,
   SnackController,
   RouterController,
   EnsController,
-  OptionsController
+  OptionsController,
+  ChainController
 } from '@web3modal/core'
 import { setColorTheme, setThemeVariables } from '@web3modal/ui'
 import { ConstantsUtil } from '@web3modal/common'
@@ -173,24 +174,24 @@ export class Appkit {
     AccountController.resetAccount()
   }
 
-  public setCaipNetwork: (typeof NetworkController)['setCaipNetwork'] = (caipNetwork, protocol) => {
-    NetworkController.setCaipNetwork(caipNetwork, protocol)
+  public setCaipNetwork: (typeof ChainController)['setCaipNetwork'] = (caipNetwork, protocol) => {
+    ChainController.setCaipNetwork(caipNetwork, protocol)
   }
 
-  public getCaipNetwork = () => NetworkController.activeNetwork()
+  public getCaipNetwork = () => ChainController.activeNetwork()
 
-  public setRequestedCaipNetworks: (typeof NetworkController)['setRequestedCaipNetworks'] = (
+  public setRequestedCaipNetworks: (typeof ChainController)['setRequestedCaipNetworks'] = (
     requestedCaipNetworks,
     protocol
   ) => {
-    NetworkController.setRequestedCaipNetworks(requestedCaipNetworks, protocol)
+    ChainController.setRequestedCaipNetworks(requestedCaipNetworks, protocol)
   }
 
-  public getApprovedCaipNetworksData: (typeof NetworkController)['getApprovedCaipNetworksData'] =
-    () => NetworkController.getApprovedCaipNetworksData()
+  public getApprovedCaipNetworksData: (typeof ChainController)['getApprovedCaipNetworksData'] =
+    () => ChainController.getApprovedCaipNetworksData()
 
-  public resetNetwork: (typeof NetworkController)['resetNetwork'] = () => {
-    NetworkController.resetNetwork(NetworkController.state.activeProtocol || 'evm')
+  public resetNetwork: (typeof ChainController)['resetNetwork'] = () => {
+    ChainController.resetNetwork(ChainController.state.activeProtocol || 'evm')
   }
 
   public setConnectors: (typeof ConnectorController)['setConnectors'] = connectors => {
@@ -226,9 +227,9 @@ export class Appkit {
       AccountController.setConnectedWalletInfo(connectedWalletInfo)
     }
 
-  public setSmartAccountEnabledNetworks: (typeof NetworkController)['setSmartAccountEnabledNetworks'] =
+  public setSmartAccountEnabledNetworks: (typeof ChainController)['setSmartAccountEnabledNetworks'] =
     smartAccountEnabledNetworks => {
-      NetworkController.setSmartAccountEnabledNetworks(smartAccountEnabledNetworks)
+      ChainController.setSmartAccountEnabledNetworks(smartAccountEnabledNetworks)
     }
 
   public setPreferredAccountType: (typeof AccountController)['setPreferredAccountType'] =
@@ -253,13 +254,13 @@ export class Appkit {
       adapter.construct(this, options)
     })
 
-    NetworkController.setAdapters(options.adapters || [])
+    ChainController.setAdapters(options.adapters || [])
 
     const defaultAdapter = options.adapters?.[0]
 
     if (defaultAdapter) {
-      NetworkController.setAdapter(defaultAdapter)
-      NetworkController.setDefaultCaipNetwork(options.defaultChain, defaultAdapter.protocol)
+      ChainController.setAdapter(defaultAdapter)
+      ChainController.setDefaultCaipNetwork(options.defaultChain, defaultAdapter.protocol)
     }
 
     OptionsController.setOptions(options)
@@ -273,7 +274,7 @@ export class Appkit {
     }
 
     if (options.allowUnsupportedChain) {
-      NetworkController.setAllowUnsupportedChain(options.allowUnsupportedChain)
+      ChainController.setAllowUnsupportedChain(options.allowUnsupportedChain)
     }
 
     if (options.siweConfig) {

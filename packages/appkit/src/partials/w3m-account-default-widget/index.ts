@@ -2,7 +2,7 @@ import {
   AccountController,
   CoreHelperUtil,
   ModalController,
-  NetworkController,
+  ChainController,
   RouterController,
   AssetUtil,
   StorageUtil,
@@ -33,7 +33,7 @@ export class W3mAccountDefaultWidget extends LitElement {
 
   @state() private profileName = AccountController.state.profileName
 
-  @state() private network = NetworkController.activeNetwork()
+  @state() private network = ChainController.activeNetwork()
 
   @state() private disconnecting = false
 
@@ -57,9 +57,9 @@ export class W3mAccountDefaultWidget extends LitElement {
           }
         })
       ],
-      NetworkController.subscribeKey(
+      ChainController.subscribeKey(
         'networks',
-        () => (this.network = NetworkController.activeNetwork())
+        () => (this.network = ChainController.activeNetwork())
       )
     )
   }
@@ -218,11 +218,11 @@ export class W3mAccountDefaultWidget extends LitElement {
   }
 
   private isAllowedNetworkSwitch() {
-    if (!NetworkController.state.activeProtocol) {
+    if (!ChainController.state.activeProtocol) {
       return false
     }
     const { requestedCaipNetworks } =
-      NetworkController.state.networks[NetworkController.state.activeProtocol]
+      ChainController.state.networks[ChainController.state.activeProtocol]
     const isMultiNetwork = requestedCaipNetworks ? requestedCaipNetworks.length > 1 : false
     const isValidNetwork = requestedCaipNetworks?.find(({ id }) => id === this.network?.id)
 

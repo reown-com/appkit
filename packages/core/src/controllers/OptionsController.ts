@@ -31,6 +31,7 @@ export interface OptionsControllerState {
   metadata?: Metadata
   enableOnramp?: boolean
   enableWalletFeatures?: boolean
+  // -- New Options for appkit transition
   themeMode?: ThemeMode
   themeVariables?: ThemeVariables
   defaultChain?: CaipNetwork

@@ -11,6 +11,12 @@ export type { RouterControllerState } from './src/controllers/RouterController.j
 export { AccountController } from './src/controllers/AccountController.js'
 export type { AccountControllerState } from './src/controllers/AccountController.js'
 
+export { ChainController } from './src/controllers/ChainController.js'
+export type {
+  ChainControllerClient,
+  ChainControllerState
+} from './src/controllers/ChainController.js'
+
 export { NetworkController } from './src/controllers/NetworkController.js'
 export type {
   NetworkControllerClient,

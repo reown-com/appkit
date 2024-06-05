@@ -5,7 +5,7 @@ import {
   CoreHelperUtil,
   EventsController,
   ModalController,
-  NetworkController,
+  ChainController,
   RouterController,
   SnackController,
   StorageUtil,
@@ -37,7 +37,7 @@ export class W3mAccountSettingsView extends LitElement {
 
   @state() private profileName = AccountController.state.profileName
 
-  @state() private network = NetworkController.activeNetwork()
+  @state() private network = ChainController.activeNetwork()
 
   @state() private preferredAccountType = AccountController.state.preferredAccountType
 
@@ -63,8 +63,8 @@ export class W3mAccountSettingsView extends LitElement {
             ModalController.close()
           }
         }),
-        NetworkController.subscribe(() => {
-          this.network = NetworkController.activeNetwork()
+        ChainController.subscribe(() => {
+          this.network = ChainController.activeNetwork()
         })
       ]
     )
@@ -192,11 +192,11 @@ export class W3mAccountSettingsView extends LitElement {
   }
 
   private isAllowedNetworkSwitch() {
-    if (!NetworkController.state.activeProtocol) {
+    if (!ChainController.state.activeProtocol) {
       return false
     }
     const { requestedCaipNetworks } =
-      NetworkController.state.networks[NetworkController.state.activeProtocol]
+      ChainController.state.networks[ChainController.state.activeProtocol]
     const isMultiNetwork = requestedCaipNetworks ? requestedCaipNetworks.length > 1 : false
     const isValidNetwork = requestedCaipNetworks?.find(({ id }) => id === this.network?.id)
 
@@ -215,7 +215,7 @@ export class W3mAccountSettingsView extends LitElement {
   }
 
   private togglePreferredAccountBtnTemplate() {
-    const networkEnabled = NetworkController.checkIfSmartAccountEnabled()
+    const networkEnabled = ChainController.checkIfSmartAccountEnabled()
     const type = StorageUtil.getConnectedConnector()
     const authConnector = ConnectorController.getAuthConnector()
 
@@ -251,7 +251,7 @@ export class W3mAccountSettingsView extends LitElement {
   }
 
   private async changePreferredAccountType() {
-    const smartAccountEnabled = NetworkController.checkIfSmartAccountEnabled()
+    const smartAccountEnabled = ChainController.checkIfSmartAccountEnabled()
     const accountTypeTarget =
       this.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT ||
       !smartAccountEnabled
