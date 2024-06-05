@@ -25,7 +25,7 @@ export default css`
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(to top, var(--wui-color-bg-200), transparent);
+    background: linear-gradient(to top, var(--wui-color-bg-150), transparent);
     border-bottom-left-radius: var(--wui-border-radius-xs);
     border-bottom-right-radius: var(--wui-border-radius-xs);
   }

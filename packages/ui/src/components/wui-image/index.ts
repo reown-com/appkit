@@ -23,7 +23,11 @@ export class WuiImage extends LitElement {
       --local-height: ${this.size ? `var(--wui-icon-size-${this.size});` : '100%'};
       `
 
-    return html`<img src=${this.src} alt=${this.alt} />`
+    return html`<img src=${this.src} alt=${this.alt} @error=${this.handleImageError} />`
+  }
+
+  private handleImageError() {
+    this.dispatchEvent(new CustomEvent('onLoadError', { bubbles: true, composed: true }))
   }
 }
 

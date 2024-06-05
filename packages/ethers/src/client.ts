@@ -506,8 +506,8 @@ export class Web3Modal extends Web3ModalScaffold {
       this.checkActiveInjectedProvider(ethersConfig)
     }
 
-    if (ethersConfig.auth || ethersConfig.email) {
-      this.syncAuthConnector(w3mOptions.projectId, ethersConfig.auth, ethersConfig.email)
+    if (ethersConfig.auth) {
+      this.syncAuthConnector(w3mOptions.projectId, ethersConfig.auth)
     }
 
     if (ethersConfig.coinbase) {
@@ -1385,10 +1385,10 @@ export class Web3Modal extends Web3ModalScaffold {
     if (config.coinbase) {
       w3mConnectors.push({
         id: ConstantsUtil.COINBASE_SDK_CONNECTOR_ID,
-        explorerId: PresetsUtil.ConnectorExplorerIds[ConstantsUtil.COINBASE_CONNECTOR_ID],
-        imageId: PresetsUtil.ConnectorImageIds[ConstantsUtil.COINBASE_CONNECTOR_ID],
-        imageUrl: this.options?.connectorImages?.[ConstantsUtil.COINBASE_CONNECTOR_ID],
-        name: PresetsUtil.ConnectorNamesMap[ConstantsUtil.COINBASE_CONNECTOR_ID],
+        explorerId: PresetsUtil.ConnectorExplorerIds[ConstantsUtil.COINBASE_SDK_CONNECTOR_ID],
+        imageId: PresetsUtil.ConnectorImageIds[ConstantsUtil.COINBASE_SDK_CONNECTOR_ID],
+        imageUrl: this.options?.connectorImages?.[ConstantsUtil.COINBASE_SDK_CONNECTOR_ID],
+        name: PresetsUtil.ConnectorNamesMap[ConstantsUtil.COINBASE_SDK_CONNECTOR_ID],
         type: 'EXTERNAL'
       })
     }
@@ -1396,11 +1396,7 @@ export class Web3Modal extends Web3ModalScaffold {
     this.setConnectors(w3mConnectors)
   }
 
-  private async syncAuthConnector(
-    projectId: string,
-    auth: ProviderType['auth'],
-    email: ProviderType['email']
-  ) {
+  private async syncAuthConnector(projectId: string, auth: ProviderType['auth']) {
     if (typeof window !== 'undefined') {
       this.authProvider = new W3mFrameProvider(projectId)
 
@@ -1409,7 +1405,7 @@ export class Web3Modal extends Web3ModalScaffold {
         type: 'AUTH',
         name: 'Auth',
         provider: this.authProvider,
-        email,
+        email: auth?.email,
         socials: auth?.socials,
         showWallets: auth?.showWallets === undefined ? true : auth.showWallets
       })
@@ -1431,8 +1427,15 @@ export class Web3Modal extends Web3ModalScaffold {
       const { info, provider } = event.detail
       const connectors = this.getConnectors()
       const existingConnector = connectors.find(c => c.name === info.name)
+      const coinbaseConnector = connectors.find(
+        c => c.id === ConstantsUtil.COINBASE_SDK_CONNECTOR_ID
+      )
+      const isCoinbaseDuplicated =
+        coinbaseConnector &&
+        event.detail.info.rdns ===
+          ConstantsUtil.CONNECTOR_RDNS_MAP[ConstantsUtil.COINBASE_CONNECTOR_ID]
 
-      if (!existingConnector) {
+      if (!existingConnector && !isCoinbaseDuplicated) {
         const type = PresetsUtil.ConnectorTypesMap[ConstantsUtil.EIP6963_CONNECTOR_ID]
         if (type) {
           this.addConnector({

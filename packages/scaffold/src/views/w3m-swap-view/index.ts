@@ -29,9 +29,11 @@ export class W3mSwapView extends LitElement {
 
   @state() private initialized = SwapController.state.initialized
 
-  @state() private loading = SwapController.state.loading
+  @state() private loadingQuote = SwapController.state.loadingQuote
 
   @state() private loadingPrices = SwapController.state.loadingPrices
+
+  @state() private loadingTransaction = SwapController.state.loadingTransaction
 
   @state() private sourceToken = SwapController.state.sourceToken
 
@@ -48,8 +50,6 @@ export class W3mSwapView extends LitElement {
   @state() private inputError = SwapController.state.inputError
 
   @state() private gasPriceInUSD = SwapController.state.gasPriceInUSD
-
-  @state() private transactionLoading = SwapController.state.transactionLoading
 
   @state() private fetchError = SwapController.state.fetchError
 
@@ -77,9 +77,9 @@ export class W3mSwapView extends LitElement {
         }),
         SwapController.subscribe(newState => {
           this.initialized = newState.initialized
-          this.loading = newState.loading
+          this.loadingQuote = newState.loadingQuote
           this.loadingPrices = newState.loadingPrices
-          this.transactionLoading = newState.transactionLoading
+          this.loadingTransaction = newState.loadingTransaction
           this.sourceToken = newState.sourceToken
           this.sourceTokenAmount = newState.sourceTokenAmount
           this.sourceTokenPriceInUSD = newState.sourceTokenPriceInUSD
@@ -147,10 +147,6 @@ export class W3mSwapView extends LitElement {
       return 'Enter amount'
     }
 
-    if (!this.initialized) {
-      return 'Swap'
-    }
-
     if (this.inputError) {
       return this.inputError
     }
@@ -195,7 +191,7 @@ export class W3mSwapView extends LitElement {
 
     return html`<w3m-swap-input
       .value=${target === 'toToken' ? this.toTokenAmount : this.sourceTokenAmount}
-      ?disabled=${this.loading && target === 'toToken'}
+      ?disabled=${this.loadingQuote && target === 'toToken'}
       .onSetAmount=${this.handleChangeAmount.bind(this)}
       target=${target}
       .token=${token}
@@ -257,7 +253,7 @@ export class W3mSwapView extends LitElement {
   private templateActionButton() {
     const haveNoTokenSelected = !this.toToken || !this.sourceToken
     const haveNoAmount = !this.sourceTokenAmount
-    const loading = this.loading || this.loadingPrices || this.transactionLoading
+    const loading = this.loadingQuote || this.loadingPrices || this.loadingTransaction
     const disabled = loading || haveNoTokenSelected || haveNoAmount || this.inputError
 
     return html` <wui-flex gap="xs">
@@ -269,7 +265,7 @@ export class W3mSwapView extends LitElement {
         variant=${haveNoTokenSelected ? 'neutral' : 'main'}
         .loading=${loading}
         .disabled=${disabled}
-        @click=${this.onSwapPreview}
+        @click=${this.onSwapPreview.bind(this)}
       >
         ${this.actionButtonLabel()}
       </wui-button>
