@@ -17,7 +17,6 @@ import {
   getEnsAddress as wagmiGetEnsAddress,
   reconnect
 } from '@wagmi/core'
-import type { OptionsControllerState } from '@web3modal/core'
 import { mainnet } from 'viem/chains'
 import { prepareTransactionRequest, sendTransaction as wagmiSendTransaction } from '@wagmi/core'
 import type { Chain } from '@wagmi/core/chains'
@@ -28,6 +27,7 @@ import type {
   CaipNetworkId,
   ConnectionControllerClient,
   Connector,
+  LibraryOptions,
   NetworkControllerClient,
   PublicStateControllerState,
   SendTransactionArgs,
@@ -59,7 +59,7 @@ export type ReactConfig = ReturnType<typeof reactConfig>
 type Config = CoreConfig | ReactConfig
 
 export interface Web3ModalClientOptions<C extends Config>
-  extends Omit<OptionsControllerState, 'defaultChain' | 'tokens'> {
+  extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
   wagmiConfig: C
   siweConfig?: Web3ModalSIWEClient
   defaultChain?: Chain

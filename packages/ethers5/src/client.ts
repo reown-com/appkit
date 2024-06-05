@@ -5,13 +5,12 @@ import type {
   CaipNetworkId,
   ConnectionControllerClient,
   Connector,
+  LibraryOptions,
   NetworkControllerClient,
   PublicStateControllerState,
   SendTransactionArgs,
   Token
 } from '@web3modal/scaffold'
-import type { OptionsControllerState } from '@web3modal/core'
-
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
@@ -34,8 +33,7 @@ import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider'
 import { NetworkUtil } from '@web3modal/common'
 
 // -- Types ---------------------------------------------------------------------
-export interface Web3ModalClientOptions
-  extends Omit<OptionsControllerState, 'defaultChain' | 'tokens'> {
+export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
   ethersConfig: ProviderType
   siweConfig?: Web3ModalSIWEClient
   chains: Chain[]
@@ -93,8 +91,16 @@ export class Web3Modal extends Web3ModalScaffold {
   private options: Web3ModalClientOptions | undefined = undefined
 
   public constructor(options: Web3ModalClientOptions) {
-    const { ethersConfig, siweConfig, chains, defaultChain, tokens, chainImages, ...w3mOptions } =
-      options
+    const {
+      ethersConfig,
+      siweConfig,
+      chains,
+      defaultChain,
+      tokens,
+      chainImages,
+      _sdkVersion,
+      ...w3mOptions
+    } = options
 
     if (!ethersConfig) {
       throw new Error('web3modal:constructor - ethersConfig is undefined')
@@ -338,8 +344,12 @@ export class Web3Modal extends Web3ModalScaffold {
     }
 
     super({
+      networkControllerClient,
+      connectionControllerClient,
+      siweControllerClient: siweConfig,
       defaultChain: EthersHelpersUtil.getCaipDefaultChain(defaultChain),
       tokens: HelpersUtil.getCaipTokens(tokens),
+      _sdkVersion: _sdkVersion ?? `html-ethers5-${ConstantsUtil.VERSION}`,
       ...w3mOptions
     })
 

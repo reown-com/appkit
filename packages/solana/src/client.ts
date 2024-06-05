@@ -8,8 +8,6 @@ import {
   NetworkController,
   OptionsController
 } from '@web3modal/core'
-import type { OptionsControllerState } from '@web3modal/core'
-
 import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@web3modal/scaffold-utils'
 
 import { createWalletAdapters, syncInjectedWallets } from './connectors/walletAdapters.js'
@@ -22,8 +20,10 @@ import type UniversalProvider from '@walletconnect/universal-provider'
 import type {
   CaipNetworkId,
   ConnectionControllerClient,
+  LibraryOptions,
   NetworkControllerClient,
   Token,
+  ScaffoldOptions,
   Connector,
   CaipAddress,
   CaipNetwork
@@ -32,8 +32,7 @@ import type {
 import type { AdapterKey } from './connectors/walletAdapters.js'
 import type { ProviderType, Chain, Provider, SolStoreUtilState } from './utils/scaffold/index.js'
 
-export interface Web3ModalClientOptions
-  extends Omit<OptionsControllerState, 'defaultChain' | 'tokens'> {
+export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
   solanaConfig: ProviderType
   chains: Chain[]
   connectionSettings?: Commitment | ConnectionConfig
@@ -61,6 +60,7 @@ export class Web3Modal extends Web3ModalScaffold {
       solanaConfig,
       chains,
       tokens,
+      _sdkVersion,
       chainImages,
       connectionSettings = 'confirmed',
       ...w3mOptions
@@ -181,13 +181,16 @@ export class Web3Modal extends Web3ModalScaffold {
     }
 
     super({
+      networkControllerClient,
+      connectionControllerClient,
       defaultChain: SolHelpersUtil.getChainFromCaip(
         chains,
         typeof window === 'object' ? localStorage.getItem(SolConstantsUtil.CAIP_CHAIN_ID) : ''
       ) as CaipNetwork,
       tokens: HelpersUtil.getCaipTokens(tokens),
+      _sdkVersion: _sdkVersion ?? `html-solana-${ConstantsUtil.VERSION}`,
       ...w3mOptions
-    } as OptionsControllerState)
+    } as ScaffoldOptions)
 
     this.chains = chains
     this.connectionSettings = connectionSettings
@@ -230,7 +233,7 @@ export class Web3Modal extends Web3ModalScaffold {
     })
 
     NetworkController.subscribeKey('caipNetwork', () => {
-      if (NetworkController.activeNetwork() && !SolStoreUtil.state.isConnected) {
+      if (NetworkController.state.caipNetwork && !SolStoreUtil.state.isConnected) {
         SolStoreUtil.setCaipChainId(`solana:${chain.chainId}`)
         SolStoreUtil.setCurrentChain(chain)
         localStorage.setItem(SolConstantsUtil.CAIP_CHAIN_ID, `solana:${chain.chainId}`)
