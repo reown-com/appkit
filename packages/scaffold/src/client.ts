@@ -1,12 +1,16 @@
 import type {
+  ConnectionControllerClient,
   EventsControllerState,
+  NetworkControllerClient,
+  NetworkControllerState,
+  OptionsControllerState,
   PublicStateControllerState,
   ThemeControllerState,
-  OptionsControllerState,
+  ThemeMode,
+  ThemeVariables,
   ModalControllerState,
   ConnectedWalletInfo,
-  RouterControllerState,
-  AdapterCore
+  RouterControllerState
 } from '@web3modal/core'
 import {
   AccountController,
@@ -17,18 +21,47 @@ import {
   EventsController,
   ModalController,
   NetworkController,
+  OptionsController,
   PublicStateController,
   ThemeController,
   SnackController,
   RouterController,
-  EnsController,
-  OptionsController
+  EnsController
 } from '@web3modal/core'
 import { setColorTheme, setThemeVariables } from '@web3modal/ui'
+import type { SIWEControllerClient } from '@web3modal/siwe'
 import { ConstantsUtil } from '@web3modal/common'
 
 // -- Helpers -------------------------------------------------------------------
 let isInitialized = false
+
+// -- Types ---------------------------------------------------------------------
+export interface LibraryOptions {
+  projectId: OptionsControllerState['projectId']
+  themeMode?: ThemeMode
+  themeVariables?: ThemeVariables
+  allWallets?: OptionsControllerState['allWallets']
+  includeWalletIds?: OptionsControllerState['includeWalletIds']
+  excludeWalletIds?: OptionsControllerState['excludeWalletIds']
+  featuredWalletIds?: OptionsControllerState['featuredWalletIds']
+  defaultChain?: NetworkControllerState['caipNetwork']
+  tokens?: OptionsControllerState['tokens']
+  termsConditionsUrl?: OptionsControllerState['termsConditionsUrl']
+  privacyPolicyUrl?: OptionsControllerState['privacyPolicyUrl']
+  customWallets?: OptionsControllerState['customWallets']
+  enableAnalytics?: OptionsControllerState['enableAnalytics']
+  metadata?: OptionsControllerState['metadata']
+  enableOnramp?: OptionsControllerState['enableOnramp']
+  enableWalletFeatures?: OptionsControllerState['enableWalletFeatures']
+  allowUnsupportedChain?: NetworkControllerState['allowUnsupportedChain']
+  _sdkVersion: OptionsControllerState['sdkVersion']
+}
+
+export interface ScaffoldOptions extends LibraryOptions {
+  networkControllerClient: NetworkControllerClient
+  connectionControllerClient: ConnectionControllerClient
+  siweControllerClient?: SIWEControllerClient
+}
 
 export interface OpenOptions {
   view: 'Account' | 'Connect' | 'Networks' | 'ApproveTransaction' | 'OnRampProviders'
@@ -36,19 +69,11 @@ export interface OpenOptions {
 
 // -- Client --------------------------------------------------------------------
 export class Web3ModalScaffold {
-  private static instance?: Web3ModalScaffold
-
-  public adapters?: AdapterCore[]
-
   private initPromise?: Promise<void> = undefined
 
-  public constructor(options: OptionsControllerState) {
+  public constructor(options: ScaffoldOptions) {
     this.initControllers(options)
     this.initOrContinue()
-  }
-
-  public static getInstance() {
-    return this.instance
   }
 
   // -- Public -------------------------------------------------------------------
@@ -121,117 +146,115 @@ export class Web3ModalScaffold {
   }
 
   // -- Protected ----------------------------------------------------------------
-  public replace(route: RouterControllerState['view']) {
+  protected replace(route: RouterControllerState['view']) {
     RouterController.replace(route)
   }
 
-  public redirect(route: RouterControllerState['view']) {
+  protected redirect(route: RouterControllerState['view']) {
     RouterController.push(route)
   }
 
-  public popTransactionStack(cancel?: boolean) {
+  protected popTransactionStack(cancel?: boolean) {
     RouterController.popTransactionStack(cancel)
   }
 
-  public isOpen() {
+  protected isOpen() {
     return ModalController.state.open
   }
 
-  public isTransactionStackEmpty() {
+  protected isTransactionStackEmpty() {
     return RouterController.state.transactionStack.length === 0
   }
 
-  public isTransactionShouldReplaceView() {
+  protected isTransactionShouldReplaceView() {
     return RouterController.state.transactionStack[
       RouterController.state.transactionStack.length - 1
     ]?.replace
   }
 
-  public setIsConnected: (typeof AccountController)['setIsConnected'] = isConnected => {
+  protected setIsConnected: (typeof AccountController)['setIsConnected'] = isConnected => {
     AccountController.setIsConnected(isConnected)
   }
 
-  public getIsConnectedState = () => AccountController.state.isConnected
+  protected getIsConnectedState = () => AccountController.state.isConnected
 
-  public setCaipAddress: (typeof AccountController)['setCaipAddress'] = caipAddress => {
+  protected setCaipAddress: (typeof AccountController)['setCaipAddress'] = caipAddress => {
     AccountController.setCaipAddress(caipAddress)
   }
 
-  public setBalance: (typeof AccountController)['setBalance'] = (balance, balanceSymbol) => {
+  protected setBalance: (typeof AccountController)['setBalance'] = (balance, balanceSymbol) => {
     AccountController.setBalance(balance, balanceSymbol)
   }
 
-  public setProfileName: (typeof AccountController)['setProfileName'] = profileName => {
+  protected setProfileName: (typeof AccountController)['setProfileName'] = profileName => {
     AccountController.setProfileName(profileName)
   }
 
-  public setProfileImage: (typeof AccountController)['setProfileImage'] = profileImage => {
+  protected setProfileImage: (typeof AccountController)['setProfileImage'] = profileImage => {
     AccountController.setProfileImage(profileImage)
   }
 
-  public resetAccount: (typeof AccountController)['resetAccount'] = () => {
+  protected resetAccount: (typeof AccountController)['resetAccount'] = () => {
     AccountController.resetAccount()
   }
 
-  public setCaipNetwork: (typeof NetworkController)['setCaipNetwork'] = (caipNetwork, protocol) => {
-    NetworkController.setCaipNetwork(caipNetwork, protocol)
+  protected setCaipNetwork: (typeof NetworkController)['setCaipNetwork'] = caipNetwork => {
+    NetworkController.setCaipNetwork(caipNetwork)
   }
 
-  public getCaipNetwork = () => NetworkController.activeNetwork()
+  protected getCaipNetwork = () => NetworkController.state.caipNetwork
 
-  public setRequestedCaipNetworks: (typeof NetworkController)['setRequestedCaipNetworks'] = (
-    requestedCaipNetworks,
-    protocol
-  ) => {
-    NetworkController.setRequestedCaipNetworks(requestedCaipNetworks, protocol)
-  }
+  protected setRequestedCaipNetworks: (typeof NetworkController)['setRequestedCaipNetworks'] =
+    requestedCaipNetworks => {
+      NetworkController.setRequestedCaipNetworks(requestedCaipNetworks)
+    }
 
-  public getApprovedCaipNetworksData: (typeof NetworkController)['getApprovedCaipNetworksData'] =
+  protected getApprovedCaipNetworksData: (typeof NetworkController)['getApprovedCaipNetworksData'] =
     () => NetworkController.getApprovedCaipNetworksData()
 
-  public resetNetwork: (typeof NetworkController)['resetNetwork'] = () => {
-    NetworkController.resetNetwork(NetworkController.state.activeProtocol || 'evm')
+  protected resetNetwork: (typeof NetworkController)['resetNetwork'] = () => {
+    NetworkController.resetNetwork()
   }
 
-  public setConnectors: (typeof ConnectorController)['setConnectors'] = connectors => {
+  protected setConnectors: (typeof ConnectorController)['setConnectors'] = connectors => {
     ConnectorController.setConnectors(connectors)
   }
 
-  public addConnector: (typeof ConnectorController)['addConnector'] = connector => {
+  protected addConnector: (typeof ConnectorController)['addConnector'] = connector => {
     ConnectorController.addConnector(connector)
   }
 
-  public getConnectors: (typeof ConnectorController)['getConnectors'] = () =>
+  protected getConnectors: (typeof ConnectorController)['getConnectors'] = () =>
     ConnectorController.getConnectors()
 
-  public resetWcConnection: (typeof ConnectionController)['resetWcConnection'] = () => {
+  protected resetWcConnection: (typeof ConnectionController)['resetWcConnection'] = () => {
     ConnectionController.resetWcConnection()
   }
 
-  public fetchIdentity: (typeof BlockchainApiController)['fetchIdentity'] = request =>
+  protected fetchIdentity: (typeof BlockchainApiController)['fetchIdentity'] = request =>
     BlockchainApiController.fetchIdentity(request)
 
-  public setAddressExplorerUrl: (typeof AccountController)['setAddressExplorerUrl'] =
+  protected setAddressExplorerUrl: (typeof AccountController)['setAddressExplorerUrl'] =
     addressExplorerUrl => {
       AccountController.setAddressExplorerUrl(addressExplorerUrl)
     }
 
-  public setSmartAccountDeployed: (typeof AccountController)['setSmartAccountDeployed'] =
+  protected setSmartAccountDeployed: (typeof AccountController)['setSmartAccountDeployed'] =
     isDeployed => {
       AccountController.setSmartAccountDeployed(isDeployed)
     }
 
-  public setConnectedWalletInfo: (typeof AccountController)['setConnectedWalletInfo'] =
+  protected setConnectedWalletInfo: (typeof AccountController)['setConnectedWalletInfo'] =
     connectedWalletInfo => {
       AccountController.setConnectedWalletInfo(connectedWalletInfo)
     }
 
-  public setSmartAccountEnabledNetworks: (typeof NetworkController)['setSmartAccountEnabledNetworks'] =
+  protected setSmartAccountEnabledNetworks: (typeof NetworkController)['setSmartAccountEnabledNetworks'] =
     smartAccountEnabledNetworks => {
       NetworkController.setSmartAccountEnabledNetworks(smartAccountEnabledNetworks)
     }
 
-  public setPreferredAccountType: (typeof AccountController)['setPreferredAccountType'] =
+  protected setPreferredAccountType: (typeof AccountController)['setPreferredAccountType'] =
     preferredAccountType => {
       AccountController.setPreferredAccountType(preferredAccountType)
     }
@@ -239,7 +262,7 @@ export class Web3ModalScaffold {
   protected getWalletConnectName: (typeof EnsController)['getNamesForAddress'] = address =>
     EnsController.getNamesForAddress(address)
 
-  public resolveWalletConnectName = async (name: string) => {
+  protected resolveWalletConnectName = async (name: string) => {
     const trimmedName = name.replace(ConstantsUtil.WC_NAME_SUFFIX, '')
     const wcNameAddress = await EnsController.resolveName(trimmedName)
     const networkNameAddresses = Object.values(wcNameAddress?.addresses) || []
@@ -248,21 +271,25 @@ export class Web3ModalScaffold {
   }
 
   // -- Private ------------------------------------------------------------------
-  private async initControllers(options: OptionsControllerState) {
-    options.adapters?.forEach(adapter => {
-      adapter.construct(this, options)
-    })
+  private async initControllers(options: ScaffoldOptions) {
+    NetworkController.setClient(options.networkControllerClient)
+    NetworkController.setDefaultCaipNetwork(options.defaultChain)
 
-    NetworkController.setAdapters(options.adapters || [])
+    OptionsController.setProjectId(options.projectId)
+    OptionsController.setAllWallets(options.allWallets)
+    OptionsController.setIncludeWalletIds(options.includeWalletIds)
+    OptionsController.setExcludeWalletIds(options.excludeWalletIds)
+    OptionsController.setFeaturedWalletIds(options.featuredWalletIds)
+    OptionsController.setTokens(options.tokens)
+    OptionsController.setTermsConditionsUrl(options.termsConditionsUrl)
+    OptionsController.setPrivacyPolicyUrl(options.privacyPolicyUrl)
+    OptionsController.setCustomWallets(options.customWallets)
+    OptionsController.setEnableAnalytics(options.enableAnalytics)
+    OptionsController.setSdkVersion(options._sdkVersion)
 
-    const defaultAdapter = options.adapters?.[0]
-
-    if (defaultAdapter) {
-      NetworkController.setAdapter(defaultAdapter)
-      NetworkController.setDefaultCaipNetwork(options.defaultChain, defaultAdapter.protocol)
+    if (options.metadata) {
+      OptionsController.setMetadata(options.metadata)
     }
-
-    OptionsController.setOptions(options)
 
     if (options.themeMode) {
       ThemeController.setThemeMode(options.themeMode)
@@ -272,15 +299,25 @@ export class Web3ModalScaffold {
       ThemeController.setThemeVariables(options.themeVariables)
     }
 
+    if (options.enableOnramp) {
+      OptionsController.setOnrampEnabled(Boolean(options.enableOnramp))
+    }
+
+    if (options.enableWalletFeatures) {
+      OptionsController.setWalletFeaturesEnabled(Boolean(options.enableWalletFeatures))
+    }
+
     if (options.allowUnsupportedChain) {
       NetworkController.setAllowUnsupportedChain(options.allowUnsupportedChain)
     }
 
-    if (options.siweConfig) {
+    if (options.siweControllerClient) {
       const { SIWEController } = await import('@web3modal/siwe')
 
-      SIWEController.setSIWEClient(options.siweConfig)
+      SIWEController.setSIWEClient(options.siweControllerClient)
     }
+
+    ConnectionController.setClient(options.connectionControllerClient)
   }
 
   private async initOrContinue() {

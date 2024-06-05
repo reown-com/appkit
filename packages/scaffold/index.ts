@@ -97,13 +97,7 @@ export * from './src/partials/w3m-all-wallets-widget/index.js'
 export * from './src/partials/w3m-account-auth-button/index.js'
 
 export { Web3ModalScaffold } from './src/client.js'
+export type { LibraryOptions, ScaffoldOptions } from './src/client.js'
 
 export type * from '@web3modal/core'
 export { CoreHelperUtil } from '@web3modal/core'
-
-import type { OptionsControllerState } from '@web3modal/core'
-import { Web3ModalScaffold } from './src/client.js'
-
-export function createAppkit(options: OptionsControllerState) {
-  return new Web3ModalScaffold({ ...options })
-}
