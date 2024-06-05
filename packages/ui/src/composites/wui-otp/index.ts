@@ -110,8 +110,6 @@ export class WuiOtp extends LitElement {
   private handleKeyDown = (e: KeyboardEvent, index: number) => {
     console.log('wui-otp - handleKeyDown', e, index)
     const inputElement = e.target as HTMLElement
-    const clipboardValue = navigator.clipboard.readText()
-    console.log('clipboardValue', clipboardValue)
     const input = this.getInputElement(inputElement)
     const keyArr = ['ArrowLeft', 'ArrowRight', 'Shift', 'Delete']
     if (!input) {
