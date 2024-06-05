@@ -45,12 +45,16 @@ export function getEmailCaipNetworks() {
   }
 }
 
-export function getTransport({ chainId, projectId }: { chainId: number; projectId: string }) {
-  const RPC_URL = CoreHelperUtil.getBlockchainApiUrl()
+export function getTransport({ chain, projectId }: { chain: Chain; projectId: string }) {
+  const defaultRpcUrl = chain.rpcUrls.default?.http[0]
+  if (defaultRpcUrl) {
+    return http(defaultRpcUrl)
+  }
 
-  if (!PresetsUtil.WalletConnectRpcChainIds.includes(chainId)) {
+  const RPC_URL = CoreHelperUtil.getBlockchainApiUrl()
+  if (!PresetsUtil.WalletConnectRpcChainIds.includes(chain.id)) {
     return http()
   }
 
-  return http(`${RPC_URL}/v1/?chainId=${ConstantsUtil.EIP155}:${chainId}&projectId=${projectId}`)
+  return http(`${RPC_URL}/v1/?chainId=${ConstantsUtil.EIP155}:${chain.id}&projectId=${projectId}`)
 }
