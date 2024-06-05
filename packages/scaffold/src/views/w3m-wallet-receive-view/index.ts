@@ -25,7 +25,7 @@ export class W3mWalletReceiveView extends LitElement {
 
   @state() private profileName = AccountController.state.profileName
 
-  @state() private network = NetworkController.activeNetwork()
+  @state() private network = NetworkController.state.caipNetwork
 
   @state() private preferredAccountType = AccountController.state.preferredAccountType
 
@@ -43,10 +43,9 @@ export class W3mWalletReceiveView extends LitElement {
           }
         })
       ],
-      NetworkController.subscribe(() => {
-        const caipNetwork = NetworkController.activeNetwork()
-        if (caipNetwork?.id) {
-          this.network = caipNetwork
+      NetworkController.subscribeKey('caipNetwork', val => {
+        if (val?.id) {
+          this.network = val
         }
       })
     )
@@ -105,14 +104,9 @@ export class W3mWalletReceiveView extends LitElement {
 
   // -- Private ------------------------------------------- //
   networkTemplate() {
-    if (!NetworkController.state.activeProtocol) {
-      return null
-    }
-    const networks = NetworkController.getRequestedCaipNetworks(
-      NetworkController.state.activeProtocol
-    )
+    const networks = NetworkController.getRequestedCaipNetworks()
     const isNetworkEnabledForSmartAccounts = NetworkController.checkIfSmartAccountEnabled()
-    const caipNetwork = NetworkController.activeNetwork()
+    const caipNetwork = NetworkController.state.caipNetwork
 
     if (
       this.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT &&

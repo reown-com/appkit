@@ -21,15 +21,12 @@ export class W3mNetworksView extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() public caipNetwork = NetworkController.activeNetwork()
+  @state() public caipNetwork = NetworkController.state.caipNetwork
 
   public constructor() {
     super()
     this.unsubscribe.push(
-      NetworkController.subscribeKey(
-        'networks',
-        () => (this.caipNetwork = NetworkController.activeNetwork())
-      )
+      NetworkController.subscribeKey('caipNetwork', val => (this.caipNetwork = val))
     )
   }
 
@@ -65,11 +62,8 @@ export class W3mNetworksView extends LitElement {
   }
 
   private networksTemplate() {
-    const { supportsAllNetworks, networks, activeProtocol } = NetworkController.state
-    if (!activeProtocol) {
-      return null
-    }
-    const { approvedCaipNetworkIds, requestedCaipNetworks } = networks[activeProtocol]
+    const { approvedCaipNetworkIds, requestedCaipNetworks, supportsAllNetworks } =
+      NetworkController.state
 
     const sortedNetworks = CoreHelperUtil.sortRequestedNetworks(
       approvedCaipNetworkIds,
@@ -93,11 +87,7 @@ export class W3mNetworksView extends LitElement {
 
   private async onSwitchNetwork(network: CaipNetwork) {
     const { isConnected } = AccountController.state
-    const { networks, activeProtocol, supportsAllNetworks } = NetworkController.state
-    if (!activeProtocol) {
-      return
-    }
-    const { approvedCaipNetworkIds, caipNetwork } = networks[activeProtocol]
+    const { approvedCaipNetworkIds, supportsAllNetworks, caipNetwork } = NetworkController.state
     const { data } = RouterController.state
     if (isConnected && caipNetwork?.id !== network.id) {
       if (approvedCaipNetworkIds?.includes(network.id)) {
@@ -107,7 +97,7 @@ export class W3mNetworksView extends LitElement {
         RouterController.push('SwitchNetwork', { ...data, network })
       }
     } else if (!isConnected) {
-      NetworkController.setCaipNetwork(network, activeProtocol)
+      NetworkController.setCaipNetwork(network)
       RouterController.push('Connect')
     }
   }

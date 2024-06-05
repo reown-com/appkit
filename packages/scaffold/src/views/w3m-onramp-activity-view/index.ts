@@ -76,7 +76,7 @@ export class W3mOnRampActivityView extends LitElement {
       const icon = fungibleInfo?.icon?.url || this.tokenImages?.[fungibleInfo.symbol || '']
 
       return html`
-        <w3m-onramp-activity-item
+        <wui-onramp-activity-item
           label="Bought"
           .completed=${transaction.metadata.status === 'ONRAMP_TRANSACTION_STATUS_SUCCESS'}
           .inProgress=${transaction.metadata.status === 'ONRAMP_TRANSACTION_STATUS_IN_PROGRESS'}
@@ -86,7 +86,7 @@ export class W3mOnRampActivityView extends LitElement {
           date=${date}
           icon=${ifDefined(icon)}
           symbol=${ifDefined(fungibleInfo.symbol)}
-        ></w3m-onramp-activity-item>
+        ></wui-onramp-activity-item>
       `
     })
   }

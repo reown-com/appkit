@@ -31,14 +31,13 @@ export class W3mConnectWalletConnectWidget extends LitElement {
 
       return null
     }
-    this.style.cssText = `display: block`
+
     const connector = this.connectors.find(c => c.type === 'WALLET_CONNECT')
     if (!connector) {
       this.style.cssText = `display: none`
 
       return null
     }
-    this.style.cssText = `display: block`
 
     return html`
       <wui-list-wallet

@@ -39,7 +39,7 @@ export class W3mConnectFeaturedWidget extends LitElement {
 
       return null
     }
-    this.style.cssText = `display: block`
+
     const wallets = this.filterOutDuplicateWallets(featured)
 
     return html`

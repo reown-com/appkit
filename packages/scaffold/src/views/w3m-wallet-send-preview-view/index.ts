@@ -24,7 +24,7 @@ export class W3mWalletSendPreviewView extends LitElement {
 
   @state() private gasPriceInUSD = SendController.state.gasPriceInUSD
 
-  @state() private caipNetwork = NetworkController.activeNetwork()
+  @state() private caipNetwork = NetworkController.state.caipNetwork
 
   public constructor() {
     super()
@@ -38,10 +38,7 @@ export class W3mWalletSendPreviewView extends LitElement {
           this.receiverProfileName = val.receiverProfileName
           this.receiverProfileImageUrl = val.receiverProfileImageUrl
         }),
-        NetworkController.subscribeKey(
-          'networks',
-          () => (this.caipNetwork = NetworkController.activeNetwork())
-        )
+        NetworkController.subscribeKey('caipNetwork', val => (this.caipNetwork = val))
       ]
     )
   }

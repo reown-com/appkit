@@ -51,7 +51,6 @@ export class W3mConnectRecommendedWidget extends LitElement {
 
       return null
     }
-    this.style.cssText = `display: block`
 
     const overrideLength = injectedWallets.length + recent.length
 
@@ -64,7 +63,6 @@ export class W3mConnectRecommendedWidget extends LitElement {
 
       return null
     }
-    this.style.cssText = `display: block`
 
     return html`
       <wui-flex flexDirection="column" gap="xs">

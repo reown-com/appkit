@@ -39,7 +39,7 @@ export class W3mConnectCustomWidget extends LitElement {
 
       return null
     }
-    this.style.cssText = `display: block`
+
     const wallets = this.filterOutDuplicateWallets(customWallets)
 
     return html`<wui-flex flexDirection="column" gap="xs">

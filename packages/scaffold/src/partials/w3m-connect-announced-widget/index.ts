@@ -34,8 +34,6 @@ export class W3mConnectAnnouncedWidget extends LitElement {
       return null
     }
 
-    this.style.cssText = `display: block`
-
     return html`
       <wui-flex flexDirection="column" gap="xs">
         ${announcedConnectors.map(

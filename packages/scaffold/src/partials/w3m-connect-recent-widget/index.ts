@@ -15,7 +15,6 @@ export class W3mConnectRecentWidget extends LitElement {
 
       return null
     }
-    this.style.cssText = `display: block`
 
     return html`
       <wui-flex flexDirection="column" gap="xs">

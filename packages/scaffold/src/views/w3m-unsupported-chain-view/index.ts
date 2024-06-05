@@ -84,11 +84,7 @@ export class W3mUnsupportedChainView extends LitElement {
   }
 
   private networksTemplate() {
-    const { networks, activeProtocol } = NetworkController.state
-    if (!activeProtocol) {
-      return null
-    }
-    const { approvedCaipNetworkIds, requestedCaipNetworks } = networks[activeProtocol]
+    const { approvedCaipNetworkIds, requestedCaipNetworks } = NetworkController.state
 
     const sortedNetworks = CoreHelperUtil.sortRequestedNetworks(
       approvedCaipNetworkIds,
@@ -130,14 +126,7 @@ export class W3mUnsupportedChainView extends LitElement {
 
   private async onSwitchNetwork(network: CaipNetwork) {
     const { isConnected } = AccountController.state
-    const { supportsAllNetworks, networks, activeProtocol } = NetworkController.state
-
-    if (!activeProtocol) {
-      return
-    }
-
-    const { approvedCaipNetworkIds, caipNetwork } = networks[activeProtocol]
-
+    const { approvedCaipNetworkIds, supportsAllNetworks, caipNetwork } = NetworkController.state
     const { data } = RouterController.state
 
     if (isConnected && caipNetwork?.id !== network.id) {
@@ -148,7 +137,7 @@ export class W3mUnsupportedChainView extends LitElement {
         RouterController.push('SwitchNetwork', { ...data, network })
       }
     } else if (!isConnected) {
-      NetworkController.setCaipNetwork(network, activeProtocol)
+      NetworkController.setCaipNetwork(network)
       RouterController.push('Connect')
     }
   }

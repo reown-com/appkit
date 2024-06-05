@@ -25,7 +25,7 @@ export class W3mSwapView extends LitElement {
 
   @state() private detailsOpen = false
 
-  @state() private caipNetworkId = NetworkController.activeNetwork()?.id
+  @state() private caipNetworkId = NetworkController.state.caipNetwork?.id
 
   @state() private initialized = SwapController.state.initialized
 
@@ -56,8 +56,7 @@ export class W3mSwapView extends LitElement {
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
-    NetworkController.subscribe(() => {
-      const newCaipNetwork = NetworkController.activeNetwork()
+    NetworkController.subscribeKey('caipNetwork', newCaipNetwork => {
       if (this.caipNetworkId !== newCaipNetwork?.id) {
         this.caipNetworkId = newCaipNetwork?.id
         SwapController.resetState()

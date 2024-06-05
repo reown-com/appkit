@@ -37,7 +37,7 @@ export class W3mAccountSettingsView extends LitElement {
 
   @state() private profileName = AccountController.state.profileName
 
-  @state() private network = NetworkController.activeNetwork()
+  @state() private network = NetworkController.state.caipNetwork
 
   @state() private preferredAccountType = AccountController.state.preferredAccountType
 
@@ -63,8 +63,10 @@ export class W3mAccountSettingsView extends LitElement {
             ModalController.close()
           }
         }),
-        NetworkController.subscribe(() => {
-          this.network = NetworkController.activeNetwork()
+        NetworkController.subscribeKey('caipNetwork', val => {
+          if (val?.id) {
+            this.network = val
+          }
         })
       ]
     )
