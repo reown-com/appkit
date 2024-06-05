@@ -46,7 +46,7 @@ export function getEmailCaipNetworks() {
 }
 
 export function getTransport({ chain, projectId }: { chain: Chain; projectId: string }) {
-  const defaultRpcUrl = chain.rpcUrls.default?.http[0]
+  const defaultRpcUrl = chain.rpcUrls?.default?.http?.[0]
   if (defaultRpcUrl) {
     return http(defaultRpcUrl)
   }
