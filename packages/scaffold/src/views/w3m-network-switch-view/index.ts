@@ -131,6 +131,7 @@ export class W3mNetworkSwitchView extends LitElement {
   }
 
   private async onSwitchNetwork() {
+    console.log('firing off switch network', this.network)
     try {
       this.error = false
       if (this.network) {
