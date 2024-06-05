@@ -33,7 +33,6 @@ import type {
   SendTransactionArgs,
   SocialProvider,
   Token,
-  Web3ModalScaffold,
   WriteContractArgs
 } from '@web3modal/scaffold'
 import { formatUnits, parseUnits } from 'viem'
@@ -47,6 +46,9 @@ import { NetworkUtil } from '@web3modal/common'
 import type { defaultWagmiConfig as coreConfig } from './utils/defaultWagmiCoreConfig.js'
 import type { defaultWagmiConfig as reactConfig } from './utils/defaultWagmiReactConfig.js'
 import { normalize } from 'viem/ens'
+
+// Appkit
+import { Appkit } from '@web3modal/appkit'
 
 // -- Types ---------------------------------------------------------------------
 export type CoreConfig = ReturnType<typeof coreConfig>
@@ -67,7 +69,7 @@ interface Web3ModalState extends PublicStateControllerState {
 
 // -- Client --------------------------------------------------------------------
 export class EVMWagmiClient {
-  private scaffold: Web3ModalScaffold | undefined = undefined
+  private scaffold: Appkit | undefined = undefined
 
   public options: OptionsControllerState | undefined = undefined
 
@@ -389,7 +391,7 @@ export class EVMWagmiClient {
     })
   }
 
-  public construct(scaffold: Web3ModalScaffold, options: OptionsControllerState) {
+  public construct(scaffold: Appkit, options: OptionsControllerState) {
     if (!options.projectId) {
       throw new Error('web3modal:initialize - projectId is undefined')
     }

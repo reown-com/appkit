@@ -15,18 +15,11 @@ export function Web3ModalButtons() {
             </Heading>
             <w3m-button />
           </Box>
-
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">
               Network Button
             </Heading>
             <w3m-network-button />
-          </Box>
-          <Box>
-            <Heading size="xs" textTransform="uppercase" pb="2">
-              Onramp Widget
-            </Heading>
-            <w3m-onramp-widget />
           </Box>
         </Stack>
       </CardBody>

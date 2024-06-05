@@ -22,8 +22,7 @@ import {
   SnackController,
   RouterController,
   EnsController,
-  OptionsController,
-  ChainController
+  OptionsController
 } from '@web3modal/core'
 import { setColorTheme, setThemeVariables } from '@web3modal/ui'
 import { ConstantsUtil } from '@web3modal/common'

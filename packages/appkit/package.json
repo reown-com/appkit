@@ -10,7 +10,7 @@
   ],
   "scripts": {
     "build:clean": "rm -rf dist",
-    "build:scaffold": "tsc --build",
+    "build:appkit": "tsc --build",
     "watch": "tsc --watch",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
@@ -19,9 +19,9 @@
     "@web3modal/common": "4.2.3",
     "@web3modal/core": "4.2.3",
     "@web3modal/ui": "4.2.3",
-    "lit": "3.1.0",
     "@web3modal/siwe": "4.2.3",
-    "@web3modal/wallet": "4.2.3"
+    "@web3modal/wallet": "4.2.3",
+    "lit": "3.1.0"
   },
   "keywords": [
     "web3",

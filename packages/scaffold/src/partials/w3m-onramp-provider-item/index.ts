@@ -53,12 +53,7 @@ export class W3mOnRampProviderItem extends LitElement {
 
   // -- Private ------------------------------------------- //
   private networksTemplate() {
-    if (!NetworkController.state.activeProtocol) {
-      return null
-    }
-    const networks = NetworkController.getRequestedCaipNetworks(
-      NetworkController.state.activeProtocol
-    )
+    const networks = NetworkController.getRequestedCaipNetworks()
     const slicedNetworks = networks?.filter(network => network?.imageId)?.slice(0, 5)
 
     return html`

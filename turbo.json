@@ -37,6 +37,11 @@
       ],
       "cache": false
     },
+    "build:appkit": {
+      "outputs": ["dist/**"],
+      "dependsOn": ["^build:common", "^build:core", "^build:ui", "^build:wallet", "^build:siwe"],
+      "cache": false
+    },
     "build:scaffold-utils": {
       "outputs": ["dist/**"],
       "dependsOn": ["^build:polyfills", "^build:core"],
@@ -60,6 +65,7 @@
     "build:adapters": {
       "outputs": ["dist/**"],
       "dependsOn": [
+        "^build:appkit",
         "^build:scaffold",
         "^build:scaffold-utils",
         "^build:siwe",
@@ -72,6 +78,7 @@
       "outputs": ["dist/**"],
       "dependsOn": [
         "^build:adapters",
+        "^build:appkit",
         "^build:common",
         "^build:core",
         "^build:polyfills",

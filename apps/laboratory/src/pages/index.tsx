@@ -18,6 +18,32 @@ export default function HomePage() {
     <>
       <Card marginTop={20}>
         <CardHeader>
+          <Heading size="md">Appkit</Heading>
+        </CardHeader>
+
+        <CardBody>
+          <Stack divider={<StackDivider />} spacing="4">
+            <Box>
+              <Stack direction="row" justifyContent="space-between" alignItems="center">
+                <Box>
+                  <Heading size="xs" textTransform="uppercase">
+                    Default
+                  </Heading>
+                  <Text pt="2" fontSize="sm">
+                    Configuration with new architecture of appkit
+                  </Text>
+                </Box>
+                <Link href="/library/appkit">
+                  <Button rightIcon={<IoArrowForward />}>Go</Button>
+                </Link>
+              </Stack>
+            </Box>
+          </Stack>
+        </CardBody>
+      </Card>
+
+      <Card marginTop={20}>
+        <CardHeader>
           <Heading size="md">Testing</Heading>
         </CardHeader>
 
