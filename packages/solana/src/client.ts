@@ -256,6 +256,8 @@ export class Web3Modal extends Web3ModalScaffold {
     })
 
     if (CoreHelperUtil.isClient()) {
+      this.checkActiveProviders()
+      this.syncConnectors()
       let timer = 0
       // Brave browser delay to detect injected wallets
       if (
@@ -267,6 +269,8 @@ export class Web3Modal extends Web3ModalScaffold {
 
       const checkWallet = () => {
         if (window.solflare) {
+          // eslint-disable-next-line no-console
+          console.log(`checking injected wallet`);
           this.checkActiveProviders()
           this.syncConnectors()
         } else {
