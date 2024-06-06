@@ -6,6 +6,7 @@ import styles from './styles.js'
 
 // -- Helpers ------------------------------------------- //
 const presets = {
+  loading: undefined,
   success: {
     backgroundColor: 'success-100',
     iconColor: 'success-100',
@@ -53,9 +54,10 @@ export class W3mSnackBar extends LitElement {
     return html`
       <wui-snackbar
         message=${message}
-        backgroundColor=${preset.backgroundColor}
-        iconColor=${preset.iconColor}
-        icon=${preset.icon}
+        backgroundColor=${preset?.backgroundColor}
+        iconColor=${preset?.iconColor}
+        icon=${preset?.icon}
+        .loading=${variant === 'loading'}
       ></wui-snackbar>
     `
   }
