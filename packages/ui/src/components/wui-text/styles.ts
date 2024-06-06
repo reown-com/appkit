@@ -22,6 +22,20 @@ export default css`
     color: var(--local-color);
   }
 
+  .wui-line-clamp-1 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+  }
+
+  .wui-line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
   .wui-font-medium-400 {
     font-size: var(--wui-font-size-medium);
     font-weight: var(--wui-font-weight-light);

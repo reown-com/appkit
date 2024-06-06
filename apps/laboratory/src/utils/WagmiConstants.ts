@@ -50,7 +50,6 @@ export const CONFIGS = {
     chains: WagmiConstantsUtil.chains,
     projectId: ConstantsUtil.ProjectId,
     metadata: ConstantsUtil.Metadata,
-    enableEmail: true,
     auth: {
       socials: ['google', 'x', 'discord', 'apple', 'github']
     },

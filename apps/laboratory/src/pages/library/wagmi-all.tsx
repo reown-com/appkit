@@ -9,6 +9,7 @@ import { CONFIGS } from '../../utils/WagmiConstants'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { SiweData } from '../../components/Siwe/SiweData'
 import { siweConfig } from '../../utils/SiweUtils'
+import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
 
 const queryClient = new QueryClient()
 
@@ -39,6 +40,7 @@ export default function Wagmi() {
     <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <Web3ModalButtons />
+        <WagmiModalInfo />
         <SiweData />
         <WagmiTests />
       </QueryClientProvider>

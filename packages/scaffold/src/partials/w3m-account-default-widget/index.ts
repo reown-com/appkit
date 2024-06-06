@@ -120,7 +120,7 @@ export class W3mAccountDefaultWidget extends LitElement {
       </wui-flex>
 
       <wui-flex flexDirection="column" gap="xs" .padding=${['0', 's', 's', 's'] as const}>
-        ${this.emailCardTemplate()} <w3m-account-auth-button></w3m-account-auth-button>
+        ${this.authCardTemplate()} <w3m-account-auth-button></w3m-account-auth-button>
 
         <wui-list-item
           .variant=${networkImage ? 'image' : 'icon'}
@@ -179,7 +179,7 @@ export class W3mAccountDefaultWidget extends LitElement {
     `
   }
 
-  private emailCardTemplate() {
+  private authCardTemplate() {
     const type = StorageUtil.getConnectedConnector()
     const authConnector = ConnectorController.getAuthConnector()
     const { origin } = location
