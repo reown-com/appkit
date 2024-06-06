@@ -44,6 +44,7 @@ import { filtersSvg } from '../../assets/svg/filters.js'
 import { githubSvg } from '../../assets/svg/github.js'
 import { googleSvg } from '../../assets/svg/google.js'
 import { helpCircleSvg } from '../../assets/svg/help-circle.js'
+import { imageSvg } from '../../assets/svg/image.js'
 import { infoCircleSvg } from '../../assets/svg/info-circle.js'
 import { mailSvg } from '../../assets/svg/mail.js'
 import { mobileSvg } from '../../assets/svg/mobile.js'
@@ -113,6 +114,7 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   github: githubSvg,
   google: googleSvg,
   helpCircle: helpCircleSvg,
+  image: imageSvg,
   id: idSvg,
   infoCircle: infoCircleSvg,
   mail: mailSvg,
