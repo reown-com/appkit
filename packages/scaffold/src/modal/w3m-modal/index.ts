@@ -88,7 +88,7 @@ export class W3mModal extends LitElement {
     if (this.isSiweEnabled) {
       const { SIWEController } = await import('@web3modal/siwe')
 
-      if (SIWEController.state.status !== 'success') {
+      if (SIWEController.state.status !== 'success' && this.connected) {
         await ConnectionController.disconnect()
       }
     }
