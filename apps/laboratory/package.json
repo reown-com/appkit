@@ -50,7 +50,7 @@
     "valtio": "1.11.2",
     "viem": "2.10.3",
     "wagmi": "2.9.4",
-    "@wagmi/connectors": "5.0.3"
+    "@wagmi/connectors": "5.0.8"
   },
   "devDependencies": {
     "@aws-sdk/client-cloudwatch": "3.509.0",
