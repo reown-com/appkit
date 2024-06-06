@@ -257,16 +257,27 @@ export class Web3Modal extends Web3ModalScaffold {
 
     if (CoreHelperUtil.isClient()) {
       let timer = 0
+      // Brave browser delay to detect injected wallets
       if (
         window.navigator.brave !== undefined &&
         window.navigator.brave.isBrave.name === 'isBrave'
       ) {
-        timer = 500
+        timer = 100
+      }
+
+      const checkWallet = () => {
+        if (window.solflare) {
+          this.checkActiveProviders()
+          this.syncConnectors()
+        } else {
+          setTimeout(() => {
+            checkWallet()
+          }, timer)
+        }
       }
 
       setTimeout(() => {
-        this.checkActiveProviders()
-        this.syncConnectors()
+        checkWallet()
       }, timer)
     }
   }
