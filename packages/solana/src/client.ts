@@ -270,7 +270,7 @@ export class Web3Modal extends Web3ModalScaffold {
       const checkWallet = () => {
         if (window.solflare) {
           // eslint-disable-next-line no-console
-          console.log(`checking injected wallet`);
+          console.log(`checking injected wallet`)
           this.checkActiveProviders()
           this.syncConnectors()
         } else {
