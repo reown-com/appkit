@@ -20,25 +20,25 @@ export const vitalikEthAddress = '0xd8da6bf26964af9d7eed9e03e53415d37aa96045'
 
 export const wagmiSdkOptions = [
   {
-    title: 'Wagmi + SolanaWeb3Js',
-    link: '/library/wagmiSolana',
-    description: 'Multichain test using wagmi as a driving library for evm and web3js for Solana'
+    title: 'Default',
+    link: '/library/wagmi',
+    description: 'Basic configuration using wagmi as a driving library'
+  },
+  {
+    title: 'SIWE',
+    link: '/library/wagmi-siwe/',
+    description: 'Configuration using wagmi and implementing sign in with ethereum'
+  },
+  {
+    title: 'Email',
+    link: '/library/wagmi-email/',
+    description: 'Configuration using wagmi and implementing email login'
+  },
+  {
+    title: 'Wallet',
+    link: '/library/wagmi-wallet/',
+    description: 'Configuration using wagmi and implementing social wallet'
   }
-  // {
-  //   title: 'SIWE',
-  //   link: '/library/wagmi-siwe/',
-  //   description: 'Configuration using wagmi and implementing sign in with ethereum'
-  // },
-  // {
-  //   title: 'Email',
-  //   link: '/library/wagmi-email/',
-  //   description: 'Configuration using wagmi and implementing email login'
-  // },
-  // {
-  //   title: 'Wallet',
-  //   link: '/library/wagmi-wallet/',
-  //   description: 'Configuration using wagmi and implementing social wallet'
-  // }
 ]
 
 export const ethersSdkOptions = [
