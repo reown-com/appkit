@@ -176,7 +176,7 @@ export const CoreHelperUtil = {
   },
 
   getApiUrl() {
-    return 'https://api.web3modal.org'
+    return CommonConstants.W3M_API_URL
   },
 
   getBlockchainApiUrl() {
@@ -184,7 +184,7 @@ export const CoreHelperUtil = {
   },
 
   getAnalyticsUrl() {
-    return 'https://pulse.walletconnect.org'
+    return CommonConstants.PULSE_API_URL
   },
 
   getUUID() {

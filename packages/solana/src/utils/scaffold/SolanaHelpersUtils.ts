@@ -8,7 +8,7 @@ import type { Chain, Provider } from './SolanaTypesUtil.js'
 
 export const SolHelpersUtil = {
   detectRpcUrl(chain: Chain, projectId: string) {
-    if (chain.rpcUrl.includes(ConstantsUtil.BLOCKCHAIN_API_RPC_URL)) {
+    if (chain.rpcUrl.includes(new URL(ConstantsUtil.BLOCKCHAIN_API_RPC_URL).hostname)) {
       return `${chain.rpcUrl}?chainId=solana:${chain.chainId}&projectId=${projectId}`
     }
 
