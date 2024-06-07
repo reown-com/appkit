@@ -1,6 +1,7 @@
 import type { RouterControllerState } from '@web3modal/core'
 import {
   AccountController,
+  ChainController,
   ConnectionController,
   ConnectorController,
   EventsController,
@@ -21,6 +22,7 @@ function headings() {
   const connectorName = RouterController.state.data?.connector?.name
   const walletName = RouterController.state.data?.wallet?.name
   const networkName = RouterController.state.data?.network?.name
+  const chainSelectConnectorName = RouterController.state.data?.chainSelectConnectorName
   const name = walletName ?? connectorName
   const connectors = ConnectorController.getConnectors()
   const isEmail = connectors.length === 1 && connectors[0]?.id === 'w3m-email'
@@ -70,7 +72,8 @@ function headings() {
     ConnectSocials: 'All socials',
     ConnectingSocial: AccountController.state.socialProvider
       ? AccountController.state.socialProvider
-      : 'Connect Social'
+      : 'Connect Social',
+    SelectChain: chainSelectConnectorName || 'Select chain'
   }
 }
 
@@ -129,7 +132,7 @@ export class W3mHeader extends LitElement {
   }
 
   private async onClose() {
-    if (OptionsController.state.isSiweEnabled) {
+    if (OptionsController.state.isSiweEnabled && ChainController.state.activeChain === 'evm') {
       const { SIWEController } = await import('@web3modal/siwe')
       if (SIWEController.state.status !== 'success') {
         await ConnectionController.disconnect()

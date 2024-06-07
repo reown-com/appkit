@@ -13,8 +13,9 @@ export type { AccountControllerState } from './src/controllers/AccountController
 
 export { ChainController } from './src/controllers/ChainController.js'
 export type {
-  ChainControllerClient,
-  ChainControllerState
+  ChainControllerState,
+  Chain,
+  ChainOptions
 } from './src/controllers/ChainController.js'
 
 export { NetworkController } from './src/controllers/NetworkController.js'

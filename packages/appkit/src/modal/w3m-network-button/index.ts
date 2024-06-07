@@ -3,7 +3,7 @@ import {
   AssetUtil,
   EventsController,
   ModalController,
-  ChainController
+  NetworkController
 } from '@web3modal/core'
 import type { WuiNetworkButton } from '@web3modal/ui'
 import { customElement } from '@web3modal/ui'
@@ -22,23 +22,23 @@ export class W3mNetworkButton extends LitElement {
   // -- State & Properties -------------------------------- //
   @property({ type: Boolean }) public disabled?: WuiNetworkButton['disabled'] = false
 
-  @state() private network = ChainController.activeNetwork()
+  @state() private network = NetworkController.activeNetwork(true)
 
   @state() private connected = AccountController.state.isConnected
 
   @state() private loading = ModalController.state.loading
 
-  @state() private isUnsupportedChain = ChainController.state.isUnsupportedChain
+  @state() private isUnsupportedChain = NetworkController.state.isUnsupportedChain
 
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
     this.unsubscribe.push(
       ...[
-        ChainController.subscribe(() => (this.network = ChainController.activeNetwork())),
+        NetworkController.subscribe(() => (this.network = NetworkController.activeNetwork(true))),
         AccountController.subscribeKey('isConnected', val => (this.connected = val)),
         ModalController.subscribeKey('loading', val => (this.loading = val)),
-        ChainController.subscribeKey('isUnsupportedChain', val => (this.isUnsupportedChain = val))
+        NetworkController.subscribeKey('isUnsupportedChain', val => (this.isUnsupportedChain = val))
       ]
     )
   }

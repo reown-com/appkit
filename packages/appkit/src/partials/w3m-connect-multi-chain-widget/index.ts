@@ -5,8 +5,8 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-@customElement('w3m-connect-announced-widget')
-export class W3mConnectAnnouncedWidget extends LitElement {
+@customElement('w3m-connect-multi-chain-widget')
+export class W3mConnectMultiChainWidget extends LitElement {
   // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
 
@@ -26,11 +26,32 @@ export class W3mConnectAnnouncedWidget extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const announcedConnectors = this.connectors
-      .filter(connector => connector.type === 'ANNOUNCED')
-      .filter(connector => connector.name !== 'Phantom')
+    const uniqueConnectorsMap: Record<string, Connector[]> = {}
+    const multiChainConnectors: Partial<Connector>[] = []
 
-    if (!announcedConnectors?.length) {
+    this.connectors.forEach(connector => {
+      const name = connector.name ?? 'Unknown'
+      if (uniqueConnectorsMap[name]) {
+        uniqueConnectorsMap[name]?.push(connector)
+      } else {
+        uniqueConnectorsMap[name] = [connector]
+      }
+    })
+
+    Object.keys(uniqueConnectorsMap).forEach(key => {
+      const connectors = uniqueConnectorsMap[key]
+      if (connectors && connectors.length > 1) {
+        if (key === 'Phantom') {
+          multiChainConnectors.push({
+            name: key,
+            imageUrl: connectors[0]?.imageUrl || connectors[1]?.imageUrl,
+            imageId: connectors[0]?.imageId || connectors[1]?.imageId
+          })
+        }
+      }
+    })
+
+    if (!multiChainConnectors?.length) {
       this.style.cssText = `display: none`
 
       return null
@@ -40,14 +61,14 @@ export class W3mConnectAnnouncedWidget extends LitElement {
 
     return html`
       <wui-flex flexDirection="column" gap="xs">
-        ${announcedConnectors.map(
+        ${multiChainConnectors.map(
           connector => html`
             <wui-list-wallet
               imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
               name=${connector.name ?? 'Unknown'}
-              @click=${() => this.onConnector(connector)}
-              tagVariant="success"
-              tagLabel="installed"
+              @click=${() => this.onMultiChainConnector('Phantom')}
+              tagVariant="shade"
+              tagLabel="multi-chain"
               data-testid=${`wallet-selector-${connector.id}`}
               .installed=${true}
             >
@@ -59,21 +80,13 @@ export class W3mConnectAnnouncedWidget extends LitElement {
   }
 
   // -- Private Methods ----------------------------------- //
-  private onConnector(connector: Connector) {
-    if (connector.type === 'WALLET_CONNECT') {
-      if (CoreHelperUtil.isMobile()) {
-        RouterController.push('AllWallets')
-      } else {
-        RouterController.push('ConnectingWalletConnect')
-      }
-    } else {
-      RouterController.push('ConnectingExternal', { connector })
-    }
+  private onMultiChainConnector(connectorName: string) {
+    RouterController.push('SelectChain', { chainSelectConnectorName: connectorName })
   }
 }
 
 declare global {
   interface HTMLElementTagNameMap {
-    'w3m-connect-announced-widget': W3mConnectAnnouncedWidget
+    'w3m-connect-multi-chain-widget': W3mConnectMultiChainWidget
   }
 }

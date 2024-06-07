@@ -1,6 +1,7 @@
 import {
   AccountController,
   ApiController,
+  ChainController,
   ConnectionController,
   CoreHelperUtil,
   EventsController,
@@ -85,7 +86,7 @@ export class W3mModal extends LitElement {
   }
 
   private async handleClose() {
-    if (this.isSiweEnabled) {
+    if (this.isSiweEnabled && ChainController.state.activeChain === 'evm') {
       const { SIWEController } = await import('@web3modal/siwe')
 
       if (SIWEController.state.status !== 'success') {

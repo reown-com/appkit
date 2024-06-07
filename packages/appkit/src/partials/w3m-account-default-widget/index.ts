@@ -2,7 +2,7 @@ import {
   AccountController,
   CoreHelperUtil,
   ModalController,
-  ChainController,
+  NetworkController,
   RouterController,
   AssetUtil,
   StorageUtil,
@@ -11,7 +11,8 @@ import {
   ConnectionController,
   SnackController,
   ConstantsUtil,
-  OptionsController
+  OptionsController,
+  ChainController
 } from '@web3modal/core'
 import { UiHelperUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -33,7 +34,7 @@ export class W3mAccountDefaultWidget extends LitElement {
 
   @state() private profileName = AccountController.state.profileName
 
-  @state() private network = ChainController.activeNetwork()
+  @state() private network = NetworkController.activeNetwork(true)
 
   @state() private disconnecting = false
 
@@ -57,9 +58,9 @@ export class W3mAccountDefaultWidget extends LitElement {
           }
         })
       ],
-      ChainController.subscribeKey(
-        'networks',
-        () => (this.network = ChainController.activeNetwork())
+      NetworkController.subscribeKey(
+        'caipNetwork',
+        () => (this.network = NetworkController.activeNetwork(true))
       )
     )
   }
@@ -218,11 +219,10 @@ export class W3mAccountDefaultWidget extends LitElement {
   }
 
   private isAllowedNetworkSwitch() {
-    if (!ChainController.state.activeProtocol) {
+    if (!ChainController.state.activeChain) {
       return false
     }
-    const { requestedCaipNetworks } =
-      ChainController.state.networks[ChainController.state.activeProtocol]
+    const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks(true)
     const isMultiNetwork = requestedCaipNetworks ? requestedCaipNetworks.length > 1 : false
     const isValidNetwork = requestedCaipNetworks?.find(({ id }) => id === this.network?.id)
 
@@ -255,7 +255,7 @@ export class W3mAccountDefaultWidget extends LitElement {
   private async onDisconnect() {
     try {
       this.disconnecting = true
-      await ConnectionController.disconnect()
+      await ConnectionController.disconnect(ChainController.state.activeChain)
       EventsController.sendEvent({ type: 'track', event: 'DISCONNECT_SUCCESS' })
       ModalController.close()
     } catch {

@@ -21,7 +21,11 @@ import type { OptionsControllerState } from '@web3modal/core'
 import { mainnet } from 'viem/chains'
 import { prepareTransactionRequest, sendTransaction as wagmiSendTransaction } from '@wagmi/core'
 import type { Chain } from '@wagmi/core/chains'
-import type { GetAccountReturnType, GetEnsAddressReturnType } from '@wagmi/core'
+import type {
+  GetAccountReturnType,
+  GetConnectorsReturnType,
+  GetEnsAddressReturnType
+} from '@wagmi/core'
 import type {
   CaipAddress,
   CaipNetwork,
@@ -77,7 +81,7 @@ export class EVMWagmiClient {
 
   private wagmiConfig: Web3ModalClientOptions<CoreConfig>['wagmiConfig']
 
-  public protocol: 'evm' | 'solana' | 'bitcoin'
+  public protocol: 'evm' | 'solana'
 
   public networkControllerClient: NetworkControllerClient
 
@@ -383,11 +387,21 @@ export class EVMWagmiClient {
     }
     // #endregion
 
+    // Wagmi listeners
     watchConnectors(this.wagmiConfig, {
-      onChange: connectors => this.syncConnectors(connectors)
+      onChange: connectors => {
+        this.syncConnectors([
+          ...connectors.map(c => ({
+            ...c,
+            chain: this.protocol
+          }))
+        ])
+      }
     })
     watchAccount(this.wagmiConfig, {
-      onChange: accountData => this.syncAccount({ ...accountData })
+      onChange: accountData => {
+        this.syncAccount(accountData)
+      }
     })
   }
 
@@ -397,11 +411,9 @@ export class EVMWagmiClient {
     }
     this.scaffold = scaffold
     this.options = options
-  }
 
-  public initialize() {
     this.syncRequestedNetworks([...this.wagmiConfig.chains])
-    this.syncConnectors([...this.wagmiConfig.connectors])
+    this.syncConnectors([...this.wagmiConfig.connectors.map(c => ({ ...c, chain: this.protocol }))])
     this.initAuthConnectorListeners([...this.wagmiConfig.connectors])
   }
 
@@ -451,7 +463,7 @@ export class EVMWagmiClient {
         this.syncProfile(address, chainId),
         this.syncBalance(address, chainId),
         this.syncConnectedWalletInfo(connector),
-        this.scaffold?.getApprovedCaipNetworksData()
+        this.scaffold?.setApprovedCaipNetworksData(this.protocol)
       ])
       this.hasSyncedConnectedAccount = true
     } else if (!isConnected && this.hasSyncedConnectedAccount) {
@@ -617,7 +629,8 @@ export class EVMWagmiClient {
           type: PresetsUtil.ConnectorTypesMap[type] ?? 'EXTERNAL',
           info: {
             rdns: id
-          }
+          },
+          chain: this.protocol
         })
       }
     })
@@ -748,7 +761,7 @@ export class EVMWagmiClient {
       })
 
       provider.onGetSmartAccountEnabledNetworks(networks => {
-        this.scaffold?.setSmartAccountEnabledNetworks(networks)
+        this.scaffold?.setSmartAccountEnabledNetworks(networks, this.protocol)
       })
 
       provider.onSetPreferredAccount(({ address, type }) => {

@@ -1,8 +1,9 @@
 import {
   AccountController,
   AssetUtil,
-  CoreHelperUtil,
   ChainController,
+  CoreHelperUtil,
+  NetworkController,
   RouterController,
   SnackController,
   ThemeController
@@ -25,7 +26,7 @@ export class W3mWalletReceiveView extends LitElement {
 
   @state() private profileName = AccountController.state.profileName
 
-  @state() private network = ChainController.activeNetwork()
+  @state() private network = NetworkController.activeNetwork(true)
 
   @state() private preferredAccountType = AccountController.state.preferredAccountType
 
@@ -43,8 +44,8 @@ export class W3mWalletReceiveView extends LitElement {
           }
         })
       ],
-      ChainController.subscribe(() => {
-        const caipNetwork = ChainController.activeNetwork()
+      NetworkController.subscribe(() => {
+        const caipNetwork = NetworkController.activeNetwork(true)
         if (caipNetwork?.id) {
           this.network = caipNetwork
         }
@@ -105,12 +106,12 @@ export class W3mWalletReceiveView extends LitElement {
 
   // -- Private ------------------------------------------- //
   networkTemplate() {
-    if (!ChainController.state.activeProtocol) {
+    if (!ChainController.state.activeChain) {
       return null
     }
-    const networks = ChainController.getRequestedCaipNetworks(ChainController.state.activeProtocol)
-    const isNetworkEnabledForSmartAccounts = ChainController.checkIfSmartAccountEnabled()
-    const caipNetwork = ChainController.activeNetwork()
+    const networks = NetworkController.getRequestedCaipNetworks(true)
+    const isNetworkEnabledForSmartAccounts = NetworkController.checkIfSmartAccountEnabled()
+    const caipNetwork = NetworkController.activeNetwork(true)
 
     if (
       this.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT &&

@@ -56,7 +56,7 @@ describe('NetworkController', () => {
   })
 
   it('should update state correctly on getApprovedCaipNetworkIds()', async () => {
-    await NetworkController.getApprovedCaipNetworksData()
+    await NetworkController.setApprovedCaipNetworksData()
     // expect(NetworkController.state.approvedCaipNetworkIds).toEqual(approvedCaipNetworkIds)
   })
 

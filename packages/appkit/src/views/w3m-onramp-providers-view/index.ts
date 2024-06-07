@@ -5,7 +5,7 @@ import {
   OnRampController,
   type OnRampProvider,
   RouterController,
-  ChainController,
+  NetworkController,
   BlockchainApiController
 } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
@@ -82,7 +82,7 @@ export class W3mOnRampProvidersView extends LitElement {
 
   private async getCoinbaseOnRampURL() {
     const address = AccountController.state.address
-    const network = ChainController.activeNetwork()
+    const network = NetworkController.activeNetwork(true)
 
     if (!address) {
       throw new Error('No address found')

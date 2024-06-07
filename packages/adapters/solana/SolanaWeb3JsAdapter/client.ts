@@ -1,8 +1,8 @@
 import { Connection } from '@solana/web3.js'
-import { Web3ModalScaffold } from '@web3modal/scaffold'
 import {
   ApiController,
   AssetController,
+  ChainController,
   CoreHelperUtil,
   EventsController,
   NetworkController,
@@ -30,6 +30,7 @@ import type {
 
 import type { AdapterKey } from './connectors/walletAdapters.js'
 import type { ProviderType, Chain, Provider, SolStoreUtilState } from './utils/scaffold/index.js'
+import type { Appkit } from '@web3modal/appkit'
 
 export interface Web3ModalClientOptions {
   solanaConfig: ProviderType
@@ -55,9 +56,10 @@ export class SolanaWeb3JsClient {
 
   public connectionControllerClient: ConnectionControllerClient
 
-  private scaffold: Web3ModalScaffold | undefined = undefined
+  private scaffold: Appkit | undefined = undefined
 
-  public protocol: 'evm' | 'solana' | 'bitcoin'
+  // TODO(enes): Get the types from common or appkit
+  public protocol: 'evm' | 'solana'
 
   public options: OptionsControllerState | undefined = undefined
 
@@ -206,12 +208,13 @@ export class SolanaWeb3JsClient {
       this.syncNetwork(chainImages)
     })
 
-    NetworkController.subscribe(() => {
+    // INFO(enes): This is a workaround to sync the network when the chain is changed.
+    ChainController.subscribe(() => {
       const caipNetwork = NetworkController.activeNetwork()
       if (
         caipNetwork &&
         !SolStoreUtil.state.isConnected &&
-        NetworkController.state.activeProtocol === 'solana'
+        ChainController.state.activeChain === 'solana'
       ) {
         SolStoreUtil.setCaipChainId(`solana:${chain.chainId}`)
         SolStoreUtil.setCurrentChain(chain)
@@ -235,16 +238,23 @@ export class SolanaWeb3JsClient {
     })
   }
 
-  public construct(scaffold: Web3ModalScaffold, options: OptionsControllerState) {
+  public construct(scaffold: Appkit, options: OptionsControllerState) {
     if (!options.projectId) {
       throw new Error('web3modal:initialize - projectId is undefined')
     }
     this.scaffold = scaffold
     this.options = options
+
+    this.syncRequestedNetworks(this.chains, this.options?.chainImages)
+    this.syncNetwork(this.options?.chainImages)
+
+    if (typeof window === 'object') {
+      this.checkActiveProviders()
+      this.syncConnectors()
+    }
   }
 
   public initialize() {
-    this.syncRequestedNetworks(this.chains, this.options?.chainImages)
     this.syncNetwork(this.options?.chainImages)
 
     if (typeof window === 'object') {
@@ -324,7 +334,8 @@ export class SolanaWeb3JsClient {
         type: connectorType,
         imageUrl: 'https://avatars.githubusercontent.com/u/37784886',
         name: this.WalletConnectConnector.name,
-        provider: this.WalletConnectConnector.getProvider()
+        provider: this.WalletConnectConnector.getProvider(),
+        chain: this.protocol
       })
     }
 
@@ -479,7 +490,10 @@ export class SolanaWeb3JsClient {
       SolConstantsUtil.WALLET_ID,
       ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID
     )
-    await Promise.all([this.syncBalance(address), this.scaffold?.getApprovedCaipNetworksData()])
+    await Promise.all([
+      this.syncBalance(address),
+      this.scaffold?.setApprovedCaipNetworksData(this.protocol)
+    ])
   }
 
   private setInjectedProvider(provider: Provider, adapter: AdapterKey, address = '') {

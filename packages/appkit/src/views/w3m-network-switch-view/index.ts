@@ -1,7 +1,7 @@
 import {
   AssetUtil,
   ConnectorController,
-  ChainController,
+  NetworkController,
   OptionsController,
   RouterController,
   RouterUtil,
@@ -133,7 +133,7 @@ export class W3mNetworkSwitchView extends LitElement {
     try {
       this.error = false
       if (this.network) {
-        await ChainController.switchActiveNetwork(this.network)
+        await NetworkController.switchActiveNetwork(this.network)
         if (!OptionsController.state.isSiweEnabled) {
           RouterUtil.navigateAfterNetworkSwitch()
         }

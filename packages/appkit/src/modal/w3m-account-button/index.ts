@@ -3,7 +3,7 @@ import {
   AssetUtil,
   CoreHelperUtil,
   ModalController,
-  ChainController
+  NetworkController
 } from '@web3modal/core'
 
 import type { WuiAccountButton } from '@web3modal/ui'
@@ -36,9 +36,9 @@ export class W3mAccountButton extends LitElement {
 
   @state() private profileImage = AccountController.state.profileImage
 
-  @state() private network = ChainController.activeNetwork()
+  @state() private network = NetworkController.activeNetwork(true)
 
-  @state() private isUnsupportedChain = ChainController.state.isUnsupportedChain
+  @state() private isUnsupportedChain = NetworkController.state.isUnsupportedChain
 
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
@@ -60,8 +60,8 @@ export class W3mAccountButton extends LitElement {
             this.balanceSymbol = ''
           }
         }),
-        ChainController.subscribe(val => {
-          this.network = ChainController.activeNetwork()
+        NetworkController.subscribe(val => {
+          this.network = NetworkController.activeNetwork(true)
           this.isUnsupportedChain = val.isUnsupportedChain
         })
       ]

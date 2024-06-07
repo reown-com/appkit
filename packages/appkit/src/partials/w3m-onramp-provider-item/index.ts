@@ -1,6 +1,6 @@
 import { html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
-import { AssetUtil, ChainController, type OnRampProvider } from '@web3modal/core'
+import { AssetUtil, ChainController, NetworkController, type OnRampProvider } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import type { ColorType } from '@web3modal/ui'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -53,10 +53,10 @@ export class W3mOnRampProviderItem extends LitElement {
 
   // -- Private ------------------------------------------- //
   private networksTemplate() {
-    if (!ChainController.state.activeProtocol) {
+    if (!ChainController.state.activeChain) {
       return null
     }
-    const networks = ChainController.getRequestedCaipNetworks(ChainController.state.activeProtocol)
+    const networks = NetworkController.getRequestedCaipNetworks(true)
     const slicedNetworks = networks?.filter(network => network?.imageId)?.slice(0, 5)
 
     return html`

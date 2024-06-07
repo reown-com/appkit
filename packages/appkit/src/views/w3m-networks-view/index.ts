@@ -1,10 +1,11 @@
-import type { CaipNetwork } from '@web3modal/core'
+import type { CaipNetwork, Chain } from '@web3modal/core'
 import {
   AccountController,
   AssetUtil,
+  ChainController,
   CoreHelperUtil,
   EventsController,
-  ChainController,
+  NetworkController,
   RouterController,
   RouterUtil
 } from '@web3modal/core'
@@ -21,14 +22,14 @@ export class W3mNetworksView extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() public caipNetwork = ChainController.activeNetwork()
+  @state() public caipNetwork = NetworkController.activeNetwork(true)
 
   public constructor() {
     super()
     this.unsubscribe.push(
-      ChainController.subscribeKey(
-        'networks',
-        () => (this.caipNetwork = ChainController.activeNetwork())
+      NetworkController.subscribeKey(
+        'caipNetwork',
+        () => (this.caipNetwork = NetworkController.activeNetwork(true))
       )
     )
   }
@@ -65,11 +66,16 @@ export class W3mNetworksView extends LitElement {
   }
 
   private networksTemplate() {
-    const { supportsAllNetworks, networks, activeProtocol } = ChainController.state
-    if (!activeProtocol) {
-      return null
-    }
-    const { approvedCaipNetworkIds, requestedCaipNetworks } = networks[activeProtocol]
+    const supportsAllNetworks = NetworkController.getSupportsAllNetworks()
+    const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks(true)
+    const approvedCaipNetworkIds = NetworkController.getApprovedCaipNetworkIds(
+      ChainController.state.activeChain
+    )
+    console.log(
+      '>>> [W3mNetworksView] networksTemplate: ',
+      requestedCaipNetworks,
+      approvedCaipNetworkIds
+    )
 
     const sortedNetworks = CoreHelperUtil.sortRequestedNetworks(
       approvedCaipNetworkIds,
@@ -83,7 +89,7 @@ export class W3mNetworksView extends LitElement {
           imageSrc=${ifDefined(AssetUtil.getNetworkImage(network))}
           type="network"
           name=${network.name ?? network.id}
-          @click=${() => this.onSwitchNetwork(network)}
+          @click=${() => this.onSwitchNetwork(network, 'evm')}
           .disabled=${!supportsAllNetworks && !approvedCaipNetworkIds?.includes(network.id)}
           data-testid=${`w3m-network-switch-${network.name ?? network.id}`}
         ></wui-card-select>
@@ -91,23 +97,29 @@ export class W3mNetworksView extends LitElement {
     )
   }
 
-  private async onSwitchNetwork(network: CaipNetwork) {
+  private async onSwitchNetwork(network: CaipNetwork, chain?: Chain) {
     const { isConnected } = AccountController.state
-    const { networks, activeProtocol, supportsAllNetworks } = ChainController.state
-    if (!activeProtocol) {
-      return
-    }
-    const { approvedCaipNetworkIds, caipNetwork } = networks[activeProtocol]
+    const caipNetwork = NetworkController.activeNetwork(true)
+    const supportsAllNetworks = NetworkController.getSupportsAllNetworks(true)
+    const approvedCaipNetworkIds = NetworkController.getApprovedCaipNetworkIds(chain)
+
+    console.log('>>> [onSwitchNetwork]', approvedCaipNetworkIds, supportsAllNetworks)
+
     const { data } = RouterController.state
+
     if (isConnected && caipNetwork?.id !== network.id) {
+      console.log('>>> [onSwitchNetwork] 1')
       if (approvedCaipNetworkIds?.includes(network.id)) {
-        await ChainController.switchActiveNetwork(network)
+        await NetworkController.switchActiveNetwork(network)
         RouterUtil.navigateAfterNetworkSwitch()
+        console.log('>>> [onSwitchNetwork] 2')
       } else if (supportsAllNetworks) {
+        console.log('>>> [onSwitchNetwork] 3')
         RouterController.push('SwitchNetwork', { ...data, network })
       }
     } else if (!isConnected) {
-      ChainController.setCaipNetwork(network, activeProtocol)
+      console.log('>>> [onSwitchNetwork] 4', ChainController.state.activeChain)
+      NetworkController.setCaipNetwork(network, network.id.includes('solana') ? 'solana' : 'evm')
       RouterController.push('Connect')
     }
   }

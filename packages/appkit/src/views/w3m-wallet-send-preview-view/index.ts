@@ -2,7 +2,7 @@ import { UiHelperUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
 import { state } from 'lit/decorators.js'
-import { ChainController, RouterController, SendController } from '@web3modal/core'
+import { NetworkController, RouterController, SendController } from '@web3modal/core'
 
 @customElement('w3m-wallet-send-preview-view')
 export class W3mWalletSendPreviewView extends LitElement {
@@ -24,7 +24,7 @@ export class W3mWalletSendPreviewView extends LitElement {
 
   @state() private gasPriceInUSD = SendController.state.gasPriceInUSD
 
-  @state() private caipNetwork = ChainController.activeNetwork()
+  @state() private caipNetwork = NetworkController.activeNetwork(true)
 
   public constructor() {
     super()
@@ -38,9 +38,9 @@ export class W3mWalletSendPreviewView extends LitElement {
           this.receiverProfileName = val.receiverProfileName
           this.receiverProfileImageUrl = val.receiverProfileImageUrl
         }),
-        ChainController.subscribeKey(
-          'networks',
-          () => (this.caipNetwork = ChainController.activeNetwork())
+        NetworkController.subscribeKey(
+          'caipNetwork',
+          () => (this.caipNetwork = NetworkController.activeNetwork(true))
         )
       ]
     )

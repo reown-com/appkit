@@ -31,7 +31,8 @@ export function syncInjectedWallets(
         type: 'ANNOUNCED',
         imageUrl: adapters[wallet].icon,
         name: adapters[wallet].name,
-        provider: adapters[wallet]
+        provider: adapters[wallet],
+        chain: 'solana'
       })
     }
   })

@@ -6,7 +6,7 @@ import {
   SwapController,
   RouterController,
   CoreHelperUtil,
-  ChainController,
+  NetworkController,
   ModalController,
   ConstantsUtil,
   type SwapToken,
@@ -25,7 +25,7 @@ export class W3mSwapView extends LitElement {
 
   @state() private detailsOpen = false
 
-  @state() private caipNetworkId = ChainController.activeNetwork()?.id
+  @state() private caipNetworkId = NetworkController.activeNetwork(true)?.id
 
   @state() private initialized = SwapController.state.initialized
 
@@ -56,8 +56,8 @@ export class W3mSwapView extends LitElement {
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
-    ChainController.subscribe(() => {
-      const newCaipNetwork = ChainController.activeNetwork()
+    NetworkController.subscribe(() => {
+      const newCaipNetwork = NetworkController.activeNetwork(true)
       if (this.caipNetworkId !== newCaipNetwork?.id) {
         this.caipNetworkId = newCaipNetwork?.id
         SwapController.resetState()

@@ -613,7 +613,7 @@ export interface WriteContractArgs {
 }
 
 export interface AdapterCore {
-  protocol: 'evm' | 'solana' | 'bitcoin'
+  protocol: 'evm' | 'solana'
   networkControllerClient: NetworkControllerClient
   connectionControllerClient: ConnectionControllerClient
   construct(scaffold: any, options: OptionsControllerState): void

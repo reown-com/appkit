@@ -1,6 +1,7 @@
 import type { BaseError, Platform } from '@web3modal/core'
 import {
   AssetUtil,
+  ChainController,
   ConnectionController,
   ConnectorController,
   ConstantsUtil,
@@ -24,6 +25,8 @@ export class W3mConnectingWcView extends LitElement {
   private lastRetry = Date.now()
 
   private wallet = RouterController.state.data?.wallet
+
+  protected readonly chainToConnect = RouterController.state.data?.chainToConnect
 
   // -- State & Properties -------------------------------- //
   @state() private platform?: Platform = undefined
@@ -59,7 +62,8 @@ export class W3mConnectingWcView extends LitElement {
     try {
       const { wcPairingExpiry } = ConnectionController.state
       if (retry || CoreHelperUtil.isPairingExpired(wcPairingExpiry)) {
-        ConnectionController.connectWalletConnect()
+        console.log('>>> initializeConnection', this.chainToConnect)
+        ConnectionController.connectWalletConnect(this.chainToConnect)
         if (this.wallet) {
           const url = AssetUtil.getWalletImage(this.wallet)
           if (url) {
@@ -69,6 +73,7 @@ export class W3mConnectingWcView extends LitElement {
           const connectors = ConnectorController.state.connectors
           const connector = connectors.find(c => c.type === 'WALLET_CONNECT')
           const url = AssetUtil.getConnectorImage(connector)
+          console.log('>>> initializeConnection url', url)
           if (url) {
             StorageUtil.setConnectedWalletImageUrl(url)
           }
@@ -76,11 +81,16 @@ export class W3mConnectingWcView extends LitElement {
 
         await ConnectionController.state.wcPromise
         this.finalizeConnection()
-        if (OptionsController.state.isSiweEnabled) {
+        if (OptionsController.state.isSiweEnabled && ChainController.state.activeChain === 'evm') {
           const { SIWEController } = await import('@web3modal/siwe')
           if (SIWEController.state.status === 'success') {
             ModalController.close()
           } else {
+            console.log(
+              '>>> SIWEController.state.status',
+              SIWEController.state.status,
+              ChainController.state.activeChain
+            )
             RouterController.push('ConnectingSiwe')
           }
         } else {

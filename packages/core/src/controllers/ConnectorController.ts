@@ -25,8 +25,12 @@ export const ConnectorController = {
     return subKey(state, key, callback)
   },
 
-  setConnectors(connectors: ConnectorControllerState['connectors']) {
-    state.connectors = connectors.map(c => ref(c))
+  setConnectors(connectors: ConnectorControllerState['connectors'], multiChain?: boolean) {
+    if (multiChain) {
+      state.connectors = [...state.connectors, ...connectors.map(c => ref(c))]
+    } else {
+      state.connectors = connectors.map(c => ref(c))
+    }
   },
 
   addConnector(connector: Connector | AuthConnector) {

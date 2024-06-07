@@ -417,7 +417,7 @@ export class Web3Modal extends Web3ModalScaffold {
         this.syncProfile(address, chainId),
         this.syncBalance(address, chainId),
         this.syncConnectedWalletInfo(connector),
-        this.getApprovedCaipNetworksData()
+        this.setApprovedCaipNetworksData()
       ])
       this.hasSyncedConnectedAccount = true
     } else if (!isConnected && this.hasSyncedConnectedAccount) {

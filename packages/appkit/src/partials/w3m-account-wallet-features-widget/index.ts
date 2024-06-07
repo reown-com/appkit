@@ -1,7 +1,7 @@
 import {
   AccountController,
   ModalController,
-  ChainController,
+  NetworkController,
   AssetUtil,
   RouterController,
   CoreHelperUtil,
@@ -37,7 +37,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
   @state() private smartAccountDeployed = AccountController.state.smartAccountDeployed
 
-  @state() private network = ChainController.activeNetwork()
+  @state() private network = NetworkController.activeNetwork(true)
 
   @state() private currentTab = AccountController.state.currentTab
 
@@ -63,8 +63,8 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
           }
         })
       ],
-      ChainController.subscribe(() => {
-        this.network = ChainController.activeNetwork()
+      NetworkController.subscribe(() => {
+        this.network = NetworkController.activeNetwork(true)
       })
     )
     this.watchSwapValues()
@@ -163,7 +163,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   private activateAccountTemplate() {
-    const smartAccountEnabled = ChainController.checkIfSmartAccountEnabled()
+    const smartAccountEnabled = NetworkController.checkIfSmartAccountEnabled()
 
     if (
       !smartAccountEnabled ||

@@ -2,9 +2,9 @@ import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
 import {
+  ChainController,
   ConnectorController,
   CoreHelperUtil,
-  ChainController,
   RouterController
 } from '@web3modal/core'
 import { state } from 'lit/decorators/state.js'
@@ -26,17 +26,14 @@ export class W3mConnectView extends LitElement {
 
   @state() private currentTab = 0
 
-  @state() private protocolTabs = Object.keys(ChainController.state.networks).map(item => ({
-    icon: 'ethereum',
-    label: item
-  }))
+  @state() private chainTabs = ['evm', 'solana']
 
   public constructor() {
     super()
     this.unsubscribe.push(
       ConnectorController.subscribeKey('connectors', val => (this.connectors = val)),
-      ChainController.subscribeKey('activeProtocol', val => {
-        this.currentTab = this.protocolTabs.findIndex(tab => tab.label === val)
+      ChainController.subscribeKey('activeChain', val => {
+        this.currentTab = this.chainTabs.findIndex(tab => tab === val)
       })
     )
   }
@@ -46,8 +43,8 @@ export class W3mConnectView extends LitElement {
   }
 
   public override firstUpdated() {
-    const protocol = ChainController.state.activeProtocol
-    const index = this.protocolTabs.findIndex(tab => tab.label === protocol)
+    const protocol = ChainController.state.activeChain
+    const index = this.chainTabs.findIndex(tab => tab === protocol)
     this.currentTab = index
   }
 
@@ -55,15 +52,6 @@ export class W3mConnectView extends LitElement {
   public override render() {
     return html`
       <wui-flex flexDirection="column" .padding=${['3xs', 's', 's', 's']}>
-        <wui-tabs
-          style="min-height:36px;"
-          .onTabChange=${this.onProtocolChange.bind(this)}
-          .activeTab=${this.currentTab}
-          localTabWidth=${CoreHelperUtil.isMobile() && window.innerWidth < MODAL_MOBILE_VIEW_PX
-            ? `${(window.innerWidth - TABS_PADDING) / TABS}px`
-            : '104px'}
-          .tabs=${this.protocolTabs}
-        ></wui-tabs>
         <w3m-email-login-widget></w3m-email-login-widget>
         <w3m-social-login-widget></w3m-social-login-widget>
         ${this.walletListTemplate()}
@@ -74,8 +62,8 @@ export class W3mConnectView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private onProtocolChange(value: number) {
-    const protocol = this.protocolTabs[value]?.label || 'evm'
-    const newAdapter = ChainController.state.adaptersV2?.find(a => a.protocol === protocol)
+    const chain = this.chainTabs[value] || 'evm'
+    const newAdapter = ChainController.state.adapters?.find(a => a.chain === chain)
 
     if (newAdapter) {
       this.currentTab = value

@@ -2,6 +2,7 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy } from 'valtio/vanilla'
 import type { CaipNetwork, Connector, WcWallet } from '../utils/TypeUtil.js'
 import type { SwapInputTarget } from './SwapController.js'
+import type { Chain } from './ChainController.js'
 
 // -- Types --------------------------------------------- //
 type TransactionAction = {
@@ -57,6 +58,7 @@ export interface RouterControllerState {
     | 'Swap'
     | 'SwapSelectToken'
     | 'SwapPreview'
+    | 'SelectChain'
   history: RouterControllerState['view'][]
   data?: {
     connector?: Connector
@@ -66,6 +68,9 @@ export interface RouterControllerState {
     newEmail?: string
     target?: SwapInputTarget
     swapUnsupportedChain?: boolean
+    connectors?: Connector[]
+    chainSelectConnectorName?: string
+    chainToConnect?: Chain
   }
   transactionStack: TransactionAction[]
 }

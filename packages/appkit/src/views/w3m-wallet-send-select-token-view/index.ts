@@ -4,7 +4,7 @@ import styles from './styles.js'
 import {
   AccountController,
   CoreHelperUtil,
-  ChainController,
+  NetworkController,
   RouterController,
   SendController
 } from '@web3modal/core'
@@ -71,7 +71,7 @@ export class W3mSendSelectTokenView extends LitElement {
 
   private templateTokens() {
     this.tokens = this.tokenBalance?.filter(
-      token => token.chainId === ChainController.activeNetwork()?.id
+      token => token.chainId === NetworkController.activeNetwork(true)?.id
     )
     if (this.search) {
       this.filteredTokens = this.tokenBalance?.filter(token =>

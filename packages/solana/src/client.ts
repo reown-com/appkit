@@ -484,7 +484,7 @@ export class Web3Modal extends Web3ModalScaffold {
       SolConstantsUtil.WALLET_ID,
       ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID
     )
-    await Promise.all([this.syncBalance(address), this.getApprovedCaipNetworksData()])
+    await Promise.all([this.syncBalance(address), this.setApprovedCaipNetworksData()])
   }
 
   private setInjectedProvider(provider: Provider, adapter: AdapterKey, address = '') {

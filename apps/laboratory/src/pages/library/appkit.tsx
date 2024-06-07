@@ -13,6 +13,10 @@ import {
 
 import { mainnet, sepolia } from 'wagmi/chains'
 import { solana, solanaDevnet, solanaTestnet } from '../../utils/ChainsUtil'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { WagmiProvider } from 'wagmi'
+
+const queryClient = new QueryClient()
 
 // Evm
 const wagmiConfig = defaultWagmiConfig({
@@ -53,10 +57,14 @@ const modal = createAppkit({
 
 ThemeStore.setModal(modal)
 
-export default function Ethers() {
+export default function Appkit() {
   return (
     <>
-      <Web3ModalButtons />
+      <WagmiProvider config={wagmiConfig}>
+        <QueryClientProvider client={queryClient}>
+          <Web3ModalButtons />
+        </QueryClientProvider>
+      </WagmiProvider>
     </>
   )
 }
