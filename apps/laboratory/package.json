@@ -43,16 +43,16 @@
     "@web3modal/siwe": "4.2.3",
     "@web3modal/solana": "4.2.3",
     "@web3modal/wagmi": "4.2.3",
-    "ethers": "6.9.0",
+    "ethers": "6.13.0",
     "framer-motion": "10.17.9",
     "next": "14.2.3",
     "next-auth": "4.24.5",
     "react-icons": "4.12.0",
-    "@walletconnect/utils": "2.12.0",
+    "@walletconnect/utils": "2.13.1",
     "valtio": "1.11.2",
     "viem": "2.10.3",
-    "wagmi": "2.9.4",
-    "@wagmi/connectors": "5.0.3"
+    "wagmi": "2.9.9",
+    "@wagmi/connectors": "5.0.8"
   },
   "devDependencies": {
     "@aws-sdk/client-cloudwatch": "3.509.0",
