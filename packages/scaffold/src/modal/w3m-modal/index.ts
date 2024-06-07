@@ -120,7 +120,7 @@ export class W3mModal extends LitElement {
     const styleTag = document.createElement('style')
     styleTag.dataset['w3m'] = SCROLL_LOCK
     styleTag.textContent = `
-      html, body {
+      body {
         touch-action: none;
         overflow: hidden;
         overscroll-behavior: contain;
