@@ -1,5 +1,5 @@
 import type { Connector } from '@web3modal/core'
-import { AssetUtil, ConnectorController, CoreHelperUtil, RouterController } from '@web3modal/core'
+import { AssetUtil, ConnectorController, RouterController } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
@@ -29,6 +29,7 @@ export class W3mConnectMultiChainWidget extends LitElement {
     const uniqueConnectorsMap: Record<string, Connector[]> = {}
     const multiChainConnectors: Partial<Connector>[] = []
 
+    console.log('>>> w3m-connect-multi-chain-widget', this.connectors)
     this.connectors.forEach(connector => {
       const name = connector.name ?? 'Unknown'
       if (uniqueConnectorsMap[name]) {
@@ -64,7 +65,7 @@ export class W3mConnectMultiChainWidget extends LitElement {
         ${multiChainConnectors.map(
           connector => html`
             <wui-list-wallet
-              imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
+              imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector as Connector))}
               name=${connector.name ?? 'Unknown'}
               @click=${() => this.onMultiChainConnector('Phantom')}
               tagVariant="shade"

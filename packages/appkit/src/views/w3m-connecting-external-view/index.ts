@@ -3,7 +3,6 @@ import {
   ConnectionController,
   EventsController,
   ModalController,
-  OptionsController,
   RouterController,
   StorageUtil
 } from '@web3modal/core'

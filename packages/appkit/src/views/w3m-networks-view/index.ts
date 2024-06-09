@@ -22,14 +22,14 @@ export class W3mNetworksView extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() public caipNetwork = NetworkController.activeNetwork(true)
+  @state() public caipNetwork = NetworkController.activeNetwork()
 
   public constructor() {
     super()
     this.unsubscribe.push(
       NetworkController.subscribeKey(
         'caipNetwork',
-        () => (this.caipNetwork = NetworkController.activeNetwork(true))
+        () => (this.caipNetwork = NetworkController.activeNetwork())
       )
     )
   }
@@ -68,9 +68,7 @@ export class W3mNetworksView extends LitElement {
   private networksTemplate() {
     const supportsAllNetworks = NetworkController.getSupportsAllNetworks()
     const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks(true)
-    const approvedCaipNetworkIds = NetworkController.getApprovedCaipNetworkIds(
-      ChainController.state.activeChain
-    )
+    const approvedCaipNetworkIds = NetworkController.getApprovedCaipNetworkIds()
     console.log(
       '>>> [W3mNetworksView] networksTemplate: ',
       requestedCaipNetworks,
@@ -99,8 +97,8 @@ export class W3mNetworksView extends LitElement {
 
   private async onSwitchNetwork(network: CaipNetwork, chain?: Chain) {
     const { isConnected } = AccountController.state
-    const caipNetwork = NetworkController.activeNetwork(true)
-    const supportsAllNetworks = NetworkController.getSupportsAllNetworks(true)
+    const caipNetwork = NetworkController.activeNetwork()
+    const supportsAllNetworks = NetworkController.getSupportsAllNetworks()
     const approvedCaipNetworkIds = NetworkController.getApprovedCaipNetworkIds(chain)
 
     console.log('>>> [onSwitchNetwork]', approvedCaipNetworkIds, supportsAllNetworks)

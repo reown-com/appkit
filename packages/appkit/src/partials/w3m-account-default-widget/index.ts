@@ -34,7 +34,7 @@ export class W3mAccountDefaultWidget extends LitElement {
 
   @state() private profileName = AccountController.state.profileName
 
-  @state() private network = NetworkController.activeNetwork(true)
+  @state() private network = NetworkController.activeNetwork()
 
   @state() private disconnecting = false
 
@@ -60,7 +60,7 @@ export class W3mAccountDefaultWidget extends LitElement {
       ],
       NetworkController.subscribeKey(
         'caipNetwork',
-        () => (this.network = NetworkController.activeNetwork(true))
+        () => (this.network = NetworkController.activeNetwork())
       )
     )
   }
@@ -255,7 +255,7 @@ export class W3mAccountDefaultWidget extends LitElement {
   private async onDisconnect() {
     try {
       this.disconnecting = true
-      await ConnectionController.disconnect(ChainController.state.activeChain)
+      await ConnectionController.disconnect()
       EventsController.sendEvent({ type: 'track', event: 'DISCONNECT_SUCCESS' })
       ModalController.close()
     } catch {

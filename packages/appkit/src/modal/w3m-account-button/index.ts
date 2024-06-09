@@ -36,7 +36,7 @@ export class W3mAccountButton extends LitElement {
 
   @state() private profileImage = AccountController.state.profileImage
 
-  @state() private network = NetworkController.activeNetwork(true)
+  @state() private network = NetworkController.activeNetwork()
 
   @state() private isUnsupportedChain = NetworkController.state.isUnsupportedChain
 
@@ -61,7 +61,7 @@ export class W3mAccountButton extends LitElement {
           }
         }),
         NetworkController.subscribe(val => {
-          this.network = NetworkController.activeNetwork(true)
+          this.network = NetworkController.activeNetwork()
           this.isUnsupportedChain = val.isUnsupportedChain
         })
       ]

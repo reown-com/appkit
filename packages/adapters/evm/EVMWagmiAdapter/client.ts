@@ -21,11 +21,7 @@ import type { OptionsControllerState } from '@web3modal/core'
 import { mainnet } from 'viem/chains'
 import { prepareTransactionRequest, sendTransaction as wagmiSendTransaction } from '@wagmi/core'
 import type { Chain } from '@wagmi/core/chains'
-import type {
-  GetAccountReturnType,
-  GetConnectorsReturnType,
-  GetEnsAddressReturnType
-} from '@wagmi/core'
+import type { GetAccountReturnType, GetEnsAddressReturnType } from '@wagmi/core'
 import type {
   CaipAddress,
   CaipNetwork,
@@ -453,12 +449,12 @@ export class EVMWagmiClient {
     chainId,
     connector
   }: Pick<GetAccountReturnType, 'address' | 'isConnected' | 'chainId' | 'connector'>) {
-    this.scaffold?.resetAccount()
+    this.scaffold?.resetAccount('evm')
     this.syncNetwork(address, chainId, isConnected)
     if (isConnected && address && chainId) {
       const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`
-      this.scaffold?.setIsConnected(isConnected)
-      this.scaffold?.setCaipAddress(caipAddress)
+      this.scaffold?.setIsConnected(isConnected, 'evm')
+      this.scaffold?.setCaipAddress(caipAddress, 'evm')
       await Promise.all([
         this.syncProfile(address, chainId),
         this.syncBalance(address, chainId),
@@ -490,7 +486,7 @@ export class EVMWagmiClient {
       )
       if (isConnected && address && chainId) {
         const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${id}:${address}`
-        this.scaffold?.setCaipAddress(caipAddress)
+        this.scaffold?.setCaipAddress(caipAddress, 'evm')
         if (chain?.blockExplorers?.default?.url) {
           const url = `${chain.blockExplorers.default.url}/address/${address}`
           this.scaffold?.setAddressExplorerUrl(url)
@@ -514,12 +510,12 @@ export class EVMWagmiClient {
       const registeredWcNames = await this.scaffold.getWalletConnectName(address)
       if (registeredWcNames[0]) {
         const wcName = registeredWcNames[0]
-        this.scaffold?.setProfileName(wcName.name)
+        this.scaffold?.setProfileName(wcName.name, 'evm')
       } else {
-        this.scaffold?.setProfileName(null)
+        this.scaffold?.setProfileName(null, 'evm')
       }
     } catch {
-      this.scaffold?.setProfileName(null)
+      this.scaffold?.setProfileName(null, 'evm')
     }
   }
 
@@ -532,8 +528,8 @@ export class EVMWagmiClient {
       const { name, avatar } = await this.scaffold.fetchIdentity({
         address
       })
-      this.scaffold?.setProfileName(name)
-      this.scaffold?.setProfileImage(avatar)
+      this.scaffold?.setProfileName(name, 'evm')
+      this.scaffold?.setProfileImage(avatar, 'evm')
 
       if (!name) {
         await this.syncWalletConnectName(address)
@@ -542,21 +538,21 @@ export class EVMWagmiClient {
       if (chainId === mainnet.id) {
         const profileName = await getEnsName(this.wagmiConfig, { address, chainId })
         if (profileName) {
-          this.scaffold?.setProfileName(profileName)
+          this.scaffold?.setProfileName(profileName, 'evm')
           const profileImage = await wagmiGetEnsAvatar(this.wagmiConfig, {
             name: profileName,
             chainId
           })
           if (profileImage) {
-            this.scaffold?.setProfileImage(profileImage)
+            this.scaffold?.setProfileImage(profileImage, 'evm')
           }
         } else {
           await this.syncWalletConnectName(address)
-          this.scaffold?.setProfileImage(null)
+          this.scaffold?.setProfileImage(null, 'evm')
         }
       } else {
         await this.syncWalletConnectName(address)
-        this.scaffold?.setProfileImage(null)
+        this.scaffold?.setProfileImage(null, 'evm')
       }
     }
   }
@@ -570,11 +566,11 @@ export class EVMWagmiClient {
         // @ts-ignore
         token: (this.options?.tokens?.[chain.id] as Token)?.address as Hex
       })
-      this.scaffold?.setBalance(balance.formatted, balance.symbol)
+      this.scaffold?.setBalance(balance.formatted, balance.symbol, 'evm')
 
       return
     }
-    this.scaffold?.setBalance(undefined, undefined)
+    this.scaffold?.setBalance(undefined, undefined, 'evm')
   }
 
   private async syncConnectedWalletInfo(connector: GetAccountReturnType['connector']) {
@@ -587,14 +583,17 @@ export class EVMWagmiClient {
         ReturnType<(typeof EthereumProvider)['init']>
       >
       if (walletConnectProvider.session) {
-        this.scaffold?.setConnectedWalletInfo({
-          ...walletConnectProvider.session.peer.metadata,
-          name: walletConnectProvider.session.peer.metadata.name,
-          icon: walletConnectProvider.session.peer.metadata.icons?.[0]
-        })
+        this.scaffold?.setConnectedWalletInfo(
+          {
+            ...walletConnectProvider.session.peer.metadata,
+            name: walletConnectProvider.session.peer.metadata.name,
+            icon: walletConnectProvider.session.peer.metadata.icons?.[0]
+          },
+          'evm'
+        )
       }
     } else {
-      this.scaffold?.setConnectedWalletInfo({ name: connector.name, icon: connector.icon })
+      this.scaffold?.setConnectedWalletInfo({ name: connector.name, icon: connector.icon }, 'evm')
     }
   }
 
@@ -657,7 +656,8 @@ export class EVMWagmiClient {
         provider,
         email: authConnector.email,
         socials: authConnector.socials,
-        showWallets: authConnector?.showWallets === undefined ? true : authConnector.showWallets
+        showWallets: authConnector?.showWallets === undefined ? true : authConnector.showWallets,
+        chain: this.protocol
       })
     }
   }
@@ -683,7 +683,7 @@ export class EVMWagmiClient {
       this.scaffold?.setLoading(isLoginEmailUsed)
 
       if (isLoginEmailUsed) {
-        this.scaffold?.setIsConnected(false)
+        this.scaffold?.setIsConnected(false, 'evm')
       }
 
       provider.onRpcRequest(request => {
@@ -746,14 +746,14 @@ export class EVMWagmiClient {
       provider.onNotConnected(() => {
         const isConnected = this.scaffold?.getIsConnectedState()
         if (!isConnected) {
-          this.scaffold?.setIsConnected(false)
+          this.scaffold?.setIsConnected(false, 'evm')
           this.scaffold?.setLoading(false)
         }
       })
 
       provider.onIsConnected(req => {
-        this.scaffold?.setIsConnected(true)
-        this.scaffold?.setSmartAccountDeployed(Boolean(req.smartAccountDeployed))
+        this.scaffold?.setIsConnected(true, 'evm')
+        this.scaffold?.setSmartAccountDeployed(Boolean(req.smartAccountDeployed), 'evm')
         this.scaffold?.setPreferredAccountType(
           req.preferredAccountType as W3mFrameTypes.AccountType
         )

@@ -30,6 +30,8 @@ export class W3mConnectExternalWidget extends LitElement {
       connector => !['WALLET_CONNECT', 'INJECTED', 'ANNOUNCED', 'AUTH'].includes(connector.type)
     )
 
+    console.log('>>> externalConnectors', externalConnectors)
+
     if (!externalConnectors?.length) {
       this.style.cssText = `display: none`
 

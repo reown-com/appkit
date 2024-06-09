@@ -4,6 +4,7 @@ import styles from './styles.js'
 import { state } from 'lit/decorators/state.js'
 import {
   AssetUtil,
+  ChainController,
   ConnectorController,
   CoreHelperUtil,
   RouterController,
@@ -66,10 +67,10 @@ export class W3mSelectChainView extends LitElement {
           ${connectors.map(
             connector =>
               html`<wui-list-wallet
-                imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
+                imageSrc=${ifDefined(AssetUtil.getChainImage(connector.chain))}
                 name=${connector.chain}
                 @click=${() => this.onConnector(connector)}
-                tagVariant="success"
+                tagVariant="main"
                 tagLabel="installed"
                 data-testid=${`wallet-selector-${connector.id}`}
                 .installed=${true}
@@ -83,6 +84,10 @@ export class W3mSelectChainView extends LitElement {
 
   // -- Private Methods ----------------------------------- //
   private onConnector(connector: Connector) {
+    if (!ChainController.state.activeCaipNetwork) {
+      ChainController.setActiveChain(connector.chain)
+    }
+
     if (connector.type === 'WALLET_CONNECT') {
       if (CoreHelperUtil.isMobile()) {
         RouterController.push('AllWallets')

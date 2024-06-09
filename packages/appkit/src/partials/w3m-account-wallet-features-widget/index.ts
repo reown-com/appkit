@@ -37,7 +37,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
   @state() private smartAccountDeployed = AccountController.state.smartAccountDeployed
 
-  @state() private network = NetworkController.activeNetwork(true)
+  @state() private network = NetworkController.activeNetwork()
 
   @state() private currentTab = AccountController.state.currentTab
 
@@ -64,7 +64,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
         })
       ],
       NetworkController.subscribe(() => {
-        this.network = NetworkController.activeNetwork(true)
+        this.network = NetworkController.activeNetwork()
       })
     )
     this.watchSwapValues()

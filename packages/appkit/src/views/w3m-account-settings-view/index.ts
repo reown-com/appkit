@@ -38,7 +38,7 @@ export class W3mAccountSettingsView extends LitElement {
 
   @state() private profileName = AccountController.state.profileName
 
-  @state() private network = NetworkController.activeNetwork(true)
+  @state() private network = NetworkController.activeNetwork()
 
   @state() private preferredAccountType = AccountController.state.preferredAccountType
 
@@ -65,7 +65,7 @@ export class W3mAccountSettingsView extends LitElement {
           }
         }),
         NetworkController.subscribe(() => {
-          this.network = NetworkController.activeNetwork(true)
+          this.network = NetworkController.activeNetwork()
         })
       ]
     )

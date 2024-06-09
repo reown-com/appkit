@@ -149,37 +149,37 @@ export class Appkit {
     ]?.replace
   }
 
-  public setIsConnected: (typeof AccountController)['setIsConnected'] = isConnected => {
-    AccountController.setIsConnected(isConnected)
+  public setIsConnected: (typeof AccountController)['setIsConnected'] = (isConnected, chain) => {
+    AccountController.setIsConnected(isConnected, chain)
   }
 
   public getIsConnectedState = () => AccountController.state.isConnected
 
-  public setCaipAddress: (typeof AccountController)['setCaipAddress'] = caipAddress => {
-    AccountController.setCaipAddress(caipAddress)
+  public setCaipAddress: (typeof AccountController)['setCaipAddress'] = (caipAddress, chain) => {
+    AccountController.setCaipAddress(caipAddress, chain)
   }
 
-  public setBalance: (typeof AccountController)['setBalance'] = (balance, balanceSymbol) => {
-    AccountController.setBalance(balance, balanceSymbol)
+  public setBalance: (typeof AccountController)['setBalance'] = (balance, balanceSymbol, chain) => {
+    AccountController.setBalance(balance, balanceSymbol, chain)
   }
 
-  public setProfileName: (typeof AccountController)['setProfileName'] = profileName => {
-    AccountController.setProfileName(profileName)
+  public setProfileName: (typeof AccountController)['setProfileName'] = (profileName, chain) => {
+    AccountController.setProfileName(profileName, chain)
   }
 
-  public setProfileImage: (typeof AccountController)['setProfileImage'] = profileImage => {
-    AccountController.setProfileImage(profileImage)
+  public setProfileImage: (typeof AccountController)['setProfileImage'] = (profileImage, chain) => {
+    AccountController.setProfileImage(profileImage, chain)
   }
 
-  public resetAccount: (typeof AccountController)['resetAccount'] = () => {
-    AccountController.resetAccount()
+  public resetAccount: (typeof AccountController)['resetAccount'] = (chain: Chain) => {
+    AccountController.resetAccount(chain)
   }
 
   public setCaipNetwork: (typeof ChainController)['setCaipNetwork'] = (caipNetwork, chain) => {
     NetworkController.setCaipNetwork(caipNetwork, chain)
   }
 
-  public getCaipNetwork = () => NetworkController.activeNetwork(true)
+  public getCaipNetwork = () => NetworkController.activeNetwork()
 
   public setRequestedCaipNetworks: (typeof ChainController)['setRequestedCaipNetworks'] = (
     requestedCaipNetworks,
@@ -214,20 +214,26 @@ export class Appkit {
   public fetchIdentity: (typeof BlockchainApiController)['fetchIdentity'] = request =>
     BlockchainApiController.fetchIdentity(request)
 
-  public setAddressExplorerUrl: (typeof AccountController)['setAddressExplorerUrl'] =
-    addressExplorerUrl => {
-      AccountController.setAddressExplorerUrl(addressExplorerUrl)
-    }
+  public setAddressExplorerUrl: (typeof AccountController)['setAddressExplorerUrl'] = (
+    addressExplorerUrl,
+    chain
+  ) => {
+    AccountController.setAddressExplorerUrl(addressExplorerUrl, chain)
+  }
 
-  public setSmartAccountDeployed: (typeof AccountController)['setSmartAccountDeployed'] =
-    isDeployed => {
-      AccountController.setSmartAccountDeployed(isDeployed)
-    }
+  public setSmartAccountDeployed: (typeof AccountController)['setSmartAccountDeployed'] = (
+    isDeployed,
+    chain
+  ) => {
+    AccountController.setSmartAccountDeployed(isDeployed, chain)
+  }
 
-  public setConnectedWalletInfo: (typeof AccountController)['setConnectedWalletInfo'] =
-    connectedWalletInfo => {
-      AccountController.setConnectedWalletInfo(connectedWalletInfo)
-    }
+  public setConnectedWalletInfo: (typeof AccountController)['setConnectedWalletInfo'] = (
+    connectedWalletInfo,
+    chain
+  ) => {
+    AccountController.setConnectedWalletInfo(connectedWalletInfo, chain)
+  }
 
   public setSmartAccountEnabledNetworks: (typeof NetworkController)['setSmartAccountEnabledNetworks'] =
     (smartAccountEnabledNetworks, chain) => {
@@ -256,18 +262,7 @@ export class Appkit {
       adapter.construct(this, options)
     })
 
-    ChainController.setAdapters(options.adapters || [])
-
-    // const defaultAdapter = options.adapters?.[0]
-    // const requestedCaipNetworkIds = NetworkController.getRequestedCaipNetworks(true)
-    // console.log('>>> [Appkit] requestedCaipNetworkIds', requestedCaipNetworkIds)
-
-    // if (defaultAdapter) {
-    //   ChainController.setAdapter(defaultAdapter)
-    //   NetworkController.switchActiveNetwork(requestedCaipNetworkIds[0], defaultAdapter.protocol)
-    //   NetworkController.setDefaultCaipNetwork(requestedCaipNetworkIds[0], defaultAdapter.protocol)
-    // }
-
+    ChainController.initialize(options.adapters || [])
     OptionsController.setOptions(options)
 
     if (options.themeMode) {

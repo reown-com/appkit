@@ -349,12 +349,12 @@ export class SolanaWeb3JsClient {
     const chainId = SolStoreUtil.state.currentChain?.chainId
     const isConnected = SolStoreUtil.state.isConnected
 
-    this.scaffold?.resetAccount()
+    this.scaffold?.resetAccount('solana')
 
     if (isConnected && address && chainId) {
       const caipAddress: CaipAddress = `${ConstantsUtil.INJECTED_CONNECTOR_ID}:${chainId}:${address}`
-      this.scaffold?.setIsConnected(isConnected)
-      this.scaffold?.setCaipAddress(caipAddress)
+      this.scaffold?.setIsConnected(isConnected, 'solana')
+      this.scaffold?.setCaipAddress(caipAddress, 'solana')
       await Promise.all([this.syncBalance(address)])
 
       this.hasSyncedConnectedAccount = true
@@ -370,7 +370,7 @@ export class SolanaWeb3JsClient {
       const chain = SolHelpersUtil.getChainFromCaip(this.chains, caipChainId)
       if (chain) {
         const balance = await this.WalletConnectConnector.getBalance(address)
-        this.scaffold?.setBalance(balance.decimals.toString(), chain.currency)
+        this.scaffold?.setBalance(balance.decimals.toString(), chain.currency, 'solana')
       }
     }
   }

@@ -1,18 +1,8 @@
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
-import {
-  ChainController,
-  ConnectorController,
-  CoreHelperUtil,
-  RouterController
-} from '@web3modal/core'
+import { ConnectorController, RouterController } from '@web3modal/core'
 import { state } from 'lit/decorators/state.js'
-
-// -- Constants ----------------------------------------- //
-const TABS = 3
-const TABS_PADDING = 48
-const MODAL_MOBILE_VIEW_PX = 430
 
 @customElement('w3m-connect-view')
 export class W3mConnectView extends LitElement {
@@ -24,28 +14,15 @@ export class W3mConnectView extends LitElement {
   // -- State & Properties -------------------------------- //
   @state() private connectors = ConnectorController.state.connectors
 
-  @state() private currentTab = 0
-
-  @state() private chainTabs = ['evm', 'solana']
-
   public constructor() {
     super()
     this.unsubscribe.push(
-      ConnectorController.subscribeKey('connectors', val => (this.connectors = val)),
-      ChainController.subscribeKey('activeChain', val => {
-        this.currentTab = this.chainTabs.findIndex(tab => tab === val)
-      })
+      ConnectorController.subscribeKey('connectors', val => (this.connectors = val))
     )
   }
 
   public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
-  }
-
-  public override firstUpdated() {
-    const protocol = ChainController.state.activeChain
-    const index = this.chainTabs.findIndex(tab => tab === protocol)
-    this.currentTab = index
   }
 
   // -- Render -------------------------------------------- //
@@ -61,16 +38,6 @@ export class W3mConnectView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
-  private onProtocolChange(value: number) {
-    const chain = this.chainTabs[value] || 'evm'
-    const newAdapter = ChainController.state.adapters?.find(a => a.chain === chain)
-
-    if (newAdapter) {
-      this.currentTab = value
-      ChainController.setAdapter(newAdapter)
-    }
-  }
-
   private walletListTemplate() {
     const authConnector = this.connectors.find(c => c.type === 'AUTH')
 
