@@ -37,7 +37,7 @@ export const EventsController = {
 
     return {
       'x-project-id': projectId,
-      'x-sdk-type': sdkType || 'appkit',
+      'x-sdk-type': sdkType || 'w3m',
       'x-sdk-version': sdkVersion || 'html-wagmi-4.2.2'
     }
   },

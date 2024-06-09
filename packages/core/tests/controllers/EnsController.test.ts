@@ -140,7 +140,8 @@ describe('EnsController', () => {
     const getAuthConnectorSpy = vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue({
       provider: { getEmail: () => 'test@walletconnect.com' } as unknown as W3mFrameProvider,
       id: 'w3mAuth',
-      type: 'AUTH'
+      type: 'AUTH',
+      chain: 'evm'
     })
     const signMessageSpy = vi
       .spyOn(ConnectionController, 'signMessage')

@@ -16,7 +16,7 @@ import type { NetworkControllerState } from './NetworkController.js'
 // -- Types --------------------------------------------- //
 export interface OptionsControllerState {
   projectId: ProjectId
-  sdkType?: 'appkit'
+  sdkType?: 'w3m'
   sdkVersion?: SdkVersion
   allWallets?: 'SHOW' | 'HIDE' | 'ONLY_MOBILE'
   featuredWalletIds?: string[]
@@ -47,7 +47,7 @@ type StateKey = keyof OptionsControllerState
 // -- State --------------------------------------------- //
 const state = proxy<OptionsControllerState>({
   projectId: '',
-  sdkType: 'appkit',
+  sdkType: 'w3m',
   sdkVersion: 'html-wagmi-undefined'
 })
 

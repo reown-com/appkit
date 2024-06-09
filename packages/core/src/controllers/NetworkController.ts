@@ -62,8 +62,8 @@ export const NetworkController = {
     return state._client
   },
 
-  activeNetwork(multiChain?: boolean) {
-    if (multiChain) {
+  activeNetwork() {
+    if (ChainController.state.multiChainEnabled) {
       return ChainController.activeNetwork()
     }
 
@@ -131,8 +131,8 @@ export const NetworkController = {
     }
   },
 
-  getRequestedCaipNetworks(multiChain?: boolean) {
-    if (multiChain) {
+  getRequestedCaipNetworks() {
+    if (ChainController.state.multiChainEnabled) {
       return ChainController.getRequestedCaipNetworks()
     } else {
       const { approvedCaipNetworkIds, requestedCaipNetworks } = state
@@ -144,8 +144,8 @@ export const NetworkController = {
     }
   },
 
-  getSupportsAllNetworks(multiChain?: boolean) {
-    if (multiChain) {
+  getSupportsAllNetworks() {
+    if (ChainController.state.multiChainEnabled) {
       return ChainController.getSupportsAllNetworks()
     } else {
       return state.supportsAllNetworks
@@ -154,7 +154,7 @@ export const NetworkController = {
 
   getApprovedCaipNetworkIds(chain?: Chain) {
     console.log('>>> [NetworkController] getApprovedCaipNetworkIds', chain)
-    if (chain) {
+    if (ChainController.state.multiChainEnabled) {
       return ChainController.getApprovedCaipNetworkIds(chain)
     }
 

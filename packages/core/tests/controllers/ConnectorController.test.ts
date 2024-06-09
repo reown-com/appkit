@@ -19,14 +19,16 @@ const authProvider = {
 const walletConnectConnector = {
   id: 'walletConnect',
   explorerId: 'walletConnectId',
-  type: 'WALLET_CONNECT'
+  type: 'WALLET_CONNECT',
+  chain: 'evm'
 } as const
-const externalConnector = { id: 'external', type: 'EXTERNAL' } as const
-const authConnector = { id: 'w3mAuth', type: 'AUTH', provider: authProvider } as const
+const externalConnector = { id: 'external', type: 'EXTERNAL', chain: 'evm' } as const
+const authConnector = { id: 'w3mAuth', type: 'AUTH', provider: authProvider, chain: 'evm' } as const
 const announcedConnector = {
   id: 'announced',
   type: 'ANNOUNCED',
-  info: { rdns: 'announced.io' }
+  info: { rdns: 'announced.io' },
+  chain: 'evm'
 } as const
 
 const syncDappDataSpy = vi.spyOn(authProvider, 'syncDappData')
@@ -45,11 +47,13 @@ const mockDappData = {
 const metamaskConnector = {
   id: 'metamask',
   type: 'INJECTED',
-  info: { rdns: 'io.metamask.com' }
+  info: { rdns: 'io.metamask.com' },
+  chain: 'evm'
 } as const
 const zerionConnector = {
   id: 'ecc4036f814562b41a5268adc86270fba1365471402006302e70169465b7ac18',
-  type: 'INJECTED'
+  type: 'INJECTED',
+  chain: 'evm'
 } as const
 // -- Tests --------------------------------------------------------------------
 describe('ConnectorController', () => {

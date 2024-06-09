@@ -9,6 +9,7 @@ import { SwapController } from './SwapController.js'
 import { SwapApiUtil } from '../utils/SwapApiUtil.js'
 import type { W3mFrameTypes } from '@web3modal/wallet'
 import { NetworkController } from './NetworkController.js'
+import { ChainController, type Chain } from './ChainController.js'
 
 // -- Types --------------------------------------------- //
 export interface AccountControllerState {
@@ -51,70 +52,140 @@ export const AccountController = {
     return subKey(state, key, callback)
   },
 
-  setIsConnected(isConnected: AccountControllerState['isConnected']) {
+  setIsConnected(isConnected: AccountControllerState['isConnected'], chain?: Chain) {
+    if (ChainController.state.multiChainEnabled) {
+      ChainController.setAccountProp('isConnected', true, chain)
+    }
+
     state.isConnected = isConnected
   },
 
-  setCaipAddress(caipAddress: AccountControllerState['caipAddress']) {
+  setCaipAddress(caipAddress: AccountControllerState['caipAddress'], chain?: Chain) {
+    if (ChainController.state.multiChainEnabled) {
+      ChainController.setAccountProp('isConnected', true, chain)
+    }
+
     state.caipAddress = caipAddress
     state.address = caipAddress ? CoreHelperUtil.getPlainAddress(caipAddress) : undefined
   },
 
   setBalance(
     balance: AccountControllerState['balance'],
-    balanceSymbol: AccountControllerState['balanceSymbol']
+    balanceSymbol: AccountControllerState['balanceSymbol'],
+    chain?: Chain
   ) {
+    if (ChainController.state.multiChainEnabled) {
+      ChainController.setAccountProp('isConnected', true, chain)
+    }
+
     state.balance = balance
     state.balanceSymbol = balanceSymbol
   },
 
-  setProfileName(profileName: AccountControllerState['profileName']) {
+  setProfileName(profileName: AccountControllerState['profileName'], chain?: Chain) {
+    if (ChainController.state.multiChainEnabled) {
+      ChainController.setAccountProp('isConnected', true, chain)
+    }
+
     state.profileName = profileName
   },
 
-  setProfileImage(profileImage: AccountControllerState['profileImage']) {
+  setProfileImage(profileImage: AccountControllerState['profileImage'], chain?: Chain) {
+    if (ChainController.state.multiChainEnabled) {
+      ChainController.setAccountProp('profileImage', profileImage, chain)
+    }
+
     state.profileImage = profileImage
   },
 
-  setAddressExplorerUrl(explorerUrl: AccountControllerState['addressExplorerUrl']) {
+  setAddressExplorerUrl(explorerUrl: AccountControllerState['addressExplorerUrl'], chain?: Chain) {
+    if (ChainController.state.multiChainEnabled) {
+      ChainController.setAccountProp('addressExplorerUrl', explorerUrl, chain)
+    }
+
     state.addressExplorerUrl = explorerUrl
   },
 
-  setSmartAccountDeployed(isDeployed: boolean) {
+  setSmartAccountDeployed(isDeployed: boolean, chain?: Chain) {
+    if (ChainController.state.multiChainEnabled) {
+      ChainController.setAccountProp('smartAccountDeployed', isDeployed, chain)
+    }
+
     state.smartAccountDeployed = isDeployed
   },
 
-  setCurrentTab(currentTab: AccountControllerState['currentTab']) {
+  setCurrentTab(currentTab: AccountControllerState['currentTab'], chain?: Chain) {
+    if (ChainController.state.multiChainEnabled) {
+      ChainController.setAccountProp('currentTab', currentTab, chain)
+    }
+
     state.currentTab = currentTab
   },
 
-  setTokenBalance(tokenBalance: AccountControllerState['tokenBalance']) {
+  setTokenBalance(tokenBalance: AccountControllerState['tokenBalance'], chain?: Chain) {
+    if (ChainController.state.multiChainEnabled) {
+      if (tokenBalance) {
+        ChainController.setAccountProp('tokenBalance', ref(tokenBalance), chain)
+      }
+    }
+
     if (tokenBalance) {
       state.tokenBalance = ref(tokenBalance)
     }
   },
 
-  setConnectedWalletInfo(connectedWalletInfo: AccountControllerState['connectedWalletInfo']) {
+  setConnectedWalletInfo(
+    connectedWalletInfo: AccountControllerState['connectedWalletInfo'],
+    chain?: Chain
+  ) {
+    if (ChainController.state.multiChainEnabled) {
+      ChainController.setAccountProp('connectedWalletInfo', connectedWalletInfo, chain)
+    }
+
     state.connectedWalletInfo = connectedWalletInfo
   },
 
-  setPreferredAccountType(preferredAccountType: AccountControllerState['preferredAccountType']) {
+  setPreferredAccountType(
+    preferredAccountType: AccountControllerState['preferredAccountType'],
+    chain?: Chain
+  ) {
+    if (ChainController.state.multiChainEnabled) {
+      ChainController.setAccountProp('preferredAccountType', preferredAccountType, chain)
+    }
+
     state.preferredAccountType = preferredAccountType
   },
 
-  setSocialProvider(socialProvider: AccountControllerState['socialProvider']) {
+  setSocialProvider(socialProvider: AccountControllerState['socialProvider'], chain?: Chain) {
+    if (ChainController.state.multiChainEnabled) {
+      if (socialProvider) {
+        ChainController.setAccountProp('socialProvider', socialProvider, chain)
+      }
+    }
+
     if (socialProvider) {
       state.socialProvider = socialProvider
     }
   },
 
-  setSocialWindow(socialWindow: AccountControllerState['socialWindow']) {
+  setSocialWindow(socialWindow: AccountControllerState['socialWindow'], chain?: Chain) {
+    if (ChainController.state.multiChainEnabled) {
+      if (socialWindow) {
+        ChainController.setAccountProp('socialWindow', ref(socialWindow), chain)
+      }
+    }
+
     if (socialWindow) {
       state.socialWindow = ref(socialWindow)
     }
   },
 
   async fetchTokenBalance() {
+    // if (ChainController.state.multiChainEnabled) {
+    //   ChainController.setAccountProp('isConnected', true, chain)
+    // }
+    // TODO(enes): handle
+
     const chainId = NetworkController.activeNetwork()?.id
 
     try {
@@ -133,7 +204,12 @@ export const AccountController = {
     }
   },
 
-  resetAccount() {
+  resetAccount(chain?: Chain) {
+    if (ChainController.state.multiChainEnabled) {
+      ChainController.resetAccount(chain)
+      return
+    }
+
     state.isConnected = false
     state.smartAccountDeployed = false
     state.currentTab = 0

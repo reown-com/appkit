@@ -3,6 +3,7 @@ import type { Balance, Transaction } from '@web3modal/common'
 import type { NetworkControllerClient } from '../controllers/NetworkController'
 import type { ConnectionControllerClient } from '../controllers/ConnectionController'
 import type { OptionsControllerState } from '../controllers/OptionsController'
+import type { Chain } from '../controllers/ChainController'
 
 export type CaipAddress = `${string}:${string}:${string}`
 
@@ -61,6 +62,7 @@ export type Connector = {
   email?: boolean
   socials?: SocialProvider[]
   showWallets?: boolean
+  chain: Chain
 }
 
 export interface AuthConnector extends Connector {

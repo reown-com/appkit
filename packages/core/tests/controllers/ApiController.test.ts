@@ -157,12 +157,14 @@ describe('ApiController', () => {
         id: '12341',
         name: 'MetaMask',
         imageId: '12341',
-        type: 'INJECTED'
+        type: 'INJECTED',
+        chain: 'evm'
       },
       {
         id: '12341',
         name: 'RandomConnector',
-        type: 'INJECTED'
+        type: 'INJECTED',
+        chain: 'evm'
       }
     ])
     const fetchSpy = vi.spyOn(ApiController, '_fetchConnectorImage').mockResolvedValue()
