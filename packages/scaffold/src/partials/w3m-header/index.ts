@@ -70,7 +70,8 @@ function headings() {
     ConnectSocials: 'All socials',
     ConnectingSocial: AccountController.state.socialProvider
       ? AccountController.state.socialProvider
-      : 'Connect Social'
+      : 'Connect Social',
+    SelectChain: ''
   }
 }
 

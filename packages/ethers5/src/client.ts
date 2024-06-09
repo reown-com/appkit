@@ -1031,7 +1031,8 @@ export class Web3Modal extends Web3ModalScaffold {
         imageId: PresetsUtil.ConnectorImageIds[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID],
         imageUrl: this.options?.connectorImages?.[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID],
         name: PresetsUtil.ConnectorNamesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID],
-        type: connectorType
+        type: connectorType,
+        chain: 'evm'
       })
     }
 
@@ -1045,7 +1046,8 @@ export class Web3Modal extends Web3ModalScaffold {
           imageId: PresetsUtil.ConnectorImageIds[ConstantsUtil.INJECTED_CONNECTOR_ID],
           imageUrl: this.options?.connectorImages?.[ConstantsUtil.INJECTED_CONNECTOR_ID],
           name: PresetsUtil.ConnectorNamesMap[ConstantsUtil.INJECTED_CONNECTOR_ID],
-          type: injectedConnectorType
+          type: injectedConnectorType,
+          chain: 'evm'
         })
       }
     }
@@ -1057,7 +1059,8 @@ export class Web3Modal extends Web3ModalScaffold {
         imageId: PresetsUtil.ConnectorImageIds[ConstantsUtil.COINBASE_CONNECTOR_ID],
         imageUrl: this.options?.connectorImages?.[ConstantsUtil.COINBASE_CONNECTOR_ID],
         name: PresetsUtil.ConnectorNamesMap[ConstantsUtil.COINBASE_CONNECTOR_ID],
-        type: 'EXTERNAL'
+        type: 'EXTERNAL',
+        chain: 'evm'
       })
     }
 
@@ -1079,7 +1082,8 @@ export class Web3Modal extends Web3ModalScaffold {
               info.icon ?? this.options?.connectorImages?.[ConstantsUtil.EIP6963_CONNECTOR_ID],
             name: info.name,
             provider,
-            info
+            info,
+            chain: 'evm'
           })
 
           const eip6963ProviderObj = {

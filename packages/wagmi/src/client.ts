@@ -571,7 +571,8 @@ export class Web3Modal extends Web3ModalScaffold {
           type: PresetsUtil.ConnectorTypesMap[type] ?? 'EXTERNAL',
           info: {
             rdns: id
-          }
+          },
+          chain: 'evm'
         })
       }
     })
@@ -599,7 +600,8 @@ export class Web3Modal extends Web3ModalScaffold {
         provider,
         email: authConnector.email,
         socials: authConnector.socials,
-        showWallets: authConnector.showWallets
+        showWallets: authConnector.showWallets,
+        chain: 'evm'
       })
     }
   }

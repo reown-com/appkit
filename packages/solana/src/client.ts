@@ -332,7 +332,8 @@ export class Web3Modal extends Web3ModalScaffold {
         type: connectorType,
         imageUrl: 'https://avatars.githubusercontent.com/u/37784886',
         name: this.WalletConnectConnector.name,
-        provider: this.WalletConnectConnector.getProvider()
+        provider: this.WalletConnectConnector.getProvider(),
+        chain: 'solana'
       })
     }
 
