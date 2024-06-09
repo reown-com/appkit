@@ -62,7 +62,6 @@ export class W3mConnectingWcView extends LitElement {
     try {
       const { wcPairingExpiry } = ConnectionController.state
       if (retry || CoreHelperUtil.isPairingExpired(wcPairingExpiry)) {
-        console.log('>>> initializeConnection', this.chainToConnect)
         ConnectionController.connectWalletConnect(this.chainToConnect)
         if (this.wallet) {
           const url = AssetUtil.getWalletImage(this.wallet)
@@ -73,7 +72,6 @@ export class W3mConnectingWcView extends LitElement {
           const connectors = ConnectorController.state.connectors
           const connector = connectors.find(c => c.type === 'WALLET_CONNECT')
           const url = AssetUtil.getConnectorImage(connector)
-          console.log('>>> initializeConnection url', url)
           if (url) {
             StorageUtil.setConnectedWalletImageUrl(url)
           }
@@ -86,11 +84,6 @@ export class W3mConnectingWcView extends LitElement {
           if (SIWEController.state.status === 'success') {
             ModalController.close()
           } else {
-            console.log(
-              '>>> SIWEController.state.status',
-              SIWEController.state.status,
-              ChainController.state.activeChain
-            )
             RouterController.push('ConnectingSiwe')
           }
         } else {

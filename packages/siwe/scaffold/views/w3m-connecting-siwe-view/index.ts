@@ -98,7 +98,7 @@ export class W3mConnectingSiweView extends LitElement {
 
       return session
     } catch (error) {
-      const preferredAccountType = AccountController.state.preferredAccountType
+      const preferredAccountType = AccountController.getProperty('preferredAccountType')
       if (preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT) {
         SnackController.showError('This application might not support Smart Accounts')
       } else {
@@ -116,7 +116,7 @@ export class W3mConnectingSiweView extends LitElement {
   }
 
   private async onCancel() {
-    const { isConnected } = AccountController.state
+    const isConnected = AccountController.getProperty('isConnected')
     if (isConnected) {
       await ConnectionController.disconnect()
       ModalController.close()

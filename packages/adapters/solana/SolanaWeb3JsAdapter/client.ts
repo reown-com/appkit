@@ -240,21 +240,12 @@ export class SolanaWeb3JsClient {
 
   public construct(scaffold: Appkit, options: OptionsControllerState) {
     if (!options.projectId) {
-      throw new Error('web3modal:initialize - projectId is undefined')
+      throw new Error('Solana:construct - projectId is undefined')
     }
     this.scaffold = scaffold
     this.options = options
 
     this.syncRequestedNetworks(this.chains, this.options?.chainImages)
-    this.syncNetwork(this.options?.chainImages)
-
-    if (typeof window === 'object') {
-      this.checkActiveProviders()
-      this.syncConnectors()
-    }
-  }
-
-  public initialize() {
     this.syncNetwork(this.options?.chainImages)
 
     if (typeof window === 'object') {

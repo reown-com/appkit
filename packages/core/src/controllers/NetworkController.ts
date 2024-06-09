@@ -153,7 +153,6 @@ export const NetworkController = {
   },
 
   getApprovedCaipNetworkIds(chain?: Chain) {
-    console.log('>>> [NetworkController] getApprovedCaipNetworkIds', chain)
     if (ChainController.state.multiChainEnabled) {
       return ChainController.getApprovedCaipNetworkIds(chain)
     }
@@ -163,12 +162,6 @@ export const NetworkController = {
 
   async setApprovedCaipNetworksData(chain?: Chain) {
     const data = await this._getClient(chain)?.getApprovedCaipNetworksData()
-    console.log(
-      '>>> [NetworkController] setApprovedCaipNetworksData',
-      chain,
-      '-->',
-      data?.approvedCaipNetworkIds
-    )
 
     state.supportsAllNetworks = data?.supportsAllNetworks || false
     state.approvedCaipNetworkIds = data?.approvedCaipNetworkIds || []
@@ -236,7 +229,6 @@ export const NetworkController = {
   },
 
   showUnsupportedChainUI() {
-    console.log('>>> [NetworkController] showUnsupportedChainUI')
     setTimeout(() => {
       ModalController.open({ view: 'UnsupportedChain' })
     }, 300)

@@ -90,7 +90,7 @@ export class Web3ModalSIWEClient {
   }
 
   async signIn(): Promise<SIWESession> {
-    const { address } = AccountController.state
+    const address = AccountController.getProperty('address')
     const nonce = await this.methods.getNonce(address)
     if (!address) {
       throw new Error('An address is required to create a SIWE message.')

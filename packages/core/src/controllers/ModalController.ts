@@ -41,7 +41,7 @@ export const ModalController = {
 
   async open(options?: ModalControllerArguments['open']) {
     await ApiController.state.prefetchPromise
-    const connected = AccountController.state.isConnected
+    const connected = AccountController.getProperty('isConnected')
     if (options?.view) {
       RouterController.reset(options.view)
     } else if (connected) {
@@ -59,7 +59,7 @@ export const ModalController = {
   },
 
   close() {
-    const connected = AccountController.state.isConnected
+    const connected = AccountController.getProperty('isConnected')
     state.open = false
     PublicStateController.set({ open: false })
     EventsController.sendEvent({

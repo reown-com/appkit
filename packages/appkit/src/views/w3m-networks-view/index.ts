@@ -2,7 +2,6 @@ import type { CaipNetwork, Chain } from '@web3modal/core'
 import {
   AccountController,
   AssetUtil,
-  ChainController,
   CoreHelperUtil,
   EventsController,
   NetworkController,
@@ -66,8 +65,8 @@ export class W3mNetworksView extends LitElement {
   }
 
   private networksTemplate() {
-    const supportsAllNetworks = NetworkController.getSupportsAllNetworks()
-    const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks(true)
+    // const supportsAllNetworks = NetworkController.getSupportsAllNetworks()
+    const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
     const approvedCaipNetworkIds = NetworkController.getApprovedCaipNetworkIds()
     console.log(
       '>>> [W3mNetworksView] networksTemplate: ',
@@ -88,7 +87,6 @@ export class W3mNetworksView extends LitElement {
           type="network"
           name=${network.name ?? network.id}
           @click=${() => this.onSwitchNetwork(network, 'evm')}
-          .disabled=${!supportsAllNetworks && !approvedCaipNetworkIds?.includes(network.id)}
           data-testid=${`w3m-network-switch-${network.name ?? network.id}`}
         ></wui-card-select>
       `
@@ -96,27 +94,21 @@ export class W3mNetworksView extends LitElement {
   }
 
   private async onSwitchNetwork(network: CaipNetwork, chain?: Chain) {
-    const { isConnected } = AccountController.state
+    const isConnected = AccountController.getProperty('isConnected')
     const caipNetwork = NetworkController.activeNetwork()
     const supportsAllNetworks = NetworkController.getSupportsAllNetworks()
     const approvedCaipNetworkIds = NetworkController.getApprovedCaipNetworkIds(chain)
 
-    console.log('>>> [onSwitchNetwork]', approvedCaipNetworkIds, supportsAllNetworks)
-
     const { data } = RouterController.state
 
     if (isConnected && caipNetwork?.id !== network.id) {
-      console.log('>>> [onSwitchNetwork] 1')
       if (approvedCaipNetworkIds?.includes(network.id)) {
         await NetworkController.switchActiveNetwork(network)
         RouterUtil.navigateAfterNetworkSwitch()
-        console.log('>>> [onSwitchNetwork] 2')
       } else if (supportsAllNetworks) {
-        console.log('>>> [onSwitchNetwork] 3')
         RouterController.push('SwitchNetwork', { ...data, network })
       }
     } else if (!isConnected) {
-      console.log('>>> [onSwitchNetwork] 4', ChainController.state.activeChain)
       NetworkController.setCaipNetwork(network, network.id.includes('solana') ? 'solana' : 'evm')
       RouterController.push('Connect')
     }

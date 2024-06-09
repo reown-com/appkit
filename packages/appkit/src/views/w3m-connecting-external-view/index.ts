@@ -41,11 +41,6 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
         if (this.connector.imageUrl) {
           StorageUtil.setConnectedWalletImageUrl(this.connector.imageUrl)
         }
-        console.log(
-          '>>> ConnectionController.connectExternal: ',
-          this.connector,
-          this.chainToConnect
-        )
         await ConnectionController.connectExternal(this.connector, this.chainToConnect)
 
         // if (OptionsController.state.isSiweEnabled) {

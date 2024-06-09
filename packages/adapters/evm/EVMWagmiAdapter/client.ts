@@ -267,12 +267,18 @@ export class EVMWagmiClient {
       },
 
       disconnect: async () => {
-        const siweConfig = this.options?.siweConfig
+        try {
+          await disconnect(this.wagmiConfig)
 
-        await disconnect(this.wagmiConfig)
-        if (siweConfig?.options?.signOutOnDisconnect) {
-          const { SIWEController } = await import('@web3modal/siwe')
-          await SIWEController.signOut()
+          // TODO(enes): handle siwe
+          // const siweConfig = this.options?.siweConfig
+          // if (siweConfig?.options?.signOutOnDisconnect) {
+          //   const { SIWEController } = await import('@web3modal/siwe')
+          //   await SIWEController.signOut()
+          // }
+        } catch (error) {
+          console.error('Failed to disconnect1', error)
+          throw new Error('Failed to disconnect1')
         }
       },
 

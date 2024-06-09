@@ -20,13 +20,14 @@ export class W3mWalletCompatibleNetworksView extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() private preferredAccountType = AccountController.state.preferredAccountType
+  @state() private preferredAccountType = AccountController.getProperty('preferredAccountType')
 
   public constructor() {
     super()
     this.unsubscribe.push(
-      AccountController.subscribeKey('preferredAccountType', val => {
-        this.preferredAccountType = val
+      ChainController.subscribe(val => {
+        const accountState = val.activeChain ? val.chains[val.activeChain]?.accountState : undefined
+        this.preferredAccountType = accountState?.preferredAccountType || undefined
       })
     )
   }

@@ -28,31 +28,35 @@ export class W3mAccountDefaultWidget extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() public address = AccountController.state.address
+  @state() public address = AccountController.getProperty('address')
 
-  @state() private profileImage = AccountController.state.profileImage
+  @state() private profileImage = AccountController.getProperty('profileImage')
 
-  @state() private profileName = AccountController.state.profileName
+  @state() private profileName = AccountController.getProperty('profileName')
 
   @state() private network = NetworkController.activeNetwork()
 
   @state() private disconnecting = false
 
-  @state() private balance = AccountController.state.balance
+  @state() private balance = AccountController.getProperty('balance')
 
-  @state() private balanceSymbol = AccountController.state.balanceSymbol
+  @state() private balanceSymbol = AccountController.getProperty('balanceSymbol')
 
   public constructor() {
     super()
     this.unsubscribe.push(
       ...[
-        AccountController.subscribe(val => {
-          if (val.address) {
-            this.address = val.address
-            this.profileImage = val.profileImage
-            this.profileName = val.profileName
-            this.balance = val.balance
-            this.balanceSymbol = val.balanceSymbol
+        ChainController.subscribe(val => {
+          const accountState =
+            val.activeChain &&
+            val.chains[val.activeChain] &&
+            val.chains[val.activeChain].accountState
+          if (accountState && accountState.address) {
+            this.address = accountState.address
+            this.profileImage = accountState.profileImage
+            this.profileName = accountState.profileName
+            this.balance = accountState.balance
+            this.balanceSymbol = accountState.balanceSymbol
           } else if (!this.disconnecting) {
             SnackController.showError('Account not found')
           }
@@ -203,7 +207,7 @@ export class W3mAccountDefaultWidget extends LitElement {
   }
 
   private explorerBtnTemplate() {
-    const { addressExplorerUrl } = AccountController.state
+    const addressExplorerUrl = AccountController.getProperty('addressExplorerUrl')
 
     if (!addressExplorerUrl) {
       return null
@@ -222,7 +226,7 @@ export class W3mAccountDefaultWidget extends LitElement {
     if (!ChainController.state.activeChain) {
       return false
     }
-    const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks(true)
+    const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
     const isMultiNetwork = requestedCaipNetworks ? requestedCaipNetworks.length > 1 : false
     const isValidNetwork = requestedCaipNetworks?.find(({ id }) => id === this.network?.id)
 
@@ -258,7 +262,7 @@ export class W3mAccountDefaultWidget extends LitElement {
       await ConnectionController.disconnect()
       EventsController.sendEvent({ type: 'track', event: 'DISCONNECT_SUCCESS' })
       ModalController.close()
-    } catch {
+    } catch (error) {
       EventsController.sendEvent({ type: 'track', event: 'DISCONNECT_ERROR' })
       SnackController.showError('Failed to disconnect')
     } finally {
@@ -267,7 +271,7 @@ export class W3mAccountDefaultWidget extends LitElement {
   }
 
   private onExplorer() {
-    const { addressExplorerUrl } = AccountController.state
+    const addressExplorerUrl = AccountController.getProperty('addressExplorerUrl')
     if (addressExplorerUrl) {
       CoreHelperUtil.openHref(addressExplorerUrl, '_blank')
     }

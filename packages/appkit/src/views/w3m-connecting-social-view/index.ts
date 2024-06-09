@@ -1,6 +1,7 @@
 /* eslint-disable max-depth */
 import {
   AccountController,
+  ChainController,
   ConnectionController,
   ConnectorController,
   ModalController,
@@ -24,9 +25,9 @@ export class W3mConnectingSocialView extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() private socialProvider = AccountController.state.socialProvider
+  @state() private socialProvider = AccountController.getProperty('socialProvider')
 
-  @state() private socialWindow = AccountController.state.socialWindow
+  @state() private socialWindow = AccountController.getProperty('socialWindow')
 
   @state() protected error = false
 
@@ -40,14 +41,17 @@ export class W3mConnectingSocialView extends LitElement {
     super()
     this.unsubscribe.push(
       ...[
-        AccountController.subscribe(val => {
-          if (val.socialProvider) {
-            this.socialProvider = val.socialProvider
+        ChainController.subscribe(val => {
+          const accountState = val.activeChain
+            ? val.chains[val.activeChain]?.accountState
+            : undefined
+          if (accountState && accountState.socialProvider) {
+            this.socialProvider = accountState.socialProvider
           }
-          if (val.socialWindow) {
-            this.socialWindow = val.socialWindow
+          if (accountState && accountState.socialWindow) {
+            this.socialWindow = accountState.socialWindow
           }
-          if (val.address) {
+          if (accountState && accountState.address) {
             if (ModalController.state.open) {
               ModalController.close()
             }

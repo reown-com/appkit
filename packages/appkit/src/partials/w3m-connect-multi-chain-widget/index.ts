@@ -29,7 +29,6 @@ export class W3mConnectMultiChainWidget extends LitElement {
     const uniqueConnectorsMap: Record<string, Connector[]> = {}
     const multiChainConnectors: Partial<Connector>[] = []
 
-    console.log('>>> w3m-connect-multi-chain-widget', this.connectors)
     this.connectors.forEach(connector => {
       const name = connector.name ?? 'Unknown'
       if (uniqueConnectorsMap[name]) {

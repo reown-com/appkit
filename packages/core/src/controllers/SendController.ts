@@ -119,7 +119,7 @@ export const SendController = {
     })
 
     const to = params.receiverAddress as `0x${string}`
-    const address = AccountController.state.address as `0x${string}`
+    const address = AccountController.getProperty('address') as `0x${string}`
     const value = ConnectionController.parseUnits(
       params.sendTokenAmount.toString(),
       Number(params.decimals)
@@ -154,13 +154,13 @@ export const SendController = {
 
     try {
       if (
-        AccountController.state.address &&
+        AccountController.getProperty('address') &&
         params.sendTokenAmount &&
         params.receiverAddress &&
         params.tokenAddress
       ) {
         await ConnectionController.writeContract({
-          fromAddress: AccountController.state.address as `0x${string}`,
+          fromAddress: AccountController.getProperty('address') as `0x${string}`,
           tokenAddress: CoreHelperUtil.getPlainAddress(
             params.tokenAddress as `${string}:${string}:${string}`
           ) as `0x${string}`,

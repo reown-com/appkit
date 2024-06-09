@@ -70,8 +70,8 @@ function headings() {
     WalletSendSelectToken: 'Select Token',
     ConnectWallets: 'Connect wallet',
     ConnectSocials: 'All socials',
-    ConnectingSocial: AccountController.state.socialProvider
-      ? AccountController.state.socialProvider
+    ConnectingSocial: AccountController.getProperty('socialProvider')
+      ? AccountController.getProperty('socialProvider')
       : 'Connect Social',
     SelectChain: chainSelectConnectorName || 'Select chain'
   }

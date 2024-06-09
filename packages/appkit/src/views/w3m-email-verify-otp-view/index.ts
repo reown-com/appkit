@@ -7,7 +7,8 @@ import {
   ModalController,
   NetworkController,
   RouterController,
-  AccountController
+  AccountController,
+  ChainController
 } from '@web3modal/core'
 import { state } from 'lit/decorators.js'
 
@@ -17,14 +18,15 @@ export class W3mEmailVerifyOtpView extends W3mEmailOtpWidget {
   private unsubscribe: (() => void)[] = []
 
   // -- State ------------------------------------------- //
-  @state() private smartAccountDeployed = AccountController.state.smartAccountDeployed
+  @state() private smartAccountDeployed = AccountController.getProperty('smartAccountDeployed')
 
   public constructor() {
     super()
 
     this.unsubscribe.push(
-      AccountController.subscribeKey('smartAccountDeployed', val => {
-        this.smartAccountDeployed = val
+      ChainController.subscribe(val => {
+        const accountState = val.activeChain ? val.chains[val.activeChain]?.accountState : undefined
+        this.smartAccountDeployed = accountState?.smartAccountDeployed || undefined
       })
     )
   }

@@ -1,5 +1,4 @@
 import { AssetController } from '../controllers/AssetController.js'
-import type { Chain } from '../controllers/ChainController.js'
 import type { CaipNetwork, Connector, WcWallet } from './TypeUtil.js'
 
 export const AssetUtil = {
@@ -39,7 +38,7 @@ export const AssetUtil = {
     return undefined
   },
 
-  getChainImage(chain: Chain) {
-    return AssetController.state.chainImages[chain]
+  getChainImage(imageId: string) {
+    return AssetController.state.chainImages[imageId]
   }
 }

@@ -137,7 +137,7 @@ export class W3mOnRampActivityView extends LitElement {
   }
 
   private async fetchCoinbaseTransactions() {
-    const address = AccountController.state.address
+    const address = AccountController.getProperty('address')
     const projectId = OptionsController.state.projectId
 
     if (!address) {
@@ -172,7 +172,7 @@ export class W3mOnRampActivityView extends LitElement {
 
     // Wait 2 seconds before refetching
     this.refetchTimeout = setTimeout(async () => {
-      const address = AccountController.state.address
+      const address = AccountController.getProperty('address')
       await TransactionsController.fetchTransactions(address, 'coinbase')
       this.refetchLoadingTransactions()
     }, 3000)

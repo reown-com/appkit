@@ -91,7 +91,7 @@ export class Appkit {
   }
 
   public getWalletInfo() {
-    return AccountController.state.connectedWalletInfo
+    return AccountController.getProperty('connectedWalletInfo')
   }
 
   public subscribeWalletInfo(callback: (newState: ConnectedWalletInfo) => void) {
@@ -153,7 +153,7 @@ export class Appkit {
     AccountController.setIsConnected(isConnected, chain)
   }
 
-  public getIsConnectedState = () => AccountController.state.isConnected
+  public getIsConnectedState = () => AccountController.getProperty('isConnected')
 
   public setCaipAddress: (typeof AccountController)['setCaipAddress'] = (caipAddress, chain) => {
     AccountController.setCaipAddress(caipAddress, chain)

@@ -22,23 +22,26 @@ export class W3mWalletReceiveView extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() private address = AccountController.state.address
+  @state() private address = AccountController.getProperty('address')
 
-  @state() private profileName = AccountController.state.profileName
+  @state() private profileName = AccountController.getProperty('profileName')
 
   @state() private network = NetworkController.activeNetwork()
 
-  @state() private preferredAccountType = AccountController.state.preferredAccountType
+  @state() private preferredAccountType = AccountController.getProperty('preferredAccountType')
 
   public constructor() {
     super()
     this.unsubscribe.push(
       ...[
-        AccountController.subscribe(val => {
-          if (val.address) {
-            this.address = val.address
-            this.profileName = val.profileName
-            this.preferredAccountType = val.preferredAccountType
+        ChainController.subscribe(val => {
+          const accountState = val.activeChain
+            ? val.chains[val.activeChain]?.accountState
+            : undefined
+          if (accountState && accountState.address) {
+            this.address = accountState.address
+            this.profileName = accountState.profileName
+            this.preferredAccountType = accountState.preferredAccountType
           } else {
             SnackController.showError('Account not found')
           }
@@ -109,7 +112,7 @@ export class W3mWalletReceiveView extends LitElement {
     if (!ChainController.state.activeChain) {
       return null
     }
-    const networks = NetworkController.getRequestedCaipNetworks(true)
+    const networks = NetworkController.getRequestedCaipNetworks()
     const isNetworkEnabledForSmartAccounts = NetworkController.checkIfSmartAccountEnabled()
     const caipNetwork = NetworkController.activeNetwork()
 

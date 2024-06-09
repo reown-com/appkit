@@ -1,6 +1,7 @@
 import {
   AccountController,
   AssetUtil,
+  ChainController,
   CoreHelperUtil,
   ModalController,
   NetworkController
@@ -26,15 +27,15 @@ export class W3mAccountButton extends LitElement {
 
   @property() public charsEnd?: WuiAccountButton['charsEnd'] = 6
 
-  @state() private address = AccountController.state.address
+  @state() private address = AccountController.getProperty('address')
 
-  @state() private balanceVal = AccountController.state.balance
+  @state() private balanceVal = AccountController.getProperty('balance')
 
-  @state() private balanceSymbol = AccountController.state.balanceSymbol
+  @state() private balanceSymbol = AccountController.getProperty('balanceSymbol')
 
-  @state() private profileName = AccountController.state.profileName
+  @state() private profileName = AccountController.getProperty('profileName')
 
-  @state() private profileImage = AccountController.state.profileImage
+  @state() private profileImage = AccountController.getProperty('profileImage')
 
   @state() private network = NetworkController.activeNetwork()
 
@@ -45,13 +46,16 @@ export class W3mAccountButton extends LitElement {
     super()
     this.unsubscribe.push(
       ...[
-        AccountController.subscribe(val => {
-          if (val.isConnected) {
-            this.address = val.address
-            this.balanceVal = val.balance
-            this.profileName = val.profileName
-            this.profileImage = val.profileImage
-            this.balanceSymbol = val.balanceSymbol
+        ChainController.subscribe(val => {
+          const accountState = val.activeChain
+            ? val.chains[val.activeChain]?.accountState
+            : undefined
+          if (accountState && accountState.isConnected) {
+            this.address = accountState.address
+            this.balanceVal = accountState.balance
+            this.profileName = accountState.profileName
+            this.profileImage = accountState.profileImage
+            this.balanceSymbol = accountState.balanceSymbol
           } else {
             this.address = ''
             this.balanceVal = ''

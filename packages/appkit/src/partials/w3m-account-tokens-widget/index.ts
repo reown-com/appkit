@@ -1,4 +1,4 @@
-import { AccountController, RouterController } from '@web3modal/core'
+import { AccountController, ChainController, RouterController } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
@@ -12,14 +12,17 @@ export class W3mAccountTokensWidget extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() private tokenBalance = AccountController.state.tokenBalance
+  @state() private tokenBalance = AccountController.getProperty('tokenBalance')
 
   public constructor() {
     super()
     this.unsubscribe.push(
       ...[
-        AccountController.subscribe(val => {
-          this.tokenBalance = val.tokenBalance
+        ChainController.subscribe(val => {
+          const accountState = val.activeChain
+            ? val.chains[val.activeChain]?.accountState
+            : undefined
+          this.tokenBalance = accountState?.tokenBalance || undefined
         })
       ]
     )

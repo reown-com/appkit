@@ -29,7 +29,7 @@ type ChainProps = Partial<NetworkControllerState> & {
 
 export interface ChainControllerState {
   multiChainEnabled: boolean
-  activeChain: any
+  activeChain: 'evm' | 'solana' | undefined
   activeCaipNetwork: any
   chains: Record<Chain, ChainProps>
 }
@@ -97,10 +97,22 @@ export const ChainController = {
       })
     })
     const networks = this.getRequestedCaipNetworks()
-    console.log('>>> [ChainController] initialize networks', networks)
     if (!state.activeCaipNetwork) {
       state.activeCaipNetwork = networks?.[0]
     }
+  },
+
+  getAccountProp(prop: keyof AccountControllerState) {
+    if (!this.state.activeChain) {
+      console.warn(`>>> Chain is required to get account prop ${prop}`)
+      return undefined
+    }
+
+    if (state.chains[this.state.activeChain].accountState) {
+      return state.chains[this.state.activeChain].accountState[prop]
+    }
+
+    return undefined
   },
 
   setAccountProp(
@@ -108,9 +120,9 @@ export const ChainController = {
     value: AccountControllerState[keyof AccountControllerState],
     chain?: Chain
   ) {
-    console.log('>>> [ChainController] setAccountProp', prop, value, chain)
     if (!chain) {
-      throw new Error('Chain is required to set account prop')
+      console.warn(`Chain is required to set account prop ${prop}: ${value}`)
+      return
     }
 
     if (state.chains[chain].accountState) {
@@ -146,17 +158,12 @@ export const ChainController = {
   },
 
   setActiveChain(chain?: Chain) {
-    console.log('>>> [ChainController] setActiveChain', chain)
     // const allCaipNetworkIds = this.getApprovedCaipNetworkIds()
     // const chainCaipNetworks = allCaipNetworkIds?.filter(network =>network.id === chain)
 
     if (chain) {
       state.activeChain = chain
       if (!state.activeCaipNetwork) {
-        console.log(
-          '>>> [ChainController] activeCaipNetwork',
-          state.chains[chain].requestedCaipNetworks?.[0]
-        )
         state.activeCaipNetwork = state.chains[chain].requestedCaipNetworks?.[0]
       }
     }
@@ -180,7 +187,6 @@ export const ChainController = {
   },
 
   setRequestedCaipNetworks(requestedNetworks: ChainOptions['requestedCaipNetworks'], chain: Chain) {
-    console.log('>>> [ChainController] setRequestedCaipNetworks', requestedNetworks, chain)
     state.chains[chain].requestedCaipNetworks = requestedNetworks
   },
 
@@ -219,7 +225,6 @@ export const ChainController = {
   },
 
   getApprovedCaipNetworkIds(chain?: Chain) {
-    console.log('>>> [ChainController] getApprovedCaipNetworkIds of', chain)
     if (chain) {
       return state.chains[chain].approvedCaipNetworkIds
     }
@@ -241,34 +246,34 @@ export const ChainController = {
       | undefined,
     chain: Chain
   ) {
-    console.log('>>> [ChainController] setApprovedCaipNetworksData', data?.approvedCaipNetworkIds)
-
     state.chains[chain].approvedCaipNetworkIds = data?.approvedCaipNetworkIds
     state.chains[chain].supportsAllNetworks = data?.supportsAllNetworks
   },
 
   async switchActiveNetwork(network: NetworkControllerState['caipNetwork'], chain: Chain) {
+    // TODO(enes): Add logic to switch chain
     state.chains[chain].caipNetwork = network
     state.activeCaipNetwork = network
     state.activeChain = chain
   },
 
+  switchChain(newChain: Chain) {
+    state.activeChain = newChain
+    this.setCaipNetwork(state.chains[newChain].caipNetwork, newChain)
+  },
+
   checkIfSupportedNetwork(chain: Chain, activeCaipNetworkId: CaipNetworkId | undefined) {
-    console.log('>>> [ChainController] checkIfSupportedNetwork', chain, activeCaipNetworkId)
     const requestedCaipNetworks = state.chains[chain].requestedCaipNetworks
     return requestedCaipNetworks?.some(network => network.id === activeCaipNetworkId) ? false : true
   },
 
   resetNetwork(chain: Chain) {
-    state.activeCaipNetwork = undefined
-    state.activeChain = undefined
     state.chains[chain].approvedCaipNetworkIds = undefined
     state.chains[chain].supportsAllNetworks = true
     state.chains[chain].smartAccountEnabledNetworks = []
   },
 
   showUnsupportedChainUI() {
-    console.log('>>> [ChainController] showUnsupportedChainUI')
     setTimeout(() => {
       ModalController.open({ view: 'UnsupportedChain' })
     }, 300)

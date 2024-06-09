@@ -52,6 +52,15 @@ export const AccountController = {
     return subKey(state, key, callback)
   },
 
+  getProperty<K extends StateKey>(key: K): AccountControllerState[K] {
+    if (ChainController.state.multiChainEnabled) {
+      // @ts-ignore
+      return ChainController.getAccountProp(key)
+    }
+
+    return state[key]
+  },
+
   setIsConnected(isConnected: AccountControllerState['isConnected'], chain?: Chain) {
     if (ChainController.state.multiChainEnabled) {
       ChainController.setAccountProp('isConnected', true, chain)
@@ -63,6 +72,12 @@ export const AccountController = {
   setCaipAddress(caipAddress: AccountControllerState['caipAddress'], chain?: Chain) {
     if (ChainController.state.multiChainEnabled) {
       ChainController.setAccountProp('isConnected', true, chain)
+      ChainController.setAccountProp('caipAddress', caipAddress, chain)
+      ChainController.setAccountProp(
+        'address',
+        caipAddress ? CoreHelperUtil.getPlainAddress(caipAddress) : undefined,
+        chain
+      )
     }
 
     state.caipAddress = caipAddress
@@ -75,7 +90,8 @@ export const AccountController = {
     chain?: Chain
   ) {
     if (ChainController.state.multiChainEnabled) {
-      ChainController.setAccountProp('isConnected', true, chain)
+      ChainController.setAccountProp('balance', balance, chain)
+      ChainController.setAccountProp('balanceSymbol', balanceSymbol, chain)
     }
 
     state.balance = balance
@@ -84,7 +100,7 @@ export const AccountController = {
 
   setProfileName(profileName: AccountControllerState['profileName'], chain?: Chain) {
     if (ChainController.state.multiChainEnabled) {
-      ChainController.setAccountProp('isConnected', true, chain)
+      ChainController.setAccountProp('profileName', profileName, chain)
     }
 
     state.profileName = profileName

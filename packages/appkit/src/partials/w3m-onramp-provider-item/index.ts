@@ -56,7 +56,7 @@ export class W3mOnRampProviderItem extends LitElement {
     if (!ChainController.state.activeChain) {
       return null
     }
-    const networks = NetworkController.getRequestedCaipNetworks(true)
+    const networks = NetworkController.getRequestedCaipNetworks()
     const slicedNetworks = networks?.filter(network => network?.imageId)?.slice(0, 5)
 
     return html`

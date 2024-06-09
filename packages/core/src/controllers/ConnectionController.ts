@@ -75,7 +75,10 @@ export const ConnectionController = {
         throw new Error('ConnectionController chain not set')
       }
 
-      return ChainController.getConnectionControllerClient(chain) as ConnectionControllerClient
+      const client = ChainController.getConnectionControllerClient(
+        chain
+      ) as ConnectionControllerClient
+      return client
     }
 
     if (!state._client) {
@@ -141,7 +144,7 @@ export const ConnectionController = {
   },
 
   checkInstalled(ids?: string[], chain?: Chain) {
-    return this._getClient(chain)?.checkInstalled?.(ids) || false
+    return this._getClient(chain).checkInstalled?.(ids) || false
   },
 
   resetWcConnection() {
@@ -173,10 +176,12 @@ export const ConnectionController = {
 
   async disconnect() {
     const chain = ChainController.state.activeChain
-    console.log('>>> ConnectionController.disconnect', chain, this._getClient(chain))
-    await this._getClient(chain)?.disconnect()
-    StorageUtil.removeConnectedWalletImageUrl()
-
-    this.resetWcConnection()
+    const client = this._getClient(chain)
+    try {
+      await client.disconnect()
+      StorageUtil.removeConnectedWalletImageUrl()
+    } catch (error) {
+      throw new Error('Failed to disconnect')
+    }
   }
 }

@@ -1,6 +1,7 @@
 import type { Connector } from '@web3modal/core'
 import {
   AssetUtil,
+  ChainController,
   ConnectionController,
   ConnectorController,
   CoreHelperUtil,
@@ -37,6 +38,7 @@ export class W3mConnectInjectedWidget extends LitElement {
     const injectedConnectors = this.connectors
       .filter(connector => connector.type === 'INJECTED')
       .filter(connector => connector.name !== 'Phantom')
+    // TODO(enes): remove phantom related logics
 
     if (
       !injectedConnectors?.length ||
@@ -48,18 +50,20 @@ export class W3mConnectInjectedWidget extends LitElement {
 
       return null
     }
-    this.style.cssText = `display: block`
 
-    console.log('>>> injectedConnectors: ', injectedConnectors)
+    if (!ConnectionController.checkInstalled(undefined, ChainController.state.activeChain)) {
+      this.style.cssText = `display: none`
+
+      return null
+    }
+
+    this.style.cssText = `display: block`
 
     return html`
       <wui-flex flexDirection="column" gap="xs">
         ${injectedConnectors.map(connector => {
           if (!CoreHelperUtil.isMobile() && connector.name === 'Browser Wallet') {
-            return null
-          }
-
-          if (!ConnectionController.checkInstalled()) {
+            this.style.cssText = `display: none`
             return null
           }
 
