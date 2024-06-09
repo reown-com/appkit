@@ -56,7 +56,7 @@ export const PresetsUtil = {
     2020: 'b8101fc0-9c19-4b6f-ec65-f6dfff106e00',
     // Saigon Testnet (a.k.a. Ronin)
     2021: 'b8101fc0-9c19-4b6f-ec65-f6dfff106e00',
-    // Solana chains
+    // Solana networks
     '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': 'a1b58899-f671-4276-6a5e-56ca5bd59700',
     '4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z': 'a1b58899-f671-4276-6a5e-56ca5bd59700',
     EtWTRABZaYq6iMfeYKouRu166VU2xqa1: 'a1b58899-f671-4276-6a5e-56ca5bd59700'
