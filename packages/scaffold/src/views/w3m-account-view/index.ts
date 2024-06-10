@@ -1,4 +1,4 @@
-import { OptionsController, StorageUtil } from '@web3modal/core'
+import { ConnectorController, StorageUtil } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 
@@ -8,9 +8,10 @@ export class W3mAccountView extends LitElement {
 
   public override render() {
     const type = StorageUtil.getConnectedConnector()
+    const authConnector = ConnectorController.getAuthConnector()
 
     return html`
-      ${OptionsController.state.enableWalletFeatures && type === 'AUTH'
+      ${authConnector?.walletFeatures && type === 'AUTH'
         ? this.walletFeaturesTemplate()
         : this.defaultTemplate()}
     `
