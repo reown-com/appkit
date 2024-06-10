@@ -122,7 +122,7 @@ export class ModalPage {
     await expect(
       this.page.getByText(email),
       `Expected current email: ${email} to be visible on the notification screen`
-    ).ctoBeVisible({
+    ).toBeVisible({
       timeout: 20_000
     })
   }
