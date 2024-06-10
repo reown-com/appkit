@@ -262,6 +262,7 @@ export class Web3Modal extends Web3ModalScaffold {
       /*
        * Brave browser doesn't inject window.solflare immediately
        * so there is delay to detect injected wallets
+       * issue: https://github.com/anza-xyz/wallet-adapter/issues/329
        */
       if (
         window.navigator.brave !== undefined &&
