@@ -175,11 +175,14 @@ export class ModalPage {
     await expect(this.page.getByText(headerTitle)).not.toBeVisible()
   }
 
-  async disconnect() {
+  async disconnect(auth?: boolean) {
     const accountBtn = this.page.getByTestId('account-button')
     await expect(accountBtn, 'Account button should be visible').toBeVisible()
     await expect(accountBtn, 'Account button should be enabled').toBeEnabled()
     await accountBtn.click()
+    if (auth) {
+      await this.page.getByTestId('w3m-profile-button').click()
+    }
     const disconnectBtn = this.page.getByTestId('disconnect-button')
     await expect(disconnectBtn, 'Disconnect button should be visible').toBeVisible()
     await expect(disconnectBtn, 'Disconnect button should be enabled').toBeEnabled()
@@ -218,6 +221,8 @@ export class ModalPage {
 
   async clickWalletUpgradeCard(context: BrowserContext) {
     await this.page.getByTestId('account-button').click()
+
+    await this.page.getByTestId('w3m-profile-button').click()
     await this.page.getByTestId('w3m-wallet-upgrade-card').click()
 
     const page = await doActionAndWaitForNewPage(
@@ -241,9 +246,14 @@ export class ModalPage {
     await this.page.getByTestId('w3m-connecting-siwe-cancel').click()
   }
 
-  async switchNetwork(network: string) {
+  async switchNetwork(network: string, auth?: boolean) {
     await this.page.getByTestId('account-button').click()
-    await this.page.getByTestId('w3m-account-select-network').click()
+    if (auth) {
+      await this.page.getByTestId('w3m-profile-button').click()
+      await this.page.getByTestId('account-switch-network-button').click()
+    } else {
+      await this.page.getByTestId('w3m-account-select-network').click()
+    }
     await this.page.getByTestId(`w3m-network-switch-${network}`).click()
   }
 

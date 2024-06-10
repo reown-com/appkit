@@ -1,5 +1,5 @@
 import { expect } from '@playwright/test'
-import type { Page } from '@playwright/test'
+import type { Locator, Page } from '@playwright/test'
 import { ConstantsUtil } from '../../../src/utils/ConstantsUtil'
 import { getMaximumWaitConnections } from '../utils/timeouts'
 import { verifySignature } from '../../../src/utils/SignatureUtil'
@@ -84,9 +84,13 @@ export class ModalValidator {
     // We use Chakra Toast and it's not quite straightforward to set the `data-testid` attribute on the toast element.
     await expect(this.page.getByText(ConstantsUtil.SigningFailedToastTitle)).toBeVisible()
   }
-
-  async expectSwitchedNetwork(network: string) {
-    const switchNetworkButton = this.page.getByTestId('w3m-account-select-network')
+  async expectSwitchedNetwork(network: string, auth?: boolean) {
+    let switchNetworkButton: Locator | null = null
+    if (auth) {
+      switchNetworkButton = this.page.getByTestId('account-switch-network-button')
+    } else {
+      switchNetworkButton = this.page.getByTestId('w3m-account-select-network')
+    }
     await expect(switchNetworkButton).toBeVisible()
     await expect(switchNetworkButton, `Switched network should include ${network}`).toContainText(
       network

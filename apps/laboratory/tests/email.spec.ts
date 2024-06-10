@@ -26,16 +26,16 @@ testMEmail('it should reject sign', async ({ modalPage, modalValidator }) => {
 
 testMEmail('it should switch network and sign', async ({ modalPage, modalValidator }) => {
   let targetChain = 'Polygon'
-  await modalPage.switchNetwork(targetChain)
-  await modalValidator.expectSwitchedNetwork(targetChain)
+  await modalPage.switchNetwork(targetChain, true)
+  await modalValidator.expectSwitchedNetwork(targetChain, true)
   await modalPage.closeModal()
   await modalPage.sign()
   await modalPage.approveSign()
   await modalValidator.expectAcceptedSign()
 
   targetChain = 'Ethereum'
-  await modalPage.switchNetwork(targetChain)
-  await modalValidator.expectSwitchedNetwork(targetChain)
+  await modalPage.switchNetwork(targetChain, true)
+  await modalValidator.expectSwitchedNetwork(targetChain, true)
   await modalPage.closeModal()
   await modalPage.sign()
   await modalPage.approveSign()
@@ -43,6 +43,6 @@ testMEmail('it should switch network and sign', async ({ modalPage, modalValidat
 })
 
 testMEmail('it should disconnect correctly', async ({ modalPage, modalValidator }) => {
-  await modalPage.disconnect()
+  await modalPage.disconnect(true)
   await modalValidator.expectDisconnected()
 })
