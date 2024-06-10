@@ -109,7 +109,7 @@ export const solana = {
   name: 'Solana',
   currency: 'SOL',
   explorerUrl: 'https://solscan.io',
-  rpcUrl: 'https://rpc.walletconnect.com/v1'
+  rpcUrl: 'https://rpc.walletconnect.org/v1'
 }
 
 export const solanaTestnet = {
