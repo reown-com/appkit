@@ -1,5 +1,4 @@
 import type { ModalFixture } from './w3m-fixture'
-import { ModalValidator } from '../validators/ModalValidator'
 import { Email } from '../utils/email'
 import { ModalWalletValidator } from '../validators/ModalWalletValidator'
 import { timingFixture } from './timing-fixture'
