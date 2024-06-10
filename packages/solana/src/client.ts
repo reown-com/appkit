@@ -259,7 +259,10 @@ export class Web3Modal extends Web3ModalScaffold {
       this.checkActiveProviders()
       this.syncConnectors()
       let timer = 0
-      // Brave browser delay to detect injected wallets
+      /*
+       * Brave browser doesn't inject window.solflare immediately
+       * so there is delay to detect injected wallets
+       */
       if (
         window.navigator.brave !== undefined &&
         window.navigator.brave.isBrave.name === 'isBrave'
@@ -347,7 +350,6 @@ export class Web3Modal extends Web3ModalScaffold {
   private syncConnectors() {
     const w3mConnectors: Connector[] = []
 
-    syncInjectedWallets(w3mConnectors, this.walletAdapters)
 
     const connectorType = PresetsUtil.ConnectorTypesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID]
     if (connectorType) {
@@ -361,6 +363,7 @@ export class Web3Modal extends Web3ModalScaffold {
       })
     }
 
+    syncInjectedWallets(w3mConnectors, this.walletAdapters)
     this.setConnectors(w3mConnectors)
   }
 
