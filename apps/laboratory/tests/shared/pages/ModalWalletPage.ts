@@ -7,7 +7,7 @@ export class ModalWalletPage extends ModalPage {
   constructor(
     public override readonly page: Page,
     public override readonly library: string,
-    public override readonly flavor: 'wallet' | 'all' = 'wallet'
+    public override readonly flavor: 'wallet' | 'all' = 'all'
   ) {
     super(page, library, flavor)
   }
@@ -17,13 +17,11 @@ export class ModalWalletPage extends ModalPage {
   }
 
   override async switchNetwork(network: string) {
-    await this.page.getByTestId('w3m-profile-button').click()
     await this.page.getByTestId('account-switch-network-button').click()
     await this.page.getByTestId(`w3m-network-switch-${network}`).click()
   }
 
   async togglePreferredAccountType() {
-    await this.page.getByTestId('w3m-profile-button').click()
     const toggleButton = this.page.getByTestId('account-toggle-preferred-account-type')
     await expect(toggleButton, 'Toggle button should be visible').toBeVisible()
     await expect(toggleButton, 'Toggle button should be enabled').toBeEnabled()
@@ -31,7 +29,6 @@ export class ModalWalletPage extends ModalPage {
   }
 
   override async disconnect(): Promise<void> {
-    await this.page.getByTestId('w3m-profile-button').click()
     const disconnectBtn = this.page.getByTestId('disconnect-button')
     await expect(disconnectBtn, 'Disconnect button should be visible').toBeVisible()
     await expect(disconnectBtn, 'Disconnect button should be enabled').toBeEnabled()
