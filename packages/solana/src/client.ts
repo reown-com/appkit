@@ -350,7 +350,6 @@ export class Web3Modal extends Web3ModalScaffold {
   private syncConnectors() {
     const w3mConnectors: Connector[] = []
 
-
     const connectorType = PresetsUtil.ConnectorTypesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID]
     if (connectorType) {
       w3mConnectors.push({
