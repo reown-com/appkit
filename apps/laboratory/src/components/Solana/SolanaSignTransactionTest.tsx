@@ -13,7 +13,7 @@ import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/solana/rea
 import { solana } from '../../utils/ChainsUtil'
 import { useChakraToast } from '../Toast'
 
-const PHANTOM_DEVNET_ADDRESS = 'EmT8r4E8ZjoQgt8sXGbaWBRMKfUXsVT1wonoSnJZ4nBn'
+const PHANTOM_DEVNET_ADDRESS = '8vCyX7oB6Pc3pbWMGYYZF5pbSnAdQ7Gyr32JqxqCy8ZR'
 const recipientAddress = new PublicKey(PHANTOM_DEVNET_ADDRESS)
 const amountInLamports = 100000000
 
