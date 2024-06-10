@@ -6,6 +6,7 @@ import { ThemeStore } from '../../utils/StoreUtil'
 import { EthersConstants } from '../../utils/EthersConstants'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { siweConfig } from '../../utils/SiweUtils'
+import { EthersModalInfo } from '../../components/Ethers/EthersModalInfo'
 
 const modal = createWeb3Modal({
   ethersConfig: defaultConfig({
@@ -28,6 +29,7 @@ export default function EthersSiwe() {
   return (
     <>
       <Web3ModalButtons />
+      <EthersModalInfo />
       <SiweData />
       <EthersTests />
     </>
