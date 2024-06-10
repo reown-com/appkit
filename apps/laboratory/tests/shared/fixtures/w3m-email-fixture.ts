@@ -22,7 +22,7 @@ export const testMEmail = timingFixture.extend<ModalFixture>({
     await use(modalPage)
   },
   modalValidator: async ({ modalPage }, use) => {
-    const modalValidator = new ModalValidator(modalPage.page)
+    const modalValidator = new ModalWalletValidator(modalPage.page)
     await use(modalValidator)
   }
 })
