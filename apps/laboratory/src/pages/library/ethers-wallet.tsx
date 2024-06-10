@@ -21,7 +21,6 @@ const modal = createWeb3Modal({
   metadata: ConstantsUtil.Metadata,
   termsConditionsUrl: 'https://walletconnect.com/terms',
   privacyPolicyUrl: 'https://walletconnect.com/privacy',
-  enableOnramp: true,
   customWallets: ConstantsUtil.CustomWallets,
   enableWalletFeatures: true
 })
