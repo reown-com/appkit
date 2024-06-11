@@ -19,6 +19,7 @@ export interface OptionsControllerState {
   enableAnalytics?: boolean
   metadata?: Metadata
   enableOnramp?: boolean
+  disableAppend?: boolean
 }
 
 type StateKey = keyof OptionsControllerState
@@ -92,6 +93,10 @@ export const OptionsController = {
 
   setOnrampEnabled(enableOnramp: OptionsControllerState['enableOnramp']) {
     state.enableOnramp = enableOnramp
+  },
+
+  setDisableAppend(disableAppend: OptionsControllerState['disableAppend']) {
+    state.disableAppend = disableAppend
   },
 
   getSnapshot() {
