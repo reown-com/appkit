@@ -10,6 +10,7 @@ export interface ConfigOptions {
     email?: boolean
     socials?: SocialProvider[]
     showWallets?: boolean
+    walletFeatures?: boolean
   }
   enableInjected?: boolean
   rpcUrl?: string
@@ -26,7 +27,8 @@ export function defaultConfig(options: ConfigOptions) {
     enableInjected = true,
     auth = {
       email: true,
-      showWallets: true
+      showWallets: true,
+      walletFeatures: true
     },
     metadata,
     rpcUrl,
@@ -104,6 +106,7 @@ export function defaultConfig(options: ConfigOptions) {
   if (auth) {
     auth.email ??= true
     auth.showWallets ??= true
+    auth.walletFeatures ??= true
     providers.auth = auth
   }
 
