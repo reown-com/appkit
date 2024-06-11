@@ -208,7 +208,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
     this.walletAdapters = createWalletAdapters(chain?.chainId)
     this.WalletConnectConnector = new WalletConnectConnector({
-      relayerRegion: 'wss://relay.walletconnect.com',
+      relayerRegion: 'wss://relay.walletconnect.org',
       metadata,
       chains,
       qrcode: true
@@ -255,9 +255,36 @@ export class Web3Modal extends Web3ModalScaffold {
       }
     })
 
-    if (typeof window === 'object') {
+    if (CoreHelperUtil.isClient()) {
       this.checkActiveProviders()
       this.syncConnectors()
+      let timer = 0
+      /*
+       * Brave browser doesn't inject window.solflare immediately
+       * so there is delay to detect injected wallets
+       * issue: https://github.com/anza-xyz/wallet-adapter/issues/329
+       */
+      if (
+        window.navigator.brave !== undefined &&
+        window.navigator.brave.isBrave.name === 'isBrave'
+      ) {
+        timer = 100
+      }
+
+      const checkWallet = () => {
+        if (window.solflare) {
+          this.checkActiveProviders()
+          this.syncConnectors()
+        } else {
+          setTimeout(() => {
+            checkWallet()
+          }, timer)
+        }
+      }
+
+      setTimeout(() => {
+        checkWallet()
+      }, timer)
     }
   }
 
@@ -337,7 +364,6 @@ export class Web3Modal extends Web3ModalScaffold {
     }
 
     syncInjectedWallets(w3mConnectors, this.walletAdapters)
-
     this.setConnectors(w3mConnectors)
   }
 
