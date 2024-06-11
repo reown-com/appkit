@@ -1,3 +1,5 @@
+import { resolve } from 'path'
+
 import { defineConfig } from 'vite'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 
@@ -5,9 +7,10 @@ import { nodePolyfills } from 'vite-plugin-node-polyfills'
 export default defineConfig({
   build: {
     lib: {
-      entry: 'index.ts',
-      name: 'cdn-wagmi',
-      fileName: 'cdn-wagmi'
+      entry: {
+        wagmi: resolve(__dirname, 'lib/wagmi.ts'),
+        ethers: resolve(__dirname, 'lib/ethers.ts')
+      }
     }
   },
   plugins: [

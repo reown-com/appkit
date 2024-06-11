@@ -78,8 +78,12 @@
       "cache": false,
       "persistent": true
     },
-    "build": {
+    "build:cdn": {
       "dependsOn": ["^build:client"],
+      "cache": false
+    },
+    "build": {
+      "dependsOn": ["build:cdn"],
       "cache": false,
       "persistent": true
     },

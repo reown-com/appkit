@@ -1,12 +1,13 @@
 {
   "name": "@web3modal/cdn",
   "version": "4.2.3",
-  "main": "dist/cdn-wagmi.umd.cjs",
+  "main": "dist/wagmi.js",
   "type": "module",
   "files": [
     "dist"
   ],
   "scripts": {
+    "build:clean": "rm -rf dist",
     "build:cdn": "tsc && vite build",
     "watch": "npx tsc --watch",
     "upload": "npm run build && npm publish --public"
@@ -27,6 +28,7 @@
     "@wagmi/connectors": "5.0.8",
     "@wagmi/core": "2.10.5",
     "@web3modal/wagmi": "4.2.3",
+    "@web3modal/ethers": "4.2.3",
     "viem": "2.10.3",
     "vite": "5.2.11"
   }
