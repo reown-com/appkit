@@ -1407,7 +1407,8 @@ export class Web3Modal extends Web3ModalScaffold {
         provider: this.authProvider,
         email: auth?.email,
         socials: auth?.socials,
-        showWallets: auth?.showWallets === undefined ? true : auth.showWallets
+        showWallets: auth?.showWallets === undefined ? true : auth.showWallets,
+        walletFeatures: auth?.walletFeatures
       })
 
       super.setLoading(true)

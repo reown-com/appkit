@@ -588,6 +588,7 @@ export class Web3Modal extends Web3ModalScaffold {
       email: boolean
       socials: SocialProvider[]
       showWallets?: boolean
+      walletFeatures?: boolean
     }
 
     if (authConnector) {
@@ -599,7 +600,8 @@ export class Web3Modal extends Web3ModalScaffold {
         provider,
         email: authConnector.email,
         socials: authConnector.socials,
-        showWallets: authConnector.showWallets
+        showWallets: authConnector.showWallets,
+        walletFeatures: authConnector.walletFeatures
       })
     }
   }

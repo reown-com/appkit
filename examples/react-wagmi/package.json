@@ -13,7 +13,7 @@
     "react-dom": "18.2.0",
     "vite": "5.2.11",
     "viem": "2.10.3",
-    "wagmi": "2.9.9"
+    "wagmi": "2.9.10"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "4.2.1",
