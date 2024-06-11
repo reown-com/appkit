@@ -84,7 +84,8 @@
     },
     "build": {
       "dependsOn": ["build:cdn"],
-      "cache": false
+      "cache": false,
+      "persistent": true
     },
     "build:gallery": {
       "outputs": ["out/**"],
