@@ -1,11 +1,10 @@
 {
   "compilerOptions": {
-    "composite": true,
-    "outDir": "./dist/esm",
-    "declarationDir": "./dist/types",
-    "baseUrl": "../../",
+    "target": "ES2021",
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
+    "composite": true,
+    "baseUrl": "../../",
     "declaration": true,
     "noEmit": true,
     "noImplicitAny": true,

@@ -1,12 +1,13 @@
 {
   "name": "@web3modal/cdn",
   "version": "4.2.3",
-  "main": "dist/cdn-wagmi.umd.cjs",
+  "main": "dist/wagmi.umd.cjs",
   "type": "module",
   "files": [
     "dist"
   ],
   "scripts": {
+    "build:clean": "rm -rf dist",
     "build:cdn": "tsc && vite build",
     "watch": "npx tsc --watch",
     "upload": "npm run build && npm publish --public"

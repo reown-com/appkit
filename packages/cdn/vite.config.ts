@@ -5,9 +5,9 @@ import { nodePolyfills } from 'vite-plugin-node-polyfills'
 export default defineConfig({
   build: {
     lib: {
-      entry: 'index.ts',
-      name: 'cdn-wagmi',
-      fileName: 'cdn-wagmi'
+      entry: 'wagmi.ts',
+      name: 'wagmi',
+      fileName: 'wagmi'
     }
   },
   plugins: [

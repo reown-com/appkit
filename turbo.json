@@ -78,10 +78,13 @@
       "cache": false,
       "persistent": true
     },
-    "build": {
+    "build:cdn": {
       "dependsOn": ["^build:client"],
-      "cache": false,
-      "persistent": true
+      "cache": false
+    },
+    "build": {
+      "dependsOn": ["build:cdn"],
+      "cache": false
     },
     "build:gallery": {
       "outputs": ["out/**"],
