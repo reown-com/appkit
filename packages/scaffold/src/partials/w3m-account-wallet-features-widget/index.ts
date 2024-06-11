@@ -101,6 +101,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
         icon="chevronBottom"
         avatarSrc=${ifDefined(this.profileImage ? this.profileImage : undefined)}
         profileName=${this.profileName}
+        data-testid="w3m-profile-button"
       ></wui-profile-button>
       ${this.tokenBalanceTemplate()}
       <wui-flex gap="s">

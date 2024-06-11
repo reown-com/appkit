@@ -1,6 +1,4 @@
 import type { ModalFixture } from './w3m-fixture'
-import { ModalPage } from '../pages/ModalPage'
-import { ModalValidator } from '../validators/ModalValidator'
 import { Email } from '../utils/email'
 import { ModalWalletValidator } from '../validators/ModalWalletValidator'
 import { timingFixture } from './timing-fixture'
@@ -9,7 +7,7 @@ import { ModalWalletPage } from '../pages/ModalWalletPage'
 export const testMEmail = timingFixture.extend<ModalFixture>({
   library: ['wagmi', { option: true }],
   modalPage: async ({ page, library, context }, use, testInfo) => {
-    const modalPage = new ModalPage(page, library, 'email')
+    const modalPage = new ModalWalletPage(page, library, 'email')
     await modalPage.load()
 
     const mailsacApiKey = process.env['MAILSAC_API_KEY']
@@ -23,7 +21,7 @@ export const testMEmail = timingFixture.extend<ModalFixture>({
     await use(modalPage)
   },
   modalValidator: async ({ modalPage }, use) => {
-    const modalValidator = new ModalValidator(modalPage.page)
+    const modalValidator = new ModalWalletValidator(modalPage.page)
     await use(modalValidator)
   }
 })
