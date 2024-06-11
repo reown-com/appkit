@@ -89,7 +89,9 @@ export class W3mConnectingSiweView extends LitElement {
       type: 'track',
       properties: {
         network: NetworkController.state.caipNetwork?.id || '',
-        isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount'
+        isSmartAccount:
+          AccountController.state.preferredAccountType ===
+          W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })
     try {
@@ -101,7 +103,9 @@ export class W3mConnectingSiweView extends LitElement {
         type: 'track',
         properties: {
           network: NetworkController.state.caipNetwork?.id || '',
-          isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount'
+          isSmartAccount:
+            AccountController.state.preferredAccountType ===
+            W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
         }
       })
 
@@ -143,7 +147,9 @@ export class W3mConnectingSiweView extends LitElement {
       type: 'track',
       properties: {
         network: NetworkController.state.caipNetwork?.id || '',
-        isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount'
+        isSmartAccount:
+          AccountController.state.preferredAccountType ===
+          W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })
   }
