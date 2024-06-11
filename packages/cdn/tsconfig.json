@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "outDir": "./dist/esm",
+    "declarationDir": "./dist/types",
+    "baseUrl": "../../",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "declaration": true,
+    "noEmit": true,
+    "noImplicitAny": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "useUnknownInCatchVariables": true,
+    "alwaysStrict": true
+  },
+  "extends": "../../tsconfig.json",
+  "exclude": ["/dist", "dist/**/*.d.ts"]
+}
