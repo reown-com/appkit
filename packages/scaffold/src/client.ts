@@ -302,7 +302,7 @@ export class Web3ModalScaffold {
     if (options.enableOnramp) {
       OptionsController.setOnrampEnabled(Boolean(options.enableOnramp))
     }
-    
+
     if (options.disableAppend) {
       OptionsController.setDisableAppend(Boolean(options.disableAppend))
     }
