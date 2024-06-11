@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build:clean": "turbo run build:clean",
-    "build": "turbo run build:clean; turbo run build",
+    "build": "turbo run build:clean; turbo run build --concurrency=30",
     "watch": "turbo run watch --concurrency=50 --continue",
     "gallery": "turbo run dev:gallery",
     "laboratory": "turbo run dev:laboratory",
@@ -47,6 +47,7 @@
     "packages/ethers",
     "packages/ethers5",
     "packages/solana",
+    "packages/cdn",
     "apps/*",
     "examples/*"
   ],
