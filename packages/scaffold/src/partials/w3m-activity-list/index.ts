@@ -278,7 +278,8 @@ export class W3mActivityList extends LitElement {
           properties: {
             address: this.address,
             projectId,
-            cursor: this.next
+            cursor: this.next,
+            isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount'
           }
         })
       }

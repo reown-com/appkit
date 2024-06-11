@@ -4,6 +4,7 @@ import { OptionsController } from './OptionsController.js'
 import { EventsController } from './EventsController.js'
 import { SnackController } from './SnackController.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
+import { AccountController } from './AccountController.js'
 
 // -- Types --------------------------------------------- //
 type TransactionByMonthMap = Record<number, Transaction[]>
@@ -80,7 +81,8 @@ export const TransactionsController = {
         properties: {
           address: accountAddress,
           projectId,
-          cursor: state.next
+          cursor: state.next,
+          isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount'
         }
       })
       SnackController.showError('Failed to fetch transactions')

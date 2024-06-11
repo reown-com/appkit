@@ -41,6 +41,7 @@ export class W3mAccountDefaultWidget extends LitElement {
 
   @state() private balanceSymbol = AccountController.state.balanceSymbol
 
+
   public constructor() {
     super()
     this.unsubscribe.push(
@@ -245,7 +246,11 @@ export class W3mAccountDefaultWidget extends LitElement {
   }
 
   private onTransactions() {
-    EventsController.sendEvent({ type: 'track', event: 'CLICK_TRANSACTIONS' })
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'CLICK_TRANSACTIONS',
+      properties: { isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount' }
+    })
     RouterController.push('Transactions')
   }
 

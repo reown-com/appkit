@@ -433,6 +433,9 @@ export type Event =
   | {
       type: 'track'
       event: 'CLICK_TRANSACTIONS'
+      properties: {
+        isSmartAccount: boolean
+      }
     }
   | {
       type: 'track'
@@ -441,6 +444,7 @@ export type Event =
         address: string
         projectId: string
         cursor: string | undefined
+        isSmartAccount: boolean
       }
     }
   | {
@@ -450,6 +454,7 @@ export type Event =
         address: string | undefined
         projectId: string
         cursor: string | undefined
+        isSmartAccount: boolean
       }
     }
   | {
