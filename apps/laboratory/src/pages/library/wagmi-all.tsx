@@ -22,8 +22,7 @@ const modal = createWeb3Modal({
   termsConditionsUrl: 'https://walletconnect.com/terms',
   privacyPolicyUrl: 'https://walletconnect.com/privacy',
   siweConfig,
-  customWallets: ConstantsUtil.CustomWallets,
-  enableWalletFeatures: true
+  customWallets: ConstantsUtil.CustomWallets
 })
 
 ThemeStore.setModal(modal)

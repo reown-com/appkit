@@ -52,7 +52,7 @@ export interface LibraryOptions {
   enableAnalytics?: OptionsControllerState['enableAnalytics']
   metadata?: OptionsControllerState['metadata']
   enableOnramp?: OptionsControllerState['enableOnramp']
-  enableWalletFeatures?: OptionsControllerState['enableWalletFeatures']
+  disableAppend?: OptionsControllerState['disableAppend']
   allowUnsupportedChain?: NetworkControllerState['allowUnsupportedChain']
   _sdkVersion: OptionsControllerState['sdkVersion']
 }
@@ -301,8 +301,8 @@ export class Web3ModalScaffold {
       ThemeController.setThemeVariables(options.themeVariables)
     }
 
-    if (options.enableWalletFeatures) {
-      OptionsController.setWalletFeaturesEnabled(Boolean(options.enableWalletFeatures))
+    if (options.disableAppend) {
+      OptionsController.setDisableAppend(Boolean(options.disableAppend))
     }
 
     if (options.allowUnsupportedChain) {
@@ -324,7 +324,9 @@ export class Web3ModalScaffold {
       this.initPromise = new Promise<void>(async resolve => {
         await Promise.all([import('@web3modal/ui'), import('./modal/w3m-modal/index.js')])
         const modal = document.createElement('w3m-modal')
-        document.body.insertAdjacentElement('beforeend', modal)
+        if (!OptionsController.state.disableAppend) {
+          document.body.insertAdjacentElement('beforeend', modal)
+        }
         resolve()
       })
     }

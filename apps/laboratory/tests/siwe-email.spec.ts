@@ -30,7 +30,7 @@ testMEmailSiwe('it should switch network and sign', async ({ modalPage, modalVal
   await modalWalletPage.switchNetwork(targetChain)
   await modalWalletPage.promptSiwe()
   await modalWalletPage.approveSign()
-  await modalWalletValidator.expectSwitchedNetwork(targetChain)
+  await modalWalletValidator.expectSwitchedNetwork(targetChain, true)
   await modalWalletPage.closeModal()
 
   await modalWalletPage.sign()

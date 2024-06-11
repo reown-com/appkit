@@ -218,6 +218,8 @@ export class ModalPage {
 
   async clickWalletUpgradeCard(context: BrowserContext) {
     await this.page.getByTestId('account-button').click()
+
+    await this.page.getByTestId('w3m-profile-button').click()
     await this.page.getByTestId('w3m-wallet-upgrade-card').click()
 
     const page = await doActionAndWaitForNewPage(
