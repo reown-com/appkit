@@ -10,6 +10,10 @@ import type {
   WriteContractArgs
 } from '../utils/TypeUtil.js'
 import { TransactionsController } from './TransactionsController.js'
+import { type W3mFrameTypes } from '@web3modal/wallet'
+import { ModalController } from './ModalController.js'
+import { ConnectorController } from './ConnectorController.js'
+import { EventsController } from './EventsController.js'
 
 // -- Types --------------------------------------------- //
 export interface ConnectExternalOptions {
@@ -96,6 +100,22 @@ export const ConnectionController = {
   async reconnectExternal(options: ConnectExternalOptions) {
     await this._getClient().reconnectExternal?.(options)
     StorageUtil.setConnectedConnector(options.type)
+  },
+
+  async setPreferredAccountType(accountType: W3mFrameTypes.AccountType) {
+    ModalController.setLoading(true)
+    const authConnector = ConnectorController.getAuthConnector()
+    if (!authConnector) {
+      return
+    }
+    await authConnector?.provider.setPreferredAccount(accountType)
+    await this.reconnectExternal(authConnector)
+    ModalController.setLoading(false)
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'SET_PREFERRED_ACCOUNT_TYPE',
+      properties: { accountType }
+    })
   },
 
   async signMessage(message: string) {

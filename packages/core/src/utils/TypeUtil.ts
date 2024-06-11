@@ -1,4 +1,4 @@
-import { W3mFrameRpcConstants, type W3mFrameProvider } from '@web3modal/wallet'
+import type { W3mFrameProvider, W3mFrameTypes } from '@web3modal/wallet'
 import type { Balance, Transaction } from '@web3modal/common'
 import type { OnRampProviderOption } from '../controllers/OnRampController.js'
 
@@ -571,7 +571,7 @@ export type Event =
       type: 'track'
       event: 'SET_PREFERRED_ACCOUNT_TYPE'
       properties: {
-        accountType: (typeof W3mFrameRpcConstants.ACCOUNT_TYPES)[keyof typeof W3mFrameRpcConstants.ACCOUNT_TYPES]
+        accountType: W3mFrameTypes.AccountType
       }
     }
 
