@@ -1,6 +1,6 @@
-import type { W3mFrameProvider } from '@web3modal/wallet'
+import { W3mFrameRpcConstants, type W3mFrameProvider } from '@web3modal/wallet'
 import type { Balance, Transaction } from '@web3modal/common'
-import type { OnRampProviderOption } from '../controllers/OnRampController'
+import type { OnRampProviderOption } from '../controllers/OnRampController.js'
 
 export type CaipAddress = `${string}:${string}:${string}`
 
@@ -558,6 +558,20 @@ export type Event =
       properties: {
         provider: OnRampProviderOption
         isSmartAccount: boolean
+      }
+    }
+  | {
+      type: 'track'
+      event: 'SELECT_WHAT_IS_A_BUY'
+      properties: {
+        isSmartAccount: boolean
+      }
+    }
+  | {
+      type: 'track'
+      event: 'SET_PREFERRED_ACCOUNT_TYPE'
+      properties: {
+        accountType: (typeof W3mFrameRpcConstants.ACCOUNT_TYPES)[keyof typeof W3mFrameRpcConstants.ACCOUNT_TYPES]
       }
     }
 

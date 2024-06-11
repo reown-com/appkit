@@ -1,7 +1,13 @@
-import { OptionsController, RouterController } from '@web3modal/core'
+import {
+  AccountController,
+  EventsController,
+  OptionsController,
+  RouterController
+} from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
+import { W3mFrameRpcConstants } from '@web3modal/wallet'
 
 @customElement('w3m-onramp-providers-footer')
 export class W3mOnRampProvidersFooter extends LitElement {
@@ -42,6 +48,15 @@ export class W3mOnRampProvidersFooter extends LitElement {
   }
 
   private onWhatIsBuy() {
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'SELECT_WHAT_IS_A_BUY',
+      properties: {
+        isSmartAccount:
+          AccountController.state.preferredAccountType ===
+          W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+      }
+    })
     RouterController.push('WhatIsABuy')
   }
 }
