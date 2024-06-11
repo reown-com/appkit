@@ -68,7 +68,7 @@ export class W3mConnectExternalWidget extends LitElement {
    */
   private async onCoinbaseConnector(connector: Connector) {
     try {
-      ConnectionController.setWcError(true)
+      ConnectionController.setWcError(false)
 
       if (connector.imageUrl) {
         StorageUtil.setConnectedWalletImageUrl(connector.imageUrl)
