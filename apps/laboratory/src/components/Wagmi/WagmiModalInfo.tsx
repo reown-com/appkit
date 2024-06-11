@@ -9,13 +9,11 @@ export function WagmiModalInfo() {
   const [clientId, setClientId] = React.useState<string | null>(null)
 
   async function getClientId() {
-    if (connector?.getProvider) {
+    if (connector?.type === 'walletConnect') {
       const provider = await connector?.getProvider()
-      if (connector?.type === 'walletConnect') {
-        const ethereumProvider = provider as EthereumProvider
+      const ethereumProvider = provider as EthereumProvider
 
-        return ethereumProvider?.signer?.client?.core?.crypto?.getClientId()
-      }
+      return ethereumProvider?.signer?.client?.core?.crypto?.getClientId()
     }
 
     return null
