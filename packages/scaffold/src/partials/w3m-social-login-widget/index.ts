@@ -2,6 +2,7 @@ import {
   AccountController,
   ConnectorController,
   CoreHelperUtil,
+  EventsController,
   RouterController,
   SnackController,
   type SocialProvider
@@ -153,6 +154,11 @@ export class W3mSocialLoginWidget extends LitElement {
   async onSocialClick(socialProvider?: SocialProvider) {
     if (socialProvider) {
       AccountController.setSocialProvider(socialProvider)
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'SOCIAL_LOGIN_STARTED',
+        properties: { provider: socialProvider }
+      })
       RouterController.push('ConnectingSocial')
     }
     const authConnector = ConnectorController.getAuthConnector()

@@ -619,6 +619,27 @@ export type Event =
         swapToAmount: string
       }
     }
+  | {
+      type: 'track'
+      event: 'SOCIAL_LOGIN_STARTED'
+      properties: {
+        provider: SocialProvider
+      }
+    }
+  | {
+      type: 'track'
+      event: 'SOCIAL_LOGIN_SUCCESS'
+      properties: {
+        provider: SocialProvider
+      }
+    }
+  | {
+      type: 'track'
+      event: 'SOCIAL_LOGIN_ERROR'
+      properties: {
+        provider: SocialProvider
+      }
+    }
 
 // Onramp Types
 export type DestinationWallet = {
