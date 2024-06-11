@@ -88,7 +88,7 @@ export class W3mConnectingSiweView extends LitElement {
       event: 'CLICK_SIGN_SIWE_MESSAGE',
       type: 'track',
       properties: {
-        network: NetworkController.state.caipNetwork?.id,
+        network: NetworkController.state.caipNetwork?.id || '',
         isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount'
       }
     })
@@ -100,7 +100,7 @@ export class W3mConnectingSiweView extends LitElement {
         event: 'SIWE_AUTH_SUCCESS',
         type: 'track',
         properties: {
-          network: NetworkController.state.caipNetwork?.id,
+          network: NetworkController.state.caipNetwork?.id || '',
           isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount'
         }
       })
@@ -121,7 +121,7 @@ export class W3mConnectingSiweView extends LitElement {
         event: 'SIWE_AUTH_ERROR',
         type: 'track',
         properties: {
-          network: NetworkController.state.caipNetwork?.id,
+          network: NetworkController.state.caipNetwork?.id || '',
           isSmartAccount
         }
       })
@@ -140,7 +140,11 @@ export class W3mConnectingSiweView extends LitElement {
     }
     EventsController.sendEvent({
       event: 'CLICK_CANCEL_SIWE',
-      type: 'track'
+      type: 'track',
+      properties: {
+        network: NetworkController.state.caipNetwork?.id || '',
+        isSmartAccount: AccountController.state.preferredAccountType === 'smartAccount'
+      }
     })
   }
 }

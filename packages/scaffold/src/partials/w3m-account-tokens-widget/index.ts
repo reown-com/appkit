@@ -1,8 +1,9 @@
-import { AccountController, RouterController } from '@web3modal/core'
+import { AccountController, EventsController, RouterController } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
 import { state } from 'lit/decorators.js'
+import { W3mFrameRpcConstants } from '@web3modal/wallet'
 
 @customElement('w3m-account-tokens-widget')
 export class W3mAccountTokensWidget extends LitElement {
@@ -81,6 +82,15 @@ export class W3mAccountTokensWidget extends LitElement {
   }
 
   private onBuyClick() {
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'SELECT_BUY_CRYPTO',
+      properties: {
+        isSmartAccount:
+          AccountController.state.preferredAccountType ===
+          W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+      }
+    })
     RouterController.push('OnRampProviders')
   }
 }

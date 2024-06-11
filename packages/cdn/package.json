@@ -4,7 +4,8 @@
   "main": "dist/wagmi.js",
   "type": "module",
   "files": [
-    "dist"
+    "dist",
+    "!tsconfig.tsbuildinfo"
   ],
   "scripts": {
     "build:clean": "rm -rf dist",
