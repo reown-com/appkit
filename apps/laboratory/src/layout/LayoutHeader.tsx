@@ -10,9 +10,11 @@ import {
 import Link from 'next/link'
 import { IoSettingsOutline } from 'react-icons/io5'
 import { OptionsDrawer } from './OptionsDrawer'
+import { CustomWallet } from './CustomWallet'
 
 export function LayoutHeader() {
   const controls = useDisclosure()
+  const controlsCW = useDisclosure({ id: 'customWallet' })
 
   return (
     <>
@@ -35,12 +37,16 @@ export function LayoutHeader() {
           </CLink>
         </HStack>
 
+        <Button rightIcon={<IoSettingsOutline />} onClick={controlsCW.onOpen}>
+          Custom Wallet
+        </Button>
         <Button rightIcon={<IoSettingsOutline />} onClick={controls.onOpen}>
           Options
         </Button>
       </Stack>
 
       <OptionsDrawer controls={controls} />
+      <CustomWallet controls={controlsCW} />
     </>
   )
 }

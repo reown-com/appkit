@@ -5,6 +5,8 @@ export const PresetsUtil = {
   ConnectorExplorerIds: {
     [ConstantsUtil.COINBASE_CONNECTOR_ID]:
       'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
+    [ConstantsUtil.COINBASE_SDK_CONNECTOR_ID]:
+      'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
     [ConstantsUtil.SAFE_CONNECTOR_ID]:
       '225affb176778569276e484e1b92637ad061b01e13a048b35a9d280c3b58970f',
     [ConstantsUtil.LEDGER_CONNECTOR_ID]:

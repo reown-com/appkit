@@ -79,6 +79,17 @@ export class Web3Modal extends Web3ModalScaffold {
       switchCaipNetwork: async caipNetwork => {
         if (caipNetwork) {
           try {
+            // Update chain for Solflare
+            this.walletAdapters = createWalletAdapters(caipNetwork?.id.split(':')[1])
+            const walletId = localStorage.getItem(SolConstantsUtil.WALLET_ID)
+            const wallet = walletId?.split('_')[1] as AdapterKey
+            if (wallet === 'solflare' && window[wallet as keyof Window]) {
+              const adapter = this.walletAdapters[wallet]
+              await adapter.connect()
+              const address = adapter.publicKey?.toString()
+              this.setInjectedProvider(adapter as unknown as Provider, wallet, address)
+            }
+
             await this.switchNetwork(caipNetwork)
           } catch (error) {
             SolStoreUtil.setError(error)
@@ -150,7 +161,6 @@ export class Web3Modal extends Web3ModalScaffold {
       },
 
       estimateGas: async () => await Promise.resolve(BigInt(0)),
-
       // -- Transaction methods ---------------------------------------------------
       /**
        *
@@ -196,9 +206,9 @@ export class Web3Modal extends Web3ModalScaffold {
     }
     this.syncNetwork(chainImages)
 
-    this.walletAdapters = createWalletAdapters()
+    this.walletAdapters = createWalletAdapters(chain?.chainId)
     this.WalletConnectConnector = new WalletConnectConnector({
-      relayerRegion: 'wss://relay.walletconnect.com',
+      relayerRegion: 'wss://relay.walletconnect.org',
       metadata,
       chains,
       qrcode: true
@@ -245,9 +255,36 @@ export class Web3Modal extends Web3ModalScaffold {
       }
     })
 
-    if (typeof window === 'object') {
+    if (CoreHelperUtil.isClient()) {
       this.checkActiveProviders()
       this.syncConnectors()
+      let timer = 0
+      /*
+       * Brave browser doesn't inject window.solflare immediately
+       * so there is delay to detect injected wallets
+       * issue: https://github.com/anza-xyz/wallet-adapter/issues/329
+       */
+      if (
+        window.navigator.brave !== undefined &&
+        window.navigator.brave.isBrave.name === 'isBrave'
+      ) {
+        timer = 100
+      }
+
+      const checkWallet = () => {
+        if (window.solflare) {
+          this.checkActiveProviders()
+          this.syncConnectors()
+        } else {
+          setTimeout(() => {
+            checkWallet()
+          }, timer)
+        }
+      }
+
+      setTimeout(() => {
+        checkWallet()
+      }, timer)
     }
   }
 
@@ -327,7 +364,6 @@ export class Web3Modal extends Web3ModalScaffold {
     }
 
     syncInjectedWallets(w3mConnectors, this.walletAdapters)
-
     this.setConnectors(w3mConnectors)
   }
 

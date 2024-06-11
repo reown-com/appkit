@@ -60,12 +60,13 @@ export function useSwitchNetwork() {
 }
 
 export function useWeb3ModalAccount() {
-  const { address, isConnected, chainId } = useSnapshot(EthersStoreUtil.state)
+  const { address, isConnected, chainId, status } = useSnapshot(EthersStoreUtil.state)
 
   return {
     address,
     isConnected,
-    chainId
+    chainId,
+    status
   }
 }
 

@@ -11,7 +11,8 @@ import {
   StorageUtil,
   ConnectorController,
   SendController,
-  EnsController
+  EnsController,
+  ConstantsUtil
 } from '@web3modal/core'
 import { UiHelperUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -116,8 +117,9 @@ export class W3mAccountSettingsView extends LitElement {
       </wui-flex>
 
       <wui-flex flexDirection="column" gap="m">
-        <wui-flex flexDirection="column" gap="xs" .padding=${['0', 'xl', 'm', 'xl'] as const}>
-          ${this.emailBtnTemplate()}
+        <wui-flex flexDirection="column" gap="xs" .padding=${['0', 'l', 'm', 'l'] as const}>
+          ${this.authCardTemplate()}
+          <w3m-account-auth-button></w3m-account-auth-button>
           <wui-list-item
             .variant=${networkImage ? 'image' : 'icon'}
             iconVariant="overlay"
@@ -172,6 +174,25 @@ export class W3mAccountSettingsView extends LitElement {
     `
   }
 
+  private authCardTemplate() {
+    const type = StorageUtil.getConnectedConnector()
+    const authConnector = ConnectorController.getAuthConnector()
+    const { origin } = location
+    if (!authConnector || type !== 'AUTH' || origin.includes(ConstantsUtil.SECURE_SITE)) {
+      return null
+    }
+
+    return html`
+      <wui-notice-card
+        @click=${this.onGoToUpgradeView.bind(this)}
+        label="Upgrade your wallet"
+        description="Transition to a self-custodial wallet"
+        icon="wallet"
+        data-testid="w3m-wallet-upgrade-card"
+      ></wui-notice-card>
+    `
+  }
+
   private isAllowedNetworkSwitch() {
     const { requestedCaipNetworks } = NetworkController.state
     const isMultiNetwork = requestedCaipNetworks ? requestedCaipNetworks.length > 1 : false
@@ -189,28 +210,6 @@ export class W3mAccountSettingsView extends LitElement {
     } catch {
       SnackController.showError('Failed to copy')
     }
-  }
-
-  private emailBtnTemplate() {
-    const type = StorageUtil.getConnectedConnector()
-    const authConnector = ConnectorController.getAuthConnector()
-    if (!authConnector || type !== 'AUTH') {
-      return null
-    }
-    const email = authConnector.provider.getEmail() ?? ''
-
-    return html`
-      <wui-list-item
-        variant="icon"
-        iconVariant="overlay"
-        icon="mail"
-        iconSize="sm"
-        ?chevron=${true}
-        @click=${() => this.onGoToUpdateEmail(email)}
-      >
-        <wui-text variant="paragraph-500" color="fg-100">${email}</wui-text>
-      </wui-list-item>
-    `
   }
 
   private togglePreferredAccountBtnTemplate() {
@@ -279,10 +278,6 @@ export class W3mAccountSettingsView extends LitElement {
     this.requestUpdate()
   }
 
-  private onGoToUpdateEmail(email: string) {
-    RouterController.push('UpdateEmailWallet', { email })
-  }
-
   private onNetworks() {
     if (this.isAllowedNetworkSwitch()) {
       RouterController.push('Networks')
@@ -301,6 +296,11 @@ export class W3mAccountSettingsView extends LitElement {
     } finally {
       this.disconnecting = false
     }
+  }
+
+  private onGoToUpgradeView() {
+    EventsController.sendEvent({ type: 'track', event: 'EMAIL_UPGRADE_FROM_MODAL' })
+    RouterController.push('UpgradeEmailWallet')
   }
 }
 

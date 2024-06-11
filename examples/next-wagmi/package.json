@@ -1,6 +1,6 @@
 {
   "name": "@examples/next-wagmi",
-  "version": "4.2.2",
+  "version": "4.2.3",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -10,12 +10,12 @@
   },
   "dependencies": {
     "@tanstack/react-query": "5.24.8",
-    "@web3modal/wagmi": "4.2.2",
+    "@web3modal/wagmi": "4.2.3",
     "next": "14.2.3",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "viem": "2.10.3",
-    "wagmi": "2.8.7"
+    "wagmi": "2.9.9"
   },
   "devDependencies": {
     "@types/node": "20.11.5",
