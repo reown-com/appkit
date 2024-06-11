@@ -1,4 +1,5 @@
 import { PresetsUtil } from '@web3modal/scaffold-utils'
+import { ConstantsUtil } from '@web3modal/common'
 
 import { SolConstantsUtil } from './SolanaConstantsUtil.js'
 
@@ -7,7 +8,7 @@ import type { Chain, Provider } from './SolanaTypesUtil.js'
 
 export const SolHelpersUtil = {
   detectRpcUrl(chain: Chain, projectId: string) {
-    if (chain.rpcUrl.includes('rpc.walletconnect.com/')) {
+    if (chain.rpcUrl.includes(new URL(ConstantsUtil.BLOCKCHAIN_API_RPC_URL).hostname)) {
       return `${chain.rpcUrl}?chainId=solana:${chain.chainId}&projectId=${projectId}`
     }
 

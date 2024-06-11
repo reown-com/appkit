@@ -19,7 +19,7 @@ export interface OptionsControllerState {
   enableAnalytics?: boolean
   metadata?: Metadata
   enableOnramp?: boolean
-  enableWalletFeatures?: boolean
+  disableAppend?: boolean
 }
 
 type StateKey = keyof OptionsControllerState
@@ -95,8 +95,8 @@ export const OptionsController = {
     state.enableOnramp = enableOnramp
   },
 
-  setWalletFeaturesEnabled(enableWalletFeatures: OptionsControllerState['enableWalletFeatures']) {
-    state.enableWalletFeatures = enableWalletFeatures
+  setDisableAppend(disableAppend: OptionsControllerState['disableAppend']) {
+    state.disableAppend = disableAppend
   },
 
   getSnapshot() {

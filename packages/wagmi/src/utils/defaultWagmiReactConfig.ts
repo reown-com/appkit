@@ -16,6 +16,7 @@ export type ConfigOptions = Partial<CreateConfigParameters> & {
     email?: boolean
     socials?: SocialProvider[]
     showWallets?: boolean
+    walletFeatures?: boolean
   }
   enableInjected?: boolean
   enableWalletConnect?: boolean
@@ -44,7 +45,8 @@ export function defaultWagmiConfig({
   const transports = Object.fromEntries(transportsArr)
   const defaultAuth = {
     email: true,
-    showWallets: true
+    showWallets: true,
+    walletFeatures: true
   }
 
   // Enabled by default
@@ -88,7 +90,8 @@ export function defaultWagmiConfig({
         options: { projectId },
         socials: mergedAuth.socials,
         email: mergedAuth.email,
-        showWallets: mergedAuth.showWallets
+        showWallets: mergedAuth.showWallets,
+        walletFeatures: mergedAuth.walletFeatures
       })
     )
   }
