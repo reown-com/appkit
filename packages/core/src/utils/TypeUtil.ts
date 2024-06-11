@@ -572,6 +572,7 @@ export type Event =
       event: 'SET_PREFERRED_ACCOUNT_TYPE'
       properties: {
         accountType: W3mFrameTypes.AccountType
+        network: string
       }
     }
 

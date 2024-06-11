@@ -14,6 +14,7 @@ import { type W3mFrameTypes } from '@web3modal/wallet'
 import { ModalController } from './ModalController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
+import { NetworkController } from './NetworkController.js'
 
 // -- Types --------------------------------------------- //
 export interface ConnectExternalOptions {
@@ -114,7 +115,7 @@ export const ConnectionController = {
     EventsController.sendEvent({
       type: 'track',
       event: 'SET_PREFERRED_ACCOUNT_TYPE',
-      properties: { accountType }
+      properties: { accountType, network: NetworkController.state.caipNetwork?.id || '' }
     })
   },
 
