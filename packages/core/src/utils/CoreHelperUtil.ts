@@ -1,4 +1,5 @@
 import type { Balance } from '@web3modal/common'
+import { ConstantsUtil as CommonConstants } from '@web3modal/common'
 import { ConstantsUtil } from './ConstantsUtil.js'
 import type { CaipAddress, LinkingRecord, CaipNetwork } from './TypeUtil.js'
 
@@ -174,33 +175,16 @@ export const CoreHelperUtil = {
     }
   },
 
-  isRestrictedRegion() {
-    try {
-      const { timeZone } = new Intl.DateTimeFormat().resolvedOptions()
-      const capTimeZone = timeZone.toUpperCase()
-
-      return ConstantsUtil.RESTRICTED_TIMEZONES.includes(capTimeZone)
-    } catch {
-      return false
-    }
-  },
-
   getApiUrl() {
-    return CoreHelperUtil.isRestrictedRegion()
-      ? 'https://api.web3modal.org'
-      : 'https://api.web3modal.com'
+    return CommonConstants.W3M_API_URL
   },
 
   getBlockchainApiUrl() {
-    return CoreHelperUtil.isRestrictedRegion()
-      ? 'https://rpc.walletconnect.org'
-      : 'https://rpc.walletconnect.com'
+    return CommonConstants.BLOCKCHAIN_API_RPC_URL
   },
 
   getAnalyticsUrl() {
-    return CoreHelperUtil.isRestrictedRegion()
-      ? 'https://pulse.walletconnect.org'
-      : 'https://pulse.walletconnect.com'
+    return CommonConstants.PULSE_API_URL
   },
 
   getUUID() {
