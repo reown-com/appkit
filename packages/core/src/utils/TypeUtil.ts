@@ -575,6 +575,50 @@ export type Event =
         network: string
       }
     }
+  | {
+      type: 'track'
+      event: 'OPEN_SWAP'
+      properties: {
+        isSmartAccount: boolean
+        network: string
+      }
+    }
+  | {
+      type: 'track'
+      event: 'INITIATE_SWAP'
+      properties: {
+        isSmartAccount: boolean
+        network: string
+        swapFromToken: string
+        swapToToken: string
+        swapfromAmount: string
+        swapToAmount: string
+      }
+    }
+  | {
+      type: 'track'
+      event: 'SWAP_SUCCESS'
+      properties: {
+        isSmartAccount: boolean
+        network: string
+        swapFromToken: string
+        swapToToken: string
+        swapfromAmount: string
+        swapToAmount: string
+      }
+    }
+  | {
+      type: 'track'
+      event: 'SWAP_ERROR'
+      properties: {
+        isSmartAccount: boolean
+        network: string
+        swapFromToken: string
+        swapToToken: string
+        swapfromAmount: string
+        swapToAmount: string
+      }
+    }
 
 // Onramp Types
 export type DestinationWallet = {

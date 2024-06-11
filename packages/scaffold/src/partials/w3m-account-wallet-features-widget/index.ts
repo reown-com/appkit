@@ -5,7 +5,8 @@ import {
   AssetUtil,
   RouterController,
   CoreHelperUtil,
-  ConstantsUtil as CoreConstantsUtil
+  ConstantsUtil as CoreConstantsUtil,
+  EventsController
 } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -199,6 +200,16 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
         swapUnsupportedChain: true
       })
     } else {
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'OPEN_SWAP',
+        properties: {
+          network: this.network?.id || '',
+          isSmartAccount:
+            AccountController.state.preferredAccountType ===
+            W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+        }
+      })
       RouterController.push('Swap')
     }
   }
