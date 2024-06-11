@@ -85,7 +85,7 @@ export class W3mConnectExternalWidget extends LitElement {
       EventsController.sendEvent({
         type: 'track',
         event: 'CONNECT_SUCCESS',
-        properties: { method: 'browser', name: this.connector.name || 'Unknown' }
+        properties: { method: 'browser', name: connector.name || 'Unknown' }
       })
     } catch (error) {
       EventsController.sendEvent({

@@ -80,10 +80,6 @@ export const ConnectionController = {
     state._client = ref(client)
   },
 
-  setWcError(value: boolean) {
-    state.wcError = value
-  },
-
   connectWalletConnect() {
     state.wcPromise = this._getClient().connectWalletConnect(uri => {
       state.wcUri = uri
