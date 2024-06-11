@@ -286,6 +286,8 @@ export class Web3ModalScaffold {
     OptionsController.setCustomWallets(options.customWallets)
     OptionsController.setEnableAnalytics(options.enableAnalytics)
     OptionsController.setSdkVersion(options._sdkVersion)
+    // Enabled by default
+    OptionsController.setOnrampEnabled(options.enableOnramp !== false)
 
     if (options.metadata) {
       OptionsController.setMetadata(options.metadata)
@@ -297,10 +299,6 @@ export class Web3ModalScaffold {
 
     if (options.themeVariables) {
       ThemeController.setThemeVariables(options.themeVariables)
-    }
-
-    if (options.enableOnramp) {
-      OptionsController.setOnrampEnabled(Boolean(options.enableOnramp))
     }
 
     if (options.disableAppend) {
