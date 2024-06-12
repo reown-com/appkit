@@ -13,6 +13,8 @@ import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { OptionsController } from './OptionsController.js'
 import { SwapCalculationUtil } from '../utils/SwapCalculationUtil.js'
+import { EventsController } from './EventsController.js'
+import { W3mFrameRpcConstants } from '@web3modal/wallet'
 
 // -- Constants ---------------------------------------- //
 export const INITIAL_GAS_LIMIT = 150000
@@ -721,6 +723,20 @@ export const SwapController = {
 
       state.loadingTransaction = false
       SnackController.showSuccess(snackbarSuccessMessage)
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'SWAP_SUCCESS',
+        properties: {
+          network: NetworkController.state.caipNetwork?.id || '',
+          swapFromToken: this.state.sourceToken?.symbol || '',
+          swapToToken: this.state.toToken?.symbol || '',
+          swapfromAmount: this.state.sourceTokenAmount || '',
+          swapToAmount: this.state.toTokenAmount || '',
+          isSmartAccount:
+            AccountController.state.preferredAccountType ===
+            W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+        }
+      })
       SwapController.resetState()
       SwapController.getMyTokensWithBalance(forceUpdateAddresses)
 
@@ -730,6 +746,20 @@ export const SwapController = {
       state.transactionError = error?.shortMessage
       state.loadingTransaction = false
       SnackController.showError(error?.shortMessage || 'Transaction error')
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'SWAP_ERROR',
+        properties: {
+          network: NetworkController.state.caipNetwork?.id || '',
+          swapFromToken: this.state.sourceToken?.symbol || '',
+          swapToToken: this.state.toToken?.symbol || '',
+          swapfromAmount: this.state.sourceTokenAmount || '',
+          swapToAmount: this.state.toTokenAmount || '',
+          isSmartAccount:
+            AccountController.state.preferredAccountType ===
+            W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+        }
+      })
 
       return undefined
     }

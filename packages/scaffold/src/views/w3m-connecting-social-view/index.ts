@@ -3,6 +3,7 @@ import {
   AccountController,
   ConnectionController,
   ConnectorController,
+  EventsController,
   ModalController,
   RouterController,
   SnackController,
@@ -128,16 +129,35 @@ export class W3mConnectingSocialView extends LitElement {
 
             if (this.socialProvider) {
               StorageUtil.setConnectedSocialProvider(this.socialProvider)
+              await ConnectionController.connectExternal(this.authConnector)
+              EventsController.sendEvent({
+                type: 'track',
+                event: 'SOCIAL_LOGIN_SUCCESS',
+                properties: { provider: this.socialProvider }
+              })
             }
-            await ConnectionController.connectExternal(this.authConnector)
           }
         } catch (error) {
           this.error = true
           this.updateMessage()
+          if (this.socialProvider) {
+            EventsController.sendEvent({
+              type: 'track',
+              event: 'SOCIAL_LOGIN_ERROR',
+              properties: { provider: this.socialProvider }
+            })
+          }
         }
       } else {
         RouterController.goBack()
         SnackController.showError('Untrusted Origin')
+        if (this.socialProvider) {
+          EventsController.sendEvent({
+            type: 'track',
+            event: 'SOCIAL_LOGIN_ERROR',
+            properties: { provider: this.socialProvider }
+          })
+        }
       }
     }
   }
