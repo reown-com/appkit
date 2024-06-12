@@ -2,7 +2,7 @@ import base58 from 'bs58'
 import { PublicKey, Transaction, VersionedTransaction } from '@solana/web3.js'
 import { OptionsController } from '@web3modal/core'
 
-import { SolStoreUtil } from '../utils/scaffold/'
+import { SolStoreUtil } from '../utils/scaffold/index.js'
 import { UniversalProviderFactory } from './universalProvider.js'
 import { BaseConnector } from './baseConnector.js'
 
@@ -10,7 +10,7 @@ import type { Signer } from '@solana/web3.js'
 import type UniversalProvider from '@walletconnect/universal-provider'
 
 import type { Connector } from './baseConnector.js'
-import type { Chain } from '../utils/scaffold/'
+import type { Chain } from '../utils/scaffold/SolanaTypesUtil.js'
 
 export interface WalletConnectAppMetadata {
   name: string
