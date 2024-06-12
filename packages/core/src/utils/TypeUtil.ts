@@ -672,6 +672,44 @@ export type Event =
         error: string
       }
     }
+  | {
+      type: 'track'
+      event: 'OPEN_SEND'
+      properties: {
+        isSmartAccount: boolean
+        network: string
+      }
+    }
+  | {
+      type: 'track'
+      event: 'SEND_INITIATED'
+      properties: {
+        isSmartAccount: boolean
+        network: string
+        token: string
+        amount: number
+      }
+    }
+  | {
+      type: 'track'
+      event: 'SEND_SUCCESS'
+      properties: {
+        isSmartAccount: boolean
+        network: string
+        token: string
+        amount: number
+      }
+    }
+  | {
+      type: 'track'
+      event: 'SEND_ERROR'
+      properties: {
+        isSmartAccount: boolean
+        network: string
+        token: string
+        amount: number
+      }
+    }
 // Onramp Types
 export type DestinationWallet = {
   address: string

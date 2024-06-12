@@ -219,6 +219,16 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   private onSendClick() {
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'OPEN_SEND',
+      properties: {
+        network: this.network?.id || '',
+        isSmartAccount:
+          AccountController.state.preferredAccountType ===
+          W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+      }
+    })
     RouterController.push('WalletSend')
   }
 
