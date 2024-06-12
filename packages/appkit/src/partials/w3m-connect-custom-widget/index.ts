@@ -1,6 +1,7 @@
 import type { WcWallet } from '@web3modal/core'
 import {
   AssetUtil,
+  ChainController,
   ConnectorController,
   CoreHelperUtil,
   OptionsController,
@@ -77,7 +78,10 @@ export class W3mConnectCustomWidget extends LitElement {
   }
 
   private onConnectWallet(wallet: WcWallet) {
-    RouterController.push('ConnectingWalletConnect', { wallet })
+    RouterController.push('ConnectingWalletConnect', {
+      wallet,
+      chainToConnect: ChainController.state.activeChain
+    })
   }
 }
 

@@ -10,6 +10,7 @@ import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { type ConnectionControllerClient } from './ConnectionController.js'
 import { type NetworkControllerClient, type NetworkControllerState } from './NetworkController.js'
 import { type AccountControllerState } from './AccountController.js'
+import { PublicStateController } from './PublicStateController.js'
 
 // -- Types --------------------------------------------- //
 export type Chain = 'evm' | 'solana'
@@ -85,6 +86,7 @@ export const ChainController = {
     }
     if (!state.activeChain) {
       state.activeChain = adapters?.[0]?.protocol
+      PublicStateController.set({ activeChain: adapters?.[0]?.protocol })
     }
     adapters.forEach((adapter: AdapterCore) => {
       state.chains[adapter.protocol].connectionControllerClient = adapter.connectionControllerClient
@@ -163,6 +165,7 @@ export const ChainController = {
 
     if (chain) {
       state.activeChain = chain
+      PublicStateController.set({ activeChain: chain })
       if (!state.activeCaipNetwork) {
         state.activeCaipNetwork = state.chains[chain].requestedCaipNetworks?.[0]
       }
@@ -177,6 +180,7 @@ export const ChainController = {
     state.chains[chain].caipNetwork = caipNetwork
     state.activeCaipNetwork = caipNetwork
     state.activeChain = chain
+    PublicStateController.set({ activeChain: chain })
   },
 
   setDefaultCaipNetwork(caipNetwork: ChainOptions['caipNetwork'], chain: Chain) {
@@ -184,6 +188,7 @@ export const ChainController = {
     state.chains[chain].isDefaultCaipNetwork = true
     state.activeCaipNetwork = caipNetwork
     state.activeChain = chain
+    PublicStateController.set({ activeChain: chain })
   },
 
   setRequestedCaipNetworks(requestedNetworks: ChainOptions['requestedCaipNetworks'], chain: Chain) {
@@ -255,11 +260,13 @@ export const ChainController = {
     state.chains[chain].caipNetwork = network
     state.activeCaipNetwork = network
     state.activeChain = chain
+    PublicStateController.set({ activeChain: chain })
   },
 
   switchChain(newChain: Chain) {
     state.activeChain = newChain
     this.setCaipNetwork(state.chains[newChain].caipNetwork, newChain)
+    PublicStateController.set({ activeChain: newChain })
   },
 
   checkIfSupportedNetwork(chain: Chain, activeCaipNetworkId: CaipNetworkId | undefined) {

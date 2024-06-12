@@ -37,8 +37,8 @@ export interface OpenOptions {
 }
 
 // -- Client --------------------------------------------------------------------
-export class Appkit {
-  private static instance?: Appkit
+export class AppKit {
+  private static instance?: AppKit
 
   public adapters?: AdapterCore[]
 
@@ -259,6 +259,7 @@ export class Appkit {
   // -- Private ------------------------------------------------------------------
   private async initControllers(options: OptionsControllerState) {
     options.adapters?.forEach(adapter => {
+      console.log('>>> initControllers', adapter)
       adapter.construct(this, options)
     })
 

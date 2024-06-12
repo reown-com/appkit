@@ -69,7 +69,8 @@ export const ConnectionController = {
     return subKey(state, key, callback)
   },
 
-  _getClient(chain?: Chain) {
+  _getClient(_chain?: Chain) {
+    const chain = ChainController.state.activeChain
     if (ChainController.state.multiChainEnabled) {
       if (!chain) {
         throw new Error('ConnectionController chain not set')
@@ -93,6 +94,7 @@ export const ConnectionController = {
   },
 
   connectWalletConnect(chain?: Chain) {
+    console.log('>>> [ConnectionController] connectWalletConnect()', chain)
     state.wcPromise = this._getClient(chain).connectWalletConnect(uri => {
       state.wcUri = uri
       state.wcPairingExpiry = CoreHelperUtil.getPairingExpiry()
@@ -101,12 +103,14 @@ export const ConnectionController = {
   },
 
   async connectExternal(options: ConnectExternalOptions, chain?: Chain) {
+    console.log('>>> [ConnectionController] connectExternal()', chain)
     await this._getClient(chain).connectExternal?.(options)
     ChainController.setActiveChain(chain)
     StorageUtil.setConnectedConnector(options.type)
   },
 
   async reconnectExternal(options: ConnectExternalOptions, chain?: Chain) {
+    console.log('>>> [ConnectionController] reconnectExternal()', chain)
     await this._getClient(chain).reconnectExternal?.(options)
     StorageUtil.setConnectedConnector(options.type)
   },

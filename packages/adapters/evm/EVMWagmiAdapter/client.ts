@@ -47,8 +47,8 @@ import type { defaultWagmiConfig as coreConfig } from './utils/defaultWagmiCoreC
 import type { defaultWagmiConfig as reactConfig } from './utils/defaultWagmiReactConfig.js'
 import { normalize } from 'viem/ens'
 
-// Appkit
-import { Appkit } from '@web3modal/appkit'
+// AppKit
+import { AppKit } from '@web3modal/appkit'
 
 // -- Types ---------------------------------------------------------------------
 export type CoreConfig = ReturnType<typeof coreConfig>
@@ -69,7 +69,7 @@ interface Web3ModalState extends PublicStateControllerState {
 
 // -- Client --------------------------------------------------------------------
 export class EVMWagmiClient {
-  private scaffold: Appkit | undefined = undefined
+  private scaffold: AppKit | undefined = undefined
 
   public options: OptionsControllerState | undefined = undefined
 
@@ -407,7 +407,7 @@ export class EVMWagmiClient {
     })
   }
 
-  public construct(scaffold: Appkit, options: OptionsControllerState) {
+  public construct(scaffold: AppKit, options: OptionsControllerState) {
     if (!options.projectId) {
       throw new Error('web3modal:initialize - projectId is undefined')
     }

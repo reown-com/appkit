@@ -18,7 +18,7 @@ export default function HomePage() {
     <>
       <Card marginTop={10}>
         <CardHeader>
-          <Heading size="md">Appkit</Heading>
+          <Heading size="md">AppKit</Heading>
         </CardHeader>
 
         <CardBody>

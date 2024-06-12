@@ -30,7 +30,7 @@ import type {
 
 import type { AdapterKey } from './connectors/walletAdapters.js'
 import type { ProviderType, Chain, Provider, SolStoreUtilState } from './utils/scaffold/index.js'
-import type { Appkit } from '@web3modal/appkit'
+import type { AppKit } from '@web3modal/appkit'
 
 export interface Web3ModalClientOptions {
   solanaConfig: ProviderType
@@ -56,7 +56,7 @@ export class SolanaWeb3JsClient {
 
   public connectionControllerClient: ConnectionControllerClient
 
-  private scaffold: Appkit | undefined = undefined
+  private scaffold: AppKit | undefined = undefined
 
   // TODO(enes): Get the types from common or appkit
   public protocol: 'evm' | 'solana'
@@ -238,7 +238,7 @@ export class SolanaWeb3JsClient {
     })
   }
 
-  public construct(scaffold: Appkit, options: OptionsControllerState) {
+  public construct(scaffold: AppKit, options: OptionsControllerState) {
     if (!options.projectId) {
       throw new Error('Solana:construct - projectId is undefined')
     }

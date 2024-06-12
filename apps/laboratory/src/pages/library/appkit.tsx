@@ -1,8 +1,7 @@
-import { createAppkit } from '@web3modal/appkit'
+import { createAppKit } from '@web3modal/appkit/react'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
-import { Web3ModalButtons } from '../../components/Web3ModalButtons'
-import { siweConfig } from '../../utils/SiweUtils'
+// import { siweConfig } from '../../utils/SiweUtils'
 
 import {
   EVMWagmiClient,
@@ -15,6 +14,8 @@ import { mainnet, sepolia } from 'wagmi/chains'
 import { solana, solanaDevnet, solanaTestnet } from '../../utils/ChainsUtil'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
+import { AppKitButtons } from '../../components/AppKitButtons'
+import { AppKitInfo } from '../../components/AppKitStatus'
 
 const queryClient = new QueryClient()
 
@@ -42,14 +43,14 @@ const solanaWeb3JsAdapter = new SolanaWeb3JsClient({
   chains: [solana, solanaTestnet, solanaDevnet]
 })
 
-const modal = createAppkit({
+const modal = createAppKit({
   adapters: [wagmiAdapter, solanaWeb3JsAdapter],
   projectId: ConstantsUtil.ProjectId,
   enableAnalytics: true,
   metadata: ConstantsUtil.Metadata,
   termsConditionsUrl: 'https://walletconnect.com/terms',
   privacyPolicyUrl: 'https://walletconnect.com/privacy',
-  siweConfig,
+  isSiweEnabled: false,
   enableOnramp: true,
   customWallets: ConstantsUtil.CustomWallets,
   enableWalletFeatures: true
@@ -57,12 +58,13 @@ const modal = createAppkit({
 
 ThemeStore.setModal(modal)
 
-export default function Appkit() {
+export default function AppKit() {
   return (
     <>
       <WagmiProvider config={wagmiConfig}>
         <QueryClientProvider client={queryClient}>
-          <Web3ModalButtons />
+          <AppKitButtons />
+          <AppKitInfo />
         </QueryClientProvider>
       </WagmiProvider>
     </>
