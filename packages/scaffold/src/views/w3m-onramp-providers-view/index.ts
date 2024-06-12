@@ -6,12 +6,14 @@ import {
   type OnRampProvider,
   RouterController,
   NetworkController,
-  BlockchainApiController
+  BlockchainApiController,
+  EventsController
 } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import type { CoinbasePaySDKChainNameValues } from '@web3modal/core/src/utils/ConstantsUtil'
+import { W3mFrameRpcConstants } from '@web3modal/wallet'
 
 @customElement('w3m-onramp-providers-view')
 export class W3mOnRampProvidersView extends LitElement {
@@ -78,6 +80,16 @@ export class W3mOnRampProvidersView extends LitElement {
     OnRampController.setSelectedProvider(provider)
     RouterController.push('BuyInProgress')
     CoreHelperUtil.openHref(provider.url, 'popupWindow', 'width=600,height=800,scrollbars=yes')
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'SELECT_BUY_PROVIDER',
+      properties: {
+        provider: provider.name,
+        isSmartAccount:
+          AccountController.state.preferredAccountType ===
+          W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+      }
+    })
   }
 
   private async getCoinbaseOnRampURL() {

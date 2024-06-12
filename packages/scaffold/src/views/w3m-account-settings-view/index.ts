@@ -11,7 +11,6 @@ import {
   StorageUtil,
   ConnectorController,
   SendController,
-  EnsController,
   ConstantsUtil
 } from '@web3modal/core'
 import { UiHelperUtil, customElement } from '@web3modal/ui'
@@ -154,8 +153,7 @@ export class W3mAccountSettingsView extends LitElement {
   private chooseNameButtonTemplate() {
     const type = StorageUtil.getConnectedConnector()
     const authConnector = ConnectorController.getAuthConnector()
-    const isAllowed = EnsController.isAllowedToRegisterName()
-    if (!authConnector || type !== 'AUTH' || this.profileName || !isAllowed) {
+    if (!authConnector || type !== 'AUTH' || this.profileName) {
       return null
     }
 
@@ -262,10 +260,7 @@ export class W3mAccountSettingsView extends LitElement {
     }
 
     this.loading = true
-    ModalController.setLoading(true)
-    await authConnector?.provider.setPreferredAccount(accountTypeTarget)
-    await ConnectionController.reconnectExternal(authConnector)
-    ModalController.setLoading(false)
+    await ConnectionController.setPreferredAccountType(accountTypeTarget)
 
     this.text =
       accountTypeTarget === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT

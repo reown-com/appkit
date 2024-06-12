@@ -3,7 +3,14 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import styles from './styles.js'
 import { createRef, ref, type Ref } from 'lit/directives/ref.js'
-import { CoreHelperUtil, SnackController, EnsController } from '@web3modal/core'
+import {
+  CoreHelperUtil,
+  SnackController,
+  EnsController,
+  EventsController,
+  AccountController
+} from '@web3modal/core'
+import { W3mFrameRpcConstants } from '@web3modal/wallet'
 
 @customElement('w3m-register-account-name-view')
 export class W3mRegisterAccountNameView extends LitElement {
@@ -171,9 +178,40 @@ export class W3mRegisterAccountNameView extends LitElement {
       if (!this.isAllowedToSubmit()) {
         return
       }
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'REGISTER_NAME_INITIATED',
+        properties: {
+          isSmartAccount:
+            AccountController.state.preferredAccountType ===
+            W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
+          ensName: this.name
+        }
+      })
       await EnsController.registerName(this.name)
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'REGISTER_NAME_SUCCESS',
+        properties: {
+          isSmartAccount:
+            AccountController.state.preferredAccountType ===
+            W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
+          ensName: this.name
+        }
+      })
     } catch (error) {
       SnackController.showError((error as Error).message)
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'REGISTER_NAME_ERROR',
+        properties: {
+          isSmartAccount:
+            AccountController.state.preferredAccountType ===
+            W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
+          ensName: this.name,
+          error: (error as Error)?.message || 'Unknown error'
+        }
+      })
     }
   }
 
