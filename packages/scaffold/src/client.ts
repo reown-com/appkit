@@ -52,7 +52,6 @@ export interface LibraryOptions {
   enableAnalytics?: OptionsControllerState['enableAnalytics']
   metadata?: OptionsControllerState['metadata']
   enableOnramp?: OptionsControllerState['enableOnramp']
-  enableWalletFeatures?: OptionsControllerState['enableWalletFeatures']
   disableAppend?: OptionsControllerState['disableAppend']
   allowUnsupportedChain?: NetworkControllerState['allowUnsupportedChain']
   _sdkVersion: OptionsControllerState['sdkVersion']
@@ -287,6 +286,8 @@ export class Web3ModalScaffold {
     OptionsController.setCustomWallets(options.customWallets)
     OptionsController.setEnableAnalytics(options.enableAnalytics)
     OptionsController.setSdkVersion(options._sdkVersion)
+    // Enabled by default
+    OptionsController.setOnrampEnabled(options.enableOnramp !== false)
 
     if (options.metadata) {
       OptionsController.setMetadata(options.metadata)
@@ -298,14 +299,6 @@ export class Web3ModalScaffold {
 
     if (options.themeVariables) {
       ThemeController.setThemeVariables(options.themeVariables)
-    }
-
-    if (options.enableOnramp) {
-      OptionsController.setOnrampEnabled(Boolean(options.enableOnramp))
-    }
-
-    if (options.enableWalletFeatures) {
-      OptionsController.setWalletFeaturesEnabled(Boolean(options.enableWalletFeatures))
     }
 
     if (options.disableAppend) {

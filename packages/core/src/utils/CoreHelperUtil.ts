@@ -267,5 +267,19 @@ export const CoreHelperUtil = {
     }
 
     return false
+  },
+
+  uniqueBy<T>(arr: T[], key: keyof T) {
+    const set = new Set()
+
+    return arr.filter(item => {
+      const keyValue = item[key]
+      if (set.has(keyValue)) {
+        return false
+      }
+      set.add(keyValue)
+
+      return true
+    })
   }
 }
