@@ -647,7 +647,31 @@ export type Event =
         isSmartAccount: boolean
       }
     }
-
+  | {
+      type: 'track'
+      event: 'INITIATE_NAME_REGISTRATION'
+      properties: {
+        isSmartAccount: boolean
+        ensName: string
+      }
+    }
+  | {
+      type: 'track'
+      event: 'REGISTER_NAME_SUCCESS'
+      properties: {
+        isSmartAccount: boolean
+        ensName: string
+      }
+    }
+  | {
+      type: 'track'
+      event: 'REGISTER_NAME_ERROR'
+      properties: {
+        isSmartAccount: boolean
+        ensName: string
+        error: string
+      }
+    }
 // Onramp Types
 export type DestinationWallet = {
   address: string
