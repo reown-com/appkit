@@ -188,7 +188,7 @@ export const ApiController = {
       ...(images as string[]).map(id => ApiController._fetchWalletImage(id)),
       CoreHelperUtil.wait(300)
     ])
-    state.wallets = [...state.wallets, ...data]
+    state.wallets = CoreHelperUtil.uniqueBy([...state.wallets, ...data], 'id')
     state.count = count > state.count ? count : state.count
     state.page = page
   },

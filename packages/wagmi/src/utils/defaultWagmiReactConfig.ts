@@ -41,10 +41,7 @@ export function defaultWagmiConfig({
   ...wagmiConfig
 }: ConfigOptions): Config {
   const connectors: CreateConnectorFn[] = []
-  const transportsArr = chains.map(chain => [
-    chain.id,
-    getTransport({ chainId: chain.id, projectId })
-  ])
+  const transportsArr = chains.map(chain => [chain.id, getTransport({ chain, projectId })])
   const transports = Object.fromEntries(transportsArr)
   const defaultAuth = {
     email: true,
