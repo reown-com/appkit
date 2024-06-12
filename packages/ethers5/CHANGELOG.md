@@ -1,5 +1,19 @@
 # @web3modal/ethers5
 
+## 5.0.1
+
+### Patch Changes
+
+- fix: remove walletconnect restriction on names
+
+- Updated dependencies []:
+  - @web3modal/scaffold-react@5.0.1
+  - @web3modal/scaffold-utils@5.0.1
+  - @web3modal/scaffold-vue@5.0.1
+  - @web3modal/polyfills@5.0.1
+  - @web3modal/scaffold@5.0.1
+  - @web3modal/siwe@5.0.1
+
 ## 5.0.0
 
 ### Major Changes

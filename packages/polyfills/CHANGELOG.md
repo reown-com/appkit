@@ -1,5 +1,11 @@
 # @web3modal/polyfills
 
+## 5.0.1
+
+### Patch Changes
+
+- fix: remove walletconnect restriction on names
+
 ## 5.0.0
 
 ### Major Changes
