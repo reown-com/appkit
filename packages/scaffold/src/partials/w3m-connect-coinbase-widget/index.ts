@@ -1,5 +1,15 @@
-import type { Connector } from '@web3modal/core'
-import { AssetUtil, ConnectorController, RouterController } from '@web3modal/core'
+import type { BaseError, Connector } from '@web3modal/core'
+import {
+  AssetUtil,
+  ConnectionController,
+  ConnectorController,
+  EventsController,
+  ModalController,
+  OptionsController,
+  RouterController,
+  StorageUtil
+} from '@web3modal/core'
+import { ConstantsUtil } from '@web3modal/scaffold-utils'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
@@ -51,8 +61,46 @@ export class W3mConnectCoinbaseWidget extends LitElement {
   }
 
   // -- Private Methods ----------------------------------- //
+  /**
+   * Replicate of `onConnectProxy` method from `w3m-connecting-external-view` which is only used for Coinbase connector.
+   */
+  private async onCoinbaseConnector(connector: Connector) {
+    try {
+      ConnectionController.setWcError(false)
+
+      if (connector.imageUrl) {
+        StorageUtil.setConnectedWalletImageUrl(connector.imageUrl)
+      }
+
+      await ConnectionController.connectExternal(connector)
+
+      if (OptionsController.state.isSiweEnabled) {
+        RouterController.push('ConnectingSiwe')
+      } else {
+        ModalController.close()
+      }
+
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'CONNECT_SUCCESS',
+        properties: { method: 'browser', name: connector.name || 'Unknown' }
+      })
+    } catch (error) {
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'CONNECT_ERROR',
+        properties: { message: (error as BaseError)?.message ?? 'Unknown' }
+      })
+      ConnectionController.setWcError(true)
+    }
+  }
+
   private onConnector(connector: Connector) {
     RouterController.push('ConnectingExternal', { connector })
+
+    if (connector.id === ConstantsUtil.COINBASE_SDK_CONNECTOR_ID) {
+      this.onCoinbaseConnector(connector)
+    }
   }
 }
 
