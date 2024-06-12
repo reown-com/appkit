@@ -78,6 +78,10 @@ export default css`
     cursor: not-allowed;
   }
 
+  .action-button > wui-loading-spinner {
+    display: inline-block;
+  }
+
   .cancel-button:hover,
   .action-button:hover {
     cursor: pointer;

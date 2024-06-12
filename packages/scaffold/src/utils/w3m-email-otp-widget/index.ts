@@ -23,6 +23,8 @@ export class W3mEmailOtpWidget extends LitElement {
   public static override styles = styles
 
   // -- State & Properties -------------------------------- //
+  private OTPTimeout?: ReturnType<typeof setInterval>
+
   @state() private loading = false
 
   @state() private timeoutTimeLeft = W3mFrameHelpers.getTimeToNextEmailLogin()
@@ -30,8 +32,6 @@ export class W3mEmailOtpWidget extends LitElement {
   @state() private error = ''
 
   private otp = ''
-
-  private OTPTimeout: NodeJS.Timeout | undefined
 
   public email = RouterController.state.data?.email
 

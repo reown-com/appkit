@@ -18,6 +18,7 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
+import { W3mFrameRpcConstants } from '@web3modal/wallet'
 
 @customElement('w3m-account-default-widget')
 export class W3mAccountDefaultWidget extends LitElement {
@@ -120,7 +121,7 @@ export class W3mAccountDefaultWidget extends LitElement {
       </wui-flex>
 
       <wui-flex flexDirection="column" gap="xs" .padding=${['0', 's', 's', 's'] as const}>
-        ${this.emailCardTemplate()} ${this.emailBtnTemplate()}
+        ${this.authCardTemplate()} <w3m-account-auth-button></w3m-account-auth-button>
 
         <wui-list-item
           .variant=${networkImage ? 'image' : 'icon'}
@@ -179,7 +180,7 @@ export class W3mAccountDefaultWidget extends LitElement {
     `
   }
 
-  private emailCardTemplate() {
+  private authCardTemplate() {
     const type = StorageUtil.getConnectedConnector()
     const authConnector = ConnectorController.getAuthConnector()
     const { origin } = location
@@ -218,29 +219,6 @@ export class W3mAccountDefaultWidget extends LitElement {
     `
   }
 
-  private emailBtnTemplate() {
-    const type = StorageUtil.getConnectedConnector()
-    const authConnector = ConnectorController.getAuthConnector()
-    if (!authConnector || type !== 'AUTH') {
-      return null
-    }
-    const email = authConnector.provider.getEmail() ?? ''
-
-    return html`
-      <wui-list-item
-        variant="icon"
-        iconVariant="overlay"
-        icon="mail"
-        iconSize="sm"
-        data-testid="w3m-account-email-update"
-        ?chevron=${true}
-        @click=${() => this.onGoToUpdateEmail(email)}
-      >
-        <wui-text variant="paragraph-500" color="fg-100">${email}</wui-text>
-      </wui-list-item>
-    `
-  }
-
   private isAllowedNetworkSwitch() {
     const { requestedCaipNetworks } = NetworkController.state
     const isMultiNetwork = requestedCaipNetworks ? requestedCaipNetworks.length > 1 : false
@@ -268,7 +246,15 @@ export class W3mAccountDefaultWidget extends LitElement {
   }
 
   private onTransactions() {
-    EventsController.sendEvent({ type: 'track', event: 'CLICK_TRANSACTIONS' })
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'CLICK_TRANSACTIONS',
+      properties: {
+        isSmartAccount:
+          AccountController.state.preferredAccountType ===
+          W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+      }
+    })
     RouterController.push('Transactions')
   }
 
@@ -296,10 +282,6 @@ export class W3mAccountDefaultWidget extends LitElement {
   private onGoToUpgradeView() {
     EventsController.sendEvent({ type: 'track', event: 'EMAIL_UPGRADE_FROM_MODAL' })
     RouterController.push('UpgradeEmailWallet')
-  }
-
-  private onGoToUpdateEmail(email: string) {
-    RouterController.push('UpdateEmailWallet', { email })
   }
 }
 

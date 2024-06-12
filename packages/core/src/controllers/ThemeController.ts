@@ -43,7 +43,7 @@ export const ThemeController = {
       }
     } catch {
       // eslint-disable-next-line no-console
-      console.info('Unable to sync theme to email connector')
+      console.info('Unable to sync theme to auth connector')
     }
   },
 
@@ -63,7 +63,7 @@ export const ThemeController = {
       }
     } catch {
       // eslint-disable-next-line no-console
-      console.info('Unable to sync theme to email connector')
+      console.info('Unable to sync theme to auth connector')
     }
   },
 

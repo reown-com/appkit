@@ -1,5 +1,79 @@
 # @web3modal/ethers
 
+## 5.0.1
+
+### Patch Changes
+
+- fix: remove walletconnect restriction on names
+
+- Updated dependencies []:
+  - @web3modal/scaffold-react@5.0.1
+  - @web3modal/scaffold-utils@5.0.1
+  - @web3modal/scaffold-vue@5.0.1
+  - @web3modal/polyfills@5.0.1
+  - @web3modal/scaffold@5.0.1
+  - @web3modal/siwe@5.0.1
+
+## 5.0.0
+
+### Major Changes
+
+- Release V5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @web3modal/polyfills@5.0.0
+  - @web3modal/scaffold@5.0.0
+  - @web3modal/scaffold-react@5.0.0
+  - @web3modal/scaffold-utils@5.0.0
+  - @web3modal/scaffold-vue@5.0.0
+  - @web3modal/siwe@5.0.0
+
+## 5.0.0-cn-v5.0
+
+### Major Changes
+
+- Test V5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @web3modal/polyfills@5.0.0-cn-v5.0
+  - @web3modal/scaffold@5.0.0-cn-v5.0
+  - @web3modal/scaffold-react@5.0.0-cn-v5.0
+  - @web3modal/scaffold-utils@5.0.0-cn-v5.0
+  - @web3modal/scaffold-vue@5.0.0-cn-v5.0
+  - @web3modal/siwe@5.0.0-cn-v5.0
+
+## 4.2.3
+
+### Patch Changes
+
+- feat: - feat: restricted ens names. fix: iat set automatically if not present in messageParams. Adds siwe config handlers
+
+- Updated dependencies []:
+  - @web3modal/polyfills@4.2.3
+  - @web3modal/scaffold@4.2.3
+  - @web3modal/scaffold-react@4.2.3
+  - @web3modal/scaffold-utils@4.2.3
+  - @web3modal/scaffold-vue@4.2.3
+  - @web3modal/siwe@4.2.3
+
+## 4.2.3-alpha.0
+
+### Patch Changes
+
+- feat: add support for coinbase smart accounts
+
+- Updated dependencies []:
+  - @web3modal/scaffold-utils@4.2.3-alpha.0
+  - @web3modal/scaffold@4.2.3-alpha.0
+  - @web3modal/siwe@4.2.3-alpha.0
+  - @web3modal/polyfills@4.2.3-alpha.0
+  - @web3modal/scaffold-react@4.2.3-alpha.0
+  - @web3modal/scaffold-vue@4.2.3-alpha.0
+
 ## 4.2.2
 
 ### Patch Changes

@@ -5,8 +5,7 @@ import {
   AccountController,
   NetworkController,
   RouterController,
-  SwapController,
-  ConstantsUtil
+  SwapController
 } from '@web3modal/core'
 import { state } from 'lit/decorators.js'
 
@@ -17,6 +16,8 @@ export class W3mSwapPreviewView extends LitElement {
   private unsubscribe: ((() => void) | undefined)[] = []
 
   // -- State & Properties -------------------------------- //
+  @state() private interval?: ReturnType<typeof setInterval>
+
   @state() private detailsOpen = true
 
   @state() private approvalTransaction = SwapController.state.approvalTransaction
@@ -37,17 +38,19 @@ export class W3mSwapPreviewView extends LitElement {
 
   @state() private caipNetwork = NetworkController.state.caipNetwork
 
-  @state() private transactionLoading = SwapController.state.transactionLoading
-
   @state() private balanceSymbol = AccountController.state.balanceSymbol
 
   @state() private gasPriceInUSD = SwapController.state.gasPriceInUSD
 
-  @state() private priceImpact = SwapController.state.priceImpact
+  @state() private inputError = SwapController.state.inputError
 
-  @state() private maxSlippage = SwapController.state.maxSlippage
+  @state() private loadingQuote = SwapController.state.loadingQuote
 
-  @state() private providerFee = SwapController.state.providerFee
+  @state() private loadingApprovalTransaction = SwapController.state.loadingApprovalTransaction
+
+  @state() private loadingBuildTransaction = SwapController.state.loadingBuildTransaction
+
+  @state() private loadingTransaction = SwapController.state.loadingTransaction
 
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
@@ -72,29 +75,51 @@ export class W3mSwapPreviewView extends LitElement {
           this.sourceToken = newState.sourceToken
           this.gasPriceInUSD = newState.gasPriceInUSD
           this.toToken = newState.toToken
-          this.transactionLoading = newState.transactionLoading
           this.gasPriceInUSD = newState.gasPriceInUSD
           this.toTokenPriceInUSD = newState.toTokenPriceInUSD
           this.sourceTokenAmount = newState.sourceTokenAmount ?? ''
           this.toTokenAmount = newState.toTokenAmount ?? ''
-          this.priceImpact = newState.priceImpact
-          this.maxSlippage = newState.maxSlippage
-          this.providerFee = newState.providerFee
+          this.inputError = newState.inputError
+          if (newState.inputError) {
+            RouterController.goBack()
+          }
+          this.loadingQuote = newState.loadingQuote
+          this.loadingApprovalTransaction = newState.loadingApprovalTransaction
+          this.loadingBuildTransaction = newState.loadingBuildTransaction
+          this.loadingTransaction = newState.loadingTransaction
         })
       ]
     )
   }
 
+  public override firstUpdated() {
+    SwapController.getTransaction()
+    this.refreshTransaction()
+  }
+
+  public override disconnectedCallback() {
+    this.unsubscribe.forEach(unsubscribe => unsubscribe?.())
+    clearInterval(this.interval)
+  }
+
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex flexDirection="column" .padding=${['0', 'l', 'l', 'l']} gap="s"
-        >${this.templateSwap()}</wui-flex
-      >
+      <wui-flex flexDirection="column" .padding=${['0', 'l', 'l', 'l']} gap="s">
+        ${this.templateSwap()}
+      </wui-flex>
     `
   }
 
   // -- Private ------------------------------------------- //
+  private refreshTransaction() {
+    this.interval = setInterval(() => {
+      if (!SwapController.getApprovalLoadingState()) {
+        SwapController.getTransaction()
+      }
+    }, 10_000)
+  }
+
   private templateSwap() {
     const sourceTokenText = `${UiHelperUtil.formatNumberToLocalString(
       parseFloat(this.sourceTokenAmount)
@@ -108,6 +133,12 @@ export class W3mSwapPreviewView extends LitElement {
       parseFloat(this.toTokenAmount) * this.toTokenPriceInUSD - (this.gasPriceInUSD || 0)
     const sentPrice = UiHelperUtil.formatNumberToLocalString(sourceTokenValue)
     const receivePrice = UiHelperUtil.formatNumberToLocalString(toTokenValue)
+
+    const loading =
+      this.loadingQuote ||
+      this.loadingBuildTransaction ||
+      this.loadingTransaction ||
+      this.loadingApprovalTransaction
 
     return html`
       <wui-flex flexDirection="column" alignItems="center" gap="l">
@@ -179,14 +210,13 @@ export class W3mSwapPreviewView extends LitElement {
             size="lg"
             borderRadius="xs"
             variant="main"
-            ?disabled=${this.transactionLoading}
+            ?loading=${loading}
+            ?disabled=${loading}
             @click=${this.onSendTransaction.bind(this)}
           >
-            ${this.transactionLoading
-              ? html`<wui-loading-spinner color="inverse-100"></wui-loading-spinner>`
-              : html`<wui-text variant="paragraph-600" color="inverse-100">
-                  ${this.actionButtonLabel()}
-                </wui-text>`}
+            <wui-text variant="paragraph-600" color="inverse-100">
+              ${this.actionButtonLabel()}
+            </wui-text>
           </wui-button>
         </wui-flex>
       </wui-flex>
@@ -194,29 +224,18 @@ export class W3mSwapPreviewView extends LitElement {
   }
 
   private templateDetails() {
-    const toTokenSwappedAmount =
-      this.sourceTokenPriceInUSD && this.toTokenPriceInUSD
-        ? (1 / this.toTokenPriceInUSD) * this.sourceTokenPriceInUSD
-        : 0
+    if (!this.sourceToken || !this.toToken || this.inputError) {
+      return null
+    }
 
-    return html`
-      <w3m-swap-details
-        detailsOpen=${this.detailsOpen}
-        sourceTokenSymbol=${this.sourceToken?.symbol}
-        sourceTokenPrice=${this.sourceTokenPriceInUSD}
-        toTokenSymbol=${this.toToken?.symbol}
-        toTokenSwappedAmount=${toTokenSwappedAmount}
-        toTokenAmount=${this.toTokenAmount}
-        gasPriceInUSD=${UiHelperUtil.formatNumberToLocalString(this.gasPriceInUSD, 3)}
-        .priceImpact=${this.priceImpact}
-        slippageRate=${ConstantsUtil.CONVERT_SLIPPAGE_TOLERANCE}
-        .maxSlippage=${this.maxSlippage}
-        providerFee=${this.providerFee}
-      ></w3m-swap-details>
-    `
+    return html`<w3m-swap-details .detailsOpen=${this.detailsOpen}></w3m-swap-details>`
   }
 
   private actionButtonLabel(): string {
+    if (this.loadingApprovalTransaction) {
+      return 'Approving...'
+    }
+
     if (this.approvalTransaction) {
       return 'Approve'
     }

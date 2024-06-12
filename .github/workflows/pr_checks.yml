@@ -5,6 +5,8 @@ on:
     branches:
       - V3
       - V4
+      - V5
+      - main
 
 concurrency:
   # Support push/pr as event types with different behaviors each:

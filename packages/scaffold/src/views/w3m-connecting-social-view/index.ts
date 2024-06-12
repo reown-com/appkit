@@ -1,10 +1,13 @@
+/* eslint-disable max-depth */
 import {
   AccountController,
   ConnectionController,
   ConnectorController,
+  EventsController,
   ModalController,
   RouterController,
   SnackController,
+  StorageUtil,
   ThemeController
 } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
@@ -24,9 +27,13 @@ export class W3mConnectingSocialView extends LitElement {
   // -- State & Properties -------------------------------- //
   @state() private socialProvider = AccountController.state.socialProvider
 
+  @state() private socialWindow = AccountController.state.socialWindow
+
   @state() protected error = false
 
   @state() protected connecting = false
+
+  @state() protected message = 'Connect in the provider window'
 
   public authConnector = ConnectorController.getAuthConnector()
 
@@ -37,6 +44,9 @@ export class W3mConnectingSocialView extends LitElement {
         AccountController.subscribe(val => {
           if (val.socialProvider) {
             this.socialProvider = val.socialProvider
+          }
+          if (val.socialWindow) {
+            this.socialWindow = val.socialWindow
           }
           if (val.address) {
             if (ModalController.state.open) {
@@ -86,7 +96,7 @@ export class W3mConnectingSocialView extends LitElement {
             <span class="capitalize">${this.socialProvider ?? 'Social'}</span></wui-text
           >
           <wui-text align="center" variant="small-400" color=${this.error ? 'error-100' : 'fg-200'}
-            >${this.error ? 'Something went wrong' : 'Connect in the provider window'}</wui-text
+            >${this.message}</wui-text
           ></wui-flex
         >
       </wui-flex>
@@ -107,24 +117,63 @@ export class W3mConnectingSocialView extends LitElement {
         window.removeEventListener('message', this.handleSocialConnection, false)
         try {
           if (this.authConnector && !this.connecting) {
+            if (this.socialWindow) {
+              this.socialWindow.close()
+              AccountController.setSocialWindow(undefined)
+            }
             this.connecting = true
+            this.updateMessage()
             const uri = event.data.resultUri as string
 
             await this.authConnector.provider.connectSocial(uri)
-            await ConnectionController.connectExternal(this.authConnector)
+
+            if (this.socialProvider) {
+              StorageUtil.setConnectedSocialProvider(this.socialProvider)
+              await ConnectionController.connectExternal(this.authConnector)
+              EventsController.sendEvent({
+                type: 'track',
+                event: 'SOCIAL_LOGIN_SUCCESS',
+                properties: { provider: this.socialProvider }
+              })
+            }
           }
         } catch (error) {
           this.error = true
+          this.updateMessage()
+          if (this.socialProvider) {
+            EventsController.sendEvent({
+              type: 'track',
+              event: 'SOCIAL_LOGIN_ERROR',
+              properties: { provider: this.socialProvider }
+            })
+          }
         }
       } else {
         RouterController.goBack()
         SnackController.showError('Untrusted Origin')
+        if (this.socialProvider) {
+          EventsController.sendEvent({
+            type: 'track',
+            event: 'SOCIAL_LOGIN_ERROR',
+            properties: { provider: this.socialProvider }
+          })
+        }
       }
     }
   }
 
   private connectSocial() {
     window.addEventListener('message', this.handleSocialConnection, false)
+  }
+
+  private updateMessage() {
+    if (this.error) {
+      this.message = 'Something went wrong'
+    } else if (this.connecting) {
+      this.message = 'Retrieving user data'
+    } else {
+      this.message = 'Connect in the provider window'
+    }
   }
 }
 

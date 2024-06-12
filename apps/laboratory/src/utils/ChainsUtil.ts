@@ -1,3 +1,5 @@
+import * as viemChains from 'viem/chains'
+
 export const mainnet = {
   chainId: 1,
   name: 'Ethereum',
@@ -107,7 +109,7 @@ export const solana = {
   name: 'Solana',
   currency: 'SOL',
   explorerUrl: 'https://solscan.io',
-  rpcUrl: 'https://rpc.walletconnect.com/v1'
+  rpcUrl: 'https://rpc.walletconnect.org/v1'
 }
 
 export const solanaTestnet = {
@@ -124,4 +126,18 @@ export const solanaDevnet = {
   currency: 'SOL',
   explorerUrl: 'https://explorer.solana.com/?cluster=devnet',
   rpcUrl: 'https://api.devnet.solana.com'
+}
+
+export const baseSepolia = {
+  chainId: 84532,
+  name: 'Base Sepolia',
+  currency: 'BASE',
+  explorerUrl: 'https://sepolia.basescan.org',
+  rpcUrl: 'https://sepolia.base.org'
+}
+
+export function getChain(id: number) {
+  const chains = Object.values(viemChains) as viemChains.Chain[]
+
+  return chains.find(x => x.id === id)
 }

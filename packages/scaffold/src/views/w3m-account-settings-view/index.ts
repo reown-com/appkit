@@ -10,7 +10,8 @@ import {
   SnackController,
   StorageUtil,
   ConnectorController,
-  SendController
+  SendController,
+  ConstantsUtil
 } from '@web3modal/core'
 import { UiHelperUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -60,13 +61,13 @@ export class W3mAccountSettingsView extends LitElement {
           } else {
             ModalController.close()
           }
+        }),
+        NetworkController.subscribeKey('caipNetwork', val => {
+          if (val?.id) {
+            this.network = val
+          }
         })
-      ],
-      NetworkController.subscribeKey('caipNetwork', val => {
-        if (val?.id) {
-          this.network = val
-        }
-      })
+      ]
     )
   }
 
@@ -92,24 +93,17 @@ export class W3mAccountSettingsView extends LitElement {
         <wui-avatar
           alt=${this.address}
           address=${this.address}
-          imageSrc=${ifDefined(this.profileImage)}
+          .imageSrc=${this.profileImage || ''}
         ></wui-avatar>
         <wui-flex flexDirection="column" alignItems="center">
           <wui-flex gap="3xs" alignItems="center" justifyContent="center">
             <wui-text variant="large-600" color="fg-100" data-testid="account-settings-address">
-              ${this.profileName
-                ? UiHelperUtil.getTruncateString({
-                    string: this.profileName,
-                    charsStart: 20,
-                    charsEnd: 0,
-                    truncate: 'end'
-                  })
-                : UiHelperUtil.getTruncateString({
-                    string: this.address,
-                    charsStart: 4,
-                    charsEnd: 6,
-                    truncate: 'middle'
-                  })}
+              ${UiHelperUtil.getTruncateString({
+                string: this.address,
+                charsStart: 4,
+                charsEnd: 6,
+                truncate: 'middle'
+              })}
             </wui-text>
             <wui-icon-link
               size="md"
@@ -122,8 +116,9 @@ export class W3mAccountSettingsView extends LitElement {
       </wui-flex>
 
       <wui-flex flexDirection="column" gap="m">
-        <wui-flex flexDirection="column" gap="xs" .padding=${['0', 'xl', 'm', 'xl'] as const}>
-          ${this.emailBtnTemplate()}
+        <wui-flex flexDirection="column" gap="xs" .padding=${['0', 'l', 'm', 'l'] as const}>
+          ${this.authCardTemplate()}
+          <w3m-account-auth-button></w3m-account-auth-button>
           <wui-list-item
             .variant=${networkImage ? 'image' : 'icon'}
             iconVariant="overlay"
@@ -137,7 +132,7 @@ export class W3mAccountSettingsView extends LitElement {
               ${this.network?.name ?? 'Unknown'}
             </wui-text>
           </wui-list-item>
-          ${this.togglePreferredAccountBtnTemplate()}
+          ${this.togglePreferredAccountBtnTemplate()} ${this.chooseNameButtonTemplate()}
           <wui-list-item
             variant="icon"
             iconVariant="overlay"
@@ -155,6 +150,47 @@ export class W3mAccountSettingsView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private chooseNameButtonTemplate() {
+    const type = StorageUtil.getConnectedConnector()
+    const authConnector = ConnectorController.getAuthConnector()
+    if (!authConnector || type !== 'AUTH' || this.profileName) {
+      return null
+    }
+
+    return html`
+      <wui-list-item
+        variant="icon"
+        iconVariant="overlay"
+        icon="id"
+        iconSize="sm"
+        ?chevron=${true}
+        @click=${this.onChooseName.bind(this)}
+        data-testid="account-choose-name-button"
+      >
+        <wui-text variant="paragraph-500" color="fg-100">Choose account name </wui-text>
+      </wui-list-item>
+    `
+  }
+
+  private authCardTemplate() {
+    const type = StorageUtil.getConnectedConnector()
+    const authConnector = ConnectorController.getAuthConnector()
+    const { origin } = location
+    if (!authConnector || type !== 'AUTH' || origin.includes(ConstantsUtil.SECURE_SITE)) {
+      return null
+    }
+
+    return html`
+      <wui-notice-card
+        @click=${this.onGoToUpgradeView.bind(this)}
+        label="Upgrade your wallet"
+        description="Transition to a self-custodial wallet"
+        icon="wallet"
+        data-testid="w3m-wallet-upgrade-card"
+      ></wui-notice-card>
+    `
+  }
+
   private isAllowedNetworkSwitch() {
     const { requestedCaipNetworks } = NetworkController.state
     const isMultiNetwork = requestedCaipNetworks ? requestedCaipNetworks.length > 1 : false
@@ -172,28 +208,6 @@ export class W3mAccountSettingsView extends LitElement {
     } catch {
       SnackController.showError('Failed to copy')
     }
-  }
-
-  private emailBtnTemplate() {
-    const type = StorageUtil.getConnectedConnector()
-    const authConnector = ConnectorController.getAuthConnector()
-    if (!authConnector || type !== 'AUTH') {
-      return null
-    }
-    const email = authConnector.provider.getEmail() ?? ''
-
-    return html`
-      <wui-list-item
-        variant="icon"
-        iconVariant="overlay"
-        icon="mail"
-        iconSize="sm"
-        ?chevron=${true}
-        @click=${() => this.onGoToUpdateEmail(email)}
-      >
-        <wui-text variant="paragraph-500" color="fg-100">${email}</wui-text>
-      </wui-list-item>
-    `
   }
 
   private togglePreferredAccountBtnTemplate() {
@@ -228,6 +242,10 @@ export class W3mAccountSettingsView extends LitElement {
     `
   }
 
+  private onChooseName() {
+    RouterController.push('ChooseAccountName')
+  }
+
   private async changePreferredAccountType() {
     const smartAccountEnabled = NetworkController.checkIfSmartAccountEnabled()
     const accountTypeTarget =
@@ -242,10 +260,7 @@ export class W3mAccountSettingsView extends LitElement {
     }
 
     this.loading = true
-    ModalController.setLoading(true)
-    await authConnector?.provider.setPreferredAccount(accountTypeTarget)
-    await ConnectionController.reconnectExternal(authConnector)
-    ModalController.setLoading(false)
+    await ConnectionController.setPreferredAccountType(accountTypeTarget)
 
     this.text =
       accountTypeTarget === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
@@ -256,10 +271,6 @@ export class W3mAccountSettingsView extends LitElement {
     SendController.resetSend()
     this.loading = false
     this.requestUpdate()
-  }
-
-  private onGoToUpdateEmail(email: string) {
-    RouterController.push('UpdateEmailWallet', { email })
   }
 
   private onNetworks() {
@@ -280,6 +291,11 @@ export class W3mAccountSettingsView extends LitElement {
     } finally {
       this.disconnecting = false
     }
+  }
+
+  private onGoToUpgradeView() {
+    EventsController.sendEvent({ type: 'track', event: 'EMAIL_UPGRADE_FROM_MODAL' })
+    RouterController.push('UpgradeEmailWallet')
   }
 }
 

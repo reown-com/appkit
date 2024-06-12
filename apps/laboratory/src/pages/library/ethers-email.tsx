@@ -11,7 +11,6 @@ const modal = createWeb3Modal({
     metadata: ConstantsUtil.Metadata,
     defaultChainId: 1,
     rpcUrl: 'https://cloudflare-eth.com',
-    enableEmail: true,
     auth: {
       socials: ['google', 'x', 'discord', 'apple', 'github']
     }
@@ -22,7 +21,6 @@ const modal = createWeb3Modal({
   metadata: ConstantsUtil.Metadata,
   termsConditionsUrl: 'https://walletconnect.com/terms',
   privacyPolicyUrl: 'https://walletconnect.com/privacy',
-  enableOnramp: true,
   customWallets: ConstantsUtil.CustomWallets
 })
 

@@ -20,7 +20,7 @@ import {
 import { mainnet } from 'viem/chains'
 import { prepareTransactionRequest, sendTransaction as wagmiSendTransaction } from '@wagmi/core'
 import type { Chain } from '@wagmi/core/chains'
-import type { GetAccountReturnType } from '@wagmi/core'
+import type { GetAccountReturnType, GetEnsAddressReturnType } from '@wagmi/core'
 import type {
   CaipAddress,
   CaipNetwork,
@@ -40,6 +40,7 @@ import type { Hex } from 'viem'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
+import { ConstantsUtil as CommonConstants } from '@web3modal/common'
 import {
   getCaipDefaultChain,
   getEmailCaipNetworks,
@@ -297,18 +298,26 @@ export class Web3Modal extends Web3ModalScaffold {
       },
 
       getEnsAddress: async (value: string) => {
-        const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
+        try {
+          const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
+          let ensName: boolean | GetEnsAddressReturnType = false
+          let wcName: boolean | string = false
 
-        if (chainId !== mainnet.id) {
+          if (value?.endsWith(CommonConstants.WC_NAME_SUFFIX)) {
+            wcName = await this.resolveWalletConnectName(value)
+          }
+
+          if (chainId === mainnet.id) {
+            ensName = await wagmiGetEnsAddress(this.wagmiConfig, {
+              name: normalize(value),
+              chainId
+            })
+          }
+
+          return ensName || wcName || false
+        } catch {
           return false
         }
-
-        const address = await wagmiGetEnsAddress(this.wagmiConfig, {
-          name: normalize(value),
-          chainId
-        })
-
-        return address || false
       },
 
       getEnsAvatar: async (value: string) => {
@@ -440,10 +449,23 @@ export class Web3Modal extends Web3ModalScaffold {
           this.setAddressExplorerUrl(undefined)
         }
         if (this.hasSyncedConnectedAccount) {
-          await this.syncProfile(address, chainId)
           await this.syncBalance(address, chainId)
         }
       }
+    }
+  }
+
+  private async syncWalletConnectName(address: Hex) {
+    try {
+      const registeredWcNames = await this.getWalletConnectName(address)
+      if (registeredWcNames[0]) {
+        const wcName = registeredWcNames[0]
+        this.setProfileName(wcName.name)
+      } else {
+        this.setProfileName(null)
+      }
+    } catch {
+      this.setProfileName(null)
     }
   }
 
@@ -454,6 +476,10 @@ export class Web3Modal extends Web3ModalScaffold {
       })
       this.setProfileName(name)
       this.setProfileImage(avatar)
+
+      if (!name) {
+        await this.syncWalletConnectName(address)
+      }
     } catch {
       if (chainId === mainnet.id) {
         const profileName = await getEnsName(this.wagmiConfig, { address, chainId })
@@ -466,9 +492,12 @@ export class Web3Modal extends Web3ModalScaffold {
           if (profileImage) {
             this.setProfileImage(profileImage)
           }
+        } else {
+          await this.syncWalletConnectName(address)
+          this.setProfileImage(null)
         }
       } else {
-        this.setProfileName(null)
+        await this.syncWalletConnectName(address)
         this.setProfileImage(null)
       }
     }
@@ -523,13 +552,13 @@ export class Web3Modal extends Web3ModalScaffold {
     const coinbaseSDKId = ConstantsUtil.COINBASE_SDK_CONNECTOR_ID
 
     // Check if coinbase injected connector is present
-    const coinbaseConnector = filteredConnectors.find(
-      c => c.id === ConstantsUtil.CONNECTOR_RDNS_MAP[ConstantsUtil.COINBASE_CONNECTOR_ID]
-    )
+    const coinbaseConnector = filteredConnectors.find(c => c.id === coinbaseSDKId)
 
     filteredConnectors.forEach(({ id, name, type, icon }) => {
       // If coinbase injected connector is present, skip coinbase sdk connector.
-      const isCoinbaseRepeated = coinbaseConnector && id === coinbaseSDKId
+      const isCoinbaseRepeated =
+        coinbaseConnector &&
+        id === ConstantsUtil.CONNECTOR_RDNS_MAP[ConstantsUtil.COINBASE_CONNECTOR_ID]
       const shouldSkip = isCoinbaseRepeated || ConstantsUtil.AUTH_CONNECTOR_ID === id
       if (!shouldSkip) {
         w3mConnectors.push({
@@ -558,7 +587,9 @@ export class Web3Modal extends Web3ModalScaffold {
       email: boolean
       socials: SocialProvider[]
       showWallets?: boolean
+      walletFeatures?: boolean
     }
+
     if (authConnector) {
       const provider = await authConnector.getProvider()
       this.addConnector({
@@ -568,7 +599,8 @@ export class Web3Modal extends Web3ModalScaffold {
         provider,
         email: authConnector.email,
         socials: authConnector.socials,
-        showWallets: authConnector?.showWallets === undefined ? true : authConnector.showWallets
+        showWallets: authConnector.showWallets,
+        walletFeatures: authConnector.walletFeatures
       })
     }
   }
@@ -677,13 +709,7 @@ export class Web3Modal extends Web3ModalScaffold {
         if (!address) {
           return
         }
-        const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
-        this.syncAccount({
-          address: address as `0x${string}`,
-          chainId,
-          isConnected: true,
-          connector
-        }).then(() => this.setPreferredAccountType(type as W3mFrameTypes.AccountType))
+        this.setPreferredAccountType(type as W3mFrameTypes.AccountType)
       })
     }
   }

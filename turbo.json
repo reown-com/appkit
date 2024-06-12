@@ -32,7 +32,7 @@
         "^build:core",
         "^build:ui",
         "^build:wallet",
-        "@web3modal/siwe#build:siwe",
+        "^build:siwe",
         "^build:scaffold-utils"
       ],
       "cache": false
@@ -57,7 +57,7 @@
       "dependsOn": ["^build:core", "^build:scaffold-utils"],
       "cache": false
     },
-    "build": {
+    "build:client": {
       "outputs": ["dist/**"],
       "dependsOn": [
         "^build:common",
@@ -74,28 +74,37 @@
       "cache": false
     },
     "watch": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build:client"],
+      "cache": false,
+      "persistent": true
+    },
+    "build:cdn": {
+      "dependsOn": ["^build:client"],
+      "cache": false
+    },
+    "build": {
+      "dependsOn": ["build:cdn"],
       "cache": false,
       "persistent": true
     },
     "build:gallery": {
       "outputs": ["out/**"],
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build:client"],
       "cache": false
     },
     "build:laboratory": {
       "outputs": ["out/**", ".next/**", "!.next/cache/**"],
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build:client"],
       "cache": false
     },
     "build:examples": {
       "outputs": ["dist/**"],
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build:client"],
       "cache": false
     },
     "build:demo": {
       "outputs": ["out/**", ".next/**", "!.next/cache/**"],
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build:client"],
       "cache": false
     },
     "typecheck": {

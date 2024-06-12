@@ -44,6 +44,7 @@ import { filtersSvg } from '../../assets/svg/filters.js'
 import { githubSvg } from '../../assets/svg/github.js'
 import { googleSvg } from '../../assets/svg/google.js'
 import { helpCircleSvg } from '../../assets/svg/help-circle.js'
+import { imageSvg } from '../../assets/svg/image.js'
 import { infoCircleSvg } from '../../assets/svg/info-circle.js'
 import { mailSvg } from '../../assets/svg/mail.js'
 import { mobileSvg } from '../../assets/svg/mobile.js'
@@ -72,6 +73,7 @@ import { walletPlaceholderSvg } from '../../assets/svg/wallet-placeholder.js'
 import { walletSvg } from '../../assets/svg/wallet.js'
 import { walletConnectSvg } from '../../assets/svg/walletconnect.js'
 import { warningCircleSvg } from '../../assets/svg/warning-circle.js'
+import { idSvg } from '../../assets/svg/id.js'
 import { xSvg } from '../../assets/svg/x.js'
 
 const svgOptions: Record<IconType, TemplateResult<2>> = {
@@ -112,6 +114,8 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   github: githubSvg,
   google: googleSvg,
   helpCircle: helpCircleSvg,
+  image: imageSvg,
+  id: idSvg,
   infoCircle: infoCircleSvg,
   mail: mailSvg,
   mobile: mobileSvg,

@@ -59,11 +59,23 @@ testConnectedMW(
     timeStart('modalPage.disconnect')
     await modalPage.disconnect()
     timeEnd('modalPage.disconnect')
-    timeStart('modalValidator.expectDisconnected')
-    await modalValidator.expectDisconnected()
-    timeEnd('modalValidator.expectDisconnected')
+    const disconnectRequestedTime = new Date()
     timeStart('walletValidator.expectDisconnected')
     await walletValidator.expectDisconnected()
     timeEnd('walletValidator.expectDisconnected')
+    // The wallet completes the disconnect first, so testing the disconnect time of the wallet before the disconnect time of the app
+    const disconnectWalletReceivedTime = new Date()
+    timingRecords.push({
+      item: 'disconnectWallet',
+      timeMs: disconnectWalletReceivedTime.getTime() - disconnectRequestedTime.getTime()
+    })
+    timeStart('modalValidator.expectDisconnected')
+    await modalValidator.expectDisconnected()
+    timeEnd('modalValidator.expectDisconnected')
+    const disconnectAppReceivedTime = new Date()
+    timingRecords.push({
+      item: 'disconnectApp',
+      timeMs: disconnectAppReceivedTime.getTime() - disconnectRequestedTime.getTime()
+    })
   }
 )

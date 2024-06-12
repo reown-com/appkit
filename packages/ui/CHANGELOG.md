@@ -1,5 +1,35 @@
 # @web3modal/ui
 
+## 5.0.1
+
+### Patch Changes
+
+- fix: remove walletconnect restriction on names
+
+## 5.0.0
+
+### Major Changes
+
+- Release V5
+
+## 5.0.0-cn-v5.0
+
+### Major Changes
+
+- Test V5
+
+## 4.2.3
+
+### Patch Changes
+
+- feat: - feat: restricted ens names. fix: iat set automatically if not present in messageParams. Adds siwe config handlers
+
+## 4.2.3-alpha.0
+
+### Patch Changes
+
+- feat: add support for coinbase smart accounts
+
 ## 4.2.2
 
 ### Patch Changes

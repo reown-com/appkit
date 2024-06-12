@@ -10,9 +10,12 @@ import {
   ModalController,
   ConstantsUtil,
   type SwapToken,
-  type SwapInputTarget
+  type SwapInputTarget,
+  EventsController,
+  AccountController
 } from '@web3modal/core'
 import { NumberUtil } from '@web3modal/common'
+import { W3mFrameRpcConstants } from '@web3modal/wallet'
 
 @customElement('w3m-swap-view')
 export class W3mSwapView extends LitElement {
@@ -21,7 +24,7 @@ export class W3mSwapView extends LitElement {
   private unsubscribe: ((() => void) | undefined)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() private interval?: NodeJS.Timeout
+  @state() private interval?: ReturnType<typeof setInterval>
 
   @state() private detailsOpen = false
 
@@ -29,9 +32,11 @@ export class W3mSwapView extends LitElement {
 
   @state() private initialized = SwapController.state.initialized
 
-  @state() private loading = SwapController.state.loading
+  @state() private loadingQuote = SwapController.state.loadingQuote
 
   @state() private loadingPrices = SwapController.state.loadingPrices
+
+  @state() private loadingTransaction = SwapController.state.loadingTransaction
 
   @state() private sourceToken = SwapController.state.sourceToken
 
@@ -48,16 +53,6 @@ export class W3mSwapView extends LitElement {
   @state() private inputError = SwapController.state.inputError
 
   @state() private gasPriceInUSD = SwapController.state.gasPriceInUSD
-
-  @state() private priceImpact = SwapController.state.priceImpact
-
-  @state() private maxSlippage = SwapController.state.maxSlippage
-
-  @state() private providerFee = SwapController.state.providerFee
-
-  @state() private transactionLoading = SwapController.state.transactionLoading
-
-  @state() private networkTokenSymbol = SwapController.state.networkTokenSymbol
 
   @state() private fetchError = SwapController.state.fetchError
 
@@ -85,9 +80,9 @@ export class W3mSwapView extends LitElement {
         }),
         SwapController.subscribe(newState => {
           this.initialized = newState.initialized
-          this.loading = newState.loading
+          this.loadingQuote = newState.loadingQuote
           this.loadingPrices = newState.loadingPrices
-          this.transactionLoading = newState.transactionLoading
+          this.loadingTransaction = newState.loadingTransaction
           this.sourceToken = newState.sourceToken
           this.sourceTokenAmount = newState.sourceTokenAmount
           this.sourceTokenPriceInUSD = newState.sourceTokenPriceInUSD
@@ -96,9 +91,6 @@ export class W3mSwapView extends LitElement {
           this.toTokenPriceInUSD = newState.toTokenPriceInUSD
           this.inputError = newState.inputError
           this.gasPriceInUSD = newState.gasPriceInUSD
-          this.priceImpact = newState.priceImpact
-          this.maxSlippage = newState.maxSlippage
-          this.providerFee = newState.providerFee
           this.fetchError = newState.fetchError
         })
       ]
@@ -135,7 +127,7 @@ export class W3mSwapView extends LitElement {
 
   private templateSwap() {
     return html`
-      <wui-flex flexDirection="column" gap="l">
+      <wui-flex flexDirection="column" gap="s">
         <wui-flex flexDirection="column" alignItems="center" gap="xs" class="swap-inputs-container">
           ${this.templateTokenInput('sourceToken', this.sourceToken)}
           ${this.templateTokenInput('toToken', this.toToken)} ${this.templateReplaceTokensButton()}
@@ -156,10 +148,6 @@ export class W3mSwapView extends LitElement {
 
     if (!this.sourceTokenAmount) {
       return 'Enter amount'
-    }
-
-    if (!this.initialized) {
-      return 'Swap'
     }
 
     if (this.inputError) {
@@ -206,7 +194,7 @@ export class W3mSwapView extends LitElement {
 
     return html`<w3m-swap-input
       .value=${target === 'toToken' ? this.toTokenAmount : this.sourceTokenAmount}
-      ?disabled=${this.loading && target === 'toToken'}
+      ?disabled=${this.loadingQuote && target === 'toToken'}
       .onSetAmount=${this.handleChangeAmount.bind(this)}
       target=${target}
       .token=${token}
@@ -248,35 +236,11 @@ export class W3mSwapView extends LitElement {
   }
 
   private templateDetails() {
-    if (this.inputError) {
+    if (!this.sourceToken || !this.toToken || this.inputError) {
       return null
     }
 
-    if (!this.sourceToken || !this.toToken || !this.sourceTokenAmount || !this.toTokenAmount) {
-      return null
-    }
-
-    const toTokenSwappedAmount =
-      this.sourceTokenPriceInUSD && this.toTokenPriceInUSD
-        ? (1 / this.toTokenPriceInUSD) * this.sourceTokenPriceInUSD
-        : 0
-
-    return html`
-      <w3m-swap-details
-        .detailsOpen=${this.detailsOpen}
-        sourceTokenSymbol=${this.sourceToken?.symbol}
-        sourceTokenPrice=${this.sourceTokenPriceInUSD}
-        toTokenSymbol=${this.toToken?.symbol}
-        toTokenSwappedAmount=${toTokenSwappedAmount}
-        toTokenAmount=${this.toTokenAmount}
-        gasPriceInUSD=${this.gasPriceInUSD}
-        .priceImpact=${this.priceImpact}
-        slippageRate=${ConstantsUtil.CONVERT_SLIPPAGE_TOLERANCE}
-        .maxSlippage=${this.maxSlippage}
-        providerFee=${this.providerFee}
-        networkTokenSymbol=${this.networkTokenSymbol}
-      ></w3m-swap-details>
-    `
+    return html`<w3m-swap-details .detailsOpen=${this.detailsOpen}></w3m-swap-details>`
   }
 
   private handleChangeAmount(target: SwapInputTarget, value: string) {
@@ -292,7 +256,7 @@ export class W3mSwapView extends LitElement {
   private templateActionButton() {
     const haveNoTokenSelected = !this.toToken || !this.sourceToken
     const haveNoAmount = !this.sourceTokenAmount
-    const loading = this.loading || this.loadingPrices || this.transactionLoading
+    const loading = this.loadingQuote || this.loadingPrices || this.loadingTransaction
     const disabled = loading || haveNoTokenSelected || haveNoAmount || this.inputError
 
     return html` <wui-flex gap="xs">
@@ -304,7 +268,7 @@ export class W3mSwapView extends LitElement {
         variant=${haveNoTokenSelected ? 'neutral' : 'main'}
         .loading=${loading}
         .disabled=${disabled}
-        @click=${this.onSwapPreview}
+        @click=${this.onSwapPreview.bind(this)}
       >
         ${this.actionButtonLabel()}
       </wui-button>
@@ -325,7 +289,20 @@ export class W3mSwapView extends LitElement {
 
       return
     }
-
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'INITIATE_SWAP',
+      properties: {
+        network: this.caipNetworkId || '',
+        swapFromToken: this.sourceToken?.symbol || '',
+        swapToToken: this.toToken?.symbol || '',
+        swapfromAmount: this.sourceTokenAmount || '',
+        swapToAmount: this.toTokenAmount || '',
+        isSmartAccount:
+          AccountController.state.preferredAccountType ===
+          W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+      }
+    })
     RouterController.push('SwapPreview')
   }
 }
