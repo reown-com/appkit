@@ -67,7 +67,9 @@ export class Email {
   }
 
   getOtpCodeFromBody(body: string): string {
-    const match = body.match(OTP_CODE_REGEX)
+    const cleanedBody = body.replace(/https:\/\/s1\.designmodo\.com\/postcards\/[^\s]+\s?/gu, '')
+
+    const match = cleanedBody.match(OTP_CODE_REGEX)
     if (match) {
       // Remove empty space in OTP code 111 111
       return match[0].replace(' ', '')
