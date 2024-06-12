@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@web3modal/common": "4.2.3",
+    "@web3modal/scaffold-utils": "4.2.3",
     "@web3modal/core": "4.2.3",
     "@web3modal/ui": "4.2.3",
     "lit": "3.1.0",

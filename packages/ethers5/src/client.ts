@@ -43,6 +43,12 @@ export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultCha
   tokens?: Record<number, Token>
 }
 
+type CoinbaseProviderError = {
+  code: number
+  message: string
+  data: string | undefined
+}
+
 export type Web3ModalOptions = Omit<Web3ModalClientOptions, '_sdkVersion'>
 
 declare global {
@@ -256,6 +262,7 @@ export class Web3Modal extends Web3ModalScaffold {
             await CoinbaseProvider.request({ method: 'eth_requestAccounts' })
           } catch (error) {
             EthersStoreUtil.setError(error)
+            throw new Error((error as CoinbaseProviderError).message)
           }
         }
       },
