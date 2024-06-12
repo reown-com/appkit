@@ -180,7 +180,7 @@ export class W3mRegisterAccountNameView extends LitElement {
       }
       EventsController.sendEvent({
         type: 'track',
-        event: 'INITIATE_NAME_REGISTRATION',
+        event: 'REGISTER_NAME_INITIATED',
         properties: {
           isSmartAccount:
             AccountController.state.preferredAccountType ===
