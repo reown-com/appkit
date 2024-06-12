@@ -18,7 +18,6 @@ export class W3mWalletLoginList extends LitElement {
         <w3m-connect-custom-widget></w3m-connect-custom-widget>
         <w3m-connect-coinbase-widget></w3m-connect-coinbase-widget>
         <w3m-connect-recommended-widget></w3m-connect-recommended-widget>
-
         <w3m-all-wallets-widget></w3m-all-wallets-widget>
       </wui-flex>
     `
