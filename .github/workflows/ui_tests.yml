@@ -5,7 +5,7 @@ on:
     inputs:
       branch:
         description: 'The branch to use'
-        default: 'V3'
+        default: 'V5'
         required: false
         type: string
       base-url:
