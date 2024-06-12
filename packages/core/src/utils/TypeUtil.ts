@@ -640,6 +640,13 @@ export type Event =
         provider: SocialProvider
       }
     }
+  | {
+      type: 'track'
+      event: 'OPEN_ENS_FLOW'
+      properties: {
+        isSmartAccount: boolean
+      }
+    }
 
 // Onramp Types
 export type DestinationWallet = {
