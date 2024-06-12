@@ -1,5 +1,16 @@
 # @examples/html-ethers5
 
+## 5.0.0
+
+### Major Changes
+
+- Release V5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @web3modal/ethers5@5.0.0
+
 ## 5.0.0-cn-v5.0
 
 ### Major Changes

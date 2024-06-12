@@ -1,5 +1,21 @@
 # @web3modal/ethers5
 
+## 5.0.0
+
+### Major Changes
+
+- Release V5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @web3modal/polyfills@5.0.0
+  - @web3modal/scaffold@5.0.0
+  - @web3modal/scaffold-react@5.0.0
+  - @web3modal/scaffold-utils@5.0.0
+  - @web3modal/scaffold-vue@5.0.0
+  - @web3modal/siwe@5.0.0
+
 ## 5.0.0-cn-v5.0
 
 ### Major Changes
