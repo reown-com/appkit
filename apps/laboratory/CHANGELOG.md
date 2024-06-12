@@ -1,5 +1,19 @@
 # @apps/laboratory
 
+## 5.0.0
+
+### Major Changes
+
+- Release V5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @web3modal/ethers@5.0.0
+  - @web3modal/siwe@5.0.0
+  - @web3modal/solana@5.0.0
+  - @web3modal/wagmi@5.0.0
+
 ## 5.0.0-cn-v5.0
 
 ### Major Changes

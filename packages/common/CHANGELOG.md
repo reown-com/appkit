@@ -1,5 +1,11 @@
 # @web3modal/common
 
+## 5.0.0
+
+### Major Changes
+
+- Release V5
+
 ## 5.0.0-cn-v5.0
 
 ### Major Changes
