@@ -649,7 +649,7 @@ export type Event =
     }
   | {
       type: 'track'
-      event: 'INITIATE_NAME_REGISTRATION'
+      event: 'REGISTER_NAME_INITIATED'
       properties: {
         isSmartAccount: boolean
         ensName: string
