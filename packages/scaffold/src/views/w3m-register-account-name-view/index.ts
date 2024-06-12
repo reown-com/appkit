@@ -45,6 +45,9 @@ export class W3mRegisterAccountNameView extends LitElement {
         }),
         AccountController.subscribeKey('profileName', val => {
           this.profileName = val
+          if (val) {
+            this.error = 'You already own a name'
+          }
         })
       ]
     )
