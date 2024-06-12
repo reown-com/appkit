@@ -1,5 +1,19 @@
 # @web3modal/scaffold
 
+## 5.0.1
+
+### Patch Changes
+
+- fix: remove walletconnect restriction on names
+
+- Updated dependencies []:
+  - @web3modal/scaffold-utils@5.0.1
+  - @web3modal/common@5.0.1
+  - @web3modal/wallet@5.0.1
+  - @web3modal/core@5.0.1
+  - @web3modal/siwe@5.0.1
+  - @web3modal/ui@5.0.1
+
 ## 5.0.0
 
 ### Major Changes

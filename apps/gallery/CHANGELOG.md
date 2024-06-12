@@ -1,5 +1,15 @@
 # @apps/gallery
 
+## 5.0.1
+
+### Patch Changes
+
+- fix: remove walletconnect restriction on names
+
+- Updated dependencies []:
+  - @web3modal/common@5.0.1
+  - @web3modal/ui@5.0.1
+
 ## 5.0.0
 
 ### Major Changes
