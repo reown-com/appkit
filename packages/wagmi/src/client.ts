@@ -449,7 +449,6 @@ export class Web3Modal extends Web3ModalScaffold {
           this.setAddressExplorerUrl(undefined)
         }
         if (this.hasSyncedConnectedAccount) {
-          await this.syncProfile(address, chainId)
           await this.syncBalance(address, chainId)
         }
       }
@@ -710,13 +709,7 @@ export class Web3Modal extends Web3ModalScaffold {
         if (!address) {
           return
         }
-        const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
-        this.syncAccount({
-          address: address as `0x${string}`,
-          chainId,
-          isConnected: true,
-          connector
-        }).then(() => this.setPreferredAccountType(type as W3mFrameTypes.AccountType))
+        this.setPreferredAccountType(type as W3mFrameTypes.AccountType)
       })
     }
   }

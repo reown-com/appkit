@@ -1,7 +1,6 @@
 import { RouterController } from '../controllers/RouterController.js'
 import { ModalController } from '../controllers/ModalController.js'
 import { OptionsController } from '../controllers/OptionsController.js'
-import { AccountController } from '../controllers/AccountController.js'
 
 export const RouterUtil = {
   goBackOrCloseModal() {
@@ -22,13 +21,10 @@ export const RouterUtil = {
   },
   navigateAfterPreferredAccountTypeSelect() {
     const { isSiweEnabled } = OptionsController.state
-    const { profileName } = AccountController.state
     if (isSiweEnabled) {
       RouterController.push('ConnectingSiwe')
-    } else if (profileName) {
-      RouterController.push('Account')
     } else {
-      RouterController.push('ChooseAccountName')
+      RouterController.push('Account')
     }
   }
 }
