@@ -1,5 +1,17 @@
 # @web3modal/siwe
 
+## 5.0.0-cn-v5.0
+
+### Major Changes
+
+- Test V5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @web3modal/core@5.0.0-cn-v5.0
+  - @web3modal/scaffold-utils@5.0.0-cn-v5.0
+
 ## 4.2.3
 
 ### Patch Changes

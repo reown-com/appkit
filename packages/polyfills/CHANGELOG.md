@@ -1,5 +1,11 @@
 # @web3modal/polyfills
 
+## 5.0.0-cn-v5.0
+
+### Major Changes
+
+- Test V5
+
 ## 4.2.3
 
 ### Patch Changes
