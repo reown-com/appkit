@@ -1,0 +1,35 @@
+{
+  "mode": "exit",
+  "tag": "cn-v5",
+  "initialVersions": {
+    "@apps/demo": "4.2.3",
+    "@apps/gallery": "4.2.3",
+    "@apps/laboratory": "4.2.3",
+    "@examples/html-ethers5": "4.2.3",
+    "@examples/html-wagmi": "4.2.3",
+    "@examples/next-wagmi": "4.2.3",
+    "@examples/react-ethers": "4.2.3",
+    "@examples/react-ethers5": "4.2.3",
+    "@examples/react-wagmi": "4.2.3",
+    "@examples/vue-ethers5": "4.2.3",
+    "@examples/vue-wagmi": "4.2.3",
+    "@web3modal/cdn": "4.2.3",
+    "@web3modal/common": "4.2.3",
+    "@web3modal/core": "4.2.3",
+    "@web3modal/ethers": "4.2.3",
+    "@web3modal/ethers5": "4.2.3",
+    "@web3modal/polyfills": "4.2.3",
+    "@web3modal/scaffold": "4.2.3",
+    "@web3modal/scaffold-react": "4.2.3",
+    "@web3modal/scaffold-utils": "4.2.3",
+    "@web3modal/scaffold-vue": "4.2.3",
+    "@web3modal/siwe": "4.2.3",
+    "@web3modal/solana": "4.2.3",
+    "@web3modal/ui": "4.2.3",
+    "@web3modal/wagmi": "4.2.3",
+    "@web3modal/wallet": "4.2.3"
+  },
+  "changesets": [
+    "giant-geese-care"
+  ]
+}
