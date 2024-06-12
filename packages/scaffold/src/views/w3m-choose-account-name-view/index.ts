@@ -1,9 +1,15 @@
 import { customElement } from '@web3modal/ui'
-import { CoreHelperUtil, RouterController } from '@web3modal/core'
+import {
+  AccountController,
+  CoreHelperUtil,
+  EventsController,
+  RouterController
+} from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
 import { NavigationUtil } from '@web3modal/common'
+import { W3mFrameRpcConstants } from '@web3modal/wallet'
 
 @customElement('w3m-choose-account-name-view')
 export class W3mChooseAccountNameView extends LitElement {
@@ -74,10 +80,23 @@ export class W3mChooseAccountNameView extends LitElement {
         .loading=${this.loading}
         size="lg"
         borderRadius="xs"
-        @click=${() => RouterController.push('RegisterAccountName')}
+        @click=${this.handleContinue.bind(this)}
         >Choose name
       </wui-button>
     </wui-flex>`
+  }
+
+  private handleContinue() {
+    RouterController.push('RegisterAccountName')
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'OPEN_ENS_FLOW',
+      properties: {
+        isSmartAccount:
+          AccountController.state.preferredAccountType ===
+          W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+      }
+    })
   }
 }
 

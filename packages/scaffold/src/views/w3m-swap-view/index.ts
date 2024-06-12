@@ -10,9 +10,12 @@ import {
   ModalController,
   ConstantsUtil,
   type SwapToken,
-  type SwapInputTarget
+  type SwapInputTarget,
+  EventsController,
+  AccountController
 } from '@web3modal/core'
 import { NumberUtil } from '@web3modal/common'
+import { W3mFrameRpcConstants } from '@web3modal/wallet'
 
 @customElement('w3m-swap-view')
 export class W3mSwapView extends LitElement {
@@ -286,7 +289,20 @@ export class W3mSwapView extends LitElement {
 
       return
     }
-
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'INITIATE_SWAP',
+      properties: {
+        network: this.caipNetworkId || '',
+        swapFromToken: this.sourceToken?.symbol || '',
+        swapToToken: this.toToken?.symbol || '',
+        swapfromAmount: this.sourceTokenAmount || '',
+        swapToAmount: this.toTokenAmount || '',
+        isSmartAccount:
+          AccountController.state.preferredAccountType ===
+          W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+      }
+    })
     RouterController.push('SwapPreview')
   }
 }

@@ -12,6 +12,7 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import type { TransactionType } from '@web3modal/ui/src/utils/TypeUtil.js'
 import styles from './styles.js'
+import { W3mFrameRpcConstants } from '@web3modal/wallet'
 
 // -- Helpers --------------------------------------------- //
 const PAGINATOR_ID = 'last-transaction'
@@ -278,7 +279,10 @@ export class W3mActivityList extends LitElement {
           properties: {
             address: this.address,
             projectId,
-            cursor: this.next
+            cursor: this.next,
+            isSmartAccount:
+              AccountController.state.preferredAccountType ===
+              W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
           }
         })
       }

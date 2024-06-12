@@ -3,6 +3,7 @@ import {
   ConnectionController,
   EventsController,
   ModalController,
+  NetworkController,
   OptionsController,
   RouterController,
   SnackController
@@ -85,7 +86,13 @@ export class W3mConnectingSiweView extends LitElement {
     this.isSigning = true
     EventsController.sendEvent({
       event: 'CLICK_SIGN_SIWE_MESSAGE',
-      type: 'track'
+      type: 'track',
+      properties: {
+        network: NetworkController.state.caipNetwork?.id || '',
+        isSmartAccount:
+          AccountController.state.preferredAccountType ===
+          W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+      }
     })
     try {
       SIWEController.setStatus('loading')
@@ -93,13 +100,21 @@ export class W3mConnectingSiweView extends LitElement {
       SIWEController.setStatus('success')
       EventsController.sendEvent({
         event: 'SIWE_AUTH_SUCCESS',
-        type: 'track'
+        type: 'track',
+        properties: {
+          network: NetworkController.state.caipNetwork?.id || '',
+          isSmartAccount:
+            AccountController.state.preferredAccountType ===
+            W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+        }
       })
 
       return session
     } catch (error) {
       const preferredAccountType = AccountController.state.preferredAccountType
-      if (preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT) {
+      const isSmartAccount =
+        preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+      if (isSmartAccount) {
         SnackController.showError('This application might not support Smart Accounts')
       } else {
         SnackController.showError('Signature declined')
@@ -108,7 +123,11 @@ export class W3mConnectingSiweView extends LitElement {
 
       return EventsController.sendEvent({
         event: 'SIWE_AUTH_ERROR',
-        type: 'track'
+        type: 'track',
+        properties: {
+          network: NetworkController.state.caipNetwork?.id || '',
+          isSmartAccount
+        }
       })
     } finally {
       this.isSigning = false
@@ -125,7 +144,13 @@ export class W3mConnectingSiweView extends LitElement {
     }
     EventsController.sendEvent({
       event: 'CLICK_CANCEL_SIWE',
-      type: 'track'
+      type: 'track',
+      properties: {
+        network: NetworkController.state.caipNetwork?.id || '',
+        isSmartAccount:
+          AccountController.state.preferredAccountType ===
+          W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+      }
     })
   }
 }
