@@ -12,7 +12,6 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
-import { SIWEController } from '@web3modal/siwe'
 
 @customElement('w3m-network-switch-view')
 export class W3mNetworkSwitchView extends LitElement {
@@ -135,11 +134,11 @@ export class W3mNetworkSwitchView extends LitElement {
       this.error = false
       if (this.network) {
         await NetworkController.switchActiveNetwork(this.network)
-        if (
-          OptionsController.state.isSiweEnabled &&
-          SIWEController.state._client?.options?.signOutOnNetworkChange
-        ) {
-          await SIWEController.signOut()
+        if (OptionsController.state.isSiweEnabled) {
+          const { SIWEController } = await import('@web3modal/siwe')
+          if (SIWEController.state._client?.options?.signOutOnNetworkChange) {
+            await SIWEController.signOut()
+          }
         } else {
           RouterUtil.navigateAfterNetworkSwitch()
         }
