@@ -176,10 +176,12 @@ export class W3mSocialLoginWidget extends LitElement {
           AccountController.setSocialWindow(this.popupWindow)
           this.popupWindow.location.href = uri
         } else {
+          this.popupWindow?.close()
           throw new Error('Something went wrong')
         }
       }
     } catch (error) {
+      this.popupWindow?.close()
       SnackController.showError('Something went wrong')
     }
   }
