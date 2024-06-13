@@ -16,8 +16,9 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "zod": "3.22.4",
-    "@web3modal/polyfills": "5.0.1"
+    "@walletconnect/logger": "^2.1.2",
+    "@web3modal/polyfills": "5.0.1",
+    "zod": "3.22.4"
   },
   "keywords": [
     "web3",
