@@ -171,6 +171,8 @@ export class W3mModal extends LitElement {
 
     const previousAddress = CoreHelperUtil.getPlainAddress(this.caipAddress)
     const newAddress = CoreHelperUtil.getPlainAddress(caipAddress)
+    const previousNetworkId = CoreHelperUtil.getNetworkId(this.caipAddress)
+    const newNetworkId = CoreHelperUtil.getNetworkId(caipAddress)
     this.caipAddress = caipAddress
 
     if (this.isSiweEnabled) {
@@ -180,6 +182,19 @@ export class W3mModal extends LitElement {
       // If the address has changed and signOnAccountChange is enabled, sign out
       if (session && previousAddress && newAddress && previousAddress !== newAddress) {
         if (SIWEController.state._client?.options.signOutOnAccountChange) {
+          await SIWEController.signOut()
+          this.onSiweNavigation()
+        }
+
+        return
+      }
+
+      /*
+       * If the network has changed and signOnNetworkChange is enabled, sign out
+       * Covers case where network is switched wallet-side
+       */
+      if (session && previousNetworkId && newNetworkId && previousNetworkId !== newNetworkId) {
+        if (SIWEController.state._client?.options.signOutOnNetworkChange) {
           await SIWEController.signOut()
           this.onSiweNavigation()
         }

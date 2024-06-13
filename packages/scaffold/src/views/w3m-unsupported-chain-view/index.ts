@@ -7,7 +7,9 @@ import {
   EventsController,
   ModalController,
   NetworkController,
+  OptionsController,
   RouterController,
+  RouterUtil,
   SnackController
 } from '@web3modal/core'
 
@@ -131,6 +133,14 @@ export class W3mUnsupportedChainView extends LitElement {
     if (isConnected && caipNetwork?.id !== network.id) {
       if (approvedCaipNetworkIds?.includes(network.id)) {
         await NetworkController.switchActiveNetwork(network)
+        if (OptionsController.state.isSiweEnabled) {
+          const { SIWEController } = await import('@web3modal/siwe')
+          if (SIWEController.state._client?.options?.signOutOnNetworkChange) {
+            await SIWEController.signOut()
+          }
+        } else {
+          RouterUtil.navigateAfterNetworkSwitch()
+        }
       } else if (supportsAllNetworks) {
         RouterController.push('SwitchNetwork', { ...data, network })
       }
