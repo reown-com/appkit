@@ -93,7 +93,7 @@ export class W3mFrameProvider {
     this.logger = generateChildLogger(logger, this.constructor.name)
     this.chunkLoggerController = chunkLoggerController
 
-    if (this.chunkLoggerController?.downloadLogsBlobInBrowser) {
+    if (window && this.chunkLoggerController?.downloadLogsBlobInBrowser) {
       // @ts-expect-error any
       if (!window.dowdownloadAppKitLogsBlob) {
         // @ts-expect-error any
