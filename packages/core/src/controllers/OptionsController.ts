@@ -11,6 +11,7 @@ export interface OptionsControllerState {
   featuredWalletIds?: string[]
   includeWalletIds?: string[]
   excludeWalletIds?: string[]
+  excludeWalletRDNS?: string[]
   tokens?: Tokens
   customWallets?: CustomWallet[]
   termsConditionsUrl?: string
@@ -53,6 +54,10 @@ export const OptionsController = {
 
   setExcludeWalletIds(excludeWalletIds: OptionsControllerState['excludeWalletIds']) {
     state.excludeWalletIds = excludeWalletIds
+  },
+
+  setExcludeWalletRDNS(excludeWalletRDNS: OptionsControllerState['excludeWalletRDNS']) {
+    state.excludeWalletRDNS = excludeWalletRDNS
   },
 
   setFeaturedWalletIds(featuredWalletIds: OptionsControllerState['featuredWalletIds']) {

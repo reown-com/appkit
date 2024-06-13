@@ -4,6 +4,7 @@ import {
   ConnectionController,
   ConnectorController,
   CoreHelperUtil,
+  OptionsController,
   RouterController
 } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
@@ -19,10 +20,13 @@ export class W3mConnectInjectedWidget extends LitElement {
   // -- State & Properties -------------------------------- //
   @state() private connectors = ConnectorController.state.connectors
 
+  @state() private excludedWalletRDNS = OptionsController.state.excludeWalletRDNS
+
   public constructor() {
     super()
     this.unsubscribe.push(
-      ConnectorController.subscribeKey('connectors', val => (this.connectors = val))
+      ConnectorController.subscribeKey('connectors', val => (this.connectors = val)),
+      OptionsController.subscribeKey('excludeWalletRDNS', val => (this.excludedWalletRDNS = val))
     )
   }
 
@@ -54,6 +58,12 @@ export class W3mConnectInjectedWidget extends LitElement {
 
           if (!ConnectionController.checkInstalled()) {
             return null
+          }
+
+          if (connector.info?.rdns && this.excludedWalletRDNS) {
+            if (this.excludedWalletRDNS.includes(connector?.info?.rdns)) {
+              return null
+            }
           }
 
           return html`

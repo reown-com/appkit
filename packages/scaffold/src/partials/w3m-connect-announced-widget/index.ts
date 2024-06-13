@@ -1,5 +1,11 @@
 import type { Connector } from '@web3modal/core'
-import { AssetUtil, ConnectorController, CoreHelperUtil, RouterController } from '@web3modal/core'
+import {
+  AssetUtil,
+  ConnectorController,
+  CoreHelperUtil,
+  OptionsController,
+  RouterController
+} from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
@@ -13,10 +19,13 @@ export class W3mConnectAnnouncedWidget extends LitElement {
   // -- State & Properties -------------------------------- //
   @state() private connectors = ConnectorController.state.connectors
 
+  @state() private excludedWalletRDNS = OptionsController.state.excludeWalletRDNS
+
   public constructor() {
     super()
     this.unsubscribe.push(
-      ConnectorController.subscribeKey('connectors', val => (this.connectors = val))
+      ConnectorController.subscribeKey('connectors', val => (this.connectors = val)),
+      OptionsController.subscribeKey('excludeWalletRDNS', val => (this.excludedWalletRDNS = val))
     )
   }
 
@@ -36,8 +45,14 @@ export class W3mConnectAnnouncedWidget extends LitElement {
 
     return html`
       <wui-flex flexDirection="column" gap="xs">
-        ${announcedConnectors.map(
-          connector => html`
+        ${announcedConnectors.map(connector => {
+          if (connector.info?.rdns && this.excludedWalletRDNS) {
+            if (this.excludedWalletRDNS.includes(connector?.info?.rdns)) {
+              return null
+            }
+          }
+
+          return html`
             <wui-list-wallet
               imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
               name=${connector.name ?? 'Unknown'}
@@ -49,7 +64,7 @@ export class W3mConnectAnnouncedWidget extends LitElement {
             >
             </wui-list-wallet>
           `
-        )}
+        })}
       </wui-flex>
     `
   }
