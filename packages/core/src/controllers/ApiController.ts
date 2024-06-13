@@ -4,7 +4,7 @@ import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { FetchUtil } from '../utils/FetchUtil.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
 import type {
-  ApiGetAnalyticsConfigResponse,
+  ApiGetProjectConfigResponse,
   ApiGetWalletsRequest,
   ApiGetWalletsResponse,
   WcWallet
@@ -228,19 +228,29 @@ export const ApiController = {
       ApiController.fetchFeaturedWallets(),
       ApiController.fetchRecommendedWallets(),
       ApiController.fetchNetworkImages(),
-      ApiController.fetchConnectorImages()
+      ApiController.fetchConnectorImages(),
+      ApiController.fetchProjectConfig()
     ]
-    if (OptionsController.state.enableAnalytics === undefined) {
-      promises.push(ApiController.fetchAnalyticsConfig())
-    }
+
     state.prefetchPromise = Promise.race([Promise.allSettled(promises), CoreHelperUtil.wait(3000)])
   },
 
-  async fetchAnalyticsConfig() {
-    const { isAnalyticsEnabled } = await api.get<ApiGetAnalyticsConfigResponse>({
-      path: '/getAnalyticsConfig',
+  async fetchProjectConfig() {
+    const { isAnalyticsEnabled, isAppKitAuthEnabled } = await api.get<ApiGetProjectConfigResponse>({
+      path: '/getProjectConfig',
       headers: ApiController._getApiHeaders()
     })
-    OptionsController.setEnableAnalytics(isAnalyticsEnabled)
+    // Only set the analytics state if it's not already set through the SDK config
+    if (OptionsController.state.enableAnalytics === undefined) {
+      OptionsController.setEnableAnalytics(isAnalyticsEnabled)
+    }
+
+    if (isAppKitAuthEnabled) {
+      const { SIWEController, appKitAuthConfig } = await import('@web3modal/siwe')
+
+      SIWEController.setSIWEClient(appKitAuthConfig)
+
+      OptionsController.setIsSiweEnabled(isAppKitAuthEnabled)
+    }
   }
 }

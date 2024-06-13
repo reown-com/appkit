@@ -6,6 +6,7 @@ import type {
   SIWEClientMethods
 } from '../core/utils/TypeUtils.js'
 import { Web3ModalSIWEClient } from '../src/client.js'
+export { appKitAuthConfig } from '../core/utils/AppKitAuthUtil.js'
 export {
   getAddressFromMessage,
   getChainIdFromMessage,
@@ -23,9 +24,9 @@ export type {
   SIWEClientMethods
 }
 
+export * from '../scaffold/partials/w3m-connecting-siwe/index.js'
+export * from '../scaffold/views/w3m-connecting-siwe-view/index.js'
+
 export function createSIWEConfig(siweConfig: SIWEConfig) {
   return new Web3ModalSIWEClient(siweConfig)
 }
-
-export * from '../scaffold/partials/w3m-connecting-siwe/index.js'
-export * from '../scaffold/views/w3m-connecting-siwe-view/index.js'

@@ -1,0 +1,107 @@
+import { formatMessage } from '@walletconnect/utils'
+import { Web3ModalSIWEClient } from '../../src/client.js'
+import type { SIWECreateMessageArgs, SIWESession, SIWEVerifyMessageArgs } from './TypeUtils.js'
+
+const myHeaders = new Headers()
+myHeaders.append('x-project-id', '24970167f11c121f6eb40b558edb9691')
+myHeaders.append('x-sdk-type', 'w3m')
+myHeaders.append('x-sdk-version', 'html-3.0.0')
+
+export async function getNonce() {
+  return fetch('http://localhost:8787/auth/v1/nonce', {
+    method: 'GET',
+    headers: myHeaders,
+    credentials: 'include'
+  })
+    .then(response => response.json())
+    .catch(error => console.error(error))
+}
+
+export async function getAppKitAuthSession() {
+  return fetch('http://localhost:8787/auth/v1/me', {
+    method: 'GET',
+    headers: myHeaders,
+    credentials: 'include'
+  })
+    .then(response => response.json())
+    .catch(error => console.error(error))
+}
+
+export async function authenticate(payload: { message: string; signature: string }) {
+  return fetch('http://localhost:8787/auth/v1/authenticate', {
+    method: 'POST',
+    headers: myHeaders,
+    body: JSON.stringify(payload),
+    credentials: 'include'
+  })
+    .then(response => response.json())
+    .catch(error => console.error(error))
+}
+
+export async function appKitAuthSignOut() {
+  return fetch('http://localhost:8787/auth/v1/sign-out', {
+    method: 'POST',
+    headers: myHeaders,
+    credentials: 'include'
+  })
+    .then(response => response.json())
+    .catch(error => console.error(error))
+}
+
+export const appKitAuthConfig = new Web3ModalSIWEClient({
+  signOutOnAccountChange: true,
+  signOutOnNetworkChange: true,
+  // We don't require any async action to populate params but other apps might
+  // eslint-disable-next-line @typescript-eslint/require-await
+  getMessageParams: async () => ({
+    domain: window.location.host,
+    uri: window.location.origin,
+    chains: [1],
+    statement: 'Please sign with your account',
+    iat: new Date().toISOString()
+  }),
+  createMessage: ({ address, ...args }: SIWECreateMessageArgs) => formatMessage(args, address),
+  getNonce: async () => {
+    const { nonce } = await getNonce()
+    if (!nonce) {
+      throw new Error('Failed to get nonce!')
+    }
+
+    return nonce
+  },
+  getSession: async () => {
+    const session = await getAppKitAuthSession()
+    if (!session) {
+      throw new Error('Failed to get session!')
+    }
+
+    const { address, chainId } = session as unknown as SIWESession
+
+    return { address, chainId }
+  },
+  verifyMessage: async ({ message, signature, cacao }: SIWEVerifyMessageArgs) => {
+    try {
+      /*
+       * Signed Cacao (CAIP-74) will be available for further validations if the wallet supports caip-222 signing
+       * When personal_sign fallback is used, cacao will be undefined
+       */
+      if (cacao) {
+        // Do something
+      }
+      const { token } = await authenticate({ message, signature })
+
+      return Boolean(token)
+    } catch (error) {
+      return false
+    }
+  },
+  signOut: async () => {
+    try {
+      await appKitAuthSignOut()
+
+      return true
+    } catch (error) {
+      return false
+    }
+  }
+})
