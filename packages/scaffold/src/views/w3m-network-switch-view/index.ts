@@ -2,9 +2,7 @@ import {
   AssetUtil,
   ConnectorController,
   NetworkController,
-  OptionsController,
   RouterController,
-  RouterUtil,
   StorageUtil
 } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
@@ -41,6 +39,7 @@ export class W3mNetworkSwitchView extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    console.log('SWITCH NETWORK VIEW')
     if (!this.network) {
       throw new Error('w3m-network-switch-view: No network provided')
     }
@@ -134,14 +133,6 @@ export class W3mNetworkSwitchView extends LitElement {
       this.error = false
       if (this.network) {
         await NetworkController.switchActiveNetwork(this.network)
-        if (OptionsController.state.isSiweEnabled) {
-          const { SIWEController } = await import('@web3modal/siwe')
-          if (SIWEController.state._client?.options?.signOutOnNetworkChange) {
-            await SIWEController.signOut()
-          }
-        } else {
-          RouterUtil.navigateAfterNetworkSwitch()
-        }
       }
     } catch {
       this.error = true

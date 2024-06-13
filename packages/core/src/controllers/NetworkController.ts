@@ -6,6 +6,8 @@ import { EventsController } from './EventsController.js'
 import { ModalController } from './ModalController.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { NetworkUtil } from '@web3modal/common'
+import { OptionsController } from './OptionsController.js'
+import { RouterUtil } from '../utils/RouterUtil.js'
 
 // -- Types --------------------------------------------- //
 export interface NetworkControllerClient {
@@ -106,6 +108,14 @@ export const NetworkController = {
 
   async switchActiveNetwork(network: NetworkControllerState['caipNetwork']) {
     await this._getClient().switchCaipNetwork(network)
+    if (OptionsController.state.isSiweEnabled) {
+      const { SIWEController } = await import('@web3modal/siwe')
+      if (SIWEController.state._client?.options?.signOutOnNetworkChange) {
+        await SIWEController.signOut()
+      }
+    } else {
+      RouterUtil.navigateAfterNetworkSwitch()
+    }
 
     state.caipNetwork = network
     if (network) {
