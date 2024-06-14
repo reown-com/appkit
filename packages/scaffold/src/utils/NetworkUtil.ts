@@ -6,6 +6,8 @@ export const NetworkUtil = {
       const { SIWEController } = await import('@web3modal/siwe')
       if (SIWEController.state._client?.options?.signOutOnNetworkChange) {
         await SIWEController.signOut()
+      } else {
+        RouterUtil.navigateAfterNetworkSwitch()
       }
     } else {
       RouterUtil.navigateAfterNetworkSwitch()
