@@ -19,12 +19,7 @@ const modal = createWeb3Modal({
   metadata: ConstantsUtil.Metadata,
   termsConditionsUrl: 'https://walletconnect.com/terms',
   privacyPolicyUrl: 'https://walletconnect.com/privacy',
-  customWallets: ConstantsUtil.CustomWallets,
-  excludeWalletIds: [
-    '8a0153a6a099bb8dbacd0300327cd2e6c89502c4bb76ccba2eb568dd56c155a6',
-    'c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96',
-    'a797aa35c0fadbfc1a53e7f675162ed5226968b44a19ee3d24385c64d1d3c393'
-  ]
+  customWallets: ConstantsUtil.CustomWallets
 })
 
 ThemeStore.setModal(modal)

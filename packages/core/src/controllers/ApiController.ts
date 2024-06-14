@@ -201,7 +201,7 @@ export const ApiController = {
       headers: ApiController._getApiHeaders(),
       params: {
         page: '1',
-        entries: '1',
+        entries: String(ids.length),
         chains: NetworkController.state.caipNetwork?.id,
         include: ids?.join(',')
       }
