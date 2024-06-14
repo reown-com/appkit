@@ -195,7 +195,7 @@ export const ApiController = {
     state.page = page
   },
 
-  async searchWalletById({ id }: { id: string }) {
+  async searchWalletByIds({ ids }: { ids: string[] }) {
     const { data } = await api.get<ApiGetWalletsResponse>({
       path: '/getWallets',
       headers: ApiController._getApiHeaders(),
@@ -203,12 +203,16 @@ export const ApiController = {
         page: '1',
         entries: '1',
         chains: NetworkController.state.caipNetwork?.id,
-        include: id
+        include: ids?.join(',')
       }
     })
 
-    if (data[0]?.rdns) {
-      state.excludedRDNS.push(data[0].rdns)
+    if (data) {
+      data.forEach(wallet => {
+        if (wallet?.rdns) {
+          state.excludedRDNS.push(wallet.rdns)
+        }
+      })
     }
   },
 
