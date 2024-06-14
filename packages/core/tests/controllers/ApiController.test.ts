@@ -18,7 +18,8 @@ describe('ApiController', () => {
       recommended: [],
       wallets: [],
       search: [],
-      isAnalyticsEnabled: false
+      isAnalyticsEnabled: false,
+      excludedRDNS: []
     })
   })
 
