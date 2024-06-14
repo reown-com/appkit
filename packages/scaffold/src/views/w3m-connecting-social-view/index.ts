@@ -163,6 +163,14 @@ export class W3mConnectingSocialView extends LitElement {
   }
 
   private connectSocial() {
+    const interval = setInterval(() => {
+      if (this.socialWindow?.closed) {
+        if (!this.connecting && RouterController.state.view === 'ConnectingSocial') {
+          RouterController.goBack()
+        }
+        clearInterval(interval)
+      }
+    }, 1000)
     window.addEventListener('message', this.handleSocialConnection, false)
   }
 
