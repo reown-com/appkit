@@ -96,6 +96,7 @@ export const ConnectionController = {
   connectWalletConnect(chain?: Chain) {
     console.log('>>> [ConnectionController] connectWalletConnect()', chain)
     state.wcPromise = this._getClient(chain).connectWalletConnect(uri => {
+      console.log('>>> [ConnectionController] connectWalletConnect() uri', uri)
       state.wcUri = uri
       state.wcPairingExpiry = CoreHelperUtil.getPairingExpiry()
     })

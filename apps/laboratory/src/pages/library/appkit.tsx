@@ -44,7 +44,7 @@ const solanaWeb3JsAdapter = new SolanaWeb3JsClient({
 })
 
 const modal = createAppKit({
-  adapters: [wagmiAdapter, solanaWeb3JsAdapter],
+  adapters: [solanaWeb3JsAdapter],
   projectId: ConstantsUtil.ProjectId,
   enableAnalytics: true,
   metadata: ConstantsUtil.Metadata,

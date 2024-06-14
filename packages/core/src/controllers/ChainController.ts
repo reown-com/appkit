@@ -4,10 +4,9 @@
  */
 import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy, subscribe as sub } from 'valtio/vanilla'
-import type { AdapterCore, CaipNetwork, CaipNetworkId } from '../utils/TypeUtil.js'
+import type { CaipNetwork, CaipNetworkId, ChainAdapter } from '../utils/TypeUtil.js'
 import { ModalController } from './ModalController.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
-import { type ConnectionControllerClient } from './ConnectionController.js'
 import { type NetworkControllerClient, type NetworkControllerState } from './NetworkController.js'
 import { type AccountControllerState } from './AccountController.js'
 import { PublicStateController } from './PublicStateController.js'
@@ -22,17 +21,11 @@ export type ChainOptions = {
   defaultCaipNetwork?: CaipNetwork
 }
 
-type ChainProps = Partial<NetworkControllerState> & {
-  connectionControllerClient?: ConnectionControllerClient
-  networkControllerClient?: NetworkControllerClient
-  accountState: AccountControllerState
-}
-
 export interface ChainControllerState {
   multiChainEnabled: boolean
   activeChain: 'evm' | 'solana' | undefined
   activeCaipNetwork: any
-  chains: Record<Chain, ChainProps>
+  chains: Record<Chain, ChainAdapter>
 }
 
 type StateKey = keyof ChainControllerState
@@ -50,10 +43,16 @@ const state = proxy<ChainControllerState>({
   multiChainEnabled: false,
   chains: {
     evm: {
-      accountState
+      connectionControllerClient: undefined,
+      networkControllerClient: undefined,
+      accountState,
+      chain: 'evm'
     },
     solana: {
-      accountState
+      connectionControllerClient: undefined,
+      networkControllerClient: undefined,
+      accountState,
+      chain: 'solana'
     }
   },
   activeChain: undefined,
@@ -80,28 +79,27 @@ export const ChainController = {
     return state.chains[chain].networkControllerClient
   },
 
-  initialize(adapters: any) {
+  initialize(adapters: ChainAdapter[]) {
+    const firstChainToActivate = adapters?.[0]?.chain || 'evm'
+    console.log('>>> initialize ChainController', adapters)
+
     if (!state.multiChainEnabled) {
       state.multiChainEnabled = true
     }
-    if (!state.activeChain) {
-      state.activeChain = adapters?.[0]?.protocol
-      PublicStateController.set({ activeChain: adapters?.[0]?.protocol })
-    }
-    adapters.forEach((adapter: AdapterCore) => {
-      state.chains[adapter.protocol].connectionControllerClient = adapter.connectionControllerClient
-      state.chains[adapter.protocol].networkControllerClient = adapter.networkControllerClient
-      state.chains[adapter.protocol].accountState = proxy<AccountControllerState>({
+
+    adapters.forEach((adapter: ChainAdapter) => {
+      state.chains[adapter.chain].connectionControllerClient = adapter.connectionControllerClient
+      state.chains[adapter.chain].networkControllerClient = adapter.networkControllerClient
+      state.chains[adapter.chain].accountState = proxy<AccountControllerState>({
         isConnected: false,
         currentTab: 0,
         tokenBalance: [],
         smartAccountDeployed: false
       })
     })
-    const networks = this.getRequestedCaipNetworks()
-    if (!state.activeCaipNetwork) {
-      state.activeCaipNetwork = networks?.[0]
-    }
+    const networks = this.getRequestedCaipNetworks(firstChainToActivate)
+
+    this.setCaipNetwork(networks[0], firstChainToActivate)
   },
 
   getAccountProp(prop: keyof AccountControllerState) {
@@ -165,6 +163,7 @@ export const ChainController = {
 
     if (chain) {
       state.activeChain = chain
+      console.log('>>> set active chain to 2', chain)
       PublicStateController.set({ activeChain: chain })
       if (!state.activeCaipNetwork) {
         state.activeCaipNetwork = state.chains[chain].requestedCaipNetworks?.[0]
@@ -177,13 +176,15 @@ export const ChainController = {
   },
 
   setCaipNetwork(caipNetwork: ChainOptions['caipNetwork'], chain: Chain) {
+    console.log('>>> setCaipNetwork', caipNetwork, chain)
     state.chains[chain].caipNetwork = caipNetwork
     state.activeCaipNetwork = caipNetwork
     state.activeChain = chain
-    PublicStateController.set({ activeChain: chain })
+    PublicStateController.set({ activeChain: chain, selectedNetworkId: caipNetwork?.id })
   },
 
   setDefaultCaipNetwork(caipNetwork: ChainOptions['caipNetwork'], chain: Chain) {
+    console.log('>>> setDefaultCaipNetwork', caipNetwork, chain)
     state.chains[chain].caipNetwork = caipNetwork
     state.chains[chain].isDefaultCaipNetwork = true
     state.activeCaipNetwork = caipNetwork
@@ -209,24 +210,32 @@ export const ChainController = {
     state.chains[chain].smartAccountEnabledNetworks = smartAccountEnabledNetworks
   },
 
-  getRequestedCaipNetworks() {
-    const chains = Object.values(state.chains)
+  getRequestedCaipNetworks(filteredChain?: Chain) {
+    let chainAdapters: ChainAdapter[] | undefined
+
+    if (filteredChain) {
+      chainAdapters = [state.chains[filteredChain]]
+    } else {
+      chainAdapters = Object.values(state.chains)
+    }
+    console.log('>>> getRequestedCaipNetworks', chainAdapters)
 
     const approvedIds: `${string}:${string}`[] = []
     const requestedIds: CaipNetwork[] = []
 
-    chains.forEach(chain => {
+    chainAdapters.forEach(chain => {
       if (chain.approvedCaipNetworkIds) {
         approvedIds.push(...chain.approvedCaipNetworkIds)
       }
-    })
-    chains.forEach(chain => {
       if (chain.requestedCaipNetworks) {
         requestedIds.push(...chain.requestedCaipNetworks)
       }
     })
 
-    return CoreHelperUtil.sortRequestedNetworks(approvedIds, requestedIds)
+    const sortedNetworks = CoreHelperUtil.sortRequestedNetworks(approvedIds, requestedIds)
+    console.log('>>> sortedNetworks', sortedNetworks)
+
+    return sortedNetworks
   },
 
   getApprovedCaipNetworkIds(chain?: Chain) {
@@ -265,6 +274,7 @@ export const ChainController = {
 
   switchChain(newChain: Chain) {
     state.activeChain = newChain
+    console.log('>>> set active chain to 5', newChain)
     this.setCaipNetwork(state.chains[newChain].caipNetwork, newChain)
     PublicStateController.set({ activeChain: newChain })
   },

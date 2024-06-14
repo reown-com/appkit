@@ -1,9 +1,13 @@
 import type { W3mFrameProvider } from '@web3modal/wallet'
 import type { Balance, Transaction } from '@web3modal/common'
-import type { NetworkControllerClient } from '../controllers/NetworkController'
+import type {
+  NetworkControllerClient,
+  NetworkControllerState
+} from '../controllers/NetworkController'
 import type { ConnectionControllerClient } from '../controllers/ConnectionController'
 import type { OptionsControllerState } from '../controllers/OptionsController'
 import type { Chain } from '../controllers/ChainController'
+import type { AccountControllerState } from '../controllers/AccountController'
 
 export type CaipAddress = `${string}:${string}:${string}`
 
@@ -614,10 +618,11 @@ export interface WriteContractArgs {
   abi: any
 }
 
-export interface AdapterCore {
-  protocol: 'evm' | 'solana'
-  networkControllerClient: NetworkControllerClient
-  connectionControllerClient: ConnectionControllerClient
-  construct(scaffold: any, options: OptionsControllerState): void
-  initialize(): void
+export type ChainAdapter = Partial<NetworkControllerState> & {
+  connectionControllerClient?: ConnectionControllerClient
+  networkControllerClient?: NetworkControllerClient
+  accountState: AccountControllerState
+  chain: Chain
+  construct?: (scaffold: any, options: OptionsControllerState) => void
+  initialize?: () => void
 }

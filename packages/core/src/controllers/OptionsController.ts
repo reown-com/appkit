@@ -1,8 +1,8 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, snapshot } from 'valtio/vanilla'
 import type {
-  AdapterCore,
   CaipNetwork,
+  ChainAdapter,
   CustomWallet,
   Metadata,
   ProjectId,
@@ -31,7 +31,7 @@ export interface OptionsControllerState {
   metadata?: Metadata
   enableOnramp?: boolean
   enableWalletFeatures?: boolean
-  // -- New Options for appkit transition
+  // -- Props that merged with all for AppKit transition
   themeMode?: ThemeMode
   themeVariables?: ThemeVariables
   defaultChain?: CaipNetwork
@@ -39,7 +39,7 @@ export interface OptionsControllerState {
   siweConfig?: any
   chainImages?: Record<number | string, string>
   connectorImages?: Record<string, string>
-  adapters?: AdapterCore[]
+  adapters?: ChainAdapter[]
 }
 
 type StateKey = keyof OptionsControllerState
