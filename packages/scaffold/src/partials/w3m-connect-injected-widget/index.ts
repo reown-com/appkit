@@ -1,5 +1,6 @@
 import type { Connector } from '@web3modal/core'
 import {
+  ApiController,
   AssetUtil,
   ConnectionController,
   ConnectorController,
@@ -54,6 +55,12 @@ export class W3mConnectInjectedWidget extends LitElement {
 
           if (!ConnectionController.checkInstalled()) {
             return null
+          }
+
+          if (connector.info?.rdns && ApiController.state.excludedRDNS) {
+            if (ApiController.state.excludedRDNS.includes(connector?.info?.rdns)) {
+              return null
+            }
           }
 
           return html`

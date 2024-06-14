@@ -30,6 +30,7 @@ export interface ApiControllerState {
   wallets: WcWallet[]
   search: WcWallet[]
   isAnalyticsEnabled: boolean
+  excludedRDNS: string[]
 }
 
 type StateKey = keyof ApiControllerState
@@ -42,7 +43,8 @@ const state = proxy<ApiControllerState>({
   recommended: [],
   wallets: [],
   search: [],
-  isAnalyticsEnabled: false
+  isAnalyticsEnabled: false,
+  excludedRDNS: []
 })
 
 // -- Controller ---------------------------------------- //
@@ -191,6 +193,23 @@ export const ApiController = {
     state.wallets = CoreHelperUtil.uniqueBy([...state.wallets, ...data], 'id')
     state.count = count > state.count ? count : state.count
     state.page = page
+  },
+
+  async searchWalletById({ id }: { id: string }) {
+    const { data } = await api.get<ApiGetWalletsResponse>({
+      path: '/getWallets',
+      headers: ApiController._getApiHeaders(),
+      params: {
+        page: '1',
+        entries: '1',
+        chains: NetworkController.state.caipNetwork?.id,
+        include: id
+      }
+    })
+
+    if (data[0]?.rdns) {
+      state.excludedRDNS.push(data[0].rdns)
+    }
   },
 
   async searchWallet({ search }: Pick<ApiGetWalletsRequest, 'search'>) {
