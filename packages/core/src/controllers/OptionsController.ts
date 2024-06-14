@@ -1,6 +1,7 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, snapshot } from 'valtio/vanilla'
 import type { CustomWallet, Metadata, ProjectId, SdkVersion, Tokens } from '../utils/TypeUtil.js'
+import { ApiController } from './ApiController.js'
 
 // -- Types --------------------------------------------- //
 export interface OptionsControllerState {
@@ -53,6 +54,9 @@ export const OptionsController = {
 
   setExcludeWalletIds(excludeWalletIds: OptionsControllerState['excludeWalletIds']) {
     state.excludeWalletIds = excludeWalletIds
+    if (excludeWalletIds) {
+      ApiController.searchWalletByIds({ ids: excludeWalletIds })
+    }
   },
 
   setFeaturedWalletIds(featuredWalletIds: OptionsControllerState['featuredWalletIds']) {
