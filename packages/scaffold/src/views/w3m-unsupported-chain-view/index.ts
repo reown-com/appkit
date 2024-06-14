@@ -8,7 +8,6 @@ import {
   ModalController,
   NetworkController,
   RouterController,
-  RouterUtil,
   SnackController
 } from '@web3modal/core'
 
@@ -18,6 +17,7 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
+import { NetworkUtil } from '../../utils/NetworkUtil.js'
 
 @customElement('w3m-unsupported-chain-view')
 export class W3mUnsupportedChainView extends LitElement {
@@ -132,7 +132,7 @@ export class W3mUnsupportedChainView extends LitElement {
     if (isConnected && caipNetwork?.id !== network.id) {
       if (approvedCaipNetworkIds?.includes(network.id)) {
         await NetworkController.switchActiveNetwork(network)
-        RouterUtil.navigateAfterNetworkSwitch()
+        await NetworkUtil.onNetworkChange()
       } else if (supportsAllNetworks) {
         RouterController.push('SwitchNetwork', { ...data, network })
       }
