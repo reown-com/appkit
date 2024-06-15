@@ -33,8 +33,6 @@ export interface OptionsControllerState {
   enableOnramp?: boolean
   enableWalletFeatures?: boolean
   // -- Props that merged with all for AppKit transition
-  themeMode?: ThemeMode
-  themeVariables?: ThemeVariables
   defaultChain?: CaipNetwork
   allowUnsupportedChain?: NetworkControllerState['allowUnsupportedChain']
   siweConfig?: any

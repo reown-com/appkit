@@ -1,7 +1,6 @@
 import { RouterController } from '../controllers/RouterController.js'
 import { ModalController } from '../controllers/ModalController.js'
 import { OptionsController } from '../controllers/OptionsController.js'
-import { AccountController } from '../controllers/AccountController.js'
 import { ChainController } from '../controllers/ChainController.js'
 
 export const RouterUtil = {
@@ -23,7 +22,6 @@ export const RouterUtil = {
   },
   navigateAfterPreferredAccountTypeSelect() {
     const { isSiweEnabled } = OptionsController.state
-    const profileName = AccountController.getProperty('profileName')
     if (isSiweEnabled && ChainController.state.activeChain === 'evm') {
       console.log(
         '>>> [RouterUtil] navigateAfterPreferredAccountTypeSelect: ConnectingSiwe',

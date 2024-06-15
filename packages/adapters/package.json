@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/adapters",
-  "version": "4.2.3",
+  "version": "5.0.2",
   "type": "module",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
@@ -16,12 +16,12 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@web3modal/appkit": "4.2.3",
-    "@web3modal/common": "4.2.3",
-    "@web3modal/polyfills": "4.2.3",
-    "@web3modal/scaffold": "4.2.3",
-    "@web3modal/scaffold-utils": "4.2.3",
-    "@web3modal/siwe": "4.2.3",
+    "@web3modal/appkit": "5.0.2",
+    "@web3modal/common": "5.0.2",
+    "@web3modal/polyfills": "5.0.2",
+    "@web3modal/scaffold": "5.0.2",
+    "@web3modal/scaffold-utils": "5.0.2",
+    "@web3modal/siwe": "5.0.2",
     "bs58": "^5.0.0",
     "valtio": "1.11.2"
   },
