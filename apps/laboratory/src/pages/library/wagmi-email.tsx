@@ -7,11 +7,11 @@ import { WagmiTests } from '../../components/Wagmi/WagmiTests'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
-import { CONFIGS } from '../../utils/WagmiConstants'
+import { getWagmiConfig } from '../../utils/WagmiConstants'
 
 const queryClient = new QueryClient()
 
-const wagmiConfig = CONFIGS.email
+const wagmiConfig = getWagmiConfig('email')
 const modal = createWeb3Modal({
   wagmiConfig,
   projectId: ConstantsUtil.ProjectId,
@@ -19,7 +19,6 @@ const modal = createWeb3Modal({
   metadata: ConstantsUtil.Metadata,
   termsConditionsUrl: 'https://walletconnect.com/terms',
   privacyPolicyUrl: 'https://walletconnect.com/privacy',
-  enableOnramp: true,
   customWallets: ConstantsUtil.CustomWallets
 })
 

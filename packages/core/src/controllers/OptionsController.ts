@@ -12,6 +12,7 @@ import type {
 } from '../utils/TypeUtil.js'
 import type { ThemeVariables } from '@web3modal/common'
 import type { NetworkControllerState } from './NetworkController.js'
+import { ApiController } from './ApiController.js'
 
 // -- Types --------------------------------------------- //
 export interface OptionsControllerState {
@@ -40,6 +41,7 @@ export interface OptionsControllerState {
   chainImages?: Record<number | string, string>
   connectorImages?: Record<string, string>
   adapters?: ChainAdapter[]
+  disableAppend?: boolean
 }
 
 type StateKey = keyof OptionsControllerState
@@ -77,6 +79,9 @@ export const OptionsController = {
 
   setExcludeWalletIds(excludeWalletIds: OptionsControllerState['excludeWalletIds']) {
     state.excludeWalletIds = excludeWalletIds
+    if (excludeWalletIds) {
+      ApiController.searchWalletByIds({ ids: excludeWalletIds })
+    }
   },
 
   setFeaturedWalletIds(featuredWalletIds: OptionsControllerState['featuredWalletIds']) {
@@ -119,8 +124,8 @@ export const OptionsController = {
     state.enableOnramp = enableOnramp
   },
 
-  setWalletFeaturesEnabled(enableWalletFeatures: OptionsControllerState['enableWalletFeatures']) {
-    state.enableWalletFeatures = enableWalletFeatures
+  setDisableAppend(disableAppend: OptionsControllerState['disableAppend']) {
+    state.disableAppend = disableAppend
   },
 
   getSnapshot() {

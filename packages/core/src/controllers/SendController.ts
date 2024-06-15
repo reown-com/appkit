@@ -7,6 +7,9 @@ import { AccountController } from './AccountController.js'
 import { ConnectionController } from './ConnectionController.js'
 import { SnackController } from './SnackController.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
+import { EventsController } from './EventsController.js'
+import { NetworkController } from './NetworkController.js'
+import { W3mFrameRpcConstants } from '@web3modal/wallet'
 
 // -- Types --------------------------------------------- //
 
@@ -91,6 +94,18 @@ export const SendController = {
 
   sendToken() {
     if (this.state.token?.address && this.state.sendTokenAmount && this.state.receiverAddress) {
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'SEND_INITIATED',
+        properties: {
+          isSmartAccount:
+            AccountController.state.preferredAccountType ===
+            W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
+          token: this.state.token.address,
+          amount: this.state.sendTokenAmount,
+          network: NetworkController.state.caipNetwork?.id || ''
+        }
+      })
       this.sendERC20Token({
         receiverAddress: this.state.receiverAddress,
         tokenAddress: this.state.token.address,
@@ -103,6 +118,18 @@ export const SendController = {
       this.state.gasPrice &&
       this.state.token?.quantity.decimals
     ) {
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'SEND_INITIATED',
+        properties: {
+          isSmartAccount:
+            AccountController.state.preferredAccountType ===
+            W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
+          token: this.state.token?.symbol,
+          amount: this.state.sendTokenAmount,
+          network: NetworkController.state.caipNetwork?.id || ''
+        }
+      })
       this.sendNativeToken({
         receiverAddress: this.state.receiverAddress,
         sendTokenAmount: this.state.sendTokenAmount,
@@ -135,8 +162,32 @@ export const SendController = {
         gasPrice: params.gasPrice
       })
       SnackController.showSuccess('Transaction started')
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'SEND_SUCCESS',
+        properties: {
+          isSmartAccount:
+            AccountController.state.preferredAccountType ===
+            W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
+          token: this.state.token?.symbol || '',
+          amount: params.sendTokenAmount,
+          network: NetworkController.state.caipNetwork?.id || ''
+        }
+      })
       this.resetSend()
     } catch (error) {
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'SEND_ERROR',
+        properties: {
+          isSmartAccount:
+            AccountController.state.preferredAccountType ===
+            W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
+          token: this.state.token?.symbol || '',
+          amount: params.sendTokenAmount,
+          network: NetworkController.state.caipNetwork?.id || ''
+        }
+      })
       SnackController.showError('Something went wrong')
     }
   },

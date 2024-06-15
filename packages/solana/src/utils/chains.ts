@@ -1,9 +1,11 @@
+import { ConstantsUtil } from '@web3modal/common'
+
 export const solana = {
   chainId: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
   name: 'Solana',
   currency: 'SOL',
   explorerUrl: 'https://solscan.io',
-  rpcUrl: 'https://rpc.walletconnect.com/v1'
+  rpcUrl: `${ConstantsUtil.BLOCKCHAIN_API_RPC_URL}/v1`
 }
 
 export const solanaTestnet = {

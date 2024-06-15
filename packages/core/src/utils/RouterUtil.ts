@@ -30,10 +30,8 @@ export const RouterUtil = {
         ChainController.state.activeChain
       )
       RouterController.push('ConnectingSiwe')
-    } else if (profileName) {
-      RouterController.push('Account')
     } else {
-      RouterController.push('ChooseAccountName')
+      RouterController.push('Account')
     }
   }
 }

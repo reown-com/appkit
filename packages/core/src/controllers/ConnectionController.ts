@@ -11,6 +11,11 @@ import type {
 } from '../utils/TypeUtil.js'
 import { TransactionsController } from './TransactionsController.js'
 import { ChainController, type Chain } from './ChainController.js'
+import { type W3mFrameTypes } from '@web3modal/wallet'
+import { ModalController } from './ModalController.js'
+import { ConnectorController } from './ConnectorController.js'
+import { EventsController } from './EventsController.js'
+import { NetworkController } from './NetworkController.js'
 
 // -- Types --------------------------------------------- //
 export interface ConnectExternalOptions {
@@ -116,8 +121,24 @@ export const ConnectionController = {
     StorageUtil.setConnectedConnector(options.type)
   },
 
-  async signMessage(message: string, chain?: Chain) {
-    return this._getClient(chain).signMessage(message)
+  async setPreferredAccountType(accountType: W3mFrameTypes.AccountType) {
+    ModalController.setLoading(true)
+    const authConnector = ConnectorController.getAuthConnector()
+    if (!authConnector) {
+      return
+    }
+    await authConnector?.provider.setPreferredAccount(accountType)
+    await this.reconnectExternal(authConnector)
+    ModalController.setLoading(false)
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'SET_PREFERRED_ACCOUNT_TYPE',
+      properties: { accountType, network: NetworkController.state.caipNetwork?.id || '' }
+    })
+  },
+
+  async signMessage(message: string) {
+    return this._getClient().signMessage(message)
   },
 
   parseUnits(value: string, decimals: number, chain?: Chain) {

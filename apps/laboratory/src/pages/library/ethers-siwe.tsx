@@ -18,7 +18,6 @@ const modal = createWeb3Modal({
   enableAnalytics: true,
   metadata: ConstantsUtil.Metadata,
   siweConfig,
-  enableOnramp: true,
   customWallets: ConstantsUtil.CustomWallets
 })
 
