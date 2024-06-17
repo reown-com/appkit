@@ -43,7 +43,7 @@ const nextConfig = {
           },
           {
             key: 'Report-To',
-            value: cspReportToHeader
+            value: JSON.stringify(cspReportToHeader)
           }
         ]
       },
