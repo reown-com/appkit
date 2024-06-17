@@ -1,4 +1,4 @@
-import type { CaipNetworkId } from '@web3modal/core'
+import type { CaipNetworkId } from "./TypeUtil"
 
 export const NetworkUtil = {
   caipNetworkIdToNumber(caipnetworkId?: CaipNetworkId) {
