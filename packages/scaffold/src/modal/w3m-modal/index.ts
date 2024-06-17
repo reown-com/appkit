@@ -189,7 +189,10 @@ export class W3mModal extends LitElement {
         return
       }
 
-      // If the network has changed and signOnNetworkChange is enabled, sign out
+      /*
+       * If the network has changed and signOnNetworkChange is enabled, sign out
+       * Covers case where network is switched wallet-side
+       */
       if (session && previousNetworkId && newNetworkId && previousNetworkId !== newNetworkId) {
         if (SIWEController.state._client?.options.signOutOnNetworkChange) {
           await SIWEController.signOut()
