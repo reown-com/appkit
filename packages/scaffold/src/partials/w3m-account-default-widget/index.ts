@@ -264,19 +264,9 @@ export class W3mAccountDefaultWidget extends LitElement {
       await ConnectionController.disconnect()
       EventsController.sendEvent({ type: 'track', event: 'DISCONNECT_SUCCESS' })
       ModalController.close()
-      fs.writeFileSync('disconnect-error.txt', 'test')
     } catch (e) {
       EventsController.sendEvent({ type: 'track', event: 'DISCONNECT_ERROR' })
       SnackController.showError('Failed to disconnect')
-      console.log('>>> e', e)
-      // write the e to a file
-      try {
-        const fs = require('fs')
-        fs.writeFileSync(
-          '/Users/enes/Desktop/Projects/walletconnect/web3modal/disconnect-error.txt',
-          e
-        )
-      } catch (error) {}
     } finally {
       this.disconnecting = false
     }
