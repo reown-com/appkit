@@ -32,3 +32,21 @@ testMWSiwe(
     await modalValidator.expectUnauthenticated()
   }
 )
+
+testMWSiwe(
+  'it should require re-authentication when switching networks',
+  async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
+    const uri = await modalPage.getConnectUri()
+    await walletPage.connectWithUri(uri)
+    await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
+    await modalValidator.expectAuthenticated()
+    await modalValidator.expectConnected()
+    await walletValidator.expectConnected()
+    await modalPage.switchNetwork('Polygon')
+
+    // Re-authentication required
+    await modalValidator.expectUnauthenticated()
+    await modalPage.closeModal()
+    await modalValidator.expectDisconnected()
+  }
+)
