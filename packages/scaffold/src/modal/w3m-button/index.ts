@@ -1,4 +1,4 @@
-import { AccountController, ModalController } from '@web3modal/core'
+import { AccountController, ConnectionController, ModalController } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
@@ -33,14 +33,19 @@ export class W3mButton extends LitElement {
 
   @state() private isLoading = ModalController.state.loading
 
+  @state() private balanceVal = AccountController.state.balance
+
+  @state() private balanceSymbol = AccountController.state.balanceSymbol
+
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
     this.unsubscribe.push(
-      AccountController.subscribeKey('isConnected', val => {
-        this.isAccount = val
+      AccountController.subscribe(val => {
+        this.isAccount = val.isConnected
+        this.balanceVal = val.balance
+        this.balanceSymbol = val.balanceSymbol
       }),
-
       ModalController.subscribeKey('loading', val => {
         this.isLoading = val
       })
@@ -53,7 +58,9 @@ export class W3mButton extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    return this.isAccount && !this.isLoading
+    const isBalanceFetched = this.balanceVal && this.balanceSymbol
+
+    return isBalanceFetched && this.isAccount && !this.isLoading
       ? html`
           <w3m-account-button
             .disabled=${Boolean(this.disabled)}
