@@ -1,5 +1,5 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
-import { proxy, snapshot } from 'valtio/vanilla'
+import { proxy } from 'valtio/vanilla'
 import type {
   CaipNetwork,
   ChainAdapter,
@@ -33,6 +33,8 @@ export interface OptionsControllerState {
   enableOnramp?: boolean
   enableWalletFeatures?: boolean
   // -- Props that merged with all for AppKit transition
+  themeMode?: ThemeMode
+  themeVariables?: ThemeVariables
   defaultChain?: CaipNetwork
   allowUnsupportedChain?: NetworkControllerState['allowUnsupportedChain']
   siweConfig?: any
@@ -124,9 +126,5 @@ export const OptionsController = {
 
   setDisableAppend(disableAppend: OptionsControllerState['disableAppend']) {
     state.disableAppend = disableAppend
-  },
-
-  getSnapshot() {
-    return snapshot(state)
   }
 }

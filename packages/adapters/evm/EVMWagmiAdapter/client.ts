@@ -47,7 +47,8 @@ import type { defaultWagmiConfig as reactConfig } from './utils/defaultWagmiReac
 import { normalize } from 'viem/ens'
 
 // AppKit
-import { AppKit } from '@web3modal/appkit'
+// TODO(enes): we should import appkit here. or should we?
+// import { AppKit } from '@web3modal/appkit'
 
 // -- Types ---------------------------------------------------------------------
 export type CoreConfig = ReturnType<typeof coreConfig>
@@ -68,7 +69,7 @@ interface Web3ModalState extends PublicStateControllerState {
 
 // -- Client --------------------------------------------------------------------
 export class EVMWagmiClient {
-  private scaffold: AppKit | undefined = undefined
+  private scaffold: any | undefined = undefined
 
   public options: OptionsControllerState | undefined = undefined
 
@@ -248,7 +249,9 @@ export class EVMWagmiClient {
       },
 
       checkInstalled: ids => {
-        const injectedConnector = this.scaffold?.getConnectors().find(c => c.type === 'INJECTED')
+        const injectedConnector = this.scaffold
+          ?.getConnectors()
+          .find((c: Connector) => c.type === 'INJECTED')
 
         if (!ids) {
           return Boolean(window.ethereum)
@@ -338,6 +341,7 @@ export class EVMWagmiClient {
         return tx
       },
 
+      // @ts-ignore
       getEnsAddress: async (value: string) => {
         try {
           if (!this.wagmiConfig) {
@@ -406,7 +410,7 @@ export class EVMWagmiClient {
     })
   }
 
-  public construct(scaffold: AppKit, options: OptionsControllerState) {
+  public construct(scaffold: any, options: OptionsControllerState) {
     if (!options.projectId) {
       throw new Error('web3modal:initialize - projectId is undefined')
     }
@@ -426,6 +430,7 @@ export class EVMWagmiClient {
 
   // @ts-expect-error: Overriden state type is correct
   public override subscribeState(callback: (state: Web3ModalState) => void) {
+    // @ts-ignore
     return this.scaffold?.subscribeState(state =>
       callback({
         ...state,
