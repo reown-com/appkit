@@ -57,18 +57,6 @@
       "dependsOn": ["^build:core", "^build:scaffold-utils"],
       "cache": false
     },
-    "build:adapters": {
-      "outputs": ["dist/**"],
-      "dependsOn": [
-        "^build:appkit",
-        "^build:scaffold",
-        "^build:scaffold-utils",
-        "^build:siwe",
-        "^build:common",
-        "^build:polyfills"
-      ],
-      "cache": false
-    },
     "build:client": {
       "outputs": ["dist/**"],
       "dependsOn": [
@@ -90,29 +78,12 @@
       "cache": false,
       "persistent": true
     },
-    "watch:appkit": {
-      "dependsOn": ["^build:appkit"],
-      "cache": false,
-      "persistent": true
-    },
     "build:cdn": {
       "dependsOn": ["^build:client"],
       "cache": false
     },
-    "build:appkit": {
-      "outputs": ["dist/**"],
-      "dependsOn": [
-        "^build:adapters",
-        "^build:common",
-        "^build:core",
-        "^build:ui",
-        "^build:wallet",
-        "^build:siwe"
-      ],
-      "cache": false
-    },
     "build": {
-      "dependsOn": ["build:cdn", "build:appkit"],
+      "dependsOn": ["build:cdn"],
       "cache": false,
       "persistent": true
     },
