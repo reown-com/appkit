@@ -39,6 +39,8 @@
     "@sentry/react": "7.92.0",
     "@solana/web3.js": "1.91.7",
     "@tanstack/react-query": "5.24.8",
+    "@web3modal/adapters": "5.0.2",
+    "@web3modal/appkit": "5.0.2",
     "@web3modal/ethers": "5.0.2",
     "@web3modal/siwe": "5.0.2",
     "@web3modal/solana": "5.0.2",

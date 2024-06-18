@@ -33,6 +33,8 @@
     "publish:canary": "npm install; npm run build; changeset publish --tag canary"
   },
   "workspaces": [
+    "packages/adapters",
+    "packages/appkit",
     "packages/common",
     "packages/ui",
     "packages/core",

@@ -10,13 +10,12 @@
   ],
   "scripts": {
     "build:clean": "rm -rf dist",
-    "build": "tsc --project tsconfig.json",
+    "build:adapters": "tsc --project tsconfig.json",
     "watch": "tsc --watch",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@web3modal/appkit": "5.0.2",
     "@web3modal/common": "5.0.2",
     "@web3modal/polyfills": "5.0.2",
     "@web3modal/scaffold": "5.0.2",
