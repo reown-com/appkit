@@ -30,7 +30,8 @@ import type {
 
 import type { AdapterKey } from './connectors/walletAdapters.js'
 import type { ProviderType, Chain, Provider, SolStoreUtilState } from './utils/scaffold/index.js'
-import type { Appkit } from '@web3modal/appkit'
+
+// import type { AppKit } from '@web3modal/appkit'
 
 export interface Web3ModalClientOptions {
   solanaConfig: ProviderType
@@ -56,10 +57,10 @@ export class SolanaWeb3JsClient {
 
   public connectionControllerClient: ConnectionControllerClient
 
-  private scaffold: Appkit | undefined = undefined
+  private scaffold: any | undefined = undefined
 
   // TODO(enes): Get the types from common or appkit
-  public protocol: 'evm' | 'solana'
+  public chain: 'evm' | 'solana'
 
   public options: OptionsControllerState | undefined = undefined
 
@@ -74,7 +75,7 @@ export class SolanaWeb3JsClient {
       throw new Error('web3modal:constructor - solanaConfig is undefined')
     }
 
-    this.protocol = 'solana'
+    this.chain = 'solana'
     this.networkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
         if (caipNetwork) {
@@ -107,7 +108,9 @@ export class SolanaWeb3JsClient {
         WalletConnectProvider.on('display_uri', (uri: string) => {
           onUri(uri)
         })
+        console.log('>>> [ConnectionController] connectWalletConnect() 1')
         const address = await this.WalletConnectConnector.connect()
+        console.log('>>> [ConnectionController] connectWalletConnect() 2', address)
         this.setWalletConnectProvider(address)
       },
 
@@ -238,7 +241,7 @@ export class SolanaWeb3JsClient {
     })
   }
 
-  public construct(scaffold: Appkit, options: OptionsControllerState) {
+  public construct(scaffold: any, options: OptionsControllerState) {
     if (!options.projectId) {
       throw new Error('Solana:construct - projectId is undefined')
     }
@@ -326,7 +329,7 @@ export class SolanaWeb3JsClient {
         imageUrl: 'https://avatars.githubusercontent.com/u/37784886',
         name: this.WalletConnectConnector.name,
         provider: this.WalletConnectConnector.getProvider(),
-        chain: this.protocol
+        chain: this.chain
       })
     }
 
@@ -351,7 +354,7 @@ export class SolanaWeb3JsClient {
       this.hasSyncedConnectedAccount = true
     } else if (!isConnected && this.hasSyncedConnectedAccount) {
       this.scaffold?.resetWcConnection()
-      this.scaffold?.resetNetwork(this.protocol)
+      this.scaffold?.resetNetwork(this.chain)
     }
   }
 
@@ -379,7 +382,7 @@ export class SolanaWeb3JsClient {
           imageUrl: chainImages?.[chain.chainId]
         }) as CaipNetwork
     )
-    this.scaffold?.setRequestedCaipNetworks(requestedCaipNetworks ?? [], this.protocol)
+    this.scaffold?.setRequestedCaipNetworks(requestedCaipNetworks ?? [], this.chain)
   }
 
   public async switchNetwork(caipNetwork: CaipNetwork) {
@@ -433,6 +436,7 @@ export class SolanaWeb3JsClient {
       if (chain) {
         const caipChainId: CaipNetworkId = `solana:${chain.chainId}`
 
+        // TODO(enes): refactor this. Instead of setting the network here, we are now setting them in the appkit initializer
         this.scaffold?.setCaipNetwork(
           {
             id: caipChainId,
@@ -440,7 +444,7 @@ export class SolanaWeb3JsClient {
             imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId],
             imageUrl: chainImages?.[chain.chainId]
           },
-          this.protocol
+          this.chain
         )
         if (isConnected && address) {
           if (chain.explorerUrl) {
@@ -483,7 +487,7 @@ export class SolanaWeb3JsClient {
     )
     await Promise.all([
       this.syncBalance(address),
-      this.scaffold?.setApprovedCaipNetworksData(this.protocol)
+      this.scaffold?.setApprovedCaipNetworksData(this.chain)
     ])
   }
 

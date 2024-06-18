@@ -1,8 +1,8 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
-import { proxy, snapshot } from 'valtio/vanilla'
+import { proxy } from 'valtio/vanilla'
 import type {
-  AdapterCore,
   CaipNetwork,
+  ChainAdapter,
   CustomWallet,
   Metadata,
   ProjectId,
@@ -12,6 +12,7 @@ import type {
 } from '../utils/TypeUtil.js'
 import type { ThemeVariables } from '@web3modal/common'
 import type { NetworkControllerState } from './NetworkController.js'
+import { ApiController } from './ApiController.js'
 
 // -- Types --------------------------------------------- //
 export interface OptionsControllerState {
@@ -31,7 +32,7 @@ export interface OptionsControllerState {
   metadata?: Metadata
   enableOnramp?: boolean
   enableWalletFeatures?: boolean
-  // -- New Options for appkit transition
+  // -- Props that merged with all for AppKit transition
   themeMode?: ThemeMode
   themeVariables?: ThemeVariables
   defaultChain?: CaipNetwork
@@ -39,7 +40,8 @@ export interface OptionsControllerState {
   siweConfig?: any
   chainImages?: Record<number | string, string>
   connectorImages?: Record<string, string>
-  adapters?: AdapterCore[]
+  adapters?: ChainAdapter[]
+  disableAppend?: boolean
 }
 
 type StateKey = keyof OptionsControllerState
@@ -77,6 +79,9 @@ export const OptionsController = {
 
   setExcludeWalletIds(excludeWalletIds: OptionsControllerState['excludeWalletIds']) {
     state.excludeWalletIds = excludeWalletIds
+    if (excludeWalletIds) {
+      ApiController.searchWalletByIds({ ids: excludeWalletIds })
+    }
   },
 
   setFeaturedWalletIds(featuredWalletIds: OptionsControllerState['featuredWalletIds']) {
@@ -119,11 +124,7 @@ export const OptionsController = {
     state.enableOnramp = enableOnramp
   },
 
-  setWalletFeaturesEnabled(enableWalletFeatures: OptionsControllerState['enableWalletFeatures']) {
-    state.enableWalletFeatures = enableWalletFeatures
-  },
-
-  getSnapshot() {
-    return snapshot(state)
+  setDisableAppend(disableAppend: OptionsControllerState['disableAppend']) {
+    state.disableAppend = disableAppend
   }
 }

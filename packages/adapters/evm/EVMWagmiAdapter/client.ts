@@ -25,7 +25,6 @@ import type { GetAccountReturnType, GetEnsAddressReturnType } from '@wagmi/core'
 import type {
   CaipAddress,
   CaipNetwork,
-  CaipNetworkId,
   ConnectionControllerClient,
   Connector,
   NetworkControllerClient,
@@ -47,8 +46,9 @@ import type { defaultWagmiConfig as coreConfig } from './utils/defaultWagmiCoreC
 import type { defaultWagmiConfig as reactConfig } from './utils/defaultWagmiReactConfig.js'
 import { normalize } from 'viem/ens'
 
-// Appkit
-import { Appkit } from '@web3modal/appkit'
+// AppKit
+// TODO(enes): we should import appkit here. or should we?
+// import { AppKit } from '@web3modal/appkit'
 
 // -- Types ---------------------------------------------------------------------
 export type CoreConfig = ReturnType<typeof coreConfig>
@@ -69,7 +69,7 @@ interface Web3ModalState extends PublicStateControllerState {
 
 // -- Client --------------------------------------------------------------------
 export class EVMWagmiClient {
-  private scaffold: Appkit | undefined = undefined
+  private scaffold: any | undefined = undefined
 
   public options: OptionsControllerState | undefined = undefined
 
@@ -77,7 +77,7 @@ export class EVMWagmiClient {
 
   private wagmiConfig: Web3ModalClientOptions<CoreConfig>['wagmiConfig']
 
-  public protocol: 'evm' | 'solana'
+  public chain: 'evm' | 'solana'
 
   public networkControllerClient: NetworkControllerClient
 
@@ -90,7 +90,7 @@ export class EVMWagmiClient {
       throw new Error('web3modal:constructor - wagmiConfig is undefined')
     }
 
-    this.protocol = 'evm'
+    this.chain = 'evm'
     this.wagmiConfig = wagmiConfig
 
     // #region set clients
@@ -249,7 +249,9 @@ export class EVMWagmiClient {
       },
 
       checkInstalled: ids => {
-        const injectedConnector = this.scaffold?.getConnectors().find(c => c.type === 'INJECTED')
+        const injectedConnector = this.scaffold
+          ?.getConnectors()
+          .find((c: Connector) => c.type === 'INJECTED')
 
         if (!ids) {
           return Boolean(window.ethereum)
@@ -339,6 +341,7 @@ export class EVMWagmiClient {
         return tx
       },
 
+      // @ts-ignore
       getEnsAddress: async (value: string) => {
         try {
           if (!this.wagmiConfig) {
@@ -395,7 +398,7 @@ export class EVMWagmiClient {
         this.syncConnectors([
           ...connectors.map(c => ({
             ...c,
-            chain: this.protocol
+            chain: this.chain
           }))
         ])
       }
@@ -407,7 +410,7 @@ export class EVMWagmiClient {
     })
   }
 
-  public construct(scaffold: Appkit, options: OptionsControllerState) {
+  public construct(scaffold: any, options: OptionsControllerState) {
     if (!options.projectId) {
       throw new Error('web3modal:initialize - projectId is undefined')
     }
@@ -415,7 +418,7 @@ export class EVMWagmiClient {
     this.options = options
 
     this.syncRequestedNetworks([...this.wagmiConfig.chains])
-    this.syncConnectors([...this.wagmiConfig.connectors.map(c => ({ ...c, chain: this.protocol }))])
+    this.syncConnectors([...this.wagmiConfig.connectors.map(c => ({ ...c, chain: this.chain }))])
     this.initAuthConnectorListeners([...this.wagmiConfig.connectors])
   }
 
@@ -427,6 +430,7 @@ export class EVMWagmiClient {
 
   // @ts-expect-error: Overriden state type is correct
   public override subscribeState(callback: (state: Web3ModalState) => void) {
+    // @ts-ignore
     return this.scaffold?.subscribeState(state =>
       callback({
         ...state,
@@ -446,7 +450,7 @@ export class EVMWagmiClient {
           imageUrl: this.options?.chainImages?.[chain.id]
         }) as CaipNetwork
     )
-    this.scaffold?.setRequestedCaipNetworks(requestedCaipNetworks ?? [], this.protocol)
+    this.scaffold?.setRequestedCaipNetworks(requestedCaipNetworks ?? [], this.chain)
   }
 
   private async syncAccount({
@@ -465,12 +469,12 @@ export class EVMWagmiClient {
         this.syncProfile(address, chainId),
         this.syncBalance(address, chainId),
         this.syncConnectedWalletInfo(connector),
-        this.scaffold?.setApprovedCaipNetworksData(this.protocol)
+        this.scaffold?.setApprovedCaipNetworksData(this.chain)
       ])
       this.hasSyncedConnectedAccount = true
     } else if (!isConnected && this.hasSyncedConnectedAccount) {
       this.scaffold?.resetWcConnection()
-      this.scaffold?.resetNetwork(this.protocol)
+      this.scaffold?.resetNetwork(this.chain)
     }
   }
 
@@ -478,18 +482,20 @@ export class EVMWagmiClient {
     const chain = this.wagmiConfig.chains.find((c: Chain) => c.id === chainId)
 
     if (chain || chainId) {
-      const name = chain?.name ?? chainId?.toString()
+      // const name = chain?.name ?? chainId?.toString()
       const id = Number(chain?.id ?? chainId)
-      const caipChainId: CaipNetworkId = `${ConstantsUtil.EIP155}:${id}`
-      this.scaffold?.setCaipNetwork(
-        {
-          id: caipChainId,
-          name,
-          imageId: PresetsUtil.EIP155NetworkImageIds[id],
-          imageUrl: this.options?.chainImages?.[id]
-        },
-        this.protocol
-      )
+      // const caipChainId: CaipNetworkId = `${ConstantsUtil.EIP155}:${id}`
+
+      // TODO(enes): refactor this. Instead of setting the network here, we are now setting them in the appkit initializer
+      // this.scaffold?.setCaipNetwork(
+      //   {
+      //     id: caipChainId,
+      //     name,
+      //     imageId: PresetsUtil.EIP155NetworkImageIds[id],
+      //     imageUrl: this.options?.chainImages?.[id]
+      //   },
+      //   this.chain
+      // )
       if (isConnected && address && chainId) {
         const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${id}:${address}`
         this.scaffold?.setCaipAddress(caipAddress, 'evm')
@@ -635,7 +641,7 @@ export class EVMWagmiClient {
           info: {
             rdns: id
           },
-          chain: this.protocol
+          chain: this.chain
         })
       }
     })
@@ -663,7 +669,7 @@ export class EVMWagmiClient {
         email: authConnector.email,
         socials: authConnector.socials,
         showWallets: authConnector?.showWallets === undefined ? true : authConnector.showWallets,
-        chain: this.protocol
+        chain: this.chain
       })
     }
   }
@@ -767,7 +773,7 @@ export class EVMWagmiClient {
       })
 
       provider.onGetSmartAccountEnabledNetworks(networks => {
-        this.scaffold?.setSmartAccountEnabledNetworks(networks, this.protocol)
+        this.scaffold?.setSmartAccountEnabledNetworks(networks, this.chain)
       })
 
       provider.onSetPreferredAccount(({ address, type }) => {

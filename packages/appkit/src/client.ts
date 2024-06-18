@@ -6,7 +6,7 @@ import type {
   ModalControllerState,
   ConnectedWalletInfo,
   RouterControllerState,
-  AdapterCore,
+  ChainAdapter,
   Chain
 } from '@web3modal/core'
 import {
@@ -37,10 +37,10 @@ export interface OpenOptions {
 }
 
 // -- Client --------------------------------------------------------------------
-export class Appkit {
-  private static instance?: Appkit
+export class AppKit {
+  private static instance?: AppKit
 
-  public adapters?: AdapterCore[]
+  public adapters?: ChainAdapter[]
 
   private initPromise?: Promise<void> = undefined
 
@@ -259,7 +259,8 @@ export class Appkit {
   // -- Private ------------------------------------------------------------------
   private async initControllers(options: OptionsControllerState) {
     options.adapters?.forEach(adapter => {
-      adapter.construct(this, options)
+      console.log('>>> initControllers', adapter)
+      adapter.construct?.(this, options)
     })
 
     ChainController.initialize(options.adapters || [])

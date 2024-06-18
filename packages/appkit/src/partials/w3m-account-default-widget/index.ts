@@ -19,6 +19,7 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
+import { W3mFrameRpcConstants } from '@web3modal/wallet'
 
 @customElement('w3m-account-default-widget')
 export class W3mAccountDefaultWidget extends LitElement {
@@ -252,7 +253,15 @@ export class W3mAccountDefaultWidget extends LitElement {
   }
 
   private onTransactions() {
-    EventsController.sendEvent({ type: 'track', event: 'CLICK_TRANSACTIONS' })
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'CLICK_TRANSACTIONS',
+      properties: {
+        isSmartAccount:
+          AccountController.state.preferredAccountType ===
+          W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+      }
+    })
     RouterController.push('Transactions')
   }
 

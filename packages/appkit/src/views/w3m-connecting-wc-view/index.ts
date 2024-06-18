@@ -26,8 +26,6 @@ export class W3mConnectingWcView extends LitElement {
 
   private wallet = RouterController.state.data?.wallet
 
-  protected readonly chainToConnect = RouterController.state.data?.chainToConnect
-
   // -- State & Properties -------------------------------- //
   @state() private platform?: Platform = undefined
 
@@ -62,7 +60,8 @@ export class W3mConnectingWcView extends LitElement {
     try {
       const { wcPairingExpiry } = ConnectionController.state
       if (retry || CoreHelperUtil.isPairingExpired(wcPairingExpiry)) {
-        ConnectionController.connectWalletConnect(this.chainToConnect)
+        // TODO(enes): check if this should be coming from RouterController params or like this
+        ConnectionController.connectWalletConnect(ChainController.state.activeChain)
         if (this.wallet) {
           const url = AssetUtil.getWalletImage(this.wallet)
           if (url) {

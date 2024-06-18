@@ -15,7 +15,7 @@ export const PresetsUtil = {
 
   EIP155NetworkImageIds: {
     // Ethereum
-    1: '692ed6ba-e569-459a-556a-776476829e00',
+    1: 'ba0ba0cd-17c6-4806-ad93-f9d174f17900',
     // Arbitrum
     42161: '3bff954d-5cb0-47a0-9a23-d20192e74600',
     // Avalanche

@@ -107,6 +107,6 @@ export class W3mOnRampActivityItem extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'e3m-onramp-activity-item': W3mOnRampActivityItem
+    'w3m-onramp-activity-item': W3mOnRampActivityItem
   }
 }

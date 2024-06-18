@@ -11,6 +11,11 @@ import type {
 } from '../utils/TypeUtil.js'
 import { TransactionsController } from './TransactionsController.js'
 import { ChainController, type Chain } from './ChainController.js'
+import { type W3mFrameTypes } from '@web3modal/wallet'
+import { ModalController } from './ModalController.js'
+import { ConnectorController } from './ConnectorController.js'
+import { EventsController } from './EventsController.js'
+import { NetworkController } from './NetworkController.js'
 
 // -- Types --------------------------------------------- //
 export interface ConnectExternalOptions {
@@ -69,7 +74,8 @@ export const ConnectionController = {
     return subKey(state, key, callback)
   },
 
-  _getClient(chain?: Chain) {
+  _getClient(_chain?: Chain) {
+    const chain = ChainController.state.activeChain
     if (ChainController.state.multiChainEnabled) {
       if (!chain) {
         throw new Error('ConnectionController chain not set')
@@ -93,7 +99,9 @@ export const ConnectionController = {
   },
 
   connectWalletConnect(chain?: Chain) {
+    console.log('>>> [ConnectionController] connectWalletConnect()', chain)
     state.wcPromise = this._getClient(chain).connectWalletConnect(uri => {
+      console.log('>>> [ConnectionController] connectWalletConnect() uri', uri)
       state.wcUri = uri
       state.wcPairingExpiry = CoreHelperUtil.getPairingExpiry()
     })
@@ -101,18 +109,36 @@ export const ConnectionController = {
   },
 
   async connectExternal(options: ConnectExternalOptions, chain?: Chain) {
+    console.log('>>> [ConnectionController] connectExternal()', chain)
     await this._getClient(chain).connectExternal?.(options)
     ChainController.setActiveChain(chain)
     StorageUtil.setConnectedConnector(options.type)
   },
 
   async reconnectExternal(options: ConnectExternalOptions, chain?: Chain) {
+    console.log('>>> [ConnectionController] reconnectExternal()', chain)
     await this._getClient(chain).reconnectExternal?.(options)
     StorageUtil.setConnectedConnector(options.type)
   },
 
-  async signMessage(message: string, chain?: Chain) {
-    return this._getClient(chain).signMessage(message)
+  async setPreferredAccountType(accountType: W3mFrameTypes.AccountType) {
+    ModalController.setLoading(true)
+    const authConnector = ConnectorController.getAuthConnector()
+    if (!authConnector) {
+      return
+    }
+    await authConnector?.provider.setPreferredAccount(accountType)
+    await this.reconnectExternal(authConnector)
+    ModalController.setLoading(false)
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'SET_PREFERRED_ACCOUNT_TYPE',
+      properties: { accountType, network: NetworkController.state.caipNetwork?.id || '' }
+    })
+  },
+
+  async signMessage(message: string) {
+    return this._getClient().signMessage(message)
   },
 
   parseUnits(value: string, decimals: number, chain?: Chain) {
