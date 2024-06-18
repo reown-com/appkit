@@ -52,6 +52,7 @@ export class W3mConnectView extends LitElement {
             <w3m-connect-featured-widget></w3m-connect-featured-widget>
             <w3m-connect-custom-widget></w3m-connect-custom-widget>
             <w3m-connect-coinbase-widget></w3m-connect-coinbase-widget>
+            <w3m-connect-external-widget></w3m-connect-external-widget>
             <w3m-connect-recommended-widget></w3m-connect-recommended-widget>
             <wui-flex class="all-wallets" .margin=${['xs', '0', '0', '0'] as const}>
               <w3m-all-wallets-widget></w3m-all-wallets-widget>
