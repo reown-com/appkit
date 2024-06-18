@@ -447,7 +447,8 @@ export class EVMWagmiClient {
           id: `${ConstantsUtil.EIP155}:${chain.id}`,
           name: chain.name,
           imageId: PresetsUtil.EIP155NetworkImageIds[chain.id],
-          imageUrl: this.options?.chainImages?.[chain.id]
+          imageUrl: this.options?.chainImages?.[chain.id],
+          chain: this.chain
         }) as CaipNetwork
     )
     this.scaffold?.setRequestedCaipNetworks(requestedCaipNetworks ?? [], this.chain)

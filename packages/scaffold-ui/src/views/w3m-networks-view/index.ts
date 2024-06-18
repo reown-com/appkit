@@ -21,7 +21,7 @@ export class W3mNetworksView extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() public caipNetwork = NetworkController.state.caipNetwork
+  @state() public caipNetwork = NetworkController.activeNetwork()
 
   public constructor() {
     super()
@@ -62,8 +62,8 @@ export class W3mNetworksView extends LitElement {
   }
 
   private networksTemplate() {
-    const { approvedCaipNetworkIds, requestedCaipNetworks, supportsAllNetworks } =
-      NetworkController.state
+    const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
+    const { approvedCaipNetworkIds, supportsAllNetworks } = NetworkController.state
 
     const sortedNetworks = CoreHelperUtil.sortRequestedNetworks(
       approvedCaipNetworkIds,
@@ -89,6 +89,17 @@ export class W3mNetworksView extends LitElement {
     const isConnected = AccountController.getProperty('isConnected')
     const { approvedCaipNetworkIds, supportsAllNetworks, caipNetwork } = NetworkController.state
     const { data } = RouterController.state
+
+    console.log(
+      '>>> onSwitchNetwork',
+      network,
+      isConnected,
+      approvedCaipNetworkIds,
+      supportsAllNetworks,
+      caipNetwork,
+      data
+    )
+
     if (isConnected && caipNetwork?.id !== network.id) {
       if (approvedCaipNetworkIds?.includes(network.id)) {
         await NetworkController.switchActiveNetwork(network)

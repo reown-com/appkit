@@ -175,8 +175,8 @@ export class AppKit {
     AccountController.resetAccount(chain)
   }
 
-  public setCaipNetwork: (typeof ChainController)['setCaipNetwork'] = (caipNetwork, chain) => {
-    NetworkController.setCaipNetwork(caipNetwork, chain)
+  public setCaipNetwork: (typeof ChainController)['setCaipNetwork'] = caipNetwork => {
+    NetworkController.setCaipNetwork(caipNetwork)
   }
 
   public getCaipNetwork = () => NetworkController.activeNetwork()
@@ -259,7 +259,6 @@ export class AppKit {
   // -- Private ------------------------------------------------------------------
   private async initControllers(options: OptionsControllerState) {
     options.adapters?.forEach(adapter => {
-      console.log('>>> initControllers', adapter)
       adapter.construct?.(this, options)
     })
 

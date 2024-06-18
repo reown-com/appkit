@@ -84,7 +84,8 @@ export class W3mUnsupportedChainView extends LitElement {
   }
 
   private networksTemplate() {
-    const { approvedCaipNetworkIds, requestedCaipNetworks } = NetworkController.state
+    const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
+    const { approvedCaipNetworkIds } = NetworkController.state
 
     const sortedNetworks = CoreHelperUtil.sortRequestedNetworks(
       approvedCaipNetworkIds,

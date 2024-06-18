@@ -35,7 +35,7 @@ export class W3mAccountDefaultWidget extends LitElement {
 
   @state() private profileName = AccountController.getProperty('profileName')
 
-  @state() private network = NetworkController.state.caipNetwork
+  @state() private network = NetworkController.activeNetwork()
 
   @state() private disconnecting = false
 
@@ -224,7 +224,7 @@ export class W3mAccountDefaultWidget extends LitElement {
   }
 
   private isAllowedNetworkSwitch() {
-    const { requestedCaipNetworks } = NetworkController.state
+    const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
     const isMultiNetwork = requestedCaipNetworks ? requestedCaipNetworks.length > 1 : false
     const isValidNetwork = requestedCaipNetworks?.find(({ id }) => id === this.network?.id)
 

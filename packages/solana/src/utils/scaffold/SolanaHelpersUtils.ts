@@ -34,14 +34,16 @@ export const SolHelpersUtil = {
       return {
         ...selectedChain,
         id: `solana:${chainId}`,
-        imageId: PresetsUtil.EIP155NetworkImageIds[chainId]
+        imageId: PresetsUtil.EIP155NetworkImageIds[chainId],
+        chain: 'solana'
       }
     }
 
     return {
       ...SolConstantsUtil.DEFAULT_CHAIN,
       id: `solana:${chainId}`,
-      imageId: PresetsUtil.EIP155NetworkImageIds[chainId]
+      imageId: PresetsUtil.EIP155NetworkImageIds[chainId],
+      chain: 'solana'
     }
   },
 

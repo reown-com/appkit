@@ -21,7 +21,7 @@ import {
 import { SwapApiUtil } from '../../src/utils/SwapApiUtil.js'
 
 // - Mocks ---------------------------------------------------------------------
-const caipNetwork = { id: 'eip155:137', name: 'Polygon' } as const
+const caipNetwork = { id: 'eip155:137', name: 'Polygon', chain: 'evm' } as const
 const approvedCaipNetworkIds = ['eip155:1', 'eip155:137'] as CaipNetworkId[]
 const client: NetworkControllerClient = {
   switchCaipNetwork: async _caipNetwork => Promise.resolve(),

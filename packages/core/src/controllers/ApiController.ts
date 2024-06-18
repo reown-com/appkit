@@ -222,7 +222,7 @@ export const ApiController = {
       params: {
         page: '1',
         entries: String(ids.length),
-        chains: NetworkController.state.caipNetwork?.id,
+        chains: NetworkController.activeNetwork()?.id,
         include: ids?.join(',')
       }
     })

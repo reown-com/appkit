@@ -77,17 +77,17 @@ export const NetworkController = {
     }
   },
 
-  setCaipNetwork(caipNetwork: NetworkControllerState['caipNetwork'], chain?: Chain) {
+  setCaipNetwork(caipNetwork: NetworkControllerState['caipNetwork']) {
     state.caipNetwork = caipNetwork
     // TODO(enes): check what to do for PublicStateController calls
     PublicStateController.set({ selectedNetworkId: caipNetwork?.id })
 
-    if (chain) {
-      ChainController.setCaipNetwork(caipNetwork, chain)
-    }
-
-    if (!this.state.allowUnsupportedChain) {
-      this.checkIfSupportedNetwork(chain)
+    if (ChainController.state.multiChainEnabled) {
+      ChainController.setCaipNetwork(caipNetwork)
+    } else {
+      if (!this.state.allowUnsupportedChain) {
+        this.checkIfSupportedNetwork()
+      }
     }
   },
 
@@ -171,13 +171,15 @@ export const NetworkController = {
     }
   },
 
-  async switchActiveNetwork(network: NetworkControllerState['caipNetwork'], chain?: Chain) {
-    await this._getClient(chain)?.switchCaipNetwork(network)
+  async switchActiveNetwork(network: NetworkControllerState['caipNetwork']) {
+    console.log('>>> switch network1', network)
+    await this._getClient()?.switchCaipNetwork(network)
 
     state.caipNetwork = network
 
-    if (chain) {
-      ChainController.switchActiveNetwork(network, chain)
+    if (ChainController.state.multiChainEnabled) {
+      console.log('>>> switch network2', network)
+      ChainController.switchActiveNetwork(network)
     }
 
     if (network) {
@@ -189,12 +191,9 @@ export const NetworkController = {
     }
   },
 
-  checkIfSupportedNetwork(chain?: Chain) {
-    if (chain) {
-      state.isUnsupportedChain = ChainController.checkIfSupportedNetwork(
-        chain,
-        state.caipNetwork?.id
-      )
+  checkIfSupportedNetwork() {
+    if (ChainController.state.multiChainEnabled) {
+      state.isUnsupportedChain = ChainController.checkIfSupportedNetwork(state.caipNetwork?.id)
     } else {
       state.isUnsupportedChain = !state.requestedCaipNetworks?.some(
         network => network.id === state.caipNetwork?.id

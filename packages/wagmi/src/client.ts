@@ -437,7 +437,8 @@ export class Web3Modal extends Web3ModalScaffold {
         id: caipChainId,
         name,
         imageId: PresetsUtil.EIP155NetworkImageIds[id],
-        imageUrl: this.options?.chainImages?.[id]
+        imageUrl: this.options?.chainImages?.[id],
+        chain: 'evm'
       })
       if (isConnected && address && chainId) {
         const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${id}:${address}`

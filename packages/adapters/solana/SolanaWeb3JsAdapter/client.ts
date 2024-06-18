@@ -19,7 +19,6 @@ import type { BaseWalletAdapter } from '@solana/wallet-adapter-base'
 import type { PublicKey, Commitment, ConnectionConfig } from '@solana/web3.js'
 import type UniversalProvider from '@walletconnect/universal-provider'
 import type {
-  CaipNetworkId,
   ConnectionControllerClient,
   NetworkControllerClient,
   Token,
@@ -69,7 +68,7 @@ export class SolanaWeb3JsClient {
   public connectionSettings: Commitment | ConnectionConfig
 
   public constructor(options: Web3ModalClientOptions) {
-    const { solanaConfig, chains, chainImages, connectionSettings = 'confirmed' } = options
+    const { solanaConfig, chains, connectionSettings = 'confirmed' } = options
     const { metadata } = solanaConfig
     if (!solanaConfig) {
       throw new Error('web3modal:constructor - solanaConfig is undefined')
@@ -108,9 +107,7 @@ export class SolanaWeb3JsClient {
         WalletConnectProvider.on('display_uri', (uri: string) => {
           onUri(uri)
         })
-        console.log('>>> [ConnectionController] connectWalletConnect() 1')
         const address = await this.WalletConnectConnector.connect()
-        console.log('>>> [ConnectionController] connectWalletConnect() 2', address)
         this.setWalletConnectProvider(address)
       },
 
@@ -204,11 +201,11 @@ export class SolanaWeb3JsClient {
     })
 
     SolStoreUtil.subscribeKey('caipChainId', () => {
-      this.syncNetwork(chainImages)
+      this.syncNetwork()
     })
 
     AssetController.subscribeNetworkImages(() => {
-      this.syncNetwork(chainImages)
+      this.syncNetwork()
     })
 
     // INFO(enes): This is a workaround to sync the network when the chain is changed.
@@ -249,7 +246,7 @@ export class SolanaWeb3JsClient {
     this.options = options
 
     this.syncRequestedNetworks(this.chains, this.options?.chainImages)
-    this.syncNetwork(this.options?.chainImages)
+    this.syncNetwork()
 
     if (typeof window === 'object') {
       this.checkActiveProviders()
@@ -379,7 +376,8 @@ export class SolanaWeb3JsClient {
           id: `solana:${chain.chainId}`,
           name: chain.name,
           imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId],
-          imageUrl: chainImages?.[chain.chainId]
+          imageUrl: chainImages?.[chain.chainId],
+          chain: this.chain
         }) as CaipNetwork
     )
     this.scaffold?.setRequestedCaipNetworks(requestedCaipNetworks ?? [], this.chain)
@@ -387,10 +385,9 @@ export class SolanaWeb3JsClient {
 
   public async switchNetwork(caipNetwork: CaipNetwork) {
     const caipChainId = caipNetwork.id
-
     const providerType = SolStoreUtil.state.providerType
-
     const chain = SolHelpersUtil.getChainFromCaip(this.chains, caipChainId)
+
     if (this.chains) {
       if (chain) {
         SolStoreUtil.setCaipChainId(`solana:${chain.chainId}`)
@@ -426,7 +423,7 @@ export class SolanaWeb3JsClient {
     }
   }
 
-  private async syncNetwork(chainImages?: Web3ModalClientOptions['chainImages']) {
+  private async syncNetwork() {
     const address = SolStoreUtil.state.address
     const storeChainId = SolStoreUtil.state.caipChainId
     const isConnected = SolStoreUtil.state.isConnected
@@ -434,18 +431,18 @@ export class SolanaWeb3JsClient {
     if (this.chains) {
       const chain = SolHelpersUtil.getChainFromCaip(this.chains, storeChainId)
       if (chain) {
-        const caipChainId: CaipNetworkId = `solana:${chain.chainId}`
+        // const caipChainId: CaipNetworkId = `solana:${chain.chainId}`
 
         // TODO(enes): refactor this. Instead of setting the network here, we are now setting them in the appkit initializer
-        this.scaffold?.setCaipNetwork(
-          {
-            id: caipChainId,
-            name: chain.name,
-            imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId],
-            imageUrl: chainImages?.[chain.chainId]
-          },
-          this.chain
-        )
+        // this.scaffold?.setCaipNetwork(
+        //   {
+        //     id: caipChainId,
+        //     name: chain.name,
+        //     imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId],
+        //     imageUrl: chainImages?.[chain.chainId]
+        //   },
+        //   this.chain
+        // )
         if (isConnected && address) {
           if (chain.explorerUrl) {
             const url = `${chain.explorerUrl}/account/${address}`
