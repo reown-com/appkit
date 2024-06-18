@@ -125,7 +125,7 @@ export class W3mUnsupportedChainView extends LitElement {
   }
 
   private async onSwitchNetwork(network: CaipNetwork) {
-    const { isConnected } = AccountController.state
+    const isConnected = AccountController.getProperty('isConnected')
     const { approvedCaipNetworkIds, supportsAllNetworks, caipNetwork } = NetworkController.state
     const { data } = RouterController.state
 

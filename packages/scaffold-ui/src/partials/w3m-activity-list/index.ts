@@ -2,6 +2,7 @@ import { DateUtil } from '@web3modal/common'
 import type { Transaction, TransactionImage } from '@web3modal/common'
 import {
   AccountController,
+  ChainController,
   EventsController,
   OptionsController,
   RouterController,
@@ -30,7 +31,7 @@ export class W3mActivityList extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() public page: 'account' | 'activity' = 'activity'
 
-  @state() private address: string | undefined = AccountController.state.address
+  @state() private address: string | undefined = AccountController.getProperty('address')
 
   @state() private transactionsByYear = TransactionsController.state.transactionsByYear
 
@@ -46,12 +47,15 @@ export class W3mActivityList extends LitElement {
     TransactionsController.clearCursor()
     this.unsubscribe.push(
       ...[
-        AccountController.subscribe(val => {
-          if (val.isConnected) {
-            if (this.address !== val.address) {
-              this.address = val.address
+        ChainController.subscribe(val => {
+          const accountState = val.activeChain
+            ? val.chains[val.activeChain]?.accountState
+            : undefined
+          if (accountState?.isConnected) {
+            if (this.address !== accountState.address) {
+              this.address = accountState.address
               TransactionsController.resetTransactions()
-              TransactionsController.fetchTransactions(val.address)
+              TransactionsController.fetchTransactions(accountState.address)
             }
           }
         }),
@@ -281,7 +285,7 @@ export class W3mActivityList extends LitElement {
             projectId,
             cursor: this.next,
             isSmartAccount:
-              AccountController.state.preferredAccountType ===
+              AccountController.getProperty('preferredAccountType') ===
               W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
           }
         })
