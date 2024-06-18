@@ -9,9 +9,8 @@ testM.describe('Modal only tests', () => {
 })
 
 testMExternal.describe('External connectors tests', () => {
-  testMExternal('Should show external connectors', async ({ modalPage }) => {
+  testMExternal('Should show external connectors', async ({ modalPage, modalValidator }) => {
     await modalPage.page.getByTestId('connect-button').click()
-    const externalConnector = modalPage.page.getByTestId(/^wallet-selector-external/u)
-    await expect(externalConnector).toBeVisible()
+    await modalValidator.expectExternalVisible()
   })
 })
