@@ -1,5 +1,5 @@
 import type { Connector } from '@web3modal/core'
-import { ApiController, AssetUtil, ConnectorController, RouterController } from '@web3modal/core'
+import { AssetUtil, ConnectorController, RouterController } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
@@ -47,7 +47,7 @@ export class W3mConnectExternalWidget extends LitElement {
               imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
               .installed=${true}
               name=${connector.name ?? 'Unknown'}
-              data-testid=${`wallet-selector-${connector.id}`}
+              data-testid=${`wallet-selector-external-${connector.id}`}
               @click=${() => this.onConnector(connector)}
             >
             </wui-list-wallet>
