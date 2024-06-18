@@ -26,9 +26,9 @@ export class W3mConnectExternalWidget extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const injectedConnectors = this.connectors.filter(connector => connector.type === 'EXTERNAL')
+    const externalConnectors = this.connectors.filter(connector => connector.type === 'EXTERNAL')
 
-    if (!injectedConnectors?.length) {
+    if (!externalConnectors?.length) {
       this.style.cssText = `display: none`
 
       return null
@@ -36,13 +36,7 @@ export class W3mConnectExternalWidget extends LitElement {
 
     return html`
       <wui-flex flexDirection="column" gap="xs">
-        ${injectedConnectors.map(connector => {
-          if (connector.info?.rdns && ApiController.state.excludedRDNS) {
-            if (ApiController.state.excludedRDNS.includes(connector?.info?.rdns)) {
-              return null
-            }
-          }
-
+        ${externalConnectors.map(connector => {
           // Coinbase connector is handled separately
           if (connector.id === 'coinbaseWalletSDK') {
             return null
