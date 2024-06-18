@@ -11,7 +11,8 @@ import {
   ConnectionController,
   SnackController,
   ConstantsUtil,
-  OptionsController
+  OptionsController,
+  ChainController
 } from '@web3modal/core'
 import { UiHelperUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -28,31 +29,34 @@ export class W3mAccountDefaultWidget extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() public address = AccountController.state.address
+  @state() public address = AccountController.getProperty('address')
 
-  @state() private profileImage = AccountController.state.profileImage
+  @state() private profileImage = AccountController.getProperty('profileImage')
 
-  @state() private profileName = AccountController.state.profileName
+  @state() private profileName = AccountController.getProperty('profileName')
 
   @state() private network = NetworkController.state.caipNetwork
 
   @state() private disconnecting = false
 
-  @state() private balance = AccountController.state.balance
+  @state() private balance = AccountController.getProperty('balance')
 
-  @state() private balanceSymbol = AccountController.state.balanceSymbol
+  @state() private balanceSymbol = AccountController.getProperty('balanceSymbol')
 
   public constructor() {
     super()
     this.unsubscribe.push(
       ...[
-        AccountController.subscribe(val => {
-          if (val.address) {
-            this.address = val.address
-            this.profileImage = val.profileImage
-            this.profileName = val.profileName
-            this.balance = val.balance
-            this.balanceSymbol = val.balanceSymbol
+        ChainController.subscribe(val => {
+          const accountState = val.activeChain
+            ? val.chains[val.activeChain]?.accountState
+            : undefined
+          if (accountState?.address) {
+            this.address = accountState.address
+            this.profileImage = accountState.profileImage
+            this.profileName = accountState.profileName
+            this.balance = accountState.balance
+            this.balanceSymbol = accountState.balanceSymbol
           } else if (!this.disconnecting) {
             SnackController.showError('Account not found')
           }
@@ -204,7 +208,7 @@ export class W3mAccountDefaultWidget extends LitElement {
   }
 
   private explorerBtnTemplate() {
-    const { addressExplorerUrl } = AccountController.state
+    const addressExplorerUrl = AccountController.getProperty('addressExplorerUrl')
 
     if (!addressExplorerUrl) {
       return null
@@ -251,7 +255,7 @@ export class W3mAccountDefaultWidget extends LitElement {
       event: 'CLICK_TRANSACTIONS',
       properties: {
         isSmartAccount:
-          AccountController.state.preferredAccountType ===
+          AccountController.getProperty('preferredAccountType') ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })
@@ -273,7 +277,8 @@ export class W3mAccountDefaultWidget extends LitElement {
   }
 
   private onExplorer() {
-    const { addressExplorerUrl } = AccountController.state
+    const addressExplorerUrl = AccountController.getProperty('addressExplorerUrl')
+
     if (addressExplorerUrl) {
       CoreHelperUtil.openHref(addressExplorerUrl, '_blank')
     }

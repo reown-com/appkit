@@ -1,6 +1,7 @@
 import {
   AccountController,
   AssetUtil,
+  ChainController,
   EventsController,
   ModalController,
   NetworkController
@@ -24,7 +25,7 @@ export class W3mNetworkButton extends LitElement {
 
   @state() private network = NetworkController.state.caipNetwork
 
-  @state() private connected = AccountController.state.isConnected
+  @state() private connected = AccountController.getProperty('isConnected')
 
   @state() private loading = ModalController.state.loading
 
@@ -35,8 +36,14 @@ export class W3mNetworkButton extends LitElement {
     super()
     this.unsubscribe.push(
       ...[
-        NetworkController.subscribeKey('caipNetwork', val => (this.network = val)),
-        AccountController.subscribeKey('isConnected', val => (this.connected = val)),
+        ChainController.subscribe(val => {
+          const chain = val.activeChain ? val.chains[val.activeChain] : undefined
+          const accountState = val.activeChain
+            ? val.chains[val.activeChain]?.accountState
+            : undefined
+          this.connected = accountState?.isConnected || false
+          this.network = chain?.caipNetwork || undefined
+        }),
         ModalController.subscribeKey('loading', val => (this.loading = val)),
         NetworkController.subscribeKey('isUnsupportedChain', val => (this.isUnsupportedChain = val))
       ]

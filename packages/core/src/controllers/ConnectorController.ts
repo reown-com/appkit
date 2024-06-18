@@ -44,7 +44,7 @@ export const ConnectorController = {
 
       authConnector?.provider?.syncDappData?.({
         metadata: optionsState.metadata,
-        sdkVersion: optionsState.sdkVersion,
+        sdkVersion: optionsState.sdkVersion || 'html-wagmi-0.0.1',
         projectId: optionsState.projectId
       })
       authConnector.provider.syncTheme({

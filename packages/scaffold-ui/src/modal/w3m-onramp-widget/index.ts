@@ -1,4 +1,9 @@
-import { AccountController, ModalController, OnRampController } from '@web3modal/core'
+import {
+  AccountController,
+  ChainController,
+  ModalController,
+  OnRampController
+} from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
@@ -22,7 +27,7 @@ export class W3mOnrampWidget extends LitElement {
   // -- State & Properties -------------------------------- //
   @property({ type: Boolean }) public disabled? = false
 
-  @state() private connected = AccountController.state.isConnected
+  @state() private connected = AccountController.getProperty('isConnected')
 
   @state() private loading = ModalController.state.loading
 
@@ -39,8 +44,11 @@ export class W3mOnrampWidget extends LitElement {
     super()
     this.unsubscribe.push(
       ...[
-        AccountController.subscribeKey('isConnected', val => {
-          this.connected = val
+        ChainController.subscribe(val => {
+          const accountState = val.activeChain
+            ? val.chains[val.activeChain]?.accountState
+            : undefined
+          this.connected = accountState?.isConnected || false
         }),
         ModalController.subscribeKey('loading', val => {
           this.loading = val
