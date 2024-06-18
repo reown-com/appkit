@@ -2,9 +2,7 @@ import {
   AssetUtil,
   ConnectorController,
   NetworkController,
-  OptionsController,
   RouterController,
-  RouterUtil,
   StorageUtil
 } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
@@ -12,6 +10,7 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
+import { NetworkUtil } from '../../utils/NetworkUtil.js'
 
 @customElement('w3m-network-switch-view')
 export class W3mNetworkSwitchView extends LitElement {
@@ -134,9 +133,7 @@ export class W3mNetworkSwitchView extends LitElement {
       this.error = false
       if (this.network) {
         await NetworkController.switchActiveNetwork(this.network)
-        if (!OptionsController.state.isSiweEnabled) {
-          RouterUtil.navigateAfterNetworkSwitch()
-        }
+        await NetworkUtil.onNetworkChange()
       }
     } catch {
       this.error = true
