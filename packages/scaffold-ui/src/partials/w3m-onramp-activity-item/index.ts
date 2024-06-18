@@ -1,16 +1,13 @@
 import { html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
-import '../../components/wui-icon/index.js'
-import '../../components/wui-text/index.js'
-import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { ColorType } from '../../utils/TypeUtil.js'
-import { customElement } from '../../utils/WebComponentsUtil.js'
-import styles from './styles.js'
+import { customElement } from '@web3modal/ui'
+import type { ColorType } from '@web3modal/ui/src/utils/TypeUtil.js'
 import { ApiController } from '@web3modal/core'
+import styles from './styles.js'
 
-@customElement('wui-onramp-activity-item')
-export class WuiOnRampActivityItem extends LitElement {
-  public static override styles = [resetStyles, elementStyles, styles]
+@customElement('w3m-onramp-activity-item')
+export class W3mOnRampActivityItem extends LitElement {
+  public static override styles = [styles]
 
   // -- State & Properties -------------------------------- //
   @property({ type: Boolean }) public disabled = false
@@ -110,6 +107,6 @@ export class WuiOnRampActivityItem extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'wui-onramp-activity-item': WuiOnRampActivityItem
+    'w3m-onramp-activity-item': W3mOnRampActivityItem
   }
 }
