@@ -20,10 +20,9 @@ export default function App({
 }: AppProps<{
   session: Session
 }>) {
-
-  useEffect(()=>{
+  useEffect(() => {
     window.Telegram?.WebApp.ready()
-  },[])
+  }, [])
 
   return (
     <ChakraProvider>
@@ -35,4 +34,3 @@ export default function App({
     </ChakraProvider>
   )
 }
-
