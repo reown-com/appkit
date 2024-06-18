@@ -1,5 +1,29 @@
 # @apps/laboratory
 
+## 5.0.2
+
+### Patch Changes
+
+- fix: siwe signOutOnNetwork change issue. fix: wallets filtered by rdns matched from explorer api. fix: solana network id issue
+
+- Updated dependencies []:
+  - @web3modal/ethers@5.0.2
+  - @web3modal/siwe@5.0.2
+  - @web3modal/solana@5.0.2
+  - @web3modal/wagmi@5.0.2
+
+## 5.0.1
+
+### Patch Changes
+
+- fix: remove walletconnect restriction on names
+
+- Updated dependencies []:
+  - @web3modal/ethers@5.0.1
+  - @web3modal/solana@5.0.1
+  - @web3modal/wagmi@5.0.1
+  - @web3modal/siwe@5.0.1
+
 ## 5.0.0
 
 ### Major Changes
