@@ -20,8 +20,7 @@ const modal = createWeb3Modal({
   termsConditionsUrl: 'https://walletconnect.com/terms',
   privacyPolicyUrl: 'https://walletconnect.com/privacy',
   customWallets: ConstantsUtil.CustomWallets,
-  enableOnramp: true,
-  enableUniversalLinks: true
+  enableOnramp: true
 })
 
 ThemeStore.setModal(modal)
@@ -30,7 +29,6 @@ export default function Wagmi() {
   return (
     <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
-        TTTTTTTTelegram?
         <Web3ModalButtons />
         <WagmiModalInfo />
         <WagmiTests />
