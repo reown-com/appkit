@@ -233,7 +233,7 @@ export class Web3Modal extends Web3ModalScaffold {
     })
 
     NetworkController.subscribeKey('caipNetwork', () => {
-      if (NetworkController.state.caipNetwork && !SolStoreUtil.state.isConnected) {
+      if (NetworkController.activeNetwork() && !SolStoreUtil.state.isConnected) {
         SolStoreUtil.setCaipChainId(`solana:${chain.chainId}`)
         SolStoreUtil.setCurrentChain(chain)
         localStorage.setItem(SolConstantsUtil.CAIP_CHAIN_ID, `solana:${chain.chainId}`)
@@ -409,7 +409,8 @@ export class Web3Modal extends Web3ModalScaffold {
           id: `solana:${chain.chainId}`,
           name: chain.name,
           imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId],
-          imageUrl: chainImages?.[chain.chainId]
+          imageUrl: chainImages?.[chain.chainId],
+          chain: 'solana'
         }) as CaipNetwork
     )
     this.setRequestedCaipNetworks(requestedCaipNetworks ?? [])
@@ -470,7 +471,8 @@ export class Web3Modal extends Web3ModalScaffold {
           id: caipChainId,
           name: chain.name,
           imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId],
-          imageUrl: chainImages?.[chain.chainId]
+          imageUrl: chainImages?.[chain.chainId],
+          chain: 'solana'
         })
         if (isConnected && address) {
           if (chain.explorerUrl) {

@@ -27,6 +27,7 @@ export interface CaipNetwork {
   name?: string
   imageId?: string
   imageUrl?: string
+  chain: Chain
 }
 
 export type ConnectedWalletInfo =

@@ -3,7 +3,7 @@ import type { CaipNetworkId, NetworkControllerClient } from '../../index.js'
 import { EventsController, NetworkController } from '../../index.js'
 
 // -- Setup --------------------------------------------------------------------
-const caipNetwork = { id: 'eip155:1', name: 'Ethereum' } as const
+const caipNetwork = { id: 'eip155:1', name: 'Ethereum', chain: 'evm' } as const
 // const requestedCaipNetworks = [
 //   { id: 'eip155:1', name: 'Ethereum' },
 //   { id: 'eip155:42161', name: 'Arbitrum One' },
@@ -88,7 +88,7 @@ describe('NetworkController', () => {
     expect(NetworkController.checkIfSmartAccountEnabled()).toEqual(false)
     NetworkController.setSmartAccountEnabledNetworks([2])
     expect(NetworkController.checkIfSmartAccountEnabled()).toEqual(false)
-    NetworkController.setCaipNetwork({ id: 'eip155:2', name: 'Ethereum' })
+    NetworkController.setCaipNetwork({ id: 'eip155:2', name: 'Ethereum', chain: 'evm' })
     expect(NetworkController.checkIfSmartAccountEnabled()).toEqual(true)
   })
 })

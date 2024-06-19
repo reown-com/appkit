@@ -108,16 +108,19 @@ describe('ApiController', () => {
       {
         id: '155:1',
         name: 'Ethereum Mainnet',
-        imageId: '12341'
+        imageId: '12341',
+        chain: 'evm'
       },
       {
         id: '155:4',
         name: 'Ethereum Rinkeby',
-        imageId: '12342'
+        imageId: '12342',
+        chain: 'evm'
       },
       {
         id: '155:42',
-        name: 'Ethereum Kovan'
+        name: 'Ethereum Kovan',
+        chain: 'evm'
       }
     ])
     const fetchSpy = vi.spyOn(ApiController, '_fetchNetworkImage').mockResolvedValue()
@@ -132,17 +135,20 @@ describe('ApiController', () => {
       {
         id: '155:1',
         name: 'Ethereum Mainnet',
-        imageId: '12341'
+        imageId: '12341',
+        chain: 'evm'
       },
       {
         id: '155:4',
         name: 'Ethereum Rinkeby',
-        imageId: '12342'
+        imageId: '12342',
+        chain: 'evm'
       },
       // Should not fetch this
       {
         id: '155:42',
-        name: 'Ethereum Kovan'
+        name: 'Ethereum Kovan',
+        chain: 'evm'
       }
     ])
     const fetchSpy = vi.spyOn(ApiController, '_fetchNetworkImage').mockResolvedValue()

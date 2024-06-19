@@ -28,7 +28,7 @@ export class W3mSwapView extends LitElement {
 
   @state() private detailsOpen = false
 
-  @state() private caipNetworkId = NetworkController.state.caipNetwork?.id
+  @state() private caipNetworkId = NetworkController.activeNetwork()?.id
 
   @state() private initialized = SwapController.state.initialized
 

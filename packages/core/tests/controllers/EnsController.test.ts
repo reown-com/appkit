@@ -125,7 +125,7 @@ describe('EnsController', () => {
     // No network set
     const result = await EnsController.getNamesForAddress('0x123')
     expect(result).toEqual([])
-    NetworkController.setCaipNetwork({ id: 'test:123' })
+    NetworkController.setCaipNetwork({ id: 'test:123', chain: 'evm' })
     const resultWithNetwork = await EnsController.getNamesForAddress('0x123')
     expect(resultWithNetwork).toEqual([TEST_NAME])
 
@@ -135,7 +135,7 @@ describe('EnsController', () => {
 
   it('should register name', async () => {
     // Setup
-    NetworkController.setCaipNetwork({ id: 'test:123' })
+    NetworkController.setCaipNetwork({ id: 'test:123', chain: 'evm' })
     AccountController.setCaipAddress('eip155:1:0x123')
     const getAuthConnectorSpy = vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue({
       provider: { getEmail: () => 'test@walletconnect.com' } as unknown as W3mFrameProvider,

@@ -39,7 +39,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
   @state() private smartAccountDeployed = AccountController.getProperty('smartAccountDeployed')
 
-  @state() private network = NetworkController.state.caipNetwork
+  @state() private network = NetworkController.activeNetwork()
 
   @state() private currentTab = AccountController.getProperty('currentTab')
 

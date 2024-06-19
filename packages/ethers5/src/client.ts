@@ -841,7 +841,8 @@ export class Web3Modal extends Web3ModalScaffold {
           id: caipChainId,
           name: chain.name,
           imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId],
-          imageUrl: chainImages?.[chain.chainId]
+          imageUrl: chainImages?.[chain.chainId],
+          chain: 'evm'
         })
         if (isConnected && address) {
           const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`
@@ -858,7 +859,8 @@ export class Web3Modal extends Web3ModalScaffold {
         }
       } else if (isConnected) {
         this.setCaipNetwork({
-          id: `${ConstantsUtil.EIP155}:${chainId}`
+          id: `${ConstantsUtil.EIP155}:${chainId}`,
+          chain: 'evm'
         })
       }
     }
