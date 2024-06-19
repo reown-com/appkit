@@ -25,18 +25,6 @@
       "outputs": ["dist/**"],
       "cache": false
     },
-    "build:scaffold": {
-      "outputs": ["dist/**"],
-      "dependsOn": [
-        "^build:common",
-        "^build:core",
-        "^build:ui",
-        "^build:wallet",
-        "^build:siwe",
-        "^build:scaffold-utils"
-      ],
-      "cache": false
-    },
     "build:scaffold-utils": {
       "outputs": ["dist/**"],
       "dependsOn": ["^build:polyfills", "^build:core"],
@@ -57,45 +45,66 @@
       "dependsOn": ["^build:core", "^build:scaffold-utils"],
       "cache": false
     },
-    "build": {
+    "build:scaffold-ui": {
       "outputs": ["dist/**"],
       "dependsOn": [
         "^build:common",
         "^build:core",
+        "^build:ui",
+        "^build:wallet",
+        "^build:siwe",
+        "^build:scaffold",
+        "^build:scaffold-utils"
+      ],
+      "cache": false
+    },
+    "build:scaffold": {
+      "outputs": ["dist/**"],
+      "dependsOn": ["^build:scaffold-ui"],
+      "cache": false
+    },
+    "build:client": {
+      "outputs": ["dist/**"],
+      "dependsOn": [
         "^build:polyfills",
         "^build:scaffold",
-        "^build:scaffold-utils",
         "^build:scaffold-react",
-        "^build:scaffold-vue",
-        "^build:siwe",
-        "^build:ui",
-        "^build:wallet"
+        "^build:scaffold-vue"
       ],
       "cache": false
     },
     "watch": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build:client"],
+      "cache": false,
+      "persistent": true
+    },
+    "build:cdn": {
+      "dependsOn": ["^build:client"],
+      "cache": false
+    },
+    "build": {
+      "dependsOn": ["build:cdn"],
       "cache": false,
       "persistent": true
     },
     "build:gallery": {
       "outputs": ["out/**"],
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build:client"],
       "cache": false
     },
     "build:laboratory": {
       "outputs": ["out/**", ".next/**", "!.next/cache/**"],
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build:client"],
       "cache": false
     },
     "build:examples": {
       "outputs": ["dist/**"],
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build:client"],
       "cache": false
     },
     "build:demo": {
       "outputs": ["out/**", ".next/**", "!.next/cache/**"],
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build:client"],
       "cache": false
     },
     "typecheck": {

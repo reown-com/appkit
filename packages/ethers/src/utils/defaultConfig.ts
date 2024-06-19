@@ -6,10 +6,11 @@ import type { SocialProvider } from '@web3modal/scaffold-utils'
 export interface ConfigOptions {
   enableEIP6963?: boolean
   enableCoinbase?: boolean
-  enableEmail?: boolean
   auth?: {
+    email?: boolean
     socials?: SocialProvider[]
     showWallets?: boolean
+    walletFeatures?: boolean
   }
   enableInjected?: boolean
   rpcUrl?: string
@@ -24,8 +25,11 @@ export function defaultConfig(options: ConfigOptions) {
     enableEIP6963 = true,
     enableCoinbase = true,
     enableInjected = true,
-    enableEmail = false,
-    auth,
+    auth = {
+      email: true,
+      showWallets: true,
+      walletFeatures: true
+    },
     metadata,
     rpcUrl,
     defaultChainId
@@ -99,11 +103,10 @@ export function defaultConfig(options: ConfigOptions) {
     providers.EIP6963 = true
   }
 
-  if (enableEmail) {
-    providers.email = true
-  }
-
   if (auth) {
+    auth.email ??= true
+    auth.showWallets ??= true
+    auth.walletFeatures ??= true
     providers.auth = auth
   }
 

@@ -39,21 +39,22 @@ export const WagmiConstantsUtil = {
   ] as [Chain, ...Chain[]]
 }
 
-export const CONFIGS = {
-  default: defaultWagmiConfig({
+export function getWagmiConfig(type: 'default' | 'email') {
+  const config = {
     chains: WagmiConstantsUtil.chains,
     projectId: ConstantsUtil.ProjectId,
     metadata: ConstantsUtil.Metadata,
     ssr: true
-  }),
-  email: defaultWagmiConfig({
-    chains: WagmiConstantsUtil.chains,
-    projectId: ConstantsUtil.ProjectId,
-    metadata: ConstantsUtil.Metadata,
-    enableEmail: true,
+  }
+
+  const emailConfig = {
+    ...config,
     auth: {
       socials: ['google', 'x', 'discord', 'apple', 'github']
-    },
-    ssr: true
-  })
+    }
+  }
+
+  const wagmiConfig = defaultWagmiConfig(type === 'email' ? emailConfig : config)
+
+  return wagmiConfig
 }

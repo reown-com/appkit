@@ -2,6 +2,7 @@ import { SECURE_SITE_SDK, W3mFrameConstants } from './W3mFrameConstants.js'
 import { W3mFrameSchema } from './W3mFrameSchema.js'
 import { W3mFrameHelpers } from './W3mFrameHelpers.js'
 import type { W3mFrameTypes } from './W3mFrameTypes.js'
+import { ConstantsUtil } from '@web3modal/common'
 
 // -- Sdk --------------------------------------------------------------------
 export class W3mFrame {
@@ -9,7 +10,7 @@ export class W3mFrame {
 
   private projectId: string
 
-  private rpcUrl = W3mFrameHelpers.getBlockchainApiUrl()
+  private rpcUrl = ConstantsUtil.BLOCKCHAIN_API_RPC_URL
 
   public frameLoadPromise: Promise<void>
 

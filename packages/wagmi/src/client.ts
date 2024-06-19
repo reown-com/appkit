@@ -449,7 +449,6 @@ export class Web3Modal extends Web3ModalScaffold {
           this.setAddressExplorerUrl(undefined)
         }
         if (this.hasSyncedConnectedAccount) {
-          await this.syncProfile(address, chainId)
           await this.syncBalance(address, chainId)
         }
       }
@@ -588,7 +587,9 @@ export class Web3Modal extends Web3ModalScaffold {
       email: boolean
       socials: SocialProvider[]
       showWallets?: boolean
+      walletFeatures?: boolean
     }
+
     if (authConnector) {
       const provider = await authConnector.getProvider()
       this.addConnector({
@@ -598,7 +599,8 @@ export class Web3Modal extends Web3ModalScaffold {
         provider,
         email: authConnector.email,
         socials: authConnector.socials,
-        showWallets: authConnector?.showWallets === undefined ? true : authConnector.showWallets
+        showWallets: authConnector.showWallets,
+        walletFeatures: authConnector.walletFeatures
       })
     }
   }
@@ -707,13 +709,7 @@ export class Web3Modal extends Web3ModalScaffold {
         if (!address) {
           return
         }
-        const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
-        this.syncAccount({
-          address: address as `0x${string}`,
-          chainId,
-          isConnected: true,
-          connector
-        }).then(() => this.setPreferredAccountType(type as W3mFrameTypes.AccountType))
+        this.setPreferredAccountType(type as W3mFrameTypes.AccountType)
       })
     }
   }

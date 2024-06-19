@@ -13,10 +13,11 @@ export type Address = `0x${string}`
 export type ProviderType = {
   injected?: Provider
   coinbase?: ProviderInterface
-  email?: boolean
   auth?: {
+    email?: boolean
     socials?: SocialProvider[]
     showWallets?: boolean
+    walletFeatures?: boolean
   }
   EIP6963?: boolean
   metadata: Metadata

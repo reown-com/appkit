@@ -52,8 +52,8 @@ export interface LibraryOptions {
   enableAnalytics?: OptionsControllerState['enableAnalytics']
   metadata?: OptionsControllerState['metadata']
   enableOnramp?: OptionsControllerState['enableOnramp']
-  enableWalletFeatures?: OptionsControllerState['enableWalletFeatures']
   enableUniversalLinks?: OptionsControllerState['enableUniversalLinks']
+  disableAppend?: OptionsControllerState['disableAppend']
   allowUnsupportedChain?: NetworkControllerState['allowUnsupportedChain']
   _sdkVersion: OptionsControllerState['sdkVersion']
 }
@@ -287,6 +287,8 @@ export class Web3ModalScaffold {
     OptionsController.setCustomWallets(options.customWallets)
     OptionsController.setEnableAnalytics(options.enableAnalytics)
     OptionsController.setSdkVersion(options._sdkVersion)
+    // Enabled by default
+    OptionsController.setOnrampEnabled(options.enableOnramp !== false)
 
     if (options.metadata) {
       OptionsController.setMetadata(options.metadata)
@@ -300,12 +302,8 @@ export class Web3ModalScaffold {
       ThemeController.setThemeVariables(options.themeVariables)
     }
 
-    if (options.enableOnramp) {
-      OptionsController.setOnrampEnabled(Boolean(options.enableOnramp))
-    }
-
-    if (options.enableWalletFeatures) {
-      OptionsController.setWalletFeaturesEnabled(Boolean(options.enableWalletFeatures))
+    if (options.disableAppend) {
+      OptionsController.setDisableAppend(Boolean(options.disableAppend))
     }
 
     if (options.enableUniversalLinks) {
@@ -329,9 +327,11 @@ export class Web3ModalScaffold {
     if (!this.initPromise && !isInitialized && CoreHelperUtil.isClient()) {
       isInitialized = true
       this.initPromise = new Promise<void>(async resolve => {
-        await Promise.all([import('@web3modal/ui'), import('./modal/w3m-modal/index.js')])
+        await Promise.all([import('@web3modal/ui'), import('@web3modal/scaffold-ui/w3m-modal')])
         const modal = document.createElement('w3m-modal')
-        document.body.insertAdjacentElement('beforeend', modal)
+        if (!OptionsController.state.disableAppend) {
+          document.body.insertAdjacentElement('beforeend', modal)
+        }
         resolve()
       })
     }
