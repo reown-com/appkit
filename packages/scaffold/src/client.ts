@@ -26,7 +26,8 @@ import {
   ThemeController,
   SnackController,
   RouterController,
-  EnsController
+  EnsController,
+  ApiController
 } from '@web3modal/core'
 import { setColorTheme, setThemeVariables } from '@web3modal/ui'
 import type { SIWEControllerClient } from '@web3modal/siwe'
@@ -309,10 +310,17 @@ export class Web3ModalScaffold {
       NetworkController.setAllowUnsupportedChain(options.allowUnsupportedChain)
     }
 
-    if (options.siweControllerClient) {
-      const { SIWEController } = await import('@web3modal/siwe')
+    const { isAppKitAuthEnabled, isAnalyticsEnabled } = await ApiController.fetchProjectConfig()
 
-      SIWEController.setSIWEClient(options.siweControllerClient)
+    // Only set the analytics state if it's not already set through the SDK config
+    if (options.enableAnalytics === undefined) {
+      OptionsController.setEnableAnalytics(isAnalyticsEnabled)
+    }
+
+    if (options.siweControllerClient || isAppKitAuthEnabled) {
+      const { SIWEController, appKitAuthConfig } = await import('@web3modal/siwe')
+      OptionsController.setIsSiweEnabled(true)
+      SIWEController.setSIWEClient(options.siweControllerClient ?? appKitAuthConfig)
     }
 
     ConnectionController.setClient(options.connectionControllerClient)

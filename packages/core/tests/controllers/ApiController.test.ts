@@ -507,7 +507,10 @@ describe('ApiController', () => {
       .spyOn(ApiController, 'fetchConnectorImages')
       .mockResolvedValue()
 
-    const fetchAnalyticsSpy = vi.spyOn(ApiController, 'fetchProjectConfig').mockResolvedValue()
+    const fetchAnalyticsSpy = vi.spyOn(ApiController, 'fetchProjectConfig').mockResolvedValue({
+      isAnalyticsEnabled: true,
+      isAppKitAuthEnabled: false
+    })
 
     ApiController.prefetch()
 

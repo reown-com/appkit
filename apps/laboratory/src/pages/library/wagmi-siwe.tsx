@@ -1,5 +1,4 @@
 import { createWeb3Modal } from '@web3modal/wagmi/react'
-import { appKitAuthConfig } from '@web3modal/siwe'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
 import { Web3ModalButtons } from '../../components/Web3ModalButtons'
@@ -9,6 +8,7 @@ import { getWagmiConfig } from '../../utils/WagmiConstants'
 import { SiweData } from '../../components/Siwe/SiweData'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
+import { siweConfig } from '../../utils/SiweUtils'
 
 const queryClient = new QueryClient()
 
@@ -18,7 +18,7 @@ const modal = createWeb3Modal({
   projectId: ConstantsUtil.ProjectId,
   enableAnalytics: true,
   metadata: ConstantsUtil.Metadata,
-  siweConfig: appKitAuthConfig,
+  siweConfig,
   enableOnramp: true,
   customWallets: ConstantsUtil.CustomWallets
 })

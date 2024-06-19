@@ -228,29 +228,18 @@ export const ApiController = {
       ApiController.fetchFeaturedWallets(),
       ApiController.fetchRecommendedWallets(),
       ApiController.fetchNetworkImages(),
-      ApiController.fetchConnectorImages(),
-      ApiController.fetchProjectConfig()
+      ApiController.fetchConnectorImages()
     ]
 
     state.prefetchPromise = Promise.race([Promise.allSettled(promises), CoreHelperUtil.wait(3000)])
   },
 
   async fetchProjectConfig() {
-    const { isAnalyticsEnabled, isAppKitAuthEnabled } = await api.get<ApiGetProjectConfigResponse>({
-      path: '/getProjectConfig',
+    const { isAnalyticsEnabled } = await api.get<ApiGetProjectConfigResponse>({
+      path: '/getAnalyticsConfig',
       headers: ApiController._getApiHeaders()
     })
-    // Only set the analytics state if it's not already set through the SDK config
-    if (OptionsController.state.enableAnalytics === undefined) {
-      OptionsController.setEnableAnalytics(isAnalyticsEnabled)
-    }
 
-    if (isAppKitAuthEnabled) {
-      const { SIWEController, appKitAuthConfig } = await import('@web3modal/siwe')
-
-      SIWEController.setSIWEClient(appKitAuthConfig)
-
-      OptionsController.setIsSiweEnabled(isAppKitAuthEnabled)
-    }
+    return { isAnalyticsEnabled, isAppKitAuthEnabled: true }
   }
 }

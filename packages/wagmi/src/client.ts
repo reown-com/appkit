@@ -240,8 +240,8 @@ export class Web3Modal extends Web3ModalScaffold {
 
       disconnect: async () => {
         await disconnect(this.wagmiConfig)
-        if (siweConfig?.options?.signOutOnDisconnect) {
-          const { SIWEController } = await import('@web3modal/siwe')
+        const { SIWEController } = await import('@web3modal/siwe')
+        if (SIWEController.state._client?.options?.signOutOnDisconnect) {
           await SIWEController.signOut()
         }
       },

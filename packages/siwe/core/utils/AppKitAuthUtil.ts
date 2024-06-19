@@ -1,6 +1,7 @@
 import { formatMessage } from '@walletconnect/utils'
 import { Web3ModalSIWEClient } from '../../src/client.js'
 import type { SIWECreateMessageArgs, SIWESession, SIWEVerifyMessageArgs } from './TypeUtils.js'
+import { ConstantsUtil } from '@web3modal/common'
 
 const myHeaders = new Headers()
 myHeaders.append('x-project-id', '24970167f11c121f6eb40b558edb9691')
@@ -8,7 +9,7 @@ myHeaders.append('x-sdk-type', 'w3m')
 myHeaders.append('x-sdk-version', 'html-3.0.0')
 
 export async function getNonce() {
-  return fetch('http://localhost:8787/auth/v1/nonce', {
+  return fetch(`${ConstantsUtil.APPKIT_AUTH_API_URL}/auth/v1/nonce`, {
     method: 'GET',
     headers: myHeaders,
     credentials: 'include'
@@ -18,7 +19,7 @@ export async function getNonce() {
 }
 
 export async function getAppKitAuthSession() {
-  return fetch('http://localhost:8787/auth/v1/me', {
+  return fetch(`${ConstantsUtil.APPKIT_AUTH_API_URL}/auth/v1/me`, {
     method: 'GET',
     headers: myHeaders,
     credentials: 'include'
@@ -28,7 +29,7 @@ export async function getAppKitAuthSession() {
 }
 
 export async function authenticate(payload: { message: string; signature: string }) {
-  return fetch('http://localhost:8787/auth/v1/authenticate', {
+  return fetch(`${ConstantsUtil.APPKIT_AUTH_API_URL}/auth/v1/authenticate`, {
     method: 'POST',
     headers: myHeaders,
     body: JSON.stringify(payload),
@@ -39,7 +40,7 @@ export async function authenticate(payload: { message: string; signature: string
 }
 
 export async function appKitAuthSignOut() {
-  return fetch('http://localhost:8787/auth/v1/sign-out', {
+  return fetch(`${ConstantsUtil.APPKIT_AUTH_API_URL}/auth/v1/sign-out`, {
     method: 'POST',
     headers: myHeaders,
     credentials: 'include'
