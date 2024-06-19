@@ -3,8 +3,8 @@
  * ChainController is a controller that manages the network state with the capabilities of managing multiple chains/protocols.
  */
 import { subscribeKey as subKey } from 'valtio/utils'
-import { proxy, subscribe as sub } from 'valtio/vanilla'
-import type { CaipNetwork, CaipNetworkId, ChainAdapter } from '../utils/TypeUtil.js'
+import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
+import type { CaipNetwork, CaipNetworkId, ChainAdapter, Connector } from '../utils/TypeUtil.js'
 import { ModalController } from './ModalController.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { type NetworkControllerClient, type NetworkControllerState } from './NetworkController.js'
@@ -26,6 +26,7 @@ export interface ChainControllerState {
   activeChain: 'evm' | 'solana' | undefined
   activeCaipNetwork?: CaipNetwork
   chains: Record<Chain, ChainAdapter>
+  activeConnector?: Connector
 }
 
 type StateKey = keyof ChainControllerState
@@ -194,6 +195,12 @@ export const ChainController = {
     state.activeCaipNetwork = caipNetwork
     state.activeChain = chain
     PublicStateController.set({ activeChain: chain })
+  },
+
+  setActiveConnector(connector: ChainControllerState['activeConnector']) {
+    if (connector) {
+      state.activeConnector = ref(connector)
+    }
   },
 
   setRequestedCaipNetworks(requestedNetworks: ChainOptions['requestedCaipNetworks'], chain: Chain) {
