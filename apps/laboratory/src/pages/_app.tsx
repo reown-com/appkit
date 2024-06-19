@@ -20,7 +20,6 @@ export default function App({
 }: AppProps<{
   session: Session
 }>) {
-  
   useEffect(() => {
     window.Telegram?.WebApp.ready()
   }, [])
