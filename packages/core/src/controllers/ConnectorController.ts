@@ -53,7 +53,6 @@ export const ConnectorController = {
           if (existingConnector?.chain === chain || existingConnector.type === type) {
             mergedConnectors.push({ ...connector })
           } else if (existingConnector.type !== 'MULTI_CHAIN') {
-            console.log(existingConnector.chain, chain, existingConnector.type, type, name)
             mergedConnectors[existingConnectorIndex] = {
               ...existingConnector,
               type: 'MULTI_CHAIN',

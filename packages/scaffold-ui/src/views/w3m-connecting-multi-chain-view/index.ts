@@ -85,8 +85,6 @@ export class W3mConnectingMultiChainView extends LitElement {
 
     const networks: CaipNetwork[] | null | undefined = []
 
-    console.log(sortedNetworks)
-
     if (chains.evm) {
       const network = sortedNetworks.find(element => element.name === 'Ethereum')
       if (network) {
