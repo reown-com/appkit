@@ -27,6 +27,7 @@ export interface RouterControllerState {
     | 'ConnectingWalletConnect'
     | 'ConnectingSiwe'
     | 'ConnectingSocial'
+    | 'ConnectingMultiChain'
     | 'ConnectSocials'
     | 'ConnectWallets'
     | 'Downloads'
