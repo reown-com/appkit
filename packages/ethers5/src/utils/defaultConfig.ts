@@ -14,14 +14,7 @@ export interface ConfigOptions {
 }
 
 export function defaultConfig(options: ConfigOptions) {
-  const {
-    enableEIP6963 = true,
-    enableInjected = true,
-    enableCoinbase = true,
-    metadata,
-    rpcUrl,
-    defaultChainId
-  } = options
+  const { enableEIP6963 = true, enableInjected = true, enableCoinbase = true, metadata } = options
 
   let injectedProvider: Provider | undefined = undefined
   // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
@@ -78,7 +71,7 @@ export function defaultConfig(options: ConfigOptions) {
     return coinbaseProvider
   }
 
-  if (enableCoinbase && rpcUrl && defaultChainId) {
+  if (enableCoinbase) {
     providers.coinbase = getCoinbaseProvider()
   }
 
