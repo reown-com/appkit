@@ -74,16 +74,14 @@ export const ConnectionController = {
     return subKey(state, key, callback)
   },
 
-  _getClient(_chain?: Chain) {
-    const chain = ChainController.state.activeChain
+  _getClient() {
     if (ChainController.state.multiChainEnabled) {
-      if (!chain) {
-        throw new Error('ConnectionController chain not set')
+      const client = ChainController.getConnectionControllerClient()
+
+      if (!client) {
+        throw new Error('ConnectionController client not set')
       }
 
-      const client = ChainController.getConnectionControllerClient(
-        chain
-      ) as ConnectionControllerClient
       return client
     }
 
@@ -98,10 +96,8 @@ export const ConnectionController = {
     state._client = ref(client)
   },
 
-  connectWalletConnect(chain?: Chain) {
-    console.log('>>> [ConnectionController] connectWalletConnect()', chain)
-    state.wcPromise = this._getClient(chain).connectWalletConnect(uri => {
-      console.log('>>> [ConnectionController] connectWalletConnect() uri', uri)
+  connectWalletConnect() {
+    state.wcPromise = this._getClient().connectWalletConnect(uri => {
       state.wcUri = uri
       state.wcPairingExpiry = CoreHelperUtil.getPairingExpiry()
     })
@@ -109,15 +105,13 @@ export const ConnectionController = {
   },
 
   async connectExternal(options: ConnectExternalOptions, chain?: Chain) {
-    console.log('>>> [ConnectionController] connectExternal()', chain)
-    await this._getClient(chain).connectExternal?.(options)
+    await this._getClient().connectExternal?.(options)
     ChainController.setActiveChain(chain)
     StorageUtil.setConnectedConnector(options.type)
   },
 
   async reconnectExternal(options: ConnectExternalOptions, chain?: Chain) {
-    console.log('>>> [ConnectionController] reconnectExternal()', chain)
-    await this._getClient(chain).reconnectExternal?.(options)
+    await this._getClient().reconnectExternal?.(options)
     StorageUtil.setConnectedConnector(options.type)
   },
 
@@ -141,36 +135,36 @@ export const ConnectionController = {
     return this._getClient().signMessage(message)
   },
 
-  parseUnits(value: string, decimals: number, chain?: Chain) {
-    return this._getClient(chain).parseUnits(value, decimals)
+  parseUnits(value: string, decimals: number) {
+    return this._getClient().parseUnits(value, decimals)
   },
 
-  formatUnits(value: bigint, decimals: number, chain?: Chain) {
-    return this._getClient(chain).formatUnits(value, decimals)
+  formatUnits(value: bigint, decimals: number) {
+    return this._getClient().formatUnits(value, decimals)
   },
 
-  async sendTransaction(args: SendTransactionArgs, chain?: Chain) {
-    return this._getClient(chain).sendTransaction(args)
+  async sendTransaction(args: SendTransactionArgs) {
+    return this._getClient().sendTransaction(args)
   },
 
-  async estimateGas(args: EstimateGasTransactionArgs, chain?: Chain) {
-    return this._getClient(chain).estimateGas(args)
+  async estimateGas(args: EstimateGasTransactionArgs) {
+    return this._getClient().estimateGas(args)
   },
 
-  async writeContract(args: WriteContractArgs, chain?: Chain) {
-    return this._getClient(chain).writeContract(args)
+  async writeContract(args: WriteContractArgs) {
+    return this._getClient().writeContract(args)
   },
 
-  async getEnsAddress(value: string, chain?: Chain) {
-    return this._getClient(chain).getEnsAddress(value)
+  async getEnsAddress(value: string) {
+    return this._getClient().getEnsAddress(value)
   },
 
-  async getEnsAvatar(value: string, chain?: Chain) {
-    return this._getClient(chain).getEnsAvatar(value)
+  async getEnsAvatar(value: string) {
+    return this._getClient().getEnsAvatar(value)
   },
 
-  checkInstalled(ids?: string[], chain?: Chain) {
-    return this._getClient(chain).checkInstalled?.(ids) || false
+  checkInstalled(ids?: string[]) {
+    return this._getClient().checkInstalled?.(ids) || false
   },
 
   resetWcConnection() {
@@ -201,11 +195,12 @@ export const ConnectionController = {
   },
 
   async disconnect() {
-    const chain = ChainController.state.activeChain
-    const client = this._getClient(chain)
+    const client = this._getClient()
+
     try {
       await client.disconnect()
       StorageUtil.removeConnectedWalletImageUrl()
+      this.resetWcConnection()
     } catch (error) {
       throw new Error('Failed to disconnect')
     }

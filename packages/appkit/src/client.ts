@@ -192,8 +192,8 @@ export class AppKit {
     chain: Chain
   ) => NetworkController.setApprovedCaipNetworksData(chain)
 
-  public resetNetwork = (chain: Chain) => {
-    NetworkController.resetNetwork(chain)
+  public resetNetwork = () => {
+    NetworkController.resetNetwork()
   }
 
   public setConnectors: (typeof ConnectorController)['setConnectors'] = connectors => {
