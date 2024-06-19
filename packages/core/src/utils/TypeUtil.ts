@@ -47,7 +47,13 @@ export type ProjectId = string
 
 export type Platform = 'mobile' | 'desktop' | 'browser' | 'web' | 'qrcode' | 'unsupported'
 
-export type ConnectorType = 'EXTERNAL' | 'WALLET_CONNECT' | 'INJECTED' | 'ANNOUNCED' | 'AUTH'
+export type ConnectorType =
+  | 'EXTERNAL'
+  | 'WALLET_CONNECT'
+  | 'INJECTED'
+  | 'ANNOUNCED'
+  | 'AUTH'
+  | 'MULTI_CHAIN'
 
 export type SocialProvider = 'google' | 'github' | 'apple' | 'facebook' | 'x' | 'discord'
 
@@ -70,6 +76,7 @@ export type Connector = {
   showWallets?: boolean
   chain: Chain
   walletFeatures?: boolean
+  providers?: Connector[]
 }
 
 export interface AuthConnector extends Connector {
@@ -811,6 +818,7 @@ export type ChainAdapter = Partial<NetworkControllerState> & {
   networkControllerClient?: NetworkControllerClient
   accountState: AccountControllerState
   chain: Chain
+
   construct?: (scaffold: any, options: OptionsControllerState) => void
   initialize?: () => void
 }

@@ -52,7 +52,7 @@ const modal = createAppKit({
   privacyPolicyUrl: 'https://walletconnect.com/privacy',
   isSiweEnabled: false,
   enableOnramp: true,
-  customWallets: ConstantsUtil.CustomWallets,
+  // customWallets: ConstantsUtil.CustomWallets,
   enableWalletFeatures: true
 })
 

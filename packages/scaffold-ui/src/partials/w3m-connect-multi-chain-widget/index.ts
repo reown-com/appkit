@@ -1,19 +1,12 @@
 import type { Connector } from '@web3modal/core'
-import {
-  ApiController,
-  AssetUtil,
-  ConnectionController,
-  ConnectorController,
-  CoreHelperUtil,
-  RouterController
-} from '@web3modal/core'
+import { AssetUtil, ChainController, ConnectorController, RouterController } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-@customElement('w3m-connect-injected-widget')
-export class W3mConnectInjectedWidget extends LitElement {
+@customElement('w3m-connect-multi-chain-widget')
+export class W3mConnectMultiChainWidget extends LitElement {
   // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
 
@@ -33,14 +26,11 @@ export class W3mConnectInjectedWidget extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const injectedConnectors = this.connectors.filter(connector => connector.type === 'INJECTED')
+    const multiChainConnectors = this.connectors.filter(
+      connector => connector.type === 'MULTI_CHAIN'
+    )
 
-    if (
-      !injectedConnectors?.length ||
-      (injectedConnectors.length === 1 &&
-        injectedConnectors[0]?.name === 'Browser Wallet' &&
-        !CoreHelperUtil.isMobile())
-    ) {
+    if (!multiChainConnectors?.length) {
       this.style.cssText = `display: none`
 
       return null
@@ -48,30 +38,13 @@ export class W3mConnectInjectedWidget extends LitElement {
 
     return html`
       <wui-flex flexDirection="column" gap="xs">
-        ${injectedConnectors.map(connector => {
-          if (!CoreHelperUtil.isMobile() && connector.name === 'Browser Wallet') {
-            return null
-          }
-
-          if (!ConnectionController.checkInstalled()) {
-            this.style.cssText = `display: none`
-
-            return null
-          }
-
-          if (connector.info?.rdns && ApiController.state.excludedRDNS) {
-            if (ApiController.state.excludedRDNS.includes(connector?.info?.rdns)) {
-              return null
-            }
-          }
-
+        ${multiChainConnectors.map(connector => {
           return html`
             <wui-list-wallet
               imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
-              .installed=${true}
               name=${connector.name ?? 'Unknown'}
-              tagVariant="success"
-              tagLabel="installed"
+              tagVariant="shade"
+              tagLabel="multi-chain"
               data-testid=${`wallet-selector-${connector.id}`}
               @click=${() => this.onConnector(connector)}
             >
@@ -84,12 +57,13 @@ export class W3mConnectInjectedWidget extends LitElement {
 
   // -- Private Methods ----------------------------------- //
   private onConnector(connector: Connector) {
-    RouterController.push('ConnectingExternal', { connector })
+    ChainController.setActiveConnector(connector)
+    RouterController.push('ConnectingMultiChain', { connector })
   }
 }
 
 declare global {
   interface HTMLElementTagNameMap {
-    'w3m-connect-injected-widget': W3mConnectInjectedWidget
+    'w3m-connect-multi-chain-widget': W3mConnectMultiChainWidget
   }
 }

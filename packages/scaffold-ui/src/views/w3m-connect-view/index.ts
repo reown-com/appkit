@@ -47,6 +47,7 @@ export class W3mConnectView extends LitElement {
           <wui-flex flexDirection="column" gap="xs" .margin=${['xs', '0', '0', '0'] as const}>
             <w3m-connect-walletconnect-widget></w3m-connect-walletconnect-widget>
             <w3m-connect-recent-widget></w3m-connect-recent-widget>
+            <w3m-connect-multi-chain-widget></w3m-connect-multi-chain-widget>
             <w3m-connect-announced-widget></w3m-connect-announced-widget>
             <w3m-connect-injected-widget></w3m-connect-injected-widget>
             <w3m-connect-featured-widget></w3m-connect-featured-widget>

@@ -1,6 +1,7 @@
 import type { RouterControllerState } from '@web3modal/core'
 import {
   AccountController,
+  ChainController,
   ConnectionController,
   ConnectorController,
   EventsController,
@@ -71,7 +72,8 @@ function headings() {
     ConnectingSocial: AccountController.getProperty('socialProvider')
       ? AccountController.getProperty('socialProvider')
       : 'Connect Social',
-    SelectChain: ''
+    SelectChain: '',
+    ConnectingMultiChain: ChainController.state.activeConnector?.name ?? 'Wallet'
   }
 }
 

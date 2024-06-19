@@ -28,9 +28,45 @@ export const ConnectorController = {
   setConnectors(connectors: ConnectorControllerState['connectors'], multiChain?: boolean) {
     if (multiChain) {
       state.connectors = [...state.connectors, ...connectors.map(c => ref(c))]
+
+      state.connectors = this.mergeMultiChainConnectors(state.connectors)
     } else {
       state.connectors = connectors.map(c => ref(c))
     }
+  },
+
+  mergeMultiChainConnectors(connectors: ConnectorControllerState['connectors']) {
+    const mergedConnectors: Connector[] = []
+
+    connectors.forEach(connector => {
+      const { name, chain, type } = connector
+
+      const existingConnectorIndex = mergedConnectors.findIndex(
+        existingConnector => existingConnector.name === name
+      )
+
+      if (existingConnectorIndex === -1) {
+        mergedConnectors.push({ ...connector })
+      } else {
+        const existingConnector = mergedConnectors[existingConnectorIndex]
+        if (existingConnector) {
+          if (existingConnector?.chain === chain || existingConnector.type === type) {
+            mergedConnectors.push({ ...connector })
+          } else if (existingConnector.type !== 'MULTI_CHAIN') {
+            console.log(existingConnector.chain, chain, existingConnector.type, type, name)
+            mergedConnectors[existingConnectorIndex] = {
+              ...existingConnector,
+              type: 'MULTI_CHAIN',
+              providers: [existingConnector, connector]
+            }
+          } else {
+            mergedConnectors.push({ ...connector })
+          }
+        }
+      }
+    })
+
+    return mergedConnectors
   },
 
   addConnector(connector: Connector | AuthConnector) {
