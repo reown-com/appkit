@@ -30,6 +30,7 @@ export default function Wagmi() {
   return (
     <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
+        TTTTTTTTelegram?
         <Web3ModalButtons />
         <WagmiModalInfo />
         <WagmiTests />
