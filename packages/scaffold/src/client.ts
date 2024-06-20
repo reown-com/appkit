@@ -55,6 +55,7 @@ export interface LibraryOptions {
   disableAppend?: OptionsControllerState['disableAppend']
   allowUnsupportedChain?: NetworkControllerState['allowUnsupportedChain']
   _sdkVersion: OptionsControllerState['sdkVersion']
+  enableEIP6963?: OptionsControllerState['enableEIP6963']
 }
 
 export interface ScaffoldOptions extends LibraryOptions {
@@ -288,6 +289,8 @@ export class Web3ModalScaffold {
     OptionsController.setSdkVersion(options._sdkVersion)
     // Enabled by default
     OptionsController.setOnrampEnabled(options.enableOnramp !== false)
+
+    OptionsController.setEnableEIP6963(options.enableEIP6963 !== false)
 
     if (options.metadata) {
       OptionsController.setMetadata(options.metadata)

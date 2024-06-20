@@ -384,15 +384,14 @@ export class Web3Modal extends Web3ModalScaffold {
       this.checkActiveInjectedProvider(ethersConfig)
     }
 
-    if (ethersConfig.EIP6963) {
-      if (typeof window !== 'undefined') {
-        this.listenConnectors(ethersConfig.EIP6963)
-        this.checkActive6963Provider()
-      }
-    }
-
     if (ethersConfig.coinbase) {
       this.checkActiveCoinbaseProvider(ethersConfig)
+    }
+
+    // Setup EIP6963 providers
+    if (typeof window !== 'undefined') {
+      this.listenConnectors(true)
+      this.checkActive6963Provider()
     }
   }
 
