@@ -210,7 +210,7 @@ export class SolanaWeb3JsClient {
 
     // INFO(enes): This is a workaround to sync the network when the chain is changed.
     ChainController.subscribe(() => {
-      const caipNetwork = NetworkController.activeNetwork()
+      const caipNetwork = ChainController.activeNetwork()
       if (
         caipNetwork &&
         !SolStoreUtil.state.isConnected &&

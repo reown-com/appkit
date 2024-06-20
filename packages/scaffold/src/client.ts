@@ -26,7 +26,8 @@ import {
   ThemeController,
   SnackController,
   RouterController,
-  EnsController
+  EnsController,
+  ChainController
 } from '@web3modal/core'
 import { setColorTheme, setThemeVariables } from '@web3modal/ui'
 import type { SIWEControllerClient } from '@web3modal/siwe'
@@ -275,6 +276,27 @@ export class Web3ModalScaffold {
 
   // -- Private ------------------------------------------------------------------
   private async initControllers(options: ScaffoldOptions) {
+    ChainController.initialize(
+      [
+        {
+          networkControllerClient: options.networkControllerClient,
+          connectionControllerClient: options.connectionControllerClient,
+          chain: 'evm',
+          accountState: {
+            isConnected: false,
+            currentTab: 0,
+            tokenBalance: [],
+            smartAccountDeployed: false
+          },
+          networkState: {
+            supportsAllNetworks: true,
+            isDefaultCaipNetwork: false,
+            smartAccountEnabledNetworks: []
+          }
+        }
+      ],
+      false
+    )
     NetworkController.setClient(options.networkControllerClient)
     NetworkController.setDefaultCaipNetwork(options.defaultChain)
 

@@ -51,6 +51,9 @@ export class W3mAccountDefaultWidget extends LitElement {
           const accountState = val.activeChain
             ? val.chains[val.activeChain]?.accountState
             : undefined
+          const networkState = val.activeChain
+            ? val.chains[val.activeChain]?.networkState
+            : undefined
           if (accountState?.address) {
             this.address = accountState.address
             this.profileImage = accountState.profileImage
@@ -60,13 +63,11 @@ export class W3mAccountDefaultWidget extends LitElement {
           } else if (!this.disconnecting) {
             SnackController.showError('Account not found')
           }
+          if (networkState?.caipNetwork?.id) {
+            this.network = networkState.caipNetwork
+          }
         })
-      ],
-      NetworkController.subscribeKey('caipNetwork', val => {
-        if (val?.id) {
-          this.network = val
-        }
-      })
+      ]
     )
   }
 
@@ -224,7 +225,7 @@ export class W3mAccountDefaultWidget extends LitElement {
   }
 
   private isAllowedNetworkSwitch() {
-    const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
+    const requestedCaipNetworks = ChainController.getRequestedCaipNetworks()
     const isMultiNetwork = requestedCaipNetworks ? requestedCaipNetworks.length > 1 : false
     const isValidNetwork = requestedCaipNetworks?.find(({ id }) => id === this.network?.id)
 

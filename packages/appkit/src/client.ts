@@ -176,16 +176,16 @@ export class AppKit {
   }
 
   public setCaipNetwork: (typeof ChainController)['setCaipNetwork'] = caipNetwork => {
-    NetworkController.setCaipNetwork(caipNetwork)
+    ChainController.setCaipNetwork(caipNetwork)
   }
 
-  public getCaipNetwork = () => NetworkController.activeNetwork()
+  public getCaipNetwork = () => ChainController.activeNetwork()
 
   public setRequestedCaipNetworks: (typeof ChainController)['setRequestedCaipNetworks'] = (
     requestedCaipNetworks,
     chain
   ) => {
-    NetworkController.setRequestedCaipNetworks(requestedCaipNetworks, chain)
+    ChainController.setRequestedCaipNetworks(requestedCaipNetworks, chain)
   }
 
   public setApprovedCaipNetworksData: (typeof NetworkController)['setApprovedCaipNetworksData'] = (
@@ -193,7 +193,7 @@ export class AppKit {
   ) => NetworkController.setApprovedCaipNetworksData(chain)
 
   public resetNetwork = () => {
-    NetworkController.resetNetwork()
+    ChainController.resetNetwork()
   }
 
   public setConnectors: (typeof ConnectorController)['setConnectors'] = connectors => {
@@ -237,7 +237,7 @@ export class AppKit {
 
   public setSmartAccountEnabledNetworks: (typeof NetworkController)['setSmartAccountEnabledNetworks'] =
     (smartAccountEnabledNetworks, chain) => {
-      NetworkController.setSmartAccountEnabledNetworks(smartAccountEnabledNetworks, chain)
+      ChainController.setSmartAccountEnabledNetworks(smartAccountEnabledNetworks, chain)
     }
 
   public setPreferredAccountType: (typeof AccountController)['setPreferredAccountType'] =
@@ -258,11 +258,14 @@ export class AppKit {
 
   // -- Private ------------------------------------------------------------------
   private async initControllers(options: OptionsControllerState) {
+    ChainController.setMultiChainEnabled(true)
+
+    ChainController.initialize(options.adapters || [])
+
     options.adapters?.forEach(adapter => {
       adapter.construct?.(this, options)
     })
 
-    ChainController.initialize(options.adapters || [])
     OptionsController.setOptions(options)
 
     if (options.themeMode) {

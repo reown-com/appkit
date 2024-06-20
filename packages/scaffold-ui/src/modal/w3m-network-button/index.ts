@@ -29,7 +29,7 @@ export class W3mNetworkButton extends LitElement {
 
   @state() private loading = ModalController.state.loading
 
-  @state() private isUnsupportedChain = NetworkController.state.isUnsupportedChain
+  @state() private isUnsupportedChain = NetworkController.getProperty('isUnsupportedChain')
 
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
@@ -37,18 +37,17 @@ export class W3mNetworkButton extends LitElement {
     this.unsubscribe.push(
       ...[
         ChainController.subscribe(val => {
-          const chain = val.activeChain ? val.chains[val.activeChain] : undefined
           const accountState = val.activeChain
             ? val.chains[val.activeChain]?.accountState
             : undefined
+          const networkState = val.activeChain
+            ? val.chains[val.activeChain]?.networkState
+            : undefined
           this.connected = accountState?.isConnected || false
-          this.network = chain?.caipNetwork || undefined
+          this.network = networkState?.caipNetwork || undefined
+          this.isUnsupportedChain = networkState?.isUnsupportedChain
         }),
-        ModalController.subscribeKey('loading', val => (this.loading = val)),
-        NetworkController.subscribeKey(
-          'isUnsupportedChain',
-          val => (this.isUnsupportedChain = val || false)
-        )
+        ModalController.subscribeKey('loading', val => (this.loading = val))
       ]
     )
   }

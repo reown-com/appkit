@@ -817,6 +817,7 @@ export type ChainAdapter = Partial<NetworkControllerState> & {
   connectionControllerClient?: ConnectionControllerClient
   networkControllerClient?: NetworkControllerClient
   accountState: AccountControllerState
+  networkState: NetworkControllerState
   chain: Chain
 
   construct?: (scaffold: any, options: OptionsControllerState) => void

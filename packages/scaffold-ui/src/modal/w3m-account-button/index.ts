@@ -39,7 +39,7 @@ export class W3mAccountButton extends LitElement {
 
   @state() private network = NetworkController.activeNetwork()
 
-  @state() private isUnsupportedChain = NetworkController.state.isUnsupportedChain
+  @state() private isUnsupportedChain = NetworkController.getProperty('isUnsupportedChain')
 
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
@@ -49,6 +49,9 @@ export class W3mAccountButton extends LitElement {
         ChainController.subscribe(val => {
           const accountState = val.activeChain
             ? val.chains[val.activeChain]?.accountState
+            : undefined
+          const networkState = val.activeChain
+            ? val.chains[val.activeChain]?.networkState
             : undefined
           if (accountState && accountState.isConnected) {
             this.address = accountState.address
@@ -63,10 +66,8 @@ export class W3mAccountButton extends LitElement {
             this.profileImage = ''
             this.balanceSymbol = ''
           }
-        }),
-        NetworkController.subscribe(val => {
           this.network = NetworkController.activeNetwork()
-          this.isUnsupportedChain = val.isUnsupportedChain || false
+          this.isUnsupportedChain = networkState?.isUnsupportedChain || false
         })
       ]
     )

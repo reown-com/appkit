@@ -53,8 +53,9 @@ export class W3mWalletCompatibleNetworksView extends LitElement {
 
   // -- Private ------------------------------------------- //
   networkTemplate() {
-    const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
-    const { approvedCaipNetworkIds, caipNetwork } = NetworkController.state
+    const requestedCaipNetworks = ChainController.getRequestedCaipNetworks()
+    const approvedCaipNetworkIds = NetworkController.getProperty('approvedCaipNetworkIds')
+    const caipNetwork = NetworkController.getProperty('caipNetwork')
     const isNetworkEnabledForSmartAccounts = NetworkController.checkIfSmartAccountEnabled()
 
     let sortedNetworks = CoreHelperUtil.sortRequestedNetworks(

@@ -110,7 +110,7 @@ export const ConnectionController = {
     StorageUtil.setConnectedConnector(options.type)
   },
 
-  async reconnectExternal(options: ConnectExternalOptions, chain?: Chain) {
+  async reconnectExternal(options: ConnectExternalOptions) {
     await this._getClient().reconnectExternal?.(options)
     StorageUtil.setConnectedConnector(options.type)
   },

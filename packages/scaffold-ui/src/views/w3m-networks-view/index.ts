@@ -2,6 +2,7 @@ import type { CaipNetwork } from '@web3modal/core'
 import {
   AccountController,
   AssetUtil,
+  ChainController,
   CoreHelperUtil,
   EventsController,
   NetworkController,
@@ -23,10 +24,15 @@ export class W3mNetworksView extends LitElement {
   // -- State & Properties -------------------------------- //
   @state() public caipNetwork = NetworkController.activeNetwork()
 
+  @state() public requestedCaipNetworks = ChainController.getRequestedCaipNetworks()
+
   public constructor() {
     super()
     this.unsubscribe.push(
-      NetworkController.subscribeKey('caipNetwork', val => (this.caipNetwork = val))
+      ChainController.subscribe(() => {
+        this.caipNetwork = ChainController.activeNetwork()
+        this.requestedCaipNetworks = ChainController.getRequestedCaipNetworks()
+      })
     )
   }
 
@@ -62,8 +68,9 @@ export class W3mNetworksView extends LitElement {
   }
 
   private networksTemplate() {
-    const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
-    const { approvedCaipNetworkIds, supportsAllNetworks } = NetworkController.state
+    const requestedCaipNetworks = ChainController.getRequestedCaipNetworks()
+    const approvedCaipNetworkIds = NetworkController.getProperty('approvedCaipNetworkIds')
+    const supportsAllNetworks = NetworkController.getProperty('supportsAllNetworks')
 
     const sortedNetworks = CoreHelperUtil.sortRequestedNetworks(
       approvedCaipNetworkIds,
@@ -87,25 +94,17 @@ export class W3mNetworksView extends LitElement {
 
   private async onSwitchNetwork(network: CaipNetwork) {
     const isConnected = AccountController.getProperty('isConnected')
-    const { approvedCaipNetworkIds, supportsAllNetworks, caipNetwork } = NetworkController.state
-    const { data } = RouterController.state
-
-    console.log(
-      '>>> onSwitchNetwork',
-      network,
-      isConnected,
-      approvedCaipNetworkIds,
-      supportsAllNetworks,
-      caipNetwork,
-      data
-    )
+    const approvedCaipNetworkIds = NetworkController.getProperty('approvedCaipNetworkIds')
+    const supportsAllNetworks = NetworkController.getProperty('supportsAllNetworks')
+    const caipNetwork = NetworkController.getProperty('caipNetwork')
+    const routerData = RouterController.state.data
 
     if (isConnected && caipNetwork?.id !== network.id) {
       if (approvedCaipNetworkIds?.includes(network.id)) {
         await NetworkController.switchActiveNetwork(network)
         await NetworkUtil.onNetworkChange()
       } else if (supportsAllNetworks) {
-        RouterController.push('SwitchNetwork', { ...data, network })
+        RouterController.push('SwitchNetwork', { ...routerData, network })
       }
     } else if (!isConnected) {
       NetworkController.setCaipNetwork(network)
