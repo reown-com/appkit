@@ -508,7 +508,7 @@ export class Web3Modal extends Web3ModalScaffold {
       this.checkActive6963Provider()
     }
 
-    this.setEIP6963Enabled(ethersConfig.EIP6963 !== false)
+    this.setEIP6963Enabled(ethersConfig.EIP6963)
 
     if (ethersConfig.injected) {
       this.checkActiveInjectedProvider(ethersConfig)
