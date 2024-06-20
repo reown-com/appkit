@@ -1,8 +1,16 @@
-import { ConnectorController, CoreHelperUtil, StorageUtil, type WcWallet } from '@web3modal/core'
+import {
+  ConnectorController,
+  CoreHelperUtil,
+  OptionsController,
+  StorageUtil,
+  type WcWallet
+} from '@web3modal/core'
 
 export const WalletUtil = {
   filterOutDuplicatesByRDNS(wallets: WcWallet[]) {
-    const connectors = ConnectorController.state.connectors
+    const connectors = OptionsController.state.enableEIP6963
+      ? ConnectorController.state.connectors
+      : []
     const recent = StorageUtil.getRecentWallets()
 
     const connectorRDNSs = connectors

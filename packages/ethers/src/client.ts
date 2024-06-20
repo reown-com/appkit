@@ -141,12 +141,6 @@ export class Web3Modal extends Web3ModalScaffold {
       throw new Error('web3modal:constructor - projectId is undefined')
     }
 
-    if (ethersConfig.EIP6963) {
-      ethersConfig.EIP6963.forEach(provider => {
-        this.EIP6963Providers.push(provider)
-      })
-    }
-
     const networkControllerClient: NetworkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
         const chainId = NetworkUtil.caipNetworkIdToNumber(caipNetwork?.id)
@@ -524,6 +518,10 @@ export class Web3Modal extends Web3ModalScaffold {
 
     if (ethersConfig.coinbase) {
       this.checkActiveCoinbaseProvider(ethersConfig)
+    }
+
+    if (ethersConfig.EIP6963) {
+      this.setEIP6963Enabled(true)
     }
   }
 

@@ -72,8 +72,8 @@ export class W3mConnectorList extends LitElement {
       custom,
       recent,
       coinbase,
-      announced: OptionsController.enableEIP6963 ? announced : [],
-      injected: OptionsController.enableEIP6963 ? injected : [],
+      announced: OptionsController.state.enableEIP6963 ? announced : [],
+      injected: OptionsController.state.enableEIP6963 ? injected : [],
       recommended: filteredRecommended,
       featured: filteredFeatured
     }

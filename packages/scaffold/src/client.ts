@@ -271,6 +271,10 @@ export class Web3ModalScaffold {
     return networkNameAddresses[0]?.address || false
   }
 
+  protected setEIP6963Enabled: (typeof OptionsController)['setEIP6963Enabled'] = enabled => {
+    OptionsController.setEIP6963Enabled(enabled)
+  }
+
   // -- Private ------------------------------------------------------------------
   private async initControllers(options: ScaffoldOptions) {
     NetworkController.setClient(options.networkControllerClient)
@@ -289,8 +293,6 @@ export class Web3ModalScaffold {
     OptionsController.setSdkVersion(options._sdkVersion)
     // Enabled by default
     OptionsController.setOnrampEnabled(options.enableOnramp !== false)
-
-    OptionsController.setEnableEIP6963(options.enableEIP6963 !== false)
 
     if (options.metadata) {
       OptionsController.setMetadata(options.metadata)

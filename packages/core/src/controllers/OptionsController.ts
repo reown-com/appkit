@@ -104,7 +104,7 @@ export const OptionsController = {
     state.disableAppend = disableAppend
   },
 
-  setEnableEIP6963(enableEIP6963: OptionsControllerState['enableEIP6963']) {
+  setEIP6963Enabled(enableEIP6963: OptionsControllerState['enableEIP6963']) {
     state.enableEIP6963 = enableEIP6963
   },
 
