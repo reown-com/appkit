@@ -52,8 +52,7 @@
     "valtio": "1.11.2",
     "viem": "2.10.3",
     "wagmi": "2.9.10",
-    "@wagmi/connectors": "5.0.8",
-    "rpc-websockets": "7.11.0"
+    "@wagmi/connectors": "5.0.8"
   },
   "devDependencies": {
     "@aws-sdk/client-cloudwatch": "3.509.0",
