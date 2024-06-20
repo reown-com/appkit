@@ -29,7 +29,7 @@ export class W3mConnectorList extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const { custom, recent, announced, coinbase, injected, recommended, featured } =
+    const { custom, recent, announced, coinbase, injected, recommended, featured, external } =
       this.getConnectorsByType()
 
     return html`
@@ -47,6 +47,9 @@ export class W3mConnectorList extends LitElement {
           : null}
         ${custom?.length ? html`<w3m-connect-custom-widget></w3m-connect-custom-widget>` : null}
         ${coinbase ? html`<w3m-connect-coinbase-widget></w3m-connect-coinbase-widget>` : null}
+        ${external.length
+          ? html`<w3m-connect-external-widget></w3m-connect-external-widget>`
+          : null}
         ${recommended.length
           ? html`<w3m-connect-recommended-widget></w3m-connect-recommended-widget>`
           : null}
@@ -64,6 +67,7 @@ export class W3mConnectorList extends LitElement {
 
     const announced = this.connectors.filter(connector => connector.type === 'ANNOUNCED')
     const injected = this.connectors.filter(connector => connector.type === 'INJECTED')
+    const external = this.connectors.filter(connector => connector.type === 'EXTERNAL')
     const coinbase = this.connectors.find(
       connector => connector.id === ConstantsUtil.COINBASE_SDK_CONNECTOR_ID
     )
@@ -74,6 +78,7 @@ export class W3mConnectorList extends LitElement {
       announced,
       coinbase,
       injected,
+      external,
       recommended: filteredRecommended,
       featured: filteredFeatured
     }
