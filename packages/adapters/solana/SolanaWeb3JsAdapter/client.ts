@@ -5,7 +5,6 @@ import {
   ChainController,
   CoreHelperUtil,
   EventsController,
-  NetworkController,
   OptionsController
 } from '@web3modal/core'
 import type { OptionsControllerState } from '@web3modal/core'
