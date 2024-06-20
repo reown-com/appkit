@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/ethers5",
-  "version": "5.0.2",
+  "version": "5.0.3",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -43,14 +43,14 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@coinbase/wallet-sdk": "4.0.0",
+    "@coinbase/wallet-sdk": "4.0.3",
     "@walletconnect/ethereum-provider": "2.13.0",
-    "@web3modal/polyfills": "5.0.2",
-    "@web3modal/scaffold": "5.0.2",
-    "@web3modal/scaffold-react": "5.0.2",
-    "@web3modal/scaffold-utils": "5.0.2",
-    "@web3modal/scaffold-vue": "5.0.2",
-    "@web3modal/siwe": "5.0.2",
+    "@web3modal/polyfills": "5.0.3",
+    "@web3modal/scaffold": "5.0.3",
+    "@web3modal/scaffold-react": "5.0.3",
+    "@web3modal/scaffold-utils": "5.0.3",
+    "@web3modal/scaffold-vue": "5.0.3",
+    "@web3modal/siwe": "5.0.3",
     "valtio": "1.11.2"
   },
   "devDependencies": {

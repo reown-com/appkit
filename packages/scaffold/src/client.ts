@@ -55,6 +55,7 @@ export interface LibraryOptions {
   disableAppend?: OptionsControllerState['disableAppend']
   allowUnsupportedChain?: NetworkControllerState['allowUnsupportedChain']
   _sdkVersion: OptionsControllerState['sdkVersion']
+  enableEIP6963?: OptionsControllerState['enableEIP6963']
 }
 
 export interface ScaffoldOptions extends LibraryOptions {
@@ -270,6 +271,10 @@ export class Web3ModalScaffold {
     return networkNameAddresses[0]?.address || false
   }
 
+  protected setEIP6963Enabled: (typeof OptionsController)['setEIP6963Enabled'] = enabled => {
+    OptionsController.setEIP6963Enabled(enabled)
+  }
+
   // -- Private ------------------------------------------------------------------
   private async initControllers(options: ScaffoldOptions) {
     NetworkController.setClient(options.networkControllerClient)
@@ -322,7 +327,7 @@ export class Web3ModalScaffold {
     if (!this.initPromise && !isInitialized && CoreHelperUtil.isClient()) {
       isInitialized = true
       this.initPromise = new Promise<void>(async resolve => {
-        await Promise.all([import('@web3modal/ui'), import('./modal/w3m-modal/index.js')])
+        await Promise.all([import('@web3modal/ui'), import('@web3modal/scaffold-ui/w3m-modal')])
         const modal = document.createElement('w3m-modal')
         if (!OptionsController.state.disableAppend) {
           document.body.insertAdjacentElement('beforeend', modal)
