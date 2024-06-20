@@ -310,7 +310,7 @@ export const ChainController = {
 
   setSmartAccountEnabledNetworks(
     smartAccountEnabledNetworks: NetworkControllerState['smartAccountEnabledNetworks'],
-    chain: Chain
+    chain?: Chain
   ) {
     const chainToWrite = state.multiChainEnabled ? chain : 'evm'
 
