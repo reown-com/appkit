@@ -1,5 +1,5 @@
 import type { WcWallet } from '@web3modal/core'
-import { ApiController, AssetUtil, RouterController } from '@web3modal/core'
+import { ApiController, AssetUtil, ConnectorController, RouterController } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -43,7 +43,12 @@ export class W3mConnectFeaturedWidget extends LitElement {
 
   // -- Private Methods ----------------------------------- //
   private onConnectWallet(wallet: WcWallet) {
-    RouterController.push('ConnectingWalletConnect', { wallet })
+    const connector = ConnectorController.getConnector(wallet.id, wallet.rdns)
+    if (connector) {
+      RouterController.push('ConnectingExternal', { connector })
+    } else {
+      RouterController.push('ConnectingWalletConnect', { wallet })
+    }
   }
 }
 

@@ -502,12 +502,13 @@ export class Web3Modal extends Web3ModalScaffold {
     this.syncRequestedNetworks(chains, chainImages)
     this.syncConnectors(ethersConfig)
 
-    if (ethersConfig.EIP6963) {
-      if (typeof window !== 'undefined') {
-        this.listenConnectors(ethersConfig.EIP6963)
-        this.checkActive6963Provider()
-      }
+    // Setup EIP6963 providers
+    if (typeof window !== 'undefined') {
+      this.listenConnectors(true)
+      this.checkActive6963Provider()
     }
+
+    this.setEIP6963Enabled(ethersConfig.EIP6963 !== false)
 
     if (ethersConfig.injected) {
       this.checkActiveInjectedProvider(ethersConfig)
