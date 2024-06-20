@@ -266,6 +266,8 @@ export class AppKit {
       adapter.construct?.(this, options)
     })
 
+    ChainController.initializeDefaultNetwork()
+
     OptionsController.setOptions(options)
 
     if (options.themeMode) {

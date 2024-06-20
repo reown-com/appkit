@@ -108,17 +108,19 @@ export const ChainController = {
     state.activeChain = firstChainToActivate
 
     adapters.forEach((adapter: ChainAdapter) => {
-      console.log('>>> [ChainController.initialize]', adapter.chain)
       state.chains[adapter.chain].connectionControllerClient = adapter.connectionControllerClient
       state.chains[adapter.chain].networkControllerClient = adapter.networkControllerClient
       state.chains[adapter.chain].accountState = accountState
       state.chains[adapter.chain].networkState = networkState
     })
+  },
 
-    // const networks = this.getRequestedCaipNetworks()
-    // if (networks.length > 0) {
-    //   this.setCaipNetwork(networks[0])
-    // }
+  initializeDefaultNetwork() {
+    const networks = this.getRequestedCaipNetworks()
+
+    if (networks.length > 0) {
+      this.setCaipNetwork(networks[0])
+    }
   },
 
   getAccountProp(prop: keyof AccountControllerState) {
@@ -326,6 +328,7 @@ export const ChainController = {
     requestedNetworks: ChainOptions['requestedCaipNetworks'],
     chain?: Chain
   ) {
+    console.log('setRequestedCaipNetworks', requestedNetworks)
     const chainToWrite = state.multiChainEnabled ? chain : 'evm'
 
     if (!chainToWrite) {
@@ -336,10 +339,6 @@ export const ChainController = {
       ...state.chains[chainToWrite].networkState,
       requestedCaipNetworks: requestedNetworks
     }
-    console.log(
-      `>>> [state.chains[${chainToWrite}].networkState]`,
-      state.chains[chainToWrite].networkState
-    )
   },
 
   getRequestedCaipNetworks(filteredChain?: Chain) {
@@ -365,7 +364,6 @@ export const ChainController = {
     const requestedNetworks: CaipNetwork[] = []
 
     chainAdapters.forEach((chn: Chain) => {
-      console.log(`>>> read [state.chains[${chn}].networkState]`, state.chains[chn].networkState)
       if (state.chains[chn].networkState.approvedCaipNetworkIds) {
         approvedIds.push(...(state.chains[chn].networkState?.approvedCaipNetworkIds || []))
       }
@@ -461,12 +459,7 @@ export const ChainController = {
     const activeCaipNetwork = state.chains[chainToWrite].networkState.caipNetwork
 
     const requestedCaipNetworks = this.getRequestedCaipNetworks()
-    console.log(
-      '>>> [ChainController.checkIfSupportedNetwork]',
-      chainToWrite,
-      activeCaipNetwork,
-      requestedCaipNetworks
-    )
+
     return requestedCaipNetworks?.some(network => network.id === activeCaipNetwork?.id)
       ? false
       : true

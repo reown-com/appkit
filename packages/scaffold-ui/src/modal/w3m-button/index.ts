@@ -40,7 +40,6 @@ export class W3mButton extends LitElement {
       ChainController.subscribe(val => {
         const accountState = val.activeChain ? val.chains[val.activeChain]?.accountState : undefined
         this.isAccount = accountState?.isConnected || false
-        console.log('>>> val.chains', val.chains)
       }),
       ModalController.subscribeKey('loading', val => {
         this.isLoading = val
