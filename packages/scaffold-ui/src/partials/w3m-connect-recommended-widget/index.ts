@@ -3,7 +3,7 @@ import {
   ApiController,
   AssetUtil,
   ConnectorController,
-  CoreHelperUtil,
+  OptionsController,
   RouterController,
   StorageUtil
 } from '@web3modal/core'
@@ -11,9 +11,10 @@ import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
+import { WalletUtil } from '../../utils/WalletUtil.js'
 
-@customElement('w3m-connect-featured-widget')
-export class W3mConnectFeaturedWidget extends LitElement {
+@customElement('w3m-connect-recommended-widget')
+export class W3mConnectRecommendedWidget extends LitElement {
   // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
 
@@ -33,14 +34,33 @@ export class W3mConnectFeaturedWidget extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const { featured } = ApiController.state
-    if (!featured.length) {
+    const connector = this.connectors.find(c => c.type === 'WALLET_CONNECT')
+    if (!connector) {
+      return null
+    }
+    const { recommended } = ApiController.state
+    const { customWallets, featuredWalletIds } = OptionsController.state
+    const { connectors } = ConnectorController.state
+    const recent = StorageUtil.getRecentWallets()
+
+    const injected = connectors.filter(c => c.type === 'INJECTED' || c.type === 'ANNOUNCED')
+    const injectedWallets = injected.filter(i => i.name !== 'Browser Wallet')
+
+    if (featuredWalletIds || customWallets || !recommended.length) {
       this.style.cssText = `display: none`
 
       return null
     }
 
-    const wallets = this.filterOutDuplicateWallets(featured)
+    const overrideLength = injectedWallets.length + recent.length
+
+    const maxRecommended = Math.max(0, 2 - overrideLength)
+    const wallets = WalletUtil.filterOutDuplicateWallets(recommended).slice(0, maxRecommended)
+    if (!wallets.length) {
+      this.style.cssText = `display: none`
+
+      return null
+    }
 
     return html`
       <wui-flex flexDirection="column" gap="xs">
@@ -48,7 +68,7 @@ export class W3mConnectFeaturedWidget extends LitElement {
           wallet => html`
             <wui-list-wallet
               imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
-              name=${wallet.name ?? 'Unknown'}
+              name=${wallet?.name ?? 'Unknown'}
               @click=${() => this.onConnectWallet(wallet)}
             >
             </wui-list-wallet>
@@ -59,31 +79,18 @@ export class W3mConnectFeaturedWidget extends LitElement {
   }
 
   // -- Private Methods ----------------------------------- //
-  private filterOutDuplicateWallets(wallets: WcWallet[]) {
-    const recent = StorageUtil.getRecentWallets()
-
-    const connectorRDNSs = this.connectors
-      .map(connector => connector.info?.rdns)
-      .filter(Boolean) as string[]
-
-    const recentRDNSs = recent.map(wallet => wallet.rdns).filter(Boolean) as string[]
-    const allRDNSs = connectorRDNSs.concat(recentRDNSs)
-    if (allRDNSs.includes('io.metamask.mobile') && CoreHelperUtil.isMobile()) {
-      const index = allRDNSs.indexOf('io.metamask.mobile')
-      allRDNSs[index] = 'io.metamask'
-    }
-    const filtered = wallets.filter(wallet => !allRDNSs.includes(String(wallet?.rdns)))
-
-    return filtered
-  }
-
   private onConnectWallet(wallet: WcWallet) {
-    RouterController.push('ConnectingWalletConnect', { wallet })
+    const connector = ConnectorController.getConnector(wallet.id, wallet.rdns)
+    if (connector) {
+      RouterController.push('ConnectingExternal', { connector })
+    } else {
+      RouterController.push('ConnectingWalletConnect', { wallet })
+    }
   }
 }
 
 declare global {
   interface HTMLElementTagNameMap {
-    'w3m-connect-featured-widget': W3mConnectFeaturedWidget
+    'w3m-connect-recommended-widget': W3mConnectRecommendedWidget
   }
 }

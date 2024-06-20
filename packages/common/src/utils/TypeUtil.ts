@@ -1,3 +1,5 @@
+export type CaipNetworkId = `${string}:${string}`
+
 export type CoinbaseTransactionStatus =
   | 'ONRAMP_TRANSACTION_STATUS_SUCCESS'
   | 'ONRAMP_TRANSACTION_STATUS_IN_PROGRESS'
