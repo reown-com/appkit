@@ -89,7 +89,7 @@
     },
     "build:gallery": {
       "outputs": ["out/**"],
-      "dependsOn": ["^build:client"],
+      "dependsOn": ["^build:client", "^build:ui"],
       "cache": false
     },
     "build:laboratory": {
