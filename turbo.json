@@ -19,6 +19,7 @@
     },
     "build:ui": {
       "outputs": ["dist/**"],
+      "dependsOn": ["^build:common"],
       "cache": false
     },
     "build:wallet": {
