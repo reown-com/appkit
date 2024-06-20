@@ -102,4 +102,9 @@ export class ModalValidator {
 
     expect(isVerified).toBe(true)
   }
+
+  async expectExternalVisible() {
+    const externalConnector = this.page.getByTestId(/^wallet-selector-external/u)
+    await expect(externalConnector).toBeVisible()
+  }
 }
