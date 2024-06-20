@@ -13,7 +13,7 @@
       "outputs": ["dist/**"],
       "cache": false
     },
-    "build:core": {
+    "build:wallet": {
       "outputs": ["dist/**"],
       "cache": false
     },
@@ -22,8 +22,8 @@
       "dependsOn": ["^build:common"],
       "cache": false
     },
-    "build:wallet": {
-      "outputs": ["dist/**"],
+    "build:core": {
+      "outputs": ["dist/**", "^build:common", "^build:wallet"],
       "cache": false
     },
     "build:scaffold-utils": {
