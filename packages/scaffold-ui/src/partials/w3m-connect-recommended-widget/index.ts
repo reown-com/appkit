@@ -80,7 +80,12 @@ export class W3mConnectRecommendedWidget extends LitElement {
 
   // -- Private Methods ----------------------------------- //
   private onConnectWallet(wallet: WcWallet) {
-    RouterController.push('ConnectingWalletConnect', { wallet })
+    const connector = ConnectorController.getConnector(wallet.id, wallet.rdns)
+    if (connector) {
+      RouterController.push('ConnectingExternal', { connector })
+    } else {
+      RouterController.push('ConnectingWalletConnect', { wallet })
+    }
   }
 }
 
