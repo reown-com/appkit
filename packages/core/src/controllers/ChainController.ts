@@ -442,7 +442,7 @@ export const ChainController = {
     }
     state.activeCaipNetwork = network
     state.activeChain = chainToWrite
-    PublicStateController.set({ activeChain: chainToWrite })
+    PublicStateController.set({ activeChain: chainToWrite, selectedNetworkId: network.id })
   },
 
   switchChain(newChain: Chain) {
@@ -461,6 +461,12 @@ export const ChainController = {
     const activeCaipNetwork = state.chains[chainToWrite].networkState.caipNetwork
 
     const requestedCaipNetworks = this.getRequestedCaipNetworks()
+    console.log(
+      '>>> [ChainController.checkIfSupportedNetwork]',
+      chainToWrite,
+      activeCaipNetwork,
+      requestedCaipNetworks
+    )
     return requestedCaipNetworks?.some(network => network.id === activeCaipNetwork?.id)
       ? false
       : true

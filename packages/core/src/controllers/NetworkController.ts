@@ -135,7 +135,11 @@ export const NetworkController = {
   },
 
   checkIfSupportedNetwork() {
-    this.showUnsupportedChainUI()
+    const isUnsupportedChain = ChainController.checkIfSupportedNetwork()
+
+    if (isUnsupportedChain) {
+      this.showUnsupportedChainUI()
+    }
   },
 
   checkIfSmartAccountEnabled() {
