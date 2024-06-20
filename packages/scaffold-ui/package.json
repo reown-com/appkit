@@ -1,16 +1,28 @@
 {
-  "name": "@web3modal/scaffold",
+  "name": "@web3modal/scaffold-ui",
   "version": "5.0.2",
   "type": "module",
-  "main": "./dist/esm/index.js",
-  "types": "./dist/types/index.d.ts",
+  "main": "./dist/esm/exports/index.js",
+  "types": "./dist/types/exports/index.d.ts",
   "files": [
     "dist",
     "!tsconfig.tsbuildinfo"
   ],
+  "exports": {
+    ".": {
+      "types": "./dist/types/exports/index.d.ts",
+      "import": "./dist/esm/exports/index.js",
+      "default": "./dist/esm/exports/index.js"
+    },
+    "./w3m-modal": {
+      "types": "./dist/types/exports/w3m-modal.d.ts",
+      "import": "./dist/esm/exports/w3m-modal.js",
+      "default": "./dist/esm/exports/w3m-modal.js"
+    }
+  },
   "scripts": {
     "build:clean": "rm -rf dist",
-    "build:scaffold": "tsc --build",
+    "build:scaffold-ui": "tsc --build",
     "watch": "tsc --watch",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
@@ -18,7 +30,6 @@
   "dependencies": {
     "@web3modal/common": "5.0.2",
     "@web3modal/scaffold-utils": "5.0.2",
-    "@web3modal/scaffold-ui": "5.0.2",
     "@web3modal/core": "5.0.2",
     "@web3modal/ui": "5.0.2",
     "lit": "3.1.0",
