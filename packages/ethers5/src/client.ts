@@ -394,9 +394,7 @@ export class Web3Modal extends Web3ModalScaffold {
       this.checkActive6963Provider()
     }
 
-    if (ethersConfig.EIP6963) {
-      this.setEIP6963Enabled(true)
-    }
+    this.setEIP6963Enabled(ethersConfig.EIP6963 !== false)
   }
 
   // -- Public ------------------------------------------------------------------

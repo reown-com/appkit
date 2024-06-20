@@ -508,6 +508,8 @@ export class Web3Modal extends Web3ModalScaffold {
       this.checkActive6963Provider()
     }
 
+    this.setEIP6963Enabled(ethersConfig.EIP6963 !== false)
+
     if (ethersConfig.injected) {
       this.checkActiveInjectedProvider(ethersConfig)
     }
@@ -518,10 +520,6 @@ export class Web3Modal extends Web3ModalScaffold {
 
     if (ethersConfig.coinbase) {
       this.checkActiveCoinbaseProvider(ethersConfig)
-    }
-
-    if (ethersConfig.EIP6963) {
-      this.setEIP6963Enabled(true)
     }
   }
 

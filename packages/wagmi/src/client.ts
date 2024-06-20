@@ -364,9 +364,7 @@ export class Web3Modal extends Web3ModalScaffold {
       onChange: accountData => this.syncAccount({ ...accountData })
     })
 
-    if (w3mOptions.enableEIP6963) {
-      this.setEIP6963Enabled(true)
-    }
+    this.setEIP6963Enabled(w3mOptions.enableEIP6963 !== false)
   }
 
   // -- Public ------------------------------------------------------------------
