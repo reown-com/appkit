@@ -54,7 +54,6 @@
         "^build:ui",
         "^build:wallet",
         "^build:siwe",
-        "^build:scaffold",
         "^build:scaffold-utils"
       ],
       "cache": false
