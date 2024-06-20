@@ -265,10 +265,15 @@ export const ChainController = {
     }
     state.activeCaipNetwork = caipNetwork
     state.activeChain = chainToWrite
+
     PublicStateController.set({
       activeChain: chainToWrite,
       selectedNetworkId: caipNetwork?.id
     })
+
+    if (!state.chains[chainToWrite].networkState.allowUnsupportedChain) {
+      this.checkIfSupportedNetwork()
+    }
   },
 
   setDefaultCaipNetwork(caipNetwork: ChainOptions['caipNetwork'], chain?: Chain) {
@@ -285,7 +290,7 @@ export const ChainController = {
     }
     state.activeCaipNetwork = caipNetwork
     state.activeChain = chainToWrite
-    PublicStateController.set({ activeChain: chainToWrite })
+    PublicStateController.set({ selectedNetworkId: caipNetwork?.id, activeChain: chainToWrite })
   },
 
   setActiveConnector(connector: ChainControllerState['activeConnector']) {
@@ -298,11 +303,8 @@ export const ChainController = {
     allowUnsupportedChain: NetworkControllerState['allowUnsupportedChain'],
     chain?: Chain
   ) {
-    const chainToWrite = state.multiChainEnabled ? chain : 'evm'
-
-    if (!chainToWrite) {
-      throw new Error('chainToWrite is required to set default network')
-    }
+    // TODO(enes): Specifically to this we are setting this option only for the EVM chain
+    const chainToWrite = chain || 'evm'
 
     state.chains[chainToWrite].networkState = {
       ...state.chains[chainToWrite].networkState,
@@ -328,7 +330,6 @@ export const ChainController = {
     requestedNetworks: ChainOptions['requestedCaipNetworks'],
     chain?: Chain
   ) {
-    console.log('setRequestedCaipNetworks', requestedNetworks)
     const chainToWrite = state.multiChainEnabled ? chain : 'evm'
 
     if (!chainToWrite) {

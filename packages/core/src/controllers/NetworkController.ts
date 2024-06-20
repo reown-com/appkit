@@ -67,17 +67,10 @@ export const NetworkController = {
   },
 
   setCaipNetwork(caipNetwork: NetworkControllerState['caipNetwork']) {
-    PublicStateController.set({ selectedNetworkId: caipNetwork?.id })
     ChainController.setCaipNetwork(caipNetwork)
-
-    // TODO(enes): update
-    if (!this.state.allowUnsupportedChain) {
-      this.checkIfSupportedNetwork()
-    }
   },
 
   setDefaultCaipNetwork(caipNetwork: NetworkControllerState['caipNetwork'], chain?: Chain) {
-    PublicStateController.set({ selectedNetworkId: caipNetwork?.id })
     ChainController.setDefaultCaipNetwork(caipNetwork, chain)
   },
 

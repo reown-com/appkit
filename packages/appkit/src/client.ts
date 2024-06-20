@@ -279,15 +279,14 @@ export class AppKit {
     }
 
     if (options.allowUnsupportedChain) {
-      // TODO(enes): implement this
-      // ChainController.setAllowUnsupportedChain(options.allowUnsupportedChain)
+      ChainController.setAllowUnsupportedChain(options.allowUnsupportedChain)
     }
 
-    // if (options.siweConfig) {
-    //   const { SIWEController } = await import('@web3modal/siwe')
+    if (options.siweConfig) {
+      const { SIWEController } = await import('@web3modal/siwe')
 
-    //   SIWEController.setSIWEClient(options.siweConfig)
-    // }
+      SIWEController.setSIWEClient(options.siweConfig)
+    }
   }
 
   private async initOrContinue() {
