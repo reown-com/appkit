@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - V4
+      - main
 
 concurrency: ${{ github.workflow }}
 

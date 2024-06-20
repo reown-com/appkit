@@ -13,7 +13,7 @@ import {
 import { solana } from '../../utils/ChainsUtil'
 import { useChakraToast } from '../Toast'
 
-const PHANTOM_TESTNET_ADDRESS = 'EmT8r4E8ZjoQgt8sXGbaWBRMKfUXsVT1wonoSnJZ4nBn'
+const PHANTOM_TESTNET_ADDRESS = '8vCyX7oB6Pc3pbWMGYYZF5pbSnAdQ7Gyr32JqxqCy8ZR'
 const recipientAddress = new PublicKey(PHANTOM_TESTNET_ADDRESS)
 const amountInLamports = 100000000
 

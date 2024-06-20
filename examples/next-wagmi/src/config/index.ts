@@ -20,7 +20,6 @@ export const config = defaultWagmiConfig({
   enableWalletConnect: true,
   enableEIP6963: true,
   enableCoinbase: true,
-  enableEmail: true,
   storage: createStorage({
     storage: cookieStorage
   }),
