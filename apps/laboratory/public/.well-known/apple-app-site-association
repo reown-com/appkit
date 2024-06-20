@@ -4,15 +4,33 @@
     "details": [
       {
         "appID": "W5R8AG9K22.com.walletconnect.dapp",
-        "paths": ["/dapp*"]
+        "paths": [
+          "/dapp*"
+        ]
       },
       {
         "appID": "W5R8AG9K22.com.walletconnect.walletapp",
-        "paths": ["/wallet*"]
+        "paths": [
+          "/wallet*"
+        ]
       },
       {
         "appID": "W5R8AG9K22.com.walletconnect.web3modal.sample",
-        "paths": ["/web3modal_example*"]
+        "paths": [
+          "/web3modal_example*"
+        ]
+      },
+      {
+        "appID": "W5R8AG9K22.com.walletconnect.web3modal.rnsample.internal",
+        "paths": [
+          "/appkit_rn*"
+        ]
+      },
+      {
+        "appID": "W5R8AG9K22.com.walletconnect.web3wallet.rnsample.internal",
+        "paths": [
+          "/walletkit_rn*"
+        ]
       }
     ]
   }
