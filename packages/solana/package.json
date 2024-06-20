@@ -57,6 +57,7 @@
     "@web3modal/scaffold-react": "5.0.2",
     "@web3modal/scaffold-utils": "5.0.2",
     "@web3modal/scaffold-vue": "5.0.2",
+    "rpc-websockets": "7.11.0",
     "bn.js": "5.2.1",
     "bs58": "5.0.0"
   },
