@@ -1,6 +1,6 @@
 {
   "name": "@apps/laboratory",
-  "version": "5.0.2",
+  "version": "5.0.3",
   "private": true,
   "scripts": {
     "dev:laboratory": "next dev",
@@ -39,10 +39,10 @@
     "@sentry/react": "7.92.0",
     "@solana/web3.js": "1.91.7",
     "@tanstack/react-query": "5.24.8",
-    "@web3modal/ethers": "5.0.2",
-    "@web3modal/siwe": "5.0.2",
-    "@web3modal/solana": "5.0.2",
-    "@web3modal/wagmi": "5.0.2",
+    "@web3modal/ethers": "5.0.3",
+    "@web3modal/siwe": "5.0.3",
+    "@web3modal/solana": "5.0.3",
+    "@web3modal/wagmi": "5.0.3",
     "ethers": "6.13.0",
     "framer-motion": "10.17.9",
     "next": "14.2.3",
