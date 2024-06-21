@@ -42,6 +42,7 @@ export interface OptionsControllerState {
   connectorImages?: Record<string, string>
   adapters?: ChainAdapter[]
   disableAppend?: boolean
+  enableEIP6963?: boolean
 }
 
 type StateKey = keyof OptionsControllerState
@@ -126,5 +127,9 @@ export const OptionsController = {
 
   setDisableAppend(disableAppend: OptionsControllerState['disableAppend']) {
     state.disableAppend = disableAppend
+  },
+
+  setEIP6963Enabled(enableEIP6963: OptionsControllerState['enableEIP6963']) {
+    state.enableEIP6963 = enableEIP6963
   }
 }
