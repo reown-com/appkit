@@ -363,6 +363,8 @@ export class Web3Modal extends Web3ModalScaffold {
     watchAccount(this.wagmiConfig, {
       onChange: accountData => this.syncAccount({ ...accountData })
     })
+
+    this.setEIP6963Enabled(w3mOptions.enableEIP6963 !== false)
   }
 
   // -- Public ------------------------------------------------------------------

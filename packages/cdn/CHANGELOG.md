@@ -1,5 +1,15 @@
 # @web3modal/cdn
 
+## 5.0.3
+
+### Patch Changes
+
+- fix: ethers5 coinbase issues. Turbo build issues. Upate cb connector.
+
+- Updated dependencies []:
+  - @web3modal/ethers@5.0.3
+  - @web3modal/wagmi@5.0.3
+
 ## 5.0.2
 
 ### Patch Changes
