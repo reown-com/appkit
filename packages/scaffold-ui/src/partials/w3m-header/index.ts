@@ -1,6 +1,7 @@
 import type { RouterControllerState } from '@web3modal/core'
 import {
   AccountController,
+  AssetController,
   ChainController,
   ConnectionController,
   ConnectorController,
@@ -91,12 +92,19 @@ export class W3mHeader extends LitElement {
 
   @state() private showBack = false
 
+  private activeCaipNetwork = ChainController.state.activeCaipNetwork
+
+  private readonly networkImages = AssetController.state.networkImages
+
   public constructor() {
     super()
     this.unsubscribe.push(
       RouterController.subscribeKey('view', val => {
         this.onViewChange(val)
         this.onHistoryChange()
+      }),
+      ChainController.subscribeKey('activeCaipNetwork', val => {
+        this.activeCaipNetwork = val
       }),
       ConnectionController.subscribeKey('buffering', val => (this.buffering = val))
     )
@@ -156,8 +164,20 @@ export class W3mHeader extends LitElement {
     const isApproveTransaction = view === 'ApproveTransaction'
     const isUpgradeToSmartAccounts = view === 'UpgradeToSmartAccount'
     const isConnectingSIWEView = view === 'ConnectingSiwe'
+    const isAccountView = view === 'Account'
 
     const shouldHideBack = isApproveTransaction || isUpgradeToSmartAccounts || isConnectingSIWEView
+
+    if (isAccountView) {
+      const networkImage = this.networkImages[this.activeCaipNetwork?.imageId ?? '']
+
+      return html`<wui-select
+        id="dynamic"
+        data-testid="w3m-account-select-network"
+        @click=${this.onNetworks.bind(this)}
+        .imageSrc=${networkImage ?? ''}
+      ></wui-select>`
+    }
 
     if (this.showBack && !shouldHideBack) {
       return html`<wui-icon-link
@@ -174,6 +194,23 @@ export class W3mHeader extends LitElement {
       icon="helpCircle"
       @click=${this.onWalletHelp.bind(this)}
     ></wui-icon-link>`
+  }
+
+  private onNetworks() {
+    if (this.isAllowedNetworkSwitch()) {
+      EventsController.sendEvent({ type: 'track', event: 'CLICK_NETWORKS' })
+      RouterController.push('Networks')
+    }
+  }
+
+  private isAllowedNetworkSwitch() {
+    const requestedCaipNetworks = ChainController.getRequestedCaipNetworks()
+    const isMultiNetwork = requestedCaipNetworks ? requestedCaipNetworks.length > 1 : false
+    const isValidNetwork = requestedCaipNetworks?.find(
+      ({ id }) => id === this.activeCaipNetwork?.id
+    )
+
+    return isMultiNetwork || !isValidNetwork
   }
 
   private getPadding() {
@@ -205,6 +242,7 @@ export class W3mHeader extends LitElement {
 
   private async onHistoryChange() {
     const { history } = RouterController.state
+
     const buttonEl = this.shadowRoot?.querySelector('#dynamic')
     if (history.length > 1 && !this.showBack && buttonEl) {
       await buttonEl.animate([{ opacity: 1 }, { opacity: 0 }], {

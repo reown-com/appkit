@@ -128,19 +128,6 @@ export class W3mAccountDefaultWidget extends LitElement {
       <wui-flex flexDirection="column" gap="xs" .padding=${['0', 's', 's', 's'] as const}>
         ${this.authCardTemplate()} <w3m-account-auth-button></w3m-account-auth-button>
 
-        <wui-list-item
-          .variant=${networkImage ? 'image' : 'icon'}
-          iconVariant="overlay"
-          icon="networkPlaceholder"
-          imageSrc=${ifDefined(networkImage)}
-          ?chevron=${this.isAllowedNetworkSwitch()}
-          @click=${this.onNetworks.bind(this)}
-          data-testid="w3m-account-select-network"
-        >
-          <wui-text variant="paragraph-500" color="fg-100">
-            ${this.network?.name ?? 'Unknown'}
-          </wui-text>
-        </wui-list-item>
         ${this.onrampTemplate()}
         <wui-list-item
           iconVariant="blue"
@@ -224,14 +211,6 @@ export class W3mAccountDefaultWidget extends LitElement {
     `
   }
 
-  private isAllowedNetworkSwitch() {
-    const requestedCaipNetworks = ChainController.getRequestedCaipNetworks()
-    const isMultiNetwork = requestedCaipNetworks ? requestedCaipNetworks.length > 1 : false
-    const isValidNetwork = requestedCaipNetworks?.find(({ id }) => id === this.network?.id)
-
-    return isMultiNetwork || !isValidNetwork
-  }
-
   private onCopyAddress() {
     try {
       if (this.address) {
@@ -240,13 +219,6 @@ export class W3mAccountDefaultWidget extends LitElement {
       }
     } catch {
       SnackController.showError('Failed to copy')
-    }
-  }
-
-  private onNetworks() {
-    if (this.isAllowedNetworkSwitch()) {
-      EventsController.sendEvent({ type: 'track', event: 'CLICK_NETWORKS' })
-      RouterController.push('Networks')
     }
   }
 
