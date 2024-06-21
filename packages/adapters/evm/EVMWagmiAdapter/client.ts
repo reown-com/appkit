@@ -56,7 +56,7 @@ export type ReactConfig = ReturnType<typeof reactConfig>
 type Config = CoreConfig | ReactConfig
 
 export interface Web3ModalClientOptions<C extends Config>
-  extends Pick<OptionsControllerState, 'siweConfig'> {
+  extends Pick<OptionsControllerState, 'siweConfig' | 'enableEIP6963'> {
   wagmiConfig: C
 }
 
@@ -272,12 +272,11 @@ export class EVMWagmiClient {
         try {
           await disconnect(this.wagmiConfig)
 
-          // TODO(enes): handle siwe
-          // const siweConfig = this.options?.siweConfig
-          // if (siweConfig?.options?.signOutOnDisconnect) {
-          //   const { SIWEController } = await import('@web3modal/siwe')
-          //   await SIWEController.signOut()
-          // }
+          const siweConfig = this.options?.siweConfig
+          if (siweConfig?.options?.signOutOnDisconnect) {
+            const { SIWEController } = await import('@web3modal/siwe')
+            await SIWEController.signOut()
+          }
         } catch (error) {
           console.error('Failed to disconnect1', error)
           throw new Error('Failed to disconnect1')
@@ -391,6 +390,18 @@ export class EVMWagmiClient {
       formatUnits
     }
     // #endregion
+  }
+
+  public construct(scaffold: any, options: OptionsControllerState) {
+    if (!options.projectId) {
+      throw new Error('web3modal:initialize - projectId is undefined')
+    }
+    this.scaffold = scaffold
+    this.options = options
+
+    this.syncRequestedNetworks([...this.wagmiConfig.chains])
+    this.syncConnectors([...this.wagmiConfig.connectors.map(c => ({ ...c, chain: this.chain }))])
+    this.initAuthConnectorListeners([...this.wagmiConfig.connectors])
 
     // Wagmi listeners
     watchConnectors(this.wagmiConfig, {
@@ -408,18 +419,8 @@ export class EVMWagmiClient {
         this.syncAccount(accountData)
       }
     })
-  }
 
-  public construct(scaffold: any, options: OptionsControllerState) {
-    if (!options.projectId) {
-      throw new Error('web3modal:initialize - projectId is undefined')
-    }
-    this.scaffold = scaffold
-    this.options = options
-
-    this.syncRequestedNetworks([...this.wagmiConfig.chains])
-    this.syncConnectors([...this.wagmiConfig.connectors.map(c => ({ ...c, chain: this.chain }))])
-    this.initAuthConnectorListeners([...this.wagmiConfig.connectors])
+    this.scaffold?.setEIP6963Enabled(options.enableEIP6963 !== false)
   }
 
   public tokens = HelpersUtil.getCaipTokens(this.options?.tokens)

@@ -74,9 +74,10 @@ export class W3mConnectingMultiChainView extends LitElement {
 
   // Private Methods ------------------------------------- //
   private networksTemplate() {
-    const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
-    const { approvedCaipNetworkIds, supportsAllNetworks } = NetworkController.state
-    const { chains } = ChainController.state
+    const requestedCaipNetworks = ChainController.getRequestedCaipNetworks()
+    const approvedCaipNetworkIds = NetworkController.getProperty('approvedCaipNetworkIds')
+    const supportsAllNetworks = NetworkController.getProperty('supportsAllNetworks')
+    const chains = ChainController.state.chains
 
     const sortedNetworks = CoreHelperUtil.sortRequestedNetworks(
       approvedCaipNetworkIds,

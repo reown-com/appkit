@@ -1,5 +1,11 @@
 # @web3modal/polyfills
 
+## 5.0.3
+
+### Patch Changes
+
+- fix: ethers5 coinbase issues. Turbo build issues. Upate cb connector.
+
 ## 5.0.2
 
 ### Patch Changes

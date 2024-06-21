@@ -176,24 +176,24 @@ export class AppKit {
   }
 
   public setCaipNetwork: (typeof ChainController)['setCaipNetwork'] = caipNetwork => {
-    NetworkController.setCaipNetwork(caipNetwork)
+    ChainController.setCaipNetwork(caipNetwork)
   }
 
-  public getCaipNetwork = () => NetworkController.activeNetwork()
+  public getCaipNetwork = () => ChainController.activeNetwork()
 
   public setRequestedCaipNetworks: (typeof ChainController)['setRequestedCaipNetworks'] = (
     requestedCaipNetworks,
     chain
   ) => {
-    NetworkController.setRequestedCaipNetworks(requestedCaipNetworks, chain)
+    ChainController.setRequestedCaipNetworks(requestedCaipNetworks, chain)
   }
 
   public setApprovedCaipNetworksData: (typeof NetworkController)['setApprovedCaipNetworksData'] = (
     chain: Chain
   ) => NetworkController.setApprovedCaipNetworksData(chain)
 
-  public resetNetwork = (chain: Chain) => {
-    NetworkController.resetNetwork(chain)
+  public resetNetwork = () => {
+    ChainController.resetNetwork()
   }
 
   public setConnectors: (typeof ConnectorController)['setConnectors'] = connectors => {
@@ -237,7 +237,7 @@ export class AppKit {
 
   public setSmartAccountEnabledNetworks: (typeof NetworkController)['setSmartAccountEnabledNetworks'] =
     (smartAccountEnabledNetworks, chain) => {
-      NetworkController.setSmartAccountEnabledNetworks(smartAccountEnabledNetworks, chain)
+      ChainController.setSmartAccountEnabledNetworks(smartAccountEnabledNetworks, chain)
     }
 
   public setPreferredAccountType: (typeof AccountController)['setPreferredAccountType'] =
@@ -256,13 +256,22 @@ export class AppKit {
     return networkNameAddresses[0]?.address || false
   }
 
+  public setEIP6963Enabled: (typeof OptionsController)['setEIP6963Enabled'] = enabled => {
+    OptionsController.setEIP6963Enabled(enabled)
+  }
+
   // -- Private ------------------------------------------------------------------
   private async initControllers(options: OptionsControllerState) {
+    ChainController.setMultiChainEnabled(true)
+
+    ChainController.initialize(options.adapters || [])
+
     options.adapters?.forEach(adapter => {
       adapter.construct?.(this, options)
     })
 
-    ChainController.initialize(options.adapters || [])
+    ChainController.initializeDefaultNetwork()
+
     OptionsController.setOptions(options)
 
     if (options.themeMode) {
@@ -274,15 +283,15 @@ export class AppKit {
     }
 
     if (options.allowUnsupportedChain) {
-      // TODO(enes): implement this
-      // ChainController.setAllowUnsupportedChain(options.allowUnsupportedChain)
+      ChainController.setAllowUnsupportedChain(options.allowUnsupportedChain)
     }
 
-    // if (options.siweConfig) {
-    //   const { SIWEController } = await import('@web3modal/siwe')
+    if (options.siweConfig) {
+      console.log('>>> options.siweConfig', options.siweConfig)
+      const { SIWEController } = await import('@web3modal/siwe')
 
-    //   SIWEController.setSIWEClient(options.siweConfig)
-    // }
+      SIWEController.setSIWEClient(options.siweConfig)
+    }
   }
 
   private async initOrContinue() {

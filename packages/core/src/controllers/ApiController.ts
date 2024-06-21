@@ -13,6 +13,7 @@ import { AssetController } from './AssetController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { NetworkController } from './NetworkController.js'
 import { OptionsController } from './OptionsController.js'
+import { ChainController } from './ChainController.js'
 
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getApiUrl()
@@ -102,8 +103,7 @@ export const ApiController = {
   },
 
   async fetchNetworkImages() {
-    // TODO(enes): add multi-chain capability
-    const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
+    const requestedCaipNetworks = ChainController.getRequestedCaipNetworks()
 
     const ids = requestedCaipNetworks?.map(({ imageId }) => imageId).filter(Boolean)
     if (ids) {

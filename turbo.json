@@ -13,16 +13,18 @@
       "outputs": ["dist/**"],
       "cache": false
     },
-    "build:core": {
+    "build:wallet": {
       "outputs": ["dist/**"],
       "cache": false
     },
     "build:ui": {
       "outputs": ["dist/**"],
+      "dependsOn": ["^build:common"],
       "cache": false
     },
-    "build:wallet": {
+    "build:core": {
       "outputs": ["dist/**"],
+      "dependsOn": ["^build:common", "^build:wallet"],
       "cache": false
     },
     "build:scaffold-utils": {
@@ -53,7 +55,6 @@
         "^build:ui",
         "^build:wallet",
         "^build:siwe",
-        "^build:scaffold",
         "^build:scaffold-utils"
       ],
       "cache": false
@@ -110,7 +111,7 @@
     },
     "build:gallery": {
       "outputs": ["out/**"],
-      "dependsOn": ["^build:client"],
+      "dependsOn": ["^build:client", "^build:ui"],
       "cache": false
     },
     "build:laboratory": {

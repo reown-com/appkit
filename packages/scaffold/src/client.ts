@@ -26,7 +26,8 @@ import {
   ThemeController,
   SnackController,
   RouterController,
-  EnsController
+  EnsController,
+  ChainController
 } from '@web3modal/core'
 import { setColorTheme, setThemeVariables } from '@web3modal/ui'
 import type { SIWEControllerClient } from '@web3modal/siwe'
@@ -55,6 +56,7 @@ export interface LibraryOptions {
   disableAppend?: OptionsControllerState['disableAppend']
   allowUnsupportedChain?: NetworkControllerState['allowUnsupportedChain']
   _sdkVersion: OptionsControllerState['sdkVersion']
+  enableEIP6963?: OptionsControllerState['enableEIP6963']
 }
 
 export interface ScaffoldOptions extends LibraryOptions {
@@ -273,8 +275,30 @@ export class Web3ModalScaffold {
     return networkNameAddresses[0]?.address || false
   }
 
+  protected setEIP6963Enabled: (typeof OptionsController)['setEIP6963Enabled'] = enabled => {
+    OptionsController.setEIP6963Enabled(enabled)
+  }
+
   // -- Private ------------------------------------------------------------------
   private async initControllers(options: ScaffoldOptions) {
+    ChainController.initialize([
+      {
+        networkControllerClient: options.networkControllerClient,
+        connectionControllerClient: options.connectionControllerClient,
+        chain: 'evm',
+        accountState: {
+          isConnected: false,
+          currentTab: 0,
+          tokenBalance: [],
+          smartAccountDeployed: false
+        },
+        networkState: {
+          supportsAllNetworks: true,
+          isDefaultCaipNetwork: false,
+          smartAccountEnabledNetworks: []
+        }
+      }
+    ])
     NetworkController.setClient(options.networkControllerClient)
     NetworkController.setDefaultCaipNetwork(options.defaultChain)
 
