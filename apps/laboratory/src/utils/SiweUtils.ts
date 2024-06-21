@@ -1,6 +1,7 @@
 import { getCsrfToken, signIn, signOut, getSession } from 'next-auth/react'
 import type { SIWEVerifyMessageArgs, SIWECreateMessageArgs, SIWESession } from '@web3modal/siwe'
 import { createSIWEConfig, formatMessage } from '@web3modal/siwe'
+import { WagmiConstantsUtil } from './WagmiConstants'
 
 export const siweConfig = createSIWEConfig({
   signOutOnAccountChange: true,
@@ -10,7 +11,7 @@ export const siweConfig = createSIWEConfig({
   getMessageParams: async () => ({
     domain: window.location.host,
     uri: window.location.origin,
-    chains: [],
+    chains: WagmiConstantsUtil.chains.map(chain => chain.id),
     statement: 'Please sign with your account',
     iat: new Date().toISOString()
   }),

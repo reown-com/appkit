@@ -256,6 +256,10 @@ export class AppKit {
     return networkNameAddresses[0]?.address || false
   }
 
+  public setEIP6963Enabled: (typeof OptionsController)['setEIP6963Enabled'] = enabled => {
+    OptionsController.setEIP6963Enabled(enabled)
+  }
+
   // -- Private ------------------------------------------------------------------
   private async initControllers(options: OptionsControllerState) {
     ChainController.setMultiChainEnabled(true)
@@ -283,6 +287,7 @@ export class AppKit {
     }
 
     if (options.siweConfig) {
+      console.log('>>> options.siweConfig', options.siweConfig)
       const { SIWEController } = await import('@web3modal/siwe')
 
       SIWEController.setSIWEClient(options.siweConfig)

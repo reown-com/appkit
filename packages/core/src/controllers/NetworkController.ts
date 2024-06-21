@@ -1,7 +1,6 @@
 import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 import type { CaipNetwork, CaipNetworkId } from '../utils/TypeUtil.js'
-import { PublicStateController } from './PublicStateController.js'
 import { EventsController } from './EventsController.js'
 import { ModalController } from './ModalController.js'
 import { NetworkUtil } from '@web3modal/common'
