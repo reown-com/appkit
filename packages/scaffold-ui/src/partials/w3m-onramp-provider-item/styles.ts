@@ -4,6 +4,8 @@ export default css`
   button {
     padding: var(--wui-spacing-s);
     border-radius: var(--wui-border-radius-xs);
+    border: none;
+    outline: none;
     background-color: var(--wui-color-gray-glass-002);
     width: 100%;
     display: flex;

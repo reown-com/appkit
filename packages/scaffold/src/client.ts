@@ -55,6 +55,7 @@ export interface LibraryOptions {
   disableAppend?: OptionsControllerState['disableAppend']
   allowUnsupportedChain?: NetworkControllerState['allowUnsupportedChain']
   _sdkVersion: OptionsControllerState['sdkVersion']
+  enableEIP6963?: OptionsControllerState['enableEIP6963']
 }
 
 export interface ScaffoldOptions extends LibraryOptions {
@@ -268,6 +269,10 @@ export class Web3ModalScaffold {
     const networkNameAddresses = Object.values(wcNameAddress?.addresses) || []
 
     return networkNameAddresses[0]?.address || false
+  }
+
+  protected setEIP6963Enabled: (typeof OptionsController)['setEIP6963Enabled'] = enabled => {
+    OptionsController.setEIP6963Enabled(enabled)
   }
 
   // -- Private ------------------------------------------------------------------

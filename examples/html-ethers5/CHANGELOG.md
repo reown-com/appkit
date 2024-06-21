@@ -1,5 +1,14 @@
 # @examples/html-ethers5
 
+## 5.0.3
+
+### Patch Changes
+
+- fix: ethers5 coinbase issues. Turbo build issues. Upate cb connector.
+
+- Updated dependencies []:
+  - @web3modal/ethers5@5.0.3
+
 ## 5.0.2
 
 ### Patch Changes

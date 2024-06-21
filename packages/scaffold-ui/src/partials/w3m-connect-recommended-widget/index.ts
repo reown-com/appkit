@@ -3,7 +3,6 @@ import {
   ApiController,
   AssetUtil,
   ConnectorController,
-  CoreHelperUtil,
   OptionsController,
   RouterController,
   StorageUtil
@@ -12,6 +11,7 @@ import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
+import { WalletUtil } from '../../utils/WalletUtil.js'
 
 @customElement('w3m-connect-recommended-widget')
 export class W3mConnectRecommendedWidget extends LitElement {
@@ -55,9 +55,7 @@ export class W3mConnectRecommendedWidget extends LitElement {
     const overrideLength = injectedWallets.length + recent.length
 
     const maxRecommended = Math.max(0, 2 - overrideLength)
-
-    const wallets = this.filterOutDuplicateWallets(recommended).slice(0, maxRecommended)
-
+    const wallets = WalletUtil.filterOutDuplicateWallets(recommended).slice(0, maxRecommended)
     if (!wallets.length) {
       this.style.cssText = `display: none`
 
@@ -81,26 +79,13 @@ export class W3mConnectRecommendedWidget extends LitElement {
   }
 
   // -- Private Methods ----------------------------------- //
-  private filterOutDuplicateWallets(wallets: WcWallet[]) {
-    const recent = StorageUtil.getRecentWallets()
-
-    const connectorRDNSs = this.connectors
-      .map(connector => connector.info?.rdns)
-      .filter(Boolean) as string[]
-
-    const recentRDNSs = recent.map(wallet => wallet.rdns).filter(Boolean) as string[]
-    const allRDNSs = connectorRDNSs.concat(recentRDNSs)
-    if (allRDNSs.includes('io.metamask.mobile') && CoreHelperUtil.isMobile()) {
-      const index = allRDNSs.indexOf('io.metamask.mobile')
-      allRDNSs[index] = 'io.metamask'
-    }
-    const filtered = wallets.filter(wallet => !allRDNSs.includes(String(wallet?.rdns)))
-
-    return filtered
-  }
-
   private onConnectWallet(wallet: WcWallet) {
-    RouterController.push('ConnectingWalletConnect', { wallet })
+    const connector = ConnectorController.getConnector(wallet.id, wallet.rdns)
+    if (connector) {
+      RouterController.push('ConnectingExternal', { connector })
+    } else {
+      RouterController.push('ConnectingWalletConnect', { wallet })
+    }
   }
 }
 

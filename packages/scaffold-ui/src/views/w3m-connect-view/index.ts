@@ -45,14 +45,7 @@ export class W3mConnectView extends LitElement {
       if (authConnector?.showWallets) {
         return html`
           <wui-flex flexDirection="column" gap="xs" .margin=${['xs', '0', '0', '0'] as const}>
-            <w3m-connect-walletconnect-widget></w3m-connect-walletconnect-widget>
-            <w3m-connect-recent-widget></w3m-connect-recent-widget>
-            <w3m-connect-announced-widget></w3m-connect-announced-widget>
-            <w3m-connect-injected-widget></w3m-connect-injected-widget>
-            <w3m-connect-featured-widget></w3m-connect-featured-widget>
-            <w3m-connect-custom-widget></w3m-connect-custom-widget>
-            <w3m-connect-coinbase-widget></w3m-connect-coinbase-widget>
-            <w3m-connect-recommended-widget></w3m-connect-recommended-widget>
+            <w3m-connector-list></w3m-connector-list>
             <wui-flex class="all-wallets" .margin=${['xs', '0', '0', '0'] as const}>
               <w3m-all-wallets-widget></w3m-all-wallets-widget>
             </wui-flex>

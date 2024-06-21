@@ -7,7 +7,16 @@ import { Email } from '../utils/email'
 import { DeviceRegistrationPage } from './DeviceRegistrationPage'
 import type { TimingRecords } from '../fixtures/timing-fixture'
 
-export type ModalFlavor = 'default' | 'siwe' | 'email' | 'wallet' | 'all'
+export type ModalFlavor = 'default' | 'siwe' | 'email' | 'wallet' | 'external' | 'all'
+
+function getUrlByFlavor(baseUrl: string, library: string, flavor: ModalFlavor) {
+  const urlsByFlavor: Partial<Record<ModalFlavor, string>> = {
+    default: `${baseUrl}library/${library}/`,
+    external: `${baseUrl}library/external/`
+  }
+
+  return urlsByFlavor[flavor] || `${baseUrl}library/${library}-${flavor}/`
+}
 
 export class ModalPage {
   private readonly baseURL = BASE_URL
@@ -22,10 +31,7 @@ export class ModalPage {
     public readonly flavor: ModalFlavor
   ) {
     this.connectButton = this.page.getByTestId('connect-button')
-    this.url =
-      flavor === 'default'
-        ? `${this.baseURL}library/${this.library}/`
-        : `${this.baseURL}library/${this.library}-${this.flavor}/`
+    this.url = getUrlByFlavor(this.baseURL, library, flavor)
   }
 
   async load() {
