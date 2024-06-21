@@ -75,7 +75,7 @@
       "cache": false
     },
     "watch": {
-      "dependsOn": ["^build:client", "^build:appkit"],
+      "dependsOn": ["^build:client"],
       "cache": false,
       "persistent": true
     },
@@ -83,29 +83,8 @@
       "dependsOn": ["^build:client"],
       "cache": false
     },
-    "build:adapters": {
-      "dependsOn": [
-        "^build:common",
-        "^build:polyfills",
-        "^build:scaffold",
-        "^build:scaffold-utils",
-        "^build:siwe"
-      ],
-      "cache": false
-    },
-    "build:appkit": {
-      "dependsOn": [
-        "^build:scaffold-ui",
-        "^build:common",
-        "^build:core",
-        "^build:ui",
-        "^build:siwe",
-        "^build:wallet"
-      ],
-      "cache": false
-    },
     "build": {
-      "dependsOn": ["build:cdn", "build:adapters", "build:appkit"],
+      "dependsOn": ["build:cdn"],
       "cache": false,
       "persistent": true
     },
