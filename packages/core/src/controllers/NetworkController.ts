@@ -54,8 +54,20 @@ export const NetworkController = {
     })
   },
 
-  subscribeKey<K extends StateKey>(key: K, callback: (value: NetworkControllerState[K]) => void) {
-    return subKey(state, key, callback)
+  subscribeKey<K extends keyof NetworkControllerState>(
+    property: K,
+    callback: (val: NetworkControllerState[K]) => void
+  ) {
+    let prev: NetworkControllerState[K] | undefined
+    return ChainController.subscribeChainProp('networkState', networkState => {
+      if (networkState) {
+        const nextValue = networkState[property]
+        if (prev !== nextValue) {
+          prev = nextValue
+          callback(nextValue)
+        }
+      }
+    })
   },
 
   _getClient() {
@@ -182,16 +194,10 @@ export const NetworkController = {
     return sortedNetworks
   },
 
-  async getApprovedCaipNetworksData() {
-    const data = await ChainController.getNetworkControllerClient()?.getApprovedCaipNetworksData()
-
-    if (data) {
-      state.supportsAllNetworks = data.supportsAllNetworks
-      state.approvedCaipNetworkIds = data.approvedCaipNetworkIds
-    }
-  },
-
   async switchActiveNetwork(network: NetworkControllerState['caipNetwork']) {
+    const networkControllerClient = ChainController.getNetworkControllerClient()
+    await networkControllerClient.switchCaipNetwork(network)
+
     let chain = ChainController.state.multiChainEnabled ? network?.chain : 'evm'
 
     if (!chain) {
@@ -240,7 +246,8 @@ export const NetworkController = {
   },
 
   async setApprovedCaipNetworksData(_chain?: Chain) {
-    const data = await ChainController.getNetworkControllerClient()?.getApprovedCaipNetworksData()
+    const networkControllerClient = ChainController.getNetworkControllerClient()
+    const data = await networkControllerClient.getApprovedCaipNetworksData()
 
     let chain = ChainController.state.multiChainEnabled ? _chain : 'evm'
 

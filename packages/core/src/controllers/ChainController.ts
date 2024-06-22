@@ -154,7 +154,17 @@ export const ChainController = {
       throw new Error('Chain is required to get network controller client')
     }
 
-    return state.chains.get(chain)?.networkControllerClient
+    const chainAdapter = state.chains.get(chain)
+
+    if (!chainAdapter) {
+      throw new Error('Chain adapter not found')
+    }
+
+    if (!chainAdapter.networkControllerClient) {
+      throw new Error('Network controller client not found')
+    }
+
+    return chainAdapter.networkControllerClient
   },
 
   initialize(adapters: ChainAdapter[]) {
