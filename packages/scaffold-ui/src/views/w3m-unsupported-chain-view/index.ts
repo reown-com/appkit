@@ -1,7 +1,6 @@
 import {
   AccountController,
   AssetUtil,
-  ChainController,
   ConnectionController,
   ConstantsUtil,
   CoreHelperUtil,
@@ -85,7 +84,7 @@ export class W3mUnsupportedChainView extends LitElement {
   }
 
   private networksTemplate() {
-    const requestedCaipNetworks = ChainController.getRequestedCaipNetworks()
+    const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
     const approvedCaipNetworkIds = NetworkController.getProperty('approvedCaipNetworkIds')
 
     const sortedNetworks = CoreHelperUtil.sortRequestedNetworks(

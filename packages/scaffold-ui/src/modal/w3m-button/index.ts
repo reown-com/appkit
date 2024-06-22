@@ -1,4 +1,4 @@
-import { AccountController, ChainController, ModalController } from '@web3modal/core'
+import { AccountController, ModalController } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
@@ -37,9 +37,8 @@ export class W3mButton extends LitElement {
   public constructor() {
     super()
     this.unsubscribe.push(
-      ChainController.subscribe(val => {
-        const accountState = val.activeChain ? val.chains[val.activeChain]?.accountState : undefined
-        this.isAccount = accountState?.isConnected || false
+      AccountController.subscribeKey('isConnected', val => {
+        this.isAccount = val
       }),
       ModalController.subscribeKey('loading', val => {
         this.isLoading = val

@@ -3,7 +3,6 @@ import { LitElement, html } from 'lit'
 import styles from './styles.js'
 import {
   AccountController,
-  ChainController,
   CoreHelperUtil,
   NetworkController,
   RouterController,
@@ -34,11 +33,8 @@ export class W3mSendSelectTokenView extends LitElement {
     super()
     this.unsubscribe.push(
       ...[
-        ChainController.subscribe(val => {
-          const accountState = val.activeChain
-            ? val.chains[val.activeChain]?.accountState
-            : undefined
-          this.tokenBalance = accountState?.tokenBalance
+        AccountController.subscribe(val => {
+          this.tokenBalance = val.tokenBalance
         })
       ]
     )

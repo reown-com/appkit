@@ -11,8 +11,7 @@ import {
   ConnectionController,
   SnackController,
   ConstantsUtil,
-  OptionsController,
-  ChainController
+  OptionsController
 } from '@web3modal/core'
 import { UiHelperUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -47,24 +46,20 @@ export class W3mAccountDefaultWidget extends LitElement {
     super()
     this.unsubscribe.push(
       ...[
-        ChainController.subscribe(val => {
-          const accountState = val.activeChain
-            ? val.chains[val.activeChain]?.accountState
-            : undefined
-          const networkState = val.activeChain
-            ? val.chains[val.activeChain]?.networkState
-            : undefined
-          if (accountState?.address) {
-            this.address = accountState.address
-            this.profileImage = accountState.profileImage
-            this.profileName = accountState.profileName
-            this.balance = accountState.balance
-            this.balanceSymbol = accountState.balanceSymbol
+        AccountController.subscribe(val => {
+          if (val.address) {
+            this.address = val.address
+            this.profileImage = val.profileImage
+            this.profileName = val.profileName
+            this.balance = val.balance
+            this.balanceSymbol = val.balanceSymbol
           } else if (!this.disconnecting) {
             SnackController.showError('Account not found')
           }
-          if (networkState?.caipNetwork?.id) {
-            this.network = networkState.caipNetwork
+        }),
+        NetworkController.subscribeKey('caipNetwork', val => {
+          if (val?.id) {
+            this.network = val
           }
         })
       ]
@@ -225,7 +220,7 @@ export class W3mAccountDefaultWidget extends LitElement {
   }
 
   private isAllowedNetworkSwitch() {
-    const requestedCaipNetworks = ChainController.getRequestedCaipNetworks()
+    const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
     const isMultiNetwork = requestedCaipNetworks ? requestedCaipNetworks.length > 1 : false
     const isValidNetwork = requestedCaipNetworks?.find(({ id }) => id === this.network?.id)
 

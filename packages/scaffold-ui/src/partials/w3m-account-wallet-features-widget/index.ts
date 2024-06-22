@@ -6,8 +6,7 @@ import {
   RouterController,
   CoreHelperUtil,
   ConstantsUtil as CoreConstantsUtil,
-  EventsController,
-  ChainController
+  EventsController
 } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -51,18 +50,15 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
     super()
     this.unsubscribe.push(
       ...[
-        ChainController.subscribe(val => {
-          const accountState = val.activeChain
-            ? val.chains[val.activeChain]?.accountState
-            : undefined
-          if (accountState?.address) {
-            this.address = accountState.address
-            this.profileImage = accountState.profileImage
-            this.profileName = accountState.profileName
-            this.currentTab = accountState.currentTab
-            this.tokenBalance = accountState.tokenBalance
-            this.smartAccountDeployed = accountState.smartAccountDeployed
-            this.preferredAccountType = accountState.preferredAccountType
+        AccountController.subscribe(val => {
+          if (val.address) {
+            this.address = val.address
+            this.profileImage = val.profileImage
+            this.profileName = val.profileName
+            this.currentTab = val.currentTab
+            this.tokenBalance = val.tokenBalance
+            this.smartAccountDeployed = val.smartAccountDeployed
+            this.preferredAccountType = val.preferredAccountType
           } else {
             ModalController.close()
           }

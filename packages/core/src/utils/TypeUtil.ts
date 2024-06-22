@@ -6,7 +6,7 @@ import type {
 } from '../controllers/NetworkController'
 import type { ConnectionControllerClient } from '../controllers/ConnectionController'
 import type { OptionsControllerState } from '../controllers/OptionsController'
-import type { Chain } from '../controllers/ChainController'
+import type { Chain } from '@web3modal/common'
 import type { AccountControllerState } from '../controllers/AccountController'
 import type { OnRampProviderOption } from '../controllers/OnRampController.js'
 
@@ -74,8 +74,8 @@ export type Connector = {
   email?: boolean
   socials?: SocialProvider[]
   showWallets?: boolean
-  chain: Chain
   walletFeatures?: boolean
+  chain: Chain
   providers?: Connector[]
 }
 
@@ -813,13 +813,12 @@ export interface WriteContractArgs {
   abi: any
 }
 
-export type ChainAdapter = Partial<NetworkControllerState> & {
+export type ChainAdapter = {
   connectionControllerClient?: ConnectionControllerClient
   networkControllerClient?: NetworkControllerClient
   accountState: AccountControllerState
   networkState: NetworkControllerState
   chain: Chain
-
   construct?: (scaffold: any, options: OptionsControllerState) => void
   initialize?: () => void
 }

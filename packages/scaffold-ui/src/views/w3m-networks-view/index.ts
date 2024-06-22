@@ -2,7 +2,6 @@ import type { CaipNetwork } from '@web3modal/core'
 import {
   AccountController,
   AssetUtil,
-  ChainController,
   CoreHelperUtil,
   EventsController,
   NetworkController,
@@ -24,15 +23,12 @@ export class W3mNetworksView extends LitElement {
   // -- State & Properties -------------------------------- //
   @state() public caipNetwork = NetworkController.activeNetwork()
 
-  @state() public requestedCaipNetworks = ChainController.getRequestedCaipNetworks()
+  @state() public requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
 
   public constructor() {
     super()
     this.unsubscribe.push(
-      ChainController.subscribe(() => {
-        this.caipNetwork = ChainController.activeNetwork()
-        this.requestedCaipNetworks = ChainController.getRequestedCaipNetworks()
-      })
+      NetworkController.subscribeKey('caipNetwork', val => (this.caipNetwork = val))
     )
   }
 
@@ -68,7 +64,7 @@ export class W3mNetworksView extends LitElement {
   }
 
   private networksTemplate() {
-    const requestedCaipNetworks = ChainController.getRequestedCaipNetworks()
+    const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
     const approvedCaipNetworkIds = NetworkController.getProperty('approvedCaipNetworkIds')
     const supportsAllNetworks = NetworkController.getProperty('supportsAllNetworks')
 

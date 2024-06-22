@@ -99,7 +99,7 @@ export const SendController = {
         event: 'SEND_INITIATED',
         properties: {
           isSmartAccount:
-            AccountController.state.preferredAccountType ===
+            AccountController.getProperty('preferredAccountType') ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           token: this.state.token.address,
           amount: this.state.sendTokenAmount,
@@ -123,7 +123,7 @@ export const SendController = {
         event: 'SEND_INITIATED',
         properties: {
           isSmartAccount:
-            AccountController.state.preferredAccountType ===
+            AccountController.getProperty('preferredAccountType') ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           token: this.state.token?.symbol,
           amount: this.state.sendTokenAmount,
@@ -167,7 +167,7 @@ export const SendController = {
         event: 'SEND_SUCCESS',
         properties: {
           isSmartAccount:
-            AccountController.state.preferredAccountType ===
+            AccountController.getProperty('preferredAccountType') ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           token: this.state.token?.symbol || '',
           amount: params.sendTokenAmount,
@@ -181,7 +181,7 @@ export const SendController = {
         event: 'SEND_ERROR',
         properties: {
           isSmartAccount:
-            AccountController.state.preferredAccountType ===
+            AccountController.getProperty('preferredAccountType') ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           token: this.state.token?.symbol || '',
           amount: params.sendTokenAmount,

@@ -41,6 +41,7 @@ import { Web3ModalScaffold } from '@web3modal/scaffold'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
 import { ConstantsUtil as CommonConstants } from '@web3modal/common'
+import type { Chain as AvailableChain } from '@web3modal/common'
 import {
   getCaipDefaultChain,
   getEmailCaipNetworks,
@@ -82,6 +83,8 @@ export class Web3Modal extends Web3ModalScaffold {
   private options: Web3ModalClientOptions<CoreConfig> | undefined = undefined
 
   private wagmiConfig: Web3ModalClientOptions<CoreConfig>['wagmiConfig']
+
+  private chain: AvailableChain = 'evm'
 
   public constructor(options: Web3ModalClientOptions<CoreConfig>) {
     const { wagmiConfig, siweConfig, defaultChain, tokens, _sdkVersion, ...w3mOptions } = options
@@ -440,7 +443,7 @@ export class Web3Modal extends Web3ModalScaffold {
         name,
         imageId: PresetsUtil.EIP155NetworkImageIds[id],
         imageUrl: this.options?.chainImages?.[id],
-        chain: 'evm'
+        chain: this.chain
       })
       if (isConnected && address && chainId) {
         const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${id}:${address}`
@@ -574,7 +577,7 @@ export class Web3Modal extends Web3ModalScaffold {
           info: {
             rdns: id
           },
-          chain: 'evm'
+          chain: this.chain
         })
       }
     })
@@ -604,7 +607,7 @@ export class Web3Modal extends Web3ModalScaffold {
         email: authConnector.email,
         socials: authConnector.socials,
         showWallets: authConnector.showWallets,
-        chain: 'evm',
+        chain: this.chain,
         walletFeatures: authConnector.walletFeatures
       })
     }

@@ -1,5 +1,6 @@
 import {
   AccountController,
+  ChainController,
   ConnectionController,
   EventsController,
   ModalController,
@@ -90,7 +91,7 @@ export class W3mConnectingSiweView extends LitElement {
       properties: {
         network: NetworkController.activeNetwork()?.id || '',
         isSmartAccount:
-          AccountController.state.preferredAccountType ===
+          ChainController.getAccountProp('preferredAccountType') ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })
@@ -104,14 +105,14 @@ export class W3mConnectingSiweView extends LitElement {
         properties: {
           network: NetworkController.activeNetwork()?.id || '',
           isSmartAccount:
-            AccountController.state.preferredAccountType ===
+            ChainController.getAccountProp('preferredAccountType') ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
         }
       })
 
       return session
     } catch (error) {
-      const preferredAccountType = AccountController.state.preferredAccountType
+      const preferredAccountType = ChainController.getAccountProp('preferredAccountType')
       const isSmartAccount =
         preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       if (isSmartAccount) {
@@ -148,7 +149,7 @@ export class W3mConnectingSiweView extends LitElement {
       properties: {
         network: NetworkController.activeNetwork()?.id || '',
         isSmartAccount:
-          AccountController.state.preferredAccountType ===
+          AccountController.getProperty('preferredAccountType') ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })

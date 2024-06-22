@@ -17,6 +17,7 @@ import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-uti
 import EthereumProvider, { OPTIONAL_METHODS } from '@walletconnect/ethereum-provider'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
 import { ConstantsUtil as CommonConstants } from '@web3modal/common'
+import type { Chain as AvailableChain } from '@web3modal/common'
 import type {
   Address,
   Metadata,
@@ -114,6 +115,8 @@ export class Web3Modal extends Web3ModalScaffold {
   private projectId: string
 
   private chains: Chain[]
+
+  private chain: AvailableChain = 'evm'
 
   private metadata?: Metadata
 
@@ -1107,7 +1110,7 @@ export class Web3Modal extends Web3ModalScaffold {
           name: chain.name,
           imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId],
           imageUrl: chainImages?.[chain.chainId],
-          chain: 'evm'
+          chain: this.chain
         })
         if (isConnected && address) {
           const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`
@@ -1126,7 +1129,7 @@ export class Web3Modal extends Web3ModalScaffold {
       } else if (isConnected) {
         this.setCaipNetwork({
           id: `${ConstantsUtil.EIP155}:${chainId}`,
-          chain: 'evm'
+          chain: this.chain
         })
       }
     }
@@ -1374,7 +1377,7 @@ export class Web3Modal extends Web3ModalScaffold {
         imageUrl: this.options?.connectorImages?.[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID],
         name: PresetsUtil.ConnectorNamesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID],
         type: connectorType,
-        chain: 'evm'
+        chain: this.chain
       })
     }
 
@@ -1389,7 +1392,7 @@ export class Web3Modal extends Web3ModalScaffold {
           imageUrl: this.options?.connectorImages?.[ConstantsUtil.INJECTED_CONNECTOR_ID],
           name: PresetsUtil.ConnectorNamesMap[ConstantsUtil.INJECTED_CONNECTOR_ID],
           type: injectedConnectorType,
-          chain: 'evm'
+          chain: this.chain
         })
       }
     }
@@ -1402,7 +1405,7 @@ export class Web3Modal extends Web3ModalScaffold {
         imageUrl: this.options?.connectorImages?.[ConstantsUtil.COINBASE_SDK_CONNECTOR_ID],
         name: PresetsUtil.ConnectorNamesMap[ConstantsUtil.COINBASE_SDK_CONNECTOR_ID],
         type: 'EXTERNAL',
-        chain: 'evm'
+        chain: this.chain
       })
     }
 
@@ -1421,7 +1424,7 @@ export class Web3Modal extends Web3ModalScaffold {
         email: auth?.email,
         socials: auth?.socials,
         showWallets: auth?.showWallets === undefined ? true : auth.showWallets,
-        chain: 'evm',
+        chain: this.chain,
         walletFeatures: auth?.walletFeatures
       })
 
@@ -1461,7 +1464,7 @@ export class Web3Modal extends Web3ModalScaffold {
             name: info.name,
             provider,
             info,
-            chain: 'evm'
+            chain: this.chain
           })
 
           const eip6963ProviderObj = {

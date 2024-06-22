@@ -1,7 +1,6 @@
 import {
   AccountController,
   AssetUtil,
-  ChainController,
   CoreHelperUtil,
   ModalController,
   NetworkController
@@ -46,19 +45,13 @@ export class W3mAccountButton extends LitElement {
     super()
     this.unsubscribe.push(
       ...[
-        ChainController.subscribe(val => {
-          const accountState = val.activeChain
-            ? val.chains[val.activeChain]?.accountState
-            : undefined
-          const networkState = val.activeChain
-            ? val.chains[val.activeChain]?.networkState
-            : undefined
-          if (accountState && accountState.isConnected) {
-            this.address = accountState.address
-            this.balanceVal = accountState.balance
-            this.profileName = accountState.profileName
-            this.profileImage = accountState.profileImage
-            this.balanceSymbol = accountState.balanceSymbol
+        AccountController.subscribe(val => {
+          if (val.isConnected) {
+            this.address = val.address
+            this.balanceVal = val.balance
+            this.profileName = val.profileName
+            this.profileImage = val.profileImage
+            this.balanceSymbol = val.balanceSymbol
           } else {
             this.address = ''
             this.balanceVal = ''
@@ -66,6 +59,8 @@ export class W3mAccountButton extends LitElement {
             this.profileImage = ''
             this.balanceSymbol = ''
           }
+        }),
+        NetworkController.subscribe(networkState => {
           this.network = NetworkController.activeNetwork()
           this.isUnsupportedChain = networkState?.isUnsupportedChain || false
         })

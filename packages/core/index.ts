@@ -12,11 +12,7 @@ export { AccountController } from './src/controllers/AccountController.js'
 export type { AccountControllerState } from './src/controllers/AccountController.js'
 
 export { ChainController } from './src/controllers/ChainController.js'
-export type {
-  ChainControllerState,
-  Chain,
-  ChainOptions
-} from './src/controllers/ChainController.js'
+export type { ChainControllerState, ChainOptions } from './src/controllers/ChainController.js'
 
 export { NetworkController } from './src/controllers/NetworkController.js'
 export type {

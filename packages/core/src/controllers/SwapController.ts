@@ -734,7 +734,7 @@ export const SwapController = {
           swapfromAmount: this.state.sourceTokenAmount || '',
           swapToAmount: this.state.toTokenAmount || '',
           isSmartAccount:
-            AccountController.state.preferredAccountType ===
+            AccountController.getProperty('preferredAccountType') ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
         }
       })
@@ -757,7 +757,7 @@ export const SwapController = {
           swapfromAmount: this.state.sourceTokenAmount || '',
           swapToAmount: this.state.toTokenAmount || '',
           isSmartAccount:
-            AccountController.state.preferredAccountType ===
+            AccountController.getProperty('preferredAccountType') ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
         }
       })

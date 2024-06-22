@@ -141,10 +141,6 @@ export class W3mRouter extends LitElement {
         return html`<w3m-what-is-a-network-view></w3m-what-is-a-network-view>`
       case 'WhatIsAWallet':
         return html`<w3m-what-is-a-wallet-view></w3m-what-is-a-wallet-view>`
-      case 'SelectChain':
-        return null
-      case 'ConnectingMultiChain':
-        return html`<w3m-connecting-multi-chain-view></w3m-connecting-multi-chain-view>`
 
       default:
         return html`<w3m-connect-view></w3m-connect-view>`

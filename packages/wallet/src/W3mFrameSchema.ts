@@ -57,14 +57,12 @@ export const AppSyncDappDataRequest = z.object({
       icons: z.array(z.string())
     })
     .optional(),
-  sdkVersion: z.optional(
-    z.string() as z.ZodType<
-      | `${'html' | 'react' | 'vue'}-wagmi-${string}`
-      | `${'html' | 'react' | 'vue'}-ethers5-${string}`
-      | `${'html' | 'react' | 'vue'}-ethers-${string}`
-      | `${'html' | 'react' | 'vue'}-solana-${string}`
-    >
-  ),
+  sdkVersion: z.string() as z.ZodType<
+    | `${'html' | 'react' | 'vue'}-wagmi-${string}`
+    | `${'html' | 'react' | 'vue'}-ethers5-${string}`
+    | `${'html' | 'react' | 'vue'}-ethers-${string}`
+    | `${'html' | 'react' | 'vue'}-solana-${string}`
+  >,
   projectId: z.string()
 })
 export const AppSetPreferredAccountRequest = z.object({ type: z.string() })

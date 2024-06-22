@@ -1,18 +1,13 @@
-/**
- * Duplicate of the NetworkController from the core package.
- * ChainController is a controller that manages the network state with the capabilities of managing multiple chains/protocols.
- */
-import { subscribeKey as subKey } from 'valtio/utils'
+import { proxyMap, subscribeKey as subKey } from 'valtio/utils'
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
 import type { CaipNetwork, CaipNetworkId, ChainAdapter, Connector } from '../utils/TypeUtil.js'
-import { ModalController } from './ModalController.js'
-import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
-import { type NetworkControllerClient, type NetworkControllerState } from './NetworkController.js'
+
+import { type NetworkControllerState } from './NetworkController.js'
 import { type AccountControllerState } from './AccountController.js'
 import { PublicStateController } from './PublicStateController.js'
+import { type Chain } from '@web3modal/common'
 
 // -- Types --------------------------------------------- //
-export type Chain = 'evm' | 'solana'
 
 export type ChainOptions = {
   requestedCaipNetworks?: CaipNetwork[]
@@ -23,47 +18,54 @@ export type ChainOptions = {
 
 export interface ChainControllerState {
   multiChainEnabled: boolean
-  activeChain: 'evm' | 'solana' | undefined
+  activeChain: Chain | undefined
   activeCaipNetwork?: CaipNetwork
-  chains: Record<Chain, ChainAdapter>
+  chains: Map<Chain, ChainAdapter>
   activeConnector?: Connector
 }
 
 type StateKey = keyof ChainControllerState
 
 // -- Constants ----------------------------------------- //
-const accountState = {
+const accountState: AccountControllerState = {
   isConnected: false,
   currentTab: 0,
   tokenBalance: [],
   smartAccountDeployed: false
 }
 
-const networkState = {
+const networkState: NetworkControllerState = {
   supportsAllNetworks: true,
   isDefaultCaipNetwork: false,
   smartAccountEnabledNetworks: []
 }
 
+const defaultChainAdapterEVM: ChainAdapter = {
+  connectionControllerClient: undefined,
+  networkControllerClient: undefined,
+  accountState,
+  networkState,
+  chain: 'evm'
+}
+
+const defaultChainAdapterSolana: ChainAdapter = {
+  connectionControllerClient: undefined,
+  networkControllerClient: undefined,
+  accountState,
+  networkState,
+  chain: 'solana'
+}
+
 // -- State --------------------------------------------- //
+const evmKey = defaultChainAdapterEVM
+const solana = defaultChainAdapterSolana
+
 const state = proxy<ChainControllerState>({
   multiChainEnabled: false,
-  chains: {
-    evm: {
-      connectionControllerClient: undefined,
-      networkControllerClient: undefined,
-      accountState,
-      networkState,
-      chain: 'evm'
-    },
-    solana: {
-      connectionControllerClient: undefined,
-      networkControllerClient: undefined,
-      accountState,
-      networkState,
-      chain: 'solana'
-    }
-  },
+  chains: proxyMap<Chain, ChainAdapter>([
+    ['evm', evmKey],
+    ['solana', solana]
+  ]),
   activeChain: undefined,
   activeCaipNetwork: undefined
 })
@@ -80,26 +82,79 @@ export const ChainController = {
     return subKey(state, key, callback)
   },
 
+  subscribeChain(callback: (value: ChainAdapter | undefined) => void) {
+    let prev: ChainAdapter | undefined
+    const activeChain = state.activeChain || 'evm'
+    return sub(state.chains, () => {
+      const nextValue = state.chains.get(activeChain)
+      if (!prev || prev !== nextValue) {
+        prev = nextValue
+        callback(nextValue)
+      }
+    })
+  },
+
+  subscribeChainProp<K extends keyof ChainAdapter>(
+    property: K,
+    callback: (value: ChainAdapter[K] | undefined) => void
+  ) {
+    let prev: ChainAdapter[K] | undefined
+    const activeChain = state.activeChain || 'evm'
+    return sub(state.chains, () => {
+      const nextValue = state.chains.get(activeChain)?.[property]
+      if (prev !== nextValue) {
+        prev = nextValue
+        callback(nextValue)
+      }
+    })
+  },
+
   getConnectionControllerClient() {
     if (!state.activeChain) {
       throw new Error('Chain is required to get connection controller client')
     }
 
-    return state.chains[state.activeChain].connectionControllerClient
-  },
-
-  getNetworkControllerClient() {
-    const chainToWrite = state.multiChainEnabled ? state.activeChain : 'evm'
-
-    if (!chainToWrite) {
-      throw new Error('Chain is required to get network controller client')
-    }
-
-    return state.chains[chainToWrite].networkControllerClient
+    return state.chains.get(state.activeChain)?.connectionControllerClient
   },
 
   setMultiChainEnabled(multiChain: boolean) {
     state.multiChainEnabled = multiChain
+  },
+
+  updateChainNetworkData(chain: Chain | undefined, props: Partial<NetworkControllerState>) {
+    if (!chain) {
+      throw new Error('Chain is required to update chain network data')
+    }
+
+    const chainAdapter = state.chains.get(chain)
+
+    if (chainAdapter) {
+      chainAdapter.networkState = { ...chainAdapter.networkState, ...props }
+      state.chains.set(chain, chainAdapter)
+    }
+  },
+
+  updateChainAccountData(chain: Chain | undefined, accountProps: Partial<AccountControllerState>) {
+    if (!chain) {
+      throw new Error('Chain is required to update chain network data')
+    }
+
+    const chainAdapter = state.chains.get(chain)
+
+    if (chainAdapter) {
+      chainAdapter.accountState = { ...chainAdapter.accountState, ...accountProps }
+      state.chains.set(chain, chainAdapter)
+    }
+  },
+
+  getNetworkControllerClient() {
+    const chain = state.multiChainEnabled ? state.activeChain : 'evm'
+
+    if (!chain) {
+      throw new Error('Chain is required to get network controller client')
+    }
+
+    return state.chains.get(chain)?.networkControllerClient
   },
 
   initialize(adapters: ChainAdapter[]) {
@@ -108,47 +163,50 @@ export const ChainController = {
     state.activeChain = firstChainToActivate
 
     adapters.forEach((adapter: ChainAdapter) => {
-      state.chains[adapter.chain].connectionControllerClient = adapter.connectionControllerClient
-      state.chains[adapter.chain].networkControllerClient = adapter.networkControllerClient
-      state.chains[adapter.chain].accountState = accountState
-      state.chains[adapter.chain].networkState = networkState
+      state.chains.set(adapter.chain, {
+        chain: adapter.chain,
+        connectionControllerClient: adapter.connectionControllerClient,
+        networkControllerClient: adapter.networkControllerClient,
+        accountState,
+        networkState
+      })
     })
   },
 
-  initializeDefaultNetwork() {
-    const networks = this.getRequestedCaipNetworks()
-
-    if (networks.length > 0) {
-      this.setCaipNetwork(networks[0])
-    }
-  },
-
-  getAccountProp(prop: keyof AccountControllerState) {
+  getAccountProp<K extends keyof AccountControllerState>(
+    key: K
+  ): AccountControllerState[K] | undefined {
     const chainToWrite = state.multiChainEnabled ? state.activeChain : 'evm'
 
     if (!chainToWrite) {
       return undefined
     }
 
-    if (state.chains[chainToWrite].accountState) {
-      return state.chains[chainToWrite].accountState[prop]
+    const accountState = state.chains.get(chainToWrite)?.accountState
+
+    if (!accountState) {
+      return undefined
     }
 
-    return undefined
+    return accountState[key]
   },
 
-  getNetworkProp(prop: keyof NetworkControllerState) {
+  getNetworkProp<K extends keyof NetworkControllerState>(
+    key: K
+  ): NetworkControllerState[K] | undefined {
     const chainToWrite = state.multiChainEnabled ? state.activeChain : 'evm'
 
     if (!chainToWrite) {
       return undefined
     }
 
-    if (state.chains[chainToWrite].networkState) {
-      return state.chains[chainToWrite].networkState[prop]
+    const networkState = state.chains.get(chainToWrite)?.networkState
+
+    if (!networkState) {
+      return undefined
     }
 
-    return undefined
+    return networkState[key]
   },
 
   setAccountProp(
@@ -156,37 +214,26 @@ export const ChainController = {
     value: AccountControllerState[keyof AccountControllerState],
     chain?: Chain
   ) {
-    const chainToWrite = state.multiChainEnabled ? chain : 'evm'
+    this.updateChainAccountData(state.multiChainEnabled ? chain : 'evm', { [prop]: value })
+  },
 
-    if (!chainToWrite) {
-      console.warn(`Chain is required to set account prop ${prop}: ${value}`)
-      return
-    }
-
-    if (state.chains[chainToWrite].accountState) {
-      // @ts-ignore
-      state.chains[chainToWrite].accountState[prop] = value
+  setActiveChain(_chain?: Chain) {
+    if (_chain) {
+      state.activeChain = _chain
+      PublicStateController.set({ activeChain: _chain })
+      if (!state.activeCaipNetwork) {
+        state.activeCaipNetwork = state.chains.get(_chain)?.networkState.requestedCaipNetworks?.[0]
+      }
     }
   },
 
-  seNetworkProp(
-    prop: keyof AccountControllerState,
-    value: NetworkControllerState[keyof NetworkControllerState],
-    chain?: Chain
-  ) {
-    const chainToWrite = state.multiChainEnabled ? chain : 'evm'
-
-    if (!chainToWrite) {
-      console.warn(`Chain is required to set account prop ${prop}: ${value}`)
-      return
-    }
-
-    if (state.chains[chainToWrite].networkState) {
-      // @ts-ignore
-      state.chains[chainToWrite].networkState[prop] = value
+  setActiveConnector(connector: ChainControllerState['activeConnector']) {
+    if (connector) {
+      state.activeConnector = ref(connector)
     }
   },
 
+  // -- AccountController methods ----------------------- //
   resetAccount(chain?: Chain) {
     const chainToWrite = state.multiChainEnabled ? chain : 'evm'
 
@@ -194,8 +241,7 @@ export const ChainController = {
       throw new Error('Chain is required to set account prop')
     }
 
-    state.chains[chainToWrite].accountState = {
-      ...state.chains[chainToWrite].accountState,
+    this.updateChainAccountData(chainToWrite, {
       isConnected: false,
       smartAccountDeployed: false,
       currentTab: 0,
@@ -211,296 +257,6 @@ export const ChainController = {
       preferredAccountType: undefined,
       socialProvider: undefined,
       socialWindow: undefined
-    }
-  },
-
-  activeNetwork() {
-    if (state.multiChainEnabled) {
-      return state.activeCaipNetwork
-    }
-
-    return state.chains['evm'].networkState.caipNetwork
-  },
-
-  setActiveChain(chain?: Chain) {
-    // const allCaipNetworkIds = this.getApprovedCaipNetworkIds()
-    // const chainCaipNetworks = allCaipNetworkIds?.filter(network =>network.id === chain)
-
-    if (chain) {
-      state.activeChain = chain
-      PublicStateController.set({ activeChain: chain })
-      if (!state.activeCaipNetwork) {
-        state.activeCaipNetwork = state.chains[chain].networkState.requestedCaipNetworks?.[0]
-      }
-    }
-  },
-
-  setClient(client: NetworkControllerClient, chain?: Chain) {
-    const chainToWrite = state.multiChainEnabled ? chain : 'evm'
-
-    if (!chainToWrite) {
-      throw new Error('chainToWrite is required to set default network')
-    }
-
-    state.chains[chainToWrite].networkState = {
-      ...state.chains[chainToWrite].networkState,
-      _client: client
-    }
-  },
-
-  setCaipNetwork(caipNetwork: ChainOptions['caipNetwork']) {
-    const chainToWrite = state.multiChainEnabled ? caipNetwork?.chain : 'evm'
-
-    if (!chainToWrite) {
-      throw new Error('chainToWrite is required to set default network')
-    }
-
-    if (!caipNetwork) {
-      throw new Error('caipNetwork is required to set active network')
-    }
-
-    state.chains[chainToWrite].networkState = {
-      ...state.chains[chainToWrite].networkState,
-      caipNetwork
-    }
-    state.activeCaipNetwork = caipNetwork
-    state.activeChain = chainToWrite
-
-    PublicStateController.set({
-      activeChain: chainToWrite,
-      selectedNetworkId: caipNetwork?.id
     })
-
-    if (!state.chains[chainToWrite].networkState.allowUnsupportedChain) {
-      this.checkIfSupportedNetwork()
-    }
-  },
-
-  setDefaultCaipNetwork(caipNetwork: ChainOptions['caipNetwork'], chain?: Chain) {
-    const chainToWrite = state.multiChainEnabled ? chain : 'evm'
-
-    if (!chainToWrite) {
-      throw new Error('chainToWrite is required to set default network')
-    }
-
-    state.chains[chainToWrite].networkState = {
-      ...state.chains[chainToWrite].networkState,
-      caipNetwork,
-      isDefaultCaipNetwork: true
-    }
-    state.activeCaipNetwork = caipNetwork
-    state.activeChain = chainToWrite
-    PublicStateController.set({ selectedNetworkId: caipNetwork?.id, activeChain: chainToWrite })
-  },
-
-  setActiveConnector(connector: ChainControllerState['activeConnector']) {
-    if (connector) {
-      state.activeConnector = ref(connector)
-    }
-  },
-
-  setAllowUnsupportedChain(
-    allowUnsupportedChain: NetworkControllerState['allowUnsupportedChain'],
-    chain?: Chain
-  ) {
-    // TODO(enes): Specifically to this we are setting this option only for the EVM chain
-    const chainToWrite = chain || 'evm'
-
-    state.chains[chainToWrite].networkState = {
-      ...state.chains[chainToWrite].networkState,
-      allowUnsupportedChain
-    }
-  },
-
-  setSmartAccountEnabledNetworks(
-    smartAccountEnabledNetworks: NetworkControllerState['smartAccountEnabledNetworks'],
-    chain?: Chain
-  ) {
-    const chainToWrite = state.multiChainEnabled ? chain : 'evm'
-
-    if (!chainToWrite) {
-      throw new Error('chainToWrite is required to set default network')
-    }
-
-    state.chains[chainToWrite].networkState.smartAccountEnabledNetworks =
-      smartAccountEnabledNetworks
-  },
-
-  setRequestedCaipNetworks(
-    requestedNetworks: ChainOptions['requestedCaipNetworks'],
-    chain?: Chain
-  ) {
-    const chainToWrite = state.multiChainEnabled ? chain : 'evm'
-
-    if (!chainToWrite) {
-      throw new Error('chainToWrite is required to set default network')
-    }
-
-    state.chains[chainToWrite].networkState = {
-      ...state.chains[chainToWrite].networkState,
-      requestedCaipNetworks: requestedNetworks
-    }
-  },
-
-  getRequestedCaipNetworks(filteredChain?: Chain) {
-    let chainAdapters: Chain[] | undefined
-
-    if (filteredChain) {
-      let chainToWrite = state.multiChainEnabled ? filteredChain : 'evm'
-
-      if (!chainToWrite) {
-        throw new Error('chainToWrite is required to set default network')
-      }
-
-      chainAdapters = [chainToWrite]
-    } else {
-      if (state.multiChainEnabled) {
-        chainAdapters = Object.keys(state.chains) as Chain[]
-      } else {
-        chainAdapters = ['evm']
-      }
-    }
-
-    const approvedIds: `${string}:${string}`[] = []
-    const requestedNetworks: CaipNetwork[] = []
-
-    chainAdapters.forEach((chn: Chain) => {
-      if (state.chains[chn].networkState.approvedCaipNetworkIds) {
-        approvedIds.push(...(state.chains[chn].networkState?.approvedCaipNetworkIds || []))
-      }
-      if (state.chains[chn].networkState.requestedCaipNetworks) {
-        requestedNetworks.push(...(state.chains[chn].networkState?.requestedCaipNetworks || []))
-      }
-    })
-
-    const sortedNetworks = CoreHelperUtil.sortRequestedNetworks(approvedIds, requestedNetworks)
-
-    return sortedNetworks
-  },
-
-  getApprovedCaipNetworkIds(chain?: Chain) {
-    // If user specifies a chain, return the approved networks for that chain
-    if (chain) {
-      let chainToWrite = state.multiChainEnabled ? chain : 'evm'
-
-      if (!chainToWrite) {
-        throw new Error('chainToWrite is required to set default network')
-      }
-
-      return state.chains[chain].networkState.approvedCaipNetworkIds
-    }
-
-    // Otherwise, return all approved networks
-    const allCaipNetworkIds: CaipNetworkId[] = []
-
-    Object.values(state.chains).forEach(adapter => {
-      if (adapter.networkState.approvedCaipNetworkIds) {
-        allCaipNetworkIds.push(...(adapter.networkState?.approvedCaipNetworkIds || []))
-      }
-    })
-
-    return allCaipNetworkIds
-  },
-
-  async setApprovedCaipNetworksData(
-    data:
-      | {
-          approvedCaipNetworkIds: `${string}:${string}`[] | undefined
-          supportsAllNetworks: boolean
-        }
-      | undefined,
-    chain?: Chain
-  ) {
-    let chainToWrite = state.multiChainEnabled ? chain : 'evm'
-
-    if (!chainToWrite) {
-      throw new Error('chainToWrite is required to set default network')
-    }
-
-    state.chains[chainToWrite].networkState = {
-      ...state.chains[chainToWrite].networkState,
-      approvedCaipNetworkIds: data?.approvedCaipNetworkIds,
-      supportsAllNetworks: data?.supportsAllNetworks || false
-    }
-  },
-
-  async switchActiveNetwork(network: NetworkControllerState['caipNetwork']) {
-    let chainToWrite = state.multiChainEnabled ? network?.chain : 'evm'
-
-    if (!chainToWrite) {
-      throw new Error('chainToWrite is required to set default network')
-    }
-
-    if (!network) {
-      throw new Error('Network is required to switch active network')
-    }
-
-    state.chains[chainToWrite].networkState = {
-      ...state.chains[chainToWrite].networkState,
-      caipNetwork: network
-    }
-    state.activeCaipNetwork = network
-    state.activeChain = chainToWrite
-    PublicStateController.set({ activeChain: chainToWrite, selectedNetworkId: network.id })
-  },
-
-  switchChain(newChain: Chain) {
-    state.activeChain = newChain
-    this.setCaipNetwork(state.chains[newChain].caipNetwork)
-    PublicStateController.set({ activeChain: newChain })
-  },
-
-  checkIfSupportedNetwork() {
-    const chainToWrite = state.multiChainEnabled ? state.activeChain : 'evm'
-
-    if (!chainToWrite) {
-      return false
-    }
-
-    const activeCaipNetwork = state.chains[chainToWrite].networkState.caipNetwork
-
-    const requestedCaipNetworks = this.getRequestedCaipNetworks()
-
-    return requestedCaipNetworks?.some(network => network.id === activeCaipNetwork?.id)
-      ? false
-      : true
-  },
-
-  resetNetwork() {
-    const chainToWrite = state.multiChainEnabled ? state.activeChain : 'evm'
-
-    if (!chainToWrite) {
-      throw new Error('chainToWrite is required to set default network')
-    }
-
-    if (!state.chains[chainToWrite].networkState.isDefaultCaipNetwork) {
-      state.chains[chainToWrite].networkState = {
-        ...state.chains[chainToWrite].networkState,
-        caipNetwork: undefined
-      }
-    }
-
-    state.chains[chainToWrite].networkState = {
-      ...state.chains[chainToWrite].networkState,
-      approvedCaipNetworkIds: undefined,
-      supportsAllNetworks: true,
-      smartAccountEnabledNetworks: []
-    }
-  },
-
-  showUnsupportedChainUI() {
-    setTimeout(() => {
-      ModalController.open({ view: 'UnsupportedChain' })
-    }, 300)
-  },
-
-  getSupportsAllNetworks() {
-    const chainToWrite = state.multiChainEnabled ? state.activeChain : 'evm'
-
-    if (!chainToWrite) {
-      throw new Error('chainToWrite is required to set default network')
-    }
-
-    return state.chains[chainToWrite].networkState.supportsAllNetworks
   }
 }

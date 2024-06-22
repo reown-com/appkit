@@ -2,7 +2,6 @@ import { DateUtil } from '@web3modal/common'
 import type { Transaction, TransactionImage } from '@web3modal/common'
 import {
   AccountController,
-  ChainController,
   EventsController,
   OptionsController,
   RouterController,
@@ -47,15 +46,12 @@ export class W3mActivityList extends LitElement {
     TransactionsController.clearCursor()
     this.unsubscribe.push(
       ...[
-        ChainController.subscribe(val => {
-          const accountState = val.activeChain
-            ? val.chains[val.activeChain]?.accountState
-            : undefined
-          if (accountState?.isConnected) {
-            if (this.address !== accountState.address) {
-              this.address = accountState.address
+        AccountController.subscribe(val => {
+          if (val.isConnected) {
+            if (this.address !== val.address) {
+              this.address = val.address
               TransactionsController.resetTransactions()
-              TransactionsController.fetchTransactions(accountState.address)
+              TransactionsController.fetchTransactions(val.address)
             }
           }
         }),

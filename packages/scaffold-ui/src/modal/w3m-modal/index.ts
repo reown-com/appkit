@@ -1,7 +1,6 @@
 import {
   AccountController,
   ApiController,
-  ChainController,
   ConnectionController,
   CoreHelperUtil,
   EventsController,
@@ -50,12 +49,8 @@ export class W3mModal extends LitElement {
         this.loading = val
         this.onNewAddress(AccountController.getProperty('caipAddress'))
       }),
-      ChainController.subscribe(val => {
-        const accountState =
-          val.activeChain && val.chains[val.activeChain] && val.chains[val.activeChain].accountState
-        this.connected = accountState?.isConnected || false
-        this.onNewAddress(accountState?.caipAddress)
-      }),
+      AccountController.subscribeKey('isConnected', val => (this.connected = val)),
+      AccountController.subscribeKey('caipAddress', val => this.onNewAddress(val)),
       OptionsController.subscribeKey('isSiweEnabled', val => (this.isSiweEnabled = val))
     )
     EventsController.sendEvent({ type: 'track', event: 'MODAL_LOADED' })

@@ -13,7 +13,6 @@ import type {
   RouterControllerState
 } from '@web3modal/core'
 import {
-  AccountController,
   BlockchainApiController,
   ConnectionController,
   ConnectorController,
@@ -27,7 +26,8 @@ import {
   SnackController,
   RouterController,
   EnsController,
-  ChainController
+  ChainController,
+  AccountController
 } from '@web3modal/core'
 import { setColorTheme, setThemeVariables } from '@web3modal/ui'
 import type { SIWEControllerClient } from '@web3modal/siwe'
@@ -116,7 +116,7 @@ export class Web3ModalScaffold {
   }
 
   public getWalletInfo() {
-    return AccountController.state.connectedWalletInfo
+    return AccountController.getProperty('connectedWalletInfo')
   }
 
   public subscribeWalletInfo(callback: (newState: ConnectedWalletInfo) => void) {
@@ -178,7 +178,7 @@ export class Web3ModalScaffold {
     AccountController.setIsConnected(isConnected)
   }
 
-  protected getIsConnectedState = () => AccountController.state.isConnected
+  protected getIsConnectedState = () => AccountController.getProperty('isConnected')
 
   protected setCaipAddress: (typeof AccountController)['setCaipAddress'] = caipAddress => {
     AccountController.setCaipAddress(caipAddress)

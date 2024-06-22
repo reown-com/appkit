@@ -36,9 +36,5 @@ export const AssetUtil = {
     }
 
     return undefined
-  },
-
-  getChainImage(imageId: string) {
-    return AssetController.state.chainImages[imageId]
   }
 }

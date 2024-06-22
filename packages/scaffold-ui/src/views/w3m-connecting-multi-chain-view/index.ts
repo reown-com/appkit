@@ -74,7 +74,7 @@ export class W3mConnectingMultiChainView extends LitElement {
 
   // Private Methods ------------------------------------- //
   private networksTemplate() {
-    const requestedCaipNetworks = ChainController.getRequestedCaipNetworks()
+    const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
     const approvedCaipNetworkIds = NetworkController.getProperty('approvedCaipNetworkIds')
     const supportsAllNetworks = NetworkController.getProperty('supportsAllNetworks')
     const chains = ChainController.state.chains
@@ -86,13 +86,13 @@ export class W3mConnectingMultiChainView extends LitElement {
 
     const networks: CaipNetwork[] | null | undefined = []
 
-    if (chains.evm) {
+    if (chains.get('evm')) {
       const network = sortedNetworks.find(element => element.name === 'Ethereum')
       if (network) {
         networks.push(network)
       }
     }
-    if (chains.solana) {
+    if (chains.get('solana')) {
       const network = sortedNetworks.find(element => element.name === 'Solana')
       if (network) {
         networks.push(network)

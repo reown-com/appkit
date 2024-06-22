@@ -10,11 +10,12 @@ import type {
   WriteContractArgs
 } from '../utils/TypeUtil.js'
 import { TransactionsController } from './TransactionsController.js'
-import { ChainController, type Chain } from './ChainController.js'
+import { ChainController } from './ChainController.js'
 import { type W3mFrameTypes } from '@web3modal/wallet'
 import { ModalController } from './ModalController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
+import type { Chain } from '@web3modal/common'
 import { NetworkController } from './NetworkController.js'
 
 // -- Types --------------------------------------------- //
@@ -75,21 +76,14 @@ export const ConnectionController = {
   },
 
   _getClient() {
-    if (ChainController.state.multiChainEnabled) {
-      const client = ChainController.getConnectionControllerClient()
+    const client = ChainController.getConnectionControllerClient()
+    console.log('>>> client', client)
 
-      if (!client) {
-        throw new Error('ConnectionController client not set')
-      }
-
-      return client
-    }
-
-    if (!state._client) {
+    if (!client) {
       throw new Error('ConnectionController client not set')
     }
 
-    return state._client as ConnectionControllerClient
+    return client
   },
 
   setClient(client: ConnectionControllerClient) {

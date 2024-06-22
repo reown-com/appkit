@@ -17,8 +17,8 @@ import { ApiController } from './ApiController.js'
 // -- Types --------------------------------------------- //
 export interface OptionsControllerState {
   projectId: ProjectId
-  sdkType?: 'w3m'
-  sdkVersion?: SdkVersion
+  sdkType: 'w3m'
+  sdkVersion: SdkVersion
   allWallets?: 'SHOW' | 'HIDE' | 'ONLY_MOBILE'
   featuredWalletIds?: string[]
   includeWalletIds?: string[]

@@ -1,5 +1,3 @@
-import { subscribeKey as subKey } from 'valtio/vanilla/utils'
-import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import type { CaipAddress, ConnectedWalletInfo, SocialProvider } from '../utils/TypeUtil.js'
 import type { Balance } from '@web3modal/common'
@@ -8,8 +6,9 @@ import { SnackController } from './SnackController.js'
 import { SwapController } from './SwapController.js'
 import { SwapApiUtil } from '../utils/SwapApiUtil.js'
 import type { W3mFrameTypes } from '@web3modal/wallet'
+import { ChainController } from './ChainController.js'
+import type { Chain } from '@web3modal/common'
 import { NetworkController } from './NetworkController.js'
-import { ChainController, type Chain } from './ChainController.js'
 
 // -- Types --------------------------------------------- //
 export interface AccountControllerState {
@@ -32,29 +31,34 @@ export interface AccountControllerState {
 
 type StateKey = keyof AccountControllerState
 
-// -- State --------------------------------------------- //
-const state = proxy<AccountControllerState>({
-  isConnected: false,
-  currentTab: 0,
-  tokenBalance: [],
-  smartAccountDeployed: false
-})
-
 // -- Controller ---------------------------------------- //
 export const AccountController = {
-  state,
-
-  subscribe(callback: (newState: AccountControllerState) => void) {
-    return sub(state, () => callback(state))
-  },
-
-  subscribeKey<K extends StateKey>(key: K, callback: (value: AccountControllerState[K]) => void) {
-    return subKey(state, key, callback)
-  },
-
-  getProperty<K extends StateKey>(key: K): AccountControllerState[K] {
-    // @ts-ignore
+  getProperty<K extends StateKey>(key: K): AccountControllerState[K] | undefined {
     return ChainController.getAccountProp(key)
+  },
+
+  subscribe(callback: (val: AccountControllerState) => void) {
+    return ChainController.subscribeChainProp('accountState', accountState => {
+      if (accountState) {
+        return callback(accountState)
+      }
+    })
+  },
+
+  subscribeKey<K extends keyof AccountControllerState>(
+    property: K,
+    callback: (val: AccountControllerState[K]) => void
+  ) {
+    let prev: AccountControllerState[K] | undefined
+    return ChainController.subscribeChainProp('accountState', accountState => {
+      if (accountState) {
+        const nextValue = accountState[property]
+        if (prev !== nextValue) {
+          prev = nextValue
+          callback(nextValue)
+        }
+      }
+    })
   },
 
   setIsConnected(isConnected: AccountControllerState['isConnected'], chain?: Chain) {
@@ -99,7 +103,7 @@ export const AccountController = {
 
   setTokenBalance(tokenBalance: AccountControllerState['tokenBalance'], chain?: Chain) {
     if (tokenBalance) {
-      ChainController.setAccountProp('tokenBalance', ref(tokenBalance), chain)
+      ChainController.setAccountProp('tokenBalance', tokenBalance, chain)
     }
   },
 
@@ -125,16 +129,17 @@ export const AccountController = {
 
   setSocialWindow(socialWindow: AccountControllerState['socialWindow'], chain?: Chain) {
     if (socialWindow) {
-      ChainController.setAccountProp('socialWindow', ref(socialWindow), chain)
+      ChainController.setAccountProp('socialWindow', socialWindow, chain)
     }
   },
 
   async fetchTokenBalance() {
     const chainId = NetworkController.activeNetwork()?.id
+    const address = AccountController.getProperty('address')
 
     try {
-      if (state.address && chainId) {
-        const response = await BlockchainApiController.getBalance(state.address, chainId)
+      if (address && chainId) {
+        const response = await BlockchainApiController.getBalance(address, chainId)
 
         const filteredBalances = response.balances.filter(
           balance => balance.quantity.decimals !== '0'

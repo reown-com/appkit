@@ -1,7 +1,6 @@
 import {
   AccountController,
   AssetUtil,
-  ChainController,
   CoreHelperUtil,
   NetworkController,
   RouterController,
@@ -34,14 +33,11 @@ export class W3mWalletReceiveView extends LitElement {
     super()
     this.unsubscribe.push(
       ...[
-        ChainController.subscribe(val => {
-          const accountState = val.activeChain
-            ? val.chains[val.activeChain]?.accountState
-            : undefined
-          if (accountState?.address) {
-            this.address = accountState.address
-            this.profileName = accountState.profileName
-            this.preferredAccountType = accountState.preferredAccountType
+        AccountController.subscribe(val => {
+          if (val.address) {
+            this.address = val.address
+            this.profileName = val.profileName
+            this.preferredAccountType = val.preferredAccountType
           } else {
             SnackController.showError('Account not found')
           }
@@ -108,7 +104,7 @@ export class W3mWalletReceiveView extends LitElement {
 
   // -- Private ------------------------------------------- //
   networkTemplate() {
-    const requestedCaipNetworks = ChainController.getRequestedCaipNetworks()
+    const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
     const isNetworkEnabledForSmartAccounts = NetworkController.checkIfSmartAccountEnabled()
     const caipNetwork = NetworkController.activeNetwork()
 

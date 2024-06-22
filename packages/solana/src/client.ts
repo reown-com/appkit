@@ -3,6 +3,7 @@ import { Web3ModalScaffold } from '@web3modal/scaffold'
 import {
   ApiController,
   AssetController,
+  ChainController,
   CoreHelperUtil,
   EventsController,
   NetworkController,
@@ -28,6 +29,7 @@ import type {
   CaipAddress,
   CaipNetwork
 } from '@web3modal/scaffold'
+import type { Chain as AvailableChain } from '@web3modal/common'
 
 import type { AdapterKey } from './connectors/walletAdapters.js'
 import type { ProviderType, Chain, Provider, SolStoreUtilState } from './utils/scaffold/index.js'
@@ -52,6 +54,8 @@ export class Web3Modal extends Web3ModalScaffold {
   private walletAdapters: Record<AdapterKey, BaseWalletAdapter>
 
   private chains: Chain[]
+
+  private chain: AvailableChain = 'solana'
 
   public connectionSettings: Commitment | ConnectionConfig
 
@@ -232,7 +236,7 @@ export class Web3Modal extends Web3ModalScaffold {
       this.syncNetwork(chainImages)
     })
 
-    NetworkController.subscribeKey('caipNetwork', () => {
+    ChainController.subscribeKey('activeCaipNetwork', () => {
       if (NetworkController.activeNetwork() && !SolStoreUtil.state.isConnected) {
         SolStoreUtil.setCaipChainId(`solana:${chain.chainId}`)
         SolStoreUtil.setCurrentChain(chain)
@@ -360,7 +364,7 @@ export class Web3Modal extends Web3ModalScaffold {
         imageUrl: 'https://avatars.githubusercontent.com/u/37784886',
         name: this.WalletConnectConnector.name,
         provider: this.WalletConnectConnector.getProvider(),
-        chain: 'solana'
+        chain: this.chain
       })
     }
 
@@ -410,7 +414,7 @@ export class Web3Modal extends Web3ModalScaffold {
           name: chain.name,
           imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId],
           imageUrl: chainImages?.[chain.chainId],
-          chain: 'solana'
+          chain: this.chain
         }) as CaipNetwork
     )
     this.setRequestedCaipNetworks(requestedCaipNetworks ?? [])
@@ -472,7 +476,7 @@ export class Web3Modal extends Web3ModalScaffold {
           name: chain.name,
           imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId],
           imageUrl: chainImages?.[chain.chainId],
-          chain: 'solana'
+          chain: this.chain
         })
         if (isConnected && address) {
           if (chain.explorerUrl) {
