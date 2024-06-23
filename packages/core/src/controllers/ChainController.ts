@@ -2,8 +2,8 @@ import { proxyMap, subscribeKey as subKey } from 'valtio/utils'
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
 import type { CaipNetwork, CaipNetworkId, ChainAdapter, Connector } from '../utils/TypeUtil.js'
 
-import { type NetworkControllerState } from './NetworkController.js'
-import { type AccountControllerState } from './AccountController.js'
+import { NetworkController, type NetworkControllerState } from './NetworkController.js'
+import { AccountController, type AccountControllerState } from './AccountController.js'
 import { PublicStateController } from './PublicStateController.js'
 import { type Chain } from '@web3modal/common'
 
@@ -131,6 +131,7 @@ export const ChainController = {
     if (chainAdapter) {
       chainAdapter.networkState = { ...chainAdapter.networkState, ...props }
       state.chains.set(chain, chainAdapter)
+      NetworkController.replaceState(chainAdapter.networkState)
     }
   },
 
@@ -144,6 +145,7 @@ export const ChainController = {
     if (chainAdapter) {
       chainAdapter.accountState = { ...chainAdapter.accountState, ...accountProps }
       state.chains.set(chain, chainAdapter)
+      AccountController.replaceState(chainAdapter.accountState)
     }
   },
 

@@ -99,7 +99,7 @@ export const SendController = {
         event: 'SEND_INITIATED',
         properties: {
           isSmartAccount:
-            AccountController.getProperty('preferredAccountType') ===
+            AccountController.state.preferredAccountType ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           token: this.state.token.address,
           amount: this.state.sendTokenAmount,
@@ -123,7 +123,7 @@ export const SendController = {
         event: 'SEND_INITIATED',
         properties: {
           isSmartAccount:
-            AccountController.getProperty('preferredAccountType') ===
+            AccountController.state.preferredAccountType ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           token: this.state.token?.symbol,
           amount: this.state.sendTokenAmount,
@@ -146,7 +146,7 @@ export const SendController = {
     })
 
     const to = params.receiverAddress as `0x${string}`
-    const address = AccountController.getProperty('address') as `0x${string}`
+    const address = AccountController.state.address as `0x${string}`
     const value = ConnectionController.parseUnits(
       params.sendTokenAmount.toString(),
       Number(params.decimals)
@@ -167,7 +167,7 @@ export const SendController = {
         event: 'SEND_SUCCESS',
         properties: {
           isSmartAccount:
-            AccountController.getProperty('preferredAccountType') ===
+            AccountController.state.preferredAccountType ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           token: this.state.token?.symbol || '',
           amount: params.sendTokenAmount,
@@ -181,7 +181,7 @@ export const SendController = {
         event: 'SEND_ERROR',
         properties: {
           isSmartAccount:
-            AccountController.getProperty('preferredAccountType') ===
+            AccountController.state.preferredAccountType ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           token: this.state.token?.symbol || '',
           amount: params.sendTokenAmount,
@@ -205,13 +205,13 @@ export const SendController = {
 
     try {
       if (
-        AccountController.getProperty('address') &&
+        AccountController.state.address &&
         params.sendTokenAmount &&
         params.receiverAddress &&
         params.tokenAddress
       ) {
         await ConnectionController.writeContract({
-          fromAddress: AccountController.getProperty('address') as `0x${string}`,
+          fromAddress: AccountController.state.address as `0x${string}`,
           tokenAddress: CoreHelperUtil.getPlainAddress(
             params.tokenAddress as `${string}:${string}:${string}`
           ) as `0x${string}`,

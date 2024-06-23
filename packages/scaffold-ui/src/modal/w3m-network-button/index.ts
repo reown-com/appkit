@@ -24,11 +24,11 @@ export class W3mNetworkButton extends LitElement {
 
   @state() private network = NetworkController.activeNetwork()
 
-  @state() private connected = AccountController.getProperty('isConnected')
+  @state() private connected = AccountController.state.isConnected
 
   @state() private loading = ModalController.state.loading
 
-  @state() private isUnsupportedChain = NetworkController.getProperty('isUnsupportedChain')
+  @state() private isUnsupportedChain = NetworkController.state.isUnsupportedChain
 
   // -- Lifecycle ----------------------------------------- //
   public constructor() {

@@ -26,19 +26,19 @@ export class W3mAccountButton extends LitElement {
 
   @property() public charsEnd?: WuiAccountButton['charsEnd'] = 6
 
-  @state() private address = AccountController.getProperty('address')
+  @state() private address = AccountController.state.address
 
-  @state() private balanceVal = AccountController.getProperty('balance')
+  @state() private balanceVal = AccountController.state.balance
 
-  @state() private balanceSymbol = AccountController.getProperty('balanceSymbol')
+  @state() private balanceSymbol = AccountController.state.balanceSymbol
 
-  @state() private profileName = AccountController.getProperty('profileName')
+  @state() private profileName = AccountController.state.profileName
 
-  @state() private profileImage = AccountController.getProperty('profileImage')
+  @state() private profileImage = AccountController.state.profileImage
 
   @state() private network = NetworkController.activeNetwork()
 
-  @state() private isUnsupportedChain = NetworkController.getProperty('isUnsupportedChain')
+  @state() private isUnsupportedChain = NetworkController.state.isUnsupportedChain
 
   // -- Lifecycle ----------------------------------------- //
   public constructor() {

@@ -31,11 +31,11 @@ export class W3mModal extends LitElement {
   // -- State & Properties -------------------------------- //
   @state() private open = ModalController.state.open
 
-  @state() private caipAddress = AccountController.getProperty('caipAddress')
+  @state() private caipAddress = AccountController.state.caipAddress
 
   @state() private isSiweEnabled = OptionsController.state.isSiweEnabled
 
-  @state() private connected = AccountController.getProperty('isConnected')
+  @state() private connected = AccountController.state.isConnected
 
   @state() private loading = ModalController.state.loading
 
@@ -47,7 +47,7 @@ export class W3mModal extends LitElement {
       ModalController.subscribeKey('open', val => (val ? this.onOpen() : this.onClose())),
       ModalController.subscribeKey('loading', val => {
         this.loading = val
-        this.onNewAddress(AccountController.getProperty('caipAddress'))
+        this.onNewAddress(AccountController.state.caipAddress)
       }),
       AccountController.subscribeKey('isConnected', val => (this.connected = val)),
       AccountController.subscribeKey('caipAddress', val => this.onNewAddress(val)),

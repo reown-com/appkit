@@ -20,7 +20,7 @@ export class W3mSendSelectTokenView extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() private tokenBalance = AccountController.getProperty('tokenBalance')
+  @state() private tokenBalance = AccountController.state.tokenBalance
 
   @state() private tokens?: Balance[]
 

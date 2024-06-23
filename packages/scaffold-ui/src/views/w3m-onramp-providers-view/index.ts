@@ -86,14 +86,14 @@ export class W3mOnRampProvidersView extends LitElement {
       properties: {
         provider: provider.name,
         isSmartAccount:
-          AccountController.getProperty('preferredAccountType') ===
+          AccountController.state.preferredAccountType ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })
   }
 
   private async getCoinbaseOnRampURL() {
-    const address = AccountController.getProperty('address')
+    const address = AccountController.state.address
     const network = NetworkController.activeNetwork()
 
     if (!address) {

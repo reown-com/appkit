@@ -136,7 +136,7 @@ export class W3mConnectingSiweView extends LitElement {
   }
 
   private async onCancel() {
-    const isConnected = AccountController.getProperty('isConnected')
+    const isConnected = AccountController.state.isConnected
     if (isConnected) {
       await ConnectionController.disconnect()
       ModalController.close()
@@ -149,7 +149,7 @@ export class W3mConnectingSiweView extends LitElement {
       properties: {
         network: NetworkController.activeNetwork()?.id || '',
         isSmartAccount:
-          AccountController.getProperty('preferredAccountType') ===
+          AccountController.state.preferredAccountType ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })

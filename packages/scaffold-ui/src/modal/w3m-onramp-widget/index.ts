@@ -22,7 +22,7 @@ export class W3mOnrampWidget extends LitElement {
   // -- State & Properties -------------------------------- //
   @property({ type: Boolean }) public disabled? = false
 
-  @state() private connected = AccountController.getProperty('isConnected')
+  @state() private connected = AccountController.state.isConnected
 
   @state() private loading = ModalController.state.loading
 

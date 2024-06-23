@@ -116,7 +116,7 @@ export class Web3ModalScaffold {
   }
 
   public getWalletInfo() {
-    return AccountController.getProperty('connectedWalletInfo')
+    return AccountController.state.connectedWalletInfo
   }
 
   public subscribeWalletInfo(callback: (newState: ConnectedWalletInfo) => void) {
@@ -178,7 +178,7 @@ export class Web3ModalScaffold {
     AccountController.setIsConnected(isConnected)
   }
 
-  protected getIsConnectedState = () => AccountController.getProperty('isConnected')
+  protected getIsConnectedState = () => AccountController.state.isConnected
 
   protected setCaipAddress: (typeof AccountController)['setCaipAddress'] = caipAddress => {
     AccountController.setCaipAddress(caipAddress)

@@ -84,7 +84,7 @@ export const TransactionsController = {
           projectId,
           cursor: state.next,
           isSmartAccount:
-            AccountController.getProperty('preferredAccountType') ===
+            AccountController.state.preferredAccountType ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
         }
       })

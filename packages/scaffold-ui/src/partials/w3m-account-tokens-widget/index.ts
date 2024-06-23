@@ -13,7 +13,7 @@ export class W3mAccountTokensWidget extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() private tokenBalance = AccountController.getProperty('tokenBalance')
+  @state() private tokenBalance = AccountController.state.tokenBalance
 
   public constructor() {
     super()
@@ -87,7 +87,7 @@ export class W3mAccountTokensWidget extends LitElement {
       event: 'SELECT_BUY_CRYPTO',
       properties: {
         isSmartAccount:
-          AccountController.getProperty('preferredAccountType') ===
+          AccountController.state.preferredAccountType ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })

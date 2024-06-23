@@ -171,14 +171,14 @@ export const SwapController = {
 
   getParams() {
     const caipNetwork = NetworkController.activeNetwork()
-    const address = AccountController.getProperty('address')
+    const address = AccountController.state.address
     const networkAddress = `${caipNetwork?.id}:${ConstantsUtil.NATIVE_TOKEN_ADDRESS}`
 
     if (!address) {
       throw new Error('No address found to swap the tokens from.')
     }
 
-    const caipAddress = AccountController.getProperty('caipAddress')
+    const caipAddress = AccountController.state.caipAddress
     const invalidToToken = !state.toToken?.address || !state.toToken?.decimals
     const invalidSourceToken =
       !state.sourceToken?.address ||
@@ -189,7 +189,7 @@ export const SwapController = {
     return {
       networkAddress,
       fromAddress: address,
-      fromCaipAddress: AccountController.getProperty('caipAddress'),
+      fromCaipAddress: AccountController.state.caipAddress,
       sourceTokenAddress: state.sourceToken?.address,
       toTokenAddress: state.toToken?.address,
       toTokenAmount: state.toTokenAmount,
@@ -457,7 +457,7 @@ export const SwapController = {
 
   // -- Swap -------------------------------------- //
   async swapTokens() {
-    const address = AccountController.getProperty('address') as `${string}:${string}:${string}`
+    const address = AccountController.state.address as `${string}:${string}:${string}`
     const sourceToken = state.sourceToken
     const toToken = state.toToken
     const haveSourceTokenAmount = NumberUtil.bigNumber(state.sourceTokenAmount).isGreaterThan(0)
@@ -734,7 +734,7 @@ export const SwapController = {
           swapfromAmount: this.state.sourceTokenAmount || '',
           swapToAmount: this.state.toTokenAmount || '',
           isSmartAccount:
-            AccountController.getProperty('preferredAccountType') ===
+            AccountController.state.preferredAccountType ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
         }
       })
@@ -757,7 +757,7 @@ export const SwapController = {
           swapfromAmount: this.state.sourceTokenAmount || '',
           swapToAmount: this.state.toTokenAmount || '',
           isSmartAccount:
-            AccountController.getProperty('preferredAccountType') ===
+            AccountController.state.preferredAccountType ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
         }
       })

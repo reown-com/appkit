@@ -30,7 +30,7 @@ export class W3mActivityList extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() public page: 'account' | 'activity' = 'activity'
 
-  @state() private address: string | undefined = AccountController.getProperty('address')
+  @state() private address: string | undefined = AccountController.state.address
 
   @state() private transactionsByYear = TransactionsController.state.transactionsByYear
 
@@ -281,7 +281,7 @@ export class W3mActivityList extends LitElement {
             projectId,
             cursor: this.next,
             isSmartAccount:
-              AccountController.getProperty('preferredAccountType') ===
+              AccountController.state.preferredAccountType ===
               W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
           }
         })

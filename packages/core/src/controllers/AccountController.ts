@@ -9,6 +9,7 @@ import type { W3mFrameTypes } from '@web3modal/wallet'
 import { ChainController } from './ChainController.js'
 import type { Chain } from '@web3modal/common'
 import { NetworkController } from './NetworkController.js'
+import { proxy } from 'valtio'
 
 // -- Types --------------------------------------------- //
 export interface AccountControllerState {
@@ -31,8 +32,22 @@ export interface AccountControllerState {
 
 type StateKey = keyof AccountControllerState
 
+// -- State --------------------------------------------- //
+const state = proxy<AccountControllerState>({
+  isConnected: false,
+  currentTab: 0,
+  tokenBalance: [],
+  smartAccountDeployed: false
+})
+
 // -- Controller ---------------------------------------- //
 export const AccountController = {
+  state,
+
+  replaceState(newState: AccountControllerState) {
+    Object.assign(state, newState)
+  },
+
   getProperty<K extends StateKey>(key: K): AccountControllerState[K] | undefined {
     return ChainController.getAccountProp(key)
   },
@@ -135,7 +150,7 @@ export const AccountController = {
 
   async fetchTokenBalance() {
     const chainId = NetworkController.activeNetwork()?.id
-    const address = AccountController.getProperty('address')
+    const address = AccountController.state.address
 
     try {
       if (address && chainId) {

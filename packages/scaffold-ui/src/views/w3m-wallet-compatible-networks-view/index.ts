@@ -14,7 +14,7 @@ export class W3mWalletCompatibleNetworksView extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() private preferredAccountType = AccountController.getProperty('preferredAccountType')
+  @state() private preferredAccountType = AccountController.state.preferredAccountType
 
   public constructor() {
     super()
@@ -47,8 +47,8 @@ export class W3mWalletCompatibleNetworksView extends LitElement {
   // -- Private ------------------------------------------- //
   networkTemplate() {
     const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
-    const approvedCaipNetworkIds = NetworkController.getProperty('approvedCaipNetworkIds')
-    const caipNetwork = NetworkController.getProperty('caipNetwork')
+    const approvedCaipNetworkIds = NetworkController.state.approvedCaipNetworkIds
+    const caipNetwork = NetworkController.state.caipNetwork
     const isNetworkEnabledForSmartAccounts = NetworkController.checkIfSmartAccountEnabled()
 
     let sortedNetworks = CoreHelperUtil.sortRequestedNetworks(

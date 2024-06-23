@@ -155,9 +155,7 @@ describe('EnsController', () => {
     await EnsController.registerName('newname')
     expect(getAuthConnectorSpy).toHaveBeenCalled()
     expect(signMessageSpy).toHaveBeenCalledWith(message)
-    expect(AccountController.getProperty('profileName')).toBe(
-      `newname${ConstantsUtil.WC_NAME_SUFFIX}`
-    )
+    expect(AccountController.state.profileName).toBe(`newname${ConstantsUtil.WC_NAME_SUFFIX}`)
     expect(EnsController.state.loading).toBe(false)
   })
 

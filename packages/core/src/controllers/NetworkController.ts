@@ -1,4 +1,3 @@
-import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy } from 'valtio/vanilla'
 import type { CaipNetwork, CaipNetworkId } from '../utils/TypeUtil.js'
 import { PublicStateController } from './PublicStateController.js'
@@ -41,6 +40,10 @@ const state = proxy<NetworkControllerState>({
 // -- Controller ---------------------------------------- //
 export const NetworkController = {
   state,
+
+  replaceState(newState: NetworkControllerState) {
+    Object.assign(state, newState)
+  },
 
   getProperty<K extends StateKey>(key: K): NetworkControllerState[K] | undefined {
     return ChainController.getNetworkProp(key)

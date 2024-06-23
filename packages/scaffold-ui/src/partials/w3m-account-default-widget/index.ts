@@ -28,19 +28,19 @@ export class W3mAccountDefaultWidget extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() public address = AccountController.getProperty('address')
+  @state() public address = AccountController.state.address
 
-  @state() private profileImage = AccountController.getProperty('profileImage')
+  @state() private profileImage = AccountController.state.profileImage
 
-  @state() private profileName = AccountController.getProperty('profileName')
+  @state() private profileName = AccountController.state.profileName
 
   @state() private network = NetworkController.activeNetwork()
 
   @state() private disconnecting = false
 
-  @state() private balance = AccountController.getProperty('balance')
+  @state() private balance = AccountController.state.balance
 
-  @state() private balanceSymbol = AccountController.getProperty('balanceSymbol')
+  @state() private balanceSymbol = AccountController.state.balanceSymbol
 
   public constructor() {
     super()
@@ -204,7 +204,7 @@ export class W3mAccountDefaultWidget extends LitElement {
   }
 
   private explorerBtnTemplate() {
-    const addressExplorerUrl = AccountController.getProperty('addressExplorerUrl')
+    const addressExplorerUrl = AccountController.state.addressExplorerUrl
 
     if (!addressExplorerUrl) {
       return null
@@ -251,7 +251,7 @@ export class W3mAccountDefaultWidget extends LitElement {
       event: 'CLICK_TRANSACTIONS',
       properties: {
         isSmartAccount:
-          AccountController.getProperty('preferredAccountType') ===
+          AccountController.state.preferredAccountType ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })
@@ -273,7 +273,7 @@ export class W3mAccountDefaultWidget extends LitElement {
   }
 
   private onExplorer() {
-    const addressExplorerUrl = AccountController.getProperty('addressExplorerUrl')
+    const addressExplorerUrl = AccountController.state.addressExplorerUrl
 
     if (addressExplorerUrl) {
       CoreHelperUtil.openHref(addressExplorerUrl, '_blank')

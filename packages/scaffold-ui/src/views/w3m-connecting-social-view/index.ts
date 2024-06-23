@@ -25,9 +25,9 @@ export class W3mConnectingSocialView extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() private socialProvider = AccountController.getProperty('socialProvider')
+  @state() private socialProvider = AccountController.state.socialProvider
 
-  @state() private socialWindow = AccountController.getProperty('socialWindow')
+  @state() private socialWindow = AccountController.state.socialWindow
 
   @state() protected error = false
 

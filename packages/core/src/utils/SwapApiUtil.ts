@@ -89,7 +89,7 @@ export const SwapApiUtil = {
   },
 
   async getMyTokensWithBalance(forceUpdate?: string) {
-    const address = AccountController.getProperty('address')
+    const address = AccountController.state.address
     const caipNetwork = NetworkController.activeNetwork()
 
     if (!address || !caipNetwork) {

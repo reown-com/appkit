@@ -299,7 +299,7 @@ export class W3mSwapView extends LitElement {
         swapfromAmount: this.sourceTokenAmount || '',
         swapToAmount: this.toTokenAmount || '',
         isSmartAccount:
-          AccountController.getProperty('preferredAccountType') ===
+          AccountController.state.preferredAccountType ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })

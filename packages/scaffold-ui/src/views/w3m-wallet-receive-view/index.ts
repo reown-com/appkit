@@ -21,13 +21,13 @@ export class W3mWalletReceiveView extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() private address = AccountController.getProperty('address')
+  @state() private address = AccountController.state.address
 
-  @state() private profileName = AccountController.getProperty('profileName')
+  @state() private profileName = AccountController.state.profileName
 
   @state() private network = NetworkController.activeNetwork()
 
-  @state() private preferredAccountType = AccountController.getProperty('preferredAccountType')
+  @state() private preferredAccountType = AccountController.state.preferredAccountType
 
   public constructor() {
     super()

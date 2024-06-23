@@ -29,7 +29,7 @@ export class W3mButton extends LitElement {
 
   @property() public charsEnd?: W3mAccountButton['charsEnd'] = 6
 
-  @state() private isAccount = AccountController.getProperty('isConnected')
+  @state() private isAccount = AccountController.state.isConnected
 
   @state() private isLoading = ModalController.state.loading
 

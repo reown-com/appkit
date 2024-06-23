@@ -17,7 +17,7 @@ export class W3mEmailVerifyOtpView extends W3mEmailOtpWidget {
   private unsubscribe: (() => void)[] = []
 
   // -- State ------------------------------------------- //
-  @state() private smartAccountDeployed = AccountController.getProperty('smartAccountDeployed')
+  @state() private smartAccountDeployed = AccountController.state.smartAccountDeployed
 
   public constructor() {
     super()

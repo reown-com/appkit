@@ -30,21 +30,21 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() private address = AccountController.getProperty('address')
+  @state() private address = AccountController.state.address
 
-  @state() private profileImage = AccountController.getProperty('profileImage')
+  @state() private profileImage = AccountController.state.profileImage
 
-  @state() private profileName = AccountController.getProperty('profileName')
+  @state() private profileName = AccountController.state.profileName
 
-  @state() private smartAccountDeployed = AccountController.getProperty('smartAccountDeployed')
+  @state() private smartAccountDeployed = AccountController.state.smartAccountDeployed
 
   @state() private network = NetworkController.activeNetwork()
 
-  @state() private currentTab = AccountController.getProperty('currentTab')
+  @state() private currentTab = AccountController.state.currentTab
 
-  @state() private tokenBalance = AccountController.getProperty('tokenBalance')
+  @state() private tokenBalance = AccountController.state.tokenBalance
 
-  @state() private preferredAccountType = AccountController.getProperty('preferredAccountType')
+  @state() private preferredAccountType = AccountController.state.preferredAccountType
 
   public constructor() {
     super()
@@ -206,7 +206,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
         properties: {
           network: this.network?.id || '',
           isSmartAccount:
-            AccountController.getProperty('preferredAccountType') ===
+            AccountController.state.preferredAccountType ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
         }
       })
@@ -225,7 +225,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
       properties: {
         network: this.network?.id || '',
         isSmartAccount:
-          AccountController.getProperty('preferredAccountType') ===
+          AccountController.state.preferredAccountType ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })
