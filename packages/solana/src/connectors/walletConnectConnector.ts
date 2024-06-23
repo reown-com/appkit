@@ -11,6 +11,11 @@ import type UniversalProvider from '@walletconnect/universal-provider'
 
 import type { Connector } from './baseConnector.js'
 import type { Chain } from '../utils/scaffold/SolanaTypesUtil.js'
+import {
+  getChainsFromChainId,
+  getDefaultChainFromSession,
+  type ChainIDType
+} from '../utils/chainPath/index.js'
 
 export interface WalletConnectAppMetadata {
   name: string
@@ -216,14 +221,13 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
 
       return acc
     }, {})
-    const chainsNamespaces = [`solana:${chainId}`]
     const rpcMap = {
       [chainId]: rpcs[chainId] ?? ''
     }
 
     return {
       solana: {
-        chains: [...chainsNamespaces],
+        chains: getChainsFromChainId(`solana:${chainId}` as ChainIDType),
         methods: ['solana_signMessage', 'solana_signTransaction'],
         events: [],
         rpcMap
@@ -232,7 +236,8 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
   }
 
   public async connect(useURI?: boolean) {
-    const solanaNamespace = this.generateNamespaces(SolStoreUtil.state.currentChain?.chainId ?? '')
+    const currentChainId = SolStoreUtil.state.currentChain?.chainId
+    const solanaNamespace = this.generateNamespaces(currentChainId ?? '')
 
     const provider = await UniversalProviderFactory.getProvider()
 
@@ -245,16 +250,20 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
       // Without namespaces provider.enable() will not work (reconnect flow)
       provider
         .connect({
-          pairingTopic: undefined,
-          namespaces: solanaNamespace,
           optionalNamespaces: solanaNamespace
         })
-        .then(providerResult => {
-          if (!providerResult) {
+        .then(session => {
+          if (!session) {
             throw new Error('Failed connection.')
           }
-          const address = providerResult.namespaces['solana']?.accounts[0]?.split(':')[2] ?? null
+          const address = session.namespaces['solana']?.accounts[0]?.split(':')[2] ?? null
           if (address && this.qrcode) {
+            const defaultChain = getDefaultChainFromSession(
+              session,
+              `solana:${currentChainId}` as ChainIDType
+            )
+            provider.setDefaultChain(defaultChain)
+
             resolve(address)
           } else {
             reject(new Error('Could not resolve address'))
