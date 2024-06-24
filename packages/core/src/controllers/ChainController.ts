@@ -8,14 +8,6 @@ import { PublicStateController } from './PublicStateController.js'
 import { ConstantsUtil, type Chain } from '@web3modal/common'
 
 // -- Types --------------------------------------------- //
-
-export type ChainOptions = {
-  requestedCaipNetworks?: CaipNetwork[]
-  approvedCaipNetworkIds?: CaipNetworkId[]
-  caipNetwork?: CaipNetwork
-  defaultCaipNetwork?: CaipNetwork
-}
-
 export interface ChainControllerState {
   multiChainEnabled: boolean
   activeChain: Chain | undefined
@@ -24,7 +16,12 @@ export interface ChainControllerState {
   activeConnector?: Connector
 }
 
-type StateKey = keyof ChainControllerState
+type ChainControllerStateKey = keyof ChainControllerState
+
+type ChainsInitializerAdapter = Pick<
+  ChainAdapter,
+  'connectionControllerClient' | 'networkControllerClient' | 'chain'
+>
 
 // -- Constants ----------------------------------------- //
 const accountState: AccountControllerState = {
@@ -74,11 +71,10 @@ const state = proxy<ChainControllerState>({
 export const ChainController = {
   state,
 
-  subscribe(callback: (newState: ChainControllerState) => void) {
-    return sub(state, () => callback(state))
-  },
-
-  subscribeKey<K extends StateKey>(key: K, callback: (value: ChainControllerState[K]) => void) {
+  subscribeKey<K extends ChainControllerStateKey>(
+    key: K,
+    callback: (value: ChainControllerState[K]) => void
+  ) {
     return subKey(state, key, callback)
   },
 
@@ -109,19 +105,27 @@ export const ChainController = {
     })
   },
 
-  getConnectionControllerClient() {
-    if (!state.activeChain) {
-      throw new Error('Chain is required to get connection controller client')
-    }
+  initialize(adapters: ChainsInitializerAdapter[]) {
+    const firstChainToActivate = adapters?.[0]?.chain || ConstantsUtil.CHAIN.EVM
 
-    return state.chains.get(state.activeChain)?.connectionControllerClient
+    state.activeChain = firstChainToActivate
+
+    adapters.forEach((adapter: ChainsInitializerAdapter) => {
+      state.chains.set(adapter.chain, {
+        chain: adapter.chain,
+        connectionControllerClient: adapter.connectionControllerClient,
+        networkControllerClient: adapter.networkControllerClient,
+        accountState,
+        networkState
+      })
+    })
   },
 
   setMultiChainEnabled(multiChain: boolean) {
     state.multiChainEnabled = multiChain
   },
 
-  updateChainNetworkData(chain: Chain | undefined, props: Partial<NetworkControllerState>) {
+  setChainNetworkData(chain: Chain | undefined, props: Partial<NetworkControllerState>) {
     if (!chain) {
       throw new Error('Chain is required to update chain network data')
     }
@@ -135,7 +139,7 @@ export const ChainController = {
     }
   },
 
-  updateChainAccountData(chain: Chain | undefined, accountProps: Partial<AccountControllerState>) {
+  setChainAccountData(chain: Chain | undefined, accountProps: Partial<AccountControllerState>) {
     if (!chain) {
       throw new Error('Chain is required to update chain network data')
     }
@@ -146,6 +150,32 @@ export const ChainController = {
       chainAdapter.accountState = { ...chainAdapter.accountState, ...accountProps }
       state.chains.set(chain, chainAdapter)
       AccountController.replaceState(chainAdapter.accountState)
+    }
+  },
+
+  setAccountProp(
+    prop: keyof AccountControllerState,
+    value: AccountControllerState[keyof AccountControllerState],
+    chain?: Chain
+  ) {
+    this.setChainAccountData(state.multiChainEnabled ? chain : ConstantsUtil.CHAIN.EVM, {
+      [prop]: value
+    })
+  },
+
+  setActiveChain(_chain?: Chain) {
+    if (_chain) {
+      state.activeChain = _chain
+      PublicStateController.set({ activeChain: _chain })
+      if (!state.activeCaipNetwork) {
+        state.activeCaipNetwork = state.chains.get(_chain)?.networkState.requestedCaipNetworks?.[0]
+      }
+    }
+  },
+
+  setActiveConnector(connector: ChainControllerState['activeConnector']) {
+    if (connector) {
+      state.activeConnector = ref(connector)
     }
   },
 
@@ -169,20 +199,12 @@ export const ChainController = {
     return chainAdapter.networkControllerClient
   },
 
-  initialize(adapters: ChainAdapter[]) {
-    const firstChainToActivate = adapters?.[0]?.chain || ConstantsUtil.CHAIN.EVM
+  getConnectionControllerClient() {
+    if (!state.activeChain) {
+      throw new Error('Chain is required to get connection controller client')
+    }
 
-    state.activeChain = firstChainToActivate
-
-    adapters.forEach((adapter: ChainAdapter) => {
-      state.chains.set(adapter.chain, {
-        chain: adapter.chain,
-        connectionControllerClient: adapter.connectionControllerClient,
-        networkControllerClient: adapter.networkControllerClient,
-        accountState,
-        networkState
-      })
-    })
+    return state.chains.get(state.activeChain)?.connectionControllerClient
   },
 
   getAccountProp<K extends keyof AccountControllerState>(
@@ -221,33 +243,6 @@ export const ChainController = {
     return networkState[key]
   },
 
-  setAccountProp(
-    prop: keyof AccountControllerState,
-    value: AccountControllerState[keyof AccountControllerState],
-    chain?: Chain
-  ) {
-    this.updateChainAccountData(state.multiChainEnabled ? chain : ConstantsUtil.CHAIN.EVM, {
-      [prop]: value
-    })
-  },
-
-  setActiveChain(_chain?: Chain) {
-    if (_chain) {
-      state.activeChain = _chain
-      PublicStateController.set({ activeChain: _chain })
-      if (!state.activeCaipNetwork) {
-        state.activeCaipNetwork = state.chains.get(_chain)?.networkState.requestedCaipNetworks?.[0]
-      }
-    }
-  },
-
-  setActiveConnector(connector: ChainControllerState['activeConnector']) {
-    if (connector) {
-      state.activeConnector = ref(connector)
-    }
-  },
-
-  // -- AccountController methods ----------------------- //
   resetAccount(chain?: Chain) {
     const chainToWrite = state.multiChainEnabled ? chain : ConstantsUtil.CHAIN.EVM
 
@@ -255,7 +250,7 @@ export const ChainController = {
       throw new Error('Chain is required to set account prop')
     }
 
-    this.updateChainAccountData(chainToWrite, {
+    this.setChainAccountData(chainToWrite, {
       isConnected: false,
       smartAccountDeployed: false,
       currentTab: 0,

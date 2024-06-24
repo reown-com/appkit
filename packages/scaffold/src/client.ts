@@ -285,18 +285,7 @@ export class Web3ModalScaffold {
       {
         networkControllerClient: options.networkControllerClient,
         connectionControllerClient: options.connectionControllerClient,
-        chain: ConstantsUtil.CHAIN.EVM,
-        accountState: {
-          isConnected: false,
-          currentTab: 0,
-          tokenBalance: [],
-          smartAccountDeployed: false
-        },
-        networkState: {
-          supportsAllNetworks: true,
-          isDefaultCaipNetwork: false,
-          smartAccountEnabledNetworks: []
-        }
+        chain: ConstantsUtil.CHAIN.EVM
       }
     ])
     NetworkController.setClient(options.networkControllerClient)

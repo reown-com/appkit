@@ -80,7 +80,7 @@ export const NetworkController = {
   },
 
   setClient(client: NetworkControllerClient, chain?: Chain) {
-    ChainController.updateChainNetworkData(
+    ChainController.setChainNetworkData(
       ChainController.state.multiChainEnabled ? chain : ConstantsUtil.CHAIN.EVM,
       { _client: client }
     )
@@ -101,7 +101,7 @@ export const NetworkController = {
 
     ChainController.state.activeCaipNetwork = caipNetwork
     ChainController.state.activeChain = chain
-    ChainController.updateChainNetworkData(chain, { caipNetwork })
+    ChainController.setChainNetworkData(chain, { caipNetwork })
     PublicStateController.set({ activeChain: chain, selectedNetworkId: caipNetwork?.id })
 
     if (!ChainController.state.chains.get(chain)?.networkState.allowUnsupportedChain) {
@@ -118,7 +118,7 @@ export const NetworkController = {
 
     ChainController.state.activeCaipNetwork = caipNetwork
     ChainController.state.activeChain = chainToSet
-    ChainController.updateChainNetworkData(chainToSet, { caipNetwork, isDefaultCaipNetwork: true })
+    ChainController.setChainNetworkData(chainToSet, { caipNetwork, isDefaultCaipNetwork: true })
     PublicStateController.set({ selectedNetworkId: caipNetwork?.id, activeChain: chain })
   },
 
@@ -126,7 +126,7 @@ export const NetworkController = {
     requestedNetworks: NetworkControllerState['requestedCaipNetworks'],
     chain?: Chain
   ) {
-    ChainController.updateChainNetworkData(
+    ChainController.setChainNetworkData(
       ChainController.state.multiChainEnabled ? chain : ConstantsUtil.CHAIN.EVM,
       { requestedCaipNetworks: requestedNetworks }
     )
@@ -136,7 +136,7 @@ export const NetworkController = {
     allowUnsupportedChain: NetworkControllerState['allowUnsupportedChain'],
     chain?: Chain
   ) {
-    ChainController.updateChainNetworkData(chain || ConstantsUtil.CHAIN.EVM, {
+    ChainController.setChainNetworkData(chain || ConstantsUtil.CHAIN.EVM, {
       allowUnsupportedChain
     })
   },
@@ -145,7 +145,7 @@ export const NetworkController = {
     smartAccountEnabledNetworks: NetworkControllerState['smartAccountEnabledNetworks'],
     chain?: Chain
   ) {
-    ChainController.updateChainNetworkData(
+    ChainController.setChainNetworkData(
       ChainController.state.multiChainEnabled ? chain : ConstantsUtil.CHAIN.EVM,
       { smartAccountEnabledNetworks }
     )
@@ -207,7 +207,7 @@ export const NetworkController = {
 
     ChainController.state.activeCaipNetwork = network
     ChainController.state.activeChain = chain
-    ChainController.updateChainNetworkData(chain, { caipNetwork: network })
+    ChainController.setChainNetworkData(chain, { caipNetwork: network })
     PublicStateController.set({ activeChain: chain, selectedNetworkId: network.id })
 
     if (network) {
@@ -252,7 +252,7 @@ export const NetworkController = {
       throw new Error('chain is required to set default network')
     }
 
-    ChainController.updateChainNetworkData(chain, {
+    ChainController.setChainNetworkData(chain, {
       approvedCaipNetworkIds: data?.approvedCaipNetworkIds,
       supportsAllNetworks: data?.supportsAllNetworks || false
     })
@@ -304,10 +304,10 @@ export const NetworkController = {
     }
 
     if (!ChainController.state.chains.get(chain)?.networkState.isDefaultCaipNetwork) {
-      ChainController.updateChainNetworkData(chain, { caipNetwork: undefined })
+      ChainController.setChainNetworkData(chain, { caipNetwork: undefined })
     }
 
-    ChainController.updateChainNetworkData(chain, {
+    ChainController.setChainNetworkData(chain, {
       approvedCaipNetworkIds: undefined,
       supportsAllNetworks: true,
       smartAccountEnabledNetworks: []
