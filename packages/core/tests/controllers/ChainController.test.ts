@@ -1,8 +1,8 @@
 import { beforeAll, describe, expect, it } from 'vitest'
-import { ChainController } from '../../src/controllers/ChainController.js'
 import { ConstantsUtil, type Chain } from '@web3modal/common'
-import { ConnectionControllerClient } from '../../src/controllers/ConnectionController.js'
-import { NetworkControllerClient } from '../../src/controllers/NetworkController.js'
+import { ChainController } from '../../src/controllers/ChainController.js'
+import { type ConnectionControllerClient } from '../../src/controllers/ConnectionController.js'
+import { type NetworkControllerClient } from '../../src/controllers/NetworkController.js'
 
 // -- Setup --------------------------------------------------------------------
 const caipAddress = 'eip155:1:0x123'
