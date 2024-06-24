@@ -1,7 +1,7 @@
 {
   "name": "@examples/html-wagmi",
   "private": true,
-  "version": "5.0.2",
+  "version": "5.0.3",
   "scripts": {
     "dev:example": "vite --port 3001",
     "build:examples": "vite build"
@@ -9,7 +9,7 @@
   "dependencies": {
     "@wagmi/connectors": "5.0.8",
     "@wagmi/core": "2.10.5",
-    "@web3modal/wagmi": "5.0.2",
+    "@web3modal/wagmi": "5.0.3",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },
