@@ -48,6 +48,8 @@ export const NetworkController = {
       if (networkState) {
         return callback(networkState)
       }
+
+      return undefined
     })
   },
 
@@ -55,7 +57,8 @@ export const NetworkController = {
     property: K,
     callback: (val: NetworkControllerState[K]) => void
   ) {
-    let prev: NetworkControllerState[K] | undefined
+    let prev: NetworkControllerState[K] | undefined = undefined
+
     return ChainController.subscribeChainProp('networkState', networkState => {
       if (networkState) {
         const nextValue = networkState[property]
@@ -145,10 +148,12 @@ export const NetworkController = {
   },
 
   getRequestedCaipNetworks(chainToFilter?: Chain) {
-    let chainAdapters: Chain[] | undefined
+    let chainAdapters: Chain[] | undefined = undefined
 
     if (chainToFilter) {
-      let chain = ChainController.state.multiChainEnabled ? chainToFilter : ConstantsUtil.CHAIN.EVM
+      const chain = ChainController.state.multiChainEnabled
+        ? chainToFilter
+        : ConstantsUtil.CHAIN.EVM
 
       if (!chain) {
         throw new Error('chain is required to set default network')
@@ -156,11 +161,9 @@ export const NetworkController = {
 
       chainAdapters = [chain]
     } else {
-      if (ChainController.state.multiChainEnabled) {
-        chainAdapters = Object.keys(ChainController.state.chains) as Chain[]
-      } else {
-        chainAdapters = [ConstantsUtil.CHAIN.EVM]
-      }
+      chainAdapters = ChainController.state.multiChainEnabled
+        ? (Object.keys(ChainController.state.chains) as Chain[])
+        : [ConstantsUtil.CHAIN.EVM]
     }
 
     const approvedIds: `${string}:${string}`[] = []
@@ -188,7 +191,7 @@ export const NetworkController = {
     const networkControllerClient = ChainController.getNetworkControllerClient()
     await networkControllerClient.switchCaipNetwork(network)
 
-    let chain = ChainController.state.multiChainEnabled ? network?.chain : ConstantsUtil.CHAIN.EVM
+    const chain = ChainController.state.multiChainEnabled ? network?.chain : ConstantsUtil.CHAIN.EVM
 
     if (!chain) {
       throw new Error('chain is required to set default network')
@@ -214,7 +217,9 @@ export const NetworkController = {
 
   getApprovedCaipNetworkIds(chainToFilter?: Chain) {
     if (chainToFilter) {
-      let chain = ChainController.state.multiChainEnabled ? chainToFilter : ConstantsUtil.CHAIN.EVM
+      const chain = ChainController.state.multiChainEnabled
+        ? chainToFilter
+        : ConstantsUtil.CHAIN.EVM
 
       if (!chain) {
         throw new Error('chain is required to set default network')
@@ -239,7 +244,7 @@ export const NetworkController = {
     const networkControllerClient = ChainController.getNetworkControllerClient()
     const data = await networkControllerClient.getApprovedCaipNetworksData()
 
-    let chain = ChainController.state.multiChainEnabled ? _chain : ConstantsUtil.CHAIN.EVM
+    const chain = ChainController.state.multiChainEnabled ? _chain : ConstantsUtil.CHAIN.EVM
 
     if (!chain) {
       throw new Error('chain is required to set default network')
@@ -265,8 +270,6 @@ export const NetworkController = {
     const requestedCaipNetworks = this.getRequestedCaipNetworks()
 
     return requestedCaipNetworks?.some(network => network.id === activeCaipNetwork?.id)
-      ? false
-      : true
   },
 
   checkIfSmartAccountEnabled() {

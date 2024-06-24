@@ -1,13 +1,11 @@
 import type { W3mFrameProvider, W3mFrameTypes } from '@web3modal/wallet'
-import type { Balance, Transaction } from '@web3modal/common'
+import type { Balance, Transaction, Chain } from '@web3modal/common'
 import type {
   NetworkControllerClient,
   NetworkControllerState
-} from '../controllers/NetworkController'
-import type { ConnectionControllerClient } from '../controllers/ConnectionController'
-import type { OptionsControllerState } from '../controllers/OptionsController'
-import type { Chain } from '@web3modal/common'
-import type { AccountControllerState } from '../controllers/AccountController'
+} from '../controllers/NetworkController.js'
+import type { ConnectionControllerClient } from '../controllers/ConnectionController.js'
+import type { AccountControllerState } from '../controllers/AccountController.js'
 import type { OnRampProviderOption } from '../controllers/OnRampController.js'
 
 export type CaipAddress = `${string}:${string}:${string}`
@@ -819,6 +817,4 @@ export type ChainAdapter = {
   accountState: AccountControllerState
   networkState: NetworkControllerState
   chain: Chain
-  construct?: (scaffold: any, options: OptionsControllerState) => void
-  initialize?: () => void
 }

@@ -1,4 +1,4 @@
-import type { Chain } from './TypeUtil'
+import type { Chain } from './TypeUtil.js'
 
 export const ConstantsUtil = {
   WC_NAME_SUFFIX: '.wcn.id',

@@ -1,17 +1,6 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy } from 'valtio/vanilla'
-import type {
-  CaipNetwork,
-  ChainAdapter,
-  CustomWallet,
-  Metadata,
-  ProjectId,
-  SdkVersion,
-  ThemeMode,
-  Tokens
-} from '../utils/TypeUtil.js'
-import type { ThemeVariables } from '@web3modal/common'
-import type { NetworkControllerState } from './NetworkController.js'
+import type { CustomWallet, Metadata, ProjectId, SdkVersion, Tokens } from '../utils/TypeUtil.js'
 import { ApiController } from './ApiController.js'
 
 // -- Types --------------------------------------------- //
@@ -32,15 +21,6 @@ export interface OptionsControllerState {
   metadata?: Metadata
   enableOnramp?: boolean
   enableWalletFeatures?: boolean
-  // -- Props that merged with all for AppKit transition
-  themeMode?: ThemeMode
-  themeVariables?: ThemeVariables
-  defaultChain?: CaipNetwork
-  allowUnsupportedChain?: NetworkControllerState['allowUnsupportedChain']
-  siweConfig?: any
-  chainImages?: Record<number | string, string>
-  connectorImages?: Record<string, string>
-  adapters?: ChainAdapter[]
   disableAppend?: boolean
   enableEIP6963?: boolean
 }

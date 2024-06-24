@@ -52,14 +52,14 @@ export const ConnectorController = {
         if (existingConnector) {
           if (existingConnector?.chain === chain || existingConnector.type === type) {
             mergedConnectors.push({ ...connector })
-          } else if (existingConnector.type !== 'MULTI_CHAIN') {
+          } else if (existingConnector.type === 'MULTI_CHAIN') {
+            mergedConnectors.push({ ...connector })
+          } else {
             mergedConnectors[existingConnectorIndex] = {
               ...existingConnector,
               type: 'MULTI_CHAIN',
               providers: [existingConnector, connector]
             }
-          } else {
-            mergedConnectors.push({ ...connector })
           }
         }
       }

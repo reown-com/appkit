@@ -6,7 +6,6 @@ import { NetworkController, type NetworkControllerState } from './NetworkControl
 import { AccountController, type AccountControllerState } from './AccountController.js'
 import { PublicStateController } from './PublicStateController.js'
 import { ConstantsUtil, type Chain } from '@web3modal/common'
-import { ConnectionController } from './ConnectionController.js'
 
 // -- Types --------------------------------------------- //
 export interface ChainControllerState {
@@ -80,8 +79,9 @@ export const ChainController = {
   },
 
   subscribeChain(callback: (value: ChainAdapter | undefined) => void) {
-    let prev: ChainAdapter | undefined
+    let prev: ChainAdapter | undefined = undefined
     const activeChain = state.activeChain || ConstantsUtil.CHAIN.EVM
+
     return sub(state.chains, () => {
       const nextValue = state.chains.get(activeChain)
       if (!prev || prev !== nextValue) {
@@ -95,8 +95,9 @@ export const ChainController = {
     property: K,
     callback: (value: ChainAdapter[K] | undefined) => void
   ) {
-    let prev: ChainAdapter[K] | undefined
+    let prev: ChainAdapter[K] | undefined = undefined
     const activeChain = state.activeChain || ConstantsUtil.CHAIN.EVM
+
     return sub(state.chains, () => {
       const nextValue = state.chains.get(activeChain)?.[property]
       if (prev !== nextValue) {
@@ -230,13 +231,13 @@ export const ChainController = {
       return undefined
     }
 
-    const accountState = state.chains.get(chainToWrite)?.accountState
+    const chainAccountState = state.chains.get(chainToWrite)?.accountState
 
-    if (!accountState) {
+    if (!chainAccountState) {
       return undefined
     }
 
-    return accountState[key]
+    return chainAccountState[key]
   },
 
   getNetworkProp<K extends keyof NetworkControllerState>(
@@ -248,13 +249,13 @@ export const ChainController = {
       return undefined
     }
 
-    const networkState = state.chains.get(chainToWrite)?.networkState
+    const chainNetworkState = state.chains.get(chainToWrite)?.networkState
 
-    if (!networkState) {
+    if (!chainNetworkState) {
       return undefined
     }
 
-    return networkState[key]
+    return chainNetworkState[key]
   },
 
   resetAccount(chain?: Chain) {

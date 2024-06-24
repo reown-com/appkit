@@ -51,6 +51,8 @@ export const AccountController = {
       if (accountState) {
         return callback(accountState)
       }
+
+      return undefined
     })
   },
 
@@ -58,7 +60,8 @@ export const AccountController = {
     property: K,
     callback: (val: AccountControllerState[K]) => void
   ) {
-    let prev: AccountControllerState[K] | undefined
+    let prev: AccountControllerState[K] | undefined = undefined
+
     return ChainController.subscribeChainProp('accountState', accountState => {
       if (accountState) {
         const nextValue = accountState[property]
