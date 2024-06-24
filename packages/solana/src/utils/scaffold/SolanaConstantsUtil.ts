@@ -32,6 +32,6 @@ export const SolConstantsUtil = {
     currency: 'SOL',
     explorerUrl: 'https://solscan.io',
     rpcUrl: `${ConstantsUtil.BLOCKCHAIN_API_RPC_URL}/v1`,
-    chain: 'solana'
+    chain: ConstantsUtil.CHAIN.SOLANA
   }
 }

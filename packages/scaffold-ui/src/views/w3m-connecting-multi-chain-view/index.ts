@@ -124,7 +124,7 @@ export class W3mConnectingMultiChainView extends LitElement {
       RouterController.push('ConnectingExternal', { connector })
     } else if (network.name === 'Solana') {
       const connector = this.activeConnector?.providers?.find(
-        provider => provider.chain === 'solana'
+        provider => provider.chain === ConstantsUtil.CHAIN.SOLANA
       )
       RouterController.push('ConnectingExternal', { connector })
     }

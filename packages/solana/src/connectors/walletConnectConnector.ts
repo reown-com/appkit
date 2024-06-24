@@ -1,6 +1,7 @@
 import base58 from 'bs58'
 import { PublicKey, Transaction, VersionedTransaction } from '@solana/web3.js'
 import { OptionsController } from '@web3modal/core'
+import { ConstantsUtil } from '@web3modal/common'
 
 import { SolStoreUtil } from '../utils/scaffold/index.js'
 import { UniversalProviderFactory } from './universalProvider.js'
@@ -51,7 +52,7 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
 
     UniversalProviderFactory.getProvider().then(provider => {
       provider.on('session_delete', () => {
-        delete provider.session?.namespaces['solana']
+        delete provider.session?.namespaces[ConstantsUtil.CHAIN.SOLANA]
       })
     })
   }
@@ -64,7 +65,7 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
     try {
       await provider.disconnect()
     } finally {
-      delete provider.session?.namespaces['solana']
+      delete provider.session?.namespaces[ConstantsUtil.CHAIN.SOLANA]
     }
 
     SolStoreUtil.setAddress('')
@@ -253,7 +254,9 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
           if (!providerResult) {
             throw new Error('Failed connection.')
           }
-          const address = providerResult.namespaces['solana']?.accounts[0]?.split(':')[2] ?? null
+          const address =
+            providerResult.namespaces[ConstantsUtil.CHAIN.SOLANA]?.accounts[0]?.split(':')[2] ??
+            null
           if (address && this.qrcode) {
             resolve(address)
           } else {

@@ -3,13 +3,13 @@ import { Web3ModalScaffold } from '@web3modal/scaffold'
 import {
   ApiController,
   AssetController,
-  ChainController,
   CoreHelperUtil,
   EventsController,
   NetworkController,
   OptionsController
 } from '@web3modal/core'
 import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@web3modal/scaffold-utils'
+import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 
 import { createWalletAdapters, syncInjectedWallets } from './connectors/walletAdapters.js'
 import { SolConstantsUtil, SolHelpersUtil, SolStoreUtil } from './utils/scaffold/index.js'
@@ -55,7 +55,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
   private chains: Chain[]
 
-  private chain: AvailableChain = 'solana'
+  private chain: AvailableChain = CommonConstantsUtil.CHAIN.SOLANA
 
   public connectionSettings: Commitment | ConnectionConfig
 

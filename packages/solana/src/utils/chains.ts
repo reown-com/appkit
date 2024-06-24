@@ -6,7 +6,7 @@ export const solana = {
   currency: 'SOL',
   explorerUrl: 'https://solscan.io',
   rpcUrl: `${ConstantsUtil.BLOCKCHAIN_API_RPC_URL}/v1`,
-  chain: 'solana'
+  chain: ConstantsUtil.CHAIN.SOLANA
 }
 
 export const solanaTestnet = {
@@ -15,7 +15,7 @@ export const solanaTestnet = {
   currency: 'SOL',
   explorerUrl: 'https://explorer.solana.com/?cluster=testnet',
   rpcUrl: 'https://api.testnet.solana.com',
-  chain: 'solana'
+  chain: ConstantsUtil.CHAIN.SOLANA
 }
 
 export const solanaDevnet = {
@@ -24,5 +24,5 @@ export const solanaDevnet = {
   currency: 'SOL',
   explorerUrl: 'https://explorer.solana.com/?cluster=devnet',
   rpcUrl: 'https://api.devnet.solana.com',
-  chain: 'solana'
+  chain: ConstantsUtil.CHAIN.SOLANA
 }

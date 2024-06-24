@@ -1,6 +1,6 @@
 import { proxyMap, subscribeKey as subKey } from 'valtio/utils'
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
-import type { CaipNetwork, CaipNetworkId, ChainAdapter, Connector } from '../utils/TypeUtil.js'
+import type { CaipNetwork, ChainAdapter, Connector } from '../utils/TypeUtil.js'
 
 import { NetworkController, type NetworkControllerState } from './NetworkController.js'
 import { AccountController, type AccountControllerState } from './AccountController.js'
@@ -50,7 +50,7 @@ const defaultChainAdapterSolana: ChainAdapter = {
   networkControllerClient: undefined,
   accountState,
   networkState,
-  chain: 'solana'
+  chain: ConstantsUtil.CHAIN.SOLANA
 }
 
 // -- State --------------------------------------------- //
