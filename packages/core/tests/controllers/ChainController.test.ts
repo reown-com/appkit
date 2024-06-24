@@ -29,8 +29,8 @@ const networkControllerClient: NetworkControllerClient = {
 
 const evmAdapter = {
   chain: 'evm' as Chain,
-  connectionControllerClient: connectionControllerClient,
-  networkControllerClient: networkControllerClient
+  connectionControllerClient,
+  networkControllerClient
 }
 
 beforeAll(() => {
@@ -52,7 +52,7 @@ describe('ChainController', () => {
 
   it('should update network state as expected', () => {
     ChainController.setChainNetworkData(ChainController.state.activeChain, {
-      approvedCaipNetworkIds: approvedCaipNetworkIds
+      approvedCaipNetworkIds
     })
     expect(ChainController.getNetworkProp('approvedCaipNetworkIds')).toEqual(approvedCaipNetworkIds)
   })
