@@ -5,7 +5,7 @@ import type { CaipNetwork, CaipNetworkId, ChainAdapter, Connector } from '../uti
 import { NetworkController, type NetworkControllerState } from './NetworkController.js'
 import { AccountController, type AccountControllerState } from './AccountController.js'
 import { PublicStateController } from './PublicStateController.js'
-import { type Chain } from '@web3modal/common'
+import { ConstantsUtil, type Chain } from '@web3modal/common'
 
 // -- Types --------------------------------------------- //
 
@@ -45,7 +45,7 @@ const defaultChainAdapterEVM: ChainAdapter = {
   networkControllerClient: undefined,
   accountState,
   networkState,
-  chain: 'evm'
+  chain: ConstantsUtil.CHAIN.EVM
 }
 
 const defaultChainAdapterSolana: ChainAdapter = {
@@ -63,8 +63,8 @@ const solana = defaultChainAdapterSolana
 const state = proxy<ChainControllerState>({
   multiChainEnabled: false,
   chains: proxyMap<Chain, ChainAdapter>([
-    ['evm', evmKey],
-    ['solana', solana]
+    [ConstantsUtil.CHAIN.EVM, evmKey],
+    [ConstantsUtil.CHAIN.SOLANA, solana]
   ]),
   activeChain: undefined,
   activeCaipNetwork: undefined
@@ -84,7 +84,7 @@ export const ChainController = {
 
   subscribeChain(callback: (value: ChainAdapter | undefined) => void) {
     let prev: ChainAdapter | undefined
-    const activeChain = state.activeChain || 'evm'
+    const activeChain = state.activeChain || ConstantsUtil.CHAIN.EVM
     return sub(state.chains, () => {
       const nextValue = state.chains.get(activeChain)
       if (!prev || prev !== nextValue) {
@@ -99,7 +99,7 @@ export const ChainController = {
     callback: (value: ChainAdapter[K] | undefined) => void
   ) {
     let prev: ChainAdapter[K] | undefined
-    const activeChain = state.activeChain || 'evm'
+    const activeChain = state.activeChain || ConstantsUtil.CHAIN.EVM
     return sub(state.chains, () => {
       const nextValue = state.chains.get(activeChain)?.[property]
       if (prev !== nextValue) {
@@ -150,7 +150,7 @@ export const ChainController = {
   },
 
   getNetworkControllerClient() {
-    const chain = state.multiChainEnabled ? state.activeChain : 'evm'
+    const chain = state.multiChainEnabled ? state.activeChain : ConstantsUtil.CHAIN.EVM
 
     if (!chain) {
       throw new Error('Chain is required to get network controller client')
@@ -170,7 +170,7 @@ export const ChainController = {
   },
 
   initialize(adapters: ChainAdapter[]) {
-    const firstChainToActivate = adapters?.[0]?.chain || 'evm'
+    const firstChainToActivate = adapters?.[0]?.chain || ConstantsUtil.CHAIN.EVM
 
     state.activeChain = firstChainToActivate
 
@@ -188,7 +188,7 @@ export const ChainController = {
   getAccountProp<K extends keyof AccountControllerState>(
     key: K
   ): AccountControllerState[K] | undefined {
-    const chainToWrite = state.multiChainEnabled ? state.activeChain : 'evm'
+    const chainToWrite = state.multiChainEnabled ? state.activeChain : ConstantsUtil.CHAIN.EVM
 
     if (!chainToWrite) {
       return undefined
@@ -206,7 +206,7 @@ export const ChainController = {
   getNetworkProp<K extends keyof NetworkControllerState>(
     key: K
   ): NetworkControllerState[K] | undefined {
-    const chainToWrite = state.multiChainEnabled ? state.activeChain : 'evm'
+    const chainToWrite = state.multiChainEnabled ? state.activeChain : ConstantsUtil.CHAIN.EVM
 
     if (!chainToWrite) {
       return undefined
@@ -226,7 +226,9 @@ export const ChainController = {
     value: AccountControllerState[keyof AccountControllerState],
     chain?: Chain
   ) {
-    this.updateChainAccountData(state.multiChainEnabled ? chain : 'evm', { [prop]: value })
+    this.updateChainAccountData(state.multiChainEnabled ? chain : ConstantsUtil.CHAIN.EVM, {
+      [prop]: value
+    })
   },
 
   setActiveChain(_chain?: Chain) {
@@ -247,7 +249,7 @@ export const ChainController = {
 
   // -- AccountController methods ----------------------- //
   resetAccount(chain?: Chain) {
-    const chainToWrite = state.multiChainEnabled ? chain : 'evm'
+    const chainToWrite = state.multiChainEnabled ? chain : ConstantsUtil.CHAIN.EVM
 
     if (!chainToWrite) {
       throw new Error('Chain is required to set account prop')

@@ -1,13 +1,14 @@
 import { describe, expect, it } from 'vitest'
 import type { CaipNetwork, CaipNetworkId, NetworkControllerClient } from '../../index.js'
 import { EventsController, NetworkController } from '../../index.js'
+import { ConstantsUtil } from '@web3modal/common'
 
 // -- Setup --------------------------------------------------------------------
-const caipNetwork = { id: 'eip155:1', name: 'Ethereum', chain: 'evm' } as const
+const caipNetwork = { id: 'eip155:1', name: 'Ethereum', chain: ConstantsUtil.CHAIN.EVM } as const
 const requestedCaipNetworks = [
-  { id: 'eip155:1', name: 'Ethereum', chain: 'evm' },
-  { id: 'eip155:42161', name: 'Arbitrum One', chain: 'evm' },
-  { id: 'eip155:43114', name: 'Avalanche C-Chain', chain: 'evm' }
+  { id: 'eip155:1', name: 'Ethereum', chain: ConstantsUtil.CHAIN.EVM },
+  { id: 'eip155:42161', name: 'Arbitrum One', chain: ConstantsUtil.CHAIN.EVM },
+  { id: 'eip155:43114', name: 'Avalanche C-Chain', chain: ConstantsUtil.CHAIN.EVM }
 ] as CaipNetwork[]
 const approvedCaipNetworkIds = ['eip155:1', 'eip155:42161'] as CaipNetworkId[]
 const switchNetworkEvent = {
@@ -88,7 +89,11 @@ describe('NetworkController', () => {
     expect(NetworkController.checkIfSmartAccountEnabled()).toEqual(false)
     NetworkController.setSmartAccountEnabledNetworks([2])
     expect(NetworkController.checkIfSmartAccountEnabled()).toEqual(false)
-    NetworkController.setCaipNetwork({ id: 'eip155:2', name: 'Ethereum', chain: 'evm' })
+    NetworkController.setCaipNetwork({
+      id: 'eip155:2',
+      name: 'Ethereum',
+      chain: ConstantsUtil.CHAIN.EVM
+    })
     expect(NetworkController.checkIfSmartAccountEnabled()).toEqual(true)
   })
 })

@@ -12,6 +12,7 @@ import { html, LitElement } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
+import { ConstantsUtil } from '@web3modal/common'
 
 @customElement('w3m-connecting-multi-chain-view')
 export class W3mConnectingMultiChainView extends LitElement {
@@ -86,13 +87,13 @@ export class W3mConnectingMultiChainView extends LitElement {
 
     const networks: CaipNetwork[] | null | undefined = []
 
-    if (chains.get('evm')) {
+    if (chains.get(ConstantsUtil.CHAIN.EVM)) {
       const network = sortedNetworks.find(element => element.name === 'Ethereum')
       if (network) {
         networks.push(network)
       }
     }
-    if (chains.get('solana')) {
+    if (chains.get(ConstantsUtil.CHAIN.SOLANA)) {
       const network = sortedNetworks.find(element => element.name === 'Solana')
       if (network) {
         networks.push(network)
@@ -117,7 +118,9 @@ export class W3mConnectingMultiChainView extends LitElement {
   private onSwitchNetwork(network: CaipNetwork) {
     NetworkController.setCaipNetwork(network)
     if (network.name === 'Ethereum') {
-      const connector = this.activeConnector?.providers?.find(provider => provider.chain === 'evm')
+      const connector = this.activeConnector?.providers?.find(
+        provider => provider.chain === ConstantsUtil.CHAIN.EVM
+      )
       RouterController.push('ConnectingExternal', { connector })
     } else if (network.name === 'Solana') {
       const connector = this.activeConnector?.providers?.find(

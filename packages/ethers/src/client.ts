@@ -14,6 +14,7 @@ import type {
 } from '@web3modal/scaffold'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
+import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 import EthereumProvider, { OPTIONAL_METHODS } from '@walletconnect/ethereum-provider'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
 import { ConstantsUtil as CommonConstants } from '@web3modal/common'
@@ -116,7 +117,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
   private chains: Chain[]
 
-  private chain: AvailableChain = 'evm'
+  private chain: AvailableChain = CommonConstantsUtil.CHAIN.EVM
 
   private metadata?: Metadata
 

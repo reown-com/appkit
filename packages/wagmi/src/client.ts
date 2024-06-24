@@ -40,7 +40,7 @@ import type { Hex } from 'viem'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
-import { ConstantsUtil as CommonConstants } from '@web3modal/common'
+import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 import type { Chain as AvailableChain } from '@web3modal/common'
 import {
   getCaipDefaultChain,
@@ -84,7 +84,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
   private wagmiConfig: Web3ModalClientOptions<CoreConfig>['wagmiConfig']
 
-  private chain: AvailableChain = 'evm'
+  private chain: AvailableChain = CommonConstantsUtil.CHAIN.EVM
 
   public constructor(options: Web3ModalClientOptions<CoreConfig>) {
     const { wagmiConfig, siweConfig, defaultChain, tokens, _sdkVersion, ...w3mOptions } = options
@@ -306,7 +306,7 @@ export class Web3Modal extends Web3ModalScaffold {
           let ensName: boolean | GetEnsAddressReturnType = false
           let wcName: boolean | string = false
 
-          if (value?.endsWith(CommonConstants.WC_NAME_SUFFIX)) {
+          if (value?.endsWith(CommonConstantsUtil.WC_NAME_SUFFIX)) {
             wcName = await this.resolveWalletConnectName(value)
           }
 

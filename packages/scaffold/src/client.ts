@@ -285,7 +285,7 @@ export class Web3ModalScaffold {
       {
         networkControllerClient: options.networkControllerClient,
         connectionControllerClient: options.connectionControllerClient,
-        chain: 'evm',
+        chain: ConstantsUtil.CHAIN.EVM,
         accountState: {
           isConnected: false,
           currentTab: 0,

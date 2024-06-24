@@ -19,9 +19,10 @@ import {
   tokensResponse
 } from '../mocks/SwapController.js'
 import { SwapApiUtil } from '../../src/utils/SwapApiUtil.js'
+import { ConstantsUtil } from '@web3modal/common'
 
 // - Mocks ---------------------------------------------------------------------
-const caipNetwork = { id: 'eip155:137', name: 'Polygon', chain: 'evm' } as const
+const caipNetwork = { id: 'eip155:137', name: 'Polygon', chain: ConstantsUtil.CHAIN.EVM } as const
 const approvedCaipNetworkIds = ['eip155:1', 'eip155:137'] as CaipNetworkId[]
 const client: NetworkControllerClient = {
   switchCaipNetwork: async _caipNetwork => Promise.resolve(),
