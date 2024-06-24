@@ -179,8 +179,12 @@ export class W3mModal extends LitElement {
       const { SIWEController } = await import('@web3modal/siwe')
       const session = await SIWEController.getSession()
 
+      if (!session?.address) {
+        return
+      }
+
       // If the address has changed and signOnAccountChange is enabled, sign out
-      if (session && previousAddress && newAddress && previousAddress !== newAddress) {
+      if (previousAddress && newAddress && previousAddress !== newAddress) {
         if (SIWEController.state._client?.options.signOutOnAccountChange) {
           await SIWEController.signOut()
           this.onSiweNavigation()
@@ -190,7 +194,7 @@ export class W3mModal extends LitElement {
       }
 
       // If the network has changed and signOnNetworkChange is enabled, sign out
-      if (session && previousNetworkId && newNetworkId && previousNetworkId !== newNetworkId) {
+      if (previousNetworkId && newNetworkId && previousNetworkId !== newNetworkId) {
         if (SIWEController.state._client?.options.signOutOnNetworkChange) {
           await SIWEController.signOut()
           this.onSiweNavigation()

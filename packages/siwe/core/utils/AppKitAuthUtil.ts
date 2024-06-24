@@ -9,44 +9,78 @@ myHeaders.append('x-sdk-type', 'w3m')
 myHeaders.append('x-sdk-version', 'html-3.0.0')
 
 export async function getNonce() {
-  return fetch(`${ConstantsUtil.APPKIT_AUTH_API_URL}/auth/v1/nonce`, {
-    method: 'GET',
-    headers: myHeaders,
-    credentials: 'include'
-  })
-    .then(response => response.json())
-    .catch(error => console.error(error))
+  try {
+    const res = await fetch(`${ConstantsUtil.APPKIT_AUTH_API_URL}/auth/v1/nonce`, {
+      method: 'GET',
+      headers: myHeaders,
+      credentials: 'include'
+    })
+
+    const nonceRes = await res.json()
+
+    return nonceRes
+  } catch (error) {
+    throw new Error('Failed to get nonce', {
+      cause: error
+    })
+  }
 }
 
 export async function getAppKitAuthSession() {
-  return fetch(`${ConstantsUtil.APPKIT_AUTH_API_URL}/auth/v1/me`, {
-    method: 'GET',
-    headers: myHeaders,
-    credentials: 'include'
-  })
-    .then(response => response.json())
-    .catch(error => console.error(error))
+  try {
+    const res = await fetch(`${ConstantsUtil.APPKIT_AUTH_API_URL}/auth/v1/me`, {
+      method: 'GET',
+      headers: myHeaders,
+      credentials: 'include'
+    })
+
+    const sessionRes = await res.json()
+
+    return sessionRes
+  } catch (error) {
+    console.error(error)
+    throw new Error('Failed to get session', {
+      cause: error
+    })
+  }
 }
 
 export async function authenticate(payload: { message: string; signature: string }) {
-  return fetch(`${ConstantsUtil.APPKIT_AUTH_API_URL}/auth/v1/authenticate`, {
-    method: 'POST',
-    headers: myHeaders,
-    body: JSON.stringify(payload),
-    credentials: 'include'
-  })
-    .then(response => response.json())
-    .catch(error => console.error(error))
+  try {
+    const res = await fetch(`${ConstantsUtil.APPKIT_AUTH_API_URL}/auth/v1/authenticate`, {
+      method: 'POST',
+      headers: myHeaders,
+      body: JSON.stringify(payload),
+      credentials: 'include'
+    })
+    const authenticateRes = await res.json()
+
+    return authenticateRes
+  } catch (error) {
+    console.error(error)
+    throw new Error('Failed to authenticate', {
+      cause: error
+    })
+  }
 }
 
 export async function appKitAuthSignOut() {
-  return fetch(`${ConstantsUtil.APPKIT_AUTH_API_URL}/auth/v1/sign-out`, {
-    method: 'POST',
-    headers: myHeaders,
-    credentials: 'include'
-  })
-    .then(response => response.json())
-    .catch(error => console.error(error))
+  try {
+    const res = await fetch(`${ConstantsUtil.APPKIT_AUTH_API_URL}/auth/v1/sign-out`, {
+      method: 'POST',
+      headers: myHeaders,
+      credentials: 'include'
+    })
+
+    const signOutRes = await res.json()
+
+    return signOutRes
+  } catch (error) {
+    console.error(error)
+    throw new Error('Failed to sign out', {
+      cause: error
+    })
+  }
 }
 
 export const appKitAuthConfig = new Web3ModalSIWEClient({

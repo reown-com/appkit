@@ -140,15 +140,19 @@ export class Web3Modal extends Web3ModalScaffold {
 
         const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
         // Make sure client uses ethereum provider version that supports `authenticate`
-        if (siweConfig?.options?.enabled && typeof provider?.authenticate === 'function') {
+        if (this.getIsSiweEnabled() && typeof provider?.authenticate === 'function') {
           const { SIWEController, getDidChainId, getDidAddress } = await import('@web3modal/siwe')
-          const siweParams = await siweConfig.getMessageParams()
-          // @ts-expect-error - setting requested chains beforehand avoids wagmi auto disconnecting the session when `connect` is called because it things chains are stale
+          if (!SIWEController.state._client) {
+            return
+          }
+
+          const siweParams = await SIWEController.state._client.getMessageParams()
+          // @ts-expect-error - setting requested chains beforehand avoids wagmi auto disconnecting the session when `connect` is called because it thinks chains are stale
           await connector.setRequestedChainsIds(siweParams.chains)
 
           const result = await provider.authenticate({
-            nonce: await siweConfig.getNonce(),
-            methods: [...OPTIONAL_METHODS],
+            nonce: await SIWEController.getNonce(),
+            methods: OPTIONAL_METHODS,
             ...siweParams
           })
 

@@ -51,6 +51,7 @@ export interface LibraryOptions {
   privacyPolicyUrl?: OptionsControllerState['privacyPolicyUrl']
   customWallets?: OptionsControllerState['customWallets']
   enableAnalytics?: OptionsControllerState['enableAnalytics']
+  enableAuth?: OptionsControllerState['enableAuth']
   metadata?: OptionsControllerState['metadata']
   enableOnramp?: OptionsControllerState['enableOnramp']
   disableAppend?: OptionsControllerState['disableAppend']
@@ -205,6 +206,8 @@ export class Web3ModalScaffold {
 
   protected getCaipNetwork = () => NetworkController.state.caipNetwork
 
+  protected getIsSiweEnabled = () => OptionsController.state.isSiweEnabled
+
   protected setRequestedCaipNetworks: (typeof NetworkController)['setRequestedCaipNetworks'] =
     requestedCaipNetworks => {
       NetworkController.setRequestedCaipNetworks(requestedCaipNetworks)
@@ -286,6 +289,7 @@ export class Web3ModalScaffold {
     OptionsController.setPrivacyPolicyUrl(options.privacyPolicyUrl)
     OptionsController.setCustomWallets(options.customWallets)
     OptionsController.setEnableAnalytics(options.enableAnalytics)
+    OptionsController.setEnableAuth(options.enableAuth)
     OptionsController.setSdkVersion(options._sdkVersion)
     // Enabled by default
     OptionsController.setOnrampEnabled(options.enableOnramp !== false)
@@ -320,7 +324,11 @@ export class Web3ModalScaffold {
     if (options.siweControllerClient || isAppKitAuthEnabled) {
       const { SIWEController, appKitAuthConfig } = await import('@web3modal/siwe')
       OptionsController.setIsSiweEnabled(true)
-      SIWEController.setSIWEClient(options.siweControllerClient ?? appKitAuthConfig)
+      if (options.siweControllerClient) {
+        SIWEController.setSIWEClient(options.siweControllerClient)
+      } else {
+        SIWEController.setSIWEClient(appKitAuthConfig)
+      }
     }
 
     ConnectionController.setClient(options.connectionControllerClient)
