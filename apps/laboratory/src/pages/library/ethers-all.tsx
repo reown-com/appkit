@@ -6,6 +6,7 @@ import { EthersTests } from '../../components/Ethers/EthersTests'
 import { Web3ModalButtons } from '../../components/Web3ModalButtons'
 import { siweConfig } from '../../utils/SiweUtils'
 import { SiweData } from '../../components/Siwe/SiweData'
+import { EthersModalInfo } from '../../components/Ethers/EthersModalInfo'
 
 const modal = createWeb3Modal({
   ethersConfig: defaultConfig({
@@ -33,6 +34,7 @@ export default function Ethers() {
   return (
     <>
       <Web3ModalButtons />
+      <EthersModalInfo />
       <SiweData />
       <EthersTests />
     </>
