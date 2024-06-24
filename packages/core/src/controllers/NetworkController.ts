@@ -77,10 +77,6 @@ export const NetworkController = {
     return ChainController.getNetworkControllerClient()
   },
 
-  activeNetwork() {
-    return ChainController.state.activeCaipNetwork
-  },
-
   initializeDefaultNetwork() {
     const networks = this.getRequestedCaipNetworks()
 

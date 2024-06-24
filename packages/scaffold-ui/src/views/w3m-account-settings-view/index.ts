@@ -36,7 +36,7 @@ export class W3mAccountSettingsView extends LitElement {
 
   @state() private profileName = AccountController.state.profileName
 
-  @state() private network = NetworkController.activeNetwork()
+  @state() private network = NetworkController.state.caipNetwork
 
   @state() private preferredAccountType = AccountController.state.preferredAccountType
 

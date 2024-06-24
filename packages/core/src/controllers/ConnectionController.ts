@@ -120,7 +120,7 @@ export const ConnectionController = {
     EventsController.sendEvent({
       type: 'track',
       event: 'SET_PREFERRED_ACCOUNT_TYPE',
-      properties: { accountType, network: NetworkController.activeNetwork()?.id || '' }
+      properties: { accountType, network: NetworkController.state.caipNetwork?.id || '' }
     })
   },
 

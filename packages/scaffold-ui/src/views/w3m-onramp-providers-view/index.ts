@@ -94,7 +94,7 @@ export class W3mOnRampProvidersView extends LitElement {
 
   private async getCoinbaseOnRampURL() {
     const address = AccountController.state.address
-    const network = NetworkController.activeNetwork()
+    const network = NetworkController.state.caipNetwork
 
     if (!address) {
       throw new Error('No address found')

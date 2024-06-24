@@ -150,7 +150,7 @@ export const ApiController = {
         headers: ApiController._getApiHeaders(),
         params: {
           page: '1',
-          chains: NetworkController.activeNetwork()?.id,
+          chains: NetworkController.state.caipNetwork?.id,
           entries: recommendedEntries,
           include: includeWalletIds?.join(','),
           exclude: exclude?.join(',')
@@ -185,7 +185,7 @@ export const ApiController = {
       params: {
         page: String(page),
         entries,
-        chains: NetworkController.activeNetwork()?.id,
+        chains: NetworkController.state.caipNetwork?.id,
         include: includeWalletIds?.join(','),
         exclude: exclude.join(',')
       }
@@ -207,7 +207,7 @@ export const ApiController = {
       params: {
         page: '1',
         entries: String(ids.length),
-        chains: NetworkController.activeNetwork()?.id,
+        chains: NetworkController.state.caipNetwork?.id,
         include: ids?.join(',')
       }
     })
@@ -231,7 +231,7 @@ export const ApiController = {
         page: '1',
         entries: '100',
         search: search?.trim(),
-        chains: NetworkController.activeNetwork()?.id,
+        chains: NetworkController.state.caipNetwork?.id,
         include: includeWalletIds?.join(','),
         exclude: excludeWalletIds?.join(',')
       }

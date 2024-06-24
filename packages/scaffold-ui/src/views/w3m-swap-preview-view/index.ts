@@ -36,7 +36,7 @@ export class W3mSwapPreviewView extends LitElement {
 
   @state() private toTokenPriceInUSD = SwapController.state.toTokenPriceInUSD
 
-  @state() private caipNetwork = NetworkController.activeNetwork()
+  @state() private caipNetwork = NetworkController.state.caipNetwork
 
   @state() private balanceSymbol = AccountController.state.balanceSymbol
 

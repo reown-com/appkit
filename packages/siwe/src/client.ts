@@ -95,7 +95,7 @@ export class Web3ModalSIWEClient {
     if (!address) {
       throw new Error('An address is required to create a SIWE message.')
     }
-    const chainId = NetworkUtil.caipNetworkIdToNumber(NetworkController.activeNetwork()?.id)
+    const chainId = NetworkUtil.caipNetworkIdToNumber(NetworkController.state.caipNetwork?.id)
     if (!chainId) {
       throw new Error('A chainId is required to create a SIWE message.')
     }

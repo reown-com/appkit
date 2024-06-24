@@ -170,7 +170,7 @@ export const SwapController = {
   },
 
   getParams() {
-    const caipNetwork = NetworkController.activeNetwork()
+    const caipNetwork = NetworkController.state.caipNetwork
     const address = AccountController.state.address
     const networkAddress = `${caipNetwork?.id}:${ConstantsUtil.NATIVE_TOKEN_ADDRESS}`
 
@@ -420,7 +420,7 @@ export const SwapController = {
 
   setBalances(balances: SwapTokenWithBalance[]) {
     const { networkAddress } = this.getParams()
-    const caipNetwork = NetworkController.activeNetwork()
+    const caipNetwork = NetworkController.state.caipNetwork
 
     if (!caipNetwork) {
       return
@@ -728,7 +728,7 @@ export const SwapController = {
         type: 'track',
         event: 'SWAP_SUCCESS',
         properties: {
-          network: NetworkController.activeNetwork()?.id || '',
+          network: NetworkController.state.caipNetwork?.id || '',
           swapFromToken: this.state.sourceToken?.symbol || '',
           swapToToken: this.state.toToken?.symbol || '',
           swapfromAmount: this.state.sourceTokenAmount || '',
@@ -751,7 +751,7 @@ export const SwapController = {
         type: 'track',
         event: 'SWAP_ERROR',
         properties: {
-          network: NetworkController.activeNetwork()?.id || '',
+          network: NetworkController.state.caipNetwork?.id || '',
           swapFromToken: this.state.sourceToken?.symbol || '',
           swapToToken: this.state.toToken?.symbol || '',
           swapfromAmount: this.state.sourceTokenAmount || '',

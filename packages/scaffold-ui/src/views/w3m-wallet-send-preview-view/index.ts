@@ -24,7 +24,7 @@ export class W3mWalletSendPreviewView extends LitElement {
 
   @state() private gasPriceInUSD = SendController.state.gasPriceInUSD
 
-  @state() private caipNetwork = NetworkController.activeNetwork()
+  @state() private caipNetwork = NetworkController.state.caipNetwork
 
   public constructor() {
     super()

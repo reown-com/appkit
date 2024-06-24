@@ -15,7 +15,7 @@ export class WuiSwapDetails extends LitElement {
   private unsubscribe: ((() => void) | undefined)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() public networkName = NetworkController.activeNetwork()?.name
+  @state() public networkName = NetworkController.state.caipNetwork?.name
 
   @property() public detailsOpen = false
 

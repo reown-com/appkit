@@ -21,7 +21,7 @@ export class W3mNetworksView extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() public caipNetwork = NetworkController.activeNetwork()
+  @state() public caipNetwork = NetworkController.state.caipNetwork
 
   @state() public requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
 

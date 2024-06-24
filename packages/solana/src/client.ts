@@ -237,7 +237,7 @@ export class Web3Modal extends Web3ModalScaffold {
     })
 
     ChainController.subscribeKey('activeCaipNetwork', () => {
-      if (NetworkController.activeNetwork() && !SolStoreUtil.state.isConnected) {
+      if (NetworkController.state.caipNetwork && !SolStoreUtil.state.isConnected) {
         SolStoreUtil.setCaipChainId(`solana:${chain.chainId}`)
         SolStoreUtil.setCurrentChain(chain)
         localStorage.setItem(SolConstantsUtil.CAIP_CHAIN_ID, `solana:${chain.chainId}`)
