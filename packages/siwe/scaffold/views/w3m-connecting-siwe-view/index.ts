@@ -1,6 +1,5 @@
 import {
   AccountController,
-  ChainController,
   ConnectionController,
   EventsController,
   ModalController,

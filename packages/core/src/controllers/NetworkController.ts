@@ -28,8 +28,6 @@ export interface NetworkControllerState {
   smartAccountEnabledNetworks?: number[]
 }
 
-type StateKey = keyof NetworkControllerState
-
 // -- State --------------------------------------------- //
 const state = proxy<NetworkControllerState>({
   supportsAllNetworks: true,

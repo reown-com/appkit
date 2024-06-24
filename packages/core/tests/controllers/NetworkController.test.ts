@@ -88,7 +88,7 @@ describe('NetworkController', () => {
     expect(NetworkController.checkIfSmartAccountEnabled()).toEqual(false)
     NetworkController.setSmartAccountEnabledNetworks([2])
     expect(NetworkController.checkIfSmartAccountEnabled()).toEqual(false)
-    NetworkController.setCaipNetwork({ id: 'eip155:2', name: 'Ethereum' })
+    NetworkController.setCaipNetwork({ id: 'eip155:2', name: 'Ethereum', chain: 'evm' })
     expect(NetworkController.checkIfSmartAccountEnabled()).toEqual(true)
   })
 })

@@ -30,8 +30,6 @@ export interface AccountControllerState {
   socialWindow?: Window
 }
 
-type StateKey = keyof AccountControllerState
-
 // -- State --------------------------------------------- //
 const state = proxy<AccountControllerState>({
   isConnected: false,
