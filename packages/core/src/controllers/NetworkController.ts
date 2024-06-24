@@ -45,10 +45,6 @@ export const NetworkController = {
     Object.assign(state, newState)
   },
 
-  getProperty<K extends StateKey>(key: K): NetworkControllerState[K] | undefined {
-    return ChainController.getNetworkProp(key)
-  },
-
   subscribe(callback: (val: NetworkControllerState) => void) {
     return ChainController.subscribeChainProp('networkState', networkState => {
       if (networkState) {

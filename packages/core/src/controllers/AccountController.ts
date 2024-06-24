@@ -48,10 +48,6 @@ export const AccountController = {
     Object.assign(state, newState)
   },
 
-  getProperty<K extends StateKey>(key: K): AccountControllerState[K] | undefined {
-    return ChainController.getAccountProp(key)
-  },
-
   subscribe(callback: (val: AccountControllerState) => void) {
     return ChainController.subscribeChainProp('accountState', accountState => {
       if (accountState) {

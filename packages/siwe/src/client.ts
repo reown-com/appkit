@@ -12,8 +12,8 @@ import {
   RouterUtil,
   RouterController,
   StorageUtil,
-  ChainController,
-  NetworkController
+  NetworkController,
+  AccountController
 } from '@web3modal/core'
 
 import { NetworkUtil } from '@web3modal/common'
@@ -90,7 +90,7 @@ export class Web3ModalSIWEClient {
   }
 
   async signIn(): Promise<SIWESession> {
-    const address = ChainController.getAccountProp('address')
+    const address = AccountController.state.address
     const nonce = await this.methods.getNonce(address)
     if (!address) {
       throw new Error('An address is required to create a SIWE message.')
