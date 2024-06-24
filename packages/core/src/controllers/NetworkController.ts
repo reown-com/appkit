@@ -79,13 +79,6 @@ export const NetworkController = {
     }
   },
 
-  setClient(client: NetworkControllerClient, chain?: Chain) {
-    ChainController.setChainNetworkData(
-      ChainController.state.multiChainEnabled ? chain : ConstantsUtil.CHAIN.EVM,
-      { _client: client }
-    )
-  },
-
   setCaipNetwork(caipNetwork: NetworkControllerState['caipNetwork']) {
     const chain = ChainController.state.multiChainEnabled
       ? caipNetwork?.chain

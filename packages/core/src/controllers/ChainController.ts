@@ -6,6 +6,7 @@ import { NetworkController, type NetworkControllerState } from './NetworkControl
 import { AccountController, type AccountControllerState } from './AccountController.js'
 import { PublicStateController } from './PublicStateController.js'
 import { ConstantsUtil, type Chain } from '@web3modal/common'
+import { ConnectionController } from './ConnectionController.js'
 
 // -- Types --------------------------------------------- //
 export interface ChainControllerState {
@@ -163,13 +164,14 @@ export const ChainController = {
     })
   },
 
-  setActiveChain(_chain?: Chain) {
-    if (_chain) {
-      state.activeChain = _chain
-      PublicStateController.set({ activeChain: _chain })
-      if (!state.activeCaipNetwork) {
-        state.activeCaipNetwork = state.chains.get(_chain)?.networkState.requestedCaipNetworks?.[0]
-      }
+  setActiveChain(chain?: Chain) {
+    const newAdapter = chain ? state.chains.get(chain) : undefined
+
+    if (newAdapter) {
+      state.activeChain = newAdapter.chain
+      state.activeCaipNetwork = state.chains.get(newAdapter.chain)?.networkState
+        .requestedCaipNetworks?.[0]
+      PublicStateController.set({ activeChain: chain })
     }
   },
 
@@ -193,18 +195,30 @@ export const ChainController = {
     }
 
     if (!chainAdapter.networkControllerClient) {
-      throw new Error('Network controller client not found')
+      throw new Error('NetworkController client not set')
     }
 
     return chainAdapter.networkControllerClient
   },
 
   getConnectionControllerClient() {
-    if (!state.activeChain) {
+    const chain = state.multiChainEnabled ? state.activeChain : ConstantsUtil.CHAIN.EVM
+
+    if (!chain) {
       throw new Error('Chain is required to get connection controller client')
     }
 
-    return state.chains.get(state.activeChain)?.connectionControllerClient
+    const chainAdapter = state.chains.get(chain)
+
+    if (!chainAdapter) {
+      throw new Error('Chain adapter not found')
+    }
+
+    if (!chainAdapter.connectionControllerClient) {
+      throw new Error('ConnectionController client not set')
+    }
+
+    return chainAdapter.connectionControllerClient
   },
 
   getAccountProp<K extends keyof AccountControllerState>(

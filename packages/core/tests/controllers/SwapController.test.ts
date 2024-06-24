@@ -3,6 +3,7 @@ import { parseUnits } from 'viem'
 import {
   AccountController,
   BlockchainApiController,
+  ChainController,
   ConnectionController,
   NetworkController,
   SwapController,
@@ -38,7 +39,7 @@ const toTokenAddress = 'eip155:137:0x2c89bbc92bd86f8075d1decc58c7f4e0107f286b'
 // - Setup ---------------------------------------------------------------------
 beforeAll(async () => {
   //  -- Set Account and
-  NetworkController.setClient(client)
+  ChainController.initialize([{ chain: ConstantsUtil.CHAIN.EVM, networkControllerClient: client }])
   await NetworkController.switchActiveNetwork(caipNetwork)
   AccountController.setCaipAddress(caipAddress)
 

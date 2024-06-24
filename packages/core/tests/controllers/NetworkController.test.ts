@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { CaipNetwork, CaipNetworkId, NetworkControllerClient } from '../../index.js'
-import { EventsController, NetworkController } from '../../index.js'
+import { ChainController, EventsController, NetworkController } from '../../index.js'
 import { ConstantsUtil } from '@web3modal/common'
 
 // -- Setup --------------------------------------------------------------------
@@ -30,10 +30,11 @@ describe('NetworkController', () => {
   })
 
   it('should have valid default state', () => {
-    NetworkController.setClient(client)
+    ChainController.initialize([
+      { chain: ConstantsUtil.CHAIN.EVM, networkControllerClient: client }
+    ])
 
     expect(NetworkController.state).toEqual({
-      _client: NetworkController._getClient(),
       supportsAllNetworks: true,
       isDefaultCaipNetwork: false,
       smartAccountEnabledNetworks: []

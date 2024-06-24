@@ -76,13 +76,7 @@ export const ConnectionController = {
   },
 
   _getClient() {
-    const client = ChainController.getConnectionControllerClient()
-
-    if (!client) {
-      throw new Error('ConnectionController client not set')
-    }
-
-    return client
+    return ChainController.getConnectionControllerClient()
   },
 
   setClient(client: ConnectionControllerClient) {

@@ -288,7 +288,6 @@ export class Web3ModalScaffold {
         chain: ConstantsUtil.CHAIN.EVM
       }
     ])
-    NetworkController.setClient(options.networkControllerClient)
     NetworkController.setDefaultCaipNetwork(options.defaultChain)
 
     OptionsController.setProjectId(options.projectId)
@@ -330,8 +329,6 @@ export class Web3ModalScaffold {
 
       SIWEController.setSIWEClient(options.siweControllerClient)
     }
-
-    ConnectionController.setClient(options.connectionControllerClient)
   }
 
   private async initOrContinue() {
