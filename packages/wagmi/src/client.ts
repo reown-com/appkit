@@ -196,8 +196,9 @@ export class Web3Modal extends Web3ModalScaffold {
              */
             this.wagmiConfig.state.current = ''
           }
+        } else {
+          await connect(this.wagmiConfig, { connector, chainId })
         }
-        await connect(this.wagmiConfig, { connector, chainId })
       },
 
       connectExternal: async ({ id, provider, info }) => {
