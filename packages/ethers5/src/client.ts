@@ -253,7 +253,7 @@ export class Web3Modal extends Web3ModalScaffold {
             EthersStoreUtil.setError(error)
           }
           this.setEIP6963Provider(provider, info.name)
-        } else if (id === ConstantsUtil.COINBASE_CONNECTOR_ID) {
+        } else if (id === ConstantsUtil.COINBASE_SDK_CONNECTOR_ID) {
           const CoinbaseProvider = ethersConfig.coinbase
           if (!CoinbaseProvider) {
             throw new Error('connectionControllerClient:connectCoinbase - connector is undefined')
@@ -261,8 +261,8 @@ export class Web3Modal extends Web3ModalScaffold {
 
           try {
             EthersStoreUtil.setError(undefined)
-            this.setCoinbaseProvider(ethersConfig)
             await CoinbaseProvider.request({ method: 'eth_requestAccounts' })
+            this.setCoinbaseProvider(ethersConfig)
           } catch (error) {
             EthersStoreUtil.setError(error)
             throw new Error((error as CoinbaseProviderError).message)
@@ -389,16 +389,17 @@ export class Web3Modal extends Web3ModalScaffold {
       this.checkActiveInjectedProvider(ethersConfig)
     }
 
-    if (ethersConfig.EIP6963) {
-      if (typeof window !== 'undefined') {
-        this.listenConnectors(ethersConfig.EIP6963)
-        this.checkActive6963Provider()
-      }
-    }
-
     if (ethersConfig.coinbase) {
       this.checkActiveCoinbaseProvider(ethersConfig)
     }
+
+    // Setup EIP6963 providers
+    if (typeof window !== 'undefined') {
+      this.listenConnectors(true)
+      this.checkActive6963Provider()
+    }
+
+    this.setEIP6963Enabled(ethersConfig.EIP6963)
   }
 
   // -- Public ------------------------------------------------------------------
@@ -568,7 +569,7 @@ export class Web3Modal extends Web3ModalScaffold {
     const walletId = localStorage.getItem(EthersConstantsUtil.WALLET_ID)
 
     if (CoinbaseProvider) {
-      if (walletId === ConstantsUtil.COINBASE_CONNECTOR_ID) {
+      if (walletId === ConstantsUtil.COINBASE_SDK_CONNECTOR_ID) {
         if (CoinbaseProvider._addresses && CoinbaseProvider._addresses?.length > 0) {
           this.setCoinbaseProvider(config)
           this.watchCoinbase(config)
@@ -645,14 +646,16 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private async setCoinbaseProvider(config: ProviderType) {
-    window?.localStorage.setItem(EthersConstantsUtil.WALLET_ID, ConstantsUtil.COINBASE_CONNECTOR_ID)
+    window?.localStorage.setItem(
+      EthersConstantsUtil.WALLET_ID,
+      ConstantsUtil.COINBASE_SDK_CONNECTOR_ID
+    )
     const CoinbaseProvider = config.coinbase
-
     if (CoinbaseProvider) {
       const { address, chainId } = await EthersHelpersUtil.getUserInfo(CoinbaseProvider)
       if (address && chainId) {
         EthersStoreUtil.setChainId(chainId)
-        EthersStoreUtil.setProviderType('coinbaseWallet')
+        EthersStoreUtil.setProviderType('coinbaseWalletSDK')
         EthersStoreUtil.setProvider(config.coinbase)
         EthersStoreUtil.setStatus('connected')
         EthersStoreUtil.setIsConnected(true)
@@ -791,7 +794,7 @@ export class Web3Modal extends Web3ModalScaffold {
     }
 
     function chainChangedHandler(chainId: string) {
-      if (chainId && walletId === ConstantsUtil.COINBASE_CONNECTOR_ID) {
+      if (chainId && walletId === ConstantsUtil.COINBASE_SDK_CONNECTOR_ID) {
         const chain = Number(chainId)
         EthersStoreUtil.setChainId(chain)
       }
@@ -1007,7 +1010,7 @@ export class Web3Modal extends Web3ModalScaffold {
             }
           }
         }
-      } else if (providerType === ConstantsUtil.COINBASE_CONNECTOR_ID && chain) {
+      } else if (providerType === ConstantsUtil.COINBASE_SDK_CONNECTOR_ID && chain) {
         const CoinbaseProvider = provider
         if (CoinbaseProvider) {
           try {
@@ -1064,11 +1067,11 @@ export class Web3Modal extends Web3ModalScaffold {
 
     if (config.coinbase) {
       w3mConnectors.push({
-        id: ConstantsUtil.COINBASE_CONNECTOR_ID,
-        explorerId: PresetsUtil.ConnectorExplorerIds[ConstantsUtil.COINBASE_CONNECTOR_ID],
-        imageId: PresetsUtil.ConnectorImageIds[ConstantsUtil.COINBASE_CONNECTOR_ID],
-        imageUrl: this.options?.connectorImages?.[ConstantsUtil.COINBASE_CONNECTOR_ID],
-        name: PresetsUtil.ConnectorNamesMap[ConstantsUtil.COINBASE_CONNECTOR_ID],
+        id: ConstantsUtil.COINBASE_SDK_CONNECTOR_ID,
+        explorerId: PresetsUtil.ConnectorExplorerIds[ConstantsUtil.COINBASE_SDK_CONNECTOR_ID],
+        imageId: PresetsUtil.ConnectorImageIds[ConstantsUtil.COINBASE_SDK_CONNECTOR_ID],
+        imageUrl: this.options?.connectorImages?.[ConstantsUtil.COINBASE_SDK_CONNECTOR_ID],
+        name: PresetsUtil.ConnectorNamesMap[ConstantsUtil.COINBASE_SDK_CONNECTOR_ID],
         type: 'EXTERNAL'
       })
     }
@@ -1081,7 +1084,15 @@ export class Web3Modal extends Web3ModalScaffold {
       const { info, provider } = event.detail
       const connectors = this.getConnectors()
       const existingConnector = connectors.find(c => c.name === info.name)
-      if (!existingConnector) {
+      const coinbaseConnector = connectors.find(
+        c => c.id === ConstantsUtil.COINBASE_SDK_CONNECTOR_ID
+      )
+      const isCoinbaseDuplicated =
+        coinbaseConnector &&
+        event.detail.info.rdns ===
+          ConstantsUtil.CONNECTOR_RDNS_MAP[ConstantsUtil.COINBASE_SDK_CONNECTOR_ID]
+
+      if (!existingConnector && !isCoinbaseDuplicated) {
         const type = PresetsUtil.ConnectorTypesMap[ConstantsUtil.EIP6963_CONNECTOR_ID]
         if (type) {
           this.addConnector({
@@ -1095,8 +1106,8 @@ export class Web3Modal extends Web3ModalScaffold {
           })
 
           const eip6963ProviderObj = {
-            info,
-            provider
+            provider,
+            info
           }
 
           this.EIP6963Providers.push(eip6963ProviderObj)

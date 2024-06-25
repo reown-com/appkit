@@ -1,5 +1,25 @@
 # @web3modal/siwe
 
+## 5.0.3
+
+### Patch Changes
+
+- fix: ethers5 coinbase issues. Turbo build issues. Upate cb connector.
+
+- Updated dependencies []:
+  - @web3modal/core@5.0.3
+  - @web3modal/scaffold-utils@5.0.3
+
+## 5.0.2
+
+### Patch Changes
+
+- fix: siwe signOutOnNetwork change issue. fix: wallets filtered by rdns matched from explorer api. fix: solana network id issue
+
+- Updated dependencies []:
+  - @web3modal/core@5.0.2
+  - @web3modal/scaffold-utils@5.0.2
+
 ## 5.0.1
 
 ### Patch Changes

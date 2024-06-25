@@ -508,12 +508,13 @@ export class Web3Modal extends Web3ModalScaffold {
     this.syncRequestedNetworks(chains, chainImages)
     this.syncConnectors(ethersConfig)
 
-    if (ethersConfig.EIP6963) {
-      if (typeof window !== 'undefined') {
-        this.listenConnectors(ethersConfig.EIP6963)
-        this.checkActive6963Provider()
-      }
+    // Setup EIP6963 providers
+    if (typeof window !== 'undefined') {
+      this.listenConnectors(true)
+      this.checkActive6963Provider()
     }
+
+    this.setEIP6963Enabled(ethersConfig.EIP6963)
 
     if (ethersConfig.injected) {
       this.checkActiveInjectedProvider(ethersConfig)
@@ -1447,7 +1448,7 @@ export class Web3Modal extends Web3ModalScaffold {
       const isCoinbaseDuplicated =
         coinbaseConnector &&
         event.detail.info.rdns ===
-          ConstantsUtil.CONNECTOR_RDNS_MAP[ConstantsUtil.COINBASE_CONNECTOR_ID]
+          ConstantsUtil.CONNECTOR_RDNS_MAP[ConstantsUtil.COINBASE_SDK_CONNECTOR_ID]
 
       if (!existingConnector && !isCoinbaseDuplicated) {
         const type = PresetsUtil.ConnectorTypesMap[ConstantsUtil.EIP6963_CONNECTOR_ID]

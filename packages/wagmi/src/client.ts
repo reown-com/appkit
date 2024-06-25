@@ -384,6 +384,8 @@ export class Web3Modal extends Web3ModalScaffold {
         this.syncAccount({ ...accountData })
       }
     })
+
+    this.setEIP6963Enabled(w3mOptions.enableEIP6963 !== false)
   }
 
   // -- Public ------------------------------------------------------------------

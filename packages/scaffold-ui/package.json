@@ -1,0 +1,58 @@
+{
+  "name": "@web3modal/scaffold-ui",
+  "version": "5.0.3",
+  "type": "module",
+  "main": "./dist/esm/exports/index.js",
+  "types": "./dist/types/exports/index.d.ts",
+  "files": [
+    "dist",
+    "!tsconfig.tsbuildinfo"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/types/exports/index.d.ts",
+      "import": "./dist/esm/exports/index.js",
+      "default": "./dist/esm/exports/index.js"
+    },
+    "./w3m-modal": {
+      "types": "./dist/types/exports/w3m-modal.d.ts",
+      "import": "./dist/esm/exports/w3m-modal.js",
+      "default": "./dist/esm/exports/w3m-modal.js"
+    }
+  },
+  "scripts": {
+    "build:clean": "rm -rf dist",
+    "build:scaffold-ui": "tsc --build",
+    "watch": "tsc --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+  },
+  "dependencies": {
+    "@web3modal/common": "5.0.3",
+    "@web3modal/scaffold-utils": "5.0.3",
+    "@web3modal/core": "5.0.3",
+    "@web3modal/ui": "5.0.3",
+    "lit": "3.1.0",
+    "@web3modal/siwe": "5.0.3",
+    "@web3modal/wallet": "5.0.3"
+  },
+  "keywords": [
+    "web3",
+    "crypto",
+    "ethereum",
+    "web3modal",
+    "walletconnect",
+    "lit",
+    "webcomponents"
+  ],
+  "author": "WalletConnect <walletconnect.com>",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/web3modal/web3modal",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/web3modal/web3modal.git"
+  },
+  "bugs": {
+    "url": "https://github.com/web3modal/web3modal/issues"
+  }
+}
