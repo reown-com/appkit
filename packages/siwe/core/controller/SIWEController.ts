@@ -97,6 +97,13 @@ export const SIWEController = {
     return isValid
   },
 
+  async getMessageParams() {
+    const client = this._getClient()
+    const messageParams = await client.getMessageParams()
+
+    return messageParams
+  },
+
   async signIn() {
     const client = this._getClient()
     const session = await client.signIn()

@@ -139,6 +139,12 @@ export class Web3Modal extends Web3ModalScaffold {
         })
 
         const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
+        console.log('>>>> wagmi client', {
+          isSiweEnabled: this.getIsSiweEnabled(),
+          provider
+        })
+
+        console.log('>>>> connect wallet connect', typeof provider?.authenticate === 'function')
         // Make sure client uses ethereum provider version that supports `authenticate`
         if (this.getIsSiweEnabled() && typeof provider?.authenticate === 'function') {
           const { SIWEController, getDidChainId, getDidAddress } = await import('@web3modal/siwe')
@@ -146,7 +152,7 @@ export class Web3Modal extends Web3ModalScaffold {
             return
           }
 
-          const siweParams = await SIWEController.state._client.getMessageParams()
+          const siweParams = await SIWEController.getMessageParams()
           // @ts-expect-error - setting requested chains beforehand avoids wagmi auto disconnecting the session when `connect` is called because it thinks chains are stale
           await connector.setRequestedChainsIds(siweParams.chains)
 
@@ -180,6 +186,8 @@ export class Web3Modal extends Web3ModalScaffold {
                 signature: s.s,
                 cacao: signedCacao
               })
+
+              await SIWEController.getSession()
             } catch (error) {
               // eslint-disable-next-line no-console
               console.error('Error verifying message', error)
@@ -244,6 +252,7 @@ export class Web3Modal extends Web3ModalScaffold {
       },
 
       disconnect: async () => {
+        console.log('>>>> disconnect')
         await disconnect(this.wagmiConfig)
         const { SIWEController } = await import('@web3modal/siwe')
         if (SIWEController.state._client?.options?.signOutOnDisconnect) {
@@ -365,8 +374,15 @@ export class Web3Modal extends Web3ModalScaffold {
     watchConnectors(this.wagmiConfig, {
       onChange: connectors => this.syncConnectors(connectors)
     })
+    console.log('>>>> this.wagmiConfig', this.wagmiConfig)
     watchAccount(this.wagmiConfig, {
-      onChange: accountData => this.syncAccount({ ...accountData })
+      onChange: (accountData, prevAccount) => {
+        console.log('>>>> this.wagmiConfig on Change', this.wagmiConfig)
+
+        console.log('>>>> watch account', { accountData })
+        console.log('>>>> prevAccount', { prevAccount })
+        this.syncAccount({ ...accountData })
+      }
     })
   }
 
@@ -414,6 +430,7 @@ export class Web3Modal extends Web3ModalScaffold {
   }: Pick<GetAccountReturnType, 'address' | 'isConnected' | 'chainId' | 'connector'>) {
     this.resetAccount()
     this.syncNetwork(address, chainId, isConnected)
+    console.log('>>>> sync accounts', { isConnected, address, connector })
     if (isConnected && address && chainId) {
       const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`
       this.setIsConnected(isConnected)

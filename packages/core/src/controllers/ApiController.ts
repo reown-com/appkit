@@ -228,18 +228,29 @@ export const ApiController = {
       ApiController.fetchFeaturedWallets(),
       ApiController.fetchRecommendedWallets(),
       ApiController.fetchNetworkImages(),
-      ApiController.fetchConnectorImages()
+      ApiController.fetchConnectorImages(),
+      ApiController.fetchProjectConfig()
     ]
 
     state.prefetchPromise = Promise.race([Promise.allSettled(promises), CoreHelperUtil.wait(3000)])
   },
 
   async fetchProjectConfig() {
-    const { isAnalyticsEnabled } = await api.get<ApiGetProjectConfigResponse>({
-      path: '/getAnalyticsConfig',
-      headers: ApiController._getApiHeaders()
-    })
+    // Mock isAppKitAuthEnabled until the API is live on prod
+    const { isAnalyticsEnabled, isAppKitAuthEnabled = true } =
+      await api.get<ApiGetProjectConfigResponse>({
+        path: '/getAnalyticsConfig',
+        headers: ApiController._getApiHeaders()
+      })
 
-    return { isAnalyticsEnabled, isAppKitAuthEnabled: true }
+    // Code config always takes precedence over the Cloud config
+    if (OptionsController.state.enableAnalytics === undefined) {
+      OptionsController.state.enableAnalytics = isAnalyticsEnabled
+    }
+    if (OptionsController.state.enableAuth === undefined) {
+      OptionsController.state.enableAuth = isAppKitAuthEnabled
+    }
+
+    return { isAnalyticsEnabled, isAppKitAuthEnabled }
   }
 }

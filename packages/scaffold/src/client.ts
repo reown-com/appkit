@@ -313,8 +313,7 @@ export class Web3ModalScaffold {
     if (options.allowUnsupportedChain) {
       NetworkController.setAllowUnsupportedChain(options.allowUnsupportedChain)
     }
-
-    const { isAppKitAuthEnabled, isAnalyticsEnabled } = await ApiController.fetchProjectConfig()
+    const { isAnalyticsEnabled, isAppKitAuthEnabled } = await ApiController.fetchProjectConfig()
 
     // Only set the analytics state if it's not already set through the SDK config
     if (options.enableAnalytics === undefined) {

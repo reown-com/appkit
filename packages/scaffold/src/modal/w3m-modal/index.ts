@@ -175,9 +175,18 @@ export class W3mModal extends LitElement {
     const newNetworkId = CoreHelperUtil.getNetworkId(caipAddress)
     this.caipAddress = caipAddress
 
+    console.log('>>>> onNewAddress', {
+      isSiweEnabled: this.isSiweEnabled,
+      previousAddress,
+      newAddress,
+      previousNetworkId,
+      newNetworkId,
+      caipAddress
+    })
     if (this.isSiweEnabled) {
       const { SIWEController } = await import('@web3modal/siwe')
       const session = await SIWEController.getSession()
+      console.log('>>>> session', session)
 
       if (!session?.address) {
         return
