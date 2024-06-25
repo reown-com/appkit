@@ -28,6 +28,8 @@ export class W3mWalletSendPreviewView extends LitElement {
 
   @state() private type = SendController.state.type
 
+  @state() private loading = SendController.state.loading
+
   public constructor() {
     super()
     this.unsubscribe.push(
@@ -39,6 +41,7 @@ export class W3mWalletSendPreviewView extends LitElement {
           this.gasPriceInUSD = val.gasPriceInUSD
           this.receiverProfileName = val.receiverProfileName
           this.receiverProfileImageUrl = val.receiverProfileImageUrl
+          this.loading = val.loading
         }),
         NetworkController.subscribeKey('caipNetwork', val => (this.caipNetwork = val))
       ]
@@ -129,10 +132,15 @@ export class W3mWalletSendPreviewView extends LitElement {
           <wui-button
             class="sendButton"
             @click=${this.onSendClick.bind(this)}
+            ?loading=${this.loading}
             size="lg"
             variant="main"
           >
-            Send
+          ${this.loading
+            ? html`<wui-loading-spinner size="md" color="fg-150"></wui-loading-spinner>`
+            : this.type == 'Address'
+              ? 'Send'
+              : 'Generate Link'}
           </wui-button>
         </wui-flex>
       </wui-flex></wui-flex
@@ -154,7 +162,11 @@ export class W3mWalletSendPreviewView extends LitElement {
   }
 
   onSendClick() {
-    SendController.sendToken()
+    if (this.type === 'Address') {
+      SendController.sendToken()
+    } else {
+      SendController.generateLink()
+    }
   }
 
   private onCancelClick() {
