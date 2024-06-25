@@ -1,9 +1,42 @@
 import { defaultWagmiConfig } from '@web3modal/wagmi/react/config'
-import { mainnet, type Chain } from 'wagmi/chains'
+import {
+  arbitrum,
+  aurora,
+  avalanche,
+  base,
+  bsc,
+  celo,
+  gnosis,
+  mainnet,
+  optimism,
+  polygon,
+  zkSync,
+  zora,
+  sepolia,
+  optimismSepolia,
+  baseSepolia,
+  type Chain
+} from 'wagmi/chains'
 import { ConstantsUtil } from './ConstantsUtil'
 
 export const WagmiConstantsUtil = {
-  chains: [mainnet] as [Chain, ...Chain[]]
+  chains: [
+    mainnet,
+    arbitrum,
+    polygon,
+    avalanche,
+    bsc,
+    optimism,
+    gnosis,
+    zkSync,
+    zora,
+    base,
+    celo,
+    aurora,
+    sepolia,
+    optimismSepolia,
+    baseSepolia
+  ] as [Chain, ...Chain[]]
 }
 
 export function getWagmiConfig(type: 'default' | 'email') {

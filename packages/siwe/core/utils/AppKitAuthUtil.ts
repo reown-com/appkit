@@ -92,7 +92,6 @@ export const appKitAuthConfig = new Web3ModalSIWEClient({
   getMessageParams: async () => ({
     domain: window.location.host,
     uri: window.location.origin,
-    chains: [1],
     statement: 'Please sign with your account',
     iat: new Date().toISOString()
   }),

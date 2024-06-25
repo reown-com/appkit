@@ -146,15 +146,16 @@ export class Web3Modal extends Web3ModalScaffold {
           if (!SIWEController.state._client) {
             return
           }
-
           const siweParams = await SIWEController.getMessageParams()
+          const chainIds = this.wagmiConfig.chains.map(c => c.id)
           // @ts-expect-error - setting requested chains beforehand avoids wagmi auto disconnecting the session when `connect` is called because it thinks chains are stale
-          await connector.setRequestedChainsIds(siweParams.chains)
+          await connector.setRequestedChainsIds(chainIds)
 
           const result = await provider.authenticate({
             nonce: await SIWEController.getNonce(),
             methods: OPTIONAL_METHODS,
-            ...siweParams
+            ...siweParams,
+            chains: chainIds
           })
 
           // Auths is an array of signed CACAO objects https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-74.md
