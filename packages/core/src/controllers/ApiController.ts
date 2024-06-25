@@ -251,8 +251,7 @@ export const ApiController = {
       ApiController.fetchFeaturedWallets(),
       ApiController.fetchRecommendedWallets(),
       ApiController.fetchNetworkImages(),
-      ApiController.fetchConnectorImages(),
-      ApiController.fetchProjectConfig()
+      ApiController.fetchConnectorImages()
     ]
 
     state.prefetchPromise = Promise.race([Promise.allSettled(promises), CoreHelperUtil.wait(3000)])
@@ -265,14 +264,6 @@ export const ApiController = {
         path: '/getAnalyticsConfig',
         headers: ApiController._getApiHeaders()
       })
-
-    // Code config always takes precedence over the Cloud config
-    if (OptionsController.state.enableAnalytics === undefined) {
-      OptionsController.state.enableAnalytics = isAnalyticsEnabled
-    }
-    if (OptionsController.state.enableAuth === undefined) {
-      OptionsController.state.enableAuth = isAppKitAuthEnabled
-    }
 
     return { isAnalyticsEnabled, isAppKitAuthEnabled }
   }
