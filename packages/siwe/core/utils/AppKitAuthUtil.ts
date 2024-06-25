@@ -65,6 +65,25 @@ export async function authenticate(payload: { message: string; signature: string
   }
 }
 
+export async function updateUser(metadata: Record<string, unknown>) {
+  try {
+    const res = await fetch(`${ConstantsUtil.APPKIT_AUTH_API_URL}/auth/v1/update-user`, {
+      method: 'POST',
+      headers: myHeaders,
+      body: JSON.stringify({ metadata }),
+      credentials: 'include'
+    })
+    const updateUserRes = await res.json()
+
+    return updateUserRes
+  } catch (error) {
+    console.error(error)
+    throw new Error('Failed to authenticate', {
+      cause: error
+    })
+  }
+}
+
 export async function appKitAuthSignOut() {
   try {
     const res = await fetch(`${ConstantsUtil.APPKIT_AUTH_API_URL}/auth/v1/sign-out`, {

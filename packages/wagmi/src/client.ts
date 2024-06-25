@@ -142,7 +142,9 @@ export class Web3Modal extends Web3ModalScaffold {
 
         // Make sure client uses ethereum provider version that supports `authenticate`
         if (this.getIsSiweEnabled() && typeof provider?.authenticate === 'function') {
-          const { SIWEController, getDidChainId, getDidAddress } = await import('@web3modal/siwe')
+          const { SIWEController, getDidChainId, getDidAddress, updateUser } = await import(
+            '@web3modal/siwe'
+          )
           if (!SIWEController.state._client) {
             return
           }
@@ -183,7 +185,11 @@ export class Web3Modal extends Web3ModalScaffold {
                 cacao: signedCacao
               })
 
-              await SIWEController.getSession()
+              const clientId = await provider?.signer?.client?.core?.crypto?.getClientId()
+              console.log({ clientId })
+              await updateUser({
+                client_id: clientId
+              })
             } catch (error) {
               // eslint-disable-next-line no-console
               console.error('Error verifying message', error)
