@@ -56,6 +56,12 @@ export interface LibraryOptions {
   allowUnsupportedChain?: NetworkControllerState['allowUnsupportedChain']
   _sdkVersion: OptionsControllerState['sdkVersion']
   enableEIP6963?: OptionsControllerState['enableEIP6963']
+
+  /**
+   * Disables the swap feature in the modal. Default to false.
+   * @see https://docs.walletconnect.com/appkit/react/core/options#disableSwaps
+   */
+  disableSwaps?: OptionsControllerState['disableSwaps']
 }
 
 export interface ScaffoldOptions extends LibraryOptions {
@@ -308,6 +314,10 @@ export class Web3ModalScaffold {
 
     if (options.disableAppend) {
       OptionsController.setDisableAppend(Boolean(options.disableAppend))
+    }
+
+    if (options.disableSwaps) {
+      OptionsController.setDisableSwaps(Boolean(options.disableSwaps))
     }
 
     if (options.allowUnsupportedChain) {

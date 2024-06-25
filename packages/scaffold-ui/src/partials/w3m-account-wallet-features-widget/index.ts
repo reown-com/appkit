@@ -6,7 +6,8 @@ import {
   RouterController,
   CoreHelperUtil,
   ConstantsUtil as CoreConstantsUtil,
-  EventsController
+  EventsController,
+  OptionsController
 } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -109,9 +110,14 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
         <w3m-tooltip-trigger text="Buy">
           <wui-icon-button @click=${this.onBuyClick.bind(this)} icon="card"></wui-icon-button>
         </w3m-tooltip-trigger>
-        <w3m-tooltip-trigger text="Swap">
-          <wui-icon-button @click=${this.onSwapClick.bind(this)} icon="recycleHorizontal">
-          </wui-icon-button>
+        ${
+          !OptionsController.state.disableSwaps
+            ? html`<w3m-tooltip-trigger text="Swap">
+                <wui-icon-button @click=${this.onSwapClick.bind(this)} icon="recycleHorizontal">
+                </wui-icon-button
+              ></w3m-tooltip-trigger>`
+            : null
+        }
         </w3m-tooltip-trigger>
         <w3m-tooltip-trigger text="Receive">
           <wui-icon-button @click=${this.onReceiveClick.bind(this)} icon="arrowBottomCircle">
@@ -125,9 +131,11 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
       <wui-tabs
         .onTabChange=${this.onTabChange.bind(this)}
         .activeTab=${this.currentTab}
-        localTabWidth=${CoreHelperUtil.isMobile() && window.innerWidth < MODAL_MOBILE_VIEW_PX
-          ? `${(window.innerWidth - TABS_PADDING) / TABS}px`
-          : '104px'}
+        localTabWidth=${
+          CoreHelperUtil.isMobile() && window.innerWidth < MODAL_MOBILE_VIEW_PX
+            ? `${(window.innerWidth - TABS_PADDING) / TABS}px`
+            : '104px'
+        }
         .tabs=${ConstantsUtil.ACCOUNT_TABS}
       ></wui-tabs>
       ${this.listContentTemplate()}

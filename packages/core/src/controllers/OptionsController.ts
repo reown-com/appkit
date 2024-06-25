@@ -22,6 +22,7 @@ export interface OptionsControllerState {
   enableOnramp?: boolean
   disableAppend?: boolean
   enableEIP6963?: boolean
+  disableSwaps?: boolean
 }
 
 type StateKey = keyof OptionsControllerState
@@ -106,6 +107,10 @@ export const OptionsController = {
 
   setEIP6963Enabled(enableEIP6963: OptionsControllerState['enableEIP6963']) {
     state.enableEIP6963 = enableEIP6963
+  },
+
+  setDisableSwaps(disableSwaps: OptionsControllerState['disableSwaps']) {
+    state.disableSwaps = disableSwaps
   },
 
   getSnapshot() {
