@@ -35,6 +35,8 @@ export interface SendControllerState {
   gasPrice?: bigint
   gasPriceInUSD?: number
   loading: boolean
+  type?: 'Address' | 'Link'
+  createdLink?: string
 }
 
 type StateKey = keyof SendControllerState
@@ -90,6 +92,14 @@ export const SendController = {
 
   setLoading(loading: SendControllerState['loading']) {
     state.loading = loading
+  },
+
+  setType(type: SendControllerState['type']) {
+    state.type = type
+  },
+
+  setCreatedLink(createdLink: SendControllerState['createdLink']) {
+    state.createdLink = createdLink
   },
 
   sendToken() {
@@ -228,6 +238,8 @@ export const SendController = {
     }
   },
 
+  
+
   resetSend() {
     state.token = undefined
     state.sendTokenAmount = undefined
@@ -235,5 +247,8 @@ export const SendController = {
     state.receiverProfileImageUrl = undefined
     state.receiverProfileName = undefined
     state.loading = false
+    state.type = undefined
+    state.createdLink = undefined
+
   }
 }
