@@ -325,7 +325,12 @@ export class Web3ModalScaffold {
       OptionsController.setEnableAnalytics(isAnalyticsEnabled)
     }
 
-    if (options.siweControllerClient || isAppKitAuthEnabled) {
+    // Only set the AppKit Auth state if it's not already set through the SDK config
+    if (options.enableAuth === undefined) {
+      OptionsController.setEnableAuth(isAppKitAuthEnabled)
+    }
+
+    if (options.siweControllerClient || OptionsController.state.enableAuth) {
       const { SIWEController, appKitAuthConfig } = await import('@web3modal/siwe')
       OptionsController.setIsSiweEnabled(true)
       if (options.siweControllerClient) {

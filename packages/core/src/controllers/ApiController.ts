@@ -258,12 +258,10 @@ export const ApiController = {
   },
 
   async fetchProjectConfig() {
-    // Mock isAppKitAuthEnabled until the API is live on prod
-    const { isAnalyticsEnabled, isAppKitAuthEnabled = true } =
-      await api.get<ApiGetProjectConfigResponse>({
-        path: '/getAnalyticsConfig',
-        headers: ApiController._getApiHeaders()
-      })
+    const { isAnalyticsEnabled, isAppKitAuthEnabled } = await api.get<ApiGetProjectConfigResponse>({
+      path: '/getAnalyticsConfig',
+      headers: ApiController._getApiHeaders()
+    })
 
     return { isAnalyticsEnabled, isAppKitAuthEnabled }
   }
