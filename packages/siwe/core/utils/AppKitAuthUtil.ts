@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { formatMessage } from '@walletconnect/utils'
 import { Web3ModalSIWEClient } from '../../src/client.js'
 import type { SIWECreateMessageArgs, SIWESession, SIWEVerifyMessageArgs } from './TypeUtils.js'

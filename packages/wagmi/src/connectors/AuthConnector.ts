@@ -108,7 +108,6 @@ export function authConnector(parameters: AuthParameters) {
     },
 
     onAccountsChanged(accounts) {
-      console.log('>>>> onAccountsChanged', accounts)
       if (accounts.length === 0) {
         this.onDisconnect()
       } else {

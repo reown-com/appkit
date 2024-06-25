@@ -139,12 +139,7 @@ export class Web3Modal extends Web3ModalScaffold {
         })
 
         const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
-        console.log('>>>> wagmi client', {
-          isSiweEnabled: this.getIsSiweEnabled(),
-          provider
-        })
 
-        console.log('>>>> connect wallet connect', typeof provider?.authenticate === 'function')
         // Make sure client uses ethereum provider version that supports `authenticate`
         if (this.getIsSiweEnabled() && typeof provider?.authenticate === 'function') {
           const { SIWEController, getDidChainId, getDidAddress } = await import('@web3modal/siwe')
@@ -252,11 +247,12 @@ export class Web3Modal extends Web3ModalScaffold {
       },
 
       disconnect: async () => {
-        console.log('>>>> disconnect')
         await disconnect(this.wagmiConfig)
-        const { SIWEController } = await import('@web3modal/siwe')
-        if (SIWEController.state._client?.options?.signOutOnDisconnect) {
-          await SIWEController.signOut()
+        if (this.getIsSiweEnabled()) {
+          const { SIWEController } = await import('@web3modal/siwe')
+          if (SIWEController.state._client?.options?.signOutOnDisconnect) {
+            await SIWEController.signOut()
+          }
         }
       },
 
@@ -374,15 +370,8 @@ export class Web3Modal extends Web3ModalScaffold {
     watchConnectors(this.wagmiConfig, {
       onChange: connectors => this.syncConnectors(connectors)
     })
-    console.log('>>>> this.wagmiConfig', this.wagmiConfig)
     watchAccount(this.wagmiConfig, {
-      onChange: (accountData, prevAccount) => {
-        console.log('>>>> this.wagmiConfig on Change', this.wagmiConfig)
-
-        console.log('>>>> watch account', { accountData })
-        console.log('>>>> prevAccount', { prevAccount })
-        this.syncAccount({ ...accountData })
-      }
+      onChange: accountData => this.syncAccount({ ...accountData })
     })
 
     this.setEIP6963Enabled(w3mOptions.enableEIP6963 !== false)
@@ -432,7 +421,6 @@ export class Web3Modal extends Web3ModalScaffold {
   }: Pick<GetAccountReturnType, 'address' | 'isConnected' | 'chainId' | 'connector'>) {
     this.resetAccount()
     this.syncNetwork(address, chainId, isConnected)
-    console.log('>>>> sync accounts', { isConnected, address, connector })
     if (isConnected && address && chainId) {
       const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`
       this.setIsConnected(isConnected)
