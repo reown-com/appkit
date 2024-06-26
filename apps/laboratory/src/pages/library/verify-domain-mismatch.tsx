@@ -12,7 +12,7 @@ import { getWagmiConfig } from '../../utils/WagmiConstants'
 const queryClient = new QueryClient()
 
 const wagmiConfig = getWagmiConfig('default', {
-  projectId: 'e4eae1aad4503db9966a04fd045a7e4d',
+  projectId: 'e4eae1aad4503db9966a04fd045a7e4d'
 })
 
 const modal = createWeb3Modal({

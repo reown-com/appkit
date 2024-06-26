@@ -20,7 +20,7 @@ const queryClient = new QueryClient()
 
 const wagmiConfig = getWagmiConfig('default', {
   projectId: 'e4eae1aad4503db9966a04fd045a7e4d',
-  metadata,
+  metadata
 })
 
 const modal = createWeb3Modal({
