@@ -46,7 +46,11 @@ export async function getAppKitAuthSession() {
   }
 }
 
-export async function authenticate(payload: { message: string; signature: string }) {
+export async function authenticate(payload: {
+  message: string
+  signature: string
+  clientId?: string
+}) {
   try {
     const res = await fetch(`${ConstantsUtil.APPKIT_AUTH_API_URL}/auth/v1/authenticate`, {
       method: 'POST',
@@ -133,7 +137,7 @@ export const appKitAuthConfig = new Web3ModalSIWEClient({
 
     return { address, chainId }
   },
-  verifyMessage: async ({ message, signature, cacao }: SIWEVerifyMessageArgs) => {
+  verifyMessage: async ({ message, signature, cacao, clientId }: SIWEVerifyMessageArgs) => {
     try {
       /*
        * Signed Cacao (CAIP-74) will be available for further validations if the wallet supports caip-222 signing
@@ -142,7 +146,7 @@ export const appKitAuthConfig = new Web3ModalSIWEClient({
       if (cacao) {
         // Do something
       }
-      const { token } = await authenticate({ message, signature })
+      const { token } = await authenticate({ message, signature, clientId })
 
       return Boolean(token)
     } catch (error) {

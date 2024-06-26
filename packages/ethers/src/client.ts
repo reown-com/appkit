@@ -210,6 +210,12 @@ export class Web3Modal extends Web3ModalScaffold {
           })
           // Auths is an array of signed CACAO objects https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-74.md
           const signedCacao = result?.auths?.[0]
+
+          const clientId = await WalletConnectProvider?.signer?.client?.core?.crypto?.getClientId()
+          if (clientId) {
+            this.setClientId(clientId)
+          }
+
           if (signedCacao) {
             const { p, s } = signedCacao
             const chainId = getDidChainId(p.iss)
@@ -230,7 +236,8 @@ export class Web3Modal extends Web3ModalScaffold {
               await SIWEController.verifyMessage({
                 message,
                 signature: s.s,
-                cacao: signedCacao
+                cacao: signedCacao,
+                clientId
               })
             } catch (error) {
               // eslint-disable-next-line no-console

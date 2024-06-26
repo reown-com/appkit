@@ -56,6 +56,7 @@ export interface SIWEVerifyMessageArgs {
   message: string
   signature: string
   cacao?: Cacao
+  clientId?: string
 }
 
 export interface SIWEClientMethods {

@@ -142,9 +142,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
         // Make sure client uses ethereum provider version that supports `authenticate`
         if (this.getIsSiweEnabled() && typeof provider?.authenticate === 'function') {
-          const { SIWEController, getDidChainId, getDidAddress, updateUser } = await import(
-            '@web3modal/siwe'
-          )
+          const { SIWEController, getDidChainId, getDidAddress } = await import('@web3modal/siwe')
           if (!SIWEController.state._client) {
             return
           }
@@ -162,6 +160,12 @@ export class Web3Modal extends Web3ModalScaffold {
 
           // Auths is an array of signed CACAO objects https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-74.md
           const signedCacao = result?.auths?.[0]
+
+          const clientId = await provider?.signer?.client?.core?.crypto?.getClientId()
+          if (clientId) {
+            this.setClientId(clientId)
+          }
+
           if (signedCacao) {
             const { p, s } = signedCacao
             const cacaoChainId = getDidChainId(p.iss) || ''
@@ -182,13 +186,8 @@ export class Web3Modal extends Web3ModalScaffold {
               await SIWEController.verifyMessage({
                 message,
                 signature: s.s,
-                cacao: signedCacao
-              })
-
-              const clientId = await provider?.signer?.client?.core?.crypto?.getClientId()
-              console.log({ clientId })
-              await updateUser({
-                client_id: clientId
+                cacao: signedCacao,
+                clientId
               })
             } catch (error) {
               // eslint-disable-next-line no-console

@@ -279,6 +279,10 @@ export class Web3ModalScaffold {
     OptionsController.setEIP6963Enabled(enabled)
   }
 
+  protected setClientId = (clientId: string) => {
+    ConnectionController.setClientId(clientId)
+  }
+
   // -- Private ------------------------------------------------------------------
   private async initControllers(options: ScaffoldOptions) {
     NetworkController.setClient(options.networkControllerClient)
