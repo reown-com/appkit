@@ -7,12 +7,14 @@ import { Email } from '../utils/email'
 import { DeviceRegistrationPage } from './DeviceRegistrationPage'
 import type { TimingRecords } from '../fixtures/timing-fixture'
 
-export type ModalFlavor = 'default' | 'siwe' | 'email' | 'wallet' | 'external' | 'all'
+export type ModalFlavor = 'default' | 'siwe' | 'email' | 'wallet' | 'external' | 'verify-valid' | 'verify-domain-mismatch' | 'all'
 
 function getUrlByFlavor(baseUrl: string, library: string, flavor: ModalFlavor) {
   const urlsByFlavor: Partial<Record<ModalFlavor, string>> = {
     default: `${baseUrl}library/${library}/`,
-    external: `${baseUrl}library/external/`
+    external: `${baseUrl}library/external/`,
+    'verify-valid': `${baseUrl}library/verify-valid/`,
+    'verify-domain-mismatch': `${baseUrl}library/verify-domain-mismatch/`
   }
 
   return urlsByFlavor[flavor] || `${baseUrl}library/${library}-${flavor}/`
