@@ -64,6 +64,11 @@
       "dependsOn": ["^build:scaffold-ui"],
       "cache": false
     },
+    "build:appkit": {
+      "outputs": ["dist/**"],
+      "dependsOn": ["^build:scaffold-ui"],
+      "cache": false
+    },
     "build:client": {
       "outputs": ["dist/**"],
       "dependsOn": [
@@ -84,7 +89,7 @@
       "cache": false
     },
     "build": {
-      "dependsOn": ["build:cdn"],
+      "dependsOn": ["build:cdn", "build:appkit"],
       "cache": false,
       "persistent": true
     },
@@ -121,6 +126,9 @@
       "cache": false
     },
     "dev:laboratory": {
+      "cache": false
+    },
+    "dev:laboratory-appkit": {
       "cache": false
     },
     "dev:gallery": {
