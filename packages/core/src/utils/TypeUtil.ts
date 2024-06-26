@@ -814,7 +814,7 @@ export interface WriteContractArgs {
 export type ChainAdapter = {
   connectionControllerClient?: ConnectionControllerClient
   networkControllerClient?: NetworkControllerClient
-  accountState: AccountControllerState
-  networkState: NetworkControllerState
+  accountState?: AccountControllerState
+  networkState?: NetworkControllerState
   chain: Chain
 }

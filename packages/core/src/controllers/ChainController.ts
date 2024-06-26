@@ -135,7 +135,10 @@ export const ChainController = {
     const chainAdapter = state.chains.get(chain)
 
     if (chainAdapter) {
-      chainAdapter.networkState = { ...chainAdapter.networkState, ...props }
+      chainAdapter.networkState = {
+        ...chainAdapter.networkState,
+        ...props
+      } as NetworkControllerState
       state.chains.set(chain, chainAdapter)
       NetworkController.replaceState(chainAdapter.networkState)
     }
@@ -143,13 +146,16 @@ export const ChainController = {
 
   setChainAccountData(chain: Chain | undefined, accountProps: Partial<AccountControllerState>) {
     if (!chain) {
-      throw new Error('Chain is required to update chain network data')
+      throw new Error('Chain is required to update chain account data')
     }
 
     const chainAdapter = state.chains.get(chain)
 
     if (chainAdapter) {
-      chainAdapter.accountState = { ...chainAdapter.accountState, ...accountProps }
+      chainAdapter.accountState = {
+        ...chainAdapter.accountState,
+        ...accountProps
+      } as AccountControllerState
       state.chains.set(chain, chainAdapter)
       AccountController.replaceState(chainAdapter.accountState)
     }
@@ -171,7 +177,7 @@ export const ChainController = {
     if (newAdapter) {
       state.activeChain = newAdapter.chain
       state.activeCaipNetwork = state.chains.get(newAdapter.chain)?.networkState
-        .requestedCaipNetworks?.[0]
+        ?.requestedCaipNetworks?.[0]
       PublicStateController.set({ activeChain: chain })
     }
   },

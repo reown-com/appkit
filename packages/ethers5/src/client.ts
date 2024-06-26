@@ -931,25 +931,24 @@ export class Web3Modal extends Web3ModalScaffold {
         )
 
         if (currentProvider) {
-          this.setConnectedWalletInfo({
-            ...currentProvider.info
-          })
+          this.setConnectedWalletInfo({ ...currentProvider.info }, this.chain)
         }
       }
     } else if (providerType === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
       const provider = EthersStoreUtil.state.provider as unknown as EthereumProvider
 
       if (provider.session) {
-        this.setConnectedWalletInfo({
-          ...provider.session.peer.metadata,
-          name: provider.session.peer.metadata.name,
-          icon: provider.session.peer.metadata.icons?.[0]
-        })
+        this.setConnectedWalletInfo(
+          {
+            ...provider.session.peer.metadata,
+            name: provider.session.peer.metadata.name,
+            icon: provider.session.peer.metadata.icons?.[0]
+          },
+          this.chain
+        )
       }
     } else if (currentActiveWallet) {
-      this.setConnectedWalletInfo({
-        name: currentActiveWallet
-      })
+      this.setConnectedWalletInfo({ name: currentActiveWallet }, this.chain)
     }
   }
 

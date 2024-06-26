@@ -534,14 +534,17 @@ export class Web3Modal extends Web3ModalScaffold {
         ReturnType<(typeof EthereumProvider)['init']>
       >
       if (walletConnectProvider.session) {
-        this.setConnectedWalletInfo({
-          ...walletConnectProvider.session.peer.metadata,
-          name: walletConnectProvider.session.peer.metadata.name,
-          icon: walletConnectProvider.session.peer.metadata.icons?.[0]
-        })
+        this.setConnectedWalletInfo(
+          {
+            ...walletConnectProvider.session.peer.metadata,
+            name: walletConnectProvider.session.peer.metadata.name,
+            icon: walletConnectProvider.session.peer.metadata.icons?.[0]
+          },
+          this.chain
+        )
       }
     } else {
-      this.setConnectedWalletInfo({ name: connector.name, icon: connector.icon })
+      this.setConnectedWalletInfo({ name: connector.name, icon: connector.icon }, this.chain)
     }
   }
 
@@ -704,8 +707,11 @@ export class Web3Modal extends Web3ModalScaffold {
 
       provider.onIsConnected(req => {
         this.setIsConnected(true)
-        this.setSmartAccountDeployed(Boolean(req.smartAccountDeployed))
-        this.setPreferredAccountType(req.preferredAccountType as W3mFrameTypes.AccountType)
+        this.setSmartAccountDeployed(Boolean(req.smartAccountDeployed), this.chain)
+        this.setPreferredAccountType(
+          req.preferredAccountType as W3mFrameTypes.AccountType,
+          this.chain
+        )
         super.setLoading(false)
       })
 
@@ -717,7 +723,7 @@ export class Web3Modal extends Web3ModalScaffold {
         if (!address) {
           return
         }
-        this.setPreferredAccountType(type as W3mFrameTypes.AccountType)
+        this.setPreferredAccountType(type as W3mFrameTypes.AccountType, this.chain)
       })
     }
   }

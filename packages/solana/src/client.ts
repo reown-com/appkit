@@ -51,6 +51,7 @@ export class Web3Modal extends Web3ModalScaffold {
   private hasSyncedConnectedAccount = false
 
   private WalletConnectConnector: WalletConnectConnector
+
   private walletAdapters: Record<AdapterKey, BaseWalletAdapter>
 
   private chains: Chain[]
@@ -422,10 +423,9 @@ export class Web3Modal extends Web3ModalScaffold {
 
   public async switchNetwork(caipNetwork: CaipNetwork) {
     const caipChainId = caipNetwork.id
-
     const providerType = SolStoreUtil.state.providerType
-
     const chain = SolHelpersUtil.getChainFromCaip(this.chains, caipChainId)
+
     if (this.chains) {
       if (chain) {
         SolStoreUtil.setCaipChainId(`solana:${chain.chainId}`)
