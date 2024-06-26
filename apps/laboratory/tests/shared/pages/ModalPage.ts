@@ -7,6 +7,8 @@ import { Email } from '../utils/email'
 import { DeviceRegistrationPage } from './DeviceRegistrationPage'
 import type { TimingRecords } from '../fixtures/timing-fixture'
 
+const maliciousUrl = 'https://malicious-app-verify-simulation.vercel.app'
+
 export type ModalFlavor =
   | 'default'
   | 'siwe'
@@ -15,6 +17,7 @@ export type ModalFlavor =
   | 'external'
   | 'verify-valid'
   | 'verify-domain-mismatch'
+  | 'verify-evil'
   | 'all'
 
 function getUrlByFlavor(baseUrl: string, library: string, flavor: ModalFlavor) {
@@ -22,7 +25,8 @@ function getUrlByFlavor(baseUrl: string, library: string, flavor: ModalFlavor) {
     default: `${baseUrl}library/${library}/`,
     external: `${baseUrl}library/external/`,
     'verify-valid': `${baseUrl}library/verify-valid/`,
-    'verify-domain-mismatch': `${baseUrl}library/verify-domain-mismatch/`
+    'verify-domain-mismatch': `${baseUrl}library/verify-domain-mismatch/`,
+    'verify-evil': maliciousUrl
   }
 
   return urlsByFlavor[flavor] || `${baseUrl}library/${library}-${flavor}/`
@@ -45,6 +49,32 @@ export class ModalPage {
   }
 
   async load() {
+    if (this.flavor === 'verify-evil') {
+      await this.page.route(`${maliciousUrl}/**/*`, async (route, request) => {
+        let url: string
+        if (request.url() == `${maliciousUrl}/`) {
+          url = `${this.baseURL}/library/verify-evil/`
+        } else {
+          url = request.url().replace(maliciousUrl, this.baseURL)
+        }
+        const response = await fetch(url, {
+          method: request.method(),
+          headers: request.headers(),
+          body: request.postData()
+        })
+        const headers: { [key: string]: string } = {}
+        response.headers.forEach((value, key) => {
+          headers[key] = value
+        })
+        const body = Buffer.from(await response.arrayBuffer())
+        await route.fulfill({
+          status: response.status,
+          headers,
+          body
+        })
+      })
+    }
+
     await this.page.goto(this.url)
   }
 
