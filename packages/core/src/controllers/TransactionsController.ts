@@ -55,6 +55,8 @@ export const TransactionsController = {
         onramp
       })
 
+      console.log(response)
+
       const nonSpamTransactions = this.filterSpamTransactions(response.data)
       const filteredTransactions = [...state.transactions, ...nonSpamTransactions]
 

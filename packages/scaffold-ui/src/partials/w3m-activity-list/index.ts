@@ -102,6 +102,8 @@ export class W3mActivityList extends LitElement {
         const groupTitle = TransactionUtil.getTransactionGroupTitle(yearInt, month)
         const transactions = this.transactionsByYear[yearInt]?.[month]
 
+        console.log('transactions', transactions)
+
         if (!transactions) {
           return null
         }

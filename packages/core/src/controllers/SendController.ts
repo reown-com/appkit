@@ -10,7 +10,7 @@ import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { EventsController } from './EventsController.js'
 import { NetworkController } from './NetworkController.js'
 import { W3mFrameRpcConstants } from '@web3modal/wallet'
-import { getLinksFromTx, getRandomString, prepareDepositTxs } from '@squirrel-labs/peanut-sdk'
+import { getLinksFromTx, getRandomString, prepareDepositTxs, makeDepositGasless, makeGaslessDepositPayload, VAULT_CONTRACTS_WITH_EIP_3009, EIP3009Tokens, getLatestContractVersion } from '@squirrel-labs/peanut-sdk'
 import type { CaipNetwork } from '../utils/TypeUtil.js'
 
 
@@ -242,9 +242,49 @@ export const SendController = {
   },
 
   async generateLink(){
-    console.log('generateLink')
 
-    if (!this.state.token) return // TDOO: handle
+    const isGaslessDepositPossible = ({
+      tokenAddress,
+      latestContractVersion,
+      chainId,
+  }: {
+      tokenAddress: string
+      latestContractVersion?: string
+      chainId: string
+  }) => {
+      if (latestContractVersion == undefined) {
+          latestContractVersion = getLatestContractVersion({
+              chainId: chainId,
+              type: 'normal',
+          })
+      }
+      if (
+          toLowerCaseKeys(EIP3009Tokens[chainId as keyof typeof EIP3009Tokens])[
+              tokenAddress.toLowerCase()
+          ] &&
+        VAULT_CONTRACTS_WITH_EIP_3009.includes(latestContractVersion)
+      ) {
+          return true
+      } else {
+          return false
+      }
+  }
+
+   const toLowerCaseKeys = (obj: any): any => {
+    let newObj: any = {}
+    if (obj) {
+        Object.keys(obj).forEach((key) => {
+            // Convert only the top-level keys to lowercase
+            let lowerCaseKey = key.toLowerCase()
+            newObj[lowerCaseKey] = obj[key]
+        })
+    }
+
+    return newObj
+}
+
+
+    if (!this.state.token) return
 
     try {
       this.setLoading(true)
@@ -262,14 +302,9 @@ export const SendController = {
         tokenAddress,
         tokenDecimals: Number(state.token?.quantity.decimals) ?? 18,
         trackId: 'walletconnect',
-        tokenType: tokenType
+        tokenType: tokenType,
+        baseUrl: 'https://profile.walletconnect.com/claim'
       }
-
-
-
-      console.log('linkDetails', linkDetails)
-      console.log('address', address)
-      console.log('password', password)
 
       const network = NetworkController.state.caipNetwork
       if (network && network.id != state.token?.chainId) {
@@ -287,41 +322,86 @@ export const SendController = {
         await NetworkController.setCaipNetwork(requestedNetwork as CaipNetwork)
       }
 
-      const preparedDepositTsx = await prepareDepositTxs({
-        passwords: [password],
-        address: address ?? '',
-        linkDetails
+      const isGaslessPossible = isGaslessDepositPossible({
+        tokenAddress : tokenAddress ??'', 
+        chainId: chainId ?? '',
       })
 
-      console.log('prepared deposits', preparedDepositTsx.unsignedTxs)
+      let hash = ''
 
-      let hashes: string[] = []
-      for (const tx of preparedDepositTsx.unsignedTxs) {
+      if (isGaslessPossible) {
 
-        RouterController.pushTransactionStack({
-          view: 'ApproveTransaction',
-          goBack: true
+        const latestContractVersion = getLatestContractVersion({
+          chainId: chainId ??'',
+          type: 'normal',
+      })
+
+      const makeGaslessDepositPayloadResponse = await makeGaslessDepositPayload({
+          linkDetails: linkDetails,
+          password: password,
+          address: address ?? '',
+          contractVersion: latestContractVersion,
+      })
+
+      RouterController.pushTransactionStack({
+        view: 'ApproveTransaction',
+        goBack: true
+      })
+      const signature = await ConnectionController.signTypedData({
+        domain: {
+            ...makeGaslessDepositPayloadResponse.message.domain,
+            chainId: Number(makeGaslessDepositPayloadResponse.message.domain.chainId), 
+            verifyingContract: makeGaslessDepositPayloadResponse.message.domain.verifyingContract as `0x${string}`,
+        },
+        types: makeGaslessDepositPayloadResponse.message.types,
+        primaryType: makeGaslessDepositPayloadResponse.message.primaryType,
+        message: {
+            ...makeGaslessDepositPayloadResponse.message.values,
+            value: BigInt(makeGaslessDepositPayloadResponse.message.values.value),
+            validAfter: BigInt(makeGaslessDepositPayloadResponse.message.values.validAfter),
+            validBefore: BigInt(makeGaslessDepositPayloadResponse.message.values.validBefore),
+        },
+    })
+
+    const response = await makeDepositGasless({
+      payload: makeGaslessDepositPayloadResponse.payload,
+      signature: signature,
+      APIKey: '', // TODO: add API key
+  })
+hash = response.txHash
+      }else {
+        const preparedDepositTsx = await prepareDepositTxs({
+          passwords: [password],
+          address: address ?? '',
+          linkDetails
         })
+  
+        let hashes: string[] = []
+        for (const tx of preparedDepositTsx.unsignedTxs) {
+  
+          RouterController.pushTransactionStack({
+            view: 'ApproveTransaction',
+            goBack: true
+          })
+  
+          const hash = await ConnectionController.sendTransaction({
+            to: (tx.to ? tx.to : '') as `0x${string}`,
+            value: tx.value ? BigInt(tx.value.toString()) : BigInt(0),
+            data: tx.data ? (tx.data as `0x${string}`) : '0x',
+            gasPrice: this.state.gasPrice,
+          })
+  
+          hashes.push(hash?.toString() ??'')
+        }
 
-        const hash = await ConnectionController.sendTransaction({
-          to: (tx.to ? tx.to : '') as `0x${string}`,
-          value: tx.value ? BigInt(tx.value.toString()) : BigInt(0),
-          data: tx.data ? (tx.data as `0x${string}`) : '0x',
-          gasPrice: this.state.gasPrice,
-        })
-
-        console.log('hash', hash)
-
-        hashes.push(hash?.toString() ??'')
+        hash = hashes[hashes.length - 1] ??''
       }
 
       const getLinksFromTxResponse = await getLinksFromTx({
         linkDetails,
-        txHash: hashes[0] ??'',
+        txHash: hash,
         passwords: [password],
     })
-
-    console.log('getLinksFromTxResponse', getLinksFromTxResponse)
 
     this.setCreatedLink(getLinksFromTxResponse.links[0])
     SnackController.showSuccess('Link copied to clipboard!')
@@ -349,4 +429,6 @@ export const SendController = {
     state.createdLink = undefined
 
   }
+
+  
 }
