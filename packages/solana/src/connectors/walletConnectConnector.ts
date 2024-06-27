@@ -7,7 +7,7 @@ import { UniversalProviderFactory } from './universalProvider.js'
 import { BaseConnector } from './baseConnector.js'
 
 import type { Signer } from '@solana/web3.js'
-import type UniversalProvider from '@walletconnect/universal-provider'
+import UniversalProvider from '@walletconnect/universal-provider'
 
 import type { Connector } from './baseConnector.js'
 import type { Chain } from '../utils/scaffold/SolanaTypesUtil.js'
@@ -54,24 +54,14 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
       qrcode: this.qrcode
     })
 
-    UniversalProviderFactory.getProvider().then(provider => {
-      provider.on('session_delete', () => {
-        delete provider.session?.namespaces['solana']
-      })
-    })
+    UniversalProviderFactory.init()
   }
 
   public static readonly connectorName = 'walletconnect'
 
   public async disconnect() {
     const provider = await UniversalProviderFactory.getProvider()
-
-    try {
-      await provider.disconnect()
-    } finally {
-      delete provider.session?.namespaces['solana']
-    }
-
+    await provider.disconnect()
     SolStoreUtil.setAddress('')
   }
 
