@@ -7,6 +7,7 @@ export function RandomLink({ hrefs, children }: { hrefs: string[], children: Rea
   if (!href) {
     throw new Error("No hrefs provided");
   }
+
   return <Link href={href}>
     {children}
   </Link>
