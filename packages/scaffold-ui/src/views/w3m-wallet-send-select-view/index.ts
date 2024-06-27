@@ -1,7 +1,13 @@
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
-import { CoreHelperUtil, SendController, RouterController } from '@web3modal/core'
+import {
+  CoreHelperUtil,
+  SendController,
+  RouterController,
+  NetworkController,
+  SnackController
+} from '@web3modal/core'
 
 import { state } from 'lit/decorators.js'
 
@@ -17,7 +23,10 @@ export class W3mWalletSelectSend extends LitElement {
 
   @state() private receiverProfileName = SendController.state.receiverProfileName
 
-  @state() private message: 'Generate link' | 'Invalid Address' | 'Send' = 'Generate link'
+  @state() private message: 'Generate link' | 'Invalid Address' | 'Send' = NetworkController.state
+    .isPeanutSupportedChain
+    ? 'Generate link'
+    : 'Invalid Address'
 
   public constructor() {
     super()
@@ -37,14 +46,10 @@ export class W3mWalletSelectSend extends LitElement {
   public override render() {
     this.getMessage()
 
-    return html` <wui-flex
-      flexDirection="column"
-      gap="s"
-      .padding=${['s', 'l', 'l', 'l'] as const}
-    >
-       <w3m-input-address
-          .value=${this.receiverProfileName ? this.receiverProfileName : this.receiverAddress}
-        ></w3m-input-address>
+    return html` <wui-flex flexDirection="column" gap="s" .padding=${['s', 'l', 'l', 'l'] as const}>
+      <w3m-input-address
+        .value=${this.receiverProfileName ? this.receiverProfileName : this.receiverAddress}
+      ></w3m-input-address>
       <wui-flex justifyContent="center" alignItems="center" gap="1">
         <wui-separator></wui-separator>
         or
@@ -52,11 +57,10 @@ export class W3mWalletSelectSend extends LitElement {
       </wui-flex>
 
       <wui-flex .margin=${['0', '0', '0', '0'] as const}>
-
         <wui-button
-        @click=${this.onButtonClick.bind(this)}
-        ?disabled=${!this.message.startsWith('Generate link') && !this.message.startsWith('Send')}
-        size="lg"
+          @click=${this.onButtonClick.bind(this)}
+          ?disabled=${!this.message.startsWith('Generate link') && !this.message.startsWith('Send')}
+          size="lg"
           variant="main"
           fullWidth
         >
@@ -69,7 +73,12 @@ export class W3mWalletSelectSend extends LitElement {
   // -- Private ------------------------------------------- //
   private onButtonClick() {
     if (this.message == 'Generate link') {
-      SendController.setType('Link')
+      if (NetworkController.state.isPeanutSupportedChain === false) {
+        SnackController.showError('Creating a link on this chain is not supported.')
+        return
+      } else {
+        SendController.setType('Link')
+      }
     } else if (this.message == 'Send') {
       SendController.setType('Address')
     }
@@ -77,7 +86,9 @@ export class W3mWalletSelectSend extends LitElement {
   }
 
   private getMessage() {
-    this.message = 'Generate link'
+    if (NetworkController.state.isPeanutSupportedChain === true) {
+      this.message = 'Generate link'
+    }
 
     if (this.receiverAddress && !CoreHelperUtil.isAddress(this.receiverAddress)) {
       this.message = 'Invalid Address'
