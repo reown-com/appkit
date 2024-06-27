@@ -2,7 +2,13 @@ import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 
 import styles from './styles.js'
-import { ApiController, ConnectorController, OptionsController, StorageUtil } from '@web3modal/core'
+import {
+  ApiController,
+  ConnectorController,
+  NetworkController,
+  OptionsController,
+  StorageUtil
+} from '@web3modal/core'
 import { state } from 'lit/decorators.js'
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
 import { WalletUtil } from '../../utils/WalletUtil.js'
@@ -72,13 +78,16 @@ export class W3mConnectorList extends LitElement {
       connector => connector.id === ConstantsUtil.COINBASE_SDK_CONNECTOR_ID
     )
 
+    // Solana doesn't support EIP 6963
+    const isSolana = NetworkController.state.caipNetwork?.id
+
     return {
       custom,
       recent,
       coinbase,
       external,
-      announced: OptionsController.state.enableEIP6963 ? announced : [],
-      injected: OptionsController.state.enableEIP6963 ? injected : [],
+      announced: OptionsController.state.enableEIP6963 || isSolana ? announced : [],
+      injected: OptionsController.state.enableEIP6963 || isSolana ? injected : [],
       recommended: filteredRecommended,
       featured: filteredFeatured
     }

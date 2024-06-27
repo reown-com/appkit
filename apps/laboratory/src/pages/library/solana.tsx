@@ -21,7 +21,8 @@ const modal = createWeb3Modal({
   chains,
   enableAnalytics: false,
   termsConditionsUrl: 'https://walletconnect.com/terms',
-  privacyPolicyUrl: 'https://walletconnect.com/privacy'
+  privacyPolicyUrl: 'https://walletconnect.com/privacy',
+  adapters: ['phantom', 'solflare', 'trust']
 })
 
 ThemeStore.setModal(modal)
