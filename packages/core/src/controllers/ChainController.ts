@@ -5,7 +5,7 @@ import type { CaipNetwork, ChainAdapter, Connector } from '../utils/TypeUtil.js'
 import { NetworkController, type NetworkControllerState } from './NetworkController.js'
 import { AccountController, type AccountControllerState } from './AccountController.js'
 import { PublicStateController } from './PublicStateController.js'
-import { ConstantsUtil, type Chain } from '@web3modal/common'
+import { type Chain } from '@web3modal/common'
 
 // -- Types --------------------------------------------- //
 export interface ChainControllerState {
@@ -37,32 +37,10 @@ const networkState: NetworkControllerState = {
   smartAccountEnabledNetworks: []
 }
 
-const defaultChainAdapterEVM: ChainAdapter = {
-  connectionControllerClient: undefined,
-  networkControllerClient: undefined,
-  accountState,
-  networkState,
-  chain: ConstantsUtil.CHAIN.EVM
-}
-
-const defaultChainAdapterSolana: ChainAdapter = {
-  connectionControllerClient: undefined,
-  networkControllerClient: undefined,
-  accountState,
-  networkState,
-  chain: ConstantsUtil.CHAIN.SOLANA
-}
-
 // -- State --------------------------------------------- //
-const evmKey = defaultChainAdapterEVM
-const solana = defaultChainAdapterSolana
-
 const state = proxy<ChainControllerState>({
   multiChainEnabled: false,
-  chains: proxyMap<Chain, ChainAdapter>([
-    [ConstantsUtil.CHAIN.EVM, evmKey],
-    [ConstantsUtil.CHAIN.SOLANA, solana]
-  ]),
+  chains: proxyMap<Chain, ChainAdapter>(),
   activeChain: undefined,
   activeCaipNetwork: undefined
 })
@@ -201,7 +179,7 @@ export const ChainController = {
   },
 
   getNetworkControllerClient() {
-    const chain = state.multiChainEnabled ? state.activeChain : state.activeChain
+    const chain = state.activeChain
 
     if (!chain) {
       throw new Error('Chain is required to get network controller client')
@@ -221,7 +199,7 @@ export const ChainController = {
   },
 
   getConnectionControllerClient() {
-    const chain = state.multiChainEnabled ? state.activeChain : state.activeChain
+    const chain = state.activeChain
 
     if (!chain) {
       throw new Error('Chain is required to get connection controller client')

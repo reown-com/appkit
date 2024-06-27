@@ -1,7 +1,8 @@
-import { describe, expect, it, vi } from 'vitest'
+import { beforeAll, describe, expect, it, vi } from 'vitest'
 import {
   ApiController,
   AssetController,
+  ChainController,
   ConnectorController,
   NetworkController,
   OptionsController
@@ -10,6 +11,10 @@ import { api } from '../../src/controllers/ApiController.js'
 import { ConstantsUtil } from '@web3modal/common'
 
 // -- Tests --------------------------------------------------------------------
+beforeAll(() => {
+  ChainController.initialize([{ chain: ConstantsUtil.CHAIN.EVM }])
+})
+
 describe('ApiController', () => {
   it('should have valid default state', () => {
     expect(ApiController.state).toEqual({

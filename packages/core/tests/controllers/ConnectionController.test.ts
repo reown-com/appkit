@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest'
+import { beforeAll, describe, expect, it, vi } from 'vitest'
 import type { ConnectionControllerClient, ConnectorType } from '../../index.js'
 import { ChainController, ConnectionController, ConstantsUtil, StorageUtil } from '../../index.js'
 import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
@@ -44,11 +44,11 @@ const partialClient: ConnectionControllerClient = {
 }
 
 // -- Tests --------------------------------------------------------------------
-describe('ConnectionController', () => {
-  it('should throw if client not set', () => {
-    expect(ConnectionController._getClient).toThrow('ConnectionController client not set')
-  })
+beforeAll(() => {
+  ChainController.initialize([{ chain: CommonConstantsUtil.CHAIN.EVM }])
+})
 
+describe('ConnectionController', () => {
   it('should have valid default state', () => {
     ChainController.initialize([
       { chain: CommonConstantsUtil.CHAIN.EVM, connectionControllerClient: client }

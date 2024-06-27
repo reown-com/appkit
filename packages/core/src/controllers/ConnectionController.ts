@@ -151,7 +151,7 @@ export const ConnectionController = {
   },
 
   checkInstalled(ids?: string[]) {
-    return this._getClient().checkInstalled?.(ids) || false
+    return this._getClient().checkInstalled?.(ids)
   },
 
   resetWcConnection() {

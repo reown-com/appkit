@@ -20,7 +20,6 @@ export interface OptionsControllerState {
   enableAnalytics?: boolean
   metadata?: Metadata
   enableOnramp?: boolean
-  enableWalletFeatures?: boolean
   disableAppend?: boolean
   enableEIP6963?: boolean
 }
@@ -40,10 +39,6 @@ export const OptionsController = {
 
   subscribeKey<K extends StateKey>(key: K, callback: (value: OptionsControllerState[K]) => void) {
     return subKey(state, key, callback)
-  },
-
-  setOptions(options: OptionsControllerState) {
-    Object.assign(state, options)
   },
 
   setProjectId(projectId: OptionsControllerState['projectId']) {

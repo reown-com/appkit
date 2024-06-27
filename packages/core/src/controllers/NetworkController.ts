@@ -43,16 +43,6 @@ export const NetworkController = {
     Object.assign(state, newState)
   },
 
-  subscribe(callback: (val: NetworkControllerState) => void) {
-    return ChainController.subscribeChainProp('networkState', networkState => {
-      if (networkState) {
-        return callback(networkState)
-      }
-
-      return undefined
-    })
-  },
-
   subscribeKey<K extends keyof NetworkControllerState>(
     property: K,
     callback: (val: NetworkControllerState[K]) => void
@@ -238,7 +228,6 @@ export const NetworkController = {
       return ChainController.state.chains.get(chain)?.networkState?.approvedCaipNetworkIds
     }
 
-    // Otherwise, return all approved networks
     const allCaipNetworkIds: CaipNetworkId[] = []
 
     Object.values(ChainController.state.chains).forEach(adapter => {
@@ -336,12 +325,5 @@ export const NetworkController = {
     setTimeout(() => {
       ModalController.open({ view: 'UnsupportedChain' })
     }, 300)
-  },
-
-  // -- New methods
-  switchChain(newChain: Chain) {
-    ChainController.state.activeChain = newChain
-    this.setCaipNetwork(ChainController.state.chains.get(newChain)?.networkState?.caipNetwork)
-    PublicStateController.set({ activeChain: newChain })
   }
 }
