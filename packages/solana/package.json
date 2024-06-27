@@ -62,7 +62,7 @@
   },
   "devDependencies": {
     "@types/bn.js": "5.1.5",
-    "@walletconnect/types": "^2.13.3"
+    "@walletconnect/types": "2.13.3"
   },
   "peerDependencies": {
     "react": ">=17",
