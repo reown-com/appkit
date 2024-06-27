@@ -152,8 +152,8 @@ export const NetworkController = {
   getRequestedCaipNetworks(chainToFilter?: Chain) {
     let chainAdapters: Chain[] | undefined = undefined
 
-    if (!ChainController.state.multiChainEnabled && !ChainController.state.activeChain) {
-      throw new Error('Chain is required to get requested networks')
+    if (!ChainController.state.activeChain) {
+      throw new Error('activeChain is required to get requested networks')
     }
 
     if (chainToFilter) {
@@ -167,9 +167,11 @@ export const NetworkController = {
 
       chainAdapters = [chain]
     } else {
-      chainAdapters = ChainController.state.multiChainEnabled
+      const chains = ChainController.state.multiChainEnabled
         ? [...ChainController.state.chains.keys()]
-        : [ChainController.state.activeChain!]
+        : [ChainController.state.activeChain]
+
+      chainAdapters = chains
     }
 
     const approvedIds: `${string}:${string}`[] = []
