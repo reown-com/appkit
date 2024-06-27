@@ -323,10 +323,11 @@ export class Web3Modal extends Web3ModalScaffold {
 
     try {
       if (walletId === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
-        await this.WalletConnectConnector.connect(true)
         const provider = await this.WalletConnectConnector.getProvider()
-        const accounts = await provider.enable()
-        this.setWalletConnectProvider(accounts[0])
+        if (provider.session) {
+          const account = provider.session.namespaces['solana']?.accounts[0]
+          this.setWalletConnectProvider(account?.toString().split(':')[2])
+        }
       } else {
         const wallet = walletId?.split('_')[1] as AdapterKey
         const adapter = this.walletAdapters[wallet]
@@ -371,7 +372,6 @@ export class Web3Modal extends Web3ModalScaffold {
     const address = SolStoreUtil.state.address
     const chainId = SolStoreUtil.state.currentChain?.chainId
     const isConnected = SolStoreUtil.state.isConnected
-
     this.resetAccount()
 
     if (isConnected && address && chainId) {
