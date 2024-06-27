@@ -115,11 +115,10 @@ export class Web3Modal extends Web3ModalScaffold {
           throw new Error('connectionControllerClient:getWalletConnectUri - provider is undefined')
         }
 
-        WalletConnectProvider.on('display_uri', (uri: string) => {
-          onUri(uri)
-        })
+        WalletConnectProvider.on('display_uri', onUri)
         const address = await this.WalletConnectConnector.connect()
         this.setWalletConnectProvider(address)
+        WalletConnectProvider.removeListener('display_uri', onUri)
       },
 
       connectExternal: async ({ id }) => {

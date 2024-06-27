@@ -7,7 +7,7 @@ import { UniversalProviderFactory } from './universalProvider.js'
 import { BaseConnector } from './baseConnector.js'
 
 import type { Signer } from '@solana/web3.js'
-import UniversalProvider from '@walletconnect/universal-provider'
+import type UniversalProvider from '@walletconnect/universal-provider'
 
 import type { Connector } from './baseConnector.js'
 import type { Chain } from '../utils/scaffold/SolanaTypesUtil.js'
@@ -225,19 +225,13 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
     }
   }
 
-  public async connect(useURI?: boolean) {
+  public async connect() {
     const currentChainId = SolStoreUtil.state.currentChain?.chainId
     const solanaNamespace = this.generateNamespaces(currentChainId ?? '')
 
     const provider = await UniversalProviderFactory.getProvider()
 
     return new Promise<string>((resolve, reject) => {
-      provider.on('display_uri', (uri: string) => {
-        if (!(this.qrcode && !useURI)) {
-          resolve(uri)
-        }
-      })
-      // Without namespaces provider.enable() will not work (reconnect flow)
       provider
         .connect({
           optionalNamespaces: solanaNamespace
