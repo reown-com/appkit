@@ -325,7 +325,7 @@ export class Web3Modal extends Web3ModalScaffold {
         const provider = await this.WalletConnectConnector.getProvider()
         if (provider.session) {
           const account = provider.session.namespaces['solana']?.accounts[0]
-          this.setWalletConnectProvider(account?.toString().split(':')[2])
+          this.setWalletConnectProvider(account?.split(':')[2])
         }
       } else {
         const wallet = walletId?.split('_')[1] as AdapterKey
