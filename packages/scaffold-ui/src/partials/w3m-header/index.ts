@@ -126,8 +126,10 @@ export class W3mHeader extends LitElement {
   }
 
   private async onClose() {
+    console.log({ isSiweEnabled: OptionsController.state.isSiweEnabled })
     if (OptionsController.state.isSiweEnabled) {
       const { SIWEController } = await import('@web3modal/siwe')
+      console.log({ status: SIWEController.state.status, isConnected: this.isConnected })
       if (SIWEController.state.status !== 'success' && this.isConnected) {
         await ConnectionController.disconnect()
       }

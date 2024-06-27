@@ -35,8 +35,11 @@ export async function getAppKitAuthSession() {
       credentials: 'include'
     })
 
-    const sessionRes = await res.json()
+    if (!res.ok && res.status === 404) {
+      return undefined
+    }
 
+    const sessionRes = await res.json()
     return sessionRes
   } catch (error) {
     console.error(error)
@@ -129,8 +132,9 @@ export const appKitAuthConfig = new Web3ModalSIWEClient({
   },
   getSession: async () => {
     const session = await getAppKitAuthSession()
+    console.log({ getAppKitAuthSession: session })
     if (!session) {
-      throw new Error('Failed to get session!')
+      return null
     }
 
     const { address, chainId } = session as unknown as SIWESession

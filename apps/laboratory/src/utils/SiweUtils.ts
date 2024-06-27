@@ -25,7 +25,7 @@ export const siweConfig = createSIWEConfig({
   getSession: async () => {
     const session = await getSession()
     if (!session) {
-      throw new Error('Failed to get session!')
+      return null
     }
 
     const { address, chainId } = session as unknown as SIWESession

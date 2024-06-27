@@ -82,9 +82,6 @@ export class Web3ModalSIWEClient {
 
   async getSession() {
     const session = await this.methods.getSession()
-    if (!session) {
-      throw new Error('siweControllerClient:getSession - session is undefined')
-    }
 
     return session
   }

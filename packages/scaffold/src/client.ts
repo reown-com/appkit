@@ -336,11 +336,13 @@ export class Web3ModalScaffold {
 
     if (options.siweControllerClient || OptionsController.state.enableAuth) {
       const { SIWEController, appKitAuthConfig } = await import('@web3modal/siwe')
+
+      const siweClient = options.siweControllerClient ?? appKitAuthConfig
+      SIWEController.setSIWEClient(siweClient)
+      const session = await siweClient.getSession()
       OptionsController.setIsSiweEnabled(true)
-      if (options.siweControllerClient) {
-        SIWEController.setSIWEClient(options.siweControllerClient)
-      } else {
-        SIWEController.setSIWEClient(appKitAuthConfig)
+      if (session?.address && session?.chainId) {
+        SIWEController.setStatus('success')
       }
     }
 

@@ -31,8 +31,6 @@ export class W3mModal extends LitElement {
   // -- State & Properties -------------------------------- //
   @state() private open = ModalController.state.open
 
-  @state() private caipAddress = AccountController.state.caipAddress
-
   @state() private isSiweEnabled = OptionsController.state.isSiweEnabled
 
   @state() private connected = AccountController.state.isConnected
@@ -169,41 +167,42 @@ export class W3mModal extends LitElement {
       return
     }
 
-    const previousAddress = CoreHelperUtil.getPlainAddress(this.caipAddress)
     const newAddress = CoreHelperUtil.getPlainAddress(caipAddress)
-    const previousNetworkId = CoreHelperUtil.getNetworkId(this.caipAddress)
     const newNetworkId = CoreHelperUtil.getNetworkId(caipAddress)
-    this.caipAddress = caipAddress
 
     if (this.isSiweEnabled) {
-      const { SIWEController } = await import('@web3modal/siwe')
+      const { SIWEController, appKitAuthConfig } = await import('@web3modal/siwe')
+      console.log({ siweClient: SIWEController.state._client })
+      if (!SIWEController.state._client) {
+        SIWEController.setSIWEClient(appKitAuthConfig)
+      }
       const session = await SIWEController.getSession()
+      console.log({ session })
+      if (session?.address && session?.chainId) {
+        const { chainId, address } = session
 
-      if (!session?.address) {
-        return
-      }
+        // If the address has changed and signOnAccountChange is enabled, sign out
+        if (newAddress && address !== newAddress) {
+          if (SIWEController.state._client?.options.signOutOnAccountChange) {
+            await SIWEController.signOut()
+            this.onSiweNavigation()
+          }
 
-      // If the address has changed and signOnAccountChange is enabled, sign out
-      if (previousAddress && newAddress && previousAddress !== newAddress) {
-        if (SIWEController.state._client?.options.signOutOnAccountChange) {
-          await SIWEController.signOut()
-          this.onSiweNavigation()
+          return
         }
 
-        return
-      }
+        // If the network has changed and signOnNetworkChange is enabled, sign out
+        if (newNetworkId && chainId.toString() !== newNetworkId) {
+          if (SIWEController.state._client?.options.signOutOnNetworkChange) {
+            await SIWEController.signOut()
+            this.onSiweNavigation()
+          }
 
-      // If the network has changed and signOnNetworkChange is enabled, sign out
-      if (previousNetworkId && newNetworkId && previousNetworkId !== newNetworkId) {
-        if (SIWEController.state._client?.options.signOutOnNetworkChange) {
-          await SIWEController.signOut()
-          this.onSiweNavigation()
+          return
         }
-
-        return
+      } else {
+        this.onSiweNavigation()
       }
-
-      this.onSiweNavigation()
     }
   }
 
