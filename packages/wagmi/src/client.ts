@@ -344,6 +344,7 @@ export class Web3Modal extends Web3ModalScaffold {
     }
 
     super({
+      chain: CommonConstantsUtil.CHAIN.EVM,
       networkControllerClient,
       connectionControllerClient,
       siweControllerClient: siweConfig,

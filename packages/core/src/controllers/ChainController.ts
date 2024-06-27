@@ -80,7 +80,11 @@ export const ChainController = {
 
   subscribeChain(callback: (value: ChainAdapter | undefined) => void) {
     let prev: ChainAdapter | undefined = undefined
-    const activeChain = state.activeChain || ConstantsUtil.CHAIN.EVM
+    const activeChain = state.activeChain
+
+    if (!activeChain) {
+      throw new Error('Chain is required to subscribe chain')
+    }
 
     return sub(state.chains, () => {
       const nextValue = state.chains.get(activeChain)
@@ -96,7 +100,11 @@ export const ChainController = {
     callback: (value: ChainAdapter[K] | undefined) => void
   ) {
     let prev: ChainAdapter[K] | undefined = undefined
-    const activeChain = state.activeChain || ConstantsUtil.CHAIN.EVM
+    const activeChain = state.activeChain
+
+    if (!activeChain) {
+      throw new Error('Chain is required to subscribe chain')
+    }
 
     return sub(state.chains, () => {
       const nextValue = state.chains.get(activeChain)?.[property]
@@ -108,7 +116,11 @@ export const ChainController = {
   },
 
   initialize(adapters: ChainsInitializerAdapter[]) {
-    const firstChainToActivate = adapters?.[0]?.chain || ConstantsUtil.CHAIN.EVM
+    const firstChainToActivate = adapters?.[0]?.chain
+
+    if (!firstChainToActivate) {
+      throw new Error('Chain is required to initialize ChainController')
+    }
 
     state.activeChain = firstChainToActivate
 
@@ -166,7 +178,7 @@ export const ChainController = {
     value: AccountControllerState[keyof AccountControllerState],
     chain?: Chain
   ) {
-    this.setChainAccountData(state.multiChainEnabled ? chain : ConstantsUtil.CHAIN.EVM, {
+    this.setChainAccountData(state.multiChainEnabled ? chain : state.activeChain, {
       [prop]: value
     })
   },
@@ -189,7 +201,7 @@ export const ChainController = {
   },
 
   getNetworkControllerClient() {
-    const chain = state.multiChainEnabled ? state.activeChain : ConstantsUtil.CHAIN.EVM
+    const chain = state.multiChainEnabled ? state.activeChain : state.activeChain
 
     if (!chain) {
       throw new Error('Chain is required to get network controller client')
@@ -209,7 +221,7 @@ export const ChainController = {
   },
 
   getConnectionControllerClient() {
-    const chain = state.multiChainEnabled ? state.activeChain : ConstantsUtil.CHAIN.EVM
+    const chain = state.multiChainEnabled ? state.activeChain : state.activeChain
 
     if (!chain) {
       throw new Error('Chain is required to get connection controller client')
@@ -231,7 +243,7 @@ export const ChainController = {
   getAccountProp<K extends keyof AccountControllerState>(
     key: K
   ): AccountControllerState[K] | undefined {
-    const chainToWrite = state.multiChainEnabled ? state.activeChain : ConstantsUtil.CHAIN.EVM
+    const chainToWrite = state.multiChainEnabled ? state.activeChain : state.activeChain
 
     if (!chainToWrite) {
       return undefined
@@ -249,7 +261,7 @@ export const ChainController = {
   getNetworkProp<K extends keyof NetworkControllerState>(
     key: K
   ): NetworkControllerState[K] | undefined {
-    const chainToWrite = state.multiChainEnabled ? state.activeChain : ConstantsUtil.CHAIN.EVM
+    const chainToWrite = state.multiChainEnabled ? state.activeChain : state.activeChain
 
     if (!chainToWrite) {
       return undefined
@@ -265,7 +277,7 @@ export const ChainController = {
   },
 
   resetAccount(chain?: Chain) {
-    const chainToWrite = state.multiChainEnabled ? chain : ConstantsUtil.CHAIN.EVM
+    const chainToWrite = state.multiChainEnabled ? chain : state.activeChain
 
     if (!chainToWrite) {
       throw new Error('Chain is required to set account prop')

@@ -186,6 +186,7 @@ export class Web3Modal extends Web3ModalScaffold {
     }
 
     super({
+      chain: CommonConstantsUtil.CHAIN.SOLANA,
       networkControllerClient,
       connectionControllerClient,
       defaultChain: SolHelpersUtil.getChainFromCaip(
