@@ -8,5 +8,9 @@ export const ConstantsUtil = {
   CHAIN: {
     EVM: 'evm' as Chain,
     SOLANA: 'solana' as Chain
+  },
+  CHAIN_NAME: {
+    EVM: 'Ethereum',
+    SOLANA: 'Solana'
   }
 }

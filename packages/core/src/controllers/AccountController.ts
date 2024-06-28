@@ -147,6 +147,7 @@ export const AccountController = {
 
   async fetchTokenBalance() {
     const chainId = NetworkController.state.caipNetwork?.id
+    const chain = NetworkController.state.caipNetwork?.chain
     const address = AccountController.state.address
 
     try {
@@ -157,7 +158,7 @@ export const AccountController = {
           balance => balance.quantity.decimals !== '0'
         )
 
-        this.setTokenBalance(filteredBalances)
+        this.setTokenBalance(filteredBalances, chain)
         SwapController.setBalances(SwapApiUtil.mapBalancesToSwapTokens(response.balances))
       }
     } catch (error) {

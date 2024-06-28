@@ -1,6 +1,7 @@
-import { describe, expect, it, vi } from 'vitest'
+import { beforeAll, describe, expect, it, vi } from 'vitest'
 import {
   AccountController,
+  ChainController,
   ConnectionController,
   ConnectorController,
   EnsController,
@@ -68,6 +69,10 @@ vi.mock('../../src/controllers/BlockchainApiController.js', async importOriginal
 })
 
 // -- Tests --------------------------------------------------------------------
+beforeAll(() => {
+  ChainController.initialize([{ chain: ConstantsUtil.CHAIN.EVM }])
+})
+
 describe('EnsController', () => {
   it('should have valid default state', () => {
     expect(EnsController.state).toEqual({

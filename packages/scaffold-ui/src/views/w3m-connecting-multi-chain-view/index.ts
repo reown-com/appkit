@@ -117,12 +117,12 @@ export class W3mConnectingMultiChainView extends LitElement {
 
   private onSwitchNetwork(network: CaipNetwork) {
     NetworkController.setCaipNetwork(network)
-    if (network.name === 'Ethereum') {
+    if (network.name === ConstantsUtil.CHAIN_NAME.EVM) {
       const connector = this.activeConnector?.providers?.find(
         provider => provider.chain === ConstantsUtil.CHAIN.EVM
       )
       RouterController.push('ConnectingExternal', { connector })
-    } else if (network.name === 'Solana') {
+    } else if (network.name === ConstantsUtil.CHAIN_NAME.SOLANA) {
       const connector = this.activeConnector?.providers?.find(
         provider => provider.chain === ConstantsUtil.CHAIN.SOLANA
       )

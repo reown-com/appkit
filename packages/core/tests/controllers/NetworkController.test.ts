@@ -26,6 +26,10 @@ const client: NetworkControllerClient = {
 // -- Tests --------------------------------------------------------------------
 describe('NetworkController', () => {
   it('should throw if client not set', () => {
+    expect(NetworkController._getClient).toThrow(
+      'Chain is required to get network controller client'
+    )
+    ChainController.initialize([{ chain: ConstantsUtil.CHAIN.EVM }])
     expect(NetworkController._getClient).toThrow('NetworkController client not set')
   })
 

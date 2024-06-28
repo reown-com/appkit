@@ -5,7 +5,7 @@ import type { CaipNetwork, ChainAdapter, Connector } from '../utils/TypeUtil.js'
 import { NetworkController, type NetworkControllerState } from './NetworkController.js'
 import { AccountController, type AccountControllerState } from './AccountController.js'
 import { PublicStateController } from './PublicStateController.js'
-import { ConstantsUtil, type Chain } from '@web3modal/common'
+import { type Chain } from '@web3modal/common'
 
 // -- Types --------------------------------------------- //
 export interface ChainControllerState {
@@ -37,32 +37,10 @@ const networkState: NetworkControllerState = {
   smartAccountEnabledNetworks: []
 }
 
-const defaultChainAdapterEVM: ChainAdapter = {
-  connectionControllerClient: undefined,
-  networkControllerClient: undefined,
-  accountState,
-  networkState,
-  chain: ConstantsUtil.CHAIN.EVM
-}
-
-const defaultChainAdapterSolana: ChainAdapter = {
-  connectionControllerClient: undefined,
-  networkControllerClient: undefined,
-  accountState,
-  networkState,
-  chain: ConstantsUtil.CHAIN.SOLANA
-}
-
 // -- State --------------------------------------------- //
-const evmKey = defaultChainAdapterEVM
-const solana = defaultChainAdapterSolana
-
 const state = proxy<ChainControllerState>({
   multiChainEnabled: false,
-  chains: proxyMap<Chain, ChainAdapter>([
-    [ConstantsUtil.CHAIN.EVM, evmKey],
-    [ConstantsUtil.CHAIN.SOLANA, solana]
-  ]),
+  chains: proxyMap<Chain, ChainAdapter>(),
   activeChain: undefined,
   activeCaipNetwork: undefined
 })
@@ -80,15 +58,20 @@ export const ChainController = {
 
   subscribeChain(callback: (value: ChainAdapter | undefined) => void) {
     let prev: ChainAdapter | undefined = undefined
-    const activeChain = state.activeChain || ConstantsUtil.CHAIN.EVM
+    const activeChain = state.activeChain
 
-    return sub(state.chains, () => {
-      const nextValue = state.chains.get(activeChain)
-      if (!prev || prev !== nextValue) {
-        prev = nextValue
-        callback(nextValue)
-      }
-    })
+    if (activeChain) {
+      return sub(state.chains, () => {
+        const nextValue = state.chains.get(activeChain)
+        if (!prev || prev !== nextValue) {
+          prev = nextValue
+          callback(nextValue)
+        }
+      })
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    return () => {}
   },
 
   subscribeChainProp<K extends keyof ChainAdapter>(
@@ -96,19 +79,28 @@ export const ChainController = {
     callback: (value: ChainAdapter[K] | undefined) => void
   ) {
     let prev: ChainAdapter[K] | undefined = undefined
-    const activeChain = state.activeChain || ConstantsUtil.CHAIN.EVM
+    const activeChain = state.activeChain
 
-    return sub(state.chains, () => {
-      const nextValue = state.chains.get(activeChain)?.[property]
-      if (prev !== nextValue) {
-        prev = nextValue
-        callback(nextValue)
-      }
-    })
+    if (activeChain) {
+      return sub(state.chains, () => {
+        const nextValue = state.chains.get(activeChain)?.[property]
+        if (prev !== nextValue) {
+          prev = nextValue
+          callback(nextValue)
+        }
+      })
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    return () => {}
   },
 
   initialize(adapters: ChainsInitializerAdapter[]) {
-    const firstChainToActivate = adapters?.[0]?.chain || ConstantsUtil.CHAIN.EVM
+    const firstChainToActivate = adapters?.[0]?.chain
+
+    if (!firstChainToActivate) {
+      throw new Error('Chain is required to initialize ChainController')
+    }
 
     state.activeChain = firstChainToActivate
 
@@ -135,7 +127,10 @@ export const ChainController = {
     const chainAdapter = state.chains.get(chain)
 
     if (chainAdapter) {
-      chainAdapter.networkState = { ...chainAdapter.networkState, ...props }
+      chainAdapter.networkState = {
+        ...chainAdapter.networkState,
+        ...props
+      } as NetworkControllerState
       state.chains.set(chain, chainAdapter)
       NetworkController.replaceState(chainAdapter.networkState)
     }
@@ -143,13 +138,16 @@ export const ChainController = {
 
   setChainAccountData(chain: Chain | undefined, accountProps: Partial<AccountControllerState>) {
     if (!chain) {
-      throw new Error('Chain is required to update chain network data')
+      throw new Error('Chain is required to update chain account data')
     }
 
     const chainAdapter = state.chains.get(chain)
 
     if (chainAdapter) {
-      chainAdapter.accountState = { ...chainAdapter.accountState, ...accountProps }
+      chainAdapter.accountState = {
+        ...chainAdapter.accountState,
+        ...accountProps
+      } as AccountControllerState
       state.chains.set(chain, chainAdapter)
       AccountController.replaceState(chainAdapter.accountState)
     }
@@ -160,7 +158,7 @@ export const ChainController = {
     value: AccountControllerState[keyof AccountControllerState],
     chain?: Chain
   ) {
-    this.setChainAccountData(state.multiChainEnabled ? chain : ConstantsUtil.CHAIN.EVM, {
+    this.setChainAccountData(state.multiChainEnabled ? chain : state.activeChain, {
       [prop]: value
     })
   },
@@ -171,7 +169,7 @@ export const ChainController = {
     if (newAdapter) {
       state.activeChain = newAdapter.chain
       state.activeCaipNetwork = state.chains.get(newAdapter.chain)?.networkState
-        .requestedCaipNetworks?.[0]
+        ?.requestedCaipNetworks?.[0]
       PublicStateController.set({ activeChain: chain })
     }
   },
@@ -183,7 +181,7 @@ export const ChainController = {
   },
 
   getNetworkControllerClient() {
-    const chain = state.multiChainEnabled ? state.activeChain : ConstantsUtil.CHAIN.EVM
+    const chain = state.activeChain
 
     if (!chain) {
       throw new Error('Chain is required to get network controller client')
@@ -203,7 +201,7 @@ export const ChainController = {
   },
 
   getConnectionControllerClient() {
-    const chain = state.multiChainEnabled ? state.activeChain : ConstantsUtil.CHAIN.EVM
+    const chain = state.activeChain
 
     if (!chain) {
       throw new Error('Chain is required to get connection controller client')
@@ -225,7 +223,7 @@ export const ChainController = {
   getAccountProp<K extends keyof AccountControllerState>(
     key: K
   ): AccountControllerState[K] | undefined {
-    const chainToWrite = state.multiChainEnabled ? state.activeChain : ConstantsUtil.CHAIN.EVM
+    const chainToWrite = state.multiChainEnabled ? state.activeChain : state.activeChain
 
     if (!chainToWrite) {
       return undefined
@@ -243,7 +241,7 @@ export const ChainController = {
   getNetworkProp<K extends keyof NetworkControllerState>(
     key: K
   ): NetworkControllerState[K] | undefined {
-    const chainToWrite = state.multiChainEnabled ? state.activeChain : ConstantsUtil.CHAIN.EVM
+    const chainToWrite = state.multiChainEnabled ? state.activeChain : state.activeChain
 
     if (!chainToWrite) {
       return undefined
@@ -259,7 +257,7 @@ export const ChainController = {
   },
 
   resetAccount(chain?: Chain) {
-    const chainToWrite = state.multiChainEnabled ? chain : ConstantsUtil.CHAIN.EVM
+    const chainToWrite = state.multiChainEnabled ? chain : state.activeChain
 
     if (!chainToWrite) {
       throw new Error('Chain is required to set account prop')

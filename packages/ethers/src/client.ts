@@ -82,7 +82,7 @@ declare global {
   }
 }
 
-// @ts-expect-error: Overriden state type is correct
+// @ts-expect-error: Overridden state type is correct
 interface Web3ModalState extends PublicStateControllerState {
   selectedNetworkId: number | undefined
 }
@@ -477,6 +477,7 @@ export class Web3Modal extends Web3ModalScaffold {
     }
 
     super({
+      chain: CommonConstantsUtil.CHAIN.EVM,
       networkControllerClient,
       connectionControllerClient,
       siweControllerClient: siweConfig,
@@ -529,7 +530,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
   // -- Public ------------------------------------------------------------------
 
-  // @ts-expect-error: Overriden state type is correct
+  // @ts-expect-error: Overridden state type is correct
   public override getState() {
     const state = super.getState()
 
@@ -539,7 +540,7 @@ export class Web3Modal extends Web3ModalScaffold {
     }
   }
 
-  // @ts-expect-error: Overriden state type is correct
+  // @ts-expect-error: Overridden state type is correct
   public override subscribeState(callback: (state: Web3ModalState) => void) {
     return super.subscribeState(state =>
       callback({
@@ -824,7 +825,7 @@ export class Web3Modal extends Web3ModalScaffold {
         EthersStoreUtil.setIsConnected(true)
         EthersStoreUtil.setAddress(address as Address)
         EthersStoreUtil.setPreferredAccountType(preferredAccountType as W3mFrameTypes.AccountType)
-        this.setSmartAccountDeployed(Boolean(smartAccountDeployed))
+        this.setSmartAccountDeployed(Boolean(smartAccountDeployed), this.chain)
 
         this.watchAuth()
         this.watchModal()
@@ -1080,7 +1081,7 @@ export class Web3Modal extends Web3ModalScaffold {
       const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`
 
       this.setIsConnected(isConnected)
-      this.setPreferredAccountType(preferredAccountType)
+      this.setPreferredAccountType(preferredAccountType, this.chain)
       this.setCaipAddress(caipAddress)
       this.syncConnectedWalletInfo()
       await Promise.all([
@@ -1215,25 +1216,24 @@ export class Web3Modal extends Web3ModalScaffold {
         )
 
         if (currentProvider) {
-          this.setConnectedWalletInfo({
-            ...currentProvider.info
-          })
+          this.setConnectedWalletInfo({ ...currentProvider.info }, this.chain)
         }
       }
     } else if (providerType === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
       const provider = EthersStoreUtil.state.provider as unknown as EthereumProvider
 
       if (provider.session) {
-        this.setConnectedWalletInfo({
-          ...provider.session.peer.metadata,
-          name: provider.session.peer.metadata.name,
-          icon: provider.session.peer.metadata.icons?.[0]
-        })
+        this.setConnectedWalletInfo(
+          {
+            ...provider.session.peer.metadata,
+            name: provider.session.peer.metadata.name,
+            icon: provider.session.peer.metadata.icons?.[0]
+          },
+          this.chain
+        )
       }
     } else if (currentActiveWallet) {
-      this.setConnectedWalletInfo({
-        name: currentActiveWallet
-      })
+      this.setConnectedWalletInfo({ name: currentActiveWallet }, this.chain)
     }
   }
 

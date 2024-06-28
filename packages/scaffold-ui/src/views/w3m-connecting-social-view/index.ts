@@ -1,6 +1,7 @@
 /* eslint-disable max-depth */
 import {
   AccountController,
+  ChainController,
   ConnectionController,
   ConnectorController,
   EventsController,
@@ -119,7 +120,7 @@ export class W3mConnectingSocialView extends LitElement {
           if (this.authConnector && !this.connecting) {
             if (this.socialWindow) {
               this.socialWindow.close()
-              AccountController.setSocialWindow(undefined)
+              AccountController.setSocialWindow(undefined, ChainController.state.activeChain)
             }
             this.connecting = true
             this.updateMessage()
