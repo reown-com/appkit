@@ -11,6 +11,7 @@ export type AuthParameters = {
   options: W3mFrameProviderOptions
   socials?: SocialProvider[]
   showWallets?: boolean
+  walletFeatures?: boolean
   email?: boolean
 }
 
@@ -18,6 +19,7 @@ export function authConnector(parameters: AuthParameters) {
   return authConnectorWagmi({
     email: true,
     showWallets: true,
+    walletFeatures: true,
     ...parameters
   })
 }

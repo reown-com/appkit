@@ -66,6 +66,12 @@ export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultCha
   tokens?: Record<number, Token>
 }
 
+type CoinbaseProviderError = {
+  code: number
+  message: string
+  data: string | undefined
+}
+
 export type Web3ModalOptions = Omit<Web3ModalClientOptions, '_sdkVersion'>
 
 declare global {
@@ -281,6 +287,7 @@ export class Web3Modal extends Web3ModalScaffold {
             this.setCoinbaseProvider(ethersConfig)
           } catch (error) {
             EthersStoreUtil.setError(error)
+            throw new Error((error as CoinbaseProviderError).message)
           }
         } else if (id === ConstantsUtil.AUTH_CONNECTOR_ID) {
           this.setAuthProvider()
@@ -495,12 +502,13 @@ export class Web3Modal extends Web3ModalScaffold {
     this.syncRequestedNetworks(chains, chainImages)
     this.syncConnectors(ethersConfig)
 
-    if (ethersConfig.EIP6963) {
-      if (typeof window !== 'undefined') {
-        this.listenConnectors(ethersConfig.EIP6963)
-        this.checkActive6963Provider()
-      }
+    // Setup EIP6963 providers
+    if (typeof window !== 'undefined') {
+      this.listenConnectors(true)
+      this.checkActive6963Provider()
     }
+
+    this.setEIP6963Enabled(ethersConfig.EIP6963)
 
     if (ethersConfig.injected) {
       this.checkActiveInjectedProvider(ethersConfig)
@@ -1407,7 +1415,8 @@ export class Web3Modal extends Web3ModalScaffold {
         provider: this.authProvider,
         email: auth?.email,
         socials: auth?.socials,
-        showWallets: auth?.showWallets === undefined ? true : auth.showWallets
+        showWallets: auth?.showWallets === undefined ? true : auth.showWallets,
+        walletFeatures: auth?.walletFeatures
       })
 
       super.setLoading(true)
@@ -1433,7 +1442,7 @@ export class Web3Modal extends Web3ModalScaffold {
       const isCoinbaseDuplicated =
         coinbaseConnector &&
         event.detail.info.rdns ===
-          ConstantsUtil.CONNECTOR_RDNS_MAP[ConstantsUtil.COINBASE_CONNECTOR_ID]
+          ConstantsUtil.CONNECTOR_RDNS_MAP[ConstantsUtil.COINBASE_SDK_CONNECTOR_ID]
 
       if (!existingConnector && !isCoinbaseDuplicated) {
         const type = PresetsUtil.ConnectorTypesMap[ConstantsUtil.EIP6963_CONNECTOR_ID]

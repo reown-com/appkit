@@ -106,7 +106,6 @@ export const NetworkController = {
 
   async switchActiveNetwork(network: NetworkControllerState['caipNetwork']) {
     await this._getClient().switchCaipNetwork(network)
-
     state.caipNetwork = network
     if (network) {
       EventsController.sendEvent({

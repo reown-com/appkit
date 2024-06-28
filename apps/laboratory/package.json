@@ -1,6 +1,6 @@
 {
   "name": "@apps/laboratory",
-  "version": "4.2.3",
+  "version": "5.0.3",
   "private": true,
   "scripts": {
     "dev:laboratory": "next dev",
@@ -10,6 +10,7 @@
     "playwright:start": "npm run start:laboratory",
     "playwright:install": "playwright install --with-deps",
     "playwright:test": "playwright test",
+    "playwright:test:basic": "playwright test --grep 'basic-tests.spec.ts'",
     "playwright:test:wallet": "playwright test --grep 'connect-qr.spec.ts|wallet.spec.ts'",
     "playwright:test:email": "playwright test --grep 'email.spec.ts'",
     "playwright:test:social": "playwright test --grep 'social.spec.ts'",
@@ -19,6 +20,7 @@
     "playwright:test:sa": "playwright test --grep smart-account.spec.ts",
     "playwright:test:canary": "playwright test --retries=0 --grep canary.spec.ts --project='Desktop Chrome/wagmi'",
     "playwright:debug": "npm run playwright:test -- --debug",
+    "playwright:debug:basic": "npm run playwright:test:basic -- --debug",
     "playwright:debug:wallet": "npm run playwright:test:wallet -- --debug",
     "playwright:debug:email": "npm run playwright:test:email -- --debug",
     "playwright:debug:social": "npm run playwright:test:social -- --debug",
@@ -37,10 +39,10 @@
     "@sentry/react": "7.92.0",
     "@solana/web3.js": "1.91.7",
     "@tanstack/react-query": "5.24.8",
-    "@web3modal/ethers": "4.2.3",
-    "@web3modal/siwe": "4.2.3",
-    "@web3modal/solana": "4.2.3",
-    "@web3modal/wagmi": "4.2.3",
+    "@web3modal/ethers": "5.0.3",
+    "@web3modal/siwe": "5.0.3",
+    "@web3modal/solana": "5.0.3",
+    "@web3modal/wagmi": "5.0.3",
     "ethers": "6.13.0",
     "framer-motion": "10.17.9",
     "next": "14.2.3",
@@ -49,8 +51,9 @@
     "@walletconnect/utils": "2.13.1",
     "valtio": "1.11.2",
     "viem": "2.10.3",
-    "wagmi": "2.9.9",
-    "@wagmi/connectors": "5.0.8"
+    "wagmi": "2.9.10",
+    "@wagmi/connectors": "5.0.8",
+    "rpc-websockets": "7.11.0"
   },
   "devDependencies": {
     "@aws-sdk/client-cloudwatch": "3.509.0",
