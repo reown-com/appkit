@@ -1,5 +1,6 @@
 import {
   AccountController,
+  ChainController,
   ConnectorController,
   CoreHelperUtil,
   EventsController,
@@ -151,7 +152,7 @@ export class W3mSocialLoginWidget extends LitElement {
 
   async onSocialClick(socialProvider?: SocialProvider) {
     if (socialProvider) {
-      AccountController.setSocialProvider(socialProvider)
+      AccountController.setSocialProvider(socialProvider, ChainController.state.activeChain)
       EventsController.sendEvent({
         type: 'track',
         event: 'SOCIAL_LOGIN_STARTED',
@@ -173,7 +174,7 @@ export class W3mSocialLoginWidget extends LitElement {
         })
 
         if (this.popupWindow && uri) {
-          AccountController.setSocialWindow(this.popupWindow)
+          AccountController.setSocialWindow(this.popupWindow, ChainController.state.activeChain)
           this.popupWindow.location.href = uri
         } else {
           this.popupWindow?.close()
