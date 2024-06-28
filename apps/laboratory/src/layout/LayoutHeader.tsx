@@ -46,16 +46,26 @@ export function LayoutHeader() {
         <Button rightIcon={<IoSettingsOutline />} onClick={controls.onOpen}>
           Options
         </Button>
-        <Button rightIcon={<DownloadIcon />} onClick={() => {
-          (window as unknown as { downloadLogsBlobInBrowser?: () => void }).downloadLogsBlobInBrowser?.();
-          (window as unknown as { downloadAppKitLogsBlob: Record<string, () => void> }).downloadAppKitLogsBlob?.['sdk']?.();
-          toast({
-            title: 'Logs downloaded',
-            description: 'To get logs for secure site too, switch to it in developer console and run `window.downloadLogsBlobInBrowser()`',
-            type: 'success'
-          })
-        }}>Logs</Button>
-      </Stack >
+        <Button
+          rightIcon={<DownloadIcon />}
+          onClick={() => {
+            ;(
+              window as unknown as { downloadLogsBlobInBrowser?: () => void }
+            ).downloadLogsBlobInBrowser?.()
+            ;(
+              window as unknown as { downloadAppKitLogsBlob: Record<string, () => void> }
+            ).downloadAppKitLogsBlob?.['sdk']?.()
+            toast({
+              title: 'Logs downloaded',
+              description:
+                'To get logs for secure site too, switch to it in developer console and run `window.downloadLogsBlobInBrowser()`',
+              type: 'success'
+            })
+          }}
+        >
+          Logs
+        </Button>
+      </Stack>
 
       <OptionsDrawer controls={controls} />
       <CustomWallet controls={controlsCW} />
