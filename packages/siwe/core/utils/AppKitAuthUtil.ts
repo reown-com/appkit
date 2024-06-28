@@ -21,6 +21,7 @@ export async function getNonce() {
 
     return nonceRes
   } catch (error) {
+    console.error(error)
     throw new Error('Failed to get nonce', {
       cause: error
     })
@@ -40,6 +41,7 @@ export async function getAppKitAuthSession() {
     }
 
     const sessionRes = await res.json()
+
     return sessionRes
   } catch (error) {
     console.error(error)
@@ -61,6 +63,11 @@ export async function authenticate(payload: {
       body: JSON.stringify(payload),
       credentials: 'include'
     })
+
+    if (!res.ok && res.status === 404) {
+      return undefined
+    }
+
     const authenticateRes = await res.json()
 
     return authenticateRes
@@ -80,6 +87,11 @@ export async function updateUser(metadata: Record<string, unknown>) {
       body: JSON.stringify({ metadata }),
       credentials: 'include'
     })
+
+    if (!res.ok && res.status === 404) {
+      return undefined
+    }
+
     const updateUserRes = await res.json()
 
     return updateUserRes
@@ -132,7 +144,6 @@ export const appKitAuthConfig = new Web3ModalSIWEClient({
   },
   getSession: async () => {
     const session = await getAppKitAuthSession()
-    console.log({ getAppKitAuthSession: session })
     if (!session) {
       return null
     }

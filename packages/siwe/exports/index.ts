@@ -14,6 +14,7 @@ export {
 } from '../core/helpers/index.js'
 export { formatMessage, getDidChainId, getDidAddress } from '@walletconnect/utils'
 export { SIWEController, type SIWEControllerClient } from '../core/controller/SIWEController.js'
+export { useSiweSession } from '../core/hooks/react.js'
 
 export type {
   Web3ModalSIWEClient,
@@ -25,6 +26,7 @@ export type {
 }
 
 export * from '../scaffold/partials/w3m-connecting-siwe/index.js'
+export * from '../scaffold/views/w3m-connecting-siwe-view/index.js'
 export * from '../scaffold/views/w3m-connecting-siwe-view/index.js'
 
 export function createSIWEConfig(siweConfig: SIWEConfig) {

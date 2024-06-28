@@ -172,12 +172,10 @@ export class W3mModal extends LitElement {
 
     if (this.isSiweEnabled) {
       const { SIWEController, appKitAuthConfig } = await import('@web3modal/siwe')
-      console.log({ siweClient: SIWEController.state._client })
       if (!SIWEController.state._client) {
         SIWEController.setSIWEClient(appKitAuthConfig)
       }
       const session = await SIWEController.getSession()
-      console.log({ session })
       if (session?.address && session?.chainId) {
         const { chainId, address } = session
 
@@ -197,8 +195,6 @@ export class W3mModal extends LitElement {
             await SIWEController.signOut()
             this.onSiweNavigation()
           }
-
-          return
         }
       } else {
         this.onSiweNavigation()
