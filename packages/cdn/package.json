@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/cdn",
-  "version": "5.0.2",
+  "version": "5.0.3",
   "main": "dist/wagmi.js",
   "type": "module",
   "files": [
@@ -28,8 +28,8 @@
   "dependencies": {
     "@wagmi/connectors": "5.0.8",
     "@wagmi/core": "2.10.5",
-    "@web3modal/wagmi": "5.0.2",
-    "@web3modal/ethers": "5.0.2",
+    "@web3modal/wagmi": "5.0.3",
+    "@web3modal/ethers": "5.0.3",
     "viem": "2.10.3",
     "vite": "5.2.11"
   }
