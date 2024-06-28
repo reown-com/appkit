@@ -11,6 +11,7 @@ import Link from 'next/link'
 import { IoSettingsOutline } from 'react-icons/io5'
 import { OptionsDrawer } from './OptionsDrawer'
 import { CustomWallet } from './CustomWallet'
+import { DownloadIcon } from '@chakra-ui/icons'
 
 export function LayoutHeader() {
   const controls = useDisclosure()
@@ -43,6 +44,11 @@ export function LayoutHeader() {
         <Button rightIcon={<IoSettingsOutline />} onClick={controls.onOpen}>
           Options
         </Button>
+        <Button rightIcon={<DownloadIcon />} onClick={() => {
+          (window as any).downloadLogsBlobInBrowser();
+          (window as any).downloadAppKitLogsBlob['sdk']();
+          alert('Logs downloaded. To get logs for secure site too, switch to it in developer console and run `window.downloadLogsBlobInBrowser()`');
+        }}>Logs</Button>
       </Stack>
 
       <OptionsDrawer controls={controls} />
