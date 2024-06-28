@@ -58,20 +58,18 @@ export const ChainController = {
 
   subscribeChain(callback: (value: ChainAdapter | undefined) => void) {
     let prev: ChainAdapter | undefined = undefined
-    const activeChain = state.activeChain
 
-    if (activeChain) {
-      return sub(state.chains, () => {
+    return sub(state.chains, () => {
+      const activeChain = state.activeChain
+
+      if (activeChain) {
         const nextValue = state.chains.get(activeChain)
         if (!prev || prev !== nextValue) {
           prev = nextValue
           callback(nextValue)
         }
-      })
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    return () => {}
+      }
+    })
   },
 
   subscribeChainProp<K extends keyof ChainAdapter>(
@@ -79,20 +77,18 @@ export const ChainController = {
     callback: (value: ChainAdapter[K] | undefined) => void
   ) {
     let prev: ChainAdapter[K] | undefined = undefined
-    const activeChain = state.activeChain
 
-    if (activeChain) {
-      return sub(state.chains, () => {
+    return sub(state.chains, () => {
+      const activeChain = state.activeChain
+
+      if (activeChain) {
         const nextValue = state.chains.get(activeChain)?.[property]
         if (prev !== nextValue) {
           prev = nextValue
           callback(nextValue)
         }
-      })
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    return () => {}
+      }
+    })
   },
 
   initialize(adapters: ChainsInitializerAdapter[]) {
@@ -170,6 +166,8 @@ export const ChainController = {
       state.activeChain = newAdapter.chain
       state.activeCaipNetwork = state.chains.get(newAdapter.chain)?.networkState
         ?.requestedCaipNetworks?.[0]
+      AccountController.replaceState(newAdapter.accountState)
+      NetworkController.replaceState(newAdapter.networkState)
       PublicStateController.set({ activeChain: chain })
     }
   },

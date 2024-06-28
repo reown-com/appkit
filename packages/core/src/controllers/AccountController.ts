@@ -42,7 +42,9 @@ const state = proxy<AccountControllerState>({
 export const AccountController = {
   state,
 
-  replaceState(newState: AccountControllerState) {
+  replaceState(newState: AccountControllerState | undefined) {
+    if (!newState) return
+
     Object.assign(state, newState)
   },
 

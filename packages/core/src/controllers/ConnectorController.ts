@@ -4,6 +4,7 @@ import type { AuthConnector, Connector } from '../utils/TypeUtil.js'
 import { getW3mThemeVariables } from '@web3modal/common'
 import { OptionsController } from './OptionsController.js'
 import { ThemeController } from './ThemeController.js'
+import { ChainController } from './ChainController.js'
 
 // -- Types --------------------------------------------- //
 export interface ConnectorControllerState {
@@ -25,10 +26,9 @@ export const ConnectorController = {
     return subKey(state, key, callback)
   },
 
-  setConnectors(connectors: ConnectorControllerState['connectors'], multiChain?: boolean) {
-    if (multiChain) {
+  setConnectors(connectors: ConnectorControllerState['connectors']) {
+    if (ChainController.state.multiChainEnabled) {
       state.connectors = [...state.connectors, ...connectors.map(c => ref(c))]
-
       state.connectors = this.mergeMultiChainConnectors(state.connectors)
     } else {
       state.connectors = connectors.map(c => ref(c))

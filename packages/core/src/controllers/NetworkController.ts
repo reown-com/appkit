@@ -39,7 +39,9 @@ const state = proxy<NetworkControllerState>({
 export const NetworkController = {
   state,
 
-  replaceState(newState: NetworkControllerState) {
+  replaceState(newState: NetworkControllerState | undefined) {
+    if (!newState) return
+
     Object.assign(state, newState)
   },
 
@@ -203,8 +205,9 @@ export const NetworkController = {
 
     ChainController.state.activeCaipNetwork = network
     ChainController.state.activeChain = chain
+    ChainController.setActiveChain(chain)
     ChainController.setChainNetworkData(chain, { caipNetwork: network })
-    PublicStateController.set({ activeChain: chain, selectedNetworkId: network.id })
+    PublicStateController.set({ selectedNetworkId: network.id })
 
     if (network) {
       EventsController.sendEvent({
