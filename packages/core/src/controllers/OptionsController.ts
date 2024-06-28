@@ -1,5 +1,5 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
-import { proxy, snapshot } from 'valtio/vanilla'
+import { proxy } from 'valtio/vanilla'
 import type { CustomWallet, Metadata, ProjectId, SdkVersion, Tokens } from '../utils/TypeUtil.js'
 import { ApiController } from './ApiController.js'
 
@@ -106,9 +106,5 @@ export const OptionsController = {
 
   setEIP6963Enabled(enableEIP6963: OptionsControllerState['enableEIP6963']) {
     state.enableEIP6963 = enableEIP6963
-  },
-
-  getSnapshot() {
-    return snapshot(state)
   }
 }

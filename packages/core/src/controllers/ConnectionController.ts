@@ -10,10 +10,12 @@ import type {
   WriteContractArgs
 } from '../utils/TypeUtil.js'
 import { TransactionsController } from './TransactionsController.js'
+import { ChainController } from './ChainController.js'
 import { type W3mFrameTypes } from '@web3modal/wallet'
 import { ModalController } from './ModalController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
+import type { Chain } from '@web3modal/common'
 import { NetworkController } from './NetworkController.js'
 
 // -- Types --------------------------------------------- //
@@ -74,11 +76,7 @@ export const ConnectionController = {
   },
 
   _getClient() {
-    if (!state._client) {
-      throw new Error('ConnectionController client not set')
-    }
-
-    return state._client
+    return ChainController.getConnectionControllerClient()
   },
 
   setClient(client: ConnectionControllerClient) {
@@ -93,8 +91,9 @@ export const ConnectionController = {
     StorageUtil.setConnectedConnector('WALLET_CONNECT')
   },
 
-  async connectExternal(options: ConnectExternalOptions) {
+  async connectExternal(options: ConnectExternalOptions, chain?: Chain) {
     await this._getClient().connectExternal?.(options)
+    ChainController.setActiveChain(chain)
     StorageUtil.setConnectedConnector(options.type)
   },
 
@@ -183,9 +182,14 @@ export const ConnectionController = {
   },
 
   async disconnect() {
-    await this._getClient().disconnect()
-    StorageUtil.removeConnectedWalletImageUrl()
+    const client = this._getClient()
 
-    this.resetWcConnection()
+    try {
+      await client.disconnect()
+      StorageUtil.removeConnectedWalletImageUrl()
+      this.resetWcConnection()
+    } catch (error) {
+      throw new Error('Failed to disconnect')
+    }
   }
 }

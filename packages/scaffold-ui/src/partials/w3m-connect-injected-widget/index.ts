@@ -54,6 +54,8 @@ export class W3mConnectInjectedWidget extends LitElement {
           }
 
           if (!ConnectionController.checkInstalled()) {
+            this.style.cssText = `display: none`
+
             return null
           }
 

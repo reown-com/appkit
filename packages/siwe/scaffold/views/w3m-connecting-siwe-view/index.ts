@@ -135,7 +135,7 @@ export class W3mConnectingSiweView extends LitElement {
   }
 
   private async onCancel() {
-    const { isConnected } = AccountController.state
+    const isConnected = AccountController.state.isConnected
     if (isConnected) {
       await ConnectionController.disconnect()
       ModalController.close()
