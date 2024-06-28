@@ -48,6 +48,7 @@
     "@solana/wallet-adapter-base": "0.9.23",
     "@solana/web3.js": "1.91.7",
     "@walletconnect/universal-provider": "2.11.2",
+    "@web3modal/common": "5.0.3",
     "@web3modal/polyfills": "5.0.3",
     "@web3modal/scaffold": "5.0.3",
     "@web3modal/scaffold-react": "5.0.3",
@@ -57,7 +58,8 @@
     "bs58": "5.0.0"
   },
   "devDependencies": {
-    "@types/bn.js": "5.1.5"
+    "@types/bn.js": "5.1.5",
+    "@walletconnect/types": "2.13.3"
   },
   "peerDependencies": {
     "react": ">=17",

@@ -1,30 +1,22 @@
 import type { Connector } from '@web3modal/scaffold'
 import { BackpackWalletAdapter } from '@solana/wallet-adapter-backpack'
+import { ConstantsUtil } from '@web3modal/common'
 
 import type { BaseWalletAdapter } from '@solana/wallet-adapter-base'
 
-export function createWalletAdapters(adapters: BaseWalletAdapter[]) {
-  const result = []
-  for (const Adapter of adapters) {
-    // @ts-expect-error no constructor
-    result.push(new Adapter())
-  }
-
-  return result
-}
-
-export function syncInjectedWallets(
-  w3mConnectors: Connector[],
-  adapters: BaseWalletAdapter[]
-) {
+export function syncInjectedWallets(w3mConnectors: Connector[], adapters: BaseWalletAdapter[]) {
   for (const adapter of adapters) {
-    w3mConnectors.push({
-      id: adapter.name,
-      type: 'ANNOUNCED',
-      imageUrl: adapter.icon,
-      name: adapter.name,
-      provider: adapter
-    })
+    const name = adapter.name.toLocaleLowerCase() as keyof Window
+    if (window[name]) {
+      w3mConnectors.push({
+        id: adapter.name,
+        type: 'ANNOUNCED',
+        imageUrl: adapter.icon,
+        name: adapter.name,
+        provider: adapter,
+        chain: ConstantsUtil.CHAIN.SOLANA
+      })
+    }
   }
 
   if (window.backpack) {
@@ -34,7 +26,8 @@ export function syncInjectedWallets(
       type: 'ANNOUNCED',
       imageUrl: adapter.icon,
       name: adapter.name,
-      provider: adapter
+      provider: adapter,
+      chain: ConstantsUtil.CHAIN.SOLANA
     })
   }
 }
