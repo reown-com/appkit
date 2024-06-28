@@ -70,6 +70,7 @@ export const ChainController = {
       })
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     return () => {}
   },
 
@@ -90,6 +91,7 @@ export const ChainController = {
       })
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     return () => {}
   },
 
