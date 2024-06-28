@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/solana",
-  "version": "4.2.3-alpha.0",
+  "version": "5.0.3",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -37,7 +37,7 @@
   },
   "scripts": {
     "build:clean": "rm -rf dist",
-    "build": "tsc --build",
+    "build:client": "tsc --build",
     "watch": "tsc --watch",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
@@ -52,11 +52,11 @@
     "@solana/wallet-adapter-trust": "0.1.13",
     "@solana/wallet-adapter-walletconnect": "0.1.16",
     "@walletconnect/universal-provider": "2.11.2",
-    "@web3modal/polyfills": "4.2.3-alpha.0",
-    "@web3modal/scaffold": "4.2.3-alpha.0",
-    "@web3modal/scaffold-react": "4.2.3-alpha.0",
-    "@web3modal/scaffold-utils": "4.2.3-alpha.0",
-    "@web3modal/scaffold-vue": "4.2.3-alpha.0",
+    "@web3modal/polyfills": "5.0.3",
+    "@web3modal/scaffold": "5.0.3",
+    "@web3modal/scaffold-react": "5.0.3",
+    "@web3modal/scaffold-utils": "5.0.3",
+    "@web3modal/scaffold-vue": "5.0.3",
     "bn.js": "5.2.1",
     "bs58": "5.0.0"
   },

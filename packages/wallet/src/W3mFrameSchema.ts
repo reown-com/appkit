@@ -82,7 +82,8 @@ export const FrameConnectSocialResponse = z.object({
         W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       ])
     })
-  )
+  ),
+  userName: z.string().optional()
 })
 export const FrameUpdateEmailResponse = z.object({
   action: z.enum(['VERIFY_PRIMARY_OTP', 'VERIFY_SECONDARY_OTP'])

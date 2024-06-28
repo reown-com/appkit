@@ -13,6 +13,8 @@ import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { OptionsController } from './OptionsController.js'
 import { SwapCalculationUtil } from '../utils/SwapCalculationUtil.js'
+import { EventsController } from './EventsController.js'
+import { W3mFrameRpcConstants } from '@web3modal/wallet'
 
 // -- Constants ---------------------------------------- //
 export const INITIAL_GAS_LIMIT = 150000
@@ -45,7 +47,10 @@ export interface SwapControllerState {
   initializing: boolean
   initialized: boolean
   loadingPrices: boolean
-  loading?: boolean
+  loadingQuote?: boolean
+  loadingApprovalTransaction?: boolean
+  loadingBuildTransaction?: boolean
+  loadingTransaction?: boolean
 
   // Error states
   fetchError: boolean
@@ -53,7 +58,6 @@ export interface SwapControllerState {
   // Approval & Swap transaction states
   approvalTransaction: TransactionParams | undefined
   swapTransaction: TransactionParams | undefined
-  transactionLoading?: boolean
   transactionError?: string
 
   // Input values
@@ -106,8 +110,11 @@ const initialState: SwapControllerState = {
   // Loading states
   initializing: false,
   initialized: false,
-  loading: false,
   loadingPrices: false,
+  loadingQuote: false,
+  loadingApprovalTransaction: false,
+  loadingBuildTransaction: false,
+  loadingTransaction: false,
 
   // Error states
   fetchError: false,
@@ -116,7 +123,6 @@ const initialState: SwapControllerState = {
   approvalTransaction: undefined,
   swapTransaction: undefined,
   transactionError: undefined,
-  transactionLoading: false,
 
   // Input values
   sourceToken: undefined,
@@ -195,10 +201,6 @@ export const SwapController = {
       availableToSwap:
         caipAddress && !invalidToToken && !invalidSourceToken && !invalidSourceTokenAmount
     }
-  },
-
-  setLoading(loading: boolean) {
-    state.loading = loading
   },
 
   setSourceToken(sourceToken: SwapTokenWithBalance | undefined) {
@@ -302,6 +304,10 @@ export const SwapController = {
     this.setToToken(undefined)
   },
 
+  getApprovalLoadingState() {
+    return state.loadingApprovalTransaction
+  },
+
   clearError() {
     state.transactionError = undefined
   },
@@ -345,24 +351,16 @@ export const SwapController = {
     const tokens = await SwapApiUtil.getTokenList()
 
     state.tokens = tokens
-    state.popularTokens = tokens
-      .sort((aTokenInfo, bTokenInfo) => {
-        if (aTokenInfo.symbol < bTokenInfo.symbol) {
-          return -1
-        }
-        if (aTokenInfo.symbol > bTokenInfo.symbol) {
-          return 1
-        }
+    state.popularTokens = tokens.sort((aTokenInfo, bTokenInfo) => {
+      if (aTokenInfo.symbol < bTokenInfo.symbol) {
+        return -1
+      }
+      if (aTokenInfo.symbol > bTokenInfo.symbol) {
+        return 1
+      }
 
-        return 0
-      })
-      .filter(token => {
-        if (ConstantsUtil.SWAP_POPULAR_TOKENS.includes(token.symbol)) {
-          return true
-        }
-
-        return false
-      }, {})
+      return 0
+    })
     state.suggestedTokens = tokens.filter(token => {
       if (ConstantsUtil.SWAP_SUGGESTED_TOKENS.includes(token.symbol)) {
         return true
@@ -467,7 +465,7 @@ export const SwapController = {
       return
     }
 
-    state.loading = true
+    state.loadingQuote = true
 
     const amountDecimal = NumberUtil.bigNumber(state.sourceTokenAmount).multipliedBy(
       10 ** sourceToken.decimals
@@ -481,6 +479,8 @@ export const SwapController = {
       gasPrice: state.gasFee,
       amount: amountDecimal.toString()
     })
+
+    state.loadingQuote = false
 
     const quoteToAmount = quoteResponse?.quotes?.[0]?.toAmount
 
@@ -505,8 +505,6 @@ export const SwapController = {
       state.inputError = undefined
       this.setTransactionDetails()
     }
-
-    state.loading = false
   },
 
   // -- Create Transactions -------------------------------------- //
@@ -515,12 +513,12 @@ export const SwapController = {
     const sourceToken = state.sourceToken
     const toToken = state.toToken
 
-    if (!fromCaipAddress || !availableToSwap || !sourceToken || !toToken || state.loading) {
+    if (!fromCaipAddress || !availableToSwap || !sourceToken || !toToken || state.loadingQuote) {
       return undefined
     }
 
     try {
-      state.loading = true
+      state.loadingBuildTransaction = true
       const hasAllowance = await SwapApiUtil.fetchSwapAllowance({
         userAddress: fromCaipAddress,
         tokenAddress: sourceToken.address,
@@ -536,13 +534,14 @@ export const SwapController = {
         transaction = await this.createAllowanceTransaction()
       }
 
-      state.loading = false
+      state.loadingBuildTransaction = false
       state.fetchError = false
 
       return transaction
     } catch (error) {
       RouterController.goBack()
       SnackController.showError('Failed to check allowance')
+      state.loadingBuildTransaction = false
       state.approvalTransaction = undefined
       state.swapTransaction = undefined
       state.fetchError = true
@@ -656,11 +655,14 @@ export const SwapController = {
   // -- Send Transactions --------------------------------- //
   async sendTransactionForApproval(data: TransactionParams) {
     const { fromAddress } = this.getParams()
-    state.transactionLoading = true
 
+    state.loadingApprovalTransaction = true
     RouterController.pushTransactionStack({
       view: null,
-      goBack: true
+      goBack: true,
+      onSuccess() {
+        SnackController.showLoading('Approving transaction...')
+      }
     })
 
     try {
@@ -672,13 +674,14 @@ export const SwapController = {
         gasPrice: BigInt(data.gasPrice)
       })
 
+      await this.swapTokens()
+      await this.getTransaction()
       state.approvalTransaction = undefined
-      state.transactionLoading = false
-      this.swapTokens()
+      state.loadingApprovalTransaction = false
     } catch (err) {
       const error = err as TransactionError
       state.transactionError = error?.shortMessage as unknown as string
-      state.transactionLoading = false
+      state.loadingTransaction = false
     }
   },
 
@@ -689,20 +692,25 @@ export const SwapController = {
 
     const { fromAddress, toTokenAmount } = this.getParams()
 
-    state.transactionLoading = true
+    state.loadingTransaction = true
+
+    const snackbarPendingMessage = `Swapping ${state.sourceToken
+      ?.symbol} to ${NumberUtil.formatNumberToLocalString(toTokenAmount, 3)} ${state.toToken
+      ?.symbol}`
+    const snackbarSuccessMessage = `Swapped ${state.sourceToken
+      ?.symbol} to ${NumberUtil.formatNumberToLocalString(toTokenAmount, 3)} ${state.toToken
+      ?.symbol}`
 
     RouterController.pushTransactionStack({
       view: 'Account',
       goBack: false,
       onSuccess() {
+        SnackController.showLoading(snackbarPendingMessage)
         SwapController.resetState()
       }
     })
 
     try {
-      const successMessage = `Swapped ${state.sourceToken
-        ?.symbol} to ${NumberUtil.formatNumberToLocalString(toTokenAmount, 3)} ${state.toToken
-        ?.symbol}!`
       const forceUpdateAddresses = [state.sourceToken?.address, state.toToken?.address].join(',')
       const transactionHash = await ConnectionController.sendTransaction({
         address: fromAddress as `0x${string}`,
@@ -712,9 +720,23 @@ export const SwapController = {
         gasPrice: BigInt(data.gasPrice),
         value: data.value
       })
-      state.transactionLoading = false
 
-      SnackController.showSuccess(successMessage)
+      state.loadingTransaction = false
+      SnackController.showSuccess(snackbarSuccessMessage)
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'SWAP_SUCCESS',
+        properties: {
+          network: NetworkController.state.caipNetwork?.id || '',
+          swapFromToken: this.state.sourceToken?.symbol || '',
+          swapToToken: this.state.toToken?.symbol || '',
+          swapfromAmount: this.state.sourceTokenAmount || '',
+          swapToAmount: this.state.toTokenAmount || '',
+          isSmartAccount:
+            AccountController.state.preferredAccountType ===
+            W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+        }
+      })
       SwapController.resetState()
       SwapController.getMyTokensWithBalance(forceUpdateAddresses)
 
@@ -722,8 +744,22 @@ export const SwapController = {
     } catch (err) {
       const error = err as TransactionError
       state.transactionError = error?.shortMessage
-      state.transactionLoading = false
+      state.loadingTransaction = false
       SnackController.showError(error?.shortMessage || 'Transaction error')
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'SWAP_ERROR',
+        properties: {
+          network: NetworkController.state.caipNetwork?.id || '',
+          swapFromToken: this.state.sourceToken?.symbol || '',
+          swapToToken: this.state.toToken?.symbol || '',
+          swapfromAmount: this.state.sourceTokenAmount || '',
+          swapToAmount: this.state.toTokenAmount || '',
+          isSmartAccount:
+            AccountController.state.preferredAccountType ===
+            W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+        }
+      })
 
       return undefined
     }

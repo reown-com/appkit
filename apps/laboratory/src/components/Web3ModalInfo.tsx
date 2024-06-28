@@ -11,7 +11,13 @@ import {
   Text
 } from '@chakra-ui/react'
 
-export function Web3ModalInfo({ address, chainId }: { address?: string; chainId?: number }) {
+type Web3ModalInfoProps = {
+  address?: string
+  chainId?: number
+  clientId: string | null
+}
+
+export function Web3ModalInfo({ address, chainId, clientId }: Web3ModalInfoProps) {
   return (
     <Card marginTop={10} marginBottom={10}>
       <CardHeader>
@@ -33,6 +39,14 @@ export function Web3ModalInfo({ address, chainId }: { address?: string; chainId?
             </Heading>
             <Text data-testid="w3m-chain-id">{chainId}</Text>
           </Box>
+          {clientId && (
+            <Box>
+              <Heading size="xs" textTransform="uppercase" pb="2">
+                Relay Client ID
+              </Heading>
+              <Text data-testid="w3m-chain-id">{clientId}</Text>
+            </Box>
+          )}
         </Stack>
       </CardBody>
     </Card>

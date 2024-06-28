@@ -1,5 +1,41 @@
 # @web3modal/common
 
+## 5.0.3
+
+### Patch Changes
+
+- fix: ethers5 coinbase issues. Turbo build issues. Upate cb connector.
+
+## 5.0.2
+
+### Patch Changes
+
+- fix: siwe signOutOnNetwork change issue. fix: wallets filtered by rdns matched from explorer api. fix: solana network id issue
+
+## 5.0.1
+
+### Patch Changes
+
+- fix: remove walletconnect restriction on names
+
+## 5.0.0
+
+### Major Changes
+
+- Release V5
+
+## 5.0.0-cn-v5.0
+
+### Major Changes
+
+- Test V5
+
+## 4.2.3
+
+### Patch Changes
+
+- feat: - feat: restricted ens names. fix: iat set automatically if not present in messageParams. Adds siwe config handlers
+
 ## 4.2.3-alpha.0
 
 ### Patch Changes

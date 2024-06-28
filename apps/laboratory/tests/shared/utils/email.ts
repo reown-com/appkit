@@ -5,7 +5,6 @@ const EMAIL_APPROVE_BUTTON_TEXT = 'Approve this login'
 const APPROVE_URL_REGEX = /https:\/\/register.*/u
 const OTP_CODE_REGEX = /\d{3}\s?\d{3}/u
 const EMAIL_DOMAIN = 'web3modal.msdc.co'
-export const NOT_ENABLED_DOMAIN = 'w3ma.msdc.co'
 
 export class Email {
   // eslint-disable-next-line  @typescript-eslint/no-explicit-any
@@ -67,7 +66,9 @@ export class Email {
   }
 
   getOtpCodeFromBody(body: string): string {
-    const match = body.match(OTP_CODE_REGEX)
+    const cleanedBody = body.replace(/https:\/\/s1\.designmodo\.com\/postcards\/[^\s]+\s?/gu, '')
+
+    const match = cleanedBody.match(OTP_CODE_REGEX)
     if (match) {
       // Remove empty space in OTP code 111 111
       return match[0].replace(' ', '')

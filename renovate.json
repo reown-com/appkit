@@ -7,12 +7,15 @@
     ":semanticCommits",
     ":semanticCommitScope(deps)"
   ],
+  "rebaseWhen": "conflicted",
   "packageRules": [
     {
       "matchPackagePatterns": ["*"],
       "enabled": false
     },
     {
+      "matchFileNames": ["apps/laboratory/package.json"],
+      "enabled": true,
       "matchPackageNames": [
         "@walletconnect/utils",
         "wagmi",
@@ -22,9 +25,7 @@
         "@solana/web3.js"
       ],
       "matchPackagePrefixes": ["@web3modal/"],
-      "enabled": true,
       "prPriority": 10
     }
-  ],
-  "includePaths": ["apps/laboratory/package.json"]
+  ]
 }

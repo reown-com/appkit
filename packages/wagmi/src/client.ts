@@ -70,7 +70,7 @@ export interface Web3ModalClientOptions<C extends Config>
 
 export type Web3ModalOptions<C extends Config> = Omit<Web3ModalClientOptions<C>, '_sdkVersion'>
 
-// @ts-expect-error: Overriden state type is correct
+// @ts-expect-error: Overridden state type is correct
 interface Web3ModalState extends PublicStateControllerState {
   selectedNetworkId: number | undefined
 }
@@ -363,11 +363,13 @@ export class Web3Modal extends Web3ModalScaffold {
     watchAccount(this.wagmiConfig, {
       onChange: accountData => this.syncAccount({ ...accountData })
     })
+
+    this.setEIP6963Enabled(w3mOptions.enableEIP6963 !== false)
   }
 
   // -- Public ------------------------------------------------------------------
 
-  // @ts-expect-error: Overriden state type is correct
+  // @ts-expect-error: Overridden state type is correct
   public override getState() {
     const state = super.getState()
 
@@ -377,7 +379,7 @@ export class Web3Modal extends Web3ModalScaffold {
     }
   }
 
-  // @ts-expect-error: Overriden state type is correct
+  // @ts-expect-error: Overridden state type is correct
   public override subscribeState(callback: (state: Web3ModalState) => void) {
     return super.subscribeState(state =>
       callback({
@@ -449,7 +451,6 @@ export class Web3Modal extends Web3ModalScaffold {
           this.setAddressExplorerUrl(undefined)
         }
         if (this.hasSyncedConnectedAccount) {
-          await this.syncProfile(address, chainId)
           await this.syncBalance(address, chainId)
         }
       }
@@ -588,7 +589,9 @@ export class Web3Modal extends Web3ModalScaffold {
       email: boolean
       socials: SocialProvider[]
       showWallets?: boolean
+      walletFeatures?: boolean
     }
+
     if (authConnector) {
       const provider = await authConnector.getProvider()
       this.addConnector({
@@ -598,7 +601,8 @@ export class Web3Modal extends Web3ModalScaffold {
         provider,
         email: authConnector.email,
         socials: authConnector.socials,
-        showWallets: authConnector?.showWallets === undefined ? true : authConnector.showWallets
+        showWallets: authConnector.showWallets,
+        walletFeatures: authConnector.walletFeatures
       })
     }
   }
@@ -707,13 +711,7 @@ export class Web3Modal extends Web3ModalScaffold {
         if (!address) {
           return
         }
-        const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
-        this.syncAccount({
-          address: address as `0x${string}`,
-          chainId,
-          isConnected: true,
-          connector
-        }).then(() => this.setPreferredAccountType(type as W3mFrameTypes.AccountType))
+        this.setPreferredAccountType(type as W3mFrameTypes.AccountType)
       })
     }
   }

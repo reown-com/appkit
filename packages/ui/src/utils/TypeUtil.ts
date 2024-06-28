@@ -38,6 +38,8 @@ export type TextType =
 
 export type TextAlign = 'center' | 'left' | 'right'
 
+export type LineClamp = '1' | '2'
+
 export type SizeType = 'inherit' | 'xl' | 'lg' | 'md' | 'mdl' | 'sm' | 'xs' | 'xxs' | 'xxl'
 
 export type SpacingType =
@@ -134,6 +136,7 @@ export type IconType =
   | 'github'
   | 'google'
   | 'helpCircle'
+  | 'image'
   | 'id'
   | 'infoCircle'
   | 'lightbulb'

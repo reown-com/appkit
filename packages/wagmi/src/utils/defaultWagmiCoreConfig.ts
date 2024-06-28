@@ -12,10 +12,11 @@ export type ConfigOptions = Partial<CreateConfigParameters> & {
   projectId: string
   enableEIP6963?: boolean
   enableCoinbase?: boolean
-  enableEmail?: boolean
   auth?: {
+    email?: boolean
     socials?: SocialProvider[]
     showWallets?: boolean
+    walletFeatures?: boolean
   }
   enableInjected?: boolean
   enableWalletConnect?: boolean
@@ -33,21 +34,20 @@ export function defaultWagmiConfig({
   chains,
   metadata,
   enableCoinbase,
-  enableEmail,
   enableInjected,
-  auth = {
-    showWallets: true
-  },
+  auth = {},
   enableWalletConnect,
   enableEIP6963,
   ...wagmiConfig
 }: ConfigOptions) {
   const connectors: CreateConnectorFn[] = []
-  const transportsArr = chains.map(chain => [
-    chain.id,
-    getTransport({ chainId: chain.id, projectId })
-  ])
+  const transportsArr = chains.map(chain => [chain.id, getTransport({ chain, projectId })])
   const transports = Object.fromEntries(transportsArr)
+  const defaultAuth = {
+    email: true,
+    showWallets: true,
+    walletFeatures: true
+  }
 
   // Enabled by default
   if (enableWalletConnect !== false) {
@@ -69,15 +69,20 @@ export function defaultWagmiConfig({
     )
   }
 
-  // Dissabled by default
-  if (enableEmail || auth?.socials) {
+  const mergedAuth = {
+    ...defaultAuth,
+    ...auth
+  }
+
+  if (mergedAuth.email || mergedAuth.socials) {
     connectors.push(
       authConnector({
         chains: [...chains],
         options: { projectId },
-        socials: auth?.socials,
-        email: enableEmail,
-        showWallets: auth.showWallets
+        socials: mergedAuth.socials,
+        email: mergedAuth.email,
+        showWallets: mergedAuth.showWallets,
+        walletFeatures: mergedAuth.walletFeatures
       })
     )
   }

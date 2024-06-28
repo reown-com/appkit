@@ -62,8 +62,6 @@ import type { WuiVisualThumbnail } from '../composites/wui-visual-thumbnail/inde
 import type { WuiWalletImage } from '../composites/wui-wallet-image/index.js'
 import type { WuiNoticeCard } from '../composites/wui-notice-card/index.js'
 import type { WuiListWalletTransaction } from '../composites/wui-list-wallet-transaction/index.js'
-import type { WuiOnRampActivityItem } from '../composites/wui-onramp-activity-item/index.js'
-import type { WuiOnRampProviderItem } from '../composites/wui-onramp-provider-item/index.js'
 import type { WuiPromo } from '../composites/wui-promo/index.js'
 import type { WuiProfileButton } from '../composites/wui-profile-button/index.js'
 import type { WuiProfileButtonV2 } from '../composites/wui-profile-button-v2/index.js'
@@ -128,8 +126,6 @@ declare global {
       'wui-network-button': CustomElement<WuiNetworkButton>
       'wui-network-image': CustomElement<WuiNetworkImage>
       'wui-notice-card': CustomElement<WuiNoticeCard>
-      'wui-onramp-activity-item': CustomElement<WuiOnRampActivityItem>
-      'wui-onramp-provider-item': CustomElement<WuiOnRampProviderItem>
       'wui-otp': CustomElement<WuiOtp>
       'wui-preview-item': CustomElement<WuiPreviewItem>
       'wui-profile-button': CustomElement<WuiProfileButton>
