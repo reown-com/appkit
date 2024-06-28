@@ -4,7 +4,7 @@ import { PublicStateController } from './PublicStateController.js'
 import { EventsController } from './EventsController.js'
 import { ModalController } from './ModalController.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
-import { ConstantsUtil, NetworkUtil, type Chain } from '@web3modal/common'
+import { NetworkUtil, type Chain } from '@web3modal/common'
 import { ChainController } from './ChainController.js'
 
 // -- Types --------------------------------------------- //
@@ -325,12 +325,5 @@ export const NetworkController = {
     setTimeout(() => {
       ModalController.open({ view: 'UnsupportedChain' })
     }, 300)
-  },
-
-  // -- New methods
-  switchChain(newChain: Chain) {
-    ChainController.state.activeChain = newChain
-    this.setCaipNetwork(ChainController.state.chains.get(newChain)?.networkState.caipNetwork)
-    PublicStateController.set({ activeChain: newChain })
   }
 }
