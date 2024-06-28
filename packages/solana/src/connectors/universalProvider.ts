@@ -1,5 +1,4 @@
 import { UniversalProvider as Provider } from '@walletconnect/universal-provider'
-import { ConstantsUtil } from '@web3modal/common'
 
 import { SolStoreUtil } from '../utils/scaffold/SolanaStoreUtil.js'
 import type { WalletConnectAppMetadata } from './walletConnectConnector.js'
