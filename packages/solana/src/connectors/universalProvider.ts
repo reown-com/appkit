@@ -1,4 +1,5 @@
 import { UniversalProvider as Provider } from '@walletconnect/universal-provider'
+import { ConstantsUtil } from '@web3modal/common'
 
 import { SolStoreUtil } from '../utils/scaffold/SolanaStoreUtil.js'
 import type { WalletConnectAppMetadata } from './walletConnectConnector.js'
@@ -32,7 +33,7 @@ export class UniversalProviderFactory {
 
     // Subscribe to session delete
     UniversalProviderFactory.provider.on('session_delete', () => {
-      delete UniversalProviderFactory.provider?.session?.namespaces['solana']
+      delete UniversalProviderFactory.provider?.session?.namespaces[ConstantsUtil.CHAIN.SOLANA]
       SolStoreUtil.setAddress('')
     })
   }

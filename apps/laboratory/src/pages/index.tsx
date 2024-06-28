@@ -17,7 +17,7 @@ import { RandomLink } from '../components/RandomLink'
 export default function HomePage() {
   return (
     <>
-      <Card marginTop={20}>
+      <Card marginTop={10}>
         <CardHeader>
           <Heading size="md">Testing</Heading>
         </CardHeader>
@@ -43,7 +43,7 @@ export default function HomePage() {
         </CardBody>
       </Card>
 
-      <Card marginTop={20}>
+      <Card marginTop={10}>
         <CardHeader>
           <Heading size="md">Wagmi</Heading>
         </CardHeader>
