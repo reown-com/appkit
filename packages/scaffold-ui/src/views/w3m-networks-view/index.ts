@@ -74,7 +74,7 @@ export class W3mNetworksView extends LitElement {
         <wui-input-text
           @inputChange=${this.onInputChange.bind(this)}
           class="network-search-input"
-          size="sm"
+          size="md"
           placeholder="Search network"
           icon="search"
         ></wui-input-text>
