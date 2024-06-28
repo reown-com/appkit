@@ -60,17 +60,18 @@ export const ChainController = {
     let prev: ChainAdapter | undefined = undefined
     const activeChain = state.activeChain
 
-    if (!activeChain) {
-      throw new Error('Chain is required to subscribe chain')
+    if (activeChain) {
+      return sub(state.chains, () => {
+        const nextValue = state.chains.get(activeChain)
+        if (!prev || prev !== nextValue) {
+          prev = nextValue
+          callback(nextValue)
+        }
+      })
     }
 
-    return sub(state.chains, () => {
-      const nextValue = state.chains.get(activeChain)
-      if (!prev || prev !== nextValue) {
-        prev = nextValue
-        callback(nextValue)
-      }
-    })
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    return () => {}
   },
 
   subscribeChainProp<K extends keyof ChainAdapter>(
@@ -80,17 +81,18 @@ export const ChainController = {
     let prev: ChainAdapter[K] | undefined = undefined
     const activeChain = state.activeChain
 
-    if (!activeChain) {
-      throw new Error('Chain is required to subscribe chain')
+    if (activeChain) {
+      return sub(state.chains, () => {
+        const nextValue = state.chains.get(activeChain)?.[property]
+        if (prev !== nextValue) {
+          prev = nextValue
+          callback(nextValue)
+        }
+      })
     }
 
-    return sub(state.chains, () => {
-      const nextValue = state.chains.get(activeChain)?.[property]
-      if (prev !== nextValue) {
-        prev = nextValue
-        callback(nextValue)
-      }
-    })
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    return () => {}
   },
 
   initialize(adapters: ChainsInitializerAdapter[]) {

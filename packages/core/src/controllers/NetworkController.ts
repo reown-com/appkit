@@ -78,7 +78,7 @@ export const NetworkController = {
       : ChainController.state.activeChain
 
     if (!chain) {
-      throw new Error('chain is required to set default network')
+      throw new Error('chain is required to set active network')
     }
 
     if (!caipNetwork) {
@@ -152,7 +152,7 @@ export const NetworkController = {
         : ChainController.state.activeChain
 
       if (!chain) {
-        throw new Error('chain is required to set default network')
+        throw new Error('chain is required to get requested networks')
       }
 
       chainAdapters = [chain]
@@ -194,11 +194,11 @@ export const NetworkController = {
       : ChainController.state.activeChain
 
     if (!chain) {
-      throw new Error('chain is required to set default network')
+      throw new Error('chain is required to switch active network')
     }
 
     if (!network) {
-      throw new Error('Network is required to switch active network')
+      throw new Error('network is required to switch active network')
     }
 
     ChainController.state.activeCaipNetwork = network
@@ -222,7 +222,7 @@ export const NetworkController = {
         : ChainController.state.activeChain
 
       if (!chain) {
-        throw new Error('chain is required to set default network')
+        throw new Error('chain is required to get approved network IDs')
       }
 
       return ChainController.state.chains.get(chain)?.networkState?.approvedCaipNetworkIds
@@ -248,7 +248,7 @@ export const NetworkController = {
       : ChainController.state.activeChain
 
     if (!chain) {
-      throw new Error('chain is required to set default network')
+      throw new Error('chain is required to set approved network data')
     }
 
     ChainController.setChainNetworkData(chain, {
@@ -315,7 +315,7 @@ export const NetworkController = {
       : ChainController.state.activeChain
 
     if (!chain) {
-      throw new Error('chain is required to get getSupportsAllNetworks')
+      throw new Error('chain is required to check if network supports all networks')
     }
 
     return ChainController.state.chains.get(chain)?.networkState?.supportsAllNetworks
