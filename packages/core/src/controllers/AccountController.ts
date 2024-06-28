@@ -52,7 +52,7 @@ export const AccountController = {
         return callback(accountState)
       }
 
-      return undefined
+      return
     })
   },
 
