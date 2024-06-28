@@ -8,6 +8,7 @@ import {
 import { WalletAdapterNetwork, type BaseWalletAdapter } from '@solana/wallet-adapter-base'
 import { solana, solanaDevnet, solanaTestnet } from '../utils/chains.js'
 import type { Connector } from '@web3modal/scaffold'
+import { ConstantsUtil } from '@web3modal/common'
 
 export type AdapterKey = 'phantom' | 'solflare' | 'trustWallet' | 'backpack'
 export const supportedWallets: AdapterKey[] = ['phantom', 'solflare', 'trustWallet', 'backpack']
@@ -40,7 +41,8 @@ export function syncInjectedWallets(
         type: 'ANNOUNCED',
         imageUrl: adapters[wallet].icon,
         name: adapters[wallet].name,
-        provider: adapters[wallet]
+        provider: adapters[wallet],
+        chain: ConstantsUtil.CHAIN.SOLANA
       })
     }
   })
