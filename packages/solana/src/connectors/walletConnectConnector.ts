@@ -1,6 +1,7 @@
 import base58 from 'bs58'
 import { PublicKey, Transaction, VersionedTransaction } from '@solana/web3.js'
 import { OptionsController } from '@web3modal/core'
+import { ConstantsUtil } from '@web3modal/common'
 
 import { SolStoreUtil } from '../utils/scaffold/index.js'
 import { UniversalProviderFactory } from './universalProvider.js'

@@ -40,7 +40,8 @@ import type { Hex } from 'viem'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
-import { ConstantsUtil as CommonConstants } from '@web3modal/common'
+import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
+import type { Chain as AvailableChain } from '@web3modal/common'
 import {
   getCaipDefaultChain,
   getEmailCaipNetworks,
@@ -82,6 +83,8 @@ export class Web3Modal extends Web3ModalScaffold {
   private options: Web3ModalClientOptions<CoreConfig> | undefined = undefined
 
   private wagmiConfig: Web3ModalClientOptions<CoreConfig>['wagmiConfig']
+
+  private chain: AvailableChain = CommonConstantsUtil.CHAIN.EVM
 
   public constructor(options: Web3ModalClientOptions<CoreConfig>) {
     const { wagmiConfig, siweConfig, defaultChain, tokens, _sdkVersion, ...w3mOptions } = options
@@ -303,7 +306,7 @@ export class Web3Modal extends Web3ModalScaffold {
           let ensName: boolean | GetEnsAddressReturnType = false
           let wcName: boolean | string = false
 
-          if (value?.endsWith(CommonConstants.WC_NAME_SUFFIX)) {
+          if (value?.endsWith(CommonConstantsUtil.WC_NAME_SUFFIX)) {
             wcName = await this.resolveWalletConnectName(value)
           }
 
@@ -341,6 +344,7 @@ export class Web3Modal extends Web3ModalScaffold {
     }
 
     super({
+      chain: CommonConstantsUtil.CHAIN.EVM,
       networkControllerClient,
       connectionControllerClient,
       siweControllerClient: siweConfig,
@@ -419,7 +423,7 @@ export class Web3Modal extends Web3ModalScaffold {
         this.syncProfile(address, chainId),
         this.syncBalance(address, chainId),
         this.syncConnectedWalletInfo(connector),
-        this.getApprovedCaipNetworksData()
+        this.setApprovedCaipNetworksData()
       ])
       this.hasSyncedConnectedAccount = true
     } else if (!isConnected && this.hasSyncedConnectedAccount) {
@@ -439,7 +443,8 @@ export class Web3Modal extends Web3ModalScaffold {
         id: caipChainId,
         name,
         imageId: PresetsUtil.EIP155NetworkImageIds[id],
-        imageUrl: this.options?.chainImages?.[id]
+        imageUrl: this.options?.chainImages?.[id],
+        chain: this.chain
       })
       if (isConnected && address && chainId) {
         const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${id}:${address}`
@@ -530,14 +535,17 @@ export class Web3Modal extends Web3ModalScaffold {
         ReturnType<(typeof EthereumProvider)['init']>
       >
       if (walletConnectProvider.session) {
-        this.setConnectedWalletInfo({
-          ...walletConnectProvider.session.peer.metadata,
-          name: walletConnectProvider.session.peer.metadata.name,
-          icon: walletConnectProvider.session.peer.metadata.icons?.[0]
-        })
+        this.setConnectedWalletInfo(
+          {
+            ...walletConnectProvider.session.peer.metadata,
+            name: walletConnectProvider.session.peer.metadata.name,
+            icon: walletConnectProvider.session.peer.metadata.icons?.[0]
+          },
+          this.chain
+        )
       }
     } else {
-      this.setConnectedWalletInfo({ name: connector.name, icon: connector.icon })
+      this.setConnectedWalletInfo({ name: connector.name, icon: connector.icon }, this.chain)
     }
   }
 
@@ -572,7 +580,8 @@ export class Web3Modal extends Web3ModalScaffold {
           type: PresetsUtil.ConnectorTypesMap[type] ?? 'EXTERNAL',
           info: {
             rdns: id
-          }
+          },
+          chain: this.chain
         })
       }
     })
@@ -602,6 +611,7 @@ export class Web3Modal extends Web3ModalScaffold {
         email: authConnector.email,
         socials: authConnector.socials,
         showWallets: authConnector.showWallets,
+        chain: this.chain,
         walletFeatures: authConnector.walletFeatures
       })
     }
@@ -698,8 +708,11 @@ export class Web3Modal extends Web3ModalScaffold {
 
       provider.onIsConnected(req => {
         this.setIsConnected(true)
-        this.setSmartAccountDeployed(Boolean(req.smartAccountDeployed))
-        this.setPreferredAccountType(req.preferredAccountType as W3mFrameTypes.AccountType)
+        this.setSmartAccountDeployed(Boolean(req.smartAccountDeployed), this.chain)
+        this.setPreferredAccountType(
+          req.preferredAccountType as W3mFrameTypes.AccountType,
+          this.chain
+        )
         super.setLoading(false)
       })
 
@@ -711,7 +724,7 @@ export class Web3Modal extends Web3ModalScaffold {
         if (!address) {
           return
         }
-        this.setPreferredAccountType(type as W3mFrameTypes.AccountType)
+        this.setPreferredAccountType(type as W3mFrameTypes.AccountType, this.chain)
       })
     }
   }
