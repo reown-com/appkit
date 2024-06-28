@@ -1,6 +1,7 @@
 import '@web3modal/polyfills'
 
 import type { Chain, Metadata, Provider, ProviderType } from './scaffold/index.js'
+import type { BaseWalletAdapter } from '@solana/wallet-adapter-base'
 
 declare global {
   interface Navigator {
@@ -26,6 +27,7 @@ export interface ConfigOptions {
   rpcUrl?: string
   defaultChainId?: number
   metadata: Metadata
+  adapters: BaseWalletAdapter[]
 }
 
 export function defaultSolanaConfig(options: ConfigOptions) {

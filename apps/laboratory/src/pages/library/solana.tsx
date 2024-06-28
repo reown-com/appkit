@@ -5,6 +5,42 @@ import { solana, solanaDevnet, solanaTestnet } from '../../utils/ChainsUtil'
 import { Web3ModalButtons } from '../../components/Web3ModalButtons'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { SolanaTests } from '../../components/Solana/SolanaTests'
+import {
+  AlphaWalletAdapter,
+  AvanaWalletAdapter,
+  BitpieWalletAdapter,
+  CloverWalletAdapter,
+  Coin98WalletAdapter,
+  CoinbaseWalletAdapter,
+  CoinhubWalletAdapter,
+  FractalWalletAdapter,
+  HuobiWalletAdapter,
+  HyperPayWalletAdapter,
+  KeystoneWalletAdapter,
+  KrystalWalletAdapter,
+  LedgerWalletAdapter,
+  MathWalletAdapter,
+  NekoWalletAdapter,
+  NightlyWalletAdapter,
+  NufiWalletAdapter,
+  OntoWalletAdapter,
+  ParticleAdapter,
+  PhantomWalletAdapter,
+  SafePalWalletAdapter,
+  SaifuWalletAdapter,
+  SalmonWalletAdapter,
+  SkyWalletAdapter,
+  SolflareWalletAdapter,
+  SolongWalletAdapter,
+  SpotWalletAdapter,
+  TokenaryWalletAdapter,
+  TokenPocketWalletAdapter,
+  TorusWalletAdapter,
+  TrezorWalletAdapter,
+  TrustWalletAdapter,
+  UnsafeBurnerWalletAdapter,
+  XDEFIWalletAdapter
+} from '@solana/wallet-adapter-wallets'
 
 const chains = [solana, solanaTestnet, solanaDevnet]
 
@@ -22,7 +58,42 @@ const modal = createWeb3Modal({
   enableAnalytics: false,
   termsConditionsUrl: 'https://walletconnect.com/terms',
   privacyPolicyUrl: 'https://walletconnect.com/privacy',
-  adapters: ['phantom', 'solflare', 'trust']
+  adapters: [
+    AlphaWalletAdapter,
+    AvanaWalletAdapter,
+    BitpieWalletAdapter,
+    CloverWalletAdapter,
+    Coin98WalletAdapter,
+    CoinbaseWalletAdapter,
+    CoinhubWalletAdapter,
+    FractalWalletAdapter,
+    HuobiWalletAdapter,
+    HyperPayWalletAdapter,
+    KeystoneWalletAdapter,
+    KrystalWalletAdapter,
+    LedgerWalletAdapter,
+    MathWalletAdapter,
+    NekoWalletAdapter,
+    NightlyWalletAdapter,
+    NufiWalletAdapter,
+    OntoWalletAdapter,
+    ParticleAdapter,
+    PhantomWalletAdapter,
+    SafePalWalletAdapter,
+    SaifuWalletAdapter,
+    SalmonWalletAdapter,
+    SkyWalletAdapter,
+    SolflareWalletAdapter,
+    SolongWalletAdapter,
+    SpotWalletAdapter,
+    TokenaryWalletAdapter,
+    TokenPocketWalletAdapter,
+    TorusWalletAdapter,
+    TrezorWalletAdapter,
+    TrustWalletAdapter,
+    UnsafeBurnerWalletAdapter,
+    XDEFIWalletAdapter
+  ]
 })
 
 ThemeStore.setModal(modal)

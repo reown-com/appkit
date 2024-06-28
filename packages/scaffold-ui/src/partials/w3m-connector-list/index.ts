@@ -5,7 +5,6 @@ import styles from './styles.js'
 import {
   ApiController,
   ConnectorController,
-  NetworkController,
   OptionsController,
   StorageUtil
 } from '@web3modal/core'
@@ -43,22 +42,22 @@ export class W3mConnectorList extends LitElement {
         <w3m-connect-walletconnect-widget></w3m-connect-walletconnect-widget>
         ${recent.length ? html`<w3m-connect-recent-widget></w3m-connect-recent-widget>` : null}
         ${announced.length
-          ? html`<w3m-connect-announced-widget></w3m-connect-announced-widget>`
-          : null}
+        ? html`<w3m-connect-announced-widget></w3m-connect-announced-widget>`
+        : null}
         ${injected.length
-          ? html`<w3m-connect-injected-widget></w3m-connect-injected-widget>`
-          : null}
+        ? html`<w3m-connect-injected-widget></w3m-connect-injected-widget>`
+        : null}
         ${featured.length
-          ? html`<w3m-connect-featured-widget></w3m-connect-featured-widget>`
-          : null}
+        ? html`<w3m-connect-featured-widget></w3m-connect-featured-widget>`
+        : null}
         ${custom?.length ? html`<w3m-connect-custom-widget></w3m-connect-custom-widget>` : null}
         ${coinbase ? html`<w3m-connect-coinbase-widget></w3m-connect-coinbase-widget>` : null}
         ${external.length
-          ? html`<w3m-connect-external-widget></w3m-connect-external-widget>`
-          : null}
+        ? html`<w3m-connect-external-widget></w3m-connect-external-widget>`
+        : null}
         ${recommended.length
-          ? html`<w3m-connect-recommended-widget></w3m-connect-recommended-widget>`
-          : null}
+        ? html`<w3m-connect-recommended-widget></w3m-connect-recommended-widget>`
+        : null}
       </wui-flex>
     `
   }
@@ -78,16 +77,13 @@ export class W3mConnectorList extends LitElement {
       connector => connector.id === ConstantsUtil.COINBASE_SDK_CONNECTOR_ID
     )
 
-    // Solana doesn't support EIP 6963
-    const isSolana = NetworkController.state.caipNetwork?.id
-
     return {
       custom,
       recent,
       coinbase,
       external,
-      announced: OptionsController.state.enableEIP6963 || isSolana ? announced : [],
-      injected: OptionsController.state.enableEIP6963 || isSolana ? injected : [],
+      announced: OptionsController.state.enableEIP6963 ? announced : [],
+      injected: OptionsController.state.enableEIP6963 ? injected : [],
       recommended: filteredRecommended,
       featured: filteredFeatured
     }
