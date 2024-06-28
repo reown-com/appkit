@@ -9,7 +9,6 @@ import type {
 import type { SIWEControllerClient, Web3ModalSIWEClient } from '@web3modal/siwe'
 
 export type AppKitOptions = OptionsControllerState & {
-  // -- AppKit Options
   adapters?: ChainAdapter[]
   siweConfig?: Web3ModalSIWEClient
   themeMode?: ThemeMode

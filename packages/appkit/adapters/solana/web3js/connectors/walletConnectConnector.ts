@@ -28,11 +28,13 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
   protected qrcode: boolean
 
   public constructor({
+    projectId,
     relayerRegion,
     metadata,
     qrcode,
     chains
   }: {
+    projectId: string
     relayerRegion: string
     metadata: WalletConnectAppMetadata
     qrcode?: boolean
@@ -42,8 +44,7 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
     this.chains = chains
     this.qrcode = Boolean(qrcode)
     UniversalProviderFactory.setSettings({
-      // TODO(enes): this should be updated after constructing the adapters
-      projectId: '3bdbc796b351092d40d5d08e987f4eca',
+      projectId,
       relayerRegion,
       metadata,
       qrcode: this.qrcode

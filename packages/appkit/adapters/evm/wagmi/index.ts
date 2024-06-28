@@ -1,6 +1,6 @@
 import '@web3modal/polyfills'
 
-export { EVMWagmiClient } from './client'
+export { EVMWagmiClient } from './client.js'
 
 // -- Types
 export type { CoreConfig, ReactConfig, Web3ModalClientOptions } from './client.js'

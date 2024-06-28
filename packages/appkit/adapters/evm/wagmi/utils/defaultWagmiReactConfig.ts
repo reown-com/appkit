@@ -3,7 +3,7 @@ import '@web3modal/polyfills'
 import type { CreateConfigParameters, CreateConnectorFn, Config } from 'wagmi'
 import { createConfig } from 'wagmi'
 import { coinbaseWallet, walletConnect, injected } from 'wagmi/connectors'
-// import { authConnector } from '../connectors/AuthConnector.js'
+import { authConnector } from '../connectors/AuthConnector.js'
 import { getTransport } from './helpers.js'
 import type { SocialProvider } from '@web3modal/scaffold-utils'
 
@@ -67,18 +67,17 @@ export function defaultWagmiConfig({
     )
   }
 
-  // Dissabled by default
+  // Disabled by default
   if (enableEmail || auth?.socials) {
-    // TODO(enes): fix email auth
-    // connectors.push(
-    //   authConnector({
-    //     chains: [...chains],
-    //     options: { projectId },
-    //     socials: auth?.socials,
-    //     email: enableEmail,
-    //     showWallets: auth.showWallets
-    //   })
-    // )
+    connectors.push(
+      authConnector({
+        chains: [...chains],
+        options: { projectId },
+        socials: auth?.socials,
+        email: enableEmail,
+        showWallets: auth.showWallets
+      })
+    )
   }
 
   return createConfig({

@@ -40,7 +40,9 @@ export const NetworkController = {
   state,
 
   replaceState(newState: NetworkControllerState | undefined) {
-    if (!newState) return
+    if (!newState) {
+      return
+    }
 
     Object.assign(state, newState)
   },

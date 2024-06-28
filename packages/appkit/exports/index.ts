@@ -1,5 +1,5 @@
-import { AppKit } from '../src/client'
-import type { AppKitOptions } from '../utils/TypesUtil'
+import { AppKit } from '../src/client.js'
+import type { AppKitOptions } from '../utils/TypesUtil.js'
 
 // -- Views ------------------------------------------------------------
 export * from '@web3modal/scaffold-ui'

@@ -119,7 +119,7 @@ export class W3mConnectingMultiChainView extends LitElement {
 
   private onSwitchNetwork(network: CaipNetwork) {
     NetworkController.setCaipNetwork(network)
-    let connector = this.activeConnector?.providers?.find(
+    const connector = this.activeConnector?.providers?.find(
       provider => provider.chain === network.chain
     )
     RouterController.push('ConnectingExternal', { connector })

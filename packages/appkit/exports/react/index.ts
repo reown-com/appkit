@@ -1,12 +1,12 @@
-import { AppKit } from '../../src/client'
-import { getAppKit } from './hooks'
-import type { AppKitOptions } from '../../utils/TypesUtil'
+import { AppKit } from '../../src/client.js'
+import { getAppKit } from './hooks.js'
+import type { AppKitOptions } from '../../utils/TypesUtil.js'
 
 // -- Views ------------------------------------------------------------
 export * from '@web3modal/scaffold-ui'
 
 // -- Hooks ------------------------------------------------------------
-export * from './hooks'
+export * from './hooks.js'
 
 // -- Utils & Other -----------------------------------------------------
 export type * from '@web3modal/core'

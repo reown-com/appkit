@@ -5,7 +5,7 @@ import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 import '../../components/wui-icon/index.js'
 import '../../components/wui-image/index.js'
-import '../wui-icon-box'
+import '../../composites/wui-icon-box/index.js'
 
 @customElement('wui-select')
 export class WuiSelect extends LitElement {

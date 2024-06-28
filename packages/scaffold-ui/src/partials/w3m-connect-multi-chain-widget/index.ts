@@ -38,8 +38,8 @@ export class W3mConnectMultiChainWidget extends LitElement {
 
     return html`
       <wui-flex flexDirection="column" gap="xs">
-        ${multiChainConnectors.map(connector => {
-          return html`
+        ${multiChainConnectors.map(
+          connector => html`
             <wui-list-wallet
               imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
               .installed=${true}
@@ -51,7 +51,7 @@ export class W3mConnectMultiChainWidget extends LitElement {
             >
             </wui-list-wallet>
           `
-        })}
+        )}
       </wui-flex>
     `
   }

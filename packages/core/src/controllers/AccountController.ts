@@ -43,7 +43,9 @@ export const AccountController = {
   state,
 
   replaceState(newState: AccountControllerState | undefined) {
-    if (!newState) return
+    if (!newState) {
+      return
+    }
 
     Object.assign(state, newState)
   },
