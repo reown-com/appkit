@@ -338,7 +338,6 @@ export class EVMWagmiClient {
         return tx
       },
 
-      // @ts-expect-error - missing type definitions will be handled
       getEnsAddress: async (value: string) => {
         try {
           if (!this.wagmiConfig) {
@@ -458,7 +457,6 @@ export class EVMWagmiClient {
     chainId,
     connector
   }: Pick<GetAccountReturnType, 'address' | 'isConnected' | 'chainId' | 'connector'>) {
-    console.log('>>> syncAccount', address, isConnected, chainId)
     this.appKit?.resetAccount(this.chain)
     this.syncNetwork(address, chainId, isConnected)
     if (isConnected && address && chainId) {
@@ -474,7 +472,7 @@ export class EVMWagmiClient {
       this.hasSyncedConnectedAccount = true
     } else if (!isConnected && this.hasSyncedConnectedAccount) {
       this.appKit?.resetWcConnection()
-      this.appKit?.resetNetwork(this.chain)
+      this.appKit?.resetNetwork()
     }
   }
 

@@ -81,6 +81,10 @@ export const AccountController = {
     ChainController.setAccountProp('isConnected', isConnected, chain)
   },
 
+  getChainIsConnected(chain?: Chain) {
+    return ChainController.getAccountProp('isConnected', chain)
+  },
+
   setCaipAddress(caipAddress: AccountControllerState['caipAddress'], chain?: Chain) {
     const newCaipAddress = caipAddress ? CoreHelperUtil.getPlainAddress(caipAddress) : undefined
 

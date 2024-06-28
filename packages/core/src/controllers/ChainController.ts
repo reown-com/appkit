@@ -219,15 +219,20 @@ export const ChainController = {
   },
 
   getAccountProp<K extends keyof AccountControllerState>(
-    key: K
+    key: K,
+    _chain?: Chain
   ): AccountControllerState[K] | undefined {
-    const chainToWrite = state.multiChainEnabled ? state.activeChain : state.activeChain
+    let chain = state.multiChainEnabled ? state.activeChain : state.activeChain
 
-    if (!chainToWrite) {
+    if (_chain) {
+      chain = _chain
+    }
+
+    if (!chain) {
       return undefined
     }
 
-    const chainAccountState = state.chains.get(chainToWrite)?.accountState
+    const chainAccountState = state.chains.get(chain)?.accountState
 
     if (!chainAccountState) {
       return undefined

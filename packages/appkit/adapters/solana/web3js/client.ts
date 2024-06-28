@@ -310,8 +310,10 @@ export class SolanaWeb3JsClient {
       if (walletId === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
         await this.WalletConnectConnector?.connect(true)
         const provider = await this.WalletConnectConnector?.getProvider()
-        const accounts = await provider.enable()
-        this.setWalletConnectProvider(accounts[0])
+        const accounts = await provider?.enable()
+        if (accounts) {
+          this.setWalletConnectProvider(accounts[0])
+        }
       } else {
         const wallet = walletId?.split('_')[1] as AdapterKey
         const adapter = this.walletAdapters[wallet]
@@ -380,7 +382,7 @@ export class SolanaWeb3JsClient {
       const chain = SolHelpersUtil.getChainFromCaip(this.chains, caipChainId)
       if (chain) {
         const balance = await this.WalletConnectConnector?.getBalance(address)
-        this.appKit?.setBalance(balance.decimals.toString(), chain.currency, this.chain)
+        this.appKit?.setBalance(balance?.decimals.toString(), chain.currency, this.chain)
       }
     }
   }
@@ -435,7 +437,7 @@ export class SolanaWeb3JsClient {
               this.connectionSettings
             )
           )
-          universalProvider.connect({ namespaces, pairingTopic: undefined })
+          universalProvider?.connect({ namespaces, pairingTopic: undefined })
           await this.syncAccount()
         }
       }
