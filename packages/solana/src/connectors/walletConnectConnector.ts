@@ -1,7 +1,6 @@
 import base58 from 'bs58'
 import { PublicKey, Transaction, VersionedTransaction } from '@solana/web3.js'
 import { OptionsController } from '@web3modal/core'
-import { ConstantsUtil } from '@web3modal/common'
 
 import { SolStoreUtil } from '../utils/scaffold/index.js'
 import { UniversalProviderFactory } from './universalProvider.js'
@@ -12,6 +11,11 @@ import type UniversalProvider from '@walletconnect/universal-provider'
 
 import type { Connector } from './baseConnector.js'
 import type { Chain } from '../utils/scaffold/SolanaTypesUtil.js'
+import {
+  getChainsFromChainId,
+  getDefaultChainFromSession,
+  type ChainIDType
+} from '../utils/chainPath/index.js'
 
 export interface WalletConnectAppMetadata {
   name: string
@@ -50,24 +54,14 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
       qrcode: this.qrcode
     })
 
-    UniversalProviderFactory.getProvider().then(provider => {
-      provider.on('session_delete', () => {
-        delete provider.session?.namespaces[ConstantsUtil.CHAIN.SOLANA]
-      })
-    })
+    UniversalProviderFactory.init()
   }
 
   public static readonly connectorName = 'walletconnect'
 
   public async disconnect() {
     const provider = await UniversalProviderFactory.getProvider()
-
-    try {
-      await provider.disconnect()
-    } finally {
-      delete provider.session?.namespaces[ConstantsUtil.CHAIN.SOLANA]
-    }
-
+    await provider.disconnect()
     SolStoreUtil.setAddress('')
   }
 
@@ -217,14 +211,13 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
 
       return acc
     }, {})
-    const chainsNamespaces = [`solana:${chainId}`]
     const rpcMap = {
       [chainId]: rpcs[chainId] ?? ''
     }
 
     return {
       solana: {
-        chains: [...chainsNamespaces],
+        chains: getChainsFromChainId(`solana:${chainId}` as ChainIDType),
         methods: ['solana_signMessage', 'solana_signTransaction'],
         events: [],
         rpcMap
@@ -232,32 +225,29 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
     }
   }
 
-  public async connect(useURI?: boolean) {
-    const solanaNamespace = this.generateNamespaces(SolStoreUtil.state.currentChain?.chainId ?? '')
+  public async connect() {
+    const currentChainId = SolStoreUtil.state.currentChain?.chainId
+    const solanaNamespace = this.generateNamespaces(currentChainId ?? '')
 
     const provider = await UniversalProviderFactory.getProvider()
 
     return new Promise<string>((resolve, reject) => {
-      provider.on('display_uri', (uri: string) => {
-        if (!(this.qrcode && !useURI)) {
-          resolve(uri)
-        }
-      })
-      // Without namespaces provider.enable() will not work (reconnect flow)
       provider
         .connect({
-          pairingTopic: undefined,
-          namespaces: solanaNamespace,
           optionalNamespaces: solanaNamespace
         })
-        .then(providerResult => {
-          if (!providerResult) {
+        .then(session => {
+          if (!session) {
             throw new Error('Failed connection.')
           }
-          const address =
-            providerResult.namespaces[ConstantsUtil.CHAIN.SOLANA]?.accounts[0]?.split(':')[2] ??
-            null
+          const address = session.namespaces['solana']?.accounts[0]?.split(':')[2] ?? null
           if (address && this.qrcode) {
+            const defaultChain = getDefaultChainFromSession(
+              session,
+              `solana:${currentChainId}` as ChainIDType
+            )
+            provider.setDefaultChain(defaultChain)
+
             resolve(address)
           } else {
             reject(new Error('Could not resolve address'))
