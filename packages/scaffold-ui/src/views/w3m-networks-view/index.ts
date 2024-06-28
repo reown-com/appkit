@@ -88,7 +88,7 @@ export class W3mNetworksView extends LitElement {
 
   private onDebouncedSearch = CoreHelperUtil.debounce((value: string) => {
     this.search = value
-  })
+  }, 100)
 
   private onNetworkHelp() {
     EventsController.sendEvent({ type: 'track', event: 'CLICK_NETWORK_HELP' })
@@ -106,8 +106,8 @@ export class W3mNetworksView extends LitElement {
     )
 
     if (this.search) {
-      this.filteredNetworks = sortedNetworks?.filter(network =>
-        network.name.toLowerCase().includes(this.search.toLowerCase())
+      this.filteredNetworks = sortedNetworks?.filter(
+        network => network?.name?.toLowerCase().includes(this.search.toLowerCase())
       )
     } else {
       this.filteredNetworks = sortedNetworks

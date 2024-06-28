@@ -57,6 +57,7 @@ export interface RouterControllerState {
     | 'Swap'
     | 'SwapSelectToken'
     | 'SwapPreview'
+    | 'ConnectingMultiChain'
   history: RouterControllerState['view'][]
   data?: {
     connector?: Connector

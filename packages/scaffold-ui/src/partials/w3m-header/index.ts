@@ -7,6 +7,7 @@ import {
   ConnectorController,
   EventsController,
   ModalController,
+  NetworkController,
   OptionsController,
   RouterController
 } from '@web3modal/core'
@@ -72,7 +73,8 @@ function headings() {
     ConnectSocials: 'All socials',
     ConnectingSocial: AccountController.state.socialProvider
       ? AccountController.state.socialProvider
-      : 'Connect Social'
+      : 'Connect Social',
+    ConnectingMultiChain: 'Select chain'
   }
 }
 
@@ -115,7 +117,11 @@ export class W3mHeader extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex .padding=${this.getPadding()} justifyContent="space-between" alignItems="center">
+      <wui-flex
+        .padding=${['0', '2l', '0', '2l']}
+        justifyContent="space-between"
+        alignItems="center"
+      >
         ${this.dynamicButtonTemplate()} ${this.titleTemplate()}
         <wui-icon-link
           ?disabled=${this.buffering}
@@ -202,21 +208,13 @@ export class W3mHeader extends LitElement {
   }
 
   private isAllowedNetworkSwitch() {
-    const requestedCaipNetworks = ChainController.getRequestedCaipNetworks()
+    const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
     const isMultiNetwork = requestedCaipNetworks ? requestedCaipNetworks.length > 1 : false
     const isValidNetwork = requestedCaipNetworks?.find(
       ({ id }) => id === this.activeCaipNetwork?.id
     )
 
     return isMultiNetwork || !isValidNetwork
-  }
-
-  private getPadding() {
-    if (this.heading) {
-      return ['l', '2l', 'l', '2l'] as const
-    }
-
-    return ['l', '2l', '0', '2l'] as const
   }
 
   private async onViewChange(view: RouterControllerState['view']) {

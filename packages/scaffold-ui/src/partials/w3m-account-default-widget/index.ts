@@ -2,9 +2,7 @@ import {
   AccountController,
   CoreHelperUtil,
   ModalController,
-  NetworkController,
   RouterController,
-  AssetUtil,
   StorageUtil,
   ConnectorController,
   EventsController,
@@ -34,8 +32,6 @@ export class W3mAccountDefaultWidget extends LitElement {
 
   @state() private profileName = AccountController.state.profileName
 
-  @state() private network = NetworkController.state.caipNetwork
-
   @state() private disconnecting = false
 
   @state() private balance = AccountController.state.balance
@@ -56,11 +52,6 @@ export class W3mAccountDefaultWidget extends LitElement {
           } else if (!this.disconnecting) {
             SnackController.showError('Account not found')
           }
-        }),
-        NetworkController.subscribeKey('caipNetwork', val => {
-          if (val?.id) {
-            this.network = val
-          }
         })
       ]
     )
@@ -75,8 +66,6 @@ export class W3mAccountDefaultWidget extends LitElement {
     if (!this.address) {
       throw new Error('w3m-account-view: No account provided')
     }
-
-    const networkImage = AssetUtil.getNetworkImage(this.network)
 
     return html`<wui-flex
         flexDirection="column"
