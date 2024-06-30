@@ -1,5 +1,4 @@
 import type { Connector } from '@web3modal/scaffold'
-import { BackpackWalletAdapter } from '@solana/wallet-adapter-backpack'
 import { ConstantsUtil } from '@web3modal/common'
 
 import type { BaseWalletAdapter } from '@solana/wallet-adapter-base'
@@ -17,17 +16,5 @@ export function syncInjectedWallets(w3mConnectors: Connector[], adapters: BaseWa
         chain: ConstantsUtil.CHAIN.SOLANA
       })
     }
-  }
-
-  if (window.backpack) {
-    const adapter = new BackpackWalletAdapter()
-    w3mConnectors.push({
-      id: adapter.name,
-      type: 'ANNOUNCED',
-      imageUrl: adapter.icon,
-      name: adapter.name,
-      provider: adapter,
-      chain: ConstantsUtil.CHAIN.SOLANA
-    })
   }
 }

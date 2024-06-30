@@ -5,6 +5,7 @@ import { solana, solanaDevnet, solanaTestnet } from '../../utils/ChainsUtil'
 import { Web3ModalButtons } from '../../components/Web3ModalButtons'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { SolanaTests } from '../../components/Solana/SolanaTests'
+import { BackpackWalletAdapter } from '@solana/wallet-adapter-backpack'
 import {
   AlphaWalletAdapter,
   AvanaWalletAdapter,
@@ -62,6 +63,7 @@ const modal = createWeb3Modal({
   adapters: [
     new AlphaWalletAdapter(),
     new AvanaWalletAdapter(),
+    new BackpackWalletAdapter(),
     new BitpieWalletAdapter(),
     new CloverWalletAdapter(),
     new Coin98WalletAdapter(),
