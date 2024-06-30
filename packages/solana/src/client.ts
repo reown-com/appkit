@@ -15,7 +15,7 @@ import { createWalletAdapters, syncInjectedWallets } from './connectors/walletAd
 import { SolConstantsUtil, SolHelpersUtil, SolStoreUtil } from './utils/scaffold/index.js'
 import { WalletConnectConnector } from './connectors/walletConnectConnector.js'
 
-import type { BaseWalletAdapter } from '@solana/wallet-adapter-base'
+import type { BaseWalletAdapter, StandardWalletAdapter } from '@solana/wallet-adapter-base'
 import type { PublicKey, Commitment, ConnectionConfig } from '@solana/web3.js'
 import type UniversalProvider from '@walletconnect/universal-provider'
 import type {
@@ -33,6 +33,7 @@ import type { Chain as AvailableChain } from '@web3modal/common'
 
 import type { AdapterKey } from './connectors/walletAdapters.js'
 import type { ProviderType, Chain, Provider, SolStoreUtilState } from './utils/scaffold/index.js'
+import { watchStandard } from './utils/wallet-standard/watchStandard.js'
 
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
   solanaConfig: ProviderType
@@ -291,6 +292,8 @@ export class Web3Modal extends Web3ModalScaffold {
         checkWallet()
       }, timer)
     }
+
+    watchStandard(this.syncStandardAdapters)
   }
 
   public setAddress(address?: string) {
@@ -491,6 +494,32 @@ export class Web3Modal extends Web3ModalScaffold {
         }
       }
     }
+  }
+
+  private async syncStandardAdapters(standardAdapters: StandardWalletAdapter[]) {
+    const w3mConnectors: Connector[] = []
+
+    const connectorType = PresetsUtil.ConnectorTypesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID]
+    if (connectorType) {
+      w3mConnectors.push({
+        id: ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID,
+        explorerId: PresetsUtil.ConnectorExplorerIds[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID],
+        type: connectorType,
+        imageUrl: 'https://avatars.githubusercontent.com/u/37784886',
+        name: this.WalletConnectConnector.name,
+        provider: this.WalletConnectConnector.getProvider(),
+        chain: this.chain
+      })
+    }
+
+    syncInjectedWallets(w3mConnectors, this.walletAdapters)
+    this.setConnectors(w3mConnectors)
+
+    const uniqueIds = new Set(...Object.entries(this.walletAdapters))
+    const filteredAdapters = standardAdapters.filter(
+      adapter => !uniqueIds.has(adapter.name) && uniqueIds.add(adapter.name)
+    )
+    filteredAdapters.forEach()
   }
 
   public subscribeProvider(callback: (newState: SolStoreUtilState) => void) {
