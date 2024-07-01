@@ -64,7 +64,6 @@ describe('ConnectionController', () => {
     await ConnectionController.disconnect()
     expect(ConnectionController.state.wcUri).toEqual(undefined)
     expect(ConnectionController.state.wcPairingExpiry).toEqual(undefined)
-    expect(ConnectionController.state.wcPromise).toEqual(undefined)
   })
 
   it('should update state correctly and set wcPromise on connectWalletConnect()', async () => {
@@ -73,11 +72,8 @@ describe('ConnectionController', () => {
     vi.useFakeTimers()
     vi.setSystemTime(fakeDate)
 
-    ConnectionController.connectWalletConnect()
-    expect(ConnectionController.state.wcPromise).toBeDefined()
-
     // Await on set promise and check results
-    await ConnectionController.state.wcPromise
+    await ConnectionController.connectWalletConnect()
     expect(ConnectionController.state.wcUri).toEqual(walletConnectUri)
     expect(ConnectionController.state.wcPairingExpiry).toEqual(ConstantsUtil.FOUR_MINUTES_MS)
     expect(storageSpy).toHaveBeenCalledWith('WALLET_CONNECT')
@@ -118,6 +114,5 @@ describe('ConnectionController', () => {
     ConnectionController.resetWcConnection()
     expect(ConnectionController.state.wcUri).toEqual(undefined)
     expect(ConnectionController.state.wcPairingExpiry).toEqual(undefined)
-    expect(ConnectionController.state.wcPromise).toEqual(undefined)
   })
 })
