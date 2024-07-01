@@ -70,6 +70,8 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
 
   readonly url = 'https://github.com/solana-labs/wallet-standard'
 
+  readonly isAnnounced = true
+
   get icon() {
     return this.#wallet.icon
   }
