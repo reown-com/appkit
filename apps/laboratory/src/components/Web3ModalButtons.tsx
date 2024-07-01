@@ -26,7 +26,7 @@ export function Web3ModalButtons() {
             <Heading size="xs" textTransform="uppercase" pb="2">
               Onramp Widget
             </Heading>
-            <w3m-onramp-widget />
+            <w3m-meld-onramp-widget />
           </Box>
         </Stack>
       </CardBody>
