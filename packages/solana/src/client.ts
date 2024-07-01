@@ -564,7 +564,7 @@ export class Web3Modal extends Web3ModalScaffold {
     const id = SolHelpersUtil.getStorageInjectedId(provider as unknown as ExtendedBaseWalletAdapter)
     const address = provider.publicKey?.toString()
 
-    window?.localStorage.setItem(SolConstantsUtil.WALLET_ID, `${id}_${provider.name}`)
+    window?.localStorage.setItem(SolConstantsUtil.WALLET_ID, id)
 
     const chainId = SolStoreUtil.state.currentChain?.chainId
     const caipChainId = `solana:${chainId}`

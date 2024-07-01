@@ -96,8 +96,8 @@ export const SolHelpersUtil = {
 
   getStorageInjectedId: (adapter: ExtendedBaseWalletAdapter) =>
     (adapter.isAnnounced
-      ? ConstantsUtil.WALLET_STANDARD_CONNECTOR_ID
-      : ConstantsUtil.INJECTED_CONNECTOR_ID) as unknown as Exclude<
+      ? `${ConstantsUtil.WALLET_STANDARD_CONNECTOR_ID}_${adapter.name}`
+      : `${ConstantsUtil.INJECTED_CONNECTOR_ID}_${adapter.name}`) as unknown as Exclude<
       SolStoreUtilState['providerType'],
       undefined
     >
