@@ -7,10 +7,8 @@ import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { SolanaTests } from '../../components/Solana/SolanaTests'
 import { BackpackWalletAdapter } from '@solana/wallet-adapter-backpack'
 import {
-  PhantomWalletAdapter,
   HuobiWalletAdapter,
-  SolflareWalletAdapter,
-  TrustWalletAdapter
+  SolflareWalletAdapter
 } from '@solana/wallet-adapter-wallets'
 
 const chains = [solana, solanaTestnet, solanaDevnet]
@@ -33,9 +31,7 @@ const modal = createWeb3Modal({
   wallets: [
     new BackpackWalletAdapter(),
     new HuobiWalletAdapter(),
-    new PhantomWalletAdapter(),
-    new SolflareWalletAdapter(),
-    new TrustWalletAdapter()
+    new SolflareWalletAdapter()
   ]
 })
 

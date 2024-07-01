@@ -11,7 +11,6 @@ import {
 import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@web3modal/scaffold-utils'
 import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 
-import { syncInjectedWallets } from './connectors/walletAdapters.js'
 import { SolConstantsUtil, SolHelpersUtil, SolStoreUtil } from './utils/scaffold/index.js'
 import { WalletConnectConnector } from './connectors/walletConnectConnector.js'
 
@@ -270,37 +269,9 @@ export class Web3Modal extends Web3ModalScaffold {
 
     if (CoreHelperUtil.isClient()) {
       this.checkActiveProviders()
-      this.syncConnectors()
-      let timer = 0
-      /*
-       * Brave browser doesn't inject window.solflare immediately
-       * so there is delay to detect injected wallets
-       * issue: https://github.com/anza-xyz/wallet-adapter/issues/329
-       */
-      if (
-        window.navigator.brave !== undefined &&
-        window.navigator.brave.isBrave.name === 'isBrave'
-      ) {
-        timer = 100
-      }
-
-      const checkWallet = () => {
-        if (window.solflare) {
-          this.checkActiveProviders()
-          this.syncConnectors()
-        } else {
-          setTimeout(() => {
-            checkWallet()
-          }, timer)
-        }
-      }
-
-      setTimeout(() => {
-        checkWallet()
-      }, timer)
+      this.syncStandardAdapters()
+      watchStandard(this.syncStandardAdapters.bind(this))
     }
-
-    watchStandard(this.syncStandardAdapters)
   }
 
   public setAddress(address?: string) {
@@ -359,7 +330,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
   // -- Private -----------------------------------------------------------------
 
-  private syncConnectors() {
+  private syncStandardAdapters(standardAdapters?: StandardWalletAdapter[]) {
     const w3mConnectors: Connector[] = []
 
     const connectorType = PresetsUtil.ConnectorTypesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID]
@@ -375,7 +346,31 @@ export class Web3Modal extends Web3ModalScaffold {
       })
     }
 
-    syncInjectedWallets(w3mConnectors, this.walletAdapters)
+    const uniqueIds = standardAdapters ? new Set(standardAdapters.map(s => s.name)) : new Set([])
+    const filteredAdapters = this.walletAdapters.filter(
+      adapter => !uniqueIds.has(adapter.name) && uniqueIds.add(adapter.name)
+    )
+    standardAdapters?.forEach(adapter => {
+      w3mConnectors.push({
+        id: adapter.name,
+        type: 'ANNOUNCED',
+        imageUrl: adapter.icon,
+        name: adapter.name,
+        provider: adapter,
+        chain: CommonConstantsUtil.CHAIN.SOLANA
+      })
+    })
+    filteredAdapters.forEach(adapter => {
+      w3mConnectors.push({
+        id: adapter.name,
+        type: 'EXTERNAL',
+        imageUrl: adapter.icon,
+        name: adapter.name,
+        provider: adapter,
+        chain: CommonConstantsUtil.CHAIN.SOLANA
+      })
+    })
+
     this.setConnectors(w3mConnectors)
   }
 
@@ -501,32 +496,6 @@ export class Web3Modal extends Web3ModalScaffold {
         }
       }
     }
-  }
-
-  private async syncStandardAdapters(standardAdapters: StandardWalletAdapter[]) {
-    const w3mConnectors: Connector[] = []
-
-    const connectorType = PresetsUtil.ConnectorTypesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID]
-    if (connectorType) {
-      w3mConnectors.push({
-        id: ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID,
-        explorerId: PresetsUtil.ConnectorExplorerIds[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID],
-        type: connectorType,
-        imageUrl: 'https://avatars.githubusercontent.com/u/37784886',
-        name: this.WalletConnectConnector.name,
-        provider: this.WalletConnectConnector.getProvider(),
-        chain: this.chain
-      })
-    }
-
-    syncInjectedWallets(w3mConnectors, this.walletAdapters)
-    this.setConnectors(w3mConnectors)
-
-    const uniqueIds = new Set(...Object.entries(this.walletAdapters))
-    const filteredAdapters = standardAdapters.filter(
-      adapter => !uniqueIds.has(adapter.name) && uniqueIds.add(adapter.name)
-    )
-    filteredAdapters.forEach()
   }
 
   public subscribeProvider(callback: (newState: SolStoreUtilState) => void) {
