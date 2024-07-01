@@ -59,7 +59,6 @@ export class W3mConnectingWcView extends LitElement {
     try {
       const { wcPairingExpiry } = ConnectionController.state
       if (retry || CoreHelperUtil.isPairingExpired(wcPairingExpiry)) {
-        ConnectionController.connectWalletConnect()
         if (this.wallet) {
           const url = AssetUtil.getWalletImage(this.wallet)
           if (url) {
@@ -74,7 +73,7 @@ export class W3mConnectingWcView extends LitElement {
           }
         }
 
-        await ConnectionController.state.wcPromise
+        await ConnectionController.connectWalletConnect()
         this.finalizeConnection()
         if (OptionsController.state.isSiweEnabled) {
           const { SIWEController } = await import('@web3modal/siwe')
