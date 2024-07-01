@@ -71,9 +71,9 @@ export class W3mEmailOtpWidget extends LitElement {
         gap="l"
       >
         <wui-flex flexDirection="column" alignItems="center">
-          <wui-text variant="paragraph-400" color="fg-100" align="center"
-            >Enter the code we sent to</wui-text
-          >
+          <wui-text variant="paragraph-400" color="fg-100" align="center">
+            Enter the code we sent to
+          </wui-text>
           <wui-text
             class="email-text"
             variant="paragraph-500"
