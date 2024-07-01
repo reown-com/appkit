@@ -17,6 +17,7 @@ export type ProviderType = {
     email?: boolean
     socials?: SocialProvider[]
     showWallets?: boolean
+    walletFeatures?: boolean
   }
   EIP6963?: boolean
   metadata: Metadata

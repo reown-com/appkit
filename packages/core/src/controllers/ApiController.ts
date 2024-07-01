@@ -30,6 +30,7 @@ export interface ApiControllerState {
   wallets: WcWallet[]
   search: WcWallet[]
   isAnalyticsEnabled: boolean
+  excludedRDNS: string[]
 }
 
 type StateKey = keyof ApiControllerState
@@ -42,7 +43,8 @@ const state = proxy<ApiControllerState>({
   recommended: [],
   wallets: [],
   search: [],
-  isAnalyticsEnabled: false
+  isAnalyticsEnabled: false,
+  excludedRDNS: []
 })
 
 // -- Controller ---------------------------------------- //
@@ -94,7 +96,8 @@ export const ApiController = {
   },
 
   async fetchNetworkImages() {
-    const { requestedCaipNetworks } = NetworkController.state
+    const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
+
     const ids = requestedCaipNetworks?.map(({ imageId }) => imageId).filter(Boolean)
     if (ids) {
       await Promise.allSettled((ids as string[]).map(id => ApiController._fetchNetworkImage(id)))
@@ -188,9 +191,30 @@ export const ApiController = {
       ...(images as string[]).map(id => ApiController._fetchWalletImage(id)),
       CoreHelperUtil.wait(300)
     ])
-    state.wallets = [...state.wallets, ...data]
+    state.wallets = CoreHelperUtil.uniqueBy([...state.wallets, ...data], 'id')
     state.count = count > state.count ? count : state.count
     state.page = page
+  },
+
+  async searchWalletByIds({ ids }: { ids: string[] }) {
+    const { data } = await api.get<ApiGetWalletsResponse>({
+      path: '/getWallets',
+      headers: ApiController._getApiHeaders(),
+      params: {
+        page: '1',
+        entries: String(ids.length),
+        chains: NetworkController.state.caipNetwork?.id,
+        include: ids?.join(',')
+      }
+    })
+
+    if (data) {
+      data.forEach(wallet => {
+        if (wallet?.rdns) {
+          state.excludedRDNS.push(wallet.rdns)
+        }
+      })
+    }
   },
 
   async searchWallet({ search }: Pick<ApiGetWalletsRequest, 'search'>) {

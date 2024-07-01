@@ -1,5 +1,12 @@
-import type { W3mFrameProvider } from '@web3modal/wallet'
-import type { Balance, Transaction } from '@web3modal/common'
+import type { W3mFrameProvider, W3mFrameTypes } from '@web3modal/wallet'
+import type { Balance, Transaction, Chain } from '@web3modal/common'
+import type {
+  NetworkControllerClient,
+  NetworkControllerState
+} from '../controllers/NetworkController.js'
+import type { ConnectionControllerClient } from '../controllers/ConnectionController.js'
+import type { AccountControllerState } from '../controllers/AccountController.js'
+import type { OnRampProviderOption } from '../controllers/OnRampController.js'
 
 export type CaipAddress = `${string}:${string}:${string}`
 
@@ -18,6 +25,7 @@ export interface CaipNetwork {
   name?: string
   imageId?: string
   imageUrl?: string
+  chain: Chain
 }
 
 export type ConnectedWalletInfo =
@@ -37,7 +45,13 @@ export type ProjectId = string
 
 export type Platform = 'mobile' | 'desktop' | 'browser' | 'web' | 'qrcode' | 'unsupported'
 
-export type ConnectorType = 'EXTERNAL' | 'WALLET_CONNECT' | 'INJECTED' | 'ANNOUNCED' | 'AUTH'
+export type ConnectorType =
+  | 'EXTERNAL'
+  | 'WALLET_CONNECT'
+  | 'INJECTED'
+  | 'ANNOUNCED'
+  | 'AUTH'
+  | 'MULTI_CHAIN'
 
 export type SocialProvider = 'google' | 'github' | 'apple' | 'facebook' | 'x' | 'discord'
 
@@ -58,6 +72,9 @@ export type Connector = {
   email?: boolean
   socials?: SocialProvider[]
   showWallets?: boolean
+  walletFeatures?: boolean
+  chain: Chain
+  providers?: Connector[]
 }
 
 export interface AuthConnector extends Connector {
@@ -432,6 +449,9 @@ export type Event =
   | {
       type: 'track'
       event: 'CLICK_TRANSACTIONS'
+      properties: {
+        isSmartAccount: boolean
+      }
     }
   | {
       type: 'track'
@@ -440,6 +460,7 @@ export type Event =
         address: string
         projectId: string
         cursor: string | undefined
+        isSmartAccount: boolean
       }
     }
   | {
@@ -449,15 +470,24 @@ export type Event =
         address: string | undefined
         projectId: string
         cursor: string | undefined
+        isSmartAccount: boolean
       }
     }
   | {
       type: 'track'
       event: 'CLICK_SIGN_SIWE_MESSAGE'
+      properties: {
+        network: string
+        isSmartAccount: boolean
+      }
     }
   | {
       type: 'track'
       event: 'CLICK_CANCEL_SIWE'
+      properties: {
+        network: string
+        isSmartAccount: boolean
+      }
     }
   | {
       type: 'track'
@@ -466,10 +496,18 @@ export type Event =
   | {
       type: 'track'
       event: 'SIWE_AUTH_SUCCESS'
+      properties: {
+        network: string
+        isSmartAccount: boolean
+      }
     }
   | {
       type: 'track'
       event: 'SIWE_AUTH_ERROR'
+      properties: {
+        network: string
+        isSmartAccount: boolean
+      }
     }
   | {
       type: 'track'
@@ -522,7 +560,171 @@ export type Event =
       type: 'track'
       event: 'CLICK_SELECT_NETWORK_TO_SWAP'
     }
-
+  | {
+      type: 'track'
+      event: 'SELECT_BUY_CRYPTO'
+      properties: {
+        isSmartAccount: boolean
+      }
+    }
+  | {
+      type: 'track'
+      event: 'SELECT_BUY_PROVIDER'
+      properties: {
+        provider: OnRampProviderOption
+        isSmartAccount: boolean
+      }
+    }
+  | {
+      type: 'track'
+      event: 'SELECT_WHAT_IS_A_BUY'
+      properties: {
+        isSmartAccount: boolean
+      }
+    }
+  | {
+      type: 'track'
+      event: 'SET_PREFERRED_ACCOUNT_TYPE'
+      properties: {
+        accountType: W3mFrameTypes.AccountType
+        network: string
+      }
+    }
+  | {
+      type: 'track'
+      event: 'OPEN_SWAP'
+      properties: {
+        isSmartAccount: boolean
+        network: string
+      }
+    }
+  | {
+      type: 'track'
+      event: 'INITIATE_SWAP'
+      properties: {
+        isSmartAccount: boolean
+        network: string
+        swapFromToken: string
+        swapToToken: string
+        swapfromAmount: string
+        swapToAmount: string
+      }
+    }
+  | {
+      type: 'track'
+      event: 'SWAP_SUCCESS'
+      properties: {
+        isSmartAccount: boolean
+        network: string
+        swapFromToken: string
+        swapToToken: string
+        swapfromAmount: string
+        swapToAmount: string
+      }
+    }
+  | {
+      type: 'track'
+      event: 'SWAP_ERROR'
+      properties: {
+        isSmartAccount: boolean
+        network: string
+        swapFromToken: string
+        swapToToken: string
+        swapfromAmount: string
+        swapToAmount: string
+      }
+    }
+  | {
+      type: 'track'
+      event: 'SOCIAL_LOGIN_STARTED'
+      properties: {
+        provider: SocialProvider
+      }
+    }
+  | {
+      type: 'track'
+      event: 'SOCIAL_LOGIN_SUCCESS'
+      properties: {
+        provider: SocialProvider
+      }
+    }
+  | {
+      type: 'track'
+      event: 'SOCIAL_LOGIN_ERROR'
+      properties: {
+        provider: SocialProvider
+      }
+    }
+  | {
+      type: 'track'
+      event: 'OPEN_ENS_FLOW'
+      properties: {
+        isSmartAccount: boolean
+      }
+    }
+  | {
+      type: 'track'
+      event: 'REGISTER_NAME_INITIATED'
+      properties: {
+        isSmartAccount: boolean
+        ensName: string
+      }
+    }
+  | {
+      type: 'track'
+      event: 'REGISTER_NAME_SUCCESS'
+      properties: {
+        isSmartAccount: boolean
+        ensName: string
+      }
+    }
+  | {
+      type: 'track'
+      event: 'REGISTER_NAME_ERROR'
+      properties: {
+        isSmartAccount: boolean
+        ensName: string
+        error: string
+      }
+    }
+  | {
+      type: 'track'
+      event: 'OPEN_SEND'
+      properties: {
+        isSmartAccount: boolean
+        network: string
+      }
+    }
+  | {
+      type: 'track'
+      event: 'SEND_INITIATED'
+      properties: {
+        isSmartAccount: boolean
+        network: string
+        token: string
+        amount: number
+      }
+    }
+  | {
+      type: 'track'
+      event: 'SEND_SUCCESS'
+      properties: {
+        isSmartAccount: boolean
+        network: string
+        token: string
+        amount: number
+      }
+    }
+  | {
+      type: 'track'
+      event: 'SEND_ERROR'
+      properties: {
+        isSmartAccount: boolean
+        network: string
+        token: string
+        amount: number
+      }
+    }
 // Onramp Types
 export type DestinationWallet = {
   address: string
@@ -607,4 +809,12 @@ export interface WriteContractArgs {
   method: 'send' | 'transfer' | 'call'
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   abi: any
+}
+
+export type ChainAdapter = {
+  connectionControllerClient?: ConnectionControllerClient
+  networkControllerClient?: NetworkControllerClient
+  accountState?: AccountControllerState
+  networkState?: NetworkControllerState
+  chain: Chain
 }
