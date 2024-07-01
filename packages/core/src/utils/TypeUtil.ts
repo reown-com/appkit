@@ -1,5 +1,11 @@
 import type { W3mFrameProvider, W3mFrameTypes } from '@web3modal/wallet'
-import type { Balance, Transaction } from '@web3modal/common'
+import type { Balance, Transaction, Chain } from '@web3modal/common'
+import type {
+  NetworkControllerClient,
+  NetworkControllerState
+} from '../controllers/NetworkController.js'
+import type { ConnectionControllerClient } from '../controllers/ConnectionController.js'
+import type { AccountControllerState } from '../controllers/AccountController.js'
 import type { OnRampProviderOption } from '../controllers/OnRampController.js'
 
 export type CaipAddress = `${string}:${string}:${string}`
@@ -19,6 +25,7 @@ export interface CaipNetwork {
   name?: string
   imageId?: string
   imageUrl?: string
+  chain: Chain
 }
 
 export type ConnectedWalletInfo =
@@ -38,7 +45,13 @@ export type ProjectId = string
 
 export type Platform = 'mobile' | 'desktop' | 'browser' | 'web' | 'qrcode' | 'unsupported'
 
-export type ConnectorType = 'EXTERNAL' | 'WALLET_CONNECT' | 'INJECTED' | 'ANNOUNCED' | 'AUTH'
+export type ConnectorType =
+  | 'EXTERNAL'
+  | 'WALLET_CONNECT'
+  | 'INJECTED'
+  | 'ANNOUNCED'
+  | 'AUTH'
+  | 'MULTI_CHAIN'
 
 export type SocialProvider = 'google' | 'github' | 'apple' | 'facebook' | 'x' | 'discord'
 
@@ -60,6 +73,8 @@ export type Connector = {
   socials?: SocialProvider[]
   showWallets?: boolean
   walletFeatures?: boolean
+  chain: Chain
+  providers?: Connector[]
 }
 
 export interface AuthConnector extends Connector {
@@ -794,4 +809,12 @@ export interface WriteContractArgs {
   method: 'send' | 'transfer' | 'call'
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   abi: any
+}
+
+export type ChainAdapter = {
+  connectionControllerClient?: ConnectionControllerClient
+  networkControllerClient?: NetworkControllerClient
+  accountState?: AccountControllerState
+  networkState?: NetworkControllerState
+  chain: Chain
 }
