@@ -1,5 +1,11 @@
 # @web3modal/ui
 
+## 5.0.4
+
+### Patch Changes
+
+- fix: wcPromise incompatibility issues
+
 ## 5.0.3
 
 ### Patch Changes
