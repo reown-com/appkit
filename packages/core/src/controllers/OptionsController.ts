@@ -1,6 +1,7 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
-import { proxy, snapshot } from 'valtio/vanilla'
+import { proxy } from 'valtio/vanilla'
 import type { CustomWallet, Metadata, ProjectId, SdkVersion, Tokens } from '../utils/TypeUtil.js'
+import { ApiController } from './ApiController.js'
 
 // -- Types --------------------------------------------- //
 export interface OptionsControllerState {
@@ -20,6 +21,7 @@ export interface OptionsControllerState {
   metadata?: Metadata
   enableOnramp?: boolean
   disableAppend?: boolean
+  enableEIP6963?: boolean
 }
 
 type StateKey = keyof OptionsControllerState
@@ -53,6 +55,9 @@ export const OptionsController = {
 
   setExcludeWalletIds(excludeWalletIds: OptionsControllerState['excludeWalletIds']) {
     state.excludeWalletIds = excludeWalletIds
+    if (excludeWalletIds) {
+      ApiController.searchWalletByIds({ ids: excludeWalletIds })
+    }
   },
 
   setFeaturedWalletIds(featuredWalletIds: OptionsControllerState['featuredWalletIds']) {
@@ -99,7 +104,7 @@ export const OptionsController = {
     state.disableAppend = disableAppend
   },
 
-  getSnapshot() {
-    return snapshot(state)
+  setEIP6963Enabled(enableEIP6963: OptionsControllerState['enableEIP6963']) {
+    state.enableEIP6963 = enableEIP6963
   }
 }
