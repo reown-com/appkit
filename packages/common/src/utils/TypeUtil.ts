@@ -14,6 +14,8 @@ export type TransactionImage = {
   url: string | undefined
 }
 
+export type Chain = 'evm' | 'solana'
+
 export interface Transaction {
   id: string
   metadata: TransactionMetadata

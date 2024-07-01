@@ -8,6 +8,7 @@ export default css`
     padding: var(--wui-spacing-3xs);
     position: relative;
     height: 36px;
+    min-height: 36px;
     overflow: hidden;
   }
 
