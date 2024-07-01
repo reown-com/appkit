@@ -1,8 +1,7 @@
 import type { RouterControllerState } from '@web3modal/core'
 import {
   AccountController,
-  AssetController,
-  ChainController,
+  AssetUtil,
   ConnectionController,
   ConnectorController,
   EventsController,
@@ -15,6 +14,7 @@ import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 
 // -- Constants ----------------------------------------- //
 const BETA_SCREENS = ['Swap', 'SwapSelectToken', 'SwapPreview']
@@ -92,9 +92,7 @@ export class W3mHeader extends LitElement {
 
   @state() private showBack = false
 
-  private activeCaipNetwork = ChainController.state.activeCaipNetwork
-
-  private readonly networkImages = AssetController.state.networkImages
+  @state() private network = NetworkController.state.caipNetwork
 
   public constructor() {
     super()
@@ -103,10 +101,8 @@ export class W3mHeader extends LitElement {
         this.onViewChange(val)
         this.onHistoryChange()
       }),
-      ChainController.subscribeKey('activeCaipNetwork', val => {
-        this.activeCaipNetwork = val
-      }),
-      ConnectionController.subscribeKey('buffering', val => (this.buffering = val))
+      ConnectionController.subscribeKey('buffering', val => (this.buffering = val)),
+      NetworkController.subscribeKey('caipNetwork', val => (this.network = val))
     )
   }
 
@@ -173,13 +169,12 @@ export class W3mHeader extends LitElement {
     const shouldHideBack = isApproveTransaction || isUpgradeToSmartAccounts || isConnectingSIWEView
 
     if (isAccountView) {
-      const networkImage = this.networkImages[this.activeCaipNetwork?.imageId ?? '']
-
       return html`<wui-select
         id="dynamic"
         data-testid="w3m-account-select-network"
+        active-network=${this.network?.name}
         @click=${this.onNetworks.bind(this)}
-        .imageSrc=${networkImage ?? ''}
+        imageSrc=${ifDefined(AssetUtil.getNetworkImage(this.network))}
       ></wui-select>`
     }
 
@@ -210,9 +205,7 @@ export class W3mHeader extends LitElement {
   private isAllowedNetworkSwitch() {
     const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
     const isMultiNetwork = requestedCaipNetworks ? requestedCaipNetworks.length > 1 : false
-    const isValidNetwork = requestedCaipNetworks?.find(
-      ({ id }) => id === this.activeCaipNetwork?.id
-    )
+    const isValidNetwork = requestedCaipNetworks?.find(({ id }) => id === this.network?.id)
 
     return isMultiNetwork || !isValidNetwork
   }

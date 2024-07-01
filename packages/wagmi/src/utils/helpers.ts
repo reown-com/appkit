@@ -1,4 +1,5 @@
 import { CoreHelperUtil } from '@web3modal/scaffold'
+import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 import { ConstantsUtil, PresetsUtil } from '@web3modal/scaffold-utils'
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
 import { fallback, http } from 'viem'
@@ -15,7 +16,8 @@ export function getCaipDefaultChain(chain?: Chain) {
   return {
     id: `${ConstantsUtil.EIP155}:${chain.id}`,
     name: chain.name,
-    imageId: PresetsUtil.EIP155NetworkImageIds[chain.id]
+    imageId: PresetsUtil.EIP155NetworkImageIds[chain.id],
+    chain: CommonConstantsUtil.CHAIN.EVM
   } as CaipNetwork
 }
 

@@ -24,7 +24,7 @@ import type {
   CaipAddress,
   CaipNetwork
 } from '@web3modal/scaffold'
-import type { Chain as AvailableChain } from '@web3modal/common'
+import type { Chain as AvailableChain, CaipNetworkId } from '@web3modal/common'
 import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 
 import type { AdapterKey } from './connectors/walletAdapters.js'
@@ -35,6 +35,8 @@ import type { AppKit } from '../../../src/client.js'
 export interface Web3ModalClientOptions
   extends Pick<AppKitOptions, 'siweConfig' | 'enableEIP6963' | 'chainImages'> {
   chains: Chain[]
+  defaultChain?: Chain
+  chainImages?: Record<number | string, string>
   solanaConfig: ProviderType
   connectionSettings?: Commitment | ConnectionConfig
 }
@@ -64,6 +66,8 @@ export class SolanaWeb3JsClient {
   public networkControllerClient: NetworkControllerClient
 
   public connectionControllerClient: ConnectionControllerClient
+
+  public defaultChain: CaipNetwork | undefined = undefined
 
   public constructor(options: Web3ModalClientOptions) {
     const { solanaConfig, chains, connectionSettings = 'confirmed' } = options
@@ -180,13 +184,14 @@ export class SolanaWeb3JsClient {
       formatUnits: () => ''
     }
 
-    this.chains = chains
-    this.connectionSettings = connectionSettings
-
     const chain = SolHelpersUtil.getChainFromCaip(
       chains,
       typeof window === 'object' ? localStorage.getItem(SolConstantsUtil.CAIP_CHAIN_ID) : ''
     )
+
+    this.chains = chains
+    this.connectionSettings = connectionSettings
+    this.defaultChain = chain as CaipNetwork
 
     if (chain) {
       SolStoreUtil.setCurrentChain(chain)
@@ -211,11 +216,11 @@ export class SolanaWeb3JsClient {
     })
 
     SolStoreUtil.subscribeKey('caipChainId', () => {
-      this.syncNetwork()
+      this.syncNetwork(this.instanceOptions?.chainImages)
     })
 
     AssetController.subscribeNetworkImages(() => {
-      this.syncNetwork()
+      this.syncNetwork(this.instanceOptions?.chainImages)
     })
 
     NetworkController.subscribeKey('caipNetwork', () => {
@@ -263,8 +268,8 @@ export class SolanaWeb3JsClient {
       })
     }
 
-    this.syncRequestedNetworks(this.chains, this.options?.chainImages)
-    this.syncNetwork()
+    this.syncRequestedNetworks(this.chains, this.instanceOptions?.chainImages)
+    this.syncNetwork(this.instanceOptions?.chainImages)
     this.appKit?.setEIP6963Enabled(options.enableEIP6963 !== false)
 
     if (typeof window === 'object') {
@@ -444,7 +449,7 @@ export class SolanaWeb3JsClient {
     }
   }
 
-  private async syncNetwork() {
+  private async syncNetwork(chainImages?: Web3ModalClientOptions['chainImages']) {
     const address = SolStoreUtil.state.address
     const storeChainId = SolStoreUtil.state.caipChainId
     const isConnected = SolStoreUtil.state.isConnected
@@ -452,6 +457,14 @@ export class SolanaWeb3JsClient {
     if (this.chains) {
       const chain = SolHelpersUtil.getChainFromCaip(this.chains, storeChainId)
       if (chain) {
+        const caipChainId: CaipNetworkId = `solana:${chain.chainId}`
+        this.appKit?.setCaipNetwork({
+          id: caipChainId,
+          name: chain.name,
+          imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId],
+          imageUrl: chainImages?.[chain.chainId],
+          chain: this.chain
+        })
         if (isConnected && address) {
           if (chain.explorerUrl) {
             const url = `${chain.explorerUrl}/account/${address}`

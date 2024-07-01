@@ -816,5 +816,6 @@ export type ChainAdapter = {
   networkControllerClient?: NetworkControllerClient
   accountState?: AccountControllerState
   networkState?: NetworkControllerState
+  defaultChain?: CaipNetwork
   chain: Chain
 }

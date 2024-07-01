@@ -37,7 +37,11 @@ import { formatUnits, parseUnits } from 'viem'
 import type { Hex } from 'viem'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
 import { ConstantsUtil as CommonConstants } from '@web3modal/common'
-import { getEmailCaipNetworks, getWalletConnectCaipNetworks } from './utils/helpers.js'
+import {
+  getCaipDefaultChain,
+  getEmailCaipNetworks,
+  getWalletConnectCaipNetworks
+} from './utils/helpers.js'
 import { W3mFrameConstants, W3mFrameHelpers, W3mFrameRpcConstants } from '@web3modal/wallet'
 import type { W3mFrameProvider, W3mFrameTypes } from '@web3modal/wallet'
 import { NetworkUtil } from '@web3modal/common'
@@ -45,7 +49,7 @@ import type { defaultWagmiConfig as coreConfig } from './utils/defaultWagmiCoreC
 import type { defaultWagmiConfig as reactConfig } from './utils/defaultWagmiReactConfig.js'
 import { normalize } from 'viem/ens'
 import type { AppKitOptions } from '../../../utils/TypesUtil.js'
-import type { Chain as AvailableChain } from '@web3modal/common'
+import type { Chain as AvailableChain, CaipNetworkId } from '@web3modal/common'
 import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 import type { AppKit } from '../../../src/client.js'
 
@@ -57,6 +61,7 @@ type Config = CoreConfig | ReactConfig
 export interface Web3ModalClientOptions<C extends Config>
   extends Pick<AppKitOptions, 'siweConfig' | 'enableEIP6963'> {
   wagmiConfig: C
+  defaultChain?: Chain
 }
 
 export type Web3ModalOptions<C extends Config> = Omit<Web3ModalClientOptions<C>, '_sdkVersion'>
@@ -82,16 +87,18 @@ export class EVMWagmiClient {
 
   public connectionControllerClient: ConnectionControllerClient
 
+  public defaultChain: CaipNetwork | undefined = undefined
+
   public constructor(options: Web3ModalClientOptions<CoreConfig>) {
-    const { wagmiConfig } = options
+    const { wagmiConfig, defaultChain } = options
 
     if (!wagmiConfig) {
       throw new Error('web3modal:constructor - wagmiConfig is undefined')
     }
 
     this.wagmiConfig = wagmiConfig
+    this.defaultChain = getCaipDefaultChain(defaultChain)
 
-    // #region set clients
     this.networkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
         const chainId = NetworkUtil.caipNetworkIdToNumber(caipNetwork?.id)
@@ -386,7 +393,6 @@ export class EVMWagmiClient {
 
       formatUnits
     }
-    // #endregion
   }
 
   public construct(appKit: AppKit, options: OptionsControllerState) {
@@ -480,7 +486,16 @@ export class EVMWagmiClient {
     const chain = this.wagmiConfig.chains.find((c: Chain) => c.id === chainId)
 
     if (chain || chainId) {
+      const name = chain?.name ?? chainId?.toString()
       const id = Number(chain?.id ?? chainId)
+      const caipChainId: CaipNetworkId = `${ConstantsUtil.EIP155}:${id}`
+      this.appKit?.setCaipNetwork({
+        id: caipChainId,
+        name,
+        imageId: PresetsUtil.EIP155NetworkImageIds[id],
+        imageUrl: this.options?.chainImages?.[id],
+        chain: this.chain
+      })
       if (isConnected && address && chainId) {
         const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${id}:${address}`
         this.appKit?.setCaipAddress(caipAddress, this.chain)

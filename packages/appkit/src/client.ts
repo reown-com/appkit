@@ -274,8 +274,6 @@ export class AppKit {
       adapter.construct?.(this, options)
     })
 
-    // NetworkController.setDefaultCaipNetwork(options.defaultChain)
-
     OptionsController.setProjectId(options.projectId)
     OptionsController.setAllWallets(options.allWallets)
     OptionsController.setIncludeWalletIds(options.includeWalletIds)

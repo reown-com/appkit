@@ -41,7 +41,7 @@ export const ModalController = {
 
   async open(options?: ModalControllerArguments['open']) {
     await ApiController.state.prefetchPromise
-    const connected = AccountController.state.isConnected || false
+    const connected = AccountController.state.isConnected
     if (options?.view) {
       RouterController.reset(options.view)
     } else if (connected) {

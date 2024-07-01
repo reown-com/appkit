@@ -20,7 +20,7 @@ type ChainControllerStateKey = keyof ChainControllerState
 
 type ChainsInitializerAdapter = Pick<
   ChainAdapter,
-  'connectionControllerClient' | 'networkControllerClient' | 'chain'
+  'connectionControllerClient' | 'networkControllerClient' | 'chain' | 'defaultChain'
 >
 
 // -- Constants ----------------------------------------- //
@@ -92,13 +92,14 @@ export const ChainController = {
   },
 
   initialize(adapters: ChainsInitializerAdapter[]) {
-    const firstChainToActivate = adapters?.[0]?.chain
+    const adapterToActivate = adapters?.[0]
 
-    if (!firstChainToActivate) {
-      throw new Error('Chain is required to initialize ChainController')
+    if (!adapterToActivate) {
+      throw new Error('Adapter is required to initialize ChainController')
     }
 
-    state.activeChain = firstChainToActivate
+    state.activeChain = adapterToActivate.chain
+    this.setActiveCaipNetwork(adapterToActivate.defaultChain)
 
     adapters.forEach((adapter: ChainsInitializerAdapter) => {
       state.chains.set(adapter.chain, {
@@ -162,14 +163,30 @@ export const ChainController = {
   setActiveChain(chain?: Chain) {
     const newAdapter = chain ? state.chains.get(chain) : undefined
 
-    if (newAdapter) {
+    if (newAdapter && newAdapter.chain !== state.activeChain) {
       state.activeChain = newAdapter.chain
-      state.activeCaipNetwork = state.chains.get(newAdapter.chain)?.networkState
-        ?.requestedCaipNetworks?.[0]
       AccountController.replaceState(newAdapter.accountState)
       NetworkController.replaceState(newAdapter.networkState)
       PublicStateController.set({ activeChain: chain })
     }
+  },
+
+  setActiveCaipNetwork(caipNetwork: NetworkControllerState['caipNetwork']) {
+    if (!caipNetwork) {
+      return
+    }
+
+    if (caipNetwork.chain !== state.activeChain) {
+      this.setActiveChain(caipNetwork.chain)
+    }
+
+    state.activeCaipNetwork = caipNetwork
+    this.setCaipNetwork(caipNetwork.chain, caipNetwork)
+  },
+
+  setCaipNetwork(chain: Chain, caipNetwork: NetworkControllerState['caipNetwork']) {
+    this.setChainNetworkData(chain, { caipNetwork })
+    PublicStateController.set({ selectedNetworkId: caipNetwork?.id })
   },
 
   setActiveConnector(connector: ChainControllerState['activeConnector']) {
