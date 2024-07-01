@@ -5,16 +5,13 @@ import type { BaseWalletAdapter } from '@solana/wallet-adapter-base'
 
 export function syncInjectedWallets(w3mConnectors: Connector[], adapters: BaseWalletAdapter[]) {
   for (const adapter of adapters) {
-    const name = adapter.name.toLocaleLowerCase() as keyof Window
-    if (window[name]) {
-      w3mConnectors.push({
-        id: adapter.name,
-        type: 'EXTERNAL',
-        imageUrl: adapter.icon,
-        name: adapter.name,
-        provider: adapter,
-        chain: ConstantsUtil.CHAIN.SOLANA
-      })
-    }
+    w3mConnectors.push({
+      id: adapter.name,
+      type: 'EXTERNAL',
+      imageUrl: adapter.icon,
+      name: adapter.name,
+      provider: adapter,
+      chain: ConstantsUtil.CHAIN.SOLANA
+    })
   }
 }

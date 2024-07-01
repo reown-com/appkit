@@ -41,7 +41,7 @@ export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultCha
   chainImages?: Record<number | string, string>
   connectorImages?: Record<string, string>
   tokens?: Record<number, Token>
-  adapters: BaseWalletAdapter[]
+  wallets: BaseWalletAdapter[]
 }
 
 export type Web3ModalOptions = Omit<Web3ModalClientOptions, '_sdkVersion'>
@@ -67,7 +67,7 @@ export class Web3Modal extends Web3ModalScaffold {
       _sdkVersion,
       chainImages,
       connectionSettings = 'confirmed',
-      adapters,
+      wallets,
       ...w3mOptions
     } = options
 
@@ -86,7 +86,7 @@ export class Web3Modal extends Web3ModalScaffold {
         if (caipNetwork) {
           try {
             // Update chain for Solflare
-            this.walletAdapters = adapters
+            this.walletAdapters = wallets
             const walletId = localStorage.getItem(SolConstantsUtil.WALLET_ID)
             const wallet = walletId?.split('_')[1]
             if (wallet === 'solflare' && window[wallet as keyof Window]) {
@@ -193,7 +193,7 @@ export class Web3Modal extends Web3ModalScaffold {
       chain: CommonConstantsUtil.CHAIN.SOLANA,
       networkControllerClient,
       connectionControllerClient,
-      supportedWallets: adapters,
+      supportedWallets: wallets,
 
       defaultChain: SolHelpersUtil.getChainFromCaip(
         chains,
@@ -218,7 +218,7 @@ export class Web3Modal extends Web3ModalScaffold {
     }
     this.syncNetwork(chainImages)
 
-    this.walletAdapters = adapters
+    this.walletAdapters = wallets
     this.WalletConnectConnector = new WalletConnectConnector({
       relayerRegion: 'wss://relay.walletconnect.com',
       metadata,
