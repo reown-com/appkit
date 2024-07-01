@@ -9,7 +9,7 @@ export function syncInjectedWallets(w3mConnectors: Connector[], adapters: BaseWa
     if (window[name]) {
       w3mConnectors.push({
         id: adapter.name,
-        type: 'ANNOUNCED',
+        type: 'EXTERNAL',
         imageUrl: adapter.icon,
         name: adapter.name,
         provider: adapter,
