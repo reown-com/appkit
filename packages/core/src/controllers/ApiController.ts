@@ -104,7 +104,8 @@ export const ApiController = {
   },
 
   async fetchNetworkImages() {
-    const { requestedCaipNetworks } = NetworkController.state
+    const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
+
     const ids = requestedCaipNetworks?.map(({ imageId }) => imageId).filter(Boolean)
     if (ids) {
       await Promise.allSettled((ids as string[]).map(id => ApiController._fetchNetworkImage(id)))

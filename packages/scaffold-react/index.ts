@@ -88,7 +88,7 @@ export function useWeb3Modal() {
 
 export function useWalletInfo() {
   if (!modal) {
-    throw new Error('Please call "createWeb3Modal" before using "useWeb3Modal" hook')
+    throw new Error('Please call "createWeb3Modal" before using "useWalletInfo" hook')
   }
 
   const walletInfo = useSyncExternalStore(
@@ -122,7 +122,7 @@ export function useWeb3ModalState() {
 
 export function useWeb3ModalEvents() {
   if (!modal) {
-    throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalState" hook')
+    throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalEvents" hook')
   }
 
   const [event, setEvents] = useState(modal.getEvent())

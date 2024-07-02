@@ -31,8 +31,7 @@ export class W3mNetworkButton extends LitElement {
   @state() private isUnsupportedChain = NetworkController.state.isUnsupportedChain
 
   // -- Lifecycle ----------------------------------------- //
-  public constructor() {
-    super()
+  public override firstUpdated() {
     this.unsubscribe.push(
       ...[
         NetworkController.subscribeKey('caipNetwork', val => (this.network = val)),
