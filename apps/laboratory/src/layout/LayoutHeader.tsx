@@ -14,6 +14,11 @@ import { CustomWallet } from './CustomWallet'
 import { DownloadIcon } from '@chakra-ui/icons'
 import { useChakraToast } from '../components/Toast'
 
+type WindowWithLogs = typeof Window & {
+  downloadLogsBlobInBrowser?: () => void
+  downloadAppKitLogsBlob: Record<string, () => void>
+}
+
 export function LayoutHeader() {
   const controls = useDisclosure()
   const controlsCW = useDisclosure({ id: 'customWallet' })
@@ -49,12 +54,9 @@ export function LayoutHeader() {
         <Button
           rightIcon={<DownloadIcon />}
           onClick={() => {
-            ;(
-              window as unknown as { downloadLogsBlobInBrowser?: () => void }
-            ).downloadLogsBlobInBrowser?.()
-            ;(
-              window as unknown as { downloadAppKitLogsBlob: Record<string, () => void> }
-            ).downloadAppKitLogsBlob?.['sdk']?.()
+            const logWindow = window as unknown as WindowWithLogs
+            logWindow.downloadLogsBlobInBrowser?.()
+            logWindow.downloadAppKitLogsBlob?.['sdk']?.()
             toast({
               title: 'Logs downloaded',
               description:
