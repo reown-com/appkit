@@ -32,6 +32,7 @@ import type {
 import type { Chain as AvailableChain } from '@web3modal/common'
 
 import type { Chain, Provider, ProviderType, SolStoreUtilState } from './utils/scaffold/index.js'
+import { ALL_SOLANA_CHAINS } from './utils/chains.js'
 
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
   solanaConfig: ProviderType
@@ -244,11 +245,19 @@ export class Web3Modal extends Web3ModalScaffold {
       this.syncNetwork(chainImages)
     })
 
-    NetworkController.subscribeKey('caipNetwork', () => {
-      if (NetworkController.state.caipNetwork && !SolStoreUtil.state.isConnected) {
-        SolStoreUtil.setCaipChainId(`solana:${chain.chainId}`)
-        SolStoreUtil.setCurrentChain(chain)
-        localStorage.setItem(SolConstantsUtil.CAIP_CHAIN_ID, `solana:${chain.chainId}`)
+    NetworkController.subscribeKey('caipNetwork', (newCaipChain: CaipNetwork | undefined) => {
+      const newChain = ALL_SOLANA_CHAINS.find(
+        _chain => _chain.chainId === newCaipChain?.id.split(':')[1]
+      )
+
+      if (!newChain) {
+        throw new Error('The selected chain is not a valid Solana chain')
+      }
+
+      if (NetworkController.state.caipNetwork && !SolStoreUtil.state.isConnected && newChain) {
+        SolStoreUtil.setCaipChainId(`solana:${newChain.chainId}`)
+        SolStoreUtil.setCurrentChain(newChain)
+        localStorage.setItem(SolConstantsUtil.CAIP_CHAIN_ID, `solana:${newChain.chainId}`)
         ApiController.reFetchWallets()
       }
     })

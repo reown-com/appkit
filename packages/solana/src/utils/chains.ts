@@ -26,3 +26,5 @@ export const solanaDevnet = {
   rpcUrl: 'https://api.devnet.solana.com',
   chain: ConstantsUtil.CHAIN.SOLANA
 }
+
+export const ALL_SOLANA_CHAINS = [solana, solanaTestnet, solanaDevnet]
