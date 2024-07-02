@@ -1,4 +1,3 @@
-import { useSnapshot } from 'valtio'
 import { onUnmounted, ref } from 'vue'
 
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
@@ -34,11 +33,18 @@ export function useWeb3ModalProvider() {
     throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalProvider" composition')
   }
 
-  const { provider, providerType, connection } = useSnapshot(SolStoreUtil.state)
+  const walletProvider = ref(SolStoreUtil.state.provider as Provider)
+  const walletProviderType = ref(SolStoreUtil.state.providerType)
+  const connection = ref(SolStoreUtil.state.connection)
 
-  const walletProvider = provider as Provider
+  const unsubscribe = modal.subscribeProvider(state => {
+    walletProvider.value = state.provider as unknown as Provider
+    walletProviderType.value = state.providerType
+  })
 
-  const walletProviderType = providerType
+  onUnmounted(() => {
+    unsubscribe?.()
+  })
 
   return {
     walletProvider,
