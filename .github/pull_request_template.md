@@ -4,7 +4,8 @@ Please include a brief summary of the change.
 
 # Showcase
 
-Include a screenshot
+If there is a UI change include the screenshots with before and after state.
+If new feature is being introduced, include the link to demo recording.
 
 ## Type of change
 
