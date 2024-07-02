@@ -31,6 +31,7 @@ import type {
 import type { Chain as AvailableChain } from '@web3modal/common'
 
 import type { ProviderType, Chain, Provider, SolStoreUtilState } from './utils/scaffold/index.js'
+import { signAndSendTransaction } from './connectors/walletAdapters/utils.js'
 import { watchStandard } from './utils/wallet-standard/watchStandard.js'
 
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
@@ -44,7 +45,10 @@ export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultCha
   wallets: BaseWalletAdapter[]
 }
 
-export type ExtendedBaseWalletAdapter = BaseWalletAdapter & { isAnnounced: boolean }
+export type ExtendedBaseWalletAdapter = BaseWalletAdapter & {
+  isAnnounced: boolean
+  signAndSendTransaction: Promise<string>
+}
 
 export type Web3ModalOptions = Omit<Web3ModalClientOptions, '_sdkVersion'>
 
@@ -281,7 +285,10 @@ export class Web3Modal extends Web3ModalScaffold {
           ...this.walletAdapters.filter(
             adapter => !uniqueIds.has(adapter.name) && uniqueIds.add(adapter.name)
           )
-        ]
+        ].map(adapter => ({
+          ...adapter,
+          signAndSendTransaction: signAndSendTransaction(adapter)
+        })) as unknown as ExtendedBaseWalletAdapter[]
         this.checkActiveProviders.bind(this)(standardAdapters)
         this.syncStandardAdapters.bind(this)(standardAdapters)
       })
