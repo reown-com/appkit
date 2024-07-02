@@ -32,7 +32,6 @@ import type {
 import type { Chain as AvailableChain } from '@web3modal/common'
 
 import type { Chain, Provider, ProviderType, SolStoreUtilState } from './utils/scaffold/index.js'
-import { ALL_SOLANA_CHAINS } from './utils/chains.js'
 
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
   solanaConfig: ProviderType
@@ -246,9 +245,7 @@ export class Web3Modal extends Web3ModalScaffold {
     })
 
     NetworkController.subscribeKey('caipNetwork', (newCaipChain: CaipNetwork | undefined) => {
-      const newChain = ALL_SOLANA_CHAINS.find(
-        _chain => _chain.chainId === newCaipChain?.id.split(':')[1]
-      )
+      const newChain = chains.find(_chain => _chain.chainId === newCaipChain?.id.split(':')[1])
 
       if (!newChain) {
         throw new Error('The selected chain is not a valid Solana chain')
