@@ -75,7 +75,7 @@ describe('NetworkController', () => {
   })
 
   it('should update state correctly on setDefaultCaipNetwork()', () => {
-    NetworkController.setDefaultCaipNetwork(caipNetwork)
+    NetworkController.setCaipNetwork(caipNetwork)
     expect(NetworkController.state.caipNetwork).toEqual(caipNetwork)
     expect(NetworkController.state.isDefaultCaipNetwork).toEqual(true)
   })

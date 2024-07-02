@@ -2,6 +2,7 @@ import type { CaipNetwork } from '@web3modal/core'
 import {
   AccountController,
   AssetUtil,
+  ChainController,
   CoreHelperUtil,
   EventsController,
   NetworkController,
@@ -121,7 +122,9 @@ export class W3mNetworksView extends LitElement {
           type="network"
           name=${network.name ?? network.id}
           @click=${() => this.onSwitchNetwork(network)}
-          .disabled=${!supportsAllNetworks && !approvedCaipNetworkIds?.includes(network.id)}
+          .disabled=${!supportsAllNetworks &&
+          !approvedCaipNetworkIds?.includes(network.id) &&
+          network.chain === ChainController.state.activeChain}
           data-testid=${`w3m-network-switch-${network.name ?? network.id}`}
         ></wui-list-network>
       `
@@ -143,7 +146,7 @@ export class W3mNetworksView extends LitElement {
         RouterController.push('SwitchNetwork', { ...routerData, network })
       }
     } else if (!isConnected) {
-      NetworkController.setCaipNetwork(network)
+      NetworkController.setActiveCaipNetwork(network)
       RouterController.push('Connect')
     }
   }

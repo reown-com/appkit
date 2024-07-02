@@ -99,6 +99,7 @@ export const ChainController = {
     }
 
     state.activeChain = adapterToActivate.chain
+    PublicStateController.set({ activeChain: adapterToActivate.chain })
     this.setActiveCaipNetwork(adapterToActivate.defaultChain)
 
     adapters.forEach((adapter: ChainsInitializerAdapter) => {
@@ -116,7 +117,11 @@ export const ChainController = {
     state.multiChainEnabled = multiChain
   },
 
-  setChainNetworkData(chain: Chain | undefined, props: Partial<NetworkControllerState>) {
+  setChainNetworkData(
+    chain: Chain | undefined,
+    props: Partial<NetworkControllerState>,
+    replaceState: boolean = true
+  ) {
     if (!chain) {
       throw new Error('Chain is required to update chain network data')
     }
@@ -129,7 +134,9 @@ export const ChainController = {
         ...props
       } as NetworkControllerState
       state.chains.set(chain, chainAdapter)
-      NetworkController.replaceState(chainAdapter.networkState)
+      if (replaceState) {
+        NetworkController.replaceState(chainAdapter.networkState)
+      }
     }
   },
 
@@ -182,11 +189,14 @@ export const ChainController = {
 
     state.activeCaipNetwork = caipNetwork
     this.setCaipNetwork(caipNetwork.chain, caipNetwork)
+    PublicStateController.set({
+      activeChain: caipNetwork.chain,
+      selectedNetworkId: caipNetwork?.id
+    })
   },
 
   setCaipNetwork(chain: Chain, caipNetwork: NetworkControllerState['caipNetwork']) {
-    this.setChainNetworkData(chain, { caipNetwork })
-    PublicStateController.set({ selectedNetworkId: caipNetwork?.id })
+    this.setChainNetworkData(chain, { caipNetwork }, false)
   },
 
   setActiveConnector(connector: ChainControllerState['activeConnector']) {

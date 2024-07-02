@@ -75,23 +75,15 @@ export const NetworkController = {
     }
   },
 
-  setCaipNetwork(caipNetwork: NetworkControllerState['caipNetwork']) {
-    if (!caipNetwork?.chain) {
-      throw new Error('chain is required to set active network')
-    }
-
-    if (!caipNetwork) {
-      throw new Error('caipNetwork is required to set active network')
-    }
-
-    ChainController.setCaipNetwork(caipNetwork?.chain, caipNetwork)
+  setActiveCaipNetwork(caipNetwork: NetworkControllerState['caipNetwork']) {
+    ChainController.setActiveCaipNetwork(caipNetwork)
 
     if (!ChainController.getNetworkProp('allowUnsupportedChain')) {
       this.checkIfSupportedNetwork()
     }
   },
 
-  setDefaultCaipNetwork(caipNetwork: NetworkControllerState['caipNetwork']) {
+  setCaipNetwork(caipNetwork: NetworkControllerState['caipNetwork']) {
     if (!caipNetwork) {
       return
     }
