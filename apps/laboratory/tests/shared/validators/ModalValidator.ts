@@ -53,6 +53,12 @@ export class ModalValidator {
     })
   }
 
+  async expectConnectScreen() {
+    await expect(this.page.getByText('Connect Wallet')).toBeVisible({
+      timeout: MAX_WAIT
+    })
+  }
+
   async expectAddress(expectedAddress: string) {
     const address = this.page.getByTestId('w3m-address')
 
