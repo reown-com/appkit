@@ -251,7 +251,7 @@ export class Web3Modal extends Web3ModalScaffold {
         throw new Error('The selected chain is not a valid Solana chain')
       }
 
-      if (NetworkController.state.caipNetwork && !SolStoreUtil.state.isConnected && newChain) {
+      if (NetworkController.state.caipNetwork && !SolStoreUtil.state.isConnected) {
         SolStoreUtil.setCaipChainId(`solana:${newChain.chainId}`)
         SolStoreUtil.setCurrentChain(newChain)
         localStorage.setItem(SolConstantsUtil.CAIP_CHAIN_ID, `solana:${newChain.chainId}`)
