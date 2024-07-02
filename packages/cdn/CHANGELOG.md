@@ -1,5 +1,15 @@
 # @web3modal/cdn
 
+## 5.0.5
+
+### Patch Changes
+
+- feat: universal link internal flag. Add kotlin assetlinks. Fix email truncation'
+
+- Updated dependencies []:
+  - @web3modal/ethers@5.0.5
+  - @web3modal/wagmi@5.0.5
+
 ## 5.0.4
 
 ### Patch Changes
