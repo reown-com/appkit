@@ -16,5 +16,5 @@ closes #...
 
 # Checklist
 
-- [ ] New functionality is covered by automated tests (Unit tests, E2E tests)
+- [ ] Code in this PR is covered by automated tests (Unit tests, E2E tests)
 - [ ] My changes generate no new warnings
