@@ -5,7 +5,8 @@ export default css`
     margin: 9px auto;
   }
 
-  wui-text.email-text {
-    max-width: 300px;
+  .email-display,
+  .email-display wui-text {
+    max-width: 100%;
   }
 `
