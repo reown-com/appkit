@@ -2,11 +2,6 @@
 
 Please include a brief summary of the change.
 
-# Showcase
-
-If there is a UI change include the screenshots with before and after state.
-If new feature is being introduced, include the link to demo recording.
-
 ## Type of change
 
 - [ ] Chore (non-breaking change that addresses non-functional tasks, maintenance, or code quality improvements)
@@ -14,9 +9,15 @@ If new feature is being introduced, include the link to demo recording.
 - [ ] New feature (non-breaking change which adds functionality)
 - [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
 
+# Showcase (Optional)
+
+If there is a UI change include the screenshots with before and after state.
+If new feature is being introduced, include the link to demo recording.
+
 # Associated Issues
 
-closes #...
+For Linear issues: Closes APKT-xxx
+For GH issues: closes #...
 
 # Checklist
 
