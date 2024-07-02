@@ -140,7 +140,7 @@ export class W3mConnectingSiweView extends LitElement {
       await ConnectionController.disconnect()
       ModalController.close()
     } else {
-      RouterController.push('Connect')
+      RouterController.goBack()
     }
     EventsController.sendEvent({
       event: 'CLICK_CANCEL_SIWE',

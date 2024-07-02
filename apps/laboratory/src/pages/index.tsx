@@ -11,7 +11,12 @@ import {
   Link
 } from '@chakra-ui/react'
 import { IoArrowForward } from 'react-icons/io5'
-import { wagmiSdkOptions, ethersSdkOptions, solanaSdkOptions } from '../utils/DataUtil'
+import {
+  wagmiSdkOptions,
+  ethersSdkOptions,
+  solanaSdkOptions,
+  appkitSdkOptions
+} from '../utils/DataUtil'
 
 export default function HomePage() {
   return (
@@ -23,21 +28,23 @@ export default function HomePage() {
 
         <CardBody>
           <Stack divider={<StackDivider />} spacing="4">
-            <Box>
-              <Stack direction="row" justifyContent="space-between" alignItems="center">
-                <Box>
-                  <Heading size="xs" textTransform="uppercase">
-                    Default
-                  </Heading>
-                  <Text pt="2" fontSize="sm">
-                    Configuration with new architecture of appkit
-                  </Text>
-                </Box>
-                <Link href="/library/appkit">
-                  <Button rightIcon={<IoArrowForward />}>Go</Button>
-                </Link>
-              </Stack>
-            </Box>
+            {appkitSdkOptions.map(option => (
+              <Box key={option.link}>
+                <Stack direction="row" justifyContent="space-between" alignItems="center">
+                  <Box>
+                    <Heading size="xs" textTransform="uppercase">
+                      {option.title}
+                    </Heading>
+                    <Text pt="2" fontSize="sm">
+                      {option.description}
+                    </Text>
+                  </Box>
+                  <Link href={option.link}>
+                    <Button rightIcon={<IoArrowForward />}>Go</Button>
+                  </Link>
+                </Stack>
+              </Box>
+            ))}
           </Stack>
         </CardBody>
       </Card>

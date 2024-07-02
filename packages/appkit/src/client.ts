@@ -131,6 +131,10 @@ export class AppKit {
     RouterController.push(route)
   }
 
+  public reset(route: RouterControllerState['view']) {
+    RouterController.reset(route)
+  }
+
   public popTransactionStack(cancel?: boolean) {
     RouterController.popTransactionStack(cancel)
   }

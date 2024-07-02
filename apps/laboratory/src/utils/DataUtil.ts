@@ -18,6 +18,19 @@ export const colors = [
 
 export const vitalikEthAddress = '0xd8da6bf26964af9d7eed9e03e53415d37aa96045'
 
+export const appkitSdkOptions = [
+  {
+    title: 'Default',
+    link: '/library/appkit',
+    description: 'Solana and EVM configuration with new architecture of appkit'
+  },
+  {
+    title: 'Ethereum Adapter',
+    link: '/library/appkit-ep/',
+    description: 'Ethereum Adapter configuration with new architecture of appkit'
+  }
+]
+
 export const wagmiSdkOptions = [
   {
     title: 'Default',

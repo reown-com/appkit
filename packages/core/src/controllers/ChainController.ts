@@ -249,7 +249,7 @@ export const ChainController = {
   },
 
   setCaipNetwork(caipNetwork: ChainOptions['caipNetwork']) {
-    const chainToWrite = state.multiChainEnabled ? caipNetwork?.chain : 'evm'
+    const chainToWrite = 'evm'
 
     if (!chainToWrite) {
       throw new Error('chainToWrite is required to set default network')

@@ -47,7 +47,7 @@ export const ModalController = {
     } else if (connected) {
       RouterController.reset('Account')
     } else {
-      RouterController.reset('Connect')
+      RouterController.reset(RouterController.state.view ? RouterController.state.view : 'Connect')
     }
     state.open = true
     PublicStateController.set({ open: true })
