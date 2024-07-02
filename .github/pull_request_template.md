@@ -2,6 +2,10 @@
 
 Please include a brief summary of the change.
 
+# Showcase
+
+Include a screenshot
+
 ## Type of change
 
 - [ ] Chore (non-breaking change that addresses non-functional tasks, maintenance, or code quality improvements)
