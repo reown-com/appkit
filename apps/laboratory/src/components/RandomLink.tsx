@@ -7,9 +7,6 @@ export function RandomLink({ hrefs, children }: { hrefs: string[]; children: Rea
   const [href, setHref] = useState<string>()
   useEffect(() => {
     const newHref = hrefs[Math.floor(Math.random() * hrefs.length)]
-    if (!href) {
-      throw new Error('No hrefs provided')
-    }
     setHref(newHref)
   }, [hrefs])
 
