@@ -36,3 +36,19 @@ export const Default: Component = {
     </wui-text>
   `
 }
+
+export const LineClamp: Component = {
+  render: args => html`
+    <div style="max-width:300px">
+      <wui-text
+        variant=${args.variant}
+        color=${args.color}
+        align=${ifDefined(args.align)}
+        lineClamp="1"
+      >
+        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has
+        been the industry's standard dummy text ever since the 1500s.
+      </wui-text>
+    </div>
+  `
+}

@@ -1,5 +1,14 @@
 # @web3modal/scaffold-vue
 
+## 5.0.4
+
+### Patch Changes
+
+- fix: wcPromise incompatibility issues
+
+- Updated dependencies []:
+  - @web3modal/scaffold@5.0.4
+
 ## 5.0.3
 
 ### Patch Changes
