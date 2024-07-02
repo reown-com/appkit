@@ -67,7 +67,7 @@ export const ApiController = {
 
   _filterOutExtensions(wallets: WcWallet[]) {
     if (OptionsController.state.isUniversalProvider) {
-      return wallets.filter(w => Boolean(w.mobile_link))
+      return wallets.filter(w => Boolean(w.mobile_link || w.desktop_link || w.webapp_link))
     }
 
     return wallets
