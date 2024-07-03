@@ -2,11 +2,11 @@ import { createWeb3Modal } from '@web3modal/wagmi/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider, createConfig, http } from 'wagmi'
 import { Web3ModalButtons } from '../../components/Web3ModalButtons'
-import { WagmiTests } from '../../components/Wagmi/WagmiTests'
+import { WagmiPermissionsTest } from '../../components/Wagmi/WagmiPermissionsTest'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
-import { sepolia } from 'viem/chains'
+import { sepolia } from 'wagmi/chains'
 import { walletConnect } from 'wagmi/connectors'
 import { OPTIONAL_METHODS } from '@walletconnect/ethereum-provider'
 
@@ -47,7 +47,7 @@ export default function Wagmi() {
       <QueryClientProvider client={queryClient}>
         <Web3ModalButtons />
         <WagmiModalInfo />
-        <WagmiTests />
+        <WagmiPermissionsTest />
       </QueryClientProvider>
     </WagmiProvider>
   )
