@@ -64,8 +64,8 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
           }
         })
       ],
-      NetworkController.subscribe(val => {
-        this.network = val.caipNetwork
+      NetworkController.subscribeKey('caipNetwork', val => {
+        this.network = val
       })
     )
     this.watchSwapValues()

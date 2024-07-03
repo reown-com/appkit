@@ -11,10 +11,30 @@ import Link from 'next/link'
 import { IoSettingsOutline } from 'react-icons/io5'
 import { OptionsDrawer } from './OptionsDrawer'
 import { CustomWallet } from './CustomWallet'
+import { DownloadIcon } from '@chakra-ui/icons'
+import { useChakraToast } from '../components/Toast'
+
+function downloadLogs(toast: ReturnType<typeof useChakraToast>) {
+  type WindowWithLogs = typeof Window & {
+    downloadLogsBlobInBrowser?: () => void
+    downloadAppKitLogsBlob: Record<string, () => void>
+  }
+
+  const logWindow = window as unknown as WindowWithLogs
+  logWindow.downloadLogsBlobInBrowser?.()
+  logWindow.downloadAppKitLogsBlob?.['sdk']?.()
+  toast({
+    title: 'Logs downloaded',
+    description:
+      'To get logs for secure site too, switch to it in developer console and run `window.downloadLogsBlobInBrowser()`',
+    type: 'success'
+  })
+}
 
 export function LayoutHeader() {
   const controls = useDisclosure()
   const controlsCW = useDisclosure({ id: 'customWallet' })
+  const toast = useChakraToast()
 
   return (
     <>
@@ -42,6 +62,9 @@ export function LayoutHeader() {
         </Button>
         <Button rightIcon={<IoSettingsOutline />} onClick={controls.onOpen}>
           Options
+        </Button>
+        <Button rightIcon={<DownloadIcon />} onClick={() => downloadLogs(toast)}>
+          Logs
         </Button>
       </Stack>
 

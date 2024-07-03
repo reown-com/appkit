@@ -56,13 +56,13 @@ export class W3mAccountDefaultWidget extends LitElement {
           } else if (!this.disconnecting) {
             SnackController.showError('Account not found')
           }
+        }),
+        NetworkController.subscribeKey('caipNetwork', val => {
+          if (val?.id) {
+            this.network = val
+          }
         })
-      ],
-      NetworkController.subscribeKey('caipNetwork', val => {
-        if (val?.id) {
-          this.network = val
-        }
-      })
+      ]
     )
   }
 
@@ -190,7 +190,7 @@ export class W3mAccountDefaultWidget extends LitElement {
   }
 
   private explorerBtnTemplate() {
-    const { addressExplorerUrl } = AccountController.state
+    const addressExplorerUrl = AccountController.state.addressExplorerUrl
 
     if (!addressExplorerUrl) {
       return null
@@ -206,7 +206,7 @@ export class W3mAccountDefaultWidget extends LitElement {
   }
 
   private isAllowedNetworkSwitch() {
-    const { requestedCaipNetworks } = NetworkController.state
+    const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
     const isMultiNetwork = requestedCaipNetworks ? requestedCaipNetworks.length > 1 : false
     const isValidNetwork = requestedCaipNetworks?.find(({ id }) => id === this.network?.id)
 
@@ -259,7 +259,8 @@ export class W3mAccountDefaultWidget extends LitElement {
   }
 
   private onExplorer() {
-    const { addressExplorerUrl } = AccountController.state
+    const addressExplorerUrl = AccountController.state.addressExplorerUrl
+
     if (addressExplorerUrl) {
       CoreHelperUtil.openHref(addressExplorerUrl, '_blank')
     }

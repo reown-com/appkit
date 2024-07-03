@@ -1,5 +1,17 @@
 # @web3modal/polyfills
 
+## 5.0.5
+
+### Patch Changes
+
+- feat: universal link internal flag. Add kotlin assetlinks. Fix email truncation'
+
+## 5.0.4
+
+### Patch Changes
+
+- fix: wcPromise incompatibility issues
+
 ## 5.0.3
 
 ### Patch Changes
