@@ -11,7 +11,8 @@ import type {
   ThemeVariables,
   ModalControllerState,
   ConnectedWalletInfo,
-  RouterControllerState
+  RouterControllerState,
+  CaipNetwork
 } from '@web3modal/core'
 import {
   BlockchainApiController,
@@ -128,6 +129,10 @@ export class Web3ModalScaffold {
 
   public subscribeShouldUpdateToAddress(callback: (newState?: string) => void) {
     AccountController.subscribeKey('shouldUpdateToAddress', callback)
+  }
+
+  public subscribeCaipNetworkChange(callback: (newState?: CaipNetwork) => void) {
+    NetworkController.subscribeKey('caipNetwork', callback)
   }
 
   public getState() {

@@ -15,7 +15,6 @@ import type {
 } from '@web3modal/scaffold'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
-import { NetworkController } from '@web3modal/core'
 import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 import EthereumProvider, { OPTIONAL_METHODS } from '@walletconnect/ethereum-provider'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
@@ -512,7 +511,7 @@ export class Web3Modal extends Web3ModalScaffold {
      * This subscribes to the network change and sets the chainId in the store so it can be used when connecting.
      * Especially important for email connector where correct chainId dictates which account is available e.g. smart account, eoa.
      */
-    NetworkController.subscribeKey('caipNetwork', network => {
+    this.subscribeCaipNetworkChange(network => {
       if (!this.getChainId() && network) {
         EthersStoreUtil.setChainId(NetworkUtil.caipNetworkIdToNumber(network.id))
       }

@@ -382,6 +382,27 @@ export class Web3Modal extends Web3ModalScaffold {
       this.syncNetwork(chainImages)
     })
 
+    /*
+     * When the client is loaded, this.getChainId stays undefined even if the user switches networks via w3modal <networks> button.
+     * This subscribes to the network change and sets the chainId in the store so it can be used when connecting.
+     * Especially important for email connector where correct chainId dictates which account is available e.g. smart account, eoa.
+     */
+    this.subscribeCaipNetworkChange(network => {
+      if (!this.getChainId() && network) {
+        EthersStoreUtil.setChainId(NetworkUtil.caipNetworkIdToNumber(network.id))
+      }
+    })
+
+    // Console.log('@ethers, NetworkController caipNetwork', network)
+    this.subscribeShouldUpdateToAddress((address?: string) => {
+      console.log('shouldUpdateToAddress', address)
+      if (!address) {
+        return
+      }
+      console.log('shouldUpdateToAddress', address)
+      EthersStoreUtil.setAddress(utils.getAddress(address) as Address)
+    })
+
     this.syncRequestedNetworks(chains, chainImages)
     this.syncConnectors(ethersConfig)
 
