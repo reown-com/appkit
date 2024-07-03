@@ -3,9 +3,9 @@ import { Transaction, VersionedTransaction } from '@solana/web3.js'
 import { SolStoreUtil } from '../../utils/scaffold/index.js'
 
 import type { ConfirmOptions, Signer } from '@solana/web3.js'
-import type { Adapter } from '@solana/wallet-adapter-base'
+import type { BaseWalletAdapter } from '@solana/wallet-adapter-base'
 
-export function signAndSendTransaction(adapter: Adapter) {
+export function signAndSendTransaction(adapter: BaseWalletAdapter) {
   return async (
     transactionParam: Transaction | VersionedTransaction,
     signers: Signer[],
