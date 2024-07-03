@@ -53,8 +53,8 @@ export class W3mOnRampProviderItem extends LitElement {
 
   // -- Private ------------------------------------------- //
   private networksTemplate() {
-    const networks = NetworkController.getRequestedCaipNetworks()
-    const slicedNetworks = networks?.filter(network => network?.imageId)?.slice(0, 5)
+    const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
+    const slicedNetworks = requestedCaipNetworks?.filter(network => network?.imageId)?.slice(0, 5)
 
     return html`
       <wui-flex class="networks">
