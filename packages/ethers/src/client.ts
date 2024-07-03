@@ -1255,7 +1255,8 @@ export class Web3Modal extends Web3ModalScaffold {
             EthersStoreUtil.setChainId(chainId)
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
           } catch (switchError: any) {
-            if (/(?<temp1>user rejected)/u.test(switchError?.message)) {
+            const message = switchError?.message as string
+            if (/(?<temp1>user rejected)/u.test(message?.toLowerCase())) {
               throw new Error('Chain is not supported')
             }
             await EthersHelpersUtil.addEthereumChain(
