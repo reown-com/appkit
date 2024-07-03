@@ -31,26 +31,6 @@ export class W3mSelectAddressesView extends LitElement {
     })
   }
 
-  onSelectAll = (event: Event) => {
-    const checked = (event.target as HTMLInputElement).checked
-    this.selectAll = this.selectedAccounts.length === this.allAccounts.length
-    this.allAccounts.forEach(account => {
-      this.onSelect(account, checked)
-    })
-  }
-
-  onSelect = (account: AccountType, add: boolean) => {
-    if (add) {
-      this.selectedAccounts.push(account)
-    } else {
-      this.selectedAccounts = this.selectedAccounts.filter(a => a.address !== account.address)
-    }
-    if (this.selectedAccounts.length > 0) {
-      this.selectAll = this.selectedAccounts.length === this.allAccounts.length
-    }
-    this.requestUpdate()
-  }
-
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
@@ -94,7 +74,7 @@ export class W3mSelectAddressesView extends LitElement {
 
   // -- Private ------------------------------------------- //
 
-  getAddressTemplate = (account: AccountType) => {
+  private getAddressTemplate = (account: AccountType) => {
     const checked = this.selectedAccounts.some(_account => _account.address === account.address)
 
     return html`<wui-list-account accountAddress="${account.address}" accountType="${account.type}">
@@ -108,9 +88,31 @@ export class W3mSelectAddressesView extends LitElement {
     </wui-list-account>`
   }
 
-  private handleClick = (account: AccountType) => (event: Event) => {
-    const target = event.target as HTMLInputElement
-    this.onSelect?.({ ...account }, target?.checked)
+  private onSelectAll = (event: Event) => {
+    const checked = (event.target as HTMLInputElement).checked
+    this.selectAll = this.selectedAccounts.length === this.allAccounts.length
+    this.allAccounts.forEach(account => {
+      this.onSelect(account, checked)
+    })
+  }
+
+  private onSelect = (account: AccountType, add: boolean) => {
+    if (add) {
+      this.selectedAccounts.push(account)
+    } else {
+      this.selectedAccounts = this.selectedAccounts.filter(a => a.address !== account.address)
+    }
+    if (this.selectedAccounts.length > 0) {
+      this.selectAll = this.selectedAccounts.length === this.allAccounts.length
+    }
+    this.requestUpdate()
+  }
+
+  private handleClick(account: AccountType) {
+    return (event: Event) => {
+      const target = event.target as HTMLInputElement
+      this.onSelect?.({ ...account }, target?.checked)
+    }
   }
 
   private onContinue() {

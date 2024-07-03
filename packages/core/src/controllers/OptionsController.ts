@@ -21,7 +21,6 @@ export interface OptionsControllerState {
   enableAnalytics?: boolean
   metadata?: Metadata
   enableOnramp?: boolean
-  enableWalletFeatures?: boolean
   hasMultipleAddresses?: boolean
   disableAppend?: boolean
   enableEIP6963?: boolean

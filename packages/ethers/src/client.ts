@@ -782,7 +782,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
     if (InjectedProvider) {
       const { addresses, chainId } = await EthersHelpersUtil.getUserInfo(InjectedProvider)
-      if (addresses && chainId) {
+      if (addresses?.[0] && chainId) {
         EthersStoreUtil.setChainId(chainId)
         EthersStoreUtil.setProviderType('injected')
         EthersStoreUtil.setProvider(config.injected)
@@ -867,10 +867,9 @@ export class Web3Modal extends Web3ModalScaffold {
   private async watchWalletConnect() {
     const provider = await this.getWalletConnectProvider()
 
-    const disconnectHandler = () => {
+    function disconnectHandler() {
       localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
       EthersStoreUtil.reset()
-      this.setAllAccounts([])
       provider?.removeListener('disconnect', disconnectHandler)
       provider?.removeListener('accountsChanged', accountsChangedHandler)
       provider?.removeListener('chainChanged', chainChangedHandler)
@@ -936,10 +935,9 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private watchEIP6963(provider: Provider) {
-    const disconnectHandler = () => {
+    function disconnectHandler() {
       localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
       EthersStoreUtil.reset()
-      this.setAllAccounts([])
       provider.removeListener('disconnect', disconnectHandler)
       provider.removeListener('accountsChanged', accountsChangedHandler)
       provider.removeListener('chainChanged', chainChangedHandler)
@@ -1132,6 +1130,7 @@ export class Web3Modal extends Web3ModalScaffold {
     } else if (!isConnected && this.hasSyncedConnectedAccount) {
       this.resetWcConnection()
       this.resetNetwork()
+      this.setAllAccounts([])
     }
   }
 

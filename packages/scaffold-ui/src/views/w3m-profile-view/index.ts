@@ -33,14 +33,22 @@ export class W3mProfileView extends LitElement {
   public constructor() {
     super()
     this.usubscribe.push(
-      AccountController.subscribe(val => {
-        if (val.address) {
-          this.address = val.address
-          this.profileImage = val.profileImage
-          this.profileName = val.profileName
+      AccountController.subscribeKey('address', address => {
+        if (address) {
+          this.address = address
         } else {
           ModalController.close()
         }
+      })
+    )
+    this.usubscribe.push(
+      AccountController.subscribeKey('profileImage', profileImage => {
+        this.profileImage = profileImage
+      })
+    )
+    this.usubscribe.push(
+      AccountController.subscribeKey('profileName', profileName => {
+        this.profileName = profileName
       })
     )
   }

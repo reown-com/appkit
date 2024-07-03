@@ -74,7 +74,6 @@ export class W3mSwitchAddressView extends LitElement {
   // -- Private ------------------------------------------- //
 
   private getAddressTemplate(account: AccountType) {
-    // If there is custom label for the address, use it
     const label = this.labels?.get(account.address)
 
     return html`

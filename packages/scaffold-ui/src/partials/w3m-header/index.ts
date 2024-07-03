@@ -159,17 +159,8 @@ export class W3mHeader extends LitElement {
     const isApproveTransaction = view === 'ApproveTransaction'
     const isUpgradeToSmartAccounts = view === 'UpgradeToSmartAccount'
     const isConnectingSIWEView = view === 'ConnectingSiwe'
-    const isWalletAccountView = view === 'Account' && OptionsController.state.enableWalletFeatures
-    const shouldHideBack = isApproveTransaction || isUpgradeToSmartAccounts || isConnectingSIWEView
 
-    if (isWalletAccountView) {
-      return html`<w3m-network-button
-        @click=${() => RouterController.push('Networks')}
-        label=${' '}
-      >
-        <wui-icon name="chevronBottom" size="sm"></wui-icon>
-      </w3m-network-button>`
-    }
+    const shouldHideBack = isApproveTransaction || isUpgradeToSmartAccounts || isConnectingSIWEView
 
     if (this.showBack && !shouldHideBack) {
       return html`<wui-icon-link

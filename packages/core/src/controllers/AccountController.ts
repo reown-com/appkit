@@ -137,7 +137,6 @@ export const AccountController = {
   },
 
   addAddressLabel(address: string, label: string) {
-    state.addressLabels.set(address, label)
     const map = ChainController.getAccountProp('addressLabels') || new Map()
     map.set(address, label)
     ChainController.setAccountProp('addressLabels', map)

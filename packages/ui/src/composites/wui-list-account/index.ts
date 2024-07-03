@@ -25,25 +25,23 @@ export class WuiListAccount extends LitElement {
   @property() public accountType = ''
 
   private connectedConnector = StorageUtil.getConnectedConnector()
+
   private labels = AccountController.state.addressLabels
-  private balance = 0
-  private fetchingBalance = true
-  private shouldShowIcon = false
+
   private caipNetwork = NetworkController.state.caipNetwork
+
+  private balance = 0
+
+  private fetchingBalance = true
+
+  private shouldShowIcon = false
+
   @property({ type: Boolean }) public selected = false
 
   @property({ type: Function }) public onSelect?: (
     { address, type }: { address: string; type: string },
     selected: boolean
   ) => void
-
-  handleClick = (event: Event) => {
-    this.onSelect?.(
-      { address: this.accountAddress, type: this.accountType },
-      // @ts-expect-error - checked is available on the event
-      event?.target?.checked
-    )
-  }
 
   public override connectedCallback() {
     super.connectedCallback()
@@ -57,22 +55,10 @@ export class WuiListAccount extends LitElement {
       this.requestUpdate()
     })
   }
+
   // -- Render -------------------------------------------- //
   public override render() {
-    let label = this.labels?.get(this.accountAddress)
-
-    // If there is no provided label, set one depending on the account type
-    if (!label && this.connectedConnector === 'AUTH') {
-      label = `${this.accountType === 'eoa' ? 'Email' : 'Smart'} Account`
-    } else if (
-      (!label && this.connectedConnector === 'INJECTED') ||
-      this.connectedConnector === 'ANNOUNCED'
-    ) {
-      label = `Injected Account`
-    } else if (!label) {
-      label = 'EOA'
-    }
-
+    const label = this.getLabel()
     // Only show icon for AUTH accounts
     this.shouldShowIcon = this.connectedConnector === 'AUTH'
 
@@ -115,6 +101,26 @@ export class WuiListAccount extends LitElement {
         </wui-flex>
       </wui-flex>
     `
+  }
+
+  // -- Private --- //
+
+  private getLabel() {
+    let label = this.labels?.get(this.accountAddress)
+
+    // If there is no provided label, set one depending on the account type
+    if (!label && this.connectedConnector === 'AUTH') {
+      label = `${this.accountType === 'eoa' ? 'Email' : 'Smart'} Account`
+    } else if (
+      (!label && this.connectedConnector === 'INJECTED') ||
+      this.connectedConnector === 'ANNOUNCED'
+    ) {
+      label = `Injected Account`
+    } else if (!label) {
+      label = 'EOA'
+    }
+
+    return label
   }
 }
 

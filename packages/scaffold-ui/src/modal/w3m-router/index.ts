@@ -75,22 +75,6 @@ export class W3mRouter extends LitElement {
         return html`<w3m-connecting-external-view></w3m-connecting-external-view>`
       case 'ConnectingSiwe':
         return html`<w3m-connecting-siwe-view></w3m-connecting-siwe-view>`
-      case 'Networks':
-        return html`<w3m-networks-view></w3m-networks-view>`
-      case 'SwitchNetwork':
-        return html`<w3m-network-switch-view></w3m-network-switch-view>`
-      case 'Profile':
-        return html`<w3m-profile-view></w3m-profile-view>`
-      case 'SelectAddresses':
-        return html`<w3m-select-addresses-view></w3m-select-addresses-view>`
-      case 'SwitchAddress':
-        return html`<w3m-switch-address-view></w3m-switch-address-view>`
-      case 'WhatIsAWallet':
-        return html`<w3m-what-is-a-wallet-view></w3m-what-is-a-wallet-view>`
-      case 'WhatIsANetwork':
-        return html`<w3m-what-is-a-network-view></w3m-what-is-a-network-view>`
-      case 'GetWallet':
-        return html`<w3m-get-wallet-view></w3m-get-wallet-view>`
       case 'ConnectWallets':
         return html`<w3m-connect-wallets-view></w3m-connect-wallets-view>`
       case 'ConnectSocials':
@@ -103,6 +87,18 @@ export class W3mRouter extends LitElement {
         return html`<w3m-email-verify-otp-view></w3m-email-verify-otp-view>`
       case 'EmailVerifyDevice':
         return html`<w3m-email-verify-device-view></w3m-email-verify-device-view>`
+      case 'GetWallet':
+        return html`<w3m-get-wallet-view></w3m-get-wallet-view>`
+      case 'Networks':
+        return html`<w3m-networks-view></w3m-networks-view>`
+      case 'SwitchNetwork':
+        return html`<w3m-network-switch-view></w3m-network-switch-view>`
+      case 'Profile':
+        return html`<w3m-profile-view></w3m-profile-view>`
+      case 'SelectAddresses':
+        return html`<w3m-select-addresses-view></w3m-select-addresses-view>`
+      case 'SwitchAddress':
+        return html`<w3m-switch-address-view></w3m-switch-address-view>`
       case 'Transactions':
         return html`<w3m-transactions-view></w3m-transactions-view>`
       case 'OnRampProviders':
@@ -125,10 +121,6 @@ export class W3mRouter extends LitElement {
         return html`<w3m-update-email-secondary-otp-view></w3m-update-email-secondary-otp-view>`
       case 'UnsupportedChain':
         return html`<w3m-unsupported-chain-view></w3m-unsupported-chain-view>`
-      case 'WalletReceive':
-        return html`<w3m-wallet-receive-view></w3m-wallet-receive-view>`
-      case 'WalletCompatibleNetworks':
-        return html`<w3m-wallet-compatible-networks-view></w3m-wallet-compatible-networks-view>`
       case 'Swap':
         return html`<w3m-swap-view></w3m-swap-view>`
       case 'SwapSelectToken':
@@ -143,6 +135,14 @@ export class W3mRouter extends LitElement {
         return html`<w3m-wallet-send-preview-view></w3m-wallet-send-preview-view>`
       case 'WhatIsABuy':
         return html`<w3m-what-is-a-buy-view></w3m-what-is-a-buy-view>`
+      case 'WalletReceive':
+        return html`<w3m-wallet-receive-view></w3m-wallet-receive-view>`
+      case 'WalletCompatibleNetworks':
+        return html`<w3m-wallet-compatible-networks-view></w3m-wallet-compatible-networks-view>`
+      case 'WhatIsAWallet':
+        return html`<w3m-what-is-a-wallet-view></w3m-what-is-a-wallet-view>`
+      case 'WhatIsANetwork':
+        return html`<w3m-what-is-a-network-view></w3m-what-is-a-network-view>`
       default:
         return html`<w3m-connect-view></w3m-connect-view>`
     }
