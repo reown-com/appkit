@@ -225,8 +225,8 @@ export const ChainController = {
     return chainAdapter.networkControllerClient
   },
 
-  getConnectionControllerClient() {
-    const chain = state.activeChain
+  getConnectionControllerClient(_chain?: Chain) {
+    const chain = _chain || state.activeChain
 
     if (!chain) {
       throw new Error('Chain is required to get connection controller client')
