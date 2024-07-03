@@ -1,5 +1,15 @@
 # @web3modal/siwe
 
+## 5.0.5
+
+### Patch Changes
+
+- feat: universal link internal flag. Add kotlin assetlinks. Fix email truncation'
+
+- Updated dependencies []:
+  - @web3modal/core@5.0.5
+  - @web3modal/scaffold-utils@5.0.5
+
 ## 5.0.4
 
 ### Patch Changes
