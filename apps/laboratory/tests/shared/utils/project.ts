@@ -52,14 +52,7 @@ const customProjectProperties: CustomProjectProperties = {
     testIgnore: /(?:social\.spec\.ts).*$/u
   },
   'Desktop Brave/wagmi': {
-    testIgnore: EMAIL_BASED_PLATFORM_REGEX,
     useOptions: braveOptions
-  },
-  'Desktop Chrome/wagmi': {
-    testIgnore: EMAIL_BASED_PLATFORM_REGEX
-  },
-  'Desktop Firefox/wagmi': {
-    testIgnore: EMAIL_BASED_PLATFORM_REGEX
   },
   // Exclude social.spec.ts, email.spec.ts, siwe.spec.ts, and canary.spec.ts from solana, not yet implemented
   'Desktop Chrome/solana': {
