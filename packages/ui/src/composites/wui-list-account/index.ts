@@ -103,7 +103,7 @@ export class WuiListAccount extends LitElement {
     `
   }
 
-  // -- Private --- //
+  // -- Private ------------------------------------------- //
 
   private getLabel() {
     let label = this.labels?.get(this.accountAddress)
