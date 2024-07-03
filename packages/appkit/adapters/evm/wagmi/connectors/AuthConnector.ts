@@ -5,6 +5,7 @@ import { SwitchChainError, getAddress } from 'viem'
 import type { Address } from 'viem'
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
 import type { SocialProvider } from '@web3modal/scaffold-utils'
+
 // -- Types ----------------------------------------------------------------------------------------
 interface W3mFrameProviderOptions {
   projectId: string
@@ -20,6 +21,7 @@ export type AuthParameters = {
   socials?: SocialProvider[]
   email?: boolean
   showWallets?: boolean
+  walletFeatures?: boolean
 }
 
 // -- Connector ------------------------------------------------------------------------------------
@@ -35,6 +37,7 @@ export function authConnector(parameters: AuthParameters) {
     socials: parameters.socials,
     email: parameters.email,
     showWallets: parameters.showWallets,
+    walletFeatures: parameters.walletFeatures,
     chain: CommonConstantsUtil.CHAIN.EVM,
 
     async connect(options: ConnectOptions = {}) {
