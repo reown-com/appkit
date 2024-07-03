@@ -1,6 +1,5 @@
 /* eslint-disable max-depth */
 import {
-  RouterController,
   type CaipNetwork,
   type CaipNetworkId,
   type ConnectionControllerClient,
