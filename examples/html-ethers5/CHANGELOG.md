@@ -1,5 +1,14 @@
 # @examples/html-ethers5
 
+## 5.0.5
+
+### Patch Changes
+
+- feat: universal link internal flag. Add kotlin assetlinks. Fix email truncation'
+
+- Updated dependencies []:
+  - @web3modal/ethers5@5.0.5
+
 ## 5.0.4
 
 ### Patch Changes
