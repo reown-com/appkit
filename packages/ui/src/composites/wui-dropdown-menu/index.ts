@@ -33,8 +33,8 @@ export class WuiDropdownMenu extends LitElement {
 
     return html`
       <wui-flex flexDirection="column" gap="4xs">
-        ${this.actions.map(action => {
-          return html`
+        ${this.actions.map(
+          action => html`
             <wui-list-item
               icon=${action.icon}
               iconSize="sm"
@@ -44,7 +44,7 @@ export class WuiDropdownMenu extends LitElement {
               <wui-text variant="small-400" color="fg-100">${action.label}</wui-text>
             </wui-list-item>
           `
-        })}
+        )}
       </wui-flex>
     `
   }
