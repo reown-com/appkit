@@ -660,6 +660,7 @@ export class EVMWagmiClient {
       email: boolean
       socials: SocialProvider[]
       showWallets?: boolean
+      walletFeatures?: boolean
     }
     if (authConnector) {
       const provider = await authConnector.getProvider()
@@ -671,6 +672,7 @@ export class EVMWagmiClient {
         email: authConnector.email,
         socials: authConnector.socials,
         showWallets: authConnector?.showWallets === undefined ? true : authConnector.showWallets,
+        walletFeatures: authConnector.walletFeatures,
         chain: this.chain
       })
     }
