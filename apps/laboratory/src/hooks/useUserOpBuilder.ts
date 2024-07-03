@@ -19,7 +19,7 @@ export type UserOpBuilderGetCallDataArguments = {
   actions: Execution[]
 }
 
-type Execution = {
+export type Execution = {
   target: Hex
   value: bigint
   callData: Hex

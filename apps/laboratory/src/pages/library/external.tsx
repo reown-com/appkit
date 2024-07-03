@@ -7,7 +7,7 @@ import { WagmiTests } from '../../components/Wagmi/WagmiTests'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
-import { mainnet } from 'viem/chains'
+import { mainnet } from 'wagmi/chains'
 import { externalTestConnector } from '../../utils/ConnectorUtil'
 
 const queryClient = new QueryClient()
