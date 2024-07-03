@@ -20,8 +20,6 @@ export class WuiBannerImg extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    console.log('WuiBannerImg', this.imageSrc, this.text, this.size)
-
     return html`
       <wui-flex gap="1xs" alignItems="center">
         <wui-avatar size=${this.size} imageSrc=${this.imageSrc}></wui-avatar>

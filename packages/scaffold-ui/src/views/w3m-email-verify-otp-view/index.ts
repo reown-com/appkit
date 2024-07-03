@@ -42,10 +42,6 @@ export class W3mEmailVerifyOtpView extends W3mEmailOtpWidget {
           event: 'CONNECT_SUCCESS',
           properties: { method: 'email', name: this.authConnector.name || 'Unknown' }
         })
-        console.log(
-          'AccountController.state.allAccounts.length',
-          AccountController.state.allAccounts.length
-        )
         if (AccountController.state.allAccounts.length > 1) {
           RouterController.push('SelectAddresses')
         } else if (smartAccountEnabled && !this.smartAccountDeployed) {

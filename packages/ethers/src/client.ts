@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /* eslint-disable max-depth */
 import type {
   CaipAddress,
@@ -149,7 +148,6 @@ export class Web3Modal extends Web3ModalScaffold {
     const networkControllerClient: NetworkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
         const chainId = NetworkUtil.caipNetworkIdToNumber(caipNetwork?.id)
-        console.log('switchCaipNetwork', chainId)
         if (chainId) {
           try {
             EthersStoreUtil.setError(undefined)
@@ -517,13 +515,10 @@ export class Web3Modal extends Web3ModalScaffold {
       }
     })
 
-    // Console.log('@ethers, NetworkController caipNetwork', network)
     this.subscribeShouldUpdateToAddress((address?: string) => {
-      console.log('shouldUpdateToAddress', address)
       if (!address) {
         return
       }
-      console.log('shouldUpdateToAddress', address)
       EthersStoreUtil.setAddress(getOriginalAddress(address) as Address)
     })
 
@@ -757,7 +752,6 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private async setWalletConnectProvider() {
-    console.log('setWalletConnectProvider')
     window?.localStorage.setItem(
       EthersConstantsUtil.WALLET_ID,
       ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID
@@ -769,14 +763,11 @@ export class Web3Modal extends Web3ModalScaffold {
       EthersStoreUtil.setProvider(WalletConnectProvider as unknown as Provider)
       EthersStoreUtil.setStatus('connected')
       EthersStoreUtil.setIsConnected(true)
-      console.log('WalletConnectProvider.accounts', WalletConnectProvider.accounts)
       this.setAllAccounts(WalletConnectProvider.accounts.map(address => ({ address, type: 'eoa' })))
       const session = WalletConnectProvider.signer?.session
-      console.log('session', session)
       for (const address of WalletConnectProvider.accounts) {
         const label = session?.sessionProperties?.[address]
         if (label) {
-          console.log('addAddressLabel', address, label)
           this.addAddressLabel(address, label)
         }
       }
@@ -809,7 +800,6 @@ export class Web3Modal extends Web3ModalScaffold {
 
     if (provider) {
       const { addresses, chainId } = await EthersHelpersUtil.getUserInfo(provider)
-      console.log('setEIP6963Provider', addresses, chainId)
       if (addresses?.[0] && chainId) {
         EthersStoreUtil.setChainId(chainId)
         EthersStoreUtil.setProviderType('eip6963')
@@ -849,7 +839,6 @@ export class Web3Modal extends Web3ModalScaffold {
 
     if (this.authProvider) {
       super.setLoading(true)
-      console.log('connecting with emailProvider, chain', this.getChainId())
       const { address, chainId, smartAccountDeployed, preferredAccountType, accounts } =
         await this.authProvider.connect({ chainId: this.getChainId() })
 
@@ -879,7 +868,6 @@ export class Web3Modal extends Web3ModalScaffold {
     const provider = await this.getWalletConnectProvider()
 
     const disconnectHandler = () => {
-      console.log('disconnectHandler')
       localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
       EthersStoreUtil.reset()
       this.setAllAccounts([])
@@ -951,7 +939,6 @@ export class Web3Modal extends Web3ModalScaffold {
     const disconnectHandler = () => {
       localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
       EthersStoreUtil.reset()
-      console.log('disconnectHandler')
       this.setAllAccounts([])
       provider.removeListener('disconnect', disconnectHandler)
       provider.removeListener('accountsChanged', accountsChangedHandler)
@@ -1126,7 +1113,6 @@ export class Web3Modal extends Web3ModalScaffold {
       const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`
 
       this.setIsConnected(isConnected)
-      console.log('@ethers syncAccount', caipAddress)
       this.setPreferredAccountType(preferredAccountType, this.chain)
       this.setCaipAddress(caipAddress)
       this.syncConnectedWalletInfo()
@@ -1292,7 +1278,6 @@ export class Web3Modal extends Web3ModalScaffold {
   public async switchNetwork(chainId: number) {
     const provider = EthersStoreUtil.state.provider
     const providerType = EthersStoreUtil.state.providerType
-    console.log('switchNetwork', chainId)
     if (this.chains) {
       const chain = this.chains.find(c => c.chainId === chainId)
 

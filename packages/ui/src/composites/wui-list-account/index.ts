@@ -38,7 +38,6 @@ export class WuiListAccount extends LitElement {
   ) => void
 
   handleClick = (event: Event) => {
-    console.log('handleClick', event, this.onSelect)
     this.onSelect?.(
       { address: this.accountAddress, type: this.accountType },
       // @ts-expect-error - checked is available on the event
@@ -51,20 +50,16 @@ export class WuiListAccount extends LitElement {
     BlockchainApiController.getBalance(this.accountAddress, this.caipNetwork?.id).then(response => {
       let total = this.balance
       if (response.balances.length > 0) {
-        total = response.balances.reduce((acc, balance) => {
-          return acc + (balance?.value || 0)
-        }, 0)
+        total = response.balances.reduce((acc, balance) => acc + (balance?.value || 0), 0)
       }
       this.balance = total
       this.fetchingBalance = false
-      console.log(`balance for`, this.accountAddress, response, this.balance)
       this.requestUpdate()
     })
   }
   // -- Render -------------------------------------------- //
   public override render() {
     let label = this.labels?.get(this.accountAddress)
-    console.log('WuiListAccount', this.accountAddress, this.accountType, label)
 
     // If there is no provided label, set one depending on the account type
     if (!label && this.connectedConnector === 'AUTH') {
@@ -80,7 +75,6 @@ export class WuiListAccount extends LitElement {
 
     // Only show icon for AUTH accounts
     this.shouldShowIcon = this.connectedConnector === 'AUTH'
-    console.log('label', label, this.connectedConnector)
 
     return html`
       <wui-flex
@@ -122,27 +116,6 @@ export class WuiListAccount extends LitElement {
       </wui-flex>
     `
   }
-
-  /*
-   * Private templateIcon() {
-   *   // Const color: 'accent-100' | 'error-100' | 'success-100' | 'inverse-100' = 'accent-100'
-   */
-
-  //   Const icon = 'mail'
-
-  /*
-   *   Return html`
-   *     <wui-icon-box
-   *       size="xxs"
-   *       background=""
-   *       color="accent-100"
-   *       icon=${icon}
-   *       ?border=${true}
-   *       borderColor="wui-color-bg-125"
-   *     ></wui-icon-box>
-   *   `
-   * }
-   */
 }
 
 declare global {

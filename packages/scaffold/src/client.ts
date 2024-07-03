@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import type {
   ConnectionControllerClient,
   EventsControllerState,
@@ -193,9 +192,7 @@ export class Web3ModalScaffold {
   protected getIsConnectedState = () => AccountController.state.isConnected
 
   protected setAllAccounts: (typeof AccountController)['setAllAccounts'] = (addresses = []) => {
-    console.log('@scaffold setAllAccounts', addresses)
     AccountController.setAllAccounts(addresses)
-    console.log('@scaffold setHasMultipleAddresses', addresses?.length > 1)
     OptionsController.setHasMultipleAddresses(addresses?.length > 1)
   }
 
@@ -208,7 +205,6 @@ export class Web3ModalScaffold {
   }
 
   protected setCaipAddress: (typeof AccountController)['setCaipAddress'] = (caipAddress, chain) => {
-    console.log('@scaffold setCaipAddress', caipAddress)
     AccountController.setCaipAddress(caipAddress, chain)
   }
 

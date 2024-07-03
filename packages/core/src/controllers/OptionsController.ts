@@ -116,7 +116,6 @@ export const OptionsController = {
   },
 
   setHasMultipleAddresses(hasMultipleAddresses: OptionsControllerState['hasMultipleAddresses']) {
-    console.log('@options hasMultipleAddresses', hasMultipleAddresses)
     state.hasMultipleAddresses = hasMultipleAddresses
   }
 }

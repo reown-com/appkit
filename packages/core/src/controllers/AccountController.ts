@@ -133,7 +133,6 @@ export const AccountController = {
   },
 
   setAllAccounts(accounts: AccountType[], chain?: Chain) {
-    console.log('@AccountController setAllAccounts', accounts)
     ChainController.setAccountProp('allAccounts', accounts, chain)
   },
 

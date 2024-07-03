@@ -39,9 +39,7 @@ export class W3mSwitchAddressView extends LitElement {
       BlockchainApiController.getBalance(account.address, this.caipNetwork?.id).then(response => {
         let total = this.balances[account.address] || 0
         if (response.balances.length > 0) {
-          total = response.balances.reduce((acc, balance) => {
-            return acc + (balance?.value || 0)
-          }, 0)
+          total = response.balances.reduce((acc, balance) => acc + (balance?.value || 0), 0)
         }
         this.balances[account.address] = total
         this.requestUpdate()
@@ -68,9 +66,7 @@ export class W3mSwitchAddressView extends LitElement {
         ></wui-banner-img>
       </wui-flex>
       <wui-flex flexDirection="column" gap="xxl" .padding=${['l', 'xl', 'xl', 'xl'] as const}>
-        ${this.allAccounts.map(account => {
-          return this.getAddressTemplate(account)
-        })}
+        ${this.allAccounts.map(account => this.getAddressTemplate(account))}
       </wui-flex>
     `
   }
@@ -80,7 +76,6 @@ export class W3mSwitchAddressView extends LitElement {
   private getAddressTemplate(account: AccountType) {
     // If there is custom label for the address, use it
     const label = this.labels?.get(account.address)
-    console.log('getAddressTemplate', account.address, this.allAccounts, label)
 
     return html`
       <wui-flex flexDirection="row" justifyContent="space-between">
@@ -132,7 +127,6 @@ export class W3mSwitchAddressView extends LitElement {
   }
 
   private onSwitchAddress(address: string) {
-    console.log('onSwitchAddress', address)
     AccountController.setShouldUpdateToAddress(address)
     ModalController.close()
   }

@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import {
   AccountController,
   ConnectionController,
@@ -27,21 +26,14 @@ export class W3mSelectAddressesView extends LitElement {
   constructor() {
     super()
     AccountController.subscribeKey('allAccounts', allAccounts => {
-      console.log('W3mSelectAddressesView, allAccounts change', allAccounts)
       this.allAccounts = allAccounts
       this.requestUpdate()
     })
-    console.log('W3mSelectAddressesView')
-    console.log('metadata', this.metadata)
-    console.log('selectedAccounts', this.selectedAccounts)
-    console.log('allAccounts', this.allAccounts)
   }
 
   onSelectAll = (event: Event) => {
-    console.log('onSelectAll', event)
     const checked = (event.target as HTMLInputElement).checked
     this.selectAll = this.selectedAccounts.length === this.allAccounts.length
-    console.log('selectedAccounts', this.selectedAccounts)
     this.allAccounts.forEach(account => {
       this.onSelect(account, checked)
     })
@@ -74,11 +66,7 @@ export class W3mSelectAddressesView extends LitElement {
         <input type="checkbox" .checked=${this.selectAll}  @click=${this.onSelectAll.bind(this)} />
     </wui-flex>
       <wui-flex flexDirection="column" .padding=${['l', 'xl', 'xl', 'xl'] as const}>
-        ${this.allAccounts.map(account => {
-          console.log('account', account, this.selectedAccounts.includes(account))
-
-          return this.getAddressTemplate(account)
-        })}
+        ${this.allAccounts.map(account => this.getAddressTemplate(account))}
       </wui-flex>
       <wui-flex .padding=${['l', 'xl', 'xl', 'xl'] as const} gap="s" justifyContent="space-between">
         <wui-button
@@ -108,7 +96,6 @@ export class W3mSelectAddressesView extends LitElement {
 
   getAddressTemplate = (account: AccountType) => {
     const checked = this.selectedAccounts.some(_account => _account.address === account.address)
-    console.log('checked', checked)
 
     return html`<wui-list-account accountAddress="${account.address}" accountType="${account.type}">
       <input
@@ -123,7 +110,6 @@ export class W3mSelectAddressesView extends LitElement {
 
   private handleClick = (account: AccountType) => (event: Event) => {
     const target = event.target as HTMLInputElement
-    console.log('handleClick', event, this.onSelect)
     this.onSelect?.({ ...account }, target?.checked)
   }
 

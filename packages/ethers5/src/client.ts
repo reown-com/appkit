@@ -393,13 +393,10 @@ export class Web3Modal extends Web3ModalScaffold {
       }
     })
 
-    // Console.log('@ethers, NetworkController caipNetwork', network)
     this.subscribeShouldUpdateToAddress((address?: string) => {
-      console.log('shouldUpdateToAddress', address)
       if (!address) {
         return
       }
-      console.log('shouldUpdateToAddress', address)
       EthersStoreUtil.setAddress(utils.getAddress(address) as Address)
     })
 
