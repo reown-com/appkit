@@ -1,6 +1,6 @@
-import { Button, Stack, Text } from '@chakra-ui/react'
+import { Button, Flex, Stack, Text } from '@chakra-ui/react'
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
-import { useAccount, type Connector } from 'wagmi'
+import { useAccount, useReadContract, type Connector } from 'wagmi'
 import { type Chain } from 'wagmi/chains'
 import { type GrantPermissionsReturnType } from 'viem/experimental'
 import {
@@ -13,14 +13,7 @@ import { pimlicoBundlerActions } from 'permissionless/actions/pimlico'
 import { type UserOperation } from 'permissionless/types'
 import { useState, useEffect } from 'react'
 import { useChakraToast } from '../Toast'
-import {
-  createPublicClient,
-  encodeFunctionData,
-  http,
-  parseEther,
-  signatureToHex,
-  type Address
-} from 'viem'
+import { createPublicClient, encodeFunctionData, http, parseEther, signatureToHex } from 'viem'
 import { EIP_7715_RPC_METHODS } from '../../utils/EIP5792Utils'
 import { GRANTED_PERMISSIONS_KEY } from '../../utils/LocalStorage'
 import { useLocalSigner } from '../../hooks/useLocalSigner'
@@ -28,13 +21,25 @@ import { useLocalStorageState } from '../../hooks/useLocalStorageState'
 import { sepolia } from 'viem/chains'
 import { abi as donutContractAbi, address as donutContractaddress } from '../../utils/DonutContract'
 import { sign } from 'viem/accounts'
-import { useUserOpBuilder } from '../../hooks/useUserOpBuilder'
+import { useUserOpBuilder, type Execution } from '../../hooks/useUserOpBuilder'
 
 export function WagmiPurchaseDonutWithPermissionsTest() {
   const { status, chain, address, connector } = useAccount()
   const { getCallDataWithContext, getNonceWithContext, getSignatureWithContext } =
     useUserOpBuilder()
   const { signer, signerPrivateKey } = useLocalSigner()
+  const {
+    data: donutsOwned,
+    refetch: fetchDonutsOwned,
+    isLoading: donutsQueryLoading,
+    isRefetching: donutsQueryRefetching
+  } = useReadContract({
+    abi: donutContractAbi,
+    address: donutContractaddress,
+    functionName: 'getBalance',
+    args: [address]
+  })
+
   const [isTransactionPending, setTransactionPending] = useState<boolean>(false)
   const [grantedPermissions] = useLocalStorageState<GrantPermissionsReturnType | undefined>(
     GRANTED_PERMISSIONS_KEY,
@@ -79,6 +84,7 @@ export function WagmiPurchaseDonutWithPermissionsTest() {
           description: 'Signing with local key successfully completed',
           type: 'success'
         })
+        await fetchDonutsOwned()
       }
     } catch (error) {
       toast({
@@ -91,18 +97,15 @@ export function WagmiPurchaseDonutWithPermissionsTest() {
   }
 
   async function buildAndSendTransactionsWithPermissions(
-    issuedPermissionsResponse: GrantPermissionsReturnType,
-    actions: {
-      target: Address
-      value: bigint
-      callData: `0x${string}`
-    }[]
-  ): Promise<`0x${string}` | undefined> {
+    grantedPermissionsResponse: GrantPermissionsReturnType,
+    actions: Execution[]
+  ): Promise<`0x${string}`> {
     if (!signerPrivateKey || !signer) {
-      return
+      throw new Error('No dapp signer key available.')
     }
     const apiKey = process.env['NEXT_PUBLIC_PIMLICO_KEY']
     const bundlerUrl = `https://api.pimlico.io/v1/sepolia/rpc?apikey=${apiKey}`
+
     const entryPoint = ENTRYPOINT_ADDRESS_V07
     const publicClient = createPublicClient({
       transport: http(),
@@ -115,9 +118,9 @@ export function WagmiPurchaseDonutWithPermissionsTest() {
       chain: sepolia
     }).extend(pimlicoBundlerActions(entryPoint))
 
-    const { factory, factoryData, signerData, permissionsContext } = issuedPermissionsResponse
+    const { factory, factoryData, signerData, permissionsContext } = grantedPermissionsResponse
     if (!signerData?.userOpBuilder || !signerData.submitToAddress || !permissionsContext) {
-      return
+      throw new Error('Missing value in granted permissions response')
     }
     const testDappPrivateKey = signerPrivateKey as `0x${string}`
 
@@ -148,7 +151,6 @@ export function WagmiPurchaseDonutWithPermissionsTest() {
       maxPriorityFeePerGas: gasPrice.fast.maxPriorityFeePerGas,
       signature: '0x'
     }
-
     const userOpHash = getUserOperationHash({
       userOperation: {
         ...userOp
@@ -172,8 +174,6 @@ export function WagmiPurchaseDonutWithPermissionsTest() {
     })
 
     userOp.signature = finalSigForValidator
-
-    // THe const packedUserOp = getPackedUserOperation(userOp)
 
     const _userOpHash = await bundlerClient.sendUserOperation({
       userOperation: userOp
@@ -221,15 +221,31 @@ export function WagmiPurchaseDonutWithPermissionsTest() {
       </Text>
     )
   }
+  const allowedChains = [sepolia.id] as number[]
 
-  return (
+  return allowedChains.includes(Number(chain?.id)) && status === 'connected' ? (
     <Stack direction={['column', 'column', 'row']}>
       <Button
-        disabled={!grantedPermissions || isTransactionPending}
+        isDisabled={!grantedPermissions}
+        isLoading={isTransactionPending}
         onClick={onPurchaseDonutWithPermissions}
       >
         Purchase Donut
       </Button>
+      <Flex alignItems="center">
+        {donutsQueryLoading || donutsQueryRefetching ? (
+          <Text>Fetching donuts...</Text>
+        ) : (
+          <>
+            <Text marginRight="5px">Crypto donuts left:</Text>
+            <Text>{donutsOwned?.toString()}</Text>
+          </>
+        )}
+      </Flex>
     </Stack>
+  ) : (
+    <Text fontSize="md" color="yellow">
+      Switch to Sepolia to test this feature
+    </Text>
   )
 }

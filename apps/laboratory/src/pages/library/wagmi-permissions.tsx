@@ -5,7 +5,6 @@ import { Web3ModalButtons } from '../../components/Web3ModalButtons'
 import { WagmiPermissionsTest } from '../../components/Wagmi/WagmiPermissionsTest'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
-import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
 import { sepolia } from 'wagmi/chains'
 import { walletConnect } from 'wagmi/connectors'
 import { OPTIONAL_METHODS } from '@walletconnect/ethereum-provider'
@@ -26,8 +25,7 @@ const wagmiConfig = createConfig({
   connectors,
   transports: {
     11155111: http()
-  },
-  multiInjectedProviderDiscovery: false
+  }
 })
 
 const modal = createWeb3Modal({
@@ -46,7 +44,6 @@ export default function Wagmi() {
     <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <Web3ModalButtons />
-        <WagmiModalInfo />
         <WagmiPermissionsTest />
       </QueryClientProvider>
     </WagmiProvider>

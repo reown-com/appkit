@@ -137,14 +137,17 @@ export function WagmiRequestPermissionsTest() {
       <Button
         data-test-id="request-permissions-button"
         onClick={onRequestPermissions}
-        disabled={isRequestPermissionLoading || grantedPermissions !== undefined || !isConnected}
+        isDisabled={Boolean(
+          isRequestPermissionLoading || Boolean(grantedPermissions) || !isConnected
+        )}
+        isLoading={isRequestPermissionLoading}
       >
         Request Permissions
       </Button>
       <Button
         data-test-id="clear-permissions-button"
         onClick={onClearPermissions}
-        disabled={!grantedPermissions}
+        isDisabled={!grantedPermissions}
       >
         Clear Permissions
       </Button>
