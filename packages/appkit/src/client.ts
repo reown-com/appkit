@@ -2,7 +2,6 @@ import type {
   EventsControllerState,
   PublicStateControllerState,
   ThemeControllerState,
-  OptionsControllerState,
   ModalControllerState,
   ConnectedWalletInfo,
   RouterControllerState,
@@ -45,7 +44,7 @@ export class AppKit {
 
   private initPromise?: Promise<void> = undefined
 
-  public constructor(options: OptionsControllerState) {
+  public constructor(options: AppKitOptions) {
     this.initControllers(options)
     this.initOrContinue()
   }
