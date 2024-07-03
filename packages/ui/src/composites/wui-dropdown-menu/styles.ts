@@ -6,7 +6,7 @@ export default css`
     width: 200px;
     padding: var(--wui-spacing-3xs);
     align-items: center;
-
+    display: inherit;
     border-radius: var(--wui-border-radius-xs);
     border: 1px solid var(--wui-gray-glass-002);
     background: var(--wui-color-fg-base-125);
