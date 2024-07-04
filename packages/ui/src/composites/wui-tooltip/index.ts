@@ -16,8 +16,6 @@ export class WuiTooltip extends LitElement {
 
   @property() public variant: 'shade' | 'fill' = 'fill'
 
-  @property() public message = ''
-
   // -- Render -------------------------------------------- //
   public override render() {
     this.dataset['variant'] = this.variant
@@ -28,7 +26,7 @@ export class WuiTooltip extends LitElement {
         size="inherit"
         name=${this.variant === 'fill' ? 'cursor' : 'cursorTransparent'}
       ></wui-icon>
-      <wui-text color="inherit" variant="small-500">${this.message}</wui-text>`
+      <slot></slot>`
   }
 }
 

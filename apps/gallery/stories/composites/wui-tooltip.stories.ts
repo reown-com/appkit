@@ -10,7 +10,6 @@ type Component = Meta<WuiTooltip>
 export default {
   title: 'Composites/wui-tooltip',
   args: {
-    message: 'Tooltip',
     placement: 'top',
     variant: 'fill'
   },
@@ -29,9 +28,7 @@ export default {
 
 export const Default: Component = {
   render: args =>
-    html`<wui-tooltip
-      variant=${args.variant}
-      placement=${args.placement}
-      message=${args.message}
-    ></wui-tooltip>`
+    html`<wui-tooltip variant=${args.variant} placement=${args.placement}>
+      <wui-text color="fg-200" variant="small-500">This is a tooltip</wui-text>
+    </wui-tooltip>`
 }
