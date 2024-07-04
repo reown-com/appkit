@@ -839,8 +839,13 @@ export class Web3Modal extends Web3ModalScaffold {
 
     if (this.authProvider) {
       super.setLoading(true)
-      const { address, chainId, smartAccountDeployed, preferredAccountType, accounts } =
-        await this.authProvider.connect({ chainId: this.getChainId() })
+      const {
+        address,
+        chainId,
+        smartAccountDeployed,
+        preferredAccountType,
+        accounts = []
+      } = await this.authProvider.connect({ chainId: this.getChainId() })
 
       const { smartAccountEnabledNetworks } =
         await this.authProvider.getSmartAccountEnabledNetworks()

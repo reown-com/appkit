@@ -93,14 +93,16 @@ export const FrameGetUserResponse = z.object({
   address: z.string(),
   chainId: z.number(),
   smartAccountDeployed: z.optional(z.boolean()),
-  accounts: z.array(
-    z.object({
-      address: z.string(),
-      type: z.enum([
-        W3mFrameRpcConstants.ACCOUNT_TYPES.EOA,
-        W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
-      ])
-    })
+  accounts: z.optional(
+    z.array(
+      z.object({
+        address: z.string(),
+        type: z.enum([
+          W3mFrameRpcConstants.ACCOUNT_TYPES.EOA,
+          W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+        ])
+      })
+    )
   ),
   preferredAccountType: z.optional(z.string())
 })
