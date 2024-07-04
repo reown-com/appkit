@@ -1,5 +1,20 @@
 # @web3modal/scaffold
 
+## 5.0.6
+
+### Patch Changes
+
+- fix: Social Login illegal invocation issue. Wagmi tests
+
+- Updated dependencies []:
+  - @web3modal/common@5.0.6
+  - @web3modal/core@5.0.6
+  - @web3modal/scaffold-ui@5.0.6
+  - @web3modal/scaffold-utils@5.0.6
+  - @web3modal/siwe@5.0.6
+  - @web3modal/ui@5.0.6
+  - @web3modal/wallet@5.0.6
+
 ## 5.0.5
 
 ### Patch Changes
