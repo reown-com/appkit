@@ -71,9 +71,12 @@ export const SIWEController = {
     try {
       const client = this._getClient()
       const session = await client.getSession()
-      if (session) {
+      if (session?.address && session?.chainId) {
         this.setSession(session)
         this.setStatus('success')
+      } else {
+        this.setSession(undefined)
+        this.setStatus('ready')
       }
 
       return session
