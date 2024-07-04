@@ -51,6 +51,11 @@ jobs:
     runs-on:
       group: ubuntu-runners
     timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4]
+        shardTotal: [4]
     steps:
       - name: checkout
         uses: actions/checkout@v4
@@ -104,22 +109,10 @@ jobs:
           SOCIAL_TEST_PASSWORD: ${{ secrets.TESTS_SOCIAL_PASSWORD }}
           CI: true
         working-directory: ./apps/laboratory/
-        run: npm run ${{ inputs.command }}
+        run: npm run ${{ inputs.command }} -- --shard=${{ matrix.shard }}/${{ matrix.shardTotal }}
       - name: Run canary with minimal environment config
         env:
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
           CI: true
         working-directory: ./apps/laboratory/
         run: npm run playwright:test:canary
-      - uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: playwright-report
-          path: ./apps/laboratory/playwright-report/
-          retention-days: 7
-      - uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: screenshots
-          path: ./apps/laboratory/test-results/
-          retention-days: 7
