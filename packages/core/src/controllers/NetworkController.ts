@@ -1,10 +1,10 @@
-import { subscribeKey as subKey } from 'valtio/utils'
-import { proxy, subscribe as sub } from 'valtio/vanilla'
+import { proxy } from 'valtio/vanilla'
 import type { CaipNetwork, CaipNetworkId } from '../utils/TypeUtil.js'
 import { EventsController } from './EventsController.js'
 import { ModalController } from './ModalController.js'
-import { NetworkUtil } from '@web3modal/common'
-import { ChainController, type Chain } from './ChainController.js'
+import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
+import { NetworkUtil, type Chain } from '@web3modal/common'
+import { ChainController } from './ChainController.js'
 
 // -- Types --------------------------------------------- //
 export interface NetworkControllerClient {
@@ -27,8 +27,6 @@ export interface NetworkControllerState {
   smartAccountEnabledNetworks?: number[]
 }
 
-type StateKey = keyof NetworkControllerState
-
 // -- State --------------------------------------------- //
 const state = proxy<NetworkControllerState>({
   supportsAllNetworks: true,
@@ -40,82 +38,143 @@ const state = proxy<NetworkControllerState>({
 export const NetworkController = {
   state,
 
-  subscribe(callback: (newState: NetworkControllerState) => void) {
-    return sub(state, () => callback(state))
+  replaceState(newState: NetworkControllerState | undefined) {
+    if (!newState) {
+      return
+    }
+
+    Object.assign(state, newState)
   },
 
-  subscribeKey<K extends StateKey>(key: K, callback: (value: NetworkControllerState[K]) => void) {
-    return subKey(state, key, callback)
-  },
+  subscribeKey<K extends keyof NetworkControllerState>(
+    property: K,
+    callback: (val: NetworkControllerState[K]) => void
+  ) {
+    let prev: NetworkControllerState[K] | undefined = undefined
 
-  getProperty<K extends StateKey>(key: K): NetworkControllerState[K] {
-    // @ts-ignore
-    return ChainController.getNetworkProp(key)
+    return ChainController.subscribeChainProp('networkState', networkState => {
+      if (networkState) {
+        const nextValue = networkState[property]
+        if (prev !== nextValue) {
+          prev = nextValue
+          callback(nextValue)
+        }
+      }
+    })
   },
 
   _getClient() {
     return ChainController.getNetworkControllerClient()
   },
 
-  activeNetwork() {
-    return ChainController.activeNetwork()
+  initializeDefaultNetwork() {
+    const networks = this.getRequestedCaipNetworks()
+
+    if (networks.length > 0) {
+      this.setCaipNetwork(networks[0])
+    }
   },
 
-  setClient(client: NetworkControllerClient, chain?: Chain) {
-    ChainController.setClient(client, chain)
+  setActiveCaipNetwork(caipNetwork: NetworkControllerState['caipNetwork']) {
+    ChainController.setActiveCaipNetwork(caipNetwork)
+
+    if (!ChainController.getNetworkProp('allowUnsupportedChain')) {
+      this.checkIfSupportedNetwork()
+    }
   },
 
   setCaipNetwork(caipNetwork: NetworkControllerState['caipNetwork']) {
-    ChainController.setCaipNetwork(caipNetwork)
-  },
+    if (!caipNetwork) {
+      return
+    }
 
-  setDefaultCaipNetwork(caipNetwork: NetworkControllerState['caipNetwork'], chain?: Chain) {
-    ChainController.setDefaultCaipNetwork(caipNetwork, chain)
+    if (!caipNetwork?.chain) {
+      throw new Error('chain is required to set active network')
+    }
+
+    ChainController.setCaipNetwork(caipNetwork?.chain, caipNetwork)
   },
 
   setRequestedCaipNetworks(
     requestedNetworks: NetworkControllerState['requestedCaipNetworks'],
     chain?: Chain
   ) {
-    ChainController.setRequestedCaipNetworks(requestedNetworks, chain)
+    ChainController.setChainNetworkData(
+      ChainController.state.multiChainEnabled ? chain : ChainController.state.activeChain,
+      { requestedCaipNetworks: requestedNetworks }
+    )
   },
 
   setAllowUnsupportedChain(
     allowUnsupportedChain: NetworkControllerState['allowUnsupportedChain'],
     chain?: Chain
   ) {
-    ChainController.setAllowUnsupportedChain(allowUnsupportedChain, chain)
+    ChainController.setChainNetworkData(chain || ChainController.state.activeChain, {
+      allowUnsupportedChain
+    })
   },
 
   setSmartAccountEnabledNetworks(
     smartAccountEnabledNetworks: NetworkControllerState['smartAccountEnabledNetworks'],
     chain?: Chain
   ) {
-    ChainController.setSmartAccountEnabledNetworks(smartAccountEnabledNetworks, chain)
+    ChainController.setChainNetworkData(
+      ChainController.state.multiChainEnabled ? chain : ChainController.state.activeChain,
+      { smartAccountEnabledNetworks }
+    )
   },
 
-  getRequestedCaipNetworks() {
-    return ChainController.getRequestedCaipNetworks()
-  },
+  getRequestedCaipNetworks(chainToFilter?: Chain) {
+    let chainAdapters: Chain[] | undefined = undefined
 
-  getSupportsAllNetworks() {
-    return ChainController.getSupportsAllNetworks()
-  },
+    if (!ChainController.state.activeChain) {
+      throw new Error('activeChain is required to get requested networks')
+    }
 
-  getApprovedCaipNetworkIds(chain?: Chain) {
-    return ChainController.getApprovedCaipNetworkIds(chain)
-  },
+    if (chainToFilter) {
+      const chain = ChainController.state.multiChainEnabled
+        ? chainToFilter
+        : ChainController.state.activeChain
 
-  async setApprovedCaipNetworksData(chain?: Chain) {
-    const data = await this._getClient()?.getApprovedCaipNetworksData()
+      if (!chain) {
+        throw new Error('chain is required to get requested networks')
+      }
 
-    ChainController.setApprovedCaipNetworksData(data, chain)
+      chainAdapters = [chain]
+    } else {
+      const chains = ChainController.state.multiChainEnabled
+        ? [...ChainController.state.chains.keys()]
+        : [ChainController.state.activeChain]
+
+      chainAdapters = chains
+    }
+
+    const approvedIds: `${string}:${string}`[] = []
+    const requestedNetworks: CaipNetwork[] = []
+
+    chainAdapters.forEach((chn: Chain) => {
+      if (ChainController.state.chains.get(chn)?.networkState?.approvedCaipNetworkIds) {
+        approvedIds.push(
+          ...(ChainController.state.chains.get(chn)?.networkState?.approvedCaipNetworkIds || [])
+        )
+      }
+      if (ChainController.state.chains.get(chn)?.networkState?.requestedCaipNetworks) {
+        requestedNetworks.push(
+          ...(ChainController.state.chains.get(chn)?.networkState?.requestedCaipNetworks || [])
+        )
+      }
+    })
+
+    const sortedNetworks = CoreHelperUtil.sortRequestedNetworks(approvedIds, requestedNetworks)
+
+    return sortedNetworks
   },
 
   async switchActiveNetwork(network: NetworkControllerState['caipNetwork']) {
-    await this._getClient()?.switchCaipNetwork(network)
+    const networkControllerClient = ChainController.getNetworkControllerClient()
+    await networkControllerClient.switchCaipNetwork(network)
 
-    ChainController.switchActiveNetwork(network)
+    ChainController.setActiveCaipNetwork(network)
 
     if (network) {
       EventsController.sendEvent({
@@ -126,26 +185,110 @@ export const NetworkController = {
     }
   },
 
-  checkIfSupportedNetwork() {
-    const isUnsupportedChain = ChainController.checkIfSupportedNetwork()
+  getApprovedCaipNetworkIds(chainToFilter?: Chain) {
+    if (chainToFilter) {
+      const chain = ChainController.state.multiChainEnabled
+        ? chainToFilter
+        : ChainController.state.activeChain
 
-    if (isUnsupportedChain) {
-      this.showUnsupportedChainUI()
+      if (!chain) {
+        throw new Error('chain is required to get approved network IDs')
+      }
+
+      return ChainController.state.chains.get(chain)?.networkState?.approvedCaipNetworkIds
     }
+
+    const allCaipNetworkIds: CaipNetworkId[] = []
+
+    Object.values(ChainController.state.chains).forEach(adapter => {
+      if (adapter.networkState.approvedCaipNetworkIds) {
+        allCaipNetworkIds.push(...(adapter.networkState?.approvedCaipNetworkIds || []))
+      }
+    })
+
+    return allCaipNetworkIds
+  },
+
+  async setApprovedCaipNetworksData(_chain?: Chain) {
+    const networkControllerClient = ChainController.getNetworkControllerClient()
+    const data = await networkControllerClient.getApprovedCaipNetworksData()
+
+    const chain = ChainController.state.multiChainEnabled
+      ? _chain
+      : ChainController.state.activeChain
+
+    if (!chain) {
+      throw new Error('chain is required to set approved network data')
+    }
+
+    ChainController.setChainNetworkData(chain, {
+      approvedCaipNetworkIds: data?.approvedCaipNetworkIds,
+      supportsAllNetworks: data?.supportsAllNetworks || false
+    })
+  },
+
+  checkIfSupportedNetwork() {
+    const chain = ChainController.state.multiChainEnabled
+      ? ChainController.state.activeChain
+      : ChainController.state.activeChain
+
+    if (!chain) {
+      return false
+    }
+
+    const activeCaipNetwork = ChainController.state.chains.get(chain)?.networkState?.caipNetwork
+
+    const requestedCaipNetworks = this.getRequestedCaipNetworks()
+
+    return requestedCaipNetworks?.some(network => network.id === activeCaipNetwork?.id)
   },
 
   checkIfSmartAccountEnabled() {
-    const networkId = NetworkUtil.caipNetworkIdToNumber(state.caipNetwork?.id)
+    const networkId = NetworkUtil.caipNetworkIdToNumber(ChainController.state.activeCaipNetwork?.id)
+    const activeChain = ChainController.state.activeChain
+
+    if (!activeChain) {
+      throw new Error('activeChain is required to check if smart account is enabled')
+    }
 
     if (!networkId) {
       return false
     }
 
-    return Boolean(state.smartAccountEnabledNetworks?.includes(networkId))
+    const smartAccountEnabledNetworks =
+      ChainController.state.chains.get(activeChain)?.networkState?.smartAccountEnabledNetworks || []
+
+    return Boolean(smartAccountEnabledNetworks?.includes(networkId))
   },
 
   resetNetwork() {
-    ChainController.resetNetwork()
+    const chain = ChainController.state.activeChain
+
+    if (!chain) {
+      throw new Error('chain is required to reset network')
+    }
+
+    if (!ChainController.state.chains.get(chain)?.networkState?.isDefaultCaipNetwork) {
+      ChainController.setChainNetworkData(chain, { caipNetwork: undefined })
+    }
+
+    ChainController.setChainNetworkData(chain, {
+      approvedCaipNetworkIds: undefined,
+      supportsAllNetworks: true,
+      smartAccountEnabledNetworks: []
+    })
+  },
+
+  getSupportsAllNetworks() {
+    const chain = ChainController.state.multiChainEnabled
+      ? ChainController.state.activeChain
+      : ChainController.state.activeChain
+
+    if (!chain) {
+      throw new Error('chain is required to check if network supports all networks')
+    }
+
+    return ChainController.state.chains.get(chain)?.networkState?.supportsAllNetworks
   },
 
   showUnsupportedChainUI() {

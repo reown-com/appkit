@@ -2,9 +2,9 @@ import { Stack, Card, CardHeader, Heading, CardBody, Box, StackDivider } from '@
 
 export function AppKitButtons() {
   return (
-    <Card marginTop={20}>
+    <Card marginTop={10} marginBottom={10}>
       <CardHeader>
-        <Heading size="md">AppKit Interactions</Heading>
+        <Heading size="md">Web3Modal Interactions</Heading>
       </CardHeader>
 
       <CardBody>
@@ -15,11 +15,18 @@ export function AppKitButtons() {
             </Heading>
             <w3m-button />
           </Box>
+
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">
               Network Button
             </Heading>
             <w3m-network-button />
+          </Box>
+          <Box>
+            <Heading size="xs" textTransform="uppercase" pb="2">
+              Onramp Widget
+            </Heading>
+            <w3m-onramp-widget />
           </Box>
         </Stack>
       </CardBody>

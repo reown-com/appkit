@@ -1,7 +1,6 @@
 import {
   AccountController,
   AssetUtil,
-  ChainController,
   CoreHelperUtil,
   NetworkController,
   RouterController,
@@ -22,26 +21,23 @@ export class W3mWalletReceiveView extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() private address = AccountController.getProperty('address')
+  @state() private address = AccountController.state.address
 
-  @state() private profileName = AccountController.getProperty('profileName')
+  @state() private profileName = AccountController.state.profileName
 
-  @state() private network = NetworkController.activeNetwork()
+  @state() private network = NetworkController.state.caipNetwork
 
-  @state() private preferredAccountType = AccountController.getProperty('preferredAccountType')
+  @state() private preferredAccountType = AccountController.state.preferredAccountType
 
   public constructor() {
     super()
     this.unsubscribe.push(
       ...[
-        ChainController.subscribe(val => {
-          const accountState = val.activeChain
-            ? val.chains[val.activeChain]?.accountState
-            : undefined
-          if (accountState?.address) {
-            this.address = accountState.address
-            this.profileName = accountState.profileName
-            this.preferredAccountType = accountState.preferredAccountType
+        AccountController.subscribe(val => {
+          if (val.address) {
+            this.address = val.address
+            this.profileName = val.profileName
+            this.preferredAccountType = val.preferredAccountType
           } else {
             SnackController.showError('Account not found')
           }
@@ -108,9 +104,9 @@ export class W3mWalletReceiveView extends LitElement {
 
   // -- Private ------------------------------------------- //
   networkTemplate() {
-    const requestedCaipNetworks = ChainController.getRequestedCaipNetworks()
+    const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
     const isNetworkEnabledForSmartAccounts = NetworkController.checkIfSmartAccountEnabled()
-    const caipNetwork = NetworkController.activeNetwork()
+    const caipNetwork = NetworkController.state.caipNetwork
 
     if (
       this.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT &&

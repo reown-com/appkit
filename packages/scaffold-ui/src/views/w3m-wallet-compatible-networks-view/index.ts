@@ -1,10 +1,4 @@
-import {
-  AccountController,
-  AssetUtil,
-  ChainController,
-  CoreHelperUtil,
-  NetworkController
-} from '@web3modal/core'
+import { AccountController, AssetUtil, CoreHelperUtil, NetworkController } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -20,14 +14,13 @@ export class W3mWalletCompatibleNetworksView extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() private preferredAccountType = AccountController.getProperty('preferredAccountType')
+  @state() private preferredAccountType = AccountController.state.preferredAccountType
 
   public constructor() {
     super()
     this.unsubscribe.push(
-      ChainController.subscribe(val => {
-        const accountState = val.activeChain ? val.chains[val.activeChain]?.accountState : undefined
-        this.preferredAccountType = accountState?.preferredAccountType
+      AccountController.subscribeKey('preferredAccountType', val => {
+        this.preferredAccountType = val
       })
     )
   }
@@ -53,9 +46,9 @@ export class W3mWalletCompatibleNetworksView extends LitElement {
 
   // -- Private ------------------------------------------- //
   networkTemplate() {
-    const requestedCaipNetworks = ChainController.getRequestedCaipNetworks()
-    const approvedCaipNetworkIds = NetworkController.getProperty('approvedCaipNetworkIds')
-    const caipNetwork = NetworkController.getProperty('caipNetwork')
+    const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
+    const approvedCaipNetworkIds = NetworkController.state.approvedCaipNetworkIds
+    const caipNetwork = NetworkController.state.caipNetwork
     const isNetworkEnabledForSmartAccounts = NetworkController.checkIfSmartAccountEnabled()
 
     let sortedNetworks = CoreHelperUtil.sortRequestedNetworks(

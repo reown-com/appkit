@@ -44,6 +44,9 @@ export function getWagmiConfig(type: 'default' | 'email') {
     chains: WagmiConstantsUtil.chains,
     projectId: ConstantsUtil.ProjectId,
     metadata: ConstantsUtil.Metadata,
+    auth: {
+      socials: ['google']
+    },
     ssr: true
   }
 

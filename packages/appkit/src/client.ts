@@ -2,12 +2,10 @@ import type {
   EventsControllerState,
   PublicStateControllerState,
   ThemeControllerState,
-  OptionsControllerState,
   ModalControllerState,
   ConnectedWalletInfo,
   RouterControllerState,
-  ChainAdapter,
-  Chain
+  ChainAdapter
 } from '@web3modal/core'
 import {
   AccountController,
@@ -27,14 +25,16 @@ import {
   NetworkController
 } from '@web3modal/core'
 import { setColorTheme, setThemeVariables } from '@web3modal/ui'
-import { ConstantsUtil } from '@web3modal/common'
+import { ConstantsUtil, type Chain } from '@web3modal/common'
+import type { AppKitOptions } from '../utils/TypesUtil.js'
 
-// -- Helpers -------------------------------------------------------------------
-let isInitialized = false
-
+// -- Types --------------------------------------------------------------------
 export interface OpenOptions {
   view: 'Account' | 'Connect' | 'Networks' | 'ApproveTransaction' | 'OnRampProviders'
 }
+
+// -- Helpers -------------------------------------------------------------------
+let isInitialized = false
 
 // -- Client --------------------------------------------------------------------
 export class AppKit {
@@ -44,7 +44,7 @@ export class AppKit {
 
   private initPromise?: Promise<void> = undefined
 
-  public constructor(options: OptionsControllerState) {
+  public constructor(options: AppKitOptions) {
     this.initControllers(options)
     this.initOrContinue()
   }
@@ -91,7 +91,7 @@ export class AppKit {
   }
 
   public getWalletInfo() {
-    return AccountController.getProperty('connectedWalletInfo')
+    return AccountController.state.connectedWalletInfo
   }
 
   public subscribeWalletInfo(callback: (newState: ConnectedWalletInfo) => void) {
@@ -157,7 +157,7 @@ export class AppKit {
     AccountController.setIsConnected(isConnected, chain)
   }
 
-  public getIsConnectedState = () => AccountController.getProperty('isConnected')
+  public getIsConnectedState = () => AccountController.state.isConnected
 
   public setCaipAddress: (typeof AccountController)['setCaipAddress'] = (caipAddress, chain) => {
     AccountController.setCaipAddress(caipAddress, chain)
@@ -179,29 +179,31 @@ export class AppKit {
     AccountController.resetAccount(chain)
   }
 
-  public setCaipNetwork: (typeof ChainController)['setCaipNetwork'] = caipNetwork => {
-    ChainController.setCaipNetwork(caipNetwork)
+  public setCaipNetwork: (typeof NetworkController)['setCaipNetwork'] = caipNetwork => {
+    NetworkController.setCaipNetwork(caipNetwork)
   }
 
-  public getCaipNetwork = () => ChainController.activeNetwork()
+  public getCaipNetwork = () => NetworkController.state.caipNetwork
 
-  public setRequestedCaipNetworks: (typeof ChainController)['setRequestedCaipNetworks'] = (
+  public setRequestedCaipNetworks: (typeof NetworkController)['setRequestedCaipNetworks'] = (
     requestedCaipNetworks,
-    chain
+    chain: Chain
   ) => {
-    ChainController.setRequestedCaipNetworks(requestedCaipNetworks, chain)
+    NetworkController.setRequestedCaipNetworks(requestedCaipNetworks, chain)
   }
 
-  public setApprovedCaipNetworksData: (typeof NetworkController)['setApprovedCaipNetworksData'] = (
-    chain: Chain
-  ) => NetworkController.setApprovedCaipNetworksData(chain)
+  public getApprovedCaipNetworkIds: (typeof NetworkController)['getApprovedCaipNetworkIds'] = () =>
+    NetworkController.getApprovedCaipNetworkIds()
 
-  public resetNetwork = () => {
-    ChainController.resetNetwork()
+  public setApprovedCaipNetworksData: (typeof NetworkController)['setApprovedCaipNetworksData'] =
+    chain => NetworkController.setApprovedCaipNetworksData(chain)
+
+  public resetNetwork: (typeof NetworkController)['resetNetwork'] = () => {
+    NetworkController.resetNetwork()
   }
 
   public setConnectors: (typeof ConnectorController)['setConnectors'] = connectors => {
-    ConnectorController.setConnectors(connectors, true)
+    ConnectorController.setConnectors(connectors)
   }
 
   public addConnector: (typeof ConnectorController)['addConnector'] = connector => {
@@ -241,13 +243,15 @@ export class AppKit {
 
   public setSmartAccountEnabledNetworks: (typeof NetworkController)['setSmartAccountEnabledNetworks'] =
     (smartAccountEnabledNetworks, chain) => {
-      ChainController.setSmartAccountEnabledNetworks(smartAccountEnabledNetworks, chain)
+      NetworkController.setSmartAccountEnabledNetworks(smartAccountEnabledNetworks, chain)
     }
 
-  public setPreferredAccountType: (typeof AccountController)['setPreferredAccountType'] =
-    preferredAccountType => {
-      AccountController.setPreferredAccountType(preferredAccountType)
-    }
+  public setPreferredAccountType: (typeof AccountController)['setPreferredAccountType'] = (
+    preferredAccountType,
+    chain
+  ) => {
+    AccountController.setPreferredAccountType(preferredAccountType, chain)
+  }
 
   public getWalletConnectName: (typeof EnsController)['getNamesForAddress'] = address =>
     EnsController.getNamesForAddress(address)
@@ -265,18 +269,31 @@ export class AppKit {
   }
 
   // -- Private ------------------------------------------------------------------
-  private async initControllers(options: OptionsControllerState) {
+  private async initControllers(options: AppKitOptions) {
     ChainController.setMultiChainEnabled(true)
-
     ChainController.initialize(options.adapters || [])
-
     options.adapters?.forEach(adapter => {
+      // @ts-expect-error will introduce construct later
       adapter.construct?.(this, options)
     })
 
-    ChainController.initializeDefaultNetwork()
+    OptionsController.setProjectId(options.projectId)
+    OptionsController.setAllWallets(options.allWallets)
+    OptionsController.setIncludeWalletIds(options.includeWalletIds)
+    OptionsController.setExcludeWalletIds(options.excludeWalletIds)
+    OptionsController.setFeaturedWalletIds(options.featuredWalletIds)
+    OptionsController.setTokens(options.tokens)
+    OptionsController.setTermsConditionsUrl(options.termsConditionsUrl)
+    OptionsController.setPrivacyPolicyUrl(options.privacyPolicyUrl)
+    OptionsController.setCustomWallets(options.customWallets)
+    OptionsController.setEnableAnalytics(options.enableAnalytics)
+    OptionsController.setSdkVersion(options.sdkVersion)
+    // Enabled by default
+    OptionsController.setOnrampEnabled(options.enableOnramp !== false)
 
-    OptionsController.setOptions(options)
+    if (options.metadata) {
+      OptionsController.setMetadata(options.metadata)
+    }
 
     if (options.themeMode) {
       ThemeController.setThemeMode(options.themeMode)
@@ -286,15 +303,18 @@ export class AppKit {
       ThemeController.setThemeVariables(options.themeVariables)
     }
 
-    if (options.allowUnsupportedChain) {
-      ChainController.setAllowUnsupportedChain(options.allowUnsupportedChain)
+    if (options.disableAppend) {
+      OptionsController.setDisableAppend(Boolean(options.disableAppend))
     }
 
-    if (options.siweConfig) {
-      console.log('>>> options.siweConfig', options.siweConfig)
+    if (options.allowUnsupportedChain) {
+      NetworkController.setAllowUnsupportedChain(options.allowUnsupportedChain)
+    }
+
+    if (options.siweControllerClient) {
       const { SIWEController } = await import('@web3modal/siwe')
 
-      SIWEController.setSIWEClient(options.siweConfig)
+      SIWEController.setSIWEClient(options.siweControllerClient)
     }
   }
 
@@ -304,7 +324,9 @@ export class AppKit {
       this.initPromise = new Promise<void>(async resolve => {
         await Promise.all([import('@web3modal/ui'), import('@web3modal/scaffold-ui/w3m-modal')])
         const modal = document.createElement('w3m-modal')
-        document.body.insertAdjacentElement('beforeend', modal)
+        if (!OptionsController.state.disableAppend) {
+          document.body.insertAdjacentElement('beforeend', modal)
+        }
         resolve()
       })
     }

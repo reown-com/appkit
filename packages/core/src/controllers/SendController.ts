@@ -103,7 +103,7 @@ export const SendController = {
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           token: this.state.token.address,
           amount: this.state.sendTokenAmount,
-          network: NetworkController.activeNetwork()?.id || ''
+          network: NetworkController.state.caipNetwork?.id || ''
         }
       })
       this.sendERC20Token({
@@ -127,7 +127,7 @@ export const SendController = {
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           token: this.state.token?.symbol,
           amount: this.state.sendTokenAmount,
-          network: NetworkController.activeNetwork()?.id || ''
+          network: NetworkController.state.caipNetwork?.id || ''
         }
       })
       this.sendNativeToken({
@@ -146,7 +146,7 @@ export const SendController = {
     })
 
     const to = params.receiverAddress as `0x${string}`
-    const address = AccountController.getProperty('address') as `0x${string}`
+    const address = AccountController.state.address as `0x${string}`
     const value = ConnectionController.parseUnits(
       params.sendTokenAmount.toString(),
       Number(params.decimals)
@@ -171,7 +171,7 @@ export const SendController = {
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           token: this.state.token?.symbol || '',
           amount: params.sendTokenAmount,
-          network: NetworkController.activeNetwork()?.id || ''
+          network: NetworkController.state.caipNetwork?.id || ''
         }
       })
       this.resetSend()
@@ -185,7 +185,7 @@ export const SendController = {
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           token: this.state.token?.symbol || '',
           amount: params.sendTokenAmount,
-          network: NetworkController.activeNetwork()?.id || ''
+          network: NetworkController.state.caipNetwork?.id || ''
         }
       })
       SnackController.showError('Something went wrong')
@@ -205,13 +205,13 @@ export const SendController = {
 
     try {
       if (
-        AccountController.getProperty('address') &&
+        AccountController.state.address &&
         params.sendTokenAmount &&
         params.receiverAddress &&
         params.tokenAddress
       ) {
         await ConnectionController.writeContract({
-          fromAddress: AccountController.getProperty('address') as `0x${string}`,
+          fromAddress: AccountController.state.address as `0x${string}`,
           tokenAddress: CoreHelperUtil.getPlainAddress(
             params.tokenAddress as `${string}:${string}:${string}`
           ) as `0x${string}`,

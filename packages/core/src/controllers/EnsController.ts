@@ -83,7 +83,7 @@ export const EnsController = {
 
   async getNamesForAddress(address: string) {
     try {
-      const network = NetworkController.activeNetwork()
+      const network = NetworkController.state.caipNetwork
       if (!network) {
         return []
       }
@@ -98,12 +98,12 @@ export const EnsController = {
   },
 
   async registerName(name: string) {
-    const network = NetworkController.activeNetwork()
+    const network = NetworkController.state.caipNetwork
     if (!network) {
       throw new Error('Network not found')
     }
 
-    const address = AccountController.getProperty('address')
+    const address = AccountController.state.address
     const emailConnector = ConnectorController.getAuthConnector()
     if (!address || !emailConnector) {
       throw new Error('Address or auth connector not found')

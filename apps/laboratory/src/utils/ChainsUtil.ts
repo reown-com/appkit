@@ -2,6 +2,7 @@ import * as viemChains from 'viem/chains'
 
 export const mainnet = {
   chainId: 1,
+  chain: 'evm',
   name: 'Ethereum',
   currency: 'ETH',
   explorerUrl: 'https://etherscan.io',

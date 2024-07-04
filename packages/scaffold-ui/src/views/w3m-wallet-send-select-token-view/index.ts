@@ -3,7 +3,6 @@ import { LitElement, html } from 'lit'
 import styles from './styles.js'
 import {
   AccountController,
-  ChainController,
   CoreHelperUtil,
   NetworkController,
   RouterController,
@@ -21,7 +20,7 @@ export class W3mSendSelectTokenView extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() private tokenBalance = AccountController.getProperty('tokenBalance')
+  @state() private tokenBalance = AccountController.state.tokenBalance
 
   @state() private tokens?: Balance[]
 
@@ -34,11 +33,8 @@ export class W3mSendSelectTokenView extends LitElement {
     super()
     this.unsubscribe.push(
       ...[
-        ChainController.subscribe(val => {
-          const accountState = val.activeChain
-            ? val.chains[val.activeChain]?.accountState
-            : undefined
-          this.tokenBalance = accountState?.tokenBalance
+        AccountController.subscribe(val => {
+          this.tokenBalance = val.tokenBalance
         })
       ]
     )
@@ -75,7 +71,7 @@ export class W3mSendSelectTokenView extends LitElement {
 
   private templateTokens() {
     this.tokens = this.tokenBalance?.filter(
-      token => token.chainId === NetworkController.activeNetwork()?.id
+      token => token.chainId === NetworkController.state.caipNetwork?.id
     )
     if (this.search) {
       this.filteredTokens = this.tokenBalance?.filter(token =>

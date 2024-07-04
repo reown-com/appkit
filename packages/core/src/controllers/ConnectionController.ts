@@ -10,11 +10,12 @@ import type {
   WriteContractArgs
 } from '../utils/TypeUtil.js'
 import { TransactionsController } from './TransactionsController.js'
-import { ChainController, type Chain } from './ChainController.js'
+import { ChainController } from './ChainController.js'
 import { type W3mFrameTypes } from '@web3modal/wallet'
 import { ModalController } from './ModalController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
+import type { Chain } from '@web3modal/common'
 import { NetworkController } from './NetworkController.js'
 
 // -- Types --------------------------------------------- //
@@ -44,7 +45,6 @@ export interface ConnectionControllerClient {
 export interface ConnectionControllerState {
   _client?: ConnectionControllerClient
   wcUri?: string
-  wcPromise?: Promise<void>
   wcPairingExpiry?: number
   wcLinking?: {
     href: string
@@ -74,34 +74,20 @@ export const ConnectionController = {
     return subKey(state, key, callback)
   },
 
-  _getClient() {
-    if (ChainController.state.multiChainEnabled) {
-      const client = ChainController.getConnectionControllerClient()
-
-      if (!client) {
-        throw new Error('ConnectionController client not set')
-      }
-
-      return client
-    }
-
-    if (!state._client) {
-      throw new Error('ConnectionController client not set')
-    }
-
-    return state._client as ConnectionControllerClient
+  _getClient(chain?: Chain) {
+    return ChainController.getConnectionControllerClient(chain)
   },
 
   setClient(client: ConnectionControllerClient) {
     state._client = ref(client)
   },
 
-  connectWalletConnect() {
-    state.wcPromise = this._getClient().connectWalletConnect(uri => {
+  async connectWalletConnect() {
+    StorageUtil.setConnectedConnector('WALLET_CONNECT')
+    await this._getClient().connectWalletConnect(uri => {
       state.wcUri = uri
       state.wcPairingExpiry = CoreHelperUtil.getPairingExpiry()
     })
-    StorageUtil.setConnectedConnector('WALLET_CONNECT')
   },
 
   async connectExternal(options: ConnectExternalOptions, chain?: Chain) {
@@ -127,7 +113,7 @@ export const ConnectionController = {
     EventsController.sendEvent({
       type: 'track',
       event: 'SET_PREFERRED_ACCOUNT_TYPE',
-      properties: { accountType, network: NetworkController.activeNetwork()?.id || '' }
+      properties: { accountType, network: NetworkController.state.caipNetwork?.id || '' }
     })
   },
 
@@ -163,14 +149,13 @@ export const ConnectionController = {
     return this._getClient().getEnsAvatar(value)
   },
 
-  checkInstalled(ids?: string[]) {
-    return this._getClient().checkInstalled?.(ids) || false
+  checkInstalled(ids?: string[], chain?: Chain) {
+    return this._getClient(chain).checkInstalled?.(ids) || false
   },
 
   resetWcConnection() {
     state.wcUri = undefined
     state.wcPairingExpiry = undefined
-    state.wcPromise = undefined
     state.wcLinking = undefined
     state.recentWallet = undefined
     TransactionsController.resetTransactions()

@@ -1,12 +1,12 @@
 import type { RouterControllerState } from '@web3modal/core'
 import {
   AccountController,
-  AssetController,
-  ChainController,
+  AssetUtil,
   ConnectionController,
   ConnectorController,
   EventsController,
   ModalController,
+  NetworkController,
   OptionsController,
   RouterController
 } from '@web3modal/core'
@@ -14,6 +14,7 @@ import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 
 // -- Constants ----------------------------------------- //
 const BETA_SCREENS = ['Swap', 'SwapSelectToken', 'SwapPreview']
@@ -70,11 +71,10 @@ function headings() {
     WalletSendSelectToken: 'Select Token',
     ConnectWallets: 'Connect wallet',
     ConnectSocials: 'All socials',
-    ConnectingSocial: AccountController.getProperty('socialProvider')
-      ? AccountController.getProperty('socialProvider')
+    ConnectingSocial: AccountController.state.socialProvider
+      ? AccountController.state.socialProvider
       : 'Connect Social',
-    SelectChain: '',
-    ConnectingMultiChain: ChainController.state.activeConnector?.name ?? 'Wallet'
+    ConnectingMultiChain: 'Select chain'
   }
 }
 
@@ -92,9 +92,7 @@ export class W3mHeader extends LitElement {
 
   @state() private showBack = false
 
-  private activeCaipNetwork = ChainController.state.activeCaipNetwork
-
-  private readonly networkImages = AssetController.state.networkImages
+  @state() private network = NetworkController.state.caipNetwork
 
   public constructor() {
     super()
@@ -103,10 +101,8 @@ export class W3mHeader extends LitElement {
         this.onViewChange(val)
         this.onHistoryChange()
       }),
-      ChainController.subscribeKey('activeCaipNetwork', val => {
-        this.activeCaipNetwork = val
-      }),
-      ConnectionController.subscribeKey('buffering', val => (this.buffering = val))
+      ConnectionController.subscribeKey('buffering', val => (this.buffering = val)),
+      NetworkController.subscribeKey('caipNetwork', val => (this.network = val))
     )
   }
 
@@ -117,7 +113,11 @@ export class W3mHeader extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex .padding=${this.getPadding()} justifyContent="space-between" alignItems="center">
+      <wui-flex
+        .padding=${['0', '2l', '0', '2l']}
+        justifyContent="space-between"
+        alignItems="center"
+      >
         ${this.dynamicButtonTemplate()} ${this.titleTemplate()}
         <wui-icon-link
           ?disabled=${this.buffering}
@@ -169,13 +169,12 @@ export class W3mHeader extends LitElement {
     const shouldHideBack = isApproveTransaction || isUpgradeToSmartAccounts || isConnectingSIWEView
 
     if (isAccountView) {
-      const networkImage = this.networkImages[this.activeCaipNetwork?.imageId ?? '']
-
       return html`<wui-select
         id="dynamic"
         data-testid="w3m-account-select-network"
+        active-network=${ifDefined(this.network?.name)}
         @click=${this.onNetworks.bind(this)}
-        .imageSrc=${networkImage ?? ''}
+        imageSrc=${ifDefined(AssetUtil.getNetworkImage(this.network))}
       ></wui-select>`
     }
 
@@ -204,21 +203,11 @@ export class W3mHeader extends LitElement {
   }
 
   private isAllowedNetworkSwitch() {
-    const requestedCaipNetworks = ChainController.getRequestedCaipNetworks()
+    const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
     const isMultiNetwork = requestedCaipNetworks ? requestedCaipNetworks.length > 1 : false
-    const isValidNetwork = requestedCaipNetworks?.find(
-      ({ id }) => id === this.activeCaipNetwork?.id
-    )
+    const isValidNetwork = requestedCaipNetworks?.find(({ id }) => id === this.network?.id)
 
     return isMultiNetwork || !isValidNetwork
-  }
-
-  private getPadding() {
-    if (this.heading) {
-      return ['l', '2l', 'l', '2l'] as const
-    }
-
-    return ['l', '2l', '0', '2l'] as const
   }
 
   private async onViewChange(view: RouterControllerState['view']) {

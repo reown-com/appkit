@@ -1,14 +1,20 @@
-import { describe, expect, it, vi } from 'vitest'
+import { beforeAll, describe, expect, it, vi } from 'vitest'
 import {
   ApiController,
   AssetController,
+  ChainController,
   ConnectorController,
   NetworkController,
   OptionsController
 } from '../../index.js'
 import { api } from '../../src/controllers/ApiController.js'
+import { ConstantsUtil } from '@web3modal/common'
 
 // -- Tests --------------------------------------------------------------------
+beforeAll(() => {
+  ChainController.initialize([{ chain: ConstantsUtil.CHAIN.EVM }])
+})
+
 describe('ApiController', () => {
   it('should have valid default state', () => {
     expect(ApiController.state).toEqual({
@@ -109,18 +115,18 @@ describe('ApiController', () => {
         id: '155:1',
         name: 'Ethereum Mainnet',
         imageId: '12341',
-        chain: 'evm'
+        chain: ConstantsUtil.CHAIN.EVM
       },
       {
         id: '155:4',
         name: 'Ethereum Rinkeby',
         imageId: '12342',
-        chain: 'evm'
+        chain: ConstantsUtil.CHAIN.EVM
       },
       {
         id: '155:42',
         name: 'Ethereum Kovan',
-        chain: 'evm'
+        chain: ConstantsUtil.CHAIN.EVM
       }
     ])
     const fetchSpy = vi.spyOn(ApiController, '_fetchNetworkImage').mockResolvedValue()
@@ -136,19 +142,19 @@ describe('ApiController', () => {
         id: '155:1',
         name: 'Ethereum Mainnet',
         imageId: '12341',
-        chain: 'evm'
+        chain: ConstantsUtil.CHAIN.EVM
       },
       {
         id: '155:4',
         name: 'Ethereum Rinkeby',
         imageId: '12342',
-        chain: 'evm'
+        chain: ConstantsUtil.CHAIN.EVM
       },
       // Should not fetch this
       {
         id: '155:42',
         name: 'Ethereum Kovan',
-        chain: 'evm'
+        chain: ConstantsUtil.CHAIN.EVM
       }
     ])
     const fetchSpy = vi.spyOn(ApiController, '_fetchNetworkImage').mockResolvedValue()
@@ -165,13 +171,13 @@ describe('ApiController', () => {
         name: 'MetaMask',
         imageId: '12341',
         type: 'INJECTED',
-        chain: 'evm'
+        chain: ConstantsUtil.CHAIN.EVM
       },
       {
         id: '12341',
         name: 'RandomConnector',
         type: 'INJECTED',
-        chain: 'evm'
+        chain: ConstantsUtil.CHAIN.EVM
       }
     ])
     const fetchSpy = vi.spyOn(ApiController, '_fetchConnectorImage').mockResolvedValue()

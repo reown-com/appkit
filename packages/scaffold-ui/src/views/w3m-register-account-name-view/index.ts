@@ -183,7 +183,7 @@ export class W3mRegisterAccountNameView extends LitElement {
         event: 'REGISTER_NAME_INITIATED',
         properties: {
           isSmartAccount:
-            AccountController.getProperty('preferredAccountType') ===
+            AccountController.state.preferredAccountType ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           ensName: this.name
         }
@@ -194,7 +194,7 @@ export class W3mRegisterAccountNameView extends LitElement {
         event: 'REGISTER_NAME_SUCCESS',
         properties: {
           isSmartAccount:
-            AccountController.getProperty('preferredAccountType') ===
+            AccountController.state.preferredAccountType ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           ensName: this.name
         }
@@ -206,7 +206,7 @@ export class W3mRegisterAccountNameView extends LitElement {
         event: 'REGISTER_NAME_ERROR',
         properties: {
           isSmartAccount:
-            AccountController.getProperty('preferredAccountType') ===
+            AccountController.state.preferredAccountType ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           ensName: this.name,
           error: (error as Error)?.message || 'Unknown error'

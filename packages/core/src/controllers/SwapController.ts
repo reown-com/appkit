@@ -170,15 +170,15 @@ export const SwapController = {
   },
 
   getParams() {
-    const caipNetwork = NetworkController.activeNetwork()
-    const address = AccountController.getProperty('address')
+    const caipNetwork = NetworkController.state.caipNetwork
+    const address = AccountController.state.address
     const networkAddress = `${caipNetwork?.id}:${ConstantsUtil.NATIVE_TOKEN_ADDRESS}`
 
     if (!address) {
       throw new Error('No address found to swap the tokens from.')
     }
 
-    const caipAddress = AccountController.getProperty('caipAddress')
+    const caipAddress = AccountController.state.caipAddress
     const invalidToToken = !state.toToken?.address || !state.toToken?.decimals
     const invalidSourceToken =
       !state.sourceToken?.address ||
@@ -189,7 +189,7 @@ export const SwapController = {
     return {
       networkAddress,
       fromAddress: address,
-      fromCaipAddress: AccountController.getProperty('caipAddress'),
+      fromCaipAddress: AccountController.state.caipAddress,
       sourceTokenAddress: state.sourceToken?.address,
       toTokenAddress: state.toToken?.address,
       toTokenAmount: state.toTokenAmount,
@@ -420,7 +420,7 @@ export const SwapController = {
 
   setBalances(balances: SwapTokenWithBalance[]) {
     const { networkAddress } = this.getParams()
-    const caipNetwork = NetworkController.activeNetwork()
+    const caipNetwork = NetworkController.state.caipNetwork
 
     if (!caipNetwork) {
       return
@@ -457,7 +457,7 @@ export const SwapController = {
 
   // -- Swap -------------------------------------- //
   async swapTokens() {
-    const address = AccountController.getProperty('address') as `${string}:${string}:${string}`
+    const address = AccountController.state.address as `${string}:${string}:${string}`
     const sourceToken = state.sourceToken
     const toToken = state.toToken
     const haveSourceTokenAmount = NumberUtil.bigNumber(state.sourceTokenAmount).isGreaterThan(0)
@@ -559,7 +559,7 @@ export const SwapController = {
     }
 
     if (!sourceTokenAddress) {
-      throw new Error('>>> createAllowanceTransaction - No source token address found.')
+      throw new Error('createAllowanceTransaction - No source token address found.')
     }
 
     try {
@@ -728,7 +728,7 @@ export const SwapController = {
         type: 'track',
         event: 'SWAP_SUCCESS',
         properties: {
-          network: NetworkController.activeNetwork()?.id || '',
+          network: NetworkController.state.caipNetwork?.id || '',
           swapFromToken: this.state.sourceToken?.symbol || '',
           swapToToken: this.state.toToken?.symbol || '',
           swapfromAmount: this.state.sourceTokenAmount || '',
@@ -751,7 +751,7 @@ export const SwapController = {
         type: 'track',
         event: 'SWAP_ERROR',
         properties: {
-          network: NetworkController.activeNetwork()?.id || '',
+          network: NetworkController.state.caipNetwork?.id || '',
           swapFromToken: this.state.sourceToken?.symbol || '',
           swapToToken: this.state.toToken?.symbol || '',
           swapfromAmount: this.state.sourceTokenAmount || '',

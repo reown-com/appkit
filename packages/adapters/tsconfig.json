@@ -7,5 +7,5 @@
     "declarationMap": true
   },
   "extends": "../../tsconfig.json",
-  "include": ["index.ts", "evm", "solana", "walletconnect"]
+  "include": ["index.ts", "evm", "solana", "../appkit/adapters/walletconnect"]
 }

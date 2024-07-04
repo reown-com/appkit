@@ -1,7 +1,6 @@
 import {
   AccountController,
   AssetUtil,
-  ChainController,
   EventsController,
   ModalController,
   NetworkController
@@ -23,31 +22,22 @@ export class W3mNetworkButton extends LitElement {
   // -- State & Properties -------------------------------- //
   @property({ type: Boolean }) public disabled?: WuiNetworkButton['disabled'] = false
 
-  @state() private network = NetworkController.activeNetwork()
+  @state() private network = NetworkController.state.caipNetwork
 
-  @state() private connected = AccountController.getProperty('isConnected')
+  @state() private connected = AccountController.state.isConnected
 
   @state() private loading = ModalController.state.loading
 
-  @state() private isUnsupportedChain = NetworkController.getProperty('isUnsupportedChain')
+  @state() private isUnsupportedChain = NetworkController.state.isUnsupportedChain
 
   // -- Lifecycle ----------------------------------------- //
-  public constructor() {
-    super()
+  public override firstUpdated() {
     this.unsubscribe.push(
       ...[
-        ChainController.subscribe(val => {
-          const accountState = val.activeChain
-            ? val.chains[val.activeChain]?.accountState
-            : undefined
-          const networkState = val.activeChain
-            ? val.chains[val.activeChain]?.networkState
-            : undefined
-          this.connected = accountState?.isConnected || false
-          this.network = networkState?.caipNetwork || undefined
-          this.isUnsupportedChain = networkState?.isUnsupportedChain
-        }),
-        ModalController.subscribeKey('loading', val => (this.loading = val))
+        NetworkController.subscribeKey('caipNetwork', val => (this.network = val)),
+        AccountController.subscribeKey('isConnected', val => (this.connected = val)),
+        ModalController.subscribeKey('loading', val => (this.loading = val)),
+        NetworkController.subscribeKey('isUnsupportedChain', val => (this.isUnsupportedChain = val))
       ]
     )
   }

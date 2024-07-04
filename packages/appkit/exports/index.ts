@@ -1,5 +1,5 @@
-import type { OptionsControllerState } from '@web3modal/core'
-import { AppKit } from '../src/client'
+import { AppKit } from '../src/client.js'
+import type { AppKitOptions } from '../utils/TypesUtil.js'
 
 // -- Views ------------------------------------------------------------
 export * from '@web3modal/scaffold-ui'
@@ -8,7 +8,7 @@ export * from '@web3modal/scaffold-ui'
 export type * from '@web3modal/core'
 export { CoreHelperUtil } from '@web3modal/core'
 
-export function createAppKit(options: OptionsControllerState) {
+export function createAppKit(options: AppKitOptions) {
   return new AppKit({ ...options })
 }
 

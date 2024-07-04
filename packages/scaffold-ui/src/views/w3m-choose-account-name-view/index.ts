@@ -93,7 +93,7 @@ export class W3mChooseAccountNameView extends LitElement {
       event: 'OPEN_ENS_FLOW',
       properties: {
         isSmartAccount:
-          AccountController.getProperty('preferredAccountType') ===
+          AccountController.state.preferredAccountType ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })

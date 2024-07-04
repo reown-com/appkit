@@ -210,8 +210,11 @@ export class W3mFrameProvider {
 
   public async connectEmail(payload: W3mFrameTypes.Requests['AppConnectEmailRequest']) {
     await this.w3mFrame.frameLoadPromise
+
     W3mFrameHelpers.checkIfAllowedToTriggerEmail()
-    this.w3mFrame.events.postAppEvent({ type: W3mFrameConstants.APP_CONNECT_EMAIL, payload })
+    setTimeout(() => {
+      this.w3mFrame.events.postAppEvent({ type: W3mFrameConstants.APP_CONNECT_EMAIL, payload })
+    }, 1000)
 
     return new Promise<W3mFrameTypes.Responses['FrameConnectEmailResponse']>((resolve, reject) => {
       this.connectEmailResolver = { resolve, reject }
@@ -487,6 +490,7 @@ export class W3mFrameProvider {
     event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/CONNECT_EMAIL_SUCCESS' }>
   ) {
     this.connectEmailResolver?.resolve(event.payload)
+
     this.setNewLastEmailLoginTime()
   }
 

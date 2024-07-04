@@ -28,7 +28,7 @@ export class W3mSwapView extends LitElement {
 
   @state() private detailsOpen = false
 
-  @state() private caipNetworkId = NetworkController.activeNetwork()?.id
+  @state() private caipNetworkId = NetworkController.state.caipNetwork?.id
 
   @state() private initialized = SwapController.state.initialized
 
@@ -299,7 +299,7 @@ export class W3mSwapView extends LitElement {
         swapfromAmount: this.sourceTokenAmount || '',
         swapToAmount: this.toTokenAmount || '',
         isSmartAccount:
-          AccountController.getProperty('preferredAccountType') ===
+          AccountController.state.preferredAccountType ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })

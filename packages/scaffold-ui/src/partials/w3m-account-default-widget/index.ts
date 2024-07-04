@@ -2,17 +2,14 @@ import {
   AccountController,
   CoreHelperUtil,
   ModalController,
-  NetworkController,
   RouterController,
-  AssetUtil,
   StorageUtil,
   ConnectorController,
   EventsController,
   ConnectionController,
   SnackController,
   ConstantsUtil,
-  OptionsController,
-  ChainController
+  OptionsController
 } from '@web3modal/core'
 import { UiHelperUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -29,43 +26,37 @@ export class W3mAccountDefaultWidget extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() public address = AccountController.getProperty('address')
+  @state() public address = AccountController.state.address
 
-  @state() private profileImage = AccountController.getProperty('profileImage')
+  @state() private profileImage = AccountController.state.profileImage
 
-  @state() private profileName = AccountController.getProperty('profileName')
-
-  @state() private network = NetworkController.activeNetwork()
+  @state() private profileName = AccountController.state.profileName
 
   @state() private disconnecting = false
 
-  @state() private balance = AccountController.getProperty('balance')
+  @state() private balance = AccountController.state.balance
 
-  @state() private balanceSymbol = AccountController.getProperty('balanceSymbol')
+  @state() private balanceSymbol = AccountController.state.balanceSymbol
+
+  @state() private isWalletConnectAdapterOnly = ConnectorController.state.isWalletConnectAdapterOnly
 
   public constructor() {
     super()
     this.unsubscribe.push(
       ...[
-        ChainController.subscribe(val => {
-          const accountState = val.activeChain
-            ? val.chains[val.activeChain]?.accountState
-            : undefined
-          const networkState = val.activeChain
-            ? val.chains[val.activeChain]?.networkState
-            : undefined
-          if (accountState?.address) {
-            this.address = accountState.address
-            this.profileImage = accountState.profileImage
-            this.profileName = accountState.profileName
-            this.balance = accountState.balance
-            this.balanceSymbol = accountState.balanceSymbol
+        AccountController.subscribe(val => {
+          if (val.address) {
+            this.address = val.address
+            this.profileImage = val.profileImage
+            this.profileName = val.profileName
+            this.balance = val.balance
+            this.balanceSymbol = val.balanceSymbol
           } else if (!this.disconnecting) {
             SnackController.showError('Account not found')
           }
-          if (networkState?.caipNetwork?.id) {
-            this.network = networkState.caipNetwork
-          }
+        }),
+        ConnectorController.subscribeKey('isWalletConnectAdapterOnly', val => {
+          this.isWalletConnectAdapterOnly = val
         })
       ]
     )
@@ -81,8 +72,6 @@ export class W3mAccountDefaultWidget extends LitElement {
       throw new Error('w3m-account-view: No account provided')
     }
 
-    const networkImage = AssetUtil.getNetworkImage(this.network)
-
     return html`<wui-flex
         flexDirection="column"
         .padding=${['0', 'xl', 'm', 'xl'] as const}
@@ -94,6 +83,7 @@ export class W3mAccountDefaultWidget extends LitElement {
           address=${ifDefined(this.address)}
           imageSrc=${ifDefined(this.profileImage === null ? undefined : this.profileImage)}
         ></wui-avatar>
+
         <wui-flex flexDirection="column" alignItems="center">
           <wui-flex gap="3xs" alignItems="center" justifyContent="center">
             <wui-text variant="medium-title-600" color="fg-100">
@@ -118,9 +108,13 @@ export class W3mAccountDefaultWidget extends LitElement {
               @click=${this.onCopyAddress}
             ></wui-icon-link>
           </wui-flex>
-          <wui-text variant="paragraph-500" color="fg-200"
-            >${CoreHelperUtil.formatBalance(this.balance, this.balanceSymbol)}</wui-text
-          >
+          ${this.isWalletConnectAdapterOnly
+            ? ''
+            : html`
+                <wui-text variant="paragraph-500" color="fg-200">
+                  ${CoreHelperUtil.formatBalance(this.balance, this.balanceSymbol)}
+                </wui-text>
+              `}
         </wui-flex>
         ${this.explorerBtnTemplate()}
       </wui-flex>
@@ -128,16 +122,19 @@ export class W3mAccountDefaultWidget extends LitElement {
       <wui-flex flexDirection="column" gap="xs" .padding=${['0', 's', 's', 's'] as const}>
         ${this.authCardTemplate()} <w3m-account-auth-button></w3m-account-auth-button>
 
-        ${this.onrampTemplate()}
-        <wui-list-item
-          iconVariant="blue"
-          icon="swapHorizontalMedium"
-          iconSize="sm"
-          ?chevron=${true}
-          @click=${this.onTransactions.bind(this)}
-        >
-          <wui-text variant="paragraph-500" color="fg-100">Activity</wui-text>
-        </wui-list-item>
+        ${this.isWalletConnectAdapterOnly ? '' : this.onrampTemplate()}
+        ${this.isWalletConnectAdapterOnly
+          ? ''
+          : html` <wui-list-item
+              iconVariant="blue"
+              icon="swapHorizontalMedium"
+              iconSize="sm"
+              ?chevron=${true}
+              @click=${this.onTransactions.bind(this)}
+            >
+              <wui-text variant="paragraph-500" color="fg-100">Activity</wui-text>
+            </wui-list-item>`}
+
         <wui-list-item
           variant="icon"
           iconVariant="overlay"
@@ -196,7 +193,7 @@ export class W3mAccountDefaultWidget extends LitElement {
   }
 
   private explorerBtnTemplate() {
-    const addressExplorerUrl = AccountController.getProperty('addressExplorerUrl')
+    const addressExplorerUrl = AccountController.state.addressExplorerUrl
 
     if (!addressExplorerUrl) {
       return null
@@ -228,7 +225,7 @@ export class W3mAccountDefaultWidget extends LitElement {
       event: 'CLICK_TRANSACTIONS',
       properties: {
         isSmartAccount:
-          AccountController.getProperty('preferredAccountType') ===
+          AccountController.state.preferredAccountType ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })
@@ -250,7 +247,7 @@ export class W3mAccountDefaultWidget extends LitElement {
   }
 
   private onExplorer() {
-    const addressExplorerUrl = AccountController.getProperty('addressExplorerUrl')
+    const addressExplorerUrl = AccountController.state.addressExplorerUrl
 
     if (addressExplorerUrl) {
       CoreHelperUtil.openHref(addressExplorerUrl, '_blank')

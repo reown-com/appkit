@@ -11,8 +11,7 @@ import {
   StorageUtil,
   ConnectorController,
   SendController,
-  ConstantsUtil,
-  ChainController
+  ConstantsUtil
 } from '@web3modal/core'
 import { UiHelperUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -31,15 +30,15 @@ export class W3mAccountSettingsView extends LitElement {
   private readonly networkImages = AssetController.state.networkImages
 
   // -- State & Properties --------------------------------- //
-  @state() private address = AccountController.getProperty('address')
+  @state() private address = AccountController.state.address
 
-  @state() private profileImage = AccountController.getProperty('profileImage')
+  @state() private profileImage = AccountController.state.profileImage
 
-  @state() private profileName = AccountController.getProperty('profileName')
+  @state() private profileName = AccountController.state.profileName
 
-  @state() private network = NetworkController.activeNetwork()
+  @state() private network = NetworkController.state.caipNetwork
 
-  @state() private preferredAccountType = AccountController.getProperty('preferredAccountType')
+  @state() private preferredAccountType = AccountController.state.preferredAccountType
 
   @state() private disconnecting = false
 
@@ -53,15 +52,12 @@ export class W3mAccountSettingsView extends LitElement {
     super()
     this.usubscribe.push(
       ...[
-        ChainController.subscribe(val => {
-          const accountState = val.activeChain
-            ? val.chains[val.activeChain]?.accountState
-            : undefined
-          if (accountState?.address) {
-            this.address = accountState.address
-            this.profileImage = accountState.profileImage
-            this.profileName = accountState.profileName
-            this.preferredAccountType = accountState.preferredAccountType
+        AccountController.subscribe(val => {
+          if (val.address) {
+            this.address = val.address
+            this.profileImage = val.profileImage
+            this.profileName = val.profileName
+            this.preferredAccountType = val.preferredAccountType
           } else {
             ModalController.close()
           }
@@ -196,7 +192,7 @@ export class W3mAccountSettingsView extends LitElement {
   }
 
   private isAllowedNetworkSwitch() {
-    const requestedCaipNetworks = ChainController.getRequestedCaipNetworks()
+    const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
     const isMultiNetwork = requestedCaipNetworks ? requestedCaipNetworks.length > 1 : false
     const isValidNetwork = requestedCaipNetworks?.find(({ id }) => id === this.network?.id)
 

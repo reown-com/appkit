@@ -2,7 +2,14 @@ import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 
 import styles from './styles.js'
-import { ApiController, ConnectorController, OptionsController, StorageUtil } from '@web3modal/core'
+import {
+  ApiController,
+  ChainController,
+  ConnectorController,
+  OptionsController,
+  StorageUtil
+} from '@web3modal/core'
+import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 import { state } from 'lit/decorators.js'
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
 import { WalletUtil } from '../../utils/WalletUtil.js'
@@ -29,13 +36,25 @@ export class W3mConnectorList extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const { custom, recent, announced, coinbase, injected, recommended, featured, external } =
-      this.getConnectorsByType()
+    const {
+      custom,
+      recent,
+      announced,
+      coinbase,
+      injected,
+      multiChain,
+      recommended,
+      featured,
+      external
+    } = this.getConnectorsByType()
 
     return html`
       <wui-flex flexDirection="column" gap="xs">
         <w3m-connect-walletconnect-widget></w3m-connect-walletconnect-widget>
         ${recent.length ? html`<w3m-connect-recent-widget></w3m-connect-recent-widget>` : null}
+        ${multiChain.length
+          ? html`<w3m-connect-multi-chain-widget></w3m-connect-multi-chain-widget>`
+          : null}
         ${announced.length
           ? html`<w3m-connect-announced-widget></w3m-connect-announced-widget>`
           : null}
@@ -65,20 +84,24 @@ export class W3mConnectorList extends LitElement {
     const filteredRecommended = WalletUtil.filterOutDuplicateWallets(recommended)
     const filteredFeatured = WalletUtil.filterOutDuplicateWallets(featured)
 
+    const multiChain = this.connectors.filter(connector => connector.type === 'MULTI_CHAIN')
     const announced = this.connectors.filter(connector => connector.type === 'ANNOUNCED')
     const injected = this.connectors.filter(connector => connector.type === 'INJECTED')
     const external = this.connectors.filter(connector => connector.type === 'EXTERNAL')
     const coinbase = this.connectors.find(
       connector => connector.id === ConstantsUtil.COINBASE_SDK_CONNECTOR_ID
     )
+    const isEVM = ChainController.state.activeChain === CommonConstantsUtil.CHAIN.EVM
+    const includeAnnouncedAndInjected = isEVM ? OptionsController.state.enableEIP6963 : true
 
     return {
       custom,
       recent,
       coinbase,
       external,
-      announced: OptionsController.state.enableEIP6963 ? announced : [],
-      injected: OptionsController.state.enableEIP6963 ? injected : [],
+      multiChain,
+      announced: includeAnnouncedAndInjected ? announced : [],
+      injected: includeAnnouncedAndInjected ? injected : [],
       recommended: filteredRecommended,
       featured: filteredFeatured
     }

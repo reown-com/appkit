@@ -6,8 +6,7 @@ import {
   RouterController,
   CoreHelperUtil,
   ConstantsUtil as CoreConstantsUtil,
-  EventsController,
-  ChainController
+  EventsController
 } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -31,45 +30,42 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() private address = AccountController.getProperty('address')
+  @state() private address = AccountController.state.address
 
-  @state() private profileImage = AccountController.getProperty('profileImage')
+  @state() private profileImage = AccountController.state.profileImage
 
-  @state() private profileName = AccountController.getProperty('profileName')
+  @state() private profileName = AccountController.state.profileName
 
-  @state() private smartAccountDeployed = AccountController.getProperty('smartAccountDeployed')
+  @state() private smartAccountDeployed = AccountController.state.smartAccountDeployed
 
-  @state() private network = NetworkController.activeNetwork()
+  @state() private network = NetworkController.state.caipNetwork
 
-  @state() private currentTab = AccountController.getProperty('currentTab')
+  @state() private currentTab = AccountController.state.currentTab
 
-  @state() private tokenBalance = AccountController.getProperty('tokenBalance')
+  @state() private tokenBalance = AccountController.state.tokenBalance
 
-  @state() private preferredAccountType = AccountController.getProperty('preferredAccountType')
+  @state() private preferredAccountType = AccountController.state.preferredAccountType
 
   public constructor() {
     super()
     this.unsubscribe.push(
       ...[
-        ChainController.subscribe(val => {
-          const accountState = val.activeChain
-            ? val.chains[val.activeChain]?.accountState
-            : undefined
-          if (accountState?.address) {
-            this.address = accountState.address
-            this.profileImage = accountState.profileImage
-            this.profileName = accountState.profileName
-            this.currentTab = accountState.currentTab
-            this.tokenBalance = accountState.tokenBalance
-            this.smartAccountDeployed = accountState.smartAccountDeployed
-            this.preferredAccountType = accountState.preferredAccountType
+        AccountController.subscribe(val => {
+          if (val.address) {
+            this.address = val.address
+            this.profileImage = val.profileImage
+            this.profileName = val.profileName
+            this.currentTab = val.currentTab
+            this.tokenBalance = val.tokenBalance
+            this.smartAccountDeployed = val.smartAccountDeployed
+            this.preferredAccountType = val.preferredAccountType
           } else {
             ModalController.close()
           }
         })
       ],
-      NetworkController.subscribe(val => {
-        this.network = val.caipNetwork
+      NetworkController.subscribeKey('caipNetwork', val => {
+        this.network = val
       })
     )
     this.watchSwapValues()
@@ -210,7 +206,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
         properties: {
           network: this.network?.id || '',
           isSmartAccount:
-            AccountController.getProperty('preferredAccountType') ===
+            AccountController.state.preferredAccountType ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
         }
       })
@@ -229,7 +225,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
       properties: {
         network: this.network?.id || '',
         isSmartAccount:
-          AccountController.getProperty('preferredAccountType') ===
+          AccountController.state.preferredAccountType ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })

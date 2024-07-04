@@ -7,7 +7,7 @@ export type {
   ReactConfig,
   Web3ModalClientOptions
 } from './evm/EVMWagmiAdapter/client.js'
-export { EthereumAdapterClient } from './walletconnect/EthereumAdapter/client.js'
+export { EthereumAdapterClient } from '../appkit/adapters/walletconnect/ethereum/client.js'
 
 // -- Utils
 export { defaultWagmiConfig } from './evm/EVMWagmiAdapter/utils/defaultWagmiCoreConfig.js'

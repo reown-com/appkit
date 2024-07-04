@@ -13,7 +13,6 @@ import { AssetController } from './AssetController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { NetworkController } from './NetworkController.js'
 import { OptionsController } from './OptionsController.js'
-import { ChainController } from './ChainController.js'
 
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getApiUrl()
@@ -78,12 +77,6 @@ export const ApiController = {
     AssetController.setNetworkImage(imageId, URL.createObjectURL(blob))
   },
 
-  async _fetchChainImage(imageId: string) {
-    const imageUrl = `${api.baseUrl}/public/getAssetImage/${imageId}`
-    const blob = await api.getBlob({ path: imageUrl, headers: ApiController._getApiHeaders() })
-    AssetController.setChainImage(imageId, URL.createObjectURL(blob))
-  },
-
   async _fetchConnectorImage(imageId: string) {
     const imageUrl = `${api.baseUrl}/public/getAssetImage/${imageId}`
     const blob = await api.getBlob({ path: imageUrl, headers: ApiController._getApiHeaders() })
@@ -103,20 +96,12 @@ export const ApiController = {
   },
 
   async fetchNetworkImages() {
-    const requestedCaipNetworks = ChainController.getRequestedCaipNetworks()
+    const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
 
     const ids = requestedCaipNetworks?.map(({ imageId }) => imageId).filter(Boolean)
     if (ids) {
       await Promise.allSettled((ids as string[]).map(id => ApiController._fetchNetworkImage(id)))
     }
-  },
-
-  async fetchChainImages() {
-    await Promise.allSettled(
-      (
-        ['a1b58899-f671-4276-6a5e-56ca5bd59700', '692ed6ba-e569-459a-556a-776476829e00'] as string[]
-      ).map(id => ApiController._fetchChainImage(id))
-    )
   },
 
   async fetchConnectorImages() {
@@ -165,7 +150,7 @@ export const ApiController = {
         headers: ApiController._getApiHeaders(),
         params: {
           page: '1',
-          chains: NetworkController.activeNetwork()?.id,
+          chains: NetworkController.state.caipNetwork?.id,
           entries: recommendedEntries,
           include: includeWalletIds?.join(','),
           exclude: exclude?.join(',')
@@ -200,7 +185,7 @@ export const ApiController = {
       params: {
         page: String(page),
         entries,
-        chains: NetworkController.activeNetwork()?.id,
+        chains: NetworkController.state.caipNetwork?.id,
         include: includeWalletIds?.join(','),
         exclude: exclude.join(',')
       }
@@ -222,7 +207,7 @@ export const ApiController = {
       params: {
         page: '1',
         entries: String(ids.length),
-        chains: NetworkController.activeNetwork()?.id,
+        chains: NetworkController.state.caipNetwork?.id,
         include: ids?.join(',')
       }
     })
@@ -246,7 +231,7 @@ export const ApiController = {
         page: '1',
         entries: '100',
         search: search?.trim(),
-        chains: NetworkController.activeNetwork()?.id,
+        chains: NetworkController.state.caipNetwork?.id,
         include: includeWalletIds?.join(','),
         exclude: excludeWalletIds?.join(',')
       }
@@ -271,7 +256,6 @@ export const ApiController = {
       ApiController.fetchFeaturedWallets(),
       ApiController.fetchRecommendedWallets(),
       ApiController.fetchNetworkImages(),
-      ApiController.fetchChainImages(),
       ApiController.fetchConnectorImages()
     ]
     if (OptionsController.state.enableAnalytics === undefined) {

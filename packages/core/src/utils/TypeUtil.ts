@@ -1,13 +1,11 @@
 import type { W3mFrameProvider, W3mFrameTypes } from '@web3modal/wallet'
-import type { Balance, Transaction } from '@web3modal/common'
+import type { Balance, Transaction, Chain } from '@web3modal/common'
 import type {
   NetworkControllerClient,
   NetworkControllerState
-} from '../controllers/NetworkController'
-import type { ConnectionControllerClient } from '../controllers/ConnectionController'
-import type { OptionsControllerState } from '../controllers/OptionsController'
-import type { Chain } from '../controllers/ChainController'
-import type { AccountControllerState } from '../controllers/AccountController'
+} from '../controllers/NetworkController.js'
+import type { ConnectionControllerClient } from '../controllers/ConnectionController.js'
+import type { AccountControllerState } from '../controllers/AccountController.js'
 import type { OnRampProviderOption } from '../controllers/OnRampController.js'
 
 export type CaipAddress = `${string}:${string}:${string}`
@@ -74,8 +72,8 @@ export type Connector = {
   email?: boolean
   socials?: SocialProvider[]
   showWallets?: boolean
-  chain: Chain
   walletFeatures?: boolean
+  chain: Chain
   providers?: Connector[]
 }
 
@@ -813,13 +811,11 @@ export interface WriteContractArgs {
   abi: any
 }
 
-export type ChainAdapter = Partial<NetworkControllerState> & {
+export type ChainAdapter = {
   connectionControllerClient?: ConnectionControllerClient
   networkControllerClient?: NetworkControllerClient
-  accountState: AccountControllerState
-  networkState: NetworkControllerState
+  accountState?: AccountControllerState
+  networkState?: NetworkControllerState
+  defaultChain?: CaipNetwork
   chain: Chain
-
-  construct?: (scaffold: any, options: OptionsControllerState) => void
-  initialize?: () => void
 }

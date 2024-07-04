@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/appkit",
-  "version": "5.0.3",
+  "version": "5.0.4",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -18,6 +18,26 @@
       "types": "./dist/types/exports/react/index.d.ts",
       "import": "./dist/esm/exports/react/index.js",
       "default": "./dist/esm/exports/react/index.js"
+    },
+    "./wagmi": {
+      "types": "./dist/types/exports/wagmi/index.d.ts",
+      "import": "./dist/esm/exports/wagmi/index.js",
+      "default": "./dist/esm/exports/wagmi/index.js"
+    },
+    "./adapters/evm/wagmi": {
+      "types": "./dist/types/adapters/evm/wagmi/index.d.ts",
+      "import": "./dist/esm/adapters/evm/wagmi/index.js",
+      "default": "./dist/esm/adapters/evm/wagmi/index.js"
+    },
+    "./adapters/solana/web3js": {
+      "types": "./dist/types/adapters/solana/web3js/index.d.ts",
+      "import": "./dist/esm/adapters/solana/web3js/index.js",
+      "default": "./dist/esm/adapters/solana/web3js/index.js"
+    },
+    "./adapters/walletconnect/ethereum": {
+      "types": "./dist/types/adapters/walletconnect/ethereum/index.d.ts",
+      "import": "./dist/esm/adapters/walletconnect/ethereum/index.js",
+      "default": "./dist/esm/adapters/walletconnect/ethereum/index.js"
     }
   },
   "scripts": {
@@ -28,12 +48,12 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@web3modal/common": "5.0.3",
-    "@web3modal/core": "5.0.3",
-    "@web3modal/ui": "5.0.3",
-    "@web3modal/siwe": "5.0.3",
-    "@web3modal/wallet": "5.0.3",
-    "@web3modal/scaffold-ui": "5.0.3",
+    "@web3modal/common": "5.0.4",
+    "@web3modal/core": "5.0.4",
+    "@web3modal/ui": "5.0.4",
+    "@web3modal/siwe": "5.0.4",
+    "@web3modal/wallet": "5.0.4",
+    "@web3modal/scaffold-ui": "5.0.4",
     "lit": "3.1.0"
   },
   "keywords": [

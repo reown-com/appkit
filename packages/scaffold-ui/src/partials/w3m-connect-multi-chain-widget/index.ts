@@ -38,19 +38,20 @@ export class W3mConnectMultiChainWidget extends LitElement {
 
     return html`
       <wui-flex flexDirection="column" gap="xs">
-        ${multiChainConnectors.map(connector => {
-          return html`
+        ${multiChainConnectors.map(
+          connector => html`
             <wui-list-wallet
               imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
+              .installed=${true}
               name=${connector.name ?? 'Unknown'}
               tagVariant="shade"
-              tagLabel="multi-chain"
+              tagLabel="multichain"
               data-testid=${`wallet-selector-${connector.id}`}
               @click=${() => this.onConnector(connector)}
             >
             </wui-list-wallet>
           `
-        })}
+        )}
       </wui-flex>
     `
   }
@@ -58,7 +59,7 @@ export class W3mConnectMultiChainWidget extends LitElement {
   // -- Private Methods ----------------------------------- //
   private onConnector(connector: Connector) {
     ChainController.setActiveConnector(connector)
-    RouterController.push('ConnectingMultiChain', { connector })
+    RouterController.push('ConnectingMultiChain')
   }
 }
 

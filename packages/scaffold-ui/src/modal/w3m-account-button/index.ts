@@ -1,7 +1,7 @@
 import {
   AccountController,
   AssetUtil,
-  ChainController,
+  ConnectorController,
   CoreHelperUtil,
   ModalController,
   NetworkController
@@ -27,38 +27,32 @@ export class W3mAccountButton extends LitElement {
 
   @property() public charsEnd?: WuiAccountButton['charsEnd'] = 6
 
-  @state() private address = AccountController.getProperty('address')
+  @state() private address = AccountController.state.address
 
-  @state() private balanceVal = AccountController.getProperty('balance')
+  @state() private balanceVal = AccountController.state.balance
 
-  @state() private balanceSymbol = AccountController.getProperty('balanceSymbol')
+  @state() private balanceSymbol = AccountController.state.balanceSymbol
 
-  @state() private profileName = AccountController.getProperty('profileName')
+  @state() private profileName = AccountController.state.profileName
 
-  @state() private profileImage = AccountController.getProperty('profileImage')
+  @state() private profileImage = AccountController.state.profileImage
 
-  @state() private network = NetworkController.activeNetwork()
+  @state() private network = NetworkController.state.caipNetwork
 
-  @state() private isUnsupportedChain = NetworkController.getProperty('isUnsupportedChain')
+  @state() private isUnsupportedChain = NetworkController.state.isUnsupportedChain
 
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
     this.unsubscribe.push(
       ...[
-        ChainController.subscribe(val => {
-          const accountState = val.activeChain
-            ? val.chains[val.activeChain]?.accountState
-            : undefined
-          const networkState = val.activeChain
-            ? val.chains[val.activeChain]?.networkState
-            : undefined
-          if (accountState && accountState.isConnected) {
-            this.address = accountState.address
-            this.balanceVal = accountState.balance
-            this.profileName = accountState.profileName
-            this.profileImage = accountState.profileImage
-            this.balanceSymbol = accountState.balanceSymbol
+        AccountController.subscribe(val => {
+          if (val.isConnected) {
+            this.address = val.address
+            this.balanceVal = val.balance
+            this.profileName = val.profileName
+            this.profileImage = val.profileImage
+            this.balanceSymbol = val.balanceSymbol
           } else {
             this.address = ''
             this.balanceVal = ''
@@ -66,8 +60,12 @@ export class W3mAccountButton extends LitElement {
             this.profileImage = ''
             this.balanceSymbol = ''
           }
-          this.network = NetworkController.activeNetwork()
-          this.isUnsupportedChain = networkState?.isUnsupportedChain || false
+        }),
+        NetworkController.subscribeKey('caipNetwork', val => {
+          this.network = val
+        }),
+        NetworkController.subscribeKey('isUnsupportedChain', val => {
+          this.isUnsupportedChain = val
         })
       ]
     )
@@ -80,7 +78,8 @@ export class W3mAccountButton extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     const networkImage = AssetUtil.getNetworkImage(this.network)
-    const showBalance = this.balance === 'show'
+    const showBalance =
+      this.balance === 'show' && !ConnectorController.state.isWalletConnectAdapterOnly
 
     return html`
       <wui-account-button

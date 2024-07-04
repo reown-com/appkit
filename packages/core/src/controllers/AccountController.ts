@@ -1,5 +1,3 @@
-import { subscribeKey as subKey } from 'valtio/vanilla/utils'
-import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import type { CaipAddress, ConnectedWalletInfo, SocialProvider } from '../utils/TypeUtil.js'
 import type { Balance } from '@web3modal/common'
@@ -8,8 +6,10 @@ import { SnackController } from './SnackController.js'
 import { SwapController } from './SwapController.js'
 import { SwapApiUtil } from '../utils/SwapApiUtil.js'
 import type { W3mFrameTypes } from '@web3modal/wallet'
+import { ChainController } from './ChainController.js'
+import type { Chain } from '@web3modal/common'
 import { NetworkController } from './NetworkController.js'
-import { ChainController, type Chain } from './ChainController.js'
+import { proxy } from 'valtio'
 
 // -- Types --------------------------------------------- //
 export interface AccountControllerState {
@@ -30,8 +30,6 @@ export interface AccountControllerState {
   socialWindow?: Window
 }
 
-type StateKey = keyof AccountControllerState
-
 // -- State --------------------------------------------- //
 const state = proxy<AccountControllerState>({
   isConnected: false,
@@ -44,21 +42,47 @@ const state = proxy<AccountControllerState>({
 export const AccountController = {
   state,
 
-  subscribe(callback: (newState: AccountControllerState) => void) {
-    return sub(state, () => callback(state))
+  replaceState(newState: AccountControllerState | undefined) {
+    if (!newState) {
+      return
+    }
+
+    Object.assign(state, newState)
   },
 
-  subscribeKey<K extends StateKey>(key: K, callback: (value: AccountControllerState[K]) => void) {
-    return subKey(state, key, callback)
+  subscribe(callback: (val: AccountControllerState) => void) {
+    return ChainController.subscribeChainProp('accountState', accountState => {
+      if (accountState) {
+        return callback(accountState)
+      }
+
+      return undefined
+    })
   },
 
-  getProperty<K extends StateKey>(key: K): AccountControllerState[K] {
-    // @ts-ignore
-    return ChainController.getAccountProp(key)
+  subscribeKey<K extends keyof AccountControllerState>(
+    property: K,
+    callback: (val: AccountControllerState[K]) => void
+  ) {
+    let prev: AccountControllerState[K] | undefined = undefined
+
+    return ChainController.subscribeChainProp('accountState', accountState => {
+      if (accountState) {
+        const nextValue = accountState[property]
+        if (prev !== nextValue) {
+          prev = nextValue
+          callback(nextValue)
+        }
+      }
+    })
   },
 
   setIsConnected(isConnected: AccountControllerState['isConnected'], chain?: Chain) {
     ChainController.setAccountProp('isConnected', isConnected, chain)
+  },
+
+  getChainIsConnected(chain?: Chain) {
+    return ChainController.getAccountProp('isConnected', chain)
   },
 
   setCaipAddress(caipAddress: AccountControllerState['caipAddress'], chain?: Chain) {
@@ -99,7 +123,7 @@ export const AccountController = {
 
   setTokenBalance(tokenBalance: AccountControllerState['tokenBalance'], chain?: Chain) {
     if (tokenBalance) {
-      ChainController.setAccountProp('tokenBalance', ref(tokenBalance), chain)
+      ChainController.setAccountProp('tokenBalance', tokenBalance, chain)
     }
   },
 
@@ -125,22 +149,24 @@ export const AccountController = {
 
   setSocialWindow(socialWindow: AccountControllerState['socialWindow'], chain?: Chain) {
     if (socialWindow) {
-      ChainController.setAccountProp('socialWindow', ref(socialWindow), chain)
+      ChainController.setAccountProp('socialWindow', socialWindow, chain)
     }
   },
 
   async fetchTokenBalance() {
-    const chainId = NetworkController.activeNetwork()?.id
+    const chainId = NetworkController.state.caipNetwork?.id
+    const chain = NetworkController.state.caipNetwork?.chain
+    const address = AccountController.state.address
 
     try {
-      if (state.address && chainId) {
-        const response = await BlockchainApiController.getBalance(state.address, chainId)
+      if (address && chainId) {
+        const response = await BlockchainApiController.getBalance(address, chainId)
 
         const filteredBalances = response.balances.filter(
           balance => balance.quantity.decimals !== '0'
         )
 
-        this.setTokenBalance(filteredBalances)
+        this.setTokenBalance(filteredBalances, chain)
         SwapController.setBalances(SwapApiUtil.mapBalancesToSwapTokens(response.balances))
       }
     } catch (error) {
