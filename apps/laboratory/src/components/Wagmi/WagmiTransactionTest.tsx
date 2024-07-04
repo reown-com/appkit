@@ -7,7 +7,7 @@ import { useChakraToast } from '../Toast'
 
 const TEST_TX = {
   to: vitalikEthAddress as Address,
-  value: parseGwei('0.00')
+  value: parseGwei('0')
 }
 
 export function WagmiTransactionTest() {

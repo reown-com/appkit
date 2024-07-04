@@ -21,7 +21,7 @@ export function EthersTransactionTest() {
       const signer = new JsonRpcSigner(provider, address)
       const tx = await signer.sendTransaction({
         to: vitalikEthAddress,
-        value: ethers.parseUnits('0.0001', 'gwei')
+        value: ethers.parseUnits('0', 'gwei')
       })
 
       toast({
