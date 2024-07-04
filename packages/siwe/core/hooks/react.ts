@@ -3,12 +3,15 @@ import { SIWEController } from '../controller/SIWEController.js'
 import { OptionsController } from '@web3modal/core'
 
 export function useSiweSession() {
-  if (!SIWEController.state._client && !OptionsController.state.enableAuth) {
+  if (
+    SIWEController.state.status !== 'uninitialized' &&
+    !SIWEController.state._client &&
+    !OptionsController.state.enableAuth
+  ) {
     throw new Error(
       'Please provide a "siweConfig" or enable AppKit Auth before using "useSiweSession" hook'
     )
   }
-
   const [session, setSession] = useState(SIWEController.state.session)
   const [status, setStatus] = useState(SIWEController.state.status)
 

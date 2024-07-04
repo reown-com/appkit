@@ -73,7 +73,8 @@ export const SIWEController = {
       const session = await client.getSession()
       if (session?.address && session?.chainId) {
         this.setSession(session)
-        this.setStatus('success')
+      } else {
+        this.setSession(undefined)
       }
 
       return session
@@ -107,6 +108,7 @@ export const SIWEController = {
   async signIn() {
     const client = this._getClient()
     const session = await client.signIn()
+    this.setSession(session)
 
     return session
   },
@@ -149,6 +151,6 @@ export const SIWEController = {
 
   setSession(session: SIWEControllerClientState['session']) {
     state.session = session
-    state.status = session ? 'success' : 'ready'
+    state.status = session?.address && session?.chainId ? 'success' : 'ready'
   }
 }

@@ -36,7 +36,7 @@ export async function getAppKitAuthSession() {
       credentials: 'include'
     })
 
-    if (!res.ok && res.status === 404) {
+    if (!res.ok) {
       return undefined
     }
 

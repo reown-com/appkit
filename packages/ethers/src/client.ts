@@ -220,12 +220,7 @@ export class Web3Modal extends Web3ModalScaffold {
             const { p, s } = signedCacao
             const chainId = getDidChainId(p.iss)
             const address = getDidAddress(p.iss)
-            if (address && chainId) {
-              SIWEController.setSession({
-                address,
-                chainId: parseInt(chainId, 10)
-              })
-            }
+
             try {
               // Kicks off verifyMessage and populates external states
               const message = WalletConnectProvider.signer.client.formatAuthMessage({
@@ -239,6 +234,12 @@ export class Web3Modal extends Web3ModalScaffold {
                 cacao: signedCacao,
                 clientId
               })
+              if (address && chainId) {
+                SIWEController.setSession({
+                  address,
+                  chainId: parseInt(chainId, 10)
+                })
+              }
             } catch (error) {
               // eslint-disable-next-line no-console
               console.error('Error verifying message', error)

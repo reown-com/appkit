@@ -343,6 +343,7 @@ export class Web3ModalScaffold {
       OptionsController.setIsSiweEnabled(true)
       if (session?.address && session?.chainId) {
         SIWEController.setStatus('success')
+        SIWEController.setSession(session)
       }
     }
 
