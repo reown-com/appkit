@@ -12,8 +12,11 @@ export class ModalWalletPage extends ModalPage {
     super(page, library, flavor)
   }
 
-  async openSettings() {
+  async openProfileView() {
     await this.page.getByTestId('wui-profile-button').click()
+  }
+  async openSettings() {
+    await this.page.getByTestId('w3m-profile-view').click()
   }
 
   override async switchNetwork(network: string) {
