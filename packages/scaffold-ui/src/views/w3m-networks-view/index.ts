@@ -95,10 +95,11 @@ export class W3mNetworksView extends LitElement {
     const supportsAllNetworks = NetworkController.state.supportsAllNetworks
     const caipNetwork = NetworkController.state.caipNetwork
     const routerData = RouterController.state.data
+
+    const networkId = CommonNetworkUtil.caipNetworkIdToNumber(network.id)
+
     const isSwitchingToSmartAccountNetwork =
-      NetworkController.state.smartAccountEnabledNetworks?.includes(
-        CommonNetworkUtil.caipNetworkIdToNumber(network.id)!
-      )
+      networkId && NetworkController.state.smartAccountEnabledNetworks?.includes(networkId)
 
     if (isConnected && caipNetwork?.id !== network.id) {
       if (approvedCaipNetworkIds?.includes(network.id) && !isSwitchingToSmartAccountNetwork) {
