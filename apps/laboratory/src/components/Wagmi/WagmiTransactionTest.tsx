@@ -81,7 +81,7 @@ export function WagmiTransactionTest() {
     </Stack>
   ) : (
     <Text fontSize="md" color="yellow">
-      Switch to Sepolia or OP to test this feature
+      Feature not available in mainnet
     </Text>
   )
 }
