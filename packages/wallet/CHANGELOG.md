@@ -1,5 +1,14 @@
 # @web3modal/wallet
 
+## 5.0.6
+
+### Patch Changes
+
+- fix: Social Login illegal invocation issue. Wagmi tests
+
+- Updated dependencies []:
+  - @web3modal/polyfills@5.0.6
+
 ## 5.0.5
 
 ### Patch Changes
