@@ -9,6 +9,7 @@ import {
 } from '@web3modal/core'
 import { UiHelperUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
+import { state } from 'lit/decorators.js'
 import styles from './styles.js'
 
 @customElement('w3m-switch-address-view')
@@ -16,20 +17,26 @@ export class W3mSwitchAddressView extends LitElement {
   public static override styles = styles
   // -- Members ------------------------------------------- //
   private readonly metadata = OptionsController.state.metadata
-  public allAccounts: AccountType[] = AccountController.state.allAccounts || []
+
+  @state() public allAccounts: AccountType[] = AccountController.state.allAccounts || []
+
+  @state() private balances: Record<string, number> = {}
+
   public readonly labels = AccountController.state.addressLabels
+
   public readonly currentAddress: string = AccountController.state.address || ''
-  private balances: Record<string, number> = {}
+
   private connectedConnector = StorageUtil.getConnectedConnector()
+
   // Only show icon for AUTH accounts
   private shouldShowIcon = this.connectedConnector === 'AUTH'
+
   private caipNetwork = NetworkController.state.caipNetwork
 
   constructor() {
     super()
     AccountController.subscribeKey('allAccounts', allAccounts => {
       this.allAccounts = allAccounts
-      this.requestUpdate()
     })
   }
 

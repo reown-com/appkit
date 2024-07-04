@@ -1,4 +1,5 @@
 import { html, LitElement } from 'lit'
+import { state } from 'lit/decorators.js'
 import { property } from 'lit/decorators.js'
 import '../../components/wui-text/index.js'
 import '../../components/wui-image/index.js'
@@ -30,9 +31,9 @@ export class WuiListAccount extends LitElement {
 
   private caipNetwork = NetworkController.state.caipNetwork
 
-  private balance = 0
+  @state() private balance = 0
 
-  private fetchingBalance = true
+  @state() private fetchingBalance = true
 
   private shouldShowIcon = false
 
@@ -52,7 +53,6 @@ export class WuiListAccount extends LitElement {
       }
       this.balance = total
       this.fetchingBalance = false
-      this.requestUpdate()
     })
   }
 

@@ -17,17 +17,20 @@ export class W3mSelectAddressesView extends LitElement {
   public static override styles = styles
   // -- Members ------------------------------------------- //
   private readonly metadata = OptionsController.state.metadata
-  public allAccounts: AccountType[] = AccountController.state.allAccounts
-  private selectedAccounts: AccountType[] = AccountController.state.allAccounts
-  private selectAll = true
-  private approved = false
+
+  @state() public allAccounts: AccountType[] = AccountController.state.allAccounts
+
+  @state() private selectedAccounts: AccountType[] = AccountController.state.allAccounts
+
+  @state() private selectAll = true
+
+  @state() private approved = false
 
   @state() private isApproving = false
   constructor() {
     super()
     AccountController.subscribeKey('allAccounts', allAccounts => {
       this.allAccounts = allAccounts
-      this.requestUpdate()
     })
   }
 
@@ -105,7 +108,6 @@ export class W3mSelectAddressesView extends LitElement {
     if (this.selectedAccounts.length > 0) {
       this.selectAll = this.selectedAccounts.length === this.allAccounts.length
     }
-    this.requestUpdate()
   }
 
   private handleClick(account: AccountType) {

@@ -17,13 +17,10 @@ import { UiHelperUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import styles from './styles.js'
 import { W3mFrameRpcConstants } from '@web3modal/wallet'
 
 @customElement('w3m-account-settings-view')
 export class W3mAccountSettingsView extends LitElement {
-  public static override styles = styles
-
   // -- Members -------------------------------------------- //
   private usubscribe: (() => void)[] = []
 
