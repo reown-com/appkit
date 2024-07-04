@@ -361,6 +361,7 @@ export class Web3Modal extends Web3ModalScaffold {
     this.wagmiConfig = wagmiConfig
 
     this.syncRequestedNetworks([...wagmiConfig.chains])
+    this.syncConnectors([...wagmiConfig.connectors])
     this.initAuthConnectorListeners([...wagmiConfig.connectors])
 
     watchConnectors(this.wagmiConfig, {
@@ -587,6 +588,7 @@ export class Web3Modal extends Web3ModalScaffold {
         })
       }
     })
+    console.log('>>> w3mConnectors', w3mConnectors)
     this.setConnectors(w3mConnectors)
     this.syncAuthConnector(filteredConnectors)
   }
