@@ -8,7 +8,7 @@ import { useChakraToast } from '../Toast'
 
 const TEST_TX = {
   to: vitalikEthAddress as Address,
-  value: parseGwei('0.001')
+  value: parseGwei('0.00')
 }
 
 export function WagmiTransactionTest() {
@@ -57,7 +57,7 @@ export function WagmiTransactionTest() {
 
   const allowedChains = [sepolia.id, optimism.id, optimismSepolia.id] as number[]
 
-  return allowedChains.includes(Number(chain?.id)) && status === 'connected' ? (
+  return Number(chain?.id) !== 1 && status === 'connected' ? (
     <Stack direction={['column', 'column', 'row']}>
       <Button
         data-test-id="sign-transaction-button"

@@ -13,6 +13,7 @@ import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
 import { NetworkUtil } from '../../utils/NetworkUtil.js'
+import { NetworkUtil as CommonNetworkUtil } from '@web3modal/common'
 
 @customElement('w3m-networks-view')
 export class W3mNetworksView extends LitElement {
@@ -94,12 +95,16 @@ export class W3mNetworksView extends LitElement {
     const supportsAllNetworks = NetworkController.state.supportsAllNetworks
     const caipNetwork = NetworkController.state.caipNetwork
     const routerData = RouterController.state.data
+    const isSwitchingToSmartAccountNetwork =
+      NetworkController.state.smartAccountEnabledNetworks?.includes(
+        CommonNetworkUtil.caipNetworkIdToNumber(network.id)!
+      )
 
     if (isConnected && caipNetwork?.id !== network.id) {
-      if (approvedCaipNetworkIds?.includes(network.id)) {
+      if (approvedCaipNetworkIds?.includes(network.id) && !isSwitchingToSmartAccountNetwork) {
         await NetworkController.switchActiveNetwork(network)
         await NetworkUtil.onNetworkChange()
-      } else if (supportsAllNetworks) {
+      } else if (supportsAllNetworks || isSwitchingToSmartAccountNetwork) {
         RouterController.push('SwitchNetwork', { ...routerData, network })
       }
     } else if (!isConnected) {

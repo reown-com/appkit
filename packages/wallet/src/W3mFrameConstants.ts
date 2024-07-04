@@ -1,5 +1,7 @@
 export const SECURE_SITE_SDK =
-  process.env['NEXT_PUBLIC_SECURE_SITE_SDK_URL'] || 'https://secure.walletconnect.com/sdk'
+  process.env['NEXT_PUBLIC_SECURE_SITE_SDK_URL'] ||
+  // 'https://secure.walletconnect.com/sdk'
+  'https://secure-web3modal-git-feat-deployment-cost-ui-walletconnect1.vercel.app/sdk'
 
 export const DEFAULT_LOG_LEVEL = process.env['NEXT_PUBLIC_DEFAULT_LOG_LEVEL'] || 'error'
 
