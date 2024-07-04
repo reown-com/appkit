@@ -1,5 +1,4 @@
 import { html, LitElement } from 'lit'
-import { state } from 'lit/decorators.js'
 import { property } from 'lit/decorators.js'
 import '../../components/wui-text/index.js'
 import '../../components/wui-image/index.js'
@@ -31,9 +30,9 @@ export class WuiListAccount extends LitElement {
 
   private caipNetwork = NetworkController.state.caipNetwork
 
-  @state() private balance = 0
+  private balance = 0
 
-  @state() private fetchingBalance = true
+  private fetchingBalance = true
 
   private shouldShowIcon = false
 
@@ -53,6 +52,7 @@ export class WuiListAccount extends LitElement {
       }
       this.balance = total
       this.fetchingBalance = false
+      this.requestUpdate()
     })
   }
 
@@ -108,7 +108,6 @@ export class WuiListAccount extends LitElement {
   private getLabel() {
     let label = this.labels?.get(this.accountAddress)
 
-    // If there is no provided label, set one depending on the account type
     if (!label && this.connectedConnector === 'AUTH') {
       label = `${this.accountType === 'eoa' ? 'Email' : 'Smart'} Account`
     } else if (
