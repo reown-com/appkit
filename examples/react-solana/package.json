@@ -1,0 +1,22 @@
+{
+  "name": "@examples/react-solana",
+  "private": true,
+  "version": "5.0.6",
+  "scripts": {
+    "dev:example": "vite --port 3002",
+    "build:examples": "vite build"
+  },
+  "dependencies": {
+    "@web3modal/solana": "5.0.6",
+    "@tanstack/react-query": "5.24.8",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "vite": "5.2.11",
+    "viem": "2.10.3",
+    "wagmi": "2.9.10"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "4.2.1",
+    "vite": "5.2.11"
+  }
+}
