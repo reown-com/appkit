@@ -1,4 +1,4 @@
-import { defaultWagmiConfig } from '@web3modal/solana/react/config'
+import { defaultSolanaConfig } from '@web3modal/solana/react'
 import {
   createWeb3Modal,
   useWeb3Modal,
@@ -6,10 +6,13 @@ import {
   useWeb3ModalState,
   useWeb3ModalTheme
 } from '@web3modal/solana/react'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-
-// 0. Setup queryClient for WAGMIv2
-const queryClient = new QueryClient()
+import { BackpackWalletAdapter } from '@solana/wallet-adapter-backpack'
+import {
+  PhantomWalletAdapter,
+  HuobiWalletAdapter,
+  SolflareWalletAdapter,
+  TrustWalletAdapter
+} from '@solana/wallet-adapter-wallets'
 
 // @ts-expect-error 1. Get projectId
 const projectId = import.meta.env.VITE_PROJECT_ID
@@ -17,31 +20,33 @@ if (!projectId) {
   throw new Error('VITE_PROJECT_ID is not set')
 }
 
-// 2. Create wagmiConfig
-const wagmiConfig = defaultWagmiConfig({
-  chains: [
-    {
-      chainId: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-      name: 'Solana',
-      currency: 'SOL',
-      explorerUrl: 'https://solscan.io',
-      rpcUrl: 'https://rpc.walletconnect.org/v1'
-    },
-    {
-      chainId: '4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z',
-      name: 'Solana Testnet',
-      currency: 'SOL',
-      explorerUrl: 'https://explorer.solana.com/?cluster=testnet',
-      rpcUrl: 'https://api.testnet.solana.com'
-    },
-    {
-      chainId: 'EtWTRABZaYq6iMfeYKouRu166VU2xqa1',
-      name: 'Solana Devnet',
-      currency: 'SOL',
-      explorerUrl: 'https://explorer.solana.com/?cluster=devnet',
-      rpcUrl: 'https://api.devnet.solana.com'
-    }
-  ],
+const chains = [
+  {
+    chainId: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+    name: 'Solana',
+    currency: 'SOL',
+    explorerUrl: 'https://solscan.io',
+    rpcUrl: 'https://rpc.walletconnect.org/v1'
+  },
+  {
+    chainId: '4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z',
+    name: 'Solana Testnet',
+    currency: 'SOL',
+    explorerUrl: 'https://explorer.solana.com/?cluster=testnet',
+    rpcUrl: 'https://api.testnet.solana.com'
+  },
+  {
+    chainId: 'EtWTRABZaYq6iMfeYKouRu166VU2xqa1',
+    name: 'Solana Devnet',
+    currency: 'SOL',
+    explorerUrl: 'https://explorer.solana.com/?cluster=devnet',
+    rpcUrl: 'https://api.devnet.solana.com'
+  }
+]
+
+// 2. Create solanaConfig
+const solanaConfig = defaultSolanaConfig({
+  chains: chains,
   projectId,
   metadata: {
     name: 'Web3Modal React Example',
@@ -53,9 +58,17 @@ const wagmiConfig = defaultWagmiConfig({
 
 // 3. Create modal
 createWeb3Modal({
-  wagmiConfig,
+  solanaConfig,
   projectId,
   themeMode: 'light',
+  chains,
+  wallets: [
+    new BackpackWalletAdapter(),
+    new HuobiWalletAdapter(),
+    new PhantomWalletAdapter(),
+    new SolflareWalletAdapter(),
+    new TrustWalletAdapter()
+  ],
   themeVariables: {
     '--w3m-color-mix': '#00DCFF',
     '--w3m-color-mix-strength': 20
@@ -70,22 +83,20 @@ export default function App() {
   const events = useWeb3ModalEvents()
 
   return (
-    <WagmiProvider config={wagmiConfig}>
-      <QueryClientProvider client={queryClient}>
-        <w3m-button />
-        <w3m-network-button />
-        <w3m-connect-button />
-        <w3m-account-button />
+    <>
+      <w3m-button />
+      <w3m-network-button />
+      <w3m-connect-button />
+      <w3m-account-button />
 
-        <button onClick={() => modal.open()}>Connect Wallet</button>
-        <button onClick={() => modal.open({ view: 'Networks' })}>Choose Network</button>
-        <button onClick={() => setThemeMode(themeMode === 'dark' ? 'light' : 'dark')}>
-          Toggle Theme Mode
-        </button>
-        <pre>{JSON.stringify(state, null, 2)}</pre>
-        <pre>{JSON.stringify({ themeMode, themeVariables }, null, 2)}</pre>
-        <pre>{JSON.stringify(events, null, 2)}</pre>
-      </QueryClientProvider>
-    </WagmiProvider>
+      <button onClick={() => modal.open()}>Connect Wallet</button>
+      <button onClick={() => modal.open({ view: 'Networks' })}>Choose Network</button>
+      <button onClick={() => setThemeMode(themeMode === 'dark' ? 'light' : 'dark')}>
+        Toggle Theme Mode
+      </button>
+      <pre>{JSON.stringify(state, null, 2)}</pre>
+      <pre>{JSON.stringify({ themeMode, themeVariables }, null, 2)}</pre>
+      <pre>{JSON.stringify(events, null, 2)}</pre>
+    </>
   )
 }

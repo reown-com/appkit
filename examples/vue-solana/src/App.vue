@@ -7,6 +7,13 @@ import {
   useWeb3ModalState,
   useWeb3ModalTheme
 } from '@web3modal/solana/vue'
+import { BackpackWalletAdapter } from '@solana/wallet-adapter-backpack'
+import {
+  PhantomWalletAdapter,
+  HuobiWalletAdapter,
+  SolflareWalletAdapter,
+  TrustWalletAdapter
+} from '@solana/wallet-adapter-wallets'
 
 // @ts-expect-error 1. Get projectId
 const projectId = import.meta.env.VITE_PROJECT_ID
@@ -46,6 +53,14 @@ const ethersConfig = defaultConfig({
     url: 'https://web3modal.com',
     icons: ['https://avatars.githubusercontent.com/u/37784886']
   },
+  chains: chains,
+  wallets: [
+    new BackpackWalletAdapter(),
+    new HuobiWalletAdapter(),
+    new PhantomWalletAdapter(),
+    new SolflareWalletAdapter(),
+    new TrustWalletAdapter()
+  ],
   defaultChainId: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
   rpcUrl: 'https://cloudflare-eth.com'
 })

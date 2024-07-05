@@ -7,8 +7,9 @@
     "build:examples": "vite build"
   },
   "dependencies": {
-    "@web3modal/solana": "5.0.6",
-    "ethers": "5.7.2"
+    "@solana/wallet-adapter-backpack": "0.1.14",
+    "@solana/wallet-adapter-wallets": "0.19.32",
+    "@web3modal/solana": "5.0.6"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "5.0.2"
