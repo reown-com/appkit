@@ -6,7 +6,6 @@ import {
   useWeb3ModalState,
   useWeb3ModalTheme
 } from '@web3modal/solana/react'
-import { WagmiProvider } from 'wagmi'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 // 0. Setup queryClient for WAGMIv2
