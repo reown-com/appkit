@@ -403,7 +403,8 @@ export class EVMWagmiClient {
     this.options = options
 
     this.syncRequestedNetworks([...this.wagmiConfig.chains])
-    this.syncConnectors([...this.wagmiConfig.connectors.map(c => ({ ...c, chain: this.chain }))])
+    // Enabling this disables authConnector to work on AppKit
+    // this.syncConnectors([...this.wagmiConfig.connectors.map(c => ({ ...c, chain: this.chain }))])
     this.initAuthConnectorListeners([...this.wagmiConfig.connectors])
 
     // Wagmi listeners
