@@ -5,7 +5,7 @@ import type {
   SIWEClientMethods,
   SIWESession
 } from '../core/utils/TypeUtils.js'
-import type { SIWEControllerClient } from '../core/controller/SIWEController.js'
+import { SIWEController, type SIWEControllerClient } from '../core/controller/SIWEController.js'
 
 import {
   ConnectionController,
@@ -88,7 +88,10 @@ export class Web3ModalSIWEClient {
 
   async signIn(): Promise<SIWESession> {
     const address = AccountController.state.address
-    const nonce = await this.methods.getNonce(address)
+    let nonce = SIWEController.state.nonce
+    if (!nonce) {
+      nonce = await SIWEController.getNonce()
+    }
     if (!address) {
       throw new Error('An address is required to create a SIWE message.')
     }
@@ -104,7 +107,7 @@ export class Web3ModalSIWEClient {
       chainId,
       nonce,
       version: '1',
-      iat: messageParams.iat || new Date().toISOString(),
+      iat: messageParams.iat ?? new Date().toISOString(),
       ...messageParams
     })
 

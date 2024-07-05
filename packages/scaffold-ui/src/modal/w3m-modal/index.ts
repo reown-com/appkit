@@ -37,6 +37,8 @@ export class W3mModal extends LitElement {
 
   @state() private loading = ModalController.state.loading
 
+  @state() private caipAddress = AccountController.state.caipAddress
+
   public constructor() {
     super()
     this.initializeTheming()
@@ -167,14 +169,22 @@ export class W3mModal extends LitElement {
       return
     }
 
+    const previousAddress = CoreHelperUtil.getPlainAddress(this.caipAddress)
+    const previousNetworkId = CoreHelperUtil.getNetworkId(this.caipAddress)
     const newAddress = CoreHelperUtil.getPlainAddress(caipAddress)
     const newNetworkId = CoreHelperUtil.getNetworkId(caipAddress)
+    this.caipAddress = caipAddress
 
     if (this.isSiweEnabled) {
       const { SIWEController, appKitAuthConfig } = await import('@web3modal/siwe')
       if (!SIWEController.state._client) {
         SIWEController.setSIWEClient(appKitAuthConfig)
       }
+
+      if (previousAddress === newAddress && previousNetworkId === newNetworkId) {
+        return
+      }
+
       const session = await SIWEController.getSession()
       if (session?.address && session?.chainId) {
         const { chainId, address } = session
