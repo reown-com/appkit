@@ -101,7 +101,7 @@ export class W3mProfileView extends LitElement {
           </wui-flex>
         </wui-flex>
         <wui-flex
-          data-test-id="account-settings-button"
+          data-testid="account-settings-button"
           justifyContent="center"
           alignItems="center"
           class="account-settings-button"
