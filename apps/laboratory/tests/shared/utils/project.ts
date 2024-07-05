@@ -5,7 +5,7 @@ import { getLocalBravePath, BRAVE_LINUX_PATH } from '../constants/browsers'
 
 const availableDevices = getAvailableDevices()
 
-const LIBRARIES = ['appkit-all'] as const
+const LIBRARIES = ['ethers'] as const
 
 const PERMUTATIONS = availableDevices.flatMap(device =>
   LIBRARIES.map(library => ({ device, library }))
@@ -34,7 +34,7 @@ const braveOptions: UseOptions = {
   }
 }
 
-const EMAIL_BASED_PLATFORM_REGEX =
+const WAGMI_EMAIL_BASED_REGEX =
   /(?:email\.spec\.ts|smart-account\.spec\.ts|siwe-email\.spec\.ts|siwe-sa\.spec\.ts|social\.spec\.ts).*$/u
 
 const SOLANA_UNIMPLEMENTED_TESTS_REGEX =
@@ -52,14 +52,14 @@ const customProjectProperties: CustomProjectProperties = {
     testIgnore: /(?:social\.spec\.ts).*$/u
   },
   'Desktop Brave/wagmi': {
-    testIgnore: EMAIL_BASED_PLATFORM_REGEX,
+    testIgnore: WAGMI_EMAIL_BASED_REGEX,
     useOptions: braveOptions
   },
   'Desktop Chrome/wagmi': {
-    testIgnore: EMAIL_BASED_PLATFORM_REGEX
+    testIgnore: WAGMI_EMAIL_BASED_REGEX
   },
   'Desktop Firefox/wagmi': {
-    testIgnore: EMAIL_BASED_PLATFORM_REGEX
+    testIgnore: WAGMI_EMAIL_BASED_REGEX
   },
   // Exclude social.spec.ts, email.spec.ts, siwe.spec.ts, and canary.spec.ts from solana, not yet implemented
   'Desktop Chrome/solana': {

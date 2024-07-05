@@ -62,6 +62,10 @@ export class W3mAccountSettingsView extends LitElement {
             ModalController.close()
           }
         }),
+        AccountController.subscribeKey(
+          'preferredAccountType',
+          val => (this.preferredAccountType = val)
+        ),
         NetworkController.subscribeKey('caipNetwork', val => {
           if (val?.id) {
             this.network = val

@@ -589,6 +589,7 @@ export class Web3Modal extends Web3ModalScaffold {
         })
       }
     })
+    console.log('>>> w3mConnectors', w3mConnectors)
     this.setConnectors(w3mConnectors)
     this.syncAuthConnector(filteredConnectors)
   }
@@ -729,6 +730,12 @@ export class Web3Modal extends Web3ModalScaffold {
           return
         }
         this.setPreferredAccountType(type as W3mFrameTypes.AccountType, this.chain)
+        this.syncAccount({
+          address: address as `0x${string}`,
+          isConnected: true,
+          chainId: NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id),
+          connector
+        })
       })
     }
   }

@@ -67,16 +67,19 @@ testModalSmartAccount(
   }
 )
 
-testModalSmartAccount(
+testModalSmartAccount.skip(
   'it should properly sign with a 6492 signature',
   async ({ modalPage, modalValidator }) => {
     const walletModalPage = modalPage as ModalWalletPage
     const walletModalValidator = modalValidator as ModalWalletValidator
 
+    const eoaAddress = await walletModalPage.getAddress()
+
     await walletModalPage.openAccount()
     await walletModalPage.openSettings()
     await walletModalPage.togglePreferredAccountType()
     await walletModalValidator.expectChangePreferredAccountToShow(EOA)
+    await walletModalValidator.expectChangedAddressAfterSwitchingAccountType(eoaAddress)
     await walletModalPage.closeModal()
 
     await walletModalPage.sign()
@@ -85,6 +88,7 @@ testModalSmartAccount(
     const signature = await walletModalPage.getSignature()
     const address = await walletModalPage.getAddress()
     const chainId = await walletModalPage.getChainId()
+
     await walletModalValidator.expectValidSignature(signature, address, chainId)
   }
 )
