@@ -28,6 +28,7 @@ testModalSmartAccount(
     await walletModalPage.openAccount()
     await walletModalValidator.expectActivateSmartAccountPromoVisible(true)
 
+    await walletModalPage.openProfileView()
     await walletModalPage.openSettings()
     await walletModalValidator.expectChangePreferredAccountToShow(SMART_ACCOUNT)
     await walletModalPage.togglePreferredAccountType()
@@ -50,6 +51,7 @@ testModalSmartAccount(
     const originalAddress = await walletModalPage.getAddress()
 
     await walletModalPage.openAccount()
+    await walletModalPage.openProfileView()
     await walletModalPage.openSettings()
 
     await walletModalPage.togglePreferredAccountType()
@@ -74,6 +76,7 @@ testModalSmartAccount(
     const walletModalValidator = modalValidator as ModalWalletValidator
 
     await walletModalPage.openAccount()
+    await walletModalPage.openProfileView()
     await walletModalPage.openSettings()
     await walletModalPage.togglePreferredAccountType()
     await walletModalValidator.expectChangePreferredAccountToShow(EOA)
