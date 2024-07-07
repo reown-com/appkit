@@ -81,9 +81,11 @@ export function defaultWagmiConfig({
   }
 
   if (enableSafe !== false) {
-    connectors.push(safe({
-      allowedDomains: wagmiConfig.allowedDomainsSafe
-    }))
+    connectors.push(
+      safe({
+        allowedDomains: wagmiConfig.allowedDomainsSafe
+      })
+    )
   }
 
   const mergedAuth = {
