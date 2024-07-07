@@ -17,13 +17,10 @@ import { UiHelperUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import styles from './styles.js'
 import { W3mFrameRpcConstants } from '@web3modal/wallet'
 
 @customElement('w3m-account-settings-view')
 export class W3mAccountSettingsView extends LitElement {
-  public static override styles = styles
-
   // -- Members -------------------------------------------- //
   private usubscribe: (() => void)[] = []
 
@@ -82,28 +79,37 @@ export class W3mAccountSettingsView extends LitElement {
     }
 
     const networkImage = this.networkImages[this.network?.imageId ?? '']
+    const name = this.profileName?.split('.')[0]
 
     return html`
       <wui-flex
         flexDirection="column"
-        .padding=${['0', 'xl', 'm', 'xl'] as const}
         alignItems="center"
         gap="l"
+        .padding=${['0', 'xl', 'm', 'xl'] as const}
       >
         <wui-avatar
           alt=${this.address}
           address=${this.address}
-          .imageSrc=${this.profileImage || ''}
+          imageSrc=${ifDefined(this.profileImage)}
+          size="2lg"
         ></wui-avatar>
         <wui-flex flexDirection="column" alignItems="center">
           <wui-flex gap="3xs" alignItems="center" justifyContent="center">
-            <wui-text variant="large-600" color="fg-100" data-testid="account-settings-address">
-              ${UiHelperUtil.getTruncateString({
-                string: this.address,
-                charsStart: 4,
-                charsEnd: 6,
-                truncate: 'middle'
-              })}
+            <wui-text variant="title-6-600" color="fg-100" data-testid="account-settings-address">
+              ${name
+                ? UiHelperUtil.getTruncateString({
+                    string: name,
+                    charsStart: 20,
+                    charsEnd: 0,
+                    truncate: 'end'
+                  })
+                : UiHelperUtil.getTruncateString({
+                    string: this.address,
+                    charsStart: 4,
+                    charsEnd: 6,
+                    truncate: 'middle'
+                  })}
             </wui-text>
             <wui-icon-link
               size="md"
@@ -114,7 +120,6 @@ export class W3mAccountSettingsView extends LitElement {
           </wui-flex>
         </wui-flex>
       </wui-flex>
-
       <wui-flex flexDirection="column" gap="m">
         <wui-flex flexDirection="column" gap="xs" .padding=${['0', 'l', 'm', 'l'] as const}>
           ${this.authCardTemplate()}
@@ -201,7 +206,10 @@ export class W3mAccountSettingsView extends LitElement {
 
   private onCopyAddress() {
     try {
-      if (this.address) {
+      if (this.profileName) {
+        CoreHelperUtil.copyToClopboard(this.profileName)
+        SnackController.showSuccess('Name copied')
+      } else if (this.address) {
         CoreHelperUtil.copyToClopboard(this.address)
         SnackController.showSuccess('Address copied')
       }
