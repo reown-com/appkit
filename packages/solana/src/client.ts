@@ -337,21 +337,18 @@ export class Web3Modal extends Web3ModalScaffold {
       } else {
         const walletArray = walletId?.split('_') ?? ''
         if (walletArray[0] === 'announced' && standardAdapter) {
-          const adapter = standardAdapter.find(
-            a => a.name.toLocaleLowerCase() === walletArray[1]?.toLocaleLowerCase()
-          )
+          const adapter = standardAdapter.find(a => a.name === walletArray[1])
 
           if (adapter) {
-            await adapter.connect()
+            await adapter.autoConnect()
             this.setInjectedProvider(adapter as unknown as Provider)
 
             return
           }
         } else if (walletArray[0] === 'injected') {
           const adapter = [...(standardAdapter ?? []), ...this.walletAdapters].find(
-            a => a.name.toLocaleLowerCase() === walletArray[1]?.toLocaleLowerCase()
+            a => a.name === walletArray[1]
           ) as ExtendedBaseWalletAdapter
-
           await adapter.connect()
           this.setInjectedProvider(adapter as unknown as Provider)
 

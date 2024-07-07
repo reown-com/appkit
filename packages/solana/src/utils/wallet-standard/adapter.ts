@@ -130,8 +130,8 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
     return this.#connect({ silent: true })
   }
 
-  async connect(): Promise<void> {
-    return this.#connect()
+  async connect(params?: StandardConnectInput): Promise<void> {
+    return this.#connect(params)
   }
 
   async #connect(input?: StandardConnectInput): Promise<void> {
