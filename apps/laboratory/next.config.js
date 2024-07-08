@@ -1,4 +1,5 @@
 /** @type {import('next').NextConfig} */
+// Keep in-sync with https://docs.walletconnect.com/advanced/security/content-security-policy
 const cspHeader = `
   default-src 'self';
   script-src 'self' 'unsafe-inline';
