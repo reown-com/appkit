@@ -201,6 +201,12 @@ export class Web3Modal extends Web3ModalScaffold {
           onUri(uri)
         })
 
+        // When connecting through walletconnect, we need to set the clientId in the store
+        const clientId = await WalletConnectProvider.signer?.client?.core?.crypto?.getClientId()
+        if (clientId) {
+          this.setClientId(clientId)
+        }
+
         if (siweConfig?.options?.enabled) {
           const { SIWEController, getDidChainId, getDidAddress } = await import('@web3modal/siwe')
           const result = await WalletConnectProvider.authenticate({
@@ -643,16 +649,18 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private async initWalletConnectProvider() {
+    const rpcMap = this.chains
+      ? this.chains.reduce<Record<number, string>>((map, chain) => {
+          map[chain.chainId] = chain.rpcUrl
+
+          return map
+        }, {})
+      : ({} as Record<number, string>)
+
     const walletConnectProviderOptions: EthereumProviderOptions = {
       projectId: this.projectId,
       showQrModal: false,
-      rpcMap: this.chains
-        ? this.chains.reduce<Record<number, string>>((map, chain) => {
-            map[chain.chainId] = chain.rpcUrl
-
-            return map
-          }, {})
-        : ({} as Record<number, string>),
+      rpcMap,
       optionalChains: [...this.chains.map(chain => chain.chainId)] as [number],
       metadata: {
         name: this.metadata ? this.metadata.name : '',

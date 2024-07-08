@@ -176,6 +176,12 @@ export class Web3Modal extends Web3ModalScaffold {
           onUri(uri)
         })
 
+        // When connecting through walletconnect, we need to set the clientId in the store
+        const clientId = await WalletConnectProvider.signer?.client?.core?.crypto?.getClientId()
+        if (clientId) {
+          this.setClientId(clientId)
+        }
+
         if (siweConfig?.options?.enabled) {
           const { SIWEController, getDidChainId, getDidAddress } = await import('@web3modal/siwe')
           const result = await WalletConnectProvider.authenticate({
