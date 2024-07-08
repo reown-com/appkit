@@ -310,7 +310,7 @@ export const SendController = {
         tokenDecimals: Number(state.token?.quantity.decimals) ?? 18,
         trackId: 'walletconnect',
         tokenType: tokenType,
-        baseUrl: 'https://profile.walletconnect.com/claim'
+        baseUrl: 'http://localhost:3001/claim'
       }
 
       const network = NetworkController.state.caipNetwork
@@ -370,12 +370,10 @@ export const SendController = {
           }
         })
 
-        console.log(process.env['PEANUT_API_KEY'])
-
         const response = await makeDepositGasless({
           payload: makeGaslessDepositPayloadResponse.payload,
           signature: signature,
-          APIKey: process.env['PEANUT_API_KEY'] ?? '' // TODO: add API key
+          APIKey: process.env['PEANUT_API_KEY']! // TODO: add API key
         })
         hash = response.txHash
       } else {
@@ -415,7 +413,7 @@ export const SendController = {
       SnackController.showSuccess('Link copied to clipboard!')
       CoreHelperUtil.copyToClopboard(getLinksFromTxResponse.links[0] ?? '')
 
-      RouterController.push('Account')
+      RouterController.reset('Account')
       this.resetSend()
     } catch (error: any) {
       if (error.toString().includes('insufficient funds for gas * price + value')) {
@@ -427,7 +425,6 @@ export const SendController = {
       } else {
         SnackController.showError('Something went wrong')
       }
-      console.log('error', error)
     } finally {
       this.setLoading(false)
     }

@@ -2,6 +2,7 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy } from 'valtio/vanilla'
 import type { CaipNetwork, Connector, WcWallet } from '../utils/TypeUtil.js'
 import type { SwapInputTarget } from './SwapController.js'
+import type { Transaction } from '@web3modal/common'
 
 // -- Types --------------------------------------------- //
 type TransactionAction = {
@@ -41,6 +42,7 @@ export interface RouterControllerState {
     | 'RegisterAccountNameSuccess'
     | 'SwitchNetwork'
     | 'Transactions'
+    | 'TransactionDetails'
     | 'UnsupportedChain'
     | 'UpdateEmailWallet'
     | 'UpdateEmailPrimaryOtp'
@@ -67,6 +69,7 @@ export interface RouterControllerState {
     newEmail?: string
     target?: SwapInputTarget
     swapUnsupportedChain?: boolean
+    transaction?: Transaction
   }
   transactionStack: TransactionAction[]
 }

@@ -21,6 +21,15 @@ export default css`
     flex: 1;
   }
 
+  :host wui-flex.wui-pointer {
+    cursor: pointer;
+  }
+
+  :host wui-flex.wui-pointer:hover {
+    background-color: var(--wui-color-gray-glass-002);
+    border-radius: var(--wui-border-radius-xs);
+  }
+
   :host wui-flex wui-flex {
     overflow: hidden;
   }

@@ -99,6 +99,8 @@ export class W3mRouter extends LitElement {
         return html`<w3m-get-wallet-view></w3m-get-wallet-view>`
       case 'Transactions':
         return html`<w3m-transactions-view></w3m-transactions-view>`
+      case 'TransactionDetails':
+        return html`<w3m-transaction-details-view></w3m-transaction-details-view>`
       case 'OnRampProviders':
         return html`<w3m-onramp-providers-view></w3m-onramp-providers-view>`
       case 'OnRampActivity':

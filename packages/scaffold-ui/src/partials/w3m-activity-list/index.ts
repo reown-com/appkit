@@ -125,9 +125,17 @@ export class W3mActivityList extends LitElement {
   }
 
   private templateRenderTransaction(transaction: Transaction, isLastTransaction: boolean) {
-    const { date, descriptions, direction, isAllNFT, images, status, transfers, type , application} =
-      this.getTransactionListItemProps(transaction)
-    console.log(application)
+    const {
+      date,
+      descriptions,
+      direction,
+      isAllNFT,
+      images,
+      status,
+      transfers,
+      type,
+      application
+    } = this.getTransactionListItemProps(transaction)
     const haveMultipleTransfers = transfers?.length > 1
     const haveTwoTransfers = transfers?.length === 2
 
@@ -141,7 +149,8 @@ export class W3mActivityList extends LitElement {
           type=${type}
           .images=${images}
           .descriptions=${descriptions}
-          .isPeanutTransfer=${transaction.metadata.application.name === 'peanut_created_link'}
+          .isPeanutTransfer=${application === 'peanut_created_link'}
+          .
         ></wui-transaction-list-item>
       `
     }
@@ -174,6 +183,11 @@ export class W3mActivityList extends LitElement {
         .images=${images}
         .descriptions=${descriptions}
         .isPeanutTransfer=${transaction.metadata.application.name === 'peanut_created_link'}
+        .onClick=${() => {
+          RouterController.push('TransactionDetails', {
+            transaction: transaction
+          })
+        }}
       ></wui-transaction-list-item>
     `
   }

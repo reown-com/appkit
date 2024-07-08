@@ -8,6 +8,7 @@ import '../../components/wui-text/index.js'
 import '../wui-transaction-visual/index.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
+import { RouterController } from '@web3modal/core'
 
 @customElement('wui-transaction-list-item')
 export class WuiTransactionListItem extends LitElement {
@@ -36,10 +37,15 @@ export class WuiTransactionListItem extends LitElement {
 
   @property({ type: Boolean }) public isPeanutTransfer: boolean = false
 
+  @property() public onClick: () => void = () => null
+
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex>
+      <wui-flex
+        class=${this.isPeanutTransfer ? 'wui-pointer' : ''}
+        @click=${() => this.isPeanutTransfer && this.onClick()}
+      >
         <wui-transaction-visual
           .status=${this.status}
           direction=${ifDefined(this.direction)}
@@ -49,7 +55,9 @@ export class WuiTransactionListItem extends LitElement {
         ></wui-transaction-visual>
         <wui-flex flexDirection="column" gap="3xs">
           <wui-text variant="paragraph-600" color="fg-100">
-            ${this.isPeanutTransfer ? "Link created" : TransactionTypePastTense[this.type] || this.type}
+            ${this.isPeanutTransfer
+              ? 'Link created'
+              : TransactionTypePastTense[this.type] || this.type}
           </wui-text>
           <wui-flex class="description-container">
             ${this.templateDescription()} ${this.templateSecondDescription()}
