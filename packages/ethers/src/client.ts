@@ -265,6 +265,8 @@ export class Web3Modal extends Web3ModalScaffold {
         info: Info
         provider: Provider
       }) => {
+        // If connecting with something else than walletconnect, we need to clear the clientId in the store
+        this.setClientId(null)
         if (id === ConstantsUtil.INJECTED_CONNECTOR_ID) {
           const InjectedProvider = ethersConfig.injected
           if (!InjectedProvider) {
@@ -323,6 +325,7 @@ export class Web3Modal extends Web3ModalScaffold {
         const providerType = EthersStoreUtil.state.providerType
         localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
         EthersStoreUtil.reset()
+        this.setClientId(null)
         if (siweConfig?.options?.signOutOnDisconnect) {
           const { SIWEController } = await import('@web3modal/siwe')
           await SIWEController.signOut()
@@ -621,7 +624,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
     localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
     EthersStoreUtil.reset()
-
+    this.setClientId(null)
     if (providerType === ConstantsUtil.AUTH_CONNECTOR_ID) {
       await this.authProvider?.disconnect()
     } else if (providerType === 'injected' || providerType === 'eip6963') {

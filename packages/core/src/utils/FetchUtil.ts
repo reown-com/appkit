@@ -1,7 +1,7 @@
 // -- Types ----------------------------------------------------------------------
 interface Options {
   baseUrl: string
-  clientId?: string
+  clientId: string | null
 }
 
 interface RequestArguments {

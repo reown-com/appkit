@@ -390,7 +390,7 @@ export const BlockchainApiController = {
     }
   },
 
-  setClientId(clientId: string) {
+  setClientId(clientId: string | null) {
     state.clientId = clientId
     state.api = new FetchUtil({ baseUrl, clientId })
   }
