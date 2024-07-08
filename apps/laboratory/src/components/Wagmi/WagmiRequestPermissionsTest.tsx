@@ -2,26 +2,22 @@ import { Button, Stack, Text } from '@chakra-ui/react'
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
 import { useAccount, type Connector } from 'wagmi'
 import { type Chain } from 'wagmi/chains'
-import { type GrantPermissionsReturnType } from 'viem/experimental'
 import { walletActionsErc7715 } from 'viem/experimental'
 import { useCallback, useState, useEffect } from 'react'
 import { useChakraToast } from '../Toast'
-import { createWalletClient, custom, parseEther } from 'viem'
+import { createPublicClient, custom, parseEther } from 'viem'
 import { EIP_7715_RPC_METHODS } from '../../utils/EIP5792Utils'
-import { GRANTED_PERMISSIONS_KEY } from '../../utils/LocalStorage'
 import { useLocalSigner } from '../../hooks/useLocalSigner'
-import { useLocalStorageState } from '../../hooks/useLocalStorageState'
 import { sepolia } from 'viem/chains'
 import { encodeSecp256k1PublicKeyToDID } from '../../utils/CommonUtils'
+import { useGrantedPermissions } from '../../hooks/useGrantedPermissions'
 
 export function WagmiRequestPermissionsTest() {
   const { status, chain, address, connector } = useAccount()
 
   const { signer } = useLocalSigner()
   const [isRequestPermissionLoading, setRequestPermissionLoading] = useState<boolean>(false)
-  const [grantedPermissions, setGrantedPermissions] = useLocalStorageState<
-    GrantPermissionsReturnType | undefined
-  >(GRANTED_PERMISSIONS_KEY, undefined)
+  const { grantedPermissions, setGrantedPermissions } = useGrantedPermissions()
 
   const [ethereumProvider, setEthereumProvider] =
     useState<Awaited<ReturnType<(typeof EthereumProvider)['init']>>>()
@@ -32,13 +28,17 @@ export function WagmiRequestPermissionsTest() {
 
   useEffect(() => {
     if (isConnected && connector && address && chain) {
-      fetchProviderAndAccountCapabilities(connector, chain)
+      fetchProviderAndAccountCapabilities(connector, chain).then(provider => {
+        setEthereumProvider(provider)
+      })
     }
   }, [isConnected, connector, address])
 
   const onRequestPermissions = useCallback(async () => {
     setRequestPermissionLoading(true)
     if (!ethereumProvider) {
+      setRequestPermissionLoading(false)
+
       return
     }
     try {
@@ -46,7 +46,7 @@ export function WagmiRequestPermissionsTest() {
       if (!targetPublicKey) {
         throw new Error('Local signer not initialized')
       }
-      const _walletClient = createWalletClient({
+      const _walletClient = createPublicClient({
         chain: sepolia,
         transport: custom(ethereumProvider)
       }).extend(walletActionsErc7715())
@@ -91,7 +91,7 @@ export function WagmiRequestPermissionsTest() {
       })
     }
     setRequestPermissionLoading(false)
-  }, [])
+  }, [ethereumProvider, signer])
 
   const onClearPermissions = useCallback(() => {
     setGrantedPermissions(undefined)
@@ -113,8 +113,10 @@ export function WagmiRequestPermissionsTest() {
       chainId: connectedChain.id
     })
     if (connectedProvider instanceof EthereumProvider) {
-      setEthereumProvider(connectedProvider)
+      return connectedProvider
     }
+
+    return undefined
   }
 
   if (!isConnected || !ethereumProvider || !address) {

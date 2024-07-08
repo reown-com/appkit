@@ -1,21 +1,16 @@
 import { Button, Flex, Stack, Text } from '@chakra-ui/react'
 import { useAccount, useReadContract } from 'wagmi'
-import { type GrantPermissionsReturnType } from 'viem/experimental'
 import { useState } from 'react'
 import { useChakraToast } from '../Toast'
 import { encodeFunctionData, parseEther } from 'viem'
-import { GRANTED_PERMISSIONS_KEY } from '../../utils/LocalStorage'
-import { useLocalStorageState } from '../../hooks/useLocalStorageState'
 import { abi as donutContractAbi, address as donutContractaddress } from '../../utils/DonutContract'
 import { usePermissions } from '../../hooks/usePermissions'
+import { useGrantedPermissions } from '../../hooks/useGrantedPermissions'
 
 export function WagmiPurchaseDonutWithPermissionsTest() {
-  const { address } = useAccount()
-  const { buildAndSendTransactionsWithPermissions } = usePermissions()
-  const [grantedPermissions] = useLocalStorageState<GrantPermissionsReturnType | undefined>(
-    GRANTED_PERMISSIONS_KEY,
-    undefined
-  )
+  const { address, chain } = useAccount()
+  const { buildAndSendTransactionsWithPermissions } = usePermissions(chain)
+  const { grantedPermissions } = useGrantedPermissions()
   const {
     data: donutsOwned,
     refetch: fetchDonutsOwned,

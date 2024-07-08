@@ -5,9 +5,10 @@ import { Web3ModalButtons } from '../../components/Web3ModalButtons'
 import { WagmiPermissionsTest } from '../../components/Wagmi/WagmiPermissionsTest'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
-import { sepolia } from 'wagmi/chains'
+import { foundry, sepolia } from 'wagmi/chains'
 import { walletConnect } from 'wagmi/connectors'
 import { OPTIONAL_METHODS } from '@walletconnect/ethereum-provider'
+import { GrantedPermissionsProvider } from '../../hooks/context/GrantedPermissionContext'
 
 const queryClient = new QueryClient()
 
@@ -21,10 +22,11 @@ const connectors = [
   })
 ]
 const wagmiConfig = createConfig({
-  chains: [sepolia],
+  chains: [foundry, sepolia],
   connectors,
   transports: {
-    11155111: http()
+    11155111: http(),
+    31337: http()
   }
 })
 
@@ -43,8 +45,10 @@ export default function Wagmi() {
   return (
     <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
-        <Web3ModalButtons />
-        <WagmiPermissionsTest />
+        <GrantedPermissionsProvider>
+          <Web3ModalButtons />
+          <WagmiPermissionsTest />
+        </GrantedPermissionsProvider>
       </QueryClientProvider>
     </WagmiProvider>
   )
