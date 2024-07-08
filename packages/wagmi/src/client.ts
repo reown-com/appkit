@@ -588,7 +588,6 @@ export class Web3Modal extends Web3ModalScaffold {
         })
       }
     })
-    console.log('>>> w3mConnectors', w3mConnectors)
     this.setConnectors(w3mConnectors)
     this.syncAuthConnector(filteredConnectors)
   }
