@@ -1,5 +1,15 @@
 # @web3modal/cdn
 
+## 5.0.6
+
+### Patch Changes
+
+- fix: Social Login illegal invocation issue. Wagmi tests
+
+- Updated dependencies []:
+  - @web3modal/ethers@5.0.6
+  - @web3modal/wagmi@5.0.6
+
 ## 5.0.5
 
 ### Patch Changes
