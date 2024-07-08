@@ -430,9 +430,11 @@ export class Web3Modal extends Web3ModalScaffold {
         this.setApprovedCaipNetworksData()
       ])
       this.hasSyncedConnectedAccount = true
+      this.setAllAccounts([{ address, type: 'eoa' }])
     } else if (!isConnected && this.hasSyncedConnectedAccount) {
       this.resetWcConnection()
       this.resetNetwork()
+      this.setAllAccounts([])
     }
   }
 
@@ -589,7 +591,6 @@ export class Web3Modal extends Web3ModalScaffold {
         })
       }
     })
-    console.log('>>> w3mConnectors', w3mConnectors)
     this.setConnectors(w3mConnectors)
     this.syncAuthConnector(filteredConnectors)
   }

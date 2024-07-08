@@ -22,6 +22,7 @@ export interface OptionsControllerState {
   metadata?: Metadata
   enableOnramp?: boolean
   enableWalletFeatures?: boolean
+  hasMultipleAddresses?: boolean
   disableAppend?: boolean
   enableEIP6963?: boolean
 }
@@ -117,5 +118,9 @@ export const OptionsController = {
 
   setEIP6963Enabled(enableEIP6963: OptionsControllerState['enableEIP6963']) {
     state.enableEIP6963 = enableEIP6963
+  },
+
+  setHasMultipleAddresses(hasMultipleAddresses: OptionsControllerState['hasMultipleAddresses']) {
+    state.hasMultipleAddresses = hasMultipleAddresses
   }
 }

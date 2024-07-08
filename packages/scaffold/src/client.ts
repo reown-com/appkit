@@ -10,7 +10,8 @@ import type {
   ThemeVariables,
   ModalControllerState,
   ConnectedWalletInfo,
-  RouterControllerState
+  RouterControllerState,
+  CaipNetwork
 } from '@web3modal/core'
 import {
   BlockchainApiController,
@@ -125,6 +126,14 @@ export class Web3ModalScaffold {
     return AccountController.subscribeKey('connectedWalletInfo', callback)
   }
 
+  public subscribeShouldUpdateToAddress(callback: (newState?: string) => void) {
+    AccountController.subscribeKey('shouldUpdateToAddress', callback)
+  }
+
+  public subscribeCaipNetworkChange(callback: (newState?: CaipNetwork) => void) {
+    NetworkController.subscribeKey('caipNetwork', callback)
+  }
+
   public getState() {
     return PublicStateController.state
   }
@@ -181,6 +190,19 @@ export class Web3ModalScaffold {
   }
 
   protected getIsConnectedState = () => AccountController.state.isConnected
+
+  protected setAllAccounts: (typeof AccountController)['setAllAccounts'] = (addresses = []) => {
+    AccountController.setAllAccounts(addresses)
+    OptionsController.setHasMultipleAddresses(addresses?.length > 1)
+  }
+
+  protected addAddressLabel: (typeof AccountController)['addAddressLabel'] = (address, label) => {
+    AccountController.addAddressLabel(address, label)
+  }
+
+  protected removeAddressLabel: (typeof AccountController)['removeAddressLabel'] = address => {
+    AccountController.removeAddressLabel(address)
+  }
 
   protected setCaipAddress: (typeof AccountController)['setCaipAddress'] = (caipAddress, chain) => {
     AccountController.setCaipAddress(caipAddress, chain)
