@@ -6,7 +6,13 @@ export const ONRAMP_PROVIDERS = [
     name: 'coinbase',
     feeRange: '1-2%',
     url: ''
-  }
+  },
+  {
+    label: 'Meld.io',
+    name: 'meld',
+    feeRange: '1-2%',
+    url: ''
+  },
 ]
 
 export const ConstantsUtil = {

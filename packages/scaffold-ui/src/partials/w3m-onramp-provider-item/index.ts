@@ -45,8 +45,8 @@ export class W3mOnRampProviderItem extends LitElement {
           </wui-flex>
         </wui-flex>
         ${this.loading
-          ? html`<wui-loading-spinner color="fg-200" size="md"></wui-loading-spinner>`
-          : html`<wui-icon name="chevronRight" color="fg-200" size="sm"></wui-icon>`}
+        ? html`<wui-loading-spinner color="fg-200" size="md"></wui-loading-spinner>`
+        : html`<wui-icon name="chevronRight" color="fg-200" size="sm"></wui-icon>`}
       </button>
     `
   }
@@ -59,12 +59,12 @@ export class W3mOnRampProviderItem extends LitElement {
     return html`
       <wui-flex class="networks">
         ${slicedNetworks?.map(
-          network => html`
+      network => html`
             <wui-flex class="network-icon">
               <wui-image src=${ifDefined(AssetUtil.getNetworkImage(network))}></wui-image>
             </wui-flex>
           `
-        )}
+    )}
       </wui-flex>
     `
   }
