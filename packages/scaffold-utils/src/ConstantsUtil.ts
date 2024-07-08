@@ -12,7 +12,8 @@ export const ConstantsUtil = {
   EIP6963_ANNOUNCE_EVENT: 'eip6963:announceProvider',
   EIP6963_REQUEST_EVENT: 'eip6963:requestProvider',
   CONNECTOR_RDNS_MAP: {
-    coinbaseWallet: 'com.coinbase.wallet'
+    coinbaseWallet: 'com.coinbase.wallet',
+    coinbaseWalletSDK: 'com.coinbase.wallet'
   } as Record<string, string>,
-  VERSION: '5.0.2'
+  VERSION: '5.0.6'
 }

@@ -65,6 +65,14 @@ export const ApiController = {
     }
   },
 
+  _filterOutExtensions(wallets: WcWallet[]) {
+    if (OptionsController.state.isUniversalProvider) {
+      return wallets.filter(w => Boolean(w.mobile_link || w.desktop_link || w.webapp_link))
+    }
+
+    return wallets
+  },
+
   async _fetchWalletImage(imageId: string) {
     const imageUrl = `${api.baseUrl}/getWalletImage/${imageId}`
     const blob = await api.getBlob({ path: imageUrl, headers: ApiController._getApiHeaders() })
@@ -96,7 +104,8 @@ export const ApiController = {
   },
 
   async fetchNetworkImages() {
-    const { requestedCaipNetworks } = NetworkController.state
+    const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
+
     const ids = requestedCaipNetworks?.map(({ imageId }) => imageId).filter(Boolean)
     if (ids) {
       await Promise.allSettled((ids as string[]).map(id => ApiController._fetchNetworkImage(id)))
@@ -190,7 +199,11 @@ export const ApiController = {
       ...(images as string[]).map(id => ApiController._fetchWalletImage(id)),
       CoreHelperUtil.wait(300)
     ])
-    state.wallets = CoreHelperUtil.uniqueBy([...state.wallets, ...data], 'id')
+
+    state.wallets = CoreHelperUtil.uniqueBy(
+      [...state.wallets, ...ApiController._filterOutExtensions(data)],
+      'id'
+    )
     state.count = count > state.count ? count : state.count
     state.page = page
   },
@@ -236,7 +249,7 @@ export const ApiController = {
       ...(images as string[]).map(id => ApiController._fetchWalletImage(id)),
       CoreHelperUtil.wait(300)
     ])
-    state.search = data
+    state.search = ApiController._filterOutExtensions(data)
   },
 
   async reFetchWallets() {
