@@ -268,9 +268,20 @@ export class AppKit {
   private async initControllers(options: AppKitOptions) {
     ChainController.setMultiChainEnabled(true)
     ChainController.initialize(options.adapters || [])
-    options.adapters?.forEach(adapter => {
+    options.adapters?.forEach(async adapter => {
       // @ts-expect-error will introduce construct later
       adapter.construct?.(this, options)
+
+      // Set this value for all chains
+      NetworkController.setAllowUnsupportedChain(options.allowUnsupportedChain, adapter.chain)
+
+      // Set the SIWE client for EVM chains
+      if (adapter.chain === ConstantsUtil.CHAIN.EVM) {
+        if (options.siweConfig) {
+          const { SIWEController } = await import('@web3modal/siwe')
+          SIWEController.setSIWEClient(options.siweConfig)
+        }
+      }
     })
 
     OptionsController.setProjectId(options.projectId)
@@ -301,16 +312,6 @@ export class AppKit {
 
     if (options.disableAppend) {
       OptionsController.setDisableAppend(Boolean(options.disableAppend))
-    }
-
-    if (options.allowUnsupportedChain) {
-      NetworkController.setAllowUnsupportedChain(options.allowUnsupportedChain)
-    }
-
-    if (options.siweControllerClient) {
-      const { SIWEController } = await import('@web3modal/siwe')
-
-      SIWEController.setSIWEClient(options.siweControllerClient)
     }
   }
 

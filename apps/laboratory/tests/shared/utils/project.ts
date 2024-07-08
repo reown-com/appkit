@@ -37,7 +37,7 @@ const braveOptions: UseOptions = {
 const WAGMI_EMAIL_BASED_REGEX = /(?:smart-account\.spec\.ts|siwe-sa\.spec\.ts|social\.spec\.ts).*$/u
 
 const SOLANA_UNIMPLEMENTED_TESTS_REGEX =
-  /^(?!.*(?:email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts|smart-account\.spec\.ts|social\.spec\.ts|siwe-sa\.spec\.ts|siwe-email\.spec\.ts)).*$/u
+  /(?:email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts|smart-account\.spec\.ts|social\.spec\.ts|siwe-sa\.spec\.ts|siwe-email\.spec\.ts|appkit\.spec\.ts).*$/u
 
 const customProjectProperties: CustomProjectProperties = {
   'Desktop Chrome/ethers': {
@@ -62,17 +62,17 @@ const customProjectProperties: CustomProjectProperties = {
   },
   // Exclude social.spec.ts, email.spec.ts, siwe.spec.ts, and canary.spec.ts from solana, not yet implemented
   'Desktop Chrome/solana': {
-    grep: SOLANA_UNIMPLEMENTED_TESTS_REGEX
+    testIgnore: SOLANA_UNIMPLEMENTED_TESTS_REGEX
   },
   'Desktop Brave/solana': {
     useOptions: braveOptions,
-    grep: SOLANA_UNIMPLEMENTED_TESTS_REGEX
+    testIgnore: SOLANA_UNIMPLEMENTED_TESTS_REGEX
   },
   'Desktop Firefox/solana': {
-    grep: SOLANA_UNIMPLEMENTED_TESTS_REGEX
+    testIgnore: SOLANA_UNIMPLEMENTED_TESTS_REGEX
   },
   'Desktop Safari/solana': {
-    grep: SOLANA_UNIMPLEMENTED_TESTS_REGEX
+    testIgnore: SOLANA_UNIMPLEMENTED_TESTS_REGEX
   }
 }
 

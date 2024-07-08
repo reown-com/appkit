@@ -1,4 +1,5 @@
-import { createWeb3Modal, defaultSolanaConfig } from '@web3modal/solana/react'
+import { createAppKit } from '@web3modal/appkit/solana/react'
+import { defaultSolanaConfig } from '@web3modal/appkit/adapters/solana/web3js'
 
 import { ThemeStore } from '../../utils/StoreUtil'
 import { solana, solanaDevnet, solanaTestnet } from '../../utils/ChainsUtil'
@@ -21,7 +22,7 @@ export const solanaConfig = defaultSolanaConfig({
   metadata: ConstantsUtil.Metadata
 })
 
-const modal = createWeb3Modal({
+const modal = createAppKit({
   solanaConfig,
   projectId: ConstantsUtil.ProjectId,
   metadata: ConstantsUtil.Metadata,

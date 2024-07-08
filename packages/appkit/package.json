@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/appkit",
-  "version": "5.0.5",
+  "version": "5.0.6",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -24,6 +24,21 @@
       "import": "./dist/esm/exports/wagmi/index.js",
       "default": "./dist/esm/exports/wagmi/index.js"
     },
+    "./wagmi/react": {
+      "types": "./dist/types/exports/wagmi/react.d.ts",
+      "import": "./dist/esm/exports/wagmi/react.js",
+      "default": "./dist/esm/exports/wagmi/react.js"
+    },
+    "./solana": {
+      "types": "./dist/types/exports/solana/index.d.ts",
+      "import": "./dist/esm/exports/solana/index.js",
+      "default": "./dist/esm/exports/solana/index.js"
+    },
+    "./solana/react": {
+      "types": "./dist/types/exports/solana/react.d.ts",
+      "import": "./dist/esm/exports/solana/react.js",
+      "default": "./dist/esm/exports/solana/react.js"
+    },
     "./adapters/evm/wagmi": {
       "types": "./dist/types/adapters/evm/wagmi/index.d.ts",
       "import": "./dist/esm/adapters/evm/wagmi/index.js",
@@ -43,12 +58,13 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@web3modal/common": "5.0.5",
-    "@web3modal/core": "5.0.5",
-    "@web3modal/ui": "5.0.5",
-    "@web3modal/siwe": "5.0.5",
-    "@web3modal/wallet": "5.0.5",
-    "@web3modal/scaffold-ui": "5.0.5",
+    "@web3modal/common": "5.0.6",
+    "@web3modal/core": "5.0.6",
+    "@web3modal/ui": "5.0.6",
+    "@web3modal/siwe": "5.0.6",
+    "@web3modal/wallet": "5.0.6",
+    "@web3modal/scaffold-ui": "5.0.6",
+    "@web3modal/scaffold-react": "5.0.6",
     "lit": "3.1.0"
   },
   "keywords": [

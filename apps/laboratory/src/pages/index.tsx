@@ -46,7 +46,9 @@ export default function HomePage() {
 
       <Card marginTop={10}>
         <CardHeader>
-          <Heading size="md">Wagmi</Heading>
+          <Heading size="md">
+            Wagmi <Badge>New arc</Badge>
+          </Heading>
         </CardHeader>
 
         <CardBody>
@@ -102,7 +104,9 @@ export default function HomePage() {
 
       <Card marginTop={10} marginBottom={10}>
         <CardHeader>
-          <Heading size="md">Solana</Heading>
+          <Heading size="md">
+            Solana <Badge>New arc</Badge>
+          </Heading>
         </CardHeader>
 
         <CardBody>

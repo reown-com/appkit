@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Button, Stack, Text, Spacer, Link } from '@chakra-ui/react'
-import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/solana/react'
+import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/appkit/solana/react'
 import {
   PublicKey,
   Transaction,

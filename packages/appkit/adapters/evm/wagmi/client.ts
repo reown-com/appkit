@@ -89,6 +89,12 @@ export class EVMWagmiClient {
 
   public defaultChain: CaipNetwork | undefined = undefined
 
+  public tokens = HelpersUtil.getCaipTokens(this.options?.tokens)
+
+  public getCaipDefaultChain = this.options?.defaultChain
+
+  public siweControllerClient = this.options?.siweConfig
+
   public constructor(options: Web3ModalClientOptions<CoreConfig>) {
     const { wagmiConfig, defaultChain } = options
 
@@ -98,6 +104,7 @@ export class EVMWagmiClient {
 
     this.wagmiConfig = wagmiConfig
     this.defaultChain = getCaipDefaultChain(defaultChain)
+    this.siweControllerClient = options.siweConfig
 
     this.networkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
@@ -404,7 +411,8 @@ export class EVMWagmiClient {
 
     this.syncRequestedNetworks([...this.wagmiConfig.chains])
     // Enabling this disables authConnector to work on AppKit
-    // this.syncConnectors([...this.wagmiConfig.connectors.map(c => ({ ...c, chain: this.chain }))])
+    // But it's not setting external connector
+    this.syncConnectors([...this.wagmiConfig.connectors.map(c => ({ ...c, chain: this.chain }))])
     this.initAuthConnectorListeners([...this.wagmiConfig.connectors])
 
     // Wagmi listeners
@@ -426,12 +434,6 @@ export class EVMWagmiClient {
 
     this.appKit?.setEIP6963Enabled(options.enableEIP6963 !== false)
   }
-
-  public tokens = HelpersUtil.getCaipTokens(this.options?.tokens)
-
-  public getCaipDefaultChain = this.options?.defaultChain
-
-  public siweControllerClient = this.options?.siweConfig
 
   // @ts-expect-error: Overriden state type is correct
   public override subscribeState(callback: (state: Web3ModalState) => void) {

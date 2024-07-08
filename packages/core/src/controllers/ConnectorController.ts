@@ -69,7 +69,10 @@ export const ConnectorController = {
   },
 
   addConnector(connector: Connector | AuthConnector) {
-    state.connectors.push(ref(connector))
+    const existingAuthConnector = state.connectors.find(c => c.type === 'AUTH')
+    if (!existingAuthConnector) {
+      state.connectors.push(ref(connector))
+    }
 
     if (connector.id === 'w3mAuth') {
       const authConnector = connector as AuthConnector

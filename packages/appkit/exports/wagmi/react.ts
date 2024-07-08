@@ -11,7 +11,7 @@ export type * from '@web3modal/core'
 export { CoreHelperUtil } from '@web3modal/core'
 
 // -- Configs -----------------------------------------------------------
-export { defaultWagmiConfig } from '../../adapters/evm/wagmi/utils/defaultWagmiCoreConfig.js'
+export { defaultWagmiConfig } from '../../adapters/evm/wagmi/utils/defaultWagmiReactConfig.js'
 
 // -- Setup -------------------------------------------------------------
 type WagmiAppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 'sdkVersion'> & {
@@ -32,3 +32,15 @@ export function createAppKit(options: WagmiAppKitOptions) {
 }
 
 export { AppKit }
+
+// -- Types -------------------------------------------------------------
+export type { AppKitOptions } from '../../utils/TypesUtil.js'
+
+// -- Hooks -------------------------------------------------------------
+export {
+  useWeb3ModalTheme,
+  useWeb3Modal,
+  useWeb3ModalState,
+  useWeb3ModalEvents,
+  useWalletInfo
+} from '@web3modal/scaffold-react'

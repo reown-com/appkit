@@ -1,4 +1,4 @@
-import { createWeb3Modal } from '@web3modal/wagmi/react'
+import { createAppKit } from '@web3modal/appkit/wagmi/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 import { WagmiProvider, createConfig, http } from 'wagmi'
@@ -23,7 +23,7 @@ const wagmiConfig = createConfig({
   multiInjectedProviderDiscovery: false
 })
 
-const modal = createWeb3Modal({
+const modal = createAppKit({
   wagmiConfig,
   projectId: ConstantsUtil.ProjectId,
   enableAnalytics: true,

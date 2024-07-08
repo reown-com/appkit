@@ -1,7 +1,7 @@
 import { getCsrfToken, signIn, signOut, getSession } from 'next-auth/react'
 import type { SIWEVerifyMessageArgs, SIWECreateMessageArgs, SIWESession } from '@web3modal/siwe'
 import { createSIWEConfig, formatMessage } from '@web3modal/siwe'
-import { WagmiConstantsUtil } from './WagmiConstants'
+import { WagmiConstantsUtil } from './AppKitWagmiConstants'
 
 export const siweConfig = createSIWEConfig({
   signOutOnAccountChange: true,

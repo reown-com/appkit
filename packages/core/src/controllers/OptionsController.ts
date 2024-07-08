@@ -84,7 +84,6 @@ export const OptionsController = {
   },
 
   setCustomWallets(customWallets: OptionsControllerState['customWallets']) {
-    console.log('>>> customWallets', customWallets)
     state.customWallets = customWallets
   },
 

@@ -5,11 +5,10 @@
   "type": "module",
   "scripts": {
     "build:clean": "turbo run build:clean",
-    "build": "turbo run build:clean; turbo run build --concurrency=30",
+    "build": "turbo run build:clean; turbo run build --concurrency=35",
     "watch": "turbo run watch --concurrency=50 --continue",
     "gallery": "turbo run dev:gallery",
     "laboratory": "turbo run dev:laboratory",
-    "laboratory:appkit": "turbo run dev:laboratory-appkit",
     "demo": "turbo run dev:demo",
     "examples": "turbo run dev:example",
     "build:gallery": "turbo run build:clean; turbo run build:gallery",

@@ -8,7 +8,7 @@ import {
   SystemProgram
 } from '@solana/web3.js'
 
-import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/solana/react'
+import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/appkit/solana/react'
 
 import { solana } from '../../utils/ChainsUtil'
 import { useChakraToast } from '../Toast'

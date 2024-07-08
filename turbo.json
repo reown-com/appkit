@@ -128,9 +128,6 @@
     "dev:laboratory": {
       "cache": false
     },
-    "dev:laboratory-appkit": {
-      "cache": false
-    },
     "dev:gallery": {
       "cache": false
     },

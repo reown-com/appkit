@@ -1,6 +1,6 @@
 import { Button } from '@chakra-ui/react'
 
-import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/solana/react'
+import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/appkit/solana/react'
 
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { useChakraToast } from '../Toast'
