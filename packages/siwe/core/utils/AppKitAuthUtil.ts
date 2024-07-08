@@ -133,7 +133,12 @@ export const appKitAuthConfig = new Web3ModalSIWEClient({
     statement: 'Please sign with your account',
     iat: new Date().toISOString()
   }),
-  createMessage: ({ address, ...args }: SIWECreateMessageArgs) => formatMessage(args, address),
+  createMessage: ({ address, ...args }: SIWECreateMessageArgs) => {
+    console.log({ address, args })
+    const message = formatMessage(args, address)
+
+    return message
+  },
   getNonce: async () => {
     const { nonce } = await getNonce()
     if (!nonce) {

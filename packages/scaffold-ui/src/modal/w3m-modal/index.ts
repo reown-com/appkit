@@ -181,11 +181,19 @@ export class W3mModal extends LitElement {
         SIWEController.setSIWEClient(appKitAuthConfig)
       }
 
-      if (previousAddress === newAddress && previousNetworkId === newNetworkId) {
+      if (
+        previousAddress &&
+        previousAddress === newAddress &&
+        previousNetworkId &&
+        previousNetworkId === newNetworkId
+      ) {
         return
       }
 
-      const session = await SIWEController.getSession()
+      let session = SIWEController.state.session
+      if (!session) {
+        session = (await SIWEController.getSession()) ?? undefined
+      }
       if (session?.address && session?.chainId) {
         const { chainId, address } = session
 

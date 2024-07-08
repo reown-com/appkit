@@ -7,6 +7,7 @@ import { ThemeStore } from '../../utils/StoreUtil'
 import { getWagmiConfig } from '../../utils/WagmiConstants'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
+import { AppKitAuthInfo } from '../../components/AppKitAuthInfo'
 
 const queryClient = new QueryClient()
 
@@ -19,7 +20,8 @@ const modal = createWeb3Modal({
   metadata: ConstantsUtil.Metadata,
   termsConditionsUrl: 'https://walletconnect.com/terms',
   privacyPolicyUrl: 'https://walletconnect.com/privacy',
-  customWallets: ConstantsUtil.CustomWallets
+  customWallets: ConstantsUtil.CustomWallets,
+  enableAuth: true
 })
 
 ThemeStore.setModal(modal)
@@ -30,6 +32,7 @@ export default function Wagmi() {
       <QueryClientProvider client={queryClient}>
         <Web3ModalButtons />
         <WagmiModalInfo />
+        <AppKitAuthInfo />
         <WagmiTests />
       </QueryClientProvider>
     </WagmiProvider>

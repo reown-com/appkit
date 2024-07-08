@@ -30,6 +30,12 @@ export const wagmiSdkOptions = [
     description: 'Configuration using wagmi and implementing sign in with ethereum'
   },
   {
+    title: 'AppKit Auth - Hosted SIWE',
+    link: '/library/wagmi-auth/',
+    description:
+      'Configuration using wagmi and implementing sign in with ethereum with a hosted server'
+  },
+  {
     title: 'Email & Social',
     link: '/library/wagmi-email/',
     description: 'Configuration using wagmi and implementing email and social login'
@@ -46,6 +52,12 @@ export const ethersSdkOptions = [
     title: 'SIWE',
     link: '/library/ethers-siwe/',
     description: 'Configuration using ethers and implementing sign in with ethereum'
+  },
+  {
+    title: 'AppKit Auth - Hosted SIWE',
+    link: '/library/ethers-auth/',
+    description:
+      'Configuration using ethers and implementing sign in with ethereum with a hosted server'
   },
   {
     title: 'Email and Social',

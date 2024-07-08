@@ -5,6 +5,7 @@ import { ThemeStore } from '../../utils/StoreUtil'
 import { EthersConstants } from '../../utils/EthersConstants'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { EthersModalInfo } from '../../components/Ethers/EthersModalInfo'
+import { AppKitAuthInfo } from '../../components/AppKitAuthInfo'
 
 const modal = createWeb3Modal({
   ethersConfig: defaultConfig({
@@ -20,7 +21,8 @@ const modal = createWeb3Modal({
   metadata: ConstantsUtil.Metadata,
   termsConditionsUrl: 'https://walletconnect.com/terms',
   privacyPolicyUrl: 'https://walletconnect.com/privacy',
-  customWallets: ConstantsUtil.CustomWallets
+  customWallets: ConstantsUtil.CustomWallets,
+  enableAuth: true
 })
 
 ThemeStore.setModal(modal)
@@ -30,6 +32,7 @@ export default function Ethers() {
     <>
       <Web3ModalButtons />
       <EthersModalInfo />
+      <AppKitAuthInfo />
       <EthersTests />
     </>
   )
