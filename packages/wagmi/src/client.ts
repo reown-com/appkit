@@ -144,7 +144,8 @@ export class Web3Modal extends Web3ModalScaffold {
           onUri(data)
         })
 
-        const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
+        let chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
+
         // Make sure client uses ethereum provider version that supports `authenticate`
         if (this.getIsSiweEnabled() && typeof provider?.authenticate === 'function') {
           const { SIWEController, getDidChainId, getDidAddress } = await import('@web3modal/siwe')
@@ -190,10 +191,12 @@ export class Web3Modal extends Web3ModalScaffold {
                 clientId
               })
 
+              chainId = parseInt(cacaoChainId, 10)
+
               if (address && cacaoChainId) {
                 SIWEController.setSession({
                   address,
-                  chainId: parseInt(cacaoChainId, 10)
+                  chainId
                 })
               }
             } catch (error) {
@@ -211,7 +214,7 @@ export class Web3Modal extends Web3ModalScaffold {
            * this avoids case where wagmi throws because the connector is already connected
            * what we need connect() to do is to only setup internal event listeners
            */
-          this.wagmiConfig.state.current = ''
+          this.wagmiConfig.state.current = null
         }
         await connect(this.wagmiConfig, { connector, chainId })
       },

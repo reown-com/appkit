@@ -17,6 +17,10 @@ export async function getNonce() {
       credentials: 'include'
     })
 
+    if (!res.ok) {
+      return undefined
+    }
+
     const nonceRes = await res.json()
 
     return nonceRes
@@ -64,7 +68,7 @@ export async function authenticate(payload: {
       credentials: 'include'
     })
 
-    if (!res.ok && res.status === 404) {
+    if (!res.ok) {
       return undefined
     }
 
@@ -88,7 +92,7 @@ export async function updateUser(metadata: Record<string, unknown>) {
       credentials: 'include'
     })
 
-    if (!res.ok && res.status === 404) {
+    if (!res.ok) {
       return undefined
     }
 
@@ -134,7 +138,6 @@ export const appKitAuthConfig = new Web3ModalSIWEClient({
     iat: new Date().toISOString()
   }),
   createMessage: ({ address, ...args }: SIWECreateMessageArgs) => {
-    console.log({ address, args })
     const message = formatMessage(args, address)
 
     return message

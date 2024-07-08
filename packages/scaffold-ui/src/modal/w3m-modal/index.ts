@@ -181,12 +181,12 @@ export class W3mModal extends LitElement {
         SIWEController.setSIWEClient(appKitAuthConfig)
       }
 
-      if (
+      const isNoOp =
         previousAddress &&
         previousAddress === newAddress &&
         previousNetworkId &&
         previousNetworkId === newNetworkId
-      ) {
+      if (isNoOp) {
         return
       }
 
