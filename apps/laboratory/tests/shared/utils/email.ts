@@ -78,7 +78,7 @@ export class Email {
   }
 
   getEmailAddressToUse(index: number, domain = EMAIL_DOMAIN): string {
-    const randIndex = Math.floor(Math.random() * 101)
+    const randIndex = Math.floor(Math.random() * 10) % 9
 
     return `w3m-w${index}${randIndex}@${domain}`
   }

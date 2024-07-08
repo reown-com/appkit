@@ -50,7 +50,7 @@ jobs:
     name: 'Playwright Tests'
     runs-on:
       group: ubuntu-runners
-    timeout-minutes: 30
+    timeout-minutes: 20
     steps:
       - name: checkout
         uses: actions/checkout@v4
