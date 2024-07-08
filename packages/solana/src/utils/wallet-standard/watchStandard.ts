@@ -19,7 +19,7 @@ export function watchStandard(callback: (arg: StandardWalletAdapter[]) => void) 
     }),
     on('unregister', (...wallets) => {
       standardAdapters = standardAdapters.filter(standardAdapter =>
-        wallets.some(wallet => wallet === standardAdapter.wallet)
+        wallets.some(wallet => wallet.name === standardAdapter.wallet.name)
       )
       callback(standardAdapters)
     })

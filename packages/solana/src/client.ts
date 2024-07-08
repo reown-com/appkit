@@ -340,7 +340,7 @@ export class Web3Modal extends Web3ModalScaffold {
           const adapter = standardAdapter.find(a => a.name === walletArray[1])
 
           if (adapter) {
-            await adapter.autoConnect()
+            await adapter.connect()
             this.setInjectedProvider(adapter as unknown as Provider)
 
             return
