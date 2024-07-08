@@ -17,9 +17,11 @@ export interface OptionsControllerState {
   termsConditionsUrl?: string
   privacyPolicyUrl?: string
   isSiweEnabled?: boolean
+  isUniversalProvider?: boolean
   enableAnalytics?: boolean
   metadata?: Metadata
   enableOnramp?: boolean
+  hasMultipleAddresses?: boolean
   disableAppend?: boolean
   enableEIP6963?: boolean
 }
@@ -84,6 +86,10 @@ export const OptionsController = {
     state.isSiweEnabled = isSiweEnabled
   },
 
+  setIsUniversalProvider(isUniversalProvider: OptionsControllerState['isUniversalProvider']) {
+    state.isUniversalProvider = isUniversalProvider
+  },
+
   setEnableAnalytics(enableAnalytics: OptionsControllerState['enableAnalytics']) {
     state.enableAnalytics = enableAnalytics
   },
@@ -106,5 +112,9 @@ export const OptionsController = {
 
   setEIP6963Enabled(enableEIP6963: OptionsControllerState['enableEIP6963']) {
     state.enableEIP6963 = enableEIP6963
+  },
+
+  setHasMultipleAddresses(hasMultipleAddresses: OptionsControllerState['hasMultipleAddresses']) {
+    state.hasMultipleAddresses = hasMultipleAddresses
   }
 }

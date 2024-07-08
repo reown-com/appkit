@@ -69,7 +69,10 @@ export interface Web3ModalClientOptions<C extends Config>
   tokens?: Record<number, Token>
 }
 
-export type Web3ModalOptions<C extends Config> = Omit<Web3ModalClientOptions<C>, '_sdkVersion'>
+export type Web3ModalOptions<C extends Config> = Omit<
+  Web3ModalClientOptions<C>,
+  '_sdkVersion' | 'isUniversalProvider'
+>
 
 // @ts-expect-error: Overridden state type is correct
 interface Web3ModalState extends PublicStateControllerState {
@@ -426,9 +429,11 @@ export class Web3Modal extends Web3ModalScaffold {
         this.setApprovedCaipNetworksData()
       ])
       this.hasSyncedConnectedAccount = true
+      this.setAllAccounts([{ address, type: 'eoa' }])
     } else if (!isConnected && this.hasSyncedConnectedAccount) {
       this.resetWcConnection()
       this.resetNetwork()
+      this.setAllAccounts([])
     }
   }
 
@@ -725,6 +730,12 @@ export class Web3Modal extends Web3ModalScaffold {
           return
         }
         this.setPreferredAccountType(type as W3mFrameTypes.AccountType, this.chain)
+        this.syncAccount({
+          address: address as `0x${string}`,
+          isConnected: true,
+          chainId: NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id),
+          connector
+        })
       })
     }
   }

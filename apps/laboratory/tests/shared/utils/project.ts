@@ -34,8 +34,7 @@ const braveOptions: UseOptions = {
   }
 }
 
-const EMAIL_BASED_PLATFORM_REGEX =
-  /(?:email\.spec\.ts|smart-account\.spec\.ts|siwe-email\.spec\.ts|siwe-sa\.spec\.ts|social\.spec\.ts).*$/u
+const WAGMI_EMAIL_BASED_REGEX = /(?:smart-account\.spec\.ts|siwe-sa\.spec\.ts|social\.spec\.ts).*$/u
 
 const SOLANA_UNIMPLEMENTED_TESTS_REGEX =
   /^(?!.*(?:email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts|smart-account\.spec\.ts|social\.spec\.ts|siwe-sa\.spec\.ts|siwe-email\.spec\.ts|verify\.spec\.ts)).*$/u
@@ -52,14 +51,14 @@ const customProjectProperties: CustomProjectProperties = {
     testIgnore: /(?:social\.spec\.ts|verify\.spec\.ts).*$/u
   },
   'Desktop Brave/wagmi': {
-    testIgnore: EMAIL_BASED_PLATFORM_REGEX,
+    testIgnore: WAGMI_EMAIL_BASED_REGEX,
     useOptions: braveOptions
   },
   'Desktop Chrome/wagmi': {
-    testIgnore: EMAIL_BASED_PLATFORM_REGEX
+    testIgnore: WAGMI_EMAIL_BASED_REGEX
   },
   'Desktop Firefox/wagmi': {
-    testIgnore: EMAIL_BASED_PLATFORM_REGEX
+    testIgnore: WAGMI_EMAIL_BASED_REGEX
   },
   // Exclude social.spec.ts, email.spec.ts, siwe.spec.ts, and canary.spec.ts from solana, not yet implemented
   'Desktop Chrome/solana': {
