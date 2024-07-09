@@ -1,4 +1,4 @@
-import { createAppKit } from '@web3modal/appkit/wagmi'
+import { createAppKit } from '@web3modal/appkit/wagmi/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 import { WagmiProvider } from 'wagmi'
