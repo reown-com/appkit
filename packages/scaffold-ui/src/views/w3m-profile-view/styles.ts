@@ -52,12 +52,12 @@ export default css`
     padding: calc(var(--wui-spacing-m) - 1px) var(--wui-spacing-2l);
     height: 40px;
     border-radius: var(--wui-border-radius-xxs);
-    border: 1px solid var(--wui-gray-glass-002);
-    background: var(--wui-gray-glass-002);
+    border: 1px solid var(--wui-color-gray-glass-002);
+    background: var(--wui-color-gray-glass-002);
     cursor: pointer;
   }
 
   .account-settings-button:hover {
-    background: var(--wui-gray-glass-005);
+    background: var(--wui-color-gray-glass-005);
   }
 `
