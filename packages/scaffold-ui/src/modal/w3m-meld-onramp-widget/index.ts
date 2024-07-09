@@ -30,7 +30,6 @@ export class W3mMeldOnrampWidget extends LitElement {
       </wui-flex>
     `
   }
-
 }
 
 declare global {

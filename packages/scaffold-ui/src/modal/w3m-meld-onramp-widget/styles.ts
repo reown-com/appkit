@@ -10,7 +10,7 @@ export default css`
     border-radius: var(--wui-border-radius-l);
     width: 100%;
   }
-  
+
   :host > wui-flex > iframe {
     width: 100%;
     height: 100%;

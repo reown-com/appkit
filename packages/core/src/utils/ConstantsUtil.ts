@@ -11,8 +11,8 @@ export const ONRAMP_PROVIDERS = [
     label: 'Meld.io',
     name: 'meld',
     feeRange: '1-2%',
-    url: ''
-  },
+    url: 'https://meldcrypto.com/?publicKey=WXETMsajb7XcQBm7mcxAab:q3MtzJpiEMtXVNXsqYkAnAaBkgStybGVtZ'
+  }
 ]
 
 export const ConstantsUtil = {
