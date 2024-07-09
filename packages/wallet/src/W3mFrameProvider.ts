@@ -367,7 +367,9 @@ export class W3mFrameProvider {
     })
 
     return new Promise<W3mFrameTypes.Responses['FrameGetUserResponse']>((resolve, reject) => {
-      this.connectResolver = { resolve, reject }
+      if (!this.connectResolver) {
+        this.connectResolver = { resolve, reject }
+      }
     })
   }
 
@@ -523,12 +525,14 @@ export class W3mFrameProvider {
     this.setLastUsedChainId(event.payload.chainId)
 
     this.connectResolver?.resolve(event.payload)
+    this.connectResolver = undefined
   }
 
   private onConnectError(
     event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/GET_USER_ERROR' }>
   ) {
     this.connectResolver?.reject(event.payload.message)
+    this.connectResolver = undefined
   }
 
   private onConnectSocialSuccess(
