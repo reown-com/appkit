@@ -8,6 +8,7 @@ testMEmailSiwe.beforeEach(async ({ modalValidator, modalPage }) => {
   await modalWaletValidator.expectConnected()
   // Switch to supported network
   await modalWalletPage.openAccount()
+  await modalWalletPage.openProfileView()
   await modalWalletPage.openSettings()
   await modalWalletPage.switchNetwork('Polygon')
   await modalWalletPage.promptSiwe()
@@ -49,6 +50,7 @@ testMEmailSiwe(
     const modalWalletPage = modalPage as ModalWalletPage
     const targetChain = 'Sepolia'
     await modalWalletPage.openAccount()
+    await modalWalletPage.openProfileView()
     await modalWalletPage.openSettings()
     await modalWalletPage.switchNetwork(targetChain)
     await modalWalletPage.promptSiwe()
@@ -69,6 +71,7 @@ testMEmailSiwe(
     const modalWalletPage = modalPage as ModalWalletPage
     const targetChain = 'Ethereum'
     await modalWalletPage.openAccount()
+    await modalWalletPage.openProfileView()
     await modalWalletPage.openSettings()
     await modalWalletPage.switchNetwork(targetChain)
     /*
@@ -94,6 +97,7 @@ testMEmailSiwe('it should disconnect correctly', async ({ modalPage, modalValida
   const modalWalletPage = modalPage as ModalWalletPage
 
   await modalWalletPage.openAccount()
+  await modalWalletPage.openProfileView()
   await modalWalletPage.openSettings()
   await modalWalletPage.disconnect()
   await modalWaletValidator.expectDisconnected()
