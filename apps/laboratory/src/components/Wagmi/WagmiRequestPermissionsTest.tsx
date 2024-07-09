@@ -8,8 +8,7 @@ import { useChakraToast } from '../Toast'
 import { createPublicClient, custom, parseEther } from 'viem'
 import { EIP_7715_RPC_METHODS } from '../../utils/EIP5792Utils'
 import { useLocalSigner } from '../../hooks/useLocalSigner'
-import { sepolia } from 'viem/chains'
-import { encodeSecp256k1PublicKeyToDID } from '../../utils/CommonUtils'
+import { bigIntReplacer, encodeSecp256k1PublicKeyToDID } from '../../utils/CommonUtils'
 import { useGrantedPermissions } from '../../hooks/useGrantedPermissions'
 
 export function WagmiRequestPermissionsTest() {
@@ -47,12 +46,12 @@ export function WagmiRequestPermissionsTest() {
         throw new Error('Local signer not initialized')
       }
       const publicClient = createPublicClient({
-        chain: sepolia,
+        chain,
         transport: custom(ethereumProvider)
       }).extend(walletActionsErc7715())
 
-      const grantPermissionsResponse = await publicClient.grantPermissions({
-        expiry: 1716846083638,
+      const permissions = await publicClient.grantPermissions({
+        expiry: Date.now() + 24 * 60 * 60,
         permissions: [
           {
             type: 'native-token-transfer',
@@ -76,18 +75,23 @@ export function WagmiRequestPermissionsTest() {
           }
         }
       })
-      if (grantPermissionsResponse) {
-        setGrantedPermissions(grantPermissionsResponse)
+      if (permissions) {
+        setGrantedPermissions(permissions)
         setRequestPermissionLoading(false)
-        toast({ title: 'Success', description: 'Permissions granted successfully' })
+        toast({
+          type: 'success',
+          title: 'Permissions Granted',
+          description: JSON.stringify(permissions, bigIntReplacer)
+        })
 
         return
       }
       toast({ title: 'Error', description: 'Failed to obtain permissions' })
     } catch (error) {
       toast({
-        title: 'Error',
-        description: 'Failed to obtain permissions'
+        type: 'error',
+        title: 'Permissions Erros',
+        description: error instanceof Error ? error.message : 'Some error occurred'
       })
     }
     setRequestPermissionLoading(false)
