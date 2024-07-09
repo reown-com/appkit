@@ -8,7 +8,7 @@ import {
 import { pimlicoBundlerActions, pimlicoPaymasterActions } from 'permissionless/actions/pimlico'
 import { type UserOperation } from 'permissionless/types'
 import { createPublicClient, http, signatureToHex, type PublicClient } from 'viem'
-import { sepolia, type Chain } from 'wagmi/chains'
+import { foundry, sepolia, type Chain } from 'wagmi/chains'
 import { sign } from 'viem/accounts'
 import { useUserOpBuilder, type Execution } from './useUserOpBuilder'
 import { bigIntReplacer } from '../utils/CommonUtils'
@@ -157,9 +157,15 @@ export function usePermissions() {
 
       return `https://api.pimlico.io/v2/sepolia/rpc?apikey=${apiKey}`
     }
-    // Default to foundry chain
+    if (chainId === foundry.id) {
+      const localBundlerUrl = process.env['NEXT_PUBLIC_LOCAL_BUNDLER_URL']
+      if (!localBundlerUrl) {
+        throw new Error('env NEXT_PUBLIC_LOCAL_BUNDLER_URL missing.')
+      }
 
-    return 'http://localhost:4337'
+      return localBundlerUrl
+    }
+    throw new Error(`ChainId ${chainId} not supported`)
   }
 
   function createClients(chain: Chain, bundlerUrl: string) {
