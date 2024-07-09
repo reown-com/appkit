@@ -320,7 +320,7 @@ export class Web3Modal extends Web3ModalScaffold {
     return SolStoreUtil.state.connection
   }
 
-  public async checkActiveProviders(standardAdapter?: StandardWalletAdapter[]) {
+  public async checkActiveProviders(standardAdapters?: StandardWalletAdapter[]) {
     const walletId = localStorage.getItem(SolConstantsUtil.WALLET_ID)
 
     if (!walletId) {
@@ -335,9 +335,9 @@ export class Web3Modal extends Web3ModalScaffold {
           this.setWalletConnectProvider(account?.split(':')[2])
         }
       } else {
-        const walletArray = walletId?.split('_') ?? ''
-        if (walletArray[0] === 'announced' && standardAdapter) {
-          const adapter = standardAdapter.find(a => a.name === walletArray[1])
+        const walletArray = walletId?.split('_') ?? []
+        if (walletArray[0] === 'announced' && standardAdapters) {
+          const adapter = standardAdapters.find(a => a.name === walletArray[1])
 
           if (adapter) {
             await adapter.connect()
@@ -346,7 +346,7 @@ export class Web3Modal extends Web3ModalScaffold {
             return
           }
         } else if (walletArray[0] === 'injected') {
-          const adapter = [...(standardAdapter ?? []), ...this.walletAdapters].find(
+          const adapter = [...(standardAdapters ?? []), ...this.walletAdapters].find(
             a => a.name === walletArray[1]
           ) as ExtendedBaseWalletAdapter
           await adapter.connect()
