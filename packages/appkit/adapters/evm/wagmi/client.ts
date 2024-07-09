@@ -408,22 +408,17 @@ export class EVMWagmiClient {
     }
     this.appKit = appKit
     this.options = options
+    const connectors = this.wagmiConfig.connectors
 
     this.syncRequestedNetworks([...this.wagmiConfig.chains])
-    // Enabling this disables authConnector to work on AppKit
-    // But it's not setting external connector
-    this.syncConnectors([...this.wagmiConfig.connectors.map(c => ({ ...c, chain: this.chain }))])
-    this.initAuthConnectorListeners([...this.wagmiConfig.connectors])
+    this.syncConnectors(this.wagmiConfig.connectors)
+    this.syncAuthConnector(connectors.find(c => c.id === ConstantsUtil.AUTH_CONNECTOR_ID))
 
     // Wagmi listeners
     watchConnectors(this.wagmiConfig, {
       onChange: connectors => {
-        this.syncConnectors([
-          ...connectors.map(c => ({
-            ...c,
-            chain: this.chain
-          }))
-        ])
+        this.syncConnectors(connectors)
+        this.syncAuthConnector(connectors.find(c => c.id === ConstantsUtil.AUTH_CONNECTOR_ID))
       }
     })
     watchAccount(this.wagmiConfig, {
@@ -615,12 +610,15 @@ export class EVMWagmiClient {
   }
 
   private syncConnectors(
-    connectors: Web3ModalClientOptions<CoreConfig>['wagmiConfig']['connectors']
+    _connectors: Web3ModalClientOptions<CoreConfig>['wagmiConfig']['connectors']
   ) {
+    const connectors = _connectors.map(connector => ({ ...connector, chain: this.chain }))
     const uniqueIds = new Set()
-    const filteredConnectors = connectors.filter(
-      item => !uniqueIds.has(item.id) && uniqueIds.add(item.id)
-    )
+    const filteredConnectors = connectors.filter(item => {
+      const isDuplicate = uniqueIds.has(item.id)
+      uniqueIds.add(item.id)
+      return !isDuplicate
+    })
 
     const w3mConnectors: Connector[] = []
 
@@ -635,6 +633,7 @@ export class EVMWagmiClient {
       // If coinbase injected connector is present, skip coinbase sdk connector.
       const isCoinbaseRepeated = coinbaseConnector && id === coinbaseSDKId
       const shouldSkip = isCoinbaseRepeated || ConstantsUtil.AUTH_CONNECTOR_ID === id
+
       if (!shouldSkip) {
         w3mConnectors.push({
           id,
@@ -650,41 +649,45 @@ export class EVMWagmiClient {
         })
       }
     })
+
     this.appKit?.setConnectors(w3mConnectors)
-    this.syncAuthConnector(filteredConnectors)
   }
 
   private async syncAuthConnector(
-    connectors: Web3ModalClientOptions<CoreConfig>['wagmiConfig']['connectors']
+    authConnector:
+      | Web3ModalClientOptions<CoreConfig>['wagmiConfig']['connectors'][number]
+      | undefined
   ) {
-    const authConnector = connectors.find(
-      ({ id }) => id === ConstantsUtil.AUTH_CONNECTOR_ID
-    ) as unknown as Web3ModalClientOptions<CoreConfig>['wagmiConfig']['connectors'][0] & {
-      email: boolean
-      socials: SocialProvider[]
-      showWallets?: boolean
-      walletFeatures?: boolean
-    }
-    if (authConnector) {
-      const provider = await authConnector.getProvider()
+    const connector =
+      authConnector as unknown as Web3ModalClientOptions<CoreConfig>['wagmiConfig']['connectors'][0] & {
+        email: boolean
+        socials: SocialProvider[]
+        showWallets?: boolean
+        walletFeatures?: boolean
+      }
+
+    if (connector) {
+      const provider = await connector.getProvider()
       this.appKit?.addConnector({
         id: ConstantsUtil.AUTH_CONNECTOR_ID,
         type: 'AUTH',
         name: 'Auth',
         provider,
-        email: authConnector.email,
-        socials: authConnector.socials,
-        showWallets: authConnector?.showWallets === undefined ? true : authConnector.showWallets,
-        walletFeatures: authConnector.walletFeatures,
+        email: connector.email,
+        socials: connector.socials,
+        showWallets: connector?.showWallets === undefined ? true : connector.showWallets,
+        walletFeatures: connector.walletFeatures,
         chain: this.chain
       })
+      this.initAuthConnectorListeners(authConnector)
     }
   }
 
   private async initAuthConnectorListeners(
-    connectors: Web3ModalClientOptions<CoreConfig>['wagmiConfig']['connectors']
+    authConnector:
+      | Web3ModalClientOptions<CoreConfig>['wagmiConfig']['connectors'][number]
+      | undefined
   ) {
-    const authConnector = connectors.find(({ id }) => id === ConstantsUtil.AUTH_CONNECTOR_ID)
     if (authConnector) {
       await this.listenAuthConnector(authConnector)
       await this.listenModal(authConnector)

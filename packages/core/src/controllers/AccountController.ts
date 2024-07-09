@@ -127,8 +127,8 @@ export const AccountController = {
     ChainController.setAccountProp('smartAccountDeployed', isDeployed, chain)
   },
 
-  setCurrentTab(currentTab: AccountControllerState['currentTab'], chain?: Chain) {
-    ChainController.setAccountProp('currentTab', currentTab, chain)
+  setCurrentTab(currentTab: AccountControllerState['currentTab']) {
+    ChainController.setAccountProp('currentTab', currentTab, ChainController.state.activeChain)
   },
 
   setTokenBalance(tokenBalance: AccountControllerState['tokenBalance'], chain?: Chain) {

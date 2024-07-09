@@ -1,3 +1,4 @@
+import { getWeb3Modal } from '@web3modal/scaffold-react'
 import { EVMWagmiClient } from '../../adapters/evm/wagmi/client.js'
 import { AppKit } from '../../src/client.js'
 import type { AppKitOptions } from '../../utils/TypesUtil.js'
@@ -14,21 +15,27 @@ export { CoreHelperUtil } from '@web3modal/core'
 export { defaultWagmiConfig } from '../../adapters/evm/wagmi/utils/defaultWagmiReactConfig.js'
 
 // -- Setup -------------------------------------------------------------
+let appkit: AppKit | undefined = undefined
+let wagmiAdapter: EVMWagmiClient | undefined = undefined
+
 type WagmiAppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 'sdkVersion'> & {
   wagmiConfig: Config
 }
 
 export function createAppKit(options: WagmiAppKitOptions) {
-  const wagmiAdapter = new EVMWagmiClient({
+  wagmiAdapter = new EVMWagmiClient({
     wagmiConfig: options.wagmiConfig,
     siweConfig: options.siweConfig
   })
-  return new AppKit({
+  appkit = new AppKit({
     ...options,
     adapters: [wagmiAdapter],
     sdkType: 'w3m',
-    sdkVersion: 'html-wagmi-undefined'
+    sdkVersion: 'html-wagmi-5.0.6'
   })
+  getWeb3Modal(appkit)
+
+  return appkit
 }
 
 export { AppKit }
