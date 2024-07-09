@@ -7,132 +7,179 @@ import {
 } from 'permissionless'
 import { pimlicoBundlerActions, pimlicoPaymasterActions } from 'permissionless/actions/pimlico'
 import { type UserOperation } from 'permissionless/types'
-import { createPublicClient, http, signatureToHex } from 'viem'
-import { useLocalSigner } from './useLocalSigner'
-import { sepolia, foundry } from 'wagmi/chains'
-import type { Chain } from 'wagmi/chains'
+import { createPublicClient, http, signatureToHex, type PublicClient } from 'viem'
+import { sepolia, type Chain } from 'wagmi/chains'
 import { sign } from 'viem/accounts'
 import { useUserOpBuilder, type Execution } from './useUserOpBuilder'
 import { bigIntReplacer } from '../utils/CommonUtils'
 
-export function usePermissions(chain: Chain) {
+export function usePermissions() {
   const { getCallDataWithContext, getNonceWithContext, getSignatureWithContext } =
     useUserOpBuilder()
-  const { signer, signerPrivateKey } = useLocalSigner()
-  async function buildAndSendTransactionsWithPermissions(
-    grantedPermissionsResponse: GrantPermissionsReturnType,
-    actions: Execution[]
-  ): Promise<`0x${string}`> {
-    try {
-      if (!signerPrivateKey || !signer) {
-        throw new Error('No dapp signer key available.')
-      }
-      let bundlerUrl = ''
-      let paymasterUrl = ''
-      if (!chain) {
-        throw new Error('Not connected.')
-      }
 
-      if (chain.id === foundry.id) {
-        bundlerUrl = 'http://localhost:4337'
-        paymasterUrl = 'http://localhost:3000'
-      }
-      if (chain.id === sepolia.id && process.env['NEXT_PUBLIC_PIMLICO_KEY']) {
-        const apiKey = process.env['NEXT_PUBLIC_PIMLICO_KEY']
-        bundlerUrl = `https://api.pimlico.io/v2/sepolia/rpc?apikey=${apiKey}`
-        paymasterUrl = `https://api.pimlico.io/v2/sepolia/rpc?apikey=${apiKey}`
-      }
-
-      const entryPoint = ENTRYPOINT_ADDRESS_V07
-      const publicClient = createPublicClient({
-        transport: http(),
-        chain
-      })
-
-      const bundlerClient = createBundlerClient({
-        transport: http(bundlerUrl),
-        entryPoint,
-        chain
-      })
-        .extend(pimlicoBundlerActions(entryPoint))
-        .extend(pimlicoPaymasterActions(ENTRYPOINT_ADDRESS_V07))
-
-      const { factory, factoryData, signerData, permissionsContext } = grantedPermissionsResponse
-      if (!signerData?.userOpBuilder || !signerData.submitToAddress || !permissionsContext) {
-        throw new Error('Missing value in granted permissions response')
-      }
-      const testDappPrivateKey = signerPrivateKey as `0x${string}`
-
-      const nonce = await getNonceWithContext(publicClient, {
-        userOpBuilderAddress: signerData.userOpBuilder,
-        sender: signerData.submitToAddress,
-        permissionsContext: permissionsContext as `0x${string}`
-      })
-
-      const callData = await getCallDataWithContext(publicClient, {
-        userOpBuilderAddress: signerData.userOpBuilder,
-        sender: signerData.submitToAddress,
-        permissionsContext: permissionsContext as `0x${string}`,
-        actions
-      })
-
-      const gasPrice = await bundlerClient.getUserOperationGasPrice()
-      const userOp: UserOperation<'v0.7'> = {
-        sender: signerData.submitToAddress,
-        factory,
-        factoryData: factoryData ? (factoryData as `0x${string}`) : undefined,
-        nonce,
-        callData,
-        callGasLimit: BigInt(2000000),
-        verificationGasLimit: BigInt(2000000),
-        preVerificationGas: BigInt(2000000),
-        maxFeePerGas: gasPrice.fast.maxFeePerGas,
-        maxPriorityFeePerGas: gasPrice.fast.maxPriorityFeePerGas,
-        signature: '0x'
-      }
-      const userOpHash = getUserOperationHash({
-        userOperation: {
-          ...userOp
-        },
-        entryPoint,
-        chainId: chain.id
-      })
-
-      const dappSignatureOnUserOp = await sign({
-        privateKey: testDappPrivateKey,
-        hash: userOpHash
-      })
-      const rawSignature = signatureToHex(dappSignatureOnUserOp)
-      userOp.signature = rawSignature
-      const preSignaturePackedUserOp = getPackedUserOperation(userOp)
-      const finalSigForValidator = await getSignatureWithContext(publicClient, {
-        sender: signerData.submitToAddress,
-        permissionsContext: permissionsContext as `0x${string}`,
-        userOperation: preSignaturePackedUserOp,
-        userOpBuilderAddress: signerData.userOpBuilder
-      })
-
-      userOp.signature = finalSigForValidator
-
-      const packedUserOp = getPackedUserOperation(userOp)
-      console.log('Final Packed UserOp to send', JSON.stringify(packedUserOp, bigIntReplacer))
-
-      const _userOpHash = await bundlerClient.sendUserOperation({
-        userOperation: userOp
-      })
-
-      const txReceipt = await bundlerClient.waitForUserOperationReceipt({
-        hash: _userOpHash,
-        timeout: 120000
-      })
-
-      return txReceipt.receipt.transactionHash
-    } catch (e) {
-      console.log(e.message)
+  async function prepareUserOperationWithPermissions(
+    publicClient: PublicClient,
+    args: {
+      actions: Execution[]
+      permissions: GrantPermissionsReturnType
     }
+  ): Promise<UserOperation<'v0.7'>> {
+    const { permissions, actions } = args
+    const { factory, factoryData, signerData, permissionsContext } = permissions
+
+    if (!signerData?.userOpBuilder || !signerData.submitToAddress || !permissionsContext) {
+      throw new Error(`Invalid permissions ${JSON.stringify(permissions, bigIntReplacer)}`)
+    }
+
+    const nonce = await getNonceWithContext(publicClient, {
+      userOpBuilderAddress: signerData.userOpBuilder,
+      sender: signerData.submitToAddress,
+      permissionsContext: permissionsContext as `0x${string}`
+    })
+
+    const callData = await getCallDataWithContext(publicClient, {
+      userOpBuilderAddress: signerData.userOpBuilder,
+      sender: signerData.submitToAddress,
+      permissionsContext: permissionsContext as `0x${string}`,
+      actions
+    })
+
+    const userOp: UserOperation<'v0.7'> = {
+      sender: signerData.submitToAddress,
+      factory,
+      factoryData: factoryData ? (factoryData as `0x${string}`) : undefined,
+      nonce,
+      callData,
+      callGasLimit: BigInt(2000000),
+      verificationGasLimit: BigInt(2000000),
+      preVerificationGas: BigInt(2000000),
+      maxFeePerGas: BigInt(0),
+      maxPriorityFeePerGas: BigInt(0),
+      signature: '0x'
+    }
+
+    return userOp
+  }
+
+  async function signUserOperationWithECDSAKeyAndPermissions(
+    publicClient: PublicClient,
+    args: {
+      ecdsaPrivateKey: `0x${string}`
+      userOp: UserOperation<'v0.7'>
+      permissions: GrantPermissionsReturnType
+      chain: Chain
+    }
+  ): Promise<`0x${string}`> {
+    const { ecdsaPrivateKey, userOp, chain, permissions } = args
+
+    const { signerData, permissionsContext } = permissions
+
+    if (!signerData?.userOpBuilder || !signerData.submitToAddress || !permissionsContext) {
+      throw new Error(`Invalid permissions ${JSON.stringify(permissions, bigIntReplacer)}`)
+    }
+    const userOpHash = getUserOperationHash({
+      userOperation: {
+        ...userOp
+      },
+      entryPoint: ENTRYPOINT_ADDRESS_V07,
+      chainId: chain.id
+    })
+
+    const dappSignatureOnUserOp = await sign({
+      privateKey: ecdsaPrivateKey,
+      hash: userOpHash
+    })
+    const rawSignature = signatureToHex(dappSignatureOnUserOp)
+    userOp.signature = rawSignature
+    const preSignaturePackedUserOp = getPackedUserOperation(userOp)
+
+    const signatureWithContext = await getSignatureWithContext(publicClient, {
+      sender: signerData.submitToAddress,
+      permissionsContext: permissionsContext as `0x${string}`,
+      userOperation: preSignaturePackedUserOp,
+      userOpBuilderAddress: signerData.userOpBuilder
+    })
+
+    return signatureWithContext
+  }
+
+  async function buildAndSendTransactionsECDSAKeyAndPermissions(args: {
+    ecdsaPrivateKey: `0x${string}`
+    permissions: GrantPermissionsReturnType
+    actions: Execution[]
+    chain: Chain
+  }): Promise<`0x${string}`> {
+    const { ecdsaPrivateKey, permissions, actions, chain } = args
+
+    const bundlerUrl = getBundlerUrl(chain.id)
+    const { publicClient, bundlerClient } = createClients(chain, bundlerUrl)
+
+    const userOp = await prepareUserOperationWithPermissions(publicClient, {
+      actions,
+      permissions
+    })
+
+    const gasPrice = await bundlerClient.getUserOperationGasPrice()
+    userOp.maxFeePerGas = gasPrice.fast.maxFeePerGas
+    userOp.maxPriorityFeePerGas = gasPrice.fast.maxPriorityFeePerGas
+
+    const signature = await signUserOperationWithECDSAKeyAndPermissions(publicClient, {
+      permissions,
+      ecdsaPrivateKey,
+      userOp,
+      chain
+    })
+
+    userOp.signature = signature
+    /**
+     *  Const packedUserOp = getPackedUserOperation(userOp)
+     *  console.log('Final Packed UserOp to send', JSON.stringify(packedUserOp, bigIntReplacer))
+     */
+
+    const _userOpHash = await bundlerClient.sendUserOperation({
+      userOperation: userOp
+    })
+
+    const txReceipt = await bundlerClient.waitForUserOperationReceipt({
+      hash: _userOpHash,
+      timeout: 30000
+    })
+
+    return txReceipt.receipt.transactionHash
+  }
+
+  function getBundlerUrl(chainId: number): string {
+    if (chainId === sepolia.id) {
+      const apiKey = process.env['NEXT_PUBLIC_PIMLICO_KEY']
+      if (!apiKey) {
+        throw new Error('env NEXT_PUBLIC_PIMLICO_KEY missing.')
+      }
+
+      return `https://api.pimlico.io/v2/sepolia/rpc?apikey=${apiKey}`
+    }
+    // Default to foundry chain
+
+    return 'http://localhost:4337'
+  }
+
+  function createClients(chain: Chain, bundlerUrl: string) {
+    const publicClient = createPublicClient({
+      transport: http(),
+      chain
+    })
+
+    const bundlerClient = createBundlerClient({
+      transport: http(bundlerUrl),
+      entryPoint: ENTRYPOINT_ADDRESS_V07,
+      chain
+    })
+      .extend(pimlicoBundlerActions(ENTRYPOINT_ADDRESS_V07))
+      .extend(pimlicoPaymasterActions(ENTRYPOINT_ADDRESS_V07))
+
+    return { publicClient, bundlerClient }
   }
 
   return {
-    buildAndSendTransactionsWithPermissions
+    buildAndSendTransactionsECDSAKeyAndPermissions
   }
 }

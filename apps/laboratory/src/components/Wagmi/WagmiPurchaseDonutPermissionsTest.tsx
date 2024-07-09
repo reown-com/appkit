@@ -6,10 +6,13 @@ import { encodeFunctionData, parseEther } from 'viem'
 import { abi as donutContractAbi, address as donutContractaddress } from '../../utils/DonutContract'
 import { usePermissions } from '../../hooks/usePermissions'
 import { useGrantedPermissions } from '../../hooks/useGrantedPermissions'
+import { useLocalSigner } from '../../hooks/useLocalSigner'
 
 export function WagmiPurchaseDonutWithPermissionsTest() {
   const { address, chain } = useAccount()
-  const { buildAndSendTransactionsWithPermissions } = usePermissions(chain)
+  const { buildAndSendTransactionsECDSAKeyAndPermissions } = usePermissions()
+  const { signerPrivateKey: ecdsaPrivateKey } = useLocalSigner()
+
   const { grantedPermissions } = useGrantedPermissions()
   const {
     data: donutsOwned,
@@ -32,31 +35,42 @@ export function WagmiPurchaseDonutWithPermissionsTest() {
       if (!grantedPermissions) {
         throw Error('No permissions available')
       }
-      const callData = encodeFunctionData({
+      if (!chain) {
+        throw new Error(`chain ${chain}`)
+      }
+      if (!ecdsaPrivateKey) {
+        throw new Error(`Invalid ecdsaPrivateKey:${ecdsaPrivateKey}`)
+      }
+      const purchaseDonutCallData = encodeFunctionData({
         abi: donutContractAbi,
         functionName: 'purchase',
         args: [1]
       })
-
-      const txHash = await buildAndSendTransactionsWithPermissions(grantedPermissions, [
+      const purchaseDonutCallDataExecution = [
         {
-          target: donutContractaddress,
+          target: donutContractaddress as `0x${string}`,
           value: parseEther('0.0001'),
-          callData
+          callData: purchaseDonutCallData
         }
-      ])
+      ]
+      const txHash = await buildAndSendTransactionsECDSAKeyAndPermissions({
+        actions: purchaseDonutCallDataExecution,
+        ecdsaPrivateKey: ecdsaPrivateKey as `0x${string}`,
+        permissions: grantedPermissions,
+        chain
+      })
       if (txHash) {
         toast({
-          title: 'Success',
-          description: 'Signing with local key successfully completed',
+          title: 'Transaction success',
+          description: txHash,
           type: 'success'
         })
         await fetchDonutsOwned()
       }
     } catch (error) {
       toast({
-        title: 'Failure',
-        description: 'Error while trying to sign with local private key',
+        title: 'Transaction Failed',
+        description: `${error}`,
         type: 'error'
       })
     }

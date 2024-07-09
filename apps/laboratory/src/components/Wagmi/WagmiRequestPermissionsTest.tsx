@@ -46,12 +46,12 @@ export function WagmiRequestPermissionsTest() {
       if (!targetPublicKey) {
         throw new Error('Local signer not initialized')
       }
-      const _walletClient = createPublicClient({
+      const publicClient = createPublicClient({
         chain: sepolia,
         transport: custom(ethereumProvider)
       }).extend(walletActionsErc7715())
 
-      const grantPermissionsResponse = await _walletClient.grantPermissions({
+      const grantPermissionsResponse = await publicClient.grantPermissions({
         expiry: 1716846083638,
         permissions: [
           {
