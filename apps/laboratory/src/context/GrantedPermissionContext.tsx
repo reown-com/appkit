@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { createContext } from 'react'
-import { GRANTED_PERMISSIONS_KEY } from '../../utils/LocalStorage'
-import { useLocalStorageState } from '../useLocalStorageState'
+import { GRANTED_PERMISSIONS_KEY } from '../utils/LocalStorage'
+import { useLocalStorageState } from '../hooks/useLocalStorageState'
 import type { GrantPermissionsReturnType } from 'viem/experimental'
 
 interface GrantedPermissionsContextType {

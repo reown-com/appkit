@@ -8,7 +8,7 @@ import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { foundry, sepolia } from 'wagmi/chains'
 import { walletConnect } from 'wagmi/connectors'
 import { OPTIONAL_METHODS } from '@walletconnect/ethereum-provider'
-import { GrantedPermissionsProvider } from '../../hooks/context/GrantedPermissionContext'
+import { GrantedPermissionsProvider } from '../../context/GrantedPermissionContext'
 
 const queryClient = new QueryClient()
 
