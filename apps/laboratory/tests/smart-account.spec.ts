@@ -43,6 +43,29 @@ testModalSmartAccount(
 )
 
 testModalSmartAccount(
+  'it should switch to its smart account and reject sign',
+  async ({ modalPage, modalValidator }) => {
+    const walletModalPage = modalPage as ModalWalletPage
+    const walletModalValidator = modalValidator as ModalWalletValidator
+
+    await walletModalPage.openAccount()
+    await walletModalValidator.expectActivateSmartAccountPromoVisible(true)
+
+    await walletModalPage.openProfileView()
+    await walletModalPage.openSettings()
+    await walletModalValidator.expectChangePreferredAccountToShow(SMART_ACCOUNT)
+    await walletModalPage.togglePreferredAccountType()
+    await walletModalValidator.expectChangePreferredAccountToShow(EOA)
+
+    await walletModalPage.closeModal()
+
+    await walletModalPage.sign()
+    await walletModalPage.rejectSign()
+    await walletModalValidator.expectRejectedSign()
+  }
+)
+
+testModalSmartAccount(
   'it should return to an eoa when switching to a non supported network',
   async ({ modalPage, modalValidator }) => {
     const walletModalPage = modalPage as ModalWalletPage
