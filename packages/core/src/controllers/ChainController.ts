@@ -190,15 +190,28 @@ export const ChainController = {
     }
 
     state.activeCaipNetwork = caipNetwork
-    this.setCaipNetwork(caipNetwork.chain, caipNetwork)
+    this.setCaipNetwork(caipNetwork.chain, caipNetwork, true)
     PublicStateController.set({
       activeChain: caipNetwork.chain,
       selectedNetworkId: caipNetwork?.id
     })
   },
 
-  setCaipNetwork(chain: Chain, caipNetwork: NetworkControllerState['caipNetwork']) {
-    this.setChainNetworkData(chain, { caipNetwork }, false)
+  /**
+   * setCaipNetwork function is being called for different purposes and it needs to be controlled if it should replace the NetworkController state or not.
+   * While we initializing the adapters, we need to set the caipNetwork without replacing the state.
+   * But when we switch the network, we need to replace the state.
+   * @param chain
+   * @param caipNetwork
+   * @param shouldReplace - if true, it will replace the NetworkController state
+   */
+  setCaipNetwork(
+    chain: Chain,
+    caipNetwork: NetworkControllerState['caipNetwork'],
+    shouldReplace = false
+  ) {
+    console.log('>>> setCaipNetwork', chain, caipNetwork)
+    this.setChainNetworkData(chain, { caipNetwork }, shouldReplace)
   },
 
   setActiveConnector(connector: ChainControllerState['activeConnector']) {

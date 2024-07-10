@@ -103,12 +103,14 @@ export class W3mHeader extends LitElement {
   public constructor() {
     super()
     this.unsubscribe.push(
-      RouterController.subscribeKey('view', val => {
-        this.onViewChange(val)
-        this.onHistoryChange()
-      }),
-      ConnectionController.subscribeKey('buffering', val => (this.buffering = val)),
-      NetworkController.subscribeKey('caipNetwork', val => (this.network = val))
+      ...[
+        RouterController.subscribeKey('view', val => {
+          this.onViewChange(val)
+          this.onHistoryChange()
+        }),
+        ConnectionController.subscribeKey('buffering', val => (this.buffering = val)),
+        NetworkController.subscribeKey('caipNetwork', val => (this.network = val))
+      ]
     )
   }
 
