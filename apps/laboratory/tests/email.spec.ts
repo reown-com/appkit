@@ -31,6 +31,7 @@ testMEmail('it should switch network and sign', async ({ modalPage, modalValidat
   const walletModalPage = modalPage as ModalWalletPage
   const walletModalValidator = modalValidator as ModalWalletValidator
   await walletModalPage.openAccount()
+  await walletModalPage.openProfileView()
   await walletModalPage.openSettings()
   await walletModalPage.switchNetwork(targetChain)
   await walletModalValidator.expectSwitchedNetwork(targetChain)
@@ -41,6 +42,7 @@ testMEmail('it should switch network and sign', async ({ modalPage, modalValidat
 
   targetChain = 'Ethereum'
   await walletModalPage.openAccount()
+  await walletModalPage.openProfileView()
   await walletModalPage.openSettings()
   await walletModalPage.switchNetwork(targetChain)
   await walletModalValidator.expectSwitchedNetwork(targetChain)
@@ -54,6 +56,7 @@ testMEmail('it should disconnect correctly', async ({ modalPage, modalValidator 
   const walletModalPage = modalPage as ModalWalletPage
   const walletModalValidator = modalValidator as ModalWalletValidator
   await walletModalPage.openAccount()
+  await walletModalPage.openProfileView()
   await walletModalPage.openSettings()
   await walletModalPage.disconnect()
   await walletModalValidator.expectDisconnected()

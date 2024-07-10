@@ -32,6 +32,10 @@ export class ModalWalletValidator extends ModalValidator {
     ).toContainText(type)
   }
 
+  async expectChangedAddressAfterSwitchingAccountType(previousAddress: string) {
+    await expect(this.page.getByTestId('w3m-address')).not.toHaveText(previousAddress)
+  }
+
   override async expectSwitchedNetwork(network: string) {
     const switchNetworkButton = this.page.getByTestId('account-switch-network-button')
     await expect(switchNetworkButton).toBeVisible()

@@ -55,7 +55,7 @@ export class WuiIconBox extends LitElement {
     if (isColorChange) {
       bgValueVariable = `var(--wui-icon-box-bg-${this.backgroundColor})`
     } else if (isGray) {
-      bgValueVariable = `var(--wui-gray-${this.backgroundColor})`
+      bgValueVariable = `var(--wui-color-gray-${this.backgroundColor})`
     }
 
     this.style.cssText = `
