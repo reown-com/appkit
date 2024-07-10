@@ -9,13 +9,13 @@ interface ModalMetamaskFixture {
 
 export const testMetamask = base.extend<ModalMetamaskFixture>({
   // eslint-disable-next-line
-  context: async ({}, use) => {
+  context: async ({}, use, testInfo) => {
     // eslint-disable-next-line
-    const [wallet, _, context] = await dappwright.bootstrap('', {
+    const [_, __, context] = await dappwright.bootstrap('', {
       wallet: 'metamask',
       version: MetaMaskWallet.recommendedVersion,
       seed: 'test test test test test test test test test test test junk',
-      headless: false
+      headless: testInfo.project.use.headless
     })
 
     await use(context)

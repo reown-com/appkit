@@ -1,5 +1,9 @@
 import { testMetamask } from './shared/fixtures/w3m-metamask-fixture'
 
+testMetamask.describe.configure({
+  mode: 'serial'
+})
+
 testMetamask.beforeEach(async ({ browserName, modalPage, wallet, modalValidator }) => {
   if (browserName !== 'chromium') {
     testMetamask.skip()
@@ -25,3 +29,18 @@ testMetamask('it should reject sign', async ({ modalPage, wallet, modalValidator
   await wallet.reject()
   await modalValidator.expectRejectedSign()
 })
+
+testMetamask(
+  'it should switch networks and sign',
+  async ({ modalPage, wallet, modalValidator }) => {
+    const chainName = 'Polygon'
+    await modalPage.switchNetwork(chainName)
+    await wallet.approve()
+    await wallet.confirmNetworkSwitch()
+    await modalValidator.expectSwitchedNetwork(chainName)
+    await modalPage.closeModal()
+    await modalPage.sign()
+    await wallet.confirmTransaction()
+    await modalValidator.expectAcceptedSign()
+  }
+)
