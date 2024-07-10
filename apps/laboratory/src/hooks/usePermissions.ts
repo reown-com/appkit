@@ -77,9 +77,7 @@ export function usePermissions() {
       throw new Error(`Invalid permissions ${JSON.stringify(permissions, bigIntReplacer)}`)
     }
     const userOpHash = getUserOperationHash({
-      userOperation: {
-        ...userOp
-      },
+      userOperation: userOp,
       entryPoint: ENTRYPOINT_ADDRESS_V07,
       chainId: chain.id
     })
