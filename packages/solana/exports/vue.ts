@@ -27,8 +27,6 @@ export function createWeb3Modal(options: SolanaAppKitOptions) {
     solanaConfig: options.solanaConfig,
     chains: options.chains,
     wallets: options.wallets,
-    sdkType: 'w3m',
-    sdkVersion: `react-solana-${ConstantsUtil.VERSION}`,
     projectId: options.projectId
   })
   appkit = new AppKit({
