@@ -1,15 +1,14 @@
 import { Connection } from '@solana/web3.js'
-import { Web3ModalScaffold } from '@web3modal/scaffold'
 import {
   ApiController,
   AssetController,
   CoreHelperUtil,
   EventsController,
-  NetworkController,
-  OptionsController
+  NetworkController
 } from '@web3modal/core'
 import { ConstantsUtil, PresetsUtil } from '@web3modal/scaffold-utils'
 import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
+import type { OptionsControllerState } from '@web3modal/core'
 
 import { SolConstantsUtil, SolHelpersUtil, SolStoreUtil } from './utils/scaffold/index.js'
 import { WalletConnectConnector } from './connectors/walletConnectConnector.js'
@@ -50,7 +49,7 @@ export type ExtendedBaseWalletAdapter = BaseWalletAdapter & {
 export type Web3ModalOptions = Omit<Web3ModalClientOptions, '_sdkVersion' | 'isUniversalProvider'>
 
 // -- Client --------------------------------------------------------------------
-export class Web3Modal {
+export class SolanaWeb3JsClient {
   private appKit: AppKit | undefined = undefined
 
   private instanceOptions: Web3ModalClientOptions | undefined = undefined
@@ -78,13 +77,17 @@ export class Web3Modal {
   public defaultChain: CaipNetwork | undefined = undefined
 
   public constructor(options: Web3ModalClientOptions) {
-    const { solanaConfig, chains, connectionSettings = 'confirmed', wallets, metadata } = options
+    const { solanaConfig, chains, connectionSettings = 'confirmed', wallets } = options
 
     if (!solanaConfig) {
       throw new Error('web3modal:constructor - solanaConfig is undefined')
     }
 
     this.instanceOptions = options
+
+    this.chains = chains
+
+    this.connectionSettings = connectionSettings
 
     this.networkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
@@ -174,7 +177,6 @@ export class Web3Modal {
       },
 
       estimateGas: async () => await Promise.resolve(BigInt(0)),
-
       // -- Transaction methods ---------------------------------------------------
       /**
        *
@@ -193,33 +195,48 @@ export class Web3Modal {
 
       formatUnits: () => ''
     }
+  }
+
+  public construct(appKit: AppKit, options: OptionsControllerState) {
+    const { projectId } = options
+    const clientOptions = this.instanceOptions
+
+    if (!projectId) {
+      throw new Error('Solana:construct - projectId is undefined')
+    }
+
+    if (!clientOptions) {
+      throw new Error('Solana:construct - clientOptions is undefined')
+    }
+
+    this.appKit = appKit
+
+    this.options = options
+
+    const { chains, wallets } = clientOptions
 
     const chain = SolHelpersUtil.getChainFromCaip(
       chains,
       typeof window === 'object' ? localStorage.getItem(SolConstantsUtil.CAIP_CHAIN_ID) : ''
     )
 
-    this.chains = chains
-    this.connectionSettings = connectionSettings
-    this.defaultChain = chain as CaipNetwork
-    this.syncRequestedNetworks(chains, chainImages)
+    this.defaultChain = SolHelpersUtil.getChainFromCaip(
+      chains,
+      typeof window === 'object' ? localStorage.getItem(SolConstantsUtil.CAIP_CHAIN_ID) : ''
+    ) as CaipNetwork
+    this.syncRequestedNetworks(chains, this.options?.chainImages)
 
     if (chain) {
       SolStoreUtil.setCurrentChain(chain)
       SolStoreUtil.setCaipChainId(`solana:${chain.chainId}`)
     }
-    this.syncNetwork(chainImages)
+    this.syncNetwork(this.options?.chainImages)
 
     this.walletAdapters = wallets as ExtendedBaseWalletAdapter[]
-    this.WalletConnectConnector = new WalletConnectConnector({
-      relayerRegion: 'wss://relay.walletconnect.com',
-      metadata,
-      chains,
-      qrcode: true
-    })
+
     SolStoreUtil.setConnection(
       new Connection(
-        SolHelpersUtil.detectRpcUrl(chain, OptionsController.state.projectId),
+        SolHelpersUtil.detectRpcUrl(chain, this.instanceOptions?.projectId || ''),
         this.connectionSettings
       )
     )
@@ -258,6 +275,14 @@ export class Web3Modal {
           window.location.href = `https://phantom.app/ul/browse/${href}?ref=${ref}`
         }
       }
+    })
+
+    this.WalletConnectConnector = new WalletConnectConnector({
+      projectId: clientOptions.projectId,
+      relayerRegion: 'wss://relay.walletconnect.com',
+      metadata: clientOptions.solanaConfig?.metadata,
+      chains: clientOptions.chains,
+      qrcode: true
     })
 
     if (CoreHelperUtil.isClient()) {
@@ -352,7 +377,6 @@ export class Web3Modal {
   }
 
   // -- Private -----------------------------------------------------------------
-
   private syncStandardAdapters(standardAdapters?: StandardWalletAdapter[]) {
     const w3mConnectors: Connector[] = []
 
@@ -394,7 +418,7 @@ export class Web3Modal {
       })
     })
 
-    this.setConnectors(w3mConnectors)
+    this.appKit?.setConnectors(w3mConnectors)
   }
 
   private async syncAccount() {
@@ -463,7 +487,7 @@ export class Web3Modal {
         const namespaces = this.WalletConnectConnector.generateNamespaces(chain.chainId)
         SolStoreUtil.setConnection(
           new Connection(
-            SolHelpersUtil.detectRpcUrl(chain, OptionsController.state.projectId),
+            SolHelpersUtil.detectRpcUrl(chain, this.instanceOptions?.projectId || ''),
             this.connectionSettings
           )
         )
@@ -472,7 +496,7 @@ export class Web3Modal {
       } else {
         SolStoreUtil.setConnection(
           new Connection(
-            SolHelpersUtil.detectRpcUrl(chain, OptionsController.state.projectId),
+            SolHelpersUtil.detectRpcUrl(chain, this.instanceOptions?.projectId || ''),
             this.connectionSettings
           )
         )

@@ -25,7 +25,11 @@ type SolanaAppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 'sdkVers
 export function createWeb3Modal(options: SolanaAppKitOptions) {
   solanaAdapter = new SolanaWeb3JsClient({
     solanaConfig: options.solanaConfig,
-    chains: options.chains
+    chains: options.chains,
+    wallets: options.wallets,
+    sdkType: 'w3m',
+    sdkVersion: `react-solana-${ConstantsUtil.VERSION}`,
+    projectId: options.projectId
   })
   appkit = new AppKit({
     ...options,

@@ -17,7 +17,11 @@ type SolanaAppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 'sdkVers
 export function createWeb3Modal(options: SolanaAppKitOptions) {
   const wagmiAdapter = new SolanaWeb3JsClient({
     solanaConfig: options.solanaConfig,
-    chains: options.chains
+    chains: options.chains,
+    wallets: options.wallets,
+    sdkType: 'w3m',
+    sdkVersion: `html-solana-${ConstantsUtil.VERSION}`,
+    projectId: options.projectId
   })
   return new AppKit({
     ...options,
