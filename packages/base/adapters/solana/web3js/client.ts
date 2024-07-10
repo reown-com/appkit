@@ -32,7 +32,8 @@ import { watchStandard } from './utils/wallet-standard/watchStandard.js'
 import type { AppKitOptions } from '../../../utils/TypesUtil.js'
 import type { AppKit } from '../../../src/client.js'
 
-export interface Web3ModalClientOptions extends Omit<AppKitOptions, 'defaultChain' | 'tokens'> {
+export interface Web3ModalClientOptions
+  extends Omit<AppKitOptions, 'defaultChain' | 'tokens' | 'sdkType' | 'sdkVersion'> {
   solanaConfig: ProviderType
   chains: Chain[]
   connectionSettings?: Commitment | ConnectionConfig

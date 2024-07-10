@@ -58,8 +58,6 @@ export interface Web3ModalClientOptions<C extends Config>
   defaultChain?: Chain
 }
 
-export type Web3ModalOptions<C extends Config> = Omit<Web3ModalClientOptions<C>, '_sdkVersion'>
-
 // @ts-expect-error: Overridden state type is correct
 interface Web3ModalState extends PublicStateControllerState {
   selectedNetworkId: number | undefined
