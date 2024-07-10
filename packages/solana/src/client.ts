@@ -247,8 +247,8 @@ export class Web3Modal extends Web3ModalScaffold {
       this.syncNetwork(chainImages)
     })
 
-    NetworkController.subscribeKey('caipNetwork', (newCaipChain: CaipNetwork | undefined) => {
-      const newChain = chains.find(_chain => _chain.chainId === newCaipChain?.id.split(':')[1])
+    NetworkController.subscribeKey('caipNetwork', (newCaipNetwork: CaipNetwork | undefined) => {
+      const newChain = chains.find(_chain => _chain.chainId === newCaipNetwork?.id.split(':')[1])
 
       if (!newChain) {
         throw new Error('The selected chain is not a valid Solana chain')
