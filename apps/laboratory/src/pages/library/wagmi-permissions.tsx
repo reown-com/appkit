@@ -5,10 +5,11 @@ import { Web3ModalButtons } from '../../components/Web3ModalButtons'
 import { WagmiPermissionsTest } from '../../components/Wagmi/WagmiPermissionsTest'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
-import { foundry, sepolia } from 'wagmi/chains'
+import { sepolia } from 'wagmi/chains'
 import { walletConnect } from 'wagmi/connectors'
 import { OPTIONAL_METHODS } from '@walletconnect/ethereum-provider'
 import { GrantedPermissionsProvider } from '../../context/GrantedPermissionContext'
+import { getPublicClientUrl } from '../../utils/PermissionsUtils'
 
 const queryClient = new QueryClient()
 
@@ -21,13 +22,15 @@ const connectors = [
     optionalMethods: [...OPTIONAL_METHODS, 'wallet_grantPermissions']
   })
 ]
+
+const publicClientUrl = getPublicClientUrl()
+
 const wagmiConfig = createConfig({
-  chains: [foundry, sepolia],
-  connectors,
+  chains: [sepolia],
   transports: {
-    11155111: http(),
-    31337: http()
-  }
+    [sepolia.id]: http(publicClientUrl)
+  },
+  connectors
 })
 
 const modal = createWeb3Modal({

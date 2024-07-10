@@ -1,17 +1,16 @@
 import { type GrantPermissionsReturnType } from 'viem/experimental'
 import {
   ENTRYPOINT_ADDRESS_V07,
-  createBundlerClient,
   getPackedUserOperation,
   getUserOperationHash
 } from 'permissionless'
-import { pimlicoBundlerActions, pimlicoPaymasterActions } from 'permissionless/actions/pimlico'
 import { type UserOperation } from 'permissionless/types'
-import { createPublicClient, http, signatureToHex, type PublicClient } from 'viem'
-import { foundry, sepolia, type Chain } from 'wagmi/chains'
+import { signatureToHex, type PublicClient } from 'viem'
+import { type Chain } from 'wagmi/chains'
 import { sign } from 'viem/accounts'
 import { useUserOpBuilder, type Execution } from './useUserOpBuilder'
 import { bigIntReplacer } from '../utils/CommonUtils'
+import { createClients } from '../utils/PermissionsUtils'
 
 export function usePermissions() {
   const { getCallDataWithContext, getNonceWithContext, getSignatureWithContext } =
@@ -111,8 +110,7 @@ export function usePermissions() {
   }): Promise<`0x${string}`> {
     const { ecdsaPrivateKey, permissions, actions, chain } = args
 
-    const bundlerUrl = getBundlerUrl(chain.id)
-    const { publicClient, bundlerClient } = createClients(chain, bundlerUrl)
+    const { publicClient, bundlerClient } = createClients(chain)
 
     const userOp = await prepareUserOperationWithPermissions(publicClient, {
       actions,
@@ -146,43 +144,6 @@ export function usePermissions() {
     })
 
     return txReceipt.receipt.transactionHash
-  }
-
-  function getBundlerUrl(chainId: number): string {
-    if (chainId === sepolia.id) {
-      const apiKey = process.env['NEXT_PUBLIC_PIMLICO_KEY']
-      if (!apiKey) {
-        throw new Error('env NEXT_PUBLIC_PIMLICO_KEY missing.')
-      }
-
-      return `https://api.pimlico.io/v2/sepolia/rpc?apikey=${apiKey}`
-    }
-    if (chainId === foundry.id) {
-      const localBundlerUrl = process.env['NEXT_PUBLIC_LOCAL_BUNDLER_URL']
-      if (!localBundlerUrl) {
-        throw new Error('env NEXT_PUBLIC_LOCAL_BUNDLER_URL missing.')
-      }
-
-      return localBundlerUrl
-    }
-    throw new Error(`ChainId ${chainId} not supported`)
-  }
-
-  function createClients(chain: Chain, bundlerUrl: string) {
-    const publicClient = createPublicClient({
-      transport: http(),
-      chain
-    })
-
-    const bundlerClient = createBundlerClient({
-      transport: http(bundlerUrl),
-      entryPoint: ENTRYPOINT_ADDRESS_V07,
-      chain
-    })
-      .extend(pimlicoBundlerActions(ENTRYPOINT_ADDRESS_V07))
-      .extend(pimlicoPaymasterActions(ENTRYPOINT_ADDRESS_V07))
-
-    return { publicClient, bundlerClient }
   }
 
   return {
