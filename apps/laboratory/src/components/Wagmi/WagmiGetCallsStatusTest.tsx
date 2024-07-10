@@ -1,49 +1,57 @@
 import { Button, Stack, Text, Input } from '@chakra-ui/react'
 import { useAccount, useConnections } from 'wagmi'
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
-import { getCallsStatus } from '@wagmi/core/experimental'
-import { useCallback, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useChakraToast } from '../Toast'
 import { EIP_5792_RPC_METHODS } from '../../utils/EIP5792Utils'
-import { wagmiConfig } from '../../pages/library/wagmi'
 import { bigIntReplacer } from '../../utils/CommonUtils'
+import { useCallsStatus } from 'wagmi/experimental'
 
 export function WagmiGetCallsStatusTest() {
   const [ethereumProvider, setEthereumProvider] =
     useState<Awaited<ReturnType<(typeof EthereumProvider)['init']>>>()
-  const [isLoading, setLoading] = useState(false)
+  const [enableGetCallsStatus, setEnableGetCallsStatus] = useState(false)
   const [batchCallId, setBatchCallId] = useState('')
 
   const { status, address } = useAccount()
+  const isConnected = status === 'connected'
   const connection = useConnections()
   const toast = useChakraToast()
-
-  const isConnected = status === 'connected'
-
-  const onGetCallsStatus = useCallback(async () => {
-    setLoading(true)
-    try {
-      const batchCallsStatus = await getCallsStatus(wagmiConfig, { id: batchCallId })
-      toast({
-        title: 'Success',
-        description: JSON.stringify(batchCallsStatus, bigIntReplacer),
-        type: 'success'
-      })
-    } catch {
-      toast({
-        title: 'Error',
-        description: 'Failed to get calls status',
-        type: 'error'
-      })
-    } finally {
-      setLoading(false)
+  const {
+    isLoading,
+    isFetched,
+    error,
+    data: callsStatusResult
+  } = useCallsStatus({
+    id: batchCallId,
+    query: {
+      enabled: enableGetCallsStatus && isConnected
     }
-  }, [batchCallId, toast])
+  })
+
   useEffect(() => {
     if (isConnected) {
       fetchProvider()
     }
   }, [isConnected])
+  useEffect(() => {
+    if (enableGetCallsStatus && isFetched && callsStatusResult) {
+      toast({
+        title: 'GetCallsStatus Success',
+        description: JSON.stringify(callsStatusResult, bigIntReplacer),
+        type: 'success'
+      })
+      setEnableGetCallsStatus(false)
+    }
+    if (error) {
+      toast({
+        title: 'GetCallsStatus Error',
+        description: 'Failed to get calls status',
+        type: 'error'
+      })
+      setEnableGetCallsStatus(false)
+    }
+  }, [enableGetCallsStatus, isFetched, error, callsStatusResult])
 
   function isGetCallsStatusSupported(): boolean {
     return Boolean(
@@ -84,8 +92,8 @@ export function WagmiGetCallsStatusTest() {
       />
       <Button
         data-test-id="get-calls-status-button"
-        onClick={onGetCallsStatus}
-        isDisabled={isLoading}
+        onClick={() => setEnableGetCallsStatus(true)}
+        isDisabled={isLoading || !batchCallId}
       >
         Get Calls Status
       </Button>

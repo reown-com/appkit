@@ -10,7 +10,9 @@ const modal = createWeb3Modal({
   ethersConfig: defaultConfig({
     metadata: ConstantsUtil.Metadata,
     defaultChainId: 1,
-    rpcUrl: 'https://cloudflare-eth.com'
+    rpcUrl: 'https://cloudflare-eth.com',
+    chains: EthersConstants.chains,
+    coinbasePreference: 'smartWalletOnly'
   }),
   chains: EthersConstants.chains,
   projectId: ConstantsUtil.ProjectId,
@@ -18,8 +20,7 @@ const modal = createWeb3Modal({
   metadata: ConstantsUtil.Metadata,
   termsConditionsUrl: 'https://walletconnect.com/terms',
   privacyPolicyUrl: 'https://walletconnect.com/privacy',
-  customWallets: ConstantsUtil.CustomWallets,
-  enableOnramp: true
+  customWallets: ConstantsUtil.CustomWallets
 })
 
 ThemeStore.setModal(modal)

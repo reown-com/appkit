@@ -1,28 +1,17 @@
 import { createWeb3Modal } from '@web3modal/wagmi/react'
-import { defaultWagmiConfig } from '@web3modal/wagmi/react/config'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 import { WagmiProvider } from 'wagmi'
 import { Web3ModalButtons } from '../../components/Web3ModalButtons'
 import { WagmiTests } from '../../components/Wagmi/WagmiTests'
 import { ThemeStore } from '../../utils/StoreUtil'
-import { WagmiConstantsUtil } from '../../utils/WagmiConstants'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
+import { getWagmiConfig } from '../../utils/WagmiConstants'
 
 const queryClient = new QueryClient()
 
-export const wagmiConfig = defaultWagmiConfig({
-  chains: WagmiConstantsUtil.chains,
-  projectId: ConstantsUtil.ProjectId,
-  metadata: ConstantsUtil.Metadata,
-  enableEmail: true,
-  auth: {
-    socials: ['google', 'x', 'discord', 'apple', 'github']
-  },
-  ssr: true
-})
-
+const wagmiConfig = getWagmiConfig('email')
 const modal = createWeb3Modal({
   wagmiConfig,
   projectId: ConstantsUtil.ProjectId,
@@ -30,7 +19,6 @@ const modal = createWeb3Modal({
   metadata: ConstantsUtil.Metadata,
   termsConditionsUrl: 'https://walletconnect.com/terms',
   privacyPolicyUrl: 'https://walletconnect.com/privacy',
-  enableOnramp: true,
   customWallets: ConstantsUtil.CustomWallets
 })
 

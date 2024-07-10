@@ -1,6 +1,7 @@
-import { describe, expect, it, vi } from 'vitest'
+import { beforeAll, describe, expect, it, vi } from 'vitest'
 import type { ConnectionControllerClient, ConnectorType } from '../../index.js'
-import { ConnectionController, ConstantsUtil, StorageUtil } from '../../index.js'
+import { ChainController, ConnectionController, ConstantsUtil, StorageUtil } from '../../index.js'
+import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 
 // -- Setup --------------------------------------------------------------------
 const walletConnectUri = 'wc://uri?=123'
@@ -43,18 +44,19 @@ const partialClient: ConnectionControllerClient = {
 }
 
 // -- Tests --------------------------------------------------------------------
-describe('ConnectionController', () => {
-  it('should throw if client not set', () => {
-    expect(ConnectionController._getClient).toThrow('ConnectionController client not set')
-  })
+beforeAll(() => {
+  ChainController.initialize([{ chain: CommonConstantsUtil.CHAIN.EVM }])
+})
 
+describe('ConnectionController', () => {
   it('should have valid default state', () => {
-    ConnectionController.setClient(client)
+    ChainController.initialize([
+      { chain: CommonConstantsUtil.CHAIN.EVM, connectionControllerClient: client }
+    ])
 
     expect(ConnectionController.state).toEqual({
       wcError: false,
-      buffering: false,
-      _client: ConnectionController._getClient()
+      buffering: false
     })
   })
 
@@ -62,7 +64,6 @@ describe('ConnectionController', () => {
     await ConnectionController.disconnect()
     expect(ConnectionController.state.wcUri).toEqual(undefined)
     expect(ConnectionController.state.wcPairingExpiry).toEqual(undefined)
-    expect(ConnectionController.state.wcPromise).toEqual(undefined)
   })
 
   it('should update state correctly and set wcPromise on connectWalletConnect()', async () => {
@@ -71,11 +72,8 @@ describe('ConnectionController', () => {
     vi.useFakeTimers()
     vi.setSystemTime(fakeDate)
 
-    ConnectionController.connectWalletConnect()
-    expect(ConnectionController.state.wcPromise).toBeDefined()
-
     // Await on set promise and check results
-    await ConnectionController.state.wcPromise
+    await ConnectionController.connectWalletConnect()
     expect(ConnectionController.state.wcUri).toEqual(walletConnectUri)
     expect(ConnectionController.state.wcPairingExpiry).toEqual(ConstantsUtil.FOUR_MINUTES_MS)
     expect(storageSpy).toHaveBeenCalledWith('WALLET_CONNECT')
@@ -102,18 +100,19 @@ describe('ConnectionController', () => {
   })
 
   it('should not throw when optional methods are undefined', async () => {
-    ConnectionController.setClient(partialClient)
+    ChainController.initialize([
+      { chain: CommonConstantsUtil.CHAIN.EVM, connectionControllerClient: partialClient }
+    ])
     await ConnectionController.connectExternal({ id: externalId, type })
     ConnectionController.checkInstalled([externalId])
     expect(clientCheckInstalledSpy).toHaveBeenCalledWith([externalId])
     expect(clientCheckInstalledSpy).toHaveBeenCalledWith(undefined)
-    expect(ConnectionController.state._client).toEqual(partialClient)
+    expect(ConnectionController._getClient()).toEqual(partialClient)
   })
 
   it('should update state correctly on resetWcConnection()', () => {
     ConnectionController.resetWcConnection()
     expect(ConnectionController.state.wcUri).toEqual(undefined)
     expect(ConnectionController.state.wcPairingExpiry).toEqual(undefined)
-    expect(ConnectionController.state.wcPromise).toEqual(undefined)
   })
 })

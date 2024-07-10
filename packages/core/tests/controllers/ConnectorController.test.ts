@@ -7,7 +7,7 @@ import {
   type ThemeMode,
   type ThemeVariables
 } from '../../index.js'
-import { getW3mThemeVariables } from '@web3modal/common'
+import { ConstantsUtil, getW3mThemeVariables } from '@web3modal/common'
 
 // -- Setup --------------------------------------------------------------------
 const authProvider = {
@@ -19,14 +19,25 @@ const authProvider = {
 const walletConnectConnector = {
   id: 'walletConnect',
   explorerId: 'walletConnectId',
-  type: 'WALLET_CONNECT'
+  type: 'WALLET_CONNECT',
+  chain: ConstantsUtil.CHAIN.EVM
 } as const
-const externalConnector = { id: 'external', type: 'EXTERNAL' } as const
-const authConnector = { id: 'w3mAuth', type: 'AUTH', provider: authProvider } as const
+const externalConnector = {
+  id: 'external',
+  type: 'EXTERNAL',
+  chain: ConstantsUtil.CHAIN.EVM
+} as const
+const authConnector = {
+  id: 'w3mAuth',
+  type: 'AUTH',
+  provider: authProvider,
+  chain: ConstantsUtil.CHAIN.EVM
+} as const
 const announcedConnector = {
   id: 'announced',
   type: 'ANNOUNCED',
-  info: { rdns: 'announced.io' }
+  info: { rdns: 'announced.io' },
+  chain: ConstantsUtil.CHAIN.EVM
 } as const
 
 const syncDappDataSpy = vi.spyOn(authProvider, 'syncDappData')
@@ -45,11 +56,13 @@ const mockDappData = {
 const metamaskConnector = {
   id: 'metamask',
   type: 'INJECTED',
-  info: { rdns: 'io.metamask.com' }
+  info: { rdns: 'io.metamask.com' },
+  chain: ConstantsUtil.CHAIN.EVM
 } as const
 const zerionConnector = {
   id: 'ecc4036f814562b41a5268adc86270fba1365471402006302e70169465b7ac18',
-  type: 'INJECTED'
+  type: 'INJECTED',
+  chain: ConstantsUtil.CHAIN.EVM
 } as const
 // -- Tests --------------------------------------------------------------------
 describe('ConnectorController', () => {
@@ -89,7 +102,7 @@ describe('ConnectorController', () => {
     expect(ConnectorController.getAuthConnector()).toEqual(undefined)
   })
 
-  it('should trigger corresponding sync methods when adding email connector', () => {
+  it('should trigger corresponding sync methods when adding auth connector', () => {
     OptionsController.setMetadata(mockDappData.metadata)
     OptionsController.setSdkVersion(mockDappData.sdkVersion)
     OptionsController.setProjectId(mockDappData.projectId)

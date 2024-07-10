@@ -38,7 +38,6 @@ const ethersConfig = defaultConfig({
     url: 'https://web3modal.com',
     icons: ['https://avatars.githubusercontent.com/u/37784886']
   },
-  enableEmail: true,
   defaultChainId: 1,
   rpcUrl: 'https://cloudflare-eth.com'
 })

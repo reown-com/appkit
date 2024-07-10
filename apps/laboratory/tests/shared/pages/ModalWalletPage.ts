@@ -7,13 +7,16 @@ export class ModalWalletPage extends ModalPage {
   constructor(
     public override readonly page: Page,
     public override readonly library: string,
-    public override readonly flavor: 'wallet' | 'all' = 'wallet'
+    public override readonly flavor: 'email' | 'all' = 'email'
   ) {
     super(page, library, flavor)
   }
 
-  async openSettings() {
+  async openProfileView() {
     await this.page.getByTestId('wui-profile-button').click()
+  }
+  async openSettings() {
+    await this.page.getByTestId('account-settings-button').click()
   }
 
   override async switchNetwork(network: string) {
@@ -22,7 +25,10 @@ export class ModalWalletPage extends ModalPage {
   }
 
   async togglePreferredAccountType() {
-    await this.page.getByTestId('account-toggle-preferred-account-type').click()
+    const toggleButton = this.page.getByTestId('account-toggle-preferred-account-type')
+    await expect(toggleButton, 'Toggle button should be visible').toBeVisible()
+    await expect(toggleButton, 'Toggle button should be enabled').toBeEnabled()
+    await toggleButton.click()
   }
 
   override async disconnect(): Promise<void> {

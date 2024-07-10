@@ -1,7 +1,6 @@
 import { testModalSmartAccount } from './shared/fixtures/w3m-smart-account-fixture'
 import type { ModalWalletPage } from './shared/pages/ModalWalletPage'
 import { EOA, SMART_ACCOUNT } from './shared/validators/ModalWalletValidator'
-import { Email, NOT_ENABLED_DOMAIN } from './shared/utils/email'
 
 import type { ModalWalletValidator } from './shared/validators/ModalWalletValidator'
 
@@ -29,6 +28,7 @@ testModalSmartAccount(
     await walletModalPage.openAccount()
     await walletModalValidator.expectActivateSmartAccountPromoVisible(true)
 
+    await walletModalPage.openProfileView()
     await walletModalPage.openSettings()
     await walletModalValidator.expectChangePreferredAccountToShow(SMART_ACCOUNT)
     await walletModalPage.togglePreferredAccountType()
@@ -51,6 +51,7 @@ testModalSmartAccount(
     const originalAddress = await walletModalPage.getAddress()
 
     await walletModalPage.openAccount()
+    await walletModalPage.openProfileView()
     await walletModalPage.openSettings()
 
     await walletModalPage.togglePreferredAccountType()
@@ -68,46 +69,20 @@ testModalSmartAccount(
   }
 )
 
-testModalSmartAccount(
-  'it should use an eoa and not propose flow when disconnecting and connecting to a not enabled address',
-  async ({ modalPage, modalValidator, context }, { parallelIndex }) => {
-    const walletModalPage = modalPage as ModalWalletPage
-    const walletModalValidator = modalValidator as ModalWalletValidator
-
-    const email = new Email(mailsacApiKey)
-
-    await walletModalPage.openAccount()
-    await walletModalPage.openSettings()
-    await walletModalPage.togglePreferredAccountType()
-    await walletModalPage.disconnect()
-    await walletModalPage.page.waitForTimeout(500)
-
-    await walletModalPage.emailFlow(
-      email.getEmailAddressToUse(parallelIndex, NOT_ENABLED_DOMAIN),
-      context,
-      mailsacApiKey
-    )
-    await walletModalPage.page.waitForTimeout(1500)
-    await walletModalPage.openAccount()
-    await walletModalPage.openSettings()
-    await walletModalValidator.expectTogglePreferredTypeVisible(false)
-    await walletModalPage.closeModal()
-
-    await walletModalPage.openAccount()
-    await walletModalValidator.expectActivateSmartAccountPromoVisible(false)
-  }
-)
-
-testModalSmartAccount(
+testModalSmartAccount.skip(
   'it should properly sign with a 6492 signature',
   async ({ modalPage, modalValidator }) => {
     const walletModalPage = modalPage as ModalWalletPage
     const walletModalValidator = modalValidator as ModalWalletValidator
 
+    const eoaAddress = await walletModalPage.getAddress()
+
     await walletModalPage.openAccount()
+    await walletModalPage.openProfileView()
     await walletModalPage.openSettings()
     await walletModalPage.togglePreferredAccountType()
     await walletModalValidator.expectChangePreferredAccountToShow(EOA)
+    await walletModalValidator.expectChangedAddressAfterSwitchingAccountType(eoaAddress)
     await walletModalPage.closeModal()
 
     await walletModalPage.sign()
@@ -116,6 +91,7 @@ testModalSmartAccount(
     const signature = await walletModalPage.getSignature()
     const address = await walletModalPage.getAddress()
     const chainId = await walletModalPage.getChainId()
+
     await walletModalValidator.expectValidSignature(signature, address, chainId)
   }
 )

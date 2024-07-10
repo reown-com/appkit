@@ -22,6 +22,20 @@ export default css`
     color: var(--local-color);
   }
 
+  .wui-line-clamp-1 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+  }
+
+  .wui-line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
   .wui-font-medium-400 {
     font-size: var(--wui-font-size-medium);
     font-weight: var(--wui-font-weight-light);
@@ -33,9 +47,14 @@ export default css`
     letter-spacing: var(--wui-letter-spacing-medium);
   }
 
-  .wui-font-medium-title-600 {
-    font-size: var(--wui-font-size-medium-title);
-    letter-spacing: var(--wui-letter-spacing-medium-title);
+  .wui-font-title-600 {
+    font-size: var(--wui-font-size-title);
+    letter-spacing: var(--wui-letter-spacing-title);
+  }
+
+  .wui-font-title-6-600 {
+    font-size: var(--wui-font-size-title-6);
+    letter-spacing: var(--wui-letter-spacing-title-6);
   }
 
   .wui-font-mini-700 {
@@ -89,6 +108,7 @@ export default css`
 
   .wui-font-tiny-400,
   .wui-font-small-400,
+  .wui-font-medium-400,
   .wui-font-paragraph-400 {
     font-weight: var(--wui-font-weight-light);
   }
@@ -102,6 +122,7 @@ export default css`
 
   .wui-font-medium-600,
   .wui-font-medium-title-600,
+  .wui-font-title-6-600,
   .wui-font-large-600,
   .wui-font-paragraph-600,
   .wui-font-small-600,

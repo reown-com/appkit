@@ -34,6 +34,11 @@ const braveOptions: UseOptions = {
   }
 }
 
+const WAGMI_EMAIL_BASED_REGEX = /(?:smart-account\.spec\.ts|siwe-sa\.spec\.ts|social\.spec\.ts).*$/u
+
+const SOLANA_UNIMPLEMENTED_TESTS_REGEX =
+  /^(?!.*(?:email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts|smart-account\.spec\.ts|social\.spec\.ts|siwe-sa\.spec\.ts|siwe-email\.spec\.ts)).*$/u
+
 const customProjectProperties: CustomProjectProperties = {
   'Desktop Chrome/ethers': {
     testIgnore: /(?:social\.spec\.ts).*$/u
@@ -46,31 +51,28 @@ const customProjectProperties: CustomProjectProperties = {
     testIgnore: /(?:social\.spec\.ts).*$/u
   },
   'Desktop Brave/wagmi': {
-    testIgnore:
-      /(?:email\.spec\.ts|smart-account\.spec\.ts|siwe-email\.spec\.ts|siwe-smart-account\.spec\.ts|social\.spec\.ts).*$/u,
+    testIgnore: WAGMI_EMAIL_BASED_REGEX,
     useOptions: braveOptions
   },
   'Desktop Chrome/wagmi': {
-    testIgnore:
-      /(?:email\.spec\.ts|smart-account\.spec\.ts|siwe-email\.spec\.ts|siwe-smart-account\.spec\.ts|social\.spec\.ts).*$/u
+    testIgnore: WAGMI_EMAIL_BASED_REGEX
   },
   'Desktop Firefox/wagmi': {
-    testIgnore:
-      /(?:email\.spec\.ts|smart-account\.spec\.ts|siwe-email\.spec\.ts|siwe-smart-account\.spec\.ts|social\.spec\.ts).*$/u
+    testIgnore: WAGMI_EMAIL_BASED_REGEX
   },
   // Exclude social.spec.ts, email.spec.ts, siwe.spec.ts, and canary.spec.ts from solana, not yet implemented
   'Desktop Chrome/solana': {
-    grep: /^(?!.*(?:email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts|smart-account\.spec\.ts|social\.spec\.ts)).*$/u
+    grep: SOLANA_UNIMPLEMENTED_TESTS_REGEX
   },
   'Desktop Brave/solana': {
     useOptions: braveOptions,
-    grep: /^(?!.*(?:email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts|smart-account\.spec\.ts|social\.spec\.ts)).*$/u
+    grep: SOLANA_UNIMPLEMENTED_TESTS_REGEX
   },
   'Desktop Firefox/solana': {
-    grep: /^(?!.*(?:email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts|smart-account\.spec\.ts|social\.spec\.ts)).*$/u
+    grep: SOLANA_UNIMPLEMENTED_TESTS_REGEX
   },
   'Desktop Safari/solana': {
-    grep: /^(?!.*(?:email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts|smart-account\.spec\.ts|social\.spec\.ts)).*$/u
+    grep: SOLANA_UNIMPLEMENTED_TESTS_REGEX
   }
 }
 

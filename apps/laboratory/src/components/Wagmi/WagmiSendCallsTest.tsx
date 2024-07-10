@@ -1,13 +1,17 @@
 import { Button, Stack, Text } from '@chakra-ui/react'
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
-import { useAccount, useConnections } from 'wagmi'
-import { useCapabilities, useSendCalls } from 'wagmi/experimental'
+import { useAccount, type Connector } from 'wagmi'
+import { useSendCalls } from 'wagmi/experimental'
 import { useCallback, useState, useEffect } from 'react'
 import { useChakraToast } from '../Toast'
-import { parseGwei, type Address, type WalletCapabilities } from 'viem'
+import { parseGwei, type Address, type Chain, type WalletCapabilities } from 'viem'
 import { vitalikEthAddress } from '../../utils/DataUtil'
-import { EIP_5792_RPC_METHODS } from '../../utils/EIP5792Utils'
-import { getChain } from '../../utils/ChainsUtil'
+import {
+  EIP_5792_RPC_METHODS,
+  WALLET_CAPABILITIES,
+  getFilteredCapabilitySupportedChainInfo,
+  getProviderCachedCapabilities
+} from '../../utils/EIP5792Utils'
 
 const TEST_TX_1 = {
   to: vitalikEthAddress as Address,
@@ -21,18 +25,19 @@ const TEST_TX_2 = {
 export function WagmiSendCallsTest() {
   const [ethereumProvider, setEthereumProvider] =
     useState<Awaited<ReturnType<(typeof EthereumProvider)['init']>>>()
+  const [availableCapabilities, setAvailableCapabilities] = useState<
+    Record<number, WalletCapabilities> | undefined
+  >()
   const [isLoading, setLoading] = useState(false)
-
-  const { status, chain, address } = useAccount()
-  const { data: availableCapabilities } = useCapabilities({
-    account: address
-  })
-  const connection = useConnections()
+  const { status, chain, address, connector } = useAccount()
   const toast = useChakraToast()
 
   const isConnected = status === 'connected'
   const atomicBatchSupportedChains = availableCapabilities
-    ? getAtomicBatchSupportedChainInfo(availableCapabilities)
+    ? getFilteredCapabilitySupportedChainInfo(
+        WALLET_CAPABILITIES.ATOMIC_BATCH,
+        availableCapabilities
+      )
     : []
   const atomicBatchSupportedChainsName = atomicBatchSupportedChains
     .map(ci => ci.chainName)
@@ -42,16 +47,16 @@ export function WagmiSendCallsTest() {
   )
 
   useEffect(() => {
-    if (isConnected) {
-      fetchProvider()
+    if (isConnected && connector && address && chain) {
+      fetchProviderAndAccountCapabilities(address, connector, chain)
     }
-  }, [isConnected])
+  }, [isConnected, connector, address])
   const { sendCalls } = useSendCalls({
     mutation: {
       onSuccess: hash => {
         setLoading(false)
         toast({
-          title: 'Transaction Success',
+          title: 'SendCalls Success',
           description: hash,
           type: 'success'
         })
@@ -59,8 +64,8 @@ export function WagmiSendCallsTest() {
       onError: () => {
         setLoading(false)
         toast({
-          title: 'Error',
-          description: 'Failed to sign transaction',
+          title: 'SendCalls Error',
+          description: 'Failed to send calls',
           type: 'error'
         })
       }
@@ -73,12 +78,6 @@ export function WagmiSendCallsTest() {
     })
   }, [sendCalls])
 
-  async function fetchProvider() {
-    const connectedProvider = await connection?.[0]?.connector?.getProvider()
-    if (connectedProvider instanceof EthereumProvider) {
-      setEthereumProvider(connectedProvider)
-    }
-  }
   function isSendCallsSupported(): boolean {
     return Boolean(
       ethereumProvider?.signer?.session?.namespaces?.['eip155']?.methods?.includes(
@@ -86,27 +85,21 @@ export function WagmiSendCallsTest() {
       )
     )
   }
-  function getAtomicBatchSupportedChainInfo(capabilities: Record<number, WalletCapabilities>): {
-    chainId: number
-    chainName: string
-  }[] {
-    const chainIds = Object.keys(capabilities)
-    const chainInfo = chainIds
-      .filter(chainId => {
-        const capabilitiesPerChain = capabilities[parseInt(chainId, 10)]
 
-        return capabilitiesPerChain?.['atomicBatch']?.supported === true
-      })
-      .map(chainId => {
-        const capabilityChain = getChain(parseInt(chainId, 10))
-
-        return {
-          chainId: parseInt(chainId, 10),
-          chainName: capabilityChain?.name ?? `Unknown Chain(${chainId})`
-        }
-      })
-
-    return chainInfo
+  async function fetchProviderAndAccountCapabilities(
+    connectedAccount: `0x${string}`,
+    connectedConnector: Connector,
+    connectedChain: Chain
+  ) {
+    const connectedProvider = await connectedConnector.getProvider({
+      chainId: connectedChain.id
+    })
+    if (connectedProvider instanceof EthereumProvider) {
+      setEthereumProvider(connectedProvider)
+      let walletCapabilities = undefined
+      walletCapabilities = getProviderCachedCapabilities(connectedAccount, connectedProvider)
+      setAvailableCapabilities(walletCapabilities)
+    }
   }
 
   if (!isConnected || !ethereumProvider || !address) {

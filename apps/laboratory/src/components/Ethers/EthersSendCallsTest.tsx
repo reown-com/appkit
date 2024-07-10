@@ -6,7 +6,11 @@ import { useChakraToast } from '../Toast'
 import { parseGwei, type Address } from 'viem'
 import { vitalikEthAddress } from '../../utils/DataUtil'
 import { BrowserProvider } from 'ethers'
-import { EIP_5792_RPC_METHODS, getAtomicBatchSupportedChainInfo } from '../../utils/EIP5792Utils'
+import {
+  EIP_5792_RPC_METHODS,
+  WALLET_CAPABILITIES,
+  getCapabilitySupportedChainInfo
+} from '../../utils/EIP5792Utils'
 
 export function EthersSendCallsTest() {
   const [loading, setLoading] = useState(false)
@@ -17,9 +21,10 @@ export function EthersSendCallsTest() {
 
   const atomicBatchSupportedChains =
     address && walletProvider instanceof EthereumProvider
-      ? getAtomicBatchSupportedChainInfo(walletProvider, address)
+      ? getCapabilitySupportedChainInfo(WALLET_CAPABILITIES.ATOMIC_BATCH, walletProvider, address)
       : []
-  const atomicBatchSupportedChainsNames = atomicBatchSupportedChains
+
+  const atomicBatchSupportedChainNames = atomicBatchSupportedChains
     .map(ci => ci.chainName)
     .join(', ')
   const currentChainsInfo = atomicBatchSupportedChains.find(
@@ -95,14 +100,14 @@ export function EthersSendCallsTest() {
   if (!isSendCallsSupported()) {
     return (
       <Text fontSize="md" color="yellow">
-        Wallet does not support this feature
+        Wallet does not support wallet_sendCalls rpc
       </Text>
     )
   }
   if (atomicBatchSupportedChains.length === 0) {
     return (
       <Text fontSize="md" color="yellow">
-        Account does not support this feature
+        Account does not support atomic batch feature
       </Text>
     )
   }
@@ -116,7 +121,7 @@ export function EthersSendCallsTest() {
     </Stack>
   ) : (
     <Text fontSize="md" color="yellow">
-      Switch to {atomicBatchSupportedChainsNames} to test this feature
+      Switch to {atomicBatchSupportedChainNames} to test atomic batch feature
     </Text>
   )
 }

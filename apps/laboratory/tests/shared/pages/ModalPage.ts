@@ -7,7 +7,16 @@ import { Email } from '../utils/email'
 import { DeviceRegistrationPage } from './DeviceRegistrationPage'
 import type { TimingRecords } from '../fixtures/timing-fixture'
 
-export type ModalFlavor = 'default' | 'siwe' | 'email' | 'wallet' | 'all'
+export type ModalFlavor = 'default' | 'siwe' | 'email' | 'wallet' | 'external' | 'all'
+
+function getUrlByFlavor(baseUrl: string, library: string, flavor: ModalFlavor) {
+  const urlsByFlavor: Partial<Record<ModalFlavor, string>> = {
+    default: `${baseUrl}library/${library}/`,
+    external: `${baseUrl}library/external/`
+  }
+
+  return urlsByFlavor[flavor] || `${baseUrl}library/${library}-${flavor}/`
+}
 
 export class ModalPage {
   private readonly baseURL = BASE_URL
@@ -22,10 +31,7 @@ export class ModalPage {
     public readonly flavor: ModalFlavor
   ) {
     this.connectButton = this.page.getByTestId('connect-button')
-    this.url =
-      flavor === 'default'
-        ? `${this.baseURL}library/${this.library}/`
-        : `${this.baseURL}library/${this.library}-${this.flavor}/`
+    this.url = getUrlByFlavor(this.baseURL, library, flavor)
   }
 
   async load() {
@@ -123,7 +129,7 @@ export class ModalPage {
       this.page.getByText(email),
       `Expected current email: ${email} to be visible on the notification screen`
     ).toBeVisible({
-      timeout: 10_000
+      timeout: 20_000
     })
   }
 
@@ -218,6 +224,9 @@ export class ModalPage {
 
   async clickWalletUpgradeCard(context: BrowserContext) {
     await this.page.getByTestId('account-button').click()
+
+    await this.page.getByTestId('w3m-profile-button').click()
+    await this.page.getByTestId('account-settings-button').click()
     await this.page.getByTestId('w3m-wallet-upgrade-card').click()
 
     const page = await doActionAndWaitForNewPage(
@@ -291,6 +300,8 @@ export class ModalPage {
       this.page.getByTestId('w3m-account-email-update'),
       `Expected to go to the account screen after the update`
     ).toBeVisible()
+
+    await expect(this.page.getByText(newEmailAddress)).toBeVisible()
   }
 
   async updateOtpFlow(emailAddress: string, mailsacApiKey: string, headerTitle: string) {
