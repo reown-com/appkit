@@ -43,7 +43,6 @@ export const testMEmailSiwe = timingFixture.extend<ModalFixture>({
       await modalPage.emailFlow(tempEmail, context, mailsacApiKey)
       await modalPage.promptSiwe()
       await modalPage.approveSign()
-      await modalPage.page.waitForTimeout(1000)
 
       await use(modalPage)
     },

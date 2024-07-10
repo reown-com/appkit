@@ -31,6 +31,11 @@ testMEmailSiwe('it should switch network and sign', async ({ modalPage, modalVal
   await modalWalletPage.switchNetwork(targetChain)
   await modalWalletPage.promptSiwe()
   await modalWalletPage.approveSign()
+
+  // Open the settings again to see if the network is switched
+  await modalWalletPage.openAccount()
+  await modalWalletPage.openProfileView()
+  await modalWalletPage.openSettings()
   await modalWalletValidator.expectSwitchedNetwork(targetChain, true)
   await modalWalletPage.closeModal()
 
@@ -45,6 +50,11 @@ testMEmailSiwe('it should switch network and sign', async ({ modalPage, modalVal
   await modalWalletPage.switchNetwork(targetChain)
   await modalWalletPage.promptSiwe()
   await modalWalletPage.approveSign()
+
+  // Open the settings again to see if the network is switched
+  await modalWalletPage.openAccount()
+  await modalWalletPage.openProfileView()
+  await modalWalletPage.openSettings()
   await modalWalletValidator.expectSwitchedNetwork(targetChain)
   await modalWalletPage.closeModal()
 

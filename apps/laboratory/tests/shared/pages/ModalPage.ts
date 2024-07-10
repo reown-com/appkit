@@ -196,6 +196,7 @@ export class ModalPage {
     const signButton = this.page.getByTestId('sign-message-button')
     await signButton.scrollIntoViewIfNeeded()
     await signButton.click()
+    await this.page.waitForTimeout(1000)
   }
 
   async signatureRequestFrameShouldVisible() {
@@ -209,7 +210,10 @@ export class ModalPage {
   }
 
   async clickSignatureRequestButton(name: string) {
+    const signatureHeader = this.page.getByText('Approve Transaction')
     await this.page.frameLocator('#w3m-iframe').getByRole('button', { name, exact: true }).click()
+    await expect(signatureHeader, 'Signature request should be closed').not.toBeVisible()
+    await this.page.waitForTimeout(1000)
   }
 
   async approveSign() {
