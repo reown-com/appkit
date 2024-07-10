@@ -3,6 +3,17 @@ if (!projectId) {
   throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
 }
 export const WALLET_URL = process.env['WALLET_URL'] || 'https://react-wallet.walletconnect.com/'
+export const PUBLIC_URL = 'https://lab.web3modal.com'
+
+export const CUSTOM_WALLET = 'wc:custom_wallet'
+
+// eslint-disable-next-line init-declarations
+let storedCustomWallet
+if (typeof window !== 'undefined') {
+  storedCustomWallet = localStorage.getItem(CUSTOM_WALLET)
+}
+
+const customWallet = storedCustomWallet ? [JSON.parse(storedCustomWallet)] : []
 
 export const ConstantsUtil = {
   SigningSucceededToastTitle: 'Signing Succeeded',
@@ -11,11 +22,12 @@ export const ConstantsUtil = {
   Metadata: {
     name: 'Web3Modal',
     description: 'Web3Modal Laboratory',
-    url: 'https://lab.web3modal.com',
-    icons: ['https://avatars.githubusercontent.com/u/37784886'],
+    url: PUBLIC_URL,
+    icons: [`${PUBLIC_URL}/metadata-icon.png`],
     verifyUrl: ''
   },
   CustomWallets: [
+    ...customWallet,
     {
       id: 'react-wallet-v2',
       name: 'react-wallet-v2',
@@ -41,6 +53,12 @@ export const ConstantsUtil = {
       name: 'flutter-web3wallet',
       homepage: 'https://walletconnect.com',
       mobile_link: 'wcflutterwallet://'
+    },
+    {
+      id: 'rn-web3wallet',
+      name: 'rn-web3wallet',
+      homepage: 'https://walletconnect.com',
+      mobile_link: 'rn-web3wallet://'
     }
   ],
   ProjectId: projectId

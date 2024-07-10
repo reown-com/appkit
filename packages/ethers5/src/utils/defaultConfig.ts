@@ -1,6 +1,6 @@
 import '@web3modal/polyfills'
-import type { Metadata, Provider, ProviderType } from '@web3modal/scaffold-utils/ethers'
-import { CoinbaseWalletSDK } from '@coinbase/wallet-sdk'
+import type { Chain, Metadata, Provider, ProviderType } from '@web3modal/scaffold-utils/ethers'
+import { CoinbaseWalletSDK, type ProviderInterface } from '@coinbase/wallet-sdk'
 
 export interface ConfigOptions {
   enableEIP6963?: boolean
@@ -9,20 +9,16 @@ export interface ConfigOptions {
   rpcUrl?: string
   defaultChainId?: number
   metadata: Metadata
+  chains?: Chain[]
+  coinbasePreference?: 'all' | 'smartWalletOnly' | 'eoaOnly'
 }
 
 export function defaultConfig(options: ConfigOptions) {
-  const {
-    enableEIP6963 = true,
-    enableInjected = true,
-    enableCoinbase = true,
-    metadata,
-    rpcUrl,
-    defaultChainId
-  } = options
+  const { enableEIP6963 = true, enableInjected = true, enableCoinbase = true, metadata } = options
 
   let injectedProvider: Provider | undefined = undefined
-  let coinbaseProvider: Provider | undefined = undefined
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+  let coinbaseProvider: ProviderInterface | undefined = undefined
 
   const providers: ProviderType = { metadata }
 
@@ -57,16 +53,25 @@ export function defaultConfig(options: ConfigOptions) {
     const coinbaseWallet = new CoinbaseWalletSDK({
       appName: metadata.name,
       appLogoUrl: metadata.icons[0],
-      darkMode: false,
-      enableMobileWalletLink: true
+      appChainIds: options.chains?.map(chain => chain.chainId) || [1, 84532]
     })
 
-    coinbaseProvider = coinbaseWallet.makeWeb3Provider(rpcUrl, defaultChainId)
+    coinbaseProvider = coinbaseWallet.makeWeb3Provider({
+      /**
+       * Determines which wallet options to display in Coinbase Wallet SDK.
+       * @property options
+       *   - `all`: Show both smart wallet and EOA options.
+       *   - `smartWalletOnly`: Show only smart wallet options.
+       *   - `eoaOnly`: Show only EOA options.
+       * @see https://www.smartwallet.dev/sdk/v3-to-v4-changes#parameters
+       */
+      options: options.coinbasePreference || 'all'
+    })
 
     return coinbaseProvider
   }
 
-  if (enableCoinbase && rpcUrl && defaultChainId) {
+  if (enableCoinbase) {
     providers.coinbase = getCoinbaseProvider()
   }
 
