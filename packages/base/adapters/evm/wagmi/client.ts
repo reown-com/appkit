@@ -410,9 +410,9 @@ export class EVMWagmiClient {
 
     // Wagmi listeners
     watchConnectors(this.wagmiConfig, {
-      onChange: connectors => {
-        this.syncConnectors(connectors)
-        this.syncAuthConnector(connectors.find(c => c.id === ConstantsUtil.AUTH_CONNECTOR_ID))
+      onChange: _connectors => {
+        this.syncConnectors(_connectors)
+        this.syncAuthConnector(_connectors.find(c => c.id === ConstantsUtil.AUTH_CONNECTOR_ID))
       }
     })
     watchAccount(this.wagmiConfig, {
@@ -609,6 +609,7 @@ export class EVMWagmiClient {
     const filteredConnectors = connectors.filter(item => {
       const isDuplicate = uniqueIds.has(item.id)
       uniqueIds.add(item.id)
+
       return !isDuplicate
     })
 
@@ -646,12 +647,10 @@ export class EVMWagmiClient {
   }
 
   private async syncAuthConnector(
-    authConnector:
-      | Web3ModalClientOptions<CoreConfig>['wagmiConfig']['connectors'][number]
-      | undefined
+    authConnector: Web3ModalClientOptions<Config>['wagmiConfig']['connectors'][number] | undefined
   ) {
     const connector =
-      authConnector as unknown as Web3ModalClientOptions<CoreConfig>['wagmiConfig']['connectors'][0] & {
+      authConnector as unknown as Web3ModalClientOptions<Config>['wagmiConfig']['connectors'][0] & {
         email: boolean
         socials: SocialProvider[]
         showWallets?: boolean

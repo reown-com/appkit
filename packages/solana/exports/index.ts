@@ -23,6 +23,7 @@ export function createWeb3Modal(options: SolanaAppKitOptions) {
     sdkVersion: `html-solana-${ConstantsUtil.VERSION}`,
     projectId: options.projectId
   })
+
   return new AppKit({
     ...options,
     adapters: [wagmiAdapter],

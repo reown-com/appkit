@@ -122,7 +122,7 @@ export const ChainController = {
   setChainNetworkData(
     chain: Chain | undefined,
     props: Partial<NetworkControllerState>,
-    replaceState: boolean = true
+    replaceState = true
   ) {
     if (!chain) {
       throw new Error('Chain is required to update chain network data')
@@ -198,7 +198,7 @@ export const ChainController = {
   },
 
   /**
-   * setCaipNetwork function is being called for different purposes and it needs to be controlled if it should replace the NetworkController state or not.
+   * The setCaipNetwork function is being called for different purposes and it needs to be controlled if it should replace the NetworkController state or not.
    * While we initializing the adapters, we need to set the caipNetwork without replacing the state.
    * But when we switch the network, we need to replace the state.
    * @param chain
@@ -210,7 +210,6 @@ export const ChainController = {
     caipNetwork: NetworkControllerState['caipNetwork'],
     shouldReplace = false
   ) {
-    console.log('>>> setCaipNetwork', chain, caipNetwork)
     this.setChainNetworkData(chain, { caipNetwork }, shouldReplace)
   },
 

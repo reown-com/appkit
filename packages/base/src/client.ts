@@ -274,6 +274,7 @@ export class AppKit {
 
       // Set this value for all chains
       NetworkController.setAllowUnsupportedChain(options.allowUnsupportedChain, adapter.chain)
+      NetworkController.setDefaultCaipNetwork(options.defaultChain)
     })
 
     OptionsController.setProjectId(options.projectId)

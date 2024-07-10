@@ -329,7 +329,7 @@ export class Web3ModalScaffold {
         chain: options.chain
       }
     ])
-    NetworkController.setCaipNetwork(options.defaultChain)
+    NetworkController.setDefaultCaipNetwork(options.defaultChain)
 
     OptionsController.setProjectId(options.projectId)
     OptionsController.setAllWallets(options.allWallets)

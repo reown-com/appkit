@@ -5,6 +5,7 @@ import { ModalController } from './ModalController.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { NetworkUtil, type Chain } from '@web3modal/common'
 import { ChainController } from './ChainController.js'
+import { PublicStateController } from './PublicStateController.js'
 
 // -- Types --------------------------------------------- //
 export interface NetworkControllerClient {
@@ -72,6 +73,14 @@ export const NetworkController = {
 
     if (networks.length > 0) {
       this.setCaipNetwork(networks[0])
+    }
+  },
+
+  setDefaultCaipNetwork(caipNetwork: NetworkControllerState['caipNetwork']) {
+    if (caipNetwork) {
+      ChainController.setCaipNetwork(caipNetwork.chain, caipNetwork)
+      ChainController.setChainNetworkData(caipNetwork.chain, { isDefaultCaipNetwork: true })
+      PublicStateController.set({ selectedNetworkId: caipNetwork.id })
     }
   },
 

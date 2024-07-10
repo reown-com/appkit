@@ -58,9 +58,9 @@ export class SolanaWeb3JsClient {
 
   private hasSyncedConnectedAccount = false
 
-  private WalletConnectConnector: WalletConnectConnector
+  private WalletConnectConnector: WalletConnectConnector | undefined = undefined
 
-  private walletAdapters: ExtendedBaseWalletAdapter[]
+  private walletAdapters: ExtendedBaseWalletAdapter[] = []
 
   private filteredWalletAdapters: ExtendedBaseWalletAdapter[] | undefined
 
@@ -126,13 +126,13 @@ export class SolanaWeb3JsClient {
 
     this.connectionControllerClient = {
       connectWalletConnect: async onUri => {
-        const WalletConnectProvider = await this.WalletConnectConnector.getProvider()
+        const WalletConnectProvider = await this.WalletConnectConnector?.getProvider()
         if (!WalletConnectProvider) {
           throw new Error('connectionControllerClient:getWalletConnectUri - provider is undefined')
         }
 
         WalletConnectProvider.on('display_uri', onUri)
-        const address = await this.WalletConnectConnector.connect()
+        const address = await this.WalletConnectConnector?.connect()
         this.setWalletConnectProvider(address)
         WalletConnectProvider.removeListener('display_uri', onUri)
       },
@@ -348,8 +348,8 @@ export class SolanaWeb3JsClient {
 
     try {
       if (walletId === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
-        const provider = await this.WalletConnectConnector.getProvider()
-        if (provider.session) {
+        const provider = await this.WalletConnectConnector?.getProvider()
+        if (provider?.session) {
           const account = provider.session.namespaces['solana']?.accounts[0]
           this.setWalletConnectProvider(account?.split(':')[2])
         }
@@ -392,8 +392,8 @@ export class SolanaWeb3JsClient {
         explorerId: PresetsUtil.ConnectorExplorerIds[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID],
         type: connectorType,
         imageUrl: 'https://avatars.githubusercontent.com/u/37784886',
-        name: this.WalletConnectConnector.name,
-        provider: this.WalletConnectConnector.getProvider(),
+        name: this.WalletConnectConnector?.name,
+        provider: this.WalletConnectConnector?.getProvider(),
         chain: this.chain
       })
     }
@@ -451,7 +451,9 @@ export class SolanaWeb3JsClient {
       const chain = SolHelpersUtil.getChainFromCaip(this.chains, caipChainId)
       if (chain) {
         const balance = await this.WalletConnectConnector?.getBalance(address)
-        this.appKit?.setBalance(balance.decimals.toString(), chain.currency, this.chain)
+        if (balance) {
+          this.appKit?.setBalance(balance.decimals.toString(), chain.currency, this.chain)
+        }
       }
     }
   }
@@ -487,16 +489,16 @@ export class SolanaWeb3JsClient {
         throw new Error('connectionControllerClient:switchNetwork - providerType is undefined')
       }
       if (providerType === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
-        const universalProvider = await this.WalletConnectConnector.getProvider()
+        const universalProvider = await this.WalletConnectConnector?.getProvider()
 
-        const namespaces = this.WalletConnectConnector.generateNamespaces(chain.chainId)
+        const namespaces = this.WalletConnectConnector?.generateNamespaces(chain.chainId)
         SolStoreUtil.setConnection(
           new Connection(
             SolHelpersUtil.detectRpcUrl(chain, this.instanceOptions?.projectId || ''),
             this.connectionSettings
           )
         )
-        universalProvider.connect({ namespaces, pairingTopic: undefined })
+        universalProvider?.connect({ namespaces, pairingTopic: undefined })
         await this.syncAccount()
       } else {
         SolStoreUtil.setConnection(

@@ -1,5 +1,5 @@
 import { getWallets } from '@wallet-standard/app'
-import { StandardWalletAdapter } from './adapter'
+import { StandardWalletAdapter } from './adapter.js'
 import { isWalletAdapterCompatibleStandardWallet } from '@solana/wallet-adapter-base'
 import type { Wallet } from '@wallet-standard/base'
 

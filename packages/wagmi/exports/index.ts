@@ -5,11 +5,7 @@ import { ConstantsUtil } from '@web3modal/scaffold-utils'
 import type { Config } from '@wagmi/core'
 
 // -- Types -------------------------------------------------------------
-export type {
-  CoreConfig,
-  ReactConfig,
-  Web3ModalClientOptions
-} from '@web3modal/base/adapters/evm/wagmi'
+export type { Web3ModalClientOptions } from '@web3modal/base/adapters/evm/wagmi'
 
 // -- Connectors --------------------------------------------------------
 export { authConnector } from '@web3modal/base/adapters/evm/wagmi'
@@ -27,6 +23,7 @@ export function createWeb3Modal(options: WagmiAppKitOptions) {
     wagmiConfig: options.wagmiConfig,
     siweConfig: options.siweConfig
   })
+
   return new AppKit({
     ...options,
     adapters: [wagmiAdapter],
