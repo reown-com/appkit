@@ -47,6 +47,11 @@
       "dependsOn": ["^build:core", "^build:scaffold-utils"],
       "cache": false
     },
+    "build:siws": {
+      "outputs": ["dist/**"],
+      "dependsOn": ["^build:core", "^build:scaffold-utils"],
+      "cache": false
+    },
     "build:scaffold-ui": {
       "outputs": ["dist/**"],
       "dependsOn": [

@@ -17,6 +17,7 @@ export interface OptionsControllerState {
   termsConditionsUrl?: string
   privacyPolicyUrl?: string
   isSiweEnabled?: boolean
+  isSiwsEnabled?: boolean
   enableAnalytics?: boolean
   metadata?: Metadata
   enableOnramp?: boolean
@@ -82,6 +83,10 @@ export const OptionsController = {
 
   setIsSiweEnabled(isSiweEnabled: OptionsControllerState['isSiweEnabled']) {
     state.isSiweEnabled = isSiweEnabled
+  },
+
+  setIsSiwsEnabled(isSiwsEnabled: OptionsControllerState['isSiwsEnabled']) {
+    state.isSiwsEnabled = isSiwsEnabled
   },
 
   setEnableAnalytics(enableAnalytics: OptionsControllerState['enableAnalytics']) {

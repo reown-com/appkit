@@ -30,11 +30,12 @@ import type {
   CaipNetwork
 } from '@web3modal/scaffold'
 import type { Chain as AvailableChain } from '@web3modal/common'
-
+import type { Web3ModalSIWSClient } from '@web3modal/siws'
 import type { Chain, Provider, ProviderType, SolStoreUtilState } from './utils/scaffold/index.js'
 
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
   solanaConfig: ProviderType
+  siwsConfig?: Web3ModalSIWSClient
   chains: Chain[]
   connectionSettings?: Commitment | ConnectionConfig
   defaultChain?: Chain
@@ -62,6 +63,7 @@ export class Web3Modal extends Web3ModalScaffold {
   public constructor(options: Web3ModalClientOptions) {
     const {
       solanaConfig,
+      siwsConfig,
       chains,
       tokens,
       _sdkVersion,
@@ -146,6 +148,12 @@ export class Web3Modal extends Web3ModalScaffold {
         const provider = SolStoreUtil.state.provider as Provider
         const providerType = SolStoreUtil.state.providerType
         localStorage.removeItem(SolConstantsUtil.WALLET_ID)
+
+        if (siwsConfig?.options?.signOutOnDisconnect) {
+          const { SIWSController } = await import('@web3modal/siws')
+          await SIWSController.signOut()
+        }
+
         if (providerType === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
           const WalletConnectProvider = provider
           await (WalletConnectProvider as unknown as UniversalProvider).disconnect()
@@ -157,6 +165,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
       signMessage: async (message: string) => {
         const provider = SolStoreUtil.state.provider
+
         if (!provider) {
           throw new Error('connectionControllerClient:signMessage - provider is undefined')
         }
@@ -165,6 +174,18 @@ export class Web3Modal extends Web3ModalScaffold {
           method: 'personal_sign',
           params: [message, this.getAddress()]
         })
+
+        // if (!window.solana) return null
+
+        // const encodedMessage = new TextEncoder().encode(message)
+
+        // const signedMessage = await window.solana.request({
+        //   method: 'signMessage',
+        //   params: {
+        //     message: encodedMessage,
+        //     display: 'text'
+        //   }
+        // })
 
         return signature as string
       },
@@ -194,6 +215,7 @@ export class Web3Modal extends Web3ModalScaffold {
       networkControllerClient,
       connectionControllerClient,
       supportedWallets: wallets,
+      siwsControllerClient: siwsConfig,
 
       defaultChain: SolHelpersUtil.getChainFromCaip(
         chains,
