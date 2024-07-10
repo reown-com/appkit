@@ -7,13 +7,16 @@ export class ModalWalletPage extends ModalPage {
   constructor(
     public override readonly page: Page,
     public override readonly library: string,
-    public override readonly flavor: 'wallet' | 'all' = 'wallet'
+    public override readonly flavor: 'email' | 'all' = 'email'
   ) {
     super(page, library, flavor)
   }
 
-  async openSettings() {
+  async openProfileView() {
     await this.page.getByTestId('wui-profile-button').click()
+  }
+  async openSettings() {
+    await this.page.getByTestId('account-settings-button').click()
   }
 
   override async switchNetwork(network: string) {
