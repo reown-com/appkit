@@ -50,6 +50,8 @@ export function getDefaultChainFromSession(
     console.warn(chainWarns.wallet)
 
     return Chains.Deprecated_Devnet
+  } else if (selectedChain === Chains.Testnet) {
+    return Chains.Testnet
   }
   throw Error('WalletConnect Solana Adapter: Unable to get a default chain from the session.')
 }
