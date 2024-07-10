@@ -151,7 +151,7 @@ export default function HomePage() {
                     Configuration with multiple adapters enabled for AppKit
                   </Text>
                 </Box>
-                <Link href={'/library/appkit-all'}>
+                <Link href={'/library/multichain-all'}>
                   <Button rightIcon={<IoArrowForward />}>Go</Button>
                 </Link>
               </Stack>
@@ -166,7 +166,7 @@ export default function HomePage() {
                     Configuration with only Wagmi adapters enabled for AppKit
                   </Text>
                 </Box>
-                <Link href={'/library/appkit-wagmi'}>
+                <Link href={'/library/multichain-wagmi'}>
                   <Button rightIcon={<IoArrowForward />}>Go</Button>
                 </Link>
               </Stack>
@@ -181,7 +181,7 @@ export default function HomePage() {
                     Configuration with only Solana adapters enabled for AppKit
                   </Text>
                 </Box>
-                <Link href={'/library/appkit-solana'}>
+                <Link href={'/library/multichain-solana'}>
                   <Button rightIcon={<IoArrowForward />}>Go</Button>
                 </Link>
               </Stack>

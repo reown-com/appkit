@@ -1,22 +1,10 @@
-import { createWeb3Modal } from '@web3modal/base/react'
-import { EVMWagmiClient } from '@web3modal/base/adapters/evm/wagmi'
+import { createWeb3Modal } from '@web3modal/base'
 import { SolanaWeb3JsClient, defaultSolanaConfig } from '@web3modal/base/adapters/solana/web3js'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { getWagmiConfig } from '../../utils/WagmiConstants'
-import { WagmiProvider } from 'wagmi'
 import { solana, solanaDevnet, solanaTestnet } from '../../utils/ChainsUtil'
 import { Web3ModalButtons } from '../../components/Web3ModalButtons'
-import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
-
-const queryClient = new QueryClient()
-
-const wagmiConfig = getWagmiConfig('default')
-
-const wagmiAdapter = new EVMWagmiClient({
-  wagmiConfig
-})
+import { SolanaTests } from '../../components/Solana/SolanaTests'
 
 const solanaConfig = defaultSolanaConfig({
   chains: [solana, solanaTestnet, solanaDevnet],
@@ -30,7 +18,7 @@ const solanaWeb3JsAdapter = new SolanaWeb3JsClient({
 })
 
 const modal = createWeb3Modal({
-  adapters: [wagmiAdapter, solanaWeb3JsAdapter],
+  adapters: [solanaWeb3JsAdapter],
   projectId: ConstantsUtil.ProjectId,
   enableAnalytics: true,
   metadata: ConstantsUtil.Metadata,
@@ -43,13 +31,11 @@ const modal = createWeb3Modal({
 
 ThemeStore.setModal(modal)
 
-export default function AppKitMultipleAdapters() {
+export default function MultiChainSolanaAdapterOnly() {
   return (
-    <WagmiProvider config={wagmiConfig}>
-      <QueryClientProvider client={queryClient}>
-        <Web3ModalButtons />
-        <WagmiModalInfo />
-      </QueryClientProvider>
-    </WagmiProvider>
+    <>
+      <Web3ModalButtons />
+      <SolanaTests />
+    </>
   )
 }

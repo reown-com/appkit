@@ -1,6 +1,6 @@
 import { Stack, Card, CardHeader, Heading, CardBody, Box, StackDivider } from '@chakra-ui/react'
 
-export default function AppKitBasic() {
+export default function MultiChainNoAdapters() {
   return (
     <Card marginTop={10} marginBottom={10}>
       <CardHeader>
