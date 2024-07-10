@@ -21,7 +21,7 @@ import type { OptionsControllerState } from '@web3modal/core'
 import { mainnet } from 'viem/chains'
 import { prepareTransactionRequest, sendTransaction as wagmiSendTransaction } from '@wagmi/core'
 import type { Chain } from '@wagmi/core/chains'
-import type { GetAccountReturnType, GetEnsAddressReturnType } from '@wagmi/core'
+import type { GetAccountReturnType, GetEnsAddressReturnType, Config } from '@wagmi/core'
 import type {
   CaipAddress,
   CaipNetwork,
@@ -45,8 +45,6 @@ import {
 import { W3mFrameConstants, W3mFrameHelpers, W3mFrameRpcConstants } from '@web3modal/wallet'
 import type { W3mFrameProvider, W3mFrameTypes } from '@web3modal/wallet'
 import { NetworkUtil } from '@web3modal/common'
-import type { defaultWagmiConfig as coreConfig } from './utils/defaultWagmiCoreConfig.js'
-import type { defaultWagmiConfig as reactConfig } from './utils/defaultWagmiReactConfig.js'
 import { normalize } from 'viem/ens'
 import type { AppKitOptions } from '../../../utils/TypesUtil.js'
 import type { Chain as AvailableChain, CaipNetworkId } from '@web3modal/common'
@@ -54,10 +52,6 @@ import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 import type { AppKit } from '../../../src/client.js'
 
 // -- Types ---------------------------------------------------------------------
-export type CoreConfig = ReturnType<typeof coreConfig>
-export type ReactConfig = ReturnType<typeof reactConfig>
-type Config = CoreConfig | ReactConfig
-
 export interface Web3ModalClientOptions<C extends Config>
   extends Pick<AppKitOptions, 'siweConfig' | 'enableEIP6963'> {
   wagmiConfig: C
@@ -79,7 +73,7 @@ export class EVMWagmiClient {
 
   private hasSyncedConnectedAccount = false
 
-  private wagmiConfig: Web3ModalClientOptions<CoreConfig>['wagmiConfig']
+  private wagmiConfig: Web3ModalClientOptions<Config>['wagmiConfig']
 
   public chain: AvailableChain = CommonConstantsUtil.CHAIN.EVM
 
@@ -95,7 +89,7 @@ export class EVMWagmiClient {
 
   public siweControllerClient = this.options?.siweConfig
 
-  public constructor(options: Web3ModalClientOptions<CoreConfig>) {
+  public constructor(options: Web3ModalClientOptions<Config>) {
     const { wagmiConfig, defaultChain } = options
 
     if (!wagmiConfig) {
@@ -609,9 +603,7 @@ export class EVMWagmiClient {
     }
   }
 
-  private syncConnectors(
-    _connectors: Web3ModalClientOptions<CoreConfig>['wagmiConfig']['connectors']
-  ) {
+  private syncConnectors(_connectors: Web3ModalClientOptions<Config>['wagmiConfig']['connectors']) {
     const connectors = _connectors.map(connector => ({ ...connector, chain: this.chain }))
     const uniqueIds = new Set()
     const filteredConnectors = connectors.filter(item => {
@@ -684,9 +676,7 @@ export class EVMWagmiClient {
   }
 
   private async initAuthConnectorListeners(
-    authConnector:
-      | Web3ModalClientOptions<CoreConfig>['wagmiConfig']['connectors'][number]
-      | undefined
+    authConnector: Web3ModalClientOptions<Config>['wagmiConfig']['connectors'][number] | undefined
   ) {
     if (authConnector) {
       await this.listenAuthConnector(authConnector)
@@ -695,7 +685,7 @@ export class EVMWagmiClient {
   }
 
   private async listenAuthConnector(
-    connector: Web3ModalClientOptions<CoreConfig>['wagmiConfig']['connectors'][number]
+    connector: Web3ModalClientOptions<Config>['wagmiConfig']['connectors'][number]
   ) {
     if (typeof window !== 'undefined' && connector) {
       this.appKit?.setLoading(true)
@@ -803,7 +793,7 @@ export class EVMWagmiClient {
   }
 
   private async listenModal(
-    connector: Web3ModalClientOptions<CoreConfig>['wagmiConfig']['connectors'][number]
+    connector: Web3ModalClientOptions<Config>['wagmiConfig']['connectors'][number]
   ) {
     const provider = (await connector.getProvider()) as W3mFrameProvider
     this.subscribeState(val => {

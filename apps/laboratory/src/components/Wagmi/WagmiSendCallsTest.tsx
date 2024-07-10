@@ -4,7 +4,8 @@ import { useAccount, type Connector } from 'wagmi'
 import { useSendCalls } from 'wagmi/experimental'
 import { useCallback, useState, useEffect } from 'react'
 import { useChakraToast } from '../Toast'
-import { parseGwei, type Address, type Chain, type WalletCapabilities } from 'viem'
+import { parseGwei, type Address, type WalletCapabilities } from 'viem'
+import { type Chain } from 'wagmi/chains'
 import { vitalikEthAddress } from '../../utils/DataUtil'
 import {
   EIP_5792_RPC_METHODS,
