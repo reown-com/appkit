@@ -1,9 +1,10 @@
-import { createAppKit } from '@web3modal/appkit'
-import { SolanaWeb3JsClient, defaultSolanaConfig } from '@web3modal/appkit/adapters/solana/web3js'
+import { createWeb3Modal } from '@web3modal/base'
+import { SolanaWeb3JsClient, defaultSolanaConfig } from '@web3modal/base/adapters/solana/web3js'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
-import { AppKitButtons } from '../../components/AppKitButtons'
 import { solana, solanaDevnet, solanaTestnet } from '../../utils/ChainsUtil'
+import { Web3ModalButtons } from '../../components/Web3ModalButtons'
+import { SolanaTests } from '../../components/Solana/SolanaTests'
 
 const solanaConfig = defaultSolanaConfig({
   chains: [solana, solanaTestnet, solanaDevnet],
@@ -16,7 +17,7 @@ const solanaWeb3JsAdapter = new SolanaWeb3JsClient({
   chains: [solana, solanaTestnet, solanaDevnet]
 })
 
-const modal = createAppKit({
+const modal = createWeb3Modal({
   adapters: [solanaWeb3JsAdapter],
   projectId: ConstantsUtil.ProjectId,
   enableAnalytics: true,
@@ -31,5 +32,10 @@ const modal = createAppKit({
 ThemeStore.setModal(modal)
 
 export default function AppKitSolana() {
-  return <AppKitButtons />
+  return (
+    <>
+      <Web3ModalButtons />
+      <SolanaTests />
+    </>
+  )
 }

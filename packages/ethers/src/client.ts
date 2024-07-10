@@ -697,7 +697,7 @@ export class Web3Modal extends Web3ModalScaffold {
           chain: CommonConstantsUtil.CHAIN.EVM
         }) as CaipNetwork
     )
-    this.setRequestedCaipNetworks(requestedCaipNetworks ?? [])
+    this.setRequestedCaipNetworks(requestedCaipNetworks ?? [], this.chain)
   }
 
   private async checkActiveWalletConnectProvider() {

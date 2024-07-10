@@ -51,9 +51,9 @@ export class WalletValidator {
     ).toBeVisible({
       timeout: MAX_WAIT
     })
-    // await expect(
-    //   this.page.getByTestId('request-details-chain'),
-    //   'Request details should contain chain name'
-    // ).toContainText(chainName)
+    await expect(
+      this.page.getByTestId('request-details-chain'),
+      'Request details should contain chain name'
+    ).toContainText(chainName)
   }
 }

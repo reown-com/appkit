@@ -34,12 +34,12 @@
     },
     "build:scaffold-react": {
       "outputs": ["dist/**"],
-      "dependsOn": ["^build:scaffold-utils", "^build:scaffold"],
+      "dependsOn": ["^build:scaffold-utils", "^build:scaffold", "^build:scaffold-ui"],
       "cache": false
     },
     "build:scaffold-vue": {
       "outputs": ["dist/**"],
-      "dependsOn": ["^build:scaffold-utils", "^build:scaffold"],
+      "dependsOn": ["^build:scaffold-utils", "^build:scaffold", "^build:scaffold-ui"],
       "cache": false
     },
     "build:siwe": {
@@ -72,6 +72,7 @@
     "build:client": {
       "outputs": ["dist/**"],
       "dependsOn": [
+        "^build:appkit",
         "^build:polyfills",
         "^build:scaffold",
         "^build:scaffold-react",
@@ -89,7 +90,7 @@
       "cache": false
     },
     "build": {
-      "dependsOn": ["build:cdn", "build:appkit"],
+      "dependsOn": ["build:cdn"],
       "cache": false,
       "persistent": true
     },

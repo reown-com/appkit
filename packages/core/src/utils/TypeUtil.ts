@@ -97,6 +97,7 @@ export type SdkVersion =
   | `${'html' | 'react' | 'vue'}-ethers5-${string}`
   | `${'html' | 'react' | 'vue'}-ethers-${string}`
   | `${'html' | 'react' | 'vue'}-solana-${string}`
+  | `${'html' | 'react' | 'vue'}-multichain-${string}`
 
 export interface BaseError {
   message?: string

@@ -16,7 +16,8 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@web3modal/scaffold": "5.0.6"
+    "@web3modal/scaffold": "5.0.6",
+    "@web3modal/scaffold-ui": "5.0.6"
   },
   "peerDependencies": {
     "vue": ">=3"

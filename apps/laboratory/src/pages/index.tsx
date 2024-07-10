@@ -190,15 +190,12 @@ export default function HomePage() {
               <Stack direction="row" justifyContent="space-between" alignItems="center">
                 <Box>
                   <Heading size="xs" textTransform="uppercase">
-                    Basic
+                    Basic <Badge>Soon</Badge>
                   </Heading>
                   <Text pt="2" fontSize="sm">
                     Configuration with no adapters enabled for AppKit
                   </Text>
                 </Box>
-                <Link href={'/library/appkit'}>
-                  <Button rightIcon={<IoArrowForward />}>Go</Button>
-                </Link>
               </Stack>
             </Box>
           </Stack>

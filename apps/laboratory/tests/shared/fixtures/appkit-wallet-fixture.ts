@@ -13,7 +13,7 @@ interface ModalWalletFixture {
 }
 
 export const appKitTestMW = base.extend<ModalWalletFixture>({
-  walletPage: async ({ context, modalPage, timingRecords }, use) => {
+  walletPage: async ({ context, modalPage }, use) => {
     const page = await doActionAndWaitForNewPage(modalPage.clickWalletDeeplink(), context)
     const walletPage = new WalletPage(page)
     await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)

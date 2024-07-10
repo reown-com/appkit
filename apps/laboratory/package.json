@@ -45,7 +45,7 @@
     "@tanstack/react-query": "5.24.8",
     "@wagmi/connectors": "5.0.8",
     "@walletconnect/utils": "2.13.1",
-    "@web3modal/appkit": "5.0.6",
+    "@web3modal/base": "5.0.6",
     "@web3modal/ethers": "5.0.6",
     "@web3modal/siwe": "5.0.6",
     "@web3modal/solana": "5.0.6",

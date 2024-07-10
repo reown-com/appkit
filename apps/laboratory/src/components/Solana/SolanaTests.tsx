@@ -1,4 +1,4 @@
-import { useWeb3ModalAccount } from '@web3modal/appkit/solana/react'
+import { useWeb3ModalAccount } from '@web3modal/solana/react'
 import {
   StackDivider,
   Card,

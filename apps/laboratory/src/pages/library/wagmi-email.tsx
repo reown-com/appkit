@@ -1,4 +1,4 @@
-import { createAppKit } from '@web3modal/appkit/wagmi/react'
+import { createWeb3Modal } from '@web3modal/wagmi/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 import { WagmiProvider } from 'wagmi'
@@ -7,13 +7,13 @@ import { WagmiTests } from '../../components/Wagmi/WagmiTests'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
-import { getWagmiConfig } from '../../utils/AppKitWagmiConstants'
+import { getWagmiConfig } from '../../utils/WagmiConstants'
 
 const queryClient = new QueryClient()
 
 const wagmiConfig = getWagmiConfig('email')
 
-const modal = createAppKit({
+const modal = createWeb3Modal({
   wagmiConfig,
   projectId: ConstantsUtil.ProjectId,
   enableAnalytics: true,

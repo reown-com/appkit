@@ -28,7 +28,9 @@ export const ConnectorController = {
 
   setConnectors(connectors: ConnectorControllerState['connectors']) {
     if (ChainController.state.multiChainEnabled) {
-      state.connectors = this.mergeMultiChainConnectors(connectors.map(c => ref(c)))
+      state.connectors = this.mergeMultiChainConnectors(
+        [...state.connectors, ...connectors].map(c => ref(c))
+      )
     } else {
       state.connectors = connectors.map(c => ref(c))
     }
@@ -78,7 +80,7 @@ export const ConnectorController = {
 
       authConnector?.provider?.syncDappData?.({
         metadata: optionsState.metadata,
-        sdkVersion: optionsState.sdkVersion || 'html-wagmi-0.0.1',
+        sdkVersion: optionsState.sdkVersion,
         projectId: optionsState.projectId
       })
       authConnector.provider.syncTheme({
