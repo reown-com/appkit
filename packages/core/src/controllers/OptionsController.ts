@@ -1,5 +1,5 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
-import { proxy, snapshot } from 'valtio/vanilla'
+import { proxy } from 'valtio/vanilla'
 import type { CustomWallet, Metadata, ProjectId, SdkVersion, Tokens } from '../utils/TypeUtil.js'
 import { ApiController } from './ApiController.js'
 
@@ -17,10 +17,13 @@ export interface OptionsControllerState {
   termsConditionsUrl?: string
   privacyPolicyUrl?: string
   isSiweEnabled?: boolean
+  isUniversalProvider?: boolean
   enableAnalytics?: boolean
   metadata?: Metadata
   enableOnramp?: boolean
+  hasMultipleAddresses?: boolean
   disableAppend?: boolean
+  enableEIP6963?: boolean
 }
 
 type StateKey = keyof OptionsControllerState
@@ -83,6 +86,10 @@ export const OptionsController = {
     state.isSiweEnabled = isSiweEnabled
   },
 
+  setIsUniversalProvider(isUniversalProvider: OptionsControllerState['isUniversalProvider']) {
+    state.isUniversalProvider = isUniversalProvider
+  },
+
   setEnableAnalytics(enableAnalytics: OptionsControllerState['enableAnalytics']) {
     state.enableAnalytics = enableAnalytics
   },
@@ -103,7 +110,11 @@ export const OptionsController = {
     state.disableAppend = disableAppend
   },
 
-  getSnapshot() {
-    return snapshot(state)
+  setEIP6963Enabled(enableEIP6963: OptionsControllerState['enableEIP6963']) {
+    state.enableEIP6963 = enableEIP6963
+  },
+
+  setHasMultipleAddresses(hasMultipleAddresses: OptionsControllerState['hasMultipleAddresses']) {
+    state.hasMultipleAddresses = hasMultipleAddresses
   }
 }
