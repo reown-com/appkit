@@ -12,11 +12,12 @@ import {
 } from '@chakra-ui/react'
 import { IoArrowForward } from 'react-icons/io5'
 import { wagmiSdkOptions, ethersSdkOptions, solanaSdkOptions } from '../utils/DataUtil'
+import { RandomLink } from '../components/RandomLink'
 
 export default function HomePage() {
   return (
     <>
-      <Card marginTop={20}>
+      <Card marginTop={10}>
         <CardHeader>
           <Heading size="md">Testing</Heading>
         </CardHeader>
@@ -33,16 +34,16 @@ export default function HomePage() {
                     Configuration with all features enabled and randomly using ethers or wagmi
                   </Text>
                 </Box>
-                <Link href={Math.random() > 0.5 ? '/library/wagmi-all' : '/library/ethers-all'}>
+                <RandomLink hrefs={['/library/wagmi-all', '/library/ethers-all']}>
                   <Button rightIcon={<IoArrowForward />}>Go</Button>
-                </Link>
+                </RandomLink>
               </Stack>
             </Box>
           </Stack>
         </CardBody>
       </Card>
 
-      <Card marginTop={20}>
+      <Card marginTop={10}>
         <CardHeader>
           <Heading size="md">Wagmi</Heading>
         </CardHeader>

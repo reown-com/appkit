@@ -30,9 +30,7 @@ export function defaultConfig(options: ConfigOptions) {
       showWallets: true,
       walletFeatures: true
     },
-    metadata,
-    rpcUrl,
-    defaultChainId
+    metadata
   } = options
 
   let injectedProvider: Provider | undefined = undefined
@@ -95,7 +93,7 @@ export function defaultConfig(options: ConfigOptions) {
     providers.injected = getInjectedProvider()
   }
 
-  if (enableCoinbase && rpcUrl && defaultChainId) {
+  if (enableCoinbase) {
     providers.coinbase = getCoinbaseProvider()
   }
 
