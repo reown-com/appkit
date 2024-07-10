@@ -13,6 +13,7 @@ export type OnRampProvider = {
   name: OnRampProviderOption
   feeRange: string
   url: string
+  supportedChains: string[]
 }
 
 export interface OnRampControllerState {

@@ -5,13 +5,15 @@ export const ONRAMP_PROVIDERS = [
     label: 'Coinbase',
     name: 'coinbase',
     feeRange: '1-2%',
-    url: ''
+    url: '',
+    supportedChains: ['evm']
   },
   {
     label: 'Meld.io',
     name: 'meld',
     feeRange: '1-2%',
-    url: 'https://meldcrypto.com/?publicKey=WXETMsajb7XcQBm7mcxAab:q3MtzJpiEMtXVNXsqYkAnAaBkgStybGVtZ'
+    url: 'https://meldcrypto.com/?publicKey=WXETMsajb7XcQBm7mcxAab:q3MtzJpiEMtXVNXsqYkAnAaBkgStybGVtZ',
+    supportedChains: ['evm', 'solana']
   }
 ]
 

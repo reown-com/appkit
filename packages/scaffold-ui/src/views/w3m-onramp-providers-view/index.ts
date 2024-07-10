@@ -7,7 +7,8 @@ import {
   RouterController,
   NetworkController,
   BlockchainApiController,
-  EventsController
+  EventsController,
+  ChainController
 } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -61,15 +62,15 @@ export class W3mOnRampProvidersView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private onRampProvidersTemplate() {
-    return this.providers.map(
+    return this.providers.filter(provider => provider.supportedChains.includes(ChainController.state.activeChain ?? 'evm')).map(
       provider => html`
         <w3m-onramp-provider-item
           label=${provider.label}
           name=${provider.name}
           feeRange=${provider.feeRange}
           @click=${() => {
-            this.onClickProvider(provider)
-          }}
+          this.onClickProvider(provider)
+        }}
           ?disabled=${!provider.url}
         ></w3m-onramp-provider-item>
       `
@@ -106,7 +107,7 @@ export class W3mOnRampProvidersView extends LitElement {
 
     const defaultNetwork =
       ConstantsUtil.WC_COINBASE_PAY_SDK_CHAIN_NAME_MAP[
-        network.name as CoinbasePaySDKChainNameValues
+      network.name as CoinbasePaySDKChainNameValues
       ] ?? ConstantsUtil.WC_COINBASE_PAY_SDK_FALLBACK_CHAIN
 
     const purchaseCurrency = OnRampController.state.purchaseCurrency
