@@ -9,7 +9,11 @@ if (!mailsacApiKey) {
   throw new Error('MAILSAC_API_KEY is not set')
 }
 
-testModalSmartAccount.beforeEach(async ({ modalPage, modalValidator }) => {
+testModalSmartAccount.beforeEach(async ({ modalValidator }) => {
+  await modalValidator.expectConnected()
+})
+
+testModalSmartAccount('it should use a Smart Account', async ({ modalPage, modalValidator }) => {
   const walletModalPage = modalPage as ModalWalletPage
   const walletModalValidator = modalValidator as ModalWalletValidator
 
