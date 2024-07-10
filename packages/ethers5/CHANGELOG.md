@@ -1,5 +1,61 @@
 # @web3modal/ethers5
 
+## 5.0.6
+
+### Patch Changes
+
+- fix: Social Login illegal invocation issue. Wagmi tests
+
+- Updated dependencies []:
+  - @web3modal/polyfills@5.0.6
+  - @web3modal/scaffold@5.0.6
+  - @web3modal/scaffold-react@5.0.6
+  - @web3modal/scaffold-utils@5.0.6
+  - @web3modal/scaffold-vue@5.0.6
+  - @web3modal/siwe@5.0.6
+
+## 5.0.5
+
+### Patch Changes
+
+- feat: universal link internal flag. Add kotlin assetlinks. Fix email truncation'
+
+- Updated dependencies []:
+  - @web3modal/polyfills@5.0.5
+  - @web3modal/scaffold@5.0.5
+  - @web3modal/scaffold-react@5.0.5
+  - @web3modal/scaffold-utils@5.0.5
+  - @web3modal/scaffold-vue@5.0.5
+  - @web3modal/siwe@5.0.5
+
+## 5.0.4
+
+### Patch Changes
+
+- fix: wcPromise incompatibility issues
+
+- Updated dependencies []:
+  - @web3modal/polyfills@5.0.4
+  - @web3modal/scaffold@5.0.4
+  - @web3modal/scaffold-react@5.0.4
+  - @web3modal/scaffold-utils@5.0.4
+  - @web3modal/scaffold-vue@5.0.4
+  - @web3modal/siwe@5.0.4
+
+## 5.0.3
+
+### Patch Changes
+
+- fix: ethers5 coinbase issues. Turbo build issues. Upate cb connector.
+
+- Updated dependencies []:
+  - @web3modal/polyfills@5.0.3
+  - @web3modal/scaffold@5.0.3
+  - @web3modal/scaffold-react@5.0.3
+  - @web3modal/scaffold-utils@5.0.3
+  - @web3modal/scaffold-vue@5.0.3
+  - @web3modal/siwe@5.0.3
+
 ## 5.0.2
 
 ### Patch Changes

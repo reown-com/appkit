@@ -13,7 +13,7 @@ import {
   ConstantsUtil,
   OptionsController
 } from '@web3modal/core'
-import { UiHelperUtil, customElement } from '@web3modal/ui'
+import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -56,13 +56,13 @@ export class W3mAccountDefaultWidget extends LitElement {
           } else if (!this.disconnecting) {
             SnackController.showError('Account not found')
           }
+        }),
+        NetworkController.subscribeKey('caipNetwork', val => {
+          if (val?.id) {
+            this.network = val
+          }
         })
-      ],
-      NetworkController.subscribeKey('caipNetwork', val => {
-        if (val?.id) {
-          this.network = val
-        }
-      })
+      ]
     )
   }
 
@@ -77,6 +77,8 @@ export class W3mAccountDefaultWidget extends LitElement {
     }
 
     const networkImage = AssetUtil.getNetworkImage(this.network)
+    const account = AccountController.state.allAccounts?.find(acc => acc.address === this.address)
+    const label = AccountController.state.addressLabels.get(this.address)
 
     return html`<wui-flex
         flexDirection="column"
@@ -84,35 +86,15 @@ export class W3mAccountDefaultWidget extends LitElement {
         alignItems="center"
         gap="l"
       >
-        <wui-avatar
-          alt=${ifDefined(this.address)}
+        <wui-profile-button-v2
+          .onProfileClick=${this.handleSwitchAccountsView.bind(this)}
           address=${ifDefined(this.address)}
-          imageSrc=${ifDefined(this.profileImage === null ? undefined : this.profileImage)}
-        ></wui-avatar>
+          icon="${account?.type === 'smartAccount' ? 'lightbulb' : 'mail'}"
+          avatarSrc=${ifDefined(this.profileImage ? this.profileImage : undefined)}
+          profileName=${ifDefined(label ? label : this.profileName)}
+          .onCopyClick=${this.onCopyAddress.bind(this)}
+        ></wui-profile-button-v2>
         <wui-flex flexDirection="column" alignItems="center">
-          <wui-flex gap="3xs" alignItems="center" justifyContent="center">
-            <wui-text variant="medium-title-600" color="fg-100">
-              ${this.profileName
-                ? UiHelperUtil.getTruncateString({
-                    string: this.profileName,
-                    charsStart: 20,
-                    charsEnd: 0,
-                    truncate: 'end'
-                  })
-                : UiHelperUtil.getTruncateString({
-                    string: this.address ? this.address : '',
-                    charsStart: 4,
-                    charsEnd: 4,
-                    truncate: 'middle'
-                  })}
-            </wui-text>
-            <wui-icon-link
-              size="md"
-              icon="copy"
-              iconColor="fg-200"
-              @click=${this.onCopyAddress}
-            ></wui-icon-link>
-          </wui-flex>
           <wui-text variant="paragraph-500" color="fg-200"
             >${CoreHelperUtil.formatBalance(this.balance, this.balanceSymbol)}</wui-text
           >
@@ -199,12 +181,16 @@ export class W3mAccountDefaultWidget extends LitElement {
     `
   }
 
+  private handleSwitchAccountsView() {
+    RouterController.push('SwitchAddress')
+  }
+
   private handleClickPay() {
     RouterController.push('OnRampProviders')
   }
 
   private explorerBtnTemplate() {
-    const { addressExplorerUrl } = AccountController.state
+    const addressExplorerUrl = AccountController.state.addressExplorerUrl
 
     if (!addressExplorerUrl) {
       return null
@@ -220,7 +206,7 @@ export class W3mAccountDefaultWidget extends LitElement {
   }
 
   private isAllowedNetworkSwitch() {
-    const { requestedCaipNetworks } = NetworkController.state
+    const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
     const isMultiNetwork = requestedCaipNetworks ? requestedCaipNetworks.length > 1 : false
     const isValidNetwork = requestedCaipNetworks?.find(({ id }) => id === this.network?.id)
 
@@ -273,7 +259,8 @@ export class W3mAccountDefaultWidget extends LitElement {
   }
 
   private onExplorer() {
-    const { addressExplorerUrl } = AccountController.state
+    const addressExplorerUrl = AccountController.state.addressExplorerUrl
+
     if (addressExplorerUrl) {
       CoreHelperUtil.openHref(addressExplorerUrl, '_blank')
     }
