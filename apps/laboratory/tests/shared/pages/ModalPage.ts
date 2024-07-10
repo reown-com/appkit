@@ -236,6 +236,7 @@ export class ModalPage {
     await this.page.getByTestId('account-button').click()
 
     await this.page.getByTestId('w3m-profile-button').click()
+    await this.page.getByTestId('account-settings-button').click()
     await this.page.getByTestId('w3m-wallet-upgrade-card').click()
 
     const page = await doActionAndWaitForNewPage(
