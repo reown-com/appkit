@@ -10,6 +10,7 @@ export interface ConfigOptions {
     email?: boolean
     socials?: SocialProvider[]
     showWallets?: boolean
+    walletFeatures?: boolean
   }
   enableInjected?: boolean
   rpcUrl?: string
@@ -26,11 +27,10 @@ export function defaultConfig(options: ConfigOptions) {
     enableInjected = true,
     auth = {
       email: true,
-      showWallets: true
+      showWallets: true,
+      walletFeatures: true
     },
-    metadata,
-    rpcUrl,
-    defaultChainId
+    metadata
   } = options
 
   let injectedProvider: Provider | undefined = undefined
@@ -93,7 +93,7 @@ export function defaultConfig(options: ConfigOptions) {
     providers.injected = getInjectedProvider()
   }
 
-  if (enableCoinbase && rpcUrl && defaultChainId) {
+  if (enableCoinbase) {
     providers.coinbase = getCoinbaseProvider()
   }
 
@@ -104,6 +104,7 @@ export function defaultConfig(options: ConfigOptions) {
   if (auth) {
     auth.email ??= true
     auth.showWallets ??= true
+    auth.walletFeatures ??= true
     providers.auth = auth
   }
 

@@ -1,14 +1,20 @@
-import { describe, expect, it, vi } from 'vitest'
+import { beforeAll, describe, expect, it, vi } from 'vitest'
 import {
   ApiController,
   AssetController,
+  ChainController,
   ConnectorController,
   NetworkController,
   OptionsController
 } from '../../index.js'
 import { api } from '../../src/controllers/ApiController.js'
+import { ConstantsUtil } from '@web3modal/common'
 
 // -- Tests --------------------------------------------------------------------
+beforeAll(() => {
+  ChainController.initialize([{ chain: ConstantsUtil.CHAIN.EVM }])
+})
+
 describe('ApiController', () => {
   it('should have valid default state', () => {
     expect(ApiController.state).toEqual({
@@ -18,7 +24,8 @@ describe('ApiController', () => {
       recommended: [],
       wallets: [],
       search: [],
-      isAnalyticsEnabled: false
+      isAnalyticsEnabled: false,
+      excludedRDNS: []
     })
   })
 
@@ -107,16 +114,19 @@ describe('ApiController', () => {
       {
         id: '155:1',
         name: 'Ethereum Mainnet',
-        imageId: '12341'
+        imageId: '12341',
+        chain: ConstantsUtil.CHAIN.EVM
       },
       {
         id: '155:4',
         name: 'Ethereum Rinkeby',
-        imageId: '12342'
+        imageId: '12342',
+        chain: ConstantsUtil.CHAIN.EVM
       },
       {
         id: '155:42',
-        name: 'Ethereum Kovan'
+        name: 'Ethereum Kovan',
+        chain: ConstantsUtil.CHAIN.EVM
       }
     ])
     const fetchSpy = vi.spyOn(ApiController, '_fetchNetworkImage').mockResolvedValue()
@@ -131,17 +141,20 @@ describe('ApiController', () => {
       {
         id: '155:1',
         name: 'Ethereum Mainnet',
-        imageId: '12341'
+        imageId: '12341',
+        chain: ConstantsUtil.CHAIN.EVM
       },
       {
         id: '155:4',
         name: 'Ethereum Rinkeby',
-        imageId: '12342'
+        imageId: '12342',
+        chain: ConstantsUtil.CHAIN.EVM
       },
       // Should not fetch this
       {
         id: '155:42',
-        name: 'Ethereum Kovan'
+        name: 'Ethereum Kovan',
+        chain: ConstantsUtil.CHAIN.EVM
       }
     ])
     const fetchSpy = vi.spyOn(ApiController, '_fetchNetworkImage').mockResolvedValue()
@@ -157,12 +170,14 @@ describe('ApiController', () => {
         id: '12341',
         name: 'MetaMask',
         imageId: '12341',
-        type: 'INJECTED'
+        type: 'INJECTED',
+        chain: ConstantsUtil.CHAIN.EVM
       },
       {
         id: '12341',
         name: 'RandomConnector',
-        type: 'INJECTED'
+        type: 'INJECTED',
+        chain: ConstantsUtil.CHAIN.EVM
       }
     ])
     const fetchSpy = vi.spyOn(ApiController, '_fetchConnectorImage').mockResolvedValue()
@@ -346,6 +361,51 @@ describe('ApiController', () => {
 
     expect(fetchImageSpy).toHaveBeenCalledTimes(2)
     expect(ApiController.state.wallets).toEqual(data)
+  })
+
+  it('should fetch excludedWalletIds and check if RDNS of EIP6963 matches', async () => {
+    const excludeWalletIds = ['12345', '12346']
+    const EIP6963Wallets = [
+      { name: 'MetaMask', rdns: 'io.metamask' },
+      { name: 'Rainbow', rdns: 'me.rainbow' }
+    ]
+    const filteredWallet = [{ name: 'Rainbow', rdns: 'me.rainbow' }]
+    const data = [
+      {
+        id: '12345',
+        name: 'MetaMask',
+        rdns: 'io.metamask'
+      },
+      {
+        id: '12346',
+        name: 'Phantom',
+        rdns: 'app.phantom'
+      }
+    ]
+
+    OptionsController.setExcludeWalletIds(excludeWalletIds)
+
+    const fetchSpy = vi.spyOn(api, 'get').mockResolvedValue({ data, count: data.length })
+    const fetchWalletsSpy = vi.spyOn(ApiController, 'searchWalletByIds')
+
+    await ApiController.searchWalletByIds({ ids: excludeWalletIds })
+
+    expect(fetchSpy).toHaveBeenCalledWith({
+      path: '/getWallets',
+      headers: ApiController._getApiHeaders(),
+      params: {
+        page: '1',
+        entries: String(excludeWalletIds.length),
+        include: excludeWalletIds.join(',')
+      }
+    })
+
+    expect(fetchWalletsSpy).toHaveBeenCalledOnce()
+    expect(ApiController.state.excludedRDNS).toEqual(['io.metamask', 'app.phantom'])
+    const result = EIP6963Wallets.filter(
+      wallet => !ApiController.state.excludedRDNS.includes(wallet.rdns)
+    )
+    expect(result).toEqual(filteredWallet)
   })
 
   // Wallet search with exact wallet name

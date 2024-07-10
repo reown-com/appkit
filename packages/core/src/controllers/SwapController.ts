@@ -13,6 +13,8 @@ import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { OptionsController } from './OptionsController.js'
 import { SwapCalculationUtil } from '../utils/SwapCalculationUtil.js'
+import { EventsController } from './EventsController.js'
+import { W3mFrameRpcConstants } from '@web3modal/wallet'
 
 // -- Constants ---------------------------------------- //
 export const INITIAL_GAS_LIMIT = 150000
@@ -168,8 +170,9 @@ export const SwapController = {
   },
 
   getParams() {
-    const { address } = AccountController.state
-    const networkAddress = `${NetworkController.state.caipNetwork?.id}:${ConstantsUtil.NATIVE_TOKEN_ADDRESS}`
+    const caipNetwork = NetworkController.state.caipNetwork
+    const address = AccountController.state.address
+    const networkAddress = `${caipNetwork?.id}:${ConstantsUtil.NATIVE_TOKEN_ADDRESS}`
 
     if (!address) {
       throw new Error('No address found to swap the tokens from.')
@@ -556,7 +559,7 @@ export const SwapController = {
     }
 
     if (!sourceTokenAddress) {
-      throw new Error('>>> createAllowanceTransaction - No source token address found.')
+      throw new Error('createAllowanceTransaction - No source token address found.')
     }
 
     try {
@@ -721,6 +724,20 @@ export const SwapController = {
 
       state.loadingTransaction = false
       SnackController.showSuccess(snackbarSuccessMessage)
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'SWAP_SUCCESS',
+        properties: {
+          network: NetworkController.state.caipNetwork?.id || '',
+          swapFromToken: this.state.sourceToken?.symbol || '',
+          swapToToken: this.state.toToken?.symbol || '',
+          swapfromAmount: this.state.sourceTokenAmount || '',
+          swapToAmount: this.state.toTokenAmount || '',
+          isSmartAccount:
+            AccountController.state.preferredAccountType ===
+            W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+        }
+      })
       SwapController.resetState()
       SwapController.getMyTokensWithBalance(forceUpdateAddresses)
 
@@ -730,6 +747,20 @@ export const SwapController = {
       state.transactionError = error?.shortMessage
       state.loadingTransaction = false
       SnackController.showError(error?.shortMessage || 'Transaction error')
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'SWAP_ERROR',
+        properties: {
+          network: NetworkController.state.caipNetwork?.id || '',
+          swapFromToken: this.state.sourceToken?.symbol || '',
+          swapToToken: this.state.toToken?.symbol || '',
+          swapfromAmount: this.state.sourceTokenAmount || '',
+          swapToAmount: this.state.toTokenAmount || '',
+          isSmartAccount:
+            AccountController.state.preferredAccountType ===
+            W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+        }
+      })
 
       return undefined
     }

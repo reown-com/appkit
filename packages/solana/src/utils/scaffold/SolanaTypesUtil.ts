@@ -37,6 +37,7 @@ export interface Provider {
   publicKey: PublicKey
   name: string
   on: <T>(event: string, listener: (data: T) => void) => void
+  wallet: Provider
   removeListener: <T>(event: string, listener: (data: T) => void) => void
   emit: (event: string) => void
   connect: () => Promise<void>

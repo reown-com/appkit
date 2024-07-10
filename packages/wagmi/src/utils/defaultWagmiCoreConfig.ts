@@ -1,6 +1,6 @@
 import '@web3modal/polyfills'
 
-import type { CreateConfigParameters, CreateConnectorFn } from '@wagmi/core'
+import type { CreateConfigParameters, CreateConnectorFn, Config } from '@wagmi/core'
 import { createConfig } from '@wagmi/core'
 import { coinbaseWallet, walletConnect, injected } from '@wagmi/connectors'
 import { authConnector } from '../connectors/AuthConnector.js'
@@ -16,6 +16,7 @@ export type ConfigOptions = Partial<CreateConfigParameters> & {
     email?: boolean
     socials?: SocialProvider[]
     showWallets?: boolean
+    walletFeatures?: boolean
   }
   enableInjected?: boolean
   enableWalletConnect?: boolean
@@ -38,16 +39,14 @@ export function defaultWagmiConfig({
   enableWalletConnect,
   enableEIP6963,
   ...wagmiConfig
-}: ConfigOptions) {
-  const connectors: CreateConnectorFn[] = []
-  const transportsArr = chains.map(chain => [
-    chain.id,
-    getTransport({ chainId: chain.id, projectId })
-  ])
+}: ConfigOptions): Config {
+  const connectors: CreateConnectorFn[] = wagmiConfig?.connectors ?? []
+  const transportsArr = chains.map(chain => [chain, getTransport({ chain, projectId })])
   const transports = Object.fromEntries(transportsArr)
   const defaultAuth = {
     email: true,
-    showWallets: true
+    showWallets: true,
+    walletFeatures: true
   }
 
   // Enabled by default
@@ -55,10 +54,12 @@ export function defaultWagmiConfig({
     connectors.push(walletConnect({ projectId, metadata, showQrModal: false }))
   }
 
+  // Enabled by default
   if (enableInjected !== false) {
     connectors.push(injected({ shimDisconnect: true }))
   }
 
+  // Enabled by default
   if (enableCoinbase !== false) {
     connectors.push(
       coinbaseWallet({
@@ -75,14 +76,15 @@ export function defaultWagmiConfig({
     ...auth
   }
 
-  if (auth?.email || auth?.socials) {
+  if (mergedAuth.email || mergedAuth.socials) {
     connectors.push(
       authConnector({
         chains: [...chains],
         options: { projectId },
         socials: mergedAuth.socials,
         email: mergedAuth.email,
-        showWallets: mergedAuth.showWallets
+        showWallets: mergedAuth.showWallets,
+        walletFeatures: mergedAuth.walletFeatures
       })
     )
   }
