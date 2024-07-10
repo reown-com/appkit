@@ -25,6 +25,7 @@ export const testModalSmartAccount = timingFixture.extend<
 
       await modalPage.emailFlow(tempEmail, context, mailsacApiKey)
       await modalPage.openAccount()
+      await modalPage.openProfileView()
       await modalPage.openSettings()
       await modalPage.switchNetwork('Sepolia')
       await modalValidator.expectSwitchedNetwork('Sepolia')

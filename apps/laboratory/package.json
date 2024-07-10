@@ -1,6 +1,6 @@
 {
   "name": "@apps/laboratory",
-  "version": "5.0.5",
+  "version": "5.0.6",
   "private": true,
   "scripts": {
     "dev:laboratory": "next dev",
@@ -41,21 +41,23 @@
     "@solana/wallet-adapter-wallets": "0.19.32",
     "@solana/web3.js": "1.91.7",
     "@tanstack/react-query": "5.24.8",
-    "@wagmi/connectors": "5.0.8",
+    "@wagmi/connectors": "5.0.21",
     "@walletconnect/utils": "2.13.1",
-    "@web3modal/ethers": "5.0.5",
-    "@web3modal/siwe": "5.0.5",
-    "@web3modal/solana": "5.0.5",
-    "@web3modal/wagmi": "5.0.5",
+    "@web3modal/ethers": "5.0.6",
+    "@web3modal/siwe": "5.0.6",
+    "@web3modal/solana": "5.0.6",
+    "@web3modal/wagmi": "5.0.6",
+    "bs58": "6.0.0",
     "ethers": "6.13.0",
     "framer-motion": "10.17.9",
     "next": "14.2.3",
     "next-auth": "4.24.5",
+    "permissionless": "0.1.31",
     "react-icons": "4.12.0",
     "rpc-websockets": "7.11.0",
     "valtio": "1.11.2",
-    "viem": "2.10.3",
-    "wagmi": "2.9.10"
+    "viem": "2.16.2",
+    "wagmi": "2.10.9"
   },
   "devDependencies": {
     "@aws-sdk/client-cloudwatch": "3.509.0",

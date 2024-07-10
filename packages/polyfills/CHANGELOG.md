@@ -1,5 +1,11 @@
 # @web3modal/polyfills
 
+## 5.0.6
+
+### Patch Changes
+
+- fix: Social Login illegal invocation issue. Wagmi tests
+
 ## 5.0.5
 
 ### Patch Changes
