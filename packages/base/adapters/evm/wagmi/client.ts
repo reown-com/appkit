@@ -791,15 +791,13 @@ export class EVMWagmiClient {
         if (!address) {
           return
         }
-        const chainId = NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id)
+        this.setPreferredAccountType(type as W3mFrameTypes.AccountType, this.chain)
         this.syncAccount({
           address: address as `0x${string}`,
-          chainId,
           isConnected: true,
+          chainId: NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id),
           connector
-        }).then(
-          () => this.appKit?.setPreferredAccountType(type as W3mFrameTypes.AccountType, this.chain)
-        )
+        })
       })
     }
   }
