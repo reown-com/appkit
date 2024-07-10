@@ -4,9 +4,11 @@ import { ONRAMP_PROVIDERS } from '../utils/ConstantsUtil.js'
 import type { PurchaseCurrency, PaymentCurrency } from '../utils/TypeUtil.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { ApiController } from './ApiController.js'
+import { ChainController } from './ChainController.js'
+import { AccountController } from './AccountController.js'
 
 // -- Types --------------------------------------------- //
-export type OnRampProviderOption = 'coinbase' | 'moonpay' | 'stripe' | 'paypal'
+export type OnRampProviderOption = 'coinbase' | 'moonpay' | 'stripe' | 'paypal' | 'meld'
 
 export type OnRampProvider = {
   label: string
@@ -94,6 +96,12 @@ export const OnRampController = {
   },
 
   setSelectedProvider(provider: OnRampProvider | null) {
+    if (provider && provider.name === 'meld') {
+      const currency = ChainController.state.activeChain === 'solana' ? 'SOL' : 'USDC'
+      provider.url += `&destinationCurrencyCode=${currency}`
+      const address = AccountController.state.address
+      provider.url += `&walletAddress=${address}`
+    }
     state.selectedProvider = provider
   },
 

@@ -62,19 +62,23 @@ export class W3mOnRampProvidersView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private onRampProvidersTemplate() {
-    return this.providers.filter(provider => provider.supportedChains.includes(ChainController.state.activeChain ?? 'evm')).map(
-      provider => html`
-        <w3m-onramp-provider-item
-          label=${provider.label}
-          name=${provider.name}
-          feeRange=${provider.feeRange}
-          @click=${() => {
-          this.onClickProvider(provider)
-        }}
-          ?disabled=${!provider.url}
-        ></w3m-onramp-provider-item>
-      `
-    )
+    return this.providers
+      .filter(provider =>
+        provider.supportedChains.includes(ChainController.state.activeChain ?? 'evm')
+      )
+      .map(
+        provider => html`
+          <w3m-onramp-provider-item
+            label=${provider.label}
+            name=${provider.name}
+            feeRange=${provider.feeRange}
+            @click=${() => {
+              this.onClickProvider(provider)
+            }}
+            ?disabled=${!provider.url}
+          ></w3m-onramp-provider-item>
+        `
+      )
   }
 
   private onClickProvider(provider: OnRampProvider) {
@@ -107,7 +111,7 @@ export class W3mOnRampProvidersView extends LitElement {
 
     const defaultNetwork =
       ConstantsUtil.WC_COINBASE_PAY_SDK_CHAIN_NAME_MAP[
-      network.name as CoinbasePaySDKChainNameValues
+        network.name as CoinbasePaySDKChainNameValues
       ] ?? ConstantsUtil.WC_COINBASE_PAY_SDK_FALLBACK_CHAIN
 
     const purchaseCurrency = OnRampController.state.purchaseCurrency

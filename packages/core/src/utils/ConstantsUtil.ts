@@ -12,7 +12,7 @@ export const ONRAMP_PROVIDERS = [
     label: 'Meld.io',
     name: 'meld',
     feeRange: '1-2%',
-    url: 'https://meldcrypto.com/?publicKey=WXETMsajb7XcQBm7mcxAab:q3MtzJpiEMtXVNXsqYkAnAaBkgStybGVtZ',
+    url: 'https://meldcrypto.com/?publicKey=WXETMuFUQmqqybHuRkSgxv:25B8LJHSfpG6LVjR2ytU5Cwh7Z4Sch2ocoU',
     supportedChains: ['evm', 'solana']
   }
 ]
