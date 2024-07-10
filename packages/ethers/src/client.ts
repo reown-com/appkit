@@ -866,7 +866,7 @@ export class Web3Modal extends Web3ModalScaffold {
         EthersStoreUtil.setPreferredAccountType(preferredAccountType as W3mFrameTypes.AccountType)
         this.setSmartAccountDeployed(Boolean(smartAccountDeployed), this.chain)
         this.watchAuth()
-        this.watchModal()
+        // this.watchModal()
       }
       super.setLoading(false)
     }
@@ -1098,15 +1098,15 @@ export class Web3Modal extends Web3ModalScaffold {
     }
   }
 
-  private watchModal() {
-    if (this.authProvider) {
-      this.subscribeState(val => {
-        if (!val.open) {
-          this.authProvider?.rejectRpcRequest()
-        }
-      })
-    }
-  }
+  // private watchModal() {
+  //   if (this.authProvider) {
+  //     this.subscribeState(val => {
+  //       if (!val.open) {
+  //         this.authProvider?.rejectRpcRequest()
+  //       }
+  //     })
+  //   }
+  // }
 
   private async syncAccount() {
     const address = EthersStoreUtil.state.address
