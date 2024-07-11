@@ -117,7 +117,6 @@ export class W3mFrameProvider {
 
     this.w3mFrame = new W3mFrame(projectId, true)
     this.w3mFrame.events.onFrameEvent(event => {
-      console.log(`🖥️ Event Received`, event)
       this.logger.info({ event }, 'Event received')
 
       switch (event.type) {
@@ -538,7 +537,7 @@ export class W3mFrameProvider {
   }
 
   private onGetFarcasterUriSuccess(
-    event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/GET_FARCASTER_URI_SUCESS' }>
+    event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/GET_FARCASTER_URI_SUCCESS' }>
   ) {
     this.getFarcasterUriResolver?.resolve(event.payload)
   }
@@ -801,7 +800,7 @@ export class W3mFrameProvider {
     W3mFrameStorage.set(W3mFrameConstants.SOCIAL_USERNAME, username)
   }
 
-  private setEmailLoginSuccess(email?: string) {
+  private setEmailLoginSuccess(email?: string | null) {
     if (email) {
       W3mFrameStorage.set(W3mFrameConstants.EMAIL, email)
     }
