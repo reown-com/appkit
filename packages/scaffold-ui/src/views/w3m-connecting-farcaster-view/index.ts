@@ -116,6 +116,7 @@ export class W3mConnectingFarcasterView extends LitElement {
           >Accept connection request in the app</wui-text
         ></wui-flex
       >
+      ${this.mobileLinkTemplate()}
     </wui-flex>`
   }
 
@@ -129,14 +130,6 @@ export class W3mConnectingFarcasterView extends LitElement {
   private async connectFarcaster() {
     if (this.authConnector) {
       try {
-        if (CoreHelperUtil.isMobile() && AccountController.state.farcasterUrl) {
-          const deeplink = CoreHelperUtil.formatFarcasterDeeplink(
-            AccountController.state.farcasterUrl
-          )
-          console.log(deeplink)
-
-          CoreHelperUtil.openHref(deeplink, '_blank')
-        }
         await this.authConnector?.provider.connectFarcaster()
         if (this.socialProvider) {
           StorageUtil.setConnectedSocialProvider(this.socialProvider)
@@ -149,6 +142,19 @@ export class W3mConnectingFarcasterView extends LitElement {
         SnackController.showError(error)
       }
     }
+  }
+
+  private mobileLinkTemplate() {
+    return html`<wui-button
+      size="md"
+      ?disabled=${!this.uri}
+      @click=${() => {
+        if (this.uri) {
+          CoreHelperUtil.openHref(this.uri, '_blank')
+        }
+      }}
+      >Open farcaster</wui-button
+    >`
   }
 
   private onRenderProxy() {
