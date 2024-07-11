@@ -207,6 +207,7 @@ export type LogoType =
   | 'telegram'
   | 'twitch'
   | 'x'
+  | 'farcaster'
 
 export type PlacementType = 'bottom' | 'left' | 'right' | 'top'
 

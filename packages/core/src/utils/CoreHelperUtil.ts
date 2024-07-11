@@ -121,6 +121,28 @@ export const CoreHelperUtil = {
     }
   },
 
+  formatFarcasterDeeplink(farcasterUrl: string) {
+    const url = new URL(farcasterUrl)
+    const params = new URLSearchParams(url.search)
+
+    const channelToken = params.get('channelToken')
+    const nonce = params.get('nonce')
+    const domain = params.get('domain')
+    const siweUri = params.get('siweUri')
+
+    if (!channelToken || !nonce || !domain || !siweUri) {
+      throw new Error('Missing required query parameters')
+    }
+
+    const deeplink = `farcaster://sign-in?channelToken=${encodeURIComponent(
+      channelToken
+    )}&nonce=${encodeURIComponent(nonce)}&domain=${encodeURIComponent(
+      domain
+    )}&siweUri=${encodeURIComponent(siweUri)}`
+
+    return deeplink
+  },
+
   openHref(href: string, target: '_blank' | '_self' | 'popupWindow', features?: string) {
     window.open(href, target, features || 'noreferrer noopener')
   },
