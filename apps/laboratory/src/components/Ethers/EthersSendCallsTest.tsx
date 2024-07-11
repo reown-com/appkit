@@ -20,7 +20,7 @@ export function EthersSendCallsTest() {
   const toast = useChakraToast()
 
   const atomicBatchSupportedChains =
-    address && walletProvider instanceof EthereumProvider
+    address && walletProvider?.signer
       ? getCapabilitySupportedChainInfo(WALLET_CAPABILITIES.ATOMIC_BATCH, walletProvider, address)
       : []
 
@@ -79,7 +79,7 @@ export function EthersSendCallsTest() {
     }
   }
   function isSendCallsSupported(): boolean {
-    if (walletProvider instanceof EthereumProvider) {
+    if (walletProvider?.signer) {
       return Boolean(
         walletProvider?.signer?.session?.namespaces?.['eip155']?.methods?.includes(
           EIP_5792_RPC_METHODS.WALLET_SEND_CALLS

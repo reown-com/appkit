@@ -48,6 +48,7 @@ export function EthersGetCallsStatusTest() {
   }
   function isGetCallsStatusSupported(): boolean {
     if (walletProvider instanceof EthereumProvider) {
+    if (walletProvider?.signer) {
       return Boolean(
         walletProvider?.signer?.session?.namespaces?.['eip155']?.methods?.includes(
           EIP_5792_RPC_METHODS.WALLET_GET_CALLS_STATUS
