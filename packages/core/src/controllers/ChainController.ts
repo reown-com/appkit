@@ -142,7 +142,11 @@ export const ChainController = {
     }
   },
 
-  setChainAccountData(chain: Chain | undefined, accountProps: Partial<AccountControllerState>) {
+  setChainAccountData(
+    chain: Chain | undefined,
+    accountProps: Partial<AccountControllerState>,
+    replaceState = true
+  ) {
     if (!chain) {
       throw new Error('Chain is required to update chain account data')
     }
@@ -155,7 +159,9 @@ export const ChainController = {
         ...accountProps
       } as AccountControllerState
       state.chains.set(chain, chainAdapter)
-      AccountController.replaceState(chainAdapter.accountState)
+      if (replaceState) {
+        AccountController.replaceState(chainAdapter.accountState)
+      }
     }
   },
 
@@ -175,8 +181,7 @@ export const ChainController = {
     if (newAdapter && newAdapter.chain !== state.activeChain) {
       state.activeChain = newAdapter.chain
       AccountController.replaceState(newAdapter.accountState)
-      console.log('>>> ChainController: setActiveChain', newAdapter)
-      // NetworkController.replaceState(newAdapter.networkState)
+      NetworkController.replaceState(newAdapter.networkState)
       PublicStateController.set({ activeChain: chain })
     }
   },
