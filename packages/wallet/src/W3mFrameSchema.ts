@@ -74,17 +74,17 @@ export const FrameConnectSocialResponse = z.object({
   email: z.string(),
   address: z.string(),
   chainId: z.number(),
-  accounts: z.array(
-    z
-      .object({
+  accounts: z
+    .array(
+      z.object({
         address: z.string(),
         type: z.enum([
           W3mFrameRpcConstants.ACCOUNT_TYPES.EOA,
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
         ])
       })
-      .optional()
-  ),
+    )
+    .optional(),
   userName: z.string().optional()
 })
 export const FrameUpdateEmailResponse = z.object({
@@ -95,8 +95,8 @@ export const FrameGetUserResponse = z.object({
   address: z.string(),
   chainId: z.number(),
   smartAccountDeployed: z.optional(z.boolean()),
-  accounts: z.optional(
-    z.array(
+  accounts: z
+    .array(
       z.object({
         address: z.string(),
         type: z.enum([
@@ -105,7 +105,7 @@ export const FrameGetUserResponse = z.object({
         ])
       })
     )
-  ),
+    .optional(),
   preferredAccountType: z.optional(z.string())
 })
 export const FrameGetSocialRedirectUriResponse = z.object({ uri: z.string() })

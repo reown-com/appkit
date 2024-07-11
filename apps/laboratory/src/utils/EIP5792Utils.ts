@@ -7,10 +7,14 @@ export const EIP_5792_RPC_METHODS = {
   WALLET_GET_CALLS_STATUS: 'wallet_getCallsStatus',
   WALLET_SEND_CALLS: 'wallet_sendCalls'
 }
+export const EIP_7715_RPC_METHODS = {
+  WALLET_GRANT_PERMISSIONS: 'wallet_grantPermissions'
+}
 
 export const WALLET_CAPABILITIES = {
   ATOMIC_BATCH: 'atomicBatch',
-  PAYMASTER_SERVICE: 'paymasterService'
+  PAYMASTER_SERVICE: 'paymasterService',
+  PERMISSIONS: 'permissions'
 }
 
 export function getFilteredCapabilitySupportedChainInfo(
