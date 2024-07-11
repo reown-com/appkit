@@ -35,6 +35,12 @@ export function WagmiPermissionsTest() {
           </Box>
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">
+              New Passkey
+            </Heading>
+            <WagmiCreatePasskeySignerTest />
+          </Box>
+          <Box>
+            <Heading size="xs" textTransform="uppercase" pb="2">
               Request Permissions
             </Heading>
             <WagmiRequestPermissionsTest />
@@ -44,12 +50,6 @@ export function WagmiPermissionsTest() {
               Purchase Donut With Permissions
             </Heading>
             <WagmiPurchaseDonutWithPermissionsTest />
-          </Box>
-          <Box>
-            <Heading size="xs" textTransform="uppercase" pb="2">
-              New Passkey
-            </Heading>
-            <WagmiCreatePasskeySignerTest />
           </Box>
         </Stack>
       </CardBody>

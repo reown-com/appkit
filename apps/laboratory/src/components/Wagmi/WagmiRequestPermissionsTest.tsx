@@ -8,12 +8,14 @@ import { useChakraToast } from '../Toast'
 import { createPublicClient, custom, parseEther } from 'viem'
 import { EIP_7715_RPC_METHODS } from '../../utils/EIP5792Utils'
 import { useLocalSigner } from '../../hooks/useLocalSigner'
-import { bigIntReplacer, encodeSecp256k1PublicKeyToDID } from '../../utils/CommonUtils'
+import { bigIntReplacer, encodePublicKeyToDID } from '../../utils/CommonUtils'
 import { useGrantedPermissions } from '../../hooks/useGrantedPermissions'
+import usePasskey from '../../hooks/usePasskey'
+import { serializePublicKey, type P256Credential } from 'webauthn-p256'
 
 export function WagmiRequestPermissionsTest() {
   const { status, chain, address, connector } = useAccount()
-
+  const { passKey } = usePasskey()
   const { signer } = useLocalSigner()
   const [isRequestPermissionLoading, setRequestPermissionLoading] = useState<boolean>(false)
   const { grantedPermissions, setGrantedPermissions } = useGrantedPermissions()
@@ -42,9 +44,26 @@ export function WagmiRequestPermissionsTest() {
     }
     try {
       const targetPublicKey = signer?.publicKey
+
       if (!targetPublicKey) {
-        throw new Error('Local signer not initialized')
+        throw new Error('Local private key not available')
       }
+      if (!passKey) {
+        throw new Error('Passkey not available')
+      }
+      let p = passKey as P256Credential
+      p = {
+        ...p,
+        publicKey: {
+          prefix: p.publicKey.prefix,
+          x: BigInt(p.publicKey.x),
+          y: BigInt(p.publicKey.y)
+        }
+      }
+      const passkeyPublicKey = serializePublicKey(p.publicKey, { to: 'hex' })
+      const passkeyDID = encodePublicKeyToDID(passkeyPublicKey, 'secp256r1')
+      const secp256k1DID = encodePublicKeyToDID(targetPublicKey, 'secp256k1')
+
       const publicClient = createPublicClient({
         chain,
         transport: custom(ethereumProvider)
@@ -69,9 +88,9 @@ export function WagmiRequestPermissionsTest() {
           }
         ],
         signer: {
-          type: 'key',
+          type: 'keys',
           data: {
-            id: encodeSecp256k1PublicKeyToDID(targetPublicKey)
+            ids: [secp256k1DID, passkeyDID]
           }
         }
       })
