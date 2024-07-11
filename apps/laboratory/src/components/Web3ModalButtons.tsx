@@ -13,10 +13,7 @@ export function Web3ModalButtons() {
             <Heading size="xs" textTransform="uppercase" pb="2">
               Select / Paymaster Token
             </Heading>
-            <w3m-payment-token-button
-              currency="ETH"
-              imageUrl="https://assets.coingecko.com/coins/images/279/small/ethereum.png"
-            />
+            <w3m-payment-token-button />
           </Box>
 
           <Box>

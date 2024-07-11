@@ -23,7 +23,7 @@ declare global {
       'w3m-button': Pick<W3mButton, 'size' | 'label' | 'loadingLabel' | 'disabled' | 'balance'>
       'w3m-network-button': Pick<W3mNetworkButton, 'disabled'>
       'w3m-onramp-widget': Pick<W3mOnrampWidget, 'disabled'>
-      'w3m-payment-token-button': Pick<W3mPaymentTokenButton, 'currency' | 'imageUrl'>
+      'w3m-payment-token-button': W3mPaymentTokenButton
     }
   }
 }
