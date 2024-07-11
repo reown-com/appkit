@@ -10,8 +10,8 @@ type Component = Meta<W3mPaymentTokenButton>
 export default {
   title: 'Partials/w3m-token-payment-button',
   args: {
-    tokenCurrency: 'ETH',
-    tokenImageUrl: networkImageSrc
+    currency: 'ETH',
+    imageUrl: networkImageSrc
   }
 } as Component
 
@@ -19,8 +19,8 @@ export const Default: Component = {
   render: args =>
     html`<gallery-container width="200" height="100"
       ><w3m-payment-token-button
-        tokenCurrency=${args.tokenCurrency}
-        tokenImageUrl=${args.tokenImageUrl}
+        currency=${args.currency}
+        imageUrl=${args.imageUrl}
       ></w3m-payment-token-button
     ></gallery-container>`
 }

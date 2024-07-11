@@ -13,9 +13,9 @@ export class W3mPaymentTokenButton extends LitElement {
   `
 
   // -- State & Properties -------------------------------- //
-  @property() public tokenCurrency = ''
+  @property() public currency = ''
 
-  @property() public tokenImageUrl = ''
+  @property() public imageUrl = ''
 
   async handleClick() {
     await PaymasterController.getTokenList()
@@ -27,10 +27,10 @@ export class W3mPaymentTokenButton extends LitElement {
     return html`
       <wui-chip-button
         @click=${this.handleClick.bind(this)}
-        .text=${this.tokenCurrency}
+        .text=${this.currency}
         icon="chevronRight"
         variant="gray"
-        imageSrc=${ifDefined(this.tokenImageUrl)}
+        imageSrc=${ifDefined(this.imageUrl)}
       ></wui-chip-button>
     `
   }
