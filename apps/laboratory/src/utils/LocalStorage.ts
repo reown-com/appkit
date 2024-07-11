@@ -33,4 +33,11 @@ function removeItem(key: string) {
   localStorage.removeItem(key)
 }
 
+export type PasskeyLocalStorageFormat = {
+  rawId: string
+  pubkeyCoordinates: {
+    x: string
+    y: string
+  }
+}
 export { setItem, getItem, removeItem }

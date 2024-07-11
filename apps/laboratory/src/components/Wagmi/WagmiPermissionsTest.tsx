@@ -4,6 +4,7 @@ import { WagmiRequestPermissionsTest } from './WagmiRequestPermissionsTest'
 import { WagmiPurchaseDonutWithPermissionsTest } from './WagmiPurchaseDonutPermissionsTest'
 import { WagmiSendCallsTest } from './WagmiSendCallsTest'
 import { WagmiGetCallsStatusTest } from './WagmiGetCallsStatusTest'
+import { WagmiCreatePasskeySignerTest } from './WagmiCreatePasskeySignerTest'
 
 export function WagmiPermissionsTest() {
   return (
@@ -43,6 +44,12 @@ export function WagmiPermissionsTest() {
               Purchase Donut With Permissions
             </Heading>
             <WagmiPurchaseDonutWithPermissionsTest />
+          </Box>
+          <Box>
+            <Heading size="xs" textTransform="uppercase" pb="2">
+              New Passkey
+            </Heading>
+            <WagmiCreatePasskeySignerTest />
           </Box>
         </Stack>
       </CardBody>
