@@ -3,6 +3,7 @@ import {
   ConnectionController,
   ConnectorController,
   ModalController,
+  RouterController,
   SnackController,
   StorageUtil,
   ThemeController
@@ -81,13 +82,18 @@ export class W3mConnectingFarcasterView extends LitElement {
   // -- Private ------------------------------------------- //
   private async connectFarcaster() {
     if (this.authConnector) {
-      await this.authConnector?.provider.connectFarcaster()
-      if (this.socialProvider) {
-        StorageUtil.setConnectedSocialProvider(this.socialProvider)
+      try {
+        await this.authConnector?.provider.connectFarcaster()
+        if (this.socialProvider) {
+          StorageUtil.setConnectedSocialProvider(this.socialProvider)
+        }
+        SnackController.showLoading('Loading user data')
+        await ConnectionController.connectExternal(this.authConnector)
+        ModalController.close()
+      } catch (error) {
+        RouterController.goBack()
+        SnackController.showError(error)
       }
-      SnackController.showLoading('Loading user data')
-      await ConnectionController.connectExternal(this.authConnector)
-      ModalController.close()
     }
   }
 
