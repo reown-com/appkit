@@ -31,10 +31,24 @@ export const testM = timingFixture.extend<ModalFixture>({
     await use(modalValidator)
   }
 })
+
 export const testMSiwe = timingFixture.extend<ModalFixture>({
   library: ['wagmi', { option: true }],
   modalPage: async ({ page, library }, use) => {
     const modalPage = new ModalPage(page, library, 'siwe')
+    await modalPage.load()
+    await use(modalPage)
+  },
+  modalValidator: async ({ modalPage }, use) => {
+    const modalValidator = new ModalValidator(modalPage.page)
+    await use(modalValidator)
+  }
+})
+
+export const testMultiChainM = timingFixture.extend<ModalFixture>({
+  library: ['multichain', { option: true }],
+  modalPage: async ({ page, library }, use) => {
+    const modalPage = new ModalPage(page, library, 'all')
     await modalPage.load()
     await use(modalPage)
   },

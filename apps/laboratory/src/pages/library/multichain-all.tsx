@@ -11,6 +11,7 @@ import { Web3ModalButtons } from '../../components/Web3ModalButtons'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
 import { BackpackWalletAdapter } from '@solana/wallet-adapter-backpack'
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
+import { MultiChainTests } from '../../components/MultiChainTests'
 
 const queryClient = new QueryClient()
 
@@ -53,6 +54,7 @@ export default function MultiChainAllAdapters() {
       <QueryClientProvider client={queryClient}>
         <Web3ModalButtons />
         <WagmiModalInfo />
+        <MultiChainTests />
       </QueryClientProvider>
     </WagmiProvider>
   )

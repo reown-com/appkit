@@ -45,8 +45,10 @@ export class ModalPage {
     return value!
   }
 
-  async getConnectUri(timingRecords?: TimingRecords): Promise<string> {
-    await this.page.goto(this.url)
+  async getConnectUri(timingRecords?: TimingRecords, goToPage = true): Promise<string> {
+    if (goToPage) {
+      await this.page.goto(this.url)
+    }
     await this.connectButton.click()
     const connect = this.page.getByTestId('wallet-selector-walletconnect')
     await connect.waitFor({
@@ -257,6 +259,11 @@ export class ModalPage {
   async switchNetwork(network: string) {
     await this.page.getByTestId('account-button').click()
     await this.page.getByTestId('w3m-account-select-network').click()
+    await this.page.getByTestId(`w3m-network-switch-${network}`).click()
+  }
+
+  async switchNetworkWithNetworkButton(network: string) {
+    await this.page.getByTestId('w3m-network-button').click()
     await this.page.getByTestId(`w3m-network-switch-${network}`).click()
   }
 

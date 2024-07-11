@@ -258,7 +258,7 @@ export class SolanaWeb3JsClient {
       const newChain = chains.find(_chain => _chain.chainId === newCaipNetwork?.id.split(':')[1])
 
       if (!newChain) {
-        throw new Error('The selected chain is not a valid Solana chain')
+        return
       }
 
       if (NetworkController.state.caipNetwork && !SolStoreUtil.state.isConnected) {
@@ -292,8 +292,6 @@ export class SolanaWeb3JsClient {
     })
 
     if (CoreHelperUtil.isClient()) {
-      this.checkActiveProviders()
-      this.syncStandardAdapters()
       watchStandard(standardAdapters => {
         const uniqueIds = standardAdapters
           ? new Set(standardAdapters.map(s => s.name))

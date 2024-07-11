@@ -20,6 +20,7 @@
     "playwright:test:siwe-sa": "playwright test --grep siwe-sa.spec.ts",
     "playwright:test:sa": "playwright test --grep smart-account.spec.ts",
     "playwright:test:canary": "playwright test --retries=0 --grep canary.spec.ts --project='Desktop Chrome/wagmi'",
+    "playwright:test:multichain": "playwright test --retries=0 --grep multichain.spec.ts",
     "playwright:debug": "npm run playwright:test -- --debug",
     "playwright:debug:basic": "npm run playwright:test:basic -- --debug",
     "playwright:debug:appkit": "npm run playwright:test:appkit -- --debug",
@@ -30,7 +31,8 @@
     "playwright:debug:siwe-email": "npm run playwright:test:siwe-email -- --debug",
     "playwright:debug:siwe-sa": "npm run playwright:test:siwe-sa -- --debug",
     "playwright:debug:sa": "npm run playwright:test:sa -- --debug",
-    "playwright:debug:canary": "npm run playwright:test:canary -- --debug"
+    "playwright:debug:canary": "npm run playwright:test:canary -- --debug",
+    "playwright:debug:multichain": "npm run playwright:test:multichain -- --debug"
   },
   "dependencies": {
     "@chakra-ui/icons": "2.1.1",

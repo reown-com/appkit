@@ -122,7 +122,7 @@ export const ChainController = {
   setChainNetworkData(
     chain: Chain | undefined,
     props: Partial<NetworkControllerState>,
-    replaceState = true
+    replaceState = false
   ) {
     if (!chain) {
       throw new Error('Chain is required to update chain network data')
@@ -175,7 +175,8 @@ export const ChainController = {
     if (newAdapter && newAdapter.chain !== state.activeChain) {
       state.activeChain = newAdapter.chain
       AccountController.replaceState(newAdapter.accountState)
-      NetworkController.replaceState(newAdapter.networkState)
+      console.log('>>> ChainController: setActiveChain', newAdapter)
+      // NetworkController.replaceState(newAdapter.networkState)
       PublicStateController.set({ activeChain: chain })
     }
   },
@@ -190,6 +191,7 @@ export const ChainController = {
     }
 
     state.activeCaipNetwork = caipNetwork
+
     this.setCaipNetwork(caipNetwork.chain, caipNetwork, true)
     PublicStateController.set({
       activeChain: caipNetwork.chain,
