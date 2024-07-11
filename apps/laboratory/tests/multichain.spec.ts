@@ -25,7 +25,7 @@ testMWMultiChain(
 testMWMultiChain.skip(
   'it should connect to Solana and sign',
   async ({ modalPage, modalValidator, walletPage, walletValidator }) => {
-    // TODO(enes): Since we didn't replaced WC with UniversalAdapter yet, we need to disconnect from EVM first then reconnect with Solana's WC connector.
+    // Since we didn't replaced WC with UniversalAdapter yet, we need to disconnect from EVM first then reconnect with Solana's WC connector.
     await modalPage.disconnect()
     await modalPage.switchNetworkWithNetworkButton('Solana')
     await modalPage.closeModal()

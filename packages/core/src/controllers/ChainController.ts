@@ -136,7 +136,7 @@ export const ChainController = {
         ...props
       } as NetworkControllerState
       state.chains.set(chain, chainAdapter)
-      if (replaceState) {
+      if (replaceState || state.chains.size === 1) {
         NetworkController.replaceState(chainAdapter.networkState)
       }
     }
