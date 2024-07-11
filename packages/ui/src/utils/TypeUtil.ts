@@ -132,6 +132,7 @@ export type IconType =
   | 'extension'
   | 'externalLink'
   | 'facebook'
+  | 'farcaster'
   | 'filters'
   | 'github'
   | 'google'

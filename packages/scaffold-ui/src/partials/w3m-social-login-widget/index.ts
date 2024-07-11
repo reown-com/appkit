@@ -153,37 +153,51 @@ export class W3mSocialLoginWidget extends LitElement {
   async onSocialClick(socialProvider?: SocialProvider) {
     if (socialProvider) {
       AccountController.setSocialProvider(socialProvider, ChainController.state.activeChain)
+
       EventsController.sendEvent({
         type: 'track',
         event: 'SOCIAL_LOGIN_STARTED',
         properties: { provider: socialProvider }
       })
-      RouterController.push('ConnectingSocial')
     }
-    const authConnector = ConnectorController.getAuthConnector()
-    this.popupWindow = CoreHelperUtil.returnOpenHref(
-      '',
-      'popupWindow',
-      'width=600,height=800,scrollbars=yes'
-    )
+    if (socialProvider === 'farcaster') {
+      RouterController.push('ConnectingFarcaster')
+      const authConnector = ConnectorController.getAuthConnector()
 
-    try {
-      if (authConnector && socialProvider) {
-        const { uri } = await authConnector.provider.getSocialRedirectUri({
-          provider: socialProvider
-        })
-
-        if (this.popupWindow && uri) {
-          AccountController.setSocialWindow(this.popupWindow, ChainController.state.activeChain)
-          this.popupWindow.location.href = uri
-        } else {
-          this.popupWindow?.close()
-          throw new Error('Something went wrong')
+      if (authConnector) {
+        if (!AccountController.state.farcasterUrl) {
+          const { url } = await authConnector.provider.getFarcasterUri()
+          AccountController.setFarcasterUrl(url)
         }
       }
-    } catch (error) {
-      this.popupWindow?.close()
-      SnackController.showError('Something went wrong')
+    } else {
+      RouterController.push('ConnectingSocial')
+
+      const authConnector = ConnectorController.getAuthConnector()
+      this.popupWindow = CoreHelperUtil.returnOpenHref(
+        '',
+        'popupWindow',
+        'width=600,height=800,scrollbars=yes'
+      )
+
+      try {
+        if (authConnector && socialProvider) {
+          const { uri } = await authConnector.provider.getSocialRedirectUri({
+            provider: socialProvider
+          })
+
+          if (this.popupWindow && uri) {
+            AccountController.setSocialWindow(this.popupWindow, ChainController.state.activeChain)
+            this.popupWindow.location.href = uri
+          } else {
+            this.popupWindow?.close()
+            throw new Error('Something went wrong')
+          }
+        }
+      } catch (error) {
+        this.popupWindow?.close()
+        SnackController.showError('Something went wrong')
+      }
     }
   }
 }

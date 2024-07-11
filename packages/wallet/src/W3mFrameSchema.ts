@@ -70,26 +70,27 @@ export const AppSetPreferredAccountRequest = z.object({ type: z.string() })
 export const FrameConnectEmailResponse = z.object({
   action: z.enum(['VERIFY_DEVICE', 'VERIFY_OTP'])
 })
+
+export const FrameGetFarcasterUriResponse = z.object({
+  url: z.string()
+})
+
+export const FrameConnectFarcasterResponse = z.object({
+  userName: z.string()
+})
+
 export const FrameConnectSocialResponse = z.object({
   email: z.string(),
   address: z.string(),
   chainId: z.number(),
-  accounts: z.array(
-    z.object({
-      address: z.string(),
-      type: z.enum([
-        W3mFrameRpcConstants.ACCOUNT_TYPES.EOA,
-        W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
-      ])
-    })
-  ),
+
   userName: z.string().optional()
 })
 export const FrameUpdateEmailResponse = z.object({
   action: z.enum(['VERIFY_PRIMARY_OTP', 'VERIFY_SECONDARY_OTP'])
 })
 export const FrameGetUserResponse = z.object({
-  email: z.string().email(),
+  email: z.string().email().optional().nullable(),
   address: z.string(),
   chainId: z.number(),
   smartAccountDeployed: z.optional(z.boolean()),
@@ -317,6 +318,10 @@ export const W3mFrameSchema = {
 
     .or(z.object({ type: zType('APP_CONNECT_SOCIAL'), payload: AppConnectSocialRequest }))
 
+    .or(z.object({ type: zType('APP_GET_FARCASTER_URI') }))
+
+    .or(z.object({ type: zType('APP_CONNECT_FARCASTER') }))
+
     .or(z.object({ type: zType('APP_GET_USER'), payload: z.optional(AppGetUserRequest) }))
 
     .or(
@@ -413,6 +418,24 @@ export const W3mFrameSchema = {
     )
 
     .or(z.object({ type: zType('FRAME_CONNECT_EMAIL_ERROR'), payload: zError }))
+
+    .or(
+      z.object({
+        type: zType('FRAME_GET_FARCASTER_URI_SUCCESS'),
+        payload: FrameGetFarcasterUriResponse
+      })
+    )
+
+    .or(z.object({ type: zType('FRAME_GET_FARCASTER_URI_ERROR'), payload: zError }))
+
+    .or(
+      z.object({
+        type: zType('FRAME_CONNECT_FARCASTER_SUCCESS'),
+        payload: FrameConnectFarcasterResponse
+      })
+    )
+
+    .or(z.object({ type: zType('FRAME_CONNECT_FARCASTER_ERROR'), payload: zError }))
 
     .or(
       z.object({ type: zType('FRAME_CONNECT_EMAIL_SUCCESS'), payload: FrameConnectEmailResponse })
