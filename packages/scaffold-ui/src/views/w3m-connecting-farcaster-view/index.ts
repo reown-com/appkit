@@ -69,6 +69,7 @@ export class W3mConnectingFarcasterView extends LitElement {
     if (CoreHelperUtil.isMobile()) {
       return html`${this.mobileTemplate()}`
     }
+
     return html`${this.desktopTemplate()}`
   }
 
