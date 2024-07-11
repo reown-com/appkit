@@ -91,6 +91,7 @@ export class W3mPaymasterSelectTokenView extends LitElement {
     return tokens.map(
       token => html`
         <wui-token-list-item
+          ?checked=${this.selectedToken?.name === token.name}
           name=${token.name}
           imageSrc=${token.logoURI}
           symbol=${token.symbol}
