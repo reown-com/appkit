@@ -86,6 +86,8 @@ export const SIWSController = {
     const client = this._getClient()
 
     const message = client.createMessage(args)
+    console.log('_message__siws/core/controller_', message)
+
     this.setMessage(message)
 
     return message

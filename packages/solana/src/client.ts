@@ -1,3 +1,4 @@
+import base58 from 'bs58'
 import { Connection } from '@solana/web3.js'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import {
@@ -163,31 +164,42 @@ export class Web3Modal extends Web3ModalScaffold {
         SolStoreUtil.reset()
       },
 
-      signMessage: async (message: string) => {
+      signMessage: async (message: any) => {
         const provider = SolStoreUtil.state.provider
+        const encodedMessage = new TextEncoder().encode(message)
 
         if (!provider) {
           throw new Error('connectionControllerClient:signMessage - provider is undefined')
         }
 
-        const signature = await provider.request({
-          method: 'personal_sign',
-          params: [message, this.getAddress()]
-        })
+        // const getSolanaProvider = () => {
+        //   if ('phantom' in window) {
+        //     const anyWindow: any = window
+        //     const provider = anyWindow.phantom?.solana
 
-        // if (!window.solana) return null
-
-        // const encodedMessage = new TextEncoder().encode(message)
-
-        // const signedMessage = await window.solana.request({
-        //   method: 'signMessage',
-        //   params: {
-        //     message: encodedMessage,
-        //     display: 'text'
+        //     if (provider?.isPhantom) {
+        //       return provider
+        //     }
         //   }
-        // })
 
-        return signature as string
+        //   return null
+        // }
+        // const prv = getSolanaProvider()
+
+        // @ts-ignore
+        const signature = await provider.signMessage(encodedMessage)
+        // const signature = await prv.signMessage(encodedMessage, 'utf8')
+
+        // const decoder = new TextDecoder('utf-8')
+        // const upSignature = decoder.decode(signature)
+        // console.log('_upSignature_1', upSignature)
+
+        // const base64str = Buffer.from(signature.signature).toString('base64')
+
+        // console.log('_signature_2', signature.signature, 'base64str', base64str)
+
+        console.log('_signature_111', base58.encode(signature))
+        return base58.encode(signature)
       },
 
       estimateGas: async () => await Promise.resolve(BigInt(0)),

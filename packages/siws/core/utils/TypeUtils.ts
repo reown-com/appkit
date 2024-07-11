@@ -22,9 +22,10 @@ export interface SIWSCreateMessageArgs {
   resources?: string[]
   expiry?: number
   iat?: string
+  typeSiwx?: 'Solana' | 'Ethereum'
 }
 export type SIWSMessageArgs = {
-  chains: number[]
+  chains: string[]
   methods?: string[]
 } & Omit<SIWSCreateMessageArgs, 'address' | 'chainId' | 'nonce' | 'version'>
 // Signed Cacao (CAIP-74)
@@ -47,7 +48,7 @@ interface Cacao {
   h: CacaoHeader
   p: CacaoPayload
   s: {
-    t: 'eip191' | 'eip1271' | 'eip4361'
+    t: 'eip191' | 'eip1271'
     s: string
     m?: string
   }

@@ -1,7 +1,8 @@
+import base58 from 'bs58'
 import { getCsrfToken, signIn, signOut, getSession } from 'next-auth/react'
 import type { SIWSVerifyMessageArgs, SIWSCreateMessageArgs, SIWSSession } from '@web3modal/siws'
-import { createSIWSConfig } from '@web3modal/siws'
-import { WagmiConstantsUtil } from './WagmiConstants'
+import { createSIWSConfig, formatMessage } from '@web3modal/siws'
+import { SolanaConstantsUtil } from './SolanaConstants'
 
 export const siwsConfig = createSIWSConfig({
   signOutOnAccountChange: true,
@@ -11,14 +12,13 @@ export const siwsConfig = createSIWSConfig({
   getMessageParams: async () => ({
     domain: window.location.host,
     uri: window.location.origin,
-    chains: WagmiConstantsUtil.chains.map(chain => chain.id),
+    chains: SolanaConstantsUtil.chains.map(chain => chain.chainId),
     statement: 'Please sign with your account',
     iat: new Date().toISOString()
   }),
 
-  createMessage: ({ address, ...args }: SIWSCreateMessageArgs) => {
-    return '_message from client_'
-  },
+  createMessage: ({ address, ...args }: SIWSCreateMessageArgs) =>
+    formatMessage({ address, ...args }),
 
   getNonce: async () => {
     const nonce = await getCsrfToken()
@@ -47,15 +47,19 @@ export const siwsConfig = createSIWSConfig({
       if (cacao) {
         // Do something
       }
-      const success = await signIn('credentials', {
-        message: JSON.stringify(message),
+
+      console.log('_verifyMessageParams_', { message, signature })
+
+      const response = await signIn('credentials', {
+        message,
         redirect: false,
-        signature,
-        callbackUrl: '/protected'
+        signature
       })
 
-      return Boolean(success?.ok)
+      console.log('_success_laboratory/utils/SiwsUtils__111', response)
+      return Boolean(response?.ok)
     } catch (error) {
+      console.error('Error during verifyMessage:', error)
       return false
     }
   },

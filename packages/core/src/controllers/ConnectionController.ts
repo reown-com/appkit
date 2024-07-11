@@ -29,7 +29,7 @@ export interface ConnectExternalOptions {
 export interface ConnectionControllerClient {
   connectWalletConnect: (onUri: (uri: string) => void) => Promise<void>
   disconnect: () => Promise<void>
-  signMessage: (message: string) => Promise<string>
+  signMessage: (message: any) => Promise<any>
   sendTransaction: (args: SendTransactionArgs) => Promise<`0x${string}` | null>
   estimateGas: (args: EstimateGasTransactionArgs) => Promise<bigint>
   parseUnits: (value: string, decimals: number) => bigint
@@ -117,7 +117,7 @@ export const ConnectionController = {
     })
   },
 
-  async signMessage(message: string) {
+  async signMessage(message: any) {
     return this._getClient().signMessage(message)
   },
 

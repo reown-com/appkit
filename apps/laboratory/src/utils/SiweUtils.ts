@@ -15,7 +15,10 @@ export const siweConfig = createSIWEConfig({
     statement: 'Please sign with your account',
     iat: new Date().toISOString()
   }),
-  createMessage: ({ address, ...args }: SIWECreateMessageArgs) => formatMessage(args, address),
+  createMessage: ({ address, ...args }: SIWECreateMessageArgs) => {
+    console.log('laboratory_utils/message_', formatMessage(args, address))
+    return formatMessage(args, address)
+  },
   getNonce: async () => {
     const nonce = await getCsrfToken()
     if (!nonce) {
@@ -43,6 +46,8 @@ export const siweConfig = createSIWEConfig({
       if (cacao) {
         // Do something
       }
+
+      console.log(message, signature)
       const success = await signIn('credentials', {
         message,
         redirect: false,

@@ -51,7 +51,7 @@
     "ethers": "6.13.0",
     "framer-motion": "10.17.9",
     "next": "14.2.3",
-    "next-auth": "4.24.5",
+    "next-auth": "4.24.7",
     "react-icons": "4.12.0",
     "rpc-websockets": "7.11.0",
     "valtio": "1.11.2",

@@ -11,9 +11,9 @@ export {
   getChainIdFromMessage,
   verifySignature
 } from '../core/helpers/index.js'
-export { formatMessage, getDidChainId, getDidAddress } from '@walletconnect/utils'
+export { getDidChainId, getDidAddress } from '@walletconnect/utils'
 export { SIWSController, type SIWSControllerClient } from '../core/controller/SIWSController.js'
-export { createSolanaMessage } from '../core/utils/formatMessage.js'
+export { formatMessage } from '../core/utils/formatMessage.js'
 
 export type {
   Web3ModalSIWSClient,
