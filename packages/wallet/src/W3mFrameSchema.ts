@@ -75,13 +75,15 @@ export const FrameConnectSocialResponse = z.object({
   address: z.string(),
   chainId: z.number(),
   accounts: z.array(
-    z.object({
-      address: z.string(),
-      type: z.enum([
-        W3mFrameRpcConstants.ACCOUNT_TYPES.EOA,
-        W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
-      ])
-    })
+    z
+      .object({
+        address: z.string(),
+        type: z.enum([
+          W3mFrameRpcConstants.ACCOUNT_TYPES.EOA,
+          W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+        ])
+      })
+      .optional()
   ),
   userName: z.string().optional()
 })
@@ -119,6 +121,17 @@ export const FrameInitSmartAccountResponse = z.object({
   isDeployed: z.boolean()
 })
 export const FrameSetPreferredAccountResponse = z.object({ type: z.string(), address: z.string() })
+
+export const FrameGetPaymasterTokensResponse = z.array(
+  z.object({
+    name: z.string(),
+    symbol: z.string(),
+    amount: z.string(),
+    decimals: z.number(),
+    logoURI: z.string(),
+    exchangeRate: z.number()
+  })
+)
 
 export const RpcResponse = z.any()
 
@@ -402,7 +415,9 @@ export const W3mFrameSchema = {
 
     .or(z.object({ type: zType('APP_SYNC_THEME'), payload: AppSyncThemeRequest }))
 
-    .or(z.object({ type: zType('APP_SYNC_DAPP_DATA'), payload: AppSyncDappDataRequest })),
+    .or(z.object({ type: zType('APP_SYNC_DAPP_DATA'), payload: AppSyncDappDataRequest }))
+
+    .or(z.object({ type: zType('APP_GET_PAYMASTER_TOKENS') })),
 
   // -- Frame Events ---------------------------------------------------------
   frameEvent: z
@@ -516,4 +531,12 @@ export const W3mFrameSchema = {
       })
     )
     .or(z.object({ type: zType('FRAME_SET_PREFERRED_ACCOUNT_ERROR'), payload: zError }))
+
+    .or(
+      z.object({
+        type: zType('FRAME_GET_PAYMASTER_TOKENS_SUCCESS'),
+        payload: FrameGetPaymasterTokensResponse
+      })
+    )
+    .or(z.object({ type: zType('FRAME_GET_PAYMASTER_TOKENS_ERROR'), payload: zError }))
 }
