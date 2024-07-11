@@ -1,7 +1,7 @@
 import { Button, Stack, Text, Spacer } from '@chakra-ui/react'
 import { useState } from 'react'
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers/react'
-import { EthereumProvider } from '@walletconnect/ethereum-provider'
+import type EthereumProvider from '@walletconnect/ethereum-provider'
 import { useChakraToast } from '../Toast'
 import { parseGwei, type Address } from 'viem'
 import { vitalikEthAddress } from '../../utils/DataUtil'
@@ -20,8 +20,12 @@ export function EthersSendCallsTest() {
   const toast = useChakraToast()
 
   const atomicBatchSupportedChains =
-    address && walletProvider?.signer
-      ? getCapabilitySupportedChainInfo(WALLET_CAPABILITIES.ATOMIC_BATCH, walletProvider, address)
+    address && (walletProvider as EthereumProvider)?.signer
+      ? getCapabilitySupportedChainInfo(
+          WALLET_CAPABILITIES.ATOMIC_BATCH,
+          walletProvider as EthereumProvider,
+          address
+        )
       : []
 
   const atomicBatchSupportedChainNames = atomicBatchSupportedChains
@@ -79,11 +83,11 @@ export function EthersSendCallsTest() {
     }
   }
   function isSendCallsSupported(): boolean {
-    if (walletProvider?.signer) {
+    if ((walletProvider as EthereumProvider)?.signer) {
       return Boolean(
-        walletProvider?.signer?.session?.namespaces?.['eip155']?.methods?.includes(
-          EIP_5792_RPC_METHODS.WALLET_SEND_CALLS
-        )
+        (walletProvider as EthereumProvider)?.signer?.session?.namespaces?.[
+          'eip155'
+        ]?.methods?.includes(EIP_5792_RPC_METHODS.WALLET_SEND_CALLS)
       )
     }
 

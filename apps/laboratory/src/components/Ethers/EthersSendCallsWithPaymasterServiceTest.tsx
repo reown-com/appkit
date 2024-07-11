@@ -1,7 +1,7 @@
 import { Button, Stack, Text, Input, Tooltip } from '@chakra-ui/react'
 import { useState } from 'react'
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers/react'
-import { EthereumProvider } from '@walletconnect/ethereum-provider'
+import type EthereumProvider from '@walletconnect/ethereum-provider'
 import { useChakraToast } from '../Toast'
 import { parseGwei } from 'viem'
 import { vitalikEthAddress } from '../../utils/DataUtil'
@@ -21,10 +21,10 @@ export function EthersSendCallsWithPaymasterServiceTest() {
   const toast = useChakraToast()
 
   const paymasterServiceSupportedChains =
-    address && walletProvider instanceof EthereumProvider
+    address && (walletProvider as EthereumProvider)?.signer
       ? getCapabilitySupportedChainInfo(
           WALLET_CAPABILITIES.PAYMASTER_SERVICE,
-          walletProvider,
+          walletProvider as EthereumProvider,
           address
         )
       : []
@@ -90,11 +90,11 @@ export function EthersSendCallsWithPaymasterServiceTest() {
   }
 
   function isSendCallsSupported(): boolean {
-    if (walletProvider?.signer) {
+    if ((walletProvider as EthereumProvider)?.signer) {
       return Boolean(
-        walletProvider?.signer?.session?.namespaces?.['eip155']?.methods?.includes(
-          EIP_5792_RPC_METHODS.WALLET_SEND_CALLS
-        )
+        (walletProvider as EthereumProvider)?.signer?.session?.namespaces?.[
+          'eip155'
+        ]?.methods?.includes(EIP_5792_RPC_METHODS.WALLET_SEND_CALLS)
       )
     }
 

@@ -1,7 +1,7 @@
 import { Button, Stack, Text, Input } from '@chakra-ui/react'
 import { useState } from 'react'
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers/react'
-import { EthereumProvider } from '@walletconnect/ethereum-provider'
+import type EthereumProvider from '@walletconnect/ethereum-provider'
 import { useChakraToast } from '../Toast'
 import { BrowserProvider } from 'ethers'
 import { type GetCallsStatusParams } from '../../types/EIP5792'
@@ -47,12 +47,11 @@ export function EthersGetCallsStatusTest() {
     }
   }
   function isGetCallsStatusSupported(): boolean {
-    if (walletProvider instanceof EthereumProvider) {
-    if (walletProvider?.signer) {
+    if ((walletProvider as EthereumProvider)?.signer) {
       return Boolean(
-        walletProvider?.signer?.session?.namespaces?.['eip155']?.methods?.includes(
-          EIP_5792_RPC_METHODS.WALLET_GET_CALLS_STATUS
-        )
+        (walletProvider as EthereumProvider)?.signer?.session?.namespaces?.[
+          'eip155'
+        ]?.methods?.includes(EIP_5792_RPC_METHODS.WALLET_GET_CALLS_STATUS)
       )
     }
 
