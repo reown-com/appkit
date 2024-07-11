@@ -133,6 +133,8 @@ export class W3mConnectingFarcasterView extends LitElement {
           const deeplink = CoreHelperUtil.formatFarcasterDeeplink(
             AccountController.state.farcasterUrl
           )
+          console.log(deeplink)
+
           CoreHelperUtil.openHref(deeplink, '_blank')
         }
         await this.authConnector?.provider.connectFarcaster()
