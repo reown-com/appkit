@@ -52,7 +52,8 @@ export const TransactionsController = {
         account: accountAddress,
         projectId,
         cursor: state.next,
-        onramp
+        onramp,
+        cache: onramp === 'coinbase' ? 'no-cache' : 'default'
       })
 
       const nonSpamTransactions = this.filterSpamTransactions(response.data)
