@@ -116,6 +116,7 @@ export class W3mConnectingFarcasterView extends LitElement {
           >Accept connection request in the app</wui-text
         ></wui-flex
       >
+      ${this.mobileLinkTemplate()}
     </wui-flex>`
   }
 
@@ -141,6 +142,19 @@ export class W3mConnectingFarcasterView extends LitElement {
         SnackController.showError(error)
       }
     }
+  }
+
+  private mobileLinkTemplate() {
+    return html`<wui-button
+      size="md"
+      ?disabled=${!this.uri}
+      @click=${() => {
+        if (this.uri) {
+          CoreHelperUtil.openHref(this.uri, '_blank')
+        }
+      }}
+      >Open farcaster</wui-button
+    >`
   }
 
   private onRenderProxy() {
