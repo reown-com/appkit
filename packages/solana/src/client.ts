@@ -172,33 +172,9 @@ export class Web3Modal extends Web3ModalScaffold {
           throw new Error('connectionControllerClient:signMessage - provider is undefined')
         }
 
-        // const getSolanaProvider = () => {
-        //   if ('phantom' in window) {
-        //     const anyWindow: any = window
-        //     const provider = anyWindow.phantom?.solana
-
-        //     if (provider?.isPhantom) {
-        //       return provider
-        //     }
-        //   }
-
-        //   return null
-        // }
-        // const prv = getSolanaProvider()
-
         // @ts-ignore
         const signature = await provider.signMessage(encodedMessage)
-        // const signature = await prv.signMessage(encodedMessage, 'utf8')
 
-        // const decoder = new TextDecoder('utf-8')
-        // const upSignature = decoder.decode(signature)
-        // console.log('_upSignature_1', upSignature)
-
-        // const base64str = Buffer.from(signature.signature).toString('base64')
-
-        // console.log('_signature_2', signature.signature, 'base64str', base64str)
-
-        console.log('_signature_111', base58.encode(signature))
         return base58.encode(signature)
       },
 

@@ -1,5 +1,4 @@
 import base58 from 'bs58'
-import nacl from 'tweetnacl'
 
 import { SiwxError, SiwxErrorTypes, SiwxMessage } from '@learnweb3dao/siwx-common'
 import type { VerificationResponse, VerifyParams } from '@learnweb3dao/siwx-common'
@@ -37,46 +36,10 @@ export class SiwxMessageCommon extends SiwxMessage<Uint8Array> {
         data: this
       }
     } catch (error) {
-      console.log('_error_SiwxCont', error)
       return {
         success: false,
-        // error,
         data: this
       }
     }
-  }
-}
-
-type SignMessage = {
-  domain: string
-  publicKey: string
-  nonce: string
-  statement: string
-}
-
-export class SigninMessageCustom {
-  domain: any
-  publicKey: any
-  nonce: any
-  statement: any
-
-  constructor({ domain, publicKey, nonce, statement }: SignMessage) {
-    this.domain = domain
-    this.publicKey = publicKey
-    this.nonce = nonce
-    this.statement = statement
-  }
-
-  prepare() {
-    return `${this.statement}${this.nonce}`
-  }
-
-  async validate(signature: string) {
-    const msg = this.prepare()
-    const signatureUint8 = base58.decode(signature)
-    const msgUint8 = new TextEncoder().encode(msg)
-    const pubKeyUint8 = base58.decode(this.publicKey)
-
-    return nacl.sign.detached.verify(msgUint8, signatureUint8, pubKeyUint8)
   }
 }

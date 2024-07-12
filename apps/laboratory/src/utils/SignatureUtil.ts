@@ -1,24 +1,29 @@
 import { createPublicClient, http } from 'viem'
+import { PublicKey } from '@solana/web3.js'
+import nacl from 'tweetnacl'
+import base58 from 'bs58'
 
-function getTransport({ chainId }: { chainId: number }) {
+function getTransport({ chainId, typeChain }: { chainId: string | number; typeChain: string }) {
   return http(
-    `https://rpc.walletconnect.org/v1/?chainId=eip155:${chainId}&projectId=${process.env['NEXT_PUBLIC_PROJECT_ID']}`
+    `https://rpc.walletconnect.org/v1/?chainId=${typeChain}:${chainId}&projectId=${process.env['NEXT_PUBLIC_PROJECT_ID']}`
   )
 }
 
-export async function verifySignature({
+async function verifyEthSignature({
   address,
   message,
   signature,
-  chainId
+  chainId,
+  typeChain
 }: {
   address: string
   message: string
   signature: string
-  chainId: number
+  chainId: string | number
+  typeChain: string
 }) {
   const publicClient = createPublicClient({
-    transport: getTransport({ chainId })
+    transport: getTransport({ chainId, typeChain })
   })
 
   return publicClient.verifyMessage({
@@ -26,4 +31,49 @@ export async function verifySignature({
     address: address as `0x${string}`,
     signature: signature as `0x${string}`
   })
+}
+
+async function verifySolSignature({
+  address,
+  message,
+  signature
+}: {
+  address: string
+  message: string
+  signature: string
+}) {
+  try {
+    const publicKeyBytes = base58.decode(address)
+    const publicKey = new PublicKey(publicKeyBytes)
+
+    const isValid = nacl.sign.detached.verify(
+      Buffer.from(message),
+      base58.decode(signature),
+      publicKey.toBuffer()
+    )
+
+    return isValid
+  } catch (error) {
+    return false
+  }
+}
+
+export async function verifySignature({
+  address,
+  message,
+  signature,
+  chainId,
+  typeChain = 'eip155'
+}: {
+  address: string
+  message: string
+  signature: string
+  chainId: string | number
+  typeChain?: string
+}) {
+  if (typeChain === 'solana') {
+    return verifySolSignature({ address, message, signature })
+  } else {
+    return verifyEthSignature({ address, message, signature, chainId, typeChain })
+  }
 }

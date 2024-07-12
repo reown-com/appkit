@@ -111,8 +111,6 @@ export class W3mConnectingSiwsView extends LitElement {
 
       return session
     } catch (error) {
-      console.log('_error_', error)
-
       const preferredAccountType = AccountController.state.preferredAccountType
       const isSmartAccount =
         preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT

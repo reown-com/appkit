@@ -6,7 +6,6 @@ import type {
   SIWSSession
 } from '../core/utils/TypeUtils.js'
 import type { SIWSControllerClient } from '../core/controller/SIWSController.js'
-import { PublicKey } from '@solana/web3.js'
 
 import {
   ConnectionController,
@@ -14,12 +13,10 @@ import {
   AccountController,
   NetworkController,
   StorageUtil,
-  RouterController,
-  SigninMessageCustom
+  RouterController
 } from '@web3modal/core'
 
 import { ConstantsUtil } from '../core/utils/ConstantsUtil.js'
-import base58 from 'bs58'
 
 // -- Client -------------------------------------------------------------------- //
 export class Web3ModalSIWSClient {
@@ -98,24 +95,24 @@ export class Web3ModalSIWSClient {
     if (!address) {
       throw new Error('An address is required to create a SIWS message.')
     }
+
     const chainId = NetworkController.state.caipNetwork?.id
 
     if (!chainId) {
       throw new Error('A chainId is required to create a SIWS message.')
     }
 
-    const { domain, statement } = await this.getMessageParams()
-    // console.log('_messageParams_', messageParams)
+    const messageParams = await this.getMessageParams()
 
-    // const message = this.methods.createMessage({
-    //   address,
-    //   chainId,
-    //   nonce,
-    //   version: '1',
-    //   typeSiwx: 'Solana',
-    //   iat: messageParams.iat || new Date().toISOString(),
-    //   ...messageParams
-    // })
+    const message = this.methods.createMessage({
+      address,
+      chainId,
+      nonce,
+      version: '1',
+      typeSiwx: 'Solana',
+      iat: messageParams.iat || new Date().toISOString(),
+      ...messageParams
+    })
 
     const type = StorageUtil.getConnectedConnector()
     if (type === 'AUTH') {
@@ -129,38 +126,12 @@ export class Web3ModalSIWSClient {
       })
     }
 
-    const publicKey = new PublicKey(address)
-
-    console.log('_nonce_', nonce)
-    console.log('_pubkey_', publicKey?.toBase58(), domain)
-
-    const message = new SigninMessageCustom({
-      domain,
-      statement: `Sign this message to sign in to the app.`,
-      nonce: nonce,
-      publicKey: publicKey?.toBase58()
-      // domain: window.location.host,
-      // publicKey: wallet.publicKey?.toBase58(),
-      // statement: `Sign this message to sign in to the app.`,
-      // nonce: csrf
-    })
-
-    // const data = new TextEncoder().encode(message.prepare())
-    // const signature = await wallet.signMessage(data)
-
-    const signature = await ConnectionController.signMessage(message.prepare())
-    // const serializedSignature = base58.encode(signature)
+    const signature = await ConnectionController.signMessage(message)
 
     const isValid = await this.methods.verifyMessage({
-      message: JSON.stringify(message),
+      message,
       signature
     })
-    //
-
-    // const signature = await ConnectionController.signMessage(message)
-    // const isValid = await this.methods.verifyMessage({ message, signature })
-
-    console.log('_isValid_', isValid)
 
     if (!isValid) {
       throw new Error('Error verifying SIWS signature')

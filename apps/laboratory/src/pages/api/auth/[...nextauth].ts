@@ -47,11 +47,13 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
           const { message, signature } = credentials
           const address = getAddressFromMessage(message)
           const chainId = getChainIdFromMessage(message)
+
           const isValid = await verifySignature({
             address,
             message,
             signature,
-            chainId: Number(chainId.split(':')[1])
+            chainId: String(chainId.split(':')[1]),
+            typeChain: String(chainId.split(':')[0])
           })
 
           if (isValid) {

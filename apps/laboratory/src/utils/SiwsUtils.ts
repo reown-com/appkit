@@ -1,4 +1,3 @@
-import base58 from 'bs58'
 import { getCsrfToken, signIn, signOut, getSession } from 'next-auth/react'
 import type { SIWSVerifyMessageArgs, SIWSCreateMessageArgs, SIWSSession } from '@web3modal/siws'
 import { createSIWSConfig, formatMessage } from '@web3modal/siws'
@@ -48,15 +47,12 @@ export const siwsConfig = createSIWSConfig({
         // Do something
       }
 
-      console.log('_verifyMessageParams_', { message, signature })
-
       const response = await signIn('credentials', {
         message,
         redirect: false,
         signature
       })
 
-      console.log('_success_laboratory/utils/SiwsUtils__111', response)
       return Boolean(response?.ok)
     } catch (error) {
       console.error('Error during verifyMessage:', error)
