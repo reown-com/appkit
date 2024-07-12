@@ -1,38 +1,38 @@
+import { type Chain, ConstantsUtil } from '@web3modal/common'
 import type {
+  ConnectedWalletInfo,
   ConnectionControllerClient,
   EventsControllerState,
+  ModalControllerState,
   NetworkControllerClient,
   NetworkControllerState,
   OptionsControllerState,
   PublicStateControllerState,
+  RouterControllerState,
   ThemeControllerState,
   ThemeMode,
-  ThemeVariables,
-  ModalControllerState,
-  ConnectedWalletInfo,
-  RouterControllerState
+  ThemeVariables
 } from '@web3modal/core'
 import {
+  AccountController,
+  ApiController,
   BlockchainApiController,
+  ChainController,
   ConnectionController,
   ConnectorController,
   CoreHelperUtil,
+  EnsController,
   EventsController,
   ModalController,
   NetworkController,
   OptionsController,
   PublicStateController,
-  ThemeController,
-  SnackController,
   RouterController,
-  EnsController,
-  ApiController,
-  ChainController,
-  AccountController
+  SnackController,
+  ThemeController
 } from '@web3modal/core'
-import { setColorTheme, setThemeVariables } from '@web3modal/ui'
 import type { SIWEControllerClient } from '@web3modal/siwe'
-import { ConstantsUtil, type Chain } from '@web3modal/common'
+import { setColorTheme, setThemeVariables } from '@web3modal/ui'
 
 // -- Helpers -------------------------------------------------------------------
 let isInitialized = false

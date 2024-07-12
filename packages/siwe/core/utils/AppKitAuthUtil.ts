@@ -1,19 +1,15 @@
 /* eslint-disable no-console */
 import { formatMessage } from '@walletconnect/utils'
+import { ConstantsUtil } from '@web3modal/common'
+import { ApiController } from '@web3modal/core'
 import { Web3ModalSIWEClient } from '../../src/client.js'
 import type { SIWECreateMessageArgs, SIWESession, SIWEVerifyMessageArgs } from './TypeUtils.js'
-import { ConstantsUtil } from '@web3modal/common'
-
-const myHeaders = new Headers()
-myHeaders.append('x-project-id', '24970167f11c121f6eb40b558edb9691')
-myHeaders.append('x-sdk-type', 'w3m')
-myHeaders.append('x-sdk-version', 'html-3.0.0')
 
 export async function getNonce() {
   try {
-    const res = await fetch(`${ConstantsUtil.APPKIT_AUTH_API_URL}/auth/v1/nonce`, {
+    const res = await fetch(`${ConstantsUtil.W3M_API_URL}/auth/v1/nonce`, {
       method: 'GET',
-      headers: myHeaders,
+      headers: ApiController._getApiHeaders(),
       credentials: 'include'
     })
 
@@ -34,9 +30,9 @@ export async function getNonce() {
 
 export async function getAppKitAuthSession() {
   try {
-    const res = await fetch(`${ConstantsUtil.APPKIT_AUTH_API_URL}/auth/v1/me`, {
+    const res = await fetch(`${ConstantsUtil.W3M_API_URL}/auth/v1/me`, {
       method: 'GET',
-      headers: myHeaders,
+      headers: ApiController._getApiHeaders(),
       credentials: 'include'
     })
 
@@ -61,9 +57,9 @@ export async function authenticate(payload: {
   clientId?: string
 }) {
   try {
-    const res = await fetch(`${ConstantsUtil.APPKIT_AUTH_API_URL}/auth/v1/authenticate`, {
+    const res = await fetch(`${ConstantsUtil.W3M_API_URL}/auth/v1/authenticate`, {
       method: 'POST',
-      headers: myHeaders,
+      headers: ApiController._getApiHeaders(),
       body: JSON.stringify(payload),
       credentials: 'include'
     })
@@ -85,9 +81,9 @@ export async function authenticate(payload: {
 
 export async function updateUser(metadata: Record<string, unknown>) {
   try {
-    const res = await fetch(`${ConstantsUtil.APPKIT_AUTH_API_URL}/auth/v1/update-user`, {
+    const res = await fetch(`${ConstantsUtil.W3M_API_URL}/auth/v1/update-user`, {
       method: 'POST',
-      headers: myHeaders,
+      headers: ApiController._getApiHeaders(),
       body: JSON.stringify({ metadata }),
       credentials: 'include'
     })
@@ -109,9 +105,9 @@ export async function updateUser(metadata: Record<string, unknown>) {
 
 export async function appKitAuthSignOut() {
   try {
-    const res = await fetch(`${ConstantsUtil.APPKIT_AUTH_API_URL}/auth/v1/sign-out`, {
+    const res = await fetch(`${ConstantsUtil.W3M_API_URL}/auth/v1/sign-out`, {
       method: 'POST',
-      headers: myHeaders,
+      headers: ApiController._getApiHeaders(),
       credentials: 'include'
     })
 
