@@ -269,7 +269,7 @@ describe('TransactionsController', () => {
       projectId,
       cursor: undefined,
       onramp: undefined,
-      cache: 'default'
+      cache: undefined
     })
     expect(TransactionsController.state.next).toBe('cursor')
   })
