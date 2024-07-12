@@ -85,9 +85,7 @@ export class W3mConnectInjectedWidget extends LitElement {
 
   // -- Private Methods ----------------------------------- //
   private onConnector(connector: Connector) {
-    if (connector.chain !== ChainController.state.activeChain) {
-      ChainController.setActiveChain(connector.chain)
-    }
+    ChainController.setActiveConnector(connector)
     RouterController.push('ConnectingExternal', { connector })
   }
 }

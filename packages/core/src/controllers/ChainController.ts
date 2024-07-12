@@ -180,9 +180,15 @@ export const ChainController = {
 
     if (newAdapter && newAdapter.chain !== state.activeChain) {
       state.activeChain = newAdapter.chain
+      state.activeCaipNetwork = newAdapter.networkState?.caipNetwork
+        ? ref(newAdapter.networkState?.caipNetwork)
+        : undefined
       AccountController.replaceState(newAdapter.accountState)
       NetworkController.replaceState(newAdapter.networkState)
-      PublicStateController.set({ activeChain: chain })
+      PublicStateController.set({
+        activeChain: chain,
+        selectedNetworkId: newAdapter.networkState?.caipNetwork?.id
+      })
     }
   },
 
@@ -195,7 +201,7 @@ export const ChainController = {
       this.setActiveChain(caipNetwork.chain)
     }
 
-    state.activeCaipNetwork = caipNetwork
+    state.activeCaipNetwork = ref(caipNetwork)
 
     this.setCaipNetwork(caipNetwork.chain, caipNetwork, true)
     PublicStateController.set({
@@ -223,6 +229,9 @@ export const ChainController = {
   setActiveConnector(connector: ChainControllerState['activeConnector']) {
     if (connector) {
       state.activeConnector = ref(connector)
+      if (connector.chain !== state.activeChain) {
+        this.setActiveChain(connector.chain)
+      }
     }
   },
 
@@ -314,22 +323,25 @@ export const ChainController = {
       throw new Error('Chain is required to set account prop')
     }
 
-    this.setChainAccountData(chainToWrite, {
-      isConnected: false,
-      smartAccountDeployed: false,
-      currentTab: 0,
-      caipAddress: undefined,
-      address: undefined,
-      balance: undefined,
-      balanceSymbol: undefined,
-      profileName: undefined,
-      profileImage: undefined,
-      addressExplorerUrl: undefined,
-      tokenBalance: [],
-      connectedWalletInfo: undefined,
-      preferredAccountType: undefined,
-      socialProvider: undefined,
-      socialWindow: undefined
-    })
+    this.setChainAccountData(
+      chainToWrite,
+      ref({
+        isConnected: false,
+        smartAccountDeployed: false,
+        currentTab: 0,
+        caipAddress: undefined,
+        address: undefined,
+        balance: undefined,
+        balanceSymbol: undefined,
+        profileName: undefined,
+        profileImage: undefined,
+        addressExplorerUrl: undefined,
+        tokenBalance: [],
+        connectedWalletInfo: undefined,
+        preferredAccountType: undefined,
+        socialProvider: undefined,
+        socialWindow: undefined
+      })
+    )
   }
 }
