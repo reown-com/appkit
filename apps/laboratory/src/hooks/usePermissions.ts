@@ -5,7 +5,7 @@ import {
   getUserOperationHash
 } from 'permissionless'
 import { type UserOperation } from 'permissionless/types'
-import { signatureToHex, type PublicClient } from 'viem'
+import { serializeSignature, type PublicClient } from 'viem'
 import { type Chain } from 'wagmi/chains'
 import { sign } from 'viem/accounts'
 import { useUserOpBuilder, type Execution } from './useUserOpBuilder'
@@ -88,7 +88,7 @@ export function usePermissions() {
       privateKey: ecdsaPrivateKey,
       hash: userOpHash
     })
-    const rawSignature = signatureToHex(dappSignatureOnUserOp)
+    const rawSignature = serializeSignature(dappSignatureOnUserOp)
     userOp.signature = rawSignature
     const preSignaturePackedUserOp = getPackedUserOperation(userOp)
 
