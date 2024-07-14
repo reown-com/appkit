@@ -31,6 +31,7 @@ async function verifyEthSignature({
   })
 }
 
+// eslint-disable-next-line @typescript-eslint/require-await
 async function verifySolSignature({
   address,
   message,
@@ -71,7 +72,7 @@ export async function verifySignature({
 }) {
   if (typeChain === 'solana') {
     return verifySolSignature({ address, message, signature })
-  } else {
-    return verifyEthSignature({ address, message, signature, chainId })
   }
+
+  return verifyEthSignature({ address, message, signature, chainId })
 }

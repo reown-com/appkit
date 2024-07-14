@@ -176,10 +176,11 @@ export class Web3Modal extends Web3ModalScaffold {
           throw new Error('connectionControllerClient:signMessage - provider is undefined')
         }
 
-        // @ts-ignore
+        // @ts-expect-error @ts-ignore
         const signature = await provider.signMessage(encodedMessage)
+        const encodeSignature = base58.encode(signature)
 
-        return base58.encode(signature) as string
+        return encodeSignature
       },
 
       estimateGas: async () => await Promise.resolve(BigInt(0)),

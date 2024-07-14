@@ -56,7 +56,7 @@ export const siwsConfig = createSIWSConfig({
 
       return Boolean(response?.ok)
     } catch (error) {
-      console.error('Error during verifyMessage:', error)
+
       return false
     }
   },

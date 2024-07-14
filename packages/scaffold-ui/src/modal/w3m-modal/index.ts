@@ -237,6 +237,7 @@ export class W3mModal extends LitElement {
 
         this.onNavigationGeneric(typeSignControlSiwX)
       }
+
       return
     }
 
@@ -249,6 +250,7 @@ export class W3mModal extends LitElement {
         await controller.signOut()
         this.onNavigationGeneric(typeSignControlSiwX)
       }
+
       return
     }
 
