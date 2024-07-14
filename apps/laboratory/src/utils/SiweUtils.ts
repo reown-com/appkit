@@ -43,7 +43,6 @@ export const siweConfig = createSIWEConfig({
       if (cacao) {
         // Do something
       }
-
       const success = await signIn('credentials', {
         message,
         redirect: false,

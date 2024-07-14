@@ -164,7 +164,7 @@ export class Web3Modal extends Web3ModalScaffold {
         SolStoreUtil.reset()
       },
 
-      signMessage: async (message: any) => {
+      signMessage: async (message: string) => {
         const provider = SolStoreUtil.state.provider
         const encodedMessage = new TextEncoder().encode(message)
 
@@ -175,7 +175,7 @@ export class Web3Modal extends Web3ModalScaffold {
         // @ts-ignore
         const signature = await provider.signMessage(encodedMessage)
 
-        return base58.encode(signature)
+        return base58.encode(signature) as string
       },
 
       estimateGas: async () => await Promise.resolve(BigInt(0)),
