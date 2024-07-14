@@ -1,5 +1,25 @@
 # @web3modal/core
 
+## 5.0.6
+
+### Patch Changes
+
+- fix: Social Login illegal invocation issue. Wagmi tests
+
+- Updated dependencies []:
+  - @web3modal/common@5.0.6
+  - @web3modal/wallet@5.0.6
+
+## 5.0.5
+
+### Patch Changes
+
+- feat: universal link internal flag. Add kotlin assetlinks. Fix email truncation'
+
+- Updated dependencies []:
+  - @web3modal/common@5.0.5
+  - @web3modal/wallet@5.0.5
+
 ## 5.0.4
 
 ### Patch Changes

@@ -13,7 +13,6 @@ export const testModalSmartAccount = timingFixture.extend<
   modalPage: [
     async ({ page, library, context }, use, testInfo) => {
       const modalPage = new ModalWalletPage(page, library)
-      const modalValidator = new ModalWalletValidator(page)
       await modalPage.load()
 
       const mailsacApiKey = process.env['MAILSAC_API_KEY']
@@ -23,12 +22,11 @@ export const testModalSmartAccount = timingFixture.extend<
       const email = new Email(mailsacApiKey)
       const tempEmail = email.getEmailAddressToUse(testInfo.parallelIndex)
 
-      await modalPage.emailFlow(tempEmail, context, mailsacApiKey)
-      await modalPage.openAccount()
-      await modalPage.openSettings()
-      await modalPage.switchNetwork('Sepolia')
-      await modalValidator.expectSwitchedNetwork('Sepolia')
+      // Switch to supported network first so it initializes with SA
+      await modalPage.switchNetworkWithNetworkButton('Sepolia')
       await modalPage.closeModal()
+      await modalPage.emailFlow(tempEmail, context, mailsacApiKey)
+
       await use(modalPage)
     },
     { timeout: 90_000 }

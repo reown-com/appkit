@@ -70,9 +70,18 @@ export class W3mEmailOtpWidget extends LitElement {
         .padding=${['l', '0', 'l', '0'] as const}
         gap="l"
       >
-        <wui-flex flexDirection="column" alignItems="center">
-          <wui-text variant="paragraph-400" color="fg-100">Enter the code we sent to</wui-text>
-          <wui-text variant="paragraph-500" color="fg-100">${this.email}</wui-text>
+        <wui-flex
+          class="email-display"
+          flexDirection="column"
+          alignItems="center"
+          .padding=${['0', 'xl', '0', 'xl'] as const}
+        >
+          <wui-text variant="paragraph-400" color="fg-100" align="center">
+            Enter the code we sent to
+          </wui-text>
+          <wui-text variant="paragraph-500" color="fg-100" lineClamp="1" align="center">
+            ${this.email}
+          </wui-text>
         </wui-flex>
 
         <wui-text variant="small-400" color="fg-200">The code expires in 20 minutes</wui-text>
