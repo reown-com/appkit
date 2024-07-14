@@ -18,8 +18,8 @@
   "dependencies": {
     "@learnweb3dao/siwx-common": "^0.3.0",
     "@walletconnect/utils": "2.12.0",
-    "@web3modal/core": "5.0.4",
-    "@web3modal/scaffold-utils": "5.0.4",
+    "@web3modal/core": "5.0.6",
+    "@web3modal/scaffold-utils": "5.0.6",
     "bs58": "^6.0.0",
     "lit": "3.1.0",
     "valtio": "1.11.2"
