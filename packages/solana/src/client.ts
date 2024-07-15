@@ -27,7 +27,8 @@ import type {
   ScaffoldOptions,
   Connector,
   CaipAddress,
-  CaipNetwork
+  CaipNetwork,
+  EventsControllerState
 } from '@web3modal/scaffold'
 import type { Chain as AvailableChain } from '@web3modal/common'
 import type { Web3ModalSIWSClient } from '@web3modal/siws'
@@ -90,7 +91,7 @@ export class Web3Modal extends Web3ModalScaffold {
     }
 
     const networkControllerClient: NetworkControllerClient = {
-      switchCaipNetwork: async (caipNetwork: CaipNetwork) => {
+      switchCaipNetwork: async (caipNetwork: CaipNetwork | undefined) => {
         if (caipNetwork) {
           try {
             // Update chain for Solflare
@@ -274,7 +275,7 @@ export class Web3Modal extends Web3ModalScaffold {
       }
     })
 
-    EventsController.subscribe((state: EventsController.State) => {
+    EventsController.subscribe((state: EventsControllerState) => {
       if (state.data.event === 'SELECT_WALLET' && state.data.properties?.name === 'Phantom') {
         const isMobile = CoreHelperUtil.isMobile()
         const isClient = CoreHelperUtil.isClient()
