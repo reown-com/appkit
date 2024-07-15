@@ -177,8 +177,12 @@ export class Web3Modal extends Web3ModalScaffold {
           throw new Error('connectionControllerClient:signMessage - provider is undefined')
         }
 
-        // @ts-expect-error Universal provider has no signMessage
-        const signature = await provider.signMessage(encodedMessage)
+        const signResponse = await provider.signMessage(encodedMessage)
+        let signature: Uint8Array = signResponse as Uint8Array
+        if ((signResponse as { signature: Uint8Array }).signature) {
+          signature = (signResponse as { signature: Uint8Array }).signature
+        }
+
         const encodeSignature = base58.encode(signature)
 
         return encodeSignature
