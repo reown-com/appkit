@@ -177,7 +177,8 @@ export class Web3Modal extends Web3ModalScaffold {
         })
 
         const params = await siweConfig?.getMessageParams?.()
-        if (siweConfig?.options?.enabled && params && Object.keys(params).length > 0) {
+        // Must perform these checks to satify optional types
+        if (siweConfig?.options?.enabled && params && Object.keys(params || {}).length > 0) {
           const { SIWEController, getDidChainId, getDidAddress } = await import('@web3modal/siwe')
           const siweParams = await siweConfig.getMessageParams()
 
@@ -206,7 +207,6 @@ export class Web3Modal extends Web3ModalScaffold {
                 chainId: parseInt(cacaoChainId, 10)
               })
             }
-
             try {
               // Kicks off verifyMessage and populates external states
               const message = WalletConnectProvider.signer.client.formatAuthMessage({
@@ -230,8 +230,9 @@ export class Web3Modal extends Web3ModalScaffold {
             }
           }
         } else {
-          await WalletConnectProvider.connect()
+          await WalletConnectProvider.connect({ optionalChains: this.chains.map(c => c.chainId) })
         }
+
         await this.setWalletConnectProvider()
       },
 
