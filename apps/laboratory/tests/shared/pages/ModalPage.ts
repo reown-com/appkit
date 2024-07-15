@@ -262,11 +262,6 @@ export class ModalPage {
     await this.page.getByTestId(`w3m-network-switch-${network}`).click()
   }
 
-  async switchNetworkWithNetworkButton(network: string) {
-    await this.page.getByTestId('w3m-network-button').click()
-    await this.page.getByTestId(`w3m-network-switch-${network}`).click()
-  }
-
   async clickWalletDeeplink() {
     await this.connectButton.click()
     await this.page.getByTestId('wallet-selector-react-wallet-v2').click()
@@ -327,5 +322,14 @@ export class ModalPage {
     const otp = email.getOtpCodeFromBody(emailBody)
 
     await this.enterOTP(otp, headerTitle)
+  }
+
+  async switchNetworkWithNetworkButton(networkName: string) {
+    const networkButton = this.page.getByTestId('w3m-network-button')
+    await networkButton.click()
+
+    const networkToSwitchButton = this.page.getByTestId(`w3m-network-switch-${networkName}`)
+    await networkToSwitchButton.click()
+    await networkToSwitchButton.waitFor({ state: 'hidden' })
   }
 }
