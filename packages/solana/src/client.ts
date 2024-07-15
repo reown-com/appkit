@@ -85,7 +85,7 @@ export class Web3Modal extends Web3ModalScaffold {
     }
 
     const networkControllerClient: NetworkControllerClient = {
-      switchCaipNetwork: async caipNetwork => {
+      switchCaipNetwork: async (caipNetwork: CaipNetwork) => {
         if (caipNetwork) {
           try {
             // Update chain for Solflare
@@ -164,7 +164,7 @@ export class Web3Modal extends Web3ModalScaffold {
         SolStoreUtil.reset()
       },
 
-      signMessage: async (message: any) => {
+      signMessage: async (message: string) => {
         const provider = SolStoreUtil.state.provider
         const encodedMessage = new TextEncoder().encode(message)
 
@@ -172,7 +172,7 @@ export class Web3Modal extends Web3ModalScaffold {
           throw new Error('connectionControllerClient:signMessage - provider is undefined')
         }
 
-        // @ts-ignore
+        // @ts-expect-error Universal provider has no signMessage
         const signature = await provider.signMessage(encodedMessage)
 
         return base58.encode(signature)
@@ -263,7 +263,7 @@ export class Web3Modal extends Web3ModalScaffold {
       }
     })
 
-    EventsController.subscribe(state => {
+    EventsController.subscribe((state: EventsController.State) => {
       if (state.data.event === 'SELECT_WALLET' && state.data.properties?.name === 'Phantom') {
         const isMobile = CoreHelperUtil.isMobile()
         const isClient = CoreHelperUtil.isClient()
