@@ -3,9 +3,9 @@ import { PublicKey } from '@solana/web3.js'
 import nacl from 'tweetnacl'
 import base58 from 'bs58'
 
-function getTransport({ chainId, typeChain }: { chainId: string | number; typeChain: string }) {
+function getTransport({ chainId }: { chainId: string | number }) {
   return http(
-    `https://rpc.walletconnect.org/v1/?chainId=${typeChain}:${chainId}&projectId=${process.env['NEXT_PUBLIC_PROJECT_ID']}`
+    `https://rpc.walletconnect.org/v1/?chainId=eip155:${chainId}&projectId=${process.env['NEXT_PUBLIC_PROJECT_ID']}`
   )
 }
 
@@ -13,17 +13,15 @@ async function verifyEthSignature({
   address,
   message,
   signature,
-  chainId,
-  typeChain
+  chainId
 }: {
   address: string
   message: string
   signature: string
   chainId: string | number
-  typeChain: string
 }) {
   const publicClient = createPublicClient({
-    transport: getTransport({ chainId, typeChain })
+    transport: getTransport({ chainId })
   })
 
   return publicClient.verifyMessage({
@@ -33,6 +31,7 @@ async function verifyEthSignature({
   })
 }
 
+// eslint-disable-next-line @typescript-eslint/require-await
 async function verifySolSignature({
   address,
   message,
@@ -73,7 +72,7 @@ export async function verifySignature({
 }) {
   if (typeChain === 'solana') {
     return verifySolSignature({ address, message, signature })
-  } else {
-    return verifyEthSignature({ address, message, signature, chainId, typeChain })
   }
+
+  return verifyEthSignature({ address, message, signature, chainId })
 }

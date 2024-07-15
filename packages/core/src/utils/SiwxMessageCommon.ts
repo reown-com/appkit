@@ -3,7 +3,7 @@ import base58 from 'bs58'
 import { SiwxError, SiwxErrorTypes, SiwxMessage } from '@learnweb3dao/siwx-common'
 import type { VerificationResponse, VerifyParams } from '@learnweb3dao/siwx-common'
 import { ed25519 } from '@noble/curves/ed25519'
-import type { TypeSiwx } from './TypeUtil'
+import type { TypeSiwx } from './TypeUtil.ts'
 
 export class SiwxMessageCommon extends SiwxMessage<Uint8Array> {
   toMessage(typeSiwx?: TypeSiwx): Uint8Array {
@@ -12,6 +12,7 @@ export class SiwxMessageCommon extends SiwxMessage<Uint8Array> {
     return new TextEncoder().encode(messageStr)
   }
 
+  // eslint-disable-next-line @typescript-eslint/require-await
   async verify(params: VerifyParams): Promise<VerificationResponse<Uint8Array>> {
     try {
       const { signature } = params

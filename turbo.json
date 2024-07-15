@@ -60,6 +60,7 @@
         "^build:ui",
         "^build:wallet",
         "^build:siwe",
+        "^build:siws",
         "^build:scaffold-utils"
       ],
       "cache": false

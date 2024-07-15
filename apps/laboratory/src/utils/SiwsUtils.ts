@@ -50,12 +50,12 @@ export const siwsConfig = createSIWSConfig({
       const response = await signIn('credentials', {
         message,
         redirect: false,
-        signature
+        signature,
+        callbackUrl: '/protected'
       })
 
       return Boolean(response?.ok)
     } catch (error) {
-      console.error('Error during verifyMessage:', error)
       return false
     }
   },

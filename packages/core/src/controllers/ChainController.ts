@@ -28,7 +28,9 @@ const accountState: AccountControllerState = {
   isConnected: false,
   currentTab: 0,
   tokenBalance: [],
-  smartAccountDeployed: false
+  smartAccountDeployed: false,
+  addressLabels: new Map(),
+  allAccounts: []
 }
 
 const networkState: NetworkControllerState = {

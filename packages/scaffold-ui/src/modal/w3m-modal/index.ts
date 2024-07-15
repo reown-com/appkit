@@ -19,9 +19,6 @@ import type { CaipAddress, RouterControllerState } from '@web3modal/core'
 import type { SIWESession } from '@web3modal/siwe'
 import type { SIWSSession } from '@web3modal/siws'
 
-const { SIWEController } = await import('@web3modal/siwe')
-const { SIWSController } = await import('@web3modal/siws')
-
 // -- Helpers --------------------------------------------- //
 const SCROLL_LOCK = 'scroll-lock'
 
@@ -98,6 +95,14 @@ export class W3mModal extends LitElement {
       const { SIWEController } = await import('@web3modal/siwe')
 
       if (SIWEController.state.status !== 'success' && this.connected) {
+        await ConnectionController.disconnect()
+      }
+    }
+
+    if (this.isSiwsEnabled) {
+      const { SIWSController } = await import('@web3modal/siws')
+
+      if (SIWSController.state.status !== 'success' && this.connected) {
         await ConnectionController.disconnect()
       }
     }
@@ -213,6 +218,9 @@ export class W3mModal extends LitElement {
     previousNetworkId,
     newNetworkId
   }: ICheckNewAddressGeneric) {
+    const { SIWEController } = await import('@web3modal/siwe')
+    const { SIWSController } = await import('@web3modal/siws')
+
     const moduleMap = {
       Siwe: SIWEController,
       Siws: SIWSController
@@ -222,20 +230,27 @@ export class W3mModal extends LitElement {
 
     const session: SIWESession | SIWSSession | null | undefined = await controller.getSession()
 
+    // If the address has changed and signOnAccountChange is enabled, sign out
     if (session && previousAddress && newAddress && previousAddress !== newAddress) {
       if (controller.state._client?.options.signOutOnAccountChange) {
         await controller.signOut()
 
         this.onNavigationGeneric(typeSignControlSiwX)
       }
+
       return
     }
 
+    /*
+     * If the network has changed and signOnNetworkChange is enabled, sign out
+     * Covers case where network is switched wallet-side
+     */
     if (session && previousNetworkId && newNetworkId && previousNetworkId !== newNetworkId) {
       if (controller.state._client?.options.signOutOnNetworkChange) {
         await controller.signOut()
         this.onNavigationGeneric(typeSignControlSiwX)
       }
+
       return
     }
 

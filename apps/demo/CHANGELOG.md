@@ -1,5 +1,23 @@
 # @apps/demo
 
+## 5.0.6
+
+### Patch Changes
+
+- fix: Social Login illegal invocation issue. Wagmi tests
+
+- Updated dependencies []:
+  - @web3modal/wagmi@5.0.6
+
+## 5.0.5
+
+### Patch Changes
+
+- feat: universal link internal flag. Add kotlin assetlinks. Fix email truncation'
+
+- Updated dependencies []:
+  - @web3modal/wagmi@5.0.5
+
 ## 5.0.4
 
 ### Patch Changes

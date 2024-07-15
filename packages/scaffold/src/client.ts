@@ -10,7 +10,8 @@ import type {
   ThemeVariables,
   ModalControllerState,
   ConnectedWalletInfo,
-  RouterControllerState
+  RouterControllerState,
+  CaipNetwork
 } from '@web3modal/core'
 import {
   BlockchainApiController,
@@ -51,6 +52,7 @@ export interface LibraryOptions {
   termsConditionsUrl?: OptionsControllerState['termsConditionsUrl']
   privacyPolicyUrl?: OptionsControllerState['privacyPolicyUrl']
   customWallets?: OptionsControllerState['customWallets']
+  isUniversalProvider?: OptionsControllerState['isUniversalProvider']
   enableAnalytics?: OptionsControllerState['enableAnalytics']
   metadata?: OptionsControllerState['metadata']
   enableOnramp?: OptionsControllerState['enableOnramp']
@@ -126,6 +128,14 @@ export class Web3ModalScaffold {
     return AccountController.subscribeKey('connectedWalletInfo', callback)
   }
 
+  public subscribeShouldUpdateToAddress(callback: (newState?: string) => void) {
+    AccountController.subscribeKey('shouldUpdateToAddress', callback)
+  }
+
+  public subscribeCaipNetworkChange(callback: (newState?: CaipNetwork) => void) {
+    NetworkController.subscribeKey('caipNetwork', callback)
+  }
+
   public getState() {
     return PublicStateController.state
   }
@@ -182,6 +192,19 @@ export class Web3ModalScaffold {
   }
 
   protected getIsConnectedState = () => AccountController.state.isConnected
+
+  protected setAllAccounts: (typeof AccountController)['setAllAccounts'] = (addresses = []) => {
+    AccountController.setAllAccounts(addresses)
+    OptionsController.setHasMultipleAddresses(addresses?.length > 1)
+  }
+
+  protected addAddressLabel: (typeof AccountController)['addAddressLabel'] = (address, label) => {
+    AccountController.addAddressLabel(address, label)
+  }
+
+  protected removeAddressLabel: (typeof AccountController)['removeAddressLabel'] = address => {
+    AccountController.removeAddressLabel(address)
+  }
 
   protected setCaipAddress: (typeof AccountController)['setCaipAddress'] = (caipAddress, chain) => {
     AccountController.setCaipAddress(caipAddress, chain)
@@ -318,8 +341,9 @@ export class Web3ModalScaffold {
     OptionsController.setTokens(options.tokens)
     OptionsController.setTermsConditionsUrl(options.termsConditionsUrl)
     OptionsController.setPrivacyPolicyUrl(options.privacyPolicyUrl)
-    OptionsController.setCustomWallets(options.customWallets)
     OptionsController.setEnableAnalytics(options.enableAnalytics)
+    OptionsController.setCustomWallets(options.customWallets)
+    OptionsController.setIsUniversalProvider(options.isUniversalProvider)
     OptionsController.setSdkVersion(options._sdkVersion)
     // Enabled by default
     OptionsController.setOnrampEnabled(options.enableOnramp !== false)
