@@ -40,7 +40,7 @@ const chains = [
     name: 'Solana Devnet',
     currency: 'SOL',
     explorerUrl: 'https://explorer.solana.com/?cluster=devnet',
-    rpcUrl: 'https://rpc.walletconnect.org/v1com'
+    rpcUrl: 'https://rpc.walletconnect.org/v1'
   }
 ]
 
