@@ -18,7 +18,6 @@ import { SiwsData } from '../../components/Siws/SiwsData'
 const chains = [solana, solanaTestnet, solanaDevnet]
 
 export const solanaConfig = defaultSolanaConfig({
-  chains,
   projectId: ConstantsUtil.ProjectId,
   metadata: ConstantsUtil.Metadata
 })
