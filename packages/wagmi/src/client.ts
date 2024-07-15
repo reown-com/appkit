@@ -15,7 +15,9 @@ import {
   writeContract as wagmiWriteContract,
   getAccount,
   getEnsAddress as wagmiGetEnsAddress,
-  reconnect
+  reconnect,
+  getConnections,
+  switchAccount
 } from '@wagmi/core'
 import { mainnet } from 'viem/chains'
 import { prepareTransactionRequest, sendTransaction as wagmiSendTransaction } from '@wagmi/core'
@@ -377,6 +379,26 @@ export class Web3Modal extends Web3ModalScaffold {
     })
 
     this.setEIP6963Enabled(w3mOptions.enableEIP6963 !== false)
+
+    this.subscribeShouldUpdateToAddress((newAddress?: string) => {
+      if (newAddress) {
+        const connections = getConnections(this.wagmiConfig)
+        const connector = connections[0]?.connector
+        if (connector) {
+          switchAccount(this.wagmiConfig, {
+            connector
+          }).then(response =>
+            this.syncAccount({
+              address: newAddress as Hex,
+              isConnected: true,
+              addresses: response.accounts,
+              connector,
+              chainId: response.chainId
+            })
+          )
+        }
+      }
+    })
   }
 
   // -- Public ------------------------------------------------------------------
@@ -419,8 +441,12 @@ export class Web3Modal extends Web3ModalScaffold {
     address,
     isConnected,
     chainId,
-    connector
-  }: Pick<GetAccountReturnType, 'address' | 'isConnected' | 'chainId' | 'connector'>) {
+    connector,
+    addresses
+  }: Partial<
+    Pick<GetAccountReturnType, 'address' | 'isConnected' | 'chainId' | 'connector' | 'addresses'>
+  >) {
+    console.log('SyncAccount >> addresses: ', addresses)
     this.resetAccount()
     this.syncNetwork(address, chainId, isConnected)
     if (isConnected && address && chainId) {
@@ -430,11 +456,16 @@ export class Web3Modal extends Web3ModalScaffold {
       await Promise.all([
         this.syncProfile(address, chainId),
         this.syncBalance(address, chainId),
-        this.syncConnectedWalletInfo(connector),
         this.setApprovedCaipNetworksData()
       ])
+      if (connector) {
+        this.syncConnectedWalletInfo(connector)
+      }
+      if (addresses?.length) {
+        this.setAllAccounts(addresses.map(addr => ({ address: addr, type: 'eoa' })))
+      }
+
       this.hasSyncedConnectedAccount = true
-      this.setAllAccounts([{ address, type: 'eoa' }])
     } else if (!isConnected && this.hasSyncedConnectedAccount) {
       this.resetWcConnection()
       this.resetNetwork()
