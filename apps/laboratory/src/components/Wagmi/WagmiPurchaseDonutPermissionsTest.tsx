@@ -10,7 +10,7 @@ import { useLocalSigner } from '../../hooks/useLocalSigner'
 
 export function WagmiPurchaseDonutWithPermissionsTest() {
   const { address, chain } = useAccount()
-  const { buildAndSendTransactionsECDSAKeyAndPermissions } = usePermissions()
+  const { buildAndSendTransactionsWithCosignerAndPermissions } = usePermissions()
   const { signerPrivateKey: ecdsaPrivateKey } = useLocalSigner()
 
   const { grantedPermissions } = useGrantedPermissions()
@@ -53,7 +53,7 @@ export function WagmiPurchaseDonutWithPermissionsTest() {
           callData: purchaseDonutCallData
         }
       ]
-      const txHash = await buildAndSendTransactionsECDSAKeyAndPermissions({
+      const txHash = await buildAndSendTransactionsWithCosignerAndPermissions({
         actions: purchaseDonutCallDataExecution,
         ecdsaPrivateKey: ecdsaPrivateKey as `0x${string}`,
         permissions: grantedPermissions,
@@ -68,6 +68,7 @@ export function WagmiPurchaseDonutWithPermissionsTest() {
         await fetchDonutsOwned()
       }
     } catch (error) {
+      console.log(error)
       toast({
         title: 'Transaction Failed',
         description: `${error}`,
