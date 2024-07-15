@@ -1,3 +1,7 @@
+import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider'
+import EthereumProvider, { OPTIONAL_METHODS } from '@walletconnect/ethereum-provider'
+import type { Chain as AvailableChain } from '@web3modal/common'
+import { ConstantsUtil as CommonConstantsUtil, NetworkUtil } from '@web3modal/common'
 /* eslint-disable max-depth */
 import type {
   CaipAddress,
@@ -12,27 +16,22 @@ import type {
   Token
 } from '@web3modal/scaffold'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
-import type { Web3ModalSIWEClient } from '@web3modal/siwe'
-import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
-import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
-import EthereumProvider, { OPTIONAL_METHODS } from '@walletconnect/ethereum-provider'
+import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@web3modal/scaffold-utils'
 import type {
   Address,
-  Metadata,
-  ProviderType,
   Chain,
+  EthersStoreUtilState,
+  Metadata,
   Provider,
-  EthersStoreUtilState
+  ProviderType
 } from '@web3modal/scaffold-utils/ethers'
-import { ethers, utils } from 'ethers'
 import {
   EthersConstantsUtil,
   EthersHelpersUtil,
   EthersStoreUtil
 } from '@web3modal/scaffold-utils/ethers'
-import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider'
-import { NetworkUtil } from '@web3modal/common'
-import type { Chain as AvailableChain } from '@web3modal/common'
+import type { Web3ModalSIWEClient } from '@web3modal/siwe'
+import { ethers, utils } from 'ethers'
 
 // -- Types ---------------------------------------------------------------------
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
@@ -193,7 +192,13 @@ export class Web3Modal extends Web3ModalScaffold {
             const { p, s } = signedCacao
             const chainId = getDidChainId(p.iss)
             const address = getDidAddress(p.iss)
-
+            // Optimistically set the session to avoid a flash of the wrong state
+            if (address && chainId) {
+              SIWEController.setSession({
+                address,
+                chainId: parseInt(chainId, 10)
+              })
+            }
             try {
               // Kicks off verifyMessage and populates external states
               const message = WalletConnectProvider.signer.client.formatAuthMessage({
@@ -206,13 +211,6 @@ export class Web3Modal extends Web3ModalScaffold {
                 signature: s.s,
                 cacao: signedCacao
               })
-
-              if (address && chainId) {
-                SIWEController.setSession({
-                  address,
-                  chainId: parseInt(chainId, 10)
-                })
-              }
             } catch (error) {
               // eslint-disable-next-line no-console
               console.error('Error verifying message', error)

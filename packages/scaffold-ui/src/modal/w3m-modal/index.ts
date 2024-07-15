@@ -1,3 +1,4 @@
+import type { CaipAddress } from '@web3modal/core'
 import {
   AccountController,
   ApiController,
@@ -14,7 +15,6 @@ import { UiHelperUtil, customElement, initializeTheming } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
-import type { CaipAddress } from '@web3modal/core'
 
 // -- Helpers --------------------------------------------- //
 const SCROLL_LOCK = 'scroll-lock'
@@ -177,7 +177,7 @@ export class W3mModal extends LitElement {
 
     if (this.isSiweEnabled) {
       const { SIWEController, appKitAuthConfig } = await import('@web3modal/siwe')
-      if (!SIWEController.state._client) {
+      if (!SIWEController.state._client && OptionsController.state.enableAuth) {
         SIWEController.setSIWEClient(appKitAuthConfig)
       }
 

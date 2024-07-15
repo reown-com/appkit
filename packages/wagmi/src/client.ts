@@ -1,26 +1,28 @@
-/* eslint-disable no-console */
-import { EthereumProvider, OPTIONAL_METHODS } from '@walletconnect/ethereum-provider'
+import type { GetAccountReturnType, GetEnsAddressReturnType } from '@wagmi/core'
 import {
   connect,
   disconnect,
-  signMessage,
-  getBalance,
-  getEnsAvatar as wagmiGetEnsAvatar,
-  getEnsName,
-  switchChain,
-  watchAccount,
-  watchConnectors,
-  waitForTransactionReceipt,
-  estimateGas as wagmiEstimateGas,
-  writeContract as wagmiWriteContract,
   getAccount,
+  getBalance,
+  getEnsName,
+  prepareTransactionRequest,
+  reconnect,
+  signMessage,
+  switchChain,
+  estimateGas as wagmiEstimateGas,
   getEnsAddress as wagmiGetEnsAddress,
-  reconnect
+  getEnsAvatar as wagmiGetEnsAvatar,
+  sendTransaction as wagmiSendTransaction,
+  writeContract as wagmiWriteContract,
+  waitForTransactionReceipt,
+  watchAccount,
+  watchConnectors
 } from '@wagmi/core'
-import { mainnet } from 'viem/chains'
-import { prepareTransactionRequest, sendTransaction as wagmiSendTransaction } from '@wagmi/core'
 import type { Chain } from '@wagmi/core/chains'
-import type { GetAccountReturnType, GetEnsAddressReturnType } from '@wagmi/core'
+/* eslint-disable no-console */
+import { EthereumProvider, OPTIONAL_METHODS } from '@walletconnect/ethereum-provider'
+import type { Chain as AvailableChain } from '@web3modal/common'
+import { ConstantsUtil as CommonConstantsUtil, NetworkUtil } from '@web3modal/common'
 import type {
   CaipAddress,
   CaipNetwork,
@@ -35,24 +37,22 @@ import type {
   Token,
   WriteContractArgs
 } from '@web3modal/scaffold'
-import { formatUnits, parseUnits } from 'viem'
-import type { Hex } from 'viem'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
+import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@web3modal/scaffold-utils'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
-import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
-import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
-import type { Chain as AvailableChain } from '@web3modal/common'
+import type { W3mFrameProvider, W3mFrameTypes } from '@web3modal/wallet'
+import { W3mFrameConstants, W3mFrameHelpers, W3mFrameRpcConstants } from '@web3modal/wallet'
+import type { Hex } from 'viem'
+import { formatUnits, parseUnits } from 'viem'
+import { mainnet } from 'viem/chains'
+import { normalize } from 'viem/ens'
+import type { defaultWagmiConfig as coreConfig } from './utils/defaultWagmiCoreConfig.js'
+import type { defaultWagmiConfig as reactConfig } from './utils/defaultWagmiReactConfig.js'
 import {
   getCaipDefaultChain,
   getEmailCaipNetworks,
   getWalletConnectCaipNetworks
 } from './utils/helpers.js'
-import { W3mFrameConstants, W3mFrameHelpers, W3mFrameRpcConstants } from '@web3modal/wallet'
-import type { W3mFrameProvider, W3mFrameTypes } from '@web3modal/wallet'
-import { NetworkUtil } from '@web3modal/common'
-import type { defaultWagmiConfig as coreConfig } from './utils/defaultWagmiCoreConfig.js'
-import type { defaultWagmiConfig as reactConfig } from './utils/defaultWagmiReactConfig.js'
-import { normalize } from 'viem/ens'
 
 // -- Types ---------------------------------------------------------------------
 export type CoreConfig = ReturnType<typeof coreConfig>
@@ -176,6 +176,14 @@ export class Web3Modal extends Web3ModalScaffold {
             const { p, s } = signedCacao
             const cacaoChainId = getDidChainId(p.iss) || ''
             const address = getDidAddress(p.iss)
+            chainId = parseInt(cacaoChainId, 10)
+            // Optimistically set the session to avoid a flash of the wrong state
+            if (address && cacaoChainId) {
+              SIWEController.setSession({
+                address,
+                chainId
+              })
+            }
 
             try {
               // Kicks off verifyMessage and populates external states
@@ -190,15 +198,6 @@ export class Web3Modal extends Web3ModalScaffold {
                 cacao: signedCacao,
                 clientId
               })
-
-              chainId = parseInt(cacaoChainId, 10)
-
-              if (address && cacaoChainId) {
-                SIWEController.setSession({
-                  address,
-                  chainId
-                })
-              }
             } catch (error) {
               // eslint-disable-next-line no-console
               console.error('Error verifying message', error)

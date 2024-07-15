@@ -1,19 +1,19 @@
-import type {
-  SIWECreateMessageArgs,
-  SIWEVerifyMessageArgs,
-  SIWEConfig,
-  SIWEClientMethods,
-  SIWESession
-} from '../core/utils/TypeUtils.js'
 import { SIWEController, type SIWEControllerClient } from '../core/controller/SIWEController.js'
+import type {
+  SIWEClientMethods,
+  SIWEConfig,
+  SIWECreateMessageArgs,
+  SIWESession,
+  SIWEVerifyMessageArgs
+} from '../core/utils/TypeUtils.js'
 
 import {
+  AccountController,
   ConnectionController,
-  RouterUtil,
-  RouterController,
-  StorageUtil,
   NetworkController,
-  AccountController
+  RouterController,
+  RouterUtil,
+  StorageUtil
 } from '@web3modal/core'
 
 import { NetworkUtil } from '@web3modal/common'
@@ -88,7 +88,10 @@ export class Web3ModalSIWEClient {
 
   async signIn(): Promise<SIWESession> {
     const address = AccountController.state.address
-    const nonce = await SIWEController.getNonce()
+    let nonce = SIWEController.state.nonce
+    if (!nonce) {
+      nonce = await SIWEController.getNonce()
+    }
     if (!address) {
       throw new Error('An address is required to create a SIWE message.')
     }

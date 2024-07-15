@@ -1,3 +1,11 @@
+import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider'
+import EthereumProvider, { OPTIONAL_METHODS } from '@walletconnect/ethereum-provider'
+import type { Chain as AvailableChain } from '@web3modal/common'
+import {
+  ConstantsUtil as CommonConstants,
+  ConstantsUtil as CommonConstantsUtil,
+  NetworkUtil
+} from '@web3modal/common'
 /* eslint-disable max-depth */
 import type {
   CaipAddress,
@@ -13,50 +21,44 @@ import type {
   WriteContractArgs
 } from '@web3modal/scaffold'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
-import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
-import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
-import EthereumProvider, { OPTIONAL_METHODS } from '@walletconnect/ethereum-provider'
-import type { Web3ModalSIWEClient } from '@web3modal/siwe'
-import { ConstantsUtil as CommonConstants } from '@web3modal/common'
-import type { Chain as AvailableChain } from '@web3modal/common'
+import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@web3modal/scaffold-utils'
 import type {
   Address,
+  Chain,
+  CombinedProvider,
+  EthersStoreUtilState,
   Metadata,
   Provider,
-  ProviderType,
-  Chain,
-  EthersStoreUtilState
+  ProviderType
 } from '@web3modal/scaffold-utils/ethers'
-import {
-  formatEther,
-  JsonRpcProvider,
-  InfuraProvider,
-  getAddress as getOriginalAddress,
-  parseUnits,
-  formatUnits,
-  JsonRpcSigner,
-  BrowserProvider,
-  Contract,
-  hexlify,
-  toUtf8Bytes,
-  isHexString
-} from 'ethers'
 import {
   EthersConstantsUtil,
   EthersHelpersUtil,
   EthersStoreUtil
 } from '@web3modal/scaffold-utils/ethers'
-import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider'
+import type { Web3ModalSIWEClient } from '@web3modal/siwe'
+import type { W3mFrameTypes } from '@web3modal/wallet'
+import {
+  W3mFrameConstants,
+  W3mFrameHelpers,
+  W3mFrameProvider,
+  W3mFrameRpcConstants
+} from '@web3modal/wallet'
 import type { Eip1193Provider } from 'ethers'
 import {
-  W3mFrameProvider,
-  W3mFrameHelpers,
-  W3mFrameRpcConstants,
-  W3mFrameConstants
-} from '@web3modal/wallet'
-import type { CombinedProvider } from '@web3modal/scaffold-utils/ethers'
-import { NetworkUtil } from '@web3modal/common'
-import type { W3mFrameTypes } from '@web3modal/wallet'
+  BrowserProvider,
+  Contract,
+  InfuraProvider,
+  JsonRpcProvider,
+  JsonRpcSigner,
+  formatEther,
+  formatUnits,
+  getAddress as getOriginalAddress,
+  hexlify,
+  isHexString,
+  parseUnits,
+  toUtf8Bytes
+} from 'ethers'
 // -- Types ---------------------------------------------------------------------
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
   ethersConfig: ProviderType
@@ -224,7 +226,13 @@ export class Web3Modal extends Web3ModalScaffold {
             const { p, s } = signedCacao
             const chainId = getDidChainId(p.iss)
             const address = getDidAddress(p.iss)
-
+            // Optimistically set the session to avoid a flash of the wrong state
+            if (address && chainId) {
+              SIWEController.setSession({
+                address,
+                chainId: parseInt(chainId, 10)
+              })
+            }
             try {
               // Kicks off verifyMessage and populates external states
               const message = WalletConnectProvider.signer.client.formatAuthMessage({
@@ -238,12 +246,6 @@ export class Web3Modal extends Web3ModalScaffold {
                 cacao: signedCacao,
                 clientId
               })
-              if (address && chainId) {
-                SIWEController.setSession({
-                  address,
-                  chainId: parseInt(chainId, 10)
-                })
-              }
             } catch (error) {
               // eslint-disable-next-line no-console
               console.error('Error verifying message', error)
