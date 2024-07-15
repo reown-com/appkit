@@ -176,7 +176,8 @@ export class Web3Modal extends Web3ModalScaffold {
           onUri(uri)
         })
 
-        if (siweConfig?.options?.enabled) {
+        const params = await siweConfig?.getMessageParams?.()
+        if (siweConfig?.options?.enabled && params && Object.keys(params).length > 0) {
           const { SIWEController, getDidChainId, getDidAddress } = await import('@web3modal/siwe')
           const siweParams = await siweConfig.getMessageParams()
 
