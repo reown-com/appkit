@@ -10,11 +10,12 @@ import {
   encodePacked,
   hashMessage,
   serializeSignature,
+  verifyMessage,
   type PublicClient
 } from 'viem'
-import { sign as signWithPasskey } from 'webauthn-p256'
+import { sign as signWithPasskey, verify, type P256Credential } from 'webauthn-p256'
 import { type Chain } from 'wagmi/chains'
-import { sign, signMessage } from 'viem/accounts'
+import { privateKeyToAccount, sign, signMessage } from 'viem/accounts'
 import { useUserOpBuilder, type Execution } from './useUserOpBuilder'
 import { bigIntReplacer } from '../utils/CommonUtils'
 import { createClients } from '../utils/PermissionsUtils'
@@ -23,7 +24,7 @@ import usePasskey from './usePasskey'
 export function usePermissions() {
   const { getCallDataWithContext, getNonceWithContext, getSignatureWithContext } =
     useUserOpBuilder()
-  const { passkeyId } = usePasskey()
+  const { passkeyId, passKey } = usePasskey()
 
   async function prepareUserOperationWithPermissions(
     publicClient: PublicClient,
@@ -140,6 +141,14 @@ export function usePermissions() {
       message: { raw: userOpHash }
     })
     console.log({ cosignerSignatureOnUserOp })
+    const coSignerAccount = privateKeyToAccount(ecdsaPrivateKey)
+
+    const cosignerSignatureValid = await verifyMessage({
+      address: coSignerAccount.address,
+      message: { raw: userOpHash },
+      signature: cosignerSignatureOnUserOp
+    })
+    console.log({ cosignerSignatureValid })
 
     const ethMessageUserOpHash = hashMessage({ raw: userOpHash })
 
@@ -147,6 +156,19 @@ export function usePermissions() {
       credentialId: passkeyId,
       hash: ethMessageUserOpHash
     })
+
+    const verifyResult = await verify({
+      hash: ethMessageUserOpHash,
+      signature: usersPasskeySignature.signature,
+      webauthn: usersPasskeySignature.webauthn,
+      publicKey: {
+        prefix: (passKey as P256Credential).publicKey.prefix,
+        x: BigInt((passKey as P256Credential).publicKey.x),
+        y: BigInt((passKey as P256Credential).publicKey.y)
+      }
+    })
+    console.log({ passkeySignatureVerificatioResult: verifyResult })
+
     console.log({ usersPasskeySignature })
     const authenticatorData = usersPasskeySignature.webauthn.authenticatorData
     const clientDataJSON = usersPasskeySignature.webauthn.clientDataJSON
@@ -166,7 +188,7 @@ export function usePermissions() {
       ],
       [authenticatorData, clientDataJSON, responseTypeLocation, r, s, userVerificationRequired]
     )
-
+    console.log({ passkeySignature })
     userOp.signature = encodePacked(
       ['bytes', 'bytes'],
       [cosignerSignatureOnUserOp, passkeySignature]
