@@ -124,12 +124,15 @@ export const FrameSetPreferredAccountResponse = z.object({ type: z.string(), add
 
 export const FrameGetPaymasterTokensResponse = z.array(
   z.object({
-    name: z.string(),
     symbol: z.string(),
-    amount: z.string(),
-    decimals: z.number(),
-    logoURI: z.string(),
-    exchangeRate: z.number()
+    decimal: z.number(),
+    tokenAddress: z.string(),
+    maxGasFee: z.number(),
+    maxGasFeeUSD: z.number(),
+    exchangeRate: z.number(),
+    premiumPercentage: z.string(),
+    validUntil: z.number(),
+    logoUrl: z.string()
   })
 )
 

@@ -1,16 +1,15 @@
-import type { W3mFrameTypes } from '@web3modal/wallet'
+import type { Balance } from '@web3modal/common'
 import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy, subscribe as sub } from 'valtio/vanilla'
-import { ConnectorController } from './ConnectorController.js'
+import { AccountController } from './AccountController.js'
+import { BlockchainApiController } from './BlockchainApiController.js'
 import { NetworkController } from './NetworkController.js'
 
-type PaymasterToken = W3mFrameTypes.Responses['FrameGetPaymasterTokensResponse']
-
 export interface PaymasterControllerState {
-  selectedToken: PaymasterToken[number] | null
-  tokens: PaymasterToken
-  suggestedTokens: PaymasterToken
-  fetchError: boolean
+  selectedToken: string | null
+  availableTokens: string[]
+  tokens: Balance[]
+  suggestedTokens: Balance[]
 }
 
 type StateKey = keyof PaymasterControllerState
@@ -20,8 +19,8 @@ type StateKey = keyof PaymasterControllerState
 const state = proxy<PaymasterControllerState>({
   selectedToken: null,
   tokens: [],
-  suggestedTokens: [],
-  fetchError: false
+  availableTokens: [],
+  suggestedTokens: []
 })
 
 // -- Controller ---------------------------------------- //
@@ -37,35 +36,31 @@ export const PaymasterController = {
     return subKey(state, key, callback)
   },
 
-  setInitialToken() {
+  setAvailableTokens(tokens: string[]) {
+    state.availableTokens = tokens
+  },
+
+  async getMyTokensWithBalance() {
+    const address = AccountController.state.address
     const caipNetwork = NetworkController.state.caipNetwork
-    if (!caipNetwork) {
+
+    if (!address || !caipNetwork) {
+      state.tokens = []
+
       return
     }
 
-    const token = state.tokens?.find(item => item.name === caipNetwork.name)
-    if (!token) {
-      return
-    }
+    const response = await BlockchainApiController.getBalance(address, caipNetwork.id)
 
+    const tokens = response.balances.filter(
+      balance => balance.quantity.decimals !== '0' && state.availableTokens.includes(balance.symbol)
+    )
+
+    state.tokens = tokens
+  },
+
+  selectToken(token: string | null) {
     state.selectedToken = token
-  },
-
-  async getTokenList() {
-    const auth = ConnectorController.getAuthConnector()
-    const tokens = await auth?.provider?.getPaymasterTokens()
-
-    if (tokens) {
-      state.tokens = tokens
-    }
-
-    if (!state.selectedToken) {
-      PaymasterController.setInitialToken()
-    }
-  },
-
-  selectToken(token: PaymasterToken[number] | undefined) {
-    state.selectedToken = token || null
   },
 
   searchTokens(query: string) {
