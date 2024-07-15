@@ -52,6 +52,7 @@ export class W3mNetworkButton extends LitElement {
   public override render() {
     return html`
       <wui-network-button
+        data-testid="w3m-network-button"
         .disabled=${Boolean(this.disabled || this.loading)}
         .isUnsupportedChain=${this.isUnsupportedChain}
         imageSrc=${ifDefined(AssetUtil.getNetworkImage(this.network))}

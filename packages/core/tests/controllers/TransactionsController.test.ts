@@ -45,7 +45,8 @@ describe('TransactionsController', () => {
       account: accountAddress,
       projectId,
       onramp: 'coinbase',
-      cursor: undefined
+      cursor: undefined,
+      cache: 'no-cache'
     })
 
     expect(TransactionsController.state.transactions).toEqual([])
@@ -80,7 +81,8 @@ describe('TransactionsController', () => {
       account: accountAddress,
       projectId,
       onramp: 'coinbase',
-      cursor: undefined
+      cursor: undefined,
+      cache: 'no-cache'
     })
 
     expect(TransactionsController.state.transactions).toEqual([])
@@ -105,7 +107,8 @@ describe('TransactionsController', () => {
       account: accountAddress,
       projectId,
       onramp: 'coinbase',
-      cursor: undefined
+      cursor: undefined,
+      cache: 'no-cache'
     })
 
     // Transaction should be replaced
@@ -140,7 +143,8 @@ describe('TransactionsController', () => {
       account: accountAddress,
       projectId,
       onramp: 'coinbase',
-      cursor: undefined
+      cursor: undefined,
+      cache: 'no-cache'
     })
 
     expect(TransactionsController.state.transactions).toEqual([])
@@ -165,7 +169,8 @@ describe('TransactionsController', () => {
       account: accountAddress,
       projectId,
       onramp: 'coinbase',
-      cursor: undefined
+      cursor: undefined,
+      cache: 'no-cache'
     })
 
     // Transaction should be replaced
@@ -200,7 +205,8 @@ describe('TransactionsController', () => {
       account: accountAddress,
       projectId,
       onramp: 'coinbase',
-      cursor: undefined
+      cursor: undefined,
+      cache: 'no-cache'
     })
 
     expect(TransactionsController.state.transactions).toEqual([])
@@ -225,7 +231,8 @@ describe('TransactionsController', () => {
       account: accountAddress,
       projectId,
       onramp: 'coinbase',
-      cursor: undefined
+      cursor: undefined,
+      cache: 'no-cache'
     })
 
     // Transaction should be replaced
@@ -261,7 +268,8 @@ describe('TransactionsController', () => {
       account: '0x123',
       projectId,
       cursor: undefined,
-      onramp: undefined
+      onramp: undefined,
+      cache: undefined
     })
     expect(TransactionsController.state.next).toBe('cursor')
   })
