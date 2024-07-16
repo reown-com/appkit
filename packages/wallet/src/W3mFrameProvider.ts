@@ -1,8 +1,15 @@
 import { W3mFrame } from './W3mFrame.js'
 import type { W3mFrameTypes } from './W3mFrameTypes.js'
-import { W3mFrameConstants, W3mFrameRpcConstants } from './W3mFrameConstants.js'
+import { DEFAULT_LOG_LEVEL, W3mFrameConstants, W3mFrameRpcConstants } from './W3mFrameConstants.js'
 import { W3mFrameStorage } from './W3mFrameStorage.js'
 import { W3mFrameHelpers } from './W3mFrameHelpers.js'
+import {
+  generateChildLogger,
+  generatePlatformLogger,
+  getDefaultLoggerOptions,
+  type ChunkLoggerController,
+  type Logger
+} from '@walletconnect/logger'
 
 // -- Types -----------------------------------------------------------
 type Resolver<T> = { resolve: (value: T) => void; reject: (reason?: unknown) => void } | undefined
@@ -73,11 +80,41 @@ export class W3mFrameProvider {
 
   public capabilities: Record<string, any> = {}
 
+  public logger: Logger
+
+  public chunkLoggerController: ChunkLoggerController | null
+
   public constructor(projectId: string) {
+    const loggerOptions = getDefaultLoggerOptions({
+      level: DEFAULT_LOG_LEVEL
+    })
+
+    const { logger, chunkLoggerController } = generatePlatformLogger({
+      opts: loggerOptions
+    })
+    this.logger = generateChildLogger(logger, this.constructor.name)
+    this.chunkLoggerController = chunkLoggerController
+
+    if (typeof window !== 'undefined' && this.chunkLoggerController?.downloadLogsBlobInBrowser) {
+      // @ts-expect-error any
+      if (!window.dowdownloadAppKitLogsBlob) {
+        // @ts-expect-error any
+        window.downloadAppKitLogsBlob = {}
+      }
+      // @ts-expect-error any
+      window.downloadAppKitLogsBlob['sdk'] = () => {
+        if (this.chunkLoggerController?.downloadLogsBlobInBrowser) {
+          this.chunkLoggerController.downloadLogsBlobInBrowser({
+            projectId
+          })
+        }
+      }
+    }
+
     this.w3mFrame = new W3mFrame(projectId, true)
     this.w3mFrame.events.onFrameEvent(event => {
-      // eslint-disable-next-line no-console
-      console.log('💻 received', event)
+      this.logger.info({ event }, 'Event received')
+
       switch (event.type) {
         case W3mFrameConstants.FRAME_CONNECT_EMAIL_SUCCESS:
           return this.onConnectEmailSuccess(event)
@@ -157,9 +194,8 @@ export class W3mFrameProvider {
         default:
           return null
       }
-
     })
-    this.getCapabilities().then(capabilities => this.capabilities = capabilities);
+    this.getCapabilities().then(capabilities => (this.capabilities = capabilities))
   }
 
   // -- Extended Methods ------------------------------------------------
@@ -335,7 +371,9 @@ export class W3mFrameProvider {
     })
 
     return new Promise<W3mFrameTypes.Responses['FrameGetUserResponse']>((resolve, reject) => {
-      this.connectResolver = { resolve, reject }
+      if (!this.connectResolver) {
+        this.connectResolver = { resolve, reject }
+      }
     })
   }
 
@@ -521,17 +559,22 @@ export class W3mFrameProvider {
     this.setLastUsedChainId(event.payload.chainId)
 
     this.connectResolver?.resolve(event.payload)
+    this.connectResolver = undefined
   }
 
   private onConnectError(
     event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/GET_USER_ERROR' }>
   ) {
     this.connectResolver?.reject(event.payload.message)
+    this.connectResolver = undefined
   }
 
   private onConnectSocialSuccess(
     event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/CONNECT_SOCIAL_SUCCESS' }>
   ) {
+    if (event.payload.userName) {
+      this.setSocialLoginSuccess(event.payload.userName)
+    }
     this.connectSocialResolver?.resolve(event.payload)
   }
 
@@ -545,7 +588,7 @@ export class W3mFrameProvider {
     event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/IS_CONNECTED_SUCCESS' }>
   ) {
     if (!event.payload.isConnected) {
-      this.deleteEmailLoginCache()
+      this.deleteAuthLoginCache()
     }
     this.isConnectedResolver?.resolve(event.payload)
   }
@@ -583,7 +626,7 @@ export class W3mFrameProvider {
 
   private onSignOutSuccess() {
     this.disconnectResolver?.resolve(undefined)
-    this.deleteEmailLoginCache()
+    this.deleteAuthLoginCache()
   }
 
   private onSignOutError(
@@ -723,16 +766,22 @@ export class W3mFrameProvider {
     W3mFrameStorage.set(W3mFrameConstants.LAST_EMAIL_LOGIN_TIME, Date.now().toString())
   }
 
+  private setSocialLoginSuccess(username: string) {
+    W3mFrameStorage.set(W3mFrameConstants.SOCIAL_USERNAME, username)
+  }
+
   private setEmailLoginSuccess(email: string) {
     W3mFrameStorage.set(W3mFrameConstants.EMAIL, email)
     W3mFrameStorage.set(W3mFrameConstants.EMAIL_LOGIN_USED_KEY, 'true')
     W3mFrameStorage.delete(W3mFrameConstants.LAST_EMAIL_LOGIN_TIME)
   }
 
-  private deleteEmailLoginCache() {
+  private deleteAuthLoginCache() {
     W3mFrameStorage.delete(W3mFrameConstants.EMAIL_LOGIN_USED_KEY)
     W3mFrameStorage.delete(W3mFrameConstants.EMAIL)
     W3mFrameStorage.delete(W3mFrameConstants.LAST_USED_CHAIN_KEY)
+    W3mFrameStorage.delete(W3mFrameConstants.SOCIAL_USERNAME)
+    W3mFrameStorage.delete(W3mFrameConstants.SOCIAL, true)
   }
 
   private setLastUsedChainId(chainId: number) {

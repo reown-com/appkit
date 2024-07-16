@@ -102,6 +102,7 @@ export const EnsController = {
     if (!network) {
       throw new Error('Network not found')
     }
+
     const address = AccountController.state.address
     const emailConnector = ConnectorController.getAuthConnector()
     if (!address || !emailConnector) {

@@ -1,5 +1,151 @@
 # @web3modal/scaffold
 
+## 5.0.6
+
+### Patch Changes
+
+- fix: Social Login illegal invocation issue. Wagmi tests
+
+- Updated dependencies []:
+  - @web3modal/common@5.0.6
+  - @web3modal/core@5.0.6
+  - @web3modal/scaffold-ui@5.0.6
+  - @web3modal/scaffold-utils@5.0.6
+  - @web3modal/siwe@5.0.6
+  - @web3modal/ui@5.0.6
+  - @web3modal/wallet@5.0.6
+
+## 5.0.5
+
+### Patch Changes
+
+- feat: universal link internal flag. Add kotlin assetlinks. Fix email truncation'
+
+- Updated dependencies []:
+  - @web3modal/common@5.0.5
+  - @web3modal/core@5.0.5
+  - @web3modal/scaffold-ui@5.0.5
+  - @web3modal/scaffold-utils@5.0.5
+  - @web3modal/siwe@5.0.5
+  - @web3modal/ui@5.0.5
+  - @web3modal/wallet@5.0.5
+
+## 5.0.4
+
+### Patch Changes
+
+- fix: wcPromise incompatibility issues
+
+- Updated dependencies []:
+  - @web3modal/common@5.0.4
+  - @web3modal/core@5.0.4
+  - @web3modal/scaffold-ui@5.0.4
+  - @web3modal/scaffold-utils@5.0.4
+  - @web3modal/siwe@5.0.4
+  - @web3modal/ui@5.0.4
+  - @web3modal/wallet@5.0.4
+
+## 5.0.3
+
+### Patch Changes
+
+- fix: ethers5 coinbase issues. Turbo build issues. Upate cb connector.
+
+- Updated dependencies []:
+  - @web3modal/common@5.0.3
+  - @web3modal/core@5.0.3
+  - @web3modal/scaffold-ui@5.0.3
+  - @web3modal/scaffold-utils@5.0.3
+  - @web3modal/siwe@5.0.3
+  - @web3modal/ui@5.0.3
+  - @web3modal/wallet@5.0.3
+
+## 5.0.2
+
+### Patch Changes
+
+- fix: siwe signOutOnNetwork change issue. fix: wallets filtered by rdns matched from explorer api. fix: solana network id issue
+
+- Updated dependencies []:
+  - @web3modal/common@5.0.2
+  - @web3modal/core@5.0.2
+  - @web3modal/scaffold-utils@5.0.2
+  - @web3modal/siwe@5.0.2
+  - @web3modal/ui@5.0.2
+  - @web3modal/wallet@5.0.2
+
+## 5.0.1
+
+### Patch Changes
+
+- fix: remove walletconnect restriction on names
+
+- Updated dependencies []:
+  - @web3modal/scaffold-utils@5.0.1
+  - @web3modal/common@5.0.1
+  - @web3modal/wallet@5.0.1
+  - @web3modal/core@5.0.1
+  - @web3modal/siwe@5.0.1
+  - @web3modal/ui@5.0.1
+
+## 5.0.0
+
+### Major Changes
+
+- Release V5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @web3modal/common@5.0.0
+  - @web3modal/core@5.0.0
+  - @web3modal/scaffold-utils@5.0.0
+  - @web3modal/siwe@5.0.0
+  - @web3modal/ui@5.0.0
+  - @web3modal/wallet@5.0.0
+
+## 5.0.0-cn-v5.0
+
+### Major Changes
+
+- Test V5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @web3modal/common@5.0.0-cn-v5.0
+  - @web3modal/core@5.0.0-cn-v5.0
+  - @web3modal/scaffold-utils@5.0.0-cn-v5.0
+  - @web3modal/siwe@5.0.0-cn-v5.0
+  - @web3modal/ui@5.0.0-cn-v5.0
+  - @web3modal/wallet@5.0.0-cn-v5.0
+
+## 4.2.3
+
+### Patch Changes
+
+- feat: - feat: restricted ens names. fix: iat set automatically if not present in messageParams. Adds siwe config handlers
+
+- Updated dependencies []:
+  - @web3modal/common@4.2.3
+  - @web3modal/core@4.2.3
+  - @web3modal/siwe@4.2.3
+  - @web3modal/ui@4.2.3
+  - @web3modal/wallet@4.2.3
+
+## 4.2.3-alpha.0
+
+### Patch Changes
+
+- feat: add support for coinbase smart accounts
+
+- Updated dependencies []:
+  - @web3modal/siwe@4.2.3-alpha.0
+  - @web3modal/common@4.2.3-alpha.0
+  - @web3modal/core@4.2.3-alpha.0
+  - @web3modal/ui@4.2.3-alpha.0
+  - @web3modal/wallet@4.2.3-alpha.0
+
 ## 4.2.2
 
 ### Patch Changes

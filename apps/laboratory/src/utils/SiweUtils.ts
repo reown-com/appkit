@@ -1,9 +1,11 @@
 import { getCsrfToken, signIn, signOut, getSession } from 'next-auth/react'
 import type { SIWEVerifyMessageArgs, SIWECreateMessageArgs, SIWESession } from '@web3modal/siwe'
 import { createSIWEConfig, formatMessage } from '@web3modal/siwe'
-import { WagmiConstantsUtil } from '../utils/WagmiConstants'
+import { WagmiConstantsUtil } from './WagmiConstants'
 
 export const siweConfig = createSIWEConfig({
+  signOutOnAccountChange: true,
+  signOutOnNetworkChange: true,
   // We don't require any async action to populate params but other apps might
   // eslint-disable-next-line @typescript-eslint/require-await
   getMessageParams: async () => ({

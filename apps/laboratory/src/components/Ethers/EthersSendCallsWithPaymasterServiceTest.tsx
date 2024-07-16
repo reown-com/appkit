@@ -34,11 +34,10 @@ export function EthersSendCallsWithPaymasterServiceTest() {
         WALLET_CAPABILITIES.PAYMASTER_SERVICE,
         walletProvider,
         address
-      ).then((capabilities) => {
-	console.log(">> paymaster capabilities", capabilities)
-	setPaymasterServiceSupportedChains(capabilities)
+      ).then(capabilities => {
+        console.log('>> paymaster capabilities', capabilities)
+        setPaymasterServiceSupportedChains(capabilities)
       })
-
     } else {
       setPaymasterServiceSupportedChains([])
     }
@@ -114,10 +113,9 @@ export function EthersSendCallsWithPaymasterServiceTest() {
       )
     }
 
+    // TODO: Replace with capability check
     if (walletProvider instanceof W3mFrameProvider) {
-      return Boolean(
-	true
-      )
+      return Boolean(true)
     }
 
     return false
@@ -133,7 +131,7 @@ export function EthersSendCallsWithPaymasterServiceTest() {
   if (!isSendCallsSupported()) {
     return (
       <Text fontSize="md" color="yellow">
-        Wallet does not support this feature
+        Wallet does not support wallet_sendCalls rpc
       </Text>
     )
   }
@@ -168,7 +166,7 @@ export function EthersSendCallsWithPaymasterServiceTest() {
     </Stack>
   ) : (
     <Text fontSize="md" color="yellow">
-      Switch to {paymasterServiceSupportedChainNames} to test this feature
+      Switch to {paymasterServiceSupportedChainNames} to test paymaster service feature
     </Text>
   )
 }

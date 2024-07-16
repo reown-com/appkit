@@ -1,6 +1,7 @@
-import { describe, expect, it, vi } from 'vitest'
+import { beforeAll, describe, expect, it, vi } from 'vitest'
 import {
   AccountController,
+  ChainController,
   ConnectionController,
   ConnectorController,
   EnsController,
@@ -68,6 +69,10 @@ vi.mock('../../src/controllers/BlockchainApiController.js', async importOriginal
 })
 
 // -- Tests --------------------------------------------------------------------
+beforeAll(() => {
+  ChainController.initialize([{ chain: ConstantsUtil.CHAIN.EVM }])
+})
+
 describe('EnsController', () => {
   it('should have valid default state', () => {
     expect(EnsController.state).toEqual({
@@ -125,7 +130,7 @@ describe('EnsController', () => {
     // No network set
     const result = await EnsController.getNamesForAddress('0x123')
     expect(result).toEqual([])
-    NetworkController.setCaipNetwork({ id: 'test:123' })
+    NetworkController.setCaipNetwork({ id: 'test:123', chain: ConstantsUtil.CHAIN.EVM })
     const resultWithNetwork = await EnsController.getNamesForAddress('0x123')
     expect(resultWithNetwork).toEqual([TEST_NAME])
 
@@ -135,15 +140,14 @@ describe('EnsController', () => {
 
   it('should register name', async () => {
     // Setup
-    NetworkController.setCaipNetwork({ id: 'test:123' })
+    NetworkController.setCaipNetwork({ id: 'test:123', chain: ConstantsUtil.CHAIN.EVM })
     AccountController.setCaipAddress('eip155:1:0x123')
-    const getAuthConnectorSpy = vi
-      .spyOn(ConnectorController, 'getAuthConnector')
-      .mockResolvedValueOnce({
-        provider: new W3mFrameProvider(''),
-        id: 'w3mAuth',
-        type: 'AUTH'
-      })
+    const getAuthConnectorSpy = vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue({
+      provider: { getEmail: () => 'test@walletconnect.com' } as unknown as W3mFrameProvider,
+      id: 'w3mAuth',
+      type: 'AUTH',
+      chain: ConstantsUtil.CHAIN.EVM
+    })
     const signMessageSpy = vi
       .spyOn(ConnectionController, 'signMessage')
       .mockResolvedValueOnce('0x123123123')

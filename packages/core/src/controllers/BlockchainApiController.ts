@@ -129,7 +129,8 @@ export const BlockchainApiController = {
     projectId,
     cursor,
     onramp,
-    signal
+    signal,
+    cache
   }: BlockchainApiTransactionsRequest) {
     const queryParams = cursor ? { cursor } : {}
 
@@ -138,7 +139,8 @@ export const BlockchainApiController = {
         onramp ? `&onramp=${onramp}` : ''
       }`,
       params: queryParams,
-      signal
+      signal,
+      cache
     })
   },
 

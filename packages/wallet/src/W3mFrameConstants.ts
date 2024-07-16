@@ -1,5 +1,7 @@
 export const SECURE_SITE_SDK =
-  process.env['NEXT_PUBLIC_SECURE_SITE_SDK_URL'] || 'https://secure.walletconnect.com/sdk'
+  process.env['NEXT_PUBLIC_SECURE_SITE_SDK_URL'] || 'https://secure.walletconnect.org/sdk'
+
+export const DEFAULT_LOG_LEVEL = process.env['NEXT_PUBLIC_DEFAULT_LOG_LEVEL'] || 'error'
 
 export const W3mFrameConstants = {
   APP_EVENT_KEY: '@w3m-app/',
@@ -15,6 +17,8 @@ export const W3mFrameConstants = {
   PREFERRED_ACCOUNT_TYPE: 'PREFERRED_ACCOUNT_TYPE',
   SMART_ACCOUNT_ENABLED: 'SMART_ACCOUNT_ENABLED',
   SMART_ACCOUNT_ENABLED_NETWORKS: 'SMART_ACCOUNT_ENABLED_NETWORKS',
+  SOCIAL_USERNAME: 'SOCIAL_USERNAME',
+  SOCIAL: '@w3m/connected_social',
 
   APP_SWITCH_NETWORK: '@w3m-app/SWITCH_NETWORK',
   APP_CONNECT_EMAIL: '@w3m-app/CONNECT_EMAIL',

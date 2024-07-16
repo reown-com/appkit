@@ -19,6 +19,7 @@ export type AuthParameters = {
   socials?: SocialProvider[]
   email?: boolean
   showWallets?: boolean
+  walletFeatures?: boolean
 }
 
 // -- Connector ------------------------------------------------------------------------------------
@@ -34,6 +35,7 @@ export function authConnector(parameters: AuthParameters) {
     socials: parameters.socials,
     email: parameters.email,
     showWallets: parameters.showWallets,
+    walletFeatures: parameters.walletFeatures,
 
     async connect(options: ConnectOptions = {}) {
       const provider = await this.getProvider()

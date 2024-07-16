@@ -29,16 +29,11 @@ export function EthersSendCallsTest() {
       address &&
       (walletProvider instanceof EthereumProvider || walletProvider instanceof W3mFrameProvider)
     ) {
-      console.log(">> calling and setting capability")
       getCapabilitySupportedChainInfo(
         WALLET_CAPABILITIES.ATOMIC_BATCH,
         walletProvider,
         address
-      ).then(capabilities => {
-	console.log(">> setting capabilities>", capabilities)
-        setAtomicBatchSupportedChains(capabilities)
-      })
-
+      ).then(capabilities => setAtomicBatchSupportedChains(capabilities))
     } else {
       setAtomicBatchSupportedChains([])
     }
@@ -88,7 +83,7 @@ export function EthersSendCallsTest() {
         description: batchCallHash,
         type: 'success'
       })
-    } catch (e) {
+    } catch {
       toast({
         title: 'Error',
         description: 'Failed to send calls',
@@ -99,6 +94,7 @@ export function EthersSendCallsTest() {
     }
   }
   function isSendCallsSupported(): boolean {
+    // TODO: Replace with capability check
     if (walletProvider instanceof W3mFrameProvider) {
       return true
     }
@@ -123,14 +119,14 @@ export function EthersSendCallsTest() {
   if (!isSendCallsSupported()) {
     return (
       <Text fontSize="md" color="yellow">
-        Wallet does not support this feature
+        Wallet does not support wallet_sendCalls rpc
       </Text>
     )
   }
   if (atomicBatchSupportedChains.length === 0) {
     return (
       <Text fontSize="md" color="yellow">
-        Account does not support this feature
+        Account does not support atomic batch feature
       </Text>
     )
   }
@@ -144,7 +140,7 @@ export function EthersSendCallsTest() {
     </Stack>
   ) : (
     <Text fontSize="md" color="yellow">
-      Switch to {atomicBatchSupportedChainsNames} to test this feature
+      Switch to {atomicBatchSupportedChainsNames} to test atomic batch feature
     </Text>
   )
 }
