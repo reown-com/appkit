@@ -4,10 +4,41 @@ import { W3mFrameProvider } from '../src/W3mFrameProvider.js'
 
 // Mocks
 import { W3mFrameHelpers } from './mocks/W3mFrameHelpers.mock.js'
+import { W3mFrameTypes } from '../src/W3mFrameTypes.js'
 
 // Mock dependencies
 vi.mock('../src/W3mFrameStorage')
 vi.mock('../src/W3mFrameHelpers')
+
+const SecureSiteMock = {
+  approveRequest: ({ id, type, response }: { id: string; type: string; response: any }) =>
+    setTimeout(() => {
+      window.dispatchEvent(
+        new MessageEvent('message', {
+          data: {
+            type: `@w3m-frame/${type}_SUCCESS`,
+            id,
+            payload: response
+          }
+        })
+      )
+    }, 0),
+  rejectRequest: ({ id, type, message }: { id: string; type: string; message: string }) => {
+    setTimeout(() => {
+      window.dispatchEvent(
+        new MessageEvent('message', {
+          data: {
+            type: `@w3m-frame/${type}_ERROR`,
+            id,
+            payload: {
+              message
+            }
+          }
+        })
+      )
+    }, 0)
+  }
+}
 
 describe('W3mFrameProvider', () => {
   const projectId = 'test-project-id'
@@ -27,17 +58,7 @@ describe('W3mFrameProvider', () => {
     const postAppEventSpy = vi
       .spyOn(provider['w3mFrame'].events, 'postAppEvent')
       .mockImplementation(({ id }) => {
-        setTimeout(() => {
-          window.dispatchEvent(
-            new MessageEvent('message', {
-              data: {
-                type: `@w3m-frame/CONNECT_EMAIL_SUCCESS`,
-                id,
-                payload: responsePayload
-              }
-            })
-          )
-        }, 0)
+        SecureSiteMock.approveRequest({ id, type: 'CONNECT_EMAIL', response: responsePayload })
       })
 
     const response = await provider.connectEmail(payload)
@@ -51,17 +72,7 @@ describe('W3mFrameProvider', () => {
     const postAppEventSpy = vi
       .spyOn(provider['w3mFrame'].events, 'postAppEvent')
       .mockImplementation(({ id }) => {
-        setTimeout(() => {
-          window.dispatchEvent(
-            new MessageEvent('message', {
-              data: {
-                type: `@w3m-frame/CONNECT_OTP_SUCCESS`,
-                id,
-                payload: undefined
-              }
-            })
-          )
-        }, 0)
+        SecureSiteMock.approveRequest({ id, type: 'CONNECT_OTP', response: undefined })
       })
 
     const response = await provider.connectOtp(payload)
@@ -77,17 +88,7 @@ describe('W3mFrameProvider', () => {
     const postAppEventSpy = vi
       .spyOn(provider['w3mFrame'].events, 'postAppEvent')
       .mockImplementation(({ id }) => {
-        setTimeout(() => {
-          window.dispatchEvent(
-            new MessageEvent('message', {
-              data: {
-                type: `@w3m-frame/GET_USER_SUCCESS`,
-                id,
-                payload: responsePayload
-              }
-            })
-          )
-        }, 0)
+        SecureSiteMock.approveRequest({ id, type: 'GET_USER', response: responsePayload })
       })
 
     const response = await provider.connect(payload)
@@ -103,17 +104,7 @@ describe('W3mFrameProvider', () => {
     const postAppEventSpy = vi
       .spyOn(provider['w3mFrame'].events, 'postAppEvent')
       .mockImplementation(({ id }) => {
-        setTimeout(() => {
-          window.dispatchEvent(
-            new MessageEvent('message', {
-              data: {
-                type: `@w3m-frame/SWITCH_NETWORK_SUCCESS`,
-                id,
-                payload: responsePayload
-              }
-            })
-          )
-        }, 0)
+        SecureSiteMock.approveRequest({ id, type: 'SWITCH_NETWORK', response: responsePayload })
       })
 
     const response = await provider.switchNetwork(chainId)
