@@ -95,8 +95,8 @@ export const FrameGetUserResponse = z.object({
   address: z.string(),
   chainId: z.number(),
   smartAccountDeployed: z.optional(z.boolean()),
-  accounts: z.optional(
-    z.array(
+  accounts: z
+    .array(
       z.object({
         address: z.string(),
         type: z.enum([
@@ -105,7 +105,7 @@ export const FrameGetUserResponse = z.object({
         ])
       })
     )
-  ),
+    .optional(),
   preferredAccountType: z.optional(z.string())
 })
 export const FrameGetSocialRedirectUriResponse = z.object({ uri: z.string() })
