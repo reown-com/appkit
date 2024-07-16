@@ -422,12 +422,8 @@ export class W3mFrameProvider {
 
     return new Promise<W3mFrameTypes.RPCResponse>((resolve, reject) => {
       this.rpcRequestResolver = {
-        resolve: v => {
-          return resolve(v)
-        },
-        reject: e => {
-          reject(e)
-        }
+        resolve,
+        reject
       }
     })
   }
