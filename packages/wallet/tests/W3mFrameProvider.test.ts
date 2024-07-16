@@ -4,7 +4,6 @@ import { W3mFrameProvider } from '../src/W3mFrameProvider.js'
 
 // Mocks
 import { W3mFrameHelpers } from './mocks/W3mFrameHelpers.mock.js'
-import { W3mFrameTypes } from '../src/W3mFrameTypes.js'
 
 // Mock dependencies
 vi.mock('../src/W3mFrameStorage')
