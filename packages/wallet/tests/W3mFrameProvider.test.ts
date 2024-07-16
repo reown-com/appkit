@@ -4,40 +4,11 @@ import { W3mFrameProvider } from '../src/W3mFrameProvider.js'
 
 // Mocks
 import { W3mFrameHelpers } from './mocks/W3mFrameHelpers.mock.js'
+import { SecureSiteMock } from './mocks/SecureSite.mock.js'
 
 // Mock dependencies
 vi.mock('../src/W3mFrameStorage')
 vi.mock('../src/W3mFrameHelpers')
-
-const SecureSiteMock = {
-  approveRequest: ({ id, type, response }: { id: string; type: string; response: any }) =>
-    setTimeout(() => {
-      window.dispatchEvent(
-        new MessageEvent('message', {
-          data: {
-            type: `@w3m-frame/${type}_SUCCESS`,
-            id,
-            payload: response
-          }
-        })
-      )
-    }, 0),
-  rejectRequest: ({ id, type, message }: { id: string; type: string; message: string }) => {
-    setTimeout(() => {
-      window.dispatchEvent(
-        new MessageEvent('message', {
-          data: {
-            type: `@w3m-frame/${type}_ERROR`,
-            id,
-            payload: {
-              message
-            }
-          }
-        })
-      )
-    }, 0)
-  }
-}
 
 describe('W3mFrameProvider', () => {
   const projectId = 'test-project-id'
