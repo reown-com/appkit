@@ -48,7 +48,7 @@ export function EthersGetCallsStatusTest() {
     }
   }
   function isGetCallsStatusSupported(): boolean {
-    // TODO: Replace with capability check
+    // Replace with capability check
     if (walletProvider instanceof W3mFrameProvider) {
       return true
     }

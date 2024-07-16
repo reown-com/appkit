@@ -78,7 +78,7 @@ export class W3mFrameProvider {
 
   private setPreferredAccountResolver: SetPreferredAccountResolver = undefined
 
-  public capabilities: Record<string, any> = {}
+  public capabilities: Record<string, unknown> = {}
 
   public logger: Logger
 

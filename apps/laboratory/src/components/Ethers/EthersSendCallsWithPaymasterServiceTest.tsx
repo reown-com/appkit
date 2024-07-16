@@ -112,7 +112,7 @@ export function EthersSendCallsWithPaymasterServiceTest() {
       )
     }
 
-    // TODO: Replace with capability check
+    // Replace with capability check
     if (walletProvider instanceof W3mFrameProvider) {
       return Boolean(true)
     }
