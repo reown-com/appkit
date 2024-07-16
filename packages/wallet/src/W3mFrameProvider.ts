@@ -363,6 +363,7 @@ export class W3mFrameProvider {
 
     return new Promise((resolve, reject) => {
       const id = Math.random().toString(36).substring(7)
+      this.w3mLogger.logger.info({ event, id }, 'Sending app event')
       this.w3mFrame.events.postAppEvent({ ...event, id } as W3mFrameTypes.AppEvent)
       this.w3mFrame.events.registerFrameEventHandler(id, frameEvent => {
         if (frameEvent.type === `@w3m-frame/${type}_SUCCESS`) {
