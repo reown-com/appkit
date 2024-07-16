@@ -468,7 +468,7 @@ export class W3mFrameProvider {
     })
   }
 
-  public async getCapabilities(): Promise<Record<number, any>> {
+  public async getCapabilities(): Promise<Record<number, unknown>> {
     try {
       const capabilities = await this.request({
         method: 'wallet_getCapabilities'
