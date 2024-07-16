@@ -1,14 +1,12 @@
 // W3mFrameProvider.test.ts
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { W3mFrameProvider } from '../src/W3mFrameProvider.js'
+import { W3mFrameStorage } from '../src/W3mFrameStorage.js'
 
 // Mocks
 import { W3mFrameHelpers } from './mocks/W3mFrameHelpers.mock.js'
 import { SecureSiteMock } from './mocks/SecureSite.mock.js'
-
-// Mock dependencies
-vi.mock('../src/W3mFrameStorage')
-vi.mock('../src/W3mFrameHelpers')
+import { W3mFrameConstants } from '../src/W3mFrameConstants.js'
 
 describe('W3mFrameProvider', () => {
   const projectId = 'test-project-id'
@@ -25,6 +23,7 @@ describe('W3mFrameProvider', () => {
     W3mFrameHelpers.checkIfAllowedToTriggerEmail.mockReturnValue(true)
     const responsePayload = { action: 'VERIFY_OTP' }
 
+    // Fire secure site approval from postAppEvent since we need an ID to approve the request
     const postAppEventSpy = vi
       .spyOn(provider['w3mFrame'].events, 'postAppEvent')
       .mockImplementation(({ id }) => {
@@ -35,6 +34,9 @@ describe('W3mFrameProvider', () => {
 
     expect(response).toEqual(responsePayload)
     expect(postAppEventSpy).toHaveBeenCalled()
+
+    const lastLoginTime = W3mFrameStorage.get(W3mFrameConstants.LAST_EMAIL_LOGIN_TIME)
+    expect(lastLoginTime).toBeDefined()
   })
 
   it('should connect otp', async () => {

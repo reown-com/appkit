@@ -76,7 +76,9 @@ export class W3mFrame {
       callback: (event: W3mFrameTypes.FrameEvent) => void,
       signal: AbortSignal
     ) => {
+      console.log('>>> registerFrameEventHandler', id)
       function eventHandler({ data }: MessageEvent) {
+        console.log('>>> window event', data)
         if (!data.type?.includes(W3mFrameConstants.FRAME_EVENT_KEY)) {
           return
         }

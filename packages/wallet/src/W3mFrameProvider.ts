@@ -369,12 +369,17 @@ export class W3mFrameProvider {
   private async appEvent<T extends W3mFrameTypes.ProviderRequestType>(
     event: Omit<W3mFrameTypes.AppEvent, 'id'>
   ): Promise<W3mFrameTypes.Responses[`Frame${T}Response`]> {
+    console.log('>>> W3mFrameProvider.appEvent', event.type)
     await this.w3mFrame.frameLoadPromise
     const type = event.type.replace('@w3m-app/', '')
+    console.log('>>> W3mFrameProvider.type ', type)
 
     return new Promise((resolve, reject) => {
       const id = Math.random().toString(36).substring(7)
+      console.log('>>> W3mFrameProvider.logging event')
       this.w3mLogger.logger.info?.({ event, id }, 'Sending app event')
+      console.log('>>> W3mFrameProvider.postAppEvent')
+
       this.w3mFrame.events.postAppEvent({ ...event, id } as W3mFrameTypes.AppEvent)
       const abortController = new AbortController()
       this.openRequests[id] = { type, abortController }
@@ -398,11 +403,13 @@ export class W3mFrameProvider {
           reject(new Error('An error occurred'))
         }
       }
+      console.log('>>> W3mFrameProvider.registerFrameEventHandler')
       this.w3mFrame.events.registerFrameEventHandler(id, handler, abortController.signal)
     })
   }
 
   private setNewLastEmailLoginTime() {
+    console.log('>>> W3mFrameProvider.setNewLastEmailLoginTime')
     W3mFrameStorage.set(W3mFrameConstants.LAST_EMAIL_LOGIN_TIME, Date.now().toString())
   }
 
