@@ -94,7 +94,6 @@ export function EthersSendCallsTest() {
     }
   }
   function isSendCallsSupported(): boolean {
-    // Replace with capability check
     if (walletProvider instanceof W3mFrameProvider) {
       return true
     }
