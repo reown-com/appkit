@@ -7,7 +7,7 @@ import { verifySignature } from '../../../utils/SignatureUtil'
 declare module 'next-auth' {
   interface Session extends SIWESession {
     address: string
-    chainId: number
+    chainId: string
   }
 }
 /*
@@ -93,7 +93,7 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
         const [, chainId, address] = token.sub.split(':')
         if (chainId && address) {
           session.address = address
-          session.chainId = parseInt(chainId, 10)
+          session.chainId = chainId
         }
 
         return session
