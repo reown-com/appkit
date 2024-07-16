@@ -27,31 +27,11 @@
     "changeset:pre": "changeset pre enter",
     "changeset:pre:exit": "changeset pre exit",
     "changeset": "changeset; changeset version",
-    "publish:latest": "npm install; npm run build; changeset publish",
-    "publish:alpha": "npm install; npm run build; changeset publish --tag alpha",
-    "publish:beta": "npm install; npm run build; changeset publish --tag beta",
-    "publish:canary": "npm install; npm run build; changeset publish --tag canary"
+    "publish:latest": "pnpm install; pnpm run build; changeset publish",
+    "publish:alpha": "pnpm install; pnpm run build; changeset publish --tag alpha",
+    "publish:beta": "pnpm install; pnpm run build; changeset publish --tag beta",
+    "publish:canary": "pnpm install; pnpm run build; changeset publish --tag canary"
   },
-  "workspaces": [
-    "packages/common",
-    "packages/ui",
-    "packages/core",
-    "packages/scaffold",
-    "packages/scaffold-utils",
-    "packages/scaffold-ui",
-    "packages/scaffold-react",
-    "packages/scaffold-vue",
-    "packages/polyfills",
-    "packages/wallet",
-    "packages/siwe",
-    "packages/wagmi",
-    "packages/ethers",
-    "packages/ethers5",
-    "packages/solana",
-    "packages/cdn",
-    "apps/*",
-    "examples/*"
-  ],
   "devDependencies": {
     "@changesets/changelog-github": "0.5.0",
     "@changesets/cli": "2.27.1",
@@ -66,5 +46,6 @@
     "turbo": "1.11.3",
     "typescript": "5.3.3",
     "vitest": "1.5.0"
-  }
+  },
+  "packageManager": "pnpm@9.5.0"
 }
