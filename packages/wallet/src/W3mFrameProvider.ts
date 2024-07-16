@@ -9,6 +9,8 @@ import { W3mFrameLogger } from './W3mFrameLogger.js'
 export class W3mFrameProvider {
   private w3mFrame: W3mFrame
 
+  private openRequests: Record<string, { type: string; abortController: AbortController }> = {}
+
   public w3mLogger: W3mFrameLogger
 
   public constructor(projectId: string) {
@@ -355,6 +357,15 @@ export class W3mFrameProvider {
   }
 
   // -- Private Methods -------------------------------------------------
+  public rejectRpcRequests() {
+    const openRPCRequests = Object.values(this.openRequests).filter(
+      request => request.type === 'RPC_REQUEST'
+    )
+    openRPCRequests.forEach(({ abortController }) => {
+      abortController.abort()
+    })
+  }
+
   private async appEvent<T extends W3mFrameTypes.ProviderRequestType>(
     event: Omit<W3mFrameTypes.AppEvent, 'id'>
   ): Promise<W3mFrameTypes.Responses[`Frame${T}Response`]> {
@@ -365,19 +376,29 @@ export class W3mFrameProvider {
       const id = Math.random().toString(36).substring(7)
       this.w3mLogger.logger.info({ event, id }, 'Sending app event')
       this.w3mFrame.events.postAppEvent({ ...event, id } as W3mFrameTypes.AppEvent)
-      this.w3mFrame.events.registerFrameEventHandler(id, frameEvent => {
-        if (frameEvent.type === `@w3m-frame/${type}_SUCCESS`) {
-          if ('payload' in frameEvent) {
-            resolve(frameEvent?.payload)
+      const abortController = new AbortController()
+      this.openRequests[id] = { type, abortController }
+
+      abortController.signal.addEventListener('abort', () => {
+        if (type === 'RPC_REQUEST') {
+          reject(new Error('Request was aborted'))
+        }
+      })
+
+      function handler(framEvent: W3mFrameTypes.FrameEvent) {
+        if (framEvent.type === `@w3m-frame/${type}_SUCCESS`) {
+          if ('payload' in framEvent) {
+            resolve(framEvent.payload)
           }
           resolve(undefined as unknown as W3mFrameTypes.Responses[`Frame${T}Response`])
-        } else if (frameEvent.type === `@w3m-frame/${type}_ERROR`) {
-          if ('payload' in frameEvent) {
-            reject(new Error(frameEvent.payload?.message || 'An error occurred'))
+        } else if (framEvent.type === `@w3m-frame/${type}_ERROR`) {
+          if ('payload' in framEvent) {
+            reject(new Error(framEvent.payload?.message || 'An error occurred'))
           }
           reject(new Error('An error occurred'))
         }
-      })
+      }
+      this.w3mFrame.events.registerFrameEventHandler(id, handler, abortController.signal)
     })
   }
 
