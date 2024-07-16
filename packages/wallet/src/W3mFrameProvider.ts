@@ -374,7 +374,7 @@ export class W3mFrameProvider {
 
     return new Promise((resolve, reject) => {
       const id = Math.random().toString(36).substring(7)
-      this.w3mLogger.logger.info({ event, id }, 'Sending app event')
+      this.w3mLogger.logger.info?.({ event, id }, 'Sending app event')
       this.w3mFrame.events.postAppEvent({ ...event, id } as W3mFrameTypes.AppEvent)
       const abortController = new AbortController()
       this.openRequests[id] = { type, abortController }
