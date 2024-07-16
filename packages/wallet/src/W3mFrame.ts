@@ -100,9 +100,7 @@ export class W3mFrame {
         if (!this.iframe?.contentWindow) {
           throw new Error('W3mFrame: iframe is not set')
         }
-	console.log(">> parsing", event)
         W3mFrameSchema.appEvent.parse(event)
-	console.log(">> parsed", event)
         window.postMessage(event)
         this.iframe.contentWindow.postMessage(event, '*')
       }

@@ -74,7 +74,7 @@ export function getProviderCachedCapabilities(
 
 export async function getCapabilitySupportedChainInfo(
   capability: string,
-  provider: Awaited<ReturnType<(typeof EthereumProvider)['init']>>,
+  provider: Awaited<ReturnType<(typeof EthereumProvider)['init']>> | W3mFrameProvider,
   address: string
 ): Promise<
   {

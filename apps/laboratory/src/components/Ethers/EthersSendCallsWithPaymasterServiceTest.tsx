@@ -35,7 +35,6 @@ export function EthersSendCallsWithPaymasterServiceTest() {
         walletProvider,
         address
       ).then(capabilities => {
-        console.log('>> paymaster capabilities', capabilities)
         setPaymasterServiceSupportedChains(capabilities)
       })
     } else {
