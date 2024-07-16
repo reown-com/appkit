@@ -15,6 +15,8 @@ import { OptionsController } from './OptionsController.js'
 import { SwapCalculationUtil } from '../utils/SwapCalculationUtil.js'
 import { EventsController } from './EventsController.js'
 import { W3mFrameRpcConstants } from '@web3modal/wallet'
+import { StorageUtil } from '../utils/StorageUtil.js'
+import { ConnectorController } from './ConnectorController.js'
 
 // -- Constants ---------------------------------------- //
 export const INITIAL_GAS_LIMIT = 150000
@@ -173,6 +175,8 @@ export const SwapController = {
     const caipNetwork = NetworkController.state.caipNetwork
     const address = AccountController.state.address
     const networkAddress = `${caipNetwork?.id}:${ConstantsUtil.NATIVE_TOKEN_ADDRESS}`
+    const type = StorageUtil.getConnectedConnector()
+    const authConnector = ConnectorController.getAuthConnector()
 
     if (!address) {
       throw new Error('No address found to swap the tokens from.')
@@ -200,7 +204,8 @@ export const SwapController = {
       invalidSourceToken,
       invalidSourceTokenAmount,
       availableToSwap:
-        caipAddress && !invalidToToken && !invalidSourceToken && !invalidSourceTokenAmount
+        caipAddress && !invalidToToken && !invalidSourceToken && !invalidSourceTokenAmount,
+      isAuthConnector: authConnector?.walletFeatures && type === 'AUTH'
     }
   },
 
@@ -655,16 +660,20 @@ export const SwapController = {
 
   // -- Send Transactions --------------------------------- //
   async sendTransactionForApproval(data: TransactionParams) {
-    const { fromAddress } = this.getParams()
+    const { fromAddress, isAuthConnector } = this.getParams()
 
     state.loadingApprovalTransaction = true
-    RouterController.pushTransactionStack({
-      view: null,
-      goBack: true,
-      onSuccess() {
-        SnackController.showLoading('Approving transaction...')
-      }
-    })
+    if (isAuthConnector) {
+      RouterController.pushTransactionStack({
+        view: null,
+        goBack: true,
+        onSuccess() {
+          SnackController.showLoading('Approving transaction...')
+        }
+      })
+    } else {
+      SnackController.showLoading('Approve spending increase')
+    }
 
     try {
       await ConnectionController.sendTransaction({
@@ -675,6 +684,9 @@ export const SwapController = {
         gasPrice: BigInt(data.gasPrice)
       })
 
+      if (!isAuthConnector) {
+        RouterController.goBack()
+      }
       await this.swapTokens()
       await this.getTransaction()
       state.approvalTransaction = undefined
@@ -691,7 +703,7 @@ export const SwapController = {
       return undefined
     }
 
-    const { fromAddress, toTokenAmount } = this.getParams()
+    const { fromAddress, toTokenAmount, isAuthConnector } = this.getParams()
 
     state.loadingTransaction = true
 
@@ -702,14 +714,18 @@ export const SwapController = {
       ?.symbol} to ${NumberUtil.formatNumberToLocalString(toTokenAmount, 3)} ${state.toToken
       ?.symbol}`
 
-    RouterController.pushTransactionStack({
-      view: 'Account',
-      goBack: false,
-      onSuccess() {
-        SnackController.showLoading(snackbarPendingMessage)
-        SwapController.resetState()
-      }
-    })
+    if (isAuthConnector) {
+      RouterController.pushTransactionStack({
+        view: 'Account',
+        goBack: false,
+        onSuccess() {
+          SnackController.showLoading(snackbarPendingMessage)
+          SwapController.resetState()
+        }
+      })
+    } else {
+      SnackController.showLoading(snackbarPendingMessage)
+    }
 
     try {
       const forceUpdateAddresses = [state.sourceToken?.address, state.toToken?.address].join(',')
@@ -739,6 +755,9 @@ export const SwapController = {
         }
       })
       SwapController.resetState()
+      if (!isAuthConnector) {
+        RouterController.replace('Account')
+      }
       SwapController.getMyTokensWithBalance(forceUpdateAddresses)
 
       return transactionHash
