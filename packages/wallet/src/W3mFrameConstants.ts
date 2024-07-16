@@ -1,5 +1,5 @@
 export const SECURE_SITE_SDK =
-  process.env['NEXT_PUBLIC_SECURE_SITE_SDK_URL'] || 'https://secure.walletconnect.com/sdk'
+  process.env['NEXT_PUBLIC_SECURE_SITE_SDK_URL'] || 'https://secure.walletconnect.org/sdk'
 
 export const DEFAULT_LOG_LEVEL = process.env['NEXT_PUBLIC_DEFAULT_LOG_LEVEL'] || 'error'
 
