@@ -1,6 +1,6 @@
 export const SecureSiteMock = {
-  approveRequest: ({ id, type, response }: { id: string; type: string; response: unknown }) =>
-    setTimeout(() => {
+  approveRequest: ({ id, type, response }: { id: string; type: string; response: unknown }) => {
+    Promise.resolve().then(() =>
       window.dispatchEvent(
         new MessageEvent('message', {
           data: {
@@ -10,9 +10,10 @@ export const SecureSiteMock = {
           }
         })
       )
-    }, 0),
+    )
+  },
   rejectRequest: ({ id, type, message }: { id: string; type: string; message: string }) => {
-    setTimeout(() => {
+    Promise.resolve().then(() =>
       window.dispatchEvent(
         new MessageEvent('message', {
           data: {
@@ -24,6 +25,6 @@ export const SecureSiteMock = {
           }
         })
       )
-    }, 0)
+    )
   }
 }

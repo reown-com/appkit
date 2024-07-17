@@ -1,4 +1,3 @@
-// W3mFrameProvider.test.ts
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { W3mFrameProvider } from '../src/W3mFrameProvider.js'
 import { W3mFrameStorage } from '../src/W3mFrameStorage.js'
