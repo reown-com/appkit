@@ -83,4 +83,6 @@ describe('W3mFrameProvider', () => {
     expect(response).toEqual(responsePayload)
     expect(postAppEventSpy).toHaveBeenCalled()
   })
+
+  it('should abort open RPC requests on close', async () => {})
 })

@@ -9,7 +9,8 @@ import { W3mFrameLogger } from './W3mFrameLogger.js'
 export class W3mFrameProvider {
   private w3mFrame: W3mFrame
 
-  private openRequests: Record<string, { type: string; abortController: AbortController }> = {}
+  private openRpcRequests: Array<W3mFrameTypes.RPCRequest & { abortController: AbortController }> =
+    []
 
   public w3mLogger: W3mFrameLogger
 
@@ -358,12 +359,14 @@ export class W3mFrameProvider {
 
   // -- Private Methods -------------------------------------------------
   public rejectRpcRequests() {
-    const openRPCRequests = Object.values(this.openRequests).filter(
-      request => request.type === 'RPC_REQUEST'
-    )
-    openRPCRequests.forEach(({ abortController }) => {
-      abortController.abort()
-    })
+    try {
+      this.openRpcRequests.forEach(({ abortController }) => {
+        abortController.abort()
+      })
+      this.openRpcRequests = []
+    } catch (e) {
+      this.w3mLogger.logger.error({ error: e }, 'Error aborting RPC request')
+    }
   }
 
   private async appEvent<T extends W3mFrameTypes.ProviderRequestType>(
@@ -378,8 +381,10 @@ export class W3mFrameProvider {
 
       this.w3mFrame.events.postAppEvent({ ...event, id } as W3mFrameTypes.AppEvent)
       const abortController = new AbortController()
-      this.openRequests[id] = { type, abortController }
-
+      if (type === 'RPC_REQUEST') {
+        const rpcEvent = event as Extract<W3mFrameTypes.AppEvent, { type: '@w3m-app/RPC_REQUEST' }>
+        this.openRpcRequests = [...this.openRpcRequests, { ...rpcEvent.payload, abortController }]
+      }
       abortController.signal.addEventListener('abort', () => {
         if (type === 'RPC_REQUEST') {
           reject(new Error('Request was aborted'))
