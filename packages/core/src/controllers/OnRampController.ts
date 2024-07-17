@@ -97,6 +97,8 @@ export const OnRampController = {
 
   setSelectedProvider(provider: OnRampProvider | null) {
     if (provider && provider.name === 'meld') {
+      const publicKey = `?publicKey=${process.env['MELD_KEY']}`
+      provider.url += publicKey
       const currency = ChainController.state.activeChain === 'solana' ? 'SOL' : 'USDC'
       provider.url += `&destinationCurrencyCode=${currency}`
       const address = AccountController.state.address
