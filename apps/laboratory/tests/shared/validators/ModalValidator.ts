@@ -107,4 +107,11 @@ export class ModalValidator {
     const externalConnector = this.page.getByTestId(/^wallet-selector-external/u)
     await expect(externalConnector).toBeVisible()
   }
+
+  async expectMultipleAccounts() {
+    await this.page.waitForTimeout(1500)
+    const accounts = await this.page.getByTestId('switch-address-item').all()
+
+    expect(accounts.length).toBeGreaterThan(1)
+  }
 }
