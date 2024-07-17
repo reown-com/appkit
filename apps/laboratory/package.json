@@ -55,7 +55,6 @@
     "permissionless": "0.1.31",
     "react-icons": "4.12.0",
     "rpc-websockets": "7.11.0",
-    "solady": "^0.0.219",
     "valtio": "1.11.2",
     "viem": "2.16.2",
     "wagmi": "2.10.9",
