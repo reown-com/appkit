@@ -247,12 +247,17 @@ export class Web3Modal extends Web3ModalScaffold {
       this.syncNetwork(chainImages)
     })
 
-    NetworkController.subscribeKey('caipNetwork', () => {
+    NetworkController.subscribeKey('caipNetwork', (newCaipNetwork: CaipNetwork | undefined) => {
+      const newChain = chains.find(_chain => _chain.chainId === newCaipNetwork?.id.split(':')[1])
+
+      if (!newChain) {
+        throw new Error('The selected chain is not a valid Solana chain')
+      }
+
       if (NetworkController.state.caipNetwork && !SolStoreUtil.state.isConnected) {
-        const chainId = NetworkController.state.caipNetwork.id.split(':')[1]
-        SolStoreUtil.setCaipChainId(`solana:${chainId}`)
-        SolStoreUtil.setCurrentChain(chain)
-        localStorage.setItem(SolConstantsUtil.CAIP_CHAIN_ID, `solana:${chainId}`)
+        SolStoreUtil.setCaipChainId(`solana:${newChain.chainId}`)
+        SolStoreUtil.setCurrentChain(newChain)
+        localStorage.setItem(SolConstantsUtil.CAIP_CHAIN_ID, `solana:${newChain.chainId}`)
         ApiController.reFetchWallets()
       }
     })
