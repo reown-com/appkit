@@ -226,6 +226,7 @@ export class ModalPage {
     await this.page.getByTestId('account-button').click()
 
     await this.page.getByTestId('w3m-profile-button').click()
+    await this.page.getByTestId('account-settings-button').click()
     await this.page.getByTestId('w3m-wallet-upgrade-card').click()
 
     const page = await doActionAndWaitForNewPage(
@@ -315,5 +316,8 @@ export class ModalPage {
     const otp = email.getOtpCodeFromBody(emailBody)
 
     await this.enterOTP(otp, headerTitle)
+  }
+  async openProfileView() {
+    await this.page.getByTestId('wui-profile-button').click()
   }
 }

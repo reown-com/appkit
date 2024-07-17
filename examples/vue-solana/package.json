@@ -1,0 +1,17 @@
+{
+  "name": "@examples/vue-solana",
+  "private": true,
+  "version": "5.0.7",
+  "scripts": {
+    "dev:example": "vite --port 3013",
+    "build:examples": "vite build"
+  },
+  "dependencies": {
+    "@solana/wallet-adapter-backpack": "0.1.14",
+    "@solana/wallet-adapter-wallets": "0.19.32",
+    "@web3modal/solana": "5.0.7"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "5.0.2"
+  }
+}

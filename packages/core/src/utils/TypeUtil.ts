@@ -177,6 +177,7 @@ export interface BlockchainApiTransactionsRequest {
   cursor?: string
   onramp?: 'coinbase'
   signal?: AbortSignal
+  cache?: RequestCache
 }
 
 export interface BlockchainApiTransactionsResponse {
@@ -784,6 +785,10 @@ export type GetQuoteArgs = {
   paymentCurrency: PaymentCurrency
   amount: string
   network: string
+}
+export type AccountType = {
+  address: string
+  type: 'eoa' | 'smartAccount'
 }
 
 export interface SendTransactionArgs {
