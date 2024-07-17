@@ -109,7 +109,6 @@ export class ModalValidator {
   }
 
   async expectMultipleAccounts() {
-    await this.page.waitForTimeout(1500)
     const accounts = await this.page.getByTestId('switch-address-item').all()
 
     expect(accounts.length).toBeGreaterThan(1)
