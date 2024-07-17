@@ -444,10 +444,14 @@ export class Web3Modal extends Web3ModalScaffold {
     connector,
     addresses
   }: Partial<
-    Pick<GetAccountReturnType, 'address' | 'isConnected' | 'chainId' | 'connector' | 'addresses'>
+    Pick<
+      GetAccountReturnType,
+      'address' | 'isConnected' | 'chainId' | 'connector' | 'addresses'
+    > & { isSmartAccount?: boolean }
   >) {
     this.resetAccount()
     this.syncNetwork(address, chainId, isConnected)
+    const isAuthConnecor = connector?.id === ConstantsUtil.AUTH_CONNECTOR_ID
     if (isConnected && address && chainId) {
       const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`
       this.setIsConnected(isConnected)
@@ -460,7 +464,9 @@ export class Web3Modal extends Web3ModalScaffold {
       if (connector) {
         this.syncConnectedWalletInfo(connector)
       }
-      if (addresses?.length) {
+
+      // Set by authConnector.onIsConnectedHandler as we need the account type
+      if (!isAuthConnecor && addresses?.length) {
         this.setAllAccounts(addresses.map(addr => ({ address: addr, type: 'eoa' })))
       }
 
@@ -752,6 +758,14 @@ export class Web3Modal extends Web3ModalScaffold {
           this.chain
         )
         super.setLoading(false)
+        this.setAllAccounts(
+          req.accounts || [
+            {
+              address: req.address,
+              type: (req.preferredAccountType || 'eoa') as W3mFrameTypes.AccountType
+            }
+          ]
+        )
       })
 
       provider.onGetSmartAccountEnabledNetworks(networks => {
