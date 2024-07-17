@@ -31,7 +31,10 @@ function AvailableTestContent({ accountAddress }: { accountAddress: Address }) {
     abi,
     address,
     functionName: 'getBalance',
-    args: [accountAddress]
+    args: [accountAddress],
+    query: {
+      refetchOnWindowFocus: false
+    }
   })
   const {
     refetch: simulateContract,

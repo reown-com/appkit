@@ -5,7 +5,7 @@ import { useCallback } from 'react'
 import { useChakraToast } from '../Toast'
 import { parseGwei, type Address } from 'viem'
 import { vitalikEthAddress } from '../../utils/DataUtil'
-import { WALLET_CAPABILITIES } from '../../utils/EIP5792Utils'
+import { EIP_5792_RPC_METHODS, WALLET_CAPABILITIES } from '../../utils/EIP5792Utils'
 import { useWagmiAvailableCapabilities } from '../../hooks/useWagmiActiveCapabilities'
 
 const TEST_TX_1 = {
@@ -18,14 +18,22 @@ const TEST_TX_2 = {
 }
 
 export function WagmiSendCallsTest() {
-  const { isSendCallsSupported, supportedChains, supportedChainsName, currentChainsInfo } =
-    useWagmiAvailableCapabilities({ capability: WALLET_CAPABILITIES.ATOMIC_BATCH })
+  const {
+    ethereumProvider,
+    isMethodSupported: isSendCallsSupported,
+    supportedChains,
+    supportedChainsName,
+    currentChainsInfo
+  } = useWagmiAvailableCapabilities({
+    capability: WALLET_CAPABILITIES.ATOMIC_BATCH,
+    method: EIP_5792_RPC_METHODS.WALLET_SEND_CALLS
+  })
 
   const { address, status } = useAccount()
 
   const isConnected = status === 'connected'
 
-  if (!isConnected || !address) {
+  if (!isConnected || !ethereumProvider || !address) {
     return (
       <Text fontSize="md" color="yellow">
         Wallet not connected

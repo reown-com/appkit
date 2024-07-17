@@ -4,16 +4,19 @@ import { useState, useEffect } from 'react'
 import { type WalletCapabilities } from 'viem'
 import { type Chain } from 'wagmi/chains'
 import {
-  EIP_5792_RPC_METHODS,
   getFilteredCapabilitySupportedChainInfo,
   getProviderCachedCapabilities
 } from '../utils/EIP5792Utils'
 
 type UseWagmiAvailableCapabilitiesParams = {
-  capability: string
+  capability?: string
+  method: string
 }
 
-export function useWagmiAvailableCapabilities({ capability }: UseWagmiAvailableCapabilitiesParams) {
+export function useWagmiAvailableCapabilities({
+  capability,
+  method
+}: UseWagmiAvailableCapabilitiesParams) {
   const [ethereumProvider, setEthereumProvider] =
     useState<Awaited<ReturnType<(typeof EthereumProvider)['init']>>>()
 
@@ -23,9 +26,10 @@ export function useWagmiAvailableCapabilities({ capability }: UseWagmiAvailableC
     Record<number, WalletCapabilities> | undefined
   >()
 
-  const supportedChains = availableCapabilities
-    ? getFilteredCapabilitySupportedChainInfo(capability, availableCapabilities)
-    : []
+  const supportedChains =
+    availableCapabilities && capability
+      ? getFilteredCapabilitySupportedChainInfo(capability, availableCapabilities)
+      : []
   const supportedChainsName = supportedChains.map(ci => ci.chainName).join(', ')
   const currentChainsInfo = supportedChains.find(
     chainInfo => chainInfo.chainId === Number(chain?.id)
@@ -53,19 +57,18 @@ export function useWagmiAvailableCapabilities({ capability }: UseWagmiAvailableC
     }
   }
 
-  function isSendCallsSupported(): boolean {
+  function isMethodSupported(): boolean {
     return Boolean(
-      ethereumProvider?.signer?.session?.namespaces?.['eip155']?.methods?.includes(
-        EIP_5792_RPC_METHODS.WALLET_SEND_CALLS
-      )
+      ethereumProvider?.signer?.session?.namespaces?.['eip155']?.methods?.includes(method)
     )
   }
 
   return {
+    ethereumProvider,
     currentChainsInfo,
     availableCapabilities,
     supportedChains,
     supportedChainsName,
-    isSendCallsSupported
+    isMethodSupported
   }
 }
