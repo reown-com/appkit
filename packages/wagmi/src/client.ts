@@ -444,10 +444,7 @@ export class Web3Modal extends Web3ModalScaffold {
     connector,
     addresses
   }: Partial<
-    Pick<
-      GetAccountReturnType,
-      'address' | 'isConnected' | 'chainId' | 'connector' | 'addresses'
-    > & { isSmartAccount?: boolean }
+    Pick<GetAccountReturnType, 'address' | 'isConnected' | 'chainId' | 'connector' | 'addresses'>
   >) {
     this.resetAccount()
     this.syncNetwork(address, chainId, isConnected)
