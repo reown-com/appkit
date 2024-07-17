@@ -89,7 +89,7 @@ export class W3mAccountDefaultWidget extends LitElement {
         <wui-profile-button-v2
           .onProfileClick=${this.handleSwitchAccountsView.bind(this)}
           address=${ifDefined(this.address)}
-          icon="${account?.type === 'smartAccount' ? 'lightbulb' : 'mail'}"
+          icon="${account?.type === 'smartAccount' && !this.network.chain.includes('solana') ? 'lightbulb' : 'mail'}"
           avatarSrc=${ifDefined(this.profileImage ? this.profileImage : undefined)}
           profileName=${ifDefined(label ? label : this.profileName)}
           .onCopyClick=${this.onCopyAddress.bind(this)}
