@@ -98,13 +98,10 @@ export class W3mAllWalletsList extends LitElement {
 
     return walletsWithInstalled.map(
       wallet => html`
-        <wui-card-select
-          imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
-          type="wallet"
-          name=${wallet.name}
+        <w3m-all-wallets-list-item
           @click=${() => this.onConnectWallet(wallet)}
-          .installed=${wallet.installed}
-        ></wui-card-select>
+          .wallet=${wallet}
+        ></w3m-all-wallets-list-item>
       `
     )
   }
