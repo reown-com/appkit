@@ -97,7 +97,8 @@ export const OnRampController = {
 
   setSelectedProvider(provider: OnRampProvider | null) {
     if (provider && provider.name === 'meld') {
-      const publicKey = `?publicKey=${process.env['MELD_KEY']}`
+      // @ts-expect-error 1. Get MELD_KEY
+      const publicKey = `?publicKey=${import.meta.env.MELD_KEY}`
       provider.url += publicKey
       const currency = ChainController.state.activeChain === 'solana' ? 'SOL' : 'USDC'
       provider.url += `&destinationCurrencyCode=${currency}`
