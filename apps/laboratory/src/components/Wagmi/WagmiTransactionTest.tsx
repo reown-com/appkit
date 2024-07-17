@@ -17,7 +17,7 @@ export function WagmiTransactionTest() {
   const { status, chain } = useAccount()
 
   return ALLOWED_CHAINS.includes(Number(chain?.id)) && status === 'connected' ? (
-    <Content />
+    <AvailableTestContent />
   ) : (
     <Text fontSize="md" color="yellow">
       Switch to Sepolia or OP to test this feature
@@ -25,7 +25,7 @@ export function WagmiTransactionTest() {
   )
 }
 
-function Content() {
+function AvailableTestContent() {
   const toast = useChakraToast()
   const { refetch: estimateGas, isFetching: estimateGasFetching } = useEstimateGas({
     ...TEST_TX,
