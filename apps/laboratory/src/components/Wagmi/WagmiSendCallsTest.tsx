@@ -1,7 +1,7 @@
 import { Button, Stack, Text } from '@chakra-ui/react'
 import { useAccount } from 'wagmi'
 import { useSendCalls } from 'wagmi/experimental'
-import { useCallback, useState } from 'react'
+import { useCallback } from 'react'
 import { useChakraToast } from '../Toast'
 import { parseGwei, type Address } from 'viem'
 import { vitalikEthAddress } from '../../utils/DataUtil'
@@ -61,13 +61,11 @@ export function WagmiSendCallsTest() {
 }
 
 function ConnectedTestContent() {
-  const [isLoading, setLoading] = useState(false)
   const toast = useChakraToast()
 
-  const { sendCalls } = useSendCalls({
+  const { sendCalls, isPending: isLoading } = useSendCalls({
     mutation: {
       onSuccess: hash => {
-        setLoading(false)
         toast({
           title: 'SendCalls Success',
           description: hash,
@@ -75,7 +73,6 @@ function ConnectedTestContent() {
         })
       },
       onError: () => {
-        setLoading(false)
         toast({
           title: 'SendCalls Error',
           description: 'Failed to send calls',
@@ -85,7 +82,6 @@ function ConnectedTestContent() {
     }
   })
   const onSendCalls = useCallback(() => {
-    setLoading(true)
     sendCalls({
       calls: [TEST_TX_1, TEST_TX_2]
     })
@@ -98,6 +94,7 @@ function ConnectedTestContent() {
         onClick={onSendCalls}
         disabled={!sendCalls}
         isDisabled={isLoading}
+        isLoading={isLoading}
       >
         Send Batch Calls to Vitalik
       </Button>

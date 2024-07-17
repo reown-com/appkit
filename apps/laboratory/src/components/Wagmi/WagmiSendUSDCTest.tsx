@@ -46,15 +46,13 @@ export function WagmiSendUSDCTest() {
 }
 
 function AvailableTestContent() {
-  const [isLoading, setLoading] = useState(false)
   const [address, setAddress] = useState('')
   const [amount, setAmount] = useState('')
   const toast = useChakraToast()
 
-  const { writeContract } = useWriteContract({
+  const { writeContract, isPending: isLoading } = useWriteContract({
     mutation: {
       onSuccess: hash => {
-        setLoading(false)
         toast({
           title: 'Transaction Success',
           description: hash,
@@ -62,7 +60,6 @@ function AvailableTestContent() {
         })
       },
       onError: () => {
-        setLoading(false)
         toast({
           title: 'Error',
           description: 'Failed to send transaction',
@@ -73,7 +70,6 @@ function AvailableTestContent() {
   })
 
   const onSendTransaction = useCallback(() => {
-    setLoading(true)
     writeContract({
       abi: minTokenAbi,
       functionName: 'transfer',
@@ -97,6 +93,7 @@ function AvailableTestContent() {
         onClick={onSendTransaction}
         disabled={!writeContract}
         isDisabled={isLoading}
+        isLoading={isLoading}
         width="80%"
       >
         Send USDC
