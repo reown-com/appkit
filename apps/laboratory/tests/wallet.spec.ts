@@ -68,7 +68,7 @@ testConnectedMW(
   }
 )
 
-testConnectedMW.only('it should show multiple accounts', async ({ modalPage, modalValidator }) => {
+testConnectedMW('it should show multiple accounts', async ({ modalPage, modalValidator }) => {
   // Multi address not available in solana wallet
   if (modalPage.library === 'solana') {
     return
