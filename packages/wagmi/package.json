@@ -51,7 +51,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@walletconnect/ethereum-provider": "2.13.0",
+    "@walletconnect/ethereum-provider": "2.14.0",
     "@web3modal/polyfills": "5.0.7",
     "@web3modal/scaffold": "5.0.7",
     "@web3modal/scaffold-react": "5.0.7",
