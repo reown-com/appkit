@@ -55,6 +55,7 @@
     "@web3modal/scaffold-react": "workspace:*",
     "@web3modal/scaffold-utils": "workspace:*",
     "@web3modal/scaffold-vue": "workspace:*",
+    "@web3modal/wallet": "workspace:*",
     "bn.js": "5.2.1",
     "bs58": "5.0.0"
   },

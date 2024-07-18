@@ -21,9 +21,9 @@
     "@web3modal/scaffold-ui": "workspace:*",
     "@web3modal/core": "workspace:*",
     "@web3modal/ui": "workspace:*",
-    "lit": "3.1.0",
     "@web3modal/siwe": "workspace:*",
-    "@web3modal/wallet": "workspace:*"
+    "@web3modal/wallet": "workspace:*",
+    "lit": "3.1.0"
   },
   "keywords": [
     "web3",

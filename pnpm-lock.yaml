@@ -569,6 +569,9 @@ importers:
       '@web3modal/siwe':
         specifier: workspace:*
         version: link:../siwe
+      '@web3modal/wallet':
+        specifier: workspace:*
+        version: link:../wallet
       ethers:
         specifier: '>=6.0.0'
         version: 6.13.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
@@ -808,6 +811,9 @@ importers:
       '@web3modal/scaffold-vue':
         specifier: workspace:*
         version: link:../scaffold-vue
+      '@web3modal/wallet':
+        specifier: workspace:*
+        version: link:../wallet
       bn.js:
         specifier: 5.2.1
         version: 5.2.1
