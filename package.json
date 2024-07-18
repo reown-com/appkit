@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build:clean": "pnpm --if-present -r clean",
-    "build": "pnpm --if-present --workspace-concurrency=10 -r build",
+    "build": "pnpm --if-present --workspace-concurrency=30 -r build",
     "watch": "pnpm --if-present --workspace-concurrency=50 -r watch",
     "gallery": "pnpm --filter=./apps/gallery dev",
     "laboratory": "pnpm --filter=./apps/laboratory dev",

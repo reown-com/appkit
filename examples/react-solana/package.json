@@ -16,6 +16,7 @@
     "@solana/wallet-adapter-wallets": "0.19.32"
   },
   "devDependencies": {
+    "@types/react": "18.2.62",
     "@vitejs/plugin-react": "4.2.1",
     "vite": "5.2.11"
   }

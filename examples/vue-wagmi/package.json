@@ -9,7 +9,8 @@
   "dependencies": {
     "@wagmi/connectors": "5.0.21",
     "@wagmi/core": "2.11.6",
-    "@web3modal/wagmi": "workspace:*"
+    "@web3modal/wagmi": "workspace:*",
+    "vue": "3.4.3"
   },
   "devDependencies": {
     "vite": "5.2.11",

@@ -19,6 +19,11 @@
       "import": "./dist/esm/exports/react.js",
       "default": "./dist/esm/exports/react.js"
     },
+    "./vue": {
+      "types": "./dist/types/exports/vue.d.ts",
+      "import": "./dist/esm/exports/vue.js",
+      "default": "./dist/esm/exports/vue.js"
+    },
     "./chains": {
       "types": "./dist/types/exports/chains.d.ts",
       "import": "./dist/esm/exports/chains.js",
@@ -29,6 +34,9 @@
     "*": {
       "react": [
         "./dist/types/exports/react.d.ts"
+      ],
+      "vue": [
+        "./dist/types/exports/vue.d.ts"
       ],
       "chains": [
         "./dist/types/exports/chains.d.ts"
@@ -64,6 +72,7 @@
     "bn.js": "5.2.1",
     "bs58": "5.0.0",
     "borsh": "0.7.0",
+    "buffer": "6.0.3",
     "valtio": "1.11.2"
   },
   "devDependencies": {
