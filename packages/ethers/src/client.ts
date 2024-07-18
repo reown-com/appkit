@@ -201,23 +201,34 @@ export class Web3Modal extends Web3ModalScaffold {
           onUri(uri)
         })
 
-        if (siweConfig?.options?.enabled) {
+        const params = await siweConfig?.getMessageParams?.()
+        // Must perform these checks to satify optional types
+        if (siweConfig?.options?.enabled && params && Object.keys(params || {}).length > 0) {
           const { SIWEController, getDidChainId, getDidAddress } = await import('@web3modal/siwe')
+
+          // Make active chain first in requested chains to make it default for siwe message
+          const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
+          let reorderedChains = params.chains
+          if (chainId) {
+            reorderedChains = [chainId, ...params.chains.filter(c => c !== chainId)]
+          }
+
           const result = await WalletConnectProvider.authenticate({
             nonce: await siweConfig.getNonce(),
-            methods: OPTIONAL_METHODS,
-            ...(await siweConfig.getMessageParams())
+            methods: [...OPTIONAL_METHODS],
+            ...params,
+            chains: reorderedChains
           })
           // Auths is an array of signed CACAO objects https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-74.md
           const signedCacao = result?.auths?.[0]
           if (signedCacao) {
             const { p, s } = signedCacao
-            const chainId = getDidChainId(p.iss)
+            const cacaoChainId = getDidChainId(p.iss)
             const address = getDidAddress(p.iss)
-            if (address && chainId) {
+            if (address && cacaoChainId) {
               SIWEController.setSession({
                 address,
-                chainId: parseInt(chainId, 10)
+                chainId: parseInt(cacaoChainId, 10)
               })
             }
             try {
@@ -243,7 +254,7 @@ export class Web3Modal extends Web3ModalScaffold {
             }
           }
         } else {
-          await WalletConnectProvider.connect()
+          await WalletConnectProvider.connect({ optionalChains: this.chains.map(c => c.chainId) })
         }
 
         await this.setWalletConnectProvider()
@@ -313,10 +324,7 @@ export class Web3Modal extends Web3ModalScaffold {
       },
 
       disconnect: async () => {
-        const provider = EthersStoreUtil.state.provider
-        const providerType = EthersStoreUtil.state.providerType
-        localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
-        EthersStoreUtil.reset()
+        const { provider, providerType } = EthersStoreUtil.state
         if (siweConfig?.options?.signOutOnDisconnect) {
           const { SIWEController } = await import('@web3modal/siwe')
           await SIWEController.signOut()
@@ -330,6 +338,15 @@ export class Web3Modal extends Web3ModalScaffold {
           // eslint-disable-next-line no-negated-condition
         } else if (providerType === ConstantsUtil.AUTH_CONNECTOR_ID) {
           await this.authProvider?.disconnect()
+        } else if (providerType === ConstantsUtil.EIP6963_CONNECTOR_ID && provider) {
+          await this.disconnectProvider(provider)
+          provider.emit('disconnect')
+        } else if (providerType === ConstantsUtil.INJECTED_CONNECTOR_ID) {
+          const InjectedProvider = ethersConfig.injected
+          if (InjectedProvider) {
+            await this.disconnectProvider(InjectedProvider)
+            InjectedProvider.emit('disconnect')
+          }
         } else {
           provider?.emit('disconnect')
         }
@@ -618,7 +635,8 @@ export class Web3Modal extends Web3ModalScaffold {
 
     if (providerType === ConstantsUtil.AUTH_CONNECTOR_ID) {
       await this.authProvider?.disconnect()
-    } else if (providerType === 'injected' || providerType === 'eip6963') {
+    } else if (provider && (providerType === 'injected' || providerType === 'eip6963')) {
+      await this.disconnectProvider(provider)
       provider?.emit('disconnect')
     } else if (providerType === 'walletConnect' || providerType === 'coinbaseWalletSDK') {
       const ethereumProvider = provider as unknown as EthereumProvider
@@ -665,6 +683,26 @@ export class Web3Modal extends Web3ModalScaffold {
     this.walletConnectProvider = await EthereumProvider.init(walletConnectProviderOptions)
 
     await this.checkActiveWalletConnectProvider()
+  }
+
+  private async disconnectProvider(provider: Provider | CombinedProvider) {
+    try {
+      const permissions: { parentCapability: string }[] = await provider.request({
+        method: 'wallet_getPermissions'
+      })
+      const ethAccountsPermission = permissions.find(
+        permission => permission.parentCapability === 'eth_accounts'
+      )
+
+      if (ethAccountsPermission) {
+        await provider.request({
+          method: 'wallet_revokePermissions',
+          params: [{ eth_accounts: {} }]
+        })
+      }
+    } catch (error) {
+      throw new Error('Error revoking permissions:')
+    }
   }
 
   private async getWalletConnectProvider() {
