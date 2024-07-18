@@ -69,42 +69,43 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  test:
-    runs-on: ubuntu-latest
-    continue-on-error: true
-    steps:
-      - name: checkout
-        uses: actions/checkout@v3
-      - name: setup-node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18.x
-          cache: 'npm'
-          cache-dependency-path: 'package-lock.json'
-      - name: install
-        run: npm ci
-      - name: build
-        run: npm run build
-        env:
-          NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
-      - name: Test
-        run: npm run test
-      - name: Merge Coverage Reports
-        if: always()
-        run: npm run coverage:merge
-      - name: Report
-        if: always()
-        uses: davelosert/vitest-coverage-report-action@v2
-        with:
-          name: Coverage
-          json-final-path: ./coverage/coverage-merged-final.json
-          json-summary-path: ./coverage/coverage-merged-summary.json
-
-  ui-test:
-    uses: ./.github/workflows/ui_tests.yml
-    secrets: inherit
-    permissions:
-      contents: write
-      pull-requests: write
-    with:
-      branch: ${{ github.ref }}
+  # Disabling in this fork
+  # test:
+  #   runs-on: ubuntu-latest
+  #   continue-on-error: true
+  #   steps:
+  #     - name: checkout
+  #       uses: actions/checkout@v3
+  #     - name: setup-node
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: 18.x
+  #         cache: 'npm'
+  #         cache-dependency-path: 'package-lock.json'
+  #     - name: install
+  #       run: npm ci
+  #     - name: build
+  #       run: npm run build
+  #       env:
+  #         NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
+  #     - name: Test
+  #       run: npm run test
+  #     - name: Merge Coverage Reports
+  #       if: always()
+  #       run: npm run coverage:merge
+  #     - name: Report
+  #       if: always()
+  #       uses: davelosert/vitest-coverage-report-action@v2
+  #       with:
+  #         name: Coverage
+  #         json-final-path: ./coverage/coverage-merged-final.json
+  #         json-summary-path: ./coverage/coverage-merged-summary.json
+ 
+  # ui-test:
+  #   uses: ./.github/workflows/ui_tests.yml
+  #   secrets: inherit
+  #   permissions:
+  #     contents: write
+  #     pull-requests: write
+  #   with:
+  #     branch: ${{ github.ref }}

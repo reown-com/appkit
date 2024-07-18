@@ -1,31 +1,42 @@
-name: Release
-
+name: Release Packages
 on:
-  push:
-    branches:
-      - V5
+  pull_request:
+    types: [closed]
+    branches: [V5]
 
-concurrency: ${{ github.workflow }}-${{ github.ref }}
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   release:
-    name: Release
+    if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'changeset-pr')
+    name: Release Packages
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
         with:
-          token: ${{ secrets.CHANGESETS_ACTION_TOKEN }}
+          node-version: '14'
 
-      - name: Setup Node.js 16
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16
-
-      - name: Install Dependencies
-        run: npm install
-
-      - name: Create Release Pull Request
-        uses: changesets/action@v1
+      - name: Publish packages
+        # Remove dry when ready
+        run: npm run publish:dry
         env:
-          GITHUB_TOKEN: ${{ secrets.CHANGESETS_ACTION_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create GitHub Release
+        run: |
+          PACKAGES=$(npx changeset status --output=json | jq -r '.releases[].name')
+          CHANGES=$(npx changeset status --output=json | jq -r '.releases[].changesets[]')
+          echo "Releasing packages: $PACKAGES"
+          echo "Changesets: $CHANGES"
+          VERSION=$(node -pe "require('./packages/core/package.json').version")
+          gh release create "v$VERSION" --title "Release v$VERSION" --notes "Packages: $PACKAGES"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

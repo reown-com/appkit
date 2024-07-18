@@ -1,0 +1,45 @@
+name: Changesets
+on:
+  push:
+    branches: [V5]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  changesets:
+    name: Create Publish PR
+    permissions:
+      contents: write
+      id-token: write
+      pull-requests: write
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name:
+        uses: ./.github/actions/setup
+
+      - name: Create Release Pull Request
+        id: create_pr
+        uses: changesets/action@v1
+        with:
+          title: 'chore: version packages'
+          commit: 'chore: version packages'
+          publish: npm run publish:dry
+          version: npm run changeset:version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Add Changeset PR Label
+        if: steps.create_pr.outputs.pull-request-url != ''
+        run: |
+          pr_number=$(echo "${{ steps.create_pr.outputs.pull-request-url }}" | awk -F '/' '{print $NF}')
+          gh pr edit $pr_number --add-label changeset-pr
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
