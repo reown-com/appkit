@@ -40,8 +40,10 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
+    "@coinbase/wallet-sdk": "4.0.3",
     "@web3modal/core": "workspace:*",
     "@web3modal/polyfills": "workspace:*",
+    "@web3modal/wallet": "workspace:*",
     "valtio": "1.11.2"
   },
   "keywords": [

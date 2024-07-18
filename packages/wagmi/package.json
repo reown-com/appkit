@@ -53,6 +53,8 @@
   "dependencies": {
     "@walletconnect/ethereum-provider": "2.13.0",
     "@web3modal/polyfills": "workspace:*",
+    "@web3modal/wallet": "workspace:*",
+    "@web3modal/common": "workspace:*",
     "@web3modal/scaffold": "workspace:*",
     "@web3modal/scaffold-react": "workspace:*",
     "@web3modal/scaffold-utils": "workspace:*",

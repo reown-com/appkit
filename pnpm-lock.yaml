@@ -699,18 +699,27 @@ importers:
 
   packages/scaffold-utils:
     dependencies:
+      '@coinbase/wallet-sdk':
+        specifier: 4.0.3
+        version: 4.0.3
       '@web3modal/core':
         specifier: workspace:*
         version: link:../core
       '@web3modal/polyfills':
         specifier: workspace:*
         version: link:../polyfills
+      '@web3modal/wallet':
+        specifier: workspace:*
+        version: link:../wallet
       valtio:
         specifier: 1.11.2
         version: 1.11.2(@types/react@18.2.62)(react@18.2.0)
 
   packages/scaffold-vue:
     dependencies:
+      '@web3modal/core':
+        specifier: workspace:*
+        version: link:../core
       '@web3modal/scaffold':
         specifier: workspace:*
         version: link:../scaffold
@@ -831,6 +840,9 @@ importers:
       '@walletconnect/ethereum-provider':
         specifier: 2.13.0
         version: 2.13.0(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(utf-8-validate@5.0.10)
+      '@web3modal/common':
+        specifier: workspace:*
+        version: link:../common
       '@web3modal/polyfills':
         specifier: workspace:*
         version: link:../polyfills
@@ -849,6 +861,9 @@ importers:
       '@web3modal/siwe':
         specifier: workspace:*
         version: link:../siwe
+      '@web3modal/wallet':
+        specifier: workspace:*
+        version: link:../wallet
     devDependencies:
       '@wagmi/connectors':
         specifier: 5.0.21
