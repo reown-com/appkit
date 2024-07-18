@@ -23,6 +23,7 @@
   "devDependencies": {
     "@types/qrcode": "1.5.5",
     "@web3modal/common": "workspace:*",
+    "@web3modal/wallet": "workspace:*",
     "@web3modal/core": "workspace:*",
     "eslint-plugin-lit": "1.11.0",
     "eslint-plugin-wc": "2.0.4"

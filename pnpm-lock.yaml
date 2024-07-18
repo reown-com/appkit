@@ -828,6 +828,9 @@ importers:
       '@web3modal/core':
         specifier: workspace:*
         version: link:../core
+      '@web3modal/wallet':
+        specifier: workspace:*
+        version: link:../wallet
       eslint-plugin-lit:
         specifier: 1.11.0
         version: 1.11.0(eslint@8.57.0)
