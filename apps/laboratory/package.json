@@ -68,6 +68,7 @@
     "@mailsac/api": "1.0.5",
     "@playwright/test": "1.40.1",
     "@types/react": "18.2.62",
+    "@types/react-dom": "18.2.7",
     "dotenv": "16.3.1"
   }
 }
