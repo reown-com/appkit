@@ -184,6 +184,7 @@ export interface BlockchainApiTransactionsRequest {
   cursor?: string
   onramp?: 'coinbase'
   signal?: AbortSignal
+  cache?: RequestCache
 }
 
 export interface BlockchainApiTransactionsResponse {
