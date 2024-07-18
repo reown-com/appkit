@@ -545,6 +545,9 @@ importers:
       '@walletconnect/ethereum-provider':
         specifier: 2.13.0
         version: 2.13.0(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(utf-8-validate@5.0.10)
+      '@web3modal/common':
+        specifier: workspace:*
+        version: link:../common
       '@web3modal/polyfills':
         specifier: workspace:*
         version: link:../polyfills
@@ -588,6 +591,9 @@ importers:
       '@walletconnect/ethereum-provider':
         specifier: 2.13.0
         version: 2.13.0(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(utf-8-validate@5.0.10)
+      '@web3modal/common':
+        specifier: workspace:*
+        version: link:../common
       '@web3modal/polyfills':
         specifier: workspace:*
         version: link:../polyfills
@@ -736,6 +742,9 @@ importers:
       '@walletconnect/utils':
         specifier: 2.12.0
         version: 2.12.0
+      '@web3modal/common':
+        specifier: workspace:*
+        version: link:../common
       '@web3modal/core':
         specifier: workspace:*
         version: link:../core
