@@ -2,6 +2,7 @@ import { DateUtil } from '@web3modal/common'
 import type { Transaction, TransactionImage } from '@web3modal/common'
 import {
   AccountController,
+  ChainController,
   EventsController,
   OptionsController,
   RouterController,
@@ -66,6 +67,12 @@ export class W3mActivityList extends LitElement {
   }
 
   public override firstUpdated() {
+    if (ChainController.state.activeChain === 'solana') {
+      this.loading = false
+      this.empty = true
+
+      return
+    }
     TransactionsController.fetchTransactions(this.address)
     this.createPaginationObserver()
   }
@@ -184,6 +191,19 @@ export class W3mActivityList extends LitElement {
   }
 
   private emptyStateActivity() {
+    const comingSoon = html`
+      <wui-text align="center" variant="paragraph-500" color="fg-100"
+        >Transaction history is coming soon!</wui-text
+      >
+    `
+    const empty = html` <wui-text align="center" variant="paragraph-500" color="fg-100"
+        >No Transactions yet</wui-text
+      >
+      <wui-text align="center" variant="small-500" color="fg-200"
+        >Start trading on dApps <br />
+        to grow your wallet!</wui-text
+      >`
+
     return html`<wui-flex
       class="emptyContainer"
       flexGrow="1"
@@ -203,18 +223,24 @@ export class W3mActivityList extends LitElement {
         borderColor="wui-color-bg-125"
       ></wui-icon-box>
       <wui-flex flexDirection="column" alignItems="center" gap="xs">
-        <wui-text align="center" variant="paragraph-500" color="fg-100"
-          >No Transactions yet</wui-text
-        >
-        <wui-text align="center" variant="small-500" color="fg-200"
-          >Start trading on dApps <br />
-          to grow your wallet!</wui-text
-        >
+        ${ChainController.state.activeChain === 'solana' ? comingSoon : empty}
       </wui-flex>
     </wui-flex>`
   }
 
   private emptyStateAccount() {
+    const comingSoon = html`
+      <wui-text variant="paragraph-500" align="center" color="fg-100"
+        >Transaction history is coming soon!</wui-text
+      >
+    `
+    const empty = html` <wui-text variant="paragraph-500" align="center" color="fg-100"
+        >No activity yet</wui-text
+      >
+      <wui-text variant="small-400" align="center" color="fg-200"
+        >Your next transactions will appear here</wui-text
+      >`
+
     return html`<wui-flex
       class="contentContainer"
       alignItems="center"
@@ -236,10 +262,7 @@ export class W3mActivityList extends LitElement {
         justifyContent="center"
         flexDirection="column"
       >
-        <wui-text variant="paragraph-500" align="center" color="fg-100">No activity yet</wui-text>
-        <wui-text variant="small-400" align="center" color="fg-200"
-          >Your next transactions will appear here</wui-text
-        >
+        ${ChainController.state.activeChain === 'solana' ? comingSoon : empty}
       </wui-flex>
       <wui-link @click=${this.onReceiveClick.bind(this)}>Trade</wui-link>
     </wui-flex>`

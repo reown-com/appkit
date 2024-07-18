@@ -11,7 +11,8 @@ import {
   ConnectionController,
   SnackController,
   ConstantsUtil,
-  OptionsController
+  OptionsController,
+  ChainController
 } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -87,9 +88,12 @@ export class W3mAccountDefaultWidget extends LitElement {
         gap="l"
       >
         <wui-profile-button-v2
-          .onProfileClick=${this.handleSwitchAccountsView.bind(this)}
+          .onProfileClick=${ChainController.state.activeChain !== 'solana' &&
+          this.handleSwitchAccountsView.bind(this)}
           address=${ifDefined(this.address)}
-          icon="${account?.type === 'smartAccount' && !this.network.chain.includes('solana') ? 'lightbulb' : 'mail'}"
+          icon="${account?.type === 'smartAccount' && ChainController.state.activeChain !== 'solana'
+            ? 'lightbulb'
+            : 'mail'}"
           avatarSrc=${ifDefined(this.profileImage ? this.profileImage : undefined)}
           profileName=${ifDefined(label ? label : this.profileName)}
           .onCopyClick=${this.onCopyAddress.bind(this)}
