@@ -751,6 +751,9 @@ importers:
       '@web3modal/scaffold-utils':
         specifier: workspace:*
         version: link:../scaffold-utils
+      '@web3modal/ui':
+        specifier: workspace:*
+        version: link:../ui
       lit:
         specifier: 3.1.0
         version: 3.1.0

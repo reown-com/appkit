@@ -18,6 +18,7 @@
   "dependencies": {
     "@walletconnect/utils": "2.12.0",
     "@web3modal/core": "workspace:*",
+    "@web3modal/ui": "workspace:*",
     "@web3modal/common": "workspace:*",
     "@web3modal/scaffold-utils": "workspace:*",
     "valtio": "1.11.2",
