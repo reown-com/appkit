@@ -8,6 +8,7 @@ interface RequestArguments {
   path: string
   headers?: HeadersInit
   params?: Record<string, string | undefined>
+  cache?: RequestCache
   signal?: AbortSignal
 }
 
@@ -38,9 +39,9 @@ export class FetchUtil {
     this.clientId = clientId
   }
 
-  public async get<T>({ headers, signal, ...args }: RequestArguments) {
+  public async get<T>({ headers, signal, cache, ...args }: RequestArguments) {
     const url = this.createUrl(args)
-    const response = await fetchData(url, { method: 'GET', headers, signal, cache: 'no-cache' })
+    const response = await fetchData(url, { method: 'GET', headers, signal, cache })
 
     return response.json() as T
   }

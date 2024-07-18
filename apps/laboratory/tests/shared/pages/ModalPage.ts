@@ -317,4 +317,7 @@ export class ModalPage {
 
     await this.enterOTP(otp, headerTitle)
   }
+  async openProfileView() {
+    await this.page.getByTestId('wui-profile-button').click()
+  }
 }

@@ -15,12 +15,14 @@ import {
   writeContract as wagmiWriteContract,
   getAccount,
   getEnsAddress as wagmiGetEnsAddress,
-  reconnect
+  reconnect,
+  getConnections,
+  switchAccount
 } from '@wagmi/core'
 import { mainnet } from 'viem/chains'
 import { prepareTransactionRequest, sendTransaction as wagmiSendTransaction } from '@wagmi/core'
 import type { Chain } from '@wagmi/core/chains'
-import type { GetAccountReturnType, GetEnsAddressReturnType } from '@wagmi/core'
+import type { GetAccountReturnType, GetEnsAddressReturnType, Config } from '@wagmi/core'
 import type {
   CaipAddress,
   CaipNetwork,
@@ -50,15 +52,9 @@ import {
 import { W3mFrameConstants, W3mFrameHelpers, W3mFrameRpcConstants } from '@web3modal/wallet'
 import type { W3mFrameProvider, W3mFrameTypes } from '@web3modal/wallet'
 import { NetworkUtil } from '@web3modal/common'
-import type { defaultWagmiConfig as coreConfig } from './utils/defaultWagmiCoreConfig.js'
-import type { defaultWagmiConfig as reactConfig } from './utils/defaultWagmiReactConfig.js'
 import { normalize } from 'viem/ens'
 
 // -- Types ---------------------------------------------------------------------
-export type CoreConfig = ReturnType<typeof coreConfig>
-export type ReactConfig = ReturnType<typeof reactConfig>
-type Config = CoreConfig | ReactConfig
-
 export interface Web3ModalClientOptions<C extends Config>
   extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
   wagmiConfig: C
@@ -83,13 +79,13 @@ interface Web3ModalState extends PublicStateControllerState {
 export class Web3Modal extends Web3ModalScaffold {
   private hasSyncedConnectedAccount = false
 
-  private options: Web3ModalClientOptions<CoreConfig> | undefined = undefined
+  private options: Web3ModalClientOptions<Config> | undefined = undefined
 
-  private wagmiConfig: Web3ModalClientOptions<CoreConfig>['wagmiConfig']
+  private wagmiConfig: Web3ModalClientOptions<Config>['wagmiConfig']
 
   private chain: AvailableChain = CommonConstantsUtil.CHAIN.EVM
 
-  public constructor(options: Web3ModalClientOptions<CoreConfig>) {
+  public constructor(options: Web3ModalClientOptions<Config>) {
     const { wagmiConfig, siweConfig, defaultChain, tokens, _sdkVersion, ...w3mOptions } = options
 
     if (!wagmiConfig) {
@@ -150,19 +146,31 @@ export class Web3Modal extends Web3ModalScaffold {
         }
 
         const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
+        const siweParams = await siweConfig?.getMessageParams?.()
         // Make sure client uses ethereum provider version that supports `authenticate`
-        if (siweConfig?.options?.enabled && typeof provider?.authenticate === 'function') {
+        if (
+          siweConfig?.options?.enabled &&
+          typeof provider?.authenticate === 'function' &&
+          siweParams &&
+          Object.keys(siweParams || {}).length > 0
+        ) {
           const { SIWEController, getDidChainId, getDidAddress } = await import('@web3modal/siwe')
-          const siweParams = await siweConfig.getMessageParams()
+
           // @ts-expect-error - setting requested chains beforehand avoids wagmi auto disconnecting the session when `connect` is called because it things chains are stale
           await connector.setRequestedChainsIds(siweParams.chains)
+
+          // Make active chain first in requested chains to make it default for siwe message
+          let reorderedChains = siweParams.chains
+          if (chainId) {
+            reorderedChains = [chainId, ...siweParams.chains.filter(c => c !== chainId)]
+          }
 
           const result = await provider.authenticate({
             nonce: await siweConfig.getNonce(),
             methods: [...OPTIONAL_METHODS],
-            ...siweParams
+            ...siweParams,
+            chains: reorderedChains
           })
-
           // Auths is an array of signed CACAO objects https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-74.md
           const signedCacao = result?.auths?.[0]
           if (signedCacao) {
@@ -181,7 +189,6 @@ export class Web3Modal extends Web3ModalScaffold {
                 request: p,
                 iss: p.iss
               })
-
               await SIWEController.verifyMessage({
                 message,
                 signature: s.s,
@@ -379,6 +386,26 @@ export class Web3Modal extends Web3ModalScaffold {
     })
 
     this.setEIP6963Enabled(w3mOptions.enableEIP6963 !== false)
+
+    this.subscribeShouldUpdateToAddress((newAddress?: string) => {
+      if (newAddress) {
+        const connections = getConnections(this.wagmiConfig)
+        const connector = connections[0]?.connector
+        if (connector) {
+          switchAccount(this.wagmiConfig, {
+            connector
+          }).then(response =>
+            this.syncAccount({
+              address: newAddress as Hex,
+              isConnected: true,
+              addresses: response.accounts,
+              connector,
+              chainId: response.chainId
+            })
+          )
+        }
+      }
+    })
   }
 
   // -- Public ------------------------------------------------------------------
@@ -421,22 +448,39 @@ export class Web3Modal extends Web3ModalScaffold {
     address,
     isConnected,
     chainId,
-    connector
-  }: Pick<GetAccountReturnType, 'address' | 'isConnected' | 'chainId' | 'connector'>) {
+    connector,
+    addresses
+  }: Partial<
+    Pick<GetAccountReturnType, 'address' | 'isConnected' | 'chainId' | 'connector' | 'addresses'>
+  >) {
+    const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`
+
+    if (this.getCaipAddress() === caipAddress) {
+      return
+    }
+
     this.resetAccount()
     this.syncNetwork(address, chainId, isConnected)
+
     if (isConnected && address && chainId) {
-      const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`
       this.setIsConnected(isConnected)
       this.setCaipAddress(caipAddress)
       await Promise.all([
         this.syncProfile(address, chainId),
         this.syncBalance(address, chainId),
-        this.syncConnectedWalletInfo(connector),
         this.setApprovedCaipNetworksData()
       ])
+      if (connector) {
+        this.syncConnectedWalletInfo(connector)
+      }
+
+      // Set by authConnector.onIsConnectedHandler as we need the account type
+      const isAuthConnector = connector?.id === ConstantsUtil.AUTH_CONNECTOR_ID
+      if (!isAuthConnector && addresses?.length) {
+        this.setAllAccounts(addresses.map(addr => ({ address: addr, type: 'eoa' })))
+      }
+
       this.hasSyncedConnectedAccount = true
-      this.setAllAccounts([{ address, type: 'eoa' }])
     } else if (!isConnected && this.hasSyncedConnectedAccount) {
       this.resetWcConnection()
       this.resetNetwork()
@@ -561,9 +605,7 @@ export class Web3Modal extends Web3ModalScaffold {
     }
   }
 
-  private syncConnectors(
-    connectors: Web3ModalClientOptions<CoreConfig>['wagmiConfig']['connectors']
-  ) {
+  private syncConnectors(connectors: Web3ModalClientOptions<Config>['wagmiConfig']['connectors']) {
     const uniqueIds = new Set()
     const filteredConnectors = connectors.filter(
       item => !uniqueIds.has(item.id) && uniqueIds.add(item.id)
@@ -602,11 +644,11 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private async syncAuthConnector(
-    connectors: Web3ModalClientOptions<CoreConfig>['wagmiConfig']['connectors']
+    connectors: Web3ModalClientOptions<Config>['wagmiConfig']['connectors']
   ) {
     const authConnector = connectors.find(
       ({ id }) => id === ConstantsUtil.AUTH_CONNECTOR_ID
-    ) as unknown as Web3ModalClientOptions<CoreConfig>['wagmiConfig']['connectors'][0] & {
+    ) as unknown as Web3ModalClientOptions<Config>['wagmiConfig']['connectors'][0] & {
       email: boolean
       socials: SocialProvider[]
       showWallets?: boolean
@@ -630,7 +672,7 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private async initAuthConnectorListeners(
-    connectors: Web3ModalClientOptions<CoreConfig>['wagmiConfig']['connectors']
+    connectors: Web3ModalClientOptions<Config>['wagmiConfig']['connectors']
   ) {
     const authConnector = connectors.find(({ id }) => id === ConstantsUtil.AUTH_CONNECTOR_ID)
     if (authConnector) {
@@ -640,7 +682,7 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private async listenAuthConnector(
-    connector: Web3ModalClientOptions<CoreConfig>['wagmiConfig']['connectors'][number]
+    connector: Web3ModalClientOptions<Config>['wagmiConfig']['connectors'][number]
   ) {
     if (typeof window !== 'undefined' && connector) {
       super.setLoading(true)
@@ -726,6 +768,14 @@ export class Web3Modal extends Web3ModalScaffold {
           this.chain
         )
         super.setLoading(false)
+        this.setAllAccounts(
+          req.accounts || [
+            {
+              address: req.address,
+              type: (req.preferredAccountType || 'eoa') as W3mFrameTypes.AccountType
+            }
+          ]
+        )
       })
 
       provider.onGetSmartAccountEnabledNetworks(networks => {
@@ -748,7 +798,7 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private async listenModal(
-    connector: Web3ModalClientOptions<CoreConfig>['wagmiConfig']['connectors'][number]
+    connector: Web3ModalClientOptions<Config>['wagmiConfig']['connectors'][number]
   ) {
     const provider = (await connector.getProvider()) as W3mFrameProvider
     this.subscribeState(val => {

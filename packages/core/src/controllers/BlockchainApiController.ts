@@ -32,7 +32,7 @@ import type {
   BlockchainApiRegisterNameParams
 } from '../utils/TypeUtil.js'
 import { OptionsController } from './OptionsController.js'
-import { proxy } from 'valtio'
+import { proxy } from 'valtio/vanilla'
 
 const DEFAULT_OPTIONS = {
   purchaseCurrencies: [
@@ -120,7 +120,7 @@ const baseUrl = CoreHelperUtil.getBlockchainApiUrl()
 // -- State --------------------------------------------- //
 const state = proxy<BlockchainApiControllerState>({
   clientId: null,
-  api: new FetchUtil({ baseUrl })
+  api: new FetchUtil({ baseUrl, clientId: null })
 })
 
 // -- Controller ---------------------------------------- //
@@ -140,7 +140,8 @@ export const BlockchainApiController = {
     projectId,
     cursor,
     onramp,
-    signal
+    signal,
+    cache
   }: BlockchainApiTransactionsRequest) {
     const queryParams = cursor ? { cursor } : {}
 
@@ -149,7 +150,8 @@ export const BlockchainApiController = {
         onramp ? `&onramp=${onramp}` : ''
       }`,
       params: queryParams,
-      signal
+      signal,
+      cache
     })
   },
 

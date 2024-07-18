@@ -204,6 +204,8 @@ export class Web3ModalScaffold {
     AccountController.removeAddressLabel(address)
   }
 
+  protected getCaipAddress = () => AccountController.state.caipAddress
+
   protected setCaipAddress: (typeof AccountController)['setCaipAddress'] = (caipAddress, chain) => {
     AccountController.setCaipAddress(caipAddress, chain)
   }
