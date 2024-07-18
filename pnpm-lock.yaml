@@ -450,7 +450,10 @@ importers:
     devDependencies:
       '@vitejs/plugin-vue':
         specifier: 5.0.2
-        version: 5.0.2(vite@5.3.4(@types/node@20.14.10)(terser@5.31.2))(vue@3.4.3(typescript@5.3.3))
+        version: 5.0.2(vite@5.2.11(@types/node@20.14.10)(terser@5.31.2))(vue@3.4.3(typescript@5.3.3))
+      vite:
+        specifier: 5.2.11
+        version: 5.2.11(@types/node@20.14.10)(terser@5.31.2)
 
   examples/vue-solana:
     dependencies:
@@ -466,7 +469,10 @@ importers:
     devDependencies:
       '@vitejs/plugin-vue':
         specifier: 5.0.2
-        version: 5.0.2(vite@5.3.4(@types/node@20.14.10)(terser@5.31.2))(vue@3.4.3(typescript@5.3.3))
+        version: 5.0.2(vite@5.2.11(@types/node@20.14.10)(terser@5.31.2))(vue@3.4.3(typescript@5.3.3))
+      vite:
+        specifier: 5.2.11
+        version: 5.2.11(@types/node@20.14.10)(terser@5.31.2)
 
   examples/vue-wagmi:
     dependencies:
@@ -482,7 +488,10 @@ importers:
     devDependencies:
       '@vitejs/plugin-vue':
         specifier: 5.0.2
-        version: 5.0.2(vite@5.3.4(@types/node@20.14.10)(terser@5.31.2))(vue@3.4.3(typescript@5.3.3))
+        version: 5.0.2(vite@5.2.11(@types/node@20.14.10)(terser@5.31.2))(vue@3.4.3(typescript@5.3.3))
+      vite:
+        specifier: 5.2.11
+        version: 5.2.11(@types/node@20.14.10)(terser@5.31.2)
 
   packages/cdn:
     dependencies:
@@ -18518,9 +18527,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@vitejs/plugin-vue@5.0.2(vite@5.3.4(@types/node@20.14.10)(terser@5.31.2))(vue@3.4.3(typescript@5.3.3))':
+  '@vitejs/plugin-vue@5.0.2(vite@5.2.11(@types/node@20.14.10)(terser@5.31.2))(vue@3.4.3(typescript@5.3.3))':
     dependencies:
-      vite: 5.3.4(@types/node@20.14.10)(terser@5.31.2)
+      vite: 5.2.11(@types/node@20.14.10)(terser@5.31.2)
       vue: 3.4.3(typescript@5.3.3)
 
   '@vitest/coverage-v8@1.1.2(vitest@1.5.0(@types/node@20.14.10)(terser@5.31.2))':

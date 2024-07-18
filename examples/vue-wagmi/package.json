@@ -12,6 +12,7 @@
     "@web3modal/wagmi": "workspace:*"
   },
   "devDependencies": {
+    "vite": "5.2.11",
     "@vitejs/plugin-vue": "5.0.2"
   }
 }

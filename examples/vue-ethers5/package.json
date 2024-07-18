@@ -11,6 +11,7 @@
     "ethers": "5.7.2"
   },
   "devDependencies": {
+    "vite": "5.2.11",
     "@vitejs/plugin-vue": "5.0.2"
   }
 }
