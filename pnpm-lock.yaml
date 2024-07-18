@@ -754,6 +754,9 @@ importers:
       '@web3modal/ui':
         specifier: workspace:*
         version: link:../ui
+      '@web3modal/wallet':
+        specifier: workspace:*
+        version: link:../wallet
       lit:
         specifier: 3.1.0
         version: 3.1.0
