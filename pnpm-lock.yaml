@@ -129,6 +129,9 @@ importers:
       lit:
         specifier: 3.1.0
         version: 3.1.0
+      react:
+        specifier: 18.2.0
+        version: 18.2.0
       storybook:
         specifier: 7.6.7
         version: 7.6.7(bufferutil@4.0.8)(utf-8-validate@5.0.10)
