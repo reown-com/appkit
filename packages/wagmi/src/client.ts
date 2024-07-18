@@ -446,11 +446,16 @@ export class Web3Modal extends Web3ModalScaffold {
   }: Partial<
     Pick<GetAccountReturnType, 'address' | 'isConnected' | 'chainId' | 'connector' | 'addresses'>
   >) {
+    const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`
+
+    if (this.getCaipAddress() === caipAddress) {
+      return
+    }
+
     this.resetAccount()
     this.syncNetwork(address, chainId, isConnected)
-    const isAuthConnecor = connector?.id === ConstantsUtil.AUTH_CONNECTOR_ID
+
     if (isConnected && address && chainId) {
-      const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`
       this.setIsConnected(isConnected)
       this.setCaipAddress(caipAddress)
       await Promise.all([
@@ -463,7 +468,8 @@ export class Web3Modal extends Web3ModalScaffold {
       }
 
       // Set by authConnector.onIsConnectedHandler as we need the account type
-      if (!isAuthConnecor && addresses?.length) {
+      const isAuthConnector = connector?.id === ConstantsUtil.AUTH_CONNECTOR_ID
+      if (!isAuthConnector && addresses?.length) {
         this.setAllAccounts(addresses.map(addr => ({ address: addr, type: 'eoa' })))
       }
 
