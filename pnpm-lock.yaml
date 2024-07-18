@@ -675,6 +675,9 @@ importers:
         specifier: workspace:*
         version: link:../scaffold
     devDependencies:
+      '@types/react':
+        specifier: 18.2.62
+        version: 18.2.62
       react:
         specifier: 18.2.0
         version: 18.2.0
