@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/cdn",
-  "version": "5.0.6",
+  "version": "5.0.7",
   "main": "dist/wagmi.js",
   "type": "module",
   "files": [
