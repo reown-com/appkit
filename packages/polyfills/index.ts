@@ -1,15 +1,15 @@
 import { Buffer } from 'buffer'
 
 if (typeof window !== 'undefined') {
-  if (typeof window['Buffer'] === 'undefined') {
+  if (!window.Buffer) {
     window.Buffer = Buffer
   }
 
-  if (typeof window['global'] === 'undefined') {
+  if (!window.global) {
     window.global = window
   }
 
-  if (typeof window['process'] === 'undefined') {
+  if (!window.process) {
     // @ts-expect-error minimal process
     window.process = {}
   }
