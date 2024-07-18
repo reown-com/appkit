@@ -16,6 +16,7 @@ import type { Web3ModalSIWEClient } from '@web3modal/siwe'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
 import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 import EthereumProvider, { OPTIONAL_METHODS } from '@walletconnect/ethereum-provider'
+import { getChainsFromAccounts } from '@walletconnect/utils'
 import type {
   Address,
   Metadata,
@@ -146,7 +147,9 @@ export class Web3Modal extends Web3ModalScaffold {
             }
             const ns = provider.signer?.session?.namespaces
             const nsMethods = ns?.[ConstantsUtil.EIP155]?.methods
-            const nsChains = ns?.[ConstantsUtil.EIP155]?.chains
+            const nsChains = getChainsFromAccounts(
+              ns?.[ConstantsUtil.EIP155]?.accounts || []
+            ) as CaipNetworkId[]
 
             const result = {
               supportsAllNetworks: nsMethods?.includes(ConstantsUtil.ADD_CHAIN_METHOD) ?? false,
