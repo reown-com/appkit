@@ -22,7 +22,8 @@
     "valtio": "1.11.2"
   },
   "devDependencies": {
-    "@vitest/coverage-v8": "1.1.2"
+    "@vitest/coverage-v8": "1.1.2",
+    "viem": "2.16.2"
   },
   "keywords": [
     "web3",
