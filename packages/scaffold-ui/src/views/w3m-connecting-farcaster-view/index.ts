@@ -85,6 +85,7 @@ export class W3mConnectingFarcasterView extends LitElement {
       <wui-text variant="paragraph-500" color="fg-100">
         Scan this QR Code with your phone
       </wui-text>
+      ${this.copyTemplate()}
     </wui-flex>`
   }
 
@@ -181,8 +182,34 @@ export class W3mConnectingFarcasterView extends LitElement {
     ></wui-qr-code>`
   }
 
+  private copyTemplate() {
+    const inactive = !this.uri || !this.ready
+
+    return html`<wui-link
+      .disabled=${inactive}
+      @click=${this.onCopyUri}
+      color="fg-200"
+      data-testid="copy-wc2-uri"
+    >
+      <wui-icon size="xs" color="fg-200" slot="iconLeft" name="copy"></wui-icon>
+      Copy link
+    </wui-link>`
+  }
+
   private forceUpdate = () => {
     this.requestUpdate()
+  }
+
+  // -- Protected ----------------------------------------- //
+  protected onCopyUri() {
+    try {
+      if (this.uri) {
+        CoreHelperUtil.copyToClopboard(this.uri)
+        SnackController.showSuccess('Link copied')
+      }
+    } catch {
+      SnackController.showError('Failed to copy')
+    }
   }
 }
 
