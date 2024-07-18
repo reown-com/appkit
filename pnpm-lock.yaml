@@ -47,6 +47,9 @@ importers:
       typescript:
         specifier: 5.3.3
         version: 5.3.3
+      vite:
+        specifier: 5.2.11
+        version: 5.2.11(@types/node@20.11.5)(terser@5.31.3)
       vite-plugin-node-polyfills:
         specifier: 0.22.0
         version: 0.22.0(rollup@4.18.1)(vite@5.2.11(@types/node@20.11.5)(terser@5.31.3))
