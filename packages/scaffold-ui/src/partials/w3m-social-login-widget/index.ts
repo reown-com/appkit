@@ -168,7 +168,6 @@ export class W3mSocialLoginWidget extends LitElement {
         if (!AccountController.state.farcasterUrl) {
           try {
             const { url } = await authConnector.provider.getFarcasterUri()
-            console.log('app side', url)
 
             AccountController.setFarcasterUrl(url)
           } catch (error) {
