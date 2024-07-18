@@ -1,16 +1,19 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Buffer } from 'buffer'
 
 if (typeof window !== 'undefined') {
-  if (!window.Buffer) {
-    ;(window as any).Buffer = Buffer
+  if (typeof window['Buffer'] === 'undefined') {
+    window.Buffer = Buffer
   }
-  if (!window.global) {
-    ;(window as any).global = window
+
+  if (typeof window['global'] === 'undefined') {
+    window.global = window
   }
-  if (!window.process) {
-    ;(window as any).process = {}
+
+  if (typeof window['process'] === 'undefined') {
+    // @ts-expect-error minimal process
+    window.process = {}
   }
+
   if (!window.process?.env) {
     // @ts-expect-error minimal process
     window.process = { env: {} }
