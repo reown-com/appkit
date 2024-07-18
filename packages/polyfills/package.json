@@ -18,6 +18,9 @@
   "dependencies": {
     "buffer": "6.0.3"
   },
+  "devDependencies": {
+    "@types/node": "20.11.5"
+  },
   "keywords": [
     "web3",
     "crypto",
