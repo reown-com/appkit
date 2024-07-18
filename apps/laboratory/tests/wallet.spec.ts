@@ -78,3 +78,16 @@ testConnectedMW('it should show multiple accounts', async ({ modalPage, modalVal
   await modalValidator.expectMultipleAccounts()
   await modalPage.closeModal()
 })
+
+testConnectedMW.only(
+  'it should show Switch Network modal if network is not supported',
+  async ({ modalPage, modalValidator, walletPage }) => {
+    if (modalPage.library === 'solana') {
+      return
+    }
+    await walletPage.enableTestnets()
+    await walletPage.switchNetwork('eip155:5')
+    await modalValidator.expectNetworkNotSupportedVisible()
+    await modalPage.closeModal()
+  }
+)
