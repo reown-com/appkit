@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@walletconnect/logger": "2.1.2",
+    "@web3modal/common": "workspace:*",
     "@web3modal/polyfills": "workspace:*",
     "zod": "3.22.4"
   },

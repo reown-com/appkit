@@ -871,6 +871,9 @@ importers:
       '@walletconnect/logger':
         specifier: 2.1.2
         version: 2.1.2
+      '@web3modal/common':
+        specifier: workspace:*
+        version: link:../common
       '@web3modal/polyfills':
         specifier: workspace:*
         version: link:../polyfills
