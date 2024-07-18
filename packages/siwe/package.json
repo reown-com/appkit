@@ -9,16 +9,16 @@
     "!tsconfig.tsbuildinfo"
   ],
   "scripts": {
-    "build:clean": "rm -rf dist",
-    "build:siwe": "tsc --build",
+    "clean": "rm -rf dist",
+    "build": "tsc --build",
     "watch": "tsc --watch",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
     "@walletconnect/utils": "2.12.0",
-    "@web3modal/core": "5.0.6",
-    "@web3modal/scaffold-utils": "5.0.6",
+    "@web3modal/core": "workspace:*",
+    "@web3modal/scaffold-utils": "workspace:*",
     "valtio": "1.11.2",
     "lit": "3.1.0"
   },

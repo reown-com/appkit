@@ -9,8 +9,8 @@
     "!tsconfig.tsbuildinfo"
   ],
   "scripts": {
-    "build:clean": "rm -rf dist",
-    "build:ui": "tsc --build",
+    "clean": "rm -rf dist",
+    "build": "tsc --build",
     "watch": "tsc --watch",
     "test": "vitest run --dir tests --coverage.enabled --reporter=junit --coverage.reporter=json-summary --coverage.reporter=html",
     "typecheck": "tsc --noEmit",
@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "@types/qrcode": "1.5.5",
-    "@web3modal/common": "5.0.6",
+    "@web3modal/common": "workspace:*",
     "eslint-plugin-lit": "1.11.0",
     "eslint-plugin-wc": "2.0.4"
   },

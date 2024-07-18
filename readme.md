@@ -52,8 +52,8 @@ For example: `pnpm changeset:pre a123bas2`
 
 ### Steps
 
-1. Run `npm outdated` and update dependencies
-2. Run `npm install` and verify if everything still works correctly
+1. Run `pnpm update` and update dependencies
+2. Run `pnpm install` and verify if everything still works correctly
 3. Merge your feature branch into `V4`
 4. Create a new branch from `V4` and name it with the version tag
 5. Run `pnpm changeset` and set new custom version, enter prelease mode first if you want to add a tag to the version.

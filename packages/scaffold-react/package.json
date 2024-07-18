@@ -9,14 +9,14 @@
     "!tsconfig.tsbuildinfo"
   ],
   "scripts": {
-    "build:clean": "rm -rf dist",
-    "build:scaffold-react": "tsc --build",
+    "clean": "rm -rf dist",
+    "build": "tsc --build",
     "watch": "tsc --watch",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@web3modal/scaffold": "5.0.6"
+    "@web3modal/scaffold": "workspace:*"
   },
   "peerDependencies": {
     "react": ">=17",

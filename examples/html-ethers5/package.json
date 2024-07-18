@@ -3,11 +3,11 @@
   "private": true,
   "version": "5.0.6",
   "scripts": {
-    "dev:example": "vite --port 3011",
-    "build:examples": "vite build"
+    "dev": "vite --port 3011",
+    "build": "vite build"
   },
   "dependencies": {
-    "@web3modal/ethers5": "5.0.6",
+    "@web3modal/ethers5": "workspace:*",
     "ethers": "5.7.2"
   },
   "devDependencies": {
