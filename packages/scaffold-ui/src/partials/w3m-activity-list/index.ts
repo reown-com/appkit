@@ -12,8 +12,10 @@ import { TransactionUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import type { TransactionType } from '@web3modal/ui/src/utils/TypeUtil.js'
-import styles from './styles.js'
 import { W3mFrameRpcConstants } from '@web3modal/wallet'
+import { ConstantsUtil } from '@web3modal/common'
+
+import styles from './styles.js'
 
 // -- Helpers --------------------------------------------- //
 const PAGINATOR_ID = 'last-transaction'
@@ -67,7 +69,7 @@ export class W3mActivityList extends LitElement {
   }
 
   public override firstUpdated() {
-    if (ChainController.state.activeChain === 'solana') {
+    if (ChainController.state.activeChain === ConstantsUtil.CHAIN_NAME.SOLANA) {
       this.loading = false
       this.empty = true
 
@@ -223,7 +225,9 @@ export class W3mActivityList extends LitElement {
         borderColor="wui-color-bg-125"
       ></wui-icon-box>
       <wui-flex flexDirection="column" alignItems="center" gap="xs">
-        ${ChainController.state.activeChain === 'solana' ? comingSoon : empty}
+        ${ChainController.state.activeChain === ConstantsUtil.CHAIN_NAME.SOLANA
+          ? comingSoon
+          : empty}
       </wui-flex>
     </wui-flex>`
   }
@@ -262,7 +266,9 @@ export class W3mActivityList extends LitElement {
         justifyContent="center"
         flexDirection="column"
       >
-        ${ChainController.state.activeChain === 'solana' ? comingSoon : empty}
+        ${ChainController.state.activeChain === ConstantsUtil.CHAIN_NAME.SOLANA
+          ? comingSoon
+          : empty}
       </wui-flex>
       <wui-link @click=${this.onReceiveClick.bind(this)}>Trade</wui-link>
     </wui-flex>`

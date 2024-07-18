@@ -10,7 +10,7 @@ import {
   EventsController,
   ConnectionController,
   SnackController,
-  ConstantsUtil,
+  ConstantsUtil as CommonConstantsUtil,
   OptionsController,
   ChainController
 } from '@web3modal/core'
@@ -18,8 +18,10 @@ import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import styles from './styles.js'
+import { ConstantsUtil } from '@web3modal/common'
 import { W3mFrameRpcConstants } from '@web3modal/wallet'
+
+import styles from './styles.js'
 
 @customElement('w3m-account-default-widget')
 export class W3mAccountDefaultWidget extends LitElement {
@@ -88,10 +90,11 @@ export class W3mAccountDefaultWidget extends LitElement {
         gap="l"
       >
         <wui-profile-button-v2
-          .onProfileClick=${ChainController.state.activeChain !== 'solana' &&
+          .onProfileClick=${ChainController.state.activeChain === ConstantsUtil.CHAIN_NAME.EVM &&
           this.handleSwitchAccountsView.bind(this)}
           address=${ifDefined(this.address)}
-          icon="${account?.type === 'smartAccount' && ChainController.state.activeChain !== 'solana'
+          icon="${account?.type === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT &&
+          ChainController.state.activeChain === ConstantsUtil.CHAIN_NAME.EVM
             ? 'lightbulb'
             : 'mail'}"
           avatarSrc=${ifDefined(this.profileImage ? this.profileImage : undefined)}
@@ -170,7 +173,7 @@ export class W3mAccountDefaultWidget extends LitElement {
     const type = StorageUtil.getConnectedConnector()
     const authConnector = ConnectorController.getAuthConnector()
     const { origin } = location
-    if (!authConnector || type !== 'AUTH' || origin.includes(ConstantsUtil.SECURE_SITE)) {
+    if (!authConnector || type !== 'AUTH' || origin.includes(CommonConstantsUtil.SECURE_SITE)) {
       return null
     }
 
