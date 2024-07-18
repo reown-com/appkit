@@ -79,7 +79,7 @@ testConnectedMW('it should show multiple accounts', async ({ modalPage, modalVal
   await modalPage.closeModal()
 })
 
-testConnectedMW.only(
+testConnectedMW(
   'it should show Switch Network modal if network is not supported',
   async ({ modalPage, modalValidator, walletPage }) => {
     if (modalPage.library === 'solana') {
