@@ -16,7 +16,7 @@
     "build:demo": "turbo run build:clean; turbo run build:demo",
     "build:examples": "turbo run build:clean; turbo run build:examples",
     "test": "turbo run test",
-    "test:static": "npm run typecheck && npm run lint && npm run prettier",
+    "test:static": "npm run typecheck; npm run lint; npm run prettier",
     "coverage:merge": "node ./scripts/coverage-merge.js",
     "coverage:summary": "node ./scripts/coverage-summary.js",
     "typecheck": "turbo run typecheck",
