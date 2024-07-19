@@ -11,7 +11,7 @@ export const testModalSmartAccount = timingFixture.extend<
 >({
   library: ['wagmi', { option: true }],
   modalPage: [
-    async ({ page, library, context }, use, testInfo) => {
+    async ({ page, library, context }, use) => {
       const modalPage = new ModalWalletPage(page, library)
       await modalPage.load()
 
@@ -20,7 +20,7 @@ export const testModalSmartAccount = timingFixture.extend<
         throw new Error('MAILSAC_API_KEY is not set')
       }
       const email = new Email(mailsacApiKey)
-      const tempEmail = email.getEmailAddressToUse(testInfo.parallelIndex)
+      const tempEmail = email.getEmailAddressToUse()
 
       // Switch to supported network first so it initializes with SA
       await modalPage.switchNetworkWithNetworkButton('Sepolia')

@@ -6,7 +6,7 @@ import { ModalWalletPage } from '../pages/ModalWalletPage'
 
 export const testMEmail = timingFixture.extend<ModalFixture>({
   library: ['wagmi', { option: true }],
-  modalPage: async ({ page, library, context }, use, testInfo) => {
+  modalPage: async ({ page, library, context }, use) => {
     const modalPage = new ModalWalletPage(page, library, 'email')
     await modalPage.load()
 
@@ -15,7 +15,7 @@ export const testMEmail = timingFixture.extend<ModalFixture>({
       throw new Error('MAILSAC_API_KEY is not set')
     }
     const email = new Email(mailsacApiKey)
-    const tempEmail = email.getEmailAddressToUse(testInfo.parallelIndex)
+    const tempEmail = email.getEmailAddressToUse()
 
     await modalPage.emailFlow(tempEmail, context, mailsacApiKey)
     await use(modalPage)
@@ -29,7 +29,7 @@ export const testMEmail = timingFixture.extend<ModalFixture>({
 export const testMEmailSiwe = timingFixture.extend<ModalFixture>({
   library: ['wagmi', { option: true }],
   modalPage: [
-    async ({ page, library, context }, use, testInfo) => {
+    async ({ page, library, context }, use) => {
       const modalPage = new ModalWalletPage(page, library, 'all')
       await modalPage.load()
 
@@ -38,7 +38,7 @@ export const testMEmailSiwe = timingFixture.extend<ModalFixture>({
         throw new Error('MAILSAC_API_KEY is not set')
       }
       const email = new Email(mailsacApiKey)
-      const tempEmail = email.getEmailAddressToUse(testInfo.parallelIndex)
+      const tempEmail = await email.getEmailAddressToUse()
 
       await modalPage.emailFlow(tempEmail, context, mailsacApiKey)
       await modalPage.promptSiwe()

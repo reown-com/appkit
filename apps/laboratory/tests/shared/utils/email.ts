@@ -77,10 +77,11 @@ export class Email {
     throw new Error(`No code found in email: ${body}`)
   }
 
-  getEmailAddressToUse(index: number, domain = EMAIL_DOMAIN): string {
-    const randIndex = Math.floor(Math.random() * 10) % 9
+  async getEmailAddressToUse(domain = EMAIL_DOMAIN): Promise<string> {
+    const response = await fetch('https://id-allocation-service.walletconnect-v1-bridge.workers.dev/allocate');
+    const { id } = await response.json();
 
-    return `w3m-w${index}${randIndex}@${domain}`
+    return `w3m-w${id}@${domain}`
   }
 
   getSmartAccountEnabledEmail(): string {
