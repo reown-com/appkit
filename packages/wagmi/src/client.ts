@@ -140,6 +140,11 @@ export class Web3Modal extends Web3ModalScaffold {
           onUri(data)
         })
 
+        const clientId = await provider.signer?.client?.core?.crypto?.getClientId()
+        if (clientId) {
+          this.setClientId(clientId)
+        }
+
         const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
         const siweParams = await siweConfig?.getMessageParams?.()
         // Make sure client uses ethereum provider version that supports `authenticate`
@@ -214,6 +219,7 @@ export class Web3Modal extends Web3ModalScaffold {
         if (!connector) {
           throw new Error('connectionControllerClient:connectExternal - connector is undefined')
         }
+        this.setClientId(null)
         if (provider && info && connector.id === ConstantsUtil.EIP6963_CONNECTOR_ID) {
           // @ts-expect-error Exists on EIP6963Connector
           connector.setEip6963Wallet?.({ provider, info })
@@ -253,6 +259,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
       disconnect: async () => {
         await disconnect(this.wagmiConfig)
+        this.setClientId(null)
         if (siweConfig?.options?.signOutOnDisconnect) {
           const { SIWEController } = await import('@web3modal/siwe')
           await SIWEController.signOut()
