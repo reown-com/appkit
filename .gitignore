@@ -2,7 +2,6 @@ dist
 node_modules
 .DS_Store
 .env
-.env.production
 .idea
 .next
 out
