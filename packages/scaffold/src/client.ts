@@ -322,6 +322,10 @@ export class Web3ModalScaffold {
     OptionsController.setEIP6963Enabled(enabled)
   }
 
+  protected setClientId: (typeof BlockchainApiController)['setClientId'] = clientId => {
+    BlockchainApiController.setClientId(clientId)
+  }
+
   // -- Private ------------------------------------------------------------------
   private async initControllers(options: ScaffoldOptions) {
     ChainController.initialize([
