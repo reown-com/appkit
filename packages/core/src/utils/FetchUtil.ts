@@ -1,6 +1,7 @@
 // -- Types ----------------------------------------------------------------------
 interface Options {
   baseUrl: string
+  clientId: string | null
 }
 
 interface RequestArguments {
@@ -31,9 +32,11 @@ async function fetchData(...args: Parameters<typeof fetch>) {
 // -- Utility --------------------------------------------------------------------
 export class FetchUtil {
   public baseUrl: Options['baseUrl']
+  public clientId: Options['clientId']
 
-  public constructor({ baseUrl }: Options) {
+  public constructor({ baseUrl, clientId }: Options) {
     this.baseUrl = baseUrl
+    this.clientId = clientId
   }
 
   public async get<T>({ headers, signal, cache, ...args }: RequestArguments) {
@@ -94,6 +97,9 @@ export class FetchUtil {
           url.searchParams.append(key, value)
         }
       })
+    }
+    if (this.clientId) {
+      url.searchParams.append('clientId', this.clientId)
     }
 
     return url
