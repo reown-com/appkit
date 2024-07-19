@@ -388,8 +388,9 @@ export class Web3Modal extends Web3ModalScaffold {
     const uniqueIds = standardAdapters ? new Set(standardAdapters.map(s => s.name)) : new Set([])
     const filteredAdapters = this.walletAdapters.filter(
       adapter =>
-        !uniqueIds.has(adapter.name) || (adapter.name === 'Trust' && uniqueIds.add(adapter.name))
+        (!uniqueIds.has(adapter.name) || adapter.name === 'Trust') && uniqueIds.add(adapter.name)
     )
+
     standardAdapters?.forEach(adapter => {
       w3mConnectors.push({
         id: adapter.name,
