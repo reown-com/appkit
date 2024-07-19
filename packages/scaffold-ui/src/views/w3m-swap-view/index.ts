@@ -261,6 +261,7 @@ export class W3mSwapView extends LitElement {
 
     return html` <wui-flex gap="xs">
       <wui-button
+        data-testid="swap-action-button"
         class="action-button"
         fullWidth
         size="lg"

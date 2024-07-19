@@ -7,6 +7,7 @@
     "start:laboratory": "next start",
     "build:laboratory": "next build",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "vitest:start": "vitest",
     "playwright:start": "npm run start:laboratory",
     "playwright:install": "playwright install --with-deps",
     "playwright:test": "playwright test",
@@ -17,6 +18,7 @@
     "playwright:test:siwe": "playwright test --grep siwe.spec.ts",
     "playwright:test:siwe-email": "playwright test --grep siwe-email.spec.ts",
     "playwright:test:siwe-sa": "playwright test --grep siwe-sa.spec.ts",
+    "playwright:test:wallet-features": "playwright test --grep wallet-features.spec.ts",
     "playwright:test:sa": "playwright test --grep smart-account.spec.ts",
     "playwright:test:canary": "playwright test --retries=0 --grep canary.spec.ts --project='Desktop Chrome/wagmi'",
     "playwright:debug": "npm run playwright:test -- --debug",
@@ -27,6 +29,7 @@
     "playwright:debug:siwe": "npm run playwright:test:siwe -- --debug",
     "playwright:debug:siwe-email": "npm run playwright:test:siwe-email -- --debug",
     "playwright:debug:siwe-sa": "npm run playwright:test:siwe-sa -- --debug",
+    "playwright:debug:wallet-features": "npm run playwright:test:wallet-features -- --debug",
     "playwright:debug:sa": "npm run playwright:test:sa -- --debug",
     "playwright:debug:canary": "npm run playwright:test:canary -- --debug"
   },

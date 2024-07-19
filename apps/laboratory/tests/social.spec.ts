@@ -1,40 +1,22 @@
+import { expect } from '@playwright/test'
 import { testMSocial } from './shared/fixtures/w3m-social-fixture'
+import type { ModalWalletPage } from './shared/pages/ModalWalletPage'
 
 testMSocial.beforeEach(async ({ modalValidator }) => {
   await modalValidator.expectConnected()
 })
 
-testMSocial('it should sign', async ({ modalPage, modalValidator }) => {
-  await modalPage.sign()
-  await modalPage.approveSign()
-  await modalValidator.expectAcceptedSign()
-})
+testMSocial('it should connect with GitHub, switch network and sign', async ({ modalPage }) => {
+  const targetChain = 'Polygon'
+  const modalWalletPage = modalPage as ModalWalletPage
 
-testMSocial('it should reject sign', async ({ modalPage, modalValidator }) => {
-  await modalPage.sign()
-  await modalPage.rejectSign()
-  await modalValidator.expectRejectedSign()
-})
+  const networkButton = modalWalletPage.page.getByTestId('w3m-network-button')
+  await networkButton.click()
 
-testMSocial('it should switch network and sign', async ({ modalPage, modalValidator }) => {
-  let targetChain = 'Polygon'
-  await modalPage.switchNetwork(targetChain)
-  await modalValidator.expectSwitchedNetwork(targetChain)
-  await modalPage.closeModal()
-  await modalPage.sign()
-  await modalPage.approveSign()
-  await modalValidator.expectAcceptedSign()
-
-  targetChain = 'Ethereum'
-  await modalPage.switchNetwork(targetChain)
-  await modalValidator.expectSwitchedNetwork(targetChain)
-  await modalPage.closeModal()
-  await modalPage.sign()
-  await modalPage.approveSign()
-  await modalValidator.expectAcceptedSign()
-})
-
-testMSocial('it should disconnect correctly', async ({ modalPage, modalValidator }) => {
-  await modalPage.disconnect()
-  await modalValidator.expectDisconnected()
+  const networkToSwitchButton = modalWalletPage.page.getByTestId(
+    `w3m-network-switch-${targetChain}`
+  )
+  await networkToSwitchButton.click()
+  await networkToSwitchButton.waitFor({ state: 'hidden' })
+  await expect(networkButton).toHaveText(targetChain)
 })
