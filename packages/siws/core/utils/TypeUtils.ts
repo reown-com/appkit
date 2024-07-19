@@ -13,7 +13,7 @@ export interface SIWSCreateMessageArgs {
   nonce: string
   uri: string
   address: string
-  version: '1'
+  version: string
   type?: CacaoHeader['t']
   nbf?: string
   exp?: string
@@ -22,7 +22,7 @@ export interface SIWSCreateMessageArgs {
   resources?: string[]
   expiry?: number
   iat?: string
-  typeSiwx?: 'Solana' | 'Ethereum'
+  typeSiwx?: string
 }
 export type SIWSMessageArgs = {
   chains: string[]

@@ -1,22 +1,18 @@
+import base58 from 'bs58'
 import type {
   SIWSCreateMessageArgs,
   SIWSVerifyMessageArgs,
   SIWSConfig,
   SIWSClientMethods,
-  SIWSSession
+  SIWSSession,
+  SIWSMessageArgs
 } from '../core/utils/TypeUtils.js'
 import type { SIWSControllerClient } from '../core/controller/SIWSController.js'
 
-import {
-  ConnectionController,
-  RouterUtil,
-  AccountController,
-  NetworkController,
-  StorageUtil,
-  RouterController
-} from '@web3modal/core'
-
+import { RouterUtil, NetworkController, StorageUtil, RouterController } from '@web3modal/core'
+import type { ExtendedBaseWalletAdapter } from '@web3modal/solana'
 import { ConstantsUtil } from '../core/utils/ConstantsUtil.js'
+import { formatChainId } from '../core/utils/formatChainId.js'
 
 // -- Client -------------------------------------------------------------------- //
 export class Web3ModalSIWSClient {
@@ -88,31 +84,33 @@ export class Web3ModalSIWSClient {
     return session
   }
 
-  async signIn(): Promise<SIWSSession> {
-    const address = AccountController.state.address
+  async signIn(adapter: ExtendedBaseWalletAdapter): Promise<SIWSSession> {
     const nonce = await this.methods.getNonce()
-
-    if (!address) {
-      throw new Error('An address is required to create a SIWS message.')
-    }
-
-    const chainId = NetworkController.state.caipNetwork?.id
+    const rawChainId = NetworkController.state.caipNetwork?.name
+    const chainId = formatChainId(rawChainId)
 
     if (!chainId) {
       throw new Error('A chainId is required to create a SIWS message.')
     }
 
-    const messageParams = await this.getMessageParams()
+    const messageParams: SIWSMessageArgs = await this.getMessageParams()
 
-    const message = this.methods.createMessage({
-      address,
+    const dataMsg = {
       chainId,
       nonce,
       version: '1',
       typeSiwx: 'Solana',
-      iat: messageParams.iat || new Date().toISOString(),
+      issuedAt: messageParams.iat || new Date().toISOString(),
       ...messageParams
-    })
+    }
+
+    const { signature, account } = await adapter.signIn(dataMsg)
+
+    if (!account || !account.address) {
+      throw new Error('An address is required to create a SIWS message.')
+    }
+
+    const message = this.methods.createMessage({ address: account.address, ...dataMsg })
 
     const type = StorageUtil.getConnectedConnector()
     if (type === 'AUTH') {
@@ -126,11 +124,11 @@ export class Web3ModalSIWSClient {
       })
     }
 
-    const signature = await ConnectionController.signMessage(message)
+    console.log('_pre_valid_1')
 
     const isValid = await this.methods.verifyMessage({
       message,
-      signature
+      signature: base58.encode(signature)
     })
 
     if (!isValid) {
@@ -141,6 +139,7 @@ export class Web3ModalSIWSClient {
     if (!session) {
       throw new Error('Error verifying SIWS signature')
     }
+
     if (this.methods.onSignIn) {
       this.methods.onSignIn(session)
     }

@@ -7,10 +7,11 @@ import type {
   SIWSVerifyMessageArgs
 } from '../utils/TypeUtils.js'
 import { OptionsController } from '@web3modal/core'
+import type { ExtendedBaseWalletAdapter } from '@web3modal/solana'
 
 // -- Types --------------------------------------------- //
 export interface SIWSControllerClient extends SIWSClientMethods {
-  signIn: () => Promise<SIWSSession>
+  signIn: (adapter: ExtendedBaseWalletAdapter) => Promise<SIWSSession>
   options: {
     enabled: boolean
     nonceRefetchIntervalMs: number
@@ -98,9 +99,9 @@ export const SIWSController = {
     return isValid
   },
 
-  async signIn() {
+  async signIn(adapter: ExtendedBaseWalletAdapter) {
     const client = this._getClient()
-    const session = await client.signIn()
+    const session = await client.signIn(adapter)
 
     return session
   },

@@ -15,7 +15,12 @@ import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 import { SolConstantsUtil, SolHelpersUtil, SolStoreUtil } from './utils/scaffold/index.js'
 import { WalletConnectConnector } from './connectors/walletConnectConnector.js'
 
-import type { BaseWalletAdapter, StandardWalletAdapter } from '@solana/wallet-adapter-base'
+import type {
+  BaseSignInMessageSignerWalletAdapter,
+  BaseWalletAdapter,
+  StandardWalletAdapter
+} from '@solana/wallet-adapter-base'
+import type { SolanaSignInInput, SolanaSignInOutput } from '@solana/wallet-standard-features'
 import type { PublicKey, Commitment, ConnectionConfig } from '@solana/web3.js'
 import type UniversalProvider from '@walletconnect/universal-provider'
 import type {
@@ -48,9 +53,10 @@ export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultCha
   wallets: BaseWalletAdapter[]
 }
 
-export type ExtendedBaseWalletAdapter = BaseWalletAdapter & {
-  isAnnounced: boolean
-}
+export type ExtendedBaseWalletAdapter = BaseWalletAdapter &
+  BaseSignInMessageSignerWalletAdapter & {
+    isAnnounced: boolean
+  }
 export type Web3ModalOptions = Omit<Web3ModalClientOptions, '_sdkVersion' | 'isUniversalProvider'>
 
 // -- Client --------------------------------------------------------------------
@@ -146,7 +152,16 @@ export class Web3Modal extends Web3ModalScaffold {
         if (!adapter) {
           throw Error('connectionControllerClient:connectExternal - adapter was undefined')
         }
-        await adapter.connect()
+
+        // await adapter.connect()
+        if (siwsConfig) {
+          const { SIWSController } = await import('@web3modal/siws')
+          await SIWSController.signIn(adapter)
+        } else {
+          await adapter.connect()
+        }
+
+        // await adapter.connect()
         this.setInjectedProvider(adapter as unknown as Provider)
       },
 
