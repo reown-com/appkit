@@ -50,7 +50,6 @@
     "packages/solana",
     "packages/cdn",
     "apps/*",
-    "apps/laboratory/tests/id-allocation-service",
     "examples/*"
   ],
   "devDependencies": {

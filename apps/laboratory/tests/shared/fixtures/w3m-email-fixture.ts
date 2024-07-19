@@ -15,7 +15,7 @@ export const testMEmail = timingFixture.extend<ModalFixture>({
       throw new Error('MAILSAC_API_KEY is not set')
     }
     const email = new Email(mailsacApiKey)
-    const tempEmail = email.getEmailAddressToUse()
+    const tempEmail = await email.getEmailAddressToUse()
 
     await modalPage.emailFlow(tempEmail, context, mailsacApiKey)
     await use(modalPage)

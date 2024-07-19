@@ -20,7 +20,7 @@ export const testModalSmartAccount = timingFixture.extend<
         throw new Error('MAILSAC_API_KEY is not set')
       }
       const email = new Email(mailsacApiKey)
-      const tempEmail = email.getEmailAddressToUse()
+      const tempEmail = await email.getEmailAddressToUse()
 
       // Switch to supported network first so it initializes with SA
       await modalPage.switchNetworkWithNetworkButton('Sepolia')
