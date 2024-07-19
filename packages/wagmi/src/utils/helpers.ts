@@ -54,7 +54,17 @@ export function getTransport({ chain, projectId }: { chain: Chain; projectId: st
   }
 
   return fallback([
-    http(`${RPC_URL}/v1/?chainId=${ConstantsUtil.EIP155}:${chain.id}&projectId=${projectId}`),
+    http(`${RPC_URL}/v1/?chainId=${ConstantsUtil.EIP155}:${chain.id}&projectId=${projectId}`, {
+      /*
+       * The Blockchain API uses "Content-Type: text/plain" to avoid OPTIONS preflight requests
+       * It will only work for viem >= 2.17.7
+       */
+      fetchOptions: {
+        headers: {
+          'Content-Type': 'text/plain'
+        }
+      }
+    }),
     http(chainDefaultUrl)
   ])
 }
