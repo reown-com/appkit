@@ -44,7 +44,7 @@ export function WagmiSendCallsWithPaymasterServiceTest() {
   if (!isSendCallsSupported()) {
     return (
       <Text fontSize="md" color="yellow">
-        Wallet does not support wallet_sendCalls rpc method
+        Wallet does not support "wallet_sendCalls" RPC method
       </Text>
     )
   }
