@@ -13,9 +13,10 @@ app.get('/allocate', async c => {
   const now = Date.now()
   const ids: Ids = JSON.parse((await c.env.ID_ALLOCATION.get('ids')) || '{}')
   for (let id = 0; ; id++) {
-    const isFree = ids[id] === undefined || ids[id] < now
+    const exp = ids[id]
+    const isFree = exp === undefined || exp < now
     if (isFree) {
-      ids[id] = now + 1000 * 5
+      ids[id] = now + 1000 * 60
       await c.env.ID_ALLOCATION.put('ids', JSON.stringify(ids))
       return c.json({ id: id })
     }
