@@ -153,7 +153,6 @@ export class Web3Modal extends Web3ModalScaffold {
           throw Error('connectionControllerClient:connectExternal - adapter was undefined')
         }
 
-        // await adapter.connect()
         if (siwsConfig) {
           const { SIWSController } = await import('@web3modal/siws')
           await SIWSController.signIn(adapter)
@@ -161,7 +160,6 @@ export class Web3Modal extends Web3ModalScaffold {
           await adapter.connect()
         }
 
-        // await adapter.connect()
         this.setInjectedProvider(adapter as unknown as Provider)
       },
 

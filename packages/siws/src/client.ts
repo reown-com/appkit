@@ -124,8 +124,6 @@ export class Web3ModalSIWSClient {
       })
     }
 
-    console.log('_pre_valid_1')
-
     const isValid = await this.methods.verifyMessage({
       message,
       signature: base58.encode(signature)
