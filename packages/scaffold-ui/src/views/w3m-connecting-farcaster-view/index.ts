@@ -30,6 +30,8 @@ export class W3mConnectingFarcasterView extends LitElement {
 
   @state() protected ready = false
 
+  @state() protected loading = false
+
   public authConnector = ConnectorController.getAuthConnector()
 
   public constructor() {
@@ -132,11 +134,14 @@ export class W3mConnectingFarcasterView extends LitElement {
     if (this.authConnector) {
       try {
         await this.authConnector?.provider.connectFarcaster()
+
         if (this.socialProvider) {
           StorageUtil.setConnectedSocialProvider(this.socialProvider)
         }
         SnackController.showLoading('Loading user data')
+        this.loading = true
         await ConnectionController.connectExternal(this.authConnector)
+        this.loading = false
         ModalController.close()
       } catch (error) {
         RouterController.goBack()
@@ -148,13 +153,15 @@ export class W3mConnectingFarcasterView extends LitElement {
   private mobileLinkTemplate() {
     return html`<wui-button
       size="md"
-      ?disabled=${!this.uri}
+      ?loading=${this.loading}
+      ?disabled=${!this.uri || this.loading}
       @click=${() => {
         if (this.uri) {
           CoreHelperUtil.openHref(this.uri, '_blank')
         }
       }}
-      >Open farcaster</wui-button
+    >
+      Open farcaster</wui-button
     >`
   }
 

@@ -271,6 +271,19 @@ export class W3mFrameProvider {
     })
   }
 
+  public async getFarcasterUri() {
+    await this.w3mFrame.frameLoadPromise
+    this.w3mFrame.events.postAppEvent({
+      type: W3mFrameConstants.APP_GET_FARCASTER_URI
+    })
+
+    return new Promise<W3mFrameTypes.Responses['FrameGetFarcasterUriResponse']>(
+      (resolve, reject) => {
+        this.getFarcasterUriResolver = { resolve, reject }
+      }
+    )
+  }
+
   public async getSocialRedirectUri(
     payload: W3mFrameTypes.Requests['AppGetSocialRedirectUriRequest']
   ) {
@@ -396,19 +409,6 @@ export class W3mFrameProvider {
     return new Promise<W3mFrameTypes.Responses['FrameGetUserResponse']>((resolve, reject) => {
       this.connectSocialResolver = { resolve, reject }
     })
-  }
-
-  public async getFarcasterUri() {
-    await this.w3mFrame.frameLoadPromise
-    this.w3mFrame.events.postAppEvent({
-      type: W3mFrameConstants.APP_GET_FARCASTER_URI
-    })
-
-    return new Promise<W3mFrameTypes.Responses['FrameGetFarcasterUriResponse']>(
-      (resolve, reject) => {
-        this.getFarcasterUriResolver = { resolve, reject }
-      }
-    )
   }
 
   public async connectFarcaster() {
