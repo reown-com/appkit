@@ -205,6 +205,8 @@ export class Web3ModalScaffold {
     AccountController.removeAddressLabel(address)
   }
 
+  protected getCaipAddress = () => AccountController.state.caipAddress
+
   protected setCaipAddress: (typeof AccountController)['setCaipAddress'] = (caipAddress, chain) => {
     AccountController.setCaipAddress(caipAddress, chain)
   }
@@ -319,6 +321,10 @@ export class Web3ModalScaffold {
 
   protected setEIP6963Enabled: (typeof OptionsController)['setEIP6963Enabled'] = enabled => {
     OptionsController.setEIP6963Enabled(enabled)
+  }
+
+  protected setClientId: (typeof BlockchainApiController)['setClientId'] = clientId => {
+    BlockchainApiController.setClientId(clientId)
   }
 
   // -- Private ------------------------------------------------------------------
