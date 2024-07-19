@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/siws",
-  "version": "5.0.6",
+  "version": "5.0.7",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -18,8 +18,8 @@
   "dependencies": {
     "@learnweb3dao/siwx-common": "0.3.0",
     "@walletconnect/utils": "2.12.0",
-    "@web3modal/core": "5.0.6",
-    "@web3modal/scaffold-utils": "5.0.6",
+    "@web3modal/core": "5.0.7",
+    "@web3modal/scaffold-utils": "5.0.7",
     "bs58": "6.0.0",
     "lit": "3.1.0",
     "valtio": "1.11.2"
