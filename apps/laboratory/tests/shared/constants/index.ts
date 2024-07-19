@@ -10,3 +10,4 @@ export const DEFAULT_SESSION_PARAMS: SessionParams = {
 }
 export const SECURE_WEBSITE_URL = 'https://secure.walletconnect.com'
 export const DEFAULT_CHAIN_NAME = process.env['DEFAULT_CHAIN_NAME'] || 'Ethereum'
+export const BLOCKCHAIN_API_URL = 'https://rpc.walletconnect.org/v1/'

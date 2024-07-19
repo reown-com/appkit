@@ -1,5 +1,5 @@
-import { DEFAULT_CHAIN_NAME } from './shared/constants'
-import { testConnectedMW } from './shared/fixtures/w3m-wallet-fixture'
+import { BLOCKCHAIN_API_URL, DEFAULT_CHAIN_NAME } from './shared/constants'
+import { expect, testConnectedMW } from './shared/fixtures/w3m-wallet-fixture'
 import { expectConnection } from './shared/utils/validation'
 
 testConnectedMW.beforeEach(async ({ modalValidator, walletValidator }) => {
@@ -89,5 +89,24 @@ testConnectedMW(
     await walletPage.switchNetwork('eip155:5')
     await modalValidator.expectNetworkNotSupportedVisible()
     await modalPage.closeModal()
+  }
+)
+
+testConnectedMW.only(
+  'it should call identify a single time',
+  async ({ modalPage, walletPage, modalValidator }) => {
+    let count = 0
+    await modalPage.page.context().route(`${BLOCKCHAIN_API_URL}/identity/**`, async route => {
+      count += 1
+
+      return route.continue()
+    })
+
+    await modalPage.sign()
+    await walletPage.handleRequest({ accept: true })
+    await modalValidator.expectAcceptedSign()
+
+    await modalPage.page.waitForTimeout(3000)
+    expect(count).toBe(1)
   }
 )
