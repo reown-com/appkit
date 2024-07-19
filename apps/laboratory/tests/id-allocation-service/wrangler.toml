@@ -1,0 +1,6 @@
+name = "id-allocation-service"
+compatibility_date = "2024-07-19"
+
+[[kv_namespaces]]
+binding = "ID_ALLOCATION"
+id = "7f5188649dcb47c784bf3bed187f7475"
