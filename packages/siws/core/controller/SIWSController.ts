@@ -77,8 +77,6 @@ export const SIWSController = {
         this.setStatus('success')
       }
 
-      console.log(`session: `, session)
-
       return session
     } catch {
       return undefined

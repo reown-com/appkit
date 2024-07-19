@@ -17,7 +17,7 @@ export function defaultConfig(options: ConfigOptions) {
   const { enableEIP6963 = true, enableInjected = true, enableCoinbase = true, metadata } = options
 
   let injectedProvider: Provider | undefined = undefined
-  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents @typescript-eslint/no-explicit-any
   let coinbaseProvider: ProviderInterface | undefined = undefined
 
   const providers: ProviderType = { metadata }

@@ -20,7 +20,6 @@ import type {
   BaseWalletAdapter,
   StandardWalletAdapter
 } from '@solana/wallet-adapter-base'
-import type { SolanaSignInInput, SolanaSignInOutput } from '@solana/wallet-standard-features'
 import type { PublicKey, Commitment, ConnectionConfig } from '@solana/web3.js'
 import type UniversalProvider from '@walletconnect/universal-provider'
 import type {

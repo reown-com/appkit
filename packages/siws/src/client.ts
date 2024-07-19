@@ -106,7 +106,7 @@ export class Web3ModalSIWSClient {
 
     const { signature, account } = await adapter.signIn(dataMsg)
 
-    if (!account || !account.address) {
+    if (!account) {
       throw new Error('An address is required to create a SIWS message.')
     }
 
