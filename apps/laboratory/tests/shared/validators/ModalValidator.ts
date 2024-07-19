@@ -116,4 +116,14 @@ export class ModalValidator {
 
     expect(accounts.length).toBeGreaterThan(1)
   }
+
+  async expectNetworkNotSupportedVisible() {
+    const networkNotSupportedMessage = this.page.getByText(
+      'This app doesn’t support your current network. Switch to an available option to continue.'
+    )
+    await expect(
+      networkNotSupportedMessage,
+      'Network not supported message should be visible'
+    ).toBeVisible()
+  }
 }
