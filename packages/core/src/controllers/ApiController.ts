@@ -19,7 +19,7 @@ const baseUrl = CoreHelperUtil.getApiUrl()
 export const api = new FetchUtil({ baseUrl })
 const entries = '40'
 const recommendedEntries = '4'
-const imageCountToFetch = 16
+const imageCountToFetch = 20
 
 // -- Types --------------------------------------------- //
 export interface ApiControllerState {
