@@ -78,8 +78,10 @@ export class Email {
   }
 
   async getEmailAddressToUse(domain = EMAIL_DOMAIN): Promise<string> {
-    const response = await fetch('https://id-allocation-service.walletconnect-v1-bridge.workers.dev/allocate');
-    const { id } = await response.json();
+    const response = await fetch(
+      'https://id-allocation-service.walletconnect-v1-bridge.workers.dev/allocate'
+    )
+    const { id } = await response.json()
 
     return `w3m-w${id}@${domain}`
   }

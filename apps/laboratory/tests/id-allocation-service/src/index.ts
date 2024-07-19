@@ -9,9 +9,9 @@ const app = new Hono<{ Bindings: Bindings }>()
 
 type Ids = { [key: number]: number }
 
-app.get('/allocate', async (c) => {
+app.get('/allocate', async c => {
   const now = Date.now()
-  const ids: Ids = JSON.parse(await c.env.ID_ALLOCATION.get('ids') || '{}')
+  const ids: Ids = JSON.parse((await c.env.ID_ALLOCATION.get('ids')) || '{}')
   for (let id = 0; ; id++) {
     const isFree = ids[id] === undefined || ids[id] < now
     if (isFree) {
