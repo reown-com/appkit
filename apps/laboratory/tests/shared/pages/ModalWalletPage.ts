@@ -12,9 +12,6 @@ export class ModalWalletPage extends ModalPage {
     super(page, library, flavor)
   }
 
-  async openProfileView() {
-    await this.page.getByTestId('wui-profile-button').click()
-  }
   async openSettings() {
     await this.page.getByTestId('account-settings-button').click()
   }

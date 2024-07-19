@@ -201,23 +201,40 @@ export class Web3Modal extends Web3ModalScaffold {
           onUri(uri)
         })
 
-        if (siweConfig?.options?.enabled) {
+        // When connecting through walletconnect, we need to set the clientId in the store
+        const clientId = await WalletConnectProvider.signer?.client?.core?.crypto?.getClientId()
+        if (clientId) {
+          this.setClientId(clientId)
+        }
+
+        const params = await siweConfig?.getMessageParams?.()
+        // Must perform these checks to satify optional types
+        if (siweConfig?.options?.enabled && params && Object.keys(params || {}).length > 0) {
           const { SIWEController, getDidChainId, getDidAddress } = await import('@web3modal/siwe')
+
+          // Make active chain first in requested chains to make it default for siwe message
+          const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
+          let reorderedChains = params.chains
+          if (chainId) {
+            reorderedChains = [chainId, ...params.chains.filter(c => c !== chainId)]
+          }
+
           const result = await WalletConnectProvider.authenticate({
             nonce: await siweConfig.getNonce(),
-            methods: OPTIONAL_METHODS,
-            ...(await siweConfig.getMessageParams())
+            methods: [...OPTIONAL_METHODS],
+            ...params,
+            chains: reorderedChains
           })
           // Auths is an array of signed CACAO objects https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-74.md
           const signedCacao = result?.auths?.[0]
           if (signedCacao) {
             const { p, s } = signedCacao
-            const chainId = getDidChainId(p.iss)
+            const cacaoChainId = getDidChainId(p.iss)
             const address = getDidAddress(p.iss)
-            if (address && chainId) {
+            if (address && cacaoChainId) {
               SIWEController.setSession({
                 address,
-                chainId: parseInt(chainId, 10)
+                chainId: parseInt(cacaoChainId, 10)
               })
             }
             try {
@@ -243,7 +260,7 @@ export class Web3Modal extends Web3ModalScaffold {
             }
           }
         } else {
-          await WalletConnectProvider.connect()
+          await WalletConnectProvider.connect({ optionalChains: this.chains.map(c => c.chainId) })
         }
 
         await this.setWalletConnectProvider()
@@ -259,6 +276,8 @@ export class Web3Modal extends Web3ModalScaffold {
         info: Info
         provider: Provider
       }) => {
+        // If connecting with something else than walletconnect, we need to clear the clientId in the store
+        this.setClientId(null)
         if (id === ConstantsUtil.INJECTED_CONNECTOR_ID) {
           const InjectedProvider = ethersConfig.injected
           if (!InjectedProvider) {
@@ -313,7 +332,11 @@ export class Web3Modal extends Web3ModalScaffold {
       },
 
       disconnect: async () => {
-        const { provider, providerType } = EthersStoreUtil.state
+        const provider = EthersStoreUtil.state.provider
+        const providerType = EthersStoreUtil.state.providerType
+        localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
+        EthersStoreUtil.reset()
+        this.setClientId(null)
         if (siweConfig?.options?.signOutOnDisconnect) {
           const { SIWEController } = await import('@web3modal/siwe')
           await SIWEController.signOut()
@@ -621,7 +644,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
     localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
     EthersStoreUtil.reset()
-
+    this.setClientId(null)
     if (providerType === ConstantsUtil.AUTH_CONNECTOR_ID) {
       await this.authProvider?.disconnect()
     } else if (provider && (providerType === 'injected' || providerType === 'eip6963')) {
@@ -650,16 +673,18 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private async initWalletConnectProvider() {
+    const rpcMap = this.chains
+      ? this.chains.reduce<Record<number, string>>((map, chain) => {
+          map[chain.chainId] = chain.rpcUrl
+
+          return map
+        }, {})
+      : ({} as Record<number, string>)
+
     const walletConnectProviderOptions: EthereumProviderOptions = {
       projectId: this.projectId,
       showQrModal: false,
-      rpcMap: this.chains
-        ? this.chains.reduce<Record<number, string>>((map, chain) => {
-            map[chain.chainId] = chain.rpcUrl
-
-            return map
-          }, {})
-        : ({} as Record<number, string>),
+      rpcMap,
       optionalChains: [...this.chains.map(chain => chain.chainId)] as [number],
       metadata: {
         name: this.metadata ? this.metadata.name : '',
