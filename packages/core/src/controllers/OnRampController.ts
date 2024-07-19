@@ -1,6 +1,6 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, subscribe as sub } from 'valtio/vanilla'
-import { ONRAMP_PROVIDERS } from '../utils/ConstantsUtil.js'
+import { ONRAMP_PROVIDERS, MELD_DEV_PUBLIC_KEY, MELD_PROD_PUBLIC_KEY } from '../utils/ConstantsUtil.js'
 import type { PurchaseCurrency, PaymentCurrency } from '../utils/TypeUtil.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { ApiController } from './ApiController.js'
@@ -97,8 +97,8 @@ export const OnRampController = {
 
   setSelectedProvider(provider: OnRampProvider | null) {
     if (provider && provider.name === 'meld') {
-      const publicKey = "?publicKey=WXETMsajb7XcQBm7mcxAab:q3MtzJpiEMtXVNXsqYkAnAaBkgStybGVtZ"
-      provider.url += publicKey
+      const pubKey = process.env['NODE_ENV'] === 'production' ? MELD_PROD_PUBLIC_KEY : MELD_DEV_PUBLIC_KEY
+      provider.url += pubKey
       const currency = ChainController.state.activeChain === 'solana' ? 'SOL' : 'USDC'
       provider.url += `&destinationCurrencyCode=${currency}`
       const address = AccountController.state.address
