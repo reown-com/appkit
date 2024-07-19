@@ -399,8 +399,6 @@ export class Web3Modal extends Web3ModalScaffold {
         chain: CommonConstantsUtil.CHAIN.SOLANA
       })
     })
-    // @eslint-disable-next-line no-console
-    console.log(`filteredAdapters`, filteredAdapters);
     filteredAdapters.forEach(adapter => {
       w3mConnectors.push({
         id: adapter.name,
