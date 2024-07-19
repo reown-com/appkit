@@ -387,7 +387,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
     const uniqueIds = standardAdapters ? new Set(standardAdapters.map(s => s.name)) : new Set([])
     const filteredAdapters = this.walletAdapters.filter(
-      adapter => !uniqueIds.has(adapter.name) && uniqueIds.add(adapter.name)
+      adapter => !uniqueIds.has(adapter.name) || adapter.name === 'Trust' && uniqueIds.add(adapter.name)
     )
     standardAdapters?.forEach(adapter => {
       w3mConnectors.push({
@@ -399,6 +399,8 @@ export class Web3Modal extends Web3ModalScaffold {
         chain: CommonConstantsUtil.CHAIN.SOLANA
       })
     })
+    // @eslint-disable-next-line no-console
+    console.log(`filteredAdapters`, filteredAdapters);
     filteredAdapters.forEach(adapter => {
       w3mConnectors.push({
         id: adapter.name,
