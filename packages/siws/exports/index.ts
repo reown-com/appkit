@@ -29,4 +29,3 @@ export function createSIWSConfig(siwsConfig: SIWSConfig) {
 }
 
 export * from '../scaffold/partials/w3m-connecting-siws/index.js'
-export * from '../scaffold/views/w3m-connecting-siws-view/index.js'

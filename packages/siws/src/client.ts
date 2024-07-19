@@ -5,12 +5,12 @@ import type {
   SIWSConfig,
   SIWSClientMethods,
   SIWSSession,
-  SIWSMessageArgs
+  SIWSMessageArgs,
+  ExtendedBaseWalletAdapter
 } from '../core/utils/TypeUtils.js'
 import type { SIWSControllerClient } from '../core/controller/SIWSController.js'
 
 import { RouterUtil, NetworkController, StorageUtil, RouterController } from '@web3modal/core'
-import type { ExtendedBaseWalletAdapter } from '@web3modal/solana'
 import { ConstantsUtil } from '../core/utils/ConstantsUtil.js'
 import { formatChainId } from '../core/utils/formatChainId.js'
 

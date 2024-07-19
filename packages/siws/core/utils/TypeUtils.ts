@@ -1,3 +1,13 @@
+import type {
+  BaseSignInMessageSignerWalletAdapter,
+  BaseWalletAdapter
+} from '@solana/wallet-adapter-base'
+
+export type ExtendedBaseWalletAdapter = BaseWalletAdapter &
+  BaseSignInMessageSignerWalletAdapter & {
+    isAnnounced: boolean
+  }
+
 export interface SIWSSession {
   address: string
   chainId: string

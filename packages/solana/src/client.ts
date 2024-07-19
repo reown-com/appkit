@@ -20,6 +20,7 @@ import type {
   BaseWalletAdapter,
   StandardWalletAdapter
 } from '@solana/wallet-adapter-base'
+
 import type { PublicKey, Commitment, ConnectionConfig } from '@solana/web3.js'
 import type UniversalProvider from '@walletconnect/universal-provider'
 import type {
@@ -52,10 +53,9 @@ export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultCha
   wallets: BaseWalletAdapter[]
 }
 
-export type ExtendedBaseWalletAdapter = BaseWalletAdapter &
-  BaseSignInMessageSignerWalletAdapter & {
-    isAnnounced: boolean
-  }
+export type ExtendedBaseWalletAdapter = BaseWalletAdapter & {
+  isAnnounced: boolean
+}
 export type Web3ModalOptions = Omit<Web3ModalClientOptions, '_sdkVersion' | 'isUniversalProvider'>
 
 // -- Client --------------------------------------------------------------------
@@ -154,7 +154,9 @@ export class Web3Modal extends Web3ModalScaffold {
 
         if (siwsConfig) {
           const { SIWSController } = await import('@web3modal/siws')
-          await SIWSController.signIn(adapter)
+          await SIWSController.signIn(
+            adapter as BaseSignInMessageSignerWalletAdapter & ExtendedBaseWalletAdapter
+          )
         } else {
           await adapter.connect()
         }

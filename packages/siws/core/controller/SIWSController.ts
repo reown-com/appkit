@@ -4,10 +4,10 @@ import type {
   SIWSClientMethods,
   SIWSSession,
   SIWSCreateMessageArgs,
-  SIWSVerifyMessageArgs
+  SIWSVerifyMessageArgs,
+  ExtendedBaseWalletAdapter
 } from '../utils/TypeUtils.js'
 import { OptionsController } from '@web3modal/core'
-import type { ExtendedBaseWalletAdapter } from '@web3modal/solana'
 
 // -- Types --------------------------------------------- //
 export interface SIWSControllerClient extends SIWSClientMethods {
