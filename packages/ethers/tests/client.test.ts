@@ -2,7 +2,6 @@ import { beforeAll, describe, expect, it } from 'vitest'
 import { createWeb3Modal, defaultConfig } from '../exports/index.js'
 import { ConnectorController, NetworkController, OptionsController } from '@web3modal/core'
 import { ConstantsUtil, PresetsUtil } from '@web3modal/scaffold-utils'
-import { Web3Modal } from '../src/client.js'
 
 // -- Constants ----------------------------------------------------------------
 const mainnet = {
@@ -18,11 +17,10 @@ const metadata = {
   icons: ['https://test.com/icon.png'],
   url: 'https://test.com'
 }
-let modal: Web3Modal | undefined = undefined
 
 // -- Setup -------------------------------------------------------------------
 beforeAll(() => {
-  modal = createWeb3Modal({
+  createWeb3Modal({
     ethersConfig: defaultConfig({
       metadata,
       defaultChainId: 1,

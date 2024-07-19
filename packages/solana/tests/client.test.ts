@@ -1,8 +1,7 @@
 import { beforeAll, describe, expect, it } from 'vitest'
 import { createWeb3Modal, defaultSolanaConfig } from '../exports/index.js'
-import { ConnectorController, NetworkController, OptionsController } from '@web3modal/core'
+import { NetworkController, OptionsController } from '@web3modal/core'
 import { ConstantsUtil, PresetsUtil } from '@web3modal/scaffold-utils'
-import { Web3Modal } from '../src/client.js'
 import { solana } from '../exports/chains.js'
 
 // -- Constants ----------------------------------------------------------------
@@ -13,7 +12,6 @@ const metadata = {
   url: 'https://test.com',
   verify_url: ''
 }
-let modal: Web3Modal | undefined = undefined
 const chains = [solana]
 
 export const solanaConfig = defaultSolanaConfig({
@@ -23,7 +21,7 @@ export const solanaConfig = defaultSolanaConfig({
 })
 // -- Setup -------------------------------------------------------------------
 beforeAll(() => {
-  modal = createWeb3Modal({
+  createWeb3Modal({
     solanaConfig,
     chains,
     wallets: [],
