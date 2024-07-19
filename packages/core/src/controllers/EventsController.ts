@@ -6,7 +6,7 @@ import { OptionsController } from './OptionsController.js'
 
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getAnalyticsUrl()
-const api = new FetchUtil({ baseUrl })
+const api = new FetchUtil({ baseUrl, clientId: null })
 const excluded = ['MODAL_CREATED']
 
 // -- Types --------------------------------------------- //
