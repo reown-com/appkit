@@ -499,7 +499,6 @@ export class EVMWagmiClient {
     this.syncNetwork(address, chainId, isConnected)
 
     if (isConnected && address && chainId) {
-      const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`
       this.appKit?.setIsConnected(isConnected, this.chain)
       this.appKit?.setCaipAddress(caipAddress, this.chain)
       await Promise.all([
