@@ -495,7 +495,7 @@ export class EVMWagmiClient {
       return
     }
 
-    this.appKit?.resetAccount()
+    this.appKit?.resetAccount(this.chain)
     this.syncNetwork(address, chainId, isConnected)
 
     if (isConnected && address && chainId) {
@@ -514,7 +514,10 @@ export class EVMWagmiClient {
       // Set by authConnector.onIsConnectedHandler as we need the account type
       const isAuthConnector = connector?.id === ConstantsUtil.AUTH_CONNECTOR_ID
       if (!isAuthConnector && addresses?.length) {
-        this.appKit?.setAllAccounts(addresses.map(addr => ({ address: addr, type: 'eoa' })))
+        this.appKit?.setAllAccounts(
+          addresses.map(addr => ({ address: addr, type: 'eoa' })),
+          this.chain
+        )
       }
 
       this.hasSyncedConnectedAccount = true
@@ -826,7 +829,8 @@ export class EVMWagmiClient {
               address: req.address,
               type: (req.preferredAccountType || 'eoa') as W3mFrameTypes.AccountType
             }
-          ]
+          ],
+          this.chain
         )
       })
 

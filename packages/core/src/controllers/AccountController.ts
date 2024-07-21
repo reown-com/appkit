@@ -144,16 +144,16 @@ export const AccountController = {
     ChainController.setAccountProp('allAccounts', accounts, chain)
   },
 
-  addAddressLabel(address: string, label: string) {
-    const map = ChainController.getAccountProp('addressLabels') || new Map()
+  addAddressLabel(address: string, label: string, chain?: Chain) {
+    const map = ChainController.getAccountProp('addressLabels', chain) || new Map()
     map.set(address, label)
-    ChainController.setAccountProp('addressLabels', map)
+    ChainController.setAccountProp('addressLabels', map, chain)
   },
 
-  removeAddressLabel(address: string) {
-    const map = ChainController.getAccountProp('addressLabels') || new Map()
+  removeAddressLabel(address: string, chain?: Chain) {
+    const map = ChainController.getAccountProp('addressLabels', chain) || new Map()
     map.delete(address)
-    ChainController.setAccountProp('addressLabels', map)
+    ChainController.setAccountProp('addressLabels', map, chain)
   },
 
   setConnectedWalletInfo(

@@ -159,17 +159,24 @@ export class AppKit {
 
   public getIsConnectedState = () => AccountController.state.isConnected
 
-  public setAllAccounts: (typeof AccountController)['setAllAccounts'] = (addresses = []) => {
-    AccountController.setAllAccounts(addresses)
+  public setAllAccounts: (typeof AccountController)['setAllAccounts'] = (addresses = [], chain) => {
+    AccountController.setAllAccounts(addresses, chain)
     OptionsController.setHasMultipleAddresses(addresses?.length > 1)
   }
 
-  public addAddressLabel: (typeof AccountController)['addAddressLabel'] = (address, label) => {
-    AccountController.addAddressLabel(address, label)
+  public addAddressLabel: (typeof AccountController)['addAddressLabel'] = (
+    address,
+    label,
+    chain
+  ) => {
+    AccountController.addAddressLabel(address, label, chain)
   }
 
-  public removeAddressLabel: (typeof AccountController)['removeAddressLabel'] = address => {
-    AccountController.removeAddressLabel(address)
+  public removeAddressLabel: (typeof AccountController)['removeAddressLabel'] = (
+    address,
+    chain
+  ) => {
+    AccountController.removeAddressLabel(address, chain)
   }
 
   public getCaipAddress = () => AccountController.state.caipAddress

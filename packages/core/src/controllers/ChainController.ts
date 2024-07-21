@@ -318,6 +318,7 @@ export const ChainController = {
 
   resetAccount(chain?: Chain) {
     const chainToWrite = state.multiChainEnabled ? chain : state.activeChain
+    console.log('resetAccount', chain, chainToWrite, state.multiChainEnabled)
 
     if (!chainToWrite) {
       throw new Error('Chain is required to set account prop')
