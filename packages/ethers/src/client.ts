@@ -1154,7 +1154,7 @@ export class Web3Modal extends Web3ModalScaffold {
     if (this.authProvider) {
       this.subscribeState(val => {
         if (!val.open) {
-          this.authProvider?.rejectRpcRequest()
+          this.authProvider?.rejectRpcRequests()
         }
       })
     }

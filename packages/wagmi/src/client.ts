@@ -719,7 +719,7 @@ export class Web3Modal extends Web3ModalScaffold {
           setTimeout(() => {
             this.showErrorMessage(W3mFrameRpcConstants.RPC_METHOD_NOT_ALLOWED_UI_MESSAGE)
           }, 300)
-          provider.rejectRpcRequest()
+          provider.rejectRpcRequests()
         }
       })
 
@@ -803,7 +803,7 @@ export class Web3Modal extends Web3ModalScaffold {
     const provider = (await connector.getProvider()) as W3mFrameProvider
     this.subscribeState(val => {
       if (!val.open) {
-        provider.rejectRpcRequest()
+        provider.rejectRpcRequests()
       }
     })
   }

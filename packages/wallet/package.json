@@ -13,7 +13,8 @@
     "build:wallet": "tsc --build",
     "watch": "tsc --watch",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "test": "vitest run --dir tests"
   },
   "dependencies": {
     "@walletconnect/logger": "2.1.2",
@@ -38,5 +39,9 @@
   },
   "bugs": {
     "url": "https://github.com/web3modal/web3modal/issues"
+  },
+  "devDependencies": {
+    "jsdom": "^24.1.0",
+    "vitest": "2.0.3"
   }
 }

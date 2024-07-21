@@ -65,6 +65,7 @@
     ],
 
     // Typescript
+    "@typescript-eslint/array-type": "off",
     "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
     "@typescript-eslint/dot-notation": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off",
