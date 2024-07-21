@@ -245,7 +245,7 @@ export class EVMWagmiClient {
         if (!connector) {
           throw new Error('connectionControllerClient:connectExternal - connector is undefined')
         }
-        this.setClientId(null)
+        this.appKit?.setClientId(null)
         if (provider && info && connector.id === ConstantsUtil.EIP6963_CONNECTOR_ID) {
           // @ts-expect-error Exists on EIP6963Connector
           connector.setEip6963Wallet?.({ provider, info })

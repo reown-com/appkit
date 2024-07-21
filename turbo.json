@@ -64,7 +64,7 @@
       "dependsOn": ["^build:scaffold-ui"],
       "cache": false
     },
-    "build:appkit": {
+    "build:base": {
       "outputs": ["dist/**"],
       "dependsOn": ["^build:scaffold-ui"],
       "cache": false
@@ -72,7 +72,7 @@
     "build:client": {
       "outputs": ["dist/**"],
       "dependsOn": [
-        "^build:appkit",
+        "^build:base",
         "^build:polyfills",
         "^build:scaffold",
         "^build:scaffold-react",
