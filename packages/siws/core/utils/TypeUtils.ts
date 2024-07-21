@@ -23,7 +23,7 @@ export interface SIWSCreateMessageArgs {
   nonce: string
   uri: string
   address: string
-  version: string
+  version: '1'
   type?: CacaoHeader['t']
   nbf?: string
   exp?: string

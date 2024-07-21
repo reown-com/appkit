@@ -11,7 +11,7 @@ import { OptionsController } from '@web3modal/core'
 
 // -- Types --------------------------------------------- //
 export interface SIWSControllerClient extends SIWSClientMethods {
-  signIn: (adapter: ExtendedBaseWalletAdapter) => Promise<SIWSSession>
+  signIn: (adapter?: ExtendedBaseWalletAdapter) => Promise<SIWSSession>
   options: {
     enabled: boolean
     nonceRefetchIntervalMs: number
@@ -99,7 +99,7 @@ export const SIWSController = {
     return isValid
   },
 
-  async signIn(adapter: ExtendedBaseWalletAdapter) {
+  async signIn(adapter?: ExtendedBaseWalletAdapter) {
     const client = this._getClient()
     const session = await client.signIn(adapter)
 

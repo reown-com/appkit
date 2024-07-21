@@ -864,7 +864,7 @@ export interface SiwxMessageCreatorArgs {
   nonce: string
   uri: string
   address: string
-  version: '1' | string
+  version: '1'
   nbf?: string
   exp?: string
   statement?: string

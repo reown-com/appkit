@@ -84,7 +84,7 @@ export class Web3ModalSIWSClient {
     return session
   }
 
-  async signIn(adapter: ExtendedBaseWalletAdapter): Promise<SIWSSession> {
+  async signIn(adapter?: ExtendedBaseWalletAdapter): Promise<SIWSSession> {
     const nonce = await this.methods.getNonce()
     const rawChainId = NetworkController.state.caipNetwork?.name
     const chainId = formatChainId(rawChainId)
@@ -93,12 +93,15 @@ export class Web3ModalSIWSClient {
       throw new Error('A chainId is required to create a SIWS message.')
     }
 
+    if (!adapter) {
+      throw new Error('A adapter is required to create a SIWS message.')
+    }
+
     const messageParams: SIWSMessageArgs = await this.getMessageParams()
 
     const dataMsg = {
       chainId,
       nonce,
-      version: '1',
       typeSiwx: 'Solana',
       issuedAt: messageParams.iat || new Date().toISOString(),
       ...messageParams
@@ -110,7 +113,11 @@ export class Web3ModalSIWSClient {
       throw new Error('An address is required to create a SIWS message.')
     }
 
-    const message = this.methods.createMessage({ address: account.address, ...dataMsg })
+    const message = this.methods.createMessage({
+      ...dataMsg,
+      address: account.address,
+      version: '1'
+    })
 
     const type = StorageUtil.getConnectedConnector()
     if (type === 'AUTH') {
