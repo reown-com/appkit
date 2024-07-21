@@ -15,7 +15,9 @@ import {
   getEnsAddress as wagmiGetEnsAddress,
   reconnect,
   switchChain,
-  waitForTransactionReceipt
+  waitForTransactionReceipt,
+  getConnections,
+  switchAccount
 } from '@wagmi/core'
 import type { OptionsControllerState } from '@web3modal/core'
 import { mainnet } from 'viem/chains'
@@ -157,20 +159,37 @@ export class EVMWagmiClient {
           onUri(data)
         })
 
+        const clientId = await provider.signer?.client?.core?.crypto?.getClientId()
+        if (clientId) {
+          this.appKit?.setClientId(clientId)
+        }
+
         const chainId = NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id)
+        const siweParams = await siweConfig?.getMessageParams?.()
         // Make sure client uses ethereum provider version that supports `authenticate`
-        if (siweConfig?.options?.enabled && typeof provider?.authenticate === 'function') {
+        if (
+          siweConfig?.options?.enabled &&
+          typeof provider?.authenticate === 'function' &&
+          siweParams &&
+          Object.keys(siweParams || {}).length > 0
+        ) {
           const { SIWEController, getDidChainId, getDidAddress } = await import('@web3modal/siwe')
-          const siweParams = await siweConfig.getMessageParams()
+
           // @ts-expect-error - setting requested chains beforehand avoids wagmi auto disconnecting the session when `connect` is called because it things chains are stale
           await connector.setRequestedChainsIds(siweParams.chains)
+
+          // Make active chain first in requested chains to make it default for siwe message
+          let reorderedChains = siweParams.chains
+          if (chainId) {
+            reorderedChains = [chainId, ...siweParams.chains.filter(c => c !== chainId)]
+          }
 
           const result = await provider.authenticate({
             nonce: await siweConfig.getNonce(),
             methods: [...OPTIONAL_METHODS],
-            ...siweParams
+            ...siweParams,
+            chains: reorderedChains
           })
-
           // Auths is an array of signed CACAO objects https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-74.md
           const signedCacao = result?.auths?.[0]
           if (signedCacao) {
@@ -189,7 +208,6 @@ export class EVMWagmiClient {
                 request: p,
                 iss: p.iss
               })
-
               await SIWEController.verifyMessage({
                 message,
                 signature: s.s,
@@ -227,6 +245,7 @@ export class EVMWagmiClient {
         if (!connector) {
           throw new Error('connectionControllerClient:connectExternal - connector is undefined')
         }
+        this.setClientId(null)
         if (provider && info && connector.id === ConstantsUtil.EIP6963_CONNECTOR_ID) {
           // @ts-expect-error Exists on EIP6963Connector
           connector.setEip6963Wallet?.({ provider, info })
@@ -273,17 +292,11 @@ export class EVMWagmiClient {
       },
 
       disconnect: async () => {
-        try {
-          await disconnect(this.wagmiConfig)
-
-          const siweConfig = this.options?.siweConfig
-          if (siweConfig?.options?.signOutOnDisconnect) {
-            const { SIWEController } = await import('@web3modal/siwe')
-            await SIWEController.signOut()
-          }
-        } catch (error) {
-          console.error('Failed to disconnect1', error)
-          throw new Error('Failed to disconnect1')
+        await disconnect(this.wagmiConfig)
+        this.appKit?.setClientId(null)
+        if (this.options?.siweConfig?.options?.signOutOnDisconnect) {
+          const { SIWEController } = await import('@web3modal/siwe')
+          await SIWEController.signOut()
         }
       },
 
@@ -420,6 +433,26 @@ export class EVMWagmiClient {
     })
 
     this.appKit?.setEIP6963Enabled(options.enableEIP6963 !== false)
+
+    this.appKit?.subscribeShouldUpdateToAddress((newAddress?: string) => {
+      if (newAddress) {
+        const connections = getConnections(this.wagmiConfig)
+        const connector = connections[0]?.connector
+        if (connector) {
+          switchAccount(this.wagmiConfig, {
+            connector
+          }).then(response =>
+            this.syncAccount({
+              address: newAddress as Hex,
+              isConnected: true,
+              addresses: response.accounts,
+              connector,
+              chainId: response.chainId
+            })
+          )
+        }
+      }
+    })
   }
 
   // @ts-expect-error: Overriden state type is correct
@@ -451,10 +484,20 @@ export class EVMWagmiClient {
     address,
     isConnected,
     chainId,
-    connector
-  }: Pick<GetAccountReturnType, 'address' | 'isConnected' | 'chainId' | 'connector'>) {
-    this.appKit?.resetAccount(this.chain)
+    connector,
+    addresses
+  }: Partial<
+    Pick<GetAccountReturnType, 'address' | 'isConnected' | 'chainId' | 'connector' | 'addresses'>
+  >) {
+    const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`
+
+    if (this.appKit?.getCaipAddress() === caipAddress) {
+      return
+    }
+
+    this.appKit?.resetAccount()
     this.syncNetwork(address, chainId, isConnected)
+
     if (isConnected && address && chainId) {
       const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`
       this.appKit?.setIsConnected(isConnected, this.chain)
@@ -465,6 +508,16 @@ export class EVMWagmiClient {
         this.syncConnectedWalletInfo(connector),
         this.appKit?.setApprovedCaipNetworksData(this.chain)
       ])
+      if (connector) {
+        this.syncConnectedWalletInfo(connector)
+      }
+
+      // Set by authConnector.onIsConnectedHandler as we need the account type
+      const isAuthConnector = connector?.id === ConstantsUtil.AUTH_CONNECTOR_ID
+      if (!isAuthConnector && addresses?.length) {
+        this.appKit?.setAllAccounts(addresses.map(addr => ({ address: addr, type: 'eoa' })))
+      }
+
       this.hasSyncedConnectedAccount = true
     } else if (!isConnected && this.hasSyncedConnectedAccount) {
       this.appKit?.resetWcConnection()
@@ -768,6 +821,14 @@ export class EVMWagmiClient {
           this.chain
         )
         this.appKit?.setLoading(false)
+        this.appKit?.setAllAccounts(
+          req.accounts || [
+            {
+              address: req.address,
+              type: (req.preferredAccountType || 'eoa') as W3mFrameTypes.AccountType
+            }
+          ]
+        )
       })
 
       provider.onGetSmartAccountEnabledNetworks(networks => {

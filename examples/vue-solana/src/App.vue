@@ -35,14 +35,14 @@ const chains = [
     name: 'Solana Testnet',
     currency: 'SOL',
     explorerUrl: 'https://explorer.solana.com/?cluster=testnet',
-    rpcUrl: 'https://api.testnet.solana.com'
+    rpcUrl: 'https://rpc.walletconnect.org/v1'
   },
   {
     chainId: 'EtWTRABZaYq6iMfeYKouRu166VU2xqa1',
     name: 'Solana Devnet',
     currency: 'SOL',
     explorerUrl: 'https://explorer.solana.com/?cluster=devnet',
-    rpcUrl: 'https://api.devnet.solana.com'
+    rpcUrl: 'https://rpc.walletconnect.org/v1'
   }
 ]
 

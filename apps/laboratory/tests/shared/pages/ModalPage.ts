@@ -332,4 +332,8 @@ export class ModalPage {
     await networkToSwitchButton.click()
     await networkToSwitchButton.waitFor({ state: 'hidden' })
   }
+
+  async openProfileView() {
+    await this.page.getByTestId('wui-profile-button').click()
+  }
 }

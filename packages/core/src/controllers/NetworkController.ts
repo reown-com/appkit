@@ -85,10 +85,26 @@ export const NetworkController = {
   },
 
   setActiveCaipNetwork(caipNetwork: NetworkControllerState['caipNetwork']) {
+    if (!caipNetwork) {
+      return
+    }
+
     ChainController.setActiveCaipNetwork(caipNetwork)
 
-    if (!ChainController.getNetworkProp('allowUnsupportedChain')) {
-      this.checkIfSupportedNetwork()
+    ChainController.state.activeCaipNetwork = caipNetwork
+    ChainController.state.activeChain = caipNetwork.chain
+    ChainController.setChainNetworkData(caipNetwork.chain, { caipNetwork })
+    PublicStateController.set({
+      activeChain: caipNetwork.chain,
+      selectedNetworkId: caipNetwork?.id
+    })
+
+    if (!ChainController.state.chains.get(caipNetwork.chain)?.networkState?.allowUnsupportedChain) {
+      const isSupported = this.checkIfSupportedNetwork()
+
+      if (!isSupported) {
+        this.showUnsupportedChainUI()
+      }
     }
   },
 
@@ -237,9 +253,7 @@ export const NetworkController = {
   },
 
   checkIfSupportedNetwork() {
-    const chain = ChainController.state.multiChainEnabled
-      ? ChainController.state.activeChain
-      : ChainController.state.activeChain
+    const chain = ChainController.state.activeChain
 
     if (!chain) {
       return false

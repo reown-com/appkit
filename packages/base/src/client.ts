@@ -98,6 +98,10 @@ export class AppKit {
     return AccountController.subscribeKey('connectedWalletInfo', callback)
   }
 
+  public subscribeShouldUpdateToAddress(callback: (newState?: string) => void) {
+    AccountController.subscribeKey('shouldUpdateToAddress', callback)
+  }
+
   public getState() {
     return PublicStateController.state
   }
@@ -154,6 +158,21 @@ export class AppKit {
   }
 
   public getIsConnectedState = () => AccountController.state.isConnected
+
+  public setAllAccounts: (typeof AccountController)['setAllAccounts'] = (addresses = []) => {
+    AccountController.setAllAccounts(addresses)
+    OptionsController.setHasMultipleAddresses(addresses?.length > 1)
+  }
+
+  public addAddressLabel: (typeof AccountController)['addAddressLabel'] = (address, label) => {
+    AccountController.addAddressLabel(address, label)
+  }
+
+  public removeAddressLabel: (typeof AccountController)['removeAddressLabel'] = address => {
+    AccountController.removeAddressLabel(address)
+  }
+
+  public getCaipAddress = () => AccountController.state.caipAddress
 
   public setCaipAddress: (typeof AccountController)['setCaipAddress'] = (caipAddress, chain) => {
     AccountController.setCaipAddress(caipAddress, chain)
@@ -262,6 +281,10 @@ export class AppKit {
 
   public setEIP6963Enabled: (typeof OptionsController)['setEIP6963Enabled'] = enabled => {
     OptionsController.setEIP6963Enabled(enabled)
+  }
+
+  public setClientId: (typeof BlockchainApiController)['setClientId'] = clientId => {
+    BlockchainApiController.setClientId(clientId)
   }
 
   // -- Private ------------------------------------------------------------------
