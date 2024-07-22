@@ -1096,22 +1096,24 @@ export class Web3Modal extends Web3ModalScaffold {
           }, 300)
         }
       })
+
+      this.authProvider.onRpcError(() => {
+        const isModalOpen = super.isOpen()
+
+        if (isModalOpen) {
+          if (super.isTransactionStackEmpty()) {
+            super.close()
+          } else {
+            super.popTransactionStack(true)
+          }
+        }
+      })
+
       this.authProvider.onRpcResponse(response => {
+        console.log('>> onRpcResponse', response)
         const responseType = W3mFrameHelpers.getResponseType(response)
 
         switch (responseType) {
-          case W3mFrameConstants.RPC_RESPONSE_TYPE_ERROR: {
-            const isModalOpen = super.isOpen()
-
-            if (isModalOpen) {
-              if (super.isTransactionStackEmpty()) {
-                super.close()
-              } else {
-                super.popTransactionStack(true)
-              }
-            }
-            break
-          }
           case W3mFrameConstants.RPC_RESPONSE_TYPE_TX: {
             if (super.isTransactionStackEmpty()) {
               super.close()

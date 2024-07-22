@@ -7,18 +7,17 @@ import { W3mFrameLogger } from './W3mFrameLogger.js'
 
 // -- Provider --------------------------------------------------------
 export class W3mFrameProvider {
-  public capabilities: Record<string, unknown> = {}
   public w3mLogger: W3mFrameLogger
   private w3mFrame: W3mFrame
   private openRpcRequests: Array<W3mFrameTypes.RPCRequest & { abortController: AbortController }> =
     []
 
   private onRpcResponseHandler: (request: W3mFrameTypes.FrameEvent) => void = () => {}
+  private onRpcErrorHandler: (error: Error) => void = () => {}
 
   public constructor(projectId: string) {
     this.w3mLogger = new W3mFrameLogger(projectId)
     this.w3mFrame = new W3mFrame(projectId, true)
-    // this.getCapabilities().then(capabilities => (this.capabilities = capabilities))
   }
 
   // -- Extended Methods ------------------------------------------------
@@ -296,6 +295,7 @@ export class W3mFrameProvider {
 
       return response
     } catch (error) {
+      this.onRpcErrorHandler?.(error as Error)
       this.w3mLogger.logger.error({ error }, 'Error requesting')
       throw error
     }
@@ -311,6 +311,10 @@ export class W3mFrameProvider {
 
   public onRpcResponse(callback: (request: W3mFrameTypes.FrameEvent) => void) {
     this.onRpcResponseHandler = callback
+  }
+
+  public onRpcError(callback: (error: Error) => void) {
+    this.onRpcErrorHandler = callback
   }
 
   public onIsConnected(
@@ -342,8 +346,8 @@ export class W3mFrameProvider {
       const capabilities = await this.request({
         method: 'wallet_getCapabilities'
       })
-
-      return capabilities
+      console.log('getCapabilities', capabilities)
+      return capabilities || {}
     } catch (e) {
       return {}
     }
