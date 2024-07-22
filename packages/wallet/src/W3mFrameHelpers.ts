@@ -1,9 +1,5 @@
 import { W3mFrameStorage } from './W3mFrameStorage.js'
-import {
-  W3mFrameConstants,
-  W3mFrameRpcConstants,
-  type W3mFrameConstantValue
-} from './W3mFrameConstants.js'
+import { W3mFrameConstants, W3mFrameRpcConstants } from './W3mFrameConstants.js'
 import type { W3mFrameTypes } from './W3mFrameTypes.js'
 import { RegexUtil } from './RegexUtil.js'
 
@@ -33,7 +29,7 @@ export const W3mFrameHelpers = {
     return 0
   },
 
-  checkIfRequestExists(request: unknown) {
+  checkIfRequestExists(request: W3mFrameTypes.RPCRequest) {
     const method = this.getRequestMethod(request)
 
     return (
@@ -42,8 +38,8 @@ export const W3mFrameHelpers = {
     )
   },
 
-  getRequestMethod(request: unknown) {
-    return (request as { payload: W3mFrameTypes.RPCRequest })?.payload?.method
+  getRequestMethod(request: W3mFrameTypes.RPCRequest) {
+    return request?.method
   },
 
   getResponseType(response: unknown) {
@@ -59,7 +55,7 @@ export const W3mFrameHelpers = {
     return W3mFrameConstants.RPC_RESPONSE_TYPE_OBJECT
   },
 
-  checkIfRequestIsAllowed(request: unknown) {
+  checkIfRequestIsAllowed(request: W3mFrameTypes.RPCRequest) {
     const method = this.getRequestMethod(request)
 
     return W3mFrameRpcConstants.SAFE_RPC_METHODS.includes(method)

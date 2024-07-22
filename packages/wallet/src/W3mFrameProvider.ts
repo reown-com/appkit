@@ -12,8 +12,9 @@ export class W3mFrameProvider {
   private openRpcRequests: Array<W3mFrameTypes.RPCRequest & { abortController: AbortController }> =
     []
 
-  private onRpcResponseHandler: (request: W3mFrameTypes.FrameEvent) => void = () => {}
-  private onRpcErrorHandler: (error: Error) => void = () => {}
+  private rpcRequestHandler?: (request: W3mFrameTypes.RPCRequest) => void
+  private rpcSuccessHandler?: (request: W3mFrameTypes.FrameEvent) => void
+  private rpcErrorHandler?: (error: Error) => void
 
   public constructor(projectId: string) {
     this.w3mLogger = new W3mFrameLogger(projectId)
@@ -286,35 +287,32 @@ export class W3mFrameProvider {
         return this.getLastUsedChainId()
       }
 
+      this.rpcRequestHandler?.(req)
       const response = await this.appEvent<'Rpc'>({
         type: W3mFrameConstants.APP_RPC_REQUEST,
         payload: req
       } as W3mFrameTypes.AppEvent)
 
-      this.onRpcResponseHandler?.(response)
+      this.rpcSuccessHandler?.(response)
 
       return response
     } catch (error) {
-      this.onRpcErrorHandler?.(error as Error)
+      this.rpcErrorHandler?.(error as Error)
       this.w3mLogger.logger.error({ error }, 'Error requesting')
       throw error
     }
   }
 
-  public onRpcRequest(callback: (request: unknown) => void) {
-    this.w3mFrame.events.onAppEvent(event => {
-      if (event.type.includes(W3mFrameConstants.RPC_METHOD_KEY)) {
-        callback(event)
-      }
-    })
+  public onRpcRequest(callback: (request: W3mFrameTypes.RPCRequest) => void) {
+    this.rpcRequestHandler = callback
   }
 
-  public onRpcResponse(callback: (request: W3mFrameTypes.FrameEvent) => void) {
-    this.onRpcResponseHandler = callback
+  public onRpcSuccess(callback: (request: W3mFrameTypes.FrameEvent) => void) {
+    this.rpcSuccessHandler = callback
   }
 
   public onRpcError(callback: (error: Error) => void) {
-    this.onRpcErrorHandler = callback
+    this.rpcErrorHandler = callback
   }
 
   public onIsConnected(
@@ -346,7 +344,7 @@ export class W3mFrameProvider {
       const capabilities = await this.request({
         method: 'wallet_getCapabilities'
       })
-      console.log('getCapabilities', capabilities)
+
       return capabilities || {}
     } catch (e) {
       return {}

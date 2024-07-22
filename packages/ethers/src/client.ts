@@ -1109,8 +1109,7 @@ export class Web3Modal extends Web3ModalScaffold {
         }
       })
 
-      this.authProvider.onRpcResponse(response => {
-        console.log('>> onRpcResponse', response)
+      this.authProvider.onRpcSuccess(response => {
         const responseType = W3mFrameHelpers.getResponseType(response)
 
         switch (responseType) {
