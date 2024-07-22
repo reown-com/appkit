@@ -44,8 +44,8 @@
     }
   },
   "scripts": {
-    "build:clean": "rm -rf dist",
-    "build:client": "tsc --build",
+    "clean": "rm -rf dist",
+    "build": "tsc --build",
     "watch": "tsc --watch",
     "typecheck": "tsc --noEmit",
     "test": "vitest run --dir tests --coverage.enabled=true --coverage.reporter=json --coverage.reporter=json-summary --coverage.reportOnFailure=true",
@@ -53,12 +53,14 @@
   },
   "dependencies": {
     "@walletconnect/ethereum-provider": "2.13.0",
-    "@web3modal/polyfills": "5.0.7",
-    "@web3modal/scaffold": "5.0.7",
-    "@web3modal/scaffold-react": "5.0.7",
-    "@web3modal/scaffold-utils": "5.0.7",
-    "@web3modal/scaffold-vue": "5.0.7",
-    "@web3modal/siwe": "5.0.7"
+    "@web3modal/polyfills": "workspace:*",
+    "@web3modal/wallet": "workspace:*",
+    "@web3modal/common": "workspace:*",
+    "@web3modal/scaffold": "workspace:*",
+    "@web3modal/scaffold-react": "workspace:*",
+    "@web3modal/scaffold-utils": "workspace:*",
+    "@web3modal/scaffold-vue": "workspace:*",
+    "@web3modal/siwe": "workspace:*"
   },
   "devDependencies": {
     "@wagmi/connectors": "5.0.21",
@@ -66,7 +68,8 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "viem": "2.16.2",
-    "vue": "3.4.3"
+    "vue": "3.4.3",
+    "wagmi": "2.10.9"
   },
   "peerDependencies": {
     "@wagmi/connectors": ">=4",
@@ -74,7 +77,8 @@
     "react": ">=17",
     "react-dom": ">=17",
     "viem": ">=2.0.0",
-    "vue": ">=3"
+    "vue": ">=3",
+    "wagmi": ">=2.0.0"
   },
   "peerDependenciesMeta": {
     "react": {
