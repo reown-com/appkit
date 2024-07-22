@@ -489,6 +489,8 @@ export class Web3Modal extends Web3ModalScaffold {
       this.resetWcConnection()
       this.resetNetwork()
       this.setAllAccounts([])
+
+      this.hasSyncedConnectedAccount = false
     }
   }
 
