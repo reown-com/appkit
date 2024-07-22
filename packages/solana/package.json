@@ -19,6 +19,11 @@
       "import": "./dist/esm/exports/react.js",
       "default": "./dist/esm/exports/react.js"
     },
+    "./vue": {
+      "types": "./dist/types/exports/vue.d.ts",
+      "import": "./dist/esm/exports/vue.js",
+      "default": "./dist/esm/exports/vue.js"
+    },
     "./chains": {
       "types": "./dist/types/exports/chains.d.ts",
       "import": "./dist/esm/exports/chains.js",
@@ -30,6 +35,9 @@
       "react": [
         "./dist/types/exports/react.d.ts"
       ],
+      "vue": [
+        "./dist/types/exports/vue.d.ts"
+      ],
       "chains": [
         "./dist/types/exports/chains.d.ts"
       ]
@@ -37,7 +45,7 @@
   },
   "scripts": {
     "build:clean": "rm -rf dist",
-    "build:client": "tsc --build",
+    "build": "tsc --build",
     "watch": "tsc --watch",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
@@ -45,18 +53,27 @@
   "dependencies": {
     "@ethersproject/sha2": "5.7.0",
     "@solana/wallet-adapter-base": "0.9.23",
+    "@solana/wallet-standard-features": "1.2.0",
+    "@solana/wallet-standard-util": "1.1.1",
     "@solana/web3.js": "1.91.7",
     "@wallet-standard/app": "1.0.1",
     "@wallet-standard/base": "1.0.1",
-    "@walletconnect/universal-provider": "2.13.3",
-    "@web3modal/common": "5.0.7",
-    "@web3modal/polyfills": "5.0.7",
-    "@web3modal/scaffold": "5.0.7",
-    "@web3modal/scaffold-react": "5.0.7",
-    "@web3modal/scaffold-utils": "5.0.7",
-    "@web3modal/scaffold-vue": "5.0.7",
+    "@wallet-standard/features": "1.0.3",
+    "@wallet-standard/wallet": "1.0.1",
+    "@walletconnect/universal-provider": "2.14.0",
+    "@web3modal/core": "workspace:*",
+    "@web3modal/common": "workspace:*",
+    "@web3modal/polyfills": "workspace:*",
+    "@web3modal/scaffold": "workspace:*",
+    "@web3modal/scaffold-react": "workspace:*",
+    "@web3modal/scaffold-utils": "workspace:*",
+    "@web3modal/scaffold-vue": "workspace:*",
+    "@web3modal/wallet": "workspace:*",
     "bn.js": "5.2.1",
-    "bs58": "5.0.0"
+    "bs58": "5.0.0",
+    "borsh": "0.7.0",
+    "buffer": "6.0.3",
+    "valtio": "1.11.2"
   },
   "devDependencies": {
     "@types/bn.js": "5.1.5",
