@@ -3,11 +3,11 @@
   "private": true,
   "version": "5.0.7",
   "scripts": {
-    "dev:example": "vite --port 3002",
-    "build:examples": "vite build"
+    "dev": "vite --port 3002",
+    "build": "vite build"
   },
   "dependencies": {
-    "@web3modal/solana": "5.0.7",
+    "@web3modal/solana": "workspace:*",
     "@tanstack/react-query": "5.24.8",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -16,6 +16,8 @@
     "@solana/wallet-adapter-wallets": "0.19.32"
   },
   "devDependencies": {
+    "@types/react": "18.2.62",
+    "@types/react-dom": "18.2.7",
     "@vitejs/plugin-react": "4.2.1",
     "vite": "5.2.11"
   }
