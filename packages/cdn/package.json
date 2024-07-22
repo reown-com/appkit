@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/cdn",
-  "version": "5.0.6",
+  "version": "5.0.7",
   "main": "dist/wagmi.js",
   "type": "module",
   "files": [
@@ -8,10 +8,10 @@
     "!tsconfig.tsbuildinfo"
   ],
   "scripts": {
-    "build:clean": "rm -rf dist",
-    "build:cdn": "tsc && vite build",
+    "clean": "rm -rf dist",
+    "build": "tsc && vite build",
     "watch": "npx tsc --watch",
-    "upload": "npm run build && npm publish --public"
+    "upload": "pnpm build && pnpm publish --public"
   },
   "devDependencies": {
     "typescript": "5.3.3",
@@ -28,8 +28,8 @@
   "dependencies": {
     "@wagmi/connectors": "5.0.21",
     "@wagmi/core": "2.11.6",
-    "@web3modal/wagmi": "5.0.6",
-    "@web3modal/ethers": "5.0.6",
+    "@web3modal/wagmi": "workspace:*",
+    "@web3modal/ethers": "workspace:*",
     "viem": "2.16.2",
     "vite": "5.2.11"
   }

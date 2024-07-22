@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/scaffold-utils",
-  "version": "5.0.6",
+  "version": "5.0.7",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -33,15 +33,17 @@
     }
   },
   "scripts": {
-    "build:clean": "rm -rf dist",
-    "build:scaffold-utils": "tsc --build",
+    "clean": "rm -rf dist",
+    "build": "tsc --build",
     "watch": "tsc --watch",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@web3modal/core": "5.0.6",
-    "@web3modal/polyfills": "5.0.6",
+    "@coinbase/wallet-sdk": "4.0.3",
+    "@web3modal/core": "workspace:*",
+    "@web3modal/polyfills": "workspace:*",
+    "@web3modal/wallet": "workspace:*",
     "valtio": "1.11.2"
   },
   "keywords": [
