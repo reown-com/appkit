@@ -3,7 +3,7 @@ import { property } from 'lit/decorators.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
-import { createRef, ref } from 'lit/directives/ref.js'
+import { createRef, ref, type Ref } from 'lit/directives/ref.js'
 import { numbersRegex, specialCharactersRegex } from '../../utils/ConstantsUtil.js'
 
 @customElement('wui-input-amount')
@@ -11,7 +11,7 @@ export class WuiInputAmount extends LitElement {
   public static override styles = [resetStyles, elementStyles, styles]
 
   // -- Members ------------------------------------------- //
-  public inputElementRef = createRef<HTMLInputElement>()
+  public inputElementRef: Ref<HTMLInputElement> = createRef<HTMLInputElement>()
 
   // -- State & Properties -------------------------------- //
   @property({ type: Boolean }) public disabled = false
