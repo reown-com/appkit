@@ -9,7 +9,7 @@ WORKDIR /src
 
 COPY ../ ./
 RUN pnpm install
-RUN pnpm build:packages
+RUN pnpm build
 
 WORKDIR ./apps/laboratory/
 
