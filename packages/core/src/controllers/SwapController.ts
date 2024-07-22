@@ -663,16 +663,18 @@ export const SwapController = {
     const { fromAddress, isAuthConnector } = this.getParams()
 
     state.loadingApprovalTransaction = true
+    const approveLimitMessage = `Approve limit increase in your wallet`
+
     if (isAuthConnector) {
       RouterController.pushTransactionStack({
         view: null,
         goBack: true,
         onSuccess() {
-          SnackController.showLoading('Approving transaction...')
+          SnackController.showLoading(approveLimitMessage)
         }
       })
     } else {
-      SnackController.showLoading('Approve spending increase')
+      SnackController.showLoading(approveLimitMessage)
     }
 
     try {
@@ -684,9 +686,6 @@ export const SwapController = {
         gasPrice: BigInt(data.gasPrice)
       })
 
-      if (!isAuthConnector) {
-        RouterController.goBack()
-      }
       await this.swapTokens()
       await this.getTransaction()
       state.approvalTransaction = undefined
@@ -694,7 +693,8 @@ export const SwapController = {
     } catch (err) {
       const error = err as TransactionError
       state.transactionError = error?.shortMessage as unknown as string
-      state.loadingTransaction = false
+      state.loadingApprovalTransaction = false
+      SnackController.showError(error?.shortMessage || 'Transaction error')
     }
   },
 
@@ -724,7 +724,7 @@ export const SwapController = {
         }
       })
     } else {
-      SnackController.showLoading(snackbarPendingMessage)
+      SnackController.showLoading('Confirm transaction in your wallet')
     }
 
     try {
@@ -747,7 +747,7 @@ export const SwapController = {
           network: NetworkController.state.caipNetwork?.id || '',
           swapFromToken: this.state.sourceToken?.symbol || '',
           swapToToken: this.state.toToken?.symbol || '',
-          swapfromAmount: this.state.sourceTokenAmount || '',
+          swapFromAmount: this.state.sourceTokenAmount || '',
           swapToAmount: this.state.toTokenAmount || '',
           isSmartAccount:
             AccountController.state.preferredAccountType ===
@@ -773,7 +773,7 @@ export const SwapController = {
           network: NetworkController.state.caipNetwork?.id || '',
           swapFromToken: this.state.sourceToken?.symbol || '',
           swapToToken: this.state.toToken?.symbol || '',
-          swapfromAmount: this.state.sourceTokenAmount || '',
+          swapFromAmount: this.state.sourceTokenAmount || '',
           swapToAmount: this.state.toTokenAmount || '',
           isSmartAccount:
             AccountController.state.preferredAccountType ===
