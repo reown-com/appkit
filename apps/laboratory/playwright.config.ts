@@ -39,7 +39,7 @@ export default defineConfig<ModalFixture>({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: 'npm run playwright:start',
+    command: 'pnpm playwright:start',
     url: BASE_URL,
     reuseExistingServer: !process.env['CI'] || Boolean(process.env['SKIP_PLAYWRIGHT_WEBSERVER'])
   }

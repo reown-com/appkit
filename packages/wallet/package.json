@@ -9,15 +9,16 @@
     "!tsconfig.tsbuildinfo"
   ],
   "scripts": {
-    "build:clean": "rm -rf dist",
-    "build:wallet": "tsc --build",
+    "clean": "rm -rf dist",
+    "build": "tsc --build",
     "watch": "tsc --watch",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
     "@walletconnect/logger": "2.1.2",
-    "@web3modal/polyfills": "5.0.7",
+    "@web3modal/common": "workspace:*",
+    "@web3modal/polyfills": "workspace:*",
     "zod": "3.22.4"
   },
   "keywords": [

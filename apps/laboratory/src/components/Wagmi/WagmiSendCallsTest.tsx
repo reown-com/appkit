@@ -44,7 +44,7 @@ export function WagmiSendCallsTest() {
   if (!isSendCallsSupported()) {
     return (
       <Text fontSize="md" color="yellow">
-        Wallet does not support wallet_sendCalls rpc method
+        Wallet does not support the "wallet_sendCalls" RPC method
       </Text>
     )
   }
@@ -52,7 +52,7 @@ export function WagmiSendCallsTest() {
   if (supportedChains.length === 0) {
     return (
       <Text fontSize="md" color="yellow">
-        Account does not support atomic batch feature
+        Account does not support the atomic batch feature
       </Text>
     )
   }

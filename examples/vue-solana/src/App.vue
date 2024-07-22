@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {
   createWeb3Modal,
-  defaultConfig,
+  defaultSolanaConfig,
   useWeb3Modal,
   useWeb3ModalEvents,
   useWeb3ModalState,
@@ -46,14 +46,24 @@ const chains = [
   }
 ]
 
-const ethersConfig = defaultConfig({
-  metadata: {
-    name: 'Web3Modal',
-    description: 'Web3Modal Laboratory',
-    url: 'https://web3modal.com',
-    icons: ['https://avatars.githubusercontent.com/u/37784886']
-  },
+// 2. Create solanaConfig
+const solanaConfig = defaultSolanaConfig({
   chains: chains,
+  projectId,
+  metadata: {
+    name: 'Web3Modal React Example',
+    description: 'Web3Modal React Example',
+    url: '',
+    icons: []
+  }
+})
+
+// 3. Create modal
+createWeb3Modal({
+  solanaConfig,
+  projectId,
+  themeMode: 'light',
+  chains,
   wallets: [
     new BackpackWalletAdapter(),
     new HuobiWalletAdapter(),
@@ -61,18 +71,8 @@ const ethersConfig = defaultConfig({
     new SolflareWalletAdapter(),
     new TrustWalletAdapter()
   ],
-  defaultChainId: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-  rpcUrl: 'https://cloudflare-eth.com'
-})
-
-// 3. Create modal
-createWeb3Modal({
-  ethersConfig,
-  projectId,
-  chains,
-  themeMode: 'light',
   themeVariables: {
-    '--w3m-color-mix': '#00BB7F',
+    '--w3m-color-mix': '#00DCFF',
     '--w3m-color-mix-strength': 20
   }
 })
