@@ -44,7 +44,7 @@
     }
   },
   "scripts": {
-    "clean": "rm -rf dist",
+    "build:clean": "rm -rf dist",
     "build": "tsc --build",
     "watch": "tsc --watch",
     "typecheck": "tsc --noEmit",

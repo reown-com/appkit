@@ -7,9 +7,9 @@ import {
   RouterController,
   StorageUtil
 } from '@web3modal/core'
+import { ConstantsUtil } from '@web3modal/scaffold-utils'
 import { customElement } from '@web3modal/ui'
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
-import { ConstantsUtil } from '@web3modal/scaffold-utils'
 
 @customElement('w3m-connecting-external-view')
 export class W3mConnectingExternalView extends W3mConnectingWidget {
