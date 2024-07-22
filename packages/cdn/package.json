@@ -8,7 +8,7 @@
     "!tsconfig.tsbuildinfo"
   ],
   "scripts": {
-    "clean": "rm -rf dist",
+    "build:clean": "rm -rf dist",
     "build": "tsc && vite build",
     "watch": "npx tsc --watch",
     "upload": "pnpm build && pnpm publish --public"
