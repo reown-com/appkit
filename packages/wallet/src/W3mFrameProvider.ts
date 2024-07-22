@@ -13,10 +13,12 @@ export class W3mFrameProvider {
   private openRpcRequests: Array<W3mFrameTypes.RPCRequest & { abortController: AbortController }> =
     []
 
+  private onRpcResponseHandler: (request: W3mFrameTypes.FrameEvent) => void = () => {}
+
   public constructor(projectId: string) {
     this.w3mLogger = new W3mFrameLogger(projectId)
     this.w3mFrame = new W3mFrame(projectId, true)
-    this.getCapabilities().then(capabilities => (this.capabilities = capabilities))
+    // this.getCapabilities().then(capabilities => (this.capabilities = capabilities))
   }
 
   // -- Extended Methods ------------------------------------------------
@@ -285,10 +287,14 @@ export class W3mFrameProvider {
         return this.getLastUsedChainId()
       }
 
-      return this.appEvent<'Rpc'>({
+      const response = await this.appEvent<'Rpc'>({
         type: W3mFrameConstants.APP_RPC_REQUEST,
         payload: req
       } as W3mFrameTypes.AppEvent)
+
+      this.onRpcResponseHandler?.(response)
+
+      return response
     } catch (error) {
       this.w3mLogger.logger.error({ error }, 'Error requesting')
       throw error
@@ -303,12 +309,8 @@ export class W3mFrameProvider {
     })
   }
 
-  public onRpcResponse(callback: (request: unknown) => void) {
-    this.w3mFrame.events.onFrameEvent(event => {
-      if (event.type.includes(W3mFrameConstants.RPC_METHOD_KEY)) {
-        callback(event)
-      }
-    })
+  public onRpcResponse(callback: (request: W3mFrameTypes.FrameEvent) => void) {
+    this.onRpcResponseHandler = callback
   }
 
   public onIsConnected(
@@ -372,8 +374,10 @@ export class W3mFrameProvider {
   // -- Private Methods -------------------------------------------------
   public rejectRpcRequests() {
     try {
-      this.openRpcRequests.forEach(({ abortController }) => {
-        abortController.abort()
+      this.openRpcRequests.forEach(({ abortController, method }) => {
+        if (!W3mFrameRpcConstants.SAFE_RPC_METHODS.includes(method)) {
+          abortController.abort()
+        }
       })
       this.openRpcRequests = []
     } catch (e) {

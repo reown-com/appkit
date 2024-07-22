@@ -8,16 +8,15 @@ import { useCallsStatus } from 'wagmi/experimental'
 import { useWagmiAvailableCapabilities } from '../../hooks/useWagmiActiveCapabilities'
 
 export function WagmiGetCallsStatusTest() {
-  const { ethereumProvider, isMethodSupported: isGetCallsStatusSupported } =
-    useWagmiAvailableCapabilities({
-      method: EIP_5792_RPC_METHODS.WALLET_GET_CALLS_STATUS
-    })
+  const { isMethodSupported: isGetCallsStatusSupported } = useWagmiAvailableCapabilities({
+    method: EIP_5792_RPC_METHODS.WALLET_GET_CALLS_STATUS
+  })
 
   const { status, address } = useAccount()
 
   const isConnected = status === 'connected'
 
-  if (!isConnected || !ethereumProvider || !address) {
+  if (!isConnected || !address) {
     return (
       <Text fontSize="md" color="yellow">
         Wallet not connected
