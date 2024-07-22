@@ -9,22 +9,22 @@
     "!tsconfig.tsbuildinfo"
   ],
   "scripts": {
-    "build:clean": "rm -rf dist",
-    "build:scaffold": "tsc --build",
+    "clean": "rm -rf dist",
+    "build": "tsc --build",
     "watch": "tsc --watch",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@web3modal/common": "5.0.7",
-    "@web3modal/scaffold-utils": "5.0.7",
-    "@web3modal/scaffold-ui": "5.0.7",
-    "@web3modal/core": "5.0.7",
-    "@web3modal/ui": "5.0.7",
-    "lit": "3.1.0",
-    "@web3modal/siwe": "5.0.7",
-    "@web3modal/wallet": "5.0.7",
-    "@web3modal/siws": "5.0.7"
+    "@web3modal/common": "workspace:*",
+    "@web3modal/scaffold-utils": "workspace:*",
+    "@web3modal/scaffold-ui": "workspace:*",
+    "@web3modal/core": "workspace:*",
+    "@web3modal/ui": "workspace:*",
+    "@web3modal/siwe": "workspace:*",
+    "@web3modal/wallet": "workspace:*",
+    "@web3modal/siws": "workspace:*",
+    "lit": "3.1.0"
   },
   "keywords": [
     "web3",
