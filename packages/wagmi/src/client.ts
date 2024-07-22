@@ -713,9 +713,10 @@ export class Web3Modal extends Web3ModalScaffold {
           }
         } else {
           super.open()
-          const method = W3mFrameHelpers.getRequestMethod(request)
           // eslint-disable-next-line no-console
-          console.error(W3mFrameRpcConstants.RPC_METHOD_NOT_ALLOWED_MESSAGE, { method })
+          console.error(W3mFrameRpcConstants.RPC_METHOD_NOT_ALLOWED_MESSAGE, {
+            method: request.method
+          })
           setTimeout(() => {
             this.showErrorMessage(W3mFrameRpcConstants.RPC_METHOD_NOT_ALLOWED_UI_MESSAGE)
           }, 300)
