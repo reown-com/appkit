@@ -18,22 +18,16 @@ const TEST_TX_2 = {
 }
 
 export function WagmiSendCallsTest() {
-  const {
-    ethereumProvider,
-    isMethodSupported: isSendCallsSupported,
-    supportedChains,
-    supportedChainsName,
-    currentChainsInfo
-  } = useWagmiAvailableCapabilities({
-    capability: WALLET_CAPABILITIES.ATOMIC_BATCH,
-    method: EIP_5792_RPC_METHODS.WALLET_SEND_CALLS
-  })
-
+  const { provider, supported, supportedChains, supportedChainsName, currentChainsInfo } =
+    useWagmiAvailableCapabilities({
+      capability: WALLET_CAPABILITIES.ATOMIC_BATCH,
+      method: EIP_5792_RPC_METHODS.WALLET_SEND_CALLS
+    })
   const { address, status } = useAccount()
 
   const isConnected = status === 'connected'
 
-  if (!isConnected || !ethereumProvider || !address) {
+  if (!isConnected || !provider || !address) {
     return (
       <Text fontSize="md" color="yellow">
         Wallet not connected
@@ -41,7 +35,7 @@ export function WagmiSendCallsTest() {
     )
   }
 
-  if (!isSendCallsSupported()) {
+  if (!supported) {
     return (
       <Text fontSize="md" color="yellow">
         Wallet does not support the "wallet_sendCalls" RPC method

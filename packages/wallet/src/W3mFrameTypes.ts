@@ -192,4 +192,5 @@ export namespace W3mFrameTypes {
     | 'SetPreferredAccount'
     | 'SignOut'
     | 'Rpc'
+  export type WalletCapabilities = Record<string, any>
 }

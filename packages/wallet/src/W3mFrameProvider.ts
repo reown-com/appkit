@@ -339,7 +339,7 @@ export class W3mFrameProvider {
     })
   }
 
-  public async getCapabilities(): Promise<Record<number, unknown>> {
+  public async getCapabilities(): Promise<Record<number, W3mFrameTypes.WalletCapabilities>> {
     try {
       const capabilities = await this.request({
         method: 'wallet_getCapabilities'

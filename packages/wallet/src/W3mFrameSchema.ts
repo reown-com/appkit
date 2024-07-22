@@ -312,8 +312,8 @@ export const WalletSendCallsRequest = z.object({
       calls: z.array(
         z.object({
           to: z.string().startsWith('0x'),
-          data: z.string().startsWith('0x'),
-          value: z.string()
+          data: z.string().startsWith('0x').optional(),
+          value: z.string().optional()
         })
       )
     })

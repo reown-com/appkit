@@ -8,7 +8,7 @@ import { useCallsStatus } from 'wagmi/experimental'
 import { useWagmiAvailableCapabilities } from '../../hooks/useWagmiActiveCapabilities'
 
 export function WagmiGetCallsStatusTest() {
-  const { isMethodSupported: isGetCallsStatusSupported } = useWagmiAvailableCapabilities({
+  const { supported } = useWagmiAvailableCapabilities({
     method: EIP_5792_RPC_METHODS.WALLET_GET_CALLS_STATUS
   })
 
@@ -24,7 +24,7 @@ export function WagmiGetCallsStatusTest() {
     )
   }
 
-  if (!isGetCallsStatusSupported()) {
+  if (!supported) {
     return (
       <Text fontSize="md" color="yellow">
         Wallet does not support the "wallet_getCallsStatus" RPC method
