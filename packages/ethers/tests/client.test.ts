@@ -59,7 +59,7 @@ beforeAll(() => {
 })
 
 // -- Tests --------------------------------------------------------------------
-describe('createWeb3Modal by wagmi', () => {
+describe('createWeb3Modal by ethers', () => {
   it('should set controller states as expected', () => {
     expect(OptionsController.state.projectId).toBe('PROJECT_ID')
     expect(OptionsController.state.allWallets).toBe('SHOW')
