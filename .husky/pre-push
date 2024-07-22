@@ -1,1 +1,1 @@
-npm run test:static
+npx lint-staged
