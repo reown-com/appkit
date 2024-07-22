@@ -26,16 +26,16 @@ const all_files = [...updated_files, ...created_files, ...deleted_files].filter(
 // -- Dependency Checks -------------------------------------------------------
 async function checkPackageJsons() {
   const packageJsons = all_files.filter(f => f.includes('package.json'))
-  const packageLock = updated_files.find(f => f.includes('package-lock.json'))
-  const yarnLock = updated_files.find(f => f.includes('yarn.lock'))
   const pnpmLock = updated_files.find(f => f.includes('pnpm-lock.yaml'))
+  const yarnLock = updated_files.find(f => f.includes('yarn.lock'))
+  const npmLock = updated_files.find(f => f.includes('package-lock.json'))
 
-  if (packageJsons.length && !packageLock) {
-    warn('Changes were made to one or more package.json(s), but not to package-lock.json')
+  if (packageJsons.length && !pnpmLock) {
+    warn('Changes were made to one or more package.json(s), but not to pnpm-lock.yaml')
   }
 
-  if (yarnLock || pnpmLock) {
-    fail('Non npm lockfile(s) detected (yarn / pnpm), please use npm')
+  if (yarnLock || npmLock) {
+    fail('Non pnpm lockfile(s) detected (yarn / npm), please use pnpm')
   }
 
   for (const f of packageJsons) {

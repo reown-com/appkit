@@ -204,6 +204,12 @@ export class Web3Modal extends Web3ModalScaffold {
           onUri(uri)
         })
 
+        // When connecting through walletconnect, we need to set the clientId in the store
+        const clientId = await WalletConnectProvider.signer?.client?.core?.crypto?.getClientId()
+        if (clientId) {
+          this.setClientId(clientId)
+        }
+
         const params = await siweConfig?.getMessageParams?.()
         // Must perform these checks to satify optional types
         if (siweConfig?.options?.enabled && params && Object.keys(params || {}).length > 0) {
@@ -273,6 +279,8 @@ export class Web3Modal extends Web3ModalScaffold {
         info: Info
         provider: Provider
       }) => {
+        // If connecting with something else than walletconnect, we need to clear the clientId in the store
+        this.setClientId(null)
         if (id === ConstantsUtil.INJECTED_CONNECTOR_ID) {
           const InjectedProvider = ethersConfig.injected
           if (!InjectedProvider) {
@@ -327,7 +335,11 @@ export class Web3Modal extends Web3ModalScaffold {
       },
 
       disconnect: async () => {
-        const { provider, providerType } = EthersStoreUtil.state
+        const provider = EthersStoreUtil.state.provider
+        const providerType = EthersStoreUtil.state.providerType
+        localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
+        EthersStoreUtil.reset()
+        this.setClientId(null)
         if (siweConfig?.options?.signOutOnDisconnect) {
           const { SIWEController } = await import('@web3modal/siwe')
           await SIWEController.signOut()
@@ -635,7 +647,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
     localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
     EthersStoreUtil.reset()
-
+    this.setClientId(null)
     if (providerType === ConstantsUtil.AUTH_CONNECTOR_ID) {
       await this.authProvider?.disconnect()
     } else if (provider && (providerType === 'injected' || providerType === 'eip6963')) {
@@ -664,16 +676,18 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private async initWalletConnectProvider() {
+    const rpcMap = this.chains
+      ? this.chains.reduce<Record<number, string>>((map, chain) => {
+          map[chain.chainId] = chain.rpcUrl
+
+          return map
+        }, {})
+      : ({} as Record<number, string>)
+
     const walletConnectProviderOptions: EthereumProviderOptions = {
       projectId: this.projectId,
       showQrModal: false,
-      rpcMap: this.chains
-        ? this.chains.reduce<Record<number, string>>((map, chain) => {
-            map[chain.chainId] = chain.rpcUrl
-
-            return map
-          }, {})
-        : ({} as Record<number, string>),
+      rpcMap,
       optionalChains: [...this.chains.map(chain => chain.chainId)] as [number],
       metadata: {
         name: this.metadata ? this.metadata.name : '',
