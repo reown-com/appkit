@@ -114,42 +114,58 @@ export default css`
   }
 
   /* -- Hover & Active states ----------------------------------------------------------- */
-  button[data-variant='main']:hover:enabled {
-    background-color: var(--wui-color-accent-090);
-  }
+  @media (hover: hover) and (pointer: fine) {
+    button[data-variant='main']:hover:enabled {
+      background-color: var(--wui-color-accent-090);
+    }
 
-  button[data-variant='main']:active:enabled {
-    background-color: var(--wui-color-accent-080);
-  }
+    button[data-variant='main']:active:enabled {
+      background-color: var(--wui-color-accent-080);
+    }
 
-  button[data-variant='inverse']:hover:enabled {
-    background-color: var(--wui-color-inverse-100);
-  }
+    button[data-variant='accent']:hover:enabled {
+      background-color: var(--wui-color-accent-glass-015);
+    }
 
-  button[data-variant='accent']:hover:enabled {
-    background-color: var(--wui-color-accent-glass-010);
-  }
+    button[data-variant='accent']:active:enabled {
+      background-color: var(--wui-color-accent-glass-020);
+    }
 
-  button[data-variant='accent-error']:hover:enabled {
-    background: var(--wui-color-error-glass-015);
-    color: var(--wui-color-error-100);
-  }
+    button[data-variant='accent-error']:hover:enabled {
+      background: var(--wui-color-error-glass-020);
+      color: var(--wui-color-error-100);
+    }
 
-  button[data-variant='accent-success']:hover:enabled {
-    background: var(--wui-color-success-glass-015);
-    color: var(--wui-color-success-100);
-  }
+    button[data-variant='accent-error']:active:enabled {
+      background: var(--wui-color-error-glass-030);
+      color: var(--wui-color-error-100);
+    }
 
-  button[data-variant='neutral']:hover:enabled {
-    background: var(--wui-color-gray-glass-005);
-  }
+    button[data-variant='accent-success']:hover:enabled {
+      background: var(--wui-color-success-glass-020);
+      color: var(--wui-color-success-100);
+    }
 
-  button[data-size='lg'][data-icon-left='true'][data-icon-right='false'] {
-    padding-left: var(--wui-spacing-m);
-  }
+    button[data-variant='accent-success']:active:enabled {
+      background: var(--wui-color-success-glass-030);
+      color: var(--wui-color-success-100);
+    }
 
-  button[data-size='lg'][data-icon-right='true'][data-icon-left='false'] {
-    padding-right: var(--wui-spacing-m);
+    button[data-variant='neutral']:hover:enabled {
+      background: var(--wui-color-gray-glass-005);
+    }
+
+    button[data-variant='neutral']:active:enabled {
+      background: var(--wui-color-gray-glass-010);
+    }
+
+    button[data-size='lg'][data-icon-left='true'][data-icon-right='false'] {
+      padding-left: var(--wui-spacing-m);
+    }
+
+    button[data-size='lg'][data-icon-right='true'][data-icon-left='false'] {
+      padding-right: var(--wui-spacing-m);
+    }
   }
 
   /* -- Disabled state --------------------------------------------------- */

@@ -621,10 +621,7 @@ export const elementStyles = css`
     justify-content: center;
     align-items: center;
     position: relative;
-    transition:
-      background-color var(--wui-ease-inout-power-1) var(--wui-duration-md),
-      color var(--wui-ease-inout-power-1) var(--wui-duration-md),
-      box-shadow var(--wui-ease-inout-power-1) var(--wui-duration-md);
+    transition: all var(--wui-ease-out-power-1) var(--wui-duration-lg);
     will-change: background-color, color;
     outline: none;
     border: none;
@@ -641,6 +638,16 @@ export const elementStyles = css`
   button:disabled > wui-transaction-visual,
   button:disabled > wui-logo {
     filter: grayscale(1);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    button:hover:enabled {
+      background-color: var(--wui-color-gray-glass-005);
+    }
+
+    button:active:enabled {
+      background-color: var(--wui-color-gray-glass-010);
+    }
   }
 
   input {
