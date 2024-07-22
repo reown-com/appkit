@@ -3,15 +3,15 @@
   "version": "5.0.7",
   "private": true,
   "scripts": {
-    "dev:demo": "next dev",
-    "build:demo": "next build",
-    "start:demo": "next start",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
     "@radix-ui/react-switch": "1.0.3",
     "@tanstack/react-query": "5.24.8",
-    "@web3modal/wagmi": "5.0.7",
+    "@web3modal/wagmi": "workspace:*",
     "clsx": "2.1.0",
     "framer-motion": "11.0.8",
     "next": "14.2.3",
@@ -26,6 +26,7 @@
   },
   "devDependencies": {
     "@types/react": "18.2.62",
+    "@types/react-dom": "18.2.7",
     "autoprefixer": "10.4.18",
     "eslint": "8.57.0",
     "eslint-config-next": "14.1.1",
