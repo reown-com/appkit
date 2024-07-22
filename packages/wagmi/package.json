@@ -52,7 +52,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@walletconnect/ethereum-provider": "2.13.0",
+    "@walletconnect/ethereum-provider": "2.14.0",
     "@web3modal/polyfills": "workspace:*",
     "@web3modal/wallet": "workspace:*",
     "@web3modal/common": "workspace:*",
