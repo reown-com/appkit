@@ -44,7 +44,7 @@
     }
   },
   "scripts": {
-    "clean": "rm -rf dist",
+    "build:clean": "rm -rf dist",
     "build": "tsc --build",
     "watch": "tsc --watch",
     "typecheck": "tsc --noEmit",
@@ -61,7 +61,7 @@
     "@wallet-standard/base": "1.0.1",
     "@wallet-standard/features": "1.0.3",
     "@wallet-standard/wallet": "1.0.1",
-    "@walletconnect/universal-provider": "2.13.3",
+    "@walletconnect/universal-provider": "2.14.0",
     "@web3modal/core": "workspace:*",
     "@web3modal/common": "workspace:*",
     "@web3modal/polyfills": "workspace:*",
@@ -78,7 +78,7 @@
   },
   "devDependencies": {
     "@types/bn.js": "5.1.5",
-    "@walletconnect/types": "2.13.3"
+    "@walletconnect/types": "2.14.0"
   },
   "peerDependencies": {
     "react": ">=17",

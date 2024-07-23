@@ -3,8 +3,13 @@ import { ModalPage } from '../pages/ModalPage'
 import { ModalValidator } from '../validators/ModalValidator'
 import { timingFixture } from './timing-fixture'
 
-export const testMSocial = timingFixture.extend<ModalFixture>({
+export const testMSocial = timingFixture.extend<
+  ModalFixture & {
+    social: string[]
+  }
+>({
   library: ['wagmi', { option: true }],
+  social: ['github'],
   modalPage: async ({ page, library }, use) => {
     const modalPage = new ModalPage(page, library, 'email')
     await modalPage.load()
@@ -18,7 +23,7 @@ export const testMSocial = timingFixture.extend<ModalFixture>({
       throw new Error('SOCIAL_TEST_PASSWORD is not set')
     }
 
-    await modalPage.loginWithSocial(socialMail, socialPass)
+    await modalPage.loginWithSocial('github', socialMail, socialPass)
     await use(modalPage)
   },
   modalValidator: async ({ modalPage }, use) => {

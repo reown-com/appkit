@@ -36,7 +36,7 @@
     }
   },
   "scripts": {
-    "clean": "rm -rf dist",
+    "build:clean": "rm -rf dist",
     "build": "tsc --build",
     "watch": "tsc --watch",
     "typecheck": "tsc --noEmit",
@@ -45,7 +45,8 @@
   },
   "dependencies": {
     "@coinbase/wallet-sdk": "4.0.3",
-    "@walletconnect/ethereum-provider": "2.13.0",
+    "@walletconnect/ethereum-provider": "2.14.0",
+    "@walletconnect/utils": "2.14.0",
     "@web3modal/common": "workspace:*",
     "@web3modal/wallet": "workspace:*",
     "@web3modal/polyfills": "workspace:*",
