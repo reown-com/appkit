@@ -145,6 +145,7 @@ export class W3mAccountDefaultWidget extends LitElement {
   // -- Private ------------------------------------------- //
   private onrampTemplate() {
     const { enableOnramp } = OptionsController.state
+    const isSolana = this.network?.chain === 'solana'
 
     if (!enableOnramp) {
       return null
@@ -156,8 +157,12 @@ export class W3mAccountDefaultWidget extends LitElement {
         icon="card"
         ?chevron=${true}
         @click=${this.handleClickPay.bind(this)}
+        .disabled=${isSolana}
       >
-        <wui-text variant="paragraph-500" color="fg-100">Buy crypto</wui-text>
+        <wui-flex justifyContent="space-between">
+          <wui-text variant="paragraph-500" color="fg-100">Buy crypto</wui-text>
+          ${isSolana ? html`<wui-tag variant="main">Coming soon</wui-tag>` : null}
+        </wui-flex>
       </wui-list-item>
     `
   }
