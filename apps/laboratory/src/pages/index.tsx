@@ -31,7 +31,7 @@ export default function HomePage() {
                     Demo
                   </Heading>
                   <Text pt="2" fontSize="sm">
-                    Configuration with all features enabled and randomly using ethers or wagmi
+                    All features enabled and randomly using ethers or wagmi
                   </Text>
                 </Box>
                 <RandomLink hrefs={['/library/wagmi-all', '/library/ethers-all']}>
@@ -50,8 +50,8 @@ export default function HomePage() {
                     Demo w/ Sample Wallets
                   </Heading>
                   <Text pt="2" fontSize="sm">
-                    Configuration with all features and sample wallets enabled and randomly using
-                    ethers or wagmi
+                    All features enabled, with sample wallet links, and randomly using ethers or
+                    wagmi
                   </Text>
                 </Box>
                 <RandomLink hrefs={['/library/wagmi-all-internal', '/library/ethers-all-internal']}>
