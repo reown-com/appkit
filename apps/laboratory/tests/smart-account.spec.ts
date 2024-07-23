@@ -37,8 +37,6 @@ smartAccountTest.beforeAll(async ({ browser, library }, testInfo) => {
   await page.closeModal()
   const tempEmail = email.getEmailAddressToUse(testInfo.parallelIndex)
   await page.emailFlow(tempEmail, context, mailsacApiKey)
-  await page.promptSiwe()
-  await page.approveSign()
 
   await validator.expectConnected()
   await validator.expectAuthenticated()
@@ -85,8 +83,6 @@ smartAccountTest('it should switch to a SA enabled network and sign', async () =
   await page.openProfileView()
   await page.openSettings()
   await page.switchNetwork(targetChain)
-  await page.promptSiwe()
-  await page.approveSign()
   await validator.expectSwitchedNetwork(targetChain)
   await page.closeModal()
   await page.sign()
@@ -100,13 +96,6 @@ smartAccountTest('it should switch to a not enabled network and sign with EOA', 
   await page.openProfileView()
   await page.openSettings()
   await page.switchNetwork(targetChain)
-  /*
-   * Flaky as network switch to non-enabled network changes network AND address causing 2 siwe popups
-   * Test goes too fast and the second siwe popup is not handled
-   */
-  await page.page.waitForTimeout(1000)
-  await page.promptSiwe()
-  await page.approveSign()
   await validator.expectSwitchedNetwork(targetChain)
   // Shouldn't show the toggle on a non enabled network
   await validator.expectTogglePreferredTypeVisible(false)
