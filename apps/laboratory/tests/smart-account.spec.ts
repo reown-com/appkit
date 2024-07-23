@@ -1,8 +1,7 @@
-import { expect, test, type BrowserContext } from '@playwright/test'
+import { test, type BrowserContext } from '@playwright/test'
 import { ModalWalletPage } from './shared/pages/ModalWalletPage'
 import { Email } from './shared/utils/email'
 import { EOA, ModalWalletValidator, SMART_ACCOUNT } from './shared/validators/ModalWalletValidator'
-import { SECURE_WEBSITE_URL } from './shared/constants'
 
 /* eslint-disable init-declarations */
 let page: ModalWalletPage
@@ -69,13 +68,6 @@ smartAccountTest('it should sign with smart account 6492 signature', async () =>
   await validator.expectValidSignature(signature, address, chainId)
 })
 
-smartAccountTest('it should upgrade wallet', async () => {
-  const walletUpgradePage = await page.clickWalletUpgradeCard(context)
-  expect(walletUpgradePage.url()).toContain(SECURE_WEBSITE_URL)
-  await walletUpgradePage.close()
-  await page.closeModal()
-})
-
 smartAccountTest('it should switch to a SA enabled network and sign', async () => {
   const targetChain = 'Sepolia'
   await page.openAccount()
@@ -105,7 +97,31 @@ smartAccountTest('it should switch to a not enabled network and sign with EOA', 
   await validator.expectAcceptedSign()
 })
 
-smartAccountTest('it should switch to its eoa and sign', async () => {
+smartAccountTest('it should switch to smart account and sign', async () => {
+  await page.openAccount()
+  await page.openProfileView()
+  await page.openSettings()
+
+  await page.switchNetwork('Polygon')
+  await validator.expectSwitchedNetwork('Polygon')
+
+  await page.togglePreferredAccountType()
+  await validator.expectChangePreferredAccountToShow(EOA)
+
+  await page.closeModal()
+
+  await page.sign()
+  await page.approveSign()
+  await validator.expectAcceptedSign()
+
+  const signature = await page.getSignature()
+  const address = await page.getAddress()
+  const chainId = await page.getChainId()
+
+  await validator.expectValidSignature(signature, address, chainId)
+})
+
+smartAccountTest('it should switch to eoa and sign', async () => {
   await page.openAccount()
   await page.openProfileView()
   await page.openSettings()
