@@ -81,7 +81,6 @@ export class W3mAccountDefaultWidget extends LitElement {
 
     const networkImage = AssetUtil.getNetworkImage(this.network)
 
-
     return html`<wui-flex
         flexDirection="column"
         .padding=${['0', 'xl', 'm', 'xl'] as const}
@@ -89,8 +88,8 @@ export class W3mAccountDefaultWidget extends LitElement {
         gap="l"
       >
         ${ChainController.state.activeChain === ConstantsUtil.CHAIN_NAME.EVM
-        ? this.multiAccountTemplate()
-        : this.singleAccountTemplate()}
+          ? this.multiAccountTemplate()
+          : this.singleAccountTemplate()}
         <wui-flex flexDirection="column" alignItems="center">
           <wui-text variant="paragraph-500" color="fg-200"
             >${CoreHelperUtil.formatBalance(this.balance, this.balanceSymbol)}</wui-text
@@ -115,16 +114,7 @@ export class W3mAccountDefaultWidget extends LitElement {
             ${this.network?.name ?? 'Unknown'}
           </wui-text>
         </wui-list-item>
-        ${this.onrampTemplate()} ${this.swapsTemplate()}
-        <wui-list-item
-          iconVariant="blue"
-          icon="clock"
-          iconSize="sm"
-          ?chevron=${true}
-          @click=${this.onTransactions.bind(this)}
-        >
-          <wui-text variant="paragraph-500" color="fg-100">Activity</wui-text>
-        </wui-list-item>
+        ${this.onrampTemplate()} ${this.swapsTemplate()} ${this.activityTemplate()}
         <wui-list-item
           variant="icon"
           iconVariant="overlay"
@@ -155,6 +145,27 @@ export class W3mAccountDefaultWidget extends LitElement {
         @click=${this.handleClickPay.bind(this)}
       >
         <wui-text variant="paragraph-500" color="fg-100">Buy crypto</wui-text>
+      </wui-list-item>
+    `
+  }
+
+  private activityTemplate() {
+    const isSolana =
+      ChainController.state.activeChain === ConstantsUtil.CHAIN_NAME.SOLANA.toLocaleLowerCase()
+
+    return html`
+      <wui-list-item
+        iconVariant="blue"
+        icon="clock"
+        iconSize="sm"
+        ?chevron=${!isSolana}
+        disabled=${isSolana}
+        @click=${this.onTransactions.bind(this)}
+      >
+        <wui-text variant="paragraph-500" color=${isSolana ? 'gray-glass-020' : 'fg-100'}
+          >Activity</wui-text
+        >
+        ${isSolana ? html`<wui-tag variant="main">Coming soon</wui-tag>` : null}
       </wui-list-item>
     `
   }
@@ -236,18 +247,18 @@ export class W3mAccountDefaultWidget extends LitElement {
         <wui-flex gap="3xs" alignItems="center" justifyContent="center">
           <wui-text variant="medium-title-600" color="fg-100">
             ${this.profileName
-        ? UiHelperUtil.getTruncateString({
-          string: this.profileName,
-          charsStart: 20,
-          charsEnd: 0,
-          truncate: 'end'
-        })
-        : UiHelperUtil.getTruncateString({
-          string: this.address ? this.address : '',
-          charsStart: 4,
-          charsEnd: 4,
-          truncate: 'middle'
-        })}
+              ? UiHelperUtil.getTruncateString({
+                  string: this.profileName,
+                  charsStart: 20,
+                  charsEnd: 0,
+                  truncate: 'end'
+                })
+              : UiHelperUtil.getTruncateString({
+                  string: this.address ? this.address : '',
+                  charsStart: 4,
+                  charsEnd: 4,
+                  truncate: 'middle'
+                })}
           </wui-text>
           <wui-icon-link
             size="md"
@@ -269,16 +280,16 @@ export class W3mAccountDefaultWidget extends LitElement {
 
     return html`
       <wui-profile-button-v2
-      .onProfileClick=${this.handleSwitchAccountsView.bind(this)}
-      address=${ifDefined(this.address)}
-      icon="${account?.type === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT &&
+        .onProfileClick=${this.handleSwitchAccountsView.bind(this)}
+        address=${ifDefined(this.address)}
+        icon="${account?.type === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT &&
         ChainController.state.activeChain === ConstantsUtil.CHAIN_NAME.EVM
-        ? 'lightbulb'
-        : 'mail'}"
-      avatarSrc=${ifDefined(this.profileImage ? this.profileImage : undefined)}
-      profileName=${ifDefined(label ? label : this.profileName)}
-      .onCopyClick=${this.onCopyAddress.bind(this)}
-    ></wui-profile-button-v2>
+          ? 'lightbulb'
+          : 'mail'}"
+        avatarSrc=${ifDefined(this.profileImage ? this.profileImage : undefined)}
+        profileName=${ifDefined(label ? label : this.profileName)}
+        .onCopyClick=${this.onCopyAddress.bind(this)}
+      ></wui-profile-button-v2>
     `
   }
 

@@ -17,6 +17,11 @@ export default css`
     margin-bottom: var(--wui-spacing-3xs);
   }
 
+  wui-tag {
+    position: absolute;
+    right: 20px;
+  }
+
   w3m-transactions-view {
     max-height: 200px;
   }
@@ -45,7 +50,7 @@ export default css`
     box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-002);
     background-color: var(--wui-color-gray-glass-002);
     border-radius: 24px;
-    transaction: background-color 0.2s linear;
+    transition: background-color 0.2s linear;
   }
 
   .account-button:hover {

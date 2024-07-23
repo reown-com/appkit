@@ -33,6 +33,9 @@ export class W3mActivityList extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() public page: 'account' | 'activity' = 'activity'
 
+  @state() private isSolana =
+    ChainController.state.activeChain === ConstantsUtil.CHAIN_NAME.SOLANA.toLocaleLowerCase()
+
   @state() private address: string | undefined = AccountController.state.address
 
   @state() private transactionsByYear = TransactionsController.state.transactionsByYear
@@ -69,7 +72,7 @@ export class W3mActivityList extends LitElement {
   }
 
   public override firstUpdated() {
-    if (ChainController.state.activeChain === ConstantsUtil.CHAIN_NAME.SOLANA) {
+    if (this.isSolana) {
       this.loading = false
       this.empty = true
 
@@ -206,9 +209,6 @@ export class W3mActivityList extends LitElement {
         to grow your wallet!</wui-text
       >`
 
-    console.log(`ChainController.state.activeChain`, ChainController.state.activeChain);
-    console.log(`ConstantsUtil.CHAIN_NAME.SOLANA`, ConstantsUtil.CHAIN_NAME.SOLANA);
-
     return html`<wui-flex
       class="emptyContainer"
       flexGrow="1"
@@ -228,9 +228,7 @@ export class W3mActivityList extends LitElement {
         borderColor="wui-color-bg-125"
       ></wui-icon-box>
       <wui-flex flexDirection="column" alignItems="center" gap="xs">
-        ${ChainController.state.activeChain === ConstantsUtil.CHAIN_NAME.SOLANA.toLocaleLowerCase()
-        ? comingSoon
-        : empty}
+        ${this.isSolana ? comingSoon : empty}
       </wui-flex>
     </wui-flex>`
   }
@@ -247,9 +245,6 @@ export class W3mActivityList extends LitElement {
       <wui-text variant="small-400" align="center" color="fg-200"
         >Your next transactions will appear here</wui-text
       >`
-
-    console.log(`ChainController.state.activeChain`, ChainController.state.activeChain);
-    console.log(`ConstantsUtil.CHAIN_NAME.SOLANA`, ConstantsUtil.CHAIN_NAME.SOLANA);
 
     return html`<wui-flex
       class="contentContainer"
@@ -272,9 +267,7 @@ export class W3mActivityList extends LitElement {
         justifyContent="center"
         flexDirection="column"
       >
-        ${ChainController.state.activeChain === ConstantsUtil.CHAIN_NAME.SOLANA.toLocaleLowerCase()
-        ? comingSoon
-        : empty}
+        ${this.isSolana ? comingSoon : empty}
       </wui-flex>
       <wui-link @click=${this.onReceiveClick.bind(this)}>Trade</wui-link>
     </wui-flex>`

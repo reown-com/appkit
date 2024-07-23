@@ -235,6 +235,8 @@ export class Web3Modal extends Web3ModalScaffold {
       )
     )
 
+    OptionsController.state.enableSwaps = false
+
     SolStoreUtil.subscribeKey('address', () => {
       this.syncAccount()
     })
