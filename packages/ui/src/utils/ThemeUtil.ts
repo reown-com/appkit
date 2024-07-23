@@ -626,7 +626,7 @@ export const elementStyles = css`
       background-color var(--wui-duration-lg) var(--wui-ease-out-power-1),
       border var(--wui-duration-lg) var(--wui-ease-out-power-1),
       box-shadow var(--wui-duration-lg) var(--wui-ease-out-power-1);
-    will-change: background-color, color;
+    will-change: background-color, color, border, box-shadow;
     outline: none;
     border: none;
     column-gap: var(--wui-spacing-3xs);
