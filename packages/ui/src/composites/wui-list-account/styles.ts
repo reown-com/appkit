@@ -30,6 +30,7 @@ export default css`
     color: var(--wui-color-fg-base-100);
   }
   .address-description {
+    text-transform: capitalize;
     color: var(--wui-color-fg-base-200);
   }
 
