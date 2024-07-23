@@ -80,7 +80,9 @@ export const testConnectedMW = base.extend<ModalWalletFixture>({
 
     const walletValidator = new WalletValidator(walletPage.page)
 
+    timeStart('walletValidator.expectConnected')
     await walletValidator.expectConnected()
+    timeEnd('walletValidator.expectConnected')
 
     await use(walletPage)
   },
