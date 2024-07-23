@@ -97,6 +97,10 @@
       "outputs": ["dist/**"]
     },
 
+    "build:clean": {
+      "cache": false
+    },
+
     "build:cdn": {
       "dependsOn": ["^build"],
       "cache": false,
