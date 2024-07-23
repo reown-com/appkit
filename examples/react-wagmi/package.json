@@ -3,19 +3,21 @@
   "private": true,
   "version": "5.0.7",
   "scripts": {
-    "dev:example": "vite --port 3002",
-    "build:examples": "vite build"
+    "dev": "vite --port 3002",
+    "build": "vite build"
   },
   "dependencies": {
     "@tanstack/react-query": "5.24.8",
-    "@web3modal/wagmi": "5.0.7",
+    "@web3modal/wagmi": "workspace:*",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "vite": "5.2.11",
-    "viem": "2.16.2",
+    "viem": "2.17.8",
     "wagmi": "2.10.9"
   },
   "devDependencies": {
+    "@types/react": "18.2.62",
+    "@types/react-dom": "18.2.7",
     "@vitejs/plugin-react": "4.2.1",
     "vite": "5.2.11"
   }
