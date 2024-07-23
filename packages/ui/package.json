@@ -10,7 +10,7 @@
   ],
   "scripts": {
     "build:clean": "rm -rf dist",
-    "build:ui": "tsc --build",
+    "build": "tsc --build",
     "watch": "tsc --watch",
     "test": "vitest run --dir tests --coverage.enabled --reporter=junit --coverage.reporter=json-summary --coverage.reporter=html",
     "typecheck": "tsc --noEmit",
@@ -22,7 +22,9 @@
   },
   "devDependencies": {
     "@types/qrcode": "1.5.5",
-    "@web3modal/common": "5.0.7",
+    "@web3modal/common": "workspace:*",
+    "@web3modal/wallet": "workspace:*",
+    "@web3modal/core": "workspace:*",
     "eslint-plugin-lit": "1.11.0",
     "eslint-plugin-wc": "2.0.4"
   },
