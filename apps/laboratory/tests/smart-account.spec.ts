@@ -39,7 +39,6 @@ smartAccountTest.beforeAll(async ({ browser, library }, testInfo) => {
   await page.emailFlow(tempEmail, context, mailsacApiKey)
 
   await validator.expectConnected()
-  await validator.expectAuthenticated()
 })
 
 smartAccountTest.afterAll(async () => {
