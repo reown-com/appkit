@@ -184,7 +184,7 @@ export class W3mConnectingFarcasterView extends LitElement {
       size=${size}
       theme=${ThemeController.state.themeMode}
       uri=${this.uri}
-      ?arenaClear=${true}
+      ?farcaster=${true}
       data-testid="wui-qr-code"
     ></wui-qr-code>`
   }

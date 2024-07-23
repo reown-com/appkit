@@ -1,6 +1,7 @@
 import { svg } from 'lit'
 
-export const farcasterSvg = svg`<svg fill="none" viewBox="0 0 1000 1000">
+export const farcasterSvg = svg`<svg style="border-radius: 9999px; overflow: hidden;"  fill="none" viewBox="0 0 1000 1000">
+  <rect width="1000" height="1000" rx="9999" ry="9999" fill="#855DCD"/>
   <path fill="#855DCD" d="M0 0h1000v1000H0V0Z" />
   <path
     fill="#fff"

@@ -586,7 +586,7 @@ export class W3mFrameProvider {
   private onConnectSuccess(
     event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/GET_USER_SUCCESS' }>
   ) {
-    this.setEmailLoginSuccess(event.payload.email)
+    this.setLoginSuccess(event.payload.email)
     this.setLastUsedChainId(event.payload.chainId)
 
     this.connectResolver?.resolve(event.payload)
@@ -730,7 +730,7 @@ export class W3mFrameProvider {
     >
   ) {
     const { newEmail } = event.payload
-    this.setEmailLoginSuccess(newEmail)
+    this.setLoginSuccess(newEmail)
     this.updateEmailSecondaryOtpResolver?.resolve({ newEmail })
   }
 
@@ -800,7 +800,7 @@ export class W3mFrameProvider {
     W3mFrameStorage.set(W3mFrameConstants.SOCIAL_USERNAME, username)
   }
 
-  private setEmailLoginSuccess(email?: string | null) {
+  private setLoginSuccess(email?: string | null) {
     if (email) {
       W3mFrameStorage.set(W3mFrameConstants.EMAIL, email)
     }
