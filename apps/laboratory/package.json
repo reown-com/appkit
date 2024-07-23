@@ -49,6 +49,7 @@
     "@walletconnect/utils": "2.14.0",
     "@web3modal/ethers": "workspace:*",
     "@web3modal/siwe": "workspace:*",
+    "@web3modal/siws": "workspace:*",
     "@web3modal/solana": "workspace:*",
     "@web3modal/wagmi": "workspace:*",
     "bs58": "6.0.0",
