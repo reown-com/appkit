@@ -621,7 +621,11 @@ export const elementStyles = css`
     justify-content: center;
     align-items: center;
     position: relative;
-    transition: all var(--wui-ease-out-power-1) var(--wui-duration-lg);
+    transition:
+      color var(--wui-duration-lg) var(--wui-ease-out-power-1),
+      background-color var(--wui-duration-lg) var(--wui-ease-out-power-1),
+      border var(--wui-duration-lg) var(--wui-ease-out-power-1),
+      box-shadow var(--wui-duration-lg) var(--wui-ease-out-power-1);
     will-change: background-color, color;
     outline: none;
     border: none;
