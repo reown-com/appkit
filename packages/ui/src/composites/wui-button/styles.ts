@@ -152,11 +152,11 @@ export default css`
     }
 
     button[data-variant='neutral']:hover:enabled {
-      background: var(--wui-color-gray-glass-005);
+      background: var(--wui-color-gray-glass-002);
     }
 
     button[data-variant='neutral']:active:enabled {
-      background: var(--wui-color-gray-glass-010);
+      background: var(--wui-color-gray-glass-005);
     }
 
     button[data-size='lg'][data-icon-left='true'][data-icon-right='false'] {
