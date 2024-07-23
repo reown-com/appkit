@@ -6,7 +6,8 @@ import {
   RouterController,
   CoreHelperUtil,
   ConstantsUtil as CoreConstantsUtil,
-  EventsController
+  EventsController,
+  OptionsController
 } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -110,10 +111,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
         <w3m-tooltip-trigger text="Buy">
           <wui-icon-button @click=${this.onBuyClick.bind(this)} icon="card"></wui-icon-button>
         </w3m-tooltip-trigger>
-        <w3m-tooltip-trigger text="Swap">
-          <wui-icon-button @click=${this.onSwapClick.bind(this)} icon="recycleHorizontal">
-          </wui-icon-button>
-        </w3m-tooltip-trigger>
+        ${this.swapsTemplate()}
         <w3m-tooltip-trigger text="Receive">
           <wui-icon-button @click=${this.onReceiveClick.bind(this)} icon="arrowBottomCircle">
           </wui-icon-button>
@@ -136,6 +134,21 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private swapsTemplate() {
+    const { enableSwaps } = OptionsController.state
+
+    if (!enableSwaps) {
+      return null
+    }
+
+    return html`
+      <w3m-tooltip-trigger text="Swap">
+        <wui-icon-button @click=${this.onSwapClick.bind(this)} icon="recycleHorizontal">
+        </wui-icon-button>
+      </w3m-tooltip-trigger>
+    `
+  }
+
   private watchSwapValues() {
     this.watchTokenBalance = setInterval(() => AccountController.fetchTokenBalance(), 10000)
   }
