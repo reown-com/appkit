@@ -77,6 +77,7 @@
     "valtio": "1.11.2"
   },
   "devDependencies": {
+    "@web3modal/core": "workspace:*",
     "@types/bn.js": "5.1.5",
     "@walletconnect/types": "2.14.0"
   },

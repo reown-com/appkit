@@ -648,6 +648,9 @@ importers:
         specifier: 1.11.2
         version: 1.11.2(@types/react@18.2.62)(react@18.2.0)
     devDependencies:
+      '@web3modal/core':
+        specifier: workspace:*
+        version: link:../core
       react:
         specifier: 18.2.0
         version: 18.2.0
@@ -1003,6 +1006,9 @@ importers:
       '@wagmi/core':
         specifier: 2.11.6
         version: 2.11.6(@tanstack/query-core@5.24.8)(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10)(viem@2.16.2(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4))(zod@3.22.4)
+      '@web3modal/core':
+        specifier: workspace:*
+        version: link:../core
       react:
         specifier: 18.2.0
         version: 18.2.0
