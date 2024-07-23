@@ -39,8 +39,8 @@
     "@sentry/react": "7.92.0",
     "@solana/web3.js": "1.91.7",
     "@tanstack/react-query": "5.24.8",
-    "@wagmi/core": "2.11.6",
     "@wagmi/connectors": "5.0.21",
+    "@wagmi/core": "2.11.6",
     "@walletconnect/ethereum-provider": "2.13.0",
     "@walletconnect/utils": "2.13.1",
     "@web3modal/ethers": "workspace:*",
@@ -65,6 +65,7 @@
     "@aws-sdk/client-cloudwatch": "3.509.0",
     "@mailsac/api": "1.0.5",
     "@playwright/test": "1.40.1",
+    "@types/node": "20.11.5",
     "@types/react": "18.2.62",
     "@types/react-dom": "18.2.7",
     "dotenv": "16.3.1"
