@@ -28,7 +28,7 @@ export default function HomePage() {
               <Stack direction="row" justifyContent="space-between" alignItems="center">
                 <Box>
                   <Heading size="xs" textTransform="uppercase">
-                    External Demo
+                    Demo
                   </Heading>
                   <Text pt="2" fontSize="sm">
                     Configuration with all features enabled and randomly using ethers or wagmi
@@ -47,10 +47,10 @@ export default function HomePage() {
               <Stack direction="row" justifyContent="space-between" alignItems="center">
                 <Box>
                   <Heading size="xs" textTransform="uppercase">
-                    Internal Testing
+                    Demo w/ Sample Wallets
                   </Heading>
                   <Text pt="2" fontSize="sm">
-                    Configuration with all features and custom wallets enabled and randomly using
+                    Configuration with all features and sample wallets enabled and randomly using
                     ethers or wagmi
                   </Text>
                 </Box>
