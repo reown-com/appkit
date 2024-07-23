@@ -10,6 +10,7 @@ import { BlockchainApiController } from './BlockchainApiController.js'
 import { ApiController } from './ApiController.js'
 import { ChainController } from './ChainController.js'
 import { AccountController } from './AccountController.js'
+import { ConstantsUtil } from '@web3modal/common'
 
 // -- Types --------------------------------------------- //
 export type OnRampProviderOption = 'coinbase' | 'moonpay' | 'stripe' | 'paypal' | 'meld'
@@ -103,11 +104,14 @@ export const OnRampController = {
     if (provider && provider.name === 'meld') {
       const pubKey =
         process.env['NODE_ENV'] === 'production' ? MELD_PROD_PUBLIC_KEY : MELD_DEV_PUBLIC_KEY
-      provider.url += pubKey
-      const currency = ChainController.state.activeChain === 'solana' ? 'SOL' : 'USDC'
-      provider.url += `&destinationCurrencyCode=${currency}`
-      const address = AccountController.state.address
-      provider.url += `&walletAddress=${address}`
+      const currency =
+        ChainController.state.activeChain === ConstantsUtil.CHAIN.SOLANA ? 'SOL' : 'USDC'
+      const address = AccountController.state.address ?? ''
+      const url = new URL(provider.url)
+      url.searchParams.append('publicKey', pubKey)
+      url.searchParams.append('destinationCurrencyCode', currency)
+      url.searchParams.append('walletAddress', address)
+      provider.url = url.toString()
     }
     state.selectedProvider = provider
   },

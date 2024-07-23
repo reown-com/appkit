@@ -17,10 +17,8 @@ export const ONRAMP_PROVIDERS = [
   }
 ]
 
-export const MELD_DEV_PUBLIC_KEY =
-  '?publicKey=WXETMsajb7XcQBm7mcxAab:q3MtzJpiEMtXVNXsqYkAnAaBkgStybGVtZ'
-export const MELD_PROD_PUBLIC_KEY =
-  '?publicKey=WXETMuFUQmqqybHuRkSgxv:25B8LJHSfpG6LVjR2ytU5Cwh7Z4Sch2ocoU'
+export const MELD_DEV_PUBLIC_KEY = 'WXETMsajb7XcQBm7mcxAab:q3MtzJpiEMtXVNXsqYkAnAaBkgStybGVtZ'
+export const MELD_PROD_PUBLIC_KEY = 'WXETMuFUQmqqybHuRkSgxv:25B8LJHSfpG6LVjR2ytU5Cwh7Z4Sch2ocoU'
 
 export const ConstantsUtil = {
   FOUR_MINUTES_MS: 240_000,
