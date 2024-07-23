@@ -12,6 +12,7 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
 import type { SocialProvider } from '@web3modal/scaffold-utils'
+import { SocialProviderEnum } from '@web3modal/scaffold-utils'
 @customElement('w3m-social-login-list')
 export class W3mSocialLoginList extends LitElement {
   public static override styles = styles
@@ -71,7 +72,7 @@ export class W3mSocialLoginList extends LitElement {
         properties: { provider: socialProvider }
       })
     }
-    if (socialProvider === 'farcaster') {
+    if (socialProvider === SocialProviderEnum.Farcaster) {
       RouterController.push('ConnectingFarcaster')
       const authConnector = ConnectorController.getAuthConnector()
 

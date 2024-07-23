@@ -6,3 +6,13 @@ export type SocialProvider =
   | 'x'
   | 'discord'
   | 'farcaster'
+
+export enum SocialProviderEnum {
+  Google = 'google',
+  Github = 'github',
+  Apple = 'apple',
+  Facebook = 'facebook',
+  X = 'x',
+  Discord = 'discord',
+  Farcaster = 'farcaster'
+}

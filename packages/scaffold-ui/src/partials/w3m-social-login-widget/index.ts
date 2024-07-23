@@ -14,6 +14,7 @@ import { state } from 'lit/decorators.js'
 
 import styles from './styles.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
+import { SocialProviderEnum } from '@web3modal/scaffold-utils'
 
 const MAX_TOP_VIEW = 2
 const MAXIMUM_LENGTH = 6
@@ -160,7 +161,7 @@ export class W3mSocialLoginWidget extends LitElement {
         properties: { provider: socialProvider }
       })
     }
-    if (socialProvider === 'farcaster') {
+    if (socialProvider === SocialProviderEnum.Farcaster) {
       RouterController.push('ConnectingFarcaster')
       const authConnector = ConnectorController.getAuthConnector()
 

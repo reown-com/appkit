@@ -38,13 +38,15 @@ export class W3mConnectingFarcasterView extends LitElement {
     super()
     this.unsubscribe.push(
       ...[
-        AccountController.subscribe(val => {
-          if (val.farcasterUrl) {
-            this.uri = val.farcasterUrl
+        AccountController.subscribeKey('farcasterUrl', val => {
+          if (val) {
+            this.uri = val
             this.connectFarcaster()
           }
-          if (val.socialProvider) {
-            this.socialProvider = val.socialProvider
+        }),
+        AccountController.subscribeKey('socialProvider', val => {
+          if (val) {
+            this.socialProvider = val
           }
         })
       ]
