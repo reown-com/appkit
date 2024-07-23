@@ -10,7 +10,7 @@
   ],
   "scripts": {
     "build:clean": "rm -rf dist",
-    "build": "tsc --build",
+    "build:ui": "tsc --build",
     "watch": "tsc --watch",
     "test": "vitest run --dir tests --coverage.enabled --reporter=junit --coverage.reporter=json-summary --coverage.reporter=html",
     "typecheck": "tsc --noEmit",

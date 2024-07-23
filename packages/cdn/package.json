@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "build:clean": "rm -rf dist",
-    "build": "tsc && vite build",
+    "build:cdn": "tsc && vite build",
     "watch": "npx tsc --watch",
     "upload": "pnpm build && pnpm publish --public"
   },

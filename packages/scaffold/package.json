@@ -10,7 +10,7 @@
   ],
   "scripts": {
     "build:clean": "rm -rf dist",
-    "build": "tsc --build",
+    "build:scaffold": "tsc --build",
     "watch": "tsc --watch",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
