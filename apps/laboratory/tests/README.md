@@ -8,13 +8,13 @@ We use Playwright as our functional test runner. It's configured to try multiple
 ## Setup
 
 - Make sure your `.env.local` is set up (see `.env.example` for reference)
-- Run `npm run playwright:install` to install the browsers required to run the tests
-- Build Web3Modal by running `npm run build` in the root directory
+- Run `pnpm playwright:install` to install the browsers required to run the tests
+- Build Web3Modal by running `pnpm build` in the root directory
 
 ## Running Tests
 
-- `npm run playwright:test` to run in default mode.
-- `npm run playwright:debug` to step by step see what the tests are doing
+- `pnpm playwright:test` to run in default mode.
+- `pnpm playwright:debug` to step by step see what the tests are doing
 
 ## Debugging
 
