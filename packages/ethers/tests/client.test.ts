@@ -1,6 +1,11 @@
-import { beforeAll, describe, expect, it } from 'vitest'
+import { beforeAll, describe, expect, it, vi } from 'vitest'
 import { createWeb3Modal, defaultConfig } from '../exports/index.js'
-import { ConnectorController, NetworkController, OptionsController } from '@web3modal/core'
+import {
+  ApiController,
+  ConnectorController,
+  NetworkController,
+  OptionsController
+} from '@web3modal/core'
 import { ConstantsUtil, PresetsUtil } from '@web3modal/scaffold-utils'
 
 // -- Constants ----------------------------------------------------------------
@@ -20,6 +25,7 @@ const metadata = {
 
 // -- Setup -------------------------------------------------------------------
 beforeAll(() => {
+  vi.spyOn(ApiController, 'searchWalletByIds')
   createWeb3Modal({
     ethersConfig: defaultConfig({
       metadata,
