@@ -69,6 +69,7 @@ export class W3mWalletReceiveView extends LitElement {
       alignItems="center"
     >
       <wui-chip-button
+        data-testid="receive-address-copy-button"
         @click=${this.onCopyClick.bind(this)}
         text=${UiHelperUtil.getTruncateString({
           string: this.profileName || this.address || '',
