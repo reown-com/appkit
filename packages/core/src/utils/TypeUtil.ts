@@ -614,7 +614,7 @@ export type Event =
         network: string
         swapFromToken: string
         swapToToken: string
-        swapfromAmount: string
+        swapFromAmount: string
         swapToAmount: string
       }
     }
@@ -626,7 +626,7 @@ export type Event =
         network: string
         swapFromToken: string
         swapToToken: string
-        swapfromAmount: string
+        swapFromAmount: string
         swapToAmount: string
       }
     }
@@ -638,7 +638,7 @@ export type Event =
         network: string
         swapFromToken: string
         swapToToken: string
-        swapfromAmount: string
+        swapFromAmount: string
         swapToAmount: string
       }
     }

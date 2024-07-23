@@ -10,19 +10,20 @@
   ],
   "scripts": {
     "build:clean": "rm -rf dist",
-    "build:core": "tsc --build",
+    "build": "tsc --build",
     "watch": "tsc --watch",
     "typecheck": "tsc --noEmit",
     "test": "vitest run --dir tests --coverage.enabled=true --coverage.reporter=json --coverage.reporter=json-summary --coverage.reportOnFailure=true",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@web3modal/common": "5.0.7",
-    "@web3modal/wallet": "5.0.7",
+    "@web3modal/common": "workspace:*",
+    "@web3modal/wallet": "workspace:*",
     "valtio": "1.11.2"
   },
   "devDependencies": {
-    "@vitest/coverage-v8": "1.1.2"
+    "@vitest/coverage-v8": "1.1.2",
+    "viem": "2.16.2"
   },
   "keywords": [
     "web3",

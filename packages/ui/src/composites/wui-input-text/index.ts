@@ -1,7 +1,7 @@
 import { html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import { createRef, ref } from 'lit/directives/ref.js'
+import { createRef, ref, type Ref } from 'lit/directives/ref.js'
 import { classMap } from 'lit/directives/class-map.js'
 import '../../components/wui-icon/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
@@ -14,7 +14,7 @@ export class WuiInputText extends LitElement {
   public static override styles = [resetStyles, elementStyles, styles]
 
   // -- Members ------------------------------------------- //
-  public inputElementRef = createRef<HTMLInputElement>()
+  public inputElementRef: Ref<HTMLInputElement> = createRef<HTMLInputElement>()
 
   // -- State & Properties -------------------------------- //
   @property() public size: Exclude<SizeType, 'inherit' | 'xs' | 'xxs'> = 'md'
