@@ -4,20 +4,20 @@ import type { CaipNetwork, Connector, WcWallet } from './TypeUtil.js'
 
 export const AssetUtil = {
   async fetchWalletImage(imageId?: string) {
-    if (imageId) {
-      await ApiController._fetchWalletImage(imageId)
-      return this.getWalletImageById(imageId)
+    if (!imageId) {
+      return undefined
     }
 
-    return undefined
+    await ApiController._fetchWalletImage(imageId)
+    return this.getWalletImageById(imageId)
   },
 
   getWalletImageById(imageId?: string) {
-    if (imageId) {
-      return AssetController.state.walletImages[imageId]
+    if (!imageId) {
+      return undefined
     }
 
-    return undefined
+    return AssetController.state.walletImages[imageId]
   },
 
   getWalletImage(wallet?: WcWallet) {
