@@ -448,11 +448,15 @@ export class Web3Modal extends Web3ModalScaffold {
   private async syncAccount({
     address,
     isConnected,
+    isDisconnected,
     chainId,
     connector,
     addresses
   }: Partial<
-    Pick<GetAccountReturnType, 'address' | 'isConnected' | 'chainId' | 'connector' | 'addresses'>
+    Pick<
+      GetAccountReturnType,
+      'address' | 'isConnected' | 'isDisconnected' | 'chainId' | 'connector' | 'addresses'
+    >
   >) {
     const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`
 
@@ -460,10 +464,9 @@ export class Web3Modal extends Web3ModalScaffold {
       return
     }
 
-    this.resetAccount()
-    this.syncNetwork(address, chainId, isConnected)
-
     if (isConnected && address && chainId) {
+      this.resetAccount()
+      this.syncNetwork(address, chainId, isConnected)
       this.setIsConnected(isConnected)
       this.setCaipAddress(caipAddress)
       await Promise.all([
@@ -482,10 +485,13 @@ export class Web3Modal extends Web3ModalScaffold {
       }
 
       this.hasSyncedConnectedAccount = true
-    } else if (!isConnected && this.hasSyncedConnectedAccount) {
+    } else if (isDisconnected && this.hasSyncedConnectedAccount) {
+      this.resetAccount()
       this.resetWcConnection()
       this.resetNetwork()
       this.setAllAccounts([])
+
+      this.hasSyncedConnectedAccount = false
     }
   }
 
