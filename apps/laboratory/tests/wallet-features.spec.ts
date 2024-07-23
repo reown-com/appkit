@@ -53,6 +53,7 @@ walletFeaturesTest('it should initialize swap as expected', async () => {
     .fill('USDC')
   await page.page.getByTestId('swap-select-token-item-USDC').click()
   await expect(page.page.getByTestId('swap-action-button')).toHaveText('Insufficient balance')
+  await page.closeModal()
 })
 
 walletFeaturesTest('it should initialize onramp as expected', async () => {
@@ -60,6 +61,7 @@ walletFeaturesTest('it should initialize onramp as expected', async () => {
   const walletFeatureButton = await page.getWalletFeaturesButton('onramp')
   await walletFeatureButton.click()
   await expect(page.page.getByText('Coinbase')).toBeVisible()
+  await page.closeModal()
 })
 
 walletFeaturesTest('it should initialize receive as expected', async () => {
@@ -68,4 +70,5 @@ walletFeaturesTest('it should initialize receive as expected', async () => {
   await walletFeatureButton.click()
   await page.page.getByTestId('receive-address-copy-button').click()
   await expect(page.page.getByText('Address copied')).toBeVisible()
+  await page.closeModal()
 })
