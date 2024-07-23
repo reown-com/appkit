@@ -169,9 +169,7 @@ export class W3mConnectingFarcasterView extends LitElement {
 
   private onRenderProxy() {
     if (!this.ready && this.uri) {
-      this.timeout = setTimeout(() => {
-        this.ready = true
-      }, 200)
+      this.ready = true
     }
   }
 
