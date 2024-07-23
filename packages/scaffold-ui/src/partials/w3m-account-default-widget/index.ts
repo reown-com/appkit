@@ -88,8 +88,8 @@ export class W3mAccountDefaultWidget extends LitElement {
         gap="l"
       >
         ${ChainController.state.activeChain === ConstantsUtil.CHAIN_NAME.EVM
-          ? this.multiAccountTemplate()
-          : this.singleAccountTemplate()}
+        ? this.multiAccountTemplate()
+        : this.singleAccountTemplate()}
         <wui-flex flexDirection="column" alignItems="center">
           <wui-text variant="paragraph-500" color="fg-200"
             >${CoreHelperUtil.formatBalance(this.balance, this.balanceSymbol)}</wui-text
@@ -151,7 +151,7 @@ export class W3mAccountDefaultWidget extends LitElement {
 
   private activityTemplate() {
     const isSolana =
-      ChainController.state.activeChain === ConstantsUtil.CHAIN_NAME.SOLANA.toLocaleLowerCase()
+      ChainController.state.activeChain === ConstantsUtil.CHAIN.SOLANA
 
     return html`
       <wui-list-item
@@ -162,7 +162,7 @@ export class W3mAccountDefaultWidget extends LitElement {
         disabled=${isSolana}
         @click=${this.onTransactions.bind(this)}
       >
-        <wui-text variant="paragraph-500" color=${isSolana ? 'gray-glass-020' : 'fg-100'}
+        <wui-text variant="paragraph-500" color='fg-100' disabled=${isSolana}
           >Activity</wui-text
         >
         ${isSolana ? html`<wui-tag variant="main">Coming soon</wui-tag>` : null}
@@ -247,18 +247,18 @@ export class W3mAccountDefaultWidget extends LitElement {
         <wui-flex gap="3xs" alignItems="center" justifyContent="center">
           <wui-text variant="medium-title-600" color="fg-100">
             ${this.profileName
-              ? UiHelperUtil.getTruncateString({
-                  string: this.profileName,
-                  charsStart: 20,
-                  charsEnd: 0,
-                  truncate: 'end'
-                })
-              : UiHelperUtil.getTruncateString({
-                  string: this.address ? this.address : '',
-                  charsStart: 4,
-                  charsEnd: 4,
-                  truncate: 'middle'
-                })}
+        ? UiHelperUtil.getTruncateString({
+          string: this.profileName,
+          charsStart: 20,
+          charsEnd: 0,
+          truncate: 'end'
+        })
+        : UiHelperUtil.getTruncateString({
+          string: this.address ? this.address : '',
+          charsStart: 4,
+          charsEnd: 4,
+          truncate: 'middle'
+        })}
           </wui-text>
           <wui-icon-link
             size="md"
@@ -283,9 +283,9 @@ export class W3mAccountDefaultWidget extends LitElement {
         .onProfileClick=${this.handleSwitchAccountsView.bind(this)}
         address=${ifDefined(this.address)}
         icon="${account?.type === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT &&
-        ChainController.state.activeChain === ConstantsUtil.CHAIN_NAME.EVM
-          ? 'lightbulb'
-          : 'mail'}"
+        ChainController.state.activeChain === ConstantsUtil.CHAIN.EVM
+        ? 'lightbulb'
+        : 'mail'}"
         avatarSrc=${ifDefined(this.profileImage ? this.profileImage : undefined)}
         profileName=${ifDefined(label ? label : this.profileName)}
         .onCopyClick=${this.onCopyAddress.bind(this)}
