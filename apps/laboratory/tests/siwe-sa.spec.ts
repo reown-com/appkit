@@ -1,104 +1,107 @@
-import { testMEmailSiwe } from './shared/fixtures/w3m-email-fixture'
+import { expect, test, type BrowserContext } from '@playwright/test'
 import { ModalWalletPage } from './shared/pages/ModalWalletPage'
+import { Email } from './shared/utils/email'
 import { ModalWalletValidator } from './shared/validators/ModalWalletValidator'
+import { SECURE_WEBSITE_URL } from './shared/constants'
 
-testMEmailSiwe.beforeEach(async ({ modalValidator, modalPage }) => {
-  const modalWaletValidator = modalValidator as ModalWalletValidator
-  const modalWalletPage = modalPage as ModalWalletPage
-  await modalWaletValidator.expectConnected()
-  // Switch to supported network
-  await modalWalletPage.openAccount()
-  await modalWalletPage.openProfileView()
-  await modalWalletPage.openSettings()
-  await modalWalletPage.switchNetwork('Polygon')
-  await modalWalletPage.promptSiwe()
-  await modalWalletPage.approveSign()
-  await modalWaletValidator.expectSwitchedNetwork('Polygon')
+let page: ModalWalletPage
+let validator: ModalWalletValidator
+let context: BrowserContext
 
-  // Switch to smart account
-  await modalWalletPage.togglePreferredAccountType()
-  await modalWalletPage.promptSiwe()
-  await modalWalletPage.approveSign()
-
-  await modalWaletValidator.expectConnected()
+// -- Setup --------------------------------------------------------------------
+const smartAccountSiweTest = test.extend<{ library: string }>({
+  library: ['wagmi', { option: true }]
 })
 
-testMEmailSiwe(
-  'it should sign with siwe + smart account',
-  async ({ modalPage, modalValidator }) => {
-    const modalWaletValidator = modalValidator as ModalWalletValidator
-    await modalPage.sign()
-    await modalPage.approveSign()
-    await modalWaletValidator.expectAcceptedSign()
+smartAccountSiweTest.describe.configure({ mode: 'serial' })
+
+smartAccountSiweTest.beforeAll(async ({ browser, library }, testInfo) => {
+  context = await browser.newContext()
+  const browserPage = await context.newPage()
+
+  page = new ModalWalletPage(browserPage, library, 'all')
+  validator = new ModalWalletValidator(browserPage)
+
+  await page.load()
+
+  const mailsacApiKey = process.env['MAILSAC_API_KEY']
+  if (!mailsacApiKey) {
+    throw new Error('MAILSAC_API_KEY is not set')
   }
-)
+  const email = new Email(mailsacApiKey)
 
-testMEmailSiwe(
-  'it should reject sign with siwe + smart account',
-  async ({ modalPage, modalValidator }) => {
-    const modalWaletValidator = modalValidator as ModalWalletValidator
-    await modalPage.sign()
-    await modalPage.rejectSign()
-    await modalWaletValidator.expectRejectedSign()
-  }
-)
+  // Switch to a SA enabled network
+  await page.switchNetworkWithNetworkButton('Polygon')
+  await page.closeModal()
+  const tempEmail = email.getEmailAddressToUse(testInfo.parallelIndex)
+  await page.emailFlow(tempEmail, context, mailsacApiKey)
+  await page.promptSiwe()
+  await page.approveSign()
 
-testMEmailSiwe(
-  'it should switch to an enabled network and sign',
-  async ({ modalPage, modalValidator }) => {
-    const modalWalletValidator = modalValidator as ModalWalletValidator
-    const modalWalletPage = modalPage as ModalWalletPage
-    const targetChain = 'Sepolia'
-    await modalWalletPage.openAccount()
-    await modalWalletPage.openProfileView()
-    await modalWalletPage.openSettings()
-    await modalWalletPage.switchNetwork(targetChain)
-    await modalWalletPage.promptSiwe()
-    await modalWalletPage.approveSign()
-    await modalWalletValidator.expectSwitchedNetwork(targetChain)
-    await modalWalletPage.closeModal()
+  await validator.expectConnected()
+  await validator.expectAuthenticated()
+})
 
-    await modalWalletPage.sign()
-    await modalWalletPage.approveSign()
-    await modalWalletValidator.expectAcceptedSign()
-  }
-)
+smartAccountSiweTest.afterAll(async () => {
+  await page.page.close()
+})
 
-testMEmailSiwe(
-  'it should switch to a not enabled network and sign with EOA',
-  async ({ modalPage, modalValidator }) => {
-    const modalWalletValidator = modalValidator as ModalWalletValidator
-    const modalWalletPage = modalPage as ModalWalletPage
-    const targetChain = 'Ethereum'
-    await modalWalletPage.openAccount()
-    await modalWalletPage.openProfileView()
-    await modalWalletPage.openSettings()
-    await modalWalletPage.switchNetwork(targetChain)
-    /*
-     * Flaky as network switch to non-enabled network changes network AND address causing 2 siwe popups
-     * Test goes too fast and the second siwe popup is not handled
-     */
-    await modalWalletPage.page.waitForTimeout(1500)
-    await modalWalletPage.promptSiwe()
-    await modalWalletPage.approveSign()
-    await modalWalletValidator.expectSwitchedNetwork(targetChain)
-    // Shouldn't show the toggle on a non enabled network
-    await modalWalletValidator.expectTogglePreferredTypeVisible(false)
-    await modalWalletPage.closeModal()
+// -- Tests --------------------------------------------------------------------
+smartAccountSiweTest('it should sign with siwe + smart account', async () => {
+  await page.sign()
+  await page.approveSign()
+  await validator.expectAcceptedSign()
+})
 
-    await modalWalletPage.sign()
-    await modalWalletPage.approveSign()
-    await modalWalletValidator.expectAcceptedSign()
-  }
-)
+smartAccountSiweTest('it should upgrade wallet', async () => {
+  const walletUpgradePage = await page.clickWalletUpgradeCard(context)
+  expect(walletUpgradePage.url()).toContain(SECURE_WEBSITE_URL)
+  await walletUpgradePage.close()
+  await page.closeModal()
+})
 
-testMEmailSiwe('it should disconnect correctly', async ({ modalPage, modalValidator }) => {
-  const modalWaletValidator = modalValidator as ModalWalletValidator
-  const modalWalletPage = modalPage as ModalWalletPage
+smartAccountSiweTest('it should switch to a SA enabled network and sign', async () => {
+  let targetChain = 'Sepolia'
+  await page.openAccount()
+  await page.openProfileView()
+  await page.openSettings()
+  await page.switchNetwork(targetChain)
+  await page.promptSiwe()
+  await page.approveSign()
+  await validator.expectSwitchedNetwork(targetChain)
+  await page.closeModal()
+  await page.sign()
+  await page.approveSign()
+  await validator.expectAcceptedSign()
+})
 
-  await modalWalletPage.openAccount()
-  await modalWalletPage.openProfileView()
-  await modalWalletPage.openSettings()
-  await modalWalletPage.disconnect()
-  await modalWaletValidator.expectDisconnected()
+smartAccountSiweTest('it should switch to a not enabled network and sign with EOA', async () => {
+  const targetChain = 'Ethereum'
+  await page.openAccount()
+  await page.openProfileView()
+  await page.openSettings()
+  await page.switchNetwork(targetChain)
+  /*
+   * Flaky as network switch to non-enabled network changes network AND address causing 2 siwe popups
+   * Test goes too fast and the second siwe popup is not handled
+   */
+  await page.page.waitForTimeout(1000)
+  await page.promptSiwe()
+  await page.approveSign()
+  await validator.expectSwitchedNetwork(targetChain)
+  // Shouldn't show the toggle on a non enabled network
+  await validator.expectTogglePreferredTypeVisible(false)
+  await page.closeModal()
+
+  await page.sign()
+  await page.approveSign()
+  await validator.expectAcceptedSign()
+})
+
+smartAccountSiweTest('it should disconnect correctly', async () => {
+  await page.openAccount()
+  await page.openProfileView()
+  await page.openSettings()
+  await page.disconnect()
+  await validator.expectDisconnected()
 })
