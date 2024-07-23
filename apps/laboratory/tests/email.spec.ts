@@ -4,9 +4,11 @@ import { Email } from './shared/utils/email'
 import { ModalWalletValidator } from './shared/validators/ModalWalletValidator'
 import { SECURE_WEBSITE_URL } from './shared/constants'
 
+/* eslint-disable init-declarations */
 let page: ModalWalletPage
 let validator: ModalWalletValidator
 let context: BrowserContext
+/* eslint-enable init-declarations */
 
 // -- Setup --------------------------------------------------------------------
 const emailTest = test.extend<{ library: string }>({

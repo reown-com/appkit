@@ -4,9 +4,11 @@ import { Email } from './shared/utils/email'
 import { ModalWalletValidator } from './shared/validators/ModalWalletValidator'
 import { SECURE_WEBSITE_URL } from './shared/constants'
 
+/* eslint-disable init-declarations */
 let page: ModalWalletPage
 let validator: ModalWalletValidator
 let context: BrowserContext
+/* eslint-enable init-declarations */
 
 // -- Setup --------------------------------------------------------------------
 const smartAccountSiweTest = test.extend<{ library: string }>({
@@ -61,7 +63,7 @@ smartAccountSiweTest('it should upgrade wallet', async () => {
 })
 
 smartAccountSiweTest('it should switch to a SA enabled network and sign', async () => {
-  let targetChain = 'Sepolia'
+  const targetChain = 'Sepolia'
   await page.openAccount()
   await page.openProfileView()
   await page.openSettings()
