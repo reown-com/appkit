@@ -1,7 +1,7 @@
-import { Button, Stack, Text } from '@chakra-ui/react'
+import { Button, Heading, Stack, Text } from '@chakra-ui/react'
 import { useAccount } from 'wagmi'
 import { useSendCalls } from 'wagmi/experimental'
-import { useCallback } from 'react'
+import { useCallback, useState } from 'react'
 import { useChakraToast } from '../Toast'
 import { parseGwei, type Address } from 'viem'
 import { vitalikEthAddress } from '../../utils/DataUtil'
@@ -10,7 +10,7 @@ import { useWagmiAvailableCapabilities } from '../../hooks/useWagmiActiveCapabil
 
 const TEST_TX_1 = {
   to: vitalikEthAddress as Address,
-  value: parseGwei('0.001')
+  value: parseGwei('0.00')
 }
 const TEST_TX_2 = {
   to: vitalikEthAddress as Address,
@@ -64,10 +64,12 @@ export function WagmiSendCallsTest() {
 
 function ConnectedTestContent() {
   const toast = useChakraToast()
+  const [lastCallsBatchId, setLastCallsBatchId] = useState<string | null>(null)
 
   const { sendCalls, isPending: isLoading } = useSendCalls({
     mutation: {
       onSuccess: hash => {
+        setLastCallsBatchId(hash)
         toast({
           title: 'SendCalls Success',
           description: hash,
@@ -92,7 +94,7 @@ function ConnectedTestContent() {
   return (
     <Stack direction={['column', 'column', 'row']}>
       <Button
-        data-test-id="send-calls-button"
+        data-testid="send-calls-button"
         onClick={onSendCalls}
         disabled={!sendCalls}
         isDisabled={isLoading}
@@ -100,6 +102,10 @@ function ConnectedTestContent() {
       >
         Send Batch Calls to Vitalik
       </Button>
+      <>
+        <Heading size="xs">Last batch call ID:</Heading>
+        <Text data-testid="send-calls-id">{lastCallsBatchId}</Text>
+      </>
     </Stack>
   )
 }

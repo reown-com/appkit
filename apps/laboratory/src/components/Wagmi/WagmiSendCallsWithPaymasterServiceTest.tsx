@@ -124,7 +124,7 @@ function AvailableTestContent() {
       </Tooltip>
       <Button
         width={'fit-content'}
-        data-test-id="send-calls-paymaster-service-button"
+        data-testid="send-calls-paymaster-service-button"
         onClick={onSendCalls}
         disabled={!sendCalls}
         isDisabled={isLoading || !paymasterServiceUrl}

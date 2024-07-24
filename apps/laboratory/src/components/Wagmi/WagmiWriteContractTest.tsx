@@ -87,7 +87,7 @@ function AvailableTestContent({ accountAddress }: { accountAddress: Address }) {
   return (
     <Stack direction={['column', 'column', 'row']}>
       <Button
-        data-test-id="sign-transaction-button"
+        data-testid="sign-transaction-button"
         onClick={onSendTransaction}
         disabled={!simulateData?.request}
         isDisabled={isPending}

@@ -93,3 +93,22 @@ testModalSmartAccount(
     await walletModalValidator.expectChangedAddressAfterSwitchingAccountType(originalAddress)
   }
 )
+
+// EIP 5792
+testModalSmartAccount.skip(
+  'it should sendCalls and getCallsStatus',
+  async ({ modalPage, modalValidator }) => {
+    const modalWalletPage = modalPage as ModalWalletPage
+    const modalWalletValidator = modalValidator as ModalWalletValidator
+
+    await modalWalletPage.sendCalls()
+    await modalWalletPage.approveMultipleTransactions()
+    await modalWalletValidator.expectAcceptedSign()
+
+    const sendCallsId = await modalPage.page.getByTestId('send-calls-id').textContent()
+
+    await modalWalletPage.getCallsStatus(sendCallsId || '')
+
+    await modalWalletValidator.expectCallStatusSuccessOrRetry(sendCallsId || '', true)
+  }
+)

@@ -156,7 +156,7 @@ export function EthersSendCallsWithPaymasterServiceTest() {
       </Tooltip>
       <Button
         width={'fit-content'}
-        data-test-id="send-calls-paymaster-service-button"
+        data-testid="send-calls-paymaster-service-button"
         onClick={onSendCalls}
         isDisabled={isLoading || !paymasterServiceUrl}
       >

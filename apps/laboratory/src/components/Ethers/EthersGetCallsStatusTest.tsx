@@ -87,7 +87,7 @@ export function EthersGetCallsStatusTest() {
         isDisabled={isLoading}
       />
       <Button
-        data-test-id="get-calls-status-button"
+        data-testid="get-calls-status-button"
         onClick={onGetCallsStatus}
         isDisabled={isLoading}
       >

@@ -1,9 +1,9 @@
-import { Button, Stack, Text, Spacer } from '@chakra-ui/react'
+import { Button, Stack, Text, Spacer, Heading } from '@chakra-ui/react'
 import { useState, useEffect } from 'react'
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers/react'
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
 import { useChakraToast } from '../Toast'
-import { parseGwei, type Address } from 'viem'
+import type { Address } from 'viem'
 import { vitalikEthAddress } from '../../utils/DataUtil'
 import { BrowserProvider } from 'ethers'
 import {
@@ -23,6 +23,8 @@ export function EthersSendCallsTest() {
   const [atomicBatchSupportedChains, setAtomicBatchSupportedChains] = useState<
     Awaited<ReturnType<typeof getCapabilitySupportedChainInfo>>
   >([])
+
+  const [lastCallsBatchId, setLastCallsBatchId] = useState<string | null>(null)
 
   useEffect(() => {
     if (
@@ -56,12 +58,11 @@ export function EthersSendCallsTest() {
         throw Error('chain not selected')
       }
       const provider = new BrowserProvider(walletProvider, chainId)
-      const amountToSend = parseGwei('0.001').toString(16)
       const calls = [
         {
           to: vitalikEthAddress as `0x${string}`,
           data: '0x' as `0x${string}`,
-          value: `0x${amountToSend}`
+          value: `0x0`
         },
         {
           to: vitalikEthAddress as Address,
@@ -78,6 +79,8 @@ export function EthersSendCallsTest() {
       const batchCallHash = await provider.send(EIP_5792_RPC_METHODS.WALLET_SEND_CALLS, [
         sendCallsParams
       ])
+
+      setLastCallsBatchId(batchCallHash)
       toast({
         title: 'Success',
         description: batchCallHash,
@@ -131,11 +134,22 @@ export function EthersSendCallsTest() {
   }
 
   return currentChainsInfo ? (
-    <Stack direction={['column', 'column', 'row']}>
-      <Button data-test-id="send-calls-button" onClick={onSendCalls} isDisabled={loading}>
+    <Stack direction={['column', 'column']}>
+      <Button
+        data-testid="send-calls-button"
+        onClick={onSendCalls}
+        isDisabled={loading}
+        maxWidth={'50%'}
+      >
         Send Batch Calls to Vitalik
       </Button>
       <Spacer />
+      {lastCallsBatchId && (
+        <>
+          <Heading size="xs">Last batch call ID:</Heading>
+          <Text data-testid="send-calls-id">{lastCallsBatchId}</Text>
+        </>
+      )}
     </Stack>
   ) : (
     <Text fontSize="md" color="yellow">

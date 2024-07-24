@@ -73,9 +73,10 @@ function AvailableTestContent() {
         onChange={e => setBatchCallId(e.target.value)}
         value={batchCallId}
         isDisabled={isLoading}
+        data-testid="get-calls-id-input"
       />
       <Button
-        data-test-id="get-calls-status-button"
+        data-testid="get-calls-status-button"
         onClick={onGetCallsStatus}
         isDisabled={isLoading || !batchCallId}
         isLoading={isLoading}
