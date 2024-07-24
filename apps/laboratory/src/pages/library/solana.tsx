@@ -24,7 +24,7 @@ const modal = createWeb3Modal({
   termsConditionsUrl: 'https://walletconnect.com/terms',
   privacyPolicyUrl: 'https://walletconnect.com/privacy',
   customWallets: ConstantsUtil.CustomWallets,
-  wallets: [SolflareWalletAdapter]
+  wallets: [new SolflareWalletAdapter()]
 })
 
 ThemeStore.setModal(modal)
