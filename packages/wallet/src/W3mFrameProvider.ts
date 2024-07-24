@@ -31,7 +31,7 @@ type RpcRequestResolver = Resolver<W3mFrameTypes.RPCResponse>
 type UpdateEmailResolver = Resolver<W3mFrameTypes.Responses['FrameUpdateEmailResponse']>
 type UpdateEmailPrimaryOtpResolver = Resolver<undefined>
 type UpdateEmailSecondaryOtpResolver = Resolver<
-  W3mFrameTypes.Responses['FrameUpdateEmailSecondaryOtpResolver']
+  W3mFrameTypes.Responses['FrameUpdateEmailSecondaryOtpResponse']
 >
 type SyncThemeResolver = Resolver<undefined>
 type SyncDappDataResolver = Resolver<undefined>
@@ -334,7 +334,7 @@ export class W3mFrameProvider {
       payload
     })
 
-    return new Promise<W3mFrameTypes.Responses['FrameUpdateEmailSecondaryOtpResolver']>(
+    return new Promise<W3mFrameTypes.Responses['FrameUpdateEmailSecondaryOtpResponse']>(
       (resolve, reject) => {
         this.updateEmailSecondaryOtpResolver = { resolve, reject }
       }
@@ -460,15 +460,15 @@ export class W3mFrameProvider {
     })
   }
 
-  public onRpcRequest(callback: (request: unknown) => void) {
+  public onRpcRequest(callback: (request: W3mFrameTypes.RPCRequest) => void) {
     this.w3mFrame.events.onAppEvent(event => {
       if (event.type.includes(W3mFrameConstants.RPC_METHOD_KEY)) {
-        callback(event)
+        callback((event as { payload: W3mFrameTypes.RPCRequest })?.payload)
       }
     })
   }
 
-  public onRpcResponse(callback: (request: unknown) => void) {
+  public onRpcResponse(callback: (request: W3mFrameTypes.FrameEvent) => void) {
     this.w3mFrame.events.onFrameEvent(event => {
       if (event.type.includes(W3mFrameConstants.RPC_METHOD_KEY)) {
         callback(event)
