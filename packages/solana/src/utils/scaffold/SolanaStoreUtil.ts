@@ -13,7 +13,7 @@ type StateKey = keyof SolStoreUtilState
 
 export interface SolStoreUtilState {
   provider?: Provider | CombinedProvider | UniversalProvider
-  providerType?: 'walletConnect' | `injected_${string}` | `announced_${string}`
+  providerType?: 'walletConnect' | `injected_${string}` | `announced_${string}` | 'w3mAuth'
   address?: string
   chainId?: string
   caipChainId?: string

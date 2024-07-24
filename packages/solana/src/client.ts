@@ -9,7 +9,7 @@ import {
   OptionsController
 } from '@web3modal/core'
 import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@web3modal/scaffold-utils'
-import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
+import { ConstantsUtil as CommonConstantsUtil, NetworkUtil } from '@web3modal/common'
 
 import { SolConstantsUtil, SolHelpersUtil, SolStoreUtil } from './utils/scaffold/index.js'
 import { WalletConnectConnector } from './connectors/walletConnectConnector.js'
@@ -30,8 +30,20 @@ import type {
 } from '@web3modal/scaffold'
 import type { Chain as AvailableChain } from '@web3modal/common'
 
-import type { ProviderType, Chain, Provider, SolStoreUtilState } from './utils/scaffold/index.js'
+import type {
+  ProviderType,
+  Chain,
+  Provider,
+  SolStoreUtilState,
+  CombinedProvider
+} from './utils/scaffold/index.js'
 import { watchStandard } from './utils/wallet-standard/watchStandard.js'
+import {
+  W3mFrameConstants,
+  W3mFrameHelpers,
+  W3mFrameProvider,
+  W3mFrameRpcConstants
+} from '@web3modal/wallet'
 
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
   solanaConfig: ProviderType
@@ -62,6 +74,10 @@ export class Web3Modal extends Web3ModalScaffold {
   private chain: AvailableChain = CommonConstantsUtil.CHAIN.SOLANA
 
   public connectionSettings: Commitment | ConnectionConfig
+
+  private authProvider?: W3mFrameProvider
+
+  private solanaConfig: ProviderType
 
   public constructor(options: Web3ModalClientOptions) {
     const {
@@ -134,6 +150,11 @@ export class Web3Modal extends Web3ModalScaffold {
       },
 
       connectExternal: async ({ id }) => {
+        console.log(
+          '>>> connectionControllerClient:connectExternal - id: ',
+          this.filteredWalletAdapters,
+          id
+        )
         const adapter = this.filteredWalletAdapters?.find(
           a => a.name.toLocaleLowerCase() === id.toLocaleLowerCase()
         )
@@ -210,6 +231,7 @@ export class Web3Modal extends Web3ModalScaffold {
     this.chains = chains
     this.connectionSettings = connectionSettings
     this.syncRequestedNetworks(chains, chainImages)
+    this.solanaConfig = solanaConfig
 
     const chain = SolHelpersUtil.getChainFromCaip(
       chains,
@@ -411,6 +433,73 @@ export class Web3Modal extends Web3ModalScaffold {
     })
 
     this.setConnectors(w3mConnectors)
+    this.syncAuthConnector(OptionsController.state.projectId)
+  }
+
+  private async syncAuthConnector(projectId: string) {
+    if (typeof window !== 'undefined') {
+      this.authProvider = new W3mFrameProvider(projectId)
+
+      this.addConnector({
+        id: ConstantsUtil.AUTH_CONNECTOR_ID,
+        type: 'AUTH',
+        name: 'Auth',
+        provider: this.authProvider,
+        email: true,
+        socials: ['apple', 'discord', 'github'],
+        showWallets: true,
+        chain: this.chain,
+        walletFeatures: true
+      })
+
+      super.setLoading(true)
+      const isLoginEmailUsed = this.authProvider.getLoginEmailUsed()
+      super.setLoading(isLoginEmailUsed)
+      const { isConnected } = await this.authProvider.isConnected()
+      if (isConnected) {
+        await this.setAuthProvider()
+      } else {
+        super.setLoading(false)
+      }
+    }
+  }
+
+  private async setAuthProvider() {
+    window?.localStorage.setItem(SolConstantsUtil.WALLET_ID, ConstantsUtil.AUTH_CONNECTOR_ID)
+
+    if (this.authProvider) {
+      super.setLoading(true)
+      const {
+        address,
+        chainId,
+        smartAccountDeployed,
+        preferredAccountType,
+        accounts = []
+      } = await this.authProvider.connect({ chainId: this.getChainId() })
+
+      const { smartAccountEnabledNetworks } =
+        await this.authProvider.getSmartAccountEnabledNetworks()
+
+      this.setSmartAccountEnabledNetworks(smartAccountEnabledNetworks)
+      if (address && chainId) {
+        this.setAllAccounts(
+          accounts.length > 0
+            ? accounts
+            : [{ address, type: preferredAccountType as 'eoa' | 'smartAccount' }]
+        )
+        SolStoreUtil.setCaipChainId(`solana:${chainId}`)
+        SolStoreUtil.setProviderType(ConstantsUtil.AUTH_CONNECTOR_ID as 'w3mAuth')
+        SolStoreUtil.setProvider(this.authProvider as unknown as CombinedProvider)
+        // SolStoreUtil.setStatus('connected')
+        SolStoreUtil.setIsConnected(true)
+        SolStoreUtil.setAddress(address)
+        // SolStoreUtil.setPreferredAccountType(preferredAccountType as W3mFrameTypes.AccountType)
+        this.setSmartAccountDeployed(Boolean(smartAccountDeployed), this.chain)
+        this.watchAuth()
+        this.watchModal()
+      }
+      super.setLoading(false)
+    }
   }
 
   private async syncAccount() {
@@ -560,6 +649,13 @@ export class Web3Modal extends Web3ModalScaffold {
     await Promise.all([this.syncBalance(address), this.setApprovedCaipNetworksData()])
   }
 
+  public getChainId() {
+    const storeChainId = SolStoreUtil.state.chainId
+    const networkControllerChainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
+
+    return storeChainId ?? networkControllerChainId
+  }
+
   private setInjectedProvider(provider: Provider) {
     const id = SolHelpersUtil.getStorageInjectedId(provider as unknown as ExtendedBaseWalletAdapter)
     const address = provider.publicKey?.toString()
@@ -604,6 +700,98 @@ export class Web3Modal extends Web3ModalScaffold {
       provider.on('disconnect', disconnectHandler)
       provider.on('accountsChanged', accountsChangedHandler)
       provider.on('connect', accountsChangedHandler)
+    }
+  }
+
+  private watchAuth() {
+    if (this.authProvider) {
+      this.authProvider.onRpcRequest(request => {
+        if (W3mFrameHelpers.checkIfRequestExists(request)) {
+          if (!W3mFrameHelpers.checkIfRequestIsAllowed(request)) {
+            if (super.isOpen()) {
+              if (super.isTransactionStackEmpty()) {
+                return
+              }
+              if (super.isTransactionShouldReplaceView()) {
+                super.replace('ApproveTransaction')
+              } else {
+                super.redirect('ApproveTransaction')
+              }
+            } else {
+              super.open({ view: 'ApproveTransaction' })
+            }
+          }
+        } else {
+          super.open()
+          const method = W3mFrameHelpers.getRequestMethod(request)
+          // eslint-disable-next-line no-console
+          console.error(W3mFrameRpcConstants.RPC_METHOD_NOT_ALLOWED_MESSAGE, { method })
+          setTimeout(() => {
+            this.showErrorMessage(W3mFrameRpcConstants.RPC_METHOD_NOT_ALLOWED_UI_MESSAGE)
+          }, 300)
+        }
+      })
+      this.authProvider.onRpcResponse(response => {
+        const responseType = W3mFrameHelpers.getResponseType(response)
+
+        switch (responseType) {
+          case W3mFrameConstants.RPC_RESPONSE_TYPE_ERROR: {
+            const isModalOpen = super.isOpen()
+
+            if (isModalOpen) {
+              if (super.isTransactionStackEmpty()) {
+                super.close()
+              } else {
+                super.popTransactionStack(true)
+              }
+            }
+            break
+          }
+          case W3mFrameConstants.RPC_RESPONSE_TYPE_TX: {
+            if (super.isTransactionStackEmpty()) {
+              super.close()
+            } else {
+              super.popTransactionStack()
+            }
+            break
+          }
+          default:
+            break
+        }
+      })
+      this.authProvider.onNotConnected(() => {
+        this.setIsConnected(false)
+        super.setLoading(false)
+      })
+      this.authProvider.onIsConnected(({}) => {
+        this.setIsConnected(true)
+        super.setLoading(false)
+        // SolStoreUtil.setPreferredAccountType(preferredAccountType as W3mFrameTypes.AccountType)
+      })
+
+      this.authProvider.onSetPreferredAccount(({ address, type }) => {
+        if (!address) {
+          return
+        }
+        super.setLoading(true)
+        const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
+        SolStoreUtil.setAddress(address)
+        SolStoreUtil.setCaipChainId(`solana:${chainId}`)
+        // SolStoreUtil.setStatus('connected')
+        SolStoreUtil.setIsConnected(true)
+        // SolStoreUtil.setPreferredAccountType(type as W3mFrameTypes.AccountType)
+        this.syncAccount().then(() => super.setLoading(false))
+      })
+    }
+  }
+
+  private watchModal() {
+    if (this.authProvider) {
+      this.subscribeState(val => {
+        if (!val.open) {
+          this.authProvider?.rejectRpcRequest()
+        }
+      })
     }
   }
 }

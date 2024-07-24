@@ -10,6 +10,7 @@ import type {
   Signer
 } from '@solana/web3.js'
 import type { SendTransactionOptions } from '@solana/wallet-adapter-base'
+import type { SocialProvider } from '@web3modal/scaffold-utils'
 
 export type Connection = SolanaConnection
 
@@ -25,6 +26,12 @@ export type ProviderType = {
   email?: boolean
   EIP6963?: boolean
   metadata: Metadata
+  auth?: {
+    email?: boolean
+    socials?: SocialProvider[]
+    showWallets?: boolean
+    walletFeatures?: boolean
+  }
 }
 
 export interface RequestArguments {

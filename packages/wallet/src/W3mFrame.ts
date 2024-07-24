@@ -57,14 +57,52 @@ export class W3mFrame {
   // -- Networks --------------------------------------------------------------
   get networks(): Record<number, W3mFrameTypes.Network> {
     const data = [
-      1, 5, 11155111, 10, 420, 42161, 421613, 137, 80001, 42220, 1313161554, 1313161555, 56, 97,
-      43114, 43113, 324, 280, 100, 8453, 84531, 7777777, 999
-    ].map(id => ({
-      [id]: {
-        rpcUrl: `${this.rpcUrl}/v1/?chainId=eip155:${id}&projectId=${this.projectId}`,
-        chainId: id
+      1,
+      5,
+      11155111,
+      10,
+      420,
+      42161,
+      421613,
+      137,
+      80001,
+      42220,
+      1313161554,
+      1313161555,
+      56,
+      97,
+      43114,
+      43113,
+      324,
+      280,
+      100,
+      8453,
+      84531,
+      7777777,
+      999,
+      // Solana Mainnet
+      '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      // Solana Testnet
+      '4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z',
+      // Solana Devnet
+      'EtWTRABZaYq6iMfeYKouRu166VU2xqa1'
+    ].map(id => {
+      if (typeof id === 'number') {
+        return {
+          [id]: {
+            rpcUrl: `${this.rpcUrl}/v1/?chainId=eip155:${id}&projectId=${this.projectId}`,
+            chainId: id
+          }
+        }
       }
-    }))
+
+      return {
+        [id]: {
+          rpcUrl: `${this.rpcUrl}/v1/`,
+          chainId: id
+        }
+      }
+    })
 
     return Object.assign({}, ...data)
   }
