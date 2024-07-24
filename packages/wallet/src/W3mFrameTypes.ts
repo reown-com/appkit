@@ -62,6 +62,8 @@ import {
   AppGetSocialRedirectUriRequest,
   FrameGetSocialRedirectUriResponse,
   FrameConnectSocialResponse,
+  FrameConnectFarcasterResponse,
+  FrameGetFarcasterUriResponse,
   AppConnectSocialRequest,
   AppSetPreferredAccountRequest,
   FrameSetPreferredAccountResponse,
@@ -108,6 +110,8 @@ export namespace W3mFrameTypes {
     FrameUpdateEmailResponse: z.infer<typeof FrameUpdateEmailResponse>
     FrameGetSocialRedirectUriResponse: z.infer<typeof FrameGetSocialRedirectUriResponse>
     FrameConnectSocialResponse: z.infer<typeof FrameConnectSocialResponse>
+    FrameGetFarcasterUriResponse: z.infer<typeof FrameGetFarcasterUriResponse>
+    FrameConnectFarcasterResponse: z.infer<typeof FrameConnectFarcasterResponse>
     FrameSyncThemeResponse: undefined
     FrameSyncDappDataResponse: undefined
     FrameUpdateEmailPrimaryOtpResponse: undefined
