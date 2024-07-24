@@ -70,6 +70,15 @@ export const AppSetPreferredAccountRequest = z.object({ type: z.string() })
 export const FrameConnectEmailResponse = z.object({
   action: z.enum(['VERIFY_DEVICE', 'VERIFY_OTP'])
 })
+
+export const FrameGetFarcasterUriResponse = z.object({
+  url: z.string()
+})
+
+export const FrameConnectFarcasterResponse = z.object({
+  userName: z.string()
+})
+
 export const FrameConnectSocialResponse = z.object({
   email: z.string(),
   address: z.string(),
@@ -91,7 +100,7 @@ export const FrameUpdateEmailResponse = z.object({
   action: z.enum(['VERIFY_PRIMARY_OTP', 'VERIFY_SECONDARY_OTP'])
 })
 export const FrameGetUserResponse = z.object({
-  email: z.string().email(),
+  email: z.string().email().optional().nullable(),
   address: z.string(),
   chainId: z.number(),
   smartAccountDeployed: z.optional(z.boolean()),
@@ -364,6 +373,10 @@ export const W3mFrameSchema = {
       })
     )
 
+    .or(EventSchema.extend({ type: zType('APP_GET_FARCASTER_URI') }))
+
+    .or(EventSchema.extend({ type: zType('APP_CONNECT_FARCASTER') }))
+
     .or(
       EventSchema.extend({
         type: zType('APP_GET_USER'),
@@ -482,14 +495,32 @@ export const W3mFrameSchema = {
       })
     )
 
-    .or(EventSchema.extend({ type: zType('FRAME_CONNECT_EMAIL_ERROR'), payload: zError }))
-
     .or(
       EventSchema.extend({
         type: zType('FRAME_CONNECT_EMAIL_SUCCESS'),
         payload: FrameConnectEmailResponse
       })
     )
+
+    .or(EventSchema.extend({ type: zType('FRAME_CONNECT_EMAIL_ERROR'), payload: zError }))
+
+    .or(
+      EventSchema.extend({
+        type: zType('FRAME_GET_FARCASTER_URI_SUCCESS'),
+        payload: FrameGetFarcasterUriResponse
+      })
+    )
+
+    .or(EventSchema.extend({ type: zType('FRAME_GET_FARCASTER_URI_ERROR'), payload: zError }))
+
+    .or(
+      EventSchema.extend({
+        type: zType('FRAME_CONNECT_FARCASTER_SUCCESS'),
+        payload: FrameConnectFarcasterResponse
+      })
+    )
+
+    .or(EventSchema.extend({ type: zType('FRAME_CONNECT_FARCASTER_ERROR'), payload: zError }))
 
     .or(EventSchema.extend({ type: zType('FRAME_CONNECT_OTP_ERROR'), payload: zError }))
 
