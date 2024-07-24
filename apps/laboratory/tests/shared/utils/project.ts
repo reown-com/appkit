@@ -34,23 +34,22 @@ const braveOptions: UseOptions = {
   }
 }
 
-const WAGMI_EMAIL_BASED_REGEX =
-  /(?:multichain\.spec\.ts|smart-account\.spec\.ts|siwe-sa\.spec\.ts|social\.spec\.ts).*$/u
+const WAGMI_EMAIL_BASED_REGEX = /(?:smart-account\.spec\.ts|siwe-sa\.spec\.ts|social\.spec\.ts).*$/u
+const ETHERS_EMAIL_BASED_REGEX = /(?:social\.spec\.ts).*$/u
 
 const SOLANA_UNIMPLEMENTED_TESTS_REGEX =
-  /(?:multichain\.spec\.ts|email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts|smart-account\.spec\.ts|social\.spec\.ts|siwe-sa\.spec\.ts|siwe-email\.spec\.ts).*$/u
+  /^(?!.*(?:email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts|smart-account\.spec\.ts|social\.spec\.ts|siwe-sa\.spec\.ts|siwe-email\.spec\.ts|wallet-features\.spec\.ts)).*$/u
 
 const customProjectProperties: CustomProjectProperties = {
   'Desktop Chrome/ethers': {
-    testIgnore: /(?:multichain\.spec\.ts|social\.spec\.ts).*$/u
+    testIgnore: ETHERS_EMAIL_BASED_REGEX
   },
   'Desktop Brave/ethers': {
-    testIgnore:
-      /(?:multichain\.spec\.ts|email\.spec\.ts|smart-account\.spec\.ts|social\.spec\.ts).*$/u,
+    testIgnore: ETHERS_EMAIL_BASED_REGEX,
     useOptions: braveOptions
   },
   'Desktop Firefox/ethers': {
-    testIgnore: /(?:multichain\.spec\.ts|social\.spec\.ts).*$/u
+    testIgnore: ETHERS_EMAIL_BASED_REGEX
   },
   'Desktop Brave/wagmi': {
     testIgnore: WAGMI_EMAIL_BASED_REGEX,

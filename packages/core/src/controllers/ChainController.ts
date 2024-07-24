@@ -341,7 +341,8 @@ export const ChainController = {
         connectedWalletInfo: undefined,
         preferredAccountType: undefined,
         socialProvider: undefined,
-        socialWindow: undefined
+        socialWindow: undefined,
+        farcasterUrl: undefined
       })
     )
   }

@@ -94,11 +94,10 @@ export class W3mAccountDefaultWidget extends LitElement {
 
       <wui-flex flexDirection="column" gap="xs" .padding=${['0', 's', 's', 's'] as const}>
         ${this.authCardTemplate()} <w3m-account-auth-button></w3m-account-auth-button>
-
-        ${this.onrampTemplate()}
+        ${this.onrampTemplate()} ${this.swapsTemplate()}
         <wui-list-item
           iconVariant="blue"
-          icon="swapHorizontalMedium"
+          icon="clock"
           iconSize="sm"
           ?chevron=${true}
           @click=${this.onTransactions.bind(this)}
@@ -139,6 +138,25 @@ export class W3mAccountDefaultWidget extends LitElement {
     `
   }
 
+  private swapsTemplate() {
+    const { enableSwaps } = OptionsController.state
+
+    if (!enableSwaps) {
+      return null
+    }
+
+    return html`
+      <wui-list-item
+        iconVariant="blue"
+        icon="recycleHorizontal"
+        ?chevron=${true}
+        @click=${this.handleClickSwap.bind(this)}
+      >
+        <wui-text variant="paragraph-500" color="fg-100">Swap</wui-text>
+      </wui-list-item>
+    `
+  }
+
   private authCardTemplate() {
     const type = StorageUtil.getConnectedConnector()
     const authConnector = ConnectorController.getAuthConnector()
@@ -164,6 +182,10 @@ export class W3mAccountDefaultWidget extends LitElement {
 
   private handleClickPay() {
     RouterController.push('OnRampProviders')
+  }
+
+  private handleClickSwap() {
+    RouterController.push('Swap')
   }
 
   private explorerBtnTemplate() {

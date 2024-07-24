@@ -483,11 +483,15 @@ export class EVMWagmiClient {
   private async syncAccount({
     address,
     isConnected,
+    isDisconnected,
     chainId,
     connector,
     addresses
   }: Partial<
-    Pick<GetAccountReturnType, 'address' | 'isConnected' | 'chainId' | 'connector' | 'addresses'>
+    Pick<
+      GetAccountReturnType,
+      'address' | 'isConnected' | 'isDisconnected' | 'chainId' | 'connector' | 'addresses'
+    >
   >) {
     const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`
 
@@ -495,12 +499,11 @@ export class EVMWagmiClient {
       return
     }
 
-    this.appKit?.resetAccount(this.chain)
-    this.syncNetwork(address, chainId, isConnected)
-
     if (isConnected && address && chainId) {
-      this.appKit?.setIsConnected(isConnected, this.chain)
-      this.appKit?.setCaipAddress(caipAddress, this.chain)
+      this.appKit?.resetAccount()
+      this.syncNetwork(address, chainId, isConnected)
+      this.appKit?.setIsConnected(isConnected)
+      this.appKit?.setCaipAddress(caipAddress)
       await Promise.all([
         this.syncProfile(address, chainId),
         this.syncBalance(address, chainId),
@@ -521,9 +524,13 @@ export class EVMWagmiClient {
       }
 
       this.hasSyncedConnectedAccount = true
-    } else if (!isConnected && this.hasSyncedConnectedAccount) {
+    } else if (isDisconnected && this.hasSyncedConnectedAccount) {
+      this.appKit?.resetAccount()
       this.appKit?.resetWcConnection()
       this.appKit?.resetNetwork()
+      this.appKit?.setAllAccounts([])
+
+      this.hasSyncedConnectedAccount = false
     }
   }
 
@@ -768,9 +775,10 @@ export class EVMWagmiClient {
           }
         } else {
           this.appKit?.open()
-          const method = W3mFrameHelpers.getRequestMethod(request)
           // eslint-disable-next-line no-console
-          console.error(W3mFrameRpcConstants.RPC_METHOD_NOT_ALLOWED_MESSAGE, { method })
+          console.error(W3mFrameRpcConstants.RPC_METHOD_NOT_ALLOWED_MESSAGE, {
+            method: request.method
+          })
           setTimeout(() => {
             this.appKit?.showErrorMessage(W3mFrameRpcConstants.RPC_METHOD_NOT_ALLOWED_UI_MESSAGE)
           }, 300)

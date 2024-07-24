@@ -135,21 +135,38 @@ export class ModalPage {
     })
   }
 
-  async loginWithSocial(socialMail: string, socialPass: string) {
-    const authFile = 'playwright/.auth/user.json'
+  async loginWithSocial(socialOption: 'github', socialMail: string, socialPass: string) {
     await this.page
       .getByTestId('connect-button')
       .getByRole('button', { name: 'Connect Wallet' })
       .click()
-    const discordPopupPromise = this.page.waitForEvent('popup')
-    await this.page.getByTestId('social-selector-discord').click()
-    const discordPopup = await discordPopupPromise
-    await discordPopup.fill('#uid_8', socialMail)
-    await discordPopup.fill('#uid_10', socialPass)
-    await discordPopup.locator('[type=submit]').click()
-    await discordPopup.locator('.footer_b96583 button:nth-child(2)').click()
-    await discordPopup.context().storageState({ path: authFile })
-    await discordPopup.waitForEvent('close')
+
+    switch (socialOption) {
+      case 'github':
+        await this.loginWithGitHub(socialMail, socialPass)
+        break
+      default:
+        throw new Error(`Unknown social option: ${socialOption}`)
+    }
+  }
+
+  async loginWithGitHub(socialMail: string, socialPass: string) {
+    const socialPopupPromise = this.page.waitForEvent('popup')
+    await this.page.getByTestId(`social-selector-github`).click()
+    const socialPopup = await socialPopupPromise
+    await socialPopup.waitForLoadState()
+    await socialPopup.fill('#login_field.form-control.input-block.js-login-field', socialMail)
+    await socialPopup.fill(
+      '#password.form-control.form-control.input-block.js-password-field',
+      socialPass
+    )
+    await socialPopup.locator('[type=submit]').click()
+
+    if (await socialPopup.locator('h1').getByText('Reauthorization required').isVisible()) {
+      await socialPopup.locator('button').getByText('Authorize WalletConnect').click()
+    }
+
+    await socialPopup.waitForEvent('close')
   }
 
   async enterOTP(otp: string, headerTitle = 'Confirm Email') {
@@ -335,5 +352,12 @@ export class ModalPage {
 
   async openProfileView() {
     await this.page.getByTestId('wui-profile-button').click()
+  }
+
+  async getWalletFeaturesButton(feature: 'onramp' | 'swap' | 'receive' | 'send') {
+    const walletFeatureButton = this.page.getByTestId(`wallet-features-${feature}-button`)
+    await expect(walletFeatureButton).toBeVisible()
+
+    return walletFeatureButton
   }
 }

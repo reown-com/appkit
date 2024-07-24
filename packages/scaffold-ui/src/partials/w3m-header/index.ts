@@ -80,7 +80,8 @@ function headings() {
     ConnectingSocial: AccountController.state.socialProvider
       ? AccountController.state.socialProvider
       : 'Connect Social',
-    ConnectingMultiChain: 'Select chain'
+    ConnectingMultiChain: 'Select chain',
+    ConnectingFarcaster: 'Farcaster'
   }
 }
 

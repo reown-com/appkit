@@ -16,6 +16,7 @@ import { Web3ModalScaffold } from '@web3modal/scaffold'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
 import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 import EthereumProvider, { OPTIONAL_METHODS } from '@walletconnect/ethereum-provider'
+import { getChainsFromAccounts } from '@walletconnect/utils'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
 import { ConstantsUtil as CommonConstants } from '@web3modal/common'
 import type { Chain as AvailableChain } from '@web3modal/common'
@@ -171,7 +172,9 @@ export class Web3Modal extends Web3ModalScaffold {
             }
             const ns = provider.signer?.session?.namespaces
             const nsMethods = ns?.[ConstantsUtil.EIP155]?.methods
-            const nsChains = ns?.[ConstantsUtil.EIP155]?.chains
+            const nsChains = getChainsFromAccounts(
+              ns?.[ConstantsUtil.EIP155]?.accounts || []
+            ) as CaipNetworkId[]
 
             const result = {
               supportsAllNetworks: nsMethods?.includes(ConstantsUtil.ADD_CHAIN_METHOD) ?? false,
@@ -1092,9 +1095,10 @@ export class Web3Modal extends Web3ModalScaffold {
           }
         } else {
           super.open()
-          const method = W3mFrameHelpers.getRequestMethod(request)
           // eslint-disable-next-line no-console
-          console.error(W3mFrameRpcConstants.RPC_METHOD_NOT_ALLOWED_MESSAGE, { method })
+          console.error(W3mFrameRpcConstants.RPC_METHOD_NOT_ALLOWED_MESSAGE, {
+            method: request.method
+          })
           setTimeout(() => {
             this.showErrorMessage(W3mFrameRpcConstants.RPC_METHOD_NOT_ALLOWED_UI_MESSAGE)
           }, 300)
