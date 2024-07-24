@@ -41,7 +41,7 @@ export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultCha
   chainImages?: Record<number | string, string>
   connectorImages?: Record<string, string>
   tokens?: Record<number, Token>
-  wallets: BaseWalletAdapter[]
+  wallets?: BaseWalletAdapter[]
 }
 
 export type ExtendedBaseWalletAdapter = BaseWalletAdapter & {
@@ -71,9 +71,9 @@ export class Web3Modal extends Web3ModalScaffold {
       _sdkVersion,
       chainImages,
       connectionSettings = 'confirmed',
-      wallets,
       ...w3mOptions
     } = options
+    const wallets = options.wallets ?? []
 
     const { metadata } = solanaConfig
 
