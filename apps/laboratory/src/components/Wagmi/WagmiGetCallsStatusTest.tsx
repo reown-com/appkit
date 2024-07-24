@@ -28,7 +28,7 @@ export function WagmiGetCallsStatusTest() {
   if (!isGetCallsStatusSupported()) {
     return (
       <Text fontSize="md" color="yellow">
-        Wallet does not support wallet_getCallsStatus rpc method
+        Wallet does not support the "wallet_getCallsStatus" RPC method
       </Text>
     )
   }
