@@ -33,20 +33,14 @@ export const W3mFrameHelpers = {
     return 0
   },
 
-  checkIfRequestExists(request: unknown) {
-    const method = this.getRequestMethod(request)
-
+  checkIfRequestExists(request: W3mFrameTypes.RPCRequest) {
     return (
-      W3mFrameRpcConstants.NOT_SAFE_RPC_METHODS.includes(method) ||
-      W3mFrameRpcConstants.SAFE_RPC_METHODS.includes(method)
+      W3mFrameRpcConstants.NOT_SAFE_RPC_METHODS.includes(request.method) ||
+      W3mFrameRpcConstants.SAFE_RPC_METHODS.includes(request.method)
     )
   },
 
-  getRequestMethod(request: unknown) {
-    return (request as { payload: W3mFrameTypes.RPCRequest })?.payload?.method
-  },
-
-  getResponseType(response: unknown) {
+  getResponseType(response: W3mFrameTypes.FrameEvent) {
     const { type, payload } = response as {
       type: W3mFrameConstantValue
       payload: W3mFrameTypes.RPCResponse
@@ -70,10 +64,8 @@ export const W3mFrameHelpers = {
     return W3mFrameConstants.RPC_RESPONSE_TYPE_OBJECT
   },
 
-  checkIfRequestIsAllowed(request: unknown) {
-    const method = this.getRequestMethod(request)
-
-    return W3mFrameRpcConstants.SAFE_RPC_METHODS.includes(method)
+  checkIfRequestIsAllowed(request: W3mFrameTypes.RPCRequest) {
+    return W3mFrameRpcConstants.SAFE_RPC_METHODS.includes(request.method)
   },
 
   isClient: typeof window !== 'undefined'
