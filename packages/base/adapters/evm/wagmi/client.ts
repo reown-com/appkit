@@ -500,10 +500,10 @@ export class EVMWagmiClient {
     }
 
     if (isConnected && address && chainId) {
-      this.appKit?.resetAccount()
+      this.appKit?.resetAccount(this.chain)
       this.syncNetwork(address, chainId, isConnected)
-      this.appKit?.setIsConnected(isConnected)
-      this.appKit?.setCaipAddress(caipAddress)
+      this.appKit?.setIsConnected(isConnected, this.chain)
+      this.appKit?.setCaipAddress(caipAddress, this.chain)
       await Promise.all([
         this.syncProfile(address, chainId),
         this.syncBalance(address, chainId),
@@ -525,10 +525,10 @@ export class EVMWagmiClient {
 
       this.hasSyncedConnectedAccount = true
     } else if (isDisconnected && this.hasSyncedConnectedAccount) {
-      this.appKit?.resetAccount()
+      this.appKit?.resetAccount(this.chain)
       this.appKit?.resetWcConnection()
       this.appKit?.resetNetwork()
-      this.appKit?.setAllAccounts([])
+      this.appKit?.setAllAccounts([], this.chain)
 
       this.hasSyncedConnectedAccount = false
     }

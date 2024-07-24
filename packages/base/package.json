@@ -55,6 +55,7 @@
     "lit": "3.1.0"
   },
   "devDependencies": {
+    "@types/bn.js": "5.1.5",
     "@wagmi/connectors": "5.0.21",
     "@wagmi/core": "2.11.6",
     "react": "18.2.0",
@@ -63,13 +64,21 @@
     "vue": "3.4.3",
     "@ethersproject/sha2": "5.7.0",
     "@solana/wallet-adapter-base": "0.9.23",
+    "@solana/wallet-standard-features": "1.2.0",
+    "@solana/wallet-standard-util": "1.1.1",
     "@solana/web3.js": "1.91.7",
     "@wallet-standard/app": "1.0.1",
     "@wallet-standard/base": "1.0.1",
+    "@wallet-standard/features": "1.0.3",
+    "@wallet-standard/wallet": "1.0.1",
+    "@walletconnect/types": "2.13.3",
     "@walletconnect/universal-provider": "2.13.3",
     "@walletconnect/ethereum-provider": "2.13.3",
     "bn.js": "5.2.1",
     "bs58": "5.0.0",
+    "borsh": "0.7.0",
+    "buffer": "6.0.3",
+    "valtio": "1.11.2",
     "wagmi": "2.10.9"
   },
   "keywords": [
