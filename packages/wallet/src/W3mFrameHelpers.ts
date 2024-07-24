@@ -30,23 +30,28 @@ export const W3mFrameHelpers = {
   },
 
   checkIfRequestExists(request: W3mFrameTypes.RPCRequest) {
-    const method = this.getRequestMethod(request)
-
     return (
-      W3mFrameRpcConstants.NOT_SAFE_RPC_METHODS.includes(method) ||
-      W3mFrameRpcConstants.SAFE_RPC_METHODS.includes(method)
+      W3mFrameRpcConstants.NOT_SAFE_RPC_METHODS.includes(request.method) ||
+      W3mFrameRpcConstants.SAFE_RPC_METHODS.includes(request.method)
     )
   },
 
-  getRequestMethod(request: W3mFrameTypes.RPCRequest) {
-    return request?.method
-  },
+  getResponseType(response: W3mFrameTypes.FrameEvent) {
+    const { type, payload } = response as {
+      type: W3mFrameTypes.FrameEvent['type']
+      payload?: W3mFrameTypes.RPCResponse
+    }
 
-  getResponseType(response: unknown) {
-    const isPayloadString = typeof response === 'string'
+    const isError = type === W3mFrameConstants.FRAME_RPC_REQUEST_ERROR
+
+    if (isError) {
+      return W3mFrameConstants.RPC_RESPONSE_TYPE_ERROR
+    }
+
+    const isPayloadString = typeof payload === 'string'
     const isTransactionHash =
       isPayloadString &&
-      (response?.match(RegexUtil.transactionHash) || response?.match(RegexUtil.signedMessage))
+      (payload?.match(RegexUtil.transactionHash) || payload?.match(RegexUtil.signedMessage))
 
     if (isTransactionHash) {
       return W3mFrameConstants.RPC_RESPONSE_TYPE_TX
@@ -56,9 +61,7 @@ export const W3mFrameHelpers = {
   },
 
   checkIfRequestIsAllowed(request: W3mFrameTypes.RPCRequest) {
-    const method = this.getRequestMethod(request)
-
-    return W3mFrameRpcConstants.SAFE_RPC_METHODS.includes(method)
+    return W3mFrameRpcConstants.SAFE_RPC_METHODS.includes(request.method)
   },
 
   isClient: typeof window !== 'undefined'

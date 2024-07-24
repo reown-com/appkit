@@ -153,7 +153,7 @@ export class W3mFrameProvider {
         payload
       } as W3mFrameTypes.AppEvent)
 
-      this.setEmailLoginSuccess(response.newEmail)
+      this.setLoginSuccess(response.newEmail)
 
       return response
     } catch (error) {
@@ -223,7 +223,7 @@ export class W3mFrameProvider {
         type: W3mFrameConstants.APP_GET_USER,
         payload: { ...payload, chainId }
       } as W3mFrameTypes.AppEvent)
-      this.setEmailLoginSuccess(response.email)
+      this.setLoginSuccess(response.email)
       this.setLastUsedChainId(response.chainId)
 
       return response
@@ -247,6 +247,36 @@ export class W3mFrameProvider {
       return response
     } catch (error) {
       this.w3mLogger.logger.error({ error }, 'Error connecting social')
+      throw error
+    }
+  }
+
+  public async getFarcasterUri() {
+    try {
+      const response = await this.appEvent<'GetFarcasterUri'>({
+        type: W3mFrameConstants.APP_GET_FARCASTER_URI
+      } as W3mFrameTypes.AppEvent)
+
+      return response
+    } catch (error) {
+      this.w3mLogger.logger.error({ error }, 'Error getting farcaster uri')
+      throw error
+    }
+  }
+
+  public async connectFarcaster() {
+    try {
+      const response = await this.appEvent<'ConnectFarcaster'>({
+        type: W3mFrameConstants.APP_CONNECT_FARCASTER
+      } as W3mFrameTypes.AppEvent)
+
+      if (response.userName) {
+        this.setSocialLoginSuccess(response.userName)
+      }
+
+      return response
+    } catch (error) {
+      this.w3mLogger.logger.error({ error }, 'Error connecting farcaster')
       throw error
     }
   }
@@ -434,8 +464,11 @@ export class W3mFrameProvider {
     W3mFrameStorage.set(W3mFrameConstants.SOCIAL_USERNAME, username)
   }
 
-  private setEmailLoginSuccess(email: string) {
-    W3mFrameStorage.set(W3mFrameConstants.EMAIL, email)
+  private setLoginSuccess(email?: string | null) {
+    if (email) {
+      W3mFrameStorage.set(W3mFrameConstants.EMAIL, email)
+    }
+
     W3mFrameStorage.set(W3mFrameConstants.EMAIL_LOGIN_USED_KEY, 'true')
     W3mFrameStorage.delete(W3mFrameConstants.LAST_EMAIL_LOGIN_TIME)
   }

@@ -14,7 +14,7 @@ const modal = createWeb3Modal({
     defaultChainId: 1,
     rpcUrl: 'https://cloudflare-eth.com',
     auth: {
-      socials: ['google', 'x', 'discord', 'apple', 'github', 'facebook']
+      socials: ['google', 'x', 'discord', 'farcaster', 'github', 'apple', 'facebook']
     },
     coinbasePreference: 'smartWalletOnly'
   }),

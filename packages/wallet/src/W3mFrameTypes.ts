@@ -62,6 +62,8 @@ import {
   AppGetSocialRedirectUriRequest,
   FrameGetSocialRedirectUriResponse,
   FrameConnectSocialResponse,
+  FrameConnectFarcasterResponse,
+  FrameGetFarcasterUriResponse,
   AppConnectSocialRequest,
   AppSetPreferredAccountRequest,
   FrameSetPreferredAccountResponse,
@@ -93,6 +95,8 @@ export namespace W3mFrameTypes {
     AppConnectDeviceRequest: undefined
     AppSignOutRequest: undefined
     AppRpcRequest: RPCRequest
+    AppGetFarcasterUriRequest: undefined
+    AppConnectFarcasterRequest: undefined
   }
 
   export interface Responses {
@@ -108,6 +112,8 @@ export namespace W3mFrameTypes {
     FrameUpdateEmailResponse: z.infer<typeof FrameUpdateEmailResponse>
     FrameGetSocialRedirectUriResponse: z.infer<typeof FrameGetSocialRedirectUriResponse>
     FrameConnectSocialResponse: z.infer<typeof FrameConnectSocialResponse>
+    FrameGetFarcasterUriResponse: z.infer<typeof FrameGetFarcasterUriResponse>
+    FrameConnectFarcasterResponse: z.infer<typeof FrameConnectFarcasterResponse>
     FrameSyncThemeResponse: undefined
     FrameSyncDappDataResponse: undefined
     FrameUpdateEmailPrimaryOtpResponse: undefined
@@ -175,9 +181,11 @@ export namespace W3mFrameTypes {
 
   export type ProviderRequestType =
     | 'GetUser'
+    | 'GetFarcasterUri'
     | 'ConnectDevice'
     | 'ConnectEmail'
     | 'ConnectSocial'
+    | 'ConnectFarcaster'
     | 'ConnectOtp'
     | 'GetSocialRedirectUri'
     | 'SwitchNetwork'
@@ -192,5 +200,7 @@ export namespace W3mFrameTypes {
     | 'SetPreferredAccount'
     | 'SignOut'
     | 'Rpc'
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   export type WalletCapabilities = Record<string, any>
 }
