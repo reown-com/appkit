@@ -1,4 +1,4 @@
-import { createConnector } from '@wagmi/core'
+import { createConnector } from 'wagmi'
 
 interface ConnectOptions {
   chainId?: number
