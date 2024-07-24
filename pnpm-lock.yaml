@@ -17,9 +17,9 @@ importers:
       '@learnweb3dao/siwx-common':
         specifier: 0.3.0
         version: 0.3.0
-      '@noble/ed25519':
-        specifier: 2.1.0
-        version: 2.1.0
+      '@noble/curves':
+        specifier: 1.4.2
+        version: 1.4.2
       '@solana/wallet-adapter-base':
         specifier: 0.9.23
         version: 0.9.23(@solana/web3.js@1.91.7(bufferutil@4.0.8)(utf-8-validate@5.0.10))
@@ -3526,9 +3526,6 @@ packages:
   '@noble/curves@1.4.2':
     resolution: {integrity: sha512-TavHr8qycMChk8UwMld0ZDRvatedkzWfH8IiaeGCfymOP5i0hSCozz9vHOL0nkwk7HRMlFnAiKpS2jrUmSybcw==}
 
-  '@noble/ed25519@2.1.0':
-    resolution: {integrity: sha512-KM4qTyXPinyCgMzeYJH/UudpdL+paJXtY3CHtHYZQtBkS8MZoPr4rOikZllIutJe0d06QDQKisyn02gxZ8TcQA==}
-
   '@noble/hashes@1.3.2':
     resolution: {integrity: sha512-MVC8EAQp7MvEcm30KWENFjgR+Mkmf+D189XJTkFIlwohU5hcBbn1ZkKq7KVTi2Hme3PMGF390DaL52beVrIihQ==}
     engines: {node: '>= 16'}
@@ -5474,8 +5471,8 @@ packages:
   '@types/node@18.15.13':
     resolution: {integrity: sha512-N+0kuo9KgrUQ1Sn/ifDXsvg0TTleP7rIy4zOBGECxAljqvqfqpTfzx0Q1NUedOixRMBfe2Whhb056a42cWs26Q==}
 
-  '@types/node@18.19.41':
-    resolution: {integrity: sha512-LX84pRJ+evD2e2nrgYCHObGWkiQJ1mL+meAgbvnwk/US6vmMY7S2ygBTGV2Jw91s9vUsLSXeDEkUHZIJGLrhsg==}
+  '@types/node@18.19.42':
+    resolution: {integrity: sha512-d2ZFc/3lnK2YCYhos8iaNIYu9Vfhr92nHiyJHRltXWjXUBjEE+A4I58Tdbnw4VhggSW+2j5y5gTrLs4biNnubg==}
 
   '@types/node@20.11.5':
     resolution: {integrity: sha512-g557vgQjUUfN76MZAN/dt1z3dzcUsimuysco0KeluHgrPdJXkP/XdAURgyO2W9fZWHRtRBiVKzKn8vyOAwlG+w==}
@@ -9521,8 +9518,8 @@ packages:
     peerDependencies:
       preact: '>=10'
 
-  preact@10.22.1:
-    resolution: {integrity: sha512-jRYbDDgMpIb5LHq3hkI0bbl+l/TQ9UnkdQ0ww+lp+4MMOdqaUYdFc5qeyP+IV8FAd/2Em7drVPeKdQxsiWCf/A==}
+  preact@10.23.0:
+    resolution: {integrity: sha512-Pox0jeY4q6PGkFB5AsXni+zHxxx/sAYFIFZzukW4nIpoJLRziRX0xC4WjZENlkSrDQvqVgZcaZzZ/NL8/A+H/w==}
 
   preact@10.4.1:
     resolution: {integrity: sha512-WKrRpCSwL2t3tpOOGhf2WfTpcmbpxaWtDbdJdKdjd0aEiTkvOmS4NBkG6kzlaAHI9AkQ3iVqbFWM3Ei7mZ4o1Q==}
@@ -10881,8 +10878,8 @@ packages:
     resolution: {integrity: sha512-pjy2bYhSsufwWlKwPc+l3cN7+wuJlK6uz0YdJEOlQDbl6jo/YlPi4mb8agUkVC8BF7V8NuzeyPNqRksA3hztKQ==}
     engines: {node: '>= 0.8'}
 
-  unplugin@1.11.0:
-    resolution: {integrity: sha512-3r7VWZ/webh0SGgJScpWl2/MRCZK5d3ZYFcNaeci/GQ7Teop7zf0Nl2pUuz7G21BwPd9pcUPOC5KmJ2L3WgC5g==}
+  unplugin@1.12.0:
+    resolution: {integrity: sha512-KeczzHl2sATPQUx1gzo+EnUkmN4VmGBYRRVOZSGvGITE9rGHRDGqft6ONceP3vgXcyJ2XjX5axG5jMWUwNCYLw==}
     engines: {node: '>=14.0.0'}
 
   unstorage@1.10.2:
@@ -13690,7 +13687,7 @@ snapshots:
       eth-json-rpc-filters: 6.0.1
       eventemitter3: 5.0.1
       keccak: 3.0.4
-      preact: 10.22.1
+      preact: 10.23.0
       sha.js: 2.4.11
     transitivePeerDependencies:
       - supports-color
@@ -13701,7 +13698,7 @@ snapshots:
       clsx: 1.2.1
       eventemitter3: 5.0.1
       keccak: 3.0.4
-      preact: 10.22.1
+      preact: 10.23.0
       sha.js: 2.4.11
 
   '@coinbase/wallet-sdk@4.0.4':
@@ -13710,7 +13707,7 @@ snapshots:
       clsx: 1.2.1
       eventemitter3: 5.0.1
       keccak: 3.0.4
-      preact: 10.22.1
+      preact: 10.23.0
       sha.js: 2.4.11
 
   '@colors/colors@1.5.0':
@@ -14939,8 +14936,6 @@ snapshots:
     dependencies:
       '@noble/hashes': 1.4.0
 
-  '@noble/ed25519@2.1.0': {}
-
   '@noble/hashes@1.3.2': {}
 
   '@noble/hashes@1.4.0': {}
@@ -15926,7 +15921,7 @@ snapshots:
 
   '@rnx-kit/chromium-edge-launcher@1.0.0':
     dependencies:
-      '@types/node': 18.19.41
+      '@types/node': 18.19.42
       escape-string-regexp: 4.0.0
       is-wsl: 2.2.0
       lighthouse-logger: 1.4.2
@@ -16033,7 +16028,7 @@ snapshots:
 
   '@scure/bip32@1.4.0':
     dependencies:
-      '@noble/curves': 1.4.0
+      '@noble/curves': 1.4.2
       '@noble/hashes': 1.4.0
       '@scure/base': 1.1.7
 
@@ -17209,7 +17204,7 @@ snapshots:
       '@storybook/node-logger': 7.6.7
       '@storybook/types': 7.6.7
       '@types/find-cache-dir': 3.2.1
-      '@types/node': 18.19.41
+      '@types/node': 18.19.42
       '@types/node-fetch': 2.6.11
       '@types/pretty-hrtime': 1.0.3
       chalk: 4.1.2
@@ -17254,7 +17249,7 @@ snapshots:
       '@storybook/telemetry': 7.6.7
       '@storybook/types': 7.6.7
       '@types/detect-port': 1.3.5
-      '@types/node': 18.19.41
+      '@types/node': 18.19.42
       '@types/pretty-hrtime': 1.0.3
       '@types/semver': 7.5.8
       better-opn: 3.0.2
@@ -17288,7 +17283,7 @@ snapshots:
   '@storybook/csf-plugin@7.6.7':
     dependencies:
       '@storybook/csf-tools': 7.6.7
-      unplugin: 1.11.0
+      unplugin: 1.12.0
     transitivePeerDependencies:
       - supports-color
 
@@ -17923,7 +17918,7 @@ snapshots:
 
   '@types/node@18.15.13': {}
 
-  '@types/node@18.19.41':
+  '@types/node@18.19.42':
     dependencies:
       undici-types: 5.26.5
 
@@ -22835,8 +22830,8 @@ snapshots:
       next: 14.2.3(@babel/core@7.24.9)(@playwright/test@1.40.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       oauth: 0.9.15
       openid-client: 5.6.5
-      preact: 10.22.1
-      preact-render-to-string: 5.2.6(preact@10.22.1)
+      preact: 10.23.0
+      preact-render-to-string: 5.2.6(preact@10.23.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
       uuid: 8.3.2
@@ -23373,12 +23368,12 @@ snapshots:
       picocolors: 1.0.1
       source-map-js: 1.2.0
 
-  preact-render-to-string@5.2.6(preact@10.22.1):
+  preact-render-to-string@5.2.6(preact@10.23.0):
     dependencies:
-      preact: 10.22.1
+      preact: 10.23.0
       pretty-format: 3.8.0
 
-  preact@10.22.1: {}
+  preact@10.23.0: {}
 
   preact@10.4.1: {}
 
@@ -24937,7 +24932,7 @@ snapshots:
 
   unpipe@1.0.0: {}
 
-  unplugin@1.11.0:
+  unplugin@1.12.0:
     dependencies:
       acorn: 8.12.1
       chokidar: 3.6.0
