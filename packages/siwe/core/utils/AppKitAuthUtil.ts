@@ -79,10 +79,10 @@ export async function authenticate(payload: {
   }
 }
 
-export async function updateUser(metadata: Record<string, unknown>) {
+export async function updateUserMetadata(metadata: Record<string, unknown>) {
   try {
-    const res = await fetch(`${ConstantsUtil.W3M_API_URL}/auth/v1/update-user`, {
-      method: 'POST',
+    const res = await fetch(`${ConstantsUtil.W3M_API_URL}/auth/v1/update-user-metadata`, {
+      method: 'PATCH',
       headers: ApiController._getApiHeaders(),
       body: JSON.stringify({ metadata }),
       credentials: 'include'
@@ -97,7 +97,7 @@ export async function updateUser(metadata: Record<string, unknown>) {
     return updateUserRes
   } catch (error) {
     console.error(error)
-    throw new Error('Failed to authenticate', {
+    throw new Error('Failed to update user metadata', {
       cause: error
     })
   }

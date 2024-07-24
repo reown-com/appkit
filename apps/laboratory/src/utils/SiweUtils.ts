@@ -1,6 +1,6 @@
-import { getCsrfToken, signIn, signOut, getSession } from 'next-auth/react'
-import type { SIWEVerifyMessageArgs, SIWECreateMessageArgs, SIWESession } from '@web3modal/siwe'
+import type { SIWECreateMessageArgs, SIWESession, SIWEVerifyMessageArgs } from '@web3modal/siwe'
 import { createSIWEConfig, formatMessage } from '@web3modal/siwe'
+import { getCsrfToken, getSession, signIn, signOut } from 'next-auth/react'
 
 export const siweConfig = createSIWEConfig({
   signOutOnAccountChange: true,
