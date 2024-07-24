@@ -87,7 +87,7 @@ export class W3mAccountDefaultWidget extends LitElement {
         alignItems="center"
         gap="l"
       >
-        ${ChainController.state.activeChain === ConstantsUtil.CHAIN_NAME.EVM
+        ${ChainController.state.activeChain === ConstantsUtil.CHAIN.EVM
           ? this.multiAccountTemplate()
           : this.singleAccountTemplate()}
         <wui-flex flexDirection="column" alignItems="center">
@@ -152,19 +152,17 @@ export class W3mAccountDefaultWidget extends LitElement {
   private activityTemplate() {
     const isSolana = ChainController.state.activeChain === ConstantsUtil.CHAIN.SOLANA
 
-    return html`
-      <wui-list-item
-        iconVariant="blue"
-        icon="clock"
-        iconSize="sm"
-        ?chevron=${!isSolana}
-        disabled=${isSolana}
-        @click=${this.onTransactions.bind(this)}
-      >
-        <wui-text variant="paragraph-500" color="fg-100" disabled=${isSolana}>Activity</wui-text>
-        ${isSolana ? html`<wui-tag variant="main">Coming soon</wui-tag>` : null}
-      </wui-list-item>
-    `
+    return html` <wui-list-item
+      iconVariant="blue"
+      icon="clock"
+      iconSize="sm"
+      ?chevron=${!isSolana}
+      ?disabled=${isSolana}
+      @click=${this.onTransactions.bind(this)}
+    >
+      <wui-text variant="paragraph-500" color="fg-100" ?disabled=${isSolana}> Activity </wui-text>
+      ${isSolana ? html`<wui-tag variant="main">Coming soon</wui-tag>` : ''}
+    </wui-list-item>`
   }
 
   private swapsTemplate() {
@@ -242,7 +240,7 @@ export class W3mAccountDefaultWidget extends LitElement {
       ></wui-avatar>
       <wui-flex flexDirection="column" alignItems="center">
         <wui-flex gap="3xs" alignItems="center" justifyContent="center">
-          <wui-text variant="medium-title-600" color="fg-100">
+          <wui-text variant="large-600" color="fg-100">
             ${this.profileName
               ? UiHelperUtil.getTruncateString({
                   string: this.profileName,
