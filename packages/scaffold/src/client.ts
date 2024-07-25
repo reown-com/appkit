@@ -352,7 +352,7 @@ export class Web3ModalScaffold {
     OptionsController.setSdkVersion(options._sdkVersion)
     // Enabled by default
     OptionsController.setOnrampEnabled(options.enableOnramp !== false)
-    OptionsController.setEnableSwaps(options.defaultChain?.id !== false)
+    OptionsController.setEnableSwaps(Boolean(options.defaultChain?.id))
 
     if (options.metadata) {
       OptionsController.setMetadata(options.metadata)
