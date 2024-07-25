@@ -460,6 +460,7 @@ export const W3mFrameSchema = {
           .or(WalletGetCallsReceiptRequest)
           .or(WalletSendCallsRequest)
           .or(WalletGetCapabilitiesRequest)
+          .or(WalletGrantPermissionsRequest)
       })
     )
 
