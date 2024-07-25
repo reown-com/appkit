@@ -88,8 +88,8 @@ export class W3mAccountDefaultWidget extends LitElement {
         gap="l"
       >
         ${ChainController.state.activeChain === ConstantsUtil.CHAIN.EVM
-        ? this.multiAccountTemplate()
-        : this.singleAccountTemplate()}
+          ? this.multiAccountTemplate()
+          : this.singleAccountTemplate()}
         <wui-flex flexDirection="column" alignItems="center">
           <wui-text variant="paragraph-500" color="fg-200"
             >${CoreHelperUtil.formatBalance(this.balance, this.balanceSymbol)}</wui-text
@@ -245,18 +245,18 @@ export class W3mAccountDefaultWidget extends LitElement {
         <wui-flex gap="3xs" alignItems="center" justifyContent="center">
           <wui-text variant="large-600" color="fg-100">
             ${this.profileName
-        ? UiHelperUtil.getTruncateString({
-          string: this.profileName,
-          charsStart: 20,
-          charsEnd: 0,
-          truncate: 'end'
-        })
-        : UiHelperUtil.getTruncateString({
-          string: this.address ? this.address : '',
-          charsStart: 4,
-          charsEnd: 4,
-          truncate: 'middle'
-        })}
+              ? UiHelperUtil.getTruncateString({
+                  string: this.profileName,
+                  charsStart: 20,
+                  charsEnd: 0,
+                  truncate: 'end'
+                })
+              : UiHelperUtil.getTruncateString({
+                  string: this.address ? this.address : '',
+                  charsStart: 4,
+                  charsEnd: 4,
+                  truncate: 'middle'
+                })}
           </wui-text>
           <wui-icon-link
             size="md"
@@ -282,8 +282,8 @@ export class W3mAccountDefaultWidget extends LitElement {
         address=${ifDefined(this.address)}
         icon="${account?.type === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT &&
         ChainController.state.activeChain === ConstantsUtil.CHAIN.EVM
-        ? 'lightbulb'
-        : 'mail'}"
+          ? 'lightbulb'
+          : 'mail'}"
         avatarSrc=${ifDefined(this.profileImage ? this.profileImage : undefined)}
         profileName=${ifDefined(label ? label : this.profileName)}
         .onCopyClick=${this.onCopyAddress.bind(this)}
