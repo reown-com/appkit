@@ -338,7 +338,8 @@ export const WalletGetCapabilitiesRequest = z.object({
   method: z.literal('wallet_getCapabilities')
 })
 export const WalletGrantPermissionsRequest = z.object({
-  method: z.literal('wallet_grantPermissions')
+  method: z.literal('wallet_grantPermissions'),
+  params: z.array(z.any())
 })
 
 export const FrameSession = z.object({
