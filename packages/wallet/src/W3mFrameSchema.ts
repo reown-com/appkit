@@ -337,6 +337,9 @@ export const WalletGetCallsReceiptRequest = z.object({
 export const WalletGetCapabilitiesRequest = z.object({
   method: z.literal('wallet_getCapabilities')
 })
+export const WalletGrantPermissionsRequest = z.object({
+  method: z.literal('wallet_grantPermissions')
+})
 
 export const FrameSession = z.object({
   token: z.string()
