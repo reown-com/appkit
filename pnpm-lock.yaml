@@ -223,6 +223,9 @@ importers:
       '@web3modal/wagmi':
         specifier: workspace:*
         version: link:../../packages/wagmi
+      '@web3modal/wallet':
+        specifier: workspace:*
+        version: link:../../packages/wallet
       bs58:
         specifier: 6.0.0
         version: 6.0.0
