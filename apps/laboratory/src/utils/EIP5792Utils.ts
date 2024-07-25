@@ -1,7 +1,7 @@
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
 import { getChain } from './ChainsUtil'
 import { parseJSON } from './CommonUtils'
-import { fromHex, toHex, type WalletCapabilities } from 'viem'
+import { fromHex, type WalletCapabilities } from 'viem'
 import { W3mFrameProvider } from '@web3modal/wallet'
 
 export const EIP_5792_RPC_METHODS = {
