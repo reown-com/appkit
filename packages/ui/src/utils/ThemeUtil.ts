@@ -644,7 +644,7 @@ export const elementStyles = css`
   }
 
   button:disabled > wui-icon-box {
-    opacity: 0.3;
+    opacity: 0.5;
   }
 
   input {

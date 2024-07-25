@@ -235,8 +235,6 @@ export class Web3Modal extends Web3ModalScaffold {
       )
     )
 
-    OptionsController.state.enableSwaps = false
-
     SolStoreUtil.subscribeKey('address', () => {
       this.syncAccount()
     })
@@ -388,10 +386,10 @@ export class Web3Modal extends Web3ModalScaffold {
     }
 
     const uniqueIds = standardAdapters ? new Set(standardAdapters.map(s => s.name)) : new Set([])
-    const filteredAdapters = this.walletAdapters.filter(
-      adapter =>
-        (!uniqueIds.has(adapter.name) || adapter.name === 'Trust') && uniqueIds.add(adapter.name)
-    )
+    const FILTER_OUT_ADAPTERS = ['Trust']
+    const filteredAdapters = this.walletAdapters
+      .filter(adapter => FILTER_OUT_ADAPTERS.some(filter => filter === adapter.name))
+      .filter(adapter => !uniqueIds.has(adapter.name) && uniqueIds.add(adapter.name))
 
     standardAdapters?.forEach(adapter => {
       w3mConnectors.push({

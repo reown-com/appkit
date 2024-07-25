@@ -17,9 +17,8 @@ export default css`
     margin-bottom: var(--wui-spacing-3xs);
   }
 
-  wui-tag {
-    position: absolute;
-    right: 20px;
+  wui-list-item > wui-text {
+    flex: 1;
   }
 
   w3m-transactions-view {

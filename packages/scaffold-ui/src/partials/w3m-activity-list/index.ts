@@ -33,8 +33,7 @@ export class W3mActivityList extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() public page: 'account' | 'activity' = 'activity'
 
-  @state() private isSolana =
-    ChainController.state.activeChain === ConstantsUtil.CHAIN_NAME.SOLANA.toLocaleLowerCase()
+  @state() private isSolana = ChainController.state.activeChain === ConstantsUtil.CHAIN.SOLANA
 
   @state() private address: string | undefined = AccountController.state.address
 
@@ -52,6 +51,9 @@ export class W3mActivityList extends LitElement {
     TransactionsController.clearCursor()
     this.unsubscribe.push(
       ...[
+        ChainController.subscribeKey('activeChain', activeChain => {
+          this.isSolana = activeChain === ConstantsUtil.CHAIN.SOLANA
+        }),
         AccountController.subscribe(val => {
           if (val.isConnected) {
             if (this.address !== val.address) {
