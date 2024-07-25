@@ -42,7 +42,7 @@
     "url": "https://github.com/web3modal/web3modal/issues"
   },
   "devDependencies": {
-    "jsdom": "^24.1.0",
+    "jsdom": "24.1.0",
     "vitest": "2.0.3"
   }
 }
