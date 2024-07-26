@@ -149,12 +149,24 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: checkout
+        uses: actions/checkout@v4
         with:
-          node-version: 18
-      - name: Install dependencies
-        run: pnpm install
+          repository: WalletConnect/web3modal
+          ref: ${{ inputs.branch }}
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+
+      - name: setup-node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          cache: 'pnpm'
+
+      - name: Get installed Playwright version
+        id: playwright-version
+        run: echo "PLAYWRIGHT_VERSION=$(node -e "console.log(require('./package-lock.json').packages['apps/laboratory']['devDependencies']['@playwright/test'])")" >> $GITHUB_ENV
 
       - name: Download blob reports from GitHub Actions Artifacts
         uses: actions/download-artifact@v4
