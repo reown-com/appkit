@@ -17,7 +17,7 @@ export const siwsConfig = createSIWSConfig({
   }),
 
   createMessage: ({ address, ...args }: SIWSCreateMessageArgs) =>
-    formatMessage({ ...args, address, typeSiwx: 'Solana' }),
+    formatMessage({ ...args, address }),
 
   getNonce: async () => {
     const nonce = await getCsrfToken()

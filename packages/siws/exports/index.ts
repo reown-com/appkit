@@ -6,11 +6,7 @@ import type {
   SIWSClientMethods
 } from '../core/utils/TypeUtils.js'
 import { Web3ModalSIWSClient } from '../src/client.js'
-export {
-  getAddressFromMessage,
-  getChainIdFromMessage,
-  verifySignature
-} from '../core/helpers/index.js'
+export { verifySignature } from '../core/helpers/index.js'
 export { getDidChainId, getDidAddress } from '@walletconnect/utils'
 export { SIWSController, type SIWSControllerClient } from '../core/controller/SIWSController.js'
 export { formatMessage } from '../core/utils/formatMessage.js'

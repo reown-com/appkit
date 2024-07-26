@@ -1,11 +1,18 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import nextAuth from 'next-auth'
 import credentialsProvider from 'next-auth/providers/credentials'
-import { type SIWESession, getChainIdFromMessage, getAddressFromMessage } from '@web3modal/siwe'
-import { verifySignature } from '../../../utils/SignatureUtil'
+
+import { getAddressFromMessage, getChainIdFromMessage } from '@web3modal/core'
+import { verifySignature as verifySignatureETH } from '../../../utils/SignatureUtil'
+import { verifySignature as verifySignatureSOL } from '@web3modal/siws'
+import type { SIWESession } from '@web3modal/siwe'
+import type { SIWSSession } from '@web3modal/siws'
+import { SiwxUriType, type IVerifySignatureParams } from '../../../types/siwx'
+
+type SIWXSession = SIWESession & SIWSSession
 
 declare module 'next-auth' {
-  interface Session extends SIWESession {
+  interface Session extends SIWXSession {
     address: string
     chainId: string
   }
@@ -24,38 +31,51 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
     throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
   }
 
+  // It's checking what method singIn use in uri headers
+  const isSIWS = req.headers.referer?.includes(SiwxUriType.SIWS)
+
+  const placeholder = isSIWS ? 'solana' : '0x0'
+  const name = isSIWS ? 'Solana' : 'Ethereum'
+
   const providers = [
     credentialsProvider({
-      name: 'Ethereum',
+      name,
       credentials: {
         message: {
           label: 'Message',
           type: 'text',
-          placeholder: '0x0'
+          placeholder
         },
         signature: {
           label: 'Signature',
           type: 'text',
-          placeholder: '0x0'
+          placeholder
         }
       },
       async authorize(credentials) {
         try {
           if (!credentials?.message) {
-            throw new Error('SiweMessage is undefined')
+            throw new Error('SiwxMessage is undefined')
           }
           const { message, signature } = credentials
           const address = getAddressFromMessage(message)
           const chainId = getChainIdFromMessage(message)
 
-          const isValid = await verifySignature({
+          // eslint-disable-next-line func-style
+          const verifySignature = async (
+            referer: string | undefined,
+            params: IVerifySignatureParams
+          ) =>
+            referer?.includes(SiwxUriType.SIWS)
+              ? await verifySignatureSOL(params)
+              : await verifySignatureETH(params)
+
+          const isValid = await verifySignature(req.headers.referer, {
             address,
             message,
             signature,
-            chainId: String(chainId.split(':')[1]),
-            typeChain: String(chainId.split(':')[0])
+            chainId: Number(chainId.split(':')[1])
           })
-
           if (isValid) {
             return {
               id: `${chainId}:${address}`
@@ -72,7 +92,7 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
 
   const isDefaultSigninPage = req.method === 'GET' && req.query?.['nextauth']?.includes('signin')
 
-  // Hide Sign-In with Ethereum from default sign page
+  // Hide Sign-In with Ethereum or Solana from default sign page
   if (isDefaultSigninPage) {
     providers.pop()
   }

@@ -2,6 +2,7 @@ import type {
   BaseSignInMessageSignerWalletAdapter,
   BaseWalletAdapter
 } from '@solana/wallet-adapter-base'
+import type { SignatureType } from '@learnweb3dao/siwx-common'
 
 export type ExtendedBaseWalletAdapter = BaseWalletAdapter &
   BaseSignInMessageSignerWalletAdapter & {
@@ -24,7 +25,7 @@ export interface SIWSCreateMessageArgs {
   uri: string
   address: string
   version: '1'
-  type?: CacaoHeader['t']
+  type?: SignatureType
   nbf?: string
   exp?: string
   statement?: string
@@ -32,8 +33,8 @@ export interface SIWSCreateMessageArgs {
   resources?: string[]
   expiry?: number
   iat?: string
-  typeSiwx?: string
 }
+
 export type SIWSMessageArgs = {
   chains: string[]
   methods?: string[]

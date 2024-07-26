@@ -102,12 +102,12 @@ export class Web3ModalSIWSClient {
     const dataMsg = {
       chainId,
       nonce,
-      typeSiwx: 'Solana',
+      version: '1' as const,
       issuedAt: messageParams.iat || new Date().toISOString(),
       ...messageParams
     }
 
-    const { signature, account } = await adapter.signIn({ ...dataMsg, version: '1' })
+    const { signature, account } = await adapter.signIn(dataMsg)
 
     if (!account) {
       throw new Error('An address is required to create a SIWS message.')
@@ -115,8 +115,7 @@ export class Web3ModalSIWSClient {
 
     const message = this.methods.createMessage({
       ...dataMsg,
-      address: account.address,
-      version: '1'
+      address: account.address
     })
 
     const type = StorageUtil.getConnectedConnector()

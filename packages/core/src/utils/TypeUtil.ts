@@ -862,22 +862,3 @@ export type ChainAdapter = {
   networkState?: NetworkControllerState
   chain: Chain
 }
-
-export type TypeSiwx = 'Solana' | 'Ethereum'
-
-export interface SiwxMessageCreatorArgs {
-  chainId: string
-  domain: string
-  nonce: string
-  uri: string
-  address: string
-  version: '1'
-  nbf?: string
-  exp?: string
-  statement?: string
-  requestId?: string
-  resources?: string[]
-  expiry?: number
-  iat?: string
-  typeSiwx?: TypeSiwx
-}
