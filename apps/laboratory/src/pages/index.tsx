@@ -96,7 +96,9 @@ export default function HomePage() {
 
       <Card marginTop={10} marginBottom={10}>
         <CardHeader>
-          <Heading size="md">Ethers</Heading>
+          <Heading size="md">
+            Ethers <Badge>New arc</Badge>
+          </Heading>
         </CardHeader>
 
         <CardBody>
