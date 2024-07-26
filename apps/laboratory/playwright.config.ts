@@ -14,7 +14,7 @@ export default defineConfig<ModalFixture>({
   workers: getValue(8, 4),
   reporter: getValue('blob', [['list'], ['html', { host: '0.0.0.0' }]]),
   // Limits the number of failed tests in the whole test suite. Playwright Test will stop after reaching this number of failed tests and skip any tests that were not executed yet
-  maxFailures: getValue(2, undefined),
+  maxFailures: getValue(10, undefined),
   expect: {
     timeout: getValue(60, 15) * 1000
   },
