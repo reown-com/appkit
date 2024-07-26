@@ -115,7 +115,7 @@ export class EVMEthersClient {
 
   private walletConnectProviderInitPromise?: Promise<void>
 
-  private projectId: string = ''
+  private projectId = ''
 
   private chains: Chain[]
 

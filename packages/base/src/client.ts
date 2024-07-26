@@ -164,7 +164,7 @@ export class AppKit {
 
   public getIsConnectedState = () => AccountController.state.isConnected
 
-  public setAllAccounts: (typeof AccountController)['setAllAccounts'] = (addresses = [], chain) => {
+  public setAllAccounts: (typeof AccountController)['setAllAccounts'] = (addresses, chain) => {
     AccountController.setAllAccounts(addresses, chain)
     OptionsController.setHasMultipleAddresses(addresses?.length > 1)
   }

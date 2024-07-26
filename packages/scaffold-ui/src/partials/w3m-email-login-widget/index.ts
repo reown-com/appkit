@@ -111,6 +111,7 @@ export class W3mEmailLoginWidget extends LitElement {
       RouterController.push('SwitchActiveChain', {
         switchToChain: ConstantsUtil.CHAIN.EVM
       })
+
       return
     }
 
