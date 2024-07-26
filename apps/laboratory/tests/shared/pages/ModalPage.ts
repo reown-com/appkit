@@ -207,6 +207,7 @@ export class ModalPage {
     await expect(disconnectBtn, 'Disconnect button should be visible').toBeVisible()
     await expect(disconnectBtn, 'Disconnect button should be enabled').toBeEnabled()
     await disconnectBtn.click()
+    await this.page.waitForTimeout(1000)
   }
 
   async sign() {
