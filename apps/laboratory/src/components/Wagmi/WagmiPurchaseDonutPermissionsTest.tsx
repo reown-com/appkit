@@ -13,7 +13,7 @@ export function WagmiPurchaseDonutWithPermissionsTest() {
   const { buildAndSendTransactionsWithCosignerAndPermissions } = usePermissions()
   const { signerPrivateKey: ecdsaPrivateKey } = useLocalSigner()
 
-  const { grantedPermissions } = useGrantedPermissions()
+  const { grantedPermissions, wcCosignerData } = useGrantedPermissions()
   const {
     data: donutsOwned,
     refetch: fetchDonutsOwned,
@@ -35,11 +35,14 @@ export function WagmiPurchaseDonutWithPermissionsTest() {
       if (!grantedPermissions) {
         throw Error('No permissions available')
       }
+      if (!wcCosignerData) {
+        throw Error('No wc-cosigner data available')
+      }
       if (!chain) {
         throw new Error(`chain ${chain}`)
       }
-      if (!ecdsaPrivateKey) {
-        throw new Error(`Invalid ecdsaPrivateKey:${ecdsaPrivateKey}`)
+      if (!address) {
+        throw new Error(`Account Not Connected`)
       }
       const purchaseDonutCallData = encodeFunctionData({
         abi: donutContractAbi,
@@ -57,7 +60,8 @@ export function WagmiPurchaseDonutWithPermissionsTest() {
         actions: purchaseDonutCallDataExecution,
         ecdsaPrivateKey: ecdsaPrivateKey as `0x${string}`,
         permissions: grantedPermissions,
-        chain
+        chain,
+        accountAddress: address
       })
       if (txHash) {
         toast({

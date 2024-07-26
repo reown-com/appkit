@@ -11,7 +11,7 @@ export function parseJSON(str: string) {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function bigIntReplacer(_key: string, value: any) {
   if (typeof value === 'bigint') {
-    return value.toString()
+    return `0x${value.toString(16)}`
   }
 
   return value
@@ -62,4 +62,32 @@ export function encodePublicKeyToDID(publicKey: string, keyType: string): string
 
   // Construct the did:key
   return `${didPrefix}${encodedPublicKey}`
+}
+
+export function decodeUncompressedPublicKey(uncompressedPublicKey: string): `0x${string}` {
+  const uncompressedPublicKeyBuffer = Buffer.from(uncompressedPublicKey, 'base64')
+
+  if (uncompressedPublicKeyBuffer.length !== 65) {
+    throw new Error('Invalid uncompressed public key length')
+  }
+
+  const header = uncompressedPublicKeyBuffer[0]
+  if (header !== 0x04) {
+    throw new Error('Invalid uncompressed public key header')
+  }
+
+  const publicKey = uncompressedPublicKeyBuffer.toString('hex')
+
+  return `0x${publicKey}`
+}
+
+export function hexStringToBase64(hexString: string): string {
+  // Remove the `0x` prefix if it exists
+  const cleanedHexString = hexString.replace(/^0x/u, '')
+
+  // Convert the hex string to a Buffer
+  const buffer = Buffer.from(cleanedHexString, 'hex')
+
+  // Convert the Buffer to a base64 string
+  return buffer.toString('base64')
 }

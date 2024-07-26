@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { Button, Stack, Text } from '@chakra-ui/react'
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
 import { useAccount, type Connector } from 'wagmi'
@@ -8,18 +9,25 @@ import { useChakraToast } from '../Toast'
 import { createPublicClient, custom, parseEther } from 'viem'
 import { EIP_7715_RPC_METHODS } from '../../utils/EIP5792Utils'
 import { useLocalSigner } from '../../hooks/useLocalSigner'
-import { bigIntReplacer, encodePublicKeyToDID } from '../../utils/CommonUtils'
+import {
+  bigIntReplacer,
+  decodeUncompressedPublicKey,
+  encodePublicKeyToDID,
+  hexStringToBase64
+} from '../../utils/CommonUtils'
 import { useGrantedPermissions } from '../../hooks/useGrantedPermissions'
 import usePasskey from '../../hooks/usePasskey'
 import { serializePublicKey, type P256Credential } from 'webauthn-p256'
+import { CoSignerApiError, useWalletConnectCosigner } from '../../hooks/useWalletConnectCosigner'
 
 export function WagmiRequestPermissionsTest() {
   const { status, chain, address, connector } = useAccount()
   const { passKey } = usePasskey()
   const { signer } = useLocalSigner()
-  const [isRequestPermissionLoading, setRequestPermissionLoading] = useState<boolean>(false)
-  const { grantedPermissions, setGrantedPermissions } = useGrantedPermissions()
 
+  const [isRequestPermissionLoading, setRequestPermissionLoading] = useState<boolean>(false)
+  const { grantedPermissions, setGrantedPermissions, setWCCosignerData } = useGrantedPermissions()
+  const { addPermission, updatePermissionsContext } = useWalletConnectCosigner()
   const [ethereumProvider, setEthereumProvider] =
     useState<Awaited<ReturnType<(typeof EthereumProvider)['init']>>>()
 
@@ -42,15 +50,24 @@ export function WagmiRequestPermissionsTest() {
 
       return
     }
+    const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
+    if (!projectId) {
+      throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
+    }
+    if (!passKey) {
+      throw new Error('Passkey not available')
+    }
+    const caip10Address = `eip155:${chain?.id}:${address}`
     try {
-      const targetPublicKey = signer?.publicKey
-
-      if (!targetPublicKey) {
-        throw new Error('Local private key not available')
-      }
-      if (!passKey) {
-        throw new Error('Passkey not available')
-      }
+      const addPermissionResponse = await addPermission(caip10Address, projectId, {
+        permissionType: 'native-token-transfer',
+        data: '',
+        onChainValidated: false,
+        required: true
+      })
+      console.info({ addPermissionResponse })
+      setWCCosignerData(addPermissionResponse)
+      const cosignerPublicKey = decodeUncompressedPublicKey(addPermissionResponse.key)
       let p = passKey as P256Credential
       p = {
         ...p,
@@ -62,7 +79,7 @@ export function WagmiRequestPermissionsTest() {
       }
       const passkeyPublicKey = serializePublicKey(p.publicKey, { to: 'hex' })
       const passkeyDID = encodePublicKeyToDID(passkeyPublicKey, 'secp256r1')
-      const secp256k1DID = encodePublicKeyToDID(targetPublicKey, 'secp256k1')
+      const secp256k1DID = encodePublicKeyToDID(cosignerPublicKey, 'secp256k1')
 
       const publicClient = createPublicClient({
         chain,
@@ -95,6 +112,26 @@ export function WagmiRequestPermissionsTest() {
         }
       })
       if (permissions) {
+        await updatePermissionsContext(caip10Address, projectId, {
+          pci: addPermissionResponse.pci,
+          context: {
+            expiry: permissions.expiry,
+            signer: {
+              type: 'native-token-transfer',
+              data: {
+                ids: [addPermissionResponse.key, hexStringToBase64(passkeyPublicKey)]
+              }
+            },
+            signerData: {
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
+              userOpBuilder: permissions.signerData?.userOpBuilder!
+            },
+            permissionsContext: permissions.permissionsContext,
+            factory: permissions.factory || '',
+            factoryData: permissions.factoryData || ''
+          }
+        })
+        console.info('Updated the context on co-signer')
         setGrantedPermissions(permissions)
         setRequestPermissionLoading(false)
         toast({
@@ -107,6 +144,10 @@ export function WagmiRequestPermissionsTest() {
       }
       toast({ title: 'Error', description: 'Failed to obtain permissions' })
     } catch (error) {
+      if (error instanceof CoSignerApiError) {
+        console.error(`API Error ${error.status}: ${error.message}`)
+      }
+      console.error('Unexpected error:', error)
       toast({
         type: 'error',
         title: 'Permissions Erros',

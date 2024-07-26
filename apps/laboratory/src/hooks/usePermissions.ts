@@ -8,15 +8,17 @@ import { type UserOperation } from 'permissionless/types'
 import { encodeAbiParameters, hashMessage, type PublicClient } from 'viem'
 import { sign as signWithPasskey } from 'webauthn-p256'
 import { type Chain } from 'wagmi/chains'
-import { signMessage } from 'viem/accounts'
 import { useUserOpBuilder, type Execution } from './useUserOpBuilder'
 import { bigIntReplacer } from '../utils/CommonUtils'
 import { createClients } from '../utils/PermissionsUtils'
 import usePasskey from './usePasskey'
+import { useWalletConnectCosigner } from './useWalletConnectCosigner'
+import { useGrantedPermissions } from './useGrantedPermissions'
 
 export function usePermissions() {
-  const { getCallDataWithContext, getNonceWithContext, getSignatureWithContext } =
-    useUserOpBuilder()
+  const { getCallDataWithContext, getNonceWithContext } = useUserOpBuilder()
+  const { coSignUserOperation } = useWalletConnectCosigner()
+  const { wcCosignerData } = useGrantedPermissions()
   const { passkeyId } = usePasskey()
 
   async function prepareUserOperationWithPermissions(
@@ -46,15 +48,25 @@ export function usePermissions() {
       actions
     })
 
+    /*
+     * Comment
+     * const dummySignature = await getDummySignatureWithContext(publicClient, {
+     *   userOpBuilderAddress: signerData.userOpBuilder,
+     *   sender: signerData.submitToAddress,
+     *   permissionsContext: permissionsContext as `0x${string}`,
+     *   actions
+     * })
+     * console.log({ dummySignature })
+     */
     const userOp: UserOperation<'v0.7'> = {
       sender: signerData.submitToAddress,
       factory,
       factoryData: factoryData ? (factoryData as `0x${string}`) : undefined,
       nonce,
       callData,
-      callGasLimit: BigInt(6000000),
-      verificationGasLimit: BigInt(6000000),
-      preVerificationGas: BigInt(6000000),
+      callGasLimit: BigInt(2000000),
+      verificationGasLimit: BigInt(2000000),
+      preVerificationGas: BigInt(2000000),
       maxFeePerGas: BigInt(0),
       maxPriorityFeePerGas: BigInt(0),
       signature: '0x'
@@ -72,13 +84,15 @@ export function usePermissions() {
       chain: Chain
     }
   ): Promise<`0x${string}`> {
-    const { ecdsaPrivateKey, userOp, chain, permissions } = args
+    const { userOp, chain, permissions } = args
 
     const { signerData, permissionsContext } = permissions
 
     if (!signerData?.userOpBuilder || !signerData.submitToAddress || !permissionsContext) {
       throw new Error(`Invalid permissions ${JSON.stringify(permissions, bigIntReplacer)}`)
     }
+    const packedForEntryPoint = getPackedUserOperation(userOp)
+    console.log({ packedForEntryPoint })
     const userOpHash = getUserOperationHash({
       userOperation: {
         ...userOp
@@ -86,13 +100,10 @@ export function usePermissions() {
       entryPoint: ENTRYPOINT_ADDRESS_V07,
       chainId: chain.id
     })
-    const cosignerSignatureOnUserOp = await signMessage({
-      privateKey: ecdsaPrivateKey,
-      message: { raw: userOpHash }
-    })
-
+    console.log({ userOpHash })
     const ethMessageUserOpHash = hashMessage({ raw: userOpHash })
-
+    // console.log({ prefixedMessage: toPrefixedMessage({ raw: userOpHash }) })
+    // console.log({ ethMessageUserOpHash })
     const usersPasskeySignature = await signWithPasskey({
       credentialId: passkeyId,
       hash: ethMessageUserOpHash
@@ -116,20 +127,8 @@ export function usePermissions() {
       ],
       [authenticatorData, clientDataJSON, responseTypeLocation, r, s, false]
     )
-    userOp.signature = encodeAbiParameters(
-      [{ type: 'bytes' }, { type: 'bytes' }],
-      [cosignerSignatureOnUserOp, passkeySignature]
-    )
-    const preSignaturePackedUserOp = getPackedUserOperation(userOp)
 
-    const signatureWithContext = await getSignatureWithContext(publicClient, {
-      sender: signerData.submitToAddress,
-      permissionsContext: permissionsContext as `0x${string}`,
-      userOperation: preSignaturePackedUserOp,
-      userOpBuilderAddress: signerData.userOpBuilder
-    })
-
-    return signatureWithContext
+    return passkeySignature
   }
 
   async function buildAndSendTransactionsWithCosignerAndPermissions(args: {
@@ -137,11 +136,20 @@ export function usePermissions() {
     permissions: GrantPermissionsReturnType
     actions: Execution[]
     chain: Chain
+    accountAddress: `0x${string}`
   }): Promise<`0x${string}`> {
-    const { ecdsaPrivateKey, permissions, actions, chain } = args
+    const { ecdsaPrivateKey, permissions, actions, chain, accountAddress } = args
 
     const { publicClient, bundlerClient } = createClients(chain)
+    const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
+    if (!projectId) {
+      throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
+    }
+    if (!wcCosignerData) {
+      throw new Error('No WC_COSIGNER data available')
+    }
 
+    const caip10Address = `eip155:${chain?.id}:${accountAddress}`
     const userOp = await prepareUserOperationWithPermissions(publicClient, {
       actions,
       permissions
@@ -151,6 +159,19 @@ export function usePermissions() {
     userOp.maxFeePerGas = gasPrice.fast.maxFeePerGas
     userOp.maxPriorityFeePerGas = gasPrice.fast.maxPriorityFeePerGas
 
+    /**
+     * Comment
+     * const pimlicoPaymasterClient = createPimlicoPaymasterClient({
+     *   transport: http(getPaymasterUrl()),
+     *  entryPoint: ENTRYPOINT_ADDRESS_V07,
+     *   chain: sepolia
+     *  })
+     * const paymasterResponse = pimlicoPaymasterClient.sponsorUserOperation({
+     *   userOperation: userOp
+     * })
+     * userOp = { ...userOp, ...paymasterResponse }
+     * console.log({ userOp })
+     */
     const signature = await signUserOperationWithPasskeyAndCosigner(publicClient, {
       permissions,
       ecdsaPrivateKey,
@@ -159,22 +180,12 @@ export function usePermissions() {
     })
 
     userOp.signature = signature
-
-    /*
-     * Const packedUserOp = getPackedUserOperation(userOp)
-     * Console.log('Final Packed UserOp to send', JSON.stringify(packedUserOp, bigIntReplacer))
-     */
-
-    const _userOpHash = await bundlerClient.sendUserOperation({
-      userOperation: userOp
+    const txHash = await coSignUserOperation(caip10Address, projectId, {
+      pci: wcCosignerData.pci,
+      userOp
     })
 
-    const txReceipt = await bundlerClient.waitForUserOperationReceipt({
-      hash: _userOpHash,
-      timeout: 30000
-    })
-
-    return txReceipt.receipt.transactionHash
+    return txHash.userOpReceipt as `0x${string}`
   }
 
   return {
