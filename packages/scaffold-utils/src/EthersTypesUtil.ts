@@ -37,7 +37,7 @@ type ProviderEventListener = {
 }
 
 export interface Provider {
-  request: <T>(args: RequestArguments) => Promise<T>
+  request: <T>(args: RequestArguments, expiry?: number, opts?: object) => Promise<T>
   on<T extends keyof ProviderEventListener>(event: T, listener: ProviderEventListener[T]): void
   removeListener: <T>(event: string, listener: (data: T) => void) => void
   emit: (event: string) => void

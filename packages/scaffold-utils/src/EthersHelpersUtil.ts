@@ -48,22 +48,26 @@ export const EthersHelpersUtil = {
     return addresses
   },
   async addEthereumChain(provider: Provider, chain: Chain) {
-    await provider.request({
-      method: 'wallet_addEthereumChain',
-      params: [
-        {
-          chainId: EthersHelpersUtil.numberToHexString(chain.chainId),
-          rpcUrls: [chain.rpcUrl],
-          chainName: chain.name,
-          nativeCurrency: {
-            name: chain.currency,
-            decimals: 18,
-            symbol: chain.currency
-          },
-          blockExplorerUrls: [chain.explorerUrl],
-          iconUrls: [PresetsUtil.EIP155NetworkImageIds[chain.chainId]]
-        }
-      ]
-    })
+    await provider.request(
+      {
+        method: 'wallet_addEthereumChain',
+        params: [
+          {
+            chainId: EthersHelpersUtil.numberToHexString(chain.chainId),
+            rpcUrls: [chain.rpcUrl],
+            chainName: chain.name,
+            nativeCurrency: {
+              name: chain.currency,
+              decimals: 18,
+              symbol: chain.currency
+            },
+            blockExplorerUrls: [chain.explorerUrl],
+            iconUrls: [PresetsUtil.EIP155NetworkImageIds[chain.chainId]]
+          }
+        ]
+      },
+      undefined,
+      { disableDeepLink: true }
+    )
   }
 }
