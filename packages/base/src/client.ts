@@ -5,7 +5,8 @@ import type {
   ModalControllerState,
   ConnectedWalletInfo,
   RouterControllerState,
-  ChainAdapter
+  ChainAdapter,
+  CaipNetwork
 } from '@web3modal/core'
 import {
   AccountController,
@@ -100,6 +101,10 @@ export class AppKit {
 
   public subscribeShouldUpdateToAddress(callback: (newState?: string) => void) {
     AccountController.subscribeKey('shouldUpdateToAddress', callback)
+  }
+
+  public subscribeCaipNetworkChange(callback: (newState?: CaipNetwork) => void) {
+    NetworkController.subscribeKey('caipNetwork', callback)
   }
 
   public getState() {
@@ -320,6 +325,7 @@ export class AppKit {
     OptionsController.setSdkVersion(options.sdkVersion)
     // Enabled by default
     OptionsController.setOnrampEnabled(options.enableOnramp !== false)
+    OptionsController.setEnableSwaps(options.enableSwaps !== false)
 
     if (options.metadata) {
       OptionsController.setMetadata(options.metadata)

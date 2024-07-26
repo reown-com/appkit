@@ -24,6 +24,11 @@
       "import": "./dist/esm/adapters/evm/wagmi/index.js",
       "default": "./dist/esm/adapters/evm/wagmi/index.js"
     },
+    "./adapters/evm/ethers": {
+      "types": "./dist/types/adapters/evm/ethers/index.d.ts",
+      "import": "./dist/esm/adapters/evm/ethers/index.js",
+      "default": "./dist/esm/adapters/evm/ethers/index.js"
+    },
     "./adapters/solana/web3js": {
       "types": "./dist/types/adapters/solana/web3js/index.d.ts",
       "import": "./dist/esm/adapters/solana/web3js/index.js",
@@ -62,6 +67,8 @@
     "react-dom": "18.2.0",
     "viem": "2.16.2",
     "vue": "3.4.3",
+    "ethers": "6.13.0",
+    "@coinbase/wallet-sdk": "4.0.3",
     "@ethersproject/sha2": "5.7.0",
     "@solana/wallet-adapter-base": "0.9.23",
     "@solana/wallet-standard-features": "1.2.0",

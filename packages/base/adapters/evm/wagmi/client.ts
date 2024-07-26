@@ -54,7 +54,7 @@ import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 import type { AppKit } from '../../../src/client.js'
 
 // -- Types ---------------------------------------------------------------------
-export interface Web3ModalClientOptions<C extends Config>
+export interface AdapterOptions<C extends Config>
   extends Pick<AppKitOptions, 'siweConfig' | 'enableEIP6963'> {
   wagmiConfig: C
   defaultChain?: Chain
@@ -67,13 +67,15 @@ interface Web3ModalState extends PublicStateControllerState {
 
 // -- Client --------------------------------------------------------------------
 export class EVMWagmiClient {
+  // -- Private variables -------------------------------------------------------
   private appKit: AppKit | undefined = undefined
-
-  public options: AppKitOptions | undefined = undefined
 
   private hasSyncedConnectedAccount = false
 
-  private wagmiConfig: Web3ModalClientOptions<Config>['wagmiConfig']
+  private wagmiConfig: AdapterOptions<Config>['wagmiConfig']
+
+  // -- Public variables --------------------------------------------------------
+  public options: AppKitOptions | undefined = undefined
 
   public chain: AvailableChain = CommonConstantsUtil.CHAIN.EVM
 
@@ -89,7 +91,7 @@ export class EVMWagmiClient {
 
   public siweControllerClient = this.options?.siweConfig
 
-  public constructor(options: Web3ModalClientOptions<Config>) {
+  public constructor(options: AdapterOptions<Config>) {
     const { wagmiConfig, defaultChain } = options
 
     if (!wagmiConfig) {
@@ -411,15 +413,17 @@ export class EVMWagmiClient {
     if (!options.projectId) {
       throw new Error('web3modal:initialize - projectId is undefined')
     }
+
     this.appKit = appKit
     this.options = options
+    this.tokens = HelpersUtil.getCaipTokens(options.tokens)
+
     const connectors = this.wagmiConfig.connectors
 
     this.syncRequestedNetworks([...this.wagmiConfig.chains])
     this.syncConnectors(this.wagmiConfig.connectors)
     this.syncAuthConnector(connectors.find(c => c.id === ConstantsUtil.AUTH_CONNECTOR_ID))
 
-    // Wagmi listeners
     watchConnectors(this.wagmiConfig, {
       onChange: _connectors => {
         this.syncConnectors(_connectors)
@@ -663,7 +667,7 @@ export class EVMWagmiClient {
     }
   }
 
-  private syncConnectors(_connectors: Web3ModalClientOptions<Config>['wagmiConfig']['connectors']) {
+  private syncConnectors(_connectors: AdapterOptions<Config>['wagmiConfig']['connectors']) {
     const connectors = _connectors.map(connector => ({ ...connector, chain: this.chain }))
     const uniqueIds = new Set()
     const filteredConnectors = connectors.filter(item => {
@@ -707,10 +711,10 @@ export class EVMWagmiClient {
   }
 
   private async syncAuthConnector(
-    authConnector: Web3ModalClientOptions<Config>['wagmiConfig']['connectors'][number] | undefined
+    authConnector: AdapterOptions<Config>['wagmiConfig']['connectors'][number] | undefined
   ) {
     const connector =
-      authConnector as unknown as Web3ModalClientOptions<Config>['wagmiConfig']['connectors'][0] & {
+      authConnector as unknown as AdapterOptions<Config>['wagmiConfig']['connectors'][0] & {
         email: boolean
         socials: SocialProvider[]
         showWallets?: boolean
@@ -735,7 +739,7 @@ export class EVMWagmiClient {
   }
 
   private async initAuthConnectorListeners(
-    authConnector: Web3ModalClientOptions<Config>['wagmiConfig']['connectors'][number] | undefined
+    authConnector: AdapterOptions<Config>['wagmiConfig']['connectors'][number] | undefined
   ) {
     if (authConnector) {
       await this.listenAuthConnector(authConnector)
@@ -744,7 +748,7 @@ export class EVMWagmiClient {
   }
 
   private async listenAuthConnector(
-    connector: Web3ModalClientOptions<Config>['wagmiConfig']['connectors'][number]
+    connector: AdapterOptions<Config>['wagmiConfig']['connectors'][number]
   ) {
     if (typeof window !== 'undefined' && connector) {
       this.appKit?.setLoading(true)
@@ -862,7 +866,7 @@ export class EVMWagmiClient {
   }
 
   private async listenModal(
-    connector: Web3ModalClientOptions<Config>['wagmiConfig']['connectors'][number]
+    connector: AdapterOptions<Config>['wagmiConfig']['connectors'][number]
   ) {
     const provider = (await connector.getProvider()) as W3mFrameProvider
     this.subscribeState(val => {

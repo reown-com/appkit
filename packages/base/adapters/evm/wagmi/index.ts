@@ -3,7 +3,7 @@ import '@web3modal/polyfills'
 export { EVMWagmiClient } from './client.js'
 
 // -- Types
-export type { Web3ModalClientOptions } from './client.js'
+export type { AdapterOptions } from './client.js'
 
 // -- Utils
 export { defaultWagmiConfig as defaultWagmiCoreConfig } from './utils/defaultWagmiCoreConfig.js'
