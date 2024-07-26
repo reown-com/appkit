@@ -131,14 +131,14 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
-          name: blob-report-${{ matrix.shardIndex }}
+          name: blob-report-${{ matrix.shard }}
           path: ./apps/laboratory/blob-report/
           retention-days: 7
 
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
-          name: screenshots-${{ matrix.shardIndex }}
+          name: screenshots-${{ matrix.shard }}
           path: ./apps/laboratory/test-results/
           retention-days: 7
 
