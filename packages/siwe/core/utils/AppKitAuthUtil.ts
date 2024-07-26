@@ -5,11 +5,15 @@ import { ApiController } from '@web3modal/core'
 import { Web3ModalSIWEClient } from '../../src/client.js'
 import type { SIWECreateMessageArgs, SIWESession, SIWEVerifyMessageArgs } from './TypeUtils.js'
 
+const headers = {
+  ...ApiController._getApiHeaders(),
+  'x-project-id': '24970167f11c121f6eb40b558edb9691'
+}
 export async function getNonce() {
   try {
-    const res = await fetch(`${ConstantsUtil.W3M_API_URL}/auth/v1/nonce`, {
+    const res = await fetch(`${ConstantsUtil.DEV_W3M_API_URL}/auth/v1/nonce`, {
       method: 'GET',
-      headers: ApiController._getApiHeaders(),
+      headers,
       credentials: 'include'
     })
 
@@ -30,9 +34,9 @@ export async function getNonce() {
 
 export async function getAppKitAuthSession() {
   try {
-    const res = await fetch(`${ConstantsUtil.W3M_API_URL}/auth/v1/me`, {
+    const res = await fetch(`${ConstantsUtil.DEV_W3M_API_URL}/auth/v1/me`, {
       method: 'GET',
-      headers: ApiController._getApiHeaders(),
+      headers,
       credentials: 'include'
     })
 
@@ -57,9 +61,9 @@ export async function authenticate(payload: {
   clientId?: string
 }) {
   try {
-    const res = await fetch(`${ConstantsUtil.W3M_API_URL}/auth/v1/authenticate`, {
+    const res = await fetch(`${ConstantsUtil.DEV_W3M_API_URL}/auth/v1/authenticate`, {
       method: 'POST',
-      headers: ApiController._getApiHeaders(),
+      headers,
       body: JSON.stringify(payload),
       credentials: 'include'
     })
@@ -81,9 +85,9 @@ export async function authenticate(payload: {
 
 export async function updateUserMetadata(metadata: Record<string, unknown>) {
   try {
-    const res = await fetch(`${ConstantsUtil.W3M_API_URL}/auth/v1/update-user-metadata`, {
+    const res = await fetch(`${ConstantsUtil.DEV_W3M_API_URL}/auth/v1/update-user-metadata`, {
       method: 'PATCH',
-      headers: ApiController._getApiHeaders(),
+      headers,
       body: JSON.stringify({ metadata }),
       credentials: 'include'
     })
@@ -105,9 +109,9 @@ export async function updateUserMetadata(metadata: Record<string, unknown>) {
 
 export async function appKitAuthSignOut() {
   try {
-    const res = await fetch(`${ConstantsUtil.W3M_API_URL}/auth/v1/sign-out`, {
+    const res = await fetch(`${ConstantsUtil.DEV_W3M_API_URL}/auth/v1/sign-out`, {
       method: 'POST',
-      headers: ApiController._getApiHeaders(),
+      headers,
       credentials: 'include'
     })
 

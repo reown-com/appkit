@@ -1,12 +1,12 @@
-import { subscribeKey as subKey } from 'valtio/vanilla/utils'
+import { OptionsController } from '@web3modal/core'
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
+import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import type {
   SIWEClientMethods,
-  SIWESession,
   SIWECreateMessageArgs,
+  SIWESession,
   SIWEVerifyMessageArgs
 } from '../utils/TypeUtils.js'
-import { OptionsController } from '@web3modal/core'
 
 // -- Types --------------------------------------------- //
 export interface SIWEControllerClient extends SIWEClientMethods {
@@ -118,7 +118,7 @@ export const SIWEController = {
     await client.signOut()
     this.setStatus('ready')
     this.setSession(undefined)
-    client.onSignOut?.()
+    this.setNonce(undefined)
   },
 
   onSignIn(args: SIWESession) {
