@@ -81,13 +81,14 @@ function headings() {
       ? AccountController.state.socialProvider
       : 'Connect Social',
     ConnectingMultiChain: 'Select chain',
-    ConnectingFarcaster: 'Farcaster'
+    ConnectingFarcaster: 'Farcaster',
+    SwitchActiveChain: 'Switch chain'
   }
 }
 
 @customElement('w3m-header')
 export class W3mHeader extends LitElement {
-  public static override styles = [styles]
+  public static override styles = styles
 
   // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
@@ -101,6 +102,7 @@ export class W3mHeader extends LitElement {
 
   @state() private network = NetworkController.state.caipNetwork
 
+  // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
     this.unsubscribe.push(

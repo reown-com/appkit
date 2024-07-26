@@ -30,6 +30,7 @@ export class W3mNetworksView extends LitElement {
 
   @state() private search = ''
 
+  // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
     this.unsubscribe.push(

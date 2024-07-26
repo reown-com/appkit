@@ -131,10 +131,10 @@ export const ChainController = {
     const chainAdapter = state.chains.get(chain)
 
     if (chainAdapter) {
-      chainAdapter.networkState = {
+      chainAdapter.networkState = ref({
         ...chainAdapter.networkState,
         ...props
-      } as NetworkControllerState
+      } as NetworkControllerState)
       state.chains.set(chain, chainAdapter)
       if (replaceState || state.chains.size === 1) {
         NetworkController.replaceState(chainAdapter.networkState)
@@ -154,10 +154,10 @@ export const ChainController = {
     const chainAdapter = state.chains.get(chain)
 
     if (chainAdapter) {
-      chainAdapter.accountState = {
+      chainAdapter.accountState = ref({
         ...chainAdapter.accountState,
         ...accountProps
-      } as AccountControllerState
+      } as AccountControllerState)
       state.chains.set(chain, chainAdapter)
       if (replaceState) {
         AccountController.replaceState(chainAdapter.accountState)
@@ -185,6 +185,7 @@ export const ChainController = {
         : undefined
       AccountController.replaceState(newAdapter.accountState)
       NetworkController.replaceState(newAdapter.networkState)
+      this.setCaipNetwork(newAdapter.chain, newAdapter.networkState?.caipNetwork)
       PublicStateController.set({
         activeChain: chain,
         selectedNetworkId: newAdapter.networkState?.caipNetwork?.id
@@ -229,9 +230,6 @@ export const ChainController = {
   setActiveConnector(connector: ChainControllerState['activeConnector']) {
     if (connector) {
       state.activeConnector = ref(connector)
-      if (connector.chain !== state.activeChain) {
-        this.setActiveChain(connector.chain)
-      }
     }
   },
 

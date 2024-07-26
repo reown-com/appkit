@@ -142,6 +142,7 @@ export interface WcWallet {
 
 export interface ApiGetWalletsRequest {
   page: number
+  chains: string
   entries: number
   search?: string
   include?: string[]

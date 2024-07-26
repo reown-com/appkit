@@ -1,4 +1,4 @@
-import { proxy } from 'valtio/vanilla'
+import { proxy, ref } from 'valtio/vanilla'
 import type { CaipNetwork, CaipNetworkId } from '../utils/TypeUtil.js'
 import { EventsController } from './EventsController.js'
 import { ModalController } from './ModalController.js'
@@ -44,7 +44,7 @@ export const NetworkController = {
       return
     }
 
-    Object.assign(state, newState)
+    this.state = ref(newState)
   },
 
   subscribeKey<K extends keyof NetworkControllerState>(
