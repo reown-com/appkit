@@ -50,6 +50,11 @@ jobs:
     name: 'Playwright Tests'
     runs-on:
       group: ubuntu-runners
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4]
+        shardTotal: [4]
     timeout-minutes: 20
     steps:
       - name: checkout
@@ -114,7 +119,7 @@ jobs:
           SOCIAL_TEST_PASSWORD: ${{ secrets.TESTS_SOCIAL_PASSWORD }}
           CI: true
         working-directory: ./apps/laboratory/
-        run: pnpm ${{ inputs.command }}
+        run: pnpm ${{ inputs.command }} -- --shard=${{ matrix.shard }}/${{ matrix.shardTotal }}
 
       - name: Run canary with minimal environment config
         env:
@@ -123,16 +128,46 @@ jobs:
         working-directory: ./apps/laboratory/
         run: pnpm playwright:test:canary
 
-      - uses: actions/upload-artifact@v3
-        if: always()
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
         with:
-          name: playwright-report
-          path: ./apps/laboratory/playwright-report/
+          name: blob-report-${{ matrix.shardIndex }}
+          path: ./apps/laboratory/blob-report/
           retention-days: 7
 
-      - uses: actions/upload-artifact@v3
-        if: always()
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
         with:
-          name: screenshots
+          name: screenshots-${{ matrix.shardIndex }}
           path: ./apps/laboratory/test-results/
+          retention-days: 7
+
+  merge-reports:
+    if: ${{ !cancelled() }}
+    needs: [ui_tests]
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download blob reports from GitHub Actions Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ./apps/laboratory/blob-report-all
+          pattern: blob-report-*
+          merge-multiple: true
+
+      - name: Merge into HTML Report
+        run: npx playwright merge-reports --reporter html ./apps/laboratory/blob-report-all
+
+      - name: Upload HTML report
+        uses: actions/upload-artifact@v4
+        with:
+          name: html-report--attempt-${{ github.run_attempt }}
+          path: ./apps/laboratory/playwright-report/
           retention-days: 7
