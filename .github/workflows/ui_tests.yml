@@ -129,15 +129,8 @@ jobs:
         run: pnpm playwright:test:canary
 
       - uses: actions/upload-artifact@v4
-        if: ${{ !cancelled() }}
+        if: always()
         with:
-          name: blob-report-${{ matrix.shard }}
-          path: ./apps/laboratory/blob-report/
-          retention-days: 7
-
-      - uses: actions/upload-artifact@v4
-        if: ${{ !cancelled() }}
-        with:
-          name: screenshots-${{ matrix.shard }}
-          path: ./apps/laboratory/test-results/
+          name: playwright-report-${{ matrix.shard }}
+          path: ./apps/laboratory/playwright-report/
           retention-days: 7
