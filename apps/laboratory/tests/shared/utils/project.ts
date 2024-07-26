@@ -35,11 +35,11 @@ const braveOptions: UseOptions = {
 }
 
 const WAGMI_EMAIL_BASED_REGEX =
-  /(?:smart-account\.spec\.ts|siwe-sa\.spec\.ts|social\.spec\.ts|siwe\.spec\.ts).*$/u
-const ETHERS_EMAIL_BASED_REGEX = /(?:social\.spec\.ts|siwe\.spec\.ts).*$/u
+  /(?:wallet-features\.spec\.ts|smart-account\.spec\.ts|siwe-sa\.spec\.ts|social\.spec\.ts|siwe\.spec\.ts).*$/u
+const ETHERS_EMAIL_BASED_REGEX = /(?:wallet-features\.spec\.ts|social\.spec\.ts|siwe\.spec\.ts).*$/u
 
 const SOLANA_UNIMPLEMENTED_TESTS_REGEX =
-  /^(?!.*(?:siwe\.spec\.ts|email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts|smart-account\.spec\.ts|social\.spec\.ts|siwe-sa\.spec\.ts|siwe-email\.spec\.ts|wallet-features\.spec\.ts)).*$/u
+  /^(?!.*(?:wallet-features\.spec\.ts|siwe\.spec\.ts|email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts|smart-account\.spec\.ts|social\.spec\.ts|siwe-sa\.spec\.ts|siwe-email\.spec\.ts|wallet-features\.spec\.ts)).*$/u
 
 const customProjectProperties: CustomProjectProperties = {
   'Desktop Chrome/ethers': {
