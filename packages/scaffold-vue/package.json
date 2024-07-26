@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/scaffold-vue",
-  "version": "5.0.6",
+  "version": "5.0.8",
   "type": "module",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
@@ -10,19 +10,21 @@
   ],
   "scripts": {
     "build:clean": "rm -rf dist",
-    "build:scaffold-vue": "tsc --build",
+    "build": "tsc --build",
     "watch": "tsc --watch",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@web3modal/scaffold": "5.0.6"
+    "@web3modal/scaffold": "workspace:*",
+    "@web3modal/core": "workspace:*"
   },
   "peerDependencies": {
     "vue": ">=3"
   },
   "devDependencies": {
-    "vue": "3.4.3"
+    "vue": "3.4.3",
+    "@vue/runtime-core": "3.4.3"
   },
   "peerDependenciesMeta": {
     "vue": {

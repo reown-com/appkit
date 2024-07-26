@@ -261,6 +261,7 @@ export class W3mSwapView extends LitElement {
 
     return html` <wui-flex gap="xs">
       <wui-button
+        data-testid="swap-action-button"
         class="action-button"
         fullWidth
         size="lg"
@@ -296,7 +297,7 @@ export class W3mSwapView extends LitElement {
         network: this.caipNetworkId || '',
         swapFromToken: this.sourceToken?.symbol || '',
         swapToToken: this.toToken?.symbol || '',
-        swapfromAmount: this.sourceTokenAmount || '',
+        swapFromAmount: this.sourceTokenAmount || '',
         swapToAmount: this.toTokenAmount || '',
         isSmartAccount:
           AccountController.state.preferredAccountType ===
