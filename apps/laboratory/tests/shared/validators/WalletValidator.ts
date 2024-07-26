@@ -35,6 +35,7 @@ export class WalletValidator {
   }
 
   async expectDisconnected() {
+    await this.page.reload()
     await this.gotoSessions.click()
     await expect(
       this.page.getByTestId('session-card'),
