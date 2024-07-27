@@ -39,7 +39,7 @@ const WAGMI_EMAIL_BASED_REGEX =
 const ETHERS_EMAIL_BASED_REGEX = /(?:wallet-features\.spec\.ts|social\.spec\.ts|siwe\.spec\.ts).*$/u
 
 const SOLANA_UNIMPLEMENTED_TESTS_REGEX =
-  /^(?!.*(?:wallet-features\.spec\.ts|siwe\.spec\.ts|email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts|smart-account\.spec\.ts|social\.spec\.ts|siwe-sa\.spec\.ts|siwe-email\.spec\.ts|wallet-features\.spec\.ts)).*$/u
+  /^(?!.*(?:wallet|.spec\.ts|wallet-features\.spec\.ts|siwe\.spec\.ts|email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts|smart-account\.spec\.ts|social\.spec\.ts|siwe-sa\.spec\.ts|siwe-email\.spec\.ts|wallet-features\.spec\.ts)).*$/u
 
 const customProjectProperties: CustomProjectProperties = {
   'Desktop Chrome/ethers': {

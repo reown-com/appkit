@@ -132,7 +132,7 @@ jobs:
         run: pnpm playwright:test:canary
 
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: failure()
         with:
           name: playwright-report-${{ matrix.shard }}
           path: ./apps/laboratory/playwright-report/
