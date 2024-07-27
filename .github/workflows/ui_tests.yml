@@ -57,6 +57,9 @@ jobs:
         shardTotal: [4]
     timeout-minutes: 20
     steps:
+      - name: Tune GitHub-hosted runner network
+        uses: smorimoto/tune-github-hosted-runner-network@v1
+
       - name: checkout
         uses: actions/checkout@v4
         with:
