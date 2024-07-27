@@ -11,7 +11,7 @@ export default defineConfig<ModalFixture>({
   testDir: './tests',
   fullyParallel: true,
   retries: getValue(2, 1),
-  workers: getValue(8, 4),
+  workers: getValue(2, 4),
   reporter: getValue(
     [['list'], ['html', { host: '0.0.0.0' }]],
     [['list'], ['html', { host: '0.0.0.0' }]]
