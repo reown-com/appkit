@@ -1,10 +1,9 @@
 import { test, type BrowserContext } from '@playwright/test'
-import { ModalWalletValidator } from './shared/validators/ModalWalletValidator'
 import { DEFAULT_CHAIN_NAME } from './shared/constants'
 import { WalletPage } from './shared/pages/WalletPage'
 import { WalletValidator } from './shared/validators/WalletValidator'
 import { ModalPage } from './shared/pages/ModalPage'
-import type { ModalValidator } from './shared/validators/ModalValidator'
+import { ModalValidator } from './shared/validators/ModalValidator'
 
 /* eslint-disable init-declarations */
 let modalPage: ModalPage
@@ -27,7 +26,7 @@ sampleWalletTest.beforeAll(async ({ browser, library }) => {
 
   modalPage = new ModalPage(browserPage, library, 'default')
   walletPage = new WalletPage(await context.newPage())
-  modalValidator = new ModalWalletValidator(browserPage)
+  modalValidator = new ModalValidator(browserPage)
   walletValidator = new WalletValidator(walletPage.page)
 
   await modalPage.load()
