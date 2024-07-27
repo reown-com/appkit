@@ -7,7 +7,7 @@ import { verifySignature as verifySignatureETH } from '../../../utils/SignatureU
 import { verifySignature as verifySignatureSOL } from '@web3modal/siws'
 import type { SIWESession } from '@web3modal/siwe'
 import type { SIWSSession } from '@web3modal/siws'
-import { SiwxUriType, type IVerifySignatureParams } from '../../../types/siwx'
+import { type IVerifySignatureParams } from '../../../types/siwx'
 
 type SIWXSession = SIWESession & SIWSSession
 
@@ -32,7 +32,7 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
   }
 
   // It's checking what method singIn use in uri headers
-  const isSIWS = req.headers.referer?.includes(SiwxUriType.SIWS)
+  const isSIWS = req.headers.referer?.includes('siws')
 
   const placeholder = isSIWS ? 'solana' : '0x0'
   const name = isSIWS ? 'Solana' : 'Ethereum'
@@ -66,7 +66,7 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
             referer: string | undefined,
             params: IVerifySignatureParams
           ) =>
-            referer?.includes(SiwxUriType.SIWS)
+            referer?.includes('siws')
               ? await verifySignatureSOL(params)
               : await verifySignatureETH(params)
 

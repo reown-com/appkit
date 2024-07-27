@@ -4,8 +4,3 @@ export interface IVerifySignatureParams {
   signature: string
   chainId: number
 }
-
-export enum SiwxUriType {
-  SIWS = 'siws',
-  SIWE = 'siwe'
-}
