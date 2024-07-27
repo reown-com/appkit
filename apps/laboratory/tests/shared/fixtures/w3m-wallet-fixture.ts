@@ -85,12 +85,6 @@ export const testConnectedMW = base.extend<ModalWalletFixture>({
     timeEnd('walletValidator.expectConnected')
 
     await use(walletPage)
-  },
-  walletValidator: async ({ walletPage }, use) => {
-    timeStart('new WalletValidator')
-    const walletValidator = new WalletValidator(walletPage.page)
-    timeEnd('new WalletValidator')
-    await use(walletValidator)
   }
 })
 export const testMWSiwe = siwe.extend<ModalWalletFixture>({
@@ -98,10 +92,6 @@ export const testMWSiwe = siwe.extend<ModalWalletFixture>({
     const walletPage = new WalletPage(await context.newPage())
     await walletPage.load()
     await use(walletPage)
-  },
-  walletValidator: async ({ walletPage }, use) => {
-    const walletValidator = new WalletValidator(walletPage.page)
-    await use(walletValidator)
   }
 })
 
