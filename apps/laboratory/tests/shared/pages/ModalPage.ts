@@ -213,7 +213,9 @@ export class ModalPage {
   async sign() {
     const signButton = this.page.getByTestId('sign-message-button')
     await signButton.scrollIntoViewIfNeeded()
+    await this.page.waitForTimeout(500)
     await signButton.click()
+    await this.page.waitForTimeout(1000)
   }
 
   async signatureRequestFrameShouldVisible() {
