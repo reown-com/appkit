@@ -127,4 +127,9 @@ export class ModalValidator {
       'Network not supported message should be visible'
     ).toBeVisible()
   }
+
+  async expectAccountPageVisible() {
+    const switchNetworkButton = this.page.getByTestId('w3m-account-select-network')
+    await expect(switchNetworkButton).toBeVisible()
+  }
 }

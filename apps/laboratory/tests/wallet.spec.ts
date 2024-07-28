@@ -41,6 +41,7 @@ sampleWalletTest.afterAll(async () => {
   await modalPage.page.close()
 })
 
+// -- Tests --------------------------------------------------------------------
 sampleWalletTest('it should switch networks and sign', async ({ library }) => {
   const chains = library === 'solana' ? ['Solana Testnet', 'Solana'] : ['Polygon', 'Ethereum']
 
