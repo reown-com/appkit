@@ -389,6 +389,14 @@ export class Web3Modal extends Web3ModalScaffold {
     const filteredAdapters = this.walletAdapters.filter(
       adapter => !uniqueIds.has(adapter.name) && uniqueIds.add(adapter.name)
     )
+
+    // @eslint-disable-next-line no-alert
+    window.alert(`phantom ${window.phantom}`)
+    // @eslint-disable-next-line no-alert
+    window.alert(`standardAdapters ${standardAdapters?.map(adapter => adapter.name)}`)
+    // @eslint-disable-next-line no-alert
+    window.alert(`filteredAdapters ${filteredAdapters?.map(adapter => adapter.name)}`)
+
     standardAdapters?.forEach(adapter => {
       w3mConnectors.push({
         id: adapter.name,
