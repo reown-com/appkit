@@ -2,13 +2,11 @@ import { test, type BrowserContext } from '@playwright/test'
 import { ModalPage } from './shared/pages/ModalPage'
 import { WalletPage } from './shared/pages/WalletPage'
 import { ModalValidator } from './shared/validators/ModalValidator'
-import { WalletValidator } from './shared/validators/WalletValidator'
 
 /* eslint-disable init-declarations */
 let modalPage: ModalPage
 let modalValidator: ModalValidator
 let walletPage: WalletPage
-let walletValidator: WalletValidator
 let context: BrowserContext
 /* eslint-enable init-declarations */
 
@@ -26,7 +24,6 @@ siweWalletTest.beforeAll(async ({ browser, library }) => {
   modalPage = new ModalPage(browserPage, library, 'siwe')
   walletPage = new WalletPage(await context.newPage())
   modalValidator = new ModalValidator(browserPage)
-  walletValidator = new WalletValidator(walletPage.page)
 
   await modalPage.load()
   await modalPage.qrCodeFlow(modalPage, walletPage)
@@ -41,11 +38,11 @@ siweWalletTest.afterAll(async () => {
 })
 
 // -- Tests --------------------------------------------------------------------
-siweWalletTest('it should be authenticated', async ({}) => {
+siweWalletTest('it should be authenticated', async () => {
   await modalValidator.expectAuthenticated()
 })
 
-siweWalletTest('it should require re-authentication when switching networks', async ({}) => {
+siweWalletTest('it should require re-authentication when switching networks', async () => {
   await modalPage.switchNetwork('Polygon')
   await modalValidator.expectUnauthenticated()
   await modalPage.promptSiwe()
@@ -55,7 +52,7 @@ siweWalletTest('it should require re-authentication when switching networks', as
   await modalPage.closeModal()
 })
 
-siweWalletTest('it should be unauthenticated when disconnect', async ({}) => {
+siweWalletTest('it should be unauthenticated when disconnect', async () => {
   await modalPage.disconnect()
   await modalValidator.expectUnauthenticated()
 })
