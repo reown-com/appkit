@@ -5,8 +5,6 @@ import { solana, solanaDevnet, solanaTestnet } from '../../utils/ChainsUtil'
 import { Web3ModalButtons } from '../../components/Web3ModalButtons'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { SolanaTests } from '../../components/Solana/SolanaTests'
-import { BackpackWalletAdapter } from '@solana/wallet-adapter-backpack'
-import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 
 const chains = [solana, solanaTestnet, solanaDevnet]
 
