@@ -1,5 +1,14 @@
 # @web3modal/scaffold-react
 
+## 5.0.9
+
+### Patch Changes
+
+- - chore: refine link names by @chris13524 in https://github.com/WalletConnect/web3modal/pull/2588
+  - hotfix change secure site origin domain to .org by @svenvoskamp in https://github.com/WalletConnect/web3modal/pull/2603
+
+**Full Changelog**: https://github.com/WalletConnect/web3modal/compare/5.0.8...5.0.9
+
 ## 5.0.8
 
 ### Patch Changes
