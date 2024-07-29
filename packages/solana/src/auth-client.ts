@@ -1,0 +1,192 @@
+import {
+  W3mFrameConstants,
+  W3mFrameHelpers,
+  W3mFrameProvider,
+  W3mFrameRpcConstants
+} from '@web3modal/wallet'
+import { type CombinedProvider } from './utils/scaffold'
+import type { ISolanaModal } from './solana-interface'
+
+import { ConstantsUtil as CommonConstantsUtil, NetworkUtil } from '@web3modal/common'
+import { ConstantsUtil } from '@web3modal/scaffold-utils'
+import { type Connector } from '@web3modal/core'
+
+type SolanaAuthClientConfig = {
+  modal: ISolanaModal
+  projectId: string
+}
+
+export class SolanaAuthClient {
+  private authProvider: W3mFrameProvider
+  private modal: ISolanaModal
+
+  constructor({ modal, projectId }: SolanaAuthClientConfig) {
+    this.modal = modal
+    this.authProvider = new W3mFrameProvider(projectId)
+  }
+
+  public getConnector(): Connector {
+    return {
+      id: ConstantsUtil.AUTH_CONNECTOR_ID,
+      type: 'AUTH',
+      name: 'Auth',
+      provider: this.authProvider,
+      email: true,
+      socials: ['apple', 'discord', 'github'],
+      showWallets: true,
+      chain: CommonConstantsUtil.CHAIN.SOLANA,
+      walletFeatures: true
+    }
+  }
+
+  public async connect() {
+    try {
+      this.modal.setLoading(true)
+
+      const {
+        address,
+        chainId,
+        smartAccountDeployed,
+        preferredAccountType,
+        accounts = []
+      } = await this.authProvider.connect({ chainId: this.modal.getChainId() })
+
+      const { smartAccountEnabledNetworks } =
+        await this.authProvider.getSmartAccountEnabledNetworks()
+
+      this.modal.handleConnection({
+        connectorId: ConstantsUtil.AUTH_CONNECTOR_ID,
+        caipChainId: `solana:${chainId}`,
+        providerType: ConstantsUtil.AUTH_CONNECTOR_ID,
+        provider: this.authProvider as CombinedProvider,
+        address,
+        accounts:
+          accounts.length > 0
+            ? accounts
+            : [{ address, type: preferredAccountType as 'eoa' | 'smartAccount' }],
+        smartAccountEnabledNetworks,
+        smartAccountDeployed
+      })
+
+      this.watchAuth()
+      this.watchModal()
+    } finally {
+      this.modal.setLoading(false)
+    }
+  }
+
+  private watchAuth() {
+    console.log('watchAuth')
+
+    this.authProvider.onRpcRequest(request => {
+      console.log('onRpcRequest', request)
+
+      if (
+        W3mFrameHelpers.checkIfRequestExists(request) &&
+        !W3mFrameHelpers.checkIfRequestIsAllowed(request)
+      ) {
+        if (this.modal.isOpen()) {
+          if (this.modal.isTransactionStackEmpty()) {
+            return
+          }
+          if (this.modal.isTransactionShouldReplaceView()) {
+            this.modal.replace('ApproveTransaction')
+          } else {
+            this.modal.redirect('ApproveTransaction')
+          }
+        } else {
+          this.modal.open({ view: 'ApproveTransaction' })
+        }
+      } else {
+        this.modal.open()
+        const method = W3mFrameHelpers.getRequestMethod(request)
+        // eslint-disable-next-line no-console
+        console.error(W3mFrameRpcConstants.RPC_METHOD_NOT_ALLOWED_MESSAGE, { method })
+        setTimeout(() => {
+          this.modal.showErrorMessage(W3mFrameRpcConstants.RPC_METHOD_NOT_ALLOWED_UI_MESSAGE)
+        }, 300)
+      }
+    })
+
+    this.authProvider.onRpcResponse(response => {
+      console.log('onRpcResponse', response)
+
+      const responseType = W3mFrameHelpers.getResponseType(response)
+
+      switch (responseType) {
+        case W3mFrameConstants.RPC_RESPONSE_TYPE_ERROR: {
+          if (this.modal.isOpen()) {
+            if (this.modal.isTransactionStackEmpty()) {
+              this.modal.close()
+            } else {
+              this.modal.popTransactionStack(true)
+            }
+          }
+          break
+        }
+        case W3mFrameConstants.RPC_RESPONSE_TYPE_TX: {
+          if (this.modal.isTransactionStackEmpty()) {
+            this.modal.close()
+          } else {
+            this.modal.popTransactionStack()
+          }
+          break
+        }
+        default:
+          break
+      }
+    })
+
+    this.authProvider.onNotConnected(() => {
+      this.modal.setIsConnected(false)
+      this.modal.setLoading(false)
+    })
+
+    this.authProvider.onIsConnected(
+      ({ address, chainId, accounts = [], smartAccountDeployed, preferredAccountType }) => {
+        console.log('onIsConnected (event)', address, chainId, accounts, smartAccountDeployed)
+
+        this.modal.handleConnection({
+          connectorId: ConstantsUtil.AUTH_CONNECTOR_ID,
+          caipChainId: `solana:${chainId}`,
+          providerType: ConstantsUtil.AUTH_CONNECTOR_ID,
+          provider: this.authProvider as CombinedProvider,
+          address,
+          accounts:
+            accounts.length > 0
+              ? accounts
+              : [{ address, type: preferredAccountType as 'eoa' | 'smartAccount' }],
+          smartAccountDeployed
+        })
+      }
+    )
+
+    this.authProvider.onSetPreferredAccount(({ address }) => {
+      if (!address) {
+        return
+      }
+      this.modal.setLoading(true)
+      const chainId = NetworkUtil.caipNetworkIdToNumber(this.modal.getCaipNetwork()?.id)
+
+      this.modal
+        .handleConnection({
+          address,
+          caipChainId: `solana:${chainId}`,
+          connectorId: ConstantsUtil.AUTH_CONNECTOR_ID,
+          provider: this.authProvider as CombinedProvider,
+          providerType: ConstantsUtil.AUTH_CONNECTOR_ID
+        })
+        .finally(() => this.modal.setLoading(false))
+    })
+  }
+
+  private watchModal() {
+    if (this.authProvider) {
+      this.modal.subscribeState(val => {
+        if (!val.open) {
+          this.authProvider?.rejectRpcRequest()
+        }
+      })
+    }
+  }
+}

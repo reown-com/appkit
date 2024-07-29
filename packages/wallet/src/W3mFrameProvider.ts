@@ -749,7 +749,7 @@ export class W3mFrameProvider {
     W3mFrameStorage.delete(W3mFrameConstants.SOCIAL, true)
   }
 
-  private setLastUsedChainId(chainId: number) {
+  private setLastUsedChainId(chainId: number | string) {
     W3mFrameStorage.set(W3mFrameConstants.LAST_USED_CHAIN_KEY, String(chainId))
   }
 
