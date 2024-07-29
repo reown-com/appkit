@@ -225,9 +225,10 @@ export class Web3Modal extends Web3ModalScaffold {
     this.walletAdapters = wallets as ExtendedBaseWalletAdapter[]
     if (CoreHelperUtil.isMobile()) {
       legacyAdaptersForMobile.forEach(legacyAdapter => {
+        const normalizeName = legacyAdapter.name.toLocaleLowerCase()
         if (
-          window[legacyAdapter.name as keyof Window] &&
-          !wallets.some(w => w.name === legacyAdapter.name)
+          window[normalizeName as keyof Window] &&
+          !wallets.some(w => w.name.toLocaleLowerCase() === normalizeName)
         ) {
           this.walletAdapters.push({
             ...legacyAdapter,
