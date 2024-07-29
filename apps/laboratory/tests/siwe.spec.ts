@@ -28,9 +28,6 @@ siweWalletTest.beforeAll(async ({ browser, library }) => {
   await modalPage.load()
   await modalPage.qrCodeFlow(modalPage, walletPage)
   await modalValidator.expectConnected()
-  await modalPage.page.waitForTimeout(1000)
-
-  await modalValidator.expectConnected()
 })
 
 siweWalletTest.afterAll(async () => {
