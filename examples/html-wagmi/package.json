@@ -1,7 +1,7 @@
 {
   "name": "@examples/html-wagmi",
   "private": true,
-  "version": "5.0.8",
+  "version": "5.0.9",
   "scripts": {
     "dev": "vite --port 3001",
     "build": "vite build"
