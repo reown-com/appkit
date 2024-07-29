@@ -1,5 +1,16 @@
 # @web3modal/scaffold-utils
 
+## 5.0.9
+
+### Patch Changes
+
+- Patch version to 5.0.9
+
+- Updated dependencies []:
+  - @web3modal/core@5.0.9
+  - @web3modal/polyfills@5.0.9
+  - @web3modal/wallet@5.0.9
+
 ## 5.0.8
 
 ### Patch Changes

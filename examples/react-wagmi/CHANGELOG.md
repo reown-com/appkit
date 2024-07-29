@@ -1,5 +1,14 @@
 # @examples/react-wagmi
 
+## 5.0.9
+
+### Patch Changes
+
+- Patch version to 5.0.9
+
+- Updated dependencies []:
+  - @web3modal/wagmi@5.0.9
+
 ## 5.0.8
 
 ### Patch Changes
