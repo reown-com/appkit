@@ -30,7 +30,7 @@ on:
         type: boolean
       secure-site-url:
         description: 'Secure site SDK url'
-        default: 'https://secure.walletconnect.com/sdk'
+        default: 'https://secure.walletconnect.org/sdk'
         required: false
         type: string
     secrets:
