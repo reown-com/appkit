@@ -97,8 +97,10 @@ export default css`
     border-radius: var(--XS, 16px);
     border: 1px solid var(--dark-accent-glass-010, rgba(71, 161, 255, 0.1));
     background: var(--dark-accent-glass-010, rgba(71, 161, 255, 0.1));
-    transition: background-color var(--wui-ease-out-power-1) var(--wui-duration-md);
-    will-change: background-color;
+    transition:
+      background-color var(--wui-ease-out-power-1) var(--wui-duration-md),
+      opacity var(--wui-ease-out-power-1) var(--wui-duration-md);
+    will-change: background-color, opacity;
   }
 
   .account-links wui-flex:hover {
