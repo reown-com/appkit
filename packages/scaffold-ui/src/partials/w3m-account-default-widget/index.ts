@@ -134,20 +134,19 @@ export class W3mAccountDefaultWidget extends LitElement {
     const { enableOnramp } = OptionsController.state
     const isSolana = ChainController.state.activeChain === ConstantsUtil.CHAIN.SOLANA
 
-    if (!enableOnramp) {
+    if (!enableOnramp || isSolana) {
       return null
     }
 
     return html`
       <wui-list-item
+        data-testid="w3m-account-default-onramp-button"
         iconVariant="blue"
         icon="card"
-        ?chevron=${!isSolana}
-        ?disabled=${isSolana}
+        ?chevron=${true}
         @click=${this.handleClickPay.bind(this)}
       >
-        <wui-text variant="paragraph-500" color="fg-100" ?disabled=${isSolana}>Buy crypto</wui-text>
-        ${isSolana ? html`<wui-tag variant="main">Coming soon</wui-tag>` : ''}
+        <wui-text variant="paragraph-500" color="fg-100">Buy crypto</wui-text>
       </wui-list-item>
     `
   }
