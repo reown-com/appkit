@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createWeb3Modal } from '@web3modal/wagmi/react'
 import React, { type ReactNode } from 'react'
 import { type State, WagmiProvider } from 'wagmi'
+import { siweConfig } from './siweConfig'
 
 const queryClient = new QueryClient()
 
@@ -14,7 +15,14 @@ if (!projectId) {
 
 createWeb3Modal({
   wagmiConfig: config,
-  projectId
+  projectId,
+  metadata: {
+    name: 'My App',
+    description: 'My app description',
+    url: 'https://google.com',
+    icons: ['https://google.com/favicon.ico']
+  },
+  siweConfig
 })
 
 function ContextProvider({
