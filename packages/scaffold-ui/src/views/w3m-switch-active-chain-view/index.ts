@@ -14,6 +14,10 @@ export class W3mSwitchActiveChainView extends LitElement {
 
   protected readonly switchToChain = RouterController.state.data?.switchToChain
 
+  protected readonly navigateTo = RouterController.state.data?.navigateTo
+
+  protected readonly navigateWithReplace = RouterController.state.data?.navigateWithReplace
+
   // -- State & Properties -------------------------------- //
   @property() public activeChain = ChainController.state.activeChain
 
@@ -64,7 +68,15 @@ export class W3mSwitchActiveChainView extends LitElement {
     }
 
     ChainController.setActiveChain(this.switchToChain)
-    RouterController.goBack()
+    if (this.navigateTo) {
+      if (this.navigateWithReplace) {
+        RouterController.replace(this.navigateTo)
+      } else {
+        RouterController.push(this.navigateTo)
+      }
+    } else {
+      RouterController.goBack()
+    }
   }
 }
 

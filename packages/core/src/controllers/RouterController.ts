@@ -75,6 +75,8 @@ export interface RouterControllerState {
     swapUnsupportedChain?: boolean
     connectors?: Connector[]
     switchToChain?: Chain
+    navigateTo?: RouterControllerState['view']
+    navigateWithReplace?: boolean
   }
   transactionStack: TransactionAction[]
 }

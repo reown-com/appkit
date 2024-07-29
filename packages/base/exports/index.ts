@@ -9,8 +9,14 @@ export * from '@web3modal/scaffold-ui'
 export type * from '@web3modal/core'
 export { CoreHelperUtil } from '@web3modal/core'
 
-export function createWeb3Modal(options: AppKitOptions) {
-  return new AppKit({ ...options, sdkVersion: `html-multichain-${ConstantsUtil.VERSION}` })
+type CreateWeb3Modal = Omit<AppKitOptions, 'sdkType' | 'sdkVersion'>
+
+export function createWeb3Modal(options: CreateWeb3Modal) {
+  return new AppKit({
+    ...options,
+    sdkType: 'w3m',
+    sdkVersion: `html-multichain-${ConstantsUtil.VERSION}`
+  })
 }
 
 export { AppKit }

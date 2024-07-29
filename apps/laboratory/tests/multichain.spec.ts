@@ -1,43 +1,69 @@
-import { DEFAULT_CHAIN_NAME, DEFAULT_SESSION_PARAMS } from './shared/constants'
-import { testMWMultiChain } from './shared/fixtures/w3m-wallet-fixture'
+import { test, type BrowserContext } from '@playwright/test'
+import { DEFAULT_CHAIN_NAME } from './shared/constants'
+import { ModalPage } from './shared/pages/ModalPage'
+import { WalletPage } from './shared/pages/WalletPage'
+import { ModalValidator } from './shared/validators/ModalValidator'
+import { WalletValidator } from './shared/validators/WalletValidator'
 
-import { expectConnection } from './shared/utils/validation'
+/* eslint-disable init-declarations */
+let modalPage: ModalPage
+let modalValidator: ModalValidator
+let walletPage: WalletPage
+let walletValidator: WalletValidator
+let context: BrowserContext
+/* eslint-enable init-declarations */
 
-testMWMultiChain.beforeEach(async ({ modalValidator, walletValidator }) => {
-  await expectConnection(modalValidator, walletValidator)
+// -- Setup --------------------------------------------------------------------
+const sampleWalletTest = test.extend<{ library: string }>({
+  library: ['wagmi', { option: true }]
 })
 
-testMWMultiChain.afterEach(async ({ modalPage, modalValidator }) => {
-  await modalPage.disconnect()
-  await modalValidator.expectDisconnected()
+sampleWalletTest.describe.configure({ mode: 'serial' })
+
+sampleWalletTest.beforeAll(async ({ browser, library }) => {
+  context = await browser.newContext()
+  const browserPage = await context.newPage()
+
+  modalPage = new ModalPage(browserPage, library, 'default')
+  walletPage = new WalletPage(await context.newPage())
+  modalValidator = new ModalValidator(browserPage)
+  walletValidator = new WalletValidator(walletPage.page)
+
+  await modalPage.load()
+  await modalPage.qrCodeFlow(modalPage, walletPage)
+  await modalValidator.expectConnected()
 })
 
-testMWMultiChain(
-  'it should connect to Ethereum and sign',
-  async ({ modalPage, modalValidator, walletPage, walletValidator }) => {
-    await modalPage.sign()
-    await walletValidator.expectReceivedSign({ chainName: DEFAULT_CHAIN_NAME })
-    await walletPage.handleRequest({ accept: true })
-    await modalValidator.expectAcceptedSign()
-  }
-)
+sampleWalletTest.afterAll(async () => {
+  await modalPage.page.close()
+})
 
-testMWMultiChain.skip(
-  'it should connect to Solana and sign',
-  async ({ modalPage, modalValidator, walletPage, walletValidator }) => {
-    // Since we didn't replaced WC with UniversalAdapter yet, we need to disconnect from EVM first then reconnect with Solana's WC connector.
-    await modalPage.disconnect()
-    await modalPage.switchNetworkWithNetworkButton('Solana')
+// -- Tests --------------------------------------------------------------------
+sampleWalletTest('it should switch networks and sign', async ({ library }) => {
+  const chains = library === 'solana' ? ['Solana Testnet', 'Solana'] : ['Polygon', 'Ethereum']
+
+  async function processChain(index: number) {
+    if (index >= chains.length) {
+      return
+    }
+
+    const chainName = chains[index] ?? DEFAULT_CHAIN_NAME
+    // -- Switch network --------------------------------------------------------
+    /* For Solana, even though we switch to Solana Devnet, the chain name on the wallet page is still Solana */
+    const chainNameOnWalletPage = library === 'solana' ? 'Solana' : chainName
+    await modalPage.switchNetwork(chainName)
+    await modalValidator.expectSwitchedNetwork(chainName)
     await modalPage.closeModal()
 
-    const uri = await modalPage.getConnectUri(undefined, false)
-    await walletPage.connectWithUri(uri)
-    await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
-    await modalValidator.expectConnected()
-
+    // -- Sign ------------------------------------------------------------------
     await modalPage.sign()
-    await walletValidator.expectReceivedSign({ chainName: 'Solana' })
+    await walletValidator.expectReceivedSign({ chainName: chainNameOnWalletPage })
     await walletPage.handleRequest({ accept: true })
     await modalValidator.expectAcceptedSign()
+
+    await processChain(index + 1)
   }
-)
+
+  // Start processing from the first chain
+  await processChain(0)
+})

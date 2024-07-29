@@ -15,9 +15,15 @@ export { CoreHelperUtil } from '@web3modal/core'
 
 let modal: AppKit | undefined = undefined
 
-export function createWeb3Modal(options: AppKitOptions) {
+type CreateWeb3Modal = Omit<AppKitOptions, 'sdkType' | 'sdkVersion'>
+
+export function createWeb3Modal(options: CreateWeb3Modal) {
   if (!modal) {
-    modal = new AppKit({ ...options, sdkVersion: `react-multichain-${ConstantsUtil.VERSION}` })
+    modal = new AppKit({
+      ...options,
+      sdkType: 'w3m',
+      sdkVersion: `react-multichain-${ConstantsUtil.VERSION}`
+    })
     getWeb3Modal(modal)
   }
 
