@@ -140,7 +140,8 @@ export const W3mFrameRpcConstants = {
     'personal_sign',
     'eth_signTypedData_v4',
     'eth_sendTransaction',
-    'wallet_sendCalls'
+    'wallet_sendCalls',
+    'wallet_grantPermissions'
   ],
   GET_CHAIN_ID: 'eth_chainId',
   RPC_METHOD_NOT_ALLOWED_MESSAGE: 'Requested RPC call is not allowed',

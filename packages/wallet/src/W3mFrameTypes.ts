@@ -67,7 +67,8 @@ import {
   AppConnectSocialRequest,
   AppSetPreferredAccountRequest,
   FrameSetPreferredAccountResponse,
-  WalletGetCapabilitiesRequest
+  WalletGetCapabilitiesRequest,
+  WalletGrantPermissionsRequest
 } from './W3mFrameSchema.js'
 import type { W3mFrameRpcConstants } from './W3mFrameConstants.js'
 
@@ -170,6 +171,7 @@ export namespace W3mFrameTypes {
     | z.infer<typeof WalletSendCallsRequest>
     | z.infer<typeof WalletGetCallsReceiptRequest>
     | z.infer<typeof WalletGetCapabilitiesRequest>
+    | z.infer<typeof WalletGrantPermissionsRequest>
 
   export type RPCResponse = z.infer<typeof RpcResponse>
 

@@ -1,114 +1,163 @@
-import { testModalSmartAccount } from './shared/fixtures/w3m-smart-account-fixture'
-import type { ModalWalletPage } from './shared/pages/ModalWalletPage'
-import { EOA, SMART_ACCOUNT } from './shared/validators/ModalWalletValidator'
+import { test, type BrowserContext } from '@playwright/test'
+import { ModalWalletPage } from './shared/pages/ModalWalletPage'
+import { Email } from './shared/utils/email'
+import { EOA, ModalWalletValidator, SMART_ACCOUNT } from './shared/validators/ModalWalletValidator'
 
-import type { ModalWalletValidator } from './shared/validators/ModalWalletValidator'
+/* eslint-disable init-declarations */
+let page: ModalWalletPage
+let validator: ModalWalletValidator
+let context: BrowserContext
+/* eslint-enable init-declarations */
 
-const mailsacApiKey = process.env['MAILSAC_API_KEY']
-if (!mailsacApiKey) {
-  throw new Error('MAILSAC_API_KEY is not set')
-}
-
-testModalSmartAccount.beforeEach(async ({ modalValidator }) => {
-  await modalValidator.expectConnected()
+// -- Setup --------------------------------------------------------------------
+const smartAccountTest = test.extend<{ library: string }>({
+  library: ['wagmi', { option: true }]
 })
 
-testModalSmartAccount('it should use a Smart Account', async ({ modalPage, modalValidator }) => {
-  const walletModalPage = modalPage as ModalWalletPage
-  const walletModalValidator = modalValidator as ModalWalletValidator
+smartAccountTest.describe.configure({ mode: 'serial' })
 
-  await modalValidator.expectConnected()
-  await walletModalPage.openAccount()
-  await walletModalValidator.expectActivateSmartAccountPromoVisible(false)
+smartAccountTest.beforeAll(async ({ browser, library }, testInfo) => {
+  context = await browser.newContext()
+  const browserPage = await context.newPage()
 
-  await walletModalPage.openProfileView()
-  await walletModalPage.openSettings()
-  await walletModalValidator.expectChangePreferredAccountToShow(EOA)
-  await walletModalPage.closeModal()
+  page = new ModalWalletPage(browserPage, library)
+  validator = new ModalWalletValidator(browserPage)
+
+  await page.load()
+
+  const mailsacApiKey = process.env['MAILSAC_API_KEY']
+  if (!mailsacApiKey) {
+    throw new Error('MAILSAC_API_KEY is not set')
+  }
+  const email = new Email(mailsacApiKey)
+
+  // Switch to a SA enabled network
+  await page.switchNetworkWithNetworkButton('Polygon')
+  await page.closeModal()
+  const tempEmail = email.getEmailAddressToUse(testInfo.parallelIndex)
+  await page.emailFlow(tempEmail, context, mailsacApiKey)
+
+  await validator.expectConnected()
 })
 
-testModalSmartAccount('it should sign with 6492', async ({ modalPage, modalValidator }) => {
-  const walletModalPage = modalPage as ModalWalletPage
-  const walletModalValidator = modalValidator as ModalWalletValidator
-
-  await walletModalPage.sign()
-  await walletModalPage.approveSign()
-  await walletModalValidator.expectAcceptedSign()
-
-  const signature = await walletModalPage.getSignature()
-  const address = await walletModalPage.getAddress()
-  const chainId = await walletModalPage.getChainId()
-
-  await walletModalValidator.expectValidSignature(signature, address, chainId)
+smartAccountTest.afterAll(async () => {
+  await page.page.close()
 })
 
-testModalSmartAccount(
-  'it should switch to its eoa and sign',
-  async ({ modalPage, modalValidator }) => {
-    const walletModalPage = modalPage as ModalWalletPage
-    const walletModalValidator = modalValidator as ModalWalletValidator
+// -- Tests --------------------------------------------------------------------
+smartAccountTest('it should use a Smart Account', async () => {
+  await validator.expectConnected()
+  await page.openAccount()
+  await validator.expectActivateSmartAccountPromoVisible(false)
 
-    await walletModalPage.openAccount()
-    await walletModalPage.openProfileView()
-    await walletModalPage.openSettings()
+  await page.openProfileView()
+  await page.openSettings()
+  await validator.expectChangePreferredAccountToShow(EOA)
+  await page.closeModal()
+})
 
-    await walletModalPage.togglePreferredAccountType()
-    await walletModalValidator.expectChangePreferredAccountToShow(SMART_ACCOUNT)
+smartAccountTest('it should sign with smart account 6492 signature', async () => {
+  await page.sign()
+  await page.approveSign()
+  await validator.expectAcceptedSign()
 
-    await walletModalPage.closeModal()
+  const signature = await page.getSignature()
+  const address = await page.getAddress()
+  const chainId = await page.getChainId()
 
-    await walletModalPage.sign()
-    await walletModalPage.approveSign()
-    await walletModalValidator.expectAcceptedSign()
+  await validator.expectValidSignature(signature, address, chainId)
+})
 
-    const signature = await walletModalPage.getSignature()
-    const address = await walletModalPage.getAddress()
-    const chainId = await walletModalPage.getChainId()
+smartAccountTest('it should switch to a SA enabled network and sign', async () => {
+  const targetChain = 'Sepolia'
+  await page.openAccount()
+  await page.openProfileView()
+  await page.openSettings()
+  await page.switchNetwork(targetChain)
+  await validator.expectSwitchedNetwork(targetChain)
+  await page.closeModal()
+  await page.sign()
+  await page.approveSign()
+  await validator.expectAcceptedSign()
+})
 
-    await walletModalValidator.expectValidSignature(signature, address, chainId)
-  }
-)
+smartAccountTest('it should switch to a not enabled network and sign with EOA', async () => {
+  const targetChain = 'Ethereum'
+  await page.openAccount()
+  await page.openProfileView()
+  await page.openSettings()
+  await page.switchNetwork(targetChain)
+  await validator.expectSwitchedNetwork(targetChain)
+  // Shouldn't show the toggle on a non enabled network
+  await validator.expectTogglePreferredTypeVisible(false)
+  await page.closeModal()
 
-testModalSmartAccount(
-  'it should return to an eoa when switching to a non supported network',
-  async ({ modalPage, modalValidator }) => {
-    const walletModalPage = modalPage as ModalWalletPage
-    const walletModalValidator = modalValidator as ModalWalletValidator
+  await page.sign()
+  await page.approveSign()
+  await validator.expectAcceptedSign()
+})
 
-    const originalAddress = await walletModalPage.getAddress()
+smartAccountTest('it should switch to smart account and sign', async () => {
+  await page.openAccount()
+  await page.openProfileView()
+  await page.openSettings()
 
-    await walletModalPage.openAccount()
-    await walletModalPage.openProfileView()
-    await walletModalPage.openSettings()
+  await page.switchNetwork('Polygon')
+  await validator.expectSwitchedNetwork('Polygon')
 
-    await walletModalPage.switchNetwork('Avalanche')
-    await modalValidator.expectSwitchedNetwork('Avalanche')
-    await walletModalValidator.expectTogglePreferredTypeVisible(false)
-    await walletModalPage.closeModal()
+  await page.togglePreferredAccountType()
+  await validator.expectChangePreferredAccountToShow(EOA)
 
-    await walletModalPage.openAccount()
-    await walletModalValidator.expectActivateSmartAccountPromoVisible(false)
-    await walletModalPage.closeModal()
+  await page.closeModal()
 
-    await walletModalValidator.expectChangedAddressAfterSwitchingAccountType(originalAddress)
-  }
-)
+  await page.sign()
+  await page.approveSign()
+  await validator.expectAcceptedSign()
 
-// EIP 5792
-testModalSmartAccount.skip(
-  'it should sendCalls and getCallsStatus',
-  async ({ modalPage, modalValidator }) => {
-    const modalWalletPage = modalPage as ModalWalletPage
-    const modalWalletValidator = modalValidator as ModalWalletValidator
+  const signature = await page.getSignature()
+  const address = await page.getAddress()
+  const chainId = await page.getChainId()
 
-    await modalWalletPage.sendCalls()
-    await modalWalletPage.approveMultipleTransactions()
-    await modalWalletValidator.expectAcceptedSign()
+  await validator.expectValidSignature(signature, address, chainId)
+})
 
-    const sendCallsId = await modalPage.page.getByTestId('send-calls-id').textContent()
+smartAccountTest('it should switch to eoa and sign', async () => {
+  await page.openAccount()
+  await page.openProfileView()
+  await page.openSettings()
 
-    await modalWalletPage.getCallsStatus(sendCallsId || '')
+  await page.togglePreferredAccountType()
+  await validator.expectChangePreferredAccountToShow(SMART_ACCOUNT)
 
-    await modalWalletValidator.expectCallStatusSuccessOrRetry(sendCallsId || '', true)
-  }
-)
+  await page.closeModal()
+
+  await page.sign()
+  await page.approveSign()
+  await validator.expectAcceptedSign()
+
+  const signature = await page.getSignature()
+  const address = await page.getAddress()
+  const chainId = await page.getChainId()
+
+  await validator.expectValidSignature(signature, address, chainId)
+})
+
+smartAccountTest('it should disconnect correctly', async () => {
+  await page.openAccount()
+  await page.openProfileView()
+  await page.openSettings()
+  await page.disconnect()
+  await validator.expectDisconnected()
+})
+
+smartAccountTest.skip('it should sendCalls and getCallsStatus', async () => {
+  await page.sendCalls()
+  await page.approveMultipleTransactions()
+  await validator.expectAcceptedSign()
+
+  const sendCallsId = await page.page.getByTestId('send-calls-id').textContent()
+
+  await page.getCallsStatus(sendCallsId || '')
+
+  await validator.expectCallStatusSuccessOrRetry(sendCallsId || '', true)
+})

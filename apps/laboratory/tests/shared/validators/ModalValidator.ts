@@ -84,6 +84,7 @@ export class ModalValidator {
     // We use Chakra Toast and it's not quite straightforward to set the `data-testid` attribute on the toast element.
     await expect(this.page.getByText(ConstantsUtil.SigningFailedToastTitle)).toBeVisible()
   }
+
   async expectSwitchedNetwork(network: string) {
     const switchNetworkButton = this.page.getByTestId('w3m-account-select-network')
     await expect(switchNetworkButton).toBeVisible()
@@ -125,6 +126,20 @@ export class ModalValidator {
       networkNotSupportedMessage,
       'Network not supported message should be visible'
     ).toBeVisible()
+  }
+
+  async expectAccountPageVisible() {
+    const switchNetworkButton = this.page.getByTestId('w3m-account-select-network')
+    await expect(switchNetworkButton).toBeVisible()
+  }
+
+  async expectOnrampButton(library: string) {
+    const onrampButton = this.page.getByTestId('w3m-account-default-onramp-button')
+    if (library === 'solana') {
+      await expect(onrampButton).toBeHidden()
+    } else {
+      await expect(onrampButton).toBeVisible()
+    }
   }
 
   async expectCallStatusSuccessOrRetry(sendCallsId: string, allowedRetry: boolean) {
