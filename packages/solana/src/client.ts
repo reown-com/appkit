@@ -32,7 +32,6 @@ import type { Chain as AvailableChain } from '@web3modal/common'
 
 import type { ProviderType, Chain, Provider, SolStoreUtilState } from './utils/scaffold/index.js'
 import { watchStandard } from './utils/wallet-standard/watchStandard.js'
-import { legacyAdaptersForMobile } from './utils/defaultConfig.js'
 
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
   solanaConfig: ProviderType
@@ -42,7 +41,7 @@ export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultCha
   chainImages?: Record<number | string, string>
   connectorImages?: Record<string, string>
   tokens?: Record<number, Token>
-  wallets: BaseWalletAdapter[]
+  wallets?: BaseWalletAdapter[]
 }
 
 export type ExtendedBaseWalletAdapter = BaseWalletAdapter & {
@@ -91,7 +90,7 @@ export class Web3Modal extends Web3ModalScaffold {
         if (caipNetwork) {
           try {
             // Update chain for Solflare
-            this.walletAdapters = wallets as ExtendedBaseWalletAdapter[]
+            this.walletAdapters = wallets as ExtendedBaseWalletAdapter[] ?? []
             const walletId = localStorage.getItem(SolConstantsUtil.WALLET_ID)
             const wallet = walletId?.split('_')[1]
             if (wallet === 'solflare' && window[wallet as keyof Window]) {
@@ -222,8 +221,7 @@ export class Web3Modal extends Web3ModalScaffold {
     }
     this.syncNetwork(chainImages)
 
-    this.walletAdapters = wallets as ExtendedBaseWalletAdapter[]
-
+    this.walletAdapters = wallets as ExtendedBaseWalletAdapter[] ?? []
     this.WalletConnectConnector = new WalletConnectConnector({
       relayerRegion: 'wss://relay.walletconnect.com',
       metadata,
@@ -391,21 +389,7 @@ export class Web3Modal extends Web3ModalScaffold {
     const filteredAdapters = this.walletAdapters.filter(
       adapter => !uniqueIds.has(adapter.name) && uniqueIds.add(adapter.name)
     )
-    if (CoreHelperUtil.isMobile()) {
-      legacyAdaptersForMobile.forEach(legacyAdapter => {
-        const normalizeName = legacyAdapter.name.toLocaleLowerCase()
-        if (
-          window[normalizeName as keyof Window] &&
-          !filteredAdapters.some(w => w.name.toLocaleLowerCase() === normalizeName)
-        ) {
-          filteredAdapters.push({
-            ...legacyAdapter,
-            isAnnounced: true
-          } as unknown as ExtendedBaseWalletAdapter)
-        }
-      })
-    }
-
+    console.log(`standardAdapters`, standardAdapters);
     standardAdapters?.forEach(adapter => {
       w3mConnectors.push({
         id: adapter.name,

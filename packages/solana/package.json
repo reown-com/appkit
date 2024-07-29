@@ -53,9 +53,6 @@
   "dependencies": {
     "@ethersproject/sha2": "5.7.0",
     "@solana/wallet-adapter-base": "0.9.23",
-    "@solana/wallet-adapter-huobi": "0.1.15",
-    "@solana/wallet-adapter-phantom": "0.9.24",
-    "@solana/wallet-adapter-solflare": "0.6.28",
     "@solana/wallet-standard-features": "1.2.0",
     "@solana/wallet-standard-util": "1.1.1",
     "@solana/web3.js": "1.91.7",
