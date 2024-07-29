@@ -32,6 +32,7 @@ import type { Chain as AvailableChain } from '@web3modal/common'
 
 import type { ProviderType, Chain, Provider, SolStoreUtilState } from './utils/scaffold/index.js'
 import { watchStandard } from './utils/wallet-standard/watchStandard.js'
+import { legacyAdaptersForMobile } from './utils/defaultConfig.js'
 
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
   solanaConfig: ProviderType
@@ -222,6 +223,13 @@ export class Web3Modal extends Web3ModalScaffold {
     this.syncNetwork(chainImages)
 
     this.walletAdapters = wallets as ExtendedBaseWalletAdapter[]
+    if (CoreHelperUtil.isMobile()) {
+      legacyAdaptersForMobile.forEach((legacyAdapter) => {
+        if (window[legacyAdapter.name as keyof Window] && !wallets.some(w => w.name === legacyAdapter.name)) {
+          this.walletAdapters.push({ ...legacyAdapter, isAnnounced: true } as unknown as ExtendedBaseWalletAdapter)
+        }
+      })
+    }
     this.WalletConnectConnector = new WalletConnectConnector({
       relayerRegion: 'wss://relay.walletconnect.com',
       metadata,
@@ -389,13 +397,6 @@ export class Web3Modal extends Web3ModalScaffold {
     const filteredAdapters = this.walletAdapters.filter(
       adapter => !uniqueIds.has(adapter.name) && uniqueIds.add(adapter.name)
     )
-
-    // @eslint-disable-next-line no-alert
-    window.alert(`phantom ${window.phantom}`)
-    // @eslint-disable-next-line no-alert
-    window.alert(`standardAdapters ${standardAdapters?.map(adapter => adapter.name)}`)
-    // @eslint-disable-next-line no-alert
-    window.alert(`filteredAdapters ${filteredAdapters?.map(adapter => adapter.name)}`)
 
     standardAdapters?.forEach(adapter => {
       w3mConnectors.push({

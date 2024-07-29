@@ -1,6 +1,9 @@
 import '@web3modal/polyfills'
 
 import type { Chain, Metadata, Provider, ProviderType } from './scaffold/index.js'
+import { SolflareWalletAdapter } from '@solana/wallet-adapter-solflare'
+import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom'
+import { HuobiWalletAdapter } from '@solana/wallet-adapter-huobi'
 
 declare global {
   interface Navigator {
@@ -59,3 +62,7 @@ export function defaultSolanaConfig(options: ConfigOptions) {
 
   return providers
 }
+
+export const legacyAdaptersForMobile = [
+  HuobiWalletAdapter, SolflareWalletAdapter, PhantomWalletAdapter
+]
