@@ -70,10 +70,6 @@ export default css`
     height: 14px;
   }
 
-  button:hover:enabled {
-    background-color: var(--wui-color-gray-glass-005);
-  }
-
   button:disabled {
     color: var(--wui-color-gray-glass-020);
   }
