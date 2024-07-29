@@ -39,8 +39,8 @@ export class W3mConnectExternalWidget extends LitElement {
 
     return html`
       <wui-flex flexDirection="column" gap="xs">
-        ${filteredOutCoinbaseConnectors.map(connector => {
-          return html`
+        ${filteredOutCoinbaseConnectors.map(
+          connector => html`
             <wui-list-wallet
               imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
               .installed=${true}
@@ -50,7 +50,7 @@ export class W3mConnectExternalWidget extends LitElement {
             >
             </wui-list-wallet>
           `
-        })}
+        )}
       </wui-flex>
     `
   }
