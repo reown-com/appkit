@@ -43,7 +43,7 @@ export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultCha
   chainImages?: Record<number | string, string>
   connectorImages?: Record<string, string>
   tokens?: Record<number, Token>
-  wallets: BaseWalletAdapter[]
+  wallets?: BaseWalletAdapter[]
 }
 
 export type ExtendedBaseWalletAdapter = BaseWalletAdapter & {
@@ -77,9 +77,9 @@ export class Web3Modal extends Web3ModalScaffold implements ISolanaModal {
       _sdkVersion,
       chainImages,
       connectionSettings = 'confirmed',
-      wallets,
       ...w3mOptions
     } = options
+    const wallets = options.wallets ?? []
 
     const { metadata } = solanaConfig
 
@@ -452,9 +452,11 @@ export class Web3Modal extends Web3ModalScaffold implements ISolanaModal {
     }
 
     const uniqueIds = standardAdapters ? new Set(standardAdapters.map(s => s.name)) : new Set([])
-    const filteredAdapters = this.walletAdapters.filter(
-      adapter => !uniqueIds.has(adapter.name) && uniqueIds.add(adapter.name)
-    )
+    const FILTER_OUT_ADAPTERS = ['Trust']
+    const filteredAdapters = this.walletAdapters
+      .filter(adapter => FILTER_OUT_ADAPTERS.some(filter => filter === adapter.name))
+      .filter(adapter => !uniqueIds.has(adapter.name) && uniqueIds.add(adapter.name))
+
     standardAdapters?.forEach(adapter => {
       w3mConnectors.push({
         id: adapter.name,

@@ -1,5 +1,41 @@
 # @web3modal/wallet
 
+## 5.0.9
+
+### Patch Changes
+
+- - chore: refine link names by @chris13524 in https://github.com/WalletConnect/web3modal/pull/2588
+  - hotfix change secure site origin domain to .org by @svenvoskamp in https://github.com/WalletConnect/web3modal/pull/2603
+
+**Full Changelog**: https://github.com/WalletConnect/web3modal/compare/5.0.8...5.0.9
+
+## 5.0.8
+
+### Patch Changes
+
+- - chore: lab loading indicator by @chris13524 in https://github.com/WalletConnect/web3modal/pull/2548
+  - fix: not allow multiple account syncs for same caip address by @zoruka in https://github.com/WalletConnect/web3modal/pull/2547
+  - fix: missing network not supported modal on wallet network switch by @zoruka in https://github.com/WalletConnect/web3modal/pull/2565
+  - chore: add clientId to BlockchainAPI requests by @tomiir in https://github.com/WalletConnect/web3modal/pull/2521
+  - Chore/split internal external testing by @svenvoskamp in https://github.com/WalletConnect/web3modal/pull/2563
+  - fix: remove 200ms QR delay by @chris13524 in https://github.com/WalletConnect/web3modal/pull/2567
+  - [TDW] move from npm to pnpm by @segunadebayo in https://github.com/WalletConnect/web3modal/pull/2545
+  - feat: enableSwaps option by @enesozturk in https://github.com/WalletConnect/web3modal/pull/2573
+  - build: fix dockerfile and bring back turbo by @segunadebayo in https://github.com/WalletConnect/web3modal/pull/2582
+  - chore: updates providers to `2.14` by @ganchoradkov in https://github.com/WalletConnect/web3modal/pull/2557
+  - fix: gets chains from approved accounts by @ganchoradkov in https://github.com/WalletConnect/web3modal/pull/2562
+  - :fix show right icon for multi-address account by @svenvoskamp in https://github.com/WalletConnect/web3modal/pull/2560
+  - feat: add wallet features and socials github tests by @enesozturk in https://github.com/WalletConnect/web3modal/pull/2571
+  - fix: multiple account syncs on wagmi by @zoruka in https://github.com/WalletConnect/web3modal/pull/2575
+  - feat: apply RPC refactor and EIP5792 schema changes by @tomiir in https://github.com/WalletConnect/web3modal/pull/2580
+  - refactor: turbo pipeline by @segunadebayo in https://github.com/WalletConnect/web3modal/pull/2587
+
+  **Full Changelog**: https://github.com/WalletConnect/web3modal/compare/5.0.7...5.0.8
+
+- Updated dependencies []:
+  - @web3modal/common@5.0.8
+  - @web3modal/polyfills@5.0.8
+
 ## 5.0.7
 
 ### Patch Changes
