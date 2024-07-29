@@ -29,10 +29,10 @@ export default function HomePage() {
               <Stack direction="row" justifyContent="space-between" alignItems="center">
                 <Box>
                   <Heading size="xs" textTransform="uppercase">
-                    External Demo
+                    Demo
                   </Heading>
                   <Text pt="2" fontSize="sm">
-                    Configuration with all features enabled and randomly using ethers or wagmi
+                    All features enabled and randomly using ethers or wagmi
                   </Text>
                 </Box>
                 <RandomLink hrefs={['/library/wagmi-all', '/library/ethers-all']}>
@@ -48,11 +48,11 @@ export default function HomePage() {
               <Stack direction="row" justifyContent="space-between" alignItems="center">
                 <Box>
                   <Heading size="xs" textTransform="uppercase">
-                    Internal Testing
+                    Demo w/ Sample Wallets
                   </Heading>
                   <Text pt="2" fontSize="sm">
-                    Configuration with all features and custom wallets enabled and randomly using
-                    ethers or wagmi
+                    All features enabled, with sample wallet links, and randomly using ethers or
+                    wagmi
                   </Text>
                 </Box>
                 <RandomLink hrefs={['/library/wagmi-all-internal', '/library/ethers-all-internal']}>

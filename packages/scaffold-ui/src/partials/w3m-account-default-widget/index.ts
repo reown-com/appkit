@@ -8,15 +8,18 @@ import {
   EventsController,
   ConnectionController,
   SnackController,
-  ConstantsUtil,
-  OptionsController
+  ConstantsUtil as CommonConstantsUtil,
+  OptionsController,
+  ChainController
 } from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+import { customElement, UiHelperUtil } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import styles from './styles.js'
+import { ConstantsUtil } from '@web3modal/common'
 import { W3mFrameRpcConstants } from '@web3modal/wallet'
+
+import styles from './styles.js'
 
 @customElement('w3m-account-default-widget')
 export class W3mAccountDefaultWidget extends LitElement {
@@ -67,23 +70,15 @@ export class W3mAccountDefaultWidget extends LitElement {
       throw new Error('w3m-account-view: No account provided')
     }
 
-    const account = AccountController.state.allAccounts?.find(acc => acc.address === this.address)
-    const label = AccountController.state.addressLabels.get(this.address)
-
     return html`<wui-flex
         flexDirection="column"
         .padding=${['0', 'xl', 'm', 'xl'] as const}
         alignItems="center"
         gap="l"
       >
-        <wui-profile-button-v2
-          .onProfileClick=${this.handleSwitchAccountsView.bind(this)}
-          address=${ifDefined(this.address)}
-          icon="${account?.type === 'smartAccount' ? 'lightbulb' : 'mail'}"
-          avatarSrc=${ifDefined(this.profileImage ? this.profileImage : undefined)}
-          profileName=${ifDefined(label ? label : this.profileName)}
-          .onCopyClick=${this.onCopyAddress.bind(this)}
-        ></wui-profile-button-v2>
+        ${ChainController.state.activeChain === ConstantsUtil.CHAIN.EVM
+          ? this.multiAccountTemplate()
+          : this.singleAccountTemplate()}
         <wui-flex flexDirection="column" alignItems="center">
           <wui-text variant="paragraph-500" color="fg-200"
             >${CoreHelperUtil.formatBalance(this.balance, this.balanceSymbol)}</wui-text
@@ -94,16 +89,7 @@ export class W3mAccountDefaultWidget extends LitElement {
 
       <wui-flex flexDirection="column" gap="xs" .padding=${['0', 's', 's', 's'] as const}>
         ${this.authCardTemplate()} <w3m-account-auth-button></w3m-account-auth-button>
-        ${this.onrampTemplate()} ${this.swapsTemplate()}
-        <wui-list-item
-          iconVariant="blue"
-          icon="clock"
-          iconSize="sm"
-          ?chevron=${true}
-          @click=${this.onTransactions.bind(this)}
-        >
-          <wui-text variant="paragraph-500" color="fg-100">Activity</wui-text>
-        </wui-list-item>
+        ${this.onrampTemplate()} ${this.swapsTemplate()} ${this.activityTemplate()}
         <wui-list-item
           variant="icon"
           iconVariant="overlay"
@@ -121,13 +107,15 @@ export class W3mAccountDefaultWidget extends LitElement {
   // -- Private ------------------------------------------- //
   private onrampTemplate() {
     const { enableOnramp } = OptionsController.state
+    const isSolana = ChainController.state.activeChain === ConstantsUtil.CHAIN.SOLANA
 
-    if (!enableOnramp) {
+    if (!enableOnramp || isSolana) {
       return null
     }
 
     return html`
       <wui-list-item
+        data-testid="w3m-account-default-onramp-button"
         iconVariant="blue"
         icon="card"
         ?chevron=${true}
@@ -136,6 +124,22 @@ export class W3mAccountDefaultWidget extends LitElement {
         <wui-text variant="paragraph-500" color="fg-100">Buy crypto</wui-text>
       </wui-list-item>
     `
+  }
+
+  private activityTemplate() {
+    const isSolana = ChainController.state.activeChain === ConstantsUtil.CHAIN.SOLANA
+
+    return html` <wui-list-item
+      iconVariant="blue"
+      icon="clock"
+      iconSize="sm"
+      ?chevron=${!isSolana}
+      ?disabled=${isSolana}
+      @click=${this.onTransactions.bind(this)}
+    >
+      <wui-text variant="paragraph-500" color="fg-100" ?disabled=${isSolana}> Activity </wui-text>
+      ${isSolana ? html`<wui-tag variant="main">Coming soon</wui-tag>` : ''}
+    </wui-list-item>`
   }
 
   private swapsTemplate() {
@@ -161,7 +165,7 @@ export class W3mAccountDefaultWidget extends LitElement {
     const type = StorageUtil.getConnectedConnector()
     const authConnector = ConnectorController.getAuthConnector()
     const { origin } = location
-    if (!authConnector || type !== 'AUTH' || origin.includes(ConstantsUtil.SECURE_SITE)) {
+    if (!authConnector || type !== 'AUTH' || origin.includes(CommonConstantsUtil.SECURE_SITE)) {
       return null
     }
 
@@ -201,6 +205,63 @@ export class W3mAccountDefaultWidget extends LitElement {
         Block Explorer
         <wui-icon size="sm" color="inherit" slot="iconRight" name="externalLink"></wui-icon>
       </wui-button>
+    `
+  }
+
+  private singleAccountTemplate() {
+    return html`
+      <wui-avatar
+        alt=${ifDefined(this.address)}
+        address=${ifDefined(this.address)}
+        imageSrc=${ifDefined(this.profileImage === null ? undefined : this.profileImage)}
+      ></wui-avatar>
+      <wui-flex flexDirection="column" alignItems="center">
+        <wui-flex gap="3xs" alignItems="center" justifyContent="center">
+          <wui-text variant="large-600" color="fg-100">
+            ${this.profileName
+              ? UiHelperUtil.getTruncateString({
+                  string: this.profileName,
+                  charsStart: 20,
+                  charsEnd: 0,
+                  truncate: 'end'
+                })
+              : UiHelperUtil.getTruncateString({
+                  string: this.address ? this.address : '',
+                  charsStart: 4,
+                  charsEnd: 4,
+                  truncate: 'middle'
+                })}
+          </wui-text>
+          <wui-icon-link
+            size="md"
+            icon="copy"
+            iconColor="fg-200"
+            @click=${this.onCopyAddress}
+          ></wui-icon-link> </wui-flex
+      ></wui-flex>
+    `
+  }
+
+  private multiAccountTemplate() {
+    if (!this.address) {
+      throw new Error('w3m-account-view: No account provided')
+    }
+
+    const account = AccountController.state.allAccounts?.find(acc => acc.address === this.address)
+    const label = AccountController.state.addressLabels.get(this.address)
+
+    return html`
+      <wui-profile-button-v2
+        .onProfileClick=${this.handleSwitchAccountsView.bind(this)}
+        address=${ifDefined(this.address)}
+        icon="${account?.type === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT &&
+        ChainController.state.activeChain === ConstantsUtil.CHAIN.EVM
+          ? 'lightbulb'
+          : 'mail'}"
+        avatarSrc=${ifDefined(this.profileImage ? this.profileImage : undefined)}
+        profileName=${ifDefined(label ? label : this.profileName)}
+        .onCopyClick=${this.onCopyAddress.bind(this)}
+      ></wui-profile-button-v2>
     `
   }
 

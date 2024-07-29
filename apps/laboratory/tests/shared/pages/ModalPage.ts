@@ -1,11 +1,13 @@
 /* eslint-disable no-await-in-loop */
 import type { BrowserContext, Locator, Page } from '@playwright/test'
 import { expect } from '@playwright/test'
-import { BASE_URL } from '../constants'
+import { BASE_URL, DEFAULT_SESSION_PARAMS } from '../constants'
 import { doActionAndWaitForNewPage } from '../utils/actions'
 import { Email } from '../utils/email'
 import { DeviceRegistrationPage } from './DeviceRegistrationPage'
 import type { TimingRecords } from '../fixtures/timing-fixture'
+import { WalletPage } from './WalletPage'
+import { WalletValidator } from '../validators/WalletValidator'
 
 export type ModalFlavor = 'default' | 'siwe' | 'email' | 'wallet' | 'external' | 'all'
 
@@ -72,6 +74,15 @@ export class ModalPage {
     }
 
     return uri
+  }
+
+  async qrCodeFlow(page: ModalPage, walletPage: WalletPage): Promise<void> {
+    await walletPage.load()
+    const uri = await page.getConnectUri()
+    await walletPage.connectWithUri(uri)
+    await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
+    const walletValidator = new WalletValidator(walletPage.page)
+    await walletValidator.expectConnected()
   }
 
   async emailFlow(
@@ -209,11 +220,13 @@ export class ModalPage {
     await expect(disconnectBtn, 'Disconnect button should be visible').toBeVisible()
     await expect(disconnectBtn, 'Disconnect button should be enabled').toBeEnabled()
     await disconnectBtn.click()
+    await this.page.waitForTimeout(1000)
   }
 
   async sign() {
     const signButton = this.page.getByTestId('sign-message-button')
     await signButton.scrollIntoViewIfNeeded()
+    await this.page.waitForTimeout(500)
     await signButton.click()
     await this.page.waitForTimeout(1000)
   }
@@ -348,6 +361,10 @@ export class ModalPage {
     const networkToSwitchButton = this.page.getByTestId(`w3m-network-switch-${networkName}`)
     await networkToSwitchButton.click()
     await networkToSwitchButton.waitFor({ state: 'hidden' })
+  }
+
+  async openModal() {
+    await this.page.getByTestId('account-button').click()
   }
 
   async openProfileView() {

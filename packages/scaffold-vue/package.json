@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/scaffold-vue",
-  "version": "5.0.8",
+  "version": "5.0.9",
   "type": "module",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
