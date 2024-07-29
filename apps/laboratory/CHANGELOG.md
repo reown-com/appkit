@@ -4,13 +4,10 @@
 
 ### Patch Changes
 
-- Patch version to 5.0.9
+- - chore: refine link names by @chris13524 in https://github.com/WalletConnect/web3modal/pull/2588
+    -hotfix change secure site origin domain to .org by @svenvoskamp in https://github.com/WalletConnect/web3modal/pull/2603
 
-- Updated dependencies []:
-  - @web3modal/ethers@5.0.9
-  - @web3modal/siwe@5.0.9
-  - @web3modal/solana@5.0.9
-  - @web3modal/wagmi@5.0.9
+**Full Changelog**: https://github.com/WalletConnect/web3modal/compare/5.0.8...5.0.9
 
 ## 5.0.8
 
