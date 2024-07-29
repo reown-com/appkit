@@ -437,6 +437,7 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-color-blueberry-100: hsla(230, 100%, 67%, 1);
         --wui-color-blueberry-090: hsla(231, 76%, 61%, 1);
         --wui-color-blueberry-080: hsla(230, 59%, 55%, 1);
+        --wui-color-blueberry-050: hsla(231, 100%, 70%, 0.1);
 
         --wui-color-fg-100: #e4e7e7;
         --wui-color-fg-125: #d0d5d5;
@@ -637,10 +638,13 @@ export const elementStyles = css`
   button:disabled > wui-all-wallets-image,
   button:disabled > wui-network-image,
   button:disabled > wui-image,
-  button:disabled > wui-icon-box,
   button:disabled > wui-transaction-visual,
   button:disabled > wui-logo {
     filter: grayscale(1);
+  }
+
+  button:disabled > wui-icon-box {
+    opacity: 0.5;
   }
 
   input {
