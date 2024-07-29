@@ -99,3 +99,8 @@ sampleWalletTest(
     await modalPage.closeModal()
   }
 )
+
+sampleWalletTest('it should not show onramp button accordingly', async ({ library }) => {
+  await modalPage.openModal()
+  await modalValidator.expectOnrampButton(library)
+})
