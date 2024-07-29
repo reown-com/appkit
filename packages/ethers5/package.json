@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/ethers5",
-  "version": "5.0.7",
+  "version": "5.0.9",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",

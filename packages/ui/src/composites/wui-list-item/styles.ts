@@ -71,8 +71,7 @@ export default css`
   }
 
   button:disabled {
-    background-color: var(--wui-color-gray-glass-015);
-    color: var(--wui-color-gray-glass-015);
+    color: var(--wui-color-gray-glass-020);
   }
 
   button[data-loading='true'] > wui-icon {
