@@ -6,9 +6,9 @@
   "scripts": {
     "build:clean": "turbo run build:clean --filter={./packages/*}",
     "build": "turbo run build --filter={./packages/*} --concurrency=30",
-    "watch": "turbo run watch --filter={./packages/*} --concurrency=50 --continue",
+    "watch": "pnpm  --filter={./packages/*} watch",
     "gallery": "turbo run dev --filter={./apps/gallery}",
-    "laboratory": "turbo run dev --filter={./apps/laboratory}",
+    "laboratory": "pnpm --filter={./apps/laboratory} dev",
     "demo": "turbo run dev --filter={./apps/demo}",
     "examples": "turbo run dev --filter={./examples/*}",
     "build:gallery": "pnpm build; pnpm --filter=./apps/gallery build",
