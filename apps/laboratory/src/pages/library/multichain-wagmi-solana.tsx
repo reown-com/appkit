@@ -41,9 +41,7 @@ const modal = createWeb3Modal({
   metadata: ConstantsUtil.Metadata,
   termsConditionsUrl: 'https://walletconnect.com/terms',
   privacyPolicyUrl: 'https://walletconnect.com/privacy',
-  customWallets: ConstantsUtil.CustomWallets,
-  sdkType: 'w3m',
-  sdkVersion: 'html-wagmi-1.0.0'
+  customWallets: ConstantsUtil.CustomWallets
 })
 
 ThemeStore.setModal(modal)

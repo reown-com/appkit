@@ -167,13 +167,28 @@ export default function HomePage() {
               <Stack direction="row" justifyContent="space-between" alignItems="center">
                 <Box>
                   <Heading size="xs" textTransform="uppercase">
-                    Multiple adapters
+                    Wagmi + Solana
                   </Heading>
                   <Text pt="2" fontSize="sm">
-                    Configuration with multiple adapters enabled for AppKit
+                    Configuration with Wagmi and Solana adapters enabled for AppKit
                   </Text>
                 </Box>
-                <Link href={'/library/multichain-all'}>
+                <Link href={'/library/multichain-wagmi-solana'}>
+                  <Button rightIcon={<IoArrowForward />}>Go</Button>
+                </Link>
+              </Stack>
+            </Box>
+            <Box>
+              <Stack direction="row" justifyContent="space-between" alignItems="center">
+                <Box>
+                  <Heading size="xs" textTransform="uppercase">
+                    Ethers + Solana
+                  </Heading>
+                  <Text pt="2" fontSize="sm">
+                    Configuration with Ethers and Solana adapters enabled for AppKit
+                  </Text>
+                </Box>
+                <Link href={'/library/multichain-ethers-solana'}>
                   <Button rightIcon={<IoArrowForward />}>Go</Button>
                 </Link>
               </Stack>
