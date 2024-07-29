@@ -223,20 +223,7 @@ export class Web3Modal extends Web3ModalScaffold {
     this.syncNetwork(chainImages)
 
     this.walletAdapters = wallets as ExtendedBaseWalletAdapter[]
-    if (CoreHelperUtil.isMobile()) {
-      legacyAdaptersForMobile.forEach(legacyAdapter => {
-        const normalizeName = legacyAdapter.name.toLocaleLowerCase()
-        if (
-          window[normalizeName as keyof Window] &&
-          !wallets.some(w => w.name.toLocaleLowerCase() === normalizeName)
-        ) {
-          this.walletAdapters.push({
-            ...legacyAdapter,
-            isAnnounced: true
-          } as unknown as ExtendedBaseWalletAdapter)
-        }
-      })
-    }
+
     this.WalletConnectConnector = new WalletConnectConnector({
       relayerRegion: 'wss://relay.walletconnect.com',
       metadata,
@@ -404,6 +391,20 @@ export class Web3Modal extends Web3ModalScaffold {
     const filteredAdapters = this.walletAdapters.filter(
       adapter => !uniqueIds.has(adapter.name) && uniqueIds.add(adapter.name)
     )
+    if (CoreHelperUtil.isMobile()) {
+      legacyAdaptersForMobile.forEach(legacyAdapter => {
+        const normalizeName = legacyAdapter.name.toLocaleLowerCase()
+        if (
+          window[normalizeName as keyof Window] &&
+          !filteredAdapters.some(w => w.name.toLocaleLowerCase() === normalizeName)
+        ) {
+          filteredAdapters.push({
+            ...legacyAdapter,
+            isAnnounced: true
+          } as unknown as ExtendedBaseWalletAdapter)
+        }
+      })
+    }
 
     standardAdapters?.forEach(adapter => {
       w3mConnectors.push({

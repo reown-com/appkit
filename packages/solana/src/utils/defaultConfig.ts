@@ -64,7 +64,7 @@ export function defaultSolanaConfig(options: ConfigOptions) {
 }
 
 export const legacyAdaptersForMobile = [
-  HuobiWalletAdapter,
-  SolflareWalletAdapter,
-  PhantomWalletAdapter
+  new HuobiWalletAdapter(),
+  new SolflareWalletAdapter(),
+  new PhantomWalletAdapter()
 ]
