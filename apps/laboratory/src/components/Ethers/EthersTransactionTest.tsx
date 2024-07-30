@@ -67,7 +67,7 @@ export function EthersTransactionTest() {
     </Stack>
   ) : (
     <Text fontSize="md" color="yellow">
-      Switch to Sepolia or OP to test this feature
+      Feature not enabled on Ethereum Mainnet
     </Text>
   )
 }

@@ -18,7 +18,7 @@ export function WagmiTransactionTest() {
     <AvailableTestContent />
   ) : (
     <Text fontSize="md" color="yellow">
-      Switch to Sepolia or OP to test this feature
+      Feature not available on Ethereum Mainnet
     </Text>
   )
 }
