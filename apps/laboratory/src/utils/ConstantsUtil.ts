@@ -8,6 +8,7 @@ export function getPublicUrl() {
   if (vercelUrl) {
     return `https://${vercelUrl}`
   }
+
   return 'https://lab.web3modal.com'
 }
 
