@@ -2,6 +2,7 @@ name: Checks
 
 on:
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
     branches:
       - V3
       - V4
@@ -120,6 +121,7 @@ jobs:
           json-summary-path: ./coverage/coverage-merged-summary.json
 
   ui-test:
+    if: github.event.pull_request.draft == false
     uses: ./.github/workflows/ui_tests.yml
     secrets: inherit
     permissions:
