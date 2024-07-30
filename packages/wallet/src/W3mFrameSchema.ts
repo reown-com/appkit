@@ -338,6 +338,10 @@ export const WalletGetCallsReceiptRequest = z.object({
 export const WalletGetCapabilitiesRequest = z.object({
   method: z.literal('wallet_getCapabilities')
 })
+export const WalletGrantPermissionsRequest = z.object({
+  method: z.literal('wallet_grantPermissions'),
+  params: z.array(z.any())
+})
 
 export const FrameSession = z.object({
   token: z.string()
@@ -458,6 +462,7 @@ export const W3mFrameSchema = {
           .or(WalletGetCallsReceiptRequest)
           .or(WalletSendCallsRequest)
           .or(WalletGetCapabilitiesRequest)
+          .or(WalletGrantPermissionsRequest)
       })
     )
 
