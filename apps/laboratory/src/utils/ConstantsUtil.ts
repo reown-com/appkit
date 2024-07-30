@@ -3,7 +3,7 @@ if (!projectId) {
   throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
 }
 export const WALLET_URL = process.env['WALLET_URL'] || 'https://react-wallet.walletconnect.com/'
-export const PUBLIC_URL = () => window.location.origin
+export const getPublicUrl = () => window.location.origin
 
 export const CUSTOM_WALLET = 'wc:custom_wallet'
 
@@ -19,11 +19,11 @@ export const ConstantsUtil = {
   SigningSucceededToastTitle: 'Signing Succeeded',
   SigningFailedToastTitle: 'Signing Failed',
   TestIdSiweAuthenticationStatus: 'w3m-authentication-status',
-  Metadata: () => ({
+  getMetadata: () => ({
     name: 'AppKit',
     description: 'AppKit Laboratory',
-    url: PUBLIC_URL(),
-    icons: [`${PUBLIC_URL()}/metadata-icon.png`],
+    url: getPublicUrl(),
+    icons: [`${getPublicUrl()}/metadata-icon.png`],
     verifyUrl: ''
   }),
   CustomWallets: [

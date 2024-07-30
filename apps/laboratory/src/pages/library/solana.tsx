@@ -12,13 +12,13 @@ const chains = [solana, solanaTestnet, solanaDevnet]
 export const solanaConfig = defaultSolanaConfig({
   chains,
   projectId: ConstantsUtil.ProjectId,
-  metadata: ConstantsUtil.Metadata()
+  metadata: ConstantsUtil.getMetadata()
 })
 
 const modal = createWeb3Modal({
   solanaConfig,
   projectId: ConstantsUtil.ProjectId,
-  metadata: ConstantsUtil.Metadata(),
+  metadata: ConstantsUtil.getMetadata(),
   chains,
   enableAnalytics: false,
   termsConditionsUrl: 'https://walletconnect.com/terms',

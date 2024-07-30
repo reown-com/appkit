@@ -8,7 +8,7 @@ import { EthersModalInfo } from '../../components/Ethers/EthersModalInfo'
 
 const modal = createWeb3Modal({
   ethersConfig: defaultConfig({
-    metadata: ConstantsUtil.Metadata(),
+    metadata: ConstantsUtil.getMetadata(),
     defaultChainId: 1,
     rpcUrl: 'https://cloudflare-eth.com',
     auth: {
@@ -18,7 +18,7 @@ const modal = createWeb3Modal({
   chains: EthersConstants.chains,
   projectId: ConstantsUtil.ProjectId,
   enableAnalytics: true,
-  metadata: ConstantsUtil.Metadata(),
+  metadata: ConstantsUtil.getMetadata(),
   termsConditionsUrl: 'https://walletconnect.com/terms',
   privacyPolicyUrl: 'https://walletconnect.com/privacy',
   customWallets: ConstantsUtil.CustomWallets

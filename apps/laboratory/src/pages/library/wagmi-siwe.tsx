@@ -17,7 +17,7 @@ const modal = createWeb3Modal({
   wagmiConfig,
   projectId: ConstantsUtil.ProjectId,
   enableAnalytics: true,
-  metadata: ConstantsUtil.Metadata(),
+  metadata: ConstantsUtil.getMetadata(),
   siweConfig,
   customWallets: ConstantsUtil.CustomWallets
 })
