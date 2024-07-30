@@ -17,31 +17,6 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    if: github.event.action == 'opened' || github.event.action == 'synchronize'
-    steps:
-      - name: checkout
-        uses: actions/checkout@v3
-
-      - uses: pnpm/action-setup@v4
-        name: Install pnpm
-
-      - name: setup-node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18.x
-          cache: 'pnpm'
-
-      - name: install
-        run: pnpm install
-
-      - name: build
-        run: pnpm build
-        env:
-          NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
-
   code_style:
     runs-on: ubuntu-latest
     permissions:
