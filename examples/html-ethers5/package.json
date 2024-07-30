@@ -1,7 +1,7 @@
 {
   "name": "@examples/html-ethers5",
   "private": true,
-  "version": "5.0.8",
+  "version": "5.0.9",
   "scripts": {
     "dev": "vite --port 3011",
     "build": "vite build"

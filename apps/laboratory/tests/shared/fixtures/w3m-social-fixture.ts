@@ -1,6 +1,5 @@
 import type { ModalFixture } from './w3m-fixture'
 import { ModalPage } from '../pages/ModalPage'
-import { ModalValidator } from '../validators/ModalValidator'
 import { timingFixture } from './timing-fixture'
 
 export const testMSocial = timingFixture.extend<
@@ -25,9 +24,5 @@ export const testMSocial = timingFixture.extend<
 
     await modalPage.loginWithSocial('github', socialMail, socialPass)
     await use(modalPage)
-  },
-  modalValidator: async ({ modalPage }, use) => {
-    const modalValidator = new ModalValidator(modalPage.page)
-    await use(modalValidator)
   }
 })
