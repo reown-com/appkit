@@ -6,10 +6,9 @@ export const WALLET_URL = process.env['WALLET_URL'] || 'https://react-wallet.wal
 export function getPublicUrl() {
   const vercelUrl = process.env['NEXT_PUBLIC_VERCEL_URL']
   if (vercelUrl) {
-    return 'https://' + vercelUrl
-  } else {
-    return 'https://lab.web3modal.com'
+    return `https://${vercelUrl}`
   }
+  return 'https://lab.web3modal.com'
 }
 
 export const CUSTOM_WALLET = 'wc:custom_wallet'
