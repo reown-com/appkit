@@ -135,7 +135,7 @@ export const ChainController = {
         ...chainAdapter.networkState,
         ...props
       } as NetworkControllerState)
-      state.chains.set(chain, chainAdapter)
+      state.chains.set(chain, ref(chainAdapter))
       if (replaceState || state.chains.size === 1) {
         NetworkController.replaceState(chainAdapter.networkState)
       }
@@ -203,7 +203,7 @@ export const ChainController = {
     }
 
     state.activeCaipNetwork = ref(caipNetwork)
-
+    state.activeChain = caipNetwork.chain
     this.setCaipNetwork(caipNetwork.chain, caipNetwork, true)
     PublicStateController.set({
       activeChain: caipNetwork.chain,

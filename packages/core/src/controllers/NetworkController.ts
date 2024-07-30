@@ -44,7 +44,7 @@ export const NetworkController = {
       return
     }
 
-    this.state = ref(newState)
+    Object.assign(state, ref(newState))
   },
 
   subscribeKey<K extends keyof NetworkControllerState>(
@@ -90,9 +90,6 @@ export const NetworkController = {
     }
 
     ChainController.setActiveCaipNetwork(caipNetwork)
-
-    ChainController.state.activeCaipNetwork = caipNetwork
-    ChainController.state.activeChain = caipNetwork.chain
     ChainController.setChainNetworkData(caipNetwork.chain, { caipNetwork })
     PublicStateController.set({
       activeChain: caipNetwork.chain,
@@ -267,6 +264,7 @@ export const NetworkController = {
   },
 
   checkIfSmartAccountEnabled() {
+    const caipNetwork = ChainController.getNetworkProp('caipNetwork')
     const networkId = NetworkUtil.caipNetworkIdToNumber(state.caipNetwork?.id)
     const activeChain = ChainController.state.activeChain
 

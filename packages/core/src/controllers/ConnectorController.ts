@@ -44,16 +44,16 @@ export const ConnectorController = {
         const existingConnector = connectorMap.get(name)
 
         // If an existing connector with the same name is found, ensure it's a MULTI_CHAIN type
-        if (existingConnector.type !== 'MULTI_CHAIN') {
+        if (existingConnector.type === 'MULTI_CHAIN') {
+          // If it's already a MULTI_CHAIN type, add the new connector to the providers array
+          existingConnector.providers.push(connector)
+        } else {
           connectorMap.set(name, {
             type: 'MULTI_CHAIN',
             imageUrl,
             name,
             providers: [existingConnector, connector]
           })
-        } else {
-          // If it's already a MULTI_CHAIN type, add the new connector to the providers array
-          existingConnector.providers.push(connector)
         }
       } else {
         // If no existing connector with the same name, add the connector to the map

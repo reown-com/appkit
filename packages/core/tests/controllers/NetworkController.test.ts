@@ -88,6 +88,7 @@ describe('NetworkController', () => {
   })
 
   it('should check correctly if smart accounts are enabled on the network', () => {
+    NetworkController.setActiveCaipNetwork(caipNetwork)
     NetworkController.setSmartAccountEnabledNetworks([1])
     expect(NetworkController.checkIfSmartAccountEnabled()).toEqual(true)
     NetworkController.setSmartAccountEnabledNetworks([])

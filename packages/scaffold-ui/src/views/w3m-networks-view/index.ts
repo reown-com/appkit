@@ -147,6 +147,7 @@ export class W3mNetworksView extends LitElement {
           navigateTo: 'Connect',
           navigateWithReplace: true
         })
+
         return
       }
       if (approvedCaipNetworkIds?.includes(network.id)) {

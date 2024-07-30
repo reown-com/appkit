@@ -58,7 +58,7 @@ export const AccountController = {
       return
     }
 
-    this.state = ref(newState)
+    Object.assign(state, ref(newState))
   },
 
   subscribe(callback: (val: AccountControllerState) => void) {
