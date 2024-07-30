@@ -1,3 +1,5 @@
+/* eslint-disable multiline-comment-style */
+/* eslint-disable capitalized-comments */
 /* eslint-disable no-console */
 import { Button, Stack, Text } from '@chakra-ui/react'
 import { useAccount } from 'wagmi'
@@ -18,10 +20,9 @@ import { CoSignerApiError, useWalletConnectCosigner } from '../../hooks/useWalle
 import { useWagmiAvailableCapabilities } from '../../hooks/useWagmiActiveCapabilities'
 
 export function WagmiRequestPermissionsTest() {
-  const { isMethodSupported: isGrantPermissionsSupported, ethereumProvider } =
-    useWagmiAvailableCapabilities({
-      method: EIP_7715_RPC_METHODS.WALLET_GRANT_PERMISSIONS
-    })
+  const { ethereumProvider } = useWagmiAvailableCapabilities({
+    method: EIP_7715_RPC_METHODS.WALLET_GRANT_PERMISSIONS
+  })
   const { chain, address, isConnected } = useAccount()
   const {
     passkey,
@@ -160,13 +161,13 @@ export function WagmiRequestPermissionsTest() {
       </Text>
     )
   }
-  if (!isGrantPermissionsSupported()) {
-    return (
-      <Text fontSize="md" color="yellow">
-        Wallet does not support wallet_grantPermissions rpc method
-      </Text>
-    )
-  }
+  // if (!isGrantPermissionsSupported()) {
+  //   return (
+  //     <Text fontSize="md" color="yellow">
+  //       Wallet does not support wallet_grantPermissions rpc method
+  //     </Text>
+  //   )
+  // }
 
   return (
     <Stack direction={['column', 'column', 'row']}>
