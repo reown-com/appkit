@@ -132,4 +132,16 @@ export class ModalValidator {
     const switchNetworkButton = this.page.getByTestId('w3m-account-select-network')
     await expect(switchNetworkButton).toBeVisible()
   }
+<<<<<<< HEAD
+=======
+
+  async expectOnrampButton(library: string) {
+    const onrampButton = this.page.getByTestId('w3m-account-default-onramp-button')
+    if (library === 'solana') {
+      await expect(onrampButton).toBeHidden()
+    } else {
+      await expect(onrampButton).toBeVisible()
+    }
+  }
+>>>>>>> efa0963246ec7b0beb9471e5fe880db84e255526
 }
