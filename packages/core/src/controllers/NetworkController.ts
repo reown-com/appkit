@@ -264,7 +264,6 @@ export const NetworkController = {
   },
 
   checkIfSmartAccountEnabled() {
-    const caipNetwork = ChainController.getNetworkProp('caipNetwork')
     const networkId = NetworkUtil.caipNetworkIdToNumber(state.caipNetwork?.id)
     const activeChain = ChainController.state.activeChain
 
