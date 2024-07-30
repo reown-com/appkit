@@ -8,7 +8,13 @@ import { getWagmiConfig } from '../../utils/WagmiConstants'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
 import { AppKitAuthInfo } from '../../components/AppKitAuthInfo'
-import { getProfile, siweProfilesConfig, unlinkAccountFromProfile } from '../../utils/ProfilesUtil'
+import {
+  deleteProfile,
+  getProfile,
+  siweProfilesConfig,
+  unlinkAccountFromProfile,
+  updateMainAccount
+} from '../../utils/ProfilesUtil'
 import { useProxy } from 'valtio/utils'
 import { ProfileStore } from '../../utils/ProfileStoreUtil'
 import { Button, Card, CardBody, CardHeader, Flex, Heading, Text } from '@chakra-ui/react'
@@ -40,9 +46,30 @@ export default function WagmiProfiles() {
   }
 
   async function handleUnlinkAccount(accountUuid: string) {
-    await unlinkAccountFromProfile(accountUuid)
-    const updatedProfile = profile?.filter(({ uuid }) => uuid !== accountUuid)
-    ProfileStore.setProfile(updatedProfile)
+    const { success } = await unlinkAccountFromProfile(accountUuid)
+    if (success) {
+      const updatedProfile = profile?.filter(({ uuid }) => uuid !== accountUuid)
+      ProfileStore.setProfile(updatedProfile)
+    }
+  }
+
+  async function handleUpdateMainAccount(accountUuid: string) {
+    const { success } = await updateMainAccount(accountUuid)
+    if (success) {
+      const updatedProfile = profile?.map(({ uuid, ...rest }) => ({
+        ...rest,
+        uuid,
+        is_main_account: uuid === accountUuid
+      }))
+      ProfileStore.setProfile(updatedProfile)
+    }
+  }
+
+  async function handleDeleteProfile() {
+    const { success } = await deleteProfile()
+    if (success) {
+      ProfileStore.setProfile(null)
+    }
   }
 
   return (
@@ -80,7 +107,13 @@ export default function WagmiProfiles() {
                   <Text>
                     <strong>Main account:</strong> {is_main_account.toString()}
                   </Text>
-                  <Button onClick={() => handleUnlinkAccount(uuid)}>Unlink</Button>
+                  <Flex flexDir="column" gap={4}>
+                    <Button onClick={() => handleUnlinkAccount(uuid)}>Unlink</Button>
+                    <Button onClick={() => handleUpdateMainAccount(uuid)}>Set as main</Button>
+                    <Button colorScheme="red" onClick={() => handleDeleteProfile()}>
+                      Delete profile
+                    </Button>
+                  </Flex>
                 </Flex>
               )
             })}

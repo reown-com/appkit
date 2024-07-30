@@ -7,13 +7,14 @@ interface ProfileStoreState {
         account: string
         profile_uuid: string
         created_at: string
-        is_main_account: true
+        is_main_account: boolean
       }[]
     | undefined
+    | null
 }
 
 const state = proxy<ProfileStoreState>({
-  profile: undefined
+  profile: null
 })
 
 export const ProfileStore = {

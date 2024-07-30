@@ -13,21 +13,14 @@ import {
 import { type Config, disconnect } from '@wagmi/core'
 import { ProfileStore } from './ProfileStoreUtil'
 
-const headers = {
-  'x-project-id': '24970167f11c121f6eb40b558edb9691',
-  'x-sdk-type': 'w3m',
-  'x-sdk-version': '5.0.0'
-}
-
 const queryParams = `projectId=24970167f11c121f6eb40b558edb9691&st=w3m&sv=5.0.0`
 
-const devProfileApiUrl = 'http://localhost:8787'
+const devProfileApiUrl = 'https://api-web3modal-auth-staging.walletconnect-v1-bridge.workers.dev'
 
 export async function addCurrentAccountToProfile() {
   try {
-    const res = await fetch(`${devProfileApiUrl}/profiles/v1/add-account`, {
+    const res = await fetch(`${devProfileApiUrl}/profiles/v1/add-account?${queryParams}`, {
       method: 'POST',
-      headers,
       body: null,
       credentials: 'include'
     })
@@ -48,9 +41,8 @@ export async function addCurrentAccountToProfile() {
 
 export async function getProfile() {
   try {
-    const res = await fetch(`${devProfileApiUrl}/profiles/v1/profile`, {
+    const res = await fetch(`${devProfileApiUrl}/profiles/v1?${queryParams}`, {
       method: 'GET',
-      headers,
       credentials: 'include'
     })
 
@@ -70,23 +62,47 @@ export async function getProfile() {
 
 export async function unlinkAccountFromProfile(accountUuid: string) {
   try {
+    const res = await fetch(`${devProfileApiUrl}/profiles/v1/${accountUuid}?${queryParams}`, {
+      method: 'DELETE',
+      credentials: 'include'
+    })
+
+    return { success: res.ok && res.status === 204 }
+  } catch (error) {
+    throw new Error('Failed to unlink account from profile', {
+      cause: error
+    })
+  }
+}
+
+export async function deleteProfile() {
+  try {
+    const res = await fetch(`${devProfileApiUrl}/profiles/v1?${queryParams}`, {
+      method: 'DELETE',
+      credentials: 'include'
+    })
+
+    return { success: res.ok && res.status === 204 }
+  } catch (error) {
+    throw new Error('Failed to delete profile', {
+      cause: error
+    })
+  }
+}
+
+export async function updateMainAccount(accountUuid: string) {
+  try {
     const res = await fetch(
-      `${devProfileApiUrl}/profiles/v1/accounts/${accountUuid}?${queryParams}`,
+      `${devProfileApiUrl}/profiles/v1/main-account/${accountUuid}?${queryParams}`,
       {
-        method: 'DELETE',
+        method: 'PATCH',
         credentials: 'include'
       }
     )
 
-    if (!res.ok) {
-      return undefined
-    }
-
-    const unlinkAccountRes = await res.json()
-
-    return unlinkAccountRes
+    return { success: res.ok && res.status === 204 }
   } catch (error) {
-    throw new Error('Failed to add account to profile', {
+    throw new Error('Failed to update main account', {
       cause: error
     })
   }
