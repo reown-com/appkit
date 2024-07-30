@@ -3,7 +3,9 @@ if (!projectId) {
   throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
 }
 export const WALLET_URL = process.env['WALLET_URL'] || 'https://react-wallet.walletconnect.com/'
-export const getPublicUrl = () => window.location.origin
+export function getPublicUrl() {
+  return window.location.origin
+}
 
 export const CUSTOM_WALLET = 'wc:custom_wallet'
 
