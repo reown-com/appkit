@@ -26,13 +26,13 @@ export const ConstantsUtil = {
   SigningSucceededToastTitle: 'Signing Succeeded',
   SigningFailedToastTitle: 'Signing Failed',
   TestIdSiweAuthenticationStatus: 'w3m-authentication-status',
-  getMetadata: () => ({
+  Metadata: {
     name: 'AppKit',
     description: 'AppKit Laboratory',
     url: getPublicUrl(),
     icons: [`${getPublicUrl()}/metadata-icon.png`],
     verifyUrl: ''
-  }),
+  },
   CustomWallets: [
     ...customWallet,
     {

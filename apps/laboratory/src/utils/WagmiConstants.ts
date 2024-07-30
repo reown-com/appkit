@@ -43,7 +43,7 @@ export function getWagmiConfig(type: 'default' | 'email') {
   const config = {
     chains: WagmiConstantsUtil.chains,
     projectId: ConstantsUtil.ProjectId,
-    metadata: ConstantsUtil.getMetadata(),
+    metadata: ConstantsUtil.Metadata,
     ssr: true
   }
 

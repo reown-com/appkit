@@ -16,7 +16,7 @@ const queryClient = new QueryClient()
 const connectors = [
   walletConnect({
     projectId: ConstantsUtil.ProjectId,
-    metadata: ConstantsUtil.getMetadata(),
+    metadata: ConstantsUtil.Metadata,
     showQrModal: false,
     // @ts-expect-error: Overridding optionalMethods
     optionalMethods: [...OPTIONAL_METHODS, 'wallet_grantPermissions']
@@ -37,7 +37,7 @@ const modal = createWeb3Modal({
   wagmiConfig,
   projectId: ConstantsUtil.ProjectId,
   enableAnalytics: true,
-  metadata: ConstantsUtil.getMetadata(),
+  metadata: ConstantsUtil.Metadata,
   termsConditionsUrl: 'https://walletconnect.com/terms',
   privacyPolicyUrl: 'https://walletconnect.com/privacy'
 })

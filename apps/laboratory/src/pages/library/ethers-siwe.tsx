@@ -10,14 +10,14 @@ import { EthersModalInfo } from '../../components/Ethers/EthersModalInfo'
 
 const modal = createWeb3Modal({
   ethersConfig: defaultConfig({
-    metadata: ConstantsUtil.getMetadata(),
+    metadata: ConstantsUtil.Metadata,
     defaultChainId: 1,
     rpcUrl: 'https://cloudflare-eth.com'
   }),
   chains: EthersConstants.chains,
   projectId: ConstantsUtil.ProjectId,
   enableAnalytics: true,
-  metadata: ConstantsUtil.getMetadata(),
+  metadata: ConstantsUtil.Metadata,
   siweConfig,
   customWallets: ConstantsUtil.CustomWallets
 })
