@@ -1,6 +1,6 @@
 {
   "name": "@apps/demo",
-  "version": "5.0.9",
+  "version": "5.0.10",
   "private": true,
   "scripts": {
     "dev": "next dev",
