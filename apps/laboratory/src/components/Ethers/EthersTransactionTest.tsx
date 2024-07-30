@@ -1,10 +1,10 @@
 import { Button, Stack, Link, Text, Spacer } from '@chakra-ui/react'
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers/react'
 import { BrowserProvider, JsonRpcSigner, ethers } from 'ethers'
-import { sepolia, optimism } from '../../utils/ChainsUtil'
 import { useState } from 'react'
 import { vitalikEthAddress } from '../../utils/DataUtil'
 import { useChakraToast } from '../Toast'
+import { mainnet } from 'wagmi/chains'
 
 export function EthersTransactionTest() {
   const toast = useChakraToast()
@@ -41,9 +41,7 @@ export function EthersTransactionTest() {
     }
   }
 
-  const allowedChains = [sepolia.chainId, optimism.chainId]
-
-  return allowedChains.includes(Number(chainId)) && address ? (
+  return Number(chainId) !== mainnet.id && address ? (
     <Stack direction={['column', 'column', 'row']}>
       <Button
         data-test-id="sign-transaction-button"
