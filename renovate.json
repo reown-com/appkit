@@ -26,6 +26,24 @@
       ],
       "matchPackagePrefixes": ["@web3modal/"],
       "prPriority": 10
+    },
+    {
+      "matchPackageNames": ["@walletconnect/ethereum-provider", "@walletconnect/utils"],
+      "enabled": true
+    },
+    {
+      "matchFileNames": [
+        "packages/cdn/package.json",
+        "examples/html-wagmi/package.json",
+        "examples/vue-wagmi/package.json"
+      ],
+      "matchPackageNames": ["@wagmi/connectors", "@wagmi/core"],
+      "enabled": true
+    },
+    {
+      "matchFileNames": ["packages/wagmi/package.json"],
+      "matchPackageNames": ["@wagmi/connectors", "@wagmi/core", "viem", "wagmi"],
+      "enabled": true
     }
   ]
 }
