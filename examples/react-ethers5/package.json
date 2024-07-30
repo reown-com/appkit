@@ -1,7 +1,7 @@
 {
   "name": "@examples/react-ethers5",
   "private": true,
-  "version": "5.0.9",
+  "version": "5.0.10",
   "scripts": {
     "dev": "vite --port 3012",
     "build": "vite build"
