@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+/* eslint-disable no-console */
 import { type GrantPermissionsReturnType } from 'viem/experimental'
 import {
   ENTRYPOINT_ADDRESS_V07,
@@ -6,20 +8,25 @@ import {
 } from 'permissionless'
 import { type UserOperation } from 'permissionless/types'
 import { encodeAbiParameters, hashMessage, type PublicClient } from 'viem'
-import { sign as signWithPasskey } from 'webauthn-p256'
+import { serializePublicKey, sign as signWithPasskey, type P256Credential } from 'webauthn-p256'
 import { type Chain } from 'wagmi/chains'
 import { useUserOpBuilder, type Execution } from './useUserOpBuilder'
-import { bigIntReplacer } from '../utils/CommonUtils'
+import { bigIntReplacer, hexStringToBase64 } from '../utils/CommonUtils'
 import { createClients } from '../utils/PermissionsUtils'
-import usePasskey from './usePasskey'
 import { useWalletConnectCosigner } from './useWalletConnectCosigner'
-import { useGrantedPermissions } from './useGrantedPermissions'
+import { useWagmiPermissions } from '../context/WagmiPermissionsContext'
 
 export function usePermissions() {
   const { getCallDataWithContext, getNonceWithContext } = useUserOpBuilder()
-  const { coSignUserOperation } = useWalletConnectCosigner()
-  const { wcCosignerData } = useGrantedPermissions()
-  const { passkeyId } = usePasskey()
+  const { coSignUserOperation, updatePermissionsContext } = useWalletConnectCosigner()
+  const {
+    grantedPermissions,
+    wcCosignerData,
+    permissionConsumedCount,
+    setPermissionConsumedCount,
+    passkeyId,
+    passkey
+  } = useWagmiPermissions()
 
   async function prepareUserOperationWithPermissions(
     publicClient: PublicClient,
@@ -75,15 +82,11 @@ export function usePermissions() {
     return userOp
   }
 
-  async function signUserOperationWithPasskeyAndCosigner(
-    publicClient: PublicClient,
-    args: {
-      ecdsaPrivateKey: `0x${string}`
-      userOp: UserOperation<'v0.7'>
-      permissions: GrantPermissionsReturnType
-      chain: Chain
-    }
-  ): Promise<`0x${string}`> {
+  async function signUserOperationWithPasskeyAndCosigner(args: {
+    userOp: UserOperation<'v0.7'>
+    permissions: GrantPermissionsReturnType
+    chain: Chain
+  }): Promise<`0x${string}`> {
     const { userOp, chain, permissions } = args
 
     const { signerData, permissionsContext } = permissions
@@ -100,10 +103,7 @@ export function usePermissions() {
       entryPoint: ENTRYPOINT_ADDRESS_V07,
       chainId: chain.id
     })
-    console.log({ userOpHash })
     const ethMessageUserOpHash = hashMessage({ raw: userOpHash })
-    // console.log({ prefixedMessage: toPrefixedMessage({ raw: userOpHash }) })
-    // console.log({ ethMessageUserOpHash })
     const usersPasskeySignature = await signWithPasskey({
       credentialId: passkeyId,
       hash: ethMessageUserOpHash
@@ -132,13 +132,12 @@ export function usePermissions() {
   }
 
   async function buildAndSendTransactionsWithCosignerAndPermissions(args: {
-    ecdsaPrivateKey: `0x${string}`
     permissions: GrantPermissionsReturnType
     actions: Execution[]
     chain: Chain
     accountAddress: `0x${string}`
   }): Promise<`0x${string}`> {
-    const { ecdsaPrivateKey, permissions, actions, chain, accountAddress } = args
+    const { permissions, actions, chain, accountAddress } = args
 
     const { publicClient, bundlerClient } = createClients(chain)
     const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
@@ -172,9 +171,8 @@ export function usePermissions() {
      * userOp = { ...userOp, ...paymasterResponse }
      * console.log({ userOp })
      */
-    const signature = await signUserOperationWithPasskeyAndCosigner(publicClient, {
+    const signature = await signUserOperationWithPasskeyAndCosigner({
       permissions,
-      ecdsaPrivateKey,
       userOp,
       chain
     })
@@ -185,7 +183,49 @@ export function usePermissions() {
       userOp
     })
 
-    return txHash.userOpReceipt as `0x${string}`
+    const userOpReceipt = await bundlerClient.waitForUserOperationReceipt({
+      hash: txHash.userOperationTxHash as `0x${string}`
+    })
+
+    if (userOpReceipt) {
+      const consumedCount = parseInt(permissionConsumedCount || '0', 10) + 1
+      console.log({ consumedCount })
+      setPermissionConsumedCount(consumedCount.toString())
+      let p = passkey as P256Credential
+      p = {
+        ...p,
+        publicKey: {
+          prefix: p.publicKey.prefix,
+          x: BigInt(p.publicKey.x),
+          y: BigInt(p.publicKey.y)
+        }
+      }
+      const passkeyPublicKey = serializePublicKey(p.publicKey, { to: 'hex' })
+      // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
+      let pc = grantedPermissions?.permissionsContext!
+      pc = `${pc.slice(0, 42)}00${pc.slice(44)}`
+      await updatePermissionsContext(caip10Address, projectId, {
+        pci: wcCosignerData.pci,
+        context: {
+          expiry: permissions.expiry,
+          signer: {
+            type: 'native-token-transfer',
+            data: {
+              ids: [wcCosignerData.key, hexStringToBase64(passkeyPublicKey)]
+            }
+          },
+          signerData: {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
+            userOpBuilder: permissions.signerData?.userOpBuilder!
+          },
+          permissionsContext: pc,
+          factory: permissions.factory || '',
+          factoryData: permissions.factoryData || ''
+        }
+      })
+    }
+
+    return userOpReceipt.receipt.transactionHash
   }
 
   return {

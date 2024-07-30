@@ -1,8 +1,6 @@
 import axios, { AxiosError } from 'axios'
 import { bigIntReplacer } from '../utils/CommonUtils'
 import type { UserOperation } from 'permissionless'
-// eslint-disable-next-line capitalized-comments
-// import type { UserOperation } from 'permissionless/types'
 
 // Define types for the request and response
 type AddPermission = {
@@ -58,7 +56,7 @@ type CoSignRequest = {
 }
 
 type CoSignResponse = {
-  userOpReceipt: string
+  userOperationTxHash: string
 }
 
 // Define a custom error type
@@ -73,8 +71,7 @@ export class CoSignerApiError extends Error {
 }
 
 export function useWalletConnectCosigner() {
-  const baseUrl = 'https://maksy.ngrok.dev/v1/sessions'
-  // const baseUrl = 'https://rpc.walletconnect.com/v1/sessions'
+  const baseUrl = 'https://rpc.walletconnect.com/v1/sessions'
   /**
    * Adds a new permission session for the account.
    *

@@ -48,7 +48,9 @@ export function createClients(chain: Chain) {
   })
 
   const bundlerClient = createBundlerClient({
-    transport: http(bundlerUrl),
+    transport: http(bundlerUrl, {
+      timeout: 30000
+    }),
     entryPoint: ENTRYPOINT_ADDRESS_V07,
     chain
   })
