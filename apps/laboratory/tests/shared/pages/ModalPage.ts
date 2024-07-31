@@ -1,11 +1,13 @@
 /* eslint-disable no-await-in-loop */
 import type { BrowserContext, Locator, Page } from '@playwright/test'
 import { expect } from '@playwright/test'
-import { BASE_URL } from '../constants'
+import { BASE_URL, DEFAULT_SESSION_PARAMS } from '../constants'
 import { doActionAndWaitForNewPage } from '../utils/actions'
 import { Email } from '../utils/email'
 import { DeviceRegistrationPage } from './DeviceRegistrationPage'
 import type { TimingRecords } from '../fixtures/timing-fixture'
+import { WalletPage } from './WalletPage'
+import { WalletValidator } from '../validators/WalletValidator'
 
 export type ModalFlavor = 'default' | 'siwe' | 'email' | 'wallet' | 'external' | 'all'
 
@@ -72,6 +74,15 @@ export class ModalPage {
     return uri
   }
 
+  async qrCodeFlow(page: ModalPage, walletPage: WalletPage): Promise<void> {
+    await walletPage.load()
+    const uri = await page.getConnectUri()
+    await walletPage.connectWithUri(uri)
+    await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
+    const walletValidator = new WalletValidator(walletPage.page)
+    await walletValidator.expectConnected()
+  }
+
   async emailFlow(
     emailAddress: string,
     context: BrowserContext,
@@ -133,21 +144,38 @@ export class ModalPage {
     })
   }
 
-  async loginWithSocial(socialMail: string, socialPass: string) {
-    const authFile = 'playwright/.auth/user.json'
+  async loginWithSocial(socialOption: 'github', socialMail: string, socialPass: string) {
     await this.page
       .getByTestId('connect-button')
       .getByRole('button', { name: 'Connect Wallet' })
       .click()
-    const discordPopupPromise = this.page.waitForEvent('popup')
-    await this.page.getByTestId('social-selector-discord').click()
-    const discordPopup = await discordPopupPromise
-    await discordPopup.fill('#uid_8', socialMail)
-    await discordPopup.fill('#uid_10', socialPass)
-    await discordPopup.locator('[type=submit]').click()
-    await discordPopup.locator('.footer_b96583 button:nth-child(2)').click()
-    await discordPopup.context().storageState({ path: authFile })
-    await discordPopup.waitForEvent('close')
+
+    switch (socialOption) {
+      case 'github':
+        await this.loginWithGitHub(socialMail, socialPass)
+        break
+      default:
+        throw new Error(`Unknown social option: ${socialOption}`)
+    }
+  }
+
+  async loginWithGitHub(socialMail: string, socialPass: string) {
+    const socialPopupPromise = this.page.waitForEvent('popup')
+    await this.page.getByTestId(`social-selector-github`).click()
+    const socialPopup = await socialPopupPromise
+    await socialPopup.waitForLoadState()
+    await socialPopup.fill('#login_field.form-control.input-block.js-login-field', socialMail)
+    await socialPopup.fill(
+      '#password.form-control.form-control.input-block.js-password-field',
+      socialPass
+    )
+    await socialPopup.locator('[type=submit]').click()
+
+    if (await socialPopup.locator('h1').getByText('Reauthorization required').isVisible()) {
+      await socialPopup.locator('button').getByText('Authorize WalletConnect').click()
+    }
+
+    await socialPopup.waitForEvent('close')
   }
 
   async enterOTP(otp: string, headerTitle = 'Confirm Email') {
@@ -190,12 +218,15 @@ export class ModalPage {
     await expect(disconnectBtn, 'Disconnect button should be visible').toBeVisible()
     await expect(disconnectBtn, 'Disconnect button should be enabled').toBeEnabled()
     await disconnectBtn.click()
+    await this.page.waitForTimeout(1000)
   }
 
   async sign() {
     const signButton = this.page.getByTestId('sign-message-button')
     await signButton.scrollIntoViewIfNeeded()
+    await this.page.waitForTimeout(500)
     await signButton.click()
+    await this.page.waitForTimeout(1000)
   }
 
   async signatureRequestFrameShouldVisible() {
@@ -226,6 +257,7 @@ export class ModalPage {
     await this.page.getByTestId('account-button').click()
 
     await this.page.getByTestId('w3m-profile-button').click()
+    await this.page.getByTestId('account-settings-button').click()
     await this.page.getByTestId('w3m-wallet-upgrade-card').click()
 
     const page = await doActionAndWaitForNewPage(
@@ -315,5 +347,20 @@ export class ModalPage {
     const otp = email.getOtpCodeFromBody(emailBody)
 
     await this.enterOTP(otp, headerTitle)
+  }
+
+  async openModal() {
+    await this.page.getByTestId('account-button').click()
+  }
+
+  async openProfileView() {
+    await this.page.getByTestId('wui-profile-button').click()
+  }
+
+  async getWalletFeaturesButton(feature: 'onramp' | 'swap' | 'receive' | 'send') {
+    const walletFeatureButton = this.page.getByTestId(`wallet-features-${feature}-button`)
+    await expect(walletFeatureButton).toBeVisible()
+
+    return walletFeatureButton
   }
 }

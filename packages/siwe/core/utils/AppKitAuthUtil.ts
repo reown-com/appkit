@@ -58,7 +58,7 @@ export async function getAppKitAuthSession() {
 export async function authenticate(payload: {
   message: string
   signature: string
-  clientId?: string
+  clientId?: string | null
 }) {
   try {
     const res = await fetch(`${ConstantsUtil.DEV_W3M_API_URL}/auth/v1/authenticate`, {

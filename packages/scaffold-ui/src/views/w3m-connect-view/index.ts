@@ -1,8 +1,8 @@
+import { ConnectorController, RouterController } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
-import styles from './styles.js'
-import { ConnectorController, RouterController } from '@web3modal/core'
 import { state } from 'lit/decorators/state.js'
+import styles from './styles.js'
 
 @customElement('w3m-connect-view')
 export class W3mConnectView extends LitElement {
@@ -46,14 +46,14 @@ export class W3mConnectView extends LitElement {
         return html`
           <wui-flex flexDirection="column" gap="xs" .margin=${['xs', '0', '0', '0'] as const}>
             <w3m-connector-list></w3m-connector-list>
-            <wui-flex class="all-wallets" .margin=${['xs', '0', '0', '0'] as const}>
+            <wui-flex class="all-wallets">
               <w3m-all-wallets-widget></w3m-all-wallets-widget>
             </wui-flex>
           </wui-flex>
         `
       }
 
-      return html` <wui-list-button
+      return html`<wui-list-button
         @click=${this.onContinueWalletClick.bind(this)}
         text="Continue with a wallet"
       ></wui-list-button>`

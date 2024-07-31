@@ -13,9 +13,11 @@ export default defineConfig<ModalFixture>({
   retries: getValue(2, 1),
   workers: getValue(8, 4),
   reporter: getValue(
-    [['list'], ['html', { open: 'never' }]],
+    [['list'], ['html', { host: '0.0.0.0' }]],
     [['list'], ['html', { host: '0.0.0.0' }]]
   ),
+  // Limits the number of failed tests in the whole test suite. Playwright Test will stop after reaching this number of failed tests and skip any tests that were not executed yet
+  maxFailures: getValue(10, undefined),
   expect: {
     timeout: getValue(60, 15) * 1000
   },
@@ -39,7 +41,7 @@ export default defineConfig<ModalFixture>({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: 'npm run playwright:start',
+    command: 'pnpm playwright:start',
     url: BASE_URL,
     reuseExistingServer: !process.env['CI'] || Boolean(process.env['SKIP_PLAYWRIGHT_WEBSERVER'])
   }

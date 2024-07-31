@@ -56,12 +56,12 @@ export interface SIWEVerifyMessageArgs {
   message: string
   signature: string
   cacao?: Cacao
-  clientId?: string
+  clientId?: string | null
 }
 
 export interface SIWEClientMethods {
   getNonce: (address?: string) => Promise<string>
-  getMessageParams: () => Promise<SIWEMessageArgs>
+  getMessageParams?: () => Promise<SIWEMessageArgs>
   createMessage: (args: SIWECreateMessageArgs) => string
   verifyMessage: (args: SIWEVerifyMessageArgs) => Promise<boolean>
   getSession: () => Promise<SIWESession | null>

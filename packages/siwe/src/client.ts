@@ -3,6 +3,7 @@ import type {
   SIWEClientMethods,
   SIWEConfig,
   SIWECreateMessageArgs,
+  SIWEMessageArgs,
   SIWESession,
   SIWEVerifyMessageArgs
 } from '../core/utils/TypeUtils.js'
@@ -58,10 +59,8 @@ export class Web3ModalSIWEClient {
     return nonce
   }
 
-  async getMessageParams() {
-    const params = await this.methods.getMessageParams()
-
-    return params || {}
+  async getMessageParams?() {
+    return ((await this.methods.getMessageParams?.()) || {}) as SIWEMessageArgs
   }
 
   createMessage(args: SIWECreateMessageArgs) {
@@ -100,15 +99,15 @@ export class Web3ModalSIWEClient {
     if (!chainId) {
       throw new Error('A chainId is required to create a SIWE message.')
     }
-    const messageParams = await this.getMessageParams()
-
+    const messageParams = await this.getMessageParams?.()
     const message = this.methods.createMessage({
       address: `eip155:${chainId}:${address}`,
       chainId,
       nonce,
       version: '1',
-      iat: messageParams.iat ?? new Date().toISOString(),
-      ...messageParams
+      iat: messageParams?.iat || new Date().toISOString(),
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      ...messageParams!
     })
 
     const type = StorageUtil.getConnectedConnector()

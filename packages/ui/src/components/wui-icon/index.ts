@@ -40,6 +40,7 @@ import { etherscanSvg } from '../../assets/svg/etherscan.js'
 import { extensionSvg } from '../../assets/svg/extension.js'
 import { externalLinkSvg } from '../../assets/svg/external-link.js'
 import { facebookSvg } from '../../assets/svg/facebook.js'
+import { farcasterSvg } from '../../assets/svg/farcaster.js'
 import { filtersSvg } from '../../assets/svg/filters.js'
 import { githubSvg } from '../../assets/svg/github.js'
 import { googleSvg } from '../../assets/svg/google.js'
@@ -65,6 +66,7 @@ import { swapHorizontalMediumSvg } from '../../assets/svg/swapHorizontalMedium.j
 import { swapHorizontalRoundedBoldSvg } from '../../assets/svg/swapHorizontalRoundedBold.js'
 import { swapVerticalSvg } from '../../assets/svg/swapVertical.js'
 import { telegramSvg } from '../../assets/svg/telegram.js'
+import { threeDotsSvg } from '../../assets/svg/three-dots.js'
 import { twitchSvg } from '../../assets/svg/twitch.js'
 import { twitterIconSvg } from '../../assets/svg/twitterIcon.js'
 import { verifySvg } from '../../assets/svg/verify.js'
@@ -73,6 +75,7 @@ import { walletPlaceholderSvg } from '../../assets/svg/wallet-placeholder.js'
 import { walletSvg } from '../../assets/svg/wallet.js'
 import { walletConnectSvg } from '../../assets/svg/walletconnect.js'
 import { warningCircleSvg } from '../../assets/svg/warning-circle.js'
+import { lightbulbSvg } from '../../assets/svg/lightbulb.js'
 import { idSvg } from '../../assets/svg/id.js'
 import { xSvg } from '../../assets/svg/x.js'
 
@@ -110,6 +113,7 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   extension: extensionSvg,
   externalLink: externalLinkSvg,
   facebook: facebookSvg,
+  farcaster: farcasterSvg,
   filters: filtersSvg,
   github: githubSvg,
   google: googleSvg,
@@ -117,6 +121,7 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   image: imageSvg,
   id: idSvg,
   infoCircle: infoCircleSvg,
+  lightbulb: lightbulbSvg,
   mail: mailSvg,
   mobile: mobileSvg,
   more: moreSvg,
@@ -136,6 +141,7 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   swapHorizontalRoundedBold: swapHorizontalRoundedBoldSvg,
   swapVertical: swapVerticalSvg,
   telegram: telegramSvg,
+  threeDots: threeDotsSvg,
   twitch: twitchSvg,
   twitter: xSvg,
   twitterIcon: twitterIconSvg,

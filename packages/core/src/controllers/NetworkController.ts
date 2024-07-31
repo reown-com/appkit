@@ -1,11 +1,11 @@
+import { NetworkUtil, type Chain } from '@web3modal/common'
 import { proxy } from 'valtio/vanilla'
+import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import type { CaipNetwork, CaipNetworkId } from '../utils/TypeUtil.js'
-import { PublicStateController } from './PublicStateController.js'
+import { ChainController } from './ChainController.js'
 import { EventsController } from './EventsController.js'
 import { ModalController } from './ModalController.js'
-import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
-import { NetworkUtil, type Chain } from '@web3modal/common'
-import { ChainController } from './ChainController.js'
+import { PublicStateController } from './PublicStateController.js'
 
 // -- Types --------------------------------------------- //
 export interface NetworkControllerClient {
@@ -91,7 +91,11 @@ export const NetworkController = {
     PublicStateController.set({ activeChain: chain, selectedNetworkId: caipNetwork?.id })
 
     if (!ChainController.state.chains.get(chain)?.networkState?.allowUnsupportedChain) {
-      this.checkIfSupportedNetwork()
+      const isSupported = this.checkIfSupportedNetwork()
+
+      if (!isSupported) {
+        this.showUnsupportedChainUI()
+      }
     }
   },
 
@@ -258,9 +262,7 @@ export const NetworkController = {
   },
 
   checkIfSupportedNetwork() {
-    const chain = ChainController.state.multiChainEnabled
-      ? ChainController.state.activeChain
-      : ChainController.state.activeChain
+    const chain = ChainController.state.activeChain
 
     if (!chain) {
       return false

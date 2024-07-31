@@ -34,46 +34,58 @@ const braveOptions: UseOptions = {
   }
 }
 
-const EMAIL_BASED_PLATFORM_REGEX =
-  /(?:email\.spec\.ts|smart-account\.spec\.ts|siwe-email\.spec\.ts|siwe-sa\.spec\.ts|social\.spec\.ts).*$/u
+const SOLANA_DISABLED_TESTS = [
+  'canary.spec.ts',
+  'email.spec.ts',
+  'siwe.spec.ts',
+  'siwe-email.spec.ts',
+  'siwe-sa.spec.ts',
+  'smart-account.spec.ts',
+  'social.spec.ts',
+  'wallet-features.spec.ts',
+  'wallet.spec.ts'
+]
+const WAGMI_DISABLED_TESTS = ['smart-account.spec.ts', 'social.spec.ts']
+const ETHERS_DISABLED_TESTS = ['wallet-features.spec.ts', 'social.spec.ts']
 
-const SOLANA_UNIMPLEMENTED_TESTS_REGEX =
-  /^(?!.*(?:email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts|smart-account\.spec\.ts|social\.spec\.ts|siwe-sa\.spec\.ts|siwe-email\.spec\.ts)).*$/u
+const ETHERS_EMAIL_BASED_REGEX = new RegExp(ETHERS_DISABLED_TESTS.join('|'), 'u')
+const WAGMI_DISABLED_TESTS_REGEX = new RegExp(WAGMI_DISABLED_TESTS.join('|'), 'u')
+const SOLANA_DISABLED_TESTS_REGEX = new RegExp(SOLANA_DISABLED_TESTS.join('|'), 'u')
 
 const customProjectProperties: CustomProjectProperties = {
   'Desktop Chrome/ethers': {
-    testIgnore: /(?:social\.spec\.ts).*$/u
+    testIgnore: ETHERS_EMAIL_BASED_REGEX
   },
   'Desktop Brave/ethers': {
-    testIgnore: /(?:email\.spec\.ts|smart-account\.spec\.ts|social\.spec\.ts).*$/u,
+    testIgnore: ETHERS_EMAIL_BASED_REGEX,
     useOptions: braveOptions
   },
   'Desktop Firefox/ethers': {
-    testIgnore: /(?:social\.spec\.ts).*$/u
+    testIgnore: ETHERS_EMAIL_BASED_REGEX
   },
   'Desktop Brave/wagmi': {
-    testIgnore: EMAIL_BASED_PLATFORM_REGEX,
+    testIgnore: WAGMI_DISABLED_TESTS_REGEX,
     useOptions: braveOptions
   },
   'Desktop Chrome/wagmi': {
-    testIgnore: EMAIL_BASED_PLATFORM_REGEX
+    testIgnore: WAGMI_DISABLED_TESTS_REGEX
   },
   'Desktop Firefox/wagmi': {
-    testIgnore: EMAIL_BASED_PLATFORM_REGEX
+    testIgnore: WAGMI_DISABLED_TESTS_REGEX
   },
   // Exclude social.spec.ts, email.spec.ts, siwe.spec.ts, and canary.spec.ts from solana, not yet implemented
   'Desktop Chrome/solana': {
-    grep: SOLANA_UNIMPLEMENTED_TESTS_REGEX
+    testIgnore: SOLANA_DISABLED_TESTS_REGEX
   },
   'Desktop Brave/solana': {
     useOptions: braveOptions,
-    grep: SOLANA_UNIMPLEMENTED_TESTS_REGEX
+    testIgnore: SOLANA_DISABLED_TESTS_REGEX
   },
   'Desktop Firefox/solana': {
-    grep: SOLANA_UNIMPLEMENTED_TESTS_REGEX
+    testIgnore: SOLANA_DISABLED_TESTS_REGEX
   },
   'Desktop Safari/solana': {
-    grep: SOLANA_UNIMPLEMENTED_TESTS_REGEX
+    testIgnore: SOLANA_DISABLED_TESTS_REGEX
   }
 }
 

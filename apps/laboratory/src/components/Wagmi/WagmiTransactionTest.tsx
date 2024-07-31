@@ -3,7 +3,7 @@ import { parseGwei, type Address } from 'viem'
 import { useEstimateGas, useSendTransaction, useAccount } from 'wagmi'
 import { vitalikEthAddress } from '../../utils/DataUtil'
 import { useCallback, useState } from 'react'
-import { optimism, optimismSepolia, sepolia } from 'wagmi/chains'
+import { mainnet } from 'wagmi/chains'
 import { useChakraToast } from '../Toast'
 
 const TEST_TX = {
@@ -12,11 +12,26 @@ const TEST_TX = {
 }
 
 export function WagmiTransactionTest() {
-  const toast = useChakraToast()
   const { status, chain } = useAccount()
-  const { data: gas, error: prepareError } = useEstimateGas(TEST_TX)
+
+  return Number(chain?.id) !== mainnet.id && status === 'connected' ? (
+    <AvailableTestContent />
+  ) : (
+    <Text fontSize="md" color="yellow">
+      Feature not available on Ethereum Mainnet
+    </Text>
+  )
+}
+
+function AvailableTestContent() {
+  const toast = useChakraToast()
+  const { refetch: estimateGas, isFetching: estimateGasFetching } = useEstimateGas({
+    ...TEST_TX,
+    query: {
+      enabled: false
+    }
+  })
   const [isLoading, setLoading] = useState(false)
-  const isConnected = status === 'connected'
 
   const { sendTransaction } = useSendTransaction({
     mutation: {
@@ -39,7 +54,9 @@ export function WagmiTransactionTest() {
     }
   })
 
-  const onSendTransaction = useCallback(() => {
+  const onSendTransaction = useCallback(async () => {
+    const { data: gas, error: prepareError } = await estimateGas()
+
     if (prepareError) {
       toast({
         title: 'Error',
@@ -53,17 +70,16 @@ export function WagmiTransactionTest() {
         gas
       })
     }
-  }, [sendTransaction, prepareError])
+  }, [sendTransaction, estimateGas])
 
-  const allowedChains = [sepolia.id, optimism.id, optimismSepolia.id] as number[]
-
-  return allowedChains.includes(Number(chain?.id)) && status === 'connected' ? (
+  return (
     <Stack direction={['column', 'column', 'row']}>
       <Button
         data-test-id="sign-transaction-button"
         onClick={onSendTransaction}
         disabled={!sendTransaction}
-        isDisabled={isLoading || !isConnected}
+        isDisabled={isLoading}
+        isLoading={estimateGasFetching}
       >
         Send Transaction to Vitalik
       </Button>
@@ -82,9 +98,5 @@ export function WagmiTransactionTest() {
         </Button>
       </Link>
     </Stack>
-  ) : (
-    <Text fontSize="md" color="yellow">
-      Switch to Sepolia or OP to test this feature
-    </Text>
   )
 }

@@ -100,7 +100,7 @@ export const SIWEController = {
 
   async getMessageParams() {
     const client = this._getClient()
-    const messageParams = await client.getMessageParams()
+    const messageParams = await client.getMessageParams?.()
 
     return messageParams
   },

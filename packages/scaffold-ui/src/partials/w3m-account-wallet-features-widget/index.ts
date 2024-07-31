@@ -6,7 +6,8 @@ import {
   RouterController,
   CoreHelperUtil,
   ConstantsUtil as CoreConstantsUtil,
-  EventsController
+  EventsController,
+  OptionsController
 } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -94,6 +95,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
       alignItems="center"
       gap="m"
     >
+      ${this.network && html`<wui-network-icon .network=${this.network}></wui-network-icon>`}
       ${this.activateAccountTemplate()}
       <wui-profile-button
         @click=${this.onProfileButtonClick.bind(this)}
@@ -107,18 +109,27 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
       ${this.tokenBalanceTemplate()}
       <wui-flex gap="s">
         <w3m-tooltip-trigger text="Buy">
-          <wui-icon-button @click=${this.onBuyClick.bind(this)} icon="card"></wui-icon-button>
+          <wui-icon-button
+            data-testid="wallet-features-onramp-button"
+            @click=${this.onBuyClick.bind(this)}
+            icon="card"
+          ></wui-icon-button>
         </w3m-tooltip-trigger>
-        <w3m-tooltip-trigger text="Swap">
-          <wui-icon-button @click=${this.onSwapClick.bind(this)} icon="recycleHorizontal">
-          </wui-icon-button>
-        </w3m-tooltip-trigger>
+        ${this.swapsTemplate()}
         <w3m-tooltip-trigger text="Receive">
-          <wui-icon-button @click=${this.onReceiveClick.bind(this)} icon="arrowBottomCircle">
+          <wui-icon-button
+            data-testid="wallet-features-receive-button"
+            @click=${this.onReceiveClick.bind(this)}
+            icon="arrowBottomCircle"
+          >
           </wui-icon-button>
         </w3m-tooltip-trigger>
         <w3m-tooltip-trigger text="Send">
-          <wui-icon-button @click=${this.onSendClick.bind(this)} icon="send"></wui-icon-button>
+          <wui-icon-button
+            data-testid="wallet-features-send-button"
+            @click=${this.onSendClick.bind(this)}
+            icon="send"
+          ></wui-icon-button>
         </w3m-tooltip-trigger>
       </wui-flex>
 
@@ -135,6 +146,25 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private swapsTemplate() {
+    const { enableSwaps } = OptionsController.state
+
+    if (!enableSwaps) {
+      return null
+    }
+
+    return html`
+      <w3m-tooltip-trigger text="Swap">
+        <wui-icon-button
+          data-testid="wallet-features-swap-button"
+          @click=${this.onSwapClick.bind(this)}
+          icon="recycleHorizontal"
+        >
+        </wui-icon-button>
+      </w3m-tooltip-trigger>
+    `
+  }
+
   private watchSwapValues() {
     this.watchTokenBalance = setInterval(() => AccountController.fetchTokenBalance(), 10000)
   }
@@ -187,7 +217,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   private onProfileButtonClick() {
-    RouterController.push('AccountSettings')
+    RouterController.push('Profile')
   }
 
   private onBuyClick() {

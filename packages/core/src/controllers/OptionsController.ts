@@ -1,5 +1,5 @@
-import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy } from 'valtio/vanilla'
+import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import type { CustomWallet, Metadata, ProjectId, SdkVersion, Tokens } from '../utils/TypeUtil.js'
 import { ApiController } from './ApiController.js'
 
@@ -21,9 +21,11 @@ export interface OptionsControllerState {
   enableAnalytics?: boolean
   metadata?: Metadata
   enableOnramp?: boolean
+  hasMultipleAddresses?: boolean
   disableAppend?: boolean
   enableAuth?: boolean
   enableEIP6963?: boolean
+  enableSwaps?: boolean
 }
 
 type StateKey = keyof OptionsControllerState
@@ -117,5 +119,13 @@ export const OptionsController = {
 
   setEIP6963Enabled(enableEIP6963: OptionsControllerState['enableEIP6963']) {
     state.enableEIP6963 = enableEIP6963
+  },
+
+  setHasMultipleAddresses(hasMultipleAddresses: OptionsControllerState['hasMultipleAddresses']) {
+    state.hasMultipleAddresses = hasMultipleAddresses
+  },
+
+  setEnableSwaps(enableSwaps: OptionsControllerState['enableSwaps']) {
+    state.enableSwaps = enableSwaps
   }
 }
