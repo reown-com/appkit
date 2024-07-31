@@ -102,34 +102,36 @@ export class W3mConnectingFarcasterView extends LitElement {
   }
 
   private loadingTemplate() {
-    return html`<wui-flex
-    flexDirection="column"
-    alignItems="center"
-    .padding=${['xl', 'xl', 'xl', 'xl'] as const}
-    gap="xl"
-  >
-    <wui-flex justifyContent="center" alignItems="center">
-      <wui-logo logo="farcaster"></wui-logo>
-      ${this.loaderTemplate()}
-      <wui-icon-box
-        backgroundColor="error-100"
-        background="opaque"
-        iconColor="error-100"
-        icon="close"
-        size="sm"
-        border
-        borderColor="wui-color-bg-125"
-      ></wui-icon-box>
-      </wui-flex>
-      <wui-flex flexDirection="column" alignItems="center" gap="xs">
-        <wui-text align="center" variant="paragraph-500" color="fg-100"
-          >Loading user data</span></wui-text
-        >
-        <wui-text align="center" variant="small-400" color="fg-200"
-          >Please wait a moment while we load your data.</wui-text
-        ></wui-flex
+    return html`
+      <wui-flex
+        flexDirection="column"
+        alignItems="center"
+        .padding=${['xl', 'xl', 'xl', 'xl'] as const}
+        gap="xl"
       >
-    </wui-flex>`
+        <wui-flex justifyContent="center" alignItems="center">
+          <wui-logo logo="farcaster"></wui-logo>
+          ${this.loaderTemplate()}
+          <wui-icon-box
+            backgroundColor="error-100"
+            background="opaque"
+            iconColor="error-100"
+            icon="close"
+            size="sm"
+            border
+            borderColor="wui-color-bg-125"
+          ></wui-icon-box>
+        </wui-flex>
+        <wui-flex flexDirection="column" alignItems="center" gap="xs">
+          <wui-text align="center" variant="paragraph-500" color="fg-100">
+            Loading user data
+          </wui-text>
+          <wui-text align="center" variant="small-400" color="fg-200">
+            Please wait a moment while we load your data.
+          </wui-text>
+        </wui-flex>
+      </wui-flex>
+    `
   }
 
   private mobileTemplate() {
