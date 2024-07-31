@@ -913,16 +913,7 @@ export class Web3Modal extends Web3ModalScaffold {
             : [{ address, type: preferredAccountType as 'eoa' | 'smartAccount' }]
         )
 
-        /**
-         * Warning: This is a temporary fix to handle both string and number chainId
-         * `chainId` will be only string after the dependencies are updated
-         */
-        if (typeof chainId === 'string') {
-          EthersStoreUtil.setChainId(NetworkUtil.caipNetworkIdToNumber(chainId as CaipNetworkId))
-        } else {
-          EthersStoreUtil.setChainId(chainId)
-        }
-
+        EthersStoreUtil.setChainId(NetworkUtil.parseEvmChainId(chainId))
         EthersStoreUtil.setProviderType(ConstantsUtil.AUTH_CONNECTOR_ID as 'w3mAuth')
         EthersStoreUtil.setProvider(this.authProvider as unknown as CombinedProvider)
         EthersStoreUtil.setStatus('connected')
