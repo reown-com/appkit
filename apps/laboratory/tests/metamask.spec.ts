@@ -10,11 +10,11 @@ const synpressTest = testWithSynpress(metaMaskFixtures(basicSetup)).extend<{ lib
 
 synpressTest.describe.configure({ mode: 'serial' })
 
-synpressTest('should be connected as expected', async ({ page, library, metamask }) => {
+synpressTest('should be connected as expected', async ({ page, metamask }) => {
   await page.goto(`/library/wagmi`)
   const modalValidator = new ModalValidator(page)
   await page.getByTestId('connect-button').click()
-  const connectMetaMaskButton = await page.getByTestId('wallet-selector-io.metamask')
+  const connectMetaMaskButton = page.getByTestId('wallet-selector-io.metamask')
   await expect(connectMetaMaskButton).toBeVisible()
   await connectMetaMaskButton.click()
   await metamask.connectToDapp()
