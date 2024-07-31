@@ -35,9 +35,9 @@
   "devDependencies": {
     "@changesets/changelog-github": "0.5.0",
     "@changesets/cli": "2.27.1",
-    "@vitest/coverage-v8": "1.1.2",
     "@typescript-eslint/eslint-plugin": "6.18.1",
     "@typescript-eslint/parser": "6.18.1",
+    "@vitest/coverage-v8": "1.1.2",
     "danger": "11.3.1",
     "eslint": "8.56.0",
     "eslint-config-prettier": "9.1.0",
@@ -47,8 +47,13 @@
     "turbo": "2.0.6-canary.0",
     "typescript": "5.3.3",
     "vite": "5.2.11",
-    "vitest": "1.5.0",
-    "vite-plugin-node-polyfills": "0.22.0"
+    "vite-plugin-node-polyfills": "0.22.0",
+    "vitest": "1.5.0"
   },
-  "packageManager": "pnpm@9.5.0"
+  "packageManager": "pnpm@9.5.0",
+  "pnpm": {
+    "patchedDependencies": {
+      "@synthetixio/synpress-metamask@0.0.1-alpha.7": "patches/@synthetixio__synpress-metamask@0.0.1-alpha.7.patch"
+    }
+  }
 }
