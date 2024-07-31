@@ -152,7 +152,7 @@ export function WagmiRequestPermissionsTest() {
       })
     }
     setRequestPermissionLoading(false)
-  }, [passkey])
+  }, [passkey, ethereumProvider])
 
   if (!isConnected || !ethereumProvider || !address) {
     return (

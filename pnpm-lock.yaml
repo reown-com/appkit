@@ -223,6 +223,9 @@ importers:
       '@web3modal/wagmi':
         specifier: workspace:*
         version: link:../../packages/wagmi
+      '@web3modal/wallet':
+        specifier: workspace:*
+        version: link:../../packages/wallet
       axios:
         specifier: 1.7.2
         version: 1.7.2
