@@ -151,7 +151,7 @@ export class Web3Modal extends Web3ModalScaffold {
             return
           }
           const params = await SIWEController?.getMessageParams?.()
-
+          console.log({ params })
           /*
            * Must perform these checks to satify optional types
            * Make active chain first in requested chains to make it default for siwe message
@@ -160,13 +160,19 @@ export class Web3Modal extends Web3ModalScaffold {
             return
           }
 
-          // @ts-expect-error - setting requested chains beforehand avoids wagmi auto disconnecting the session when `connect` is called because it things chains are stale
-          await connector.setRequestedChainsIds(siweParams.chains)
+          let reorderedChains = this.wagmiConfig.chains.map(c => c.id)
+          // @ts-expect-error - setting requested chains beforehand avoids wagmi auto disconnecting the session when `connect` is called because it thinks chains are stale
+          await connector.setRequestedChainsIds(reorderedChains)
+
+          if (chainId) {
+            reorderedChains = [chainId, ...reorderedChains.filter(c => c !== chainId)]
+          }
 
           const result = await provider.authenticate({
             nonce: await SIWEController.getNonce(),
             methods: [...OPTIONAL_METHODS],
-            ...params
+            ...params,
+            chains: reorderedChains
           })
           // Auths is an array of signed CACAO objects https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-74.md
           const signedCacao = result?.auths?.[0]
