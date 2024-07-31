@@ -139,6 +139,62 @@ export class Web3Modal extends Web3ModalScaffold {
 
         WalletConnectProvider.on('display_uri', onUri)
         const address = await this.WalletConnectConnector.connect()
+
+        // When connecting through walletconnect, we need to set the clientId in the store
+        const clientId = await WalletConnectProvider.client?.core?.crypto?.getClientId()
+        if (clientId) {
+          this.setClientId(clientId)
+        }
+
+        const params = await siwsConfig?.getMessageParams?.()
+
+        if (siwsConfig?.options?.enabled && params && Object.keys(params || {}).length > 0) {
+          const { SIWSController } = await import('@web3modal/siws')
+          const chainId = NetworkController.state.caipNetwork?.id
+
+          if (!chainId) {
+            throw new Error('A chainId is required to create a SIWS message.')
+          }
+
+          let reorderedChains = params.chains
+          if (chainId) {
+            reorderedChains = [chainId, ...params.chains.filter(c => c !== chainId)]
+          }
+
+          if (address && chainId) {
+            SIWSController.setSession({
+              address,
+              chainId
+            })
+          }
+          try {
+            const messageParams = await siwsConfig.getMessageParams()
+            const nonce = await siwsConfig.getNonce()
+
+            const message = await siwsConfig.createMessage({
+              chainId,
+              nonce,
+              version: '1' as const,
+              address,
+              ...messageParams
+            })
+
+            await SIWSController.verifyMessage({
+              message,
+              signature: ''
+            })
+            this.setWalletConnectProvider(address)
+          } catch (error) {
+            // eslint-disable-next-line no-console
+            console.error('Error verifying message', error)
+            // eslint-disable-next-line no-console
+            await WalletConnectProvider.disconnect().catch(console.error)
+            // eslint-disable-next-line no-console
+            await SIWSController.signOut().catch(console.error)
+            throw error
+          }
+        }
+
         this.setWalletConnectProvider(address)
         WalletConnectProvider.removeListener('display_uri', onUri)
       },
