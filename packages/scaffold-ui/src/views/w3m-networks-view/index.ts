@@ -22,7 +22,7 @@ export class W3mNetworksView extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() public caipNetwork = NetworkController.state.caipNetwork
+  @state() public network = NetworkController.state.caipNetwork
 
   @state() public requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
 
@@ -118,7 +118,7 @@ export class W3mNetworksView extends LitElement {
     return this.filteredNetworks?.map(
       network => html`
         <wui-list-network
-          .selected=${this.caipNetwork?.id === network.id}
+          .selected=${this.network?.id === network.id}
           imageSrc=${ifDefined(AssetUtil.getNetworkImage(network))}
           type="network"
           name=${network.name ?? network.id}
