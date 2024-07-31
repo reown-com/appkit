@@ -4,13 +4,11 @@ import { SwitchChainError, getAddress } from 'viem'
 import type { Address } from 'viem'
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
 import type { SocialProvider } from '@web3modal/scaffold-utils'
+import { NetworkUtil, type CaipNetworkId } from '@web3modal/common'
+
 // -- Types ----------------------------------------------------------------------------------------
 interface W3mFrameProviderOptions {
   projectId: string
-}
-
-interface ConnectOptions {
-  chainId?: number
 }
 
 export type AuthParameters = {
@@ -28,6 +26,16 @@ export function authConnector(parameters: AuthParameters) {
     provider?: W3mFrameProvider
   }
 
+  /**
+   * Warning: This is a temporary function for migrating chainId to CAIP-2 string instead of number
+   * It should be changed to accept only string once the dependencies are updated to use CAIP-2 string
+   */
+  function parseChainId(chainId: string | number) {
+    return typeof chainId === 'string'
+      ? NetworkUtil.caipNetworkIdToNumber(chainId as CaipNetworkId) || 1
+      : chainId
+  }
+
   return createConnector<W3mFrameProvider, Properties>(config => ({
     id: ConstantsUtil.AUTH_CONNECTOR_ID,
     name: 'Web3Modal Auth',
@@ -37,17 +45,21 @@ export function authConnector(parameters: AuthParameters) {
     showWallets: parameters.showWallets,
     walletFeatures: parameters.walletFeatures,
 
-    async connect(options: ConnectOptions = {}) {
+    async connect(options = {}) {
       const provider = await this.getProvider()
-      const { address, chainId } = await provider.connect({ chainId: options.chainId })
+      const { address, chainId } = await provider.connect({
+        chainId: options.chainId
+      })
       await provider.getSmartAccountEnabledNetworks()
+
+      const parsedChainId = parseChainId(chainId)
 
       return {
         accounts: [address as Address],
         account: address as Address,
-        chainId,
+        chainId: parsedChainId,
         chain: {
-          id: chainId,
+          id: parsedChainId,
           unsuported: false
         }
       }
@@ -78,7 +90,7 @@ export function authConnector(parameters: AuthParameters) {
       const provider: W3mFrameProvider = await this.getProvider()
       const { chainId } = await provider.getChainId()
 
-      return chainId
+      return parseChainId(chainId)
     },
 
     async isAuthorized() {
