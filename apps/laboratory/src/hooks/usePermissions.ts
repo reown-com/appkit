@@ -209,7 +209,7 @@ export function usePermissions() {
         context: {
           expiry: permissions.expiry,
           signer: {
-            type: 'native-token-transfer',
+            type: 'donut-purchase',
             data: {
               ids: [wcCosignerData.key, hexStringToBase64(passkeyPublicKey)]
             }

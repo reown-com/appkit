@@ -14,6 +14,7 @@ import {
   encodePublicKeyToDID,
   hexStringToBase64
 } from '../../utils/CommonUtils'
+import { abi as donutContractAbi, address as donutContractAddress } from '../../utils/DonutContract'
 import { useWagmiPermissions } from '../../context/WagmiPermissionsContext'
 import { serializePublicKey, type P256Credential } from 'webauthn-p256'
 import { CoSignerApiError, useWalletConnectCosigner } from '../../hooks/useWalletConnectCosigner'
@@ -44,18 +45,16 @@ export function WagmiRequestPermissionsTest() {
       expiry: Date.now() + 24 * 60 * 60,
       permissions: [
         {
-          type: 'native-token-transfer',
-          data: {
-            ticker: 'ETH'
+          type: {
+            custom: 'donut-purchase'
           },
-          policies: [
-            {
-              type: 'token-allowance',
-              data: {
-                allowance: parseEther('1')
-              }
-            }
-          ]
+          data: {
+            target: donutContractAddress,
+            abi: donutContractAbi,
+            valueLimit: parseEther('10'),
+            functionName: 'purchase'
+          },
+          policies: []
         }
       ],
       signer: {
@@ -79,7 +78,7 @@ export function WagmiRequestPermissionsTest() {
     const caip10Address = `eip155:${chain?.id}:${address}`
     try {
       const addPermissionResponse = await addPermission(caip10Address, projectId, {
-        permissionType: 'native-token-transfer',
+        permissionType: 'donut-purchase',
         data: '',
         onChainValidated: false,
         required: true
@@ -113,7 +112,7 @@ export function WagmiRequestPermissionsTest() {
           context: {
             expiry: approvedPermissions.expiry,
             signer: {
-              type: 'native-token-transfer',
+              type: 'donut-purchase',
               data: {
                 ids: [addPermissionResponse.key, hexStringToBase64(passkeyPublicKey)]
               }
