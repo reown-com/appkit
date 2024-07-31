@@ -81,7 +81,7 @@ importers:
         version: 11.0.8(react-dom@18.2.0)(react@18.2.0)
       next:
         specifier: 14.2.3
-        version: 14.2.3(@babel/core@7.25.2)(@playwright/test@1.40.1)(react-dom@18.2.0)(react@18.2.0)
+        version: 14.2.3(@babel/core@7.25.2)(@playwright/test@1.44.0)(react-dom@18.2.0)(react@18.2.0)
       react:
         specifier: 18.2.0
         version: 18.2.0
@@ -239,7 +239,7 @@ importers:
         version: 10.17.9(react-dom@18.2.0)(react@18.2.0)
       next:
         specifier: 14.2.3
-        version: 14.2.3(@babel/core@7.25.2)(@playwright/test@1.40.1)(react-dom@18.2.0)(react@18.2.0)
+        version: 14.2.3(@babel/core@7.25.2)(@playwright/test@1.44.0)(react-dom@18.2.0)(react@18.2.0)
       next-auth:
         specifier: 4.24.5
         version: 4.24.5(next@14.2.3)(react-dom@18.2.0)(react@18.2.0)
@@ -275,11 +275,11 @@ importers:
         specifier: 1.0.5
         version: 1.0.5
       '@playwright/test':
-        specifier: 1.40.1
-        version: 1.40.1
+        specifier: 1.44.0
+        version: 1.44.0
       '@synthetixio/synpress':
         specifier: 4.0.0-alpha.7
-        version: 4.0.0-alpha.7(@playwright/test@1.40.1)(playwright-core@1.44.0)(typescript@5.3.3)
+        version: 4.0.0-alpha.7(@playwright/test@1.44.0)(playwright-core@1.44.0)(typescript@5.3.3)
       '@types/node':
         specifier: 20.11.5
         version: 20.11.5
@@ -338,7 +338,7 @@ importers:
         version: link:../../packages/wagmi
       next:
         specifier: 14.2.3
-        version: 14.2.3(@babel/core@7.25.2)(@playwright/test@1.40.1)(react-dom@18.2.0)(react@18.2.0)
+        version: 14.2.3(@babel/core@7.25.2)(@playwright/test@1.44.0)(react-dom@18.2.0)(react@18.2.0)
       react:
         specifier: 18.2.0
         version: 18.2.0
@@ -7092,12 +7092,12 @@ packages:
     engines: {node: ^12.20.0 || ^14.18.0 || >=16.0.0}
     dev: true
 
-  /@playwright/test@1.40.1:
-    resolution: {integrity: sha512-EaaawMTOeEItCRvfmkI9v6rBkF1svM8wjl/YPRrg2N2Wmp+4qJYkWtJsbew1szfKKDm6fPLy4YAanBhIlf9dWw==}
+  /@playwright/test@1.44.0:
+    resolution: {integrity: sha512-rNX5lbNidamSUorBhB4XZ9SQTjAqfe5M+p37Z8ic0jPFBMo5iCtQz1kRWkEMg+rYOKSlVycpQmpqjSFq7LXOfg==}
     engines: {node: '>=16'}
     hasBin: true
     dependencies:
-      playwright: 1.40.1
+      playwright: 1.44.0
 
   /@popperjs/core@2.11.8:
     resolution: {integrity: sha512-P1st0aksCrn9sGZhp8GMYwBnQsbvAWsZAX44oXNNvLHGqAOcoVxmjZiohstwQ7SqKnbR47akdNi+uleWD8+g6A==}
@@ -10488,14 +10488,14 @@ packages:
       tslib: 2.6.3
     dev: false
 
-  /@synthetixio/ethereum-wallet-mock@0.0.1-alpha.7(@playwright/test@1.40.1)(typescript@5.3.3):
+  /@synthetixio/ethereum-wallet-mock@0.0.1-alpha.7(@playwright/test@1.44.0)(typescript@5.3.3):
     resolution: {integrity: sha512-afyAVC2b39OC/mxfVeISFQ7TVleS15GYeCPte6VrdFYWi/2SXPml6myAZx9FlRqRlyaPLhRrtRRjdno44S6/6Q==}
     peerDependencies:
       '@playwright/test': 1.44.0
     dependencies:
       '@depay/web3-mock': 14.17.0
-      '@playwright/test': 1.40.1
-      '@synthetixio/synpress-core': 0.0.1-alpha.7(@playwright/test@1.40.1)
+      '@playwright/test': 1.44.0
+      '@synthetixio/synpress-core': 0.0.1-alpha.7(@playwright/test@1.44.0)
       viem: 2.9.9(typescript@5.3.3)
     transitivePeerDependencies:
       - bufferutil
@@ -10532,22 +10532,22 @@ packages:
       - typescript
     dev: true
 
-  /@synthetixio/synpress-core@0.0.1-alpha.7(@playwright/test@1.40.1):
+  /@synthetixio/synpress-core@0.0.1-alpha.7(@playwright/test@1.44.0):
     resolution: {integrity: sha512-El23vK/FlYiliT2JworRc8zXGVdUIvzxwzWtGMZwC/KOKy0RGgNA7rQfwc3VSPhp1ceUd4w3uIRtv6Ccjo8WbA==}
     peerDependencies:
       '@playwright/test': 1.44.0
     dependencies:
-      '@playwright/test': 1.40.1
+      '@playwright/test': 1.44.0
     dev: true
 
-  /@synthetixio/synpress-metamask@0.0.1-alpha.7(patch_hash=fj5b4lzbslgihe6pqcmuyxpfd4)(@playwright/test@1.40.1)(playwright-core@1.44.0)(typescript@5.3.3):
+  /@synthetixio/synpress-metamask@0.0.1-alpha.7(patch_hash=fj5b4lzbslgihe6pqcmuyxpfd4)(@playwright/test@1.44.0)(playwright-core@1.44.0)(typescript@5.3.3):
     resolution: {integrity: sha512-xzBsF5wnak25uw7ZO9RJEmCuMtT03W9pyDaEpO7T1VkDcZT8MBxKHs9vR4UKqHHd9IPKXc9EvsUJ/oSwW4saKQ==}
     peerDependencies:
       '@playwright/test': 1.44.0
     dependencies:
-      '@playwright/test': 1.40.1
+      '@playwright/test': 1.44.0
       '@synthetixio/synpress-cache': 0.0.1-alpha.7(playwright-core@1.44.0)(typescript@5.3.3)
-      '@synthetixio/synpress-core': 0.0.1-alpha.7(@playwright/test@1.40.1)
+      '@synthetixio/synpress-core': 0.0.1-alpha.7(@playwright/test@1.44.0)
       '@viem/anvil': 0.0.7
       fs-extra: 11.2.0
       zod: 3.22.4
@@ -10565,17 +10565,17 @@ packages:
     dev: true
     patched: true
 
-  /@synthetixio/synpress@4.0.0-alpha.7(@playwright/test@1.40.1)(playwright-core@1.44.0)(typescript@5.3.3):
+  /@synthetixio/synpress@4.0.0-alpha.7(@playwright/test@1.44.0)(playwright-core@1.44.0)(typescript@5.3.3):
     resolution: {integrity: sha512-hdVV+LR/aCO+o7FyeJiFxJ+o797mDqNqkh+huz3Ic4LDbTW18HkLKwLwUzRKt8ngIOf60K/PFL9QyBLujTc76g==}
     hasBin: true
     peerDependencies:
       '@playwright/test': 1.44.0
     dependencies:
-      '@playwright/test': 1.40.1
-      '@synthetixio/ethereum-wallet-mock': 0.0.1-alpha.7(@playwright/test@1.40.1)(typescript@5.3.3)
+      '@playwright/test': 1.44.0
+      '@synthetixio/ethereum-wallet-mock': 0.0.1-alpha.7(@playwright/test@1.44.0)(typescript@5.3.3)
       '@synthetixio/synpress-cache': 0.0.1-alpha.7(playwright-core@1.44.0)(typescript@5.3.3)
-      '@synthetixio/synpress-core': 0.0.1-alpha.7(@playwright/test@1.40.1)
-      '@synthetixio/synpress-metamask': 0.0.1-alpha.7(patch_hash=fj5b4lzbslgihe6pqcmuyxpfd4)(@playwright/test@1.40.1)(playwright-core@1.44.0)(typescript@5.3.3)
+      '@synthetixio/synpress-core': 0.0.1-alpha.7(@playwright/test@1.44.0)
+      '@synthetixio/synpress-metamask': 0.0.1-alpha.7(patch_hash=fj5b4lzbslgihe6pqcmuyxpfd4)(@playwright/test@1.44.0)(playwright-core@1.44.0)(typescript@5.3.3)
     transitivePeerDependencies:
       - '@microsoft/api-extractor'
       - '@swc/core'
@@ -18561,7 +18561,7 @@ packages:
       '@panva/hkdf': 1.2.1
       cookie: 0.5.0
       jose: 4.15.9
-      next: 14.2.3(@babel/core@7.25.2)(@playwright/test@1.40.1)(react-dom@18.2.0)(react@18.2.0)
+      next: 14.2.3(@babel/core@7.25.2)(@playwright/test@1.44.0)(react-dom@18.2.0)(react@18.2.0)
       oauth: 0.9.15
       openid-client: 5.6.5
       preact: 10.23.1
@@ -18571,7 +18571,7 @@ packages:
       uuid: 8.3.2
     dev: false
 
-  /next@14.2.3(@babel/core@7.25.2)(@playwright/test@1.40.1)(react-dom@18.2.0)(react@18.2.0):
+  /next@14.2.3(@babel/core@7.25.2)(@playwright/test@1.44.0)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-dowFkFTR8v79NPJO4QsBUtxv0g9BrS/phluVpMAt2ku7H+cbcBJlopXjkWlwxrk/xGqMemr7JkGPGemPrLLX7A==}
     engines: {node: '>=18.17.0'}
     hasBin: true
@@ -18590,7 +18590,7 @@ packages:
         optional: true
     dependencies:
       '@next/env': 14.2.3
-      '@playwright/test': 1.40.1
+      '@playwright/test': 1.44.0
       '@swc/helpers': 0.5.5
       busboy: 1.6.0
       caniuse-lite: 1.0.30001645
@@ -19295,23 +19295,17 @@ packages:
       mlly: 1.7.1
       pathe: 1.1.2
 
-  /playwright-core@1.40.1:
-    resolution: {integrity: sha512-+hkOycxPiV534c4HhpfX6yrlawqVUzITRKwHAmYfmsVreltEl6fAZJ3DPfLMOODw0H3s1Itd6MDCWmP1fl/QvQ==}
-    engines: {node: '>=16'}
-    hasBin: true
-
   /playwright-core@1.44.0:
     resolution: {integrity: sha512-ZTbkNpFfYcGWohvTTl+xewITm7EOuqIqex0c7dNZ+aXsbrLj0qI8XlGKfPpipjm0Wny/4Lt4CJsWJk1stVS5qQ==}
     engines: {node: '>=16'}
     hasBin: true
-    dev: true
 
-  /playwright@1.40.1:
-    resolution: {integrity: sha512-2eHI7IioIpQ0bS1Ovg/HszsN/XKNwEG1kbzSDDmADpclKc7CyqkHw7Mg2JCz/bbCxg25QUPcjksoMW7JcIFQmw==}
+  /playwright@1.44.0:
+    resolution: {integrity: sha512-F9b3GUCLQ3Nffrfb6dunPOkE5Mh68tR7zN32L4jCk4FjQamgesGay7/dAAe1WaMEGV04DkdJfcJzjoCKygUaRQ==}
     engines: {node: '>=16'}
     hasBin: true
     dependencies:
-      playwright-core: 1.40.1
+      playwright-core: 1.44.0
     optionalDependencies:
       fsevents: 2.3.2
 
