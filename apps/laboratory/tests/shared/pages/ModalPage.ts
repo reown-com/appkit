@@ -94,15 +94,15 @@ export class ModalPage {
     await email.deleteAllMessages(emailAddress)
     await this.loginWithEmail(emailAddress)
 
-    let messageId = await email.getLatestMessageId(emailAddress)
-
+    const messageId = await email.getLatestMessageId(emailAddress)
     if (!messageId) {
       throw new Error('No messageId found')
     }
-    let emailBody = await email.getEmailBody(emailAddress, messageId)
+
+    const firstEmailBody = await email.getEmailBody(emailAddress, messageId)
     let otp = ''
-    if (email.isApproveEmail(emailBody)) {
-      const url = email.getApproveUrlFromBody(emailBody)
+    if (email.isApproveEmail(firstEmailBody)) {
+      const url = email.getApproveUrlFromBody(firstEmailBody)
 
       await email.deleteAllMessages(emailAddress)
 
@@ -111,16 +111,18 @@ export class ModalPage {
       await drp.approveDevice()
       await drp.close()
 
-      messageId = await email.getLatestMessageId(emailAddress)
-
-      emailBody = await email.getEmailBody(emailAddress, messageId)
-      if (!email.isApproveEmail(emailBody)) {
-        otp = email.getOtpCodeFromBody(emailBody)
+      const messageId = await email.getLatestMessageId(emailAddress)
+      if (!messageId) {
+        throw new Error('No messageId found')
       }
-    }
 
-    if (otp === '') {
-      otp = email.getOtpCodeFromBody(emailBody)
+      const secondEmailBody = await email.getEmailBody(emailAddress, messageId)
+      if (email.isApproveEmail(secondEmailBody)) {
+        throw new Error('Unexpected approve email after already approved')
+      }
+      otp = email.getOtpCodeFromBody(secondEmailBody)
+    } else {
+      otp = email.getOtpCodeFromBody(firstEmailBody)
     }
 
     await this.enterOTP(otp)
