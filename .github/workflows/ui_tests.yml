@@ -105,9 +105,13 @@ jobs:
         working-directory: ./apps/laboratory/
         run: pnpm playwright:install
 
-      - name: Setup MetaMask wallet
+      - name: Build MetaMask wallet cache
         working-directory: ./apps/laboratory/
-        run: pnpm synpress
+        run: xvfb-run pnpm synpress
+
+      - name: Run MetaMask Playwright tests (headful)
+        working-directory: ./apps/laboratory/
+        run: xvfb-run pnpm playwright:test:metamask
 
       - name: Run Playwright tests
         env:
