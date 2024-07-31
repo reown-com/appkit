@@ -48,7 +48,6 @@ export class ModalPage {
   }
 
   async getConnectUri(timingRecords?: TimingRecords): Promise<string> {
-    await this.page.goto(this.url)
     await this.connectButton.click()
     const connect = this.page.getByTestId('wallet-selector-walletconnect')
     await connect.waitFor({
