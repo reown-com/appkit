@@ -10,7 +10,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "playwright:start": "pnpm start",
     "playwright:install": "playwright install --with-deps",
-    "synpress": "synpress ./tests/wallet-setup",
+    "synpress": "synpress ./tests/wallet-setup --headless",
     "playwright:test": "playwright test",
     "playwright:test:metamask": "playwright test --grep 'metamask.spec.ts'",
     "playwright:test:basic": "playwright test --grep 'basic-tests.spec.ts'",
