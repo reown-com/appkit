@@ -38,7 +38,7 @@ on:
         required: true
       TESTS_NEXTAUTH_SECRET:
         required: false
-      TESTS_MAILSEC_API_KEY:
+      TESTS_MAILSAC_API_KEY:
         required: false
       TESTS_SOCIAL_EMAIL:
         required: false
@@ -95,7 +95,7 @@ jobs:
         env:
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
           NEXTAUTH_SECRET: ${{ secrets.TESTS_NEXTAUTH_SECRET }}
-          MAILSAC_API_KEY: ${{ secrets.TESTS_MAILSEC_API_KEY }}
+          MAILSAC_API_KEY: ${{ secrets.TESTS_MAILSAC_API_KEY }}
           NEXT_PUBLIC_SECURE_SITE_SDK_URL: ${{ inputs.secure-site-url }}
           SOCIAL_TEST_EMAIL: ${{ secrets.TESTS_SOCIAL_EMAIL }}
           SOCIAL_TEST_PASSWORD: ${{ secrets.TESTS_SOCIAL_PASSWORD }}
@@ -112,7 +112,7 @@ jobs:
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
           SKIP_PLAYWRIGHT_WEBSERVER: ${{ inputs.skip-playwright-webserver }}
           NEXTAUTH_SECRET: ${{ secrets.TESTS_NEXTAUTH_SECRET }}
-          MAILSAC_API_KEY: ${{ secrets.TESTS_MAILSEC_API_KEY }}
+          MAILSAC_API_KEY: ${{ secrets.TESTS_MAILSAC_API_KEY }}
           NEXT_PUBLIC_SECURE_SITE_SDK_URL: ${{ inputs.secure-site-url }}
           SOCIAL_TEST_EMAIL: ${{ secrets.TESTS_SOCIAL_EMAIL }}
           SOCIAL_TEST_PASSWORD: ${{ secrets.TESTS_SOCIAL_PASSWORD }}
