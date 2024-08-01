@@ -88,7 +88,7 @@ export class W3mFrameProvider {
 
   public chunkLoggerController: ChunkLoggerController | null
 
-  public constructor(projectId: string) {
+  public constructor(projectId: string, chainId?: W3mFrameTypes.Network['chainId']) {
     const loggerOptions = getDefaultLoggerOptions({
       level: DEFAULT_LOG_LEVEL
     })
@@ -115,7 +115,7 @@ export class W3mFrameProvider {
       }
     }
 
-    this.w3mFrame = new W3mFrame(projectId, true)
+    this.w3mFrame = new W3mFrame(projectId, true, chainId)
     this.w3mFrame.events.onFrameEvent(event => {
       this.logger.info({ event }, 'Event received')
 

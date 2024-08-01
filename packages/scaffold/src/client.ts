@@ -160,33 +160,33 @@ export class Web3ModalScaffold {
   }
 
   // -- Protected ----------------------------------------------------------------
-  protected replace(route: RouterControllerState['view']) {
+  public replace(route: RouterControllerState['view']) {
     RouterController.replace(route)
   }
 
-  protected redirect(route: RouterControllerState['view']) {
+  public redirect(route: RouterControllerState['view']) {
     RouterController.push(route)
   }
 
-  protected popTransactionStack(cancel?: boolean) {
+  public popTransactionStack(cancel?: boolean) {
     RouterController.popTransactionStack(cancel)
   }
 
-  protected isOpen() {
+  public isOpen() {
     return ModalController.state.open
   }
 
-  protected isTransactionStackEmpty() {
+  public isTransactionStackEmpty() {
     return RouterController.state.transactionStack.length === 0
   }
 
-  protected isTransactionShouldReplaceView() {
+  public isTransactionShouldReplaceView() {
     return RouterController.state.transactionStack[
       RouterController.state.transactionStack.length - 1
     ]?.replace
   }
 
-  protected setIsConnected: (typeof AccountController)['setIsConnected'] = (isConnected, chain) => {
+  public setIsConnected: (typeof AccountController)['setIsConnected'] = (isConnected, chain) => {
     AccountController.setIsConnected(isConnected, chain)
   }
 
@@ -238,7 +238,7 @@ export class Web3ModalScaffold {
     NetworkController.setCaipNetwork(caipNetwork)
   }
 
-  protected getCaipNetwork = () => NetworkController.state.caipNetwork
+  public getCaipNetwork = () => NetworkController.state.caipNetwork
 
   protected setRequestedCaipNetworks: (typeof NetworkController)['setRequestedCaipNetworks'] = (
     requestedCaipNetworks,

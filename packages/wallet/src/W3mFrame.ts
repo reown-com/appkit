@@ -21,7 +21,11 @@ export class W3mFrame {
       }
     | undefined
 
-  public constructor(projectId: string, isAppClient = false) {
+  public constructor(
+    projectId: string,
+    isAppClient = false,
+    chainId: W3mFrameTypes.Network['chainId'] = 'eip155:1'
+  ) {
     this.projectId = projectId
     this.frameLoadPromise = new Promise((resolve, reject) => {
       this.frameLoadPromiseResolver = { resolve, reject }
@@ -35,7 +39,7 @@ export class W3mFrame {
       if (W3mFrameHelpers.isClient) {
         const iframe = document.createElement('iframe')
         iframe.id = 'w3m-iframe'
-        iframe.src = `${SECURE_SITE_SDK}?projectId=${projectId}`
+        iframe.src = `${SECURE_SITE_SDK}?projectId=${projectId}&chainId=${chainId}`
         iframe.style.position = 'fixed'
         iframe.style.zIndex = '999999'
         iframe.style.display = 'none'
@@ -55,54 +59,40 @@ export class W3mFrame {
   }
 
   // -- Networks --------------------------------------------------------------
-  get networks(): Record<number, W3mFrameTypes.Network> {
+  get networks(): Record<string, W3mFrameTypes.Network> {
     const data = [
-      1,
-      5,
-      11155111,
-      10,
-      420,
-      42161,
-      421613,
-      137,
-      80001,
-      42220,
-      1313161554,
-      1313161555,
-      56,
-      97,
-      43114,
-      43113,
-      324,
-      280,
-      100,
-      8453,
-      84531,
-      7777777,
-      999,
-      // Solana Mainnet
-      '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-      // Solana Testnet
-      '4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z',
-      // Solana Devnet
-      'EtWTRABZaYq6iMfeYKouRu166VU2xqa1'
-    ].map(id => {
-      if (typeof id === 'number') {
-        return {
-          [id]: {
-            rpcUrl: `${this.rpcUrl}/v1/?chainId=eip155:${id}&projectId=${this.projectId}`,
-            chainId: id
-          }
-        }
+      'eip155:1',
+      'eip155:5',
+      'eip155:11155111',
+      'eip155:10',
+      'eip155:420',
+      'eip155:42161',
+      'eip155:421613',
+      'eip155:137',
+      'eip155:80001',
+      'eip155:42220',
+      'eip155:1313161554',
+      'eip155:1313161555',
+      'eip155:56',
+      'eip155:97',
+      'eip155:43114',
+      'eip155:43113',
+      'eip155:324',
+      'eip155:280',
+      'eip155:100',
+      'eip155:8453',
+      'eip155:84531',
+      'eip155:7777777',
+      'eip155:999',
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      'solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z',
+      'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1'
+    ].map(id => ({
+      [id]: {
+        rpcUrl: `${this.rpcUrl}/v1/?chainId=${id}&projectId=${this.projectId}`,
+        chainId: id
       }
-
-      return {
-        [id]: {
-          rpcUrl: `${this.rpcUrl}/v1/`,
-          chainId: id
-        }
-      }
-    })
+    }))
 
     return Object.assign({}, ...data)
   }

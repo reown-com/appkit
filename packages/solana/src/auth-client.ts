@@ -2,7 +2,8 @@ import {
   W3mFrameConstants,
   W3mFrameHelpers,
   W3mFrameProvider,
-  W3mFrameRpcConstants
+  W3mFrameRpcConstants,
+  type W3mFrameTypes
 } from '@web3modal/wallet'
 import { type CombinedProvider } from './utils/scaffold'
 import type { ISolanaModal } from './solana-interface'
@@ -22,7 +23,10 @@ export class SolanaAuthClient {
 
   constructor({ modal, projectId }: SolanaAuthClientConfig) {
     this.modal = modal
-    this.authProvider = new W3mFrameProvider(projectId)
+    this.authProvider = new W3mFrameProvider(
+      projectId,
+      modal.getChainId() as W3mFrameTypes.Network['chainId']
+    )
   }
 
   public getConnector(): Connector {

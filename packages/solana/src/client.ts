@@ -348,8 +348,6 @@ export class Web3Modal extends Web3ModalScaffold implements ISolanaModal {
   public async checkActiveProviders(standardAdapters?: StandardWalletAdapter[]) {
     const walletId = localStorage.getItem(SolConstantsUtil.WALLET_ID)
 
-    console.log('wallet id ===', walletId)
-
     if (!walletId) {
       return
     }
@@ -395,7 +393,6 @@ export class Web3Modal extends Web3ModalScaffold implements ISolanaModal {
         }
       }
     } catch (error) {
-      console.log('failed to check active providers', error)
       SolStoreUtil.setError(error)
     }
   }
@@ -635,9 +632,7 @@ export class Web3Modal extends Web3ModalScaffold implements ISolanaModal {
       return storeChainId
     }
 
-    const networkControllerChainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
-
-    return networkControllerChainId
+    return this.getCaipNetwork()?.id
   }
 
   private setInjectedProvider(provider: Provider) {

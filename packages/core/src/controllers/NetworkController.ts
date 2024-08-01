@@ -6,6 +6,7 @@ import { ModalController } from './ModalController.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { NetworkUtil, type Chain } from '@web3modal/common'
 import { ChainController } from './ChainController.js'
+import { ConnectorController } from './ConnectorController.js'
 
 // -- Types --------------------------------------------- //
 export interface NetworkControllerClient {
@@ -97,6 +98,8 @@ export const NetworkController = {
         this.showUnsupportedChainUI()
       }
     }
+
+    ConnectorController.switchAuthConnectorProviderNetwork(caipNetwork.id)
   },
 
   setDefaultCaipNetwork(caipNetwork: NetworkControllerState['caipNetwork'], chain?: Chain) {
@@ -216,6 +219,8 @@ export const NetworkController = {
         event: 'SWITCH_NETWORK',
         properties: { network: network.id }
       })
+
+      await ConnectorController.switchAuthConnectorProviderNetwork(network.id)
     }
   },
 
