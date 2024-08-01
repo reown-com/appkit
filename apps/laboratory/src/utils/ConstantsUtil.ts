@@ -3,7 +3,14 @@ if (!projectId) {
   throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
 }
 export const WALLET_URL = process.env['WALLET_URL'] || 'https://react-wallet.walletconnect.com/'
-export const PUBLIC_URL = 'https://lab.web3modal.com'
+export function getPublicUrl() {
+  const vercelUrl = process.env['NEXT_PUBLIC_VERCEL_URL']
+  if (vercelUrl) {
+    return `https://${vercelUrl}`
+  }
+
+  return 'https://lab.web3modal.com'
+}
 
 export const CUSTOM_WALLET = 'wc:custom_wallet'
 
@@ -20,10 +27,10 @@ export const ConstantsUtil = {
   SigningFailedToastTitle: 'Signing Failed',
   TestIdSiweAuthenticationStatus: 'w3m-authentication-status',
   Metadata: {
-    name: 'Web3Modal',
-    description: 'Web3Modal Laboratory',
-    url: PUBLIC_URL,
-    icons: [`${PUBLIC_URL}/metadata-icon.png`],
+    name: 'AppKit',
+    description: 'AppKit Laboratory',
+    url: getPublicUrl(),
+    icons: [`${getPublicUrl()}/metadata-icon.png`],
     verifyUrl: ''
   },
   CustomWallets: [
