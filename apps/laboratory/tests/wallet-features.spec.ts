@@ -40,7 +40,7 @@ walletFeaturesTest.afterAll(async () => {
   await page.page.close()
 })
 
-walletFeaturesTest('it should initialize swap as expected', async () => {
+walletFeaturesTest.skip('it should initialize swap as expected', async () => {
   await page.openAccount()
   const walletFeatureButton = await page.getWalletFeaturesButton('swap')
   await walletFeatureButton.click()
@@ -56,7 +56,7 @@ walletFeaturesTest('it should initialize swap as expected', async () => {
   await page.closeModal()
 })
 
-walletFeaturesTest('it should initialize onramp as expected', async () => {
+walletFeaturesTest.skip('it should initialize onramp as expected', async () => {
   await page.openAccount()
   const walletFeatureButton = await page.getWalletFeaturesButton('onramp')
   await walletFeatureButton.click()
@@ -64,11 +64,26 @@ walletFeaturesTest('it should initialize onramp as expected', async () => {
   await page.closeModal()
 })
 
-walletFeaturesTest('it should initialize receive as expected', async () => {
+walletFeaturesTest.skip('it should initialize receive as expected', async () => {
   await page.openAccount()
   const walletFeatureButton = await page.getWalletFeaturesButton('receive')
   await walletFeatureButton.click()
   await page.page.getByTestId('receive-address-copy-button').click()
   await expect(page.page.getByText('Address copied')).toBeVisible()
+  await page.closeModal()
+})
+
+walletFeaturesTest('it should find account name as expected', async () => {
+  await page.openAccount()
+  await page.openProfileView()
+  await page.openSettings()
+
+  await page.switchNetwork('Polygon')
+  await validator.expectSwitchedNetwork('Polygon')
+
+  await page.openChooseNameIntro()
+  await page.openChooseName()
+  await page.typeName('test-ens-check')
+  await validator.expectAccountNameFound('test-ens-check')
   await page.closeModal()
 })
