@@ -266,7 +266,15 @@ export class Web3Modal extends Web3ModalScaffold {
         }
       },
 
-      signMessage: async message => signMessage(this.wagmiConfig, { message }),
+      signMessage: async message => {
+        const caipAddress = this.getCaipAddress() || ''
+        const account = caipAddress.split(':')[2] as Hex
+        if (!account) {
+          throw new Error('connectionControllerClient:signMessage - account is undefined')
+        }
+
+        return signMessage(this.wagmiConfig, { message, account })
+      },
 
       estimateGas: async args => {
         try {
@@ -304,11 +312,17 @@ export class Web3Modal extends Web3ModalScaffold {
       },
 
       writeContract: async (data: WriteContractArgs) => {
+        const caipAddress = this.getCaipAddress() || ''
+        const account = caipAddress.split(':')[2] as Hex
+        if (!account) {
+          throw new Error('connectionControllerClient:signMessage - account is undefined')
+        }
         const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
 
         const tx = await wagmiWriteContract(wagmiConfig, {
           chainId,
           address: data.tokenAddress,
+          account,
           abi: data.abi,
           functionName: data.method,
           args: [data.receiverAddress, data.tokenAmount]
