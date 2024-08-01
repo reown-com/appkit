@@ -40,7 +40,7 @@ walletFeaturesTest.afterAll(async () => {
   await page.page.close()
 })
 
-walletFeaturesTest.skip('it should initialize swap as expected', async () => {
+walletFeaturesTest('it should initialize swap as expected', async () => {
   await page.openAccount()
   const walletFeatureButton = await page.getWalletFeaturesButton('swap')
   await walletFeatureButton.click()
@@ -56,7 +56,7 @@ walletFeaturesTest.skip('it should initialize swap as expected', async () => {
   await page.closeModal()
 })
 
-walletFeaturesTest.skip('it should initialize onramp as expected', async () => {
+walletFeaturesTest('it should initialize onramp as expected', async () => {
   await page.openAccount()
   const walletFeatureButton = await page.getWalletFeaturesButton('onramp')
   await walletFeatureButton.click()
@@ -64,7 +64,7 @@ walletFeaturesTest.skip('it should initialize onramp as expected', async () => {
   await page.closeModal()
 })
 
-walletFeaturesTest.skip('it should initialize receive as expected', async () => {
+walletFeaturesTest('it should initialize receive as expected', async () => {
   await page.openAccount()
   const walletFeatureButton = await page.getWalletFeaturesButton('receive')
   await walletFeatureButton.click()
