@@ -42,7 +42,7 @@ const ethersConfig = defaultConfig({
     url: 'https://web3modal.com',
     icons: ['https://avatars.githubusercontent.com/u/37784886']
   },
-  defaultChainId: 1,
+  defaultChainId: 1
 })
 
 // 3. Create modal
