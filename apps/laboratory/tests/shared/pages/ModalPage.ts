@@ -353,6 +353,11 @@ export class ModalPage {
     await this.page.getByTestId('account-button').click()
   }
 
+  async openNetworks() {
+    await this.page.getByTestId('w3m-account-select-network').click()
+    await expect(this.page.getByText('Choose Network')).toBeVisible()
+  }
+
   async openProfileView() {
     await this.page.getByTestId('wui-profile-button').click()
   }
@@ -362,5 +367,14 @@ export class ModalPage {
     await expect(walletFeatureButton).toBeVisible()
 
     return walletFeatureButton
+  }
+
+  async switchNetworkWithNetworkButton(networkName: string) {
+    const networkButton = this.page.getByTestId('w3m-network-button')
+    await networkButton.click()
+
+    const networkToSwitchButton = this.page.getByTestId(`w3m-network-switch-${networkName}`)
+    await networkToSwitchButton.click()
+    await networkToSwitchButton.waitFor({ state: 'hidden' })
   }
 }

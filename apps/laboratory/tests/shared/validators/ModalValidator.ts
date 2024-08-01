@@ -146,4 +146,9 @@ export class ModalValidator {
     const suggestion = this.page.getByTestId('account-name-suggestion').getByText(name)
     await expect(suggestion).toBeVisible()
   }
+
+  async expectNetworksDisabled(name: string) {
+    const networkOptions = this.page.getByTestId(`w3m-network-switch-${name}`)
+    await expect(networkOptions).toBeDisabled()
+  }
 }
