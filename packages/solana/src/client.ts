@@ -121,10 +121,9 @@ export class Web3Modal extends Web3ModalScaffold {
               )
             }
             const ns = provider?.session?.namespaces
-            const nsMethods = ns?.['solana']?.methods
             const nsChains = ns?.['solana']?.chains
             const result = {
-              supportsAllNetworks: nsMethods?.includes('wallet_addSolanaChain') ?? false,
+              supportsAllNetworks: false,
               approvedCaipNetworkIds: nsChains as CaipNetworkId[] | undefined
             }
 
