@@ -14,7 +14,7 @@ import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 import { SolConstantsUtil, SolHelpersUtil, SolStoreUtil } from './utils/scaffold/index.js'
 import { WalletConnectConnector } from './connectors/walletConnectConnector.js'
 
-import type { BaseWalletAdapter, StandardWalletAdapter } from '@solana/wallet-adapter-base'
+import type { BaseWalletAdapter } from '@solana/wallet-adapter-base'
 import type { PublicKey, Commitment, ConnectionConfig } from '@solana/web3.js'
 import type UniversalProvider from '@walletconnect/universal-provider'
 import type {
@@ -32,6 +32,7 @@ import type { Chain as AvailableChain } from '@web3modal/common'
 
 import type { ProviderType, Chain, Provider, SolStoreUtilState } from './utils/scaffold/index.js'
 import { watchStandard } from './utils/wallet-standard/watchStandard.js'
+import { StandardWalletAdapter } from './utils/wallet-standard/adapter.js'
 
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
   solanaConfig: ProviderType
@@ -110,13 +111,52 @@ export class Web3Modal extends Web3ModalScaffold {
       },
 
       getApprovedCaipNetworksData: async () =>
-        new Promise(resolve => {
-          const result = {
-            approvedCaipNetworkIds: undefined,
-            supportsAllNetworks: true
-          }
+        new Promise(async resolve => {
+          const walletChoice = localStorage.getItem(SolConstantsUtil.WALLET_ID)
+          if (walletChoice?.includes(ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID)) {
+            const provider = await this.WalletConnectConnector.getProvider()
+            if (!provider) {
+              throw new Error(
+                'networkControllerClient:getApprovedCaipNetworks - connector is undefined'
+              )
+            }
+            const ns = provider?.session?.namespaces
+            const nsMethods = ns?.['solana']?.methods
+            const nsChains = ns?.['solana']?.chains
+            const result = {
+              supportsAllNetworks: nsMethods?.includes('wallet_addSolanaChain') ?? false,
+              approvedCaipNetworkIds: nsChains as CaipNetworkId[] | undefined
+            }
 
-          resolve(result)
+            resolve(result)
+          } else {
+            const provider = SolStoreUtil.state.provider
+            if (provider && provider instanceof StandardWalletAdapter) {
+              const solanaNetworkNameToIdMap: Record<string, string> = {
+                mainnet: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+                testnet: '4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z',
+                devnet: 'EtWTRABZaYq6iMfeYKouRu166VU2xqa1'
+              }
+              const approvedCaipNetworkIds: CaipNetworkId[] = provider.wallet?.chains
+                .map(network => {
+                  const networkName = network.split(':')[1] || ''
+                  const networkId = solanaNetworkNameToIdMap[networkName]
+
+                  return networkId && `solana:${networkId}`
+                })
+                .filter(Boolean) as CaipNetworkId[]
+
+              resolve({
+                approvedCaipNetworkIds,
+                supportsAllNetworks: false
+              })
+            } else {
+              resolve({
+                approvedCaipNetworkIds: undefined,
+                supportsAllNetworks: true
+              })
+            }
+          }
         })
     }
 
@@ -540,7 +580,7 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private async setWalletConnectProvider(address = '') {
-    const caipChainId = `${SolStoreUtil.state.currentChain?.name}: ${SolStoreUtil.state.currentChain?.chainId}`
+    const caipChainId = `${SolStoreUtil.state.currentChain?.name}:${SolStoreUtil.state.currentChain?.chainId}`
     const chain = SolHelpersUtil.getChainFromCaip(
       this.chains,
       typeof window === 'object' ? localStorage.getItem(SolConstantsUtil.CAIP_CHAIN_ID) : ''
@@ -579,6 +619,7 @@ export class Web3Modal extends Web3ModalScaffold {
       this.setAddress(address)
       this.watchInjected(provider)
       this.hasSyncedConnectedAccount = true
+      this.setApprovedCaipNetworksData()
     }
   }
 
