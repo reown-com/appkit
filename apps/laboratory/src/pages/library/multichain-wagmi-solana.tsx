@@ -9,6 +9,7 @@ import { WagmiProvider } from 'wagmi'
 import { solana, solanaDevnet, solanaTestnet } from '../../utils/ChainsUtil'
 import { Web3ModalButtons } from '../../components/Web3ModalButtons'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
+import { MultiChainInfo } from '../../components/MultiChainInfo'
 import { BackpackWalletAdapter } from '@solana/wallet-adapter-backpack'
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { MultiChainTests } from '../../components/MultiChainTests'
@@ -51,6 +52,7 @@ export default function MultiChainAllAdapters() {
     <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <Web3ModalButtons />
+        <MultiChainInfo />
         <WagmiModalInfo />
         <MultiChainTests />
       </QueryClientProvider>

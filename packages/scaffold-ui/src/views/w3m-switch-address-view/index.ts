@@ -1,6 +1,7 @@
 import {
   AccountController,
   BlockchainApiController,
+  ChainController,
   ModalController,
   NetworkController,
   OptionsController,
@@ -138,7 +139,7 @@ export class W3mSwitchAddressView extends LitElement {
   }
 
   private onSwitchAddress(address: string) {
-    AccountController.setShouldUpdateToAddress(address)
+    AccountController.setShouldUpdateToAddress(address, ChainController.state.activeChain)
     ModalController.close()
   }
 }

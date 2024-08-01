@@ -1,3 +1,4 @@
+import type { Chain } from '@web3modal/common'
 import type { ConnectorType } from '@web3modal/core'
 import { ConstantsUtil } from './ConstantsUtil.js'
 
@@ -61,6 +62,13 @@ export const PresetsUtil = {
     '4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z': 'a1b58899-f671-4276-6a5e-56ca5bd59700',
     EtWTRABZaYq6iMfeYKouRu166VU2xqa1: 'a1b58899-f671-4276-6a5e-56ca5bd59700'
   } as Record<string, string>,
+
+  ChainImageIds: {
+    // Ethereum
+    evm: 'ba0ba0cd-17c6-4806-ad93-f9d174f17900',
+    // Solana
+    solana: 'a1b58899-f671-4276-6a5e-56ca5bd59700'
+  } as Record<Chain, string>,
 
   ConnectorImageIds: {
     [ConstantsUtil.COINBASE_CONNECTOR_ID]: '0c2840c3-5b04-4c44-9661-fbd4b49e1800',
