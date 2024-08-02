@@ -141,4 +141,9 @@ export class ModalValidator {
       await expect(onrampButton).toBeVisible()
     }
   }
+
+  async expectAccountNameFound(name: string) {
+    const suggestion = this.page.getByTestId('account-name-suggestion').getByText(name)
+    await expect(suggestion).toBeVisible()
+  }
 }

@@ -13,6 +13,9 @@ export interface ConfigOptions {
     walletFeatures?: boolean
   }
   enableInjected?: boolean
+  /**
+   * @deprecated this doesn't do anything, use `chains` instead
+   */
   rpcUrl?: string
   defaultChainId?: number
   metadata: Metadata
