@@ -182,9 +182,6 @@ export const ChainController = {
   },
 
   setActiveChain(chain?: Chain) {
-    if (state.isUniversalAdapterOnly) {
-      console.log(state.chains.get('evm'))
-    }
     const newAdapter = chain ? state.chains.get(chain) : undefined
 
     if (newAdapter && newAdapter.chain !== state.activeChain) {

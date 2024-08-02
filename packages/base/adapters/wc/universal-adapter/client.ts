@@ -169,7 +169,6 @@ export class UniversalAdapterClient {
           }
         } else {
           const namespaces = WcHelpersUtil.createNamespaces(this.chains)
-          console.log(namespaces)
 
           await WalletConnectProvider.connect({ optionalNamespaces: namespaces })
         }
@@ -304,7 +303,6 @@ export class UniversalAdapterClient {
     )
 
     const chainType = this.chain === 'evm' ? 'eip155' : this.chain
-    console.log(this.walletConnectProvider?.session)
 
     if (this.walletConnectProvider?.session?.namespaces[chainType]?.accounts[0]) {
       const { chainId, address } = WcHelpersUtil.extractDetails(
