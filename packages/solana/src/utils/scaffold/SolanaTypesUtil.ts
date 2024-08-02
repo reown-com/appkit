@@ -5,10 +5,9 @@ import type {
   PublicKey,
   Transaction as SolanaWeb3Transaction,
   TransactionSignature,
-  VersionedTransaction,
-  ConfirmOptions,
-  Signer
+  VersionedTransaction
 } from '@solana/web3.js'
+
 import type { SendTransactionOptions } from '@solana/wallet-adapter-base'
 
 export type Connection = SolanaConnection
@@ -47,11 +46,7 @@ export interface Provider {
   signAndSendAllTransactions: (
     transactions: SolanaWeb3Transaction[]
   ) => Promise<TransactionSignature[]>
-  signAndSendTransaction: (
-    transaction: SolanaWeb3Transaction | VersionedTransaction,
-    signers: Signer[],
-    confirmOptions?: ConfirmOptions
-  ) => Promise<TransactionSignature>
+  signAndSendTransaction: (transaction: SolanaWeb3Transaction) => Promise<TransactionSignature>
   signMessage: (message: Uint8Array) => Promise<Uint8Array> | Promise<{ signature: Uint8Array }>
   signTransaction: (transaction: SolanaWeb3Transaction | VersionedTransaction) => Promise<{
     signatures: { signature: Uint8Array }[]
@@ -187,7 +182,7 @@ export type FilterObject =
     }
   | { dataSize: number }
 
-export interface TransactionInstructionRq {
+export interface TransactionInstructionRequest {
   programId: string
   data: string
   keys: {
@@ -197,7 +192,7 @@ export interface TransactionInstructionRq {
   }[]
 }
 
-interface VersionedInstractionRequest {
+interface VersionedInstructionRequest {
   data: string
   programIdIndex: number
   accountKeyIndexes: number[]
@@ -220,7 +215,7 @@ export interface RequestMethods {
   solana_signTransaction: {
     params: {
       feePayer: string
-      instructions: TransactionInstructionRq[] | VersionedInstractionRequest[]
+      instructions: TransactionInstructionRequest[] | VersionedInstructionRequest[]
       recentBlockhash: string
       signatures?: {
         pubkey: string
@@ -231,6 +226,17 @@ export interface RequestMethods {
       signature: string
     }
   }
+  solana_signAndSendTransaction: {
+    params: {
+      feePayer: string
+      instructions: TransactionInstructionRequest[]
+      recentBlockhash: string
+    }
+    returns: {
+      signature: string
+    }
+  }
+
   signMessage: {
     params: {
       message: Uint8Array

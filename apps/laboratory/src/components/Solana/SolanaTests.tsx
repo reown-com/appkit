@@ -15,6 +15,7 @@ import { SolanaSendTransactionTest } from './SolanaSendTransactionTest'
 import { SolanaSignMessageTest } from './SolanaSignMessageTest'
 import { SolanaWriteContractTest } from './SolanaWriteContractTest'
 import { solana, solanaDevnet, solanaTestnet } from '../../utils/ChainsUtil'
+import { SolanaSignAndSendTransaction } from './SolanaSignAndSendTransactionTest'
 
 export function SolanaTests() {
   const { isConnected, currentChain } = useWeb3ModalAccount()
@@ -48,9 +49,15 @@ export function SolanaTests() {
           </Box>
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">
-              Sign and Send Transaction
+              Sign and Send Transaction (dApp)
             </Heading>
             <SolanaSendTransactionTest />
+          </Box>
+          <Box>
+            <Heading size="xs" textTransform="uppercase" pb="2">
+              Sign and Send Transaction (Wallet)
+            </Heading>
+            <SolanaSignAndSendTransaction />
           </Box>
           {(currentChain?.chainId === solanaTestnet.chainId ||
             currentChain?.chainId === solanaDevnet.chainId) && (
