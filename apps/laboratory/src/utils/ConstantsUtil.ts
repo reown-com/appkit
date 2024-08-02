@@ -37,35 +37,40 @@ export const ConstantsUtil = {
     ...customWallet,
     {
       id: 'react-wallet-v2',
-      name: 'react-wallet-v2',
+      name: 'React Sample Wallet',
       homepage: WALLET_URL,
       mobile_link: WALLET_URL,
       desktop_link: WALLET_URL,
-      webapp_link: WALLET_URL
+      webapp_link: WALLET_URL,
+      image_url: '/sample-wallets/react.svg'
     },
     {
       id: 'kotlin-web3wallet',
-      name: 'kotlin-web3wallet',
+      name: 'Kotlin Sample Wallet',
       homepage: 'https://walletconnect.com',
-      mobile_link: 'kotlin-web3wallet://'
+      mobile_link: 'kotlin-web3wallet://',
+      image_url: '/sample-wallets/kotlin.svg'
     },
     {
       id: 'swift-web3wallet',
-      name: 'swift-web3wallet',
+      name: 'Swift Sample Wallet',
       homepage: 'https://walletconnect.com',
-      mobile_link: 'walletapp://'
+      mobile_link: 'walletapp://',
+      image_url: '/sample-wallets/swift.svg'
     },
     {
       id: 'flutter-web3wallet',
-      name: 'flutter-web3wallet',
+      name: 'Flutter Sample Wallet',
       homepage: 'https://walletconnect.com',
-      mobile_link: 'wcflutterwallet://'
+      mobile_link: 'wcflutterwallet://',
+      image_url: '/sample-wallets/flutter.svg'
     },
     {
       id: 'rn-web3wallet',
-      name: 'rn-web3wallet',
+      name: 'React Native Sample Wallet',
       homepage: 'https://walletconnect.com',
-      mobile_link: 'rn-web3wallet://'
+      mobile_link: 'rn-web3wallet://',
+      image_url: '/sample-wallets/react-native.svg'
     }
   ],
   ProjectId: projectId
