@@ -41,6 +41,8 @@ export class W3mAccountDefaultWidget extends LitElement {
 
   @state() private balanceSymbol = AccountController.state.balanceSymbol
 
+  @state() private isUniversalAdapterOnly = ChainController.state.isUniversalAdapterOnly
+
   public constructor() {
     super()
     this.unsubscribe.push(
@@ -76,7 +78,8 @@ export class W3mAccountDefaultWidget extends LitElement {
         alignItems="center"
         gap="l"
       >
-        ${ChainController.state.activeChain === ConstantsUtil.CHAIN.EVM
+        ${ChainController.state.activeChain === ConstantsUtil.CHAIN.EVM &&
+        !this.isUniversalAdapterOnly
           ? this.multiAccountTemplate()
           : this.singleAccountTemplate()}
         <wui-flex flexDirection="column" alignItems="center">
@@ -109,7 +112,7 @@ export class W3mAccountDefaultWidget extends LitElement {
     const { enableOnramp } = OptionsController.state
     const isSolana = ChainController.state.activeChain === ConstantsUtil.CHAIN.SOLANA
 
-    if (!enableOnramp || isSolana) {
+    if (!enableOnramp || isSolana || this.isUniversalAdapterOnly) {
       return null
     }
 
@@ -127,6 +130,10 @@ export class W3mAccountDefaultWidget extends LitElement {
   }
 
   private activityTemplate() {
+    if (this.isUniversalAdapterOnly) {
+      return null
+    }
+
     const isSolana = ChainController.state.activeChain === ConstantsUtil.CHAIN.SOLANA
 
     return html` <wui-list-item
@@ -145,7 +152,7 @@ export class W3mAccountDefaultWidget extends LitElement {
   private swapsTemplate() {
     const { enableSwaps } = OptionsController.state
 
-    if (!enableSwaps) {
+    if (!enableSwaps || this.isUniversalAdapterOnly) {
       return null
     }
 

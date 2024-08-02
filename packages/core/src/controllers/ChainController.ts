@@ -14,6 +14,7 @@ export interface ChainControllerState {
   activeCaipNetwork?: CaipNetwork
   chains: Map<Chain, ChainAdapter>
   activeConnector?: Connector
+  isUniversalAdapterOnly: boolean
 }
 
 type ChainControllerStateKey = keyof ChainControllerState
@@ -44,7 +45,8 @@ const state = proxy<ChainControllerState>({
   multiChainEnabled: false,
   chains: proxyMap<Chain, ChainAdapter>(),
   activeChain: undefined,
-  activeCaipNetwork: undefined
+  activeCaipNetwork: undefined,
+  isUniversalAdapterOnly: false
 })
 
 // -- Controller ---------------------------------------- //
@@ -119,6 +121,10 @@ export const ChainController = {
     state.multiChainEnabled = multiChain
   },
 
+  setisUniversalAdapterOnly(isUniversalAdapterOnly: boolean) {
+    state.isUniversalAdapterOnly = isUniversalAdapterOnly
+  },
+
   setChainNetworkData(
     chain: Chain | undefined,
     props: Partial<NetworkControllerState>,
@@ -176,6 +182,9 @@ export const ChainController = {
   },
 
   setActiveChain(chain?: Chain) {
+    if (state.isUniversalAdapterOnly) {
+      console.log(state.chains.get('evm'))
+    }
     const newAdapter = chain ? state.chains.get(chain) : undefined
 
     if (newAdapter && newAdapter.chain !== state.activeChain) {

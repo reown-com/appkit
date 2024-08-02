@@ -6,6 +6,7 @@ import { EventsController } from './EventsController.js'
 import { PublicStateController } from './PublicStateController.js'
 import type { RouterControllerState } from './RouterController.js'
 import { RouterController } from './RouterController.js'
+import { ChainController } from './ChainController.js'
 
 // -- Types --------------------------------------------- //
 export interface ModalControllerState {
@@ -42,10 +43,14 @@ export const ModalController = {
   async open(options?: ModalControllerArguments['open']) {
     await ApiController.state.prefetchPromise
     const connected = AccountController.state.isConnected
+    const isUniversalAdapterOnly = ChainController.state.isUniversalAdapterOnly
+
     if (options?.view) {
       RouterController.reset(options.view)
     } else if (connected) {
       RouterController.reset('Account')
+    } else if (isUniversalAdapterOnly) {
+      RouterController.reset('ConnectingWalletConnect')
     } else {
       RouterController.reset('Connect')
     }

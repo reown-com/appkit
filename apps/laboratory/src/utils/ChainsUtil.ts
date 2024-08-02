@@ -13,7 +13,8 @@ export const mainnet = {
   name: 'Ethereum',
   currency: 'ETH',
   explorerUrl: 'https://etherscan.io',
-  rpcUrl: getBlockchainApiRpcUrl(1)
+  rpcUrl: getBlockchainApiRpcUrl(1),
+  chain: 'evm'
 }
 
 export const arbitrum = {
@@ -21,7 +22,8 @@ export const arbitrum = {
   name: 'Arbitrum',
   currency: 'ETH',
   explorerUrl: 'https://arbiscan.io',
-  rpcUrl: getBlockchainApiRpcUrl(42161)
+  rpcUrl: getBlockchainApiRpcUrl(42161),
+  chain: 'evm'
 }
 
 export const avalanche = {
@@ -29,7 +31,8 @@ export const avalanche = {
   name: 'Avalanche',
   currency: 'AVAX',
   explorerUrl: 'https://snowtrace.io',
-  rpcUrl: getBlockchainApiRpcUrl(43114)
+  rpcUrl: getBlockchainApiRpcUrl(43114),
+  chain: 'evm'
 }
 
 export const binanceSmartChain = {
@@ -37,7 +40,8 @@ export const binanceSmartChain = {
   name: 'Binance Smart Chain',
   currency: 'BNB',
   explorerUrl: 'https://bscscan.com',
-  rpcUrl: getBlockchainApiRpcUrl(56)
+  rpcUrl: getBlockchainApiRpcUrl(56),
+  chain: 'evm'
 }
 
 export const optimism = {
@@ -45,7 +49,8 @@ export const optimism = {
   name: 'Optimism',
   currency: 'ETH',
   explorerUrl: 'https://optimistic.etherscan.io',
-  rpcUrl: getBlockchainApiRpcUrl(10)
+  rpcUrl: getBlockchainApiRpcUrl(10),
+  chain: 'evm'
 }
 
 export const polygon = {
@@ -53,7 +58,8 @@ export const polygon = {
   name: 'Polygon',
   currency: 'MATIC',
   explorerUrl: 'https://polygonscan.com',
-  rpcUrl: getBlockchainApiRpcUrl(137)
+  rpcUrl: getBlockchainApiRpcUrl(137),
+  chain: 'evm'
 }
 
 export const gnosis = {
@@ -61,7 +67,8 @@ export const gnosis = {
   name: 'Gnosis',
   currency: 'xDAI',
   explorerUrl: 'https://gnosis.blockscout.com',
-  rpcUrl: getBlockchainApiRpcUrl(100)
+  rpcUrl: getBlockchainApiRpcUrl(100),
+  chain: 'evm'
 }
 
 export const zkSync = {
@@ -69,7 +76,8 @@ export const zkSync = {
   name: 'ZkSync',
   currency: 'ETH',
   explorerUrl: 'https://explorer.zksync.io',
-  rpcUrl: getBlockchainApiRpcUrl(324)
+  rpcUrl: getBlockchainApiRpcUrl(324),
+  chain: 'evm'
 }
 
 export const zora = {
@@ -77,7 +85,8 @@ export const zora = {
   name: 'Zora',
   currency: 'ETH',
   explorerUrl: 'https://explorer.zora.energy',
-  rpcUrl: getBlockchainApiRpcUrl(7777777)
+  rpcUrl: getBlockchainApiRpcUrl(7777777),
+  chain: 'evm'
 }
 
 export const celo = {
@@ -85,7 +94,8 @@ export const celo = {
   name: 'Celo',
   currency: 'CELO',
   explorerUrl: 'https://explorer.celo.org/mainnet',
-  rpcUrl: getBlockchainApiRpcUrl(42220)
+  rpcUrl: getBlockchainApiRpcUrl(42220),
+  chain: 'evm'
 }
 
 export const base = {
@@ -93,7 +103,8 @@ export const base = {
   name: 'Base',
   currency: 'BASE',
   explorerUrl: 'https://basescan.org',
-  rpcUrl: getBlockchainApiRpcUrl(8453)
+  rpcUrl: getBlockchainApiRpcUrl(8453),
+  chain: 'evm'
 }
 
 export const aurora = {
@@ -101,7 +112,8 @@ export const aurora = {
   name: 'Aurora',
   currency: 'ETH',
   explorerUrl: 'https://explorer.aurora.dev',
-  rpcUrl: getBlockchainApiRpcUrl(1313161554)
+  rpcUrl: getBlockchainApiRpcUrl(1313161554),
+  chain: 'evm'
 }
 
 export const sepolia = {
@@ -109,7 +121,8 @@ export const sepolia = {
   name: 'Sepolia',
   currency: 'ETH',
   explorerUrl: 'https://sepolia.etherscan.io',
-  rpcUrl: getBlockchainApiRpcUrl(11155111)
+  rpcUrl: getBlockchainApiRpcUrl(11155111),
+  chain: 'evm'
 }
 
 export const baseSepolia = {
@@ -117,7 +130,8 @@ export const baseSepolia = {
   name: 'Base Sepolia',
   currency: 'BASE',
   explorerUrl: 'https://sepolia.basescan.org',
-  rpcUrl: getBlockchainApiRpcUrl(84532)
+  rpcUrl: getBlockchainApiRpcUrl(84532),
+  chain: 'evm'
 }
 
 export const solana = {
@@ -125,7 +139,8 @@ export const solana = {
   name: 'Solana',
   currency: 'SOL',
   explorerUrl: 'https://solscan.io',
-  rpcUrl: 'https://rpc.walletconnect.org/v1'
+  rpcUrl: 'https://rpc.walletconnect.org/v1',
+  chain: 'solana'
 }
 
 export const solanaTestnet = {

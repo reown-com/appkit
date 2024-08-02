@@ -33,6 +33,11 @@
       "types": "./dist/types/adapters/solana/web3js/index.d.ts",
       "import": "./dist/esm/adapters/solana/web3js/index.js",
       "default": "./dist/esm/adapters/solana/web3js/index.js"
+    },
+    "./adapters/wc/universal-adapter": {
+      "types": "./dist/types/adapters/wc/universal-adapter/index.d.ts",
+      "import": "./dist/esm/adapters/wc/universal-adapter/index.js",
+      "default": "./dist/esm/adapters/wc/universal-adapter/index.js"
     }
   },
   "scripts": {

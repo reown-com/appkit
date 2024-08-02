@@ -1,21 +1,25 @@
-import { Stack, Card, CardHeader, Heading, CardBody, Box, StackDivider } from '@chakra-ui/react'
+import { createWeb3Modal } from '@web3modal/base/react'
+import { UniversalAdapterClient } from '@web3modal/base/adapters/wc/universal-adapter'
+import { ThemeStore } from '../../utils/StoreUtil'
+import { ConstantsUtil } from '../../utils/ConstantsUtil'
 
-export default function MultiChainNoAdapters() {
-  return (
-    <Card marginTop={10} marginBottom={10}>
-      <CardHeader>
-        <Heading size="md">AppKit Basic version</Heading>
-      </CardHeader>
+import { Web3ModalButtons } from '../../components/Web3ModalButtons'
+import { mainnet, optimism, arbitrum, solana } from '../../utils/ChainsUtil'
 
-      <CardBody>
-        <Stack divider={<StackDivider />} spacing="4">
-          <Box>
-            <Heading size="xs" textTransform="uppercase" pb="2">
-              ⚠️ In progress
-            </Heading>
-          </Box>
-        </Stack>
-      </CardBody>
-    </Card>
-  )
+const modal = createWeb3Modal({
+  adapters: [],
+  chains: [mainnet, optimism, arbitrum, solana],
+
+  projectId: ConstantsUtil.ProjectId,
+  enableAnalytics: true,
+  metadata: ConstantsUtil.Metadata,
+  termsConditionsUrl: 'https://walletconnect.com/terms',
+  privacyPolicyUrl: 'https://walletconnect.com/privacy',
+  customWallets: ConstantsUtil.CustomWallets
+})
+
+ThemeStore.setModal(modal)
+
+export default function MultiChainWagmiAdapterOnly() {
+  return <Web3ModalButtons />
 }

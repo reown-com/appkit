@@ -28,6 +28,7 @@ import {
 import { setColorTheme, setThemeVariables } from '@web3modal/ui'
 import { ConstantsUtil, type Chain } from '@web3modal/common'
 import type { AppKitOptions } from '../utils/TypesUtil.js'
+import { UniversalAdapterClient } from '../adapters/wc/universal-adapter/client.js'
 
 // -- Types --------------------------------------------------------------------
 export interface OpenOptions {
@@ -302,15 +303,31 @@ export class AppKit {
   // -- Private ------------------------------------------------------------------
   private async initControllers(options: AppKitOptions) {
     ChainController.setMultiChainEnabled(true)
-    ChainController.initialize(options.adapters || [])
-    options.adapters?.forEach(adapter => {
-      // @ts-expect-error will introduce construct later
-      adapter.construct?.(this, options)
+    if (options.adapters?.length === 0) {
+      ChainController.setisUniversalAdapterOnly(true)
+      const universalAdapter = new UniversalAdapterClient({
+        chains: options.chains,
+        metadata: options.metadata
+      })
 
-      // Set this value for all chains
-      NetworkController.setAllowUnsupportedChain(options.allowUnsupportedChain, adapter.chain)
+      ChainController.initialize([universalAdapter])
+      universalAdapter.construct?.(this, options)
+      NetworkController.setAllowUnsupportedChain(
+        options.allowUnsupportedChain,
+        universalAdapter.chain
+      )
       NetworkController.setDefaultCaipNetwork(options.defaultChain)
-    })
+    } else {
+      ChainController.initialize(options.adapters || [])
+      options.adapters?.forEach(adapter => {
+        // @ts-expect-error will introduce construct later
+        adapter.construct?.(this, options)
+
+        // Set this value for all chains
+        NetworkController.setAllowUnsupportedChain(options.allowUnsupportedChain, adapter.chain)
+        NetworkController.setDefaultCaipNetwork(options.defaultChain)
+      })
+    }
 
     OptionsController.setProjectId(options.projectId)
     OptionsController.setAllWallets(options.allWallets)

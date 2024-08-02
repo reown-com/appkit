@@ -233,6 +233,9 @@ export default function HomePage() {
                     Configuration with no adapters enabled for AppKit
                   </Text>
                 </Box>
+                <Link href={'/library/multichain-basic'}>
+                  <Button rightIcon={<IoArrowForward />}>Go</Button>
+                </Link>
               </Stack>
             </Box>
           </Stack>

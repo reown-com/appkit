@@ -832,4 +832,5 @@ export type ChainAdapter = {
   networkState?: NetworkControllerState
   defaultChain?: CaipNetwork
   chain: Chain
+  isUniversalAdapterClient?: boolean
 }
