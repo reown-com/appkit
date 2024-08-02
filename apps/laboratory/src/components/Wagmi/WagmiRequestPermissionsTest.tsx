@@ -52,7 +52,7 @@ export function WagmiRequestPermissionsTest() {
             target: donutContractAddress,
             abi: donutContractAbi,
             valueLimit: parseEther('10'),
-            functionName: 'purchase'
+            functionName: 'function purchase()'
           },
           policies: []
         }
