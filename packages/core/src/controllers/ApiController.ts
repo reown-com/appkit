@@ -273,7 +273,7 @@ export const ApiController = {
     if (OptionsController.state.enableAnalytics === undefined) {
       promises.push(ApiController.fetchAnalyticsConfig())
     }
-    state.prefetchPromise = Promise.race([Promise.allSettled(promises), CoreHelperUtil.wait(3000)])
+    state.prefetchPromise = Promise.race([Promise.allSettled(promises)])
   },
 
   async fetchAnalyticsConfig() {

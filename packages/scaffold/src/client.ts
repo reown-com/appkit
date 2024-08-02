@@ -59,7 +59,7 @@ export interface LibraryOptions {
   allowUnsupportedChain?: NetworkControllerState['allowUnsupportedChain']
   _sdkVersion: OptionsControllerState['sdkVersion']
   enableEIP6963?: OptionsControllerState['enableEIP6963']
-  enableSwaps?: OptionsControllerState['enableEIP6963']
+  enableSwaps?: OptionsControllerState['enableSwaps']
 }
 
 export interface ScaffoldOptions extends LibraryOptions {

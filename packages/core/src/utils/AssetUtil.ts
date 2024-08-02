@@ -1,5 +1,13 @@
+import type { Chain } from '@web3modal/common'
 import { AssetController } from '../controllers/AssetController.js'
 import type { CaipNetwork, Connector, WcWallet } from './TypeUtil.js'
+
+const chainImageIds: Record<Chain, string> = {
+  // Ethereum
+  evm: 'ba0ba0cd-17c6-4806-ad93-f9d174f17900',
+  // Solana
+  solana: 'a1b58899-f671-4276-6a5e-56ca5bd59700'
+}
 
 export const AssetUtil = {
   getWalletImage(wallet?: WcWallet) {
@@ -26,6 +34,14 @@ export const AssetUtil = {
     return undefined
   },
 
+  getNetworkImageById(imageId?: string) {
+    if (!imageId) {
+      return undefined
+    }
+
+    return AssetController.state.networkImages[imageId]
+  },
+
   getConnectorImage(connector?: Connector) {
     if (connector?.imageUrl) {
       return connector.imageUrl
@@ -36,5 +52,9 @@ export const AssetUtil = {
     }
 
     return undefined
+  },
+
+  getChainImage(chain: Chain) {
+    return AssetController.state.networkImages[chainImageIds[chain]]
   }
 }

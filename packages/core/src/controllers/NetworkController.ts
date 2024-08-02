@@ -193,10 +193,20 @@ export const NetworkController = {
   },
 
   async switchActiveNetwork(network: NetworkControllerState['caipNetwork']) {
-    const networkControllerClient = ChainController.getNetworkControllerClient()
-    await networkControllerClient.switchCaipNetwork(network)
+    const sameChain = network?.chain === ChainController.state.activeChain
+
+    let networkControllerClient: NetworkControllerState['_client'] = undefined
+
+    if (sameChain) {
+      networkControllerClient = ChainController.getNetworkControllerClient()
+    } else {
+      networkControllerClient = network
+        ? ChainController.state.chains.get(network.chain)?.networkControllerClient
+        : undefined
+    }
 
     ChainController.setActiveCaipNetwork(network)
+    await networkControllerClient?.switchCaipNetwork(network)
 
     if (network) {
       EventsController.sendEvent({

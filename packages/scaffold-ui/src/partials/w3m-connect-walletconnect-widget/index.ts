@@ -39,7 +39,7 @@ export class W3mConnectWalletConnectWidget extends LitElement {
     }
 
     const connector = this.connectors.find(
-      c => c.type === 'WALLET_CONNECT' && c.chain === ChainController.state.activeChain
+      c => c.type === 'MULTI_CHAIN' && c.name === 'WalletConnect'
     )
 
     if (!connector) {
@@ -63,15 +63,8 @@ export class W3mConnectWalletConnectWidget extends LitElement {
 
   // -- Private Methods ----------------------------------- //
   private onConnector(connector: Connector) {
-    if (connector.type === 'WALLET_CONNECT') {
-      if (CoreHelperUtil.isMobile()) {
-        RouterController.push('AllWallets')
-      } else {
-        RouterController.push('ConnectingWalletConnect')
-      }
-    } else {
-      RouterController.push('ConnectingExternal', { connector })
-    }
+    ChainController.setActiveConnector(connector)
+    RouterController.push('ConnectingMultiChain')
   }
 }
 

@@ -152,7 +152,11 @@ export class W3mAccountDefaultWidget extends LitElement {
   private swapsTemplate() {
     const { enableSwaps } = OptionsController.state
 
-    if (!enableSwaps || this.isUniversalAdapterOnly) {
+    if (
+      !enableSwaps ||
+      this.isUniversalAdapterOnly ||
+      ChainController.state.activeChain === ConstantsUtil.CHAIN.SOLANA
+    ) {
       return null
     }
 

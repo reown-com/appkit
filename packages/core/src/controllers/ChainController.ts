@@ -142,7 +142,7 @@ export const ChainController = {
         ...props
       } as NetworkControllerState)
       state.chains.set(chain, ref(chainAdapter))
-      if (replaceState || state.chains.size === 1) {
+      if (replaceState || state.chains.size === 1 || state.activeChain === chain) {
         NetworkController.replaceState(chainAdapter.networkState)
       }
     }
@@ -165,7 +165,7 @@ export const ChainController = {
         ...accountProps
       } as AccountControllerState)
       state.chains.set(chain, chainAdapter)
-      if (replaceState) {
+      if (replaceState || state.chains.size === 1 || state.activeChain === chain) {
         AccountController.replaceState(chainAdapter.accountState)
       }
     }
