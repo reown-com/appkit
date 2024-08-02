@@ -230,7 +230,6 @@ export interface RequestMethods {
     params: {
       feePayer: string
       instructions: TransactionInstructionRequest[]
-      recentBlockhash: string
     }
     returns: {
       signature: string

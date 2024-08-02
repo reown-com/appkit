@@ -41,12 +41,8 @@ export function SolanaSignAndSendTransaction() {
         })
       )
       transaction.feePayer = walletProvider.publicKey
-
-      const { blockhash } = await connection.getLatestBlockhash()
-
-      transaction.recentBlockhash = blockhash
-
       const signature = await walletProvider.signAndSendTransaction(transaction)
+
       toast({
         title: 'Success',
         description: signature,

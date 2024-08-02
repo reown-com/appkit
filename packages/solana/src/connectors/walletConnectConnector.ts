@@ -178,8 +178,7 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
           pubkey: key.pubkey.toBase58()
         })),
         programId: instruction.programId.toBase58()
-      })),
-      recentBlockhash: transaction.recentBlockhash ?? ''
+      }))
     })
 
     return signature
