@@ -10,7 +10,14 @@ import type {
 } from '../core/utils/TypeUtils.js'
 import type { SIWSControllerClient } from '../core/controller/SIWSController.js'
 
-import { RouterUtil, NetworkController, StorageUtil, RouterController } from '@web3modal/core'
+import {
+  RouterUtil,
+  NetworkController,
+  StorageUtil,
+  RouterController,
+  ConnectionController,
+  AccountController
+} from '@web3modal/core'
 import { ConstantsUtil } from '../core/utils/ConstantsUtil.js'
 import { formatChainId } from '../core/utils/formatChainId.js'
 
@@ -85,38 +92,13 @@ export class Web3ModalSIWSClient {
   }
 
   async signIn(adapter?: ExtendedBaseWalletAdapter): Promise<SIWSSession> {
-    const nonce = await this.methods.getNonce()
-    const rawChainId = NetworkController.state.caipNetwork?.name
-    const chainId = formatChainId(rawChainId)
+    const signData = await this.signConnector(adapter)
 
-    if (!chainId) {
-      throw new Error('A chainId is required to create a SIWS message.')
+    if (!signData) {
+      throw new Error('A sign is required to create a SIWS.')
     }
 
-    if (!adapter) {
-      throw new Error('A adapter is required to create a SIWS message.')
-    }
-
-    const messageParams: SIWSMessageArgs = await this.getMessageParams()
-
-    const dataMsg = {
-      chainId,
-      nonce,
-      version: '1' as const,
-      issuedAt: messageParams.iat || new Date().toISOString(),
-      ...messageParams
-    }
-
-    const { signature, account } = await adapter.signIn(dataMsg)
-
-    if (!account) {
-      throw new Error('An address is required to create a SIWS message.')
-    }
-
-    const message = this.methods.createMessage({
-      ...dataMsg,
-      address: account.address
-    })
+    const { signature, message } = signData
 
     const type = StorageUtil.getConnectedConnector()
     if (type === 'AUTH') {
@@ -132,7 +114,7 @@ export class Web3ModalSIWSClient {
 
     const isValid = await this.methods.verifyMessage({
       message,
-      signature: base58.encode(signature)
+      signature
     })
 
     if (!isValid) {
@@ -151,6 +133,52 @@ export class Web3ModalSIWSClient {
     RouterUtil.navigateAfterNetworkSwitch()
 
     return session
+  }
+
+  private async signConnector(adapter?: ExtendedBaseWalletAdapter) {
+    const rawChainId = NetworkController.state.caipNetwork?.name
+    const chainId = formatChainId(rawChainId)
+    const nonce = await this.methods.getNonce()
+    const address = AccountController.state.address
+
+    if (!chainId) {
+      throw new Error('A chainId is required to create a SIWS message.')
+    }
+
+    if (!address && !adapter) {
+      throw new Error('An address is required to create a SIWS message.')
+    }
+
+    // Create main message params
+    const messageParams: SIWSMessageArgs = await this.getMessageParams()
+    const dataMsg = {
+      chainId,
+      nonce,
+      version: '1' as const,
+      issuedAt: messageParams.iat || new Date().toISOString(),
+      ...messageParams
+    }
+
+    // If wallet supports one click auth ( phantom wallet )
+    if (adapter) {
+      const { signature, account } = await adapter.signIn(dataMsg)
+      const message = this.methods.createMessage({
+        ...dataMsg,
+        address: account.address
+      })
+
+      return { signature: base58.encode(signature), message }
+    }
+
+    // If wallet not supports one click auth and was only connect to wallet without sign message
+    if (address && !adapter) {
+      const message = this.methods.createMessage({ ...dataMsg, address })
+      const signature = await ConnectionController.signMessage(message)
+
+      return { signature, message }
+    }
+
+    return null
   }
 
   async signOut() {
