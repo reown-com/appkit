@@ -8,25 +8,18 @@ import {
 } from 'permissionless'
 import { type UserOperation } from 'permissionless/types'
 import { encodeAbiParameters, hashMessage, type PublicClient } from 'viem'
-import { serializePublicKey, sign as signWithPasskey, type P256Credential } from 'webauthn-p256'
+import { sign as signWithPasskey } from 'webauthn-p256'
 import { type Chain } from 'wagmi/chains'
 import { useUserOpBuilder, type Execution } from './useUserOpBuilder'
-import { bigIntReplacer, hexStringToBase64 } from '../utils/CommonUtils'
+import { bigIntReplacer } from '../utils/CommonUtils'
 import { createClients } from '../utils/PermissionsUtils'
 import { useWalletConnectCosigner } from './useWalletConnectCosigner'
 import { useWagmiPermissions } from '../context/WagmiPermissionsContext'
 
 export function usePermissions() {
   const { getCallDataWithContext, getNonceWithContext } = useUserOpBuilder()
-  const { coSignUserOperation, updatePermissionsContext } = useWalletConnectCosigner()
-  const {
-    grantedPermissions,
-    wcCosignerData,
-    permissionConsumedCount,
-    setPermissionConsumedCount,
-    passkeyId,
-    passkey
-  } = useWagmiPermissions()
+  const { coSignUserOperation } = useWalletConnectCosigner()
+  const { wcCosignerData, passkeyId } = useWagmiPermissions()
 
   async function prepareUserOperationWithPermissions(
     publicClient: PublicClient,
@@ -82,7 +75,7 @@ export function usePermissions() {
     return userOp
   }
 
-  async function signUserOperationWithPasskeyAndCosigner(args: {
+  async function signUserOperationWithPasskey(args: {
     userOp: UserOperation<'v0.7'>
     permissions: GrantPermissionsReturnType
     chain: Chain
@@ -131,7 +124,7 @@ export function usePermissions() {
     return passkeySignature
   }
 
-  async function buildAndSendTransactionsWithCosignerAndPermissions(args: {
+  async function executeActionsWithPasskeyAndCosignerPermissions(args: {
     permissions: GrantPermissionsReturnType
     actions: Execution[]
     chain: Chain
@@ -171,7 +164,7 @@ export function usePermissions() {
      * userOp = { ...userOp, ...paymasterResponse }
      * console.log({ userOp })
      */
-    const signature = await signUserOperationWithPasskeyAndCosigner({
+    const signature = await signUserOperationWithPasskey({
       permissions,
       userOp,
       chain
@@ -187,48 +180,10 @@ export function usePermissions() {
       hash: txHash.userOperationTxHash as `0x${string}`
     })
 
-    if (userOpReceipt) {
-      const consumedCount = parseInt(permissionConsumedCount || '0', 10) + 1
-      console.log({ consumedCount })
-      setPermissionConsumedCount(consumedCount.toString())
-      let p = passkey as P256Credential
-      p = {
-        ...p,
-        publicKey: {
-          prefix: p.publicKey.prefix,
-          x: BigInt(p.publicKey.x),
-          y: BigInt(p.publicKey.y)
-        }
-      }
-      const passkeyPublicKey = serializePublicKey(p.publicKey, { to: 'hex' })
-      // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
-      let pc = grantedPermissions?.permissionsContext!
-      pc = `${pc.slice(0, 42)}00${pc.slice(44)}`
-      await updatePermissionsContext(caip10Address, projectId, {
-        pci: wcCosignerData.pci,
-        context: {
-          expiry: permissions.expiry,
-          signer: {
-            type: 'donut-purchase',
-            data: {
-              ids: [wcCosignerData.key, hexStringToBase64(passkeyPublicKey)]
-            }
-          },
-          signerData: {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
-            userOpBuilder: permissions.signerData?.userOpBuilder!
-          },
-          permissionsContext: pc,
-          factory: permissions.factory || '',
-          factoryData: permissions.factoryData || ''
-        }
-      })
-    }
-
     return userOpReceipt.receipt.transactionHash
   }
 
   return {
-    buildAndSendTransactionsWithCosignerAndPermissions
+    executeActionsWithPasskeyAndCosignerPermissions
   }
 }

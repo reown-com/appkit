@@ -9,7 +9,7 @@ import { useWagmiPermissions } from '../../context/WagmiPermissionsContext'
 import { sepolia } from 'viem/chains'
 
 export function WagmiPurchaseDonutWithPermissionsTest() {
-  const { buildAndSendTransactionsWithCosignerAndPermissions } = usePermissions()
+  const { executeActionsWithPasskeyAndCosignerPermissions } = usePermissions()
 
   const { grantedPermissions, wcCosignerData } = useWagmiPermissions()
   const {
@@ -51,7 +51,7 @@ export function WagmiPurchaseDonutWithPermissionsTest() {
           callData: purchaseDonutCallData
         }
       ]
-      const txHash = await buildAndSendTransactionsWithCosignerAndPermissions({
+      const txHash = await executeActionsWithPasskeyAndCosignerPermissions({
         actions: purchaseDonutCallDataExecution,
         permissions: grantedPermissions,
         chain: sepolia,

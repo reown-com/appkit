@@ -30,8 +30,7 @@ export function WagmiRequestPermissionsTest() {
     grantedPermissions,
     clearGrantedPermissions,
     setGrantedPermissions,
-    setWCCosignerData,
-    setPermissionConsumedCount
+    setWCCosignerData
   } = useWagmiPermissions()
   const [isRequestPermissionLoading, setRequestPermissionLoading] = useState<boolean>(false)
   const { addPermission, updatePermissionsContext } = useWalletConnectCosigner()
@@ -127,7 +126,6 @@ export function WagmiRequestPermissionsTest() {
           }
         })
         console.info('Updated the context on co-signer')
-        setPermissionConsumedCount('0')
         setGrantedPermissions(approvedPermissions)
         setRequestPermissionLoading(false)
         toast({
