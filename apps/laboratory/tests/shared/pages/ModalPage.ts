@@ -48,7 +48,6 @@ export class ModalPage {
   }
 
   async getConnectUri(timingRecords?: TimingRecords): Promise<string> {
-    await this.page.goto(this.url)
     await this.connectButton.click()
     const connect = this.page.getByTestId('wallet-selector-walletconnect')
     await connect.waitFor({
@@ -95,15 +94,15 @@ export class ModalPage {
     await email.deleteAllMessages(emailAddress)
     await this.loginWithEmail(emailAddress)
 
-    let messageId = await email.getLatestMessageId(emailAddress)
-
-    if (!messageId) {
+    const firstMessageId = await email.getLatestMessageId(emailAddress)
+    if (!firstMessageId) {
       throw new Error('No messageId found')
     }
-    let emailBody = await email.getEmailBody(emailAddress, messageId)
+
+    const firstEmailBody = await email.getEmailBody(emailAddress, firstMessageId)
     let otp = ''
-    if (email.isApproveEmail(emailBody)) {
-      const url = email.getApproveUrlFromBody(emailBody)
+    if (email.isApproveEmail(firstEmailBody)) {
+      const url = email.getApproveUrlFromBody(firstEmailBody)
 
       await email.deleteAllMessages(emailAddress)
 
@@ -112,16 +111,18 @@ export class ModalPage {
       await drp.approveDevice()
       await drp.close()
 
-      messageId = await email.getLatestMessageId(emailAddress)
-
-      emailBody = await email.getEmailBody(emailAddress, messageId)
-      if (!email.isApproveEmail(emailBody)) {
-        otp = email.getOtpCodeFromBody(emailBody)
+      const secondMessageId = await email.getLatestMessageId(emailAddress)
+      if (!secondMessageId) {
+        throw new Error('No messageId found')
       }
-    }
 
-    if (otp === '') {
-      otp = email.getOtpCodeFromBody(emailBody)
+      const secondEmailBody = await email.getEmailBody(emailAddress, secondMessageId)
+      if (email.isApproveEmail(secondEmailBody)) {
+        throw new Error('Unexpected approve email after already approved')
+      }
+      otp = email.getOtpCodeFromBody(secondEmailBody)
+    } else {
+      otp = email.getOtpCodeFromBody(firstEmailBody)
     }
 
     await this.enterOTP(otp)
@@ -218,15 +219,12 @@ export class ModalPage {
     await expect(disconnectBtn, 'Disconnect button should be visible').toBeVisible()
     await expect(disconnectBtn, 'Disconnect button should be enabled').toBeEnabled()
     await disconnectBtn.click()
-    await this.page.waitForTimeout(1000)
   }
 
   async sign() {
     const signButton = this.page.getByTestId('sign-message-button')
     await signButton.scrollIntoViewIfNeeded()
-    await this.page.waitForTimeout(500)
     await signButton.click()
-    await this.page.waitForTimeout(1000)
   }
 
   async signatureRequestFrameShouldVisible() {

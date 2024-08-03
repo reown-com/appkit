@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/cdn",
-  "version": "5.0.9",
+  "version": "5.0.10",
   "main": "dist/wagmi.js",
   "type": "module",
   "files": [
@@ -26,8 +26,8 @@
     }
   },
   "dependencies": {
-    "@wagmi/connectors": "5.0.21",
-    "@wagmi/core": "2.11.6",
+    "@wagmi/connectors": "5.1.2",
+    "@wagmi/core": "2.13.1",
     "@web3modal/wagmi": "workspace:*",
     "@web3modal/ethers": "workspace:*",
     "@web3modal/solana": "workspace:*",
