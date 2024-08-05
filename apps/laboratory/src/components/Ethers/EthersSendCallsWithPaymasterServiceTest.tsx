@@ -113,11 +113,7 @@ export function EthersSendCallsWithPaymasterServiceTest() {
     }
 
     // Replace with capability check
-    if (walletProvider instanceof W3mFrameProvider) {
-      return Boolean(true)
-    }
-
-    return false
+    return walletProvider instanceof W3mFrameProvider
   }
 
   if (!isConnected || !walletProvider || !address) {
