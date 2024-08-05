@@ -1,0 +1,22 @@
+diff --git a/src/fixtures/metaMaskFixtures.ts b/src/fixtures/metaMaskFixtures.ts
+index cc2019e4baa64c8a7dee64398c09dd415169a17f..cda6d980723f3ce885d4fab99596a3e07384a65e 100644
+--- a/src/fixtures/metaMaskFixtures.ts
++++ b/src/fixtures/metaMaskFixtures.ts
+@@ -53,7 +53,7 @@ export const metaMaskFixtures = (walletSetup: ReturnType<typeof defineWalletSetu
+       // We don't need the `--load-extension` arg since the extension is already loaded in the cache.
+       const browserArgs = [`--disable-extensions-except=${metamaskPath}`]
+ 
+-      if (process.env.HEADLESS) {
++      if (process.env["HEADLESS"]) {
+         browserArgs.push('--headless=new')
+ 
+         if (slowMo > 0) {
+@@ -64,7 +64,7 @@ export const metaMaskFixtures = (walletSetup: ReturnType<typeof defineWalletSetu
+       const context = await chromium.launchPersistentContext(_contextPath, {
+         headless: false,
+         args: browserArgs,
+-        slowMo: process.env.HEADLESS ? 0 : slowMo
++        slowMo: process.env["HEADLESS"] ? 0 : slowMo
+       })
+ 
+       const { cookies, origins } = await currentContext.storageState()
