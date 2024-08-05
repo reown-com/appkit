@@ -43,7 +43,7 @@ import {
 } from '@wallet-standard/features'
 import { arraysEqual } from '@wallet-standard/wallet'
 import bs58 from 'bs58'
-import { SolStoreUtil } from '../scaffold'
+import { SolStoreUtil } from '../scaffold/index.js'
 
 /** TODO: docs */
 export interface StandardWalletAdapterConfig {
