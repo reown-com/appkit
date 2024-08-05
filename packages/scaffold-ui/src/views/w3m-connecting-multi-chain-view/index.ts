@@ -2,9 +2,9 @@ import {
   AssetUtil,
   ChainController,
   CoreHelperUtil,
-  NetworkController,
   RouterController,
-  type CaipNetwork
+  SnackController,
+  type Connector
 } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 
@@ -12,7 +12,6 @@ import { html, LitElement } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
-import { ConstantsUtil } from '@web3modal/common'
 
 @customElement('w3m-connecting-multi-chain-view')
 export class W3mConnectingMultiChainView extends LitElement {
@@ -47,7 +46,7 @@ export class W3mConnectingMultiChainView extends LitElement {
         <wui-flex justifyContent="center" alignItems="center">
           <wui-wallet-image
             size="lg"
-            imageSrc=${ifDefined(this.activeConnector?.imageUrl)}
+            imageSrc=${ifDefined(AssetUtil.getConnectorImage(this.activeConnector))}
           ></wui-wallet-image>
         </wui-flex>
         <wui-flex
@@ -78,51 +77,36 @@ export class W3mConnectingMultiChainView extends LitElement {
 
   // Private Methods ------------------------------------- //
   private networksTemplate() {
-    const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
-    const approvedCaipNetworkIds = NetworkController.state.approvedCaipNetworkIds
-    const supportsAllNetworks = NetworkController.state.supportsAllNetworks
-    const chains = ChainController.state.chains
-    const chainKeys = [...chains.keys()]
-
-    const sortedNetworks = CoreHelperUtil.sortRequestedNetworks(
-      approvedCaipNetworkIds,
-      requestedCaipNetworks
-    )
-
-    const networks: CaipNetwork[] | null | undefined = []
-
-    chainKeys.forEach(chain => {
-      if (chains.get(chain)) {
-        const network = sortedNetworks.find(
-          element => element.name === ConstantsUtil.CHAIN_NAME_MAP[chain]
-        )
-        if (network) {
-          networks.push(network)
-        }
-      }
-    })
-
-    return networks?.map(
-      network => html`
+    return this.activeConnector?.providers?.map(
+      provider => html`
         <wui-list-wallet
-          imageSrc=${ifDefined(AssetUtil.getNetworkImage(network))}
-          type="network"
-          tagLabel="installed"
-          tagVariant="main"
-          name=${network.name ?? network.id}
-          @click=${() => this.onSwitchNetwork(network)}
-          .disabled=${!supportsAllNetworks && !approvedCaipNetworkIds?.includes(network.id)}
+          imageSrc=${ifDefined(AssetUtil.getChainImage(provider.chain))}
+          name=${provider.name}
+          @click=${() => this.onConnector(provider)}
         ></wui-list-wallet>
       `
     )
   }
 
-  private onSwitchNetwork(network: CaipNetwork) {
-    NetworkController.setActiveCaipNetwork(network)
-    const connector = this.activeConnector?.providers?.find(
-      provider => provider.chain === network.chain
-    )
-    RouterController.push('ConnectingExternal', { connector })
+  private onConnector(provider: Connector) {
+    ChainController.setActiveChain(provider.chain)
+    const connector = this.activeConnector?.providers?.find(p => p.chain === provider.chain)
+
+    if (!connector) {
+      SnackController.showError('Failed to find connector')
+
+      return
+    }
+
+    if (connector.type === 'WALLET_CONNECT') {
+      if (CoreHelperUtil.isMobile()) {
+        RouterController.push('AllWallets')
+      } else {
+        RouterController.push('ConnectingWalletConnect')
+      }
+    } else {
+      RouterController.push('ConnectingExternal', { connector })
+    }
   }
 }
 

@@ -27,7 +27,7 @@ export class W3mConnectMultiChainWidget extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     const multiChainConnectors = this.connectors.filter(
-      connector => connector.type === 'MULTI_CHAIN'
+      connector => connector.type === 'MULTI_CHAIN' && connector.name !== 'WalletConnect'
     )
 
     if (!multiChainConnectors?.length) {

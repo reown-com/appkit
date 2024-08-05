@@ -137,8 +137,8 @@ export const AccountController = {
       ChainController.setAccountProp('tokenBalance', tokenBalance, chain)
     }
   },
-  setShouldUpdateToAddress(address: string) {
-    ChainController.setAccountProp('shouldUpdateToAddress', address)
+  setShouldUpdateToAddress(address: string, chain?: Chain) {
+    ChainController.setAccountProp('shouldUpdateToAddress', address, chain)
   },
 
   setAllAccounts(accounts: AccountType[], chain?: Chain) {
