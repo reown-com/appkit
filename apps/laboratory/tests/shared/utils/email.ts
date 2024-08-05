@@ -83,7 +83,11 @@ export class Email {
     )
     const { id } = await response.json()
 
-    return `w3m-w${id}@${domain}`
+    const email = `w3m-w${id}@${domain}`
+    // eslint-disable-next-line no-console
+    console.log(`allocating email: ${email}`)
+
+    return email
   }
 
   getSmartAccountEnabledEmail(): string {
