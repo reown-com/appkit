@@ -33,6 +33,7 @@ import type {
 } from '../utils/TypeUtil.js'
 import { OptionsController } from './OptionsController.js'
 import { proxy } from 'valtio/vanilla'
+import { AccountController } from './AccountController.js'
 
 const DEFAULT_OPTIONS = {
   purchaseCurrencies: [
@@ -130,7 +131,8 @@ export const BlockchainApiController = {
     return state.api.get<BlockchainApiIdentityResponse>({
       path: `/v1/identity/${address}`,
       params: {
-        projectId: OptionsController.state.projectId
+        projectId: OptionsController.state.projectId,
+        sender: AccountController.state.address
       }
     })
   },
@@ -304,7 +306,10 @@ export const BlockchainApiController = {
 
   async reverseLookupEnsName({ address }: { address: string }) {
     return state.api.get<BlockchainApiLookupEnsName[]>({
-      path: `/v1/profile/reverse/${address}?projectId=${OptionsController.state.projectId}`
+      path: `/v1/profile/reverse/${address}?projectId=${OptionsController.state.projectId}`,
+      params: {
+        sender: AccountController.state.address
+      }
     })
   },
 
