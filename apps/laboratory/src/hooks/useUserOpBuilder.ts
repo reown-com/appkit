@@ -106,10 +106,10 @@ export const getCallDataAbi = [
   }
 ] as const
 
-export const getSignatureAbi = [
+export const formatSignatureAbi = [
   {
     type: 'function',
-    name: 'getSignature',
+    name: 'formatSignature',
     inputs: [
       {
         name: 'smartAccount',
@@ -275,8 +275,8 @@ export function useUserOpBuilder() {
 
     const sig = await publicClient.readContract({
       address: userOpBuilderAddress,
-      abi: getSignatureAbi,
-      functionName: 'getSignature',
+      abi: formatSignatureAbi,
+      functionName: 'formatSignature',
       args: [sender, userOperation, permissionsContext]
     })
 
