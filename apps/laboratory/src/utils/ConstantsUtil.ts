@@ -27,10 +27,10 @@ export const ConstantsUtil = {
   SigningFailedToastTitle: 'Signing Failed',
   TestIdSiweAuthenticationStatus: 'w3m-authentication-status',
   Metadata: {
-    name: 'AppKit',
-    description: 'AppKit Laboratory',
+    name: 'AppKit Lab',
+    description: 'Laboratory environment for AppKit testing',
     url: getPublicUrl(),
-    icons: [`${getPublicUrl()}/metadata-icon.png`],
+    icons: [`${getPublicUrl()}/metadata-icon.svg`],
     verifyUrl: ''
   },
   CustomWallets: [
