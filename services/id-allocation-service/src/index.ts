@@ -3,7 +3,7 @@ import type { DurableObjectNamespace } from '@cloudflare/workers-types'
 import { DurableObject } from 'cloudflare:workers'
 
 export type Bindings = {
-  ID_ALLOCATION: DurableObjectNamespace<IdAllocation>,
+  ID_ALLOCATION: DurableObjectNamespace<IdAllocation>
 }
 
 const app = new Hono<{ Bindings: Bindings }>()
