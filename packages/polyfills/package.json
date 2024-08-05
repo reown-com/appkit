@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/polyfills",
-  "version": "5.0.7",
+  "version": "5.0.10",
   "type": "module",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
@@ -10,13 +10,16 @@
   ],
   "scripts": {
     "build:clean": "rm -rf dist",
-    "build:polyfills": "tsc --build",
+    "build": "tsc --build",
     "watch": "tsc --watch",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
     "buffer": "6.0.3"
+  },
+  "devDependencies": {
+    "@types/node": "20.11.5"
   },
   "keywords": [
     "web3",

@@ -17,6 +17,10 @@ export default css`
     margin-bottom: var(--wui-spacing-3xs);
   }
 
+  wui-list-item > wui-text {
+    flex: 1;
+  }
+
   w3m-transactions-view {
     max-height: 200px;
   }
@@ -45,7 +49,7 @@ export default css`
     box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-002);
     background-color: var(--wui-color-gray-glass-002);
     border-radius: 24px;
-    transaction: background-color 0.2s linear;
+    transition: background-color 0.2s linear;
   }
 
   .account-button:hover {
@@ -93,8 +97,10 @@ export default css`
     border-radius: var(--XS, 16px);
     border: 1px solid var(--dark-accent-glass-010, rgba(71, 161, 255, 0.1));
     background: var(--dark-accent-glass-010, rgba(71, 161, 255, 0.1));
-    transition: background-color var(--wui-ease-out-power-1) var(--wui-duration-md);
-    will-change: background-color;
+    transition:
+      background-color var(--wui-ease-out-power-1) var(--wui-duration-md),
+      opacity var(--wui-ease-out-power-1) var(--wui-duration-md);
+    will-change: background-color, opacity;
   }
 
   .account-links wui-flex:hover {

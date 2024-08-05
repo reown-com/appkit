@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/common",
-  "version": "5.0.7",
+  "version": "5.0.10",
   "type": "module",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
@@ -10,7 +10,7 @@
   ],
   "scripts": {
     "build:clean": "rm -rf dist",
-    "build:common": "tsc --build",
+    "build": "tsc --build",
     "watch": "tsc --watch",
     "typecheck": "tsc --noEmit",
     "test": "vitest run --dir tests --coverage.enabled=true --coverage.reporter=json --coverage.reporter=json-summary --coverage.reportOnFailure=true",
