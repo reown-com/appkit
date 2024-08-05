@@ -1,11 +1,5 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-/* eslint-disable no-console */
 import { type GrantPermissionsReturnType } from 'viem/experimental'
-import {
-  ENTRYPOINT_ADDRESS_V07,
-  getPackedUserOperation,
-  getUserOperationHash
-} from 'permissionless'
+import { ENTRYPOINT_ADDRESS_V07, getUserOperationHash } from 'permissionless'
 import { type UserOperation } from 'permissionless/types'
 import { encodeAbiParameters, hashMessage, type PublicClient } from 'viem'
 import { sign as signWithPasskey } from 'webauthn-p256'
@@ -16,7 +10,7 @@ import { createClients } from '../utils/PermissionsUtils'
 import { useWalletConnectCosigner } from './useWalletConnectCosigner'
 import { useWagmiPermissions } from '../context/WagmiPermissionsContext'
 
-export function usePermissions() {
+export function useERC7715PermissionsSync() {
   const { getCallDataWithContext, getNonceWithContext } = useUserOpBuilder()
   const { coSignUserOperation } = useWalletConnectCosigner()
   const { wcCosignerData, passkeyId } = useWagmiPermissions()
@@ -87,8 +81,6 @@ export function usePermissions() {
     if (!signerData?.userOpBuilder || !signerData.submitToAddress || !permissionsContext) {
       throw new Error(`Invalid permissions ${JSON.stringify(permissions, bigIntReplacer)}`)
     }
-    const packedForEntryPoint = getPackedUserOperation(userOp)
-    console.log({ packedForEntryPoint })
     const userOpHash = getUserOperationHash({
       userOperation: {
         ...userOp
@@ -128,12 +120,15 @@ export function usePermissions() {
     permissions: GrantPermissionsReturnType
     actions: Execution[]
     chain: Chain
-    accountAddress: `0x${string}`
   }): Promise<`0x${string}`> {
-    const { permissions, actions, chain, accountAddress } = args
-
+    const { permissions, actions, chain } = args
+    const accountAddress = permissions?.signerData?.submitToAddress
     const { publicClient, bundlerClient } = createClients(chain)
     const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
+
+    if (!accountAddress) {
+      throw new Error(`Unable to get account details from granted permission`)
+    }
     if (!projectId) {
       throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
     }

@@ -1,6 +1,3 @@
-/* eslint-disable multiline-comment-style */
-/* eslint-disable capitalized-comments */
-/* eslint-disable no-console */
 import { Button, Stack, Text } from '@chakra-ui/react'
 import { useAccount } from 'wagmi'
 import { walletActionsErc7715, type GrantPermissionsParameters } from 'viem/experimental'
@@ -17,11 +14,11 @@ import {
 import { abi as donutContractAbi, address as donutContractAddress } from '../../utils/DonutContract'
 import { useWagmiPermissions } from '../../context/WagmiPermissionsContext'
 import { serializePublicKey, type P256Credential } from 'webauthn-p256'
-import { CoSignerApiError, useWalletConnectCosigner } from '../../hooks/useWalletConnectCosigner'
+import { useWalletConnectCosigner } from '../../hooks/useWalletConnectCosigner'
 import { useWagmiAvailableCapabilities } from '../../hooks/useWagmiActiveCapabilities'
 
 export function WagmiRequestPermissionsTest() {
-  const { ethereumProvider } = useWagmiAvailableCapabilities({
+  const { ethereumProvider, isMethodSupported } = useWagmiAvailableCapabilities({
     method: EIP_7715_RPC_METHODS.WALLET_GRANT_PERMISSIONS
   })
   const { chain, address, isConnected } = useAccount()
@@ -74,6 +71,9 @@ export function WagmiRequestPermissionsTest() {
     if (!passkey) {
       throw new Error('Passkey not available')
     }
+    if (!ethereumProvider) {
+      throw new Error('No Provider available, Please connect your wallet.')
+    }
     const caip10Address = `eip155:${chain?.id}:${address}`
     try {
       const addPermissionResponse = await addPermission(caip10Address, projectId, {
@@ -82,7 +82,7 @@ export function WagmiRequestPermissionsTest() {
         onChainValidated: false,
         required: true
       })
-      console.info({ addPermissionResponse })
+
       setWCCosignerData(addPermissionResponse)
       const cosignerPublicKey = decodeUncompressedPublicKey(addPermissionResponse.key)
       let p = passkey as P256Credential
@@ -100,9 +100,9 @@ export function WagmiRequestPermissionsTest() {
 
       const publicClient = createPublicClient({
         chain,
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        transport: custom(ethereumProvider!)
+        transport: custom(ethereumProvider)
       }).extend(walletActionsErc7715())
+
       const samplePermissions = getSamplePermissions(secp256k1DID, passkeyDID)
       const approvedPermissions = await publicClient.grantPermissions(samplePermissions)
       if (approvedPermissions) {
@@ -125,7 +125,6 @@ export function WagmiRequestPermissionsTest() {
             factoryData: approvedPermissions.factoryData || ''
           }
         })
-        console.info('Updated the context on co-signer')
         setGrantedPermissions(approvedPermissions)
         setRequestPermissionLoading(false)
         toast({
@@ -138,13 +137,9 @@ export function WagmiRequestPermissionsTest() {
       }
       toast({ title: 'Error', description: 'Failed to obtain permissions' })
     } catch (error) {
-      if (error instanceof CoSignerApiError) {
-        console.error(`API Error ${error.status}: ${error.message}`)
-      }
-      console.error('Unexpected error:', error)
       toast({
         type: 'error',
-        title: 'Permissions Erros',
+        title: 'Request Permissions Erros',
         description: error instanceof Error ? error.message : 'Some error occurred'
       })
     }
@@ -158,13 +153,13 @@ export function WagmiRequestPermissionsTest() {
       </Text>
     )
   }
-  // if (!isGrantPermissionsSupported()) {
-  //   return (
-  //     <Text fontSize="md" color="yellow">
-  //       Wallet does not support wallet_grantPermissions rpc method
-  //     </Text>
-  //   )
-  // }
+  if (!isMethodSupported()) {
+    return (
+      <Text fontSize="md" color="yellow">
+        Wallet does not support wallet_grantPermissions rpc method
+      </Text>
+    )
+  }
 
   return (
     <Stack direction={['column', 'column', 'row']}>
