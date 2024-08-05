@@ -369,14 +369,14 @@ export class W3mFrameProvider {
     })
   }
 
-  public async getCapabilities(): Promise<Record<number, W3mFrameTypes.WalletCapabilities>> {
+  public async getCapabilities(): Promise<Record<`0x${string}`, W3mFrameTypes.WalletCapabilities>> {
     try {
       const capabilities = await this.request({
         method: 'wallet_getCapabilities'
       })
 
       return capabilities || {}
-    } catch (e) {
+    } catch {
       return {}
     }
   }

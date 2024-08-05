@@ -10,7 +10,7 @@ import { useWagmiAvailableCapabilities } from '../../hooks/useWagmiActiveCapabil
 
 const TEST_TX_1 = {
   to: vitalikEthAddress as Address,
-  value: parseGwei('0.00')
+  value: parseGwei('0.0001')
 }
 const TEST_TX_2 = {
   to: vitalikEthAddress as Address,

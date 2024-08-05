@@ -82,6 +82,7 @@ export class W3mFrame {
         }
         const frameEvent = W3mFrameSchema.frameEvent.parse(data)
         if (frameEvent.id === id) {
+          console.log('Received Frame Event', frameEvent)
           callback(frameEvent)
           window.removeEventListener('message', eventHandler)
         }

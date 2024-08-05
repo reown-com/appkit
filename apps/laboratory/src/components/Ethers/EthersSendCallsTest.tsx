@@ -27,10 +27,7 @@ export function EthersSendCallsTest() {
   const [lastCallsBatchId, setLastCallsBatchId] = useState<string | null>(null)
 
   useEffect(() => {
-    if (
-      address &&
-      (walletProvider instanceof EthereumProvider || walletProvider instanceof W3mFrameProvider)
-    ) {
+    if (address) {
       getCapabilitySupportedChainInfo(
         WALLET_CAPABILITIES.ATOMIC_BATCH,
         walletProvider,
