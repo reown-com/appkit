@@ -17,6 +17,7 @@ const smartAccountTest = test.extend<{ library: string }>({
 smartAccountTest.describe.configure({ mode: 'serial' })
 
 smartAccountTest.beforeAll(async ({ browser, library }, testInfo) => {
+  smartAccountTest.setTimeout(120000)
   context = await browser.newContext()
   const browserPage = await context.newPage()
 
