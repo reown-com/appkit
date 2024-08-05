@@ -48,27 +48,6 @@ export class ModalWalletPage extends ModalPage {
     await this.page.getByTestId('connect-button').waitFor({ state: 'visible', timeout: 5000 })
   }
 
-  async getAddress(): Promise<`0x${string}`> {
-    const address = await this.page.getByTestId('w3m-address').textContent()
-    expect(address, 'Address should be present').toBeTruthy()
-
-    return address as `0x${string}`
-  }
-
-  async getChainId(): Promise<number> {
-    const chainId = await this.page.getByTestId('w3m-chain-id').textContent()
-    expect(chainId, 'Chain ID should be present').toBeTruthy()
-
-    return Number(chainId)
-  }
-
-  async getSignature(): Promise<`0x${string}`> {
-    const signature = await this.page.getByTestId('w3m-signature').textContent()
-    expect(signature, 'Signature should be present').toBeTruthy()
-
-    return signature as `0x${string}`
-  }
-
   async switchNetworkWithNetworkButton(networkName: string) {
     const networkButton = this.page.getByTestId('w3m-network-button')
     await networkButton.click()

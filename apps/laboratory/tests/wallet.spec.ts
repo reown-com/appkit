@@ -87,6 +87,18 @@ sampleWalletTest('it should show multiple accounts', async ({ library }) => {
   await modalPage.closeModal()
 })
 
+sampleWalletTest('it should switch between multiple accounts', async ({ library }) => {
+  // Multi address not available in Solana wallet and wagmi does not allow programatic account switching
+  if (library === 'solana' || library === 'wagmi') {
+    return
+  }
+  const originalAddress = await modalPage.getAddress()
+  await modalPage.openAccount()
+  await modalPage.openProfileView()
+  await modalPage.switchAccount()
+  await modalValidator.expectAccountSwitched(originalAddress)
+})
+
 sampleWalletTest(
   'it should show Switch Network modal if network is not supported',
   async ({ library }) => {

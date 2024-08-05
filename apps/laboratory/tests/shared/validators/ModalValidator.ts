@@ -146,4 +146,9 @@ export class ModalValidator {
     const suggestion = this.page.getByTestId('account-name-suggestion').getByText(name)
     await expect(suggestion).toBeVisible()
   }
+
+  async expectAccountSwitched(oldAddress: string) {
+    const address = this.page.getByTestId('w3m-address')
+    await expect(address).not.toHaveText(oldAddress)
+  }
 }
