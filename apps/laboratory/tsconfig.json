@@ -4,5 +4,10 @@
     "jsx": "preserve",
     "noEmit": true
   },
-  "include": ["next-env.d.ts", "src", "tests", "playwright.config.ts", "../id-allocation-service"]
+  "include": [
+    "next-env.d.ts",
+    "src",
+    "tests",
+    "playwright.config.ts"
+  ]
 }

@@ -16,7 +16,7 @@ app.get('/allocate', async c => {
     const exp = ids[id]
     const isFree = exp === undefined || exp < now
     if (isFree) {
-      ids[id] = now + 1000 * 60
+      ids[id] = now + 1000 * 60 * 5
       await c.env.ID_ALLOCATION.put('ids', JSON.stringify(ids))
       return c.json({ id: id })
     }

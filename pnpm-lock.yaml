@@ -175,19 +175,6 @@ importers:
         specifier: 2.4.4
         version: 2.4.4
 
-  apps/id-allocation-service:
-    dependencies:
-      hono:
-        specifier: ^4.5.0
-        version: 4.5.3
-    devDependencies:
-      '@cloudflare/workers-types':
-        specifier: ^4.20240529.0
-        version: 4.20240729.0
-      wrangler:
-        specifier: ^3.57.2
-        version: 3.68.0(@cloudflare/workers-types@4.20240729.0)(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-
   apps/laboratory:
     dependencies:
       '@chakra-ui/icons':
@@ -1057,6 +1044,19 @@ importers:
       zod:
         specifier: 3.22.4
         version: 3.22.4
+
+  services/id-allocation-service:
+    dependencies:
+      hono:
+        specifier: ^4.5.0
+        version: 4.5.3
+    devDependencies:
+      '@cloudflare/workers-types':
+        specifier: ^4.20240529.0
+        version: 4.20240729.0
+      wrangler:
+        specifier: ^3.57.2
+        version: 3.68.0(@cloudflare/workers-types@4.20240729.0)(bufferutil@4.0.8)(utf-8-validate@5.0.10)
 
 packages:
 

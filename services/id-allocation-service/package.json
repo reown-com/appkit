@@ -1,5 +1,5 @@
 {
-  "name": "id-allocation-service",
+  "name": "@services/id-allocation-service",
   "scripts": {
     "dev": "wrangler dev src/index.ts",
     "deploy": "wrangler deploy --minify src/index.ts"
