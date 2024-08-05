@@ -77,14 +77,6 @@ export type Metadata = {
 
 export type CombinedProvider = W3mFrameProvider & Provider
 
-export type Chain = {
-  rpcUrl: string
-  explorerUrl: string
-  currency: string
-  name: string
-  chainId: string
-}
-
 // eslint-disable-next-line no-shadow
 export enum Tag {
   Uninitialized = 0,

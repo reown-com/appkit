@@ -64,7 +64,7 @@ export interface AdapterOptions extends Pick<AppKitOptions, 'siweConfig'> {
   ethersConfig: ProviderType
   chains: Chain[]
   defaultChain?: Chain
-  chainImages?: Record<number, string>
+  chainImages?: Record<number | string, string>
   connectorImages?: Record<string, string>
   tokens?: Record<number, Token>
 }
@@ -274,7 +274,9 @@ export class EVMEthersClient {
             }
           }
         } else {
-          await WalletConnectProvider.connect({ optionalChains: this.chains.map(c => c.chainId) })
+          await WalletConnectProvider.connect({
+            optionalChains: this.chains.map(c => c.chainId as number)
+          })
         }
 
         await this.setWalletConnectProvider()
@@ -623,7 +625,7 @@ export class EVMEthersClient {
       this.appKit?.getCaipNetwork()?.id
     )
 
-    return storeChainId ?? networkControllerChainId
+    return (storeChainId as number | undefined) ?? networkControllerChainId
   }
 
   public getStatus() {
@@ -682,7 +684,7 @@ export class EVMEthersClient {
 
   private async initWalletConnectProvider() {
     const rpcMap = this.chains
-      ? this.chains.reduce<Record<number, string>>((map, chain) => {
+      ? this.chains.reduce<Record<number | string, string>>((map, chain) => {
           map[chain.chainId] = chain.rpcUrl
 
           return map
@@ -1321,7 +1323,7 @@ export class EVMEthersClient {
 
       if (chain) {
         const jsonRpcProvider = new JsonRpcProvider(chain.rpcUrl, {
-          chainId,
+          chainId: chain.chainId as number,
           name: chain.name
         })
         if (jsonRpcProvider) {
@@ -1468,11 +1470,11 @@ export class EVMEthersClient {
         if (this.authProvider && chain?.chainId) {
           try {
             this.appKit?.setLoading(true)
-            await this.authProvider.switchNetwork(chain?.chainId)
+            await this.authProvider.switchNetwork(chain.chainId as number)
             EthersStoreUtil.setChainId(chain.chainId)
 
             const { address, preferredAccountType } = await this.authProvider.connect({
-              chainId: chain?.chainId
+              chainId: chain?.chainId as number | undefined
             })
 
             EthersStoreUtil.setAddress(address as Address)

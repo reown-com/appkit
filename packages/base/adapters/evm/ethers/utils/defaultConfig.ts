@@ -71,7 +71,7 @@ export function defaultConfig(options: ConfigOptions) {
     const coinbaseWallet = new CoinbaseWalletSDK({
       appName: metadata.name,
       appLogoUrl: metadata.icons[0],
-      appChainIds: options.chains?.map(chain => chain.chainId) || [1, 84532]
+      appChainIds: options.chains?.map(chain => chain.chainId as number) || [1, 84532]
     })
 
     /**

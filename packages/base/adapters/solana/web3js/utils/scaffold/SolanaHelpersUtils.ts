@@ -1,10 +1,10 @@
 import { PresetsUtil, ConstantsUtil } from '@web3modal/scaffold-utils'
 import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
+import type { Chain } from '@web3modal/scaffold-utils'
+import type { CaipNetwork } from '@web3modal/core'
 
 import { SolConstantsUtil } from './SolanaConstantsUtil.js'
-
-import type { CaipNetwork } from '@web3modal/core'
-import type { Chain, Provider } from './SolanaTypesUtil.js'
+import type { Provider } from './SolanaTypesUtil.js'
 import type { ExtendedBaseWalletAdapter } from '../../client.js'
 import type { SolStoreUtilState } from './SolanaStoreUtil.js'
 

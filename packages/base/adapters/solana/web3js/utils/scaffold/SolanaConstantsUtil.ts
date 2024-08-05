@@ -30,6 +30,7 @@ export const SolConstantsUtil = {
     name: 'Solana',
     currency: 'SOL',
     explorerUrl: 'https://solscan.io',
-    rpcUrl: 'https://rpc.walletconnect.com/v1'
+    rpcUrl: 'https://rpc.walletconnect.com/v1',
+    chain: 'solana'
   }
 }

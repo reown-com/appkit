@@ -303,30 +303,11 @@ export class AppKit {
   // -- Private ------------------------------------------------------------------
   private async initControllers(options: AppKitOptions) {
     ChainController.setMultiChainEnabled(true)
+
     if (options.adapters?.length === 0) {
-      ChainController.setisUniversalAdapterOnly(true)
-      const universalAdapter = new UniversalAdapterClient({
-        chains: options.chains,
-        metadata: options.metadata
-      })
-
-      ChainController.initialize([universalAdapter])
-      universalAdapter.construct?.(this, options)
-      NetworkController.setAllowUnsupportedChain(
-        options.allowUnsupportedChain,
-        universalAdapter.chain
-      )
-      NetworkController.setDefaultCaipNetwork(options.defaultChain)
+      this.initializeUniversalAdapter(options)
     } else {
-      ChainController.initialize(options.adapters || [])
-      options.adapters?.forEach(adapter => {
-        // @ts-expect-error will introduce construct later
-        adapter.construct?.(this, options)
-
-        // Set this value for all chains
-        NetworkController.setAllowUnsupportedChain(options.allowUnsupportedChain, adapter.chain)
-        NetworkController.setDefaultCaipNetwork(options.defaultChain)
-      })
+      this.initializeAdapters(options)
     }
 
     OptionsController.setProjectId(options.projectId)
@@ -369,6 +350,33 @@ export class AppKit {
         SIWEController.setSIWEClient(options.siweConfig)
       }
     }
+  }
+
+  private initializeUniversalAdapter(options: AppKitOptions) {
+    ChainController.setisUniversalAdapterOnly(true)
+    const universalAdapter = new UniversalAdapterClient({
+      chains: options.chains,
+      metadata: options.metadata
+    })
+
+    ChainController.initializeUniversalAdapter(universalAdapter)
+    universalAdapter.construct?.(this, options)
+
+    NetworkController.setAllowUnsupportedChain(options.allowUnsupportedChain, 'evm')
+    NetworkController.setAllowUnsupportedChain(options.allowUnsupportedChain, 'solana')
+    NetworkController.setDefaultCaipNetwork(options.defaultChain)
+  }
+
+  private initializeAdapters(options: AppKitOptions) {
+    ChainController.initialize(options.adapters || [])
+    options.adapters?.forEach(adapter => {
+      // @ts-expect-error will introduce construct later
+      adapter.construct?.(this, options)
+
+      // Set this value for all chains
+      NetworkController.setAllowUnsupportedChain(options.allowUnsupportedChain, adapter.chain)
+      NetworkController.setDefaultCaipNetwork(options.defaultChain)
+    })
   }
 
   private async initOrContinue() {

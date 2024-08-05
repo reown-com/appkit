@@ -7,9 +7,9 @@ import { BaseConnector } from './baseConnector.js'
 
 import type { Signer } from '@solana/web3.js'
 import type UniversalProvider from '@walletconnect/universal-provider'
+import type { Chain } from '@web3modal/scaffold-utils'
 
 import type { Connector } from './baseConnector.js'
-import type { Chain } from '../utils/scaffold/SolanaTypesUtil.js'
 import {
   getChainsFromChainId,
   getDefaultChainFromSession,
@@ -227,7 +227,7 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
   }
 
   public async connect() {
-    const currentChainId = SolStoreUtil.state.currentChain?.chainId
+    const currentChainId = SolStoreUtil.state.currentChain?.chainId as string | undefined
     const solanaNamespace = this.generateNamespaces(currentChainId ?? '')
 
     const provider = await UniversalProviderFactory.getProvider()
