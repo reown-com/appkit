@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  '@synthetixio/synpress-metamask@0.0.1-alpha.7':
+    hash: fj5b4lzbslgihe6pqcmuyxpfd4
+    path: patches/@synthetixio__synpress-metamask@0.0.1-alpha.7.patch
+
 importers:
 
   .:
@@ -23870,7 +23875,7 @@ snapshots:
 
   playwright@1.44.0:
     dependencies:
-      playwright-core: 1.40.1
+      playwright-core: 1.44.0
     optionalDependencies:
       fsevents: 2.3.2
 
