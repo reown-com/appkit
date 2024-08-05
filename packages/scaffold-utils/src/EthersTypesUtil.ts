@@ -53,9 +53,10 @@ export type Metadata = {
 export type CombinedProvider = W3mFrameProvider & Provider
 
 export type Chain = {
-  rpcUrl: string
-  explorerUrl: string
-  currency: string
+  chainId: string | number
   name: string
-  chainId: number
+  currency: string
+  explorerUrl: string
+  rpcUrl: string
+  chain: string
 }

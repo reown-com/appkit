@@ -7,11 +7,12 @@ import type {
   Token
 } from '@web3modal/core'
 import type { SIWEControllerClient, Web3ModalSIWEClient } from '@web3modal/siwe'
+import type { Chain } from '@web3modal/scaffold-utils'
 
 export type AppKitOptions = OptionsControllerState & {
   adapters?: ChainAdapter[]
   siweConfig?: Web3ModalSIWEClient
-  chains: Chain[]
+  chains?: Chain[]
   themeMode?: ThemeMode
   themeVariables?: ThemeVariables
   allowUnsupportedChain?: NetworkControllerState['allowUnsupportedChain']
@@ -31,12 +32,3 @@ export type Namespace = Record<
     rpcMap: Record<string, string>
   }
 >
-
-export type Chain = {
-  chainId: string | number
-  name: string
-  currency: string
-  explorerUrl: string
-  rpcUrl: string | ((chainId: string | number) => string)
-  chain: string
-}

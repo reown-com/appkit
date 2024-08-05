@@ -21,7 +21,7 @@ export const EthersHelpersUtil = {
 
     return number
   },
-  numberToHexString(value: number) {
+  numberToHexString(value: number | string) {
     return `0x${value.toString(16)}`
   },
   async getUserInfo(provider: Provider) {

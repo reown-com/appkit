@@ -1,4 +1,5 @@
-import type { Chain, Namespace } from './TypesUtil.js'
+import type { Chain } from '@web3modal/scaffold-utils'
+import type { Namespace } from './TypesUtil.js'
 
 export const WcHelpersUtil = {
   hexStringToNumber(value: string) {
@@ -41,18 +42,27 @@ export const WcHelpersUtil = {
       }
 
       const fullChainId = `${namespaceKey}:${chainId}`
+      // @ts-ignore
       acc[namespaceKey].chains.push(fullChainId)
-      acc[namespaceKey].rpcMap[fullChainId] =
-        typeof rpcUrl === 'function' ? rpcUrl(chainId) : rpcUrl
+      // @ts-ignore
+      acc[namespaceKey].rpcMap[fullChainId] = rpcUrl
+      // typeof rpcUrl === 'function' ? rpcUrl(chainId) : rpcUrl
 
       return acc
     }, {})
   },
-  extractDetails(fullIdentifier: string): {
-    chainType: string
-    chainId: string
+  extractDetails(fullIdentifier: string | undefined): {
+    chainType: string | undefined
+    chainId: string | undefined
     address?: string
   } {
+    if (!fullIdentifier) {
+      return {
+        chainType: undefined,
+        chainId: undefined
+      }
+    }
+
     const parts = fullIdentifier.split(':')
     if (parts.length < 2 || parts.length > 3) {
       throw new Error(`Invalid format: ${fullIdentifier}`)

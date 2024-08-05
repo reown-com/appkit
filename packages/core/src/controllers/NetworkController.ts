@@ -193,11 +193,14 @@ export const NetworkController = {
   },
 
   async switchActiveNetwork(network: NetworkControllerState['caipNetwork']) {
+    const isUniversalAdapterOnly = ChainController.state.isUniversalAdapterOnly
     const sameChain = network?.chain === ChainController.state.activeChain
 
     let networkControllerClient: NetworkControllerState['_client'] = undefined
 
-    if (sameChain) {
+    if (isUniversalAdapterOnly) {
+      networkControllerClient = ChainController.state.universalAdapter?.networkControllerClient
+    } else if (sameChain) {
       networkControllerClient = ChainController.getNetworkControllerClient()
     } else {
       networkControllerClient = network

@@ -2,7 +2,6 @@
 import {
   AccountController,
   ConnectionController,
-  NetworkController,
   type CaipAddress,
   type CaipNetwork,
   type CaipNetworkId,
@@ -13,6 +12,8 @@ import {
   type Token
 } from '@web3modal/core'
 import { ConstantsUtil, PresetsUtil } from '@web3modal/scaffold-utils'
+import { type Chain } from '@web3modal/scaffold-utils'
+import { type Chain as AvailablChain } from '@web3modal/common'
 import UniversalProvider from '@walletconnect/universal-provider'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
 import type { UniversalProviderOpts } from '@walletconnect/universal-provider'
@@ -21,15 +22,6 @@ import { WcConstantsUtil } from '../../../utils/ConstantsUtil.js'
 import { WcHelpersUtil } from '../../../utils/HelpersUtil.js'
 import { WcStoreUtil } from '../../../utils/StoreUtil.js'
 import type { AppKit } from '../../../src/client.js'
-
-type Chain = {
-  rpcUrl: string
-  chain: 'evm' | 'solana'
-  explorerUrl: string
-  currency: string
-  name: string
-  chainId: number
-}
 
 type Metadata = {
   name: string
@@ -40,10 +32,10 @@ type Metadata = {
 
 // -- Types ---------------------------------------------------------------------
 export interface Web3ModalClientOptions {
-  chains: Chain[]
+  chains?: Chain[]
   siweConfig?: Web3ModalSIWEClient
   defaultChain?: Chain
-  chainImages?: Record<number, string>
+  chainImages?: Record<number | string, string>
   connectorImages?: Record<string, string>
   tokens?: Record<number, Token>
   metadata?: Metadata
@@ -80,7 +72,7 @@ export class UniversalAdapterClient {
 
     this.metadata = metadata
 
-    this.chains = chains
+    this.chains = chains || []
 
     this.networkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
@@ -189,7 +181,41 @@ export class UniversalAdapterClient {
           await this.walletConnectProvider.disconnect()
         }
         // eslint-disable-next-line no-negated-condition
-      }
+      },
+
+      signMessage: async (message: string) => {
+        const provider = await this.getWalletConnectProvider()
+
+        if (!provider) {
+          throw new Error('connectionControllerClient:signMessage - provider is undefined')
+        }
+
+        const signature = await provider.request({
+          method: 'personal_sign',
+          params: [message, this.getAddress()]
+        })
+
+        return signature as string
+      },
+
+      estimateGas: async () => await Promise.resolve(BigInt(0)),
+      // -- Transaction methods ---------------------------------------------------
+      /**
+       *
+       * These methods are supported only on `wagmi` and `ethers` since the Solana SDK does not support them in the same way.
+       * These function definition is to have a type parity between the clients. Currently not in use.
+       */
+      getEnsAvatar: async (value: string) => await Promise.resolve(value),
+
+      getEnsAddress: async (value: string) => await Promise.resolve(value),
+
+      writeContract: async () => await Promise.resolve('0x'),
+
+      sendTransaction: async () => await Promise.resolve('0x'),
+
+      parseUnits: () => BigInt(0),
+
+      formatUnits: () => ''
     }
   }
 
@@ -201,17 +227,18 @@ export class UniversalAdapterClient {
     this.appKit = appkit
     this.options = options
 
-    WcStoreUtil.subscribeKey('address', () => {
-      this.syncAccount()
-    })
+    WcStoreUtil.subscribe(val => {
+      const { isConnected, provider } = val
 
-    // EthersStoreUtil.subscribeKey('chainId', () => {
-    //   this.syncNetwork(chainImages)
-    // })
+      if (isConnected && provider) {
+        this.syncBalance()
+      }
+    })
 
     this.createProvider()
     this.syncRequestedNetworks(this.chains)
     this.syncConnectors()
+    this.syncAccount()
   }
 
   public async disconnect() {
@@ -222,6 +249,12 @@ export class UniversalAdapterClient {
   }
 
   // -- Private -----------------------------------------------------------------
+  public getAddress() {
+    const { address } = WcStoreUtil.state
+
+    return address ? WcStoreUtil.state.address : address
+  }
+
   private createProvider() {
     if (
       !this.walletConnectProviderInitPromise &&
@@ -268,7 +301,20 @@ export class UniversalAdapterClient {
     chains: Web3ModalClientOptions['chains'],
     chainImages?: Web3ModalClientOptions['chainImages']
   ) {
-    const requestedCaipNetworks = chains?.map(
+    const evmRequestedCaipNetworks = chains?.filter(c => c.chain === 'evm')
+    const solanaRequestedCaipNetworks = chains?.filter(c => c.chain === 'solana')
+
+    const evmCaipNetworks = evmRequestedCaipNetworks?.map(
+      chain =>
+        ({
+          id: `${chain.chain === 'evm' ? ConstantsUtil.EIP155 : chain.chain}:${chain.chainId}`,
+          name: chain.name,
+          imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId],
+          imageUrl: chainImages?.[chain.chainId],
+          chain: chain.chain
+        }) as CaipNetwork
+    )
+    const solanaCaipNetworks = solanaRequestedCaipNetworks?.map(
       chain =>
         ({
           id: `${chain.chain === 'evm' ? ConstantsUtil.EIP155 : chain.chain}:${chain.chainId}`,
@@ -279,7 +325,8 @@ export class UniversalAdapterClient {
         }) as CaipNetwork
     )
 
-    this.appKit?.setRequestedCaipNetworks(requestedCaipNetworks ?? [], this.chain)
+    this.appKit?.setRequestedCaipNetworks(evmCaipNetworks ?? [], 'evm')
+    this.appKit?.setRequestedCaipNetworks(solanaCaipNetworks ?? [], 'solana')
   }
 
   private async checkActiveWalletConnectProvider() {
@@ -302,26 +349,25 @@ export class UniversalAdapterClient {
       ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID
     )
 
-    const chainType = this.chain === 'evm' ? 'eip155' : this.chain
+    const nameSpaces = this.walletConnectProvider?.session?.namespaces
 
-    if (this.walletConnectProvider?.session?.namespaces[chainType]?.accounts[0]) {
-      const { chainId, address } = WcHelpersUtil.extractDetails(
-        this.walletConnectProvider?.session?.namespaces[chainType]?.accounts[0]
-      )
+    if (nameSpaces) {
+      Object.keys(nameSpaces).forEach(key => {
+        const chain = (key === 'eip155' ? 'evm' : key) as AvailablChain
+        const address = nameSpaces?.[key]?.accounts[0]
+        const { chainId } = WcHelpersUtil.extractDetails(address)
 
-      if (address && chainId) {
-        WcStoreUtil.setChainId(Number(chainId))
-        WcStoreUtil.setProvider(this.walletConnectProvider)
-        WcStoreUtil.setProviderType('walletConnect')
-        WcStoreUtil.setStatus('connected')
-        WcStoreUtil.setIsConnected(true)
-        WcStoreUtil.setAddress(address)
-        const WalletConnectProvider = await this.getWalletConnectProvider()
-        if (WalletConnectProvider) {
-          this.watchWalletConnect()
+        if (address) {
+          WcStoreUtil.setChainId(Number(chainId))
+          WcStoreUtil.setProvider(this.walletConnectProvider)
+          WcStoreUtil.setProviderType('walletConnect')
+          WcStoreUtil.setStatus('connected')
+          this.appKit?.setIsConnected(true, chain)
+          this.appKit?.setCaipAddress(address as CaipAddress, chain)
         }
-      }
+      })
     }
+    this.watchWalletConnect()
   }
 
   private async watchWalletConnect() {
@@ -369,25 +415,61 @@ export class UniversalAdapterClient {
     }
   }
 
+  private getProviderData() {
+    const provider = WcStoreUtil.state.provider
+    const namespaces = provider?.session?.namespaces
+
+    const { isConnected, preferredAccountType } = WcStoreUtil.state
+
+    return {
+      provider,
+      namespaces,
+      namespaceKeys: namespaces ? Object.keys(namespaces) : [],
+      isConnected,
+      preferredAccountType
+    }
+  }
+
   private async syncAccount() {
-    const { address, chainId, isConnected, providerType, preferredAccountType } = WcStoreUtil.state
+    const { namespaceKeys, namespaces } = this.getProviderData()
 
-    this.appKit?.resetAccount(this.chain)
+    const { isConnected, preferredAccountType } = WcStoreUtil.state
 
-    if (isConnected && address && chainId) {
-      if (providerType === 'walletConnect') {
-        const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`
+    if (isConnected) {
+      namespaceKeys.forEach(async key => {
+        const chain = (key === 'eip155' ? 'evm' : key) as AvailablChain
+        const address = namespaces?.[key]?.accounts[0]
+        const {} = WcHelpersUtil.extractDetails(address)
 
-        this.appKit?.setIsConnected(isConnected, this.chain)
-        this.appKit?.setPreferredAccountType(preferredAccountType, this.chain)
-        this.appKit?.setCaipAddress(caipAddress, this.chain)
+        this.appKit?.resetAccount(chain)
+        this.appKit?.setIsConnected(isConnected, chain)
+        this.appKit?.setPreferredAccountType(preferredAccountType, chain)
+        this.appKit?.setCaipAddress(address as CaipAddress, chain)
         this.syncConnectedWalletInfo()
-        await Promise.all([this.appKit?.setApprovedCaipNetworksData(this.chain)])
-      }
-    } else if (!isConnected) {
+        await Promise.all([this.appKit?.setApprovedCaipNetworksData(chain)])
+      })
+    } else {
       this.appKit?.resetWcConnection()
       this.appKit?.resetNetwork()
     }
+  }
+
+  private async syncBalance() {
+    const { namespaceKeys, namespaces, provider } = this.getProviderData()
+
+    if (!provider) {
+      return
+    }
+
+    namespaceKeys.forEach(async key => {
+      const address = namespaces?.[key]?.accounts[0]
+
+      if (!address) {
+        return
+      }
+
+      // Todo: will be implemented
+    })
   }
 
   private syncConnectedWalletInfo() {
@@ -403,7 +485,8 @@ export class UniversalAdapterClient {
         this.chain
       )
     } else if (currentActiveWallet) {
-      this.appKit?.setConnectedWalletInfo({ name: currentActiveWallet }, this.chain)
+      this.appKit?.setConnectedWalletInfo({ name: currentActiveWallet }, 'evm')
+      this.appKit?.setConnectedWalletInfo({ name: currentActiveWallet }, 'solana')
     }
   }
 

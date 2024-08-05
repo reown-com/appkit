@@ -1,6 +1,7 @@
 import '@web3modal/polyfills'
 
-import type { Chain, Metadata, Provider, ProviderType } from './scaffold/index.js'
+import type { Chain } from '@web3modal/scaffold-utils'
+import type { Metadata, Provider, ProviderType } from './scaffold/index.js'
 
 declare global {
   interface Window {

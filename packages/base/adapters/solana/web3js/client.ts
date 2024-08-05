@@ -9,6 +9,7 @@ import {
 import { ConstantsUtil, PresetsUtil } from '@web3modal/scaffold-utils'
 import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 import type { OptionsControllerState } from '@web3modal/core'
+import type { Chain } from '@web3modal/scaffold-utils'
 
 import { SolConstantsUtil, SolHelpersUtil, SolStoreUtil } from './utils/scaffold/index.js'
 import { WalletConnectConnector } from './connectors/walletConnectConnector.js'
@@ -27,13 +28,13 @@ import type {
 } from '@web3modal/scaffold'
 import type { Chain as AvailableChain } from '@web3modal/common'
 
-import type { ProviderType, Chain, Provider, SolStoreUtilState } from './utils/scaffold/index.js'
+import type { ProviderType, Provider, SolStoreUtilState } from './utils/scaffold/index.js'
 import { watchStandard } from './utils/wallet-standard/watchStandard.js'
 import type { AppKitOptions } from '../../../utils/TypesUtil.js'
 import type { AppKit } from '../../../src/client.js'
 
 export interface Web3ModalClientOptions
-  extends Omit<AppKitOptions, 'defaultChain' | 'tokens' | 'sdkType' | 'sdkVersion'> {
+  extends Omit<AppKitOptions, 'defaultChain' | 'chain' | 'tokens' | 'sdkType' | 'sdkVersion'> {
   solanaConfig: ProviderType
   chains: Chain[]
   connectionSettings?: Commitment | ConnectionConfig
@@ -493,7 +494,7 @@ export class SolanaWeb3JsClient {
       if (providerType === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
         const universalProvider = await this.WalletConnectConnector?.getProvider()
 
-        const namespaces = this.WalletConnectConnector?.generateNamespaces(chain.chainId)
+        const namespaces = this.WalletConnectConnector?.generateNamespaces(chain.chainId as string)
         SolStoreUtil.setConnection(
           new Connection(
             SolHelpersUtil.detectRpcUrl(chain, this.instanceOptions?.projectId || ''),

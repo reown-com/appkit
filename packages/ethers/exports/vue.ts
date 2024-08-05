@@ -91,7 +91,7 @@ export function useWeb3ModalAccount() {
     address.value = state.address as string | undefined
     status.value = state.status
     isConnected.value = state.isConnected
-    chainId.value = state.chainId
+    chainId.value = state.chainId as number | undefined
   })
 
   onUnmounted(() => {

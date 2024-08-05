@@ -2,10 +2,10 @@ import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { Connection } from '@solana/web3.js'
 import { OptionsController } from '@web3modal/core'
-
+import type { Chain } from '@web3modal/scaffold-utils'
 import UniversalProvider from '@walletconnect/universal-provider'
 
-import type { Chain, CombinedProvider, Provider } from './SolanaTypesUtil.js'
+import type { CombinedProvider, Provider } from './SolanaTypesUtil.js'
 import { SolConstantsUtil } from './SolanaConstantsUtil.js'
 import { SolHelpersUtil } from './SolanaHelpersUtils.js'
 

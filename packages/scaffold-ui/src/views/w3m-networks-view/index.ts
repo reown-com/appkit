@@ -135,6 +135,8 @@ export class W3mNetworksView extends LitElement {
   private async onSwitchNetwork(network: CaipNetwork) {
     const isConnected = AccountController.state.isConnected
     const isNetworkChainConnected = AccountController.getChainIsConnected(network.chain)
+    const isUniversalAdapterOnly = ChainController.state.isUniversalAdapterOnly
+    const allApprovedCaipNetworks = ChainController.getAllApprovedCaipNetworks()
 
     const approvedCaipNetworkIds = NetworkController.state.approvedCaipNetworkIds
     const supportsAllNetworks = NetworkController.state.supportsAllNetworks
@@ -142,7 +144,7 @@ export class W3mNetworksView extends LitElement {
     const routerData = RouterController.state.data
 
     if (isConnected && caipNetwork?.id !== network.id) {
-      if (!isNetworkChainConnected) {
+      if (!isNetworkChainConnected && !isUniversalAdapterOnly) {
         RouterController.push('SwitchActiveChain', {
           switchToChain: network.chain,
           navigateTo: 'Connect',
@@ -151,7 +153,7 @@ export class W3mNetworksView extends LitElement {
 
         return
       }
-      if (approvedCaipNetworkIds?.includes(network.id)) {
+      if (isUniversalAdapterOnly || allApprovedCaipNetworks?.includes(network.id)) {
         await NetworkController.switchActiveNetwork(network)
         await NetworkUtil.onNetworkChange()
       } else if (supportsAllNetworks) {

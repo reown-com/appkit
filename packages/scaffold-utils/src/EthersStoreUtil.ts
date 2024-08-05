@@ -17,7 +17,7 @@ export interface EthersStoreUtilState {
     | 'w3mAuth'
     | 'coinbaseWalletSDK'
   address?: Address
-  chainId?: number
+  chainId?: number | string
   error?: unknown
   preferredAccountType?: W3mFrameTypes.AccountType
   status: Status
