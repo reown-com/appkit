@@ -4,10 +4,5 @@
     "jsx": "preserve",
     "noEmit": true
   },
-  "include": [
-    "next-env.d.ts",
-    "src",
-    "tests",
-    "playwright.config.ts"
-  ]
+  "include": ["next-env.d.ts", "src", "tests", "playwright.config.ts"]
 }
