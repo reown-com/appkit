@@ -142,6 +142,11 @@ export class ModalValidator {
     }
   }
 
+  async expectAccountNameFound(name: string) {
+    const suggestion = this.page.getByTestId('account-name-suggestion').getByText(name)
+    await expect(suggestion).toBeVisible()
+  }
+
   async expectCallStatusSuccessOrRetry(sendCallsId: string, allowedRetry: boolean) {
     const callStatusReceipt = this.page.getByText('"status": "CONFIRMED"')
     const isConfirmed = await callStatusReceipt.isVisible({

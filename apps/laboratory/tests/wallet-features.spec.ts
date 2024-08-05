@@ -17,6 +17,7 @@ const walletFeaturesTest = test.extend<{ library: string }>({
 walletFeaturesTest.describe.configure({ mode: 'serial' })
 
 walletFeaturesTest.beforeAll(async ({ browser, library }, testInfo) => {
+  walletFeaturesTest.setTimeout(120000)
   context = await browser.newContext()
   const browserPage = await context.newPage()
 
@@ -70,5 +71,20 @@ walletFeaturesTest('it should initialize receive as expected', async () => {
   await walletFeatureButton.click()
   await page.page.getByTestId('receive-address-copy-button').click()
   await expect(page.page.getByText('Address copied')).toBeVisible()
+  await page.closeModal()
+})
+
+walletFeaturesTest('it should find account name as expected', async () => {
+  await page.openAccount()
+  await page.openProfileView()
+  await page.openSettings()
+
+  await page.switchNetwork('Polygon')
+  await validator.expectSwitchedNetwork('Polygon')
+
+  await page.openChooseNameIntro()
+  await page.openChooseName()
+  await page.typeName('test-ens-check')
+  await validator.expectAccountNameFound('test-ens-check')
   await page.closeModal()
 })

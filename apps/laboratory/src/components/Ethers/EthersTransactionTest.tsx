@@ -1,8 +1,8 @@
 import { Button, Stack, Link, Text, Spacer } from '@chakra-ui/react'
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers/react'
 import { BrowserProvider, JsonRpcSigner, ethers } from 'ethers'
-import { sepolia, optimism } from '../../utils/ChainsUtil'
 import { useState } from 'react'
+import { mainnet } from '../../utils/ChainsUtil'
 import { vitalikEthAddress } from '../../utils/DataUtil'
 import { useChakraToast } from '../Toast'
 
@@ -41,9 +41,7 @@ export function EthersTransactionTest() {
     }
   }
 
-  const allowedChains = [sepolia.chainId, optimism.chainId]
-
-  return allowedChains.includes(Number(chainId)) && address ? (
+  return Number(chainId) !== mainnet.chainId && address ? (
     <Stack direction={['column', 'column', 'row']}>
       <Button
         data-testid="sign-transaction-button"
@@ -69,7 +67,7 @@ export function EthersTransactionTest() {
     </Stack>
   ) : (
     <Text fontSize="md" color="yellow">
-      Switch to Sepolia or OP to test this feature
+      Feature not enabled on Ethereum Mainnet
     </Text>
   )
 }
