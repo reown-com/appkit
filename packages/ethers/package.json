@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/ethers",
-  "version": "5.0.7",
+  "version": "5.0.10",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -36,7 +36,7 @@
     }
   },
   "scripts": {
-    "clean": "rm -rf dist",
+    "build:clean": "rm -rf dist",
     "build": "tsc --build",
     "watch": "tsc --watch",
     "typecheck": "tsc --noEmit",
@@ -44,7 +44,8 @@
   },
   "dependencies": {
     "@coinbase/wallet-sdk": "4.0.3",
-    "@walletconnect/ethereum-provider": "2.13.0",
+    "@walletconnect/ethereum-provider": "2.14.0",
+    "@walletconnect/utils": "2.14.0",
     "@web3modal/common": "workspace:*",
     "@web3modal/wallet": "workspace:*",
     "@web3modal/polyfills": "workspace:*",

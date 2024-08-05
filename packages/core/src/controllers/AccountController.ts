@@ -36,6 +36,7 @@ export interface AccountControllerState {
   connectedWalletInfo?: ConnectedWalletInfo
   preferredAccountType?: W3mFrameTypes.AccountType
   socialWindow?: Window
+  farcasterUrl?: string
 }
 
 // -- State --------------------------------------------- //
@@ -171,6 +172,12 @@ export const AccountController = {
   setSocialWindow(socialWindow: AccountControllerState['socialWindow'], chain?: Chain) {
     if (socialWindow) {
       ChainController.setAccountProp('socialWindow', ref(socialWindow), chain)
+    }
+  },
+
+  setFarcasterUrl(farcasterUrl: AccountControllerState['farcasterUrl'], chain?: Chain) {
+    if (farcasterUrl) {
+      ChainController.setAccountProp('farcasterUrl', farcasterUrl, chain)
     }
   },
 

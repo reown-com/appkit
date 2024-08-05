@@ -143,6 +143,12 @@ export class W3mRouter extends LitElement {
         return html`<w3m-what-is-a-wallet-view></w3m-what-is-a-wallet-view>`
       case 'WhatIsANetwork':
         return html`<w3m-what-is-a-network-view></w3m-what-is-a-network-view>`
+      case 'ConnectingFarcaster':
+        return html`<w3m-connecting-farcaster-view></w3m-connecting-farcaster-view>`
+      case 'RegisterAccountName':
+        return html`<w3m-register-account-name-view></w3m-register-account-name-view>`
+      case 'RegisterAccountNameSuccess':
+        return html`<w3m-register-account-name-success-view></w3m-register-account-name-success-view>`
       default:
         return html`<w3m-connect-view></w3m-connect-view>`
     }

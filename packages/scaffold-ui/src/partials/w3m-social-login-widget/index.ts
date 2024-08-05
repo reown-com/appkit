@@ -14,6 +14,7 @@ import { state } from 'lit/decorators.js'
 
 import styles from './styles.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
+import { SocialProviderEnum } from '@web3modal/scaffold-utils'
 
 const MAX_TOP_VIEW = 2
 const MAXIMUM_LENGTH = 6
@@ -153,37 +154,57 @@ export class W3mSocialLoginWidget extends LitElement {
   async onSocialClick(socialProvider?: SocialProvider) {
     if (socialProvider) {
       AccountController.setSocialProvider(socialProvider, ChainController.state.activeChain)
+
       EventsController.sendEvent({
         type: 'track',
         event: 'SOCIAL_LOGIN_STARTED',
         properties: { provider: socialProvider }
       })
-      RouterController.push('ConnectingSocial')
     }
-    const authConnector = ConnectorController.getAuthConnector()
-    this.popupWindow = CoreHelperUtil.returnOpenHref(
-      '',
-      'popupWindow',
-      'width=600,height=800,scrollbars=yes'
-    )
+    if (socialProvider === SocialProviderEnum.Farcaster) {
+      RouterController.push('ConnectingFarcaster')
+      const authConnector = ConnectorController.getAuthConnector()
 
-    try {
-      if (authConnector && socialProvider) {
-        const { uri } = await authConnector.provider.getSocialRedirectUri({
-          provider: socialProvider
-        })
+      if (authConnector) {
+        if (!AccountController.state.farcasterUrl) {
+          try {
+            const { url } = await authConnector.provider.getFarcasterUri()
 
-        if (this.popupWindow && uri) {
-          AccountController.setSocialWindow(this.popupWindow, ChainController.state.activeChain)
-          this.popupWindow.location.href = uri
-        } else {
-          this.popupWindow?.close()
-          throw new Error('Something went wrong')
+            AccountController.setFarcasterUrl(url)
+          } catch (error) {
+            RouterController.goBack()
+            SnackController.showError(error)
+          }
         }
       }
-    } catch (error) {
-      this.popupWindow?.close()
-      SnackController.showError('Something went wrong')
+    } else {
+      RouterController.push('ConnectingSocial')
+
+      const authConnector = ConnectorController.getAuthConnector()
+      this.popupWindow = CoreHelperUtil.returnOpenHref(
+        '',
+        'popupWindow',
+        'width=600,height=800,scrollbars=yes'
+      )
+
+      try {
+        if (authConnector && socialProvider) {
+          const { uri } = await authConnector.provider.getSocialRedirectUri({
+            provider: socialProvider
+          })
+
+          if (this.popupWindow && uri) {
+            AccountController.setSocialWindow(this.popupWindow, ChainController.state.activeChain)
+            this.popupWindow.location.href = uri
+          } else {
+            this.popupWindow?.close()
+            throw new Error('Something went wrong')
+          }
+        }
+      } catch (error) {
+        this.popupWindow?.close()
+        SnackController.showError('Something went wrong')
+      }
     }
   }
 }

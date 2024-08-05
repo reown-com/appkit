@@ -130,4 +130,8 @@ export default css`
   .wui-font-micro-600 {
     font-weight: var(--wui-font-weight-medium);
   }
+
+  :host([disabled]) {
+    opacity: 0.4;
+  }
 `
