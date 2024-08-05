@@ -1,5 +1,5 @@
 import base58 from 'bs58'
-import { PublicKey, Transaction, VersionedTransaction } from '@solana/web3.js'
+import { PublicKey, Transaction, VersionedTransaction, type SendOptions } from '@solana/web3.js'
 import { OptionsController } from '@web3modal/core'
 
 import { SolStoreUtil } from '../utils/scaffold/index.js'
@@ -163,7 +163,10 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
     return signature
   }
 
-  public async signAndSendTransaction(transaction: Transaction | VersionedTransaction) {
+  public async signAndSendTransaction<T extends Transaction | VersionedTransaction>(
+    transaction: T,
+    options?: SendOptions
+  ) {
     if (transaction instanceof VersionedTransaction) {
       throw Error('Versioned transactions are not supported')
     }
@@ -178,7 +181,8 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
           pubkey: key.pubkey.toBase58()
         })),
         programId: instruction.programId.toBase58()
-      }))
+      })),
+      options
     })
 
     return signature

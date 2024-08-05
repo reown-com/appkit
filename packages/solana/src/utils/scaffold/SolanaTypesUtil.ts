@@ -5,7 +5,8 @@ import type {
   PublicKey,
   Transaction as SolanaWeb3Transaction,
   TransactionSignature,
-  VersionedTransaction
+  VersionedTransaction,
+  SendOptions
 } from '@solana/web3.js'
 
 import type { SendTransactionOptions } from '@solana/wallet-adapter-base'
@@ -46,7 +47,10 @@ export interface Provider {
   signAndSendAllTransactions: (
     transactions: SolanaWeb3Transaction[]
   ) => Promise<TransactionSignature[]>
-  signAndSendTransaction: (transaction: SolanaWeb3Transaction) => Promise<TransactionSignature>
+  signAndSendTransaction: (
+    transaction: SolanaWeb3Transaction | VersionedTransaction,
+    options?: SendOptions
+  ) => Promise<TransactionSignature>
   signMessage: (message: Uint8Array) => Promise<Uint8Array> | Promise<{ signature: Uint8Array }>
   signTransaction: (transaction: SolanaWeb3Transaction | VersionedTransaction) => Promise<{
     signatures: { signature: Uint8Array }[]
@@ -230,6 +234,7 @@ export interface RequestMethods {
     params: {
       feePayer: string
       instructions: TransactionInstructionRequest[]
+      options?: SendOptions
     }
     returns: {
       signature: string
