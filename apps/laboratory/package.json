@@ -1,5 +1,6 @@
 {
   "name": "@apps/laboratory",
+  "type": "module",
   "version": "5.0.10",
   "private": true,
   "scripts": {
@@ -9,7 +10,9 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "playwright:start": "pnpm start",
     "playwright:install": "playwright install --with-deps",
-    "playwright:test": "playwright test",
+    "synpress": "synpress ./tests/wallet-setup",
+    "playwright:test": "playwright test --grep-invert 'metamask.spec.ts'",
+    "playwright:test:metamask": "playwright test --grep 'metamask.spec.ts'",
     "playwright:test:basic": "playwright test --grep 'basic-tests.spec.ts'",
     "playwright:test:wallet": "playwright test --grep 'wallet.spec.ts'",
     "playwright:test:email": "playwright test --grep 'email.spec.ts'",
@@ -21,6 +24,7 @@
     "playwright:test:canary": "playwright test --retries=0 --grep canary.spec.ts --project='Desktop Chrome/wagmi'",
     "playwright:test:wallet-features": "playwright test --grep wallet-features.spec.ts",
     "playwright:debug": "pnpm playwright:test --debug",
+    "playwright:debug:metamask": "pnpm playwright:test:metamask --debug",
     "playwright:debug:basic": "pnpm playwright:test:basic --debug",
     "playwright:debug:wallet": "pnpm playwright:test:wallet --debug",
     "playwright:debug:email": "pnpm playwright:test:email --debug",
@@ -67,8 +71,9 @@
   },
   "devDependencies": {
     "@aws-sdk/client-cloudwatch": "3.509.0",
+    "@synthetixio/synpress": "4.0.0-alpha.7",
     "@mailsac/api": "1.0.5",
-    "@playwright/test": "1.40.1",
+    "@playwright/test": "1.44.0",
     "@types/node": "20.11.5",
     "@types/react": "18.2.62",
     "@types/react-dom": "18.2.7",
