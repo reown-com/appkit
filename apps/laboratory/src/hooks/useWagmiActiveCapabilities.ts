@@ -21,6 +21,8 @@ export function useWagmiAvailableCapabilities({
   method
 }: UseWagmiAvailableCapabilitiesParams) {
   const [provider, setProvider] = useState<Provider>()
+  const [supported, setSupported] = useState<boolean>(false)
+
   const [availableCapabilities, setAvailableCapabilities] = useState<
     Record<number, WalletCapabilities> | undefined
   >()
@@ -45,68 +47,55 @@ export function useWagmiAvailableCapabilities({
     [supportedChains, chain]
   )
 
-  const fetchProviderAndAccountCapabilities = useCallback(
-    async (
-      connectedAccount: `0x${string}`,
-      connectedConnector: Connector,
-      connectedChain: Chain
-    ) => {
-      const connectedProvider = await connectedConnector.getProvider?.({
-        chainId: connectedChain.id
-      })
-      if (connectedProvider instanceof W3mFrameProvider) {
-        setProvider(prevProvider => {
-          if (prevProvider === connectedProvider) {
-            return prevProvider
-          }
-
-          return connectedProvider
-        })
-      } else if (connectedProvider) {
-        const ethereumProvider = connectedProvider as Awaited<
-          ReturnType<(typeof EthereumProvider)['init']>
-        >
-        setProvider(prevProvider => {
-          if (prevProvider === ethereumProvider) {
-            return prevProvider
-          }
-
-          return ethereumProvider
-        })
-
-        const walletCapabilities = getProviderCachedCapabilities(connectedAccount, ethereumProvider)
-        setAvailableCapabilities(prevCapabilities => {
-          if (prevCapabilities === walletCapabilities) {
-            return prevCapabilities
-          }
-
-          return walletCapabilities
-        })
-      }
-    },
-    []
-  )
-
   useEffect(() => {
     if (isConnected && connector && address && chain) {
       fetchProviderAndAccountCapabilities(address, connector, chain)
     }
-  }, [connector, address, chain, isConnected, fetchProviderAndAccountCapabilities])
+  }, [connector, address, chain, isConnected])
 
-  const isMethodSupported = useCallback((): boolean => {
+  async function fetchProviderAndAccountCapabilities(
+    connectedAccount: `0x${string}`,
+    connectedConnector: Connector,
+    connectedChain: Chain
+  ) {
+    const connectedProvider = await connectedConnector.getProvider?.({
+      chainId: connectedChain.id
+    })
+    if (connectedProvider instanceof EthereumProvider) {
+      setProvider(connectedProvider)
+      const walletCapabilities = getProviderCachedCapabilities(connectedAccount, connectedProvider)
+      setAvailableCapabilities(walletCapabilities)
+    } else if (connectedProvider instanceof W3mFrameProvider) {
+      const walletCapabilities = await connectedProvider.getCapabilities()
+      setProvider(connectedProvider)
+      setAvailableCapabilities(walletCapabilities)
+    }
+  }
+
+  function isMethodSupported(): boolean {
     if (provider instanceof W3mFrameProvider) {
-      return true
+      return [
+        'wallet_sendCalls',
+        'wallet_getCapabilities',
+        'wallet_getCallsStatus',
+        'wallet_grantPermissions'
+      ].includes(method)
     }
 
     return Boolean(provider?.signer?.session?.namespaces?.['eip155']?.methods?.includes(method))
-  }, [provider, method])
+  }
+
+  useEffect(() => {
+    const isGetCapabilitiesSupported = isMethodSupported()
+    setSupported(isGetCapabilitiesSupported)
+  }, [provider])
 
   return {
-    ethereumProvider: provider,
+    provider,
     currentChainsInfo,
     availableCapabilities,
     supportedChains,
     supportedChainsName,
-    isMethodSupported
+    supported
   }
 }

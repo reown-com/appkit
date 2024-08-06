@@ -3,7 +3,7 @@ import { parseGwei, type Address } from 'viem'
 import { useEstimateGas, useSendTransaction, useAccount } from 'wagmi'
 import { vitalikEthAddress } from '../../utils/DataUtil'
 import { useCallback, useState } from 'react'
-import { optimism, optimismSepolia, sepolia } from 'wagmi/chains'
+import { mainnet } from 'wagmi/chains'
 import { useChakraToast } from '../Toast'
 
 const TEST_TX = {
@@ -11,16 +11,14 @@ const TEST_TX = {
   value: parseGwei('0.001')
 }
 
-const ALLOWED_CHAINS = [sepolia.id, optimism.id, optimismSepolia.id] as number[]
-
 export function WagmiTransactionTest() {
   const { status, chain } = useAccount()
 
-  return ALLOWED_CHAINS.includes(Number(chain?.id)) && status === 'connected' ? (
+  return Number(chain?.id) !== mainnet.id && status === 'connected' ? (
     <AvailableTestContent />
   ) : (
     <Text fontSize="md" color="yellow">
-      Switch to Sepolia or OP to test this feature
+      Feature not available on Ethereum Mainnet
     </Text>
   )
 }
@@ -77,7 +75,7 @@ function AvailableTestContent() {
   return (
     <Stack direction={['column', 'column', 'row']}>
       <Button
-        data-test-id="sign-transaction-button"
+        data-testid="sign-transaction-button"
         onClick={onSendTransaction}
         disabled={!sendTransaction}
         isDisabled={isLoading}

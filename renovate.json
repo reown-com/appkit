@@ -14,10 +14,12 @@
       "enabled": false
     },
     {
-      "matchFileNames": ["apps/laboratory/package.json"],
       "enabled": true,
       "matchPackageNames": [
+        "@walletconnect/ethereum-provider",
+        "@walletconnect/universal-provider",
         "@walletconnect/utils",
+        "@wagmi/core",
         "wagmi",
         "@wagmi/connectors",
         "viem",

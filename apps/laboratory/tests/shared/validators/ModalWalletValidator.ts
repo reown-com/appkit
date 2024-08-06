@@ -43,4 +43,11 @@ export class ModalWalletValidator extends ModalValidator {
       network
     )
   }
+
+  async expectCallStatusPending() {
+    const closeButton = this.page.locator('#toast-close-button')
+
+    await expect(closeButton).toBeVisible()
+    await closeButton.click()
+  }
 }

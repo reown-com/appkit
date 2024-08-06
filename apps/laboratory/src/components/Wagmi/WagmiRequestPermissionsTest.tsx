@@ -164,7 +164,7 @@ export function WagmiRequestPermissionsTest() {
   return (
     <Stack direction={['column', 'column', 'row']}>
       <Button
-        data-test-id="request-permissions-button"
+        data-testid="request-permissions-button"
         onClick={onRequestPermissions}
         isDisabled={Boolean(
           isRequestPermissionLoading || Boolean(grantedPermissions) || !isConnected
