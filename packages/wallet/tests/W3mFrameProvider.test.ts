@@ -26,7 +26,11 @@ describe('W3mFrameProvider', () => {
     const postAppEventSpy = vi
       .spyOn(provider['w3mFrame'].events, 'postAppEvent')
       .mockImplementation(({ id }) => {
-        SecureSiteMock.approveRequest({ id, type: 'CONNECT_EMAIL', response: responsePayload })
+        SecureSiteMock.approveRequest({
+          id: id as string,
+          type: 'CONNECT_EMAIL',
+          response: responsePayload
+        })
       })
 
     const response = await provider.connectEmail(payload)
@@ -43,7 +47,11 @@ describe('W3mFrameProvider', () => {
     const postAppEventSpy = vi
       .spyOn(provider['w3mFrame'].events, 'postAppEvent')
       .mockImplementation(({ id }) => {
-        SecureSiteMock.approveRequest({ id, type: 'CONNECT_OTP', response: undefined })
+        SecureSiteMock.approveRequest({
+          id: id as string,
+          type: 'CONNECT_OTP',
+          response: undefined
+        })
       })
 
     const response = await provider.connectOtp(payload)
@@ -59,7 +67,11 @@ describe('W3mFrameProvider', () => {
     const postAppEventSpy = vi
       .spyOn(provider['w3mFrame'].events, 'postAppEvent')
       .mockImplementation(({ id }) => {
-        SecureSiteMock.approveRequest({ id, type: 'GET_USER', response: responsePayload })
+        SecureSiteMock.approveRequest({
+          id: id as string,
+          type: 'GET_USER',
+          response: responsePayload
+        })
       })
 
     const response = await provider.connect(payload)
@@ -75,7 +87,11 @@ describe('W3mFrameProvider', () => {
     const postAppEventSpy = vi
       .spyOn(provider['w3mFrame'].events, 'postAppEvent')
       .mockImplementation(({ id }) => {
-        SecureSiteMock.approveRequest({ id, type: 'SWITCH_NETWORK', response: responsePayload })
+        SecureSiteMock.approveRequest({
+          id: id as string,
+          type: 'SWITCH_NETWORK',
+          response: responsePayload
+        })
       })
 
     const response = await provider.switchNetwork(chainId)
@@ -83,6 +99,4 @@ describe('W3mFrameProvider', () => {
     expect(response).toEqual(responsePayload)
     expect(postAppEventSpy).toHaveBeenCalled()
   })
-
-  it('should abort open RPC requests on close', async () => {})
 })
