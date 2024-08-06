@@ -8,7 +8,7 @@ import {
 import { type CombinedProvider } from './utils/scaffold'
 import type { ISolanaModal } from './solana-interface'
 
-import { ConstantsUtil as CommonConstantsUtil, NetworkUtil } from '@web3modal/common'
+import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
 import { type Connector } from '@web3modal/core'
 
@@ -60,7 +60,7 @@ export class SolanaAuthClient {
 
       this.modal.handleConnection({
         connectorId: ConstantsUtil.AUTH_CONNECTOR_ID,
-        caipChainId: `solana:${chainId}`,
+        caipChainId: chainId as string,
         providerType: ConstantsUtil.AUTH_CONNECTOR_ID,
         provider: this.authProvider as CombinedProvider,
         address,
@@ -77,6 +77,10 @@ export class SolanaAuthClient {
     } finally {
       this.modal.setLoading(false)
     }
+  }
+
+  public switchNetwork(chainId: W3mFrameTypes.Network['chainId']) {
+    return this.authProvider.switchNetwork(chainId)
   }
 
   private watchAuth() {
@@ -150,9 +154,13 @@ export class SolanaAuthClient {
       ({ address, chainId, accounts = [], smartAccountDeployed, preferredAccountType }) => {
         console.log('onIsConnected (event)', address, chainId, accounts, smartAccountDeployed)
 
+        if (typeof chainId === 'number') {
+          throw new Error('Invalid chain id')
+        }
+
         this.modal.handleConnection({
           connectorId: ConstantsUtil.AUTH_CONNECTOR_ID,
-          caipChainId: `solana:${chainId}`,
+          caipChainId: chainId,
           providerType: ConstantsUtil.AUTH_CONNECTOR_ID,
           provider: this.authProvider as CombinedProvider,
           address,
@@ -170,12 +178,10 @@ export class SolanaAuthClient {
         return
       }
       this.modal.setLoading(true)
-      const chainId = NetworkUtil.caipNetworkIdToNumber(this.modal.getCaipNetwork()?.id)
-
       this.modal
         .handleConnection({
           address,
-          caipChainId: `solana:${chainId}`,
+          caipChainId: this.modal.getCaipNetwork()?.id as string,
           connectorId: ConstantsUtil.AUTH_CONNECTOR_ID,
           provider: this.authProvider as CombinedProvider,
           providerType: ConstantsUtil.AUTH_CONNECTOR_ID

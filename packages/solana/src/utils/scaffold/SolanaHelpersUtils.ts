@@ -27,24 +27,13 @@ export const SolHelpersUtil = {
     return SolConstantsUtil.DEFAULT_CHAIN
   },
 
-  getChainFromCaip(chains: Chain[], chainCaipId: string | undefined | null = ':') {
-    const chainId: string = (chainCaipId?.split(':')[1] ?? '').replace(/\s/gu, '')
-
-    const selectedChain = chains.find(chain => chain.chainId === chainId)
-
-    if (selectedChain) {
-      return {
-        ...selectedChain,
-        id: `solana:${chainId}`,
-        imageId: PresetsUtil.EIP155NetworkImageIds[chainId],
-        chain: CommonConstantsUtil.CHAIN.SOLANA
-      }
-    }
+  getChainFromCaip(chains: Chain[], chainId: string | undefined | null) {
+    const base = chains.find(chain => chain.chainId === chainId) || SolConstantsUtil.DEFAULT_CHAIN
 
     return {
-      ...SolConstantsUtil.DEFAULT_CHAIN,
-      id: `solana:${chainId}`,
-      imageId: PresetsUtil.EIP155NetworkImageIds[chainId],
+      ...base,
+      chainId: `solana:${chainId}` as const,
+      imageId: PresetsUtil.EIP155NetworkImageIds[base.chainId],
       chain: CommonConstantsUtil.CHAIN.SOLANA
     }
   },
@@ -55,7 +44,7 @@ export const SolHelpersUtil = {
     }
 
     return {
-      id: `solana:${chain.chainId}`,
+      id: chain.chainId,
       name: chain.name,
       imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId]
     } as CaipNetwork

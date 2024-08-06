@@ -1,5 +1,6 @@
 import { PublicKey } from '@solana/web3.js'
 import { ConstantsUtil } from '@web3modal/common'
+import type { Chain } from './SolanaTypesUtil'
 
 /**
  * Request methods to the solana RPC.
@@ -31,7 +32,6 @@ export const SolConstantsUtil = {
     name: 'Solana',
     currency: 'SOL',
     explorerUrl: 'https://solscan.io',
-    rpcUrl: `${ConstantsUtil.BLOCKCHAIN_API_RPC_URL}/v1`,
-    chain: ConstantsUtil.CHAIN.SOLANA
-  }
+    rpcUrl: `${ConstantsUtil.BLOCKCHAIN_API_RPC_URL}/v1`
+  } as const satisfies Chain
 }

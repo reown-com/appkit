@@ -104,13 +104,5 @@ export const ConnectorController = {
 
   getConnector(id: string, rdns?: string | null) {
     return state.connectors.find(c => c.explorerId === id || c.info?.rdns === rdns)
-  },
-
-  async switchAuthConnectorProviderNetwork(chainId: string) {
-    const authConnector = ConnectorController.getAuthConnector()
-
-    if (authConnector) {
-      await authConnector.provider.switchNetwork(chainId)
-    }
   }
 }
