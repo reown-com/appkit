@@ -1,6 +1,6 @@
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
 import { useAccount, type Connector } from 'wagmi'
-import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { type WalletCapabilities } from 'viem'
 import { type Chain } from 'wagmi/chains'
 import {

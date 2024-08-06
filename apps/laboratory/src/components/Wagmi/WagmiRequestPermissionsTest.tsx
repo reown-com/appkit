@@ -18,7 +18,7 @@ import { useWalletConnectCosigner } from '../../hooks/useWalletConnectCosigner'
 import { useWagmiAvailableCapabilities } from '../../hooks/useWagmiActiveCapabilities'
 
 export function WagmiRequestPermissionsTest() {
-  const { ethereumProvider, isMethodSupported } = useWagmiAvailableCapabilities({
+  const { provider, supported } = useWagmiAvailableCapabilities({
     method: EIP_7715_RPC_METHODS.WALLET_GRANT_PERMISSIONS
   })
   const { chain, address, isConnected } = useAccount()
@@ -71,7 +71,7 @@ export function WagmiRequestPermissionsTest() {
     if (!passkey) {
       throw new Error('Passkey not available')
     }
-    if (!ethereumProvider) {
+    if (!provider) {
       throw new Error('No Provider available, Please connect your wallet.')
     }
     const caip10Address = `eip155:${chain?.id}:${address}`
@@ -100,7 +100,7 @@ export function WagmiRequestPermissionsTest() {
 
       const publicClient = createPublicClient({
         chain,
-        transport: custom(ethereumProvider)
+        transport: custom(provider)
       }).extend(walletActionsErc7715())
 
       const samplePermissions = getSamplePermissions(secp256k1DID, passkeyDID)
@@ -144,16 +144,16 @@ export function WagmiRequestPermissionsTest() {
       })
     }
     setRequestPermissionLoading(false)
-  }, [passkey, ethereumProvider])
+  }, [passkey, provider])
 
-  if (!isConnected || !ethereumProvider || !address) {
+  if (!isConnected || !provider || !address) {
     return (
       <Text fontSize="md" color="yellow">
         Wallet not connected
       </Text>
     )
   }
-  if (!isMethodSupported()) {
+  if (!supported) {
     return (
       <Text fontSize="md" color="yellow">
         Wallet does not support wallet_grantPermissions rpc method
