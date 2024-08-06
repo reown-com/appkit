@@ -13,7 +13,7 @@ export class W3mFrameProvider {
     []
 
   private rpcRequestHandler?: (request: W3mFrameTypes.RPCRequest) => void
-  private rpcSuccessHandler?: (request: W3mFrameTypes.FrameEvent) => void
+  private rpcSuccessHandler?: (response: W3mFrameTypes.RPCResponse) => void
   private rpcErrorHandler?: (error: Error) => void
 
   public constructor(projectId: string) {

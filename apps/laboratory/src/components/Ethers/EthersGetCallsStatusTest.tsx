@@ -48,7 +48,7 @@ export function EthersGetCallsStatusTest() {
     }
   }
   function isGetCallsStatusSupported(): boolean {
-    // Replace with capability check
+    // We are currently checking capabilities above. We should use those capabilities instead of this check.
     if (walletProvider instanceof W3mFrameProvider) {
       return true
     }

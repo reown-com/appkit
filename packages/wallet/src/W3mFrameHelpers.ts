@@ -36,22 +36,11 @@ export const W3mFrameHelpers = {
     )
   },
 
-  getResponseType(response: W3mFrameTypes.FrameEvent) {
-    const { type, payload } = response as {
-      type: W3mFrameTypes.FrameEvent['type']
-      payload?: W3mFrameTypes.RPCResponse
-    }
-
-    const isError = type === W3mFrameConstants.FRAME_RPC_REQUEST_ERROR
-
-    if (isError) {
-      return W3mFrameConstants.RPC_RESPONSE_TYPE_ERROR
-    }
-
-    const isPayloadString = typeof payload === 'string'
+  getResponseType(response: W3mFrameTypes.RPCResponse) {
+    const isPayloadString = typeof response === 'string'
     const isTransactionHash =
       isPayloadString &&
-      (payload?.match(RegexUtil.transactionHash) || payload?.match(RegexUtil.signedMessage))
+      (response?.match(RegexUtil.transactionHash) || response?.match(RegexUtil.signedMessage))
 
     if (isTransactionHash) {
       return W3mFrameConstants.RPC_RESPONSE_TYPE_TX
