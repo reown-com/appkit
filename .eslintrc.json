@@ -14,6 +14,7 @@
   "ignorePatterns": [
     "node_modules",
     "*.config.js",
+    "*.config.ts",
     "next-env.d.ts",
     "out",
     "dist",
@@ -22,7 +23,9 @@
     "examples",
     "coverage",
     ".changeset",
-    "playwright-report"
+    "playwright-report",
+    "*.mock.ts",
+    "*.test.ts"
   ],
   "rules": {
     // Core
