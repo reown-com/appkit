@@ -10,8 +10,8 @@
   "rebaseWhen": "conflicted",
   "packageRules": [
     {
-      "matchPackagePatterns": ["*"],
-      "enabled": false
+      "enabled": false,
+      "matchPackageNames": ["*"]
     },
     {
       "enabled": true,
@@ -24,9 +24,9 @@
         "@wagmi/connectors",
         "viem",
         "ethers",
-        "@solana/web3.js"
+        "@solana/web3.js",
+        "@web3modal/{/,}**"
       ],
-      "matchPackagePrefixes": ["@web3modal/"],
       "prPriority": 10
     }
   ]
