@@ -13,6 +13,8 @@ import {
 } from '../../utils/EIP5792Utils'
 import { W3mFrameProvider } from '@web3modal/wallet'
 
+type Provider = W3mFrameProvider | Awaited<ReturnType<(typeof EthereumProvider)['init']>>
+
 export function EthersSendCallsTest() {
   const [loading, setLoading] = useState(false)
 
@@ -27,10 +29,10 @@ export function EthersSendCallsTest() {
   const [lastCallsBatchId, setLastCallsBatchId] = useState<string | null>(null)
 
   useEffect(() => {
-    if (address) {
+    if (address && walletProvider) {
       getCapabilitySupportedChainInfo(
         WALLET_CAPABILITIES.ATOMIC_BATCH,
-        walletProvider,
+        walletProvider as Provider,
         address
       ).then(capabilities => setAtomicBatchSupportedChains(capabilities))
     } else {
