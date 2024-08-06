@@ -104,6 +104,7 @@ export function EthersSendCallsWithPaymasterServiceTest() {
   }
 
   function isSendCallsSupported(): boolean {
+    // We are currently checking capabilities above. We should use those capabilities instead of this check.
     if (walletProvider instanceof EthereumProvider) {
       return Boolean(
         walletProvider?.signer?.session?.namespaces?.['eip155']?.methods?.includes(
@@ -112,7 +113,6 @@ export function EthersSendCallsWithPaymasterServiceTest() {
       )
     }
 
-    // Replace with capability check
     return walletProvider instanceof W3mFrameProvider
   }
 
