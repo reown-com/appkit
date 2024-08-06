@@ -91,5 +91,5 @@ export type {
   ColorType,
   SignControlSiwXType,
   ICheckNewAddressGeneric,
-    TransactionType
+  TransactionType
 } from './src/utils/TypeUtil.js'
