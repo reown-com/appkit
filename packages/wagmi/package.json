@@ -64,7 +64,7 @@
   },
   "devDependencies": {
     "@wagmi/connectors": "5.1.2",
-    "@wagmi/core": "2.13.1",
+    "@wagmi/core": "2.13.3",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "viem": "2.17.8",
