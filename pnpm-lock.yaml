@@ -27,7 +27,7 @@ importers:
         version: 6.18.1(eslint@8.56.0)(typescript@5.3.3)
       '@vitest/coverage-v8':
         specifier: 1.1.2
-        version: 1.1.2(vitest@1.5.0(@types/node@20.11.5)(jsdom@24.1.0))
+        version: 1.1.2(vitest@1.5.0(@types/node@20.11.5)(jsdom@24.1.0)(terser@5.31.3))
       danger:
         specifier: 11.3.1
         version: 11.3.1
@@ -60,7 +60,7 @@ importers:
         version: 0.22.0(rollup@4.20.0)(vite@5.2.11(@types/node@20.11.5)(terser@5.31.3))
       vitest:
         specifier: 1.5.0
-        version: 1.5.0(@types/node@20.11.5)(jsdom@24.1.0)
+        version: 1.5.0(@types/node@20.11.5)(jsdom@24.1.0)(terser@5.31.3)
 
   apps/demo:
     dependencies:
@@ -615,7 +615,7 @@ importers:
     devDependencies:
       '@vitest/coverage-v8':
         specifier: 1.1.2
-        version: 1.1.2(vitest@2.0.3(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)))
+        version: 1.1.2(vitest@2.0.3(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.31.3))
       viem:
         specifier: 2.16.2
         version: 2.16.2(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4)
@@ -1053,7 +1053,7 @@ importers:
         version: 24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       vitest:
         specifier: 2.0.3
-        version: 2.0.3(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))
+        version: 2.0.3(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.31.3)
 
   services/id-allocation-service:
     dependencies:
@@ -7306,6 +7306,9 @@ packages:
     resolution: {integrity: sha512-+slkGnbf0czY7g4LSuYpYkKJgFrb9YIXFJvV5JAuLLF39CXLlUw0iebgeL3ASK1t6RDb8xe+Rk2F5ilh2Hdv2w==}
     engines: {node: '>=14.13.1'}
     hasBin: true
+
+  data-uri-to-buffer@2.0.2:
+    resolution: {integrity: sha512-ND9qDTLc6diwj+Xe5cdAgVTbLVdXbtxTJRXRhli8Mowuaan+0EJOtdqJ0QCHNSSPyoXGx9HX2/VMnKeC34AChA==}
 
   data-urls@5.0.0:
     resolution: {integrity: sha512-ZYP5VBHshaDAiVZxjbRVcFJpc+4xGgT0bK3vzy1HLN8jTO975HEbuYzZJcHoQEY5K1a0z8YayJkyVETa08eNTg==}
@@ -19729,7 +19732,7 @@ snapshots:
       vite: 5.2.11(@types/node@20.11.5)(terser@5.31.3)
       vue: 3.4.3(typescript@5.3.3)
 
-  '@vitest/coverage-v8@1.1.2(vitest@1.5.0(@types/node@20.11.5)(jsdom@24.1.0))':
+  '@vitest/coverage-v8@1.1.2(vitest@1.5.0(@types/node@20.11.5)(jsdom@24.1.0)(terser@5.31.3))':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@bcoe/v8-coverage': 0.2.3
@@ -19744,11 +19747,11 @@ snapshots:
       std-env: 3.7.0
       test-exclude: 6.0.0
       v8-to-istanbul: 9.3.0
-      vitest: 1.5.0(@types/node@20.11.5)(terser@5.31.3)(jsdom@24.1.0)
+      vitest: 1.5.0(@types/node@20.11.5)(jsdom@24.1.0)(terser@5.31.3)
     transitivePeerDependencies:
       - supports-color
 
-  '@vitest/coverage-v8@1.1.2(vitest@2.0.3(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)))':
+  '@vitest/coverage-v8@1.1.2(vitest@2.0.3(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.31.3))':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@bcoe/v8-coverage': 0.2.3
@@ -19763,7 +19766,7 @@ snapshots:
       std-env: 3.7.0
       test-exclude: 6.0.0
       v8-to-istanbul: 9.3.0
-      vitest: 2.0.3(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))
+      vitest: 2.0.3(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.31.3)
     transitivePeerDependencies:
       - supports-color
 
@@ -21471,12 +21474,12 @@ snapshots:
       - encoding
       - supports-color
 
+  data-uri-to-buffer@2.0.2: {}
+
   data-urls@5.0.0:
     dependencies:
       whatwg-mimetype: 4.0.0
       whatwg-url: 14.0.0
-
-  data-uri-to-buffer@2.0.2: {}
 
   data-view-buffer@1.0.1:
     dependencies:
@@ -27137,7 +27140,7 @@ snapshots:
       - supports-color
       - terser
 
-  vite-node@2.0.3(@types/node@20.11.5):
+  vite-node@2.0.3(@types/node@20.11.5)(terser@5.31.3):
     dependencies:
       cac: 6.7.14
       debug: 4.3.6
@@ -27154,7 +27157,7 @@ snapshots:
       - supports-color
       - terser
 
-  vite-plugin-node-polyfills@0.22.0(rollup@4.20.0)(vite@5.2.11(@types/node@20.11.5)):
+  vite-plugin-node-polyfills@0.22.0(rollup@4.20.0)(vite@5.2.11(@types/node@20.11.5)(terser@5.31.3)):
     dependencies:
       '@rollup/plugin-inject': 5.0.5(rollup@4.20.0)
       node-stdlib-browser: 1.2.0
@@ -27172,7 +27175,7 @@ snapshots:
       fsevents: 2.3.3
       terser: 5.31.3
 
-  vitest@1.5.0(@types/node@20.11.5)(jsdom@24.1.0):
+  vitest@1.5.0(@types/node@20.11.5)(jsdom@24.1.0)(terser@5.31.3):
     dependencies:
       '@vitest/expect': 1.5.0
       '@vitest/runner': 1.5.0
@@ -27206,7 +27209,7 @@ snapshots:
       - supports-color
       - terser
 
-  vitest@2.0.3(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)):
+  vitest@2.0.3(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.31.3):
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@vitest/expect': 2.0.3
@@ -27225,7 +27228,7 @@ snapshots:
       tinypool: 1.0.0
       tinyrainbow: 1.2.0
       vite: 5.2.11(@types/node@20.11.5)(terser@5.31.3)
-      vite-node: 2.0.3(@types/node@20.11.5)
+      vite-node: 2.0.3(@types/node@20.11.5)(terser@5.31.3)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 20.11.5
