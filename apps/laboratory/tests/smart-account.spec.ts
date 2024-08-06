@@ -150,3 +150,15 @@ smartAccountTest('it should disconnect correctly', async () => {
   await page.disconnect()
   await validator.expectDisconnected()
 })
+
+smartAccountTest.skip('it should sendCalls and getCallsStatus', async () => {
+  await page.sendCalls()
+  await page.approveMultipleTransactions()
+  await validator.expectAcceptedSign()
+
+  const sendCallsId = await page.page.getByTestId('send-calls-id').textContent()
+
+  await page.getCallsStatus(sendCallsId || '')
+
+  await validator.expectCallStatusSuccessOrRetry(sendCallsId || '', true)
+})
