@@ -1,9 +1,9 @@
-import { Button, Stack, Text, Spacer } from '@chakra-ui/react'
-import { useState } from 'react'
+import { Button, Stack, Text, Spacer, Heading } from '@chakra-ui/react'
+import { useState, useEffect } from 'react'
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers/react'
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
 import { useChakraToast } from '../Toast'
-import { parseGwei, type Address } from 'viem'
+import type { Address } from 'viem'
 import { vitalikEthAddress } from '../../utils/DataUtil'
 import { BrowserProvider } from 'ethers'
 import {
@@ -11,6 +11,9 @@ import {
   WALLET_CAPABILITIES,
   getCapabilitySupportedChainInfo
 } from '../../utils/EIP5792Utils'
+import { W3mFrameProvider } from '@web3modal/wallet'
+
+type Provider = W3mFrameProvider | Awaited<ReturnType<(typeof EthereumProvider)['init']>>
 
 export function EthersSendCallsTest() {
   const [loading, setLoading] = useState(false)
@@ -19,12 +22,25 @@ export function EthersSendCallsTest() {
   const { walletProvider } = useWeb3ModalProvider()
   const toast = useChakraToast()
 
-  const atomicBatchSupportedChains =
-    address && walletProvider instanceof EthereumProvider
-      ? getCapabilitySupportedChainInfo(WALLET_CAPABILITIES.ATOMIC_BATCH, walletProvider, address)
-      : []
+  const [atomicBatchSupportedChains, setAtomicBatchSupportedChains] = useState<
+    Awaited<ReturnType<typeof getCapabilitySupportedChainInfo>>
+  >([])
 
-  const atomicBatchSupportedChainNames = atomicBatchSupportedChains
+  const [lastCallsBatchId, setLastCallsBatchId] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (address && walletProvider) {
+      getCapabilitySupportedChainInfo(
+        WALLET_CAPABILITIES.ATOMIC_BATCH,
+        walletProvider as Provider,
+        address
+      ).then(capabilities => setAtomicBatchSupportedChains(capabilities))
+    } else {
+      setAtomicBatchSupportedChains([])
+    }
+  }, [address, walletProvider, isConnected])
+
+  const atomicBatchSupportedChainsNames = atomicBatchSupportedChains
     .map(ci => ci.chainName)
     .join(', ')
   const currentChainsInfo = atomicBatchSupportedChains.find(
@@ -41,12 +57,11 @@ export function EthersSendCallsTest() {
         throw Error('chain not selected')
       }
       const provider = new BrowserProvider(walletProvider, chainId)
-      const amountToSend = parseGwei('0.001').toString(16)
       const calls = [
         {
           to: vitalikEthAddress as `0x${string}`,
           data: '0x' as `0x${string}`,
-          value: `0x${amountToSend}`
+          value: `0x0`
         },
         {
           to: vitalikEthAddress as Address,
@@ -63,6 +78,8 @@ export function EthersSendCallsTest() {
       const batchCallHash = await provider.send(EIP_5792_RPC_METHODS.WALLET_SEND_CALLS, [
         sendCallsParams
       ])
+
+      setLastCallsBatchId(batchCallHash)
       toast({
         title: 'Success',
         description: batchCallHash,
@@ -79,6 +96,9 @@ export function EthersSendCallsTest() {
     }
   }
   function isSendCallsSupported(): boolean {
+    if (walletProvider instanceof W3mFrameProvider) {
+      return true
+    }
     if (walletProvider instanceof EthereumProvider) {
       return Boolean(
         walletProvider?.signer?.session?.namespaces?.['eip155']?.methods?.includes(
@@ -113,15 +133,26 @@ export function EthersSendCallsTest() {
   }
 
   return currentChainsInfo ? (
-    <Stack direction={['column', 'column', 'row']}>
-      <Button data-test-id="send-calls-button" onClick={onSendCalls} isDisabled={loading}>
+    <Stack direction={['column', 'column']}>
+      <Button
+        data-testid="send-calls-button"
+        onClick={onSendCalls}
+        isDisabled={loading}
+        maxWidth={'50%'}
+      >
         Send Batch Calls to Vitalik
       </Button>
       <Spacer />
+      {lastCallsBatchId && (
+        <>
+          <Heading size="xs">Last batch call ID:</Heading>
+          <Text data-testid="send-calls-id">{lastCallsBatchId}</Text>
+        </>
+      )}
     </Stack>
   ) : (
     <Text fontSize="md" color="yellow">
-      Switch to {atomicBatchSupportedChainNames} to test atomic batch feature
+      Switch to {atomicBatchSupportedChainsNames} to test atomic batch feature
     </Text>
   )
 }

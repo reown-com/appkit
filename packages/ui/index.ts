@@ -90,5 +90,6 @@ export type {
   VisualType,
   ColorType,
   SignControlSiwXType,
-  ICheckNewAddressGeneric
+  ICheckNewAddressGeneric,
+    TransactionType
 } from './src/utils/TypeUtil.js'

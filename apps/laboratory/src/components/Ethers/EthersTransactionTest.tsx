@@ -44,7 +44,7 @@ export function EthersTransactionTest() {
   return Number(chainId) !== mainnet.chainId && address ? (
     <Stack direction={['column', 'column', 'row']}>
       <Button
-        data-test-id="sign-transaction-button"
+        data-testid="sign-transaction-button"
         onClick={onSendTransaction}
         isDisabled={loading}
       >
