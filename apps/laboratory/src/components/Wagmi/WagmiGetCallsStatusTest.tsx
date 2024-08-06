@@ -8,16 +8,15 @@ import { useCallsStatus } from 'wagmi/experimental'
 import { useWagmiAvailableCapabilities } from '../../hooks/useWagmiActiveCapabilities'
 
 export function WagmiGetCallsStatusTest() {
-  const { ethereumProvider, isMethodSupported: isGetCallsStatusSupported } =
-    useWagmiAvailableCapabilities({
-      method: EIP_5792_RPC_METHODS.WALLET_GET_CALLS_STATUS
-    })
+  const { supported } = useWagmiAvailableCapabilities({
+    method: EIP_5792_RPC_METHODS.WALLET_GET_CALLS_STATUS
+  })
 
   const { status, address } = useAccount()
 
   const isConnected = status === 'connected'
 
-  if (!isConnected || !ethereumProvider || !address) {
+  if (!isConnected || !address) {
     return (
       <Text fontSize="md" color="yellow">
         Wallet not connected
@@ -25,7 +24,7 @@ export function WagmiGetCallsStatusTest() {
     )
   }
 
-  if (!isGetCallsStatusSupported()) {
+  if (!supported) {
     return (
       <Text fontSize="md" color="yellow">
         Wallet does not support the "wallet_getCallsStatus" RPC method
@@ -74,9 +73,10 @@ function AvailableTestContent() {
         onChange={e => setBatchCallId(e.target.value)}
         value={batchCallId}
         isDisabled={isLoading}
+        data-testid="get-calls-id-input"
       />
       <Button
-        data-test-id="get-calls-status-button"
+        data-testid="get-calls-status-button"
         onClick={onGetCallsStatus}
         isDisabled={isLoading || !batchCallId}
         isLoading={isLoading}
