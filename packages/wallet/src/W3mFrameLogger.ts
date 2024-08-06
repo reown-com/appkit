@@ -25,7 +25,7 @@ export class W3mFrameLogger {
 
     if (typeof window !== 'undefined' && this.chunkLoggerController?.downloadLogsBlobInBrowser) {
       // @ts-expect-error any
-      if (!window.dowdownloadAppKitLogsBlob) {
+      if (!window.downloadAppKitLogsBlob) {
         // @ts-expect-error any
         window.downloadAppKitLogsBlob = {}
       }
