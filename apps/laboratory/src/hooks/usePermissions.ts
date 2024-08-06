@@ -127,11 +127,6 @@ export function usePermissions() {
     })
 
     userOp.signature = signature
-    /**
-     *  Const packedUserOp = getPackedUserOperation(userOp)
-     *  console.log('Final Packed UserOp to send', JSON.stringify(packedUserOp, bigIntReplacer))
-     */
-
     const _userOpHash = await bundlerClient.sendUserOperation({
       userOperation: userOp
     })
