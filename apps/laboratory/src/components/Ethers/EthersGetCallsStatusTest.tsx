@@ -4,6 +4,7 @@ import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers/rea
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
 import { useChakraToast } from '../Toast'
 import { BrowserProvider } from 'ethers'
+import { W3mFrameProvider } from '@web3modal/wallet'
 import { type GetCallsStatusParams } from '../../types/EIP5792'
 import { EIP_5792_RPC_METHODS } from '../../utils/EIP5792Utils'
 
@@ -52,6 +53,10 @@ export function EthersGetCallsStatusTest(params: { callsHash: string }) {
     }
   }
   function isGetCallsStatusSupported(): boolean {
+    // We are currently checking capabilities above. We should use those capabilities instead of this check.
+    if (walletProvider instanceof W3mFrameProvider) {
+      return true
+    }
     if (walletProvider instanceof EthereumProvider) {
       return Boolean(
         walletProvider?.signer?.session?.namespaces?.['eip155']?.methods?.includes(
@@ -87,7 +92,7 @@ export function EthersGetCallsStatusTest(params: { callsHash: string }) {
         isDisabled={isLoading}
       />
       <Button
-        data-test-id="get-calls-status-button"
+        data-testid="get-calls-status-button"
         onClick={onGetCallsStatus}
         isDisabled={isLoading}
       >

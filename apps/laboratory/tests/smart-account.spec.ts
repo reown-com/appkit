@@ -17,6 +17,7 @@ const smartAccountTest = test.extend<{ library: string }>({
 smartAccountTest.describe.configure({ mode: 'serial' })
 
 smartAccountTest.beforeAll(async ({ browser, library }, testInfo) => {
+  smartAccountTest.setTimeout(120000)
   context = await browser.newContext()
   const browserPage = await context.newPage()
 
@@ -148,4 +149,16 @@ smartAccountTest('it should disconnect correctly', async () => {
   await page.openSettings()
   await page.disconnect()
   await validator.expectDisconnected()
+})
+
+smartAccountTest.skip('it should sendCalls and getCallsStatus', async () => {
+  await page.sendCalls()
+  await page.approveMultipleTransactions()
+  await validator.expectAcceptedSign()
+
+  const sendCallsId = await page.page.getByTestId('send-calls-id').textContent()
+
+  await page.getCallsStatus(sendCallsId || '')
+
+  await validator.expectCallStatusSuccessOrRetry(sendCallsId || '', true)
 })

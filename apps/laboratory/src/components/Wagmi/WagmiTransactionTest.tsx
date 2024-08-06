@@ -75,7 +75,7 @@ function AvailableTestContent() {
   return (
     <Stack direction={['column', 'column', 'row']}>
       <Button
-        data-test-id="sign-transaction-button"
+        data-testid="sign-transaction-button"
         onClick={onSendTransaction}
         disabled={!sendTransaction}
         isDisabled={isLoading}

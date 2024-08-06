@@ -1,8 +1,4 @@
 import {
-  Button,
-  Stack,
-  Text,
-  Spacer,
   Box,
   Link,
   Stat,
@@ -12,7 +8,8 @@ import {
   Card,
   CardBody
 } from '@chakra-ui/react'
-import { useCallback, useState } from 'react'
+import { useCallback, useState, useEffect } from 'react'
+import { Button, Stack, Text, Spacer, Heading } from '@chakra-ui/react'
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers/react'
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
 import { useChakraToast } from '../Toast'
@@ -26,6 +23,10 @@ import {
 } from '../../utils/EIP5792Utils'
 import { AddIcon } from '@chakra-ui/icons'
 import { AddTransactionModal } from '../AddTransactionModal'
+
+import { W3mFrameProvider } from '@web3modal/wallet'
+
+type Provider = W3mFrameProvider | Awaited<ReturnType<(typeof EthereumProvider)['init']>>
 
 export function EthersSendCallsTest(params: { onCallsHash: (hash: string) => void }) {
   const { onCallsHash } = params
@@ -41,6 +42,7 @@ export function EthersSendCallsTest(params: { onCallsHash: (hash: string) => voi
   const [isOpen, setIsOpen] = useState(false)
   const onSubmit = useCallback(
     (args: { to: string; eth: string }) => {
+      setLastCallsBatchId(null)
       setTransactionsToBatch(prev => [
         ...prev,
         {
@@ -54,12 +56,25 @@ export function EthersSendCallsTest(params: { onCallsHash: (hash: string) => voi
   )
   const onClose = useCallback(() => setIsOpen(false), [])
 
-  const atomicBatchSupportedChains =
-    address && walletProvider instanceof EthereumProvider
-      ? getCapabilitySupportedChainInfo(WALLET_CAPABILITIES.ATOMIC_BATCH, walletProvider, address)
-      : []
+  const [atomicBatchSupportedChains, setAtomicBatchSupportedChains] = useState<
+    Awaited<ReturnType<typeof getCapabilitySupportedChainInfo>>
+  >([])
 
-  const atomicBatchSupportedChainNames = atomicBatchSupportedChains
+  const [lastCallsBatchId, setLastCallsBatchId] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (address && walletProvider) {
+      getCapabilitySupportedChainInfo(
+        WALLET_CAPABILITIES.ATOMIC_BATCH,
+        walletProvider as Provider,
+        address
+      ).then(capabilities => setAtomicBatchSupportedChains(capabilities))
+    } else {
+      setAtomicBatchSupportedChains([])
+    }
+  }, [address, walletProvider, isConnected])
+
+  const atomicBatchSupportedChainsNames = atomicBatchSupportedChains
     .map(ci => ci.chainName)
     .join(', ')
   const currentChainsInfo = atomicBatchSupportedChains.find(
@@ -80,12 +95,11 @@ export function EthersSendCallsTest(params: { onCallsHash: (hash: string) => voi
         throw Error('chain not selected')
       }
       const provider = new BrowserProvider(walletProvider, chainId)
-      const amountToSend = parseGwei('0.001').toString(16)
       const calls = [
         {
           to: vitalikEthAddress as `0x${string}`,
           data: '0x' as `0x${string}`,
-          value: `0x${amountToSend}`
+          value: `0x0`
         },
         {
           to: vitalikEthAddress as Address,
@@ -102,6 +116,8 @@ export function EthersSendCallsTest(params: { onCallsHash: (hash: string) => voi
       const batchCallHash = await provider.send(EIP_5792_RPC_METHODS.WALLET_SEND_CALLS, [
         sendCallsParams
       ])
+
+      setLastCallsBatchId(batchCallHash)
       toast({
         title: 'Success',
         description: batchCallHash,
@@ -120,6 +136,9 @@ export function EthersSendCallsTest(params: { onCallsHash: (hash: string) => voi
     }
   }
   function isSendCallsSupported(): boolean {
+    if (walletProvider instanceof W3mFrameProvider) {
+      return true
+    }
     if (walletProvider instanceof EthereumProvider) {
       return Boolean(
         walletProvider?.signer?.session?.namespaces?.['eip155']?.methods?.includes(
@@ -195,10 +214,18 @@ export function EthersSendCallsTest(params: { onCallsHash: (hash: string) => voi
         ) : null}
       </Box>
       <AddTransactionModal isOpen={isOpen} onSubmit={onSubmit} onClose={onClose} />
+
+      <Spacer m={2} />
+      {lastCallsBatchId && (
+        <>
+          <Heading size="xs">Last batch call ID:</Heading>
+          <Text data-testid="send-calls-id">{lastCallsBatchId}</Text>
+        </>
+      )}
     </>
   ) : (
     <Text fontSize="md" color="yellow">
-      Switch to {atomicBatchSupportedChainNames} to test atomic batch feature
+      Switch to {atomicBatchSupportedChainsNames} to test atomic batch feature
     </Text>
   )
 }
