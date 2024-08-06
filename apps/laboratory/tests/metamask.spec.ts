@@ -20,3 +20,10 @@ synpressTest('should be connected as expected', async ({ page, metamask }) => {
   await metamask.connectToDapp()
   await modalValidator.expectConnected()
 })
+
+synpressTest('should show injected connectors on Solana as expected', async ({ page }) => {
+  await page.goto(`/library/solana`)
+  await page.getByTestId('connect-button').click()
+  const connectMetaMaskButton = page.getByTestId('wallet-selector-MetaMask')
+  await expect(connectMetaMaskButton).toBeVisible()
+})
