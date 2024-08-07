@@ -15,6 +15,7 @@ import type { P256Credential } from 'webauthn-p256'
 
 type PasskeyStorageType = P256Credential | PasskeyLocalStorageFormat | undefined
 interface WagmiPermissionsSyncContextType {
+  projectId: string
   passkey: PasskeyStorageType
   isPasskeyAvailable: boolean
   passkeyId: string
@@ -31,6 +32,7 @@ function noop() {
   console.warn('WagmiPermissionsSyncContext used outside of provider')
 }
 export const WagmiPermissionsSyncContext = createContext<WagmiPermissionsSyncContextType>({
+  projectId: '',
   passkey: undefined,
   isPasskeyAvailable: false,
   passkeyId: '',
@@ -47,6 +49,10 @@ interface WagmiPermissionsSyncProviderProps {
 }
 
 export function WagmiPermissionsSyncProvider({ children }: WagmiPermissionsSyncProviderProps) {
+  const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
+  if (!projectId) {
+    throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
+  }
   const [passkey, setPasskey] = useLocalStorageState<PasskeyStorageType>(
     PASSKEY_LOCALSTORAGE_KEY,
     undefined
@@ -80,6 +86,7 @@ export function WagmiPermissionsSyncProvider({ children }: WagmiPermissionsSyncP
   return (
     <WagmiPermissionsSyncContext.Provider
       value={{
+        projectId,
         passkey,
         isPasskeyAvailable,
         passkeyId,

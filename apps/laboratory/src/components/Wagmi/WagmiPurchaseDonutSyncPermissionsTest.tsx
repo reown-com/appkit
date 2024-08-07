@@ -9,11 +9,7 @@ import { useWagmiPermissionsSync } from '../../context/WagmiPermissionsSyncConte
 import { sepolia } from 'viem/chains'
 
 export function WagmiPurchaseDonutSyncPermissionsTest() {
-  const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
-  if (!projectId) {
-    throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
-  }
-  const { grantedPermissions, wcCosignerData, passkeyId } = useWagmiPermissionsSync()
+  const { grantedPermissions, wcCosignerData, passkeyId, projectId } = useWagmiPermissionsSync()
   const { executeActionsWithPasskeyAndCosignerPermissions } = useERC7715PermissionsSync({
     chain: sepolia,
     permissions: grantedPermissions,

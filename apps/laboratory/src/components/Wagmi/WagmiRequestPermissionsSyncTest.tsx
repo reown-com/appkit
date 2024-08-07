@@ -24,11 +24,9 @@ export function WagmiRequestPermissionsSyncTest() {
   })
   const { chain, address, isConnected } = useAccount()
   const caip10Address = `eip155:${chain?.id}:${address}`
-  const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
-  if (!projectId) {
-    throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
-  }
+
   const {
+    projectId,
     passkey,
     grantedPermissions,
     clearGrantedPermissions,

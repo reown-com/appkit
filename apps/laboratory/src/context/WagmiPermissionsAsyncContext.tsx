@@ -13,6 +13,7 @@ import { generatePrivateKey, privateKeyToAccount, type PrivateKeyAccount } from 
 import { useChakraToast } from '../components/Toast'
 
 interface WagmiPermissionsAsyncContextType {
+  projectId: string
   privateKey: string | undefined
   signer: PrivateKeyAccount | undefined
   grantedPermissions: GrantPermissionsReturnType | undefined
@@ -27,6 +28,7 @@ function noop() {
   console.warn('WagmiPermissionsAsyncContext used outside of provider')
 }
 export const WagmiPermissionsAsyncContext = createContext<WagmiPermissionsAsyncContextType>({
+  projectId: '',
   privateKey: undefined,
   signer: undefined,
   grantedPermissions: undefined,
@@ -42,6 +44,10 @@ interface WagmiPermissionsAsyncProviderProps {
 
 export function WagmiPermissionsAsyncProvider({ children }: WagmiPermissionsAsyncProviderProps) {
   const toast = useChakraToast()
+  const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
+  if (!projectId) {
+    throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
+  }
   const [privateKey, setPrivateKey] = useLocalStorageState<string | undefined>(
     LOCAL_SIGNER_KEY,
     undefined
@@ -82,6 +88,7 @@ export function WagmiPermissionsAsyncProvider({ children }: WagmiPermissionsAsyn
   return (
     <WagmiPermissionsAsyncContext.Provider
       value={{
+        projectId,
         privateKey,
         signer,
         grantedPermissions,

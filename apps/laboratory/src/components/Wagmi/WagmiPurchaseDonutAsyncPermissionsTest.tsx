@@ -9,11 +9,7 @@ import { useWagmiPermissionsAsync } from '../../context/WagmiPermissionsAsyncCon
 import { useERC7715PermissionsAsync } from '../../hooks/useERC7715PermissionsAsync'
 
 export function WagmiPurchaseDonutAsyncPermissionsTest() {
-  const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
-  if (!projectId) {
-    throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
-  }
-  const { grantedPermissions, wcCosignerData, privateKey } = useWagmiPermissionsAsync()
+  const { grantedPermissions, wcCosignerData, privateKey, projectId } = useWagmiPermissionsAsync()
 
   const { executeActionsWithECDSAAndCosignerPermissions } = useERC7715PermissionsAsync({
     chain: sepolia,
