@@ -1,7 +1,6 @@
 import {
   AccountController,
   ApiController,
-  ConnectionController,
   CoreHelperUtil,
   EventsController,
   ModalController,

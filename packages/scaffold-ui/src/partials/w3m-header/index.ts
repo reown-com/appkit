@@ -144,10 +144,10 @@ export class W3mHeader extends LitElement {
   private async onClose() {
     if (this.isSiweEnabled) {
       const { SIWEController } = await import('@web3modal/siwe')
-      if (SIWEController.state.status !== 'success') {
-        RouterController.popTransactionStack(true)
-      } else {
+      if (SIWEController.state.status === 'success') {
         ModalController.close()
+      } else {
+        RouterController.popTransactionStack(true)
       }
     } else {
       ModalController.close()
@@ -221,7 +221,7 @@ export class W3mHeader extends LitElement {
     return ['0', '2l', '0', '2l'] as const
   }
 
-  private async onViewChange() {
+  private onViewChange() {
     const { history } = RouterController.state
 
     let direction = ConstantsUtil.VIEW_DIRECTION.Next

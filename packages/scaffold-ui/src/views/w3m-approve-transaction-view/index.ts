@@ -95,7 +95,7 @@ export class W3mApproveTransactionView extends LitElement {
       : 'w3m-iframe-zoom-in 200ms var(--wui-ease-out-power-2)'
   }
 
-  private async onHideIframe() {
+  private onHideIframe() {
     this.iframe.style.display = 'none'
     this.iframe.style.animation = 'w3m-iframe-fade-out 200ms var(--wui-ease-out-power-2)'
   }

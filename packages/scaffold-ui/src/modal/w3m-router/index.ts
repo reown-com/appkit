@@ -30,7 +30,7 @@ export class W3mRouter extends LitElement {
   }
 
   public override firstUpdated() {
-    this.resizeObserver = new ResizeObserver(async ([content]) => {
+    this.resizeObserver = new ResizeObserver(([content]) => {
       const height = `${content?.contentRect.height}px`
       if (this.prevHeight !== '0px') {
         this.style.setProperty('--prev-height', this.prevHeight)
@@ -160,7 +160,7 @@ export class W3mRouter extends LitElement {
     }
   }
 
-  private async onViewChange(newView: RouterControllerState['view']) {
+  private onViewChange(newView: RouterControllerState['view']) {
     TooltipController.hide()
 
     let direction = ConstantsUtil.VIEW_DIRECTION.Next
