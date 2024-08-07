@@ -19,6 +19,12 @@ export function EthersTests() {
   }, [])
 
   React.useEffect(() => {
+    if (!isConnected) {
+      setCallsHash('')
+    }
+  }, [isConnected])
+
+  React.useEffect(() => {
     setReady(true)
   }, [])
 
