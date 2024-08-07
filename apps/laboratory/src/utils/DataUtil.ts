@@ -40,8 +40,8 @@ export const wagmiSdkOptions = [
     description: 'Configuration using wagmi and implementing ERC-7715'
   },
   {
-    title: 'Permissions(Appkit)',
-    link: '/library/wagmi-permissions-email/',
+    title: 'Permissions(Sync)',
+    link: '/library/wagmi-permissions-sync/',
     description: 'Configuration using wagmi and implementing ERC-7715'
   }
 ]
