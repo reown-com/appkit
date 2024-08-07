@@ -7,10 +7,20 @@ import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { getWagmiConfig } from '../../utils/WagmiConstants'
 import { WagmiPermissionsProvider } from '../../context/WagmiPermissionsContext'
+import { walletConnect } from '@wagmi/connectors'
+import { OPTIONAL_METHODS } from '@walletconnect/ethereum-provider'
 
 const queryClient = new QueryClient()
-const wagmiEmailConfig = getWagmiConfig('email')
-
+const connectors = [
+  walletConnect({
+    projectId: ConstantsUtil.ProjectId,
+    metadata: ConstantsUtil.Metadata,
+    showQrModal: false,
+    // @ts-expect-error: Overridding optionalMethods
+    optionalMethods: [...OPTIONAL_METHODS, 'wallet_grantPermissions']
+  })
+]
+const wagmiEmailConfig = getWagmiConfig('email', connectors)
 const modal = createWeb3Modal({
   wagmiConfig: wagmiEmailConfig,
   projectId: ConstantsUtil.ProjectId,

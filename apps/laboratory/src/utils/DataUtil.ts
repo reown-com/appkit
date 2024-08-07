@@ -35,11 +35,6 @@ export const wagmiSdkOptions = [
     description: 'Configuration using wagmi and implementing email and social login'
   },
   {
-    title: 'Permissions',
-    link: '/library/wagmi-permissions/',
-    description: 'Configuration using wagmi and implementing ERC-7715'
-  },
-  {
     title: 'Permissions(Sync)',
     link: '/library/wagmi-permissions-sync/',
     description: 'Configuration using wagmi and implementing ERC-7715'
