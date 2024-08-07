@@ -71,6 +71,29 @@ export class W3mFrame {
 
   // -- Events ----------------------------------------------------------------
   public events = {
+    registerFrameEventHandler: (
+      id: string,
+      callback: (event: W3mFrameTypes.FrameEvent) => void,
+      signal: AbortSignal
+    ) => {
+      function eventHandler({ data }: MessageEvent) {
+        if (!data.type?.includes(W3mFrameConstants.FRAME_EVENT_KEY)) {
+          return
+        }
+        const frameEvent = W3mFrameSchema.frameEvent.parse(data)
+        if (frameEvent.id === id) {
+          callback(frameEvent)
+          window.removeEventListener('message', eventHandler)
+        }
+      }
+      if (W3mFrameHelpers.isClient) {
+        window.addEventListener('message', eventHandler)
+
+        signal.addEventListener('abort', () => {
+          window.removeEventListener('message', eventHandler)
+        })
+      }
+    },
     onFrameEvent: (callback: (event: W3mFrameTypes.FrameEvent) => void) => {
       if (W3mFrameHelpers.isClient) {
         window.addEventListener('message', ({ data }) => {

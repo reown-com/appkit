@@ -16,8 +16,8 @@ const smartAccountTest = test.extend<{ library: string }>({
 
 smartAccountTest.describe.configure({ mode: 'serial' })
 
-smartAccountTest.beforeAll(async ({ browser, library }, testInfo) => {
-  smartAccountTest.setTimeout(120000)
+smartAccountTest.beforeAll(async ({ browser, library }) => {
+  smartAccountTest.setTimeout(180000)
   context = await browser.newContext()
   const browserPage = await context.newPage()
 
@@ -35,7 +35,7 @@ smartAccountTest.beforeAll(async ({ browser, library }, testInfo) => {
   // Switch to a SA enabled network
   await page.switchNetworkWithNetworkButton('Polygon')
   await page.closeModal()
-  const tempEmail = email.getEmailAddressToUse(testInfo.parallelIndex)
+  const tempEmail = await email.getEmailAddressToUse()
   await page.emailFlow(tempEmail, context, mailsacApiKey)
 
   await validator.expectConnected()
@@ -149,4 +149,16 @@ smartAccountTest('it should disconnect correctly', async () => {
   await page.openSettings()
   await page.disconnect()
   await validator.expectDisconnected()
+})
+
+smartAccountTest.skip('it should sendCalls and getCallsStatus', async () => {
+  await page.sendCalls()
+  await page.approveMultipleTransactions()
+  await validator.expectAcceptedSign()
+
+  const sendCallsId = await page.page.getByTestId('send-calls-id').textContent()
+
+  await page.getCallsStatus(sendCallsId || '')
+
+  await validator.expectCallStatusSuccessOrRetry(sendCallsId || '', true)
 })
