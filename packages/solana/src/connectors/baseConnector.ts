@@ -16,7 +16,7 @@ import { SolConstantsUtil, SolStoreUtil } from '../utils/scaffold/index.js'
 import { getHashedName, getNameAccountKey } from '../utils/hash.js'
 import { NameRegistry } from '../utils/nameService.js'
 
-import type { ConfirmOptions, Signer, TransactionSignature } from '@solana/web3.js'
+import type { SendOptions, TransactionSignature } from '@solana/web3.js'
 
 import type {
   BlockResult,
@@ -43,8 +43,7 @@ export interface Connector {
   sendTransaction: (transaction: Transaction | VersionedTransaction) => Promise<string>
   signAndSendTransaction: (
     transaction: Transaction | VersionedTransaction,
-    signers: Signer[],
-    confirmOptions?: ConfirmOptions
+    options?: SendOptions
   ) => Promise<TransactionSignature>
   getAccount: (
     requestedAddress?: string,

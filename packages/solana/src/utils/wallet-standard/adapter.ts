@@ -23,7 +23,6 @@ import {
 } from '@solana/wallet-adapter-base'
 import {
   SolanaSignAndSendTransaction,
-  type SolanaSignAndSendTransactionFeature,
   SolanaSignIn,
   type SolanaSignInInput,
   type SolanaSignInOutput,
@@ -44,6 +43,7 @@ import {
 } from '@wallet-standard/features'
 import { arraysEqual } from '@wallet-standard/wallet'
 import bs58 from 'bs58'
+import { SolStoreUtil } from '../scaffold/index.js'
 
 /** TODO: docs */
 export interface StandardWalletAdapterConfig {
@@ -271,10 +271,7 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
     options: SendTransactionOptions = {}
   ): Promise<TransactionSignature> {
     try {
-      const account = this.#account
-      if (!account) {
-        throw new WalletNotConnectedError()
-      }
+      const { account, chain } = this.getTransactionMetaInputs(connection)
 
       let feature: typeof SolanaSignAndSendTransaction | typeof SolanaSignTransaction | undefined =
         undefined
@@ -298,57 +295,17 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
         throw new WalletConfigError()
       }
 
-      const chain = getChainForEndpoint(connection.rpcEndpoint)
-      if (!account.chains.includes(chain)) {
-        throw new WalletSendTransactionError()
-      }
-
       try {
-        const { signers, ...sendOptions } = options
-
-        let serializedTransaction: Uint8Array | undefined = undefined
-        if (isVersionedTransaction(transaction)) {
-          if (signers?.length) {
-            transaction.sign(signers)
-          }
-          serializedTransaction = transaction.serialize()
-        } else {
-          const _transaction = (await this.prepareTransaction(
-            transaction,
-            connection,
-            sendOptions
-          )) as T
-          if (signers?.length) {
-            ;(_transaction as Transaction).partialSign(...signers)
-          }
-          serializedTransaction = new Uint8Array(
-            (_transaction as Transaction).serialize({
-              requireAllSignatures: false,
-              verifySignatures: false
-            })
-          )
-        }
-
         if (feature === SolanaSignAndSendTransaction) {
-          const [output] = await (this.#wallet.features as SolanaSignAndSendTransactionFeature)[
-            SolanaSignAndSendTransaction
-          ].signAndSendTransaction({
-            account,
-            chain,
-            transaction: serializedTransaction,
-            options: {
-              preflightCommitment: getCommitment(
-                sendOptions.preflightCommitment || connection.commitment
-              ),
-              skipPreflight: sendOptions.skipPreflight,
-              maxRetries: sendOptions.maxRetries,
-              minContextSlot: sendOptions.minContextSlot
-            }
-          })
-
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          return bs58.encode(output!.signature)
+          return this.signAndSendTransaction(transaction, options)
         }
+
+        const serializedTransaction = await this.serializeTransaction(
+          transaction,
+          connection,
+          options
+        )
+
         const [output] = await (this.#wallet.features as SolanaSignTransactionFeature)[
           SolanaSignTransaction
         ].signTransaction({
@@ -357,18 +314,16 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
           transaction: serializedTransaction,
           options: {
             preflightCommitment: getCommitment(
-              sendOptions.preflightCommitment || connection.commitment
+              options.preflightCommitment || connection.commitment
             ),
-            minContextSlot: sendOptions.minContextSlot
+            minContextSlot: options.minContextSlot
           }
         })
 
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         return await connection.sendRawTransaction(output!.signedTransaction, {
-          ...sendOptions,
-          preflightCommitment: getCommitment(
-            sendOptions.preflightCommitment || connection.commitment
-          )
+          ...options,
+          preflightCommitment: getCommitment(options.preflightCommitment || connection.commitment)
         })
       } catch (error: unknown) {
         if (error instanceof WalletError) {
@@ -380,6 +335,84 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
       this.emit('error', error as WalletError)
       throw error
     }
+  }
+
+  async signAndSendTransaction<T extends Transaction | VersionedTransaction>(
+    transaction: T,
+    options: SendTransactionOptions = {}
+  ): Promise<TransactionSignature> {
+    if (!(SolanaSignAndSendTransaction in this.#wallet.features)) {
+      throw new Error(`The wallet does not support ${SolanaSignAndSendTransaction} feature`)
+    }
+
+    const { chain, account, connection } = this.getTransactionMetaInputs(
+      SolStoreUtil.state.connection
+    )
+
+    const serializedTransaction = await this.serializeTransaction(transaction, connection, options)
+
+    const [output] = await this.#wallet.features[
+      SolanaSignAndSendTransaction
+    ].signAndSendTransaction({
+      account,
+      chain,
+      transaction: serializedTransaction,
+      options: {
+        preflightCommitment: getCommitment(options.preflightCommitment || connection.commitment),
+        skipPreflight: options.skipPreflight,
+        maxRetries: options.maxRetries,
+        minContextSlot: options.minContextSlot
+      }
+    })
+
+    if (!output) {
+      throw new WalletSendTransactionError('Invalid transaction result')
+    }
+
+    return bs58.encode(output.signature)
+  }
+
+  private async serializeTransaction(
+    transaction: Transaction | VersionedTransaction,
+    connection: Connection,
+    options: SendTransactionOptions
+  ): Promise<Uint8Array> {
+    const { signers, ...sendOptions } = options
+
+    if (isVersionedTransaction(transaction)) {
+      if (signers?.length) {
+        transaction.sign(signers)
+      }
+
+      return transaction.serialize()
+    }
+
+    const preparedTransaction = await this.prepareTransaction(transaction, connection, sendOptions)
+
+    if (signers?.length) {
+      preparedTransaction.partialSign(...signers)
+    }
+
+    return new Uint8Array(
+      preparedTransaction.serialize({
+        requireAllSignatures: false,
+        verifySignatures: false
+      })
+    )
+  }
+
+  private getTransactionMetaInputs(connection?: Connection | null) {
+    const account = this.#account
+    if (!account || !connection) {
+      throw new WalletNotConnectedError()
+    }
+
+    const chain = getChainForEndpoint(connection.rpcEndpoint)
+    if (!account.chains.includes(chain)) {
+      throw new WalletSendTransactionError('Invalid chain')
+    }
+
+    return { account, chain, connection }
   }
 
   signTransaction:
