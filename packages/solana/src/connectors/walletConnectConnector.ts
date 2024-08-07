@@ -1,5 +1,5 @@
 import base58 from 'bs58'
-import { Transaction, VersionedTransaction, type SendOptions } from '@solana/web3.js'
+import { Connection, Transaction, VersionedTransaction, type SendOptions } from '@solana/web3.js'
 import { OptionsController } from '@web3modal/core'
 
 import { SolStoreUtil } from '../utils/scaffold/index.js'
@@ -115,15 +115,13 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
     return result.signature
   }
 
-  public async sendTransaction(transaction: AnyTransaction) {
-    if (!SolStoreUtil.state.connection) {
-      throw new Error('No connection available')
-    }
-
+  public async sendTransaction(
+    transaction: AnyTransaction,
+    connection: Connection,
+    options?: SendOptions
+  ) {
     const signedTransaction = await this.signTransaction(transaction)
-    const signature = await SolStoreUtil.state.connection.sendRawTransaction(
-      signedTransaction.serialize()
-    )
+    const signature = await connection.sendRawTransaction(signedTransaction.serialize(), options)
 
     return signature
   }

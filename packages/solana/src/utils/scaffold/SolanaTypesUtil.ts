@@ -53,9 +53,13 @@ export interface Provider {
   signAndSendAllTransactions: (
     transactions: SolanaWeb3Transaction[]
   ) => Promise<TransactionSignature[]>
-  sendTransaction: (transaction: AnyTransaction) => Promise<TransactionSignature>
+  sendTransaction: (
+    transaction: AnyTransaction,
+    connection: Connection,
+    options?: SendTransactionOptions
+  ) => Promise<TransactionSignature>
   sendAndConfirm: (
-    transaction: SolanaWeb3Transaction | VersionedTransaction,
+    transaction: AnyTransaction,
     connection: Connection,
     options?: SendTransactionOptions
   ) => Promise<TransactionSignature>
