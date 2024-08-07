@@ -11,7 +11,7 @@ import {
 import { TransactionUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
-import type { TransactionType } from '@web3modal/ui/src/utils/TypeUtil.js'
+import type { TransactionType } from '@web3modal/ui'
 import { W3mFrameRpcConstants } from '@web3modal/wallet'
 import { ConstantsUtil } from '@web3modal/common'
 

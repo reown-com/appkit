@@ -6,6 +6,10 @@ if (!projectId) {
   throw new Error('VITE_PROJECT_ID is not set')
 }
 
+function getBlockchainApiRpcUrl(chainId) {
+  return `https://rpc.walletconnect.org/v1/?chainId=eip155:${chainId}&projectId=${projectId}`
+}
+
 // 2. Create wagmiConfig
 const chains = [
   {
@@ -13,14 +17,14 @@ const chains = [
     name: 'Ethereum',
     currency: 'ETH',
     explorerUrl: 'https://etherscan.io',
-    rpcUrl: 'https://cloudflare-eth.com'
+    rpcUrl: getBlockchainApiRpcUrl(1)
   },
   {
     chainId: 42161,
     name: 'Arbitrum',
     currency: 'ETH',
     explorerUrl: 'https://arbiscan.io',
-    rpcUrl: 'https://arb1.arbitrum.io/rpc'
+    rpcUrl: getBlockchainApiRpcUrl(42161)
   }
 ]
 
@@ -31,8 +35,7 @@ const ethersConfig = defaultConfig({
     url: 'https://web3modal.com',
     icons: ['https://avatars.githubusercontent.com/u/37784886']
   },
-  defaultChainId: 1,
-  rpcUrl: 'https://cloudflare-eth.com'
+  defaultChainId: 1
 })
 
 // 3. Create modal

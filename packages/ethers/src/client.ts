@@ -1100,22 +1100,22 @@ export class Web3Modal extends Web3ModalScaffold {
           }, 300)
         }
       })
-      this.authProvider.onRpcResponse(response => {
-        const responseType = W3mFrameHelpers.getResponseType(response)
 
-        switch (responseType) {
-          case W3mFrameConstants.RPC_RESPONSE_TYPE_ERROR: {
-            const isModalOpen = super.isOpen()
+      this.authProvider.onRpcError(() => {
+        const isModalOpen = super.isOpen()
 
-            if (isModalOpen) {
-              if (super.isTransactionStackEmpty()) {
-                super.close()
-              } else {
-                super.popTransactionStack(true)
-              }
-            }
-            break
+        if (isModalOpen) {
+          if (super.isTransactionStackEmpty()) {
+            super.close()
+          } else {
+            super.popTransactionStack(true)
           }
+        }
+      })
+
+      this.authProvider.onRpcSuccess(response => {
+        const responseType = W3mFrameHelpers.getResponseType(response)
+        switch (responseType) {
           case W3mFrameConstants.RPC_RESPONSE_TYPE_TX: {
             if (super.isTransactionStackEmpty()) {
               super.close()
@@ -1158,7 +1158,7 @@ export class Web3Modal extends Web3ModalScaffold {
     if (this.authProvider) {
       this.subscribeState(val => {
         if (!val.open) {
-          this.authProvider?.rejectRpcRequest()
+          this.authProvider?.rejectRpcRequests()
         }
       })
     }
