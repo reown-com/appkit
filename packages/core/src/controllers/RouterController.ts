@@ -24,6 +24,7 @@ export interface RouterControllerState {
     | 'ChooseAccountName'
     | 'Connect'
     | 'ConnectingExternal'
+    | 'ConnectingFarcaster'
     | 'ConnectingWalletConnect'
     | 'ConnectingSiwe'
     | 'ConnectingSocial'

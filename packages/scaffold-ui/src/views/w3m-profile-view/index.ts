@@ -149,7 +149,7 @@ export class W3mProfileView extends LitElement {
             @click=${() => this.onSwitchAccount(account)}
             >Switch</wui-button
           >`}
-    </wui-list-account> `
+    </wui-list-account>`
   }
 
   private onCopyAddress() {

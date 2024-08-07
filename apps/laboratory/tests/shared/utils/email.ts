@@ -1,6 +1,6 @@
 import { Mailsac } from '@mailsac/api'
-const EMAIL_CHECK_TIMEOUT = 1000
-const MAX_EMAIL_CHECK = 16
+const EMAIL_CHECK_INTERVAL = 2500
+const MAX_EMAIL_CHECK = 48
 const EMAIL_APPROVE_BUTTON_TEXT = 'Approve this login'
 const APPROVE_URL_REGEX = /https:\/\/register.*/u
 const OTP_CODE_REGEX = /\d{3}\s?\d{3}/u
@@ -40,7 +40,7 @@ export class Email {
 
         return id
       }
-      await this.timeout(EMAIL_CHECK_TIMEOUT)
+      await this.timeout(EMAIL_CHECK_INTERVAL)
       checks += 1
     }
     throw new Error(`No email found for address ${email}`)
@@ -77,10 +77,17 @@ export class Email {
     throw new Error(`No code found in email: ${body}`)
   }
 
-  getEmailAddressToUse(index: number, domain = EMAIL_DOMAIN): string {
-    const randIndex = Math.floor(Math.random() * 10) % 9
+  async getEmailAddressToUse(domain = EMAIL_DOMAIN): Promise<string> {
+    const response = await fetch(
+      'https://id-allocation-service.walletconnect-v1-bridge.workers.dev/allocate'
+    )
+    const { id } = await response.json()
 
-    return `w3m-w${index}${randIndex}@${domain}`
+    const email = `w3m-w${id}@${domain}`
+    // eslint-disable-next-line no-console
+    console.log(`allocating email: ${email}`)
+
+    return email
   }
 
   getSmartAccountEnabledEmail(): string {

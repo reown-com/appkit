@@ -31,17 +31,28 @@ const minTokenAbi = [
   }
 ]
 
+const ALLOWED_CHAINS = [sepolia.id, optimism.id] as number[]
+
 export function WagmiSendUSDCTest() {
-  const [isLoading, setLoading] = useState(false)
+  const { status, chain } = useAccount()
+
+  return ALLOWED_CHAINS.includes(Number(chain?.id)) && status === 'connected' ? (
+    <AvailableTestContent />
+  ) : (
+    <Text fontSize="md" color="yellow">
+      Switch to Sepolia or OP to test this feature
+    </Text>
+  )
+}
+
+function AvailableTestContent() {
   const [address, setAddress] = useState('')
   const [amount, setAmount] = useState('')
-  const { status, chain } = useAccount()
   const toast = useChakraToast()
 
-  const { writeContract } = useWriteContract({
+  const { writeContract, isPending: isLoading } = useWriteContract({
     mutation: {
       onSuccess: hash => {
-        setLoading(false)
         toast({
           title: 'Transaction Success',
           description: hash,
@@ -49,7 +60,6 @@ export function WagmiSendUSDCTest() {
         })
       },
       onError: () => {
-        setLoading(false)
         toast({
           title: 'Error',
           description: 'Failed to send transaction',
@@ -60,7 +70,6 @@ export function WagmiSendUSDCTest() {
   })
 
   const onSendTransaction = useCallback(() => {
-    setLoading(true)
     writeContract({
       abi: minTokenAbi,
       functionName: 'transfer',
@@ -69,9 +78,7 @@ export function WagmiSendUSDCTest() {
     })
   }, [writeContract, address, amount])
 
-  const allowedChains = [sepolia.id, optimism.id] as number[]
-
-  return allowedChains.includes(Number(chain?.id)) && status === 'connected' ? (
+  return (
     <Stack direction={['column', 'column', 'row']}>
       <Spacer />
       <Input placeholder="0xf34ffa..." onChange={e => setAddress(e.target.value)} value={address} />
@@ -82,10 +89,11 @@ export function WagmiSendUSDCTest() {
         type="number"
       />
       <Button
-        data-test-id="sign-transaction-button"
+        data-testid="sign-transaction-button"
         onClick={onSendTransaction}
         disabled={!writeContract}
         isDisabled={isLoading}
+        isLoading={isLoading}
         width="80%"
       >
         Send USDC
@@ -96,9 +104,5 @@ export function WagmiSendUSDCTest() {
         </Button>
       </Link>
     </Stack>
-  ) : (
-    <Text fontSize="md" color="yellow">
-      Switch to Sepolia or OP to test this feature
-    </Text>
   )
 }

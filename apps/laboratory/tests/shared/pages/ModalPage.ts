@@ -1,11 +1,13 @@
 /* eslint-disable no-await-in-loop */
 import type { BrowserContext, Locator, Page } from '@playwright/test'
 import { expect } from '@playwright/test'
-import { BASE_URL } from '../constants'
+import { BASE_URL, DEFAULT_SESSION_PARAMS } from '../constants'
 import { doActionAndWaitForNewPage } from '../utils/actions'
 import { Email } from '../utils/email'
 import { DeviceRegistrationPage } from './DeviceRegistrationPage'
 import type { TimingRecords } from '../fixtures/timing-fixture'
+import { WalletPage } from './WalletPage'
+import { WalletValidator } from '../validators/WalletValidator'
 
 export type ModalFlavor = 'default' | 'siwe' | 'email' | 'wallet' | 'external' | 'all'
 
@@ -46,7 +48,6 @@ export class ModalPage {
   }
 
   async getConnectUri(timingRecords?: TimingRecords): Promise<string> {
-    await this.page.goto(this.url)
     await this.connectButton.click()
     const connect = this.page.getByTestId('wallet-selector-walletconnect')
     await connect.waitFor({
@@ -72,6 +73,15 @@ export class ModalPage {
     return uri
   }
 
+  async qrCodeFlow(page: ModalPage, walletPage: WalletPage): Promise<void> {
+    await walletPage.load()
+    const uri = await page.getConnectUri()
+    await walletPage.connectWithUri(uri)
+    await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
+    const walletValidator = new WalletValidator(walletPage.page)
+    await walletValidator.expectConnected()
+  }
+
   async emailFlow(
     emailAddress: string,
     context: BrowserContext,
@@ -84,15 +94,15 @@ export class ModalPage {
     await email.deleteAllMessages(emailAddress)
     await this.loginWithEmail(emailAddress)
 
-    let messageId = await email.getLatestMessageId(emailAddress)
-
-    if (!messageId) {
+    const firstMessageId = await email.getLatestMessageId(emailAddress)
+    if (!firstMessageId) {
       throw new Error('No messageId found')
     }
-    let emailBody = await email.getEmailBody(emailAddress, messageId)
+
+    const firstEmailBody = await email.getEmailBody(emailAddress, firstMessageId)
     let otp = ''
-    if (email.isApproveEmail(emailBody)) {
-      const url = email.getApproveUrlFromBody(emailBody)
+    if (email.isApproveEmail(firstEmailBody)) {
+      const url = email.getApproveUrlFromBody(firstEmailBody)
 
       await email.deleteAllMessages(emailAddress)
 
@@ -101,16 +111,18 @@ export class ModalPage {
       await drp.approveDevice()
       await drp.close()
 
-      messageId = await email.getLatestMessageId(emailAddress)
-
-      emailBody = await email.getEmailBody(emailAddress, messageId)
-      if (!email.isApproveEmail(emailBody)) {
-        otp = email.getOtpCodeFromBody(emailBody)
+      const secondMessageId = await email.getLatestMessageId(emailAddress)
+      if (!secondMessageId) {
+        throw new Error('No messageId found')
       }
-    }
 
-    if (otp === '') {
-      otp = email.getOtpCodeFromBody(emailBody)
+      const secondEmailBody = await email.getEmailBody(emailAddress, secondMessageId)
+      if (email.isApproveEmail(secondEmailBody)) {
+        throw new Error('Unexpected approve email after already approved')
+      }
+      otp = email.getOtpCodeFromBody(secondEmailBody)
+    } else {
+      otp = email.getOtpCodeFromBody(firstEmailBody)
     }
 
     await this.enterOTP(otp)
@@ -133,21 +145,38 @@ export class ModalPage {
     })
   }
 
-  async loginWithSocial(socialMail: string, socialPass: string) {
-    const authFile = 'playwright/.auth/user.json'
+  async loginWithSocial(socialOption: 'github', socialMail: string, socialPass: string) {
     await this.page
       .getByTestId('connect-button')
       .getByRole('button', { name: 'Connect Wallet' })
       .click()
-    const discordPopupPromise = this.page.waitForEvent('popup')
-    await this.page.getByTestId('social-selector-discord').click()
-    const discordPopup = await discordPopupPromise
-    await discordPopup.fill('#uid_8', socialMail)
-    await discordPopup.fill('#uid_10', socialPass)
-    await discordPopup.locator('[type=submit]').click()
-    await discordPopup.locator('.footer_b96583 button:nth-child(2)').click()
-    await discordPopup.context().storageState({ path: authFile })
-    await discordPopup.waitForEvent('close')
+
+    switch (socialOption) {
+      case 'github':
+        await this.loginWithGitHub(socialMail, socialPass)
+        break
+      default:
+        throw new Error(`Unknown social option: ${socialOption}`)
+    }
+  }
+
+  async loginWithGitHub(socialMail: string, socialPass: string) {
+    const socialPopupPromise = this.page.waitForEvent('popup')
+    await this.page.getByTestId(`social-selector-github`).click()
+    const socialPopup = await socialPopupPromise
+    await socialPopup.waitForLoadState()
+    await socialPopup.fill('#login_field.form-control.input-block.js-login-field', socialMail)
+    await socialPopup.fill(
+      '#password.form-control.form-control.input-block.js-password-field',
+      socialPass
+    )
+    await socialPopup.locator('[type=submit]').click()
+
+    if (await socialPopup.locator('h1').getByText('Reauthorization required').isVisible()) {
+      await socialPopup.locator('button').getByText('Authorize WalletConnect').click()
+    }
+
+    await socialPopup.waitForEvent('close')
   }
 
   async enterOTP(otp: string, headerTitle = 'Confirm Email') {
@@ -198,9 +227,9 @@ export class ModalPage {
     await signButton.click()
   }
 
-  async signatureRequestFrameShouldVisible() {
+  async signatureRequestFrameShouldVisible(headerText: string) {
     await expect(
-      this.page.frameLocator('#w3m-iframe').getByText('requests a signature'),
+      this.page.frameLocator('#w3m-iframe').getByText(headerText),
       'Web3Modal iframe should be visible'
     ).toBeVisible({
       timeout: 10000
@@ -213,13 +242,18 @@ export class ModalPage {
   }
 
   async approveSign() {
-    await this.signatureRequestFrameShouldVisible()
+    await this.signatureRequestFrameShouldVisible('requests a signature')
     await this.clickSignatureRequestButton('Sign')
   }
 
   async rejectSign() {
-    await this.signatureRequestFrameShouldVisible()
+    await this.signatureRequestFrameShouldVisible('requests a signature')
     await this.clickSignatureRequestButton('Cancel')
+  }
+
+  async approveMultipleTransactions() {
+    await this.signatureRequestFrameShouldVisible('requests multiple transactions')
+    await this.clickSignatureRequestButton('Approve')
   }
 
   async clickWalletUpgradeCard(context: BrowserContext) {
@@ -272,9 +306,9 @@ export class ModalPage {
     await this.page.waitForTimeout(300)
   }
 
-  async updateEmail(mailsacApiKey: string, index: number) {
+  async updateEmail(mailsacApiKey: string) {
     const email = new Email(mailsacApiKey)
-    const newEmailAddress = email.getEmailAddressToUse(index)
+    const newEmailAddress = await email.getEmailAddressToUse()
 
     await this.page.getByTestId('account-button').click()
     await this.page.getByTestId('w3m-account-email-update').click()
@@ -316,5 +350,34 @@ export class ModalPage {
     const otp = email.getOtpCodeFromBody(emailBody)
 
     await this.enterOTP(otp, headerTitle)
+  }
+
+  async openModal() {
+    await this.page.getByTestId('account-button').click()
+  }
+
+  async openProfileView() {
+    await this.page.getByTestId('wui-profile-button').click()
+  }
+
+  async getWalletFeaturesButton(feature: 'onramp' | 'swap' | 'receive' | 'send') {
+    const walletFeatureButton = this.page.getByTestId(`wallet-features-${feature}-button`)
+    await expect(walletFeatureButton).toBeVisible()
+
+    return walletFeatureButton
+  }
+
+  async sendCalls() {
+    const sendCallsButton = this.page.getByTestId('send-calls-button')
+    await sendCallsButton.isVisible()
+    await sendCallsButton.click()
+  }
+  async getCallsStatus(batchCallId: string) {
+    const sendCallsInput = this.page.getByTestId('get-calls-id-input')
+    const sendCallsButton = this.page.getByTestId('get-calls-status-button')
+    await sendCallsButton.scrollIntoViewIfNeeded()
+
+    await sendCallsInput.fill(batchCallId)
+    await sendCallsButton.click()
   }
 }

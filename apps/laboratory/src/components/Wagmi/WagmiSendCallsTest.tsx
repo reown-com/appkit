@@ -1,22 +1,16 @@
-import { Button, Stack, Text } from '@chakra-ui/react'
-import { EthereumProvider } from '@walletconnect/ethereum-provider'
-import { useAccount, type Connector } from 'wagmi'
+import { Button, Heading, Stack, Text } from '@chakra-ui/react'
+import { useAccount } from 'wagmi'
 import { useSendCalls } from 'wagmi/experimental'
-import { useCallback, useState, useEffect } from 'react'
+import { useCallback, useState } from 'react'
 import { useChakraToast } from '../Toast'
-import { parseGwei, type Address, type WalletCapabilities } from 'viem'
-import { type Chain } from 'wagmi/chains'
+import { parseGwei, type Address } from 'viem'
 import { vitalikEthAddress } from '../../utils/DataUtil'
-import {
-  EIP_5792_RPC_METHODS,
-  WALLET_CAPABILITIES,
-  getFilteredCapabilitySupportedChainInfo,
-  getProviderCachedCapabilities
-} from '../../utils/EIP5792Utils'
+import { EIP_5792_RPC_METHODS, WALLET_CAPABILITIES } from '../../utils/EIP5792Utils'
+import { useWagmiAvailableCapabilities } from '../../hooks/useWagmiActiveCapabilities'
 
 const TEST_TX_1 = {
   to: vitalikEthAddress as Address,
-  value: parseGwei('0.001')
+  value: parseGwei('0.0001')
 }
 const TEST_TX_2 = {
   to: vitalikEthAddress as Address,
@@ -24,38 +18,58 @@ const TEST_TX_2 = {
 }
 
 export function WagmiSendCallsTest() {
-  const [ethereumProvider, setEthereumProvider] =
-    useState<Awaited<ReturnType<(typeof EthereumProvider)['init']>>>()
-  const [availableCapabilities, setAvailableCapabilities] = useState<
-    Record<number, WalletCapabilities> | undefined
-  >()
-  const [isLoading, setLoading] = useState(false)
-  const { status, chain, address, connector } = useAccount()
-  const toast = useChakraToast()
+  const { provider, supported, supportedChains, supportedChainsName, currentChainsInfo } =
+    useWagmiAvailableCapabilities({
+      capability: WALLET_CAPABILITIES.ATOMIC_BATCH,
+      method: EIP_5792_RPC_METHODS.WALLET_SEND_CALLS
+    })
+  const { address, status } = useAccount()
 
   const isConnected = status === 'connected'
-  const atomicBatchSupportedChains = availableCapabilities
-    ? getFilteredCapabilitySupportedChainInfo(
-        WALLET_CAPABILITIES.ATOMIC_BATCH,
-        availableCapabilities
-      )
-    : []
-  const atomicBatchSupportedChainsName = atomicBatchSupportedChains
-    .map(ci => ci.chainName)
-    .join(', ')
-  const currentChainsInfo = atomicBatchSupportedChains.find(
-    chainInfo => chainInfo.chainId === Number(chain?.id)
-  )
 
-  useEffect(() => {
-    if (isConnected && connector && address && chain) {
-      fetchProviderAndAccountCapabilities(address, connector, chain)
-    }
-  }, [isConnected, connector, address])
-  const { sendCalls } = useSendCalls({
+  if (!isConnected || !provider || !address) {
+    return (
+      <Text fontSize="md" color="yellow">
+        Wallet not connected
+      </Text>
+    )
+  }
+
+  if (!supported) {
+    return (
+      <Text fontSize="md" color="yellow">
+        Wallet does not support the "wallet_sendCalls" RPC method
+      </Text>
+    )
+  }
+
+  if (supportedChains.length === 0) {
+    return (
+      <Text fontSize="md" color="yellow">
+        Account does not support the atomic batch feature
+      </Text>
+    )
+  }
+
+  if (!currentChainsInfo) {
+    return (
+      <Text fontSize="md" color="yellow">
+        Switch to {supportedChainsName} to test this feature
+      </Text>
+    )
+  }
+
+  return <ConnectedTestContent />
+}
+
+function ConnectedTestContent() {
+  const toast = useChakraToast()
+  const [lastCallsBatchId, setLastCallsBatchId] = useState<string | null>(null)
+
+  const { sendCalls, isPending: isLoading } = useSendCalls({
     mutation: {
       onSuccess: hash => {
-        setLoading(false)
+        setLastCallsBatchId(hash)
         toast({
           title: 'SendCalls Success',
           description: hash,
@@ -63,7 +77,6 @@ export function WagmiSendCallsTest() {
         })
       },
       onError: () => {
-        setLoading(false)
         toast({
           title: 'SendCalls Error',
           description: 'Failed to send calls',
@@ -73,72 +86,26 @@ export function WagmiSendCallsTest() {
     }
   })
   const onSendCalls = useCallback(() => {
-    setLoading(true)
     sendCalls({
       calls: [TEST_TX_1, TEST_TX_2]
     })
   }, [sendCalls])
 
-  function isSendCallsSupported(): boolean {
-    return Boolean(
-      ethereumProvider?.signer?.session?.namespaces?.['eip155']?.methods?.includes(
-        EIP_5792_RPC_METHODS.WALLET_SEND_CALLS
-      )
-    )
-  }
-
-  async function fetchProviderAndAccountCapabilities(
-    connectedAccount: `0x${string}`,
-    connectedConnector: Connector,
-    connectedChain: Chain
-  ) {
-    const connectedProvider = await connectedConnector.getProvider({
-      chainId: connectedChain.id
-    })
-    if (connectedProvider instanceof EthereumProvider) {
-      setEthereumProvider(connectedProvider)
-      let walletCapabilities = undefined
-      walletCapabilities = getProviderCachedCapabilities(connectedAccount, connectedProvider)
-      setAvailableCapabilities(walletCapabilities)
-    }
-  }
-
-  if (!isConnected || !ethereumProvider || !address) {
-    return (
-      <Text fontSize="md" color="yellow">
-        Wallet not connected
-      </Text>
-    )
-  }
-  if (!isSendCallsSupported()) {
-    return (
-      <Text fontSize="md" color="yellow">
-        Wallet does not support wallet_sendCalls rpc method
-      </Text>
-    )
-  }
-  if (atomicBatchSupportedChains.length === 0) {
-    return (
-      <Text fontSize="md" color="yellow">
-        Account does not support atomic batch feature
-      </Text>
-    )
-  }
-
-  return currentChainsInfo ? (
+  return (
     <Stack direction={['column', 'column', 'row']}>
       <Button
-        data-test-id="send-calls-button"
+        data-testid="send-calls-button"
         onClick={onSendCalls}
         disabled={!sendCalls}
         isDisabled={isLoading}
+        isLoading={isLoading}
       >
         Send Batch Calls to Vitalik
       </Button>
+      <>
+        <Heading size="xs">Last batch call ID:</Heading>
+        <Text data-testid="send-calls-id">{lastCallsBatchId}</Text>
+      </>
     </Stack>
-  ) : (
-    <Text fontSize="md" color="yellow">
-      Switch to {atomicBatchSupportedChainsName} to test this feature
-    </Text>
   )
 }

@@ -33,6 +33,8 @@ export class W3mRegisterAccountNameView extends LitElement {
 
   @state() private registered = false
 
+  @state() private profileName = AccountController.state.profileName
+
   public constructor() {
     super()
     this.usubscribe.push(
@@ -40,6 +42,12 @@ export class W3mRegisterAccountNameView extends LitElement {
         EnsController.subscribe(val => {
           this.suggestions = val.suggestions
           this.loading = val.loading
+        }),
+        AccountController.subscribeKey('profileName', val => {
+          this.profileName = val
+          if (val) {
+            this.error = 'You already own a name'
+          }
         })
       ]
     )
@@ -143,6 +151,7 @@ export class W3mRegisterAccountNameView extends LitElement {
 
     return html`<wui-flex flexDirection="column" gap="xxs" alignItems="center">
       <wui-flex
+        data-testid="account-name-suggestion"
         .padding=${['m', 'm', 'm', 'm'] as const}
         justifyContent="space-between"
         class="suggestion"
@@ -157,6 +166,7 @@ export class W3mRegisterAccountNameView extends LitElement {
 
   private availableNameTemplate(suggestion: string) {
     return html` <wui-flex
+      data-testid="account-name-suggestion"
       .padding=${['m', 'm', 'm', 'm'] as const}
       justifyContent="space-between"
       class="suggestion"
@@ -170,7 +180,13 @@ export class W3mRegisterAccountNameView extends LitElement {
   }
 
   private isAllowedToSubmit() {
-    return !this.loading && !this.registered && !this.error && EnsController.validateName(this.name)
+    return (
+      !this.loading &&
+      !this.registered &&
+      !this.error &&
+      !this.profileName &&
+      EnsController.validateName(this.name)
+    )
   }
 
   private async onSubmitName() {

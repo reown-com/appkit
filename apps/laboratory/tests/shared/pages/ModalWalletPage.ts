@@ -12,11 +12,20 @@ export class ModalWalletPage extends ModalPage {
     super(page, library, flavor)
   }
 
-  async openProfileView() {
-    await this.page.getByTestId('wui-profile-button').click()
-  }
   async openSettings() {
     await this.page.getByTestId('account-settings-button').click()
+  }
+
+  async openChooseNameIntro() {
+    await this.page.getByTestId('account-choose-name-button').click()
+  }
+
+  async openChooseName() {
+    await this.page.getByRole('button', { name: 'Choose Name' }).click()
+  }
+
+  async typeName(name: string) {
+    await this.page.getByTestId('wui-ens-input').getByTestId('wui-input-text').fill(name)
   }
 
   override async switchNetwork(network: string) {
