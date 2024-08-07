@@ -9,9 +9,18 @@ import { useWagmiPermissionsAsync } from '../../context/WagmiPermissionsAsyncCon
 import { useERC7715PermissionsAsync } from '../../hooks/useERC7715PermissionsAsync'
 
 export function WagmiPurchaseDonutAsyncPermissionsTest() {
-  const { executeActionsWithECDSAAndCosignerPermissions } = useERC7715PermissionsAsync()
-
+  const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
+  if (!projectId) {
+    throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
+  }
   const { grantedPermissions, wcCosignerData, privateKey } = useWagmiPermissionsAsync()
+
+  const { executeActionsWithECDSAAndCosignerPermissions } = useERC7715PermissionsAsync({
+    chain: sepolia,
+    permissions: grantedPermissions,
+    projectId
+  })
+
   const {
     data: donutsOwned,
     refetch: fetchDonutsOwned,
@@ -30,9 +39,6 @@ export function WagmiPurchaseDonutAsyncPermissionsTest() {
   async function onPurchaseDonutWithPermissions() {
     setTransactionPending(true)
     try {
-      if (!grantedPermissions) {
-        throw Error('No permissions available')
-      }
       if (!wcCosignerData) {
         throw Error('No wc-cosigner data available')
       }
@@ -54,7 +60,6 @@ export function WagmiPurchaseDonutAsyncPermissionsTest() {
       ]
       const txHash = await executeActionsWithECDSAAndCosignerPermissions({
         actions: purchaseDonutCallDataExecution,
-        permissions: grantedPermissions,
         chain: sepolia,
         ecdsaPrivateKey: privateKey as `0x${string}`
       })

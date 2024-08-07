@@ -23,6 +23,11 @@ export function WagmiRequestPermissionsSyncTest() {
     method: EIP_7715_RPC_METHODS.WALLET_GRANT_PERMISSIONS
   })
   const { chain, address, isConnected } = useAccount()
+  const caip10Address = `eip155:${chain?.id}:${address}`
+  const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
+  if (!projectId) {
+    throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
+  }
   const {
     passkey,
     grantedPermissions,
@@ -30,24 +35,23 @@ export function WagmiRequestPermissionsSyncTest() {
     setGrantedPermissions,
     setWCCosignerData
   } = useWagmiPermissionsSync()
-  const { addPermission, updatePermissionsContext } = useWalletConnectCosigner()
+  const { addPermission, updatePermissionsContext } = useWalletConnectCosigner(
+    caip10Address,
+    projectId
+  )
   const toast = useChakraToast()
 
   const onRequestPermissions = useCallback(async () => {
     setRequestPermissionLoading(true)
-    const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
-    if (!projectId) {
-      throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
-    }
+
     if (!passkey) {
       throw new Error('Passkey not available')
     }
     if (!provider) {
       throw new Error('No Provider available, Please connect your wallet.')
     }
-    const caip10Address = `eip155:${chain?.id}:${address}`
     try {
-      const addPermissionResponse = await addPermission(caip10Address, projectId, {
+      const addPermissionResponse = await addPermission({
         permissionType: 'donut-purchase',
         data: '',
         onChainValidated: false,
@@ -77,7 +81,7 @@ export function WagmiRequestPermissionsSyncTest() {
       const samplePermissions = getSampleSyncPermissions(secp256k1DID, passkeyDID)
       const approvedPermissions = await publicClient.grantPermissions(samplePermissions)
       if (approvedPermissions) {
-        await updatePermissionsContext(caip10Address, projectId, {
+        await updatePermissionsContext({
           pci: addPermissionResponse.pci,
           context: {
             expiry: approvedPermissions.expiry,

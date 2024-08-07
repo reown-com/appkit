@@ -9,18 +9,25 @@ import { bigIntReplacer } from '../utils/CommonUtils'
 import { createClients } from '../utils/PermissionsUtils'
 import { useWalletConnectCosigner, type AddPermissionResponse } from './useWalletConnectCosigner'
 
-export function useERC7715PermissionsSync() {
+export function useERC7715PermissionsSync(params: {
+  projectId: string
+  permissions: GrantPermissionsReturnType | undefined
+  chain: Chain
+}) {
+  const { projectId, permissions, chain } = params
   const { getCallDataWithContext, getNonceWithContext } = useUserOpBuilder()
-  const { coSignUserOperation } = useWalletConnectCosigner()
+  const accountAddress = permissions?.signerData?.submitToAddress
+  const caip10Address = `eip155:${chain?.id}:${accountAddress}`
+  const { coSignUserOperation } = useWalletConnectCosigner(caip10Address, projectId)
 
   async function prepareUserOperationWithPermissions(
     publicClient: PublicClient,
-    args: {
-      actions: Execution[]
-      permissions: GrantPermissionsReturnType
-    }
+
+    actions: Execution[]
   ): Promise<UserOperation<'v0.7'>> {
-    const { permissions, actions } = args
+    if (!permissions) {
+      throw new Error('No permissions available')
+    }
     const { factory, factoryData, signerData, permissionsContext } = permissions
 
     if (!signerData?.userOpBuilder || !signerData.submitToAddress || !permissionsContext) {
@@ -69,12 +76,12 @@ export function useERC7715PermissionsSync() {
 
   async function signUserOperationWithPasskey(args: {
     userOp: UserOperation<'v0.7'>
-    permissions: GrantPermissionsReturnType
-    chain: Chain
     passkeyId: string
   }): Promise<`0x${string}`> {
-    const { userOp, chain, permissions, passkeyId } = args
-
+    const { userOp, passkeyId } = args
+    if (!permissions) {
+      throw new Error('No permissions available')
+    }
     const { signerData, permissionsContext } = permissions
 
     if (!signerData?.userOpBuilder || !signerData.submitToAddress || !permissionsContext) {
@@ -116,32 +123,22 @@ export function useERC7715PermissionsSync() {
   }
 
   async function executeActionsWithPasskeyAndCosignerPermissions(args: {
-    permissions: GrantPermissionsReturnType
     actions: Execution[]
-    chain: Chain
     passkeyId: string
     wcCosignerData: AddPermissionResponse
   }): Promise<`0x${string}`> {
-    const { permissions, actions, chain, passkeyId, wcCosignerData } = args
-    const accountAddress = permissions?.signerData?.submitToAddress
+    const { actions, passkeyId, wcCosignerData } = args
     const { publicClient, bundlerClient } = createClients(chain)
-    const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
 
     if (!accountAddress) {
       throw new Error(`Unable to get account details from granted permission`)
     }
-    if (!projectId) {
-      throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
-    }
+
     if (!wcCosignerData) {
       throw new Error('No WC_COSIGNER data available')
     }
 
-    const caip10Address = `eip155:${chain?.id}:${accountAddress}`
-    const userOp = await prepareUserOperationWithPermissions(publicClient, {
-      actions,
-      permissions
-    })
+    const userOp = await prepareUserOperationWithPermissions(publicClient, actions)
 
     const gasPrice = await bundlerClient.getUserOperationGasPrice()
     userOp.maxFeePerGas = gasPrice.fast.maxFeePerGas
@@ -161,14 +158,12 @@ export function useERC7715PermissionsSync() {
      * console.log({ userOp })
      */
     const signature = await signUserOperationWithPasskey({
-      permissions,
       userOp,
-      chain,
       passkeyId
     })
 
     userOp.signature = signature
-    const txHash = await coSignUserOperation(caip10Address, projectId, {
+    const txHash = await coSignUserOperation({
       pci: wcCosignerData.pci,
       userOp
     })
