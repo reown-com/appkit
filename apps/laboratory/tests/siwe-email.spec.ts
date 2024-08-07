@@ -17,7 +17,8 @@ const emailSiweTest = test.extend<{ library: string }>({
 
 emailSiweTest.describe.configure({ mode: 'serial' })
 
-emailSiweTest.beforeAll(async ({ browser, library }, testInfo) => {
+emailSiweTest.beforeAll(async ({ browser, library }) => {
+  emailSiweTest.setTimeout(180000)
   context = await browser.newContext()
   const browserPage = await context.newPage()
 
@@ -31,7 +32,7 @@ emailSiweTest.beforeAll(async ({ browser, library }, testInfo) => {
     throw new Error('MAILSAC_API_KEY is not set')
   }
   const email = new Email(mailsacApiKey)
-  const tempEmail = email.getEmailAddressToUse(testInfo.parallelIndex)
+  const tempEmail = await email.getEmailAddressToUse()
   await page.emailFlow(tempEmail, context, mailsacApiKey)
   await page.promptSiwe()
   await page.approveSign()
