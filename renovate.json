@@ -27,12 +27,12 @@
     },
     {
       "enabled": true,
-      "matchPackageNames": ["@wagmi/core", "wagmi", "@wagmi/connectors"],
+      "matchPackageNames": ["viem", "@wagmi/core", "wagmi", "@wagmi/connectors"],
       "groupName": "wagmi"
     },
     {
       "enabled": true,
-      "matchPackageNames": ["viem", "ethers", "@solana/web3.js"]
+      "matchPackageNames": ["ethers", "@solana/web3.js"]
     }
   ]
 }
