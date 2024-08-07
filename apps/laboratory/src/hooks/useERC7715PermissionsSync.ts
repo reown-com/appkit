@@ -7,13 +7,11 @@ import { type Chain } from 'wagmi/chains'
 import { useUserOpBuilder, type Execution } from './useUserOpBuilder'
 import { bigIntReplacer } from '../utils/CommonUtils'
 import { createClients } from '../utils/PermissionsUtils'
-import { useWalletConnectCosigner } from './useWalletConnectCosigner'
-import { useWagmiPermissions } from '../context/WagmiPermissionsContext'
+import { useWalletConnectCosigner, type AddPermissionResponse } from './useWalletConnectCosigner'
 
 export function useERC7715PermissionsSync() {
   const { getCallDataWithContext, getNonceWithContext } = useUserOpBuilder()
   const { coSignUserOperation } = useWalletConnectCosigner()
-  const { wcCosignerData, passkeyId } = useWagmiPermissions()
 
   async function prepareUserOperationWithPermissions(
     publicClient: PublicClient,
@@ -73,8 +71,9 @@ export function useERC7715PermissionsSync() {
     userOp: UserOperation<'v0.7'>
     permissions: GrantPermissionsReturnType
     chain: Chain
+    passkeyId: string
   }): Promise<`0x${string}`> {
-    const { userOp, chain, permissions } = args
+    const { userOp, chain, permissions, passkeyId } = args
 
     const { signerData, permissionsContext } = permissions
 
@@ -120,8 +119,10 @@ export function useERC7715PermissionsSync() {
     permissions: GrantPermissionsReturnType
     actions: Execution[]
     chain: Chain
+    passkeyId: string
+    wcCosignerData: AddPermissionResponse
   }): Promise<`0x${string}`> {
-    const { permissions, actions, chain } = args
+    const { permissions, actions, chain, passkeyId, wcCosignerData } = args
     const accountAddress = permissions?.signerData?.submitToAddress
     const { publicClient, bundlerClient } = createClients(chain)
     const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
@@ -162,7 +163,8 @@ export function useERC7715PermissionsSync() {
     const signature = await signUserOperationWithPasskey({
       permissions,
       userOp,
-      chain
+      chain,
+      passkeyId
     })
 
     userOp.signature = signature

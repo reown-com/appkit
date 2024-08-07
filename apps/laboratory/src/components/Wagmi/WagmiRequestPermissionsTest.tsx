@@ -7,7 +7,7 @@ import { createPublicClient, custom, parseEther } from 'viem'
 import { EIP_7715_RPC_METHODS } from '../../utils/EIP5792Utils'
 import { bigIntReplacer } from '../../utils/CommonUtils'
 import { abi as donutContractAbi, address as donutContractAddress } from '../../utils/DonutContract'
-import { useWagmiPermissions } from '../../context/WagmiPermissionsContext'
+import { useWagmiPermissions } from '../../context/WagmiPermissionsAsyncContext'
 import { serializePublicKey, type P256Credential } from 'webauthn-p256'
 import { useWalletConnectCosigner } from '../../hooks/useWalletConnectCosigner'
 import { useWagmiAvailableCapabilities } from '../../hooks/useWagmiActiveCapabilities'
@@ -18,6 +18,7 @@ import {
 } from '../../utils/EncodingUtils'
 
 export function WagmiRequestPermissionsTest() {
+  const [isRequestPermissionLoading, setRequestPermissionLoading] = useState<boolean>(false)
   const { provider, supported } = useWagmiAvailableCapabilities({
     method: EIP_7715_RPC_METHODS.WALLET_GRANT_PERMISSIONS
   })
@@ -29,7 +30,6 @@ export function WagmiRequestPermissionsTest() {
     setGrantedPermissions,
     setWCCosignerData
   } = useWagmiPermissions()
-  const [isRequestPermissionLoading, setRequestPermissionLoading] = useState<boolean>(false)
   const { addPermission, updatePermissionsContext } = useWalletConnectCosigner()
   const toast = useChakraToast()
 

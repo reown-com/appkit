@@ -6,7 +6,7 @@ import { WagmiPermissionsTest } from '../../components/Wagmi/WagmiPermissionsTes
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { getWagmiConfig } from '../../utils/WagmiConstants'
-import { WagmiPermissionsProvider } from '../../context/WagmiPermissionsContext'
+import { WagmiPermissionsAsyncProvider } from '../../context/WagmiPermissionsAsyncContext'
 import { walletConnect } from '@wagmi/connectors'
 import { OPTIONAL_METHODS } from '@walletconnect/ethereum-provider'
 
@@ -36,10 +36,10 @@ export default function Wagmi() {
   return (
     <WagmiProvider config={wagmiEmailConfig}>
       <QueryClientProvider client={queryClient}>
-        <WagmiPermissionsProvider>
+        <WagmiPermissionsAsyncProvider>
           <Web3ModalButtons />
           <WagmiPermissionsTest />
-        </WagmiPermissionsProvider>
+        </WagmiPermissionsAsyncProvider>
       </QueryClientProvider>
     </WagmiProvider>
   )

@@ -5,13 +5,12 @@ import { useChakraToast } from '../Toast'
 import { encodeFunctionData, parseEther } from 'viem'
 import { abi as donutContractAbi, address as donutContractaddress } from '../../utils/DonutContract'
 import { useERC7715PermissionsSync } from '../../hooks/useERC7715PermissionsSync'
-import { useWagmiPermissions } from '../../context/WagmiPermissionsContext'
+import { useWagmiPermissions } from '../../context/WagmiPermissionsAsyncContext'
 import { sepolia } from 'viem/chains'
 
 export function WagmiPurchaseDonutWithPermissionsTest() {
   const { executeActionsWithPasskeyAndCosignerPermissions } = useERC7715PermissionsSync()
-
-  const { grantedPermissions, wcCosignerData } = useWagmiPermissions()
+  const { grantedPermissions, wcCosignerData, passkeyId } = useWagmiPermissions()
   const {
     data: donutsOwned,
     refetch: fetchDonutsOwned,
@@ -52,7 +51,9 @@ export function WagmiPurchaseDonutWithPermissionsTest() {
       const txHash = await executeActionsWithPasskeyAndCosignerPermissions({
         actions: purchaseDonutCallDataExecution,
         permissions: grantedPermissions,
-        chain: sepolia
+        chain: sepolia,
+        passkeyId,
+        wcCosignerData
       })
       if (txHash) {
         toast({

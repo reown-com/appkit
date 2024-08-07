@@ -14,7 +14,7 @@ import type { AddPermissionResponse } from '../hooks/useWalletConnectCosigner'
 import type { P256Credential } from 'webauthn-p256'
 
 type PasskeyStorageType = P256Credential | PasskeyLocalStorageFormat | undefined
-interface WagmiPermissionsContextType {
+interface WagmiPermissionsAsyncContextType {
   passkey: PasskeyStorageType
   isPasskeyAvailable: boolean
   passkeyId: string
@@ -28,9 +28,9 @@ interface WagmiPermissionsContextType {
   clearGrantedPermissions: () => void
 }
 function noop() {
-  console.warn('WagmiPermissionsContext used outside of provider')
+  console.warn('WagmiPermissionsAsyncContext used outside of provider')
 }
-export const WagmiPermissionsContext = createContext<WagmiPermissionsContextType>({
+export const WagmiPermissionsAsyncContext = createContext<WagmiPermissionsAsyncContextType>({
   passkey: undefined,
   isPasskeyAvailable: false,
   passkeyId: '',
@@ -42,11 +42,11 @@ export const WagmiPermissionsContext = createContext<WagmiPermissionsContextType
   clearGrantedPermissions: noop
 })
 
-interface WagmiPermissionsProviderProps {
+interface WagmiPermissionsAsyncProviderProps {
   children: ReactNode
 }
 
-export function WagmiPermissionsProvider({ children }: WagmiPermissionsProviderProps) {
+export function WagmiPermissionsAsyncProvider({ children }: WagmiPermissionsAsyncProviderProps) {
   const [passkey, setPasskey] = useLocalStorageState<PasskeyStorageType>(
     PASSKEY_LOCALSTORAGE_KEY,
     undefined
@@ -78,7 +78,7 @@ export function WagmiPermissionsProvider({ children }: WagmiPermissionsProviderP
   }, [passkey])
 
   return (
-    <WagmiPermissionsContext.Provider
+    <WagmiPermissionsAsyncContext.Provider
       value={{
         passkey,
         isPasskeyAvailable,
@@ -92,13 +92,13 @@ export function WagmiPermissionsProvider({ children }: WagmiPermissionsProviderP
       }}
     >
       {children}
-    </WagmiPermissionsContext.Provider>
+    </WagmiPermissionsAsyncContext.Provider>
   )
 }
 export function useWagmiPermissions() {
-  const context = useContext(WagmiPermissionsContext)
+  const context = useContext(WagmiPermissionsAsyncContext)
   if (!context) {
-    throw new Error('useWagmiPermissions must be used within a GrantedPermissionsProvider')
+    throw new Error('useWagmiPermissions must be used within a WagmiPermissionsAsyncContext')
   }
 
   return context

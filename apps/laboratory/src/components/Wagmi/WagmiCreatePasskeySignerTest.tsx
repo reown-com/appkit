@@ -4,7 +4,7 @@ import { privateKeyToAccount } from 'viem/accounts'
 import { useChakraToast } from '../Toast'
 import { LOCAL_SIGNER_KEY, getItem } from '../../utils/LocalStorage'
 import { createCredential } from 'webauthn-p256'
-import { useWagmiPermissions } from '../../context/WagmiPermissionsContext'
+import { useWagmiPermissions } from '../../context/WagmiPermissionsAsyncContext'
 
 export function WagmiCreatePasskeySignerTest() {
   const { isPasskeyAvailable, setPasskey, passkeyId } = useWagmiPermissions()
