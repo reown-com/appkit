@@ -97,7 +97,7 @@ export function WagmiPermissionsProvider({ children }: WagmiPermissionsProviderP
 }
 export function useWagmiPermissions() {
   const context = useContext(WagmiPermissionsContext)
-  if (context === undefined) {
+  if (!context) {
     throw new Error('useWagmiPermissions must be used within a GrantedPermissionsProvider')
   }
 

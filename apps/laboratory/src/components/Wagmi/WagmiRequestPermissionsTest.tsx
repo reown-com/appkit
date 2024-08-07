@@ -5,17 +5,17 @@ import { useCallback, useState } from 'react'
 import { useChakraToast } from '../Toast'
 import { createPublicClient, custom, parseEther } from 'viem'
 import { EIP_7715_RPC_METHODS } from '../../utils/EIP5792Utils'
-import {
-  bigIntReplacer,
-  decodeUncompressedPublicKey,
-  encodePublicKeyToDID,
-  hexStringToBase64
-} from '../../utils/CommonUtils'
+import { bigIntReplacer } from '../../utils/CommonUtils'
 import { abi as donutContractAbi, address as donutContractAddress } from '../../utils/DonutContract'
 import { useWagmiPermissions } from '../../context/WagmiPermissionsContext'
 import { serializePublicKey, type P256Credential } from 'webauthn-p256'
 import { useWalletConnectCosigner } from '../../hooks/useWalletConnectCosigner'
 import { useWagmiAvailableCapabilities } from '../../hooks/useWagmiActiveCapabilities'
+import {
+  decodeUncompressedPublicKey,
+  encodePublicKeyToDID,
+  hexStringToBase64
+} from '../../utils/EncodingUtils'
 
 export function WagmiRequestPermissionsTest() {
   const { provider, supported } = useWagmiAvailableCapabilities({

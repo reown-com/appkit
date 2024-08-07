@@ -4,6 +4,8 @@ import { useState, useEffect, useMemo } from 'react'
 import { type WalletCapabilities } from 'viem'
 import { type Chain } from 'wagmi/chains'
 import {
+  EIP_5792_RPC_METHODS,
+  EIP_7715_RPC_METHODS,
   getFilteredCapabilitySupportedChainInfo,
   getProviderCachedCapabilities
 } from '../utils/EIP5792Utils'
@@ -74,12 +76,11 @@ export function useWagmiAvailableCapabilities({
 
   function isMethodSupported(): boolean {
     if (provider instanceof W3mFrameProvider) {
-      return [
-        'wallet_sendCalls',
-        'wallet_getCapabilities',
-        'wallet_getCallsStatus',
-        'wallet_grantPermissions'
-      ].includes(method)
+      const supportedMethods = Object.values(EIP_5792_RPC_METHODS).concat(
+        Object.values(EIP_7715_RPC_METHODS)
+      )
+
+      return supportedMethods.includes(method)
     }
 
     return Boolean(provider?.signer?.session?.namespaces?.['eip155']?.methods?.includes(method))

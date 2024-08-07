@@ -5,6 +5,7 @@ import { fromHex, type WalletCapabilities } from 'viem'
 import { W3mFrameProvider } from '@web3modal/wallet'
 
 export const EIP_5792_RPC_METHODS = {
+  WALLET_GET_CAPABILITIES: 'wallet_getCapabilities',
   WALLET_GET_CALLS_STATUS: 'wallet_getCallsStatus',
   WALLET_SEND_CALLS: 'wallet_sendCalls'
 }
