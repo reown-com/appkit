@@ -1,9 +1,8 @@
 import { Box, Card, CardBody, CardHeader, Heading, Stack, StackDivider } from '@chakra-ui/react'
-import { WagmiRequestPermissionsTest } from './WagmiRequestPermissionsTest'
-import { WagmiPurchaseDonutWithPermissionsTest } from './WagmiPurchaseDonutPermissionsTest'
-import { WagmiCreatePasskeySignerTest } from './WagmiCreatePasskeySignerTest'
+import { WagmiRequestPermissionsAsyncTest } from './WagmiRequestPermissionsAsyncTest'
+import { WagmiPurchaseDonutAsyncPermissionsTest } from './WagmiPurchaseDonutAsyncPermissionsTest'
 
-export function WagmiPermissionsTest() {
+export function WagmiPermissionsAsyncTest() {
   return (
     <Card marginTop={10} marginBottom={10}>
       <CardHeader>
@@ -13,21 +12,15 @@ export function WagmiPermissionsTest() {
         <Stack divider={<StackDivider />} spacing="4">
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">
-              New Passkey
-            </Heading>
-            <WagmiCreatePasskeySignerTest />
-          </Box>
-          <Box>
-            <Heading size="xs" textTransform="uppercase" pb="2">
               Request Permissions
             </Heading>
-            <WagmiRequestPermissionsTest />
+            <WagmiRequestPermissionsAsyncTest />
           </Box>
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">
               Purchase Donut With Permissions
             </Heading>
-            <WagmiPurchaseDonutWithPermissionsTest />
+            <WagmiPurchaseDonutAsyncPermissionsTest />
           </Box>
         </Stack>
       </CardBody>

@@ -2,43 +2,37 @@ import type { ReactNode } from 'react'
 import { createContext, useContext, useEffect, useState } from 'react'
 import {
   GRANTED_PERMISSIONS_KEY,
-  PASSKEY_LOCALSTORAGE_KEY,
+  LOCAL_SIGNER_KEY,
   removeItem,
-  setItem,
-  WC_COSIGNER_DATA,
-  type PasskeyLocalStorageFormat
+  WC_COSIGNER_DATA
 } from '../utils/LocalStorage'
 import { useLocalStorageState } from '../hooks/useLocalStorageState'
 import type { GrantPermissionsReturnType } from 'viem/experimental'
 import type { AddPermissionResponse } from '../hooks/useWalletConnectCosigner'
-import type { P256Credential } from 'webauthn-p256'
+import { generatePrivateKey, privateKeyToAccount, type PrivateKeyAccount } from 'viem/accounts'
+import { useChakraToast } from '../components/Toast'
 
-type PasskeyStorageType = P256Credential | PasskeyLocalStorageFormat | undefined
 interface WagmiPermissionsAsyncContextType {
-  passkey: PasskeyStorageType
-  isPasskeyAvailable: boolean
-  passkeyId: string
+  privateKey: string | undefined
+  signer: PrivateKeyAccount | undefined
   grantedPermissions: GrantPermissionsReturnType | undefined
-  wcCosignerData: AddPermissionResponse | undefined
   setGrantedPermissions: React.Dispatch<
     React.SetStateAction<GrantPermissionsReturnType | undefined>
   >
+  wcCosignerData: AddPermissionResponse | undefined
   setWCCosignerData: React.Dispatch<React.SetStateAction<AddPermissionResponse | undefined>>
-  setPasskey: (value: PasskeyStorageType) => void
   clearGrantedPermissions: () => void
 }
 function noop() {
   console.warn('WagmiPermissionsAsyncContext used outside of provider')
 }
 export const WagmiPermissionsAsyncContext = createContext<WagmiPermissionsAsyncContextType>({
-  passkey: undefined,
-  isPasskeyAvailable: false,
-  passkeyId: '',
+  privateKey: undefined,
+  signer: undefined,
   grantedPermissions: undefined,
   wcCosignerData: undefined,
   setGrantedPermissions: noop,
   setWCCosignerData: noop,
-  setPasskey: noop,
   clearGrantedPermissions: noop
 })
 
@@ -47,8 +41,9 @@ interface WagmiPermissionsAsyncProviderProps {
 }
 
 export function WagmiPermissionsAsyncProvider({ children }: WagmiPermissionsAsyncProviderProps) {
-  const [passkey, setPasskey] = useLocalStorageState<PasskeyStorageType>(
-    PASSKEY_LOCALSTORAGE_KEY,
+  const toast = useChakraToast()
+  const [privateKey, setPrivateKey] = useLocalStorageState<string | undefined>(
+    LOCAL_SIGNER_KEY,
     undefined
   )
   const [grantedPermissions, setGrantedPermissions] = useLocalStorageState<
@@ -58,35 +53,40 @@ export function WagmiPermissionsAsyncProvider({ children }: WagmiPermissionsAsyn
     AddPermissionResponse | undefined
   >(WC_COSIGNER_DATA, undefined)
 
-  const [isPasskeyAvailable, setIsPasskeyAvailable] = useState(false)
-  const [passkeyId, setPasskeyId] = useState('')
-  function setNewPasskey(value: PasskeyStorageType) {
-    setItem(PASSKEY_LOCALSTORAGE_KEY, '')
-    setPasskey(value)
-    setIsPasskeyAvailable(false)
-  }
+  const [signer, setSigner] = useState<PrivateKeyAccount | undefined>()
+
   function clearGrantedPermissions() {
     removeItem(GRANTED_PERMISSIONS_KEY)
     setGrantedPermissions(undefined)
   }
 
   useEffect(() => {
-    if (passkey) {
-      setIsPasskeyAvailable(true)
-      setPasskeyId((passkey as P256Credential).id)
+    try {
+      let storedPrivateKey = localStorage.getItem(LOCAL_SIGNER_KEY)
+      if (!storedPrivateKey) {
+        const newPrivateKey = generatePrivateKey()
+        setPrivateKey(newPrivateKey)
+        storedPrivateKey = newPrivateKey
+      }
+      const accountSigner = privateKeyToAccount(storedPrivateKey as `0x${string}`)
+      setSigner(accountSigner)
+    } catch {
+      toast({
+        title: 'Failure',
+        description: 'No private key available',
+        type: 'error'
+      })
     }
-  }, [passkey])
+  }, [])
 
   return (
     <WagmiPermissionsAsyncContext.Provider
       value={{
-        passkey,
-        isPasskeyAvailable,
-        passkeyId,
+        privateKey,
+        signer,
         grantedPermissions,
         wcCosignerData,
         clearGrantedPermissions,
-        setPasskey: setNewPasskey,
         setGrantedPermissions,
         setWCCosignerData
       }}
@@ -95,10 +95,10 @@ export function WagmiPermissionsAsyncProvider({ children }: WagmiPermissionsAsyn
     </WagmiPermissionsAsyncContext.Provider>
   )
 }
-export function useWagmiPermissions() {
+export function useWagmiPermissionsAsync() {
   const context = useContext(WagmiPermissionsAsyncContext)
-  if (!context) {
-    throw new Error('useWagmiPermissions must be used within a WagmiPermissionsAsyncContext')
+  if (context === undefined) {
+    throw new Error('useWagmiPermissionsAsync must be used within a GrantedPermissionsProvider')
   }
 
   return context

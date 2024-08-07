@@ -5,10 +5,10 @@ import { Web3ModalButtons } from '../../components/Web3ModalButtons'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { getWagmiConfig } from '../../utils/WagmiConstants'
-import { WagmiPermissionsSyncProvider } from '../../context/WagmiPermissionsSyncContext'
+import { WagmiPermissionsAsyncProvider } from '../../context/WagmiPermissionsAsyncContext'
 import { walletConnect } from '@wagmi/connectors'
 import { OPTIONAL_METHODS } from '@walletconnect/ethereum-provider'
-import { WagmiPermissionsSyncTest } from '../../components/Wagmi/WagmiPermissionsSyncTest'
+import { WagmiPermissionsAsyncTest } from '../../components/Wagmi/WagmiPermissionsAsyncTest'
 
 const queryClient = new QueryClient()
 const connectors = [
@@ -36,10 +36,10 @@ export default function Wagmi() {
   return (
     <WagmiProvider config={wagmiEmailConfig}>
       <QueryClientProvider client={queryClient}>
-        <WagmiPermissionsSyncProvider>
+        <WagmiPermissionsAsyncProvider>
           <Web3ModalButtons />
-          <WagmiPermissionsSyncTest />
-        </WagmiPermissionsSyncProvider>
+          <WagmiPermissionsAsyncTest />
+        </WagmiPermissionsAsyncProvider>
       </QueryClientProvider>
     </WagmiProvider>
   )

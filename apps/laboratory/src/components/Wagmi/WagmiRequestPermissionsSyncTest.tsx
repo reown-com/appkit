@@ -1,13 +1,12 @@
 import { Button, Stack, Text } from '@chakra-ui/react'
 import { useAccount } from 'wagmi'
-import { walletActionsErc7715, type GrantPermissionsParameters } from 'viem/experimental'
+import { walletActionsErc7715 } from 'viem/experimental'
 import { useCallback, useState } from 'react'
 import { useChakraToast } from '../Toast'
-import { createPublicClient, custom, parseEther } from 'viem'
+import { createPublicClient, custom } from 'viem'
 import { EIP_7715_RPC_METHODS } from '../../utils/EIP5792Utils'
 import { bigIntReplacer } from '../../utils/CommonUtils'
-import { abi as donutContractAbi, address as donutContractAddress } from '../../utils/DonutContract'
-import { useWagmiPermissions } from '../../context/WagmiPermissionsAsyncContext'
+import { useWagmiPermissionsSync } from '../../context/WagmiPermissionsSyncContext'
 import { serializePublicKey, type P256Credential } from 'webauthn-p256'
 import { useWalletConnectCosigner } from '../../hooks/useWalletConnectCosigner'
 import { useWagmiAvailableCapabilities } from '../../hooks/useWagmiActiveCapabilities'
@@ -16,8 +15,9 @@ import {
   encodePublicKeyToDID,
   hexStringToBase64
 } from '../../utils/EncodingUtils'
+import { getSampleSyncPermissions } from '../../utils/ERC7715Utils'
 
-export function WagmiRequestPermissionsTest() {
+export function WagmiRequestPermissionsSyncTest() {
   const [isRequestPermissionLoading, setRequestPermissionLoading] = useState<boolean>(false)
   const { provider, supported } = useWagmiAvailableCapabilities({
     method: EIP_7715_RPC_METHODS.WALLET_GRANT_PERMISSIONS
@@ -29,38 +29,9 @@ export function WagmiRequestPermissionsTest() {
     clearGrantedPermissions,
     setGrantedPermissions,
     setWCCosignerData
-  } = useWagmiPermissions()
+  } = useWagmiPermissionsSync()
   const { addPermission, updatePermissionsContext } = useWalletConnectCosigner()
   const toast = useChakraToast()
-
-  function getSamplePermissions(
-    secp256k1DID: string,
-    passkeyDID: string
-  ): GrantPermissionsParameters {
-    return {
-      expiry: Date.now() + 24 * 60 * 60,
-      permissions: [
-        {
-          type: {
-            custom: 'donut-purchase'
-          },
-          data: {
-            target: donutContractAddress,
-            abi: donutContractAbi,
-            valueLimit: parseEther('10').toString(),
-            functionName: 'function purchase()'
-          },
-          policies: []
-        }
-      ],
-      signer: {
-        type: 'keys',
-        data: {
-          ids: [secp256k1DID, passkeyDID]
-        }
-      }
-    }
-  }
 
   const onRequestPermissions = useCallback(async () => {
     setRequestPermissionLoading(true)
@@ -103,7 +74,7 @@ export function WagmiRequestPermissionsTest() {
         transport: custom(provider)
       }).extend(walletActionsErc7715())
 
-      const samplePermissions = getSamplePermissions(secp256k1DID, passkeyDID)
+      const samplePermissions = getSampleSyncPermissions(secp256k1DID, passkeyDID)
       const approvedPermissions = await publicClient.grantPermissions(samplePermissions)
       if (approvedPermissions) {
         await updatePermissionsContext(caip10Address, projectId, {
