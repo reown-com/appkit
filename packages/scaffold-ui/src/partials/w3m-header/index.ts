@@ -1,4 +1,3 @@
-import type { RouterControllerState } from '@web3modal/core'
 import {
   AccountController,
   ConnectionController,
@@ -12,6 +11,7 @@ import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
+import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
 
 // -- Constants ----------------------------------------- //
 const BETA_SCREENS = ['Swap', 'SwapSelectToken', 'SwapPreview']
@@ -95,11 +95,25 @@ export class W3mHeader extends LitElement {
 
   @state() private showBack = false
 
+  @state() private isSiweEnabled = OptionsController.state.isSiweEnabled
+
+  @state() private prevHistoryLength = 1
+
+  @state() private view = RouterController.state.view
+
+  @state() private viewDirection = ''
+
+  @state() private headerText = headings()[RouterController.state.view]
+
   public constructor() {
     super()
     this.unsubscribe.push(
       RouterController.subscribeKey('view', val => {
-        this.onViewChange(val)
+        setTimeout(() => {
+          this.view = val
+          this.headerText = headings()[val]
+        }, ConstantsUtil.ANIMATION_DURATIONS.HeaderText)
+        this.onViewChange()
         this.onHistoryChange()
       }),
       ConnectionController.subscribeKey('buffering', val => (this.buffering = val))
@@ -114,13 +128,7 @@ export class W3mHeader extends LitElement {
   public override render() {
     return html`
       <wui-flex .padding=${this.getPadding()} justifyContent="space-between" alignItems="center">
-        ${this.dynamicButtonTemplate()} ${this.titleTemplate()}
-        <wui-icon-link
-          ?disabled=${this.buffering}
-          icon="close"
-          @click=${this.onClose.bind(this)}
-          data-testid="w3m-header-close"
-        ></wui-icon-link>
+        ${this.dynamicButtonTemplate()} ${this.titleTemplate()} ${this.closeButtonTemplate()}
       </wui-flex>
     `
   }
@@ -134,21 +142,46 @@ export class W3mHeader extends LitElement {
   }
 
   private async onClose() {
-    if (OptionsController.state.isSiweEnabled) {
+    if (this.isSiweEnabled) {
       const { SIWEController } = await import('@web3modal/siwe')
       if (SIWEController.state.status !== 'success') {
-        await ConnectionController.disconnect()
+        RouterController.popTransactionStack(true)
+      } else {
+        ModalController.close()
       }
+    } else {
+      ModalController.close()
     }
-    ModalController.close()
+  }
+
+  private closeButtonTemplate() {
+    const isSiweSignScreen = RouterController.state.view === 'ConnectingSiwe'
+
+    if (this.isSiweEnabled && isSiweSignScreen) {
+      return html`<div style="width:40px" />`
+    }
+
+    return html`
+      <wui-icon-link
+        ?disabled=${this.buffering}
+        icon="close"
+        @click=${this.onClose.bind(this)}
+        data-testid="w3m-header-close"
+      ></wui-icon-link>
+    `
   }
 
   private titleTemplate() {
-    const isBeta = BETA_SCREENS.includes(RouterController.state.view)
+    const isBeta = BETA_SCREENS.includes(this.view)
 
     return html`
-      <wui-flex class="w3m-header-title" alignItems="center" gap="xs">
-        <wui-text variant="paragraph-700" color="fg-100">${this.heading}</wui-text>
+      <wui-flex
+        view-direction="${this.viewDirection}"
+        class="w3m-header-title"
+        alignItems="center"
+        gap="xs"
+      >
+        <wui-text variant="paragraph-700" color="fg-100">${this.headerText}</wui-text>
         ${isBeta ? html`<wui-tag variant="main">Beta</wui-tag>` : null}
       </wui-flex>
     `
@@ -185,26 +218,18 @@ export class W3mHeader extends LitElement {
       return ['l', '2l', 'l', '2l'] as const
     }
 
-    return ['l', '2l', '0', '2l'] as const
+    return ['0', '2l', '0', '2l'] as const
   }
 
-  private async onViewChange(view: RouterControllerState['view']) {
-    const headingEl = this.shadowRoot?.querySelector('wui-flex.w3m-header-title')
+  private async onViewChange() {
+    const { history } = RouterController.state
 
-    if (headingEl) {
-      const preset = headings()[view]
-      await headingEl.animate([{ opacity: 1 }, { opacity: 0 }], {
-        duration: 200,
-        fill: 'forwards',
-        easing: 'ease'
-      }).finished
-      this.heading = preset
-      headingEl.animate([{ opacity: 0 }, { opacity: 1 }], {
-        duration: 200,
-        fill: 'forwards',
-        easing: 'ease'
-      })
+    let direction = ConstantsUtil.VIEW_DIRECTION.Next
+    if (history.length < this.prevHistoryLength) {
+      direction = ConstantsUtil.VIEW_DIRECTION.Prev
     }
+    this.prevHistoryLength = history.length
+    this.viewDirection = direction
   }
 
   private async onHistoryChange() {

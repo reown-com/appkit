@@ -11,6 +11,7 @@ import { RouterController } from './RouterController.js'
 export interface ModalControllerState {
   loading: boolean
   open: boolean
+  shake: boolean
 }
 
 export interface ModalControllerArguments {
@@ -24,7 +25,8 @@ type StateKey = keyof ModalControllerState
 // -- State --------------------------------------------- //
 const state = proxy<ModalControllerState>({
   loading: false,
-  open: false
+  open: false,
+  shake: false
 })
 
 // -- Controller ---------------------------------------- //
@@ -72,5 +74,15 @@ export const ModalController = {
   setLoading(loading: ModalControllerState['loading']) {
     state.loading = loading
     PublicStateController.set({ loading })
+  },
+
+  shake() {
+    if (state.shake) {
+      return
+    }
+    state.shake = true
+    setTimeout(() => {
+      state.shake = false
+    }, 500)
   }
 }

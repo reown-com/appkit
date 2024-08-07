@@ -44,6 +44,54 @@ function createRootStyles(themeVariables?: ThemeVariables) {
   return {
     core: css`
       @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+      @keyframes w3m-shake {
+        0% {
+          transform: scale(1) rotate(0deg);
+        }
+        20% {
+          transform: scale(1) rotate(-1deg);
+        }
+        40% {
+          transform: scale(1) rotate(1.5deg);
+        }
+        60% {
+          transform: scale(1) rotate(-1.5deg);
+        }
+        80% {
+          transform: scale(1) rotate(1deg);
+        }
+        100% {
+          transform: scale(1) rotate(0deg);
+        }
+      }
+      @keyframes w3m-iframe-fade-out {
+        0% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0;
+        }
+      }
+      @keyframes w3m-iframe-zoom-in {
+        0% {
+          transform: translateY(50px);
+          opacity: 0;
+        }
+        100% {
+          transform: translateY(0px);
+          opacity: 1;
+        }
+      }
+      @keyframes w3m-iframe-zoom-in-mobile {
+        0% {
+          transform: scale(0.95);
+          opacity: 0;
+        }
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
       :root {
         --w3m-modal-width: 360px;
         --w3m-color-mix-strength: ${unsafeCSS(

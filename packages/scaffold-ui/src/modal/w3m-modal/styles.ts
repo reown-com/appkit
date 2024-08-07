@@ -22,33 +22,19 @@ export default css`
     opacity: 1;
   }
 
-  @keyframes zoom-in {
-    0% {
-      transform: scale(0.95) translateY(0);
-    }
-    100% {
-      transform: scale(1) translateY(0);
-    }
-  }
-
-  @keyframes slide-in {
-    0% {
-      transform: scale(1) translateY(50px);
-    }
-    100% {
-      transform: scale(1) translateY(0);
-    }
-  }
-
   wui-card {
     max-width: var(--w3m-modal-width);
     width: 100%;
     position: relative;
-    animation-duration: 0.2s;
-    animation-name: zoom-in;
+    animation: zoom-in 0.2s var(--wui-ease-out-power-2);
     animation-fill-mode: backwards;
-    animation-timing-function: var(--wui-ease-out-power-2);
     outline: none;
+  }
+
+  wui-card[shake='true'] {
+    animation:
+      zoom-in 0.2s var(--wui-ease-out-power-2),
+      w3m-shake 0.5s var(--wui-ease-out-power-2);
   }
 
   wui-flex {
@@ -81,7 +67,61 @@ export default css`
       border-bottom-left-radius: 0;
       border-bottom-right-radius: 0;
       border-bottom: none;
-      animation-name: slide-in;
+      animation: slide-in 0.2s var(--wui-ease-out-power-2);
+    }
+
+    wui-card[shake='true'] {
+      animation:
+        slide-in 0.2s var(--wui-ease-out-power-2),
+        w3m-shake 0.5s var(--wui-ease-out-power-2);
+    }
+  }
+
+  @keyframes zoom-in {
+    0% {
+      transform: scale(0.95) translateY(0);
+    }
+    100% {
+      transform: scale(1) translateY(0);
+    }
+  }
+
+  @keyframes slide-in {
+    0% {
+      transform: scale(1) translateY(50px);
+    }
+    100% {
+      transform: scale(1) translateY(0);
+    }
+  }
+
+  @keyframes w3m-shake {
+    0% {
+      transform: scale(1) rotate(0deg);
+    }
+    20% {
+      transform: scale(1) rotate(-1deg);
+    }
+    40% {
+      transform: scale(1) rotate(1.5deg);
+    }
+    60% {
+      transform: scale(1) rotate(-1.5deg);
+    }
+    80% {
+      transform: scale(1) rotate(1deg);
+    }
+    100% {
+      transform: scale(1) rotate(0deg);
+    }
+  }
+
+  @keyframes w3m-view-height {
+    from {
+      height: var(--prev-height);
+    }
+    to {
+      height: var(--new-height);
     }
   }
 `

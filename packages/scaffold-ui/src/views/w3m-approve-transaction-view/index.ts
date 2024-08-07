@@ -31,13 +31,19 @@ export class W3mApproveTransactionView extends LitElement {
 
   public constructor() {
     super()
-
     this.unsubscribe.push(
       ...[
         ModalController.subscribeKey('open', isOpen => {
           if (!isOpen) {
             this.onHideIframe()
             RouterController.popTransactionStack()
+          }
+        }),
+        ModalController.subscribeKey('shake', val => {
+          if (val) {
+            this.iframe.style.animation = `w3m-shake 500ms var(--wui-ease-out-power-2)`
+          } else {
+            this.iframe.style.animation = 'none'
           }
         })
       ]
@@ -71,38 +77,27 @@ export class W3mApproveTransactionView extends LitElement {
         this.iframe.style.bottom = 'unset'
       }
       this.ready = true
+      this.onShowIframe()
     })
     this.bodyObserver.observe(window.document.body)
   }
 
   // -- Render -------------------------------------------- //
   public override render() {
-    if (this.ready) {
-      this.onShowIframe()
-    }
-
     return html`<div data-ready=${this.ready}></div>`
   }
 
   // -- Private ------------------------------------------- //
   private onShowIframe() {
     const isMobile = window.innerWidth <= 430
-    this.iframe.animate(
-      [
-        { opacity: 0, transform: isMobile ? 'translateY(50px)' : 'scale(.95)' },
-        { opacity: 1, transform: isMobile ? 'translateY(0)' : 'scale(1)' }
-      ],
-      { duration: 200, easing: 'ease', fill: 'forwards' }
-    )
+    this.iframe.style.animation = isMobile
+      ? 'w3m-iframe-zoom-in-mobile 200ms var(--wui-ease-out-power-2)'
+      : 'w3m-iframe-zoom-in 200ms var(--wui-ease-out-power-2)'
   }
 
   private async onHideIframe() {
     this.iframe.style.display = 'none'
-    await this.iframe.animate([{ opacity: 1 }, { opacity: 0 }], {
-      duration: 200,
-      easing: 'ease',
-      fill: 'forwards'
-    }).finished
+    this.iframe.style.animation = 'w3m-iframe-fade-out 200ms var(--wui-ease-out-power-2)'
   }
 
   private async syncTheme() {
