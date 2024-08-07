@@ -44,7 +44,7 @@ export function EthersWriteContractTest() {
   return allowedChains.includes(Number(chainId)) && address ? (
     <Stack direction={['column', 'column', 'row']}>
       <Button
-        data-test-id="sign-transaction-button"
+        data-testid="sign-transaction-button"
         onClick={onSendTransaction}
         isDisabled={loading}
       >

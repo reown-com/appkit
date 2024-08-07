@@ -17,8 +17,8 @@ const smartAccountSiweTest = test.extend<{ library: string }>({
 
 smartAccountSiweTest.describe.configure({ mode: 'serial' })
 
-smartAccountSiweTest.beforeAll(async ({ browser, library }, testInfo) => {
-  smartAccountSiweTest.setTimeout(120000)
+smartAccountSiweTest.beforeAll(async ({ browser, library }) => {
+  smartAccountSiweTest.setTimeout(180000)
   context = await browser.newContext()
   const browserPage = await context.newPage()
 
@@ -36,7 +36,7 @@ smartAccountSiweTest.beforeAll(async ({ browser, library }, testInfo) => {
   // Switch to a SA enabled network
   await page.switchNetworkWithNetworkButton('Polygon')
   await page.closeModal()
-  const tempEmail = email.getEmailAddressToUse(testInfo.parallelIndex)
+  const tempEmail = await email.getEmailAddressToUse()
   await page.emailFlow(tempEmail, context, mailsacApiKey)
   await page.promptSiwe()
   await page.approveSign()
