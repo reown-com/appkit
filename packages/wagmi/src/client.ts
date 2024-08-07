@@ -754,14 +754,6 @@ export class Web3Modal extends Web3ModalScaffold {
             }
             break
           }
-          case W3mFrameConstants.RPC_RESPONSE_TYPE_OBJECT: {
-            if (super.isTransactionStackEmpty()) {
-              super.close()
-            } else {
-              super.popTransactionStack()
-            }
-            break
-          }
           default:
             break
         }
