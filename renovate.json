@@ -20,15 +20,19 @@
         "@walletconnect/ethereum-provider",
         "@walletconnect/universal-provider",
         "@walletconnect/utils",
-        "@wagmi/core",
-        "wagmi",
-        "@wagmi/connectors",
-        "viem",
-        "ethers",
-        "@solana/web3.js",
         "@web3modal/{/,}**"
       ],
+      "groupName": "walletconnect",
       "prPriority": 10
+    },
+    {
+      "enabled": true,
+      "matchPackageNames": ["@wagmi/core", "wagmi", "@wagmi/connectors"],
+      "groupName": "wagmi"
+    },
+    {
+      "enabled": true,
+      "matchPackageNames": ["viem", "ethers", "@solana/web3.js"]
     }
   ]
 }
