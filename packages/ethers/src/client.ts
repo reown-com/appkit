@@ -1109,7 +1109,11 @@ export class Web3Modal extends Web3ModalScaffold {
       })
 
       this.authProvider.onRpcSuccess(() => {
-        super.popTransactionStack()
+        if (super.isTransactionStackEmpty()) {
+          super.close()
+        } else {
+          super.popTransactionStack()
+        }
       })
       this.authProvider.onNotConnected(() => {
         this.setIsConnected(false)
