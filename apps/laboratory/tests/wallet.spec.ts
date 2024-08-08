@@ -39,8 +39,25 @@ sampleWalletTest.afterAll(async () => {
 })
 
 // -- Tests --------------------------------------------------------------------
+sampleWalletTest.only(
+  'it should show testnet and devnet disabled on solana',
+  async ({ library }) => {
+    if (library !== 'solana') {
+      return
+    }
+
+    await modalPage.openModal()
+    await modalPage.openNetworks()
+    await modalValidator.expectNetworksDisabled('Solana Testnet')
+  }
+)
+
 sampleWalletTest('it should switch networks and sign', async ({ library }) => {
-  const chains = library === 'solana' ? ['Solana Testnet', 'Solana'] : ['Polygon', 'Ethereum']
+  if (library === 'solana') {
+    return
+  }
+
+  const chains = ['Polygon', 'Ethereum']
 
   async function processChain(index: number) {
     if (index >= chains.length) {
