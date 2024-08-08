@@ -53,8 +53,9 @@ export class ModalPage {
   async load() {
     if (this.flavor === 'verify-evil') {
       await this.page.route(`${maliciousUrl}/**/*`, async (route, request) => {
+        // eslint-disable-next-line init-declarations
         let url: string
-        if (request.url() == `${maliciousUrl}/`) {
+        if (request.url() === `${maliciousUrl}/`) {
           url = `${this.baseURL}/library/verify-evil/`
         } else {
           url = request.url().replace(maliciousUrl, this.baseURL)
@@ -64,7 +65,7 @@ export class ModalPage {
           headers: request.headers(),
           body: request.postData()
         })
-        const headers: { [key: string]: string } = {}
+        const headers: Record<string, string> = {}
         response.headers.forEach((value, key) => {
           headers[key] = value
         })
