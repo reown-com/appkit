@@ -15,7 +15,7 @@ import { SolConstantsUtil, SolHelpersUtil, SolStoreUtil } from './utils/scaffold
 import { WalletConnectConnector } from './connectors/walletConnectConnector.js'
 
 import type { BaseWalletAdapter, SendTransactionOptions, StandardWalletAdapter } from '@solana/wallet-adapter-base'
-import type { PublicKey, Commitment, ConnectionConfig, VersionedTransaction, Transaction } from '@solana/web3.js'
+import { PublicKey, type Commitment, type ConnectionConfig, type VersionedTransaction, type Transaction } from '@solana/web3.js'
 import type UniversalProvider from '@walletconnect/universal-provider'
 import type {
   CaipNetworkId,
@@ -573,20 +573,27 @@ export class Web3Modal extends Web3ModalScaffold {
     const caipChainId = `solana:${chainId}`
 
     if (address && chainId) {
-      const sendTransaction = async (transaction: Transaction | VersionedTransaction, connection: Connection, options?: SendTransactionOptions) => {
-        console.log(`calling send transaction with args:`, transaction);
-        const result = await provider.sendTransaction(transaction, connection, options)
-        this.syncBalance(this.getAddress() ?? '')
+      const originalSendTransaction = provider.sendTransaction;
 
-        return result
-      }
+      const sendTransaction = async (transaction: Transaction | VersionedTransaction, connection: Connection, options?: SendTransactionOptions) => {
+        // Use the original sendTransaction method in the implementation
+        const signature = await originalSendTransaction.call(provider, transaction, connection, options);
+
+        // Wait for the transaction to be confirmed
+        await connection.confirmTransaction(signature, 'recent');
+
+        this.syncBalance(this.getAddress() ?? '');
+
+        return signature;
+      };
+      provider.sendTransaction = sendTransaction
 
       SolStoreUtil.setIsConnected(true)
       SolStoreUtil.setCaipChainId(caipChainId)
       SolStoreUtil.setProviderType(id)
       SolStoreUtil.setProvider(provider)
       this.setAddress(address)
-      this.watchInjected({ ...provider, sendTransaction })
+      this.watchInjected(provider)
       this.hasSyncedConnectedAccount = true
     }
   }
