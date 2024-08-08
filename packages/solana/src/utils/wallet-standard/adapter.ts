@@ -44,9 +44,7 @@ import {
 } from '@wallet-standard/features'
 import { arraysEqual } from '@wallet-standard/wallet'
 import bs58 from 'bs58'
-import {
-  AccountController
-} from '@web3modal/core'
+import { AccountController } from '@web3modal/core'
 
 /** TODO: docs */
 export interface StandardWalletAdapterConfig {
@@ -322,7 +320,7 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
             sendOptions
           )) as T
           if (signers?.length) {
-            ; (_transaction as Transaction).partialSign(...signers)
+            ;(_transaction as Transaction).partialSign(...signers)
           }
           serializedTransaction = new Uint8Array(
             (_transaction as Transaction).serialize({
@@ -414,11 +412,11 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
           transaction: isVersionedTransaction(transaction)
             ? transaction.serialize()
             : new Uint8Array(
-              transaction.serialize({
-                requireAllSignatures: false,
-                verifySignatures: false
-              })
-            )
+                transaction.serialize({
+                  requireAllSignatures: false,
+                  verifySignatures: false
+                })
+              )
         })
 
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -469,11 +467,11 @@ export class StandardWalletAdapter extends BaseWalletAdapter implements Standard
             transaction: isVersionedTransaction(transaction)
               ? transaction.serialize()
               : new Uint8Array(
-                transaction.serialize({
-                  requireAllSignatures: false,
-                  verifySignatures: false
-                })
-              )
+                  transaction.serialize({
+                    requireAllSignatures: false,
+                    verifySignatures: false
+                  })
+                )
           }))
         )
 

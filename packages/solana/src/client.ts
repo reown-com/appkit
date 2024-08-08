@@ -14,8 +14,18 @@ import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 import { SolConstantsUtil, SolHelpersUtil, SolStoreUtil } from './utils/scaffold/index.js'
 import { WalletConnectConnector } from './connectors/walletConnectConnector.js'
 
-import type { BaseWalletAdapter, SendTransactionOptions, StandardWalletAdapter } from '@solana/wallet-adapter-base'
-import { PublicKey, type Commitment, type ConnectionConfig, type VersionedTransaction, type Transaction } from '@solana/web3.js'
+import type {
+  BaseWalletAdapter,
+  SendTransactionOptions,
+  StandardWalletAdapter
+} from '@solana/wallet-adapter-base'
+import {
+  PublicKey,
+  type Commitment,
+  type ConnectionConfig,
+  type VersionedTransaction,
+  type Transaction
+} from '@solana/web3.js'
 import type UniversalProvider from '@walletconnect/universal-provider'
 import type {
   CaipNetworkId,
@@ -391,7 +401,6 @@ export class Web3Modal extends Web3ModalScaffold {
       .filter(adapter => FILTER_OUT_ADAPTERS.some(filter => filter === adapter.name))
       .filter(adapter => !uniqueIds.has(adapter.name) && uniqueIds.add(adapter.name))
 
-
     standardAdapters?.forEach(adapter => {
       w3mConnectors.push({
         id: adapter.name,
@@ -573,19 +582,28 @@ export class Web3Modal extends Web3ModalScaffold {
     const caipChainId = `solana:${chainId}`
 
     if (address && chainId) {
-      const originalSendTransaction = provider.sendTransaction;
+      const originalSendTransaction = provider.sendTransaction
 
-      const sendTransaction = async (transaction: Transaction | VersionedTransaction, connection: Connection, options?: SendTransactionOptions) => {
+      const sendTransaction = async (
+        transaction: Transaction | VersionedTransaction,
+        connection: Connection,
+        options?: SendTransactionOptions
+      ) => {
         // Use the original sendTransaction method in the implementation
-        const signature = await originalSendTransaction.call(provider, transaction, connection, options);
+        const signature = await originalSendTransaction.call(
+          provider,
+          transaction,
+          connection,
+          options
+        )
 
         // Wait for the transaction to be confirmed
-        await connection.confirmTransaction(signature, 'recent');
+        await connection.confirmTransaction(signature, 'recent')
 
-        this.syncBalance(this.getAddress() ?? '');
+        this.syncBalance(this.getAddress() ?? '')
 
-        return signature;
-      };
+        return signature
+      }
       provider.sendTransaction = sendTransaction
 
       SolStoreUtil.setIsConnected(true)
