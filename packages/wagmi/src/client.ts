@@ -203,13 +203,13 @@ export class Web3Modal extends Web3ModalScaffold {
               await SIWEController.signOut().catch(console.error)
               throw error
             }
-            /*
-             * Unassign the connector from the wagmiConfig and allow connect() to reassign it in the next step
-             * this avoids case where wagmi throws because the connector is already connected
-             * what we need connect() to do is to only setup internal event listeners
-             */
-            this.wagmiConfig.state.current = ''
           }
+          /*
+           * Unassign the connector from the wagmiConfig and allow connect() to reassign it in the next step
+           * this avoids case where wagmi throws because the connector is already connected
+           * what we need connect() to do is to only setup internal event listeners
+           */
+          this.wagmiConfig.state.current = ''
         }
         await connect(this.wagmiConfig, { connector, chainId })
       },
@@ -702,7 +702,7 @@ export class Web3Modal extends Web3ModalScaffold {
         this.setIsConnected(false)
       }
 
-      provider.onRpcRequest(request => {
+      provider.onRpcRequest((request: W3mFrameTypes.RPCRequest) => {
         if (W3mFrameHelpers.checkIfRequestExists(request)) {
           if (!W3mFrameHelpers.checkIfRequestIsAllowed(request)) {
             if (super.isOpen()) {
@@ -720,32 +720,33 @@ export class Web3Modal extends Web3ModalScaffold {
           }
         } else {
           super.open()
-          const method = W3mFrameHelpers.getRequestMethod(request)
           // eslint-disable-next-line no-console
-          console.error(W3mFrameRpcConstants.RPC_METHOD_NOT_ALLOWED_MESSAGE, { method })
+          console.error(W3mFrameRpcConstants.RPC_METHOD_NOT_ALLOWED_MESSAGE, {
+            method: request.method
+          })
           setTimeout(() => {
             this.showErrorMessage(W3mFrameRpcConstants.RPC_METHOD_NOT_ALLOWED_UI_MESSAGE)
           }, 300)
-          provider.rejectRpcRequest()
+          provider.rejectRpcRequests()
         }
       })
 
-      provider.onRpcResponse(response => {
+      provider.onRpcError(() => {
+        const isModalOpen = super.isOpen()
+
+        if (isModalOpen) {
+          if (super.isTransactionStackEmpty()) {
+            super.close()
+          } else {
+            super.popTransactionStack(true)
+          }
+        }
+      })
+
+      provider.onRpcSuccess(response => {
         const responseType = W3mFrameHelpers.getResponseType(response)
 
         switch (responseType) {
-          case W3mFrameConstants.RPC_RESPONSE_TYPE_ERROR: {
-            const isModalOpen = super.isOpen()
-
-            if (isModalOpen) {
-              if (super.isTransactionStackEmpty()) {
-                super.close()
-              } else {
-                super.popTransactionStack(true)
-              }
-            }
-            break
-          }
           case W3mFrameConstants.RPC_RESPONSE_TYPE_TX: {
             if (super.isTransactionStackEmpty()) {
               super.close()
@@ -810,7 +811,7 @@ export class Web3Modal extends Web3ModalScaffold {
     const provider = (await connector.getProvider()) as W3mFrameProvider
     this.subscribeState(val => {
       if (!val.open) {
-        provider.rejectRpcRequest()
+        provider.rejectRpcRequests()
       }
     })
   }

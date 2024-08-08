@@ -53,7 +53,14 @@ export type ConnectorType =
   | 'AUTH'
   | 'MULTI_CHAIN'
 
-export type SocialProvider = 'google' | 'github' | 'apple' | 'facebook' | 'x' | 'discord'
+export type SocialProvider =
+  | 'google'
+  | 'github'
+  | 'apple'
+  | 'facebook'
+  | 'x'
+  | 'discord'
+  | 'farcaster'
 
 export type Connector = {
   id: string

@@ -211,7 +211,7 @@ export class Web3Modal extends Web3ModalScaffold {
         }
 
         const params = await siweConfig?.getMessageParams?.()
-        // Must perform these checks to satify optional types
+        // Must perform these checks to satisfy optional types
         if (siweConfig?.options?.enabled && params && Object.keys(params || {}).length > 0) {
           const { SIWEController, getDidChainId, getDidAddress } = await import('@web3modal/siwe')
 
@@ -1092,30 +1092,31 @@ export class Web3Modal extends Web3ModalScaffold {
           }
         } else {
           super.open()
-          const method = W3mFrameHelpers.getRequestMethod(request)
           // eslint-disable-next-line no-console
-          console.error(W3mFrameRpcConstants.RPC_METHOD_NOT_ALLOWED_MESSAGE, { method })
+          console.error(W3mFrameRpcConstants.RPC_METHOD_NOT_ALLOWED_MESSAGE, {
+            method: request.method
+          })
           setTimeout(() => {
             this.showErrorMessage(W3mFrameRpcConstants.RPC_METHOD_NOT_ALLOWED_UI_MESSAGE)
           }, 300)
         }
       })
-      this.authProvider.onRpcResponse(response => {
-        const responseType = W3mFrameHelpers.getResponseType(response)
 
-        switch (responseType) {
-          case W3mFrameConstants.RPC_RESPONSE_TYPE_ERROR: {
-            const isModalOpen = super.isOpen()
+      this.authProvider.onRpcError(() => {
+        const isModalOpen = super.isOpen()
 
-            if (isModalOpen) {
-              if (super.isTransactionStackEmpty()) {
-                super.close()
-              } else {
-                super.popTransactionStack(true)
-              }
-            }
-            break
+        if (isModalOpen) {
+          if (super.isTransactionStackEmpty()) {
+            super.close()
+          } else {
+            super.popTransactionStack(true)
           }
+        }
+      })
+
+      this.authProvider.onRpcSuccess(response => {
+        const responseType = W3mFrameHelpers.getResponseType(response)
+        switch (responseType) {
           case W3mFrameConstants.RPC_RESPONSE_TYPE_TX: {
             if (super.isTransactionStackEmpty()) {
               super.close()
@@ -1158,7 +1159,7 @@ export class Web3Modal extends Web3ModalScaffold {
     if (this.authProvider) {
       this.subscribeState(val => {
         if (!val.open) {
-          this.authProvider?.rejectRpcRequest()
+          this.authProvider?.rejectRpcRequests()
         }
       })
     }

@@ -5,108 +5,14 @@
       "outputs": ["dist/**"],
       "cache": false
     },
-    "build:polyfills": {
-      "outputs": ["dist/**"],
-      "cache": false
-    },
-    "build:common": {
-      "outputs": ["dist/**"],
-      "cache": false
-    },
-    "build:wallet": {
-      "outputs": ["dist/**"],
-      "cache": false
-    },
-    "build:ui": {
-      "outputs": ["dist/**"],
-      "dependsOn": ["^build:common"],
-      "cache": false
-    },
-    "build:core": {
-      "outputs": ["dist/**"],
-      "dependsOn": ["^build:common", "^build:wallet"],
-      "cache": false
-    },
-    "build:scaffold-utils": {
-      "outputs": ["dist/**"],
-      "dependsOn": ["^build:polyfills", "^build:core"],
-      "cache": false
-    },
-    "build:scaffold-react": {
-      "outputs": ["dist/**"],
-      "dependsOn": ["^build:scaffold-utils", "^build:scaffold"],
-      "cache": false
-    },
-    "build:scaffold-vue": {
-      "outputs": ["dist/**"],
-      "dependsOn": ["^build:scaffold-utils", "^build:scaffold"],
-      "cache": false
-    },
-    "build:siwe": {
-      "outputs": ["dist/**"],
-      "dependsOn": ["^build:core", "^build:scaffold-utils"],
-      "cache": false
-    },
-    "build:scaffold-ui": {
-      "outputs": ["dist/**"],
-      "dependsOn": [
-        "^build:common",
-        "^build:core",
-        "^build:ui",
-        "^build:wallet",
-        "^build:siwe",
-        "^build:scaffold-utils"
-      ],
-      "cache": false
-    },
-    "build:scaffold": {
-      "outputs": ["dist/**"],
-      "dependsOn": ["^build:scaffold-ui"],
-      "cache": false
-    },
-    "build:client": {
-      "outputs": ["dist/**"],
-      "dependsOn": [
-        "^build:polyfills",
-        "^build:scaffold",
-        "^build:scaffold-react",
-        "^build:scaffold-vue"
-      ],
-      "cache": false
-    },
     "watch": {
-      "dependsOn": ["^build:client"],
       "cache": false,
       "persistent": true
-    },
-    "build:cdn": {
-      "dependsOn": ["^build:client"],
-      "cache": false
     },
     "build": {
       "dependsOn": ["^build"],
       "cache": false,
       "outputs": ["dist/**"]
-    },
-    "build:gallery": {
-      "outputs": ["out/**"],
-      "dependsOn": ["^build:client", "^build:ui"],
-      "cache": false
-    },
-    "build:laboratory": {
-      "outputs": ["out/**", ".next/**", "!.next/cache/**"],
-      "dependsOn": ["^build:client"],
-      "cache": false
-    },
-    "build:examples": {
-      "outputs": ["dist/**"],
-      "dependsOn": ["^build:client"],
-      "cache": false
-    },
-    "build:demo": {
-      "outputs": ["out/**", ".next/**", "!.next/cache/**"],
-      "dependsOn": ["^build:client"],
-      "cache": false
     },
     "typecheck": {
       "cache": false
@@ -117,19 +23,7 @@
     "lint": {
       "cache": false
     },
-    "prettier": {
-      "cache": false
-    },
-    "dev:laboratory": {
-      "cache": false
-    },
-    "dev:gallery": {
-      "cache": false
-    },
-    "dev:demo": {
-      "cache": false
-    },
-    "dev:example": {
+    "dev": {
       "cache": false
     }
   }

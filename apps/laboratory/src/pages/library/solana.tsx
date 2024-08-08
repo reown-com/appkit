@@ -5,8 +5,7 @@ import { solana, solanaDevnet, solanaTestnet } from '../../utils/ChainsUtil'
 import { Web3ModalButtons } from '../../components/Web3ModalButtons'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { SolanaTests } from '../../components/Solana/SolanaTests'
-import { BackpackWalletAdapter } from '@solana/wallet-adapter-backpack'
-import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
+import { SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 
 const chains = [solana, solanaTestnet, solanaDevnet]
 
@@ -25,7 +24,8 @@ const modal = createWeb3Modal({
   termsConditionsUrl: 'https://walletconnect.com/terms',
   privacyPolicyUrl: 'https://walletconnect.com/privacy',
   customWallets: ConstantsUtil.CustomWallets,
-  wallets: [new BackpackWalletAdapter(), new HuobiWalletAdapter(), new SolflareWalletAdapter()]
+  enableSwaps: false,
+  wallets: [new SolflareWalletAdapter()]
 })
 
 ThemeStore.setModal(modal)

@@ -50,7 +50,7 @@ export function getWagmiConfig(type: 'default' | 'email') {
   const emailConfig = {
     ...config,
     auth: {
-      socials: ['google', 'x', 'discord', 'apple', 'github', 'facebook']
+      socials: ['google', 'x', 'discord', 'farcaster', 'github', 'apple', 'facebook']
     }
   }
 
