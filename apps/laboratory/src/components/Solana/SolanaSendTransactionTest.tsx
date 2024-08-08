@@ -53,6 +53,7 @@ export function SolanaSendTransactionTest() {
 
       transaction.recentBlockhash = blockhash
 
+      console.log('walletProvider', walletProvider)
       const signature = await walletProvider.sendTransaction(transaction, connection as Connection)
       toast({
         title: 'Success',

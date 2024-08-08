@@ -14,8 +14,8 @@ import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 import { SolConstantsUtil, SolHelpersUtil, SolStoreUtil } from './utils/scaffold/index.js'
 import { WalletConnectConnector } from './connectors/walletConnectConnector.js'
 
-import type { BaseWalletAdapter, StandardWalletAdapter } from '@solana/wallet-adapter-base'
-import type { PublicKey, Commitment, ConnectionConfig } from '@solana/web3.js'
+import type { BaseWalletAdapter, SendTransactionOptions, StandardWalletAdapter } from '@solana/wallet-adapter-base'
+import type { PublicKey, Commitment, ConnectionConfig, VersionedTransaction, Transaction } from '@solana/web3.js'
 import type UniversalProvider from '@walletconnect/universal-provider'
 import type {
   CaipNetworkId,
@@ -391,6 +391,7 @@ export class Web3Modal extends Web3ModalScaffold {
       .filter(adapter => FILTER_OUT_ADAPTERS.some(filter => filter === adapter.name))
       .filter(adapter => !uniqueIds.has(adapter.name) && uniqueIds.add(adapter.name))
 
+
     standardAdapters?.forEach(adapter => {
       w3mConnectors.push({
         id: adapter.name,
@@ -572,12 +573,20 @@ export class Web3Modal extends Web3ModalScaffold {
     const caipChainId = `solana:${chainId}`
 
     if (address && chainId) {
+      const sendTransaction = async (transaction: Transaction | VersionedTransaction, connection: Connection, options?: SendTransactionOptions) => {
+        console.log(`calling send transaction with args:`, transaction);
+        const result = await provider.sendTransaction(transaction, connection, options)
+        this.syncBalance(this.getAddress() ?? '')
+
+        return result
+      }
+
       SolStoreUtil.setIsConnected(true)
       SolStoreUtil.setCaipChainId(caipChainId)
       SolStoreUtil.setProviderType(id)
       SolStoreUtil.setProvider(provider)
       this.setAddress(address)
-      this.watchInjected(provider)
+      this.watchInjected({ ...provider, sendTransaction })
       this.hasSyncedConnectedAccount = true
     }
   }
