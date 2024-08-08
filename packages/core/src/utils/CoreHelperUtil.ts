@@ -168,7 +168,6 @@ export const CoreHelperUtil = {
         formattedBalance = number.toString().match(/^-?\d+(?:\.\d{0,3})?/u)?.[0]
       }
     }
-
     return {
       value: formattedBalance ?? '0',
       rest: formattedBalance === '0' ? '000' : '',

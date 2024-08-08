@@ -1,1 +1,1 @@
-pnpm test:static
+pnpm run typecheck; pnpm run lint;
