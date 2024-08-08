@@ -227,9 +227,9 @@ export class ModalPage {
     await signButton.click()
   }
 
-  async signatureRequestFrameShouldVisible() {
+  async signatureRequestFrameShouldVisible(headerText: string) {
     await expect(
-      this.page.frameLocator('#w3m-iframe').getByText('requests a signature'),
+      this.page.frameLocator('#w3m-iframe').getByText(headerText),
       'Web3Modal iframe should be visible'
     ).toBeVisible({
       timeout: 10000
@@ -242,13 +242,18 @@ export class ModalPage {
   }
 
   async approveSign() {
-    await this.signatureRequestFrameShouldVisible()
+    await this.signatureRequestFrameShouldVisible('requests a signature')
     await this.clickSignatureRequestButton('Sign')
   }
 
   async rejectSign() {
-    await this.signatureRequestFrameShouldVisible()
+    await this.signatureRequestFrameShouldVisible('requests a signature')
     await this.clickSignatureRequestButton('Cancel')
+  }
+
+  async approveMultipleTransactions() {
+    await this.signatureRequestFrameShouldVisible('requests multiple transactions')
+    await this.clickSignatureRequestButton('Approve')
   }
 
   async clickWalletUpgradeCard(context: BrowserContext) {
@@ -301,9 +306,9 @@ export class ModalPage {
     await this.page.waitForTimeout(300)
   }
 
-  async updateEmail(mailsacApiKey: string, index: number) {
+  async updateEmail(mailsacApiKey: string) {
     const email = new Email(mailsacApiKey)
-    const newEmailAddress = email.getEmailAddressToUse(index)
+    const newEmailAddress = await email.getEmailAddressToUse()
 
     await this.page.getByTestId('account-button').click()
     await this.page.getByTestId('w3m-account-email-update').click()
@@ -360,5 +365,19 @@ export class ModalPage {
     await expect(walletFeatureButton).toBeVisible()
 
     return walletFeatureButton
+  }
+
+  async sendCalls() {
+    const sendCallsButton = this.page.getByTestId('send-calls-button')
+    await sendCallsButton.isVisible()
+    await sendCallsButton.click()
+  }
+  async getCallsStatus(batchCallId: string) {
+    const sendCallsInput = this.page.getByTestId('get-calls-id-input')
+    const sendCallsButton = this.page.getByTestId('get-calls-status-button')
+    await sendCallsButton.scrollIntoViewIfNeeded()
+
+    await sendCallsInput.fill(batchCallId)
+    await sendCallsButton.click()
   }
 }

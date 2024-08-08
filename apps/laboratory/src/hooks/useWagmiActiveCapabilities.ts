@@ -7,18 +7,21 @@ import {
   getFilteredCapabilitySupportedChainInfo,
   getProviderCachedCapabilities
 } from '../utils/EIP5792Utils'
+import { W3mFrameProvider } from '@web3modal/wallet'
 
 type UseWagmiAvailableCapabilitiesParams = {
   capability?: string
   method: string
 }
 
+type Provider = Awaited<ReturnType<(typeof EthereumProvider)['init']>> | W3mFrameProvider
+
 export function useWagmiAvailableCapabilities({
   capability,
   method
 }: UseWagmiAvailableCapabilitiesParams) {
-  const [ethereumProvider, setEthereumProvider] =
-    useState<Awaited<ReturnType<(typeof EthereumProvider)['init']>>>()
+  const [provider, setProvider] = useState<Provider>()
+  const [supported, setSupported] = useState<boolean>(false)
 
   const { chain, address, connector } = useAccount()
 
@@ -50,25 +53,37 @@ export function useWagmiAvailableCapabilities({
       chainId: connectedChain.id
     })
     if (connectedProvider instanceof EthereumProvider) {
-      setEthereumProvider(connectedProvider)
-      let walletCapabilities = undefined
-      walletCapabilities = getProviderCachedCapabilities(connectedAccount, connectedProvider)
+      setProvider(connectedProvider)
+      const walletCapabilities = getProviderCachedCapabilities(connectedAccount, connectedProvider)
+      setAvailableCapabilities(walletCapabilities)
+    } else if (connectedProvider instanceof W3mFrameProvider) {
+      const walletCapabilities = await connectedProvider.getCapabilities()
+      setProvider(connectedProvider)
       setAvailableCapabilities(walletCapabilities)
     }
   }
 
   function isMethodSupported(): boolean {
-    return Boolean(
-      ethereumProvider?.signer?.session?.namespaces?.['eip155']?.methods?.includes(method)
-    )
+    if (provider instanceof W3mFrameProvider) {
+      return ['wallet_sendCalls', 'wallet_getCapabilities', 'wallet_getCallsStatus'].includes(
+        method
+      )
+    }
+
+    return Boolean(provider?.signer?.session?.namespaces?.['eip155']?.methods?.includes(method))
   }
 
+  useEffect(() => {
+    const isGetCapabilitiesSupported = isMethodSupported()
+    setSupported(isGetCapabilitiesSupported)
+  }, [provider])
+
   return {
-    ethereumProvider,
+    provider,
     currentChainsInfo,
     availableCapabilities,
     supportedChains,
     supportedChainsName,
-    isMethodSupported
+    supported
   }
 }
