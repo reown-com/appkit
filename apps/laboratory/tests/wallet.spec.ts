@@ -39,18 +39,16 @@ sampleWalletTest.afterAll(async () => {
 })
 
 // -- Tests --------------------------------------------------------------------
-sampleWalletTest.only(
-  'it should show testnet and devnet disabled on solana',
-  async ({ library }) => {
-    if (library !== 'solana') {
-      return
-    }
-
-    await modalPage.openModal()
-    await modalPage.openNetworks()
-    await modalValidator.expectNetworksDisabled('Solana Testnet')
+sampleWalletTest('it should show testnet and devnet disabled on solana', async ({ library }) => {
+  if (library !== 'solana') {
+    return
   }
-)
+
+  await modalPage.openModal()
+  await modalPage.openNetworks()
+  await modalValidator.expectNetworksDisabled('Solana Testnet')
+  await modalPage.closeModal()
+})
 
 sampleWalletTest('it should switch networks and sign', async ({ library }) => {
   if (library === 'solana') {
