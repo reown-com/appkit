@@ -743,7 +743,11 @@ export class Web3Modal extends Web3ModalScaffold {
       })
 
       provider.onRpcSuccess(() => {
-        super.popTransactionStack()
+        if (super.isTransactionStackEmpty()) {
+          super.close()
+        } else {
+          super.popTransactionStack()
+        }
       })
 
       provider.onNotConnected(() => {
