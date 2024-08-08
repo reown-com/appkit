@@ -65,9 +65,8 @@ export function SolanaWriteContractTest() {
       const tx = new Transaction().add(allocIx).add(incrementIx)
 
       tx.feePayer = walletProvider.publicKey
-      tx.recentBlockhash = (await connection.getLatestBlockhash('confirmed')).blockhash
 
-      await walletProvider.signAndSendTransaction(tx, [counterKeypair])
+      await walletProvider.signAndSendTransaction(tx)
 
       const counterAccountInfo = await connection.getAccountInfo(counter, {
         commitment: 'confirmed'

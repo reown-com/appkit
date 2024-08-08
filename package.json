@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build:clean": "turbo run build:clean --filter={./packages/*}",
-    "build": "turbo run build --filter={./packages/*} --concurrency=30",
+    "build": "turbo run build --filter={./packages/*} --concurrency=31",
     "watch": "turbo run watch --filter={./packages/*} --concurrency=50 --continue",
     "gallery": "turbo run dev --filter={./apps/gallery}",
     "laboratory": "pnpm --filter @apps/laboratory dev",
