@@ -142,18 +142,19 @@ export const CoreHelperUtil = {
   },
 
   formatBalance(balance: string | undefined, symbol: string | undefined) {
-    let formattedBalance = undefined
+    let formattedBalance = '0.000'
 
-    if (balance === '0') {
-      formattedBalance = '0.000'
-    } else if (typeof balance === 'string') {
+    if (typeof balance === 'string') {
       const number = Number(balance)
       if (number) {
-        formattedBalance = number.toString().match(/^-?\d+(?:\.\d{0,3})?/u)?.[0]
+        const formattedValue = Math.floor(number * 1000) / 1000
+        if (formattedValue) {
+          formattedBalance = formattedValue.toString()
+        }
       }
     }
 
-    return formattedBalance ? `${formattedBalance} ${symbol ?? ''}` : `0.000 ${symbol ?? ''}`
+    return `${formattedBalance}${symbol ? ` ${symbol}` : ''}`
   },
 
   formatBalance2(balance: string | undefined, symbol: string | undefined) {
