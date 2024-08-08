@@ -7,7 +7,8 @@ import {
   CardBody,
   Box,
   Stack,
-  Text
+  Text,
+  Tooltip
 } from '@chakra-ui/react'
 
 import { SolanaSignTransactionTest } from './SolanaSignTransactionTest'
@@ -49,13 +50,23 @@ export function SolanaTests() {
           </Box>
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">
-              Sign and Send Transaction (dApp)
+              Sign and Send Transaction (Dapp)
+              <Tooltip label="The transaction will be signed by the Wallet, returned to the Dapp and the Dapp will send the transaction into the network">
+                <Text as="span" fontSize="sm" ml="2">
+                  ℹ️
+                </Text>
+              </Tooltip>
             </Heading>
             <SolanaSendTransactionTest />
           </Box>
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">
               Sign and Send Transaction (Wallet)
+              <Tooltip label="The transaction will be sent for the Wallet to be signed and sent into the network">
+                <Text as="span" fontSize="sm" ml="2">
+                  ℹ️
+                </Text>
+              </Tooltip>
             </Heading>
             <SolanaSignAndSendTransaction />
           </Box>
