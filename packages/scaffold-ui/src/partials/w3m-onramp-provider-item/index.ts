@@ -1,8 +1,7 @@
 import { html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import { customElement } from '@web3modal/ui'
-import type { ColorType } from '@web3modal/ui/src/utils/TypeUtil.js'
+import { customElement, type ColorType } from '@web3modal/ui'
 import { AssetUtil, NetworkController, type OnRampProvider } from '@web3modal/core'
 import styles from './styles.js'
 

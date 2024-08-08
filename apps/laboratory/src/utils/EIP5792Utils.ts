@@ -1,7 +1,8 @@
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
 import { getChain } from './ChainsUtil'
 import { parseJSON } from './CommonUtils'
-import type { WalletCapabilities } from 'viem'
+import { fromHex, type WalletCapabilities } from 'viem'
+import { W3mFrameProvider } from '@web3modal/wallet'
 
 export const EIP_5792_RPC_METHODS = {
   WALLET_GET_CALLS_STATUS: 'wallet_getCallsStatus',
@@ -19,7 +20,7 @@ export const WALLET_CAPABILITIES = {
 
 export function getFilteredCapabilitySupportedChainInfo(
   capability: string,
-  capabilities: Record<number, WalletCapabilities>
+  capabilities: Record<number | string, WalletCapabilities>
 ): {
   chainId: number
   chainName: string
@@ -27,12 +28,12 @@ export function getFilteredCapabilitySupportedChainInfo(
   const chainIds = Object.keys(capabilities)
   const chainInfo = chainIds
     .filter(chainId => {
-      const capabilitiesPerChain = capabilities[parseInt(chainId, 10)]
+      const capabilitiesPerChain = capabilities[chainId]
 
       return capabilitiesPerChain?.[capability]?.supported === true
     })
     .map(cId => {
-      const chainId = parseInt(cId, 10)
+      const chainId = fromHex(cId as `0x${string}`, 'number')
       const capabilityChain = getChain(chainId)
 
       return {
@@ -71,14 +72,30 @@ export function getProviderCachedCapabilities(
   return convertCapabilitiesToRecord(accountCapabilities)
 }
 
-export function getCapabilitySupportedChainInfo(
+export async function getCapabilitySupportedChainInfo(
   capability: string,
-  provider: Awaited<ReturnType<(typeof EthereumProvider)['init']>>,
+  provider: Awaited<ReturnType<(typeof EthereumProvider)['init']>> | W3mFrameProvider,
   address: string
-): {
-  chainId: number
-  chainName: string
-}[] {
+): Promise<
+  {
+    chainId: number
+    chainName: string
+  }[]
+> {
+  if (provider instanceof W3mFrameProvider) {
+    const rawCapabilities = await provider.getCapabilities()
+    const mappedCapabilities = Object.entries(rawCapabilities).map(([chainId]) => {
+      const chain = getChain(fromHex(chainId as `0x${string}`, 'number'))
+
+      return {
+        chainId: fromHex(chainId as `0x${string}`, 'number'),
+        chainName: chain?.name ?? `Unknown Chain (${chainId})`
+      }
+    })
+
+    return mappedCapabilities
+  }
+
   const perChainCapabilities = getProviderCachedCapabilities(address, provider)
   if (!perChainCapabilities) {
     return []

@@ -44,6 +44,7 @@ export class WuiInputText extends LitElement {
 
     return html`${this.templateIcon()}
       <input
+        data-testid="wui-input-text"
         ${ref(this.inputElementRef)}
         class=${classMap(classes)}
         type=${this.type}

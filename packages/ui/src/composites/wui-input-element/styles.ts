@@ -21,13 +21,13 @@ export default css`
     border: 1px solid var(--wui-color-accent-100);
   }
 
-  button:active:enabled {
-    background-color: var(--wui-color-fg-225);
-  }
-
   @media (hover: hover) and (pointer: fine) {
     button:hover:enabled {
       background-color: var(--wui-color-fg-250);
+    }
+
+    button:active:enabled {
+      background-color: var(--wui-color-fg-225);
     }
   }
 `

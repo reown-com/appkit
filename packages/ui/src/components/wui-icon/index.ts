@@ -40,6 +40,7 @@ import { etherscanSvg } from '../../assets/svg/etherscan.js'
 import { extensionSvg } from '../../assets/svg/extension.js'
 import { externalLinkSvg } from '../../assets/svg/external-link.js'
 import { facebookSvg } from '../../assets/svg/facebook.js'
+import { farcasterSvg } from '../../assets/svg/farcaster.js'
 import { filtersSvg } from '../../assets/svg/filters.js'
 import { githubSvg } from '../../assets/svg/github.js'
 import { googleSvg } from '../../assets/svg/google.js'
@@ -112,6 +113,7 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   extension: extensionSvg,
   externalLink: externalLinkSvg,
   facebook: facebookSvg,
+  farcaster: farcasterSvg,
   filters: filtersSvg,
   github: githubSvg,
   google: googleSvg,

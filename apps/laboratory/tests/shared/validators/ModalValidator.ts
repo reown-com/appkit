@@ -84,6 +84,7 @@ export class ModalValidator {
     // We use Chakra Toast and it's not quite straightforward to set the `data-testid` attribute on the toast element.
     await expect(this.page.getByText(ConstantsUtil.SigningFailedToastTitle)).toBeVisible()
   }
+
   async expectSwitchedNetwork(network: string) {
     const switchNetworkButton = this.page.getByTestId('w3m-account-select-network')
     await expect(switchNetworkButton).toBeVisible()
@@ -125,5 +126,44 @@ export class ModalValidator {
       networkNotSupportedMessage,
       'Network not supported message should be visible'
     ).toBeVisible()
+  }
+
+  async expectAccountPageVisible() {
+    const switchNetworkButton = this.page.getByTestId('w3m-account-select-network')
+    await expect(switchNetworkButton).toBeVisible()
+  }
+
+  async expectOnrampButton(library: string) {
+    const onrampButton = this.page.getByTestId('w3m-account-default-onramp-button')
+    if (library === 'solana') {
+      await expect(onrampButton).toBeHidden()
+    } else {
+      await expect(onrampButton).toBeVisible()
+    }
+  }
+
+  async expectAccountNameFound(name: string) {
+    const suggestion = this.page.getByTestId('account-name-suggestion').getByText(name)
+    await expect(suggestion).toBeVisible()
+  }
+
+  async expectCallStatusSuccessOrRetry(sendCallsId: string, allowedRetry: boolean) {
+    const callStatusReceipt = this.page.getByText('"status": "CONFIRMED"')
+    const isConfirmed = await callStatusReceipt.isVisible({
+      timeout: 10 * 1000
+    })
+    if (isConfirmed) {
+      const closeButton = this.page.locator('#toast-close-button')
+
+      await expect(closeButton).toBeVisible()
+      await closeButton.click()
+    } else if (allowedRetry) {
+      const callStatusButton = this.page.getByTestId('get-calls-status-button')
+      await expect(callStatusButton).toBeVisible()
+      await callStatusButton.click()
+      this.expectCallStatusSuccessOrRetry(sendCallsId, false)
+    }
+
+    throw new Error('Call status not confirmed')
   }
 }

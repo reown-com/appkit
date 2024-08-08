@@ -16,6 +16,18 @@ export class ModalWalletPage extends ModalPage {
     await this.page.getByTestId('account-settings-button').click()
   }
 
+  async openChooseNameIntro() {
+    await this.page.getByTestId('account-choose-name-button').click()
+  }
+
+  async openChooseName() {
+    await this.page.getByRole('button', { name: 'Choose Name' }).click()
+  }
+
+  async typeName(name: string) {
+    await this.page.getByTestId('wui-ens-input').getByTestId('wui-input-text').fill(name)
+  }
+
   override async switchNetwork(network: string) {
     await this.page.getByTestId('account-switch-network-button').click()
     await this.page.getByTestId(`w3m-network-switch-${network}`).click()

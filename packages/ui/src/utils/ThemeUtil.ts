@@ -437,6 +437,7 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-color-blueberry-100: hsla(230, 100%, 67%, 1);
         --wui-color-blueberry-090: hsla(231, 76%, 61%, 1);
         --wui-color-blueberry-080: hsla(230, 59%, 55%, 1);
+        --wui-color-blueberry-050: hsla(231, 100%, 70%, 0.1);
 
         --wui-color-fg-100: #e4e7e7;
         --wui-color-fg-125: #d0d5d5;
@@ -622,10 +623,11 @@ export const elementStyles = css`
     align-items: center;
     position: relative;
     transition:
-      background-color var(--wui-ease-inout-power-1) var(--wui-duration-md),
-      color var(--wui-ease-inout-power-1) var(--wui-duration-md),
-      box-shadow var(--wui-ease-inout-power-1) var(--wui-duration-md);
-    will-change: background-color, color;
+      color var(--wui-duration-lg) var(--wui-ease-out-power-1),
+      background-color var(--wui-duration-lg) var(--wui-ease-out-power-1),
+      border var(--wui-duration-lg) var(--wui-ease-out-power-1),
+      box-shadow var(--wui-duration-lg) var(--wui-ease-out-power-1);
+    will-change: background-color, color, border, box-shadow;
     outline: none;
     border: none;
     column-gap: var(--wui-spacing-3xs);
@@ -637,10 +639,23 @@ export const elementStyles = css`
   button:disabled > wui-all-wallets-image,
   button:disabled > wui-network-image,
   button:disabled > wui-image,
-  button:disabled > wui-icon-box,
   button:disabled > wui-transaction-visual,
   button:disabled > wui-logo {
     filter: grayscale(1);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    button:hover:enabled {
+      background-color: var(--wui-color-gray-glass-005);
+    }
+
+    button:active:enabled {
+      background-color: var(--wui-color-gray-glass-010);
+    }
+  }
+
+  button:disabled > wui-icon-box {
+    opacity: 0.5;
   }
 
   input {

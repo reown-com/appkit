@@ -1,12 +1,11 @@
 import base58 from 'bs58'
-import { PublicKey, Transaction, VersionedTransaction } from '@solana/web3.js'
+import { PublicKey, Transaction, VersionedTransaction, type SendOptions } from '@solana/web3.js'
 import { OptionsController } from '@web3modal/core'
 
 import { SolStoreUtil } from '../utils/scaffold/index.js'
 import { UniversalProviderFactory } from './universalProvider.js'
 import { BaseConnector } from './baseConnector.js'
 
-import type { Signer } from '@solana/web3.js'
 import type UniversalProvider from '@walletconnect/universal-provider'
 
 import type { Connector } from './baseConnector.js'
@@ -164,34 +163,29 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
     return signature
   }
 
-  public async signAndSendTransaction(
-    transactionParam: Transaction | VersionedTransaction,
-    signers: Signer[]
+  public async signAndSendTransaction<T extends Transaction | VersionedTransaction>(
+    transaction: T,
+    options?: SendOptions
   ) {
-    if (transactionParam instanceof VersionedTransaction) {
+    if (transaction instanceof VersionedTransaction) {
       throw Error('Versioned transactions are not supported')
     }
 
-    if (signers.length) {
-      transactionParam.partialSign(...signers)
-    }
+    const { signature } = await this.request('solana_signAndSendTransaction', {
+      feePayer: transaction.feePayer?.toBase58() ?? '',
+      instructions: transaction.instructions.map(instruction => ({
+        data: base58.encode(instruction.data),
+        keys: instruction.keys.map(key => ({
+          isWritable: key.isWritable,
+          isSigner: key.isSigner,
+          pubkey: key.pubkey.toBase58()
+        })),
+        programId: instruction.programId.toBase58()
+      })),
+      options
+    })
 
-    const { tx } = await this._sendTransaction(transactionParam)
-
-    if (tx) {
-      const latestBlockHash = await SolStoreUtil.state.connection?.getLatestBlockhash()
-      if (latestBlockHash?.blockhash) {
-        await SolStoreUtil.state.connection?.confirmTransaction({
-          blockhash: latestBlockHash.blockhash,
-          lastValidBlockHeight: latestBlockHash.lastValidBlockHeight,
-          signature: tx
-        })
-
-        return tx
-      }
-    }
-
-    throw Error('Transaction Failed')
+    return signature
   }
 
   /**
@@ -218,7 +212,7 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
     return {
       solana: {
         chains: getChainsFromChainId(`solana:${chainId}` as ChainIDType),
-        methods: ['solana_signMessage', 'solana_signTransaction'],
+        methods: ['solana_signMessage', 'solana_signTransaction', 'solana_signAndSendTransaction'],
         events: [],
         rpcMap
       }
