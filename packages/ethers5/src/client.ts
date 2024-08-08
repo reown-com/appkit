@@ -180,7 +180,7 @@ export class Web3Modal extends Web3ModalScaffold {
         })
 
         const params = await siweConfig?.getMessageParams?.()
-        // Must perform these checks to satify optional types
+        // Must perform these checks to satisfy optional types
         if (siweConfig?.options?.enabled && params && Object.keys(params || {}).length > 0) {
           const { SIWEController, getDidChainId, getDidAddress } = await import('@web3modal/siwe')
 

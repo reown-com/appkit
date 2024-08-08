@@ -89,7 +89,7 @@ function AvailableTestContent() {
         type="number"
       />
       <Button
-        data-test-id="sign-transaction-button"
+        data-testid="sign-transaction-button"
         onClick={onSendTransaction}
         disabled={!writeContract}
         isDisabled={isLoading}
