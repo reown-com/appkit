@@ -9,6 +9,7 @@ export const AssetUtil = {
     }
 
     await ApiController._fetchWalletImage(imageId)
+
     return this.getWalletImageById(imageId)
   },
 
