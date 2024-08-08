@@ -30,6 +30,8 @@ export class WuiListAccount extends LitElement {
 
   private caipNetwork = NetworkController.state.caipNetwork
 
+  private socialProvider = StorageUtil.getConnectedSocialProvider()
+
   private balance = 0
 
   private fetchingBalance = true
@@ -59,6 +61,7 @@ export class WuiListAccount extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     const label = this.getLabel()
+
     // Only show icon for AUTH accounts
     this.shouldShowIcon = this.connectedConnector === 'AUTH'
 
@@ -76,7 +79,7 @@ export class WuiListAccount extends LitElement {
                 iconcolor="fg-200"
                 backgroundcolor="fg-300"
                 icon=${this.accountType === W3mFrameRpcConstants.ACCOUNT_TYPES.EOA
-                  ? 'mail'
+                  ? this.socialProvider ?? 'mail'
                   : 'lightbulb'}
                 background="fg-300"
               ></wui-icon-box>`
@@ -109,7 +112,7 @@ export class WuiListAccount extends LitElement {
     let label = this.labels?.get(this.accountAddress)
 
     if (!label && this.connectedConnector === 'AUTH') {
-      label = `${this.accountType === 'eoa' ? 'Email' : 'Smart'} Account`
+      label = `${this.accountType === 'eoa' ? this.socialProvider ?? 'Email' : 'Smart'} Account`
     } else if (
       (!label && this.connectedConnector === 'INJECTED') ||
       this.connectedConnector === 'ANNOUNCED'

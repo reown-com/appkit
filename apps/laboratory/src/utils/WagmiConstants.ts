@@ -51,8 +51,9 @@ export function getWagmiConfig(type: 'default' | 'email', override = {}) {
   const emailConfig = {
     ...config,
     auth: {
-      socials: ['google', 'x', 'discord', 'apple', 'github']
-    }
+      socials: ['google', 'x', 'discord', 'farcaster', 'github', 'apple', 'facebook']
+    },
+    connectors
   }
 
   const wagmiConfig = defaultWagmiConfig(type === 'email' ? emailConfig : config)

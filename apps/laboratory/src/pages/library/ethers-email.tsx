@@ -10,9 +10,8 @@ const modal = createWeb3Modal({
   ethersConfig: defaultConfig({
     metadata: ConstantsUtil.Metadata,
     defaultChainId: 1,
-    rpcUrl: 'https://cloudflare-eth.com',
     auth: {
-      socials: ['google', 'x', 'discord', 'apple', 'github']
+      socials: ['google', 'x', 'discord', 'farcaster', 'github', 'apple', 'facebook']
     }
   }),
   chains: EthersConstants.chains,

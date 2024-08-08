@@ -53,7 +53,14 @@ export type ConnectorType =
   | 'AUTH'
   | 'MULTI_CHAIN'
 
-export type SocialProvider = 'google' | 'github' | 'apple' | 'facebook' | 'x' | 'discord'
+export type SocialProvider =
+  | 'google'
+  | 'github'
+  | 'apple'
+  | 'facebook'
+  | 'x'
+  | 'discord'
+  | 'farcaster'
 
 export type Connector = {
   id: string
@@ -177,6 +184,7 @@ export interface BlockchainApiTransactionsRequest {
   cursor?: string
   onramp?: 'coinbase'
   signal?: AbortSignal
+  cache?: RequestCache
 }
 
 export interface BlockchainApiTransactionsResponse {
@@ -606,7 +614,7 @@ export type Event =
         network: string
         swapFromToken: string
         swapToToken: string
-        swapfromAmount: string
+        swapFromAmount: string
         swapToAmount: string
       }
     }
@@ -618,7 +626,7 @@ export type Event =
         network: string
         swapFromToken: string
         swapToToken: string
-        swapfromAmount: string
+        swapFromAmount: string
         swapToAmount: string
       }
     }
@@ -630,7 +638,7 @@ export type Event =
         network: string
         swapFromToken: string
         swapToToken: string
-        swapfromAmount: string
+        swapFromAmount: string
         swapToAmount: string
       }
     }

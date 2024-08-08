@@ -9,7 +9,7 @@ export function parseJSON(str: string) {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function bigIntReplacer(_key: string, value: any) {
   if (typeof value === 'bigint') {
-    return value.toString()
+    return `0x${value.toString(16)}`
   }
 
   return value

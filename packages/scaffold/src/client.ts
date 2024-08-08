@@ -59,6 +59,7 @@ export interface LibraryOptions {
   allowUnsupportedChain?: NetworkControllerState['allowUnsupportedChain']
   _sdkVersion: OptionsControllerState['sdkVersion']
   enableEIP6963?: OptionsControllerState['enableEIP6963']
+  enableSwaps?: OptionsControllerState['enableEIP6963']
 }
 
 export interface ScaffoldOptions extends LibraryOptions {
@@ -204,6 +205,8 @@ export class Web3ModalScaffold {
     AccountController.removeAddressLabel(address)
   }
 
+  protected getCaipAddress = () => AccountController.state.caipAddress
+
   protected setCaipAddress: (typeof AccountController)['setCaipAddress'] = (caipAddress, chain) => {
     AccountController.setCaipAddress(caipAddress, chain)
   }
@@ -320,6 +323,10 @@ export class Web3ModalScaffold {
     OptionsController.setEIP6963Enabled(enabled)
   }
 
+  protected setClientId: (typeof BlockchainApiController)['setClientId'] = clientId => {
+    BlockchainApiController.setClientId(clientId)
+  }
+
   // -- Private ------------------------------------------------------------------
   private async initControllers(options: ScaffoldOptions) {
     ChainController.initialize([
@@ -345,6 +352,9 @@ export class Web3ModalScaffold {
     OptionsController.setSdkVersion(options._sdkVersion)
     // Enabled by default
     OptionsController.setOnrampEnabled(options.enableOnramp !== false)
+    OptionsController.setEnableSwaps(
+      options.chain === ConstantsUtil.CHAIN.EVM && options.enableSwaps !== false
+    )
 
     if (options.metadata) {
       OptionsController.setMetadata(options.metadata)

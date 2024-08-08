@@ -27,8 +27,11 @@ export class W3mConnectExternalWidget extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     const externalConnectors = this.connectors.filter(connector => connector.type === 'EXTERNAL')
+    const filteredOutCoinbaseConnectors = externalConnectors.filter(
+      connector => connector.id !== 'coinbaseWalletSDK'
+    )
 
-    if (!externalConnectors?.length) {
+    if (!filteredOutCoinbaseConnectors?.length) {
       this.style.cssText = `display: none`
 
       return null
@@ -36,13 +39,8 @@ export class W3mConnectExternalWidget extends LitElement {
 
     return html`
       <wui-flex flexDirection="column" gap="xs">
-        ${externalConnectors.map(connector => {
-          // Coinbase connector is handled separately
-          if (connector.id === 'coinbaseWalletSDK') {
-            return null
-          }
-
-          return html`
+        ${filteredOutCoinbaseConnectors.map(
+          connector => html`
             <wui-list-wallet
               imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
               .installed=${true}
@@ -52,7 +50,7 @@ export class W3mConnectExternalWidget extends LitElement {
             >
             </wui-list-wallet>
           `
-        })}
+        )}
       </wui-flex>
     `
   }

@@ -1,4 +1,5 @@
 import { onUnmounted, reactive, ref } from 'vue'
+import type { Event } from '@web3modal/core'
 import type {
   W3mAccountButton,
   W3mButton,
@@ -124,7 +125,12 @@ export function useWeb3ModalState() {
   return reactive({ open, selectedNetworkId })
 }
 
-export function useWeb3ModalEvents() {
+export interface Web3ModalEvent {
+  timestamp: number
+  data: Event
+}
+
+export function useWeb3ModalEvents(): Web3ModalEvent {
   if (!modal) {
     throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalEvents" composable')
   }

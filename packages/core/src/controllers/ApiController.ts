@@ -16,9 +16,10 @@ import { OptionsController } from './OptionsController.js'
 
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getApiUrl()
-export const api = new FetchUtil({ baseUrl })
+export const api = new FetchUtil({ baseUrl, clientId: null })
 const entries = '40'
 const recommendedEntries = '4'
+const imageCountToFetch = 20
 
 // -- Types --------------------------------------------- //
 export interface ApiControllerState {
@@ -194,11 +195,11 @@ export const ApiController = {
         exclude: exclude.join(',')
       }
     })
-    const images = data.map(w => w.image_id).filter(Boolean)
-    await Promise.allSettled([
-      ...(images as string[]).map(id => ApiController._fetchWalletImage(id)),
-      CoreHelperUtil.wait(300)
-    ])
+    const images = data
+      .slice(0, imageCountToFetch)
+      .map(w => w.image_id)
+      .filter(Boolean)
+    await Promise.allSettled((images as string[]).map(id => ApiController._fetchWalletImage(id)))
 
     state.wallets = CoreHelperUtil.uniqueBy(
       [...state.wallets, ...ApiController._filterOutExtensions(data)],

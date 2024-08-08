@@ -13,7 +13,7 @@ export function EthersModalInfo() {
     if (walletProviderType === 'walletConnect') {
       const ethereumProvider = walletProvider as unknown as EthereumProvider
 
-      return ethereumProvider?.signer?.client?.core?.crypto?.getClientId()
+      return await ethereumProvider?.signer?.client?.core?.crypto?.getClientId()
     }
 
     return null

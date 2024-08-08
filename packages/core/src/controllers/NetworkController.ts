@@ -91,7 +91,11 @@ export const NetworkController = {
     PublicStateController.set({ activeChain: chain, selectedNetworkId: caipNetwork?.id })
 
     if (!ChainController.state.chains.get(chain)?.networkState?.allowUnsupportedChain) {
-      this.checkIfSupportedNetwork()
+      const isSupported = this.checkIfSupportedNetwork()
+
+      if (!isSupported) {
+        this.showUnsupportedChainUI()
+      }
     }
   },
 
@@ -258,9 +262,7 @@ export const NetworkController = {
   },
 
   checkIfSupportedNetwork() {
-    const chain = ChainController.state.multiChainEnabled
-      ? ChainController.state.activeChain
-      : ChainController.state.activeChain
+    const chain = ChainController.state.activeChain
 
     if (!chain) {
       return false

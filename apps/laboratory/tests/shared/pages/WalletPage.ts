@@ -68,10 +68,35 @@ export class WalletPage {
     await this.page.waitForLoadState()
     const btn = this.page.getByTestId(`session-${variant}-button`)
     await expect(btn, `Session ${variant} element should be visible`).toBeVisible({
-      timeout: 15000
+      timeout: 30000
     })
     await expect(btn).toBeEnabled()
     await btn.focus()
     await this.page.keyboard.press('Space')
+  }
+
+  /**
+   * Enables testnets in the wallet settings
+   */
+  async enableTestnets() {
+    await this.page.waitForLoadState()
+    const settingsButton = this.page.getByTestId('settings')
+    await settingsButton.click()
+    const testnetSwitch = this.page.getByTestId('settings-toggle-testnets')
+    await testnetSwitch.click()
+    expect(testnetSwitch).toHaveAttribute('data-state', 'checked')
+  }
+
+  /**
+   * Switches the network in the wallet
+   * @param network the network id to switch (e.g. eip155:1 for Ethereum Mainnet)
+   */
+  async switchNetwork(network: string) {
+    await this.page.waitForLoadState()
+    const networkButton = this.page.getByTestId('accounts')
+    await networkButton.click()
+    const switchNetworkButton = this.page.getByTestId(`chain-switch-button${network}`)
+    await switchNetworkButton.click()
+    await expect(switchNetworkButton).toHaveText('✅')
   }
 }

@@ -1,14 +1,16 @@
-import { PresetsUtil } from '@web3modal/scaffold-utils'
-import { ConstantsUtil } from '@web3modal/common'
+import { PresetsUtil, ConstantsUtil } from '@web3modal/scaffold-utils'
+import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 
 import { SolConstantsUtil } from './SolanaConstantsUtil.js'
 
 import type { CaipNetwork } from '@web3modal/core'
 import type { Chain, Provider } from './SolanaTypesUtil.js'
+import type { ExtendedBaseWalletAdapter } from '../../client.js'
+import type { SolStoreUtilState } from './SolanaStoreUtil.js'
 
 export const SolHelpersUtil = {
   detectRpcUrl(chain: Chain, projectId: string) {
-    if (chain.rpcUrl.includes(new URL(ConstantsUtil.BLOCKCHAIN_API_RPC_URL).hostname)) {
+    if (chain.rpcUrl.includes(new URL(CommonConstantsUtil.BLOCKCHAIN_API_RPC_URL).hostname)) {
       return `${chain.rpcUrl}?chainId=solana:${chain.chainId}&projectId=${projectId}`
     }
 
@@ -35,7 +37,7 @@ export const SolHelpersUtil = {
         ...selectedChain,
         id: `solana:${chainId}`,
         imageId: PresetsUtil.EIP155NetworkImageIds[chainId],
-        chain: ConstantsUtil.CHAIN.SOLANA
+        chain: CommonConstantsUtil.CHAIN.SOLANA
       }
     }
 
@@ -43,7 +45,7 @@ export const SolHelpersUtil = {
       ...SolConstantsUtil.DEFAULT_CHAIN,
       id: `solana:${chainId}`,
       imageId: PresetsUtil.EIP155NetworkImageIds[chainId],
-      chain: ConstantsUtil.CHAIN.SOLANA
+      chain: CommonConstantsUtil.CHAIN.SOLANA
     }
   },
 
@@ -72,23 +74,11 @@ export const SolHelpersUtil = {
     return address
   },
 
-  async addSolanaChain(provider: Provider, chain: Chain) {
-    await provider.request({
-      method: 'wallet_addSolanaChain',
-      params: [
-        {
-          chainId: chain.chainId,
-          rpcUrls: [chain.rpcUrl],
-          chainName: chain.name,
-          nativeCurrency: {
-            name: chain.currency,
-            decimals: 18,
-            symbol: chain.currency
-          },
-          blockExplorerUrls: [chain.explorerUrl],
-          iconUrls: [PresetsUtil.EIP155NetworkImageIds[chain.chainId]]
-        }
-      ]
-    })
-  }
+  getStorageInjectedId: (adapter: ExtendedBaseWalletAdapter) =>
+    (adapter.isAnnounced
+      ? `${ConstantsUtil.WALLET_STANDARD_CONNECTOR_ID}_${adapter.name}`
+      : `${ConstantsUtil.INJECTED_CONNECTOR_ID}_${adapter.name}`) as unknown as Exclude<
+      SolStoreUtilState['providerType'],
+      undefined
+    >
 }

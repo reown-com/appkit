@@ -132,6 +132,7 @@ export type IconType =
   | 'extension'
   | 'externalLink'
   | 'facebook'
+  | 'farcaster'
   | 'filters'
   | 'github'
   | 'google'
@@ -206,6 +207,7 @@ export type LogoType =
   | 'telegram'
   | 'twitch'
   | 'x'
+  | 'farcaster'
 
 export type PlacementType = 'bottom' | 'left' | 'right' | 'top'
 

@@ -11,6 +11,7 @@ import { UiHelperUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('w3m-switch-address-view')
 export class W3mSwitchAddressView extends LitElement {
@@ -67,8 +68,8 @@ export class W3mSwitchAddressView extends LitElement {
     return html`
       <wui-flex justifyContent="center" .padding=${['xl', '0', 'xl', '0'] as const}>
         <wui-banner-img
-          imageSrc="${this.metadata?.icons[0]}"
-          text="${this.metadata?.url}"
+          imageSrc=${ifDefined(this.metadata?.icons[0])}
+          text=${ifDefined(this.metadata?.url)}
           size="sm"
         ></wui-banner-img>
       </wui-flex>
@@ -84,7 +85,11 @@ export class W3mSwitchAddressView extends LitElement {
     const label = this.labels?.get(account.address)
 
     return html`
-      <wui-flex flexDirection="row" justifyContent="space-between">
+      <wui-flex
+        flexDirection="row"
+        justifyContent="space-between"
+        data-testid="switch-address-item"
+      >
         <wui-flex alignItems="center">
           <wui-avatar address=${account.address}></wui-avatar>
           ${this.shouldShowIcon

@@ -7,7 +7,7 @@ export default css`
     justify-content: space-between;
     width: 100%;
     border-radius: var(--wui-border-radius-xs);
-    background-color: var(--wui-gray-glass-002);
+    background-color: var(--wui-color-gray-glass-002);
   }
 
   button[data-clickable='false'] {
@@ -30,6 +30,7 @@ export default css`
     color: var(--wui-color-fg-base-100);
   }
   .address-description {
+    text-transform: capitalize;
     color: var(--wui-color-fg-base-200);
   }
 
