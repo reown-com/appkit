@@ -25,12 +25,12 @@ export interface Transaction {
 export interface TransactionMetadata {
   operationType: string
   hash: string
+  chain: `${string}:${string}`
   minedAt: string
   sentFrom: string
   sentTo: string
   status: TransactionStatus | CoinbaseTransactionStatus
   nonce: number
-  chain?: string
 }
 
 export interface TransactionTransfer {
