@@ -1,6 +1,8 @@
 import { RouterController } from '../controllers/RouterController.js'
 import { ModalController } from '../controllers/ModalController.js'
 import { OptionsController } from '../controllers/OptionsController.js'
+import { ChainController } from '../controllers/ChainController.js'
+import { ConstantsUtil } from '@web3modal/common'
 
 export const RouterUtil = {
   goBackOrCloseModal() {
@@ -21,7 +23,7 @@ export const RouterUtil = {
   },
   navigateAfterPreferredAccountTypeSelect() {
     const { isSiweEnabled } = OptionsController.state
-    if (isSiweEnabled) {
+    if (isSiweEnabled && ChainController.state.activeChain === ConstantsUtil.CHAIN.EVM) {
       RouterController.push('ConnectingSiwe')
     } else {
       RouterController.push('Account')

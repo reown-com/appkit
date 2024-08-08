@@ -1,11 +1,11 @@
-import { NetworkController } from '../controllers/NetworkController.js'
-import { AccountController } from '../controllers/AccountController.js'
 import { ConnectionController } from '../controllers/ConnectionController.js'
 import { ConstantsUtil } from './ConstantsUtil.js'
 import { BlockchainApiController } from '../controllers/BlockchainApiController.js'
 import type { SwapTokenWithBalance } from './TypeUtil.js'
 import { OptionsController } from '../controllers/OptionsController.js'
 import type { BlockchainApiSwapAllowanceRequest, BlockchainApiBalanceResponse } from './TypeUtil.js'
+import { NetworkController } from '../controllers/NetworkController.js'
+import { AccountController } from '../controllers/AccountController.js'
 
 // -- Types --------------------------------------------- //
 export type TokenInfo = {
@@ -23,8 +23,9 @@ export type TokenInfo = {
 // -- Controller ---------------------------------------- //
 export const SwapApiUtil = {
   async getTokenList() {
+    const caipNetwork = NetworkController.state.caipNetwork
     const response = await BlockchainApiController.fetchSwapTokens({
-      chainId: NetworkController.state.caipNetwork?.id,
+      chainId: caipNetwork?.id,
       projectId: OptionsController.state.projectId
     })
     const tokens =

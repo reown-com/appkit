@@ -17,11 +17,20 @@ export default css`
     background-color: transparent;
     border-radius: var(--wui-border-radius-xs);
     color: var(--wui-color-fg-250);
-    transition: background-color 0.2s linear;
+    transition:
+      background-color var(--wui-ease-out-power-1) var(--wui-duration-lg),
+      opacity var(--wui-ease-out-power-1) var(--wui-duration-lg);
+    will-change: background-color, opacity;
   }
 
-  :host > wui-flex:hover {
-    background-color: var(--wui-color-gray-glass-002);
+  @media (hover: hover) and (pointer: fine) {
+    :host > wui-flex:hover {
+      background-color: var(--wui-color-gray-glass-002);
+    }
+
+    :host > wui-flex:active {
+      background-color: var(--wui-color-gray-glass-005);
+    }
   }
 
   :host([disabled]) > wui-flex {

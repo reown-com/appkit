@@ -1,4 +1,4 @@
-const SECURE_SITE = 'https://secure.walletconnect.com'
+const SECURE_SITE = 'https://secure.walletconnect.org'
 
 export const ONRAMP_PROVIDERS = [
   {

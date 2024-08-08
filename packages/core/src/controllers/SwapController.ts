@@ -15,6 +15,8 @@ import { OptionsController } from './OptionsController.js'
 import { SwapCalculationUtil } from '../utils/SwapCalculationUtil.js'
 import { EventsController } from './EventsController.js'
 import { W3mFrameRpcConstants } from '@web3modal/wallet'
+import { StorageUtil } from '../utils/StorageUtil.js'
+import { ConnectorController } from './ConnectorController.js'
 
 // -- Constants ---------------------------------------- //
 export const INITIAL_GAS_LIMIT = 150000
@@ -170,8 +172,11 @@ export const SwapController = {
   },
 
   getParams() {
-    const { address } = AccountController.state
-    const networkAddress = `${NetworkController.state.caipNetwork?.id}:${ConstantsUtil.NATIVE_TOKEN_ADDRESS}`
+    const caipNetwork = NetworkController.state.caipNetwork
+    const address = AccountController.state.address
+    const networkAddress = `${caipNetwork?.id}:${ConstantsUtil.NATIVE_TOKEN_ADDRESS}`
+    const type = StorageUtil.getConnectedConnector()
+    const authConnector = ConnectorController.getAuthConnector()
 
     if (!address) {
       throw new Error('No address found to swap the tokens from.')
@@ -199,7 +204,8 @@ export const SwapController = {
       invalidSourceToken,
       invalidSourceTokenAmount,
       availableToSwap:
-        caipAddress && !invalidToToken && !invalidSourceToken && !invalidSourceTokenAmount
+        caipAddress && !invalidToToken && !invalidSourceToken && !invalidSourceTokenAmount,
+      isAuthConnector: authConnector?.walletFeatures && type === 'AUTH'
     }
   },
 
@@ -558,7 +564,7 @@ export const SwapController = {
     }
 
     if (!sourceTokenAddress) {
-      throw new Error('>>> createAllowanceTransaction - No source token address found.')
+      throw new Error('createAllowanceTransaction - No source token address found.')
     }
 
     try {
@@ -654,16 +660,22 @@ export const SwapController = {
 
   // -- Send Transactions --------------------------------- //
   async sendTransactionForApproval(data: TransactionParams) {
-    const { fromAddress } = this.getParams()
+    const { fromAddress, isAuthConnector } = this.getParams()
 
     state.loadingApprovalTransaction = true
-    RouterController.pushTransactionStack({
-      view: null,
-      goBack: true,
-      onSuccess() {
-        SnackController.showLoading('Approving transaction...')
-      }
-    })
+    const approveLimitMessage = `Approve limit increase in your wallet`
+
+    if (isAuthConnector) {
+      RouterController.pushTransactionStack({
+        view: null,
+        goBack: true,
+        onSuccess() {
+          SnackController.showLoading(approveLimitMessage)
+        }
+      })
+    } else {
+      SnackController.showLoading(approveLimitMessage)
+    }
 
     try {
       await ConnectionController.sendTransaction({
@@ -681,7 +693,8 @@ export const SwapController = {
     } catch (err) {
       const error = err as TransactionError
       state.transactionError = error?.shortMessage as unknown as string
-      state.loadingTransaction = false
+      state.loadingApprovalTransaction = false
+      SnackController.showError(error?.shortMessage || 'Transaction error')
     }
   },
 
@@ -690,7 +703,7 @@ export const SwapController = {
       return undefined
     }
 
-    const { fromAddress, toTokenAmount } = this.getParams()
+    const { fromAddress, toTokenAmount, isAuthConnector } = this.getParams()
 
     state.loadingTransaction = true
 
@@ -701,14 +714,18 @@ export const SwapController = {
       ?.symbol} to ${NumberUtil.formatNumberToLocalString(toTokenAmount, 3)} ${state.toToken
       ?.symbol}`
 
-    RouterController.pushTransactionStack({
-      view: 'Account',
-      goBack: false,
-      onSuccess() {
-        SnackController.showLoading(snackbarPendingMessage)
-        SwapController.resetState()
-      }
-    })
+    if (isAuthConnector) {
+      RouterController.pushTransactionStack({
+        view: 'Account',
+        goBack: false,
+        onSuccess() {
+          SnackController.showLoading(snackbarPendingMessage)
+          SwapController.resetState()
+        }
+      })
+    } else {
+      SnackController.showLoading('Confirm transaction in your wallet')
+    }
 
     try {
       const forceUpdateAddresses = [state.sourceToken?.address, state.toToken?.address].join(',')
@@ -730,7 +747,7 @@ export const SwapController = {
           network: NetworkController.state.caipNetwork?.id || '',
           swapFromToken: this.state.sourceToken?.symbol || '',
           swapToToken: this.state.toToken?.symbol || '',
-          swapfromAmount: this.state.sourceTokenAmount || '',
+          swapFromAmount: this.state.sourceTokenAmount || '',
           swapToAmount: this.state.toTokenAmount || '',
           isSmartAccount:
             AccountController.state.preferredAccountType ===
@@ -738,6 +755,9 @@ export const SwapController = {
         }
       })
       SwapController.resetState()
+      if (!isAuthConnector) {
+        RouterController.replace('Account')
+      }
       SwapController.getMyTokensWithBalance(forceUpdateAddresses)
 
       return transactionHash
@@ -753,7 +773,7 @@ export const SwapController = {
           network: NetworkController.state.caipNetwork?.id || '',
           swapFromToken: this.state.sourceToken?.symbol || '',
           swapToToken: this.state.toToken?.symbol || '',
-          swapfromAmount: this.state.sourceTokenAmount || '',
+          swapFromAmount: this.state.sourceTokenAmount || '',
           swapToAmount: this.state.toTokenAmount || '',
           isSmartAccount:
             AccountController.state.preferredAccountType ===

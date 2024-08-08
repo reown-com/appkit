@@ -25,8 +25,8 @@ Your on-ramp to web3 multichain. Web3Modal is a versatile library that makes it 
 VITE_PROJECT_ID="your_project_id"
 ```
 
-3. Run `npm run watch` to build and watch for file changes in a separate tab
-4. Run gallery, laboratory or examples in a separate tab i.e. `npm run laboratory`
+3. Run `pnpm watch` to build and watch for file changes in a separate tab
+4. Run gallery, laboratory or examples in a separate tab i.e. `pnpm laboratory`
 
 # Releasing new versions
 
@@ -35,31 +35,31 @@ VITE_PROJECT_ID="your_project_id"
 If you need to release a canary/alpha/beta you need to enter prelease mode first
 
 ```sh
-npm run changeset:pre <release tag>
+pnpm changeset:pre <release tag>
 ```
 
-For example: `npm run changeset:pre a123bas2`
+For example: `pnpm changeset:pre a123bas2`
 
 ### Generate changeset
 
 If you need to release a canary/alpha/beta you need to enter prelease mode first
 
 ```sh
-npm run changeset
+pnpm changeset
 ```
 
-For example: `npm run changeset:pre a123bas2`
+For example: `pnpm changeset:pre a123bas2`
 
 ### Steps
 
-1. Run `npm outdated` and update dependencies
-2. Run `npm install` and verify if everything still works correctly
+1. Run `pnpm update` and update dependencies
+2. Run `pnpm install` and verify if everything still works correctly
 3. Merge your feature branch into `V4`
 4. Create a new branch from `V4` and name it with the version tag
-5. Run `npm run changeset` and set new custom version, enter prelease mode first if you want to add a tag to the version.
+5. Run `pnpm changeset` and set new custom version, enter prelease mode first if you want to add a tag to the version.
 6. Update version in `ConstantsUtil` in `@web3modal/scaffold-utils` to the correct version
 7. Create a new `PR` with Release Notes and merge into `V4`
-8. Checkout `V4` and run `npm run publish:latest`
+8. Checkout `V4` and run `pnpm publish:latest`
 9. Draft a new release in GitHub and create new tag
 10. Click on `Generate Change` and only leave the link with difference. Paste in your changelog from PR.
 11. Check `Set as the last release` and publish release.

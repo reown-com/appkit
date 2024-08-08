@@ -5,6 +5,7 @@ import { proxy, subscribe as sub } from 'valtio/vanilla'
 export interface AssetControllerState {
   walletImages: Record<string, string>
   networkImages: Record<string, string>
+  chainImages: Record<string, string>
   connectorImages: Record<string, string>
   tokenImages: Record<string, string>
   currencyImages: Record<string, string>
@@ -16,6 +17,7 @@ type StateKey = keyof AssetControllerState
 const state = proxy<AssetControllerState>({
   walletImages: {},
   networkImages: {},
+  chainImages: {},
   connectorImages: {},
   tokenImages: {},
   currencyImages: {}
@@ -43,6 +45,10 @@ export const AssetController = {
 
   setNetworkImage(key: string, value: string) {
     state.networkImages[key] = value
+  },
+
+  setChainImage(key: string, value: string) {
+    state.chainImages[key] = value
   },
 
   setConnectorImage(key: string, value: string) {

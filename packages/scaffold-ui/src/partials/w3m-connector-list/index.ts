@@ -2,7 +2,14 @@ import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 
 import styles from './styles.js'
-import { ApiController, ConnectorController, OptionsController, StorageUtil } from '@web3modal/core'
+import {
+  ApiController,
+  ChainController,
+  ConnectorController,
+  OptionsController,
+  StorageUtil
+} from '@web3modal/core'
+import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 import { state } from 'lit/decorators.js'
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
 import { WalletUtil } from '../../utils/WalletUtil.js'
@@ -71,14 +78,16 @@ export class W3mConnectorList extends LitElement {
     const coinbase = this.connectors.find(
       connector => connector.id === ConstantsUtil.COINBASE_SDK_CONNECTOR_ID
     )
+    const isEVM = ChainController.state.activeChain === CommonConstantsUtil.CHAIN.EVM
+    const includeAnnouncedAndInjected = isEVM ? OptionsController.state.enableEIP6963 : true
 
     return {
       custom,
       recent,
       coinbase,
       external,
-      announced: OptionsController.state.enableEIP6963 ? announced : [],
-      injected: OptionsController.state.enableEIP6963 ? injected : [],
+      announced: includeAnnouncedAndInjected ? announced : [],
+      injected: includeAnnouncedAndInjected ? injected : [],
       recommended: filteredRecommended,
       featured: filteredFeatured
     }

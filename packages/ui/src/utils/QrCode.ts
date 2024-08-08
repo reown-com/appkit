@@ -107,7 +107,7 @@ export const QrCodeUtil = {
     // Cx to multiple cys
     const circlesToConnect: Record<number, number[]> = {}
 
-    // Mapping all dots cicles on the same x axis
+    // Mapping all dots circles on the same x axis
     circles.forEach(([cx, cy]) => {
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (circlesToConnect[cx]) {

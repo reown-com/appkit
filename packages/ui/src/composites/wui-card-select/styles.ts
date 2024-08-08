@@ -19,10 +19,6 @@ export default css`
     justify-content: center;
   }
 
-  button:hover:enabled {
-    background-color: var(--wui-color-gray-glass-005);
-  }
-
   button:disabled > wui-text {
     color: var(--wui-color-gray-glass-015);
   }

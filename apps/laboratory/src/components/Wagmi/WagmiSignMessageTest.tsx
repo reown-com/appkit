@@ -7,9 +7,8 @@ import { useChakraToast } from '../Toast'
 export function WagmiSignMessageTest() {
   const toast = useChakraToast()
 
-  const { signMessageAsync } = useSignMessage()
-  const { status } = useAccount()
-  const isConnected = status === 'connected'
+  const { signMessageAsync, isPending } = useSignMessage()
+  const { isConnected } = useAccount()
   const [signature, setSignature] = React.useState<string | undefined>()
 
   async function onSignMessage() {
@@ -32,7 +31,12 @@ export function WagmiSignMessageTest() {
 
   return (
     <>
-      <Button data-testid="sign-message-button" onClick={onSignMessage} isDisabled={!isConnected}>
+      <Button
+        data-testid="sign-message-button"
+        onClick={onSignMessage}
+        isDisabled={!isConnected || isPending}
+        isLoading={isPending}
+      >
         Sign Message
       </Button>
       <div data-testid="w3m-signature" hidden>

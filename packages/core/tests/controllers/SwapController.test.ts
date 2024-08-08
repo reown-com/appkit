@@ -3,6 +3,7 @@ import { parseUnits } from 'viem'
 import {
   AccountController,
   BlockchainApiController,
+  ChainController,
   ConnectionController,
   NetworkController,
   SwapController,
@@ -19,9 +20,10 @@ import {
   tokensResponse
 } from '../mocks/SwapController.js'
 import { SwapApiUtil } from '../../src/utils/SwapApiUtil.js'
+import { ConstantsUtil } from '@web3modal/common'
 
 // - Mocks ---------------------------------------------------------------------
-const caipNetwork = { id: 'eip155:137', name: 'Polygon' } as const
+const caipNetwork = { id: 'eip155:137', name: 'Polygon', chain: ConstantsUtil.CHAIN.EVM } as const
 const approvedCaipNetworkIds = ['eip155:1', 'eip155:137'] as CaipNetworkId[]
 const client: NetworkControllerClient = {
   switchCaipNetwork: async _caipNetwork => Promise.resolve(),
@@ -37,7 +39,7 @@ const toTokenAddress = 'eip155:137:0x2c89bbc92bd86f8075d1decc58c7f4e0107f286b'
 // - Setup ---------------------------------------------------------------------
 beforeAll(async () => {
   //  -- Set Account and
-  NetworkController.setClient(client)
+  ChainController.initialize([{ chain: ConstantsUtil.CHAIN.EVM, networkControllerClient: client }])
   await NetworkController.switchActiveNetwork(caipNetwork)
   AccountController.setCaipAddress(caipAddress)
 

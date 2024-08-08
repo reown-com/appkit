@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { RouterController } from '../../index.js'
+import { ConstantsUtil } from '@web3modal/common'
 
 // -- Tests --------------------------------------------------------------------
 describe('RouterController', () => {
@@ -68,13 +69,13 @@ describe('RouterController', () => {
 
   it('should update state correctly on push() with data', () => {
     RouterController.push('ConnectingExternal', {
-      connector: { id: 'test', type: 'WALLET_CONNECT' }
+      connector: { id: 'test', type: 'WALLET_CONNECT', chain: ConstantsUtil.CHAIN.EVM }
     })
     expect(RouterController.state).toEqual({
       view: 'ConnectingExternal',
       history: ['Account', 'Networks', 'ConnectingExternal'],
       data: {
-        connector: { id: 'test', type: 'WALLET_CONNECT' }
+        connector: { id: 'test', type: 'WALLET_CONNECT', chain: ConstantsUtil.CHAIN.EVM }
       },
       transactionStack: []
     })

@@ -28,6 +28,7 @@ const currency2 = 'EUR'
 describe('AssetController', () => {
   it('should have valid default state', () => {
     expect(AssetController.state).toEqual({
+      chainImages: {},
       walletImages: {},
       networkImages: {},
       connectorImages: {},

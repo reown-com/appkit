@@ -38,8 +38,7 @@ export class W3mButton extends LitElement {
   @state() private balanceSymbol = AccountController.state.balanceSymbol
 
   // -- Lifecycle ----------------------------------------- //
-  public constructor() {
-    super()
+  public override firstUpdated() {
     this.unsubscribe.push(
       AccountController.subscribe(val => {
         this.isAccount = val.isConnected

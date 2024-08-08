@@ -1,8 +1,8 @@
-import BigNumber from 'bignumber.js'
+import * as BigNumber from 'bignumber.js'
 
 export const NumberUtil = {
-  bigNumber(value: BigNumber.Value) {
-    return new BigNumber(value)
+  bigNumber(value: BigNumber.BigNumber.Value) {
+    return new BigNumber.BigNumber(value)
   },
 
   /**
@@ -11,14 +11,14 @@ export const NumberUtil = {
    * @param b string
    * @returns
    */
-  multiply(a: BigNumber.Value | undefined, b: BigNumber.Value | undefined) {
+  multiply(a: BigNumber.BigNumber.Value | undefined, b: BigNumber.BigNumber.Value | undefined) {
     if (a === undefined || b === undefined) {
       // eslint-disable-next-line new-cap
-      return BigNumber(0)
+      return BigNumber.BigNumber(0)
     }
 
-    const aBigNumber = new BigNumber(a)
-    const bBigNumber = new BigNumber(b)
+    const aBigNumber = new BigNumber.BigNumber(a)
+    const bBigNumber = new BigNumber.BigNumber(b)
 
     return aBigNumber.multipliedBy(bBigNumber)
   },

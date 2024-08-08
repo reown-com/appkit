@@ -1,5 +1,6 @@
-import { describe, expect, it } from 'vitest'
-import { AccountController } from '../../index.js'
+import { beforeAll, describe, expect, it } from 'vitest'
+import { AccountController, ChainController } from '../../index.js'
+import { ConstantsUtil } from '@web3modal/common'
 
 // -- Setup --------------------------------------------------------------------
 const caipAddress = 'eip155:1:0x123'
@@ -10,13 +11,19 @@ const profileImage = 'https://ipfs.com/0x123.png'
 const explorerUrl = 'https://some.explorer.com/explore'
 
 // -- Tests --------------------------------------------------------------------
+beforeAll(() => {
+  ChainController.initialize([{ chain: ConstantsUtil.CHAIN.EVM }])
+})
+
 describe('AccountController', () => {
   it('should have valid default state', () => {
     expect(AccountController.state).toEqual({
       isConnected: false,
       smartAccountDeployed: false,
       currentTab: 0,
-      tokenBalance: []
+      tokenBalance: [],
+      allAccounts: [],
+      addressLabels: new Map<string, string>()
     })
   })
 
@@ -78,7 +85,9 @@ describe('AccountController', () => {
       profileName: undefined,
       profileImage: undefined,
       addressExplorerUrl: undefined,
-      tokenBalance: []
+      tokenBalance: [],
+      allAccounts: [],
+      addressLabels: new Map<string, string>()
     })
   })
 })

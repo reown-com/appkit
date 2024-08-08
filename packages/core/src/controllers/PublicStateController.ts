@@ -6,13 +6,15 @@ export interface PublicStateControllerState {
   loading: boolean
   open: boolean
   selectedNetworkId?: CaipNetworkId
+  activeChain?: string
 }
 
 // -- State --------------------------------------------- //
 const state = proxy<PublicStateControllerState>({
   loading: false,
   open: false,
-  selectedNetworkId: undefined
+  selectedNetworkId: undefined,
+  activeChain: undefined
 })
 
 // -- Controller ---------------------------------------- //

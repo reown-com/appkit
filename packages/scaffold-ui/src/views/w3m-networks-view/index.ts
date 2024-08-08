@@ -23,6 +23,8 @@ export class W3mNetworksView extends LitElement {
   // -- State & Properties -------------------------------- //
   @state() public caipNetwork = NetworkController.state.caipNetwork
 
+  @state() public requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
+
   public constructor() {
     super()
     this.unsubscribe.push(
@@ -62,8 +64,9 @@ export class W3mNetworksView extends LitElement {
   }
 
   private networksTemplate() {
-    const { approvedCaipNetworkIds, requestedCaipNetworks, supportsAllNetworks } =
-      NetworkController.state
+    const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
+    const approvedCaipNetworkIds = NetworkController.state.approvedCaipNetworkIds
+    const supportsAllNetworks = NetworkController.state.supportsAllNetworks
 
     const sortedNetworks = CoreHelperUtil.sortRequestedNetworks(
       approvedCaipNetworkIds,
@@ -86,15 +89,18 @@ export class W3mNetworksView extends LitElement {
   }
 
   private async onSwitchNetwork(network: CaipNetwork) {
-    const { isConnected } = AccountController.state
-    const { approvedCaipNetworkIds, supportsAllNetworks, caipNetwork } = NetworkController.state
-    const { data } = RouterController.state
+    const isConnected = AccountController.state.isConnected
+    const approvedCaipNetworkIds = NetworkController.state.approvedCaipNetworkIds
+    const supportsAllNetworks = NetworkController.state.supportsAllNetworks
+    const caipNetwork = NetworkController.state.caipNetwork
+    const routerData = RouterController.state.data
+
     if (isConnected && caipNetwork?.id !== network.id) {
       if (approvedCaipNetworkIds?.includes(network.id)) {
         await NetworkController.switchActiveNetwork(network)
         await NetworkUtil.onNetworkChange()
       } else if (supportsAllNetworks) {
-        RouterController.push('SwitchNetwork', { ...data, network })
+        RouterController.push('SwitchNetwork', { ...routerData, network })
       }
     } else if (!isConnected) {
       NetworkController.setCaipNetwork(network)

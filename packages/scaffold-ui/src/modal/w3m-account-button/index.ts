@@ -60,8 +60,12 @@ export class W3mAccountButton extends LitElement {
             this.balanceSymbol = ''
           }
         }),
-        NetworkController.subscribeKey('caipNetwork', val => (this.network = val)),
-        NetworkController.subscribeKey('isUnsupportedChain', val => (this.isUnsupportedChain = val))
+        NetworkController.subscribeKey('caipNetwork', val => {
+          this.network = val
+        }),
+        NetworkController.subscribeKey('isUnsupportedChain', val => {
+          this.isUnsupportedChain = val
+        })
       ]
     )
   }
