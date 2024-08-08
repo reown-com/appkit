@@ -33,6 +33,7 @@ import type { Chain as AvailableChain } from '@web3modal/common'
 import type { ProviderType, Chain, Provider, SolStoreUtilState } from './utils/scaffold/index.js'
 import { watchStandard } from './utils/wallet-standard/watchStandard.js'
 import { StandardWalletAdapter } from './utils/wallet-standard/adapter.js'
+import { SolanaChainIDs } from './utils/chainPath/constants.js'
 
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
   solanaConfig: ProviderType
@@ -132,9 +133,9 @@ export class Web3Modal extends Web3ModalScaffold {
             const provider = SolStoreUtil.state.provider
             if (provider && provider instanceof StandardWalletAdapter) {
               const solanaNetworkNameToIdMap: Record<string, string> = {
-                mainnet: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-                testnet: '4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z',
-                devnet: 'EtWTRABZaYq6iMfeYKouRu166VU2xqa1'
+                mainnet: SolanaChainIDs.Mainnet,
+                testnet: SolanaChainIDs.Testnet,
+                devnet: SolanaChainIDs.Devnet
               }
               const approvedCaipNetworkIds: CaipNetworkId[] = provider.wallet?.chains
                 .map(network => {
