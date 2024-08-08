@@ -77,6 +77,8 @@
     "valtio": "1.11.2"
   },
   "devDependencies": {
+    "vitest": "2.0.3",
+    "@vitest/coverage-v8": "2.0.5",
     "@web3modal/core": "workspace:*",
     "@types/bn.js": "5.1.5",
     "@walletconnect/types": "2.14.0"

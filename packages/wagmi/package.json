@@ -64,6 +64,8 @@
     "@web3modal/siwe": "workspace:*"
   },
   "devDependencies": {
+    "vitest": "2.0.3",
+    "@vitest/coverage-v8": "2.0.5",
     "@web3modal/core": "workspace:*",
     "@wagmi/connectors": "5.1.2",
     "@wagmi/core": "2.13.1",

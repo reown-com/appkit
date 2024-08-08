@@ -64,6 +64,8 @@
     "vue": ">=3"
   },
   "devDependencies": {
+    "vitest": "2.0.3",
+    "@vitest/coverage-v8": "2.0.5",
     "@web3modal/core": "workspace:*",
     "react": "18.2.0",
     "react-dom": "18.2.0",
