@@ -43,13 +43,18 @@ const SOLANA_DISABLED_TESTS = [
   'smart-account.spec.ts',
   'social.spec.ts',
   'wallet-features.spec.ts',
-  'wallet.spec.ts'
+  'wallet.spec.ts',
+  'metamask.spec.ts'
 ]
 const WAGMI_DISABLED_TESTS = ['smart-account.spec.ts', 'social.spec.ts']
-const ETHERS_DISABLED_TESTS = ['wallet-features.spec.ts', 'social.spec.ts']
+const ETHERS_DISABLED_TESTS = ['wallet-features.spec.ts', 'social.spec.ts', 'metamask.spec.ts']
 
 const ETHERS_EMAIL_BASED_REGEX = new RegExp(ETHERS_DISABLED_TESTS.join('|'), 'u')
 const WAGMI_DISABLED_TESTS_REGEX = new RegExp(WAGMI_DISABLED_TESTS.join('|'), 'u')
+const WAGMI_DISABLED_TESTS_REGEX_FF = new RegExp(
+  [...WAGMI_DISABLED_TESTS, 'metamask.spec.ts'].join('|'),
+  'u'
+)
 const SOLANA_DISABLED_TESTS_REGEX = new RegExp(SOLANA_DISABLED_TESTS.join('|'), 'u')
 
 const customProjectProperties: CustomProjectProperties = {
@@ -71,7 +76,7 @@ const customProjectProperties: CustomProjectProperties = {
     testIgnore: WAGMI_DISABLED_TESTS_REGEX
   },
   'Desktop Firefox/wagmi': {
-    testIgnore: WAGMI_DISABLED_TESTS_REGEX
+    testIgnore: WAGMI_DISABLED_TESTS_REGEX_FF
   },
   // Exclude social.spec.ts, email.spec.ts, siwe.spec.ts, and canary.spec.ts from solana, not yet implemented
   'Desktop Chrome/solana': {

@@ -1,5 +1,5 @@
 import { Button, Stack, Text, Input, Tooltip } from '@chakra-ui/react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers/react'
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
 import { useChakraToast } from '../Toast'
@@ -11,6 +11,7 @@ import {
   WALLET_CAPABILITIES,
   getCapabilitySupportedChainInfo
 } from '../../utils/EIP5792Utils'
+import { W3mFrameProvider } from '@web3modal/wallet'
 
 export function EthersSendCallsWithPaymasterServiceTest() {
   const [paymasterServiceUrl, setPaymasterServiceUrl] = useState<string>('')
@@ -20,14 +21,27 @@ export function EthersSendCallsWithPaymasterServiceTest() {
   const { walletProvider } = useWeb3ModalProvider()
   const toast = useChakraToast()
 
-  const paymasterServiceSupportedChains =
-    address && walletProvider instanceof EthereumProvider
-      ? getCapabilitySupportedChainInfo(
-          WALLET_CAPABILITIES.PAYMASTER_SERVICE,
-          walletProvider,
-          address
-        )
-      : []
+  const [paymasterServiceSupportedChains, setPaymasterServiceSupportedChains] = useState<
+    Awaited<ReturnType<typeof getCapabilitySupportedChainInfo>>
+  >([])
+
+  useEffect(() => {
+    if (
+      address &&
+      (walletProvider instanceof EthereumProvider || walletProvider instanceof W3mFrameProvider)
+    ) {
+      getCapabilitySupportedChainInfo(
+        WALLET_CAPABILITIES.PAYMASTER_SERVICE,
+        walletProvider,
+        address
+      ).then(capabilities => {
+        setPaymasterServiceSupportedChains(capabilities)
+      })
+    } else {
+      setPaymasterServiceSupportedChains([])
+    }
+  }, [address, walletProvider])
+
   const paymasterServiceSupportedChainNames = paymasterServiceSupportedChains
     .map(ci => ci.chainName)
     .join(', ')
@@ -90,6 +104,7 @@ export function EthersSendCallsWithPaymasterServiceTest() {
   }
 
   function isSendCallsSupported(): boolean {
+    // We are currently checking capabilities above. We should use those capabilities instead of this check.
     if (walletProvider instanceof EthereumProvider) {
       return Boolean(
         walletProvider?.signer?.session?.namespaces?.['eip155']?.methods?.includes(
@@ -98,7 +113,7 @@ export function EthersSendCallsWithPaymasterServiceTest() {
       )
     }
 
-    return false
+    return walletProvider instanceof W3mFrameProvider
   }
 
   if (!isConnected || !walletProvider || !address) {
@@ -137,7 +152,7 @@ export function EthersSendCallsWithPaymasterServiceTest() {
       </Tooltip>
       <Button
         width={'fit-content'}
-        data-test-id="send-calls-paymaster-service-button"
+        data-testid="send-calls-paymaster-service-button"
         onClick={onSendCalls}
         isDisabled={isLoading || !paymasterServiceUrl}
       >
