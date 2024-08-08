@@ -166,4 +166,9 @@ export class ModalValidator {
 
     throw new Error('Call status not confirmed')
   }
+
+  async expectNetworksDisabled(name: string) {
+    const networkOptions = this.page.getByTestId(`w3m-network-switch-${name}`)
+    await expect(networkOptions).toBeDisabled()
+  }
 }

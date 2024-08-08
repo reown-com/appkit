@@ -5,6 +5,10 @@ export default css`
     min-height: 100%;
   }
 
+  .group-container[last-group='true'] {
+    padding-bottom: var(--wui-spacing-m);
+  }
+
   .contentContainer {
     height: 280px;
   }

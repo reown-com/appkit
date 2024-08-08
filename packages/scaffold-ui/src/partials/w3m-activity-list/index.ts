@@ -4,6 +4,7 @@ import {
   AccountController,
   ChainController,
   EventsController,
+  NetworkController,
   OptionsController,
   RouterController,
   TransactionsController
@@ -63,6 +64,9 @@ export class W3mActivityList extends LitElement {
             }
           }
         }),
+        NetworkController.subscribeKey('caipNetwork', () => {
+          this.updateTransactionView()
+        }),
         TransactionsController.subscribe(val => {
           this.transactionsByYear = val.transactionsByYear
           this.loading = val.loading
@@ -80,7 +84,8 @@ export class W3mActivityList extends LitElement {
 
       return
     }
-    TransactionsController.fetchTransactions(this.address)
+
+    this.updateTransactionView()
     this.createPaginationObserver()
   }
 
@@ -100,28 +105,50 @@ export class W3mActivityList extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private updateTransactionView() {
+    const currentNetwork = NetworkController.state.caipNetwork?.id
+    const lastNetworkInView = TransactionsController.state.lastNetworkInView
+
+    if (lastNetworkInView !== currentNetwork) {
+      TransactionsController.resetTransactions()
+      TransactionsController.fetchTransactions(this.address)
+    }
+    TransactionsController.setLastNetworkInView(currentNetwork)
+  }
+
   private templateTransactionsByYear() {
     const sortedYearKeys = Object.keys(this.transactionsByYear).sort().reverse()
 
-    return sortedYearKeys.map((year, index) => {
-      const isLastGroup = index === sortedYearKeys.length - 1
+    return sortedYearKeys.map(year => {
       const yearInt = parseInt(year, 10)
 
       const sortedMonthIndexes = new Array(12)
         .fill(null)
-        .map((_, idx) => idx)
+        .map((_, idx) => {
+          const groupTitle = TransactionUtil.getTransactionGroupTitle(yearInt, idx)
+          const transactions = this.transactionsByYear[yearInt]?.[idx]
+
+          return {
+            groupTitle,
+            transactions
+          }
+        })
+        .filter(({ transactions }) => transactions)
         .reverse()
 
-      return sortedMonthIndexes.map(month => {
-        const groupTitle = TransactionUtil.getTransactionGroupTitle(yearInt, month)
-        const transactions = this.transactionsByYear[yearInt]?.[month]
+      return sortedMonthIndexes.map(({ groupTitle, transactions }, index) => {
+        const isLastGroup = index === sortedMonthIndexes.length - 1
 
         if (!transactions) {
           return null
         }
 
         return html`
-          <wui-flex flexDirection="column">
+          <wui-flex
+            flexDirection="column"
+            class="group-container"
+            last-group="${isLastGroup ? 'true' : 'false'}"
+          >
             <wui-flex
               alignItems="center"
               flexDirection="row"
