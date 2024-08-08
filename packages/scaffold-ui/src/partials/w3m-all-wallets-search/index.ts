@@ -1,9 +1,8 @@
 import type { WcWallet } from '@web3modal/core'
-import { ApiController, AssetUtil, ConnectorController, RouterController } from '@web3modal/core'
+import { ApiController, ConnectorController, RouterController } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
 import { markWalletsAsInstalled } from '../../utils/markWalletsAsInstalled.js'
 
@@ -66,13 +65,10 @@ export class W3mAllWalletsSearch extends LitElement {
       >
         ${wallets.map(
           wallet => html`
-            <wui-card-select
-              imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
-              type="wallet"
-              name=${wallet.name}
+            <w3m-all-wallets-list-item
               @click=${() => this.onConnectWallet(wallet)}
-              .installed=${wallet.installed}
-            ></wui-card-select>
+              .wallet=${wallet}
+            ></w3m-all-wallets-list-item>
           `
         )}
       </wui-grid>

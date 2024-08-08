@@ -4,9 +4,9 @@ import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/solana/rea
 import {
   PublicKey,
   Transaction,
+  SystemProgram,
   TransactionMessage,
-  VersionedTransaction,
-  SystemProgram
+  VersionedTransaction
 } from '@solana/web3.js'
 
 import { solana } from '../../utils/ChainsUtil'
@@ -16,13 +16,13 @@ const PHANTOM_TESTNET_ADDRESS = '8vCyX7oB6Pc3pbWMGYYZF5pbSnAdQ7Gyr32JqxqCy8ZR'
 const recipientAddress = new PublicKey(PHANTOM_TESTNET_ADDRESS)
 const amountInLamports = 10_000_000
 
-export function SolanaSendTransactionTest() {
+export function SolanaSignAndSendTransaction() {
   const toast = useChakraToast()
   const { address, chainId } = useWeb3ModalAccount()
   const { walletProvider, connection } = useWeb3ModalProvider()
   const [loading, setLoading] = useState(false)
 
-  async function onSendTransaction() {
+  async function onSendTransaction(mode: 'legacy' | 'versioned') {
     try {
       setLoading(true)
       if (!walletProvider || !address) {
@@ -38,75 +38,34 @@ export function SolanaSendTransactionTest() {
         throw Error('Not enough SOL in wallet')
       }
 
-      // Create a new transaction
-      const transaction = new Transaction().add(
-        SystemProgram.transfer({
-          fromPubkey: walletProvider.publicKey,
-          toPubkey: recipientAddress,
-          lamports: amountInLamports
-        })
-      )
-      transaction.feePayer = walletProvider.publicKey
-
+      const instruction = SystemProgram.transfer({
+        fromPubkey: walletProvider.publicKey,
+        toPubkey: recipientAddress,
+        lamports: amountInLamports
+      })
       const { blockhash } = await connection.getLatestBlockhash()
 
-      transaction.recentBlockhash = blockhash
+      let signature = ''
 
-      const signature = await walletProvider.sendTransaction(transaction, connection)
+      if (mode === 'versioned') {
+        // Create v0 compatible message
+        const messageV0 = new TransactionMessage({
+          payerKey: walletProvider.publicKey,
+          recentBlockhash: blockhash,
+          instructions: [instruction]
+        }).compileToV0Message()
 
-      toast({
-        title: 'Success',
-        description: signature,
-        type: 'success'
-      })
-    } catch (err) {
-      toast({
-        title: 'Error',
-        description: (err as Error).message,
-        type: 'error'
-      })
-    } finally {
-      setLoading(false)
-    }
-  }
+        // Make a versioned transaction
+        const versionedTranasction = new VersionedTransaction(messageV0)
 
-  async function onSendVersionedTransaction() {
-    try {
-      setLoading(true)
-      if (!walletProvider || !address) {
-        throw Error('user is disconnected')
+        signature = await walletProvider.signAndSendTransaction(versionedTranasction)
+      } else {
+        // Create a new transaction
+        const transaction = new Transaction().add(instruction)
+        transaction.feePayer = walletProvider.publicKey
+        transaction.recentBlockhash = blockhash
+        signature = await walletProvider.signAndSendTransaction(transaction)
       }
-
-      if (!connection) {
-        throw Error('no connection set')
-      }
-
-      const balance = await connection.getBalance(walletProvider.publicKey)
-      if (balance < amountInLamports) {
-        throw Error('Not enough SOL in wallet')
-      }
-
-      const { blockhash } = await connection.getLatestBlockhash()
-
-      const instructions = [
-        SystemProgram.transfer({
-          fromPubkey: walletProvider.publicKey,
-          toPubkey: recipientAddress,
-          lamports: amountInLamports
-        })
-      ]
-
-      // Create v0 compatible message
-      const messageV0 = new TransactionMessage({
-        payerKey: walletProvider.publicKey,
-        recentBlockhash: blockhash,
-        instructions
-      }).compileToV0Message()
-
-      // Make a versioned transaction
-      const transactionV0 = new VersionedTransaction(messageV0)
-
-      const signature = await walletProvider.sendTransaction(transactionV0, connection)
 
       toast({
         title: 'Success',
@@ -139,15 +98,15 @@ export function SolanaSendTransactionTest() {
   return (
     <Stack direction={['column', 'column', 'row']}>
       <Button
-        data-testid="sign-transaction-button"
-        onClick={onSendTransaction}
+        data-test-id="sign-transaction-button"
+        onClick={() => onSendTransaction('legacy')}
         isDisabled={loading}
       >
         Sign and Send Transaction
       </Button>
       <Button
         data-test-id="sign-transaction-button"
-        onClick={onSendVersionedTransaction}
+        onClick={() => onSendTransaction('versioned')}
         isDisabled={loading}
       >
         Sign and Send Versioned Transaction
