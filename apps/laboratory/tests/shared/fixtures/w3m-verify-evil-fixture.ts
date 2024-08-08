@@ -1,6 +1,5 @@
 import type { ModalFixture } from './w3m-fixture'
 import { ModalPage } from '../pages/ModalPage'
-import { ModalValidator } from '../validators/ModalValidator'
 import { timingFixture } from './timing-fixture'
 
 export const testMVerifyEvil = timingFixture.extend<ModalFixture>({
@@ -9,9 +8,5 @@ export const testMVerifyEvil = timingFixture.extend<ModalFixture>({
     const modalPage = new ModalPage(page, library, 'verify-evil')
     await modalPage.load()
     await use(modalPage)
-  },
-  modalValidator: async ({ modalPage }, use) => {
-    const modalValidator = new ModalValidator(modalPage.page)
-    await use(modalValidator)
   }
 })

@@ -4,12 +4,14 @@ import { testMVerifyDomainMismatch } from './shared/fixtures/w3m-verify-domain-m
 import { testMVerifyEvil } from './shared/fixtures/w3m-verify-evil-fixture'
 import { testMVerifyValid } from './shared/fixtures/w3m-verify-valid-fixture'
 import { WalletPage } from './shared/pages/WalletPage'
+import { ModalValidator } from './shared/validators/ModalValidator'
 import { WalletValidator } from './shared/validators/WalletValidator'
 import { expect } from '@playwright/test'
 
 testM(
   'connection and signature requests from non-verified project should show as cannot verify',
-  async ({ modalPage, modalValidator, context }) => {
+  async ({ modalPage, context }) => {
+    const modalValidator = new ModalValidator(modalPage.page)
     const walletPage = new WalletPage(await context.newPage())
     await walletPage.load()
     const walletValidator = new WalletValidator(walletPage.page)
@@ -36,7 +38,8 @@ testM(
 
 testMVerifyValid(
   'connection and signature requests from non-scam verified domain should show as domain match',
-  async ({ modalPage, modalValidator, context }) => {
+  async ({ modalPage, context }) => {
+    const modalValidator = new ModalValidator(modalPage.page)
     const walletPage = new WalletPage(await context.newPage())
     await walletPage.load()
     const walletValidator = new WalletValidator(walletPage.page)
@@ -63,7 +66,8 @@ testMVerifyValid(
 
 testMVerifyDomainMismatch(
   'connection and signature requests from non-scam verified domain but on localhost should show as invalid domain',
-  async ({ modalPage, modalValidator, context }) => {
+  async ({ modalPage, context }) => {
+    const modalValidator = new ModalValidator(modalPage.page)
     const walletPage = new WalletPage(await context.newPage())
     await walletPage.load()
     const walletValidator = new WalletValidator(walletPage.page)
@@ -90,7 +94,8 @@ testMVerifyDomainMismatch(
 
 testMVerifyEvil(
   'connection and signature requests from scam verified domain should show as scam domain',
-  async ({ modalPage, modalValidator, context }) => {
+  async ({ modalPage, context }) => {
+    const modalValidator = new ModalValidator(modalPage.page)
     const walletPage = new WalletPage(await context.newPage())
     await walletPage.load()
     const walletValidator = new WalletValidator(walletPage.page)
