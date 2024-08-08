@@ -16,7 +16,7 @@ const metadata = {
 beforeAll(() => {
   createWeb3Modal({
     wagmiConfig: defaultWagmiConfig({
-      projectId: 'PROJECT_ID',
+      projectId: process.env['NEXT_PUBLIC_PROJECT_ID'] as string,
       chains: [mainnet, optimism, polygon] as [Chain, ...Chain[]],
       metadata,
       auth: {

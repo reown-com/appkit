@@ -25,7 +25,7 @@ beforeAll(() => {
     solanaConfig,
     chains,
     wallets: [],
-    projectId: 'PROJECT_ID',
+    projectId: process.env['NEXT_PUBLIC_PROJECT_ID'] as string,
     enableAnalytics: true,
     metadata,
     termsConditionsUrl: 'https://walletconnect.com/terms',
