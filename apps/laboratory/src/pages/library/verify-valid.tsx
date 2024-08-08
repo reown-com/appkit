@@ -17,16 +17,19 @@ const metadata = {
   verifyUrl: ''
 }
 
+// Special project ID with verify enabled on localhost
+const projectId = 'e4eae1aad4503db9966a04fd045a7e4d'
+
 const queryClient = new QueryClient()
 
 const wagmiConfig = getWagmiConfig('default', {
-  projectId: 'e4eae1aad4503db9966a04fd045a7e4d',
+  projectId,
   metadata
 })
 
 const modal = createWeb3Modal({
   wagmiConfig,
-  projectId: 'e4eae1aad4503db9966a04fd045a7e4d',
+  projectId,
   metadata,
   termsConditionsUrl: 'https://walletconnect.com/terms',
   privacyPolicyUrl: 'https://walletconnect.com/privacy'

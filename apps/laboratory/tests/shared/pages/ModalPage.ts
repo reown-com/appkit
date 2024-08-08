@@ -8,6 +8,7 @@ import { DeviceRegistrationPage } from './DeviceRegistrationPage'
 import type { TimingRecords } from '../fixtures/timing-fixture'
 import { WalletPage } from './WalletPage'
 import { WalletValidator } from '../validators/WalletValidator'
+import { routeInterceptUrl } from '../utils/verify'
 
 const maliciousUrl = 'https://malicious-app-verify-simulation.vercel.app'
 
@@ -52,30 +53,7 @@ export class ModalPage {
 
   async load() {
     if (this.flavor === 'verify-evil') {
-      await this.page.route(`${maliciousUrl}/**/*`, async (route, request) => {
-        // eslint-disable-next-line init-declarations
-        let url: string
-        if (request.url() === `${maliciousUrl}/`) {
-          url = `${this.baseURL}/library/verify-evil/`
-        } else {
-          url = request.url().replace(maliciousUrl, this.baseURL)
-        }
-        const response = await fetch(url, {
-          method: request.method(),
-          headers: request.headers(),
-          body: request.postData()
-        })
-        const headers: Record<string, string> = {}
-        response.headers.forEach((value: string, key: string) => {
-          headers[key] = value
-        })
-        const body = Buffer.from(await response.arrayBuffer())
-        await route.fulfill({
-          status: response.status,
-          headers,
-          body
-        })
-      })
+      await routeInterceptUrl(this.page, maliciousUrl, this.baseURL, '/library/verify-evil/')
     }
 
     await this.page.goto(this.url)
