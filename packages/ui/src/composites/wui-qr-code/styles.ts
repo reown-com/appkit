@@ -21,6 +21,10 @@ export default css`
     background-color: var(--wui-color-bg-125);
   }
 
+  :host([data-clear='true']) > wui-icon {
+    display: none;
+  }
+
   svg:first-child,
   wui-image,
   wui-icon {

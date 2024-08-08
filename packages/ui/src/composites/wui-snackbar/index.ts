@@ -1,6 +1,7 @@
 import { html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
 import '../../components/wui-text/index.js'
+import '../../components/wui-loading-spinner/index.js'
 import { resetStyles } from '../../utils/ThemeUtil.js'
 import type { ColorType, IconType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
@@ -20,17 +21,21 @@ export class WuiSnackbar extends LitElement {
 
   @property() public message = ''
 
+  @property() public loading = false
+
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-icon-box
-        size="sm"
-        iconSize="xs"
-        iconColor=${this.iconColor}
-        backgroundColor=${this.backgroundColor}
-        icon=${this.icon}
-        background="opaque"
-      ></wui-icon-box>
+      ${this.loading
+        ? html`<wui-loading-spinner size="md" color="accent-100"></wui-loading-spinner>`
+        : html`<wui-icon-box
+            size="sm"
+            iconSize="xs"
+            iconColor=${this.iconColor}
+            backgroundColor=${this.backgroundColor}
+            icon=${this.icon}
+            background="opaque"
+          ></wui-icon-box>`}
       <wui-text variant="paragraph-500" color="fg-100">${this.message}</wui-text>
     `
   }

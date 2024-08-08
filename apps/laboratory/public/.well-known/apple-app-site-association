@@ -1,0 +1,37 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "W5R8AG9K22.com.walletconnect.dapp",
+        "paths": [
+          "/dapp*"
+        ]
+      },
+      {
+        "appID": "W5R8AG9K22.com.walletconnect.walletapp",
+        "paths": [
+          "/wallet*"
+        ]
+      },
+      {
+        "appID": "W5R8AG9K22.com.walletconnect.web3modal.sample",
+        "paths": [
+          "/web3modal_example*"
+        ]
+      },
+      {
+        "appID": "W5R8AG9K22.com.walletconnect.web3modal.rnsample.internal",
+        "paths": [
+          "/rn_appkit*"
+        ]
+      },
+      {
+        "appID": "W5R8AG9K22.com.walletconnect.web3wallet.rnsample.internal",
+        "paths": [
+          "/rn_walletkit*"
+        ]
+      }
+    ]
+  }
+}

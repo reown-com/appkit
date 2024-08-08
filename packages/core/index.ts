@@ -11,6 +11,9 @@ export type { RouterControllerState } from './src/controllers/RouterController.j
 export { AccountController } from './src/controllers/AccountController.js'
 export type { AccountControllerState } from './src/controllers/AccountController.js'
 
+export { ChainController } from './src/controllers/ChainController.js'
+export type { ChainControllerState } from './src/controllers/ChainController.js'
+
 export { NetworkController } from './src/controllers/NetworkController.js'
 export type {
   NetworkControllerClient,
@@ -54,6 +57,18 @@ export type { EventsControllerState } from './src/controllers/EventsController.j
 
 export { TransactionsController } from './src/controllers/TransactionsController.js'
 export type { TransactionsControllerState } from './src/controllers/TransactionsController.js'
+
+export { SwapController } from './src/controllers/SwapController.js'
+export type { SwapControllerState, SwapInputTarget } from './src/controllers/SwapController.js'
+
+export { SendController } from './src/controllers/SendController.js'
+export type { SendControllerState } from './src/controllers/SendController.js'
+
+export { TooltipController } from './src/controllers/TooltipController.js'
+export type { TooltipControllerState } from './src/controllers/TooltipController.js'
+
+export { EnsController } from './src/controllers/EnsController.js'
+export type { EnsControllerState } from './src/controllers/EnsController.js'
 
 // -- Utils -------------------------------------------------------------------
 export { AssetUtil } from './src/utils/AssetUtil.js'

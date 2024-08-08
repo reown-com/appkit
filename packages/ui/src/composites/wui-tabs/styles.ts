@@ -3,11 +3,12 @@ import { css } from 'lit'
 export default css`
   :host {
     display: inline-flex;
-    background-color: var(--wui-gray-glass-002);
+    background-color: var(--wui-color-gray-glass-002);
     border-radius: var(--wui-border-radius-3xl);
     padding: var(--wui-spacing-3xs);
     position: relative;
     height: 36px;
+    min-height: 36px;
     overflow: hidden;
   }
 
@@ -21,10 +22,11 @@ export default css`
     width: var(--local-tab-width);
     height: 28px;
     border-radius: var(--wui-border-radius-3xl);
-    background-color: var(--wui-gray-glass-002);
-    box-shadow: inset 0 0 0 1px var(--wui-gray-glass-002);
+    background-color: var(--wui-color-gray-glass-002);
+    box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-002);
     transform: translateX(calc(var(--local-tab) * var(--local-tab-width)));
-    transition: transform var(--wui-ease-out-power-2) var(--wui-duration-lg);
+    transition: transform var(--wui-ease-out-power-1) var(--wui-duration-md);
+    will-change: background-color, opacity;
   }
 
   :host([data-type='flex'])::before {
@@ -72,11 +74,14 @@ export default css`
   button > wui-icon,
   button > wui-text {
     pointer-events: none;
-    transition: all var(--wui-ease-out-power-2) var(--wui-duration-lg);
+    transition: color var(--wui-e ase-out-power-1) var(--wui-duration-md);
+    will-change: color;
   }
 
   button {
     width: var(--local-tab-width);
+    transition: background-color var(--wui-ease-out-power-1) var(--wui-duration-md);
+    will-change: background-color;
   }
 
   :host([data-type='flex']) > button {
@@ -93,11 +98,13 @@ export default css`
 
   button:hover:enabled > wui-icon,
   button:active:enabled > wui-icon {
+    transition: all var(--wui-ease-out-power-1) var(--wui-duration-lg);
     color: var(--wui-color-fg-125);
   }
 
   button:hover:enabled > wui-text,
   button:active:enabled > wui-text {
+    transition: all var(--wui-ease-out-power-1) var(--wui-duration-lg);
     color: var(--wui-color-fg-125);
   }
 

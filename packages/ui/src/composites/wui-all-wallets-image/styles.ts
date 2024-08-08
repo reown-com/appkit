@@ -7,7 +7,7 @@ export default css`
     width: 40px;
     height: 40px;
     overflow: hidden;
-    background: var(--wui-gray-glass-002);
+    background: var(--wui-color-gray-glass-002);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -24,7 +24,7 @@ export default css`
     left: 0;
     right: 0;
     border-radius: inherit;
-    border: 1px solid var(--wui-gray-glass-010);
+    border: 1px solid var(--wui-color-gray-glass-010);
     pointer-events: none;
   }
 

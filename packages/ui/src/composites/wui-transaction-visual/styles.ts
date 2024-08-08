@@ -8,8 +8,8 @@ export default css`
     position: relative;
     width: 40px;
     height: 40px;
-    box-shadow: inset 0 0 0 1px var(--wui-gray-glass-005);
-    background-color: var(--wui-gray-glass-005);
+    box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-005);
+    background-color: var(--wui-color-gray-glass-005);
   }
 
   :host > wui-flex wui-image {

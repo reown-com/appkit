@@ -17,10 +17,12 @@ export class WuiListNetwork extends LitElement {
 
   @property({ type: Boolean }) public disabled = false
 
+  @property({ type: Boolean }) public transparent = false
+
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <button ?disabled=${this.disabled} ontouchstart>
+      <button data-transparent=${this.transparent} ?disabled=${this.disabled} ontouchstart>
         ${this.templateNetworkImage()}
         <wui-text variant="paragraph-500" color="inherit">${this.name}</wui-text>
       </button>

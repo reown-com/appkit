@@ -11,7 +11,8 @@ import {
   polygon,
   zkSync,
   zora,
-  sepolia
+  sepolia,
+  baseSepolia
 } from './ChainsUtil'
 
 export const EthersConstants = {
@@ -28,6 +29,7 @@ export const EthersConstants = {
     base,
     celo,
     aurora,
-    sepolia
+    sepolia,
+    baseSepolia
   ]
 }

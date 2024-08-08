@@ -10,7 +10,6 @@ export default css`
   svg {
     width: var(--wui-box-size-md);
     height: var(--wui-box-size-md);
-    transition: all var(--wui-ease-in-power-3) var(--wui-duration-lg);
   }
 
   rect {

@@ -6,6 +6,8 @@ import { SnackController } from './SnackController.js'
 import { NetworkController } from './NetworkController.js'
 import type { CaipNetworkId } from '../utils/TypeUtil.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
+import { AccountController } from './AccountController.js'
+import { W3mFrameRpcConstants } from '@web3modal/wallet'
 
 // -- Types --------------------------------------------- //
 type TransactionByMonthMap = Record<number, Transaction[]>
@@ -58,7 +60,9 @@ export const TransactionsController = {
         account: accountAddress,
         projectId,
         cursor: state.next,
-        onramp
+        onramp,
+        // Coinbase transaction history state updates require the latest data
+        cache: onramp === 'coinbase' ? 'no-cache' : undefined
       })
 
       const nonSpamTransactions = this.filterSpamTransactions(response.data)
@@ -89,14 +93,16 @@ export const TransactionsController = {
         properties: {
           address: accountAddress,
           projectId,
-          cursor: state.next
+          cursor: state.next,
+          isSmartAccount:
+            AccountController.state.preferredAccountType ===
+            W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
         }
       })
       SnackController.showError('Failed to fetch transactions')
       state.loading = false
       state.empty = true
-
-      throw error
+      state.next = undefined
     }
   },
 
@@ -108,6 +114,7 @@ export const TransactionsController = {
     transactions.forEach(transaction => {
       const year = new Date(transaction.metadata.minedAt).getFullYear()
       const month = new Date(transaction.metadata.minedAt).getMonth()
+
       const yearTransactions = grouped[year] ?? {}
       const monthTransactions = yearTransactions[month] ?? []
 
@@ -142,6 +149,10 @@ export const TransactionsController = {
     )
 
     return filteredTransactions
+  },
+
+  clearCursor() {
+    state.next = undefined
   },
 
   resetTransactions() {

@@ -1,32 +1,45 @@
 import '@web3modal/polyfills'
-import type { Metadata, Provider, ProviderType } from '@web3modal/scaffold-utils/ethers'
-import { CoinbaseWalletSDK } from '@coinbase/wallet-sdk'
+import type { Chain, Metadata, Provider, ProviderType } from '@web3modal/scaffold-utils/ethers'
+import { CoinbaseWalletSDK, type ProviderInterface } from '@coinbase/wallet-sdk'
+import type { SocialProvider } from '@web3modal/scaffold-utils'
 
 export interface ConfigOptions {
   enableEIP6963?: boolean
-  enableInjected?: boolean
   enableCoinbase?: boolean
-  enableEmail?: boolean
+  auth?: {
+    email?: boolean
+    socials?: SocialProvider[]
+    showWallets?: boolean
+    walletFeatures?: boolean
+  }
+  enableInjected?: boolean
+  /**
+   * @deprecated this doesn't do anything, use `chains` instead
+   */
   rpcUrl?: string
   defaultChainId?: number
   metadata: Metadata
+  chains?: Chain[]
+  coinbasePreference?: 'all' | 'smartWalletOnly' | 'eoaOnly'
 }
 
 export function defaultConfig(options: ConfigOptions) {
   const {
     enableEIP6963 = true,
-    enableInjected = true,
     enableCoinbase = true,
-    enableEmail = false,
-    metadata,
-    rpcUrl,
-    defaultChainId
+    enableInjected = true,
+    auth = {
+      email: true,
+      showWallets: true,
+      walletFeatures: true
+    },
+    metadata
   } = options
 
-  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   let injectedProvider: Provider | undefined = undefined
+
   // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-  let coinbaseProvider: Provider | undefined = undefined
+  let coinbaseProvider: ProviderInterface | undefined = undefined
 
   const providers: ProviderType = { metadata }
 
@@ -61,11 +74,20 @@ export function defaultConfig(options: ConfigOptions) {
     const coinbaseWallet = new CoinbaseWalletSDK({
       appName: metadata.name,
       appLogoUrl: metadata.icons[0],
-      darkMode: false,
-      enableMobileWalletLink: true
+      appChainIds: options.chains?.map(chain => chain.chainId) || [1, 84532]
     })
 
-    coinbaseProvider = coinbaseWallet.makeWeb3Provider(rpcUrl, defaultChainId)
+    /**
+     * Determines which wallet options to display in Coinbase Wallet SDK.
+     * @property options
+     *   - `all`: Show both smart wallet and EOA options.
+     *   - `smartWalletOnly`: Show only smart wallet options.
+     *   - `eoaOnly`: Show only EOA options.
+     * @see https://www.smartwallet.dev/sdk/v3-to-v4-changes#parameters
+     */
+    coinbaseProvider = coinbaseWallet.makeWeb3Provider({
+      options: options.coinbasePreference || 'all'
+    })
 
     return coinbaseProvider
   }
@@ -74,7 +96,7 @@ export function defaultConfig(options: ConfigOptions) {
     providers.injected = getInjectedProvider()
   }
 
-  if (enableCoinbase && rpcUrl && defaultChainId) {
+  if (enableCoinbase) {
     providers.coinbase = getCoinbaseProvider()
   }
 
@@ -82,8 +104,11 @@ export function defaultConfig(options: ConfigOptions) {
     providers.EIP6963 = true
   }
 
-  if (enableEmail) {
-    providers.email = true
+  if (auth) {
+    auth.email ??= true
+    auth.showWallets ??= true
+    auth.walletFeatures ??= true
+    providers.auth = auth
   }
 
   return providers

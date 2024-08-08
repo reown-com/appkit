@@ -1,15 +1,26 @@
-import { subscribeKey as subKey } from 'valtio/utils'
+import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
 import type { Address, CombinedProvider, Provider } from './EthersTypesUtil.js'
+import type { W3mFrameTypes } from '@web3modal/wallet'
 
 // -- Types --------------------------------------------- //
 
+export type Status = 'reconnecting' | 'connected' | 'disconnected'
+
 export interface EthersStoreUtilState {
   provider?: Provider | CombinedProvider
-  providerType?: 'walletConnect' | 'injected' | 'coinbaseWallet' | 'eip6963' | 'w3mEmail'
+  providerType?:
+    | 'walletConnect'
+    | 'injected'
+    | 'coinbaseWallet'
+    | 'eip6963'
+    | 'w3mAuth'
+    | 'coinbaseWalletSDK'
   address?: Address
   chainId?: number
   error?: unknown
+  preferredAccountType?: W3mFrameTypes.AccountType
+  status: Status
   isConnected: boolean
 }
 
@@ -21,6 +32,7 @@ const state = proxy<EthersStoreUtilState>({
   providerType: undefined,
   address: undefined,
   chainId: undefined,
+  status: 'reconnecting',
   isConnected: false
 })
 
@@ -50,8 +62,16 @@ export const EthersStoreUtil = {
     state.address = address
   },
 
+  setPreferredAccountType(preferredAccountType: EthersStoreUtilState['preferredAccountType']) {
+    state.preferredAccountType = preferredAccountType
+  },
+
   setChainId(chainId: EthersStoreUtilState['chainId']) {
     state.chainId = chainId
+  },
+
+  setStatus(status: EthersStoreUtilState['status']) {
+    state.status = status
   },
 
   setIsConnected(isConnected: EthersStoreUtilState['isConnected']) {
@@ -67,7 +87,9 @@ export const EthersStoreUtil = {
     state.address = undefined
     state.chainId = undefined
     state.providerType = undefined
+    state.status = 'disconnected'
     state.isConnected = false
     state.error = undefined
+    state.preferredAccountType = undefined
   }
 }

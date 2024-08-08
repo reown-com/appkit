@@ -12,7 +12,8 @@ export default {
     message: 'Address approved',
     backgroundColor: 'success-100',
     iconColor: 'success-100',
-    icon: 'checkmark'
+    icon: 'checkmark',
+    loading: false
   },
 
   argTypes: {
@@ -27,6 +28,9 @@ export default {
     icon: {
       options: iconOptions,
       control: { type: 'select' }
+    },
+    loading: {
+      control: { type: 'boolean' }
     }
   }
 } as Component
@@ -38,6 +42,7 @@ export const Default: Component = {
       backgroundColor=${args.backgroundColor}
       icon=${args.icon}
       message=${args.message}
+      .loading=${args.loading}
     >
     </wui-snackbar>`
 }

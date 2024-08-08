@@ -17,7 +17,10 @@ export class WalletValidator {
   }
 
   async expectConnected() {
-    await expect(this.gotoSessions).toBeVisible()
+    await expect(
+      this.gotoSessions,
+      'Approve screen should be closed and sessions tab visible'
+    ).toBeVisible()
     await this.gotoSessions.click()
     await this.expectSessionCard()
   }

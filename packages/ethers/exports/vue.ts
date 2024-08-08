@@ -73,10 +73,12 @@ export function useWeb3ModalAccount() {
 
   const address = ref(modal.getAddress())
   const isConnected = ref(modal.getIsConnected())
+  const status = ref(modal.getStatus())
   const chainId = ref(modal.getChainId())
 
   const unsubscribe = modal.subscribeProvider(state => {
-    address.value = state.address as string
+    address.value = state.address as string | undefined
+    status.value = state.status
     isConnected.value = state.isConnected
     chainId.value = state.chainId
   })
@@ -116,7 +118,8 @@ export {
   useWeb3ModalTheme,
   useWeb3Modal,
   useWeb3ModalState,
-  useWeb3ModalEvents
+  useWeb3ModalEvents,
+  useWalletInfo
 } from '@web3modal/scaffold-vue'
 
 // -- Universal Exports -------------------------------------------------------

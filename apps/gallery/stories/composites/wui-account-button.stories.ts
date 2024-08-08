@@ -14,7 +14,7 @@ export default {
     avatarSrc: avatarImageSrc,
     address,
     balance: '0.527 ETH',
-    isProfileName: false,
+    profileName: 'johndoe.eth',
     charsStart: 4,
     charsEnd: 6
   },
@@ -22,8 +22,8 @@ export default {
     disabled: {
       control: { type: 'boolean' }
     },
-    isProfileName: {
-      control: { type: 'boolean' }
+    profileName: {
+      control: { type: 'text' }
     }
   }
 } as Component
@@ -32,7 +32,7 @@ export const Default: Component = {
   render: args =>
     html`<wui-account-button
       ?disabled=${args.disabled}
-      ?isProfileName=${args.isProfileName}
+      profileName=${args.profileName}
       .networkSrc=${args.networkSrc}
       .avatarSrc=${args.avatarSrc}
       .balance=${args.balance}

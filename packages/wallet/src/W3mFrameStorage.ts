@@ -16,9 +16,13 @@ export const W3mFrameStorage = {
     return null
   },
 
-  delete(key: string) {
+  delete(key: string, social?: boolean) {
     if (W3mFrameHelpers.isClient) {
-      localStorage.removeItem(`${W3mFrameConstants.STORAGE_KEY}${key}`)
+      if (social) {
+        localStorage.removeItem(key)
+      } else {
+        localStorage.removeItem(`${W3mFrameConstants.STORAGE_KEY}${key}`)
+      }
     }
   }
 }

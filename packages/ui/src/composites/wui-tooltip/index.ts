@@ -14,15 +14,19 @@ export class WuiTooltip extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() public placement: PlacementType = 'top'
 
+  @property() public variant: 'shade' | 'fill' = 'fill'
+
   @property() public message = ''
 
   // -- Render -------------------------------------------- //
   public override render() {
+    this.dataset['variant'] = this.variant
+
     return html`<wui-icon
         data-placement=${this.placement}
         color="fg-100"
         size="inherit"
-        name="cursor"
+        name=${this.variant === 'fill' ? 'cursor' : 'cursorTransparent'}
       ></wui-icon>
       <wui-text color="inherit" variant="small-500">${this.message}</wui-text>`
   }

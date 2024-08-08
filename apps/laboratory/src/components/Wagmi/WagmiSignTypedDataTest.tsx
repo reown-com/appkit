@@ -1,5 +1,6 @@
-import { Button, useToast } from '@chakra-ui/react'
+import { Button } from '@chakra-ui/react'
 import { useAccount, useSignTypedData } from 'wagmi'
+import { useChakraToast } from '../Toast'
 
 // Example data
 const types = {
@@ -27,17 +28,16 @@ const message = {
 } as const
 
 export function WagmiSignTypedDataTest() {
-  const toast = useToast()
-  const { chain, status } = useAccount()
+  const toast = useChakraToast()
+  const { chain, isConnected } = useAccount()
   const domain = {
     name: 'Ether Mail',
     version: '1',
     chainId: chain?.id,
     verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC'
   } as const
-  const isConnected = status === 'connected'
 
-  const { signTypedDataAsync } = useSignTypedData()
+  const { signTypedDataAsync, isPending } = useSignTypedData()
 
   async function onSignTypedData() {
     try {
@@ -47,13 +47,16 @@ export function WagmiSignTypedDataTest() {
         primaryType: 'Mail',
         types
       })
-      toast({ title: 'Success', description: signature, status: 'success', isClosable: true })
+      toast({
+        title: 'Success',
+        description: signature,
+        type: 'success'
+      })
     } catch {
       toast({
         title: 'Error',
         description: 'Failed to sign message',
-        status: 'error',
-        isClosable: true
+        type: 'error'
       })
     }
   }
@@ -62,7 +65,8 @@ export function WagmiSignTypedDataTest() {
     <Button
       data-testid="sign-typed-data-button"
       onClick={onSignTypedData}
-      isDisabled={!isConnected}
+      isDisabled={!isConnected || isPending}
+      isLoading={isPending}
     >
       Sign Typed Data
     </Button>

@@ -1,0 +1,132 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.walletconnect.sample.wallet",
+      "sha256_cert_fingerprints": [
+        "45:6F:E1:8D:99:3F:1B:C2:A2:F9:95:71:54:5D:28:97:E9:8D:A1:73:65:AE:C1:0F:11:A6:56:51:20:2A:F9:FF"
+      ]
+    }
+  },
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.walletconnect.sample.wallet.debug",
+      "sha256_cert_fingerprints": [
+        "89:50:0B:F7:C3:14:A5:D7:20:33:54:37:96:88:82:67:CB:E5:48:52:47:5B:81:F7:38:63:48:67:6D:BF:CA:1D"
+      ]
+    }
+  },
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.walletconnect.sample.wallet.internal",
+      "sha256_cert_fingerprints": [
+        "30:D7:6F:CE:C3:31:C9:96:C2:1C:CA:80:0E:05:47:36:B2:F1:0D:36:8E:AE:A6:C8:E7:A4:BE:3B:10:D8:90:EC"
+      ]
+    }
+  },
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.walletconnect.sample.dapp",
+      "sha256_cert_fingerprints": [
+        "45:6F:E1:8D:99:3F:1B:C2:A2:F9:95:71:54:5D:28:97:E9:8D:A1:73:65:AE:C1:0F:11:A6:56:51:20:2A:F9:FF"
+      ]
+    }
+  },
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.walletconnect.sample.dapp.debug",
+      "sha256_cert_fingerprints": [
+        "89:50:0B:F7:C3:14:A5:D7:20:33:54:37:96:88:82:67:CB:E5:48:52:47:5B:81:F7:38:63:48:67:6D:BF:CA:1D"
+      ]
+    }
+  },
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.walletconnect.sample.dapp.internal",
+      "sha256_cert_fingerprints": [
+        "30:D7:6F:CE:C3:31:C9:96:C2:1C:CA:80:0E:05:47:36:B2:F1:0D:36:8E:AE:A6:C8:E7:A4:BE:3B:10:D8:90:EC"
+      ]
+    }
+  },
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.walletconnect.sample.modal",
+      "sha256_cert_fingerprints": [
+        "45:6F:E1:8D:99:3F:1B:C2:A2:F9:95:71:54:5D:28:97:E9:8D:A1:73:65:AE:C1:0F:11:A6:56:51:20:2A:F9:FF"
+      ]
+    }
+  },
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.walletconnect.sample.modal.debug",
+      "sha256_cert_fingerprints": [
+        "89:50:0B:F7:C3:14:A5:D7:20:33:54:37:96:88:82:67:CB:E5:48:52:47:5B:81:F7:38:63:48:67:6D:BF:CA:1D"
+      ]
+    }
+  },
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.walletconnect.sample.modal.internal",
+      "sha256_cert_fingerprints": [
+        "30:D7:6F:CE:C3:31:C9:96:C2:1C:CA:80:0E:05:47:36:B2:F1:0D:36:8E:AE:A6:C8:E7:A4:BE:3B:10:D8:90:EC"
+      ]
+    }
+  },
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.walletconnect.web3wallet.rnsample.internal",
+      "sha256_cert_fingerprints": [
+        "C5:1B:86:DA:21:D0:8F:8C:CE:D5:70:87:35:3C:D4:4A:A4:3B:E0:7B:EC:C1:34:EC:2A:59:22:E9:99:A2:B5:56"
+      ]
+    }
+  },
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.walletconnect.web3wallet.rnsample",
+      "sha256_cert_fingerprints": [
+        "F5:44:4B:97:C3:B9:94:DB:67:15:D9:18:04:A5:0D:30:06:72:FE:2A:E8:B6:D1:13:64:1C:2F:74:DB:DE:42:53"
+      ]
+    }
+  },
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.walletconnect.web3modal.rnsample.internal",
+      "sha256_cert_fingerprints": [
+        "C5:1B:86:DA:21:D0:8F:8C:CE:D5:70:87:35:3C:D4:4A:A4:3B:E0:7B:EC:C1:34:EC:2A:59:22:E9:99:A2:B5:56"
+      ]
+    }
+  },
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.walletconnect.web3modal.rnsample",
+      "sha256_cert_fingerprints": [
+        "F5:44:4B:97:C3:B9:94:DB:67:15:D9:18:04:A5:0D:30:06:72:FE:2A:E8:B6:D1:13:64:1C:2F:74:DB:DE:42:53"
+      ]
+    }
+  }
+]

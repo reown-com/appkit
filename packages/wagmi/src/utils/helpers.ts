@@ -1,7 +1,8 @@
 import { CoreHelperUtil } from '@web3modal/scaffold'
 import { ConstantsUtil, PresetsUtil } from '@web3modal/scaffold-utils'
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
-import { http } from 'viem'
+import { getChainsFromAccounts } from '@walletconnect/utils'
+import { fallback, http } from 'viem'
 
 import type { CaipNetwork, CaipNetworkId } from '@web3modal/scaffold'
 import type { Chain } from '@wagmi/core/chains'
@@ -28,7 +29,9 @@ export async function getWalletConnectCaipNetworks(connector?: Connector) {
   >
   const ns = provider?.signer?.session?.namespaces
   const nsMethods = ns?.[ConstantsUtil.EIP155]?.methods
-  const nsChains = ns?.[ConstantsUtil.EIP155]?.chains as CaipNetworkId[]
+  const nsChains = getChainsFromAccounts(
+    ns?.[ConstantsUtil.EIP155]?.accounts || []
+  ) as CaipNetworkId[]
 
   return {
     supportsAllNetworks: Boolean(nsMethods?.includes(ConstantsUtil.ADD_CHAIN_METHOD)),
@@ -45,12 +48,26 @@ export function getEmailCaipNetworks() {
   }
 }
 
-export function getTransport({ chainId, projectId }: { chainId: number; projectId: string }) {
+export function getTransport({ chain, projectId }: { chain: Chain; projectId: string }) {
   const RPC_URL = CoreHelperUtil.getBlockchainApiUrl()
+  const chainDefaultUrl = chain.rpcUrls[0]?.http?.[0]
 
-  if (!PresetsUtil.WalletConnectRpcChainIds.includes(chainId)) {
-    return http()
+  if (!PresetsUtil.WalletConnectRpcChainIds.includes(chain.id)) {
+    return http(chainDefaultUrl)
   }
 
-  return http(`${RPC_URL}/v1/?chainId=${ConstantsUtil.EIP155}:${chainId}&projectId=${projectId}`)
+  return fallback([
+    http(`${RPC_URL}/v1/?chainId=${ConstantsUtil.EIP155}:${chain.id}&projectId=${projectId}`, {
+      /*
+       * The Blockchain API uses "Content-Type: text/plain" to avoid OPTIONS preflight requests
+       * It will only work for viem >= 2.17.7
+       */
+      fetchOptions: {
+        headers: {
+          'Content-Type': 'text/plain'
+        }
+      }
+    }),
+    http(chainDefaultUrl)
+  ])
 }

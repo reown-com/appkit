@@ -1,14 +1,20 @@
-import { describe, expect, it, vi } from 'vitest'
+import { beforeAll, describe, expect, it, vi } from 'vitest'
 import {
   ApiController,
   AssetController,
+  ChainController,
   ConnectorController,
   NetworkController,
   OptionsController
 } from '../../index.js'
 import { api } from '../../src/controllers/ApiController.js'
+import { ConstantsUtil } from '@web3modal/common'
 
 // -- Tests --------------------------------------------------------------------
+beforeAll(() => {
+  ChainController.initialize([{ chain: ConstantsUtil.CHAIN.EVM }])
+})
+
 describe('ApiController', () => {
   it('should have valid default state', () => {
     expect(ApiController.state).toEqual({
@@ -18,7 +24,8 @@ describe('ApiController', () => {
       recommended: [],
       wallets: [],
       search: [],
-      isAnalyticsEnabled: false
+      isAnalyticsEnabled: false,
+      excludedRDNS: []
     })
   })
 
@@ -107,16 +114,19 @@ describe('ApiController', () => {
       {
         id: '155:1',
         name: 'Ethereum Mainnet',
-        imageId: '12341'
+        imageId: '12341',
+        chain: ConstantsUtil.CHAIN.EVM
       },
       {
         id: '155:4',
         name: 'Ethereum Rinkeby',
-        imageId: '12342'
+        imageId: '12342',
+        chain: ConstantsUtil.CHAIN.EVM
       },
       {
         id: '155:42',
-        name: 'Ethereum Kovan'
+        name: 'Ethereum Kovan',
+        chain: ConstantsUtil.CHAIN.EVM
       }
     ])
     const fetchSpy = vi.spyOn(ApiController, '_fetchNetworkImage').mockResolvedValue()
@@ -126,22 +136,25 @@ describe('ApiController', () => {
     expect(fetchSpy).toHaveBeenCalledTimes(2)
   })
 
-  it('should fetch network images', async () => {
+  it('should only fetch network images for networks with imageIds', async () => {
     NetworkController.setRequestedCaipNetworks([
       {
         id: '155:1',
         name: 'Ethereum Mainnet',
-        imageId: '12341'
+        imageId: '12341',
+        chain: ConstantsUtil.CHAIN.EVM
       },
       {
         id: '155:4',
         name: 'Ethereum Rinkeby',
-        imageId: '12342'
+        imageId: '12342',
+        chain: ConstantsUtil.CHAIN.EVM
       },
       // Should not fetch this
       {
         id: '155:42',
-        name: 'Ethereum Kovan'
+        name: 'Ethereum Kovan',
+        chain: ConstantsUtil.CHAIN.EVM
       }
     ])
     const fetchSpy = vi.spyOn(ApiController, '_fetchNetworkImage').mockResolvedValue()
@@ -157,12 +170,14 @@ describe('ApiController', () => {
         id: '12341',
         name: 'MetaMask',
         imageId: '12341',
-        type: 'INJECTED'
+        type: 'INJECTED',
+        chain: ConstantsUtil.CHAIN.EVM
       },
       {
         id: '12341',
         name: 'RandomConnector',
-        type: 'INJECTED'
+        type: 'INJECTED',
+        chain: ConstantsUtil.CHAIN.EVM
       }
     ])
     const fetchSpy = vi.spyOn(ApiController, '_fetchConnectorImage').mockResolvedValue()
@@ -236,7 +251,7 @@ describe('ApiController', () => {
     expect(fetchImageSpy).not.toHaveBeenCalled()
   })
 
-  // Recommended wllets
+  // Recommended wallets
   it('should fetch recommended wallets with configured recommended wallets', async () => {
     const includeWalletIds = ['12341', '12342']
     const excludeWalletIds = ['12343']
@@ -348,7 +363,52 @@ describe('ApiController', () => {
     expect(ApiController.state.wallets).toEqual(data)
   })
 
-  // Search Wallet
+  it('should fetch excludedWalletIds and check if RDNS of EIP6963 matches', async () => {
+    const excludeWalletIds = ['12345', '12346']
+    const EIP6963Wallets = [
+      { name: 'MetaMask', rdns: 'io.metamask' },
+      { name: 'Rainbow', rdns: 'me.rainbow' }
+    ]
+    const filteredWallet = [{ name: 'Rainbow', rdns: 'me.rainbow' }]
+    const data = [
+      {
+        id: '12345',
+        name: 'MetaMask',
+        rdns: 'io.metamask'
+      },
+      {
+        id: '12346',
+        name: 'Phantom',
+        rdns: 'app.phantom'
+      }
+    ]
+
+    OptionsController.setExcludeWalletIds(excludeWalletIds)
+
+    const fetchSpy = vi.spyOn(api, 'get').mockResolvedValue({ data, count: data.length })
+    const fetchWalletsSpy = vi.spyOn(ApiController, 'searchWalletByIds')
+
+    await ApiController.searchWalletByIds({ ids: excludeWalletIds })
+
+    expect(fetchSpy).toHaveBeenCalledWith({
+      path: '/getWallets',
+      headers: ApiController._getApiHeaders(),
+      params: {
+        page: '1',
+        entries: String(excludeWalletIds.length),
+        include: excludeWalletIds.join(',')
+      }
+    })
+
+    expect(fetchWalletsSpy).toHaveBeenCalledOnce()
+    expect(ApiController.state.excludedRDNS).toEqual(['io.metamask', 'app.phantom'])
+    const result = EIP6963Wallets.filter(
+      wallet => !ApiController.state.excludedRDNS.includes(wallet.rdns)
+    )
+    expect(result).toEqual(filteredWallet)
+  })
+
+  // Wallet search with exact wallet name
   it('should search wallet with search term', async () => {
     const includeWalletIds = ['12341', '12342']
     const excludeWalletIds = ['12343']
@@ -380,6 +440,96 @@ describe('ApiController', () => {
     })
 
     expect(fetchImageSpy).toHaveBeenCalledOnce()
+    expect(ApiController.state.search).toEqual(data)
+  })
+
+  // Wallet search with whitespace and multiple words
+  it('should search wallet with search term', async () => {
+    const includeWalletIds = ['12341', '12342']
+    const excludeWalletIds = ['12343']
+    let data = [
+      {
+        id: '12341',
+        name: 'MetaMask',
+        image_id: '12341'
+      }
+    ]
+    OptionsController.setIncludeWalletIds(includeWalletIds)
+    OptionsController.setExcludeWalletIds(excludeWalletIds)
+
+    let fetchSpy = vi.spyOn(api, 'get').mockResolvedValue({ data })
+    const fetchImageSpy = vi.spyOn(ApiController, '_fetchWalletImage').mockResolvedValue()
+
+    // Whitespace
+    await ApiController.searchWallet({ search: 'MetaMask    ' })
+
+    expect(fetchSpy).toHaveBeenCalledWith({
+      path: '/getWallets',
+      headers: ApiController._getApiHeaders(),
+      params: {
+        page: '1',
+        entries: '100',
+        search: 'MetaMask',
+        include: '12341,12342',
+        exclude: '12343'
+      }
+    })
+    expect(fetchImageSpy).toHaveBeenCalledOnce()
+    expect(ApiController.state.search).toEqual(data)
+
+    // Leading Whitespace
+    await ApiController.searchWallet({ search: ' Metamask' })
+
+    expect(fetchSpy).toHaveBeenCalledWith({
+      path: '/getWallets',
+      headers: ApiController._getApiHeaders(),
+      params: {
+        page: '1',
+        entries: '100',
+        search: 'MetaMask',
+        include: '12341,12342',
+        exclude: '12343'
+      }
+    })
+    expect(ApiController.state.search).toEqual(data)
+
+    // Leading and Trailing Whitespace
+    await ApiController.searchWallet({ search: ' Metamask  ' })
+
+    expect(fetchSpy).toHaveBeenCalledWith({
+      path: '/getWallets',
+      headers: ApiController._getApiHeaders(),
+      params: {
+        page: '1',
+        entries: '100',
+        search: 'MetaMask',
+        include: '12341,12342',
+        exclude: '12343'
+      }
+    })
+    expect(ApiController.state.search).toEqual(data)
+
+    data = [
+      {
+        id: '12341',
+        name: 'Safe Wallet',
+        image_id: '12341'
+      }
+    ]
+    fetchSpy = vi.spyOn(api, 'get').mockResolvedValue({ data })
+    await ApiController.searchWallet({ search: 'Safe Wallet' })
+
+    expect(fetchSpy).toHaveBeenCalledWith({
+      path: '/getWallets',
+      headers: ApiController._getApiHeaders(),
+      params: {
+        page: '1',
+        entries: '100',
+        search: 'Safe Wallet',
+        include: '12341,12342',
+        exclude: '12343'
+      }
+    })
     expect(ApiController.state.search).toEqual(data)
   })
 

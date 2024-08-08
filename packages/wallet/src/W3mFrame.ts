@@ -1,7 +1,8 @@
-import { W3mFrameConstants } from './W3mFrameConstants.js'
+import { SECURE_SITE_SDK, W3mFrameConstants } from './W3mFrameConstants.js'
 import { W3mFrameSchema } from './W3mFrameSchema.js'
 import { W3mFrameHelpers } from './W3mFrameHelpers.js'
 import type { W3mFrameTypes } from './W3mFrameTypes.js'
+import { ConstantsUtil } from '@web3modal/common'
 
 // -- Sdk --------------------------------------------------------------------
 export class W3mFrame {
@@ -9,7 +10,7 @@ export class W3mFrame {
 
   private projectId: string
 
-  private rpcUrl = W3mFrameHelpers.getBlockchainApiUrl()
+  private rpcUrl = ConstantsUtil.BLOCKCHAIN_API_RPC_URL
 
   public frameLoadPromise: Promise<void>
 
@@ -34,12 +35,13 @@ export class W3mFrame {
       if (W3mFrameHelpers.isClient) {
         const iframe = document.createElement('iframe')
         iframe.id = 'w3m-iframe'
-        iframe.src = `${W3mFrameConstants.SECURE_SITE_SDK}?projectId=${projectId}`
+        iframe.src = `${SECURE_SITE_SDK}?projectId=${projectId}`
         iframe.style.position = 'fixed'
         iframe.style.zIndex = '999999'
         iframe.style.display = 'none'
         iframe.style.opacity = '0'
-        iframe.style.borderRadius = `clamp(0px, var(--wui-border-radius-l), 44px)`
+        iframe.style.borderBottomLeftRadius = `clamp(0px, var(--wui-border-radius-l), 44px)`
+        iframe.style.borderBottomRightRadius = `clamp(0px, var(--wui-border-radius-l), 44px)`
         document.body.appendChild(iframe)
         this.iframe = iframe
         this.iframe.onload = () => {
@@ -69,6 +71,29 @@ export class W3mFrame {
 
   // -- Events ----------------------------------------------------------------
   public events = {
+    registerFrameEventHandler: (
+      id: string,
+      callback: (event: W3mFrameTypes.FrameEvent) => void,
+      signal: AbortSignal
+    ) => {
+      function eventHandler({ data }: MessageEvent) {
+        if (!data.type?.includes(W3mFrameConstants.FRAME_EVENT_KEY)) {
+          return
+        }
+        const frameEvent = W3mFrameSchema.frameEvent.parse(data)
+        if (frameEvent.id === id) {
+          callback(frameEvent)
+          window.removeEventListener('message', eventHandler)
+        }
+      }
+      if (W3mFrameHelpers.isClient) {
+        window.addEventListener('message', eventHandler)
+
+        signal.addEventListener('abort', () => {
+          window.removeEventListener('message', eventHandler)
+        })
+      }
+    },
     onFrameEvent: (callback: (event: W3mFrameTypes.FrameEvent) => void) => {
       if (W3mFrameHelpers.isClient) {
         window.addEventListener('message', ({ data }) => {

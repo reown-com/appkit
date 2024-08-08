@@ -3,7 +3,7 @@ import { css } from 'lit'
 export default css`
   :host {
     position: relative;
-    background-color: var(--wui-gray-glass-002);
+    background-color: var(--wui-color-gray-glass-002);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -27,12 +27,12 @@ export default css`
     left: 0;
     right: 0;
     border-radius: inherit;
-    border: 1px solid var(--wui-gray-glass-010);
+    border: 1px solid var(--wui-color-gray-glass-010);
     pointer-events: none;
   }
 
   :host([name='Extension'])::after {
-    border: 1px solid var(--wui-accent-glass-010);
+    border: 1px solid var(--wui-color-accent-glass-010);
   }
 
   :host([data-wallet-icon='allWallets']) {
@@ -40,7 +40,7 @@ export default css`
   }
 
   :host([data-wallet-icon='allWallets'])::after {
-    border: 1px solid var(--wui-accent-glass-010);
+    border: 1px solid var(--wui-color-accent-glass-010);
   }
 
   wui-icon[data-parent-size='inherit'] {
@@ -75,7 +75,7 @@ export default css`
     right: -1px;
     bottom: -2px;
     z-index: 1;
-    border: 2px solid var(--wui-color-bg-base-150, #1e1f1f);
+    border: 2px solid var(--wui-color-bg-150, #1e1f1f);
     padding: 1px;
   }
 `

@@ -5,6 +5,8 @@ export const PresetsUtil = {
   ConnectorExplorerIds: {
     [ConstantsUtil.COINBASE_CONNECTOR_ID]:
       'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
+    [ConstantsUtil.COINBASE_SDK_CONNECTOR_ID]:
+      'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
     [ConstantsUtil.SAFE_CONNECTOR_ID]:
       '225affb176778569276e484e1b92637ad061b01e13a048b35a9d280c3b58970f',
     [ConstantsUtil.LEDGER_CONNECTOR_ID]:
@@ -13,7 +15,7 @@ export const PresetsUtil = {
 
   EIP155NetworkImageIds: {
     // Ethereum
-    1: '692ed6ba-e569-459a-556a-776476829e00',
+    1: 'ba0ba0cd-17c6-4806-ad93-f9d174f17900',
     // Arbitrum
     42161: '3bff954d-5cb0-47a0-9a23-d20192e74600',
     // Avalanche
@@ -53,7 +55,11 @@ export const PresetsUtil = {
     // Ronin Mainnet
     2020: 'b8101fc0-9c19-4b6f-ec65-f6dfff106e00',
     // Saigon Testnet (a.k.a. Ronin)
-    2021: 'b8101fc0-9c19-4b6f-ec65-f6dfff106e00'
+    2021: 'b8101fc0-9c19-4b6f-ec65-f6dfff106e00',
+    // Solana networks
+    '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': 'a1b58899-f671-4276-6a5e-56ca5bd59700',
+    '4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z': 'a1b58899-f671-4276-6a5e-56ca5bd59700',
+    EtWTRABZaYq6iMfeYKouRu166VU2xqa1: 'a1b58899-f671-4276-6a5e-56ca5bd59700'
   } as Record<string, string>,
 
   ConnectorImageIds: {
@@ -78,7 +84,7 @@ export const PresetsUtil = {
     [ConstantsUtil.INJECTED_CONNECTOR_ID]: 'INJECTED',
     [ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID]: 'WALLET_CONNECT',
     [ConstantsUtil.EIP6963_CONNECTOR_ID]: 'ANNOUNCED',
-    [ConstantsUtil.EMAIL_CONNECTOR_ID]: 'EMAIL'
+    [ConstantsUtil.AUTH_CONNECTOR_ID]: 'AUTH'
   } as Record<string, ConnectorType>,
 
   WalletConnectRpcChainIds: [

@@ -7,7 +7,7 @@ export default css`
     gap: var(--wui-spacing-l);
     padding: 17px 18px 17px var(--wui-spacing-m);
     width: 100%;
-    background-color: var(--wui-gray-glass-002);
+    background-color: var(--wui-color-gray-glass-002);
     border-radius: var(--wui-border-radius-xs);
     color: var(--wui-color-fg-250);
   }

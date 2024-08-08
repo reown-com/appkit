@@ -1,13 +1,27 @@
-import { Button, useToast, Stack, Link, Text, Spacer, Flex } from '@chakra-ui/react'
-import { parseEther } from 'viem'
+import { Button, Stack, Link, Text, Spacer, Flex } from '@chakra-ui/react'
+import { parseEther, type Address } from 'viem'
 import { useAccount, useSimulateContract, useWriteContract, useReadContract } from 'wagmi'
 import { useCallback, useEffect } from 'react'
-import { sepolia } from 'wagmi/chains'
+import { optimism, sepolia } from 'wagmi/chains'
 import { abi, address } from '../../utils/DonutContract'
+import { useChakraToast } from '../Toast'
+
+const ALLOWED_CHAINS = [sepolia.id, optimism.id] as number[]
 
 export function WagmiWriteContractTest() {
-  const toast = useToast()
-  const { status, chain } = useAccount()
+  const { status, chain, address: accountAddress } = useAccount()
+
+  return ALLOWED_CHAINS.includes(Number(chain?.id)) && status === 'connected' ? (
+    <AvailableTestContent accountAddress={accountAddress} />
+  ) : (
+    <Text fontSize="md" color="yellow">
+      Switch to Sepolia or OP to test this feature
+    </Text>
+  )
+}
+
+function AvailableTestContent({ accountAddress }: { accountAddress: Address }) {
+  const toast = useChakraToast()
   const {
     data: donutsOwned,
     refetch: fetchDonutsOwned,
@@ -16,61 +30,72 @@ export function WagmiWriteContractTest() {
   } = useReadContract({
     abi,
     address,
-    functionName: 'getBalance'
+    functionName: 'getBalance',
+    args: [accountAddress],
+    query: {
+      refetchOnWindowFocus: false
+    }
   })
-  const { data: simulateData, error: simulateError } = useSimulateContract({
+  const {
+    refetch: simulateContract,
+    data: simulateData,
+    isFetching: simulateFetching
+  } = useSimulateContract({
     abi,
     address,
     functionName: 'purchase',
-    value: parseEther('0.0003'),
-    args: [1]
+    value: parseEther('0.0001'),
+    args: [1],
+    query: {
+      enabled: false
+    }
   })
   const { writeContract, reset, data, error, isPending } = useWriteContract()
-  const isConnected = status === 'connected'
 
   const onSendTransaction = useCallback(async () => {
-    if (simulateError || !simulateData?.request) {
+    const { data: localSimulateData, error: simulateError } = await simulateContract()
+
+    if (simulateError || !localSimulateData?.request) {
       toast({
         title: 'Error',
         description: 'Not able to execute this transaction. Check your balance.',
-        status: 'error',
-        isClosable: true
+        type: 'error'
       })
     } else {
-      writeContract(simulateData?.request)
+      writeContract(localSimulateData.request)
       await fetchDonutsOwned()
     }
-  }, [writeContract, simulateError, simulateData?.request])
+  }, [writeContract, simulateContract])
 
   useEffect(() => {
     if (data) {
       toast({
         title: 'Donut Purchase Success!',
         description: data,
-        status: 'success',
-        isClosable: true
+        type: 'success'
       })
     } else if (error) {
       toast({
         title: 'Error',
         description: 'Failed to purchase donut',
-        status: 'error',
-        isClosable: true
+        type: 'error'
       })
     }
     reset()
   }, [data, error])
 
-  return chain?.id === sepolia.id && status === 'connected' ? (
+  return (
     <Stack direction={['column', 'column', 'row']}>
       <Button
-        data-test-id="sign-transaction-button"
+        data-testid="sign-transaction-button"
         onClick={onSendTransaction}
         disabled={!simulateData?.request}
-        isDisabled={isPending || !isConnected}
+        isDisabled={isPending}
+        isLoading={simulateFetching}
       >
         Purchase crypto donut
       </Button>
+
       {donutsQueryLoading || donutsQueryRefetching ? (
         <Text>Fetching donuts...</Text>
       ) : (
@@ -93,9 +118,5 @@ export function WagmiWriteContractTest() {
         </Button>
       </Link>
     </Stack>
-  ) : (
-    <Text fontSize="md" color="yellow">
-      Switch to Sepolia Ethereum Testnet to test this feature
-    </Text>
   )
 }

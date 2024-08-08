@@ -1,12 +1,25 @@
+import * as React from 'react'
 import { useWeb3ModalAccount } from '@web3modal/ethers/react'
 import { EthersSignMessageTest } from './EthersSignMessageTest'
 import { EthersSignTypedDataTest } from './EthersSignTypedDataTest'
 import { StackDivider, Card, CardHeader, Heading, CardBody, Box, Stack } from '@chakra-ui/react'
 import { EthersTransactionTest } from './EthersTransactionTest'
 import { EthersWriteContractTest } from './EthersWriteContractTest'
+import { EthersSendCallsTest } from './EthersSendCallsTest'
+import { EthersGetCallsStatusTest } from './EthersGetCallsStatusTest'
+import { EthersSendCallsWithPaymasterServiceTest } from './EthersSendCallsWithPaymasterServiceTest'
 
 export function EthersTests() {
+  const [ready, setReady] = React.useState(false)
   const { isConnected } = useWeb3ModalAccount()
+
+  React.useEffect(() => {
+    setReady(true)
+  }, [])
+
+  if (!ready) {
+    return null
+  }
 
   return isConnected ? (
     <Card marginTop={10} marginBottom={10}>
@@ -41,6 +54,24 @@ export function EthersTests() {
               Contract Write
             </Heading>
             <EthersWriteContractTest />
+          </Box>
+          <Box>
+            <Heading size="xs" textTransform="uppercase" pb="2">
+              Send Calls (Atomic Batch)
+            </Heading>
+            <EthersSendCallsTest />
+          </Box>
+          <Box>
+            <Heading size="xs" textTransform="uppercase" pb="2">
+              Get Calls Status
+            </Heading>
+            <EthersGetCallsStatusTest />
+          </Box>
+          <Box>
+            <Heading size="xs" textTransform="uppercase" pb="2">
+              Send Calls (Paymaster Service)
+            </Heading>
+            <EthersSendCallsWithPaymasterServiceTest />
           </Box>
         </Stack>
       </CardBody>

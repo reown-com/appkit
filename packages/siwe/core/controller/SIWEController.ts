@@ -1,4 +1,4 @@
-import { subscribeKey as subKey } from 'valtio/utils'
+import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
 import type {
   SIWEClientMethods,
@@ -59,23 +59,27 @@ export const SIWEController = {
     return state._client
   },
 
-  async getNonce() {
+  async getNonce(address?: string) {
     const client = this._getClient()
-    const nonce = await client.getNonce()
+    const nonce = await client.getNonce(address)
     this.setNonce(nonce)
 
     return nonce
   },
 
   async getSession() {
-    const client = this._getClient()
-    const session = await client.getSession()
-    if (session) {
-      this.setSession(session)
-      this.setStatus('success')
-    }
+    try {
+      const client = this._getClient()
+      const session = await client.getSession()
+      if (session) {
+        this.setSession(session)
+        this.setStatus('success')
+      }
 
-    return session
+      return session
+    } catch {
+      return undefined
+    }
   },
 
   createMessage(args: SIWECreateMessageArgs) {
@@ -104,6 +108,7 @@ export const SIWEController = {
     const client = this._getClient()
     await client.signOut()
     this.setStatus('ready')
+    this.setSession(undefined)
     client.onSignOut?.()
   },
 
@@ -137,5 +142,6 @@ export const SIWEController = {
 
   setSession(session: SIWEControllerClientState['session']) {
     state.session = session
+    state.status = session ? 'success' : 'ready'
   }
 }

@@ -8,7 +8,7 @@ export default css`
     gap: var(--wui-spacing-s);
     padding: 17px 18px 17px var(--wui-spacing-m);
     width: 100%;
-    background-color: var(--wui-gray-glass-002);
+    background-color: var(--wui-color-gray-glass-002);
     border-radius: var(--wui-border-radius-xs);
     color: var(--wui-color-fg-250);
   }
@@ -25,7 +25,7 @@ export default css`
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(to top, var(--wui-color-bg-200), transparent);
+    background: linear-gradient(to top, var(--wui-color-bg-150), transparent);
     border-bottom-left-radius: var(--wui-border-radius-xs);
     border-bottom-right-radius: var(--wui-border-radius-xs);
   }

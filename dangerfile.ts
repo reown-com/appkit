@@ -11,6 +11,10 @@ const RENDER_COMMENT = `// -- Render -------------------------------------------
 const STATE_PROPERTIES_COMMENT = `// -- State & Properties -------------------------------- //`
 const PRIVATE_COMMENT = `// -- Private ------------------------------------------- //`
 const PACKAGE_VERSION = ConstantsUtil.VERSION
+const RELATIVE_IMPORT_SAME_DIR = `'./`
+const RELATIVE_IMPORT_PARENT_DIR = `'../`
+const RELATIVE_IMPORT_EXTENSION = `.js'`
+const PRIVATE_FUNCTION_REGEX = /private\s+(\w+)\s*\(\s*\)/g
 
 // -- Data --------------------------------------------------------------------
 const { modified_files, created_files, deleted_files, diffForFile } = danger.git
@@ -22,16 +26,16 @@ const all_files = [...updated_files, ...created_files, ...deleted_files].filter(
 // -- Dependency Checks -------------------------------------------------------
 async function checkPackageJsons() {
   const packageJsons = all_files.filter(f => f.includes('package.json'))
-  const packageLock = updated_files.find(f => f.includes('package-lock.json'))
-  const yarnLock = updated_files.find(f => f.includes('yarn.lock'))
   const pnpmLock = updated_files.find(f => f.includes('pnpm-lock.yaml'))
+  const yarnLock = updated_files.find(f => f.includes('yarn.lock'))
+  const npmLock = updated_files.find(f => f.includes('package-lock.json'))
 
-  if (packageJsons.length && !packageLock) {
-    warn('Changes were made to one or more package.json(s), but not to package-lock.json')
+  if (packageJsons.length && !pnpmLock) {
+    warn('Changes were made to one or more package.json(s), but not to pnpm-lock.yaml')
   }
 
-  if (yarnLock || pnpmLock) {
-    fail('Non npm lockfile(s) detected (yarn / pnpm), please use npm')
+  if (yarnLock || npmLock) {
+    fail('Non pnpm lockfile(s) detected (yarn / npm), please use pnpm')
   }
 
   for (const f of packageJsons) {
@@ -47,7 +51,9 @@ checkPackageJsons()
 async function checkUiPackage() {
   const created_ui_components = created_files.filter(f => f.includes('ui/src/components'))
   const created_ui_composites = created_files.filter(f => f.includes('ui/src/composites'))
+  const deleted_ui_composites = deleted_files.filter(f => f.includes('ui/src/composites'))
   const created_ui_layout = created_files.filter(f => f.includes('ui/src/layout'))
+  const deleted_ui_layout = deleted_files.filter(f => f.includes('ui/src/layout'))
   const created_ui_files = [
     ...created_ui_components,
     ...created_ui_composites,
@@ -79,7 +85,9 @@ async function checkUiPackage() {
       fail(`${f} is missing \`${STATE_PROPERTIES_COMMENT}\` comment`)
     }
 
-    if (diff?.added.includes('private ') && !diff.added.includes(PRIVATE_COMMENT)) {
+    const privateFunctionsAdded = diff?.added.match(PRIVATE_FUNCTION_REGEX)?.length
+
+    if (privateFunctionsAdded && !diff?.added.includes(PRIVATE_COMMENT)) {
       message(
         `${f} is missing \`${PRIVATE_COMMENT}\` comment, but seems to have private members. Check if this is correct`
       )
@@ -112,17 +120,26 @@ async function checkUiPackage() {
 
   const ui_index = modified_files.find(f => f.includes('ui/index.ts'))
   const ui_index_diff = ui_index ? await diffForFile(ui_index) : undefined
-  const jsx_index = modified_files.find(f => f.includes('ui/utils/JSXTypesUtil.ts'))
-  const jsx_index_diff = jsx_index ? await diffForFile(jsx_index) : undefined
+  const types_util_index = modified_files.find(f => f.includes('ui/src/utils/JSXTypeUtil.ts'))
+  const types_util_diff = types_util_index ? await diffForFile(types_util_index) : undefined
   const created_ui_components_index_ts = created_ui_components.filter(f => f.endsWith('index.ts'))
   const created_ui_composites_index_ts = created_ui_composites.filter(f => f.endsWith('index.ts'))
+  const deleted_ui_composites_index_ts = deleted_ui_composites.filter(f => f.endsWith('index.ts'))
+  const is_new_composites_added =
+    created_ui_composites_index_ts.length > deleted_ui_composites_index_ts.length
   const created_ui_layout_index_ts = created_ui_layout.filter(f => f.endsWith('index.ts'))
+  const deleted_ui_layout_index_ts = deleted_ui_layout.filter(f => f.endsWith('index.ts'))
+  const is_new_layout_added = created_ui_layout_index_ts.length > deleted_ui_layout_index_ts.length
 
   if (created_ui_components_index_ts.length && !ui_index_diff?.added.includes('src/components')) {
     fail('New components were added, but not exported in ui/index.ts')
   }
 
-  if (created_ui_composites_index_ts.length && !ui_index_diff?.added.includes('src/composites')) {
+  if (is_new_composites_added && !types_util_diff) {
+    fail('New composites were added, but JSXTypeUtil.ts is not modified')
+  }
+
+  if (is_new_composites_added && !types_util_diff?.added.includes('../composites')) {
     fail('New composites were added, but not exported in ui/index.ts')
   }
 
@@ -130,11 +147,7 @@ async function checkUiPackage() {
     fail('New layout components were added, but not exported in ui/index.ts')
   }
 
-  if (
-    created_ui_components_index_ts.length &&
-    !jsx_index_diff?.added.includes('../components') &&
-    !jsx_index_diff?.diff.includes('../components')
-  ) {
+  if (created_ui_components_index_ts.length && !types_util_diff?.added.includes('../components')) {
     fail(
       `New components were added, but not exported in ui/utils/JSXTypeUtil.ts: ${created_ui_components.join(
         ', '
@@ -142,19 +155,11 @@ async function checkUiPackage() {
     )
   }
 
-  if (
-    created_ui_composites_index_ts.length &&
-    !jsx_index_diff?.added.includes('../composites') &&
-    !jsx_index_diff?.diff.includes('../composites')
-  ) {
+  if (is_new_composites_added && !types_util_diff?.added.includes('../composites')) {
     fail('New composites were added, but not exported in ui/utils/JSXTypeUtil.ts')
   }
 
-  if (
-    created_ui_layout_index_ts.length &&
-    !jsx_index_diff?.added.includes('../layout') &&
-    !jsx_index_diff?.diff.includes('../layout')
-  ) {
+  if (is_new_layout_added && !types_util_diff?.added.includes('../layout')) {
     fail('New layout components were added, but not exported in ui/utils/JSXTypeUtil.ts')
   }
 
@@ -162,7 +167,7 @@ async function checkUiPackage() {
     fail('New components were added, but no stories were created')
   }
 
-  if (created_ui_composites.length && !created_ui_composites_stories.length) {
+  if (is_new_composites_added && !created_ui_composites_stories.length) {
     fail('New composites were added, but no stories were created')
   }
 
@@ -176,6 +181,11 @@ checkUiPackage()
 async function checkCorePackage() {
   const created_core_controllers = created_files.filter(f => f.includes('core/src/controllers'))
   const created_core_controllers_tests = created_files.filter(f =>
+    f.includes('core/tests/controllers')
+  )
+
+  const modified_core_controllers = modified_files.filter(f => f.includes('core/src/controllers'))
+  const modified_core_controllers_tests = modified_files.filter(f =>
     f.includes('core/tests/controllers')
   )
 
@@ -214,6 +224,13 @@ async function checkCorePackage() {
   if (created_core_controllers.length && !created_core_controllers_tests.length) {
     fail('New controllers were added, but no tests were created')
   }
+
+  if (modified_core_controllers.length && !modified_core_controllers_tests) {
+    message(`
+      The following controllers were modified, but not tests were changed:
+      ${modified_core_controllers.join('\n')}
+    `)
+  }
 }
 checkCorePackage()
 
@@ -239,7 +256,9 @@ async function checkScaffoldHtmlPackage() {
       fail(`${f} is missing \`${STATE_PROPERTIES_COMMENT}\` comment`)
     }
 
-    if (diff?.added.includes('private ') && !diff.added.includes(PRIVATE_COMMENT)) {
+    const privateFunctionsAdded = diff?.added.match(PRIVATE_FUNCTION_REGEX)?.length
+
+    if (privateFunctionsAdded && !diff?.added.includes(PRIVATE_COMMENT)) {
       message(
         `${f} is missing \`${PRIVATE_COMMENT}\` comment, but seems to have private members. Check if this is correct`
       )
@@ -265,18 +284,35 @@ async function checkScaffoldHtmlPackage() {
 checkScaffoldHtmlPackage()
 
 // -- Client(s) Package Checks ----------------------------------------------------
-async function checkClientPackages() {
-  const wagmi_files = modified_files.filter(f => f.includes('/wagmi/'))
+// -- Helper functions
+const isRelativeImport = (addition: string | undefined) => {
+  const sameDir = addition?.includes(RELATIVE_IMPORT_SAME_DIR)
+  const parentDir = addition?.includes(RELATIVE_IMPORT_PARENT_DIR)
+  return sameDir || parentDir
+}
+const containsRelativeImportWithoutJSExtension = (addition: string | undefined) => {
+  const hasImportStatement = addition?.includes('import')
+  const lacksJSExtension = !addition?.includes(RELATIVE_IMPORT_EXTENSION)
+  const hasRelativePath = isRelativeImport(addition)
 
-  for (const f of wagmi_files) {
+  return hasImportStatement && lacksJSExtension && hasRelativePath
+}
+async function checkClientPackages() {
+  const client_files = modified_files.filter(f => /\/(wagmi|solana|ethers|ethers5)\//.test(f))
+
+  for (const f of client_files) {
     const diff = await diffForFile(f)
 
-    if (diff?.added.includes('@web3modal/core')) {
+    if (diff?.added.includes("from '@web3modal/core")) {
       fail(`${f} is not allowed to import from @web3modal/core`)
     }
 
-    if (diff?.added.includes('@web3modal/ui')) {
+    if (diff?.added.includes("from '@web3modal/ui")) {
       fail(`${f} is not allowed to import from @web3modal/ui`)
+    }
+
+    if (containsRelativeImportWithoutJSExtension(diff?.added)) {
+      fail(`${f} contains relative imports without .js extension`)
     }
   }
 }
@@ -285,10 +321,38 @@ checkClientPackages()
 // -- Check sdkVersion ------------------------------------------------------------
 function checkSdkVersion() {
   if (PACKAGE_VERSION !== corePackageJson.version) {
-    fail(`VERSION in utils/constants does't match core package.json version`)
+    fail(`VERSION in utils/constants doesn't match core package.json version`)
   }
 }
 checkSdkVersion()
+
+// -- Check wallet ------------------------------------------------------------
+
+async function checkWallet() {
+  const wallet_files = modified_files.filter(f => f.includes('/wallet/'))
+  for (const f of wallet_files) {
+    const diff = await diffForFile(f)
+    if (f.includes('W3mFrameConstants') && diff?.added.includes('SECURE_SITE_SDK')) {
+      warn('Secure site URL has been changed')
+    }
+  }
+}
+
+checkWallet()
+
+// -- Check laboratory ------------------------------------------------------------
+
+async function checkLaboratory() {
+  const lab_files = modified_files.filter(f => f.includes('/laboratory/'))
+  for (const f of lab_files) {
+    const diff = await diffForFile(f)
+    if (f.includes('project') && (diff?.removed.includes('spec') || diff?.added.includes('spec'))) {
+      warn('Testing spec changed')
+    }
+  }
+}
+
+checkLaboratory()
 
 // -- Check left over development constants ---------------------------------------
 async function checkDevelopmentConstants() {

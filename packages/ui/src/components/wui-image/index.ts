@@ -3,6 +3,7 @@ import { property } from 'lit/decorators.js'
 import { colorStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
+import type { SizeType } from '../../utils/TypeUtil.js'
 
 @customElement('wui-image')
 export class WuiImage extends LitElement {
@@ -13,9 +14,20 @@ export class WuiImage extends LitElement {
 
   @property() public alt = 'Image'
 
+  @property() public size?: SizeType = undefined
+
   // -- Render -------------------------------------------- //
   public override render() {
-    return html`<img src=${this.src} alt=${this.alt} />`
+    this.style.cssText = `
+      --local-width: ${this.size ? `var(--wui-icon-size-${this.size});` : '100%'};
+      --local-height: ${this.size ? `var(--wui-icon-size-${this.size});` : '100%'};
+      `
+
+    return html`<img src=${this.src} alt=${this.alt} @error=${this.handleImageError} />`
+  }
+
+  private handleImageError() {
+    this.dispatchEvent(new CustomEvent('onLoadError', { bubbles: true, composed: true }))
   }
 }
 

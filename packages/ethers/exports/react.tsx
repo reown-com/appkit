@@ -60,12 +60,13 @@ export function useSwitchNetwork() {
 }
 
 export function useWeb3ModalAccount() {
-  const { address, isConnected, chainId } = useSnapshot(EthersStoreUtil.state)
+  const { address, isConnected, chainId, status } = useSnapshot(EthersStoreUtil.state)
 
   return {
     address,
     isConnected,
-    chainId
+    chainId,
+    status
   }
 }
 
@@ -81,7 +82,8 @@ export {
   useWeb3ModalTheme,
   useWeb3Modal,
   useWeb3ModalState,
-  useWeb3ModalEvents
+  useWeb3ModalEvents,
+  useWalletInfo
 } from '@web3modal/scaffold-react'
 
 // -- Universal Exports -------------------------------------------------------

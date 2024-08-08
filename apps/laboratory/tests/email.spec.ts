@@ -1,53 +1,95 @@
-import { testMEmail } from './shared/fixtures/w3m-fixture'
-import { DeviceRegistrationPage } from './shared/pages/DeviceRegistrationPage'
+import { expect, test, type BrowserContext } from '@playwright/test'
+import { ModalWalletPage } from './shared/pages/ModalWalletPage'
 import { Email } from './shared/utils/email'
+import { ModalWalletValidator } from './shared/validators/ModalWalletValidator'
+import { SECURE_WEBSITE_URL } from './shared/constants'
 
-// Prevent collissions by using a semi-random reserved Mailsac email
-const AVAILABLE_MAILSAC_ADDRESSES = 10
+/* eslint-disable init-declarations */
+let page: ModalWalletPage
+let validator: ModalWalletValidator
+let context: BrowserContext
+/* eslint-enable init-declarations */
 
-testMEmail.beforeEach(async ({ modalPage, context, modalValidator }) => {
-  // This is prone to collissions and will be improved later
-  const tempEmail = `web3modal${Math.floor(
-    Math.random() * AVAILABLE_MAILSAC_ADDRESSES
-  )}@mailsac.com`
+// -- Setup --------------------------------------------------------------------
+const emailTest = test.extend<{ library: string }>({
+  library: ['wagmi', { option: true }]
+})
+
+emailTest.describe.configure({ mode: 'serial' })
+
+emailTest.beforeAll(async ({ browser, library }) => {
+  emailTest.setTimeout(180000)
+  context = await browser.newContext()
+  const browserPage = await context.newPage()
+
+  page = new ModalWalletPage(browserPage, library, 'email')
+  validator = new ModalWalletValidator(browserPage)
+
+  await page.load()
+
   const mailsacApiKey = process.env['MAILSAC_API_KEY']
   if (!mailsacApiKey) {
     throw new Error('MAILSAC_API_KEY is not set')
   }
   const email = new Email(mailsacApiKey)
-  await email.deleteAllMessages(tempEmail)
-  await modalPage.loginWithEmail(tempEmail)
+  const tempEmail = await email.getEmailAddressToUse()
+  await page.emailFlow(tempEmail, context, mailsacApiKey)
 
-  let latestMessage = await email.getNewMessage(tempEmail)
-  let messageId = latestMessage._id
-
-  if (!messageId) {
-    throw new Error('No messageId found')
-  }
-
-  let otp = await email.getCodeFromEmail(tempEmail, messageId)
-
-  if (otp.length !== 6) {
-    // We got a device registration link so let's register first
-    const drp = new DeviceRegistrationPage(await context.newPage(), otp)
-    drp.load()
-    await drp.approveDevice()
-
-    latestMessage = await email.getNewMessage(tempEmail)
-    messageId = latestMessage._id
-    if (!messageId) {
-      throw new Error('No messageId found')
-    }
-    otp = await email.getCodeFromEmail(tempEmail, messageId)
-  }
-
-  await modalPage.enterOTP(otp)
-  await modalValidator.expectConnected()
+  await validator.expectConnected()
 })
 
-testMEmail('it should sign', async ({ modalPage, modalValidator }) => {
-  testMEmail.skip(modalPage.library === 'wagmi', 'Tests are flaky on wagmi')
-  await modalPage.sign()
-  await modalPage.approveSign()
-  await modalValidator.expectAcceptedSign()
+emailTest.afterAll(async () => {
+  await page.page.close()
+})
+
+// -- Tests --------------------------------------------------------------------
+emailTest('it should sign', async () => {
+  await page.sign()
+  await page.approveSign()
+  await validator.expectAcceptedSign()
+})
+
+emailTest('it should upgrade wallet', async () => {
+  const walletUpgradePage = await page.clickWalletUpgradeCard(context)
+  expect(walletUpgradePage.url()).toContain(SECURE_WEBSITE_URL)
+  await walletUpgradePage.close()
+  await page.closeModal()
+})
+
+emailTest('it should reject sign', async () => {
+  await page.sign()
+  await page.rejectSign()
+  await validator.expectRejectedSign()
+})
+
+emailTest('it should switch network and sign', async () => {
+  let targetChain = 'Polygon'
+  await page.openAccount()
+  await page.openProfileView()
+  await page.openSettings()
+  await page.switchNetwork(targetChain)
+  await validator.expectSwitchedNetwork(targetChain)
+  await page.closeModal()
+  await page.sign()
+  await page.approveSign()
+  await validator.expectAcceptedSign()
+
+  targetChain = 'Ethereum'
+  await page.openAccount()
+  await page.openProfileView()
+  await page.openSettings()
+  await page.switchNetwork(targetChain)
+  await validator.expectSwitchedNetwork(targetChain)
+  await page.closeModal()
+  await page.sign()
+  await page.approveSign()
+  await validator.expectAcceptedSign()
+})
+
+emailTest('it should disconnect correctly', async () => {
+  await page.openAccount()
+  await page.openProfileView()
+  await page.openSettings()
+  await page.disconnect()
+  await validator.expectDisconnected()
 })

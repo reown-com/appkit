@@ -1,5 +1,6 @@
-import { describe, expect, it } from 'vitest'
-import { AccountController } from '../../index.js'
+import { beforeAll, describe, expect, it } from 'vitest'
+import { AccountController, ChainController } from '../../index.js'
+import { ConstantsUtil } from '@web3modal/common'
 
 // -- Setup --------------------------------------------------------------------
 const caipAddress = 'eip155:1:0x123'
@@ -7,11 +8,23 @@ const balance = '0.100'
 const balanceSymbol = 'ETH'
 const profileName = 'john.eth'
 const profileImage = 'https://ipfs.com/0x123.png'
+const explorerUrl = 'https://some.explorer.com/explore'
 
 // -- Tests --------------------------------------------------------------------
+beforeAll(() => {
+  ChainController.initialize([{ chain: ConstantsUtil.CHAIN.EVM }])
+})
+
 describe('AccountController', () => {
   it('should have valid default state', () => {
-    expect(AccountController.state).toEqual({ isConnected: false })
+    expect(AccountController.state).toEqual({
+      isConnected: false,
+      smartAccountDeployed: false,
+      currentTab: 0,
+      tokenBalance: [],
+      allAccounts: [],
+      addressLabels: new Map<string, string>()
+    })
   })
 
   it('should update state correctly on setIsConnected()', () => {
@@ -41,8 +54,40 @@ describe('AccountController', () => {
     expect(AccountController.state.profileImage).toEqual(profileImage)
   })
 
+  it('should update state correctly on setAddressExplorerUrl()', () => {
+    AccountController.setAddressExplorerUrl(explorerUrl)
+    expect(AccountController.state.addressExplorerUrl).toEqual(explorerUrl)
+  })
+
+  it('shuold update state correctly on setSmartAccountDeployed()', () => {
+    AccountController.setSmartAccountDeployed(true)
+    expect(AccountController.state.smartAccountDeployed).toEqual(true)
+  })
+
+  it('should update state correctly on setPreferredAccountType()', () => {
+    AccountController.setPreferredAccountType('eoa')
+    expect(AccountController.state.preferredAccountType).toEqual('eoa')
+
+    AccountController.setPreferredAccountType('smartAccount')
+    expect(AccountController.state.preferredAccountType).toEqual('smartAccount')
+  })
+
   it('should update state correctly on resetAccount()', () => {
     AccountController.resetAccount()
-    expect(AccountController.state).toEqual({ isConnected: false })
+    expect(AccountController.state).toEqual({
+      isConnected: false,
+      smartAccountDeployed: false,
+      currentTab: 0,
+      caipAddress: undefined,
+      address: undefined,
+      balance: undefined,
+      balanceSymbol: undefined,
+      profileName: undefined,
+      profileImage: undefined,
+      addressExplorerUrl: undefined,
+      tokenBalance: [],
+      allAccounts: [],
+      addressLabels: new Map<string, string>()
+    })
   })
 })

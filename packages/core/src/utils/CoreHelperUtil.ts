@@ -1,3 +1,5 @@
+import type { Balance } from '@web3modal/common'
+import { ConstantsUtil as CommonConstants } from '@web3modal/common'
 import { ConstantsUtil } from './ConstantsUtil.js'
 import type { CaipAddress, LinkingRecord, CaipNetwork } from './TypeUtil.js'
 
@@ -11,6 +13,10 @@ export const CoreHelperUtil = {
     }
 
     return false
+  },
+
+  checkCaipNetwork(network: CaipNetwork | undefined, networkName = '') {
+    return network?.id.toLocaleLowerCase().includes(networkName.toLowerCase())
   },
 
   isAndroid() {
@@ -45,8 +51,12 @@ export const CoreHelperUtil = {
     return Date.now() + ConstantsUtil.FOUR_MINUTES_MS
   },
 
-  getPlainAddress(caipAddress: CaipAddress) {
-    return caipAddress.split(':')[2]
+  getNetworkId(caipAddress: CaipAddress | undefined) {
+    return caipAddress?.split(':')[1]
+  },
+
+  getPlainAddress(caipAddress: CaipAddress | undefined) {
+    return caipAddress?.split(':')[2]
   },
 
   async wait(milliseconds: number) {
@@ -63,6 +73,7 @@ export const CoreHelperUtil = {
       function next() {
         func(...args)
       }
+
       if (timer) {
         clearTimeout(timer)
       }
@@ -114,6 +125,10 @@ export const CoreHelperUtil = {
     window.open(href, target, features || 'noreferrer noopener')
   },
 
+  returnOpenHref(href: string, target: '_blank' | '_self' | 'popupWindow', features?: string) {
+    return window.open(href, target, features || 'noreferrer noopener')
+  },
+
   async preloadImage(src: string) {
     const imagePromise = new Promise((resolve, reject) => {
       const image = new Image()
@@ -160,33 +175,16 @@ export const CoreHelperUtil = {
     }
   },
 
-  isRestrictedRegion() {
-    try {
-      const { timeZone } = new Intl.DateTimeFormat().resolvedOptions()
-      const capTimeZone = timeZone.toUpperCase()
-
-      return ConstantsUtil.RESTRICTED_TIMEZONES.includes(capTimeZone)
-    } catch {
-      return false
-    }
-  },
-
   getApiUrl() {
-    return CoreHelperUtil.isRestrictedRegion()
-      ? 'https://api.web3modal.org'
-      : 'https://api.web3modal.com'
+    return CommonConstants.W3M_API_URL
   },
 
   getBlockchainApiUrl() {
-    return CoreHelperUtil.isRestrictedRegion()
-      ? 'https://rpc.walletconnect.org'
-      : 'https://rpc.walletconnect.com'
+    return CommonConstants.BLOCKCHAIN_API_RPC_URL
   },
 
   getAnalyticsUrl() {
-    return CoreHelperUtil.isRestrictedRegion()
-      ? 'https://pulse.walletconnect.org'
-      : 'https://pulse.walletconnect.com'
+    return CommonConstants.PULSE_API_URL
   },
 
   getUUID() {
@@ -214,6 +212,7 @@ export const CoreHelperUtil = {
 
     return 'Unknown error'
   },
+
   sortRequestedNetworks(
     approvedIds: `${string}:${string}`[] | undefined,
     requestedNetworks: CaipNetwork[] = []
@@ -242,5 +241,45 @@ export const CoreHelperUtil = {
     }
 
     return requestedNetworks
+  },
+
+  calculateBalance(array: Balance[]) {
+    let sum = 0
+    for (const item of array) {
+      sum += item.value ?? 0
+    }
+
+    return sum
+  },
+
+  formatTokenBalance(number: number) {
+    const roundedNumber = number.toFixed(2)
+    const [dollars, pennies] = roundedNumber.split('.')
+
+    return { dollars, pennies }
+  },
+
+  isAddress(address: string): boolean {
+    if (!/^(?:0x)?[0-9a-f]{40}$/iu.test(address)) {
+      return false
+    } else if (/^(?:0x)?[0-9a-f]{40}$/iu.test(address) || /^(?:0x)?[0-9A-F]{40}$/iu.test(address)) {
+      return true
+    }
+
+    return false
+  },
+
+  uniqueBy<T>(arr: T[], key: keyof T) {
+    const set = new Set()
+
+    return arr.filter(item => {
+      const keyValue = item[key]
+      if (set.has(keyValue)) {
+        return false
+      }
+      set.add(keyValue)
+
+      return true
+    })
   }
 }

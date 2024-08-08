@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useSyncExternalStore } from 'react'
 import type {
   W3mAccountButton,
   W3mButton,
@@ -86,6 +86,20 @@ export function useWeb3Modal() {
   return { open, close }
 }
 
+export function useWalletInfo() {
+  if (!modal) {
+    throw new Error('Please call "createWeb3Modal" before using "useWalletInfo" hook')
+  }
+
+  const walletInfo = useSyncExternalStore(
+    modal.subscribeWalletInfo,
+    modal.getWalletInfo,
+    modal.getWalletInfo
+  )
+
+  return { walletInfo }
+}
+
 export function useWeb3ModalState() {
   if (!modal) {
     throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalState" hook')
@@ -108,7 +122,7 @@ export function useWeb3ModalState() {
 
 export function useWeb3ModalEvents() {
   if (!modal) {
-    throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalState" hook')
+    throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalEvents" hook')
   }
 
   const [event, setEvents] = useState(modal.getEvent())

@@ -13,7 +13,6 @@ export default css`
     fill: none;
     stroke: transparent;
     stroke-linecap: round;
-    transition: all var(--wui-ease-in-power-3) var(--wui-duration-lg);
   }
 
   use {
