@@ -66,7 +66,7 @@ export class ModalPage {
           body: request.postData()
         })
         const headers: Record<string, string> = {}
-        response.headers.forEach((value, key) => {
+        response.headers.forEach((value: string, key: string) => {
           headers[key] = value
         })
         const body = Buffer.from(await response.arrayBuffer())
