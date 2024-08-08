@@ -4,7 +4,8 @@ import { OptionsController } from '@web3modal/core'
 
 import { SolStoreUtil } from '../utils/scaffold/index.js'
 import { UniversalProviderFactory } from './universalProvider.js'
-import { BaseConnector, type Connector } from './baseConnector.js'
+import { BaseConnector } from './baseConnector.js'
+import type { Connector } from './baseConnector.js'
 
 import type UniversalProvider from '@walletconnect/universal-provider'
 

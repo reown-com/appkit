@@ -15,7 +15,7 @@ import { useChakraToast } from '../Toast'
 
 const PHANTOM_DEVNET_ADDRESS = '8vCyX7oB6Pc3pbWMGYYZF5pbSnAdQ7Gyr32JqxqCy8ZR'
 const recipientAddress = new PublicKey(PHANTOM_DEVNET_ADDRESS)
-const amountInLamports = 10000000
+const amountInLamports = 10_000_000
 
 export function SolanaSignTransactionTest() {
   const toast = useChakraToast()
