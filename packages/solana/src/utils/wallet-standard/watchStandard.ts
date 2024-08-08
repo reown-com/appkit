@@ -25,6 +25,8 @@ export function watchStandard(callback: (arg: StandardWalletAdapter[]) => void) 
     })
   ]
 
+  callback(standardAdapters)
+
   return () => listeners.forEach(off => off())
 }
 
