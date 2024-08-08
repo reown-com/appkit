@@ -2,7 +2,7 @@ import { CoreHelperUtil } from '@web3modal/scaffold'
 import { ConstantsUtil, PresetsUtil } from '@web3modal/scaffold-utils'
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
 import { getChainsFromAccounts } from '@walletconnect/utils'
-import { fallback, http } from 'viem'
+import { fallback, http, type Hex } from 'viem'
 
 import type { CaipNetwork, CaipNetworkId } from '@web3modal/scaffold'
 import type { Chain } from '@wagmi/core/chains'
@@ -70,4 +70,16 @@ export function getTransport({ chain, projectId }: { chain: Chain; projectId: st
     }),
     http(chainDefaultUrl)
   ])
+}
+
+export function requireCaipAddress(caipAddress: string) {
+  if (!caipAddress) {
+    throw new Error('No CAIP address provided')
+  }
+  const account = caipAddress.split(':')[2] as Hex
+  if (!account) {
+    throw new Error('Invalid CAIP address')
+  }
+
+  return account
 }

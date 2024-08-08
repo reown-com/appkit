@@ -47,7 +47,8 @@ import type { Chain as AvailableChain } from '@web3modal/common'
 import {
   getCaipDefaultChain,
   getEmailCaipNetworks,
-  getWalletConnectCaipNetworks
+  getWalletConnectCaipNetworks,
+  requireCaipAddress
 } from './utils/helpers.js'
 import { W3mFrameConstants, W3mFrameHelpers, W3mFrameRpcConstants } from '@web3modal/wallet'
 import type { W3mFrameProvider, W3mFrameTypes } from '@web3modal/wallet'
@@ -268,10 +269,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
       signMessage: async message => {
         const caipAddress = this.getCaipAddress() || ''
-        const account = caipAddress.split(':')[2] as Hex
-        if (!account) {
-          throw new Error('connectionControllerClient:signMessage - account is undefined')
-        }
+        const account = requireCaipAddress(caipAddress)
 
         return signMessage(this.wagmiConfig, { message, account })
       },
@@ -313,10 +311,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
       writeContract: async (data: WriteContractArgs) => {
         const caipAddress = this.getCaipAddress() || ''
-        const account = caipAddress.split(':')[2] as Hex
-        if (!account) {
-          throw new Error('connectionControllerClient:signMessage - account is undefined')
-        }
+        const account = requireCaipAddress(caipAddress)
         const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
 
         const tx = await wagmiWriteContract(wagmiConfig, {
