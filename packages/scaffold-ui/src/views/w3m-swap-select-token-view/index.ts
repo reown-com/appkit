@@ -92,6 +92,7 @@ export class W3mSwapSelectTokenView extends LitElement {
     return html`
       <wui-flex .padding=${['3xs', 's', '0', 's']} gap="xs">
         <wui-input-text
+          data-testid="swap-select-token-search-input"
           class="network-search-input"
           size="sm"
           placeholder="Search token"
@@ -130,6 +131,7 @@ export class W3mSwapSelectTokenView extends LitElement {
 
                   return html`
                     <wui-token-list-item
+                      data-testid="swap-select-token-item-${token.symbol}"
                       name=${token.name}
                       ?disabled=${selected}
                       symbol=${token.symbol}
@@ -155,6 +157,7 @@ export class W3mSwapSelectTokenView extends LitElement {
             ? filteredTokens.map(
                 token => html`
                   <wui-token-list-item
+                    data-testid="swap-select-token-item-${token.symbol}"
                     name=${token.name}
                     symbol=${token.symbol}
                     imageSrc=${token.logoUri}

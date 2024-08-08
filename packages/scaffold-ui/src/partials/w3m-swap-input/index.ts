@@ -54,6 +54,7 @@ export class W3mSwapInput extends LitElement {
           class="swap-input"
         >
           <input
+            data-testid="swap-input-${this.target}"
             @focusin=${() => this.onFocusChange(true)}
             @focusout=${() => this.onFocusChange(false)}
             ?disabled=${this.disabled}
@@ -107,6 +108,7 @@ export class W3mSwapInput extends LitElement {
   private templateTokenSelectButton() {
     if (!this.token) {
       return html` <wui-button
+        data-testid="swap-select-token-button-${this.target}"
         class="swap-token-button"
         size="md"
         variant="accent"
@@ -125,6 +127,7 @@ export class W3mSwapInput extends LitElement {
         gap="xxs"
       >
         <wui-token-button
+          data-testid="swap-input-token-${this.target}"
           text=${this.token.symbol}
           imageSrc=${this.token.logoUri}
           @click=${this.onSelectToken.bind(this)}

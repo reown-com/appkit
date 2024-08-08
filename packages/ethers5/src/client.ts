@@ -16,6 +16,7 @@ import type { Web3ModalSIWEClient } from '@web3modal/siwe'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
 import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 import EthereumProvider, { OPTIONAL_METHODS } from '@walletconnect/ethereum-provider'
+import { getChainsFromAccounts } from '@walletconnect/utils'
 import type {
   Address,
   Metadata,
@@ -146,7 +147,9 @@ export class Web3Modal extends Web3ModalScaffold {
             }
             const ns = provider.signer?.session?.namespaces
             const nsMethods = ns?.[ConstantsUtil.EIP155]?.methods
-            const nsChains = ns?.[ConstantsUtil.EIP155]?.chains
+            const nsChains = getChainsFromAccounts(
+              ns?.[ConstantsUtil.EIP155]?.accounts || []
+            ) as CaipNetworkId[]
 
             const result = {
               supportsAllNetworks: nsMethods?.includes(ConstantsUtil.ADD_CHAIN_METHOD) ?? false,
@@ -176,20 +179,30 @@ export class Web3Modal extends Web3ModalScaffold {
           onUri(uri)
         })
 
-        if (siweConfig?.options?.enabled) {
+        const params = await siweConfig?.getMessageParams?.()
+        // Must perform these checks to satisfy optional types
+        if (siweConfig?.options?.enabled && params && Object.keys(params || {}).length > 0) {
           const { SIWEController, getDidChainId, getDidAddress } = await import('@web3modal/siwe')
+
+          // Make active chain first in requested chains to make it default for siwe message
+          const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
+          let reorderedChains = params.chains
+          if (chainId) {
+            reorderedChains = [chainId, ...params.chains.filter(c => c !== chainId)]
+          }
+
           const result = await WalletConnectProvider.authenticate({
             nonce: await siweConfig.getNonce(),
-            methods: OPTIONAL_METHODS,
-            ...(await siweConfig.getMessageParams())
+            methods: [...OPTIONAL_METHODS],
+            ...params,
+            chains: reorderedChains
           })
           // Auths is an array of signed CACAO objects https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-74.md
           const signedCacao = result?.auths?.[0]
           if (signedCacao) {
             const { p, s } = signedCacao
-            const chainId = getDidChainId(p.iss)
+            const cacaoChainId = getDidChainId(p.iss)
             const address = getDidAddress(p.iss)
-
             try {
               // Kicks off verifyMessage and populates external states
               const message = WalletConnectProvider.signer.client.formatAuthMessage({
@@ -203,10 +216,10 @@ export class Web3Modal extends Web3ModalScaffold {
                 cacao: signedCacao
               })
 
-              if (address && chainId) {
+              if (address && cacaoChainId) {
                 const session = {
                   address,
-                  chainId: parseInt(chainId, 10)
+                  chainId: parseInt(cacaoChainId, 10)
                 }
 
                 SIWEController.setSession(session)
@@ -223,8 +236,9 @@ export class Web3Modal extends Web3ModalScaffold {
             }
           }
         } else {
-          await WalletConnectProvider.connect()
+          await WalletConnectProvider.connect({ optionalChains: this.chains.map(c => c.chainId) })
         }
+
         await this.setWalletConnectProvider()
       },
 
@@ -238,6 +252,8 @@ export class Web3Modal extends Web3ModalScaffold {
         info: Info
         provider: Provider
       }) => {
+        // If connecting with something else than walletconnect, we need to clear the clientId in the store
+        this.setClientId(null)
         if (id === ConstantsUtil.INJECTED_CONNECTOR_ID) {
           const InjectedProvider = ethersConfig.injected
           if (!InjectedProvider) {
@@ -294,6 +310,7 @@ export class Web3Modal extends Web3ModalScaffold {
         const providerType = EthersStoreUtil.state.providerType
         localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
         EthersStoreUtil.reset()
+        this.setClientId(null)
         if (siweConfig?.options?.signOutOnDisconnect) {
           const { SIWEController } = await import('@web3modal/siwe')
           await SIWEController.signOut()
@@ -386,6 +403,24 @@ export class Web3Modal extends Web3ModalScaffold {
       this.syncNetwork(chainImages)
     })
 
+    /*
+     * When the client is loaded, this.getChainId stays undefined even if the user switches networks via w3modal <networks> button.
+     * This subscribes to the network change and sets the chainId in the store so it can be used when connecting.
+     * Especially important for email connector where correct chainId dictates which account is available e.g. smart account, eoa.
+     */
+    this.subscribeCaipNetworkChange(network => {
+      if (!this.getChainId() && network) {
+        EthersStoreUtil.setChainId(NetworkUtil.caipNetworkIdToNumber(network.id))
+      }
+    })
+
+    this.subscribeShouldUpdateToAddress((address?: string) => {
+      if (!address) {
+        return
+      }
+      EthersStoreUtil.setAddress(utils.getAddress(address) as Address)
+    })
+
     this.syncRequestedNetworks(chains, chainImages)
     this.syncConnectors(ethersConfig)
 
@@ -472,6 +507,7 @@ export class Web3Modal extends Web3ModalScaffold {
     localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
     EthersStoreUtil.reset()
 
+    this.setClientId(null)
     if (providerType === 'injected' || providerType === 'eip6963') {
       provider?.emit('disconnect')
     } else {
@@ -618,14 +654,14 @@ export class Web3Modal extends Web3ModalScaffold {
     window?.localStorage.setItem(EthersConstantsUtil.WALLET_ID, name)
 
     if (provider) {
-      const { address, chainId } = await EthersHelpersUtil.getUserInfo(provider)
-      if (address && chainId) {
+      const { addresses, chainId } = await EthersHelpersUtil.getUserInfo(provider)
+      if (addresses?.[0] && chainId) {
         EthersStoreUtil.setChainId(chainId)
         EthersStoreUtil.setProviderType('eip6963')
         EthersStoreUtil.setProvider(provider)
         EthersStoreUtil.setStatus('connected')
         EthersStoreUtil.setIsConnected(true)
-        this.setAddress(address)
+        this.setAddress(addresses[0])
         this.watchEIP6963(provider)
       }
     }
@@ -636,14 +672,14 @@ export class Web3Modal extends Web3ModalScaffold {
     const InjectedProvider = config.injected
 
     if (InjectedProvider) {
-      const { address, chainId } = await EthersHelpersUtil.getUserInfo(InjectedProvider)
-      if (address && chainId) {
+      const { addresses, chainId } = await EthersHelpersUtil.getUserInfo(InjectedProvider)
+      if (addresses?.[0] && chainId) {
         EthersStoreUtil.setChainId(chainId)
         EthersStoreUtil.setProviderType('injected')
         EthersStoreUtil.setProvider(config.injected)
         EthersStoreUtil.setStatus('connected')
         EthersStoreUtil.setIsConnected(true)
-        this.setAddress(address)
+        this.setAddress(addresses[0])
         this.watchCoinbase(config)
       }
     }
@@ -656,14 +692,14 @@ export class Web3Modal extends Web3ModalScaffold {
     )
     const CoinbaseProvider = config.coinbase
     if (CoinbaseProvider) {
-      const { address, chainId } = await EthersHelpersUtil.getUserInfo(CoinbaseProvider)
-      if (address && chainId) {
+      const { addresses, chainId } = await EthersHelpersUtil.getUserInfo(CoinbaseProvider)
+      if (addresses?.[0] && chainId) {
         EthersStoreUtil.setChainId(chainId)
         EthersStoreUtil.setProviderType('coinbaseWalletSDK')
         EthersStoreUtil.setProvider(config.coinbase)
         EthersStoreUtil.setStatus('connected')
         EthersStoreUtil.setIsConnected(true)
-        this.setAddress(address)
+        this.setAddress(addresses[0])
         this.watchCoinbase(config)
       }
     }

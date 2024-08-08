@@ -28,7 +28,9 @@ const accountState: AccountControllerState = {
   isConnected: false,
   currentTab: 0,
   tokenBalance: [],
-  smartAccountDeployed: false
+  smartAccountDeployed: false,
+  addressLabels: new Map(),
+  allAccounts: []
 }
 
 const networkState: NetworkControllerState = {
@@ -278,7 +280,8 @@ export const ChainController = {
       connectedWalletInfo: undefined,
       preferredAccountType: undefined,
       socialProvider: undefined,
-      socialWindow: undefined
+      socialWindow: undefined,
+      farcasterUrl: undefined
     })
   }
 }

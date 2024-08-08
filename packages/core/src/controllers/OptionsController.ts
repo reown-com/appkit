@@ -21,8 +21,10 @@ export interface OptionsControllerState {
   enableAnalytics?: boolean
   metadata?: Metadata
   enableOnramp?: boolean
+  hasMultipleAddresses?: boolean
   disableAppend?: boolean
   enableEIP6963?: boolean
+  enableSwaps?: boolean
 }
 
 type StateKey = keyof OptionsControllerState
@@ -111,5 +113,13 @@ export const OptionsController = {
 
   setEIP6963Enabled(enableEIP6963: OptionsControllerState['enableEIP6963']) {
     state.enableEIP6963 = enableEIP6963
+  },
+
+  setHasMultipleAddresses(hasMultipleAddresses: OptionsControllerState['hasMultipleAddresses']) {
+    state.hasMultipleAddresses = hasMultipleAddresses
+  },
+
+  setEnableSwaps(enableSwaps: OptionsControllerState['enableSwaps']) {
+    state.enableSwaps = enableSwaps
   }
 }

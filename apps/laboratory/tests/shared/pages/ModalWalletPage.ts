@@ -13,7 +13,19 @@ export class ModalWalletPage extends ModalPage {
   }
 
   async openSettings() {
-    await this.page.getByTestId('wui-profile-button').click()
+    await this.page.getByTestId('account-settings-button').click()
+  }
+
+  async openChooseNameIntro() {
+    await this.page.getByTestId('account-choose-name-button').click()
+  }
+
+  async openChooseName() {
+    await this.page.getByRole('button', { name: 'Choose Name' }).click()
+  }
+
+  async typeName(name: string) {
+    await this.page.getByTestId('wui-ens-input').getByTestId('wui-input-text').fill(name)
   }
 
   override async switchNetwork(network: string) {
@@ -55,5 +67,14 @@ export class ModalWalletPage extends ModalPage {
     expect(signature, 'Signature should be present').toBeTruthy()
 
     return signature as `0x${string}`
+  }
+
+  async switchNetworkWithNetworkButton(networkName: string) {
+    const networkButton = this.page.getByTestId('w3m-network-button')
+    await networkButton.click()
+
+    const networkToSwitchButton = this.page.getByTestId(`w3m-network-switch-${networkName}`)
+    await networkToSwitchButton.click()
+    await networkToSwitchButton.waitFor({ state: 'hidden' })
   }
 }

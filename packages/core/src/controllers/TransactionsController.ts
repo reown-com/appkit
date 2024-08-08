@@ -52,7 +52,9 @@ export const TransactionsController = {
         account: accountAddress,
         projectId,
         cursor: state.next,
-        onramp
+        onramp,
+        // Coinbase transaction history state updates require the latest data
+        cache: onramp === 'coinbase' ? 'no-cache' : undefined
       })
 
       const nonSpamTransactions = this.filterSpamTransactions(response.data)

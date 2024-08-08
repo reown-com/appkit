@@ -1,5 +1,5 @@
 import { html, LitElement } from 'lit'
-import { createRef, ref } from 'lit/directives/ref.js'
+import { createRef, ref, type Ref } from 'lit/directives/ref.js'
 import '../../composites/wui-input-element/index.js'
 import { resetStyles } from '../../utils/ThemeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
@@ -12,7 +12,7 @@ export class WuiSearchBar extends LitElement {
   public static override styles = [resetStyles, styles]
 
   // -- State & Properties -------------------------------- //
-  public inputComponentRef = createRef<WuiInputText>()
+  public inputComponentRef: Ref<WuiInputText> = createRef<WuiInputText>()
 
   // -- Render -------------------------------------------- //
   public override render() {

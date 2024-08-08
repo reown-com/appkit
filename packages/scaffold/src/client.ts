@@ -10,7 +10,8 @@ import type {
   ThemeVariables,
   ModalControllerState,
   ConnectedWalletInfo,
-  RouterControllerState
+  RouterControllerState,
+  CaipNetwork
 } from '@web3modal/core'
 import {
   BlockchainApiController,
@@ -58,6 +59,7 @@ export interface LibraryOptions {
   allowUnsupportedChain?: NetworkControllerState['allowUnsupportedChain']
   _sdkVersion: OptionsControllerState['sdkVersion']
   enableEIP6963?: OptionsControllerState['enableEIP6963']
+  enableSwaps?: OptionsControllerState['enableEIP6963']
 }
 
 export interface ScaffoldOptions extends LibraryOptions {
@@ -125,6 +127,14 @@ export class Web3ModalScaffold {
     return AccountController.subscribeKey('connectedWalletInfo', callback)
   }
 
+  public subscribeShouldUpdateToAddress(callback: (newState?: string) => void) {
+    AccountController.subscribeKey('shouldUpdateToAddress', callback)
+  }
+
+  public subscribeCaipNetworkChange(callback: (newState?: CaipNetwork) => void) {
+    NetworkController.subscribeKey('caipNetwork', callback)
+  }
+
   public getState() {
     return PublicStateController.state
   }
@@ -181,6 +191,21 @@ export class Web3ModalScaffold {
   }
 
   protected getIsConnectedState = () => AccountController.state.isConnected
+
+  protected setAllAccounts: (typeof AccountController)['setAllAccounts'] = (addresses = []) => {
+    AccountController.setAllAccounts(addresses)
+    OptionsController.setHasMultipleAddresses(addresses?.length > 1)
+  }
+
+  protected addAddressLabel: (typeof AccountController)['addAddressLabel'] = (address, label) => {
+    AccountController.addAddressLabel(address, label)
+  }
+
+  protected removeAddressLabel: (typeof AccountController)['removeAddressLabel'] = address => {
+    AccountController.removeAddressLabel(address)
+  }
+
+  protected getCaipAddress = () => AccountController.state.caipAddress
 
   protected setCaipAddress: (typeof AccountController)['setCaipAddress'] = (caipAddress, chain) => {
     AccountController.setCaipAddress(caipAddress, chain)
@@ -298,6 +323,10 @@ export class Web3ModalScaffold {
     OptionsController.setEIP6963Enabled(enabled)
   }
 
+  protected setClientId: (typeof BlockchainApiController)['setClientId'] = clientId => {
+    BlockchainApiController.setClientId(clientId)
+  }
+
   // -- Private ------------------------------------------------------------------
   private async initControllers(options: ScaffoldOptions) {
     ChainController.initialize([
@@ -323,6 +352,9 @@ export class Web3ModalScaffold {
     OptionsController.setSdkVersion(options._sdkVersion)
     // Enabled by default
     OptionsController.setOnrampEnabled(options.enableOnramp !== false)
+    OptionsController.setEnableSwaps(
+      options.chain === ConstantsUtil.CHAIN.EVM && options.enableSwaps !== false
+    )
 
     if (options.metadata) {
       OptionsController.setMetadata(options.metadata)

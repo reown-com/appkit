@@ -1,5 +1,10 @@
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
-import type { CaipAddress, ConnectedWalletInfo, SocialProvider } from '../utils/TypeUtil.js'
+import type {
+  AccountType,
+  CaipAddress,
+  ConnectedWalletInfo,
+  SocialProvider
+} from '../utils/TypeUtil.js'
 import type { Balance } from '@web3modal/common'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { SnackController } from './SnackController.js'
@@ -17,6 +22,8 @@ export interface AccountControllerState {
   currentTab: number
   caipAddress?: CaipAddress
   address?: string
+  addressLabels: Map<string, string>
+  allAccounts: AccountType[]
   balance?: string
   balanceSymbol?: string
   profileName?: string | null
@@ -25,9 +32,11 @@ export interface AccountControllerState {
   smartAccountDeployed?: boolean
   socialProvider?: SocialProvider
   tokenBalance?: Balance[]
+  shouldUpdateToAddress?: string
   connectedWalletInfo?: ConnectedWalletInfo
   preferredAccountType?: W3mFrameTypes.AccountType
   socialWindow?: Window
+  farcasterUrl?: string
 }
 
 // -- State --------------------------------------------- //
@@ -35,7 +44,9 @@ const state = proxy<AccountControllerState>({
   isConnected: false,
   currentTab: 0,
   tokenBalance: [],
-  smartAccountDeployed: false
+  smartAccountDeployed: false,
+  addressLabels: new Map(),
+  allAccounts: []
 })
 
 // -- Controller ---------------------------------------- //
@@ -118,6 +129,25 @@ export const AccountController = {
       ChainController.setAccountProp('tokenBalance', tokenBalance, chain)
     }
   },
+  setShouldUpdateToAddress(address: string) {
+    ChainController.setAccountProp('shouldUpdateToAddress', address)
+  },
+
+  setAllAccounts(accounts: AccountType[], chain?: Chain) {
+    ChainController.setAccountProp('allAccounts', accounts, chain)
+  },
+
+  addAddressLabel(address: string, label: string) {
+    const map = ChainController.getAccountProp('addressLabels') || new Map()
+    map.set(address, label)
+    ChainController.setAccountProp('addressLabels', map)
+  },
+
+  removeAddressLabel(address: string) {
+    const map = ChainController.getAccountProp('addressLabels') || new Map()
+    map.delete(address)
+    ChainController.setAccountProp('addressLabels', map)
+  },
 
   setConnectedWalletInfo(
     connectedWalletInfo: AccountControllerState['connectedWalletInfo'],
@@ -142,6 +172,12 @@ export const AccountController = {
   setSocialWindow(socialWindow: AccountControllerState['socialWindow'], chain?: Chain) {
     if (socialWindow) {
       ChainController.setAccountProp('socialWindow', ref(socialWindow), chain)
+    }
+  },
+
+  setFarcasterUrl(farcasterUrl: AccountControllerState['farcasterUrl'], chain?: Chain) {
+    if (farcasterUrl) {
+      ChainController.setAccountProp('farcasterUrl', farcasterUrl, chain)
     }
   },
 

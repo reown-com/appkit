@@ -25,6 +25,8 @@ export class WuiQrCode extends LitElement {
 
   @property({ type: Boolean }) public arenaClear?: boolean = undefined
 
+  @property({ type: Boolean }) public farcaster?: boolean = undefined
+
   // -- Render -------------------------------------------- //
   public override render() {
     this.dataset['theme'] = this.theme
@@ -48,6 +50,15 @@ export class WuiQrCode extends LitElement {
   private templateVisual() {
     if (this.imageSrc) {
       return html`<wui-image src=${this.imageSrc} alt=${this.alt ?? 'logo'}></wui-image>`
+    }
+
+    if (this.farcaster) {
+      return html`<wui-icon
+        class="farcaster"
+        size="inherit"
+        color="inherit"
+        name="farcaster"
+      ></wui-icon>`
     }
 
     return html`<wui-icon size="inherit" color="inherit" name="walletConnect"></wui-icon>`

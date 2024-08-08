@@ -14,6 +14,7 @@ import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
 const queryClient = new QueryClient()
 
 const wagmiConfig = getWagmiConfig('email')
+
 const modal = createWeb3Modal({
   wagmiConfig,
   projectId: ConstantsUtil.ProjectId,
@@ -21,8 +22,7 @@ const modal = createWeb3Modal({
   metadata: ConstantsUtil.Metadata,
   termsConditionsUrl: 'https://walletconnect.com/terms',
   privacyPolicyUrl: 'https://walletconnect.com/privacy',
-  siweConfig,
-  customWallets: ConstantsUtil.CustomWallets
+  siweConfig
 })
 
 ThemeStore.setModal(modal)

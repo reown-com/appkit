@@ -1,15 +1,19 @@
 FROM node:20-bookworm
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
+
 RUN apt update && apt install -y awscli
 
 WORKDIR /src
 
 COPY ../ ./
-RUN npm ci
-RUN npm run build
+RUN pnpm install
+RUN pnpm build
 
 WORKDIR ./apps/laboratory/
 
-RUN npm run playwright:install
+RUN pnpm playwright:install
 
 ENV TIMING_LOGS=true
 ENV CI=true
