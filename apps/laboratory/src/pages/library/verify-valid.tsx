@@ -11,6 +11,7 @@ import { getWagmiConfig } from '../../utils/WagmiConstants'
 const metadata = {
   name: 'Web3Modal',
   description: 'Web3Modal Laboratory',
+  // Allow localhost
   url: 'http://localhost:3000',
   icons: ['https://avatars.githubusercontent.com/u/37784886'],
   verifyUrl: ''
