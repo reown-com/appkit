@@ -209,7 +209,7 @@ export interface RequestMethods {
     params: {
       transaction: string
       pubkey: string
-      options?: SendOptions
+      sendOptions?: SendOptions
     }
     returns: { signature: string }
   }

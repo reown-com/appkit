@@ -103,14 +103,14 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
 
   public async signAndSendTransaction<T extends AnyTransaction>(
     transaction: T,
-    options?: SendOptions
+    sendOptions?: SendOptions
   ) {
     const serializedTransaction = this.serializeTransaction(transaction)
 
     const result = await this.request('solana_signAndSendTransaction', {
       transaction: serializedTransaction,
       pubkey: this.getPubkey(),
-      options
+      sendOptions
     })
 
     return result.signature
