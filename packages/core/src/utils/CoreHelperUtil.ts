@@ -147,11 +147,14 @@ export const CoreHelperUtil = {
     if (typeof balance === 'string') {
       const number = Number(balance)
       if (number) {
-        formattedBalance = (Math.floor(number * 1000) / 1000).toString()
+        const formattedValue = Math.floor(number * 1000) / 1000
+        if (formattedValue) {
+          formattedBalance = (Math.floor(number * 1000) / 1000).toString()
+        }
       }
     }
 
-    return `${formattedBalance} ${symbol ?? ''}`
+    return `${formattedBalance}${symbol ? ` ${symbol}` : ''}`
   },
 
   formatBalance2(balance: string | undefined, symbol: string | undefined) {
