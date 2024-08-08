@@ -598,7 +598,11 @@ export class Web3Modal extends Web3ModalScaffold {
         )
 
         // Wait for the transaction to be confirmed
-        await connection.confirmTransaction(signature, 'recent')
+        await connection.confirmTransaction({
+          signature,
+          blockhash: (await connection.getLatestBlockhash()).blockhash,
+          lastValidBlockHeight: (await connection.getLatestBlockhash()).lastValidBlockHeight
+        })
 
         this.syncBalance(this.getAddress() ?? '')
 
