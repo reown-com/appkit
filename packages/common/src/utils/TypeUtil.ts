@@ -31,7 +31,6 @@ export interface TransactionMetadata {
   sentTo: string
   status: TransactionStatus | CoinbaseTransactionStatus
   nonce: number
-  chain?: string
 }
 
 export interface TransactionTransfer {
