@@ -48,16 +48,6 @@ export function useERC7715PermissionsAsync(params: {
       actions
     })
 
-    /*
-     * Comment
-     * const dummySignature = await getDummySignatureWithContext(publicClient, {
-     *   userOpBuilderAddress: signerData.userOpBuilder,
-     *   sender: signerData.submitToAddress,
-     *   permissionsContext: permissionsContext as `0x${string}`,
-     *   actions
-     * })
-     * console.log({ dummySignature })
-     */
     const userOp: UserOperation<'v0.7'> = {
       sender: signerData.submitToAddress,
       factory,
