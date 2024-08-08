@@ -149,7 +149,7 @@ export const CoreHelperUtil = {
       if (number) {
         const formattedValue = Math.floor(number * 1000) / 1000
         if (formattedValue) {
-          formattedBalance = (Math.floor(number * 1000) / 1000).toString()
+          formattedBalance = formattedValue.toString()
         }
       }
     }
