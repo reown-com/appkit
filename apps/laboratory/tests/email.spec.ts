@@ -17,7 +17,8 @@ const emailTest = test.extend<{ library: string }>({
 
 emailTest.describe.configure({ mode: 'serial' })
 
-emailTest.beforeAll(async ({ browser, library }, testInfo) => {
+emailTest.beforeAll(async ({ browser, library }) => {
+  emailTest.setTimeout(180000)
   context = await browser.newContext()
   const browserPage = await context.newPage()
 
@@ -31,7 +32,7 @@ emailTest.beforeAll(async ({ browser, library }, testInfo) => {
     throw new Error('MAILSAC_API_KEY is not set')
   }
   const email = new Email(mailsacApiKey)
-  const tempEmail = email.getEmailAddressToUse(testInfo.parallelIndex)
+  const tempEmail = await email.getEmailAddressToUse()
   await page.emailFlow(tempEmail, context, mailsacApiKey)
 
   await validator.expectConnected()

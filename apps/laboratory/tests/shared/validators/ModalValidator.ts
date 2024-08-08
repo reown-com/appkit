@@ -147,6 +147,31 @@ export class ModalValidator {
     await expect(suggestion).toBeVisible()
   }
 
+  async expectCallStatusSuccessOrRetry(sendCallsId: string, allowedRetry: boolean) {
+    const callStatusReceipt = this.page.getByText('"status": "CONFIRMED"')
+    const isConfirmed = await callStatusReceipt.isVisible({
+      timeout: 10 * 1000
+    })
+    if (isConfirmed) {
+      const closeButton = this.page.locator('#toast-close-button')
+
+      await expect(closeButton).toBeVisible()
+      await closeButton.click()
+    } else if (allowedRetry) {
+      const callStatusButton = this.page.getByTestId('get-calls-status-button')
+      await expect(callStatusButton).toBeVisible()
+      await callStatusButton.click()
+      this.expectCallStatusSuccessOrRetry(sendCallsId, false)
+    }
+
+    throw new Error('Call status not confirmed')
+  }
+
+  async expectNetworksDisabled(name: string) {
+    const networkOptions = this.page.getByTestId(`w3m-network-switch-${name}`)
+    await expect(networkOptions).toBeDisabled()
+  }
+
   async expectAccountSwitched(oldAddress: string) {
     const address = this.page.getByTestId('w3m-address')
     await expect(address).not.toHaveText(oldAddress)

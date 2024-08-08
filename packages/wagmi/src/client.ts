@@ -715,7 +715,7 @@ export class Web3Modal extends Web3ModalScaffold {
         this.setIsConnected(false)
       }
 
-      provider.onRpcRequest(request => {
+      provider.onRpcRequest((request: W3mFrameTypes.RPCRequest) => {
         if (W3mFrameHelpers.checkIfRequestExists(request)) {
           if (!W3mFrameHelpers.checkIfRequestIsAllowed(request)) {
             if (super.isOpen()) {
@@ -740,26 +740,26 @@ export class Web3Modal extends Web3ModalScaffold {
           setTimeout(() => {
             this.showErrorMessage(W3mFrameRpcConstants.RPC_METHOD_NOT_ALLOWED_UI_MESSAGE)
           }, 300)
-          provider.rejectRpcRequest()
+          provider.rejectRpcRequests()
         }
       })
 
-      provider.onRpcResponse(response => {
+      provider.onRpcError(() => {
+        const isModalOpen = super.isOpen()
+
+        if (isModalOpen) {
+          if (super.isTransactionStackEmpty()) {
+            super.close()
+          } else {
+            super.popTransactionStack(true)
+          }
+        }
+      })
+
+      provider.onRpcSuccess(response => {
         const responseType = W3mFrameHelpers.getResponseType(response)
 
         switch (responseType) {
-          case W3mFrameConstants.RPC_RESPONSE_TYPE_ERROR: {
-            const isModalOpen = super.isOpen()
-
-            if (isModalOpen) {
-              if (super.isTransactionStackEmpty()) {
-                super.close()
-              } else {
-                super.popTransactionStack(true)
-              }
-            }
-            break
-          }
           case W3mFrameConstants.RPC_RESPONSE_TYPE_TX: {
             if (super.isTransactionStackEmpty()) {
               super.close()
@@ -824,7 +824,7 @@ export class Web3Modal extends Web3ModalScaffold {
     const provider = (await connector.getProvider()) as W3mFrameProvider
     this.subscribeState(val => {
       if (!val.open) {
-        provider.rejectRpcRequest()
+        provider.rejectRpcRequests()
       }
     })
   }
