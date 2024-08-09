@@ -1,9 +1,8 @@
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
-import { Connection } from '@solana/web3.js'
 import { OptionsController } from '@web3modal/core'
 
-import type { Chain, CombinedProvider, Provider } from './SolanaTypesUtil.js'
+import type { Chain, CombinedProvider, Provider, Connection } from './SolanaTypesUtil.js'
 import { SolConstantsUtil } from './SolanaConstantsUtil.js'
 import { SolHelpersUtil } from './SolanaHelpersUtils.js'
 

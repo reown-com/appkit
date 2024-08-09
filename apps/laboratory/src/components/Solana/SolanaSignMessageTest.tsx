@@ -19,25 +19,15 @@ export function SolanaSignMessageTest() {
       const encodedMessage = new TextEncoder().encode('Hello from Web3Modal')
       const signature = await walletProvider.signMessage(encodedMessage)
 
-      // Backpack has specific signature format now
-      if ((signature as { signature: Uint8Array }).signature) {
-        toast({
-          title: ConstantsUtil.SigningSucceededToastTitle,
-          description: (signature as { signature: Uint8Array }).signature,
-          type: 'success'
-        })
-
-        return
-      }
       toast({
         title: ConstantsUtil.SigningSucceededToastTitle,
-        description: signature as Uint8Array,
+        description: signature,
         type: 'success'
       })
     } catch (err) {
       toast({
         title: ConstantsUtil.SigningFailedToastTitle,
-        description: 'Failed to sign message',
+        description: (err as Error).message,
         type: 'error'
       })
     }

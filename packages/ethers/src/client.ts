@@ -49,12 +49,7 @@ import {
 } from '@web3modal/scaffold-utils/ethers'
 import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider'
 import type { Eip1193Provider } from 'ethers'
-import {
-  W3mFrameProvider,
-  W3mFrameHelpers,
-  W3mFrameRpcConstants,
-  W3mFrameConstants
-} from '@web3modal/wallet'
+import { W3mFrameProvider, W3mFrameHelpers, W3mFrameRpcConstants } from '@web3modal/wallet'
 import type { CombinedProvider } from '@web3modal/scaffold-utils/ethers'
 import { NetworkUtil } from '@web3modal/common'
 import type { W3mFrameTypes } from '@web3modal/wallet'
@@ -211,7 +206,7 @@ export class Web3Modal extends Web3ModalScaffold {
         }
 
         const params = await siweConfig?.getMessageParams?.()
-        // Must perform these checks to satify optional types
+        // Must perform these checks to satisfy optional types
         if (siweConfig?.options?.enabled && params && Object.keys(params || {}).length > 0) {
           const { SIWEController, getDidChainId, getDidAddress } = await import('@web3modal/siwe')
 
@@ -1113,19 +1108,11 @@ export class Web3Modal extends Web3ModalScaffold {
         }
       })
 
-      this.authProvider.onRpcSuccess(response => {
-        const responseType = W3mFrameHelpers.getResponseType(response)
-        switch (responseType) {
-          case W3mFrameConstants.RPC_RESPONSE_TYPE_TX: {
-            if (super.isTransactionStackEmpty()) {
-              super.close()
-            } else {
-              super.popTransactionStack()
-            }
-            break
-          }
-          default:
-            break
+      this.authProvider.onRpcSuccess(() => {
+        if (super.isTransactionStackEmpty()) {
+          super.close()
+        } else {
+          super.popTransactionStack()
         }
       })
       this.authProvider.onNotConnected(() => {

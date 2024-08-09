@@ -49,7 +49,7 @@ import {
   getEmailCaipNetworks,
   getWalletConnectCaipNetworks
 } from './utils/helpers.js'
-import { W3mFrameConstants, W3mFrameHelpers, W3mFrameRpcConstants } from '@web3modal/wallet'
+import { W3mFrameHelpers, W3mFrameRpcConstants } from '@web3modal/wallet'
 import type { W3mFrameProvider, W3mFrameTypes } from '@web3modal/wallet'
 import { NetworkUtil } from '@web3modal/common'
 import { normalize } from 'viem/ens'
@@ -450,11 +450,18 @@ export class Web3Modal extends Web3ModalScaffold {
     isDisconnected,
     chainId,
     connector,
-    addresses
+    addresses,
+    status
   }: Partial<
     Pick<
       GetAccountReturnType,
-      'address' | 'isConnected' | 'isDisconnected' | 'chainId' | 'connector' | 'addresses'
+      | 'address'
+      | 'isConnected'
+      | 'isDisconnected'
+      | 'chainId'
+      | 'connector'
+      | 'addresses'
+      | 'status'
     >
   >) {
     const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`
@@ -463,7 +470,9 @@ export class Web3Modal extends Web3ModalScaffold {
       return
     }
 
-    if (isConnected && address && chainId) {
+    const connected = isConnected && status === 'connected'
+
+    if (connected && address && chainId) {
       this.resetAccount()
       this.syncNetwork(address, chainId, isConnected)
       this.setIsConnected(isConnected)
@@ -742,20 +751,11 @@ export class Web3Modal extends Web3ModalScaffold {
         }
       })
 
-      provider.onRpcSuccess(response => {
-        const responseType = W3mFrameHelpers.getResponseType(response)
-
-        switch (responseType) {
-          case W3mFrameConstants.RPC_RESPONSE_TYPE_TX: {
-            if (super.isTransactionStackEmpty()) {
-              super.close()
-            } else {
-              super.popTransactionStack()
-            }
-            break
-          }
-          default:
-            break
+      provider.onRpcSuccess(() => {
+        if (super.isTransactionStackEmpty()) {
+          super.close()
+        } else {
+          super.popTransactionStack()
         }
       })
 

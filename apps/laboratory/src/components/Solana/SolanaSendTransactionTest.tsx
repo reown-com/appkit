@@ -6,8 +6,7 @@ import {
   Transaction,
   TransactionMessage,
   VersionedTransaction,
-  SystemProgram,
-  Connection
+  SystemProgram
 } from '@solana/web3.js'
 
 import { solana } from '../../utils/ChainsUtil'
@@ -15,7 +14,7 @@ import { useChakraToast } from '../Toast'
 
 const PHANTOM_TESTNET_ADDRESS = '8vCyX7oB6Pc3pbWMGYYZF5pbSnAdQ7Gyr32JqxqCy8ZR'
 const recipientAddress = new PublicKey(PHANTOM_TESTNET_ADDRESS)
-const amountInLamports = 100000000
+const amountInLamports = 10_000_000
 
 export function SolanaSendTransactionTest() {
   const toast = useChakraToast()
@@ -53,7 +52,8 @@ export function SolanaSendTransactionTest() {
 
       transaction.recentBlockhash = blockhash
 
-      const signature = await walletProvider.sendTransaction(transaction, connection as Connection)
+      const signature = await walletProvider.sendTransaction(transaction, connection)
+
       toast({
         title: 'Success',
         description: signature,
@@ -106,10 +106,7 @@ export function SolanaSendTransactionTest() {
       // Make a versioned transaction
       const transactionV0 = new VersionedTransaction(messageV0)
 
-      const signature = await walletProvider.sendTransaction(
-        transactionV0,
-        connection as Connection
-      )
+      const signature = await walletProvider.sendTransaction(transactionV0, connection)
 
       toast({
         title: 'Success',
