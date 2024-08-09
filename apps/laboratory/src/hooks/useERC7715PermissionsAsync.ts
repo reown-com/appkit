@@ -1,29 +1,34 @@
 import { type GrantPermissionsReturnType } from 'viem/experimental'
-import {
-  ENTRYPOINT_ADDRESS_V07,
-  getPackedUserOperation,
-  getUserOperationHash
-} from 'permissionless'
+import { ENTRYPOINT_ADDRESS_V07, getUserOperationHash } from 'permissionless'
 import { type UserOperation } from 'permissionless/types'
-import { signatureToHex, type PublicClient } from 'viem'
+import { type PublicClient } from 'viem'
 import { type Chain } from 'wagmi/chains'
-import { sign } from 'viem/accounts'
 import { useUserOpBuilder, type Execution } from './useUserOpBuilder'
 import { bigIntReplacer } from '../utils/CommonUtils'
 import { createClients } from '../utils/PermissionsUtils'
+import { useWalletConnectCosigner } from './useWalletConnectCosigner'
+import { signMessage } from 'viem/accounts'
+import { useWagmiPermissionsAsync } from '../context/WagmiPermissionsAsyncContext'
 
-export function usePermissions() {
-  const { getCallDataWithContext, getNonceWithContext, getSignatureWithContext } =
-    useUserOpBuilder()
+export function useERC7715PermissionsAsync(params: {
+  projectId: string
+  permissions: GrantPermissionsReturnType | undefined
+  chain: Chain
+}) {
+  const { projectId, permissions, chain } = params
+  const { getCallDataWithContext, getNonceWithContext } = useUserOpBuilder()
+  const { wcCosignerData } = useWagmiPermissionsAsync()
+  const accountAddress = permissions?.signerData?.submitToAddress
+  const caip10Address = `eip155:${chain?.id}:${accountAddress}`
+  const { coSignUserOperation } = useWalletConnectCosigner(caip10Address, projectId)
 
   async function prepareUserOperationWithPermissions(
     publicClient: PublicClient,
-    args: {
-      actions: Execution[]
-      permissions: GrantPermissionsReturnType
-    }
+    actions: Execution[]
   ): Promise<UserOperation<'v0.7'>> {
-    const { permissions, actions } = args
+    if (!permissions) {
+      throw new Error('No permissions available')
+    }
     const { factory, factoryData, signerData, permissionsContext } = permissions
 
     if (!signerData?.userOpBuilder || !signerData.submitToAddress || !permissionsContext) {
@@ -60,17 +65,14 @@ export function usePermissions() {
     return userOp
   }
 
-  async function signUserOperationWithECDSAKeyAndPermissions(
-    publicClient: PublicClient,
-    args: {
-      ecdsaPrivateKey: `0x${string}`
-      userOp: UserOperation<'v0.7'>
-      permissions: GrantPermissionsReturnType
-      chain: Chain
+  async function signUserOperationWithECDSAKey(args: {
+    ecdsaPrivateKey: `0x${string}`
+    userOp: UserOperation<'v0.7'>
+  }): Promise<`0x${string}`> {
+    const { ecdsaPrivateKey, userOp } = args
+    if (!permissions) {
+      throw new Error('No permissions available')
     }
-  ): Promise<`0x${string}`> {
-    const { ecdsaPrivateKey, userOp, chain, permissions } = args
-
     const { signerData, permissionsContext } = permissions
 
     if (!signerData?.userOpBuilder || !signerData.submitToAddress || !permissionsContext) {
@@ -81,65 +83,55 @@ export function usePermissions() {
       entryPoint: ENTRYPOINT_ADDRESS_V07,
       chainId: chain.id
     })
-
-    const dappSignatureOnUserOp = await sign({
+    const dappSignatureOnUserOp = await signMessage({
       privateKey: ecdsaPrivateKey,
-      hash: userOpHash
-    })
-    const rawSignature = signatureToHex(dappSignatureOnUserOp)
-    userOp.signature = rawSignature
-    const preSignaturePackedUserOp = getPackedUserOperation(userOp)
-
-    const signatureWithContext = await getSignatureWithContext(publicClient, {
-      sender: signerData.submitToAddress,
-      permissionsContext: permissionsContext as `0x${string}`,
-      userOperation: preSignaturePackedUserOp,
-      userOpBuilderAddress: signerData.userOpBuilder
+      message: { raw: userOpHash }
     })
 
-    return signatureWithContext
+    return dappSignatureOnUserOp
   }
 
-  async function buildAndSendTransactionsECDSAKeyAndPermissions(args: {
+  async function executeActionsWithECDSAAndCosignerPermissions(args: {
     ecdsaPrivateKey: `0x${string}`
-    permissions: GrantPermissionsReturnType
     actions: Execution[]
     chain: Chain
   }): Promise<`0x${string}`> {
-    const { ecdsaPrivateKey, permissions, actions, chain } = args
-
+    const { ecdsaPrivateKey, actions } = args
     const { publicClient, bundlerClient } = createClients(chain)
 
-    const userOp = await prepareUserOperationWithPermissions(publicClient, {
-      actions,
-      permissions
-    })
+    if (!accountAddress) {
+      throw new Error(`Unable to get account details from granted permission`)
+    }
+
+    if (!wcCosignerData) {
+      throw new Error('No WC_COSIGNER data available')
+    }
+
+    const userOp = await prepareUserOperationWithPermissions(publicClient, actions)
 
     const gasPrice = await bundlerClient.getUserOperationGasPrice()
     userOp.maxFeePerGas = gasPrice.fast.maxFeePerGas
     userOp.maxPriorityFeePerGas = gasPrice.fast.maxPriorityFeePerGas
 
-    const signature = await signUserOperationWithECDSAKeyAndPermissions(publicClient, {
-      permissions,
+    const signature = await signUserOperationWithECDSAKey({
       ecdsaPrivateKey,
-      userOp,
-      chain
+      userOp
     })
 
     userOp.signature = signature
-    const _userOpHash = await bundlerClient.sendUserOperation({
-      userOperation: userOp
+    const txHash = await coSignUserOperation({
+      pci: wcCosignerData.pci,
+      userOp
     })
 
-    const txReceipt = await bundlerClient.waitForUserOperationReceipt({
-      hash: _userOpHash,
-      timeout: 30000
+    const userOpReceipt = await bundlerClient.waitForUserOperationReceipt({
+      hash: txHash.userOperationTxHash as `0x${string}`
     })
 
-    return txReceipt.receipt.transactionHash
+    return userOpReceipt.receipt.transactionHash
   }
 
   return {
-    buildAndSendTransactionsECDSAKeyAndPermissions
+    executeActionsWithECDSAAndCosignerPermissions
   }
 }
