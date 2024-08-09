@@ -39,9 +39,6 @@ export interface Provider extends ProviderEventEmitterMethods {
   icon?: string
   chains: Chain[]
 
-  // RPC
-  request: <T>(config: RequestArguments) => Promise<T>
-
   // Methods
   connect: () => Promise<string>
   disconnect: () => Promise<void>

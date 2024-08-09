@@ -36,7 +36,7 @@ import { WalletStandardFeatureNotSupportedError } from './errors.js'
 import { ProviderEventEmitter } from '../shared/ProviderEventEmitter.js'
 import { solanaChains } from '../../utils/chains.js'
 
-export interface StandardWalletAdapterConfig {
+export interface WalletStandardProviderConfig {
   wallet: Wallet
 }
 
@@ -52,7 +52,7 @@ export class WalletStandardProvider extends ProviderEventEmitter implements Prov
 
   readonly wallet: Wallet
 
-  constructor({ wallet }: StandardWalletAdapterConfig) {
+  constructor({ wallet }: WalletStandardProviderConfig) {
     super()
 
     this.wallet = wallet
@@ -82,15 +82,17 @@ export class WalletStandardProvider extends ProviderEventEmitter implements Prov
     const feature = this.getWalletFeature(StandardConnect)
     await feature.connect()
 
-    const publicKey = new PublicKey(this.getAccount(true).publicKey)
+    const account = this.getAccount(true)
+    const publicKey = new PublicKey(account.publicKey)
     this.emit('connect', publicKey)
 
-    return publicKey.toBase58()
+    return account.address
   }
 
   public async disconnect() {
     const feature = this.getWalletFeature(StandardDisconnect)
     await feature.disconnect()
+    this.emit('disconnect', undefined)
   }
 
   public async signMessage(message: Uint8Array) {

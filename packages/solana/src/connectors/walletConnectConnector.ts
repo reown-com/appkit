@@ -4,11 +4,11 @@ import { OptionsController } from '@web3modal/core'
 
 import { SolStoreUtil } from '../utils/scaffold/index.js'
 import { UniversalProviderFactory } from './universalProvider.js'
-import { BaseConnector } from './baseConnector.js'
+import { BaseConnector, type Connector } from './baseConnector.js'
 
 import type UniversalProvider from '@walletconnect/universal-provider'
 
-import type { Chain, AnyTransaction, Provider } from '../utils/scaffold/SolanaTypesUtil.js'
+import type { Chain, AnyTransaction } from '../utils/scaffold/SolanaTypesUtil.js'
 import {
   getChainsFromChainId,
   getDefaultChainFromSession,
@@ -23,7 +23,7 @@ export interface WalletConnectAppMetadata {
   icons: string[]
 }
 
-export class WalletConnectConnector extends BaseConnector implements Provider {
+export class WalletConnectConnector extends BaseConnector implements Connector {
   id = 'WalletConnect'
   name = 'WalletConnect'
   ready = true
@@ -107,8 +107,6 @@ export class WalletConnectConnector extends BaseConnector implements Provider {
     sendOptions?: SendOptions
   ) {
     const serializedTransaction = this.serializeTransaction(transaction)
-
-    console.log('serialized transaction', serializedTransaction)
 
     const result = await this.request('solana_signAndSendTransaction', {
       transaction: serializedTransaction,
