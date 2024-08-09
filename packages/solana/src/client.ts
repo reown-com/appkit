@@ -235,9 +235,14 @@ export class Web3Modal extends Web3ModalScaffold {
         }
 
         const signResponse = await provider.signMessage(encodedMessage)
-        let signature: Uint8Array = signResponse as Uint8Array
-        if ((signResponse as { signature: Uint8Array }).signature) {
-          signature = (signResponse as { signature: Uint8Array }).signature
+        let signature: Uint8Array = signResponse
+
+        if ('signature' in signResponse && signResponse.signature instanceof Uint8Array) {
+          signature = signResponse.signature
+        } else if (signResponse instanceof Uint8Array) {
+          signature = signResponse
+        } else {
+          throw new Error('Unexpected response format')
         }
 
         const encodeSignature = base58.encode(signature)
