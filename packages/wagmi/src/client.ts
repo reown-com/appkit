@@ -47,7 +47,8 @@ import type { Chain as AvailableChain } from '@web3modal/common'
 import {
   getCaipDefaultChain,
   getEmailCaipNetworks,
-  getWalletConnectCaipNetworks
+  getWalletConnectCaipNetworks,
+  requireCaipAddress
 } from './utils/helpers.js'
 import { W3mFrameHelpers, W3mFrameRpcConstants } from '@web3modal/wallet'
 import type { W3mFrameProvider, W3mFrameTypes } from '@web3modal/wallet'
@@ -266,7 +267,12 @@ export class Web3Modal extends Web3ModalScaffold {
         }
       },
 
-      signMessage: async message => signMessage(this.wagmiConfig, { message }),
+      signMessage: async message => {
+        const caipAddress = this.getCaipAddress() || ''
+        const account = requireCaipAddress(caipAddress)
+
+        return signMessage(this.wagmiConfig, { message, account })
+      },
 
       estimateGas: async args => {
         try {
@@ -304,11 +310,14 @@ export class Web3Modal extends Web3ModalScaffold {
       },
 
       writeContract: async (data: WriteContractArgs) => {
+        const caipAddress = this.getCaipAddress() || ''
+        const account = requireCaipAddress(caipAddress)
         const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
 
         const tx = await wagmiWriteContract(wagmiConfig, {
           chainId,
           address: data.tokenAddress,
+          account,
           abi: data.abi,
           functionName: data.method,
           args: [data.receiverAddress, data.tokenAmount]
