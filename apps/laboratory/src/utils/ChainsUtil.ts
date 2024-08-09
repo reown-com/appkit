@@ -9,6 +9,7 @@ function getBlockchainApiRpcUrl(chainId: number) {
 }
 
 export const mainnet = {
+  id: 1,
   chainId: 1,
   name: 'Ethereum',
   currency: 'ETH',

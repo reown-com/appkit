@@ -7,6 +7,7 @@ import { PublicStateController } from './PublicStateController.js'
 import type { RouterControllerState } from './RouterController.js'
 import { RouterController } from './RouterController.js'
 import { ChainController } from './ChainController.js'
+import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 
 // -- Types --------------------------------------------- //
 export interface ModalControllerState {
@@ -49,7 +50,7 @@ export const ModalController = {
       RouterController.reset(options.view)
     } else if (connected) {
       RouterController.reset('Account')
-    } else if (isUniversalAdapterOnly) {
+    } else if (isUniversalAdapterOnly && !CoreHelperUtil.isMobile()) {
       RouterController.reset('ConnectingWalletConnect')
     } else {
       RouterController.reset('Connect')

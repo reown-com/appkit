@@ -15,6 +15,7 @@ export interface WcStoreUtilState {
   preferredAccountType?: W3mFrameTypes.AccountType
   status: Status
   isConnected: boolean
+  chains: string[]
 }
 
 type StateKey = keyof WcStoreUtilState
@@ -26,7 +27,8 @@ const state = proxy<WcStoreUtilState>({
   address: undefined,
   chainId: undefined,
   status: 'reconnecting',
-  isConnected: false
+  isConnected: false,
+  chains: []
 })
 
 // -- StoreUtil ---------------------------------------- //
@@ -71,6 +73,10 @@ export const WcStoreUtil = {
     state.isConnected = isConnected
   },
 
+  setChains(chains: WcStoreUtilState['chains']) {
+    state.chains = chains
+  },
+
   setError(error: WcStoreUtilState['error']) {
     state.error = error
   },
@@ -83,6 +89,7 @@ export const WcStoreUtil = {
     state.status = 'disconnected'
     state.isConnected = false
     state.error = undefined
+    state.chains = []
     state.preferredAccountType = undefined
   }
 }

@@ -99,6 +99,7 @@ export class W3mNetworksView extends LitElement {
 
   private networksTemplate() {
     const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
+
     const approvedCaipNetworkIds = NetworkController.state.approvedCaipNetworkIds
     const supportsAllNetworks = NetworkController.state.supportsAllNetworks
 
@@ -123,9 +124,11 @@ export class W3mNetworksView extends LitElement {
           type="network"
           name=${network.name ?? network.id}
           @click=${() => this.onSwitchNetwork(network)}
-          .disabled=${!supportsAllNetworks &&
-          !approvedCaipNetworkIds?.includes(network.id) &&
-          network.chain === ChainController.state.activeChain}
+          .disabled=${ChainController.state.isUniversalAdapterOnly
+            ? !supportsAllNetworks && !approvedCaipNetworkIds?.includes(network.id)
+            : !supportsAllNetworks &&
+              !approvedCaipNetworkIds?.includes(network.id) &&
+              network.chain === ChainController.state.activeChain}
           data-testid=${`w3m-network-switch-${network.name ?? network.id}`}
         ></wui-list-network>
       `
@@ -138,7 +141,6 @@ export class W3mNetworksView extends LitElement {
     const isUniversalAdapterOnly = ChainController.state.isUniversalAdapterOnly
     const allApprovedCaipNetworks = ChainController.getAllApprovedCaipNetworks()
 
-    const approvedCaipNetworkIds = NetworkController.state.approvedCaipNetworkIds
     const supportsAllNetworks = NetworkController.state.supportsAllNetworks
     const caipNetwork = NetworkController.state.caipNetwork
     const routerData = RouterController.state.data

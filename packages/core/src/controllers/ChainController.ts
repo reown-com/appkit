@@ -136,7 +136,7 @@ export const ChainController = {
     const chains: Chain[] = ['evm', 'solana']
     chains.forEach((chain: Chain) => {
       state.chains.set(chain, {
-        chain: chain,
+        chain,
         connectionControllerClient: undefined,
         networkControllerClient: undefined,
         accountState,
