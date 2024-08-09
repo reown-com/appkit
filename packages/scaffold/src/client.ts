@@ -192,8 +192,11 @@ export class Web3ModalScaffold {
 
   protected getIsConnectedState = () => AccountController.state.isConnected
 
-  protected setAllAccounts: (typeof AccountController)['setAllAccounts'] = (addresses = []) => {
-    AccountController.setAllAccounts(addresses)
+  protected setAllAccounts: (typeof AccountController)['setAllAccounts'] = (
+    addresses = [],
+    chain
+  ) => {
+    AccountController.setAllAccounts(addresses, chain)
     OptionsController.setHasMultipleAddresses(addresses?.length > 1)
   }
 
