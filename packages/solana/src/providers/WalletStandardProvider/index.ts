@@ -48,7 +48,8 @@ type AvailableFeatures = StandardConnectFeature &
   SolanaSignInFeature
 
 export class WalletStandardProvider extends ProviderEventEmitter implements Provider {
-  public name: string
+  public readonly name: string
+  public readonly type = 'EXTERNAL'
 
   readonly wallet: Wallet
 

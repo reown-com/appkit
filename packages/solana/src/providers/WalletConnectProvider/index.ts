@@ -1,4 +1,4 @@
-import type { IUniversalProvider as UniversalProvider } from '@walletconnect/universal-provider'
+import UniversalProvider from '@walletconnect/universal-provider'
 import type { AnyTransaction, Chain, Provider } from '../../utils/scaffold'
 import { ProviderEventEmitter } from '../shared/ProviderEventEmitter'
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
@@ -20,6 +20,7 @@ export type WalletConnectProviderConfig = {
 
 export class WalletConnectProvider extends ProviderEventEmitter implements Provider {
   public readonly name = ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID
+  public readonly type = 'WALLET_CONNECT'
   public readonly chains: Chain[]
 
   private provider: UniversalProvider
@@ -30,6 +31,9 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
     this.chains = chains
     this.provider = provider
   }
+
+  // -- Universal Provider Events ------------------------ //
+  public onUri?: (uri: string) => void
 
   // -- Public ------------------------------------------- //
   public get publicKey() {
@@ -44,15 +48,16 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
 
   public async connect() {
     const rpcMap = this.chains.reduce<Record<string, string>>((acc, chain) => {
-      acc[chain.chainId] = chain.rpcUrl
+      acc[`solana:${chain.chainId}`] = chain.rpcUrl
 
       return acc
     }, {})
 
+    this.provider.on('display_uri', this.onUri)
     this.session = await this.provider.connect({
       namespaces: {
         solana: {
-          chains: this.chains.map(chain => chain.chainId),
+          chains: this.chains.map(chain => `solana:${chain.chainId}`),
           methods: [
             'solana_signMessage',
             'solana_signTransaction',
@@ -63,15 +68,17 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
         }
       }
     })
+    this.provider.removeListener('display_uri', this.onUri)
 
     const account = this.getAccount(true)
+
     this.emit('connect', new PublicKey(account.publicKey))
 
     return account.address
   }
 
   public async disconnect() {
-    await this.provider.disconnect()
+    await this.provider?.disconnect()
     this.emit('disconnect', undefined)
   }
 
@@ -136,7 +143,7 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
     method: Method,
     params: WalletConnectProvider.RequestMethods[Method]['params']
   ) {
-    return this.provider.request<WalletConnectProvider.RequestMethods[Method]['returns']>({
+    return this.provider?.request<WalletConnectProvider.RequestMethods[Method]['returns']>({
       method,
       params
     })

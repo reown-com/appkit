@@ -10,6 +10,7 @@ import type {
 } from '@solana/web3.js'
 
 import type { SendTransactionOptions } from '@solana/wallet-adapter-base'
+import type { ConnectorType } from '@web3modal/core'
 
 export type Connection = SolanaConnection
 
@@ -38,6 +39,7 @@ export interface Provider extends ProviderEventEmitterMethods {
   publicKey?: PublicKey
   icon?: string
   chains: Chain[]
+  type: ConnectorType
 
   // Methods
   connect: () => Promise<string>

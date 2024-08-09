@@ -12,11 +12,10 @@ import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@web3modal/scaffold-uti
 import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 
 import { SolConstantsUtil, SolHelpersUtil, SolStoreUtil } from './utils/scaffold/index.js'
-import { WalletConnectConnector } from './connectors/walletConnectConnector.js'
 
 import type { BaseWalletAdapter } from '@solana/wallet-adapter-base'
 import type { PublicKey, Commitment, ConnectionConfig } from '@solana/web3.js'
-import UniversalProvider from '@walletconnect/universal-provider'
+import UniversalProvider, { type UniversalProviderOpts } from '@walletconnect/universal-provider'
 import type {
   CaipNetworkId,
   ConnectionControllerClient,
@@ -32,8 +31,6 @@ import type { Chain as AvailableChain } from '@web3modal/common'
 
 import type { ProviderType, Chain, Provider, SolStoreUtilState } from './utils/scaffold/index.js'
 import { watchStandard } from './utils/watchStandard.js'
-import { StandardWalletAdapter } from './utils/wallet-standard/adapter.js'
-import { WalletStandardProvider } from './providers/index.js'
 import { WalletConnectProvider } from './providers/WalletConnectProvider/index.js'
 
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
@@ -118,30 +115,21 @@ export class Web3Modal extends Web3ModalScaffold {
     }
 
     const connectionControllerClient: ConnectionControllerClient = {
-      connectWalletConnect: async () => {
-        console.log('testing')
+      connectWalletConnect: async onUri => {
         const wcProvider = this.availableProviders.find(
           provider => provider.name === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID
         )
-        if (!wcProvider) {
+
+        if (!wcProvider || !(wcProvider instanceof WalletConnectProvider)) {
           throw new Error('connectionControllerClient:getWalletConnectUri - provider is undefined')
         }
 
-        console.log('walletConnectProvider', wcProvider)
+        wcProvider.onUri = onUri
 
         return this.setProvider(wcProvider)
-
-        /*
-         * WalletConnectProvider.on('display_uri', onUri)
-         * const address = await this.WalletConnectConnector.connect()
-         * this.setWalletConnectProvider(address)
-         * WalletConnectProvider.removeListener('display_uri', onUri)
-         */
       },
 
       connectExternal: async ({ id }) => {
-        console.log('testing extenal')
-
         const externalProvider = this.availableProviders.find(
           provider => provider.name.toLocaleLowerCase() === id.toLocaleLowerCase()
         )
@@ -205,6 +193,12 @@ export class Web3Modal extends Web3ModalScaffold {
       ...w3mOptions
     } as ScaffoldOptions)
 
+    this.addWalletConnectProvider({
+      relayUrl: 'wss://relay.walletconnect.com',
+      metadata,
+      projectId: w3mOptions.projectId
+    })
+
     this.chains = chains
     this.connectionSettings = connectionSettings
     this.syncRequestedNetworks(chains, chainImages)
@@ -218,16 +212,6 @@ export class Web3Modal extends Web3ModalScaffold {
       SolStoreUtil.setCaipChainId(`solana:${chain.chainId}`)
     }
     this.syncNetwork(chainImages)
-
-    this.addProvider(
-      new WalletConnectProvider({
-        provider: new UniversalProvider({
-          metadata,
-          relayUrl: 'wss://relay.walletconnect.com'
-        }),
-        chains
-      })
-    )
 
     SolStoreUtil.setConnection(
       new Connection(
@@ -340,7 +324,7 @@ export class Web3Modal extends Web3ModalScaffold {
   private syncStandardAdapters() {
     const connectors = this.availableProviders.map<Connector>(provider => ({
       id: provider.name,
-      type: 'EXTERNAL', // TODO: get type from provider
+      type: provider.type,
       imageUrl: provider.icon,
       name: provider.name,
       provider,
@@ -369,12 +353,12 @@ export class Web3Modal extends Web3ModalScaffold {
     }
   }
 
-  private async syncBalance(address: string) {
+  private async syncBalance(_address: string) {
     const caipChainId = SolStoreUtil.state.caipChainId
     if (caipChainId && this.chains) {
       const chain = SolHelpersUtil.getChainFromCaip(this.chains, caipChainId)
       if (chain) {
-        const balance = await Promise.resolve({ decimals: BigInt(10), symbol: chain.currency })
+        const balance = await Promise.resolve({ decimals: BigInt(0), symbol: chain.currency })
         this.setBalance(balance.decimals.toString(), chain.currency)
       }
     }
@@ -511,5 +495,10 @@ export class Web3Modal extends Web3ModalScaffold {
     }
 
     this.syncStandardAdapters()
+  }
+
+  private async addWalletConnectProvider(opts: UniversalProviderOpts) {
+    const provider = await UniversalProvider.init(opts)
+    this.addProvider(new WalletConnectProvider({ provider, chains: this.chains }))
   }
 }
