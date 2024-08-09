@@ -1,581 +1,198 @@
 import {
-  BaseWalletAdapter,
   isVersionedTransaction,
-  type SendTransactionOptions,
-  type StandardWalletAdapter as StandardWalletAdapterType,
-  type SupportedTransactionVersions,
   WalletAccountError,
-  type WalletAdapterCompatibleStandardWallet,
-  WalletConfigError,
-  WalletConnectionError,
-  WalletDisconnectedError,
-  WalletDisconnectionError,
-  WalletError,
-  type WalletName,
-  WalletNotConnectedError,
-  WalletNotReadyError,
-  WalletPublicKeyError,
-  WalletReadyState,
   WalletSendTransactionError,
-  WalletSignInError,
   WalletSignMessageError,
   WalletSignTransactionError
 } from '@solana/wallet-adapter-base'
 import {
   SolanaSignAndSendTransaction,
-  SolanaSignIn,
-  type SolanaSignInInput,
-  type SolanaSignInOutput,
+  type SolanaSignAndSendTransactionFeature,
+  type SolanaSignInFeature,
   SolanaSignMessage,
+  type SolanaSignMessageFeature,
   SolanaSignTransaction,
   type SolanaSignTransactionFeature
 } from '@solana/wallet-standard-features'
-import { getChainForEndpoint, getCommitment } from '@solana/wallet-standard-util'
-import type { Connection, TransactionSignature } from '@solana/web3.js'
+import { getCommitment } from '@solana/wallet-standard-util'
+import type { Connection, SendOptions } from '@solana/web3.js'
 import { PublicKey, Transaction, VersionedTransaction } from '@solana/web3.js'
-import type { WalletAccount } from '@wallet-standard/base'
+import type { Wallet, WalletAccount, WalletWithFeatures } from '@wallet-standard/base'
 import {
   StandardConnect,
-  type StandardConnectInput,
+  type StandardConnectFeature,
   StandardDisconnect,
-  StandardEvents,
-  type StandardEventsListeners
+  type StandardDisconnectFeature
 } from '@wallet-standard/features'
-import { arraysEqual } from '@wallet-standard/wallet'
-import bs58 from 'bs58'
-import { SolStoreUtil } from '../scaffold/index.js'
+import { SolStoreUtil, type AnyTransaction, type Chain, type Provider } from '../scaffold/index.js'
+import base58 from 'bs58'
+import type { CaipNetworkId } from 'packages/common/dist/types/index.js'
+import { StandardWalletFeatureNotSupportedError } from './errors.js'
+import { ProviderEventEmitter } from '../../providers/ProviderEventEmitter.js'
+import { solanaChains } from '../chains.js'
 
-/** TODO: docs */
 export interface StandardWalletAdapterConfig {
-  wallet: WalletAdapterCompatibleStandardWallet
+  wallet: Wallet
 }
 
-/** TODO: docs */
-export class StandardWalletAdapter extends BaseWalletAdapter implements StandardWalletAdapterType {
-  #account: WalletAccount | null
-  #publicKey: PublicKey | null
-  #connecting: boolean
-  #disconnecting: boolean
-  #off: (() => void) | null
-  #supportedTransactionVersions: SupportedTransactionVersions
-  readonly #wallet: WalletAdapterCompatibleStandardWallet
-  readonly #readyState: WalletReadyState =
-    typeof window === 'undefined' || typeof document === 'undefined'
-      ? WalletReadyState.Unsupported
-      : WalletReadyState.Installed
+type AvailableFeatures = StandardConnectFeature &
+  SolanaSignAndSendTransactionFeature &
+  SolanaSignTransactionFeature &
+  StandardDisconnectFeature &
+  SolanaSignMessageFeature &
+  SolanaSignInFeature
 
-  get name() {
-    return this.#wallet.name as WalletName
-  }
+export class StandardWalletAdapter extends ProviderEventEmitter implements Provider {
+  public name: string
 
-  readonly url = 'https://github.com/solana-labs/wallet-standard'
-
-  readonly isAnnounced = true
-
-  get icon() {
-    return this.#wallet.icon
-  }
-
-  get readyState() {
-    return this.#readyState
-  }
-
-  get publicKey() {
-    return this.#publicKey
-  }
-
-  get connecting() {
-    return this.#connecting
-  }
-
-  get supportedTransactionVersions() {
-    return this.#supportedTransactionVersions
-  }
-
-  get wallet(): WalletAdapterCompatibleStandardWallet {
-    return this.#wallet
-  }
-
-  get standard() {
-    return true as const
-  }
+  readonly wallet: Wallet
 
   constructor({ wallet }: StandardWalletAdapterConfig) {
     super()
 
-    this.#wallet = wallet
-    this.#account = null
-    this.#publicKey = null
-    this.#connecting = false
-    this.#disconnecting = false
-    this.#off = this.#wallet.features[StandardEvents].on('change', this.#changed)
-
-    this.#reset()
+    this.wallet = wallet
+    this.name = wallet.name
   }
 
-  destroy(): void {
-    this.#account = null
-    this.#publicKey = null
-    this.#connecting = false
-    this.#disconnecting = false
+  // -- Public ------------------------------------------- //
+  public get publicKey() {
+    const account = this.getAccount(false)
 
-    const off = this.#off
-    if (off) {
-      this.#off = null
-      off()
-    }
-  }
-
-  override async autoConnect(): Promise<void> {
-    return this.#connect({ silent: true })
-  }
-
-  async connect(params?: StandardConnectInput): Promise<void> {
-    return this.#connect(params)
-  }
-
-  async #connect(input?: StandardConnectInput): Promise<void> {
-    try {
-      if (this.connected || this.connecting) {
-        return
-      }
-      if (this.#readyState !== WalletReadyState.Installed) {
-        throw new WalletNotReadyError()
-      }
-
-      this.#connecting = true
-
-      if (!this.#wallet.accounts.length) {
-        try {
-          await this.#wallet.features[StandardConnect].connect(input)
-        } catch (error: unknown) {
-          throw new WalletConnectionError((error as Error)?.message, error)
-        }
-      }
-
-      const account = this.#wallet.accounts[0]
-      if (!account) {
-        throw new WalletAccountError()
-      }
-
-      this.#connected(account)
-    } catch (error: unknown) {
-      this.emit('error', error as WalletError)
-      throw error
-    } finally {
-      this.#connecting = false
-    }
-  }
-
-  async disconnect(): Promise<void> {
-    if (StandardDisconnect in this.#wallet.features) {
-      try {
-        this.#disconnecting = true
-        await this.#wallet.features[StandardDisconnect].disconnect()
-      } catch (error: unknown) {
-        this.emit('error', new WalletDisconnectionError((error as Error)?.message, error))
-      } finally {
-        this.#disconnecting = false
-      }
+    if (account) {
+      return new PublicKey(account.publicKey)
     }
 
-    this.#disconnected()
+    return undefined
   }
 
-  #connected(account: WalletAccount) {
-    let publicKey: PublicKey | undefined = undefined
-    try {
-      // Use account.address instead of account.publicKey since address could be a PDA
-      publicKey = new PublicKey(account.address)
-    } catch (error: unknown) {
-      throw new WalletPublicKeyError((error as Error)?.message, error)
-    }
+  public get icon() {
+    return this.wallet.icon
+  }
 
-    this.#account = account
-    this.#publicKey = publicKey
-    this.#reset()
+  public get chains() {
+    return this.wallet.chains.map(chainId => solanaChains[chainId]).filter(Boolean) as Chain[]
+  }
+
+  public async connect(): Promise<string> {
+    const feature = this.getWalletFeature(StandardConnect)
+    await feature.connect()
+
+    const publicKey = new PublicKey(this.getAccount(true).publicKey)
     this.emit('connect', publicKey)
+
+    return publicKey.toBase58()
   }
 
-  #disconnected(): void {
-    this.#account = null
-    this.#publicKey = null
-    this.#reset()
-    this.emit('disconnect')
+  public async disconnect() {
+    const feature = this.getWalletFeature(StandardDisconnect)
+    await feature.disconnect()
   }
 
-  #reset() {
-    const supportedTransactionVersions =
-      SolanaSignAndSendTransaction in this.#wallet.features
-        ? this.#wallet.features[SolanaSignAndSendTransaction].supportedTransactionVersions
-        : this.#wallet.features[SolanaSignTransaction].supportedTransactionVersions
-    this.#supportedTransactionVersions = arraysEqual(supportedTransactionVersions, ['legacy'])
-      ? null
-      : new Set(supportedTransactionVersions)
+  public async signMessage(message: Uint8Array) {
+    const feature = this.getWalletFeature(SolanaSignMessage)
+    const account = this.getAccount(true)
 
-    if (
-      SolanaSignTransaction in this.#wallet.features &&
-      this.#account?.features.includes(SolanaSignTransaction)
-    ) {
-      this.signTransaction = this.#signTransaction
-      this.signAllTransactions = this.#signAllTransactions
-    } else {
-      delete this.signTransaction
-      delete this.signAllTransactions
+    const [result] = await feature.signMessage({ message, account })
+    if (!result) {
+      throw new WalletSignMessageError('Empty result')
     }
 
-    if (
-      SolanaSignMessage in this.#wallet.features &&
-      this.#account?.features.includes(SolanaSignMessage)
-    ) {
-      this.signMessage = this.#signMessage
-    } else {
-      delete this.signMessage
-    }
-
-    if (SolanaSignIn in this.#wallet.features) {
-      this.signIn = this.#signIn
-    } else {
-      delete this.signIn
-    }
+    return result.signature
   }
 
-  #changed: StandardEventsListeners['change'] = properties => {
-    // If accounts have changed on the wallet, reflect this on the adapter.
-    if ('accounts' in properties) {
-      const account = this.#wallet.accounts[0]
-      // If the adapter isn't connected, or is disconnecting, or the first account hasn't changed, do nothing.
-      if (this.#account && !this.#disconnecting && account !== this.#account) {
-        // If there's a connected account, connect the adapter. Otherwise, disconnect it.
-        if (account) {
-          // Connect the adapter.
-          this.#connected(account)
-        } else {
-          // Emit an error because the wallet spontaneously disconnected.
-          this.emit('error', new WalletDisconnectedError())
-          // Disconnect the adapter.
-          this.#disconnected()
-        }
-      }
-    }
+  public async signTransaction<T extends AnyTransaction>(transaction: T) {
+    const feature = this.getWalletFeature(SolanaSignTransaction)
+    const account = this.getAccount(true)
 
-    // After reflecting account changes, if features have changed on the wallet, reflect this on the adapter.
-    if ('features' in properties) {
-      this.#reset()
-    }
-  }
+    const serializedTransaction = this.serializeTransaction(transaction)
 
-  async sendTransaction<T extends Transaction | VersionedTransaction>(
-    transaction: T,
-    connection: Connection,
-    options: SendTransactionOptions = {}
-  ): Promise<TransactionSignature> {
-    try {
-      const { account, chain } = this.getTransactionMetaInputs(connection)
-
-      let feature: typeof SolanaSignAndSendTransaction | typeof SolanaSignTransaction | undefined =
-        undefined
-      if (SolanaSignAndSendTransaction in this.#wallet.features) {
-        if (account.features.includes(SolanaSignAndSendTransaction)) {
-          feature = SolanaSignAndSendTransaction
-        } else if (
-          SolanaSignTransaction in this.#wallet.features &&
-          account.features.includes(SolanaSignTransaction)
-        ) {
-          feature = SolanaSignTransaction
-        } else {
-          throw new WalletAccountError()
-        }
-      } else if (SolanaSignTransaction in this.#wallet.features) {
-        if (!account.features.includes(SolanaSignTransaction)) {
-          throw new WalletAccountError()
-        }
-        feature = SolanaSignTransaction
-      } else {
-        throw new WalletConfigError()
-      }
-
-      try {
-        if (feature === SolanaSignAndSendTransaction) {
-          return this.signAndSendTransaction(transaction, options)
-        }
-
-        const serializedTransaction = await this.serializeTransaction(
-          transaction,
-          connection,
-          options
-        )
-
-        const [output] = await (this.#wallet.features as SolanaSignTransactionFeature)[
-          SolanaSignTransaction
-        ].signTransaction({
-          account,
-          chain,
-          transaction: serializedTransaction,
-          options: {
-            preflightCommitment: getCommitment(
-              options.preflightCommitment || connection.commitment
-            ),
-            minContextSlot: options.minContextSlot
-          }
-        })
-
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        return await connection.sendRawTransaction(output!.signedTransaction, {
-          ...options,
-          preflightCommitment: getCommitment(options.preflightCommitment || connection.commitment)
-        })
-      } catch (error: unknown) {
-        if (error instanceof WalletError) {
-          throw error
-        }
-        throw new WalletSendTransactionError((error as Error)?.message, error)
-      }
-    } catch (error: unknown) {
-      this.emit('error', error as WalletError)
-      throw error
-    }
-  }
-
-  async signAndSendTransaction<T extends Transaction | VersionedTransaction>(
-    transaction: T,
-    options: SendTransactionOptions = {}
-  ): Promise<TransactionSignature> {
-    if (!(SolanaSignAndSendTransaction in this.#wallet.features)) {
-      throw new Error(`The wallet does not support ${SolanaSignAndSendTransaction} feature`)
-    }
-
-    const { chain, account, connection } = this.getTransactionMetaInputs(
-      SolStoreUtil.state.connection
-    )
-
-    const serializedTransaction = await this.serializeTransaction(transaction, connection, options)
-
-    const [output] = await this.#wallet.features[
-      SolanaSignAndSendTransaction
-    ].signAndSendTransaction({
+    const [result] = await feature.signTransaction({
       account,
-      chain,
       transaction: serializedTransaction,
-      options: {
-        preflightCommitment: getCommitment(options.preflightCommitment || connection.commitment),
-        skipPreflight: options.skipPreflight,
-        maxRetries: options.maxRetries,
-        minContextSlot: options.minContextSlot
-      }
+      chain: this.getChain()
     })
 
-    if (!output) {
-      throw new WalletSendTransactionError('Invalid transaction result')
+    if (!result) {
+      throw new WalletSignTransactionError('Empty result')
     }
-
-    return bs58.encode(output.signature)
-  }
-
-  private async serializeTransaction(
-    transaction: Transaction | VersionedTransaction,
-    connection: Connection,
-    options: SendTransactionOptions
-  ): Promise<Uint8Array> {
-    const { signers, ...sendOptions } = options
 
     if (isVersionedTransaction(transaction)) {
-      if (signers?.length) {
-        transaction.sign(signers)
-      }
-
-      return transaction.serialize()
+      return VersionedTransaction.deserialize(result.signedTransaction) as T
     }
 
-    const preparedTransaction = await this.prepareTransaction(transaction, connection, sendOptions)
-
-    if (signers?.length) {
-      preparedTransaction.partialSign(...signers)
-    }
-
-    return new Uint8Array(
-      preparedTransaction.serialize({
-        requireAllSignatures: false,
-        verifySignatures: false
-      })
-    )
+    return Transaction.from(result.signedTransaction) as T
   }
 
-  private getTransactionMetaInputs(connection?: Connection | null) {
-    const account = this.#account
-    if (!account || !connection) {
-      throw new WalletNotConnectedError()
+  public async signAndSendTransaction<T extends AnyTransaction>(
+    transaction: T,
+    sendOptions?: SendOptions
+  ) {
+    const feature = this.getWalletFeature(SolanaSignAndSendTransaction)
+    const account = this.getAccount(true)
+
+    const [result] = await feature.signAndSendTransaction({
+      account,
+      transaction: this.serializeTransaction(transaction),
+      options: {
+        ...sendOptions,
+        preflightCommitment: getCommitment(sendOptions?.preflightCommitment)
+      },
+      chain: this.getChain()
+    })
+
+    if (!result) {
+      throw new WalletSendTransactionError('Empty result')
     }
 
-    const chain = getChainForEndpoint(connection.rpcEndpoint)
-    if (!account.chains.includes(chain)) {
-      throw new WalletSendTransactionError('Invalid chain')
-    }
-
-    return { account, chain, connection }
+    return base58.encode(result.signature)
   }
 
-  signTransaction:
-    | (<T extends Transaction | VersionedTransaction>(transaction: T) => Promise<T>)
-    | undefined
-  async #signTransaction<T extends Transaction | VersionedTransaction>(transaction: T): Promise<T> {
-    try {
-      const account = this.#account
-      if (!account) {
-        throw new WalletNotConnectedError()
-      }
+  public async sendTransaction(
+    transaction: AnyTransaction,
+    connection: Connection,
+    options?: SendOptions
+  ) {
+    const signedTransaction = await this.signTransaction(transaction)
+    const signature = await connection.sendRawTransaction(signedTransaction.serialize(), options)
 
-      if (!(SolanaSignTransaction in this.#wallet.features)) {
-        throw new WalletConfigError()
-      }
-      if (!account.features.includes(SolanaSignTransaction)) {
-        throw new WalletAccountError()
-      }
-      try {
-        const signedTransactions = await this.#wallet.features[
-          SolanaSignTransaction
-        ].signTransaction({
-          account,
-          transaction: isVersionedTransaction(transaction)
-            ? transaction.serialize()
-            : new Uint8Array(
-                transaction.serialize({
-                  requireAllSignatures: false,
-                  verifySignatures: false
-                })
-              )
-        })
-
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const serializedTransaction = signedTransactions[0]!.signedTransaction
-
-        return (
-          isVersionedTransaction(transaction)
-            ? VersionedTransaction.deserialize(serializedTransaction)
-            : Transaction.from(serializedTransaction)
-        ) as T
-      } catch (error: unknown) {
-        if (error instanceof WalletError) {
-          throw error
-        }
-        throw new WalletSignTransactionError((error as Error)?.message, error)
-      }
-    } catch (error: unknown) {
-      this.emit('error', error as WalletError)
-      throw error
-    }
+    return signature
   }
 
-  signAllTransactions:
-    | (<T extends Transaction | VersionedTransaction>(transaction: T[]) => Promise<T[]>)
-    | undefined
-  async #signAllTransactions<T extends Transaction | VersionedTransaction>(
-    transactions: T[]
-  ): Promise<T[]> {
-    try {
-      const account = this.#account
-      if (!account) {
-        throw new WalletNotConnectedError()
-      }
-
-      if (!(SolanaSignTransaction in this.#wallet.features)) {
-        throw new WalletConfigError()
-      }
-      if (!account.features.includes(SolanaSignTransaction)) {
-        throw new WalletAccountError()
-      }
-
-      try {
-        const signedTransactions = await this.#wallet.features[
-          SolanaSignTransaction
-        ].signTransaction(
-          ...transactions.map(transaction => ({
-            account,
-            transaction: isVersionedTransaction(transaction)
-              ? transaction.serialize()
-              : new Uint8Array(
-                  transaction.serialize({
-                    requireAllSignatures: false,
-                    verifySignatures: false
-                  })
-                )
-          }))
-        )
-
-        return transactions.map((transaction, index) => {
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          const signedTransaction = signedTransactions[index]!.signedTransaction
-
-          return (
-            isVersionedTransaction(transaction)
-              ? VersionedTransaction.deserialize(signedTransaction)
-              : Transaction.from(signedTransaction)
-          ) as T
-        })
-      } catch (error: unknown) {
-        throw new WalletSignTransactionError((error as Error)?.message, error)
-      }
-    } catch (error: unknown) {
-      this.emit('error', error as WalletError)
-      throw error
-    }
+  public async request() {
+    return await Promise.reject(new Error('RPC request is not supported'))
   }
 
-  signMessage: ((message: Uint8Array) => Promise<Uint8Array>) | undefined
-  async #signMessage(message: Uint8Array): Promise<Uint8Array> {
-    try {
-      const account = this.#account
-      if (!account) {
-        throw new WalletNotConnectedError()
-      }
-
-      if (!(SolanaSignMessage in this.#wallet.features)) {
-        throw new WalletConfigError()
-      }
-      if (!account.features.includes(SolanaSignMessage)) {
-        throw new WalletAccountError()
-      }
-
-      try {
-        const signedMessages = await this.#wallet.features[SolanaSignMessage].signMessage({
-          account,
-          message
-        })
-
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        return signedMessages[0]!.signature
-      } catch (error: unknown) {
-        throw new WalletSignMessageError((error as Error)?.message, error)
-      }
-    } catch (error: unknown) {
-      this.emit('error', error as WalletError)
-      throw error
-    }
+  public async signAllTransactions() {
+    return await Promise.reject(new Error('Sign all transactions is not supported'))
   }
 
-  signIn: ((input?: SolanaSignInInput) => Promise<SolanaSignInOutput>) | undefined
-  async #signIn(input: SolanaSignInInput = {}): Promise<SolanaSignInOutput> {
-    try {
-      if (!(SolanaSignIn in this.#wallet.features)) {
-        throw new WalletConfigError()
-      }
+  // -- Private ------------------------------------------- //
+  private serializeTransaction(transaction: AnyTransaction) {
+    return transaction.serialize({ verifySignatures: false })
+  }
 
-      let output: SolanaSignInOutput | undefined = undefined
-      try {
-        ;[output] = await this.#wallet.features[SolanaSignIn].signIn(input)
-      } catch (error: unknown) {
-        throw new WalletSignInError((error as Error)?.message, error)
-      }
-
-      if (!output) {
-        throw new WalletSignInError()
-      }
-      this.#connected(output.account)
-
-      return output
-    } catch (error: unknown) {
-      this.emit('error', error as WalletError)
-      throw error
+  private getAccount<Required extends boolean>(
+    required?: Required
+  ): Required extends true ? WalletAccount : WalletAccount | undefined {
+    const account = this.wallet.accounts[0]
+    if (required && !account) {
+      throw new WalletAccountError()
     }
+
+    return account as Required extends true ? WalletAccount : WalletAccount | undefined
+  }
+
+  private getWalletFeature<Name extends keyof AvailableFeatures>(feature: Name) {
+    if (!(feature in this.wallet.features)) {
+      throw new StandardWalletFeatureNotSupportedError(feature)
+    }
+
+    return this.wallet.features[feature] as WalletWithFeatures<
+      Record<Name, AvailableFeatures[Name]>
+    >['features'][Name]
+  }
+
+  private getChain(): CaipNetworkId {
+    return SolStoreUtil.state.currentChain?.chainId as CaipNetworkId
   }
 }

@@ -1,4 +1,5 @@
 import { ConstantsUtil } from '@web3modal/common'
+import type { Chain } from './scaffold'
 
 export const solana = {
   chainId: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
@@ -26,3 +27,9 @@ export const solanaDevnet = {
   rpcUrl: 'https://rpc.walletconnect.org/v1',
   chain: ConstantsUtil.CHAIN.SOLANA
 }
+
+export const solanaChains = {
+  'solana:mainnet': solana,
+  'solana:testnet': solanaTestnet,
+  'solana:devnet': solanaDevnet
+} as Record<`${string}:${string}`, Chain>

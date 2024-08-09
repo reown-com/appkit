@@ -32,37 +32,56 @@ export interface RequestArguments {
   readonly params?: readonly unknown[] | object
 }
 
-export interface Provider {
-  isConnected: () => boolean
-  publicKey: PublicKey
+export interface Provider extends ProviderEventEmitterMethods {
+  // Metadata
   name: string
-  on: <T>(event: string, listener: (data: T) => void) => void
-  wallet: Provider
-  removeListener: <T>(event: string, listener: (data: T) => void) => void
-  emit: (event: string) => void
+  publicKey?: PublicKey
+  icon?: string
+  chains: Chain[]
+
+  // RPC
+  request: <T>(config: RequestArguments) => Promise<T>
+
+  // Methods
   connect: () => Promise<string>
   disconnect: () => Promise<void>
-  request: <T>(config: { method: string; params?: object }) => Promise<T>
   signMessage: (message: Uint8Array) => Promise<Uint8Array>
   signTransaction: <T extends AnyTransaction>(transaction: T) => Promise<T>
   signAndSendTransaction: (
     transaction: AnyTransaction,
     options?: SendOptions
   ) => Promise<TransactionSignature>
-  signAllTransactions: (transactions: SolanaWeb3Transaction[]) => Promise<SolanaWeb3Transaction[]>
-  signAndSendAllTransactions: (
-    transactions: SolanaWeb3Transaction[]
-  ) => Promise<TransactionSignature[]>
+  signAllTransactions: (transactions: AnyTransaction[]) => Promise<SolanaWeb3Transaction[]>
   sendTransaction: (
     transaction: AnyTransaction,
     connection: Connection,
     options?: SendTransactionOptions
   ) => Promise<TransactionSignature>
-  sendAndConfirm: (
-    transaction: AnyTransaction,
-    connection: Connection,
-    options?: SendTransactionOptions
-  ) => Promise<TransactionSignature>
+}
+
+export interface ProviderEventEmitterMethods {
+  on: <E extends ProviderEventEmitterMethods.Event>(
+    event: E,
+    listener: (data: ProviderEventEmitterMethods.EventParams[E]) => void
+  ) => void
+  removeListener: <E extends ProviderEventEmitterMethods.Event>(
+    event: E,
+    listener: (data: ProviderEventEmitterMethods.EventParams[E]) => void
+  ) => void
+  emit: <E extends ProviderEventEmitterMethods.Event>(
+    event: E,
+    data: ProviderEventEmitterMethods.EventParams[E]
+  ) => void
+}
+
+export namespace ProviderEventEmitterMethods {
+  export type Event = keyof EventParams
+  export type EventParams = {
+    connect: PublicKey
+    disconnect: undefined
+    accountsChanged: PublicKey
+    chainChanged: string
+  }
 }
 
 export type Metadata = {
