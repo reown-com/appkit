@@ -176,4 +176,9 @@ export class ModalValidator {
     const connectButton = this.page.getByTestId('connect-button')
     await expect(connectButton).toContainText('Connecting...')
   }
+
+  async expectAccountSwitched(oldAddress: string) {
+    const address = this.page.getByTestId('w3m-address')
+    await expect(address).not.toHaveText(oldAddress)
+  }
 }

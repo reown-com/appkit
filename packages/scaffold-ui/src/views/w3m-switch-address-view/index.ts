@@ -74,14 +74,14 @@ export class W3mSwitchAddressView extends LitElement {
         ></wui-banner-img>
       </wui-flex>
       <wui-flex flexDirection="column" gap="xxl" .padding=${['l', 'xl', 'xl', 'xl'] as const}>
-        ${this.allAccounts.map(account => this.getAddressTemplate(account))}
+        ${this.allAccounts.map((account, index) => this.getAddressTemplate(account, index))}
       </wui-flex>
     `
   }
 
   // -- Private ------------------------------------------- //
 
-  private getAddressTemplate(account: AccountType) {
+  private getAddressTemplate(account: AccountType, index: number) {
     const label = this.labels?.get(account.address)
 
     return html`
@@ -125,6 +125,7 @@ export class W3mSwitchAddressView extends LitElement {
             ? ''
             : html`
                 <wui-button
+                  data-testid=${`w3m-switch-address-button-${index}`}
                   textVariant="small-600"
                   size="md"
                   variant="accent"
