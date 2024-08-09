@@ -86,6 +86,11 @@ emailTest('it should switch network and sign', async () => {
   await validator.expectAcceptedSign()
 })
 
+emailTest.only('it should show loading on page refresh', async () => {
+  await page.page.reload()
+  await validator.expectConnectButtonLoading()
+})
+
 emailTest('it should disconnect correctly', async () => {
   await page.openAccount()
   await page.openProfileView()

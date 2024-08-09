@@ -345,21 +345,18 @@ export class Web3Modal extends Web3ModalScaffold {
         ) {
           const ethProvider = provider
           await (ethProvider as unknown as EthereumProvider).disconnect()
-          // eslint-disable-next-line no-negated-condition
         } else if (providerType === ConstantsUtil.AUTH_CONNECTOR_ID) {
           await this.authProvider?.disconnect()
         } else if (providerType === ConstantsUtil.EIP6963_CONNECTOR_ID && provider) {
-          await this.disconnectProvider(provider)
-          provider.emit('disconnect')
+          await this.revokeProviderPermissions(provider)
         } else if (providerType === ConstantsUtil.INJECTED_CONNECTOR_ID) {
           const InjectedProvider = ethersConfig.injected
           if (InjectedProvider) {
-            await this.disconnectProvider(InjectedProvider)
-            InjectedProvider.emit('disconnect')
+            await this.revokeProviderPermissions(InjectedProvider)
           }
-        } else {
-          provider?.emit('disconnect')
         }
+
+        provider?.emit?.('disconnect')
         localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
         EthersStoreUtil.reset()
       },
@@ -646,7 +643,7 @@ export class Web3Modal extends Web3ModalScaffold {
     if (providerType === ConstantsUtil.AUTH_CONNECTOR_ID) {
       await this.authProvider?.disconnect()
     } else if (provider && (providerType === 'injected' || providerType === 'eip6963')) {
-      await this.disconnectProvider(provider)
+      await this.revokeProviderPermissions(provider)
       provider?.emit('disconnect')
     } else if (providerType === 'walletConnect' || providerType === 'coinbaseWalletSDK') {
       const ethereumProvider = provider as unknown as EthereumProvider
@@ -697,7 +694,7 @@ export class Web3Modal extends Web3ModalScaffold {
     await this.checkActiveWalletConnectProvider()
   }
 
-  private async disconnectProvider(provider: Provider | CombinedProvider) {
+  private async revokeProviderPermissions(provider: Provider | CombinedProvider) {
     try {
       const permissions: { parentCapability: string }[] = await provider.request({
         method: 'wallet_getPermissions'
@@ -713,7 +710,8 @@ export class Web3Modal extends Web3ModalScaffold {
         })
       }
     } catch (error) {
-      throw new Error('Error revoking permissions:')
+      // eslint-disable-next-line no-console
+      console.info('Could not revoke permissions from wallet. Disconnecting...', error)
     }
   }
 
@@ -1109,7 +1107,11 @@ export class Web3Modal extends Web3ModalScaffold {
       })
 
       this.authProvider.onRpcSuccess(() => {
-        super.popTransactionStack()
+        if (super.isTransactionStackEmpty()) {
+          super.close()
+        } else {
+          super.popTransactionStack()
+        }
       })
       this.authProvider.onNotConnected(() => {
         this.setIsConnected(false)
