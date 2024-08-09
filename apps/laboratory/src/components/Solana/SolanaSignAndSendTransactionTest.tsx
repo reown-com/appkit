@@ -1,14 +1,20 @@
 import { useState } from 'react'
 import { Button, Stack, Text, Spacer, Link } from '@chakra-ui/react'
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/solana/react'
-import { PublicKey, Transaction, SystemProgram } from '@solana/web3.js'
+import {
+  PublicKey,
+  Transaction,
+  SystemProgram,
+  TransactionMessage,
+  VersionedTransaction
+} from '@solana/web3.js'
 
 import { solana } from '../../utils/ChainsUtil'
 import { useChakraToast } from '../Toast'
 
 const PHANTOM_TESTNET_ADDRESS = '8vCyX7oB6Pc3pbWMGYYZF5pbSnAdQ7Gyr32JqxqCy8ZR'
 const recipientAddress = new PublicKey(PHANTOM_TESTNET_ADDRESS)
-const amountInLamports = 50000000
+const amountInLamports = 10_000_000
 
 export function SolanaSignAndSendTransaction() {
   const toast = useChakraToast()
@@ -16,7 +22,7 @@ export function SolanaSignAndSendTransaction() {
   const { walletProvider, connection } = useWeb3ModalProvider()
   const [loading, setLoading] = useState(false)
 
-  async function onSendTransaction() {
+  async function onSendTransaction(mode: 'legacy' | 'versioned') {
     try {
       setLoading(true)
       if (!walletProvider || !address) {
@@ -32,16 +38,34 @@ export function SolanaSignAndSendTransaction() {
         throw Error('Not enough SOL in wallet')
       }
 
-      // Create a new transaction
-      const transaction = new Transaction().add(
-        SystemProgram.transfer({
-          fromPubkey: walletProvider.publicKey,
-          toPubkey: recipientAddress,
-          lamports: amountInLamports
-        })
-      )
-      transaction.feePayer = walletProvider.publicKey
-      const signature = await walletProvider.signAndSendTransaction(transaction)
+      const instruction = SystemProgram.transfer({
+        fromPubkey: walletProvider.publicKey,
+        toPubkey: recipientAddress,
+        lamports: amountInLamports
+      })
+      const { blockhash } = await connection.getLatestBlockhash()
+
+      let signature = ''
+
+      if (mode === 'versioned') {
+        // Create v0 compatible message
+        const messageV0 = new TransactionMessage({
+          payerKey: walletProvider.publicKey,
+          recentBlockhash: blockhash,
+          instructions: [instruction]
+        }).compileToV0Message()
+
+        // Make a versioned transaction
+        const versionedTranasction = new VersionedTransaction(messageV0)
+
+        signature = await walletProvider.signAndSendTransaction(versionedTranasction)
+      } else {
+        // Create a new transaction
+        const transaction = new Transaction().add(instruction)
+        transaction.feePayer = walletProvider.publicKey
+        transaction.recentBlockhash = blockhash
+        signature = await walletProvider.signAndSendTransaction(transaction)
+      }
 
       toast({
         title: 'Success',
@@ -75,10 +99,17 @@ export function SolanaSignAndSendTransaction() {
     <Stack direction={['column', 'column', 'row']}>
       <Button
         data-test-id="sign-transaction-button"
-        onClick={onSendTransaction}
+        onClick={() => onSendTransaction('legacy')}
         isDisabled={loading}
       >
         Sign and Send Transaction
+      </Button>
+      <Button
+        data-test-id="sign-transaction-button"
+        onClick={() => onSendTransaction('versioned')}
+        isDisabled={loading}
+      >
+        Sign and Send Versioned Transaction
       </Button>
       <Spacer />
 

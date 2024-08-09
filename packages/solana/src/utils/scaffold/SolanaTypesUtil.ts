@@ -40,28 +40,26 @@ export interface Provider {
   wallet: Provider
   removeListener: <T>(event: string, listener: (data: T) => void) => void
   emit: (event: string) => void
-  connect: () => Promise<void>
+  connect: () => Promise<string>
   disconnect: () => Promise<void>
   request: <T>(config: { method: string; params?: object }) => Promise<T>
+  signMessage: (message: Uint8Array) => Promise<Uint8Array>
+  signTransaction: <T extends AnyTransaction>(transaction: T) => Promise<T>
+  signAndSendTransaction: (
+    transaction: AnyTransaction,
+    options?: SendOptions
+  ) => Promise<TransactionSignature>
   signAllTransactions: (transactions: SolanaWeb3Transaction[]) => Promise<SolanaWeb3Transaction[]>
   signAndSendAllTransactions: (
     transactions: SolanaWeb3Transaction[]
   ) => Promise<TransactionSignature[]>
-  signAndSendTransaction: (
-    transaction: SolanaWeb3Transaction | VersionedTransaction,
-    options?: SendOptions
-  ) => Promise<TransactionSignature>
-  signMessage: (message: Uint8Array) => Promise<Uint8Array> | Promise<{ signature: Uint8Array }>
-  signTransaction: (transaction: SolanaWeb3Transaction | VersionedTransaction) => Promise<{
-    signatures: { signature: Uint8Array }[]
-  }>
   sendTransaction: (
-    transaction: SolanaWeb3Transaction | VersionedTransaction,
+    transaction: AnyTransaction,
     connection: Connection,
     options?: SendTransactionOptions
   ) => Promise<TransactionSignature>
   sendAndConfirm: (
-    transaction: SolanaWeb3Transaction | VersionedTransaction,
+    transaction: AnyTransaction,
     connection: Connection,
     options?: SendTransactionOptions
   ) => Promise<TransactionSignature>
@@ -186,22 +184,6 @@ export type FilterObject =
     }
   | { dataSize: number }
 
-export interface TransactionInstructionRequest {
-  programId: string
-  data: string
-  keys: {
-    isSigner: boolean
-    isWritable: boolean
-    pubkey: string
-  }[]
-}
-
-interface VersionedInstructionRequest {
-  data: string
-  programIdIndex: number
-  accountKeyIndexes: number[]
-}
-
 /**
  * Request methods to the solana RPC.
  * @see {@link https://solana.com/docs/rpc/http}
@@ -212,33 +194,24 @@ export interface RequestMethods {
       message: string
       pubkey: string
     }
-    returns: {
-      signature: string
-    }
+    returns: { signature: string }
   }
   solana_signTransaction: {
     params: {
-      feePayer: string
-      instructions: TransactionInstructionRequest[] | VersionedInstructionRequest[]
-      recentBlockhash: string
-      signatures?: {
-        pubkey: string
-        signature: string
-      }[]
+      transaction: string
+      pubkey: string
     }
     returns: {
-      signature: string
+      transaction: string
     }
   }
   solana_signAndSendTransaction: {
     params: {
-      feePayer: string
-      instructions: TransactionInstructionRequest[]
-      options?: SendOptions
+      transaction: string
+      pubkey: string
+      sendOptions?: SendOptions
     }
-    returns: {
-      signature: string
-    }
+    returns: { signature: string }
   }
 
   signMessage: {
@@ -357,3 +330,5 @@ export interface ClusterSubscribeRequestMethods {
     returns: unknown
   }
 }
+
+export type AnyTransaction = SolanaWeb3Transaction | VersionedTransaction
