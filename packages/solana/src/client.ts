@@ -31,9 +31,8 @@ import type {
 import type { Chain as AvailableChain } from '@web3modal/common'
 
 import type { ProviderType, Chain, Provider, SolStoreUtilState } from './utils/scaffold/index.js'
-import { watchStandard } from './utils/wallet-standard/watchStandard.js'
+import { watchStandard } from './utils/watchStandard.js'
 import { StandardWalletAdapter } from './utils/wallet-standard/adapter.js'
-import { SolanaChainIDs } from './utils/chainPath/constants.js'
 
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
   solanaConfig: ProviderType
@@ -131,20 +130,11 @@ export class Web3Modal extends Web3ModalScaffold {
             resolve(result)
           } else {
             const provider = SolStoreUtil.state.provider
-            if (provider && provider instanceof StandardWalletAdapter) {
-              const solanaNetworkNameToIdMap: Record<string, string> = {
-                mainnet: SolanaChainIDs.Mainnet,
-                testnet: SolanaChainIDs.Testnet,
-                devnet: SolanaChainIDs.Devnet
-              }
-              const approvedCaipNetworkIds: CaipNetworkId[] = provider.wallet?.chains
-                .map(network => {
-                  const networkName = network.split(':')[1] || ''
-                  const networkId = solanaNetworkNameToIdMap[networkName]
 
-                  return networkId && `solana:${networkId}`
-                })
-                .filter(Boolean) as CaipNetworkId[]
+            if (provider) {
+              const approvedCaipNetworkIds = provider.chains.map<CaipNetworkId>(
+                chain => `solana:${chain.chainId}`
+              )
 
               resolve({
                 approvedCaipNetworkIds,
@@ -186,14 +176,14 @@ export class Web3Modal extends Web3ModalScaffold {
       },
 
       disconnect: async () => {
-        const provider = SolStoreUtil.state.provider as Provider
+        const provider = SolStoreUtil.state.provider
         const providerType = SolStoreUtil.state.providerType
         localStorage.removeItem(SolConstantsUtil.WALLET_ID)
         if (providerType === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
           const WalletConnectProvider = provider
           await (WalletConnectProvider as unknown as UniversalProvider).disconnect()
         } else if (provider) {
-          provider.emit('disconnect')
+          provider.emit('disconnect', undefined)
         }
         SolStoreUtil.reset()
       },
@@ -340,10 +330,10 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   public disconnect() {
-    const provider = SolStoreUtil.state.provider as Provider
+    const provider = SolStoreUtil.state.provider
 
     if (provider) {
-      provider.emit('disconnect')
+      provider.emit('disconnect', undefined)
     }
   }
 
@@ -534,7 +524,7 @@ export class Web3Modal extends Web3ModalScaffold {
             this.connectionSettings
           )
         )
-        const name = provider ? (provider as Provider).name : ''
+        const name = provider ? provider.name : ''
         this.setAddress(
           this.filteredWalletAdapters?.find(adapter => adapter.name === name)?.publicKey?.toString()
         )
@@ -603,7 +593,8 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private setInjectedProvider(provider: Provider) {
-    const id = SolHelpersUtil.getStorageInjectedId(provider as unknown as ExtendedBaseWalletAdapter)
+    // Const id = SolHelpersUtil.getStorageInjectedId(provider as unknown as ExtendedBaseWalletAdapter)
+    const id = `injected_${provider.name}` as const
     const address = provider.publicKey?.toString()
 
     window?.localStorage.setItem(SolConstantsUtil.WALLET_ID, id)

@@ -1,13 +1,13 @@
 import { getWallets } from '@wallet-standard/app'
-import { StandardWalletAdapter } from './adapter'
+import { WalletStandardProvider } from '../providers'
 import { isWalletAdapterCompatibleStandardWallet } from '@solana/wallet-adapter-base'
 import type { Wallet } from '@wallet-standard/base'
 
 const { get, on } = getWallets()
 
-let standardAdapters: StandardWalletAdapter[] = [...wrapWalletsWithAdapters(get())]
+let standardAdapters: WalletStandardProvider[] = [...wrapWalletsWithAdapters(get())]
 
-export function watchStandard(callback: (arg: StandardWalletAdapter[]) => void) {
+export function watchStandard(callback: (arg: WalletStandardProvider[]) => void) {
   const listeners = [
     on('register', (...wallets) => {
       if (!standardAdapters || standardAdapters.length === 0) {
@@ -30,8 +30,8 @@ export function watchStandard(callback: (arg: StandardWalletAdapter[]) => void) 
   return () => listeners.forEach(off => off())
 }
 
-function wrapWalletsWithAdapters(wallets: readonly Wallet[]): readonly StandardWalletAdapter[] {
+function wrapWalletsWithAdapters(wallets: readonly Wallet[]): readonly WalletStandardProvider[] {
   return wallets
     .filter(isWalletAdapterCompatibleStandardWallet)
-    .map(wallet => new StandardWalletAdapter({ wallet }))
+    .map(wallet => new WalletStandardProvider({ wallet }))
 }
