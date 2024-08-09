@@ -450,11 +450,18 @@ export class Web3Modal extends Web3ModalScaffold {
     isDisconnected,
     chainId,
     connector,
-    addresses
+    addresses,
+    status
   }: Partial<
     Pick<
       GetAccountReturnType,
-      'address' | 'isConnected' | 'isDisconnected' | 'chainId' | 'connector' | 'addresses'
+      | 'address'
+      | 'isConnected'
+      | 'isDisconnected'
+      | 'chainId'
+      | 'connector'
+      | 'addresses'
+      | 'status'
     >
   >) {
     const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`
@@ -463,7 +470,9 @@ export class Web3Modal extends Web3ModalScaffold {
       return
     }
 
-    if (isConnected && address && chainId) {
+    const connected = isConnected && status === 'connected'
+
+    if (connected && address && chainId) {
       this.resetAccount()
       this.syncNetwork(address, chainId, isConnected)
       this.setIsConnected(isConnected)
