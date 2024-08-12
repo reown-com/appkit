@@ -1,7 +1,6 @@
 import UniversalProvider from '@walletconnect/universal-provider'
 import type { AnyTransaction, Chain, Provider } from '../../utils/scaffold'
 import { ProviderEventEmitter } from '../shared/ProviderEventEmitter'
-import { ConstantsUtil } from '@web3modal/scaffold-utils'
 import type { SessionTypes } from '@walletconnect/types'
 import base58 from 'bs58'
 import {
@@ -19,8 +18,9 @@ export type WalletConnectProviderConfig = {
 }
 
 export class WalletConnectProvider extends ProviderEventEmitter implements Provider {
-  public readonly name = ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID
+  public readonly name = 'WalletConnect'
   public readonly type = 'WALLET_CONNECT'
+  public readonly icon = 'https://avatars.githubusercontent.com/u/37784886'
   public readonly chains: Chain[]
 
   private provider: UniversalProvider
