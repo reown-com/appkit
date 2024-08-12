@@ -401,15 +401,6 @@ export class ModalPage {
     await sendCallsButton.click()
   }
 
-  async switchNetworkWithNetworkButton(networkName: string) {
-    const networkButton = this.page.getByTestId('w3m-network-button')
-    await networkButton.click()
-
-    const networkToSwitchButton = this.page.getByTestId(`w3m-network-switch-${networkName}`)
-    await networkToSwitchButton.click()
-    await networkToSwitchButton.waitFor({ state: 'hidden' })
-  }
-
   async switchAccount() {
     const switchAccountButton1 = this.page.getByTestId('w3m-switch-address-button-1')
     await expect(switchAccountButton1).toBeVisible()
