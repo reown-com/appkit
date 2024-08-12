@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "@wagmi/connectors": "5.0.21",
-    "@wagmi/core": "2.11.6",
+    "@wagmi/core": "2.13.1",
     "typescript": "5.3.3",
     "vite-plugin-node-polyfills": "0.22.0",
     "wagmi": "2.10.9"

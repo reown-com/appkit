@@ -43,8 +43,6 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@wagmi/connectors": "5.0.21",
-    "@wagmi/core": "2.11.6",
     "@web3modal/common": "workspace:*",
     "@web3modal/core": "workspace:*",
     "@web3modal/ui": "workspace:*",
@@ -62,10 +60,10 @@
   "devDependencies": {
     "@types/bn.js": "5.1.5",
     "@wagmi/connectors": "5.0.21",
-    "@wagmi/core": "2.11.6",
+    "@wagmi/core": "2.13.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "viem": "2.16.2",
+    "viem": "2.17.8",
     "vue": "3.4.3",
     "ethers": "6.13.0",
     "@coinbase/wallet-sdk": "4.0.3",
