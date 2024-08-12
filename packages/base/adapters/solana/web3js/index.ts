@@ -4,7 +4,7 @@ export { SolanaWeb3JsClient } from './client.js'
 
 // -- Types -----------------------------------------------------------
 export type { Web3ModalClientOptions } from './client.js'
-export type { Chain, ProviderType, Provider } from './utils/scaffold/SolanaTypesUtil.js'
+export type { Chain, ProviderType, Provider, Connection } from './utils/scaffold/SolanaTypesUtil.js'
 export type { BaseWalletAdapter } from '@solana/wallet-adapter-base'
 
 // -- Utils -----------------------------------------------------------

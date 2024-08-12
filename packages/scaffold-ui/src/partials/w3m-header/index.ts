@@ -248,6 +248,10 @@ export class W3mHeader extends LitElement {
   }
 
   private getPadding() {
+    if (this.heading) {
+      return ['l', '2l', 'l', '2l'] as const
+    }
+
     return ['0', '2l', '0', '2l'] as const
   }
 

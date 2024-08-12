@@ -41,6 +41,7 @@
   },
   "dependencies": {
     "@coinbase/wallet-sdk": "4.0.3",
+    "@web3modal/common": "workspace:*",
     "@web3modal/core": "workspace:*",
     "@web3modal/polyfills": "workspace:*",
     "@web3modal/wallet": "workspace:*",
