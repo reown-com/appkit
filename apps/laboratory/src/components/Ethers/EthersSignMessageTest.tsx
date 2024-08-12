@@ -16,6 +16,7 @@ export function EthersSignMessageTest() {
       if (!walletProvider || !address) {
         throw Error('user is disconnected')
       }
+
       const provider = new BrowserProvider(walletProvider, chainId)
       const signer = new JsonRpcSigner(provider, address)
       const sig = await signer?.signMessage('Hello Web3Modal!')
@@ -25,7 +26,7 @@ export function EthersSignMessageTest() {
         description: signature,
         type: 'success'
       })
-    } catch {
+    } catch (error) {
       toast({
         title: ConstantsUtil.SigningFailedToastTitle,
         description: 'Failed to sign message',

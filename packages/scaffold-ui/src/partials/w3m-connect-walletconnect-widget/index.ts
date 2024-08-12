@@ -64,7 +64,7 @@ export class W3mConnectWalletConnectWidget extends LitElement {
   // -- Private Methods ----------------------------------- //
   private onConnector(connector: Connector) {
     ChainController.setActiveConnector(connector)
-    RouterController.push('ConnectingMultiChain')
+    RouterController.push('ConnectingWalletConnect')
   }
 }
 

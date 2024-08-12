@@ -198,7 +198,9 @@ export const NetworkController = {
 
     let networkControllerClient: NetworkControllerState['_client'] = undefined
 
-    if (isUniversalAdapterOnly) {
+    const walletId = localStorage.getItem('@w3m/wallet_id')
+
+    if (isUniversalAdapterOnly || walletId === 'walletConnect') {
       networkControllerClient = ChainController.state.universalAdapter?.networkControllerClient
     } else if (sameChain) {
       networkControllerClient = ChainController.getNetworkControllerClient()
@@ -247,8 +249,6 @@ export const NetworkController = {
   async setApprovedCaipNetworksData(_chain?: Chain) {
     const networkControllerClient = ChainController.getNetworkControllerClient()
     const data = await networkControllerClient.getApprovedCaipNetworksData()
-
-    console.log(networkControllerClient, data, _chain)
 
     const chain = ChainController.state.multiChainEnabled
       ? _chain

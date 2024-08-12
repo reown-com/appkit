@@ -44,6 +44,8 @@ export class AppKit {
 
   public adapters?: ChainAdapter[]
 
+  public universalAdapter?: UniversalAdapterClient
+
   private initPromise?: Promise<void> = undefined
 
   public constructor(options: AppKitOptions) {
@@ -231,7 +233,8 @@ export class AppKit {
   }
 
   public setConnectors: (typeof ConnectorController)['setConnectors'] = connectors => {
-    ConnectorController.setConnectors(connectors)
+    const allConnectors = [...ConnectorController.getConnectors(), ...connectors]
+    ConnectorController.setConnectors(allConnectors)
   }
 
   public addConnector: (typeof ConnectorController)['addConnector'] = connector => {
@@ -305,8 +308,9 @@ export class AppKit {
     ChainController.setMultiChainEnabled(true)
 
     if (options.adapters?.length === 0) {
-      this.initializeUniversalAdapter(options)
+      this.initializeUniversalAdapter(options, true)
     } else {
+      this.initializeUniversalAdapter(options, false)
       this.initializeAdapters(options)
     }
 
@@ -352,15 +356,15 @@ export class AppKit {
     }
   }
 
-  private initializeUniversalAdapter(options: AppKitOptions) {
-    ChainController.setisUniversalAdapterOnly(true)
-    const universalAdapter = new UniversalAdapterClient({
+  private initializeUniversalAdapter(options: AppKitOptions, universalAdapterOnly: boolean) {
+    ChainController.setisUniversalAdapterOnly(universalAdapterOnly)
+    this.universalAdapter = new UniversalAdapterClient({
       chains: options.chains,
       metadata: options.metadata
     })
 
-    ChainController.initializeUniversalAdapter(universalAdapter)
-    universalAdapter.construct?.(this, options)
+    ChainController.initializeUniversalAdapter(this.universalAdapter)
+    this.universalAdapter.construct?.(this, options)
 
     NetworkController.setAllowUnsupportedChain(options.allowUnsupportedChain, 'evm')
     NetworkController.setAllowUnsupportedChain(options.allowUnsupportedChain, 'solana')

@@ -79,6 +79,7 @@ export class UniversalAdapterClient {
     this.networkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
         const chainId = NetworkUtil.caipNetworkIdToNumber(caipNetwork?.id)
+
         if (chainId) {
           try {
             this.switchNetwork(chainId)
@@ -299,7 +300,7 @@ export class UniversalAdapterClient {
     await this.checkActiveWalletConnectProvider()
   }
 
-  private async getWalletConnectProvider() {
+  public async getWalletConnectProvider() {
     if (!this.walletConnectProvider) {
       try {
         await this.createProvider()
@@ -371,17 +372,20 @@ export class UniversalAdapterClient {
         .forEach(key => {
           const chain = (key === 'eip155' ? 'evm' : key) as AvailablChain
           WcStoreUtil.setChains([chain === 'evm' ? 'eip155' : chain, ...WcStoreUtil.state.chains])
-          const address = nameSpaces?.[key]?.accounts[0]
-          const { chainId } = WcHelpersUtil.extractDetails(address)
+          const caipAddress = nameSpaces?.[key]?.accounts[0]
+
+          const { address, chainId } = WcHelpersUtil.extractDetails(caipAddress)
 
           if (address) {
             WcStoreUtil.setChainId(Number(chainId))
             WcStoreUtil.setProvider(this.walletConnectProvider)
             WcStoreUtil.setProviderType('walletConnect')
             WcStoreUtil.setStatus('connected')
+            WcStoreUtil.setIsConnected(true)
+            WcStoreUtil.setAddress(address)
 
             this.appKit?.setIsConnected(true, chain)
-            this.appKit?.setCaipAddress(address as CaipAddress, chain)
+            this.appKit?.setCaipAddress(caipAddress as CaipAddress, chain)
           }
         })
       if (!NetworkController.state.caipNetwork) {
@@ -455,7 +459,7 @@ export class UniversalAdapterClient {
     }
   }
 
-  public switchNetwork(chainId: number) {
+  public switchNetwork(chainId: number | string) {
     if (this.chains) {
       const chain = this.chains.find(c => c.chainId === chainId)
 

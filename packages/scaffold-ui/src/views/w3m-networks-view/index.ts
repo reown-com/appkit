@@ -140,13 +140,14 @@ export class W3mNetworksView extends LitElement {
     const isNetworkChainConnected = AccountController.getChainIsConnected(network.chain)
     const isUniversalAdapterOnly = ChainController.state.isUniversalAdapterOnly
     const allApprovedCaipNetworks = ChainController.getAllApprovedCaipNetworks()
+    const walletId = localStorage.getItem('@w3m/wallet_id')
 
     const supportsAllNetworks = NetworkController.state.supportsAllNetworks
     const caipNetwork = NetworkController.state.caipNetwork
     const routerData = RouterController.state.data
 
     if (isConnected && caipNetwork?.id !== network.id) {
-      if (!isNetworkChainConnected && !isUniversalAdapterOnly) {
+      if (!isNetworkChainConnected && !isUniversalAdapterOnly && walletId !== 'walletConnect') {
         RouterController.push('SwitchActiveChain', {
           switchToChain: network.chain,
           navigateTo: 'Connect',
@@ -155,7 +156,11 @@ export class W3mNetworksView extends LitElement {
 
         return
       }
-      if (isUniversalAdapterOnly || allApprovedCaipNetworks?.includes(network.id)) {
+      if (
+        isUniversalAdapterOnly ||
+        allApprovedCaipNetworks?.includes(network.id) ||
+        walletId === 'walletConnect'
+      ) {
         await NetworkController.switchActiveNetwork(network)
         await NetworkUtil.onNetworkChange()
       } else if (supportsAllNetworks) {

@@ -3,7 +3,7 @@
 import { useSnapshot } from 'valtio'
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
 import { getWeb3Modal } from '@web3modal/scaffold-react'
-import { AppKit } from '@web3modal/base'
+import { AppKit, WcStoreUtil } from '@web3modal/base'
 import type { AppKitOptions } from '@web3modal/base'
 import { SolanaWeb3JsClient, SolStoreUtil } from '@web3modal/base/adapters/solana/web3js'
 import type {
@@ -46,12 +46,11 @@ export function createWeb3Modal(options: SolanaAppKitOptions) {
 
 // -- Hooks -------------------------------------------------------------------
 export function useWeb3ModalProvider() {
-  const { provider, providerType, connection } = useSnapshot(SolStoreUtil.state)
+  const { provider, providerType } = useSnapshot(WcStoreUtil.state)
 
   return {
     walletProvider: provider as Provider,
-    walletProviderType: providerType,
-    connection
+    walletProviderType: providerType
   }
 }
 
@@ -66,7 +65,7 @@ export function useDisconnect() {
 }
 
 export function useWeb3ModalAccount() {
-  const { address, isConnected, chainId, currentChain } = useSnapshot(SolStoreUtil.state)
+  const { address, isConnected, chainId, currentChain } = useSnapshot(WcStoreUtil.state)
 
   return {
     address,

@@ -131,6 +131,7 @@ export const ChainController = {
     state.activeChain = 'evm'
     PublicStateController.set({ activeChain: 'evm' })
     state.universalAdapter = adapter
+
     // this.setActiveCaipNetwork("eip155:1")
 
     const chains: Chain[] = ['evm', 'solana']
@@ -219,7 +220,7 @@ export const ChainController = {
         : undefined
       AccountController.replaceState(newAdapter.accountState)
       NetworkController.replaceState(newAdapter.networkState)
-      this.setCaipNetwork(newAdapter.chain, newAdapter.networkState?.caipNetwork)
+      this.setCaipNetwork(newAdapter.chain, newAdapter.networkState?.caipNetwork, true)
       PublicStateController.set({
         activeChain: chain,
         selectedNetworkId: newAdapter.networkState?.caipNetwork?.id

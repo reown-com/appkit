@@ -1,6 +1,7 @@
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
 import { AppKit } from '../src/client.js'
 import type { AppKitOptions } from '../utils/TypesUtil.js'
+import { WcStoreUtil } from '../utils/StoreUtil.js'
 
 // -- Views ------------------------------------------------------------
 export * from '@web3modal/scaffold-ui'
@@ -8,6 +9,7 @@ export * from '@web3modal/scaffold-ui'
 // -- Utils & Other -----------------------------------------------------
 export type * from '@web3modal/core'
 export { CoreHelperUtil } from '@web3modal/core'
+export { WcStoreUtil }
 
 type CreateWeb3Modal = Omit<AppKitOptions, 'sdkType' | 'sdkVersion'>
 

@@ -2,15 +2,30 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
 import type { W3mFrameTypes } from '@web3modal/wallet'
 import UniversalProvider from '@walletconnect/universal-provider'
+
 // -- Types --------------------------------------------- //
 
 export type Status = 'reconnecting' | 'connected' | 'disconnected'
 
+export type Network = {
+  id: string
+  imageId: string | undefined
+  chainId: string | number
+  chain: 'evm' | 'solana'
+  name: string
+  currency: string
+  explorerUrl: string
+  rpcUrl: string
+}
+
 export interface WcStoreUtilState {
   provider?: UniversalProvider
-  providerType?: 'walletConnect'
+  providerType?: 'walletConnect' | 'injected' | 'eip' | 'announced'
   address?: string
   chainId?: number
+  caipChainId?: string
+  currentChain?: 'evm' | 'solana'
+  currentNetwork?: Network
   error?: unknown
   preferredAccountType?: W3mFrameTypes.AccountType
   status: Status
@@ -81,6 +96,24 @@ export const WcStoreUtil = {
     state.error = error
   },
 
+  setCurrentChain(currentChain: WcStoreUtilState['currentChain']) {
+    if (currentChain) {
+      state.currentChain = currentChain
+    }
+  },
+
+  setCurrentNetwork(currentNetwork: WcStoreUtilState['currentNetwork']) {
+    if (currentNetwork) {
+      state.currentNetwork = currentNetwork
+    }
+  },
+
+  setCaipChainId(caipChainId: WcStoreUtilState['caipChainId']) {
+    if (caipChainId) {
+      state.caipChainId = caipChainId
+    }
+  },
+
   reset() {
     state.provider = undefined
     state.address = undefined
@@ -89,6 +122,9 @@ export const WcStoreUtil = {
     state.status = 'disconnected'
     state.isConnected = false
     state.error = undefined
+    state.currentChain = undefined
+    state.currentNetwork = undefined
+    state.caipChainId = undefined
     state.chains = []
     state.preferredAccountType = undefined
   }

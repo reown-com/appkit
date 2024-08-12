@@ -38,6 +38,11 @@
       "types": "./dist/types/adapters/wc/universal-adapter/index.d.ts",
       "import": "./dist/esm/adapters/wc/universal-adapter/index.js",
       "default": "./dist/esm/adapters/wc/universal-adapter/index.js"
+    },
+    "./utils": {
+      "types": "./dist/types/utils/index.d.ts",
+      "import": "./dist/esm/utils/index.d.ts",
+      "default": "./dist/esm/utils/index.d.ts"
     }
   },
   "scripts": {

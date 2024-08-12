@@ -14,9 +14,9 @@ export const WcHelpersUtil = {
   getMethodsByChainType(chainType: string): string[] {
     switch (chainType) {
       case 'solana':
-        return []
+        return ['solana_signMessage']
       case 'evm':
-        return []
+        return ['personal_sign']
       case 'polkadot':
         return []
       case 'cosmos':

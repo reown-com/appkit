@@ -1,13 +1,12 @@
 'use client'
 
-import { AppKit } from '@web3modal/base'
+import { AppKit, WcStoreUtil } from '@web3modal/base'
 import type { AppKitOptions } from '@web3modal/base'
 import { EVMEthersClient, type AdapterOptions } from '@web3modal/base/adapters/evm/ethers'
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
-import { EthersStoreUtil } from '@web3modal/scaffold-utils/ethers'
 import { getWeb3Modal } from '@web3modal/scaffold-react'
 import { useSnapshot } from 'valtio'
-import type { Eip1193Provider } from 'ethers'
+import type UniversalProvider from '@walletconnect/universal-provider'
 
 // -- Configs -----------------------------------------------------------
 export { defaultConfig } from '@web3modal/base/adapters/evm/ethers'
@@ -38,9 +37,9 @@ export function createWeb3Modal(options: WagmiAppKitOptions) {
 
 // -- Hooks -------------------------------------------------------------------
 export function useWeb3ModalProvider() {
-  const { provider, providerType } = useSnapshot(EthersStoreUtil.state)
+  const { provider, providerType } = useSnapshot(WcStoreUtil.state)
 
-  const walletProvider = provider as Eip1193Provider | undefined
+  const walletProvider = provider as UniversalProvider | undefined
   const walletProviderType = providerType
 
   return {
@@ -70,7 +69,7 @@ export function useSwitchNetwork() {
 }
 
 export function useWeb3ModalAccount() {
-  const { address, isConnected, chainId, status } = useSnapshot(EthersStoreUtil.state)
+  const { address, isConnected, chainId, status } = useSnapshot(WcStoreUtil.state)
 
   return {
     address,
@@ -81,7 +80,7 @@ export function useWeb3ModalAccount() {
 }
 
 export function useWeb3ModalError() {
-  const { error } = useSnapshot(EthersStoreUtil.state)
+  const { error } = useSnapshot(WcStoreUtil.state)
 
   return {
     error

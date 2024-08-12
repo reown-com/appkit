@@ -182,8 +182,6 @@ export const ConnectionController = {
   async disconnect() {
     let connectionControllerClient: ConnectionControllerClient['_client'] = undefined
     if (ChainController.state.isUniversalAdapterOnly) {
-      console.log(ChainController.state.universalAdapter)
-
       connectionControllerClient =
         ChainController.state.universalAdapter?.connectionControllerClient
     } else {
