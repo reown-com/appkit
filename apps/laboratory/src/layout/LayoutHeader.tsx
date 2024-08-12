@@ -5,7 +5,8 @@ import {
   Button,
   Spacer,
   Link as CLink,
-  useDisclosure
+  useDisclosure,
+  useColorMode
 } from '@chakra-ui/react'
 import Link from 'next/link'
 import { IoSettingsOutline } from 'react-icons/io5'
@@ -35,12 +36,13 @@ export function LayoutHeader() {
   const controls = useDisclosure()
   const controlsCW = useDisclosure({ id: 'customWallet' })
   const toast = useChakraToast()
+  const { colorMode } = useColorMode()
 
   return (
     <>
       <Stack direction={['column', 'column', 'row']} marginBlockStart={10} justifyContent="center">
         <Link href="/">
-          <Image src="/logo.png" width={200} />
+          <Image src={`/logo-${colorMode}.svg`} width={200} />
         </Link>
 
         <Spacer />

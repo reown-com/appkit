@@ -227,10 +227,10 @@ export class ModalPage {
     await signButton.click()
   }
 
-  async signatureRequestFrameShouldVisible() {
+  async signatureRequestFrameShouldVisible(headerText: string) {
     await expect(
-      this.page.frameLocator('#w3m-iframe').getByText('requests a signature'),
-      'Web3Modal iframe should be visible'
+      this.page.frameLocator('#w3m-iframe').getByText(headerText),
+      'AppKit iframe should be visible'
     ).toBeVisible({
       timeout: 10000
     })
@@ -242,13 +242,18 @@ export class ModalPage {
   }
 
   async approveSign() {
-    await this.signatureRequestFrameShouldVisible()
+    await this.signatureRequestFrameShouldVisible('requests a signature')
     await this.clickSignatureRequestButton('Sign')
   }
 
   async rejectSign() {
-    await this.signatureRequestFrameShouldVisible()
+    await this.signatureRequestFrameShouldVisible('requests a signature')
     await this.clickSignatureRequestButton('Cancel')
+  }
+
+  async approveMultipleTransactions() {
+    await this.signatureRequestFrameShouldVisible('requests multiple transactions')
+    await this.clickSignatureRequestButton('Approve')
   }
 
   async clickWalletUpgradeCard(context: BrowserContext) {
@@ -301,9 +306,9 @@ export class ModalPage {
     await this.page.waitForTimeout(300)
   }
 
-  async updateEmail(mailsacApiKey: string, index: number) {
+  async updateEmail(mailsacApiKey: string) {
     const email = new Email(mailsacApiKey)
-    const newEmailAddress = email.getEmailAddressToUse(index)
+    const newEmailAddress = await email.getEmailAddressToUse()
 
     await this.page.getByTestId('account-button').click()
     await this.page.getByTestId('w3m-account-email-update').click()
@@ -351,6 +356,11 @@ export class ModalPage {
     await this.page.getByTestId('account-button').click()
   }
 
+  async openNetworks() {
+    await this.page.getByTestId('w3m-account-select-network').click()
+    await expect(this.page.getByText('Choose Network')).toBeVisible()
+  }
+
   async openProfileView() {
     await this.page.getByTestId('wui-profile-button').click()
   }
@@ -360,5 +370,55 @@ export class ModalPage {
     await expect(walletFeatureButton).toBeVisible()
 
     return walletFeatureButton
+  }
+
+  async sendCalls() {
+    const sendCallsButton = this.page.getByTestId('send-calls-button')
+    await sendCallsButton.isVisible()
+    await sendCallsButton.click()
+  }
+  async getCallsStatus(batchCallId: string) {
+    const sendCallsInput = this.page.getByTestId('get-calls-id-input')
+    const sendCallsButton = this.page.getByTestId('get-calls-status-button')
+    await sendCallsButton.scrollIntoViewIfNeeded()
+
+    await sendCallsInput.fill(batchCallId)
+    await sendCallsButton.click()
+  }
+
+  async switchNetworkWithNetworkButton(networkName: string) {
+    const networkButton = this.page.getByTestId('w3m-network-button')
+    await networkButton.click()
+
+    const networkToSwitchButton = this.page.getByTestId(`w3m-network-switch-${networkName}`)
+    await networkToSwitchButton.click()
+    await networkToSwitchButton.waitFor({ state: 'hidden' })
+  }
+
+  async switchAccount() {
+    const switchAccountButton1 = this.page.getByTestId('w3m-switch-address-button-1')
+    await expect(switchAccountButton1).toBeVisible()
+    await switchAccountButton1.click()
+  }
+
+  async getAddress(): Promise<`0x${string}`> {
+    const address = await this.page.getByTestId('w3m-address').textContent()
+    expect(address, 'Address should be present').toBeTruthy()
+
+    return address as `0x${string}`
+  }
+
+  async getChainId(): Promise<number> {
+    const chainId = await this.page.getByTestId('w3m-chain-id').textContent()
+    expect(chainId, 'Chain ID should be present').toBeTruthy()
+
+    return Number(chainId)
+  }
+
+  async getSignature(): Promise<`0x${string}`> {
+    const signature = await this.page.getByTestId('w3m-signature').textContent()
+    expect(signature, 'Signature should be present').toBeTruthy()
+
+    return signature as `0x${string}`
   }
 }
