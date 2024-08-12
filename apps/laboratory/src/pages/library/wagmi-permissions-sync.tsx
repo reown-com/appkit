@@ -1,18 +1,16 @@
 import { createWeb3Modal } from '@web3modal/wagmi/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { WagmiProvider, createConfig, http } from 'wagmi'
+import { WagmiProvider } from 'wagmi'
 import { Web3ModalButtons } from '../../components/Web3ModalButtons'
-import { WagmiPermissionsTest } from '../../components/Wagmi/WagmiPermissionsTest'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
-import { sepolia } from 'wagmi/chains'
-import { walletConnect } from 'wagmi/connectors'
+import { getWagmiConfig } from '../../utils/WagmiConstants'
+import { WagmiPermissionsSyncProvider } from '../../context/WagmiPermissionsSyncContext'
+import { walletConnect } from '@wagmi/connectors'
 import { OPTIONAL_METHODS } from '@walletconnect/ethereum-provider'
-import { GrantedPermissionsProvider } from '../../context/GrantedPermissionContext'
-import { getPublicClientUrl } from '../../utils/PermissionsUtils'
+import { WagmiPermissionsSyncTest } from '../../components/Wagmi/WagmiPermissionsSyncTest'
 
 const queryClient = new QueryClient()
-
 const connectors = [
   walletConnect({
     projectId: ConstantsUtil.ProjectId,
@@ -22,19 +20,9 @@ const connectors = [
     optionalMethods: [...OPTIONAL_METHODS, 'wallet_grantPermissions']
   })
 ]
-
-const publicClientUrl = getPublicClientUrl()
-
-const wagmiConfig = createConfig({
-  chains: [sepolia],
-  transports: {
-    [sepolia.id]: http(publicClientUrl)
-  },
-  connectors
-})
-
+const wagmiEmailConfig = getWagmiConfig('email', connectors)
 const modal = createWeb3Modal({
-  wagmiConfig,
+  wagmiConfig: wagmiEmailConfig,
   projectId: ConstantsUtil.ProjectId,
   enableAnalytics: true,
   metadata: ConstantsUtil.Metadata,
@@ -46,12 +34,12 @@ ThemeStore.setModal(modal)
 
 export default function Wagmi() {
   return (
-    <WagmiProvider config={wagmiConfig}>
+    <WagmiProvider config={wagmiEmailConfig}>
       <QueryClientProvider client={queryClient}>
-        <GrantedPermissionsProvider>
+        <WagmiPermissionsSyncProvider>
           <Web3ModalButtons />
-          <WagmiPermissionsTest />
-        </GrantedPermissionsProvider>
+          <WagmiPermissionsSyncTest />
+        </WagmiPermissionsSyncProvider>
       </QueryClientProvider>
     </WagmiProvider>
   )

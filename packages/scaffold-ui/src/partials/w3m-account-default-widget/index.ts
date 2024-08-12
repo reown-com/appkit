@@ -82,13 +82,11 @@ export class W3mAccountDefaultWidget extends LitElement {
         !this.isUniversalAdapterOnly
           ? this.multiAccountTemplate()
           : this.singleAccountTemplate()}
-        ${this.isUniversalAdapterOnly
-          ? nothing
-          : html`<wui-flex flexDirection="column" alignItems="center">
-              <wui-text variant="paragraph-500" color="fg-200"
-                >${CoreHelperUtil.formatBalance(this.balance, this.balanceSymbol)}</wui-text
-              >
-            </wui-flex>`}
+        <wui-flex flexDirection="column" alignItems="center">
+          <wui-text variant="paragraph-500" color="fg-200">
+            ${CoreHelperUtil.formatBalance(this.balance, this.balanceSymbol)}
+          </wui-text>
+        </wui-flex>
         ${this.explorerBtnTemplate()}
       </wui-flex>
 

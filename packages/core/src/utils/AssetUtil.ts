@@ -1,4 +1,5 @@
 import type { Chain } from '@web3modal/common'
+import { ApiController } from '../controllers/ApiController.js'
 import { AssetController } from '../controllers/AssetController.js'
 import type { CaipNetwork, Connector, WcWallet } from './TypeUtil.js'
 
@@ -10,6 +11,24 @@ const chainImageIds: Record<Chain, string> = {
 }
 
 export const AssetUtil = {
+  async fetchWalletImage(imageId?: string) {
+    if (!imageId) {
+      return undefined
+    }
+
+    await ApiController._fetchWalletImage(imageId)
+
+    return this.getWalletImageById(imageId)
+  },
+
+  getWalletImageById(imageId?: string) {
+    if (!imageId) {
+      return undefined
+    }
+
+    return AssetController.state.walletImages[imageId]
+  },
+
   getWalletImage(wallet?: WcWallet) {
     if (wallet?.image_url) {
       return wallet?.image_url

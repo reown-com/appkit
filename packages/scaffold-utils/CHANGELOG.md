@@ -1,5 +1,18 @@
 # @web3modal/scaffold-utils
 
+## 5.0.10
+
+- chore: update with v5 by @tomiir in https://github.com/WalletConnect/web3modal/pull/2612
+- fix: move the wagmi state mutation to outside of 1-click auth flow by @enesozturk in https://github.com/WalletConnect/web3modal/pull/2585
+- :hotfix fix svg error when requesting farcaster qr code by @svenvoskamp in https://github.com/WalletConnect/web3modal/pull/2621
+
+**Full Changelog**: https://github.com/WalletConnect/web3modal/compare/5.0.9...5.0.10
+
+- Updated dependencies []:
+  - @web3modal/core@5.0.10
+  - @web3modal/polyfills@5.0.10
+  - @web3modal/wallet@5.0.10
+
 ## 5.0.9
 
 ### Patch Changes

@@ -42,9 +42,10 @@ import { ConstantsUtil as CommonConstants } from '@web3modal/common'
 import {
   getCaipDefaultChain,
   getEmailCaipNetworks,
-  getWalletConnectCaipNetworks
+  getWalletConnectCaipNetworks,
+  requireCaipAddress
 } from './utils/helpers.js'
-import { W3mFrameConstants, W3mFrameHelpers, W3mFrameRpcConstants } from '@web3modal/wallet'
+import { W3mFrameHelpers, W3mFrameRpcConstants } from '@web3modal/wallet'
 import type { W3mFrameProvider, W3mFrameTypes } from '@web3modal/wallet'
 import { NetworkUtil } from '@web3modal/common'
 import { normalize } from 'viem/ens'
@@ -302,7 +303,12 @@ export class EVMWagmiClient {
         }
       },
 
-      signMessage: async message => signMessage(this.wagmiConfig, { message }),
+      signMessage: async message => {
+        const caipAddress = this.appKit?.getCaipAddress() || ''
+        const account = requireCaipAddress(caipAddress)
+
+        return signMessage(this.wagmiConfig, { message, account })
+      },
 
       estimateGas: async args => {
         try {
@@ -340,17 +346,14 @@ export class EVMWagmiClient {
       },
 
       writeContract: async (data: WriteContractArgs) => {
-        if (!this.wagmiConfig) {
-          throw new Error(
-            'networkControllerClient:getApprovedCaipNetworksData - wagmiConfig is undefined'
-          )
-        }
-
+        const caipAddress = this.appKit?.getCaipAddress() || ''
+        const account = requireCaipAddress(caipAddress)
         const chainId = NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id)
 
         const tx = await wagmiWriteContract(this.wagmiConfig, {
           chainId,
           address: data.tokenAddress,
+          account,
           abi: data.abi,
           functionName: data.method,
           args: [data.receiverAddress, data.tokenAmount]
@@ -494,7 +497,13 @@ export class EVMWagmiClient {
   }: Partial<
     Pick<
       GetAccountReturnType,
-      'address' | 'isConnected' | 'isDisconnected' | 'chainId' | 'connector' | 'addresses'
+      | 'address'
+      | 'isConnected'
+      | 'isDisconnected'
+      | 'chainId'
+      | 'connector'
+      | 'addresses'
+      | 'status'
     >
   >) {
     const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`
@@ -760,7 +769,7 @@ export class EVMWagmiClient {
         this.appKit?.setIsConnected(false, this.chain)
       }
 
-      provider.onRpcRequest(request => {
+      provider.onRpcRequest((request: W3mFrameTypes.RPCRequest) => {
         if (W3mFrameHelpers.checkIfRequestExists(request)) {
           if (!W3mFrameHelpers.checkIfRequestIsAllowed(request)) {
             if (this.appKit?.isOpen()) {
@@ -785,36 +794,27 @@ export class EVMWagmiClient {
           setTimeout(() => {
             this.appKit?.showErrorMessage(W3mFrameRpcConstants.RPC_METHOD_NOT_ALLOWED_UI_MESSAGE)
           }, 300)
-          provider.rejectRpcRequest()
+          provider.rejectRpcRequests()
         }
       })
 
-      provider.onRpcResponse(response => {
-        const responseType = W3mFrameHelpers.getResponseType(response)
+      provider.onRpcError(() => {
+        const isModalOpen = this.appKit?.isOpen()
 
-        switch (responseType) {
-          case W3mFrameConstants.RPC_RESPONSE_TYPE_ERROR: {
-            const isModalOpen = this.appKit?.isOpen()
+        if (isModalOpen) {
+          if (this.appKit?.isTransactionStackEmpty()) {
+            this.appKit?.close()
+          } else {
+            this.appKit?.popTransactionStack(true)
+          }
+        }
+      })
 
-            if (isModalOpen) {
-              if (this.appKit?.isTransactionStackEmpty()) {
-                this.appKit?.close()
-              } else {
-                this.appKit?.popTransactionStack(true)
-              }
-            }
-            break
-          }
-          case W3mFrameConstants.RPC_RESPONSE_TYPE_TX: {
-            if (this.appKit?.isTransactionStackEmpty()) {
-              this.appKit?.close()
-            } else {
-              this.appKit?.popTransactionStack()
-            }
-            break
-          }
-          default:
-            break
+      provider.onRpcSuccess(() => {
+        if (this.appKit?.isTransactionStackEmpty()) {
+          this.appKit?.close()
+        } else {
+          this.appKit?.popTransactionStack()
         }
       })
 
@@ -870,7 +870,7 @@ export class EVMWagmiClient {
     const provider = (await connector.getProvider()) as W3mFrameProvider
     this.subscribeState(val => {
       if (!val.open) {
-        provider.rejectRpcRequest()
+        provider.rejectRpcRequests()
       }
     })
   }
