@@ -783,6 +783,9 @@ importers:
       '@walletconnect/ethereum-provider':
         specifier: 2.14.0
         version: 2.14.0(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(utf-8-validate@5.0.10)
+      '@walletconnect/universal-provider':
+        specifier: 2.14.0
+        version: 2.14.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@walletconnect/utils':
         specifier: 2.14.0
         version: 2.14.0
@@ -16006,7 +16009,7 @@ snapshots:
 
   '@mailsac/api@1.0.5':
     dependencies:
-      axios: 1.7.3
+      axios: 1.7.2
     transitivePeerDependencies:
       - debug
 
