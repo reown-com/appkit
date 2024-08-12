@@ -1,5 +1,12 @@
 import base58 from 'bs58'
-import { Connection, Transaction, VersionedTransaction, type SendOptions } from '@solana/web3.js'
+import {
+  Connection,
+  PublicKey,
+  Transaction,
+  TransactionMessage,
+  VersionedTransaction,
+  type SendOptions
+} from '@solana/web3.js'
 import { OptionsController } from '@web3modal/core'
 
 import { SolStoreUtil } from '../utils/scaffold/index.js'
@@ -89,8 +96,19 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
 
     const result = await this.request('solana_signTransaction', {
       transaction: serializedTransaction,
-      pubkey: this.getPubkey()
+      pubkey: this.getPubkey(),
+      ...this.getRawRPCParams(transaction)
     })
+
+    // If the result contains signature is the old RPC response
+    if ('signature' in result) {
+      transaction.addSignature(
+        new PublicKey(SolStoreUtil.state.address ?? ''),
+        Buffer.from(base58.decode(result.signature))
+      )
+
+      return transaction
+    }
 
     const decodedTransaction = base58.decode(result.transaction)
 
@@ -204,5 +222,42 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
     }
 
     return address
+  }
+
+  /*
+   * This is a deprecated method that is used to support older versions of the
+   * WalletConnect RPC API. It should be removed in the future
+   */
+  private getRawRPCParams(_transaction: AnyTransaction) {
+    let transaction = _transaction
+
+    if (isVersionedTransaction(transaction)) {
+      if (!SolStoreUtil.state.address) {
+        throw new Error('No signer connected')
+      }
+
+      const instructions = TransactionMessage.decompile(transaction.message).instructions
+      const legacyMessage = new TransactionMessage({
+        payerKey: new PublicKey(SolStoreUtil.state.address),
+        recentBlockhash: transaction.message.recentBlockhash,
+        instructions: [...instructions]
+      }).compileToLegacyMessage()
+
+      transaction = Transaction.populate(legacyMessage)
+    }
+
+    return {
+      feePayer: transaction.feePayer?.toBase58() ?? '',
+      instructions: transaction.instructions.map(instruction => ({
+        data: base58.encode(instruction.data),
+        keys: instruction.keys.map(key => ({
+          isWritable: key.isWritable,
+          isSigner: key.isSigner,
+          pubkey: key.pubkey.toBase58()
+        })),
+        programId: instruction.programId.toBase58()
+      })),
+      recentBlockhash: transaction.recentBlockhash ?? ''
+    }
   }
 }

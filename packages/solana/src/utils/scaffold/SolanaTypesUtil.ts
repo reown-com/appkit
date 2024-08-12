@@ -201,9 +201,13 @@ export interface RequestMethods {
       transaction: string
       pubkey: string
     }
-    returns: {
-      transaction: string
-    }
+    returns:
+      | {
+          signature: string
+        }
+      | {
+          transaction: string
+        }
   }
   solana_signAndSendTransaction: {
     params: {
