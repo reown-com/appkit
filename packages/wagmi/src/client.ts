@@ -459,8 +459,7 @@ export class Web3Modal extends Web3ModalScaffold {
     isDisconnected,
     chainId,
     connector,
-    addresses,
-    status
+    addresses
   }: Partial<
     Pick<
       GetAccountReturnType,
@@ -479,10 +478,7 @@ export class Web3Modal extends Web3ModalScaffold {
       return
     }
 
-    const connected = isConnected && status === 'connected'
-
-    if (connected && address && chainId) {
-      this.resetAccount()
+    if (isConnected && address && chainId) {
       this.syncNetwork(address, chainId, isConnected)
       this.setIsConnected(isConnected)
       this.setCaipAddress(caipAddress)
@@ -498,7 +494,10 @@ export class Web3Modal extends Web3ModalScaffold {
       // Set by authConnector.onIsConnectedHandler as we need the account type
       const isAuthConnector = connector?.id === ConstantsUtil.AUTH_CONNECTOR_ID
       if (!isAuthConnector && addresses?.length) {
-        this.setAllAccounts(addresses.map(addr => ({ address: addr, type: 'eoa' })))
+        this.setAllAccounts(
+          addresses.map(addr => ({ address: addr, type: 'eoa' })),
+          this.chain
+        )
       }
 
       this.hasSyncedConnectedAccount = true
@@ -506,7 +505,7 @@ export class Web3Modal extends Web3ModalScaffold {
       this.resetAccount()
       this.resetWcConnection()
       this.resetNetwork()
-      this.setAllAccounts([])
+      this.setAllAccounts([], this.chain)
 
       this.hasSyncedConnectedAccount = false
     }
@@ -790,7 +789,8 @@ export class Web3Modal extends Web3ModalScaffold {
               address: req.address,
               type: (req.preferredAccountType || 'eoa') as W3mFrameTypes.AccountType
             }
-          ]
+          ],
+          this.chain
         )
       })
 
