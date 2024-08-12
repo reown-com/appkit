@@ -811,7 +811,10 @@ export class Web3Modal extends Web3ModalScaffold {
       EthersStoreUtil.setProvider(WalletConnectProvider as unknown as Provider)
       EthersStoreUtil.setStatus('connected')
       EthersStoreUtil.setIsConnected(true)
-      this.setAllAccounts(WalletConnectProvider.accounts.map(address => ({ address, type: 'eoa' })))
+      this.setAllAccounts(
+        WalletConnectProvider.accounts.map(address => ({ address, type: 'eoa' })),
+        this.chain
+      )
       const session = WalletConnectProvider.signer?.session
       for (const address of WalletConnectProvider.accounts) {
         const label = session?.sessionProperties?.[address]
@@ -836,7 +839,10 @@ export class Web3Modal extends Web3ModalScaffold {
         EthersStoreUtil.setProvider(config.injected)
         EthersStoreUtil.setStatus('connected')
         EthersStoreUtil.setIsConnected(true)
-        this.setAllAccounts(addresses.map(address => ({ address, type: 'eoa' })))
+        this.setAllAccounts(
+          addresses.map(address => ({ address, type: 'eoa' })),
+          this.chain
+        )
         this.setAddress(addresses[0])
         this.watchCoinbase(config)
       }
@@ -854,7 +860,10 @@ export class Web3Modal extends Web3ModalScaffold {
         EthersStoreUtil.setProvider(provider)
         EthersStoreUtil.setStatus('connected')
         EthersStoreUtil.setIsConnected(true)
-        this.setAllAccounts(addresses.map(address => ({ address, type: 'eoa' })))
+        this.setAllAccounts(
+          addresses.map(address => ({ address, type: 'eoa' })),
+          this.chain
+        )
         this.setAddress(addresses[0])
         this.watchEIP6963(provider)
       }
@@ -875,7 +884,10 @@ export class Web3Modal extends Web3ModalScaffold {
         EthersStoreUtil.setProvider(config.coinbase)
         EthersStoreUtil.setStatus('connected')
         EthersStoreUtil.setIsConnected(true)
-        this.setAllAccounts(addresses.map(address => ({ address, type: 'eoa' })))
+        this.setAllAccounts(
+          addresses.map(address => ({ address, type: 'eoa' })),
+          this.chain
+        )
         this.setAddress(addresses[0])
         this.watchCoinbase(config)
       }
@@ -903,7 +915,8 @@ export class Web3Modal extends Web3ModalScaffold {
         this.setAllAccounts(
           accounts.length > 0
             ? accounts
-            : [{ address, type: preferredAccountType as 'eoa' | 'smartAccount' }]
+            : [{ address, type: preferredAccountType as 'eoa' | 'smartAccount' }],
+          this.chain
         )
         EthersStoreUtil.setChainId(chainId)
         EthersStoreUtil.setProviderType(ConstantsUtil.AUTH_CONNECTOR_ID as 'w3mAuth')
@@ -1003,9 +1016,12 @@ export class Web3Modal extends Web3ModalScaffold {
       const currentAccount = accounts?.[0]
       if (currentAccount) {
         EthersStoreUtil.setAddress(getOriginalAddress(currentAccount) as Address)
-        this.setAllAccounts(accounts.map(address => ({ address, type: 'eoa' })))
+        this.setAllAccounts(
+          accounts.map(address => ({ address, type: 'eoa' })),
+          this.chain
+        )
       } else {
-        this.setAllAccounts([])
+        this.setAllAccounts([], this.chain)
         localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
         EthersStoreUtil.reset()
       }
@@ -1179,7 +1195,7 @@ export class Web3Modal extends Web3ModalScaffold {
     } else if (!isConnected && this.hasSyncedConnectedAccount) {
       this.resetWcConnection()
       this.resetNetwork()
-      this.setAllAccounts([])
+      this.setAllAccounts([], this.chain)
     }
   }
 
