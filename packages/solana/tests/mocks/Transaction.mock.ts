@@ -1,9 +1,7 @@
 import {
-  MessageV0,
   SystemProgram,
   Transaction,
   TransactionMessage,
-  VersionedMessage,
   VersionedTransaction
 } from '@solana/web3.js'
 import { TestConstants } from '../TestConstants'

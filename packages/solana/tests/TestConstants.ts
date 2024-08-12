@@ -12,7 +12,7 @@ export const TestConstants = {
       address: '2vRxHxMEmhTCJ4jctfso2MVZvaQkHQxXf9riMNS3CjSu',
       publicKey: new PublicKey(base58.decode('2vRxHxMEmhTCJ4jctfso2MVZvaQkHQxXf9riMNS3CjSu'))
     }
-  ] satisfies TestConstants.Account[],
+  ] as const satisfies TestConstants.Account[],
 
   chains: Object.values(solanaChains)
 } as const

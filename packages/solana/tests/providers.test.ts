@@ -1,11 +1,11 @@
-import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
-import { Provider } from '../src/utils/scaffold/SolanaTypesUtil'
+import { beforeAll, describe, expect, it, vi } from 'vitest'
+import type { Provider } from '../src/utils/scaffold/SolanaTypesUtil'
 import { WalletConnectProvider } from '../src/providers/WalletConnectProvider'
 import { mockUniversalProvider } from './mocks/UniversalProvider.mock'
 import { WalletStandardProvider } from '../src/providers/WalletStandardProvider'
 import { mockWallet } from './mocks/Wallet.mock'
 import { TestConstants } from './TestConstants'
-import { PublicKey, Transaction, VersionedTransaction } from '@solana/web3.js'
+import { Transaction, VersionedTransaction } from '@solana/web3.js'
 import { mockLegacyTransaction, mockVersionedTransaction } from './mocks/Transaction.mock'
 
 const providers: { name: string; provider: Provider }[] = [
@@ -24,7 +24,7 @@ const providers: { name: string; provider: Provider }[] = [
   }
 ]
 
-describe.each(providers)('Generic tests for all providers $name', ({ provider }) => {
+describe.each(providers)('Generic provider tests for $name', ({ provider }) => {
   const events = {
     connect: vi.fn(),
     disconnect: vi.fn(),

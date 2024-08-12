@@ -5,7 +5,6 @@ import { getWeb3Modal } from '@web3modal/scaffold-vue'
 
 import type { Web3ModalOptions } from '../src/client.js'
 import type { CaipNetwork } from 'packages/core/dist/types/index.js'
-import type { Provider } from '../src/utils/scaffold/index.js'
 import { SolStoreUtil } from '../src/utils/scaffold/SolanaStoreUtil.js'
 import { Web3Modal } from '../src/client.js'
 
@@ -33,12 +32,12 @@ export function useWeb3ModalProvider() {
     throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalProvider" composition')
   }
 
-  const walletProvider = ref(SolStoreUtil.state.provider as Provider)
+  const walletProvider = ref(SolStoreUtil.state.provider)
   const walletProviderType = ref(SolStoreUtil.state.providerType)
   const connection = ref(SolStoreUtil.state.connection)
 
   const unsubscribe = modal.subscribeProvider(state => {
-    walletProvider.value = state.provider as Provider
+    walletProvider.value = state.provider
     walletProviderType.value = state.providerType
   })
 

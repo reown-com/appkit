@@ -1,8 +1,8 @@
-import { Wallet, WalletAccount } from '@wallet-standard/base'
-import { StandardConnectFeature, StandardDisconnectFeature } from '@wallet-standard/features'
+import type { Wallet, WalletAccount } from '@wallet-standard/base'
+import type { StandardConnectFeature, StandardDisconnectFeature } from '@wallet-standard/features'
 import { vi } from 'vitest'
 import { TestConstants } from '../TestConstants'
-import {
+import type {
   SolanaSignAndSendTransactionFeature,
   SolanaSignMessageFeature,
   SolanaSignTransactionFeature

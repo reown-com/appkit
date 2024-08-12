@@ -1,5 +1,5 @@
 import UniversalProvider from '@walletconnect/universal-provider'
-import { SessionTypes } from '@walletconnect/types'
+import type { SessionTypes } from '@walletconnect/types'
 import { vi } from 'vitest'
 import { TestConstants } from '../TestConstants'
 import { WalletConnectProvider } from '../../src/providers/WalletConnectProvider'
@@ -11,7 +11,7 @@ export const mockUniversalProvider = (): UniversalProvider => {
   provider.removeListener = vi.fn()
   provider.connect = vi.fn(() => Promise.resolve(mockSession()))
   provider.disconnect = vi.fn(() => Promise.resolve())
-  provider.request = vi.fn((...[{ method, params }]: Parameters<UniversalProvider['request']>) => {
+  provider.request = vi.fn((...[{ method }]: Parameters<UniversalProvider['request']>) => {
     switch (method) {
       case 'solana_signMessage':
         return Promise.resolve({

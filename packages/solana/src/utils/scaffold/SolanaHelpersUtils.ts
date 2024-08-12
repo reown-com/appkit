@@ -68,8 +68,8 @@ export const SolHelpersUtil = {
     return decimalValue
   },
 
-  async getAddress(provider: Provider) {
-    const [address] = await provider.request<string[]>({ method: 'getAccountInfo' })
+  getAddress(provider: Provider) {
+    const address = provider.publicKey?.toBase58()
 
     return address
   },
