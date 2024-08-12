@@ -103,6 +103,8 @@ export class W3mNetworksView extends LitElement {
     const approvedCaipNetworkIds = NetworkController.state.approvedCaipNetworkIds
     const supportsAllNetworks = NetworkController.state.supportsAllNetworks
 
+    const walletId = localStorage.getItem('@w3m/wallet_id')
+
     const sortedNetworks = CoreHelperUtil.sortRequestedNetworks(
       approvedCaipNetworkIds,
       requestedCaipNetworks
@@ -124,7 +126,7 @@ export class W3mNetworksView extends LitElement {
           type="network"
           name=${network.name ?? network.id}
           @click=${() => this.onSwitchNetwork(network)}
-          .disabled=${ChainController.state.isUniversalAdapterOnly
+          .disabled=${ChainController.state.isUniversalAdapterOnly || walletId === 'walletConnect'
             ? !supportsAllNetworks && !approvedCaipNetworkIds?.includes(network.id)
             : !supportsAllNetworks &&
               !approvedCaipNetworkIds?.includes(network.id) &&

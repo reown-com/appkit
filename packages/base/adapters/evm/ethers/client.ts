@@ -13,7 +13,6 @@ import type {
 } from '@web3modal/scaffold'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
 import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
-import { getChainsFromAccounts } from '@walletconnect/utils'
 import { ConstantsUtil as CommonConstants } from '@web3modal/common'
 import type { Chain as AvailableChain } from '@web3modal/common'
 import {
@@ -159,38 +158,29 @@ export class EVMEthersClient {
         }
       },
 
-      getApprovedCaipNetworksData: async () =>
-        new Promise(async resolve => {
-          const walletChoice = localStorage.getItem(WcConstantsUtil.WALLET_ID)
-          if (walletChoice?.includes(ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID)) {
-            const provider = await this.appKit?.universalAdapter?.getWalletConnectProvider()
-            this.appKit?.universalAdapter?.networkControllerClient.getApprovedCaipNetworksData()
-            if (!provider) {
-              throw new Error(
-                'networkControllerClient:getApprovedCaipNetworks - connector is undefined'
-              )
-            }
-            const ns = provider.session?.namespaces
-            const nsMethods = ns?.[ConstantsUtil.EIP155]?.methods
-            const nsChains = getChainsFromAccounts(
-              ns?.[ConstantsUtil.EIP155]?.accounts || []
-            ) as CaipNetworkId[]
+      getApprovedCaipNetworksData: async () => {
+        const provider = await this.appKit?.universalAdapter?.getWalletConnectProvider()
 
-            const result = {
-              supportsAllNetworks: nsMethods?.includes(ConstantsUtil.ADD_CHAIN_METHOD) ?? false,
-              approvedCaipNetworkIds: nsChains as CaipNetworkId[] | undefined
-            }
+        return new Promise(resolve => {
+          const ns = provider?.session?.namespaces
 
-            resolve(result)
-          } else {
-            const result = {
-              approvedCaipNetworkIds: undefined,
-              supportsAllNetworks: true
-            }
+          const nsChains: CaipNetworkId[] | undefined = []
 
-            resolve(result)
+          if (ns) {
+            Object.keys(ns).forEach(key => {
+              if (ns?.[key]?.chains) {
+                nsChains.push(...(ns[key].chains as `${string}:${string}`[]))
+              }
+            })
           }
+          const result = {
+            supportsAllNetworks: false,
+            approvedCaipNetworkIds: nsChains as CaipNetworkId[] | undefined
+          }
+
+          resolve(result)
         })
+      }
     }
 
     this.connectionControllerClient = {

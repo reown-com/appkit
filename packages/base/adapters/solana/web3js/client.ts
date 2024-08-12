@@ -413,7 +413,6 @@ export class SolanaWeb3JsClient {
     const chainId = WcStoreUtil.state.currentNetwork?.chainId
     const isConnected = WcStoreUtil.state.isConnected
     const currentNetwork = WcStoreUtil.state.currentChain
-    this.appKit?.resetAccount(this.chain)
 
     if (isConnected && address && chainId && currentNetwork === 'solana') {
       const caipAddress: CaipAddress = `${ConstantsUtil.INJECTED_CONNECTOR_ID}:${chainId}:${address}`
