@@ -4,7 +4,7 @@ import { WalletConnectProvider } from '../src/providers/WalletConnectProvider'
 import { mockUniversalProvider } from './mocks/UniversalProvider.mock'
 import { WalletStandardProvider } from '../src/providers/WalletStandardProvider'
 import { mockWallet } from './mocks/Wallet.mock'
-import { TestConstants } from './TestConstants'
+import { TestConstants } from './util/TestConstants'
 import { Transaction, VersionedTransaction } from '@solana/web3.js'
 import { mockLegacyTransaction, mockVersionedTransaction } from './mocks/Transaction.mock'
 

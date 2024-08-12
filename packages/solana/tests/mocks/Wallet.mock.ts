@@ -1,14 +1,14 @@
 import type { Wallet, WalletAccount } from '@wallet-standard/base'
 import type { StandardConnectFeature, StandardDisconnectFeature } from '@wallet-standard/features'
 import { vi } from 'vitest'
-import { TestConstants } from '../TestConstants'
+import { TestConstants } from '../util/TestConstants'
 import type {
   SolanaSignAndSendTransactionFeature,
   SolanaSignMessageFeature,
   SolanaSignTransactionFeature
 } from '@solana/wallet-standard-features'
 
-export const mockWallet = (): Wallet => {
+export const mockWallet = () => {
   const accounts = TestConstants.accounts.map(mockAccount)
 
   return {
@@ -72,7 +72,7 @@ export const mockWallet = (): Wallet => {
     icon: 'data:image/png;base64,mocked...',
     name: 'mocked-wallet',
     version: '1.0.0'
-  }
+  } as const satisfies Wallet
 }
 
 const mockAccount = (account: TestConstants.Account = TestConstants.accounts[0]): WalletAccount => {

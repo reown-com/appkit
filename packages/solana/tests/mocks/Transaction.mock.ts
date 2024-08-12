@@ -4,7 +4,7 @@ import {
   TransactionMessage,
   VersionedTransaction
 } from '@solana/web3.js'
-import { TestConstants } from '../TestConstants'
+import { TestConstants } from '../util/TestConstants'
 
 export const mockLegacyTransaction = (): Transaction => {
   const transaction = new Transaction().add(

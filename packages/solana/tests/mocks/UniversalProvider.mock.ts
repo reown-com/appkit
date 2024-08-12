@@ -1,10 +1,10 @@
 import UniversalProvider from '@walletconnect/universal-provider'
 import type { SessionTypes } from '@walletconnect/types'
 import { vi } from 'vitest'
-import { TestConstants } from '../TestConstants'
+import { TestConstants } from '../util/TestConstants'
 import { WalletConnectProvider } from '../../src/providers/WalletConnectProvider'
 
-export const mockUniversalProvider = (): UniversalProvider => {
+export const mockUniversalProvider = () => {
   const provider = new UniversalProvider({})
 
   provider.on = vi.fn()
