@@ -180,16 +180,16 @@ export const ConnectionController = {
   },
 
   async disconnect() {
-    let connectionControllerClient: ConnectionControllerClient['_client'] = undefined
+    let connectionControllerClient: ConnectionControllerClient | undefined = undefined
+
     if (ChainController.state.isUniversalAdapterOnly) {
-      connectionControllerClient =
-        ChainController.state.universalAdapter?.connectionControllerClient
+      connectionControllerClient = ChainController.state.universalAdapter.connectionControllerClient
     } else {
       connectionControllerClient = this._getClient()
     }
 
     try {
-      await connectionControllerClient.disconnect()
+      await connectionControllerClient?.disconnect()
       StorageUtil.removeConnectedWalletImageUrl()
       this.resetWcConnection()
     } catch (error) {
