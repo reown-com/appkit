@@ -346,7 +346,7 @@ export class EVMWagmiClient {
       },
 
       writeContract: async (data: WriteContractArgs) => {
-        const caipAddress = this.getCaipAddress() || ''
+        const caipAddress = this.appKit?.getCaipAddress() || ''
         const account = requireCaipAddress(caipAddress)
         const chainId = NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id)
 
@@ -493,8 +493,7 @@ export class EVMWagmiClient {
     isDisconnected,
     chainId,
     connector,
-    addresses,
-    status
+    addresses
   }: Partial<
     Pick<
       GetAccountReturnType,
