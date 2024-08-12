@@ -49,8 +49,6 @@ type AvailableFeatures = StandardConnectFeature &
 
 export class WalletStandardProvider extends ProviderEventEmitter implements Provider {
   public readonly name: string
-  public readonly type = 'EXTERNAL'
-
   readonly wallet: Wallet
 
   constructor({ wallet }: WalletStandardProviderConfig) {
@@ -61,6 +59,16 @@ export class WalletStandardProvider extends ProviderEventEmitter implements Prov
   }
 
   // -- Public ------------------------------------------- //
+  public get type() {
+    const FILTER_OUT_ADAPTERS = ['Trust']
+
+    if (FILTER_OUT_ADAPTERS.includes(this.wallet.name)) {
+      return 'EXTERNAL'
+    }
+
+    return 'ANNOUNCED'
+  }
+
   public get publicKey() {
     const account = this.getAccount(false)
 
