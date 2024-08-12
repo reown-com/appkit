@@ -8,6 +8,7 @@ import type { AppKitOptions } from '@web3modal/base'
 import { SolanaWeb3JsClient, SolStoreUtil } from '@web3modal/base/adapters/solana/web3js'
 import type {
   Chain,
+  Connection,
   Provider,
   ProviderType,
   BaseWalletAdapter
@@ -51,7 +52,7 @@ export function useWeb3ModalProvider() {
   return {
     walletProvider: provider as Provider,
     walletProviderType: providerType,
-    connection
+    connection: connection as Connection
   }
 }
 

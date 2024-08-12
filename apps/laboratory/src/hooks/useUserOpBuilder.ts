@@ -1,6 +1,12 @@
 import type { PackedUserOperation } from 'permissionless/types'
 import { publicActions, type Address, type Client, type Hex } from 'viem'
 
+export type UserOpBuilderGetDummySignatureArguments = {
+  sender: Address
+  userOpBuilderAddress: Address
+  actions: Execution[]
+  permissionsContext: `0x${string}`
+}
 export type UserOpBuilderGetSignatureArguments = {
   sender: Address
   userOpBuilderAddress: Address
@@ -100,10 +106,10 @@ export const getCallDataAbi = [
   }
 ] as const
 
-export const getSignatureAbi = [
+export const formatSignatureAbi = [
   {
     type: 'function',
-    name: 'getSignature',
+    name: 'formatSignature',
     inputs: [
       {
         name: 'smartAccount',
@@ -178,6 +184,54 @@ export const getSignatureAbi = [
     stateMutability: 'view'
   }
 ] as const
+export const getDummySignatureAbi = [
+  {
+    type: 'function',
+    name: 'getDummySignature',
+    inputs: [
+      {
+        name: 'smartAccount',
+        type: 'address',
+        internalType: 'address'
+      },
+      {
+        name: 'executions',
+        type: 'tuple[]',
+        internalType: 'struct Execution[]',
+        components: [
+          {
+            name: 'target',
+            type: 'address',
+            internalType: 'address'
+          },
+          {
+            name: 'value',
+            type: 'uint256',
+            internalType: 'uint256'
+          },
+          {
+            name: 'callData',
+            type: 'bytes',
+            internalType: 'bytes'
+          }
+        ]
+      },
+      {
+        name: 'permissionsContext',
+        type: 'bytes',
+        internalType: 'bytes'
+      }
+    ],
+    outputs: [
+      {
+        name: 'signature',
+        type: 'bytes',
+        internalType: 'bytes'
+      }
+    ],
+    stateMutability: 'view'
+  }
+] as const
 
 export function useUserOpBuilder() {
   async function getNonceWithContext(client: Client, args: UserOpBuilderGetNonceArguments) {
@@ -221,9 +275,29 @@ export function useUserOpBuilder() {
 
     const sig = await publicClient.readContract({
       address: userOpBuilderAddress,
-      abi: getSignatureAbi,
-      functionName: 'getSignature',
+      abi: formatSignatureAbi,
+      functionName: 'formatSignature',
       args: [sender, userOperation, permissionsContext]
+    })
+
+    return sig
+  }
+
+  async function getDummySignatureWithContext(
+    client: Client,
+    args: UserOpBuilderGetDummySignatureArguments
+  ) {
+    const { sender, permissionsContext, userOpBuilderAddress, actions } = args
+    const publicClient = client.extend(publicActions)
+    if (!userOpBuilderAddress) {
+      throw new Error('no userOpBuilder address provided.')
+    }
+
+    const sig = await publicClient.readContract({
+      address: userOpBuilderAddress,
+      abi: getDummySignatureAbi,
+      functionName: 'getDummySignature',
+      args: [sender, actions, permissionsContext]
     })
 
     return sig
@@ -232,6 +306,7 @@ export function useUserOpBuilder() {
   return {
     getNonceWithContext,
     getCallDataWithContext,
-    getSignatureWithContext
+    getSignatureWithContext,
+    getDummySignatureWithContext
   }
 }

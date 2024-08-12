@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/ui",
-  "version": "5.0.9",
+  "version": "5.0.10",
   "type": "module",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
@@ -26,7 +26,9 @@
     "@web3modal/wallet": "workspace:*",
     "@web3modal/core": "workspace:*",
     "eslint-plugin-lit": "1.11.0",
-    "eslint-plugin-wc": "2.0.4"
+    "eslint-plugin-wc": "2.0.4",
+    "vitest": "2.0.3",
+    "@vitest/coverage-v8": "2.0.5"
   },
   "keywords": [
     "web3",
