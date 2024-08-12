@@ -5,7 +5,7 @@ import { mockUniversalProvider } from './mocks/UniversalProvider.mock'
 import { WalletStandardProvider } from '../src/providers/WalletStandardProvider'
 import { mockWallet } from './mocks/Wallet.mock'
 import { TestConstants } from './TestConstants'
-import { PublicKey } from '@solana/web3.js'
+import { PublicKey, Transaction, VersionedTransaction } from '@solana/web3.js'
 import { mockLegacyTransaction, mockVersionedTransaction } from './mocks/Transaction.mock'
 
 const providers: { name: string; provider: Provider }[] = [
@@ -53,22 +53,32 @@ describe.each(providers)('Generic tests for all providers $name', ({ provider })
   })
 
   it('should signMessage', async () => {
-    await provider.signMessage(new TextEncoder().encode('test'))
+    const result = await provider.signMessage(new TextEncoder().encode('test'))
+
+    expect(result).toBeInstanceOf(Uint8Array)
   })
 
   it('should signTransaction with Legacy Transaction', async () => {
-    await provider.signTransaction(mockLegacyTransaction())
+    const result = await provider.signTransaction(mockLegacyTransaction())
+
+    expect(result).toBeInstanceOf(Transaction)
   })
 
   it('should signTransaction with Versioned Transaction', async () => {
-    await provider.signTransaction(mockVersionedTransaction())
+    const result = await provider.signTransaction(mockVersionedTransaction())
+
+    expect(result).toBeInstanceOf(VersionedTransaction)
   })
 
   it('should signAndSendTransaction with Legacy Transaction', async () => {
-    await provider.signAndSendTransaction(mockLegacyTransaction())
+    const result = await provider.signAndSendTransaction(mockLegacyTransaction())
+
+    expect(result).toBeTypeOf('string')
   })
 
   it('should signAndSendTransaction with Versioned Transaction', async () => {
-    await provider.signAndSendTransaction(mockVersionedTransaction())
+    const result = await provider.signAndSendTransaction(mockVersionedTransaction())
+
+    expect(result).toBeTypeOf('string')
   })
 })
