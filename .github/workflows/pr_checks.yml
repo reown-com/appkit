@@ -56,6 +56,27 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+  bundle_size:
+    runs-on: ubuntu-latest
+    name: Bundle size check
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+      - name: setup-node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          cache: 'pnpm'
+      - name: install
+        run: pnpm install
+      - name: Running vite-size script
+        working-directory: ./examples/react-wagmi/
+        uses: glitch-txs/vite-size-action@v1.0.3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
   test:
     runs-on: ubuntu-latest
     continue-on-error: true
