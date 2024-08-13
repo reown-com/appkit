@@ -33,12 +33,10 @@ export function useWeb3ModalProvider() {
   }
 
   const walletProvider = ref(SolStoreUtil.state.provider)
-  const walletProviderType = ref(SolStoreUtil.state.providerType)
   const connection = ref(SolStoreUtil.state.connection)
 
   const unsubscribe = modal.subscribeProvider(state => {
     walletProvider.value = state.provider
-    walletProviderType.value = state.providerType
   })
 
   onUnmounted(() => {
@@ -47,7 +45,6 @@ export function useWeb3ModalProvider() {
 
   return {
     walletProvider,
-    walletProviderType,
     connection
   }
 }
