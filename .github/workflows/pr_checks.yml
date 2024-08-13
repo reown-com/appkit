@@ -8,6 +8,7 @@ on:
       - V4
       - V5
       - main
+      - feat/bundle-size-check
 
 concurrency:
   # Support push/pr as event types with different behaviors each:
