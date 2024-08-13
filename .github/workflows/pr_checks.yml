@@ -9,6 +9,9 @@ on:
       - V5
       - main
 
+permissions:
+  pull-requests: write
+
 concurrency:
   # Support push/pr as event types with different behaviors each:
   # 1. push: queue up builds
