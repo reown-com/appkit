@@ -31,11 +31,11 @@ import {
   type AnyTransaction,
   type Chain,
   type Provider
-} from '../../utils/scaffold/index.js'
+} from '../utils/scaffold/index.js'
 import base58 from 'bs58'
-import { WalletStandardFeatureNotSupportedError } from './errors.js'
-import { ProviderEventEmitter } from '../shared/ProviderEventEmitter.js'
-import { solanaChains } from '../../utils/chains.js'
+import { WalletStandardFeatureNotSupportedError } from './shared/Errors.js'
+import { ProviderEventEmitter } from './shared/ProviderEventEmitter.js'
+import { solanaChains } from '../utils/chains.js'
 
 export interface WalletStandardProviderConfig {
   wallet: Wallet

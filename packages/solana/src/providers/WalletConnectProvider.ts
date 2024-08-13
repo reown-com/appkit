@@ -1,11 +1,6 @@
 import UniversalProvider from '@walletconnect/universal-provider'
-import {
-  SolConstantsUtil,
-  type AnyTransaction,
-  type Chain,
-  type Provider
-} from '../../utils/scaffold'
-import { ProviderEventEmitter } from '../shared/ProviderEventEmitter'
+import { SolConstantsUtil, type AnyTransaction, type Chain, type Provider } from '../utils/scaffold'
+import { ProviderEventEmitter } from './shared/ProviderEventEmitter'
 import type { SessionTypes } from '@walletconnect/types'
 import base58 from 'bs58'
 import {
@@ -82,7 +77,7 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
     } else {
       this.provider.on('display_uri', this.onUri)
       this.session = await this.provider.connect({
-        namespaces: {
+        optionalNamespaces: {
           solana: {
             chains: this.getRequestedChainsWithDeprecated(),
             methods: [

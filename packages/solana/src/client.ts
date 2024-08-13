@@ -31,7 +31,7 @@ import type { Chain as AvailableChain } from '@web3modal/common'
 
 import type { ProviderType, Chain, Provider, SolStoreUtilState } from './utils/scaffold/index.js'
 import { watchStandard } from './utils/watchStandard.js'
-import { WalletConnectProvider } from './providers/WalletConnectProvider/index.js'
+import { WalletConnectProvider } from './providers/WalletConnectProvider.js'
 
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
   solanaConfig: ProviderType

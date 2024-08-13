@@ -1,5 +1,9 @@
 import type { Wallet, WalletAccount } from '@wallet-standard/base'
-import type { StandardConnectFeature, StandardDisconnectFeature } from '@wallet-standard/features'
+import type {
+  StandardConnectFeature,
+  StandardDisconnectFeature,
+  StandardEventsFeature
+} from '@wallet-standard/features'
 import { vi } from 'vitest'
 import { TestConstants } from '../util/TestConstants'
 import type {
@@ -67,7 +71,12 @@ export const mockWallet = () => {
         version: '1.0.0',
         supportedTransactionVersions: [0, 'legacy'],
         signAndSendTransaction: vi.fn(() => Promise.resolve([{ signature: new Uint8Array(0) }]))
-      } satisfies SolanaSignAndSendTransactionFeature['solana:signAndSendTransaction']
+      } satisfies SolanaSignAndSendTransactionFeature['solana:signAndSendTransaction'],
+
+      'standard:events': {
+        version: '1.0.0',
+        on: vi.fn()
+      } satisfies StandardEventsFeature['standard:events']
     },
     icon: 'data:image/png;base64,mocked...',
     name: 'mocked-wallet',
