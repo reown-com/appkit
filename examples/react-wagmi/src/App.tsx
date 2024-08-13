@@ -39,7 +39,9 @@ createWeb3Modal({
   themeVariables: {
     '--w3m-color-mix': '#00DCFF',
     '--w3m-color-mix-strength': 20
-  }
+  },
+  enableAnalytics: true,
+  enableOnramp: true
 })
 
 export default function App() {
