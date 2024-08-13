@@ -32,13 +32,11 @@ export function watchStandard(callback: (arg: WalletStandardProvider[]) => void)
 }
 
 function wrapWalletsWithAdapters(wallets: readonly Wallet[]): readonly WalletStandardProvider[] {
-  return wallets
-    .filter(isWalletAdapterCompatibleStandardWallet)
-    .map(
-      wallet =>
-        new WalletStandardProvider({
-          wallet,
-          getActiveChain: () => SolStoreUtil.state.currentChain
-        })
-    )
+  return wallets.filter(isWalletAdapterCompatibleStandardWallet).map(
+    wallet =>
+      new WalletStandardProvider({
+        wallet,
+        getActiveChain: () => SolStoreUtil.state.currentChain
+      })
+  )
 }

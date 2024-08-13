@@ -1,5 +1,5 @@
 import { ConstantsUtil } from '@web3modal/common'
-import type { Chain } from './scaffold'
+import type { Chain } from './scaffold/index.js'
 
 export const solana = {
   chainId: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
