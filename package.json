@@ -56,7 +56,8 @@
     "typescript": "5.3.3",
     "vite": "5.2.11",
     "vitest": "2.0.3",
-    "vite-plugin-node-polyfills": "0.22.0"
+    "vite-plugin-node-polyfills": "0.22.0",
+    "pino": "7.11.0"
   },
   "packageManager": "pnpm@9.5.0",
   "pnpm": {

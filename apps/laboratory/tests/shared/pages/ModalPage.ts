@@ -230,7 +230,7 @@ export class ModalPage {
   async signatureRequestFrameShouldVisible(headerText: string) {
     await expect(
       this.page.frameLocator('#w3m-iframe').getByText(headerText),
-      'Web3Modal iframe should be visible'
+      'AppKit iframe should be visible'
     ).toBeVisible({
       timeout: 10000
     })
@@ -393,5 +393,32 @@ export class ModalPage {
     const networkToSwitchButton = this.page.getByTestId(`w3m-network-switch-${networkName}`)
     await networkToSwitchButton.click()
     await networkToSwitchButton.waitFor({ state: 'hidden' })
+  }
+
+  async switchAccount() {
+    const switchAccountButton1 = this.page.getByTestId('w3m-switch-address-button-1')
+    await expect(switchAccountButton1).toBeVisible()
+    await switchAccountButton1.click()
+  }
+
+  async getAddress(): Promise<`0x${string}`> {
+    const address = await this.page.getByTestId('w3m-address').textContent()
+    expect(address, 'Address should be present').toBeTruthy()
+
+    return address as `0x${string}`
+  }
+
+  async getChainId(): Promise<number> {
+    const chainId = await this.page.getByTestId('w3m-chain-id').textContent()
+    expect(chainId, 'Chain ID should be present').toBeTruthy()
+
+    return Number(chainId)
+  }
+
+  async getSignature(): Promise<`0x${string}`> {
+    const signature = await this.page.getByTestId('w3m-signature').textContent()
+    expect(signature, 'Signature should be present').toBeTruthy()
+
+    return signature as `0x${string}`
   }
 }
