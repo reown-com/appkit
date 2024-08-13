@@ -117,7 +117,7 @@ export class Web3Modal extends Web3ModalScaffold {
     const connectionControllerClient: ConnectionControllerClient = {
       connectWalletConnect: async onUri => {
         const wcProvider = this.availableProviders.find(
-          provider => provider.name === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID
+          provider => provider.type === 'WALLET_CONNECT'
         )
 
         if (!wcProvider || !(wcProvider instanceof WalletConnectProvider)) {
@@ -142,9 +142,7 @@ export class Web3Modal extends Web3ModalScaffold {
       },
 
       disconnect: async () => {
-        await this.getProvider().disconnect()
-        localStorage.removeItem(SolConstantsUtil.WALLET_ID)
-        SolStoreUtil.reset()
+        await SolStoreUtil.state.provider?.disconnect()
       },
 
       signMessage: async (message: string) => {
@@ -193,7 +191,7 @@ export class Web3Modal extends Web3ModalScaffold {
       ...w3mOptions
     } as ScaffoldOptions)
 
-    this.addWalletConnectProvider({
+    this.initializeProviders({
       relayUrl: 'wss://relay.walletconnect.com',
       metadata,
       projectId: w3mOptions.projectId
@@ -260,33 +258,18 @@ export class Web3Modal extends Web3ModalScaffold {
         }
       }
     })
-
-    if (CoreHelperUtil.isClient()) {
-      this.checkActiveProviders()
-      this.syncStandardAdapters()
-      watchStandard(standardAdapters => {
-        this.addProvider.bind(this)(...standardAdapters)
-        this.checkActiveProviders.bind(this)()
-      })
-    }
   }
 
-  public setAddress(address?: string) {
-    SolStoreUtil.setAddress(address ?? '')
+  public setAddress(address = '') {
+    SolStoreUtil.setAddress(address)
   }
 
   public disconnect() {
-    const provider = SolStoreUtil.state.provider
-
-    if (provider) {
-      provider.emit('disconnect', undefined)
-    }
+    return this.getProvider().disconnect()
   }
 
   public getAddress() {
-    const { address } = SolStoreUtil.state
-
-    return address ? SolStoreUtil.state.address : address
+    return SolStoreUtil.state.address
   }
 
   public getWalletProvider() {
@@ -294,46 +277,14 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   public getWalletProviderType() {
-    return SolStoreUtil.state.providerType
+    return SolStoreUtil.state.provider?.type
   }
 
   public getWalletConnection() {
     return SolStoreUtil.state.connection
   }
 
-  public async checkActiveProviders() {
-    const walletId = localStorage.getItem(SolConstantsUtil.WALLET_ID)
-
-    if (!walletId) {
-      return
-    }
-
-    try {
-      const provider = this.availableProviders.find(p => p.name === walletId)
-
-      if (!provider) {
-        throw new Error('AppKit:checkActiveProviders - Invalid type in walletId')
-      }
-      await provider.connect()
-    } catch (error) {
-      SolStoreUtil.setError(error)
-    }
-  }
-
   // -- Private -----------------------------------------------------------------
-  private syncStandardAdapters() {
-    const connectors = this.availableProviders.map<Connector>(provider => ({
-      id: provider.name,
-      type: provider.type,
-      imageUrl: provider.icon,
-      name: provider.name,
-      provider,
-      chain: CommonConstantsUtil.CHAIN.SOLANA
-    }))
-
-    this.setConnectors(connectors)
-  }
-
   private async syncAccount() {
     const address = SolStoreUtil.state.address
     const chainId = SolStoreUtil.state.currentChain?.chainId
@@ -488,17 +439,44 @@ export class Web3Modal extends Web3ModalScaffold {
     return this.provider
   }
 
+  private async initializeProviders(opts: UniversalProviderOpts) {
+    if (CoreHelperUtil.isClient()) {
+      this.addProvider(
+        new WalletConnectProvider({
+          provider: await UniversalProvider.init(opts),
+          chains: this.chains
+        })
+      )
+
+      watchStandard(standardAdapters => this.addProvider.bind(this)(...standardAdapters))
+    }
+  }
+
   private addProvider(...providers: Provider[]) {
+    const activeProviderName = localStorage.getItem(SolConstantsUtil.WALLET_ID)
+
     for (const provider of providers) {
       this.availableProviders = this.availableProviders.filter(p => p.name !== provider.name)
       this.availableProviders.push(provider)
+
+      if (provider.name === activeProviderName) {
+        this.setProvider(provider)
+      }
     }
 
-    this.syncStandardAdapters()
+    this.syncConnectors()
   }
 
-  private async addWalletConnectProvider(opts: UniversalProviderOpts) {
-    const provider = await UniversalProvider.init(opts)
-    this.addProvider(new WalletConnectProvider({ provider, chains: this.chains }))
+  private syncConnectors() {
+    const connectors = this.availableProviders.map<Connector>(provider => ({
+      id: provider.name,
+      type: provider.type,
+      imageUrl: provider.icon,
+      name: provider.name,
+      provider,
+      chain: CommonConstantsUtil.CHAIN.SOLANA
+    }))
+
+    this.setConnectors(connectors)
   }
 }

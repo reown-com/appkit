@@ -22,7 +22,9 @@ import {
   StandardConnect,
   type StandardConnectFeature,
   StandardDisconnect,
-  type StandardDisconnectFeature
+  type StandardDisconnectFeature,
+  StandardEvents,
+  type StandardEventsFeature
 } from '@wallet-standard/features'
 import {
   SolStoreUtil,
@@ -45,20 +47,25 @@ type AvailableFeatures = StandardConnectFeature &
   SolanaSignTransactionFeature &
   StandardDisconnectFeature &
   SolanaSignMessageFeature &
-  SolanaSignInFeature
+  SolanaSignInFeature &
+  StandardEventsFeature
 
 export class WalletStandardProvider extends ProviderEventEmitter implements Provider {
-  public readonly name: string
   readonly wallet: Wallet
 
   constructor({ wallet }: WalletStandardProviderConfig) {
     super()
 
     this.wallet = wallet
-    this.name = wallet.name
+
+    this.bindEvents()
   }
 
   // -- Public ------------------------------------------- //
+  public get name() {
+    return this.wallet.name
+  }
+
   public get type() {
     const FILTER_OUT_ADAPTERS = ['Trust']
 
@@ -210,5 +217,19 @@ export class WalletStandardProvider extends ProviderEventEmitter implements Prov
 
   private getChain(): CaipNetworkId {
     return SolStoreUtil.state.currentChain?.chainId as CaipNetworkId
+  }
+
+  private bindEvents() {
+    const features = this.getWalletFeature(StandardEvents)
+
+    features.on('change', params => {
+      if (params.accounts) {
+        const account = params.accounts[0]
+
+        if (account) {
+          this.emit('accountsChanged', new PublicKey(account.publicKey))
+        }
+      }
+    })
   }
 }

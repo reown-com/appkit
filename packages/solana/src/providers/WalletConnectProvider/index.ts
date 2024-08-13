@@ -53,22 +53,26 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
       return acc
     }, {})
 
-    this.provider.on('display_uri', this.onUri)
-    this.session = await this.provider.connect({
-      namespaces: {
-        solana: {
-          chains: this.chains.map(chain => `solana:${chain.chainId}`),
-          methods: [
-            'solana_signMessage',
-            'solana_signTransaction',
-            'solana_signAndSendTransaction'
-          ],
-          events: [],
-          rpcMap
+    if (this.provider.session) {
+      this.session = this.provider.session
+    } else {
+      this.provider.on('display_uri', this.onUri)
+      this.session = await this.provider.connect({
+        namespaces: {
+          solana: {
+            chains: this.chains.map(chain => `solana:${chain.chainId}`),
+            methods: [
+              'solana_signMessage',
+              'solana_signTransaction',
+              'solana_signAndSendTransaction'
+            ],
+            events: [],
+            rpcMap
+          }
         }
-      }
-    })
-    this.provider.removeListener('display_uri', this.onUri)
+      })
+      this.provider.removeListener('display_uri', this.onUri)
+    }
 
     const account = this.getAccount(true)
 
