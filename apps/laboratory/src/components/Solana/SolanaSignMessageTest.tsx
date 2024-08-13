@@ -1,18 +1,17 @@
 import { Button } from '@chakra-ui/react'
 
-import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/solana/react'
+import { useWeb3ModalProvider } from '@web3modal/solana/react'
 
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { useChakraToast } from '../Toast'
 
 export function SolanaSignMessageTest() {
   const toast = useChakraToast()
-  const { address } = useWeb3ModalAccount()
   const { walletProvider } = useWeb3ModalProvider()
 
   async function onSignMessage() {
     try {
-      if (!walletProvider || !address) {
+      if (!walletProvider) {
         throw Error('user is disconnected')
       }
 

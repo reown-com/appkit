@@ -25,7 +25,7 @@ export function SolanaSendTransactionTest() {
   async function onSendTransaction() {
     try {
       setLoading(true)
-      if (!walletProvider || !address) {
+      if (!walletProvider?.publicKey || !address) {
         throw Error('user is disconnected')
       }
 
@@ -73,7 +73,7 @@ export function SolanaSendTransactionTest() {
   async function onSendVersionedTransaction() {
     try {
       setLoading(true)
-      if (!walletProvider || !address) {
+      if (!walletProvider?.publicKey || !address) {
         throw Error('user is disconnected')
       }
 

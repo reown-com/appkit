@@ -16,7 +16,7 @@ import { useChakraToast } from '../Toast'
 
 export function SolanaWriteContractTest() {
   const toast = useChakraToast()
-  const { address, currentChain } = useWeb3ModalAccount()
+  const { currentChain } = useWeb3ModalAccount()
   const { walletProvider, connection } = useWeb3ModalProvider()
   const [loading, setLoading] = useState(false)
 
@@ -26,7 +26,7 @@ export function SolanaWriteContractTest() {
     const PROGRAM_ID = new PublicKey(detectProgramId(currentChain?.chainId ?? ''))
 
     try {
-      if (!walletProvider || !address) {
+      if (!walletProvider?.publicKey) {
         throw new Error('User is disconnected')
       }
 

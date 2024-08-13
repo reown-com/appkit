@@ -44,8 +44,8 @@ export function useWeb3ModalProvider() {
   })
 
   return {
-    walletProvider,
-    connection
+    walletProvider: walletProvider.value ?? undefined,
+    connection: connection.value ?? undefined
   }
 }
 
