@@ -288,7 +288,7 @@ export class SolanaWeb3JsClient {
       this.syncNetwork(this.instanceOptions?.chainImages)
     })
 
-    NetworkController.subscribeKey('caipNetwork', (newCaipNetwork: CaipNetwork | undefined) => {
+    NetworkController.subscribeKey('caipNetwork', () => {
       // console.log(">>> NetworkController.subscribeKey('caipNetwork')", newCaipNetwork, chains)
       // const newChain = chains.find(
       //   _chain => _chain && _chain.chainId === newCaipNetwork?.id.split(':')[1]
