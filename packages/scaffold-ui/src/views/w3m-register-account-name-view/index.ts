@@ -151,6 +151,7 @@ export class W3mRegisterAccountNameView extends LitElement {
 
     return html`<wui-flex flexDirection="column" gap="xxs" alignItems="center">
       <wui-flex
+        data-testid="account-name-suggestion"
         .padding=${['m', 'm', 'm', 'm'] as const}
         justifyContent="space-between"
         class="suggestion"
@@ -165,6 +166,7 @@ export class W3mRegisterAccountNameView extends LitElement {
 
   private availableNameTemplate(suggestion: string) {
     return html` <wui-flex
+      data-testid="account-name-suggestion"
       .padding=${['m', 'm', 'm', 'm'] as const}
       justifyContent="space-between"
       class="suggestion"

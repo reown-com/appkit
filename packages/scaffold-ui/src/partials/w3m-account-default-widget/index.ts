@@ -134,12 +134,13 @@ export class W3mAccountDefaultWidget extends LitElement {
     const { enableOnramp } = OptionsController.state
     const isSolana = ChainController.state.activeChain === ConstantsUtil.CHAIN.SOLANA
 
-    if (!enableOnramp) {
+    if (!enableOnramp || isSolana) {
       return null
     }
 
     return html`
       <wui-list-item
+        data-testid="w3m-account-default-onramp-button"
         iconVariant="blue"
         icon="card"
         ?chevron=${!isSolana}

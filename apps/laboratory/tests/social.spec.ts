@@ -7,8 +7,10 @@
 import { expect } from '@playwright/test'
 import { testMSocial } from './shared/fixtures/w3m-social-fixture'
 import type { ModalWalletPage } from './shared/pages/ModalWalletPage'
+import { ModalValidator } from './shared/validators/ModalValidator'
 
-testMSocial.beforeEach(async ({ modalValidator }) => {
+testMSocial.beforeEach(async ({ modalPage }) => {
+  const modalValidator = new ModalValidator(modalPage.page)
   await modalValidator.expectConnected()
 })
 

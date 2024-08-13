@@ -1,6 +1,6 @@
 import { Mailsac } from '@mailsac/api'
-const EMAIL_CHECK_TIMEOUT = 1000
-const MAX_EMAIL_CHECK = 16
+const EMAIL_CHECK_INTERVAL = 2500
+const MAX_EMAIL_CHECK = 24
 const EMAIL_APPROVE_BUTTON_TEXT = 'Approve this login'
 const APPROVE_URL_REGEX = /https:\/\/register.*/u
 const OTP_CODE_REGEX = /\d{3}\s?\d{3}/u
@@ -40,7 +40,7 @@ export class Email {
 
         return id
       }
-      await this.timeout(EMAIL_CHECK_TIMEOUT)
+      await this.timeout(EMAIL_CHECK_INTERVAL)
       checks += 1
     }
     throw new Error(`No email found for address ${email}`)

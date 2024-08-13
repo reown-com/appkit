@@ -391,6 +391,10 @@ export class Web3Modal extends Web3ModalScaffold {
       .filter(adapter => FILTER_OUT_ADAPTERS.some(filter => filter === adapter.name))
       .filter(adapter => !uniqueIds.has(adapter.name) && uniqueIds.add(adapter.name))
 
+    // eslint-disable-next-line no-console
+    console.log(`filteredAdapters`, filteredAdapters);
+    // eslint-disable-next-line no-console
+    console.log(`standardAdapters`, standardAdapters);
     standardAdapters?.forEach(adapter => {
       w3mConnectors.push({
         id: adapter.name,

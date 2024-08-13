@@ -47,18 +47,18 @@ function createRootStyles(themeVariables?: ThemeVariables) {
       :root {
         --w3m-modal-width: 360px;
         --w3m-color-mix-strength: ${unsafeCSS(
-          themeVariables?.['--w3m-color-mix-strength']
-            ? `${themeVariables['--w3m-color-mix-strength']}%`
-            : '0%'
-        )};
+      themeVariables?.['--w3m-color-mix-strength']
+        ? `${themeVariables['--w3m-color-mix-strength']}%`
+        : '0%'
+    )};
         --w3m-font-family: ${unsafeCSS(
-          themeVariables?.['--w3m-font-family'] ||
-            'Inter, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;'
-        )};
+      themeVariables?.['--w3m-font-family'] ||
+      'Inter, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;'
+    )};
         --w3m-font-size-master: ${unsafeCSS(themeVariables?.['--w3m-font-size-master'] || '10px')};
         --w3m-border-radius-master: ${unsafeCSS(
-          themeVariables?.['--w3m-border-radius-master'] || '4px'
-        )};
+      themeVariables?.['--w3m-border-radius-master'] || '4px'
+    )};
         --w3m-z-index: ${unsafeCSS(themeVariables?.['--w3m-z-index'] || 999)};
 
         --wui-font-family: var(--w3m-font-family);
@@ -430,8 +430,8 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --w3m-default: #fff;
 
         --wui-color-modal-bg-base: ${unsafeCSS(
-          getW3mThemeVariables(themeVariables, 'dark')['--w3m-background']
-        )};
+      getW3mThemeVariables(themeVariables, 'dark')['--w3m-background']
+    )};
         --wui-color-accent-base-100: var(--w3m-accent);
 
         --wui-color-blueberry-100: hsla(230, 100%, 67%, 1);
@@ -515,8 +515,8 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --w3m-default: #000;
 
         --wui-color-modal-bg-base: ${unsafeCSS(
-          getW3mThemeVariables(themeVariables, 'light')['--w3m-background']
-        )};
+      getW3mThemeVariables(themeVariables, 'light')['--w3m-background']
+    )};
         --wui-color-accent-base-100: var(--w3m-accent);
 
         --wui-color-blueberry-100: hsla(231, 100%, 70%, 1);
@@ -623,10 +623,11 @@ export const elementStyles = css`
     align-items: center;
     position: relative;
     transition:
-      background-color var(--wui-ease-inout-power-1) var(--wui-duration-md),
-      color var(--wui-ease-inout-power-1) var(--wui-duration-md),
-      box-shadow var(--wui-ease-inout-power-1) var(--wui-duration-md);
-    will-change: background-color, color;
+      color var(--wui-duration-lg) var(--wui-ease-out-power-1),
+      background-color var(--wui-duration-lg) var(--wui-ease-out-power-1),
+      border var(--wui-duration-lg) var(--wui-ease-out-power-1),
+      box-shadow var(--wui-duration-lg) var(--wui-ease-out-power-1);
+    will-change: background-color, color, border, box-shadow;
     outline: none;
     border: none;
     column-gap: var(--wui-spacing-3xs);
@@ -641,6 +642,16 @@ export const elementStyles = css`
   button:disabled > wui-transaction-visual,
   button:disabled > wui-logo {
     filter: grayscale(1);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    button:hover:enabled {
+      background-color: var(--wui-color-gray-glass-005);
+    }
+
+    button:active:enabled {
+      background-color: var(--wui-color-gray-glass-010);
+    }
   }
 
   button:disabled > wui-icon-box {
