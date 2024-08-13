@@ -82,7 +82,6 @@ jobs:
       - name: Running vite-size script
         uses: glitch-txs/vite-size-action@v1.0.3
         with:
-          working-directory: ./examples/react-wagmi/
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
   test:
