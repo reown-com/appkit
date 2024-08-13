@@ -1,17 +1,17 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import { mockWallet } from './mocks/Wallet.mock'
+import { mockWalletStandard } from './mocks/WalletStandard'
 import { WalletStandardProvider } from '../src/providers/WalletStandardProvider'
 import { StandardConnect, StandardDisconnect } from '@wallet-standard/features'
 import { SolanaSignMessage } from '@solana/wallet-standard-features'
 
 describe('WalletStandardProvider specific tests', () => {
-  let wallet = mockWallet()
+  let wallet = mockWalletStandard()
   let sut = new WalletStandardProvider({
     wallet
   })
 
   beforeEach(() => {
-    wallet = mockWallet()
+    wallet = mockWalletStandard()
     sut = new WalletStandardProvider({
       wallet
     })

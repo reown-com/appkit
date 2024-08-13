@@ -6,7 +6,7 @@ import {
 } from '@solana/web3.js'
 import { TestConstants } from '../util/TestConstants'
 
-export const mockLegacyTransaction = (): Transaction => {
+export function mockLegacyTransaction(): Transaction {
   const transaction = new Transaction().add(
     SystemProgram.transfer({
       fromPubkey: TestConstants.accounts[0].publicKey,
@@ -20,7 +20,7 @@ export const mockLegacyTransaction = (): Transaction => {
   return transaction
 }
 
-export const mockVersionedTransaction = (): VersionedTransaction => {
+export function mockVersionedTransaction(): VersionedTransaction {
   const messageV0 = new TransactionMessage({
     payerKey: TestConstants.accounts[0].publicKey,
     recentBlockhash: 'EZySCpmzXRuUtM95P2JGv9SitqYph6Nv6HaYBK7a8PKJ',

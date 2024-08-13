@@ -45,11 +45,11 @@
   },
   "scripts": {
     "build:clean": "rm -rf dist",
-    "build": "tsc --build",
-    "watch": "tsc --watch",
+    "build": "tsc --build tsconfig.build.json",
+    "watch": "tsc --watch tsconfig.build.json",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "test": "vitest run --dir tests"
+    "test": "vitest run --dir tests --coverage.enabled=true --coverage.reporter=json --coverage.reporter=json-summary --coverage.reportOnFailure=true"
   },
   "dependencies": {
     "@ethersproject/sha2": "5.7.0",
@@ -78,6 +78,7 @@
   },
   "devDependencies": {
     "@types/bn.js": "5.1.5",
+    "@vitest/coverage-v8": "^2.0.5",
     "@walletconnect/types": "2.14.0",
     "vitest": "2.0.3"
   },

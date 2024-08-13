@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import { mockUniversalProvider } from './mocks/UniversalProvider.mock'
+import { mockUniversalProvider } from './mocks/UniversalProvider'
 import { WalletConnectProvider } from '../src/providers/WalletConnectProvider'
 import { TestConstants } from './util/TestConstants'
 

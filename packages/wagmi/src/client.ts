@@ -47,9 +47,10 @@ import type { Chain as AvailableChain } from '@web3modal/common'
 import {
   getCaipDefaultChain,
   getEmailCaipNetworks,
-  getWalletConnectCaipNetworks
+  getWalletConnectCaipNetworks,
+  requireCaipAddress
 } from './utils/helpers.js'
-import { W3mFrameConstants, W3mFrameHelpers, W3mFrameRpcConstants } from '@web3modal/wallet'
+import { W3mFrameHelpers, W3mFrameRpcConstants } from '@web3modal/wallet'
 import type { W3mFrameProvider, W3mFrameTypes } from '@web3modal/wallet'
 import { NetworkUtil } from '@web3modal/common'
 import { normalize } from 'viem/ens'
@@ -266,7 +267,12 @@ export class Web3Modal extends Web3ModalScaffold {
         }
       },
 
-      signMessage: async message => signMessage(this.wagmiConfig, { message }),
+      signMessage: async message => {
+        const caipAddress = this.getCaipAddress() || ''
+        const account = requireCaipAddress(caipAddress)
+
+        return signMessage(this.wagmiConfig, { message, account })
+      },
 
       estimateGas: async args => {
         try {
@@ -304,11 +310,14 @@ export class Web3Modal extends Web3ModalScaffold {
       },
 
       writeContract: async (data: WriteContractArgs) => {
+        const caipAddress = this.getCaipAddress() || ''
+        const account = requireCaipAddress(caipAddress)
         const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
 
         const tx = await wagmiWriteContract(wagmiConfig, {
           chainId,
           address: data.tokenAddress,
+          account,
           abi: data.abi,
           functionName: data.method,
           args: [data.receiverAddress, data.tokenAmount]
@@ -454,7 +463,13 @@ export class Web3Modal extends Web3ModalScaffold {
   }: Partial<
     Pick<
       GetAccountReturnType,
-      'address' | 'isConnected' | 'isDisconnected' | 'chainId' | 'connector' | 'addresses'
+      | 'address'
+      | 'isConnected'
+      | 'isDisconnected'
+      | 'chainId'
+      | 'connector'
+      | 'addresses'
+      | 'status'
     >
   >) {
     const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`
@@ -464,7 +479,6 @@ export class Web3Modal extends Web3ModalScaffold {
     }
 
     if (isConnected && address && chainId) {
-      this.resetAccount()
       this.syncNetwork(address, chainId, isConnected)
       this.setIsConnected(isConnected)
       this.setCaipAddress(caipAddress)
@@ -480,7 +494,10 @@ export class Web3Modal extends Web3ModalScaffold {
       // Set by authConnector.onIsConnectedHandler as we need the account type
       const isAuthConnector = connector?.id === ConstantsUtil.AUTH_CONNECTOR_ID
       if (!isAuthConnector && addresses?.length) {
-        this.setAllAccounts(addresses.map(addr => ({ address: addr, type: 'eoa' })))
+        this.setAllAccounts(
+          addresses.map(addr => ({ address: addr, type: 'eoa' })),
+          this.chain
+        )
       }
 
       this.hasSyncedConnectedAccount = true
@@ -488,7 +505,7 @@ export class Web3Modal extends Web3ModalScaffold {
       this.resetAccount()
       this.resetWcConnection()
       this.resetNetwork()
-      this.setAllAccounts([])
+      this.setAllAccounts([], this.chain)
 
       this.hasSyncedConnectedAccount = false
     }
@@ -742,20 +759,11 @@ export class Web3Modal extends Web3ModalScaffold {
         }
       })
 
-      provider.onRpcSuccess(response => {
-        const responseType = W3mFrameHelpers.getResponseType(response)
-
-        switch (responseType) {
-          case W3mFrameConstants.RPC_RESPONSE_TYPE_TX: {
-            if (super.isTransactionStackEmpty()) {
-              super.close()
-            } else {
-              super.popTransactionStack()
-            }
-            break
-          }
-          default:
-            break
+      provider.onRpcSuccess(() => {
+        if (super.isTransactionStackEmpty()) {
+          super.close()
+        } else {
+          super.popTransactionStack()
         }
       })
 
@@ -781,7 +789,8 @@ export class Web3Modal extends Web3ModalScaffold {
               address: req.address,
               type: (req.preferredAccountType || 'eoa') as W3mFrameTypes.AccountType
             }
-          ]
+          ],
+          this.chain
         )
       })
 

@@ -12,7 +12,7 @@ import type {
   SolanaSignTransactionFeature
 } from '@solana/wallet-standard-features'
 
-export const mockWallet = () => {
+export function mockWalletStandard() {
   const accounts = TestConstants.accounts.map(mockAccount)
 
   return {
@@ -84,7 +84,7 @@ export const mockWallet = () => {
   } as const satisfies Wallet
 }
 
-const mockAccount = (account: TestConstants.Account = TestConstants.accounts[0]): WalletAccount => {
+function mockAccount(account: TestConstants.Account = TestConstants.accounts[0]): WalletAccount {
   return {
     address: account.address,
     chains: TestConstants.chains.map(chain => `solana:${chain.chainId}` as const),

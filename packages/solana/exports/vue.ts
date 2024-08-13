@@ -4,7 +4,7 @@ import { ConstantsUtil } from '@web3modal/scaffold-utils'
 import { getWeb3Modal } from '@web3modal/scaffold-vue'
 
 import type { Web3ModalOptions } from '../src/client.js'
-import type { CaipNetwork } from 'packages/core/dist/types/index.js'
+import type { CaipNetwork } from '@web3modal/core'
 import { SolStoreUtil } from '../src/utils/scaffold/SolanaStoreUtil.js'
 import { Web3Modal } from '../src/client.js'
 

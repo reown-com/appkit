@@ -32,7 +32,8 @@
     "publish:alpha": "pnpm install; pnpm build; changeset publish --tag alpha",
     "publish:beta": "pnpm install; pnpm build; changeset publish --tag beta",
     "publish:canary": "pnpm install; pnpm build; changeset publish --tag canary",
-    "prepare": "husky"
+    "prepare": "husky",
+    "size": "pnpm --filter=./examples/react-wagmi size"
   },
   "devDependencies": {
     "@changesets/changelog-github": "0.5.0",
@@ -51,7 +52,8 @@
     "typescript": "5.3.3",
     "vite": "5.2.11",
     "vitest": "2.0.3",
-    "vite-plugin-node-polyfills": "0.22.0"
+    "vite-plugin-node-polyfills": "0.22.0",
+    "pino": "7.11.0"
   },
   "packageManager": "pnpm@9.5.0",
   "pnpm": {
