@@ -72,8 +72,8 @@ jobs:
       - name: install
         run: pnpm install
       - name: Running vite-size script
-        working-directory: ./examples/react-wagmi/
         uses: glitch-txs/vite-size-action@v1.0.3
+        working-directory: ./examples/react-wagmi/
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
