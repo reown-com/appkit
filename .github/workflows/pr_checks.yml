@@ -10,6 +10,9 @@ on:
       - main
       - feat/bundle-size-check
 
+permissions:
+  pull-requests: write
+
 concurrency:
   # Support push/pr as event types with different behaviors each:
   # 1. push: queue up builds
