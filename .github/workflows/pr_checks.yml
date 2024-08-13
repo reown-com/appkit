@@ -72,11 +72,11 @@ jobs:
           node-version: 18.x
           cache: 'pnpm'
 
-      - name: build
-        run: pnpm build
-
       - name: install
         run: pnpm install
+
+      - name: build
+        run: pnpm build
 
       - name: Running vite-size script
         uses: glitch-txs/vite-size-action@v1.0.3
