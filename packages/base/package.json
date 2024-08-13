@@ -69,7 +69,7 @@
   },
   "devDependencies": {
     "@types/bn.js": "5.1.5",
-    "@wagmi/connectors": "5.0.21",
+    "@wagmi/connectors": "5.1.2",
     "@wagmi/core": "2.13.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
