@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "vite --port 3002",
     "build": "vite build",
-    "size": "pnpm run build && vite-size --react --externals wagmi viem @tanstack/react-query react react-dom"
+    "size": "pnpm run build && vite-size --total --react --externals wagmi viem @tanstack/react-query react react-dom"
   },
   "dependencies": {
     "@tanstack/react-query": "5.24.8",
