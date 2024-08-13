@@ -1,6 +1,7 @@
 import {
   AccountController,
   ApiController,
+  ConnectionController,
   CoreHelperUtil,
   EventsController,
   ModalController,
@@ -60,7 +61,7 @@ export class W3mModal extends LitElement {
         AccountController.subscribeKey('isConnected', val => (this.connected = val)),
         AccountController.subscribeKey('caipAddress', val => this.onNewAddress(val)),
         OptionsController.subscribeKey('isSiweEnabled', val => (this.isSiweEnabled = val)),
-          OptionsController.subscribeKey('isSiwsEnabled', val => (this.isSiwsEnabled = val))
+        OptionsController.subscribeKey('isSiwsEnabled', val => (this.isSiwsEnabled = val))
       ]
     )
     EventsController.sendEvent({ type: 'track', event: 'MODAL_LOADED' })
@@ -115,7 +116,10 @@ export class W3mModal extends LitElement {
         await ConnectionController.disconnect()
       }
     }
-    ModalController.close()
+
+    if (!this.isSiwsEnabled && !this.isSiweEnabled) {
+      ModalController.close()
+    }
   }
 
   private initializeTheming() {

@@ -19,6 +19,15 @@ importers:
       '@changesets/cli':
         specifier: 2.27.1
         version: 2.27.1
+      '@learnweb3dao/siwx-common':
+        specifier: 0.3.0
+        version: 0.3.0
+      '@noble/curves':
+        specifier: 1.4.2
+        version: 1.4.2
+      '@solana/wallet-adapter-base':
+        specifier: 0.9.23
+        version: 0.9.23(@solana/web3.js@1.91.7(bufferutil@4.0.8)(utf-8-validate@5.0.10))
       '@typescript-eslint/eslint-plugin':
         specifier: 6.18.1
         version: 6.18.1(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint@8.56.0)(typescript@5.3.3)
@@ -27,7 +36,10 @@ importers:
         version: 6.18.1(eslint@8.56.0)(typescript@5.3.3)
       '@vitest/coverage-v8':
         specifier: 1.1.2
-        version: 1.1.2(vitest@2.0.3(@types/node@20.11.5)(jsdom@24.1.0)(terser@5.31.3))
+        version: 1.1.2(vitest@2.0.3(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.31.3))
+      bs58:
+        specifier: 6.0.0
+        version: 6.0.0
       danger:
         specifier: 11.3.1
         version: 11.3.1
@@ -55,6 +67,9 @@ importers:
       turbo:
         specifier: 2.0.6-canary.0
         version: 2.0.6-canary.0
+      tweetnacl:
+        specifier: 1.0.3
+        version: 1.0.3
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -201,6 +216,9 @@ importers:
       '@sentry/react':
         specifier: 7.92.0
         version: 7.92.0(react@18.2.0)
+      '@solana/wallet-adapter-backpack':
+        specifier: 0.1.14
+        version: 0.1.14(@solana/web3.js@1.91.7(bufferutil@4.0.8)(utf-8-validate@5.0.10))
       '@solana/wallet-adapter-wallets':
         specifier: 0.19.32
         version: 0.19.32(@babel/core@7.25.2)(@babel/runtime@7.25.0)(@sentry/types@7.92.0)(@solana/web3.js@1.91.7(bufferutil@4.0.8)(utf-8-validate@5.0.10))(bs58@6.0.0)(bufferutil@4.0.8)(react-dom@18.2.0(react@18.2.0))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(utf-8-validate@5.0.10))(react@18.2.0)(tslib@2.6.3)(utf-8-validate@5.0.10)
@@ -222,12 +240,18 @@ importers:
       '@walletconnect/utils':
         specifier: 2.14.0
         version: 2.14.0
+      '@web3modal/core':
+        specifier: workspace:*
+        version: link:../../packages/core
       '@web3modal/ethers':
         specifier: workspace:*
         version: link:../../packages/ethers
       '@web3modal/siwe':
         specifier: workspace:*
         version: link:../../packages/siwe
+      '@web3modal/siws':
+        specifier: workspace:*
+        version: link:../../packages/siws
       '@web3modal/solana':
         specifier: workspace:*
         version: link:../../packages/solana
@@ -253,8 +277,8 @@ importers:
         specifier: 14.2.3
         version: 14.2.3(@babel/core@7.25.2)(@playwright/test@1.44.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       next-auth:
-        specifier: 4.24.5
-        version: 4.24.5(next@14.2.3(@babel/core@7.25.2)(@playwright/test@1.44.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        specifier: 4.24.7
+        version: 4.24.7(next@14.2.3(@babel/core@7.25.2)(@playwright/test@1.44.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       permissionless:
         specifier: 0.1.31
         version: 0.1.31(viem@2.17.8(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4))
@@ -452,7 +476,7 @@ importers:
         version: 0.1.14(@solana/web3.js@1.91.7(bufferutil@4.0.8)(utf-8-validate@5.0.10))
       '@solana/wallet-adapter-wallets':
         specifier: 0.19.32
-        version: 0.19.32(@babel/core@7.25.2)(@babel/runtime@7.25.0)(@sentry/types@7.92.0)(@solana/web3.js@1.91.7(bufferutil@4.0.8)(utf-8-validate@5.0.10))(bufferutil@4.0.8)(react-dom@18.2.0(react@18.2.0))(react-native@0.74.5(@babel/core@7.25.2)(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(utf-8-validate@5.0.10))(react@18.2.0)(tslib@2.6.3)(utf-8-validate@5.0.10)
+        version: 0.19.32(@babel/core@7.25.2)(@babel/runtime@7.25.0)(@sentry/types@7.92.0)(@solana/web3.js@1.91.7(bufferutil@4.0.8)(utf-8-validate@5.0.10))(bs58@6.0.0)(bufferutil@4.0.8)(react-dom@18.2.0(react@18.2.0))(react-native@0.74.5(@babel/core@7.25.2)(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(utf-8-validate@5.0.10))(react@18.2.0)(tslib@2.6.3)(utf-8-validate@5.0.10)
       '@tanstack/react-query':
         specifier: 5.24.8
         version: 5.24.8(react@18.2.0)
@@ -539,7 +563,7 @@ importers:
         version: 0.1.14(@solana/web3.js@1.91.7(bufferutil@4.0.8)(utf-8-validate@5.0.10))
       '@solana/wallet-adapter-wallets':
         specifier: 0.19.32
-        version: 0.19.32(@babel/core@7.25.2)(@babel/runtime@7.25.0)(@sentry/types@7.92.0)(@solana/web3.js@1.91.7(bufferutil@4.0.8)(utf-8-validate@5.0.10))(bufferutil@4.0.8)(react-native@0.74.5(@babel/core@7.25.2)(bufferutil@4.0.8)(utf-8-validate@5.0.10))(tslib@2.6.3)(utf-8-validate@5.0.10)
+        version: 0.19.32(@babel/core@7.25.2)(@babel/runtime@7.25.0)(@sentry/types@7.92.0)(@solana/web3.js@1.91.7(bufferutil@4.0.8)(utf-8-validate@5.0.10))(bs58@6.0.0)(bufferutil@4.0.8)(react-native@0.74.5(@babel/core@7.25.2)(bufferutil@4.0.8)(utf-8-validate@5.0.10))(tslib@2.6.3)(utf-8-validate@5.0.10)
       '@web3modal/solana':
         specifier: workspace:*
         version: link:../../packages/solana
@@ -587,6 +611,9 @@ importers:
       '@web3modal/ethers':
         specifier: workspace:*
         version: link:../ethers
+      '@web3modal/solana':
+        specifier: workspace:*
+        version: link:../solana
       '@web3modal/wagmi':
         specifier: workspace:*
         version: link:../wagmi
@@ -770,6 +797,9 @@ importers:
       '@web3modal/siwe':
         specifier: workspace:*
         version: link:../siwe
+      '@web3modal/siws':
+        specifier: workspace:*
+        version: link:../siws
       '@web3modal/ui':
         specifier: workspace:*
         version: link:../ui
@@ -813,6 +843,9 @@ importers:
       '@web3modal/siwe':
         specifier: workspace:*
         version: link:../siwe
+      '@web3modal/siws':
+        specifier: workspace:*
+        version: link:../siws
       '@web3modal/ui':
         specifier: workspace:*
         version: link:../ui
@@ -884,6 +917,39 @@ importers:
         specifier: 1.11.2
         version: 1.11.2(@types/react@18.2.62)(react@18.2.0)
 
+  packages/siws:
+    dependencies:
+      '@learnweb3dao/siwx-common':
+        specifier: 0.3.0
+        version: 0.3.0
+      '@solana/web3.js':
+        specifier: 1.91.7
+        version: 1.91.7(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@walletconnect/utils':
+        specifier: 2.12.0
+        version: 2.12.0
+      '@web3modal/core':
+        specifier: workspace:*
+        version: link:../core
+      '@web3modal/scaffold-utils':
+        specifier: workspace:*
+        version: link:../scaffold-utils
+      '@web3modal/ui':
+        specifier: workspace:*
+        version: link:../ui
+      '@web3modal/wallet':
+        specifier: workspace:*
+        version: link:../wallet
+      bs58:
+        specifier: 6.0.0
+        version: 6.0.0
+      lit:
+        specifier: 3.1.0
+        version: 3.1.0
+      valtio:
+        specifier: 1.11.2
+        version: 1.11.2(@types/react@18.2.62)(react@18.2.0)
+
   packages/solana:
     dependencies:
       '@ethersproject/sha2':
@@ -937,6 +1003,9 @@ importers:
       '@web3modal/scaffold-vue':
         specifier: workspace:*
         version: link:../scaffold-vue
+      '@web3modal/siws':
+        specifier: workspace:*
+        version: link:../siws
       '@web3modal/wallet':
         specifier: workspace:*
         version: link:../wallet
@@ -3770,6 +3839,9 @@ packages:
 
   '@keystonehq/sol-keyring@0.3.1':
     resolution: {integrity: sha512-RU6I3HQrQ9NpRDP9TwlBIy5DftVcNcyk0NWfhkPy/YanhMcCB0cRPw68iQl1rMnR6n1G2+YrBHMxm6swCW+B4Q==}
+
+  '@learnweb3dao/siwx-common@0.3.0':
+    resolution: {integrity: sha512-fBC5hkl4gdRJZHlAZqm2WVv2ZpNzexo5YrmXQECbD1SAxZy031vEqP8DXWcKwVY62nzqXJ24+tm6DCCSVrUSFQ==}
 
   '@ledgerhq/devices@6.27.1':
     resolution: {integrity: sha512-jX++oy89jtv7Dp2X6gwt3MMkoajel80JFWcdc0HCouwDsV1mVJ3SQdwl/bQU0zd8HI6KebvUP95QTwbQLLK/RQ==}
@@ -9645,8 +9717,8 @@ packages:
   neo-async@2.6.2:
     resolution: {integrity: sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==}
 
-  next-auth@4.24.5:
-    resolution: {integrity: sha512-3RafV3XbfIKk6rF6GlLE4/KxjTcuMCifqrmD+98ejFq73SRoj2rmzoca8u764977lH/Q7jo6Xu6yM+Re1Mz/Og==}
+  next-auth@4.24.7:
+    resolution: {integrity: sha512-iChjE8ov/1K/z98gdKbn2Jw+2vLgJtVV39X+rCP5SGnVQuco7QOr19FRNGMIrD8d3LYhHWV9j9sKLzq1aDWWQQ==}
     peerDependencies:
       next: ^12.2.5 || ^13 || ^14
       nodemailer: ^6.6.5
@@ -11501,6 +11573,9 @@ packages:
     resolution: {integrity: sha512-35bevmsAkogFCfzil46dsM9vk1QVhMC63vqcXSSgzkQerDVYjrdfl/eMrMoqxzJI8ZHZYIBHAsiHMK7TteOCGw==}
     hasBin: true
 
+  tweetnacl@1.0.3:
+    resolution: {integrity: sha512-6rt+RN7aOi1nGMyC4Xa5DdYiukl2UWCbcJft7YhxReBGQD7OAM8Pbxw6YMo4r2diNEA8FEmu32YOn9rhaiE5yw==}
+
   type-check@0.4.0:
     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}
     engines: {node: '>= 0.8.0'}
@@ -11807,6 +11882,9 @@ packages:
   v8-to-istanbul@9.3.0:
     resolution: {integrity: sha512-kiGUalWN+rgBJ/1OHZsBtU4rXZOfj/7rKQxULKlIzwzQSvMJUUNgPwJEEh7gU6xEVxC0ahoOBvN2YI8GH6FNgA==}
     engines: {node: '>=10.12.0'}
+
+  valid-url@1.0.9:
+    resolution: {integrity: sha512-QQDsV8OnSf5Uc30CKSwG9lnhMPe6exHtTXLRYX8uMwKENy640pU+2BgBL0LRbDh/eYRahNCS7aewCx0wf3NYVA==}
 
   validate-npm-package-license@3.0.4:
     resolution: {integrity: sha512-DpKm2Ui/xN7/HQKCtpZxoRWBhZ9Z0kqtygG8XCgNQ8ZlDnxuQmWhj566j8fN4Cu3/JmbhsDo7fcAJq4s9h27Ew==}
@@ -15693,6 +15771,11 @@ snapshots:
       - encoding
       - utf-8-validate
 
+  '@learnweb3dao/siwx-common@0.3.0':
+    dependencies:
+      '@stablelib/random': 1.0.2
+      valid-url: 1.0.9
+
   '@ledgerhq/devices@6.27.1':
     dependencies:
       '@ledgerhq/errors': 6.18.0
@@ -17152,7 +17235,7 @@ snapshots:
 
   '@scure/bip32@1.4.0':
     dependencies:
-      '@noble/curves': 1.4.0
+      '@noble/curves': 1.4.2
       '@noble/hashes': 1.4.0
       '@scure/base': 1.1.7
 
@@ -17856,7 +17939,7 @@ snapshots:
       - uWebSockets.js
       - utf-8-validate
 
-  '@solana/wallet-adapter-wallets@0.19.32(@babel/core@7.25.2)(@babel/runtime@7.25.0)(@sentry/types@7.92.0)(@solana/web3.js@1.91.7(bufferutil@4.0.8)(utf-8-validate@5.0.10))(bufferutil@4.0.8)(react-dom@18.2.0(react@18.2.0))(react-native@0.74.5(@babel/core@7.25.2)(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(utf-8-validate@5.0.10))(react@18.2.0)(tslib@2.6.3)(utf-8-validate@5.0.10)':
+  '@solana/wallet-adapter-wallets@0.19.32(@babel/core@7.25.2)(@babel/runtime@7.25.0)(@sentry/types@7.92.0)(@solana/web3.js@1.91.7(bufferutil@4.0.8)(utf-8-validate@5.0.10))(bs58@6.0.0)(bufferutil@4.0.8)(react-dom@18.2.0(react@18.2.0))(react-native@0.74.5(@babel/core@7.25.2)(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(utf-8-validate@5.0.10))(react@18.2.0)(tslib@2.6.3)(utf-8-validate@5.0.10)':
     dependencies:
       '@solana/wallet-adapter-alpha': 0.1.10(@solana/web3.js@1.91.7(bufferutil@4.0.8)(utf-8-validate@5.0.10))
       '@solana/wallet-adapter-avana': 0.1.13(@solana/web3.js@1.91.7(bufferutil@4.0.8)(utf-8-validate@5.0.10))
@@ -17925,7 +18008,7 @@ snapshots:
       - uWebSockets.js
       - utf-8-validate
 
-  '@solana/wallet-adapter-wallets@0.19.32(@babel/core@7.25.2)(@babel/runtime@7.25.0)(@sentry/types@7.92.0)(@solana/web3.js@1.91.7(bufferutil@4.0.8)(utf-8-validate@5.0.10))(bufferutil@4.0.8)(react-native@0.74.5(@babel/core@7.25.2)(bufferutil@4.0.8)(utf-8-validate@5.0.10))(tslib@2.6.3)(utf-8-validate@5.0.10)':
+  '@solana/wallet-adapter-wallets@0.19.32(@babel/core@7.25.2)(@babel/runtime@7.25.0)(@sentry/types@7.92.0)(@solana/web3.js@1.91.7(bufferutil@4.0.8)(utf-8-validate@5.0.10))(bs58@6.0.0)(bufferutil@4.0.8)(react-native@0.74.5(@babel/core@7.25.2)(bufferutil@4.0.8)(utf-8-validate@5.0.10))(tslib@2.6.3)(utf-8-validate@5.0.10)':
     dependencies:
       '@solana/wallet-adapter-alpha': 0.1.10(@solana/web3.js@1.91.7(bufferutil@4.0.8)(utf-8-validate@5.0.10))
       '@solana/wallet-adapter-avana': 0.1.13(@solana/web3.js@1.91.7(bufferutil@4.0.8)(utf-8-validate@5.0.10))
@@ -19685,7 +19768,7 @@ snapshots:
       vite: 5.2.11(@types/node@20.11.5)(terser@5.31.3)
       vue: 3.4.3(typescript@5.3.3)
 
-  '@vitest/coverage-v8@1.1.2(vitest@2.0.3(@types/node@20.11.5)(jsdom@24.1.0)(terser@5.31.3))':
+  '@vitest/coverage-v8@1.1.2(vitest@2.0.3(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.31.3))':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@bcoe/v8-coverage': 0.2.3
@@ -20092,7 +20175,7 @@ snapshots:
       '@walletconnect/safe-json': 1.0.2
       '@walletconnect/time': 1.0.2
       tslib: 1.14.1
-      uint8arrays: 3.1.0
+      uint8arrays: 3.1.1
 
   '@walletconnect/safe-json@1.0.0': {}
 
@@ -20286,7 +20369,7 @@ snapshots:
 
   '@walletconnect/window-metadata@1.0.0':
     dependencies:
-      '@walletconnect/window-getters': 1.0.0
+      '@walletconnect/window-getters': 1.0.1
 
   '@walletconnect/window-metadata@1.0.1':
     dependencies:
@@ -24480,7 +24563,7 @@ snapshots:
 
   neo-async@2.6.2: {}
 
-  next-auth@4.24.5(next@14.2.3(@babel/core@7.25.2)(@playwright/test@1.44.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
+  next-auth@4.24.7(next@14.2.3(@babel/core@7.25.2)(@playwright/test@1.44.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
     dependencies:
       '@babel/runtime': 7.25.0
       '@panva/hkdf': 1.2.1
@@ -26652,6 +26735,8 @@ snapshots:
       turbo-windows-64: 2.0.6-canary.0
       turbo-windows-arm64: 2.0.6-canary.0
 
+  tweetnacl@1.0.3: {}
+
   type-check@0.4.0:
     dependencies:
       prelude-ls: 1.2.1
@@ -26933,6 +27018,8 @@ snapshots:
       '@jridgewell/trace-mapping': 0.3.25
       '@types/istanbul-lib-coverage': 2.0.6
       convert-source-map: 2.0.0
+
+  valid-url@1.0.9: {}
 
   validate-npm-package-license@3.0.4:
     dependencies:
