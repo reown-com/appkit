@@ -127,8 +127,6 @@ export const ChainController = {
     PublicStateController.set({ activeChain: 'evm' })
     state.universalAdapter = adapter
 
-    // this.setActiveCaipNetwork("eip155:1")
-
     const chains: Chain[] = ['evm', 'solana']
     chains.forEach((chain: Chain) => {
       state.chains.set(chain, {
@@ -271,6 +269,7 @@ export const ChainController = {
       if (!state.universalAdapter.networkControllerClient) {
         throw new Error("Universal Adapter's NetworkControllerClient is not set")
       }
+
       return state.universalAdapter.networkControllerClient
     }
 

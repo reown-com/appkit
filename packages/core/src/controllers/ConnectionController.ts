@@ -53,6 +53,7 @@ export interface ConnectionControllerState {
   wcError?: boolean
   recentWallet?: WcWallet
   buffering: boolean
+  status?: 'connecting' | 'connected' | 'disconnected'
 }
 
 type StateKey = keyof ConnectionControllerState
@@ -60,7 +61,8 @@ type StateKey = keyof ConnectionControllerState
 // -- State --------------------------------------------- //
 const state = proxy<ConnectionControllerState>({
   wcError: false,
-  buffering: false
+  buffering: false,
+  status: 'disconnected'
 })
 
 // -- Controller ---------------------------------------- //
@@ -177,6 +179,10 @@ export const ConnectionController = {
 
   setBuffering(buffering: ConnectionControllerState['buffering']) {
     state.buffering = buffering
+  },
+
+  setStatus(status: ConnectionControllerState['status']) {
+    state.status = status
   },
 
   async disconnect() {

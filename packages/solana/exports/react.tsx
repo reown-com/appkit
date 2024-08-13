@@ -5,11 +5,11 @@ import { ConstantsUtil } from '@web3modal/scaffold-utils'
 import { getWeb3Modal } from '@web3modal/scaffold-react'
 import { AppKit, WcStoreUtil } from '@web3modal/base'
 import type { AppKitOptions } from '@web3modal/base'
-import { SolanaWeb3JsClient } from '@web3modal/base/adapters/solana/web3js'
+import { SolanaWeb3JsClient, SolStoreUtil } from '@web3modal/base/adapters/solana/web3js'
 import type {
   Chain,
-  Provider,
-  ProviderType,
+  SolanaProvider,
+  SolanaProviderType,
   BaseWalletAdapter
 } from '@web3modal/base/adapters/solana/web3js'
 
@@ -21,7 +21,7 @@ let appkit: AppKit | undefined = undefined
 let solanaAdapter: SolanaWeb3JsClient | undefined = undefined
 
 type SolanaAppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 'sdkVersion'> & {
-  solanaConfig: ProviderType
+  solanaConfig: SolanaProviderType
   chains: Chain[]
   wallets: BaseWalletAdapter[]
 }
@@ -46,10 +46,10 @@ export function createWeb3Modal(options: SolanaAppKitOptions) {
 
 // -- Hooks -------------------------------------------------------------------
 export function useWeb3ModalProvider() {
-  const { provider, providerType } = useSnapshot(WcStoreUtil.state)
+  const { provider, providerType } = useSnapshot(SolStoreUtil.state)
 
   return {
-    walletProvider: provider as Provider,
+    walletProvider: provider as SolanaProvider,
     walletProviderType: providerType
   }
 }

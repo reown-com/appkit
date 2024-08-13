@@ -25,7 +25,7 @@ import type {
   RequestMethods,
   TransactionArgs,
   TransactionType,
-  Provider
+  SolanaProvider
 } from '../utils/scaffold/index.js'
 
 export interface Connector {
@@ -35,10 +35,10 @@ export interface Connector {
   getConnectorName: () => string
   disconnect: () => Promise<void>
   connect: () => Promise<string>
-  signMessage: Provider['signMessage']
-  signTransaction: Provider['signTransaction']
-  signAndSendTransaction: Provider['signAndSendTransaction']
-  sendTransaction: Provider['sendTransaction']
+  signMessage: SolanaProvider['signMessage']
+  signTransaction: SolanaProvider['signTransaction']
+  signAndSendTransaction: SolanaProvider['signAndSendTransaction']
+  sendTransaction: SolanaProvider['sendTransaction']
   getAccount: (
     requestedAddress?: string,
     encoding?: 'base58' | 'base64' | 'jsonParsed'

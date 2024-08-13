@@ -1,14 +1,15 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
-import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
+import { proxy, subscribe as sub } from 'valtio/vanilla'
 import type { W3mFrameTypes } from '@web3modal/wallet'
 import UniversalProvider from '@walletconnect/universal-provider'
+import type { CaipNetworkId, Chain } from '@web3modal/common'
 
 // -- Types --------------------------------------------- //
 
 export type Status = 'reconnecting' | 'connected' | 'disconnected'
 
 export type Network = {
-  id: string
+  id: CaipNetworkId
   imageId: string | undefined
   chainId: string | number
   chain: 'evm' | 'solana'
@@ -20,11 +21,11 @@ export type Network = {
 
 export interface WcStoreUtilState {
   provider?: UniversalProvider
-  providerType?: 'walletConnect' | 'injected' | 'eip' | 'announced'
+  providerType?: 'walletConnect' | 'injected' | 'eip' | 'announced' | 'coinbaseWalletSDK'
   address?: string
   chainId?: number
   caipChainId?: string
-  currentChain?: 'evm' | 'solana'
+  currentChain?: Chain
   currentNetwork?: Network
   error?: unknown
   preferredAccountType?: W3mFrameTypes.AccountType
@@ -58,60 +59,12 @@ export const WcStoreUtil = {
     return sub(state, () => callback(state))
   },
 
-  setProvider(provider: WcStoreUtilState['provider']) {
-    if (provider) {
-      state.provider = ref(provider)
-    }
-  },
-
-  setProviderType(providerType: WcStoreUtilState['providerType']) {
-    state.providerType = providerType
-  },
-
   setAddress(address: WcStoreUtilState['address']) {
     state.address = address
   },
 
-  setPreferredAccountType(preferredAccountType: WcStoreUtilState['preferredAccountType']) {
-    state.preferredAccountType = preferredAccountType
-  },
-
-  setChainId(chainId: WcStoreUtilState['chainId']) {
-    state.chainId = chainId
-  },
-
-  setStatus(status: WcStoreUtilState['status']) {
-    state.status = status
-  },
-
-  setIsConnected(isConnected: WcStoreUtilState['isConnected']) {
-    state.isConnected = isConnected
-  },
-
-  setChains(chains: WcStoreUtilState['chains']) {
-    state.chains = chains
-  },
-
   setError(error: WcStoreUtilState['error']) {
     state.error = error
-  },
-
-  setCurrentChain(currentChain: WcStoreUtilState['currentChain']) {
-    if (currentChain) {
-      state.currentChain = currentChain
-    }
-  },
-
-  setCurrentNetwork(currentNetwork: WcStoreUtilState['currentNetwork']) {
-    if (currentNetwork) {
-      state.currentNetwork = currentNetwork
-    }
-  },
-
-  setCaipChainId(caipChainId: WcStoreUtilState['caipChainId']) {
-    if (caipChainId) {
-      state.caipChainId = caipChainId
-    }
   },
 
   reset() {

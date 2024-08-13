@@ -7,8 +7,7 @@ import type { AppKitOptions } from '@web3modal/base'
 import { SolanaWeb3JsClient, SolStoreUtil } from '@web3modal/base/adapters/solana/web3js'
 import type {
   Chain,
-  Provider,
-  ProviderType,
+  SolanaProviderType,
   BaseWalletAdapter
 } from '@web3modal/base/adapters/solana/web3js'
 
@@ -17,7 +16,7 @@ let appkit: AppKit | undefined = undefined
 let solanaAdapter: SolanaWeb3JsClient | undefined = undefined
 
 type SolanaAppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 'sdkVersion'> & {
-  solanaConfig: ProviderType
+  solanaConfig: SolanaProviderType
   chains: Chain[]
   wallets: BaseWalletAdapter[]
 }
@@ -46,12 +45,12 @@ export function useWeb3ModalProvider() {
     throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalProvider" composition')
   }
 
-  const walletProvider = ref(SolStoreUtil.state.provider as Provider)
+  const walletProvider = ref(SolStoreUtil.state.provider)
   const walletProviderType = ref(SolStoreUtil.state.providerType)
   const connection = ref(SolStoreUtil.state.connection)
 
   const unsubscribe = solanaAdapter.subscribeProvider(state => {
-    walletProvider.value = state.provider as Provider
+    walletProvider.value = state.provider
     walletProviderType.value = state.providerType
   })
 

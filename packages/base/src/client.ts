@@ -165,6 +165,10 @@ export class AppKit {
     AccountController.setIsConnected(isConnected, chain)
   }
 
+  public setStatus: (typeof AccountController)['setStatus'] = (status, chain) => {
+    AccountController.setStatus(status, chain)
+  }
+
   public getIsConnectedState = () => AccountController.state.isConnected
 
   public setAllAccounts: (typeof AccountController)['setAllAccounts'] = (addresses, chain) => {
@@ -189,6 +193,8 @@ export class AppKit {
 
   public getCaipAddress = () => AccountController.state.caipAddress
 
+  public getAddress = () => AccountController.state.address
+
   public getProvider = () => AccountController.state.provider
 
   public getPreferredAccountType = () => AccountController.state.preferredAccountType
@@ -197,7 +203,7 @@ export class AppKit {
     AccountController.setCaipAddress(caipAddress, chain)
   }
 
-  public setProvider: (typeof AccountController)['provider'] = (provider, chain) => {
+  public setProvider: (typeof AccountController)['setProvider'] = (provider, chain) => {
     AccountController.setProvider(provider, chain)
   }
 

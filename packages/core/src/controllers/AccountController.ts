@@ -41,6 +41,7 @@ export interface AccountControllerState {
   socialWindow?: Window
   farcasterUrl?: string
   provider?: UniversalProvider | Provider | CombinedProvider
+  status?: 'reconnecting' | 'connected' | 'disconnected' | 'connecting'
 }
 
 // -- State --------------------------------------------- //
@@ -94,6 +95,10 @@ export const AccountController = {
 
   setIsConnected(isConnected: AccountControllerState['isConnected'], chain?: Chain) {
     ChainController.setAccountProp('isConnected', isConnected, chain)
+  },
+
+  setStatus(status: AccountControllerState['status'], chain?: Chain) {
+    ChainController.setAccountProp('status', status, chain)
   },
 
   getChainIsConnected(chain?: Chain) {

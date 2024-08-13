@@ -1,4 +1,4 @@
-import { W3mFrameProvider } from '@web3modal/wallet'
+import UniversalProvider from '@walletconnect/universal-provider'
 
 import type {
   Connection as SolanaConnection,
@@ -14,14 +14,14 @@ import type { SendTransactionOptions } from '@solana/wallet-adapter-base'
 export type Connection = SolanaConnection
 
 export interface ISolConfig {
-  providers: ProviderType
+  providers: SolanaProviderType
   defaultChain?: number
   SSR?: boolean
 }
 
-export type ProviderType = {
-  injected?: Provider
-  coinbase?: Provider
+export type SolanaProviderType = {
+  injected?: SolanaProvider
+  coinbase?: SolanaProvider
   email?: boolean
   EIP6963?: boolean
   metadata: Metadata
@@ -32,12 +32,12 @@ export interface RequestArguments {
   readonly params?: readonly unknown[] | object
 }
 
-export interface Provider {
+export interface SolanaProvider extends Omit<UniversalProvider, 'connect'> {
   isConnected: () => boolean
   publicKey: PublicKey
   name: string
   on: <T>(event: string, listener: (data: T) => void) => void
-  wallet: Provider
+  wallet: SolanaProvider
   removeListener: <T>(event: string, listener: (data: T) => void) => void
   emit: (event: string) => void
   connect: () => Promise<string>
@@ -71,8 +71,6 @@ export type Metadata = {
   url: string
   icons: string[]
 }
-
-export type CombinedProvider = W3mFrameProvider & Provider
 
 // eslint-disable-next-line no-shadow
 export enum Tag {

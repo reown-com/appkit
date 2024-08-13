@@ -105,7 +105,7 @@ export class EVMWagmiClient {
 
     this.networkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
-        const chainId = NetworkUtil.caipNetworkIdToNumber(caipNetwork?.id)
+        const chainId = Number(NetworkUtil.caipNetworkIdToNumber(caipNetwork?.id))
 
         if (chainId) {
           await switchChain(this.wagmiConfig, { chainId })
@@ -167,7 +167,7 @@ export class EVMWagmiClient {
           this.appKit?.setClientId(clientId)
         }
 
-        const chainId = NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id)
+        const chainId = Number(NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id))
         const siweParams = await siweConfig?.getMessageParams?.()
         // Make sure client uses ethereum provider version that supports `authenticate`
         if (
@@ -253,7 +253,7 @@ export class EVMWagmiClient {
           // @ts-expect-error Exists on EIP6963Connector
           connector.setEip6963Wallet?.({ provider, info })
         }
-        const chainId = NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id)
+        const chainId = Number(NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id))
 
         await connect(this.wagmiConfig, { connector, chainId })
       },
@@ -348,7 +348,7 @@ export class EVMWagmiClient {
       writeContract: async (data: WriteContractArgs) => {
         const caipAddress = this.appKit?.getCaipAddress() || ''
         const account = requireCaipAddress(caipAddress)
-        const chainId = NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id)
+        const chainId = Number(NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id))
 
         const tx = await wagmiWriteContract(this.wagmiConfig, {
           chainId,
@@ -370,7 +370,9 @@ export class EVMWagmiClient {
             )
           }
 
-          const chainId = NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id)
+          const chainId = Number(
+            NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id)
+          )
           let ensName: boolean | GetEnsAddressReturnType = false
           let wcName: boolean | string = false
 
@@ -392,7 +394,7 @@ export class EVMWagmiClient {
       },
 
       getEnsAvatar: async (value: string) => {
-        const chainId = NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id)
+        const chainId = Number(NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id))
 
         if (chainId !== mainnet.id) {
           return false
@@ -467,7 +469,7 @@ export class EVMWagmiClient {
     return this.appKit?.subscribeState((state: PublicStateControllerState) =>
       callback({
         ...state,
-        selectedNetworkId: NetworkUtil.caipNetworkIdToNumber(state.selectedNetworkId)
+        selectedNetworkId: Number(NetworkUtil.caipNetworkIdToNumber(state.selectedNetworkId))
       })
     )
   }
@@ -857,7 +859,7 @@ export class EVMWagmiClient {
         this.syncAccount({
           address: address as `0x${string}`,
           isConnected: true,
-          chainId: NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id),
+          chainId: Number(NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id)),
           connector
         })
       })
