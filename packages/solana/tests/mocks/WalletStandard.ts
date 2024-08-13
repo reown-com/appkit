@@ -17,7 +17,7 @@ export function mockWalletStandard() {
 
   return {
     accounts,
-    chains: [],
+    chains: TestConstants.chains.map(chain => `solana:${chain.chainId}` as const),
     features: {
       'standard:connect': {
         version: '1.0.0',

@@ -2,6 +2,7 @@ import { getWallets } from '@wallet-standard/app'
 import { WalletStandardProvider } from '../providers/WalletStandardProvider.js'
 import { isWalletAdapterCompatibleStandardWallet } from '@solana/wallet-adapter-base'
 import type { Wallet } from '@wallet-standard/base'
+import { SolStoreUtil } from './scaffold/SolanaStoreUtil.js'
 
 const { get, on } = getWallets()
 
@@ -33,5 +34,11 @@ export function watchStandard(callback: (arg: WalletStandardProvider[]) => void)
 function wrapWalletsWithAdapters(wallets: readonly Wallet[]): readonly WalletStandardProvider[] {
   return wallets
     .filter(isWalletAdapterCompatibleStandardWallet)
-    .map(wallet => new WalletStandardProvider({ wallet }))
+    .map(
+      wallet =>
+        new WalletStandardProvider({
+          wallet,
+          getActiveChain: () => SolStoreUtil.state.currentChain
+        })
+    )
 }

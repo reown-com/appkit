@@ -26,12 +26,7 @@ import {
   StandardEvents,
   type StandardEventsFeature
 } from '@wallet-standard/features'
-import {
-  SolStoreUtil,
-  type AnyTransaction,
-  type Chain,
-  type Provider
-} from '../utils/scaffold/index.js'
+import { type AnyTransaction, type Chain, type Provider } from '../utils/scaffold/index.js'
 import base58 from 'bs58'
 import { WalletStandardFeatureNotSupportedError } from './shared/Errors.js'
 import { ProviderEventEmitter } from './shared/ProviderEventEmitter.js'
@@ -39,6 +34,7 @@ import { solanaChains } from '../utils/chains.js'
 
 export interface WalletStandardProviderConfig {
   wallet: Wallet
+  getActiveChain: () => Chain | undefined
 }
 
 type AvailableFeatures = StandardConnectFeature &
@@ -51,11 +47,13 @@ type AvailableFeatures = StandardConnectFeature &
 
 export class WalletStandardProvider extends ProviderEventEmitter implements Provider {
   readonly wallet: Wallet
+  readonly getActiveChain: WalletStandardProviderConfig['getActiveChain']
 
-  constructor({ wallet }: WalletStandardProviderConfig) {
+  constructor({ wallet, getActiveChain }: WalletStandardProviderConfig) {
     super()
 
     this.wallet = wallet
+    this.getActiveChain = getActiveChain
 
     this.bindEvents()
   }
@@ -180,10 +178,6 @@ export class WalletStandardProvider extends ProviderEventEmitter implements Prov
     return signature
   }
 
-  public async request() {
-    return await Promise.reject(new Error('RPC request is not supported'))
-  }
-
   public async signAllTransactions() {
     return await Promise.reject(new Error('Sign all transactions is not supported'))
   }
@@ -216,7 +210,7 @@ export class WalletStandardProvider extends ProviderEventEmitter implements Prov
 
   private getActiveChainName() {
     const entry = Object.entries(solanaChains).find(
-      ([, chain]) => chain.chainId === SolStoreUtil.state.currentChain?.chainId
+      ([, chain]) => chain.chainId === this.getActiveChain()?.chainId
     )
 
     if (!entry) {

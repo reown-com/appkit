@@ -19,7 +19,8 @@ const providers: { name: string; provider: Provider }[] = [
   {
     name: 'WalletStandardProvider',
     provider: new WalletStandardProvider({
-      wallet: mockWalletStandard()
+      wallet: mockWalletStandard(),
+      getActiveChain: () => TestConstants.chains[0]
     })
   }
 ]
