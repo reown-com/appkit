@@ -1,15 +1,16 @@
 import { PresetsUtil, ConstantsUtil } from '@web3modal/scaffold-utils'
-import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
+import { ConstantsUtil as CommonConstantsUtil, type CaipNetworkId } from '@web3modal/common'
 import type { Chain } from '@web3modal/scaffold-utils'
 import type { CaipNetwork } from '@web3modal/core'
 
 import { SolConstantsUtil } from './SolanaConstantsUtil.js'
-import type { Provider } from './SolanaTypesUtil.js'
+import type { SolanaProvider } from './SolanaTypesUtil.js'
 import type { ExtendedBaseWalletAdapter } from '../../client.js'
 import type { SolStoreUtilState } from './SolanaStoreUtil.js'
+import type { Network } from '../../../../../utils/StoreUtil.js'
 
 export const SolHelpersUtil = {
-  detectRpcUrl(chain: Chain, projectId: string) {
+  detectRpcUrl(chain: Network, projectId: string) {
     if (chain.rpcUrl.includes(new URL(CommonConstantsUtil.BLOCKCHAIN_API_RPC_URL).hostname)) {
       return `${chain.rpcUrl}?chainId=solana:${chain.chainId}&projectId=${projectId}`
     }
@@ -27,7 +28,10 @@ export const SolHelpersUtil = {
     return SolConstantsUtil.DEFAULT_CHAIN
   },
 
-  getChainFromCaip(chains: Chain[], chainCaipId: string | undefined | null = ':') {
+  getChainObjectFromCaipNetworkId(
+    chains: Network[],
+    chainCaipId: CaipNetworkId | undefined | null = ':'
+  ): Network {
     const chainId: string = (chainCaipId?.split(':')[1] ?? '').replace(/\s/gu, '')
 
     const selectedChain = chains.find(chain => chain.chainId === chainId)
@@ -35,7 +39,7 @@ export const SolHelpersUtil = {
     if (selectedChain) {
       return {
         ...selectedChain,
-        id: `solana:${chainId}`,
+        chainId: `solana:${chainId}` as CaipNetworkId,
         imageId: PresetsUtil.EIP155NetworkImageIds[chainId],
         chain: CommonConstantsUtil.CHAIN.SOLANA
       }
@@ -43,7 +47,8 @@ export const SolHelpersUtil = {
 
     return {
       ...SolConstantsUtil.DEFAULT_CHAIN,
-      id: `solana:${chainId}`,
+      id: `solana:${chainId}` as CaipNetworkId,
+      chainId: `solana:${chainId}` as CaipNetworkId,
       imageId: PresetsUtil.EIP155NetworkImageIds[chainId],
       chain: CommonConstantsUtil.CHAIN.SOLANA
     }
@@ -68,7 +73,7 @@ export const SolHelpersUtil = {
     return decimalValue
   },
 
-  async getAddress(provider: Provider) {
+  async getAddress(provider: SolanaProvider) {
     const [address] = await provider.request<string[]>({ method: 'getAccountInfo' })
 
     return address

@@ -7,12 +7,12 @@ import type {
   Token
 } from '@web3modal/core'
 import type { SIWEControllerClient, Web3ModalSIWEClient } from '@web3modal/siwe'
-import type { Chain } from '@web3modal/scaffold-utils'
+import type { Network } from './StoreUtil'
 
 export type AppKitOptions = OptionsControllerState & {
   adapters?: ChainAdapter[]
   siweConfig?: Web3ModalSIWEClient
-  chains?: Chain[]
+  chains?: Network[]
   themeMode?: ThemeMode
   themeVariables?: ThemeVariables
   allowUnsupportedChain?: NetworkControllerState['allowUnsupportedChain']

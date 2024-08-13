@@ -98,8 +98,9 @@ export class UniversalAdapterClient {
 
           if (ns) {
             Object.keys(ns).forEach(key => {
-              if (ns?.[key]?.chains) {
-                nsChains.push(...(ns[key].chains as `${string}:${string}`[]))
+              const chains = ns?.[key]?.chains
+              if (chains) {
+                nsChains.push(...(chains as `${string}:${string}`[]))
               }
             })
           }
@@ -208,7 +209,7 @@ export class UniversalAdapterClient {
 
         const signature = await provider.request({
           method: 'personal_sign',
-          params: [message, this.getAddress()]
+          params: [message, this.appKit?.getAddress()]
         })
 
         return signature as string
@@ -468,7 +469,7 @@ export class UniversalAdapterClient {
         this.appKit?.resetAccount(chain)
         this.appKit?.setIsConnected(isConnected, chain)
         this.appKit?.setPreferredAccountType(preferredAccountType, chain)
-        this.appKit?.setProvider(this.walletConnectProvider, chain)
+        // this.appKit?.setProvider(this.walletConnectProvider, chain)
         this.appKit?.setCaipAddress(address as CaipAddress, chain)
         this.syncConnectedWalletInfo()
 

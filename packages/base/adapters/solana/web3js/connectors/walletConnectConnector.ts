@@ -8,7 +8,8 @@ import type { Connector } from './baseConnector.js'
 
 import type UniversalProvider from '@walletconnect/universal-provider'
 
-import type { Chain, AnyTransaction } from '../utils/scaffold/SolanaTypesUtil.js'
+import type { AnyTransaction } from '../utils/scaffold/SolanaTypesUtil.js'
+import type { Chain } from '@web3modal/scaffold-utils'
 import {
   getChainsFromChainId,
   getDefaultChainFromSession,

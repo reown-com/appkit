@@ -123,7 +123,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
     const networkControllerClient: NetworkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
-        const chainId = NetworkUtil.caipNetworkIdToNumber(caipNetwork?.id)
+        const chainId = Number(NetworkUtil.caipNetworkIdToNumber(caipNetwork?.id))
         if (chainId) {
           try {
             EthersStoreUtil.setError(undefined)
@@ -188,7 +188,7 @@ export class Web3Modal extends Web3ModalScaffold {
           const chainId = NetworkUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
           let reorderedChains = params.chains
           if (chainId) {
-            reorderedChains = [chainId, ...params.chains.filter(c => c !== chainId)]
+            reorderedChains = [Number(chainId), ...params.chains.filter(c => c !== Number(chainId))]
           }
 
           const result = await WalletConnectProvider.authenticate({
@@ -232,7 +232,9 @@ export class Web3Modal extends Web3ModalScaffold {
             }
           }
         } else {
-          await WalletConnectProvider.connect({ optionalChains: this.chains.map(c => c.chainId) })
+          await WalletConnectProvider.connect({
+            optionalChains: this.chains.map(c => Number(c.chainId))
+          })
         }
 
         await this.setWalletConnectProvider()
@@ -421,7 +423,7 @@ export class Web3Modal extends Web3ModalScaffold {
      */
     this.subscribeCaipNetworkChange(network => {
       if (!this.getChainId() && network) {
-        EthersStoreUtil.setChainId(NetworkUtil.caipNetworkIdToNumber(network.id))
+        EthersStoreUtil.setChainId(Number(NetworkUtil.caipNetworkIdToNumber(network.id)))
       }
     })
 
@@ -460,7 +462,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
     return {
       ...state,
-      selectedNetworkId: NetworkUtil.caipNetworkIdToNumber(state.selectedNetworkId)
+      selectedNetworkId: Number(NetworkUtil.caipNetworkIdToNumber(state.selectedNetworkId))
     }
   }
 
@@ -469,7 +471,7 @@ export class Web3Modal extends Web3ModalScaffold {
     return super.subscribeState(state =>
       callback({
         ...state,
-        selectedNetworkId: NetworkUtil.caipNetworkIdToNumber(state.selectedNetworkId)
+        selectedNetworkId: Number(NetworkUtil.caipNetworkIdToNumber(state.selectedNetworkId))
       })
     )
   }
@@ -541,7 +543,7 @@ export class Web3Modal extends Web3ModalScaffold {
       showQrModal: false,
       rpcMap: this.chains
         ? this.chains.reduce<Record<number, string>>((map, chain) => {
-            map[chain.chainId] = chain.rpcUrl
+            map[Number(chain.chainId)] = chain.rpcUrl
 
             return map
           }, {})
@@ -583,7 +585,7 @@ export class Web3Modal extends Web3ModalScaffold {
           id: `${ConstantsUtil.EIP155}:${chain.chainId}`,
           name: chain.name,
           imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId],
-          imageUrl: chainImages?.[chain.chainId]
+          imageUrl: chainImages?.[Number(chain.chainId)]
         }) as CaipNetwork
     )
     this.setRequestedCaipNetworks(requestedCaipNetworks ?? [])
@@ -900,7 +902,7 @@ export class Web3Modal extends Web3ModalScaffold {
           id: caipChainId,
           name: chain.name,
           imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId],
-          imageUrl: chainImages?.[chain.chainId],
+          imageUrl: chainImages?.[Number(chain.chainId)],
           chain: this.chain
         })
         if (isConnected && address) {
@@ -1042,7 +1044,7 @@ export class Web3Modal extends Web3ModalScaffold {
               method: 'wallet_switchEthereumChain',
               params: [{ chainId: EthersHelpersUtil.numberToHexString(chain.chainId) }]
             })
-            EthersStoreUtil.setChainId(chain.chainId)
+            EthersStoreUtil.setChainId(Number(chain.chainId))
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
           } catch (switchError: any) {
             if (
@@ -1065,7 +1067,7 @@ export class Web3Modal extends Web3ModalScaffold {
               method: 'wallet_switchEthereumChain',
               params: [{ chainId: EthersHelpersUtil.numberToHexString(chain.chainId) }]
             })
-            EthersStoreUtil.setChainId(chain.chainId)
+            EthersStoreUtil.setChainId(Number(chain.chainId))
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
           } catch (switchError: any) {
             if (
