@@ -275,7 +275,8 @@ export class Web3Modal extends Web3ModalScaffold {
       relayerRegion: 'wss://relay.walletconnect.com',
       metadata,
       chains,
-      qrcode: true
+      qrcode: true,
+      setBalance: this.setBalance
     })
     SolStoreUtil.setConnection(
       new Connection(

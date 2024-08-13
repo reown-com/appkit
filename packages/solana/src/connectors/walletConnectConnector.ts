@@ -1,6 +1,6 @@
 import base58 from 'bs58'
 import { Connection, Transaction, VersionedTransaction, type SendOptions } from '@solana/web3.js'
-import { OptionsController } from '@web3modal/core'
+import { OptionsController, type AccountControllerState } from '@web3modal/core'
 
 import { SolStoreUtil } from '../utils/scaffold/index.js'
 import { UniversalProviderFactory } from './universalProvider.js'
@@ -32,21 +32,25 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
 
   protected provider: UniversalProvider | undefined
   protected qrcode: boolean
+  setBalance: (balance: AccountControllerState["balance"], balanceSymbol: AccountControllerState["balanceSymbol"]) => void
 
   public constructor({
     relayerRegion,
     metadata,
     qrcode,
-    chains
+    chains,
+    setBalance
   }: {
     relayerRegion: string
     metadata: WalletConnectAppMetadata
     qrcode?: boolean
     chains: Chain[]
+    setBalance: (balance: AccountControllerState["balance"], balanceSymbol: AccountControllerState["balanceSymbol"]) => void
   }) {
     super()
     this.chains = chains
     this.qrcode = Boolean(qrcode)
+    this.setBalance = setBalance
     UniversalProviderFactory.setSettings({
       projectId: OptionsController.state.projectId,
       relayerRegion,
@@ -113,6 +117,10 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
       sendOptions
     })
 
+    const balance = await this.getBalance(SolStoreUtil.state.address ?? '')
+    this.setBalance(balance.decimals.toString(), 'SOL')
+
+
     return result.signature
   }
 
@@ -123,6 +131,9 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
   ) {
     const signedTransaction = await this.signTransaction(transaction)
     const signature = await connection.sendRawTransaction(signedTransaction.serialize(), options)
+
+    const balance = await this.getBalance(SolStoreUtil.state.address ?? '')
+    this.setBalance(balance.decimals.toString(), 'SOL')
 
     return signature
   }
