@@ -248,8 +248,7 @@ export const NetworkController = {
 
   async setApprovedCaipNetworksData(_chain?: Chain) {
     const networkControllerClient = ChainController.getNetworkControllerClient()
-
-    const data = await networkControllerClient.getApprovedCaipNetworksData()
+    const data = await networkControllerClient?.getApprovedCaipNetworksData()
 
     const chain = ChainController.state.multiChainEnabled
       ? _chain
@@ -295,7 +294,7 @@ export const NetworkController = {
       'smartAccountEnabledNetworks'
     )
 
-    return Boolean(smartAccountEnabledNetworks?.includes(networkId))
+    return Boolean(smartAccountEnabledNetworks?.includes(Number(networkId)))
   },
 
   resetNetwork() {

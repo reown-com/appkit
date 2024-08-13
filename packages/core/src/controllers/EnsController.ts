@@ -134,7 +134,7 @@ export const EnsController = {
         throw new Error('Network not found')
       }
 
-      const coinType = EnsUtil.convertEVMChainIdToCoinType(networkId)
+      const coinType = EnsUtil.convertEVMChainIdToCoinType(Number(networkId))
       await BlockchainApiController.registerEnsName({
         coinType,
         address: address as `0x${string}`,

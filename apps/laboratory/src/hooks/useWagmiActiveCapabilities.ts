@@ -1,45 +1,59 @@
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
 import { useAccount, type Connector } from 'wagmi'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { type WalletCapabilities } from 'viem'
 import { type Chain } from 'wagmi/chains'
 import {
+  EIP_5792_RPC_METHODS,
+  EIP_7715_RPC_METHODS,
   getFilteredCapabilitySupportedChainInfo,
   getProviderCachedCapabilities
 } from '../utils/EIP5792Utils'
+import { W3mFrameProvider } from '@web3modal/wallet'
 
 type UseWagmiAvailableCapabilitiesParams = {
   capability?: string
   method: string
 }
 
+export type Provider = Awaited<ReturnType<(typeof EthereumProvider)['init']>> | W3mFrameProvider
+
 export function useWagmiAvailableCapabilities({
   capability,
   method
 }: UseWagmiAvailableCapabilitiesParams) {
-  const [ethereumProvider, setEthereumProvider] =
-    useState<Awaited<ReturnType<(typeof EthereumProvider)['init']>>>()
-
-  const { chain, address, connector } = useAccount()
+  const [provider, setProvider] = useState<Provider>()
+  const [supported, setSupported] = useState<boolean>(false)
 
   const [availableCapabilities, setAvailableCapabilities] = useState<
     Record<number, WalletCapabilities> | undefined
   >()
 
-  const supportedChains =
-    availableCapabilities && capability
-      ? getFilteredCapabilitySupportedChainInfo(capability, availableCapabilities)
-      : []
-  const supportedChainsName = supportedChains.map(ci => ci.chainName).join(', ')
-  const currentChainsInfo = supportedChains.find(
-    chainInfo => chainInfo.chainId === Number(chain?.id)
+  const { chain, address, connector, isConnected } = useAccount()
+
+  const supportedChains = useMemo(
+    () =>
+      availableCapabilities && capability
+        ? getFilteredCapabilitySupportedChainInfo(capability, availableCapabilities)
+        : [],
+    [availableCapabilities, capability]
+  )
+
+  const supportedChainsName = useMemo(
+    () => supportedChains.map(ci => ci.chainName).join(', '),
+    [supportedChains]
+  )
+
+  const currentChainsInfo = useMemo(
+    () => supportedChains.find(chainInfo => chainInfo.chainId === Number(chain?.id)),
+    [supportedChains, chain]
   )
 
   useEffect(() => {
-    if (connector && address && chain) {
+    if (isConnected && connector && address && chain) {
       fetchProviderAndAccountCapabilities(address, connector, chain)
     }
-  }, [connector, address])
+  }, [connector, address, chain, isConnected])
 
   async function fetchProviderAndAccountCapabilities(
     connectedAccount: `0x${string}`,
@@ -50,25 +64,39 @@ export function useWagmiAvailableCapabilities({
       chainId: connectedChain.id
     })
     if (connectedProvider instanceof EthereumProvider) {
-      setEthereumProvider(connectedProvider)
-      let walletCapabilities = undefined
-      walletCapabilities = getProviderCachedCapabilities(connectedAccount, connectedProvider)
+      setProvider(connectedProvider)
+      const walletCapabilities = getProviderCachedCapabilities(connectedAccount, connectedProvider)
+      setAvailableCapabilities(walletCapabilities)
+    } else if (connectedProvider instanceof W3mFrameProvider) {
+      const walletCapabilities = await connectedProvider.getCapabilities()
+      setProvider(connectedProvider)
       setAvailableCapabilities(walletCapabilities)
     }
   }
 
   function isMethodSupported(): boolean {
-    return Boolean(
-      ethereumProvider?.signer?.session?.namespaces?.['eip155']?.methods?.includes(method)
-    )
+    if (provider instanceof W3mFrameProvider) {
+      const supportedMethods = Object.values(EIP_5792_RPC_METHODS).concat(
+        Object.values(EIP_7715_RPC_METHODS)
+      )
+
+      return supportedMethods.includes(method)
+    }
+
+    return Boolean(provider?.signer?.session?.namespaces?.['eip155']?.methods?.includes(method))
   }
 
+  useEffect(() => {
+    const isGetCapabilitiesSupported = isMethodSupported()
+    setSupported(isGetCapabilitiesSupported)
+  }, [provider])
+
   return {
-    ethereumProvider,
+    provider,
     currentChainsInfo,
     availableCapabilities,
     supportedChains,
     supportedChainsName,
-    isMethodSupported
+    supported
   }
 }

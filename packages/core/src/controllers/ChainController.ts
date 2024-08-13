@@ -13,17 +13,8 @@ export interface ChainControllerState {
   activeChain: Chain | undefined
   activeCaipNetwork?: CaipNetwork
   chains: Map<Chain, ChainAdapter>
-  /**
-   * {
-   *  "evm": {
-   *   accountState: {..}
-   *  },
-   * "solana": {
-   *  accountState: {..}
-   * }
-   */
   activeConnector?: Connector
-  universalAdapter?: ChainAdapter
+  universalAdapter: Pick<ChainAdapter, 'networkControllerClient' | 'connectionControllerClient'>
   isUniversalAdapterOnly: boolean
 }
 
@@ -56,7 +47,11 @@ const state = proxy<ChainControllerState>({
   chains: proxyMap<Chain, ChainAdapter>(),
   activeChain: undefined,
   activeCaipNetwork: undefined,
-  isUniversalAdapterOnly: false
+  isUniversalAdapterOnly: false,
+  universalAdapter: {
+    networkControllerClient: undefined,
+    connectionControllerClient: undefined
+  }
 })
 
 // -- Controller ---------------------------------------- //
@@ -273,7 +268,10 @@ export const ChainController = {
     const isUniversalAdapterOnly = state.isUniversalAdapterOnly
 
     if (isUniversalAdapterOnly) {
-      return state.universalAdapter?.networkControllerClient
+      if (!state.universalAdapter.networkControllerClient) {
+        throw new Error("Universal Adapter's NetworkControllerClient is not set")
+      }
+      return state.universalAdapter.networkControllerClient
     }
 
     if (!chain) {
@@ -298,7 +296,11 @@ export const ChainController = {
     const isUniversalAdapterOnly = state.isUniversalAdapterOnly
 
     if (isUniversalAdapterOnly) {
-      return state.universalAdapter?.connectionControllerClient
+      if (!state.universalAdapter.connectionControllerClient) {
+        throw new Error("Universal Adapter's ConnectionControllerClient is not set")
+      }
+
+      return state.universalAdapter.connectionControllerClient
     }
 
     if (!chain) {

@@ -9,12 +9,12 @@ import {
 import { ConstantsUtil, PresetsUtil } from '@web3modal/scaffold-utils'
 import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 import type { OptionsControllerState } from '@web3modal/core'
-import type { Chain } from '@web3modal/scaffold-utils'
 
 import { SolConstantsUtil, SolHelpersUtil, SolStoreUtil } from './utils/scaffold/index.js'
+import { type Chain } from './utils/scaffold/SolanaTypesUtil.js'
 import { WalletConnectConnector } from './connectors/walletConnectConnector.js'
 
-import type { BaseWalletAdapter, StandardWalletAdapter } from '@solana/wallet-adapter-base'
+import type { BaseWalletAdapter } from '@solana/wallet-adapter-base'
 import type { PublicKey, Commitment, ConnectionConfig } from '@solana/web3.js'
 
 import type {
@@ -33,6 +33,8 @@ import { watchStandard } from './utils/wallet-standard/watchStandard.js'
 import type { AppKitOptions } from '../../../utils/TypesUtil.js'
 import type { AppKit } from '../../../src/client.js'
 import { WcStoreUtil } from '../../../utils/StoreUtil.js'
+import { StandardWalletAdapter } from './utils/wallet-standard/adapter.js'
+import { SolanaChainIDs } from './utils/chainPath/constants.js'
 
 export interface Web3ModalClientOptions
   extends Omit<AppKitOptions, 'defaultChain' | 'chain' | 'tokens' | 'sdkType' | 'sdkVersion'> {
@@ -118,13 +120,51 @@ export class SolanaWeb3JsClient {
       },
 
       getApprovedCaipNetworksData: async () =>
-        new Promise(resolve => {
-          const result = {
-            approvedCaipNetworkIds: undefined,
-            supportsAllNetworks: true
-          }
+        new Promise(async resolve => {
+          const walletChoice = localStorage.getItem(SolConstantsUtil.WALLET_ID)
+          if (walletChoice?.includes(ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID)) {
+            const provider = await this.WalletConnectConnector?.getProvider()
+            if (!provider) {
+              throw new Error(
+                'networkControllerClient:getApprovedCaipNetworks - connector is undefined'
+              )
+            }
+            const ns = provider?.session?.namespaces
+            const nsChains = ns?.['solana']?.chains
+            const result = {
+              supportsAllNetworks: false,
+              approvedCaipNetworkIds: nsChains as CaipNetworkId[] | undefined
+            }
 
-          resolve(result)
+            resolve(result)
+          } else {
+            const provider = SolStoreUtil.state.provider
+            if (provider && provider instanceof StandardWalletAdapter) {
+              const solanaNetworkNameToIdMap: Record<string, string> = {
+                mainnet: SolanaChainIDs.Mainnet,
+                testnet: SolanaChainIDs.Testnet,
+                devnet: SolanaChainIDs.Devnet
+              }
+              const approvedCaipNetworkIds: CaipNetworkId[] = provider.wallet?.chains
+                .map(network => {
+                  const networkName = network.split(':')[1] || ''
+                  const networkId = solanaNetworkNameToIdMap[networkName]
+
+                  return networkId && `solana:${networkId}`
+                })
+                .filter(Boolean) as CaipNetworkId[]
+
+              resolve({
+                approvedCaipNetworkIds,
+                supportsAllNetworks: false
+              })
+            } else {
+              resolve({
+                approvedCaipNetworkIds: undefined,
+                supportsAllNetworks: true
+              })
+            }
+          }
         })
     }
 
@@ -543,6 +583,7 @@ export class SolanaWeb3JsClient {
       this.setAddress(address)
       this.watchInjected(provider)
       this.hasSyncedConnectedAccount = true
+      this.appKit?.setApprovedCaipNetworksData()
     }
   }
 

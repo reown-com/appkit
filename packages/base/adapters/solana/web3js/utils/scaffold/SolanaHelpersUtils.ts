@@ -74,26 +74,6 @@ export const SolHelpersUtil = {
     return address
   },
 
-  async addSolanaChain(provider: Provider, chain: Chain) {
-    await provider.request({
-      method: 'wallet_addSolanaChain',
-      params: [
-        {
-          chainId: chain.chainId,
-          rpcUrls: [chain.rpcUrl],
-          chainName: chain.name,
-          nativeCurrency: {
-            name: chain.currency,
-            decimals: 18,
-            symbol: chain.currency
-          },
-          blockExplorerUrls: [chain.explorerUrl],
-          iconUrls: [PresetsUtil.EIP155NetworkImageIds[chain.chainId]]
-        }
-      ]
-    })
-  },
-
   getStorageInjectedId: (adapter: ExtendedBaseWalletAdapter) =>
     (adapter.isAnnounced
       ? `${ConstantsUtil.WALLET_STANDARD_CONNECTOR_ID}_${adapter.name}`

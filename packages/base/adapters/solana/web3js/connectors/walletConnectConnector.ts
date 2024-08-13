@@ -1,20 +1,20 @@
 import base58 from 'bs58'
-import { PublicKey, Transaction, VersionedTransaction } from '@solana/web3.js'
+import { Connection, Transaction, VersionedTransaction, type SendOptions } from '@solana/web3.js'
 
 import { SolStoreUtil } from '../utils/scaffold/index.js'
 import { UniversalProviderFactory } from './universalProvider.js'
 import { BaseConnector } from './baseConnector.js'
-
-import type { Signer } from '@solana/web3.js'
-import type UniversalProvider from '@walletconnect/universal-provider'
-import type { Chain } from '@web3modal/scaffold-utils'
-
 import type { Connector } from './baseConnector.js'
+
+import type UniversalProvider from '@walletconnect/universal-provider'
+
+import type { Chain, AnyTransaction } from '../utils/scaffold/SolanaTypesUtil.js'
 import {
   getChainsFromChainId,
   getDefaultChainFromSession,
   type ChainIDType
 } from '../utils/chainPath/index.js'
+import { isVersionedTransaction } from '@solana/wallet-adapter-base'
 
 export interface WalletConnectAppMetadata {
   name: string
@@ -77,122 +77,55 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
   }
 
   public async signMessage(message: Uint8Array) {
-    const address = SolStoreUtil.state.address
-    if (!address) {
-      throw new Error('No signer connected')
-    }
-
     const signedMessage = await this.request('solana_signMessage', {
       message: base58.encode(message),
-      pubkey: address
+      pubkey: this.getPubkey()
     })
-    const { signature } = signedMessage
 
-    return signature
+    return base58.decode(signedMessage.signature)
   }
 
-  public async signVersionedTransaction(transaction: VersionedTransaction) {
-    if (!SolStoreUtil.state.address) {
-      throw new Error('No signer connected')
-    }
-    const transactionParams = {
-      feePayer: new PublicKey(SolStoreUtil.state.address).toBase58(),
-      instructions: transaction.message.compiledInstructions.map(instruction => ({
-        ...instruction,
-        data: base58.encode(instruction.data)
-      })),
-      recentBlockhash: transaction.message.recentBlockhash ?? ''
-    }
-    await this.request('solana_signTransaction', transactionParams)
+  public async signTransaction<T extends AnyTransaction>(transaction: T) {
+    const serializedTransaction = this.serializeTransaction(transaction)
 
-    return { signatures: [{ signature: base58.encode(transaction.serialize()) }] }
+    const result = await this.request('solana_signTransaction', {
+      transaction: serializedTransaction,
+      pubkey: this.getPubkey()
+    })
+
+    const decodedTransaction = base58.decode(result.transaction)
+
+    if (isVersionedTransaction(transaction)) {
+      return VersionedTransaction.deserialize(decodedTransaction) as T
+    }
+
+    return Transaction.from(decodedTransaction) as T
   }
 
-  public async signTransaction(transactionParam: Transaction | VersionedTransaction) {
-    const version = (transactionParam as VersionedTransaction).version
-    if (typeof version === 'number') {
-      return this.signVersionedTransaction(transactionParam as VersionedTransaction)
-    }
-    const transaction = transactionParam as Transaction
-    const transactionParams = {
-      feePayer: transaction.feePayer?.toBase58() ?? '',
-      instructions: transaction.instructions.map(instruction => ({
-        data: base58.encode(instruction.data),
-        keys: instruction.keys.map(key => ({
-          isWritable: key.isWritable,
-          isSigner: key.isSigner,
-          pubkey: key.pubkey.toBase58()
-        })),
-        programId: instruction.programId.toBase58()
-      })),
-      recentBlockhash: transaction.recentBlockhash ?? ''
-    }
-
-    const res = await this.request('solana_signTransaction', transactionParams)
-
-    transaction.addSignature(
-      new PublicKey(SolStoreUtil.state.address ?? ''),
-      Buffer.from(base58.decode(res.signature))
-    )
-
-    const validSig = transaction.verifySignatures()
-
-    if (!validSig) {
-      throw new Error('Signature invalid.')
-    }
-
-    return { signatures: [{ signature: base58.encode(transaction.serialize()) }] }
-  }
-
-  private async _sendTransaction(transactionParam: Transaction | VersionedTransaction) {
-    const encodedTransaction = (await this.signTransaction(transactionParam)) as {
-      signatures: {
-        signature: string
-      }[]
-    }
-    const signedTransaction = base58.decode(encodedTransaction.signatures[0]?.signature ?? '')
-    const txHash = await SolStoreUtil.state.connection?.sendRawTransaction(signedTransaction)
-
-    return {
-      tx: txHash,
-      signature: base58.encode(signedTransaction)
-    }
-  }
-
-  public async sendTransaction(transactionParam: Transaction | VersionedTransaction) {
-    const { signature } = await this._sendTransaction(transactionParam)
-
-    return signature
-  }
-
-  public async signAndSendTransaction(
-    transactionParam: Transaction | VersionedTransaction,
-    signers: Signer[]
+  public async signAndSendTransaction<T extends AnyTransaction>(
+    transaction: T,
+    sendOptions?: SendOptions
   ) {
-    if (transactionParam instanceof VersionedTransaction) {
-      throw Error('Versioned transactions are not supported')
-    }
+    const serializedTransaction = this.serializeTransaction(transaction)
 
-    if (signers.length) {
-      transactionParam.partialSign(...signers)
-    }
+    const result = await this.request('solana_signAndSendTransaction', {
+      transaction: serializedTransaction,
+      pubkey: this.getPubkey(),
+      sendOptions
+    })
 
-    const { tx } = await this._sendTransaction(transactionParam)
+    return result.signature
+  }
 
-    if (tx) {
-      const latestBlockHash = await SolStoreUtil.state.connection?.getLatestBlockhash()
-      if (latestBlockHash?.blockhash) {
-        await SolStoreUtil.state.connection?.confirmTransaction({
-          blockhash: latestBlockHash.blockhash,
-          lastValidBlockHeight: latestBlockHash.lastValidBlockHeight,
-          signature: tx
-        })
+  public async sendTransaction(
+    transaction: AnyTransaction,
+    connection: Connection,
+    options?: SendOptions
+  ) {
+    const signedTransaction = await this.signTransaction(transaction)
+    const signature = await connection.sendRawTransaction(signedTransaction.serialize(), options)
 
-        return tx
-      }
-    }
-
-    throw Error('Transaction Failed')
+    return signature
   }
 
   /**
@@ -219,7 +152,7 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
     return {
       solana: {
         chains: getChainsFromChainId(`solana:${chainId}` as ChainIDType),
-        methods: ['solana_signMessage', 'solana_signTransaction'],
+        methods: ['solana_signMessage', 'solana_signTransaction', 'solana_signAndSendTransaction'],
         events: [],
         rpcMap
       }
@@ -259,5 +192,18 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
 
   public async onConnector() {
     await this.connect()
+  }
+
+  private serializeTransaction(transaction: AnyTransaction) {
+    return base58.encode(transaction.serialize({ verifySignatures: false }))
+  }
+
+  private getPubkey() {
+    const address = SolStoreUtil.state.address
+    if (!address) {
+      throw new Error('No signer connected')
+    }
+
+    return address
   }
 }

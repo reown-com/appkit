@@ -323,7 +323,7 @@ checkClientPackages()
 // -- Check sdkVersion ------------------------------------------------------------
 function checkSdkVersion() {
   if (PACKAGE_VERSION !== corePackageJson.version) {
-    fail(`VERSION in utils/constants does't match core package.json version`)
+    fail(`VERSION in utils/constants doesn't match core package.json version`)
   }
 }
 checkSdkVersion()

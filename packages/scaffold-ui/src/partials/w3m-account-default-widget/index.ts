@@ -13,7 +13,7 @@ import {
   ChainController
 } from '@web3modal/core'
 import { customElement, UiHelperUtil } from '@web3modal/ui'
-import { LitElement, html, nothing } from 'lit'
+import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import { ConstantsUtil } from '@web3modal/common'
@@ -82,13 +82,11 @@ export class W3mAccountDefaultWidget extends LitElement {
         !this.isUniversalAdapterOnly
           ? this.multiAccountTemplate()
           : this.singleAccountTemplate()}
-        ${this.isUniversalAdapterOnly
-          ? nothing
-          : html`<wui-flex flexDirection="column" alignItems="center">
-              <wui-text variant="paragraph-500" color="fg-200"
-                >${CoreHelperUtil.formatBalance(this.balance, this.balanceSymbol)}</wui-text
-              >
-            </wui-flex>`}
+        <wui-flex flexDirection="column" alignItems="center">
+          <wui-text variant="paragraph-500" color="fg-200">
+            ${CoreHelperUtil.formatBalance(this.balance, this.balanceSymbol)}
+          </wui-text>
+        </wui-flex>
         ${this.explorerBtnTemplate()}
       </wui-flex>
 
