@@ -189,8 +189,16 @@ export class AppKit {
 
   public getCaipAddress = () => AccountController.state.caipAddress
 
+  public getProvider = () => AccountController.state.provider
+
+  public getPreferredAccountType = () => AccountController.state.preferredAccountType
+
   public setCaipAddress: (typeof AccountController)['setCaipAddress'] = (caipAddress, chain) => {
     AccountController.setCaipAddress(caipAddress, chain)
+  }
+
+  public setProvider: (typeof AccountController)['provider'] = (provider, chain) => {
+    AccountController.setProvider(provider, chain)
   }
 
   public setBalance: (typeof AccountController)['setBalance'] = (balance, balanceSymbol, chain) => {
@@ -203,6 +211,13 @@ export class AppKit {
 
   public setProfileImage: (typeof AccountController)['setProfileImage'] = (profileImage, chain) => {
     AccountController.setProfileImage(profileImage, chain)
+  }
+
+  public setPreferredAccountType: (typeof AccountController)['setPreferredAccountType'] = (
+    preferredAccountType,
+    chain
+  ) => {
+    AccountController.setPreferredAccountType(preferredAccountType, chain)
   }
 
   public resetAccount: (typeof AccountController)['resetAccount'] = (chain: Chain) => {
@@ -276,13 +291,6 @@ export class AppKit {
     (smartAccountEnabledNetworks, chain) => {
       NetworkController.setSmartAccountEnabledNetworks(smartAccountEnabledNetworks, chain)
     }
-
-  public setPreferredAccountType: (typeof AccountController)['setPreferredAccountType'] = (
-    preferredAccountType,
-    chain
-  ) => {
-    AccountController.setPreferredAccountType(preferredAccountType, chain)
-  }
 
   public getWalletConnectName: (typeof EnsController)['getNamesForAddress'] = address =>
     EnsController.getNamesForAddress(address)

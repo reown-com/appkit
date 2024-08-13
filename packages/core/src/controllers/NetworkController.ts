@@ -248,6 +248,7 @@ export const NetworkController = {
 
   async setApprovedCaipNetworksData(_chain?: Chain) {
     const networkControllerClient = ChainController.getNetworkControllerClient()
+
     const data = await networkControllerClient.getApprovedCaipNetworksData()
 
     const chain = ChainController.state.multiChainEnabled

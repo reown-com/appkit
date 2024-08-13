@@ -398,7 +398,8 @@ export const ChainController = {
         preferredAccountType: undefined,
         socialProvider: undefined,
         socialWindow: undefined,
-        farcasterUrl: undefined
+        farcasterUrl: undefined,
+        provider: undefined
       })
     )
   }

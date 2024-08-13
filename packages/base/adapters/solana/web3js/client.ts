@@ -418,6 +418,7 @@ export class SolanaWeb3JsClient {
       const caipAddress: CaipAddress = `${ConstantsUtil.INJECTED_CONNECTOR_ID}:${chainId}:${address}`
       this.appKit?.setIsConnected(isConnected, this.chain)
       this.appKit?.setCaipAddress(caipAddress, this.chain)
+
       await Promise.all([this.syncBalance(address)])
 
       this.hasSyncedConnectedAccount = true

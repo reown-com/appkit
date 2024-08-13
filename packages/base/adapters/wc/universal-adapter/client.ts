@@ -21,7 +21,6 @@ import type { UniversalProviderOpts } from '@walletconnect/universal-provider'
 import { NetworkUtil } from '@web3modal/common'
 import { WcConstantsUtil } from '../../../utils/ConstantsUtil.js'
 import { WcHelpersUtil } from '../../../utils/HelpersUtil.js'
-import { WcStoreUtil } from '../../../utils/StoreUtil.js'
 import type { AppKit } from '../../../src/client.js'
 import type { SessionTypes } from '@walletconnect/types'
 
@@ -179,7 +178,8 @@ export class UniversalAdapterClient {
       },
 
       disconnect: async () => {
-        WcStoreUtil.reset()
+        this.appKit?.resetAccount('evm')
+        this.appKit?.resetAccount('solana')
         localStorage.removeItem(WcConstantsUtil.WALLET_ID)
 
         if (siweConfig?.options?.signOutOnDisconnect) {
@@ -246,29 +246,17 @@ export class UniversalAdapterClient {
     this.createProvider()
     this.syncRequestedNetworks(this.chains)
     this.syncConnectors()
-
-    WcStoreUtil.subscribeKey('address', () => {
-      this.syncAccount()
-    })
-
-    WcStoreUtil.subscribeKey('chainId', () => {
-      // this.syncNetwork(this.options?.chainImages)
-    })
   }
 
   public async disconnect() {
     if (this.walletConnectProvider) {
       await (this.walletConnectProvider as unknown as UniversalProvider).disconnect()
-      WcStoreUtil.reset()
+      this.appKit?.resetAccount('evm')
+      this.appKit?.resetAccount('solana')
     }
   }
 
   // -- Private -----------------------------------------------------------------
-  public getAddress() {
-    const { address } = WcStoreUtil.state
-
-    return address ? WcStoreUtil.state.address : address
-  }
 
   private createProvider() {
     if (
@@ -353,9 +341,6 @@ export class UniversalAdapterClient {
         this.setWalletConnectProvider()
       }
     }
-
-    const isConnected = walletId === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID
-    WcStoreUtil.setStatus(isConnected ? 'connected' : 'disconnected')
   }
 
   private setWalletConnectProvider() {
@@ -371,19 +356,11 @@ export class UniversalAdapterClient {
         .reverse()
         .forEach(key => {
           const chain = (key === 'eip155' ? 'evm' : key) as AvailablChain
-          WcStoreUtil.setChains([chain === 'evm' ? 'eip155' : chain, ...WcStoreUtil.state.chains])
           const caipAddress = nameSpaces?.[key]?.accounts[0]
 
-          const { address, chainId } = WcHelpersUtil.extractDetails(caipAddress)
+          const { address } = WcHelpersUtil.extractDetails(caipAddress)
 
           if (address) {
-            WcStoreUtil.setChainId(Number(chainId))
-            WcStoreUtil.setProvider(this.walletConnectProvider)
-            WcStoreUtil.setProviderType('walletConnect')
-            WcStoreUtil.setStatus('connected')
-            WcStoreUtil.setIsConnected(true)
-            WcStoreUtil.setAddress(address)
-
             this.appKit?.setIsConnected(true, chain)
             this.appKit?.setCaipAddress(caipAddress as CaipAddress, chain)
           }
@@ -403,9 +380,11 @@ export class UniversalAdapterClient {
   }
 
   private setDefaultNetwork(nameSpaces: SessionTypes.Namespaces) {
-    const chain = WcStoreUtil.state.chains[0]
+    const chain = this.chains[0]?.chain === 'evm' ? 'eip155' : this.chains[0]?.chain
+
     if (chain) {
       const chainNamespace = nameSpaces?.[chain]
+
       if (chainNamespace?.chains) {
         const chainId = chainNamespace.chains[0]
 
@@ -436,14 +415,6 @@ export class UniversalAdapterClient {
 
       provider?.removeListener('disconnect', disconnectHandler)
       provider?.removeListener('accountsChanged', accountsChangedHandler)
-      provider?.removeListener('chainChanged', chainChangedHandler)
-    }
-
-    function chainChangedHandler(chainId: string) {
-      if (chainId) {
-        const network = WcHelpersUtil.hexStringToNumber(chainId)
-        WcStoreUtil.setChainId(network)
-      }
     }
 
     const accountsChangedHandler = (accounts: string[]) => {
@@ -455,7 +426,6 @@ export class UniversalAdapterClient {
     if (provider) {
       provider.on('disconnect', disconnectHandler)
       provider.on('accountsChanged', accountsChangedHandler)
-      provider.on('chainChanged', chainChangedHandler)
     }
   }
 
@@ -469,15 +439,14 @@ export class UniversalAdapterClient {
       }
     }
   }
-
   private getProviderData() {
-    const provider = WcStoreUtil.state.provider
-    const namespaces = provider?.session?.namespaces
+    const namespaces = this.walletConnectProvider?.session?.namespaces || {}
 
-    const { isConnected, preferredAccountType } = WcStoreUtil.state
+    const isConnected = this.appKit?.getIsConnectedState() || false
+    const preferredAccountType = this.appKit?.getPreferredAccountType() || ''
 
     return {
-      provider,
+      provider: this.walletConnectProvider,
       namespaces,
       namespaceKeys: namespaces ? Object.keys(namespaces) : [],
       isConnected,
@@ -488,7 +457,7 @@ export class UniversalAdapterClient {
   private syncAccount() {
     const { namespaceKeys, namespaces } = this.getProviderData()
 
-    const { preferredAccountType } = WcStoreUtil.state
+    const preferredAccountType = this.appKit?.getPreferredAccountType()
     const isConnected = this.appKit?.getIsConnectedState()
 
     if (isConnected) {
@@ -499,7 +468,7 @@ export class UniversalAdapterClient {
         this.appKit?.resetAccount(chain)
         this.appKit?.setIsConnected(isConnected, chain)
         this.appKit?.setPreferredAccountType(preferredAccountType, chain)
-
+        this.appKit?.setProvider(this.walletConnectProvider, chain)
         this.appKit?.setCaipAddress(address as CaipAddress, chain)
         this.syncConnectedWalletInfo()
 

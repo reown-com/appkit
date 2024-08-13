@@ -2,7 +2,9 @@ import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import type {
   AccountType,
   CaipAddress,
+  CombinedProvider,
   ConnectedWalletInfo,
+  Provider,
   SocialProvider
 } from '../utils/TypeUtil.js'
 import type { Balance } from '@web3modal/common'
@@ -15,6 +17,7 @@ import { ChainController } from './ChainController.js'
 import type { Chain } from '@web3modal/common'
 import { NetworkController } from './NetworkController.js'
 import { proxy, ref } from 'valtio'
+import UniversalProvider from '@walletconnect/universal-provider'
 
 // -- Types --------------------------------------------- //
 export interface AccountControllerState {
@@ -37,6 +40,7 @@ export interface AccountControllerState {
   preferredAccountType?: W3mFrameTypes.AccountType
   socialWindow?: Window
   farcasterUrl?: string
+  provider?: UniversalProvider | Provider | CombinedProvider
 }
 
 // -- State --------------------------------------------- //
@@ -94,6 +98,12 @@ export const AccountController = {
 
   getChainIsConnected(chain?: Chain) {
     return ChainController.getAccountProp('isConnected', chain)
+  },
+
+  setProvider(provider: AccountControllerState['provider'], chain?: Chain) {
+    if (provider) {
+      ChainController.setAccountProp('provider', provider, chain)
+    }
   },
 
   setCaipAddress(caipAddress: AccountControllerState['caipAddress'], chain?: Chain) {
