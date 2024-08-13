@@ -1,12 +1,10 @@
-import { PresetsUtil, ConstantsUtil } from '@web3modal/scaffold-utils'
+import { PresetsUtil } from '@web3modal/scaffold-utils'
 import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 
 import { SolConstantsUtil } from './SolanaConstantsUtil.js'
 
 import type { CaipNetwork } from '@web3modal/core'
 import type { Chain, Provider } from './SolanaTypesUtil.js'
-import type { ExtendedBaseWalletAdapter } from '../../client.js'
-import type { SolStoreUtilState } from './SolanaStoreUtil.js'
 
 export const SolHelpersUtil = {
   detectRpcUrl(chain: Chain, projectId: string) {
@@ -72,13 +70,5 @@ export const SolHelpersUtil = {
     const address = provider.publicKey?.toBase58()
 
     return address
-  },
-
-  getStorageInjectedId: (adapter: ExtendedBaseWalletAdapter) =>
-    (adapter.isAnnounced
-      ? `${ConstantsUtil.WALLET_STANDARD_CONNECTOR_ID}_${adapter.name}`
-      : `${ConstantsUtil.INJECTED_CONNECTOR_ID}_${adapter.name}`) as unknown as Exclude<
-      SolStoreUtilState['providerType'],
-      undefined
-    >
+  }
 }

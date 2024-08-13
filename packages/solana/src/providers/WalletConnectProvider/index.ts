@@ -1,5 +1,10 @@
 import UniversalProvider from '@walletconnect/universal-provider'
-import type { AnyTransaction, Chain, Provider } from '../../utils/scaffold'
+import {
+  SolConstantsUtil,
+  type AnyTransaction,
+  type Chain,
+  type Provider
+} from '../../utils/scaffold'
 import { ProviderEventEmitter } from '../shared/ProviderEventEmitter'
 import type { SessionTypes } from '@walletconnect/types'
 import base58 from 'bs58'
@@ -21,14 +26,14 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
   public readonly name = 'WalletConnect'
   public readonly type = 'WALLET_CONNECT'
   public readonly icon = 'https://avatars.githubusercontent.com/u/37784886'
-  public readonly chains: Chain[]
 
   private provider: UniversalProvider
   private session?: SessionTypes.Struct
+  private readonly requestedChains: Chain[]
 
   constructor({ provider, chains }: WalletConnectProviderConfig) {
     super()
-    this.chains = chains
+    this.requestedChains = chains
     this.provider = provider
   }
 
@@ -36,6 +41,25 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
   public onUri?: (uri: string) => void
 
   // -- Public ------------------------------------------- //
+
+  public get chains() {
+    return (
+      (this.session?.namespaces['solana']?.chains
+        ?.map(sessionChainId => {
+          // This is a workaround for wallets that only accept Solana deprecated networks
+          let chainId = sessionChainId
+          if (chainId === SolConstantsUtil.CHAIN_IDS.Deprecated_Mainnet) {
+            chainId = SolConstantsUtil.CHAIN_IDS.Mainnet
+          } else if (chainId === SolConstantsUtil.CHAIN_IDS.Deprecated_Devnet) {
+            chainId = SolConstantsUtil.CHAIN_IDS.Devnet
+          }
+
+          return this.requestedChains.find(chain => `solana:${chain.chainId}` === chainId)
+        })
+        .filter(Boolean) as Chain[]) || []
+    )
+  }
+
   public get publicKey() {
     const account = this.getAccount(false)
 
@@ -47,7 +71,7 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
   }
 
   public async connect() {
-    const rpcMap = this.chains.reduce<Record<string, string>>((acc, chain) => {
+    const rpcMap = this.requestedChains.reduce<Record<string, string>>((acc, chain) => {
       acc[`solana:${chain.chainId}`] = chain.rpcUrl
 
       return acc
@@ -60,7 +84,7 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
       this.session = await this.provider.connect({
         namespaces: {
           solana: {
-            chains: this.chains.map(chain => `solana:${chain.chainId}`),
+            chains: this.getRequestedChainsWithDeprecated(),
             methods: [
               'solana_signMessage',
               'solana_signTransaction',
@@ -188,6 +212,23 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
       address,
       publicKey: base58.decode(address)
     }
+  }
+
+  /**
+   * This method is a workaround for wallets that only accept Solana deprecated networks
+   */
+  private getRequestedChainsWithDeprecated() {
+    const chains = this.requestedChains.map(chain => `solana:${chain.chainId}`)
+
+    if (chains.includes(SolConstantsUtil.CHAIN_IDS.Mainnet)) {
+      chains.push(SolConstantsUtil.CHAIN_IDS.Deprecated_Mainnet)
+    }
+
+    if (chains.includes(SolConstantsUtil.CHAIN_IDS.Devnet)) {
+      chains.push(SolConstantsUtil.CHAIN_IDS.Deprecated_Devnet)
+    }
+
+    return chains
   }
 }
 

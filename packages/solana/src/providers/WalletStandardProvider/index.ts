@@ -33,7 +33,6 @@ import {
   type Provider
 } from '../../utils/scaffold/index.js'
 import base58 from 'bs58'
-import type { CaipNetworkId } from 'packages/common/dist/types/index.js'
 import { WalletStandardFeatureNotSupportedError } from './errors.js'
 import { ProviderEventEmitter } from '../shared/ProviderEventEmitter.js'
 import { solanaChains } from '../../utils/chains.js'
@@ -132,7 +131,7 @@ export class WalletStandardProvider extends ProviderEventEmitter implements Prov
     const [result] = await feature.signTransaction({
       account,
       transaction: serializedTransaction,
-      chain: this.getChain()
+      chain: this.getActiveChainName()
     })
 
     if (!result) {
@@ -160,7 +159,7 @@ export class WalletStandardProvider extends ProviderEventEmitter implements Prov
         ...sendOptions,
         preflightCommitment: getCommitment(sendOptions?.preflightCommitment)
       },
-      chain: this.getChain()
+      chain: this.getActiveChainName()
     })
 
     if (!result) {
@@ -215,8 +214,16 @@ export class WalletStandardProvider extends ProviderEventEmitter implements Prov
     >['features'][Name]
   }
 
-  private getChain(): CaipNetworkId {
-    return SolStoreUtil.state.currentChain?.chainId as CaipNetworkId
+  private getActiveChainName() {
+    const entry = Object.entries(solanaChains).find(
+      ([, chain]) => chain.chainId === SolStoreUtil.state.currentChain?.chainId
+    )
+
+    if (!entry) {
+      throw new Error('Invalid chain id')
+    }
+
+    return entry[0] as `${string}:${string}`
   }
 
   private bindEvents() {

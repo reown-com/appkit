@@ -14,7 +14,7 @@ import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 import { SolConstantsUtil, SolHelpersUtil, SolStoreUtil } from './utils/scaffold/index.js'
 
 import type { BaseWalletAdapter } from '@solana/wallet-adapter-base'
-import type { PublicKey, Commitment, ConnectionConfig } from '@solana/web3.js'
+import { PublicKey, type Commitment, type ConnectionConfig } from '@solana/web3.js'
 import UniversalProvider, { type UniversalProviderOpts } from '@walletconnect/universal-provider'
 import type {
   CaipNetworkId,
@@ -96,19 +96,19 @@ export class Web3Modal extends Web3ModalScaffold {
       },
 
       getApprovedCaipNetworksData: async () => {
-        if (!this.provider) {
+        if (SolStoreUtil.state.provider) {
+          const approvedCaipNetworkIds = SolStoreUtil.state.provider.chains.map<CaipNetworkId>(
+            chain => `solana:${chain.chainId}`
+          )
+
           return Promise.resolve({
-            approvedCaipNetworkIds: undefined,
+            approvedCaipNetworkIds,
             supportsAllNetworks: false
           })
         }
 
-        const approvedCaipNetworkIds = this.provider.chains.map<CaipNetworkId>(
-          chain => `solana:${chain.chainId}`
-        )
-
         return Promise.resolve({
-          approvedCaipNetworkIds,
+          approvedCaipNetworkIds: undefined,
           supportsAllNetworks: false
         })
       }
@@ -211,13 +211,6 @@ export class Web3Modal extends Web3ModalScaffold {
     }
     this.syncNetwork(chainImages)
 
-    SolStoreUtil.setConnection(
-      new Connection(
-        SolHelpersUtil.detectRpcUrl(chain, OptionsController.state.projectId),
-        this.connectionSettings
-      )
-    )
-
     SolStoreUtil.subscribeKey('address', () => {
       this.syncAccount()
     })
@@ -304,15 +297,20 @@ export class Web3Modal extends Web3ModalScaffold {
     }
   }
 
-  private async syncBalance(_address: string) {
-    const caipChainId = SolStoreUtil.state.caipChainId
-    if (caipChainId && this.chains) {
-      const chain = SolHelpersUtil.getChainFromCaip(this.chains, caipChainId)
-      if (chain) {
-        const balance = await Promise.resolve({ decimals: BigInt(0), symbol: chain.currency })
-        this.setBalance(balance.decimals.toString(), chain.currency)
-      }
+  private async syncBalance(address: string) {
+    if (!SolStoreUtil.state.connection) {
+      throw new Error('Connection is not set')
     }
+
+    if (!SolStoreUtil.state.currentChain) {
+      throw new Error('Chain is not set')
+    }
+
+    const balance =
+      (await SolStoreUtil.state.connection.getBalance(new PublicKey(address))) /
+      SolConstantsUtil.LAMPORTS_PER_SOL
+
+    this.setBalance(balance.toString(), SolStoreUtil.state.currentChain.currency)
   }
 
   private syncRequestedNetworks(
@@ -327,7 +325,7 @@ export class Web3Modal extends Web3ModalScaffold {
           imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId],
           imageUrl: chainImages?.[chain.chainId],
           chain: this.chain
-        }) as CaipNetwork
+        }) as const
     )
     this.setRequestedCaipNetworks(requestedCaipNetworks ?? [])
   }
@@ -341,7 +339,10 @@ export class Web3Modal extends Web3ModalScaffold {
       SolStoreUtil.setCurrentChain(chain)
       localStorage.setItem(SolConstantsUtil.CAIP_CHAIN_ID, `solana:${chain.chainId}`)
 
+      this.setLoading(true)
+      await this.syncNetwork()
       await this.syncAccount()
+      this.setLoading(false)
     }
   }
 
@@ -354,6 +355,13 @@ export class Web3Modal extends Web3ModalScaffold {
       const chain = SolHelpersUtil.getChainFromCaip(this.chains, storeChainId)
       if (chain) {
         const caipChainId: CaipNetworkId = `solana:${chain.chainId}`
+
+        SolStoreUtil.setConnection(
+          new Connection(
+            SolHelpersUtil.detectRpcUrl(chain, OptionsController.state.projectId),
+            this.connectionSettings
+          )
+        )
 
         this.setCaipNetwork({
           id: caipChainId,
