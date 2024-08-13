@@ -62,15 +62,19 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v3
+
       - uses: pnpm/action-setup@v4
         name: Install pnpm
+
       - name: setup-node
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
           cache: 'pnpm'
+
       - name: install
         run: pnpm install
+
       - name: Running vite-size script
         uses: glitch-txs/vite-size-action@v1.0.3
         with:
