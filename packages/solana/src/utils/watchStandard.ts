@@ -5,8 +5,7 @@ import type { Wallet } from '@wallet-standard/base'
 import { SolStoreUtil } from './scaffold/SolanaStoreUtil.js'
 
 const { get, on } = getWallets()
-
-let standardAdapters: WalletStandardProvider[] = [...wrapWalletsWithAdapters(get())]
+let standardAdapters: WalletStandardProvider[] = wrapWalletsWithAdapters(get())
 
 export function watchStandard(callback: (arg: WalletStandardProvider[]) => void) {
   const listeners = [
@@ -26,12 +25,13 @@ export function watchStandard(callback: (arg: WalletStandardProvider[]) => void)
     })
   ]
 
+  standardAdapters = wrapWalletsWithAdapters(get())
   callback(standardAdapters)
 
   return () => listeners.forEach(off => off())
 }
 
-function wrapWalletsWithAdapters(wallets: readonly Wallet[]): readonly WalletStandardProvider[] {
+function wrapWalletsWithAdapters(wallets: readonly Wallet[]): WalletStandardProvider[] {
   return wallets.filter(isWalletAdapterCompatibleStandardWallet).map(
     wallet =>
       new WalletStandardProvider({
