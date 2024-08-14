@@ -14,34 +14,34 @@ import { WalletStandardFeatureNotSupportedError } from '../src/providers/shared/
 describe('WalletStandardProvider specific tests', () => {
   let wallet = mockWalletStandard()
   let getActiveChain = vi.fn(() => TestConstants.chains[0])
-  let sut = new WalletStandardProvider({
+  let walletStandardProvider = new WalletStandardProvider({
     wallet,
     getActiveChain
   })
 
   beforeEach(() => {
     wallet = mockWalletStandard()
-    sut = new WalletStandardProvider({
+    walletStandardProvider = new WalletStandardProvider({
       wallet,
       getActiveChain
     })
   })
 
   it('should call connect', async () => {
-    await sut.connect()
+    await walletStandardProvider.connect()
 
     expect(wallet.features[StandardConnect].connect).toHaveBeenCalled()
   })
 
   it('should call disconnect', async () => {
-    await sut.disconnect()
+    await walletStandardProvider.disconnect()
 
     expect(wallet.features[StandardDisconnect].disconnect).toHaveBeenCalled()
   })
 
   it('should call signMessage with correct params', async () => {
     const message = new Uint8Array([1, 2, 3, 4, 5])
-    await sut.signMessage(message)
+    await walletStandardProvider.signMessage(message)
 
     expect(wallet.features[SolanaSignMessage].signMessage).toHaveBeenCalledWith({
       message,
@@ -51,7 +51,7 @@ describe('WalletStandardProvider specific tests', () => {
 
   it('should call signTransaction with correct params', async () => {
     const transaction = mockLegacyTransaction()
-    await sut.signTransaction(transaction)
+    await walletStandardProvider.signTransaction(transaction)
 
     expect(wallet.features[SolanaSignTransaction].signTransaction).toHaveBeenCalledWith({
       transaction: transaction.serialize({ verifySignatures: false }),
@@ -62,7 +62,7 @@ describe('WalletStandardProvider specific tests', () => {
 
   it('should call signTransaction with correct params for VersionedTransaction', async () => {
     const transaction = mockVersionedTransaction()
-    await sut.signTransaction(transaction)
+    await walletStandardProvider.signTransaction(transaction)
 
     expect(wallet.features[SolanaSignTransaction].signTransaction).toHaveBeenCalledWith({
       transaction: transaction.serialize(),
@@ -74,7 +74,7 @@ describe('WalletStandardProvider specific tests', () => {
   it('should call signAndSendTransaction with correct params', async () => {
     const transaction = mockLegacyTransaction()
 
-    await sut.signAndSendTransaction(transaction)
+    await walletStandardProvider.signAndSendTransaction(transaction)
     expect(
       wallet.features[SolanaSignAndSendTransaction].signAndSendTransaction
     ).toHaveBeenCalledWith({
@@ -84,7 +84,7 @@ describe('WalletStandardProvider specific tests', () => {
       options: { preflighCommitment: undefined }
     })
 
-    await sut.signAndSendTransaction(transaction, {
+    await walletStandardProvider.signAndSendTransaction(transaction, {
       preflightCommitment: 'singleGossip',
       maxRetries: 1,
       minContextSlot: 1,
@@ -109,16 +109,20 @@ describe('WalletStandardProvider specific tests', () => {
     // @ts-expect-error
     wallet.features = {}
 
-    await expect(sut.connect()).rejects.toThrowError(WalletStandardFeatureNotSupportedError)
-    await expect(sut.disconnect()).rejects.toThrowError(WalletStandardFeatureNotSupportedError)
-    await expect(sut.signTransaction(mockLegacyTransaction())).rejects.toThrowError(
+    await expect(walletStandardProvider.connect()).rejects.toThrowError(
       WalletStandardFeatureNotSupportedError
     )
-    await expect(sut.signMessage(new Uint8Array())).rejects.toThrowError(
+    await expect(walletStandardProvider.disconnect()).rejects.toThrowError(
       WalletStandardFeatureNotSupportedError
     )
-    await expect(sut.signAndSendTransaction(mockLegacyTransaction())).rejects.toThrowError(
+    await expect(
+      walletStandardProvider.signTransaction(mockLegacyTransaction())
+    ).rejects.toThrowError(WalletStandardFeatureNotSupportedError)
+    await expect(walletStandardProvider.signMessage(new Uint8Array())).rejects.toThrowError(
       WalletStandardFeatureNotSupportedError
     )
+    await expect(
+      walletStandardProvider.signAndSendTransaction(mockLegacyTransaction())
+    ).rejects.toThrowError(WalletStandardFeatureNotSupportedError)
   })
 })

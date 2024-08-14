@@ -6,35 +6,35 @@ import { mockLegacyTransaction, mockVersionedTransaction } from './mocks/Transac
 
 describe('WalletConnectProvider specific tests', () => {
   let provider = mockUniversalProvider()
-  let sut = new WalletConnectProvider({
+  let walletConnectProvider = new WalletConnectProvider({
     provider,
     chains: TestConstants.chains
   })
 
   beforeEach(() => {
     provider = mockUniversalProvider()
-    sut = new WalletConnectProvider({
+    walletConnectProvider = new WalletConnectProvider({
       provider,
       chains: TestConstants.chains
     })
   })
 
   it('should call connect', async () => {
-    await sut.connect()
+    await walletConnectProvider.connect()
 
     expect(provider.connect).toHaveBeenCalled()
   })
 
   it('should call disconnect', async () => {
-    await sut.disconnect()
+    await walletConnectProvider.disconnect()
 
     expect(provider.disconnect).toHaveBeenCalled()
   })
 
   it('should call signMessage with correct params', async () => {
-    await sut.connect()
+    await walletConnectProvider.connect()
     const message = new Uint8Array([1, 2, 3, 4, 5])
-    await sut.signMessage(message)
+    await walletConnectProvider.signMessage(message)
 
     expect(provider.request).toHaveBeenCalledWith({
       method: 'solana_signMessage',
@@ -46,9 +46,9 @@ describe('WalletConnectProvider specific tests', () => {
   })
 
   it('should call signTransaction with correct params', async () => {
-    await sut.connect()
+    await walletConnectProvider.connect()
     const transaction = mockLegacyTransaction()
-    await sut.signTransaction(transaction)
+    await walletConnectProvider.signTransaction(transaction)
 
     expect(provider.request).toHaveBeenCalledWith({
       method: 'solana_signTransaction',
@@ -61,9 +61,9 @@ describe('WalletConnectProvider specific tests', () => {
   })
 
   it('should call signTransaction with correct params for VersionedTransaction', async () => {
-    await sut.connect()
+    await walletConnectProvider.connect()
     const transaction = mockVersionedTransaction()
-    await sut.signTransaction(transaction)
+    await walletConnectProvider.signTransaction(transaction)
 
     expect(provider.request).toHaveBeenCalledWith({
       method: 'solana_signTransaction',
@@ -76,10 +76,10 @@ describe('WalletConnectProvider specific tests', () => {
   })
 
   it('should call signAndSendTransaction with correct params', async () => {
-    await sut.connect()
+    await walletConnectProvider.connect()
     const transaction = mockLegacyTransaction()
 
-    await sut.signAndSendTransaction(transaction)
+    await walletConnectProvider.signAndSendTransaction(transaction)
     expect(provider.request).toHaveBeenCalledWith({
       method: 'solana_signAndSendTransaction',
       params: {
@@ -90,7 +90,9 @@ describe('WalletConnectProvider specific tests', () => {
       }
     })
 
-    await sut.signAndSendTransaction(transaction, { preflightCommitment: 'singleGossip' })
+    await walletConnectProvider.signAndSendTransaction(transaction, {
+      preflightCommitment: 'singleGossip'
+    })
     expect(provider.request).toHaveBeenCalledWith({
       method: 'solana_signAndSendTransaction',
       params: {
