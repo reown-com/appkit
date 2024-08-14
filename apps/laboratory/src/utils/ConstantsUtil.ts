@@ -4,12 +4,7 @@ if (!projectId) {
 }
 export const WALLET_URL = process.env['WALLET_URL'] || 'https://react-wallet.walletconnect.com/'
 export function getPublicUrl() {
-  const vercelUrl = process.env['NEXT_PUBLIC_VERCEL_URL']
-  if (vercelUrl) {
-    return `https://${vercelUrl}`
-  }
-
-  return 'https://lab.web3modal.com'
+  return 'https://web3modal-laboratory-git-chore-verify-v2-walletconnect1.vercel.app'
 }
 
 export const CUSTOM_WALLET = 'wc:custom_wallet'
