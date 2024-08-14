@@ -51,7 +51,7 @@ export function SolanaSignTransactionTest() {
       const signature = signedTransaction.signatures[0]?.signature
 
       if (!signature) {
-        throw Error('Failed to sign transaction')
+        throw Error('Empty signature')
       }
 
       toast({
@@ -103,7 +103,7 @@ export function SolanaSignTransactionTest() {
       const signature = signedTransaction.signatures[0]
 
       if (!signature) {
-        throw Error('Failed to sign transaction')
+        throw Error('Empty signature')
       }
 
       toast({
@@ -114,7 +114,7 @@ export function SolanaSignTransactionTest() {
     } catch (err) {
       toast({
         title: 'Error',
-        description: 'Failed to sign transaction',
+        description: (err as Error).message,
         type: 'error'
       })
     } finally {

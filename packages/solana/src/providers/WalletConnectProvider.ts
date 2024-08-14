@@ -7,6 +7,7 @@ import {
   Connection,
   PublicKey,
   Transaction,
+  TransactionMessage,
   VersionedTransaction,
   type SendOptions
 } from '@solana/web3.js'
@@ -120,8 +121,19 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
 
     const result = await this.request('solana_signTransaction', {
       transaction: serializedTransaction,
-      pubkey: this.getAccount(true).address
+      pubkey: this.getAccount(true).address,
+      ...this.getRawRPCParams(transaction)
     })
+
+    // If the result contains signature is the old RPC response
+    if ('signature' in result) {
+      transaction.addSignature(
+        new PublicKey(this.getAccount(true).publicKey),
+        Buffer.from(base58.decode(result.signature))
+      )
+
+      return transaction
+    }
 
     const decodedTransaction = base58.decode(result.transaction)
 
@@ -226,6 +238,39 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
 
     return chains
   }
+
+  /*
+   * This is a deprecated method that is used to support older versions of the
+   * WalletConnect RPC API. It should be removed in the future
+   */
+  private getRawRPCParams(_transaction: AnyTransaction) {
+    let transaction = _transaction
+
+    if (isVersionedTransaction(transaction)) {
+      const instructions = TransactionMessage.decompile(transaction.message).instructions
+      const legacyMessage = new TransactionMessage({
+        payerKey: new PublicKey(this.getAccount(true).publicKey),
+        recentBlockhash: transaction.message.recentBlockhash,
+        instructions: [...instructions]
+      }).compileToLegacyMessage()
+
+      transaction = Transaction.populate(legacyMessage)
+    }
+
+    return {
+      feePayer: transaction.feePayer?.toBase58() ?? '',
+      instructions: transaction.instructions.map(instruction => ({
+        data: base58.encode(instruction.data),
+        keys: instruction.keys.map(key => ({
+          isWritable: key.isWritable,
+          isSigner: key.isSigner,
+          pubkey: key.pubkey.toBase58()
+        })),
+        programId: instruction.programId.toBase58()
+      })),
+      recentBlockhash: transaction.recentBlockhash ?? ''
+    }
+  }
 }
 
 export namespace WalletConnectProvider {
@@ -238,7 +283,7 @@ export namespace WalletConnectProvider {
     solana_signMessage: Request<{ message: string; pubkey: string }, { signature: string }>
     solana_signTransaction: Request<
       { transaction: string; pubkey: string },
-      { transaction: string }
+      { signature: string } | { transaction: string }
     >
     solana_signAndSendTransaction: Request<
       { transaction: string; pubkey: string; sendOptions?: SendOptions },
