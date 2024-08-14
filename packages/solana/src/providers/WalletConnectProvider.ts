@@ -20,7 +20,8 @@ export type WalletConnectProviderConfig = {
 export class WalletConnectProvider extends ProviderEventEmitter implements Provider {
   public readonly name = 'WalletConnect'
   public readonly type = 'WALLET_CONNECT'
-  public readonly icon = 'https://avatars.githubusercontent.com/u/37784886'
+  public readonly icon =
+    'https://imagedelivery.net/_aTEfDRm7z3tKgu9JhfeKA/05338e12-4f75-4982-4e8a-83c67b826b00/md'
 
   private provider: UniversalProvider
   private session?: SessionTypes.Struct
