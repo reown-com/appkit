@@ -19,14 +19,14 @@ const amountInLamports = 10_000_000
 
 export function SolanaSignTransactionTest() {
   const toast = useChakraToast()
-  const { address, chainId } = useWeb3ModalAccount()
+  const { chainId } = useWeb3ModalAccount()
   const { walletProvider, connection } = useWeb3ModalProvider()
   const [loading, setLoading] = useState(false)
 
   async function onSignTransaction() {
     try {
       setLoading(true)
-      if (!walletProvider || !address) {
+      if (!walletProvider?.publicKey) {
         throw Error('user is disconnected')
       }
 
@@ -73,7 +73,7 @@ export function SolanaSignTransactionTest() {
   async function onSignVersionedTransaction() {
     try {
       setLoading(true)
-      if (!walletProvider || !address) {
+      if (!walletProvider?.publicKey) {
         throw Error('user is disconnected')
       }
 
@@ -120,10 +120,6 @@ export function SolanaSignTransactionTest() {
     } finally {
       setLoading(false)
     }
-  }
-
-  if (!address) {
-    return null
   }
 
   if (chainId === solana.chainId) {

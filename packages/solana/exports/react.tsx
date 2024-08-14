@@ -6,10 +6,9 @@ import { getWeb3Modal } from '@web3modal/scaffold-react'
 
 import { Web3Modal } from '../src/client.js'
 
-import { SolStoreUtil } from '../src/utils/scaffold/index.js'
+import { SolStoreUtil, type Connection, type Provider } from '../src/utils/scaffold/index.js'
 
 import type { Web3ModalOptions } from '../src/client.js'
-import type { Connection, Provider } from '../src/utils/scaffold/index.js'
 
 // -- Setup -------------------------------------------------------------------
 let modal: Web3Modal | undefined = undefined
@@ -31,12 +30,11 @@ export function createWeb3Modal(options: Web3ModalOptions) {
 
 // -- Hooks -------------------------------------------------------------------
 export function useWeb3ModalProvider() {
-  const { provider, providerType, connection } = useSnapshot(SolStoreUtil.state)
+  const { provider, connection } = useSnapshot(SolStoreUtil.state)
 
   return {
-    walletProvider: provider as Provider,
-    walletProviderType: providerType,
-    connection: connection as Connection
+    walletProvider: provider as Provider | undefined,
+    connection: connection as Connection | undefined
   }
 }
 

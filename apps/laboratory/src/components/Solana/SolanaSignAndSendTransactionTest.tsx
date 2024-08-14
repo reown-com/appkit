@@ -25,7 +25,7 @@ export function SolanaSignAndSendTransaction() {
   async function onSendTransaction(mode: 'legacy' | 'versioned') {
     try {
       setLoading(true)
-      if (!walletProvider || !address) {
+      if (!walletProvider?.publicKey || !address) {
         throw Error('user is disconnected')
       }
 
