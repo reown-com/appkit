@@ -1,5 +1,21 @@
 # @web3modal/wagmi
 
+## 5.0.11-4e505ef09.1
+
+### Patch Changes
+
+- Bubble up SIWE error
+
+- Updated dependencies []:
+  - @web3modal/scaffold-react@5.0.11-4e505ef09.1
+  - @web3modal/scaffold-utils@5.0.11-4e505ef09.1
+  - @web3modal/scaffold-vue@5.0.11-4e505ef09.1
+  - @web3modal/polyfills@5.0.11-4e505ef09.1
+  - @web3modal/scaffold@5.0.11-4e505ef09.1
+  - @web3modal/common@5.0.11-4e505ef09.1
+  - @web3modal/wallet@5.0.11-4e505ef09.1
+  - @web3modal/siwe@5.0.11-4e505ef09.1
+
 ## 5.0.11-57abd61b5.0
 
 ### Patch Changes

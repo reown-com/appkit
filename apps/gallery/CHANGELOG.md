@@ -1,5 +1,13 @@
 # @apps/gallery
 
+## 5.0.11-4e505ef09.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @web3modal/common@5.0.11-4e505ef09.1
+  - @web3modal/ui@5.0.11-4e505ef09.1
+
 ## 5.0.11-57abd61b5.0
 
 ### Patch Changes

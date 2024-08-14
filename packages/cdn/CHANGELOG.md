@@ -1,5 +1,15 @@
 # @web3modal/cdn
 
+## 5.0.11-4e505ef09.1
+
+### Patch Changes
+
+- Bubble up SIWE error
+
+- Updated dependencies []:
+  - @web3modal/ethers@5.0.11-4e505ef09.1
+  - @web3modal/wagmi@5.0.11-4e505ef09.1
+
 ## 5.0.11-57abd61b5.0
 
 ### Patch Changes
