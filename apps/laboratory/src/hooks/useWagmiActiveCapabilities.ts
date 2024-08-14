@@ -1,9 +1,11 @@
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
 import { useAccount, type Connector } from 'wagmi'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { type WalletCapabilities } from 'viem'
 import { type Chain } from 'wagmi/chains'
 import {
+  EIP_5792_RPC_METHODS,
+  EIP_7715_RPC_METHODS,
   getFilteredCapabilitySupportedChainInfo,
   getProviderCachedCapabilities
 } from '../utils/EIP5792Utils'
@@ -14,7 +16,7 @@ type UseWagmiAvailableCapabilitiesParams = {
   method: string
 }
 
-type Provider = Awaited<ReturnType<(typeof EthereumProvider)['init']>> | W3mFrameProvider
+export type Provider = Awaited<ReturnType<(typeof EthereumProvider)['init']>> | W3mFrameProvider
 
 export function useWagmiAvailableCapabilities({
   capability,
@@ -23,26 +25,35 @@ export function useWagmiAvailableCapabilities({
   const [provider, setProvider] = useState<Provider>()
   const [supported, setSupported] = useState<boolean>(false)
 
-  const { chain, address, connector } = useAccount()
-
   const [availableCapabilities, setAvailableCapabilities] = useState<
     Record<number, WalletCapabilities> | undefined
   >()
 
-  const supportedChains =
-    availableCapabilities && capability
-      ? getFilteredCapabilitySupportedChainInfo(capability, availableCapabilities)
-      : []
-  const supportedChainsName = supportedChains.map(ci => ci.chainName).join(', ')
-  const currentChainsInfo = supportedChains.find(
-    chainInfo => chainInfo.chainId === Number(chain?.id)
+  const { chain, address, connector, isConnected } = useAccount()
+
+  const supportedChains = useMemo(
+    () =>
+      availableCapabilities && capability
+        ? getFilteredCapabilitySupportedChainInfo(capability, availableCapabilities)
+        : [],
+    [availableCapabilities, capability]
+  )
+
+  const supportedChainsName = useMemo(
+    () => supportedChains.map(ci => ci.chainName).join(', '),
+    [supportedChains]
+  )
+
+  const currentChainsInfo = useMemo(
+    () => supportedChains.find(chainInfo => chainInfo.chainId === Number(chain?.id)),
+    [supportedChains, chain]
   )
 
   useEffect(() => {
-    if (connector && address && chain) {
+    if (isConnected && connector && address && chain) {
       fetchProviderAndAccountCapabilities(address, connector, chain)
     }
-  }, [connector, address])
+  }, [connector, address, chain, isConnected])
 
   async function fetchProviderAndAccountCapabilities(
     connectedAccount: `0x${string}`,
@@ -65,9 +76,11 @@ export function useWagmiAvailableCapabilities({
 
   function isMethodSupported(): boolean {
     if (provider instanceof W3mFrameProvider) {
-      return ['wallet_sendCalls', 'wallet_getCapabilities', 'wallet_getCallsStatus'].includes(
-        method
+      const supportedMethods = Object.values(EIP_5792_RPC_METHODS).concat(
+        Object.values(EIP_7715_RPC_METHODS)
       )
+
+      return supportedMethods.includes(method)
     }
 
     return Boolean(provider?.signer?.session?.namespaces?.['eip155']?.methods?.includes(method))

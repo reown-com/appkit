@@ -9,7 +9,7 @@ import { Web3Modal } from '../src/client.js'
 import { SolStoreUtil } from '../src/utils/scaffold/index.js'
 
 import type { Web3ModalOptions } from '../src/client.js'
-import type { Provider } from '../src/utils/scaffold/index.js'
+import type { Connection, Provider } from '../src/utils/scaffold/index.js'
 
 // -- Setup -------------------------------------------------------------------
 let modal: Web3Modal | undefined = undefined
@@ -36,7 +36,7 @@ export function useWeb3ModalProvider() {
   return {
     walletProvider: provider as Provider,
     walletProviderType: providerType,
-    connection
+    connection: connection as Connection
   }
 }
 
