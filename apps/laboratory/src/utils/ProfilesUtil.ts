@@ -15,7 +15,7 @@ import { ProfileStore } from './ProfileStoreUtil'
 
 const queryParams = `projectId=24970167f11c121f6eb40b558edb9691&st=w3m&sv=5.0.0`
 
-const devProfileApiUrl = 'https://api-web3modal-auth-staging.walletconnect-v1-bridge.workers.dev'
+const devProfileApiUrl = 'http://localhost:8787'
 
 export async function addCurrentAccountToProfile() {
   try {
@@ -25,6 +25,10 @@ export async function addCurrentAccountToProfile() {
       credentials: 'include'
     })
 
+    if (res.status === 409) {
+      throw new Error('Account already associated to a profile')
+    }
+
     if (!res.ok) {
       return undefined
     }
@@ -33,7 +37,7 @@ export async function addCurrentAccountToProfile() {
 
     return accountAddedToProfileRes
   } catch (error) {
-    throw new Error('Failed to add account to profile', {
+    throw new Error(error instanceof Error ? error.message : 'Failed to add account to profile', {
       cause: error
     })
   }
@@ -67,7 +71,16 @@ export async function unlinkAccountFromProfile(accountUuid: string) {
       credentials: 'include'
     })
 
-    return { success: res.ok && res.status === 204 }
+    if (!res.ok) {
+      return { actionStatus: 'failed' }
+    }
+
+    const unlinkedAccountRes = await res.json()
+
+    return {
+      actionStatus: unlinkedAccountRes.actionStatus,
+      newMainAccountUuid: unlinkedAccountRes.newMainAccountUuid
+    }
   } catch (error) {
     throw new Error('Failed to unlink account from profile', {
       cause: error
@@ -144,21 +157,21 @@ export function siweProfilesConfig(wagmiConfig: Config) {
       return { address, chainId }
     },
     verifyMessage: async ({ message, signature, cacao, clientId }: SIWEVerifyMessageArgs) => {
-      try {
-        /*
-         * Signed Cacao (CAIP-74) will be available for further validations if the wallet supports caip-222 signing
-         * When personal_sign fallback is used, cacao will be undefined
-         */
-        if (cacao) {
-          // Do something
-        }
-        const { token } = await authenticate({ message, signature, clientId })
-        await addCurrentAccountToProfile()
-
-        return Boolean(token)
-      } catch (error) {
-        return false
+      /*
+       * Signed Cacao (CAIP-74) will be available for further validations if the wallet supports caip-222 signing
+       * When personal_sign fallback is used, cacao will be undefined
+       */
+      if (cacao) {
+        // Do something
       }
+      const { token } = await authenticate({ message, signature, clientId })
+
+      const profileUuid = await addCurrentAccountToProfile()
+      if (!profileUuid) {
+        throw new Error('Failed to add account to profile')
+      }
+
+      return Boolean(profileUuid && token)
     },
     signOut: async () => {
       try {
@@ -170,13 +183,14 @@ export function siweProfilesConfig(wagmiConfig: Config) {
       }
     },
     onSignIn: () => {
-      Promise.all([
-        disconnect(wagmiConfig),
-        appKitAuthSignOut(),
-        getProfile().then(profile => {
-          ProfileStore.setProfile(profile)
-        })
-      ])
+      disconnect(wagmiConfig).then(() => {
+        Promise.all([
+          appKitAuthSignOut(),
+          getProfile().then(profile => {
+            ProfileStore.setProfile(profile.accounts)
+          })
+        ])
+      })
     }
   })
 }

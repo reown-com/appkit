@@ -1,5 +1,15 @@
 # @web3modal/scaffold-vue
 
+## 5.0.11-57abd61b5.0
+
+### Patch Changes
+
+- AppKit Auth canary
+
+- Updated dependencies []:
+  - @web3modal/scaffold@5.0.11-57abd61b5.0
+  - @web3modal/core@5.0.11-57abd61b5.0
+
 ## 5.0.10
 
 - chore: update with v5 by @tomiir in https://github.com/WalletConnect/web3modal/pull/2612

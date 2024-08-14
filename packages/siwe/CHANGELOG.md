@@ -1,5 +1,18 @@
 # @web3modal/siwe
 
+## 5.0.11-57abd61b5.0
+
+### Patch Changes
+
+- AppKit Auth canary
+
+- Updated dependencies []:
+  - @web3modal/scaffold-utils@5.0.11-57abd61b5.0
+  - @web3modal/common@5.0.11-57abd61b5.0
+  - @web3modal/wallet@5.0.11-57abd61b5.0
+  - @web3modal/core@5.0.11-57abd61b5.0
+  - @web3modal/ui@5.0.11-57abd61b5.0
+
 ## 5.0.10
 
 - chore: update with v5 by @tomiir in https://github.com/WalletConnect/web3modal/pull/2612

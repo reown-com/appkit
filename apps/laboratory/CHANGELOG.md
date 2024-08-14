@@ -1,5 +1,15 @@
 # @apps/laboratory
 
+## 5.0.11-57abd61b5.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @web3modal/ethers@5.0.11-57abd61b5.0
+  - @web3modal/solana@5.0.11-57abd61b5.0
+  - @web3modal/wagmi@5.0.11-57abd61b5.0
+  - @web3modal/siwe@5.0.11-57abd61b5.0
+
 ## 5.0.10
 
 - chore: update with v5 by @tomiir in https://github.com/WalletConnect/web3modal/pull/2612

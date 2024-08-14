@@ -17,7 +17,17 @@ import {
 } from '../../utils/ProfilesUtil'
 import { useProxy } from 'valtio/utils'
 import { ProfileStore } from '../../utils/ProfileStoreUtil'
-import { Button, Card, CardBody, CardHeader, Flex, Heading, Text } from '@chakra-ui/react'
+import {
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  Flex,
+  Heading,
+  HStack,
+  Text,
+  useToast
+} from '@chakra-ui/react'
 import { IoRefresh } from 'react-icons/io5'
 
 const queryClient = new QueryClient()
@@ -39,17 +49,39 @@ ThemeStore.setModal(modal)
 
 export default function WagmiProfiles() {
   const { profile } = useProxy(ProfileStore.state)
+  const toast = useToast()
 
   async function fetchProfile() {
     const profileRes = await getProfile()
-    ProfileStore.setProfile(profileRes)
+    ProfileStore.setProfile(profileRes?.accounts)
   }
 
   async function handleUnlinkAccount(accountUuid: string) {
-    const { success } = await unlinkAccountFromProfile(accountUuid)
-    if (success) {
-      const updatedProfile = profile?.filter(({ uuid }) => uuid !== accountUuid)
+    const { actionStatus, newMainAccountUuid } = await unlinkAccountFromProfile(accountUuid)
+    if (actionStatus === 'unlinked') {
+      const updatedProfile = profile
+        ?.filter(({ uuid }) => uuid !== accountUuid)
+        .map(account =>
+          account.uuid === newMainAccountUuid ? { ...account, is_main_account: true } : account
+        )
       ProfileStore.setProfile(updatedProfile)
+    } else if (actionStatus === 'deleted') {
+      ProfileStore.setProfile(null)
+      toast({
+        title: 'Profile deleted',
+        status: 'warning',
+        duration: 5000,
+        isClosable: true,
+        position: 'top'
+      })
+    } else {
+      toast({
+        title: 'Failed to unlink account',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+        position: 'top'
+      })
     }
   }
 
@@ -81,12 +113,17 @@ export default function WagmiProfiles() {
         <Card>
           <CardHeader as={Flex} justifyContent="space-between">
             <Heading size="md">Profile</Heading>
-            <Button leftIcon={<IoRefresh />} onClick={fetchProfile}>
-              Get Profile
-            </Button>
+            <HStack>
+              <Button leftIcon={<IoRefresh />} onClick={fetchProfile}>
+                Get Profile
+              </Button>
+              <Button colorScheme="red" onClick={() => handleDeleteProfile()}>
+                Delete profile
+              </Button>
+            </HStack>
           </CardHeader>
           <CardBody as={Flex} flexDir="column" gap={4}>
-            {profile?.map(({ account, is_main_account, uuid }) => {
+            {profile?.map(({ account, is_main_account, uuid, created_at }) => {
               const [, chainId, address] = account.split(':')
 
               return (
@@ -107,12 +144,14 @@ export default function WagmiProfiles() {
                   <Text>
                     <strong>Main account:</strong> {is_main_account.toString()}
                   </Text>
-                  <Flex flexDir="column" gap={4}>
-                    <Button onClick={() => handleUnlinkAccount(uuid)}>Unlink</Button>
-                    <Button onClick={() => handleUpdateMainAccount(uuid)}>Set as main</Button>
-                    <Button colorScheme="red" onClick={() => handleDeleteProfile()}>
-                      Delete profile
+                  <Text>
+                    <strong>Created At:</strong> {created_at}
+                  </Text>
+                  <Flex flexDir="row" gap={4}>
+                    <Button colorScheme="orange" onClick={() => handleUnlinkAccount(uuid)}>
+                      Unlink
                     </Button>
+                    <Button onClick={() => handleUpdateMainAccount(uuid)}>Set as main</Button>
                   </Flex>
                 </Flex>
               )
