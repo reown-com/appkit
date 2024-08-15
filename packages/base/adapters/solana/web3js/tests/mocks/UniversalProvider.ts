@@ -2,7 +2,7 @@ import UniversalProvider from '@walletconnect/universal-provider'
 import type { SessionTypes } from '@walletconnect/types'
 import { vi } from 'vitest'
 import { TestConstants } from '../util/TestConstants'
-import { WalletConnectProvider } from '../../../base/adapters/solana/web3js/providers/WalletConnectProvider'
+import { WalletConnectProvider } from '../../providers/WalletConnectProvider'
 
 export function mockUniversalProvider() {
   const provider = new UniversalProvider({})

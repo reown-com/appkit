@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { mockUniversalProvider } from './mocks/UniversalProvider'
-import { WalletConnectProvider } from '../../base/adapters/solana/web3js/providers/WalletConnectProvider'
-import { TestConstants } from './util/TestConstants'
-import { mockLegacyTransaction, mockVersionedTransaction } from './mocks/Transaction'
+import { mockUniversalProvider } from './mocks/UniversalProvider.js'
+import { WalletConnectProvider } from '../providers/WalletConnectProvider.js'
+import { TestConstants } from './util/TestConstants.js'
+import { mockLegacyTransaction, mockVersionedTransaction } from './mocks/Transaction.js'
 
 describe('WalletConnectProvider specific tests', () => {
   let provider = mockUniversalProvider()
