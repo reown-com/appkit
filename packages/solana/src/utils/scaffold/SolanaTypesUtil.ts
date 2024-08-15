@@ -94,8 +94,6 @@ export type Chain = {
   currency: string
   name: string
   chainId: string
-
-  deprecatedReplacement?: string
 }
 
 export type AnyTransaction = SolanaWeb3Transaction | VersionedTransaction

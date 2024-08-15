@@ -205,7 +205,7 @@ describe('WalletConnectProvider specific tests', () => {
   })
 
   it('should replace old deprecated replacement for requests', async () => {
-    vi.spyOn(provider, 'connect').mockImplementationOnce(() =>
+    vi.spyOn(provider, 'connect').mockImplementation(() =>
       Promise.resolve(
         mockUniversalProviderSession({}, [
           { chainId: '4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ' } as Chain,
@@ -230,7 +230,7 @@ describe('WalletConnectProvider specific tests', () => {
   })
 
   it('should replace old deprecated devnet for requests', async () => {
-    vi.spyOn(provider, 'connect').mockImplementationOnce(() =>
+    vi.spyOn(provider, 'connect').mockImplementation(() =>
       Promise.resolve(
         mockUniversalProviderSession({}, [
           { chainId: '4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ' } as Chain,
@@ -240,7 +240,7 @@ describe('WalletConnectProvider specific tests', () => {
     )
 
     getActiveChain.mockImplementation(
-      () => ({ chainId: 'EtWTRABZaYq6iMfeYKouRu166VU2xqa1' }) as any
+      () => ({ chainId: 'EtWTRABZaYq6iMfeYKouRu166VU2xqa1' }) as Chain
     )
 
     await walletConnectProvider.connect()
