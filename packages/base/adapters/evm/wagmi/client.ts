@@ -513,7 +513,6 @@ export class EVMWagmiClient {
     }
 
     if (isConnected && address && chainId) {
-      this.appKit?.resetAccount(this.chain)
       this.syncNetwork(address, chainId, isConnected)
       this.appKit?.setIsConnected(isConnected, this.chain)
       this.appKit?.setCaipAddress(caipAddress, this.chain)

@@ -47,12 +47,11 @@ export function createWeb3Modal(options: SolanaAppKitOptions) {
 
 // -- Hooks -------------------------------------------------------------------
 export function useWeb3ModalProvider() {
-  const { provider, providerType, connection } = useSnapshot(SolStoreUtil.state)
+  const { provider, connection } = useSnapshot(SolStoreUtil.state)
 
   return {
-    walletProvider: provider as Provider,
-    walletProviderType: providerType,
-    connection: connection as Connection
+    walletProvider: provider as Provider | undefined,
+    connection: connection as Connection | undefined
   }
 }
 

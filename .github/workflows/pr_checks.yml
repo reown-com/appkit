@@ -9,6 +9,9 @@ on:
       - V5
       - main
 
+permissions:
+  pull-requests: write
+
 concurrency:
   # Support push/pr as event types with different behaviors each:
   # 1. push: queue up builds
@@ -55,6 +58,33 @@ jobs:
         run: pnpm ${{ matrix.style-command }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  bundle_size:
+    runs-on: ubuntu-latest
+    name: Bundle size check
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+
+      - name: setup-node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          cache: 'pnpm'
+
+      - name: install
+        run: pnpm install
+
+      - name: build
+        run: pnpm build
+
+      - name: Running vite-size script
+        uses: glitch-txs/vite-size-action@v1.0.3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
   test:
     runs-on: ubuntu-latest

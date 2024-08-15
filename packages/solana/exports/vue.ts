@@ -5,12 +5,7 @@ import type { CaipNetwork } from 'packages/core/dist/types/index.js'
 import { AppKit } from '@web3modal/base'
 import type { AppKitOptions } from '@web3modal/base'
 import { SolanaWeb3JsClient, SolStoreUtil } from '@web3modal/base/adapters/solana/web3js'
-import type {
-  Chain,
-  Provider,
-  ProviderType,
-  BaseWalletAdapter
-} from '@web3modal/base/adapters/solana/web3js'
+import type { Chain, ProviderType, BaseWalletAdapter } from '@web3modal/base/adapters/solana/web3js'
 
 // -- Setup -------------------------------------------------------------------
 let appkit: AppKit | undefined = undefined
@@ -46,13 +41,11 @@ export function useWeb3ModalProvider() {
     throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalProvider" composition')
   }
 
-  const walletProvider = ref(SolStoreUtil.state.provider as Provider)
-  const walletProviderType = ref(SolStoreUtil.state.providerType)
+  const walletProvider = ref(SolStoreUtil.state.provider)
   const connection = ref(SolStoreUtil.state.connection)
 
-  const unsubscribe = solanaAdapter.subscribeProvider(state => {
-    walletProvider.value = state.provider as Provider
-    walletProviderType.value = state.providerType
+  const unsubscribe = appkit.subscribeProvider(state => {
+    walletProvider.value = state.provider
   })
 
   onUnmounted(() => {
@@ -60,9 +53,8 @@ export function useWeb3ModalProvider() {
   })
 
   return {
-    walletProvider,
-    walletProviderType,
-    connection
+    walletProvider: walletProvider.value ?? undefined,
+    connection: connection.value ?? undefined
   }
 }
 

@@ -1,13 +1,17 @@
 import { getWallets } from '@wallet-standard/app'
+<<<<<<<< HEAD:packages/base/adapters/solana/web3js/utils/wallet-standard/watchStandard.ts
 import { StandardWalletAdapter } from './adapter.js'
+========
+import { WalletStandardProvider } from '../providers/WalletStandardProvider.js'
+>>>>>>>> main:packages/base/adapters/solana/web3js/utils/watchStandard.ts
 import { isWalletAdapterCompatibleStandardWallet } from '@solana/wallet-adapter-base'
 import type { Wallet } from '@wallet-standard/base'
+import { SolStoreUtil } from './scaffold/SolanaStoreUtil.js'
 
 const { get, on } = getWallets()
+let standardAdapters: WalletStandardProvider[] = wrapWalletsWithAdapters(get())
 
-let standardAdapters: StandardWalletAdapter[] = [...wrapWalletsWithAdapters(get())]
-
-export function watchStandard(callback: (arg: StandardWalletAdapter[]) => void) {
+export function watchStandard(callback: (arg: WalletStandardProvider[]) => void) {
   const listeners = [
     on('register', (...wallets) => {
       if (!standardAdapters || standardAdapters.length === 0) {
@@ -25,13 +29,18 @@ export function watchStandard(callback: (arg: StandardWalletAdapter[]) => void) 
     })
   ]
 
+  standardAdapters = wrapWalletsWithAdapters(get())
   callback(standardAdapters)
 
   return () => listeners.forEach(off => off())
 }
 
-function wrapWalletsWithAdapters(wallets: readonly Wallet[]): readonly StandardWalletAdapter[] {
-  return wallets
-    .filter(isWalletAdapterCompatibleStandardWallet)
-    .map(wallet => new StandardWalletAdapter({ wallet }))
+function wrapWalletsWithAdapters(wallets: readonly Wallet[]): WalletStandardProvider[] {
+  return wallets.filter(isWalletAdapterCompatibleStandardWallet).map(
+    wallet =>
+      new WalletStandardProvider({
+        wallet,
+        getActiveChain: () => SolStoreUtil.state.currentChain
+      })
+  )
 }
