@@ -48,15 +48,25 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
         ?.map(sessionChainId => {
           // This is a workaround for wallets that only accept Solana deprecated networks
           let chainId = sessionChainId
+          let deprecatedReplacement: string | undefined = undefined
           if (chainId === SolConstantsUtil.CHAIN_IDS.Deprecated_Mainnet) {
             chainId = SolConstantsUtil.CHAIN_IDS.Mainnet
+            deprecatedReplacement = SolConstantsUtil.CHAIN_IDS.Deprecated_Mainnet
           } else if (chainId === SolConstantsUtil.CHAIN_IDS.Deprecated_Devnet) {
             chainId = SolConstantsUtil.CHAIN_IDS.Devnet
+            deprecatedReplacement = SolConstantsUtil.CHAIN_IDS.Deprecated_Devnet
           }
 
-          return this.requestedChains.find(
+          const foundChain = this.requestedChains.find(
             chain => this.withSolanaNamespace(chain.chainId) === chainId
           )
+
+          if (foundChain && deprecatedReplacement) {
+            // We add the deprecatedReplacement to the chain object to be used in the request
+            foundChain.deprecatedReplacement = deprecatedReplacement.split(':')[1]
+          }
+
+          return foundChain
         })
         .filter(Boolean) as Chain[]) || []
     )
@@ -98,11 +108,6 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
         }
       })
       this.provider.removeListener('display_uri', this.onUri)
-    }
-
-    const activeChain = this.getActiveChain()
-    if (activeChain && !this.chains.includes(activeChain)) {
-      this.provider.setDefaultChain(this.withSolanaNamespace(activeChain.chainId))
     }
 
     const account = this.getAccount(true)
@@ -189,12 +194,14 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
     method: Method,
     params: WalletConnectProvider.RequestMethods[Method]['params']
   ) {
+    const chain = this.chains.find(c => this.getActiveChain()?.chainId === c.chainId)
+
     return this.provider?.request<WalletConnectProvider.RequestMethods[Method]['returns']>(
       {
         method,
         params
       },
-      this.withSolanaNamespace(this.getActiveChain()?.chainId)
+      this.withSolanaNamespace(chain?.deprecatedReplacement || chain?.chainId)
     )
   }
 

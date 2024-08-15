@@ -9,7 +9,7 @@ export function mockUniversalProvider() {
 
   provider.on = vi.fn()
   provider.removeListener = vi.fn()
-  provider.connect = vi.fn(() => Promise.resolve(mockSession()))
+  provider.connect = vi.fn(() => Promise.resolve(mockUniversalProviderSession()))
   provider.disconnect = vi.fn(() => Promise.resolve())
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -38,8 +38,11 @@ export function mockUniversalProvider() {
   return provider
 }
 
-function mockSession(replaces: Partial<SessionTypes.Struct> = {}): SessionTypes.Struct {
-  const chains = TestConstants.chains.map(chain => `solana:${chain.chainId}`)
+export function mockUniversalProviderSession(
+  replaces: Partial<SessionTypes.Struct> = {},
+  inputChains = TestConstants.chains
+): SessionTypes.Struct {
+  const chains = inputChains.map(chain => `solana:${chain.chainId}`)
 
   const accounts = chains.reduce<string[]>((acc, cur) => {
     for (const account of TestConstants.accounts) {

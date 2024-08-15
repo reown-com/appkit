@@ -1,8 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { mockUniversalProvider } from './mocks/UniversalProvider'
+import { mockUniversalProvider, mockUniversalProviderSession } from './mocks/UniversalProvider'
 import { WalletConnectProvider } from '../src/providers/WalletConnectProvider'
 import { TestConstants } from './util/TestConstants'
 import { mockLegacyTransaction, mockVersionedTransaction } from './mocks/Transaction'
+import { type Chain } from '../src/utils/scaffold'
 
 describe('WalletConnectProvider specific tests', () => {
   let provider = mockUniversalProvider()
@@ -15,6 +16,7 @@ describe('WalletConnectProvider specific tests', () => {
 
   beforeEach(() => {
     provider = mockUniversalProvider()
+    getActiveChain = vi.fn(() => TestConstants.chains[0])
     walletConnectProvider = new WalletConnectProvider({
       provider,
       chains: TestConstants.chains,
@@ -184,7 +186,9 @@ describe('WalletConnectProvider specific tests', () => {
 
   it('should use the correct chain id for requests', async () => {
     await walletConnectProvider.connect()
-    getActiveChain.mockImplementationOnce(() => ({ chainId: 'test' }) as any)
+    getActiveChain.mockImplementation(
+      () => ({ chainId: 'EtWTRABZaYq6iMfeYKouRu166VU2xqa1' }) as Chain
+    )
 
     await walletConnectProvider.signMessage(new Uint8Array([1, 2, 3, 4, 5]))
 
@@ -196,7 +200,62 @@ describe('WalletConnectProvider specific tests', () => {
           pubkey: TestConstants.accounts[0].address
         }
       },
-      'solana:test'
+      'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1'
+    )
+  })
+
+  it('should replace old deprecated replacement for requests', async () => {
+    vi.spyOn(provider, 'connect').mockImplementationOnce(() =>
+      Promise.resolve(
+        mockUniversalProviderSession({}, [
+          { chainId: '4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ' } as Chain,
+          { chainId: '8E9rvCKLFQia2Y35HXjjpWzj8weVo44K' } as Chain
+        ])
+      )
+    )
+
+    await walletConnectProvider.connect()
+    await walletConnectProvider.signMessage(new Uint8Array([1, 2, 3, 4, 5]))
+
+    expect(provider.request).toHaveBeenCalledWith(
+      {
+        method: 'solana_signMessage',
+        params: {
+          message: '7bWpTW',
+          pubkey: TestConstants.accounts[0].address
+        }
+      },
+      'solana:4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ'
+    )
+  })
+
+  it('should replace old deprecated devnet for requests', async () => {
+    vi.spyOn(provider, 'connect').mockImplementationOnce(() =>
+      Promise.resolve(
+        mockUniversalProviderSession({}, [
+          { chainId: '4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ' } as Chain,
+          { chainId: '8E9rvCKLFQia2Y35HXjjpWzj8weVo44K' } as Chain
+        ])
+      )
+    )
+
+    getActiveChain.mockImplementation(
+      () => ({ chainId: 'EtWTRABZaYq6iMfeYKouRu166VU2xqa1' }) as any
+    )
+
+    await walletConnectProvider.connect()
+
+    await walletConnectProvider.signMessage(new Uint8Array([1, 2, 3, 4, 5]))
+
+    expect(provider.request).toHaveBeenCalledWith(
+      {
+        method: 'solana_signMessage',
+        params: {
+          message: '7bWpTW',
+          pubkey: TestConstants.accounts[0].address
+        }
+      },
+      'solana:8E9rvCKLFQia2Y35HXjjpWzj8weVo44K'
     )
   })
 })
