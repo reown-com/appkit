@@ -1,11 +1,30 @@
 {
   "$schema": "https://unpkg.com/@changesets/config@3.0.0/schema.json",
-  "changelog": ["@changesets/changelog-github", { "repo": "WalletConnect/web3modal" }],
+  "changelog": [
+    "@changesets/changelog-github",
+    {
+      "repo": "WalletConnect/web3modal"
+    }
+  ],
   "commit": false,
   "fixed": [],
   "linked": [],
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": []
+  "ignore": [
+    "@examples/react-ethers5",
+    "@examples/html-ethers5",
+    "@examples/react-ethers",
+    "@examples/react-solana",
+    "@examples/react-wagmi",
+    "@examples/vue-ethers5",
+    "@examples/html-wagmi",
+    "@examples/next-wagmi",
+    "@examples/vue-solana",
+    "@examples/vue-wagmi",
+    "@apps/laboratory",
+    "@apps/gallery",
+    "@apps/demo"
+  ]
 }
