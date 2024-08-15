@@ -13,7 +13,8 @@ const providers: { name: string; provider: Provider }[] = [
     name: 'WalletConnectProvider',
     provider: new WalletConnectProvider({
       provider: mockUniversalProvider(),
-      chains: TestConstants.chains
+      chains: TestConstants.chains,
+      getActiveChain: () => TestConstants.chains[0]
     })
   },
   {

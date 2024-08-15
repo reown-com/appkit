@@ -452,7 +452,8 @@ export class Web3Modal extends Web3ModalScaffold {
       this.addProvider(
         new WalletConnectProvider({
           provider: await UniversalProvider.init(opts),
-          chains: this.chains
+          chains: this.chains,
+          getActiveChain: () => SolStoreUtil.state.currentChain
         })
       )
 
