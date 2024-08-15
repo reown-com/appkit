@@ -15,7 +15,7 @@ import { ProfileStore } from './ProfileStoreUtil'
 
 const queryParams = `projectId=24970167f11c121f6eb40b558edb9691&st=w3m&sv=5.0.0`
 
-const devProfileApiUrl = 'http://localhost:8787'
+const devProfileApiUrl = 'https://api-web3modal-auth-staging.walletconnect-v1-bridge.workers.dev'
 
 export async function addCurrentAccountToProfile() {
   try {
@@ -116,6 +116,48 @@ export async function updateMainAccount(accountUuid: string) {
     return { success: res.ok && res.status === 204 }
   } catch (error) {
     throw new Error('Failed to update main account', {
+      cause: error
+    })
+  }
+}
+
+export async function sendOtp() {
+  try {
+    const res = await fetch(`${devProfileApiUrl}/profiles/v1/otp?${queryParams}`, {
+      method: 'POST',
+      credentials: 'include',
+      body: JSON.stringify({ email: 'example@walletconnect.com' })
+    })
+
+    if (!res.ok) {
+      throw new Error('Failed to send OTP')
+    }
+
+    return { success: res.ok }
+  } catch (error) {
+    throw new Error('Failed to send OTP', {
+      cause: error
+    })
+  }
+}
+
+export async function verifyOtp() {
+  try {
+    const res = await fetch(`${devProfileApiUrl}/profiles/v1/otp/verify?${queryParams}`, {
+      method: 'POST',
+      credentials: 'include',
+      body: JSON.stringify({ otp: '123456' })
+    })
+
+    if (!res.ok) {
+      throw new Error('Failed to verify OTP')
+    }
+
+    const verifyOtpRes = await res.json()
+
+    return { isValid: verifyOtpRes.isValid }
+  } catch (error) {
+    throw new Error('Failed to send OTP', {
       cause: error
     })
   }
