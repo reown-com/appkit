@@ -44,7 +44,7 @@ export function useWeb3ModalProvider() {
   const walletProvider = ref(SolStoreUtil.state.provider)
   const connection = ref(SolStoreUtil.state.connection)
 
-  const unsubscribe = appkit.subscribeProvider(state => {
+  const unsubscribe = solanaAdapter.subscribeProvider(state => {
     walletProvider.value = state.provider
   })
 
