@@ -2,7 +2,6 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, ref, snapshot } from 'valtio/vanilla'
 import type { AuthConnector, Connector } from '../utils/TypeUtil.js'
 import { ConstantsUtil, getW3mThemeVariables } from '@web3modal/common'
-import { ConstantsUtil as ScaffoldConstantsUtil } from '@web3modal/scaffold-utils'
 import { OptionsController } from './OptionsController.js'
 import { ThemeController } from './ThemeController.js'
 import { ChainController } from './ChainController.js'
@@ -98,7 +97,7 @@ export const ConnectorController = {
   },
 
   addConnector(connector: Connector | AuthConnector) {
-    if (connector.id === ScaffoldConstantsUtil.AUTH_CONNECTOR_ID) {
+    if (connector.id === 'w3mAuth') {
       const authConnector = connector as AuthConnector
       const optionsState = snapshot(OptionsController.state) as typeof OptionsController.state
       const themeMode = ThemeController.getSnapshot().themeMode
