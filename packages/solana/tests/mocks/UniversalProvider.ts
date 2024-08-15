@@ -1,8 +1,8 @@
 import UniversalProvider from '@walletconnect/universal-provider'
 import type { SessionTypes } from '@walletconnect/types'
 import { vi } from 'vitest'
-import { TestConstants } from '../util/TestConstants'
-import { WalletConnectProvider } from '../../src/providers/WalletConnectProvider'
+import { TestConstants } from '../util/TestConstants.js'
+import { WalletConnectProvider } from '../../src/providers/WalletConnectProvider.js'
 
 export function mockUniversalProvider() {
   const provider = new UniversalProvider({})

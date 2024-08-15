@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { mockUniversalProvider, mockUniversalProviderSession } from './mocks/UniversalProvider'
-import { WalletConnectProvider } from '../src/providers/WalletConnectProvider'
-import { TestConstants } from './util/TestConstants'
-import { mockLegacyTransaction, mockVersionedTransaction } from './mocks/Transaction'
-import { type Chain } from '../src/utils/scaffold'
+import { mockUniversalProvider, mockUniversalProviderSession } from './mocks/UniversalProvider.js'
+import { WalletConnectProvider } from '../src/providers/WalletConnectProvider.js'
+import { TestConstants } from './util/TestConstants.js'
+import { mockLegacyTransaction, mockVersionedTransaction } from './mocks/Transaction.js'
+import { type Chain } from '../src/utils/scaffold/index.js'
 
 describe('WalletConnectProvider specific tests', () => {
   let provider = mockUniversalProvider()

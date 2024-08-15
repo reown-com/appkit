@@ -1,12 +1,12 @@
 import { beforeAll, describe, expect, it, vi } from 'vitest'
-import type { Provider } from '../src/utils/scaffold/SolanaTypesUtil'
-import { WalletConnectProvider } from '../src/providers/WalletConnectProvider'
-import { mockUniversalProvider } from './mocks/UniversalProvider'
-import { WalletStandardProvider } from '../src/providers/WalletStandardProvider'
-import { mockWalletStandard } from './mocks/WalletStandard'
-import { TestConstants } from './util/TestConstants'
+import type { Provider } from '../src/utils/scaffold/SolanaTypesUtil.js'
+import { WalletConnectProvider } from '../src/providers/WalletConnectProvider.js'
+import { mockUniversalProvider } from './mocks/UniversalProvider.js'
+import { WalletStandardProvider } from '../src/providers/WalletStandardProvider.js'
+import { mockWalletStandard } from './mocks/WalletStandard.js'
+import { TestConstants } from './util/TestConstants.js'
 import { Transaction, VersionedTransaction } from '@solana/web3.js'
-import { mockLegacyTransaction, mockVersionedTransaction } from './mocks/Transaction'
+import { mockLegacyTransaction, mockVersionedTransaction } from './mocks/Transaction.js'
 
 const providers: { name: string; provider: Provider }[] = [
   {

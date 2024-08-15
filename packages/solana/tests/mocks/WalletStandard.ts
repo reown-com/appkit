@@ -5,7 +5,7 @@ import type {
   StandardEventsFeature
 } from '@wallet-standard/features'
 import { vi } from 'vitest'
-import { TestConstants } from '../util/TestConstants'
+import { TestConstants } from '../util/TestConstants.js'
 import type {
   SolanaSignAndSendTransactionFeature,
   SolanaSignMessageFeature,
