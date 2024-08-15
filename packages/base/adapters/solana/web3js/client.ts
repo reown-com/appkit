@@ -295,12 +295,12 @@ export class SolanaWeb3JsClient {
     const address = SolStoreUtil.state.address
     const chainId = SolStoreUtil.state.currentChain?.chainId
     const isConnected = SolStoreUtil.state.isConnected
-    this.appKit?.resetAccount()
+    this.appKit?.resetAccount(this.chain)
 
     if (isConnected && address && chainId) {
       const caipAddress: CaipAddress = `${ConstantsUtil.INJECTED_CONNECTOR_ID}:${chainId}:${address}`
-      this.appKit?.setIsConnected(isConnected)
-      this.appKit?.setCaipAddress(caipAddress)
+      this.appKit?.setIsConnected(isConnected, this.chain)
+      this.appKit?.setCaipAddress(caipAddress, this.chain)
       await Promise.all([this.syncBalance(address)])
 
       this.hasSyncedConnectedAccount = true
@@ -323,7 +323,11 @@ export class SolanaWeb3JsClient {
       (await SolStoreUtil.state.connection.getBalance(new PublicKey(address))) /
       SolConstantsUtil.LAMPORTS_PER_SOL
 
-    this.appKit?.setBalance(balance.toString(), SolStoreUtil.state.currentChain.currency)
+    this.appKit?.setBalance(
+      balance.toString(),
+      SolStoreUtil.state.currentChain.currency,
+      this.chain
+    )
   }
 
   private syncRequestedNetworks(
@@ -340,7 +344,7 @@ export class SolanaWeb3JsClient {
           chain: this.chain
         }) as const
     )
-    this.appKit?.setRequestedCaipNetworks(requestedCaipNetworks ?? [])
+    this.appKit?.setRequestedCaipNetworks(requestedCaipNetworks ?? [], this.chain)
   }
 
   public async switchNetwork(caipNetwork: CaipNetwork) {
@@ -386,9 +390,9 @@ export class SolanaWeb3JsClient {
         if (isConnected && address) {
           if (chain.explorerUrl) {
             const url = `${chain.explorerUrl}/account/${address}`
-            this.appKit?.setAddressExplorerUrl(url)
+            this.appKit?.setAddressExplorerUrl(url, this.chain)
           } else {
-            this.appKit?.setAddressExplorerUrl(undefined)
+            this.appKit?.setAddressExplorerUrl(undefined, this.chain)
           }
           if (this.hasSyncedConnectedAccount) {
             await this.syncBalance(address)
@@ -420,7 +424,10 @@ export class SolanaWeb3JsClient {
 
     window?.localStorage.setItem(SolConstantsUtil.WALLET_ID, provider.name)
 
-    await Promise.all([this.syncBalance(address), this.appKit?.setApprovedCaipNetworksData()])
+    await Promise.all([
+      this.syncBalance(address),
+      this.appKit?.setApprovedCaipNetworksData(this.chain)
+    ])
 
     this.watchProvider(provider)
   }

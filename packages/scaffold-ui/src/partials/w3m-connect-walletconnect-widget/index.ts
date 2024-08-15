@@ -38,9 +38,7 @@ export class W3mConnectWalletConnectWidget extends LitElement {
       return null
     }
 
-    const connector = this.connectors.find(
-      c => c.type === 'MULTI_CHAIN' && c.name === 'WalletConnect'
-    )
+    const connector = this.connectors.find(c => c.name === 'WalletConnect')
 
     if (!connector) {
       this.style.cssText = `display: none`
@@ -64,7 +62,7 @@ export class W3mConnectWalletConnectWidget extends LitElement {
   // -- Private Methods ----------------------------------- //
   private onConnector(connector: Connector) {
     ChainController.setActiveConnector(connector)
-    RouterController.push('ConnectingMultiChain')
+    RouterController.push('ConnectingWalletConnect')
   }
 }
 
