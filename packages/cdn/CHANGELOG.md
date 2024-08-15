@@ -1,5 +1,14 @@
 # @web3modal/cdn
 
+## 5.0.11-9aab3753c.2
+
+### Patch Changes
+
+- 20a38fe: Bubble SIWE error
+- Updated dependencies [20a38fe]
+  - @web3modal/ethers@5.0.11-9aab3753c.2
+  - @web3modal/wagmi@5.0.11-9aab3753c.2
+
 ## 5.0.11-4e505ef09.1
 
 ### Patch Changes

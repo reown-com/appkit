@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/wallet",
-  "version": "5.0.11-4e505ef09.1",
+  "version": "5.0.11-9aab3753c.2",
   "type": "module",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",

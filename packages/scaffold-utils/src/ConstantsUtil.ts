@@ -16,5 +16,5 @@ export const ConstantsUtil = {
     coinbaseWallet: 'com.coinbase.wallet',
     coinbaseWalletSDK: 'com.coinbase.wallet'
   } as Record<string, string>,
-  VERSION: '5.0.11-e1284bf86.0'
+  VERSION: '5.0.11-9aab3753c.2'
 }
