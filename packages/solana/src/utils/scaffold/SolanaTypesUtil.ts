@@ -97,3 +97,5 @@ export type Chain = {
 }
 
 export type AnyTransaction = SolanaWeb3Transaction | VersionedTransaction
+
+export type GetActiveChain = () => Chain | undefined
