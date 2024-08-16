@@ -32,6 +32,8 @@ import type { Chain as AvailableChain } from '@web3modal/common'
 import type { ProviderType, Chain, Provider, SolStoreUtilState } from './utils/scaffold/index.js'
 import { watchStandard } from './utils/watchStandard.js'
 import { WalletConnectProvider } from './providers/WalletConnectProvider.js'
+import { AuthProvider } from './providers/AuthProvider.js'
+import { W3mFrameProvider } from '@web3modal/wallet'
 
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
   solanaConfig: ProviderType
@@ -194,7 +196,8 @@ export class Web3Modal extends Web3ModalScaffold {
     this.initializeProviders({
       relayUrl: 'wss://relay.walletconnect.com',
       metadata,
-      projectId: w3mOptions.projectId
+      projectId: w3mOptions.projectId,
+      ...solanaConfig.auth
     })
 
     this.chains = chains
@@ -451,7 +454,7 @@ export class Web3Modal extends Web3ModalScaffold {
     return this.provider
   }
 
-  private async initializeProviders(opts: UniversalProviderOpts) {
+  private async initializeProviders(opts: UniversalProviderOpts & Provider['auth']) {
     if (CoreHelperUtil.isClient()) {
       this.addProvider(
         new WalletConnectProvider({
@@ -460,6 +463,20 @@ export class Web3Modal extends Web3ModalScaffold {
           getActiveChain: () => SolStoreUtil.state.currentChain
         })
       )
+
+      if (opts.email || opts.socials) {
+        if (!opts.projectId) {
+          throw new Error('projectId is required for AuthProvider')
+        }
+
+        this.addProvider(
+          new AuthProvider({
+            provider: new W3mFrameProvider(opts.projectId),
+            getActiveChain: () => SolStoreUtil.state.currentChain,
+            auth: { email: opts.email, socials: opts.socials }
+          })
+        )
+      }
 
       watchStandard(standardAdapters => this.addProvider.bind(this)(...standardAdapters))
     }
@@ -487,7 +504,9 @@ export class Web3Modal extends Web3ModalScaffold {
       imageUrl: provider.icon,
       name: provider.name,
       provider,
-      chain: CommonConstantsUtil.CHAIN.SOLANA
+      chain: CommonConstantsUtil.CHAIN.SOLANA,
+      email: provider.auth?.email,
+      socials: provider.auth?.socials
     }))
 
     this.setConnectors(connectors)

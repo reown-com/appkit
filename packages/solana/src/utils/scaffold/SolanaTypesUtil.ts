@@ -8,7 +8,7 @@ import type {
 } from '@solana/web3.js'
 
 import type { SendTransactionOptions } from '@solana/wallet-adapter-base'
-import type { ConnectorType } from '@web3modal/scaffold'
+import type { Connector, ConnectorType } from '@web3modal/scaffold'
 
 export type Connection = SolanaConnection
 
@@ -24,6 +24,7 @@ export type ProviderType = {
   email?: boolean
   EIP6963?: boolean
   metadata: Metadata
+  auth?: Provider['auth']
 }
 
 export interface RequestArguments {
@@ -38,6 +39,7 @@ export interface Provider extends ProviderEventEmitterMethods {
   icon?: string
   chains: Chain[]
   type: ConnectorType
+  auth?: Pick<Connector, 'email' | 'socials' | 'showWallets' | 'walletFeatures'>
 
   // Methods
   connect: () => Promise<string>

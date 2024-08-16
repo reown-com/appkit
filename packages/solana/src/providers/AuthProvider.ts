@@ -8,22 +8,25 @@ import { withSolanaNamespace } from '../utils/withSolanaNamespace'
 export type AuthProviderConfig = {
   provider: W3mFrameProvider
   getActiveChain: GetActiveChain
+  auth: NonNullable<Provider['auth']>
 }
 
 export class AuthProvider extends ProviderEventEmitter implements Provider {
-  readonly name = ConstantsUtil.AUTH_CONNECTOR_ID
-  readonly type = 'AUTH'
+  public readonly name = ConstantsUtil.AUTH_CONNECTOR_ID
+  public readonly type = 'AUTH'
+  public readonly auth: AuthProviderConfig['auth']
 
-  private readonly provider: W3mFrameProvider
-  private readonly getActiveChain: GetActiveChain
+  private readonly provider: AuthProviderConfig['provider']
+  private readonly getActiveChain: AuthProviderConfig['getActiveChain']
 
   private session: AuthProvider.Session | undefined
 
-  constructor({ provider, getActiveChain }: AuthProviderConfig) {
+  constructor({ provider, getActiveChain, auth }: AuthProviderConfig) {
     super()
 
     this.provider = provider
     this.getActiveChain = getActiveChain
+    this.auth = auth
   }
 
   get publicKey(): PublicKey | undefined {
