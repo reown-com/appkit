@@ -180,7 +180,7 @@ export class Web3Modal extends Web3ModalScaffold {
         })
 
         const params = await siweConfig?.getMessageParams?.()
-        // Must perform these checks to satify optional types
+        // Must perform these checks to satisfy optional types
         if (siweConfig?.options?.enabled && params && Object.keys(params || {}).length > 0) {
           const { SIWEController, getDidChainId, getDidAddress } = await import('@web3modal/siwe')
 
@@ -311,12 +311,24 @@ export class Web3Modal extends Web3ModalScaffold {
           const { SIWEController } = await import('@web3modal/siwe')
           await SIWEController.signOut()
         }
-        if (providerType === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
-          const WalletConnectProvider = provider
-          await (WalletConnectProvider as unknown as EthereumProvider).disconnect()
-        } else if (provider) {
-          provider.emit('disconnect')
+        if (
+          providerType === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID ||
+          providerType === 'coinbaseWalletSDK'
+        ) {
+          const ethProvider = provider
+          await (ethProvider as unknown as EthereumProvider).disconnect()
+        } else if (providerType === ConstantsUtil.EIP6963_CONNECTOR_ID && provider) {
+          await this.revokeProviderPermissions(provider)
+        } else if (providerType === ConstantsUtil.INJECTED_CONNECTOR_ID) {
+          const InjectedProvider = ethersConfig.injected
+          if (InjectedProvider) {
+            await this.revokeProviderPermissions(InjectedProvider)
+          }
         }
+
+        provider?.emit?.('disconnect')
+        localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
+        EthersStoreUtil.reset()
       },
 
       signMessage: async (message: string) => {
@@ -1149,6 +1161,27 @@ export class Web3Modal extends Web3ModalScaffold {
           this.EIP6963Providers.push(eip6963ProviderObj)
         }
       }
+    }
+  }
+
+  private async revokeProviderPermissions(provider: Provider) {
+    try {
+      const permissions: { parentCapability: string }[] = await provider.request({
+        method: 'wallet_getPermissions'
+      })
+      const ethAccountsPermission = permissions.find(
+        permission => permission.parentCapability === 'eth_accounts'
+      )
+
+      if (ethAccountsPermission) {
+        await provider.request({
+          method: 'wallet_revokePermissions',
+          params: [{ eth_accounts: {} }]
+        })
+      }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.info('Could not revoke permissions from wallet. Disconnecting...', error)
     }
   }
 

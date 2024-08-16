@@ -20,6 +20,10 @@
     "bignumber.js": "9.1.2",
     "dayjs": "1.11.10"
   },
+  "devDependencies": {
+    "vitest": "2.0.3",
+    "@vitest/coverage-v8": "2.0.5"
+  },
   "keywords": [
     "utils",
     "types",

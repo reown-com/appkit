@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build:clean": "turbo run build:clean --filter={./packages/*}",
-    "build": "turbo run build --filter={./packages/*} --concurrency=30",
+    "build": "turbo run build --filter={./packages/*} --concurrency=31",
     "watch": "turbo run watch --filter={./packages/*} --concurrency=50 --continue",
     "gallery": "turbo run dev --filter={./apps/gallery}",
     "laboratory": "pnpm --filter @apps/laboratory dev",
@@ -16,6 +16,7 @@
     "build:demo": "pnpm build; pnpm --filter=./apps/demo build",
     "build:examples": "pnpm build; pnpm --filter=./examples -r build",
     "test": "turbo run test",
+    "test:static": "pnpm run typecheck; pnpm run lint; pnpm run prettier",
     "coverage:merge": "node ./scripts/coverage-merge.js",
     "coverage:summary": "node ./scripts/coverage-summary.js",
     "typecheck": "turbo run typecheck",
@@ -30,25 +31,34 @@
     "publish:latest": "pnpm install; pnpm build; changeset publish",
     "publish:alpha": "pnpm install; pnpm build; changeset publish --tag alpha",
     "publish:beta": "pnpm install; pnpm build; changeset publish --tag beta",
-    "publish:canary": "pnpm install; pnpm build; changeset publish --tag canary"
+    "publish:canary": "pnpm install; pnpm build; changeset publish --tag canary",
+    "prepare": "husky",
+    "size": "pnpm --filter=./examples/react-wagmi size"
   },
   "devDependencies": {
     "@changesets/changelog-github": "0.5.0",
     "@changesets/cli": "2.27.1",
-    "@vitest/coverage-v8": "1.1.2",
     "@typescript-eslint/eslint-plugin": "6.18.1",
     "@typescript-eslint/parser": "6.18.1",
+    "@vitest/coverage-v8": "1.1.2",
     "danger": "11.3.1",
     "eslint": "8.56.0",
     "eslint-config-prettier": "9.1.0",
     "eslint-plugin-prettier": "5.1.3",
     "eslint-plugin-require-extensions": "0.1.3",
+    "husky": "9.0.11",
     "prettier": "3.1.1",
     "turbo": "2.0.6-canary.0",
     "typescript": "5.3.3",
     "vite": "5.2.11",
-    "vitest": "1.5.0",
-    "vite-plugin-node-polyfills": "0.22.0"
+    "vitest": "2.0.3",
+    "vite-plugin-node-polyfills": "0.22.0",
+    "pino": "7.11.0"
   },
-  "packageManager": "pnpm@9.5.0"
+  "packageManager": "pnpm@9.5.0",
+  "pnpm": {
+    "patchedDependencies": {
+      "@synthetixio/synpress-metamask@0.0.1-alpha.7": "patches/@synthetixio__synpress-metamask@0.0.1-alpha.7.patch"
+    }
+  }
 }

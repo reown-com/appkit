@@ -39,7 +39,7 @@ export class W3mFrame {
         iframe.style.position = 'fixed'
         iframe.style.zIndex = '999999'
         iframe.style.display = 'none'
-        iframe.style.opacity = '0'
+        iframe.style.animationDelay = '0s, 50ms'
         iframe.style.borderBottomLeftRadius = `clamp(0px, var(--wui-border-radius-l), 44px)`
         iframe.style.borderBottomRightRadius = `clamp(0px, var(--wui-border-radius-l), 44px)`
         document.body.appendChild(iframe)
@@ -71,6 +71,29 @@ export class W3mFrame {
 
   // -- Events ----------------------------------------------------------------
   public events = {
+    registerFrameEventHandler: (
+      id: string,
+      callback: (event: W3mFrameTypes.FrameEvent) => void,
+      signal: AbortSignal
+    ) => {
+      function eventHandler({ data }: MessageEvent) {
+        if (!data.type?.includes(W3mFrameConstants.FRAME_EVENT_KEY)) {
+          return
+        }
+        const frameEvent = W3mFrameSchema.frameEvent.parse(data)
+        if (frameEvent.id === id) {
+          callback(frameEvent)
+          window.removeEventListener('message', eventHandler)
+        }
+      }
+      if (W3mFrameHelpers.isClient) {
+        window.addEventListener('message', eventHandler)
+
+        signal.addEventListener('abort', () => {
+          window.removeEventListener('message', eventHandler)
+        })
+      }
+    },
     onFrameEvent: (callback: (event: W3mFrameTypes.FrameEvent) => void) => {
       if (W3mFrameHelpers.isClient) {
         window.addEventListener('message', ({ data }) => {
@@ -101,7 +124,6 @@ export class W3mFrame {
           throw new Error('W3mFrame: iframe is not set')
         }
         W3mFrameSchema.appEvent.parse(event)
-        window.postMessage(event)
         this.iframe.contentWindow.postMessage(event, '*')
       }
     },
