@@ -97,6 +97,8 @@ export namespace W3mFrameTypes {
     AppConnectDeviceRequest: undefined
     AppSignOutRequest: undefined
     AppRpcRequest: RPCRequest
+    AppGetFarcasterUriRequest: undefined
+    AppConnectFarcasterRequest: undefined
   }
 
   export interface Responses {
@@ -182,9 +184,11 @@ export namespace W3mFrameTypes {
 
   export type ProviderRequestType =
     | 'GetUser'
+    | 'GetFarcasterUri'
     | 'ConnectDevice'
     | 'ConnectEmail'
     | 'ConnectSocial'
+    | 'ConnectFarcaster'
     | 'ConnectOtp'
     | 'GetSocialRedirectUri'
     | 'SwitchNetwork'

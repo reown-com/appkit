@@ -1,5 +1,5 @@
 import { EthersTests } from '../../components/Ethers/EthersTests'
-import { Web3ModalButtons } from '../../components/Web3ModalButtons'
+import { AppKitButtons } from '../../components/AppKitButtons'
 import { createWeb3Modal, defaultConfig } from '@web3modal/ethers/react'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { EthersConstants } from '../../utils/EthersConstants'
@@ -10,7 +10,6 @@ const modal = createWeb3Modal({
   ethersConfig: defaultConfig({
     metadata: ConstantsUtil.Metadata,
     defaultChainId: 1,
-    rpcUrl: 'https://cloudflare-eth.com',
     chains: EthersConstants.chains,
     coinbasePreference: 'smartWalletOnly'
   }),
@@ -28,7 +27,7 @@ ThemeStore.setModal(modal)
 export default function Ethers() {
   return (
     <>
-      <Web3ModalButtons />
+      <AppKitButtons />
       <EthersModalInfo />
       <EthersTests />
     </>
