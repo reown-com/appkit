@@ -1,6 +1,7 @@
 import { beforeAll, describe, expect, it, vi } from 'vitest'
 import type { Provider } from '../src/utils/scaffold/SolanaTypesUtil'
 import { WalletConnectProvider } from '../src/providers/WalletConnectProvider'
+import { AuthProvider } from '../src/providers/AuthProvider'
 import { mockUniversalProvider } from './mocks/UniversalProvider'
 import { WalletStandardProvider } from '../src/providers/WalletStandardProvider'
 import { mockWalletStandard } from './mocks/WalletStandard'
@@ -22,6 +23,10 @@ const providers: { name: string; provider: Provider }[] = [
       wallet: mockWalletStandard(),
       getActiveChain: () => TestConstants.chains[0]
     })
+  },
+  {
+    name: 'AuthProvider',
+    provider: new AuthProvider()
   }
 ]
 
