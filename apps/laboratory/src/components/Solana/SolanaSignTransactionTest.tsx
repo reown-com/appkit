@@ -19,14 +19,14 @@ const amountInLamports = 10_000_000
 
 export function SolanaSignTransactionTest() {
   const toast = useChakraToast()
-  const { address, chainId } = useWeb3ModalAccount()
+  const { chainId } = useWeb3ModalAccount()
   const { walletProvider, connection } = useWeb3ModalProvider()
   const [loading, setLoading] = useState(false)
 
   async function onSignTransaction() {
     try {
       setLoading(true)
-      if (!walletProvider || !address) {
+      if (!walletProvider?.publicKey) {
         throw Error('user is disconnected')
       }
 
@@ -51,7 +51,7 @@ export function SolanaSignTransactionTest() {
       const signature = signedTransaction.signatures[0]?.signature
 
       if (!signature) {
-        throw Error('Failed to sign transaction')
+        throw Error('Empty signature')
       }
 
       toast({
@@ -73,7 +73,7 @@ export function SolanaSignTransactionTest() {
   async function onSignVersionedTransaction() {
     try {
       setLoading(true)
-      if (!walletProvider || !address) {
+      if (!walletProvider?.publicKey) {
         throw Error('user is disconnected')
       }
 
@@ -103,7 +103,7 @@ export function SolanaSignTransactionTest() {
       const signature = signedTransaction.signatures[0]
 
       if (!signature) {
-        throw Error('Failed to sign transaction')
+        throw Error('Empty signature')
       }
 
       toast({
@@ -114,16 +114,12 @@ export function SolanaSignTransactionTest() {
     } catch (err) {
       toast({
         title: 'Error',
-        description: 'Failed to sign transaction',
+        description: (err as Error).message,
         type: 'error'
       })
     } finally {
       setLoading(false)
     }
-  }
-
-  if (!address) {
-    return null
   }
 
   if (chainId === solana.chainId) {
