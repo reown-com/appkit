@@ -476,7 +476,7 @@ export class SolanaWeb3JsClient {
         ({
           id: `solana:${chain.chainId}`,
           name: chain.name,
-          imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId],
+          imageId: PresetsUtil.NetworkImageIds[chain.chainId],
           imageUrl: chainImages?.[chain.chainId],
           chain: this.chain
         }) as CaipNetwork
@@ -531,7 +531,7 @@ export class SolanaWeb3JsClient {
         this.appKit?.setCaipNetwork({
           id: caipChainId,
           name: chain.name,
-          imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId],
+          imageId: PresetsUtil.NetworkImageIds[chain.chainId],
           imageUrl: chainImages?.[chain.chainId],
           chain: this.chain
         })

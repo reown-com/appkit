@@ -584,7 +584,7 @@ export class Web3Modal extends Web3ModalScaffold {
         ({
           id: `${ConstantsUtil.EIP155}:${chain.chainId}`,
           name: chain.name,
-          imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId],
+          imageId: PresetsUtil.NetworkImageIds[chain.chainId],
           imageUrl: chainImages?.[Number(chain.chainId)]
         }) as CaipNetwork
     )
@@ -901,7 +901,7 @@ export class Web3Modal extends Web3ModalScaffold {
         this.setCaipNetwork({
           id: caipChainId,
           name: chain.name,
-          imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId],
+          imageId: PresetsUtil.NetworkImageIds[chain.chainId],
           imageUrl: chainImages?.[Number(chain.chainId)],
           chain: this.chain
         })

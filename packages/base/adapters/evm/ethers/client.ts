@@ -594,7 +594,7 @@ export class EVMEthersClient {
         ({
           id: `${ConstantsUtil.EIP155}:${chain.chainId}`,
           name: chain.name,
-          imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId],
+          imageId: PresetsUtil.NetworkImageIds[chain.chainId],
           imageUrl: chainImages?.[chain.chainId],
           chain: CommonConstantsUtil.CHAIN.EVM
         }) as CaipNetwork
@@ -1019,7 +1019,7 @@ export class EVMEthersClient {
         this.appKit?.setCaipNetwork({
           id: caipChainId,
           name: chain.name,
-          imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId],
+          imageId: PresetsUtil.NetworkImageIds[chain.chainId],
           imageUrl: chainImages?.[chain.chainId],
           chain: this.chain
         })

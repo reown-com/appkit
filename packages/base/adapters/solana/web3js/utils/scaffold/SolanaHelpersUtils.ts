@@ -40,7 +40,7 @@ export const SolHelpersUtil = {
       return {
         ...selectedChain,
         chainId: `solana:${chainId}` as CaipNetworkId,
-        imageId: PresetsUtil.EIP155NetworkImageIds[chainId],
+        imageId: PresetsUtil.NetworkImageIds[chainId],
         chain: CommonConstantsUtil.CHAIN.SOLANA
       }
     }
@@ -49,7 +49,7 @@ export const SolHelpersUtil = {
       ...SolConstantsUtil.DEFAULT_CHAIN,
       id: `solana:${chainId}` as CaipNetworkId,
       chainId: `solana:${chainId}` as CaipNetworkId,
-      imageId: PresetsUtil.EIP155NetworkImageIds[chainId],
+      imageId: PresetsUtil.NetworkImageIds[chainId],
       chain: CommonConstantsUtil.CHAIN.SOLANA
     }
   },
@@ -62,7 +62,7 @@ export const SolHelpersUtil = {
     return {
       id: `solana:${chain.chainId}`,
       name: chain.name,
-      imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId]
+      imageId: PresetsUtil.NetworkImageIds[chain.chainId]
     } as CaipNetwork
   },
 

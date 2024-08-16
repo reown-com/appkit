@@ -17,7 +17,7 @@ export function getCaipDefaultChain(chain?: Chain) {
   return {
     id: `${ConstantsUtil.EIP155}:${chain.id}`,
     name: chain.name,
-    imageId: PresetsUtil.EIP155NetworkImageIds[chain.id],
+    imageId: PresetsUtil.NetworkImageIds[chain.id],
     chain: CommonConstantsUtil.CHAIN.EVM
   } as CaipNetwork
 }
