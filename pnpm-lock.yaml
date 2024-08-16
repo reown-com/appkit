@@ -513,8 +513,8 @@ importers:
         specifier: 4.2.1
         version: 4.2.1(vite@5.2.11(@types/node@20.11.5)(terser@5.31.6))
       vite-size:
-        specifier: 0.0.4
-        version: 0.0.4(@types/node@20.11.5)(terser@5.31.6)(vue@3.4.3(typescript@5.3.3))
+        specifier: 0.0.5
+        version: 0.0.5(@types/node@20.11.5)(terser@5.31.6)(vue@3.4.3(typescript@5.3.3))
 
   examples/vue-ethers5:
     dependencies:
@@ -27224,7 +27224,7 @@ snapshots:
     transitivePeerDependencies:
       - rollup
 
-  vite-size@0.0.4(@types/node@20.11.5)(terser@5.31.6)(vue@3.4.3(typescript@5.3.3)):
+  vite-size@0.0.5(@types/node@20.11.5)(terser@5.31.6)(vue@3.4.3(typescript@5.3.3)):
     dependencies:
       '@vitejs/plugin-react': 4.2.1(vite@5.2.9(@types/node@20.11.5)(terser@5.31.6))
       '@vitejs/plugin-vue': 5.1.2(vite@5.2.9(@types/node@20.11.5)(terser@5.31.6))(vue@3.4.3(typescript@5.3.3))
