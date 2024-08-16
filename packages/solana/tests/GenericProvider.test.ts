@@ -1,20 +1,21 @@
 import { beforeAll, describe, expect, it, vi } from 'vitest'
-import type { Provider } from '../src/utils/scaffold/SolanaTypesUtil'
-import { WalletConnectProvider } from '../src/providers/WalletConnectProvider'
-import { AuthProvider } from '../src/providers/AuthProvider'
-import { mockUniversalProvider } from './mocks/UniversalProvider'
-import { WalletStandardProvider } from '../src/providers/WalletStandardProvider'
-import { mockWalletStandard } from './mocks/WalletStandard'
-import { TestConstants } from './util/TestConstants'
+import type { Provider } from '../src/utils/scaffold/SolanaTypesUtil.js'
+import { WalletConnectProvider } from '../src/providers/WalletConnectProvider.js'
+import { mockUniversalProvider } from './mocks/UniversalProvider.js'
+import { WalletStandardProvider } from '../src/providers/WalletStandardProvider.js'
+import { mockWalletStandard } from './mocks/WalletStandard.js'
+import { TestConstants } from './util/TestConstants.js'
 import { Transaction, VersionedTransaction } from '@solana/web3.js'
-import { mockLegacyTransaction, mockVersionedTransaction } from './mocks/Transaction'
+import { mockLegacyTransaction, mockVersionedTransaction } from './mocks/Transaction.js'
+import { AuthProvider } from '../src/providers/AuthProvider.js'
 
 const providers: { name: string; provider: Provider }[] = [
   {
     name: 'WalletConnectProvider',
     provider: new WalletConnectProvider({
       provider: mockUniversalProvider(),
-      chains: TestConstants.chains
+      chains: TestConstants.chains,
+      getActiveChain: () => TestConstants.chains[0]
     })
   },
   {
