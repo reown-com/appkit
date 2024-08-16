@@ -1,5 +1,23 @@
 export type CaipNetworkId = `${string}:${string}`
 
+export type CaipAddress = `${string}:${string}:${string}`
+
+export type ChainId = string | number
+
+export type Chain = 'evm' | 'solana'
+
+export type CaipNetwork = {
+  id: CaipNetworkId
+  chainId: ChainId
+  chain: Chain
+  name: string
+  currency: string
+  explorerUrl: string
+  rpcUrl: string
+  imageUrl?: string
+  imageId?: string
+}
+
 export type CoinbaseTransactionStatus =
   | 'ONRAMP_TRANSACTION_STATUS_SUCCESS'
   | 'ONRAMP_TRANSACTION_STATUS_IN_PROGRESS'
@@ -13,8 +31,6 @@ export type TransactionImage = {
   type: 'FUNGIBLE' | 'NFT' | undefined
   url: string | undefined
 }
-
-export type Chain = 'evm' | 'solana'
 
 export interface Transaction {
   id: string

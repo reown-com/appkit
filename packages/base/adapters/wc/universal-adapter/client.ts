@@ -3,9 +3,6 @@ import {
   AccountController,
   ConnectionController,
   NetworkController,
-  type CaipAddress,
-  type CaipNetwork,
-  type CaipNetworkId,
   type ConnectionControllerClient,
   type Connector,
   type NetworkControllerClient,
@@ -13,16 +10,19 @@ import {
   type Token
 } from '@web3modal/core'
 import { ConstantsUtil, PresetsUtil } from '@web3modal/scaffold-utils'
-import { type Chain } from '@web3modal/scaffold-utils'
-import { type Chain as AvailablChain } from '@web3modal/common'
 import UniversalProvider from '@walletconnect/universal-provider'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
 import type { UniversalProviderOpts } from '@walletconnect/universal-provider'
-import { NetworkUtil } from '@web3modal/common'
 import { WcConstantsUtil } from '../../../utils/ConstantsUtil.js'
 import { WcHelpersUtil } from '../../../utils/HelpersUtil.js'
 import type { AppKit } from '../../../src/client.js'
 import type { SessionTypes } from '@walletconnect/types'
+import {
+  type CaipNetwork,
+  type CaipNetworkId,
+  type CaipAddress,
+  type Chain
+} from '@web3modal/common'
 
 type Metadata = {
   name: string
@@ -32,17 +32,17 @@ type Metadata = {
 }
 
 // -- Types ---------------------------------------------------------------------
-export interface Web3ModalClientOptions {
-  chains?: Chain[]
+export interface AppKitClientOptions {
+  caipNetworks: CaipNetwork[]
   siweConfig?: Web3ModalSIWEClient
-  defaultChain?: Chain
-  chainImages?: Record<number | string, string>
+  defaultNetwork?: CaipNetwork
+  caipNetworkImages?: Record<number | string, string>
   connectorImages?: Record<string, string>
   tokens?: Record<number, Token>
   metadata?: Metadata
 }
 
-export type Web3ModalOptions = Omit<Web3ModalClientOptions, '_sdkVersion'>
+export type AppKitOptions = Omit<AppKitClientOptions, '_sdkVersion'>
 
 // -- Client --------------------------------------------------------------------
 export class UniversalAdapterClient {
@@ -50,7 +50,7 @@ export class UniversalAdapterClient {
 
   private walletConnectProviderInitPromise?: Promise<void>
 
-  private chains: Chain[]
+  private caipNetworks: CaipNetwork[]
 
   private metadata?: Metadata
 
@@ -66,22 +66,20 @@ export class UniversalAdapterClient {
 
   public options: OptionsControllerState | undefined = undefined
 
-  public constructor(options: Web3ModalClientOptions) {
-    const { siweConfig, chains, metadata } = options
+  public constructor(options: AppKitOptions) {
+    const { siweConfig, caipNetworks, metadata } = options
 
     this.chain = 'evm'
 
     this.metadata = metadata
 
-    this.chains = chains || []
+    this.caipNetworks = caipNetworks
 
     this.networkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
-        const chainId = NetworkUtil.caipNetworkIdToNumber(caipNetwork?.id)
-
-        if (chainId) {
+        if (caipNetwork) {
           try {
-            this.switchNetwork(chainId)
+            this.switchNetwork(caipNetwork)
           } catch (error) {
             throw new Error('networkControllerClient:switchCaipNetwork - unable to switch chain')
           }
@@ -170,7 +168,7 @@ export class UniversalAdapterClient {
             }
           }
         } else {
-          const namespaces = WcHelpersUtil.createNamespaces(this.chains)
+          const namespaces = WcHelpersUtil.createNamespaces(this.caipNetworks)
 
           await WalletConnectProvider.connect({ optionalNamespaces: namespaces })
         }
@@ -245,7 +243,7 @@ export class UniversalAdapterClient {
     this.options = options
 
     this.createProvider()
-    this.syncRequestedNetworks(this.chains)
+    this.syncRequestedNetworks(this.caipNetworks)
     this.syncConnectors()
   }
 
@@ -301,36 +299,14 @@ export class UniversalAdapterClient {
     return this.walletConnectProvider
   }
 
-  private syncRequestedNetworks(
-    chains: Web3ModalClientOptions['chains'],
-    chainImages?: Web3ModalClientOptions['chainImages']
-  ) {
-    const evmRequestedCaipNetworks = chains?.filter(c => c.chain === 'evm')
-    const solanaRequestedCaipNetworks = chains?.filter(c => c.chain === 'solana')
-
-    const evmCaipNetworks = evmRequestedCaipNetworks?.map(
-      chain =>
-        ({
-          id: `${chain.chain === 'evm' ? ConstantsUtil.EIP155 : chain.chain}:${chain.chainId}`,
-          name: chain.name,
-          imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId],
-          imageUrl: chainImages?.[chain.chainId],
-          chain: chain.chain
-        }) as CaipNetwork
-    )
-    const solanaCaipNetworks = solanaRequestedCaipNetworks?.map(
-      chain =>
-        ({
-          id: `${chain.chain === 'evm' ? ConstantsUtil.EIP155 : chain.chain}:${chain.chainId}`,
-          name: chain.name,
-          imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId],
-          imageUrl: chainImages?.[chain.chainId],
-          chain: chain.chain
-        }) as CaipNetwork
-    )
-
-    this.appKit?.setRequestedCaipNetworks(evmCaipNetworks ?? [], 'evm')
-    this.appKit?.setRequestedCaipNetworks(solanaCaipNetworks ?? [], 'solana')
+  private syncRequestedNetworks(caipNetworks: AppKitClientOptions['caipNetworks']) {
+    const uniqueChains = [...new Set(caipNetworks.map(caipNetwork => caipNetwork.chain))]
+    uniqueChains.forEach(chain => {
+      this.appKit?.setRequestedCaipNetworks(
+        caipNetworks.filter(caipNetwork => caipNetwork.chain === chain),
+        chain
+      )
+    })
   }
 
   private async checkActiveWalletConnectProvider() {
@@ -356,14 +332,12 @@ export class UniversalAdapterClient {
       Object.keys(nameSpaces)
         .reverse()
         .forEach(key => {
-          const chain = (key === 'eip155' ? 'evm' : key) as AvailablChain
-          const caipAddress = nameSpaces?.[key]?.accounts[0]
+          const chain = (key === 'eip155' ? 'evm' : key) as Chain
+          const caipAddress = nameSpaces?.[key]?.accounts[0] as CaipAddress
 
-          const { address } = WcHelpersUtil.extractDetails(caipAddress)
-
-          if (address) {
+          if (caipAddress) {
             this.appKit?.setIsConnected(true, chain)
-            this.appKit?.setCaipAddress(caipAddress as CaipAddress, chain)
+            this.appKit?.setCaipAddress(caipAddress, chain)
           }
         })
       if (!NetworkController.state.caipNetwork) {
@@ -381,7 +355,7 @@ export class UniversalAdapterClient {
   }
 
   private setDefaultNetwork(nameSpaces: SessionTypes.Namespaces) {
-    const chain = this.chains[0]?.chain === 'evm' ? 'eip155' : this.chains[0]?.chain
+    const chain = this.caipNetworks[0]?.chain === 'evm' ? 'eip155' : this.caipNetworks[0]?.chain
 
     if (chain) {
       const chainNamespace = nameSpaces?.[chain]
@@ -430,13 +404,10 @@ export class UniversalAdapterClient {
     }
   }
 
-  public switchNetwork(chainId: number | string) {
-    if (this.chains) {
-      const chain = this.chains.find(c => c.chainId === chainId)
-
-      if (this.walletConnectProvider && chain) {
-        const caipChain = `${chain.chain === 'evm' ? 'eip155' : chain.chain}:${chain.chainId}`
-        this.walletConnectProvider.setDefaultChain(caipChain)
+  public switchNetwork(caipNetwork: CaipNetwork) {
+    if (caipNetwork) {
+      if (this.walletConnectProvider) {
+        this.walletConnectProvider.setDefaultChain(caipNetwork.id)
       }
     }
   }
@@ -463,14 +434,12 @@ export class UniversalAdapterClient {
 
     if (isConnected) {
       namespaceKeys.forEach(async key => {
-        const chain = (key === 'eip155' ? 'evm' : key) as AvailablChain
-        const address = namespaces?.[key]?.accounts[0]
+        const chain = (key === 'eip155' ? 'evm' : key) as Chain
+        const address = namespaces?.[key]?.accounts[0] as CaipAddress
 
-        this.appKit?.resetAccount(chain)
         this.appKit?.setIsConnected(isConnected, chain)
         this.appKit?.setPreferredAccountType(preferredAccountType, chain)
-        // this.appKit?.setProvider(this.walletConnectProvider, chain)
-        this.appKit?.setCaipAddress(address as CaipAddress, chain)
+        this.appKit?.setCaipAddress(address, chain)
         this.syncConnectedWalletInfo()
 
         await Promise.all([this.appKit?.setApprovedCaipNetworksData(chain)])

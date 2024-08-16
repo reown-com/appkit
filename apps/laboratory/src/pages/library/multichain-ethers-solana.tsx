@@ -3,7 +3,7 @@ import { EVMEthersClient, defaultConfig } from '@web3modal/base/adapters/evm/eth
 import { SolanaWeb3JsClient, defaultSolanaConfig } from '@web3modal/base/adapters/solana/web3js'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
-import { mainnet, solana, arbitrum, optimism } from '../../utils/ChainsUtil'
+import { mainnet, solana, arbitrum, optimism } from '../../utils/NetworksUtil'
 import { Web3ModalButtons } from '../../components/Web3ModalButtons'
 import { BackpackWalletAdapter } from '@solana/wallet-adapter-backpack'
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'

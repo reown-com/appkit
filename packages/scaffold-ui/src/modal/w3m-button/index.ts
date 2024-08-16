@@ -57,9 +57,9 @@ export class W3mButton extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const isBalanceFetched = this.balanceVal && this.balanceSymbol
+    // const isBalanceFetched = this.balanceVal && this.balanceSymbol
 
-    return isBalanceFetched && this.isAccount && !this.isLoading
+    return this.isAccount && !this.isLoading
       ? html`
           <w3m-account-button
             .disabled=${Boolean(this.disabled)}

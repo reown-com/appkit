@@ -1,5 +1,5 @@
 import type { W3mFrameProvider, W3mFrameTypes } from '@web3modal/wallet'
-import type { Balance, Transaction, Chain } from '@web3modal/common'
+import type { Balance, Transaction, Chain, CaipNetworkId, CaipNetwork } from '@web3modal/common'
 import type {
   NetworkControllerClient,
   NetworkControllerState
@@ -8,10 +8,6 @@ import type { ConnectionControllerClient } from '../controllers/ConnectionContro
 import type { AccountControllerState } from '../controllers/AccountController.js'
 import type { OnRampProviderOption } from '../controllers/OnRampController.js'
 
-export type CaipAddress = `${string}:${string}:${string}`
-
-export type CaipNetworkId = `${string}:${string}`
-
 export type CaipNetworkCoinbaseNetwork =
   | 'Ethereum'
   | 'Arbitrum One'
@@ -19,14 +15,6 @@ export type CaipNetworkCoinbaseNetwork =
   | 'Avalanche'
   | 'OP Mainnet'
   | 'Celo'
-
-export interface CaipNetwork {
-  id: CaipNetworkId
-  name?: string
-  imageId?: string
-  imageUrl?: string
-  chain: Chain
-}
 
 export type ConnectedWalletInfo =
   | {
@@ -830,7 +818,7 @@ export type ChainAdapter = {
   networkControllerClient?: NetworkControllerClient
   accountState?: AccountControllerState
   networkState?: NetworkControllerState
-  defaultChain?: CaipNetwork
+  defaultNetwork?: CaipNetwork
   chain: Chain
   isUniversalAdapterClient?: boolean
 }

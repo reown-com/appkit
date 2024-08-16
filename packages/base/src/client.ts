@@ -5,8 +5,7 @@ import type {
   ModalControllerState,
   ConnectedWalletInfo,
   RouterControllerState,
-  ChainAdapter,
-  CaipNetwork
+  ChainAdapter
 } from '@web3modal/core'
 import {
   AccountController,
@@ -26,9 +25,10 @@ import {
   NetworkController
 } from '@web3modal/core'
 import { setColorTheme, setThemeVariables } from '@web3modal/ui'
-import { ConstantsUtil, type Chain } from '@web3modal/common'
+import { ConstantsUtil, type CaipNetwork, type Chain } from '@web3modal/common'
 import type { AppKitOptions } from '../utils/TypesUtil.js'
 import { UniversalAdapterClient } from '../adapters/wc/universal-adapter/client.js'
+import { PresetsUtil } from '@web3modal/scaffold-utils'
 
 // -- Types --------------------------------------------------------------------
 export interface OpenOptions {
@@ -372,17 +372,21 @@ export class AppKit {
 
   private initializeUniversalAdapter(options: AppKitOptions, universalAdapterOnly: boolean) {
     ChainController.setisUniversalAdapterOnly(universalAdapterOnly)
+    const caipNetworks = this.extendCaipNetworksWithImages(
+      options.caipNetworks,
+      options.caipNetworkImages
+    )
     this.universalAdapter = new UniversalAdapterClient({
-      chains: options.chains,
+      caipNetworks,
       metadata: options.metadata
     })
 
     ChainController.initializeUniversalAdapter(this.universalAdapter)
     this.universalAdapter.construct?.(this, options)
 
-    NetworkController.setAllowUnsupportedChain(options.allowUnsupportedChain, 'evm')
-    NetworkController.setAllowUnsupportedChain(options.allowUnsupportedChain, 'solana')
-    NetworkController.setDefaultCaipNetwork(options.defaultChain)
+    NetworkController.setAllowUnsupportedCaipNetwork(options.allowUnsupportedCaipNetwork, 'evm')
+    NetworkController.setAllowUnsupportedCaipNetwork(options.allowUnsupportedCaipNetwork, 'solana')
+    NetworkController.setDefaultCaipNetwork(options.defaultCaipNetwork)
   }
 
   private initializeAdapters(options: AppKitOptions) {
@@ -392,8 +396,11 @@ export class AppKit {
       adapter.construct?.(this, options)
 
       // Set this value for all chains
-      NetworkController.setAllowUnsupportedChain(options.allowUnsupportedChain, adapter.chain)
-      NetworkController.setDefaultCaipNetwork(options.defaultChain)
+      NetworkController.setAllowUnsupportedCaipNetwork(
+        options.allowUnsupportedCaipNetwork,
+        adapter.chain
+      )
+      NetworkController.setDefaultCaipNetwork(options.defaultCaipNetwork)
     })
   }
 
@@ -411,5 +418,16 @@ export class AppKit {
     }
 
     return this.initPromise
+  }
+
+  private extendCaipNetworksWithImages(
+    caipNetworks: CaipNetwork[],
+    caipNetworkImages?: Record<number | string, string>
+  ): CaipNetwork[] {
+    return caipNetworks.map(caipNetwork => ({
+      ...caipNetwork,
+      imageId: PresetsUtil.NetworkImageIds[caipNetwork.chainId],
+      imageUrl: caipNetworkImages?.[caipNetwork.chainId]
+    }))
   }
 }

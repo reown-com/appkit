@@ -1,7 +1,7 @@
 import { createWeb3Modal, defaultSolanaConfig } from '@web3modal/solana/react'
 
 import { ThemeStore } from '../../utils/StoreUtil'
-import { solana, solanaDevnet, solanaTestnet } from '../../utils/ChainsUtil'
+import { solana, solanaDevnet, solanaTestnet } from '../../utils/NetworksUtil'
 import { Web3ModalButtons } from '../../components/Web3ModalButtons'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { SolanaTests } from '../../components/Solana/SolanaTests'

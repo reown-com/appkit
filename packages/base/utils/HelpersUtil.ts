@@ -1,5 +1,6 @@
 import type { Chain } from '@web3modal/scaffold-utils'
 import type { Namespace } from './TypesUtil.js'
+import type { CaipNetwork } from '@web3modal/common'
 
 export const WcHelpersUtil = {
   hexStringToNumber(value: string) {
@@ -25,8 +26,8 @@ export const WcHelpersUtil = {
         return []
     }
   },
-  createNamespaces(chains: Chain[]): Namespace {
-    return chains.reduce<Namespace>((acc, chain) => {
+  createNamespaces(caipNetworks: CaipNetwork[]): Namespace {
+    return caipNetworks.reduce<Namespace>((acc, chain) => {
       const { chainId, chain: chainType, rpcUrl } = chain
       // eslint-disable-next-line @typescript-eslint/no-useless-template-literals
       const namespaceKey = `${chainType === 'evm' ? 'eip155' : chainType}`

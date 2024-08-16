@@ -14,7 +14,7 @@ export const PresetsUtil = {
       '19177a98252e07ddfc9af2083ba8e07ef627cb6103467ffebb3f8f4205fd7927'
   } as Record<string, string>,
 
-  EIP155NetworkImageIds: {
+  NetworkImageIds: {
     // Ethereum
     1: 'ba0ba0cd-17c6-4806-ad93-f9d174f17900',
     // Arbitrum

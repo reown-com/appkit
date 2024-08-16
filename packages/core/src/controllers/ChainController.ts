@@ -1,11 +1,11 @@
 import { proxyMap, subscribeKey as subKey } from 'valtio/utils'
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
-import type { CaipNetwork, ChainAdapter, Connector } from '../utils/TypeUtil.js'
+import type { ChainAdapter, Connector } from '../utils/TypeUtil.js'
 
 import { NetworkController, type NetworkControllerState } from './NetworkController.js'
 import { AccountController, type AccountControllerState } from './AccountController.js'
 import { PublicStateController } from './PublicStateController.js'
-import { type Chain } from '@web3modal/common'
+import { type CaipNetwork, type Chain } from '@web3modal/common'
 
 // -- Types --------------------------------------------- //
 export interface ChainControllerState {

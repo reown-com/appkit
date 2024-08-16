@@ -13,7 +13,7 @@ import {
   zora,
   sepolia,
   baseSepolia
-} from './ChainsUtil'
+} from './NetworksUtil'
 
 export const EthersConstants = {
   chains: [

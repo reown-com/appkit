@@ -1,9 +1,8 @@
 import { proxy, ref } from 'valtio/vanilla'
-import type { CaipNetwork, CaipNetworkId } from '../utils/TypeUtil.js'
 import { EventsController } from './EventsController.js'
 import { ModalController } from './ModalController.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
-import { NetworkUtil, type Chain } from '@web3modal/common'
+import { NetworkUtil, type CaipNetwork, type CaipNetworkId, type Chain } from '@web3modal/common'
 import { ChainController } from './ChainController.js'
 import { PublicStateController } from './PublicStateController.js'
 
@@ -24,7 +23,7 @@ export interface NetworkControllerState {
   caipNetwork?: CaipNetwork
   requestedCaipNetworks?: CaipNetwork[]
   approvedCaipNetworkIds?: CaipNetworkId[]
-  allowUnsupportedChain?: boolean
+  allowUnsupportedCaipNetwork?: boolean
   smartAccountEnabledNetworks?: number[]
 }
 
@@ -96,7 +95,10 @@ export const NetworkController = {
       selectedNetworkId: caipNetwork?.id
     })
 
-    if (!ChainController.state.chains.get(caipNetwork.chain)?.networkState?.allowUnsupportedChain) {
+    if (
+      !ChainController.state.chains.get(caipNetwork.chain)?.networkState
+        ?.allowUnsupportedCaipNetwork
+    ) {
       const isSupported = this.checkIfSupportedNetwork()
 
       if (!isSupported) {
@@ -127,12 +129,12 @@ export const NetworkController = {
     )
   },
 
-  setAllowUnsupportedChain(
-    allowUnsupportedChain: NetworkControllerState['allowUnsupportedChain'],
+  setAllowUnsupportedCaipNetwork(
+    allowUnsupportedCaipNetwork: NetworkControllerState['allowUnsupportedCaipNetwork'],
     chain?: Chain
   ) {
     ChainController.setChainNetworkData(chain || ChainController.state.activeChain, {
-      allowUnsupportedChain
+      allowUnsupportedCaipNetwork
     })
   },
 
