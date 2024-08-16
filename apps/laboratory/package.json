@@ -1,5 +1,6 @@
 {
   "name": "@apps/laboratory",
+  "type": "module",
   "version": "5.0.11",
   "private": true,
   "scripts": {
