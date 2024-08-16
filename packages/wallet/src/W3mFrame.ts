@@ -39,7 +39,7 @@ export class W3mFrame {
         iframe.style.position = 'fixed'
         iframe.style.zIndex = '999999'
         iframe.style.display = 'none'
-        iframe.style.opacity = '0'
+        iframe.style.animationDelay = '0s, 50ms'
         iframe.style.borderBottomLeftRadius = `clamp(0px, var(--wui-border-radius-l), 44px)`
         iframe.style.borderBottomRightRadius = `clamp(0px, var(--wui-border-radius-l), 44px)`
         document.body.appendChild(iframe)
@@ -124,7 +124,6 @@ export class W3mFrame {
           throw new Error('W3mFrame: iframe is not set')
         }
         W3mFrameSchema.appEvent.parse(event)
-        window.postMessage(event)
         this.iframe.contentWindow.postMessage(event, '*')
       }
     },
