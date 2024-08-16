@@ -28,7 +28,6 @@ export default css`
   }
 
   button:disabled > wui-image,
-  button:disabled > wui-icon-box,
   button:disabled > wui-flex > wui-avatar {
     filter: grayscale(1);
   }

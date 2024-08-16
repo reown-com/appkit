@@ -33,14 +33,14 @@ const chains = [
     name: 'Solana Testnet',
     currency: 'SOL',
     explorerUrl: 'https://explorer.solana.com/?cluster=testnet',
-    rpcUrl: 'https://api.testnet.solana.com'
+    rpcUrl: 'https://rpc.walletconnect.org/v1'
   },
   {
     chainId: 'EtWTRABZaYq6iMfeYKouRu166VU2xqa1',
     name: 'Solana Devnet',
     currency: 'SOL',
     explorerUrl: 'https://explorer.solana.com/?cluster=devnet',
-    rpcUrl: 'https://api.devnet.solana.com'
+    rpcUrl: 'https://rpc.walletconnect.org/v1'
   }
 ]
 
@@ -49,8 +49,8 @@ const solanaConfig = defaultSolanaConfig({
   chains: chains,
   projectId,
   metadata: {
-    name: 'Web3Modal React Example',
-    description: 'Web3Modal React Example',
+    name: 'AppKit React Example',
+    description: 'AppKit React Example',
     url: '',
     icons: []
   }

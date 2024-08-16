@@ -1,10 +1,6 @@
 import { PublicKey } from '@solana/web3.js'
 import { ConstantsUtil } from '@web3modal/common'
 
-/**
- * Request methods to the solana RPC.
- * @see {@link https://solana.com/docs}
- */
 export const SolConstantsUtil = {
   HASH_PREFIX: 'SPL Name Service',
   /**
@@ -33,5 +29,13 @@ export const SolConstantsUtil = {
     explorerUrl: 'https://solscan.io',
     rpcUrl: `${ConstantsUtil.BLOCKCHAIN_API_RPC_URL}/v1`,
     chain: ConstantsUtil.CHAIN.SOLANA
-  }
-}
+  },
+  CHAIN_IDS: {
+    Mainnet: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+    Devnet: 'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1',
+    Testnet: 'solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z',
+    Deprecated_Mainnet: 'solana:4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ',
+    Deprecated_Devnet: 'solana:8E9rvCKLFQia2Y35HXjjpWzj8weVo44K'
+  },
+  LAMPORTS_PER_SOL: 1_000_000_000
+} as const

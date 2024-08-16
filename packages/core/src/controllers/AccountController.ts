@@ -36,6 +36,7 @@ export interface AccountControllerState {
   connectedWalletInfo?: ConnectedWalletInfo
   preferredAccountType?: W3mFrameTypes.AccountType
   socialWindow?: Window
+  farcasterUrl?: string
 }
 
 // -- State --------------------------------------------- //
@@ -128,8 +129,9 @@ export const AccountController = {
       ChainController.setAccountProp('tokenBalance', tokenBalance, chain)
     }
   },
-  setShouldUpdateToAddress(address: string) {
-    ChainController.setAccountProp('shouldUpdateToAddress', address)
+
+  setShouldUpdateToAddress(address: string, chain?: Chain) {
+    ChainController.setAccountProp('shouldUpdateToAddress', address, chain)
   },
 
   setAllAccounts(accounts: AccountType[], chain?: Chain) {
@@ -139,13 +141,13 @@ export const AccountController = {
   addAddressLabel(address: string, label: string) {
     const map = ChainController.getAccountProp('addressLabels') || new Map()
     map.set(address, label)
-    ChainController.setAccountProp('addressLabels', map)
+    ChainController.setAccountProp('addressLabels', map, ChainController.state.activeChain)
   },
 
   removeAddressLabel(address: string) {
     const map = ChainController.getAccountProp('addressLabels') || new Map()
     map.delete(address)
-    ChainController.setAccountProp('addressLabels', map)
+    ChainController.setAccountProp('addressLabels', map, ChainController.state.activeChain)
   },
 
   setConnectedWalletInfo(
@@ -171,6 +173,12 @@ export const AccountController = {
   setSocialWindow(socialWindow: AccountControllerState['socialWindow'], chain?: Chain) {
     if (socialWindow) {
       ChainController.setAccountProp('socialWindow', ref(socialWindow), chain)
+    }
+  },
+
+  setFarcasterUrl(farcasterUrl: AccountControllerState['farcasterUrl'], chain?: Chain) {
+    if (farcasterUrl) {
+      ChainController.setAccountProp('farcasterUrl', farcasterUrl, chain)
     }
   },
 

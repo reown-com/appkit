@@ -15,18 +15,18 @@ import { useChakraToast } from '../Toast'
 
 const PHANTOM_DEVNET_ADDRESS = '8vCyX7oB6Pc3pbWMGYYZF5pbSnAdQ7Gyr32JqxqCy8ZR'
 const recipientAddress = new PublicKey(PHANTOM_DEVNET_ADDRESS)
-const amountInLamports = 100000000
+const amountInLamports = 10_000_000
 
 export function SolanaSignTransactionTest() {
   const toast = useChakraToast()
-  const { address, chainId } = useWeb3ModalAccount()
+  const { chainId } = useWeb3ModalAccount()
   const { walletProvider, connection } = useWeb3ModalProvider()
   const [loading, setLoading] = useState(false)
 
   async function onSignTransaction() {
     try {
       setLoading(true)
-      if (!walletProvider || !address) {
+      if (!walletProvider?.publicKey) {
         throw Error('user is disconnected')
       }
 
@@ -46,18 +46,23 @@ export function SolanaSignTransactionTest() {
       const { blockhash } = await connection.getLatestBlockhash()
 
       transaction.recentBlockhash = blockhash
-      const tx = await walletProvider.signTransaction(transaction)
-      const signature = tx.signatures[0]?.signature
+
+      const signedTransaction = await walletProvider.signTransaction(transaction)
+      const signature = signedTransaction.signatures[0]?.signature
+
+      if (!signature) {
+        throw Error('Empty signature')
+      }
 
       toast({
         title: 'Success',
-        description: signature,
+        description: Uint8Array.from(signature),
         type: 'success'
       })
     } catch (err) {
       toast({
         title: 'Error',
-        description: 'Failed to sign transaction',
+        description: (err as Error).message,
         type: 'error'
       })
     } finally {
@@ -68,7 +73,7 @@ export function SolanaSignTransactionTest() {
   async function onSignVersionedTransaction() {
     try {
       setLoading(true)
-      if (!walletProvider || !address) {
+      if (!walletProvider?.publicKey) {
         throw Error('user is disconnected')
       }
 
@@ -94,8 +99,12 @@ export function SolanaSignTransactionTest() {
       // Make a versioned transaction
       const transactionV0 = new VersionedTransaction(messageV0)
 
-      const tx = await walletProvider.signTransaction(transactionV0)
-      const signature = tx.signatures[0]?.signature
+      const signedTransaction = await walletProvider.signTransaction(transactionV0)
+      const signature = signedTransaction.signatures[0]
+
+      if (!signature) {
+        throw Error('Empty signature')
+      }
 
       toast({
         title: 'Success',
@@ -105,16 +114,12 @@ export function SolanaSignTransactionTest() {
     } catch (err) {
       toast({
         title: 'Error',
-        description: 'Failed to sign transaction',
+        description: (err as Error).message,
         type: 'error'
       })
     } finally {
       setLoading(false)
     }
-  }
-
-  if (!address) {
-    return null
   }
 
   if (chainId === solana.chainId) {
@@ -125,26 +130,22 @@ export function SolanaSignTransactionTest() {
     )
   }
 
-  const supportV0Transactions = walletProvider?.name !== 'WalletConnect'
-
   return (
     <Stack direction={['column', 'column', 'row']}>
       <Button
-        data-test-id="sign-transaction-button"
+        data-testid="sign-transaction-button"
         onClick={onSignTransaction}
         isDisabled={loading}
       >
         Sign Transaction
       </Button>
-      {supportV0Transactions ? (
-        <Button
-          data-test-id="sign-transaction-button"
-          onClick={onSignVersionedTransaction}
-          isDisabled={loading}
-        >
-          Sign Versioned Transaction
-        </Button>
-      ) : null}
+      <Button
+        data-test-id="sign-transaction-button"
+        onClick={onSignVersionedTransaction}
+        isDisabled={loading}
+      >
+        Sign Versioned Transaction
+      </Button>
       <Spacer />
 
       <Link isExternal href="https://solfaucet.com/">

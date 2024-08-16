@@ -6,6 +6,9 @@ export interface ConfigOptions {
   enableEIP6963?: boolean
   enableCoinbase?: boolean
   enableInjected?: boolean
+  /**
+   * @deprecated this doesn't do anything, use `chains` instead
+   */
   rpcUrl?: string
   defaultChainId?: number
   metadata: Metadata

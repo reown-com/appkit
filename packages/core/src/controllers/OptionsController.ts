@@ -24,6 +24,7 @@ export interface OptionsControllerState {
   hasMultipleAddresses?: boolean
   disableAppend?: boolean
   enableEIP6963?: boolean
+  enableSwaps?: boolean
 }
 
 type StateKey = keyof OptionsControllerState
@@ -116,5 +117,9 @@ export const OptionsController = {
 
   setHasMultipleAddresses(hasMultipleAddresses: OptionsControllerState['hasMultipleAddresses']) {
     state.hasMultipleAddresses = hasMultipleAddresses
+  },
+
+  setEnableSwaps(enableSwaps: OptionsControllerState['enableSwaps']) {
+    state.enableSwaps = enableSwaps
   }
 }

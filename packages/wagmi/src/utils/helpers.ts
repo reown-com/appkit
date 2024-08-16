@@ -1,7 +1,8 @@
 import { CoreHelperUtil } from '@web3modal/scaffold'
 import { ConstantsUtil, PresetsUtil } from '@web3modal/scaffold-utils'
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
-import { fallback, http } from 'viem'
+import { getChainsFromAccounts } from '@walletconnect/utils'
+import { fallback, http, type Hex } from 'viem'
 
 import type { CaipNetwork, CaipNetworkId } from '@web3modal/scaffold'
 import type { Chain } from '@wagmi/core/chains'
@@ -28,7 +29,9 @@ export async function getWalletConnectCaipNetworks(connector?: Connector) {
   >
   const ns = provider?.signer?.session?.namespaces
   const nsMethods = ns?.[ConstantsUtil.EIP155]?.methods
-  const nsChains = ns?.[ConstantsUtil.EIP155]?.chains as CaipNetworkId[]
+  const nsChains = getChainsFromAccounts(
+    ns?.[ConstantsUtil.EIP155]?.accounts || []
+  ) as CaipNetworkId[]
 
   return {
     supportsAllNetworks: Boolean(nsMethods?.includes(ConstantsUtil.ADD_CHAIN_METHOD)),
@@ -54,7 +57,29 @@ export function getTransport({ chain, projectId }: { chain: Chain; projectId: st
   }
 
   return fallback([
-    http(`${RPC_URL}/v1/?chainId=${ConstantsUtil.EIP155}:${chain.id}&projectId=${projectId}`),
+    http(`${RPC_URL}/v1/?chainId=${ConstantsUtil.EIP155}:${chain.id}&projectId=${projectId}`, {
+      /*
+       * The Blockchain API uses "Content-Type: text/plain" to avoid OPTIONS preflight requests
+       * It will only work for viem >= 2.17.7
+       */
+      fetchOptions: {
+        headers: {
+          'Content-Type': 'text/plain'
+        }
+      }
+    }),
     http(chainDefaultUrl)
   ])
+}
+
+export function requireCaipAddress(caipAddress: string) {
+  if (!caipAddress) {
+    throw new Error('No CAIP address provided')
+  }
+  const account = caipAddress.split(':')[2] as Hex
+  if (!account) {
+    throw new Error('Invalid CAIP address')
+  }
+
+  return account
 }

@@ -1,9 +1,5 @@
 import { W3mFrameStorage } from './W3mFrameStorage.js'
-import {
-  W3mFrameConstants,
-  W3mFrameRpcConstants,
-  type W3mFrameConstantValue
-} from './W3mFrameConstants.js'
+import { W3mFrameConstants, W3mFrameRpcConstants } from './W3mFrameConstants.js'
 import type { W3mFrameTypes } from './W3mFrameTypes.js'
 import { RegexUtil } from './RegexUtil.js'
 
@@ -33,35 +29,18 @@ export const W3mFrameHelpers = {
     return 0
   },
 
-  checkIfRequestExists(request: unknown) {
-    const method = this.getRequestMethod(request)
-
+  checkIfRequestExists(request: W3mFrameTypes.RPCRequest) {
     return (
-      W3mFrameRpcConstants.NOT_SAFE_RPC_METHODS.includes(method) ||
-      W3mFrameRpcConstants.SAFE_RPC_METHODS.includes(method)
+      W3mFrameRpcConstants.NOT_SAFE_RPC_METHODS.includes(request.method) ||
+      W3mFrameRpcConstants.SAFE_RPC_METHODS.includes(request.method)
     )
   },
 
-  getRequestMethod(request: unknown) {
-    return (request as { payload: W3mFrameTypes.RPCRequest })?.payload?.method
-  },
-
-  getResponseType(response: unknown) {
-    const { type, payload } = response as {
-      type: W3mFrameConstantValue
-      payload: W3mFrameTypes.RPCResponse
-    }
-
-    const isError = type === W3mFrameConstants.FRAME_RPC_REQUEST_ERROR
-
-    if (isError) {
-      return W3mFrameConstants.RPC_RESPONSE_TYPE_ERROR
-    }
-
-    const isPayloadString = typeof payload === 'string'
+  getResponseType(response: W3mFrameTypes.RPCResponse) {
+    const isPayloadString = typeof response === 'string'
     const isTransactionHash =
       isPayloadString &&
-      (payload.match(RegexUtil.transactionHash) || payload.match(RegexUtil.signedMessage))
+      (response?.match(RegexUtil.transactionHash) || response?.match(RegexUtil.signedMessage))
 
     if (isTransactionHash) {
       return W3mFrameConstants.RPC_RESPONSE_TYPE_TX
@@ -70,10 +49,8 @@ export const W3mFrameHelpers = {
     return W3mFrameConstants.RPC_RESPONSE_TYPE_OBJECT
   },
 
-  checkIfRequestIsAllowed(request: unknown) {
-    const method = this.getRequestMethod(request)
-
-    return W3mFrameRpcConstants.SAFE_RPC_METHODS.includes(method)
+  checkIfRequestIsAllowed(request: W3mFrameTypes.RPCRequest) {
+    return W3mFrameRpcConstants.SAFE_RPC_METHODS.includes(request.method)
   },
 
   isClient: typeof window !== 'undefined'

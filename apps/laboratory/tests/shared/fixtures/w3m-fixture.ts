@@ -23,14 +23,9 @@ export const testM = timingFixture.extend<ModalFixture>({
     await modalPage.load()
     timeEnd('modalPage.load')
     await use(modalPage)
-  },
-  modalValidator: async ({ modalPage }, use) => {
-    timeStart('new ModalValidator')
-    const modalValidator = new ModalValidator(modalPage.page)
-    timeEnd('new ModalValidator')
-    await use(modalValidator)
   }
 })
+
 export const testMSiwe = timingFixture.extend<ModalFixture>({
   library: ['wagmi', { option: true }],
   modalPage: async ({ page, library }, use) => {

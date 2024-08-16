@@ -2,7 +2,7 @@ import { createWeb3Modal } from '@web3modal/wagmi/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 import { WagmiProvider } from 'wagmi'
-import { Web3ModalButtons } from '../../components/Web3ModalButtons'
+import { AppKitButtons } from '../../components/AppKitButtons'
 import { WagmiTests } from '../../components/Wagmi/WagmiTests'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { getWagmiConfig } from '../../utils/WagmiConstants'
@@ -22,8 +22,7 @@ const modal = createWeb3Modal({
   metadata: ConstantsUtil.Metadata,
   termsConditionsUrl: 'https://walletconnect.com/terms',
   privacyPolicyUrl: 'https://walletconnect.com/privacy',
-  siweConfig,
-  customWallets: ConstantsUtil.CustomWallets
+  siweConfig
 })
 
 ThemeStore.setModal(modal)
@@ -38,7 +37,7 @@ export default function Wagmi() {
   return ready ? (
     <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
-        <Web3ModalButtons />
+        <AppKitButtons />
         <WagmiModalInfo />
         <SiweData />
         <WagmiTests />

@@ -21,15 +21,63 @@
         ]
       },
       {
+        "appID": "W5R8AG9K22.com.walletconnect.web3modal.rnsample",
+        "paths": [
+          "/rn_appkit*"
+        ]
+      },
+      {
         "appID": "W5R8AG9K22.com.walletconnect.web3modal.rnsample.internal",
         "paths": [
-          "/appkit_rn*"
+          "/rn_appkit*"
+        ]
+      },
+      {
+        "appID": "W5R8AG9K22.com.walletconnect.web3wallet.rnsample",
+        "paths": [
+          "/rn_walletkit*"
         ]
       },
       {
         "appID": "W5R8AG9K22.com.walletconnect.web3wallet.rnsample.internal",
         "paths": [
-          "/walletkit_rn*"
+          "/rn_walletkit*"
+        ]
+      },
+      {
+        "appID": "W5R8AG9K22.com.walletconnect.flutterwallet",
+        "paths": [
+          "/walletkit_flutter"
+        ]
+      },
+      {
+        "appID": "W5R8AG9K22.com.walletconnect.flutterwallet.internal",
+        "paths": [
+          "/walletkit_flutter_internal"
+        ]
+      },
+      {
+        "appID": "W5R8AG9K22.com.walletconnect.flutterdapp",
+        "paths": [
+          "/appkit_flutter"
+        ]
+      },
+      {
+        "appID": "W5R8AG9K22.com.walletconnect.flutterdapp.internal",
+        "paths": [
+          "/appkit_flutter_internal"
+        ]
+      },
+      {
+        "appID": "W5R8AG9K22.com.web3modal.flutterExample",
+        "paths": [
+          "/appkit_flutter_modal"
+        ]
+      },
+      {
+        "appID": "W5R8AG9K22.com.web3modal.flutterExample.internal",
+        "paths": [
+          "/appkit_flutter_modal_internal"
         ]
       }
     ]

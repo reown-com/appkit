@@ -8,7 +8,7 @@ export default css`
     align-items: center;
     display: inherit;
     border-radius: var(--wui-border-radius-xs);
-    border: 1px solid var(--wui-gray-glass-002);
+    border: 1px solid var(--wui-color-gray-glass-002);
     background: var(--wui-color-fg-base-125);
     /* Dark/Elevation/L */
     box-shadow:

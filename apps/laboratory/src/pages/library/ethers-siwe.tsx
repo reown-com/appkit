@@ -1,6 +1,6 @@
 import { SiweData } from '../../components/Siwe/SiweData'
 import { EthersTests } from '../../components/Ethers/EthersTests'
-import { Web3ModalButtons } from '../../components/Web3ModalButtons'
+import { AppKitButtons } from '../../components/AppKitButtons'
 import { createWeb3Modal, defaultConfig } from '@web3modal/ethers/react'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { EthersConstants } from '../../utils/EthersConstants'
@@ -11,8 +11,7 @@ import { EthersModalInfo } from '../../components/Ethers/EthersModalInfo'
 const modal = createWeb3Modal({
   ethersConfig: defaultConfig({
     metadata: ConstantsUtil.Metadata,
-    defaultChainId: 1,
-    rpcUrl: 'https://cloudflare-eth.com'
+    defaultChainId: 1
   }),
   chains: EthersConstants.chains,
   projectId: ConstantsUtil.ProjectId,
@@ -27,7 +26,7 @@ ThemeStore.setModal(modal)
 export default function EthersSiwe() {
   return (
     <>
-      <Web3ModalButtons />
+      <AppKitButtons />
       <EthersModalInfo />
       <SiweData />
       <EthersTests />

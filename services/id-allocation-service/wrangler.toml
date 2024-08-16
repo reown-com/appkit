@@ -1,0 +1,10 @@
+name = "id-allocation-service"
+compatibility_date = "2024-07-19"
+
+[[durable_objects.bindings]]
+name = "ID_ALLOCATION"
+class_name = "IdAllocation"
+
+[[migrations]]
+tag = "v1" # Should be unique for each entry
+new_classes = ["IdAllocation"]

@@ -1,6 +1,6 @@
 import '@web3modal/polyfills'
 
-import type { CreateConfigParameters, CreateConnectorFn } from '@wagmi/core'
+import type { CreateConfigParameters, CreateConnectorFn, Config } from '@wagmi/core'
 import { createConfig } from '@wagmi/core'
 import { coinbaseWallet, walletConnect, safe, injected } from '@wagmi/connectors'
 import { authConnector } from '../connectors/AuthConnector.js'
@@ -42,8 +42,8 @@ export function defaultWagmiConfig({
   enableWalletConnect,
   enableEIP6963,
   ...wagmiConfig
-}: ConfigOptions) {
-  const connectors: CreateConnectorFn[] = []
+}: ConfigOptions): Config {
+  const connectors: CreateConnectorFn[] = wagmiConfig?.connectors ?? []
   const transportsArr = chains.map(chain => [chain.id, getTransport({ chain, projectId })])
   const transports = Object.fromEntries(transportsArr)
   const defaultAuth = {
@@ -57,10 +57,12 @@ export function defaultWagmiConfig({
     connectors.push(walletConnect({ projectId, metadata, showQrModal: false }))
   }
 
+  // Enabled by default
   if (enableInjected !== false) {
     connectors.push(injected({ shimDisconnect: true }))
   }
 
+  // Enabled by default
   if (enableCoinbase !== false) {
     connectors.push(
       coinbaseWallet({

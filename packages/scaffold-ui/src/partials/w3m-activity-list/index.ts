@@ -2,7 +2,9 @@ import { DateUtil } from '@web3modal/common'
 import type { Transaction, TransactionImage } from '@web3modal/common'
 import {
   AccountController,
+  ChainController,
   EventsController,
+  NetworkController,
   OptionsController,
   RouterController,
   TransactionsController
@@ -10,9 +12,11 @@ import {
 import { TransactionUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
-import type { TransactionType } from '@web3modal/ui/src/utils/TypeUtil.js'
-import styles from './styles.js'
+import type { TransactionType } from '@web3modal/ui'
 import { W3mFrameRpcConstants } from '@web3modal/wallet'
+import { ConstantsUtil } from '@web3modal/common'
+
+import styles from './styles.js'
 
 // -- Helpers --------------------------------------------- //
 const PAGINATOR_ID = 'last-transaction'
@@ -30,6 +34,8 @@ export class W3mActivityList extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() public page: 'account' | 'activity' = 'activity'
 
+  @state() private isSolana = ChainController.state.activeChain === ConstantsUtil.CHAIN.SOLANA
+
   @state() private address: string | undefined = AccountController.state.address
 
   @state() private transactionsByYear = TransactionsController.state.transactionsByYear
@@ -46,6 +52,9 @@ export class W3mActivityList extends LitElement {
     TransactionsController.clearCursor()
     this.unsubscribe.push(
       ...[
+        ChainController.subscribeKey('activeChain', activeChain => {
+          this.isSolana = activeChain === ConstantsUtil.CHAIN.SOLANA
+        }),
         AccountController.subscribe(val => {
           if (val.isConnected) {
             if (this.address !== val.address) {
@@ -54,6 +63,9 @@ export class W3mActivityList extends LitElement {
               TransactionsController.fetchTransactions(val.address)
             }
           }
+        }),
+        NetworkController.subscribeKey('caipNetwork', () => {
+          this.updateTransactionView()
         }),
         TransactionsController.subscribe(val => {
           this.transactionsByYear = val.transactionsByYear
@@ -66,7 +78,14 @@ export class W3mActivityList extends LitElement {
   }
 
   public override firstUpdated() {
-    TransactionsController.fetchTransactions(this.address)
+    if (this.isSolana) {
+      this.loading = false
+      this.empty = true
+
+      return
+    }
+
+    this.updateTransactionView()
     this.createPaginationObserver()
   }
 
@@ -86,28 +105,50 @@ export class W3mActivityList extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private updateTransactionView() {
+    const currentNetwork = NetworkController.state.caipNetwork?.id
+    const lastNetworkInView = TransactionsController.state.lastNetworkInView
+
+    if (lastNetworkInView !== currentNetwork) {
+      TransactionsController.resetTransactions()
+      TransactionsController.fetchTransactions(this.address)
+    }
+    TransactionsController.setLastNetworkInView(currentNetwork)
+  }
+
   private templateTransactionsByYear() {
     const sortedYearKeys = Object.keys(this.transactionsByYear).sort().reverse()
 
-    return sortedYearKeys.map((year, index) => {
-      const isLastGroup = index === sortedYearKeys.length - 1
+    return sortedYearKeys.map(year => {
       const yearInt = parseInt(year, 10)
 
       const sortedMonthIndexes = new Array(12)
         .fill(null)
-        .map((_, idx) => idx)
+        .map((_, idx) => {
+          const groupTitle = TransactionUtil.getTransactionGroupTitle(yearInt, idx)
+          const transactions = this.transactionsByYear[yearInt]?.[idx]
+
+          return {
+            groupTitle,
+            transactions
+          }
+        })
+        .filter(({ transactions }) => transactions)
         .reverse()
 
-      return sortedMonthIndexes.map(month => {
-        const groupTitle = TransactionUtil.getTransactionGroupTitle(yearInt, month)
-        const transactions = this.transactionsByYear[yearInt]?.[month]
+      return sortedMonthIndexes.map(({ groupTitle, transactions }, index) => {
+        const isLastGroup = index === sortedMonthIndexes.length - 1
 
         if (!transactions) {
           return null
         }
 
         return html`
-          <wui-flex flexDirection="column">
+          <wui-flex
+            flexDirection="column"
+            class="group-container"
+            last-group="${isLastGroup ? 'true' : 'false'}"
+          >
             <wui-flex
               alignItems="center"
               flexDirection="row"
@@ -184,6 +225,19 @@ export class W3mActivityList extends LitElement {
   }
 
   private emptyStateActivity() {
+    const comingSoon = html`
+      <wui-text align="center" variant="paragraph-500" color="fg-100"
+        >Transaction history is coming soon!</wui-text
+      >
+    `
+    const empty = html` <wui-text align="center" variant="paragraph-500" color="fg-100"
+        >No Transactions yet</wui-text
+      >
+      <wui-text align="center" variant="small-500" color="fg-200"
+        >Start trading on dApps <br />
+        to grow your wallet!</wui-text
+      >`
+
     return html`<wui-flex
       class="emptyContainer"
       flexGrow="1"
@@ -203,18 +257,24 @@ export class W3mActivityList extends LitElement {
         borderColor="wui-color-bg-125"
       ></wui-icon-box>
       <wui-flex flexDirection="column" alignItems="center" gap="xs">
-        <wui-text align="center" variant="paragraph-500" color="fg-100"
-          >No Transactions yet</wui-text
-        >
-        <wui-text align="center" variant="small-500" color="fg-200"
-          >Start trading on dApps <br />
-          to grow your wallet!</wui-text
-        >
+        ${this.isSolana ? comingSoon : empty}
       </wui-flex>
     </wui-flex>`
   }
 
   private emptyStateAccount() {
+    const comingSoon = html`
+      <wui-text variant="paragraph-500" align="center" color="fg-100"
+        >Transaction history is coming soon!</wui-text
+      >
+    `
+    const empty = html` <wui-text variant="paragraph-500" align="center" color="fg-100"
+        >No activity yet</wui-text
+      >
+      <wui-text variant="small-400" align="center" color="fg-200"
+        >Your next transactions will appear here</wui-text
+      >`
+
     return html`<wui-flex
       class="contentContainer"
       alignItems="center"
@@ -236,10 +296,7 @@ export class W3mActivityList extends LitElement {
         justifyContent="center"
         flexDirection="column"
       >
-        <wui-text variant="paragraph-500" align="center" color="fg-100">No activity yet</wui-text>
-        <wui-text variant="small-400" align="center" color="fg-200"
-          >Your next transactions will appear here</wui-text
-        >
+        ${this.isSolana ? comingSoon : empty}
       </wui-flex>
       <wui-link @click=${this.onReceiveClick.bind(this)}>Trade</wui-link>
     </wui-flex>`

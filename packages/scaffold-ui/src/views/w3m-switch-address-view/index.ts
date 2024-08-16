@@ -1,6 +1,7 @@
 import {
   AccountController,
   BlockchainApiController,
+  ChainController,
   ModalController,
   NetworkController,
   OptionsController,
@@ -11,6 +12,7 @@ import { UiHelperUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('w3m-switch-address-view')
 export class W3mSwitchAddressView extends LitElement {
@@ -67,24 +69,28 @@ export class W3mSwitchAddressView extends LitElement {
     return html`
       <wui-flex justifyContent="center" .padding=${['xl', '0', 'xl', '0'] as const}>
         <wui-banner-img
-          imageSrc="${this.metadata?.icons[0]}"
-          text="${this.metadata?.url}"
+          imageSrc=${ifDefined(this.metadata?.icons[0])}
+          text=${ifDefined(this.metadata?.url)}
           size="sm"
         ></wui-banner-img>
       </wui-flex>
       <wui-flex flexDirection="column" gap="xxl" .padding=${['l', 'xl', 'xl', 'xl'] as const}>
-        ${this.allAccounts.map(account => this.getAddressTemplate(account))}
+        ${this.allAccounts.map((account, index) => this.getAddressTemplate(account, index))}
       </wui-flex>
     `
   }
 
   // -- Private ------------------------------------------- //
 
-  private getAddressTemplate(account: AccountType) {
+  private getAddressTemplate(account: AccountType, index: number) {
     const label = this.labels?.get(account.address)
 
     return html`
-      <wui-flex flexDirection="row" justifyContent="space-between">
+      <wui-flex
+        flexDirection="row"
+        justifyContent="space-between"
+        data-testid="switch-address-item"
+      >
         <wui-flex alignItems="center">
           <wui-avatar address=${account.address}></wui-avatar>
           ${this.shouldShowIcon
@@ -120,6 +126,7 @@ export class W3mSwitchAddressView extends LitElement {
             ? ''
             : html`
                 <wui-button
+                  data-testid=${`w3m-switch-address-button-${index}`}
                   textVariant="small-600"
                   size="md"
                   variant="accent"
@@ -133,7 +140,7 @@ export class W3mSwitchAddressView extends LitElement {
   }
 
   private onSwitchAddress(address: string) {
-    AccountController.setShouldUpdateToAddress(address)
+    AccountController.setShouldUpdateToAddress(address, ChainController.state.activeChain)
     ModalController.close()
   }
 }
