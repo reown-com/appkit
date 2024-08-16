@@ -16,9 +16,9 @@ export class W3mFrameProvider {
   private rpcSuccessHandler?: (response: W3mFrameTypes.RPCResponse) => void
   private rpcErrorHandler?: (error: Error) => void
 
-  public constructor(projectId: string) {
+  public constructor(projectId: string, chainId?: W3mFrameTypes.Network['chainId']) {
     this.w3mLogger = new W3mFrameLogger(projectId)
-    this.w3mFrame = new W3mFrame(projectId, true)
+    this.w3mFrame = new W3mFrame(projectId, true, chainId)
   }
 
   // -- Extended Methods ------------------------------------------------

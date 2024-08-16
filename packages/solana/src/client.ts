@@ -34,6 +34,7 @@ import { watchStandard } from './utils/watchStandard.js'
 import { WalletConnectProvider } from './providers/WalletConnectProvider.js'
 import { AuthProvider } from './providers/AuthProvider.js'
 import { W3mFrameProvider } from '@web3modal/wallet'
+import { withSolanaNamespace } from './utils/withSolanaNamespace.js'
 
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
   solanaConfig: ProviderType
@@ -471,7 +472,10 @@ export class Web3Modal extends Web3ModalScaffold {
 
         this.addProvider(
           new AuthProvider({
-            provider: new W3mFrameProvider(opts.projectId),
+            provider: new W3mFrameProvider(
+              opts.projectId,
+              withSolanaNamespace(SolStoreUtil.state.currentChain?.chainId)
+            ),
             getActiveChain: () => SolStoreUtil.state.currentChain,
             auth: { email: opts.email, socials: opts.socials }
           })
