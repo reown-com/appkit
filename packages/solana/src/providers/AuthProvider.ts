@@ -1,14 +1,37 @@
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
-import { AnyTransaction, type Provider } from '../utils/scaffold'
+import { type AnyTransaction, type GetActiveChain, type Provider } from '../utils/scaffold'
 import { ProviderEventEmitter } from './shared/ProviderEventEmitter'
 import { PublicKey } from '@solana/web3.js'
+import type { W3mFrameProvider } from '@web3modal/wallet'
+import { withSolanaNamespace } from '../utils/withSolanaNamespace'
+
+export type AuthProviderConfig = {
+  provider: W3mFrameProvider
+  getActiveChain: GetActiveChain
+}
 
 export class AuthProvider extends ProviderEventEmitter implements Provider {
   readonly name = ConstantsUtil.AUTH_CONNECTOR_ID
   readonly type = 'AUTH'
 
+  private readonly provider: W3mFrameProvider
+  private readonly getActiveChain: GetActiveChain
+
+  private session: AuthProvider.Session | undefined
+
+  constructor({ provider, getActiveChain }: AuthProviderConfig) {
+    super()
+
+    this.provider = provider
+    this.getActiveChain = getActiveChain
+  }
+
   get publicKey(): PublicKey | undefined {
-    throw new Error('Method not implemented.')
+    if (this.session) {
+      return new PublicKey(this.session.address)
+    }
+
+    return undefined
   }
 
   get chains() {
@@ -16,15 +39,21 @@ export class AuthProvider extends ProviderEventEmitter implements Provider {
   }
 
   public async connect() {
-    this.emit('connect', new PublicKey('2VqKhjZ766ZN3uBtBpb7Ls3cN4HrocP1rzxzekhVEgoP'))
+    this.session = await this.provider.connect({
+      chainId: withSolanaNamespace(this.getActiveChain()?.chainId)
+    })
 
-    return Promise.resolve('2VqKhjZ766ZN3uBtBpb7Ls3cN4HrocP1rzxzekhVEgoP')
+    const publicKey = this.getPublicKey(true)
+
+    this.emit('connect', publicKey)
+
+    return publicKey.toBase58()
   }
 
   public async disconnect() {
-    this.emit('disconnect', undefined)
+    await this.provider.disconnect()
 
-    return Promise.resolve()
+    this.emit('disconnect', undefined)
   }
 
   public async signMessage(_message: Uint8Array) {
@@ -46,4 +75,23 @@ export class AuthProvider extends ProviderEventEmitter implements Provider {
   public async sendTransaction(_transaction: AnyTransaction) {
     return Promise.resolve('')
   }
+
+  // -- Private ------------------------------------------- //
+  private getPublicKey<Required extends boolean>(
+    required?: Required
+  ): Required extends true ? PublicKey : PublicKey | undefined {
+    if (!this.session) {
+      if (required) {
+        throw new Error('Account is required')
+      }
+
+      return undefined as Required extends true ? PublicKey : PublicKey | undefined
+    }
+
+    return new PublicKey(this.session.address)
+  }
+}
+
+export namespace AuthProvider {
+  export type Session = Awaited<ReturnType<W3mFrameProvider['connect']>>
 }

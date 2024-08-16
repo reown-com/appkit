@@ -8,6 +8,9 @@ import { TestConstants } from './util/TestConstants.js'
 import { Transaction, VersionedTransaction } from '@solana/web3.js'
 import { mockLegacyTransaction, mockVersionedTransaction } from './mocks/Transaction.js'
 import { AuthProvider } from '../src/providers/AuthProvider.js'
+import { mockW3mFrameProvider } from './mocks/W3mFrameProvider.js'
+
+const getActiveChain = vi.fn(() => TestConstants.chains[0])
 
 const providers: { name: string; provider: Provider }[] = [
   {
@@ -15,19 +18,22 @@ const providers: { name: string; provider: Provider }[] = [
     provider: new WalletConnectProvider({
       provider: mockUniversalProvider(),
       chains: TestConstants.chains,
-      getActiveChain: () => TestConstants.chains[0]
+      getActiveChain
     })
   },
   {
     name: 'WalletStandardProvider',
     provider: new WalletStandardProvider({
       wallet: mockWalletStandard(),
-      getActiveChain: () => TestConstants.chains[0]
+      getActiveChain
     })
   },
   {
     name: 'AuthProvider',
-    provider: new AuthProvider()
+    provider: new AuthProvider({
+      provider: mockW3mFrameProvider(),
+      getActiveChain
+    })
   }
 ]
 
