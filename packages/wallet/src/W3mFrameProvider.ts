@@ -281,7 +281,7 @@ export class W3mFrameProvider {
     }
   }
 
-  public async switchNetwork(chainId: number) {
+  public async switchNetwork(chainId: number | string) {
     try {
       const response = await this.appEvent<'SwitchNetwork'>({
         type: W3mFrameConstants.APP_SWITCH_NETWORK,
@@ -481,7 +481,7 @@ export class W3mFrameProvider {
     W3mFrameStorage.delete(W3mFrameConstants.SOCIAL, true)
   }
 
-  private setLastUsedChainId(chainId: number) {
+  private setLastUsedChainId(chainId: string | number) {
     W3mFrameStorage.set(W3mFrameConstants.LAST_USED_CHAIN_KEY, String(chainId))
   }
 
