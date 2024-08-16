@@ -53,8 +53,6 @@ export class AuthProvider extends ProviderEventEmitter implements Provider {
     return publicKey.toBase58()
   }
 
-  public connectEmail = this.provider.connectEmail
-
   public async disconnect() {
     await this.provider.disconnect()
 
