@@ -2,7 +2,7 @@ import { Stack, Card, CardHeader, Heading, CardBody, Box, StackDivider } from '@
 
 export function AppKitButtons() {
   return (
-    <Card marginTop={20}>
+    <Card marginTop={10}>
       <CardHeader>
         <Heading size="md">AppKit Interactions</Heading>
       </CardHeader>

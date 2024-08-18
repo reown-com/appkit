@@ -1,7 +1,7 @@
 import { expect } from '@playwright/test'
 import { metaMaskFixtures, testWithSynpress } from '@synthetixio/synpress'
 import { ModalValidator } from './shared/validators/ModalValidator'
-import basicSetup from './wallet-setup/basic.setup'
+import basicSetup from './wallet-setup/basic.setup.js'
 
 // -- Setup --------------------------------------------------------------------
 const synpressTest = testWithSynpress(metaMaskFixtures(basicSetup)).extend<{ library: string }>({

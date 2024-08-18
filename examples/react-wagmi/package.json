@@ -1,7 +1,7 @@
 {
   "name": "@examples/react-wagmi",
   "private": true,
-  "version": "5.0.10",
+  "version": "5.1.0",
   "scripts": {
     "dev": "vite --port 3002",
     "build": "vite build",
@@ -12,15 +12,15 @@
     "@web3modal/wagmi": "workspace:*",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "viem": "2.17.8",
+    "viem": "2.19.6",
     "vite": "5.2.11",
-    "wagmi": "2.12.2"
+    "wagmi": "2.12.5"
   },
   "devDependencies": {
     "@types/react": "18.2.62",
     "@types/react-dom": "18.2.7",
     "@vitejs/plugin-react": "4.2.1",
     "vite": "5.2.11",
-    "vite-size": "0.0.4"
+    "vite-size": "0.0.5"
   }
 }

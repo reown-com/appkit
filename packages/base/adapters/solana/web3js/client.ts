@@ -301,7 +301,7 @@ export class SolanaWeb3JsClient {
       const caipAddress: CaipAddress = `${ConstantsUtil.INJECTED_CONNECTOR_ID}:${chainId}:${address}`
       this.appKit?.setIsConnected(isConnected, this.chain)
       this.appKit?.setCaipAddress(caipAddress, this.chain)
-      await Promise.all([this.syncBalance(address)])
+      await this.syncBalance(address)
 
       this.hasSyncedConnectedAccount = true
     } else if (!isConnected && this.hasSyncedConnectedAccount) {
@@ -350,17 +350,12 @@ export class SolanaWeb3JsClient {
   public async switchNetwork(caipNetwork: CaipNetwork) {
     const caipChainId = caipNetwork.id
     const chain = SolHelpersUtil.getChainFromCaip(this.chains, caipChainId)
+    SolStoreUtil.setCaipChainId(chain.id)
+    SolStoreUtil.setCurrentChain(chain)
+    localStorage.setItem(SolConstantsUtil.CAIP_CHAIN_ID, chain.id)
 
-    if (chain) {
-      SolStoreUtil.setCaipChainId(`solana:${chain.chainId}`)
-      SolStoreUtil.setCurrentChain(chain)
-      localStorage.setItem(SolConstantsUtil.CAIP_CHAIN_ID, `solana:${chain.chainId}`)
-
-      this.appKit?.setLoading(true)
-      await this.syncNetwork()
-      await this.syncAccount()
-      this.appKit?.setLoading(false)
-    }
+    await this.syncNetwork()
+    await this.syncAccount()
   }
 
   private async syncNetwork(chainImages?: Web3ModalClientOptions['chainImages']) {
@@ -407,29 +402,37 @@ export class SolanaWeb3JsClient {
   }
 
   private async setProvider(provider: Provider) {
-    const address = await provider.connect()
+    try {
+      this.appKit?.setLoading(true)
+      const address = await provider.connect()
 
-    const caipChainId = `${SolStoreUtil.state.currentChain?.name}:${SolStoreUtil.state.currentChain?.chainId}`
-    const chain = SolHelpersUtil.getChainFromCaip(
-      this.chains,
-      typeof window === 'object' ? localStorage.getItem(SolConstantsUtil.CAIP_CHAIN_ID) : ''
-    )
-    if (chain) {
-      SolStoreUtil.setCurrentChain(chain)
+      // Check if the provider supports the current chain or switch to the first supported chain
+      const connectionChain =
+        provider.chains.find(chain => chain.chainId === SolStoreUtil.state.currentChain?.chainId) ||
+        provider.chains[0]
+
+      if (connectionChain) {
+        await this.switchNetwork(
+          SolHelpersUtil.getChainFromCaip(this.chains, `solana:${connectionChain.chainId}`)
+        )
+      } else {
+        provider.disconnect()
+        throw new Error('The wallet does not support any of the required chains')
+      }
+
+      SolStoreUtil.setIsConnected(true)
+      SolStoreUtil.setProvider(provider)
+      this.provider = provider
+      this.setAddress(address)
+
+      window?.localStorage.setItem(SolConstantsUtil.WALLET_ID, provider.name)
+
+      await this.appKit?.setApprovedCaipNetworksData()
+
+      this.watchProvider(provider)
+    } finally {
+      this.appKit?.setLoading(false)
     }
-    SolStoreUtil.setIsConnected(true)
-    SolStoreUtil.setCaipChainId(caipChainId)
-    SolStoreUtil.setProvider(provider)
-    this.setAddress(address)
-
-    window?.localStorage.setItem(SolConstantsUtil.WALLET_ID, provider.name)
-
-    await Promise.all([
-      this.syncBalance(address),
-      this.appKit?.setApprovedCaipNetworksData(this.chain)
-    ])
-
-    this.watchProvider(provider)
   }
 
   private watchProvider(provider: Provider) {
@@ -437,9 +440,9 @@ export class SolanaWeb3JsClient {
       localStorage.removeItem(SolConstantsUtil.WALLET_ID)
       SolStoreUtil.reset()
 
-      provider?.removeListener('disconnect', disconnectHandler)
-      provider?.removeListener('accountsChanged', accountsChangedHandler)
-      provider?.removeListener('connect', accountsChangedHandler)
+      provider.removeListener('disconnect', disconnectHandler)
+      provider.removeListener('accountsChanged', accountsChangedHandler)
+      provider.removeListener('connect', accountsChangedHandler)
     }
 
     function accountsChangedHandler(publicKey: PublicKey) {
@@ -452,11 +455,9 @@ export class SolanaWeb3JsClient {
       }
     }
 
-    if (provider) {
-      provider.on('disconnect', disconnectHandler)
-      provider.on('accountsChanged', accountsChangedHandler)
-      provider.on('connect', accountsChangedHandler)
-    }
+    provider.on('disconnect', disconnectHandler)
+    provider.on('accountsChanged', accountsChangedHandler)
+    provider.on('connect', accountsChangedHandler)
   }
 
   private getProvider() {
@@ -472,7 +473,8 @@ export class SolanaWeb3JsClient {
       this.addProvider(
         new WalletConnectProvider({
           provider: await UniversalProvider.init(opts),
-          chains: this.chains
+          chains: this.chains,
+          getActiveChain: () => SolStoreUtil.state.currentChain
         })
       )
 
