@@ -310,6 +310,14 @@ export const RpcEthSendTransactionRequest = z.object({
   params: z.array(z.any())
 })
 
+export const RpcSolanaSignMessageRequest = z.object({
+  method: z.literal('solana_signMessage'),
+  params: z.object({
+    message: z.string(),
+    pubkey: z.string()
+  })
+})
+
 export const WalletSendCallsRequest = z.object({
   method: z.literal('wallet_sendCalls'),
   params: z.array(
@@ -458,6 +466,7 @@ export const W3mFrameSchema = {
           .or(RpcPersonalSignRequest)
           .or(RpcEthSignTypedDataV4)
           .or(RpcEthSendTransactionRequest)
+          .or(RpcSolanaSignMessageRequest)
           .or(WalletGetCallsReceiptRequest)
           .or(WalletSendCallsRequest)
           .or(WalletGetCapabilitiesRequest)

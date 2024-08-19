@@ -26,6 +26,8 @@ export const ConnectorController = {
   },
 
   setConnectors(connectors: ConnectorControllerState['connectors'], multiChain?: boolean) {
+    connectors.forEach(this.syncIfAuthConnector)
+
     if (multiChain) {
       state.connectors = [...state.connectors, ...connectors.map(c => ref(c))]
 
@@ -70,24 +72,7 @@ export const ConnectorController = {
 
   addConnector(connector: Connector | AuthConnector) {
     state.connectors.push(ref(connector))
-
-    if (connector.id === 'w3mAuth') {
-      const authConnector = connector as AuthConnector
-      const optionsState = snapshot(OptionsController.state) as typeof OptionsController.state
-      const themeMode = ThemeController.getSnapshot().themeMode
-      const themeVariables = ThemeController.getSnapshot().themeVariables
-
-      authConnector?.provider?.syncDappData?.({
-        metadata: optionsState.metadata,
-        sdkVersion: optionsState.sdkVersion,
-        projectId: optionsState.projectId
-      })
-      authConnector.provider.syncTheme({
-        themeMode,
-        themeVariables,
-        w3mThemeVariables: getW3mThemeVariables(themeVariables, themeMode)
-      })
-    }
+    this.syncIfAuthConnector(connector)
   },
 
   getAuthConnector() {
@@ -104,5 +89,28 @@ export const ConnectorController = {
 
   getConnector(id: string, rdns?: string | null) {
     return state.connectors.find(c => c.explorerId === id || c.info?.rdns === rdns)
+  },
+
+  syncIfAuthConnector(connector: Connector | AuthConnector) {
+    if (connector.id !== 'w3mAuth') {
+      return
+    }
+
+    const authConnector = connector as AuthConnector
+
+    const optionsState = snapshot(OptionsController.state) as typeof OptionsController.state
+    const themeMode = ThemeController.getSnapshot().themeMode
+    const themeVariables = ThemeController.getSnapshot().themeVariables
+
+    authConnector?.provider?.syncDappData?.({
+      metadata: optionsState.metadata,
+      sdkVersion: optionsState.sdkVersion,
+      projectId: optionsState.projectId
+    })
+    authConnector.provider.syncTheme({
+      themeMode,
+      themeVariables,
+      w3mThemeVariables: getW3mThemeVariables(themeVariables, themeMode)
+    })
   }
 }

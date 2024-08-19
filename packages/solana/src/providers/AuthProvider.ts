@@ -10,6 +10,7 @@ import { ProviderEventEmitter } from './shared/ProviderEventEmitter'
 import { PublicKey } from '@solana/web3.js'
 import { W3mFrameProvider } from '@web3modal/wallet'
 import { withSolanaNamespace } from '../utils/withSolanaNamespace'
+import base58 from 'bs58'
 
 export type AuthProviderConfig = {
   provider: W3mFrameProvider
@@ -62,6 +63,7 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
     const publicKey = this.getPublicKey(true)
 
     this.emit('connect', publicKey)
+    this.bindEvents()
 
     return publicKey.toBase58()
   }
@@ -72,8 +74,13 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
     this.emit('disconnect', undefined)
   }
 
-  public async signMessage(_message: Uint8Array) {
-    return Promise.resolve(new Uint8Array())
+  public async signMessage(message: Uint8Array) {
+    const response = await this.provider.request({
+      method: 'solana_signMessage',
+      params: { message: base58.encode(message), pubkey: this.getPublicKey(true).toBase58() }
+    })
+
+    return base58.decode(response.signature)
   }
 
   public async signTransaction<T extends AnyTransaction>(_transaction: T) {
@@ -101,12 +108,12 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
   updateEmailSecondaryOtp: ProviderAuthMethods['updateEmailSecondaryOtp'] = args =>
     this.provider.updateEmailSecondaryOtp(args)
   getEmail: ProviderAuthMethods['getEmail'] = () => this.provider.getEmail()
-
   connectDevice: ProviderAuthMethods['connectDevice'] = () => this.provider.connectDevice()
   connectSocial: ProviderAuthMethods['connectSocial'] = args => this.provider.connectSocial(args)
-
   connectFarcaster: ProviderAuthMethods['connectFarcaster'] = () => this.provider.connectFarcaster()
   getFarcasterUri: ProviderAuthMethods['getFarcasterUri'] = () => this.provider.getFarcasterUri()
+  syncTheme: ProviderAuthMethods['syncTheme'] = args => this.provider.syncTheme(args)
+  syncDappData: ProviderAuthMethods['syncDappData'] = args => this.provider.syncDappData(args)
 
   // -- Private ------------------------------------------- //
   private getPublicKey<Required extends boolean>(
@@ -121,6 +128,29 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
     }
 
     return new PublicKey(this.session.address)
+  }
+
+  private bindEvents() {
+    this.provider.onRpcRequest(request => {
+      this.emit('auth_rpcRequest', request)
+    })
+
+    this.provider.onRpcSuccess(response => {
+      this.emit('auth_rpcSuccess', response)
+    })
+
+    this.provider.onRpcError(error => {
+      this.emit('auth_rpcError', error)
+    })
+
+    this.provider.onIsConnected(response => {
+      this.session = response
+      this.emit('connect', this.getPublicKey(true))
+    })
+
+    this.provider.onNotConnected(() => {
+      this.emit('disconnect', undefined)
+    })
   }
 }
 

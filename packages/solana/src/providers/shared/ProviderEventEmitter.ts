@@ -11,7 +11,11 @@ export class ProviderEventEmitter implements ProviderEventEmitterMethods {
     accountsChanged: [],
     chainChanged: [],
     connect: [],
-    disconnect: []
+    disconnect: [],
+
+    auth_rpcRequest: [],
+    auth_rpcSuccess: [],
+    auth_rpcError: []
   }
 
   public on<E extends ProviderEventEmitterMethods.Event>(

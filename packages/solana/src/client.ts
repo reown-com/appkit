@@ -33,7 +33,12 @@ import type { ProviderType, Chain, Provider, SolStoreUtilState } from './utils/s
 import { watchStandard } from './utils/watchStandard.js'
 import { WalletConnectProvider } from './providers/WalletConnectProvider.js'
 import { AuthProvider } from './providers/AuthProvider.js'
-import { W3mFrameProvider } from '@web3modal/wallet'
+import {
+  W3mFrameHelpers,
+  W3mFrameProvider,
+  W3mFrameRpcConstants,
+  type W3mFrameTypes
+} from '@web3modal/wallet'
 import { withSolanaNamespace } from './utils/withSolanaNamespace.js'
 
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
@@ -423,6 +428,64 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private watchProvider(provider: Provider) {
+    /*
+     * The auth RPC request handlers should be moved to the primary scaffold (Web3ModalScaffold).
+     * They are replicated in wagmi and ethers clients and the behavior should be kept the same
+     * between any client.
+     */
+
+    // eslint-disable-next-line func-style
+    const rpcRequestHandler = (request: W3mFrameTypes.RPCRequest) => {
+      if (W3mFrameHelpers.checkIfRequestExists(request)) {
+        if (!W3mFrameHelpers.checkIfRequestIsAllowed(request)) {
+          if (super.isOpen()) {
+            if (super.isTransactionStackEmpty()) {
+              return
+            }
+            if (super.isTransactionShouldReplaceView()) {
+              super.replace('ApproveTransaction')
+            } else {
+              super.redirect('ApproveTransaction')
+            }
+          } else {
+            super.open({ view: 'ApproveTransaction' })
+          }
+        }
+      } else {
+        super.open()
+        // eslint-disable-next-line no-console
+        console.error(W3mFrameRpcConstants.RPC_METHOD_NOT_ALLOWED_MESSAGE, {
+          method: request.method
+        })
+        setTimeout(() => {
+          this.showErrorMessage(W3mFrameRpcConstants.RPC_METHOD_NOT_ALLOWED_UI_MESSAGE)
+        }, 300)
+        // Provider.rejectRpcRequests()
+      }
+    }
+
+    // eslint-disable-next-line func-style
+    const rpcSuccessHandler = (_response: W3mFrameTypes.FrameEvent) => {
+      if (super.isTransactionStackEmpty()) {
+        super.close()
+      } else {
+        super.popTransactionStack()
+      }
+    }
+
+    // eslint-disable-next-line func-style
+    const rpcErrorHandler = (_error: Error) => {
+      const isModalOpen = super.isOpen()
+
+      if (isModalOpen) {
+        if (super.isTransactionStackEmpty()) {
+          super.close()
+        } else {
+          super.popTransactionStack(true)
+        }
+      }
+    }
+
     function disconnectHandler() {
       localStorage.removeItem(SolConstantsUtil.WALLET_ID)
       SolStoreUtil.reset()
@@ -430,6 +493,9 @@ export class Web3Modal extends Web3ModalScaffold {
       provider.removeListener('disconnect', disconnectHandler)
       provider.removeListener('accountsChanged', accountsChangedHandler)
       provider.removeListener('connect', accountsChangedHandler)
+      provider.removeListener('auth_rpcRequest', rpcRequestHandler)
+      provider.removeListener('auth_rpcSuccess', rpcSuccessHandler)
+      provider.removeListener('auth_rpcError', rpcErrorHandler)
     }
 
     function accountsChangedHandler(publicKey: PublicKey) {
@@ -445,6 +511,9 @@ export class Web3Modal extends Web3ModalScaffold {
     provider.on('disconnect', disconnectHandler)
     provider.on('accountsChanged', accountsChangedHandler)
     provider.on('connect', accountsChangedHandler)
+    provider.on('auth_rpcRequest', rpcRequestHandler)
+    provider.on('auth_rpcSuccess', rpcSuccessHandler)
+    provider.on('auth_rpcError', rpcErrorHandler)
   }
 
   private getProvider() {

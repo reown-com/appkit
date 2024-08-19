@@ -9,7 +9,7 @@ import type {
 
 import type { SendTransactionOptions } from '@solana/wallet-adapter-base'
 import type { Connector, ConnectorType } from '@web3modal/scaffold'
-import type { W3mFrameProvider } from 'packages/wallet/dist/types'
+import type { W3mFrameProvider, W3mFrameTypes } from 'packages/wallet/dist/types'
 
 export type Connection = SolanaConnection
 
@@ -81,6 +81,10 @@ export namespace ProviderEventEmitterMethods {
     disconnect: undefined
     accountsChanged: PublicKey
     chainChanged: string
+
+    auth_rpcRequest: W3mFrameTypes.RPCRequest
+    auth_rpcSuccess: W3mFrameTypes.FrameEvent
+    auth_rpcError: Error
   }
 }
 
@@ -120,4 +124,8 @@ export interface ProviderAuthMethods {
   // Farcaster
   connectFarcaster: W3mFrameProvider['connectFarcaster']
   getFarcasterUri: W3mFrameProvider['getFarcasterUri']
+
+  // Misc
+  syncTheme: W3mFrameProvider['syncTheme']
+  syncDappData: W3mFrameProvider['syncDappData']
 }
