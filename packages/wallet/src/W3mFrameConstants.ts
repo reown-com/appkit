@@ -141,6 +141,7 @@ export const W3mFrameRpcConstants = {
     'eth_signTypedData_v4',
     'eth_sendTransaction',
     'solana_signMessage',
+    'solana_signTransaction',
     'wallet_sendCalls',
     'wallet_grantPermissions'
   ],

@@ -120,6 +120,7 @@ export interface ProviderAuthMethods {
   // Social
   connectDevice: W3mFrameProvider['connectDevice']
   connectSocial: W3mFrameProvider['connectSocial']
+  getSocialRedirectUri: W3mFrameProvider['getSocialRedirectUri']
 
   // Farcaster
   connectFarcaster: W3mFrameProvider['connectFarcaster']

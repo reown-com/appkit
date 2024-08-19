@@ -7,10 +7,11 @@ import {
   type ProviderAuthMethods
 } from '../utils/scaffold'
 import { ProviderEventEmitter } from './shared/ProviderEventEmitter'
-import { PublicKey } from '@solana/web3.js'
+import { PublicKey, Transaction, VersionedTransaction } from '@solana/web3.js'
 import { W3mFrameProvider } from '@web3modal/wallet'
 import { withSolanaNamespace } from '../utils/withSolanaNamespace'
 import base58 from 'bs58'
+import { isVersionedTransaction } from '@solana/wallet-adapter-base'
 
 export type AuthProviderConfig = {
   provider: W3mFrameProvider
@@ -75,16 +76,27 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
   }
 
   public async signMessage(message: Uint8Array) {
-    const response = await this.provider.request({
+    const result = await this.provider.request({
       method: 'solana_signMessage',
       params: { message: base58.encode(message), pubkey: this.getPublicKey(true).toBase58() }
     })
 
-    return base58.decode(response.signature)
+    return base58.decode(result.signature)
   }
 
-  public async signTransaction<T extends AnyTransaction>(_transaction: T) {
-    return Promise.resolve(_transaction)
+  public async signTransaction<T extends AnyTransaction>(transaction: T) {
+    const result = await this.provider.request({
+      method: 'solana_signTransaction',
+      params: { transaction: this.serializeTransaction(transaction) }
+    })
+
+    const decodedTransaction = base58.decode(result.transaction)
+
+    if (isVersionedTransaction(transaction)) {
+      return VersionedTransaction.deserialize(decodedTransaction) as T
+    }
+
+    return Transaction.from(decodedTransaction) as T
   }
 
   public async signAndSendTransaction(_transaction: AnyTransaction) {
@@ -108,6 +120,8 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
   updateEmailSecondaryOtp: ProviderAuthMethods['updateEmailSecondaryOtp'] = args =>
     this.provider.updateEmailSecondaryOtp(args)
   getEmail: ProviderAuthMethods['getEmail'] = () => this.provider.getEmail()
+  getSocialRedirectUri: ProviderAuthMethods['getSocialRedirectUri'] = args =>
+    this.provider.getSocialRedirectUri(args)
   connectDevice: ProviderAuthMethods['connectDevice'] = () => this.provider.connectDevice()
   connectSocial: ProviderAuthMethods['connectSocial'] = args => this.provider.connectSocial(args)
   connectFarcaster: ProviderAuthMethods['connectFarcaster'] = () => this.provider.connectFarcaster()
@@ -128,6 +142,10 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
     }
 
     return new PublicKey(this.session.address)
+  }
+
+  private serializeTransaction(transaction: AnyTransaction) {
+    return base58.encode(transaction.serialize({ verifySignatures: false }))
   }
 
   private bindEvents() {

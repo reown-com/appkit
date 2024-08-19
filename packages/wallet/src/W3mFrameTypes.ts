@@ -69,7 +69,8 @@ import {
   FrameSetPreferredAccountResponse,
   WalletGetCapabilitiesRequest,
   WalletGrantPermissionsRequest,
-  RpcSolanaSignMessageRequest
+  RpcSolanaSignMessageRequest,
+  RpcSolanaSignTransactionRequest
 } from './W3mFrameSchema.js'
 import type { W3mFrameRpcConstants } from './W3mFrameConstants.js'
 import type { CaipNetworkId } from '@web3modal/common'
@@ -171,6 +172,7 @@ export namespace W3mFrameTypes {
     | z.infer<typeof RpcEthSignTypedDataV4>
     | z.infer<typeof RpcEthSendTransactionRequest>
     | z.infer<typeof RpcSolanaSignMessageRequest>
+    | z.infer<typeof RpcSolanaSignTransactionRequest>
     | z.infer<typeof WalletSendCallsRequest>
     | z.infer<typeof WalletGetCallsReceiptRequest>
     | z.infer<typeof WalletGetCapabilitiesRequest>
