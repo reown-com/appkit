@@ -1,10 +1,9 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
-import { proxy, ref, snapshot } from 'valtio/vanilla'
+import { proxy, snapshot } from 'valtio/vanilla'
 import type { AuthConnector, Connector } from '../utils/TypeUtil.js'
 import { ConstantsUtil, getW3mThemeVariables } from '@web3modal/common'
 import { OptionsController } from './OptionsController.js'
 import { ThemeController } from './ThemeController.js'
-import { ChainController } from './ChainController.js'
 
 // -- Types --------------------------------------------- //
 interface ConnectorWithProviders extends Connector {
@@ -32,12 +31,8 @@ export const ConnectorController = {
   },
 
   setConnectors(connectors: ConnectorControllerState['connectors']) {
-    if (ChainController.state.multiChainEnabled) {
-      state.unMergedConnectors = [...state.unMergedConnectors, ...connectors]
-      state.connectors = this.mergeMultiChainConnectors(state.unMergedConnectors)
-    } else {
-      state.connectors = connectors.map(c => ref(c))
-    }
+    state.unMergedConnectors = [...state.unMergedConnectors, ...connectors]
+    state.connectors = this.mergeMultiChainConnectors(state.unMergedConnectors)
   },
 
   mergeMultiChainConnectors(connectors: Connector[]) {

@@ -9,7 +9,6 @@ import { type Chain } from '@web3modal/common'
 
 // -- Types --------------------------------------------- //
 export interface ChainControllerState {
-  multiChainEnabled: boolean
   activeChain: Chain | undefined
   activeCaipNetwork?: CaipNetwork
   chains: Map<Chain, ChainAdapter>
@@ -41,7 +40,6 @@ const networkState: NetworkControllerState = {
 
 // -- State --------------------------------------------- //
 const state = proxy<ChainControllerState>({
-  multiChainEnabled: false,
   chains: proxyMap<Chain, ChainAdapter>(),
   activeChain: undefined,
   activeCaipNetwork: undefined
@@ -115,10 +113,6 @@ export const ChainController = {
     })
   },
 
-  setMultiChainEnabled(multiChain: boolean) {
-    state.multiChainEnabled = multiChain
-  },
-
   setChainNetworkData(
     chain: Chain | undefined,
     props: Partial<NetworkControllerState>,
@@ -170,7 +164,7 @@ export const ChainController = {
     value: AccountControllerState[keyof AccountControllerState],
     chain?: Chain
   ) {
-    this.setChainAccountData(state.multiChainEnabled ? chain : state.activeChain, {
+    this.setChainAccountData(chain, {
       [prop]: value
     })
   },
@@ -277,7 +271,7 @@ export const ChainController = {
     key: K,
     _chain?: Chain
   ): AccountControllerState[K] | undefined {
-    let chain = state.multiChainEnabled ? state.activeChain : state.activeChain
+    let chain = state.activeChain
 
     if (_chain) {
       chain = _chain
@@ -299,7 +293,7 @@ export const ChainController = {
   getNetworkProp<K extends keyof NetworkControllerState>(
     key: K
   ): NetworkControllerState[K] | undefined {
-    const chainToWrite = state.multiChainEnabled ? state.activeChain : state.activeChain
+    const chainToWrite = state.activeChain
 
     if (!chainToWrite) {
       return undefined
@@ -315,7 +309,7 @@ export const ChainController = {
   },
 
   resetAccount(chain?: Chain) {
-    const chainToWrite = state.multiChainEnabled ? chain : state.activeChain
+    const chainToWrite = chain
 
     if (!chainToWrite) {
       throw new Error('Chain is required to set account prop')

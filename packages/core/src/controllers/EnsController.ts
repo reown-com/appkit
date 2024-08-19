@@ -142,7 +142,7 @@ export const EnsController = {
         message
       })
 
-      AccountController.setProfileName(`${name}${ConstantsUtil.WC_NAME_SUFFIX}`)
+      AccountController.setProfileName(`${name}${ConstantsUtil.WC_NAME_SUFFIX}`, network.chain)
       RouterController.replace('RegisterAccountNameSuccess')
     } catch (e) {
       const errorMessage = this.parseEnsApiError(e, `Error registering name ${name}`)

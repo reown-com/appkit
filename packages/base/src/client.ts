@@ -305,7 +305,6 @@ export class AppKit {
 
   // -- Private ------------------------------------------------------------------
   private async initControllers(options: AppKitOptions) {
-    ChainController.setMultiChainEnabled(true)
     ChainController.initialize(options.adapters || [])
     options.adapters?.forEach(adapter => {
       // @ts-expect-error will introduce construct later
