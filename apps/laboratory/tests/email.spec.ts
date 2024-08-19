@@ -86,7 +86,7 @@ emailTest('it should switch network and sign', async () => {
   await validator.expectAcceptedSign()
 })
 
-emailTest.only('it should show loading on page refresh', async () => {
+emailTest('it should show loading on page refresh', async () => {
   await page.page.reload()
   await validator.expectConnectButtonLoading()
 })

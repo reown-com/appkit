@@ -76,7 +76,7 @@ export function defaultWagmiConfig({
     ...auth
   }
 
-  if (mergedAuth.email || mergedAuth.socials) {
+  if (mergedAuth.email || mergedAuth.socials?.length) {
     connectors.push(
       authConnector({
         chains: [...chains],

@@ -561,7 +561,7 @@ export class Web3Modal extends Web3ModalScaffold {
       this.checkActiveInjectedProvider(ethersConfig)
     }
 
-    if (ethersConfig.auth) {
+    if (ethersConfig?.auth?.email || ethersConfig?.auth?.socials?.length) {
       this.syncAuthConnector(w3mOptions.projectId, ethersConfig.auth)
     }
 
