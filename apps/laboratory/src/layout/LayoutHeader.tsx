@@ -16,6 +16,7 @@ import { CustomWallet } from './CustomWallet'
 import { DownloadIcon } from '@chakra-ui/icons'
 import { useChakraToast } from '../components/Toast'
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/router'
 
 function downloadLogs(toast: ReturnType<typeof useChakraToast>) {
   type WindowWithLogs = typeof Window & {
@@ -40,9 +41,10 @@ export function LayoutHeader() {
   const toast = useChakraToast()
   const { colorMode } = useColorMode()
 
-  const [host, setHost] = useState('')
+  const router = useRouter()
+  const [origin, setOrigin] = useState('')
   useEffect(() => {
-    setHost(window.location.href)
+    setOrigin(window.location.origin)
   }, [])
 
   return (
@@ -76,7 +78,7 @@ export function LayoutHeader() {
           Logs
         </Button>
       </Stack>
-      <Text fontSize="2xs">{host}</Text>
+      <Text fontSize="2xs">{origin + router.asPath}</Text>
 
       <OptionsDrawer controls={controls} />
       <CustomWallet controls={controlsCW} />
