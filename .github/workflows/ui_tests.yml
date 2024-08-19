@@ -53,8 +53,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: [1, 2, 3, 4]
-        shardTotal: [4]
+        shard: [1, 2, 3, 4, 5]
+        shardTotal: [5]
     timeout-minutes: 20
     steps:
       - name: Tune GitHub-hosted runner network

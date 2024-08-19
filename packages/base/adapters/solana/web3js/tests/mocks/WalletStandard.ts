@@ -12,7 +12,6 @@ import type {
   SolanaSignTransactionFeature
 } from '@solana/wallet-standard-features'
 
-// @ts-expect-error - mock
 export function mockWalletStandard() {
   const accounts = TestConstants.accounts.map(mockAccount)
 
