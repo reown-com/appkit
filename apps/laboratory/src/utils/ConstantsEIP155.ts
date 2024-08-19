@@ -1,5 +1,3 @@
-import { JsonRpcRequest } from '@walletconnect/jsonrpc-utils'
-
 export const EIP155ChainData = {
   '1': {
     name: 'Ethereum Mainnet',
@@ -137,10 +135,4 @@ export const SolanaChainData = {
     slip44: 501,
     testnet: true
   }
-}
-
-export function getChainMetadata(chainId: string) {
-  const reference = chainId.split(':')[1]
-  const metadata = EIP155ChainData[reference] || SolanaChainData[reference]
-  return metadata
 }
