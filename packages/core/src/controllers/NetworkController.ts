@@ -115,6 +115,14 @@ export const NetworkController = {
     }
 
     ChainController.setCaipNetwork(caipNetwork?.chain, caipNetwork)
+
+    if (!ChainController.state.chains.get(caipNetwork.chain)?.networkState?.allowUnsupportedChain) {
+      const isSupported = this.checkIfSupportedNetwork()
+
+      if (!isSupported) {
+        this.showUnsupportedChainUI()
+      }
+    }
   },
 
   setRequestedCaipNetworks(

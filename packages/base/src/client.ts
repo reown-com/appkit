@@ -210,6 +210,10 @@ export class AppKit {
     NetworkController.setCaipNetwork(caipNetwork)
   }
 
+  public setActiveCaipNetwork: (typeof NetworkController)['setCaipNetwork'] = caipNetwork => {
+    NetworkController.setActiveCaipNetwork(caipNetwork)
+  }
+
   public getCaipNetwork = () => NetworkController.state.caipNetwork
 
   public setRequestedCaipNetworks: (typeof NetworkController)['setRequestedCaipNetworks'] = (

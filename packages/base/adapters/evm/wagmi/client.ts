@@ -421,22 +421,15 @@ export class EVMWagmiClient {
     this.options = options
     this.tokens = HelpersUtil.getCaipTokens(options.tokens)
 
-    const connectors = this.wagmiConfig.connectors
-
     this.syncRequestedNetworks([...this.wagmiConfig.chains])
     this.syncConnectors(this.wagmiConfig.connectors)
-    this.syncAuthConnector(connectors.find(c => c.id === ConstantsUtil.AUTH_CONNECTOR_ID))
+    this.initAuthConnectorListeners([...this.wagmiConfig.connectors])
 
     watchConnectors(this.wagmiConfig, {
-      onChange: _connectors => {
-        this.syncConnectors(_connectors)
-        this.syncAuthConnector(_connectors.find(c => c.id === ConstantsUtil.AUTH_CONNECTOR_ID))
-      }
+      onChange: connectors => this.syncConnectors(connectors)
     })
     watchAccount(this.wagmiConfig, {
-      onChange: accountData => {
-        this.syncAccount(accountData)
-      }
+      onChange: accountData => this.syncAccount({ ...accountData })
     })
 
     this.appKit?.setEIP6963Enabled(options.enableEIP6963 !== false)
@@ -570,7 +563,6 @@ export class EVMWagmiClient {
           this.appKit?.setAddressExplorerUrl(undefined, this.chain)
         }
         if (this.hasSyncedConnectedAccount) {
-          await this.syncProfile(address, chainId)
           await this.syncBalance(address, chainId)
         }
       }
@@ -674,30 +666,25 @@ export class EVMWagmiClient {
     }
   }
 
-  private syncConnectors(_connectors: AdapterOptions<Config>['wagmiConfig']['connectors']) {
-    const connectors = _connectors.map(connector => ({ ...connector, chain: this.chain }))
+  private syncConnectors(connectors: AdapterOptions<Config>['wagmiConfig']['connectors']) {
     const uniqueIds = new Set()
-    const filteredConnectors = connectors.filter(item => {
-      const isDuplicate = uniqueIds.has(item.id)
-      uniqueIds.add(item.id)
-
-      return !isDuplicate
-    })
+    const filteredConnectors = connectors.filter(
+      item => !uniqueIds.has(item.id) && uniqueIds.add(item.id)
+    )
 
     const w3mConnectors: Connector[] = []
 
     const coinbaseSDKId = ConstantsUtil.COINBASE_SDK_CONNECTOR_ID
 
     // Check if coinbase injected connector is present
-    const coinbaseConnector = filteredConnectors.find(
-      c => c.id === ConstantsUtil.CONNECTOR_RDNS_MAP[ConstantsUtil.COINBASE_CONNECTOR_ID]
-    )
+    const coinbaseConnector = filteredConnectors.find(c => c.id === coinbaseSDKId)
 
     filteredConnectors.forEach(({ id, name, type, icon }) => {
       // If coinbase injected connector is present, skip coinbase sdk connector.
-      const isCoinbaseRepeated = coinbaseConnector && id === coinbaseSDKId
+      const isCoinbaseRepeated =
+        coinbaseConnector &&
+        id === ConstantsUtil.CONNECTOR_RDNS_MAP[ConstantsUtil.COINBASE_CONNECTOR_ID]
       const shouldSkip = isCoinbaseRepeated || ConstantsUtil.AUTH_CONNECTOR_ID === id
-
       if (!shouldSkip) {
         w3mConnectors.push({
           id,
@@ -713,41 +700,40 @@ export class EVMWagmiClient {
         })
       }
     })
-
     this.appKit?.setConnectors(w3mConnectors)
+    this.syncAuthConnector(filteredConnectors)
   }
 
-  private async syncAuthConnector(
-    authConnector: AdapterOptions<Config>['wagmiConfig']['connectors'][number] | undefined
-  ) {
-    const connector =
-      authConnector as unknown as AdapterOptions<Config>['wagmiConfig']['connectors'][0] & {
-        email: boolean
-        socials: SocialProvider[]
-        showWallets?: boolean
-        walletFeatures?: boolean
-      }
+  private async syncAuthConnector(connectors: AdapterOptions<Config>['wagmiConfig']['connectors']) {
+    const authConnector = connectors.find(
+      ({ id }) => id === ConstantsUtil.AUTH_CONNECTOR_ID
+    ) as unknown as AdapterOptions<Config>['wagmiConfig']['connectors'][0] & {
+      email: boolean
+      socials: SocialProvider[]
+      showWallets?: boolean
+      walletFeatures?: boolean
+    }
 
-    if (connector) {
-      const provider = await connector.getProvider()
+    if (authConnector) {
+      const provider = await authConnector.getProvider()
       this.appKit?.addConnector({
         id: ConstantsUtil.AUTH_CONNECTOR_ID,
         type: 'AUTH',
         name: 'Auth',
         provider,
-        email: connector.email,
-        socials: connector.socials,
-        showWallets: connector?.showWallets === undefined ? true : connector.showWallets,
-        walletFeatures: connector.walletFeatures,
-        chain: this.chain
+        email: authConnector.email,
+        socials: authConnector.socials,
+        showWallets: authConnector.showWallets,
+        chain: this.chain,
+        walletFeatures: authConnector.walletFeatures
       })
-      this.initAuthConnectorListeners(authConnector)
     }
   }
 
   private async initAuthConnectorListeners(
-    authConnector: AdapterOptions<Config>['wagmiConfig']['connectors'][number] | undefined
+    connectors: AdapterOptions<Config>['wagmiConfig']['connectors']
   ) {
+    const authConnector = connectors.find(({ id }) => id === ConstantsUtil.AUTH_CONNECTOR_ID)
     if (authConnector) {
       await this.listenAuthConnector(authConnector)
       await this.listenModal(authConnector)

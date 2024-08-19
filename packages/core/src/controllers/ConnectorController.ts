@@ -112,6 +112,7 @@ export const ConnectorController = {
         themeVariables,
         w3mThemeVariables: getW3mThemeVariables(themeVariables, themeMode)
       })
+      this.setConnectors([authConnector])
     } else {
       this.setConnectors([connector])
     }

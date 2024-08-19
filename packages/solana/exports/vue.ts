@@ -1,11 +1,11 @@
 import { onUnmounted, ref } from 'vue'
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
 import { getWeb3Modal } from '@web3modal/scaffold-vue'
-import type { CaipNetwork } from 'packages/core/dist/types/index.js'
 import { AppKit } from '@web3modal/base'
 import type { AppKitOptions } from '@web3modal/base'
 import { SolanaWeb3JsClient, SolStoreUtil } from '@web3modal/base/adapters/solana/web3js'
 import type { Chain, ProviderType, BaseWalletAdapter } from '@web3modal/base/adapters/solana/web3js'
+import type { CaipNetwork } from '@web3modal/core'
 
 // -- Setup -------------------------------------------------------------------
 let appkit: AppKit | undefined = undefined
