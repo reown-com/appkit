@@ -38,6 +38,8 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
     this.getActiveChain = getActiveChain
     this.auth = auth
     this.requestedChains = chains
+
+    this.bindEvents()
   }
 
   get publicKey(): PublicKey | undefined {
@@ -64,7 +66,6 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
     const publicKey = this.getPublicKey(true)
 
     this.emit('connect', publicKey)
-    this.bindEvents()
 
     return publicKey.toBase58()
   }
