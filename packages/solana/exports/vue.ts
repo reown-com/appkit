@@ -4,7 +4,13 @@ import { getWeb3Modal } from '@web3modal/scaffold-vue'
 import { AppKit } from '@web3modal/base'
 import type { AppKitOptions } from '@web3modal/base'
 import { SolanaWeb3JsClient, SolStoreUtil } from '@web3modal/base/adapters/solana/web3js'
-import type { Chain, ProviderType, BaseWalletAdapter } from '@web3modal/base/adapters/solana/web3js'
+import type {
+  Chain,
+  ProviderType,
+  BaseWalletAdapter,
+  Provider,
+  Connection
+} from '@web3modal/base/adapters/solana/web3js'
 import type { CaipNetwork } from '@web3modal/core'
 
 // -- Setup -------------------------------------------------------------------
@@ -55,6 +61,9 @@ export function useWeb3ModalProvider() {
   return {
     walletProvider: walletProvider.value ?? undefined,
     connection: connection.value ?? undefined
+  } as {
+    walletProvider: Provider | undefined
+    connection: Connection | undefined
   }
 }
 

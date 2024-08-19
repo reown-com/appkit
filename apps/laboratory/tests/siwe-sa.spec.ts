@@ -34,6 +34,7 @@ smartAccountSiweTest.beforeAll(async ({ browser, library }) => {
   const email = new Email(mailsacApiKey)
 
   // Switch to a SA enabled network
+  await validator.expectDisconnected()
   await page.switchNetworkWithNetworkButton('Polygon')
   await page.closeModal()
   const tempEmail = await email.getEmailAddressToUse()

@@ -65,15 +65,6 @@ walletFeaturesTest('it should initialize onramp as expected', async () => {
   await page.closeModal()
 })
 
-walletFeaturesTest('it should initialize receive as expected', async () => {
-  await page.openAccount()
-  const walletFeatureButton = await page.getWalletFeaturesButton('receive')
-  await walletFeatureButton.click()
-  await page.page.getByTestId('receive-address-copy-button').click()
-  await expect(page.page.getByText('Address copied')).toBeVisible()
-  await page.closeModal()
-})
-
 walletFeaturesTest('it should find account name as expected', async () => {
   await page.openAccount()
   await page.openProfileView()

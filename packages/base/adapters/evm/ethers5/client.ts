@@ -99,7 +99,7 @@ export class EVMEthers5Client {
 
   private chains: Chain[]
 
-  private chain: AvailableChain = CommonConstantsUtil.CHAIN.EVM
+  public chain: AvailableChain = CommonConstantsUtil.CHAIN.EVM
 
   private metadata?: Metadata
 
@@ -114,7 +114,7 @@ export class EVMEthers5Client {
   public tokens = HelpersUtil.getCaipTokens(this.options?.tokens)
 
   public constructor(options: AdapterOptions) {
-    const { ethersConfig, siweConfig, chains, defaultChain, tokens, chainImages } = options
+    const { ethersConfig, siweConfig, chains, defaultChain, tokens } = options
 
     if (!ethersConfig) {
       throw new Error('web3modal:constructor - ethersConfig is undefined')
@@ -128,7 +128,6 @@ export class EVMEthers5Client {
     } as CaipNetwork
     this.tokens = HelpersUtil.getCaipTokens(tokens)
     this.chains = chains
-    this.chain
 
     this.networkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
