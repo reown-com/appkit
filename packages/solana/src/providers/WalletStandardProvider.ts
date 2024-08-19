@@ -26,7 +26,12 @@ import {
   StandardEvents,
   type StandardEventsFeature
 } from '@wallet-standard/features'
-import { type AnyTransaction, type Chain, type Provider } from '../utils/scaffold/index.js'
+import {
+  type AnyTransaction,
+  type Chain,
+  type GetActiveChain,
+  type Provider
+} from '../utils/scaffold/index.js'
 import base58 from 'bs58'
 import { WalletStandardFeatureNotSupportedError } from './shared/Errors.js'
 import { ProviderEventEmitter } from './shared/ProviderEventEmitter.js'
@@ -34,7 +39,7 @@ import { solanaChains } from '../utils/chains.js'
 
 export interface WalletStandardProviderConfig {
   wallet: Wallet
-  getActiveChain: () => Chain | undefined
+  getActiveChain: GetActiveChain
 }
 
 type AvailableFeatures = StandardConnectFeature &

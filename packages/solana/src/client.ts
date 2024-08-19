@@ -288,7 +288,7 @@ export class Web3Modal extends Web3ModalScaffold {
       const caipAddress: CaipAddress = `${ConstantsUtil.INJECTED_CONNECTOR_ID}:${chainId}:${address}`
       this.setIsConnected(isConnected)
       this.setCaipAddress(caipAddress)
-      await Promise.all([this.syncBalance(address)])
+      await this.syncBalance(address)
 
       this.hasSyncedConnectedAccount = true
     } else if (!isConnected && this.hasSyncedConnectedAccount) {
@@ -333,17 +333,12 @@ export class Web3Modal extends Web3ModalScaffold {
   public async switchNetwork(caipNetwork: CaipNetwork) {
     const caipChainId = caipNetwork.id
     const chain = SolHelpersUtil.getChainFromCaip(this.chains, caipChainId)
+    SolStoreUtil.setCaipChainId(chain.id)
+    SolStoreUtil.setCurrentChain(chain)
+    localStorage.setItem(SolConstantsUtil.CAIP_CHAIN_ID, chain.id)
 
-    if (chain) {
-      SolStoreUtil.setCaipChainId(`solana:${chain.chainId}`)
-      SolStoreUtil.setCurrentChain(chain)
-      localStorage.setItem(SolConstantsUtil.CAIP_CHAIN_ID, `solana:${chain.chainId}`)
-
-      this.setLoading(true)
-      await this.syncNetwork()
-      await this.syncAccount()
-      this.setLoading(false)
-    }
+    await this.syncNetwork()
+    await this.syncAccount()
   }
 
   private async syncNetwork(chainImages?: Web3ModalClientOptions['chainImages']) {
@@ -390,26 +385,37 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private async setProvider(provider: Provider) {
-    const address = await provider.connect()
+    try {
+      this.setLoading(true)
+      const address = await provider.connect()
 
-    const caipChainId = `${SolStoreUtil.state.currentChain?.name}:${SolStoreUtil.state.currentChain?.chainId}`
-    const chain = SolHelpersUtil.getChainFromCaip(
-      this.chains,
-      typeof window === 'object' ? localStorage.getItem(SolConstantsUtil.CAIP_CHAIN_ID) : ''
-    )
-    if (chain) {
-      SolStoreUtil.setCurrentChain(chain)
+      // Check if the provider supports the current chain or switch to the first supported chain
+      const connectionChain =
+        provider.chains.find(chain => chain.chainId === SolStoreUtil.state.currentChain?.chainId) ||
+        provider.chains[0]
+
+      if (connectionChain) {
+        await this.switchNetwork(
+          SolHelpersUtil.getChainFromCaip(this.chains, `solana:${connectionChain.chainId}`)
+        )
+      } else {
+        provider.disconnect()
+        throw new Error('The wallet does not support any of the required chains')
+      }
+
+      SolStoreUtil.setIsConnected(true)
+      SolStoreUtil.setProvider(provider)
+      this.provider = provider
+      this.setAddress(address)
+
+      window?.localStorage.setItem(SolConstantsUtil.WALLET_ID, provider.name)
+
+      await this.setApprovedCaipNetworksData()
+
+      this.watchProvider(provider)
+    } finally {
+      this.setLoading(false)
     }
-    SolStoreUtil.setIsConnected(true)
-    SolStoreUtil.setCaipChainId(caipChainId)
-    SolStoreUtil.setProvider(provider)
-    this.setAddress(address)
-
-    window?.localStorage.setItem(SolConstantsUtil.WALLET_ID, provider.name)
-
-    await Promise.all([this.syncBalance(address), this.setApprovedCaipNetworksData()])
-
-    this.watchProvider(provider)
   }
 
   private watchProvider(provider: Provider) {
@@ -417,9 +423,9 @@ export class Web3Modal extends Web3ModalScaffold {
       localStorage.removeItem(SolConstantsUtil.WALLET_ID)
       SolStoreUtil.reset()
 
-      provider?.removeListener('disconnect', disconnectHandler)
-      provider?.removeListener('accountsChanged', accountsChangedHandler)
-      provider?.removeListener('connect', accountsChangedHandler)
+      provider.removeListener('disconnect', disconnectHandler)
+      provider.removeListener('accountsChanged', accountsChangedHandler)
+      provider.removeListener('connect', accountsChangedHandler)
     }
 
     function accountsChangedHandler(publicKey: PublicKey) {
@@ -432,11 +438,9 @@ export class Web3Modal extends Web3ModalScaffold {
       }
     }
 
-    if (provider) {
-      provider.on('disconnect', disconnectHandler)
-      provider.on('accountsChanged', accountsChangedHandler)
-      provider.on('connect', accountsChangedHandler)
-    }
+    provider.on('disconnect', disconnectHandler)
+    provider.on('accountsChanged', accountsChangedHandler)
+    provider.on('connect', accountsChangedHandler)
   }
 
   private getProvider() {
@@ -452,7 +456,8 @@ export class Web3Modal extends Web3ModalScaffold {
       this.addProvider(
         new WalletConnectProvider({
           provider: await UniversalProvider.init(opts),
-          chains: this.chains
+          chains: this.chains,
+          getActiveChain: () => SolStoreUtil.state.currentChain
         })
       )
 

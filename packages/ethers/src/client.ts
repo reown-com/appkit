@@ -311,7 +311,7 @@ export class Web3Modal extends Web3ModalScaffold {
             throw new Error((error as CoinbaseProviderError).message)
           }
         } else if (id === ConstantsUtil.AUTH_CONNECTOR_ID) {
-          this.setAuthProvider()
+          await this.setAuthProvider()
         }
       },
 
@@ -918,7 +918,8 @@ export class Web3Modal extends Web3ModalScaffold {
             : [{ address, type: preferredAccountType as 'eoa' | 'smartAccount' }],
           this.chain
         )
-        EthersStoreUtil.setChainId(chainId)
+
+        EthersStoreUtil.setChainId(NetworkUtil.parseEvmChainId(chainId))
         EthersStoreUtil.setProviderType(ConstantsUtil.AUTH_CONNECTOR_ID as 'w3mAuth')
         EthersStoreUtil.setProvider(this.authProvider as unknown as CombinedProvider)
         EthersStoreUtil.setStatus('connected')

@@ -6,7 +6,8 @@ import {
   Spacer,
   Link as CLink,
   useDisclosure,
-  useColorMode
+  useColorMode,
+  Text
 } from '@chakra-ui/react'
 import Link from 'next/link'
 import { IoSettingsOutline } from 'react-icons/io5'
@@ -14,6 +15,8 @@ import { OptionsDrawer } from './OptionsDrawer'
 import { CustomWallet } from './CustomWallet'
 import { DownloadIcon } from '@chakra-ui/icons'
 import { useChakraToast } from '../components/Toast'
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/router'
 
 function downloadLogs(toast: ReturnType<typeof useChakraToast>) {
   type WindowWithLogs = typeof Window & {
@@ -37,6 +40,12 @@ export function LayoutHeader() {
   const controlsCW = useDisclosure({ id: 'customWallet' })
   const toast = useChakraToast()
   const { colorMode } = useColorMode()
+
+  const router = useRouter()
+  const [origin, setOrigin] = useState('')
+  useEffect(() => {
+    setOrigin(window.location.origin)
+  }, [])
 
   return (
     <>
@@ -69,6 +78,7 @@ export function LayoutHeader() {
           Logs
         </Button>
       </Stack>
+      <Text fontSize="2xs">{origin + router.asPath}</Text>
 
       <OptionsDrawer controls={controls} />
       <CustomWallet controls={controlsCW} />
