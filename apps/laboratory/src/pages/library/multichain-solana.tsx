@@ -3,10 +3,10 @@ import { SolanaWeb3JsClient, defaultSolanaConfig } from '@web3modal/base/adapter
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { solana, solanaDevnet, solanaTestnet } from '../../utils/ChainsUtil'
-import { Web3ModalButtons } from '../../components/Web3ModalButtons'
 import { SolanaTests } from '../../components/Solana/SolanaTests'
 import { BackpackWalletAdapter } from '@solana/wallet-adapter-backpack'
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
+import { AppKitButtons } from '../../components/AppKitButtons'
 
 const solanaConfig = defaultSolanaConfig({
   chains: [solana, solanaTestnet, solanaDevnet],
@@ -36,7 +36,7 @@ ThemeStore.setModal(modal)
 export default function MultiChainSolanaAdapterOnly() {
   return (
     <>
-      <Web3ModalButtons />
+      <AppKitButtons />
       <SolanaTests />
     </>
   )

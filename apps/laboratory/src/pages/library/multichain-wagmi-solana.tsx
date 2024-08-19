@@ -7,12 +7,12 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { getWagmiConfig } from '../../utils/WagmiConstants'
 import { WagmiProvider } from 'wagmi'
 import { solana, solanaDevnet, solanaTestnet } from '../../utils/ChainsUtil'
-import { Web3ModalButtons } from '../../components/Web3ModalButtons'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
 import { MultiChainInfo } from '../../components/MultiChainInfo'
 import { BackpackWalletAdapter } from '@solana/wallet-adapter-backpack'
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { MultiChainTests } from '../../components/MultiChainTests'
+import { AppKitButtons } from '../../components/AppKitButtons'
 
 const queryClient = new QueryClient()
 
@@ -51,7 +51,7 @@ export default function MultiChainAllAdapters() {
   return (
     <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
-        <Web3ModalButtons />
+        <AppKitButtons />
         <MultiChainInfo />
         <WagmiModalInfo />
         <MultiChainTests />

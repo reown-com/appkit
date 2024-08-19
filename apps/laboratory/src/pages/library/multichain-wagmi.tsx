@@ -5,7 +5,7 @@ import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { getWagmiConfig } from '../../utils/WagmiConstants'
 import { WagmiProvider } from 'wagmi'
-import { Web3ModalButtons } from '../../components/Web3ModalButtons'
+import { AppKitButtons } from '../../components/AppKitButtons'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
 
 const queryClient = new QueryClient()
@@ -32,7 +32,7 @@ export default function MultiChainWagmiAdapterOnly() {
   return (
     <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
-        <Web3ModalButtons />
+        <AppKitButtons />
         <WagmiModalInfo />
       </QueryClientProvider>
     </WagmiProvider>
