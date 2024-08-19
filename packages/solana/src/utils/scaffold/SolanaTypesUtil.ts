@@ -9,6 +9,7 @@ import type {
 
 import type { SendTransactionOptions } from '@solana/wallet-adapter-base'
 import type { Connector, ConnectorType } from '@web3modal/scaffold'
+import type { W3mFrameProvider } from 'packages/wallet/dist/types'
 
 export type Connection = SolanaConnection
 
@@ -101,3 +102,22 @@ export type Chain = {
 export type AnyTransaction = SolanaWeb3Transaction | VersionedTransaction
 
 export type GetActiveChain = () => Chain | undefined
+
+// W3mFrame should expose an interface with these methods
+export interface ProviderAuthMethods {
+  // Email
+  connectEmail: W3mFrameProvider['connectEmail']
+  connectOtp: W3mFrameProvider['connectOtp']
+  updateEmail: W3mFrameProvider['updateEmail']
+  updateEmailPrimaryOtp: W3mFrameProvider['updateEmailPrimaryOtp']
+  updateEmailSecondaryOtp: W3mFrameProvider['updateEmailSecondaryOtp']
+  getEmail: W3mFrameProvider['getEmail']
+
+  // Social
+  connectDevice: W3mFrameProvider['connectDevice']
+  connectSocial: W3mFrameProvider['connectSocial']
+
+  // Farcaster
+  connectFarcaster: W3mFrameProvider['connectFarcaster']
+  getFarcasterUri: W3mFrameProvider['getFarcasterUri']
+}

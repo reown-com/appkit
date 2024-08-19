@@ -477,7 +477,8 @@ export class Web3Modal extends Web3ModalScaffold {
               withSolanaNamespace(SolStoreUtil.state.currentChain?.chainId)
             ),
             getActiveChain: () => SolStoreUtil.state.currentChain,
-            auth: { email: opts.email, socials: opts.socials }
+            auth: { email: opts.email, socials: opts.socials },
+            chains: this.chains
           })
         )
       }

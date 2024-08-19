@@ -1,32 +1,41 @@
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
-import { type AnyTransaction, type GetActiveChain, type Provider } from '../utils/scaffold'
+import {
+  type AnyTransaction,
+  type Chain,
+  type GetActiveChain,
+  type Provider,
+  type ProviderAuthMethods
+} from '../utils/scaffold'
 import { ProviderEventEmitter } from './shared/ProviderEventEmitter'
 import { PublicKey } from '@solana/web3.js'
-import type { W3mFrameProvider } from '@web3modal/wallet'
+import { W3mFrameProvider } from '@web3modal/wallet'
 import { withSolanaNamespace } from '../utils/withSolanaNamespace'
 
 export type AuthProviderConfig = {
   provider: W3mFrameProvider
   getActiveChain: GetActiveChain
   auth: NonNullable<Provider['auth']>
+  chains: Chain[]
 }
 
-export class AuthProvider extends ProviderEventEmitter implements Provider {
+export class AuthProvider extends ProviderEventEmitter implements Provider, ProviderAuthMethods {
   public readonly name = ConstantsUtil.AUTH_CONNECTOR_ID
   public readonly type = 'AUTH'
   public readonly auth: AuthProviderConfig['auth']
 
   private readonly provider: AuthProviderConfig['provider']
   private readonly getActiveChain: AuthProviderConfig['getActiveChain']
+  private readonly requestedChains: Chain[]
 
   private session: AuthProvider.Session | undefined
 
-  constructor({ provider, getActiveChain, auth }: AuthProviderConfig) {
+  constructor({ provider, getActiveChain, auth, chains }: AuthProviderConfig) {
     super()
 
     this.provider = provider
     this.getActiveChain = getActiveChain
     this.auth = auth
+    this.requestedChains = chains
   }
 
   get publicKey(): PublicKey | undefined {
@@ -38,7 +47,11 @@ export class AuthProvider extends ProviderEventEmitter implements Provider {
   }
 
   get chains() {
-    return []
+    const availableChainIds = this.provider.getAvailableChainIds()
+
+    return this.requestedChains.filter(requestedChain =>
+      availableChainIds.includes(withSolanaNamespace(requestedChain.chainId))
+    )
   }
 
   public async connect() {
@@ -78,6 +91,22 @@ export class AuthProvider extends ProviderEventEmitter implements Provider {
   public async sendTransaction(_transaction: AnyTransaction) {
     return Promise.resolve('')
   }
+
+  // -- W3mFrameProvider methods ------------------------------------------- //
+  connectEmail: ProviderAuthMethods['connectEmail'] = args => this.provider.connectEmail(args)
+  connectOtp: ProviderAuthMethods['connectOtp'] = args => this.provider.connectOtp(args)
+  updateEmail: ProviderAuthMethods['updateEmail'] = args => this.provider.updateEmail(args)
+  updateEmailPrimaryOtp: ProviderAuthMethods['updateEmailPrimaryOtp'] = args =>
+    this.provider.updateEmailPrimaryOtp(args)
+  updateEmailSecondaryOtp: ProviderAuthMethods['updateEmailSecondaryOtp'] = args =>
+    this.provider.updateEmailSecondaryOtp(args)
+  getEmail: ProviderAuthMethods['getEmail'] = () => this.provider.getEmail()
+
+  connectDevice: ProviderAuthMethods['connectDevice'] = () => this.provider.connectDevice()
+  connectSocial: ProviderAuthMethods['connectSocial'] = args => this.provider.connectSocial(args)
+
+  connectFarcaster: ProviderAuthMethods['connectFarcaster'] = () => this.provider.connectFarcaster()
+  getFarcasterUri: ProviderAuthMethods['getFarcasterUri'] = () => this.provider.getFarcasterUri()
 
   // -- Private ------------------------------------------- //
   private getPublicKey<Required extends boolean>(

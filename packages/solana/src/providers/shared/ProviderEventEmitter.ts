@@ -6,7 +6,7 @@ type Listeners = {
   >
 }
 
-export abstract class ProviderEventEmitter implements ProviderEventEmitterMethods {
+export class ProviderEventEmitter implements ProviderEventEmitterMethods {
   private listeners: Listeners = {
     accountsChanged: [],
     chainChanged: [],

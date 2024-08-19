@@ -403,6 +403,10 @@ export class W3mFrameProvider {
     })
   }
 
+  public getAvailableChainIds() {
+    return Object.keys(this.w3mFrame.networks)
+  }
+
   // -- Private Methods -------------------------------------------------
   public rejectRpcRequests() {
     try {

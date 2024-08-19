@@ -36,7 +36,8 @@ const providers: { name: string; provider: Provider }[] = [
       auth: {
         email: true,
         socials: ['x']
-      }
+      },
+      chains: TestConstants.chains
     })
   }
 ]
