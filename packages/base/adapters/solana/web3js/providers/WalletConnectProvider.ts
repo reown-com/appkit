@@ -1,6 +1,11 @@
 import UniversalProvider from '@walletconnect/universal-provider'
-import { SolConstantsUtil, type AnyTransaction, type Chain, type Provider } from '../utils/scaffold'
-import { ProviderEventEmitter } from './shared/ProviderEventEmitter'
+import {
+  SolConstantsUtil,
+  type AnyTransaction,
+  type Chain,
+  type Provider
+} from '../utils/scaffold/index.js'
+import { ProviderEventEmitter } from './shared/ProviderEventEmitter.js'
 import type { SessionTypes } from '@walletconnect/types'
 import base58 from 'bs58'
 import {

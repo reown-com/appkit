@@ -1,4 +1,4 @@
-import type { ProviderEventEmitterMethods } from '../../utils/scaffold'
+import type { ProviderEventEmitterMethods } from '../../utils/scaffold/index.js'
 
 type Listeners = {
   [Event in ProviderEventEmitterMethods.Event]: Array<
