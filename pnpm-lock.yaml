@@ -66,7 +66,7 @@ importers:
         version: 0.22.0(rollup@4.20.0)(vite@5.2.11(@types/node@20.11.5)(terser@5.31.6))
       vitest:
         specifier: 2.0.3
-        version: 2.0.3(@types/node@20.11.5)(jsdom@24.1.0)(terser@5.31.6)
+        version: 2.0.3(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.31.6)
 
   apps/demo:
     dependencies:
@@ -217,11 +217,11 @@ importers:
         specifier: 2.13.4
         version: 2.13.4(@tanstack/query-core@5.24.8)(@types/react@18.2.62)(react@18.2.0)(typescript@5.3.3)(viem@2.19.6(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4))
       '@walletconnect/ethereum-provider':
-        specifier: 2.15.0
-        version: 2.15.0(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(utf-8-validate@5.0.10)
+        specifier: 2.14.0
+        version: 2.14.0(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(utf-8-validate@5.0.10)
       '@walletconnect/utils':
-        specifier: 2.15.0
-        version: 2.15.0
+        specifier: 2.14.0
+        version: 2.14.0
       '@web3modal/ethers':
         specifier: workspace:*
         version: link:../../packages/ethers
@@ -618,10 +618,10 @@ importers:
     devDependencies:
       '@vitest/coverage-v8':
         specifier: 2.0.5
-        version: 2.0.5(vitest@2.0.3(@types/node@20.11.5)(jsdom@24.1.0)(terser@5.31.6))
+        version: 2.0.5(vitest@2.0.3(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.31.6))
       vitest:
         specifier: 2.0.3
-        version: 2.0.3(@types/node@20.11.5)(jsdom@24.1.0)(terser@5.31.6)
+        version: 2.0.3(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.31.6)
 
   packages/core:
     dependencies:
@@ -637,13 +637,13 @@ importers:
     devDependencies:
       '@vitest/coverage-v8':
         specifier: 2.0.5
-        version: 2.0.5(vitest@2.0.3(@types/node@20.11.5)(jsdom@24.1.0)(terser@5.31.6))
+        version: 2.0.5(vitest@2.0.3(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.31.6))
       viem:
         specifier: 2.19.6
         version: 2.19.6(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4)
       vitest:
         specifier: 2.0.3
-        version: 2.0.3(@types/node@20.11.5)(jsdom@24.1.0)(terser@5.31.6)
+        version: 2.0.3(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.31.6)
 
   packages/ethers:
     dependencies:
@@ -651,11 +651,11 @@ importers:
         specifier: 4.0.3
         version: 4.0.3
       '@walletconnect/ethereum-provider':
-        specifier: 2.15.0
-        version: 2.15.0(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(utf-8-validate@5.0.10)
+        specifier: 2.14.0
+        version: 2.14.0(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(utf-8-validate@5.0.10)
       '@walletconnect/utils':
-        specifier: 2.15.0
-        version: 2.15.0
+        specifier: 2.14.0
+        version: 2.14.0
       '@web3modal/common':
         specifier: workspace:*
         version: link:../common
@@ -703,11 +703,11 @@ importers:
         specifier: 4.0.3
         version: 4.0.3
       '@walletconnect/ethereum-provider':
-        specifier: 2.15.0
-        version: 2.15.0(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(utf-8-validate@5.0.10)
+        specifier: 2.14.0
+        version: 2.14.0(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(utf-8-validate@5.0.10)
       '@walletconnect/utils':
-        specifier: 2.15.0
-        version: 2.15.0
+        specifier: 2.14.0
+        version: 2.14.0
       '@web3modal/common':
         specifier: workspace:*
         version: link:../common
@@ -863,8 +863,8 @@ importers:
   packages/siwe:
     dependencies:
       '@walletconnect/utils':
-        specifier: 2.15.0
-        version: 2.15.0
+        specifier: 2.14.0
+        version: 2.14.0
       '@web3modal/common':
         specifier: workspace:*
         version: link:../common
@@ -973,13 +973,13 @@ importers:
         version: 5.1.5
       '@vitest/coverage-v8':
         specifier: 2.0.5
-        version: 2.0.5(vitest@2.0.3(@types/node@20.11.5)(jsdom@24.1.0)(terser@5.31.6))
+        version: 2.0.5(vitest@2.0.3(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.31.6))
       '@walletconnect/types':
         specifier: 2.14.0
         version: 2.14.0
       vitest:
         specifier: 2.0.3
-        version: 2.0.3(@types/node@20.11.5)(jsdom@24.1.0)(terser@5.31.6)
+        version: 2.0.3(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.31.6)
 
   packages/ui:
     dependencies:
@@ -995,7 +995,7 @@ importers:
         version: 1.5.5
       '@vitest/coverage-v8':
         specifier: 2.0.5
-        version: 2.0.5(vitest@2.0.3(@types/node@20.11.5)(jsdom@24.1.0)(terser@5.31.6))
+        version: 2.0.5(vitest@2.0.3(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.31.6))
       '@web3modal/common':
         specifier: workspace:*
         version: link:../common
@@ -1013,16 +1013,16 @@ importers:
         version: 2.0.4(eslint@8.57.0)
       vitest:
         specifier: 2.0.3
-        version: 2.0.3(@types/node@20.11.5)(jsdom@24.1.0)(terser@5.31.6)
+        version: 2.0.3(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.31.6)
 
   packages/wagmi:
     dependencies:
       '@walletconnect/ethereum-provider':
-        specifier: 2.15.0
-        version: 2.15.0(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(utf-8-validate@5.0.10)
+        specifier: 2.14.0
+        version: 2.14.0(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(utf-8-validate@5.0.10)
       '@walletconnect/utils':
-        specifier: 2.15.0
-        version: 2.15.0
+        specifier: 2.14.0
+        version: 2.14.0
       '@web3modal/common':
         specifier: workspace:*
         version: link:../common
@@ -1087,13 +1087,13 @@ importers:
     devDependencies:
       '@vitest/coverage-v8':
         specifier: 2.0.5
-        version: 2.0.5(vitest@2.0.3(@types/node@20.11.5)(jsdom@24.1.0)(terser@5.31.6))
+        version: 2.0.5(vitest@2.0.3(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.31.6))
       jsdom:
         specifier: 24.1.0
         version: 24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       vitest:
         specifier: 2.0.3
-        version: 2.0.3(@types/node@20.11.5)(jsdom@24.1.0)(terser@5.31.6)
+        version: 2.0.3(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.31.6)
 
   services/id-allocation-service:
     dependencies:
@@ -6286,9 +6286,6 @@ packages:
 
   '@walletconnect/ethereum-provider@2.14.0':
     resolution: {integrity: sha512-Cc2/DCn85VciA10BrsNWFM//3VC1D8yjwrjfUKjGndLPDz0YIdAxTgYZViIlMjE0lzQC/DMvPYEAnGfW0O1Bwg==}
-
-  '@walletconnect/ethereum-provider@2.15.0':
-    resolution: {integrity: sha512-qQyHVwJtPo7RZJIIn7KAp20t2pthhr9P2Nnhv196+49dTMJ5Es962cgouA410XA7DSQkom+4esiXR2AR5SsrAA==}
 
   '@walletconnect/events@1.0.1':
     resolution: {integrity: sha512-NPTqaoi0oPBVNuLv7qPaJazmGHs5JGyO8eEAk5VGKmJzDR7AHzD4k6ilox5kxk1iwiOnFopBOOMLs86Oa76HpQ==}
@@ -15663,7 +15660,7 @@ snapshots:
       '@solana/web3.js': 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@walletconnect/qrcode-modal': 1.8.0
       '@walletconnect/sign-client': 2.15.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@walletconnect/utils': 2.15.0
+      '@walletconnect/utils': 2.14.0
       bs58: 5.0.0
     transitivePeerDependencies:
       - '@azure/app-configuration'
@@ -19784,11 +19781,11 @@ snapshots:
       std-env: 3.7.0
       test-exclude: 6.0.0
       v8-to-istanbul: 9.3.0
-      vitest: 2.0.3(@types/node@20.11.5)(jsdom@24.1.0)(terser@5.31.6)
+      vitest: 2.0.3(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.31.6)
     transitivePeerDependencies:
       - supports-color
 
-  '@vitest/coverage-v8@2.0.5(vitest@2.0.3(@types/node@20.11.5)(jsdom@24.1.0)(terser@5.31.6))':
+  '@vitest/coverage-v8@2.0.5(vitest@2.0.3(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.31.6))':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@bcoe/v8-coverage': 0.2.3
@@ -19802,7 +19799,7 @@ snapshots:
       std-env: 3.7.0
       test-exclude: 7.0.1
       tinyrainbow: 1.2.0
-      vitest: 2.0.3(@types/node@20.11.5)(jsdom@24.1.0)(terser@5.31.6)
+      vitest: 2.0.3(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.31.6)
     transitivePeerDependencies:
       - supports-color
 
@@ -20060,39 +20057,6 @@ snapshots:
       '@walletconnect/types': 2.14.0
       '@walletconnect/universal-provider': 2.14.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@walletconnect/utils': 2.14.0
-      events: 3.3.0
-    transitivePeerDependencies:
-      - '@azure/app-configuration'
-      - '@azure/cosmos'
-      - '@azure/data-tables'
-      - '@azure/identity'
-      - '@azure/keyvault-secrets'
-      - '@azure/storage-blob'
-      - '@capacitor/preferences'
-      - '@netlify/blobs'
-      - '@planetscale/database'
-      - '@react-native-async-storage/async-storage'
-      - '@types/react'
-      - '@upstash/redis'
-      - '@vercel/kv'
-      - bufferutil
-      - encoding
-      - ioredis
-      - react
-      - uWebSockets.js
-      - utf-8-validate
-
-  '@walletconnect/ethereum-provider@2.15.0(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(utf-8-validate@5.0.10)':
-    dependencies:
-      '@walletconnect/jsonrpc-http-connection': 1.0.8
-      '@walletconnect/jsonrpc-provider': 1.0.14
-      '@walletconnect/jsonrpc-types': 1.0.4
-      '@walletconnect/jsonrpc-utils': 1.0.8
-      '@walletconnect/modal': 2.6.2(@types/react@18.2.62)(react@18.2.0)
-      '@walletconnect/sign-client': 2.15.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@walletconnect/types': 2.15.0
-      '@walletconnect/universal-provider': 2.15.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@walletconnect/utils': 2.15.0
       events: 3.3.0
     transitivePeerDependencies:
       - '@azure/app-configuration'
@@ -27291,7 +27255,7 @@ snapshots:
       fsevents: 2.3.3
       terser: 5.31.6
 
-  vitest@2.0.3(@types/node@20.11.5)(jsdom@24.1.0)(terser@5.31.6):
+  vitest@2.0.3(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.31.6):
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@vitest/expect': 2.0.3
