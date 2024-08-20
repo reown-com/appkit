@@ -1,4 +1,4 @@
-import { W3mFrameProvider } from '@web3modal/wallet'
+import { W3mFrameProvider, type W3mFrameTypes } from '@web3modal/wallet'
 import type { AuthProvider } from '../../src/providers/AuthProvider'
 import { vi } from 'vitest'
 import { TestConstants } from '../util/TestConstants'
@@ -8,6 +8,28 @@ export function mockW3mFrameProvider() {
 
   w3mFrame.connect = vi.fn(() => Promise.resolve(mockSession()))
   w3mFrame.disconnect = vi.fn(() => Promise.resolve(undefined))
+  w3mFrame.request = vi.fn(({ method }: W3mFrameTypes.RPCRequest) => {
+    switch (method) {
+      case 'solana_signMessage':
+        return Promise.resolve({
+          signature:
+            '5bW5EoLn696QKxgJbsDb1aXrBf9hSUvvCa9FbyRt6CyppX4cQMJWyKx736ka5WDKqCZaoVivpWaxHhcAbSwhNx6Qp5Df3cHvSkg7jSX8PVw7FMKv45B5ZaeLjYHubDVsQEFFAs3Ea1CZU7X8xCv2JbhQvoxMoFWAKxUyFbM3DFH4KzuLL5nMZ9ybkiYfGdAAzwfMTDFLY7ymdzG12mWpvPwLJnwECDgHG7BogzZBdehndK8KP5sPLY5VcgVp5D87crr7XhUwmw5QLtDjPMnp4YKwApSS58jVNw3Zy'
+        })
+      case 'solana_signTransaction':
+        return Promise.resolve({
+          transaction:
+            '4zZMC2ddAFY1YHcA2uFCqbuTHmD1xvB5QLzgNnT3dMb4aQT98md8jVm1YRGUsKJkYkLPYarnkobvESUpjqEUnDmoG76e9cgNJzLuFXBW1i6njs2Sy1Lnr9TZmLnhif5CYjh1agVJEvjfYpTq1QbTnLS3rBt4yKVjQ6FcV3x22Vm3XBPqodTXz17o1YcHMcvYQbHZfVUyikQ3Nmv6ktZzWe36D6ceKCVBV88VvYkkFhwWUWkA5ErPvsHWQU64VvbtENaJXFUUnuqTFSX4q3ccHuHdmtnhWQ7Mv8Xkb'
+        })
+      case 'solana_signAndSendTransaction':
+        return Promise.resolve({
+          signature:
+            '2Lb1KQHWfbV3pWMqXZveFWqneSyhH95YsgCENRWnArSkLydjN1M42oB82zSd6BBdGkM9pE6sQLQf1gyBh8KWM2c4'
+        })
+      default:
+        return Promise.reject(new Error('not implemented'))
+    }
+  })
+  w3mFrame.switchNetwork = vi.fn((chainId: string | number) => Promise.resolve({ chainId }))
 
   return w3mFrame
 }
