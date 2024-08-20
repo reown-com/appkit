@@ -38,7 +38,7 @@ export const ConnectorController = {
   mergeMultiChainConnectors(connectors: Connector[]) {
     const connectorsByNameMap = this.generateConnectorMapByName(connectors)
 
-    const refactoredConnector = Array.from(connectorsByNameMap.values()).map(_connectors => {
+    const refactoredConnectors = Array.from(connectorsByNameMap.values()).map(_connectors => {
       if (_connectors.length > 1) {
         return {
           name: _connectors[0]?.name,
@@ -52,7 +52,7 @@ export const ConnectorController = {
       return _connectors[0] as ConnectorWithProviders
     })
 
-    return refactoredConnector
+    return refactoredConnectors
   },
 
   generateConnectorMapByName(connectors: Connector[]): Map<string, Connector[]> {
