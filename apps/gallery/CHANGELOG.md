@@ -1,5 +1,15 @@
 # @apps/gallery
 
+## 5.1.1
+
+### Patch Changes
+
+- Rollback EthProvider to v 2.14.0
+
+- Updated dependencies []:
+  - @web3modal/common@5.1.1
+  - @web3modal/ui@5.1.1
+
 ## 5.1.0
 
 ### Minor Changes

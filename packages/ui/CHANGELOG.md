@@ -1,5 +1,11 @@
 # @web3modal/ui
 
+## 5.1.1
+
+### Patch Changes
+
+- Rollback EthProvider to v 2.14.0
+
 ## 5.1.0
 
 ### Minor Changes

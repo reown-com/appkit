@@ -1,5 +1,15 @@
 # @web3modal/cdn
 
+## 5.1.1
+
+### Patch Changes
+
+- Rollback EthProvider to v 2.14.0
+
+- Updated dependencies []:
+  - @web3modal/ethers@5.1.1
+  - @web3modal/wagmi@5.1.1
+
 ## 5.1.0
 
 ### Minor Changes
