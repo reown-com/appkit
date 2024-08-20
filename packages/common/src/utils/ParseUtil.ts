@@ -1,14 +1,14 @@
-import type { CaipAddress, CaipNetworkId } from './TypeUtil.js'
+import type { CaipAddress, CaipNetworkId, ChainId, ChainNamespace } from './TypeUtil.js'
 
 type ParsedCaipAddress = {
-  key: string
-  chainId: string
+  chainNamespace: ChainNamespace
+  chainId: ChainId
   address: string
 }
 
 type ParsedCaipNetworkId = {
-  key: string
-  chainId: string
+  chainNamespace: ChainNamespace
+  chainId: ChainId
 }
 
 export const ParseUtil = {
@@ -18,21 +18,21 @@ export const ParseUtil = {
       throw new Error(`Invalid CAIP-10 address: ${caipAddress}`)
     }
 
-    const [key, chainId, address] = parts
+    const [chainNamespace, chainId, address] = parts
 
-    if (!key || !chainId || !address) {
+    if (!chainNamespace || !chainId || !address) {
       throw new Error(`Invalid CAIP-10 address: ${caipAddress}`)
     }
 
-    return { key, chainId, address }
+    return { chainNamespace, chainId, address }
   },
   parseCaipNetworkId(caipNetworkId: CaipNetworkId): ParsedCaipNetworkId {
-    const [key, chainId] = caipNetworkId.split(':')
+    const [chainNamespace, chainId] = caipNetworkId.split(':')
 
-    if (!key || !chainId) {
+    if (!chainNamespace || !chainId) {
       throw new Error(`Invalid CAIP-2 network id: ${caipNetworkId}`)
     }
 
-    return { key, chainId }
+    return { chainNamespace, chainId }
   }
 }

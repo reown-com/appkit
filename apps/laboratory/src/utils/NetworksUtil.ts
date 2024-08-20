@@ -15,7 +15,7 @@ export const mainnet = {
   currency: 'ETH',
   explorerUrl: 'https://etherscan.io',
   rpcUrl: getBlockchainApiRpcUrl(1),
-  chain: 'evm'
+  chainNamespace: 'eip155'
 }
 
 export const arbitrum = {
@@ -25,7 +25,7 @@ export const arbitrum = {
   currency: 'ETH',
   explorerUrl: 'https://arbiscan.io',
   rpcUrl: getBlockchainApiRpcUrl(42161),
-  chain: 'evm'
+  chainNamespace: 'eip155'
 }
 
 export const avalanche = {
@@ -35,7 +35,7 @@ export const avalanche = {
   currency: 'AVAX',
   explorerUrl: 'https://snowtrace.io',
   rpcUrl: getBlockchainApiRpcUrl(43114),
-  chain: 'evm'
+  chainNamespace: 'eip155'
 }
 
 export const binanceSmartChain = {
@@ -45,7 +45,7 @@ export const binanceSmartChain = {
   currency: 'BNB',
   explorerUrl: 'https://bscscan.com',
   rpcUrl: getBlockchainApiRpcUrl(56),
-  chain: 'evm'
+  chainNamespace: 'eip155'
 }
 
 export const optimism = {
@@ -55,7 +55,7 @@ export const optimism = {
   currency: 'ETH',
   explorerUrl: 'https://optimistic.etherscan.io',
   rpcUrl: getBlockchainApiRpcUrl(10),
-  chain: 'evm'
+  chainNamespace: 'eip155'
 }
 
 export const polygon = {
@@ -65,7 +65,7 @@ export const polygon = {
   currency: 'MATIC',
   explorerUrl: 'https://polygonscan.com',
   rpcUrl: getBlockchainApiRpcUrl(137),
-  chain: 'evm'
+  chainNamespace: 'eip155'
 }
 
 export const gnosis = {
@@ -75,7 +75,7 @@ export const gnosis = {
   currency: 'xDAI',
   explorerUrl: 'https://gnosis.blockscout.com',
   rpcUrl: getBlockchainApiRpcUrl(100),
-  chain: 'evm'
+  chainNamespace: 'eip155'
 }
 
 export const zkSync = {
@@ -85,7 +85,7 @@ export const zkSync = {
   currency: 'ETH',
   explorerUrl: 'https://explorer.zksync.io',
   rpcUrl: getBlockchainApiRpcUrl(324),
-  chain: 'evm'
+  chainNamespace: 'eip155'
 }
 
 export const zora = {
@@ -95,7 +95,7 @@ export const zora = {
   currency: 'ETH',
   explorerUrl: 'https://explorer.zora.energy',
   rpcUrl: getBlockchainApiRpcUrl(7777777),
-  chain: 'evm'
+  chainNamespace: 'eip155'
 }
 
 export const celo = {
@@ -105,7 +105,7 @@ export const celo = {
   currency: 'CELO',
   explorerUrl: 'https://explorer.celo.org/mainnet',
   rpcUrl: getBlockchainApiRpcUrl(42220),
-  chain: 'evm'
+  chainNamespace: 'eip155'
 }
 
 export const base = {
@@ -115,7 +115,7 @@ export const base = {
   currency: 'BASE',
   explorerUrl: 'https://basescan.org',
   rpcUrl: getBlockchainApiRpcUrl(8453),
-  chain: 'evm'
+  chainNamespace: 'eip155'
 }
 
 export const aurora = {
@@ -125,7 +125,7 @@ export const aurora = {
   currency: 'ETH',
   explorerUrl: 'https://explorer.aurora.dev',
   rpcUrl: getBlockchainApiRpcUrl(1313161554),
-  chain: 'evm'
+  chainNamespace: 'eip155'
 }
 
 export const sepolia = {
@@ -135,7 +135,7 @@ export const sepolia = {
   currency: 'ETH',
   explorerUrl: 'https://sepolia.etherscan.io',
   rpcUrl: getBlockchainApiRpcUrl(11155111),
-  chain: 'evm'
+  chainNamespace: 'eip155'
 }
 
 export const baseSepolia = {
@@ -145,7 +145,7 @@ export const baseSepolia = {
   currency: 'BASE',
   explorerUrl: 'https://sepolia.basescan.org',
   rpcUrl: getBlockchainApiRpcUrl(84532),
-  chain: 'evm'
+  chainNamespace: 'eip155'
 }
 
 export const solana = {
@@ -155,7 +155,7 @@ export const solana = {
   currency: 'SOL',
   explorerUrl: 'https://solscan.io',
   rpcUrl: 'https://rpc.walletconnect.org/v1',
-  chain: 'solana'
+  chainNamespace: 'solana'
 }
 
 export const solanaTestnet = {
@@ -165,7 +165,7 @@ export const solanaTestnet = {
   currency: 'SOL',
   explorerUrl: 'https://explorer.solana.com/?cluster=testnet',
   rpcUrl: 'https://rpc.walletconnect.org/v1',
-  chain: 'solana'
+  chainNamespace: 'solana'
 }
 
 export const solanaDevnet = {
@@ -175,7 +175,7 @@ export const solanaDevnet = {
   currency: 'SOL',
   explorerUrl: 'https://explorer.solana.com/?cluster=devnet',
   rpcUrl: 'https://rpc.walletconnect.org/v1',
-  chain: 'solana'
+  chainNamespace: 'solana'
 }
 
 export function getChain(id: number) {

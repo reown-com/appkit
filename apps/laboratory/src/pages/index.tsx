@@ -227,6 +227,21 @@ export default function HomePage() {
               <Stack direction="row" justifyContent="space-between" alignItems="center">
                 <Box>
                   <Heading size="xs" textTransform="uppercase">
+                    Ethers
+                  </Heading>
+                  <Text pt="2" fontSize="sm">
+                    Configuration with only Ethers adapter enabled for AppKit
+                  </Text>
+                </Box>
+                <Link href={'/library/multichain-ethers'}>
+                  <Button rightIcon={<IoArrowForward />}>Go</Button>
+                </Link>
+              </Stack>
+            </Box>
+            <Box>
+              <Stack direction="row" justifyContent="space-between" alignItems="center">
+                <Box>
+                  <Heading size="xs" textTransform="uppercase">
                     Basic <Badge>Soon</Badge>
                   </Heading>
                   <Text pt="2" fontSize="sm">

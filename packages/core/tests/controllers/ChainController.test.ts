@@ -28,7 +28,7 @@ const networkControllerClient: NetworkControllerClient = {
 }
 
 const evmAdapter = {
-  chain: 'evm' as Chain,
+  chain: 'eip155' as Chain,
   connectionControllerClient,
   networkControllerClient
 }

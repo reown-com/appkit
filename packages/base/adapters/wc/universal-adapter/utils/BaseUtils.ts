@@ -4,7 +4,11 @@ import UniversalProvider from '@walletconnect/universal-provider'
 import { WcHelpersUtil } from '../../../../utils/HelpersUtil.js'
 
 export const BaseUtils = {
-  async getBalance(provider: UniversalProvider, caipAddress: CaipAddress, chain: 'evm' | 'solana') {
+  async getBalance(
+    provider: UniversalProvider,
+    caipAddress: CaipAddress,
+    chain: 'eip155' | 'solana'
+  ) {
     const { chainType, chainId, address } = WcHelpersUtil.extractDetails(caipAddress)
 
     const balance = (await provider.request(
@@ -16,7 +20,7 @@ export const BaseUtils = {
     const BALANCE_VALUE_DECIMAL_DIVIDER = 1000000000
 
     const value = new BN(balance.value)
-    const currency = chain === 'evm' ? 'eth' : 'sol'
+    const currency = chain === 'eip155' ? 'eth' : 'sol'
     const decimals = balance.value / BALANCE_VALUE_DECIMAL_DIVIDER
     const symbol = currency
 

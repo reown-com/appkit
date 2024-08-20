@@ -65,3 +65,11 @@ export type Chain = {
   chain: string
   imageId: string | undefined
 }
+
+export type ProviderId =
+  | 'walletConnect'
+  | 'injected'
+  | 'coinbaseWallet'
+  | 'eip6963'
+  | 'w3mAuth'
+  | 'coinbaseWalletSDK'

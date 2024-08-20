@@ -9,7 +9,7 @@ export function MultiChainTests() {
 
   return (
     <>
-      {activeChain === 'evm' ? <EthersTests /> : null}
+      {activeChain === 'eip155' ? <EthersTests /> : null}
       {activeChain === 'solana' ? <SolanaTests /> : null}
     </>
   )

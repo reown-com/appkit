@@ -359,7 +359,9 @@ export class AppKit {
       OptionsController.setDisableAppend(Boolean(options.disableAppend))
     }
 
-    const evmAdapter = options.adapters?.find(adapter => adapter.chain === ConstantsUtil.CHAIN.EVM)
+    const evmAdapter = options.adapters?.find(
+      adapter => adapter.chainNamespace === ConstantsUtil.CHAIN.EVM
+    )
 
     // Set the SIWE client for EVM chains
     if (evmAdapter) {
@@ -382,9 +384,10 @@ export class AppKit {
     })
 
     ChainController.initializeUniversalAdapter(this.universalAdapter)
+
     this.universalAdapter.construct?.(this, options)
 
-    NetworkController.setAllowUnsupportedCaipNetwork(options.allowUnsupportedCaipNetwork, 'evm')
+    NetworkController.setAllowUnsupportedCaipNetwork(options.allowUnsupportedCaipNetwork, 'eip155')
     NetworkController.setAllowUnsupportedCaipNetwork(options.allowUnsupportedCaipNetwork, 'solana')
     NetworkController.setDefaultCaipNetwork(options.defaultCaipNetwork)
   }
@@ -392,13 +395,18 @@ export class AppKit {
   private initializeAdapters(options: AppKitOptions) {
     ChainController.initialize(options.adapters || [])
     options.adapters?.forEach(adapter => {
+      const caipNetworks = this.extendCaipNetworksWithImages(
+        options.caipNetworks,
+        options.caipNetworkImages
+      )
+      options.caipNetworks = caipNetworks
       // @ts-expect-error will introduce construct later
       adapter.construct?.(this, options)
 
       // Set this value for all chains
       NetworkController.setAllowUnsupportedCaipNetwork(
         options.allowUnsupportedCaipNetwork,
-        adapter.chain
+        adapter.chainNamespace
       )
       NetworkController.setDefaultCaipNetwork(options.defaultCaipNetwork)
     })

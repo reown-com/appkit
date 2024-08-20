@@ -21,7 +21,7 @@ import {
   type CaipNetwork,
   type CaipNetworkId,
   type CaipAddress,
-  type Chain
+  type ChainNamespace
 } from '@web3modal/common'
 
 type Metadata = {
@@ -46,17 +46,17 @@ export type AppKitOptions = Omit<AppKitClientOptions, '_sdkVersion'>
 
 // -- Client --------------------------------------------------------------------
 export class UniversalAdapterClient {
+  public caipNetworks: CaipNetwork[]
+
   private walletConnectProvider?: UniversalProvider
 
   private walletConnectProviderInitPromise?: Promise<void>
-
-  private caipNetworks: CaipNetwork[]
 
   private metadata?: Metadata
 
   public isUniversalAdapterClient = true
 
-  public chain: 'evm' | 'solana'
+  public chainNamespace: ChainNamespace
 
   public networkControllerClient: NetworkControllerClient
 
@@ -69,7 +69,7 @@ export class UniversalAdapterClient {
   public constructor(options: AppKitOptions) {
     const { siweConfig, caipNetworks, metadata } = options
 
-    this.chain = 'evm'
+    this.chainNamespace = 'eip155'
 
     this.metadata = metadata
 
@@ -98,7 +98,7 @@ export class UniversalAdapterClient {
             Object.keys(ns).forEach(key => {
               const chains = ns?.[key]?.chains
               if (chains) {
-                nsChains.push(...(chains as `${string}:${string}`[]))
+                nsChains.push(...(chains as CaipNetworkId[]))
               }
             })
           }
@@ -177,7 +177,7 @@ export class UniversalAdapterClient {
       },
 
       disconnect: async () => {
-        this.appKit?.resetAccount('evm')
+        this.appKit?.resetAccount('eip155')
         this.appKit?.resetAccount('solana')
         localStorage.removeItem(WcConstantsUtil.WALLET_ID)
 
@@ -190,7 +190,7 @@ export class UniversalAdapterClient {
           await this.walletConnectProvider.disconnect()
 
           if (NetworkController.state.caipNetwork) {
-            this.appKit?.resetAccount('evm')
+            this.appKit?.resetAccount('eip155')
             this.appKit?.resetAccount('solana')
           }
         }
@@ -250,7 +250,7 @@ export class UniversalAdapterClient {
   public async disconnect() {
     if (this.walletConnectProvider) {
       await (this.walletConnectProvider as unknown as UniversalProvider).disconnect()
-      this.appKit?.resetAccount('evm')
+      this.appKit?.resetAccount('eip155')
       this.appKit?.resetAccount('solana')
     }
   }
@@ -300,11 +300,13 @@ export class UniversalAdapterClient {
   }
 
   private syncRequestedNetworks(caipNetworks: AppKitClientOptions['caipNetworks']) {
-    const uniqueChains = [...new Set(caipNetworks.map(caipNetwork => caipNetwork.chain))]
-    uniqueChains.forEach(chain => {
+    const uniqueChainNamespaces = [
+      ...new Set(caipNetworks.map(caipNetwork => caipNetwork.chainNamespace))
+    ]
+    uniqueChainNamespaces.forEach(chainNamespace => {
       this.appKit?.setRequestedCaipNetworks(
-        caipNetworks.filter(caipNetwork => caipNetwork.chain === chain),
-        chain
+        caipNetworks.filter(caipNetwork => caipNetwork.chainNamespace === chainNamespace),
+        chainNamespace
       )
     })
   }
@@ -332,12 +334,11 @@ export class UniversalAdapterClient {
       Object.keys(nameSpaces)
         .reverse()
         .forEach(key => {
-          const chain = (key === 'eip155' ? 'evm' : key) as Chain
           const caipAddress = nameSpaces?.[key]?.accounts[0] as CaipAddress
 
           if (caipAddress) {
-            this.appKit?.setIsConnected(true, chain)
-            this.appKit?.setCaipAddress(caipAddress, chain)
+            this.appKit?.setIsConnected(true, key)
+            this.appKit?.setCaipAddress(caipAddress, key)
           }
         })
       if (!NetworkController.state.caipNetwork) {
@@ -355,13 +356,13 @@ export class UniversalAdapterClient {
   }
 
   private setDefaultNetwork(nameSpaces: SessionTypes.Namespaces) {
-    const chain = this.caipNetworks[0]?.chain === 'evm' ? 'eip155' : this.caipNetworks[0]?.chain
+    const chainNamespace = this.caipNetworks[0]?.chainNamespace
 
-    if (chain) {
-      const chainNamespace = nameSpaces?.[chain]
+    if (chainNamespace) {
+      const namespace = nameSpaces?.[chainNamespace]
 
-      if (chainNamespace?.chains) {
-        const chainId = chainNamespace.chains[0]
+      if (namespace?.chains) {
+        const chainId = namespace.chains[0]
 
         if (chainId) {
           const requestedCaipNetworks = NetworkController.state?.requestedCaipNetworks
@@ -380,10 +381,10 @@ export class UniversalAdapterClient {
 
   private async watchWalletConnect() {
     const provider = await this.getWalletConnectProvider()
-    const chain = this.chain
+    const chainNamespace = this.chainNamespace
 
     function disconnectHandler() {
-      AccountController.resetAccount(chain)
+      AccountController.resetAccount(chainNamespace)
       ConnectionController.resetWcConnection()
 
       localStorage.removeItem(WcConstantsUtil.WALLET_ID)
@@ -434,15 +435,15 @@ export class UniversalAdapterClient {
 
     if (isConnected) {
       namespaceKeys.forEach(async key => {
-        const chain = (key === 'eip155' ? 'evm' : key) as Chain
+        const chainNamespace = key as ChainNamespace
         const address = namespaces?.[key]?.accounts[0] as CaipAddress
 
-        this.appKit?.setIsConnected(isConnected, chain)
-        this.appKit?.setPreferredAccountType(preferredAccountType, chain)
-        this.appKit?.setCaipAddress(address, chain)
+        this.appKit?.setIsConnected(isConnected, chainNamespace)
+        this.appKit?.setPreferredAccountType(preferredAccountType, chainNamespace)
+        this.appKit?.setCaipAddress(address, chainNamespace)
         this.syncConnectedWalletInfo()
 
-        await Promise.all([this.appKit?.setApprovedCaipNetworksData(chain)])
+        await Promise.all([this.appKit?.setApprovedCaipNetworksData(chainNamespace)])
       })
     } else {
       this.appKit?.resetWcConnection()
@@ -460,10 +461,10 @@ export class UniversalAdapterClient {
           name: this.walletConnectProvider.session.peer.metadata.name,
           icon: this.walletConnectProvider.session.peer.metadata.icons?.[0]
         },
-        this.chain
+        this.chainNamespace
       )
     } else if (currentActiveWallet) {
-      this.appKit?.setConnectedWalletInfo({ name: currentActiveWallet }, 'evm')
+      this.appKit?.setConnectedWalletInfo({ name: currentActiveWallet }, 'eip155')
       this.appKit?.setConnectedWalletInfo({ name: currentActiveWallet }, 'solana')
     }
   }
@@ -477,7 +478,7 @@ export class UniversalAdapterClient {
       imageId: PresetsUtil.ConnectorImageIds[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID],
       name: PresetsUtil.ConnectorNamesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID],
       type: 'WALLET_CONNECT',
-      chain: this.chain
+      chain: this.chainNamespace
     })
 
     this.appKit?.setConnectors(w3mConnectors)

@@ -12,7 +12,7 @@ export type Network = {
   id: CaipNetworkId
   imageId: string | undefined
   chainId: string | number
-  chain: 'evm' | 'solana'
+  chain: 'eip155' | 'solana'
   name: string
   currency: string
   explorerUrl: string

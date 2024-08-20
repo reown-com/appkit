@@ -302,6 +302,7 @@ export class W3mFrameProvider {
       const response = await this.appEvent<'SignOut'>({
         type: W3mFrameConstants.APP_SIGN_OUT
       } as W3mFrameTypes.AppEvent)
+
       this.deleteAuthLoginCache()
 
       return response

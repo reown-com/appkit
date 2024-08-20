@@ -6,7 +6,7 @@ export const ConstantsUtil = {
   PULSE_API_URL: 'https://pulse.walletconnect.org',
   W3M_API_URL: 'https://api.web3modal.org',
   CHAIN: {
-    EVM: 'evm' as Chain,
+    EVM: 'eip155' as Chain,
     SOLANA: 'solana' as Chain
   },
   CHAIN_NAME_MAP: {

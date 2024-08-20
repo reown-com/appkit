@@ -1,6 +1,6 @@
 import type { Chain } from '@web3modal/scaffold-utils'
 import type { Namespace } from './TypesUtil.js'
-import type { CaipNetwork } from '@web3modal/common'
+import type { CaipNetwork, ChainNamespace } from '@web3modal/common'
 
 export const WcHelpersUtil = {
   hexStringToNumber(value: string) {
@@ -12,29 +12,25 @@ export const WcHelpersUtil = {
   numberToHexString(value: number) {
     return `0x${value.toString(16)}`
   },
-  getMethodsByChainType(chainType: string): string[] {
-    switch (chainType) {
+  getMethodsByChainNamespace(chainNamespace: ChainNamespace): string[] {
+    switch (chainNamespace) {
       case 'solana':
         return ['solana_signMessage']
-      case 'evm':
+      case 'eip155':
         return ['personal_sign']
-      case 'polkadot':
-        return []
-      case 'cosmos':
-        return []
       default:
         return []
     }
   },
   createNamespaces(caipNetworks: CaipNetwork[]): Namespace {
     return caipNetworks.reduce<Namespace>((acc, chain) => {
-      const { chainId, chain: chainType, rpcUrl } = chain
+      const { chainId, chainNamespace, rpcUrl } = chain
       // eslint-disable-next-line @typescript-eslint/no-useless-template-literals
-      const namespaceKey = `${chainType === 'evm' ? 'eip155' : chainType}`
-      const methods = this.getMethodsByChainType(chainType)
 
-      if (!acc[namespaceKey]) {
-        acc[namespaceKey] = {
+      const methods = this.getMethodsByChainNamespace(chainNamespace)
+
+      if (!acc[chainNamespace]) {
+        acc[chainNamespace] = {
           methods,
           events: ['accountsChanged', 'chainChanged'],
           chains: [],
@@ -42,11 +38,11 @@ export const WcHelpersUtil = {
         }
       }
 
-      const fullChainId = `${namespaceKey}:${chainId}`
+      const fullChainId = `${chainNamespace}:${chainId}`
       // @ts-ignore
-      acc[namespaceKey].chains.push(fullChainId)
+      acc[chainNamespace].chains.push(fullChainId)
       // @ts-ignore
-      acc[namespaceKey].rpcMap[fullChainId] = rpcUrl
+      acc[chainNamespace].rpcMap[fullChainId] = rpcUrl
       // typeof rpcUrl === 'function' ? rpcUrl(chainId) : rpcUrl
 
       return acc

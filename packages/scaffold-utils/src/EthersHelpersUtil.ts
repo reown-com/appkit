@@ -47,21 +47,21 @@ export const EthersHelpersUtil = {
 
     return addresses
   },
-  async addEthereumChain(provider: Provider, chain: Chain) {
+  async addEthereumChain(provider: Provider, caipNetwork: CaipNetwork) {
     await provider.request({
       method: 'wallet_addEthereumChain',
       params: [
         {
-          chainId: EthersHelpersUtil.numberToHexString(chain.chainId),
-          rpcUrls: [chain.rpcUrl],
-          chainName: chain.name,
+          chainId: EthersHelpersUtil.numberToHexString(caipNetwork.chainId),
+          rpcUrls: [caipNetwork.rpcUrl],
+          chainName: caipNetwork.name,
           nativeCurrency: {
-            name: chain.currency,
+            name: caipNetwork.currency,
             decimals: 18,
-            symbol: chain.currency
+            symbol: caipNetwork.currency
           },
-          blockExplorerUrls: [chain.explorerUrl],
-          iconUrls: [PresetsUtil.NetworkImageIds[chain.chainId]]
+          blockExplorerUrls: [caipNetwork.explorerUrl],
+          iconUrls: [PresetsUtil.NetworkImageIds[caipNetwork.chainId]]
         }
       ]
     })

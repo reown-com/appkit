@@ -1,5 +1,12 @@
 import type { W3mFrameProvider, W3mFrameTypes } from '@web3modal/wallet'
-import type { Balance, Transaction, Chain, CaipNetworkId, CaipNetwork } from '@web3modal/common'
+import type {
+  Balance,
+  Transaction,
+  Chain,
+  CaipNetworkId,
+  CaipNetwork,
+  ChainNamespace
+} from '@web3modal/common'
 import type {
   NetworkControllerClient,
   NetworkControllerState
@@ -819,7 +826,7 @@ export type ChainAdapter = {
   accountState?: AccountControllerState
   networkState?: NetworkControllerState
   defaultNetwork?: CaipNetwork
-  chain: Chain
+  chainNamespace: ChainNamespace
   isUniversalAdapterClient?: boolean
 }
 

@@ -1,60 +1,40 @@
-/* eslint-disable max-depth */
-import type {
-  CaipNetwork,
-  CaipNetworkId,
-  ConnectionControllerClient,
-  Connector,
-  NetworkControllerClient,
-  PublicStateControllerState,
-  SendTransactionArgs,
-  Token,
-  WriteContractArgs
-} from '@web3modal/scaffold'
-import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
-import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
-import { ConstantsUtil as CommonConstants } from '@web3modal/common'
-import type { Chain as AvailableChain } from '@web3modal/common'
+import type { AppKitOptions } from '../../../utils/TypesUtil.js'
 import {
-  type Address,
+  NetworkUtil,
+  type CaipNetwork,
+  type CaipNetworkId,
+  type ChainNamespace
+} from '@web3modal/common'
+import type { CombinedProvider, Connector, Token } from '@web3modal/core'
+import {
+  EthersHelpersUtil,
   type Provider,
   type ProviderType,
-  EthersHelpersUtil,
-  EthersStoreUtil
+  type ProviderId,
+  type Address
 } from '@web3modal/scaffold-utils/ethers'
-import {
-  formatEther,
-  JsonRpcProvider,
-  InfuraProvider,
-  getAddress as getOriginalAddress,
-  parseUnits,
-  formatUnits,
-  JsonRpcSigner,
-  BrowserProvider,
-  Contract,
-  hexlify,
-  toUtf8Bytes,
-  isHexString
-} from 'ethers'
-
-import type { Eip1193Provider } from 'ethers'
-import { W3mFrameProvider, W3mFrameHelpers, W3mFrameRpcConstants } from '@web3modal/wallet'
-import type { CombinedProvider, EthersStoreUtilState } from '@web3modal/scaffold-utils/ethers'
-import { NetworkUtil } from '@web3modal/common'
-import type { W3mFrameTypes } from '@web3modal/wallet'
 import type { AppKit } from '../../../src/client.js'
-import type { AppKitOptions } from '../../../utils/TypesUtil.js'
-import type { OptionsControllerState } from '@web3modal/core'
-import { WcStoreUtil, type Network } from '../../../utils/StoreUtil.js'
+import {
+  W3mFrameHelpers,
+  W3mFrameProvider,
+  W3mFrameRpcConstants,
+  type W3mFrameTypes
+} from '@web3modal/wallet'
+import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
+import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@web3modal/scaffold-utils'
 import type UniversalProvider from '@walletconnect/universal-provider'
-import type EthereumProvider from '@walletconnect/ethereum-provider'
+import type { ConnectionControllerClient, NetworkControllerClient } from '@web3modal/scaffold'
 import { WcConstantsUtil } from '../../../utils/ConstantsUtil.js'
+import { EthersMethods } from './utils/EthersMethods.js'
+import { formatEther, InfuraProvider, JsonRpcProvider } from 'ethers'
+import { EthersStoreUtil } from './utils/EthersStoreUtil.js'
 
 // -- Types ---------------------------------------------------------------------
 export interface AdapterOptions extends Pick<AppKitOptions, 'siweConfig'> {
   ethersConfig: ProviderType
-  chains: Network[]
-  defaultChain?: Network
-  chainImages?: Record<number | string, string>
+  caipNetworks: CaipNetwork[]
+  defaultCaipNetwork?: CaipNetwork
+  caipNetworkImages?: Record<number | string, string>
   connectorImages?: Record<string, string>
   tokens?: Record<number, Token>
 }
@@ -63,6 +43,10 @@ type CoinbaseProviderError = {
   code: number
   message: string
   data: string | undefined
+}
+
+interface ExternalProvider extends Provider {
+  accounts: string[]
 }
 
 declare global {
@@ -88,20 +72,14 @@ interface EIP6963ProviderDetail {
   provider: Provider
 }
 
-interface ExternalProvider extends EthereumProvider {
-  accounts: string[]
-}
-
-// -- Client --------------------------------------------------------------------
 export class EVMEthersClient {
-  // -- Private variables -------------------------------------------------------
   private appKit: AppKit | undefined = undefined
 
   private hasSyncedConnectedAccount = false
 
   private EIP6963Providers: EIP6963ProviderDetail[] = []
 
-  private chains: Network[]
+  private caipNetworks: CaipNetwork[]
 
   private ethersConfig: AdapterOptions['ethersConfig']
 
@@ -110,7 +88,7 @@ export class EVMEthersClient {
   // -- Public variables --------------------------------------------------------
   public options: AppKitOptions | undefined = undefined
 
-  public chain: AvailableChain = CommonConstantsUtil.CHAIN.EVM
+  public chainNamespace: ChainNamespace = CommonConstantsUtil.CHAIN.EVM
 
   public networkControllerClient: NetworkControllerClient
 
@@ -124,7 +102,7 @@ export class EVMEthersClient {
 
   // -- Public -------------------------------------------------------------------
   public constructor(options: AdapterOptions) {
-    const { ethersConfig, siweConfig, chains, defaultChain } = options
+    const { ethersConfig, siweConfig, caipNetworks } = options
 
     if (!ethersConfig) {
       throw new Error('web3modal:constructor - ethersConfig is undefined')
@@ -133,21 +111,16 @@ export class EVMEthersClient {
     this.ethersConfig = ethersConfig
     this.siweControllerClient = this.options?.siweConfig
     this.tokens = HelpersUtil.getCaipTokens(options.tokens)
-    this.defaultChain = {
-      ...EthersHelpersUtil.getCaipDefaultChain(defaultChain),
-      chain: CommonConstantsUtil.CHAIN.EVM
-    } as CaipNetwork
-    this.chains = chains
+    this.caipNetworks = caipNetworks
 
     this.networkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
-        const chainId = NetworkUtil.caipNetworkIdToNumber(caipNetwork?.id)
-        if (chainId) {
+        if (caipNetwork?.chainId) {
           try {
-            WcStoreUtil.setError(undefined)
-            await this.switchNetwork(Number(chainId))
+            // WcStoreUtil.setError(undefined)
+            await this.switchNetwork(caipNetwork)
           } catch (error) {
-            WcStoreUtil.setError(error)
+            // WcStoreUtil.setError(error)
             throw new Error('networkControllerClient:switchCaipNetwork - unable to switch chain')
           }
         }
@@ -165,7 +138,7 @@ export class EVMEthersClient {
             Object.keys(ns).forEach(key => {
               const chains = ns?.[key]?.chains
               if (chains) {
-                nsChains.push(...(chains as `${string}:${string}`[]))
+                nsChains.push(...(chains as `${ChainNamespace}:${string}`[]))
               }
             })
           }
@@ -194,44 +167,54 @@ export class EVMEthersClient {
         info: Info
         provider: Provider
       }) => {
-        // If connecting with something else than walletconnect, we need to clear the clientId in the store
         this.appKit?.setClientId(null)
-        if (id === ConstantsUtil.INJECTED_CONNECTOR_ID) {
-          const InjectedProvider = ethersConfig.injected
-          if (!InjectedProvider) {
-            throw new Error('connectionControllerClient:connectInjected - provider is undefined')
-          }
-          try {
-            WcStoreUtil.setError(undefined)
-            await InjectedProvider.request({ method: 'eth_requestAccounts' })
-            this.setInjectedProvider(ethersConfig)
-          } catch (error) {
-            WcStoreUtil.setError(error)
-          }
-        } else if (id === ConstantsUtil.EIP6963_CONNECTOR_ID && info && provider) {
-          try {
-            WcStoreUtil.setError(undefined)
-            await provider.request({ method: 'eth_requestAccounts' })
-            this.setEIP6963Provider(provider, info.name)
-          } catch (error) {
-            WcStoreUtil.setError(error)
-          }
-        } else if (id === ConstantsUtil.COINBASE_SDK_CONNECTOR_ID) {
-          const CoinbaseProvider = ethersConfig.coinbase
-          if (!CoinbaseProvider) {
-            throw new Error('connectionControllerClient:connectCoinbase - connector is undefined')
-          }
 
-          try {
-            WcStoreUtil.setError(undefined)
-            await CoinbaseProvider.request({ method: 'eth_requestAccounts' })
-            this.setCoinbaseProvider(ethersConfig)
-          } catch (error) {
-            WcStoreUtil.setError(error)
+        const connectorConfig = {
+          [ConstantsUtil.INJECTED_CONNECTOR_ID]: {
+            getProvider: () => ethersConfig.injected,
+            providerType: 'injected' as const
+          },
+          [ConstantsUtil.EIP6963_CONNECTOR_ID]: {
+            getProvider: () => provider,
+            providerType: 'eip6963' as const
+          },
+          [ConstantsUtil.COINBASE_SDK_CONNECTOR_ID]: {
+            getProvider: () => ethersConfig.coinbase,
+            providerType: 'coinbase' as const
+          },
+          [ConstantsUtil.AUTH_CONNECTOR_ID]: {
+            getProvider: () => ethersConfig.auth,
+            providerType: 'auth' as const
+          }
+        }
+
+        const selectedConnector = connectorConfig[id]
+
+        if (!selectedConnector) {
+          throw new Error(`Unsupported connector ID: ${id}`)
+        }
+
+        const selectedProvider = selectedConnector.getProvider() as Provider
+
+        if (!selectedProvider) {
+          throw new Error(`Provider for connector ${id} is undefined`)
+        }
+
+        try {
+          // WcStoreUtil.setError(undefined)
+          if (selectedProvider) {
+            await selectedProvider.request({ method: 'eth_requestAccounts' })
+          }
+          await this.setProvider(
+            selectedProvider,
+            selectedConnector.providerType as ProviderId,
+            info.name
+          )
+        } catch (error) {
+          // WcStoreUtil.setError(error)
+          if (id === ConstantsUtil.COINBASE_SDK_CONNECTOR_ID) {
             throw new Error((error as CoinbaseProviderError).message)
           }
-        } else if (id === ConstantsUtil.AUTH_CONNECTOR_ID) {
-          this.setAuthProvider()
         }
       },
 
@@ -251,246 +234,157 @@ export class EVMEthersClient {
 
       disconnect: async () => {
         const provider = EthersStoreUtil.state.provider
-        const providerType = EthersStoreUtil.state.providerType
-        localStorage.removeItem(WcConstantsUtil.WALLET_ID)
-        WcStoreUtil.reset()
+        const providerId = EthersStoreUtil.state.providerId
+
         this.appKit?.setClientId(null)
         if (siweConfig?.options?.signOutOnDisconnect) {
           const { SIWEController } = await import('@web3modal/siwe')
           await SIWEController.signOut()
         }
-        if (
-          providerType === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID ||
-          providerType === 'coinbaseWalletSDK'
-        ) {
-          await this.appKit?.universalAdapter?.connectionControllerClient.disconnect() // eslint-disable-next-line no-negated-condition
-        } else if (providerType === ConstantsUtil.AUTH_CONNECTOR_ID) {
-          await this.authProvider?.disconnect()
-        } else if (providerType === ConstantsUtil.EIP6963_CONNECTOR_ID && provider) {
-          await this.revokeProviderPermissions(provider)
-        } else if (providerType === ConstantsUtil.INJECTED_CONNECTOR_ID) {
-          const InjectedProvider = ethersConfig.injected
-          if (InjectedProvider) {
-            await this.revokeProviderPermissions(InjectedProvider)
+
+        const disconnectConfig = {
+          [ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID]: async () =>
+            await this.appKit?.universalAdapter?.connectionControllerClient.disconnect(),
+
+          coinbaseWalletSDK: async () =>
+            await this.appKit?.universalAdapter?.connectionControllerClient.disconnect(),
+
+          [ConstantsUtil.AUTH_CONNECTOR_ID]: async () => {
+            await this.authProvider?.disconnect()
+          },
+
+          [ConstantsUtil.EIP6963_CONNECTOR_ID]: async () => {
+            if (provider) {
+              provider.emit('disconnect')
+              await this.revokeProviderPermissions(provider)
+            }
+          },
+          [ConstantsUtil.INJECTED_CONNECTOR_ID]: async () => {
+            if (provider) {
+              provider.emit('disconnect')
+              await this.revokeProviderPermissions(provider)
+            }
           }
         }
+        const disconnectFunction = disconnectConfig[providerId]
+
+        if (disconnectFunction) {
+          await disconnectFunction()
+        } else {
+          console.warn(`No disconnect function found for provider type: ${providerId}`)
+        }
+
+        // Common cleanup actions
         localStorage.removeItem(WcConstantsUtil.WALLET_ID)
-        WcStoreUtil.reset()
+        this.appKit?.resetAccount('eip155')
       },
-
       signMessage: async (message: string) => {
-        const provider = EthersStoreUtil.state.provider
-        if (!provider) {
-          throw new Error('connectionControllerClient:signMessage - provider is undefined')
-        }
-        const hexMessage = isHexString(message) ? message : hexlify(toUtf8Bytes(message))
-        const signature = await provider.request({
-          method: 'personal_sign',
-          params: [hexMessage, this.getAddress()]
-        })
-
-        return signature as `0x${string}`
-      },
-
-      parseUnits: (value: string, decimals: number) => parseUnits(value, decimals),
-
-      formatUnits: (value: bigint, decimals: number) => formatUnits(value, decimals),
-
-      async estimateGas(data) {
-        const { chainId, provider, address } = WcStoreUtil.state
-
-        if (!provider) {
-          throw new Error('connectionControllerClient:sendTransaction - provider is undefined')
-        }
+        const provider = EthersStoreUtil.state.provider as Provider
+        const address = this.appKit?.getAddress()
 
         if (!address) {
-          throw new Error('connectionControllerClient:sendTransaction - address is undefined')
+          throw new Error('Address is undefined')
         }
 
-        const txParams = {
-          from: data.address,
-          to: data.to,
-          data: data.data,
-          type: 0
-        }
-
-        const browserProvider = new BrowserProvider(provider, chainId)
-        const signer = new JsonRpcSigner(browserProvider, address)
-        const gas = await signer.estimateGas(txParams)
-
-        return gas
+        return await EthersMethods.signMessage(message, provider, address)
       },
 
-      sendTransaction: async (data: SendTransactionArgs) => {
-        const { chainId, provider, address } = WcStoreUtil.state
+      parseUnits: EthersMethods.parseUnits,
+      formatUnits: EthersMethods.formatUnits,
 
-        if (!provider) {
-          throw new Error('ethersClient:sendTransaction - provider is undefined')
-        }
+      estimateGas: async data => {
+        const provider = EthersStoreUtil.state.provider as Provider
+        const address = this.appKit?.getAddress()
+        const caipNetwork = this.appKit?.getCaipNetwork()
 
         if (!address) {
-          throw new Error('ethersClient:sendTransaction - address is undefined')
+          throw new Error('Address is undefined')
         }
 
-        const txParams = {
-          to: data.to,
-          value: data.value,
-          gasLimit: data.gas,
-          gasPrice: data.gasPrice,
-          data: data.data,
-          type: 0
-        }
-
-        const browserProvider = new BrowserProvider(provider, chainId)
-        const signer = new JsonRpcSigner(browserProvider, address)
-        const txResponse = await signer.sendTransaction(txParams)
-        const txReceipt = await txResponse.wait()
-
-        return (txReceipt?.hash as `0x${string}`) || null
+        return await EthersMethods.estimateGas(
+          data,
+          provider,
+          address,
+          Number(caipNetwork?.chainId)
+        )
       },
 
-      writeContract: async (data: WriteContractArgs) => {
-        const { chainId, provider, address } = WcStoreUtil.state
-
-        if (!provider) {
-          throw new Error('ethersClient:writeContract - provider is undefined')
-        }
+      sendTransaction: async data => {
+        const provider = EthersStoreUtil.state.provider as Provider
+        const address = this.appKit?.getAddress()
+        const caipNetwork = this.appKit?.getCaipNetwork()
 
         if (!address) {
-          throw new Error('ethersClient:writeContract - address is undefined')
+          throw new Error('Address is undefined')
         }
 
-        const browserProvider = new BrowserProvider(provider, chainId)
-        const signer = new JsonRpcSigner(browserProvider, address)
-        const contract = new Contract(data.tokenAddress, data.abi, signer)
-
-        if (!contract || !data.method) {
-          throw new Error('Contract method is undefined')
-        }
-
-        const method = contract[data.method]
-        if (method) {
-          const tx = await method(data.receiverAddress, data.tokenAmount)
-
-          return tx
-        }
-
-        throw new Error('Contract method is undefined')
+        return await EthersMethods.sendTransaction(
+          data,
+          provider,
+          address,
+          Number(caipNetwork?.chainId)
+        )
       },
+
+      writeContract: async data => {
+        const provider = EthersStoreUtil.state.provider as Provider
+        const address = this.appKit?.getAddress()
+        const caipNetwork = this.appKit?.getCaipNetwork()
+
+        if (!address) {
+          throw new Error('Address is undefined')
+        }
+
+        return await EthersMethods.writeContract(
+          data,
+          provider,
+          address,
+          Number(caipNetwork?.chainId)
+        )
+      },
+
       getEnsAddress: async (value: string) => {
-        try {
-          const chainId = Number(
-            NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id)
-          )
-          let ensName: string | null = null
-          let wcName: boolean | string = false
-
-          if (value?.endsWith(CommonConstants.WC_NAME_SUFFIX)) {
-            wcName = (await this.appKit?.resolveWalletConnectName(value)) || false
-          }
-
-          if (chainId === 1) {
-            const ensProvider = new InfuraProvider('mainnet')
-
-            ensName = await ensProvider.resolveName(value)
-          }
-
-          return ensName || wcName || false
-        } catch {
-          return false
-        }
-      },
-
-      getEnsAvatar: async (value: string) => {
-        const { chainId } = WcStoreUtil.state
-        if (chainId && chainId === 1) {
-          const ensProvider = new InfuraProvider('mainnet')
-
-          const avatar = await ensProvider.getAvatar(value)
-
-          if (avatar) {
-            return avatar
-          }
-
-          return false
+        if (this.appKit) {
+          return await EthersMethods.getEnsAddress(value, this.appKit)
         }
 
         return false
+      },
+
+      getEnsAvatar: async (value: string) => {
+        const caipNetwork = this.appKit?.getCaipNetwork()
+
+        return await EthersMethods.getEnsAvatar(value, Number(caipNetwork?.chainId))
       }
     }
   }
 
-  public construct(appKit: AppKit, options: OptionsControllerState) {
+  public construct(appKit: AppKit, options: AppKitOptions) {
     if (!options.projectId) {
-      throw new Error('web3modal:initialize - projectId is undefined')
+      throw new Error('appkit:ethers-client:initialize - projectId is undefined')
     }
 
     this.appKit = appKit
     this.options = options
+    this.caipNetworks = options.caipNetworks
 
-    WcStoreUtil.subscribeKey('address', () => {
-      this.syncAccount()
-    })
-
-    WcStoreUtil.subscribeKey('chainId', () => {
-      this.syncNetwork(this.options?.chainImages)
-    })
-
-    /*
-     * When the client is loaded, this.getChainId stays undefined even if the user switches networks via w3modal <networks> button.
-     * This subscribes to the network change and sets the chainId in the store so it can be used when connecting.
-     * Especially important for email connector where correct chainId dictates which account is available e.g. smart account, eoa.
-     */
-    // Todo(enes): refactor this
-    this.appKit?.subscribeCaipNetworkChange(network => {
-      if (!this.appKit?.getCaipNetwork()?.id && network) {
-        // WcStoreUtil.setChainId(NetworkUtil.caipNetworkIdToNumber())
-      }
-    })
-
-    this.appKit?.subscribeShouldUpdateToAddress((address?: string) => {
-      if (!address) {
-        return
-      }
-      this.setAddress(address)
-    })
-
-    this.syncRequestedNetworks(this.chains, this.options?.chainImages)
     this.syncConnectors(this.ethersConfig)
 
-    // Setup EIP6963 providers
     if (typeof window !== 'undefined') {
       this.listenConnectors(true)
-      this.checkActive6963Provider()
     }
 
     this.appKit?.setEIP6963Enabled(this.ethersConfig.EIP6963)
-
-    if (this.ethersConfig.injected) {
-      this.checkActiveInjectedProvider(this.ethersConfig)
-    }
 
     if (this.ethersConfig.auth) {
       this.syncAuthConnector(this.options.projectId, this.ethersConfig.auth)
     }
 
-    if (this.ethersConfig.coinbase) {
-      this.checkActiveCoinbaseProvider(this.ethersConfig)
-    }
+    this.checkActiveProviders(this.ethersConfig)
+    this.syncRequestedNetworks(this.caipNetworks)
   }
 
-  // @ts-expect-error: Overridden state type is correct
-  public override getState() {
-    const state = this.appKit?.getState()
-
-    return {
-      ...state,
-      selectedNetworkId: NetworkUtil.caipNetworkIdToNumber(state?.selectedNetworkId)
-    }
-  }
-
-  // @ts-expect-error: Overridden state type is correct
-  public override subscribeState(callback: (state: Web3ModalState) => void) {
+  public subscribeState(callback: (state: Web3ModalState) => void) {
     return this.appKit?.subscribeState(state =>
       callback({
         ...state,
@@ -499,71 +393,11 @@ export class EVMEthersClient {
     )
   }
 
-  public setAddress(address?: string) {
-    const originalAddress = address ? (getOriginalAddress(address) as Address) : undefined
-    this.appKit?.setCaipAddress(
-      `${ConstantsUtil.EIP155}:${this.getChainId()}:${originalAddress}`,
-      this.chain
-    )
-  }
-
-  public getAddress() {
-    const { address } = WcStoreUtil.state
-
-    return address ? getOriginalAddress(address) : undefined
-  }
-
-  public getError() {
-    return WcStoreUtil.state.error
-  }
-
-  public getChainId() {
-    const networkControllerChainId = NetworkUtil.caipNetworkIdToNumber(
-      this.appKit?.getCaipNetwork()?.id
-    )
-
-    return Number(networkControllerChainId)
-  }
-
-  public getStatus() {
-    return WcStoreUtil.state.status
-  }
-
-  public getIsConnected() {
-    return WcStoreUtil.state.isConnected
-  }
-
-  public getWalletProvider() {
-    return EthersStoreUtil.state.provider as Eip1193Provider | undefined
-  }
-
-  public getWalletProviderType() {
-    return EthersStoreUtil.state.providerType
-  }
-
-  public subscribeProvider(callback: (newState: EthersStoreUtilState) => void) {
-    return EthersStoreUtil.subscribe(callback)
-  }
-
   public async disconnect() {
-    const { provider, providerType } = EthersStoreUtil.state
-
-    localStorage.removeItem(WcConstantsUtil.WALLET_ID)
-    WcStoreUtil.reset()
-    this.appKit?.setClientId(null)
-
-    if (providerType === ConstantsUtil.AUTH_CONNECTOR_ID) {
-      await this.authProvider?.disconnect()
-    } else if (provider && (providerType === 'injected' || providerType === 'eip6963')) {
-      await this.revokeProviderPermissions(provider)
-      provider?.emit('disconnect')
-    } else if (providerType === 'walletConnect' || providerType === 'coinbaseWalletSDK') {
-      await this.appKit?.universalAdapter?.connectionControllerClient.disconnect()
-    }
+    await this.connectionControllerClient.disconnect()
   }
 
   // -- Private -----------------------------------------------------------------
-
   private async revokeProviderPermissions(provider: Provider | CombinedProvider) {
     try {
       const permissions: { parentCapability: string }[] = await provider.request({
@@ -585,127 +419,64 @@ export class EVMEthersClient {
     }
   }
 
-  private syncRequestedNetworks(
-    chains: AdapterOptions['chains'],
-    chainImages?: AdapterOptions['chainImages']
-  ) {
-    const requestedCaipNetworks = chains?.map(
-      chain =>
-        ({
-          id: `${ConstantsUtil.EIP155}:${chain.chainId}`,
-          name: chain.name,
-          imageId: PresetsUtil.NetworkImageIds[chain.chainId],
-          imageUrl: chainImages?.[chain.chainId],
-          chain: CommonConstantsUtil.CHAIN.EVM
-        }) as CaipNetwork
-    )
-    this.appKit?.setRequestedCaipNetworks(requestedCaipNetworks ?? [], this.chain)
-  }
-
-  private checkActiveInjectedProvider(config: ProviderType) {
-    const InjectedProvider = config.injected
+  private checkActiveProviders(config: ProviderType) {
     const walletId = localStorage.getItem(WcConstantsUtil.WALLET_ID)
+    const walletName = localStorage.getItem(WcConstantsUtil.WALLET_NAME)
 
-    if (InjectedProvider) {
-      if (walletId === ConstantsUtil.INJECTED_CONNECTOR_ID) {
-        this.setInjectedProvider(config)
-        this.watchInjected(config)
+    if (!walletId) {
+      return
+    }
+
+    const providerConfigs = {
+      [ConstantsUtil.INJECTED_CONNECTOR_ID]: {
+        provider: config.injected
+      },
+      [ConstantsUtil.COINBASE_SDK_CONNECTOR_ID]: {
+        provider: config.coinbase as unknown as ExternalProvider
+      },
+      [ConstantsUtil.EIP6963_CONNECTOR_ID]: {
+        provider: this.EIP6963Providers.find(p => p.info.name === walletName)?.provider
       }
+    }
+
+    const activeConfig = providerConfigs[walletId as keyof typeof providerConfigs]
+
+    if (activeConfig?.provider) {
+      this.setProvider(activeConfig.provider, walletId as ProviderId)
+      this.setupProviderListeners(activeConfig.provider, walletId as ProviderId)
     }
   }
 
-  private checkActiveCoinbaseProvider(config: ProviderType) {
-    const CoinbaseProvider = config.coinbase as unknown as ExternalProvider
-    const walletId = localStorage.getItem(WcConstantsUtil.WALLET_ID)
+  private async setProvider(provider: Provider, providerId: ProviderId, name?: string) {
+    if (providerId === 'w3mAuth') {
+      // this.setAuthProvider()
+    } else {
+      const walletId = providerId
 
-    if (CoinbaseProvider) {
-      if (walletId === ConstantsUtil.COINBASE_SDK_CONNECTOR_ID) {
-        if (CoinbaseProvider.accounts && CoinbaseProvider.accounts?.length > 0) {
-          this.setCoinbaseProvider(config)
-          this.watchCoinbase(config)
-        } else {
-          localStorage.removeItem(WcConstantsUtil.WALLET_ID)
-          WcStoreUtil.reset()
+      window?.localStorage.setItem(WcConstantsUtil.WALLET_ID, walletId)
+      if (name) {
+        window?.localStorage.setItem(WcConstantsUtil.WALLET_NAME, name)
+      }
+
+      if (provider) {
+        const { addresses, chainId } = await EthersHelpersUtil.getUserInfo(provider)
+        const caipNetwork = this.caipNetworks.find(c => c.chainId === chainId)
+
+        if (addresses?.[0] && chainId && caipNetwork) {
+          this.appKit?.setCaipNetwork(caipNetwork)
+          this.appKit?.setCaipAddress(
+            `${this.chainNamespace}:${chainId}:${addresses[0]}`,
+            this.chainNamespace
+          )
+          EthersStoreUtil.setProviderId(providerId)
+          EthersStoreUtil.setProvider(provider)
+          this.appKit?.setStatus('connected', this.chainNamespace)
+          this.appKit?.setIsConnected(true, this.chainNamespace)
+          this.appKit?.setAllAccounts(
+            addresses.map(address => ({ address, type: 'eoa' })),
+            this.chainNamespace
+          )
         }
-      }
-    }
-  }
-
-  private checkActive6963Provider() {
-    const currentActiveWallet = window?.localStorage.getItem(WcConstantsUtil.WALLET_ID)
-    if (currentActiveWallet) {
-      const currentProvider = this.EIP6963Providers.find(
-        provider => provider.info.name === currentActiveWallet
-      )
-      if (currentProvider) {
-        this.setEIP6963Provider(currentProvider.provider, currentProvider.info.name)
-      }
-    }
-  }
-
-  private async setInjectedProvider(config: ProviderType) {
-    window?.localStorage.setItem(WcConstantsUtil.WALLET_ID, ConstantsUtil.INJECTED_CONNECTOR_ID)
-    const InjectedProvider = config.injected
-
-    if (InjectedProvider) {
-      const { addresses, chainId } = await EthersHelpersUtil.getUserInfo(InjectedProvider)
-      const chain = this.chains.find(c => c.chainId === chainId)
-      if (addresses?.[0] && chainId) {
-        this.appKit?.setCaipNetwork(chain)
-        EthersStoreUtil.setProviderType('injected')
-        EthersStoreUtil.setProvider(config.injected)
-        this.appKit?.setStatus('connected', this.chain)
-        this.appKit?.setIsConnected(true, this.chain)
-        this.appKit?.setAllAccounts(
-          addresses.map(address => ({ address, type: 'eoa' })),
-          this.chain
-        )
-        this.setAddress(addresses[0])
-        this.watchCoinbase(config)
-      }
-    }
-  }
-
-  private async setEIP6963Provider(provider: Provider, name: string) {
-    window?.localStorage.setItem(WcConstantsUtil.WALLET_ID, name)
-
-    if (provider) {
-      const { addresses, chainId } = await EthersHelpersUtil.getUserInfo(provider)
-      if (addresses?.[0] && chainId) {
-        const chain = this.chains.find(c => c.chainId === chainId)
-        this.appKit?.setCaipNetwork(chain)
-        EthersStoreUtil.setProviderType('eip6963')
-        EthersStoreUtil.setProvider(provider)
-        this.appKit?.setStatus('connected', this.chain)
-        this.appKit?.setIsConnected(true, this.chain)
-        this.appKit?.setAllAccounts(
-          addresses.map(address => ({ address, type: 'eoa' })),
-          this.chain
-        )
-        this.setAddress(addresses[0])
-        this.watchEIP6963(provider)
-      }
-    }
-  }
-
-  private async setCoinbaseProvider(config: ProviderType) {
-    window?.localStorage.setItem(WcConstantsUtil.WALLET_ID, ConstantsUtil.COINBASE_SDK_CONNECTOR_ID)
-    const CoinbaseProvider = config.coinbase
-    if (CoinbaseProvider) {
-      const { addresses, chainId } = await EthersHelpersUtil.getUserInfo(CoinbaseProvider)
-      if (addresses?.[0] && chainId) {
-        const chain = this.chains.find(c => c.chainId === chainId)
-        this.appKit?.setCaipNetwork(chain)
-        EthersStoreUtil.setProviderType('coinbaseWalletSDK')
-        EthersStoreUtil.setProvider(config.coinbase)
-        this.appKit?.setStatus('connected', this.chain)
-        this.appKit?.setIsConnected(true, this.chain)
-        this.appKit?.setAllAccounts(
-          addresses.map(address => ({ address, type: 'eoa' })),
-          this.chain
-        )
-        this.setAddress(addresses[0])
-        this.watchCoinbase(config)
       }
     }
   }
@@ -722,245 +493,42 @@ export class EVMEthersClient {
         preferredAccountType,
         accounts = []
       } = await this.authProvider.connect({
-        chainId: Number(NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id))
+        chainId: Number(
+          NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id) ??
+            this.caipNetworks[0]?.chainId
+        )
       })
 
       const { smartAccountEnabledNetworks } =
         await this.authProvider.getSmartAccountEnabledNetworks()
 
-      this.appKit?.setSmartAccountEnabledNetworks(smartAccountEnabledNetworks, this.chain)
+      this.appKit?.setSmartAccountEnabledNetworks(smartAccountEnabledNetworks, this.chainNamespace)
       if (address && chainId) {
         this.appKit?.setAllAccounts(
           accounts.length > 0
             ? accounts
             : [{ address, type: preferredAccountType as 'eoa' | 'smartAccount' }],
-          this.chain
+          this.chainNamespace
         )
-        const chain = this.chains.find(c => c.chainId === chainId)
-        this.appKit?.setCaipNetwork(chain)
-        EthersStoreUtil.setProviderType(ConstantsUtil.AUTH_CONNECTOR_ID as 'w3mAuth')
-        EthersStoreUtil.setProvider(this.authProvider as unknown as CombinedProvider)
-        this.appKit?.setStatus('connected', this.chain)
-        this.appKit?.setIsConnected(true, this.chain)
-        this.setAddress(address)
+        const caipNetwork = this.caipNetworks.find(c => c.chainId === chainId)
+        this.appKit?.setCaipNetwork(caipNetwork)
+        this.appKit?.setStatus('connected', this.chainNamespace)
+        this.appKit?.setIsConnected(true, this.chainNamespace)
+        this.appKit?.setCaipAddress(
+          `${this.chainNamespace}:${chainId}:${address}`,
+          this.chainNamespace
+        )
         this.appKit?.setPreferredAccountType(
           preferredAccountType as W3mFrameTypes.AccountType,
-          this.chain
+          this.chainNamespace
         )
-        this.appKit?.setSmartAccountDeployed(Boolean(smartAccountDeployed), this.chain)
-        this.watchAuth()
+        this.appKit?.setSmartAccountDeployed(Boolean(smartAccountDeployed), this.chainNamespace)
+        EthersStoreUtil.setProvider(this.authProvider as unknown as Provider)
+        EthersStoreUtil.setProviderId(ConstantsUtil.AUTH_CONNECTOR_ID as ProviderId)
+        this.setupProviderListeners(this.authProvider as unknown as Provider, 'w3mAuth')
         this.watchModal()
       }
       this.appKit?.setLoading(false)
-    }
-  }
-
-  private watchInjected(config: ProviderType) {
-    const provider = config.injected
-    const appKit = this.appKit
-    const chains = this.chains
-    const setAddress = this.setAddress
-
-    function disconnectHandler() {
-      localStorage.removeItem(WcConstantsUtil.WALLET_ID)
-      WcStoreUtil.reset()
-
-      provider?.removeListener('disconnect', disconnectHandler)
-      provider?.removeListener('accountsChanged', accountsChangedHandler)
-      provider?.removeListener('chainChanged', chainChangedHandler)
-    }
-
-    function accountsChangedHandler(accounts: string[]) {
-      const currentAccount = accounts?.[0]
-      if (currentAccount) {
-        setAddress(getOriginalAddress(currentAccount) as Address)
-      } else {
-        localStorage.removeItem(WcConstantsUtil.WALLET_ID)
-        WcStoreUtil.reset()
-      }
-    }
-
-    function chainChangedHandler(chainId: string) {
-      if (chainId) {
-        const chainIdNumber =
-          typeof chainId === 'string'
-            ? EthersHelpersUtil.hexStringToNumber(chainId)
-            : Number(chainId)
-        const chain = chains.find(c => c.chainId === chainIdNumber)
-        appKit?.setCaipNetwork(chain)
-      }
-    }
-
-    if (provider) {
-      provider.on('disconnect', disconnectHandler)
-      provider.on('accountsChanged', accountsChangedHandler)
-      provider.on('chainChanged', chainChangedHandler)
-    }
-  }
-
-  private watchEIP6963(provider: Provider) {
-    const appKit = this.appKit
-    const chains = this.chains
-    const setAddress = this.setAddress
-
-    function disconnectHandler() {
-      localStorage.removeItem(WcConstantsUtil.WALLET_ID)
-      WcStoreUtil.reset()
-      provider.removeListener('disconnect', disconnectHandler)
-      provider.removeListener('accountsChanged', accountsChangedHandler)
-      provider.removeListener('chainChanged', chainChangedHandler)
-    }
-
-    const accountsChangedHandler = (accounts: string[]) => {
-      const currentAccount = accounts?.[0]
-      if (currentAccount) {
-        setAddress(getOriginalAddress(currentAccount) as Address)
-        this.appKit?.setAllAccounts(
-          accounts.map(address => ({ address, type: 'eoa' })),
-          this.chain
-        )
-      } else {
-        this.appKit?.setAllAccounts([], this.chain)
-        localStorage.removeItem(WcConstantsUtil.WALLET_ID)
-        WcStoreUtil.reset()
-      }
-    }
-
-    function chainChangedHandler(chainId: string) {
-      if (chainId) {
-        const chain =
-          typeof chainId === 'string'
-            ? EthersHelpersUtil.hexStringToNumber(chainId)
-            : Number(chainId)
-        appKit?.setCaipNetwork(chains.find(c => c.chainId === chain))
-      }
-    }
-
-    if (provider) {
-      provider.on('disconnect', disconnectHandler)
-      provider.on('accountsChanged', accountsChangedHandler)
-      provider.on('chainChanged', chainChangedHandler)
-    }
-  }
-
-  private watchCoinbase(config: ProviderType) {
-    const provider = config.coinbase
-    const walletId = localStorage.getItem(WcConstantsUtil.WALLET_ID)
-    const setCaipNetwork = this.appKit?.setCaipNetwork
-    const chains = this.chains
-    const setAddress = this.setAddress
-
-    function disconnectHandler() {
-      localStorage.removeItem(WcConstantsUtil.WALLET_ID)
-      WcStoreUtil.reset()
-
-      provider?.removeListener('disconnect', disconnectHandler)
-      provider?.removeListener('accountsChanged', accountsChangedHandler)
-      provider?.removeListener('chainChanged', chainChangedHandler)
-    }
-
-    function accountsChangedHandler(accounts: string[]) {
-      const currentAccount = accounts?.[0]
-      if (currentAccount) {
-        setAddress(getOriginalAddress(currentAccount) as Address)
-      } else {
-        localStorage.removeItem(WcConstantsUtil.WALLET_ID)
-        WcStoreUtil.reset()
-      }
-    }
-
-    function chainChangedHandler(chainId: string) {
-      if (chainId && walletId === ConstantsUtil.COINBASE_SDK_CONNECTOR_ID) {
-        const chain = chains.find(c => c.chainId === Number(chainId))
-        setCaipNetwork?.(chain)
-      }
-    }
-
-    if (provider) {
-      provider.on('disconnect', disconnectHandler)
-      provider.on('accountsChanged', accountsChangedHandler)
-      provider.on('chainChanged', chainChangedHandler)
-    }
-  }
-
-  private watchAuth() {
-    if (this.authProvider) {
-      this.authProvider.onRpcRequest(request => {
-        if (W3mFrameHelpers.checkIfRequestExists(request)) {
-          if (!W3mFrameHelpers.checkIfRequestIsAllowed(request)) {
-            if (this.appKit?.isOpen()) {
-              if (this.appKit?.isTransactionStackEmpty()) {
-                return
-              }
-              if (this.appKit?.isTransactionShouldReplaceView()) {
-                this.appKit?.replace('ApproveTransaction')
-              } else {
-                this.appKit?.redirect('ApproveTransaction')
-              }
-            } else {
-              this.appKit?.open({ view: 'ApproveTransaction' })
-            }
-          }
-        } else {
-          this.appKit?.open()
-          // eslint-disable-next-line no-console
-          console.error(W3mFrameRpcConstants.RPC_METHOD_NOT_ALLOWED_MESSAGE, {
-            method: request.method
-          })
-          setTimeout(() => {
-            this.appKit?.showErrorMessage(W3mFrameRpcConstants.RPC_METHOD_NOT_ALLOWED_UI_MESSAGE)
-          }, 300)
-        }
-      })
-
-      this.authProvider.onRpcError(() => {
-        const isModalOpen = this.appKit?.isOpen()
-
-        if (isModalOpen) {
-          if (this.appKit?.isTransactionStackEmpty()) {
-            this.appKit?.close()
-          } else {
-            this.appKit?.popTransactionStack(true)
-          }
-        }
-      })
-
-      this.authProvider.onRpcSuccess(() => {
-        if (this.appKit?.isTransactionStackEmpty()) {
-          this.appKit?.close()
-        } else {
-          this.appKit?.popTransactionStack()
-        }
-      })
-
-      this.authProvider.onNotConnected(() => {
-        this.appKit?.setIsConnected(false, this.chain)
-        this.appKit?.setLoading(false)
-      })
-
-      this.authProvider.onIsConnected(({ preferredAccountType }) => {
-        this.appKit?.setIsConnected(true, this.chain)
-        this.appKit?.setLoading(false)
-        this.appKit?.setPreferredAccountType(
-          preferredAccountType as W3mFrameTypes.AccountType,
-          this.chain
-        )
-      })
-
-      this.authProvider.onSetPreferredAccount(({ address, type }) => {
-        if (!address) {
-          return
-        }
-        this.appKit?.setLoading(true)
-        const chainId = NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id)
-        const chain = this.chains.find(c => c.chainId === chainId)
-        this.setAddress(address as Address)
-        this.appKit?.setCaipNetwork(chain)
-        this.appKit?.setStatus('connected', this.chain)
-        this.appKit?.setIsConnected(true, this.chain)
-        this.appKit?.setPreferredAccountType(type as W3mFrameTypes.AccountType, this.chain)
-        this.syncAccount().then(() => this.appKit?.setLoading(false))
-      })
     }
   }
 
@@ -974,75 +542,165 @@ export class EVMEthersClient {
     }
   }
 
-  private async syncAccount() {
-    const address = WcStoreUtil.state.address
-    const chainId = WcStoreUtil.state.chainId
-    const isConnected = WcStoreUtil.state.isConnected
-    const preferredAccountType = WcStoreUtil.state.preferredAccountType
-    this.appKit?.resetAccount(this.chain)
+  private setupProviderListeners(provider: Provider, providerId: ProviderId) {
+    const disconnectHandler = () => {
+      localStorage.removeItem(WcConstantsUtil.WALLET_ID)
+      this.removeListeners(provider)
+    }
 
-    if (isConnected && address && chainId) {
-      this.appKit?.setIsConnected(isConnected, this.chain)
-      this.appKit?.setPreferredAccountType(preferredAccountType, this.chain)
-      this.setAddress(address)
-      this.syncConnectedWalletInfo()
+    const accountsChangedHandler = (accounts: string[]) => {
+      const currentAccount = accounts?.[0]
+      if (currentAccount) {
+        this.appKit?.setCaipAddress(currentAccount, this.chainNamespace)
 
-      const chain = this.chains.find(c => c.chainId === chainId)
-      if (chain?.explorerUrl) {
-        this.appKit?.setAddressExplorerUrl(`${chain.explorerUrl}/address/${address}`, this.chain)
+        if (providerId === ConstantsUtil.EIP6963_CONNECTOR_ID) {
+          this.appKit?.setAllAccounts(
+            accounts.map(address => ({ address, type: 'eoa' })),
+            this.chainNamespace
+          )
+        }
+      } else {
+        if (providerId === ConstantsUtil.EIP6963_CONNECTOR_ID) {
+          this.appKit?.setAllAccounts([], this.chainNamespace)
+        }
+        localStorage.removeItem(WcConstantsUtil.WALLET_ID)
+        this.appKit?.resetAccount('eip155')
       }
+    }
 
-      await Promise.all([
-        this.syncProfile(address as Address),
-        this.syncBalance(address as Address),
-        this.appKit?.setApprovedCaipNetworksData(this.chain)
-      ])
+    const chainChangedHandler = (networkId: string) => {
+      if (networkId) {
+        const networkIdNumber =
+          typeof networkId === 'string'
+            ? EthersHelpersUtil.hexStringToNumber(networkId)
+            : Number(networkId)
+        const caipNetwork = this.caipNetworks.find(c => c.chainId === networkIdNumber)
+        this.appKit?.setCaipNetwork(caipNetwork)
+      }
+    }
 
-      this.hasSyncedConnectedAccount = true
-    } else if (!isConnected && this.hasSyncedConnectedAccount) {
-      this.appKit?.resetWcConnection()
-      this.appKit?.resetNetwork()
-      this.appKit?.setAllAccounts([], this.chain)
+    if (providerId === ConstantsUtil.AUTH_CONNECTOR_ID) {
+      this.setupAuthListeners(provider as unknown as W3mFrameProvider)
+    } else {
+      provider.on('disconnect', disconnectHandler)
+      provider.on('accountsChanged', accountsChangedHandler)
+      provider.on('chainChanged', chainChangedHandler)
+    }
+
+    this.providerHandlers = {
+      disconnect: disconnectHandler,
+      accountsChanged: accountsChangedHandler,
+      chainChanged: chainChangedHandler
     }
   }
 
-  private async syncNetwork(chainImages?: AdapterOptions['chainImages']) {
-    const address = WcStoreUtil.state.address
-    const chainId = this.appKit?.getCaipNetwork()?.id
-    const isConnected = WcStoreUtil.state.isConnected
-    if (this.chains) {
-      const chain = this.chains.find(c => c.chainId === chainId)
+  private providerHandlers: {
+    disconnect: () => void
+    accountsChanged: (accounts: string[]) => void
+    chainChanged: (networkId: string) => void
+  } | null = null
 
-      if (chain) {
-        const caipChainId: CaipNetworkId = `${ConstantsUtil.EIP155}:${chain.chainId}`
+  private removeListeners(provider: Provider) {
+    if (this.providerHandlers) {
+      provider.removeListener('disconnect', this.providerHandlers.disconnect)
+      provider.removeListener('accountsChanged', this.providerHandlers.accountsChanged)
+      provider.removeListener('chainChanged', this.providerHandlers.chainChanged)
+      this.providerHandlers = null
+    }
+  }
 
-        this.appKit?.setCaipNetwork({
-          id: caipChainId,
-          name: chain.name,
-          imageId: PresetsUtil.NetworkImageIds[chain.chainId],
-          imageUrl: chainImages?.[chain.chainId],
-          chain: this.chain
-        })
-        if (isConnected && address) {
-          this.setAddress(address)
-          if (chain.explorerUrl) {
-            const url = `${chain.explorerUrl}/address/${address}`
-            this.appKit?.setAddressExplorerUrl(url, this.chain)
-          } else {
-            this.appKit?.setAddressExplorerUrl(undefined, this.chain)
-          }
-          if (this.hasSyncedConnectedAccount) {
-            await this.syncProfile(address as Address)
-            await this.syncBalance(address as Address)
-          }
+  private setupAuthListeners(authProvider: W3mFrameProvider) {
+    authProvider.onRpcRequest(request => {
+      if (W3mFrameHelpers.checkIfRequestExists(request)) {
+        if (!W3mFrameHelpers.checkIfRequestIsAllowed(request)) {
+          this.handleAuthRpcRequest()
         }
-      } else if (isConnected) {
-        this.appKit?.setCaipNetwork({
-          id: `${ConstantsUtil.EIP155}:${chainId}`,
-          chain: this.chain
-        })
+      } else {
+        this.handleInvalidAuthRequest(request)
+      }
+    })
+
+    authProvider.onRpcError(() => this.handleAuthRpcError())
+    authProvider.onRpcSuccess(() => this.handleAuthRpcSuccess())
+    authProvider.onNotConnected(() => this.handleAuthNotConnected())
+    authProvider.onIsConnected(({ preferredAccountType }) =>
+      this.handleAuthIsConnected(preferredAccountType)
+    )
+    authProvider.onSetPreferredAccount(({ address, type }) => {
+      if (address) {
+        this.handleAuthSetPreferredAccount(address, type)
+      }
+    })
+  }
+
+  private handleAuthRpcRequest() {
+    if (this.appKit?.isOpen()) {
+      if (!this.appKit?.isTransactionStackEmpty()) {
+        if (this.appKit?.isTransactionShouldReplaceView()) {
+          this.appKit?.replace('ApproveTransaction')
+        } else {
+          this.appKit?.redirect('ApproveTransaction')
+        }
+      }
+    } else {
+      this.appKit?.open({ view: 'ApproveTransaction' })
+    }
+  }
+
+  private handleInvalidAuthRequest(request: W3mFrameTypes.RPCRequest) {
+    this.appKit?.open()
+    console.error(W3mFrameRpcConstants.RPC_METHOD_NOT_ALLOWED_MESSAGE, { method: request.method })
+    setTimeout(() => {
+      this.appKit?.showErrorMessage(W3mFrameRpcConstants.RPC_METHOD_NOT_ALLOWED_UI_MESSAGE)
+    }, 300)
+  }
+
+  private handleAuthRpcError() {
+    if (this.appKit?.isOpen()) {
+      if (this.appKit?.isTransactionStackEmpty()) {
+        this.appKit?.close()
+      } else {
+        this.appKit?.popTransactionStack(true)
       }
     }
+  }
+
+  private handleAuthRpcSuccess() {
+    if (this.appKit?.isTransactionStackEmpty()) {
+      this.appKit?.close()
+    } else {
+      this.appKit?.popTransactionStack(true)
+    }
+  }
+
+  private handleAuthNotConnected() {
+    this.appKit?.setIsConnected(false, this.chainNamespace)
+    this.appKit?.setLoading(false)
+  }
+
+  private handleAuthIsConnected(preferredAccountType: string | undefined) {
+    this.appKit?.setIsConnected(true, this.chainNamespace)
+    this.appKit?.setLoading(false)
+    this.appKit?.setPreferredAccountType(
+      preferredAccountType as W3mFrameTypes.AccountType,
+      this.chainNamespace
+    )
+  }
+
+  private handleAuthSetPreferredAccount(address: string, type: string) {
+    if (!address) {
+      return
+    }
+
+    this.appKit?.setLoading(true)
+    const chainId = NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id)
+    const caipNetwork = this.caipNetworks.find(c => c.chainId === chainId)
+    this.appKit?.setCaipAddress(address)
+    this.appKit?.setCaipNetwork(caipNetwork)
+    this.appKit?.setStatus('connected', this.chainNamespace)
+    this.appKit?.setIsConnected(true, this.chainNamespace)
+    this.appKit?.setPreferredAccountType(type as W3mFrameTypes.AccountType, this.chainNamespace)
+    this.syncAccount().then(() => this.appKit?.setLoading(false))
   }
 
   private async syncWalletConnectName(address: Address) {
@@ -1052,15 +710,49 @@ export class EVMEthersClient {
         const wcName = registeredWcNames[0]
         this.appKit?.setProfileName(wcName.name)
       } else {
-        this.appKit?.setProfileName(null, this.chain)
+        this.appKit?.setProfileName(null, this.chainNamespace)
       }
     } catch {
-      this.appKit?.setProfileName(null, this.chain)
+      this.appKit?.setProfileName(null, this.chainNamespace)
+    }
+  }
+
+  private async syncAccount() {
+    const isConnected = this.appKit?.getIsConnectedState()
+    const address = this.appKit?.getAddress()
+    const caipNetwork = this.appKit?.getCaipNetwork()
+    const preferredAccountType = this.appKit?.getPreferredAccountType()
+    this.appKit?.resetAccount(this.chainNamespace)
+
+    if (isConnected && address && caipNetwork) {
+      this.appKit?.setIsConnected(isConnected, this.chainNamespace)
+      this.appKit?.setPreferredAccountType(preferredAccountType, this.chainNamespace)
+
+      this.syncConnectedWalletInfo()
+
+      if (caipNetwork?.explorerUrl) {
+        this.appKit?.setAddressExplorerUrl(
+          `${caipNetwork.explorerUrl}/address/${address}`,
+          this.chainNamespace
+        )
+      }
+
+      await Promise.all([
+        this.syncProfile(address as Address),
+        this.syncBalance(address as Address),
+        this.appKit?.setApprovedCaipNetworksData(this.chainNamespace)
+      ])
+
+      this.hasSyncedConnectedAccount = true
+    } else if (!isConnected && this.hasSyncedConnectedAccount) {
+      this.appKit?.resetWcConnection()
+      this.appKit?.resetNetwork()
+      this.appKit?.setAllAccounts([], this.chainNamespace)
     }
   }
 
   private async syncProfile(address: Address) {
-    const chainId = WcStoreUtil.state.chainId
+    const caipNetwork = this.appKit?.getCaipNetwork()
 
     try {
       const identity = await this.appKit?.fetchIdentity({
@@ -1069,49 +761,47 @@ export class EVMEthersClient {
       const name = identity?.name
       const avatar = identity?.avatar
 
-      this.appKit?.setProfileName(name, this.chain)
-      this.appKit?.setProfileImage(avatar, this.chain)
+      this.appKit?.setProfileName(name, this.chainNamespace)
+      this.appKit?.setProfileImage(avatar, this.chainNamespace)
 
       if (!name) {
         await this.syncWalletConnectName(address)
       }
     } catch {
-      if (chainId === 1) {
+      if (caipNetwork?.chainId === 1) {
         const ensProvider = new InfuraProvider('mainnet')
         const name = await ensProvider.lookupAddress(address)
         const avatar = await ensProvider.getAvatar(address)
 
         if (name) {
-          this.appKit?.setProfileName(name, this.chain)
+          this.appKit?.setProfileName(name, this.chainNamespace)
         } else {
           await this.syncWalletConnectName(address)
         }
         if (avatar) {
-          this.appKit?.setProfileImage(avatar, this.chain)
+          this.appKit?.setProfileImage(avatar, this.chainNamespace)
         }
       } else {
         await this.syncWalletConnectName(address)
-        this.appKit?.setProfileImage(null, this.chain)
+        this.appKit?.setProfileImage(null, this.chainNamespace)
       }
     }
   }
 
   private async syncBalance(address: Address) {
-    const chainId = this.appKit?.getCaipNetwork()?.id
+    const caipNetwork = this.appKit?.getCaipNetwork()
 
-    if (chainId && this.chains) {
-      const chain = this.chains.find(c => c.chainId === chainId)
-
-      if (chain) {
-        const jsonRpcProvider = new JsonRpcProvider(chain.rpcUrl, {
-          chainId: chain.chainId as number,
-          name: chain.name
+    if (caipNetwork) {
+      if (caipNetwork) {
+        const jsonRpcProvider = new JsonRpcProvider(caipNetwork.rpcUrl, {
+          chainId: caipNetwork.chainId as number,
+          name: caipNetwork.name
         })
         if (jsonRpcProvider) {
           const balance = await jsonRpcProvider.getBalance(address)
           const formattedBalance = formatEther(balance)
 
-          this.appKit?.setBalance(formattedBalance, chain.currency, this.chain)
+          this.appKit?.setBalance(formattedBalance, caipNetwork.currency, this.chainNamespace)
         }
       }
     }
@@ -1119,7 +809,7 @@ export class EVMEthersClient {
 
   private syncConnectedWalletInfo() {
     const currentActiveWallet = window?.localStorage.getItem(WcConstantsUtil.WALLET_ID)
-    const providerType = EthersStoreUtil.state.providerType
+    const providerType = EthersStoreUtil.state.providerId
 
     if (providerType === ConstantsUtil.EIP6963_CONNECTOR_ID) {
       if (currentActiveWallet) {
@@ -1128,7 +818,7 @@ export class EVMEthersClient {
         )
 
         if (currentProvider) {
-          this.appKit?.setConnectedWalletInfo({ ...currentProvider.info }, this.chain)
+          this.appKit?.setConnectedWalletInfo({ ...currentProvider.info }, this.chainNamespace)
         }
       }
     } else if (providerType === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
@@ -1141,107 +831,77 @@ export class EVMEthersClient {
             name: provider.session.peer.metadata.name,
             icon: provider.session.peer.metadata.icons?.[0]
           },
-          this.chain
+          this.chainNamespace
         )
       }
     } else if (currentActiveWallet) {
-      this.appKit?.setConnectedWalletInfo({ name: currentActiveWallet }, this.chain)
+      this.appKit?.setConnectedWalletInfo({ name: currentActiveWallet }, this.chainNamespace)
     }
   }
 
-  public async switchNetwork(chainId: number) {
+  private syncRequestedNetworks(caipNetworks: CaipNetwork[]) {
+    const uniqueChainNamespaces = [
+      ...new Set(caipNetworks.map(caipNetwork => caipNetwork.chainNamespace))
+    ]
+    uniqueChainNamespaces.forEach(chainNamespace => {
+      this.appKit?.setRequestedCaipNetworks(
+        caipNetworks.filter(caipNetwork => caipNetwork.chainNamespace === chainNamespace),
+        chainNamespace
+      )
+    })
+  }
+
+  private async switchNetwork(caipNetwork: CaipNetwork) {
+    const requestSwitchNetwork = async (provider: Provider) => {
+      try {
+        await provider.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: EthersHelpersUtil.numberToHexString(caipNetwork.chainId) }]
+        })
+        this.appKit?.setCaipNetwork(caipNetwork)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (switchError: any) {
+        if (
+          switchError.code === WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
+          switchError.code === WcConstantsUtil.ERROR_CODE_DEFAULT ||
+          switchError?.data?.originalError?.code ===
+            WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
+        ) {
+          await EthersHelpersUtil.addEthereumChain(provider, caipNetwork)
+        } else {
+          throw new Error('Chain is not supported')
+        }
+      }
+    }
+
     const provider = EthersStoreUtil.state.provider
-    const providerType = EthersStoreUtil.state.providerType
-    if (this.chains) {
-      const chain = this.chains.find(c => c.chainId === chainId)
-
-      if (providerType === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID && chain) {
-        this.appKit?.universalAdapter?.networkControllerClient.switchCaipNetwork(chain)
-      } else if (providerType === ConstantsUtil.INJECTED_CONNECTOR_ID && chain) {
-        const InjectedProvider = provider
-        if (InjectedProvider) {
-          try {
-            await InjectedProvider.request({
-              method: 'wallet_switchEthereumChain',
-              params: [{ chainId: EthersHelpersUtil.numberToHexString(chain.chainId) }]
-            })
-            this.appKit?.setCaipNetwork(chain)
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          } catch (switchError: any) {
-            if (
-              switchError.code === WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
-              switchError.code === WcConstantsUtil.ERROR_CODE_DEFAULT ||
-              switchError?.data?.originalError?.code ===
-                WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
-            ) {
-              await EthersHelpersUtil.addEthereumChain(InjectedProvider, chain)
-            } else {
-              throw new Error('Chain is not supported')
-            }
-          }
+    const providerType = EthersStoreUtil.state.providerId
+    switch (providerType) {
+      case ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID:
+        this.appKit?.universalAdapter?.networkControllerClient.switchCaipNetwork(caipNetwork)
+        break
+      case ConstantsUtil.INJECTED_CONNECTOR_ID:
+      case ConstantsUtil.EIP6963_CONNECTOR_ID:
+      case ConstantsUtil.COINBASE_SDK_CONNECTOR_ID:
+        if (provider) {
+          await requestSwitchNetwork(provider)
         }
-      } else if (providerType === ConstantsUtil.EIP6963_CONNECTOR_ID && chain) {
-        const EIP6963Provider = provider
-
-        if (EIP6963Provider) {
-          try {
-            await EIP6963Provider.request({
-              method: 'wallet_switchEthereumChain',
-              params: [{ chainId: EthersHelpersUtil.numberToHexString(chain.chainId) }]
-            })
-            this.appKit?.setCaipNetwork(chain)
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          } catch (switchError: any) {
-            if (
-              switchError.code === WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
-              switchError.code === WcConstantsUtil.ERROR_CODE_DEFAULT ||
-              switchError?.data?.originalError?.code ===
-                WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
-            ) {
-              await EthersHelpersUtil.addEthereumChain(EIP6963Provider, chain)
-            } else {
-              throw new Error('Chain is not supported')
-            }
-          }
-        }
-      } else if (providerType === ConstantsUtil.COINBASE_SDK_CONNECTOR_ID && chain) {
-        const CoinbaseProvider = provider
-        if (CoinbaseProvider) {
-          try {
-            await CoinbaseProvider.request({
-              method: 'wallet_switchEthereumChain',
-              params: [{ chainId: EthersHelpersUtil.numberToHexString(chain.chainId) }]
-            })
-            this.appKit?.setCaipNetwork(chain)
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          } catch (switchError: any) {
-            if (
-              switchError.code === WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
-              switchError.code === WcConstantsUtil.ERROR_CODE_DEFAULT ||
-              switchError?.data?.originalError?.code ===
-                WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
-            ) {
-              await EthersHelpersUtil.addEthereumChain(CoinbaseProvider, chain)
-            } else {
-              throw new Error('Error switching network')
-            }
-          }
-        }
-      } else if (providerType === ConstantsUtil.AUTH_CONNECTOR_ID) {
-        if (this.authProvider && chain?.chainId) {
+        break
+      case ConstantsUtil.AUTH_CONNECTOR_ID:
+        if (this.authProvider) {
           try {
             this.appKit?.setLoading(true)
-            await this.authProvider.switchNetwork(chain.chainId as number)
-            this.appKit?.setCaipNetwork(chain)
+            await this.authProvider.switchNetwork(caipNetwork.chainId as number)
+            this.appKit?.setCaipNetwork(caipNetwork)
 
             const { address, preferredAccountType } = await this.authProvider.connect({
-              chainId: chain?.chainId as number | undefined
+              chainId: caipNetwork.chainId as number | undefined
             })
 
-            this.setAddress(address)
+            this.appKit?.setCaipAddress(address)
             this.appKit?.setPreferredAccountType(
               preferredAccountType as W3mFrameTypes.AccountType,
-              this.chain
+              this.chainNamespace
             )
             await this.syncAccount()
           } catch {
@@ -1250,7 +910,9 @@ export class EVMEthersClient {
             this.appKit?.setLoading(false)
           }
         }
-      }
+        break
+      default:
+        throw new Error('Unsupported provider type')
     }
   }
 
@@ -1268,7 +930,7 @@ export class EVMEthersClient {
           imageUrl: this.options?.connectorImages?.[ConstantsUtil.INJECTED_CONNECTOR_ID],
           name: PresetsUtil.ConnectorNamesMap[ConstantsUtil.INJECTED_CONNECTOR_ID],
           type: injectedConnectorType,
-          chain: this.chain
+          chain: this.chainNamespace
         })
       }
     }
@@ -1281,7 +943,7 @@ export class EVMEthersClient {
         imageUrl: this.options?.connectorImages?.[ConstantsUtil.COINBASE_SDK_CONNECTOR_ID],
         name: PresetsUtil.ConnectorNamesMap[ConstantsUtil.COINBASE_SDK_CONNECTOR_ID],
         type: 'EXTERNAL',
-        chain: this.chain
+        chain: this.chainNamespace
       })
     }
 
@@ -1300,7 +962,7 @@ export class EVMEthersClient {
         email: auth?.email,
         socials: auth?.socials,
         showWallets: auth?.showWallets === undefined ? true : auth.showWallets,
-        chain: this.chain,
+        chain: this.chainNamespace,
         walletFeatures: auth?.walletFeatures
       })
 
@@ -1340,7 +1002,7 @@ export class EVMEthersClient {
             name: info.name,
             provider,
             info,
-            chain: this.chain
+            chain: this.chainNamespace
           })
 
           const eip6963ProviderObj = {

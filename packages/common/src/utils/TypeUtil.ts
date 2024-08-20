@@ -1,15 +1,15 @@
-export type CaipNetworkId = `${string}:${string}`
+export type CaipNetworkId = `${ChainNamespace}:${ChainId}`
 
-export type CaipAddress = `${string}:${string}:${string}`
+export type CaipAddress = `${ChainNamespace}:${ChainId}:${string}`
 
 export type ChainId = string | number
 
-export type Chain = 'evm' | 'solana'
+export type ChainNamespace = 'eip155' | 'solana'
 
 export type CaipNetwork = {
   id: CaipNetworkId
   chainId: ChainId
-  chain: Chain
+  chainNamespace: ChainNamespace
   name: string
   currency: string
   explorerUrl: string
