@@ -64,20 +64,24 @@ smartAccountSiweTest('it should upgrade wallet', async () => {
   await page.closeModal()
 })
 
-smartAccountSiweTest('it should switch to a SA enabled network and sign', async () => {
-  const targetChain = 'Sepolia'
-  await page.openAccount()
-  await page.openProfileView()
-  await page.openSettings()
-  await page.switchNetwork(targetChain)
-  await page.promptSiwe()
-  await page.approveSign()
-  await validator.expectSwitchedNetwork(targetChain)
-  await page.closeModal()
-  await page.sign()
-  await page.approveSign()
-  await validator.expectAcceptedSign()
-})
+smartAccountSiweTest(
+  'it should switch to a smart account enabled network and sign',
+  async ({ library }) => {
+    const targetChain = 'Sepolia'
+    await page.goToSettings()
+    await page.switchNetwork(targetChain)
+    await page.promptSiwe()
+    await page.approveSign()
+    if (library === 'wagmi') {
+      await page.goToSettings()
+    }
+    await validator.expectSwitchedNetwork(targetChain)
+    await page.closeModal()
+    await page.sign()
+    await page.approveSign()
+    await validator.expectAcceptedSign()
+  }
+)
 
 /**
  * After switching to Etherum, the signing the SIWE throws the following Magic error:
@@ -87,9 +91,7 @@ smartAccountSiweTest.skip(
   'it should switch to a not enabled network and sign with EOA',
   async () => {
     const targetChain = 'Ethereum'
-    await page.openAccount()
-    await page.openProfileView()
-    await page.openSettings()
+    await page.goToSettings()
     await page.switchNetwork(targetChain)
     /*
      * Flaky as network switch to non-enabled network changes network AND address causing 2 siwe popups
@@ -110,9 +112,7 @@ smartAccountSiweTest.skip(
 )
 
 smartAccountSiweTest('it should disconnect correctly', async () => {
-  await page.openAccount()
-  await page.openProfileView()
-  await page.openSettings()
+  await page.goToSettings()
   await page.disconnect()
   await validator.expectDisconnected()
 })

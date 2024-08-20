@@ -65,12 +65,12 @@ walletFeaturesTest('it should initialize onramp as expected', async () => {
   await page.closeModal()
 })
 
-walletFeaturesTest('it should find account name as expected', async () => {
-  await page.openAccount()
-  await page.openProfileView()
-  await page.openSettings()
-
+walletFeaturesTest('it should find account name as expected', async ({ library }) => {
+  await page.goToSettings()
   await page.switchNetwork('Polygon')
+  if (library === 'wagmi') {
+    await page.goToSettings()
+  }
   await validator.expectSwitchedNetwork('Polygon')
 
   await page.openChooseNameIntro()
