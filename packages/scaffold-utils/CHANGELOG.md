@@ -1,5 +1,16 @@
 # @web3modal/scaffold-utils
 
+## 5.1.1
+
+### Patch Changes
+
+- Update EthProvider to v 2.15.1
+
+- Updated dependencies []:
+  - @web3modal/core@5.1.1
+  - @web3modal/polyfills@5.1.1
+  - @web3modal/wallet@5.1.1
+
 ## 5.1.0
 
 ### Minor Changes
