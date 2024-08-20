@@ -17,7 +17,7 @@ const solanaWeb3JsAdapter = new SolanaWeb3JsClient({
   solanaConfig,
   chains: [solana, solanaTestnet, solanaDevnet],
   projectId: ConstantsUtil.ProjectId,
-  wallets: [ new HuobiWalletAdapter(), new SolflareWalletAdapter()]
+  wallets: [new HuobiWalletAdapter(), new SolflareWalletAdapter()]
 })
 
 const modal = createWeb3Modal({
