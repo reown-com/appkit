@@ -12,7 +12,7 @@ import {
   type SendOptions
 } from '@solana/web3.js'
 import { isVersionedTransaction } from '@solana/wallet-adapter-base'
-import { withSolanaNamespace } from '../utils/withSolanaNamespace'
+import { withSolanaNamespace } from '../utils/withSolanaNamespace.js'
 
 export type WalletConnectProviderConfig = {
   provider: UniversalProvider
