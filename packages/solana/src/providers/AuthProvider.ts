@@ -101,8 +101,21 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
     return Transaction.from(decodedTransaction) as T
   }
 
-  public async signAndSendTransaction(_transaction: AnyTransaction) {
-    return Promise.resolve('')
+  public async signAndSendTransaction<T extends AnyTransaction>(
+    transaction: T,
+    options?: SendOptions
+  ) {
+    const serializedTransaction = this.serializeTransaction(transaction)
+
+    const result = await this.provider.request({
+      method: 'solana_signAndSendTransaction',
+      params: {
+        transaction: serializedTransaction,
+        options
+      }
+    })
+
+    return result.signature
   }
 
   public async signAllTransactions(_transactions: AnyTransaction[]) {
