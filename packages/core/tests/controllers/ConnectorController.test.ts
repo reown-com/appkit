@@ -147,6 +147,13 @@ describe('ConnectorController', () => {
   })
 
   it('getConnnectors() should return all connectors', () => {
-    expect(ConnectorController.getConnectors()).toEqual([])
+    expect(ConnectorController.getConnectors()).toEqual([
+      walletConnectConnector,
+      externalConnector,
+      metamaskConnector,
+      zerionConnector,
+      authConnector,
+      announcedConnector
+    ])
   })
 })
