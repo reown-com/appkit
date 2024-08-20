@@ -2,12 +2,13 @@ import { ConstantsUtil } from '@web3modal/scaffold-utils'
 import {
   type AnyTransaction,
   type Chain,
+  type Connection,
   type GetActiveChain,
   type Provider,
   type ProviderAuthMethods
 } from '../utils/scaffold'
 import { ProviderEventEmitter } from './shared/ProviderEventEmitter'
-import { PublicKey, Transaction, VersionedTransaction } from '@solana/web3.js'
+import { PublicKey, Transaction, VersionedTransaction, type SendOptions } from '@solana/web3.js'
 import { W3mFrameProvider } from '@web3modal/wallet'
 import { withSolanaNamespace } from '../utils/withSolanaNamespace'
 import base58 from 'bs58'
@@ -108,8 +109,15 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
     return Promise.resolve([])
   }
 
-  public async sendTransaction(_transaction: AnyTransaction) {
-    return Promise.resolve('')
+  public async sendTransaction(
+    transaction: AnyTransaction,
+    connection: Connection,
+    options?: SendOptions
+  ) {
+    const signedTransaction = await this.signTransaction(transaction)
+    const signature = await connection.sendRawTransaction(signedTransaction.serialize(), options)
+
+    return signature
   }
 
   // -- W3mFrameProvider methods ------------------------------------------- //
