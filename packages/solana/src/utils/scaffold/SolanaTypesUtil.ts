@@ -129,4 +129,5 @@ export interface ProviderAuthMethods {
   // Misc
   syncTheme: W3mFrameProvider['syncTheme']
   syncDappData: W3mFrameProvider['syncDappData']
+  switchNetwork: W3mFrameProvider['switchNetwork']
 }

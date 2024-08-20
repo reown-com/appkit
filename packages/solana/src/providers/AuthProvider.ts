@@ -150,6 +150,12 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
   getFarcasterUri: ProviderAuthMethods['getFarcasterUri'] = () => this.provider.getFarcasterUri()
   syncTheme: ProviderAuthMethods['syncTheme'] = args => this.provider.syncTheme(args)
   syncDappData: ProviderAuthMethods['syncDappData'] = args => this.provider.syncDappData(args)
+  switchNetwork: ProviderAuthMethods['switchNetwork'] = async args => {
+    const result = await this.provider.switchNetwork(args)
+    this.emit('chainChanged', args as string)
+
+    return result
+  }
 
   // -- Private ------------------------------------------- //
   private getPublicKey<Required extends boolean>(

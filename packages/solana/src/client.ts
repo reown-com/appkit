@@ -341,6 +341,11 @@ export class Web3Modal extends Web3ModalScaffold {
 
   public async switchNetwork(caipNetwork: CaipNetwork) {
     const caipChainId = caipNetwork.id
+
+    if (this.provider instanceof AuthProvider) {
+      await this.provider.switchNetwork(caipChainId)
+    }
+
     const chain = SolHelpersUtil.getChainFromCaip(this.chains, caipChainId)
     SolStoreUtil.setCaipChainId(chain.id)
     SolStoreUtil.setCurrentChain(chain)
