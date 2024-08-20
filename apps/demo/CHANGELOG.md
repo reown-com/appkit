@@ -4,7 +4,7 @@
 
 ### Patch Changes
 
-- Rollback EthProvider to v 2.14.0
+- Update EthProvider to v 2.15.1
 
 - Updated dependencies []:
   - @web3modal/wagmi@5.1.1
