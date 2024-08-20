@@ -33,7 +33,7 @@ jobs:
           - prettier
           - typecheck
           - danger
-          - example:build
+          - build:sample-apps
     steps:
       - name: checkout
         uses: actions/checkout@v3
