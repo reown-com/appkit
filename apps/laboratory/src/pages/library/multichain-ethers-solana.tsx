@@ -4,7 +4,6 @@ import { SolanaWeb3JsClient, defaultSolanaConfig } from '@web3modal/base/adapter
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { solana, solanaDevnet, solanaTestnet } from '../../utils/ChainsUtil'
-import { BackpackWalletAdapter } from '@solana/wallet-adapter-backpack'
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { EthersConstants } from '../../utils/EthersConstants'
 import { EthersModalInfo } from '../../components/Ethers/EthersModalInfo'
@@ -31,7 +30,7 @@ const solanaWeb3JsAdapter = new SolanaWeb3JsClient({
   solanaConfig,
   chains: [solana, solanaTestnet, solanaDevnet],
   projectId: ConstantsUtil.ProjectId,
-  wallets: [new BackpackWalletAdapter(), new HuobiWalletAdapter(), new SolflareWalletAdapter()]
+  wallets: [new HuobiWalletAdapter(), new SolflareWalletAdapter()]
 })
 
 const modal = createWeb3Modal({
