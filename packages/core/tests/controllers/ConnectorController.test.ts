@@ -61,20 +61,23 @@ const metamaskConnector = {
   id: 'metamask',
   type: 'INJECTED',
   info: { rdns: 'io.metamask.com' },
-  chain: ConstantsUtil.CHAIN.EVM
+  chain: ConstantsUtil.CHAIN.EVM,
+  name: 'MetaMask'
 } as const
 const zerionConnector = {
   id: 'ecc4036f814562b41a5268adc86270fba1365471402006302e70169465b7ac18',
   type: 'INJECTED',
-  chain: ConstantsUtil.CHAIN.EVM
+  chain: ConstantsUtil.CHAIN.EVM,
+  name: 'Zerion'
 } as const
+
 // -- Tests --------------------------------------------------------------------
 describe('ConnectorController', () => {
   it('should have valid default state', () => {
     expect(ConnectorController.state.connectors).toEqual([])
   })
 
-  it.only('should update state correctly on setConnectors()', () => {
+  it('should update state correctly on setConnectors()', () => {
     ConnectorController.setConnectors([walletConnectConnector])
     expect(ConnectorController.state.connectors).toEqual([walletConnectConnector])
   })
@@ -96,8 +99,10 @@ describe('ConnectorController', () => {
 
   it('should return the correct connector on getConnector', () => {
     ConnectorController.addConnector(zerionConnector)
-    expect(ConnectorController.getConnector('walletConnectId', '')).toBe(walletConnectConnector)
-    expect(ConnectorController.getConnector('', 'io.metamask.com')).toBe(metamaskConnector)
+    expect(ConnectorController.getConnector('walletConnectId', '')).toStrictEqual(
+      walletConnectConnector
+    )
+    expect(ConnectorController.getConnector('', 'io.metamask.com')).toStrictEqual(metamaskConnector)
     expect(ConnectorController.getConnector(zerionConnector.id, '')).toBeUndefined()
     expect(ConnectorController.getConnector('unknown', '')).toBeUndefined()
   })

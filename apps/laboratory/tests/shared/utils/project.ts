@@ -48,8 +48,10 @@ const SOLANA_DISABLED_TESTS = [
 ]
 const WAGMI_DISABLED_TESTS = ['smart-account.spec.ts', 'social.spec.ts']
 const ETHERS_DISABLED_TESTS = ['wallet-features.spec.ts', 'social.spec.ts', 'metamask.spec.ts']
+const ETHERS5_DISABLED_TESTS = ['wallet-features.spec.ts', 'social.spec.ts', 'metamask.spec.ts']
 
 const ETHERS_EMAIL_BASED_REGEX = new RegExp(ETHERS_DISABLED_TESTS.join('|'), 'u')
+const ETHERS5_EMAIL_BASED_REGEX = new RegExp(ETHERS5_DISABLED_TESTS.join('|'), 'u')
 const WAGMI_DISABLED_TESTS_REGEX = new RegExp(WAGMI_DISABLED_TESTS.join('|'), 'u')
 const WAGMI_DISABLED_TESTS_REGEX_FF = new RegExp(
   [...WAGMI_DISABLED_TESTS, 'metamask.spec.ts'].join('|'),
@@ -67,6 +69,16 @@ const customProjectProperties: CustomProjectProperties = {
   },
   'Desktop Firefox/ethers': {
     testIgnore: ETHERS_EMAIL_BASED_REGEX
+  },
+  'Desktop Chrome/ethers5': {
+    testIgnore: ETHERS5_EMAIL_BASED_REGEX
+  },
+  'Desktop Brave/ethers5': {
+    testIgnore: ETHERS5_EMAIL_BASED_REGEX,
+    useOptions: braveOptions
+  },
+  'Desktop Firefox/ethers5': {
+    testIgnore: ETHERS5_EMAIL_BASED_REGEX
   },
   'Desktop Brave/wagmi': {
     testIgnore: WAGMI_DISABLED_TESTS_REGEX,
