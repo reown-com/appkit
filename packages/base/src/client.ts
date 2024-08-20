@@ -305,6 +305,9 @@ export class AppKit {
 
   // -- Private ------------------------------------------------------------------
   private async initControllers(options: AppKitOptions) {
+    OptionsController.setProjectId(options.projectId)
+    OptionsController.setSdkVersion(options.sdkVersion)
+
     ChainController.initialize(options.adapters || [])
     options.adapters?.forEach(adapter => {
       // @ts-expect-error will introduce construct later
@@ -315,7 +318,6 @@ export class AppKit {
       NetworkController.setDefaultCaipNetwork(options.defaultChain)
     })
 
-    OptionsController.setProjectId(options.projectId)
     OptionsController.setAllWallets(options.allWallets)
     OptionsController.setIncludeWalletIds(options.includeWalletIds)
     OptionsController.setExcludeWalletIds(options.excludeWalletIds)
@@ -325,7 +327,7 @@ export class AppKit {
     OptionsController.setPrivacyPolicyUrl(options.privacyPolicyUrl)
     OptionsController.setCustomWallets(options.customWallets)
     OptionsController.setEnableAnalytics(options.enableAnalytics)
-    OptionsController.setSdkVersion(options.sdkVersion)
+
     // Enabled by default
     OptionsController.setOnrampEnabled(options.enableOnramp !== false)
     OptionsController.setEnableSwaps(options.enableSwaps !== false)
