@@ -73,6 +73,7 @@ smartAccountTest('it should switch to a not enabled network and sign with EOA', 
   await page.goToSettings()
   await page.switchNetwork(targetChain)
 
+  await page.page.waitForTimeout(2000)
   await page.goToSettings()
   await validator.expectTogglePreferredTypeVisible(false)
   await page.closeModal()
