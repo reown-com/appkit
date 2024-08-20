@@ -4,12 +4,14 @@ import {
   type Chain,
   type Connection,
   type GetActiveChain,
-  type Provider,
-  type ProviderAuthMethods
+  type Provider
 } from '../utils/scaffold'
 import { ProviderEventEmitter } from './shared/ProviderEventEmitter'
 import { PublicKey, Transaction, VersionedTransaction, type SendOptions } from '@solana/web3.js'
-import { W3mFrameProvider } from '@web3modal/wallet'
+import {
+  W3mFrameProvider,
+  type W3mFrameProviderMethods as ProviderAuthMethods
+} from '@web3modal/wallet'
 import { withSolanaNamespace } from '../utils/withSolanaNamespace'
 import base58 from 'bs58'
 import { isVersionedTransaction } from '@solana/wallet-adapter-base'

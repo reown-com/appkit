@@ -497,3 +497,27 @@ export class W3mFrameProvider {
     W3mFrameStorage.set(W3mFrameConstants.SMART_ACCOUNT_ENABLED_NETWORKS, networks.join(','))
   }
 }
+
+export interface W3mFrameProviderMethods {
+  // Email
+  connectEmail: W3mFrameProvider['connectEmail']
+  connectOtp: W3mFrameProvider['connectOtp']
+  updateEmail: W3mFrameProvider['updateEmail']
+  updateEmailPrimaryOtp: W3mFrameProvider['updateEmailPrimaryOtp']
+  updateEmailSecondaryOtp: W3mFrameProvider['updateEmailSecondaryOtp']
+  getEmail: W3mFrameProvider['getEmail']
+
+  // Social
+  connectDevice: W3mFrameProvider['connectDevice']
+  connectSocial: W3mFrameProvider['connectSocial']
+  getSocialRedirectUri: W3mFrameProvider['getSocialRedirectUri']
+
+  // Farcaster
+  connectFarcaster: W3mFrameProvider['connectFarcaster']
+  getFarcasterUri: W3mFrameProvider['getFarcasterUri']
+
+  // Misc
+  syncTheme: W3mFrameProvider['syncTheme']
+  syncDappData: W3mFrameProvider['syncDappData']
+  switchNetwork: W3mFrameProvider['switchNetwork']
+}
