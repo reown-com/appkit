@@ -1,5 +1,18 @@
 # @apps/laboratory
 
+## 5.1.1
+
+### Patch Changes
+
+- Update EthProvider to v 2.15.1
+
+- Updated dependencies []:
+  - @web3modal/ethers@5.1.1
+  - @web3modal/siwe@5.1.1
+  - @web3modal/solana@5.1.1
+  - @web3modal/wagmi@5.1.1
+  - @web3modal/wallet@5.1.1
+
 ## 5.1.0
 
 ### Minor Changes
