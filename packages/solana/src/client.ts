@@ -228,6 +228,10 @@ export class Web3Modal extends Web3ModalScaffold {
       this.syncNetwork(chainImages)
     })
 
+    SolStoreUtil.subscribeKey('isConnected', isConnected => {
+      this.setIsConnected(isConnected)
+    })
+
     AssetController.subscribeNetworkImages(() => {
       this.syncNetwork(chainImages)
     })
@@ -262,10 +266,6 @@ export class Web3Modal extends Web3ModalScaffold {
     })
   }
 
-  public setAddress(address = '') {
-    SolStoreUtil.setAddress(address)
-  }
-
   public disconnect() {
     return this.getProvider().disconnect()
   }
@@ -290,19 +290,17 @@ export class Web3Modal extends Web3ModalScaffold {
   private async syncAccount() {
     const address = SolStoreUtil.state.address
     const chainId = SolStoreUtil.state.currentChain?.chainId
-    const isConnected = SolStoreUtil.state.isConnected
-    this.resetAccount()
 
-    if (isConnected && address && chainId) {
+    if (address && chainId) {
       const caipAddress: CaipAddress = `${ConstantsUtil.INJECTED_CONNECTOR_ID}:${chainId}:${address}`
-      this.setIsConnected(isConnected)
       this.setCaipAddress(caipAddress)
       await this.syncBalance(address)
 
       this.hasSyncedConnectedAccount = true
-    } else if (!isConnected && this.hasSyncedConnectedAccount) {
+    } else if (this.hasSyncedConnectedAccount) {
       this.resetWcConnection()
       this.resetNetwork()
+      this.resetAccount()
     }
   }
 
@@ -358,7 +356,6 @@ export class Web3Modal extends Web3ModalScaffold {
   private async syncNetwork(chainImages?: Web3ModalClientOptions['chainImages']) {
     const address = SolStoreUtil.state.address
     const storeChainId = SolStoreUtil.state.caipChainId
-    const isConnected = SolStoreUtil.state.isConnected
 
     if (this.chains) {
       const chain = SolHelpersUtil.getChainFromCaip(this.chains, storeChainId)
@@ -379,7 +376,8 @@ export class Web3Modal extends Web3ModalScaffold {
           imageUrl: chainImages?.[chain.chainId],
           chain: this.chain
         })
-        if (isConnected && address) {
+
+        if (address) {
           if (chain.explorerUrl) {
             const url = `${chain.explorerUrl}/account/${address}`
             this.setAddressExplorerUrl(url)
@@ -408,25 +406,24 @@ export class Web3Modal extends Web3ModalScaffold {
         provider.chains.find(chain => chain.chainId === SolStoreUtil.state.currentChain?.chainId) ||
         provider.chains[0]
 
-      if (connectionChain) {
-        await this.switchNetwork(
-          SolHelpersUtil.getChainFromCaip(this.chains, `solana:${connectionChain.chainId}`)
-        )
-      } else {
+      if (!connectionChain) {
         provider.disconnect()
         throw new Error('The wallet does not support any of the required chains')
       }
 
-      SolStoreUtil.setIsConnected(true)
+      SolStoreUtil.setAddress(address)
+      await this.switchNetwork(
+        SolHelpersUtil.getChainFromCaip(this.chains, `solana:${connectionChain.chainId}`)
+      )
       SolStoreUtil.setProvider(provider)
       this.provider = provider
-      this.setAddress(address)
 
       window?.localStorage.setItem(SolConstantsUtil.WALLET_ID, provider.name)
 
       await this.setApprovedCaipNetworksData()
 
       this.watchProvider(provider)
+      SolStoreUtil.setIsConnected(true)
     } finally {
       this.setLoading(false)
     }
