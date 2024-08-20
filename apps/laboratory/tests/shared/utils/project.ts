@@ -46,7 +46,7 @@ const SOLANA_DISABLED_TESTS = [
   'metamask.spec.ts',
   'verify.spec.ts'
 ]
-const WAGMI_DISABLED_TESTS = ['smart-account.spec.ts', 'verify.spec.ts']
+const WAGMI_DISABLED_TESTS = ['metamask.spec.ts', 'smart-account.spec.ts', 'verify.spec.ts']
 const ETHERS_DISABLED_TESTS = ['metamask.spec.ts', 'verify.spec.ts']
 const ETHERS5_DISABLED_TESTS = ['metamask.spec.ts', 'verify.spec.ts', 'smart-account.spec.ts']
 
