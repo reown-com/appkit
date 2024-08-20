@@ -222,6 +222,9 @@ importers:
       '@walletconnect/utils':
         specifier: 2.15.1
         version: 2.15.1
+      '@web3modal/base':
+        specifier: workspace:*
+        version: link:../../packages/base
       '@web3modal/ethers':
         specifier: workspace:*
         version: link:../../packages/ethers
@@ -801,6 +804,9 @@ importers:
       '@walletconnect/utils':
         specifier: 2.15.1
         version: 2.15.1
+      '@web3modal/base':
+        specifier: workspace:*
+        version: link:../base
       '@web3modal/common':
         specifier: workspace:*
         version: link:../common
@@ -853,6 +859,9 @@ importers:
       '@walletconnect/utils':
         specifier: 2.15.1
         version: 2.15.1
+      '@web3modal/base':
+        specifier: workspace:*
+        version: link:../base
       '@web3modal/common':
         specifier: workspace:*
         version: link:../common
@@ -1180,6 +1189,9 @@ importers:
       '@walletconnect/utils':
         specifier: 2.15.1
         version: 2.15.1
+      '@web3modal/base':
+        specifier: workspace:*
+        version: link:../base
       '@web3modal/common':
         specifier: workspace:*
         version: link:../common
@@ -6410,6 +6422,9 @@ packages:
 
   '@walletconnect/ethereum-provider@2.14.0':
     resolution: {integrity: sha512-Cc2/DCn85VciA10BrsNWFM//3VC1D8yjwrjfUKjGndLPDz0YIdAxTgYZViIlMjE0lzQC/DMvPYEAnGfW0O1Bwg==}
+
+  '@walletconnect/ethereum-provider@2.15.0':
+    resolution: {integrity: sha512-qQyHVwJtPo7RZJIIn7KAp20t2pthhr9P2Nnhv196+49dTMJ5Es962cgouA410XA7DSQkom+4esiXR2AR5SsrAA==}
 
   '@walletconnect/ethereum-provider@2.15.1':
     resolution: {integrity: sha512-3ssEAKc/rLYshwyE2ZIaoTxzi/p9Ws+kj/FIsd1Ed/CC37Rl5l/KYHaRJtevWeni9s4dGqyqKsYkJ0VwwUcnfQ==}
@@ -15764,7 +15779,7 @@ snapshots:
     dependencies:
       '@solana/web3.js': 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@walletconnect/qrcode-modal': 1.8.0
-      '@walletconnect/sign-client': 2.15.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@walletconnect/sign-client': 2.15.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@walletconnect/utils': 2.15.1
       bs58: 5.0.0
     transitivePeerDependencies:
@@ -20222,6 +20237,39 @@ snapshots:
       - uWebSockets.js
       - utf-8-validate
 
+  '@walletconnect/ethereum-provider@2.15.0(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(utf-8-validate@5.0.10)':
+    dependencies:
+      '@walletconnect/jsonrpc-http-connection': 1.0.8
+      '@walletconnect/jsonrpc-provider': 1.0.14
+      '@walletconnect/jsonrpc-types': 1.0.4
+      '@walletconnect/jsonrpc-utils': 1.0.8
+      '@walletconnect/modal': 2.6.2(@types/react@18.2.62)(react@18.2.0)
+      '@walletconnect/sign-client': 2.15.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@walletconnect/types': 2.15.0
+      '@walletconnect/universal-provider': 2.15.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@walletconnect/utils': 2.15.0
+      events: 3.3.0
+    transitivePeerDependencies:
+      - '@azure/app-configuration'
+      - '@azure/cosmos'
+      - '@azure/data-tables'
+      - '@azure/identity'
+      - '@azure/keyvault-secrets'
+      - '@azure/storage-blob'
+      - '@capacitor/preferences'
+      - '@netlify/blobs'
+      - '@planetscale/database'
+      - '@react-native-async-storage/async-storage'
+      - '@types/react'
+      - '@upstash/redis'
+      - '@vercel/kv'
+      - bufferutil
+      - encoding
+      - ioredis
+      - react
+      - uWebSockets.js
+      - utf-8-validate
+
   '@walletconnect/ethereum-provider@2.15.1(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(utf-8-validate@5.0.10)':
     dependencies:
       '@walletconnect/jsonrpc-http-connection': 1.0.8
@@ -20771,7 +20819,7 @@ snapshots:
 
   '@walletconnect/window-metadata@1.0.0':
     dependencies:
-      '@walletconnect/window-getters': 1.0.0
+      '@walletconnect/window-getters': 1.0.1
 
   '@walletconnect/window-metadata@1.0.1':
     dependencies:
