@@ -51,7 +51,6 @@ export interface Provider extends ProviderEventEmitterMethods {
     transaction: AnyTransaction,
     options?: SendOptions
   ) => Promise<TransactionSignature>
-  signAllTransactions: (transactions: AnyTransaction[]) => Promise<SolanaWeb3Transaction[]>
   sendTransaction: (
     transaction: AnyTransaction,
     connection: Connection,

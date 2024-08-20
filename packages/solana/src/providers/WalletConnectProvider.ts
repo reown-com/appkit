@@ -172,10 +172,6 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
     return signature
   }
 
-  public async signAllTransactions() {
-    return await Promise.reject(new Error('Sign all transactions is not supported'))
-  }
-
   // -- Private ------------------------------------------ //
   private request<Method extends WalletConnectProvider.RequestMethod>(
     method: Method,

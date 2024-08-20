@@ -120,10 +120,6 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
     return result.signature
   }
 
-  public async signAllTransactions(_transactions: AnyTransaction[]) {
-    return Promise.resolve([])
-  }
-
   public async sendTransaction(
     transaction: AnyTransaction,
     connection: Connection,
