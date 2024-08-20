@@ -18,7 +18,7 @@ export function Ethers5SignMessageTest() {
       }
       const provider = new ethers.providers.Web3Provider(walletProvider, chainId)
       const signer = provider.getSigner(address)
-      const sig = await signer?.signMessage('Hello Web3Modal!')
+      const sig = await signer?.signMessage('Hello AppKit!')
       setSignature(sig)
       toast({
         title: ConstantsUtil.SigningSucceededToastTitle,

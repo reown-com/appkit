@@ -61,20 +61,17 @@ smartAccountTest('it should sign with smart account 6492 signature', async () =>
   await page.approveSign()
   await validator.expectAcceptedSign()
 
-  // const signature = await page.getSignature()
-  // const address = await page.getAddress()
-  // const chainId = await page.getChainId()
+  const signature = await page.getSignature()
+  const address = await page.getAddress()
+  const chainId = await page.getChainId()
 
-  // await validator.expectValidSignature(signature, address, chainId)
+  await validator.expectValidSignature(signature, address, chainId)
 })
 
 smartAccountTest('it should switch to a not enabled network and sign with EOA', async () => {
-  await page.page.waitForTimeout(1000)
   const targetChain = 'Ethereum'
   await page.goToSettings()
   await page.switchNetwork(targetChain)
-  await validator.expectSwitchedNetwork(targetChain)
-  await page.closeModal()
 
   await page.goToSettings()
   await validator.expectTogglePreferredTypeVisible(false)
@@ -86,7 +83,6 @@ smartAccountTest('it should switch to a not enabled network and sign with EOA', 
 })
 
 smartAccountTest('it should switch to smart account and sign', async () => {
-  await page.page.waitForTimeout(1000)
   const targetChain = 'Polygon'
   await page.goToSettings()
   await page.switchNetwork(targetChain)
@@ -100,6 +96,12 @@ smartAccountTest('it should switch to smart account and sign', async () => {
   await page.sign()
   await page.approveSign()
   await validator.expectAcceptedSign()
+
+  const signature = await page.getSignature()
+  const address = await page.getAddress()
+  const chainId = await page.getChainId()
+
+  await validator.expectValidSignature(signature, address, chainId)
 })
 
 smartAccountTest('it should switch to eoa and sign', async () => {

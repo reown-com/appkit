@@ -322,6 +322,9 @@ export class ModalPage {
   }
 
   async openAccount() {
+    expect(this.page.getByTestId('w3m-modal-card')).not.toBeVisible()
+    expect(this.page.getByTestId('w3m-modal-overlay')).not.toBeVisible()
+    this.page.waitForTimeout(300)
     await this.page.getByTestId('account-button').click()
   }
 
