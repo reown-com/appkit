@@ -9,7 +9,6 @@ import { WagmiProvider } from 'wagmi'
 import { solana, solanaDevnet, solanaTestnet } from '../../utils/ChainsUtil'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
 import { MultiChainInfo } from '../../components/MultiChainInfo'
-import { BackpackWalletAdapter } from '@solana/wallet-adapter-backpack'
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { MultiChainTests } from '../../components/MultiChainTests'
 import { AppKitButtons } from '../../components/AppKitButtons'
@@ -32,7 +31,7 @@ const solanaWeb3JsAdapter = new SolanaWeb3JsClient({
   solanaConfig,
   chains: [solana, solanaTestnet, solanaDevnet],
   projectId: ConstantsUtil.ProjectId,
-  wallets: [new BackpackWalletAdapter(), new HuobiWalletAdapter(), new SolflareWalletAdapter()]
+  wallets: [new HuobiWalletAdapter(), new SolflareWalletAdapter()]
 })
 
 const modal = createWeb3Modal({

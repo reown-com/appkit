@@ -4,7 +4,6 @@ import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { solana, solanaDevnet, solanaTestnet } from '../../utils/ChainsUtil'
 import { SolanaTests } from '../../components/Solana/SolanaTests'
-import { BackpackWalletAdapter } from '@solana/wallet-adapter-backpack'
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { AppKitButtons } from '../../components/AppKitButtons'
 
@@ -18,7 +17,7 @@ const solanaWeb3JsAdapter = new SolanaWeb3JsClient({
   solanaConfig,
   chains: [solana, solanaTestnet, solanaDevnet],
   projectId: ConstantsUtil.ProjectId,
-  wallets: [new BackpackWalletAdapter(), new HuobiWalletAdapter(), new SolflareWalletAdapter()]
+  wallets: [ new HuobiWalletAdapter(), new SolflareWalletAdapter()]
 })
 
 const modal = createWeb3Modal({
