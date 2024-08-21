@@ -104,7 +104,7 @@ sampleWalletTest('it should show multiple accounts', async ({ library }) => {
 })
 
 sampleWalletTest(
-  'it should show Switch Network modal if network is not supported',
+  'it should show switch network modal if network is not supported',
   async ({ library }) => {
     if (library === 'solana') {
       return
@@ -119,4 +119,10 @@ sampleWalletTest(
 sampleWalletTest('it should not show onramp button accordingly', async ({ library }) => {
   await modalPage.openModal()
   await modalValidator.expectOnrampButton(library)
+  await modalPage.closeModal()
+})
+
+sampleWalletTest('it should disconnect as expected', async () => {
+  await modalPage.disconnect()
+  await modalValidator.expectDisconnected()
 })

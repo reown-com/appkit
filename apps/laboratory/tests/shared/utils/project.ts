@@ -42,7 +42,6 @@ const SOLANA_DISABLED_TESTS = [
   'siwe-sa.spec.ts',
   'smart-account.spec.ts',
   'wallet-features.spec.ts',
-  'wallet.spec.ts',
   'metamask.spec.ts',
   'verify.spec.ts'
 ]

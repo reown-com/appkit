@@ -874,7 +874,7 @@ export class EVMEthers5Client {
       await Promise.all([
         this.syncProfile(address),
         this.syncBalance(address),
-        this.appKit?.setApprovedCaipNetworksData()
+        this.appKit?.setApprovedCaipNetworksData(this.chain)
       ])
 
       this.hasSyncedConnectedAccount = true

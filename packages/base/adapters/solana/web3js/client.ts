@@ -427,7 +427,7 @@ export class SolanaWeb3JsClient {
 
       window?.localStorage.setItem(SolConstantsUtil.WALLET_ID, provider.name)
 
-      await this.appKit?.setApprovedCaipNetworksData()
+      await this.appKit?.setApprovedCaipNetworksData(this.chain)
 
       this.watchProvider(provider)
     } finally {
