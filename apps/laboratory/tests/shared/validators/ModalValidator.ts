@@ -114,6 +114,7 @@ export class ModalValidator {
   }
 
   async expectMultipleAccounts() {
+    await this.page.waitForTimeout(500)
     await expect(this.page.getByText('Switch Address')).toBeVisible({
       timeout: MAX_WAIT
     })
