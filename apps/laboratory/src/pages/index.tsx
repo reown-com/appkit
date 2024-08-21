@@ -8,8 +8,7 @@ import {
   Box,
   Text,
   Button,
-  Link,
-  Badge
+  Link
 } from '@chakra-ui/react'
 import { IoArrowForward } from 'react-icons/io5'
 import {
