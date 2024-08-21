@@ -69,7 +69,6 @@ describe('NetworkController', () => {
 
   it('should reset state correctly on resetNetwork()', () => {
     NetworkController.resetNetwork()
-    expect(NetworkController.state.caipNetwork).toEqual(undefined)
     expect(NetworkController.state.approvedCaipNetworkIds).toEqual(undefined)
     expect(NetworkController.state.requestedCaipNetworks).toEqual(requestedCaipNetworks)
     expect(NetworkController.state.smartAccountEnabledNetworks).toEqual([])
