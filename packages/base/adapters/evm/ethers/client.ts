@@ -439,7 +439,7 @@ export class EVMEthersClient {
       }
     }
 
-    const activeConfig = providerConfigs[walletId as keyof typeof providerConfigs]
+    const activeConfig = providerConfigs[walletId as unknown as keyof typeof providerConfigs]
 
     if (activeConfig?.provider) {
       this.setProvider(activeConfig.provider, walletId as ProviderId)
