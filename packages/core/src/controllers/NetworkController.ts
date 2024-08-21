@@ -288,10 +288,6 @@ export const NetworkController = {
       throw new Error('chain is required to reset network')
     }
 
-    if (!ChainController.state.chains.get(chain)?.networkState?.isDefaultCaipNetwork) {
-      ChainController.setChainNetworkData(chain, { caipNetwork: undefined })
-    }
-
     ChainController.setChainNetworkData(chain, {
       approvedCaipNetworkIds: undefined,
       supportsAllNetworks: true,
