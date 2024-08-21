@@ -1,5 +1,14 @@
 # @web3modal/scaffold-react
 
+## 5.1.1
+
+### Patch Changes
+
+- Update EthProvider to v 2.15.1
+
+- Updated dependencies []:
+  - @web3modal/scaffold@5.1.1
+
 ## 5.1.0
 
 ### Minor Changes
