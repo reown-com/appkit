@@ -71,9 +71,7 @@ export default function HomePage() {
 
       <Card marginTop={10}>
         <CardHeader>
-          <Heading size="md">
-            Wagmi <Badge>New arc</Badge>
-          </Heading>
+          <Heading size="md">Wagmi</Heading>
         </CardHeader>
 
         <CardBody>
@@ -101,9 +99,7 @@ export default function HomePage() {
 
       <Card marginTop={10} marginBottom={10}>
         <CardHeader>
-          <Heading size="md">
-            Ethers <Badge>New arc</Badge>
-          </Heading>
+          <Heading size="md">Ethers</Heading>
         </CardHeader>
 
         <CardBody>
@@ -131,9 +127,7 @@ export default function HomePage() {
 
       <Card marginTop={10} marginBottom={10}>
         <CardHeader>
-          <Heading size="md">
-            Ethers5 <Badge>New arc</Badge>
-          </Heading>
+          <Heading size="md">Ethers5</Heading>
         </CardHeader>
 
         <CardBody>
@@ -161,9 +155,7 @@ export default function HomePage() {
 
       <Card marginTop={10} marginBottom={10}>
         <CardHeader>
-          <Heading size="md">
-            Solana <Badge>New arc</Badge>
-          </Heading>
+          <Heading size="md">Solana</Heading>
         </CardHeader>
 
         <CardBody>
@@ -185,91 +177,6 @@ export default function HomePage() {
                 </Stack>
               </Box>
             ))}
-          </Stack>
-        </CardBody>
-      </Card>
-
-      <Card marginTop={10} marginBottom={10} backgroundColor={'blue.800'}>
-        <CardHeader>
-          <Heading size="md">
-            AppKit <Badge>⛓️ Multichain</Badge> <Badge>✨ New</Badge>
-          </Heading>
-        </CardHeader>
-
-        <CardBody>
-          <Stack divider={<StackDivider />} spacing="4">
-            <Box>
-              <Stack direction="row" justifyContent="space-between" alignItems="center">
-                <Box>
-                  <Heading size="xs" textTransform="uppercase">
-                    Wagmi + Solana
-                  </Heading>
-                  <Text pt="2" fontSize="sm">
-                    Configuration with Wagmi and Solana adapters enabled for AppKit
-                  </Text>
-                </Box>
-                <Link href={'/library/multichain-wagmi-solana'}>
-                  <Button rightIcon={<IoArrowForward />}>Go</Button>
-                </Link>
-              </Stack>
-            </Box>
-            <Box>
-              <Stack direction="row" justifyContent="space-between" alignItems="center">
-                <Box>
-                  <Heading size="xs" textTransform="uppercase">
-                    Ethers + Solana
-                  </Heading>
-                  <Text pt="2" fontSize="sm">
-                    Configuration with Ethers and Solana adapters enabled for AppKit
-                  </Text>
-                </Box>
-                <Link href={'/library/multichain-ethers-solana'}>
-                  <Button rightIcon={<IoArrowForward />}>Go</Button>
-                </Link>
-              </Stack>
-            </Box>
-            <Box>
-              <Stack direction="row" justifyContent="space-between" alignItems="center">
-                <Box>
-                  <Heading size="xs" textTransform="uppercase">
-                    Wagmi
-                  </Heading>
-                  <Text pt="2" fontSize="sm">
-                    Configuration with only Wagmi adapters enabled for AppKit
-                  </Text>
-                </Box>
-                <Link href={'/library/multichain-wagmi'}>
-                  <Button rightIcon={<IoArrowForward />}>Go</Button>
-                </Link>
-              </Stack>
-            </Box>
-            <Box>
-              <Stack direction="row" justifyContent="space-between" alignItems="center">
-                <Box>
-                  <Heading size="xs" textTransform="uppercase">
-                    Solana
-                  </Heading>
-                  <Text pt="2" fontSize="sm">
-                    Configuration with only Solana adapters enabled for AppKit
-                  </Text>
-                </Box>
-                <Link href={'/library/multichain-solana'}>
-                  <Button rightIcon={<IoArrowForward />}>Go</Button>
-                </Link>
-              </Stack>
-            </Box>
-            <Box>
-              <Stack direction="row" justifyContent="space-between" alignItems="center">
-                <Box>
-                  <Heading size="xs" textTransform="uppercase">
-                    Basic <Badge>Soon</Badge>
-                  </Heading>
-                  <Text pt="2" fontSize="sm">
-                    Configuration with no adapters enabled for AppKit
-                  </Text>
-                </Box>
-              </Stack>
-            </Box>
           </Stack>
         </CardBody>
       </Card>
