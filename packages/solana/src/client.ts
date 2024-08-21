@@ -548,7 +548,12 @@ export class Web3Modal extends Web3ModalScaffold {
               withSolanaNamespace(SolStoreUtil.state.currentChain?.chainId)
             ),
             getActiveChain: () => SolStoreUtil.state.currentChain,
-            auth: { email: opts.email, socials: opts.socials },
+            auth: {
+              email: opts.email,
+              socials: opts.socials,
+              showWallets: opts.showWallets,
+              walletFeatures: opts.walletFeatures
+            },
             chains: this.chains
           })
         )
@@ -581,8 +586,7 @@ export class Web3Modal extends Web3ModalScaffold {
       name: provider.name,
       provider,
       chain: CommonConstantsUtil.CHAIN.SOLANA,
-      email: provider.auth?.email,
-      socials: provider.auth?.socials
+      ...provider.auth
     }))
 
     this.setConnectors(connectors)

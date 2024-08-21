@@ -17,7 +17,7 @@ export const solanaConfig = defaultSolanaConfig({
     email: true,
     socials: ['google', 'x', 'discord', 'farcaster', 'github', 'apple', 'facebook'],
     showWallets: true,
-    walletFeatures: true
+    walletFeatures: false
   }
 })
 
