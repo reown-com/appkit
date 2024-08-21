@@ -93,6 +93,11 @@ export class ModalValidator {
     )
   }
 
+  expectSecureSiteFrameNotInjected() {
+    const secureSiteIframe = this.page.frame({ name: 'w3m-secure-iframe' })
+    expect(secureSiteIframe).toBeNull()
+  }
+
   async expectValidSignature(signature: `0x${string}`, address: `0x${string}`, chainId: number) {
     const isVerified = await verifySignature({
       address,

@@ -36,6 +36,7 @@ export class W3mFrame {
         const iframe = document.createElement('iframe')
         iframe.id = 'w3m-iframe'
         iframe.src = `${SECURE_SITE_SDK}?projectId=${projectId}`
+        iframe.name = 'w3m-secure-iframe'
         iframe.style.position = 'fixed'
         iframe.style.zIndex = '999999'
         iframe.style.display = 'none'
