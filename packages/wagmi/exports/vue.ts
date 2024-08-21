@@ -6,7 +6,7 @@ import { ConstantsUtil } from '@web3modal/scaffold-utils'
 import type { Config } from '@wagmi/core'
 
 // -- Configs -----------------------------------------------------------
-export { defaultWagmiCoreConfig as defaultWagmiConfig } from '@web3modal/base/adapters/evm/wagmi'
+export { defaultWagmiConfig } from '@web3modal/base/adapters/evm/wagmi'
 
 // -- Setup -------------------------------------------------------------------
 let appkit: AppKit | undefined = undefined

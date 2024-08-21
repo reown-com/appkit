@@ -191,16 +191,12 @@ export const NetworkController = {
   },
 
   async switchActiveNetwork(network: NetworkControllerState['caipNetwork']) {
-    const sameChain = network?.chain === ChainController.state.activeChain
+    const networkControllerClient: NetworkControllerState['_client'] = network
+      ? ChainController.state.chains.get(network.chain)?.networkControllerClient
+      : undefined
 
-    let networkControllerClient: NetworkControllerState['_client'] = undefined
-
-    if (sameChain) {
-      networkControllerClient = ChainController.getNetworkControllerClient()
-    } else {
-      networkControllerClient = network
-        ? ChainController.state.chains.get(network.chain)?.networkControllerClient
-        : undefined
+    if (!networkControllerClient) {
+      throw new Error('networkControllerClient not found for given network object')
     }
 
     ChainController.setActiveCaipNetwork(network)

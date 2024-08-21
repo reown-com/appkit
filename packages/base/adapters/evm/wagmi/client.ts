@@ -96,7 +96,7 @@ export class EVMWagmiClient {
     const { wagmiConfig, defaultChain } = options
 
     if (!wagmiConfig) {
-      throw new Error('web3modal:constructor - wagmiConfig is undefined')
+      throw new Error('wagmiConfig is undefined')
     }
 
     this.wagmiConfig = wagmiConfig
@@ -112,14 +112,8 @@ export class EVMWagmiClient {
         }
       },
 
-      getApprovedCaipNetworksData: async () => {
-        if (!this.wagmiConfig) {
-          throw new Error(
-            'networkControllerClient:getApprovedCaipNetworksData - wagmiConfig is undefined'
-          )
-        }
-
-        return new Promise(resolve => {
+      getApprovedCaipNetworksData: async () =>
+        new Promise(resolve => {
           const connections = new Map(this.wagmiConfig.state.connections)
           const connection = connections.get(this.wagmiConfig.state.current || '')
 
@@ -135,25 +129,20 @@ export class EVMWagmiClient {
 
           resolve({ approvedCaipNetworkIds: undefined, supportsAllNetworks: true })
         })
-      }
     }
 
     this.connectionControllerClient = {
       connectWalletConnect: async onUri => {
         const siweConfig = this.options?.siweConfig
 
-        if (!this.wagmiConfig) {
-          throw new Error(
-            'networkControllerClient:getApprovedCaipNetworksData - wagmiConfig is undefined'
-          )
-        }
-
         const connector = this.wagmiConfig.connectors.find(
           c => c.id === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID
         )
+
         if (!connector) {
           throw new Error('connectionControllerClient:getWalletConnectUri - connector is undefined')
         }
+
         const provider = (await connector.getProvider()) as Awaited<
           ReturnType<(typeof EthereumProvider)['init']>
         >
@@ -237,34 +226,25 @@ export class EVMWagmiClient {
       },
 
       connectExternal: async ({ id, provider, info }) => {
-        if (!this.wagmiConfig) {
-          throw new Error(
-            'networkControllerClient:getApprovedCaipNetworksData - wagmiConfig is undefined'
-          )
-        }
-
         const connector = this.wagmiConfig.connectors.find(c => c.id === id)
 
         if (!connector) {
           throw new Error('connectionControllerClient:connectExternal - connector is undefined')
         }
+
         this.appKit?.setClientId(null)
+
         if (provider && info && connector.id === ConstantsUtil.EIP6963_CONNECTOR_ID) {
           // @ts-expect-error Exists on EIP6963Connector
           connector.setEip6963Wallet?.({ provider, info })
         }
+
         const chainId = NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id)
 
         await connect(this.wagmiConfig, { connector, chainId })
       },
 
       reconnectExternal: async ({ id }) => {
-        if (!this.wagmiConfig) {
-          throw new Error(
-            'networkControllerClient:getApprovedCaipNetworksData - wagmiConfig is undefined'
-          )
-        }
-
         const connector = this.wagmiConfig.connectors.find(c => c.id === id)
 
         if (!connector) {
@@ -364,12 +344,6 @@ export class EVMWagmiClient {
 
       getEnsAddress: async (value: string) => {
         try {
-          if (!this.wagmiConfig) {
-            throw new Error(
-              'networkControllerClient:getApprovedCaipNetworksData - wagmiConfig is undefined'
-            )
-          }
-
           const chainId = NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id)
           let ensName: boolean | GetEnsAddressReturnType = false
           let wcName: boolean | string = false
@@ -414,7 +388,7 @@ export class EVMWagmiClient {
 
   public construct(appKit: AppKit, options: OptionsControllerState) {
     if (!options.projectId) {
-      throw new Error('web3modal:initialize - projectId is undefined')
+      throw new Error('projectId is undefined')
     }
 
     this.appKit = appKit
@@ -433,7 +407,6 @@ export class EVMWagmiClient {
     })
 
     this.appKit?.setEIP6963Enabled(options.enableEIP6963 !== false)
-
     this.appKit?.subscribeShouldUpdateToAddress((newAddress?: string) => {
       if (newAddress) {
         const connections = getConnections(this.wagmiConfig)

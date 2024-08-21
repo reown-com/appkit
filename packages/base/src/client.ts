@@ -131,7 +131,6 @@ export class AppKit {
     return EventsController.subscribe(callback)
   }
 
-  // -- Protected ----------------------------------------------------------------
   public replace(route: RouterControllerState['view']) {
     RouterController.replace(route)
   }
@@ -307,8 +306,8 @@ export class AppKit {
   private async initControllers(options: AppKitOptions) {
     OptionsController.setProjectId(options.projectId)
     OptionsController.setSdkVersion(options.sdkVersion)
-
     ChainController.initialize(options.adapters || [])
+
     options.adapters?.forEach(adapter => {
       // @ts-expect-error will introduce construct later
       adapter.construct?.(this, options)
@@ -327,8 +326,6 @@ export class AppKit {
     OptionsController.setPrivacyPolicyUrl(options.privacyPolicyUrl)
     OptionsController.setCustomWallets(options.customWallets)
     OptionsController.setEnableAnalytics(options.enableAnalytics)
-
-    // Enabled by default
     OptionsController.setOnrampEnabled(options.enableOnramp !== false)
     OptionsController.setEnableSwaps(options.enableSwaps !== false)
 

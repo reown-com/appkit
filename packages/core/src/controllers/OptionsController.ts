@@ -14,6 +14,11 @@ export interface OptionsControllerState {
    * @see https://docs.walletconnect.com/appkit/react/core/options#allwallets
    */
   allWallets?: 'SHOW' | 'HIDE' | 'ONLY_MOBILE'
+  /**
+   * Array of wallet ids to be shown in the modal's connection view with priority. These wallets will also show up first in `All Wallets` view
+   * @default []
+   * @see https://docs.walletconnect.com/appkit/react/core/options#featuredwalletids
+   */
   featuredWalletIds?: string[]
   /**
    * Array of wallet ids to be shown (order is respected). Unlike `featuredWalletIds`, these wallets will be the only ones shown in `All Wallets` view and as recommended wallets.
@@ -50,28 +55,45 @@ export interface OptionsControllerState {
    * @default undefined
    */
   privacyPolicyUrl?: string
+  /**
+   * You can enable or disable the SIWE feature in your AppKit.
+   * @default false
+   */
   isSiweEnabled?: boolean
-  isUniversalProvider?: boolean
   /**
    * Enable analytics to get more insights on your users activity within your WalletConnect Cloud's dashboard.
    * @default false
    * @see https://cloud.walletconnect.com/
    */
   enableAnalytics?: boolean
+  /**
+   * Set of fields that related to your project which will be used to populate the metadata of the modal.
+   * @default {}
+   */
   metadata?: Metadata
   /**
    * Enable or disable the onramp feature in your AppKit.
    * @default true
    */
   enableOnramp?: boolean
-  hasMultipleAddresses?: boolean
+  /**
+   * Enable or disable the appending the AppKit to the DOM. Created for specific use cases like WebGL.
+   * @default false
+   */
   disableAppend?: boolean
+  /**
+   * Enable or disable the EIP6963 feature in your AppKit.
+   * @default false
+   */
   enableEIP6963?: boolean
   /**
    * Enable or disable the onramp feature in your AppKit.
    * @default true
    */
   enableSwaps?: boolean
+  // -- Internal options ---------------------------------- //
+  isUniversalProvider?: boolean
+  hasMultipleAddresses?: boolean
 }
 
 type StateKey = keyof OptionsControllerState

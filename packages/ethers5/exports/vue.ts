@@ -26,7 +26,7 @@ export function createWeb3Modal(options: EthersAppKitOptions) {
     ...options,
     adapters: [ethersAdapter],
     sdkType: 'w3m',
-    sdkVersion: `react-ethers5-${ConstantsUtil.VERSION}`
+    sdkVersion: `vue-ethers5-${ConstantsUtil.VERSION}`
   })
   getWeb3Modal(appkit)
 

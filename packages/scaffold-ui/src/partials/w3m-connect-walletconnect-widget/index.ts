@@ -1,11 +1,5 @@
 import type { Connector } from '@web3modal/core'
-import {
-  AssetUtil,
-  ChainController,
-  ConnectorController,
-  CoreHelperUtil,
-  RouterController
-} from '@web3modal/core'
+import { AssetUtil, ConnectorController, CoreHelperUtil, RouterController } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
@@ -38,7 +32,7 @@ export class W3mConnectWalletConnectWidget extends LitElement {
       return null
     }
 
-    const connector = this.connectors.find(c => c.name === 'WalletConnect')
+    const connector = this.connectors.find(c => c.type === 'WALLET_CONNECT')
 
     if (!connector) {
       this.style.cssText = `display: none`
@@ -61,8 +55,15 @@ export class W3mConnectWalletConnectWidget extends LitElement {
 
   // -- Private Methods ----------------------------------- //
   private onConnector(connector: Connector) {
-    ChainController.setActiveConnector(connector)
-    RouterController.push('ConnectingWalletConnect')
+    if (connector.type === 'WALLET_CONNECT') {
+      if (CoreHelperUtil.isMobile()) {
+        RouterController.push('AllWallets')
+      } else {
+        RouterController.push('ConnectingWalletConnect')
+      }
+    } else {
+      RouterController.push('ConnectingExternal', { connector })
+    }
   }
 }
 

@@ -3,13 +3,18 @@ import '@web3modal/polyfills'
 import type { Chain, Metadata, Provider, ProviderType } from './scaffold/index.js'
 
 declare global {
+  interface Navigator {
+    brave?: {
+      isBrave(): boolean
+    }
+  }
   interface Window {
     originalSolana?: Record<string, unknown>
     solana?: Provider
-    solflare?: { solana: Provider }
+    solflare?: { solana: Provider & { isSoflare: boolean } }
     backpack?: { solana: Provider }
     trustWallet?: { solana: Provider }
-    phantom?: { solana: Provider }
+    phantom?: { solana: Provider & { isPhantom: boolean } }
     getHashedName: (name: string) => Buffer
   }
 }

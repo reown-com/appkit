@@ -263,7 +263,7 @@ export class ModalPage {
     const signatureHeader = this.page.getByText('Approve Transaction')
     await this.page.frameLocator('#w3m-iframe').getByRole('button', { name, exact: true }).click()
     await expect(signatureHeader, 'Signature request should be closed').not.toBeVisible()
-    await this.page.waitForTimeout(1000)
+    await this.page.waitForTimeout(300)
   }
 
   async approveSign() {

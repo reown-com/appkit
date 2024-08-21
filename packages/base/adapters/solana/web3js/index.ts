@@ -8,7 +8,7 @@ export type * from './utils/scaffold/SolanaTypesUtil.js'
 export type * from '@solana/wallet-adapter-base'
 
 // -- Utils -----------------------------------------------------------
-export * from './utils/defaultSolanaConfig.js'
+export * from './utils/defaultConfig.js'
 export * from './utils/scaffold/SolanaStoreUtil.js'
 
 // -- Constants -------------------------------------------------------

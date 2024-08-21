@@ -3,7 +3,7 @@ import { ApiController } from '../controllers/ApiController.js'
 import { AssetController } from '../controllers/AssetController.js'
 import type { CaipNetwork, Connector, WcWallet } from './TypeUtil.js'
 
-const chainImageIds: Record<Chain, string> = {
+const namespaceImageIds: Record<Chain, string> = {
   // Ethereum
   evm: 'ba0ba0cd-17c6-4806-ad93-f9d174f17900',
   // Solana
@@ -74,6 +74,6 @@ export const AssetUtil = {
   },
 
   getChainImage(chain: Chain) {
-    return AssetController.state.networkImages[chainImageIds[chain]]
+    return AssetController.state.networkImages[namespaceImageIds[chain]]
   }
 }
