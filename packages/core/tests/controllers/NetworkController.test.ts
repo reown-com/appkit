@@ -16,6 +16,7 @@ const switchNetworkEvent = {
   event: 'SWITCH_NETWORK',
   properties: { network: caipNetwork.id }
 } as const
+const chain = ConstantsUtil.CHAIN.EVM
 
 const client: NetworkControllerClient = {
   switchCaipNetwork: async _caipNetwork => Promise.resolve(),
@@ -46,7 +47,7 @@ describe('NetworkController', () => {
   })
 
   it('should update state correctly on setRequestedCaipNetworks()', () => {
-    NetworkController.setRequestedCaipNetworks(requestedCaipNetworks)
+    NetworkController.setRequestedCaipNetworks(requestedCaipNetworks, chain)
     expect(NetworkController.state.requestedCaipNetworks).toEqual(requestedCaipNetworks)
   })
 
@@ -57,18 +58,17 @@ describe('NetworkController', () => {
   })
 
   it('should update state correctly on setCaipNetwork()', () => {
-    NetworkController.setCaipNetwork(caipNetwork)
+    NetworkController.setActiveCaipNetwork(caipNetwork)
     expect(NetworkController.state.caipNetwork).toEqual(caipNetwork)
   })
 
   it('should update state correctly on getApprovedCaipNetworkIds()', async () => {
-    await NetworkController.setApprovedCaipNetworksData()
+    await NetworkController.setApprovedCaipNetworksData(chain)
     expect(NetworkController.state.approvedCaipNetworkIds).toEqual(approvedCaipNetworkIds)
   })
 
   it('should reset state correctly on resetNetwork()', () => {
     NetworkController.resetNetwork()
-    expect(NetworkController.state.caipNetwork).toEqual(undefined)
     expect(NetworkController.state.approvedCaipNetworkIds).toEqual(undefined)
     expect(NetworkController.state.requestedCaipNetworks).toEqual(requestedCaipNetworks)
     expect(NetworkController.state.smartAccountEnabledNetworks).toEqual([])
@@ -88,13 +88,14 @@ describe('NetworkController', () => {
   })
 
   it('should check correctly if smart accounts are enabled on the network', () => {
-    NetworkController.setSmartAccountEnabledNetworks([1])
+    NetworkController.setActiveCaipNetwork(caipNetwork)
+    NetworkController.setSmartAccountEnabledNetworks([1], chain)
     expect(NetworkController.checkIfSmartAccountEnabled()).toEqual(true)
-    NetworkController.setSmartAccountEnabledNetworks([])
+    NetworkController.setSmartAccountEnabledNetworks([], chain)
     expect(NetworkController.checkIfSmartAccountEnabled()).toEqual(false)
-    NetworkController.setSmartAccountEnabledNetworks([2])
+    NetworkController.setSmartAccountEnabledNetworks([2], chain)
     expect(NetworkController.checkIfSmartAccountEnabled()).toEqual(false)
-    NetworkController.setCaipNetwork({
+    NetworkController.setActiveCaipNetwork({
       id: 'eip155:2',
       name: 'Ethereum',
       chain: ConstantsUtil.CHAIN.EVM

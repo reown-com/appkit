@@ -1,19 +1,24 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
-import { proxy, ref, snapshot } from 'valtio/vanilla'
+import { proxy, snapshot } from 'valtio/vanilla'
 import type { AuthConnector, Connector } from '../utils/TypeUtil.js'
-import { getW3mThemeVariables } from '@web3modal/common'
+import { ConstantsUtil, getW3mThemeVariables } from '@web3modal/common'
 import { OptionsController } from './OptionsController.js'
 import { ThemeController } from './ThemeController.js'
 
 // -- Types --------------------------------------------- //
+interface ConnectorWithProviders extends Connector {
+  providers?: Connector[]
+}
 export interface ConnectorControllerState {
-  connectors: Connector[]
+  unMergedConnectors: Connector[]
+  connectors: ConnectorWithProviders[]
 }
 
 type StateKey = keyof ConnectorControllerState
 
 // -- State --------------------------------------------- //
 const state = proxy<ConnectorControllerState>({
+  unMergedConnectors: [],
   connectors: []
 })
 
@@ -25,58 +30,73 @@ export const ConnectorController = {
     return subKey(state, key, callback)
   },
 
-  setConnectors(connectors: ConnectorControllerState['connectors'], multiChain?: boolean) {
-    if (multiChain) {
-      state.connectors = [...state.connectors, ...connectors.map(c => ref(c))]
-
-      state.connectors = this.mergeMultiChainConnectors(state.connectors)
-    } else {
-      state.connectors = connectors.map(c => ref(c))
-    }
+  setConnectors(connectors: ConnectorControllerState['connectors']) {
+    state.unMergedConnectors = [...state.unMergedConnectors, ...connectors]
+    state.connectors = this.mergeMultiChainConnectors(state.unMergedConnectors)
   },
 
-  mergeMultiChainConnectors(connectors: ConnectorControllerState['connectors']) {
-    const mergedConnectors: Connector[] = []
+  mergeMultiChainConnectors(connectors: Connector[]) {
+    const connectorsByNameMap = this.generateConnectorMapByName(connectors)
+
+    const refactoredConnectors = Array.from(connectorsByNameMap.values()).map(_connectors => {
+      if (_connectors.length > 1) {
+        return {
+          name: _connectors[0]?.name,
+          imageUrl: _connectors[0]?.imageUrl,
+          imageId: _connectors[0]?.imageId,
+          providers: this.getUniqueConnectorsByName(_connectors),
+          type: 'MULTI_CHAIN'
+        } as ConnectorWithProviders
+      }
+
+      return _connectors[0] as ConnectorWithProviders
+    })
+
+    return refactoredConnectors
+  },
+
+  generateConnectorMapByName(connectors: Connector[]): Map<string, Connector[]> {
+    const connectorsByNameMap = new Map<string, Connector[]>()
 
     connectors.forEach(connector => {
-      const { name, chain, type } = connector
+      const { name } = connector
 
-      const existingConnectorIndex = mergedConnectors.findIndex(
-        existingConnector => existingConnector.name === name
-      )
+      if (!name) {
+        return
+      }
 
-      if (existingConnectorIndex === -1) {
-        mergedConnectors.push({ ...connector })
-      } else {
-        const existingConnector = mergedConnectors[existingConnectorIndex]
-        if (existingConnector) {
-          if (existingConnector?.chain === chain || existingConnector.type === type) {
-            mergedConnectors.push({ ...connector })
-          } else if (existingConnector.type === 'MULTI_CHAIN') {
-            mergedConnectors.push({ ...connector })
-          } else {
-            mergedConnectors[existingConnectorIndex] = {
-              ...existingConnector,
-              type: 'MULTI_CHAIN',
-              providers: [existingConnector, connector]
-            }
-          }
-        }
+      const connectorsByName = connectorsByNameMap.get(name) || []
+      const haveSameConnector = connectorsByName.find(c => c.chain === connector.chain)
+      if (!haveSameConnector) {
+        connectorsByName.push(connector)
+      }
+      connectorsByNameMap.set(name, connectorsByName)
+    })
+
+    return connectorsByNameMap
+  },
+
+  getUniqueConnectorsByName(connectors: Connector[]) {
+    const uniqueConnectors: Connector[] = []
+
+    connectors.forEach(c => {
+      if (!uniqueConnectors.find(uc => uc.chain === c.chain)) {
+        uniqueConnectors.push({
+          ...c,
+          name: ConstantsUtil.CHAIN_NAME_MAP[c.chain]
+        })
       }
     })
 
-    return mergedConnectors
+    return uniqueConnectors
   },
 
   addConnector(connector: Connector | AuthConnector) {
-    state.connectors.push(ref(connector))
-
     if (connector.id === 'w3mAuth') {
       const authConnector = connector as AuthConnector
       const optionsState = snapshot(OptionsController.state) as typeof OptionsController.state
       const themeMode = ThemeController.getSnapshot().themeMode
       const themeVariables = ThemeController.getSnapshot().themeVariables
-
       authConnector?.provider?.syncDappData?.({
         metadata: optionsState.metadata,
         sdkVersion: optionsState.sdkVersion,
@@ -87,6 +107,9 @@ export const ConnectorController = {
         themeVariables,
         w3mThemeVariables: getW3mThemeVariables(themeVariables, themeMode)
       })
+      this.setConnectors([authConnector])
+    } else {
+      this.setConnectors([connector])
     }
   },
 

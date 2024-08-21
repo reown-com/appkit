@@ -66,7 +66,10 @@ export class ModalPage {
     return value!
   }
 
-  async getConnectUri(timingRecords?: TimingRecords): Promise<string> {
+  async getConnectUri(timingRecords?: TimingRecords, goToPage = true): Promise<string> {
+    if (goToPage) {
+      await this.page.goto(this.url)
+    }
     await this.connectButton.click()
     const connect = this.page.getByTestId('wallet-selector-walletconnect')
     await connect.waitFor({
@@ -253,11 +256,14 @@ export class ModalPage {
     ).toBeVisible({
       timeout: 10000
     })
-    await this.page.waitForTimeout(2000)
+    await this.page.waitForTimeout(500)
   }
 
   async clickSignatureRequestButton(name: string) {
+    const signatureHeader = this.page.getByText('Approve Transaction')
     await this.page.frameLocator('#w3m-iframe').getByRole('button', { name, exact: true }).click()
+    await expect(signatureHeader, 'Signature request should be closed').not.toBeVisible()
+    await this.page.waitForTimeout(300)
   }
 
   async approveSign() {
@@ -316,6 +322,9 @@ export class ModalPage {
   }
 
   async openAccount() {
+    expect(this.page.getByTestId('w3m-modal-card')).not.toBeVisible()
+    expect(this.page.getByTestId('w3m-modal-overlay')).not.toBeVisible()
+    this.page.waitForTimeout(300)
     await this.page.getByTestId('account-button').click()
   }
 
@@ -371,6 +380,15 @@ export class ModalPage {
     await this.enterOTP(otp, headerTitle)
   }
 
+  async switchNetworkWithNetworkButton(networkName: string) {
+    const networkButton = this.page.getByTestId('w3m-network-button')
+    await networkButton.click()
+
+    const networkToSwitchButton = this.page.getByTestId(`w3m-network-switch-${networkName}`)
+    await networkToSwitchButton.click()
+    await networkToSwitchButton.waitFor({ state: 'hidden' })
+  }
+
   async openModal() {
     await this.page.getByTestId('account-button').click()
   }
@@ -403,15 +421,6 @@ export class ModalPage {
 
     await sendCallsInput.fill(batchCallId)
     await sendCallsButton.click()
-  }
-
-  async switchNetworkWithNetworkButton(networkName: string) {
-    const networkButton = this.page.getByTestId('w3m-network-button')
-    await networkButton.click()
-
-    const networkToSwitchButton = this.page.getByTestId(`w3m-network-switch-${networkName}`)
-    await networkToSwitchButton.click()
-    await networkToSwitchButton.waitFor({ state: 'hidden' })
   }
 
   async switchAccount() {

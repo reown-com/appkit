@@ -6,6 +6,7 @@ import { OptionsController } from '../controllers/OptionsController.js'
 import type { BlockchainApiSwapAllowanceRequest, BlockchainApiBalanceResponse } from './TypeUtil.js'
 import { NetworkController } from '../controllers/NetworkController.js'
 import { AccountController } from '../controllers/AccountController.js'
+import { ChainController } from '../controllers/ChainController.js'
 
 // -- Types --------------------------------------------- //
 export type TokenInfo = {
@@ -78,7 +79,8 @@ export const SwapApiUtil = {
     })
 
     if (response?.allowance && sourceTokenAmount && sourceTokenDecimals) {
-      const parsedValue = ConnectionController.parseUnits(sourceTokenAmount, sourceTokenDecimals)
+      const parsedValue =
+        ConnectionController.parseUnits(sourceTokenAmount, sourceTokenDecimals) || 0
       const hasAllowance = BigInt(response.allowance) >= parsedValue
 
       return hasAllowance
@@ -98,7 +100,7 @@ export const SwapApiUtil = {
     const response = await BlockchainApiController.getBalance(address, caipNetwork.id, forceUpdate)
     const balances = response.balances.filter(balance => balance.quantity.decimals !== '0')
 
-    AccountController.setTokenBalance(balances)
+    AccountController.setTokenBalance(balances, ChainController.state.activeChain)
 
     return this.mapBalancesToSwapTokens(balances)
   },
