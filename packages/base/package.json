@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/base",
-  "version": "5.1.0",
+  "version": "5.1.1",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
