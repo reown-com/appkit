@@ -13,7 +13,8 @@ const modal = createWeb3Modal({
     chains: EthersConstants.chains,
     coinbasePreference: 'smartWalletOnly',
     auth: {
-      email: false
+      email: false,
+      socials: []
     }
   }),
   chains: EthersConstants.chains,

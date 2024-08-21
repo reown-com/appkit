@@ -10,7 +10,7 @@ import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
 
 const queryClient = new QueryClient()
 
-const wagmiConfig = getWagmiConfig('default', { auth: { email: false } })
+const wagmiConfig = getWagmiConfig('default', { auth: { email: false, socials: [] } })
 
 const modal = createWeb3Modal({
   wagmiConfig,
