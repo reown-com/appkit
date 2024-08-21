@@ -184,6 +184,7 @@ export class SolanaWeb3JsClient {
 
   public construct(appKit: AppKit, options: OptionsControllerState) {
     const { projectId } = options
+
     const clientOptions = this.instanceOptions
 
     if (!clientOptions) {
@@ -191,6 +192,7 @@ export class SolanaWeb3JsClient {
     }
 
     this.appKit = appKit
+
     this.options = options
 
     const { chains } = clientOptions
@@ -212,28 +214,25 @@ export class SolanaWeb3JsClient {
       typeof window === 'object' ? localStorage.getItem(SolConstantsUtil.CAIP_CHAIN_ID) : ''
     )
 
-    this.defaultChain = SolHelpersUtil.getChainFromCaip(
-      chains,
-      typeof window === 'object' ? localStorage.getItem(SolConstantsUtil.CAIP_CHAIN_ID) : ''
-    ) as CaipNetwork
+    this.defaultChain = chain as CaipNetwork
     this.syncRequestedNetworks(chains, this.options?.chainImages)
 
     if (chain) {
       SolStoreUtil.setCurrentChain(chain)
       SolStoreUtil.setCaipChainId(`solana:${chain.chainId}`)
     }
-    this.syncNetwork(this.options?.chainImages)
+    this.syncNetwork()
 
     SolStoreUtil.subscribeKey('address', () => {
       this.syncAccount()
     })
 
     SolStoreUtil.subscribeKey('caipChainId', () => {
-      this.syncNetwork(this.instanceOptions?.chainImages)
+      this.syncNetwork()
     })
 
     AssetController.subscribeNetworkImages(() => {
-      this.syncNetwork(this.instanceOptions?.chainImages)
+      this.syncNetwork()
     })
 
     NetworkController.subscribeKey('caipNetwork', (newCaipNetwork: CaipNetwork | undefined) => {
@@ -358,7 +357,8 @@ export class SolanaWeb3JsClient {
     await this.syncAccount()
   }
 
-  private async syncNetwork(chainImages?: Web3ModalClientOptions['chainImages']) {
+  private async syncNetwork() {
+    const chainImages = this.options?.chainImages
     const address = SolStoreUtil.state.address
     const storeChainId = SolStoreUtil.state.caipChainId
     const isConnected = SolStoreUtil.state.isConnected

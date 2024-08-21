@@ -9,6 +9,7 @@
   ],
   "scripts": {
     "build:clean": "rm -rf dist",
+    "build": "tsc && vite build",
     "upload": "pnpm build && pnpm publish --public"
   },
   "devDependencies": {

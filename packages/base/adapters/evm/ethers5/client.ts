@@ -409,7 +409,7 @@ export class EVMEthers5Client {
     })
 
     EthersStoreUtil.subscribeKey('chainId', () => {
-      this.syncNetwork(this.options?.chainImages)
+      this.syncNetwork()
     })
 
     /*
@@ -884,7 +884,8 @@ export class EVMEthers5Client {
     }
   }
 
-  private async syncNetwork(chainImages?: AdapterOptions['chainImages']) {
+  private async syncNetwork() {
+    const chainImages = this.options?.chainImages
     const address = EthersStoreUtil.state.address
     const chainId = EthersStoreUtil.state.chainId
     const isConnected = EthersStoreUtil.state.isConnected
