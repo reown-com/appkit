@@ -1,0 +1,116 @@
+{
+  "name": "@web3modal/base",
+  "version": "5.1.1",
+  "type": "module",
+  "main": "./dist/esm/exports/index.js",
+  "types": "./dist/types/exports/index.d.ts",
+  "files": [
+    "dist",
+    "!tsconfig.tsbuildinfo"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/types/exports/index.d.ts",
+      "import": "./dist/esm/exports/index.js",
+      "default": "./dist/esm/exports/index.js"
+    },
+    "./react": {
+      "types": "./dist/types/exports/react.d.ts",
+      "import": "./dist/esm/exports/react.js",
+      "default": "./dist/esm/exports/react.js"
+    },
+    "./adapters/evm/wagmi": {
+      "types": "./dist/types/adapters/evm/wagmi/index.d.ts",
+      "import": "./dist/esm/adapters/evm/wagmi/index.js",
+      "default": "./dist/esm/adapters/evm/wagmi/index.js"
+    },
+    "./adapters/evm/ethers": {
+      "types": "./dist/types/adapters/evm/ethers/index.d.ts",
+      "import": "./dist/esm/adapters/evm/ethers/index.js",
+      "default": "./dist/esm/adapters/evm/ethers/index.js"
+    },
+    "./adapters/evm/ethers5": {
+      "types": "./dist/types/adapters/evm/ethers5/index.d.ts",
+      "import": "./dist/esm/adapters/evm/ethers5/index.js",
+      "default": "./dist/esm/adapters/evm/ethers5/index.js"
+    },
+    "./adapters/solana/web3js": {
+      "types": "./dist/types/adapters/solana/web3js/index.d.ts",
+      "import": "./dist/esm/adapters/solana/web3js/index.js",
+      "default": "./dist/esm/adapters/solana/web3js/index.js"
+    }
+  },
+  "scripts": {
+    "build:clean": "rm -rf dist",
+    "build": "tsc --build tsconfig.build.json",
+    "watch": "tsc --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+  },
+  "dependencies": {
+    "@coinbase/wallet-sdk": "4.0.3",
+    "@ethersproject/sha2": "5.7.0",
+    "@solana/wallet-adapter-base": "0.9.23",
+    "@solana/wallet-standard-features": "1.2.0",
+    "@solana/wallet-standard-util": "1.1.1",
+    "@solana/web3.js": "1.95.2",
+    "@walletconnect/utils": "2.14.0",
+    "@wagmi/connectors": "5.1.5",
+    "@wagmi/core": "2.13.4",
+    "@wallet-standard/app": "1.0.1",
+    "@wallet-standard/base": "1.0.1",
+    "@wallet-standard/features": "1.0.3",
+    "@wallet-standard/wallet": "1.0.1",
+    "@walletconnect/ethereum-provider": "2.15.1",
+    "@walletconnect/types": "2.13.3",
+    "@walletconnect/universal-provider": "2.15.0",
+    "@web3modal/common": "workspace:*",
+    "@web3modal/core": "workspace:*",
+    "@web3modal/polyfills": "workspace:*",
+    "@web3modal/scaffold": "workspace:*",
+    "@web3modal/scaffold-react": "workspace:*",
+    "@web3modal/scaffold-ui": "workspace:*",
+    "@web3modal/scaffold-utils": "workspace:*",
+    "@web3modal/scaffold-vue": "workspace:*",
+    "@web3modal/siwe": "workspace:*",
+    "@web3modal/ui": "workspace:*",
+    "@web3modal/wallet": "workspace:*",
+    "bn.js": "5.2.1",
+    "borsh": "0.7.0",
+    "bs58": "5.0.0",
+    "buffer": "6.0.3",
+    "ethers": "6.13.0",
+    "ethers5": "npm:ethers@5.7.2",
+    "lit": "3.1.0",
+    "valtio": "1.11.2",
+    "viem": "2.19.6",
+    "vue": "3.4.3",
+    "wagmi": "2.12.5"
+  },
+  "devDependencies": {
+    "@types/bn.js": "5.1.5",
+    "@vitest/coverage-v8": "2.0.5",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "vitest": "2.0.3"
+  },
+  "keywords": [
+    "web3",
+    "crypto",
+    "ethereum",
+    "web3modal",
+    "walletconnect",
+    "lit",
+    "webcomponents"
+  ],
+  "author": "WalletConnect <walletconnect.com>",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/web3modal/web3modal",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/web3modal/web3modal.git"
+  },
+  "bugs": {
+    "url": "https://github.com/web3modal/web3modal/issues"
+  }
+}

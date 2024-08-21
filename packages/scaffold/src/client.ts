@@ -59,7 +59,7 @@ export interface LibraryOptions {
   allowUnsupportedChain?: NetworkControllerState['allowUnsupportedChain']
   _sdkVersion: OptionsControllerState['sdkVersion']
   enableEIP6963?: OptionsControllerState['enableEIP6963']
-  enableSwaps?: OptionsControllerState['enableEIP6963']
+  enableSwaps?: OptionsControllerState['enableSwaps']
 }
 
 export interface ScaffoldOptions extends LibraryOptions {
@@ -336,7 +336,7 @@ export class Web3ModalScaffold {
         chain: options.chain
       }
     ])
-    NetworkController.setDefaultCaipNetwork(options.defaultChain, options.chain)
+    NetworkController.setDefaultCaipNetwork(options.defaultChain)
 
     OptionsController.setProjectId(options.projectId)
     OptionsController.setAllWallets(options.allWallets)

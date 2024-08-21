@@ -30,6 +30,7 @@ const client: NetworkControllerClient = {
   getApprovedCaipNetworksData: async () =>
     Promise.resolve({ approvedCaipNetworkIds, supportsAllNetworks: false })
 }
+const chain = ConstantsUtil.CHAIN.EVM
 const caipAddress = 'eip155:1:0x123'
 // MATIC
 const networkTokenAddress = 'eip155:137:0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
@@ -41,7 +42,7 @@ beforeAll(async () => {
   //  -- Set Account and
   ChainController.initialize([{ chain: ConstantsUtil.CHAIN.EVM, networkControllerClient: client }])
   await NetworkController.switchActiveNetwork(caipNetwork)
-  AccountController.setCaipAddress(caipAddress)
+  AccountController.setCaipAddress(caipAddress, chain)
 
   vi.spyOn(BlockchainApiController, 'fetchSwapTokens').mockResolvedValue(tokensResponse)
   vi.spyOn(BlockchainApiController, 'getBalance').mockResolvedValue(balanceResponse)

@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/solana",
-  "version": "5.1.0",
+  "version": "5.1.1",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -45,11 +45,10 @@
   },
   "scripts": {
     "build:clean": "rm -rf dist",
-    "build": "tsc --build tsconfig.build.json",
+    "build": "tsc --build",
     "watch": "tsc --watch",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "test": "vitest run --dir tests --coverage.enabled=true --coverage.reporter=json --coverage.reporter=json-summary --coverage.reportOnFailure=true"
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
     "@ethersproject/sha2": "5.7.0",
@@ -62,6 +61,7 @@
     "@wallet-standard/features": "1.0.3",
     "@wallet-standard/wallet": "1.0.1",
     "@walletconnect/universal-provider": "2.15.0",
+    "@web3modal/base": "workspace:*",
     "@web3modal/common": "workspace:*",
     "@web3modal/core": "workspace:*",
     "@web3modal/polyfills": "workspace:*",

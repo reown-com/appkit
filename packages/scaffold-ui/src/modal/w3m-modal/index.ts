@@ -69,8 +69,14 @@ export class W3mModal extends LitElement {
   public override render() {
     return this.open
       ? html`
-          <wui-flex @click=${this.onOverlayClick.bind(this)}>
-            <wui-card shake="${this.shake}" role="alertdialog" aria-modal="true" tabindex="0">
+          <wui-flex @click=${this.onOverlayClick.bind(this)} data-testid="w3m-modal-overlay">
+            <wui-card
+              shake="${this.shake}"
+              role="alertdialog"
+              aria-modal="true"
+              tabindex="0"
+              data-testid="w3m-modal-card"
+            >
               <w3m-header></w3m-header>
               <w3m-router></w3m-router>
               <w3m-snackbar></w3m-snackbar>
