@@ -25,8 +25,6 @@ import { prepareTransactionRequest, sendTransaction as wagmiSendTransaction } fr
 import type { Chain } from '@wagmi/core/chains'
 import type { GetAccountReturnType, GetEnsAddressReturnType, Config } from '@wagmi/core'
 import type {
-  CaipAddress,
-  CaipNetwork,
   ConnectionControllerClient,
   Connector,
   NetworkControllerClient,
@@ -40,7 +38,7 @@ import type { Hex } from 'viem'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
 import { ConstantsUtil as CommonConstants } from '@web3modal/common'
 import {
-  getCaipDefaultChain,
+  getCaipDefaultNetwork,
   getEmailCaipNetworks,
   getWalletConnectCaipNetworks,
   requireCaipAddress
@@ -50,7 +48,7 @@ import type { W3mFrameProvider, W3mFrameTypes } from '@web3modal/wallet'
 import { NetworkUtil } from '@web3modal/common'
 import { normalize } from 'viem/ens'
 import type { AppKitOptions } from '../../../utils/TypesUtil.js'
-import type { Chain as AvailableChain, CaipNetworkId } from '@web3modal/common'
+import type { CaipNetwork, CaipNetworkId, ChainNamespace } from '@web3modal/common'
 import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 import type { AppKit } from '../../../src/client.js'
 
@@ -58,7 +56,7 @@ import type { AppKit } from '../../../src/client.js'
 export interface AdapterOptions<C extends Config>
   extends Pick<AppKitOptions, 'siweConfig' | 'enableEIP6963'> {
   wagmiConfig: C
-  defaultChain?: Chain
+  defaultNetwork?: Chain
 }
 
 // @ts-expect-error: Overridden state type is correct
@@ -78,29 +76,29 @@ export class EVMWagmiClient {
   // -- Public variables --------------------------------------------------------
   public options: AppKitOptions | undefined = undefined
 
-  public chain: AvailableChain = CommonConstantsUtil.CHAIN.EVM
+  public chainNamespace: ChainNamespace = CommonConstantsUtil.CHAIN.EVM
 
   public networkControllerClient: NetworkControllerClient
 
   public connectionControllerClient: ConnectionControllerClient
 
-  public defaultChain: CaipNetwork | undefined = undefined
+  public defaultNetwork: CaipNetwork | undefined = undefined
 
   public tokens = HelpersUtil.getCaipTokens(this.options?.tokens)
 
-  public getCaipDefaultChain = this.options?.defaultChain
+  public getCaipDefaultNetwork = this.options?.defaultCaipNetwork
 
   public siweControllerClient = this.options?.siweConfig
 
   public constructor(options: AdapterOptions<Config>) {
-    const { wagmiConfig, defaultChain } = options
+    const { wagmiConfig, defaultNetwork } = options
 
     if (!wagmiConfig) {
       throw new Error('web3modal:constructor - wagmiConfig is undefined')
     }
 
     this.wagmiConfig = wagmiConfig
-    this.defaultChain = getCaipDefaultChain(defaultChain)
+    this.defaultNetwork = getCaipDefaultNetwork(defaultNetwork)
     this.siweControllerClient = options.siweConfig
 
     this.networkControllerClient = {
@@ -482,11 +480,11 @@ export class EVMWagmiClient {
           id: `${ConstantsUtil.EIP155}:${chain.id}`,
           name: chain.name,
           imageId: PresetsUtil.NetworkImageIds[chain.id],
-          imageUrl: this.options?.chainImages?.[chain.id],
-          chain: this.chain
+          imageUrl: this.options?.caipNetworkImages?.[chain.id],
+          chainNamespace: this.chainNamespace
         }) as CaipNetwork
     )
-    this.appKit?.setRequestedCaipNetworks(requestedCaipNetworks ?? [], this.chain)
+    this.appKit?.setRequestedCaipNetworks(requestedCaipNetworks ?? [], this.chainNamespace)
   }
 
   private async syncAccount({
@@ -508,22 +506,23 @@ export class EVMWagmiClient {
       | 'status'
     >
   >) {
-    const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`
+    const caipNetwork = this.appKit?.getCaipNetwork()
+    const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${caipNetwork?.chainId}:${address}`
 
     if (this.appKit?.getCaipAddress() === caipAddress) {
       return
     }
 
-    if (isConnected && address && chainId) {
-      this.appKit?.resetAccount(this.chain)
-      this.syncNetwork(address, chainId, isConnected)
-      this.appKit?.setIsConnected(isConnected, this.chain)
-      this.appKit?.setCaipAddress(caipAddress, this.chain)
+    if (isConnected && address) {
+      this.appKit?.resetAccount(this.chainNamespace)
+      this.syncNetwork(address, caipNetwork?.chainId, isConnected)
+      this.appKit?.setIsConnected(isConnected, this.chainNamespace)
+      this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)
       await Promise.all([
-        this.syncProfile(address, chainId),
-        this.syncBalance(address, chainId),
+        this.syncProfile(address, caipNetwork?.chainId),
+        this.syncBalance(address, caipNetwork?.chainId),
         this.syncConnectedWalletInfo(connector),
-        this.appKit?.setApprovedCaipNetworksData(this.chain)
+        this.appKit?.setApprovedCaipNetworksData(this.chainNamespace)
       ])
       if (connector) {
         this.syncConnectedWalletInfo(connector)
@@ -534,16 +533,16 @@ export class EVMWagmiClient {
       if (!isAuthConnector && addresses?.length) {
         this.appKit?.setAllAccounts(
           addresses.map(addr => ({ address: addr, type: 'eoa' })),
-          this.chain
+          this.chainNamespace
         )
       }
 
       this.hasSyncedConnectedAccount = true
     } else if (isDisconnected && this.hasSyncedConnectedAccount) {
-      this.appKit?.resetAccount(this.chain)
+      this.appKit?.resetAccount(this.chainNamespace)
       this.appKit?.resetWcConnection()
       this.appKit?.resetNetwork()
-      this.appKit?.setAllAccounts([], this.chain)
+      this.appKit?.setAllAccounts([], this.chainNamespace)
 
       this.hasSyncedConnectedAccount = false
     }
@@ -555,22 +554,22 @@ export class EVMWagmiClient {
     if (chain || chainId) {
       const name = chain?.name ?? chainId?.toString()
       const id = Number(chain?.id ?? chainId)
-      const caipChainId: CaipNetworkId = `${ConstantsUtil.EIP155}:${id}`
+      const caipChainId: CaipNetworkId = `${ConstantsUtil.EIP155}:${id}` as CaipNetworkId
       this.appKit?.setCaipNetwork({
         id: caipChainId,
-        name,
+        name: chain?.name ?? chainId?.toString(),
         imageId: PresetsUtil.NetworkImageIds[id],
-        imageUrl: this.options?.chainImages?.[id],
-        chain: this.chain
+        imageUrl: this.options?.caipNetworkImages?.[id],
+        chainNamespace: this.chainNamespace
       })
       if (isConnected && address && chainId) {
         const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${id}:${address}`
-        this.appKit?.setCaipAddress(caipAddress, this.chain)
+        this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)
         if (chain?.blockExplorers?.default?.url) {
           const url = `${chain.blockExplorers.default.url}/address/${address}`
-          this.appKit?.setAddressExplorerUrl(url, this.chain)
+          this.appKit?.setAddressExplorerUrl(url, this.chainNamespace)
         } else {
-          this.appKit?.setAddressExplorerUrl(undefined, this.chain)
+          this.appKit?.setAddressExplorerUrl(undefined, this.chainNamespace)
         }
         if (this.hasSyncedConnectedAccount) {
           await this.syncProfile(address, chainId)
@@ -589,12 +588,12 @@ export class EVMWagmiClient {
       const registeredWcNames = await this.appKit.getWalletConnectName(address)
       if (registeredWcNames[0]) {
         const wcName = registeredWcNames[0]
-        this.appKit?.setProfileName(wcName.name, this.chain)
+        this.appKit?.setProfileName(wcName.name, this.chainNamespace)
       } else {
-        this.appKit?.setProfileName(null, this.chain)
+        this.appKit?.setProfileName(null, this.chainNamespace)
       }
     } catch {
-      this.appKit?.setProfileName(null, this.chain)
+      this.appKit?.setProfileName(null, this.chainNamespace)
     }
   }
   private async syncProfile(address: Hex, chainId: Chain['id']) {
@@ -606,8 +605,8 @@ export class EVMWagmiClient {
       const { name, avatar } = await this.appKit.fetchIdentity({
         address
       })
-      this.appKit?.setProfileName(name, this.chain)
-      this.appKit?.setProfileImage(avatar, this.chain)
+      this.appKit?.setProfileName(name, this.chainNamespace)
+      this.appKit?.setProfileImage(avatar, this.chainNamespace)
 
       if (!name) {
         await this.syncWalletConnectName(address)
@@ -616,21 +615,21 @@ export class EVMWagmiClient {
       if (chainId === mainnet.id) {
         const profileName = await getEnsName(this.wagmiConfig, { address, chainId })
         if (profileName) {
-          this.appKit?.setProfileName(profileName, this.chain)
+          this.appKit?.setProfileName(profileName, this.chainNamespace)
           const profileImage = await wagmiGetEnsAvatar(this.wagmiConfig, {
             name: profileName,
             chainId
           })
           if (profileImage) {
-            this.appKit?.setProfileImage(profileImage, this.chain)
+            this.appKit?.setProfileImage(profileImage, this.chainNamespace)
           }
         } else {
           await this.syncWalletConnectName(address)
-          this.appKit?.setProfileImage(null, this.chain)
+          this.appKit?.setProfileImage(null, this.chainNamespace)
         }
       } else {
         await this.syncWalletConnectName(address)
-        this.appKit?.setProfileImage(null, this.chain)
+        this.appKit?.setProfileImage(null, this.chainNamespace)
       }
     }
   }
@@ -643,11 +642,11 @@ export class EVMWagmiClient {
         chainId: chain.id,
         token: this.options?.tokens?.[chain.id]?.address as Hex
       })
-      this.appKit?.setBalance(balance.formatted, balance.symbol, this.chain)
+      this.appKit?.setBalance(balance.formatted, balance.symbol, this.chainNamespace)
 
       return
     }
-    this.appKit?.setBalance(undefined, undefined, this.chain)
+    this.appKit?.setBalance(undefined, undefined, this.chainNamespace)
   }
 
   private async syncConnectedWalletInfo(connector: GetAccountReturnType['connector']) {
@@ -666,19 +665,19 @@ export class EVMWagmiClient {
             name: walletConnectProvider.session.peer.metadata.name,
             icon: walletConnectProvider.session.peer.metadata.icons?.[0]
           },
-          this.chain
+          this.chainNamespace
         )
       }
     } else {
       this.appKit?.setConnectedWalletInfo(
         { name: connector.name, icon: connector.icon },
-        this.chain
+        this.chainNamespace
       )
     }
   }
 
   private syncConnectors(_connectors: AdapterOptions<Config>['wagmiConfig']['connectors']) {
-    const connectors = _connectors.map(connector => ({ ...connector, chain: this.chain }))
+    const connectors = _connectors.map(connector => ({ ...connector, chain: this.chainNamespace }))
     const uniqueIds = new Set()
     const filteredConnectors = connectors.filter(item => {
       const isDuplicate = uniqueIds.has(item.id)
@@ -712,7 +711,7 @@ export class EVMWagmiClient {
           info: {
             rdns: id
           },
-          chain: this.chain
+          chain: this.chainNamespace
         })
       }
     })
@@ -742,7 +741,7 @@ export class EVMWagmiClient {
         socials: connector.socials,
         showWallets: connector?.showWallets === undefined ? true : connector.showWallets,
         walletFeatures: connector.walletFeatures,
-        chain: this.chain
+        chain: this.chainNamespace
       })
       this.initAuthConnectorListeners(authConnector)
     }
@@ -768,7 +767,7 @@ export class EVMWagmiClient {
       this.appKit?.setLoading(isLoginEmailUsed)
 
       if (isLoginEmailUsed) {
-        this.appKit?.setIsConnected(false, this.chain)
+        this.appKit?.setIsConnected(false, this.chainNamespace)
       }
 
       provider.onRpcRequest((request: W3mFrameTypes.RPCRequest) => {
@@ -823,17 +822,17 @@ export class EVMWagmiClient {
       provider.onNotConnected(() => {
         const isConnected = this.appKit?.getIsConnectedState()
         if (!isConnected) {
-          this.appKit?.setIsConnected(false, this.chain)
+          this.appKit?.setIsConnected(false, this.chainNamespace)
           this.appKit?.setLoading(false)
         }
       })
 
       provider.onIsConnected(req => {
-        this.appKit?.setIsConnected(true, this.chain)
-        this.appKit?.setSmartAccountDeployed(Boolean(req.smartAccountDeployed), this.chain)
+        this.appKit?.setIsConnected(true, this.chainNamespace)
+        this.appKit?.setSmartAccountDeployed(Boolean(req.smartAccountDeployed), this.chainNamespace)
         this.appKit?.setPreferredAccountType(
           req.preferredAccountType as W3mFrameTypes.AccountType,
-          this.chain
+          this.chainNamespace
         )
         this.appKit?.setLoading(false)
         this.appKit?.setAllAccounts(
@@ -843,19 +842,19 @@ export class EVMWagmiClient {
               type: (req.preferredAccountType || 'eoa') as W3mFrameTypes.AccountType
             }
           ],
-          this.chain
+          this.chainNamespace
         )
       })
 
       provider.onGetSmartAccountEnabledNetworks(networks => {
-        this.appKit?.setSmartAccountEnabledNetworks(networks, this.chain)
+        this.appKit?.setSmartAccountEnabledNetworks(networks, this.chainNamespace)
       })
 
       provider.onSetPreferredAccount(({ address, type }) => {
         if (!address) {
           return
         }
-        this.appKit?.setPreferredAccountType(type as W3mFrameTypes.AccountType, this.chain)
+        this.appKit?.setPreferredAccountType(type as W3mFrameTypes.AccountType, this.chainNamespace)
         this.syncAccount({
           address: address as `0x${string}`,
           isConnected: true,

@@ -322,9 +322,9 @@ export class AppKit {
     ChainController.setMultiChainEnabled(true)
 
     if (options.adapters?.length === 0) {
-      this.initializeUniversalAdapter(options, true)
+      // this.initializeUniversalAdapter(options, true)
     } else {
-      this.initializeUniversalAdapter(options, false)
+      // this.initializeUniversalAdapter(options, false)
       this.initializeAdapters(options)
     }
 

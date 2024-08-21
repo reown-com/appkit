@@ -1,25 +1,25 @@
 import { CoreHelperUtil } from '@web3modal/scaffold'
-import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
+import { ConstantsUtil as CommonConstantsUtil, type CaipNetwork } from '@web3modal/common'
 import { ConstantsUtil, PresetsUtil } from '@web3modal/scaffold-utils'
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
 import { getChainsFromAccounts } from '@walletconnect/utils'
 import { fallback, http, type Hex } from 'viem'
 
-import type { CaipNetwork, CaipNetworkId } from '@web3modal/scaffold'
+import type { CaipNetworkId } from '@web3modal/scaffold'
 import type { Chain } from '@wagmi/core/chains'
 import type { Connector } from '@wagmi/core'
 
-export function getCaipDefaultChain(chain?: Chain) {
+export function getCaipDefaultNetwork(chain?: CaipNetwork) {
   if (!chain) {
     return undefined
   }
 
   return {
-    id: `${ConstantsUtil.EIP155}:${chain.id}`,
+    id: chain.id,
     name: chain.name,
-    imageId: PresetsUtil.NetworkImageIds[chain.id],
-    chain: CommonConstantsUtil.CHAIN.EVM
-  } as CaipNetwork
+    imageId: PresetsUtil.NetworkImageIds[chain.chainId],
+    chainNamespace: CommonConstantsUtil.CHAIN.EVM
+  } as unknown as CaipNetwork
 }
 
 export async function getWalletConnectCaipNetworks(connector?: Connector) {

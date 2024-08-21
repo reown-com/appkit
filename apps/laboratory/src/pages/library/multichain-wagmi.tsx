@@ -7,6 +7,7 @@ import { getWagmiConfig } from '../../utils/WagmiConstants'
 import { WagmiProvider } from 'wagmi'
 import { Web3ModalButtons } from '../../components/Web3ModalButtons'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
+import { arbitrum, mainnet, optimism } from '../../utils/NetworksUtil'
 
 const queryClient = new QueryClient()
 
@@ -18,6 +19,7 @@ const wagmiAdapter = new EVMWagmiClient({
 
 const modal = createWeb3Modal({
   adapters: [wagmiAdapter],
+  caipNetworks: [mainnet, arbitrum, optimism],
   projectId: ConstantsUtil.ProjectId,
   enableAnalytics: true,
   metadata: ConstantsUtil.Metadata,

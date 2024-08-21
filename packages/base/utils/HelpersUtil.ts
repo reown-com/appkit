@@ -1,4 +1,4 @@
-import type { Chain } from '@web3modal/scaffold-utils'
+import type { Chain } from 'viem'
 import type { Namespace } from './TypesUtil.js'
 import type { CaipNetwork, ChainNamespace } from '@web3modal/common'
 
@@ -22,9 +22,37 @@ export const WcHelpersUtil = {
         return []
     }
   },
+  createWagmiNamespaces(chains: Chain[]): Namespace {
+    return chains.reduce<Namespace>((acc, chain) => {
+      const { id, rpcUrls } = chain
+
+      // eslint-disable-next-line @typescript-eslint/no-useless-template-literals
+
+      const methods = this.getMethodsByChainNamespace('eip155')
+
+      if (!acc['eip155']) {
+        acc['eip155'] = {
+          methods,
+          events: ['accountsChanged', 'chainChanged'],
+          chains: [],
+          rpcMap: {}
+        }
+      }
+
+      const fullChainId = `eip155:${id}`
+      // @ts-ignore
+      acc['eip155'].chains.push(fullChainId)
+      // @ts-ignore
+      acc['eip155'].rpcMap[fullChainId] = rpcUrls[0]?.http
+      // typeof rpcUrl === 'function' ? rpcUrl(chainId) : rpcUrl
+
+      return acc
+    }, {})
+  },
   createNamespaces(caipNetworks: CaipNetwork[]): Namespace {
     return caipNetworks.reduce<Namespace>((acc, chain) => {
       const { chainId, chainNamespace, rpcUrl } = chain
+
       // eslint-disable-next-line @typescript-eslint/no-useless-template-literals
 
       const methods = this.getMethodsByChainNamespace(chainNamespace)

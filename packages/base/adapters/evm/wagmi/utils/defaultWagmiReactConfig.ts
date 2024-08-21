@@ -2,10 +2,11 @@ import '@web3modal/polyfills'
 
 import type { CreateConfigParameters, CreateConnectorFn, Config } from 'wagmi'
 import { createConfig } from 'wagmi'
-import { coinbaseWallet, walletConnect, injected } from 'wagmi/connectors'
+import { coinbaseWallet, injected } from 'wagmi/connectors'
 import { authConnector } from '../connectors/AuthConnector.js'
 import { getTransport } from './helpers.js'
 import type { SocialProvider } from '@web3modal/scaffold-utils'
+import { walletConnect } from '../connectors/UniversalConnector.js'
 
 export type ConfigOptions = Partial<CreateConfigParameters> & {
   chains: CreateConfigParameters['chains']
@@ -51,7 +52,7 @@ export function defaultWagmiConfig({
 
   // Enabled by default
   if (enableWalletConnect !== false) {
-    connectors.push(walletConnect({ projectId, metadata, showQrModal: false }))
+    connectors.push(walletConnect({ projectId, metadata }))
   }
 
   // Enabled by default
