@@ -1,5 +1,5 @@
-import { ConstantsUtil } from './ConstantsUtil.js'
-import { PresetsUtil } from './PresetsUtil.js'
+import { ConstantsUtil } from '../ConstantsUtil.js'
+import { PresetsUtil } from '../PresetsUtil.js'
 import type { Chain, Provider } from './EthersTypesUtil.js'
 import type { CaipNetwork } from '@web3modal/common'
 

@@ -38,6 +38,16 @@
       "types": "./dist/types/adapters/solana/web3js/index.d.ts",
       "import": "./dist/esm/adapters/solana/web3js/index.js",
       "default": "./dist/esm/adapters/solana/web3js/index.js"
+    },
+    "./utils/library/react": {
+      "types": "./dist/types/utils/library/react/index.d.ts",
+      "import": "./dist/esm/utils/library/react/index.js",
+      "default": "./dist/esm/utils/library/react/index.js"
+    },
+    "./utils/library/vue": {
+      "types": "./dist/types/utils/library/vue/index.d.ts",
+      "import": "./dist/esm/utils/library/vue/index.js",
+      "default": "./dist/esm/utils/library/vue/index.js"
     }
   },
   "scripts": {
@@ -67,11 +77,8 @@
     "@web3modal/common": "workspace:*",
     "@web3modal/core": "workspace:*",
     "@web3modal/polyfills": "workspace:*",
-    "@web3modal/scaffold": "workspace:*",
-    "@web3modal/scaffold-react": "workspace:*",
     "@web3modal/scaffold-ui": "workspace:*",
     "@web3modal/scaffold-utils": "workspace:*",
-    "@web3modal/scaffold-vue": "workspace:*",
     "@web3modal/siwe": "workspace:*",
     "@web3modal/ui": "workspace:*",
     "@web3modal/wallet": "workspace:*",
@@ -90,9 +97,13 @@
   "devDependencies": {
     "@types/bn.js": "5.1.5",
     "@vitest/coverage-v8": "2.0.5",
+    "@vue/runtime-core": "3.4.3",
+    "@types/react": "18.2.0",
+    "@types/react-dom": "18.2.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "vitest": "2.0.3"
+    "vitest": "2.0.3",
+    "vue": "3.4.3"
   },
   "keywords": [
     "web3",

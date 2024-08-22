@@ -39,7 +39,7 @@ import type {
   SendTransactionArgs,
   SocialProvider,
   WriteContractArgs
-} from '@web3modal/scaffold'
+} from '@web3modal/core'
 import { formatUnits, parseUnits } from 'viem'
 import type { Hex } from 'viem'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'

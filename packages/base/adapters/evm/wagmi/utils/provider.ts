@@ -1,6 +1,6 @@
 import { http } from '@wagmi/core'
 import type { Chain } from '@wagmi/core/chains'
-import { CoreHelperUtil } from '@web3modal/scaffold'
+import { CoreHelperUtil } from '@web3modal/core'
 import { ConstantsUtil, PresetsUtil } from '@web3modal/scaffold-utils'
 
 // -- Helpers ------------------------------------------------------------------

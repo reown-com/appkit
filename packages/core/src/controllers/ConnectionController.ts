@@ -92,8 +92,8 @@ export const ConnectionController = {
     })
   },
 
-  async connectExternal(options: ConnectExternalOptions, chain?: ChainNamespace) {
-    await this._getClient().connectExternal?.(options)
+  async connectExternal(options: ConnectExternalOptions, chain: ChainNamespace) {
+    await this._getClient(chain).connectExternal?.(options)
     ChainController.setActiveChain(chain)
     StorageUtil.setConnectedConnector(options.type)
   },

@@ -1,16 +1,15 @@
 import '@web3modal/polyfills'
 
-import type { Chain } from '@web3modal/scaffold-utils'
-import type { Metadata, SolanaProvider, SolanaProviderType } from './scaffold/index.js'
+import type { Chain, Metadata, Provider, ProviderType } from '@web3modal/scaffold-utils/solana'
 
 declare global {
   interface Window {
     originalSolana?: Record<string, unknown>
-    solana?: SolanaProvider
-    solflare?: { solana: SolanaProvider }
-    backpack?: { solana: SolanaProvider }
-    trustWallet?: { solana: SolanaProvider }
-    phantom?: { solana: SolanaProvider }
+    solana?: Provider
+    solflare?: { solana: Provider }
+    backpack?: { solana: Provider }
+    trustWallet?: { solana: Provider }
+    phantom?: { solana: Provider }
     getHashedName: (name: string) => Buffer
   }
 }
@@ -27,9 +26,9 @@ export interface ConfigOptions {
 export function defaultSolanaConfig(options: ConfigOptions) {
   const { enableInjected = true, metadata } = options
 
-  let injectedProvider: SolanaProvider | undefined = undefined
+  let injectedProvider: Provider | undefined = undefined
 
-  const providers: SolanaProviderType = { metadata }
+  const providers: ProviderType = { metadata }
 
   function getInjectedProvider() {
     if (injectedProvider) {

@@ -1,6 +1,7 @@
 import type { AppKitOptions } from '../../../utils/TypesUtil.js'
 import {
   NetworkUtil,
+  type CaipAddress,
   type CaipNetwork,
   type CaipNetworkId,
   type ChainNamespace
@@ -23,11 +24,12 @@ import {
 import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@web3modal/scaffold-utils'
 import type UniversalProvider from '@walletconnect/universal-provider'
-import type { ConnectionControllerClient, NetworkControllerClient } from '@web3modal/scaffold'
+import type { ConnectionControllerClient, NetworkControllerClient } from '@web3modal/core'
 import { WcConstantsUtil } from '../../../utils/ConstantsUtil.js'
 import { EthersMethods } from './utils/EthersMethods.js'
 import { formatEther, InfuraProvider, JsonRpcProvider } from 'ethers'
 import { EthersStoreUtil } from './utils/EthersStoreUtil.js'
+import type { PublicStateControllerState } from '@web3modal/core'
 
 // -- Types ---------------------------------------------------------------------
 export interface AdapterOptions extends Pick<AppKitOptions, 'siweConfig'> {
@@ -266,7 +268,7 @@ export class EVMEthersClient {
             }
           }
         }
-        const disconnectFunction = disconnectConfig[providerId]
+        const disconnectFunction = disconnectConfig[providerId as string]
 
         if (disconnectFunction) {
           await disconnectFunction()
@@ -384,13 +386,8 @@ export class EVMEthersClient {
     this.syncRequestedNetworks(this.caipNetworks)
   }
 
-  public subscribeState(callback: (state: Web3ModalState) => void) {
-    return this.appKit?.subscribeState(state =>
-      callback({
-        ...state,
-        selectedNetworkId: Number(NetworkUtil.caipNetworkIdToNumber(state.selectedNetworkId))
-      })
-    )
+  public subscribeState(callback: (state: PublicStateControllerState) => void) {
+    return this.appKit?.subscribeState(state => callback(state))
   }
 
   public async disconnect() {
@@ -549,7 +546,7 @@ export class EVMEthersClient {
     }
 
     const accountsChangedHandler = (accounts: string[]) => {
-      const currentAccount = accounts?.[0]
+      const currentAccount = accounts?.[0] as CaipAddress | undefined
       if (currentAccount) {
         this.appKit?.setCaipAddress(currentAccount, this.chainNamespace)
 
@@ -695,7 +692,8 @@ export class EVMEthersClient {
     this.appKit?.setLoading(true)
     const chainId = NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id)
     const caipNetwork = this.caipNetworks.find(c => c.chainId === chainId)
-    this.appKit?.setCaipAddress(address)
+    // @ts-expect-error - address type will be checked todo(enes|sven)
+    this.appKit?.setCaipAddress(address, this.chainNamespace)
     this.appKit?.setCaipNetwork(caipNetwork)
     this.appKit?.setStatus('connected', this.chainNamespace)
     this.appKit?.setIsConnected(true, this.chainNamespace)
@@ -708,7 +706,7 @@ export class EVMEthersClient {
       const registeredWcNames = await this.appKit?.getWalletConnectName(address)
       if (registeredWcNames?.[0]) {
         const wcName = registeredWcNames[0]
-        this.appKit?.setProfileName(wcName.name)
+        this.appKit?.setProfileName(wcName.name, this.chainNamespace)
       } else {
         this.appKit?.setProfileName(null, this.chainNamespace)
       }
@@ -898,7 +896,8 @@ export class EVMEthersClient {
               chainId: caipNetwork.chainId as number | undefined
             })
 
-            this.appKit?.setCaipAddress(address)
+            // @ts-expect-error - address type will be checked todo(enes|sven)
+            this.appKit?.setCaipAddress(address, this.chainNamespace)
             this.appKit?.setPreferredAccountType(
               preferredAccountType as W3mFrameTypes.AccountType,
               this.chainNamespace

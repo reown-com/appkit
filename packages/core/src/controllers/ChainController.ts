@@ -203,7 +203,7 @@ export const ChainController = {
     })
   },
 
-  setActiveChain(chain?: ChainNamespace) {
+  setActiveChain(chain: ChainNamespace | undefined) {
     const newAdapter = chain ? state.chains.get(chain) : undefined
 
     if (newAdapter && newAdapter.chainNamespace !== state.activeChain) {
@@ -374,8 +374,8 @@ export const ChainController = {
     return approvedCaipNetworkIds
   },
 
-  resetAccount(chain?: ChainNamespace) {
-    const chainToWrite = state.multiChainEnabled ? chain : state.activeChain
+  resetAccount(chain: ChainNamespace | undefined) {
+    const chainToWrite = chain
 
     if (!chainToWrite) {
       throw new Error('Chain is required to set account prop')

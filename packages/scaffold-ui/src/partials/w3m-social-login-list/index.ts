@@ -80,7 +80,7 @@ export class W3mSocialLoginList extends LitElement {
         if (!AccountController.state.farcasterUrl) {
           try {
             const { url } = await authConnector.provider.getFarcasterUri()
-            AccountController.setFarcasterUrl(url)
+            AccountController.setFarcasterUrl(url, ChainController.state.activeChain)
           } catch (error) {
             RouterController.goBack()
             SnackController.showError(error)
