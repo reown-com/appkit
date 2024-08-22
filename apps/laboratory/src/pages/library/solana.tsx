@@ -12,13 +12,7 @@ const chains = [solana, solanaTestnet, solanaDevnet]
 export const solanaConfig = defaultSolanaConfig({
   chains,
   projectId: ConstantsUtil.ProjectId,
-  metadata: ConstantsUtil.Metadata,
-  auth: {
-    email: true,
-    socials: ['google', 'x', 'discord', 'farcaster', 'github', 'apple', 'facebook'],
-    showWallets: true,
-    walletFeatures: false
-  }
+  metadata: ConstantsUtil.Metadata
 })
 
 const modal = createWeb3Modal({
