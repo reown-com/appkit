@@ -10,7 +10,7 @@ import {
 import { ConstantsUtil, PresetsUtil } from '@web3modal/scaffold-utils'
 import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 
-import { SolConstantsUtil, SolHelpersUtil, SolStoreUtil } from './utils/scaffold/index.js'
+import { SolConstantsUtil, SolHelpersUtil, SolStoreUtil } from '@web3modal/scaffold-utils/solana'
 
 import type { BaseWalletAdapter } from '@solana/wallet-adapter-base'
 import { PublicKey, type Commitment, type ConnectionConfig } from '@solana/web3.js'
@@ -23,10 +23,15 @@ import type {
   Connector,
   CaipAddress,
   CaipNetwork
-} from '@web3modal/scaffold'
+} from '@web3modal/core'
 import type { Chain as AvailableChain } from '@web3modal/common'
 
-import type { ProviderType, Chain, Provider, SolStoreUtilState } from './utils/scaffold/index.js'
+import type {
+  ProviderType,
+  Chain,
+  Provider,
+  SolStoreUtilState
+} from '@web3modal/scaffold-utils/solana'
 import { watchStandard } from './utils/watchStandard.js'
 import { WalletConnectProvider } from './providers/WalletConnectProvider.js'
 import { AuthProvider } from './providers/AuthProvider.js'
@@ -314,7 +319,7 @@ export class SolanaWeb3JsClient {
     } else if (this.hasSyncedConnectedAccount) {
       this.appKit?.resetWcConnection()
       this.appKit?.resetNetwork()
-      this.appKit?.resetAccount()
+      this.appKit?.resetAccount('solana')
     }
   }
 

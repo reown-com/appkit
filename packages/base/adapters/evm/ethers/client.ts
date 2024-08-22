@@ -10,7 +10,7 @@ import type {
   SendTransactionArgs,
   Token,
   WriteContractArgs
-} from '@web3modal/scaffold'
+} from '@web3modal/core'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
 import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 import EthereumProvider, { OPTIONAL_METHODS } from '@walletconnect/ethereum-provider'
@@ -1254,7 +1254,7 @@ export class EVMEthersClient {
       const registeredWcNames = await this.appKit?.getWalletConnectName(address)
       if (registeredWcNames?.[0]) {
         const wcName = registeredWcNames[0]
-        this.appKit?.setProfileName(wcName.name)
+        this.appKit?.setProfileName(wcName.name, this.chain)
       } else {
         this.appKit?.setProfileName(null, this.chain)
       }

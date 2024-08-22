@@ -3,7 +3,7 @@ import { mockUniversalProvider, mockUniversalProviderSession } from './mocks/Uni
 import { WalletConnectProvider } from '../providers/WalletConnectProvider.js'
 import { TestConstants } from './util/TestConstants.js'
 import { mockLegacyTransaction, mockVersionedTransaction } from './mocks/Transaction.js'
-import { type Chain } from '../utils/scaffold/index.js'
+import { type Chain } from '@web3modal/scaffold-utils/solana'
 
 describe('WalletConnectProvider specific tests', () => {
   let provider = mockUniversalProvider()

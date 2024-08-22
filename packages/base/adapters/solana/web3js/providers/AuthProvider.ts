@@ -1,11 +1,11 @@
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
-import {
-  type AnyTransaction,
-  type Chain,
-  type Connection,
-  type GetActiveChain,
-  type Provider
-} from '../utils/scaffold/index.js'
+import type {
+  AnyTransaction,
+  Chain,
+  Connection,
+  GetActiveChain,
+  Provider
+} from '@web3modal/scaffold-utils/solana'
 import { ProviderEventEmitter } from './shared/ProviderEventEmitter.js'
 import { PublicKey, Transaction, VersionedTransaction, type SendOptions } from '@solana/web3.js'
 import {

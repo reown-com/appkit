@@ -1,4 +1,4 @@
-import type { ProviderEventEmitterMethods } from '../../utils/scaffold/index.js'
+import type { ProviderEventEmitterMethods } from '@web3modal/scaffold-utils/solana'
 
 type Listeners = {
   [Event in ProviderEventEmitterMethods.Event]: Array<

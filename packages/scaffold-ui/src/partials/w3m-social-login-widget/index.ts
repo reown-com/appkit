@@ -170,7 +170,7 @@ export class W3mSocialLoginWidget extends LitElement {
           try {
             const { url } = await authConnector.provider.getFarcasterUri()
 
-            AccountController.setFarcasterUrl(url)
+            AccountController.setFarcasterUrl(url, ChainController.state.activeChain)
           } catch (error) {
             RouterController.goBack()
             SnackController.showError(error)
