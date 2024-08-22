@@ -1,9 +1,9 @@
-import { PresetsUtil } from '@web3modal/scaffold-utils'
+import type { CaipNetwork } from '@web3modal/core'
 import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 
+import { PresetsUtil } from '../PresetsUtil.js'
 import { SolConstantsUtil } from './SolanaConstantsUtil.js'
 
-import type { CaipNetwork } from '@web3modal/scaffold'
 import type { Chain, Provider } from './SolanaTypesUtil.js'
 
 export const SolHelpersUtil = {

@@ -1,5 +1,4 @@
 import { onUnmounted, reactive, ref } from 'vue'
-import type { Web3ModalScaffold } from '@web3modal/scaffold'
 import type { Event } from '@web3modal/core'
 import type {
   W3mAccountButton,
@@ -8,12 +7,16 @@ import type {
   W3mNetworkButton,
   W3mOnrampWidget
 } from '@web3modal/scaffold-ui'
+import type { AppKit } from '../../../src/client.js'
+import type { AppKitOptions } from '../../TypesUtil.js'
 
-type OpenOptions = Parameters<Web3ModalScaffold['open']>[0]
+type OpenOptions = {
+  view: 'Account' | 'Connect' | 'Networks' | 'ApproveTransaction' | 'OnRampProviders'
+}
 
-type ThemeModeOptions = Parameters<Web3ModalScaffold['setThemeMode']>[0]
+type ThemeModeOptions = AppKitOptions['themeMode']
 
-type ThemeVariablesOptions = Parameters<Web3ModalScaffold['setThemeVariables']>[0]
+type ThemeVariablesOptions = AppKitOptions['themeVariables']
 
 declare module '@vue/runtime-core' {
   export interface ComponentCustomProperties {
@@ -25,12 +28,11 @@ declare module '@vue/runtime-core' {
   }
 }
 
-let modal: Web3ModalScaffold | undefined = undefined
+let modal: AppKit | undefined = undefined
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function getWeb3Modal(web3modal: any) {
-  if (web3modal) {
-    modal = web3modal as Web3ModalScaffold
+export function getWeb3Modal(appKit: AppKit) {
+  if (appKit) {
+    modal = appKit
   }
 }
 
@@ -40,11 +42,15 @@ export function useWeb3ModalTheme() {
   }
 
   function setThemeMode(themeMode: ThemeModeOptions) {
-    modal?.setThemeMode(themeMode)
+    if (themeMode) {
+      modal?.setThemeMode(themeMode)
+    }
   }
 
   function setThemeVariables(themeVariables: ThemeVariablesOptions) {
-    modal?.setThemeVariables(themeVariables)
+    if (themeVariables) {
+      modal?.setThemeVariables(themeVariables)
+    }
   }
 
   const themeMode = ref(modal.getThemeMode())

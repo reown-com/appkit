@@ -2,7 +2,7 @@ import { AppKit } from '@web3modal/base'
 import type { AppKitOptions } from '@web3modal/base'
 import { EVMEthersClient, type AdapterOptions } from '@web3modal/base/adapters/evm/ethers'
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
-import { getWeb3Modal } from '@web3modal/scaffold-vue'
+import { getWeb3Modal } from '@web3modal/base/utils/library/vue'
 import { onUnmounted, ref } from 'vue'
 import type { Eip1193Provider } from 'ethers'
 
@@ -131,4 +131,4 @@ export {
   useWeb3ModalState,
   useWeb3ModalEvents,
   useWalletInfo
-} from '@web3modal/scaffold-vue'
+} from '@web3modal/base/utils/library/vue'

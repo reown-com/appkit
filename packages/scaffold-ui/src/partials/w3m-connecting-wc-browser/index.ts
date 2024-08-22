@@ -34,9 +34,9 @@ export class W3mConnectingWcBrowser extends W3mConnectingWidget {
       )
       const injectedConnector = connectors.find(c => c.type === 'INJECTED')
       if (announcedConnector) {
-        await ConnectionController.connectExternal(announcedConnector)
+        await ConnectionController.connectExternal(announcedConnector, announcedConnector.chain)
       } else if (injectedConnector) {
-        await ConnectionController.connectExternal(injectedConnector)
+        await ConnectionController.connectExternal(injectedConnector, injectedConnector.chain)
       }
       ModalController.close()
 
