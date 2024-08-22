@@ -46,13 +46,13 @@ export const ModalController = {
   async open(options?: ModalControllerArguments['open']) {
     await ApiController.state.prefetchPromise
     const connected = AccountController.state.isConnected
-    const isUniversalAdapterOnly = ChainController.state.isUniversalAdapterOnly
+    const isWcConnector = ChainController.state.activeConnector?.name === 'WalletConnect'
 
     if (options?.view) {
       RouterController.reset(options.view)
     } else if (connected) {
       RouterController.reset('Account')
-    } else if (isUniversalAdapterOnly && !CoreHelperUtil.isMobile()) {
+    } else if (isWcConnector && !CoreHelperUtil.isMobile()) {
       RouterController.reset('ConnectingWalletConnect')
     } else {
       RouterController.reset('Connect')

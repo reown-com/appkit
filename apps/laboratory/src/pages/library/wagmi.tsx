@@ -4,7 +4,7 @@ import { WagmiProvider } from 'wagmi'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { WagmiTests } from '../../components/Wagmi/WagmiTests'
 import { ThemeStore } from '../../utils/StoreUtil'
-import { getWagmiConfig } from '../../utils/WagmiConstants'
+import { getWagmiConfig, WagmiConstantsUtil } from '../../utils/WagmiConstants'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
 
@@ -14,6 +14,7 @@ const wagmiConfig = getWagmiConfig('default')
 
 const modal = createWeb3Modal({
   wagmiConfig,
+  caipNetworks: WagmiConstantsUtil.chains,
   projectId: ConstantsUtil.ProjectId,
   enableAnalytics: true,
   metadata: ConstantsUtil.Metadata,

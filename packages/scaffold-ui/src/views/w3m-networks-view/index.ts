@@ -127,9 +127,7 @@ export class W3mNetworksView extends LitElement {
           type="network"
           name=${network.name ?? network.id}
           @click=${() => this.onSwitchNetwork(network)}
-          .disabled=${ChainController.state.isUniversalAdapterOnly ||
-          walletId === 'walletConnect' ||
-          connectorId === 'WALLET_CONNECT'
+          .disabled=${walletId === 'walletConnect' || connectorId === 'WALLET_CONNECT'
             ? !supportsAllNetworks && !approvedCaipNetworkIds?.includes(network.id)
             : !supportsAllNetworks &&
               !approvedCaipNetworkIds?.includes(network.id) &&
@@ -143,7 +141,6 @@ export class W3mNetworksView extends LitElement {
   private async onSwitchNetwork(network: CaipNetwork) {
     const isConnected = AccountController.state.isConnected
     const isNetworkChainConnected = AccountController.getChainIsConnected(network.chainNamespace)
-    const isUniversalAdapterOnly = ChainController.state.isUniversalAdapterOnly
     const allApprovedCaipNetworks = ChainController.getAllApprovedCaipNetworks()
     const walletId = localStorage.getItem('@w3m/wallet_id')
     const connectorId = localStorage.getItem('@w3m/connected_connector')
@@ -153,7 +150,7 @@ export class W3mNetworksView extends LitElement {
     const routerData = RouterController.state.data
 
     if (isConnected && caipNetwork?.id !== network.id) {
-      if (!isNetworkChainConnected && !isUniversalAdapterOnly && walletId !== 'walletConnect') {
+      if (!isNetworkChainConnected && walletId !== 'walletConnect') {
         RouterController.push('SwitchActiveChain', {
           switchToChain: network.chainNamespace,
           navigateTo: 'Connect',
@@ -163,7 +160,6 @@ export class W3mNetworksView extends LitElement {
         return
       }
       if (
-        isUniversalAdapterOnly ||
         allApprovedCaipNetworks?.includes(network.id) ||
         walletId === 'walletConnect' ||
         connectorId === 'WALLET_CONNECT'
@@ -176,7 +172,7 @@ export class W3mNetworksView extends LitElement {
     } else if (!isConnected) {
       NetworkController.setActiveCaipNetwork(network)
       if (!isNetworkChainConnected) {
-        if (ChainController.state.isUniversalAdapterOnly) {
+        if (ChainController.state.noAdapters) {
           RouterController.push('ConnectingWalletConnect')
         } else {
           RouterController.push('Connect')

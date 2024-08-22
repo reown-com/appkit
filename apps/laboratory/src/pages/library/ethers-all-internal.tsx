@@ -17,7 +17,7 @@ const modal = createWeb3Modal({
     },
     coinbasePreference: 'smartWalletOnly'
   }),
-  chains: EthersConstants.chains,
+  caipNetworks: EthersConstants.chains,
   projectId: ConstantsUtil.ProjectId,
   enableAnalytics: true,
   metadata: ConstantsUtil.Metadata,

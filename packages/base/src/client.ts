@@ -322,9 +322,7 @@ export class AppKit {
 
   // -- Private ------------------------------------------------------------------
   private async initControllers(options: AppKitOptions) {
-    ChainController.setMultiChainEnabled(true)
-
-    this.initializeUniversalAdapter(options, true)
+    this.initializeUniversalAdapter(options)
     this.initializeAdapters(options)
 
     OptionsController.setProjectId(options.projectId)
@@ -369,8 +367,7 @@ export class AppKit {
     }
   }
 
-  private initializeUniversalAdapter(options: AppKitOptions, universalAdapterOnly: boolean) {
-    ChainController.setisUniversalAdapterOnly(universalAdapterOnly)
+  private initializeUniversalAdapter(options: AppKitOptions) {
     const caipNetworks = this.extendCaipNetworksWithImages(
       options.caipNetworks,
       options.chainImages

@@ -13,7 +13,7 @@ const modal = createWeb3Modal({
     metadata: ConstantsUtil.Metadata,
     defaultChainId: 1
   }),
-  chains: EthersConstants.chains,
+  caipNetworks: EthersConstants.chains,
   projectId: ConstantsUtil.ProjectId,
   enableAnalytics: true,
   metadata: ConstantsUtil.Metadata,
