@@ -40,9 +40,9 @@ export const WcHelpersUtil = {
       }
 
       const fullChainId = `${chainNamespace}:${chainId}`
-      acc[chainNamespace].chains.push(fullChainId)
+      acc[chainNamespace]?.chains.push(fullChainId)
       // @ts-expect-error might be undefined
-      acc[chainNamespace].rpcMap[fullChainId] = rpcUrl
+      acc[chainNamespace]?.rpcMap[fullChainId] = rpcUrl
 
       return acc
     }, {})

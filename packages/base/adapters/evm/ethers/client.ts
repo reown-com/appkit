@@ -601,7 +601,7 @@ export class EVMEthersClient {
           this.handleAuthRpcRequest()
         }
       } else {
-        this.handleInvalidAuthRequest(request)
+        this.handleInvalidAuthRequest()
       }
     })
 
