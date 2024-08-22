@@ -66,9 +66,9 @@ export class W3mConnectorList extends LitElement {
           : null}
         ${custom?.length ? html`<w3m-connect-custom-widget></w3m-connect-custom-widget>` : null}
         ${coinbase ? html`<w3m-connect-coinbase-widget></w3m-connect-coinbase-widget>` : null}
-        <!-- ${external.length
+        ${external.length
           ? html`<w3m-connect-external-widget></w3m-connect-external-widget>`
-          : null} -->
+          : null}
         ${recommended.length
           ? html`<w3m-connect-recommended-widget></w3m-connect-recommended-widget>`
           : null}
