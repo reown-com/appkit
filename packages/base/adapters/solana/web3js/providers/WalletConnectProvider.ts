@@ -4,7 +4,7 @@ import {
   type AnyTransaction,
   type Chain,
   type Provider
-} from '../utils/scaffold/index.js'
+} from '@web3modal/scaffold-utils/solana'
 import { ProviderEventEmitter } from './shared/ProviderEventEmitter.js'
 import type { SessionTypes } from '@walletconnect/types'
 import base58 from 'bs58'

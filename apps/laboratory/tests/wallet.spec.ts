@@ -40,11 +40,7 @@ sampleWalletTest.afterAll(async () => {
 
 // -- Tests --------------------------------------------------------------------
 sampleWalletTest('it should switch networks and sign', async ({ library }) => {
-  if (library === 'solana') {
-    return
-  }
-
-  const chains = ['Polygon', 'Ethereum']
+  const chains = library === 'solana' ? ['Solana Testnet', 'Solana'] : ['Polygon', 'Ethereum']
 
   async function processChain(index: number) {
     if (index >= chains.length) {

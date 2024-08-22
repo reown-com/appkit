@@ -2,7 +2,7 @@ import { getWallets } from '@wallet-standard/app'
 import { WalletStandardProvider } from '../providers/WalletStandardProvider.js'
 import { isWalletAdapterCompatibleStandardWallet } from '@solana/wallet-adapter-base'
 import type { Wallet } from '@wallet-standard/base'
-import { SolStoreUtil } from './scaffold/SolanaStoreUtil.js'
+import { SolStoreUtil } from '@web3modal/scaffold-utils/solana'
 
 const { get, on } = getWallets()
 let standardAdapters: WalletStandardProvider[] = wrapWalletsWithAdapters(get())

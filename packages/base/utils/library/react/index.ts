@@ -1,5 +1,4 @@
 import { useEffect, useState, useSyncExternalStore } from 'react'
-import type { Web3ModalScaffold } from '@web3modal/scaffold'
 import type {
   W3mAccountButton,
   W3mButton,
@@ -7,12 +6,16 @@ import type {
   W3mNetworkButton,
   W3mOnrampWidget
 } from '@web3modal/scaffold-ui'
+import type { AppKit } from '../../../src/client.js'
+import type { AppKitOptions } from '../../TypesUtil.js'
 
-type OpenOptions = Parameters<Web3ModalScaffold['open']>[0]
+type OpenOptions = {
+  view: 'Account' | 'Connect' | 'Networks' | 'ApproveTransaction' | 'OnRampProviders'
+}
 
-type ThemeModeOptions = Parameters<Web3ModalScaffold['setThemeMode']>[0]
+type ThemeModeOptions = AppKitOptions['themeMode']
 
-type ThemeVariablesOptions = Parameters<Web3ModalScaffold['setThemeVariables']>[0]
+type ThemeVariablesOptions = AppKitOptions['themeVariables']
 
 declare global {
   namespace JSX {
@@ -26,12 +29,11 @@ declare global {
   }
 }
 
-let modal: Web3ModalScaffold | undefined = undefined
+let modal: AppKit | undefined = undefined
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function getWeb3Modal(web3modal: any) {
-  if (web3modal) {
-    modal = web3modal as Web3ModalScaffold
+export function getWeb3Modal(appKit: AppKit) {
+  if (appKit) {
+    modal = appKit
   }
 }
 
@@ -41,11 +43,15 @@ export function useWeb3ModalTheme() {
   }
 
   function setThemeMode(themeMode: ThemeModeOptions) {
-    modal?.setThemeMode(themeMode)
+    if (themeMode) {
+      modal?.setThemeMode(themeMode)
+    }
   }
 
   function setThemeVariables(themeVariables: ThemeVariablesOptions) {
-    modal?.setThemeVariables(themeVariables)
+    if (themeVariables) {
+      modal?.setThemeVariables(themeVariables)
+    }
   }
 
   const [themeMode, setInternalThemeMode] = useState(modal.getThemeMode())
@@ -76,7 +82,9 @@ export function useWeb3Modal() {
   }
 
   async function open(options?: OpenOptions) {
-    await modal?.open(options)
+    if (options) {
+      await modal?.open(options)
+    }
   }
 
   async function close() {
