@@ -32,7 +32,7 @@ let modal: AppKit | undefined = undefined
 
 export function getWeb3Modal(appKit: AppKit) {
   if (appKit) {
-    modal = appKit as AppKit
+    modal = appKit
   }
 }
 

@@ -1,13 +1,13 @@
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
-import { getWeb3Modal } from '../utils/library/react'
 import { AppKit } from '../src/client.js'
 import type { AppKitOptions } from '../utils/TypesUtil.js'
+import { getWeb3Modal } from '../utils/library/react/index.js'
 
 // -- Views ------------------------------------------------------------
 export * from '@web3modal/scaffold-ui'
 
 // -- Hooks ------------------------------------------------------------
-export * from '../utils/library/react'
+export * from '../utils/library/react/index.js'
 
 // -- Utils & Other -----------------------------------------------------
 export type * from '@web3modal/core'
