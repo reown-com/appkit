@@ -77,7 +77,7 @@
   "devDependencies": {
     "@aws-sdk/client-cloudwatch": "3.509.0",
     "@mailsac/api": "1.0.5",
-    "@playwright/test": "1.44.0",
+    "@playwright/test": "1.46.1",
     "@synthetixio/synpress": "4.0.0-alpha.7",
     "@types/node": "20.11.5",
     "@types/react": "18.2.62",
