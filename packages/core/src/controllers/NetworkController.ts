@@ -196,12 +196,12 @@ export const NetworkController = {
 
     let networkControllerClient: NetworkControllerState['_client'] = undefined
 
-    if (!sameChain) {
+    if (sameChain) {
+      networkControllerClient = ChainController.getNetworkControllerClient()
+    } else {
       networkControllerClient = network
         ? ChainController.state.chains.get(network.chainNamespace)?.networkControllerClient
         : undefined
-    } else {
-      networkControllerClient = ChainController.getNetworkControllerClient()
     }
 
     ChainController.setActiveCaipNetwork(network)

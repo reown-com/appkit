@@ -186,7 +186,7 @@ export const ConnectionController = {
   },
 
   async disconnect() {
-    let connectionControllerClient = this._getClient()
+    const connectionControllerClient = this._getClient()
 
     try {
       await connectionControllerClient?.disconnect()
