@@ -480,7 +480,6 @@ export class SolanaWeb3JsClient {
         setTimeout(() => {
           this.appKit?.showErrorMessage(W3mFrameRpcConstants.RPC_METHOD_NOT_ALLOWED_UI_MESSAGE)
         }, 300)
-        // Provider.rejectRpcRequests()
       }
     }
 
