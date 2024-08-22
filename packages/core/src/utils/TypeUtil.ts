@@ -2,10 +2,10 @@ import type { W3mFrameProvider, W3mFrameTypes } from '@web3modal/wallet'
 import type {
   Balance,
   Transaction,
-  Chain,
   CaipNetworkId,
   CaipNetwork,
-  ChainNamespace
+  ChainNamespace,
+  CaipAddress
 } from '@web3modal/common'
 import type {
   NetworkControllerClient,
@@ -75,7 +75,7 @@ export type Connector = {
   socials?: SocialProvider[]
   showWallets?: boolean
   walletFeatures?: boolean
-  chain: Chain
+  chain: ChainNamespace
   providers?: Connector[]
 }
 
@@ -192,7 +192,7 @@ export interface BlockchainApiTransactionsResponse {
 export type SwapToken = {
   name: string
   symbol: string
-  address: `${string}:${string}:${string}`
+  address: CaipAddress
   decimals: number
   logoUri: string
   eip2612?: boolean
@@ -286,8 +286,8 @@ export interface BlockchainApiGenerateSwapCalldataRequest {
 
 export interface BlockchainApiGenerateSwapCalldataResponse {
   tx: {
-    from: `${string}:${string}:${string}`
-    to: `${string}:${string}:${string}`
+    from: CaipAddress
+    to: CaipAddress
     data: `0x${string}`
     amount: string
     eip155: {
@@ -307,8 +307,8 @@ export interface BlockchainApiGenerateApproveCalldataRequest {
 
 export interface BlockchainApiGenerateApproveCalldataResponse {
   tx: {
-    from: `${string}:${string}:${string}`
-    to: `${string}:${string}:${string}`
+    from: CaipAddress
+    to: CaipAddress
     data: `0x${string}`
     value: string
     eip155: {

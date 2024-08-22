@@ -13,7 +13,7 @@ const chain = ConstantsUtil.CHAIN.EVM
 
 // -- Tests --------------------------------------------------------------------
 beforeAll(() => {
-  ChainController.initialize([{ chain: ConstantsUtil.CHAIN.EVM }])
+  ChainController.initialize([{ chainNamespace: ConstantsUtil.CHAIN.EVM }])
 })
 
 describe('AccountController', () => {

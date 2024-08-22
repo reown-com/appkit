@@ -1,6 +1,6 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
-import { type Balance } from '@web3modal/common'
+import { type Balance, type CaipAddress } from '@web3modal/common'
 import { erc20ABI } from '@web3modal/common'
 import { RouterController } from './RouterController.js'
 import { AccountController } from './AccountController.js'
@@ -213,7 +213,7 @@ export const SendController = {
         await ConnectionController.writeContract({
           fromAddress: AccountController.state.address as `0x${string}`,
           tokenAddress: CoreHelperUtil.getPlainAddress(
-            params.tokenAddress as `${string}:${string}:${string}`
+            params.tokenAddress as CaipAddress
           ) as `0x${string}`,
           receiverAddress: params.receiverAddress as `0x${string}`,
           tokenAmount: amount,

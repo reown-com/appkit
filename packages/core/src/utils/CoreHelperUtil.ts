@@ -1,7 +1,8 @@
 import type { Balance } from '@web3modal/common'
 import { ConstantsUtil as CommonConstants } from '@web3modal/common'
 import { ConstantsUtil } from './ConstantsUtil.js'
-import type { CaipAddress, LinkingRecord, CaipNetwork } from './TypeUtil.js'
+import type { CaipAddress, CaipNetwork } from '@web3modal/common'
+import type { LinkingRecord } from './TypeUtil.js'
 
 export const CoreHelperUtil = {
   isMobile() {

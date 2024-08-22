@@ -15,7 +15,7 @@ import { type W3mFrameTypes } from '@web3modal/wallet'
 import { ModalController } from './ModalController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
-import type { Chain } from '@web3modal/common'
+import type { ChainNamespace } from '@web3modal/common'
 import { NetworkController } from './NetworkController.js'
 
 // -- Types --------------------------------------------- //
@@ -76,7 +76,7 @@ export const ConnectionController = {
     return subKey(state, key, callback)
   },
 
-  _getClient(chain?: Chain) {
+  _getClient(chain?: ChainNamespace) {
     return ChainController.getConnectionControllerClient(chain)
   },
 
@@ -92,7 +92,7 @@ export const ConnectionController = {
     })
   },
 
-  async connectExternal(options: ConnectExternalOptions, chain?: Chain) {
+  async connectExternal(options: ConnectExternalOptions, chain?: ChainNamespace) {
     await this._getClient().connectExternal?.(options)
     ChainController.setActiveChain(chain)
     StorageUtil.setConnectedConnector(options.type)
@@ -151,7 +151,7 @@ export const ConnectionController = {
     return this._getClient().getEnsAvatar(value)
   },
 
-  checkInstalled(ids?: string[], chain?: Chain) {
+  checkInstalled(ids?: string[], chain?: ChainNamespace) {
     return this._getClient(chain).checkInstalled?.(ids) || false
   },
 

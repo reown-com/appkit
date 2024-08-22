@@ -33,10 +33,6 @@ export class W3mButton extends LitElement {
 
   @state() private isLoading = ModalController.state.loading
 
-  @state() private balanceVal = AccountController.state.balance
-
-  @state() private balanceSymbol = AccountController.state.balanceSymbol
-
   // -- Lifecycle ----------------------------------------- //
   public override firstUpdated() {
     this.unsubscribe.push(

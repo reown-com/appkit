@@ -130,7 +130,7 @@ export const ChainController = {
     const chains: ChainNamespace[] = ['eip155', 'solana']
     chains.forEach((chain: ChainNamespace) => {
       state.chains.set(chain, {
-        chain,
+        chainNamespace: chain,
         connectionControllerClient: undefined,
         networkControllerClient: undefined,
         accountState,
@@ -213,7 +213,7 @@ export const ChainController = {
         : undefined
       AccountController.replaceState(newAdapter.accountState)
       NetworkController.replaceState(newAdapter.networkState)
-      this.setCaipNetwork(newAdapter.chain, newAdapter.networkState?.caipNetwork, true)
+      this.setCaipNetwork(newAdapter.chainNamespace, newAdapter.networkState?.caipNetwork, true)
       PublicStateController.set({
         activeChain: chain,
         selectedNetworkId: newAdapter.networkState?.caipNetwork?.id

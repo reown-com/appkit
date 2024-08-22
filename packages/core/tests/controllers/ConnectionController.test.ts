@@ -45,13 +45,13 @@ const partialClient: ConnectionControllerClient = {
 
 // -- Tests --------------------------------------------------------------------
 beforeAll(() => {
-  ChainController.initialize([{ chain: CommonConstantsUtil.CHAIN.EVM }])
+  ChainController.initialize([{ chainNamespace: CommonConstantsUtil.CHAIN.EVM }])
 })
 
 describe('ConnectionController', () => {
   it('should have valid default state', () => {
     ChainController.initialize([
-      { chain: CommonConstantsUtil.CHAIN.EVM, connectionControllerClient: client }
+      { chainNamespace: CommonConstantsUtil.CHAIN.EVM, connectionControllerClient: client }
     ])
 
     expect(ConnectionController.state).toEqual({
@@ -101,7 +101,7 @@ describe('ConnectionController', () => {
 
   it('should not throw when optional methods are undefined', async () => {
     ChainController.initialize([
-      { chain: CommonConstantsUtil.CHAIN.EVM, connectionControllerClient: partialClient }
+      { chainNamespace: CommonConstantsUtil.CHAIN.EVM, connectionControllerClient: partialClient }
     ])
     await ConnectionController.connectExternal({ id: externalId, type })
     ConnectionController.checkInstalled([externalId])

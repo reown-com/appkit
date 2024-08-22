@@ -15,7 +15,7 @@ const chain = ConstantsUtil.CHAIN.EVM
 
 // -- Tests --------------------------------------------------------------------
 beforeAll(() => {
-  ChainController.initialize([{ chain: ConstantsUtil.CHAIN.EVM }])
+  ChainController.initialize([{ chainNamespace: ConstantsUtil.CHAIN.EVM }])
 })
 
 describe('ApiController', () => {
@@ -116,21 +116,33 @@ describe('ApiController', () => {
     NetworkController.setRequestedCaipNetworks(
       [
         {
-          id: '155:1',
+          id: 'eip155:1',
           name: 'Ethereum Mainnet',
           imageId: '12341',
-          chain
+          chainNamespace: chain,
+          chainId: '1',
+          currency: 'ETH',
+          explorerUrl: 'https://explorer.ethereum.org',
+          rpcUrl: 'https://rpc.ethereum.org'
         },
         {
-          id: '155:4',
+          id: 'eip155:4',
           name: 'Ethereum Rinkeby',
           imageId: '12342',
-          chain
+          chainNamespace: chain,
+          chainId: '4',
+          currency: 'ETH',
+          explorerUrl: 'https://explorer.ethereum.org',
+          rpcUrl: 'https://rpc.ethereum.org'
         },
         {
-          id: '155:42',
+          id: 'eip155:42',
           name: 'Ethereum Kovan',
-          chain
+          chainNamespace: chain,
+          chainId: '42',
+          currency: 'ETH',
+          explorerUrl: 'https://explorer.ethereum.org',
+          rpcUrl: 'https://rpc.ethereum.org'
         }
       ],
       chain
@@ -146,22 +158,33 @@ describe('ApiController', () => {
     NetworkController.setRequestedCaipNetworks(
       [
         {
-          id: '155:1',
+          id: 'eip155:1',
           name: 'Ethereum Mainnet',
           imageId: '12341',
-          chain
+          chainNamespace: chain,
+          chainId: '1',
+          currency: 'ETH',
+          explorerUrl: 'https://explorer.ethereum.org',
+          rpcUrl: 'https://rpc.ethereum.org'
         },
         {
-          id: '155:4',
+          id: 'eip155:4',
           name: 'Ethereum Rinkeby',
           imageId: '12342',
-          chain
+          chainNamespace: chain,
+          chainId: '4',
+          currency: 'ETH',
+          explorerUrl: 'https://explorer.ethereum.org',
+          rpcUrl: 'https://rpc.ethereum.org'
         },
-        // Should not fetch this
         {
-          id: '155:42',
+          id: 'eip155:42',
           name: 'Ethereum Kovan',
-          chain: ConstantsUtil.CHAIN.EVM
+          chainNamespace: chain,
+          chainId: '42',
+          currency: 'ETH',
+          explorerUrl: 'https://explorer.ethereum.org',
+          rpcUrl: 'https://rpc.ethereum.org'
         }
       ],
       chain
