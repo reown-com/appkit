@@ -1,5 +1,14 @@
 # @examples/react-ethers5
 
+## 5.1.2
+
+### Patch Changes
+
+- Added Solana Auth Provider types and schemas
+
+- Updated dependencies []:
+  - @web3modal/ethers5@5.1.2
+
 ## 5.1.1
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @web3modal/polyfills
 
+## 5.1.2
+
+### Patch Changes
+
+- Added Solana Auth Provider types and schemas
+
 ## 5.1.1
 
 ### Patch Changes
