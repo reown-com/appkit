@@ -31,7 +31,7 @@ import {
   type Chain,
   type GetActiveChain,
   type Provider
-} from '../utils/scaffold/index.js'
+} from '@web3modal/scaffold-utils/solana'
 import base58 from 'bs58'
 import { WalletStandardFeatureNotSupportedError } from './shared/Errors.js'
 import { ProviderEventEmitter } from './shared/ProviderEventEmitter.js'

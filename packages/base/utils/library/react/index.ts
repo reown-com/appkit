@@ -6,8 +6,8 @@ import type {
   W3mNetworkButton,
   W3mOnrampWidget
 } from '@web3modal/scaffold-ui'
-import { AppKit } from '../../../src/client.js'
-import { type AppKitOptions } from '../../TypesUtil.js'
+import type { AppKit } from '../../../src/client.js'
+import type { AppKitOptions } from '../../TypesUtil.js'
 
 type OpenOptions = {
   view: 'Account' | 'Connect' | 'Networks' | 'ApproveTransaction' | 'OnRampProviders'
