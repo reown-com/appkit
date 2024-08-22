@@ -36,7 +36,6 @@ export function defaultConfig({
   enableCoinbase,
   enableInjected,
   auth = {},
-  enableWalletConnect,
   enableEIP6963,
   ...wagmiConfig
 }: ConfigOptions): Config {

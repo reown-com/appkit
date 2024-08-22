@@ -887,8 +887,7 @@ export class EVMEthers5Client {
       const chain = this.caipNetworks.find(c => c.chainId === chainId)
 
       if (chain) {
-        const caipChainId: CaipNetworkId =
-          `${ConstantsUtil.EIP155}:${chain.chainId}` as CaipNetworkId
+        const caipChainId: CaipNetworkId = `eip155:${chain.chainId}` as CaipNetworkId
 
         this.appKit?.setCaipNetwork({
           id: caipChainId,

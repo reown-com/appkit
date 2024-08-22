@@ -53,11 +53,6 @@ declare global {
   }
 }
 
-// @ts-expect-error: Overridden state type is correct
-interface Web3ModalState extends PublicStateControllerState {
-  selectedNetworkId: number | undefined
-}
-
 interface Info {
   uuid: string
   name: string
@@ -112,10 +107,8 @@ export class EVMEthersClient {
       switchCaipNetwork: async caipNetwork => {
         if (caipNetwork?.chainId) {
           try {
-            // WcStoreUtil.setError(undefined)
             await this.switchNetwork(caipNetwork)
           } catch (error) {
-            // WcStoreUtil.setError(error)
             throw new Error('networkControllerClient:switchCaipNetwork - unable to switch chain')
           }
         }
@@ -441,7 +434,7 @@ export class EVMEthersClient {
 
   private async setProvider(provider: Provider, providerId: ProviderId, name?: string) {
     if (providerId === 'w3mAuth') {
-      // this.setAuthProvider()
+      this.setAuthProvider()
     } else {
       const walletId = providerId
 
@@ -639,9 +632,8 @@ export class EVMEthersClient {
     }
   }
 
-  private handleInvalidAuthRequest(request: W3mFrameTypes.RPCRequest) {
+  private handleInvalidAuthRequest() {
     this.appKit?.open()
-    console.error(W3mFrameRpcConstants.RPC_METHOD_NOT_ALLOWED_MESSAGE, { method: request.method })
     setTimeout(() => {
       this.appKit?.showErrorMessage(W3mFrameRpcConstants.RPC_METHOD_NOT_ALLOWED_UI_MESSAGE)
     }, 300)

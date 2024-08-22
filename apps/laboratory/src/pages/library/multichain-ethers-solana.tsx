@@ -8,8 +8,6 @@ import { AppKitButtons } from '../../components/AppKitButtons'
 import { BackpackWalletAdapter } from '@solana/wallet-adapter-backpack'
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { EthersConstants } from '../../utils/EthersConstants'
-import { EthersModalInfo } from '../../components/Ethers/EthersModalInfo'
-import { EthersTests } from '../../components/Ethers/EthersTests'
 import { MultiChainTests } from '../../components/MultiChainTests'
 import { MultiChainInfo } from '../../components/MultiChainInfo'
 

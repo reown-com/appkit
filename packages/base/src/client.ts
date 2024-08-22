@@ -324,12 +324,8 @@ export class AppKit {
   private async initControllers(options: AppKitOptions) {
     ChainController.setMultiChainEnabled(true)
 
-    if (options.adapters?.length === 0) {
-      this.initializeUniversalAdapter(options, true)
-    } else {
-      // this.initializeUniversalAdapter(options, false)
-      this.initializeAdapters(options)
-    }
+    this.initializeUniversalAdapter(options, true)
+    this.initializeAdapters(options)
 
     OptionsController.setProjectId(options.projectId)
     OptionsController.setAllWallets(options.allWallets)

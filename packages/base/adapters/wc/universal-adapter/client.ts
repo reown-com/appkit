@@ -76,7 +76,8 @@ export class UniversalAdapterClient {
     this.caipNetworks = caipNetworks
 
     this.networkControllerClient = {
-      switchCaipNetwork: async caipNetwork => {
+      // @ts-expect-error switchCaipNetwork is async for some adapter but not for this adapter
+      switchCaipNetwork: caipNetwork => {
         if (caipNetwork) {
           try {
             this.switchNetwork(caipNetwork)

@@ -260,7 +260,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
 
       const network = parameters.caipNetworks.find(c => c.id === chain)
 
-      // todo(enes) shouldn't cast
+      // Shouldn't be casted
       return network?.chainId as number
     },
     async isAuthorized() {
@@ -322,7 +322,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
       } catch (err) {
         const error = err as RpcError
 
-        if (/(user rejected)/i.test(error.message)) {
+        if (/(?:user rejected)/iu.test(error.message)) {
           throw new UserRejectedRequestError(error)
         }
 
@@ -362,8 +362,8 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
           this.setRequestedChainsIds([...requestedChains, chainId])
 
           return chain
-        } catch (error) {
-          throw new UserRejectedRequestError(error as Error)
+        } catch (e) {
+          throw new UserRejectedRequestError(e as Error)
         }
       }
     },

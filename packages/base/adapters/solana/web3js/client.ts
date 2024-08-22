@@ -195,7 +195,7 @@ export class SolanaWeb3JsClient {
       typeof window === 'object' ? localStorage.getItem(SolConstantsUtil.CAIP_CHAIN_ID) : ''
     )
 
-    this.defaultCaipNetwork = chain as CaipNetwork
+    this.defaultCaipNetwork = chain
     this.syncRequestedNetworks(caipNetworks, this.options?.chainImages)
 
     if (chain) {

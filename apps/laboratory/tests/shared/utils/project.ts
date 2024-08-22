@@ -42,20 +42,12 @@ const SOLANA_DISABLED_TESTS = [
   'siwe-sa.spec.ts',
   'smart-account.spec.ts',
   'wallet-features.spec.ts',
-<<<<<<< HEAD
-  'wallet.spec.ts',
-  'metamask.spec.ts'
-]
-const WAGMI_DISABLED_TESTS = ['smart-account.spec.ts', 'social.spec.ts']
-const ETHERS_DISABLED_TESTS = ['wallet-features.spec.ts', 'social.spec.ts', 'metamask.spec.ts']
-=======
   'metamask.spec.ts',
   'verify.spec.ts'
 ]
 const WAGMI_DISABLED_TESTS = ['metamask.spec.ts', 'smart-account.spec.ts', 'verify.spec.ts']
 const ETHERS_DISABLED_TESTS = ['metamask.spec.ts', 'verify.spec.ts']
 const ETHERS5_DISABLED_TESTS = ['metamask.spec.ts', 'verify.spec.ts', 'smart-account.spec.ts']
->>>>>>> 543585f87756d242903d9ff48c7e3c7070be0d8e
 
 const ETHERS_EMAIL_BASED_REGEX = new RegExp(ETHERS_DISABLED_TESTS.join('|'), 'u')
 const ETHERS5_EMAIL_BASED_REGEX = new RegExp(ETHERS5_DISABLED_TESTS.join('|'), 'u')

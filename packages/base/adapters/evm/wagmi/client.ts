@@ -106,9 +106,6 @@ export class EVMWagmiClient {
 
   public siweControllerClient = this.options?.siweConfig
 
-  // eslint-disable-next-line @typescript-eslint/no-useless-constructor
-  public constructor() {}
-
   private createWagmiConfig(options: AppKitOptions, appKit: AppKit) {
     this.wagmiChains = convertCaipNetworksToWagmiChains(options.caipNetworks)
     const transportsArr = this.wagmiChains.map(chain => [
@@ -337,6 +334,7 @@ export class EVMWagmiClient {
 
           return ids.some(id => Boolean(window.ethereum?.[String(id)]))
         }
+
         return false
       },
       disconnect: async () => {
@@ -380,6 +378,7 @@ export class EVMWagmiClient {
         await prepareTransactionRequest(this.wagmiConfig!, txParams)
         const tx = await wagmiSendTransaction(this.wagmiConfig!, txParams)
         await waitForTransactionReceipt(this.wagmiConfig!, { hash: tx, timeout: 25000 })
+
         return tx
       },
       writeContract: async (data: WriteContractArgs) => {
@@ -736,10 +735,10 @@ export class EVMWagmiClient {
   }
 
   private async syncAuthConnector(
-    authConnector: AdapterOptions<Config>['wagmiConfig']['connectors'][number] | undefined
+    _authConnector: AdapterOptions<Config>['wagmiConfig']['connectors'][number] | undefined
   ) {
     const connector =
-      authConnector as unknown as AdapterOptions<Config>['wagmiConfig']['connectors'][0] & {
+      _authConnector as unknown as AdapterOptions<Config>['wagmiConfig']['connectors'][0] & {
         email: boolean
         socials: SocialProvider[]
         showWallets?: boolean
@@ -759,16 +758,16 @@ export class EVMWagmiClient {
         walletFeatures: connector.walletFeatures,
         chain: this.chainNamespace
       })
-      this.initAuthConnectorListeners(authConnector)
+      this.initAuthConnectorListeners(_authConnector)
     }
   }
 
   private async initAuthConnectorListeners(
-    authConnector: AdapterOptions<Config>['wagmiConfig']['connectors'][number] | undefined
+    _authConnector: AdapterOptions<Config>['wagmiConfig']['connectors'][number] | undefined
   ) {
-    if (authConnector) {
-      await this.listenAuthConnector(authConnector)
-      await this.listenModal(authConnector)
+    if (_authConnector) {
+      await this.listenAuthConnector(_authConnector)
+      await this.listenModal(_authConnector)
     }
   }
 
