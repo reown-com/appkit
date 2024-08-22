@@ -1,5 +1,18 @@
 # @web3modal/siwe
 
+## 5.1.2
+
+### Patch Changes
+
+- Added Solana Auth Provider types and schemas
+
+- Updated dependencies []:
+  - @web3modal/common@5.1.2
+  - @web3modal/core@5.1.2
+  - @web3modal/scaffold-utils@5.1.2
+  - @web3modal/ui@5.1.2
+  - @web3modal/wallet@5.1.2
+
 ## 5.1.1
 
 ### Patch Changes
