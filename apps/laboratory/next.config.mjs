@@ -1,8 +1,9 @@
 /** @type {import('next').NextConfig} */
+const SHAKRA_UI = `'sha256-e7MRMmTzLsLQvIy1iizO1lXf7VWYoQ6ysj5fuUzvRwE='`
 // Keep in-sync with https://docs.walletconnect.com/advanced/security/content-security-policy
 const cspHeader = `
   default-src 'self';
-  script-src 'self' 'sha256-e7MRMmTzLsLQvIy1iizO1lXf7VWYoQ6ysj5fuUzvRwE=' ${process.env.NODE_ENV === 'production' ? '' : "'unsafe-eval'"};
+  script-src 'self' ${SHAKRA_UI} ${process.env.NODE_ENV === 'production' ? '' : "'unsafe-eval'"};
   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
   img-src * 'self' data: blob: https://walletconnect.org https://walletconnect.com https://secure.walletconnect.com https://secure.walletconnect.org https://tokens-data.1inch.io https://tokens.1inch.io https://ipfs.io https://lab.web3modal.com;
   font-src 'self' https://fonts.gstatic.com;
