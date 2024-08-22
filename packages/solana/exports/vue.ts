@@ -2,27 +2,15 @@ import { onUnmounted, ref } from 'vue'
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
 import { getWeb3Modal } from '@web3modal/base/utils/library/vue'
 import { AppKit } from '@web3modal/base'
-import type { AppKitOptions } from '@web3modal/base'
 import { SolanaWeb3JsClient } from '@web3modal/base/adapters/solana/web3js'
 import { SolStoreUtil } from '@web3modal/scaffold-utils/solana'
-import type {
-  Chain,
-  ProviderType,
-  BaseWalletAdapter,
-  Provider,
-  Connection
-} from '@web3modal/base/adapters/solana/web3js'
+import type { Provider, Connection } from '@web3modal/base/adapters/solana/web3js'
 import type { CaipNetwork } from '@web3modal/core'
+import type { SolanaAppKitOptions } from './options'
 
 // -- Setup -------------------------------------------------------------------
 let appkit: AppKit | undefined = undefined
 let solanaAdapter: SolanaWeb3JsClient | undefined = undefined
-
-type SolanaAppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 'sdkVersion'> & {
-  solanaConfig: ProviderType
-  chains: Chain[]
-  wallets: BaseWalletAdapter[]
-}
 
 export function createWeb3Modal(options: SolanaAppKitOptions) {
   solanaAdapter = new SolanaWeb3JsClient({

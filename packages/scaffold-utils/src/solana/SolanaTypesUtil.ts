@@ -8,7 +8,8 @@ import type {
 } from '@solana/web3.js'
 
 import type { SendTransactionOptions } from '@solana/wallet-adapter-base'
-import type { ConnectorType } from '@web3modal/core'
+import type { Connector, ConnectorType } from '@web3modal/core'
+import type { W3mFrameTypes } from '@web3modal/wallet'
 
 export type Connection = SolanaConnection
 
@@ -24,6 +25,12 @@ export type ProviderType = {
   email?: boolean
   EIP6963?: boolean
   metadata: Metadata
+
+  /**
+   * Auth configuration will be disabled until secure site is updated
+   *
+   * auth?: Provider['auth']
+   */
 }
 
 export interface RequestArguments {
@@ -38,6 +45,7 @@ export interface Provider extends ProviderEventEmitterMethods {
   icon?: string
   chains: Chain[]
   type: ConnectorType
+  auth?: Pick<Connector, 'email' | 'socials' | 'showWallets' | 'walletFeatures'>
 
   // Methods
   connect: () => Promise<string>
@@ -48,7 +56,6 @@ export interface Provider extends ProviderEventEmitterMethods {
     transaction: AnyTransaction,
     options?: SendOptions
   ) => Promise<TransactionSignature>
-  signAllTransactions: (transactions: AnyTransaction[]) => Promise<SolanaWeb3Transaction[]>
   sendTransaction: (
     transaction: AnyTransaction,
     connection: Connection,
@@ -78,6 +85,10 @@ export namespace ProviderEventEmitterMethods {
     disconnect: undefined
     accountsChanged: PublicKey
     chainChanged: string
+
+    auth_rpcRequest: W3mFrameTypes.RPCRequest
+    auth_rpcSuccess: W3mFrameTypes.FrameEvent
+    auth_rpcError: Error
   }
 }
 

@@ -183,10 +183,6 @@ export class WalletStandardProvider extends ProviderEventEmitter implements Prov
     return signature
   }
 
-  public async signAllTransactions() {
-    return await Promise.reject(new Error('Sign all transactions is not supported'))
-  }
-
   // -- Private ------------------------------------------- //
   private serializeTransaction(transaction: AnyTransaction) {
     return transaction.serialize({ verifySignatures: false })
