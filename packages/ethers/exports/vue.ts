@@ -3,8 +3,6 @@ import type { AppKitOptions } from '@web3modal/base'
 import { EVMEthersClient, type AdapterOptions } from '@web3modal/base/adapters/evm/ethers'
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
 import { getWeb3Modal } from '@web3modal/base/utils/library/vue'
-import { onUnmounted, ref } from 'vue'
-import type { Eip1193Provider } from 'ethers'
 
 // -- Configs -----------------------------------------------------------
 export { defaultConfig } from '@web3modal/base/adapters/evm/ethers'
@@ -18,9 +16,7 @@ type EthersAppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 'sdkVers
 
 export function createWeb3Modal(options: EthersAppKitOptions) {
   ethersAdapter = new EVMEthersClient({
-    ethersConfig: options.ethersConfig,
-    siweConfig: options.siweConfig,
-    chains: options.chains
+    ethersConfig: options.ethersConfig
   })
   appkit = new AppKit({
     ...options,
@@ -35,26 +31,7 @@ export function createWeb3Modal(options: EthersAppKitOptions) {
 
 // -- Composites --------------------------------------------------------------
 export function useWeb3ModalProvider() {
-  if (!ethersAdapter) {
-    throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalProvider" composition')
-  }
-
-  const walletProvider = ref(ethersAdapter.getWalletProvider())
-  const walletProviderType = ref(ethersAdapter.getWalletProviderType())
-
-  const unsubscribe = ethersAdapter.subscribeProvider(state => {
-    walletProvider.value = state.provider as Eip1193Provider | undefined
-    walletProviderType.value = state.providerType
-  })
-
-  onUnmounted(() => {
-    unsubscribe?.()
-  })
-
-  return {
-    walletProvider,
-    walletProviderType
-  }
+  // Reimplement this
 }
 
 export function useDisconnect() {
@@ -68,62 +45,15 @@ export function useDisconnect() {
 }
 
 export function useSwitchNetwork() {
-  async function switchNetwork(chainId: number) {
-    await ethersAdapter?.switchNetwork(chainId)
-  }
-
-  return {
-    switchNetwork
-  }
+  // Implement this
 }
 
 export function useWeb3ModalAccount() {
-  if (!ethersAdapter) {
-    throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalAccount" composition')
-  }
-
-  const address = ref(ethersAdapter.getAddress())
-  const isConnected = ref(ethersAdapter.getIsConnected())
-  const status = ref(ethersAdapter.getStatus())
-  const chainId = ref(ethersAdapter.getChainId())
-
-  const unsubscribe = ethersAdapter.subscribeProvider(state => {
-    address.value = state.address as string | undefined
-    status.value = state.status
-    isConnected.value = state.isConnected
-    // @eslint-disable-next-line
-    chainId.value = state.chainId as number
-  })
-
-  onUnmounted(() => {
-    unsubscribe?.()
-  })
-
-  return {
-    address,
-    isConnected,
-    chainId
-  }
+  // Reimplement this
 }
 
 export function useWeb3ModalError() {
-  if (!ethersAdapter) {
-    throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalError" composition')
-  }
-
-  const error = ref(ethersAdapter.getError())
-
-  const unsubscribe = ethersAdapter.subscribeProvider(state => {
-    error.value = state.error
-  })
-
-  onUnmounted(() => {
-    unsubscribe?.()
-  })
-
-  return {
-    error
-  }
+  // Reimplement this
 }
 
 export {

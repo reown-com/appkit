@@ -28,6 +28,7 @@
     }
   },
   "dependencies": {
+    "@web3modal/polyfills": "workspace:*",
     "@web3modal/wagmi": "workspace:*",
     "@web3modal/ethers": "workspace:*",
     "@web3modal/ethers5": "workspace:*",

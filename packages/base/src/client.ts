@@ -5,8 +5,7 @@ import type {
   ModalControllerState,
   ConnectedWalletInfo,
   RouterControllerState,
-  ChainAdapter,
-  CaipNetwork
+  ChainAdapter
 } from '@web3modal/core'
 import {
   AccountController,
@@ -26,7 +25,7 @@ import {
   NetworkController
 } from '@web3modal/core'
 import { setColorTheme, setThemeVariables } from '@web3modal/ui'
-import { ConstantsUtil, type CaipNetwork, type Chain } from '@web3modal/common'
+import { ConstantsUtil, type CaipNetwork, type ChainNamespace } from '@web3modal/common'
 import type { AppKitOptions } from '../utils/TypesUtil.js'
 import { UniversalAdapterClient } from '../adapters/wc/universal-adapter/client.js'
 import { PresetsUtil } from '@web3modal/scaffold-utils'
@@ -219,14 +218,7 @@ export class AppKit {
     AccountController.setProfileImage(profileImage, chain)
   }
 
-  public setPreferredAccountType: (typeof AccountController)['setPreferredAccountType'] = (
-    preferredAccountType,
-    chain
-  ) => {
-    AccountController.setPreferredAccountType(preferredAccountType, chain)
-  }
-
-  public resetAccount: (typeof AccountController)['resetAccount'] = (chain: Chain) => {
+  public resetAccount: (typeof AccountController)['resetAccount'] = (chain: ChainNamespace) => {
     AccountController.resetAccount(chain)
   }
 
@@ -242,7 +234,7 @@ export class AppKit {
 
   public setRequestedCaipNetworks: (typeof NetworkController)['setRequestedCaipNetworks'] = (
     requestedCaipNetworks,
-    chain: Chain
+    chain: ChainNamespace
   ) => {
     NetworkController.setRequestedCaipNetworks(requestedCaipNetworks, chain)
   }
@@ -368,7 +360,9 @@ export class AppKit {
       OptionsController.setDisableAppend(Boolean(options.disableAppend))
     }
 
-    const evmAdapter = options.adapters?.find(adapter => adapter.chain === ConstantsUtil.CHAIN.EVM)
+    const evmAdapter = options.adapters?.find(
+      adapter => adapter.chainNamespace === ConstantsUtil.CHAIN.EVM
+    )
 
     // Set the SIWE client for EVM chains
     if (evmAdapter) {
@@ -383,7 +377,7 @@ export class AppKit {
     ChainController.setisUniversalAdapterOnly(universalAdapterOnly)
     const caipNetworks = this.extendCaipNetworksWithImages(
       options.caipNetworks,
-      options.caipNetworkImages
+      options.chainImages
     )
     this.universalAdapter = new UniversalAdapterClient({
       caipNetworks,
@@ -394,8 +388,6 @@ export class AppKit {
 
     this.universalAdapter.construct?.(this, options)
 
-    NetworkController.setAllowUnsupportedCaipNetwork(options.allowUnsupportedCaipNetwork, 'eip155')
-    NetworkController.setAllowUnsupportedCaipNetwork(options.allowUnsupportedCaipNetwork, 'solana')
     NetworkController.setDefaultCaipNetwork(options.defaultCaipNetwork)
   }
 
@@ -404,17 +396,12 @@ export class AppKit {
     options.adapters?.forEach(adapter => {
       const caipNetworks = this.extendCaipNetworksWithImages(
         options.caipNetworks,
-        options.caipNetworkImages
+        options.chainImages
       )
       options.caipNetworks = caipNetworks
       // @ts-expect-error will introduce construct later
       adapter.construct?.(this, options)
 
-      // Set this value for all chains
-      NetworkController.setAllowUnsupportedCaipNetwork(
-        options.allowUnsupportedCaipNetwork,
-        adapter.chainNamespace
-      )
       NetworkController.setDefaultCaipNetwork(options.defaultCaipNetwork)
     })
   }

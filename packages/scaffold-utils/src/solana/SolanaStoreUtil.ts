@@ -1,11 +1,11 @@
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { OptionsController } from '@web3modal/core'
+import type { CaipNetwork } from '@web3modal/common'
 
-import type { Chain, Provider, Connection } from './SolanaTypesUtil.js'
+import type { Provider, Connection } from './SolanaTypesUtil.js'
 import { SolConstantsUtil } from './SolanaConstantsUtil.js'
 import { SolHelpersUtil } from './SolanaHelpersUtils.js'
-import type { Network } from '../../../../../utils/StoreUtil.js'
 
 type StateKey = keyof SolStoreUtilState
 
@@ -14,7 +14,7 @@ export interface SolStoreUtilState {
   address?: string
   chainId?: string
   caipChainId?: string
-  currentChain?: Network
+  currentChain?: CaipNetwork
   requestId?: number
   error?: unknown
   connection: Connection | null
@@ -68,8 +68,12 @@ export const SolStoreUtil = {
     state.error = error
   },
 
+  setCurrentChain(chain: CaipNetwork) {
+    state.currentChain = chain
+  },
+
   getCluster() {
-    const chain = state.currentChain ?? (SolConstantsUtil.DEFAULT_CHAIN as Network)
+    const chain = state.currentChain ?? SolConstantsUtil.DEFAULT_CHAIN
 
     return {
       name: chain.name,

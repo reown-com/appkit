@@ -16,10 +16,7 @@ type WagmiAppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 'sdkVersi
   AdapterOptions<Config>
 
 export function createWeb3Modal(options: WagmiAppKitOptions) {
-  wagmiAdapter = new EVMWagmiClient({
-    wagmiConfig: options.wagmiConfig,
-    siweConfig: options.siweConfig
-  })
+  wagmiAdapter = new EVMWagmiClient()
   appkit = new AppKit({
     ...options,
     adapters: [wagmiAdapter],

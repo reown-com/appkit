@@ -337,8 +337,8 @@ export class UniversalAdapterClient {
           const caipAddress = nameSpaces?.[key]?.accounts[0] as CaipAddress
 
           if (caipAddress) {
-            this.appKit?.setIsConnected(true, key)
-            this.appKit?.setCaipAddress(caipAddress, key)
+            this.appKit?.setIsConnected(true, key as ChainNamespace)
+            this.appKit?.setCaipAddress(caipAddress, key as ChainNamespace)
           }
         })
       if (!NetworkController.state.caipNetwork) {

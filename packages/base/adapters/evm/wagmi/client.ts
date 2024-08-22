@@ -25,6 +25,7 @@ import {
 import { ChainController } from '@web3modal/core'
 import { prepareTransactionRequest, sendTransaction as wagmiSendTransaction } from '@wagmi/core'
 import type { Chain } from '@wagmi/core/chains'
+import { mainnet } from 'viem/chains'
 import type {
   GetAccountReturnType,
   GetEnsAddressReturnType,
@@ -162,13 +163,12 @@ export class EVMWagmiClient {
       throw new Error('web3modal:initialize - projectId is undefined')
     }
 
-    this.caipNetworks = options.caipNetworks
-
     this.appKit = appKit
     this.options = options
+    this.caipNetworks = options.caipNetworks
     this.tokens = HelpersUtil.getCaipTokens(options.tokens)
-
     this.wagmiConfig = this.createWagmiConfig(options, appKit)
+
     if (!this.wagmiConfig) {
       throw new Error('web3modal:wagmiConfig - is undefined')
     }
@@ -501,7 +501,7 @@ export class EVMWagmiClient {
           id: `${ConstantsUtil.EIP155}:${chain.id}`,
           name: chain.name,
           imageId: PresetsUtil.NetworkImageIds[chain.id],
-          imageUrl: this.options?.caipNetworkImages?.[chain.id],
+          imageUrl: this.options?.chainImages?.[chain.id],
           chainNamespace: this.chainNamespace
         }) as CaipNetwork
     )
@@ -529,7 +529,7 @@ export class EVMWagmiClient {
     >
   >) {
     if (isConnected && address && chainId) {
-      const caipAddress = `eip155:${chainId}:${address}`
+      const caipAddress = `eip155:${chainId}:${address}` as CaipAddress
       this.appKit?.resetAccount(this.chainNamespace)
       this.syncNetwork(address, chainId, isConnected)
       this.appKit?.setIsConnected(isConnected, this.chainNamespace)
@@ -573,11 +573,11 @@ export class EVMWagmiClient {
       const caipChainId: CaipNetworkId = `${ConstantsUtil.EIP155}:${id}` as CaipNetworkId
       this.appKit?.setCaipNetwork({
         id: caipChainId,
-        name: chain?.name ?? chainId?.toString(),
+        name,
         imageId: PresetsUtil.NetworkImageIds[id],
-        imageUrl: this.options?.caipNetworkImages?.[id],
+        imageUrl: this.options?.chainImages?.[id],
         chainNamespace: this.chainNamespace
-      })
+      } as CaipNetwork)
       if (isConnected && address && chainId) {
         const caipAddress: CaipAddress = `eip155:${id}:${address}`
         this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)

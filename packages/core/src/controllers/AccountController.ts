@@ -16,7 +16,7 @@ import type { W3mFrameTypes } from '@web3modal/wallet'
 import { ChainController } from './ChainController.js'
 import { NetworkController } from './NetworkController.js'
 import { proxy, ref } from 'valtio'
-import UniversalProvider from '@walletconnect/universal-provider'
+import type UniversalProvider from '@walletconnect/universal-provider'
 
 // -- Types --------------------------------------------- //
 export interface AccountControllerState {
@@ -199,7 +199,7 @@ export const AccountController = {
 
   setSocialProvider(
     socialProvider: AccountControllerState['socialProvider'],
-    chain: ChainNamespace
+    chain: ChainNamespace | undefined
   ) {
     if (socialProvider) {
       ChainController.setAccountProp('socialProvider', socialProvider, chain)

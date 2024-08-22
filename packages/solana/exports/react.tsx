@@ -8,7 +8,6 @@ import type { AppKitOptions } from '@web3modal/base'
 import { SolanaWeb3JsClient } from '@web3modal/base/adapters/solana/web3js'
 import { SolStoreUtil } from '@web3modal/scaffold-utils/solana'
 import {
-  type Chain,
   type Connection,
   type Provider,
   type ProviderType,
@@ -24,16 +23,13 @@ let solanaAdapter: SolanaWeb3JsClient | undefined = undefined
 
 type SolanaAppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 'sdkVersion'> & {
   solanaConfig: ProviderType
-  chains: Chain[]
   wallets: BaseWalletAdapter[]
 }
 
 export function createWeb3Modal(options: SolanaAppKitOptions) {
   solanaAdapter = new SolanaWeb3JsClient({
     solanaConfig: options.solanaConfig,
-    chains: options.chains,
-    wallets: options.wallets,
-    projectId: options.projectId
+    wallets: options.wallets
   })
   appkit = new AppKit({
     ...options,
@@ -73,7 +69,7 @@ export function useDisconnect() {
 }
 
 export function useWeb3ModalAccount() {
-  const { address, isConnected, chainId, currentChain } = useSnapshot(WcStoreUtil.state)
+  const { address, isConnected, chainId, currentChain } = useSnapshot(SolStoreUtil.state)
 
   return {
     address,

@@ -12,7 +12,7 @@ import type {
   Provider,
   Connection
 } from '@web3modal/base/adapters/solana/web3js'
-import type { CaipNetwork } from '@web3modal/core'
+import type { CaipNetwork } from '@web3modal/common'
 
 // -- Setup -------------------------------------------------------------------
 let appkit: AppKit | undefined = undefined
@@ -27,9 +27,7 @@ type SolanaAppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 'sdkVers
 export function createWeb3Modal(options: SolanaAppKitOptions) {
   solanaAdapter = new SolanaWeb3JsClient({
     solanaConfig: options.solanaConfig,
-    chains: options.chains,
-    wallets: options.wallets,
-    projectId: options.projectId
+    wallets: options.wallets
   })
   appkit = new AppKit({
     ...options,

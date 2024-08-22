@@ -1,3 +1,4 @@
+import '@web3modal/polyfills'
 export * as Web3modal from '@web3modal/wagmi'
 export * as Viem from 'viem'
 export * as Chains from 'viem/chains'

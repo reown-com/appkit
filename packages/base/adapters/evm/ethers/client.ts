@@ -6,7 +6,7 @@ import {
   type CaipNetworkId,
   type ChainNamespace
 } from '@web3modal/common'
-import type { CombinedProvider, Connector, Token } from '@web3modal/core'
+import type { CombinedProvider, Connector } from '@web3modal/core'
 import {
   EthersHelpersUtil,
   type Provider,
@@ -32,13 +32,9 @@ import { EthersStoreUtil } from './utils/EthersStoreUtil.js'
 import type { PublicStateControllerState } from '@web3modal/core'
 
 // -- Types ---------------------------------------------------------------------
-export interface AdapterOptions extends Pick<AppKitOptions, 'siweConfig'> {
+export interface AdapterOptions {
   ethersConfig: ProviderType
-  caipNetworks: CaipNetwork[]
   defaultCaipNetwork?: CaipNetwork
-  caipNetworkImages?: Record<number | string, string>
-  connectorImages?: Record<string, string>
-  tokens?: Record<number, Token>
 }
 
 type CoinbaseProviderError = {
@@ -81,7 +77,7 @@ export class EVMEthersClient {
 
   private EIP6963Providers: EIP6963ProviderDetail[] = []
 
-  private caipNetworks: CaipNetwork[]
+  private caipNetworks: CaipNetwork[] = []
 
   private ethersConfig: AdapterOptions['ethersConfig']
 
@@ -100,20 +96,17 @@ export class EVMEthersClient {
 
   public tokens = HelpersUtil.getCaipTokens(this.options?.tokens)
 
-  public defaultChain: CaipNetwork | undefined = undefined
+  public defaultCaipNetwork: CaipNetwork | undefined = undefined
 
   // -- Public -------------------------------------------------------------------
   public constructor(options: AdapterOptions) {
-    const { ethersConfig, siweConfig, caipNetworks } = options
+    const { ethersConfig } = options
 
     if (!ethersConfig) {
       throw new Error('web3modal:constructor - ethersConfig is undefined')
     }
 
     this.ethersConfig = ethersConfig
-    this.siweControllerClient = this.options?.siweConfig
-    this.tokens = HelpersUtil.getCaipTokens(options.tokens)
-    this.caipNetworks = caipNetworks
 
     this.networkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
@@ -239,7 +232,7 @@ export class EVMEthersClient {
         const providerId = EthersStoreUtil.state.providerId
 
         this.appKit?.setClientId(null)
-        if (siweConfig?.options?.signOutOnDisconnect) {
+        if (this.options?.siweConfig?.options?.signOutOnDisconnect) {
           const { SIWEController } = await import('@web3modal/siwe')
           await SIWEController.signOut()
         }
@@ -369,6 +362,8 @@ export class EVMEthersClient {
     this.appKit = appKit
     this.options = options
     this.caipNetworks = options.caipNetworks
+    this.defaultCaipNetwork = options.defaultCaipNetwork
+    this.tokens = HelpersUtil.getCaipTokens(options.tokens)
 
     this.syncConnectors(this.ethersConfig)
 
@@ -849,7 +844,7 @@ export class EVMEthersClient {
     })
   }
 
-  private async switchNetwork(caipNetwork: CaipNetwork) {
+  public async switchNetwork(caipNetwork: CaipNetwork) {
     const requestSwitchNetwork = async (provider: Provider) => {
       try {
         await provider.request({

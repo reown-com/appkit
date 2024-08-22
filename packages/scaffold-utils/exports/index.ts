@@ -1,9 +1,8 @@
-import UniversalProvider from '@walletconnect/universal-provider'
+import type UniversalProvider from '@walletconnect/universal-provider'
 export { ConstantsUtil } from '../src/ConstantsUtil.js'
 export { PresetsUtil } from '../src/PresetsUtil.js'
 export { HelpersUtil } from '../src/HelpersUtil.js'
 export type { SocialProvider } from '../src/TypeUtil.js'
-export type { Chain } from '../src/EthersTypesUtil.js'
 import type { W3mFrameProvider } from '@web3modal/wallet'
 
 export { SocialProviderEnum } from '../src/TypeUtil.js'

@@ -1,10 +1,10 @@
 import { ConstantsUtil } from '../ConstantsUtil.js'
 import { PresetsUtil } from '../PresetsUtil.js'
-import type { Chain, Provider } from './EthersTypesUtil.js'
+import type { Provider } from './EthersTypesUtil.js'
 import type { CaipNetwork } from '@web3modal/common'
 
 export const EthersHelpersUtil = {
-  getCaipDefaultChain(chain?: Chain) {
+  getCaipDefaultChain(chain?: CaipNetwork) {
     if (!chain) {
       return undefined
     }

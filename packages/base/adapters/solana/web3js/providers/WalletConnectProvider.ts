@@ -17,11 +17,12 @@ import {
   type SendOptions
 } from '@solana/web3.js'
 import { isVersionedTransaction } from '@solana/wallet-adapter-base'
+import type { CaipNetwork } from '@web3modal/common'
 
 export type WalletConnectProviderConfig = {
   provider: UniversalProvider
-  chains: Chain[]
-  getActiveChain: () => Chain | undefined
+  chains: CaipNetwork[]
+  getActiveChain: () => CaipNetwork | undefined
 }
 
 export class WalletConnectProvider extends ProviderEventEmitter implements Provider {
@@ -32,7 +33,7 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
 
   private provider: UniversalProvider
   private session?: SessionTypes.Struct
-  private readonly requestedChains: Chain[]
+  private readonly requestedChains: CaipNetwork[]
   private readonly getActiveChain: WalletConnectProviderConfig['getActiveChain']
 
   constructor({ provider, chains, getActiveChain }: WalletConnectProviderConfig) {
@@ -59,7 +60,7 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
         }
 
         return this.requestedChains.find(
-          chain => this.withSolanaNamespace(chain.chainId) === chainId
+          chain => this.withSolanaNamespace(chain.chainId as string) === chainId
         )
       })
       .filter(Boolean) as Chain[]
@@ -77,7 +78,7 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
 
   public async connect() {
     const rpcMap = this.requestedChains.reduce<Record<string, string>>((acc, chain) => {
-      acc[this.withSolanaNamespace(chain.chainId)] = chain.rpcUrl
+      acc[this.withSolanaNamespace(chain.chainId as string)] = chain.rpcUrl
 
       return acc
     }, {})
@@ -276,7 +277,9 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
    * This method is a workaround for wallets that only accept Solana deprecated networks
    */
   private getRequestedChainsWithDeprecated() {
-    const chains = this.requestedChains.map(chain => this.withSolanaNamespace(chain.chainId))
+    const chains = this.requestedChains.map(chain =>
+      this.withSolanaNamespace(chain.chainId as string)
+    )
 
     if (chains.includes(SolConstantsUtil.CHAIN_IDS.Mainnet)) {
       chains.push(SolConstantsUtil.CHAIN_IDS.Deprecated_Mainnet)

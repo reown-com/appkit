@@ -37,7 +37,7 @@ export type AppKitOptions = OptionsControllerState & {
    * Allow users to switch to an unsupported chain.
    * @see https://docs.walletconnect.com/appkit/react/core/options#allowunsupportedchain
    */
-  allowUnsupportedChain?: NetworkControllerState['allowUnsupportedChain']
+  allowUnsupportedChain?: NetworkControllerState['allowUnsupportedCaipNetwork']
   /**
    * You can set the desired caipnetworks for the app:
    * @see https://docs.walletconnect.com/appkit/react/core/options#defaultchain
