@@ -64,6 +64,24 @@ export const ethersSdkOptions = [
   }
 ]
 
+export const ethers5SdkOptions = [
+  {
+    title: 'Default',
+    link: '/library/ethers5',
+    description: 'Basic configuration using ethers as a driving library'
+  },
+  {
+    title: 'SIWE',
+    link: '/library/ethers5-siwe/',
+    description: 'Configuration using ethers and implementing sign in with ethereum'
+  },
+  {
+    title: 'Email and Social',
+    link: '/library/ethers5-email/',
+    description: 'Configuration using ethers and implementing email and social login'
+  }
+]
+
 export const solanaSdkOptions = [
   {
     title: 'Default',
