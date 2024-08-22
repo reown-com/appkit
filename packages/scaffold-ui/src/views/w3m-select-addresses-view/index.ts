@@ -1,5 +1,6 @@
 import {
   AccountController,
+  ChainController,
   ConnectionController,
   ModalController,
   OptionsController,
@@ -120,8 +121,11 @@ export class W3mSelectAddressesView extends LitElement {
   private onContinue() {
     if (this.selectedAccounts.length > 0) {
       this.isApproving = true
-      AccountController.setAllAccounts(this.selectedAccounts)
-      AccountController.setShouldUpdateToAddress(this.selectedAccounts[0]?.address ?? '')
+      AccountController.setAllAccounts(this.selectedAccounts, ChainController.state.activeChain)
+      AccountController.setShouldUpdateToAddress(
+        this.selectedAccounts[0]?.address ?? '',
+        ChainController.state.activeChain
+      )
       this.approved = true
       this.isApproving = false
       ModalController.close()

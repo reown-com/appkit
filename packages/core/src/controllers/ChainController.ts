@@ -169,7 +169,7 @@ export const ChainController = {
     })
   },
 
-  setActiveChain(chain?: Chain) {
+  setActiveChain(chain: Chain | undefined) {
     const newAdapter = chain ? state.chains.get(chain) : undefined
 
     if (newAdapter && newAdapter.chain !== state.activeChain) {
@@ -308,7 +308,7 @@ export const ChainController = {
     return chainNetworkState[key]
   },
 
-  resetAccount(chain?: Chain) {
+  resetAccount(chain: Chain | undefined) {
     const chainToWrite = chain
 
     if (!chainToWrite) {

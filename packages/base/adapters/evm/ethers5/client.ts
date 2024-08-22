@@ -9,7 +9,7 @@ import type {
   PublicStateControllerState,
   SendTransactionArgs,
   Token
-} from '@web3modal/scaffold'
+} from '@web3modal/core'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
 import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 import EthereumProvider, { OPTIONAL_METHODS } from '@walletconnect/ethereum-provider'
@@ -584,7 +584,7 @@ export class EVMEthers5Client {
           imageUrl: chainImages?.[chain.chainId]
         }) as CaipNetwork
     )
-    this.appKit?.setRequestedCaipNetworks(requestedCaipNetworks ?? [])
+    this.appKit?.setRequestedCaipNetworks(requestedCaipNetworks ?? [], this.chain)
   }
 
   private async checkActiveWalletConnectProvider() {
@@ -861,14 +861,14 @@ export class EVMEthers5Client {
     const chainId = EthersStoreUtil.state.chainId
     const isConnected = EthersStoreUtil.state.isConnected
 
-    this.appKit?.resetAccount()
+    this.appKit?.resetAccount(this.chain)
 
     if (isConnected && address && chainId) {
       const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`
 
-      this.appKit?.setIsConnected(isConnected)
+      this.appKit?.setIsConnected(isConnected, this.chain)
 
-      this.appKit?.setCaipAddress(caipAddress)
+      this.appKit?.setCaipAddress(caipAddress, this.chain)
       this.syncConnectedWalletInfo()
 
       await Promise.all([
@@ -904,12 +904,12 @@ export class EVMEthers5Client {
         })
         if (isConnected && address) {
           const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`
-          this.appKit?.setCaipAddress(caipAddress)
+          this.appKit?.setCaipAddress(caipAddress, this.chain)
           if (chain.explorerUrl) {
             const url = `${chain.explorerUrl}/address/${address}`
-            this.appKit?.setAddressExplorerUrl(url)
+            this.appKit?.setAddressExplorerUrl(url, this.chain)
           } else {
-            this.appKit?.setAddressExplorerUrl(undefined)
+            this.appKit?.setAddressExplorerUrl(undefined, this.chain)
           }
           if (this.hasSyncedConnectedAccount) {
             await this.syncBalance(address)
@@ -929,7 +929,7 @@ export class EVMEthers5Client {
       const registeredWcNames = await this.appKit?.getWalletConnectName(address)
       if (registeredWcNames?.[0]) {
         const wcName = registeredWcNames[0]
-        this.appKit?.setProfileName(wcName.name)
+        this.appKit?.setProfileName(wcName.name, this.chain)
       } else {
         this.appKit?.setProfileName(null, this.chain)
       }
@@ -948,8 +948,8 @@ export class EVMEthers5Client {
       const name = identity?.name
       const avatar = identity?.avatar
 
-      this.appKit?.setProfileName(name)
-      this.appKit?.setProfileImage(avatar)
+      this.appKit?.setProfileName(name, this.chain)
+      this.appKit?.setProfileImage(avatar, this.chain)
 
       if (!name) {
         await this.syncWalletConnectName(address)
@@ -961,14 +961,14 @@ export class EVMEthers5Client {
         const avatar = await ensProvider.getAvatar(address)
 
         if (name) {
-          this.appKit?.setProfileName(name)
+          this.appKit?.setProfileName(name, this.chain)
         }
         if (avatar) {
-          this.appKit?.setProfileImage(avatar)
+          this.appKit?.setProfileImage(avatar, this.chain)
         }
       } else {
-        this.appKit?.setProfileName(null)
-        this.appKit?.setProfileImage(null)
+        this.appKit?.setProfileName(null, this.chain)
+        this.appKit?.setProfileImage(null, this.chain)
       }
     }
   }
@@ -986,7 +986,7 @@ export class EVMEthers5Client {
         if (JsonRpcProvider) {
           const balance = await JsonRpcProvider.getBalance(address)
           const formattedBalance = utils.formatEther(balance)
-          this.appKit?.setBalance(formattedBalance, chain.currency)
+          this.appKit?.setBalance(formattedBalance, chain.currency, this.chain)
         }
       }
     }

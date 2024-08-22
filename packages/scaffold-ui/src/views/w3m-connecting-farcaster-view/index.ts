@@ -182,7 +182,7 @@ export class W3mConnectingFarcasterView extends LitElement {
           StorageUtil.setConnectedSocialProvider(this.socialProvider)
         }
         this.loading = true
-        await ConnectionController.connectExternal(this.authConnector)
+        await ConnectionController.connectExternal(this.authConnector, this.authConnector.chain)
         this.loading = false
         ModalController.close()
       } catch (error) {
