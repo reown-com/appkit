@@ -1,7 +1,7 @@
 import { createWeb3Modal } from '@web3modal/base/react'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
-import { Web3ModalButtons } from '../../components/Web3ModalButtons'
+import { AppKitButtons } from '../../components/AppKitButtons'
 import { mainnet, optimism, arbitrum, solana } from '../../utils/NetworksUtil'
 import { MultiChainInfo } from '../../components/MultiChainInfo'
 
@@ -17,7 +17,7 @@ ThemeStore.setModal(modal)
 export default function MultiChainWagmiAdapterOnly() {
   return (
     <>
-      <Web3ModalButtons />
+      <AppKitButtons />
       <MultiChainInfo />
     </>
   )

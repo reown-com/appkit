@@ -94,7 +94,7 @@ export class EVMWagmiClient {
     const { wagmiConfig, defaultNetwork } = options
 
     if (!wagmiConfig) {
-      throw new Error('web3modal:constructor - wagmiConfig is undefined')
+      throw new Error('wagmiConfig is undefined')
     }
 
     this.wagmiConfig = wagmiConfig
@@ -149,9 +149,11 @@ export class EVMWagmiClient {
         const connector = this.wagmiConfig.connectors.find(
           c => c.id === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID
         )
+
         if (!connector) {
           throw new Error('connectionControllerClient:getWalletConnectUri - connector is undefined')
         }
+
         const provider = (await connector.getProvider()) as Awaited<
           ReturnType<(typeof EthereumProvider)['init']>
         >
@@ -440,7 +442,6 @@ export class EVMWagmiClient {
     })
 
     this.appKit?.setEIP6963Enabled(options.enableEIP6963 !== false)
-
     this.appKit?.subscribeShouldUpdateToAddress((newAddress?: string) => {
       if (newAddress) {
         const connections = getConnections(this.wagmiConfig)

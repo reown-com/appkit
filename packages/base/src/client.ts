@@ -5,7 +5,8 @@ import type {
   ModalControllerState,
   ConnectedWalletInfo,
   RouterControllerState,
-  ChainAdapter
+  ChainAdapter,
+  CaipNetwork
 } from '@web3modal/core'
 import {
   AccountController,
@@ -134,7 +135,6 @@ export class AppKit {
     return EventsController.subscribe(callback)
   }
 
-  // -- Protected ----------------------------------------------------------------
   public replace(route: RouterControllerState['view']) {
     RouterController.replace(route)
   }
@@ -234,6 +234,10 @@ export class AppKit {
     NetworkController.setCaipNetwork(caipNetwork)
   }
 
+  public setActiveCaipNetwork: (typeof NetworkController)['setCaipNetwork'] = caipNetwork => {
+    NetworkController.setActiveCaipNetwork(caipNetwork)
+  }
+
   public getCaipNetwork = () => NetworkController.state.caipNetwork
 
   public setRequestedCaipNetworks: (typeof NetworkController)['setRequestedCaipNetworks'] = (
@@ -298,6 +302,13 @@ export class AppKit {
       NetworkController.setSmartAccountEnabledNetworks(smartAccountEnabledNetworks, chain)
     }
 
+  public setPreferredAccountType: (typeof AccountController)['setPreferredAccountType'] = (
+    preferredAccountType,
+    chain
+  ) => {
+    AccountController.setPreferredAccountType(preferredAccountType, chain)
+  }
+
   public getWalletConnectName: (typeof EnsController)['getNamesForAddress'] = address =>
     EnsController.getNamesForAddress(address)
 
@@ -322,9 +333,9 @@ export class AppKit {
     ChainController.setMultiChainEnabled(true)
 
     if (options.adapters?.length === 0) {
-      // this.initializeUniversalAdapter(options, true)
+      this.initializeUniversalAdapter(options, true)
     } else {
-      // this.initializeUniversalAdapter(options, false)
+      this.initializeUniversalAdapter(options, false)
       this.initializeAdapters(options)
     }
 
@@ -338,8 +349,6 @@ export class AppKit {
     OptionsController.setPrivacyPolicyUrl(options.privacyPolicyUrl)
     OptionsController.setCustomWallets(options.customWallets)
     OptionsController.setEnableAnalytics(options.enableAnalytics)
-    OptionsController.setSdkVersion(options.sdkVersion)
-    // Enabled by default
     OptionsController.setOnrampEnabled(options.enableOnramp !== false)
     OptionsController.setEnableSwaps(options.enableSwaps !== false)
 
@@ -359,9 +368,7 @@ export class AppKit {
       OptionsController.setDisableAppend(Boolean(options.disableAppend))
     }
 
-    const evmAdapter = options.adapters?.find(
-      adapter => adapter.chainNamespace === ConstantsUtil.CHAIN.EVM
-    )
+    const evmAdapter = options.adapters?.find(adapter => adapter.chain === ConstantsUtil.CHAIN.EVM)
 
     // Set the SIWE client for EVM chains
     if (evmAdapter) {

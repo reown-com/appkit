@@ -163,6 +163,8 @@ export class W3mNetworksView extends LitElement {
         allApprovedCaipNetworks?.includes(network.id) ||
         walletId === 'walletConnect'
       ) {
+        console.log(network)
+
         await NetworkController.switchActiveNetwork(network)
         await NetworkUtil.onNetworkChange()
       } else if (supportsAllNetworks) {

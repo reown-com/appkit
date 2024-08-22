@@ -152,10 +152,13 @@ export class W3mHeader extends LitElement {
   private async onClose() {
     if (this.isSiweEnabled) {
       const { SIWEController } = await import('@web3modal/siwe')
-      if (SIWEController.state.status === 'success') {
-        ModalController.close()
-      } else {
+      const isApproveSignScreen = RouterController.state.view === 'ApproveTransaction'
+      const isUnauthenticated = SIWEController.state.status !== 'success'
+
+      if (isUnauthenticated && isApproveSignScreen) {
         RouterController.popTransactionStack(true)
+      } else {
+        ModalController.close()
       }
     } else {
       ModalController.close()

@@ -1,13 +1,10 @@
-import { PresetsUtil, ConstantsUtil } from '@web3modal/scaffold-utils'
-import { ConstantsUtil as CommonConstantsUtil, type CaipNetworkId } from '@web3modal/common'
-import type { Chain } from '@web3modal/scaffold-utils'
-import type { CaipNetwork } from '@web3modal/core'
+import { PresetsUtil } from '@web3modal/scaffold-utils'
+import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 
 import { SolConstantsUtil } from './SolanaConstantsUtil.js'
-import type { SolanaProvider } from './SolanaTypesUtil.js'
-import type { ExtendedBaseWalletAdapter } from '../../client.js'
-import type { SolStoreUtilState } from './SolanaStoreUtil.js'
-import type { Network } from '../../../../../utils/StoreUtil.js'
+
+import type { CaipNetwork } from '@web3modal/scaffold'
+import type { Chain, Provider } from './SolanaTypesUtil.js'
 
 export const SolHelpersUtil = {
   detectRpcUrl(chain: Network, projectId: string) {
@@ -42,7 +39,7 @@ export const SolHelpersUtil = {
         chainId: `solana:${chainId}` as CaipNetworkId,
         imageId: PresetsUtil.NetworkImageIds[chainId],
         chain: CommonConstantsUtil.CHAIN.SOLANA
-      }
+      } as const
     }
 
     return {
@@ -51,7 +48,7 @@ export const SolHelpersUtil = {
       chainId: `solana:${chainId}` as CaipNetworkId,
       imageId: PresetsUtil.NetworkImageIds[chainId],
       chain: CommonConstantsUtil.CHAIN.SOLANA
-    }
+    } as const
   },
 
   getCaipDefaultChain(chain?: Chain) {
@@ -73,17 +70,9 @@ export const SolHelpersUtil = {
     return decimalValue
   },
 
-  async getAddress(provider: SolanaProvider) {
-    const [address] = await provider.request<string[]>({ method: 'getAccountInfo' })
+  getAddress(provider: Provider) {
+    const address = provider.publicKey?.toBase58()
 
     return address
-  },
-
-  getStorageInjectedId: (adapter: ExtendedBaseWalletAdapter) =>
-    (adapter.isAnnounced
-      ? `${ConstantsUtil.WALLET_STANDARD_CONNECTOR_ID}_${adapter.name}`
-      : `${ConstantsUtil.INJECTED_CONNECTOR_ID}_${adapter.name}`) as unknown as Exclude<
-      SolStoreUtilState['providerType'],
-      undefined
-    >
+  }
 }

@@ -2,7 +2,7 @@ import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { OptionsController } from '@web3modal/core'
 
-import type { Connection, SolanaProvider } from './SolanaTypesUtil.js'
+import type { Chain, Provider, Connection } from './SolanaTypesUtil.js'
 import { SolConstantsUtil } from './SolanaConstantsUtil.js'
 import { SolHelpersUtil } from './SolanaHelpersUtils.js'
 import type { Network } from '../../../../../utils/StoreUtil.js'
@@ -10,8 +10,7 @@ import type { Network } from '../../../../../utils/StoreUtil.js'
 type StateKey = keyof SolStoreUtilState
 
 export interface SolStoreUtilState {
-  provider?: SolanaProvider
-  providerType?: 'walletConnect' | `injected_${string}` | `announced_${string}`
+  provider?: Provider
   address?: string
   chainId?: string
   caipChainId?: string
@@ -24,7 +23,6 @@ export interface SolStoreUtilState {
 
 const state = proxy<SolStoreUtilState>({
   provider: undefined,
-  providerType: undefined,
   address: undefined,
   currentChain: undefined,
   chainId: undefined,
@@ -48,10 +46,6 @@ export const SolStoreUtil = {
     if (provider) {
       state.provider = ref(provider)
     }
-  },
-
-  setProviderType(providerType: SolStoreUtilState['providerType']) {
-    state.providerType = providerType
   },
 
   setAddress(address: string) {
@@ -95,7 +89,6 @@ export const SolStoreUtil = {
     state.provider = undefined
     state.address = undefined
     state.chainId = undefined
-    state.providerType = undefined
     state.isConnected = false
     state.error = undefined
   }

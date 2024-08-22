@@ -29,7 +29,7 @@ export type ConfigOptions = Partial<CreateConfigParameters> & {
   coinbasePreference?: 'all' | 'smartWalletOnly' | 'eoaOnly'
 }
 
-export function defaultWagmiConfig({
+export function defaultConfig({
   projectId,
   chains,
   metadata,

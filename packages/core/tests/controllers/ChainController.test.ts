@@ -46,7 +46,7 @@ describe('ChainController', () => {
   })
 
   it('should update account state as expected', () => {
-    ChainController.setAccountProp('caipAddress', caipAddress)
+    ChainController.setAccountProp('caipAddress', caipAddress, 'evm')
     expect(ChainController.getAccountProp('caipAddress')).toEqual(caipAddress)
   })
 
@@ -55,11 +55,6 @@ describe('ChainController', () => {
       approvedCaipNetworkIds
     })
     expect(ChainController.getNetworkProp('approvedCaipNetworkIds')).toEqual(approvedCaipNetworkIds)
-  })
-
-  it('should set multi-chain enabled flag as expected', () => {
-    ChainController.setMultiChainEnabled(true)
-    expect(ChainController.state.multiChainEnabled).toEqual(true)
   })
 
   it('should reset account as expected', () => {

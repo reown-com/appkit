@@ -24,6 +24,7 @@ const TEST_NAME = {
   ],
   attributes: []
 }
+const chain = ConstantsUtil.CHAIN.EVM
 vi.mock('../../src/controllers/BlockchainApiController.js', async importOriginal => {
   const mod =
     await importOriginal<typeof import('../../src/controllers/BlockchainApiController.js')>()
@@ -141,7 +142,7 @@ describe('EnsController', () => {
   it('should register name', async () => {
     // Setup
     NetworkController.setActiveCaipNetwork({ id: 'test:123', chain: ConstantsUtil.CHAIN.EVM })
-    AccountController.setCaipAddress('eip155:1:0x123')
+    AccountController.setCaipAddress('eip155:1:0x123', chain)
     const getAuthConnectorSpy = vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue({
       provider: { getEmail: () => 'test@walletconnect.com' } as unknown as W3mFrameProvider,
       id: 'w3mAuth',

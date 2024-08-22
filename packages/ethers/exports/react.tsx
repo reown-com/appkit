@@ -1,12 +1,13 @@
 'use client'
 
-import { AppKit, WcStoreUtil } from '@web3modal/base'
+import { AppKit } from '@web3modal/base'
 import type { AppKitOptions } from '@web3modal/base'
 import { EVMEthersClient, type AdapterOptions } from '@web3modal/base/adapters/evm/ethers'
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
+import { EthersStoreUtil } from '@web3modal/scaffold-utils/ethers'
 import { getWeb3Modal } from '@web3modal/scaffold-react'
 import { useSnapshot } from 'valtio'
-import type UniversalProvider from '@walletconnect/universal-provider'
+import type { Eip1193Provider } from 'ethers'
 
 // -- Configs -----------------------------------------------------------
 export { defaultConfig } from '@web3modal/base/adapters/evm/ethers'
@@ -28,7 +29,7 @@ export function createWeb3Modal(options: WagmiAppKitOptions) {
     ...options,
     adapters: [ethersAdapter],
     sdkType: 'w3m',
-    sdkVersion: `react-wagmi-${ConstantsUtil.VERSION}`
+    sdkVersion: `react-ethers-${ConstantsUtil.VERSION}`
   })
   getWeb3Modal(appkit)
 
@@ -37,9 +38,9 @@ export function createWeb3Modal(options: WagmiAppKitOptions) {
 
 // -- Hooks -------------------------------------------------------------------
 export function useWeb3ModalProvider() {
-  const { provider, providerType } = useSnapshot(WcStoreUtil.state)
+  const { provider, providerType } = useSnapshot(EthersStoreUtil.state)
 
-  const walletProvider = provider as UniversalProvider | undefined
+  const walletProvider = provider as Eip1193Provider | undefined
   const walletProviderType = providerType
 
   return {
@@ -69,7 +70,7 @@ export function useSwitchNetwork() {
 }
 
 export function useWeb3ModalAccount() {
-  const { address, isConnected, chainId, status } = useSnapshot(WcStoreUtil.state)
+  const { address, isConnected, chainId, status } = useSnapshot(EthersStoreUtil.state)
 
   return {
     address,
@@ -80,7 +81,7 @@ export function useWeb3ModalAccount() {
 }
 
 export function useWeb3ModalError() {
-  const { error } = useSnapshot(WcStoreUtil.state)
+  const { error } = useSnapshot(EthersStoreUtil.state)
 
   return {
     error

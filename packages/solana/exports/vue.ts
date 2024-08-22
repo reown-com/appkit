@@ -1,22 +1,24 @@
 import { onUnmounted, ref } from 'vue'
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
 import { getWeb3Modal } from '@web3modal/scaffold-vue'
-import type { CaipNetwork } from 'packages/core/dist/types/index.js'
 import { AppKit } from '@web3modal/base'
 import type { AppKitOptions } from '@web3modal/base'
 import { SolanaWeb3JsClient, SolStoreUtil } from '@web3modal/base/adapters/solana/web3js'
 import type {
   Chain,
-  SolanaProviderType,
-  BaseWalletAdapter
+  ProviderType,
+  BaseWalletAdapter,
+  Provider,
+  Connection
 } from '@web3modal/base/adapters/solana/web3js'
+import type { CaipNetwork } from '@web3modal/core'
 
 // -- Setup -------------------------------------------------------------------
 let appkit: AppKit | undefined = undefined
 let solanaAdapter: SolanaWeb3JsClient | undefined = undefined
 
 type SolanaAppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 'sdkVersion'> & {
-  solanaConfig: SolanaProviderType
+  solanaConfig: ProviderType
   chains: Chain[]
   wallets: BaseWalletAdapter[]
 }
@@ -46,12 +48,10 @@ export function useWeb3ModalProvider() {
   }
 
   const walletProvider = ref(SolStoreUtil.state.provider)
-  const walletProviderType = ref(SolStoreUtil.state.providerType)
   const connection = ref(SolStoreUtil.state.connection)
 
   const unsubscribe = solanaAdapter.subscribeProvider(state => {
     walletProvider.value = state.provider
-    walletProviderType.value = state.providerType
   })
 
   onUnmounted(() => {
@@ -59,9 +59,11 @@ export function useWeb3ModalProvider() {
   })
 
   return {
-    walletProvider,
-    walletProviderType,
-    connection
+    walletProvider: walletProvider.value ?? undefined,
+    connection: connection.value ?? undefined
+  } as {
+    walletProvider: Provider | undefined
+    connection: Connection | undefined
   }
 }
 

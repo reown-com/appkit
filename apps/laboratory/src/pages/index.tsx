@@ -12,7 +12,12 @@ import {
   Badge
 } from '@chakra-ui/react'
 import { IoArrowForward } from 'react-icons/io5'
-import { wagmiSdkOptions, ethersSdkOptions, solanaSdkOptions } from '../utils/DataUtil'
+import {
+  wagmiSdkOptions,
+  ethersSdkOptions,
+  solanaSdkOptions,
+  ethers5SdkOptions
+} from '../utils/DataUtil'
 import { RandomLink } from '../components/RandomLink'
 
 export default function HomePage() {

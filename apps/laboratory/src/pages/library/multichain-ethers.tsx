@@ -3,7 +3,7 @@ import { EVMEthersClient, defaultConfig } from '@web3modal/base/adapters/evm/eth
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { mainnet, arbitrum, optimism } from '../../utils/NetworksUtil'
-import { Web3ModalButtons } from '../../components/Web3ModalButtons'
+import { AppKitButtons } from '../../components/AppKitButtons'
 import { MultiChainTests } from '../../components/MultiChainTests'
 import { MultiChainInfo } from '../../components/MultiChainInfo'
 
@@ -28,7 +28,7 @@ ThemeStore.setModal(modal)
 export default function MultiChainAllAdapters() {
   return (
     <>
-      <Web3ModalButtons />
+      <AppKitButtons />
       <MultiChainInfo />
       <MultiChainTests />
     </>

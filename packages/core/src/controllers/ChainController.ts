@@ -213,7 +213,7 @@ export const ChainController = {
         : undefined
       AccountController.replaceState(newAdapter.accountState)
       NetworkController.replaceState(newAdapter.networkState)
-      this.setCaipNetwork(newAdapter.chainNamespace, newAdapter.networkState?.caipNetwork, true)
+      this.setCaipNetwork(newAdapter.chain, newAdapter.networkState?.caipNetwork, true)
       PublicStateController.set({
         activeChain: chain,
         selectedNetworkId: newAdapter.networkState?.caipNetwork?.id
@@ -227,6 +227,8 @@ export const ChainController = {
     }
 
     if (caipNetwork.chainNamespace !== state.activeChain) {
+      console.log('set active chain', caipNetwork)
+
       this.setActiveChain(caipNetwork.chainNamespace)
     }
 

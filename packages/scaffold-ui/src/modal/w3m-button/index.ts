@@ -42,8 +42,6 @@ export class W3mButton extends LitElement {
     this.unsubscribe.push(
       AccountController.subscribe(val => {
         this.isAccount = val.isConnected
-        this.balanceVal = val.balance
-        this.balanceSymbol = val.balanceSymbol
       }),
       ModalController.subscribeKey('loading', val => {
         this.isLoading = val
