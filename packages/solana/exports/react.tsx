@@ -5,7 +5,8 @@ import { ConstantsUtil } from '@web3modal/scaffold-utils'
 import { getWeb3Modal } from '@web3modal/base/utils/library/react'
 import { AppKit } from '@web3modal/base'
 import type { AppKitOptions } from '@web3modal/base'
-import { SolanaWeb3JsClient, SolStoreUtil } from '@web3modal/base/adapters/solana/web3js'
+import { SolanaWeb3JsClient } from '@web3modal/base/adapters/solana/web3js'
+import { SolStoreUtil } from '@web3modal/scaffold-utils/solana'
 import {
   type Chain,
   type Connection,
