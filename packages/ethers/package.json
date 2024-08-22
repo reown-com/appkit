@@ -50,10 +50,7 @@
     "@web3modal/common": "workspace:*",
     "@web3modal/wallet": "workspace:*",
     "@web3modal/polyfills": "workspace:*",
-    "@web3modal/scaffold": "workspace:*",
-    "@web3modal/scaffold-react": "workspace:*",
     "@web3modal/scaffold-utils": "workspace:*",
-    "@web3modal/scaffold-vue": "workspace:*",
     "@web3modal/siwe": "workspace:*",
     "valtio": "1.11.2"
   },

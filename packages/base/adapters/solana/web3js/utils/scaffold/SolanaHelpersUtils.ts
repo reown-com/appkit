@@ -3,7 +3,7 @@ import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 
 import { SolConstantsUtil } from './SolanaConstantsUtil.js'
 
-import type { CaipNetwork } from '@web3modal/scaffold'
+import type { CaipNetwork } from '@web3modal/core'
 import type { Chain, Provider } from './SolanaTypesUtil.js'
 
 export const SolHelpersUtil = {

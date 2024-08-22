@@ -23,7 +23,7 @@ import type {
   Connector,
   CaipAddress,
   CaipNetwork
-} from '@web3modal/scaffold'
+} from '@web3modal/core'
 import type { Chain as AvailableChain } from '@web3modal/common'
 
 import type { ProviderType, Chain, Provider, SolStoreUtilState } from './utils/scaffold/index.js'
