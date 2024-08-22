@@ -217,11 +217,11 @@ importers:
         specifier: 2.13.4
         version: 2.13.4(@tanstack/query-core@5.24.8)(@types/react@18.2.62)(react@18.2.0)(typescript@5.3.3)(viem@2.19.6(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4))
       '@walletconnect/ethereum-provider':
-        specifier: 2.15.1
-        version: 2.15.1(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(utf-8-validate@5.0.10)
+        specifier: 2.15.0-verify-v3.0
+        version: 2.15.0-verify-v3.0(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(utf-8-validate@5.0.10)
       '@walletconnect/utils':
-        specifier: 2.15.1
-        version: 2.15.1
+        specifier: 2.15.0-verify-v3.0
+        version: 2.15.0-verify-v3.0
       '@web3modal/base':
         specifier: workspace:*
         version: link:../../packages/base
@@ -627,14 +627,14 @@ importers:
         specifier: 1.0.1
         version: 1.0.1
       '@walletconnect/ethereum-provider':
-        specifier: 2.15.1
-        version: 2.15.1(@types/react@18.2.0)(bufferutil@4.0.8)(react@18.2.0)(utf-8-validate@5.0.10)
+        specifier: 2.15.0-verify-v3.0
+        version: 2.15.0-verify-v3.0(@types/react@18.2.0)(bufferutil@4.0.8)(react@18.2.0)(utf-8-validate@5.0.10)
       '@walletconnect/types':
-        specifier: 2.13.3
-        version: 2.13.3
+        specifier: 2.15.0-verify-v3.0
+        version: 2.15.0-verify-v3.0
       '@walletconnect/universal-provider':
-        specifier: 2.15.0
-        version: 2.15.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+        specifier: 2.15.0-verify-v3.0
+        version: 2.15.0-verify-v3.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@walletconnect/utils':
         specifier: 2.14.0
         version: 2.14.0
@@ -799,11 +799,11 @@ importers:
         specifier: 4.0.3
         version: 4.0.3
       '@walletconnect/ethereum-provider':
-        specifier: 2.15.1
-        version: 2.15.1(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(utf-8-validate@5.0.10)
+        specifier: 2.15.0-verify-v3.0
+        version: 2.15.0-verify-v3.0(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(utf-8-validate@5.0.10)
       '@walletconnect/utils':
-        specifier: 2.15.1
-        version: 2.15.1
+        specifier: 2.15.0-verify-v3.0
+        version: 2.15.0-verify-v3.0
       '@web3modal/base':
         specifier: workspace:*
         version: link:../base
@@ -845,11 +845,11 @@ importers:
         specifier: 4.0.3
         version: 4.0.3
       '@walletconnect/ethereum-provider':
-        specifier: 2.15.1
-        version: 2.15.1(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(utf-8-validate@5.0.10)
+        specifier: 2.15.0-verify-v3.0
+        version: 2.15.0-verify-v3.0(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(utf-8-validate@5.0.10)
       '@walletconnect/utils':
-        specifier: 2.15.1
-        version: 2.15.1
+        specifier: 2.15.0-verify-v3.0
+        version: 2.15.0-verify-v3.0
       '@web3modal/base':
         specifier: workspace:*
         version: link:../base
@@ -1095,11 +1095,11 @@ importers:
   packages/wagmi:
     dependencies:
       '@walletconnect/ethereum-provider':
-        specifier: 2.15.1
-        version: 2.15.1(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(utf-8-validate@5.0.10)
+        specifier: 2.15.0-verify-v3.0
+        version: 2.15.0-verify-v3.0(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(utf-8-validate@5.0.10)
       '@walletconnect/utils':
-        specifier: 2.15.1
-        version: 2.15.1
+        specifier: 2.15.0-verify-v3.0
+        version: 2.15.0-verify-v3.0
       '@web3modal/base':
         specifier: workspace:*
         version: link:../base
@@ -6321,6 +6321,10 @@ packages:
     resolution: {integrity: sha512-QekYQlpxyn2bcQXMkMxo0+v7nUOQKyu3j5ZKzTg/HGU1eSgTRLIvYIEkC8VVflIgOw7meOAb5pFChX51wShksQ==}
     engines: {node: '>=18'}
 
+  '@walletconnect/core@2.15.0-verify-v3.0':
+    resolution: {integrity: sha512-jb8UgJvadCti9XjrxB+JwlzYGGxiEtyL1ToSGwfhubq8NHUQHTqBQzmyl59o+D7p9OApsTYvd5sY4lg7SU+98w==}
+    engines: {node: '>=18'}
+
   '@walletconnect/core@2.15.1':
     resolution: {integrity: sha512-9MWVt33MFrLiAeK9nqY/B30/y0M4uiq8v9EXenIBQdlgkmXM++RTcOnn7u7EAbthGgzx3WLPRm4ViwIb+rI/Cg==}
     engines: {node: '>=18'}
@@ -6331,8 +6335,8 @@ packages:
   '@walletconnect/ethereum-provider@2.14.0':
     resolution: {integrity: sha512-Cc2/DCn85VciA10BrsNWFM//3VC1D8yjwrjfUKjGndLPDz0YIdAxTgYZViIlMjE0lzQC/DMvPYEAnGfW0O1Bwg==}
 
-  '@walletconnect/ethereum-provider@2.15.1':
-    resolution: {integrity: sha512-3ssEAKc/rLYshwyE2ZIaoTxzi/p9Ws+kj/FIsd1Ed/CC37Rl5l/KYHaRJtevWeni9s4dGqyqKsYkJ0VwwUcnfQ==}
+  '@walletconnect/ethereum-provider@2.15.0-verify-v3.0':
+    resolution: {integrity: sha512-daZFnEqqFiqElikT7iFnTd7kh3LY7W9+WSUOSzqnaJ1BSopY091jYfTXzueztLmDaR3HETdDiBKXqAFVXSDrpQ==}
 
   '@walletconnect/events@1.0.1':
     resolution: {integrity: sha512-NPTqaoi0oPBVNuLv7qPaJazmGHs5JGyO8eEAk5VGKmJzDR7AHzD4k6ilox5kxk1iwiOnFopBOOMLs86Oa76HpQ==}
@@ -6404,6 +6408,9 @@ packages:
   '@walletconnect/sign-client@2.15.0':
     resolution: {integrity: sha512-efwrPfIwKWKeku44TGBCnQqPZGCILI1wBKK9bTF0F0/qrLR/zRe6RWpM3/L4+jOMr/BktxPZ5lRozBh+c2U7Pg==}
 
+  '@walletconnect/sign-client@2.15.0-verify-v3.0':
+    resolution: {integrity: sha512-pouejTAKggW6vBjf6ab3wwVLPxmFmkuVzX86z1R3q6fd0dQ3rh7ri2bjH9HfMRjged5hoteOKghvRdY7koc03g==}
+
   '@walletconnect/sign-client@2.15.1':
     resolution: {integrity: sha512-YnLNEmCHgZ8yBpE3hwZnHD/bVznVMguSAlwLBNOoWUH2f4d9mR8bqa6KeVXqZ3e8mVHcxKTJTjTJ3oQMLyKIjw==}
 
@@ -6414,14 +6421,14 @@ packages:
     resolution: {integrity: sha512-Cn+3I0V0vT9ghMuzh1KzZvCkiAxTq+1TR2eSqw5E5AVWfmCtECFkVZBP6uUJZ8YjwLqXheI+rnjqPy7sVM4Fyg==}
     deprecated: 'WalletConnect''s v1 SDKs are now deprecated. Please upgrade to a v2 SDK. For details see: https://docs.walletconnect.com/'
 
-  '@walletconnect/types@2.13.3':
-    resolution: {integrity: sha512-9UdtLoQqwGFfepCPprUAXeUbKg9zyDarPRmEJVco51OWXHCOpvRgroWk54fQHDhCUIfDELjObY6XNAzNrmNYUA==}
-
   '@walletconnect/types@2.14.0':
     resolution: {integrity: sha512-vevMi4jZLJ55vLuFOicQFmBBbLyb+S0sZS4IsaBdZkQflfGIq34HkN13c/KPl4Ye0aoR4/cUcUSitmGIzEQM5g==}
 
   '@walletconnect/types@2.15.0':
     resolution: {integrity: sha512-hLffDKKe70jIrK+YcLkAnzi6vqNki1SDBWjV+M/72mKcU2KzXxk0G2STFsWsQDx8DoqxMiuGehd0DlD1jwQmBg==}
+
+  '@walletconnect/types@2.15.0-verify-v3.0':
+    resolution: {integrity: sha512-XlfogZ8MReQB0z43h1Zgy1tgIokS4Z3DiZAG+lam3xCV25eIUYSjY0GgQvCjasUU/c9U5UtHaOmAruVZR5GuSQ==}
 
   '@walletconnect/types@2.15.1':
     resolution: {integrity: sha512-4WkMsHD8ioZI5GmxNT0qMlz6msI7ZajBcTyDxfRncaNZVau0C+Btw1U4jWO+gxwJVDJY+Ue/cb1QKJ5BanZsyw==}
@@ -6432,14 +6439,17 @@ packages:
   '@walletconnect/universal-provider@2.15.0':
     resolution: {integrity: sha512-+jIuYyLfud1XRYPWt/3wYiD7DYUOSZk26qbtvZFMj1m947NRnZGzp+0gt1ORi7NInEtX3R0fUhMOYKnPwadp6g==}
 
-  '@walletconnect/universal-provider@2.15.1':
-    resolution: {integrity: sha512-JvKwHoE/ugWSKOmrEr03go1V79N0bbYV6w24Lqlzz4VAoReZZo8TDKsya7UkJ1L5HUCgKVP+AVktuJv8khzJ6w==}
+  '@walletconnect/universal-provider@2.15.0-verify-v3.0':
+    resolution: {integrity: sha512-82llmapCRMSOftAKNMQsHU7/Yyvk77Gcne3pJ1BHDocMRoUop1ITaY3NPECIYJ8WWAk1fccLJUpsGxGq3g7G5Q==}
 
   '@walletconnect/utils@2.14.0':
     resolution: {integrity: sha512-vRVomYQEtEAyCK2c5bzzEvtgxaGGITF8mWuIL+WYSAMyEJLY97mirP2urDucNwcUczwxUgI+no9RiNFbUHreQQ==}
 
   '@walletconnect/utils@2.15.0':
     resolution: {integrity: sha512-xaazgCMyr5fUPm2QuZ76G+W8beDfKMILqJ3INL6wyuaLil2YQNdsCSvWMNhSP+EZeKD3SUqqBmQaM/maP0YHTg==}
+
+  '@walletconnect/utils@2.15.0-verify-v3.0':
+    resolution: {integrity: sha512-chk12L/dQzq5VTxI9C/Wy68+imCQDzic3MMzKXUqbwktVZwODdXDSuHeF18tFACCjwCLp6WvmvyQxbcy1+xpXA==}
 
   '@walletconnect/utils@2.15.1':
     resolution: {integrity: sha512-i5AR8XpZdcX8ghaCjYV13Er/KAGe56c1mLaG9c2cv9kmnZMZijeMdInjX/flnSM1RFDUiZXvKPMUNwlCL4NsWw==}
@@ -20224,6 +20234,42 @@ snapshots:
       - uWebSockets.js
       - utf-8-validate
 
+  '@walletconnect/core@2.15.0-verify-v3.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+    dependencies:
+      '@walletconnect/heartbeat': 1.2.2
+      '@walletconnect/jsonrpc-provider': 1.0.14
+      '@walletconnect/jsonrpc-types': 1.0.4
+      '@walletconnect/jsonrpc-utils': 1.0.8
+      '@walletconnect/jsonrpc-ws-connection': 1.0.14(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@walletconnect/keyvaluestorage': 1.1.1
+      '@walletconnect/logger': 2.1.2
+      '@walletconnect/relay-api': 1.0.11
+      '@walletconnect/relay-auth': 1.0.4
+      '@walletconnect/safe-json': 1.0.2
+      '@walletconnect/time': 1.0.2
+      '@walletconnect/types': 2.15.0-verify-v3.0
+      '@walletconnect/utils': 2.15.0-verify-v3.0
+      events: 3.3.0
+      lodash.isequal: 4.5.0
+      uint8arrays: 3.1.0
+    transitivePeerDependencies:
+      - '@azure/app-configuration'
+      - '@azure/cosmos'
+      - '@azure/data-tables'
+      - '@azure/identity'
+      - '@azure/keyvault-secrets'
+      - '@azure/storage-blob'
+      - '@capacitor/preferences'
+      - '@netlify/blobs'
+      - '@planetscale/database'
+      - '@react-native-async-storage/async-storage'
+      - '@upstash/redis'
+      - '@vercel/kv'
+      - bufferutil
+      - ioredis
+      - uWebSockets.js
+      - utf-8-validate
+
   '@walletconnect/core@2.15.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
     dependencies:
       '@walletconnect/heartbeat': 1.2.2
@@ -20330,17 +20376,17 @@ snapshots:
       - uWebSockets.js
       - utf-8-validate
 
-  '@walletconnect/ethereum-provider@2.15.1(@types/react@18.2.0)(bufferutil@4.0.8)(react@18.2.0)(utf-8-validate@5.0.10)':
+  '@walletconnect/ethereum-provider@2.15.0-verify-v3.0(@types/react@18.2.0)(bufferutil@4.0.8)(react@18.2.0)(utf-8-validate@5.0.10)':
     dependencies:
       '@walletconnect/jsonrpc-http-connection': 1.0.8
       '@walletconnect/jsonrpc-provider': 1.0.14
       '@walletconnect/jsonrpc-types': 1.0.4
       '@walletconnect/jsonrpc-utils': 1.0.8
       '@walletconnect/modal': 2.6.2(@types/react@18.2.0)(react@18.2.0)
-      '@walletconnect/sign-client': 2.15.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@walletconnect/types': 2.15.1
-      '@walletconnect/universal-provider': 2.15.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@walletconnect/utils': 2.15.1
+      '@walletconnect/sign-client': 2.15.0-verify-v3.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@walletconnect/types': 2.15.0-verify-v3.0
+      '@walletconnect/universal-provider': 2.15.0-verify-v3.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@walletconnect/utils': 2.15.0-verify-v3.0
       events: 3.3.0
     transitivePeerDependencies:
       - '@azure/app-configuration'
@@ -20363,17 +20409,17 @@ snapshots:
       - uWebSockets.js
       - utf-8-validate
 
-  '@walletconnect/ethereum-provider@2.15.1(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(utf-8-validate@5.0.10)':
+  '@walletconnect/ethereum-provider@2.15.0-verify-v3.0(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(utf-8-validate@5.0.10)':
     dependencies:
       '@walletconnect/jsonrpc-http-connection': 1.0.8
       '@walletconnect/jsonrpc-provider': 1.0.14
       '@walletconnect/jsonrpc-types': 1.0.4
       '@walletconnect/jsonrpc-utils': 1.0.8
       '@walletconnect/modal': 2.6.2(@types/react@18.2.62)(react@18.2.0)
-      '@walletconnect/sign-client': 2.15.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@walletconnect/types': 2.15.1
-      '@walletconnect/universal-provider': 2.15.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@walletconnect/utils': 2.15.1
+      '@walletconnect/sign-client': 2.15.0-verify-v3.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@walletconnect/types': 2.15.0-verify-v3.0
+      '@walletconnect/universal-provider': 2.15.0-verify-v3.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@walletconnect/utils': 2.15.0-verify-v3.0
       events: 3.3.0
     transitivePeerDependencies:
       - '@azure/app-configuration'
@@ -20611,6 +20657,35 @@ snapshots:
       - uWebSockets.js
       - utf-8-validate
 
+  '@walletconnect/sign-client@2.15.0-verify-v3.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+    dependencies:
+      '@walletconnect/core': 2.15.0-verify-v3.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@walletconnect/events': 1.0.1
+      '@walletconnect/heartbeat': 1.2.2
+      '@walletconnect/jsonrpc-utils': 1.0.8
+      '@walletconnect/logger': 2.1.2
+      '@walletconnect/time': 1.0.2
+      '@walletconnect/types': 2.15.0-verify-v3.0
+      '@walletconnect/utils': 2.15.0-verify-v3.0
+      events: 3.3.0
+    transitivePeerDependencies:
+      - '@azure/app-configuration'
+      - '@azure/cosmos'
+      - '@azure/data-tables'
+      - '@azure/identity'
+      - '@azure/keyvault-secrets'
+      - '@azure/storage-blob'
+      - '@capacitor/preferences'
+      - '@netlify/blobs'
+      - '@planetscale/database'
+      - '@react-native-async-storage/async-storage'
+      - '@upstash/redis'
+      - '@vercel/kv'
+      - bufferutil
+      - ioredis
+      - uWebSockets.js
+      - utf-8-validate
+
   '@walletconnect/sign-client@2.15.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
     dependencies:
       '@walletconnect/core': 2.15.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)
@@ -20646,30 +20721,6 @@ snapshots:
 
   '@walletconnect/types@1.8.0': {}
 
-  '@walletconnect/types@2.13.3':
-    dependencies:
-      '@walletconnect/events': 1.0.1
-      '@walletconnect/heartbeat': 1.2.2
-      '@walletconnect/jsonrpc-types': 1.0.4
-      '@walletconnect/keyvaluestorage': 1.1.1
-      '@walletconnect/logger': 2.1.2
-      events: 3.3.0
-    transitivePeerDependencies:
-      - '@azure/app-configuration'
-      - '@azure/cosmos'
-      - '@azure/data-tables'
-      - '@azure/identity'
-      - '@azure/keyvault-secrets'
-      - '@azure/storage-blob'
-      - '@capacitor/preferences'
-      - '@netlify/blobs'
-      - '@planetscale/database'
-      - '@react-native-async-storage/async-storage'
-      - '@upstash/redis'
-      - '@vercel/kv'
-      - ioredis
-      - uWebSockets.js
-
   '@walletconnect/types@2.14.0':
     dependencies:
       '@walletconnect/events': 1.0.1
@@ -20695,6 +20746,30 @@ snapshots:
       - uWebSockets.js
 
   '@walletconnect/types@2.15.0':
+    dependencies:
+      '@walletconnect/events': 1.0.1
+      '@walletconnect/heartbeat': 1.2.2
+      '@walletconnect/jsonrpc-types': 1.0.4
+      '@walletconnect/keyvaluestorage': 1.1.1
+      '@walletconnect/logger': 2.1.2
+      events: 3.3.0
+    transitivePeerDependencies:
+      - '@azure/app-configuration'
+      - '@azure/cosmos'
+      - '@azure/data-tables'
+      - '@azure/identity'
+      - '@azure/keyvault-secrets'
+      - '@azure/storage-blob'
+      - '@capacitor/preferences'
+      - '@netlify/blobs'
+      - '@planetscale/database'
+      - '@react-native-async-storage/async-storage'
+      - '@upstash/redis'
+      - '@vercel/kv'
+      - ioredis
+      - uWebSockets.js
+
+  '@walletconnect/types@2.15.0-verify-v3.0':
     dependencies:
       '@walletconnect/events': 1.0.1
       '@walletconnect/heartbeat': 1.2.2
@@ -20802,16 +20877,16 @@ snapshots:
       - uWebSockets.js
       - utf-8-validate
 
-  '@walletconnect/universal-provider@2.15.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+  '@walletconnect/universal-provider@2.15.0-verify-v3.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
     dependencies:
       '@walletconnect/jsonrpc-http-connection': 1.0.8
       '@walletconnect/jsonrpc-provider': 1.0.14
       '@walletconnect/jsonrpc-types': 1.0.4
       '@walletconnect/jsonrpc-utils': 1.0.8
       '@walletconnect/logger': 2.1.2
-      '@walletconnect/sign-client': 2.15.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@walletconnect/types': 2.15.1
-      '@walletconnect/utils': 2.15.1
+      '@walletconnect/sign-client': 2.15.0-verify-v3.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@walletconnect/types': 2.15.0-verify-v3.0
+      '@walletconnect/utils': 2.15.0-verify-v3.0
       events: 3.3.0
     transitivePeerDependencies:
       - '@azure/app-configuration'
@@ -20875,6 +20950,40 @@ snapshots:
       '@walletconnect/safe-json': 1.0.2
       '@walletconnect/time': 1.0.2
       '@walletconnect/types': 2.15.0
+      '@walletconnect/window-getters': 1.0.1
+      '@walletconnect/window-metadata': 1.0.1
+      detect-browser: 5.3.0
+      elliptic: 6.5.7
+      query-string: 7.1.3
+      uint8arrays: 3.1.0
+    transitivePeerDependencies:
+      - '@azure/app-configuration'
+      - '@azure/cosmos'
+      - '@azure/data-tables'
+      - '@azure/identity'
+      - '@azure/keyvault-secrets'
+      - '@azure/storage-blob'
+      - '@capacitor/preferences'
+      - '@netlify/blobs'
+      - '@planetscale/database'
+      - '@react-native-async-storage/async-storage'
+      - '@upstash/redis'
+      - '@vercel/kv'
+      - ioredis
+      - uWebSockets.js
+
+  '@walletconnect/utils@2.15.0-verify-v3.0':
+    dependencies:
+      '@stablelib/chacha20poly1305': 1.0.1
+      '@stablelib/hkdf': 1.0.1
+      '@stablelib/random': 1.0.2
+      '@stablelib/sha256': 1.0.1
+      '@stablelib/x25519': 1.0.3
+      '@walletconnect/relay-api': 1.0.11
+      '@walletconnect/relay-auth': 1.0.4
+      '@walletconnect/safe-json': 1.0.2
+      '@walletconnect/time': 1.0.2
+      '@walletconnect/types': 2.15.0-verify-v3.0
       '@walletconnect/window-getters': 1.0.1
       '@walletconnect/window-metadata': 1.0.1
       detect-browser: 5.3.0
