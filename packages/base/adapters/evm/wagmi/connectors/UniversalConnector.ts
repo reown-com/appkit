@@ -6,10 +6,7 @@ import {
   ProviderNotFoundError,
   createConnector
 } from '@wagmi/core'
-import {
-  type UniversalProvider as UniversalProviderType,
-  type UniversalProviderOpts
-} from '@walletconnect/universal-provider'
+import { type UniversalProvider as UniversalProviderType } from '@walletconnect/universal-provider'
 import {
   type AddEthereumChainParameter,
   type Address,
@@ -22,18 +19,20 @@ import {
   numberToHex
 } from 'viem'
 import { WcHelpersUtil } from '../../../../utils/HelpersUtil.js'
+import type { AppKitOptions } from '../../../../utils/TypesUtil.js'
+import type { AppKit } from '../../../../src/client.js'
 
 type UniversalConnector = Connector & {
   onDisplayUri(uri: string): void
   onSessionDelete(data: { topic: string }): void
 }
 
-export type UniversalConnectorParams = UniversalProviderOpts & {
+export type AppKitOptionsParams = AppKitOptions & {
   isNewChainsStale?: boolean
 }
 
 walletConnect.type = 'walletConnect' as const
-export function walletConnect(parameters: UniversalConnectorParams) {
+export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
   const isNewChainsStale = parameters.isNewChainsStale ?? true
   type Provider = Awaited<ReturnType<(typeof UniversalProviderType)['init']>>
   type Properties = {
@@ -116,7 +115,7 @@ export function walletConnect(parameters: UniversalConnectorParams) {
 
         // If there isn't an active session or chains are stale, connect.
         if (!provider.session || isChainsStale) {
-          const namespaces = WcHelpersUtil.createWagmiNamespaces(config.chains)
+          const namespaces = WcHelpersUtil.createNamespaces(parameters.caipNetworks)
 
           await provider.connect({
             optionalNamespaces: namespaces,
@@ -250,9 +249,15 @@ export function walletConnect(parameters: UniversalConnectorParams) {
       return provider_!
     },
     async getChainId() {
+      if (appKit.getCaipNetwork()?.chainId) {
+        return appKit.getCaipNetwork()?.chainId
+      }
       const provider = await this.getProvider()
+      const chain = provider.session?.namespaces['eip155']?.chains[0]
 
-      return undefined
+      const network = parameters.caipNetworks.find(c => c.id === chain)
+
+      return network?.chainId
     },
     async isAuthorized() {
       try {
@@ -299,6 +304,7 @@ export function walletConnect(parameters: UniversalConnectorParams) {
             }
             config.emitter.on('change', listener)
           }),
+
           provider.request({
             method: 'wallet_switchEthereumChain',
             params: [{ chainId: numberToHex(chainId) }]

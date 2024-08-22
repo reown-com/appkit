@@ -335,7 +335,7 @@ export class AppKit {
     if (options.adapters?.length === 0) {
       this.initializeUniversalAdapter(options, true)
     } else {
-      this.initializeUniversalAdapter(options, false)
+      // this.initializeUniversalAdapter(options, false)
       this.initializeAdapters(options)
     }
 

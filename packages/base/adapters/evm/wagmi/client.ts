@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable no-console */
 import { EthereumProvider, OPTIONAL_METHODS } from '@walletconnect/ethereum-provider'
 import {
@@ -17,13 +18,19 @@ import {
   switchChain,
   waitForTransactionReceipt,
   getConnections,
-  switchAccount
+  switchAccount,
+  injected,
+  createConfig
 } from '@wagmi/core'
-import type { OptionsControllerState } from '@web3modal/core'
-import { mainnet } from 'viem/chains'
+import { ChainController } from '@web3modal/core'
 import { prepareTransactionRequest, sendTransaction as wagmiSendTransaction } from '@wagmi/core'
 import type { Chain } from '@wagmi/core/chains'
-import type { GetAccountReturnType, GetEnsAddressReturnType, Config } from '@wagmi/core'
+import type {
+  GetAccountReturnType,
+  GetEnsAddressReturnType,
+  Config,
+  CreateConnectorFn
+} from '@wagmi/core'
 import type {
   ConnectionControllerClient,
   Connector,
@@ -38,8 +45,9 @@ import type { Hex } from 'viem'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
 import { ConstantsUtil as CommonConstants } from '@web3modal/common'
 import {
-  getCaipDefaultNetwork,
+  convertCaipNetworksToWagmiChains,
   getEmailCaipNetworks,
+  getTransport,
   getWalletConnectCaipNetworks,
   requireCaipAddress
 } from './utils/helpers.js'
@@ -48,9 +56,12 @@ import type { W3mFrameProvider, W3mFrameTypes } from '@web3modal/wallet'
 import { NetworkUtil } from '@web3modal/common'
 import { normalize } from 'viem/ens'
 import type { AppKitOptions } from '../../../utils/TypesUtil.js'
-import type { CaipNetwork, CaipNetworkId, ChainNamespace } from '@web3modal/common'
+import type { CaipAddress, CaipNetwork, CaipNetworkId, ChainNamespace } from '@web3modal/common'
 import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 import type { AppKit } from '../../../src/client.js'
+import { walletConnect } from './connectors/UniversalConnector.js'
+import { coinbaseWallet } from '@wagmi/connectors'
+import { authConnector } from './connectors/AuthConnector.js'
 
 // -- Types ---------------------------------------------------------------------
 export interface AdapterOptions<C extends Config>
@@ -71,18 +82,22 @@ export class EVMWagmiClient {
 
   private hasSyncedConnectedAccount = false
 
-  private wagmiConfig: AdapterOptions<Config>['wagmiConfig']
-
   // -- Public variables --------------------------------------------------------
   public options: AppKitOptions | undefined = undefined
 
   public chainNamespace: ChainNamespace = CommonConstantsUtil.CHAIN.EVM
 
-  public networkControllerClient: NetworkControllerClient
+  public caipNetworks?: CaipNetwork[]
 
-  public connectionControllerClient: ConnectionControllerClient
+  public wagmiChains?: readonly [Chain, ...Chain[]]
 
-  public defaultNetwork: CaipNetwork | undefined = undefined
+  public wagmiConfig?: AdapterOptions<Config>['wagmiConfig']
+
+  public networkControllerClient?: NetworkControllerClient
+
+  public connectionControllerClient?: ConnectionControllerClient
+
+  public defaultCaipNetwork: CaipNetwork | undefined = undefined
 
   public tokens = HelpersUtil.getCaipTokens(this.options?.tokens)
 
@@ -90,26 +105,83 @@ export class EVMWagmiClient {
 
   public siweControllerClient = this.options?.siweConfig
 
-  public constructor(options: AdapterOptions<Config>) {
-    const { wagmiConfig, defaultNetwork } = options
+  // eslint-disable-next-line @typescript-eslint/no-useless-constructor
+  public constructor() {}
 
-    if (!wagmiConfig) {
-      throw new Error('wagmiConfig is undefined')
+  private createWagmiConfig(options: AppKitOptions, appKit: AppKit) {
+    this.wagmiChains = convertCaipNetworksToWagmiChains(options.caipNetworks)
+    const transportsArr = this.wagmiChains.map(chain => [
+      chain.id,
+      getTransport({ chain, projectId: options.projectId })
+    ])
+
+    const transports = Object.fromEntries(transportsArr)
+    const connectors: CreateConnectorFn[] = []
+
+    connectors.push(walletConnect(options, appKit))
+
+    connectors.push(injected({ shimDisconnect: true }))
+    connectors.push(
+      coinbaseWallet({
+        version: '4',
+        appName: options.metadata?.name ?? 'Unknown',
+        appLogoUrl: options.metadata?.icons[0] ?? 'Unknown',
+        /**
+         * Determines which wallet options to display in Coinbase Wallet SDK.
+         * @property preference
+         *   - `all`: Show both smart wallet and EOA options.
+         *   - `smartWalletOnly`: Show only smart wallet options.
+         *   - `eoaOnly`: Show only EOA options.
+         * @see https://www.smartwallet.dev/sdk/v3-to-v4-changes#parameters
+         */
+        preference: 'all'
+      })
+    )
+
+    connectors.push(
+      authConnector({
+        chains: this.wagmiChains,
+        options: { projectId: options.projectId },
+        socials: ['google'],
+        email: true,
+        showWallets: true,
+        walletFeatures: true
+      })
+    )
+
+    return createConfig({
+      chains: this.wagmiChains,
+      multiInjectedProviderDiscovery: true,
+      transports,
+      connectors
+    })
+  }
+
+  public construct(appKit: AppKit, options: AppKitOptions) {
+    if (!options.projectId) {
+      throw new Error('web3modal:initialize - projectId is undefined')
     }
 
-    this.wagmiConfig = wagmiConfig
-    this.defaultNetwork = getCaipDefaultNetwork(defaultNetwork)
-    this.siweControllerClient = options.siweConfig
+    this.caipNetworks = options.caipNetworks
+
+    this.appKit = appKit
+    this.options = options
+    this.tokens = HelpersUtil.getCaipTokens(options.tokens)
+
+    this.wagmiConfig = this.createWagmiConfig(options, appKit)
+    if (!this.wagmiConfig) {
+      throw new Error('web3modal:wagmiConfig - is undefined')
+    }
+
+    const connectors = this.wagmiConfig.connectors
 
     this.networkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
         const chainId = Number(NetworkUtil.caipNetworkIdToNumber(caipNetwork?.id))
-
         if (chainId) {
-          await switchChain(this.wagmiConfig, { chainId })
+          await switchChain(this.wagmiConfig!, { chainId })
         }
       },
-
       getApprovedCaipNetworksData: async () => {
         if (!this.wagmiConfig) {
           throw new Error(
@@ -118,55 +190,44 @@ export class EVMWagmiClient {
         }
 
         return new Promise(resolve => {
-          const connections = new Map(this.wagmiConfig.state.connections)
-          const connection = connections.get(this.wagmiConfig.state.current || '')
-
+          const connections = new Map(this.wagmiConfig!.state.connections)
+          const connection = connections.get(this.wagmiConfig!.state.current || '')
           if (connection?.connector?.id === ConstantsUtil.AUTH_CONNECTOR_ID) {
             resolve(getEmailCaipNetworks())
           } else if (connection?.connector?.id === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
-            const connector = this.wagmiConfig.connectors.find(
+            const connector = this.wagmiConfig!.connectors.find(
               c => c.id === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID
             )
-
             resolve(getWalletConnectCaipNetworks(connector))
           }
-
           resolve({ approvedCaipNetworkIds: undefined, supportsAllNetworks: true })
         })
       }
     }
-
     this.connectionControllerClient = {
       connectWalletConnect: async onUri => {
         const siweConfig = this.options?.siweConfig
-
         if (!this.wagmiConfig) {
           throw new Error(
             'networkControllerClient:getApprovedCaipNetworksData - wagmiConfig is undefined'
           )
         }
-
         const connector = this.wagmiConfig.connectors.find(
           c => c.id === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID
         )
-
         if (!connector) {
           throw new Error('connectionControllerClient:getWalletConnectUri - connector is undefined')
         }
-
         const provider = (await connector.getProvider()) as Awaited<
           ReturnType<(typeof EthereumProvider)['init']>
         >
-
         provider.on('display_uri', data => {
           onUri(data)
         })
-
         const clientId = await provider.signer?.client?.core?.crypto?.getClientId()
         if (clientId) {
           this.appKit?.setClientId(clientId)
         }
-
         const chainId = Number(NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id))
         const siweParams = await siweConfig?.getMessageParams?.()
         // Make sure client uses ethereum provider version that supports `authenticate`
@@ -177,16 +238,13 @@ export class EVMWagmiClient {
           Object.keys(siweParams || {}).length > 0
         ) {
           const { SIWEController, getDidChainId, getDidAddress } = await import('@web3modal/siwe')
-
           // @ts-expect-error - setting requested chains beforehand avoids wagmi auto disconnecting the session when `connect` is called because it things chains are stale
           await connector.setRequestedChainsIds(siweParams.chains)
-
           // Make active chain first in requested chains to make it default for siwe message
           let reorderedChains = siweParams.chains
           if (chainId) {
             reorderedChains = [chainId, ...siweParams.chains.filter(c => c !== chainId)]
           }
-
           const result = await provider.authenticate({
             nonce: await siweConfig.getNonce(),
             methods: [...OPTIONAL_METHODS],
@@ -235,16 +293,13 @@ export class EVMWagmiClient {
         }
         await connect(this.wagmiConfig, { connector, chainId })
       },
-
       connectExternal: async ({ id, provider, info }) => {
         if (!this.wagmiConfig) {
           throw new Error(
             'networkControllerClient:getApprovedCaipNetworksData - wagmiConfig is undefined'
           )
         }
-
         const connector = this.wagmiConfig.connectors.find(c => c.id === id)
-
         if (!connector) {
           throw new Error('connectionControllerClient:connectExternal - connector is undefined')
         }
@@ -254,35 +309,27 @@ export class EVMWagmiClient {
           connector.setEip6963Wallet?.({ provider, info })
         }
         const chainId = Number(NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id))
-
         await connect(this.wagmiConfig, { connector, chainId })
       },
-
       reconnectExternal: async ({ id }) => {
         if (!this.wagmiConfig) {
           throw new Error(
             'networkControllerClient:getApprovedCaipNetworksData - wagmiConfig is undefined'
           )
         }
-
         const connector = this.wagmiConfig.connectors.find(c => c.id === id)
-
         if (!connector) {
           throw new Error('connectionControllerClient:connectExternal - connector is undefined')
         }
-
         await reconnect(this.wagmiConfig, { connectors: [connector] })
       },
-
       checkInstalled: ids => {
         const injectedConnector = this.appKit
           ?.getConnectors()
           .find((c: Connector) => c.type === 'INJECTED')
-
         if (!ids) {
           return Boolean(window.ethereum)
         }
-
         if (injectedConnector) {
           if (!window?.ethereum) {
             return false
@@ -290,29 +337,25 @@ export class EVMWagmiClient {
 
           return ids.some(id => Boolean(window.ethereum?.[String(id)]))
         }
-
         return false
       },
-
       disconnect: async () => {
-        await disconnect(this.wagmiConfig)
+        await disconnect(this.wagmiConfig!)
         this.appKit?.setClientId(null)
         if (this.options?.siweConfig?.options?.signOutOnDisconnect) {
           const { SIWEController } = await import('@web3modal/siwe')
           await SIWEController.signOut()
         }
       },
-
       signMessage: async message => {
         const caipAddress = this.appKit?.getCaipAddress() || ''
         const account = requireCaipAddress(caipAddress)
 
-        return signMessage(this.wagmiConfig, { message, account })
+        return signMessage(this.wagmiConfig!, { message, account })
       },
-
       estimateGas: async args => {
         try {
-          return await wagmiEstimateGas(this.wagmiConfig, {
+          return await wagmiEstimateGas(this.wagmiConfig!, {
             account: args.address,
             to: args.to,
             data: args.data,
@@ -322,10 +365,8 @@ export class EVMWagmiClient {
           return 0n
         }
       },
-
       sendTransaction: async (data: SendTransactionArgs) => {
-        const { chainId } = getAccount(this.wagmiConfig)
-
+        const { chainId } = getAccount(this.wagmiConfig!)
         const txParams = {
           account: data.address,
           to: data.to,
@@ -336,21 +377,16 @@ export class EVMWagmiClient {
           chainId,
           type: 'legacy' as const
         }
-
-        await prepareTransactionRequest(this.wagmiConfig, txParams)
-        const tx = await wagmiSendTransaction(this.wagmiConfig, txParams)
-
-        await waitForTransactionReceipt(this.wagmiConfig, { hash: tx, timeout: 25000 })
-
+        await prepareTransactionRequest(this.wagmiConfig!, txParams)
+        const tx = await wagmiSendTransaction(this.wagmiConfig!, txParams)
+        await waitForTransactionReceipt(this.wagmiConfig!, { hash: tx, timeout: 25000 })
         return tx
       },
-
       writeContract: async (data: WriteContractArgs) => {
         const caipAddress = this.appKit?.getCaipAddress() || ''
         const account = requireCaipAddress(caipAddress)
         const chainId = Number(NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id))
-
-        const tx = await wagmiWriteContract(this.wagmiConfig, {
+        const tx = await wagmiWriteContract(this.wagmiConfig!, {
           chainId,
           address: data.tokenAddress,
           account,
@@ -361,7 +397,6 @@ export class EVMWagmiClient {
 
         return tx
       },
-
       getEnsAddress: async (value: string) => {
         try {
           if (!this.wagmiConfig) {
@@ -369,18 +404,15 @@ export class EVMWagmiClient {
               'networkControllerClient:getApprovedCaipNetworksData - wagmiConfig is undefined'
             )
           }
-
           const chainId = Number(
             NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id)
           )
           let ensName: boolean | GetEnsAddressReturnType = false
           let wcName: boolean | string = false
-
           if (value?.endsWith(CommonConstants.WC_NAME_SUFFIX)) {
             wcName = (await this.appKit?.resolveWalletConnectName(value)) || false
           }
-
-          if (chainId === mainnet.id) {
+          if (chainId === 1) {
             ensName = await wagmiGetEnsAddress(this.wagmiConfig, {
               name: normalize(value),
               chainId
@@ -392,38 +424,26 @@ export class EVMWagmiClient {
           return false
         }
       },
-
       getEnsAvatar: async (value: string) => {
         const chainId = Number(NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id))
-
         if (chainId !== mainnet.id) {
           return false
         }
-
-        const avatar = await wagmiGetEnsAvatar(this.wagmiConfig, {
+        const avatar = await wagmiGetEnsAvatar(this.wagmiConfig!, {
           name: normalize(value),
           chainId
         })
 
         return avatar || false
       },
-
       parseUnits,
-
       formatUnits
     }
-  }
-
-  public construct(appKit: AppKit, options: OptionsControllerState) {
-    if (!options.projectId) {
-      throw new Error('web3modal:initialize - projectId is undefined')
-    }
-
-    this.appKit = appKit
-    this.options = options
-    this.tokens = HelpersUtil.getCaipTokens(options.tokens)
-
-    const connectors = this.wagmiConfig.connectors
+    ChainController.state.chains.set(this.chainNamespace, {
+      chainNamespace: this.chainNamespace,
+      connectionControllerClient: this.connectionControllerClient,
+      networkControllerClient: this.networkControllerClient
+    })
 
     this.syncRequestedNetworks([...this.wagmiConfig.chains])
     this.syncConnectors(this.wagmiConfig.connectors)
@@ -444,10 +464,10 @@ export class EVMWagmiClient {
     this.appKit?.setEIP6963Enabled(options.enableEIP6963 !== false)
     this.appKit?.subscribeShouldUpdateToAddress((newAddress?: string) => {
       if (newAddress) {
-        const connections = getConnections(this.wagmiConfig)
+        const connections = getConnections(this.wagmiConfig!)
         const connector = connections[0]?.connector
         if (connector) {
-          switchAccount(this.wagmiConfig, {
+          switchAccount(this.wagmiConfig!, {
             connector
           }).then(response =>
             this.syncAccount({
@@ -485,6 +505,7 @@ export class EVMWagmiClient {
           chainNamespace: this.chainNamespace
         }) as CaipNetwork
     )
+
     this.appKit?.setRequestedCaipNetworks(requestedCaipNetworks ?? [], this.chainNamespace)
   }
 
@@ -507,21 +528,15 @@ export class EVMWagmiClient {
       | 'status'
     >
   >) {
-    const caipNetwork = this.appKit?.getCaipNetwork()
-    const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${caipNetwork?.chainId}:${address}`
-
-    if (this.appKit?.getCaipAddress() === caipAddress) {
-      return
-    }
-
-    if (isConnected && address) {
+    if (isConnected && address && chainId) {
+      const caipAddress = `eip155:${chainId}:${address}`
       this.appKit?.resetAccount(this.chainNamespace)
-      this.syncNetwork(address, caipNetwork?.chainId, isConnected)
+      this.syncNetwork(address, chainId, isConnected)
       this.appKit?.setIsConnected(isConnected, this.chainNamespace)
       this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)
       await Promise.all([
-        this.syncProfile(address, caipNetwork?.chainId),
-        this.syncBalance(address, caipNetwork?.chainId),
+        this.syncProfile(address, chainId),
+        this.syncBalance(address, chainId),
         this.syncConnectedWalletInfo(connector),
         this.appKit?.setApprovedCaipNetworksData(this.chainNamespace)
       ])
@@ -550,7 +565,7 @@ export class EVMWagmiClient {
   }
 
   private async syncNetwork(address?: Hex, chainId?: number, isConnected?: boolean) {
-    const chain = this.wagmiConfig.chains.find((c: Chain) => c.id === chainId)
+    const chain = this.wagmiConfig!.chains.find((c: Chain) => c.id === chainId)
 
     if (chain || chainId) {
       const name = chain?.name ?? chainId?.toString()
@@ -564,7 +579,7 @@ export class EVMWagmiClient {
         chainNamespace: this.chainNamespace
       })
       if (isConnected && address && chainId) {
-        const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${id}:${address}`
+        const caipAddress: CaipAddress = `eip155:${id}:${address}`
         this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)
         if (chain?.blockExplorers?.default?.url) {
           const url = `${chain.blockExplorers.default.url}/address/${address}`
@@ -614,10 +629,10 @@ export class EVMWagmiClient {
       }
     } catch {
       if (chainId === mainnet.id) {
-        const profileName = await getEnsName(this.wagmiConfig, { address, chainId })
+        const profileName = await getEnsName(this.wagmiConfig!, { address, chainId })
         if (profileName) {
           this.appKit?.setProfileName(profileName, this.chainNamespace)
-          const profileImage = await wagmiGetEnsAvatar(this.wagmiConfig, {
+          const profileImage = await wagmiGetEnsAvatar(this.wagmiConfig!, {
             name: profileName,
             chainId
           })
@@ -636,9 +651,9 @@ export class EVMWagmiClient {
   }
 
   private async syncBalance(address: Hex, chainId: number) {
-    const chain = this.wagmiConfig.chains.find((c: Chain) => c.id === chainId)
+    const chain = this.wagmiConfig!.chains.find((c: Chain) => c.id === chainId)
     if (chain) {
-      const balance = await getBalance(this.wagmiConfig, {
+      const balance = await getBalance(this.wagmiConfig!, {
         address,
         chainId: chain.id,
         token: this.options?.tokens?.[chain.id]?.address as Hex

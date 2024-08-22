@@ -104,6 +104,7 @@ export class W3mNetworksView extends LitElement {
     const supportsAllNetworks = NetworkController.state.supportsAllNetworks
 
     const walletId = localStorage.getItem('@w3m/wallet_id')
+    const connectorId = localStorage.getItem('@w3m/connected_connector')
 
     const sortedNetworks = CoreHelperUtil.sortRequestedNetworks(
       approvedCaipNetworkIds,
@@ -126,7 +127,9 @@ export class W3mNetworksView extends LitElement {
           type="network"
           name=${network.name ?? network.id}
           @click=${() => this.onSwitchNetwork(network)}
-          .disabled=${ChainController.state.isUniversalAdapterOnly || walletId === 'walletConnect'
+          .disabled=${ChainController.state.isUniversalAdapterOnly ||
+          walletId === 'walletConnect' ||
+          connectorId === 'WALLET_CONNECT'
             ? !supportsAllNetworks && !approvedCaipNetworkIds?.includes(network.id)
             : !supportsAllNetworks &&
               !approvedCaipNetworkIds?.includes(network.id) &&
@@ -143,6 +146,7 @@ export class W3mNetworksView extends LitElement {
     const isUniversalAdapterOnly = ChainController.state.isUniversalAdapterOnly
     const allApprovedCaipNetworks = ChainController.getAllApprovedCaipNetworks()
     const walletId = localStorage.getItem('@w3m/wallet_id')
+    const connectorId = localStorage.getItem('@w3m/connected_connector')
 
     const supportsAllNetworks = NetworkController.state.supportsAllNetworks
     const caipNetwork = NetworkController.state.caipNetwork
@@ -161,10 +165,9 @@ export class W3mNetworksView extends LitElement {
       if (
         isUniversalAdapterOnly ||
         allApprovedCaipNetworks?.includes(network.id) ||
-        walletId === 'walletConnect'
+        walletId === 'walletConnect' ||
+        connectorId === 'WALLET_CONNECT'
       ) {
-        console.log(network)
-
         await NetworkController.switchActiveNetwork(network)
         await NetworkUtil.onNetworkChange()
       } else if (supportsAllNetworks) {

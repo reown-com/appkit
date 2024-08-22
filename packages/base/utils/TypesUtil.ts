@@ -1,4 +1,4 @@
-import type { ThemeVariables } from '@web3modal/common'
+import type { CaipNetwork, ThemeVariables } from '@web3modal/common'
 import type {
   ChainAdapter,
   NetworkControllerState,
@@ -39,10 +39,15 @@ export type AppKitOptions = OptionsControllerState & {
    */
   allowUnsupportedChain?: NetworkControllerState['allowUnsupportedChain']
   /**
-   * You can set a desired chain for the initial connection:
+   * You can set the desired caipnetworks for the app:
    * @see https://docs.walletconnect.com/appkit/react/core/options#defaultchain
    */
-  defaultChain?: NetworkControllerState['caipNetwork']
+  caipNetworks: CaipNetwork[]
+  /**
+   * You can set a desired caipnetwork for the initial connection:
+   * @see https://docs.walletconnect.com/appkit/react/core/options#defaultchain
+   */
+  defaultCaipNetwork?: NetworkControllerState['caipNetwork']
   /**
    * Add or override the modal's network images.
    * @see https://docs.walletconnect.com/appkit/react/core/options#chainimages

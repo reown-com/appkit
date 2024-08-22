@@ -18,7 +18,6 @@ import {
   type Chain
 } from 'wagmi/chains'
 import { ConstantsUtil } from './ConstantsUtil'
-import type { CreateConnectorFn } from 'wagmi'
 
 export const WagmiConstantsUtil = {
   chains: [
@@ -53,8 +52,7 @@ export function getWagmiConfig(type: 'default' | 'email', override = {}) {
     ...config,
     auth: {
       socials: ['google', 'x', 'discord', 'farcaster', 'github', 'apple', 'facebook']
-    },
-    connectors
+    }
   }
 
   const wagmiConfig = defaultWagmiConfig(type === 'email' ? emailConfig : config)

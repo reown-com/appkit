@@ -227,8 +227,6 @@ export const ChainController = {
     }
 
     if (caipNetwork.chainNamespace !== state.activeChain) {
-      console.log('set active chain', caipNetwork)
-
       this.setActiveChain(caipNetwork.chainNamespace)
     }
 

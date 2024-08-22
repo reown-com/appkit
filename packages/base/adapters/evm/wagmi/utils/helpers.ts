@@ -32,8 +32,11 @@ export async function getWalletConnectCaipNetworks(connector?: Connector) {
   const provider = (await connector?.getProvider()) as Awaited<
     ReturnType<(typeof EthereumProvider)['init']>
   >
-  const ns = provider?.signer?.session?.namespaces
+
+  const ns = provider?.session?.namespaces
+
   const nsMethods = ns?.[ConstantsUtil.EIP155]?.methods
+
   const nsChains = getChainsFromAccounts(
     ns?.[ConstantsUtil.EIP155]?.accounts || []
   ) as CaipNetworkId[]
@@ -87,4 +90,33 @@ export function requireCaipAddress(caipAddress: string) {
   }
 
   return account
+}
+
+export function convertCaipNetworksToWagmiChains(caipNetworks: CaipNetwork[]) {
+  const chains = caipNetworks.map(caipNetwork => ({
+    blockExplorers: {
+      default: {
+        apiUrl: '',
+        name: '',
+        url: caipNetwork.explorerUrl || ''
+      }
+    },
+    fees: undefined,
+    formatters: undefined,
+    id: Number(caipNetwork.chainId),
+    name: caipNetwork.name,
+    nativeCurrency: {
+      decimals: 18,
+      name: caipNetwork.currency,
+      symbol: caipNetwork.currency
+    },
+    rpcUrls: {
+      default: {
+        http: [caipNetwork.rpcUrl]
+      }
+    },
+    serializers: undefined
+  })) as unknown as readonly [Chain, ...Chain[]]
+
+  return chains
 }
