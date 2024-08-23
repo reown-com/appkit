@@ -214,13 +214,8 @@ export class SolanaWeb3JsClient {
     this.initializeProviders({
       relayUrl: 'wss://relay.walletconnect.com',
       metadata: clientOptions.metadata,
-      projectId: options.projectId
-
-      /**
-       * Auth configuration will be disabled until secure site is updated
-       *
-       * ...clientOptions.solanaConfig.auth
-       */
+      projectId: options.projectId,
+      ...clientOptions.solanaConfig.auth
     })
 
     this.syncRequestedNetworks(chains, this.options?.chainImages)
