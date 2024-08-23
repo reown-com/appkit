@@ -6,8 +6,10 @@ import type { SolanaAppKitOptions } from './options'
 // -- Configs -----------------------------------------------------------
 export { defaultSolanaConfig } from '@web3modal/base/adapters/solana/web3js'
 
-// -- Setup -------------------------------------------------------------
+// -- Types -------------------------------------------------------------
+export type { SolanaAppKitOptions }
 
+// -- Setup -------------------------------------------------------------
 export function createWeb3Modal(options: SolanaAppKitOptions) {
   const wagmiAdapter = new SolanaWeb3JsClient({
     solanaConfig: options.solanaConfig,
