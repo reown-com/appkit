@@ -128,5 +128,25 @@
         "F5:44:4B:97:C3:B9:94:DB:67:15:D9:18:04:A5:0D:30:06:72:FE:2A:E8:B6:D1:13:64:1C:2F:74:DB:DE:42:53"
       ]
     }
+  },
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.walletconnect.flutterdapp",
+      "sha256_cert_fingerprints": [
+        "89:50:0B:F7:C3:14:A5:D7:20:33:54:37:96:88:82:67:CB:E5:48:52:47:5B:81:F7:38:63:48:67:6D:BF:CA:1D"
+      ]
+    }
+  },
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.walletconnect.flutterdapp.internal",
+      "sha256_cert_fingerprints": [
+        "AF:8B:CA:2C:90:FD:E7:18:AF:CA:67:ED:BA:6D:28:D5:08:B3:66:18:3A:D9:40:8C:B7:53:3D:25:E4:41:EB:29"
+      ]
+    }
   }
 ]
