@@ -324,7 +324,12 @@ export class AppKit {
   private async initControllers(options: AppKitOptions) {
     ChainController.setMultiChainEnabled(true)
 
-    this.initializeUniversalAdapter(options, true)
+    if (options.adapters?.length === 0) {
+      this.initializeUniversalAdapter(options, true)
+    } else if (!options?.adapters?.some(adapter => adapter.adapterType === 'wagmi')) {
+      this.initializeUniversalAdapter(options, false)
+    }
+
     this.initializeAdapters(options)
 
     OptionsController.setProjectId(options.projectId)

@@ -828,6 +828,7 @@ export type ChainAdapter = {
   defaultNetwork?: CaipNetwork
   chainNamespace: ChainNamespace
   isUniversalAdapterClient?: boolean
+  adapterType?: 'solana' | 'wagmi' | 'ethers'
 }
 
 type ProviderEventListener = {

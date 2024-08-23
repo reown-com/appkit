@@ -4,9 +4,8 @@ import { SolanaWeb3JsClient, defaultSolanaConfig } from '@web3modal/base/adapter
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { getWagmiConfig } from '../../utils/WagmiConstants'
 import { WagmiProvider } from 'wagmi'
-import { solana, solanaDevnet, solanaTestnet } from '../../utils/NetworksUtil'
+import { mainnet, solana } from '../../utils/NetworksUtil'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
 import { MultiChainInfo } from '../../components/MultiChainInfo'
@@ -16,27 +15,23 @@ import { MultiChainTests } from '../../components/MultiChainTests'
 
 const queryClient = new QueryClient()
 
-const wagmiConfig = getWagmiConfig('default')
-
-const wagmiAdapter = new EVMWagmiClient({
-  wagmiConfig
-})
+const wagmiAdapter = new EVMWagmiClient()
 
 const solanaConfig = defaultSolanaConfig({
-  chains: [solana, solanaTestnet, solanaDevnet],
+  chains: [solana],
   projectId: ConstantsUtil.ProjectId,
   metadata: ConstantsUtil.Metadata
 })
 
 const solanaWeb3JsAdapter = new SolanaWeb3JsClient({
   solanaConfig,
-  chains: [solana, solanaTestnet, solanaDevnet],
   projectId: ConstantsUtil.ProjectId,
   wallets: [new BackpackWalletAdapter(), new HuobiWalletAdapter(), new SolflareWalletAdapter()]
 })
 
 const modal = createWeb3Modal({
   adapters: [wagmiAdapter, solanaWeb3JsAdapter],
+  caipNetworks: [mainnet, solana],
   projectId: ConstantsUtil.ProjectId,
   enableAnalytics: true,
   metadata: ConstantsUtil.Metadata,
@@ -49,7 +44,7 @@ ThemeStore.setModal(modal)
 
 export default function MultiChainAllAdapters() {
   return (
-    <WagmiProvider config={wagmiConfig}>
+    <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <AppKitButtons />
         <MultiChainInfo />

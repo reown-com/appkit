@@ -106,6 +106,8 @@ export class EVMWagmiClient {
 
   public siweControllerClient = this.options?.siweConfig
 
+  public adapterType = 'wagmi'
+
   private createWagmiConfig(options: AppKitOptions, appKit: AppKit) {
     this.wagmiChains = convertCaipNetworksToWagmiChains(options.caipNetworks)
     const transportsArr = this.wagmiChains.map(chain => [
@@ -165,6 +167,7 @@ export class EVMWagmiClient {
     this.caipNetworks = options.caipNetworks
     this.tokens = HelpersUtil.getCaipTokens(options.tokens)
     this.wagmiConfig = this.createWagmiConfig(options, appKit)
+    console.log(this.wagmiConfig)
 
     if (!this.wagmiConfig) {
       throw new Error('web3modal:wagmiConfig - is undefined')
@@ -444,9 +447,9 @@ export class EVMWagmiClient {
       networkControllerClient: this.networkControllerClient
     })
 
-    this.syncRequestedNetworks([...this.wagmiConfig.chains])
     this.syncConnectors(this.wagmiConfig.connectors)
     this.syncAuthConnector(connectors.find(c => c.id === ConstantsUtil.AUTH_CONNECTOR_ID))
+    this.syncRequestedNetworks(options.caipNetworks)
 
     watchConnectors(this.wagmiConfig, {
       onChange: _connectors => {
@@ -493,19 +496,16 @@ export class EVMWagmiClient {
   }
 
   // -- Private -----------------------------------------------------------------
-  private syncRequestedNetworks(chains: Chain[]) {
-    const requestedCaipNetworks = chains?.map(
-      chain =>
-        ({
-          id: `${ConstantsUtil.EIP155}:${chain.id}`,
-          name: chain.name,
-          imageId: PresetsUtil.NetworkImageIds[chain.id],
-          imageUrl: this.options?.chainImages?.[chain.id],
-          chainNamespace: this.chainNamespace
-        }) as CaipNetwork
-    )
-
-    this.appKit?.setRequestedCaipNetworks(requestedCaipNetworks ?? [], this.chainNamespace)
+  private syncRequestedNetworks(caipNetworks: CaipNetwork[]) {
+    const uniqueChainNamespaces = [
+      ...new Set(caipNetworks.map(caipNetwork => caipNetwork.chainNamespace))
+    ]
+    uniqueChainNamespaces.forEach(chainNamespace => {
+      this.appKit?.setRequestedCaipNetworks(
+        caipNetworks.filter(caipNetwork => caipNetwork.chainNamespace === chainNamespace),
+        chainNamespace
+      )
+    })
   }
 
   private async syncAccount({

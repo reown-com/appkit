@@ -38,6 +38,8 @@ export class W3mConnectWalletConnectWidget extends LitElement {
       return null
     }
 
+    console.log(this.connectors)
+
     const connector = this.connectors.find(c => c.type === 'WALLET_CONNECT')
 
     if (!connector) {
