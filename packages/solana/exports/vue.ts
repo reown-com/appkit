@@ -8,6 +8,9 @@ import type { Provider, Connection } from '@web3modal/base/adapters/solana/web3j
 import type { CaipNetwork } from '@web3modal/core'
 import type { SolanaAppKitOptions } from './options'
 
+// -- Types -------------------------------------------------------------------
+export type { SolanaAppKitOptions }
+
 // -- Setup -------------------------------------------------------------------
 let appkit: AppKit | undefined = undefined
 let solanaAdapter: SolanaWeb3JsClient | undefined = undefined

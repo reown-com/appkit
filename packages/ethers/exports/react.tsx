@@ -16,10 +16,10 @@ export { defaultConfig } from '@web3modal/base/adapters/evm/ethers'
 let appkit: AppKit | undefined = undefined
 let ethersAdapter: EVMEthersClient | undefined = undefined
 
-type WagmiAppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 'sdkVersion'> &
+export type EthersAppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 'sdkVersion'> &
   AdapterOptions
 
-export function createWeb3Modal(options: WagmiAppKitOptions) {
+export function createWeb3Modal(options: EthersAppKitOptions) {
   ethersAdapter = new EVMEthersClient({
     ethersConfig: options.ethersConfig,
     siweConfig: options.siweConfig,

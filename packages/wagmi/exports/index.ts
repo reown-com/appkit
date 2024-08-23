@@ -14,7 +14,7 @@ export { authConnector } from '@web3modal/base/adapters/evm/wagmi'
 export { defaultWagmiConfig } from '@web3modal/base/adapters/evm/wagmi'
 
 // -- Setup -------------------------------------------------------------
-type WagmiAppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 'sdkVersion'> &
+export type WagmiAppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 'sdkVersion'> &
   AdapterOptions<Config>
 
 export function createWeb3Modal(options: WagmiAppKitOptions) {
