@@ -167,7 +167,6 @@ export class EVMWagmiClient {
     this.caipNetworks = options.caipNetworks
     this.tokens = HelpersUtil.getCaipTokens(options.tokens)
     this.wagmiConfig = this.createWagmiConfig(options, appKit)
-    console.log(this.wagmiConfig)
 
     if (!this.wagmiConfig) {
       throw new Error('web3modal:wagmiConfig - is undefined')
