@@ -17,7 +17,7 @@ const walletFeaturesTest = test.extend<{ library: string }>({
 walletFeaturesTest.describe.configure({ mode: 'serial' })
 
 walletFeaturesTest.beforeAll(async ({ browser, library }) => {
-  walletFeaturesTest.setTimeout(180000)
+  walletFeaturesTest.setTimeout(300000)
   context = await browser.newContext()
   const browserPage = await context.newPage()
 

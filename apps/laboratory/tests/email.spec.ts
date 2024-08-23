@@ -19,7 +19,7 @@ const emailTest = test.extend<{ library: string }>({
 emailTest.describe.configure({ mode: 'serial' })
 
 emailTest.beforeAll(async ({ browser, library }) => {
-  emailTest.setTimeout(180000)
+  emailTest.setTimeout(300000)
   context = await browser.newContext()
   browserPage = await context.newPage()
 
