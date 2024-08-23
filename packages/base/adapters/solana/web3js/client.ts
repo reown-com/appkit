@@ -108,9 +108,11 @@ export class SolanaWeb3JsClient {
       connectWalletConnect: async onUri => {
         const wagmiAdapter = this.appKit?.adapters?.find(adapter => adapter.adapterType === 'wagmi')
         if (wagmiAdapter) {
-          wagmiAdapter.connectionControllerClient?.connectWalletConnect(onUri)
+          await wagmiAdapter.connectionControllerClient?.connectWalletConnect(onUri)
         } else {
-          this.appKit?.universalAdapter?.connectionControllerClient.connectWalletConnect(onUri)
+          await this.appKit?.universalAdapter?.connectionControllerClient.connectWalletConnect(
+            onUri
+          )
         }
       },
 
