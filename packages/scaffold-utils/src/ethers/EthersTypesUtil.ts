@@ -1,7 +1,7 @@
 import type { W3mFrameProvider } from '@web3modal/wallet'
 import type { ProviderInterface } from '@coinbase/wallet-sdk'
-import type { SocialProvider } from './TypeUtil.js'
-import UniversalProvider from '@walletconnect/universal-provider'
+import type UniversalProvider from '@walletconnect/universal-provider'
+import type { SocialProvider } from '../TypeUtil.js'
 
 export interface IEthersConfig {
   providers: ProviderType

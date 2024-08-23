@@ -6,7 +6,6 @@ import { coinbaseWallet, injected } from '@wagmi/connectors'
 import { authConnector } from '../connectors/AuthConnector.js'
 import { getTransport } from './helpers.js'
 import type { SocialProvider } from '@web3modal/scaffold-utils'
-import { walletConnect } from '../connectors/UniversalConnector.js'
 
 export type ConfigOptions = Partial<CreateConfigParameters> & {
   chains: CreateConfigParameters['chains']
@@ -37,7 +36,6 @@ export function defaultConfig({
   enableCoinbase,
   enableInjected,
   auth = {},
-  enableWalletConnect,
   enableEIP6963,
   ...wagmiConfig
 }: ConfigOptions): Config {
@@ -48,11 +46,6 @@ export function defaultConfig({
     email: true,
     showWallets: true,
     walletFeatures: true
-  }
-
-  // Enabled by default
-  if (enableWalletConnect !== false) {
-    connectors.push(walletConnect({ projectId, metadata }))
   }
 
   // Enabled by default

@@ -24,7 +24,11 @@ export const ParseUtil = {
       throw new Error(`Invalid CAIP-10 address: ${caipAddress}`)
     }
 
-    return { chainNamespace, chainId, address }
+    return {
+      chainNamespace: chainNamespace as ChainNamespace,
+      chainId: chainId as ChainId,
+      address
+    }
   },
   parseCaipNetworkId(caipNetworkId: CaipNetworkId): ParsedCaipNetworkId {
     const [chainNamespace, chainId] = caipNetworkId.split(':')
@@ -33,6 +37,9 @@ export const ParseUtil = {
       throw new Error(`Invalid CAIP-2 network id: ${caipNetworkId}`)
     }
 
-    return { chainNamespace, chainId }
+    return {
+      chainNamespace: chainNamespace as ChainNamespace,
+      chainId: chainId as ChainId
+    }
   }
 }

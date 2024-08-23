@@ -205,6 +205,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
       if (!provider?.session?.namespaces) {
         return []
       }
+
       const accounts = Object.keys(provider?.session?.namespaces ?? {}).flatMap(namespace => {
         const accountsList = provider?.session?.namespaces[namespace]?.accounts
 
@@ -212,7 +213,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
         return accountsList?.map(account => account.split(':')[2]) ?? []
       })
 
-      return accounts
+      return accounts as `0x${string}`[]
     },
     async getProvider({ chainId } = {}) {
       async function initProvider() {
@@ -249,15 +250,18 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
       return provider_!
     },
     async getChainId() {
-      if (appKit.getCaipNetwork()?.chainId) {
-        return appKit.getCaipNetwork()?.chainId
+      const chainId = appKit.getCaipNetwork()?.chainId
+
+      if (chainId) {
+        return chainId as number
       }
       const provider = await this.getProvider()
-      const chain = provider.session?.namespaces['eip155']?.chains[0]
+      const chain = provider.session?.namespaces['eip155']?.chains?.[0]
 
       const network = parameters.caipNetworks.find(c => c.id === chain)
 
-      return network?.chainId
+      // Shouldn't be casted
+      return network?.chainId as number
     },
     async isAuthorized() {
       try {
@@ -318,7 +322,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
       } catch (err) {
         const error = err as RpcError
 
-        if (/(user rejected)/i.test(error.message)) {
+        if (/(?:user rejected)/iu.test(error.message)) {
           throw new UserRejectedRequestError(error)
         }
 
@@ -358,8 +362,8 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
           this.setRequestedChainsIds([...requestedChains, chainId])
 
           return chain
-        } catch (error) {
-          throw new UserRejectedRequestError(error as Error)
+        } catch (e) {
+          throw new UserRejectedRequestError(e as Error)
         }
       }
     },

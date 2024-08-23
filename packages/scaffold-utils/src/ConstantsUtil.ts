@@ -1,3 +1,5 @@
+import type { ChainNamespace } from '@web3modal/common'
+
 export const ConstantsUtil = {
   WALLET_CONNECT_CONNECTOR_ID: 'walletConnect',
   INJECTED_CONNECTOR_ID: 'injected',
@@ -8,7 +10,7 @@ export const ConstantsUtil = {
   LEDGER_CONNECTOR_ID: 'ledger',
   EIP6963_CONNECTOR_ID: 'eip6963',
   AUTH_CONNECTOR_ID: 'w3mAuth',
-  EIP155: 'eip155',
+  EIP155: 'eip155' as ChainNamespace,
   ADD_CHAIN_METHOD: 'wallet_addEthereumChain',
   EIP6963_ANNOUNCE_EVENT: 'eip6963:announceProvider',
   EIP6963_REQUEST_EVENT: 'eip6963:requestProvider',

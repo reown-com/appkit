@@ -1,14 +1,47 @@
 import { describe, expect, it } from 'vitest'
-import type { CaipNetwork, CaipNetworkId, NetworkControllerClient } from '../../index.js'
+import type { NetworkControllerClient } from '../../index.js'
+import type { CaipNetwork, CaipNetworkId } from '@web3modal/common'
 import { ChainController, EventsController, NetworkController } from '../../index.js'
 import { ConstantsUtil } from '@web3modal/common'
 
 // -- Setup --------------------------------------------------------------------
-const caipNetwork = { id: 'eip155:1', name: 'Ethereum', chain: ConstantsUtil.CHAIN.EVM } as const
+const caipNetwork = {
+  id: 'eip155:1',
+  name: 'Ethereum',
+  chainNamespace: ConstantsUtil.CHAIN.EVM,
+  chainId: 1,
+  currency: 'ETH',
+  explorerUrl: 'https://etherscan.io',
+  rpcUrl: 'https://rpc.infura.com/v1/'
+} as const
 const requestedCaipNetworks = [
-  { id: 'eip155:1', name: 'Ethereum', chain: ConstantsUtil.CHAIN.EVM },
-  { id: 'eip155:42161', name: 'Arbitrum One', chain: ConstantsUtil.CHAIN.EVM },
-  { id: 'eip155:43114', name: 'Avalanche C-Chain', chain: ConstantsUtil.CHAIN.EVM }
+  {
+    id: 'eip155:1',
+    name: 'Ethereum',
+    chainNamespace: ConstantsUtil.CHAIN.EVM,
+    chainId: 1,
+    currency: 'ETH',
+    explorerUrl: 'https://etherscan.io',
+    rpcUrl: 'https://rpc.infura.com/v1/'
+  },
+  {
+    id: 'eip155:42161',
+    name: 'Arbitrum One',
+    chainNamespace: ConstantsUtil.CHAIN.EVM,
+    chainId: 42161,
+    currency: 'ETH',
+    explorerUrl: 'https://etherscan.io',
+    rpcUrl: 'https://rpc.infura.com/v1/'
+  },
+  {
+    id: 'eip155:43114',
+    name: 'Avalanche C-Chain',
+    chainNamespace: ConstantsUtil.CHAIN.EVM,
+    chainId: 43114,
+    currency: 'ETH',
+    explorerUrl: 'https://etherscan.io',
+    rpcUrl: 'https://rpc.infura.com/v1/'
+  }
 ] as CaipNetwork[]
 const approvedCaipNetworkIds = ['eip155:1', 'eip155:42161'] as CaipNetworkId[]
 const switchNetworkEvent = {
@@ -30,13 +63,13 @@ describe('NetworkController', () => {
     expect(NetworkController._getClient).toThrow(
       'Chain is required to get network controller client'
     )
-    ChainController.initialize([{ chain: ConstantsUtil.CHAIN.EVM }])
+    ChainController.initialize([{ chainNamespace: ConstantsUtil.CHAIN.EVM }])
     expect(NetworkController._getClient).toThrow('NetworkController client not set')
   })
 
   it('should have valid default state', () => {
     ChainController.initialize([
-      { chain: ConstantsUtil.CHAIN.EVM, networkControllerClient: client }
+      { chainNamespace: ConstantsUtil.CHAIN.EVM, networkControllerClient: client }
     ])
 
     expect(NetworkController.state).toEqual({
@@ -98,7 +131,11 @@ describe('NetworkController', () => {
     NetworkController.setActiveCaipNetwork({
       id: 'eip155:2',
       name: 'Ethereum',
-      chain: ConstantsUtil.CHAIN.EVM
+      chainNamespace: ConstantsUtil.CHAIN.EVM,
+      chainId: 2,
+      currency: 'ETH',
+      explorerUrl: 'https://etherscan.io',
+      rpcUrl: 'https://rpc.infura.com/v1/'
     })
     expect(NetworkController.checkIfSmartAccountEnabled()).toEqual(true)
   })

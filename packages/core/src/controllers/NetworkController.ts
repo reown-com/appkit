@@ -128,7 +128,7 @@ export const NetworkController = {
 
   setRequestedCaipNetworks(
     requestedNetworks: NetworkControllerState['requestedCaipNetworks'],
-    chain?: ChainNamespace
+    chain: ChainNamespace | undefined
   ) {
     ChainController.setChainNetworkData(
       ChainController.state.multiChainEnabled ? chain : ChainController.state.activeChain,
@@ -136,9 +136,9 @@ export const NetworkController = {
     )
   },
 
-  setAllowUnsupportedCaipNetwork(
+  setAllowUnsupportedChain(
     allowUnsupportedCaipNetwork: NetworkControllerState['allowUnsupportedCaipNetwork'],
-    chain?: ChainNamespace
+    chain: ChainNamespace | undefined
   ) {
     ChainController.setChainNetworkData(chain || ChainController.state.activeChain, {
       allowUnsupportedCaipNetwork
@@ -147,7 +147,7 @@ export const NetworkController = {
 
   setSmartAccountEnabledNetworks(
     smartAccountEnabledNetworks: NetworkControllerState['smartAccountEnabledNetworks'],
-    chain?: ChainNamespace
+    chain: ChainNamespace | undefined
   ) {
     ChainController.setChainNetworkData(
       ChainController.state.multiChainEnabled ? chain : ChainController.state.activeChain,
@@ -255,13 +255,9 @@ export const NetworkController = {
     return allCaipNetworkIds
   },
 
-  async setApprovedCaipNetworksData(_chain?: ChainNamespace) {
+  async setApprovedCaipNetworksData(chain: ChainNamespace | undefined) {
     const networkControllerClient = ChainController.getNetworkControllerClient()
-    const data = await networkControllerClient?.getApprovedCaipNetworksData()
-
-    const chain = ChainController.state.multiChainEnabled
-      ? _chain
-      : ChainController.state.activeChain
+    const data = await networkControllerClient.getApprovedCaipNetworksData()
 
     if (!chain) {
       throw new Error('chain is required to set approved network data')

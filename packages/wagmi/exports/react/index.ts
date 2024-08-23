@@ -1,7 +1,7 @@
 import { AppKit } from '@web3modal/base'
 import type { AppKitOptions } from '@web3modal/base'
 import { EVMWagmiClient, type AdapterOptions } from '@web3modal/base/adapters/evm/wagmi'
-import { getWeb3Modal } from '@web3modal/scaffold-react'
+import { getWeb3Modal } from '@web3modal/base/utils/library/react'
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
 import type { Config } from 'wagmi'
 
@@ -16,10 +16,7 @@ type WagmiAppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 'sdkVersi
   AdapterOptions<Config>
 
 export function createWeb3Modal(options: WagmiAppKitOptions) {
-  wagmiAdapter = new EVMWagmiClient({
-    wagmiConfig: options.wagmiConfig,
-    siweConfig: options.siweConfig
-  })
+  wagmiAdapter = new EVMWagmiClient()
   appkit = new AppKit({
     ...options,
     adapters: [wagmiAdapter],
@@ -38,4 +35,4 @@ export {
   useWeb3ModalState,
   useWeb3ModalEvents,
   useWalletInfo
-} from '@web3modal/scaffold-react'
+} from '@web3modal/base/utils/library/react'

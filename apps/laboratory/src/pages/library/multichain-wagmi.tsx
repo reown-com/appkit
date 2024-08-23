@@ -7,7 +7,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
-import { arbitrum, mainnet, optimism, solana } from '../../utils/NetworksUtil'
+import { arbitrum, mainnet, optimism } from '../../utils/NetworksUtil'
 import { WagmiTests } from '../../components/Wagmi/WagmiTests'
 
 const queryClient = new QueryClient()

@@ -1,4 +1,3 @@
-import { CoreHelperUtil } from '@web3modal/scaffold'
 import {
   ConstantsUtil as CommonConstantsUtil,
   type CaipNetwork,
@@ -11,6 +10,7 @@ import { fallback, http, type Hex } from 'viem'
 
 import type { Chain } from '@wagmi/core/chains'
 import type { Connector } from '@wagmi/core'
+import { CoreHelperUtil } from '@web3modal/core'
 
 export function getCaipDefaultNetwork(chain?: CaipNetwork) {
   if (!chain) {

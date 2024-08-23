@@ -8,7 +8,8 @@ import type {
 } from '@solana/web3.js'
 
 import type { SendTransactionOptions } from '@solana/wallet-adapter-base'
-import type { ConnectorType } from '@web3modal/scaffold'
+import type { ConnectorType } from '@web3modal/core'
+import type { CaipNetwork } from '@web3modal/common'
 
 export type Connection = SolanaConnection
 
@@ -98,4 +99,4 @@ export type Chain = {
 
 export type AnyTransaction = SolanaWeb3Transaction | VersionedTransaction
 
-export type GetActiveChain = () => Chain | undefined
+export type GetActiveChain = () => CaipNetwork | undefined

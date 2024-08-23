@@ -1,4 +1,4 @@
-import type { CaipNetwork } from '@web3modal/core'
+import type { CaipNetwork } from '@web3modal/common'
 import {
   AccountController,
   AssetUtil,
@@ -133,7 +133,7 @@ export class W3mNetworksView extends LitElement {
             ? !supportsAllNetworks && !approvedCaipNetworkIds?.includes(network.id)
             : !supportsAllNetworks &&
               !approvedCaipNetworkIds?.includes(network.id) &&
-              network.chain === ChainController.state.activeChain}
+              network.chainNamespace === ChainController.state.activeChain}
           data-testid=${`w3m-network-switch-${network.name ?? network.id}`}
         ></wui-list-network>
       `
@@ -142,7 +142,7 @@ export class W3mNetworksView extends LitElement {
 
   private async onSwitchNetwork(network: CaipNetwork) {
     const isConnected = AccountController.state.isConnected
-    const isNetworkChainConnected = AccountController.getChainIsConnected(network.chain)
+    const isNetworkChainConnected = AccountController.getChainIsConnected(network.chainNamespace)
     const isUniversalAdapterOnly = ChainController.state.isUniversalAdapterOnly
     const allApprovedCaipNetworks = ChainController.getAllApprovedCaipNetworks()
     const walletId = localStorage.getItem('@w3m/wallet_id')
@@ -155,7 +155,7 @@ export class W3mNetworksView extends LitElement {
     if (isConnected && caipNetwork?.id !== network.id) {
       if (!isNetworkChainConnected && !isUniversalAdapterOnly && walletId !== 'walletConnect') {
         RouterController.push('SwitchActiveChain', {
-          switchToChain: network.chain,
+          switchToChain: network.chainNamespace,
           navigateTo: 'Connect',
           navigateWithReplace: true
         })

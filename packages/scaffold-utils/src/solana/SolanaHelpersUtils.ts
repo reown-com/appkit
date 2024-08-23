@@ -1,13 +1,13 @@
-import { PresetsUtil } from '@web3modal/scaffold-utils'
+import type { CaipNetwork } from '@web3modal/common'
 import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 
+import { PresetsUtil } from '../PresetsUtil.js'
 import { SolConstantsUtil } from './SolanaConstantsUtil.js'
 
-import type { CaipNetwork } from '@web3modal/scaffold'
 import type { Chain, Provider } from './SolanaTypesUtil.js'
 
 export const SolHelpersUtil = {
-  detectRpcUrl(chain: Network, projectId: string) {
+  detectRpcUrl(chain: CaipNetwork, projectId: string) {
     if (chain.rpcUrl.includes(new URL(CommonConstantsUtil.BLOCKCHAIN_API_RPC_URL).hostname)) {
       return `${chain.rpcUrl}?chainId=solana:${chain.chainId}&projectId=${projectId}`
     }
@@ -25,10 +25,7 @@ export const SolHelpersUtil = {
     return SolConstantsUtil.DEFAULT_CHAIN
   },
 
-  getChainObjectFromCaipNetworkId(
-    chains: Network[],
-    chainCaipId: CaipNetworkId | undefined | null = ':'
-  ): Network {
+  getChainFromCaip(chains: CaipNetwork[], chainCaipId: string | undefined | null = ':') {
     const chainId: string = (chainCaipId?.split(':')[1] ?? '').replace(/\s/gu, '')
 
     const selectedChain = chains.find(chain => chain.chainId === chainId)
@@ -36,22 +33,21 @@ export const SolHelpersUtil = {
     if (selectedChain) {
       return {
         ...selectedChain,
-        chainId: `solana:${chainId}` as CaipNetworkId,
+        id: `solana:${chainId}`,
         imageId: PresetsUtil.NetworkImageIds[chainId],
-        chain: CommonConstantsUtil.CHAIN.SOLANA
-      } as const
+        chainNamespace: CommonConstantsUtil.CHAIN.SOLANA
+      } as CaipNetwork
     }
 
     return {
       ...SolConstantsUtil.DEFAULT_CHAIN,
-      id: `solana:${chainId}` as CaipNetworkId,
-      chainId: `solana:${chainId}` as CaipNetworkId,
+      id: `solana:${chainId}`,
       imageId: PresetsUtil.NetworkImageIds[chainId],
-      chain: CommonConstantsUtil.CHAIN.SOLANA
-    } as const
+      chainNamespace: CommonConstantsUtil.CHAIN.SOLANA
+    } as CaipNetwork
   },
 
-  getCaipDefaultChain(chain?: Chain) {
+  getCaipDefaultChain(chain?: CaipNetwork) {
     if (!chain) {
       return undefined
     }
@@ -59,7 +55,8 @@ export const SolHelpersUtil = {
     return {
       id: `solana:${chain.chainId}`,
       name: chain.name,
-      imageId: PresetsUtil.NetworkImageIds[chain.chainId]
+      imageId: PresetsUtil.NetworkImageIds[chain.chainId],
+      chainNamespace: CommonConstantsUtil.CHAIN.SOLANA
     } as CaipNetwork
   },
 

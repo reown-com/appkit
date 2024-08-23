@@ -1,5 +1,4 @@
-import type { Chain } from 'viem'
-import type { Namespace } from './TypesUtil.js'
+import type { NamespaceConfig } from '@walletconnect/universal-provider'
 import type { CaipNetwork, ChainNamespace } from '@web3modal/common'
 
 export const WcHelpersUtil = {
@@ -23,8 +22,8 @@ export const WcHelpersUtil = {
     }
   },
 
-  createNamespaces(caipNetworks: CaipNetwork[]): Namespace {
-    return caipNetworks.reduce<Namespace>((acc, chain) => {
+  createNamespaces(caipNetworks: CaipNetwork[]): NamespaceConfig {
+    return caipNetworks.reduce<NamespaceConfig>((acc, chain) => {
       const { chainId, chainNamespace, rpcUrl } = chain
 
       // eslint-disable-next-line @typescript-eslint/no-useless-template-literals
@@ -41,11 +40,9 @@ export const WcHelpersUtil = {
       }
 
       const fullChainId = `${chainNamespace}:${chainId}`
-      // @ts-ignore
-      acc[chainNamespace].chains.push(fullChainId)
-      // @ts-ignore
-      acc[chainNamespace].rpcMap[fullChainId] = rpcUrl
-      // typeof rpcUrl === 'function' ? rpcUrl(chainId) : rpcUrl
+      acc[chainNamespace]?.chains.push(fullChainId)
+      // @ts-expect-error might be undefined
+      acc[chainNamespace]?.rpcMap[fullChainId] = rpcUrl
 
       return acc
     }, {})

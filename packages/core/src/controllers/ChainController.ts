@@ -130,7 +130,7 @@ export const ChainController = {
     const chains: ChainNamespace[] = ['eip155', 'solana']
     chains.forEach((chain: ChainNamespace) => {
       state.chains.set(chain, {
-        chain,
+        chainNamespace: chain,
         connectionControllerClient: undefined,
         networkControllerClient: undefined,
         accountState,
@@ -203,7 +203,7 @@ export const ChainController = {
     })
   },
 
-  setActiveChain(chain?: ChainNamespace) {
+  setActiveChain(chain: ChainNamespace | undefined) {
     const newAdapter = chain ? state.chains.get(chain) : undefined
 
     if (newAdapter && newAdapter.chainNamespace !== state.activeChain) {
@@ -213,7 +213,7 @@ export const ChainController = {
         : undefined
       AccountController.replaceState(newAdapter.accountState)
       NetworkController.replaceState(newAdapter.networkState)
-      this.setCaipNetwork(newAdapter.chain, newAdapter.networkState?.caipNetwork, true)
+      this.setCaipNetwork(newAdapter.chainNamespace, newAdapter.networkState?.caipNetwork, true)
       PublicStateController.set({
         activeChain: chain,
         selectedNetworkId: newAdapter.networkState?.caipNetwork?.id
@@ -374,8 +374,8 @@ export const ChainController = {
     return approvedCaipNetworkIds
   },
 
-  resetAccount(chain?: ChainNamespace) {
-    const chainToWrite = state.multiChainEnabled ? chain : state.activeChain
+  resetAccount(chain: ChainNamespace | undefined) {
+    const chainToWrite = chain
 
     if (!chainToWrite) {
       throw new Error('Chain is required to set account prop')

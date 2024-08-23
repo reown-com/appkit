@@ -72,7 +72,7 @@ export class W3mConnectCoinbaseWidget extends LitElement {
         StorageUtil.setConnectedWalletImageUrl(connector.imageUrl)
       }
 
-      await ConnectionController.connectExternal(connector)
+      await ConnectionController.connectExternal(connector, connector.chain)
 
       if (OptionsController.state.isSiweEnabled) {
         RouterController.push('ConnectingSiwe')

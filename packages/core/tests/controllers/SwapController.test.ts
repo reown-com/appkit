@@ -7,9 +7,9 @@ import {
   ConnectionController,
   NetworkController,
   SwapController,
-  type CaipNetworkId,
   type NetworkControllerClient
 } from '../../index.js'
+import type { CaipNetworkId, CaipNetwork } from '@web3modal/common'
 import {
   allowanceResponse,
   balanceResponse,
@@ -23,7 +23,15 @@ import { SwapApiUtil } from '../../src/utils/SwapApiUtil.js'
 import { ConstantsUtil } from '@web3modal/common'
 
 // - Mocks ---------------------------------------------------------------------
-const caipNetwork = { id: 'eip155:137', name: 'Polygon', chain: ConstantsUtil.CHAIN.EVM } as const
+const caipNetwork = {
+  id: 'eip155:137',
+  name: 'Polygon',
+  chainNamespace: ConstantsUtil.CHAIN.EVM,
+  chainId: 137,
+  currency: 'ETH',
+  explorerUrl: 'https://etherscan.io',
+  rpcUrl: 'https://rpc.infura.com/v1/'
+} as CaipNetwork
 const approvedCaipNetworkIds = ['eip155:1', 'eip155:137'] as CaipNetworkId[]
 const client: NetworkControllerClient = {
   switchCaipNetwork: async _caipNetwork => Promise.resolve(),
@@ -40,7 +48,9 @@ const toTokenAddress = 'eip155:137:0x2c89bbc92bd86f8075d1decc58c7f4e0107f286b'
 // - Setup ---------------------------------------------------------------------
 beforeAll(async () => {
   //  -- Set Account and
-  ChainController.initialize([{ chain: ConstantsUtil.CHAIN.EVM, networkControllerClient: client }])
+  ChainController.initialize([
+    { chainNamespace: ConstantsUtil.CHAIN.EVM, networkControllerClient: client }
+  ])
   await NetworkController.switchActiveNetwork(caipNetwork)
   AccountController.setCaipAddress(caipAddress, chain)
 

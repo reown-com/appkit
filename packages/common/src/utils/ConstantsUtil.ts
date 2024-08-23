@@ -1,4 +1,4 @@
-import type { Chain } from './TypeUtil.js'
+import type { ChainNamespace } from './TypeUtil.js'
 
 export const ConstantsUtil = {
   WC_NAME_SUFFIX: '.wcn.id',
@@ -6,11 +6,11 @@ export const ConstantsUtil = {
   PULSE_API_URL: 'https://pulse.walletconnect.org',
   W3M_API_URL: 'https://api.web3modal.org',
   CHAIN: {
-    EVM: 'eip155' as Chain,
-    SOLANA: 'solana' as Chain
+    EVM: 'eip155' as ChainNamespace,
+    SOLANA: 'solana' as ChainNamespace
   },
   CHAIN_NAME_MAP: {
-    evm: 'Ethereum',
+    eip155: 'Ethereum',
     solana: 'Solana'
   }
 }

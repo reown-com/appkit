@@ -4,7 +4,6 @@ import type { AuthConnector, Connector } from '../utils/TypeUtil.js'
 import { ConstantsUtil, getW3mThemeVariables } from '@web3modal/common'
 import { OptionsController } from './OptionsController.js'
 import { ThemeController } from './ThemeController.js'
-import { ChainController } from './ChainController.js'
 
 // -- Types --------------------------------------------- //
 interface ConnectorWithProviders extends Connector {

@@ -25,6 +25,7 @@ import {
 import { ChainController } from '@web3modal/core'
 import { prepareTransactionRequest, sendTransaction as wagmiSendTransaction } from '@wagmi/core'
 import type { Chain } from '@wagmi/core/chains'
+import { mainnet } from 'viem/chains'
 import type {
   GetAccountReturnType,
   GetEnsAddressReturnType,
@@ -39,7 +40,7 @@ import type {
   SendTransactionArgs,
   SocialProvider,
   WriteContractArgs
-} from '@web3modal/scaffold'
+} from '@web3modal/core'
 import { formatUnits, parseUnits } from 'viem'
 import type { Hex } from 'viem'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
@@ -105,9 +106,6 @@ export class EVMWagmiClient {
 
   public siweControllerClient = this.options?.siweConfig
 
-  // eslint-disable-next-line @typescript-eslint/no-useless-constructor
-  public constructor() {}
-
   private createWagmiConfig(options: AppKitOptions, appKit: AppKit) {
     this.wagmiChains = convertCaipNetworksToWagmiChains(options.caipNetworks)
     const transportsArr = this.wagmiChains.map(chain => [
@@ -162,13 +160,12 @@ export class EVMWagmiClient {
       throw new Error('web3modal:initialize - projectId is undefined')
     }
 
-    this.caipNetworks = options.caipNetworks
-
     this.appKit = appKit
     this.options = options
+    this.caipNetworks = options.caipNetworks
     this.tokens = HelpersUtil.getCaipTokens(options.tokens)
-
     this.wagmiConfig = this.createWagmiConfig(options, appKit)
+
     if (!this.wagmiConfig) {
       throw new Error('web3modal:wagmiConfig - is undefined')
     }
@@ -337,6 +334,7 @@ export class EVMWagmiClient {
 
           return ids.some(id => Boolean(window.ethereum?.[String(id)]))
         }
+
         return false
       },
       disconnect: async () => {
@@ -380,6 +378,7 @@ export class EVMWagmiClient {
         await prepareTransactionRequest(this.wagmiConfig!, txParams)
         const tx = await wagmiSendTransaction(this.wagmiConfig!, txParams)
         await waitForTransactionReceipt(this.wagmiConfig!, { hash: tx, timeout: 25000 })
+
         return tx
       },
       writeContract: async (data: WriteContractArgs) => {
@@ -501,7 +500,7 @@ export class EVMWagmiClient {
           id: `${ConstantsUtil.EIP155}:${chain.id}`,
           name: chain.name,
           imageId: PresetsUtil.NetworkImageIds[chain.id],
-          imageUrl: this.options?.caipNetworkImages?.[chain.id],
+          imageUrl: this.options?.chainImages?.[chain.id],
           chainNamespace: this.chainNamespace
         }) as CaipNetwork
     )
@@ -529,7 +528,7 @@ export class EVMWagmiClient {
     >
   >) {
     if (isConnected && address && chainId) {
-      const caipAddress = `eip155:${chainId}:${address}`
+      const caipAddress = `eip155:${chainId}:${address}` as CaipAddress
       this.appKit?.resetAccount(this.chainNamespace)
       this.syncNetwork(address, chainId, isConnected)
       this.appKit?.setIsConnected(isConnected, this.chainNamespace)
@@ -573,11 +572,11 @@ export class EVMWagmiClient {
       const caipChainId: CaipNetworkId = `${ConstantsUtil.EIP155}:${id}` as CaipNetworkId
       this.appKit?.setCaipNetwork({
         id: caipChainId,
-        name: chain?.name ?? chainId?.toString(),
+        name,
         imageId: PresetsUtil.NetworkImageIds[id],
-        imageUrl: this.options?.caipNetworkImages?.[id],
+        imageUrl: this.options?.chainImages?.[id],
         chainNamespace: this.chainNamespace
-      })
+      } as CaipNetwork)
       if (isConnected && address && chainId) {
         const caipAddress: CaipAddress = `eip155:${id}:${address}`
         this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)
@@ -736,10 +735,10 @@ export class EVMWagmiClient {
   }
 
   private async syncAuthConnector(
-    authConnector: AdapterOptions<Config>['wagmiConfig']['connectors'][number] | undefined
+    _authConnector: AdapterOptions<Config>['wagmiConfig']['connectors'][number] | undefined
   ) {
     const connector =
-      authConnector as unknown as AdapterOptions<Config>['wagmiConfig']['connectors'][0] & {
+      _authConnector as unknown as AdapterOptions<Config>['wagmiConfig']['connectors'][0] & {
         email: boolean
         socials: SocialProvider[]
         showWallets?: boolean
@@ -759,16 +758,16 @@ export class EVMWagmiClient {
         walletFeatures: connector.walletFeatures,
         chain: this.chainNamespace
       })
-      this.initAuthConnectorListeners(authConnector)
+      this.initAuthConnectorListeners(_authConnector)
     }
   }
 
   private async initAuthConnectorListeners(
-    authConnector: AdapterOptions<Config>['wagmiConfig']['connectors'][number] | undefined
+    _authConnector: AdapterOptions<Config>['wagmiConfig']['connectors'][number] | undefined
   ) {
-    if (authConnector) {
-      await this.listenAuthConnector(authConnector)
-      await this.listenModal(authConnector)
+    if (_authConnector) {
+      await this.listenAuthConnector(_authConnector)
+      await this.listenModal(_authConnector)
     }
   }
 
