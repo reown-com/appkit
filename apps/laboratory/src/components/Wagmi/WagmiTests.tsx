@@ -1,26 +1,14 @@
 import { WagmiTransactionTest } from './WagmiTransactionTest'
 import { WagmiSignMessageTest } from './WagmiSignMessageTest'
 import { WagmiSignTypedDataTest } from './WagmiSignTypedDataTest'
-import {
-  StackDivider,
-  Card,
-  CardHeader,
-  Heading,
-  CardBody,
-  Box,
-  Stack,
-  Button
-} from '@chakra-ui/react'
+import { StackDivider, Card, CardHeader, Heading, CardBody, Box, Stack } from '@chakra-ui/react'
 import { WagmiWriteContractTest } from './WagmiWriteContractTest'
 import { WagmiSendUSDCTest } from './WagmiSendUSDCTest'
 import { WagmiSendCallsTest } from './WagmiSendCallsTest'
 import { WagmiGetCallsStatusTest } from './WagmiGetCallsStatusTest'
 import { WagmiSendCallsWithPaymasterServiceTest } from './WagmiSendCallsWithPaymasterServiceTest'
-import { useWeb3Modal } from '@web3modal/wagmi/react'
 
 export function WagmiTests() {
-  const { open } = useWeb3Modal()
-
   return (
     <Card marginTop={10} marginBottom={10}>
       <CardHeader>
@@ -28,14 +16,6 @@ export function WagmiTests() {
       </CardHeader>
       <CardBody>
         <Stack divider={<StackDivider />} spacing="4">
-          <Box>
-            <Heading size="xs" textTransform="uppercase" pb="2">
-              Hook Interactions
-            </Heading>
-            <Button data-testId="w3m-open-hook-button" onClick={() => open()}>
-              Open
-            </Button>
-          </Box>
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">
               Sign Message
