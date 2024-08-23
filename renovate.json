@@ -40,7 +40,12 @@
     },
     {
       "enabled": true,
-      "matchPackageNames": ["ethers", "@solana/web3.js"]
+      "matchPackageNames": ["ethers"],
+      "matchCurrentVersion": ">=6.0.0"
+    },
+    {
+      "enabled": true,
+      "matchPackageNames": ["@solana/web3.js"]
     }
   ]
 }
