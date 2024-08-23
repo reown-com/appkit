@@ -49,8 +49,8 @@ jobs:
   setup_playwright_runners:
     uses: WalletConnect/gh-actions-runners/.github/workflows/setup-runners.yml@main
     with:
-      cpu: 4096
-      memory: 8192
+      cpu: 16384
+      memory: 65536
       labels: playwright
       count: 5
     secrets:
