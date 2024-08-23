@@ -4,6 +4,7 @@ import { EVMWagmiClient, type AdapterOptions } from '@web3modal/base/adapters/ev
 import { getWeb3Modal } from '@web3modal/base/utils/library/vue'
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
 import type { Config } from '@wagmi/core'
+import type { Chain } from 'viem'
 
 // -- Configs -----------------------------------------------------------
 export { defaultWagmiConfig } from '@web3modal/base/adapters/evm/wagmi'
@@ -12,7 +13,7 @@ export { defaultWagmiConfig } from '@web3modal/base/adapters/evm/wagmi'
 let appkit: AppKit | undefined = undefined
 let wagmiAdapter: EVMWagmiClient | undefined = undefined
 
-export type WagmiAppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 'sdkVersion'> &
+export type WagmiAppKitOptions = Omit<AppKitOptions<Chain>, 'adapters' | 'sdkType' | 'sdkVersion'> &
   AdapterOptions<Config>
 
 export function createWeb3Modal(options: WagmiAppKitOptions) {
