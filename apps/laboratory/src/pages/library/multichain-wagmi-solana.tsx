@@ -6,7 +6,7 @@ import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { getWagmiConfig, WagmiConstantsUtil } from '../../utils/WagmiConstants'
 import { WagmiProvider } from 'wagmi'
-import { solana, solanaDevnet, solanaTestnet } from '../../utils/NetworksUtil'
+import { solana } from '../../utils/NetworksUtil'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
 import { MultiChainInfo } from '../../components/MultiChainInfo'
@@ -42,7 +42,7 @@ ThemeStore.setModal(modal)
 
 export default function MultiChainAllAdapters() {
   return (
-    <WagmiProvider config={wagmiConfig}>
+    <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <AppKitButtons />
         <MultiChainInfo />
