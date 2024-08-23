@@ -14,7 +14,7 @@ const modal = createWeb3Modal({
       socials: ['google', 'x', 'discord', 'farcaster', 'github', 'apple', 'facebook']
     }
   }),
-  chains: EthersConstants.chains,
+  caipNetworks: EthersConstants.chains,
   projectId: ConstantsUtil.ProjectId,
   enableAnalytics: true,
   metadata: ConstantsUtil.Metadata,

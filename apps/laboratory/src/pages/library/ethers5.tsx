@@ -10,10 +10,9 @@ const modal = createWeb3Modal({
   ethersConfig: defaultConfig({
     metadata: ConstantsUtil.Metadata,
     defaultChainId: 1,
-    chains: EthersConstants.chains,
     coinbasePreference: 'smartWalletOnly'
   }),
-  chains: EthersConstants.chains,
+  caipNetworks: EthersConstants.chains,
   projectId: ConstantsUtil.ProjectId,
   enableAnalytics: true,
   metadata: ConstantsUtil.Metadata,

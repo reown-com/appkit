@@ -9,13 +9,12 @@ import { type CaipNetwork, type ChainNamespace } from '@web3modal/common'
 
 // -- Types --------------------------------------------- //
 export interface ChainControllerState {
-  multiChainEnabled: boolean
   activeChain: ChainNamespace | undefined
   activeCaipNetwork?: CaipNetwork
   chains: Map<ChainNamespace, ChainAdapter>
   activeConnector?: Connector
   universalAdapter: Pick<ChainAdapter, 'networkControllerClient' | 'connectionControllerClient'>
-  isUniversalAdapterOnly: boolean
+  noAdapters: boolean
 }
 
 type ChainControllerStateKey = keyof ChainControllerState
@@ -43,11 +42,10 @@ const networkState: NetworkControllerState = {
 
 // -- State --------------------------------------------- //
 const state = proxy<ChainControllerState>({
-  multiChainEnabled: false,
   chains: proxyMap<ChainNamespace, ChainAdapter>(),
   activeChain: undefined,
   activeCaipNetwork: undefined,
-  isUniversalAdapterOnly: false,
+  noAdapters: false,
   universalAdapter: {
     networkControllerClient: undefined,
     connectionControllerClient: undefined
@@ -103,13 +101,13 @@ export const ChainController = {
   initialize(adapters: ChainsInitializerAdapter[]) {
     const adapterToActivate = adapters?.[0]
 
-    if (!adapterToActivate) {
-      throw new Error('Adapter is required to initialize ChainController')
+    if (adapters?.length === 0) {
+      state.noAdapters = true
     }
 
-    state.activeChain = adapterToActivate.chainNamespace
-    PublicStateController.set({ activeChain: adapterToActivate.chainNamespace })
-    this.setActiveCaipNetwork(adapterToActivate.defaultNetwork)
+    state.activeChain = adapterToActivate?.chainNamespace
+    PublicStateController.set({ activeChain: adapterToActivate?.chainNamespace })
+    this.setActiveCaipNetwork(adapterToActivate?.defaultNetwork)
 
     adapters.forEach((adapter: ChainsInitializerAdapter) => {
       state.chains.set(adapter.chainNamespace, {
@@ -137,14 +135,6 @@ export const ChainController = {
         networkState
       })
     })
-  },
-
-  setMultiChainEnabled(multiChain: boolean) {
-    state.multiChainEnabled = multiChain
-  },
-
-  setisUniversalAdapterOnly(isUniversalAdapterOnly: boolean) {
-    state.isUniversalAdapterOnly = isUniversalAdapterOnly
   },
 
   setChainNetworkData(
@@ -196,9 +186,9 @@ export const ChainController = {
   setAccountProp(
     prop: keyof AccountControllerState,
     value: AccountControllerState[keyof AccountControllerState],
-    chain?: ChainNamespace
+    chain: ChainNamespace | undefined
   ) {
-    this.setChainAccountData(state.multiChainEnabled ? chain : state.activeChain, {
+    this.setChainAccountData(chain, {
       [prop]: value
     })
   },
@@ -248,7 +238,7 @@ export const ChainController = {
    * @param shouldReplace - if true, it will replace the NetworkController state
    */
   setCaipNetwork(
-    chain: ChainNamespace,
+    chain: ChainNamespace | undefined,
     caipNetwork: NetworkControllerState['caipNetwork'],
     shouldReplace = false
   ) {
@@ -263,9 +253,9 @@ export const ChainController = {
 
   getNetworkControllerClient() {
     const chain = state.activeChain
-    const isUniversalAdapterOnly = state.isUniversalAdapterOnly
+    const isWcConnector = state.activeConnector?.name === 'WalletConnect'
 
-    if (isUniversalAdapterOnly) {
+    if (isWcConnector) {
       if (!state.universalAdapter.networkControllerClient) {
         throw new Error("Universal Adapter's NetworkControllerClient is not set")
       }
@@ -292,9 +282,9 @@ export const ChainController = {
 
   getConnectionControllerClient(_chain?: ChainNamespace) {
     const chain = _chain || state.activeChain
-    const isUniversalAdapterOnly = state.isUniversalAdapterOnly
+    const isWcConnector = state.activeConnector?.name === 'WalletConnect'
 
-    if (isUniversalAdapterOnly) {
+    if (isWcConnector) {
       if (!state.universalAdapter.connectionControllerClient) {
         throw new Error("Universal Adapter's ConnectionControllerClient is not set")
       }
@@ -323,7 +313,7 @@ export const ChainController = {
     key: K,
     _chain?: ChainNamespace
   ): AccountControllerState[K] | undefined {
-    let chain = state.multiChainEnabled ? state.activeChain : state.activeChain
+    let chain = state.activeChain
 
     if (_chain) {
       chain = _chain
@@ -346,7 +336,7 @@ export const ChainController = {
     key: K,
     _chain?: ChainNamespace
   ): NetworkControllerState[K] | undefined {
-    const chain = _chain || state.multiChainEnabled ? state.activeChain : state.activeChain
+    const chain = _chain || state.activeChain
 
     if (!chain) {
       return undefined

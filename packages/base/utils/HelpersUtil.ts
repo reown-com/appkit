@@ -1,3 +1,4 @@
+import type { Namespace } from '@walletconnect/universal-provider'
 import type { NamespaceConfig } from '@walletconnect/universal-provider'
 import type { CaipNetwork, ChainNamespace } from '@web3modal/common'
 
@@ -8,9 +9,11 @@ export const WcHelpersUtil = {
 
     return number
   },
+
   numberToHexString(value: number) {
     return `0x${value.toString(16)}`
   },
+
   getMethodsByChainNamespace(chainNamespace: ChainNamespace): string[] {
     switch (chainNamespace) {
       case 'solana':
@@ -26,8 +29,6 @@ export const WcHelpersUtil = {
     return caipNetworks.reduce<NamespaceConfig>((acc, chain) => {
       const { chainId, chainNamespace, rpcUrl } = chain
 
-      // eslint-disable-next-line @typescript-eslint/no-useless-template-literals
-
       const methods = this.getMethodsByChainNamespace(chainNamespace)
 
       if (!acc[chainNamespace]) {
@@ -40,13 +41,20 @@ export const WcHelpersUtil = {
       }
 
       const fullChainId = `${chainNamespace}:${chainId}`
-      acc[chainNamespace]?.chains.push(fullChainId)
-      // @ts-expect-error might be undefined
-      acc[chainNamespace]?.rpcMap[fullChainId] = rpcUrl
+
+      // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
+      const namespace = acc[chainNamespace] as Namespace
+
+      namespace.chains.push(fullChainId)
+
+      if (namespace?.rpcMap) {
+        namespace.rpcMap[fullChainId] = rpcUrl
+      }
 
       return acc
     }, {})
   },
+
   extractDetails(fullIdentifier: string | undefined): {
     chainType: string | undefined
     chainId: string | undefined

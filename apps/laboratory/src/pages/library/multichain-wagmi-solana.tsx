@@ -1,37 +1,35 @@
 import { createWeb3Modal } from '@web3modal/base/react'
 import { EVMWagmiClient } from '@web3modal/base/adapters/evm/wagmi'
-import { SolanaWeb3JsClient, defaultSolanaConfig } from '@web3modal/base/adapters/solana/web3js'
+import { SolanaWeb3JsClient } from '@web3modal/base/adapters/solana/web3js'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { getWagmiConfig, WagmiConstantsUtil } from '../../utils/WagmiConstants'
 import { WagmiProvider } from 'wagmi'
-import { mainnet, solana } from '../../utils/NetworksUtil'
+import { solana } from '../../utils/NetworksUtil'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
 import { MultiChainInfo } from '../../components/MultiChainInfo'
-import { BackpackWalletAdapter } from '@solana/wallet-adapter-backpack'
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { MultiChainTests } from '../../components/MultiChainTests'
 
 const queryClient = new QueryClient()
 
-const wagmiAdapter = new EVMWagmiClient()
+const wagmiConfig = getWagmiConfig('default')
 
-const solanaConfig = defaultSolanaConfig({
-  chains: [solana],
-  projectId: ConstantsUtil.ProjectId,
-  metadata: ConstantsUtil.Metadata
-})
+const wagmiAdapter = new EVMWagmiClient({})
 
 const solanaWeb3JsAdapter = new SolanaWeb3JsClient({
-  solanaConfig,
-  projectId: ConstantsUtil.ProjectId,
-  wallets: [new BackpackWalletAdapter(), new HuobiWalletAdapter(), new SolflareWalletAdapter()]
+  solanaConfig: {
+    metadata: ConstantsUtil.Metadata
+  },
+  wallets: [new HuobiWalletAdapter(), new SolflareWalletAdapter()]
 })
 
 const modal = createWeb3Modal({
   adapters: [wagmiAdapter, solanaWeb3JsAdapter],
-  caipNetworks: [mainnet, solana],
+  // @ts-expect-error Wagmi's chains are different from our CaipNetwork type
+  caipNetworks: [...WagmiConstantsUtil.chains, solana, solanaTestnet, solanaDevnet],
   projectId: ConstantsUtil.ProjectId,
   enableAnalytics: true,
   metadata: ConstantsUtil.Metadata,

@@ -130,10 +130,7 @@ export const NetworkController = {
     requestedNetworks: NetworkControllerState['requestedCaipNetworks'],
     chain: ChainNamespace | undefined
   ) {
-    ChainController.setChainNetworkData(
-      ChainController.state.multiChainEnabled ? chain : ChainController.state.activeChain,
-      { requestedCaipNetworks: requestedNetworks }
-    )
+    ChainController.setChainNetworkData(chain, { requestedCaipNetworks: requestedNetworks })
   },
 
   setAllowUnsupportedChain(
@@ -149,10 +146,7 @@ export const NetworkController = {
     smartAccountEnabledNetworks: NetworkControllerState['smartAccountEnabledNetworks'],
     chain: ChainNamespace | undefined
   ) {
-    ChainController.setChainNetworkData(
-      ChainController.state.multiChainEnabled ? chain : ChainController.state.activeChain,
-      { smartAccountEnabledNetworks }
-    )
+    ChainController.setChainNetworkData(chain, { smartAccountEnabledNetworks })
   },
 
   getRequestedCaipNetworks(chainToFilter?: ChainNamespace) {
@@ -163,9 +157,7 @@ export const NetworkController = {
     }
 
     if (chainToFilter) {
-      const chain = ChainController.state.multiChainEnabled
-        ? chainToFilter
-        : ChainController.state.activeChain
+      const chain = chainToFilter
 
       if (!chain) {
         throw new Error('chain is required to get requested networks')
@@ -173,9 +165,7 @@ export const NetworkController = {
 
       chainAdapters = [chain]
     } else {
-      const chains = ChainController.state.multiChainEnabled
-        ? [...ChainController.state.chains.keys()]
-        : [ChainController.state.activeChain]
+      const chains = [...ChainController.state.chains.keys()]
 
       chainAdapters = chains
     }
@@ -202,16 +192,11 @@ export const NetworkController = {
   },
 
   async switchActiveNetwork(network: NetworkControllerState['caipNetwork']) {
-    const isUniversalAdapterOnly = ChainController.state.isUniversalAdapterOnly
     const sameChain = network?.chainNamespace === ChainController.state.activeChain
 
     let networkControllerClient: NetworkControllerState['_client'] = undefined
 
-    const walletId = localStorage.getItem('@w3m/wallet_id')
-
-    if (isUniversalAdapterOnly || walletId === 'walletConnect') {
-      networkControllerClient = ChainController.state.universalAdapter?.networkControllerClient
-    } else if (sameChain) {
+    if (sameChain) {
       networkControllerClient = ChainController.getNetworkControllerClient()
     } else {
       networkControllerClient = network
@@ -233,9 +218,7 @@ export const NetworkController = {
 
   getApprovedCaipNetworkIds(chainToFilter?: ChainNamespace) {
     if (chainToFilter) {
-      const chain = ChainController.state.multiChainEnabled
-        ? chainToFilter
-        : ChainController.state.activeChain
+      const chain = chainToFilter
 
       if (!chain) {
         throw new Error('chain is required to get approved network IDs')
@@ -321,9 +304,7 @@ export const NetworkController = {
   },
 
   getSupportsAllNetworks() {
-    const chain = ChainController.state.multiChainEnabled
-      ? ChainController.state.activeChain
-      : ChainController.state.activeChain
+    const chain = ChainController.state.activeChain
 
     if (!chain) {
       throw new Error('chain is required to check if network supports all networks')
