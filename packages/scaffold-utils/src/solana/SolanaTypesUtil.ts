@@ -25,12 +25,7 @@ export type ProviderType = {
   email?: boolean
   EIP6963?: boolean
   metadata: Metadata
-
-  /**
-   * Auth configuration will be disabled until secure site is updated
-   *
-   * auth?: Provider['auth']
-   */
+  auth?: Provider['auth']
 }
 
 export interface RequestArguments {

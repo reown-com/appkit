@@ -10,6 +10,7 @@ import { NetworkController } from './NetworkController.js'
 import { NetworkUtil } from '@web3modal/common'
 import { EnsUtil } from '../utils/EnsUtil.js'
 import { ConstantsUtil } from '@web3modal/common'
+import { ChainController } from './ChainController.js'
 
 // -- Types --------------------------------------------- //
 type Suggestion = {
@@ -142,7 +143,10 @@ export const EnsController = {
         message
       })
 
-      AccountController.setProfileName(`${name}${ConstantsUtil.WC_NAME_SUFFIX}`, network.chain)
+      AccountController.setProfileName(
+        `${name}${ConstantsUtil.WC_NAME_SUFFIX}`,
+        ChainController.state.activeChain
+      )
       RouterController.replace('RegisterAccountNameSuccess')
     } catch (e) {
       const errorMessage = this.parseEnsApiError(e, `Error registering name ${name}`)
