@@ -32,7 +32,9 @@ export function WagmiTests() {
             <Heading size="xs" textTransform="uppercase" pb="2">
               Hook Interactions
             </Heading>
-            <Button onClick={() => open()}>Open</Button>
+            <Button data-testId="w3m-open-hook-button" onClick={() => open()}>
+              Open
+            </Button>
           </Box>
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">
