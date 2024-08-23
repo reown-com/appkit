@@ -11,16 +11,18 @@ export type { SolanaAppKitOptions }
 
 // -- Setup -------------------------------------------------------------
 export function createWeb3Modal(options: SolanaAppKitOptions) {
-  const wagmiAdapter = new SolanaWeb3JsClient({
+  const solanaAdapter = new SolanaWeb3JsClient({
     solanaConfig: options.solanaConfig,
     chains: options.chains,
     wallets: options.wallets,
-    projectId: options.projectId
+    projectId: options.projectId,
+    defaultChain: options.defaultChain
   })
 
   return new AppKit({
     ...options,
-    adapters: [wagmiAdapter],
+    defaultChain: solanaAdapter.defaultChain,
+    adapters: [solanaAdapter],
     sdkType: 'w3m',
     sdkVersion: `html-solana-${ConstantsUtil.VERSION}`
   })

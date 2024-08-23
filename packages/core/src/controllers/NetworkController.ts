@@ -78,7 +78,7 @@ export const NetworkController = {
 
   setDefaultCaipNetwork(caipNetwork: NetworkControllerState['caipNetwork']) {
     if (caipNetwork) {
-      ChainController.setCaipNetwork(caipNetwork.chain, caipNetwork)
+      ChainController.setCaipNetwork(caipNetwork.chain, caipNetwork, true)
       ChainController.setChainNetworkData(caipNetwork.chain, { isDefaultCaipNetwork: true })
       PublicStateController.set({ selectedNetworkId: caipNetwork.id })
     }
