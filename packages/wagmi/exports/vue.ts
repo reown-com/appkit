@@ -12,7 +12,7 @@ export { defaultWagmiConfig } from '@web3modal/base/adapters/evm/wagmi'
 let appkit: AppKit | undefined = undefined
 let wagmiAdapter: EVMWagmiClient | undefined = undefined
 
-type WagmiAppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 'sdkVersion'> &
+export type WagmiAppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 'sdkVersion'> &
   AdapterOptions<Config>
 
 export function createWeb3Modal(options: WagmiAppKitOptions) {
