@@ -8,6 +8,13 @@
     "dist",
     "!tsconfig.tsbuildinfo"
   ],
+  "scripts": {
+    "build:clean": "rm -rf dist",
+    "build": "tsc --build tsconfig.build.json",
+    "watch": "tsc --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+  },
   "exports": {
     ".": {
       "types": "./dist/types/exports/index.d.ts",
@@ -50,12 +57,30 @@
       "default": "./dist/esm/utils/library/vue/index.js"
     }
   },
-  "scripts": {
-    "build:clean": "rm -rf dist",
-    "build": "tsc --build tsconfig.build.json",
-    "watch": "tsc --watch",
-    "typecheck": "tsc --noEmit",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+  "typesVersions": {
+    "*": {
+      "react": [
+        "./dist/types/exports/react.d.ts"
+      ],
+      "adapters/evm/ethers": [
+        "./dist/types/adapters/evm/ethers/index.d.ts"
+      ],
+      "adapters/evm/ethers5": [
+        "./dist/types/adapters/evm/ethers5/index.d.ts"
+      ],
+      "adapters/evm/wagmi": [
+        "./dist/types/adapters/evm/wagmi/index.d.ts"
+      ],
+      "adapters/solana/web3js": [
+        "./dist/types/adapters/solana/web3js/index.d.ts"
+      ],
+      "utils/library/react": [
+        "./dist/types/utils/library/react/index.d.ts"
+      ],
+      "utils/library/vue": [
+        "./dist/types/utils/library/vue/index.d.ts"
+      ]
+    }
   },
   "dependencies": {
     "@walletconnect/utils": "2.14.0",
