@@ -28,8 +28,8 @@ import type { ConnectionControllerClient, NetworkControllerClient } from '@web3m
 import { WcConstantsUtil } from '../../../utils/ConstantsUtil.js'
 import { EthersMethods } from './utils/EthersMethods.js'
 import { formatEther, InfuraProvider, JsonRpcProvider } from 'ethers'
-import { EthersStoreUtil } from './utils/EthersStoreUtil.js'
 import type { PublicStateControllerState } from '@web3modal/core'
+import { ProviderUtil } from '../../../utils/ProviderUtil.js'
 
 // -- Types ---------------------------------------------------------------------
 export interface AdapterOptions {
@@ -221,8 +221,8 @@ export class EVMEthersClient {
       },
 
       disconnect: async () => {
-        const provider = EthersStoreUtil.state.provider
-        const providerId = EthersStoreUtil.state.providerId
+        const provider = ProviderUtil.state.provider
+        const providerId = ProviderUtil.state.providerId
 
         this.appKit?.setClientId(null)
         if (this.options?.siweConfig?.options?.signOutOnDisconnect) {
@@ -267,7 +267,7 @@ export class EVMEthersClient {
         this.appKit?.resetAccount('eip155')
       },
       signMessage: async (message: string) => {
-        const provider = EthersStoreUtil.state.provider as Provider
+        const provider = ProviderUtil.state.provider as Provider
         const address = this.appKit?.getAddress()
 
         if (!address) {
@@ -281,7 +281,7 @@ export class EVMEthersClient {
       formatUnits: EthersMethods.formatUnits,
 
       estimateGas: async data => {
-        const provider = EthersStoreUtil.state.provider as Provider
+        const provider = ProviderUtil.state.provider as Provider
         const address = this.appKit?.getAddress()
         const caipNetwork = this.appKit?.getCaipNetwork()
 
@@ -298,7 +298,7 @@ export class EVMEthersClient {
       },
 
       sendTransaction: async data => {
-        const provider = EthersStoreUtil.state.provider as Provider
+        const provider = ProviderUtil.state.provider as Provider
         const address = this.appKit?.getAddress()
         const caipNetwork = this.appKit?.getCaipNetwork()
 
@@ -315,7 +315,7 @@ export class EVMEthersClient {
       },
 
       writeContract: async data => {
-        const provider = EthersStoreUtil.state.provider as Provider
+        const provider = ProviderUtil.state.provider as Provider
         const address = this.appKit?.getAddress()
         const caipNetwork = this.appKit?.getCaipNetwork()
 
@@ -453,8 +453,8 @@ export class EVMEthersClient {
             `${this.chainNamespace}:${chainId}:${addresses[0]}`,
             this.chainNamespace
           )
-          EthersStoreUtil.setProviderId(providerId)
-          EthersStoreUtil.setProvider(provider)
+          ProviderUtil.setProviderId(providerId)
+          ProviderUtil.setProvider(provider)
           this.appKit?.setStatus('connected', this.chainNamespace)
           this.appKit?.setIsConnected(true, this.chainNamespace)
           this.appKit?.setAllAccounts(
@@ -508,8 +508,8 @@ export class EVMEthersClient {
           this.chainNamespace
         )
         this.appKit?.setSmartAccountDeployed(Boolean(smartAccountDeployed), this.chainNamespace)
-        EthersStoreUtil.setProvider(this.authProvider as unknown as Provider)
-        EthersStoreUtil.setProviderId(ConstantsUtil.AUTH_CONNECTOR_ID as ProviderId)
+        ProviderUtil.setProvider(this.authProvider as unknown as Provider)
+        ProviderUtil.setProviderId(ConstantsUtil.AUTH_CONNECTOR_ID as ProviderId)
         this.setupProviderListeners(this.authProvider as unknown as Provider, 'w3mAuth')
         this.watchModal()
       }
@@ -794,7 +794,7 @@ export class EVMEthersClient {
 
   private syncConnectedWalletInfo() {
     const currentActiveWallet = window?.localStorage.getItem(WcConstantsUtil.WALLET_ID)
-    const providerType = EthersStoreUtil.state.providerId
+    const providerType = ProviderUtil.state.providerId
 
     if (providerType === ConstantsUtil.EIP6963_CONNECTOR_ID) {
       if (currentActiveWallet) {
@@ -807,7 +807,7 @@ export class EVMEthersClient {
         }
       }
     } else if (providerType === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
-      const provider = EthersStoreUtil.state.provider as unknown as UniversalProvider
+      const provider = ProviderUtil.state.provider as unknown as UniversalProvider
 
       if (provider.session) {
         this.appKit?.setConnectedWalletInfo(
@@ -859,8 +859,8 @@ export class EVMEthersClient {
       }
     }
 
-    const provider = EthersStoreUtil.state.provider
-    const providerType = EthersStoreUtil.state.providerId
+    const provider = ProviderUtil.state.provider
+    const providerType = ProviderUtil.state.providerId
     switch (providerType) {
       case ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID:
         this.appKit?.universalAdapter?.networkControllerClient.switchCaipNetwork(caipNetwork)

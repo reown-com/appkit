@@ -93,20 +93,6 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
           provider.on('display_uri', displayUri)
         }
 
-        let targetChainId = chainId
-        if (!targetChainId) {
-          const state = (await config.storage?.getItem('state')) ?? {}
-          const isChainSupported = config.chains.some(x => x.id === state.chainId)
-          if (isChainSupported) {
-            targetChainId = state.chainId
-          } else {
-            targetChainId = config.chains[0]?.id
-          }
-        }
-        if (!targetChainId) {
-          throw new Error('No chains found on connector.')
-        }
-
         const isChainsStale = await this.isChainsStale()
         // If there is an active session with stale chains, disconnect current session.
         if (provider.session && isChainsStale) {

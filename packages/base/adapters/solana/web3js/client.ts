@@ -28,6 +28,7 @@ import { watchStandard } from './utils/watchStandard.js'
 import { WalletConnectProvider } from './providers/WalletConnectProvider.js'
 import type { AppKit } from '../../../src/client.js'
 import type { AppKitOptions } from '../../../utils/TypesUtil.js'
+import { ProviderUtil } from '../../../utils/ProviderUtil.js'
 
 export interface AdapterOptions {
   solanaConfig: ProviderType
@@ -107,6 +108,7 @@ export class SolanaWeb3JsClient {
     this.connectionControllerClient = {
       connectWalletConnect: async onUri => {
         const wagmiAdapter = this.appKit?.adapters?.find(adapter => adapter.adapterType === 'wagmi')
+
         if (wagmiAdapter) {
           await wagmiAdapter.connectionControllerClient?.connectWalletConnect(onUri)
         } else {
@@ -129,7 +131,8 @@ export class SolanaWeb3JsClient {
       },
 
       disconnect: async () => {
-        await SolStoreUtil.state.provider?.disconnect()
+        await ProviderUtil.state.provider?.disconnect()
+        this.appKit?.resetAccount('solana')
       },
 
       signMessage: async (message: string) => {
@@ -172,6 +175,7 @@ export class SolanaWeb3JsClient {
     }
 
     this.appKit = appKit
+
     this.options = options
     this.caipNetworks = caipNetworks
 
@@ -271,10 +275,9 @@ export class SolanaWeb3JsClient {
 
   // -- Private -----------------------------------------------------------------
   private async syncAccount() {
-    const address = SolStoreUtil.state.address
-    const chainId = SolStoreUtil.state.currentChain?.chainId
-    const isConnected = SolStoreUtil.state.isConnected
-    this.appKit?.resetAccount(this.chainNamespace)
+    const address = this.appKit?.getAddress()
+    const chainId = this.appKit?.getCaipNetwork()?.chainId
+    const isConnected = this.appKit?.getIsConnectedState()
 
     if (isConnected && address && chainId) {
       const caipAddress: CaipAddress = `solana:${chainId}:${address}`
@@ -396,7 +399,7 @@ export class SolanaWeb3JsClient {
       }
 
       SolStoreUtil.setIsConnected(true)
-      SolStoreUtil.setProvider(provider)
+      ProviderUtil.setProvider(provider)
       this.provider = provider
       this.setAddress(address)
 

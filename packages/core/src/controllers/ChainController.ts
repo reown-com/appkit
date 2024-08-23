@@ -255,7 +255,7 @@ export const ChainController = {
     const chain = state.activeChain
     const isWcConnector = state.activeConnector?.name === 'WalletConnect'
 
-    if (isWcConnector) {
+    if (isWcConnector && state.universalAdapter.networkControllerClient) {
       if (!state.universalAdapter.networkControllerClient) {
         throw new Error("Universal Adapter's NetworkControllerClient is not set")
       }
@@ -282,9 +282,10 @@ export const ChainController = {
 
   getConnectionControllerClient(_chain?: ChainNamespace) {
     const chain = _chain || state.activeChain
+
     const isWcConnector = state.activeConnector?.name === 'WalletConnect'
 
-    if (isWcConnector) {
+    if (isWcConnector && state.universalAdapter.connectionControllerClient) {
       if (!state.universalAdapter.connectionControllerClient) {
         throw new Error("Universal Adapter's ConnectionControllerClient is not set")
       }

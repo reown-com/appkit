@@ -35,14 +35,19 @@ export async function getWalletConnectCaipNetworks(connector?: Connector) {
 
   const ns = provider?.session?.namespaces
 
-  const nsMethods = ns?.[ConstantsUtil.EIP155]?.methods
+  const nsChains: CaipNetworkId[] | undefined = []
 
-  const nsChains = getChainsFromAccounts(
-    ns?.[ConstantsUtil.EIP155]?.accounts || []
-  ) as CaipNetworkId[]
+  if (ns) {
+    Object.keys(ns).forEach(key => {
+      const chains = ns?.[key]?.chains
+      if (chains) {
+        nsChains.push(...(chains as CaipNetworkId[]))
+      }
+    })
+  }
 
   return {
-    supportsAllNetworks: Boolean(nsMethods?.includes(ConstantsUtil.ADD_CHAIN_METHOD)),
+    supportsAllNetworks: false,
     approvedCaipNetworkIds: nsChains
   }
 }

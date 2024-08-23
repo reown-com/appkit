@@ -86,6 +86,7 @@ export const ConnectionController = {
 
   async connectWalletConnect() {
     StorageUtil.setConnectedConnector('WALLET_CONNECT')
+
     await this._getClient().connectWalletConnect(uri => {
       state.wcUri = uri
       state.wcPairingExpiry = CoreHelperUtil.getPairingExpiry()

@@ -246,6 +246,8 @@ export const AccountController = {
   },
 
   resetAccount(chain: ChainNamespace) {
+    console.trace(chain)
+
     ChainController.resetAccount(chain)
   }
 }

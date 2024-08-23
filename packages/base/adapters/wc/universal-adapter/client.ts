@@ -23,6 +23,7 @@ import {
   type CaipAddress,
   type ChainNamespace
 } from '@web3modal/common'
+import { ProviderUtil } from '../../../utils/ProviderUtil.js'
 
 type Metadata = {
   name: string
@@ -330,6 +331,8 @@ export class UniversalAdapterClient {
     )
 
     const nameSpaces = this.walletConnectProvider?.session?.namespaces
+    ProviderUtil.setProvider(this.walletConnectProvider)
+    ProviderUtil.setProviderId('walletConnect')
 
     if (nameSpaces) {
       Object.keys(nameSpaces)
