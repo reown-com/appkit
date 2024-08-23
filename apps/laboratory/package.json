@@ -60,7 +60,7 @@
     "axios": "1.7.2",
     "bs58": "6.0.0",
     "ethers": "6.13.0",
-    "ethers5": "npm:ethers@5.7.2",
+    "ethers5": "npm:ethers@6.13.2",
     "framer-motion": "10.17.9",
     "next": "14.2.3",
     "next-auth": "4.24.5",

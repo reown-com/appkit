@@ -253,8 +253,8 @@ importers:
         specifier: 6.13.0
         version: 6.13.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       ethers5:
-        specifier: npm:ethers@5.7.2
-        version: ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+        specifier: npm:ethers@6.13.2
+        version: ethers@6.13.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       framer-motion:
         specifier: 10.17.9
         version: 10.17.9(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -686,8 +686,8 @@ importers:
         specifier: 6.13.0
         version: 6.13.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       ethers5:
-        specifier: npm:ethers@5.7.2
-        version: ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+        specifier: npm:ethers@6.13.2
+        version: ethers@6.13.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       react:
         specifier: 18.2.0
         version: 18.2.0
@@ -8004,6 +8004,10 @@ packages:
 
   ethers@6.13.0:
     resolution: {integrity: sha512-+yyQQQWEntY5UVbCv++guA14RRVFm1rSnO1GoLFdrK7/XRWMoktNgyG9UjwxrQqGBfGyFKknNZ81YpUS2emCgg==}
+    engines: {node: '>=14.0.0'}
+
+  ethers@6.13.2:
+    resolution: {integrity: sha512-9VkriTTed+/27BGuY1s0hf441kqwHJ1wtN2edksEtiRvXx+soxRX3iSXTfFqq2+YwrOqbDoTHjIhQnjJRlzKmg==}
     engines: {node: '>=14.0.0'}
 
   ethers@6.9.0:
@@ -23126,6 +23130,19 @@ snapshots:
       aes-js: 4.0.0-beta.5
       tslib: 2.4.0
       ws: 8.5.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+
+  ethers@6.13.2(bufferutil@4.0.8)(utf-8-validate@5.0.10):
+    dependencies:
+      '@adraffy/ens-normalize': 1.10.1
+      '@noble/curves': 1.2.0
+      '@noble/hashes': 1.3.2
+      '@types/node': 18.15.13
+      aes-js: 4.0.0-beta.5
+      tslib: 2.4.0
+      ws: 8.17.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
