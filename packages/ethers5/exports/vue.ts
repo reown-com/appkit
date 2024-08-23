@@ -20,10 +20,12 @@ export function createWeb3Modal(options: EthersAppKitOptions) {
   ethersAdapter = new EVMEthersClient({
     ethersConfig: options.ethersConfig,
     siweConfig: options.siweConfig,
-    chains: options.chains
+    chains: options.chains,
+    defaultChain: options.defaultChain
   })
   appkit = new AppKit({
     ...options,
+    defaultChain: ethersAdapter.defaultChain,
     adapters: [ethersAdapter],
     sdkType: 'w3m',
     sdkVersion: `vue-ethers5-${ConstantsUtil.VERSION}`

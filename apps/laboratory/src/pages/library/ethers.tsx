@@ -16,6 +16,7 @@ const modal = createWeb3Modal({
   chains: EthersConstants.chains,
   projectId: ConstantsUtil.ProjectId,
   enableAnalytics: true,
+  defaultChain: EthersConstants.chains[1],
   metadata: ConstantsUtil.Metadata,
   termsConditionsUrl: 'https://walletconnect.com/terms',
   privacyPolicyUrl: 'https://walletconnect.com/privacy',

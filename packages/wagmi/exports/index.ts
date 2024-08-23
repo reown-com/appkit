@@ -20,11 +20,13 @@ export type WagmiAppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 's
 export function createWeb3Modal(options: WagmiAppKitOptions) {
   const wagmiAdapter = new EVMWagmiClient({
     wagmiConfig: options.wagmiConfig,
-    siweConfig: options.siweConfig
+    siweConfig: options.siweConfig,
+    defaultChain: options.defaultChain
   })
 
   return new AppKit({
     ...options,
+    defaultChain: wagmiAdapter.defaultChain,
     adapters: [wagmiAdapter],
     sdkType: 'w3m',
     sdkVersion: `html-wagmi-${ConstantsUtil.VERSION}`

@@ -17,11 +17,13 @@ export function createWeb3Modal(options: EthersAppKitOptions) {
   const ethersAdapter = new EVMEthersClient({
     ethersConfig: options.ethersConfig,
     siweConfig: options.siweConfig,
-    chains: options.chains
+    chains: options.chains,
+    defaultChain: options.defaultChain
   })
 
   return new AppKit({
     ...options,
+    defaultChain: ethersAdapter.defaultChain,
     adapters: [ethersAdapter],
     sdkType: 'w3m',
     sdkVersion: `html-ethers-${ConstantsUtil.VERSION}`

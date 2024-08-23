@@ -15,11 +15,13 @@ export function createWeb3Modal(options: SolanaAppKitOptions) {
     solanaConfig: options.solanaConfig,
     chains: options.chains,
     wallets: options.wallets,
-    projectId: options.projectId
+    projectId: options.projectId,
+    defaultChain: options.defaultChain
   })
 
   return new AppKit({
     ...options,
+    defaultChain: wagmiAdapter.defaultChain,
     adapters: [wagmiAdapter],
     sdkType: 'w3m',
     sdkVersion: `html-solana-${ConstantsUtil.VERSION}`
