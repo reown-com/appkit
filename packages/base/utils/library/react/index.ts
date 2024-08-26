@@ -82,9 +82,7 @@ export function useWeb3Modal() {
   }
 
   async function open(options?: OpenOptions) {
-    if (options) {
-      await modal?.open(options)
-    }
+    await modal?.open(options)
   }
 
   async function close() {
