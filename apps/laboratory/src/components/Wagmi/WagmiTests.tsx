@@ -14,7 +14,6 @@ export function WagmiTests() {
       <CardHeader>
         <Heading size="md">Test Interactions</Heading>
       </CardHeader>
-
       <CardBody>
         <Stack divider={<StackDivider />} spacing="4">
           <Box>
