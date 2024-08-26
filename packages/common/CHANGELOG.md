@@ -1,5 +1,11 @@
 # @web3modal/common
 
+## 5.1.3
+
+### Patch Changes
+
+- refactor: defaultChain ts mismatch, custom hooks, separation of dependencies
+
 ## 5.1.2
 
 ### Patch Changes

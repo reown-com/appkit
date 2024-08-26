@@ -1,5 +1,14 @@
 # @examples/html-wagmi
 
+## 5.1.3
+
+### Patch Changes
+
+- refactor: defaultChain ts mismatch, custom hooks, separation of dependencies
+
+- Updated dependencies []:
+  - @web3modal/wagmi@5.1.3
+
 ## 5.1.2
 
 ### Patch Changes
