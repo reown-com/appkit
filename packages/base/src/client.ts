@@ -1,13 +1,12 @@
-import {
-  type EventsControllerState,
-  type PublicStateControllerState,
-  type ThemeControllerState,
-  type ModalControllerState,
-  type ConnectedWalletInfo,
-  type RouterControllerState,
-  type ChainAdapter,
-  type CaipNetwork,
-  AssetUtil
+import type {
+  EventsControllerState,
+  PublicStateControllerState,
+  ThemeControllerState,
+  ModalControllerState,
+  ConnectedWalletInfo,
+  RouterControllerState,
+  ChainAdapter,
+  CaipNetwork
 } from '@web3modal/core'
 import {
   AccountController,
@@ -24,7 +23,8 @@ import {
   RouterController,
   EnsController,
   OptionsController,
-  NetworkController
+  NetworkController,
+  AssetUtil
 } from '@web3modal/core'
 import { setColorTheme, setThemeVariables } from '@web3modal/ui'
 import { ConstantsUtil, type Chain } from '@web3modal/common'
