@@ -59,6 +59,8 @@ export class UniversalAdapterClient {
 
   public chainNamespace: ChainNamespace
 
+  public defaultNetwork: CaipNetwork
+
   public networkControllerClient: NetworkControllerClient
 
   public connectionControllerClient: ConnectionControllerClient
@@ -75,6 +77,8 @@ export class UniversalAdapterClient {
     this.metadata = metadata
 
     this.caipNetworks = caipNetworks
+
+    this.defaultNetwork = options.defaultNetwork ? options.defaultNetwork : this.caipNetworks[0]
 
     this.networkControllerClient = {
       // @ts-expect-error switchCaipNetwork is async for some adapter but not for this adapter
@@ -170,9 +174,9 @@ export class UniversalAdapterClient {
             }
           }
         } else {
-          const namespaces = WcHelpersUtil.createNamespaces(this.caipNetworks)
+          const optionalNamespaces = WcHelpersUtil.createNamespaces(this.caipNetworks)
 
-          await WalletConnectProvider.connect({ optionalNamespaces: namespaces })
+          await WalletConnectProvider.connect({ optionalNamespaces })
         }
 
         this.setWalletConnectProvider()

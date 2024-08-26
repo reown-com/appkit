@@ -103,6 +103,10 @@ export class EVMEthersClient {
 
     this.ethersConfig = ethersConfig
 
+    this.defaultCaipNetwork = options.defaultCaipNetwork
+      ? options.defaultCaipNetwork
+      : this.caipNetworks[0]
+
     this.networkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
         if (caipNetwork?.chainId) {

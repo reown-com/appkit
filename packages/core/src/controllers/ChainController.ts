@@ -105,26 +105,34 @@ export const ChainController = {
       state.noAdapters = true
     }
 
-    state.activeChain = adapterToActivate?.chainNamespace
-    PublicStateController.set({ activeChain: adapterToActivate?.chainNamespace })
-    this.setActiveCaipNetwork(adapterToActivate?.defaultNetwork)
+    if (!state.noAdapters) {
+      state.activeChain = adapterToActivate?.chainNamespace
+      PublicStateController.set({ activeChain: adapterToActivate?.chainNamespace })
+      this.setActiveCaipNetwork(adapterToActivate?.defaultNetwork)
 
-    adapters.forEach((adapter: ChainsInitializerAdapter) => {
-      state.chains.set(adapter.chainNamespace, {
-        chainNamespace: adapter.chainNamespace,
-        connectionControllerClient: adapter.connectionControllerClient,
-        networkControllerClient: adapter.networkControllerClient,
-        accountState,
-        networkState
+      adapters.forEach((adapter: ChainsInitializerAdapter) => {
+        state.chains.set(adapter.chainNamespace, {
+          chainNamespace: adapter.chainNamespace,
+          connectionControllerClient: adapter.connectionControllerClient,
+          networkControllerClient: adapter.networkControllerClient,
+          accountState,
+          networkState
+        })
       })
-    })
+    }
   },
 
-  initializeUniversalAdapter(adapter: ChainsInitializerAdapter) {
+  initializeUniversalAdapter(
+    adapter: ChainsInitializerAdapter,
+    adapters: ChainsInitializerAdapter[]
+  ) {
     state.activeChain = 'eip155'
     PublicStateController.set({ activeChain: 'eip155' })
     state.universalAdapter = adapter
 
+    if (adapters.length === 0) {
+      this.setActiveCaipNetwork(adapter?.defaultNetwork)
+    }
     const chains: ChainNamespace[] = ['eip155', 'solana']
     chains.forEach((chain: ChainNamespace) => {
       state.chains.set(chain, {
@@ -255,7 +263,10 @@ export const ChainController = {
     const chain = state.activeChain
     const isWcConnector = state.activeConnector?.name === 'WalletConnect'
 
-    if (isWcConnector && state.universalAdapter.networkControllerClient) {
+    if (
+      (isWcConnector && state.universalAdapter.networkControllerClient) ||
+      (state.noAdapters && state.universalAdapter.networkControllerClient)
+    ) {
       if (!state.universalAdapter.networkControllerClient) {
         throw new Error("Universal Adapter's NetworkControllerClient is not set")
       }
@@ -285,7 +296,10 @@ export const ChainController = {
 
     const isWcConnector = state.activeConnector?.name === 'WalletConnect'
 
-    if (isWcConnector && state.universalAdapter.connectionControllerClient) {
+    if (
+      (isWcConnector && state.universalAdapter.connectionControllerClient) ||
+      (state.noAdapters && state.universalAdapter.connectionControllerClient)
+    ) {
       if (!state.universalAdapter.connectionControllerClient) {
         throw new Error("Universal Adapter's ConnectionControllerClient is not set")
       }
