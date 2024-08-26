@@ -8,8 +8,9 @@ import type {
 } from '@solana/web3.js'
 
 import type { SendTransactionOptions } from '@solana/wallet-adapter-base'
-import type { ConnectorType } from '@web3modal/core'
 import type { CaipNetwork } from '@web3modal/common'
+import type { Connector, ConnectorType } from '@web3modal/core'
+import type { W3mFrameTypes } from '@web3modal/wallet'
 
 export type Connection = SolanaConnection
 
@@ -25,6 +26,7 @@ export type ProviderType = {
   email?: boolean
   EIP6963?: boolean
   metadata: Metadata
+  auth?: Provider['auth']
 }
 
 export interface RequestArguments {
@@ -37,8 +39,9 @@ export interface Provider extends ProviderEventEmitterMethods {
   name: string
   publicKey?: PublicKey
   icon?: string
-  chains: Chain[]
+  chains: CaipNetwork[]
   type: ConnectorType
+  auth?: Pick<Connector, 'email' | 'socials' | 'showWallets' | 'walletFeatures'>
 
   // Methods
   connect: () => Promise<string>
@@ -49,7 +52,6 @@ export interface Provider extends ProviderEventEmitterMethods {
     transaction: AnyTransaction,
     options?: SendOptions
   ) => Promise<TransactionSignature>
-  signAllTransactions: (transactions: AnyTransaction[]) => Promise<SolanaWeb3Transaction[]>
   sendTransaction: (
     transaction: AnyTransaction,
     connection: Connection,
@@ -79,6 +81,10 @@ export namespace ProviderEventEmitterMethods {
     disconnect: undefined
     accountsChanged: PublicKey
     chainChanged: string
+
+    auth_rpcRequest: W3mFrameTypes.RPCRequest
+    auth_rpcSuccess: W3mFrameTypes.FrameEvent
+    auth_rpcError: Error
   }
 }
 
@@ -87,14 +93,6 @@ export type Metadata = {
   description: string
   url: string
   icons: string[]
-}
-
-export type Chain = {
-  rpcUrl: string
-  explorerUrl: string
-  currency: string
-  name: string
-  chainId: string
 }
 
 export type AnyTransaction = SolanaWeb3Transaction | VersionedTransaction

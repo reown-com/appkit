@@ -1,19 +1,15 @@
 import { AppKit } from '@web3modal/base'
-import type { AppKitOptions } from '@web3modal/base'
 import { SolanaWeb3JsClient } from '@web3modal/base/adapters/solana/web3js'
-import type { Chain, ProviderType, BaseWalletAdapter } from '@web3modal/base/adapters/solana/web3js'
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
+import type { SolanaAppKitOptions } from './options'
 
 // -- Configs -----------------------------------------------------------
 export { defaultSolanaConfig } from '@web3modal/base/adapters/solana/web3js'
 
-// -- Setup -------------------------------------------------------------
-type SolanaAppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 'sdkVersion'> & {
-  solanaConfig: ProviderType
-  chains: Chain[]
-  wallets: BaseWalletAdapter[]
-}
+// -- Types -------------------------------------------------------------
+export type { SolanaAppKitOptions }
 
+// -- Setup -------------------------------------------------------------
 export function createWeb3Modal(options: SolanaAppKitOptions) {
   const solanaAdapter = new SolanaWeb3JsClient({
     solanaConfig: options.solanaConfig,

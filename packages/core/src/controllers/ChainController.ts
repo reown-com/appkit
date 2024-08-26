@@ -21,7 +21,11 @@ type ChainControllerStateKey = keyof ChainControllerState
 
 type ChainsInitializerAdapter = Pick<
   ChainAdapter,
-  'connectionControllerClient' | 'networkControllerClient' | 'defaultNetwork' | 'chainNamespace'
+  | 'connectionControllerClient'
+  | 'networkControllerClient'
+  | 'defaultNetwork'
+  | 'chainNamespace'
+  | 'adapterType'
 >
 
 // -- Constants ----------------------------------------- //

@@ -20,10 +20,10 @@ import {
   getConnections,
   switchAccount,
   injected,
-  createConfig,
-  getConnectors
+  createConfig
 } from '@wagmi/core'
 import { ChainController } from '@web3modal/core'
+import type UniversalProvider from '@walletconnect/universal-provider'
 import { prepareTransactionRequest, sendTransaction as wagmiSendTransaction } from '@wagmi/core'
 import type { Chain } from '@wagmi/core/chains'
 import { mainnet } from 'viem/chains'
@@ -42,7 +42,6 @@ import type {
   SocialProvider,
   WriteContractArgs
 } from '@web3modal/core'
-import { type UniversalProvider as UniversalProviderType } from '@walletconnect/universal-provider'
 import { formatUnits, parseUnits } from 'viem'
 import type { Hex } from 'viem'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
@@ -59,13 +58,19 @@ import type { W3mFrameProvider, W3mFrameTypes } from '@web3modal/wallet'
 import { NetworkUtil } from '@web3modal/common'
 import { normalize } from 'viem/ens'
 import type { AppKitOptions } from '../../../utils/TypesUtil.js'
-import type { CaipAddress, CaipNetwork, CaipNetworkId, ChainNamespace } from '@web3modal/common'
+import type {
+  CaipAddress,
+  CaipNetwork,
+  CaipNetworkId,
+  ChainNamespace,
+  AdapterType
+} from '@web3modal/common'
 import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 import type { AppKit } from '../../../src/client.js'
 import { walletConnect } from './connectors/UniversalConnector.js'
 import { coinbaseWallet } from '@wagmi/connectors'
 import { authConnector } from './connectors/AuthConnector.js'
-import { ProviderUtil } from '../../../utils/ProviderUtil.js'
+import { ProviderUtil } from '../../../utils/store/ProviderUtil.js'
 
 // -- Types ---------------------------------------------------------------------
 export interface AdapterOptions<C extends Config>
@@ -109,7 +114,7 @@ export class EVMWagmiClient {
 
   public siweControllerClient = this.options?.siweConfig
 
-  public adapterType = 'wagmi'
+  public adapterType: AdapterType = 'wagmi'
 
   private createWagmiConfig(options: AppKitOptions, appKit: AppKit) {
     this.wagmiChains = convertCaipNetworksToWagmiChains(options.caipNetworks)

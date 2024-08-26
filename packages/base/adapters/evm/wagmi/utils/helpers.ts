@@ -5,7 +5,6 @@ import {
 } from '@web3modal/common'
 import { ConstantsUtil, PresetsUtil } from '@web3modal/scaffold-utils'
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
-import { getChainsFromAccounts } from '@walletconnect/utils'
 import { fallback, http, type Hex } from 'viem'
 
 import type { Chain } from '@wagmi/core/chains'

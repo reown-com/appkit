@@ -1,12 +1,12 @@
-import type { Provider } from '@web3modal/core'
-import { proxy, ref } from 'valtio/vanilla'
+import { proxy } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import type UniversalProvider from '@walletconnect/universal-provider'
 
 type StateKey = keyof ProviderStoreUtilState
 
 export interface ProviderStoreUtilState {
-  provider?: Provider | UniversalProvider
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+  provider?: UniversalProvider | unknown | undefined
   providerId?:
     | 'walletConnect'
     | 'injected'
@@ -27,10 +27,14 @@ export const ProviderUtil = {
     return subKey(state, key, callback)
   },
 
-  setProvider(provider: ProviderStoreUtilState['provider']) {
+  setProvider<T = UniversalProvider>(provider: T) {
     if (provider) {
-      state.provider = ref(provider)
+      state.provider = provider as T
     }
+  },
+
+  getProvider<T = UniversalProvider>(): T {
+    return state.provider as T
   },
 
   setProviderId(providerId: ProviderStoreUtilState['providerId']) {

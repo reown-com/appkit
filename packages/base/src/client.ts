@@ -226,10 +226,6 @@ export class AppKit {
     NetworkController.setCaipNetwork(caipNetwork)
   }
 
-  public setActiveCaipNetwork: (typeof NetworkController)['setCaipNetwork'] = caipNetwork => {
-    NetworkController.setActiveCaipNetwork(caipNetwork)
-  }
-
   public getCaipNetwork = () => NetworkController.state.caipNetwork
 
   public setRequestedCaipNetworks: (typeof NetworkController)['setRequestedCaipNetworks'] = (
@@ -384,7 +380,7 @@ export class AppKit {
       metadata: options.metadata
     })
 
-    ChainController.initializeUniversalAdapter(this.universalAdapter, options.adapters)
+    ChainController.initializeUniversalAdapter(this.universalAdapter, options.adapters || [])
 
     this.universalAdapter.construct?.(this, options)
 

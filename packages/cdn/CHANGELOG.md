@@ -1,5 +1,27 @@
 # @web3modal/cdn
 
+## 5.1.3
+
+### Patch Changes
+
+- refactor: defaultChain ts mismatch, custom hooks, separation of dependencies
+
+- Updated dependencies []:
+  - @web3modal/ethers@5.1.3
+  - @web3modal/ethers5@5.1.3
+  - @web3modal/wagmi@5.1.3
+
+## 5.1.2
+
+### Patch Changes
+
+- Added Solana Auth Provider types and schemas
+
+- Updated dependencies []:
+  - @web3modal/ethers@5.1.2
+  - @web3modal/ethers5@5.1.2
+  - @web3modal/wagmi@5.1.2
+
 ## 5.1.1
 
 ### Patch Changes

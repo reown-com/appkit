@@ -1,7 +1,7 @@
 import { createWeb3Modal, defaultSolanaConfig } from '@web3modal/solana/react'
 
 import { ThemeStore } from '../../utils/StoreUtil'
-import { solana, solanaDevnet, solanaTestnet } from '../../utils/NetworksUtil'
+import { solana, solanaDevnet, solanaTestnet } from '../../utils/ChainsUtil'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { SolanaTests } from '../../components/Solana/SolanaTests'
@@ -12,14 +12,19 @@ const chains = [solana, solanaTestnet, solanaDevnet]
 export const solanaConfig = defaultSolanaConfig({
   chains,
   projectId: ConstantsUtil.ProjectId,
-  metadata: ConstantsUtil.Metadata
+  metadata: ConstantsUtil.Metadata,
+  auth: {
+    email: true,
+    socials: ['google', 'x', 'discord', 'farcaster', 'github', 'apple', 'facebook'],
+    walletFeatures: true,
+    showWallets: true
+  }
 })
 
 const modal = createWeb3Modal({
   solanaConfig,
   projectId: ConstantsUtil.ProjectId,
   metadata: ConstantsUtil.Metadata,
-  defaultChain: solana,
   chains,
   enableAnalytics: false,
   termsConditionsUrl: 'https://walletconnect.com/terms',

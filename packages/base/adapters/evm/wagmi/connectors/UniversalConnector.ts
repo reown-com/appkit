@@ -82,7 +82,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
         provider.on('session_delete', sessionDelete)
       }
     },
-    async connect({ chainId, ...rest } = {}) {
+    async connect({ ...rest } = {}) {
       try {
         const provider = await this.getProvider()
         if (!provider) {

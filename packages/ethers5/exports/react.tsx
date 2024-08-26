@@ -2,11 +2,14 @@
 
 import { AppKit } from '@web3modal/base'
 import type { AppKitOptions } from '@web3modal/base'
+import type { CaipNetwork } from '@web3modal/common'
+import { ProviderUtil } from '@web3modal/base/utils/store'
 import { EVMEthersClient, type AdapterOptions } from '@web3modal/base/adapters/evm/ethers'
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
 import { EthersStoreUtil } from '@web3modal/scaffold-utils/ethers'
 import { getWeb3Modal } from '@web3modal/base/utils/library/react'
 import { useSnapshot } from 'valtio'
+import { ethers } from 'ethers'
 
 // -- Configs -----------------------------------------------------------
 export { defaultConfig } from '@web3modal/base/adapters/evm/ethers'
@@ -15,10 +18,10 @@ export { defaultConfig } from '@web3modal/base/adapters/evm/ethers'
 let appkit: AppKit | undefined = undefined
 let ethersAdapter: EVMEthersClient | undefined = undefined
 
-type WagmiAppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 'sdkVersion'> &
+export type Ethers5AppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 'sdkVersion'> &
   AdapterOptions
 
-export function createWeb3Modal(options: WagmiAppKitOptions) {
+export function createWeb3Modal(options: Ethers5AppKitOptions) {
   ethersAdapter = new EVMEthersClient({
     ethersConfig: options.ethersConfig
   })
@@ -35,11 +38,36 @@ export function createWeb3Modal(options: WagmiAppKitOptions) {
 
 // -- Hooks -------------------------------------------------------------------
 export function useWeb3ModalProvider() {
-  // Implement this
+  const { provider, providerId } = useSnapshot(ProviderUtil.state)
+
+  const walletProvider = provider as ethers.providers.ExternalProvider | undefined
+  const walletProviderType = providerId
+
+  return {
+    walletProvider,
+    walletProviderType
+  }
+}
+
+export function useDisconnect() {
+  async function disconnect() {
+    await ethersAdapter?.disconnect()
+  }
+
+  return {
+    disconnect
+  }
 }
 
 export function useSwitchNetwork() {
-  // Implement this
+  // Breaking change
+  async function switchNetwork(caipNetwork: CaipNetwork) {
+    await ethersAdapter?.switchNetwork(caipNetwork)
+  }
+
+  return {
+    switchNetwork
+  }
 }
 
 export function useWeb3ModalAccount() {

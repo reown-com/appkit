@@ -1,6 +1,7 @@
 import type { AppKitOptions } from '../../../utils/TypesUtil.js'
 import {
   NetworkUtil,
+  type AdapterType,
   type CaipAddress,
   type CaipNetwork,
   type CaipNetworkId,
@@ -23,13 +24,13 @@ import {
 } from '@web3modal/wallet'
 import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@web3modal/scaffold-utils'
-import type UniversalProvider from '@walletconnect/universal-provider'
+import UniversalProvider from '@walletconnect/universal-provider'
 import type { ConnectionControllerClient, NetworkControllerClient } from '@web3modal/core'
 import { WcConstantsUtil } from '../../../utils/ConstantsUtil.js'
 import { EthersMethods } from './utils/EthersMethods.js'
 import { formatEther, InfuraProvider, JsonRpcProvider } from 'ethers'
 import type { PublicStateControllerState } from '@web3modal/core'
-import { ProviderUtil } from '../../../utils/ProviderUtil.js'
+import { ProviderUtil } from '../../../utils/store/ProviderUtil.js'
 
 // -- Types ---------------------------------------------------------------------
 export interface AdapterOptions {
@@ -92,6 +93,8 @@ export class EVMEthersClient {
   public tokens = HelpersUtil.getCaipTokens(this.options?.tokens)
 
   public defaultCaipNetwork: CaipNetwork | undefined = undefined
+
+  public adapterType: AdapterType = 'ethers'
 
   // -- Public -------------------------------------------------------------------
   public constructor(options: AdapterOptions) {
@@ -225,7 +228,7 @@ export class EVMEthersClient {
       },
 
       disconnect: async () => {
-        const provider = ProviderUtil.state.provider
+        const provider = ProviderUtil.getProvider<UniversalProvider | Provider>()
         const providerId = ProviderUtil.state.providerId
 
         this.appKit?.setClientId(null)
@@ -247,14 +250,14 @@ export class EVMEthersClient {
 
           [ConstantsUtil.EIP6963_CONNECTOR_ID]: async () => {
             if (provider) {
-              provider.emit('disconnect')
-              await this.revokeProviderPermissions(provider)
+              ;(provider as Provider).emit('disconnect')
+              await this.revokeProviderPermissions(provider as Provider)
             }
           },
           [ConstantsUtil.INJECTED_CONNECTOR_ID]: async () => {
             if (provider) {
-              provider.emit('disconnect')
-              await this.revokeProviderPermissions(provider)
+              ;(provider as Provider).emit('disconnect')
+              await this.revokeProviderPermissions(provider as Provider)
             }
           }
         }
@@ -271,7 +274,7 @@ export class EVMEthersClient {
         this.appKit?.resetAccount('eip155')
       },
       signMessage: async (message: string) => {
-        const provider = ProviderUtil.state.provider as Provider
+        const provider = ProviderUtil.getProvider<Provider>()
         const address = this.appKit?.getAddress()
 
         if (!address) {
@@ -285,7 +288,7 @@ export class EVMEthersClient {
       formatUnits: EthersMethods.formatUnits,
 
       estimateGas: async data => {
-        const provider = ProviderUtil.state.provider as Provider
+        const provider = ProviderUtil.getProvider<Provider>()
         const address = this.appKit?.getAddress()
         const caipNetwork = this.appKit?.getCaipNetwork()
 
@@ -302,7 +305,7 @@ export class EVMEthersClient {
       },
 
       sendTransaction: async data => {
-        const provider = ProviderUtil.state.provider as Provider
+        const provider = ProviderUtil.getProvider<Provider>()
         const address = this.appKit?.getAddress()
         const caipNetwork = this.appKit?.getCaipNetwork()
 
@@ -319,7 +322,7 @@ export class EVMEthersClient {
       },
 
       writeContract: async data => {
-        const provider = ProviderUtil.state.provider as Provider
+        const provider = ProviderUtil.getProvider<Provider>()
         const address = this.appKit?.getAddress()
         const caipNetwork = this.appKit?.getCaipNetwork()
 
@@ -458,7 +461,7 @@ export class EVMEthersClient {
             this.chainNamespace
           )
           ProviderUtil.setProviderId(providerId)
-          ProviderUtil.setProvider(provider)
+          ProviderUtil.setProvider<Provider>(provider)
           this.appKit?.setStatus('connected', this.chainNamespace)
           this.appKit?.setIsConnected(true, this.chainNamespace)
           this.appKit?.setAllAccounts(
@@ -512,7 +515,7 @@ export class EVMEthersClient {
           this.chainNamespace
         )
         this.appKit?.setSmartAccountDeployed(Boolean(smartAccountDeployed), this.chainNamespace)
-        ProviderUtil.setProvider(this.authProvider as unknown as Provider)
+        ProviderUtil.setProvider<Provider>(this.authProvider as unknown as Provider)
         ProviderUtil.setProviderId(ConstantsUtil.AUTH_CONNECTOR_ID as ProviderId)
         this.setupProviderListeners(this.authProvider as unknown as Provider, 'w3mAuth')
         this.watchModal()
@@ -811,7 +814,7 @@ export class EVMEthersClient {
         }
       }
     } else if (providerType === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
-      const provider = ProviderUtil.state.provider as unknown as UniversalProvider
+      const provider = ProviderUtil.getProvider()
 
       if (provider.session) {
         this.appKit?.setConnectedWalletInfo(
@@ -863,8 +866,9 @@ export class EVMEthersClient {
       }
     }
 
-    const provider = ProviderUtil.state.provider
+    const provider = ProviderUtil.getProvider<Provider | UniversalProvider>()
     const providerType = ProviderUtil.state.providerId
+
     switch (providerType) {
       case ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID:
         this.appKit?.universalAdapter?.networkControllerClient.switchCaipNetwork(caipNetwork)
@@ -873,7 +877,7 @@ export class EVMEthersClient {
       case ConstantsUtil.EIP6963_CONNECTOR_ID:
       case ConstantsUtil.COINBASE_SDK_CONNECTOR_ID:
         if (provider) {
-          await requestSwitchNetwork(provider)
+          await requestSwitchNetwork(provider as Provider)
         }
         break
       case ConstantsUtil.AUTH_CONNECTOR_ID:

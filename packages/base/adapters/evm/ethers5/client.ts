@@ -6,7 +6,7 @@ import type {
   PublicStateControllerState,
   SendTransactionArgs
 } from '@web3modal/core'
-import type { CaipAddress, CaipNetwork, CaipNetworkId } from '@web3modal/common'
+import type { AdapterType, CaipAddress, CaipNetwork, CaipNetworkId } from '@web3modal/common'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
 import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 import EthereumProvider, { OPTIONAL_METHODS } from '@walletconnect/ethereum-provider'
@@ -101,6 +101,8 @@ export class EVMEthers5Client {
   public defaultCaipNetwork: CaipNetwork | undefined = undefined
 
   public tokens = HelpersUtil.getCaipTokens(this.options?.tokens)
+
+  public adapterType: AdapterType = 'ethers5'
 
   public constructor(options: AdapterOptions) {
     const { ethersConfig } = options
