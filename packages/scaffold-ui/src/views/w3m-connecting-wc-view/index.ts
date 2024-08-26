@@ -1,8 +1,6 @@
 import type { BaseError, Platform } from '@web3modal/core'
 import {
-  AssetUtil,
   ConnectionController,
-  ConnectorController,
   ConstantsUtil,
   CoreHelperUtil,
   EventsController,

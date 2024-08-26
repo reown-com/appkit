@@ -4,8 +4,7 @@ import {
   EventsController,
   ModalController,
   OptionsController,
-  RouterController,
-  StorageUtil
+  RouterController
 } from '@web3modal/core'
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
 import { customElement } from '@web3modal/ui'
