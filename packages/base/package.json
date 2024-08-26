@@ -48,6 +48,11 @@
       "types": "./dist/types/utils/library/vue/index.d.ts",
       "import": "./dist/esm/utils/library/vue/index.js",
       "default": "./dist/esm/utils/library/vue/index.js"
+    },
+    "./utils/store": {
+      "types": "./dist/types/utils/store/index.d.ts",
+      "import": "./dist/esm/utils/store/index.js",
+      "default": "./dist/esm/utils/store/index.js"
     }
   },
   "scripts": {

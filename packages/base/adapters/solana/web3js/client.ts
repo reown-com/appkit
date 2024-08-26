@@ -28,7 +28,7 @@ import { watchStandard } from './utils/watchStandard.js'
 import { WalletConnectProvider } from './providers/WalletConnectProvider.js'
 import type { AppKit } from '../../../src/client.js'
 import type { AppKitOptions } from '../../../utils/TypesUtil.js'
-import { ProviderUtil } from '../../../utils/ProviderUtil.js'
+import { ProviderUtil } from '../../../utils/store/ProviderUtil.js'
 
 export interface AdapterOptions {
   solanaConfig: ProviderType

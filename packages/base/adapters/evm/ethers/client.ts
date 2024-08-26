@@ -29,7 +29,7 @@ import { WcConstantsUtil } from '../../../utils/ConstantsUtil.js'
 import { EthersMethods } from './utils/EthersMethods.js'
 import { formatEther, InfuraProvider, JsonRpcProvider } from 'ethers'
 import type { PublicStateControllerState } from '@web3modal/core'
-import { ProviderUtil } from '../../../utils/ProviderUtil.js'
+import { ProviderUtil } from '../../../utils/store/ProviderUtil.js'
 
 // -- Types ---------------------------------------------------------------------
 export interface AdapterOptions {

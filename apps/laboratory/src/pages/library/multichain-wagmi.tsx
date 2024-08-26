@@ -31,6 +31,8 @@ export default function MultiChainWagmiAdapterOnly() {
     <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <AppKitButtons />
+        <WagmiModalInfo />
+        <WagmiTests />
       </QueryClientProvider>
     </WagmiProvider>
   )

@@ -23,7 +23,7 @@ import {
   type CaipAddress,
   type ChainNamespace
 } from '@web3modal/common'
-import { ProviderUtil } from '../../../utils/ProviderUtil.js'
+import { ProviderUtil } from '../../../utils/store/ProviderUtil.js'
 
 type Metadata = {
   name: string

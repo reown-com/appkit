@@ -8,20 +8,20 @@ export function EthersModalInfo() {
   const { isConnected, address, chainId } = useWeb3ModalAccount()
   const [ready, setReady] = React.useState(false)
   const [clientId, setClientId] = React.useState<string | null>(null)
-  // const { walletProvider, walletProviderType } = useWeb3ModalProvider()
+  const { walletProvider, walletProviderType } = useWeb3ModalProvider()
   async function getClientId() {
-    // if (walletProviderType === 'walletConnect') {
-    //   const ethereumProvider = walletProvider as unknown as EthereumProvider
+    if (walletProviderType === 'walletConnect') {
+      const ethereumProvider = walletProvider as unknown as EthereumProvider
 
-    //   return await ethereumProvider?.signer?.client?.core?.crypto?.getClientId()
-    // }
+      return await ethereumProvider?.signer?.client?.core?.crypto?.getClientId()
+    }
 
     return null
   }
 
-  // React.useEffect(() => {
-  //   getClientId().then(setClientId)
-  // }, [walletProvider])
+  React.useEffect(() => {
+    getClientId().then(setClientId)
+  }, [walletProvider])
 
   React.useEffect(() => {
     setReady(true)
