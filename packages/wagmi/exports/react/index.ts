@@ -1,5 +1,5 @@
 import { AppKit } from '@web3modal/base'
-import type { AppKitOptions, ChainAdapter } from '@web3modal/base'
+import type { AppKitOptions } from '@web3modal/base'
 import { EVMWagmiClient, type AdapterOptions } from '@web3modal/base/adapters/evm/wagmi'
 import { getWeb3Modal } from '@web3modal/base/utils/library/react'
 import { ConstantsUtil } from '@web3modal/scaffold-utils'

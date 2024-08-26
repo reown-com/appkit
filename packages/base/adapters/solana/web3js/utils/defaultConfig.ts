@@ -1,6 +1,6 @@
 import '@web3modal/polyfills'
-
-import type { Chain, Metadata, Provider, ProviderType } from '@web3modal/scaffold-utils/solana'
+import type { CaipNetwork } from '@web3modal/common'
+import type { Metadata, Provider, ProviderType } from '@web3modal/scaffold-utils/solana'
 
 declare global {
   interface Window {
@@ -16,7 +16,7 @@ declare global {
 
 export interface ConfigOptions extends Pick<Provider, 'auth'> {
   projectId?: string
-  chains: Chain[]
+  chains: CaipNetwork[]
   enableInjected?: boolean
   rpcUrl?: string
   defaultChainId?: number

@@ -39,7 +39,7 @@ export interface Provider extends ProviderEventEmitterMethods {
   name: string
   publicKey?: PublicKey
   icon?: string
-  chains: Chain[]
+  chains: CaipNetwork[]
   type: ConnectorType
   auth?: Pick<Connector, 'email' | 'socials' | 'showWallets' | 'walletFeatures'>
 
@@ -93,14 +93,6 @@ export type Metadata = {
   description: string
   url: string
   icons: string[]
-}
-
-export type Chain = {
-  rpcUrl: string
-  explorerUrl: string
-  currency: string
-  name: string
-  chainId: string
 }
 
 export type AnyTransaction = SolanaWeb3Transaction | VersionedTransaction

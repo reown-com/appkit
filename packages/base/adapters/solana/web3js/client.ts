@@ -20,7 +20,7 @@ import type {
   NetworkControllerClient,
   Connector
 } from '@web3modal/core'
-import type { CaipAddress, CaipNetwork, CaipNetworkId } from '@web3modal/common'
+import type { AdapterType, CaipAddress, CaipNetwork, CaipNetworkId } from '@web3modal/common'
 import type { ChainNamespace } from '@web3modal/common'
 
 import type { ProviderType, Provider, SolStoreUtilState } from '@web3modal/scaffold-utils/solana'
@@ -72,6 +72,8 @@ export class SolanaWeb3JsClient {
   private provider: Provider | undefined
 
   public defaultCaipNetwork: CaipNetwork | undefined = undefined
+
+  public adapterType: AdapterType = 'solana'
 
   public constructor(options: AdapterOptions) {
     const { solanaConfig, connectionSettings = 'confirmed' } = options
@@ -561,7 +563,7 @@ export class SolanaWeb3JsClient {
               showWallets: opts.showWallets,
               walletFeatures: opts.walletFeatures
             },
-            chains: this.chains
+            chains: this.caipNetworks
           })
         )
       }

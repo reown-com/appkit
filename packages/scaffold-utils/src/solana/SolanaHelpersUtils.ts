@@ -4,7 +4,7 @@ import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 import { PresetsUtil } from '../PresetsUtil.js'
 import { SolConstantsUtil } from './SolanaConstantsUtil.js'
 
-import type { Chain, Provider } from './SolanaTypesUtil.js'
+import type { Provider } from './SolanaTypesUtil.js'
 
 export const SolHelpersUtil = {
   detectRpcUrl(chain: CaipNetwork, projectId: string) {
@@ -15,7 +15,7 @@ export const SolHelpersUtil = {
     return chain.rpcUrl
   },
 
-  getChain(chains: Chain[], chainId: string | null) {
+  getChain(chains: CaipNetwork[], chainId: string | null) {
     const chain = chains.find(lChain => lChain.chainId === chainId)
 
     if (chain) {

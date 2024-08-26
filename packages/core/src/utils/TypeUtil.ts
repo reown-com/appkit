@@ -5,7 +5,8 @@ import type {
   CaipNetworkId,
   CaipNetwork,
   ChainNamespace,
-  CaipAddress
+  CaipAddress,
+  AdapterType
 } from '@web3modal/common'
 import type {
   NetworkControllerClient,
@@ -828,7 +829,7 @@ export type ChainAdapter = {
   defaultNetwork?: CaipNetwork
   chainNamespace: ChainNamespace
   isUniversalAdapterClient?: boolean
-  adapterType?: 'solana' | 'wagmi' | 'ethers'
+  adapterType?: AdapterType
 }
 
 type ProviderEventListener = {

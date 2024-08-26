@@ -2,7 +2,6 @@ import UniversalProvider from '@walletconnect/universal-provider'
 import {
   SolConstantsUtil,
   type AnyTransaction,
-  type Chain,
   type Provider
 } from '@web3modal/scaffold-utils/solana'
 import { ProviderEventEmitter } from './shared/ProviderEventEmitter.js'
@@ -64,7 +63,7 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
           chain => withSolanaNamespace(chain.chainId as string) === chainId
         )
       })
-      .filter(Boolean) as Chain[]
+      .filter(Boolean) as CaipNetwork[]
   }
 
   public get publicKey() {
@@ -91,7 +90,8 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
       this.session = await this.provider.connect({
         optionalNamespaces: {
           solana: {
-            chains: this.getRequestedChainsWithDeprecated(),
+            // Double check these with Felipe
+            chains: this.getRequestedChainsWithDeprecated() as string[],
             methods: [
               'solana_signMessage',
               'solana_signTransaction',

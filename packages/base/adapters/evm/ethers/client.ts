@@ -1,6 +1,7 @@
 import type { AppKitOptions } from '../../../utils/TypesUtil.js'
 import {
   NetworkUtil,
+  type AdapterType,
   type CaipAddress,
   type CaipNetwork,
   type CaipNetworkId,
@@ -92,6 +93,8 @@ export class EVMEthersClient {
   public tokens = HelpersUtil.getCaipTokens(this.options?.tokens)
 
   public defaultCaipNetwork: CaipNetwork | undefined = undefined
+
+  public adapterType: AdapterType = 'ethers'
 
   // -- Public -------------------------------------------------------------------
   public constructor(options: AdapterOptions) {
