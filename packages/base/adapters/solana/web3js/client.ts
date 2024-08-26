@@ -131,7 +131,7 @@ export class SolanaWeb3JsClient {
       },
 
       disconnect: async () => {
-        await ProviderUtil.state.provider?.disconnect()
+        await ProviderUtil.getProvider<Provider>()?.disconnect()
         this.appKit?.resetAccount('solana')
       },
 
@@ -399,7 +399,7 @@ export class SolanaWeb3JsClient {
       }
 
       SolStoreUtil.setIsConnected(true)
-      ProviderUtil.setProvider(provider)
+      ProviderUtil.setProvider<Provider>(provider)
       this.provider = provider
       this.setAddress(address)
 

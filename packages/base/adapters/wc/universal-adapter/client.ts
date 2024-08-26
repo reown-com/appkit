@@ -59,7 +59,7 @@ export class UniversalAdapterClient {
 
   public chainNamespace: ChainNamespace
 
-  public defaultNetwork: CaipNetwork
+  public defaultNetwork: CaipNetwork | undefined = undefined
 
   public networkControllerClient: NetworkControllerClient
 

@@ -384,7 +384,7 @@ export class AppKit {
       metadata: options.metadata
     })
 
-    ChainController.initializeUniversalAdapter(this.universalAdapter, options.adapters)
+    ChainController.initializeUniversalAdapter(this.universalAdapter, options.adapters || [])
 
     this.universalAdapter.construct?.(this, options)
 

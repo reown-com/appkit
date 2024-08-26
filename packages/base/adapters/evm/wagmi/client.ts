@@ -20,10 +20,10 @@ import {
   getConnections,
   switchAccount,
   injected,
-  createConfig,
-  getConnectors
+  createConfig
 } from '@wagmi/core'
 import { ChainController } from '@web3modal/core'
+import type UniversalProvider from '@walletconnect/universal-provider'
 import { prepareTransactionRequest, sendTransaction as wagmiSendTransaction } from '@wagmi/core'
 import type { Chain } from '@wagmi/core/chains'
 import { mainnet } from 'viem/chains'
@@ -42,7 +42,6 @@ import type {
   SocialProvider,
   WriteContractArgs
 } from '@web3modal/core'
-import { type UniversalProvider as UniversalProviderType } from '@walletconnect/universal-provider'
 import { formatUnits, parseUnits } from 'viem'
 import type { Hex } from 'viem'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
