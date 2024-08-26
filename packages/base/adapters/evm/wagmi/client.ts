@@ -632,8 +632,12 @@ export class EVMWagmiClient {
         )
       }
     } else {
+      const wagmiConnector = this.appKit?.getConnectors().find(c => c.id === connector.id)
       this.appKit?.setConnectedWalletInfo(
-        { name: connector.name, icon: connector.icon },
+        {
+          name: connector.name,
+          icon: connector.icon || this.appKit.getConnectorImage(wagmiConnector)
+        },
         this.chain
       )
     }
