@@ -14,9 +14,7 @@ export type EthersAppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | '
   AdapterOptions
 
 export function createWeb3Modal(options: EthersAppKitOptions) {
-  const ethersAdapter = new EVMEthersClient({
-    ethersConfig: options.ethersConfig
-  })
+  const ethersAdapter = new EVMEthersClient()
 
   return new AppKit({
     ...options,

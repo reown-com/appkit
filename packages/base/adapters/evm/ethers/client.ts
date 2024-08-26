@@ -7,7 +7,7 @@ import {
   type CaipNetworkId,
   type ChainNamespace
 } from '@web3modal/common'
-import type { CombinedProvider, Connector } from '@web3modal/core'
+import { ChainController, type CombinedProvider, type Connector } from '@web3modal/core'
 import {
   EthersHelpersUtil,
   type Provider,
@@ -31,6 +31,7 @@ import { EthersMethods } from './utils/EthersMethods.js'
 import { formatEther, InfuraProvider, JsonRpcProvider } from 'ethers'
 import type { PublicStateControllerState } from '@web3modal/core'
 import { ProviderUtil } from '../../../utils/store/ProviderUtil.js'
+import { CoinbaseWalletSDK, type ProviderInterface } from '@coinbase/wallet-sdk'
 
 // -- Types ---------------------------------------------------------------------
 export interface AdapterOptions {
@@ -75,7 +76,7 @@ export class EVMEthersClient {
 
   private caipNetworks: CaipNetwork[] = []
 
-  private ethersConfig: AdapterOptions['ethersConfig']
+  private ethersConfig?: AdapterOptions['ethersConfig']
 
   private authProvider?: W3mFrameProvider
 
@@ -84,9 +85,9 @@ export class EVMEthersClient {
 
   public chainNamespace: ChainNamespace = CommonConstantsUtil.CHAIN.EVM
 
-  public networkControllerClient: NetworkControllerClient
+  public networkControllerClient?: NetworkControllerClient
 
-  public connectionControllerClient: ConnectionControllerClient
+  public connectionControllerClient?: ConnectionControllerClient
 
   public siweControllerClient = this.options?.siweConfig
 
@@ -96,19 +97,95 @@ export class EVMEthersClient {
 
   public adapterType: AdapterType = 'ethers'
 
-  // -- Public -------------------------------------------------------------------
-  public constructor(options: AdapterOptions) {
-    const { ethersConfig } = options
+  private createEthersConfig(options: AppKitOptions) {
+    if (!options.metadata) {
+      return undefined
+    }
+    let injectedProvider: Provider | undefined = undefined
 
-    if (!ethersConfig) {
-      throw new Error('web3modal:constructor - ethersConfig is undefined')
+    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+    let coinbaseProvider: ProviderInterface | undefined = undefined
+
+    function getInjectedProvider() {
+      if (injectedProvider) {
+        return injectedProvider
+      }
+
+      if (typeof window === 'undefined') {
+        return undefined
+      }
+
+      if (!window.ethereum) {
+        return undefined
+      }
+
+      //  @ts-expect-error window.ethereum satisfies Provider
+      injectedProvider = window.ethereum
+
+      return injectedProvider
     }
 
-    this.ethersConfig = ethersConfig
+    function getCoinbaseProvider() {
+      if (coinbaseProvider) {
+        return coinbaseProvider
+      }
 
+      if (typeof window === 'undefined') {
+        return undefined
+      }
+
+      const coinbaseWallet = new CoinbaseWalletSDK({
+        appName: options?.metadata?.name,
+        appLogoUrl: options?.metadata?.icons[0],
+        appChainIds: options.caipNetworks?.map(caipNetwork => caipNetwork.chainId as number) || [
+          1, 84532
+        ]
+      })
+
+      /**
+       * Determines which wallet options to display in Coinbase Wallet SDK.
+       * @property options
+       *   - `all`: Show both smart wallet and EOA options.
+       *   - `smartWalletOnly`: Show only smart wallet options.
+       *   - `eoaOnly`: Show only EOA options.
+       * @see https://www.smartwallet.dev/sdk/v3-to-v4-changes#parameters
+       */
+      coinbaseProvider = coinbaseWallet.makeWeb3Provider({
+        options: 'all'
+      })
+
+      return coinbaseProvider
+    }
+
+    const providers: ProviderType = { metadata: options.metadata }
+    providers.injected = getInjectedProvider()
+    providers.coinbase = getCoinbaseProvider()
+    providers.EIP6963 = true
+    const auth = {
+      email: true,
+      showWallets: true,
+      walletFeatures: true
+    }
+    providers.auth = auth
+
+    return providers
+  }
+
+  // -- Public -------------------------------------------------------------------
+  // eslint-disable-next-line @typescript-eslint/no-useless-constructor, @typescript-eslint/no-empty-function
+  public constructor() {}
+
+  public construct(appKit: AppKit, options: AppKitOptions) {
+    if (!options.projectId) {
+      throw new Error('appkit:ethers-client:initialize - projectId is undefined')
+    }
+
+    this.appKit = appKit
+    this.options = options
+    this.caipNetworks = options.caipNetworks
     this.defaultCaipNetwork = options.defaultCaipNetwork
-      ? options.defaultCaipNetwork
-      : this.caipNetworks[0]
+    this.tokens = HelpersUtil.getCaipTokens(options.tokens)
+    this.ethersConfig = this.createEthersConfig(options)
 
     this.networkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
@@ -166,7 +243,7 @@ export class EVMEthersClient {
 
         const connectorConfig = {
           [ConstantsUtil.INJECTED_CONNECTOR_ID]: {
-            getProvider: () => ethersConfig.injected,
+            getProvider: () => this.ethersConfig?.injected,
             providerType: 'injected' as const
           },
           [ConstantsUtil.EIP6963_CONNECTOR_ID]: {
@@ -174,11 +251,11 @@ export class EVMEthersClient {
             providerType: 'eip6963' as const
           },
           [ConstantsUtil.COINBASE_SDK_CONNECTOR_ID]: {
-            getProvider: () => ethersConfig.coinbase,
+            getProvider: () => this.ethersConfig?.coinbase,
             providerType: 'coinbase' as const
           },
           [ConstantsUtil.AUTH_CONNECTOR_ID]: {
-            getProvider: () => ethersConfig.auth,
+            getProvider: () => this.ethersConfig?.auth,
             providerType: 'auth' as const
           }
         }
@@ -218,7 +295,7 @@ export class EVMEthersClient {
           return Boolean(window.ethereum)
         }
 
-        if (ethersConfig.injected) {
+        if (this.ethersConfig?.injected) {
           if (!window?.ethereum) {
             return false
           }
@@ -352,32 +429,30 @@ export class EVMEthersClient {
         return await EthersMethods.getEnsAvatar(value, Number(caipNetwork?.chainId))
       }
     }
-  }
 
-  public construct(appKit: AppKit, options: AppKitOptions) {
-    if (!options.projectId) {
-      throw new Error('appkit:ethers-client:initialize - projectId is undefined')
+    ChainController.state.chains.set(this.chainNamespace, {
+      chainNamespace: this.chainNamespace,
+      connectionControllerClient: this.connectionControllerClient,
+      networkControllerClient: this.networkControllerClient
+    })
+
+    if (this.ethersConfig) {
+      this.syncConnectors(this.ethersConfig)
     }
-
-    this.appKit = appKit
-    this.options = options
-    this.caipNetworks = options.caipNetworks
-    this.defaultCaipNetwork = options.defaultCaipNetwork
-    this.tokens = HelpersUtil.getCaipTokens(options.tokens)
-
-    this.syncConnectors(this.ethersConfig)
 
     if (typeof window !== 'undefined') {
       this.listenConnectors(true)
     }
 
-    this.appKit?.setEIP6963Enabled(this.ethersConfig.EIP6963)
+    this.appKit?.setEIP6963Enabled(this.ethersConfig?.EIP6963)
 
-    if (this.ethersConfig.auth) {
+    if (this.ethersConfig?.auth) {
       this.syncAuthConnector(this.options.projectId, this.ethersConfig.auth)
     }
 
-    this.checkActiveProviders(this.ethersConfig)
+    if (this.ethersConfig) {
+      this.checkActiveProviders(this.ethersConfig)
+    }
     this.syncRequestedNetworks(this.caipNetworks)
   }
 
@@ -386,7 +461,7 @@ export class EVMEthersClient {
   }
 
   public async disconnect() {
-    await this.connectionControllerClient.disconnect()
+    await this.connectionControllerClient?.disconnect()
   }
 
   // -- Private -----------------------------------------------------------------
