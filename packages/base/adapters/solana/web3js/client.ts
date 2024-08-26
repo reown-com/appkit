@@ -26,6 +26,14 @@ import type { ChainNamespace } from '@web3modal/common'
 import type { ProviderType, Provider, SolStoreUtilState } from '@web3modal/scaffold-utils/solana'
 import { watchStandard } from './utils/watchStandard.js'
 import { WalletConnectProvider } from './providers/WalletConnectProvider.js'
+import { AuthProvider } from './providers/AuthProvider.js'
+import {
+  W3mFrameHelpers,
+  W3mFrameProvider,
+  W3mFrameRpcConstants,
+  type W3mFrameTypes
+} from '@web3modal/wallet'
+import { withSolanaNamespace } from './utils/withSolanaNamespace.js'
 import type { AppKit } from '../../../src/client.js'
 import type { AppKitOptions } from '../../../utils/TypesUtil.js'
 import { ProviderUtil } from '../../../utils/store/ProviderUtil.js'
@@ -37,9 +45,6 @@ export interface AdapterOptions {
   wallets?: BaseWalletAdapter[]
 }
 
-export type ExtendedBaseWalletAdapter = BaseWalletAdapter & {
-  isAnnounced: boolean
-}
 export type Web3ModalOptions = Omit<AdapterOptions, '_sdkVersion' | 'isUniversalProvider'>
 
 // -- Client --------------------------------------------------------------------
@@ -47,6 +52,8 @@ export class SolanaWeb3JsClient {
   private appKit: AppKit | undefined = undefined
 
   public options: AppKitOptions | undefined = undefined
+
+  public solanaConfig: ProviderType
 
   private hasSyncedConnectedAccount = false
 
@@ -72,6 +79,8 @@ export class SolanaWeb3JsClient {
     if (!solanaConfig) {
       throw new Error('web3modal:constructor - solanaConfig is undefined')
     }
+
+    this.solanaConfig = solanaConfig
 
     this.connectionSettings = connectionSettings
 
@@ -186,7 +195,8 @@ export class SolanaWeb3JsClient {
     this.initializeProviders({
       relayUrl: 'wss://relay.walletconnect.com',
       metadata: options.metadata,
-      projectId: options.projectId
+      projectId: options.projectId,
+      ...this.solanaConfig.auth
     })
 
     this.syncRequestedNetworks(caipNetworks)
@@ -211,6 +221,10 @@ export class SolanaWeb3JsClient {
 
     SolStoreUtil.subscribeKey('caipChainId', () => {
       this.syncNetwork()
+    })
+
+    SolStoreUtil.subscribeKey('isConnected', isConnected => {
+      this.appKit?.setIsConnected(isConnected, 'solana')
     })
 
     AssetController.subscribeNetworkImages(() => {
@@ -249,10 +263,6 @@ export class SolanaWeb3JsClient {
     })
   }
 
-  public setAddress(address = '') {
-    SolStoreUtil.setAddress(address)
-  }
-
   public disconnect() {
     return this.getProvider().disconnect()
   }
@@ -286,9 +296,10 @@ export class SolanaWeb3JsClient {
       await this.syncBalance(address)
 
       this.hasSyncedConnectedAccount = true
-    } else if (!isConnected && this.hasSyncedConnectedAccount) {
+    } else if (this.hasSyncedConnectedAccount) {
       this.appKit?.resetWcConnection()
       this.appKit?.resetNetwork()
+      this.appKit?.resetAccount('solana')
     }
   }
 
@@ -327,6 +338,11 @@ export class SolanaWeb3JsClient {
   public async switchNetwork(caipNetwork: CaipNetwork) {
     const caipChainId = caipNetwork.id
     const chain = SolHelpersUtil.getChainFromCaip(this.caipNetworks, caipChainId)
+
+    if (this.provider instanceof AuthProvider) {
+      await this.provider.switchNetwork(caipChainId)
+    }
+
     SolStoreUtil.setCaipChainId(chain.id)
     SolStoreUtil.setCurrentChain(chain)
     localStorage.setItem(SolConstantsUtil.CAIP_CHAIN_ID, chain.id)
@@ -339,7 +355,6 @@ export class SolanaWeb3JsClient {
     const chainImages = this.options?.chainImages
     const address = SolStoreUtil.state.address
     const storeChainId = SolStoreUtil.state.caipChainId
-    const isConnected = SolStoreUtil.state.isConnected
 
     if (this.caipNetworks) {
       const chain = SolHelpersUtil.getChainFromCaip(this.caipNetworks, storeChainId)
@@ -360,7 +375,7 @@ export class SolanaWeb3JsClient {
           imageUrl: chainImages?.[chain.chainId],
           chainNamespace: this.chainNamespace
         } as CaipNetwork)
-        if (isConnected && address) {
+        if (address) {
           if (chain.explorerUrl) {
             const url = `${chain.explorerUrl}/account/${address}`
             this.appKit?.setAddressExplorerUrl(url, this.chainNamespace)
@@ -389,31 +404,97 @@ export class SolanaWeb3JsClient {
         provider.chains.find(chain => chain.chainId === SolStoreUtil.state.currentChain?.chainId) ||
         provider.chains[0]
 
-      if (connectionChain) {
-        await this.switchNetwork(
-          SolHelpersUtil.getChainFromCaip(this.caipNetworks, `solana:${connectionChain.chainId}`)
-        )
-      } else {
+      if (!connectionChain) {
         provider.disconnect()
         throw new Error('The wallet does not support any of the required chains')
       }
 
-      SolStoreUtil.setIsConnected(true)
-      ProviderUtil.setProvider<Provider>(provider)
+      SolStoreUtil.setAddress(address)
+      await this.switchNetwork(
+        SolHelpersUtil.getChainFromCaip(this.caipNetworks, `solana:${connectionChain.chainId}`)
+      )
+      SolStoreUtil.setProvider(provider)
       this.provider = provider
-      this.setAddress(address)
 
       window?.localStorage.setItem(SolConstantsUtil.WALLET_ID, provider.name)
 
       await this.appKit?.setApprovedCaipNetworksData(this.chainNamespace)
 
       this.watchProvider(provider)
+      SolStoreUtil.setIsConnected(true)
     } finally {
       this.appKit?.setLoading(false)
     }
   }
 
   private watchProvider(provider: Provider) {
+    /*
+     * The auth RPC request handlers should be moved to the primary scaffold (Web3ModalScaffold).
+     * They are replicated in wagmi and ethers clients and the behavior should be kept the same
+     * between any client.
+     */
+
+    // eslint-disable-next-line func-style
+    const rpcRequestHandler = (request: W3mFrameTypes.RPCRequest) => {
+      if (!this.appKit) {
+        return
+      }
+
+      if (W3mFrameHelpers.checkIfRequestExists(request)) {
+        if (!W3mFrameHelpers.checkIfRequestIsAllowed(request)) {
+          if (this.appKit.isOpen()) {
+            if (this.appKit.isTransactionStackEmpty()) {
+              return
+            }
+            if (this.appKit.isTransactionShouldReplaceView()) {
+              this.appKit.replace('ApproveTransaction')
+            } else {
+              this.appKit.redirect('ApproveTransaction')
+            }
+          } else {
+            this.appKit.open({ view: 'ApproveTransaction' })
+          }
+        }
+      } else {
+        this.appKit.open()
+        // eslint-disable-next-line no-console
+        console.error(W3mFrameRpcConstants.RPC_METHOD_NOT_ALLOWED_MESSAGE, {
+          method: request.method
+        })
+        setTimeout(() => {
+          this.appKit?.showErrorMessage(W3mFrameRpcConstants.RPC_METHOD_NOT_ALLOWED_UI_MESSAGE)
+        }, 300)
+      }
+    }
+
+    // eslint-disable-next-line func-style
+    const rpcSuccessHandler = (_response: W3mFrameTypes.FrameEvent) => {
+      if (!this.appKit) {
+        return
+      }
+
+      if (this.appKit.isTransactionStackEmpty()) {
+        this.appKit.close()
+      } else {
+        this.appKit.popTransactionStack()
+      }
+    }
+
+    // eslint-disable-next-line func-style
+    const rpcErrorHandler = (_error: Error) => {
+      if (!this.appKit) {
+        return
+      }
+
+      if (this.appKit.isOpen()) {
+        if (this.appKit.isTransactionStackEmpty()) {
+          this.appKit.close()
+        } else {
+          this.appKit.popTransactionStack(true)
+        }
+      }
+    }
+
     function disconnectHandler() {
       localStorage.removeItem(SolConstantsUtil.WALLET_ID)
       SolStoreUtil.reset()
@@ -421,6 +502,9 @@ export class SolanaWeb3JsClient {
       provider.removeListener('disconnect', disconnectHandler)
       provider.removeListener('accountsChanged', accountsChangedHandler)
       provider.removeListener('connect', accountsChangedHandler)
+      provider.removeListener('auth_rpcRequest', rpcRequestHandler)
+      provider.removeListener('auth_rpcSuccess', rpcSuccessHandler)
+      provider.removeListener('auth_rpcError', rpcErrorHandler)
     }
 
     function accountsChangedHandler(publicKey: PublicKey) {
@@ -436,6 +520,9 @@ export class SolanaWeb3JsClient {
     provider.on('disconnect', disconnectHandler)
     provider.on('accountsChanged', accountsChangedHandler)
     provider.on('connect', accountsChangedHandler)
+    provider.on('auth_rpcRequest', rpcRequestHandler)
+    provider.on('auth_rpcSuccess', rpcSuccessHandler)
+    provider.on('auth_rpcError', rpcErrorHandler)
   }
 
   private getProvider() {
@@ -446,7 +533,7 @@ export class SolanaWeb3JsClient {
     return this.provider
   }
 
-  private async initializeProviders(opts: UniversalProviderOpts) {
+  private async initializeProviders(opts: UniversalProviderOpts & Provider['auth']) {
     if (CoreHelperUtil.isClient()) {
       this.addProvider(
         new WalletConnectProvider({
@@ -455,6 +542,29 @@ export class SolanaWeb3JsClient {
           getActiveChain: () => SolStoreUtil.state.currentChain
         })
       )
+
+      if (opts.email || opts.socials) {
+        if (!opts.projectId) {
+          throw new Error('projectId is required for AuthProvider')
+        }
+
+        this.addProvider(
+          new AuthProvider({
+            provider: new W3mFrameProvider(
+              opts.projectId,
+              withSolanaNamespace(SolStoreUtil.state.currentChain?.chainId)
+            ),
+            getActiveChain: () => SolStoreUtil.state.currentChain,
+            auth: {
+              email: opts.email,
+              socials: opts.socials,
+              showWallets: opts.showWallets,
+              walletFeatures: opts.walletFeatures
+            },
+            chains: this.chains
+          })
+        )
+      }
 
       watchStandard(standardAdapters => this.addProvider.bind(this)(...standardAdapters))
     }
@@ -484,7 +594,8 @@ export class SolanaWeb3JsClient {
       imageUrl: provider.icon,
       name: provider.name,
       provider,
-      chain: CommonConstantsUtil.CHAIN.SOLANA
+      chain: CommonConstantsUtil.CHAIN.SOLANA,
+      ...provider.auth
     }))
 
     this.appKit?.setConnectors(connectors)

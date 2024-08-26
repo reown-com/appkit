@@ -2,29 +2,22 @@
 
 import { useSnapshot } from 'valtio'
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
-import { getWeb3Modal } from '@web3modal/base/utils/library/react'
 import { AppKit } from '@web3modal/base'
-import type { AppKitOptions } from '@web3modal/base'
 import { SolanaWeb3JsClient } from '@web3modal/base/adapters/solana/web3js'
 import { SolStoreUtil } from '@web3modal/scaffold-utils/solana'
-import {
-  type Connection,
-  type Provider,
-  type ProviderType,
-  type BaseWalletAdapter
-} from '@web3modal/base/adapters/solana/web3js'
+import { getWeb3Modal } from '@web3modal/base/utils/library/react'
+import { type Connection, type Provider } from '@web3modal/base/adapters/solana/web3js'
+import type { SolanaAppKitOptions } from './options.js'
 
 // -- Configs -----------------------------------------------------------
 export { defaultSolanaConfig } from '@web3modal/base/adapters/solana/web3js'
 
+// -- Types -------------------------------------------------------------------
+export type { SolanaAppKitOptions }
+
 // -- Setup -------------------------------------------------------------
 let appkit: AppKit | undefined = undefined
 let solanaAdapter: SolanaWeb3JsClient | undefined = undefined
-
-type SolanaAppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 'sdkVersion'> & {
-  solanaConfig: ProviderType
-  wallets: BaseWalletAdapter[]
-}
 
 export function createWeb3Modal(options: SolanaAppKitOptions) {
   solanaAdapter = new SolanaWeb3JsClient({

@@ -17,7 +17,8 @@ import {
   type SendOptions
 } from '@solana/web3.js'
 import { isVersionedTransaction } from '@solana/wallet-adapter-base'
-import type { CaipNetwork } from '@web3modal/common'
+import type { CaipNetwork, ChainId } from '@web3modal/common'
+import { withSolanaNamespace } from '../utils/withSolanaNamespace.js'
 
 export type WalletConnectProviderConfig = {
   provider: UniversalProvider
@@ -60,7 +61,7 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
         }
 
         return this.requestedChains.find(
-          chain => this.withSolanaNamespace(chain.chainId as string) === chainId
+          chain => withSolanaNamespace(chain.chainId as string) === chainId
         )
       })
       .filter(Boolean) as Chain[]
@@ -78,7 +79,7 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
 
   public async connect() {
     const rpcMap = this.requestedChains.reduce<Record<string, string>>((acc, chain) => {
-      acc[this.withSolanaNamespace(chain.chainId as string)] = chain.rpcUrl
+      acc[withSolanaNamespace(chain.chainId as string)] = chain.rpcUrl
 
       return acc
     }, {})
@@ -179,10 +180,6 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
     return signature
   }
 
-  public async signAllTransactions() {
-    return await Promise.reject(new Error('Sign all transactions is not supported'))
-  }
-
   // -- Private ------------------------------------------ //
   private request<Method extends WalletConnectProvider.RequestMethod>(
     method: Method,
@@ -191,7 +188,7 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
     const chain = this.chains.find(c => this.getActiveChain()?.chainId === c.chainId)
 
     // This is a workaround for wallets that only accept Solana deprecated networks
-    let chainId = this.withSolanaNamespace(chain?.chainId)
+    let chainId = withSolanaNamespace(chain?.chainId)
 
     switch (chainId) {
       case SolConstantsUtil.CHAIN_IDS.Mainnet:
@@ -263,23 +260,11 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
     }
   }
 
-  private withSolanaNamespace<T extends string | undefined>(
-    chainId?: T
-  ): T extends string ? `solana:${string}` : undefined {
-    if (typeof chainId === 'string') {
-      return `solana:${chainId}` as T extends string ? `solana:${string}` : undefined
-    }
-
-    return undefined as T extends string ? `solana:${string}` : undefined
-  }
-
   /**
    * This method is a workaround for wallets that only accept Solana deprecated networks
    */
   private getRequestedChainsWithDeprecated() {
-    const chains = this.requestedChains.map(chain =>
-      this.withSolanaNamespace(chain.chainId as string)
-    )
+    const chains = this.requestedChains.map(chain => withSolanaNamespace<ChainId>(chain.chainId))
 
     if (chains.includes(SolConstantsUtil.CHAIN_IDS.Mainnet)) {
       chains.push(SolConstantsUtil.CHAIN_IDS.Deprecated_Mainnet)

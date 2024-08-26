@@ -11,11 +11,12 @@ export { defaultWagmiConfig } from '@web3modal/base/adapters/evm/wagmi'
 // -- Setup -------------------------------------------------------------------
 let appkit: AppKit | undefined = undefined
 
-type WagmiAppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 'sdkVersion'> &
+export type WagmiAppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 'sdkVersion'> &
   AdapterOptions<Config>
 
 export function createWeb3Modal(options: WagmiAppKitOptions) {
-  const wagmiAdapter = new EVMWagmiClient() as ChainAdapter
+  const wagmiAdapter = new EVMWagmiClient()
+
   appkit = new AppKit({
     ...options,
     adapters: [wagmiAdapter],

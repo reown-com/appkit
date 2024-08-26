@@ -311,6 +311,48 @@ export const RpcEthSendTransactionRequest = z.object({
   params: z.array(z.any())
 })
 
+export const RpcSolanaSignMessageRequest = z.object({
+  method: z.literal('solana_signMessage'),
+  params: z.object({
+    message: z.string(),
+    pubkey: z.string()
+  })
+})
+
+export const RpcSolanaSignTransactionRequest = z.object({
+  method: z.literal('solana_signTransaction'),
+  params: z.object({
+    transaction: z.string()
+  })
+})
+
+export const RpcSolanaSignAndSendTransactionRequest = z.object({
+  method: z.literal('solana_signAndSendTransaction'),
+  params: z.object({
+    transaction: z.string(),
+    // Options should match https://solana-labs.github.io/solana-web3.js/types/SendOptions.html
+    options: z
+      .object({
+        skipPreflight: z.boolean().optional(),
+        preflightCommitment: z
+          .enum([
+            'processed',
+            'confirmed',
+            'finalized',
+            'recent',
+            'single',
+            'singleGossip',
+            'root',
+            'max'
+          ])
+          .optional(),
+        maxRetries: z.number().optional(),
+        minContextSlot: z.number().optional()
+      })
+      .optional()
+  })
+})
+
 export const WalletSendCallsRequest = z.object({
   method: z.literal('wallet_sendCalls'),
   params: z.array(
@@ -459,6 +501,9 @@ export const W3mFrameSchema = {
           .or(RpcPersonalSignRequest)
           .or(RpcEthSignTypedDataV4)
           .or(RpcEthSendTransactionRequest)
+          .or(RpcSolanaSignMessageRequest)
+          .or(RpcSolanaSignTransactionRequest)
+          .or(RpcSolanaSignAndSendTransactionRequest)
           .or(WalletGetCallsReceiptRequest)
           .or(WalletSendCallsRequest)
           .or(WalletGetCapabilitiesRequest)

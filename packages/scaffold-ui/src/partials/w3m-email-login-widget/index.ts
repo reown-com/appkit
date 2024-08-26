@@ -105,9 +105,12 @@ export class W3mEmailLoginWidget extends LitElement {
   }
 
   private async onSubmitEmail(event: Event) {
-    const isActiveChainEVM = ChainController.state.activeChain === ConstantsUtil.CHAIN.EVM
+    const availableChains = [ConstantsUtil.CHAIN.EVM, ConstantsUtil.CHAIN.SOLANA]
+    const isAvailableChain = availableChains.find(
+      chain => chain === ChainController.state.activeChain
+    )
 
-    if (!isActiveChainEVM) {
+    if (!isAvailableChain) {
       RouterController.push('SwitchActiveChain', {
         switchToChain: ConstantsUtil.CHAIN.EVM
       })

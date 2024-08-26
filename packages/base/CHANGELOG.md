@@ -1,5 +1,37 @@
 # @web3modal/scaffold
 
+## 5.1.3
+
+### Patch Changes
+
+- refactor: defaultChain ts mismatch, custom hooks, separation of dependencies
+
+- Updated dependencies []:
+  - @web3modal/common@5.1.3
+  - @web3modal/core@5.1.3
+  - @web3modal/polyfills@5.1.3
+  - @web3modal/scaffold-ui@5.1.3
+  - @web3modal/scaffold-utils@5.1.3
+  - @web3modal/siwe@5.1.3
+  - @web3modal/ui@5.1.3
+  - @web3modal/wallet@5.1.3
+
+## 5.1.2
+
+### Patch Changes
+
+- Added Solana Auth Provider types and schemas
+
+- Updated dependencies []:
+  - @web3modal/scaffold-ui@5.1.2
+  - @web3modal/common@5.1.2
+  - @web3modal/core@5.1.2
+  - @web3modal/polyfills@5.1.2
+  - @web3modal/scaffold-utils@5.1.2
+  - @web3modal/siwe@5.1.2
+  - @web3modal/ui@5.1.2
+  - @web3modal/wallet@5.1.2
+
 ## 4.2.3
 
 ### Patch Changes
