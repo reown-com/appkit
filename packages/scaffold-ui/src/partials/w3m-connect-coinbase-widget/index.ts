@@ -6,8 +6,7 @@ import {
   EventsController,
   ModalController,
   OptionsController,
-  RouterController,
-  StorageUtil
+  RouterController
 } from '@web3modal/core'
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
 import { customElement } from '@web3modal/ui'
@@ -67,10 +66,6 @@ export class W3mConnectCoinbaseWidget extends LitElement {
   private async onCoinbaseConnector(connector: Connector) {
     try {
       ConnectionController.setWcError(false)
-
-      if (connector.imageUrl) {
-        StorageUtil.setConnectedWalletImageUrl(connector.imageUrl)
-      }
 
       await ConnectionController.connectExternal(connector, connector.chain)
 

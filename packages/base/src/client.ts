@@ -1,12 +1,13 @@
-import type {
-  EventsControllerState,
-  PublicStateControllerState,
-  ThemeControllerState,
-  ModalControllerState,
-  ConnectedWalletInfo,
-  RouterControllerState,
-  ChainAdapter,
-  CaipNetwork
+import {
+  type EventsControllerState,
+  type PublicStateControllerState,
+  type ThemeControllerState,
+  type ModalControllerState,
+  type ConnectedWalletInfo,
+  type RouterControllerState,
+  type ChainAdapter,
+  type CaipNetwork,
+  AssetUtil
 } from '@web3modal/core'
 import {
   AccountController,
@@ -297,6 +298,9 @@ export class AppKit {
   public setClientId: (typeof BlockchainApiController)['setClientId'] = clientId => {
     BlockchainApiController.setClientId(clientId)
   }
+
+  public getConnectorImage: (typeof AssetUtil)['getConnectorImage'] = connector =>
+    AssetUtil.getConnectorImage(connector)
 
   // -- Private ------------------------------------------------------------------
   private async initControllers(options: AppKitOptions) {

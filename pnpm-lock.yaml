@@ -574,6 +574,9 @@ importers:
       '@wagmi/core':
         specifier: 2.13.4
         version: 2.13.4(@tanstack/query-core@5.24.8)(@types/react@18.2.62)(react@18.2.0)(typescript@5.3.3)(viem@2.19.6(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4))
+      '@web3modal/base':
+        specifier: workspace:*
+        version: link:../../packages/base
       '@web3modal/wagmi':
         specifier: workspace:*
         version: link:../../packages/wagmi
