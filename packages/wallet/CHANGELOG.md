@@ -1,5 +1,15 @@
 # @web3modal/wallet
 
+## 5.1.3
+
+### Patch Changes
+
+- refactor: defaultChain ts mismatch, custom hooks, separation of dependencies
+
+- Updated dependencies []:
+  - @web3modal/common@5.1.3
+  - @web3modal/polyfills@5.1.3
+
 ## 5.1.2
 
 ### Patch Changes

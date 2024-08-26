@@ -1,5 +1,15 @@
 # @apps/gallery
 
+## 5.1.3
+
+### Patch Changes
+
+- refactor: defaultChain ts mismatch, custom hooks, separation of dependencies
+
+- Updated dependencies []:
+  - @web3modal/common@5.1.3
+  - @web3modal/ui@5.1.3
+
 ## 5.1.2
 
 ### Patch Changes
