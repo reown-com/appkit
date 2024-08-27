@@ -71,8 +71,6 @@ export class EVMWagmiClient {
   // -- Private variables -------------------------------------------------------
   private appKit: AppKit | undefined = undefined
 
-  private hasSyncedConnectedAccount = false
-
   private wagmiConfig: AdapterOptions<Config>['wagmiConfig']
 
   // -- Public variables --------------------------------------------------------
@@ -455,11 +453,10 @@ export class EVMWagmiClient {
 
   private async syncAccount({
     address,
-    isConnected,
-    isDisconnected,
     chainId,
     connector,
-    addresses
+    addresses,
+    status
   }: Partial<
     Pick<
       GetAccountReturnType,
@@ -477,10 +474,9 @@ export class EVMWagmiClient {
     if (this.appKit?.getCaipAddress() === caipAddress) {
       return
     }
-
-    if (isConnected && address && chainId) {
-      this.syncNetwork(address, chainId, isConnected)
-      this.appKit?.setIsConnected(isConnected, this.chain)
+    if (status === 'connected' && address && chainId) {
+      this.syncNetwork(address, chainId, true)
+      this.appKit?.setIsConnected(true, this.chain)
       this.appKit?.setCaipAddress(caipAddress, this.chain)
       await Promise.all([
         this.syncProfile(address, chainId),
@@ -500,16 +496,12 @@ export class EVMWagmiClient {
           this.chain
         )
       }
-
-      this.hasSyncedConnectedAccount = true
-    } else if (isDisconnected && this.hasSyncedConnectedAccount) {
+    } else if (status === 'disconnected') {
       this.appKit?.resetAccount(this.chain)
       this.appKit?.resetWcConnection()
       this.appKit?.resetNetwork()
       this.appKit?.setAllAccounts([], this.chain)
       this.appKit?.setIsConnected(false, this.chain)
-
-      this.hasSyncedConnectedAccount = false
     }
   }
 
@@ -536,9 +528,8 @@ export class EVMWagmiClient {
         } else {
           this.appKit?.setAddressExplorerUrl(undefined, this.chain)
         }
-        if (this.hasSyncedConnectedAccount) {
-          await this.syncBalance(address, chainId)
-        }
+
+        await this.syncBalance(address, chainId)
       }
     }
   }

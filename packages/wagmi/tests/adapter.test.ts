@@ -14,12 +14,9 @@ describe('wagmi adapter', () => {
       .spyOn(appKitMock, 'setApprovedCaipNetworksData')
       .mockResolvedValue()
 
-    const setAllAccounts = vi.spyOn(appKitMock, 'setAllAccounts').mockResolvedValue()
-
     await connect(wagmiConfigMock, { connector: wagmiConfigMock.connectors[0]! })
 
     expect(setApprovedCaipNetworksData).toHaveBeenCalledOnce()
-    expect(setAllAccounts).toHaveBeenCalledOnce()
 
     expect(appKitMock.getIsConnectedState()).toBe(true)
     expect(appKitMock.getCaipAddress()).toBe(
