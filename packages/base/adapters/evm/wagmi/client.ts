@@ -478,7 +478,7 @@ export class EVMWagmiClient {
 
           const preferredAccountType = this.appKit?.getPreferredAccountType()
 
-          namespaceKeys.forEach(async key => {
+          namespaceKeys.forEach(key => {
             const chainNamespace = key as ChainNamespace
             const caipAddress = namespaces?.[key]?.accounts[0] as CaipAddress
 
