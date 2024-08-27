@@ -507,6 +507,7 @@ export class EVMWagmiClient {
       this.appKit?.resetWcConnection()
       this.appKit?.resetNetwork()
       this.appKit?.setAllAccounts([], this.chain)
+      this.appKit?.setIsConnected(false, this.chain)
 
       this.hasSyncedConnectedAccount = false
     }
