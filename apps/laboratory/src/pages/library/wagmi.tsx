@@ -7,6 +7,7 @@ import { ThemeStore } from '../../utils/StoreUtil'
 import { getWagmiConfig } from '../../utils/WagmiConstants'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
+import { mainnet } from 'viem/chains'
 
 const queryClient = new QueryClient()
 
@@ -14,6 +15,7 @@ const wagmiConfig = getWagmiConfig('default')
 
 const modal = createWeb3Modal({
   wagmiConfig,
+  defaultChain: mainnet,
   projectId: ConstantsUtil.ProjectId,
   enableAnalytics: true,
   metadata: ConstantsUtil.Metadata,

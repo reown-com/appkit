@@ -1,5 +1,32 @@
 # @examples/html-wagmi
 
+## 5.1.3
+
+### Patch Changes
+
+- refactor: defaultChain ts mismatch, custom hooks, separation of dependencies
+
+- Updated dependencies []:
+  - @web3modal/wagmi@5.1.3
+
+## 5.1.2
+
+### Patch Changes
+
+- Added Solana Auth Provider types and schemas
+
+- Updated dependencies []:
+  - @web3modal/wagmi@5.1.2
+
+## 5.1.1
+
+### Patch Changes
+
+- Update EthProvider to v 2.15.1
+
+- Updated dependencies []:
+  - @web3modal/wagmi@5.1.1
+
 ## 5.1.0
 
 ### Minor Changes
