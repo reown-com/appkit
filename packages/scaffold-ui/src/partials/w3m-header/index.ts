@@ -1,9 +1,11 @@
 import {
   AccountController,
+  AssetUtil,
   ConnectionController,
   ConnectorController,
   EventsController,
   ModalController,
+  NetworkController,
   OptionsController,
   RouterController
 } from '@web3modal/core'
@@ -11,6 +13,7 @@ import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
 
 // -- Constants ----------------------------------------- //
@@ -77,19 +80,23 @@ function headings() {
     ConnectingSocial: AccountController.state.socialProvider
       ? AccountController.state.socialProvider
       : 'Connect Social',
-    ConnectingFarcaster: 'Farcaster'
+    ConnectingMultiChain: 'Select chain',
+    ConnectingFarcaster: 'Farcaster',
+    SwitchActiveChain: 'Switch chain'
   }
 }
 
 @customElement('w3m-header')
 export class W3mHeader extends LitElement {
-  public static override styles = [styles]
+  public static override styles = styles
 
   // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties --------------------------------- //
   @state() private heading = headings()[RouterController.state.view]
+
+  @state() private network = NetworkController.state.caipNetwork
 
   @state() private buffering = false
 
@@ -116,7 +123,8 @@ export class W3mHeader extends LitElement {
         this.onViewChange()
         this.onHistoryChange()
       }),
-      ConnectionController.subscribeKey('buffering', val => (this.buffering = val))
+      ConnectionController.subscribeKey('buffering', val => (this.buffering = val)),
+      NetworkController.subscribeKey('caipNetwork', val => (this.network = val))
     )
   }
 
@@ -144,10 +152,13 @@ export class W3mHeader extends LitElement {
   private async onClose() {
     if (this.isSiweEnabled) {
       const { SIWEController } = await import('@web3modal/siwe')
-      if (SIWEController.state.status === 'success') {
-        ModalController.close()
-      } else {
+      const isApproveSignScreen = RouterController.state.view === 'ApproveTransaction'
+      const isUnauthenticated = SIWEController.state.status !== 'success'
+
+      if (isUnauthenticated && isApproveSignScreen) {
         RouterController.popTransactionStack(true)
+      } else {
+        ModalController.close()
       }
     } else {
       ModalController.close()
@@ -193,8 +204,19 @@ export class W3mHeader extends LitElement {
     const isApproveTransaction = view === 'ApproveTransaction'
     const isUpgradeToSmartAccounts = view === 'UpgradeToSmartAccount'
     const isConnectingSIWEView = view === 'ConnectingSiwe'
+    const isAccountView = view === 'Account'
 
     const shouldHideBack = isApproveTransaction || isUpgradeToSmartAccounts || isConnectingSIWEView
+
+    if (isAccountView) {
+      return html`<wui-select
+        id="dynamic"
+        data-testid="w3m-account-select-network"
+        active-network=${this.network?.name}
+        @click=${this.onNetworks.bind(this)}
+        imageSrc=${ifDefined(AssetUtil.getNetworkImage(this.network))}
+      ></wui-select>`
+    }
 
     if (this.showBack && !shouldHideBack) {
       return html`<wui-icon-link
@@ -211,6 +233,21 @@ export class W3mHeader extends LitElement {
       icon="helpCircle"
       @click=${this.onWalletHelp.bind(this)}
     ></wui-icon-link>`
+  }
+
+  private onNetworks() {
+    if (this.isAllowedNetworkSwitch()) {
+      EventsController.sendEvent({ type: 'track', event: 'CLICK_NETWORKS' })
+      RouterController.push('Networks')
+    }
+  }
+
+  private isAllowedNetworkSwitch() {
+    const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
+    const isMultiNetwork = requestedCaipNetworks ? requestedCaipNetworks.length > 1 : false
+    const isValidNetwork = requestedCaipNetworks?.find(({ id }) => id === this.network?.id)
+
+    return isMultiNetwork || !isValidNetwork
   }
 
   private getPadding() {
@@ -234,6 +271,7 @@ export class W3mHeader extends LitElement {
 
   private async onHistoryChange() {
     const { history } = RouterController.state
+
     const buttonEl = this.shadowRoot?.querySelector('#dynamic')
     if (history.length > 1 && !this.showBack && buttonEl) {
       await buttonEl.animate([{ opacity: 1 }, { opacity: 0 }], {

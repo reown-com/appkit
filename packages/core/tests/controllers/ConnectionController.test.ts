@@ -4,6 +4,7 @@ import { ChainController, ConnectionController, ConstantsUtil, StorageUtil } fro
 import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 
 // -- Setup --------------------------------------------------------------------
+const chain = CommonConstantsUtil.CHAIN.EVM
 const walletConnectUri = 'wc://uri?=123'
 const externalId = 'coinbaseWallet'
 const type = 'AUTH' as ConnectorType
@@ -84,7 +85,7 @@ describe('ConnectionController', () => {
 
   it('connectExternal() should trigger internal client call and set connector in storage', async () => {
     const options = { id: externalId, type }
-    await ConnectionController.connectExternal(options)
+    await ConnectionController.connectExternal(options, chain)
     expect(storageSpy).toHaveBeenCalledWith(type)
     expect(clientConnectExternalSpy).toHaveBeenCalledWith(options)
   })
@@ -103,7 +104,7 @@ describe('ConnectionController', () => {
     ChainController.initialize([
       { chain: CommonConstantsUtil.CHAIN.EVM, connectionControllerClient: partialClient }
     ])
-    await ConnectionController.connectExternal({ id: externalId, type })
+    await ConnectionController.connectExternal({ id: externalId, type }, chain)
     ConnectionController.checkInstalled([externalId])
     expect(clientCheckInstalledSpy).toHaveBeenCalledWith([externalId])
     expect(clientCheckInstalledSpy).toHaveBeenCalledWith(undefined)

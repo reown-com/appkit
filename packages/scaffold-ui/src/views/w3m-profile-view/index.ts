@@ -1,5 +1,6 @@
 import {
   AccountController,
+  ChainController,
   ConnectorController,
   CoreHelperUtil,
   ModalController,
@@ -127,7 +128,7 @@ export class W3mProfileView extends LitElement {
   }
 
   private async onSwitchAccount(account: AccountType) {
-    AccountController.setShouldUpdateToAddress(account.address)
+    AccountController.setShouldUpdateToAddress(account.address, ChainController.state.activeChain)
     const emailConnector = ConnectorController.getAuthConnector()
     if (!emailConnector) {
       return

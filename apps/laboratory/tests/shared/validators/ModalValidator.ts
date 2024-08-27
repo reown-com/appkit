@@ -53,6 +53,12 @@ export class ModalValidator {
     })
   }
 
+  async expectConnectScreen() {
+    await expect(this.page.getByText('Connect Wallet')).toBeVisible({
+      timeout: MAX_WAIT
+    })
+  }
+
   async expectAddress(expectedAddress: string) {
     const address = this.page.getByTestId('w3m-address')
 
@@ -88,9 +94,7 @@ export class ModalValidator {
   async expectSwitchedNetwork(network: string) {
     const switchNetworkButton = this.page.getByTestId('w3m-account-select-network')
     await expect(switchNetworkButton).toBeVisible()
-    await expect(switchNetworkButton, `Switched network should include ${network}`).toContainText(
-      network
-    )
+    await expect(switchNetworkButton).toHaveAttribute('active-network', network)
   }
 
   expectSecureSiteFrameNotInjected() {
@@ -115,9 +119,12 @@ export class ModalValidator {
   }
 
   async expectMultipleAccounts() {
+    await this.page.waitForTimeout(500)
     await expect(this.page.getByText('Switch Address')).toBeVisible({
       timeout: MAX_WAIT
     })
+
+    expect(this.page.getByTestId('switch-address-item').first()).toBeVisible()
     const accounts = await this.page.getByTestId('switch-address-item').all()
 
     expect(accounts.length).toBeGreaterThan(1)

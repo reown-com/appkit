@@ -1,10 +1,32 @@
-import type { Web3ModalOptions } from '../src/client.js'
-import { Web3Modal } from '../src/client.js'
+import { AppKit } from '@web3modal/base'
+import type { AppKitOptions } from '@web3modal/base'
+import { EVMEthers5Client, type AdapterOptions } from '@web3modal/base/adapters/evm/ethers5'
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
+import { type Chain } from '@web3modal/scaffold-utils/ethers'
 
-export type { Web3Modal, Web3ModalOptions } from '../src/client.js'
-export { defaultConfig } from '../src/utils/defaultConfig.js'
+// -- Types -------------------------------------------------------------
+export type { AdapterOptions } from '@web3modal/base/adapters/evm/ethers'
 
-export function createWeb3Modal(options: Web3ModalOptions) {
-  return new Web3Modal({ ...options, _sdkVersion: `html-ethers5-${ConstantsUtil.VERSION}` })
+// -- Configs -----------------------------------------------------------
+export { defaultConfig } from '@web3modal/base/adapters/evm/ethers'
+
+// -- Setup -------------------------------------------------------------
+type EthersAppKitOptions = Omit<AppKitOptions<Chain>, 'adapters' | 'sdkType' | 'sdkVersion'> &
+  AdapterOptions
+
+export function createWeb3Modal(options: EthersAppKitOptions) {
+  const ethers5Adapter = new EVMEthers5Client({
+    ethersConfig: options.ethersConfig,
+    siweConfig: options.siweConfig,
+    chains: options.chains,
+    defaultChain: options.defaultChain
+  })
+
+  return new AppKit({
+    ...options,
+    defaultChain: ethers5Adapter.defaultChain,
+    adapters: [ethers5Adapter],
+    sdkType: 'w3m',
+    sdkVersion: `html-ethers5-${ConstantsUtil.VERSION}`
+  })
 }

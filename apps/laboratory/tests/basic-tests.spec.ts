@@ -7,6 +7,12 @@ testM.describe('Modal only tests', () => {
     await modalPage.page.getByTestId('connect-button').click()
     await expect(modalPage.page.getByTestId('all-wallets')).toBeVisible()
   })
+
+  testM('Should be able to open modal with the open hook', async ({ modalPage }) => {
+    const openHookButton = modalPage.page.getByTestId('w3m-open-hook-button')
+    await openHookButton.click()
+    await expect(modalPage.page.getByTestId('all-wallets')).toBeVisible()
+  })
 })
 
 testMExternal.describe('External connectors tests', () => {

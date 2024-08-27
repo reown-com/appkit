@@ -33,17 +33,11 @@ export class W3mButton extends LitElement {
 
   @state() private isLoading = ModalController.state.loading
 
-  @state() private balanceVal = AccountController.state.balance
-
-  @state() private balanceSymbol = AccountController.state.balanceSymbol
-
   // -- Lifecycle ----------------------------------------- //
   public override firstUpdated() {
     this.unsubscribe.push(
       AccountController.subscribe(val => {
         this.isAccount = val.isConnected
-        this.balanceVal = val.balance
-        this.balanceSymbol = val.balanceSymbol
       }),
       ModalController.subscribeKey('loading', val => {
         this.isLoading = val
@@ -57,9 +51,7 @@ export class W3mButton extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const isBalanceFetched = this.balanceVal && this.balanceSymbol
-
-    return isBalanceFetched && this.isAccount && !this.isLoading
+    return this.isAccount && !this.isLoading
       ? html`
           <w3m-account-button
             .disabled=${Boolean(this.disabled)}
