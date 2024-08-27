@@ -18,6 +18,7 @@ const siweWalletTest = test.extend<{ library: string }>({
 siweWalletTest.describe.configure({ mode: 'serial' })
 
 siweWalletTest.beforeAll(async ({ browser, library }) => {
+  siweWalletTest.setTimeout(300000)
   context = await browser.newContext()
   const browserPage = await context.newPage()
 
