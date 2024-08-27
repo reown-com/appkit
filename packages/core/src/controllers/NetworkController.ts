@@ -192,11 +192,11 @@ export const NetworkController = {
   },
 
   async switchActiveNetwork(network: NetworkControllerState['caipNetwork']) {
-    const sameChain = network?.chainNamespace === ChainController.state.activeChain
+    const sameNamespace = network?.chainNamespace === ChainController.state.activeChain
 
     let networkControllerClient: NetworkControllerState['_client'] = undefined
 
-    if (sameChain) {
+    if (sameNamespace) {
       networkControllerClient = ChainController.getNetworkControllerClient()
     } else {
       networkControllerClient = network

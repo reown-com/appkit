@@ -317,17 +317,25 @@ export class UniversalAdapterClient {
     const uniqueChainNamespaces = [
       ...new Set(caipNetworks.map(caipNetwork => caipNetwork.chainNamespace))
     ]
-    uniqueChainNamespaces.forEach(chainNamespace => {
-      this.appKit?.setRequestedCaipNetworks(
-        caipNetworks.filter(caipNetwork => caipNetwork.chainNamespace === chainNamespace),
-        chainNamespace
-      )
-    })
+    uniqueChainNamespaces
+      .filter(c => Boolean(c))
+      .forEach(chainNamespace => {
+        this.appKit?.setRequestedCaipNetworks(
+          caipNetworks.filter(caipNetwork => caipNetwork.chainNamespace === chainNamespace),
+          chainNamespace
+        )
+      })
   }
 
   private async checkActiveWalletConnectProvider() {
     const WalletConnectProvider = await this.getWalletConnectProvider()
     const walletId = localStorage.getItem(WcConstantsUtil.WALLET_ID)
+    console.log(
+      '>>> checkActiveWalletConnectProvider',
+      WalletConnectProvider,
+      walletId,
+      ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID
+    )
 
     if (WalletConnectProvider) {
       if (walletId === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {

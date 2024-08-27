@@ -267,34 +267,34 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
     },
     async switchChain({ addEthereumChainParameter, chainId }) {
       const provider = await this.getProvider()
+
       if (!provider) {
         throw new ProviderNotFoundError()
       }
 
       const chain = config.chains.find(x => x.id === chainId)
+
       if (!chain) {
         throw new SwitchChainError(new ChainNotConfiguredError())
       }
 
       try {
-        await Promise.all([
-          new Promise<void>(resolve => {
-            const listener = ({ chainId: currentChainId }: { chainId?: number | undefined }) => {
-              if (currentChainId === chainId) {
-                config.emitter.off('change', listener)
-                resolve()
-              }
+        await provider.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: numberToHex(chainId) }]
+        })
+        await new Promise<void>(resolve => {
+          const listener = ({ chainId: currentChainId }: { chainId?: number | undefined }) => {
+            if (currentChainId === chainId) {
+              config.emitter.off('change', listener)
+              resolve()
             }
-            config.emitter.on('change', listener)
-          }),
-
-          provider.request({
-            method: 'wallet_switchEthereumChain',
-            params: [{ chainId: numberToHex(chainId) }]
-          })
-        ])
+          }
+          config.emitter.on('change', listener)
+        })
 
         const requestedChains = await this.getRequestedChainsIds()
+
         this.setRequestedChainsIds([...requestedChains, chainId])
 
         return chain
@@ -411,7 +411,8 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
     },
 
     async getRequestedChainsIds() {
-      return (await config.storage?.getItem(this.requestedChainsStorageKey)) ?? []
+      const chainIds = (await config.storage?.getItem(this.requestedChainsStorageKey)) ?? []
+      return [...new Set(chainIds)]
     },
     /**
      * Checks if the target chains match the chains that were

@@ -371,12 +371,13 @@ export class SolanaWeb3JsClient {
         )
 
         this.appKit?.setCaipNetwork({
+          ...chain,
           id: caipChainId,
           name: chain.name,
           imageId: PresetsUtil.NetworkImageIds[chain.chainId],
           imageUrl: chainImages?.[chain.chainId],
           chainNamespace: this.chainNamespace
-        } as CaipNetwork)
+        })
         if (address) {
           if (chain.explorerUrl) {
             const url = `${chain.explorerUrl}/account/${address}`

@@ -6,7 +6,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 import { WagmiProvider } from 'wagmi'
 import { AppKitButtons } from '../../components/AppKitButtons'
-import { arbitrum, mainnet, optimism } from '../../utils/NetworksUtil'
+import { mainnet, optimism, polygon, zkSync } from '../../utils/NetworksUtil'
 import { WagmiTests } from '../../components/Wagmi/WagmiTests'
 
 const queryClient = new QueryClient()
@@ -15,7 +15,7 @@ const wagmiAdapter = new EVMWagmiClient()
 
 const modal = createWeb3Modal({
   adapters: [wagmiAdapter],
-  caipNetworks: [mainnet, arbitrum, optimism],
+  caipNetworks: [mainnet, polygon, zkSync, optimism],
   projectId: ConstantsUtil.ProjectId,
   metadata: ConstantsUtil.Metadata
 })

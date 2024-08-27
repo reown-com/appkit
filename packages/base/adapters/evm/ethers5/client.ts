@@ -896,8 +896,12 @@ export class EVMEthers5Client {
           name: chain.name,
           imageId: PresetsUtil.NetworkImageIds[chain.chainId],
           imageUrl: chainImages?.[Number(chain.chainId)],
-          chainNamespace: this.chainNamespace
-        } as CaipNetwork)
+          chainNamespace: this.chainNamespace,
+          chainId: chain.chainId,
+          currency: chain.currency,
+          explorerUrl: chain.explorerUrl,
+          rpcUrl: chain.rpcUrl
+        })
         if (isConnected && address) {
           const caipAddress: CaipAddress = `eip155:${chainId}:${address}`
           this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)
@@ -914,8 +918,14 @@ export class EVMEthers5Client {
       } else if (isConnected) {
         this.appKit?.setCaipNetwork({
           id: `${ConstantsUtil.EIP155}:${chainId}` as CaipNetworkId,
-          chainNamespace: this.chainNamespace
-        } as CaipNetwork)
+          chainNamespace: this.chainNamespace,
+          chainId: chainId as number,
+          // Fill these
+          name: '',
+          currency: '',
+          explorerUrl: '',
+          rpcUrl: ''
+        })
       }
     }
   }
