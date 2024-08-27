@@ -12,9 +12,6 @@ const modal = createWeb3Modal({
   ethersConfig: defaultConfig({
     metadata: ConstantsUtil.Metadata,
     defaultChainId: 1,
-    auth: {
-      socials: ['google', 'x', 'discord', 'farcaster', 'github', 'apple', 'facebook']
-    },
     coinbasePreference: 'smartWalletOnly'
   }),
   chains: EthersConstants.chains,

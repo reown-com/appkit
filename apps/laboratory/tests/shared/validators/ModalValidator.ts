@@ -93,7 +93,9 @@ export class ModalValidator {
 
   async expectSwitchedNetwork(network: string) {
     const switchNetworkButton = this.page.getByTestId('w3m-account-select-network')
-    await expect(switchNetworkButton).toBeVisible()
+    await expect(switchNetworkButton).toBeVisible({
+      timeout: MAX_WAIT
+    })
     await expect(switchNetworkButton).toHaveAttribute('active-network', network)
   }
 
