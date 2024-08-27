@@ -355,9 +355,8 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
         })
       }
     },
-    async onChainChanged(chain) {
+    onChainChanged(chain) {
       const chainId = Number(chain)
-      // await this.switchChain?.({ chainId })
       config.emitter.emit('change', { chainId })
     },
     async onConnect(connectInfo) {

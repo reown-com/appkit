@@ -255,7 +255,7 @@ export class EVMWagmiClient {
         if (!connector) {
           throw new Error('connectionControllerClient:connectExternal - connector is undefined')
         }
-        // await reconnect(this.wagmiConfig, { connectors: [connector] })
+        await reconnect(this.wagmiConfig, { connectors: [connector] })
       },
       checkInstalled: ids => {
         const injectedConnector = this.appKit
