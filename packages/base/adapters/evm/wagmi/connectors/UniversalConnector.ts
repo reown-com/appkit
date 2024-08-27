@@ -273,16 +273,16 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
       }
 
       const chain = config.chains.find(x => x.id === chainId)
+      const caipNetwork = parameters.caipNetworks.find(x => x.chainId === chainId)
 
       if (!chain) {
         throw new SwitchChainError(new ChainNotConfiguredError())
       }
 
       try {
-        await provider.request({
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId: numberToHex(chainId) }]
-        })
+        if (caipNetwork?.id) {
+          provider.setDefaultChain(caipNetwork?.id)
+        }
         await new Promise<void>(resolve => {
           const listener = ({ chainId: currentChainId }: { chainId?: number | undefined }) => {
             if (currentChainId === chainId) {

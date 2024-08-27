@@ -288,7 +288,6 @@ export class EVMWagmiClient {
         }
       },
       signMessage: async message => {
-        console.log('>>> signMessage request', this.appKit?.getCaipAddress())
         const caipAddress = this.appKit?.getCaipAddress() || ''
         const account = requireCaipAddress(caipAddress)
 
@@ -402,6 +401,7 @@ export class EVMWagmiClient {
     })
     watchAccount(this.wagmiConfig, {
       onChange: accountData => {
+        console.trace()
         this.syncAccount(accountData)
       }
     })
@@ -484,8 +484,6 @@ export class EVMWagmiClient {
 
           const preferredAccountType = this.appKit?.getPreferredAccountType()
 
-          this.syncNetwork(address, chainId, true)
-
           namespaceKeys.forEach(async key => {
             const chainNamespace = key as ChainNamespace
             const caipAddress = namespaces?.[key]?.accounts[0] as CaipAddress
@@ -493,9 +491,14 @@ export class EVMWagmiClient {
             this.appKit?.setIsConnected(true, chainNamespace)
             this.appKit?.setPreferredAccountType(preferredAccountType, chainNamespace)
             this.appKit?.setCaipAddress(caipAddress, chainNamespace)
-
-            await Promise.all([this.appKit?.setApprovedCaipNetworksData(chainNamespace)])
           })
+          this.syncNetwork(address, chainId, true)
+          await Promise.all([
+            this.syncProfile(address, chainId),
+            this.syncBalance(address, chainId),
+            this.syncConnectedWalletInfo(connector),
+            this.appKit?.setApprovedCaipNetworksData(this.chainNamespace)
+          ])
         } else if (status === 'connected' && address && chainId) {
           const caipAddress = `eip155:${chainId}:${address}` as CaipAddress
           this.appKit?.resetAccount(this.chainNamespace)
@@ -529,7 +532,6 @@ export class EVMWagmiClient {
           this.appKit?.setLoading(true)
           const connectors = getConnectors(this.wagmiConfig)
           const currentConnector = connectors.find(c => c.id === connector.id)
-          console.trace(currentConnector, 'connector')
           if (currentConnector) {
             await reconnect(this.wagmiConfig, {
               connectors: [currentConnector]
@@ -544,23 +546,21 @@ export class EVMWagmiClient {
   private async syncNetwork(address?: Hex, chainId?: number, isConnected?: boolean) {
     const chain = this.options?.caipNetworks.find((c: CaipNetwork) => c.chainId === chainId)
 
-    if (chain || chainId) {
-      const name = chain?.name ?? chainId?.toString()
-      const id = Number(chain?.id ?? chainId)
-      const caipChainId: CaipNetworkId = `${ConstantsUtil.EIP155}:${id}` as CaipNetworkId
+    if (chain?.id) {
       this.appKit?.setCaipNetwork({
-        chainId: id,
-        id: caipChainId,
-        name: name || '',
-        imageId: PresetsUtil.NetworkImageIds[id],
-        imageUrl: this.options?.chainImages?.[id],
+        chainId: chain.chainId,
+        id: chain.id,
+        name: chain.name || '',
+        imageId: PresetsUtil.NetworkImageIds[chain.chainId],
+        imageUrl: this.options?.chainImages?.[chain.chainId],
         chainNamespace: this.chainNamespace,
         currency: chain?.currency || '',
         explorerUrl: chain?.explorerUrl || '',
         rpcUrl: chain?.rpcUrl || ''
       })
+
       if (isConnected && address && chainId) {
-        const caipAddress: CaipAddress = `eip155:${id}:${address}`
+        const caipAddress: CaipAddress = `eip155:${chainId}:${address}`
         this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)
         if (chain?.explorerUrl) {
           const url = `${chain.explorerUrl}/address/${address}`

@@ -19,7 +19,7 @@ export const WcHelpersUtil = {
       case 'solana':
         return ['solana_signMessage']
       case 'eip155':
-        return ['personal_sign']
+        return ['personal_sign', 'eth_signTypedData_v4']
       default:
         return []
     }
