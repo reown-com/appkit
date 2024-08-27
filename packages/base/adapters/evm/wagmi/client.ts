@@ -58,13 +58,7 @@ import type { W3mFrameProvider, W3mFrameTypes } from '@web3modal/wallet'
 import { NetworkUtil } from '@web3modal/common'
 import { normalize } from 'viem/ens'
 import type { AppKitOptions } from '../../../utils/TypesUtil.js'
-import type {
-  CaipAddress,
-  CaipNetwork,
-  CaipNetworkId,
-  ChainNamespace,
-  AdapterType
-} from '@web3modal/common'
+import type { CaipAddress, CaipNetwork, ChainNamespace, AdapterType } from '@web3modal/common'
 import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 import type { AppKit } from '../../../src/client.js'
 import { walletConnect } from './connectors/UniversalConnector.js'
