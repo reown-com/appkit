@@ -2,6 +2,7 @@ import { test, type BrowserContext } from '@playwright/test'
 import { ModalWalletPage } from './shared/pages/ModalWalletPage'
 import { Email } from './shared/utils/email'
 import { EOA, ModalWalletValidator, SMART_ACCOUNT } from './shared/validators/ModalWalletValidator'
+import { EMAIL_BASED_TEST_TIMEOUT } from './shared/constants'
 
 /* eslint-disable init-declarations */
 let page: ModalWalletPage
@@ -17,7 +18,7 @@ const smartAccountTest = test.extend<{ library: string }>({
 smartAccountTest.describe.configure({ mode: 'serial' })
 
 smartAccountTest.beforeAll(async ({ browser, library }) => {
-  smartAccountTest.setTimeout(300000)
+  smartAccountTest.setTimeout(EMAIL_BASED_TEST_TIMEOUT)
   context = await browser.newContext()
   const browserPage = await context.newPage()
 

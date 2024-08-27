@@ -2,7 +2,7 @@ import { expect, test, type BrowserContext, type Page } from '@playwright/test'
 import { ModalWalletPage } from './shared/pages/ModalWalletPage'
 import { Email } from './shared/utils/email'
 import { ModalWalletValidator } from './shared/validators/ModalWalletValidator'
-import { SECURE_WEBSITE_URL } from './shared/constants'
+import { EMAIL_BASED_TEST_TIMEOUT, SECURE_WEBSITE_URL } from './shared/constants'
 
 /* eslint-disable init-declarations */
 let page: ModalWalletPage
@@ -19,7 +19,7 @@ const emailTest = test.extend<{ library: string }>({
 emailTest.describe.configure({ mode: 'serial' })
 
 emailTest.beforeAll(async ({ browser, library }) => {
-  emailTest.setTimeout(300000)
+  emailTest.setTimeout(EMAIL_BASED_TEST_TIMEOUT)
   context = await browser.newContext()
   browserPage = await context.newPage()
 

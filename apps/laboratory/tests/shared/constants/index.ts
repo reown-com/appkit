@@ -10,3 +10,4 @@ export const DEFAULT_SESSION_PARAMS: SessionParams = {
 }
 export const SECURE_WEBSITE_URL = 'https://secure.walletconnect.org'
 export const DEFAULT_CHAIN_NAME = process.env['DEFAULT_CHAIN_NAME'] || 'Ethereum'
+export const EMAIL_BASED_TEST_TIMEOUT = 300_000
