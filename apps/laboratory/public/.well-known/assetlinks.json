@@ -135,7 +135,8 @@
       "namespace": "android_app",
       "package_name": "com.walletconnect.flutterdapp",
       "sha256_cert_fingerprints": [
-        "89:50:0B:F7:C3:14:A5:D7:20:33:54:37:96:88:82:67:CB:E5:48:52:47:5B:81:F7:38:63:48:67:6D:BF:CA:1D"
+        "89:50:0B:F7:C3:14:A5:D7:20:33:54:37:96:88:82:67:CB:E5:48:52:47:5B:81:F7:38:63:48:67:6D:BF:CA:1D",
+        "D5:D7:F9:DD:49:C9:72:A2:4F:FB:16:0D:5A:A5:7D:52:79:99:E5:75:19:1C:93:99:30:6E:B9:80:B1:78:71:76"
       ]
     }
   },
@@ -145,7 +146,8 @@
       "namespace": "android_app",
       "package_name": "com.walletconnect.flutterdapp.internal",
       "sha256_cert_fingerprints": [
-        "AF:8B:CA:2C:90:FD:E7:18:AF:CA:67:ED:BA:6D:28:D5:08:B3:66:18:3A:D9:40:8C:B7:53:3D:25:E4:41:EB:29"
+        "AF:8B:CA:2C:90:FD:E7:18:AF:CA:67:ED:BA:6D:28:D5:08:B3:66:18:3A:D9:40:8C:B7:53:3D:25:E4:41:EB:29",
+        "7C:7A:93:14:0B:8E:11:DF:EA:4F:BA:B3:D4:18:66:3D:99:3A:21:45:D6:47:C4:15:2F:E2:BD:D3:E1:72:97:2D"
       ]
     }
   },
@@ -155,7 +157,8 @@
       "namespace": "android_app",
       "package_name": "com.walletconnect.flutterwallet",
       "sha256_cert_fingerprints": [
-        "89:50:0B:F7:C3:14:A5:D7:20:33:54:37:96:88:82:67:CB:E5:48:52:47:5B:81:F7:38:63:48:67:6D:BF:CA:1D"
+        "89:50:0B:F7:C3:14:A5:D7:20:33:54:37:96:88:82:67:CB:E5:48:52:47:5B:81:F7:38:63:48:67:6D:BF:CA:1D",
+        "C7:02:D5:76:EF:B9:D5:EF:DF:93:EA:DC:20:50:85:E4:E8:DF:42:A7:05:E9:E7:C8:D9:BF:65:DA:7C:45:7C:B3"
       ]
     }
   },
@@ -165,7 +168,8 @@
       "namespace": "android_app",
       "package_name": "com.walletconnect.flutterwallet.internal",
       "sha256_cert_fingerprints": [
-        "AF:8B:CA:2C:90:FD:E7:18:AF:CA:67:ED:BA:6D:28:D5:08:B3:66:18:3A:D9:40:8C:B7:53:3D:25:E4:41:EB:29"
+        "AF:8B:CA:2C:90:FD:E7:18:AF:CA:67:ED:BA:6D:28:D5:08:B3:66:18:3A:D9:40:8C:B7:53:3D:25:E4:41:EB:29",
+        "95:9F:3B:92:F3:E5:15:19:98:7D:22:E2:16:34:A9:D9:C3:02:6B:7D:13:8F:D6:4F:7D:8B:11:1C:D2:5D:5D:14"
       ]
     }
   }
