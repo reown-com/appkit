@@ -61,7 +61,7 @@ export const ModalController = {
   },
 
   close() {
-    const connected = AccountController.state.isConnected
+    const connected = AccountController.state.isConnected || false
     state.open = false
     PublicStateController.set({ open: false })
     EventsController.sendEvent({

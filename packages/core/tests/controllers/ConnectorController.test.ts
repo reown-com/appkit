@@ -20,24 +20,28 @@ const walletConnectConnector = {
   id: 'walletConnect',
   explorerId: 'walletConnectId',
   type: 'WALLET_CONNECT',
-  chain: ConstantsUtil.CHAIN.EVM
+  chain: ConstantsUtil.CHAIN.EVM,
+  name: 'WalletConnect'
 } as const
 const externalConnector = {
   id: 'external',
   type: 'EXTERNAL',
-  chain: ConstantsUtil.CHAIN.EVM
+  chain: ConstantsUtil.CHAIN.EVM,
+  name: 'External'
 } as const
 const authConnector = {
   id: 'w3mAuth',
   type: 'AUTH',
   provider: authProvider,
-  chain: ConstantsUtil.CHAIN.EVM
+  chain: ConstantsUtil.CHAIN.EVM,
+  name: 'Auth'
 } as const
 const announcedConnector = {
   id: 'announced',
   type: 'ANNOUNCED',
   info: { rdns: 'announced.io' },
-  chain: ConstantsUtil.CHAIN.EVM
+  chain: ConstantsUtil.CHAIN.EVM,
+  name: 'Announced'
 } as const
 
 const syncDappDataSpy = vi.spyOn(authProvider, 'syncDappData')
@@ -57,13 +61,16 @@ const metamaskConnector = {
   id: 'metamask',
   type: 'INJECTED',
   info: { rdns: 'io.metamask.com' },
-  chain: ConstantsUtil.CHAIN.EVM
+  chain: ConstantsUtil.CHAIN.EVM,
+  name: 'MetaMask'
 } as const
 const zerionConnector = {
   id: 'ecc4036f814562b41a5268adc86270fba1365471402006302e70169465b7ac18',
   type: 'INJECTED',
-  chain: ConstantsUtil.CHAIN.EVM
+  chain: ConstantsUtil.CHAIN.EVM,
+  name: 'Zerion'
 } as const
+
 // -- Tests --------------------------------------------------------------------
 describe('ConnectorController', () => {
   it('should have valid default state', () => {
@@ -92,8 +99,10 @@ describe('ConnectorController', () => {
 
   it('should return the correct connector on getConnector', () => {
     ConnectorController.addConnector(zerionConnector)
-    expect(ConnectorController.getConnector('walletConnectId', '')).toBe(walletConnectConnector)
-    expect(ConnectorController.getConnector('', 'io.metamask.com')).toBe(metamaskConnector)
+    expect(ConnectorController.getConnector('walletConnectId', '')).toStrictEqual(
+      walletConnectConnector
+    )
+    expect(ConnectorController.getConnector('', 'io.metamask.com')).toStrictEqual(metamaskConnector)
     expect(ConnectorController.getConnector(zerionConnector.id, '')).toBeUndefined()
     expect(ConnectorController.getConnector('unknown', '')).toBeUndefined()
   })

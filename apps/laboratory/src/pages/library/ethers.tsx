@@ -1,6 +1,6 @@
+import { createWeb3Modal, defaultConfig } from '@web3modal/ethers/react'
 import { EthersTests } from '../../components/Ethers/EthersTests'
 import { AppKitButtons } from '../../components/AppKitButtons'
-import { createWeb3Modal, defaultConfig } from '@web3modal/ethers/react'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { EthersConstants } from '../../utils/EthersConstants'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
@@ -14,6 +14,7 @@ const modal = createWeb3Modal({
     coinbasePreference: 'smartWalletOnly'
   }),
   chains: EthersConstants.chains,
+  defaultChain: EthersConstants.chains[1],
   projectId: ConstantsUtil.ProjectId,
   enableAnalytics: true,
   metadata: ConstantsUtil.Metadata,

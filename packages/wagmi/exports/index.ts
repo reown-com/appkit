@@ -1,12 +1,35 @@
-import type { Config } from '@wagmi/core'
-import type { Web3ModalOptions } from '../src/client.js'
-import { Web3Modal } from '../src/client.js'
+import { AppKit } from '@web3modal/base'
+import type { AppKitOptions } from '@web3modal/base'
+import { EVMWagmiClient, type AdapterOptions } from '@web3modal/base/adapters/evm/wagmi'
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
+import type { Chain } from 'viem'
+import type { Config } from 'wagmi'
 
-export type { Web3Modal, Web3ModalOptions } from '../src/client.js'
-export { defaultWagmiConfig } from '../src/utils/defaultWagmiCoreConfig.js'
-export { authConnector } from '../src/connectors/AuthConnectorExport.js'
+// -- Types -------------------------------------------------------------
+export type { AdapterOptions } from '@web3modal/base/adapters/evm/wagmi'
 
-export function createWeb3Modal(options: Web3ModalOptions<Config>) {
-  return new Web3Modal({ ...options, _sdkVersion: `html-wagmi-${ConstantsUtil.VERSION}` })
+// -- Connectors --------------------------------------------------------
+export { authConnector } from '@web3modal/base/adapters/evm/wagmi'
+
+// -- Configs -----------------------------------------------------------
+export { defaultWagmiConfig } from '@web3modal/base/adapters/evm/wagmi'
+
+// -- Setup -------------------------------------------------------------
+export type WagmiAppKitOptions = Omit<AppKitOptions<Chain>, 'adapters' | 'sdkType' | 'sdkVersion'> &
+  AdapterOptions<Config>
+
+export function createWeb3Modal(options: WagmiAppKitOptions) {
+  const wagmiAdapter = new EVMWagmiClient({
+    wagmiConfig: options.wagmiConfig,
+    siweConfig: options.siweConfig,
+    defaultChain: options.defaultChain
+  })
+
+  return new AppKit({
+    ...options,
+    defaultChain: wagmiAdapter.defaultChain,
+    adapters: [wagmiAdapter],
+    sdkType: 'w3m',
+    sdkVersion: `html-wagmi-${ConstantsUtil.VERSION}`
+  })
 }

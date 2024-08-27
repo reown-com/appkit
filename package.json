@@ -1,10 +1,11 @@
 {
   "name": "web3modal",
-  "version": "4.0.0",
+  "version": "5.1.3",
   "private": true,
   "type": "module",
   "scripts": {
     "build:clean": "turbo run build:clean --filter={./packages/*}",
+    "build:sample-apps": "turbo run build --filter={./examples/*}",
     "build": "turbo run build --filter={./packages/*} --concurrency=31",
     "watch": "turbo run watch --filter={./packages/*} --concurrency=50 --continue",
     "gallery": "turbo run dev --filter={./apps/gallery}",
@@ -32,7 +33,8 @@
     "publish:alpha": "pnpm install; pnpm build; changeset publish --tag alpha",
     "publish:beta": "pnpm install; pnpm build; changeset publish --tag beta",
     "publish:canary": "pnpm install; pnpm build; changeset publish --tag canary",
-    "prepare": "husky"
+    "prepare": "husky",
+    "size": "pnpm --filter=./examples/react-wagmi size"
   },
   "devDependencies": {
     "@changesets/changelog-github": "0.5.0",

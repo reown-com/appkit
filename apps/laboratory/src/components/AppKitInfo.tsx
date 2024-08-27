@@ -1,5 +1,4 @@
 import * as React from 'react'
-
 import {
   StackDivider,
   Card,
@@ -39,6 +38,7 @@ export function AppKitInfo({ address, chainId, clientId }: AppKitInfoProps) {
             </Heading>
             <Text data-testid="w3m-chain-id">{chainId}</Text>
           </Box>
+
           {clientId && (
             <Box>
               <Heading size="xs" textTransform="uppercase" pb="2">
