@@ -46,7 +46,16 @@ export function defaultConfig({
   const defaultAuth = {
     email: true,
     showWallets: true,
-    walletFeatures: true
+    walletFeatures: true,
+    socials: [
+      'google',
+      'x',
+      'discord',
+      'farcaster',
+      'github',
+      'apple',
+      'facebook'
+    ] as SocialProvider[]
   }
 
   // Enabled by default
