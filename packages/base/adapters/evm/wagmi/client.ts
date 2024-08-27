@@ -474,7 +474,7 @@ export class EVMWagmiClient {
   >) {
     if (this.wagmiConfig) {
       if (connector) {
-        if (connector.name === 'WalletConnect' && connector.getProvider) {
+        if (connector.name === 'WalletConnect' && connector.getProvider && address && chainId) {
           const provider = (await connector.getProvider()) as UniversalProvider
           ProviderUtil.setProvider(provider)
           ProviderUtil.setProviderId('walletConnect')
