@@ -128,9 +128,6 @@ export class EVMWagmiClient {
 
     const transports = Object.fromEntries(transportsArr)
     const connectors: CreateConnectorFn[] = []
-    const evmOnlyCaipNetworks = options.caipNetworks.filter(
-      caipNetwork => caipNetwork.chainNamespace === CommonConstantsUtil.CHAIN.EVM
-    )
 
     connectors.push(walletConnect(options, appKit))
 
