@@ -919,7 +919,7 @@ export class EVMEthers5Client {
         this.appKit?.setCaipNetwork({
           id: `${ConstantsUtil.EIP155}:${chainId}` as CaipNetworkId,
           chainNamespace: this.chainNamespace,
-          chainId: chainId as number,
+          chainId: Number(chainId),
           // Fill these
           name: '',
           currency: '',

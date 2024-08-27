@@ -330,12 +330,6 @@ export class UniversalAdapterClient {
   private async checkActiveWalletConnectProvider() {
     const WalletConnectProvider = await this.getWalletConnectProvider()
     const walletId = localStorage.getItem(WcConstantsUtil.WALLET_ID)
-    console.log(
-      '>>> checkActiveWalletConnectProvider',
-      WalletConnectProvider,
-      walletId,
-      ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID
-    )
 
     if (WalletConnectProvider) {
       if (walletId === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {

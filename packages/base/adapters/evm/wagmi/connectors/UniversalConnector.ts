@@ -412,6 +412,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
 
     async getRequestedChainsIds() {
       const chainIds = (await config.storage?.getItem(this.requestedChainsStorageKey)) ?? []
+
       return [...new Set(chainIds)]
     },
     /**
