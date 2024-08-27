@@ -6,12 +6,19 @@ import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
-import { arbitrum, mainnet, solana } from '../../utils/NetworksUtil'
+import {
+  arbitrum,
+  avalanche,
+  mainnet,
+  polygon,
+  base,
+  binanceSmartChain,
+  solana,
+  solanaDevnet
+} from '../../utils/NetworksUtil'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
-import { MultiChainInfo } from '../../components/MultiChainInfo'
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
-import { MultiChainTests } from '../../components/MultiChainTests'
 import { WagmiTests } from '../../components/Wagmi/WagmiTests'
 
 const queryClient = new QueryClient()
@@ -27,8 +34,17 @@ const solanaWeb3JsAdapter = new SolanaWeb3JsClient({
 
 const modal = createWeb3Modal({
   adapters: [wagmiAdapter, solanaWeb3JsAdapter],
-  // @ts-expect-error Wagmi's chains are different from our CaipNetwork type
-  caipNetworks: [mainnet, arbitrum, solana],
+  caipNetworks: [
+    avalanche,
+    mainnet,
+    polygon,
+    base,
+    binanceSmartChain,
+    arbitrum,
+    solana,
+    solanaDevnet
+  ],
+  defaultCaipNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId,
   enableAnalytics: true,
   metadata: ConstantsUtil.Metadata,
@@ -40,13 +56,7 @@ const modal = createWeb3Modal({
 ThemeStore.setModal(modal)
 
 export default function MultiChainAllAdapters() {
-  const [rendered, setRendered] = React.useState(false)
-
-  React.useEffect(() => {
-    setRendered(true)
-  }, [])
-
-  if (!rendered) {
+  if (!wagmiAdapter.wagmiConfig) {
     return null
   }
 
@@ -54,10 +64,8 @@ export default function MultiChainAllAdapters() {
     <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <AppKitButtons />
-        <MultiChainInfo />
         <WagmiModalInfo />
         <WagmiTests />
-        <MultiChainTests />
       </QueryClientProvider>
     </WagmiProvider>
   )

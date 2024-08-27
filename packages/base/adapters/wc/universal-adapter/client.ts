@@ -317,12 +317,14 @@ export class UniversalAdapterClient {
     const uniqueChainNamespaces = [
       ...new Set(caipNetworks.map(caipNetwork => caipNetwork.chainNamespace))
     ]
-    uniqueChainNamespaces.forEach(chainNamespace => {
-      this.appKit?.setRequestedCaipNetworks(
-        caipNetworks.filter(caipNetwork => caipNetwork.chainNamespace === chainNamespace),
-        chainNamespace
-      )
-    })
+    uniqueChainNamespaces
+      .filter(c => Boolean(c))
+      .forEach(chainNamespace => {
+        this.appKit?.setRequestedCaipNetworks(
+          caipNetworks.filter(caipNetwork => caipNetwork.chainNamespace === chainNamespace),
+          chainNamespace
+        )
+      })
   }
 
   private async checkActiveWalletConnectProvider() {

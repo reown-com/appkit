@@ -4,10 +4,10 @@ import { WagmiProvider } from 'wagmi'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { WagmiTests } from '../../components/Wagmi/WagmiTests'
 import { ThemeStore } from '../../utils/StoreUtil'
-import { getWagmiConfig, WagmiConstantsUtil } from '../../utils/WagmiConstants'
+import { getWagmiConfig } from '../../utils/WagmiConstants'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
-import { mainnet } from 'viem/chains'
+import { mainnet, optimism, polygon, zkSync } from '../../utils/NetworksUtil'
 
 const queryClient = new QueryClient()
 
@@ -15,8 +15,8 @@ const wagmiConfig = getWagmiConfig('default')
 
 const modal = createWeb3Modal({
   wagmiConfig,
-  caipNetworks: WagmiConstantsUtil.chains,
-  defaultChain: mainnet,
+  caipNetworks: [mainnet, polygon, zkSync, optimism],
+  defaultCaipNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId,
   enableAnalytics: true,
   metadata: ConstantsUtil.Metadata,
