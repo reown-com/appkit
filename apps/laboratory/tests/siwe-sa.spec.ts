@@ -64,7 +64,7 @@ smartAccountSiweTest('it should upgrade wallet', async () => {
   await page.closeModal()
 })
 
-smartAccountSiweTest.only(
+smartAccountSiweTest(
   'it should switch to a smart account enabled network and sign',
   async ({ library }) => {
     const targetChain = 'Sepolia'
