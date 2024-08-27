@@ -433,7 +433,8 @@ export class EVMEthersClient {
     ChainController.state.chains.set(this.chainNamespace, {
       chainNamespace: this.chainNamespace,
       connectionControllerClient: this.connectionControllerClient,
-      networkControllerClient: this.networkControllerClient
+      networkControllerClient: this.networkControllerClient,
+      adapterType: this.adapterType
     })
 
     if (this.ethersConfig) {

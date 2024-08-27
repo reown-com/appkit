@@ -119,6 +119,7 @@ export const ChainController = {
           chainNamespace: adapter.chainNamespace,
           connectionControllerClient: adapter.connectionControllerClient,
           networkControllerClient: adapter.networkControllerClient,
+          adapterType: adapter.adapterType,
           accountState,
           networkState
         })
@@ -143,6 +144,7 @@ export const ChainController = {
         chainNamespace: chain,
         connectionControllerClient: undefined,
         networkControllerClient: undefined,
+        adapterType: adapter.adapterType,
         accountState,
         networkState
       })
@@ -301,7 +303,9 @@ export const ChainController = {
     const isWcConnector = state.activeConnector?.name === 'WalletConnect'
 
     if (
-      (isWcConnector && state.universalAdapter.connectionControllerClient) ||
+      (isWcConnector &&
+        state.universalAdapter.connectionControllerClient &&
+        state.chains.get('eip155')?.adapterType !== 'wagmi') ||
       (state.noAdapters && state.universalAdapter.connectionControllerClient)
     ) {
       if (!state.universalAdapter.connectionControllerClient) {

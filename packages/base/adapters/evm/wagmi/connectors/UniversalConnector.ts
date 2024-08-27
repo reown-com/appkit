@@ -207,18 +207,11 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
         if (!optionalChains.length) {
           return
         }
-        const { UniversalProvider } = await import('@walletconnect/universal-provider')
+
+        const provider = appKit.universalAdapter?.getWalletConnectProvider()
 
         // eslint-disable-next-line consistent-return
-        return await UniversalProvider.init({
-          metadata: {
-            name: parameters.metadata ? parameters.metadata.name : '',
-            description: parameters.metadata ? parameters.metadata.description : '',
-            url: parameters.metadata ? parameters.metadata.url : '',
-            icons: parameters.metadata ? parameters.metadata.icons : ['']
-          },
-          projectId: parameters.projectId
-        })
+        return provider
       }
 
       if (!provider_) {
@@ -362,8 +355,9 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
         })
       }
     },
-    onChainChanged(chain) {
+    async onChainChanged(chain) {
       const chainId = Number(chain)
+      // await this.switchChain?.({ chainId })
       config.emitter.emit('change', { chainId })
     },
     async onConnect(connectInfo) {

@@ -1,6 +1,7 @@
 /* eslint-disable max-depth */
 import {
   AccountController,
+  ChainController,
   ConnectionController,
   NetworkController,
   type ConnectionControllerClient,
@@ -21,7 +22,8 @@ import {
   type CaipNetwork,
   type CaipNetworkId,
   type CaipAddress,
-  type ChainNamespace
+  type ChainNamespace,
+  type AdapterType
 } from '@web3modal/common'
 import { ProviderUtil } from '../../../utils/store/ProviderUtil.js'
 
@@ -68,6 +70,8 @@ export class UniversalAdapterClient {
   private appKit: AppKit | undefined = undefined
 
   public options: OptionsControllerState | undefined = undefined
+
+  public adapterType: AdapterType = 'universal'
 
   public constructor(options: AppKitOptions) {
     const { siweConfig, caipNetworks, metadata } = options
@@ -124,62 +128,66 @@ export class UniversalAdapterClient {
         if (!WalletConnectProvider) {
           throw new Error('connectionControllerClient:getWalletConnectUri - provider is undefined')
         }
-
         WalletConnectProvider.on('display_uri', (uri: string) => {
           onUri(uri)
         })
-
-        if (siweConfig?.options?.enabled) {
-          const { SIWEController, getDidChainId, getDidAddress } = await import('@web3modal/siwe')
-          const result = await WalletConnectProvider.authenticate({
-            nonce: await siweConfig.getNonce(),
-            methods: undefined,
-            uri: '',
-            chains: [],
-            domain: ''
-          })
-
-          // Auths is an array of signed CACAO objects https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-74.md
-          const signedCacao = result?.auths?.[0]
-          if (signedCacao) {
-            const { p, s } = signedCacao
-            const chainId = getDidChainId(p.iss)
-            const address = getDidAddress(p.iss)
-            if (address && chainId) {
-              SIWEController.setSession({
-                address,
-                chainId: parseInt(chainId, 10)
-              })
-            }
-            try {
-              // Kicks off verifyMessage and populates external states
-              const message = WalletConnectProvider.client.formatAuthMessage({
-                request: p,
-                iss: p.iss
-              })
-
-              await SIWEController.verifyMessage({
-                message,
-                signature: s.s,
-                cacao: signedCacao
-              })
-            } catch (error) {
-              // eslint-disable-next-line no-console
-              console.error('Error verifying message', error)
-              // eslint-disable-next-line no-console
-              await WalletConnectProvider.disconnect().catch(console.error)
-              // eslint-disable-next-line no-console
-              await SIWEController.signOut().catch(console.error)
-              throw error
-            }
-          }
+        if (
+          ChainController.state.activeChain &&
+          ChainController.state?.chains?.get(ChainController.state.activeChain)?.adapterType ===
+            'wagmi'
+        ) {
+          const adapter = ChainController.state.chains.get(ChainController.state.activeChain)
+          await adapter?.connectionControllerClient?.connectWalletConnect(onUri)
+          this.setWalletConnectProvider()
         } else {
-          const optionalNamespaces = WcHelpersUtil.createNamespaces(this.caipNetworks)
-
-          await WalletConnectProvider.connect({ optionalNamespaces })
+          if (siweConfig?.options?.enabled) {
+            const { SIWEController, getDidChainId, getDidAddress } = await import('@web3modal/siwe')
+            const result = await WalletConnectProvider.authenticate({
+              nonce: await siweConfig.getNonce(),
+              methods: undefined,
+              uri: '',
+              chains: [],
+              domain: ''
+            })
+            // Auths is an array of signed CACAO objects https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-74.md
+            const signedCacao = result?.auths?.[0]
+            if (signedCacao) {
+              const { p, s } = signedCacao
+              const chainId = getDidChainId(p.iss)
+              const address = getDidAddress(p.iss)
+              if (address && chainId) {
+                SIWEController.setSession({
+                  address,
+                  chainId: parseInt(chainId, 10)
+                })
+              }
+              try {
+                // Kicks off verifyMessage and populates external states
+                const message = WalletConnectProvider.client.formatAuthMessage({
+                  request: p,
+                  iss: p.iss
+                })
+                await SIWEController.verifyMessage({
+                  message,
+                  signature: s.s,
+                  cacao: signedCacao
+                })
+              } catch (error) {
+                // eslint-disable-next-line no-console
+                console.error('Error verifying message', error)
+                // eslint-disable-next-line no-console
+                await WalletConnectProvider.disconnect().catch(console.error)
+                // eslint-disable-next-line no-console
+                await SIWEController.signOut().catch(console.error)
+                throw error
+              }
+            }
+          } else {
+            const optionalNamespaces = WcHelpersUtil.createNamespaces(this.caipNetworks)
+            await WalletConnectProvider.connect({ optionalNamespaces })
+          }
+          this.setWalletConnectProvider()
         }
-
-        this.setWalletConnectProvider()
       },
 
       disconnect: async () => {

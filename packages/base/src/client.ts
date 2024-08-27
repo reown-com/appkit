@@ -320,12 +320,7 @@ export class AppKit {
   private async initControllers(options: AppKitOptions) {
     this.adapters = options.adapters
 
-    if (options.adapters?.length === 0) {
-      this.initializeUniversalAdapter(options)
-    } else if (!options?.adapters?.some(adapter => adapter.adapterType === 'wagmi')) {
-      this.initializeUniversalAdapter(options)
-    }
-
+    this.initializeUniversalAdapter(options)
     this.initializeAdapters(options)
 
     OptionsController.setProjectId(options.projectId)

@@ -9,6 +9,7 @@ export function WagmiSignMessageTest() {
 
   const { signMessageAsync, isPending } = useSignMessage()
   const { isConnected } = useAccount()
+
   const [signature, setSignature] = React.useState<string | undefined>()
 
   async function onSignMessage() {

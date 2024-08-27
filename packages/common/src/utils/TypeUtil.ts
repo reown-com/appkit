@@ -18,7 +18,7 @@ export type CaipNetwork = {
   imageId?: string
 }
 
-export type AdapterType = 'solana' | 'wagmi' | 'ethers' | 'ethers5'
+export type AdapterType = 'solana' | 'wagmi' | 'ethers' | 'ethers5' | 'universal'
 
 export type CoinbaseTransactionStatus =
   | 'ONRAMP_TRANSACTION_STATUS_SUCCESS'

@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable no-console */
-import { EthereumProvider, OPTIONAL_METHODS } from '@walletconnect/ethereum-provider'
 import {
   connect,
   disconnect,
@@ -20,7 +19,8 @@ import {
   getConnections,
   switchAccount,
   injected,
-  createConfig
+  createConfig,
+  getConnectors
 } from '@wagmi/core'
 import { ChainController } from '@web3modal/core'
 import type UniversalProvider from '@walletconnect/universal-provider'
@@ -161,7 +161,8 @@ export class EVMWagmiClient {
       chains: this.wagmiChains,
       multiInjectedProviderDiscovery: true,
       transports,
-      connectors
+      connectors,
+      ssr: true
     })
   }
 
@@ -179,8 +180,6 @@ export class EVMWagmiClient {
     if (!this.wagmiConfig) {
       throw new Error('web3modal:wagmiConfig - is undefined')
     }
-
-    const connectors = this.wagmiConfig.connectors
 
     this.networkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
@@ -212,91 +211,18 @@ export class EVMWagmiClient {
       }
     }
     this.connectionControllerClient = {
-      connectWalletConnect: async onUri => {
-        const siweConfig = this.options?.siweConfig
+      connectWalletConnect: async () => {
         if (!this.wagmiConfig) {
           throw new Error(
-            'networkControllerClient:getApprovedCaipNetworksData - wagmiConfig is undefined'
+            'connectionControllerClient:getWalletConnectUri - wagmiConfig is undefined'
           )
         }
         const connector = this.wagmiConfig.connectors.find(
           c => c.id === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID
         )
+
         if (!connector) {
           throw new Error('connectionControllerClient:getWalletConnectUri - connector is undefined')
-        }
-        const provider = (await connector.getProvider()) as Awaited<
-          ReturnType<(typeof EthereumProvider)['init']>
-        >
-        provider.on('display_uri', data => {
-          onUri(data)
-        })
-        const clientId = await provider.signer?.client?.core?.crypto?.getClientId()
-        if (clientId) {
-          this.appKit?.setClientId(clientId)
-        }
-        const chainId = Number(NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id))
-        const siweParams = await siweConfig?.getMessageParams?.()
-        // Make sure client uses ethereum provider version that supports `authenticate`
-        if (
-          siweConfig?.options?.enabled &&
-          typeof provider?.authenticate === 'function' &&
-          siweParams &&
-          Object.keys(siweParams || {}).length > 0
-        ) {
-          const { SIWEController, getDidChainId, getDidAddress } = await import('@web3modal/siwe')
-          // @ts-expect-error - setting requested chains beforehand avoids wagmi auto disconnecting the session when `connect` is called because it things chains are stale
-          await connector.setRequestedChainsIds(siweParams.chains)
-          // Make active chain first in requested chains to make it default for siwe message
-          let reorderedChains = siweParams.chains
-          if (chainId) {
-            reorderedChains = [chainId, ...siweParams.chains.filter(c => c !== chainId)]
-          }
-          const result = await provider.authenticate({
-            nonce: await siweConfig.getNonce(),
-            methods: [...OPTIONAL_METHODS],
-            ...siweParams,
-            chains: reorderedChains
-          })
-          // Auths is an array of signed CACAO objects https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-74.md
-          const signedCacao = result?.auths?.[0]
-          if (signedCacao) {
-            const { p, s } = signedCacao
-            const cacaoChainId = getDidChainId(p.iss) || ''
-            const address = getDidAddress(p.iss)
-            if (address && cacaoChainId) {
-              SIWEController.setSession({
-                address,
-                chainId: parseInt(cacaoChainId, 10)
-              })
-            }
-            try {
-              // Kicks off verifyMessage and populates external states
-              const message = provider.signer.client.formatAuthMessage({
-                request: p,
-                iss: p.iss
-              })
-              await SIWEController.verifyMessage({
-                message,
-                signature: s.s,
-                cacao: signedCacao
-              })
-            } catch (error) {
-              // eslint-disable-next-line no-console
-              console.error('Error verifying message', error)
-              // eslint-disable-next-line no-console
-              await provider.disconnect().catch(console.error)
-              // eslint-disable-next-line no-console
-              await SIWEController.signOut().catch(console.error)
-              throw error
-            }
-          }
-          /*
-           * Unassign the connector from the wagmiConfig and allow connect() to reassign it in the next step
-           * this avoids case where wagmi throws because the connector is already connected
-           * what we need connect() to do is to only setup internal event listeners
-           */
-          this.wagmiConfig.state.current = ''
         }
 
         await connect(this.wagmiConfig, { connector })
@@ -329,7 +255,7 @@ export class EVMWagmiClient {
         if (!connector) {
           throw new Error('connectionControllerClient:connectExternal - connector is undefined')
         }
-        await reconnect(this.wagmiConfig, { connectors: [connector] })
+        // await reconnect(this.wagmiConfig, { connectors: [connector] })
       },
       checkInstalled: ids => {
         const injectedConnector = this.appKit
@@ -454,11 +380,14 @@ export class EVMWagmiClient {
     ChainController.state.chains.set(this.chainNamespace, {
       chainNamespace: this.chainNamespace,
       connectionControllerClient: this.connectionControllerClient,
-      networkControllerClient: this.networkControllerClient
+      networkControllerClient: this.networkControllerClient,
+      adapterType: this.adapterType
     })
 
     this.syncConnectors(this.wagmiConfig.connectors)
-    this.syncAuthConnector(connectors.find(c => c.id === ConstantsUtil.AUTH_CONNECTOR_ID))
+    this.syncAuthConnector(
+      this.wagmiConfig?.connectors.find(c => c.id === ConstantsUtil.AUTH_CONNECTOR_ID)
+    )
     this.syncRequestedNetworks(options.caipNetworks)
 
     watchConnectors(this.wagmiConfig, {
@@ -520,8 +449,8 @@ export class EVMWagmiClient {
 
   private async syncAccount({
     address,
-    isConnected,
-    isDisconnected,
+    status,
+
     chainId,
     connector,
     addresses
@@ -538,11 +467,9 @@ export class EVMWagmiClient {
     >
   >) {
     if (this.wagmiConfig) {
-      const currentConnector = getConnections(this.wagmiConfig)[0]?.connector
-
-      if (currentConnector) {
-        if (currentConnector.name === 'WalletConnect') {
-          const provider = (await currentConnector.getProvider()) as UniversalProvider
+      if (connector) {
+        if (connector.name === 'WalletConnect' && connector.getProvider) {
+          const provider = (await connector.getProvider()) as UniversalProvider
           ProviderUtil.setProvider(provider)
           ProviderUtil.setProviderId('walletConnect')
 
@@ -550,7 +477,7 @@ export class EVMWagmiClient {
           const namespaceKeys = namespaces ? Object.keys(namespaces) : []
 
           const preferredAccountType = this.appKit?.getPreferredAccountType()
-
+          this.syncNetwork(address, chainId, true)
           namespaceKeys.forEach(async key => {
             const chainNamespace = key as ChainNamespace
             const caipAddress = namespaces?.[key]?.accounts[0] as CaipAddress
@@ -561,11 +488,11 @@ export class EVMWagmiClient {
 
             await Promise.all([this.appKit?.setApprovedCaipNetworksData(chainNamespace)])
           })
-        } else if (isConnected && address && chainId) {
+        } else if (status === 'connected' && address && chainId) {
           const caipAddress = `eip155:${chainId}:${address}` as CaipAddress
           this.appKit?.resetAccount(this.chainNamespace)
-          this.syncNetwork(address, chainId, isConnected)
-          this.appKit?.setIsConnected(isConnected, this.chainNamespace)
+          this.syncNetwork(address, chainId, true)
+          this.appKit?.setIsConnected(true, this.chainNamespace)
           this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)
           await Promise.all([
             this.syncProfile(address, chainId),
@@ -585,15 +512,22 @@ export class EVMWagmiClient {
               this.chainNamespace
             )
           }
-
-          this.hasSyncedConnectedAccount = true
-        } else if (isDisconnected && this.hasSyncedConnectedAccount) {
+        } else if (status === 'disconnected') {
           this.appKit?.resetAccount(this.chainNamespace)
           this.appKit?.resetWcConnection()
           this.appKit?.resetNetwork()
           this.appKit?.setAllAccounts([], this.chainNamespace)
-
-          this.hasSyncedConnectedAccount = false
+        } else if (status === 'reconnecting') {
+          this.appKit?.setLoading(true)
+          const connectors = getConnectors(this.wagmiConfig)
+          const currentConnector = connectors.find(c => c.id === connector.id)
+          console.trace(currentConnector, 'connector')
+          if (currentConnector) {
+            await reconnect(this.wagmiConfig, {
+              connectors: [currentConnector]
+            })
+            this.appKit?.setLoading(false)
+          }
         }
       }
     }
@@ -707,7 +641,7 @@ export class EVMWagmiClient {
 
     if (connector.id === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID && connector.getProvider) {
       const walletConnectProvider = (await connector.getProvider()) as Awaited<
-        ReturnType<(typeof EthereumProvider)['init']>
+        ReturnType<(typeof UniversalProvider)['init']>
       >
       if (walletConnectProvider.session) {
         this.appKit?.setConnectedWalletInfo(
@@ -749,7 +683,10 @@ export class EVMWagmiClient {
     filteredConnectors.forEach(({ id, name, type, icon }) => {
       // If coinbase injected connector is present, skip coinbase sdk connector.
       const isCoinbaseRepeated = coinbaseConnector && id === coinbaseSDKId
-      const shouldSkip = isCoinbaseRepeated || ConstantsUtil.AUTH_CONNECTOR_ID === id
+      const shouldSkip =
+        isCoinbaseRepeated ||
+        ConstantsUtil.AUTH_CONNECTOR_ID === id ||
+        ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID === id
 
       if (!shouldSkip) {
         w3mConnectors.push({
