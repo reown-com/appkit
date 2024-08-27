@@ -158,7 +158,8 @@
       "package_name": "com.walletconnect.flutterwallet",
       "sha256_cert_fingerprints": [
         "89:50:0B:F7:C3:14:A5:D7:20:33:54:37:96:88:82:67:CB:E5:48:52:47:5B:81:F7:38:63:48:67:6D:BF:CA:1D",
-        "C7:02:D5:76:EF:B9:D5:EF:DF:93:EA:DC:20:50:85:E4:E8:DF:42:A7:05:E9:E7:C8:D9:BF:65:DA:7C:45:7C:B3"
+        "C7:02:D5:76:EF:B9:D5:EF:DF:93:EA:DC:20:50:85:E4:E8:DF:42:A7:05:E9:E7:C8:D9:BF:65:DA:7C:45:7C:B3",
+        "A9:44:54:FF:7A:B2:3A:D3:44:93:D2:16:9E:E8:57:93:3F:90:37:99:9B:AB:E5:C7:AE:5C:03:F6:29:F1:46:D0"
       ]
     }
   },
@@ -169,7 +170,8 @@
       "package_name": "com.walletconnect.flutterwallet.internal",
       "sha256_cert_fingerprints": [
         "AF:8B:CA:2C:90:FD:E7:18:AF:CA:67:ED:BA:6D:28:D5:08:B3:66:18:3A:D9:40:8C:B7:53:3D:25:E4:41:EB:29",
-        "95:9F:3B:92:F3:E5:15:19:98:7D:22:E2:16:34:A9:D9:C3:02:6B:7D:13:8F:D6:4F:7D:8B:11:1C:D2:5D:5D:14"
+        "95:9F:3B:92:F3:E5:15:19:98:7D:22:E2:16:34:A9:D9:C3:02:6B:7D:13:8F:D6:4F:7D:8B:11:1C:D2:5D:5D:14",
+        "56:C4:90:89:31:E6:26:90:A6:6A:04:4A:72:1B:EB:AA:5C:F8:98:09:6D:4F:BD:90:6D:D2:5B:9A:A4:1D:E1:BC"
       ]
     }
   }
