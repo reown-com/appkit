@@ -51,8 +51,7 @@ function ConnectedTestContent({
 }) {
   const [isRequestPermissionLoading, setRequestPermissionLoading] = useState<boolean>(false)
   const { passkey } = usePasskey()
-  const { grantedPermissions, clearGrantedPermissions, requestPermissions } =
-    useERC7715Permissions()
+  const { grantedPermissions, clearGrantedPermissions, grantPermissions } = useERC7715Permissions()
   const toast = useChakraToast()
 
   const onRequestPermissions = useCallback(async () => {
@@ -81,7 +80,7 @@ function ConnectedTestContent({
       const passkeyPublicKey = serializePublicKey(p256Credential.publicKey, { to: 'hex' })
 
       const purchaseDonutPermissions = getPurchaseDonutPermissions()
-      const response = await requestPermissions(walletClient, {
+      const response = await grantPermissions(walletClient, {
         permissions: purchaseDonutPermissions,
         signerKey: {
           key: passkeyPublicKey,

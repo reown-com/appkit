@@ -48,8 +48,7 @@ function ConnectedTestContent({
   provider: Provider
   address: Address
 }) {
-  const { grantedPermissions, clearGrantedPermissions, requestPermissions } =
-    useERC7715Permissions()
+  const { grantedPermissions, clearGrantedPermissions, grantPermissions } = useERC7715Permissions()
   const { signer } = useLocalEcdsaKey()
   const [isRequestPermissionLoading, setRequestPermissionLoading] = useState<boolean>(false)
   const toast = useChakraToast()
@@ -71,7 +70,7 @@ function ConnectedTestContent({
       }).extend(walletActionsErc7715())
 
       const purchaseDonutPermissions = getPurchaseDonutPermissions()
-      const response = await requestPermissions(walletClient, {
+      const response = await grantPermissions(walletClient, {
         permissions: purchaseDonutPermissions,
         signerKey: {
           key: signer.publicKey,

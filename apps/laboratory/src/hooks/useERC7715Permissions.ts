@@ -33,7 +33,7 @@ export function useERC7715Permissions() {
     clearGrantedPermissions
   } = context
 
-  async function requestPermissions(
+  async function grantPermissions(
     walletClient: WalletClient & WalletActionsErc7715,
     args: {
       permissions: GrantPermissionsParameters
@@ -104,6 +104,6 @@ export function useERC7715Permissions() {
     grantedPermissions,
     pci: wcCosignerData?.pci,
     clearGrantedPermissions,
-    requestPermissions
+    grantPermissions
   }
 }
