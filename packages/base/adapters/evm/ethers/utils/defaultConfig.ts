@@ -24,15 +24,25 @@ export interface ConfigOptions {
 }
 
 export function defaultConfig(options: ConfigOptions) {
+  const defaultAuth = {
+    email: true,
+    showWallets: true,
+    walletFeatures: true,
+    socials: [
+      'google',
+      'x',
+      'discord',
+      'farcaster',
+      'github',
+      'apple',
+      'facebook'
+    ] as SocialProvider[]
+  }
   const {
     enableEIP6963 = true,
     enableCoinbase = true,
     enableInjected = true,
-    auth = {
-      email: true,
-      showWallets: true,
-      walletFeatures: true
-    },
+    auth,
     metadata
   } = options
 
@@ -104,12 +114,12 @@ export function defaultConfig(options: ConfigOptions) {
     providers.EIP6963 = true
   }
 
-  if (auth) {
-    auth.email ??= true
-    auth.showWallets ??= true
-    auth.walletFeatures ??= true
-    providers.auth = auth
+  const mergedAuth = {
+    ...defaultAuth,
+    ...auth
   }
+
+  providers.auth = mergedAuth
 
   return providers
 }
