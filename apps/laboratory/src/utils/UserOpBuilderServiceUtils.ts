@@ -1,5 +1,4 @@
 import axios from 'axios'
-import type { UserOperation } from 'permissionless/types'
 import { bigIntReplacer } from '../utils/CommonUtils'
 import type { Address, Hex } from 'viem'
 
@@ -14,11 +13,31 @@ export type BuildUserOpRequestArguments = {
     permissions?: { context: Hex }
   }
 }
-
-type UserOp = UserOperation<'v0.7'>
+/**
+ * UserOperation v0.7
+ */
+export type UserOperation = {
+  sender: Address
+  nonce: bigint
+  factory?: Address
+  factoryData?: Hex
+  callData: Hex
+  callGasLimit: bigint
+  verificationGasLimit: bigint
+  preVerificationGas: bigint
+  maxFeePerGas: bigint
+  maxPriorityFeePerGas: bigint
+  paymaster?: Address
+  paymasterVerificationGasLimit?: bigint
+  paymasterPostOpGasLimit?: bigint
+  paymasterData?: Hex
+  signature: Hex
+  initCode?: never
+  paymasterAndData?: never
+}
 
 export type FillUserOpResponse = {
-  userOp: UserOp
+  userOp: UserOperation
   hash: Hex
 }
 
@@ -29,7 +48,7 @@ export type ErrorResponse = {
 
 export type SendUserOpWithSignatureParams = {
   chainId: number
-  userOp: UserOp
+  userOp: UserOperation
   signature: Hex
   permissionsContext?: Hex
 }
