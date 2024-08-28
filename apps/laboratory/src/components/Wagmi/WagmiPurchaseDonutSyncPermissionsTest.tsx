@@ -4,17 +4,16 @@ import { useState } from 'react'
 import { useChakraToast } from '../Toast'
 import { encodeFunctionData, parseEther } from 'viem'
 import { abi as donutContractAbi, address as donutContractaddress } from '../../utils/DonutContract'
-import { useERC7715PermissionsSync } from '../../hooks/useERC7715PermissionsSync'
-import { useWagmiPermissionsSync } from '../../context/WagmiPermissionsSyncContext'
+import { useERC7715Permissions } from '../../hooks/useERC7715Permissions'
+import { usePasskey } from '../../context/PasskeyContext'
 import { sepolia } from 'viem/chains'
 
 export function WagmiPurchaseDonutSyncPermissionsTest() {
-  const { grantedPermissions, wcCosignerData, passkeyId, projectId } = useWagmiPermissionsSync()
-  const { executeActionsWithPasskeyAndCosignerPermissions } = useERC7715PermissionsSync({
-    chain: sepolia,
-    permissions: grantedPermissions,
-    projectId
-  })
+  const { passkeyId } = usePasskey()
+  const { grantedPermissions, executeActionsWithPasskeyAndCosignerPermissions } =
+    useERC7715Permissions({
+      chain: sepolia
+    })
 
   const {
     data: donutsOwned,
@@ -37,9 +36,6 @@ export function WagmiPurchaseDonutSyncPermissionsTest() {
       if (!grantedPermissions) {
         throw Error('No permissions available')
       }
-      if (!wcCosignerData) {
-        throw Error('No wc-cosigner data available')
-      }
 
       const purchaseDonutCallData = encodeFunctionData({
         abi: donutContractAbi,
@@ -55,8 +51,7 @@ export function WagmiPurchaseDonutSyncPermissionsTest() {
       ]
       const txHash = await executeActionsWithPasskeyAndCosignerPermissions({
         actions: purchaseDonutCallDataExecution,
-        passkeyId,
-        wcCosignerData
+        passkeyId
       })
       if (txHash) {
         toast({

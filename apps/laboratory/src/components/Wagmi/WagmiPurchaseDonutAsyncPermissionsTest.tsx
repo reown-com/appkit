@@ -5,17 +5,16 @@ import { useChakraToast } from '../Toast'
 import { encodeFunctionData, parseEther } from 'viem'
 import { abi as donutContractAbi, address as donutContractaddress } from '../../utils/DonutContract'
 import { sepolia } from 'viem/chains'
-import { useWagmiPermissionsAsync } from '../../context/WagmiPermissionsAsyncContext'
-import { useERC7715PermissionsAsync } from '../../hooks/useERC7715PermissionsAsync'
+import { useLocalEcdsaKey } from '../../context/LocalEcdsaKeyContext'
+import { useERC7715Permissions } from '../../hooks/useERC7715Permissions'
 
 export function WagmiPurchaseDonutAsyncPermissionsTest() {
-  const { grantedPermissions, wcCosignerData, privateKey, projectId } = useWagmiPermissionsAsync()
+  const { privateKey } = useLocalEcdsaKey()
 
-  const { executeActionsWithECDSAAndCosignerPermissions } = useERC7715PermissionsAsync({
-    chain: sepolia,
-    permissions: grantedPermissions,
-    projectId
-  })
+  const { grantedPermissions, executeActionsWithECDSAAndCosignerPermissions } =
+    useERC7715Permissions({
+      chain: sepolia
+    })
 
   const {
     data: donutsOwned,
@@ -35,10 +34,6 @@ export function WagmiPurchaseDonutAsyncPermissionsTest() {
   async function onPurchaseDonutWithPermissions() {
     setTransactionPending(true)
     try {
-      if (!wcCosignerData) {
-        throw Error('No wc-cosigner data available')
-      }
-
       if (!privateKey) {
         throw new Error(`Unable to get dApp private key`)
       }
@@ -56,7 +51,6 @@ export function WagmiPurchaseDonutAsyncPermissionsTest() {
       ]
       const txHash = await executeActionsWithECDSAAndCosignerPermissions({
         actions: purchaseDonutCallDataExecution,
-        chain: sepolia,
         ecdsaPrivateKey: privateKey as `0x${string}`
       })
       if (txHash) {

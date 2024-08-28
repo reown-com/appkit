@@ -1,5 +1,6 @@
+/* eslint-disable max-classes-per-file */
 import axios, { AxiosError } from 'axios'
-import { bigIntReplacer } from '../utils/CommonUtils'
+import { bigIntReplacer } from './CommonUtils'
 import type { UserOperation } from 'permissionless'
 
 // Define types for the request and response
@@ -70,7 +71,8 @@ export class CoSignerApiError extends Error {
   }
 }
 
-async function sendCoSignerRequest<TRequest, TResponset>(args: {
+// Function to send requests to the CoSigner API
+async function sendCoSignerRequest<TRequest, TResponse>(args: {
   url: string
   data: TRequest
   projectId: string
@@ -79,8 +81,9 @@ async function sendCoSignerRequest<TRequest, TResponset>(args: {
 }) {
   const { url, data, projectId, headers, transformRequest } = args
   const transformedData = transformRequest ? transformRequest(data) : data
+
   try {
-    return await axios.post<TResponset>(url, transformedData, {
+    return await axios.post<TResponse>(url, transformedData, {
       params: { projectId },
       headers
     })
@@ -88,7 +91,10 @@ async function sendCoSignerRequest<TRequest, TResponset>(args: {
     if (axios.isAxiosError(error)) {
       const axiosError = error as AxiosError
       if (axiosError.response) {
-        throw new CoSignerApiError(axiosError.response.status, axiosError.response.data as string)
+        throw new CoSignerApiError(
+          axiosError.response.status,
+          JSON.stringify(axiosError.response.data)
+        )
       } else {
         throw new CoSignerApiError(500, 'Network error')
       }
@@ -97,101 +103,70 @@ async function sendCoSignerRequest<TRequest, TResponset>(args: {
     throw error
   }
 }
-/**
- * Provides a set of functions to interact with the WalletConnect CoSigner API.
- * @param address - CAIP-10 address format
- * @param projectId - The project identifier
- */
-export function useWalletConnectCosigner(address: string, projectId: string) {
-  const baseUrl = 'https://rpc.walletconnect.com/v1/sessions'
-  if (!projectId) {
-    throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
-  }
-  if (!address) {
-    throw new Error('CAIP-10 address is not set or invalid')
+
+// Class to interact with the WalletConnect CoSigner API
+export class WalletConnectCosigner {
+  private baseUrl: string
+  private projectId: string
+
+  constructor() {
+    this.baseUrl = 'https://rpc.walletconnect.com/v1/sessions'
+    const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
+    if (!projectId) {
+      throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
+    }
+    this.projectId = projectId
   }
 
-  /**
-   * Adds a new permission session for the account.
-   *
-   * @param permission - The permission details
-   * @returns A promise that resolves to the new permission details
-   * @throws {CoSignerApiError} If the API request fails
-   */
-  async function addPermission(permission: AddPermission): Promise<AddPermissionResponse> {
-    const url = `${baseUrl}/${encodeURIComponent(address)}`
+  async addPermission(address: string, permission: AddPermission): Promise<AddPermissionResponse> {
+    const url = `${this.baseUrl}/${encodeURIComponent(address)}`
 
     const response = await sendCoSignerRequest<AddPermissionRequest, AddPermissionResponse>({
       url,
       data: { permission },
-      projectId,
+      projectId: this.projectId,
       headers: { 'Content-Type': 'application/json' }
     })
 
     return response.data
   }
 
-  /**
-   * Updates permissions context for a certain permission identifier.
-   *
-   * @param updateData - The update data including pci, signature, and context
-   * @returns A promise that resolves when the update is successful
-   * @throws {CoSignerApiError} If the API request fails
-   */
-  async function updatePermissionsContext(
+  async updatePermissionsContext(
+    address: string,
     updateData: UpdatePermissionsContextRequest
   ): Promise<void> {
-    const url = `${baseUrl}/${encodeURIComponent(address)}/context`
-
+    const url = `${this.baseUrl}/${encodeURIComponent(address)}/context`
     await sendCoSignerRequest<UpdatePermissionsContextRequest, never>({
       url,
       data: updateData,
-      projectId,
+      projectId: this.projectId,
       headers: { 'Content-Type': 'application/json' }
     })
   }
 
-  /**
-   * Revokes a permission from account sessions.
-   *
-   * @param revokeData - The revoke data including pci and signature
-   * @returns A promise that resolves when the revocation is successful
-   * @throws {CoSignerApiError} If the API request fails
-   */
-  async function revokePermission(revokeData: RevokePermissionRequest): Promise<void> {
-    const url = `${baseUrl}/${encodeURIComponent(address)}/revoke`
+  async revokePermission(address: string, revokeData: RevokePermissionRequest): Promise<void> {
+    const url = `${this.baseUrl}/${encodeURIComponent(address)}/revoke`
     await sendCoSignerRequest<RevokePermissionRequest, never>({
       url,
       data: revokeData,
-      projectId,
+      projectId: this.projectId,
       headers: { 'Content-Type': 'application/json' }
     })
   }
-  /**
-   * Sends a co-signing request for a user operation.
-   *
-   * @param coSignData - The co-sign data including pci and userOp
-   * @returns A promise that resolves to the user operation receipt
-   * @throws {CoSignerApiError} If the API request fails
-   */
-  async function coSignUserOperation(coSignData: CoSignRequest): Promise<CoSignResponse> {
-    const url = `${baseUrl}/${encodeURIComponent(address)}/sign`
 
+  async coSignUserOperation(address: string, coSignData: CoSignRequest): Promise<CoSignResponse> {
+    const url = `${this.baseUrl}/${encodeURIComponent(address)}/sign`
+    if (!this.projectId) {
+      throw new Error('Project ID is not defined')
+    }
     const response = await sendCoSignerRequest<CoSignRequest, CoSignResponse>({
       url,
       data: coSignData,
-      projectId,
+      projectId: this.projectId,
       headers: { 'Content-Type': 'application/json' },
       transformRequest: (value: CoSignRequest) => JSON.stringify(value, bigIntReplacer)
     })
 
     return response.data
-  }
-
-  return {
-    addPermission,
-    updatePermissionsContext,
-    revokePermission,
-    coSignUserOperation
   }
 }

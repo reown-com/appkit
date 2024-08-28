@@ -184,6 +184,7 @@ export const formatSignatureAbi = [
     stateMutability: 'view'
   }
 ] as const
+
 export const getDummySignatureAbi = [
   {
     type: 'function',
@@ -233,80 +234,77 @@ export const getDummySignatureAbi = [
   }
 ] as const
 
-export function useUserOpBuilder() {
-  async function getNonceWithContext(client: Client, args: UserOpBuilderGetNonceArguments) {
-    const { sender, permissionsContext, userOpBuilderAddress } = args
-    const publicClient = client.extend(publicActions)
-    if (!userOpBuilderAddress) {
-      throw new Error('no userOpBuilder address provided.')
-    }
-
-    return await publicClient.readContract({
-      address: userOpBuilderAddress,
-      abi: getNonceAbi,
-      functionName: 'getNonce',
-      args: [sender, permissionsContext]
-    })
+export async function getNonceWithContext(client: Client, args: UserOpBuilderGetNonceArguments) {
+  const { sender, permissionsContext, userOpBuilderAddress } = args
+  const publicClient = client.extend(publicActions)
+  if (!userOpBuilderAddress) {
+    throw new Error('no userOpBuilder address provided.')
   }
 
-  async function getCallDataWithContext(client: Client, args: UserOpBuilderGetCallDataArguments) {
-    const { sender, actions, permissionsContext, userOpBuilderAddress } = args
-    const publicClient = client.extend(publicActions)
-    if (!userOpBuilderAddress) {
-      throw new Error('no userOpBuilder address provided.')
-    }
+  return await publicClient.readContract({
+    address: userOpBuilderAddress,
+    abi: getNonceAbi,
+    functionName: 'getNonce',
+    args: [sender, permissionsContext]
+  })
+}
 
-    const callDataFromUserOpBuilder = await publicClient.readContract({
-      address: userOpBuilderAddress,
-      abi: getCallDataAbi,
-      functionName: 'getCallData',
-      args: [sender, actions, permissionsContext]
-    })
-
-    return callDataFromUserOpBuilder
+export async function getCallDataWithContext(
+  client: Client,
+  args: UserOpBuilderGetCallDataArguments
+) {
+  const { sender, actions, permissionsContext, userOpBuilderAddress } = args
+  const publicClient = client.extend(publicActions)
+  if (!userOpBuilderAddress) {
+    throw new Error('no userOpBuilder address provided.')
   }
 
-  async function getSignatureWithContext(client: Client, args: UserOpBuilderGetSignatureArguments) {
-    const { sender, permissionsContext, userOpBuilderAddress, userOperation } = args
-    const publicClient = client.extend(publicActions)
-    if (!userOpBuilderAddress) {
-      throw new Error('no userOpBuilder address provided.')
-    }
+  const callDataFromUserOpBuilder = await publicClient.readContract({
+    address: userOpBuilderAddress,
+    abi: getCallDataAbi,
+    functionName: 'getCallData',
+    args: [sender, actions, permissionsContext]
+  })
 
-    const sig = await publicClient.readContract({
-      address: userOpBuilderAddress,
-      abi: formatSignatureAbi,
-      functionName: 'formatSignature',
-      args: [sender, userOperation, permissionsContext]
-    })
+  return callDataFromUserOpBuilder
+}
 
-    return sig
+export async function getSignatureWithContext(
+  client: Client,
+  args: UserOpBuilderGetSignatureArguments
+) {
+  const { sender, permissionsContext, userOpBuilderAddress, userOperation } = args
+  const publicClient = client.extend(publicActions)
+  if (!userOpBuilderAddress) {
+    throw new Error('no userOpBuilder address provided.')
   }
 
-  async function getDummySignatureWithContext(
-    client: Client,
-    args: UserOpBuilderGetDummySignatureArguments
-  ) {
-    const { sender, permissionsContext, userOpBuilderAddress, actions } = args
-    const publicClient = client.extend(publicActions)
-    if (!userOpBuilderAddress) {
-      throw new Error('no userOpBuilder address provided.')
-    }
+  const sig = await publicClient.readContract({
+    address: userOpBuilderAddress,
+    abi: formatSignatureAbi,
+    functionName: 'formatSignature',
+    args: [sender, userOperation, permissionsContext]
+  })
 
-    const sig = await publicClient.readContract({
-      address: userOpBuilderAddress,
-      abi: getDummySignatureAbi,
-      functionName: 'getDummySignature',
-      args: [sender, actions, permissionsContext]
-    })
+  return sig
+}
 
-    return sig
+export async function getDummySignatureWithContext(
+  client: Client,
+  args: UserOpBuilderGetDummySignatureArguments
+) {
+  const { sender, permissionsContext, userOpBuilderAddress, actions } = args
+  const publicClient = client.extend(publicActions)
+  if (!userOpBuilderAddress) {
+    throw new Error('no userOpBuilder address provided.')
   }
 
-  return {
-    getNonceWithContext,
-    getCallDataWithContext,
-    getSignatureWithContext,
-    getDummySignatureWithContext
-  }
+  const sig = await publicClient.readContract({
+    address: userOpBuilderAddress,
+    abi: getDummySignatureAbi,
+    functionName: 'getDummySignature',
+    args: [sender, actions, permissionsContext]
+  })
+
+  return sig
 }
