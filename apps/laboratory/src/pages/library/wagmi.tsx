@@ -11,6 +11,7 @@ import { mainnet } from 'viem/chains'
 
 const queryClient = new QueryClient()
 
+// Diff comment
 const wagmiConfig = getWagmiConfig('default')
 
 const modal = createWeb3Modal({
