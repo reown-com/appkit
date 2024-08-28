@@ -23,7 +23,7 @@ emailTest.beforeAll(async ({ browser, library }) => {
   context = await browser.newContext()
   browserPage = await context.newPage()
 
-  page = new ModalWalletPage(browserPage, library, 'email')
+  page = new ModalWalletPage(browserPage, library, 'default')
   validator = new ModalWalletValidator(browserPage)
 
   await page.load()
