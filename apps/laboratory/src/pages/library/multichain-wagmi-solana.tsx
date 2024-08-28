@@ -8,13 +8,11 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
 import {
   arbitrum,
-  avalanche,
   mainnet,
   polygon,
   base,
   binanceSmartChain,
-  solana,
-  solanaDevnet
+  solana
 } from '../../utils/NetworksUtil'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
