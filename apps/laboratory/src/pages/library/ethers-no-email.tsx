@@ -1,11 +1,11 @@
 import { createWeb3Modal } from '@web3modal/base/react'
+import { EVMEthersClient } from '@web3modal/base/adapters/evm/ethers'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { EthersConstants } from '../../utils/EthersConstants'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
-import { EthersTests } from '../../components/Ethers/EthersTests'
-import { AppKitButtons } from '../../components/AppKitButtons'
 import { EthersModalInfo } from '../../components/Ethers/EthersModalInfo'
-import { EVMEthersClient } from '@web3modal/base/adapters/evm/ethers'
+import { AppKitButtons } from '../../components/AppKitButtons'
+import { EthersTests } from '../../components/Ethers/EthersTests'
 
 const ethersAdapter = new EVMEthersClient()
 

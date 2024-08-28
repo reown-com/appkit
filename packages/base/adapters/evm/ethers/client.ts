@@ -446,6 +446,7 @@ export class EVMEthersClient {
     if (this.ethersConfig) {
       this.checkActiveProviders(this.ethersConfig)
     }
+
     this.syncRequestedNetworks(this.caipNetworks)
   }
 
