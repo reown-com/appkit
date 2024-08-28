@@ -63,14 +63,14 @@ emailTest('it should reject sign', async () => {
   await validator.expectRejectedSign()
 })
 
-emailTest('it should switch network and sign', async () => {
+emailTest('it should switch network and sign', async ({ library }) => {
   let targetChain = 'Polygon'
   await page.goToSettings()
   await page.switchNetwork(targetChain)
-
-  // After switching network, it closes the modal. Only happens on tests
-  await page.goToSettings()
-
+  if (library === 'wagmi') {
+    // In wagmi, after switching network, it closes the modal
+    await page.goToSettings()
+  }
   await validator.expectSwitchedNetwork(targetChain)
   await page.closeModal()
   await page.sign()
@@ -80,7 +80,7 @@ emailTest('it should switch network and sign', async () => {
   targetChain = 'Ethereum'
   await page.goToSettings()
   await page.switchNetwork(targetChain)
-  // After switching network, it closes the modal. Only happens on tests
+  // After switching network, it closes the modal
   await page.goToSettings()
 
   await validator.expectSwitchedNetwork(targetChain)
