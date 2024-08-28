@@ -1,5 +1,5 @@
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
-import { getChain } from './ChainsUtil'
+import { getChain } from './NetworksUtil'
 import { parseJSON } from './CommonUtils'
 import { fromHex, type WalletCapabilities } from 'viem'
 import { W3mFrameProvider } from '@web3modal/wallet'

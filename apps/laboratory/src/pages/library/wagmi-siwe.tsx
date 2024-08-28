@@ -1,23 +1,27 @@
-import { createWeb3Modal } from '@web3modal/wagmi/react'
+import { createWeb3Modal } from '@web3modal/base/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { WagmiTests } from '../../components/Wagmi/WagmiTests'
 import { ThemeStore } from '../../utils/StoreUtil'
-import { getWagmiConfig } from '../../utils/WagmiConstants'
 import { SiweData } from '../../components/Siwe/SiweData'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { siweConfig } from '../../utils/SiweUtils'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
+import { EVMWagmiClient } from '@web3modal/base/adapters/evm/wagmi'
+import { mainnet, optimism, polygon, zkSync } from '../../utils/NetworksUtil'
 
 const queryClient = new QueryClient()
 
-const wagmiConfig = getWagmiConfig('default')
+const wagmiAdapter = new EVMWagmiClient()
 
 const modal = createWeb3Modal({
-  wagmiConfig,
+  adapters: [wagmiAdapter],
+  caipNetworks: [polygon, mainnet, zkSync, optimism],
   projectId: ConstantsUtil.ProjectId,
-  enableAnalytics: true,
+  features: {
+    analytics: true
+  },
   metadata: ConstantsUtil.Metadata,
   siweConfig,
   customWallets: ConstantsUtil.CustomWallets
@@ -26,8 +30,12 @@ const modal = createWeb3Modal({
 ThemeStore.setModal(modal)
 
 export default function Wagmi() {
+  if (!wagmiAdapter.wagmiConfig) {
+    return null
+  }
+
   return (
-    <WagmiProvider config={wagmiConfig}>
+    <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <AppKitButtons />
         <WagmiModalInfo />

@@ -2,7 +2,6 @@ import UniversalProvider from '@walletconnect/universal-provider'
 import {
   SolConstantsUtil,
   type AnyTransaction,
-  type Chain,
   type Provider
 } from '@web3modal/scaffold-utils/solana'
 import { ProviderEventEmitter } from './shared/ProviderEventEmitter.js'
@@ -17,12 +16,13 @@ import {
   type SendOptions
 } from '@solana/web3.js'
 import { isVersionedTransaction } from '@solana/wallet-adapter-base'
+import type { CaipNetwork, ChainId } from '@web3modal/common'
 import { withSolanaNamespace } from '../utils/withSolanaNamespace.js'
 
 export type WalletConnectProviderConfig = {
   provider: UniversalProvider
-  chains: Chain[]
-  getActiveChain: () => Chain | undefined
+  chains: CaipNetwork[]
+  getActiveChain: () => CaipNetwork | undefined
 }
 
 export class WalletConnectProvider extends ProviderEventEmitter implements Provider {
@@ -33,7 +33,7 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
 
   private provider: UniversalProvider
   private session?: SessionTypes.Struct
-  private readonly requestedChains: Chain[]
+  private readonly requestedChains: CaipNetwork[]
   private readonly getActiveChain: WalletConnectProviderConfig['getActiveChain']
 
   constructor({ provider, chains, getActiveChain }: WalletConnectProviderConfig) {
@@ -59,9 +59,11 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
           chainId = SolConstantsUtil.CHAIN_IDS.Devnet
         }
 
-        return this.requestedChains.find(chain => withSolanaNamespace(chain.chainId) === chainId)
+        return this.requestedChains.find(
+          chain => withSolanaNamespace(chain.chainId as string) === chainId
+        )
       })
-      .filter(Boolean) as Chain[]
+      .filter(Boolean) as CaipNetwork[]
   }
 
   public get publicKey() {
@@ -76,7 +78,7 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
 
   public async connect() {
     const rpcMap = this.requestedChains.reduce<Record<string, string>>((acc, chain) => {
-      acc[withSolanaNamespace(chain.chainId)] = chain.rpcUrl
+      acc[withSolanaNamespace(chain.chainId as string)] = chain.rpcUrl
 
       return acc
     }, {})
@@ -88,7 +90,8 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
       this.session = await this.provider.connect({
         optionalNamespaces: {
           solana: {
-            chains: this.getRequestedChainsWithDeprecated(),
+            // Double check these with Felipe
+            chains: this.getRequestedChainsWithDeprecated() as string[],
             methods: [
               'solana_signMessage',
               'solana_signTransaction',
@@ -261,7 +264,7 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
    * This method is a workaround for wallets that only accept Solana deprecated networks
    */
   private getRequestedChainsWithDeprecated() {
-    const chains = this.requestedChains.map(chain => withSolanaNamespace(chain.chainId))
+    const chains = this.requestedChains.map(chain => withSolanaNamespace<ChainId>(chain.chainId))
 
     if (chains.includes(SolConstantsUtil.CHAIN_IDS.Mainnet)) {
       chains.push(SolConstantsUtil.CHAIN_IDS.Deprecated_Mainnet)

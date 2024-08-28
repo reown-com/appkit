@@ -185,6 +185,3 @@ export const ConstantsUtil = {
 
   CONVERT_SLIPPAGE_TOLERANCE: 1
 }
-
-export type CoinbasePaySDKChainNameValues =
-  keyof typeof ConstantsUtil.WC_COINBASE_PAY_SDK_CHAIN_NAME_MAP

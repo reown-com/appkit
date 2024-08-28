@@ -28,7 +28,6 @@ import {
 } from '@wallet-standard/features'
 import {
   type AnyTransaction,
-  type Chain,
   type GetActiveChain,
   type Provider
 } from '@web3modal/scaffold-utils/solana'
@@ -36,6 +35,7 @@ import base58 from 'bs58'
 import { WalletStandardFeatureNotSupportedError } from './shared/Errors.js'
 import { ProviderEventEmitter } from './shared/ProviderEventEmitter.js'
 import { solanaChains } from '../utils/chains.js'
+import type { CaipNetwork } from '@web3modal/common'
 
 export interface WalletStandardProviderConfig {
   wallet: Wallet
@@ -93,7 +93,7 @@ export class WalletStandardProvider extends ProviderEventEmitter implements Prov
   }
 
   public get chains() {
-    return this.wallet.chains.map(chainId => solanaChains[chainId]).filter(Boolean) as Chain[]
+    return this.wallet.chains.map(chainId => solanaChains[chainId]).filter(Boolean) as CaipNetwork[]
   }
 
   public async connect(): Promise<string> {

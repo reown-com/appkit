@@ -8,6 +8,7 @@ import type {
 } from '@solana/web3.js'
 
 import type { SendTransactionOptions } from '@solana/wallet-adapter-base'
+import type { CaipNetwork } from '@web3modal/common'
 import type { Connector, ConnectorType } from '@web3modal/core'
 import type { W3mFrameTypes } from '@web3modal/wallet'
 
@@ -38,7 +39,7 @@ export interface Provider extends ProviderEventEmitterMethods {
   name: string
   publicKey?: PublicKey
   icon?: string
-  chains: Chain[]
+  chains: CaipNetwork[]
   type: ConnectorType
   auth?: Pick<Connector, 'email' | 'socials' | 'showWallets' | 'walletFeatures'>
 
@@ -94,14 +95,6 @@ export type Metadata = {
   icons: string[]
 }
 
-export type Chain = {
-  rpcUrl: string
-  explorerUrl: string
-  currency: string
-  name: string
-  chainId: string
-}
-
 export type AnyTransaction = SolanaWeb3Transaction | VersionedTransaction
 
-export type GetActiveChain = () => Chain | undefined
+export type GetActiveChain = () => CaipNetwork | undefined

@@ -1,7 +1,6 @@
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
 import type {
   AnyTransaction,
-  Chain,
   Connection,
   GetActiveChain,
   Provider
@@ -15,12 +14,13 @@ import {
 import { withSolanaNamespace } from '../utils/withSolanaNamespace.js'
 import base58 from 'bs58'
 import { isVersionedTransaction } from '@solana/wallet-adapter-base'
+import type { CaipNetwork } from '@web3modal/common'
 
 export type AuthProviderConfig = {
   provider: W3mFrameProvider
   getActiveChain: GetActiveChain
   auth: NonNullable<Provider['auth']>
-  chains: Chain[]
+  chains: CaipNetwork[]
 }
 
 export class AuthProvider extends ProviderEventEmitter implements Provider, ProviderAuthMethods {
@@ -30,7 +30,7 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
 
   private readonly provider: AuthProviderConfig['provider']
   private readonly getActiveChain: AuthProviderConfig['getActiveChain']
-  private readonly requestedChains: Chain[]
+  private readonly requestedChains: CaipNetwork[]
 
   private session: AuthProvider.Session | undefined
 
@@ -57,7 +57,7 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
     const availableChainIds = this.provider.getAvailableChainIds()
 
     return this.requestedChains.filter(requestedChain =>
-      availableChainIds.includes(withSolanaNamespace(requestedChain.chainId))
+      availableChainIds.includes(withSolanaNamespace(requestedChain.chainId) as string)
     )
   }
 

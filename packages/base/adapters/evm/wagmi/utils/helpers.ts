@@ -1,25 +1,27 @@
-import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
+import {
+  ConstantsUtil as CommonConstantsUtil,
+  type CaipNetwork,
+  type CaipNetworkId
+} from '@web3modal/common'
 import { ConstantsUtil, PresetsUtil } from '@web3modal/scaffold-utils'
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
-import { getChainsFromAccounts } from '@walletconnect/utils'
 import { fallback, http, type Hex } from 'viem'
 
-import type { CaipNetwork, CaipNetworkId } from '@web3modal/core'
 import type { Chain } from '@wagmi/core/chains'
 import type { Connector } from '@wagmi/core'
 import { CoreHelperUtil } from '@web3modal/core'
 
-export function getCaipDefaultChain(chain?: Chain) {
+export function getCaipDefaultNetwork(chain?: CaipNetwork) {
   if (!chain) {
     return undefined
   }
 
   return {
-    id: `${ConstantsUtil.EIP155}:${chain.id}`,
+    id: chain.id,
     name: chain.name,
-    imageId: PresetsUtil.EIP155NetworkImageIds[chain.id],
-    chain: CommonConstantsUtil.CHAIN.EVM
-  } as CaipNetwork
+    imageId: PresetsUtil.NetworkImageIds[chain.chainId],
+    chainNamespace: CommonConstantsUtil.CHAIN.EVM
+  } as unknown as CaipNetwork
 }
 
 export async function getWalletConnectCaipNetworks(connector?: Connector) {
@@ -29,14 +31,22 @@ export async function getWalletConnectCaipNetworks(connector?: Connector) {
   const provider = (await connector?.getProvider()) as Awaited<
     ReturnType<(typeof EthereumProvider)['init']>
   >
-  const ns = provider?.signer?.session?.namespaces
-  const nsMethods = ns?.[ConstantsUtil.EIP155]?.methods
-  const nsChains = getChainsFromAccounts(
-    ns?.[ConstantsUtil.EIP155]?.accounts || []
-  ) as CaipNetworkId[]
+
+  const ns = provider?.session?.namespaces
+
+  const nsChains: CaipNetworkId[] | undefined = []
+
+  if (ns) {
+    Object.keys(ns).forEach(key => {
+      const chains = ns?.[key]?.chains
+      if (chains) {
+        nsChains.push(...(chains as CaipNetworkId[]))
+      }
+    })
+  }
 
   return {
-    supportsAllNetworks: Boolean(nsMethods?.includes(ConstantsUtil.ADD_CHAIN_METHOD)),
+    supportsAllNetworks: false,
     approvedCaipNetworkIds: nsChains
   }
 }
@@ -84,4 +94,33 @@ export function requireCaipAddress(caipAddress: string) {
   }
 
   return account
+}
+
+export function convertCaipNetworksToWagmiChains(caipNetworks: CaipNetwork[]) {
+  const chains = caipNetworks.map(caipNetwork => ({
+    blockExplorers: {
+      default: {
+        apiUrl: '',
+        name: '',
+        url: caipNetwork.explorerUrl || ''
+      }
+    },
+    fees: undefined,
+    formatters: undefined,
+    id: Number(caipNetwork.chainId),
+    name: caipNetwork.name,
+    nativeCurrency: {
+      decimals: 18,
+      name: caipNetwork.currency,
+      symbol: caipNetwork.currency
+    },
+    rpcUrls: {
+      default: {
+        http: [caipNetwork.rpcUrl]
+      }
+    },
+    serializers: undefined
+  })) as unknown as readonly [Chain, ...Chain[]]
+
+  return chains
 }

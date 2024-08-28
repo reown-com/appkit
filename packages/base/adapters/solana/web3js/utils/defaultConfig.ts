@@ -1,27 +1,22 @@
 import '@web3modal/polyfills'
-
-import type { Chain, Metadata, Provider, ProviderType } from '@web3modal/scaffold-utils/solana'
+import type { CaipNetwork } from '@web3modal/common'
+import type { Metadata, Provider, ProviderType } from '@web3modal/scaffold-utils/solana'
 
 declare global {
-  interface Navigator {
-    brave?: {
-      isBrave(): boolean
-    }
-  }
   interface Window {
     originalSolana?: Record<string, unknown>
     solana?: Provider
-    solflare?: { solana: Provider & { isSoflare: boolean } }
+    solflare?: { solana: Provider }
     backpack?: { solana: Provider }
     trustWallet?: { solana: Provider }
-    phantom?: { solana: Provider & { isPhantom: boolean } }
+    phantom?: { solana: Provider }
     getHashedName: (name: string) => Buffer
   }
 }
 
 export interface ConfigOptions extends Pick<Provider, 'auth'> {
   projectId?: string
-  chains: Chain[]
+  chains: CaipNetwork[]
   enableInjected?: boolean
   rpcUrl?: string
   defaultChainId?: number

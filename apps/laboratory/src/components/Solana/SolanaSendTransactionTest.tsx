@@ -9,7 +9,7 @@ import {
   SystemProgram
 } from '@solana/web3.js'
 
-import { solana } from '../../utils/ChainsUtil'
+import { solana } from '../../utils/NetworksUtil'
 import { useChakraToast } from '../Toast'
 
 const PHANTOM_TESTNET_ADDRESS = '8vCyX7oB6Pc3pbWMGYYZF5pbSnAdQ7Gyr32JqxqCy8ZR'

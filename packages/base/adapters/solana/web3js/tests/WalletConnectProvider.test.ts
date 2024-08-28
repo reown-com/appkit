@@ -3,7 +3,7 @@ import { mockUniversalProvider, mockUniversalProviderSession } from './mocks/Uni
 import { WalletConnectProvider } from '../providers/WalletConnectProvider.js'
 import { TestConstants } from './util/TestConstants.js'
 import { mockLegacyTransaction, mockVersionedTransaction } from './mocks/Transaction.js'
-import { type Chain } from '@web3modal/scaffold-utils/solana'
+import type { CaipNetwork } from '@web3modal/common'
 
 describe('WalletConnectProvider specific tests', () => {
   let provider = mockUniversalProvider()
@@ -187,7 +187,7 @@ describe('WalletConnectProvider specific tests', () => {
   it('should use the correct chain id for requests', async () => {
     await walletConnectProvider.connect()
     getActiveChain.mockImplementation(
-      () => ({ chainId: 'EtWTRABZaYq6iMfeYKouRu166VU2xqa1' }) as Chain
+      () => ({ chainId: 'EtWTRABZaYq6iMfeYKouRu166VU2xqa1' }) as CaipNetwork
     )
 
     await walletConnectProvider.signMessage(new Uint8Array([1, 2, 3, 4, 5]))
@@ -208,8 +208,8 @@ describe('WalletConnectProvider specific tests', () => {
     vi.spyOn(provider, 'connect').mockImplementation(() =>
       Promise.resolve(
         mockUniversalProviderSession({}, [
-          { chainId: '4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ' } as Chain,
-          { chainId: '8E9rvCKLFQia2Y35HXjjpWzj8weVo44K' } as Chain
+          { chainId: '4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ' } as CaipNetwork,
+          { chainId: '8E9rvCKLFQia2Y35HXjjpWzj8weVo44K' } as CaipNetwork
         ])
       )
     )
@@ -233,14 +233,14 @@ describe('WalletConnectProvider specific tests', () => {
     vi.spyOn(provider, 'connect').mockImplementation(() =>
       Promise.resolve(
         mockUniversalProviderSession({}, [
-          { chainId: '4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ' } as Chain,
-          { chainId: '8E9rvCKLFQia2Y35HXjjpWzj8weVo44K' } as Chain
+          { chainId: '4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ' } as CaipNetwork,
+          { chainId: '8E9rvCKLFQia2Y35HXjjpWzj8weVo44K' } as CaipNetwork
         ])
       )
     )
 
     getActiveChain.mockImplementation(
-      () => ({ chainId: 'EtWTRABZaYq6iMfeYKouRu166VU2xqa1' }) as Chain
+      () => ({ chainId: 'EtWTRABZaYq6iMfeYKouRu166VU2xqa1' }) as CaipNetwork
     )
 
     await walletConnectProvider.connect()

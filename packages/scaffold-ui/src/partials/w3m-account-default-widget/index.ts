@@ -144,8 +144,9 @@ export class W3mAccountDefaultWidget extends LitElement {
 
   private swapsTemplate() {
     const { enableSwaps } = OptionsController.state
+    const isSolana = ChainController.state.activeChain === ConstantsUtil.CHAIN.SOLANA
 
-    if (!enableSwaps || ChainController.state.activeChain === ConstantsUtil.CHAIN.SOLANA) {
+    if (!enableSwaps || isSolana) {
       return null
     }
 

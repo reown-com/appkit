@@ -6,6 +6,8 @@ import { EventsController } from './EventsController.js'
 import { PublicStateController } from './PublicStateController.js'
 import type { RouterControllerState } from './RouterController.js'
 import { RouterController } from './RouterController.js'
+import { ChainController } from './ChainController.js'
+import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 
 // -- Types --------------------------------------------- //
 export interface ModalControllerState {
@@ -44,10 +46,14 @@ export const ModalController = {
   async open(options?: ModalControllerArguments['open']) {
     await ApiController.state.prefetchPromise
     const connected = AccountController.state.isConnected
+    const noAdapters = ChainController.state.noAdapters
+
     if (options?.view) {
       RouterController.reset(options.view)
     } else if (connected) {
       RouterController.reset('Account')
+    } else if (noAdapters && !CoreHelperUtil.isMobile()) {
+      RouterController.reset('ConnectingWalletConnect')
     } else {
       RouterController.reset('Connect')
     }

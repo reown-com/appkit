@@ -1,5 +1,6 @@
 import type { W3mFrameProvider } from '@web3modal/wallet'
 import type { ProviderInterface } from '@coinbase/wallet-sdk'
+import type UniversalProvider from '@walletconnect/universal-provider'
 import type { SocialProvider } from '../TypeUtil.js'
 
 export interface IEthersConfig {
@@ -52,10 +53,23 @@ export type Metadata = {
 
 export type CombinedProvider = W3mFrameProvider & Provider
 
+export type UniversalProviderType = UniversalProvider & W3mFrameProvider & Provider
+
 export type Chain = {
-  rpcUrl: string
-  explorerUrl: string
-  currency: string
+  id: string | number
+  chainId: string | number
   name: string
-  chainId: number
+  currency: string
+  explorerUrl: string
+  rpcUrl: string
+  chain: string
+  imageId: string | undefined
 }
+
+export type ProviderId =
+  | 'walletConnect'
+  | 'injected'
+  | 'coinbaseWallet'
+  | 'eip6963'
+  | 'w3mAuth'
+  | 'coinbaseWalletSDK'

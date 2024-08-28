@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { OptionsController } from '../../index.js'
+import { OptionsController } from '../../exports/index.js'
 
 // -- Tests --------------------------------------------------------------------
 describe('OptionsController', () => {

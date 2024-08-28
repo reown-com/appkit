@@ -1,0 +1,22 @@
+wagmi + solana
+
+- connected with sample wallet (supports ethereum, solana)
+- connected to ethereum chain
+- switch to solana chain
+- refresh page
+- when page load;
+  - initialize UPA
+  - 
+
+
+wagmi adapter can:
+- switch chain from appkit, while UPA cannot
+- listen to chain change events from wallet, while UPA cannot
+
+
+wagmi issues:
+- after refreshing page, it's not connecting me again (this is happening if we add solana chain to `caipNetworks`)
+- if user set evm + solana chains, then switch to solana chain, they shouldn't be able to call wagmi methods
+  - should we throw errors or users should be aware
+- after switching to solana and back to ethereum, sign message works, but switching to optimisim (which is evm) doesn't work
+  - repro: when we switch chain from appkit, wagmi methods throw ChainMismatchError

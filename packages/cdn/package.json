@@ -13,8 +13,11 @@
     "upload": "pnpm build && pnpm publish --public"
   },
   "devDependencies": {
+    "@wagmi/connectors": "5.1.2",
+    "@wagmi/core": "2.13.1",
     "typescript": "5.3.3",
-    "vite-plugin-node-polyfills": "0.22.0"
+    "vite-plugin-node-polyfills": "0.22.0",
+    "wagmi": "2.10.9"
   },
   "peerDependencies": {
     "typescript": ">=5"
@@ -25,6 +28,7 @@
     }
   },
   "dependencies": {
+    "@web3modal/polyfills": "workspace:*",
     "@web3modal/wagmi": "workspace:*",
     "@web3modal/ethers": "workspace:*",
     "@web3modal/ethers5": "workspace:*",

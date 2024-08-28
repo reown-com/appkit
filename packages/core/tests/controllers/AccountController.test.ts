@@ -1,5 +1,5 @@
 import { beforeAll, describe, expect, it } from 'vitest'
-import { AccountController, ChainController } from '../../index.js'
+import { AccountController, ChainController } from '../../exports/index.js'
 import { ConstantsUtil } from '@web3modal/common'
 
 // -- Setup --------------------------------------------------------------------
@@ -13,7 +13,7 @@ const chain = ConstantsUtil.CHAIN.EVM
 
 // -- Tests --------------------------------------------------------------------
 beforeAll(() => {
-  ChainController.initialize([{ chain: ConstantsUtil.CHAIN.EVM }])
+  ChainController.initialize([{ chainNamespace: ConstantsUtil.CHAIN.EVM }])
 })
 
 describe('AccountController', () => {

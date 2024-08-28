@@ -1,13 +1,12 @@
 'use client'
 
 import { useSnapshot } from 'valtio'
-import { ConstantsUtil } from '@web3modal/scaffold-utils'
-import { getWeb3Modal } from '@web3modal/base/utils/library/react'
 import { AppKit } from '@web3modal/base'
 import { SolanaWeb3JsClient } from '@web3modal/base/adapters/solana/web3js'
 import { SolStoreUtil } from '@web3modal/scaffold-utils/solana'
-import type { Connection, Provider } from '@web3modal/base/adapters/solana/web3js'
-import type { SolanaAppKitOptions } from './options'
+import { getWeb3Modal } from '@web3modal/base/utils/library/react'
+import { type Connection, type Provider } from '@web3modal/base/adapters/solana/web3js'
+import type { SolanaAppKitOptions } from './options.js'
 
 // -- Configs -----------------------------------------------------------
 export { defaultSolanaConfig } from '@web3modal/base/adapters/solana/web3js'
@@ -22,17 +21,11 @@ let solanaAdapter: SolanaWeb3JsClient | undefined = undefined
 export function createWeb3Modal(options: SolanaAppKitOptions) {
   solanaAdapter = new SolanaWeb3JsClient({
     solanaConfig: options.solanaConfig,
-    chains: options.chains,
-    wallets: options.wallets,
-    projectId: options.projectId,
-    defaultChain: options.defaultChain
+    wallets: options.wallets
   })
   appkit = new AppKit({
     ...options,
-    defaultChain: solanaAdapter.defaultChain,
-    adapters: [solanaAdapter],
-    sdkType: 'w3m',
-    sdkVersion: `react-solana-${ConstantsUtil.VERSION}`
+    adapters: [solanaAdapter]
   })
   getWeb3Modal(appkit)
 

@@ -1,5 +1,13 @@
 import type { W3mFrameProvider, W3mFrameTypes } from '@web3modal/wallet'
-import type { Balance, Transaction, Chain } from '@web3modal/common'
+import type {
+  Balance,
+  Transaction,
+  CaipNetworkId,
+  CaipNetwork,
+  ChainNamespace,
+  CaipAddress,
+  AdapterType
+} from '@web3modal/common'
 import type {
   NetworkControllerClient,
   NetworkControllerState
@@ -7,10 +15,7 @@ import type {
 import type { ConnectionControllerClient } from '../controllers/ConnectionController.js'
 import type { AccountControllerState } from '../controllers/AccountController.js'
 import type { OnRampProviderOption } from '../controllers/OnRampController.js'
-
-export type CaipAddress = `${string}:${string}:${string}`
-
-export type CaipNetworkId = `${string}:${string}`
+import type { ConstantsUtil } from './ConstantsUtil.js'
 
 export type CaipNetworkCoinbaseNetwork =
   | 'Ethereum'
@@ -19,14 +24,6 @@ export type CaipNetworkCoinbaseNetwork =
   | 'Avalanche'
   | 'OP Mainnet'
   | 'Celo'
-
-export interface CaipNetwork {
-  id: CaipNetworkId
-  name?: string
-  imageId?: string
-  imageUrl?: string
-  chain: Chain
-}
 
 export type ConnectedWalletInfo =
   | {
@@ -80,7 +77,7 @@ export type Connector = {
   socials?: SocialProvider[]
   showWallets?: boolean
   walletFeatures?: boolean
-  chain: Chain
+  chain: ChainNamespace
   providers?: Connector[]
 }
 
@@ -197,7 +194,7 @@ export interface BlockchainApiTransactionsResponse {
 export type SwapToken = {
   name: string
   symbol: string
-  address: `${string}:${string}:${string}`
+  address: CaipAddress
   decimals: number
   logoUri: string
   eip2612?: boolean
@@ -291,8 +288,8 @@ export interface BlockchainApiGenerateSwapCalldataRequest {
 
 export interface BlockchainApiGenerateSwapCalldataResponse {
   tx: {
-    from: `${string}:${string}:${string}`
-    to: `${string}:${string}:${string}`
+    from: CaipAddress
+    to: CaipAddress
     data: `0x${string}`
     amount: string
     eip155: {
@@ -312,8 +309,8 @@ export interface BlockchainApiGenerateApproveCalldataRequest {
 
 export interface BlockchainApiGenerateApproveCalldataResponse {
   tx: {
-    from: `${string}:${string}:${string}`
-    to: `${string}:${string}:${string}`
+    from: CaipAddress
+    to: CaipAddress
     data: `0x${string}`
     value: string
     eip155: {
@@ -830,6 +827,33 @@ export type ChainAdapter = {
   networkControllerClient?: NetworkControllerClient
   accountState?: AccountControllerState
   networkState?: NetworkControllerState
-  defaultChain?: CaipNetwork
-  chain: Chain
+  defaultNetwork?: CaipNetwork
+  chainNamespace: ChainNamespace
+  isUniversalAdapterClient?: boolean
+  adapterType?: AdapterType
 }
+
+type ProviderEventListener = {
+  connect: (connectParams: { chainId: number }) => void
+  disconnect: (error: Error) => void
+  chainChanged: (chainId: string) => void
+  accountsChanged: (accounts: string[]) => void
+  message: (message: { type: string; data: unknown }) => void
+}
+
+export interface RequestArguments {
+  readonly method: string
+  readonly params?: readonly unknown[] | object
+}
+
+export interface Provider {
+  request: <T>(args: RequestArguments) => Promise<T>
+  on<T extends keyof ProviderEventListener>(event: T, listener: ProviderEventListener[T]): void
+  removeListener: <T>(event: string, listener: (data: T) => void) => void
+  emit: (event: string) => void
+}
+
+export type CombinedProvider = W3mFrameProvider & Provider
+
+export type CoinbasePaySDKChainNameValues =
+  keyof typeof ConstantsUtil.WC_COINBASE_PAY_SDK_CHAIN_NAME_MAP

@@ -6,7 +6,7 @@ import {
   ConnectorController,
   EnsController,
   NetworkController
-} from '../../index.js'
+} from '../../exports/index.js'
 import { W3mFrameProvider } from '@web3modal/wallet'
 import { ConstantsUtil } from '@web3modal/common'
 // -- Setup --------------------------------------------------------------------
@@ -71,7 +71,7 @@ vi.mock('../../src/controllers/BlockchainApiController.js', async importOriginal
 
 // -- Tests --------------------------------------------------------------------
 beforeAll(() => {
-  ChainController.initialize([{ chain: ConstantsUtil.CHAIN.EVM }])
+  ChainController.initialize([{ chainNamespace: ConstantsUtil.CHAIN.EVM }])
 })
 
 describe('EnsController', () => {
@@ -131,7 +131,15 @@ describe('EnsController', () => {
     // No network set
     const result = await EnsController.getNamesForAddress('0x123')
     expect(result).toEqual([])
-    NetworkController.setActiveCaipNetwork({ id: 'test:123', chain: ConstantsUtil.CHAIN.EVM })
+    NetworkController.setActiveCaipNetwork({
+      id: 'eip155:1',
+      chainNamespace: ConstantsUtil.CHAIN.EVM,
+      chainId: 1,
+      name: 'Ethereum',
+      currency: 'ETH',
+      explorerUrl: 'https://etherscan.io',
+      rpcUrl: 'https://rpc.infura.com/v1/'
+    })
     const resultWithNetwork = await EnsController.getNamesForAddress('0x123')
     expect(resultWithNetwork).toEqual([TEST_NAME])
 
@@ -141,7 +149,15 @@ describe('EnsController', () => {
 
   it('should register name', async () => {
     // Setup
-    NetworkController.setActiveCaipNetwork({ id: 'test:123', chain: ConstantsUtil.CHAIN.EVM })
+    NetworkController.setActiveCaipNetwork({
+      id: 'eip155:137',
+      chainNamespace: ConstantsUtil.CHAIN.EVM,
+      chainId: 137,
+      currency: 'ETH',
+      explorerUrl: 'https://etherscan.io',
+      rpcUrl: 'https://rpc.infura.com/v1/',
+      name: 'Polygon'
+    })
     AccountController.setCaipAddress('eip155:1:0x123', chain)
     const getAuthConnectorSpy = vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue({
       provider: { getEmail: () => 'test@walletconnect.com' } as unknown as W3mFrameProvider,

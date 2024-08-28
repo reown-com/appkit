@@ -1,4 +1,4 @@
-export function withSolanaNamespace<T extends string | undefined>(
+export function withSolanaNamespace<T = string | undefined>(
   chainId?: T
 ): T extends string ? `solana:${string}` : undefined {
   if (typeof chainId === 'string') {

@@ -15,7 +15,7 @@ import { SolanaSignTransactionTest } from './SolanaSignTransactionTest'
 import { SolanaSendTransactionTest } from './SolanaSendTransactionTest'
 import { SolanaSignMessageTest } from './SolanaSignMessageTest'
 import { SolanaWriteContractTest } from './SolanaWriteContractTest'
-import { solana, solanaDevnet, solanaTestnet } from '../../utils/ChainsUtil'
+import { solana, solanaDevnet, solanaTestnet } from '../../utils/NetworksUtil'
 import { SolanaSignAndSendTransaction } from './SolanaSignAndSendTransactionTest'
 
 export function SolanaTests() {

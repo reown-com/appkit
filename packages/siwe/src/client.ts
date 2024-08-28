@@ -101,7 +101,7 @@ export class Web3ModalSIWEClient {
     const messageParams = await this.getMessageParams?.()
     const message = this.methods.createMessage({
       address: `eip155:${chainId}:${address}`,
-      chainId,
+      chainId: Number(chainId),
       nonce,
       version: '1',
       iat: messageParams?.iat || new Date().toISOString(),

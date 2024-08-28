@@ -1,4 +1,4 @@
-import { solana, solanaDevnet, solanaTestnet } from './ChainsUtil'
+import { solana, solanaDevnet, solanaTestnet } from './NetworksUtil'
 
 export const COUNTER_ACCOUNT_SIZE = 8
 

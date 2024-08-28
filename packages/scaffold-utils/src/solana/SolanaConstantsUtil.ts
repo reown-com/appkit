@@ -1,5 +1,5 @@
 import { PublicKey } from '@solana/web3.js'
-import { ConstantsUtil } from '@web3modal/common'
+import { type CaipNetwork, ConstantsUtil } from '@web3modal/common'
 
 export const SolConstantsUtil = {
   HASH_PREFIX: 'SPL Name Service',
@@ -23,13 +23,14 @@ export const SolConstantsUtil = {
   ERROR_CODE_UNRECOGNIZED_CHAIN_ID: 4902,
   ERROR_CODE_DEFAULT: 5000,
   DEFAULT_CHAIN: {
+    id: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
     chainId: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
     name: 'Solana',
+    chainNamespace: ConstantsUtil.CHAIN.SOLANA,
     currency: 'SOL',
     explorerUrl: 'https://solscan.io',
-    rpcUrl: `${ConstantsUtil.BLOCKCHAIN_API_RPC_URL}/v1`,
-    chain: ConstantsUtil.CHAIN.SOLANA
-  },
+    rpcUrl: `${ConstantsUtil.BLOCKCHAIN_API_RPC_URL}/v1`
+  } as CaipNetwork,
   CHAIN_IDS: {
     Mainnet: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
     Devnet: 'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1',

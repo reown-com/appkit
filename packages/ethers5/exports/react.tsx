@@ -2,13 +2,13 @@
 
 import { AppKit } from '@web3modal/base'
 import type { AppKitOptions } from '@web3modal/base'
+import type { CaipNetwork } from '@web3modal/common'
+import { ProviderUtil } from '@web3modal/base/utils/store'
 import { EVMEthersClient, type AdapterOptions } from '@web3modal/base/adapters/evm/ethers'
-import { ConstantsUtil } from '@web3modal/scaffold-utils'
 import { EthersStoreUtil } from '@web3modal/scaffold-utils/ethers'
 import { getWeb3Modal } from '@web3modal/base/utils/library/react'
 import { useSnapshot } from 'valtio'
 import { ethers } from 'ethers'
-import { type Chain } from '@web3modal/scaffold-utils/ethers'
 
 // -- Configs -----------------------------------------------------------
 export { defaultConfig } from '@web3modal/base/adapters/evm/ethers'
@@ -17,25 +17,14 @@ export { defaultConfig } from '@web3modal/base/adapters/evm/ethers'
 let appkit: AppKit | undefined = undefined
 let ethersAdapter: EVMEthersClient | undefined = undefined
 
-export type Ethers5AppKitOptions = Omit<
-  AppKitOptions<Chain>,
-  'adapters' | 'sdkType' | 'sdkVersion'
-> &
+export type Ethers5AppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 'sdkVersion'> &
   AdapterOptions
 
 export function createWeb3Modal(options: Ethers5AppKitOptions) {
-  ethersAdapter = new EVMEthersClient({
-    ethersConfig: options.ethersConfig,
-    siweConfig: options.siweConfig,
-    chains: options.chains,
-    defaultChain: options.defaultChain
-  })
+  ethersAdapter = new EVMEthersClient()
   appkit = new AppKit({
     ...options,
-    defaultChain: ethersAdapter.defaultChain,
-    adapters: [ethersAdapter],
-    sdkType: 'w3m',
-    sdkVersion: `react-ethers5-${ConstantsUtil.VERSION}`
+    adapters: [ethersAdapter]
   })
   getWeb3Modal(appkit)
 
@@ -44,10 +33,10 @@ export function createWeb3Modal(options: Ethers5AppKitOptions) {
 
 // -- Hooks -------------------------------------------------------------------
 export function useWeb3ModalProvider() {
-  const { provider, providerType } = useSnapshot(EthersStoreUtil.state)
+  const { provider, providerId } = useSnapshot(ProviderUtil.state)
 
   const walletProvider = provider as ethers.providers.ExternalProvider | undefined
-  const walletProviderType = providerType
+  const walletProviderType = providerId
 
   return {
     walletProvider,
@@ -66,8 +55,9 @@ export function useDisconnect() {
 }
 
 export function useSwitchNetwork() {
-  async function switchNetwork(chainId: number) {
-    await ethersAdapter?.switchNetwork(chainId)
+  // Breaking change
+  async function switchNetwork(caipNetwork: CaipNetwork) {
+    await ethersAdapter?.switchNetwork(caipNetwork)
   }
 
   return {

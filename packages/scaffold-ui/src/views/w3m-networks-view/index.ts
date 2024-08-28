@@ -1,4 +1,4 @@
-import type { CaipNetwork } from '@web3modal/core'
+import type { CaipNetwork } from '@web3modal/common'
 import {
   AccountController,
   AssetUtil,
@@ -99,8 +99,12 @@ export class W3mNetworksView extends LitElement {
 
   private networksTemplate() {
     const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
+
     const approvedCaipNetworkIds = NetworkController.state.approvedCaipNetworkIds
     const supportsAllNetworks = NetworkController.state.supportsAllNetworks
+
+    const walletId = localStorage.getItem('@w3m/wallet_id')
+    const connectorId = localStorage.getItem('@w3m/connected_connector')
 
     const sortedNetworks = CoreHelperUtil.sortRequestedNetworks(
       approvedCaipNetworkIds,
@@ -123,9 +127,11 @@ export class W3mNetworksView extends LitElement {
           type="network"
           name=${network.name ?? network.id}
           @click=${() => this.onSwitchNetwork(network)}
-          .disabled=${!supportsAllNetworks &&
-          !approvedCaipNetworkIds?.includes(network.id) &&
-          network.chain === ChainController.state.activeChain}
+          .disabled=${walletId === 'walletConnect' || connectorId === 'WALLET_CONNECT'
+            ? !supportsAllNetworks && !approvedCaipNetworkIds?.includes(network.id)
+            : !supportsAllNetworks &&
+              !approvedCaipNetworkIds?.includes(network.id) &&
+              network.chainNamespace === ChainController.state.activeChain}
           data-testid=${`w3m-network-switch-${network.name ?? network.id}`}
         ></wui-list-network>
       `
@@ -134,23 +140,30 @@ export class W3mNetworksView extends LitElement {
 
   private async onSwitchNetwork(network: CaipNetwork) {
     const isConnected = AccountController.state.isConnected
-    const isNetworkChainConnected = AccountController.getChainIsConnected(network.chain)
-    const approvedCaipNetworkIds = NetworkController.state.approvedCaipNetworkIds
+    const isNetworkChainConnected = AccountController.getChainIsConnected(network.chainNamespace)
+    const allApprovedCaipNetworks = ChainController.getAllApprovedCaipNetworks()
+    const walletId = localStorage.getItem('@w3m/wallet_id')
+    const connectorId = localStorage.getItem('@w3m/connected_connector')
+
     const supportsAllNetworks = NetworkController.state.supportsAllNetworks
     const caipNetwork = NetworkController.state.caipNetwork
     const routerData = RouterController.state.data
 
     if (isConnected && caipNetwork?.id !== network.id) {
-      if (!isNetworkChainConnected) {
+      if (!isNetworkChainConnected && walletId !== 'walletConnect') {
         RouterController.push('SwitchActiveChain', {
-          switchToChain: network.chain,
+          switchToChain: network.chainNamespace,
           navigateTo: 'Connect',
           navigateWithReplace: true
         })
 
         return
       }
-      if (approvedCaipNetworkIds?.includes(network.id)) {
+      if (
+        allApprovedCaipNetworks?.includes(network.id) ||
+        walletId === 'walletConnect' ||
+        connectorId === 'WALLET_CONNECT'
+      ) {
         await NetworkController.switchActiveNetwork(network)
         await NetworkUtil.onNetworkChange()
       } else if (supportsAllNetworks) {
@@ -159,7 +172,11 @@ export class W3mNetworksView extends LitElement {
     } else if (!isConnected) {
       NetworkController.setActiveCaipNetwork(network)
       if (!isNetworkChainConnected) {
-        RouterController.push('Connect')
+        if (ChainController.state.noAdapters) {
+          RouterController.push('ConnectingWalletConnect')
+        } else {
+          RouterController.push('Connect')
+        }
       }
     }
   }
