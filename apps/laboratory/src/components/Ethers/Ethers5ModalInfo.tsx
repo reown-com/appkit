@@ -10,20 +10,18 @@ import { AppKitInfo } from '../AppKitInfo'
 
 export function Ethers5ModalInfo() {
   const [ready, setReady] = React.useState(false)
-  const [clientId, setClientId] = React.useState<string | null>(null)
+  const [clientId, setClientId] = React.useState<string | undefined>(undefined)
 
   const { chainId } = useWeb3ModalNetwork()
   const { isConnected, address } = useWeb3ModalAccount()
-  const { walletProvider, walletProviderType } = useWeb3ModalProvider()
+  const { walletProvider, walletProviderType } = useWeb3ModalProvider<EthereumProvider>()
 
   async function getClientId() {
     if (walletProviderType === 'walletConnect') {
-      const ethereumProvider = walletProvider as unknown as EthereumProvider
-
-      return await ethereumProvider?.signer?.client?.core?.crypto?.getClientId()
+      return await walletProvider?.signer?.client?.core?.crypto?.getClientId()
     }
 
-    return null
+    return undefined
   }
 
   React.useEffect(() => {
