@@ -82,5 +82,10 @@ export const solanaSdkOptions = [
     title: 'Default',
     link: '/library/solana',
     description: 'Basic configuration using solana as a driving library'
+  },
+  {
+    title: 'Without Email',
+    link: '/library/solana-no-email/',
+    description: 'Configuration using solana without email'
   }
 ]
