@@ -30,6 +30,11 @@ export const wagmiSdkOptions = [
     description: 'Configuration using wagmi and implementing sign in with ethereum'
   },
   {
+    title: 'Without Email',
+    link: '/library/wagmi-no-email/',
+    description: 'Configuration using wagmi without email'
+  },
+  {
     title: 'Permissions(Sync)',
     link: '/library/wagmi-permissions-sync/',
     description: 'Configuration using wagmi and implementing ERC-7715 with passkey'
@@ -51,6 +56,11 @@ export const ethersSdkOptions = [
     title: 'SIWE',
     link: '/library/ethers-siwe/',
     description: 'Configuration using ethers and implementing sign in with ethereum'
+  },
+  {
+    title: 'Without Email',
+    link: '/library/ethers-no-email/',
+    description: 'Configuration using ethers without email'
   }
 ]
 

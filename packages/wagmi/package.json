@@ -48,7 +48,8 @@
     "build": "tsc --build",
     "watch": "tsc --watch",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "test": "vitest run --dir tests"
   },
   "dependencies": {
     "@walletconnect/ethereum-provider": "2.15.1",
@@ -67,7 +68,8 @@
     "react-dom": "18.2.0",
     "viem": "2.19.6",
     "vue": "3.4.3",
-    "wagmi": "2.12.5"
+    "wagmi": "2.12.5",
+    "vitest": "2.0.3"
   },
   "peerDependencies": {
     "@wagmi/connectors": ">=4",
