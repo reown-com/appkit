@@ -193,4 +193,9 @@ export class ModalValidator {
     const address = this.page.getByTestId('w3m-address')
     await expect(address).not.toHaveText(oldAddress)
   }
+
+  async expectSocialsVisible() {
+    const socials = this.page.getByTestId('w3m-social-login-widget')
+    await expect(socials).toBeVisible()
+  }
 }
