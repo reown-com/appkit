@@ -817,6 +817,7 @@ export class EVMEthersClient {
       EthersStoreUtil.setProvider(WalletConnectProvider as unknown as Provider)
       EthersStoreUtil.setStatus('connected')
       EthersStoreUtil.setIsConnected(true)
+
       this.appKit?.setAllAccounts(
         WalletConnectProvider.accounts.map(address => ({ address, type: 'eoa' })),
         this.chain
@@ -1336,7 +1337,6 @@ export class EVMEthersClient {
       }
     } else if (providerType === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
       const provider = EthersStoreUtil.state.provider as unknown as EthereumProvider
-
       if (provider.session) {
         this.appKit?.setConnectedWalletInfo(
           {
@@ -1347,6 +1347,18 @@ export class EVMEthersClient {
           this.chain
         )
       }
+    } else if (providerType === ConstantsUtil.COINBASE_SDK_CONNECTOR_ID) {
+      const connector = this.appKit
+        ?.getConnectors()
+        .find(c => c.id === ConstantsUtil.COINBASE_SDK_CONNECTOR_ID)
+
+      this.appKit?.setConnectedWalletInfo(
+        {
+          name: 'Coinbase Wallet',
+          icon: this.appKit?.getConnectorImage(connector)
+        },
+        this.chain
+      )
     } else if (currentActiveWallet) {
       this.appKit?.setConnectedWalletInfo({ name: currentActiveWallet }, this.chain)
     }
