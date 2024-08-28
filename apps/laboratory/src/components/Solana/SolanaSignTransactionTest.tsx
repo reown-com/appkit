@@ -48,6 +48,10 @@ export function SolanaSignTransactionTest() {
       transaction.recentBlockhash = blockhash
 
       const signedTransaction = await walletProvider.signTransaction(transaction)
+      if (!signedTransaction.verifySignatures()) {
+        throw Error('Transaction signature verification failed')
+      }
+
       const signature = signedTransaction.signatures[0]?.signature
 
       if (!signature) {
