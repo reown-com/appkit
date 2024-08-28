@@ -586,7 +586,7 @@ export class SolanaWeb3JsClient {
         })
       )
 
-      if (opts.email || opts.socials) {
+      if (opts.email || opts.socials?.length) {
         if (!opts.projectId) {
           throw new Error('projectId is required for AuthProvider')
         }

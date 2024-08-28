@@ -1,4 +1,5 @@
 import '@web3modal/polyfills'
+import type { SocialProvider } from '@web3modal/scaffold-utils'
 
 import type { Chain, Metadata, Provider, ProviderType } from '@web3modal/scaffold-utils/solana'
 
@@ -55,6 +56,26 @@ export function defaultSolanaConfig(options: ConfigOptions) {
 
   if (enableInjected) {
     providers.injected = getInjectedProvider()
+  }
+
+  const defaultAuth = {
+    email: true,
+    showWallets: true,
+    walletFeatures: true,
+    socials: [
+      'google',
+      'x',
+      'discord',
+      'farcaster',
+      'github',
+      'apple',
+      'facebook'
+    ] as SocialProvider[]
+  }
+
+  providers.auth = {
+    ...defaultAuth,
+    ...options.auth
   }
 
   return providers
