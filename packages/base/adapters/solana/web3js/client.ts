@@ -598,8 +598,7 @@ export class SolanaWeb3JsClient {
       imageUrl: provider.icon,
       name: provider.name,
       provider,
-      chain: CommonConstantsUtil.CHAIN.SOLANA,
-      ...provider.auth
+      chain: CommonConstantsUtil.CHAIN.SOLANA
     }))
 
     this.appKit?.setConnectors(connectors)

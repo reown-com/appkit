@@ -1,5 +1,5 @@
-import { DEFAULT_FEATURES } from '../controllers/OptionsController'
-import type { Features, FeaturesKeys } from '../controllers/OptionsController'
+import { DEFAULT_FEATURES } from '../controllers/OptionsController.js'
+import type { Features, FeaturesKeys } from '../controllers/OptionsController.js'
 
 export const OptionsUtil = {
   getFeatureValue(key: FeaturesKeys, features?: Features) {

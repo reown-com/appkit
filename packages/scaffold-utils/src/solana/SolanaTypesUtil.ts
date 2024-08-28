@@ -9,7 +9,7 @@ import type {
 
 import type { SendTransactionOptions } from '@solana/wallet-adapter-base'
 import type { CaipNetwork } from '@web3modal/common'
-import type { Connector, ConnectorType } from '@web3modal/core'
+import type { ConnectorType } from '@web3modal/core'
 import type { W3mFrameTypes } from '@web3modal/wallet'
 
 export type Connection = SolanaConnection
@@ -26,7 +26,6 @@ export type ProviderType = {
   email?: boolean
   EIP6963?: boolean
   metadata: Metadata
-  auth?: Provider['auth']
 }
 
 export interface RequestArguments {
@@ -41,7 +40,6 @@ export interface Provider extends ProviderEventEmitterMethods {
   icon?: string
   chains: CaipNetwork[]
   type: ConnectorType
-  auth?: Pick<Connector, 'email' | 'socials' | 'showWallets' | 'walletFeatures'>
 
   // Methods
   connect: () => Promise<string>

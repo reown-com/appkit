@@ -14,7 +14,7 @@ declare global {
   }
 }
 
-export interface ConfigOptions extends Pick<Provider, 'auth'> {
+export interface ConfigOptions {
   projectId?: string
   chains: CaipNetwork[]
   enableInjected?: boolean
@@ -28,7 +28,7 @@ export function defaultSolanaConfig(options: ConfigOptions) {
 
   let injectedProvider: Provider | undefined = undefined
 
-  const providers: ProviderType = { metadata, auth: options.auth }
+  const providers: ProviderType = { metadata }
 
   function getInjectedProvider() {
     if (injectedProvider) {
