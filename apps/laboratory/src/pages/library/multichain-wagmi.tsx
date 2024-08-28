@@ -15,7 +15,7 @@ const wagmiAdapter = new EVMWagmiClient()
 
 const modal = createWeb3Modal({
   adapters: [wagmiAdapter],
-  caipNetworks: [mainnet, polygon, zkSync, optimism],
+  caipNetworks: [zkSync, polygon, mainnet, optimism],
   projectId: ConstantsUtil.ProjectId,
   metadata: ConstantsUtil.Metadata
 })

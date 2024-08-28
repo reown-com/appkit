@@ -8,7 +8,7 @@ import {
   NetworkController,
   SwapController,
   type NetworkControllerClient
-} from '../../index.js'
+} from '../../exports/index.js'
 import type { CaipNetworkId, CaipNetwork } from '@web3modal/common'
 import {
   allowanceResponse,

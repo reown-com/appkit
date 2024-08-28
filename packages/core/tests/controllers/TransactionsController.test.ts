@@ -1,5 +1,9 @@
 import { describe, expect, it, vi } from 'vitest'
-import { BlockchainApiController, OptionsController, TransactionsController } from '../../index.js'
+import {
+  BlockchainApiController,
+  OptionsController,
+  TransactionsController
+} from '../../exports/index.js'
 import {
   ONRAMP_TRANSACTIONS_RESPONSES_FEB,
   ONRAMP_TRANSACTIONS_RESPONSES_JAN

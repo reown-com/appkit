@@ -6,7 +6,7 @@ import {
   ConnectorController,
   NetworkController,
   OptionsController
-} from '../../index.js'
+} from '../../exports/index.js'
 import { api } from '../../src/controllers/ApiController.js'
 import { ConstantsUtil } from '@web3modal/common'
 

@@ -15,6 +15,7 @@ import type {
 import type { ConnectionControllerClient } from '../controllers/ConnectionController.js'
 import type { AccountControllerState } from '../controllers/AccountController.js'
 import type { OnRampProviderOption } from '../controllers/OnRampController.js'
+import type { ConstantsUtil } from './ConstantsUtil.js'
 
 export type CaipNetworkCoinbaseNetwork =
   | 'Ethereum'
@@ -853,3 +854,6 @@ export interface Provider {
 }
 
 export type CombinedProvider = W3mFrameProvider & Provider
+
+export type CoinbasePaySDKChainNameValues =
+  keyof typeof ConstantsUtil.WC_COINBASE_PAY_SDK_CHAIN_NAME_MAP

@@ -6,7 +6,7 @@ import {
   ConnectorController,
   EnsController,
   NetworkController
-} from '../../index.js'
+} from '../../exports/index.js'
 import { W3mFrameProvider } from '@web3modal/wallet'
 import { ConstantsUtil } from '@web3modal/common'
 // -- Setup --------------------------------------------------------------------

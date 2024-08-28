@@ -96,7 +96,8 @@
     "@web3modal/scaffold-utils": "workspace:*",
     "@web3modal/siwe": "workspace:*",
     "@web3modal/ui": "workspace:*",
-    "@web3modal/wallet": "workspace:*"
+    "@web3modal/wallet": "workspace:*",
+    "valtio": "1.11.2"
   },
   "optionalDependencies": {
     "borsh": "0.7.0",
@@ -121,7 +122,7 @@
     "@wallet-standard/wallet": "1.0.1",
     "@walletconnect/ethereum-provider": "2.15.1",
     "@walletconnect/types": "2.13.3",
-    "@walletconnect/universal-provider": "2.15.0",
+    "@walletconnect/universal-provider": "2.15.1",
     "ethers": "6.13.0",
     "ethers5": "npm:ethers@5.7.2",
     "react": "18.2.0",

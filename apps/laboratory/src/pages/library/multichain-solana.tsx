@@ -18,7 +18,9 @@ const modal = createWeb3Modal({
   adapters: [solanaWeb3JsAdapter],
   caipNetworks: [solana, solanaTestnet, solanaDevnet],
   projectId: ConstantsUtil.ProjectId,
-  enableAnalytics: true,
+  features: {
+    analytics: true
+  },
   metadata: ConstantsUtil.Metadata,
   termsConditionsUrl: 'https://walletconnect.com/terms',
   privacyPolicyUrl: 'https://walletconnect.com/privacy',

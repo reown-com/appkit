@@ -1,14 +1,11 @@
 'use client'
 
-import { AppKit } from '@web3modal/base'
+import { AppKit, AccountController } from '@web3modal/base'
 import type { AppKitOptions } from '@web3modal/base'
-import { ProviderUtil } from '@web3modal/base/utils/store'
 import { EVMEthersClient, type AdapterOptions } from '@web3modal/base/adapters/evm/ethers'
-import { ConstantsUtil } from '@web3modal/scaffold-utils'
 import { EthersStoreUtil } from '@web3modal/scaffold-utils/ethers'
 import { getWeb3Modal } from '@web3modal/base/utils/library/react'
 import { useSnapshot } from 'valtio'
-import type { Eip1193Provider } from 'ethers'
 import type { CaipNetwork } from 'packages/common'
 
 // -- Configs -----------------------------------------------------------
@@ -25,9 +22,7 @@ export function createWeb3Modal(options: EthersAppKitOptions) {
   ethersAdapter = new EVMEthersClient()
   appkit = new AppKit({
     ...options,
-    adapters: [ethersAdapter],
-    sdkType: 'w3m',
-    sdkVersion: `react-ethers-${ConstantsUtil.VERSION}`
+    adapters: [ethersAdapter]
   })
   getWeb3Modal(appkit)
 
@@ -35,18 +30,6 @@ export function createWeb3Modal(options: EthersAppKitOptions) {
 }
 
 // -- Hooks -------------------------------------------------------------------
-export function useWeb3ModalProvider() {
-  const { provider, providerId } = useSnapshot(ProviderUtil.state)
-
-  const walletProvider = provider as Eip1193Provider | undefined
-  const walletProviderType = providerId
-
-  return {
-    walletProvider,
-    walletProviderType
-  }
-}
-
 export function useDisconnect() {
   async function disconnect() {
     await ethersAdapter?.disconnect()
@@ -69,12 +52,11 @@ export function useSwitchNetwork() {
 }
 
 export function useWeb3ModalAccount() {
-  const { address, isConnected, chainId, status } = useSnapshot(EthersStoreUtil.state)
+  const { address, isConnected, status } = useSnapshot(AccountController.state)
 
   return {
     address,
     isConnected,
-    chainId,
     status
   }
 }

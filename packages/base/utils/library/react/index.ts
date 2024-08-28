@@ -1,4 +1,5 @@
 import { useEffect, useState, useSyncExternalStore } from 'react'
+import { useSnapshot } from 'valtio'
 import type {
   W3mAccountButton,
   W3mButton,
@@ -8,6 +9,7 @@ import type {
 } from '@web3modal/scaffold-ui'
 import type { AppKit } from '../../../src/client.js'
 import type { AppKitOptions } from '../../TypesUtil.js'
+import { ProviderUtil } from '../../store/ProviderUtil.js'
 
 type OpenOptions = {
   view: 'Account' | 'Connect' | 'Networks' | 'ApproveTransaction' | 'OnRampProviders'
@@ -34,6 +36,18 @@ let modal: AppKit | undefined = undefined
 export function getWeb3Modal(appKit: AppKit) {
   if (appKit) {
     modal = appKit
+  }
+}
+
+export function useWeb3ModalProvider<T>() {
+  const { provider, providerId } = useSnapshot(ProviderUtil.state)
+
+  const walletProvider = provider as T | undefined
+  const walletProviderType = providerId
+
+  return {
+    walletProvider,
+    walletProviderType
   }
 }
 

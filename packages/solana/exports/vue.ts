@@ -1,5 +1,4 @@
 import { onUnmounted, ref } from 'vue'
-import { ConstantsUtil } from '@web3modal/scaffold-utils'
 import { getWeb3Modal } from '@web3modal/base/utils/library/vue'
 import { AppKit } from '@web3modal/base'
 import { SolanaWeb3JsClient } from '@web3modal/base/adapters/solana/web3js'
@@ -22,9 +21,7 @@ export function createWeb3Modal(options: SolanaAppKitOptions) {
   })
   appkit = new AppKit({
     ...options,
-    adapters: [solanaAdapter],
-    sdkType: 'w3m',
-    sdkVersion: `vue-solana-${ConstantsUtil.VERSION}`
+    adapters: [solanaAdapter]
   })
   getWeb3Modal(appkit)
 

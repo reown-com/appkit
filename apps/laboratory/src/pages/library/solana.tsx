@@ -19,13 +19,15 @@ const modal = createWeb3Modal({
   solanaConfig,
   projectId: ConstantsUtil.ProjectId,
   metadata: ConstantsUtil.Metadata,
-  defaultChain: solana,
-  chains,
-  enableAnalytics: false,
+  defaultCaipNetwork: solana,
+  caipNetworks: [solana, solanaTestnet, solanaDevnet],
+  features: {
+    swaps: false,
+    analytics: true
+  },
   termsConditionsUrl: 'https://walletconnect.com/terms',
   privacyPolicyUrl: 'https://walletconnect.com/privacy',
   customWallets: ConstantsUtil.CustomWallets,
-  enableSwaps: false,
   wallets: [new SolflareWalletAdapter()]
 })
 

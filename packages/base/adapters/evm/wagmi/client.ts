@@ -132,6 +132,7 @@ export class EVMWagmiClient {
     connectors.push(walletConnect(options, appKit))
 
     connectors.push(injected({ shimDisconnect: true }))
+
     connectors.push(
       coinbaseWallet({
         version: '4',
@@ -187,8 +188,8 @@ export class EVMWagmiClient {
     this.networkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
         const chainId = Number(NetworkUtil.caipNetworkIdToNumber(caipNetwork?.id))
-        if (chainId) {
-          await switchChain(this.wagmiConfig!, { chainId })
+        if (chainId && this.wagmiConfig) {
+          await switchChain(this.wagmiConfig, { chainId })
         }
       },
       getApprovedCaipNetworksData: async () => {
@@ -288,7 +289,6 @@ export class EVMWagmiClient {
         }
       },
       signMessage: async message => {
-        console.log('>>> signMessage request', this.appKit?.getCaipAddress())
         const caipAddress = this.appKit?.getCaipAddress() || ''
         const account = requireCaipAddress(caipAddress)
 
@@ -381,6 +381,7 @@ export class EVMWagmiClient {
       parseUnits,
       formatUnits
     }
+
     ChainController.state.chains.set(this.chainNamespace, {
       chainNamespace: this.chainNamespace,
       connectionControllerClient: this.connectionControllerClient,
@@ -401,7 +402,8 @@ export class EVMWagmiClient {
       }
     })
     watchAccount(this.wagmiConfig, {
-      onChange: accountData => {
+      onChange: (accountData, prevAccount) => {
+        console.trace(">>> wagmis's account data", accountData, prevAccount)
         this.syncAccount(accountData)
       }
     })
@@ -456,7 +458,6 @@ export class EVMWagmiClient {
   private async syncAccount({
     address,
     status,
-
     chainId,
     connector,
     addresses
@@ -472,7 +473,7 @@ export class EVMWagmiClient {
       | 'status'
     >
   >) {
-    if (this.wagmiConfig) {
+    if (this.wagmiConfig && chainId) {
       if (connector) {
         if (connector.name === 'WalletConnect' && connector.getProvider) {
           const provider = (await connector.getProvider()) as UniversalProvider
@@ -529,7 +530,6 @@ export class EVMWagmiClient {
           this.appKit?.setLoading(true)
           const connectors = getConnectors(this.wagmiConfig)
           const currentConnector = connectors.find(c => c.id === connector.id)
-          console.trace(currentConnector, 'connector')
           if (currentConnector) {
             await reconnect(this.wagmiConfig, {
               connectors: [currentConnector]
@@ -544,10 +544,11 @@ export class EVMWagmiClient {
   private async syncNetwork(address?: Hex, chainId?: number, isConnected?: boolean) {
     const chain = this.options?.caipNetworks.find((c: CaipNetwork) => c.chainId === chainId)
 
-    if (chain || chainId) {
+    if (chain && chainId) {
       const name = chain?.name ?? chainId?.toString()
-      const id = Number(chain?.id ?? chainId)
+      const id = chainId
       const caipChainId: CaipNetworkId = `${ConstantsUtil.EIP155}:${id}` as CaipNetworkId
+
       this.appKit?.setCaipNetwork({
         chainId: id,
         id: caipChainId,
@@ -571,6 +572,8 @@ export class EVMWagmiClient {
 
         await this.syncBalance(address, chainId)
       }
+    } else {
+      throw new Error('syncNetwork - chain or chainId is undefined')
     }
   }
 

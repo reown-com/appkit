@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import type { NetworkControllerClient } from '../../index.js'
+import type { NetworkControllerClient } from '../../exports/index.js'
 import type { CaipNetwork, CaipNetworkId } from '@web3modal/common'
-import { ChainController, EventsController, NetworkController } from '../../index.js'
+import { ChainController, EventsController, NetworkController } from '../../exports/index.js'
 import { ConstantsUtil } from '@web3modal/common'
 
 // -- Setup --------------------------------------------------------------------

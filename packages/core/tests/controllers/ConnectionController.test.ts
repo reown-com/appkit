@@ -1,6 +1,11 @@
 import { beforeAll, describe, expect, it, vi } from 'vitest'
-import type { ConnectionControllerClient, ConnectorType } from '../../index.js'
-import { ChainController, ConnectionController, ConstantsUtil, StorageUtil } from '../../index.js'
+import type { ConnectionControllerClient, ConnectorType } from '../../exports/index.js'
+import {
+  ChainController,
+  ConnectionController,
+  ConstantsUtil,
+  StorageUtil
+} from '../../exports/index.js'
 import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 
 // -- Setup --------------------------------------------------------------------

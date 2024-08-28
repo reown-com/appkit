@@ -21,6 +21,7 @@ import {
 import { WcHelpersUtil } from '../../../../utils/HelpersUtil.js'
 import type { AppKitOptions } from '../../../../utils/TypesUtil.js'
 import type { AppKit } from '../../../../src/client.js'
+import { convertCaipNetworksToWagmiChains } from '../utils/helpers.js'
 
 type UniversalConnector = Connector & {
   onDisplayUri(uri: string): void
@@ -32,6 +33,7 @@ export type AppKitOptionsParams = AppKitOptions & {
 }
 
 walletConnect.type = 'walletConnect' as const
+
 export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
   const isNewChainsStale = parameters.isNewChainsStale ?? true
   type Provider = Awaited<ReturnType<(typeof UniversalProviderType)['init']>>
@@ -68,6 +70,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
     id: 'walletConnect',
     name: 'WalletConnect',
     type: walletConnect.type,
+
     async setup() {
       const provider = await this.getProvider().catch(() => null)
       if (!provider) {
@@ -82,6 +85,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
         provider.on('session_delete', sessionDelete)
       }
     },
+
     async connect({ ...rest } = {}) {
       try {
         const provider = await this.getProvider()
@@ -108,7 +112,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
             ...('pairingTopic' in rest ? { pairingTopic: rest.pairingTopic } : {})
           })
 
-          this.setRequestedChainsIds(config.chains.map(x => x.id))
+          this.setRequestedChainsIds(parameters.caipNetworks.map(x => Number(x.chainId)))
         }
 
         // If session exists and chains are authorized, enable provider for required chain
@@ -203,14 +207,18 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
     },
     async getProvider({ chainId } = {}) {
       async function initProvider() {
-        const optionalChains = config.chains.map(x => x.id) as [number]
+        const optionalChains = parameters.caipNetworks.map(x => Number(x.chainId))
+
         if (!optionalChains.length) {
-          return
+          return undefined
         }
 
         const provider = appKit.universalAdapter?.getWalletConnectProvider()
 
-        // eslint-disable-next-line consistent-return
+        if (!provider) {
+          throw new Error('Provider not found')
+        }
+
         return provider
       }
 
@@ -221,12 +229,15 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
         provider_ = await providerPromise
         provider_?.events.setMaxListeners(Number.POSITIVE_INFINITY)
       }
-      if (chainId) {
+
+      const currentChainId = appKit.getCaipNetwork()?.chainId
+
+      if (chainId && currentChainId !== chainId) {
         await this.switchChain?.({ chainId })
       }
 
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      return provider_!
+      // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
+      return provider_ as Provider
     },
     async getChainId() {
       const chainId = appKit.getCaipNetwork()?.chainId
@@ -239,7 +250,6 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
 
       const network = parameters.caipNetworks.find(c => c.id === chain)
 
-      // Shouldn't be casted
       return network?.chainId as number
     },
     async isAuthorized() {
@@ -267,14 +277,14 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
     },
     async switchChain({ addEthereumChainParameter, chainId }) {
       const provider = await this.getProvider()
-
       if (!provider) {
         throw new ProviderNotFoundError()
       }
 
-      const chain = config.chains.find(x => x.id === chainId)
+      const chain = parameters.caipNetworks.find(x => x.chainId === chainId)
+      const [wagmiChain] = chain ? convertCaipNetworksToWagmiChains([chain]) : []
 
-      if (!chain) {
+      if (!wagmiChain) {
         throw new SwitchChainError(new ChainNotConfiguredError())
       }
 
@@ -283,21 +293,12 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
           method: 'wallet_switchEthereumChain',
           params: [{ chainId: numberToHex(chainId) }]
         })
-        await new Promise<void>(resolve => {
-          const listener = ({ chainId: currentChainId }: { chainId?: number | undefined }) => {
-            if (currentChainId === chainId) {
-              config.emitter.off('change', listener)
-              resolve()
-            }
-          }
-          config.emitter.on('change', listener)
-        })
+        config.emitter.emit('change', { chainId: Number(chainId) })
 
         const requestedChains = await this.getRequestedChainsIds()
-
         this.setRequestedChainsIds([...requestedChains, chainId])
 
-        return chain
+        return wagmiChain
       } catch (err) {
         const error = err as RpcError
 
@@ -305,31 +306,24 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
           throw new UserRejectedRequestError(error)
         }
 
-        // Indicates chain is not added to provider
         try {
           let blockExplorerUrls: string[] | undefined
+
           if (addEthereumChainParameter?.blockExplorerUrls) {
             blockExplorerUrls = addEthereumChainParameter.blockExplorerUrls
           } else {
-            blockExplorerUrls = chain.blockExplorers?.default.url
-              ? [chain.blockExplorers?.default.url]
+            blockExplorerUrls = wagmiChain.blockExplorers?.default.url
+              ? [wagmiChain.blockExplorers?.default.url]
               : []
-          }
-
-          let rpcUrls: readonly string[]
-          if (addEthereumChainParameter?.rpcUrls?.length) {
-            rpcUrls = addEthereumChainParameter.rpcUrls
-          } else {
-            rpcUrls = [...chain.rpcUrls.default.http]
           }
 
           const addEthereumChain = {
             blockExplorerUrls,
             chainId: numberToHex(chainId),
-            chainName: addEthereumChainParameter?.chainName ?? chain.name,
+            chainName: wagmiChain.name,
             iconUrls: addEthereumChainParameter?.iconUrls,
-            nativeCurrency: addEthereumChainParameter?.nativeCurrency ?? chain.nativeCurrency,
-            rpcUrls
+            nativeCurrency: wagmiChain.nativeCurrency,
+            rpcUrls: wagmiChain.rpcUrls.default.http
           } satisfies AddEthereumChainParameter
 
           await provider.request({
@@ -340,7 +334,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
           const requestedChains = await this.getRequestedChainsIds()
           this.setRequestedChainsIds([...requestedChains, chainId])
 
-          return chain
+          return wagmiChain
         } catch (e) {
           throw new UserRejectedRequestError(e as Error)
         }
@@ -431,15 +425,16 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
         return false
       }
 
-      const connectorChains = config.chains.map(x => x.id)
+      const connectorChains = parameters.caipNetworks.map(x => x.chainId)
       const namespaceChains = this.getNamespaceChainsIds()
+
       if (namespaceChains.length && !namespaceChains.some(id => connectorChains.includes(id))) {
         return false
       }
 
       const requestedChains = await this.getRequestedChainsIds()
 
-      return !connectorChains.every(id => requestedChains.includes(id))
+      return !connectorChains.every(id => requestedChains.includes(Number(id)))
     },
     async setRequestedChainsIds(chains) {
       await config.storage?.setItem(this.requestedChainsStorageKey, chains)

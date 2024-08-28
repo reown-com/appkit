@@ -1,6 +1,5 @@
 import { AppKit } from '@web3modal/base'
 import { SolanaWeb3JsClient } from '@web3modal/base/adapters/solana/web3js'
-import { ConstantsUtil } from '@web3modal/scaffold-utils'
 import type { SolanaAppKitOptions } from './options'
 
 // -- Configs -----------------------------------------------------------
@@ -18,8 +17,6 @@ export function createWeb3Modal(options: SolanaAppKitOptions) {
 
   return new AppKit({
     ...options,
-    adapters: [solanaAdapter],
-    sdkType: 'w3m',
-    sdkVersion: `html-solana-${ConstantsUtil.VERSION}`
+    adapters: [solanaAdapter]
   })
 }

@@ -21,7 +21,7 @@ export function WagmiSignMessageTest() {
         description: sig,
         type: 'success'
       })
-    } catch {
+    } catch (e) {
       toast({
         title: ConstantsUtil.SigningFailedToastTitle,
         description: 'Failed to sign message',

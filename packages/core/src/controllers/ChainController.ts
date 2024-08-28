@@ -268,17 +268,17 @@ export const ChainController = {
   getNetworkControllerClient() {
     const chain = state.activeChain
     const isWcConnector = state.activeConnector?.name === 'WalletConnect'
-    const haveWagmiAdapter = state.chains.get('eip155')?.adapterType !== 'wagmi'
+    const universalNetworkControllerClient = state.universalAdapter.networkControllerClient
+    const hasWagmiAdapter = state.chains.get('eip155')?.adapterType === 'wagmi'
 
-    if (
-      (isWcConnector && state.universalAdapter.connectionControllerClient && haveWagmiAdapter) ||
-      (state.noAdapters && state.universalAdapter.networkControllerClient)
-    ) {
-      if (!state.universalAdapter.networkControllerClient) {
-        throw new Error("Universal Adapter's NetworkControllerClient is not set")
+    const shouldUseUniversalAdapter = (isWcConnector && !hasWagmiAdapter) || state.noAdapters
+
+    if (shouldUseUniversalAdapter) {
+      if (!universalNetworkControllerClient) {
+        throw new Error("Universal Adapter's networkControllerClient is not set")
       }
 
-      return state.universalAdapter.networkControllerClient
+      return universalNetworkControllerClient
     }
 
     if (!chain) {
@@ -300,20 +300,18 @@ export const ChainController = {
 
   getConnectionControllerClient(_chain?: ChainNamespace) {
     const chain = _chain || state.activeChain
-
     const isWcConnector = state.activeConnector?.name === 'WalletConnect'
+    const universalConnectionControllerClient = state.universalAdapter.connectionControllerClient
+    const hasWagmiAdapter = state.chains.get('eip155')?.adapterType === 'wagmi'
 
-    if (
-      (isWcConnector &&
-        state.universalAdapter.connectionControllerClient &&
-        state.chains.get('eip155')?.adapterType !== 'wagmi') ||
-      (state.noAdapters && state.universalAdapter.connectionControllerClient)
-    ) {
-      if (!state.universalAdapter.connectionControllerClient) {
+    const shouldUseUniversalAdapter = (isWcConnector && !hasWagmiAdapter) || state.noAdapters
+
+    if (shouldUseUniversalAdapter) {
+      if (!universalConnectionControllerClient) {
         throw new Error("Universal Adapter's ConnectionControllerClient is not set")
       }
 
-      return state.universalAdapter.connectionControllerClient
+      return universalConnectionControllerClient
     }
 
     if (!chain) {

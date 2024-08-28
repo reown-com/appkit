@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { SendController } from '../../index.js'
+import { SendController } from '../../exports/index.js'
 
 // -- Setup --------------------------------------------------------------------
 const token = {

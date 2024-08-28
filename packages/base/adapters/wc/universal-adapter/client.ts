@@ -6,13 +6,10 @@ import {
   NetworkController,
   type ConnectionControllerClient,
   type Connector,
-  type NetworkControllerClient,
-  type OptionsControllerState,
-  type Token
+  type NetworkControllerClient
 } from '@web3modal/core'
 import { ConstantsUtil, PresetsUtil } from '@web3modal/scaffold-utils'
 import UniversalProvider from '@walletconnect/universal-provider'
-import type { Web3ModalSIWEClient } from '@web3modal/siwe'
 import type { UniversalProviderOpts } from '@walletconnect/universal-provider'
 import { WcConstantsUtil } from '../../../utils/ConstantsUtil.js'
 import { WcHelpersUtil } from '../../../utils/HelpersUtil.js'
@@ -26,6 +23,7 @@ import {
   type AdapterType
 } from '@web3modal/common'
 import { ProviderUtil } from '../../../utils/store/ProviderUtil.js'
+import type { AppKitOptions } from '../../../utils/TypesUtil.js'
 
 type Metadata = {
   name: string
@@ -33,19 +31,6 @@ type Metadata = {
   url: string
   icons: string[]
 }
-
-// -- Types ---------------------------------------------------------------------
-export interface AppKitClientOptions {
-  caipNetworks: CaipNetwork[]
-  siweConfig?: Web3ModalSIWEClient
-  defaultNetwork?: CaipNetwork
-  caipNetworkImages?: Record<number | string, string>
-  connectorImages?: Record<string, string>
-  tokens?: Record<number, Token>
-  metadata?: Metadata
-}
-
-export type AppKitOptions = Omit<AppKitClientOptions, '_sdkVersion'>
 
 // -- Client --------------------------------------------------------------------
 export class UniversalAdapterClient {
@@ -69,7 +54,7 @@ export class UniversalAdapterClient {
 
   private appKit: AppKit | undefined = undefined
 
-  public options: OptionsControllerState | undefined = undefined
+  public options: AppKitOptions | undefined = undefined
 
   public adapterType: AdapterType = 'universal'
 
@@ -82,7 +67,7 @@ export class UniversalAdapterClient {
 
     this.caipNetworks = caipNetworks
 
-    this.defaultNetwork = options.defaultNetwork ? options.defaultNetwork : this.caipNetworks[0]
+    this.defaultNetwork = options.defaultCaipNetwork || this.caipNetworks[0]
 
     this.networkControllerClient = {
       // @ts-expect-error switchCaipNetwork is async for some adapter but not for this adapter
@@ -249,7 +234,7 @@ export class UniversalAdapterClient {
   }
 
   // -- Public ------------------------------------------------------------------
-  public construct(appkit: AppKit, options: OptionsControllerState) {
+  public construct(appkit: AppKit, options: AppKitOptions) {
     if (!options.projectId) {
       throw new Error('Solana:construct - projectId is undefined')
     }
@@ -313,7 +298,7 @@ export class UniversalAdapterClient {
     return this.walletConnectProvider
   }
 
-  private syncRequestedNetworks(caipNetworks: AppKitClientOptions['caipNetworks']) {
+  private syncRequestedNetworks(caipNetworks: AppKitOptions['caipNetworks']) {
     const uniqueChainNamespaces = [
       ...new Set(caipNetworks.map(caipNetwork => caipNetwork.chainNamespace))
     ]
@@ -430,6 +415,7 @@ export class UniversalAdapterClient {
       }
     }
   }
+
   private getProviderData() {
     const namespaces = this.walletConnectProvider?.session?.namespaces || {}
 

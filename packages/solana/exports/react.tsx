@@ -1,7 +1,6 @@
 'use client'
 
 import { useSnapshot } from 'valtio'
-import { ConstantsUtil } from '@web3modal/scaffold-utils'
 import { AppKit } from '@web3modal/base'
 import { SolanaWeb3JsClient } from '@web3modal/base/adapters/solana/web3js'
 import { SolStoreUtil } from '@web3modal/scaffold-utils/solana'
@@ -26,9 +25,7 @@ export function createWeb3Modal(options: SolanaAppKitOptions) {
   })
   appkit = new AppKit({
     ...options,
-    adapters: [solanaAdapter],
-    sdkType: 'w3m',
-    sdkVersion: `react-solana-${ConstantsUtil.VERSION}`
+    adapters: [solanaAdapter]
   })
   getWeb3Modal(appkit)
 

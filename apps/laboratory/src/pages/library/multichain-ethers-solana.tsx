@@ -1,5 +1,5 @@
 import { createWeb3Modal } from '@web3modal/base/react'
-import { EVMEthersClient, defaultConfig } from '@web3modal/base/adapters/evm/ethers'
+import { EVMEthersClient } from '@web3modal/base/adapters/evm/ethers'
 import { SolanaWeb3JsClient } from '@web3modal/base/adapters/solana/web3js'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
@@ -9,14 +9,7 @@ import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapte
 import { MultiChainTests } from '../../components/MultiChainTests'
 import { MultiChainInfo } from '../../components/MultiChainInfo'
 
-const etherAdapter = new EVMEthersClient({
-  ethersConfig: defaultConfig({
-    metadata: ConstantsUtil.Metadata,
-    defaultChainId: 1,
-    rpcUrl: 'https://cloudflare-eth.com',
-    coinbasePreference: 'smartWalletOnly'
-  })
-})
+const etherAdapter = new EVMEthersClient()
 
 const solanaWeb3JsAdapter = new SolanaWeb3JsClient({
   solanaConfig: {
@@ -29,7 +22,9 @@ const modal = createWeb3Modal({
   adapters: [etherAdapter, solanaWeb3JsAdapter],
   projectId: ConstantsUtil.ProjectId,
   caipNetworks: [mainnet, arbitrum, optimism, solana],
-  enableAnalytics: true,
+  features: {
+    analytics: true
+  },
   metadata: ConstantsUtil.Metadata,
   termsConditionsUrl: 'https://walletconnect.com/terms',
   privacyPolicyUrl: 'https://walletconnect.com/privacy'

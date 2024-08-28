@@ -260,7 +260,6 @@ export const NetworkController = {
     }
 
     const activeCaipNetwork = ChainController.state.chains.get(chain)?.networkState?.caipNetwork
-
     const requestedCaipNetworks = this.getRequestedCaipNetworks()
 
     return requestedCaipNetworks?.some(network => network.id === activeCaipNetwork?.id)

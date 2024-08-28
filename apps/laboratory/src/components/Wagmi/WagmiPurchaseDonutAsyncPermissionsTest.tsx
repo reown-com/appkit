@@ -68,7 +68,6 @@ export function WagmiPurchaseDonutAsyncPermissionsTest() {
         await fetchDonutsOwned()
       }
     } catch (error) {
-      // Console.log(error)
       toast({
         title: 'Transaction Failed',
         description: `${error}`,

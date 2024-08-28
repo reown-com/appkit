@@ -1,5 +1,6 @@
 import { onUnmounted, reactive, ref } from 'vue'
-import type { Event } from '@web3modal/core'
+import { useSnapshot } from 'valtio'
+import { AccountController, type Event } from '@web3modal/core'
 import type {
   W3mAccountButton,
   W3mButton,
@@ -9,6 +10,7 @@ import type {
 } from '@web3modal/scaffold-ui'
 import type { AppKit } from '../../../src/client.js'
 import type { AppKitOptions } from '../../TypesUtil.js'
+import { ProviderUtil } from '../../store/ProviderUtil.js'
 
 type OpenOptions = {
   view: 'Account' | 'Connect' | 'Networks' | 'ApproveTransaction' | 'OnRampProviders'
@@ -33,6 +35,28 @@ let modal: AppKit | undefined = undefined
 export function getWeb3Modal(appKit: AppKit) {
   if (appKit) {
     modal = appKit
+  }
+}
+
+export function useWeb3ModalAccount() {
+  const { address, isConnected, status } = useSnapshot(AccountController.state)
+
+  return {
+    address,
+    isConnected,
+    status
+  }
+}
+
+export function useWeb3ModalProvider<T>() {
+  const { provider, providerId } = useSnapshot(ProviderUtil.state)
+
+  const walletProvider = provider as T | undefined
+  const walletProviderType = providerId
+
+  return {
+    walletProvider,
+    walletProviderType
   }
 }
 

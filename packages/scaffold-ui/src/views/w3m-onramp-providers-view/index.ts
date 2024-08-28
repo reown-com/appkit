@@ -12,7 +12,7 @@ import {
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
-import type { CoinbasePaySDKChainNameValues } from '@web3modal/core/src/utils/ConstantsUtil'
+import type { CoinbasePaySDKChainNameValues } from '@web3modal/core'
 import { W3mFrameRpcConstants } from '@web3modal/wallet'
 
 @customElement('w3m-onramp-providers-view')

@@ -1,11 +1,12 @@
 import { createWeb3Modal, defaultSolanaConfig } from '@web3modal/solana/react'
 
 import { ThemeStore } from '../../utils/StoreUtil'
-import { solana, solanaDevnet, solanaTestnet } from '../../utils/ChainsUtil'
+
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { SolanaTests } from '../../components/Solana/SolanaTests'
 import { SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
+import { solana, solanaDevnet, solanaTestnet } from '../../utils/NetworksUtil'
 
 const chains = [solana, solanaTestnet, solanaDevnet]
 
@@ -25,12 +26,14 @@ const modal = createWeb3Modal({
   solanaConfig,
   projectId: ConstantsUtil.ProjectId,
   metadata: ConstantsUtil.Metadata,
-  chains,
-  enableAnalytics: false,
+  caipNetworks: [solana, solanaTestnet, solanaDevnet],
+  features: {
+    swaps: false,
+    analytics: true
+  },
   termsConditionsUrl: 'https://walletconnect.com/terms',
   privacyPolicyUrl: 'https://walletconnect.com/privacy',
   customWallets: ConstantsUtil.CustomWallets,
-  enableSwaps: false,
   wallets: [new SolflareWalletAdapter()]
 })
 

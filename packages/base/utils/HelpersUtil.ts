@@ -1,5 +1,4 @@
-import type { Namespace } from '@walletconnect/universal-provider'
-import type { NamespaceConfig } from '@walletconnect/universal-provider'
+import type { NamespaceConfig, Namespace } from '@walletconnect/universal-provider'
 import type { CaipNetwork, ChainNamespace } from '@web3modal/common'
 
 export const WcHelpersUtil = {
@@ -19,7 +18,21 @@ export const WcHelpersUtil = {
       case 'solana':
         return ['solana_signMessage']
       case 'eip155':
-        return ['personal_sign']
+        return [
+          'personal_sign',
+          'eth_sign',
+          'eth_signTransaction',
+          'eth_signTypedData',
+          'eth_signTypedData_v3',
+          'eth_signTypedData_v4',
+          'eth_sendRawTransaction',
+          'eth_sendTransaction',
+          'wallet_getCapabilities',
+          'wallet_sendCalls',
+          'wallet_showCallsStatus',
+          'wallet_getCallsStatus',
+          'wallet_switchEthereumChain'
+        ]
       default:
         return []
     }
@@ -37,7 +50,7 @@ export const WcHelpersUtil = {
           events: ['accountsChanged', 'chainChanged'],
           chains: [],
           rpcMap: {}
-        }
+        } satisfies Namespace
       }
 
       const fullChainId = `${chainNamespace}:${chainId}`
@@ -48,7 +61,7 @@ export const WcHelpersUtil = {
       namespace.chains.push(fullChainId)
 
       if (namespace?.rpcMap) {
-        namespace.rpcMap[fullChainId] = rpcUrl
+        namespace.rpcMap[chainId] = rpcUrl
       }
 
       return acc

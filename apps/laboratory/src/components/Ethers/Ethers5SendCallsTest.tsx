@@ -1,6 +1,10 @@
 import { Button, Stack, Text, Spacer, Heading } from '@chakra-ui/react'
 import { useState, useEffect } from 'react'
-import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers5/react'
+import {
+  useWeb3ModalAccount,
+  useWeb3ModalProvider,
+  useWeb3ModalNetwork
+} from '@web3modal/base/react'
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
 import { useChakraToast } from '../Toast'
 import type { Address } from 'viem'
@@ -18,7 +22,8 @@ type Provider = W3mFrameProvider | Awaited<ReturnType<(typeof EthereumProvider)[
 export function Ethers5SendCallsTest() {
   const [loading, setLoading] = useState(false)
 
-  const { address, chainId, isConnected } = useWeb3ModalAccount()
+  const { chainId } = useWeb3ModalNetwork()
+  const { address, isConnected } = useWeb3ModalAccount()
   const { walletProvider } = useWeb3ModalProvider()
   const toast = useChakraToast()
 
