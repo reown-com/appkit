@@ -14,12 +14,45 @@ export type FeaturesSocials =
   | 'facebook'
 
 export type Features = {
+  /**
+   * @description Enable or disable the swaps feature. Enabled by default.
+   * @type {boolean}
+   */
   swaps?: boolean
+  /**
+   * @description Enable or disable the onramp feature. Enabled by default.
+   * @type {boolean}
+   */
   onramp?: boolean
+  /**
+   * @description Enable or disable the email feature. Enabled by default.
+   * @type {boolean}
+   */
   email?: boolean
+  /**
+   * @description Show or hide the regular wallet options when email is enabled. Enabled by default.
+   * @type {boolean}
+   */
+  emailShowWallets?: boolean
+  /**
+   * @description Enable or disable the socials feature. Enabled by default.
+   * @type {FeaturesSocials[]}
+   */
   socials?: FeaturesSocials[]
+  /**
+   * @description Enable or disable the history feature. Enabled by default.
+   * @type {boolean}
+   */
   history?: boolean
+  /**
+   * @description Enable or disable the analytics feature. Enabled by default.
+   * @type {boolean}
+   */
   analytics?: boolean
+  /**
+   * @description Enable or disable the all wallets feature. Enabled by default.
+   * @type {boolean}
+   */
   allWallets?: boolean
 }
 
@@ -40,20 +73,28 @@ export interface OptionsControllerState {
   isSiweEnabled?: boolean
   metadata?: Metadata
   disableAppend?: boolean
-  enableAnalytics?: boolean
-  enableOnramp?: boolean
   enableEIP6963?: boolean
-  enableSwaps?: boolean
-  email?: Features['email']
-  socials?: Features['socials']
   isUniversalProvider?: boolean
   hasMultipleAddresses?: boolean
+  features: Features
 }
 
 type StateKey = keyof OptionsControllerState
 
 // -- State --------------------------------------------- //
+export const DEFAULT_FEATURES: Features = {
+  swaps: true,
+  onramp: true,
+  email: true,
+  emailShowWallets: true,
+  socials: ['google', 'x', 'discord', 'farcaster', 'github', 'apple', 'facebook'],
+  history: true,
+  analytics: true,
+  allWallets: true
+}
+
 const state = proxy<OptionsControllerState>({
+  features: DEFAULT_FEATURES,
   projectId: '',
   sdkType: 'w3m',
   sdkVersion: 'html-wagmi-undefined'
@@ -69,6 +110,18 @@ export const OptionsController = {
 
   setOptions(options: OptionsControllerState) {
     Object.assign(state, options)
+  },
+
+  setFeatures(features: OptionsControllerState['features'] | undefined) {
+    if (!features) {
+      return
+    }
+
+    Object.entries(features).forEach(([key, value]) => {
+      if (key in state.features) {
+        ;(state.features as Record<keyof Features, unknown>)[key as keyof Features] = value
+      }
+    })
   },
 
   setProjectId(projectId: OptionsControllerState['projectId']) {
@@ -118,20 +171,12 @@ export const OptionsController = {
     state.isUniversalProvider = isUniversalProvider
   },
 
-  setEnableAnalytics(enableAnalytics: OptionsControllerState['enableAnalytics']) {
-    state.enableAnalytics = enableAnalytics
-  },
-
   setSdkVersion(sdkVersion: OptionsControllerState['sdkVersion']) {
     state.sdkVersion = sdkVersion
   },
 
   setMetadata(metadata: OptionsControllerState['metadata']) {
     state.metadata = metadata
-  },
-
-  setOnrampEnabled(enableOnramp: OptionsControllerState['enableOnramp']) {
-    state.enableOnramp = enableOnramp
   },
 
   setDisableAppend(disableAppend: OptionsControllerState['disableAppend']) {
@@ -144,9 +189,5 @@ export const OptionsController = {
 
   setHasMultipleAddresses(hasMultipleAddresses: OptionsControllerState['hasMultipleAddresses']) {
     state.hasMultipleAddresses = hasMultipleAddresses
-  },
-
-  setEnableSwaps(enableSwaps: OptionsControllerState['enableSwaps']) {
-    state.enableSwaps = enableSwaps
   }
 }

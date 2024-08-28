@@ -147,9 +147,9 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
   // -- Private ------------------------------------------- //
   private swapsTemplate() {
-    const { enableSwaps } = OptionsController.state
+    const { swaps } = OptionsController.state.features
 
-    if (!enableSwaps) {
+    if (!swaps) {
       return null
     }
 

@@ -19,14 +19,12 @@ import type { CaipNetwork } from '@web3modal/common'
 export type AuthProviderConfig = {
   provider: W3mFrameProvider
   getActiveChain: GetActiveChain
-  auth: NonNullable<Provider['auth']>
   chains: CaipNetwork[]
 }
 
 export class AuthProvider extends ProviderEventEmitter implements Provider, ProviderAuthMethods {
   public readonly name = ConstantsUtil.AUTH_CONNECTOR_ID
   public readonly type = 'AUTH'
-  public readonly auth: AuthProviderConfig['auth']
 
   private readonly provider: AuthProviderConfig['provider']
   private readonly getActiveChain: AuthProviderConfig['getActiveChain']
@@ -34,12 +32,11 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
 
   private session: AuthProvider.Session | undefined
 
-  constructor({ provider, getActiveChain, auth, chains }: AuthProviderConfig) {
+  constructor({ provider, getActiveChain, chains }: AuthProviderConfig) {
     super()
 
     this.provider = provider
     this.getActiveChain = getActiveChain
-    this.auth = auth
     this.requestedChains = chains
 
     this.bindEvents()

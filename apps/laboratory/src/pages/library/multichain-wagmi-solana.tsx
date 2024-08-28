@@ -46,9 +46,7 @@ const modal = createWeb3Modal({
   ],
   defaultCaipNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId,
-  features: {
-    analytics: true
-  },
+  enableAnalytics: true,
   metadata: ConstantsUtil.Metadata,
   termsConditionsUrl: 'https://walletconnect.com/terms',
   privacyPolicyUrl: 'https://walletconnect.com/privacy',

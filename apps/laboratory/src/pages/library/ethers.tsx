@@ -15,7 +15,10 @@ const modal = createWeb3Modal({
   defaultCaipNetwork: EthersConstants.chains[1],
   projectId: ConstantsUtil.ProjectId,
   features: {
-    analytics: true
+    analytics: true,
+    email: false,
+    socials: ['google', 'discord', 'github', 'apple'],
+    emailShowWallets: false
   },
   metadata: ConstantsUtil.Metadata,
   termsConditionsUrl: 'https://walletconnect.com/terms',

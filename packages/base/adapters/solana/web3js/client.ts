@@ -3,6 +3,7 @@ import {
   ApiController,
   AssetController,
   CoreHelperUtil,
+  DEFAULT_FEATURES,
   EventsController,
   NetworkController,
   OptionsController
@@ -188,6 +189,7 @@ export class SolanaWeb3JsClient {
     this.appKit = appKit
 
     this.options = options
+
     this.caipNetworks = caipNetworks
 
     if (!projectId) {
@@ -197,8 +199,7 @@ export class SolanaWeb3JsClient {
     this.initializeProviders({
       relayUrl: 'wss://relay.walletconnect.com',
       metadata: options.metadata,
-      projectId: options.projectId,
-      ...this.solanaConfig.auth
+      projectId: options.projectId
     })
 
     this.syncRequestedNetworks(caipNetworks)
@@ -536,7 +537,13 @@ export class SolanaWeb3JsClient {
     return this.provider
   }
 
-  private async initializeProviders(opts: UniversalProviderOpts & Provider['auth']) {
+  private async initializeProviders(opts: UniversalProviderOpts) {
+    const emailOption =
+      this.options?.features?.email === undefined
+        ? DEFAULT_FEATURES.email
+        : this.options?.features?.email
+    const socialsOption = this.options?.features?.socials || DEFAULT_FEATURES.socials
+
     if (CoreHelperUtil.isClient()) {
       this.addProvider(
         new WalletConnectProvider({
@@ -546,7 +553,7 @@ export class SolanaWeb3JsClient {
         })
       )
 
-      if (opts.email || opts.socials) {
+      if (emailOption || socialsOption) {
         if (!opts.projectId) {
           throw new Error('projectId is required for AuthProvider')
         }
@@ -558,12 +565,6 @@ export class SolanaWeb3JsClient {
               withSolanaNamespace(SolStoreUtil.state.currentChain?.chainId)
             ),
             getActiveChain: () => SolStoreUtil.state.currentChain,
-            auth: {
-              email: opts.email,
-              socials: opts.socials,
-              showWallets: opts.showWallets,
-              walletFeatures: opts.walletFeatures
-            },
             chains: this.caipNetworks
           })
         )

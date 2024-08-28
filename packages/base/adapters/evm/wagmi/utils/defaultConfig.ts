@@ -5,19 +5,12 @@ import { createConfig } from '@wagmi/core'
 import { coinbaseWallet, injected } from '@wagmi/connectors'
 import { authConnector } from '../connectors/AuthConnector.js'
 import { getTransport } from './helpers.js'
-import type { SocialProvider } from '@web3modal/scaffold-utils'
 
 export type ConfigOptions = Partial<CreateConfigParameters> & {
   chains: CreateConfigParameters['chains']
   projectId: string
   enableEIP6963?: boolean
   enableCoinbase?: boolean
-  auth?: {
-    email?: boolean
-    socials?: SocialProvider[]
-    showWallets?: boolean
-    walletFeatures?: boolean
-  }
   enableInjected?: boolean
   enableWalletConnect?: boolean
   metadata: {
@@ -35,18 +28,12 @@ export function defaultConfig({
   metadata,
   enableCoinbase,
   enableInjected,
-  auth = {},
   enableEIP6963,
   ...wagmiConfig
 }: ConfigOptions): Config {
   const connectors: CreateConnectorFn[] = wagmiConfig?.connectors ?? []
   const transportsArr = chains.map(chain => [chain.id, getTransport({ chain, projectId })])
   const transports = Object.fromEntries(transportsArr)
-  const defaultAuth = {
-    email: true,
-    showWallets: true,
-    walletFeatures: true
-  }
 
   // Enabled by default
   if (enableInjected !== false) {
@@ -73,23 +60,12 @@ export function defaultConfig({
     )
   }
 
-  const mergedAuth = {
-    ...defaultAuth,
-    ...auth
-  }
-
-  if (mergedAuth.email || mergedAuth.socials) {
-    connectors.push(
-      authConnector({
-        chains: [...chains],
-        options: { projectId },
-        socials: mergedAuth.socials,
-        email: mergedAuth.email,
-        showWallets: mergedAuth.showWallets,
-        walletFeatures: mergedAuth.walletFeatures
-      })
-    )
-  }
+  connectors.push(
+    authConnector({
+      chains: [...chains],
+      options: { projectId }
+    })
+  )
 
   return createConfig({
     chains,

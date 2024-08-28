@@ -1,7 +1,7 @@
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
-import { ConnectorController, RouterController } from '@web3modal/core'
+import { ConnectorController, OptionsController, RouterController } from '@web3modal/core'
 import { state } from 'lit/decorators/state.js'
 
 @customElement('w3m-connect-view')
@@ -14,10 +14,18 @@ export class W3mConnectView extends LitElement {
   // -- State & Properties -------------------------------- //
   @state() private connectors = ConnectorController.state.connectors
 
+  @state() private authConnector = this.connectors.find(c => c.type === 'AUTH')
+
+  @state() private features = OptionsController.state.features
+
   public constructor() {
     super()
     this.unsubscribe.push(
-      ConnectorController.subscribeKey('connectors', val => (this.connectors = val))
+      ConnectorController.subscribeKey('connectors', val => {
+        this.connectors = val
+        this.authConnector = this.connectors.find(c => c.type === 'AUTH')
+      }),
+      OptionsController.subscribeKey('features', val => (this.features = val))
     )
   }
 
@@ -39,10 +47,10 @@ export class W3mConnectView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private walletListTemplate() {
-    const authConnector = this.connectors.find(c => c.type === 'AUTH')
+    const { socials, emailShowWallets } = this.features
 
-    if (authConnector?.socials) {
-      if (authConnector?.showWallets) {
+    if (this.authConnector && socials) {
+      if (this.authConnector && emailShowWallets) {
         return html`
           <wui-flex flexDirection="column" gap="xs" .margin=${['xs', '0', '0', '0'] as const}>
             <w3m-connector-list></w3m-connector-list>

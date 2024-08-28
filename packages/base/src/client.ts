@@ -5,9 +5,7 @@ import type {
   ModalControllerState,
   ConnectedWalletInfo,
   RouterControllerState,
-  ChainAdapter,
-  Features,
-  FeaturesKeys
+  ChainAdapter
 } from '@web3modal/core'
 import {
   AccountController,
@@ -34,17 +32,6 @@ import { PresetsUtil } from '@web3modal/scaffold-utils'
 
 // -- Export Controllers -------------------------------------------------------
 export { AccountController, NetworkController }
-
-// -- Constants ----------------------------------------------------------------
-const DEFAULT_FEATURES: Features = {
-  swaps: true,
-  onramp: true,
-  email: true,
-  socials: ['google', 'x', 'discord', 'farcaster', 'github', 'apple', 'facebook'],
-  history: true,
-  analytics: true,
-  allWallets: true
-}
 
 // -- Types --------------------------------------------------------------------
 export interface OpenOptions {
@@ -348,11 +335,7 @@ export class AppKit {
     OptionsController.setTermsConditionsUrl(options.termsConditionsUrl)
     OptionsController.setPrivacyPolicyUrl(options.privacyPolicyUrl)
     OptionsController.setCustomWallets(options.customWallets)
-    OptionsController.setEnableAnalytics(
-      this.getFeatureValue('analytics', options.features) === true
-    )
-    OptionsController.setOnrampEnabled(this.getFeatureValue('onramp', options.features) !== false)
-    OptionsController.setEnableSwaps(this.getFeatureValue('swaps', options.features) !== false)
+    OptionsController.setFeatures(options.features)
 
     if (options.metadata) {
       OptionsController.setMetadata(options.metadata)
@@ -413,10 +396,6 @@ export class AppKit {
 
       NetworkController.setDefaultCaipNetwork(options.defaultCaipNetwork)
     })
-  }
-
-  private getFeatureValue(key: FeaturesKeys, features?: Features) {
-    return (features?.[key] || DEFAULT_FEATURES[key]) as Features[FeaturesKeys]
   }
 
   private async initOrContinue() {

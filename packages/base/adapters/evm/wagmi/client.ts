@@ -39,7 +39,6 @@ import type {
   NetworkControllerClient,
   PublicStateControllerState,
   SendTransactionArgs,
-  SocialProvider,
   WriteContractArgs
 } from '@web3modal/core'
 import { formatUnits, parseUnits } from 'viem'
@@ -147,11 +146,7 @@ export class EVMWagmiClient {
     connectors.push(
       authConnector({
         chains: this.wagmiChains,
-        options: { projectId: options.projectId },
-        socials: ['google'],
-        email: true,
-        showWallets: true,
-        walletFeatures: true
+        options: { projectId: options.projectId }
       })
     )
 
@@ -718,12 +713,7 @@ export class EVMWagmiClient {
     _authConnector: AdapterOptions<Config>['wagmiConfig']['connectors'][number] | undefined
   ) {
     const connector =
-      _authConnector as unknown as AdapterOptions<Config>['wagmiConfig']['connectors'][0] & {
-        email: boolean
-        socials: SocialProvider[]
-        showWallets?: boolean
-        walletFeatures?: boolean
-      }
+      _authConnector as unknown as AdapterOptions<Config>['wagmiConfig']['connectors'][0]
 
     if (connector) {
       const provider = await connector.getProvider()
@@ -732,10 +722,6 @@ export class EVMWagmiClient {
         type: 'AUTH',
         name: 'Auth',
         provider,
-        email: connector.email,
-        socials: connector.socials,
-        showWallets: connector?.showWallets === undefined ? true : connector.showWallets,
-        walletFeatures: connector.walletFeatures,
         chain: this.chainNamespace
       })
       this.initAuthConnectorListeners(_authConnector)

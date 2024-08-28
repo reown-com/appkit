@@ -73,10 +73,6 @@ export type Connector = {
     rdns?: string
   }
   provider?: unknown
-  email?: boolean
-  socials?: SocialProvider[]
-  showWallets?: boolean
-  walletFeatures?: boolean
   chain: ChainNamespace
   providers?: Connector[]
 }

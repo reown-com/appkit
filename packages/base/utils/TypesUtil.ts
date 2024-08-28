@@ -28,6 +28,11 @@ export type AppKitOptions = {
    */
   features?: Features
   /**
+   * Show or hide the wallets in the modal. This is available with the email and socials features
+   * @default true
+   */
+  showWallets?: boolean
+  /**
    * Sign In With Ethereum configuration object.
    * @default undefined
    * @see https://docs.walletconnect.com/appkit/react/core/siwe#configure-your-siwe-client
