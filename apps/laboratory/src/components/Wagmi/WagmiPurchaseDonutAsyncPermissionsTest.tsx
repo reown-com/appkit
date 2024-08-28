@@ -44,9 +44,9 @@ export function WagmiPurchaseDonutAsyncPermissionsTest() {
       })
       const purchaseDonutCallDataExecution = [
         {
-          target: donutContractaddress as `0x${string}`,
+          to: donutContractaddress as `0x${string}`,
           value: parseEther('0.0001'),
-          callData: purchaseDonutCallData
+          data: purchaseDonutCallData
         }
       ]
       const txHash = await executeActionsWithECDSAAndCosignerPermissions({

@@ -3,7 +3,7 @@ import { useAccount } from 'wagmi'
 import { walletActionsErc7715 } from 'viem/experimental'
 import { useCallback, useState } from 'react'
 import { useChakraToast } from '../Toast'
-import { createWalletClient, custom, type Chain } from 'viem'
+import { createWalletClient, custom, type Address, type Chain } from 'viem'
 import { EIP_7715_RPC_METHODS } from '../../utils/EIP5792Utils'
 import { usePasskey } from '../../context/PasskeyContext'
 import {
@@ -35,50 +35,54 @@ export function WagmiRequestPermissionsSyncTest() {
     )
   }
 
-  return <ConnectedTestContent chain={chain} provider={provider} />
+  return <ConnectedTestContent chain={chain} provider={provider} address={address} />
 }
 
-function ConnectedTestContent({ chain, provider }: { chain: Chain; provider: Provider }) {
+function ConnectedTestContent({
+  chain,
+  provider,
+  address
+}: {
+  chain: Chain
+  provider: Provider
+  address: Address
+}) {
   const [isRequestPermissionLoading, setRequestPermissionLoading] = useState<boolean>(false)
   const { passkey } = usePasskey()
   const { grantedPermissions, clearGrantedPermissions, requestPermissionsSync } =
-    useERC7715Permissions({ chain })
+    useERC7715Permissions({ chain, address })
 
   const toast = useChakraToast()
 
   const onRequestPermissions = useCallback(async () => {
     setRequestPermissionLoading(true)
+    try {
+      if (!passkey) {
+        throw new Error('Passkey not available')
+      }
+      if (!provider) {
+        throw new Error('No Provider available, Please connect your wallet.')
+      }
+      const walletClient = createWalletClient({
+        chain,
+        transport: custom(provider)
+      }).extend(walletActionsErc7715())
 
-    if (!passkey) {
-      throw new Error('Passkey not available')
-    }
-    if (!provider) {
-      throw new Error('No Provider available, Please connect your wallet.')
-    }
-
-    const walletClient = createWalletClient({
-      chain,
-      transport: custom(provider)
-    }).extend(walletActionsErc7715())
-
-    const response = await requestPermissionsSync(walletClient, passkey)
-    if ('error' in response) {
+      const response = await requestPermissionsSync(walletClient, passkey)
+      toast({
+        type: 'success',
+        title: 'Permissions Granted',
+        description: JSON.stringify(response.approvedPermissions, bigIntReplacer)
+      })
+    } catch (error) {
       toast({
         type: 'error',
         title: 'Request Permissions Errors',
-        description: response.message
+        description: error instanceof Error ? error.message : 'Unknown Error'
       })
+    } finally {
       setRequestPermissionLoading(false)
-
-      return
     }
-    toast({
-      type: 'success',
-      title: 'Permissions Granted',
-      description: JSON.stringify(response.approvedPermissions, bigIntReplacer)
-    })
-
-    setRequestPermissionLoading(false)
   }, [passkey, provider])
 
   return (

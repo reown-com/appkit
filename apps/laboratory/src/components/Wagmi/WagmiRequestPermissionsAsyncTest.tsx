@@ -3,7 +3,7 @@ import { useAccount } from 'wagmi'
 import { walletActionsErc7715 } from 'viem/experimental'
 import { useCallback, useState } from 'react'
 import { useChakraToast } from '../Toast'
-import { createWalletClient, custom, type Chain } from 'viem'
+import { createWalletClient, custom, type Address, type Chain } from 'viem'
 import { EIP_7715_RPC_METHODS } from '../../utils/EIP5792Utils'
 import {
   useWagmiAvailableCapabilities,
@@ -34,12 +34,20 @@ export function WagmiRequestPermissionsAsyncTest() {
     )
   }
 
-  return <ConnectedTestContent chain={chain} provider={provider} />
+  return <ConnectedTestContent chain={chain} provider={provider} address={address} />
 }
 
-function ConnectedTestContent({ chain, provider }: { chain: Chain; provider: Provider }) {
+function ConnectedTestContent({
+  chain,
+  provider,
+  address
+}: {
+  chain: Chain
+  provider: Provider
+  address: Address
+}) {
   const { grantedPermissions, clearGrantedPermissions, requestPermissionsAsync } =
-    useERC7715Permissions({ chain })
+    useERC7715Permissions({ chain, address })
   const { signer } = useLocalEcdsaKey()
   const [isRequestPermissionLoading, setRequestPermissionLoading] = useState<boolean>(false)
   const toast = useChakraToast()
