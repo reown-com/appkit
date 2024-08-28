@@ -289,6 +289,10 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
       }
 
       try {
+        if (chain?.id) {
+          provider.setDefaultChain(chain?.id)
+        }
+
         await provider.request({
           method: 'wallet_switchEthereumChain',
           params: [{ chainId: numberToHex(chainId) }]
