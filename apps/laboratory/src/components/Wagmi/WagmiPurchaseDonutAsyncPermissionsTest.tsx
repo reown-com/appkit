@@ -7,14 +7,12 @@ import { abi as donutContractAbi, address as donutContractaddress } from '../../
 import { sepolia } from 'viem/chains'
 import { useLocalEcdsaKey } from '../../context/LocalEcdsaKeyContext'
 import { useERC7715Permissions } from '../../hooks/useERC7715Permissions'
+import { executeActionsWithECDSAAndCosignerPermissions } from '../../utils/ERC7715Utils'
 
 export function WagmiPurchaseDonutAsyncPermissionsTest() {
   const { privateKey } = useLocalEcdsaKey()
 
-  const { grantedPermissions, executeActionsWithECDSAAndCosignerPermissions } =
-    useERC7715Permissions({
-      chain: sepolia
-    })
+  const { grantedPermissions, pci } = useERC7715Permissions()
 
   const {
     data: donutsOwned,
@@ -37,6 +35,12 @@ export function WagmiPurchaseDonutAsyncPermissionsTest() {
       if (!privateKey) {
         throw new Error(`Unable to get dApp private key`)
       }
+      if (!grantedPermissions) {
+        throw Error('No permissions available')
+      }
+      if (!pci) {
+        throw Error('No WC cosigner data(PCI) available')
+      }
       const purchaseDonutCallData = encodeFunctionData({
         abi: donutContractAbi,
         functionName: 'purchase',
@@ -51,7 +55,10 @@ export function WagmiPurchaseDonutAsyncPermissionsTest() {
       ]
       const txHash = await executeActionsWithECDSAAndCosignerPermissions({
         actions: purchaseDonutCallDataExecution,
-        ecdsaPrivateKey: privateKey as `0x${string}`
+        chain: sepolia,
+        ecdsaPrivateKey: privateKey as `0x${string}`,
+        permissions: grantedPermissions,
+        pci
       })
       if (txHash) {
         toast({

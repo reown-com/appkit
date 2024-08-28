@@ -10,7 +10,6 @@ import {
   useWagmiAvailableCapabilities,
   type Provider
 } from '../../hooks/useWagmiActiveCapabilities'
-
 import { useERC7715Permissions } from '../../hooks/useERC7715Permissions'
 import { bigIntReplacer } from '../../utils/CommonUtils'
 
@@ -50,8 +49,7 @@ function ConnectedTestContent({
   const [isRequestPermissionLoading, setRequestPermissionLoading] = useState<boolean>(false)
   const { passkey } = usePasskey()
   const { grantedPermissions, clearGrantedPermissions, requestPermissionsSync } =
-    useERC7715Permissions({ chain, address })
-
+    useERC7715Permissions()
   const toast = useChakraToast()
 
   const onRequestPermissions = useCallback(async () => {
@@ -64,6 +62,7 @@ function ConnectedTestContent({
         throw new Error('No Provider available, Please connect your wallet.')
       }
       const walletClient = createWalletClient({
+        account: address,
         chain,
         transport: custom(provider)
       }).extend(walletActionsErc7715())

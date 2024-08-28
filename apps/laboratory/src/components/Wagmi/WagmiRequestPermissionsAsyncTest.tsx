@@ -47,43 +47,42 @@ function ConnectedTestContent({
   address: Address
 }) {
   const { grantedPermissions, clearGrantedPermissions, requestPermissionsAsync } =
-    useERC7715Permissions({ chain, address })
+    useERC7715Permissions()
   const { signer } = useLocalEcdsaKey()
   const [isRequestPermissionLoading, setRequestPermissionLoading] = useState<boolean>(false)
   const toast = useChakraToast()
+
   const onRequestPermissions = useCallback(async () => {
     setRequestPermissionLoading(true)
+    try {
+      if (!signer) {
+        throw new Error('PrivateKey signer not available')
+      }
+      if (!provider) {
+        throw new Error('No Provider available, Please connect your wallet.')
+      }
 
-    if (!signer) {
-      throw new Error('PrivateKey signer not available')
-    }
-    if (!provider) {
-      throw new Error('No Provider available, Please connect your wallet.')
-    }
+      const walletClient = createWalletClient({
+        account: address,
+        chain,
+        transport: custom(provider)
+      }).extend(walletActionsErc7715())
 
-    const walletClient = createWalletClient({
-      chain,
-      transport: custom(provider)
-    }).extend(walletActionsErc7715())
-
-    const response = await requestPermissionsAsync(walletClient, signer)
-    if ('error' in response) {
+      const response = await requestPermissionsAsync(walletClient, signer)
+      toast({
+        type: 'success',
+        title: 'Permissions Granted',
+        description: JSON.stringify(response.approvedPermissions, bigIntReplacer)
+      })
+    } catch (error) {
       toast({
         type: 'error',
         title: 'Request Permissions Errors',
-        description: response.message
+        description: error instanceof Error ? error.message : 'Unknown Error'
       })
+    } finally {
       setRequestPermissionLoading(false)
-
-      return
     }
-    toast({
-      type: 'success',
-      title: 'Permissions Granted',
-      description: JSON.stringify(response.approvedPermissions, bigIntReplacer)
-    })
-
-    setRequestPermissionLoading(false)
   }, [signer, provider])
 
   return (
