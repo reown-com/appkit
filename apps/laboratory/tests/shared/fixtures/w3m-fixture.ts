@@ -11,6 +11,12 @@ export interface ModalFixture {
   library: string
 }
 
+interface ModalWalletFixture {
+  modalPage: ModalPage
+  modalValidator: ModalValidator
+  library: string
+}
+
 // M -> test Modal
 export const testM = timingFixture.extend<ModalFixture>({
   library: ['wagmi', { option: true }],
@@ -34,7 +40,7 @@ export const testMSiwe = timingFixture.extend<ModalFixture>({
   }
 })
 
-export const testMultiChainM = timingFixture.extend<ModalFixture>({
+export const testMultiChainM = timingFixture.extend<ModalWalletFixture>({
   library: ['multichain', { option: true }],
   modalPage: async ({ page, library }, use) => {
     const modalPage = new ModalPage(page, library, 'all')
