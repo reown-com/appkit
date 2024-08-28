@@ -14,7 +14,7 @@ testM.describe('Modal only tests', () => {
     await expect(modalPage.page.getByTestId('all-wallets')).toBeVisible()
   })
 
-  testM.only('Should show socials enabled by default', async ({ modalPage }) => {
+  testM('Should show socials enabled by default', async ({ modalPage }) => {
     const modalValidator = new ModalValidator(modalPage.page)
     await modalPage.page.getByTestId('connect-button').click()
     await modalValidator.expectSocialsVisible()
