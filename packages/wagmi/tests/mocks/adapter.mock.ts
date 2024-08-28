@@ -1,38 +1,46 @@
 import { EVMWagmiClient } from '@web3modal/base/adapters/evm/wagmi'
-import { mainnet } from 'viem/chains'
+import { mainnet as wagmiMainnet } from 'viem/chains'
 import { createConfig, http } from 'wagmi'
 import { mock } from 'wagmi/connectors'
 
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
-import { AppKit, type SdkVersion } from '@web3modal/base'
+import { AppKit } from '@web3modal/base'
+import type { CaipNetwork } from '@web3modal/common'
+
+export const mainnet: CaipNetwork = {
+  id: 'eip155:1',
+  chainId: 1,
+  name: 'Ethereum',
+  currency: 'ETH',
+  explorerUrl: 'https://etherscan.io',
+  rpcUrl: 'https://rpc.walletconnect.org/v1/?chainId=eip155:1&projectId=PROJECT_ID',
+  chainNamespace: 'eip155'
+}
 
 const privateKey = generatePrivateKey()
 export const mockAccount = privateKeyToAccount(privateKey)
 
 export const wagmiConfigMock = createConfig({
-  chains: [mainnet],
+  chains: [wagmiMainnet],
   connectors: [mock({ accounts: [mockAccount.address] })],
   transports: {
-    [mainnet.id]: http()
+    [wagmiMainnet.id]: http()
   }
 })
 
-const wagmiAdapterMock = new EVMWagmiClient({
-  wagmiConfig: wagmiConfigMock
-})
+const wagmiAdapterMock = new EVMWagmiClient()
 
 const mockAppKitData = {
-  defaultChain: wagmiAdapterMock.defaultChain,
   adapters: [wagmiAdapterMock],
+  caipNetworks: [mainnet],
+  defaultCaipNetwork: wagmiAdapterMock.defaultCaipNetwork,
   metadata: {
     description: 'Desc',
     name: 'Name',
     url: 'url.com',
     icons: ['icon.png']
   },
-  projectId: '1234',
-  sdkVersion: 'react-wagmi-4.0.13' as SdkVersion,
-  sdkType: 'w3m' as const
+  projectId: '1234'
 }
 
 export const appKitMock = new AppKit(mockAppKitData)
