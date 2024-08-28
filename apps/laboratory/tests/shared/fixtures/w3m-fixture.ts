@@ -2,6 +2,7 @@
 
 import { ModalPage } from '../pages/ModalPage'
 import { timeStart, timeEnd } from '../utils/logs'
+import { ModalValidator } from '../validators/ModalValidator'
 import { timingFixture } from './timing-fixture'
 
 // Declare the types of fixtures to use

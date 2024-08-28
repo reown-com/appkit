@@ -8,16 +8,16 @@ import type { Provider } from '@web3modal/base/adapters/solana/web3js'
 
 export function SolanaSignMessageTest() {
   const toast = useChakraToast()
-  const { walletProviders } = useWeb3ModalProvider<Provider>()
+  const { walletProvider } = useWeb3ModalProvider<Provider>('solana')
 
   async function onSignMessage() {
     try {
-      if (!walletProviders['solana']) {
+      if (!walletProvider) {
         throw Error('user is disconnected')
       }
 
       const encodedMessage = new TextEncoder().encode('Hello from Web3Modal')
-      const signature = await walletProviders['solana'].signMessage(encodedMessage)
+      const signature = await walletProvider.signMessage(encodedMessage)
 
       toast({
         title: ConstantsUtil.SigningSucceededToastTitle,

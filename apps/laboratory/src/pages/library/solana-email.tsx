@@ -1,29 +1,20 @@
-import { createWeb3Modal, defaultSolanaConfig } from '@web3modal/solana/react'
+import { createWeb3Modal } from '@web3modal/base/react'
 
 import { ThemeStore } from '../../utils/StoreUtil'
 
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { SolanaTests } from '../../components/Solana/SolanaTests'
-import { SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
+import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { solana, solanaDevnet, solanaTestnet } from '../../utils/NetworksUtil'
+import { SolanaWeb3JsClient } from '@web3modal/base/adapters/solana/web3js'
 
-const chains = [solana, solanaTestnet, solanaDevnet]
-
-export const solanaConfig = defaultSolanaConfig({
-  chains,
-  projectId: ConstantsUtil.ProjectId,
-  metadata: ConstantsUtil.Metadata,
-  auth: {
-    email: true,
-    socials: ['google', 'x', 'discord', 'farcaster', 'github', 'apple', 'facebook'],
-    walletFeatures: true,
-    showWallets: true
-  }
+const solanaWeb3JsAdapter = new SolanaWeb3JsClient({
+  wallets: [new HuobiWalletAdapter(), new SolflareWalletAdapter()]
 })
 
 const modal = createWeb3Modal({
-  solanaConfig,
+  adapters: [solanaWeb3JsAdapter],
   projectId: ConstantsUtil.ProjectId,
   metadata: ConstantsUtil.Metadata,
   caipNetworks: [solana, solanaTestnet, solanaDevnet],
@@ -33,8 +24,7 @@ const modal = createWeb3Modal({
   },
   termsConditionsUrl: 'https://walletconnect.com/terms',
   privacyPolicyUrl: 'https://walletconnect.com/privacy',
-  customWallets: ConstantsUtil.CustomWallets,
-  wallets: [new SolflareWalletAdapter()]
+  customWallets: ConstantsUtil.CustomWallets
 })
 
 ThemeStore.setModal(modal)

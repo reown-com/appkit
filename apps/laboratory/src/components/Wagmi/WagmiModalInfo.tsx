@@ -23,5 +23,7 @@ export function WagmiModalInfo() {
     getClientId().then(setClientId)
   }, [connector])
 
-  return isConnected ? <AppKitInfo address={address} chainId={chainId} clientId={clientId} /> : null
+  return isConnected ? (
+    <AppKitInfo address={address} chainId={chainId} clientId={clientId || undefined} />
+  ) : null
 }

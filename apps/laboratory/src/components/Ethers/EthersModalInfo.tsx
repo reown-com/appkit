@@ -8,7 +8,7 @@ export function EthersModalInfo() {
   const [ready, setReady] = React.useState(false)
   const [clientId, setClientId] = React.useState<string | undefined>(undefined)
   const { isConnected, address } = useWeb3ModalAccount()
-  const { walletProvider, walletProviderType } = useWeb3ModalProvider<EthereumProvider>()
+  const { walletProvider, walletProviderType } = useWeb3ModalProvider<EthereumProvider>('eip155')
 
   async function getClientId() {
     if (walletProviderType === 'walletConnect') {

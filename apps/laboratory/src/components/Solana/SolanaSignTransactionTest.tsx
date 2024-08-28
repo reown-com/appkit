@@ -9,7 +9,7 @@ import {
 } from '@solana/web3.js'
 
 import { useWeb3ModalNetwork, useWeb3ModalProvider } from '@web3modal/base/react'
-import { useWeb3ModalConnection } from '@web3modal/solana/react'
+import { useWeb3ModalConnection, type Provider } from '@web3modal/solana/react'
 import { solana } from '../../utils/NetworksUtil'
 import { useChakraToast } from '../Toast'
 
@@ -20,7 +20,7 @@ const amountInLamports = 10_000_000
 export function SolanaSignTransactionTest() {
   const toast = useChakraToast()
   const { caipNetwork } = useWeb3ModalNetwork()
-  const { walletProvider } = useWeb3ModalProvider()
+  const { walletProvider } = useWeb3ModalProvider<Provider>('solana')
   const { connection } = useWeb3ModalConnection()
   const [loading, setLoading] = useState(false)
 

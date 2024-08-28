@@ -2,7 +2,8 @@ import { Button, Stack, Link, Text, Spacer } from '@chakra-ui/react'
 import {
   useWeb3ModalAccount,
   useWeb3ModalNetwork,
-  useWeb3ModalProvider
+  useWeb3ModalProvider,
+  type Provider
 } from '@web3modal/base/react'
 import { ethers } from 'ethers5'
 import { useState } from 'react'
@@ -16,7 +17,7 @@ export function Ethers5TransactionTest() {
 
   const { address } = useWeb3ModalAccount()
   const { chainId } = useWeb3ModalNetwork()
-  const { walletProvider } = useWeb3ModalProvider()
+  const { walletProvider } = useWeb3ModalProvider<Provider>('eip155')
 
   async function onSendTransaction() {
     try {

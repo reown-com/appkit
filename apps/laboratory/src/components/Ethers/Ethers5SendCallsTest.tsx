@@ -8,6 +8,7 @@ import {
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
 import { useChakraToast } from '../Toast'
 import type { Address } from 'viem'
+import type { Provider as RawProvider } from '@web3modal/base'
 import { vitalikEthAddress } from '../../utils/DataUtil'
 import { ethers } from 'ethers5'
 import {
@@ -24,7 +25,8 @@ export function Ethers5SendCallsTest() {
 
   const { chainId } = useWeb3ModalNetwork()
   const { address, isConnected } = useWeb3ModalAccount()
-  const { walletProvider } = useWeb3ModalProvider()
+  const { walletProvider } = useWeb3ModalProvider<RawProvider>('eip155')
+
   const toast = useChakraToast()
 
   const [atomicBatchSupportedChains, setAtomicBatchSupportedChains] = useState<
@@ -37,7 +39,7 @@ export function Ethers5SendCallsTest() {
     if (address && walletProvider) {
       getCapabilitySupportedChainInfo(
         WALLET_CAPABILITIES.ATOMIC_BATCH,
-        walletProvider as Provider,
+        walletProvider as unknown as Provider,
         address
       ).then(capabilities => setAtomicBatchSupportedChains(capabilities))
     } else {

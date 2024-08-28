@@ -14,7 +14,7 @@ export function Ethers5ModalInfo() {
 
   const { chainId } = useWeb3ModalNetwork()
   const { isConnected, address } = useWeb3ModalAccount()
-  const { walletProvider, walletProviderType } = useWeb3ModalProvider<EthereumProvider>()
+  const { walletProvider, walletProviderType } = useWeb3ModalProvider<EthereumProvider>('eip155')
 
   async function getClientId() {
     if (walletProviderType === 'walletConnect') {
@@ -33,6 +33,6 @@ export function Ethers5ModalInfo() {
   }, [])
 
   return ready && isConnected ? (
-    <AppKitInfo address={address} chainId={chainId} clientId={clientId} />
+    <AppKitInfo address={address} chainId={Number(chainId)} clientId={clientId} />
   ) : null
 }

@@ -23,7 +23,7 @@ export function EthersSendCallsWithPaymasterServiceTest() {
 
   const { chainId } = useWeb3ModalNetwork()
   const { address, isConnected } = useWeb3ModalAccount()
-  const { walletProvider } = useWeb3ModalProvider<Eip1193Provider>()
+  const { walletProvider } = useWeb3ModalProvider<Eip1193Provider>('eip155')
   const toast = useChakraToast()
 
   const [paymasterServiceSupportedChains, setPaymasterServiceSupportedChains] = useState<
