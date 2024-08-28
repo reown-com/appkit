@@ -7,36 +7,14 @@ import { signMessage } from 'viem/accounts'
 import { bigIntReplacer } from './CommonUtils'
 import { sign as signWithPasskey } from 'webauthn-p256'
 
-export function getSampleSyncPermissions(
-  secp256k1DID: string,
-  passkeyDID: string
-): GrantPermissionsParameters {
-  return {
-    expiry: Date.now() + 24 * 60 * 60,
-    permissions: [
-      {
-        type: {
-          custom: 'donut-purchase'
-        },
-        data: {
-          target: donutContractAddress,
-          abi: donutContractAbi,
-          valueLimit: parseEther('10').toString(),
-          functionName: 'function purchase()'
-        },
-        policies: []
-      }
-    ],
-    signer: {
-      type: 'keys',
-      data: {
-        ids: [secp256k1DID, passkeyDID]
-      }
-    }
+export type MultikeySigner = {
+  type: 'keys'
+  data: {
+    ids: string[]
   }
 }
 
-export function getSampleAsyncPermissions(keys: string[]): GrantPermissionsParameters {
+export function getPurchaseDonutPermissions(): GrantPermissionsParameters {
   return {
     expiry: Date.now() + 24 * 60 * 60,
     permissions: [
@@ -52,13 +30,7 @@ export function getSampleAsyncPermissions(keys: string[]): GrantPermissionsParam
         },
         policies: []
       }
-    ],
-    signer: {
-      type: 'keys',
-      data: {
-        ids: keys
-      }
-    }
+    ]
   }
 }
 

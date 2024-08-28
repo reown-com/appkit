@@ -12,6 +12,9 @@ import {
 } from '../../hooks/useWagmiActiveCapabilities'
 import { useERC7715Permissions } from '../../hooks/useERC7715Permissions'
 import { bigIntReplacer } from '../../utils/CommonUtils'
+import { getPurchaseDonutPermissions } from '../../utils/ERC7715Utils'
+import { serializePublicKey, type P256Credential } from 'webauthn-p256'
+import { KeyTypes } from '../../utils/EncodingUtils'
 
 export function WagmiRequestPermissionsSyncTest() {
   const { provider, supported } = useWagmiAvailableCapabilities({
@@ -48,7 +51,7 @@ function ConnectedTestContent({
 }) {
   const [isRequestPermissionLoading, setRequestPermissionLoading] = useState<boolean>(false)
   const { passkey } = usePasskey()
-  const { grantedPermissions, clearGrantedPermissions, requestPermissionsSync } =
+  const { grantedPermissions, clearGrantedPermissions, requestPermissions } =
     useERC7715Permissions()
   const toast = useChakraToast()
 
@@ -66,8 +69,25 @@ function ConnectedTestContent({
         chain,
         transport: custom(provider)
       }).extend(walletActionsErc7715())
+      let p256Credential = passkey as P256Credential
+      p256Credential = {
+        ...p256Credential,
+        publicKey: {
+          prefix: p256Credential.publicKey.prefix,
+          x: BigInt(p256Credential.publicKey.x),
+          y: BigInt(p256Credential.publicKey.y)
+        }
+      }
+      const passkeyPublicKey = serializePublicKey(p256Credential.publicKey, { to: 'hex' })
 
-      const response = await requestPermissionsSync(walletClient, passkey)
+      const purchaseDonutPermissions = getPurchaseDonutPermissions()
+      const response = await requestPermissions(walletClient, {
+        permissions: purchaseDonutPermissions,
+        signerKey: {
+          key: passkeyPublicKey,
+          type: KeyTypes.secp256r1
+        }
+      })
       toast({
         type: 'success',
         title: 'Permissions Granted',

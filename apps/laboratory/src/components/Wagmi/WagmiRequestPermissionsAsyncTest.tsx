@@ -12,6 +12,8 @@ import {
 import { useLocalEcdsaKey } from '../../context/LocalEcdsaKeyContext'
 import { bigIntReplacer } from '../../utils/CommonUtils'
 import { useERC7715Permissions } from '../../hooks/useERC7715Permissions'
+import { getPurchaseDonutPermissions } from '../../utils/ERC7715Utils'
+import { KeyTypes } from '../../utils/EncodingUtils'
 
 export function WagmiRequestPermissionsAsyncTest() {
   const { provider, supported } = useWagmiAvailableCapabilities({
@@ -46,7 +48,7 @@ function ConnectedTestContent({
   provider: Provider
   address: Address
 }) {
-  const { grantedPermissions, clearGrantedPermissions, requestPermissionsAsync } =
+  const { grantedPermissions, clearGrantedPermissions, requestPermissions } =
     useERC7715Permissions()
   const { signer } = useLocalEcdsaKey()
   const [isRequestPermissionLoading, setRequestPermissionLoading] = useState<boolean>(false)
@@ -68,7 +70,14 @@ function ConnectedTestContent({
         transport: custom(provider)
       }).extend(walletActionsErc7715())
 
-      const response = await requestPermissionsAsync(walletClient, signer)
+      const purchaseDonutPermissions = getPurchaseDonutPermissions()
+      const response = await requestPermissions(walletClient, {
+        permissions: purchaseDonutPermissions,
+        signerKey: {
+          key: signer.publicKey,
+          type: KeyTypes.secp256k1
+        }
+      })
       toast({
         type: 'success',
         title: 'Permissions Granted',
