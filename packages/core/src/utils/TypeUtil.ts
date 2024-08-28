@@ -853,3 +853,57 @@ export type CombinedProvider = W3mFrameProvider & Provider
 
 export type CoinbasePaySDKChainNameValues =
   keyof typeof ConstantsUtil.WC_COINBASE_PAY_SDK_CHAIN_NAME_MAP
+
+export type FeaturesSocials =
+  | 'google'
+  | 'x'
+  | 'discord'
+  | 'farcaster'
+  | 'github'
+  | 'apple'
+  | 'facebook'
+
+export type Features = {
+  /**
+   * @description Enable or disable the swaps feature. Enabled by default.
+   * @type {boolean}
+   */
+  swaps?: boolean
+  /**
+   * @description Enable or disable the onramp feature. Enabled by default.
+   * @type {boolean}
+   */
+  onramp?: boolean
+  /**
+   * @description Enable or disable the email feature. Enabled by default.
+   * @type {boolean}
+   */
+  email?: boolean
+  /**
+   * @description Show or hide the regular wallet options when email is enabled. Enabled by default.
+   * @type {boolean}
+   */
+  emailShowWallets?: boolean
+  /**
+   * @description Enable or disable the socials feature. Enabled by default.
+   * @type {FeaturesSocials[]}
+   */
+  socials?: FeaturesSocials[]
+  /**
+   * @description Enable or disable the history feature. Enabled by default.
+   * @type {boolean}
+   */
+  history?: boolean
+  /**
+   * @description Enable or disable the analytics feature. Enabled by default.
+   * @type {boolean}
+   */
+  analytics?: boolean
+  /**
+   * @description Enable or disable the all wallets feature. Enabled by default.
+   * @type {boolean}
+   */
+  allWallets?: boolean
+}
+
+export type FeaturesKeys = keyof Features

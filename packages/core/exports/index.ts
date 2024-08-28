@@ -44,13 +44,8 @@ export type { AssetControllerState } from '../src/controllers/AssetController.js
 export { ThemeController } from '../src/controllers/ThemeController.js'
 export type { ThemeControllerState } from '../src/controllers/ThemeController.js'
 
-export { OptionsController, DEFAULT_FEATURES } from '../src/controllers/OptionsController.js'
-export type {
-  OptionsControllerState,
-  Features,
-  FeaturesKeys,
-  FeaturesSocials
-} from '../src/controllers/OptionsController.js'
+export { OptionsController } from '../src/controllers/OptionsController.js'
+export type { OptionsControllerState } from '../src/controllers/OptionsController.js'
 
 export { BlockchainApiController } from '../src/controllers/BlockchainApiController.js'
 

@@ -1,63 +1,17 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy } from 'valtio/vanilla'
-import type { CustomWallet, Metadata, ProjectId, SdkVersion, Tokens } from '../utils/TypeUtil.js'
+import type {
+  CustomWallet,
+  Features,
+  Metadata,
+  ProjectId,
+  SdkVersion,
+  Tokens
+} from '../utils/TypeUtil.js'
 import { ApiController } from './ApiController.js'
+import { DEFAULT_FEATURES } from '../utils/ConstantsUtil.js'
 
 // -- Types --------------------------------------------- //
-export type FeaturesSocials =
-  | 'google'
-  | 'x'
-  | 'discord'
-  | 'farcaster'
-  | 'github'
-  | 'apple'
-  | 'facebook'
-
-export type Features = {
-  /**
-   * @description Enable or disable the swaps feature. Enabled by default.
-   * @type {boolean}
-   */
-  swaps?: boolean
-  /**
-   * @description Enable or disable the onramp feature. Enabled by default.
-   * @type {boolean}
-   */
-  onramp?: boolean
-  /**
-   * @description Enable or disable the email feature. Enabled by default.
-   * @type {boolean}
-   */
-  email?: boolean
-  /**
-   * @description Show or hide the regular wallet options when email is enabled. Enabled by default.
-   * @type {boolean}
-   */
-  emailShowWallets?: boolean
-  /**
-   * @description Enable or disable the socials feature. Enabled by default.
-   * @type {FeaturesSocials[]}
-   */
-  socials?: FeaturesSocials[]
-  /**
-   * @description Enable or disable the history feature. Enabled by default.
-   * @type {boolean}
-   */
-  history?: boolean
-  /**
-   * @description Enable or disable the analytics feature. Enabled by default.
-   * @type {boolean}
-   */
-  analytics?: boolean
-  /**
-   * @description Enable or disable the all wallets feature. Enabled by default.
-   * @type {boolean}
-   */
-  allWallets?: boolean
-}
-
-export type FeaturesKeys = keyof Features
-
 export interface OptionsControllerState {
   projectId: ProjectId
   sdkType: 'w3m'
@@ -82,17 +36,6 @@ export interface OptionsControllerState {
 type StateKey = keyof OptionsControllerState
 
 // -- State --------------------------------------------- //
-export const DEFAULT_FEATURES: Features = {
-  swaps: true,
-  onramp: true,
-  email: true,
-  emailShowWallets: true,
-  socials: ['google', 'x', 'discord', 'farcaster', 'github', 'apple', 'facebook'],
-  history: true,
-  analytics: true,
-  allWallets: true
-}
-
 const state = proxy<OptionsControllerState>({
   features: DEFAULT_FEATURES,
   projectId: '',

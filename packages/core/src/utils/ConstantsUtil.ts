@@ -1,4 +1,17 @@
+import type { Features } from './TypeUtil.js'
+
 const SECURE_SITE = 'https://secure.walletconnect.org'
+
+export const DEFAULT_FEATURES: Features = {
+  swaps: true,
+  onramp: true,
+  email: true,
+  emailShowWallets: true,
+  socials: ['google', 'x', 'discord', 'farcaster', 'github', 'apple', 'facebook'],
+  history: true,
+  analytics: true,
+  allWallets: true
+}
 
 export const ONRAMP_PROVIDERS = [
   {

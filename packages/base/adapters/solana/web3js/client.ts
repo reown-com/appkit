@@ -3,7 +3,6 @@ import {
   ApiController,
   AssetController,
   CoreHelperUtil,
-  DEFAULT_FEATURES,
   EventsController,
   NetworkController,
   OptionsController
@@ -538,12 +537,6 @@ export class SolanaWeb3JsClient {
   }
 
   private async initializeProviders(opts: UniversalProviderOpts) {
-    const emailOption =
-      this.options?.features?.email === undefined
-        ? DEFAULT_FEATURES.email
-        : this.options?.features?.email
-    const socialsOption = this.options?.features?.socials || DEFAULT_FEATURES.socials
-
     if (CoreHelperUtil.isClient()) {
       this.addProvider(
         new WalletConnectProvider({
@@ -553,22 +546,16 @@ export class SolanaWeb3JsClient {
         })
       )
 
-      if (emailOption || socialsOption) {
-        if (!opts.projectId) {
-          throw new Error('projectId is required for AuthProvider')
-        }
-
-        this.addProvider(
-          new AuthProvider({
-            provider: new W3mFrameProvider(
-              opts.projectId,
-              withSolanaNamespace(SolStoreUtil.state.currentChain?.chainId)
-            ),
-            getActiveChain: () => SolStoreUtil.state.currentChain,
-            chains: this.caipNetworks
-          })
-        )
-      }
+      this.addProvider(
+        new AuthProvider({
+          provider: new W3mFrameProvider(
+            this.options?.projectId ?? '',
+            withSolanaNamespace(SolStoreUtil.state.currentChain?.chainId)
+          ),
+          getActiveChain: () => SolStoreUtil.state.currentChain,
+          chains: this.caipNetworks
+        })
+      )
 
       watchStandard(standardAdapters => this.addProvider.bind(this)(...standardAdapters))
     }
