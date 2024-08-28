@@ -41,6 +41,9 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
     this.requestedChains = chains
     this.provider = provider
     this.getActiveChain = getActiveChain
+    if (this.provider.session) {
+      this.session = this.provider.session
+    }
   }
 
   // -- Universal Provider Events ------------------------ //

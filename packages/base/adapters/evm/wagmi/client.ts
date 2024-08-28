@@ -397,6 +397,8 @@ export class EVMWagmiClient {
     })
     watchAccount(this.wagmiConfig, {
       onChange: accountData => {
+        console.trace('>>>> accountData', accountData)
+
         this.syncAccount(accountData)
       }
     })
@@ -470,8 +472,6 @@ export class EVMWagmiClient {
       if (connector) {
         if (connector.name === 'WalletConnect' && connector.getProvider && address && chainId) {
           const provider = (await connector.getProvider()) as UniversalProvider
-          ProviderUtil.setProvider(provider)
-          ProviderUtil.setProviderId('walletConnect')
 
           const namespaces = provider?.session?.namespaces || {}
           const namespaceKeys = namespaces ? Object.keys(namespaces) : []
@@ -481,6 +481,9 @@ export class EVMWagmiClient {
           namespaceKeys.forEach(key => {
             const chainNamespace = key as ChainNamespace
             const caipAddress = namespaces?.[key]?.accounts[0] as CaipAddress
+
+            ProviderUtil.setProvider(chainNamespace, provider)
+            ProviderUtil.setProviderId(chainNamespace, 'walletConnect')
 
             this.appKit?.setIsConnected(true, chainNamespace)
             this.appKit?.setPreferredAccountType(preferredAccountType, chainNamespace)
@@ -526,6 +529,7 @@ export class EVMWagmiClient {
           this.appKit?.setLoading(true)
           const connectors = getConnectors(this.wagmiConfig)
           const currentConnector = connectors.find(c => c.id === connector.id)
+
           if (currentConnector) {
             await reconnect(this.wagmiConfig, {
               connectors: [currentConnector]

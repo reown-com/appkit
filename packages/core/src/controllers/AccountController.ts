@@ -187,7 +187,7 @@ export const AccountController = {
     connectedWalletInfo: AccountControllerState['connectedWalletInfo'],
     chain: ChainNamespace
   ) {
-    ChainController.setAccountProp('connectedWalletInfo', connectedWalletInfo, chain)
+    ChainController.setAccountProp('connectedWalletInfo', connectedWalletInfo, chain, false)
   },
 
   setPreferredAccountType(

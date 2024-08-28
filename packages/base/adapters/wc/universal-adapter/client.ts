@@ -110,9 +110,11 @@ export class UniversalAdapterClient {
     this.connectionControllerClient = {
       connectWalletConnect: async onUri => {
         const WalletConnectProvider = await this.getWalletConnectProvider()
+
         if (!WalletConnectProvider) {
           throw new Error('connectionControllerClient:getWalletConnectUri - provider is undefined')
         }
+
         WalletConnectProvider.on('display_uri', (uri: string) => {
           onUri(uri)
         })
@@ -122,7 +124,7 @@ export class UniversalAdapterClient {
             'wagmi'
         ) {
           const adapter = ChainController.state.chains.get(ChainController.state.activeChain)
-          await adapter?.connectionControllerClient?.connectWalletConnect(onUri)
+          await adapter?.connectionControllerClient?.connectWalletConnect?.(onUri)
           this.setWalletConnectProvider()
         } else {
           if (siweConfig?.options?.enabled) {
@@ -330,14 +332,15 @@ export class UniversalAdapterClient {
     )
 
     const nameSpaces = this.walletConnectProvider?.session?.namespaces
-    ProviderUtil.setProvider(this.walletConnectProvider)
-    ProviderUtil.setProviderId('walletConnect')
 
     if (nameSpaces) {
       Object.keys(nameSpaces)
         .reverse()
         .forEach(key => {
           const caipAddress = nameSpaces?.[key]?.accounts[0] as CaipAddress
+
+          ProviderUtil.setProvider(key as ChainNamespace, this.walletConnectProvider)
+          ProviderUtil.setProviderId(key as ChainNamespace, 'walletConnect')
 
           if (caipAddress) {
             this.appKit?.setIsConnected(true, key as ChainNamespace)

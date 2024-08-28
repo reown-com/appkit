@@ -196,12 +196,9 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
         return []
       }
 
-      const accounts = Object.keys(provider?.session?.namespaces ?? {}).flatMap(namespace => {
-        const accountsList = provider?.session?.namespaces[namespace]?.accounts
+      const accountsList = provider?.session?.namespaces['eip155']?.accounts
 
-        // eslint-disable-next-line radix
-        return accountsList?.map(account => account.split(':')[2]) ?? []
-      })
+      const accounts = accountsList?.map(account => account.split(':')[2]) ?? []
 
       return accounts as `0x${string}`[]
     },
@@ -398,12 +395,11 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
       if (!provider_?.session?.namespaces) {
         return []
       }
-      const chainIds = Object.keys(provider_?.session?.namespaces ?? {}).flatMap(namespace => {
-        const accounts = provider_?.session?.namespaces[namespace]?.accounts
 
-        // eslint-disable-next-line radix
-        return accounts?.map(account => Number.parseInt(account.split(':')[1] ?? '')) ?? []
-      })
+      const accounts = provider_?.session?.namespaces['eip155']?.accounts
+
+      // eslint-disable-next-line radix
+      const chainIds = accounts?.map(account => Number.parseInt(account.split(':')[1] ?? '')) ?? []
 
       return chainIds
     },
@@ -429,7 +425,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
         return false
       }
 
-      const connectorChains = parameters.caipNetworks.map(x => x.chainId)
+      const connectorChains = config.chains.map(x => x.id)
       const namespaceChains = this.getNamespaceChainsIds()
 
       if (namespaceChains.length && !namespaceChains.some(id => connectorChains.includes(id))) {

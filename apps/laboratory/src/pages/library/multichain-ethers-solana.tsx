@@ -36,7 +36,7 @@ export default function MultiChainAllAdapters() {
   return (
     <>
       <AppKitButtons />
-      <MultiChainInfo />
+      {/* <MultiChainInfo /> */}
       <MultiChainTests />
     </>
   )

@@ -40,14 +40,14 @@ export function getWeb3Modal(appKit: AppKit) {
 }
 
 export function useWeb3ModalProvider<T>() {
-  const { provider, providerId } = useSnapshot(ProviderUtil.state)
+  const { providers, providerIds } = useSnapshot(ProviderUtil.state)
 
-  const walletProvider = provider as T | undefined
-  const walletProviderType = providerId
+  const walletProviders = providers as T | undefined
+  const walletProviderTypes = providerIds
 
   return {
-    walletProvider,
-    walletProviderType
+    walletProviders,
+    walletProviderTypes
   }
 }
 

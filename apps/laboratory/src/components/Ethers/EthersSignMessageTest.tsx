@@ -8,16 +8,16 @@ import { useChakraToast } from '../Toast'
 export function EthersSignMessageTest() {
   const toast = useChakraToast()
   const { address } = useWeb3ModalAccount()
-  const { walletProvider } = useWeb3ModalProvider<Eip1193Provider>()
+  const { walletProviders } = useWeb3ModalProvider<Eip1193Provider>()
   const [signature, setSignature] = useState<string | undefined>()
 
   async function onSignMessage() {
     try {
-      if (!walletProvider || !address) {
+      if (!walletProviders['eip155'] || !address) {
         throw Error('user is disconnected')
       }
 
-      const provider = new BrowserProvider(walletProvider, 1)
+      const provider = new BrowserProvider(walletProviders['eip155'], 1)
       const signer = new JsonRpcSigner(provider, address)
       const sig = await signer?.signMessage('Hello AppKit!')
       setSignature(sig)

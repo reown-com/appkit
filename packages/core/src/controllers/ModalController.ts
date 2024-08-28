@@ -46,6 +46,7 @@ export const ModalController = {
   async open(options?: ModalControllerArguments['open']) {
     await ApiController.state.prefetchPromise
     const connected = AccountController.state.isConnected
+
     const noAdapters = ChainController.state.noAdapters
 
     if (options?.view) {
