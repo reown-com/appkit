@@ -7,7 +7,7 @@ import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { WagmiPermissionsSyncProvider } from '../../context/WagmiPermissionsSyncContext'
 import { WagmiPermissionsSyncTest } from '../../components/Wagmi/WagmiPermissionsSyncTest'
 import { mainnet, optimism, polygon, zkSync } from '../../utils/NetworksUtil'
-import { EVMWagmiClient } from '@web3modal/base/adapters/evm/wagmi'
+import { EVMWagmiClient } from '@web3modal/adapter-wagmi'
 
 const queryClient = new QueryClient()
 

@@ -1,6 +1,6 @@
 import { createWeb3Modal } from '@web3modal/base/react'
-import { EVMEthersClient } from '@web3modal/base/adapters/evm/ethers'
-import { SolanaWeb3JsClient } from '@web3modal/base/adapters/solana/web3js'
+import { EVMEthersClient } from '@web3modal/adapter-ethers'
+import { SolanaWeb3JsClient } from '@web3modal/adapter-solana'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { mainnet, solana, arbitrum, optimism } from '../../utils/NetworksUtil'

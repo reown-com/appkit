@@ -2,10 +2,10 @@
 
 import { useSnapshot } from 'valtio'
 import { AppKit } from '@web3modal/base'
-import { SolanaWeb3JsClient } from '@web3modal/base/adapters/solana/web3js'
+import { SolanaWeb3JsClient } from '@web3modal/adapter-solana'
 import { SolStoreUtil } from '@web3modal/scaffold-utils/solana'
-import { getWeb3Modal } from '@web3modal/base/utils/library/react'
-import { type Connection, type Provider } from '@web3modal/base/adapters/solana/web3js'
+import { getWeb3Modal } from '@web3modal/base/library/react'
+import { type Connection, type Provider } from '@web3modal/adapter-solana'
 import type { SolanaAppKitOptions } from './options.js'
 
 // -- Types -------------------------------------------------------------------
@@ -56,4 +56,4 @@ export {
   useWeb3Modal,
   useWeb3ModalState,
   useWeb3ModalEvents
-} from '@web3modal/base/utils/library/react'
+} from '@web3modal/base/library/react'

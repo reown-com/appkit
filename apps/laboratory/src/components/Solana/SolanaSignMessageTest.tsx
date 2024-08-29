@@ -4,7 +4,7 @@ import { useWeb3ModalProvider } from '@web3modal/base/react'
 
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { useChakraToast } from '../Toast'
-import type { Provider } from '@web3modal/base/adapters/solana/web3js'
+import type { Provider } from '@web3modal/adapter-solana'
 
 export function SolanaSignMessageTest() {
   const toast = useChakraToast()

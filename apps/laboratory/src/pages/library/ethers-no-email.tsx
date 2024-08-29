@@ -1,5 +1,5 @@
 import { createWeb3Modal } from '@web3modal/base/react'
-import { EVMEthersClient } from '@web3modal/base/adapters/evm/ethers'
+import { EVMEthersClient } from '@web3modal/adapter-ethers'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { EthersConstants } from '../../utils/EthersConstants'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'

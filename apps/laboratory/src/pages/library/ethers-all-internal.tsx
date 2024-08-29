@@ -7,7 +7,7 @@ import { AppKitButtons } from '../../components/AppKitButtons'
 import { siweConfig } from '../../utils/SiweUtils'
 import { SiweData } from '../../components/Siwe/SiweData'
 import { EthersModalInfo } from '../../components/Ethers/EthersModalInfo'
-import { EVMEthersClient } from '@web3modal/base/adapters/evm/ethers'
+import { EVMEthersClient } from '@web3modal/adapter-ethers'
 
 const ethersAdapter = new EVMEthersClient()
 

@@ -1,13 +1,13 @@
 import { AppKit } from '@web3modal/base'
 import type { AppKitOptions } from '@web3modal/base'
-import { EVMWagmiClient, type AdapterOptions } from '@web3modal/base/adapters/evm/wagmi'
+import { EVMWagmiClient, type AdapterOptions } from '@web3modal/adapter-wagmi'
 import type { Config } from 'wagmi'
 
 // -- Types -------------------------------------------------------------
-export type { AdapterOptions } from '@web3modal/base/adapters/evm/wagmi'
+export type { AdapterOptions } from '@web3modal/adapter-wagmi'
 
 // -- Connectors --------------------------------------------------------
-export { authConnector } from '@web3modal/base/adapters/evm/wagmi'
+export { authConnector } from '@web3modal/adapter-wagmi'
 
 // -- Setup -------------------------------------------------------------
 export type WagmiAppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 'sdkVersion'> &
