@@ -16,7 +16,8 @@ import {
 } from '../../utils/NetworksUtil'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
-import { MultiChainTests } from '../../components/MultiChainTests'
+import { MultiChainTestsWagmiSolana } from '../../components/MultiChainTestsWagmiSolana'
+import { MultiChainInfo } from '../../components/MultiChainInfo'
 
 const queryClient = new QueryClient()
 
@@ -49,7 +50,8 @@ export default function MultiChainAllAdapters() {
     <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <AppKitButtons />
-        <MultiChainTests />
+        <MultiChainInfo />
+        <MultiChainTestsWagmiSolana />
       </QueryClientProvider>
     </WagmiProvider>
   )

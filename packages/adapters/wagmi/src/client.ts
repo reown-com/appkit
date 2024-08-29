@@ -65,6 +65,7 @@ import { walletConnect } from './connectors/UniversalConnector.js'
 import { coinbaseWallet } from '@wagmi/connectors'
 import { authConnector } from './connectors/AuthConnector.js'
 import { ProviderUtil } from '@web3modal/base/store'
+import { WcConstantsUtil } from '@web3modal/base/utils'
 
 // -- Types ---------------------------------------------------------------------
 export interface AdapterOptions<C extends Config>
@@ -185,7 +186,9 @@ export class EVMWagmiClient {
     this.networkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
         const chainId = Number(NetworkUtil.caipNetworkIdToNumber(caipNetwork?.id))
+
         if (chainId && this.wagmiConfig) {
+          localStorage.setItem(WcConstantsUtil.ACTIVE_CAIPNETWORK, JSON.stringify(caipNetwork))
           await switchChain(this.wagmiConfig, { chainId })
         }
       },
@@ -278,6 +281,8 @@ export class EVMWagmiClient {
       },
       disconnect: async () => {
         await disconnect(this.wagmiConfig!)
+        localStorage.removeItem(WcConstantsUtil.WALLET_ID)
+        localStorage.removeItem(WcConstantsUtil.ACTIVE_CAIPNETWORK)
         this.appKit?.setClientId(null)
         this.appKit?.resetAccount('eip155')
         this.appKit?.resetAccount('solana')
@@ -402,8 +407,6 @@ export class EVMWagmiClient {
     })
     watchAccount(this.wagmiConfig, {
       onChange: accountData => {
-        console.trace('>>>> accountData', accountData)
-
         this.syncAccount(accountData)
       }
     })
@@ -494,13 +497,15 @@ export class EVMWagmiClient {
             this.appKit?.setPreferredAccountType(preferredAccountType, chainNamespace)
             this.appKit?.setCaipAddress(caipAddress, chainNamespace)
           })
-          this.syncNetwork(address, chainId, true)
-          await Promise.all([
-            this.syncProfile(address, chainId),
-            this.syncBalance(address, chainId),
-            this.syncConnectedWalletInfo(connector),
-            this.appKit?.setApprovedCaipNetworksData(this.chainNamespace)
-          ])
+          if (this.appKit?.getCaipNetwork()?.chainNamespace !== 'solana') {
+            this.syncNetwork(address, chainId, true)
+            await Promise.all([
+              this.syncProfile(address, chainId),
+              this.syncBalance(address, chainId),
+              this.syncConnectedWalletInfo(connector),
+              this.appKit?.setApprovedCaipNetworksData(this.chainNamespace)
+            ])
+          }
         } else if (status === 'connected' && address && chainId) {
           const caipAddress = `eip155:${chainId}:${address}` as CaipAddress
           this.appKit?.resetAccount(this.chainNamespace)
@@ -530,6 +535,8 @@ export class EVMWagmiClient {
           this.appKit?.resetWcConnection()
           this.appKit?.resetNetwork()
           this.appKit?.setAllAccounts([], this.chainNamespace)
+          localStorage.removeItem(WcConstantsUtil.WALLET_ID)
+          localStorage.removeItem(WcConstantsUtil.ACTIVE_CAIPNETWORK)
         } else if (status === 'reconnecting') {
           this.appKit?.setLoading(true)
           const connectors = getConnectors(this.wagmiConfig)

@@ -6,7 +6,7 @@ import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { mainnet, solana, arbitrum, optimism } from '../../utils/NetworksUtil'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
-import { MultiChainTests } from '../../components/MultiChainTests'
+import { MultiChainTestsEthersSolana } from '../../components/MultiChainTestsEthersSolana'
 
 const etherAdapter = new EVMEthersClient()
 
@@ -32,7 +32,7 @@ export default function MultiChainAllAdapters() {
   return (
     <>
       <AppKitButtons />
-      <MultiChainTests />
+      <MultiChainTestsEthersSolana />
     </>
   )
 }

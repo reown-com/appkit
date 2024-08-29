@@ -45,6 +45,11 @@
       "types": "./dist/types/exports/store.d.ts",
       "import": "./dist/esm/exports/store.js",
       "default": "./dist/esm/exports/store.js"
+    },
+    "./utils": {
+      "types": "./dist/types/exports/utils.d.ts",
+      "import": "./dist/esm/exports/utils.js",
+      "default": "./dist/esm/exports/utils.js"
     }
   },
   "typesVersions": {

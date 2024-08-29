@@ -274,7 +274,7 @@ export const ChainController = {
 
   getNetworkControllerClient() {
     const chain = state.activeChain
-    const isWcConnector = state.activeConnector?.name === 'WalletConnect'
+    const isWcConnector = localStorage.getItem('@w3m/wallet_id') === 'walletConnect'
     const universalNetworkControllerClient = state.universalAdapter.networkControllerClient
     const hasWagmiAdapter = state.chains.get('eip155')?.adapterType === 'wagmi'
 
@@ -307,7 +307,7 @@ export const ChainController = {
 
   getConnectionControllerClient(_chain?: ChainNamespace) {
     const chain = _chain || state.activeChain
-    const isWcConnector = state.activeConnector?.name === 'WalletConnect'
+    const isWcConnector = localStorage.getItem('@w3m/wallet_id') === 'walletConnect'
     const universalConnectionControllerClient = state.universalAdapter.connectionControllerClient
     const hasWagmiAdapter = state.chains.get('eip155')?.adapterType === 'wagmi'
 

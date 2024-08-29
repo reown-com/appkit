@@ -195,8 +195,19 @@ export const NetworkController = {
     const sameNamespace = network?.chainNamespace === ChainController.state.activeChain
 
     let networkControllerClient: NetworkControllerState['_client'] = undefined
+    const isWcConnector = localStorage.getItem('@w3m/wallet_id') === 'walletConnect'
+    const hasWagmiAdapter = ChainController.state.chains.get('eip155')?.adapterType === 'wagmi'
 
-    if (sameNamespace) {
+    if (isWcConnector && network?.chainNamespace === 'solana') {
+      if (hasWagmiAdapter) {
+        networkControllerClient = ChainController.state.chains.get(network.chainNamespace)
+          ?.networkControllerClient
+      } else {
+        networkControllerClient = ChainController.state.universalAdapter.networkControllerClient
+      }
+    } else if (isWcConnector && !hasWagmiAdapter) {
+      networkControllerClient = ChainController.state.universalAdapter.networkControllerClient
+    } else if (sameNamespace) {
       networkControllerClient = ChainController.getNetworkControllerClient()
     } else {
       networkControllerClient = network
@@ -239,8 +250,11 @@ export const NetworkController = {
   },
 
   async setApprovedCaipNetworksData(chain: ChainNamespace | undefined) {
-    const networkControllerClient = ChainController.getNetworkControllerClient()
-    const data = await networkControllerClient.getApprovedCaipNetworksData()
+    const isWcConnector = localStorage.getItem('@w3m/wallet_id') === 'walletConnect'
+    const networkControllerClient = isWcConnector
+      ? ChainController.state.universalAdapter.networkControllerClient
+      : ChainController.getNetworkControllerClient()
+    const data = await networkControllerClient?.getApprovedCaipNetworksData()
 
     if (!chain) {
       throw new Error('chain is required to set approved network data')
