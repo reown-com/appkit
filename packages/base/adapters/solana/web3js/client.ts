@@ -286,6 +286,27 @@ export class SolanaWeb3JsClient {
   }
 
   // -- Private -----------------------------------------------------------------
+  private syncConnectedWalletInfo() {
+    const currentActiveWallet = window?.localStorage.getItem(SolConstantsUtil.WALLET_ID)
+    const provider = SolStoreUtil.state.provider
+
+    if (provider?.type === 'WALLET_CONNECT') {
+      const wcProvider = provider as WalletConnectProvider
+      if (wcProvider.session) {
+        this.appKit?.setConnectedWalletInfo(
+          {
+            ...wcProvider.session.peer.metadata,
+            name: wcProvider.session.peer.metadata.name,
+            icon: wcProvider.session.peer.metadata.icons?.[0]
+          },
+          this.chain
+        )
+      }
+    } else if (currentActiveWallet) {
+      this.appKit?.setConnectedWalletInfo({ name: currentActiveWallet }, this.chain)
+    }
+  }
+
   private async syncAccount() {
     const address = this.appKit?.getAddress()
     const chainId = this.appKit?.getCaipNetwork()?.chainId
@@ -296,6 +317,7 @@ export class SolanaWeb3JsClient {
       this.appKit?.setIsConnected(isConnected, this.chainNamespace)
       this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)
       await this.syncBalance(address)
+      this.syncConnectedWalletInfo()
 
       this.hasSyncedConnectedAccount = true
     } else if (this.hasSyncedConnectedAccount) {

@@ -895,6 +895,15 @@ export class EVMEthersClient {
           this.chainNamespace
         )
       }
+    } else if (providerType === ConstantsUtil.COINBASE_SDK_CONNECTOR_ID) {
+      const connector = this.appKit
+        ?.getConnectors()
+        .find(c => c.id === ConstantsUtil.COINBASE_SDK_CONNECTOR_ID)
+
+      this.appKit?.setConnectedWalletInfo(
+        { name: 'Coinbase Wallet', icon: this.appKit?.getConnectorImage(connector) },
+        this.chainNamespace
+      )
     } else if (currentActiveWallet) {
       this.appKit?.setConnectedWalletInfo({ name: currentActiveWallet }, this.chainNamespace)
     }

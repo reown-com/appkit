@@ -4,8 +4,7 @@ import {
   EventsController,
   ModalController,
   OptionsController,
-  RouterController,
-  StorageUtil
+  RouterController
 } from '@web3modal/core'
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
 import { customElement } from '@web3modal/ui'
@@ -37,9 +36,6 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
     try {
       this.error = false
       if (this.connector) {
-        if (this.connector.imageUrl) {
-          StorageUtil.setConnectedWalletImageUrl(this.connector.imageUrl)
-        }
         /**
          * Coinbase SDK works with popups and popups requires user interaction to be opened since modern browsers block popups which triggered programmatically.
          * Instead of opening a popup in first render for `W3mConnectingWidget`, we need to trigger connection for Coinbase connector specifically when users select it.

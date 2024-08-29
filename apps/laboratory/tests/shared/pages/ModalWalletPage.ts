@@ -7,7 +7,7 @@ export class ModalWalletPage extends ModalPage {
   constructor(
     public override readonly page: Page,
     public override readonly library: string,
-    public override readonly flavor: 'email' | 'all' = 'email'
+    public override readonly flavor: 'default' | 'all'
   ) {
     super(page, library, flavor)
   }

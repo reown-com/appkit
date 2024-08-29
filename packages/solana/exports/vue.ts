@@ -8,7 +8,7 @@ import type { CaipNetwork } from '@web3modal/common'
 import type { SolanaAppKitOptions } from './options'
 
 // -- Types -------------------------------------------------------------------
-export type { SolanaAppKitOptions }
+export type { SolanaAppKitOptions, Provider }
 
 // -- Setup -------------------------------------------------------------------
 let appkit: AppKit | undefined = undefined
