@@ -50,6 +50,11 @@
       "types": "./dist/types/exports/utils.d.ts",
       "import": "./dist/esm/exports/utils.js",
       "default": "./dist/esm/exports/utils.js"
+    },
+    "./chains": {
+      "types": "./dist/types/exports/chains.d.ts",
+      "import": "./dist/esm/exports/chains.js",
+      "default": "./dist/esm/exports/chains.js"
     }
   },
   "typesVersions": {
@@ -68,6 +73,9 @@
       ],
       "store": [
         "./dist/types/exports/store.d.ts"
+      ],
+      "chains": [
+        "./dist/types/exports/chains.d.ts"
       ]
     }
   },

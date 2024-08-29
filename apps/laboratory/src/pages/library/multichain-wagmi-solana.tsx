@@ -6,14 +6,7 @@ import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
-import {
-  arbitrum,
-  mainnet,
-  polygon,
-  base,
-  binanceSmartChain,
-  solana
-} from '../../utils/NetworksUtil'
+import { arbitrum, mainnet, polygon, base, binanceSmartChain, solana } from '@web3modal/base/chains'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { MultiChainTestsWagmiSolana } from '../../components/MultiChainTestsWagmiSolana'

@@ -1,13 +1,12 @@
 import { createWeb3Modal } from '@web3modal/base/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { useEffect, useState } from 'react'
 import { WagmiProvider } from 'wagmi'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { WagmiTests } from '../../components/Wagmi/WagmiTests'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
 import { EVMWagmiClient } from '@web3modal/adapter-wagmi'
-import { mainnet } from '../../utils/NetworksUtil'
+import { mainnet } from '@web3modal/base/chains'
 
 const metadata = {
   name: 'Web3Modal',
@@ -37,17 +36,11 @@ const modal = createWeb3Modal({
 ThemeStore.setModal(modal)
 
 export default function Wagmi() {
-  const [ready, setReady] = useState(false)
-
-  useEffect(() => {
-    setReady(true)
-  }, [])
-
   if (!wagmiAdapter.wagmiConfig) {
     return null
   }
 
-  return ready ? (
+  return (
     <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <AppKitButtons />
@@ -55,5 +48,5 @@ export default function Wagmi() {
         <WagmiTests />
       </QueryClientProvider>
     </WagmiProvider>
-  ) : null
+  )
 }

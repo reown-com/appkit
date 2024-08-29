@@ -8,7 +8,7 @@ import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { SiweData } from '../../components/Siwe/SiweData'
 import { siweConfig } from '../../utils/SiweUtils'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
-import { mainnet, optimism, polygon, zkSync } from '../../utils/NetworksUtil'
+import { mainnet, optimism, polygon, zkSync } from '@web3modal/base/chains'
 import { EVMWagmiClient } from '@web3modal/adapter-wagmi'
 
 const queryClient = new QueryClient()

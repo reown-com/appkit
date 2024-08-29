@@ -13,7 +13,7 @@ import {
   SystemProgram
 } from '@solana/web3.js'
 
-import { solana } from '../../utils/NetworksUtil'
+import { solana } from '@web3modal/base/chains'
 import { useChakraToast } from '../Toast'
 import { type Provider, useWeb3ModalConnection } from '@web3modal/adapter-solana/react'
 

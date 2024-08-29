@@ -2,7 +2,7 @@ import { createWeb3Modal } from '@web3modal/base/react'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { AppKitButtons } from '../../components/AppKitButtons'
-import { mainnet, optimism, arbitrum, solana } from '../../utils/NetworksUtil'
+import { mainnet, optimism, arbitrum, solana } from '@web3modal/base/chains'
 import { MultiChainInfo } from '../../components/MultiChainInfo'
 
 const modal = createWeb3Modal({

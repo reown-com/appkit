@@ -5,7 +5,7 @@ import { AppKitButtons } from '../../components/AppKitButtons'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { SolanaTests } from '../../components/Solana/SolanaTests'
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
-import { solana, solanaDevnet, solanaTestnet } from '../../utils/NetworksUtil'
+import { solana, solanaDevnet, solanaTestnet } from '@web3modal/base/chains'
 import { SolanaWeb3JsClient } from '@web3modal/adapter-solana/react'
 
 const solanaWeb3JsAdapter = new SolanaWeb3JsClient({

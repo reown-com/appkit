@@ -6,7 +6,7 @@ import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { WagmiPermissionsAsyncProvider } from '../../context/WagmiPermissionsAsyncContext'
 import { WagmiPermissionsAsyncTest } from '../../components/Wagmi/WagmiPermissionsAsyncTest'
-import { mainnet, optimism, polygon, zkSync } from '../../utils/NetworksUtil'
+import { mainnet, optimism, polygon, zkSync } from '@web3modal/base/chains'
 import { EVMWagmiClient } from '@web3modal/adapter-wagmi'
 
 const queryClient = new QueryClient()

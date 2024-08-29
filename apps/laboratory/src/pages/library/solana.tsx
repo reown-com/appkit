@@ -2,7 +2,7 @@ import { createWeb3Modal } from '@web3modal/base/react'
 import { SolanaWeb3JsClient } from '@web3modal/adapter-solana/react'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
-import { solana, solanaDevnet, solanaTestnet } from '../../utils/NetworksUtil'
+import { solana, solanaDevnet, solanaTestnet } from '@web3modal/base/chains'
 
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { AppKitButtons } from '../../components/AppKitButtons'

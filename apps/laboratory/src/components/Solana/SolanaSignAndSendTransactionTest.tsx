@@ -9,7 +9,7 @@ import {
   VersionedTransaction
 } from '@solana/web3.js'
 
-import { solana } from '../../utils/NetworksUtil'
+import { solana } from '@web3modal/base/chains'
 import { useChakraToast } from '../Toast'
 import {
   useWeb3ModalAccount,

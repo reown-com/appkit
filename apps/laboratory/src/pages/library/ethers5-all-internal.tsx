@@ -6,7 +6,7 @@ import { siweConfig } from '../../utils/SiweUtils'
 import { SiweData } from '../../components/Siwe/SiweData'
 import { Ethers5Tests } from '../../components/Ethers/Ethers5Tests'
 import { Ethers5ModalInfo } from '../../components/Ethers/Ethers5ModalInfo'
-import { mainnet, optimism, polygon, zkSync } from '../../utils/NetworksUtil'
+import { mainnet, optimism, polygon, zkSync } from '@web3modal/base/chains'
 import { EVMEthers5Client } from '@web3modal/adapter-ethers5'
 
 const ethers5Adapter = new EVMEthers5Client()
