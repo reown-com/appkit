@@ -10,9 +10,6 @@ import { getWeb3Modal } from '@web3modal/base/utils/library/react'
 import { useSnapshot } from 'valtio'
 import { ethers } from 'ethers'
 
-// -- Configs -----------------------------------------------------------
-export { defaultConfig } from '@web3modal/base/adapters/evm/ethers'
-
 // -- Setup -------------------------------------------------------------------
 let appkit: AppKit | undefined = undefined
 let ethersAdapter: EVMEthersClient | undefined = undefined
@@ -33,10 +30,10 @@ export function createWeb3Modal(options: Ethers5AppKitOptions) {
 
 // -- Hooks -------------------------------------------------------------------
 export function useWeb3ModalProvider() {
-  const { provider, providerId } = useSnapshot(ProviderUtil.state)
+  const { providers, providerIds } = useSnapshot(ProviderUtil.state)
 
-  const walletProvider = provider as ethers.providers.ExternalProvider | undefined
-  const walletProviderType = providerId
+  const walletProvider = providers['eip155'] as ethers.providers.ExternalProvider | undefined
+  const walletProviderType = providerIds['eip155']
 
   return {
     walletProvider,

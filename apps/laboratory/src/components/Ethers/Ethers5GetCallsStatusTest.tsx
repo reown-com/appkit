@@ -3,7 +3,8 @@ import { useState } from 'react'
 import {
   useWeb3ModalAccount,
   useWeb3ModalNetwork,
-  useWeb3ModalProvider
+  useWeb3ModalProvider,
+  type Provider
 } from '@web3modal/base/react'
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
 import { useChakraToast } from '../Toast'
@@ -18,7 +19,7 @@ export function Ethers5GetCallsStatusTest() {
 
   const { chainId } = useWeb3ModalNetwork()
   const { isConnected, address } = useWeb3ModalAccount()
-  const { walletProvider } = useWeb3ModalProvider()
+  const { walletProvider } = useWeb3ModalProvider<Provider>('eip155')
 
   const toast = useChakraToast()
 

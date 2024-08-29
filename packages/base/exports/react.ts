@@ -12,7 +12,7 @@ export * from '../utils/library/react/index.js'
 export type * from '@web3modal/core'
 export { CoreHelperUtil, AccountController, NetworkController } from '@web3modal/core'
 
-let modal: AppKit | undefined = undefined
+export let modal: AppKit | undefined = undefined
 
 type CreateWeb3Modal = Omit<AppKitOptions, 'sdkType' | 'sdkVersion'>
 

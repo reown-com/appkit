@@ -11,6 +11,7 @@ import type {
 import type { AppKit } from '../../../src/client.js'
 import type { AppKitOptions } from '../../TypesUtil.js'
 import { ProviderUtil } from '../../store/ProviderUtil.js'
+import type { ChainNamespace } from '@web3modal/common'
 
 type OpenOptions = {
   view: 'Account' | 'Connect' | 'Networks' | 'ApproveTransaction' | 'OnRampProviders'
@@ -48,11 +49,11 @@ export function useWeb3ModalAccount() {
   }
 }
 
-export function useWeb3ModalProvider<T>() {
-  const { provider, providerId } = useSnapshot(ProviderUtil.state)
+export function useWeb3ModalProvider<T>(chainNamespace: ChainNamespace) {
+  const { providers, providerIds } = useSnapshot(ProviderUtil.state)
 
-  const walletProvider = provider as T | undefined
-  const walletProviderType = providerId
+  const walletProvider = providers[chainNamespace] as T | undefined
+  const walletProviderType = providerIds[chainNamespace]
 
   return {
     walletProvider,

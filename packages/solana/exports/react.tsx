@@ -8,9 +8,6 @@ import { getWeb3Modal } from '@web3modal/base/utils/library/react'
 import { type Connection, type Provider } from '@web3modal/base/adapters/solana/web3js'
 import type { SolanaAppKitOptions } from './options.js'
 
-// -- Configs -----------------------------------------------------------
-export { defaultSolanaConfig } from '@web3modal/base/adapters/solana/web3js'
-
 // -- Types -------------------------------------------------------------------
 export type { SolanaAppKitOptions, Provider }
 
@@ -20,7 +17,6 @@ let solanaAdapter: SolanaWeb3JsClient | undefined = undefined
 
 export function createWeb3Modal(options: SolanaAppKitOptions) {
   solanaAdapter = new SolanaWeb3JsClient({
-    solanaConfig: options.solanaConfig,
     wallets: options.wallets
   })
   appkit = new AppKit({
@@ -33,24 +29,9 @@ export function createWeb3Modal(options: SolanaAppKitOptions) {
 }
 
 // -- Hooks -------------------------------------------------------------------
-export function useWeb3ModalProvider(): {
-  walletProvider: Provider | undefined
-  connection: Connection | undefined
-} {
-  const state = useSnapshot(SolStoreUtil.state)
-
-  return {
-    walletProvider: state.provider,
-    connection: state.connection
-  } as {
-    walletProvider: Provider | undefined
-    connection: Connection | undefined
-  }
-}
-
 export function useDisconnect() {
-  function disconnect() {
-    solanaAdapter?.disconnect()
+  async function disconnect() {
+    await solanaAdapter?.connectionControllerClient?.disconnect()
   }
 
   return {
@@ -58,14 +39,15 @@ export function useDisconnect() {
   }
 }
 
-export function useWeb3ModalAccount() {
-  const { address, isConnected, chainId, currentChain } = useSnapshot(SolStoreUtil.state)
+export function useWeb3ModalConnection(): {
+  connection: Connection | undefined
+} {
+  const state = useSnapshot(SolStoreUtil.state)
 
   return {
-    address,
-    isConnected,
-    currentChain,
-    chainId
+    connection: state.connection
+  } as {
+    connection: Connection | undefined
   }
 }
 

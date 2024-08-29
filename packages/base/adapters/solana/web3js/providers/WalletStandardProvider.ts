@@ -109,6 +109,7 @@ export class WalletStandardProvider extends ProviderEventEmitter implements Prov
 
   public async disconnect() {
     const feature = this.getWalletFeature(StandardDisconnect)
+
     await feature.disconnect()
     this.emit('disconnect', undefined)
   }

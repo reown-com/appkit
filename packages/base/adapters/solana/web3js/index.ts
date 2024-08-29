@@ -8,7 +8,6 @@ export type * from '@web3modal/scaffold-utils/solana'
 export type * from '@solana/wallet-adapter-base'
 
 // -- Utils -----------------------------------------------------------
-export * from './utils/defaultConfig.js'
 export * from '@web3modal/scaffold-utils/solana'
 
 // -- Constants -------------------------------------------------------

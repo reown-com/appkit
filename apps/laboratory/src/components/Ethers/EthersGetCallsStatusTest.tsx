@@ -3,11 +3,12 @@ import { useState } from 'react'
 import {
   useWeb3ModalAccount,
   useWeb3ModalNetwork,
-  useWeb3ModalProvider
+  useWeb3ModalProvider,
+  type Provider
 } from '@web3modal/base/react'
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
 import { useChakraToast } from '../Toast'
-import { BrowserProvider, type Eip1193Provider } from 'ethers'
+import { BrowserProvider } from 'ethers'
 import { W3mFrameProvider } from '@web3modal/wallet'
 import { type GetCallsStatusParams } from '../../types/EIP5792'
 import { EIP_5792_RPC_METHODS } from '../../utils/EIP5792Utils'
@@ -18,7 +19,7 @@ export function EthersGetCallsStatusTest() {
 
   const { chainId } = useWeb3ModalNetwork()
   const { address, isConnected } = useWeb3ModalAccount()
-  const { walletProvider } = useWeb3ModalProvider<Eip1193Provider>()
+  const { walletProvider } = useWeb3ModalProvider<Provider>('eip155')
   const toast = useChakraToast()
 
   async function onGetCallsStatus() {

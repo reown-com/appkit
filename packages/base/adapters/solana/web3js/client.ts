@@ -2,12 +2,12 @@ import { Connection } from '@solana/web3.js'
 import {
   ApiController,
   AssetController,
+  ChainController,
   CoreHelperUtil,
   EventsController,
   NetworkController,
   OptionsController
 } from '@web3modal/core'
-import { PresetsUtil } from '@web3modal/scaffold-utils'
 import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 
 import { SolConstantsUtil, SolHelpersUtil, SolStoreUtil } from '@web3modal/scaffold-utils/solana'
@@ -23,7 +23,7 @@ import type {
 import type { AdapterType, CaipAddress, CaipNetwork, CaipNetworkId } from '@web3modal/common'
 import type { ChainNamespace } from '@web3modal/common'
 
-import type { ProviderType, Provider, SolStoreUtilState } from '@web3modal/scaffold-utils/solana'
+import type { Provider } from '@web3modal/scaffold-utils/solana'
 import { watchStandard } from './utils/watchStandard.js'
 import { WalletConnectProvider } from './providers/WalletConnectProvider.js'
 import { AuthProvider } from './providers/AuthProvider.js'
@@ -39,7 +39,6 @@ import type { AppKitOptions } from '../../../utils/TypesUtil.js'
 import { ProviderUtil } from '../../../utils/store/ProviderUtil.js'
 
 export interface AdapterOptions {
-  solanaConfig: ProviderType
   connectionSettings?: Commitment | ConnectionConfig
   defaultCaipNetwork?: CaipNetwork
   wallets?: BaseWalletAdapter[]
@@ -53,7 +52,7 @@ export class SolanaWeb3JsClient {
 
   public options: AppKitOptions | undefined = undefined
 
-  public solanaConfig: ProviderType
+  public wallets?: BaseWalletAdapter[]
 
   private hasSyncedConnectedAccount = false
 
@@ -61,9 +60,9 @@ export class SolanaWeb3JsClient {
 
   public chainNamespace: ChainNamespace = CommonConstantsUtil.CHAIN.SOLANA
 
-  public networkControllerClient: NetworkControllerClient
+  public networkControllerClient?: NetworkControllerClient
 
-  public connectionControllerClient: ConnectionControllerClient
+  public connectionControllerClient?: ConnectionControllerClient
 
   public connectionSettings: Commitment | ConnectionConfig
 
@@ -76,15 +75,28 @@ export class SolanaWeb3JsClient {
   public adapterType: AdapterType = 'solana'
 
   public constructor(options: AdapterOptions) {
-    const { solanaConfig, connectionSettings = 'confirmed' } = options
+    const { wallets, connectionSettings = 'confirmed' } = options
 
-    if (!solanaConfig) {
-      throw new Error('web3modal:constructor - solanaConfig is undefined')
-    }
-
-    this.solanaConfig = solanaConfig
+    this.wallets = wallets
 
     this.connectionSettings = connectionSettings
+  }
+
+  public construct(appKit: AppKit, options: AppKitOptions) {
+    const { projectId, caipNetworks } = options
+
+    if (!options) {
+      throw new Error('Solana:construct - options is undefined')
+    }
+
+    this.appKit = appKit
+
+    this.options = options
+    this.caipNetworks = caipNetworks
+
+    if (!projectId) {
+      throw new Error('Solana:construct - projectId is undefined')
+    }
 
     this.networkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
@@ -92,14 +104,21 @@ export class SolanaWeb3JsClient {
           try {
             await this.switchNetwork(caipNetwork)
           } catch (error) {
-            SolStoreUtil.setError(error)
+            // SolStoreUtil.setError(error)
           }
         }
       },
 
       getApprovedCaipNetworksData: async () => {
-        if (SolStoreUtil.state.provider) {
-          const approvedCaipNetworkIds = SolStoreUtil.state.provider.chains.map<CaipNetworkId>(
+        let provider = ProviderUtil.state.providers['solana'] as Provider
+
+        const isUniversalProvider = provider instanceof UniversalProvider
+        if (isUniversalProvider) {
+          provider = this.getSolanaWalletConnectProvider(provider as unknown as UniversalProvider)
+        }
+
+        if (provider) {
+          const approvedCaipNetworkIds = provider.chains.map<CaipNetworkId>(
             chain => `solana:${chain.chainId}`
           )
 
@@ -117,18 +136,6 @@ export class SolanaWeb3JsClient {
     }
 
     this.connectionControllerClient = {
-      connectWalletConnect: async onUri => {
-        const wagmiAdapter = this.appKit?.adapters?.find(adapter => adapter.adapterType === 'wagmi')
-
-        if (wagmiAdapter) {
-          await wagmiAdapter.connectionControllerClient?.connectWalletConnect(onUri)
-        } else {
-          await this.appKit?.universalAdapter?.connectionControllerClient.connectWalletConnect(
-            onUri
-          )
-        }
-      },
-
       connectExternal: async ({ id }) => {
         const externalProvider = this.availableProviders.find(
           provider => provider.name.toLocaleLowerCase() === id.toLocaleLowerCase()
@@ -142,12 +149,13 @@ export class SolanaWeb3JsClient {
       },
 
       disconnect: async () => {
-        await ProviderUtil.getProvider<Provider>()?.disconnect()
+        await ProviderUtil.getProvider<Provider>('solana')?.disconnect()
+
         this.appKit?.resetAccount('solana')
       },
 
       signMessage: async (message: string) => {
-        const provider = SolStoreUtil.state.provider
+        const provider = ProviderUtil.state.providers['solana'] as Provider
         if (!provider) {
           throw new Error('connectionControllerClient:signMessage - provider is undefined')
         }
@@ -176,24 +184,20 @@ export class SolanaWeb3JsClient {
 
       formatUnits: () => ''
     }
-  }
 
-  public construct(appKit: AppKit, options: AppKitOptions) {
-    const { projectId, caipNetworks } = options
+    ChainController.state.chains.set(this.chainNamespace, {
+      chainNamespace: this.chainNamespace,
+      connectionControllerClient: this.connectionControllerClient,
+      networkControllerClient: this.networkControllerClient,
+      adapterType: this.adapterType
+    })
 
-    if (!options) {
-      throw new Error('Solana:construct - options is undefined')
-    }
-
-    this.appKit = appKit
-
-    this.options = options
-
-    this.caipNetworks = caipNetworks
-
-    if (!projectId) {
-      throw new Error('Solana:construct - projectId is undefined')
-    }
+    ProviderUtil.subscribeProviders(providers => {
+      if (providers['solana'] && providers['solana'] instanceof UniversalProvider) {
+        const walletConnectProvider = this.getSolanaWalletConnectProvider(providers['solana'])
+        ProviderUtil.setProvider('solana', walletConnectProvider)
+      }
+    })
 
     this.initializeProviders({
       relayUrl: 'wss://relay.walletconnect.com',
@@ -203,31 +207,15 @@ export class SolanaWeb3JsClient {
 
     this.syncRequestedNetworks(caipNetworks)
 
-    const chain = SolHelpersUtil.getChainFromCaip(
+    const caipNetwork = SolHelpersUtil.getChainFromCaip(
       caipNetworks,
       typeof window === 'object' ? localStorage.getItem(SolConstantsUtil.CAIP_CHAIN_ID) : ''
     )
 
-    this.defaultCaipNetwork = chain
+    this.defaultCaipNetwork = caipNetwork
     this.syncRequestedNetworks(caipNetworks)
 
-    if (chain) {
-      SolStoreUtil.setCurrentChain(chain)
-      SolStoreUtil.setCaipChainId(`solana:${chain.chainId}`)
-    }
     this.syncNetwork()
-
-    SolStoreUtil.subscribeKey('address', () => {
-      this.syncAccount()
-    })
-
-    SolStoreUtil.subscribeKey('caipChainId', () => {
-      this.syncNetwork()
-    })
-
-    SolStoreUtil.subscribeKey('isConnected', isConnected => {
-      this.appKit?.setIsConnected(isConnected, 'solana')
-    })
 
     AssetController.subscribeNetworkImages(() => {
       this.syncNetwork()
@@ -242,9 +230,7 @@ export class SolanaWeb3JsClient {
         return
       }
 
-      if (NetworkController.state.caipNetwork && !SolStoreUtil.state.isConnected) {
-        SolStoreUtil.setCaipChainId(`solana:${newChain.chainId}`)
-        SolStoreUtil.setCurrentChain(newChain)
+      if (NetworkController.state.caipNetwork && this.appKit?.getIsConnectedState()) {
         localStorage.setItem(SolConstantsUtil.CAIP_CHAIN_ID, `solana:${newChain.chainId}`)
         ApiController.reFetchWallets()
       }
@@ -254,7 +240,7 @@ export class SolanaWeb3JsClient {
       if (state.data.event === 'SELECT_WALLET' && state.data.properties?.name === 'Phantom') {
         const isMobile = CoreHelperUtil.isMobile()
         const isClient = CoreHelperUtil.isClient()
-        if (isMobile && isClient && !window.phantom) {
+        if (isMobile && isClient && !('phantom' in window)) {
           const href = window.location.href
           const protocol = href.startsWith('https') ? 'https' : 'http'
           const host = href.split('/')[2]
@@ -263,22 +249,6 @@ export class SolanaWeb3JsClient {
         }
       }
     })
-  }
-
-  public disconnect() {
-    return this.getProvider().disconnect()
-  }
-
-  public getAddress() {
-    return SolStoreUtil.state.address
-  }
-
-  public getWalletProvider() {
-    return SolStoreUtil.state.provider
-  }
-
-  public getWalletProviderType() {
-    return SolStoreUtil.state.provider?.type
   }
 
   public getWalletConnection() {
@@ -310,8 +280,8 @@ export class SolanaWeb3JsClient {
       throw new Error('Connection is not set')
     }
 
-    if (!SolStoreUtil.state.currentChain) {
-      throw new Error('Chain is not set')
+    if (!this.appKit?.getCaipNetwork()) {
+      throw new Error('CaipNetwork is not set')
     }
 
     const balance =
@@ -320,7 +290,7 @@ export class SolanaWeb3JsClient {
 
     this.appKit?.setBalance(
       balance.toString(),
-      SolStoreUtil.state.currentChain.currency,
+      this.appKit?.getCaipNetwork()?.currency,
       this.chainNamespace
     )
   }
@@ -338,63 +308,42 @@ export class SolanaWeb3JsClient {
   }
 
   public async switchNetwork(caipNetwork: CaipNetwork) {
-    const caipChainId = caipNetwork.id
-    const chain = SolHelpersUtil.getChainFromCaip(this.caipNetworks, caipChainId)
-
     if (this.provider instanceof AuthProvider) {
-      await this.provider.switchNetwork(caipChainId)
+      await this.provider.switchNetwork(caipNetwork.chainId)
     }
 
-    SolStoreUtil.setCaipChainId(chain.id)
-    SolStoreUtil.setCurrentChain(chain)
-    localStorage.setItem(SolConstantsUtil.CAIP_CHAIN_ID, chain.id)
+    this.appKit?.setCaipNetwork(caipNetwork)
+    localStorage.setItem(SolConstantsUtil.CAIP_CHAIN_ID, caipNetwork.id)
 
     await this.syncNetwork()
     await this.syncAccount()
   }
 
   private async syncNetwork() {
-    const chainImages = this.options?.chainImages
-    const address = SolStoreUtil.state.address
-    const storeChainId = SolStoreUtil.state.caipChainId
+    const address = this.appKit?.getAddress()
+    const caipNetwork = this.appKit?.getCaipNetwork()
 
-    if (this.caipNetworks) {
-      const chain = SolHelpersUtil.getChainFromCaip(this.caipNetworks, storeChainId)
-      if (chain) {
-        const caipChainId: CaipNetworkId = `solana:${chain.chainId}`
-
-        SolStoreUtil.setConnection(
-          new Connection(
-            SolHelpersUtil.detectRpcUrl(chain, OptionsController.state.projectId),
-            this.connectionSettings
-          )
+    if (caipNetwork) {
+      SolStoreUtil.setConnection(
+        new Connection(
+          SolHelpersUtil.detectRpcUrl(caipNetwork, OptionsController.state.projectId),
+          this.connectionSettings
         )
+      )
 
-        this.appKit?.setCaipNetwork({
-          ...chain,
-          id: caipChainId,
-          name: chain.name,
-          imageId: PresetsUtil.NetworkImageIds[chain.chainId],
-          imageUrl: chainImages?.[chain.chainId],
-          chainNamespace: this.chainNamespace
-        })
-        if (address) {
-          if (chain.explorerUrl) {
-            const url = `${chain.explorerUrl}/account/${address}`
-            this.appKit?.setAddressExplorerUrl(url, this.chainNamespace)
-          } else {
-            this.appKit?.setAddressExplorerUrl(undefined, this.chainNamespace)
-          }
-          if (this.hasSyncedConnectedAccount) {
-            await this.syncBalance(address)
-          }
+      this.appKit?.setCaipNetwork(caipNetwork)
+      if (address) {
+        if (caipNetwork.explorerUrl) {
+          const url = `${caipNetwork.explorerUrl}/account/${address}`
+          this.appKit?.setAddressExplorerUrl(url, this.chainNamespace)
+        } else {
+          this.appKit?.setAddressExplorerUrl(undefined, this.chainNamespace)
+        }
+        if (this.hasSyncedConnectedAccount) {
+          await this.syncBalance(address)
         }
       }
     }
-  }
-
-  public subscribeProvider(callback: (newState: SolStoreUtilState) => void) {
-    return SolStoreUtil.subscribe(callback)
   }
 
   private async setProvider(provider: Provider) {
@@ -402,21 +351,22 @@ export class SolanaWeb3JsClient {
       this.appKit?.setLoading(true)
       const address = await provider.connect()
 
-      // Check if the provider supports the current chain or switch to the first supported chain
-      const connectionChain =
-        provider.chains.find(chain => chain.chainId === SolStoreUtil.state.currentChain?.chainId) ||
-        provider.chains[0]
-
+      const connectionChain = SolHelpersUtil.getChainFromCaip(
+        this.caipNetworks,
+        localStorage.getItem('@w3m/solana_caip_chain')
+      )
       if (!connectionChain) {
         provider.disconnect()
         throw new Error('The wallet does not support any of the required chains')
       }
-
-      SolStoreUtil.setAddress(address)
-      await this.switchNetwork(
-        SolHelpersUtil.getChainFromCaip(this.caipNetworks, `solana:${connectionChain.chainId}`)
+      this.appKit?.setCaipAddress(
+        `solana:${connectionChain.chainId}:${address}`,
+        this.chainNamespace
       )
-      SolStoreUtil.setProvider(provider)
+      await this.switchNetwork(connectionChain)
+
+      ProviderUtil.setProvider('solana', provider)
+      ProviderUtil.setProviderId('solana', 'walletConnect')
       this.provider = provider
 
       window?.localStorage.setItem(SolConstantsUtil.WALLET_ID, provider.name)
@@ -424,7 +374,7 @@ export class SolanaWeb3JsClient {
       await this.appKit?.setApprovedCaipNetworksData(this.chainNamespace)
 
       this.watchProvider(provider)
-      SolStoreUtil.setIsConnected(true)
+      this.appKit?.setIsConnected(true, this.chainNamespace)
     } finally {
       this.appKit?.setLoading(false)
     }
@@ -498,9 +448,9 @@ export class SolanaWeb3JsClient {
       }
     }
 
-    function disconnectHandler() {
+    function disconnectHandler(appKit?: AppKit) {
+      appKit?.resetAccount('solana')
       localStorage.removeItem(SolConstantsUtil.WALLET_ID)
-      SolStoreUtil.reset()
 
       provider.removeListener('disconnect', disconnectHandler)
       provider.removeListener('accountsChanged', accountsChangedHandler)
@@ -510,54 +460,59 @@ export class SolanaWeb3JsClient {
       provider.removeListener('auth_rpcError', rpcErrorHandler)
     }
 
-    function accountsChangedHandler(publicKey: PublicKey) {
+    function accountsChangedHandler(publicKey: PublicKey, appKit?: AppKit) {
       const currentAccount: string = publicKey.toBase58()
-      if (currentAccount) {
-        SolStoreUtil.setAddress(currentAccount)
+      const caipNetwork = appKit?.getCaipNetwork()
+      if (currentAccount && caipNetwork) {
+        appKit?.setCaipAddress(`solana:${caipNetwork.chainId}:${currentAccount}`, 'solana')
       } else {
         localStorage.removeItem(SolConstantsUtil.WALLET_ID)
-        SolStoreUtil.reset()
+        appKit?.resetAccount('solana')
       }
     }
 
-    provider.on('disconnect', disconnectHandler)
-    provider.on('accountsChanged', accountsChangedHandler)
+    provider.on('disconnect', () => disconnectHandler(this.appKit))
+    provider.on('accountsChanged', (publicKey: PublicKey) =>
+      accountsChangedHandler(publicKey, this.appKit)
+    )
     provider.on('connect', accountsChangedHandler)
     provider.on('auth_rpcRequest', rpcRequestHandler)
     provider.on('auth_rpcSuccess', rpcSuccessHandler)
     provider.on('auth_rpcError', rpcErrorHandler)
   }
 
-  private getProvider() {
-    if (!this.provider) {
-      throw new Error('Provider is not set')
-    }
+  private getSolanaWalletConnectProvider(provider: UniversalProvider) {
+    const walletConnectProvider = new WalletConnectProvider({
+      provider,
+      chains: this.caipNetworks,
+      getActiveChain: () => this.appKit?.getCaipNetwork()
+    })
 
-    return this.provider
+    return walletConnectProvider
   }
 
-  private async initializeProviders(opts: UniversalProviderOpts) {
+  private initializeProviders(opts: UniversalProviderOpts) {
     if (CoreHelperUtil.isClient()) {
-      this.addProvider(
-        new WalletConnectProvider({
-          provider: await UniversalProvider.init(opts),
-          chains: this.caipNetworks,
-          getActiveChain: () => SolStoreUtil.state.currentChain
-        })
-      )
+      if (!opts.projectId) {
+        throw new Error('projectId is required for AuthProvider')
+      }
 
       this.addProvider(
         new AuthProvider({
           provider: new W3mFrameProvider(
-            this.options?.projectId ?? '',
-            withSolanaNamespace(SolStoreUtil.state.currentChain?.chainId)
+            opts.projectId,
+            withSolanaNamespace(this.appKit?.getCaipNetwork()?.chainId)
           ),
-          getActiveChain: () => SolStoreUtil.state.currentChain,
+          getActiveChain: () => this.appKit?.getCaipNetwork(),
           chains: this.caipNetworks
         })
       )
 
-      watchStandard(standardAdapters => this.addProvider.bind(this)(...standardAdapters))
+      if (this.appKit && this.caipNetworks[0]) {
+        watchStandard(this.appKit, this.caipNetworks[0], standardAdapters =>
+          this.addProvider.bind(this)(...standardAdapters)
+        )
+      }
     }
   }
 

@@ -1,48 +1,30 @@
 import { createWeb3Modal } from '@web3modal/base/react'
-
+import { SolanaWeb3JsClient } from '@web3modal/base/adapters/solana/web3js'
 import { ThemeStore } from '../../utils/StoreUtil'
-import { solana, solanaDevnet, solanaTestnet } from '../../utils/NetworksUtil'
-import { AppKitButtons } from '../../components/AppKitButtons'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
-import { SolanaTests } from '../../components/Solana/SolanaTests'
+import { solana, solanaDevnet, solanaTestnet } from '../../utils/NetworksUtil'
+
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
-import { SolanaWeb3JsClient, defaultSolanaConfig } from '@web3modal/base/adapters/solana/web3js'
-
-const chains = [solana, solanaTestnet, solanaDevnet]
-
-export const solanaConfig = defaultSolanaConfig({
-  chains,
-  projectId: ConstantsUtil.ProjectId,
-  metadata: ConstantsUtil.Metadata
-})
+import { AppKitButtons } from '../../components/AppKitButtons'
+import { SolanaTests } from '../../components/Solana/SolanaTests'
 
 const solanaWeb3JsAdapter = new SolanaWeb3JsClient({
-  solanaConfig: {
-    metadata: ConstantsUtil.Metadata
-  },
   wallets: [new HuobiWalletAdapter(), new SolflareWalletAdapter()]
 })
 
 const modal = createWeb3Modal({
   adapters: [solanaWeb3JsAdapter],
-  projectId: ConstantsUtil.ProjectId,
-  metadata: ConstantsUtil.Metadata,
-  defaultCaipNetwork: solana,
   caipNetworks: [solana, solanaTestnet, solanaDevnet],
+  projectId: ConstantsUtil.ProjectId,
   features: {
-    analytics: true,
-    email: true,
-    socials: ['apple', 'discord', 'farcaster'],
-    emailShowWallets: false
+    analytics: true
   },
-  termsConditionsUrl: 'https://walletconnect.com/terms',
-  privacyPolicyUrl: 'https://walletconnect.com/privacy',
-  customWallets: ConstantsUtil.CustomWallets
+  metadata: ConstantsUtil.Metadata
 })
 
 ThemeStore.setModal(modal)
 
-export default function Solana() {
+export default function MultiChainSolanaAdapterOnly() {
   return (
     <>
       <AppKitButtons />

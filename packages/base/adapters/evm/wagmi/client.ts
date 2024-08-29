@@ -401,6 +401,8 @@ export class EVMWagmiClient {
     })
     watchAccount(this.wagmiConfig, {
       onChange: accountData => {
+        console.trace('>>>> accountData', accountData)
+
         this.syncAccount(accountData)
       }
     })
@@ -470,70 +472,74 @@ export class EVMWagmiClient {
       | 'status'
     >
   >) {
-    if (this.wagmiConfig) {
-      if (connector?.name === 'WalletConnect' && connector.getProvider && address && chainId) {
-        const provider = (await connector.getProvider()) as UniversalProvider
-        ProviderUtil.setProvider(provider)
-        ProviderUtil.setProviderId('walletConnect')
+    if (this.wagmiConfig && chainId) {
+      if (connector) {
+        if (connector.name === 'WalletConnect' && connector.getProvider && address && chainId) {
+          const provider = (await connector.getProvider()) as UniversalProvider
 
-        const namespaces = provider?.session?.namespaces || {}
-        const namespaceKeys = namespaces ? Object.keys(namespaces) : []
+          const namespaces = provider?.session?.namespaces || {}
+          const namespaceKeys = namespaces ? Object.keys(namespaces) : []
 
-        const preferredAccountType = this.appKit?.getPreferredAccountType()
+          const preferredAccountType = this.appKit?.getPreferredAccountType()
 
-        namespaceKeys.forEach(key => {
-          const chainNamespace = key as ChainNamespace
-          const caipAddress = namespaces?.[key]?.accounts[0] as CaipAddress
+          namespaceKeys.forEach(key => {
+            const chainNamespace = key as ChainNamespace
+            const caipAddress = namespaces?.[key]?.accounts[0] as CaipAddress
 
-          this.appKit?.setIsConnected(true, chainNamespace)
-          this.appKit?.setPreferredAccountType(preferredAccountType, chainNamespace)
-          this.appKit?.setCaipAddress(caipAddress, chainNamespace)
-        })
-        this.syncNetwork(address, chainId, true)
-        await Promise.all([
-          this.syncProfile(address, chainId),
-          this.syncBalance(address, chainId),
-          this.syncConnectedWalletInfo(connector),
-          this.appKit?.setApprovedCaipNetworksData(this.chainNamespace)
-        ])
-      } else if (connector && status === 'connected' && address && chainId) {
-        const caipAddress = `eip155:${chainId}:${address}` as CaipAddress
-        this.appKit?.resetAccount(this.chainNamespace)
-        this.syncNetwork(address, chainId, true)
-        this.appKit?.setIsConnected(true, this.chainNamespace)
-        this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)
-        await Promise.all([
-          this.syncProfile(address, chainId),
-          this.syncBalance(address, chainId),
-          this.syncConnectedWalletInfo(connector),
-          this.appKit?.setApprovedCaipNetworksData(this.chainNamespace)
-        ])
-        if (connector) {
-          this.syncConnectedWalletInfo(connector)
-        }
+            ProviderUtil.setProvider(chainNamespace, provider)
+            ProviderUtil.setProviderId(chainNamespace, 'walletConnect')
 
-        // Set by authConnector.onIsConnectedHandler as we need the account type
-        const isAuthConnector = connector?.id === ConstantsUtil.AUTH_CONNECTOR_ID
-        if (!isAuthConnector && addresses?.length) {
-          this.appKit?.setAllAccounts(
-            addresses.map(addr => ({ address: addr, type: 'eoa' })),
-            this.chainNamespace
-          )
-        }
-      } else if (status === 'disconnected') {
-        this.appKit?.resetAccount(this.chainNamespace)
-        this.appKit?.resetWcConnection()
-        this.appKit?.resetNetwork()
-        this.appKit?.setAllAccounts([], this.chainNamespace)
-      } else if (connector && status === 'reconnecting') {
-        this.appKit?.setLoading(true)
-        const connectors = getConnectors(this.wagmiConfig)
-        const currentConnector = connectors.find(c => c.id === connector.id)
-        if (currentConnector) {
-          await reconnect(this.wagmiConfig, {
-            connectors: [currentConnector]
+            this.appKit?.setIsConnected(true, chainNamespace)
+            this.appKit?.setPreferredAccountType(preferredAccountType, chainNamespace)
+            this.appKit?.setCaipAddress(caipAddress, chainNamespace)
           })
-          this.appKit?.setLoading(false)
+          this.syncNetwork(address, chainId, true)
+          await Promise.all([
+            this.syncProfile(address, chainId),
+            this.syncBalance(address, chainId),
+            this.syncConnectedWalletInfo(connector),
+            this.appKit?.setApprovedCaipNetworksData(this.chainNamespace)
+          ])
+        } else if (status === 'connected' && address && chainId) {
+          const caipAddress = `eip155:${chainId}:${address}` as CaipAddress
+          this.appKit?.resetAccount(this.chainNamespace)
+          this.syncNetwork(address, chainId, true)
+          this.appKit?.setIsConnected(true, this.chainNamespace)
+          this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)
+          await Promise.all([
+            this.syncProfile(address, chainId),
+            this.syncBalance(address, chainId),
+            this.syncConnectedWalletInfo(connector),
+            this.appKit?.setApprovedCaipNetworksData(this.chainNamespace)
+          ])
+          if (connector) {
+            this.syncConnectedWalletInfo(connector)
+          }
+
+          // Set by authConnector.onIsConnectedHandler as we need the account type
+          const isAuthConnector = connector?.id === ConstantsUtil.AUTH_CONNECTOR_ID
+          if (!isAuthConnector && addresses?.length) {
+            this.appKit?.setAllAccounts(
+              addresses.map(addr => ({ address: addr, type: 'eoa' })),
+              this.chainNamespace
+            )
+          }
+        } else if (status === 'disconnected') {
+          this.appKit?.resetAccount(this.chainNamespace)
+          this.appKit?.resetWcConnection()
+          this.appKit?.resetNetwork()
+          this.appKit?.setAllAccounts([], this.chainNamespace)
+        } else if (status === 'reconnecting') {
+          this.appKit?.setLoading(true)
+          const connectors = getConnectors(this.wagmiConfig)
+          const currentConnector = connectors.find(c => c.id === connector.id)
+
+          if (currentConnector) {
+            await reconnect(this.wagmiConfig, {
+              connectors: [currentConnector]
+            })
+            this.appKit?.setLoading(false)
+          }
         }
       }
     }
