@@ -13,7 +13,7 @@ import type { SolanaAppKitOptions } from './options'
 export { defaultSolanaConfig } from '@web3modal/base/adapters/solana/web3js'
 
 // -- Types -------------------------------------------------------------------
-export type { SolanaAppKitOptions }
+export type { SolanaAppKitOptions, Provider }
 
 // -- Setup -------------------------------------------------------------
 let appkit: AppKit | undefined = undefined

@@ -301,6 +301,27 @@ export class SolanaWeb3JsClient {
   }
 
   // -- Private -----------------------------------------------------------------
+  private syncConnectedWalletInfo() {
+    const currentActiveWallet = window?.localStorage.getItem(SolConstantsUtil.WALLET_ID)
+    const provider = SolStoreUtil.state.provider
+
+    if (provider?.type === 'WALLET_CONNECT') {
+      const wcProvider = provider as WalletConnectProvider
+      if (wcProvider.session) {
+        this.appKit?.setConnectedWalletInfo(
+          {
+            ...wcProvider.session.peer.metadata,
+            name: wcProvider.session.peer.metadata.name,
+            icon: wcProvider.session.peer.metadata.icons?.[0]
+          },
+          this.chain
+        )
+      }
+    } else if (currentActiveWallet) {
+      this.appKit?.setConnectedWalletInfo({ name: currentActiveWallet }, this.chain)
+    }
+  }
+
   private async syncAccount() {
     const address = SolStoreUtil.state.address
     const chainId = SolStoreUtil.state.currentChain?.chainId
@@ -309,6 +330,7 @@ export class SolanaWeb3JsClient {
       const caipAddress: CaipAddress = `${ConstantsUtil.INJECTED_CONNECTOR_ID}:${chainId}:${address}`
       this.appKit?.setCaipAddress(caipAddress, this.chain)
       await this.syncBalance(address)
+      this.syncConnectedWalletInfo()
 
       this.hasSyncedConnectedAccount = true
     } else if (this.hasSyncedConnectedAccount) {
@@ -564,7 +586,7 @@ export class SolanaWeb3JsClient {
         })
       )
 
-      if (opts.email || opts.socials) {
+      if (opts.email || opts.socials?.length) {
         if (!opts.projectId) {
           throw new Error('projectId is required for AuthProvider')
         }
