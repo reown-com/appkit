@@ -81,6 +81,8 @@
   },
   "dependencies": {
     "@walletconnect/utils": "2.14.0",
+    "@walletconnect/types": "2.13.3",
+    "@walletconnect/universal-provider": "2.15.1",
     "@web3modal/common": "workspace:*",
     "@web3modal/core": "workspace:*",
     "@web3modal/polyfills": "workspace:*",
@@ -91,37 +93,15 @@
     "@web3modal/wallet": "workspace:*",
     "valtio": "1.11.2"
   },
-  "optionalDependencies": {
-    "borsh": "0.7.0",
-    "bs58": "5.0.0"
-  },
   "devDependencies": {
-    "@coinbase/wallet-sdk": "4.0.3",
-    "@ethersproject/sha2": "5.7.0",
-    "@solana/wallet-adapter-base": "0.9.23",
-    "@solana/wallet-standard-features": "1.2.0",
-    "@solana/wallet-standard-util": "1.1.1",
-    "@solana/web3.js": "1.95.2",
     "@types/react": "18.2.0",
     "@types/react-dom": "18.2.0",
     "@vitest/coverage-v8": "2.0.5",
     "@vue/runtime-core": "3.4.3",
-    "@wagmi/connectors": "5.1.5",
-    "@wagmi/core": "2.13.4",
-    "@wallet-standard/app": "1.0.1",
-    "@wallet-standard/base": "1.0.1",
-    "@wallet-standard/features": "1.0.3",
-    "@wallet-standard/wallet": "1.0.1",
-    "@walletconnect/types": "2.13.3",
-    "@walletconnect/universal-provider": "2.15.1",
-    "ethers": "6.13.0",
-    "ethers5": "npm:ethers@5.7.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "viem": "2.19.6",
     "vitest": "2.0.3",
-    "vue": "3.4.3",
-    "wagmi": "2.12.5"
+    "vue": "3.4.3"
   },
   "keywords": [
     "web3",

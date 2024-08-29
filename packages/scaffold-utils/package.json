@@ -43,6 +43,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
+    "@walletconnect/universal-provider": "2.15.1",
     "@web3modal/common": "workspace:*",
     "@web3modal/core": "workspace:*",
     "@web3modal/polyfills": "workspace:*",
