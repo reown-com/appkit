@@ -37,6 +37,7 @@ import { withSolanaNamespace } from './utils/withSolanaNamespace.js'
 import type { AppKit } from '../../../src/client.js'
 import type { AppKitOptions } from '../../../utils/TypesUtil.js'
 import { ProviderUtil } from '../../../utils/store/ProviderUtil.js'
+import { WcConstantsUtil } from '../../../utils/ConstantsUtil.js'
 
 export interface AdapterOptions {
   connectionSettings?: Commitment | ConnectionConfig
@@ -101,6 +102,7 @@ export class SolanaWeb3JsClient {
     this.networkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
         if (caipNetwork) {
+          localStorage.setItem(WcConstantsUtil.ACTIVE_CAIPNETWORK, JSON.stringify(caipNetwork))
           try {
             await this.switchNetwork(caipNetwork)
           } catch (error) {

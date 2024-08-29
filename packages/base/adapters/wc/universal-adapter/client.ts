@@ -61,6 +61,8 @@ export class UniversalAdapterClient {
   public constructor(options: AppKitOptions) {
     const { siweConfig, caipNetworks, metadata } = options
 
+    this.caipNetworks = caipNetworks
+
     this.chainNamespace = 'eip155'
 
     this.metadata = metadata
@@ -73,6 +75,7 @@ export class UniversalAdapterClient {
       // @ts-expect-error switchCaipNetwork is async for some adapter but not for this adapter
       switchCaipNetwork: caipNetwork => {
         if (caipNetwork) {
+          localStorage.setItem(WcConstantsUtil.ACTIVE_CAIPNETWORK, JSON.stringify(caipNetwork))
           try {
             this.switchNetwork(caipNetwork)
           } catch (error) {
@@ -181,6 +184,7 @@ export class UniversalAdapterClient {
         this.appKit?.resetAccount('eip155')
         this.appKit?.resetAccount('solana')
         localStorage.removeItem(WcConstantsUtil.WALLET_ID)
+        localStorage.removeItem(WcConstantsUtil.ACTIVE_CAIPNETWORK)
 
         if (siweConfig?.options?.signOutOnDisconnect) {
           const { SIWEController } = await import('@web3modal/siwe')
@@ -347,7 +351,11 @@ export class UniversalAdapterClient {
             this.appKit?.setCaipAddress(caipAddress, key as ChainNamespace)
           }
         })
-      if (!NetworkController.state.caipNetwork) {
+      const storedCaipNetwork = localStorage.getItem(WcConstantsUtil.ACTIVE_CAIPNETWORK)
+      if (storedCaipNetwork) {
+        const parsedCaipNetwork = JSON.parse(storedCaipNetwork) as CaipNetwork
+        NetworkController.setActiveCaipNetwork(parsedCaipNetwork)
+      } else if (!NetworkController.state.caipNetwork) {
         this.setDefaultNetwork(nameSpaces)
       } else if (
         !NetworkController.state.approvedCaipNetworkIds?.includes(
@@ -357,6 +365,10 @@ export class UniversalAdapterClient {
         this.setDefaultNetwork(nameSpaces)
       }
     }
+    localStorage.setItem(
+      WcConstantsUtil.ACTIVE_CAIPNETWORK,
+      JSON.stringify(this.appKit?.getCaipNetwork())
+    )
     this.syncAccount()
     this.watchWalletConnect()
   }
@@ -377,7 +389,7 @@ export class UniversalAdapterClient {
             const network = requestedCaipNetworks.find(c => c.id === chainId)
 
             if (network) {
-              NetworkController.setDefaultCaipNetwork(network as unknown as CaipNetwork)
+              NetworkController.setActiveCaipNetwork(network as unknown as CaipNetwork)
             }
           }
         }
@@ -394,6 +406,7 @@ export class UniversalAdapterClient {
       ConnectionController.resetWcConnection()
 
       localStorage.removeItem(WcConstantsUtil.WALLET_ID)
+      localStorage.removeItem(WcConstantsUtil.ACTIVE_CAIPNETWORK)
 
       provider?.removeListener('disconnect', disconnectHandler)
       provider?.removeListener('accountsChanged', accountsChangedHandler)
@@ -401,13 +414,23 @@ export class UniversalAdapterClient {
 
     const accountsChangedHandler = (accounts: string[]) => {
       if (accounts.length > 0) {
-        this.setWalletConnectProvider()
+        this.syncAccount()
+      }
+    }
+
+    const chainChanged = (chainId: number | string) => {
+      // eslint-disable-next-line eqeqeq
+      const caipNetwork = this.caipNetworks.find(c => c.chainId == chainId)
+
+      if (caipNetwork) {
+        NetworkController.setActiveCaipNetwork(caipNetwork)
       }
     }
 
     if (provider) {
       provider.on('disconnect', disconnectHandler)
       provider.on('accountsChanged', accountsChangedHandler)
+      provider.on('chainChanged', chainChanged)
     }
   }
 

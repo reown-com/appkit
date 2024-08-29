@@ -4,7 +4,7 @@ import { useWeb3ModalState } from '@web3modal/base/react'
 import { SolanaTests } from './Solana/SolanaTests'
 import { WagmiTests } from './Wagmi/WagmiTests'
 
-export function MultiChainTests() {
+export function MultiChainTestsWagmiSolana() {
   const { activeChain } = useWeb3ModalState()
 
   return (

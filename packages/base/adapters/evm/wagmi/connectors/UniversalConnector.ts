@@ -22,6 +22,8 @@ import { WcHelpersUtil } from '../../../../utils/HelpersUtil.js'
 import type { AppKitOptions } from '../../../../utils/TypesUtil.js'
 import type { AppKit } from '../../../../src/client.js'
 import { convertCaipNetworksToWagmiChains } from '../utils/helpers.js'
+import type { CaipNetwork } from '@web3modal/common'
+import { WcConstantsUtil } from '../../../../utils/ConstantsUtil.js'
 
 type UniversalConnector = Connector & {
   onDisplayUri(uri: string): void
@@ -230,7 +232,15 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
       const currentChainId = appKit.getCaipNetwork()?.chainId
 
       if (chainId && currentChainId !== chainId) {
-        await this.switchChain?.({ chainId })
+        const storedCaipNetwork = localStorage.getItem(WcConstantsUtil.ACTIVE_CAIPNETWORK)
+        if (storedCaipNetwork) {
+          const parsedCaipNetwork = JSON.parse(storedCaipNetwork) as CaipNetwork
+          if (parsedCaipNetwork.chainNamespace === 'eip155') {
+            await this.switchChain?.({ chainId: Number(parsedCaipNetwork.chainId) })
+          }
+        } else {
+          await this.switchChain?.({ chainId })
+        }
       }
 
       // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
@@ -352,6 +362,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
     },
     onChainChanged(chain) {
       const chainId = Number(chain)
+
       config.emitter.emit('change', { chainId })
     },
     async onConnect(connectInfo) {
