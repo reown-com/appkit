@@ -7,7 +7,7 @@ import { EthersConstants } from '../../utils/EthersConstants'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { siweConfig } from '../../utils/SiweUtils'
 import { EthersModalInfo } from '../../components/Ethers/EthersModalInfo'
-import { EVMEthersClient } from '@web3modal/base/adapters/evm/ethers'
+import { EVMEthersClient } from '@web3modal/adapter-ethers'
 
 const ethersAdapter = new EVMEthersClient()
 

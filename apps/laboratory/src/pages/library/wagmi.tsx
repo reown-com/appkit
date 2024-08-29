@@ -7,7 +7,7 @@ import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
 import { mainnet, optimism, polygon, zkSync } from '../../utils/NetworksUtil'
-import { EVMWagmiClient } from '@web3modal/base/adapters/evm/wagmi'
+import { EVMWagmiClient } from '@web3modal/adapter-wagmi'
 
 const queryClient = new QueryClient()
 
@@ -19,8 +19,7 @@ const modal = createWeb3Modal({
   projectId: ConstantsUtil.ProjectId,
   features: {
     analytics: true,
-    socials: ['google', 'github', 'apple', 'x', 'farcaster', 'facebook', 'discord'],
-    emailShowWallets: false
+    socials: ['google', 'github', 'apple', 'x', 'farcaster', 'facebook', 'discord']
   },
   metadata: ConstantsUtil.Metadata
 })

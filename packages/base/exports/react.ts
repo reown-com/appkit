@@ -1,14 +1,15 @@
 import { AppKit } from '../src/client.js'
-import type { AppKitOptions } from '../utils/TypesUtil.js'
-import { getWeb3Modal } from '../utils/library/react/index.js'
+import type { AppKitOptions } from '../src/utils/TypesUtil.js'
+import { getWeb3Modal } from '../src/library/react/index.js'
 
 // -- Views ------------------------------------------------------------
 export * from '@web3modal/scaffold-ui'
 
 // -- Hooks ------------------------------------------------------------
-export * from '../utils/library/react/index.js'
+export * from '../src/library/react/index.js'
 
 // -- Utils & Other -----------------------------------------------------
+export * from '../src/utils/index.js'
 export type * from '@web3modal/core'
 export { CoreHelperUtil, AccountController, NetworkController } from '@web3modal/core'
 
@@ -29,5 +30,5 @@ export { AppKit }
 export type { AppKitOptions }
 
 // -- Hooks ------------------------------------------------------------
-export * from '../utils/library/react/index.js'
+export * from '../src/library/react/index.js'
 export { useWeb3ModalAccount, useWeb3ModalNetwork } from '@web3modal/core/react'

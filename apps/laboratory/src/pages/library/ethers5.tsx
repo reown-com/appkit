@@ -5,15 +5,9 @@ import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { Ethers5ModalInfo } from '../../components/Ethers/Ethers5ModalInfo'
 import { Ethers5Tests } from '../../components/Ethers/Ethers5Tests'
 import { mainnet, optimism, polygon, zkSync } from '../../utils/NetworksUtil'
-import { defaultConfig, EVMEthers5Client } from '@web3modal/base/adapters/evm/ethers5'
+import { EVMEthers5Client } from '@web3modal/adapter-ethers5'
 
-const ethers5Adapter = new EVMEthers5Client({
-  ethersConfig: defaultConfig({
-    metadata: ConstantsUtil.Metadata,
-    defaultChainId: 1,
-    coinbasePreference: 'smartWalletOnly'
-  })
-})
+const ethers5Adapter = new EVMEthers5Client()
 
 const modal = createWeb3Modal({
   adapters: [ethers5Adapter],

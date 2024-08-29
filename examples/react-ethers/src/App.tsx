@@ -5,7 +5,7 @@ import {
   useWeb3ModalState,
   useWeb3ModalTheme
 } from '@web3modal/base/react'
-import { EVMEthersClient } from '@web3modal/base/adapters/evm/ethers'
+import { EVMEthersClient } from '@web3modal/adapter-ethers'
 
 // @ts-expect-error 1. Get projectId
 const projectId = import.meta.env.VITE_PROJECT_ID

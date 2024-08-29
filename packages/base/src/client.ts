@@ -27,9 +27,10 @@ import {
 } from '@web3modal/core'
 import { setColorTheme, setThemeVariables } from '@web3modal/ui'
 import { ConstantsUtil, type CaipNetwork, type ChainNamespace } from '@web3modal/common'
-import type { AppKitOptions } from '../utils/TypesUtil.js'
-import { UniversalAdapterClient } from '../adapters/wc/universal-adapter/client.js'
+import type { AppKitOptions } from './utils/TypesUtil.js'
+import { UniversalAdapterClient } from './universal-adapter/client.js'
 import { PresetsUtil } from '@web3modal/scaffold-utils'
+import type { W3mFrameTypes } from '@web3modal/wallet'
 
 // -- Export Controllers -------------------------------------------------------
 export { AccountController, NetworkController }
@@ -200,7 +201,8 @@ export class AppKit {
 
   public getProvider = () => AccountController.state.provider
 
-  public getPreferredAccountType = () => AccountController.state.preferredAccountType
+  public getPreferredAccountType = () =>
+    AccountController.state.preferredAccountType as W3mFrameTypes.AccountType
 
   public setCaipAddress: (typeof AccountController)['setCaipAddress'] = (caipAddress, chain) => {
     AccountController.setCaipAddress(caipAddress, chain)

@@ -2,9 +2,8 @@
 
 import { AppKit, AccountController } from '@web3modal/base'
 import type { AppKitOptions } from '@web3modal/base'
-import { EVMEthersClient, type AdapterOptions } from '@web3modal/base/adapters/evm/ethers'
-import { EthersStoreUtil } from '@web3modal/scaffold-utils/ethers'
-import { getWeb3Modal } from '@web3modal/base/utils/library/react'
+import { EVMEthersClient, type AdapterOptions } from '@web3modal/adapter-ethers'
+import { getWeb3Modal } from '@web3modal/base/library/react'
 import { useSnapshot } from 'valtio'
 import type { CaipNetwork } from 'packages/common'
 
@@ -58,18 +57,10 @@ export function useWeb3ModalAccount() {
   }
 }
 
-export function useWeb3ModalError() {
-  const { error } = useSnapshot(EthersStoreUtil.state)
-
-  return {
-    error
-  }
-}
-
 export {
   useWeb3ModalTheme,
   useWeb3Modal,
   useWeb3ModalState,
   useWeb3ModalEvents,
   useWalletInfo
-} from '@web3modal/base/utils/library/react'
+} from '@web3modal/base/library/react'

@@ -60,6 +60,7 @@
     "@wallet-standard/base": "1.0.1",
     "@wallet-standard/features": "1.0.3",
     "@wallet-standard/wallet": "1.0.1",
+    "@web3modal/adapter-solana": "workspace:*",
     "@web3modal/base": "workspace:*",
     "@web3modal/common": "workspace:*",
     "@web3modal/core": "workspace:*",

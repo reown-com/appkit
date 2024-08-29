@@ -1,7 +1,7 @@
 import { AppKit } from '@web3modal/base'
 import type { AppKitOptions } from '@web3modal/base'
-import { EVMWagmiClient, type AdapterOptions } from '@web3modal/base/adapters/evm/wagmi'
-import { getWeb3Modal } from '@web3modal/base/utils/library/react'
+import { EVMWagmiClient, type AdapterOptions } from '@web3modal/adapter-wagmi'
+import { getWeb3Modal } from '@web3modal/base/library/react'
 import type { Config } from 'wagmi'
 
 // -- Setup -------------------------------------------------------------------
@@ -29,4 +29,4 @@ export {
   useWeb3ModalState,
   useWeb3ModalEvents,
   useWalletInfo
-} from '@web3modal/base/utils/library/react'
+} from '@web3modal/base/library/react'

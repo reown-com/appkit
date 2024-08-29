@@ -1,1 +1,1 @@
-export { solana, solanaDevnet, solanaTestnet } from '@web3modal/base/adapters/solana/web3js'
+export { solana, solanaDevnet, solanaTestnet } from '@web3modal/adapter-solana'

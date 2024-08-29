@@ -1,5 +1,5 @@
 import { createWeb3Modal } from '@web3modal/base/react'
-import { SolanaWeb3JsClient } from '@web3modal/base/adapters/solana/web3js'
+import { SolanaWeb3JsClient } from '@web3modal/adapter-solana'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { solana, solanaDevnet, solanaTestnet } from '../../utils/NetworksUtil'

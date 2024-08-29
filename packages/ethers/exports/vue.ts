@@ -1,7 +1,7 @@
 import { AppKit } from '@web3modal/base'
 import type { AppKitOptions } from '@web3modal/base'
-import { EVMEthersClient, type AdapterOptions } from '@web3modal/base/adapters/evm/ethers'
-import { getWeb3Modal } from '@web3modal/base/utils/library/vue'
+import { EVMEthersClient, type AdapterOptions } from '@web3modal/adapter-ethers'
+import { getWeb3Modal } from '@web3modal/base/library/vue'
 
 // -- Setup -------------------------------------------------------------------
 let appkit: AppKit | undefined = undefined
@@ -50,4 +50,4 @@ export {
   useWeb3ModalState,
   useWeb3ModalEvents,
   useWalletInfo
-} from '@web3modal/base/utils/library/vue'
+} from '@web3modal/base/library/vue'

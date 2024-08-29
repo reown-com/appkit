@@ -1,8 +1,8 @@
-import { getWeb3Modal } from '@web3modal/base/utils/library/vue'
+import { getWeb3Modal } from '@web3modal/base/library/vue'
 import { AppKit } from '@web3modal/base'
-import { SolanaWeb3JsClient } from '@web3modal/base/adapters/solana/web3js'
+import { SolanaWeb3JsClient } from '@web3modal/adapter-solana'
 import type { CaipNetwork } from '@web3modal/common'
-import type { Provider } from '@web3modal/base/adapters/solana/web3js'
+import type { Provider } from '@web3modal/adapter-solana'
 import type { SolanaAppKitOptions } from './options'
 
 // -- Types -------------------------------------------------------------------
@@ -57,4 +57,4 @@ export {
   useWeb3Modal,
   useWeb3ModalState,
   useWeb3ModalEvents
-} from '@web3modal/base/utils/library/vue'
+} from '@web3modal/base/library/vue'

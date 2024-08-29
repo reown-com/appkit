@@ -1,4 +1,4 @@
-import { EVMWagmiClient } from '@web3modal/base/adapters/evm/wagmi'
+import { EVMWagmiClient } from '@web3modal/adapter-wagmi'
 import { mainnet as wagmiMainnet } from 'viem/chains'
 import { createConfig, http } from 'wagmi'
 import { mock } from 'wagmi/connectors'

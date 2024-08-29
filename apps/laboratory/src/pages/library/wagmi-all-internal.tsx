@@ -9,7 +9,7 @@ import { SiweData } from '../../components/Siwe/SiweData'
 import { siweConfig } from '../../utils/SiweUtils'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
 import { mainnet, optimism, polygon, zkSync } from '../../utils/NetworksUtil'
-import { EVMWagmiClient } from '@web3modal/base/adapters/evm/wagmi'
+import { EVMWagmiClient } from '@web3modal/adapter-wagmi'
 
 const queryClient = new QueryClient()
 
