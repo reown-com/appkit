@@ -1,4 +1,4 @@
-import { createWeb3Modal } from '@web3modal/wagmi/react'
+import { createWeb3Modal } from '@web3modal/base/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 import { WagmiProvider } from 'wagmi'
@@ -6,7 +6,8 @@ import { AppKitButtons } from '../../components/AppKitButtons'
 import { WagmiTests } from '../../components/Wagmi/WagmiTests'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
-import { getWagmiConfig } from '../../utils/WagmiConstants'
+import { mainnet } from '../../utils/NetworksUtil'
+import { EVMWagmiClient } from '@web3modal/base/adapters/evm/wagmi'
 
 const metadata = {
   name: 'Evil Web3Modal',
@@ -21,13 +22,11 @@ const projectId = '9d176efa3150a1df0a76c8c138b6b657'
 
 const queryClient = new QueryClient()
 
-const wagmiConfig = getWagmiConfig('default', {
-  projectId,
-  metadata
-})
+const wagmiAdapter = new EVMWagmiClient()
 
 const modal = createWeb3Modal({
-  wagmiConfig,
+  adapters: [wagmiAdapter],
+  caipNetworks: [mainnet],
   projectId,
   metadata,
   termsConditionsUrl: 'https://walletconnect.com/terms',
@@ -43,8 +42,12 @@ export default function Wagmi() {
     setReady(true)
   }, [])
 
+  if (!wagmiAdapter.wagmiConfig) {
+    return null
+  }
+
   return ready ? (
-    <WagmiProvider config={wagmiConfig}>
+    <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <AppKitButtons />
         <WagmiModalInfo />

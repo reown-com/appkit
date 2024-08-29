@@ -24,7 +24,7 @@ export function EthersSendCallsTest() {
 
   const { chainId } = useWeb3ModalNetwork()
   const { address, isConnected } = useWeb3ModalAccount()
-  const { walletProvider } = useWeb3ModalProvider<Eip1193Provider>()
+  const { walletProvider } = useWeb3ModalProvider<Eip1193Provider>('eip155')
   const toast = useChakraToast()
 
   const [atomicBatchSupportedChains, setAtomicBatchSupportedChains] = useState<

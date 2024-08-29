@@ -3,25 +3,11 @@ import { mockW3mFrameProvider } from './mocks/W3mFrameProvider'
 import { AuthProvider } from '../providers/AuthProvider'
 import { TestConstants } from './util/TestConstants'
 import { mockLegacyTransaction, mockVersionedTransaction } from './mocks/Transaction'
-import type { SocialProvider } from '@web3modal/scaffold-utils'
 
 describe('AuthProvider specific tests', () => {
   let provider = mockW3mFrameProvider()
   let getActiveChain = vi.fn(() => TestConstants.chains[0])
-  let auth = {
-    email: true,
-    socials: [
-      'google',
-      'x',
-      'discord',
-      'farcaster',
-      'github',
-      'apple',
-      'facebook'
-    ] as SocialProvider[]
-  }
   let authProvider = new AuthProvider({
-    auth,
     provider,
     chains: TestConstants.chains,
     getActiveChain
@@ -30,12 +16,7 @@ describe('AuthProvider specific tests', () => {
   beforeEach(() => {
     provider = mockW3mFrameProvider()
     getActiveChain = vi.fn(() => TestConstants.chains[0])
-    auth = {
-      email: true,
-      socials: ['google', 'x', 'discord', 'farcaster', 'github', 'apple', 'facebook']
-    }
     authProvider = new AuthProvider({
-      auth,
       provider,
       chains: TestConstants.chains,
       getActiveChain

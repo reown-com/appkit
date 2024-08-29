@@ -4,6 +4,7 @@ import {
   ConnectorController,
   CoreHelperUtil,
   EventsController,
+  OptionsController,
   RouterController,
   SnackController
 } from '@web3modal/core'
@@ -25,14 +26,14 @@ export class W3mSocialLoginList extends LitElement {
   // -- State & Properties -------------------------------- //
   @state() private connectors = ConnectorController.state.connectors
 
-  private connector = this.connectors.find(c => c.type === 'AUTH')
+  @state() private authConnector = this.connectors.find(c => c.type === 'AUTH')
 
   public constructor() {
     super()
     this.unsubscribe.push(
       ConnectorController.subscribeKey('connectors', val => {
         this.connectors = val
-        this.connector = this.connectors.find(c => c.type === 'AUTH')
+        this.authConnector = this.connectors.find(c => c.type === 'AUTH')
       })
     )
   }
@@ -43,12 +44,14 @@ export class W3mSocialLoginList extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    if (!this.connector?.socials) {
+    const { socials } = OptionsController.state.features
+
+    if (!this.authConnector || !socials?.length) {
       return null
     }
 
     return html` <wui-flex flexDirection="column" gap="xs">
-      ${this.connector.socials.map(
+      ${socials.map(
         social =>
           html`<wui-list-social
             @click=${() => {

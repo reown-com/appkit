@@ -5,9 +5,6 @@ import { EVMEthersClient, type AdapterOptions } from '@web3modal/base/adapters/e
 // -- Types -------------------------------------------------------------
 export type { AdapterOptions } from '@web3modal/base/adapters/evm/ethers'
 
-// -- Configs -----------------------------------------------------------
-export { defaultConfig } from '@web3modal/base/adapters/evm/ethers'
-
 // -- Setup -------------------------------------------------------------
 export type EthersAppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 'sdkVersion'> &
   AdapterOptions

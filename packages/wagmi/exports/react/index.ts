@@ -4,9 +4,6 @@ import { EVMWagmiClient, type AdapterOptions } from '@web3modal/base/adapters/ev
 import { getWeb3Modal } from '@web3modal/base/utils/library/react'
 import type { Config } from 'wagmi'
 
-// -- Configs -----------------------------------------------------------
-export { defaultWagmiConfig } from '@web3modal/base/adapters/evm/wagmi'
-
 // -- Setup -------------------------------------------------------------------
 let appkit: AppKit | undefined = undefined
 

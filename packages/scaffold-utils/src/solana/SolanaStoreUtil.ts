@@ -1,34 +1,16 @@
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
-import { OptionsController } from '@web3modal/core'
-import type { CaipNetwork } from '@web3modal/common'
 
-import type { Provider, Connection } from './SolanaTypesUtil.js'
-import { SolConstantsUtil } from './SolanaConstantsUtil.js'
-import { SolHelpersUtil } from './SolanaHelpersUtils.js'
+import type { Connection } from './SolanaTypesUtil.js'
 
 type StateKey = keyof SolStoreUtilState
 
 export interface SolStoreUtilState {
-  provider?: Provider
-  address?: string
-  chainId?: string
-  caipChainId?: string
-  currentChain?: CaipNetwork
-  requestId?: number
-  error?: unknown
   connection: Connection | null
-  isConnected: boolean
 }
 
 const state = proxy<SolStoreUtilState>({
-  provider: undefined,
-  address: undefined,
-  currentChain: undefined,
-  chainId: undefined,
-  caipChainId: undefined,
-  connection: null,
-  isConnected: false
+  connection: null
 })
 
 export const SolStoreUtil = {
@@ -42,58 +24,7 @@ export const SolStoreUtil = {
     return sub(state, () => callback(state))
   },
 
-  setProvider(provider: SolStoreUtilState['provider']) {
-    if (provider) {
-      state.provider = ref(provider)
-    }
-  },
-
-  setAddress(address: string) {
-    state.address = address
-  },
-
   setConnection(connection: Connection) {
     state.connection = ref(connection)
-  },
-
-  setCaipChainId(caipChainId: SolStoreUtilState['caipChainId']) {
-    state.caipChainId = caipChainId
-  },
-
-  setIsConnected(isConnected: SolStoreUtilState['isConnected']) {
-    state.isConnected = isConnected
-  },
-
-  setError(error: SolStoreUtilState['error']) {
-    state.error = error
-  },
-
-  setCurrentChain(chain: CaipNetwork) {
-    state.currentChain = chain
-  },
-
-  getCluster() {
-    const chain = state.currentChain ?? SolConstantsUtil.DEFAULT_CHAIN
-
-    return {
-      name: chain.name,
-      id: chain.chainId,
-      endpoint: SolHelpersUtil.detectRpcUrl(chain, OptionsController.state.projectId)
-    }
-  },
-
-  getNewRequestId() {
-    const curId = state.requestId ?? 0
-    state.requestId = curId + 1
-
-    return state.requestId
-  },
-
-  reset() {
-    state.provider = undefined
-    state.address = undefined
-    state.chainId = undefined
-    state.isConnected = false
-    state.error = undefined
   }
 }

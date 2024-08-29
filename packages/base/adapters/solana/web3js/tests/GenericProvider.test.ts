@@ -33,10 +33,6 @@ const providers: { name: string; provider: Provider }[] = [
     provider: new AuthProvider({
       provider: mockW3mFrameProvider(),
       getActiveChain,
-      auth: {
-        email: true,
-        socials: ['x']
-      },
       chains: TestConstants.chains
     })
   }

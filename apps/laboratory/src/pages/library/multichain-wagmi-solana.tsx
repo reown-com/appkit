@@ -8,51 +8,34 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
 import {
   arbitrum,
-  avalanche,
   mainnet,
   polygon,
   base,
   binanceSmartChain,
-  solana,
-  solanaDevnet
+  solana
 } from '../../utils/NetworksUtil'
 import { AppKitButtons } from '../../components/AppKitButtons'
-import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
-import { WagmiTests } from '../../components/Wagmi/WagmiTests'
+import { MultiChainTests } from '../../components/MultiChainTests'
 
 const queryClient = new QueryClient()
 
 const wagmiAdapter = new EVMWagmiClient()
 
 const solanaWeb3JsAdapter = new SolanaWeb3JsClient({
-  solanaConfig: {
-    metadata: ConstantsUtil.Metadata
-  },
   wallets: [new HuobiWalletAdapter(), new SolflareWalletAdapter()]
 })
 
 const modal = createWeb3Modal({
   adapters: [wagmiAdapter, solanaWeb3JsAdapter],
-  caipNetworks: [
-    avalanche,
-    mainnet,
-    polygon,
-    base,
-    binanceSmartChain,
-    arbitrum,
-    solana,
-    solanaDevnet
-  ],
+  caipNetworks: [mainnet, polygon, base, binanceSmartChain, arbitrum, solana],
   defaultCaipNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId,
   features: {
     analytics: true
   },
-  metadata: ConstantsUtil.Metadata,
-  termsConditionsUrl: 'https://walletconnect.com/terms',
-  privacyPolicyUrl: 'https://walletconnect.com/privacy',
-  customWallets: ConstantsUtil.CustomWallets
+  customWallets: ConstantsUtil.CustomWallets,
+  metadata: ConstantsUtil.Metadata
 })
 
 ThemeStore.setModal(modal)
@@ -66,8 +49,7 @@ export default function MultiChainAllAdapters() {
     <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <AppKitButtons />
-        <WagmiModalInfo />
-        <WagmiTests />
+        <MultiChainTests />
       </QueryClientProvider>
     </WagmiProvider>
   )

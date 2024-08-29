@@ -14,13 +14,11 @@ const maliciousUrl = 'https://malicious-app-verify-simulation.vercel.app'
 
 export type ModalFlavor =
   | 'default'
-  | 'siwe'
-  | 'email'
-  | 'wallet'
   | 'external'
   | 'verify-valid'
   | 'verify-domain-mismatch'
   | 'verify-evil'
+  | 'no-email'
   | 'all'
 
 function getUrlByFlavor(baseUrl: string, library: string, flavor: ModalFlavor) {

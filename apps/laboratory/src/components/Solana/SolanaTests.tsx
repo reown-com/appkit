@@ -1,4 +1,4 @@
-import { useWeb3ModalAccount } from '@web3modal/solana/react'
+import { useWeb3ModalAccount, useWeb3ModalNetwork } from '@web3modal/base/react'
 import {
   StackDivider,
   Card,
@@ -19,7 +19,8 @@ import { solana, solanaDevnet, solanaTestnet } from '../../utils/NetworksUtil'
 import { SolanaSignAndSendTransaction } from './SolanaSignAndSendTransactionTest'
 
 export function SolanaTests() {
-  const { isConnected, currentChain } = useWeb3ModalAccount()
+  const { isConnected } = useWeb3ModalAccount()
+  const { caipNetwork } = useWeb3ModalNetwork()
 
   return isConnected ? (
     <Card marginTop={10} marginBottom={10}>
@@ -35,10 +36,10 @@ export function SolanaTests() {
             </Heading>
             <SolanaSignMessageTest />
           </Box>
-          {currentChain?.chainId !== solana.chainId && (
+          {caipNetwork?.chainId !== solana.chainId && (
             <Box>
               <Text fontSize="md" color="yellow">
-                Please ensure your wallet is connected to the {currentChain?.name}
+                Please ensure your wallet is connected to the {caipNetwork?.name}
               </Text>
             </Box>
           )}
@@ -70,8 +71,8 @@ export function SolanaTests() {
             </Heading>
             <SolanaSignAndSendTransaction />
           </Box>
-          {(currentChain?.chainId === solanaTestnet.chainId ||
-            currentChain?.chainId === solanaDevnet.chainId) && (
+          {(caipNetwork?.chainId === solanaTestnet.chainId ||
+            caipNetwork?.chainId === solanaDevnet.chainId) && (
             <Stack divider={<StackDivider />} spacing="4">
               <Box>
                 <Heading size="xs" textTransform="uppercase" pb="2">

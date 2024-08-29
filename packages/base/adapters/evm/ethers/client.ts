@@ -161,12 +161,6 @@ export class EVMEthersClient {
     providers.injected = getInjectedProvider()
     providers.coinbase = getCoinbaseProvider()
     providers.EIP6963 = true
-    const auth = {
-      email: true,
-      showWallets: true,
-      walletFeatures: true
-    }
-    providers.auth = auth
 
     return providers
   }
@@ -226,7 +220,9 @@ export class EVMEthersClient {
 
     this.connectionControllerClient = {
       connectWalletConnect: async onUri => {
-        await this.appKit?.universalAdapter?.connectionControllerClient.connectWalletConnect(onUri)
+        await this.appKit?.universalAdapter?.connectionControllerClient?.connectWalletConnect?.(
+          onUri
+        )
       },
 
       //  @ts-expect-error TODO expected types in arguments are incomplete
@@ -305,8 +301,8 @@ export class EVMEthersClient {
       },
 
       disconnect: async () => {
-        const provider = ProviderUtil.getProvider<UniversalProvider | Provider>()
-        const providerId = ProviderUtil.state.providerId
+        const provider = ProviderUtil.getProvider<UniversalProvider | Provider>('eip155')
+        const providerId = ProviderUtil.state.providerIds['eip155']
 
         this.appKit?.setClientId(null)
         if (this.options?.siweConfig?.options?.signOutOnDisconnect) {
@@ -316,10 +312,10 @@ export class EVMEthersClient {
 
         const disconnectConfig = {
           [ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID]: async () =>
-            await this.appKit?.universalAdapter?.connectionControllerClient.disconnect(),
+            await this.appKit?.universalAdapter?.connectionControllerClient?.disconnect(),
 
           coinbaseWalletSDK: async () =>
-            await this.appKit?.universalAdapter?.connectionControllerClient.disconnect(),
+            await this.appKit?.universalAdapter?.connectionControllerClient?.disconnect(),
 
           [ConstantsUtil.AUTH_CONNECTOR_ID]: async () => {
             await this.authProvider?.disconnect()
@@ -351,11 +347,15 @@ export class EVMEthersClient {
         this.appKit?.resetAccount('eip155')
       },
       signMessage: async (message: string) => {
-        const provider = ProviderUtil.getProvider<Provider>()
+        const provider = ProviderUtil.getProvider<Provider>('eip155')
         const address = this.appKit?.getAddress()
 
         if (!address) {
           throw new Error('Address is undefined')
+        }
+
+        if (!provider) {
+          throw new Error('Provider is undefined')
         }
 
         return await EthersMethods.signMessage(message, provider, address)
@@ -365,12 +365,16 @@ export class EVMEthersClient {
       formatUnits: EthersMethods.formatUnits,
 
       estimateGas: async data => {
-        const provider = ProviderUtil.getProvider<Provider>()
+        const provider = ProviderUtil.getProvider<Provider>('eip155')
         const address = this.appKit?.getAddress()
         const caipNetwork = this.appKit?.getCaipNetwork()
 
         if (!address) {
           throw new Error('Address is undefined')
+        }
+
+        if (!provider) {
+          throw new Error('Provider is undefined')
         }
 
         return await EthersMethods.estimateGas(
@@ -382,12 +386,16 @@ export class EVMEthersClient {
       },
 
       sendTransaction: async data => {
-        const provider = ProviderUtil.getProvider<Provider>()
+        const provider = ProviderUtil.getProvider<Provider>('eip155')
         const address = this.appKit?.getAddress()
         const caipNetwork = this.appKit?.getCaipNetwork()
 
         if (!address) {
           throw new Error('Address is undefined')
+        }
+
+        if (!provider) {
+          throw new Error('Provider is undefined')
         }
 
         return await EthersMethods.sendTransaction(
@@ -399,12 +407,16 @@ export class EVMEthersClient {
       },
 
       writeContract: async data => {
-        const provider = ProviderUtil.getProvider<Provider>()
+        const provider = ProviderUtil.getProvider<Provider>('eip155')
         const address = this.appKit?.getAddress()
         const caipNetwork = this.appKit?.getCaipNetwork()
 
         if (!address) {
           throw new Error('Address is undefined')
+        }
+
+        if (!provider) {
+          throw new Error('Provider is undefined')
         }
 
         return await EthersMethods.writeContract(
@@ -447,13 +459,12 @@ export class EVMEthersClient {
 
     this.appKit?.setEIP6963Enabled(this.ethersConfig?.EIP6963)
 
-    if (this.ethersConfig?.auth) {
-      this.syncAuthConnector(this.options.projectId, this.ethersConfig.auth)
-    }
+    this.syncAuthConnector(this.options.projectId)
 
     if (this.ethersConfig) {
       this.checkActiveProviders(this.ethersConfig)
     }
+
     this.syncRequestedNetworks(this.caipNetworks)
   }
 
@@ -536,8 +547,8 @@ export class EVMEthersClient {
             `${this.chainNamespace}:${chainId}:${addresses[0]}`,
             this.chainNamespace
           )
-          ProviderUtil.setProviderId(providerId)
-          ProviderUtil.setProvider<Provider>(provider)
+          ProviderUtil.setProviderId('eip155', providerId)
+          ProviderUtil.setProvider<Provider>('eip155', provider)
           this.appKit?.setStatus('connected', this.chainNamespace)
           this.appKit?.setIsConnected(true, this.chainNamespace)
           this.appKit?.setAllAccounts(
@@ -591,8 +602,8 @@ export class EVMEthersClient {
           this.chainNamespace
         )
         this.appKit?.setSmartAccountDeployed(Boolean(smartAccountDeployed), this.chainNamespace)
-        ProviderUtil.setProvider<Provider>(this.authProvider as unknown as Provider)
-        ProviderUtil.setProviderId(ConstantsUtil.AUTH_CONNECTOR_ID as ProviderId)
+        ProviderUtil.setProvider<Provider>('eip155', this.authProvider as unknown as Provider)
+        ProviderUtil.setProviderId('eip155', ConstantsUtil.AUTH_CONNECTOR_ID as ProviderId)
         this.setupProviderListeners(this.authProvider as unknown as Provider, 'w3mAuth')
         this.watchModal()
       }
@@ -877,7 +888,7 @@ export class EVMEthersClient {
 
   private syncConnectedWalletInfo() {
     const currentActiveWallet = window?.localStorage.getItem(WcConstantsUtil.WALLET_ID)
-    const providerType = ProviderUtil.state.providerId
+    const providerType = ProviderUtil.state.providerIds['eip155']
 
     if (providerType === ConstantsUtil.EIP6963_CONNECTOR_ID) {
       if (currentActiveWallet) {
@@ -890,9 +901,9 @@ export class EVMEthersClient {
         }
       }
     } else if (providerType === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
-      const provider = ProviderUtil.getProvider()
+      const provider = ProviderUtil.getProvider('eip155')
 
-      if (provider.session) {
+      if (provider?.session) {
         this.appKit?.setConnectedWalletInfo(
           {
             ...provider.session.peer.metadata,
@@ -902,6 +913,15 @@ export class EVMEthersClient {
           this.chainNamespace
         )
       }
+    } else if (providerType === ConstantsUtil.COINBASE_SDK_CONNECTOR_ID) {
+      const connector = this.appKit
+        ?.getConnectors()
+        .find(c => c.id === ConstantsUtil.COINBASE_SDK_CONNECTOR_ID)
+
+      this.appKit?.setConnectedWalletInfo(
+        { name: 'Coinbase Wallet', icon: this.appKit?.getConnectorImage(connector) },
+        this.chainNamespace
+      )
     } else if (currentActiveWallet) {
       this.appKit?.setConnectedWalletInfo({ name: currentActiveWallet }, this.chainNamespace)
     }
@@ -942,8 +962,8 @@ export class EVMEthersClient {
       }
     }
 
-    const provider = ProviderUtil.getProvider<Provider | UniversalProvider>()
-    const providerType = ProviderUtil.state.providerId
+    const provider = ProviderUtil.getProvider<Provider | UniversalProvider>('eip155')
+    const providerType = ProviderUtil.state.providerIds['eip155']
 
     switch (providerType) {
       case ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID:
@@ -1020,7 +1040,7 @@ export class EVMEthersClient {
     this.appKit?.setConnectors(w3mConnectors)
   }
 
-  private async syncAuthConnector(projectId: string, auth: ProviderType['auth']) {
+  private async syncAuthConnector(projectId: string) {
     if (typeof window !== 'undefined') {
       this.authProvider = new W3mFrameProvider(projectId)
 
@@ -1029,11 +1049,7 @@ export class EVMEthersClient {
         type: 'AUTH',
         name: 'Auth',
         provider: this.authProvider,
-        email: auth?.email,
-        socials: auth?.socials,
-        showWallets: auth?.showWallets === undefined ? true : auth.showWallets,
-        chain: this.chainNamespace,
-        walletFeatures: auth?.walletFeatures
+        chain: this.chainNamespace
       })
 
       this.appKit?.setLoading(true)

@@ -1,5 +1,9 @@
 import { beforeAll, describe, expect, it, vi } from 'vitest'
-import type { ConnectionControllerClient, ConnectorType } from '../../exports/index.js'
+import type {
+  ChainAdapter,
+  ConnectionControllerClient,
+  ConnectorType
+} from '../../exports/index.js'
 import {
   ChainController,
   ConnectionController,
@@ -33,6 +37,7 @@ const client: ConnectionControllerClient = {
   getEnsAvatar: async (value: string) => Promise.resolve(value)
 }
 
+const clientConnectWalletConnectSpy = vi.spyOn(client, 'connectWalletConnect')
 const clientConnectExternalSpy = vi.spyOn(client, 'connectExternal')
 const clientCheckInstalledSpy = vi.spyOn(client, 'checkInstalled')
 
@@ -49,9 +54,20 @@ const partialClient: ConnectionControllerClient = {
   getEnsAvatar: async (value: string) => Promise.resolve(value)
 }
 
+const evmAdapter = {
+  chainNamespace: CommonConstantsUtil.CHAIN.EVM,
+  connectionControllerClient: client
+}
+const adapters = [evmAdapter] as ChainAdapter[]
+const universalAdapter = {
+  chainNamespace: 'eip155',
+  connectionControllerClient: client
+} as ChainAdapter
+
 // -- Tests --------------------------------------------------------------------
 beforeAll(() => {
-  ChainController.initialize([{ chainNamespace: CommonConstantsUtil.CHAIN.EVM }])
+  ChainController.initialize(adapters)
+  ChainController.initializeUniversalAdapter(universalAdapter, adapters)
 })
 
 describe('ConnectionController', () => {
@@ -62,7 +78,8 @@ describe('ConnectionController', () => {
 
     expect(ConnectionController.state).toEqual({
       wcError: false,
-      buffering: false
+      buffering: false,
+      status: 'disconnected'
     })
   })
 
@@ -72,7 +89,7 @@ describe('ConnectionController', () => {
     expect(ConnectionController.state.wcPairingExpiry).toEqual(undefined)
   })
 
-  it('should update state correctly and set wcPromise on connectWalletConnect()', async () => {
+  it('should update state correctly and set wcPromisae on connectWalletConnect()', async () => {
     // Setup timers for pairing expiry
     const fakeDate = new Date(0)
     vi.useFakeTimers()
@@ -83,6 +100,7 @@ describe('ConnectionController', () => {
     expect(ConnectionController.state.wcUri).toEqual(walletConnectUri)
     expect(ConnectionController.state.wcPairingExpiry).toEqual(ConstantsUtil.FOUR_MINUTES_MS)
     expect(storageSpy).toHaveBeenCalledWith('WALLET_CONNECT')
+    expect(clientConnectWalletConnectSpy).toHaveBeenCalled()
 
     // Just in case
     vi.useRealTimers()

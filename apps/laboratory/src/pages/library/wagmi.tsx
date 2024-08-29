@@ -16,15 +16,13 @@ const wagmiAdapter = new EVMWagmiClient()
 const modal = createWeb3Modal({
   adapters: [wagmiAdapter],
   caipNetworks: [polygon, mainnet, zkSync, optimism],
-  defaultCaipNetwork: polygon,
   projectId: ConstantsUtil.ProjectId,
   features: {
-    analytics: true
+    analytics: true,
+    socials: ['google', 'github', 'apple', 'x', 'farcaster', 'facebook', 'discord'],
+    emailShowWallets: false
   },
-  metadata: ConstantsUtil.Metadata,
-  termsConditionsUrl: 'https://walletconnect.com/terms',
-  privacyPolicyUrl: 'https://walletconnect.com/privacy',
-  customWallets: ConstantsUtil.CustomWallets
+  metadata: ConstantsUtil.Metadata
 })
 
 ThemeStore.setModal(modal)

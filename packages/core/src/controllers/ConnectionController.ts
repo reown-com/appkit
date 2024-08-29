@@ -27,7 +27,7 @@ export interface ConnectExternalOptions {
 }
 
 export interface ConnectionControllerClient {
-  connectWalletConnect: (onUri: (uri: string) => void) => Promise<void>
+  connectWalletConnect?: (onUri: (uri: string) => void) => Promise<void>
   disconnect: () => Promise<void>
   signMessage: (message: string) => Promise<string>
   sendTransaction: (args: SendTransactionArgs) => Promise<`0x${string}` | null>
@@ -87,7 +87,7 @@ export const ConnectionController = {
   async connectWalletConnect() {
     StorageUtil.setConnectedConnector('WALLET_CONNECT')
 
-    await ChainController.state?.universalAdapter?.connectionControllerClient?.connectWalletConnect(
+    await ChainController.state?.universalAdapter?.connectionControllerClient?.connectWalletConnect?.(
       uri => {
         state.wcUri = uri
         state.wcPairingExpiry = CoreHelperUtil.getPairingExpiry()
@@ -193,7 +193,6 @@ export const ConnectionController = {
 
     try {
       await connectionControllerClient?.disconnect()
-      StorageUtil.removeConnectedWalletImageUrl()
       this.resetWcConnection()
     } catch (error) {
       throw new Error('Failed to disconnect')

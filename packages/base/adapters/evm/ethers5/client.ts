@@ -863,7 +863,6 @@ export class EVMEthers5Client {
       const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`
 
       this.appKit?.setIsConnected(isConnected, this.chainNamespace)
-
       this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)
       this.syncConnectedWalletInfo()
 

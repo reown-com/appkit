@@ -7,14 +7,10 @@ import { mainnet, solana, arbitrum, optimism } from '../../utils/NetworksUtil'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { MultiChainTests } from '../../components/MultiChainTests'
-import { MultiChainInfo } from '../../components/MultiChainInfo'
 
 const etherAdapter = new EVMEthersClient()
 
 const solanaWeb3JsAdapter = new SolanaWeb3JsClient({
-  solanaConfig: {
-    metadata: ConstantsUtil.Metadata
-  },
   wallets: [new HuobiWalletAdapter(), new SolflareWalletAdapter()]
 })
 
@@ -36,7 +32,6 @@ export default function MultiChainAllAdapters() {
   return (
     <>
       <AppKitButtons />
-      <MultiChainInfo />
       <MultiChainTests />
     </>
   )

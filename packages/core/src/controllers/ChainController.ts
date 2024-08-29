@@ -197,14 +197,20 @@ export const ChainController = {
     }
   },
 
+  // eslint-disable-next-line max-params
   setAccountProp(
     prop: keyof AccountControllerState,
     value: AccountControllerState[keyof AccountControllerState],
-    chain: ChainNamespace | undefined
+    chain: ChainNamespace | undefined,
+    replaceState = true
   ) {
-    this.setChainAccountData(chain, {
-      [prop]: value
-    })
+    this.setChainAccountData(
+      chain,
+      {
+        [prop]: value
+      },
+      replaceState
+    )
   },
 
   setActiveChain(chain: ChainNamespace | undefined) {
@@ -215,6 +221,7 @@ export const ChainController = {
       state.activeCaipNetwork = newAdapter.networkState?.caipNetwork
         ? ref(newAdapter.networkState?.caipNetwork)
         : undefined
+
       AccountController.replaceState(newAdapter.accountState)
       NetworkController.replaceState(newAdapter.networkState)
       this.setCaipNetwork(newAdapter.chainNamespace, newAdapter.networkState?.caipNetwork, true)

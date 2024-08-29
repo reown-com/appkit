@@ -1,23 +1,27 @@
-import { proxy } from 'valtio/vanilla'
+import { proxy, ref, subscribe } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import type UniversalProvider from '@walletconnect/universal-provider'
+import type { ChainNamespace } from '@web3modal/common'
 
 type StateKey = keyof ProviderStoreUtilState
 
 export interface ProviderStoreUtilState {
   // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-  provider?: UniversalProvider | unknown | undefined
-  providerId?:
-    | 'walletConnect'
-    | 'injected'
-    | 'coinbaseWallet'
-    | 'eip6963'
-    | 'w3mAuth'
-    | 'coinbaseWalletSDK'
+  providers: Record<ChainNamespace, UniversalProvider | unknown | undefined>
+  providerIds: Record<ChainNamespace, ProviderIdType | undefined>
 }
 
+type ProviderIdType =
+  | 'walletConnect'
+  | 'injected'
+  | 'coinbaseWallet'
+  | 'eip6963'
+  | 'w3mAuth'
+  | 'coinbaseWalletSDK'
+
 const state = proxy<ProviderStoreUtilState>({
-  provider: undefined
+  providers: { eip155: undefined, solana: undefined },
+  providerIds: { eip155: undefined, solana: undefined }
 })
 
 export const ProviderUtil = {
@@ -27,24 +31,37 @@ export const ProviderUtil = {
     return subKey(state, key, callback)
   },
 
-  setProvider<T = UniversalProvider>(provider: T) {
+  subscribeProviders(callback: (providers: ProviderStoreUtilState['providers']) => void) {
+    return subscribe(state.providers, () => callback(state.providers))
+  },
+
+  setProvider<T = UniversalProvider>(chainNamespace: ChainNamespace, provider: T) {
     if (provider) {
-      state.provider = provider as T
+      state.providers[chainNamespace] = ref(provider) as T
     }
   },
 
-  getProvider<T = UniversalProvider>(): T {
-    return state.provider as T
+  getProvider<T = UniversalProvider>(chainNamespace: ChainNamespace): T | undefined {
+    return state.providers[chainNamespace] as T | undefined
   },
 
-  setProviderId(providerId: ProviderStoreUtilState['providerId']) {
+  setProviderId(chainNamespace: ChainNamespace, providerId: ProviderIdType) {
     if (providerId) {
-      state.providerId = providerId
+      state.providerIds[chainNamespace] = providerId
     }
+  },
+
+  getProviderId(chainNamespace: ChainNamespace): ProviderIdType | undefined {
+    return state.providerIds[chainNamespace]
   },
 
   reset() {
-    state.provider = undefined
-    state.providerId = undefined
+    state.providers = { eip155: undefined, solana: undefined }
+    state.providerIds = { eip155: undefined, solana: undefined }
+  },
+
+  resetChain(chainNamespace: ChainNamespace) {
+    state.providers[chainNamespace] = undefined
+    state.providerIds[chainNamespace] = undefined
   }
 }

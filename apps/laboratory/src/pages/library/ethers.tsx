@@ -12,15 +12,14 @@ const ethersAdapter = new EVMEthersClient()
 const modal = createWeb3Modal({
   adapters: [ethersAdapter],
   caipNetworks: EthersConstants.chains,
-  defaultCaipNetwork: EthersConstants.chains[1],
   projectId: ConstantsUtil.ProjectId,
   features: {
-    analytics: true
+    analytics: true,
+    email: false,
+    socials: ['google', 'discord', 'github', 'apple'],
+    emailShowWallets: false
   },
-  metadata: ConstantsUtil.Metadata,
-  termsConditionsUrl: 'https://walletconnect.com/terms',
-  privacyPolicyUrl: 'https://walletconnect.com/privacy',
-  customWallets: ConstantsUtil.CustomWallets
+  metadata: ConstantsUtil.Metadata
 })
 
 ThemeStore.setModal(modal)
