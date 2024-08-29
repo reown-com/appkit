@@ -72,21 +72,27 @@ export class CoSignerApiError extends Error {
 }
 
 // Function to send requests to the CoSigner API
-async function sendCoSignerRequest<TRequest, TResponse>(args: {
+async function sendCoSignerRequest<
+  TRequest,
+  TResponse,
+  TQueryParams extends Record<string, string> = Record<string, never>
+>(args: {
   url: string
   data: TRequest
-  projectId: string
+  queryParams?: TQueryParams
   headers: Record<string, string>
   transformRequest?: (data: TRequest) => unknown
-}) {
-  const { url, data, projectId, headers, transformRequest } = args
+}): Promise<TResponse> {
+  const { url, data, queryParams = {}, headers, transformRequest } = args
   const transformedData = transformRequest ? transformRequest(data) : data
 
   try {
-    return await axios.post<TResponse>(url, transformedData, {
-      params: { projectId },
+    const response = await axios.post<TResponse>(url, transformedData, {
+      params: queryParams,
       headers
     })
+
+    return response.data
   } catch (error) {
     if (axios.isAxiosError(error)) {
       const axiosError = error as AxiosError
@@ -104,13 +110,14 @@ async function sendCoSignerRequest<TRequest, TResponse>(args: {
   }
 }
 
+const WC_COSIGNER_BASE_URL = 'https://rpc.walletconnect.com/v1/sessions'
 // Class to interact with the WalletConnect CoSigner API
 export class WalletConnectCosigner {
   private baseUrl: string
   private projectId: string
 
   constructor() {
-    this.baseUrl = 'https://rpc.walletconnect.com/v1/sessions'
+    this.baseUrl = WC_COSIGNER_BASE_URL
     const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
     if (!projectId) {
       throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
@@ -121,14 +128,16 @@ export class WalletConnectCosigner {
   async addPermission(address: string, permission: AddPermission): Promise<AddPermissionResponse> {
     const url = `${this.baseUrl}/${encodeURIComponent(address)}`
 
-    const response = await sendCoSignerRequest<AddPermissionRequest, AddPermissionResponse>({
+    return await sendCoSignerRequest<
+      AddPermissionRequest,
+      AddPermissionResponse,
+      { projectId: string }
+    >({
       url,
       data: { permission },
-      projectId: this.projectId,
+      queryParams: { projectId: this.projectId },
       headers: { 'Content-Type': 'application/json' }
     })
-
-    return response.data
   }
 
   async updatePermissionsContext(
@@ -136,37 +145,33 @@ export class WalletConnectCosigner {
     updateData: UpdatePermissionsContextRequest
   ): Promise<void> {
     const url = `${this.baseUrl}/${encodeURIComponent(address)}/context`
-    await sendCoSignerRequest<UpdatePermissionsContextRequest, never>({
+    await sendCoSignerRequest<UpdatePermissionsContextRequest, never, { projectId: string }>({
       url,
       data: updateData,
-      projectId: this.projectId,
+      queryParams: { projectId: this.projectId },
       headers: { 'Content-Type': 'application/json' }
     })
   }
 
   async revokePermission(address: string, revokeData: RevokePermissionRequest): Promise<void> {
     const url = `${this.baseUrl}/${encodeURIComponent(address)}/revoke`
-    await sendCoSignerRequest<RevokePermissionRequest, never>({
+    await sendCoSignerRequest<RevokePermissionRequest, never, { projectId: string }>({
       url,
       data: revokeData,
-      projectId: this.projectId,
+      queryParams: { projectId: this.projectId },
       headers: { 'Content-Type': 'application/json' }
     })
   }
 
   async coSignUserOperation(address: string, coSignData: CoSignRequest): Promise<CoSignResponse> {
     const url = `${this.baseUrl}/${encodeURIComponent(address)}/sign`
-    if (!this.projectId) {
-      throw new Error('Project ID is not defined')
-    }
-    const response = await sendCoSignerRequest<CoSignRequest, CoSignResponse>({
+
+    return await sendCoSignerRequest<CoSignRequest, CoSignResponse, { projectId: string }>({
       url,
       data: coSignData,
-      projectId: this.projectId,
+      queryParams: { projectId: this.projectId },
       headers: { 'Content-Type': 'application/json' },
       transformRequest: (value: CoSignRequest) => JSON.stringify(value, bigIntReplacer)
     })
-
-    return response.data
   }
 }
