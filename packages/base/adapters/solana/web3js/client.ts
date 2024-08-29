@@ -202,10 +202,7 @@ export class SolanaWeb3JsClient {
     this.initializeProviders({
       relayUrl: 'wss://relay.walletconnect.com',
       metadata: options.metadata,
-      projectId: options.projectId,
-      email: options.features?.email,
-      socials: options.features?.socials,
-      showWallets: options.features?.allWallets
+      projectId: options.projectId
     })
 
     this.syncRequestedNetworks(caipNetworks)
@@ -494,30 +491,22 @@ export class SolanaWeb3JsClient {
     return walletConnectProvider
   }
 
-  private initializeProviders(opts: UniversalProviderOpts & Provider['auth']) {
+  private initializeProviders(opts: UniversalProviderOpts) {
     if (CoreHelperUtil.isClient()) {
-      if (opts.email || opts.socials) {
-        if (!opts.projectId) {
-          throw new Error('projectId is required for AuthProvider')
-        }
-
-        this.addProvider(
-          new AuthProvider({
-            provider: new W3mFrameProvider(
-              opts.projectId,
-              withSolanaNamespace(this.appKit?.getCaipNetwork()?.chainId)
-            ),
-            getActiveChain: () => this.appKit?.getCaipNetwork(),
-            auth: {
-              email: opts.email,
-              socials: opts.socials,
-              showWallets: opts.showWallets,
-              walletFeatures: true
-            },
-            chains: this.caipNetworks
-          })
-        )
+      if (!opts.projectId) {
+        throw new Error('projectId is required for AuthProvider')
       }
+
+      this.addProvider(
+        new AuthProvider({
+          provider: new W3mFrameProvider(
+            opts.projectId,
+            withSolanaNamespace(this.appKit?.getCaipNetwork()?.chainId)
+          ),
+          getActiveChain: () => this.appKit?.getCaipNetwork(),
+          chains: this.caipNetworks
+        })
+      )
 
       if (this.appKit && this.caipNetworks[0]) {
         watchStandard(this.appKit, this.caipNetworks[0], standardAdapters =>
@@ -551,8 +540,7 @@ export class SolanaWeb3JsClient {
       imageUrl: provider.icon,
       name: provider.name,
       provider,
-      chain: CommonConstantsUtil.CHAIN.SOLANA,
-      ...provider.auth
+      chain: CommonConstantsUtil.CHAIN.SOLANA
     }))
 
     this.appKit?.setConnectors(connectors)

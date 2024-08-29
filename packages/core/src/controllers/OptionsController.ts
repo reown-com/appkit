@@ -1,30 +1,17 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy } from 'valtio/vanilla'
-import type { CustomWallet, Metadata, ProjectId, SdkVersion, Tokens } from '../utils/TypeUtil.js'
+import type {
+  CustomWallet,
+  Features,
+  Metadata,
+  ProjectId,
+  SdkVersion,
+  Tokens
+} from '../utils/TypeUtil.js'
 import { ApiController } from './ApiController.js'
+import { DEFAULT_FEATURES } from '../utils/ConstantsUtil.js'
 
 // -- Types --------------------------------------------- //
-export type FeaturesSocials =
-  | 'google'
-  | 'x'
-  | 'discord'
-  | 'farcaster'
-  | 'github'
-  | 'apple'
-  | 'facebook'
-
-export type Features = {
-  swaps?: boolean
-  onramp?: boolean
-  email?: boolean
-  socials?: FeaturesSocials[]
-  history?: boolean
-  analytics?: boolean
-  allWallets?: boolean
-}
-
-export type FeaturesKeys = keyof Features
-
 export interface OptionsControllerState {
   projectId: ProjectId
   sdkType: 'w3m'
@@ -40,20 +27,17 @@ export interface OptionsControllerState {
   isSiweEnabled?: boolean
   metadata?: Metadata
   disableAppend?: boolean
-  enableAnalytics?: boolean
-  enableOnramp?: boolean
   enableEIP6963?: boolean
-  enableSwaps?: boolean
-  email?: Features['email']
-  socials?: Features['socials']
   isUniversalProvider?: boolean
   hasMultipleAddresses?: boolean
+  features: Features
 }
 
 type StateKey = keyof OptionsControllerState
 
 // -- State --------------------------------------------- //
 const state = proxy<OptionsControllerState>({
+  features: DEFAULT_FEATURES,
   projectId: '',
   sdkType: 'w3m',
   sdkVersion: 'html-wagmi-undefined'
@@ -69,6 +53,18 @@ export const OptionsController = {
 
   setOptions(options: OptionsControllerState) {
     Object.assign(state, options)
+  },
+
+  setFeatures(features: OptionsControllerState['features'] | undefined) {
+    if (!features) {
+      return
+    }
+
+    Object.entries(features).forEach(([key, value]) => {
+      if (key in state.features) {
+        ;(state.features as Record<keyof Features, unknown>)[key as keyof Features] = value
+      }
+    })
   },
 
   setProjectId(projectId: OptionsControllerState['projectId']) {
@@ -118,20 +114,12 @@ export const OptionsController = {
     state.isUniversalProvider = isUniversalProvider
   },
 
-  setEnableAnalytics(enableAnalytics: OptionsControllerState['enableAnalytics']) {
-    state.enableAnalytics = enableAnalytics
-  },
-
   setSdkVersion(sdkVersion: OptionsControllerState['sdkVersion']) {
     state.sdkVersion = sdkVersion
   },
 
   setMetadata(metadata: OptionsControllerState['metadata']) {
     state.metadata = metadata
-  },
-
-  setOnrampEnabled(enableOnramp: OptionsControllerState['enableOnramp']) {
-    state.enableOnramp = enableOnramp
   },
 
   setDisableAppend(disableAppend: OptionsControllerState['disableAppend']) {
@@ -144,9 +132,5 @@ export const OptionsController = {
 
   setHasMultipleAddresses(hasMultipleAddresses: OptionsControllerState['hasMultipleAddresses']) {
     state.hasMultipleAddresses = hasMultipleAddresses
-  },
-
-  setEnableSwaps(enableSwaps: OptionsControllerState['enableSwaps']) {
-    state.enableSwaps = enableSwaps
   }
 }

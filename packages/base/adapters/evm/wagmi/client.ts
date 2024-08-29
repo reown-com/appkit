@@ -31,7 +31,8 @@ import type {
   GetAccountReturnType,
   GetEnsAddressReturnType,
   Config,
-  CreateConnectorFn
+  CreateConnectorFn,
+  CreateConfigParameters
 } from '@wagmi/core'
 import type {
   ConnectionControllerClient,
@@ -39,7 +40,6 @@ import type {
   NetworkControllerClient,
   PublicStateControllerState,
   SendTransactionArgs,
-  SocialProvider,
   WriteContractArgs
 } from '@web3modal/core'
 import { formatUnits, parseUnits } from 'viem'
@@ -83,6 +83,8 @@ export class EVMWagmiClient {
   // -- Private variables -------------------------------------------------------
   private appKit: AppKit | undefined = undefined
 
+  private createConfigParams?: CreateConfigParameters
+
   // -- Public variables --------------------------------------------------------
   public options: AppKitOptions | undefined = undefined
 
@@ -108,6 +110,10 @@ export class EVMWagmiClient {
 
   public adapterType: AdapterType = 'wagmi'
 
+  public constructor(configParams?: CreateConfigParameters) {
+    this.createConfigParams = configParams
+  }
+
   private createWagmiConfig(options: AppKitOptions, appKit: AppKit) {
     this.wagmiChains = convertCaipNetworksToWagmiChains(
       options.caipNetworks.filter(
@@ -123,10 +129,12 @@ export class EVMWagmiClient {
     const transports = Object.fromEntries(transportsArr)
     const connectors: CreateConnectorFn[] = []
 
+    if (this.createConfigParams?.connectors) {
+      connectors.push(...this.createConfigParams.connectors)
+    }
+
     connectors.push(walletConnect(options, appKit))
-
     connectors.push(injected({ shimDisconnect: true }))
-
     connectors.push(
       coinbaseWallet({
         version: '4',
@@ -143,15 +151,10 @@ export class EVMWagmiClient {
         preference: 'all'
       })
     )
-
     connectors.push(
       authConnector({
         chains: this.wagmiChains,
-        options: { projectId: options.projectId },
-        socials: ['google'],
-        email: true,
-        showWallets: true,
-        walletFeatures: true
+        options: { projectId: options.projectId }
       })
     )
 
@@ -208,6 +211,7 @@ export class EVMWagmiClient {
         })
       }
     }
+
     this.connectionControllerClient = {
       connectWalletConnect: async () => {
         if (!this.wagmiConfig) {
@@ -591,6 +595,7 @@ export class EVMWagmiClient {
       this.appKit?.setProfileName(null, this.chainNamespace)
     }
   }
+
   private async syncProfile(address: Hex, chainId: Chain['id']) {
     if (!this.appKit) {
       throw new Error('syncProfile - appKit is undefined')
@@ -665,8 +670,12 @@ export class EVMWagmiClient {
         )
       }
     } else {
+      const wagmiConnector = this.appKit?.getConnectors().find(c => c.id === connector.id)
       this.appKit?.setConnectedWalletInfo(
-        { name: connector.name, icon: connector.icon },
+        {
+          name: connector.name,
+          icon: connector.icon || this.appKit.getConnectorImage(wagmiConnector)
+        },
         this.chainNamespace
       )
     }
@@ -722,12 +731,7 @@ export class EVMWagmiClient {
     _authConnector: AdapterOptions<Config>['wagmiConfig']['connectors'][number] | undefined
   ) {
     const connector =
-      _authConnector as unknown as AdapterOptions<Config>['wagmiConfig']['connectors'][0] & {
-        email: boolean
-        socials: SocialProvider[]
-        showWallets?: boolean
-        walletFeatures?: boolean
-      }
+      _authConnector as unknown as AdapterOptions<Config>['wagmiConfig']['connectors'][0]
 
     if (connector) {
       const provider = await connector.getProvider()
@@ -736,10 +740,6 @@ export class EVMWagmiClient {
         type: 'AUTH',
         name: 'Auth',
         provider,
-        email: connector.email,
-        socials: connector.socials,
-        showWallets: connector?.showWallets === undefined ? true : connector.showWallets,
-        walletFeatures: connector.walletFeatures,
         chain: this.chainNamespace
       })
       this.initAuthConnectorListeners(_authConnector)

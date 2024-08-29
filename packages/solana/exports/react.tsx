@@ -9,8 +9,7 @@ import { type Connection, type Provider } from '@web3modal/base/adapters/solana/
 import type { SolanaAppKitOptions } from './options.js'
 
 // -- Types -------------------------------------------------------------------
-export type { SolanaAppKitOptions }
-export type { Provider }
+export type { SolanaAppKitOptions, Provider }
 
 // -- Setup -------------------------------------------------------------
 let appkit: AppKit | undefined = undefined

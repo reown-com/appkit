@@ -1,7 +1,7 @@
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
-import { OptionsController, StorageUtil } from '@web3modal/core'
+import { AccountController, OptionsController } from '@web3modal/core'
 
 @customElement('w3m-connecting-siwe')
 export class W3mConnectingSiwe extends LitElement {
@@ -10,7 +10,7 @@ export class W3mConnectingSiwe extends LitElement {
   // -- Members ------------------------------------------- //
   private readonly dappImageUrl = OptionsController.state.metadata?.icons
 
-  private readonly walletImageUrl = StorageUtil.getConnectedWalletImageUrl()
+  private readonly walletImageUrl = AccountController.state.connectedWalletInfo?.icon
 
   public override firstUpdated() {
     const visuals = this.shadowRoot?.querySelectorAll('wui-visual-thumbnail')

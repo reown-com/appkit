@@ -5,9 +5,7 @@ import type {
   ModalControllerState,
   ConnectedWalletInfo,
   RouterControllerState,
-  ChainAdapter,
-  Features,
-  FeaturesKeys
+  ChainAdapter
 } from '@web3modal/core'
 import {
   AccountController,
@@ -24,7 +22,8 @@ import {
   RouterController,
   EnsController,
   OptionsController,
-  NetworkController
+  NetworkController,
+  AssetUtil
 } from '@web3modal/core'
 import { setColorTheme, setThemeVariables } from '@web3modal/ui'
 import { ConstantsUtil, type CaipNetwork, type ChainNamespace } from '@web3modal/common'
@@ -34,17 +33,6 @@ import { PresetsUtil } from '@web3modal/scaffold-utils'
 
 // -- Export Controllers -------------------------------------------------------
 export { AccountController, NetworkController }
-
-// -- Constants ----------------------------------------------------------------
-const DEFAULT_FEATURES: Features = {
-  swaps: true,
-  onramp: true,
-  email: true,
-  socials: ['google', 'x', 'discord', 'farcaster', 'github', 'apple', 'facebook'],
-  history: true,
-  analytics: true,
-  allWallets: true
-}
 
 // -- Types --------------------------------------------------------------------
 export interface OpenOptions {
@@ -332,6 +320,9 @@ export class AppKit {
     BlockchainApiController.setClientId(clientId)
   }
 
+  public getConnectorImage: (typeof AssetUtil)['getConnectorImage'] = connector =>
+    AssetUtil.getConnectorImage(connector)
+
   // -- Private ------------------------------------------------------------------
   private async initControllers(options: AppKitOptions) {
     this.adapters = options.adapters
@@ -348,11 +339,7 @@ export class AppKit {
     OptionsController.setTermsConditionsUrl(options.termsConditionsUrl)
     OptionsController.setPrivacyPolicyUrl(options.privacyPolicyUrl)
     OptionsController.setCustomWallets(options.customWallets)
-    OptionsController.setEnableAnalytics(
-      this.getFeatureValue('analytics', options.features) === true
-    )
-    OptionsController.setOnrampEnabled(this.getFeatureValue('onramp', options.features) !== false)
-    OptionsController.setEnableSwaps(this.getFeatureValue('swaps', options.features) !== false)
+    OptionsController.setFeatures(options.features)
 
     if (options.metadata) {
       OptionsController.setMetadata(options.metadata)
@@ -413,10 +400,6 @@ export class AppKit {
 
       NetworkController.setDefaultCaipNetwork(options.defaultCaipNetwork)
     })
-  }
-
-  private getFeatureValue(key: FeaturesKeys, features?: Features) {
-    return (features?.[key] || DEFAULT_FEATURES[key]) as Features[FeaturesKeys]
   }
 
   private async initOrContinue() {

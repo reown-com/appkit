@@ -1,7 +1,6 @@
 import { createWeb3Modal } from '@web3modal/base/react'
 
 import { ThemeStore } from '../../utils/StoreUtil'
-
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { SolanaTests } from '../../components/Solana/SolanaTests'
@@ -18,13 +17,11 @@ const modal = createWeb3Modal({
   projectId: ConstantsUtil.ProjectId,
   metadata: ConstantsUtil.Metadata,
   caipNetworks: [solana, solanaTestnet, solanaDevnet],
+  defaultCaipNetwork: solana,
   features: {
-    swaps: false,
-    analytics: true
-  },
-  termsConditionsUrl: 'https://walletconnect.com/terms',
-  privacyPolicyUrl: 'https://walletconnect.com/privacy',
-  customWallets: ConstantsUtil.CustomWallets
+    analytics: false,
+    swaps: false
+  }
 })
 
 ThemeStore.setModal(modal)

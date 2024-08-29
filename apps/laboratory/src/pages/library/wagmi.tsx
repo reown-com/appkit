@@ -18,7 +18,9 @@ const modal = createWeb3Modal({
   caipNetworks: [polygon, mainnet, zkSync, optimism],
   projectId: ConstantsUtil.ProjectId,
   features: {
-    analytics: true
+    analytics: true,
+    socials: ['google', 'github', 'apple', 'x', 'farcaster', 'facebook', 'discord'],
+    emailShowWallets: false
   },
   metadata: ConstantsUtil.Metadata
 })

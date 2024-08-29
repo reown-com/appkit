@@ -1,4 +1,9 @@
-import { ChainController, ConnectorController, CoreHelperUtil } from '@web3modal/core'
+import {
+  ChainController,
+  ConnectorController,
+  CoreHelperUtil,
+  OptionsController
+} from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
@@ -20,6 +25,8 @@ export class W3mEmailLoginWidget extends LitElement {
   // -- State & Properties -------------------------------- //
   @state() private connectors = ConnectorController.state.connectors
 
+  @state() private authConnector = this.connectors.find(c => c.type === 'AUTH')
+
   @state() private email = ''
 
   @state() private loading = false
@@ -29,7 +36,10 @@ export class W3mEmailLoginWidget extends LitElement {
   public constructor() {
     super()
     this.unsubscribe.push(
-      ConnectorController.subscribeKey('connectors', val => (this.connectors = val))
+      ConnectorController.subscribeKey('connectors', val => {
+        this.connectors = val
+        this.authConnector = val.find(c => c.type === 'AUTH')
+      })
     )
   }
 
@@ -47,10 +57,10 @@ export class W3mEmailLoginWidget extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const connector = this.connectors.find(c => c.type === 'AUTH')
+    const { socials, email } = OptionsController.state.features
     const multipleConnectors = this.connectors.length > 1
 
-    if (!connector?.email) {
+    if (!this.authConnector || !email) {
       return null
     }
 
@@ -68,7 +78,7 @@ export class W3mEmailLoginWidget extends LitElement {
         <input type="submit" hidden />
       </form>
 
-      ${connector.socials || !multipleConnectors
+      ${socials || !multipleConnectors
         ? null
         : html`<wui-flex .padding=${['xxs', '0', '0', '0'] as const}>
             <wui-separator text="or"></wui-separator>

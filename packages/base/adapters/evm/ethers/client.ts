@@ -161,12 +161,6 @@ export class EVMEthersClient {
     providers.injected = getInjectedProvider()
     providers.coinbase = getCoinbaseProvider()
     providers.EIP6963 = true
-    const auth = {
-      email: true,
-      showWallets: true,
-      walletFeatures: true
-    }
-    providers.auth = auth
 
     return providers
   }
@@ -465,13 +459,12 @@ export class EVMEthersClient {
 
     this.appKit?.setEIP6963Enabled(this.ethersConfig?.EIP6963)
 
-    if (this.ethersConfig?.auth) {
-      this.syncAuthConnector(this.options.projectId, this.ethersConfig.auth)
-    }
+    this.syncAuthConnector(this.options.projectId)
 
     if (this.ethersConfig) {
       this.checkActiveProviders(this.ethersConfig)
     }
+
     this.syncRequestedNetworks(this.caipNetworks)
   }
 
@@ -920,6 +913,15 @@ export class EVMEthersClient {
           this.chainNamespace
         )
       }
+    } else if (providerType === ConstantsUtil.COINBASE_SDK_CONNECTOR_ID) {
+      const connector = this.appKit
+        ?.getConnectors()
+        .find(c => c.id === ConstantsUtil.COINBASE_SDK_CONNECTOR_ID)
+
+      this.appKit?.setConnectedWalletInfo(
+        { name: 'Coinbase Wallet', icon: this.appKit?.getConnectorImage(connector) },
+        this.chainNamespace
+      )
     } else if (currentActiveWallet) {
       this.appKit?.setConnectedWalletInfo({ name: currentActiveWallet }, this.chainNamespace)
     }
@@ -1038,7 +1040,7 @@ export class EVMEthersClient {
     this.appKit?.setConnectors(w3mConnectors)
   }
 
-  private async syncAuthConnector(projectId: string, auth: ProviderType['auth']) {
+  private async syncAuthConnector(projectId: string) {
     if (typeof window !== 'undefined') {
       this.authProvider = new W3mFrameProvider(projectId)
 
@@ -1047,11 +1049,7 @@ export class EVMEthersClient {
         type: 'AUTH',
         name: 'Auth',
         provider: this.authProvider,
-        email: auth?.email,
-        socials: auth?.socials,
-        showWallets: auth?.showWallets === undefined ? true : auth.showWallets,
-        chain: this.chainNamespace,
-        walletFeatures: auth?.walletFeatures
+        chain: this.chainNamespace
       })
 
       this.appKit?.setLoading(true)

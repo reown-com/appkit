@@ -4,6 +4,7 @@ import {
   ConnectorController,
   CoreHelperUtil,
   EventsController,
+  OptionsController,
   RouterController,
   SnackController,
   type SocialProvider
@@ -31,14 +32,16 @@ export class W3mSocialLoginWidget extends LitElement {
   // -- State & Properties -------------------------------- //
   @state() private connectors = ConnectorController.state.connectors
 
-  private connector = this.connectors.find(c => c.type === 'AUTH')
+  @state() private features = OptionsController.state.features
+
+  @state() private authConnector = this.connectors.find(c => c.type === 'AUTH')
 
   public constructor() {
     super()
     this.unsubscribe.push(
       ConnectorController.subscribeKey('connectors', val => {
         this.connectors = val
-        this.connector = this.connectors.find(c => c.type === 'AUTH')
+        this.authConnector = this.connectors.find(c => c.type === 'AUTH')
       })
     )
   }
@@ -49,7 +52,9 @@ export class W3mSocialLoginWidget extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    if (!this.connector?.socials) {
+    const { socials } = this.features
+
+    if (!this.authConnector || !socials?.length) {
       return null
     }
 
@@ -59,6 +64,7 @@ export class W3mSocialLoginWidget extends LitElement {
         flexDirection="column"
         gap="xs"
         .padding=${['0', '0', 'xs', '0'] as const}
+        data-testid="w3m-social-login-widget"
       >
         ${this.topViewTemplate()}${this.bottomViewTemplate()}
       </wui-flex>
@@ -68,13 +74,15 @@ export class W3mSocialLoginWidget extends LitElement {
 
   // -- Private ------------------------------------------- //
   private topViewTemplate() {
-    if (!this.connector?.socials) {
+    const { socials } = this.features
+
+    if (!this.authConnector || !socials?.length) {
       return null
     }
 
-    if (this.connector.socials.length === 2) {
+    if (socials.length === 2) {
       return html` <wui-flex gap="xs">
-        ${this.connector.socials.slice(0, MAX_TOP_VIEW).map(
+        ${socials.slice(0, MAX_TOP_VIEW).map(
           social =>
             html`<wui-logo-select
               data-testid=${`social-selector-${social}`}
@@ -88,28 +96,30 @@ export class W3mSocialLoginWidget extends LitElement {
     }
 
     return html` <wui-list-social
-      data-testid=${`social-selector-${this.connector?.socials?.[0]}`}
+      data-testid=${`social-selector-${socials?.[0]}`}
       @click=${() => {
-        this.onSocialClick(this.connector?.socials?.[0])
+        this.onSocialClick(socials?.[0])
       }}
-      logo=${ifDefined(this.connector.socials[0])}
+      logo=${ifDefined(socials[0])}
       align="center"
-      name=${`Continue with ${this.connector.socials[0]}`}
+      name=${`Continue with ${socials[0]}`}
     ></wui-list-social>`
   }
 
   private bottomViewTemplate() {
-    if (!this.connector?.socials) {
+    const { socials } = this.features
+
+    if (!this.authConnector || !socials?.length) {
       return null
     }
 
-    if (this.connector?.socials.length <= MAX_TOP_VIEW) {
+    if (socials.length <= MAX_TOP_VIEW) {
       return null
     }
 
-    if (this.connector?.socials.length > MAXIMUM_LENGTH) {
+    if (socials.length > MAXIMUM_LENGTH) {
       return html`<wui-flex gap="xs">
-        ${this.connector.socials.slice(1, MAXIMUM_LENGTH - 1).map(
+        ${socials.slice(1, MAXIMUM_LENGTH - 1).map(
           social =>
             html`<wui-logo-select
               data-testid=${`social-selector-${social}`}
@@ -124,7 +134,7 @@ export class W3mSocialLoginWidget extends LitElement {
     }
 
     return html`<wui-flex gap="xs">
-      ${this.connector.socials.slice(1, this.connector.socials.length).map(
+      ${socials.slice(1, socials.length).map(
         social =>
           html`<wui-logo-select
             data-testid=${`social-selector-${social}`}

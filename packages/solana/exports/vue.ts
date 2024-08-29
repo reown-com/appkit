@@ -2,10 +2,11 @@ import { getWeb3Modal } from '@web3modal/base/utils/library/vue'
 import { AppKit } from '@web3modal/base'
 import { SolanaWeb3JsClient } from '@web3modal/base/adapters/solana/web3js'
 import type { CaipNetwork } from '@web3modal/common'
+import type { Provider } from '@web3modal/base/adapters/solana/web3js'
 import type { SolanaAppKitOptions } from './options'
 
 // -- Types -------------------------------------------------------------------
-export type { SolanaAppKitOptions }
+export type { SolanaAppKitOptions, Provider }
 
 // -- Setup -------------------------------------------------------------------
 let appkit: AppKit | undefined = undefined

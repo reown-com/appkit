@@ -16,7 +16,6 @@ import { SwapCalculationUtil } from '../utils/SwapCalculationUtil.js'
 import { EventsController } from './EventsController.js'
 import { W3mFrameRpcConstants } from '@web3modal/wallet'
 import { StorageUtil } from '../utils/StorageUtil.js'
-import { ConnectorController } from './ConnectorController.js'
 
 // -- Constants ---------------------------------------- //
 export const INITIAL_GAS_LIMIT = 150000
@@ -176,7 +175,6 @@ export const SwapController = {
     const address = AccountController.state.address
     const networkAddress = `${caipNetwork?.id}:${ConstantsUtil.NATIVE_TOKEN_ADDRESS}`
     const type = StorageUtil.getConnectedConnector()
-    const authConnector = ConnectorController.getAuthConnector()
 
     if (!address) {
       throw new Error('No address found to swap the tokens from.')
@@ -205,7 +203,7 @@ export const SwapController = {
       invalidSourceTokenAmount,
       availableToSwap:
         caipAddress && !invalidToToken && !invalidSourceToken && !invalidSourceTokenAmount,
-      isAuthConnector: authConnector?.walletFeatures && type === 'AUTH'
+      isAuthConnector: type === 'AUTH'
     }
   },
 

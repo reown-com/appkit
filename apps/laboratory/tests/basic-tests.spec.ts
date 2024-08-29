@@ -13,6 +13,12 @@ testM.describe('Modal only tests', () => {
     await openHookButton.click()
     await expect(modalPage.page.getByTestId('all-wallets')).toBeVisible()
   })
+
+  testM('Should show socials enabled by default', async ({ modalPage }) => {
+    const modalValidator = new ModalValidator(modalPage.page)
+    await modalPage.page.getByTestId('connect-button').click()
+    await modalValidator.expectSocialsVisible()
+  })
 })
 
 testMExternal.describe('External connectors tests', () => {

@@ -28,12 +28,18 @@ export const wagmiConfigMock = createConfig({
   }
 })
 
-const wagmiAdapterMock = new EVMWagmiClient()
+export const wagmiAdapterMock = new EVMWagmiClient({
+  chains: [wagmiMainnet],
+  connectors: [mock({ accounts: [mockAccount.address] })],
+  transports: {
+    [wagmiMainnet.id]: http()
+  }
+})
 
 const mockAppKitData = {
   adapters: [wagmiAdapterMock],
   caipNetworks: [mainnet],
-  defaultCaipNetwork: wagmiAdapterMock.defaultCaipNetwork,
+  defaultCaipNetwork: mainnet,
   metadata: {
     description: 'Desc',
     name: 'Name',

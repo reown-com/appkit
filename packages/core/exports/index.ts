@@ -45,12 +45,7 @@ export { ThemeController } from '../src/controllers/ThemeController.js'
 export type { ThemeControllerState } from '../src/controllers/ThemeController.js'
 
 export { OptionsController } from '../src/controllers/OptionsController.js'
-export type {
-  OptionsControllerState,
-  Features,
-  FeaturesKeys,
-  FeaturesSocials
-} from '../src/controllers/OptionsController.js'
+export type { OptionsControllerState } from '../src/controllers/OptionsController.js'
 
 export { BlockchainApiController } from '../src/controllers/BlockchainApiController.js'
 
@@ -81,5 +76,6 @@ export { ConstantsUtil } from '../src/utils/ConstantsUtil.js'
 export { CoreHelperUtil } from '../src/utils/CoreHelperUtil.js'
 export { StorageUtil } from '../src/utils/StorageUtil.js'
 export { RouterUtil } from '../src/utils/RouterUtil.js'
+export { OptionsUtil } from '../src/utils/OptionsUtil.js'
 
 export type * from '../src/utils/TypeUtil.js'

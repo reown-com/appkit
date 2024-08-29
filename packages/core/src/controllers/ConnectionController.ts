@@ -193,7 +193,6 @@ export const ConnectionController = {
 
     try {
       await connectionControllerClient?.disconnect()
-      StorageUtil.removeConnectedWalletImageUrl()
       this.resetWcConnection()
     } catch (error) {
       throw new Error('Failed to disconnect')
