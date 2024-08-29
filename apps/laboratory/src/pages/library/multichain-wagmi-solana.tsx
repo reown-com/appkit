@@ -1,7 +1,7 @@
 import React from 'react'
 import { createWeb3Modal } from '@web3modal/base/react'
 import { EVMWagmiClient } from '@web3modal/adapter-wagmi'
-import { SolanaWeb3JsClient } from '@web3modal/adapter-solana'
+import { SolanaWeb3JsClient } from '@web3modal/adapter-solana/react'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'

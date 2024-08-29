@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import {
   createWeb3Modal,
-  defaultConfig,
   useWeb3Modal,
   useWeb3ModalEvents,
   useWeb3ModalState,
@@ -50,7 +49,13 @@ const ethersConfig = defaultConfig({
 createWeb3Modal({
   ethersConfig,
   projectId,
-  chains,
+  metadata: {
+    name: 'AppKit',
+    description: 'AppKit Laboratory',
+    url: 'https://example.com',
+    icons: ['https://avatars.githubusercontent.com/u/37784886']
+  },
+  caipNetworks: chains,
   themeMode: 'light',
   themeVariables: {
     '--w3m-color-mix': '#00BB7F',

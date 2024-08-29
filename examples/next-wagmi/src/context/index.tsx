@@ -13,7 +13,7 @@ if (!projectId) {
 }
 
 createWeb3Modal({
-  wagmiConfig: config,
+  caipNetworks: chains,
   projectId
 })
 

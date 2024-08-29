@@ -2,7 +2,6 @@
 import { arbitrum, mainnet } from '@wagmi/core/chains'
 import {
   createWeb3Modal,
-  defaultWagmiConfig,
   useWeb3Modal,
   useWeb3ModalEvents,
   useWeb3ModalState,
@@ -17,23 +16,18 @@ if (!projectId) {
 
 // 2. Create wagmiConfig
 const chains = [mainnet, arbitrum]
-const wagmiConfig = defaultWagmiConfig({
-  chains,
-  projectId,
+
+// 3. Create modal
+createWeb3Modal({
   metadata: {
     name: 'AppKit Vue Example',
     description: 'AppKit Vue Example',
     url: '',
     icons: [],
     verifyUrl: ''
-  }
-})
-
-// 3. Create modal
-createWeb3Modal({
-  wagmiConfig,
+  },
   projectId,
-  chains,
+  caipNetworks: [mainnet, arbitrum],
   themeMode: 'light',
   themeVariables: {
     '--w3m-color-mix': '#00BB7F',

@@ -15,7 +15,7 @@ import {
 
 import { solana } from '../../utils/NetworksUtil'
 import { useChakraToast } from '../Toast'
-import { type Provider, useWeb3ModalConnection } from '@web3modal/solana/react'
+import { type Provider, useWeb3ModalConnection } from '@web3modal/adapter-solana/react'
 
 const PHANTOM_TESTNET_ADDRESS = '8vCyX7oB6Pc3pbWMGYYZF5pbSnAdQ7Gyr32JqxqCy8ZR'
 const recipientAddress = new PublicKey(PHANTOM_TESTNET_ADDRESS)

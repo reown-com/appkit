@@ -1,6 +1,5 @@
 import {
   createWeb3Modal,
-  defaultConfig,
   useWeb3Modal,
   useWeb3ModalEvents,
   useWeb3ModalState,
@@ -35,20 +34,16 @@ const chains = [
   }
 ]
 
-const ethersConfig = defaultConfig({
+// 3. Create modal
+createWeb3Modal({
+  ethersConfig,
   metadata: {
     name: 'AppKit',
     description: 'AppKit Laboratory',
     url: 'https://example.com',
     icons: ['https://avatars.githubusercontent.com/u/37784886']
   },
-  defaultChainId: 1
-})
-
-// 3. Create modal
-createWeb3Modal({
-  ethersConfig,
-  chains,
+  caipNetworks: chains,
   projectId,
   enableAnalytics: true,
   themeMode: 'light',

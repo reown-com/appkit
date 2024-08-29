@@ -15,6 +15,33 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
+  "exports": {
+    ".": {
+      "types": "./dist/types/exports/index.d.ts",
+      "import": "./dist/esm/exports/index.js",
+      "default": "./dist/esm/exports/index.js"
+    },
+    "./react": {
+      "types": "./dist/types/exports/react.d.ts",
+      "import": "./dist/esm/exports/react.js",
+      "default": "./dist/esm/exports/react.js"
+    },
+    "./vue": {
+      "types": "./dist/types/exports/vue.d.ts",
+      "import": "./dist/esm/exports/vue.js",
+      "default": "./dist/esm/exports/vue.js"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "react": [
+        "./dist/types/exports/react.d.ts"
+      ],
+      "vue": [
+        "./dist/types/exports/vue.d.ts"
+      ]
+    }
+  },
   "dependencies": {
     "@walletconnect/utils": "2.14.0",
     "@web3modal/base": "workspace:*",
@@ -34,17 +61,23 @@
   },
   "devDependencies": {
     "@coinbase/wallet-sdk": "4.0.3",
+    "@types/react": "18.2.0",
+    "@types/react-dom": "18.2.0",
     "@solana/wallet-adapter-base": "0.9.23",
     "@solana/wallet-standard-features": "1.2.0",
     "@solana/wallet-standard-util": "1.1.1",
     "@solana/web3.js": "1.95.2",
     "@vitest/coverage-v8": "2.0.5",
+    "@vue/runtime-core": "3.4.3",
     "@wallet-standard/app": "1.0.1",
     "@wallet-standard/base": "1.0.1",
     "@wallet-standard/features": "1.0.3",
     "@wallet-standard/wallet": "1.0.1",
     "@walletconnect/types": "2.13.3",
     "@walletconnect/universal-provider": "2.15.1",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "vue": "3.4.3",
     "vitest": "2.0.3"
   },
   "keywords": [

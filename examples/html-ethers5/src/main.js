@@ -1,4 +1,4 @@
-import { createWeb3Modal, defaultConfig } from '@web3modal/ethers5'
+import { createWeb3Modal } from '@web3modal/ethers5'
 
 // @ts-expect-error 1. Get projectId
 const projectId = import.meta.env.VITE_PROJECT_ID
@@ -28,19 +28,14 @@ const chains = [
   }
 ]
 
-const ethersConfig = defaultConfig({
+// 3. Create modal
+const modal = createWeb3Modal({
   metadata: {
     name: 'AppKit',
     description: 'AppKit Laboratory',
     url: 'https://example.com',
     icons: ['https://avatars.githubusercontent.com/u/37784886']
   },
-  defaultChainId: 1
-})
-
-// 3. Create modal
-const modal = createWeb3Modal({
-  ethersConfig: { ...ethersConfig, email: true },
   projectId,
   chains,
   themeMode: 'light'

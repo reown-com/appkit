@@ -9,7 +9,7 @@ import {
 } from '@solana/web3.js'
 
 import { useWeb3ModalNetwork, useWeb3ModalProvider } from '@web3modal/base/react'
-import { useWeb3ModalConnection, type Provider } from '@web3modal/solana/react'
+import { useWeb3ModalConnection, type Provider } from '@web3modal/adapter-solana/react'
 import { solana } from '../../utils/NetworksUtil'
 import { useChakraToast } from '../Toast'
 
