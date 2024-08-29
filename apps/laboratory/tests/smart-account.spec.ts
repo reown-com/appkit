@@ -21,7 +21,7 @@ smartAccountTest.beforeAll(async ({ browser, library }) => {
   context = await browser.newContext()
   const browserPage = await context.newPage()
 
-  page = new ModalWalletPage(browserPage, library)
+  page = new ModalWalletPage(browserPage, library, 'default')
   validator = new ModalWalletValidator(browserPage)
 
   await page.load()
