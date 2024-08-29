@@ -43,7 +43,6 @@
     "@wallet-standard/base": "1.0.1",
     "@wallet-standard/features": "1.0.3",
     "@wallet-standard/wallet": "1.0.1",
-    "@walletconnect/ethereum-provider": "2.15.1",
     "@walletconnect/types": "2.13.3",
     "@walletconnect/universal-provider": "2.15.1",
     "vitest": "2.0.3"

@@ -31,6 +31,7 @@
   "dependencies": {
     "@web3modal/common": "workspace:*",
     "@web3modal/wallet": "workspace:*",
+    "@walletconnect/universal-provider": "2.15.1",
     "valtio": "1.11.2"
   },
   "devDependencies": {

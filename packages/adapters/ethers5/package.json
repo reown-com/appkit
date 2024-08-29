@@ -32,7 +32,6 @@
     "@coinbase/wallet-sdk": "4.0.3",
     "@ethersproject/sha2": "5.7.0",
     "@vitest/coverage-v8": "2.0.5",
-    "@walletconnect/ethereum-provider": "2.15.1",
     "@walletconnect/types": "2.13.3",
     "@walletconnect/universal-provider": "2.15.1",
     "ethers5": "npm:ethers@5.7.2",

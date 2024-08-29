@@ -4,7 +4,7 @@ import {
   type CaipNetworkId
 } from '@web3modal/common'
 import { ConstantsUtil, PresetsUtil } from '@web3modal/scaffold-utils'
-import { EthereumProvider } from '@walletconnect/ethereum-provider'
+import { UniversalProvider } from '@walletconnect/universal-provider'
 import { fallback, http, type Hex } from 'viem'
 
 import type { Chain } from '@wagmi/core/chains'
@@ -29,7 +29,7 @@ export async function getWalletConnectCaipNetworks(connector?: Connector) {
     throw new Error('networkControllerClient:getApprovedCaipNetworks - connector is undefined')
   }
   const provider = (await connector?.getProvider()) as Awaited<
-    ReturnType<(typeof EthereumProvider)['init']>
+    ReturnType<(typeof UniversalProvider)['init']>
   >
 
   const ns = provider?.session?.namespaces

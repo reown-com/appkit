@@ -52,7 +52,6 @@
     "test": "vitest run --dir tests"
   },
   "dependencies": {
-    "@walletconnect/ethereum-provider": "2.15.1",
     "@walletconnect/utils": "2.15.1",
     "@web3modal/polyfills": "workspace:*",
     "@web3modal/adapter-wagmi": "workspace:*",

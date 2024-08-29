@@ -29,6 +29,9 @@
     "*": {
       "ethers": [
         "./dist/types/exports/ethers.d.ts"
+      ],
+      "solana": [
+        "./dist/types/exports/solana.d.ts"
       ]
     }
   },

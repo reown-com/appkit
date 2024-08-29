@@ -19,8 +19,7 @@ const modal = createWeb3Modal({
   projectId: ConstantsUtil.ProjectId,
   features: {
     analytics: true,
-    socials: ['google', 'github', 'apple', 'x', 'farcaster', 'facebook', 'discord'],
-    emailShowWallets: false
+    socials: ['google', 'github', 'apple', 'x', 'farcaster', 'facebook', 'discord']
   },
   metadata: ConstantsUtil.Metadata
 })
