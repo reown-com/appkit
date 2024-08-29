@@ -11,10 +11,6 @@ import {
 import { ConstantsUtil, PresetsUtil } from '@web3modal/scaffold-utils'
 import UniversalProvider from '@walletconnect/universal-provider'
 import type { UniversalProviderOpts } from '@walletconnect/universal-provider'
-<<<<<<< HEAD
-=======
-import { WcConstantsUtil } from '../utils/ConstantsUtil.js'
->>>>>>> 9aa1954928a202716220e0edea2eb4468f9ae245
 import { WcHelpersUtil } from '../utils/HelpersUtil.js'
 import type { AppKit } from '../client.js'
 import type { SessionTypes } from '@walletconnect/types'
