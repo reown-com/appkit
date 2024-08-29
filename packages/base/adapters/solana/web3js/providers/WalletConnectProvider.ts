@@ -32,7 +32,7 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
     'https://imagedelivery.net/_aTEfDRm7z3tKgu9JhfeKA/05338e12-4f75-4982-4e8a-83c67b826b00/md'
 
   private provider: UniversalProvider
-  private session?: SessionTypes.Struct
+  public session?: SessionTypes.Struct
   private readonly requestedChains: Chain[]
   private readonly getActiveChain: WalletConnectProviderConfig['getActiveChain']
 

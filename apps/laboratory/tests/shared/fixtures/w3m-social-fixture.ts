@@ -10,7 +10,7 @@ export const testMSocial = timingFixture.extend<
   library: ['wagmi', { option: true }],
   social: ['github'],
   modalPage: async ({ page, library }, use) => {
-    const modalPage = new ModalPage(page, library, 'email')
+    const modalPage = new ModalPage(page, library, 'default')
     await modalPage.load()
 
     const socialMail = process.env['SOCIAL_TEST_EMAIL']

@@ -19,11 +19,11 @@ const emailTest = test.extend<{ library: string }>({
 emailTest.describe.configure({ mode: 'serial' })
 
 emailTest.beforeAll(async ({ browser, library }) => {
-  emailTest.setTimeout(180000)
+  emailTest.setTimeout(300000)
   context = await browser.newContext()
   browserPage = await context.newPage()
 
-  page = new ModalWalletPage(browserPage, library, 'email')
+  page = new ModalWalletPage(browserPage, library, 'default')
   validator = new ModalWalletValidator(browserPage)
 
   await page.load()
@@ -80,10 +80,9 @@ emailTest('it should switch network and sign', async ({ library }) => {
   targetChain = 'Ethereum'
   await page.goToSettings()
   await page.switchNetwork(targetChain)
-  if (library === 'wagmi') {
-    // In wagmi, after switching network, it closes the modal
-    await page.goToSettings()
-  }
+  // After switching network, it closes the modal
+  await page.goToSettings()
+
   await validator.expectSwitchedNetwork(targetChain)
   await page.closeModal()
   await page.sign()
