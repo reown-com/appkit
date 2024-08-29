@@ -1,11 +1,13 @@
 <script lang="ts" setup>
+import { EVMEthers5Client } from '@web3modal/adapter-ethers5'
 import {
   createWeb3Modal,
   useWeb3Modal,
   useWeb3ModalEvents,
   useWeb3ModalState,
   useWeb3ModalTheme
-} from '@web3modal/ethers5/vue'
+} from '@web3modal/base/vue'
+import { mainnet, arbitrum } from '@web3modal/base/chains'
 
 // @ts-expect-error 1. Get projectId
 const projectId = import.meta.env.VITE_PROJECT_ID
@@ -17,33 +19,8 @@ function getBlockchainApiRpcUrl(chainId) {
   return `https://rpc.walletconnect.org/v1/?chainId=eip155:${chainId}&projectId=${projectId}`
 }
 
-// 2. Set chains
-const chains = [
-  {
-    chainId: 1,
-    name: 'Ethereum',
-    currency: 'ETH',
-    explorerUrl: 'https://etherscan.io',
-    rpcUrl: getBlockchainApiRpcUrl(1)
-  },
-  {
-    chainId: 42161,
-    name: 'Arbitrum',
-    currency: 'ETH',
-    explorerUrl: 'https://arbiscan.io',
-    rpcUrl: getBlockchainApiRpcUrl(42161)
-  }
-]
-
-const ethersConfig = defaultConfig({
-  metadata: {
-    name: 'AppKit',
-    description: 'AppKit Laboratory',
-    url: 'https://example.com',
-    icons: ['https://avatars.githubusercontent.com/u/37784886']
-  },
-  defaultChainId: 1
-})
+// 2. Set Ethers adapter
+const ethersAdapter = new EVMEthers5Client()
 
 // 3. Create modal
 createWeb3Modal({
@@ -55,7 +32,7 @@ createWeb3Modal({
     url: 'https://example.com',
     icons: ['https://avatars.githubusercontent.com/u/37784886']
   },
-  caipNetworks: chains,
+  caipNetworks: [mainnet, arbitrum],
   themeMode: 'light',
   themeVariables: {
     '--w3m-color-mix': '#00BB7F',

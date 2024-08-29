@@ -76,9 +76,12 @@ importers:
       '@tanstack/react-query':
         specifier: 5.24.8
         version: 5.24.8(react@18.2.0)
-      '@web3modal/wagmi':
+      '@web3modal/adapter-wagmi':
         specifier: workspace:*
-        version: link:../../packages/wagmi
+        version: link:../../packages/adapters/wagmi
+      '@web3modal/base':
+        specifier: workspace:*
+        version: link:../../packages/base
       clsx:
         specifier: 2.1.0
         version: 2.1.0
@@ -322,9 +325,12 @@ importers:
 
   examples/html-ethers5:
     dependencies:
-      '@web3modal/ethers5':
+      '@web3modal/adapter-ethers5':
         specifier: workspace:*
-        version: link:../../packages/ethers5
+        version: link:../../packages/adapters/ethers5
+      '@web3modal/base':
+        specifier: workspace:*
+        version: link:../../packages/base
       ethers:
         specifier: 5.7.2
         version: 5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
@@ -341,9 +347,12 @@ importers:
       '@wagmi/core':
         specifier: 2.13.4
         version: 2.13.4(@tanstack/query-core@5.24.8)(@types/react@18.2.62)(react@18.2.0)(typescript@5.3.3)(viem@2.19.6(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4))
-      '@web3modal/wagmi':
+      '@web3modal/adapter-wagmi':
         specifier: workspace:*
-        version: link:../../packages/wagmi
+        version: link:../../packages/adapters/wagmi
+      '@web3modal/base':
+        specifier: workspace:*
+        version: link:../../packages/base
       react:
         specifier: 18.2.0
         version: 18.2.0
@@ -372,9 +381,6 @@ importers:
       '@web3modal/base':
         specifier: workspace:*
         version: link:../../packages/base
-      '@web3modal/wagmi':
-        specifier: workspace:*
-        version: link:../../packages/wagmi
       next:
         specifier: 14.2.3
         version: 14.2.3(@babel/core@7.25.2)(@playwright/test@1.44.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -446,9 +452,12 @@ importers:
 
   examples/react-ethers5:
     dependencies:
-      '@web3modal/ethers5':
+      '@web3modal/adapter-ethers5':
         specifier: workspace:*
-        version: link:../../packages/ethers5
+        version: link:../../packages/adapters/ethers5
+      '@web3modal/base':
+        specifier: workspace:*
+        version: link:../../packages/base
       ethers:
         specifier: 5.7.2
         version: 5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
@@ -511,9 +520,12 @@ importers:
       '@tanstack/react-query':
         specifier: 5.24.8
         version: 5.24.8(react@18.2.0)
-      '@web3modal/wagmi':
+      '@web3modal/adapter-wagmi':
         specifier: workspace:*
-        version: link:../../packages/wagmi
+        version: link:../../packages/adapters/wagmi
+      '@web3modal/base':
+        specifier: workspace:*
+        version: link:../../packages/base
       react:
         specifier: 18.2.0
         version: 18.2.0
@@ -545,9 +557,12 @@ importers:
 
   examples/vue-ethers5:
     dependencies:
-      '@web3modal/ethers5':
+      '@web3modal/adapter-ethers5':
         specifier: workspace:*
-        version: link:../../packages/ethers5
+        version: link:../../packages/adapters/ethers5
+      '@web3modal/base':
+        specifier: workspace:*
+        version: link:../../packages/base
       ethers:
         specifier: 5.7.2
         version: 5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
@@ -592,9 +607,12 @@ importers:
       '@wagmi/core':
         specifier: 2.13.4
         version: 2.13.4(@tanstack/query-core@5.24.8)(@types/react@18.2.62)(react@18.2.0)(typescript@5.3.3)(viem@2.19.6(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4))
-      '@web3modal/wagmi':
+      '@web3modal/adapter-wagmi':
         specifier: workspace:*
-        version: link:../../packages/wagmi
+        version: link:../../packages/adapters/wagmi
+      '@web3modal/base':
+        specifier: workspace:*
+        version: link:../../packages/base
       vue:
         specifier: 3.4.3
         version: 3.4.3(typescript@5.3.3)

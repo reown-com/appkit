@@ -27,9 +27,9 @@
       "default": "./dist/esm/exports/react.js"
     },
     "./vue": {
-      "types": "./dist/types/exports/vue/index.d.ts",
-      "import": "./dist/esm/exports/vue/index.js",
-      "default": "./dist/esm/exports/vue/index.js"
+      "types": "./dist/types/exports/vue.d.ts",
+      "import": "./dist/esm/exports/vue.js",
+      "default": "./dist/esm/exports/vue.js"
     },
     "./library/react": {
       "types": "./dist/types/exports/library/react.d.ts",

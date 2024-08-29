@@ -1,5 +1,6 @@
-import { arbitrum, mainnet } from '@wagmi/core/chains'
-import { createWeb3Modal } from '@web3modal/wagmi'
+import { arbitrum, mainnet } from '@web3modal/base/chains'
+import { EVMWagmiClient } from '@web3modal/adapter-wagmi'
+import { createWeb3Modal } from '@web3modal/base'
 
 // @ts-expect-error 1. Get projectId
 const projectId = import.meta.env.VITE_PROJECT_ID
@@ -7,8 +8,12 @@ if (!projectId) {
   throw new Error('VITE_PROJECT_ID is not set')
 }
 
+// 2. Create Wagmi adapter
+const wagmiAdapter = new EVMWagmiClient()
+
 // 3. Create modal
 const modal = createWeb3Modal({
+  adapters: [wagmiAdapter],
   metadata: {
     name: 'Html Example',
     description: 'Html Example',

@@ -11,7 +11,8 @@
   "dependencies": {
     "@radix-ui/react-switch": "1.0.3",
     "@tanstack/react-query": "5.24.8",
-    "@web3modal/wagmi": "workspace:*",
+    "@web3modal/adapter-wagmi": "workspace:*",
+    "@web3modal/base": "workspace:*",
     "clsx": "2.1.0",
     "framer-motion": "11.0.8",
     "next": "14.2.3",
