@@ -9,6 +9,7 @@ import { Transaction, VersionedTransaction } from '@solana/web3.js'
 import { mockLegacyTransaction, mockVersionedTransaction } from './mocks/Transaction.js'
 import { AuthProvider } from '../providers/AuthProvider.js'
 import { mockW3mFrameProvider } from './mocks/W3mFrameProvider.js'
+import { isVersionedTransaction } from '@solana/wallet-adapter-base'
 
 const getActiveChain = vi.fn(() => TestConstants.chains[0])
 
@@ -110,8 +111,13 @@ describe.each(providers)('Generic provider tests for $name', ({ provider }) => {
     const result = await provider.signAllTransactions(transactions)
 
     expect(result).toHaveLength(transactions.length)
-    result.forEach(transaction => {
-      expect(transaction.signatures).toHaveLength(1)
+
+    transactions.forEach((transaction, index) => {
+      if (isVersionedTransaction(transaction)) {
+        expect(result[index]).toBeInstanceOf(VersionedTransaction)
+      } else {
+        expect(result[index]).toBeInstanceOf(Transaction)
+      }
     })
   })
 })

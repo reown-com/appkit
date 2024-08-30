@@ -183,7 +183,7 @@ export class WalletStandardProvider extends ProviderEventEmitter implements Prov
     return signature
   }
 
-  public async signAllTransactions(transactions: AnyTransaction[]) {
+  public async signAllTransactions<T extends AnyTransaction[]>(transactions: T): Promise<T> {
     const feature = this.getWalletFeature(SolanaSignTransaction)
 
     const account = this.getAccount(true)
@@ -205,11 +205,11 @@ export class WalletStandardProvider extends ProviderEventEmitter implements Prov
       }
 
       if (isVersionedTransaction(transaction)) {
-        return VersionedTransaction.deserialize(signedTransaction) as AnyTransaction
+        return VersionedTransaction.deserialize(signedTransaction)
       }
 
-      return Transaction.from(signedTransaction) as AnyTransaction
-    })
+      return Transaction.from(signedTransaction)
+    }) as T
   }
 
   // -- Private ------------------------------------------- //

@@ -56,7 +56,7 @@ export interface Provider extends ProviderEventEmitterMethods {
     connection: Connection,
     options?: SendTransactionOptions
   ) => Promise<TransactionSignature>
-  signAllTransactions: (transactions: AnyTransaction[]) => Promise<AnyTransaction[]>
+  signAllTransactions: <T extends AnyTransaction[]>(transactions: T) => Promise<T>
 }
 
 export interface ProviderEventEmitterMethods {
