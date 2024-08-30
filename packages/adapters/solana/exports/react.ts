@@ -2,6 +2,9 @@ import { useSnapshot } from 'valtio'
 import { SolStoreUtil } from '../src/utils/SolanaStoreUtil.js'
 import { type Connection } from '../src/utils/SolanaTypesUtil.js'
 
+// -- Types -----------------------------------------------------------
+export * from '../src/utils/SolanaTypesUtil.js'
+
 // -- Source -----------------------------------------------------------
 export * from '../src/index.js'
 
