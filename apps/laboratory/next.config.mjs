@@ -1,13 +1,18 @@
 /** @type {import('next').NextConfig} */
-// Keep in-sync with https://docs.walletconnect.com/advanced/security/content-security-policy
+const SHAKRA_UI = `'sha256-e7MRMmTzLsLQvIy1iizO1lXf7VWYoQ6ysj5fuUzvRwE='`
+/*
+ * Keep in-sync with https://docs.walletconnect.com/advanced/security/content-security-policy
+ * DO NOT use `unsafe-inline` or `unsafe-eval` for `script-src` or `default-src` in production as this
+ * is against CSP best practices
+ */
 const cspHeader = `
   default-src 'self';
-  script-src 'self' 'unsafe-inline' ${process.env.NODE_ENV === 'production' ? '' : "'unsafe-eval'"};
+  script-src 'self' ${SHAKRA_UI} ${process.env.NODE_ENV === 'production' ? '' : "'unsafe-eval'"};
   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-  img-src 'self' data: blob: https://walletconnect.org https://walletconnect.com https://secure.walletconnect.com https://secure.walletconnect.org https://tokens-data.1inch.io https://tokens.1inch.io https://ipfs.io https://lab.web3modal.com;
+  img-src * 'self' data: blob: https://walletconnect.org https://secure.walletconnect.org https://tokens-data.1inch.io https://tokens.1inch.io https://ipfs.io https://lab.web3modal.com;
   font-src 'self' https://fonts.gstatic.com;
-  connect-src 'self' https://rpc.walletconnect.com https://rpc.walletconnect.org https://explorer.walletconnect.com https://explorer.walletconnect.org https://relay.walletconnect.com https://relay.walletconnect.org wss://relay.walletconnect.com wss://relay.walletconnect.org https://pulse.walletconnect.com https://pulse.walletconnect.org https://api.web3modal.com https://api.web3modal.org wss://www.walletlink.org https://o1095249.ingest.sentry.io;
-  frame-src 'self' https://verify.walletconnect.com https://verify.walletconnect.org https://secure.walletconnect.com https://secure.walletconnect.org;
+  connect-src 'self' https://rpc.walletconnect.org https://explorer.walletconnect.org https://relay.walletconnect.org wss://relay.walletconnect.org https://pulse.walletconnect.org https://api.web3modal.org wss://www.walletlink.org https://o1095249.ingest.sentry.io;
+  frame-src 'self' https://verify.walletconnect.org https://secure.walletconnect.org;
   object-src 'none';
   base-uri 'self';
   form-action 'self';
@@ -39,7 +44,7 @@ const nextConfig = {
         source: '/:path*',
         headers: [
           {
-            key: 'Content-Security-Policy-Report-Only',
+            key: 'Content-Security-Policy',
             value: cspHeader.replace(/\n/g, ' ').trim()
           },
           {
