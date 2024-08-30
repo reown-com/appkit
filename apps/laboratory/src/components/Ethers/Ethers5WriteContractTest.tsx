@@ -6,7 +6,7 @@ import {
   type Provider
 } from '@web3modal/base/react'
 import { ethers } from 'ethers5'
-import { optimism, sepolia } from '../../utils/NetworksUtil'
+import { optimism, sepolia } from '@web3modal/base/chains'
 import { useState } from 'react'
 
 import { abi, address as donutAddress } from '../../utils/DonutContract'

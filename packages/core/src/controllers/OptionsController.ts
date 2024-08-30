@@ -9,7 +9,7 @@ import type {
   Tokens
 } from '../utils/TypeUtil.js'
 import { ApiController } from './ApiController.js'
-import { DEFAULT_FEATURES } from '../utils/ConstantsUtil.js'
+import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 
 // -- Types --------------------------------------------- //
 export interface OptionsControllerState {
@@ -37,7 +37,7 @@ type StateKey = keyof OptionsControllerState
 
 // -- State --------------------------------------------- //
 const state = proxy<OptionsControllerState>({
-  features: DEFAULT_FEATURES,
+  features: ConstantsUtil.DEFAULT_FEATURES,
   projectId: '',
   sdkType: 'w3m',
   sdkVersion: 'html-wagmi-undefined'

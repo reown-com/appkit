@@ -7,7 +7,7 @@ import {
 } from '@web3modal/base/react'
 import { BrowserProvider, JsonRpcSigner, ethers } from 'ethers'
 import { useState } from 'react'
-import { mainnet } from '../../utils/NetworksUtil'
+import { mainnet } from '@web3modal/base/chains'
 import { vitalikEthAddress } from '../../utils/DataUtil'
 import { useChakraToast } from '../Toast'
 

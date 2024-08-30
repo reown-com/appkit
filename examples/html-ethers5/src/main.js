@@ -1,4 +1,6 @@
-import { createWeb3Modal, defaultConfig } from '@web3modal/ethers5'
+import { EVMEthers5Client } from '@web3modal/adapter-ethers5'
+import { mainnet, arbitrum } from '@web3modal/base/chains'
+import { createWeb3Modal } from '@web3modal/base'
 
 // @ts-expect-error 1. Get projectId
 const projectId = import.meta.env.VITE_PROJECT_ID
@@ -11,36 +13,18 @@ function getBlockchainApiRpcUrl(chainId) {
 }
 
 // 2. Create wagmiConfig
-const chains = [
-  {
-    chainId: 1,
-    name: 'Ethereum',
-    currency: 'ETH',
-    explorerUrl: 'https://etherscan.io',
-    rpcUrl: getBlockchainApiRpcUrl(1)
-  },
-  {
-    chainId: 42161,
-    name: 'Arbitrum',
-    currency: 'ETH',
-    explorerUrl: 'https://arbiscan.io',
-    rpcUrl: getBlockchainApiRpcUrl(42161)
-  }
-]
+const ethers5Adapter = new EVMEthers5Client()
 
-const ethersConfig = defaultConfig({
+// 3. Create modal
+const modal = createWeb3Modal({
+  adapters: [ethers5Adapter],
+  caipNetworks: [mainnet, arbitrum],
   metadata: {
     name: 'AppKit',
     description: 'AppKit Laboratory',
     url: 'https://example.com',
     icons: ['https://avatars.githubusercontent.com/u/37784886']
   },
-  defaultChainId: 1
-})
-
-// 3. Create modal
-const modal = createWeb3Modal({
-  ethersConfig: { ...ethersConfig, email: true },
   projectId,
   chains,
   themeMode: 'light'

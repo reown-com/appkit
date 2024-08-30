@@ -1,6 +1,5 @@
-import { defaultWagmiConfig } from '@web3modal/wagmi/react/config'
-import { cookieStorage, createStorage } from 'wagmi'
-import { mainnet, sepolia } from 'wagmi/chains'
+import { cookieStorage, createStorage } from '@wagmi/core'
+import { EVMWagmiClient } from '@web3modal/adapter-wagmi'
 
 export const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
 
@@ -8,20 +7,11 @@ if (!projectId) {
   throw new Error('Project ID is not defined')
 }
 
-export const config = defaultWagmiConfig({
-  projectId,
-  chains: [mainnet, sepolia],
-  metadata: {
-    name: 'My App',
-    description: 'My app description',
-    url: 'https://myapp.com',
-    icons: ['https://myapp.com/favicon.ico']
-  },
-  enableWalletConnect: true,
-  enableEIP6963: true,
-  enableCoinbase: true,
+export const wagmiAdapter = new EVMWagmiClient({
   storage: createStorage({
     storage: cookieStorage
   }),
   ssr: true
 })
+
+export const config = wagmiAdapter.wagmiConfig

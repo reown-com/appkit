@@ -22,7 +22,7 @@ import {
   createConfig,
   getConnectors
 } from '@wagmi/core'
-import { ChainController } from '@web3modal/core'
+import { ChainController, ConstantsUtil as CoreConstantsUtil } from '@web3modal/core'
 import type UniversalProvider from '@walletconnect/universal-provider'
 import { prepareTransactionRequest, sendTransaction as wagmiSendTransaction } from '@wagmi/core'
 import type { Chain } from '@wagmi/core/chains'
@@ -47,7 +47,7 @@ import type { Hex } from 'viem'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
 import { ConstantsUtil as CommonConstants } from '@web3modal/common'
 import {
-  convertCaipNetworksToWagmiChains,
+  convertToAppKitChains,
   getEmailCaipNetworks,
   getTransport,
   getWalletConnectCaipNetworks,
@@ -84,7 +84,7 @@ export class EVMWagmiClient {
   // -- Private variables -------------------------------------------------------
   private appKit: AppKit | undefined = undefined
 
-  private createConfigParams?: CreateConfigParameters
+  private createConfigParams?: Partial<CreateConfigParameters>
 
   // -- Public variables --------------------------------------------------------
   public options: AppKitOptions | undefined = undefined
@@ -111,12 +111,12 @@ export class EVMWagmiClient {
 
   public adapterType: AdapterType = 'wagmi'
 
-  public constructor(configParams?: CreateConfigParameters) {
+  public constructor(configParams?: Partial<CreateConfigParameters>) {
     this.createConfigParams = configParams
   }
 
   private createWagmiConfig(options: AppKitOptions, appKit: AppKit) {
-    this.wagmiChains = convertCaipNetworksToWagmiChains(
+    this.wagmiChains = convertToAppKitChains(
       options.caipNetworks.filter(
         caipNetwork => caipNetwork.chainNamespace === CommonConstantsUtil.CHAIN.EVM
       )
@@ -130,41 +130,46 @@ export class EVMWagmiClient {
     const transports = Object.fromEntries(transportsArr)
     const connectors: CreateConnectorFn[] = []
 
-    if (this.createConfigParams?.connectors) {
-      connectors.push(...this.createConfigParams.connectors)
+    connectors.push(walletConnect(options, appKit))
+
+    if (options.enableInjected !== false) {
+      connectors.push(injected({ shimDisconnect: true }))
     }
 
-    connectors.push(walletConnect(options, appKit))
-    connectors.push(injected({ shimDisconnect: true }))
-    connectors.push(
-      coinbaseWallet({
-        version: '4',
-        appName: options.metadata?.name ?? 'Unknown',
-        appLogoUrl: options.metadata?.icons[0] ?? 'Unknown',
-        /**
-         * Determines which wallet options to display in Coinbase Wallet SDK.
-         * @property preference
-         *   - `all`: Show both smart wallet and EOA options.
-         *   - `smartWalletOnly`: Show only smart wallet options.
-         *   - `eoaOnly`: Show only EOA options.
-         * @see https://www.smartwallet.dev/sdk/v3-to-v4-changes#parameters
-         */
-        preference: options.coinbasePreference ?? 'all'
-      })
-    )
-    connectors.push(
-      authConnector({
-        chains: this.wagmiChains,
-        options: { projectId: options.projectId }
-      })
-    )
+    if (options.enableCoinbase !== false) {
+      connectors.push(
+        coinbaseWallet({
+          version: '4',
+          appName: options.metadata?.name ?? 'Unknown',
+          appLogoUrl: options.metadata?.icons[0] ?? 'Unknown',
+          preference: options.coinbasePreference ?? 'all'
+        })
+      )
+    }
+
+    const emailEnabled =
+      options.features?.email === undefined
+        ? CoreConstantsUtil.DEFAULT_FEATURES.email
+        : options.features?.email
+    const socialsEnabled =
+      options.features?.socials === undefined
+        ? CoreConstantsUtil.DEFAULT_FEATURES.socials
+        : options.features?.socials?.length > 0
+
+    if (emailEnabled || socialsEnabled) {
+      connectors.push(
+        authConnector({
+          chains: this.wagmiChains,
+          options: { projectId: options.projectId }
+        })
+      )
+    }
 
     return createConfig({
+      ...this.createConfigParams,
       chains: this.wagmiChains,
-      multiInjectedProviderDiscovery: true,
       transports,
-      connectors,
-      ssr: true
+      connectors: [...connectors, ...(this.createConfigParams?.connectors ?? [])]
     })
   }
 

@@ -1,4 +1,4 @@
-import { solana, solanaDevnet, solanaTestnet } from './NetworksUtil'
+import { solana, solanaDevnet, solanaTestnet } from '@web3modal/base/chains'
 
 export const COUNTER_ACCOUNT_SIZE = 8
 

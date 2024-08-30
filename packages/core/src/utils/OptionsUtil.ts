@@ -1,4 +1,4 @@
-import { DEFAULT_FEATURES } from './ConstantsUtil.js'
+import { ConstantsUtil } from './ConstantsUtil.js'
 import type { Features, FeaturesKeys } from './TypeUtil.js'
 
 export const OptionsUtil = {
@@ -6,7 +6,7 @@ export const OptionsUtil = {
     const optionValue = features?.[key]
 
     if (optionValue === undefined) {
-      return DEFAULT_FEATURES[key] as Features[typeof key]
+      return ConstantsUtil.DEFAULT_FEATURES[key] as Features[typeof key]
     }
 
     return optionValue as Features[typeof key]

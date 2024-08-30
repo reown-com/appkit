@@ -4,10 +4,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build:clean": "turbo run build:clean --filter={./packages/*}",
+    "build:clean": "turbo run build:clean --filter={./packages/*,./packages/adapters/*}",
     "build:sample-apps": "turbo run build --filter={./examples/*}",
-    "build": "turbo run build --filter={./packages/*} --concurrency=31",
-    "watch": "turbo run watch --filter={./packages/*} --concurrency=50 --continue",
+    "build": "turbo run build --filter={./packages/*,./packages/adapters/*} --concurrency=31",
+    "watch": "turbo run watch --filter={./packages/*,./packages/adapters/*} --concurrency=50 --continue",
     "gallery": "turbo run dev --filter={./apps/gallery}",
     "laboratory": "pnpm --filter @apps/laboratory dev",
     "demo": "turbo run dev --filter={./apps/demo}",

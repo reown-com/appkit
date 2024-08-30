@@ -21,7 +21,7 @@ import {
 import { WcHelpersUtil } from '@web3modal/base'
 import type { AppKitOptions } from '@web3modal/base'
 import type { AppKit } from '@web3modal/base'
-import { convertCaipNetworksToWagmiChains } from '../utils/helpers.js'
+import { convertToAppKitChains } from '../utils/helpers.js'
 import type { CaipNetwork } from '@web3modal/common'
 import { WcConstantsUtil } from '@web3modal/base/utils'
 
@@ -289,7 +289,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
       }
 
       const chain = parameters.caipNetworks.find(x => x.chainId === chainId)
-      const [wagmiChain] = chain ? convertCaipNetworksToWagmiChains([chain]) : []
+      const [wagmiChain] = chain ? convertToAppKitChains([chain]) : []
 
       if (!wagmiChain) {
         throw new SwitchChainError(new ChainNotConfiguredError())

@@ -1,13 +1,13 @@
-import { defaultWagmiConfig } from '@web3modal/wagmi/react/config'
 import {
   createWeb3Modal,
   useWeb3Modal,
   useWeb3ModalEvents,
   useWeb3ModalState,
   useWeb3ModalTheme
-} from '@web3modal/wagmi/react'
+} from '@web3modal/base/react'
+import { mainnet, polygon } from '@web3modal/base/chains'
+import { EVMWagmiClient } from '@web3modal/adapter-wagmi'
 import { WagmiProvider } from 'wagmi'
-import { arbitrum, mainnet } from 'wagmi/chains'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 // 0. Setup queryClient for WAGMIv2
@@ -19,21 +19,19 @@ if (!projectId) {
   throw new Error('VITE_PROJECT_ID is not set')
 }
 
-// 2. Create wagmiConfig
-const wagmiConfig = defaultWagmiConfig({
-  chains: [mainnet, arbitrum],
-  projectId,
+// 2. Setup wagmi adapter
+const wagmiConfig = new EVMWagmiClient()
+
+// 3. Create modal
+createWeb3Modal({
+  adapters: [wagmiConfig],
+  caipNetworks: [mainnet, polygon],
   metadata: {
     name: 'AppKit React Example',
     description: 'AppKit React Example',
     url: '',
     icons: []
-  }
-})
-
-// 3. Create modal
-createWeb3Modal({
-  wagmiConfig,
+  },
   projectId,
   themeMode: 'light',
   themeVariables: {

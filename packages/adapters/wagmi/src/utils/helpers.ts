@@ -96,7 +96,7 @@ export function requireCaipAddress(caipAddress: string) {
   return account
 }
 
-export function convertCaipNetworksToWagmiChains(caipNetworks: CaipNetwork[]) {
+export function convertToAppKitChains(caipNetworks: CaipNetwork[]) {
   const chains = caipNetworks.map(caipNetwork => ({
     blockExplorers: {
       default: {
