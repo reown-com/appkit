@@ -87,8 +87,7 @@ export function useERC7715Permissions() {
           }
         },
         signerData: {
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
-          userOpBuilder: approvedPermissions.signerData?.userOpBuilder!
+          userOpBuilder: approvedPermissions.signerData?.userOpBuilder || ''
         },
         permissionsContext: approvedPermissions.permissionsContext,
         factory: approvedPermissions.factory || '',
