@@ -5,7 +5,7 @@ import { getLocalBravePath, BRAVE_LINUX_PATH } from '../constants/browsers'
 
 const availableDevices = getAvailableDevices()
 
-const LIBRARIES = ['ethers', 'wagmi', 'solana'] as const
+const LIBRARIES = ['ethers5', 'ethers', 'wagmi', 'solana'] as const
 
 const PERMUTATIONS = availableDevices.flatMap(device =>
   LIBRARIES.map(library => ({ device, library }))
@@ -41,15 +41,30 @@ const SOLANA_DISABLED_TESTS = [
   'siwe-email.spec.ts',
   'siwe-sa.spec.ts',
   'smart-account.spec.ts',
-  'social.spec.ts',
   'wallet-features.spec.ts',
-  'wallet.spec.ts'
+  'metamask.spec.ts',
+  'verify.spec.ts'
 ]
-const WAGMI_DISABLED_TESTS = ['smart-account.spec.ts', 'social.spec.ts']
-const ETHERS_DISABLED_TESTS = ['wallet-features.spec.ts', 'social.spec.ts']
+const WAGMI_DISABLED_TESTS = ['metamask.spec.ts', 'smart-account.spec.ts', 'verify.spec.ts']
+const ETHERS_DISABLED_TESTS = ['metamask.spec.ts', 'verify.spec.ts']
+const ETHERS5_DISABLED_TESTS = [
+  'metamask.spec.ts',
+  'verify.spec.ts',
+  'smart-account.spec.ts',
+  'email.spec.ts',
+  'smart-account.spec.ts',
+  'wallet-features.spec.ts',
+  'siwe-email.spec.ts',
+  'siwe-sa.spec.ts'
+]
 
 const ETHERS_EMAIL_BASED_REGEX = new RegExp(ETHERS_DISABLED_TESTS.join('|'), 'u')
+const ETHERS5_EMAIL_BASED_REGEX = new RegExp(ETHERS5_DISABLED_TESTS.join('|'), 'u')
 const WAGMI_DISABLED_TESTS_REGEX = new RegExp(WAGMI_DISABLED_TESTS.join('|'), 'u')
+const WAGMI_DISABLED_TESTS_REGEX_FF = new RegExp(
+  [...WAGMI_DISABLED_TESTS, 'metamask.spec.ts'].join('|'),
+  'u'
+)
 const SOLANA_DISABLED_TESTS_REGEX = new RegExp(SOLANA_DISABLED_TESTS.join('|'), 'u')
 
 const customProjectProperties: CustomProjectProperties = {
@@ -63,6 +78,16 @@ const customProjectProperties: CustomProjectProperties = {
   'Desktop Firefox/ethers': {
     testIgnore: ETHERS_EMAIL_BASED_REGEX
   },
+  'Desktop Chrome/ethers5': {
+    testIgnore: ETHERS5_EMAIL_BASED_REGEX
+  },
+  'Desktop Brave/ethers5': {
+    testIgnore: ETHERS5_EMAIL_BASED_REGEX,
+    useOptions: braveOptions
+  },
+  'Desktop Firefox/ethers5': {
+    testIgnore: ETHERS5_EMAIL_BASED_REGEX
+  },
   'Desktop Brave/wagmi': {
     testIgnore: WAGMI_DISABLED_TESTS_REGEX,
     useOptions: braveOptions
@@ -71,7 +96,7 @@ const customProjectProperties: CustomProjectProperties = {
     testIgnore: WAGMI_DISABLED_TESTS_REGEX
   },
   'Desktop Firefox/wagmi': {
-    testIgnore: WAGMI_DISABLED_TESTS_REGEX
+    testIgnore: WAGMI_DISABLED_TESTS_REGEX_FF
   },
   // Exclude social.spec.ts, email.spec.ts, siwe.spec.ts, and canary.spec.ts from solana, not yet implemented
   'Desktop Chrome/solana': {

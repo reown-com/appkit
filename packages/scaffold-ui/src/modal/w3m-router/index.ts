@@ -4,6 +4,7 @@ import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
+import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
 
 @customElement('w3m-router')
 export class W3mRouter extends LitElement {
@@ -21,23 +22,26 @@ export class W3mRouter extends LitElement {
   // -- State & Properties -------------------------------- //
   @state() private view = RouterController.state.view
 
+  @state() private viewDirection = ''
+
   public constructor() {
     super()
     this.unsubscribe.push(RouterController.subscribeKey('view', val => this.onViewChange(val)))
   }
 
   public override firstUpdated() {
-    this.resizeObserver = new ResizeObserver(async ([content]) => {
+    this.resizeObserver = new ResizeObserver(([content]) => {
       const height = `${content?.contentRect.height}px`
       if (this.prevHeight !== '0px') {
-        await this.animate([{ height: this.prevHeight }, { height }], {
-          duration: 150,
-          easing: 'ease',
-          fill: 'forwards'
-        }).finished
+        this.style.setProperty('--prev-height', this.prevHeight)
+        this.style.setProperty('--new-height', height)
+        this.style.animation = 'w3m-view-height 150ms forwards ease'
         this.style.height = 'auto'
       }
-      this.prevHeight = height
+      setTimeout(() => {
+        this.prevHeight = height
+        this.style.animation = 'unset'
+      }, ConstantsUtil.ANIMATION_DURATIONS.ModalHeight)
     })
     this.resizeObserver.observe(this.getWrapper())
   }
@@ -49,7 +53,9 @@ export class W3mRouter extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    return html`<div>${this.viewTemplate()}</div>`
+    return html`<div class="w3m-router-container" view-direction="${this.viewDirection}">
+      ${this.viewTemplate()}
+    </div>`
   }
 
   // -- Private ------------------------------------------- //
@@ -141,42 +147,38 @@ export class W3mRouter extends LitElement {
         return html`<w3m-wallet-compatible-networks-view></w3m-wallet-compatible-networks-view>`
       case 'WhatIsAWallet':
         return html`<w3m-what-is-a-wallet-view></w3m-what-is-a-wallet-view>`
+      case 'ConnectingMultiChain':
+        return html`<w3m-connecting-multi-chain-view></w3m-connecting-multi-chain-view>`
       case 'WhatIsANetwork':
         return html`<w3m-what-is-a-network-view></w3m-what-is-a-network-view>`
       case 'ConnectingFarcaster':
         return html`<w3m-connecting-farcaster-view></w3m-connecting-farcaster-view>`
+      case 'SwitchActiveChain':
+        return html`<w3m-switch-active-chain-view></w3m-switch-active-chain-view>`
+      case 'RegisterAccountName':
+        return html`<w3m-register-account-name-view></w3m-register-account-name-view>`
+      case 'RegisterAccountNameSuccess':
+        return html`<w3m-register-account-name-success-view></w3m-register-account-name-success-view>`
       default:
         return html`<w3m-connect-view></w3m-connect-view>`
     }
   }
 
-  private async onViewChange(newView: RouterControllerState['view']) {
+  private onViewChange(newView: RouterControllerState['view']) {
     TooltipController.hide()
 
+    let direction = ConstantsUtil.VIEW_DIRECTION.Next
     const { history } = RouterController.state
-    let xOut = -10
-    let xIn = 10
     if (history.length < this.prevHistoryLength) {
-      xOut = 10
-      xIn = -10
+      direction = ConstantsUtil.VIEW_DIRECTION.Prev
     }
 
     this.prevHistoryLength = history.length
-    await this.animate(
-      [
-        { opacity: 1, transform: 'translateX(0px)' },
-        { opacity: 0, transform: `translateX(${xOut}px)` }
-      ],
-      { duration: 150, easing: 'ease', fill: 'forwards' }
-    ).finished
-    this.view = newView
-    await this.animate(
-      [
-        { opacity: 0, transform: `translateX(${xIn}px)` },
-        { opacity: 1, transform: 'translateX(0px)' }
-      ],
-      { duration: 150, easing: 'ease', fill: 'forwards', delay: 50 }
-    ).finished
+    this.viewDirection = direction
+
+    setTimeout(() => {
+      this.view = newView
+    }, ConstantsUtil.ANIMATION_DURATIONS.ViewTransition)
   }
 
   private getWrapper() {

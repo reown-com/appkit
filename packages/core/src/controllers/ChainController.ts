@@ -9,7 +9,6 @@ import { PublicStateController } from './PublicStateController.js'
 
 // -- Types --------------------------------------------- //
 export interface ChainControllerState {
-  multiChainEnabled: boolean
   activeChain: Chain | undefined
   activeCaipNetwork?: CaipNetwork
   chains: Map<Chain, ChainAdapter>
@@ -20,7 +19,7 @@ type ChainControllerStateKey = keyof ChainControllerState
 
 type ChainsInitializerAdapter = Pick<
   ChainAdapter,
-  'connectionControllerClient' | 'networkControllerClient' | 'chain'
+  'connectionControllerClient' | 'networkControllerClient' | 'chain' | 'defaultChain'
 >
 
 // -- Constants ----------------------------------------- //
@@ -41,7 +40,6 @@ const networkState: NetworkControllerState = {
 
 // -- State --------------------------------------------- //
 const state = proxy<ChainControllerState>({
-  multiChainEnabled: false,
   chains: proxyMap<Chain, ChainAdapter>(),
   activeChain: undefined,
   activeCaipNetwork: undefined
@@ -60,20 +58,18 @@ export const ChainController = {
 
   subscribeChain(callback: (value: ChainAdapter | undefined) => void) {
     let prev: ChainAdapter | undefined = undefined
-    const activeChain = state.activeChain
 
-    if (activeChain) {
-      return sub(state.chains, () => {
+    return sub(state.chains, () => {
+      const activeChain = state.activeChain
+
+      if (activeChain) {
         const nextValue = state.chains.get(activeChain)
         if (!prev || prev !== nextValue) {
           prev = nextValue
           callback(nextValue)
         }
-      })
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    return () => {}
+      }
+    })
   },
 
   subscribeChainProp<K extends keyof ChainAdapter>(
@@ -81,30 +77,30 @@ export const ChainController = {
     callback: (value: ChainAdapter[K] | undefined) => void
   ) {
     let prev: ChainAdapter[K] | undefined = undefined
-    const activeChain = state.activeChain
 
-    if (activeChain) {
-      return sub(state.chains, () => {
+    return sub(state.chains, () => {
+      const activeChain = state.activeChain
+
+      if (activeChain) {
         const nextValue = state.chains.get(activeChain)?.[property]
         if (prev !== nextValue) {
           prev = nextValue
           callback(nextValue)
         }
-      })
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    return () => {}
+      }
+    })
   },
 
   initialize(adapters: ChainsInitializerAdapter[]) {
-    const firstChainToActivate = adapters?.[0]?.chain
+    const adapterToActivate = adapters?.[0]
 
-    if (!firstChainToActivate) {
-      throw new Error('Chain is required to initialize ChainController')
+    if (!adapterToActivate) {
+      throw new Error('Adapter is required to initialize ChainController')
     }
 
-    state.activeChain = firstChainToActivate
+    state.activeChain = adapterToActivate.chain
+    PublicStateController.set({ activeChain: adapterToActivate.chain })
+    this.setActiveCaipNetwork(adapterToActivate.defaultChain)
 
     adapters.forEach((adapter: ChainsInitializerAdapter) => {
       state.chains.set(adapter.chain, {
@@ -117,11 +113,11 @@ export const ChainController = {
     })
   },
 
-  setMultiChainEnabled(multiChain: boolean) {
-    state.multiChainEnabled = multiChain
-  },
-
-  setChainNetworkData(chain: Chain | undefined, props: Partial<NetworkControllerState>) {
+  setChainNetworkData(
+    chain: Chain | undefined,
+    props: Partial<NetworkControllerState>,
+    replaceState = false
+  ) {
     if (!chain) {
       throw new Error('Chain is required to update chain network data')
     }
@@ -129,16 +125,22 @@ export const ChainController = {
     const chainAdapter = state.chains.get(chain)
 
     if (chainAdapter) {
-      chainAdapter.networkState = {
+      chainAdapter.networkState = ref({
         ...chainAdapter.networkState,
         ...props
-      } as NetworkControllerState
-      state.chains.set(chain, chainAdapter)
-      NetworkController.replaceState(chainAdapter.networkState)
+      } as NetworkControllerState)
+      state.chains.set(chain, ref(chainAdapter))
+      if (replaceState || state.chains.size === 1 || state.activeChain === chain) {
+        NetworkController.replaceState(chainAdapter.networkState)
+      }
     }
   },
 
-  setChainAccountData(chain: Chain | undefined, accountProps: Partial<AccountControllerState>) {
+  setChainAccountData(
+    chain: Chain | undefined,
+    accountProps: Partial<AccountControllerState>,
+    replaceState = true
+  ) {
     if (!chain) {
       throw new Error('Chain is required to update chain account data')
     }
@@ -146,12 +148,14 @@ export const ChainController = {
     const chainAdapter = state.chains.get(chain)
 
     if (chainAdapter) {
-      chainAdapter.accountState = {
+      chainAdapter.accountState = ref({
         ...chainAdapter.accountState,
         ...accountProps
-      } as AccountControllerState
+      } as AccountControllerState)
       state.chains.set(chain, chainAdapter)
-      AccountController.replaceState(chainAdapter.accountState)
+      if (replaceState || state.chains.size === 1 || state.activeChain === chain) {
+        AccountController.replaceState(chainAdapter.accountState)
+      }
     }
   },
 
@@ -160,20 +164,61 @@ export const ChainController = {
     value: AccountControllerState[keyof AccountControllerState],
     chain?: Chain
   ) {
-    this.setChainAccountData(state.multiChainEnabled ? chain : state.activeChain, {
+    this.setChainAccountData(chain, {
       [prop]: value
     })
   },
 
-  setActiveChain(chain?: Chain) {
+  setActiveChain(chain: Chain | undefined) {
     const newAdapter = chain ? state.chains.get(chain) : undefined
 
-    if (newAdapter) {
+    if (newAdapter && newAdapter.chain !== state.activeChain) {
       state.activeChain = newAdapter.chain
-      state.activeCaipNetwork = state.chains.get(newAdapter.chain)?.networkState
-        ?.requestedCaipNetworks?.[0]
-      PublicStateController.set({ activeChain: chain })
+      state.activeCaipNetwork = newAdapter.networkState?.caipNetwork
+        ? ref(newAdapter.networkState?.caipNetwork)
+        : undefined
+      AccountController.replaceState(newAdapter.accountState)
+      NetworkController.replaceState(newAdapter.networkState)
+      this.setCaipNetwork(newAdapter.chain, newAdapter.networkState?.caipNetwork)
+      PublicStateController.set({
+        activeChain: chain,
+        selectedNetworkId: newAdapter.networkState?.caipNetwork?.id
+      })
     }
+  },
+
+  setActiveCaipNetwork(caipNetwork: NetworkControllerState['caipNetwork']) {
+    if (!caipNetwork) {
+      return
+    }
+
+    if (caipNetwork.chain !== state.activeChain) {
+      this.setActiveChain(caipNetwork.chain)
+    }
+
+    state.activeCaipNetwork = ref(caipNetwork)
+    state.activeChain = caipNetwork.chain
+    this.setCaipNetwork(caipNetwork.chain, caipNetwork, true)
+    PublicStateController.set({
+      activeChain: caipNetwork.chain,
+      selectedNetworkId: caipNetwork?.id
+    })
+  },
+
+  /**
+   * The setCaipNetwork function is being called for different purposes and it needs to be controlled if it should replace the NetworkController state or not.
+   * While we initializing the adapters, we need to set the caipNetwork without replacing the state.
+   * But when we switch the network, we need to replace the state.
+   * @param chain
+   * @param caipNetwork
+   * @param shouldReplace - if true, it will replace the NetworkController state
+   */
+  setCaipNetwork(
+    chain: Chain,
+    caipNetwork: NetworkControllerState['caipNetwork'],
+    shouldReplace = false
+  ) {
+    this.setChainNetworkData(chain, { caipNetwork }, shouldReplace)
   },
 
   setActiveConnector(connector: ChainControllerState['activeConnector']) {
@@ -202,8 +247,8 @@ export const ChainController = {
     return chainAdapter.networkControllerClient
   },
 
-  getConnectionControllerClient() {
-    const chain = state.activeChain
+  getConnectionControllerClient(_chain?: Chain) {
+    const chain = _chain || state.activeChain
 
     if (!chain) {
       throw new Error('Chain is required to get connection controller client')
@@ -223,15 +268,20 @@ export const ChainController = {
   },
 
   getAccountProp<K extends keyof AccountControllerState>(
-    key: K
+    key: K,
+    _chain?: Chain
   ): AccountControllerState[K] | undefined {
-    const chainToWrite = state.multiChainEnabled ? state.activeChain : state.activeChain
+    let chain = state.activeChain
 
-    if (!chainToWrite) {
+    if (_chain) {
+      chain = _chain
+    }
+
+    if (!chain) {
       return undefined
     }
 
-    const chainAccountState = state.chains.get(chainToWrite)?.accountState
+    const chainAccountState = state.chains.get(chain)?.accountState
 
     if (!chainAccountState) {
       return undefined
@@ -243,7 +293,7 @@ export const ChainController = {
   getNetworkProp<K extends keyof NetworkControllerState>(
     key: K
   ): NetworkControllerState[K] | undefined {
-    const chainToWrite = state.multiChainEnabled ? state.activeChain : state.activeChain
+    const chainToWrite = state.activeChain
 
     if (!chainToWrite) {
       return undefined
@@ -258,30 +308,33 @@ export const ChainController = {
     return chainNetworkState[key]
   },
 
-  resetAccount(chain?: Chain) {
-    const chainToWrite = state.multiChainEnabled ? chain : state.activeChain
+  resetAccount(chain: Chain | undefined) {
+    const chainToWrite = chain
 
     if (!chainToWrite) {
       throw new Error('Chain is required to set account prop')
     }
 
-    this.setChainAccountData(chainToWrite, {
-      isConnected: false,
-      smartAccountDeployed: false,
-      currentTab: 0,
-      caipAddress: undefined,
-      address: undefined,
-      balance: undefined,
-      balanceSymbol: undefined,
-      profileName: undefined,
-      profileImage: undefined,
-      addressExplorerUrl: undefined,
-      tokenBalance: [],
-      connectedWalletInfo: undefined,
-      preferredAccountType: undefined,
-      socialProvider: undefined,
-      socialWindow: undefined,
-      farcasterUrl: undefined
-    })
+    this.setChainAccountData(
+      chainToWrite,
+      ref({
+        isConnected: false,
+        smartAccountDeployed: false,
+        currentTab: 0,
+        caipAddress: undefined,
+        address: undefined,
+        balance: undefined,
+        balanceSymbol: undefined,
+        profileName: undefined,
+        profileImage: undefined,
+        addressExplorerUrl: undefined,
+        tokenBalance: [],
+        connectedWalletInfo: undefined,
+        preferredAccountType: undefined,
+        socialProvider: undefined,
+        socialWindow: undefined,
+        farcasterUrl: undefined
+      })
+    )
   }
 }

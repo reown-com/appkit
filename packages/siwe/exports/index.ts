@@ -6,8 +6,6 @@ import type {
   SIWEVerifyMessageArgs
 } from '../core/utils/TypeUtils.js'
 import { Web3ModalSIWEClient } from '../src/client.js'
-export { formatMessage, getDidAddress, getDidChainId } from '@walletconnect/utils'
-export { SIWEController, type SIWEControllerClient } from '../core/controller/SIWEController.js'
 export {
   getAddressFromMessage,
   getChainIdFromMessage,
@@ -16,6 +14,9 @@ export {
 export { useSiweSession } from '../core/hooks/react.js'
 export * from '../core/utils/AppKitAuthUtil.js'
 
+export { formatMessage, getDidAddress, getDidChainId } from '@walletconnect/utils'
+export { SIWEController, type SIWEControllerClient } from '../core/controller/SIWEController.js'
+export * from '../core/utils/TypeUtils.js'
 export type {
   SIWEClientMethods,
   SIWEConfig,

@@ -76,6 +76,18 @@ sampleWalletTest('it should reject sign', async ({ library }) => {
   await modalValidator.expectRejectedSign()
 })
 
+sampleWalletTest('it should switch between multiple accounts', async ({ library }) => {
+  // Multi address not available in Solana wallet and wagmi does not allow programatic account switching
+  if (library === 'solana' || library === 'wagmi') {
+    return
+  }
+  const originalAddress = await modalPage.getAddress()
+  await modalPage.openAccount()
+  await modalPage.openProfileView()
+  await modalPage.switchAccount()
+  await modalValidator.expectAccountSwitched(originalAddress)
+})
+
 sampleWalletTest('it should show multiple accounts', async ({ library }) => {
   // Multi address not available in Solana wallet
   if (library === 'solana') {
@@ -88,7 +100,7 @@ sampleWalletTest('it should show multiple accounts', async ({ library }) => {
 })
 
 sampleWalletTest(
-  'it should show Switch Network modal if network is not supported',
+  'it should show switch network modal if network is not supported',
   async ({ library }) => {
     if (library === 'solana') {
       return
@@ -103,4 +115,10 @@ sampleWalletTest(
 sampleWalletTest('it should not show onramp button accordingly', async ({ library }) => {
   await modalPage.openModal()
   await modalValidator.expectOnrampButton(library)
+  await modalPage.closeModal()
+})
+
+sampleWalletTest('it should disconnect as expected', async () => {
+  await modalPage.disconnect()
+  await modalValidator.expectDisconnected()
 })

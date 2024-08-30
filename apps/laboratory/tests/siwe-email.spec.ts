@@ -17,7 +17,8 @@ const emailSiweTest = test.extend<{ library: string }>({
 
 emailSiweTest.describe.configure({ mode: 'serial' })
 
-emailSiweTest.beforeAll(async ({ browser, library }, testInfo) => {
+emailSiweTest.beforeAll(async ({ browser, library }) => {
+  emailSiweTest.setTimeout(300000)
   context = await browser.newContext()
   const browserPage = await context.newPage()
 
@@ -31,7 +32,7 @@ emailSiweTest.beforeAll(async ({ browser, library }, testInfo) => {
     throw new Error('MAILSAC_API_KEY is not set')
   }
   const email = new Email(mailsacApiKey)
-  const tempEmail = email.getEmailAddressToUse(testInfo.parallelIndex)
+  const tempEmail = await email.getEmailAddressToUse()
   await page.emailFlow(tempEmail, context, mailsacApiKey)
   await page.promptSiwe()
   await page.approveSign()
@@ -64,14 +65,15 @@ emailSiweTest('it should reject sign', async () => {
   await validator.expectRejectedSign()
 })
 
-emailSiweTest('it should switch network and sign', async () => {
+emailSiweTest('it should switch network and sign', async ({ library }) => {
   let targetChain = 'Polygon'
-  await page.openAccount()
-  await page.openProfileView()
-  await page.openSettings()
+  await page.goToSettings()
   await page.switchNetwork(targetChain)
   await page.promptSiwe()
   await page.approveSign()
+  if (library === 'wagmi') {
+    await page.goToSettings()
+  }
   await validator.expectSwitchedNetwork(targetChain)
   await page.closeModal()
   await page.sign()
@@ -79,12 +81,13 @@ emailSiweTest('it should switch network and sign', async () => {
   await validator.expectAcceptedSign()
 
   targetChain = 'Ethereum'
-  await page.openAccount()
-  await page.openProfileView()
-  await page.openSettings()
+  await page.goToSettings()
   await page.switchNetwork(targetChain)
   await page.promptSiwe()
   await page.approveSign()
+  if (library === 'wagmi') {
+    await page.goToSettings()
+  }
   await validator.expectSwitchedNetwork(targetChain)
   await page.closeModal()
   await page.sign()

@@ -6,7 +6,6 @@ import {
   useWeb3ModalState,
   useWeb3ModalTheme
 } from '@web3modal/solana/react'
-import { BackpackWalletAdapter } from '@solana/wallet-adapter-backpack'
 import {
   PhantomWalletAdapter,
   HuobiWalletAdapter,
@@ -49,8 +48,8 @@ const solanaConfig = defaultSolanaConfig({
   chains: chains,
   projectId,
   metadata: {
-    name: 'Web3Modal React Example',
-    description: 'Web3Modal React Example',
+    name: 'AppKit React Example',
+    description: 'AppKit React Example',
     url: '',
     icons: []
   }
@@ -63,7 +62,6 @@ createWeb3Modal({
   themeMode: 'light',
   chains,
   wallets: [
-    new BackpackWalletAdapter(),
     new HuobiWalletAdapter(),
     new PhantomWalletAdapter(),
     new SolflareWalletAdapter(),

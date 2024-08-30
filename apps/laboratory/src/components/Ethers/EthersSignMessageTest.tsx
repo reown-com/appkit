@@ -18,7 +18,7 @@ export function EthersSignMessageTest() {
       }
       const provider = new BrowserProvider(walletProvider, chainId)
       const signer = new JsonRpcSigner(provider, address)
-      const sig = await signer?.signMessage('Hello Web3Modal!')
+      const sig = await signer?.signMessage('Hello AppKit!')
       setSignature(sig)
       toast({
         title: ConstantsUtil.SigningSucceededToastTitle,

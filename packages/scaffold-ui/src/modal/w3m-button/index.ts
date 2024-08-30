@@ -36,8 +36,8 @@ export class W3mButton extends LitElement {
   // -- Lifecycle ----------------------------------------- //
   public override firstUpdated() {
     this.unsubscribe.push(
-      AccountController.subscribeKey('isConnected', val => {
-        this.isAccount = val
+      AccountController.subscribe(val => {
+        this.isAccount = val.isConnected
       }),
       ModalController.subscribeKey('loading', val => {
         this.isLoading = val

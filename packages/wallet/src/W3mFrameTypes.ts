@@ -68,9 +68,13 @@ import {
   AppSetPreferredAccountRequest,
   FrameSetPreferredAccountResponse,
   WalletGetCapabilitiesRequest,
-  WalletGrantPermissionsRequest
+  WalletGrantPermissionsRequest,
+  RpcSolanaSignMessageRequest,
+  RpcSolanaSignTransactionRequest,
+  RpcSolanaSignAndSendTransactionRequest
 } from './W3mFrameSchema.js'
 import type { W3mFrameRpcConstants } from './W3mFrameConstants.js'
+import type { CaipNetworkId } from '@web3modal/common'
 
 export namespace W3mFrameTypes {
   export type AppEvent = z.infer<typeof W3mFrameSchema.appEvent>
@@ -96,6 +100,8 @@ export namespace W3mFrameTypes {
     AppConnectDeviceRequest: undefined
     AppSignOutRequest: undefined
     AppRpcRequest: RPCRequest
+    AppGetFarcasterUriRequest: undefined
+    AppConnectFarcasterRequest: undefined
   }
 
   export interface Responses {
@@ -125,7 +131,7 @@ export namespace W3mFrameTypes {
 
   export interface Network {
     rpcUrl: string
-    chainId: number
+    chainId: number | CaipNetworkId
   }
 
   export type RPCRequest =
@@ -166,6 +172,9 @@ export namespace W3mFrameTypes {
     | z.infer<typeof RpcPersonalSignRequest>
     | z.infer<typeof RpcEthSignTypedDataV4>
     | z.infer<typeof RpcEthSendTransactionRequest>
+    | z.infer<typeof RpcSolanaSignMessageRequest>
+    | z.infer<typeof RpcSolanaSignTransactionRequest>
+    | z.infer<typeof RpcSolanaSignAndSendTransactionRequest>
     | z.infer<typeof WalletSendCallsRequest>
     | z.infer<typeof WalletGetCallsReceiptRequest>
     | z.infer<typeof WalletGetCapabilitiesRequest>
@@ -181,9 +190,11 @@ export namespace W3mFrameTypes {
 
   export type ProviderRequestType =
     | 'GetUser'
+    | 'GetFarcasterUri'
     | 'ConnectDevice'
     | 'ConnectEmail'
     | 'ConnectSocial'
+    | 'ConnectFarcaster'
     | 'ConnectOtp'
     | 'GetSocialRedirectUri'
     | 'SwitchNetwork'

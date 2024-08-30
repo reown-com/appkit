@@ -1,4 +1,4 @@
-import { expect, test, type BrowserContext } from '@playwright/test'
+import { expect, test, type BrowserContext, type Page } from '@playwright/test'
 import { ModalWalletPage } from './shared/pages/ModalWalletPage'
 import { Email } from './shared/utils/email'
 import { ModalWalletValidator } from './shared/validators/ModalWalletValidator'
@@ -8,6 +8,7 @@ import { SECURE_WEBSITE_URL } from './shared/constants'
 let page: ModalWalletPage
 let validator: ModalWalletValidator
 let context: BrowserContext
+let browserPage: Page
 /* eslint-enable init-declarations */
 
 // -- Setup --------------------------------------------------------------------
@@ -17,11 +18,12 @@ const emailTest = test.extend<{ library: string }>({
 
 emailTest.describe.configure({ mode: 'serial' })
 
-emailTest.beforeAll(async ({ browser, library }, testInfo) => {
+emailTest.beforeAll(async ({ browser, library }) => {
+  emailTest.setTimeout(300000)
   context = await browser.newContext()
-  const browserPage = await context.newPage()
+  browserPage = await context.newPage()
 
-  page = new ModalWalletPage(browserPage, library, 'email')
+  page = new ModalWalletPage(browserPage, library, 'default')
   validator = new ModalWalletValidator(browserPage)
 
   await page.load()
@@ -31,7 +33,7 @@ emailTest.beforeAll(async ({ browser, library }, testInfo) => {
     throw new Error('MAILSAC_API_KEY is not set')
   }
   const email = new Email(mailsacApiKey)
-  const tempEmail = email.getEmailAddressToUse(testInfo.parallelIndex)
+  const tempEmail = await email.getEmailAddressToUse()
   await page.emailFlow(tempEmail, context, mailsacApiKey)
 
   await validator.expectConnected()
@@ -61,12 +63,14 @@ emailTest('it should reject sign', async () => {
   await validator.expectRejectedSign()
 })
 
-emailTest('it should switch network and sign', async () => {
+emailTest('it should switch network and sign', async ({ library }) => {
   let targetChain = 'Polygon'
-  await page.openAccount()
-  await page.openProfileView()
-  await page.openSettings()
+  await page.goToSettings()
   await page.switchNetwork(targetChain)
+  if (library === 'wagmi') {
+    // In wagmi, after switching network, it closes the modal
+    await page.goToSettings()
+  }
   await validator.expectSwitchedNetwork(targetChain)
   await page.closeModal()
   await page.sign()
@@ -74,10 +78,11 @@ emailTest('it should switch network and sign', async () => {
   await validator.expectAcceptedSign()
 
   targetChain = 'Ethereum'
-  await page.openAccount()
-  await page.openProfileView()
-  await page.openSettings()
+  await page.goToSettings()
   await page.switchNetwork(targetChain)
+  // After switching network, it closes the modal
+  await page.goToSettings()
+
   await validator.expectSwitchedNetwork(targetChain)
   await page.closeModal()
   await page.sign()
@@ -85,10 +90,13 @@ emailTest('it should switch network and sign', async () => {
   await validator.expectAcceptedSign()
 })
 
+emailTest('it should show loading on page refresh', async () => {
+  await page.page.reload()
+  await validator.expectConnectButtonLoading()
+})
+
 emailTest('it should disconnect correctly', async () => {
-  await page.openAccount()
-  await page.openProfileView()
-  await page.openSettings()
+  await page.goToSettings()
   await page.disconnect()
   await validator.expectDisconnected()
 })

@@ -2,7 +2,6 @@ import type { CaipAddress } from '@web3modal/core'
 import {
   AccountController,
   ApiController,
-  ConnectionController,
   CoreHelperUtil,
   EventsController,
   ModalController,
@@ -39,19 +38,24 @@ export class W3mModal extends LitElement {
 
   @state() private caipAddress = AccountController.state.caipAddress
 
+  @state() private shake = ModalController.state.shake
+
   public constructor() {
     super()
     this.initializeTheming()
     ApiController.prefetch()
     this.unsubscribe.push(
-      ModalController.subscribeKey('open', val => (val ? this.onOpen() : this.onClose())),
-      ModalController.subscribeKey('loading', val => {
-        this.loading = val
-        this.onNewAddress(AccountController.state.caipAddress)
-      }),
-      AccountController.subscribeKey('isConnected', val => (this.connected = val)),
-      AccountController.subscribeKey('caipAddress', val => this.onNewAddress(val)),
-      OptionsController.subscribeKey('isSiweEnabled', val => (this.isSiweEnabled = val))
+      ...[
+        ModalController.subscribeKey('open', val => (val ? this.onOpen() : this.onClose())),
+        ModalController.subscribeKey('shake', val => (this.shake = val)),
+        ModalController.subscribeKey('loading', val => {
+          this.loading = val
+          this.onNewAddress(AccountController.state.caipAddress)
+        }),
+        AccountController.subscribeKey('isConnected', val => (this.connected = val)),
+        AccountController.subscribeKey('caipAddress', val => this.onNewAddress(val)),
+        OptionsController.subscribeKey('isSiweEnabled', val => (this.isSiweEnabled = val))
+      ]
     )
     EventsController.sendEvent({ type: 'track', event: 'MODAL_LOADED' })
   }
@@ -65,8 +69,14 @@ export class W3mModal extends LitElement {
   public override render() {
     return this.open
       ? html`
-          <wui-flex @click=${this.onOverlayClick.bind(this)}>
-            <wui-card role="alertdialog" aria-modal="true" tabindex="0">
+          <wui-flex @click=${this.onOverlayClick.bind(this)} data-testid="w3m-modal-overlay">
+            <wui-card
+              shake="${this.shake}"
+              role="alertdialog"
+              aria-modal="true"
+              tabindex="0"
+              data-testid="w3m-modal-card"
+            >
               <w3m-header></w3m-header>
               <w3m-router></w3m-router>
               <w3m-snackbar></w3m-snackbar>
@@ -85,14 +95,20 @@ export class W3mModal extends LitElement {
   }
 
   private async handleClose() {
+    const isSiweSignScreen = RouterController.state.view === 'ConnectingSiwe'
+    const isApproveSignScreen = RouterController.state.view === 'ApproveTransaction'
+
     if (this.isSiweEnabled) {
       const { SIWEController } = await import('@web3modal/siwe')
-
-      if (SIWEController.state.status !== 'success' && this.connected) {
-        await ConnectionController.disconnect()
+      const isUnauthenticated = SIWEController.state.status !== 'success'
+      if (isUnauthenticated && (isSiweSignScreen || isApproveSignScreen)) {
+        ModalController.shake()
+      } else {
+        ModalController.close()
       }
+    } else {
+      ModalController.close()
     }
-    ModalController.close()
   }
 
   private initializeTheming() {

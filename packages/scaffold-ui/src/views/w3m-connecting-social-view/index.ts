@@ -130,7 +130,10 @@ export class W3mConnectingSocialView extends LitElement {
 
             if (this.socialProvider) {
               StorageUtil.setConnectedSocialProvider(this.socialProvider)
-              await ConnectionController.connectExternal(this.authConnector)
+              await ConnectionController.connectExternal(
+                this.authConnector,
+                this.authConnector.chain
+              )
               EventsController.sendEvent({
                 type: 'track',
                 event: 'SOCIAL_LOGIN_SUCCESS',

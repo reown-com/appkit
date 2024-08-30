@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/common",
-  "version": "5.0.11-9aab3753c.2",
+  "version": "5.1.4",
   "type": "module",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
@@ -19,6 +19,10 @@
   "dependencies": {
     "bignumber.js": "9.1.2",
     "dayjs": "1.11.10"
+  },
+  "devDependencies": {
+    "vitest": "2.0.3",
+    "@vitest/coverage-v8": "2.0.5"
   },
   "keywords": [
     "utils",

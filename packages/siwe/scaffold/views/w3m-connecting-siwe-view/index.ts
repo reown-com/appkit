@@ -21,6 +21,8 @@ export class W3mConnectingSiweView extends LitElement {
 
   @state() private isSigning = false
 
+  @state() private isCancelling = false
+
   // -- Render -------------------------------------------- //
   public override render() {
     this.onRender()
@@ -54,6 +56,7 @@ export class W3mConnectingSiweView extends LitElement {
           borderRadius="xs"
           fullWidth
           variant="neutral"
+          ?loading=${this.isCancelling}
           @click=${this.onCancel.bind(this)}
           data-testid="w3m-connecting-siwe-cancel"
         >
@@ -135,6 +138,7 @@ export class W3mConnectingSiweView extends LitElement {
   }
 
   private async onCancel() {
+    this.isCancelling = true
     const isConnected = AccountController.state.isConnected
     if (isConnected) {
       await ConnectionController.disconnect()
@@ -142,6 +146,7 @@ export class W3mConnectingSiweView extends LitElement {
     } else {
       RouterController.push('Connect')
     }
+    this.isCancelling = false
     EventsController.sendEvent({
       event: 'CLICK_CANCEL_SIWE',
       type: 'track',

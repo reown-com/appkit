@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/wagmi",
-  "version": "5.0.11-9aab3753c.2",
+  "version": "5.1.4",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -48,28 +48,28 @@
     "build": "tsc --build",
     "watch": "tsc --watch",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "test": "vitest run --dir tests"
   },
   "dependencies": {
-    "@walletconnect/ethereum-provider": "2.14.0",
-    "@walletconnect/utils": "2.14.0",
+    "@walletconnect/ethereum-provider": "2.15.1",
+    "@walletconnect/utils": "2.15.1",
     "@web3modal/polyfills": "workspace:*",
+    "@web3modal/base": "workspace:*",
     "@web3modal/wallet": "workspace:*",
     "@web3modal/common": "workspace:*",
-    "@web3modal/scaffold": "workspace:*",
-    "@web3modal/scaffold-react": "workspace:*",
     "@web3modal/scaffold-utils": "workspace:*",
-    "@web3modal/scaffold-vue": "workspace:*",
     "@web3modal/siwe": "workspace:*"
   },
   "devDependencies": {
-    "@wagmi/connectors": "5.0.21",
-    "@wagmi/core": "2.11.6",
+    "@wagmi/connectors": "5.1.5",
+    "@wagmi/core": "2.13.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "viem": "2.17.8",
+    "viem": "2.19.6",
     "vue": "3.4.3",
-    "wagmi": "2.10.9"
+    "wagmi": "2.12.5",
+    "vitest": "2.0.3"
   },
   "peerDependencies": {
     "@wagmi/connectors": ">=4",

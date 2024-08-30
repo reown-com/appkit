@@ -1,4 +1,4 @@
-import { defaultWagmiConfig } from '@web3modal/wagmi/react/config'
+import { defaultWagmiConfig } from '@web3modal/wagmi/react'
 import {
   arbitrum,
   aurora,
@@ -39,12 +39,13 @@ export const WagmiConstantsUtil = {
   ] as [Chain, ...Chain[]]
 }
 
-export function getWagmiConfig(type: 'default' | 'email') {
+export function getWagmiConfig(type: 'default' | 'email', override = {}) {
   const config = {
     chains: WagmiConstantsUtil.chains,
     projectId: ConstantsUtil.ProjectId,
     metadata: ConstantsUtil.Metadata,
-    ssr: true
+    ssr: true,
+    ...override
   }
 
   const emailConfig = {

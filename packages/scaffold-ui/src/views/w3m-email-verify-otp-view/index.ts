@@ -36,7 +36,7 @@ export class W3mEmailVerifyOtpView extends W3mEmailOtpWidget {
         const smartAccountEnabled = NetworkController.checkIfSmartAccountEnabled()
         await this.authConnector.provider.connectOtp({ otp })
         EventsController.sendEvent({ type: 'track', event: 'EMAIL_VERIFICATION_CODE_PASS' })
-        await ConnectionController.connectExternal(this.authConnector)
+        await ConnectionController.connectExternal(this.authConnector, this.authConnector.chain)
         EventsController.sendEvent({
           type: 'track',
           event: 'CONNECT_SUCCESS',

@@ -1,5 +1,5 @@
-import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy } from 'valtio/vanilla'
+import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { FetchUtil } from '../utils/FetchUtil.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
@@ -19,6 +19,7 @@ const baseUrl = CoreHelperUtil.getApiUrl()
 export const api = new FetchUtil({ baseUrl, clientId: null })
 const entries = '40'
 const recommendedEntries = '4'
+const imageCountToFetch = 20
 
 // -- Types --------------------------------------------- //
 export interface ApiControllerState {
@@ -194,11 +195,11 @@ export const ApiController = {
         exclude: exclude.join(',')
       }
     })
-    const images = data.map(w => w.image_id).filter(Boolean)
-    await Promise.allSettled([
-      ...(images as string[]).map(id => ApiController._fetchWalletImage(id)),
-      CoreHelperUtil.wait(300)
-    ])
+    const images = data
+      .slice(0, imageCountToFetch)
+      .map(w => w.image_id)
+      .filter(Boolean)
+    await Promise.allSettled((images as string[]).map(id => ApiController._fetchWalletImage(id)))
 
     state.wallets = CoreHelperUtil.uniqueBy(
       [...state.wallets, ...ApiController._filterOutExtensions(data)],
@@ -267,7 +268,7 @@ export const ApiController = {
       ApiController.fetchConnectorImages()
     ]
 
-    state.prefetchPromise = Promise.race([Promise.allSettled(promises), CoreHelperUtil.wait(3000)])
+    state.prefetchPromise = Promise.race([Promise.allSettled(promises)])
   },
 
   async fetchProjectConfig() {

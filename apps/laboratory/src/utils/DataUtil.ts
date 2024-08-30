@@ -41,14 +41,19 @@ export const wagmiSdkOptions = [
     description: 'Configuration using wagmi and implementing profiles feature'
   },
   {
-    title: 'Email & Social',
-    link: '/library/wagmi-email/',
-    description: 'Configuration using wagmi and implementing email and social login'
+    title: 'Without Email',
+    link: '/library/wagmi-no-email/',
+    description: 'Configuration using wagmi without email'
   },
   {
-    title: 'Permissions',
-    link: '/library/wagmi-permissions/',
-    description: 'Configuration using wagmi and implementing ERC-7715'
+    title: 'Permissions(Sync)',
+    link: '/library/wagmi-permissions-sync/',
+    description: 'Configuration using wagmi and implementing ERC-7715 with passkey'
+  },
+  {
+    title: 'Permissions(Async)',
+    link: '/library/wagmi-permissions-async/',
+    description: 'Configuration using wagmi and implementing ERC-7715 with ecdsa key'
   }
 ]
 
@@ -70,9 +75,22 @@ export const ethersSdkOptions = [
       'Configuration using ethers and implementing sign in with ethereum with a hosted server'
   },
   {
-    title: 'Email and Social',
-    link: '/library/ethers-email/',
-    description: 'Configuration using ethers and implementing email and social login'
+    title: 'Without Email',
+    link: '/library/ethers-no-email/',
+    description: 'Configuration using ethers without email'
+  }
+]
+
+export const ethers5SdkOptions = [
+  {
+    title: 'Default',
+    link: '/library/ethers5',
+    description: 'Basic configuration using ethers as a driving library'
+  },
+  {
+    title: 'SIWE',
+    link: '/library/ethers5-siwe/',
+    description: 'Configuration using ethers and implementing sign in with ethereum'
   }
 ]
 
@@ -81,5 +99,10 @@ export const solanaSdkOptions = [
     title: 'Default',
     link: '/library/solana',
     description: 'Basic configuration using solana as a driving library'
+  },
+  {
+    title: 'Without Email',
+    link: '/library/solana-no-email/',
+    description: 'Configuration using solana without email'
   }
 ]

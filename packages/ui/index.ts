@@ -74,6 +74,7 @@ export * from './src/composites/wui-list-account/index.js'
 export * from './src/composites/wui-icon-button/index.js'
 export * from './src/composites/wui-list-button/index.js'
 export * from './src/composites/wui-list-social/index.js'
+export * from './src/composites/wui-select/index.js'
 
 export * from './src/layout/wui-flex/index.js'
 export * from './src/layout/wui-grid/index.js'
@@ -85,4 +86,4 @@ export { UiHelperUtil } from './src/utils/UiHelperUtil.js'
 export { TransactionUtil } from './src/utils/TransactionUtil.js'
 export { customElement } from './src/utils/WebComponentsUtil.js'
 
-export type { IconType, VisualType, ColorType } from './src/utils/TypeUtil.js'
+export type { IconType, VisualType, ColorType, TransactionType } from './src/utils/TypeUtil.js'

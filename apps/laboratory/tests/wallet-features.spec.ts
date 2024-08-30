@@ -16,11 +16,12 @@ const walletFeaturesTest = test.extend<{ library: string }>({
 
 walletFeaturesTest.describe.configure({ mode: 'serial' })
 
-walletFeaturesTest.beforeAll(async ({ browser, library }, testInfo) => {
+walletFeaturesTest.beforeAll(async ({ browser, library }) => {
+  walletFeaturesTest.setTimeout(300000)
   context = await browser.newContext()
   const browserPage = await context.newPage()
 
-  page = new ModalWalletPage(browserPage, library, 'email')
+  page = new ModalWalletPage(browserPage, library, 'default')
   validator = new ModalWalletValidator(browserPage)
 
   await page.load()
@@ -30,7 +31,7 @@ walletFeaturesTest.beforeAll(async ({ browser, library }, testInfo) => {
     throw new Error('MAILSAC_API_KEY is not set')
   }
   const email = new Email(mailsacApiKey)
-  const tempEmail = email.getEmailAddressToUse(testInfo.parallelIndex)
+  const tempEmail = await email.getEmailAddressToUse()
   await page.emailFlow(tempEmail, context, mailsacApiKey)
 
   await validator.expectConnected()
@@ -64,11 +65,17 @@ walletFeaturesTest('it should initialize onramp as expected', async () => {
   await page.closeModal()
 })
 
-walletFeaturesTest('it should initialize receive as expected', async () => {
-  await page.openAccount()
-  const walletFeatureButton = await page.getWalletFeaturesButton('receive')
-  await walletFeatureButton.click()
-  await page.page.getByTestId('receive-address-copy-button').click()
-  await expect(page.page.getByText('Address copied')).toBeVisible()
+walletFeaturesTest('it should find account name as expected', async ({ library }) => {
+  await page.goToSettings()
+  await page.switchNetwork('Polygon')
+  if (library === 'wagmi') {
+    await page.goToSettings()
+  }
+  await validator.expectSwitchedNetwork('Polygon')
+
+  await page.openChooseNameIntro()
+  await page.openChooseName()
+  await page.typeName('test-ens-check')
+  await validator.expectAccountNameFound('test-ens-check')
   await page.closeModal()
 })
