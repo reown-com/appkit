@@ -1,6 +1,7 @@
 import axios, { AxiosError } from 'axios'
 import { bigIntReplacer } from '../utils/CommonUtils'
 import type { Address, Hex } from 'viem'
+import { USEROP_BUILDER_SERVICE_BASE_URL } from './ConstantsUtil'
 
 export type Call = { to: Address; value: bigint; data: Hex }
 
@@ -110,11 +111,9 @@ async function sendUserOpBuilderRequest<
   }
 }
 
-const BASE_USEROP_BUILDER_SERVICE_URL = 'https://react-wallet.walletconnect.com/api'
-
 export async function buildUserOp(args: BuildUserOpRequestArguments): Promise<FillUserOpResponse> {
   const response = await sendUserOpBuilderRequest<BuildUserOpRequestArguments, FillUserOpResponse>({
-    url: `${BASE_USEROP_BUILDER_SERVICE_URL}/build`,
+    url: `${USEROP_BUILDER_SERVICE_BASE_URL}/build`,
     data: args,
     headers: {
       'Content-Type': 'application/json'
@@ -130,7 +129,7 @@ export async function sendUserOp(args: SendUserOpWithSignatureParams) {
     SendUserOpWithSignatureParams,
     SendUserOpWithSignatureResponse
   >({
-    url: `${BASE_USEROP_BUILDER_SERVICE_URL}/sendUserOp`,
+    url: `${USEROP_BUILDER_SERVICE_BASE_URL}/sendUserOp`,
     data: args,
     headers: {
       'Content-Type': 'application/json'

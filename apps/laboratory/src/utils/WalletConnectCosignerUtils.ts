@@ -2,6 +2,7 @@
 import axios, { AxiosError } from 'axios'
 import { bigIntReplacer } from './CommonUtils'
 import type { UserOperation } from './UserOpBuilderServiceUtils'
+import { WC_COSIGNER_BASE_URL } from './ConstantsUtil'
 
 // Define types for the request and response
 type AddPermission = {
@@ -110,7 +111,6 @@ async function sendCoSignerRequest<
   }
 }
 
-const WC_COSIGNER_BASE_URL = 'https://rpc.walletconnect.com/v1/sessions'
 // Class to interact with the WalletConnect CoSigner API
 export class WalletConnectCosigner {
   private baseUrl: string
