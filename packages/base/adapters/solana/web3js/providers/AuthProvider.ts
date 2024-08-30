@@ -131,7 +131,7 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
     return signature
   }
 
-  public async signAllTransactions(transactions: AnyTransaction[]) {
+  public async signAllTransactions<T extends AnyTransaction[]>(transactions: T): Promise<T> {
     const result = await this.provider.request({
       method: 'solana_signAllTransactions',
       params: {
@@ -153,7 +153,7 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
       }
 
       return Transaction.from(decodedTransaction)
-    })
+    }) as T
   }
 
   // -- W3mFrameProvider methods ------------------------------------------- //
