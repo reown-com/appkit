@@ -135,23 +135,18 @@ describe('AuthProvider specific tests', () => {
     expect(listener).toHaveBeenCalledWith(newChain.chainId)
   })
 
-  it('should call signTransaction correctly for signAllTransactions', async () => {
+  it('should call signAllTransactions with correct params', async () => {
     await authProvider.connect()
     const transactions = [mockLegacyTransaction(), mockVersionedTransaction()]
     await authProvider.signAllTransactions(transactions)
 
-    expect(provider.request).toHaveBeenNthCalledWith(1, {
-      method: 'solana_signTransaction',
+    expect(provider.request).toHaveBeenCalledWith({
+      method: 'solana_signAllTransactions',
       params: {
-        transaction:
-          'AKhoybLLJS1deDJDyjELDNhfkBBX3k4dt4bBfmppjfPVVimhQdFEfDo8AiFcCBCC9VkYWV2r3jkh9n1DAXEhnJPwMmnsrx6huAVrhHAbmRUqfUuWZ9aWMGmdEWaeroCnPR6jkEnjJcn14a59TZhkiTXMygMqu4KaqD1TqzE8vNHSw3YgbW24cfqWfQczGysuy4ugxj4TGSpqRtNmf5D7zRRa76eJTeZEaBcBQGkqxb31vBRXDMdQzGEbq'
-      }
-    })
-    expect(provider.request).toHaveBeenNthCalledWith(2, {
-      method: 'solana_signTransaction',
-      params: {
-        transaction:
+        transactions: [
+          'AKhoybLLJS1deDJDyjELDNhfkBBX3k4dt4bBfmppjfPVVimhQdFEfDo8AiFcCBCC9VkYWV2r3jkh9n1DAXEhnJPwMmnsrx6huAVrhHAbmRUqfUuWZ9aWMGmdEWaeroCnPR6jkEnjJcn14a59TZhkiTXMygMqu4KaqD1TqzE8vNHSw3YgbW24cfqWfQczGysuy4ugxj4TGSpqRtNmf5D7zRRa76eJTeZEaBcBQGkqxb31vBRXDMdQzGEbq',
           '48ckoQL1HhH5aqU1ifKqpQkwq3WPDgMnsHHQkVfddisxYcapwAVXr8hejTi2jeJpMPkZMsF72SwmJFDByyfRtaknz4ytCYNAcdHrxtrHa9hTjMKckVQrFFqS8zG63Wj5mJ6wPfj8dv1wKu2XkU6GSXSGdQmuvfRv3K6LUSMbK5XSP3yBGb1SDZKCuoFX4qDKcKhCG7Awn3ssAWB1yRaXMd6mS6HQHKSF11FTp3jTH2HKUNbKyyuGh4tYtq8b'
+        ]
       }
     })
   })
