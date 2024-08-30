@@ -2,14 +2,14 @@
 
 import * as React from 'react'
 
-import { Web3ModalInfo } from './Web3ModalInfo'
+import { AppKitInfo } from './AppKitInfo'
 import { useSiweSession } from '@web3modal/siwe'
 
 export function AppKitAuthInfo() {
   const { session, status } = useSiweSession()
 
   return (
-    <Web3ModalInfo
+    <AppKitInfo
       address={session?.address}
       chainId={session?.chainId}
       heading={`SIWE status: ${status}`}

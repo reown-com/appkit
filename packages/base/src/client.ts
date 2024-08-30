@@ -367,10 +367,14 @@ export class AppKit {
         OptionsController.setEnableAuth(isAppKitAuthEnabled)
       }
 
-      if (options.siweControllerClient || OptionsController.state.enableAuth) {
+      if (
+        options.siweConfig ||
+        options.siweControllerClient ||
+        OptionsController.state.enableAuth
+      ) {
         const { SIWEController, appKitAuthConfig } = await import('@web3modal/siwe')
 
-        const siweClient = options.siweControllerClient ?? appKitAuthConfig
+        const siweClient = options.siweConfig ?? options.siweControllerClient ?? appKitAuthConfig
         SIWEController.setSIWEClient(siweClient)
         const session = await siweClient.getSession()
         OptionsController.setIsSiweEnabled(true)

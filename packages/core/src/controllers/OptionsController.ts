@@ -187,7 +187,9 @@ export const OptionsController = {
 
   setEnableAuth(enableAuth: OptionsControllerState['enableAuth']) {
     state.enableAuth = enableAuth
-    state.isSiweEnabled = enableAuth
+    if (enableAuth) {
+      state.isSiweEnabled = enableAuth
+    }
   },
 
   setEIP6963Enabled(enableEIP6963: OptionsControllerState['enableEIP6963']) {

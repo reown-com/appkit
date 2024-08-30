@@ -17,7 +17,7 @@ type AppKitInfoProps = {
   heading?: string
 }
 
-export function Web3ModalInfo({
+export function AppKitInfo({
   address,
   chainId,
   clientId,
