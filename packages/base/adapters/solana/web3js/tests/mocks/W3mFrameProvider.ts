@@ -8,8 +8,8 @@ export function mockW3mFrameProvider() {
 
   w3mFrame.connect = vi.fn(() => Promise.resolve(mockSession()))
   w3mFrame.disconnect = vi.fn(() => Promise.resolve(undefined))
-  w3mFrame.request = vi.fn(({ method }: W3mFrameTypes.RPCRequest) => {
-    switch (method) {
+  w3mFrame.request = vi.fn((request: W3mFrameTypes.RPCRequest) => {
+    switch (request.method) {
       case 'solana_signMessage':
         return Promise.resolve({
           signature:
@@ -25,6 +25,14 @@ export function mockW3mFrameProvider() {
           signature:
             '2Lb1KQHWfbV3pWMqXZveFWqneSyhH95YsgCENRWnArSkLydjN1M42oB82zSd6BBdGkM9pE6sQLQf1gyBh8KWM2c4'
         })
+      case 'solana_signAllTransactions':
+        return Promise.resolve({
+          transactions: Array.from({ length: request.params.transactions.length }).map(
+            () =>
+              '4zZMC2ddAFY1YHcA2uFCqbuTHmD1xvB5QLzgNnT3dMb4aQT98md8jVm1YRGUsKJkYkLPYarnkobvESUpjqEUnDmoG76e9cgNJzLuFXBW1i6njs2Sy1Lnr9TZmLnhif5CYjh1agVJEvjfYpTq1QbTnLS3rBt4yKVjQ6FcV3x22Vm3XBPqodTXz17o1YcHMcvYQbHZfVUyikQ3Nmv6ktZzWe36D6ceKCVBV88VvYkkFhwWUWkA5ErPvsHWQU64VvbtENaJXFUUnuqTFSX4q3ccHuHdmtnhWQ7Mv8Xkb'
+          )
+        })
+
       default:
         return Promise.reject(new Error('not implemented'))
     }
