@@ -1,9 +1,6 @@
 import UniversalProvider from '@walletconnect/universal-provider'
-import {
-  SolConstantsUtil,
-  type AnyTransaction,
-  type Provider
-} from '@web3modal/scaffold-utils/solana'
+import { SolConstantsUtil } from '../utils/SolanaConstantsUtil.js'
+import { type AnyTransaction, type Provider } from '../utils/SolanaTypesUtil.js'
 import { ProviderEventEmitter } from './shared/ProviderEventEmitter.js'
 import type { SessionTypes } from '@walletconnect/types'
 import base58 from 'bs58'

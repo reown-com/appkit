@@ -4,7 +4,7 @@ import type {
   Connection,
   GetActiveChain,
   Provider
-} from '@web3modal/scaffold-utils/solana'
+} from '../utils/SolanaTypesUtil.js'
 import { ProviderEventEmitter } from './shared/ProviderEventEmitter.js'
 import { PublicKey, Transaction, VersionedTransaction, type SendOptions } from '@solana/web3.js'
 import {
