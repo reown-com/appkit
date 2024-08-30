@@ -26,6 +26,7 @@ import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@web3modal/scaffold-utils'
 import UniversalProvider from '@walletconnect/universal-provider'
 import type { ConnectionControllerClient, NetworkControllerClient } from '@web3modal/core'
+import { ConstantsUtil as CoreConstantsUtil } from '@web3modal/core'
 import { WcConstantsUtil } from '@web3modal/base'
 import { Ethers5Methods } from './utils/Ethers5Methods.js'
 import { ethers } from 'ethers5'
@@ -467,7 +468,18 @@ export class EVMEthers5Client {
 
     this.appKit?.setEIP6963Enabled(this.ethersConfig?.EIP6963)
 
-    this.syncAuthConnector(this.options.projectId)
+    const emailEnabled =
+      options.features?.email === undefined
+        ? CoreConstantsUtil.DEFAULT_FEATURES.email
+        : options.features?.email
+    const socialsEnabled =
+      options.features?.socials === undefined
+        ? CoreConstantsUtil.DEFAULT_FEATURES.socials
+        : options.features?.socials?.length > 0
+
+    if (emailEnabled || socialsEnabled) {
+      this.syncAuthConnector(this.options.projectId)
+    }
 
     if (this.ethersConfig) {
       this.checkActiveProviders(this.ethersConfig)

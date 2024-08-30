@@ -10,7 +10,9 @@ import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { ThemeStore } from '../../utils/StoreUtil'
 
 const queryClient = new QueryClient()
-const wagmiAdapter = new EVMWagmiClient()
+const wagmiAdapter = new EVMWagmiClient({
+  ssr: true
+})
 
 const modal = createWeb3Modal({
   adapters: [wagmiAdapter],
@@ -18,7 +20,8 @@ const modal = createWeb3Modal({
   projectId: ConstantsUtil.ProjectId,
   features: {
     analytics: true,
-    socials: ['google', 'github', 'apple', 'x', 'farcaster', 'facebook', 'discord']
+    email: true,
+    socials: ['google', 'github', 'apple', 'discord']
   },
   metadata: ConstantsUtil.Metadata
 })

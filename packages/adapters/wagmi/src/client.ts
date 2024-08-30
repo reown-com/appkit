@@ -22,7 +22,7 @@ import {
   createConfig,
   getConnectors
 } from '@wagmi/core'
-import { ChainController } from '@web3modal/core'
+import { ChainController, ConstantsUtil as CoreConstantsUtil } from '@web3modal/core'
 import type UniversalProvider from '@walletconnect/universal-provider'
 import { prepareTransactionRequest, sendTransaction as wagmiSendTransaction } from '@wagmi/core'
 import type { Chain } from '@wagmi/core/chains'
@@ -147,10 +147,16 @@ export class EVMWagmiClient {
       )
     }
 
-    if (
-      options.features?.email === false &&
-      (options.features?.socials?.length === 0 || !options.features?.socials)
-    ) {
+    const emailEnabled =
+      options.features?.email === undefined
+        ? CoreConstantsUtil.DEFAULT_FEATURES.email
+        : options.features?.email
+    const socialsEnabled =
+      options.features?.socials === undefined
+        ? CoreConstantsUtil.DEFAULT_FEATURES.socials
+        : options.features?.socials?.length > 0
+
+    if (emailEnabled || socialsEnabled) {
       connectors.push(
         authConnector({
           chains: this.wagmiChains,

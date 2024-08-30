@@ -22,6 +22,7 @@ import {
   W3mFrameRpcConstants,
   type W3mFrameTypes
 } from '@web3modal/wallet'
+import { ConstantsUtil as CoreConstantsUtil } from '@web3modal/core'
 import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@web3modal/scaffold-utils'
 import UniversalProvider from '@walletconnect/universal-provider'
@@ -458,7 +459,18 @@ export class EVMEthersClient {
 
     this.appKit?.setEIP6963Enabled(this.ethersConfig?.EIP6963)
 
-    this.syncAuthConnector(this.options.projectId)
+    const emailEnabled =
+      options.features?.email === undefined
+        ? CoreConstantsUtil.DEFAULT_FEATURES.email
+        : options.features?.email
+    const socialsEnabled =
+      options.features?.socials === undefined
+        ? CoreConstantsUtil.DEFAULT_FEATURES.socials
+        : options.features?.socials?.length > 0
+
+    if (emailEnabled || socialsEnabled) {
+      this.syncAuthConnector(this.options.projectId)
+    }
 
     if (this.ethersConfig) {
       this.checkActiveProviders(this.ethersConfig)

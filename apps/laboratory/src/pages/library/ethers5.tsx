@@ -14,7 +14,9 @@ const modal = createWeb3Modal({
   caipNetworks: [mainnet, optimism, polygon, zkSync],
   projectId: ConstantsUtil.ProjectId,
   features: {
-    analytics: true
+    analytics: true,
+    email: true,
+    socials: ['google', 'github', 'apple', 'discord']
   },
   metadata: ConstantsUtil.Metadata,
   termsConditionsUrl: 'https://walletconnect.com/terms',

@@ -17,7 +17,9 @@ const modal = createWeb3Modal({
   caipNetworks: [solana, solanaTestnet, solanaDevnet],
   projectId: ConstantsUtil.ProjectId,
   features: {
-    analytics: true
+    analytics: true,
+    email: true,
+    socials: ['google', 'github', 'apple', 'discord']
   },
   metadata: ConstantsUtil.Metadata
 })
