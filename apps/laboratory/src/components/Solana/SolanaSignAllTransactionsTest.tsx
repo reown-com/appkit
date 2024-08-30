@@ -40,8 +40,20 @@ export function SolanaSignAllTransactionsTest() {
         Array.from({ length: 5 }, () => createTransaction(walletProvider, connection, type))
       )
       const response = await walletProvider.signAllTransactions(transactions)
+
       const description = response
-        .map(transaction => bs58.encode(transaction.signatures[0] as Buffer))
+        .map(transaction => {
+          const signature =
+            transaction.signatures[0] instanceof Uint8Array
+              ? transaction.signatures[0]
+              : transaction.signatures[0]?.signature
+
+          if (!signature) {
+            throw Error('Empty signature')
+          }
+
+          return bs58.encode(signature)
+        })
         .join('\n\n')
 
       toast({

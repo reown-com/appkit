@@ -177,9 +177,8 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
     return signature
   }
 
-  public async signAllTransactions(_transactions: AnyTransaction[]) {
-    // To be implemented
-    return Promise.resolve([])
+  public async signAllTransactions(transactions: AnyTransaction[]) {
+    return Promise.all(transactions.map(transaction => this.signTransaction(transaction)))
   }
 
   // -- Private ------------------------------------------ //

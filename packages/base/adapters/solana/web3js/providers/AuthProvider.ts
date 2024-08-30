@@ -131,9 +131,8 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
     return signature
   }
 
-  public async signAllTransactions(_transactions: AnyTransaction[]) {
-    // To be implemented
-    return Promise.resolve([])
+  public async signAllTransactions(transactions: AnyTransaction[]) {
+    return Promise.all(transactions.map(transaction => this.signTransaction(transaction)))
   }
 
   // -- W3mFrameProvider methods ------------------------------------------- //
