@@ -34,6 +34,7 @@ import type { Chain as AvailableChain } from '@web3modal/common'
 import type { AppKit } from '../../../src/client.js'
 import type { AppKitOptions } from '../../../utils/TypesUtil.js'
 import type { OptionsControllerState } from '@web3modal/core'
+import { SafeLocalStorage } from '../../../utils/SafeLocalStorage.js'
 
 // -- Types ---------------------------------------------------------------------
 export interface AdapterOptions extends Pick<AppKitOptions, 'siweConfig'> {
@@ -145,7 +146,7 @@ export class EVMEthers5Client {
 
       getApprovedCaipNetworksData: async () =>
         new Promise(async resolve => {
-          const walletChoice = localStorage.getItem(EthersConstantsUtil.WALLET_ID)
+          const walletChoice = SafeLocalStorage.getItem(EthersConstantsUtil.WALLET_ID)
           if (walletChoice?.includes(ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID)) {
             const provider = await this.getWalletConnectProvider()
             if (!provider) {
@@ -312,7 +313,7 @@ export class EVMEthers5Client {
       disconnect: async () => {
         const provider = EthersStoreUtil.state.provider
         const providerType = EthersStoreUtil.state.providerType
-        localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
+        SafeLocalStorage.removeItem(EthersConstantsUtil.WALLET_ID)
         EthersStoreUtil.reset()
         this.appKit?.setClientId(null)
         if (siweConfig?.options?.signOutOnDisconnect) {
@@ -335,7 +336,7 @@ export class EVMEthers5Client {
         }
 
         provider?.emit?.('disconnect')
-        localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
+        SafeLocalStorage.removeItem(EthersConstantsUtil.WALLET_ID)
         EthersStoreUtil.reset()
       },
 
@@ -513,7 +514,7 @@ export class EVMEthers5Client {
 
   public async disconnect() {
     const { provider, providerType } = EthersStoreUtil.state
-    localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
+    SafeLocalStorage.removeItem(EthersConstantsUtil.WALLET_ID)
     EthersStoreUtil.reset()
 
     this.appKit?.setClientId(null)
@@ -589,7 +590,7 @@ export class EVMEthers5Client {
 
   private async checkActiveWalletConnectProvider() {
     const WalletConnectProvider = await this.getWalletConnectProvider()
-    const walletId = localStorage.getItem(EthersConstantsUtil.WALLET_ID)
+    const walletId = SafeLocalStorage.getItem(EthersConstantsUtil.WALLET_ID)
 
     if (WalletConnectProvider) {
       if (walletId === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
@@ -603,7 +604,7 @@ export class EVMEthers5Client {
 
   private checkActiveInjectedProvider(config: ProviderType) {
     const InjectedProvider = config.injected
-    const walletId = localStorage.getItem(EthersConstantsUtil.WALLET_ID)
+    const walletId = SafeLocalStorage.getItem(EthersConstantsUtil.WALLET_ID)
 
     if (InjectedProvider) {
       if (walletId === ConstantsUtil.INJECTED_CONNECTOR_ID) {
@@ -615,7 +616,7 @@ export class EVMEthers5Client {
 
   private checkActiveCoinbaseProvider(config: ProviderType) {
     const CoinbaseProvider = config.coinbase as unknown as ExternalProvider
-    const walletId = localStorage.getItem(EthersConstantsUtil.WALLET_ID)
+    const walletId = SafeLocalStorage.getItem(EthersConstantsUtil.WALLET_ID)
 
     if (CoinbaseProvider) {
       if (walletId === ConstantsUtil.COINBASE_SDK_CONNECTOR_ID) {
@@ -623,7 +624,7 @@ export class EVMEthers5Client {
           this.setCoinbaseProvider(config)
           this.watchCoinbase(config)
         } else {
-          localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
+          SafeLocalStorage.removeItem(EthersConstantsUtil.WALLET_ID)
           EthersStoreUtil.reset()
         }
       }
@@ -631,7 +632,7 @@ export class EVMEthers5Client {
   }
 
   private checkActive6963Provider() {
-    const currentActiveWallet = window?.localStorage.getItem(EthersConstantsUtil.WALLET_ID)
+    const currentActiveWallet = SafeLocalStorage.getItem(EthersConstantsUtil.WALLET_ID)
     if (currentActiveWallet) {
       const currentProvider = this.EIP6963Providers.find(
         provider => provider.info.name === currentActiveWallet
@@ -643,7 +644,7 @@ export class EVMEthers5Client {
   }
 
   private async setWalletConnectProvider() {
-    window?.localStorage.setItem(
+    SafeLocalStorage.setItem(
       EthersConstantsUtil.WALLET_ID,
       ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID
     )
@@ -660,7 +661,7 @@ export class EVMEthers5Client {
   }
 
   private async setEIP6963Provider(provider: Provider, name: string) {
-    window?.localStorage.setItem(EthersConstantsUtil.WALLET_ID, name)
+    SafeLocalStorage.setItem(EthersConstantsUtil.WALLET_ID, name)
 
     if (provider) {
       const { addresses, chainId } = await EthersHelpersUtil.getUserInfo(provider)
@@ -677,7 +678,7 @@ export class EVMEthers5Client {
   }
 
   private async setInjectedProvider(config: ProviderType) {
-    window?.localStorage.setItem(EthersConstantsUtil.WALLET_ID, ConstantsUtil.INJECTED_CONNECTOR_ID)
+    SafeLocalStorage.setItem(EthersConstantsUtil.WALLET_ID, ConstantsUtil.INJECTED_CONNECTOR_ID)
     const InjectedProvider = config.injected
 
     if (InjectedProvider) {
@@ -695,10 +696,7 @@ export class EVMEthers5Client {
   }
 
   private async setCoinbaseProvider(config: ProviderType) {
-    window?.localStorage.setItem(
-      EthersConstantsUtil.WALLET_ID,
-      ConstantsUtil.COINBASE_SDK_CONNECTOR_ID
-    )
+    SafeLocalStorage.setItem(EthersConstantsUtil.WALLET_ID, ConstantsUtil.COINBASE_SDK_CONNECTOR_ID)
     const CoinbaseProvider = config.coinbase
     if (CoinbaseProvider) {
       const { addresses, chainId } = await EthersHelpersUtil.getUserInfo(CoinbaseProvider)
@@ -718,7 +716,7 @@ export class EVMEthers5Client {
     const WalletConnectProvider = await this.getWalletConnectProvider()
 
     function disconnectHandler() {
-      localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
+      SafeLocalStorage.removeItem(EthersConstantsUtil.WALLET_ID)
       EthersStoreUtil.reset()
 
       WalletConnectProvider?.removeListener('disconnect', disconnectHandler)
@@ -750,7 +748,7 @@ export class EVMEthers5Client {
     const InjectedProvider = config.injected
 
     function disconnectHandler() {
-      localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
+      SafeLocalStorage.removeItem(EthersConstantsUtil.WALLET_ID)
       EthersStoreUtil.reset()
 
       InjectedProvider?.removeListener('disconnect', disconnectHandler)
@@ -763,7 +761,7 @@ export class EVMEthers5Client {
       if (currentAccount) {
         EthersStoreUtil.setAddress(utils.getAddress(currentAccount) as Address)
       } else {
-        localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
+        SafeLocalStorage.removeItem(EthersConstantsUtil.WALLET_ID)
         EthersStoreUtil.reset()
       }
     }
@@ -787,7 +785,7 @@ export class EVMEthers5Client {
 
   private watchEIP6963(provider: Provider) {
     function disconnectHandler() {
-      localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
+      SafeLocalStorage.removeItem(EthersConstantsUtil.WALLET_ID)
       EthersStoreUtil.reset()
 
       provider.removeListener('disconnect', disconnectHandler)
@@ -800,7 +798,7 @@ export class EVMEthers5Client {
       if (currentAccount) {
         EthersStoreUtil.setAddress(utils.getAddress(currentAccount) as Address)
       } else {
-        localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
+        SafeLocalStorage.removeItem(EthersConstantsUtil.WALLET_ID)
         EthersStoreUtil.reset()
       }
     }
@@ -822,10 +820,10 @@ export class EVMEthers5Client {
 
   private watchCoinbase(config: ProviderType) {
     const CoinbaseProvider = config.coinbase
-    const walletId = localStorage.getItem(EthersConstantsUtil.WALLET_ID)
+    const walletId = SafeLocalStorage.getItem(EthersConstantsUtil.WALLET_ID)
 
     function disconnectHandler() {
-      localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
+      SafeLocalStorage.removeItem(EthersConstantsUtil.WALLET_ID)
       EthersStoreUtil.reset()
 
       CoinbaseProvider?.removeListener('disconnect', disconnectHandler)
@@ -835,7 +833,7 @@ export class EVMEthers5Client {
 
     function accountsChangedHandler(accounts: string[]) {
       if (accounts.length === 0) {
-        localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
+        SafeLocalStorage.removeItem(EthersConstantsUtil.WALLET_ID)
         EthersStoreUtil.reset()
       } else {
         EthersStoreUtil.setAddress(accounts[0] as Address)
@@ -993,7 +991,7 @@ export class EVMEthers5Client {
   }
 
   private syncConnectedWalletInfo() {
-    const currentActiveWallet = window?.localStorage.getItem(EthersConstantsUtil.WALLET_ID)
+    const currentActiveWallet = SafeLocalStorage.getItem(EthersConstantsUtil.WALLET_ID)
     const providerType = EthersStoreUtil.state.providerType
 
     if (providerType === ConstantsUtil.EIP6963_CONNECTOR_ID) {
