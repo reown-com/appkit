@@ -99,4 +99,19 @@ describe.each(providers)('Generic provider tests for $name', ({ provider }) => {
 
     expect(result).toBeTypeOf('string')
   })
+
+  it('should signAllTransactions with AnyTransaction', async () => {
+    const transactions = [
+      mockLegacyTransaction(),
+      mockVersionedTransaction(),
+      mockLegacyTransaction(),
+      mockVersionedTransaction()
+    ]
+    const result = await provider.singAllTransactions(transactions)
+
+    expect(result).toHaveLength(transactions.length)
+    result.forEach(transaction => {
+      expect(transaction.signatures).toHaveLength(1)
+    })
+  })
 })
