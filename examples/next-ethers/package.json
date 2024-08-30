@@ -1,5 +1,5 @@
 {
-  "name": "@examples/next-wagmi",
+  "name": "@examples/next-ethers",
   "version": "5.1.3",
   "private": true,
   "scripts": {
