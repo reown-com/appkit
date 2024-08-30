@@ -213,7 +213,7 @@ export class SolanaWeb3JsClient {
     }
 
     this.initializeProviders({
-      relayUrl: 'wss://relay.walletconnect.com',
+      relayUrl: SolConstantsUtil.UNIVERSAL_PROVIDER_RELAY_URL,
       metadata: clientOptions.metadata,
       projectId: options.projectId,
       ...clientOptions.solanaConfig.auth
