@@ -107,7 +107,7 @@ describe.each(providers)('Generic provider tests for $name', ({ provider }) => {
       mockLegacyTransaction(),
       mockVersionedTransaction()
     ]
-    const result = await provider.singAllTransactions(transactions)
+    const result = await provider.signAllTransactions(transactions)
 
     expect(result).toHaveLength(transactions.length)
     result.forEach(transaction => {
