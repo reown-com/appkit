@@ -1,6 +1,10 @@
 import React, { type ReactNode } from 'react'
 import { createContext } from 'react'
-import { GRANTED_PERMISSIONS_KEY, removeItem, WC_COSIGNER_DATA } from '../utils/LocalStorage'
+import {
+  GRANTED_PERMISSIONS_KEY,
+  removeLocalStorageItem,
+  WC_COSIGNER_DATA
+} from '../utils/LocalStorage'
 import { useLocalStorageState } from '../hooks/useLocalStorageState'
 import type { GrantPermissionsReturnType } from 'viem/experimental'
 import type { AddPermissionResponse } from '../utils/WalletConnectCosignerUtils'
@@ -44,7 +48,7 @@ export function ERC7715PermissionsProvider({ children }: ERC7715PermissionsProvi
   >(WC_COSIGNER_DATA, undefined)
 
   function clearGrantedPermissions() {
-    removeItem(GRANTED_PERMISSIONS_KEY)
+    removeLocalStorageItem(GRANTED_PERMISSIONS_KEY)
     setGrantedPermissions(undefined)
   }
 

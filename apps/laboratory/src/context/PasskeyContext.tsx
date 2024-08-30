@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import { createContext, useContext, useEffect, useState } from 'react'
 import {
   PASSKEY_LOCALSTORAGE_KEY,
-  setItem,
+  setLocalStorageItem,
   type PasskeyLocalStorageFormat
 } from '../utils/LocalStorage'
 import { useLocalStorageState } from '../hooks/useLocalStorageState'
@@ -38,7 +38,7 @@ export function PasskeyProvider({ children }: PasskeyProviderProps) {
   const [isPasskeyAvailable, setIsPasskeyAvailable] = useState(false)
   const [passkeyId, setPasskeyId] = useState('')
   function setNewPasskey(value: PasskeyStorageType) {
-    setItem(PASSKEY_LOCALSTORAGE_KEY, '')
+    setLocalStorageItem(PASSKEY_LOCALSTORAGE_KEY, '')
     setPasskey(value)
     setIsPasskeyAvailable(false)
   }
