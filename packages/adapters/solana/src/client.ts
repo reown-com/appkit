@@ -10,7 +10,9 @@ import {
 } from '@web3modal/core'
 import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 
-import { SolConstantsUtil, SolHelpersUtil, SolStoreUtil } from '@web3modal/scaffold-utils/solana'
+import { SolConstantsUtil } from './utils/SolanaConstantsUtil.js'
+import { SolHelpersUtil } from './utils/SolanaHelpersUtils.js'
+import { SolStoreUtil } from './utils/SolanaStoreUtil.js'
 
 import type { BaseWalletAdapter } from '@solana/wallet-adapter-base'
 import { PublicKey, type Commitment, type ConnectionConfig } from '@solana/web3.js'
@@ -23,7 +25,7 @@ import type {
 import type { AdapterType, CaipAddress, CaipNetwork, CaipNetworkId } from '@web3modal/common'
 import type { ChainNamespace } from '@web3modal/common'
 
-import type { Provider } from '@web3modal/scaffold-utils/solana'
+import type { Provider } from './utils/SolanaTypesUtil.js'
 import { watchStandard } from './utils/watchStandard.js'
 import { WalletConnectProvider } from './providers/WalletConnectProvider.js'
 import { AuthProvider } from './providers/AuthProvider.js'
