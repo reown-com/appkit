@@ -1,6 +1,10 @@
 /** @type {import('next').NextConfig} */
 const SHAKRA_UI = `'sha256-e7MRMmTzLsLQvIy1iizO1lXf7VWYoQ6ysj5fuUzvRwE='`
-// Keep in-sync with https://docs.walletconnect.com/advanced/security/content-security-policy
+/*
+ * Keep in-sync with https://docs.walletconnect.com/advanced/security/content-security-policy
+ * DO NOT use `unsafe-inline` or `unsafe-eval` for `script-src` or `default-src` in production as this
+ * is against CSP best practices
+ */
 const cspHeader = `
   default-src 'self';
   script-src 'self' ${SHAKRA_UI} ${process.env.NODE_ENV === 'production' ? '' : "'unsafe-eval'"};
