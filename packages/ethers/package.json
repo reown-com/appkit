@@ -44,7 +44,7 @@
   },
   "dependencies": {
     "@coinbase/wallet-sdk": "4.0.3",
-    "@walletconnect/ethereum-provider": "2.15.1",
+    "@walletconnect/ethereum-provider": "2.15.2",
     "@walletconnect/utils": "2.15.1",
     "@web3modal/base": "workspace:*",
     "@web3modal/common": "workspace:*",
