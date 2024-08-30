@@ -6,7 +6,6 @@ import { mainnet, optimism, arbitrum, solana } from '@web3modal/base/chains'
 import { MultiChainInfo } from '../../components/MultiChainInfo'
 
 const modal = createWeb3Modal({
-  adapters: [],
   caipNetworks: [mainnet, optimism, arbitrum, solana],
   projectId: ConstantsUtil.ProjectId,
   metadata: ConstantsUtil.Metadata
