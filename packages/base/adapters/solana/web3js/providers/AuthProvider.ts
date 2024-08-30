@@ -131,6 +131,11 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
     return signature
   }
 
+  public async signAllTransactions(_transactions: AnyTransaction[]) {
+    // To be implemented
+    return Promise.resolve([])
+  }
+
   // -- W3mFrameProvider methods ------------------------------------------- //
   connectEmail: ProviderAuthMethods['connectEmail'] = args => this.provider.connectEmail(args)
   connectOtp: ProviderAuthMethods['connectOtp'] = args => this.provider.connectOtp(args)
