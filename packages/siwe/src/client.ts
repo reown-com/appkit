@@ -146,4 +146,8 @@ export class Web3ModalSIWEClient {
 
     return this.methods.signOut()
   }
+
+  onSignIn(session?: SIWESession) {
+    this.methods.onSignIn?.(session)
+  }
 }

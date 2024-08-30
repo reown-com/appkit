@@ -163,7 +163,6 @@ export class EVMWagmiClient {
             return
           }
           const params = await SIWEController?.getMessageParams?.()
-          console.log({ params })
           /*
            * Must perform these checks to satify optional types
            * Make active chain first in requested chains to make it default for siwe message
@@ -201,6 +200,7 @@ export class EVMWagmiClient {
                 chainId
               })
             }
+            SIWEController.setStatus('authenticating')
 
             try {
               // Kicks off verifyMessage and populates external states
@@ -208,13 +208,29 @@ export class EVMWagmiClient {
                 request: p,
                 iss: p.iss
               })
+
               await SIWEController.verifyMessage({
                 message,
                 signature: s.s,
                 cacao: signedCacao,
                 clientId
               })
+
+              console.log('>>>> w3m before on sign in', {
+                chainId,
+                address,
+                cacaoChainId,
+                onSignin: SIWEController.onSignIn
+              })
+              if (address && cacaoChainId) {
+                SIWEController.onSignIn?.({
+                  address,
+                  chainId
+                })
+              }
+              SIWEController.setStatus('success')
             } catch (error) {
+              SIWEController.setStatus('ready')
               // eslint-disable-next-line no-console
               console.error('Error verifying message', error)
               // eslint-disable-next-line no-console
@@ -223,13 +239,13 @@ export class EVMWagmiClient {
               await SIWEController.signOut().catch(console.error)
               throw error
             }
-            /*
-             * Unassign the connector from the wagmiConfig and allow connect() to reassign it in the next step
-             * this avoids case where wagmi throws because the connector is already connected
-             * what we need connect() to do is to only setup internal event listeners
-             */
-            this.wagmiConfig.state.current = ''
           }
+          /*
+           * Unassign the connector from the wagmiConfig and allow connect() to reassign it in the next step
+           * this avoids case where wagmi throws because the connector is already connected
+           * what we need connect() to do is to only setup internal event listeners
+           */
+          this.wagmiConfig.state.current = ''
         }
         await connect(this.wagmiConfig, { connector, chainId })
       },
@@ -286,7 +302,7 @@ export class EVMWagmiClient {
       disconnect: async () => {
         await disconnect(this.wagmiConfig)
         this.appKit?.setClientId(null)
-        if (this.options?.siweConfig?.options?.signOutOnDisconnect) {
+        if (this.appKit?.getIsSiweEnabled()) {
           const { SIWEController } = await import('@web3modal/siwe')
           if (SIWEController.state._client?.options?.signOutOnDisconnect) {
             await SIWEController.signOut()

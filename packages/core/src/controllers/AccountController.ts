@@ -36,6 +36,7 @@ export interface AccountControllerState {
   preferredAccountType?: W3mFrameTypes.AccountType
   socialWindow?: Window
   farcasterUrl?: string
+  siweStatus?: string
 }
 
 // -- State --------------------------------------------- //
@@ -217,5 +218,9 @@ export const AccountController = {
 
   resetAccount(chain: Chain) {
     ChainController.resetAccount(chain)
+  },
+
+  setSiweStatus(status: AccountControllerState['siweStatus']) {
+    ChainController.setAccountProp('siweStatus', status, ChainController.state.activeChain)
   }
 }

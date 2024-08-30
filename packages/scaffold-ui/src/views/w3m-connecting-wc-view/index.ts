@@ -1,5 +1,6 @@
 import type { BaseError, Platform } from '@web3modal/core'
 import {
+  AccountController,
   ConnectionController,
   ConstantsUtil,
   CoreHelperUtil,
@@ -28,10 +29,23 @@ export class W3mConnectingWcView extends LitElement {
 
   @state() private platforms: Platform[] = []
 
+  private unsubscribe: (() => void)[] = []
+
   public constructor() {
     super()
     this.initializeConnection()
     this.interval = setInterval(this.initializeConnection.bind(this), ConstantsUtil.TEN_SEC_MS)
+    this.unsubscribe.push(
+      AccountController.subscribe(val => {
+        if (val.siweStatus === 'authenticating') {
+          SnackController.showLoading('Authenticating', 10000)
+        }
+
+        if (val.siweStatus === 'success') {
+          ModalController.close()
+        }
+      })
+    )
   }
 
   public override disconnectedCallback() {
@@ -68,6 +82,8 @@ export class W3mConnectingWcView extends LitElement {
           const { SIWEController } = await import('@web3modal/siwe')
           if (SIWEController.state.status === 'success') {
             ModalController.close()
+          } else if (SIWEController.state.status === 'authenticating') {
+            SnackController.showLoading('Authenticating', 10000)
           } else {
             RouterController.push('ConnectingSiwe')
           }

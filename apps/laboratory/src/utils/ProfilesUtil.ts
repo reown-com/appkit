@@ -167,6 +167,7 @@ export function siweProfilesConfig(wagmiConfig: Config) {
   return createSIWEConfig({
     signOutOnAccountChange: true,
     signOutOnNetworkChange: true,
+    signOutOnDisconnect: true,
     // We don't require any async action to populate params but other apps might
     // eslint-disable-next-line @typescript-eslint/require-await
     getMessageParams: async () => ({
@@ -206,12 +207,19 @@ export function siweProfilesConfig(wagmiConfig: Config) {
       if (cacao) {
         // Do something
       }
-      const { token } = await authenticate({ message, signature, clientId })
+      const { token } = await authenticate({
+        message,
+        signature,
+        clientId
+      })
 
       const profileUuid = await addCurrentAccountToProfile()
       if (!profileUuid) {
         throw new Error('Failed to add account to profile')
       }
+
+      const profile = await getProfile()
+      ProfileStore.setProfile(profile.accounts)
 
       return Boolean(profileUuid && token)
     },
@@ -225,14 +233,7 @@ export function siweProfilesConfig(wagmiConfig: Config) {
       }
     },
     onSignIn: () => {
-      disconnect(wagmiConfig).then(() => {
-        Promise.all([
-          appKitAuthSignOut(),
-          getProfile().then(profile => {
-            ProfileStore.setProfile(profile.accounts)
-          })
-        ])
-      })
+      disconnect(wagmiConfig)
     }
   })
 }

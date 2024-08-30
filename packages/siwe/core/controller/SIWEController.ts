@@ -1,4 +1,4 @@
-import { OptionsController } from '@web3modal/core'
+import { AccountController, OptionsController } from '@web3modal/core'
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import type {
@@ -26,7 +26,14 @@ export interface SIWEControllerClientState {
   nonce?: string
   session?: SIWESession
   message?: string
-  status: 'uninitialized' | 'ready' | 'loading' | 'success' | 'rejected' | 'error'
+  status:
+    | 'uninitialized'
+    | 'ready'
+    | 'loading'
+    | 'success'
+    | 'rejected'
+    | 'error'
+    | 'authenticating'
 }
 
 type StateKey = keyof SIWEControllerClientState
@@ -143,6 +150,7 @@ export const SIWEController = {
 
   setStatus(status: SIWEControllerClientState['status']) {
     state.status = status
+    AccountController.setSiweStatus(status)
   },
 
   setMessage(message: SIWEControllerClientState['message']) {
@@ -151,6 +159,7 @@ export const SIWEController = {
 
   setSession(session: SIWEControllerClientState['session']) {
     state.session = session
-    state.status = session?.address && session?.chainId ? 'success' : 'ready'
+
+    this.setStatus(session?.address && session?.chainId ? 'success' : 'ready')
   }
 }
