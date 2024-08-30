@@ -190,10 +190,10 @@ export class EVMWagmiClient {
 
     this.networkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
+        localStorage.setItem(WcConstantsUtil.ACTIVE_CAIPNETWORK, JSON.stringify(caipNetwork))
         const chainId = Number(NetworkUtil.caipNetworkIdToNumber(caipNetwork?.id))
 
         if (chainId && this.wagmiConfig) {
-          localStorage.setItem(WcConstantsUtil.ACTIVE_CAIPNETWORK, JSON.stringify(caipNetwork))
           await switchChain(this.wagmiConfig, { chainId })
         }
       },

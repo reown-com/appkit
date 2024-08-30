@@ -316,6 +316,7 @@ export class SolanaWeb3JsClient {
     }
 
     this.appKit?.setCaipNetwork(caipNetwork)
+
     localStorage.setItem(SolConstantsUtil.CAIP_CHAIN_ID, caipNetwork.id)
 
     await this.syncNetwork()
@@ -353,31 +354,37 @@ export class SolanaWeb3JsClient {
     try {
       this.appKit?.setLoading(true)
       const address = await provider.connect()
+      const caipChainId = localStorage.getItem('@w3m/solana_caip_chain')
+      let connectionChain: CaipNetwork | undefined = undefined
 
-      const connectionChain = SolHelpersUtil.getChainFromCaip(
-        this.caipNetworks,
-        localStorage.getItem('@w3m/solana_caip_chain')
-      )
-      if (!connectionChain) {
-        provider.disconnect()
-        throw new Error('The wallet does not support any of the required chains')
+      const activeCaipNetwork = this.appKit?.getCaipNetwork()
+
+      // eslint-disable-next-line no-nested-ternary
+      connectionChain = caipChainId
+        ? SolHelpersUtil.getChainFromCaip(this.caipNetworks, caipChainId)
+        : activeCaipNetwork?.chainNamespace === 'eip155'
+          ? this.caipNetworks.find(chain => chain.chainNamespace === 'solana')
+          : activeCaipNetwork || this.caipNetworks.find(chain => chain.chainNamespace === 'solana')
+
+      if (connectionChain) {
+        this.appKit?.setCaipAddress(
+          `solana:${connectionChain.chainId}:${address}`,
+          this.chainNamespace
+        )
+
+        await this.switchNetwork(connectionChain)
+
+        ProviderUtil.setProvider('solana', provider)
+        ProviderUtil.setProviderId('solana', 'walletConnect')
+        this.provider = provider
+
+        window?.localStorage.setItem(SolConstantsUtil.WALLET_ID, provider.name)
+
+        await this.appKit?.setApprovedCaipNetworksData(this.chainNamespace)
+
+        this.watchProvider(provider)
+        this.appKit?.setIsConnected(true, this.chainNamespace)
       }
-      this.appKit?.setCaipAddress(
-        `solana:${connectionChain.chainId}:${address}`,
-        this.chainNamespace
-      )
-      await this.switchNetwork(connectionChain)
-
-      ProviderUtil.setProvider('solana', provider)
-      ProviderUtil.setProviderId('solana', 'walletConnect')
-      this.provider = provider
-
-      window?.localStorage.setItem(SolConstantsUtil.WALLET_ID, provider.name)
-
-      await this.appKit?.setApprovedCaipNetworksData(this.chainNamespace)
-
-      this.watchProvider(provider)
-      this.appKit?.setIsConnected(true, this.chainNamespace)
     } finally {
       this.appKit?.setLoading(false)
     }

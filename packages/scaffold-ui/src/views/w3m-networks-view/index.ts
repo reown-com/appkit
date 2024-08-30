@@ -154,7 +154,8 @@ export class W3mNetworksView extends LitElement {
         RouterController.push('SwitchActiveChain', {
           switchToChain: network.chainNamespace,
           navigateTo: 'Connect',
-          navigateWithReplace: true
+          navigateWithReplace: true,
+          network
         })
 
         return

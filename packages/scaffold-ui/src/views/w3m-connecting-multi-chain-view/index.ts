@@ -77,14 +77,16 @@ export class W3mConnectingMultiChainView extends LitElement {
 
   // Private Methods ------------------------------------- //
   private networksTemplate() {
-    return this.activeConnector?.providers?.map(
-      provider => html`
-        <wui-list-wallet
-          imageSrc=${ifDefined(AssetUtil.getChainImage(provider.chain))}
-          name=${provider.name}
-          @click=${() => this.onConnector(provider)}
-        ></wui-list-wallet>
-      `
+    return this.activeConnector?.providers?.map(provider =>
+      provider.name
+        ? html`
+            <wui-list-wallet
+              imageSrc=${ifDefined(AssetUtil.getChainImage(provider.chain))}
+              name=${provider.name}
+              @click=${() => this.onConnector(provider)}
+            ></wui-list-wallet>
+          `
+        : null
     )
   }
 

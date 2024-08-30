@@ -976,44 +976,46 @@ export class EVMEthersClient {
     const provider = ProviderUtil.getProvider<Provider | UniversalProvider>('eip155')
     const providerType = ProviderUtil.state.providerIds['eip155']
 
-    switch (providerType) {
-      case ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID:
-        this.appKit?.universalAdapter?.networkControllerClient.switchCaipNetwork(caipNetwork)
-        break
-      case ConstantsUtil.INJECTED_CONNECTOR_ID:
-      case ConstantsUtil.EIP6963_CONNECTOR_ID:
-      case ConstantsUtil.COINBASE_SDK_CONNECTOR_ID:
-        if (provider) {
-          await requestSwitchNetwork(provider as Provider)
-        }
-        break
-      case ConstantsUtil.AUTH_CONNECTOR_ID:
-        if (this.authProvider) {
-          try {
-            this.appKit?.setLoading(true)
-            await this.authProvider.switchNetwork(caipNetwork.chainId as number)
-            this.appKit?.setCaipNetwork(caipNetwork)
-
-            const { address, preferredAccountType } = await this.authProvider.connect({
-              chainId: caipNetwork.chainId as number | undefined
-            })
-
-            // @ts-expect-error - address type will be checked todo(enes|sven)
-            this.appKit?.setCaipAddress(address, this.chainNamespace)
-            this.appKit?.setPreferredAccountType(
-              preferredAccountType as W3mFrameTypes.AccountType,
-              this.chainNamespace
-            )
-            await this.syncAccount()
-          } catch {
-            throw new Error('Switching chain failed')
-          } finally {
-            this.appKit?.setLoading(false)
+    if (provider) {
+      switch (providerType) {
+        case ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID:
+          this.appKit?.universalAdapter?.networkControllerClient.switchCaipNetwork(caipNetwork)
+          break
+        case ConstantsUtil.INJECTED_CONNECTOR_ID:
+        case ConstantsUtil.EIP6963_CONNECTOR_ID:
+        case ConstantsUtil.COINBASE_SDK_CONNECTOR_ID:
+          if (provider) {
+            await requestSwitchNetwork(provider as Provider)
           }
-        }
-        break
-      default:
-        throw new Error('Unsupported provider type')
+          break
+        case ConstantsUtil.AUTH_CONNECTOR_ID:
+          if (this.authProvider) {
+            try {
+              this.appKit?.setLoading(true)
+              await this.authProvider.switchNetwork(caipNetwork.chainId as number)
+              this.appKit?.setCaipNetwork(caipNetwork)
+
+              const { address, preferredAccountType } = await this.authProvider.connect({
+                chainId: caipNetwork.chainId as number | undefined
+              })
+
+              // @ts-expect-error - address type will be checked todo(enes|sven)
+              this.appKit?.setCaipAddress(address, this.chainNamespace)
+              this.appKit?.setPreferredAccountType(
+                preferredAccountType as W3mFrameTypes.AccountType,
+                this.chainNamespace
+              )
+              await this.syncAccount()
+            } catch {
+              throw new Error('Switching chain failed')
+            } finally {
+              this.appKit?.setLoading(false)
+            }
+          }
+          break
+        default:
+          throw new Error('Unsupported provider type')
+      }
     }
   }
 

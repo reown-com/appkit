@@ -194,6 +194,7 @@ export type VisualType =
   | 'stripe'
   | 'paypal'
   | 'pencil'
+  | 'solana'
 
 export type VisualSize = 'sm' | 'md' | 'lg'
 

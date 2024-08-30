@@ -222,7 +222,12 @@ export const ChainController = {
         ? ref(newAdapter.networkState?.caipNetwork)
         : undefined
 
+      if (!newAdapter.accountState) {
+        this.resetAccount(newAdapter.chainNamespace)
+      }
+
       AccountController.replaceState(newAdapter.accountState)
+
       NetworkController.replaceState(newAdapter.networkState)
       this.setCaipNetwork(newAdapter.chainNamespace, newAdapter.networkState?.caipNetwork, true)
       PublicStateController.set({
