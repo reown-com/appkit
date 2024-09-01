@@ -3,6 +3,7 @@ import type {
   CaipAddress,
   CaipNetwork,
   CaipNetworkId,
+  ChainAdapter,
   ConnectionControllerClient,
   Connector,
   NetworkControllerClient,
@@ -80,7 +81,7 @@ interface ExternalProvider extends EthereumProvider {
 }
 
 // -- Client --------------------------------------------------------------------
-export class EVMEthers5Client {
+export class EVMEthers5Client implements ChainAdapter<EthersStoreUtilState, number> {
   // -- Private variables -------------------------------------------------------
   private appKit: AppKit | undefined = undefined
 
@@ -582,7 +583,8 @@ export class EVMEthers5Client {
           id: `${ConstantsUtil.EIP155}:${chain.chainId}`,
           name: chain.name,
           imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId],
-          imageUrl: chainImages?.[chain.chainId]
+          imageUrl: chainImages?.[chain.chainId],
+          chain: this.chain
         }) as CaipNetwork
     )
     this.appKit?.setRequestedCaipNetworks(requestedCaipNetworks ?? [], this.chain)

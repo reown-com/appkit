@@ -3,6 +3,7 @@ import type {
   CaipAddress,
   CaipNetwork,
   CaipNetworkId,
+  ChainAdapter,
   ConnectionControllerClient,
   Connector,
   NetworkControllerClient,
@@ -99,7 +100,7 @@ interface ExternalProvider extends EthereumProvider {
 }
 
 // -- Client --------------------------------------------------------------------
-export class EVMEthersClient {
+export class EVMEthersClient implements ChainAdapter<EthersStoreUtilState, number> {
   // -- Private variables -------------------------------------------------------
   private appKit: AppKit | undefined = undefined
 
@@ -610,7 +611,7 @@ export class EVMEthersClient {
     return EthersStoreUtil.state.error
   }
 
-  public getChainId() {
+  public getChainId(): string | number | undefined {
     const storeChainId = EthersStoreUtil.state.chainId
     const networkControllerChainId = NetworkUtil.caipNetworkIdToNumber(
       this.appKit?.getCaipNetwork()?.id
@@ -1377,7 +1378,7 @@ export class EVMEthersClient {
               method: 'wallet_switchEthereumChain',
               params: [{ chainId: EthersHelpersUtil.numberToHexString(chain.chainId) }]
             })
-            EthersStoreUtil.setChainId(chainId)
+            EthersStoreUtil.setChainId(chainId as number)
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
           } catch (switchError: any) {
             const message = switchError?.message as string
