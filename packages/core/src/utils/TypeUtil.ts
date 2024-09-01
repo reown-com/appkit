@@ -833,11 +833,11 @@ export type ChainAdapter<StoreState = unknown, SwitchNetworkParam = number> = {
   defaultChain?: CaipNetwork
   chain: Chain
   getAddress?: () => string | undefined
-  getError?: () => unknown | undefined
+  getError?: () => unknown
   getChainId?: () => number | string | undefined
   switchNetwork?: ((chainId: SwitchNetworkParam) => void) | undefined
   getIsConnected?: () => boolean | undefined
-  getWalletProvider?: () => unknown | undefined
+  getWalletProvider?: () => unknown
   getWalletProviderType?: () => string | undefined
   subscribeProvider?: (callback: (newState: StoreState) => void) => void
 }
