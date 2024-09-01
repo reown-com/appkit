@@ -100,6 +100,7 @@ interface ExternalProvider extends EthereumProvider {
 }
 
 // -- Client --------------------------------------------------------------------
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-arguments
 export class EVMEthersClient implements ChainAdapter<EthersStoreUtilState, number> {
   // -- Private variables -------------------------------------------------------
   private appKit: AppKit | undefined = undefined
@@ -1378,7 +1379,7 @@ export class EVMEthersClient implements ChainAdapter<EthersStoreUtilState, numbe
               method: 'wallet_switchEthereumChain',
               params: [{ chainId: EthersHelpersUtil.numberToHexString(chain.chainId) }]
             })
-            EthersStoreUtil.setChainId(chainId as number)
+            EthersStoreUtil.setChainId(chainId)
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
           } catch (switchError: any) {
             const message = switchError?.message as string

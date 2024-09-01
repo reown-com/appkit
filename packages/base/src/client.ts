@@ -53,6 +53,7 @@ export class AppKit<AdapterStoreState = unknown, SwitchNetworkParam = unknown> {
       adapters?: ChainAdapter<AdapterStoreState, SwitchNetworkParam>[]
     }
   ) {
+    // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
     this.adapter = options.adapters?.[0] as ChainAdapter<AdapterStoreState, SwitchNetworkParam>
     this.initControllers(options)
     this.initOrContinue()
