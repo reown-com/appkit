@@ -40,7 +40,7 @@ export function createWeb3Modal(options: EthersAppKitOptions) {
     sdkType: 'w3m',
     sdkVersion: `react-ethers-${ConstantsUtil.VERSION}`
   })
-  getWeb3Modal<EthersStoreUtilState, number>(appkit)
+  getWeb3Modal<EthersStoreUtilState>(appkit)
 
   return appkit
 }
