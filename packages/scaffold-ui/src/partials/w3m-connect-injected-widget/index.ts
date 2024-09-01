@@ -54,12 +54,6 @@ export class W3mConnectInjectedWidget extends LitElement {
             return null
           }
 
-          if (connector.info?.rdns && ApiController.state.excludedRDNS) {
-            if (ApiController.state.excludedRDNS.includes(connector?.info?.rdns)) {
-              return null
-            }
-          }
-
           if (
             !connector.info?.rdns &&
             !ConnectionController.checkInstalled(undefined, connector.chain)
@@ -67,6 +61,12 @@ export class W3mConnectInjectedWidget extends LitElement {
             this.style.cssText = `display: none`
 
             return null
+          }
+
+          if (connector.info?.rdns && ApiController.state.excludedRDNS) {
+            if (ApiController.state.excludedRDNS.includes(connector?.info?.rdns)) {
+              return null
+            }
           }
 
           return html`
