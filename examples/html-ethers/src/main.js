@@ -30,7 +30,7 @@ const chains = [
 
 const metadata = {
   name: 'AppKit',
-  description: 'AppKit HTML + Ethers5 Example',
+  description: 'AppKit HTML + Ethers Example',
   url: 'https://lab.web3modal.com',
   icons: ['https://avatars.githubusercontent.com/u/37784886']
 }
