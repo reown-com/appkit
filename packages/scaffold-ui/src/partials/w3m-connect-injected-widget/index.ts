@@ -54,10 +54,7 @@ export class W3mConnectInjectedWidget extends LitElement {
             return null
           }
 
-          if (
-            !connector.info?.rdns &&
-            !ConnectionController.checkInstalled(undefined, connector.chain)
-          ) {
+          if (!connector.info && !ConnectionController.checkInstalled(undefined, connector.chain)) {
             this.style.cssText = `display: none`
 
             return null
