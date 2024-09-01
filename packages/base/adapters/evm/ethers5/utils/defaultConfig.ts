@@ -1,10 +1,17 @@
 import '@web3modal/polyfills'
 import type { Chain, Metadata, Provider, ProviderType } from '@web3modal/scaffold-utils/ethers'
 import { CoinbaseWalletSDK, type ProviderInterface } from '@coinbase/wallet-sdk'
+import type { SocialProvider } from '@web3modal/scaffold-utils'
 
 export interface ConfigOptions {
   enableEIP6963?: boolean
   enableCoinbase?: boolean
+  auth?: {
+    email?: boolean
+    socials?: SocialProvider[]
+    showWallets?: boolean
+    walletFeatures?: boolean
+  }
   enableInjected?: boolean
   /**
    * @deprecated this doesn't do anything, use `chains` instead
