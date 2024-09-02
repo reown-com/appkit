@@ -32,7 +32,7 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
     'https://imagedelivery.net/_aTEfDRm7z3tKgu9JhfeKA/05338e12-4f75-4982-4e8a-83c67b826b00/md'
 
   private provider: UniversalProvider
-  private session?: SessionTypes.Struct
+  public session?: SessionTypes.Struct
   private readonly requestedChains: Chain[]
   private readonly getActiveChain: WalletConnectProviderConfig['getActiveChain']
 
@@ -175,6 +175,12 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
     const signature = await connection.sendRawTransaction(signedTransaction.serialize(), options)
 
     return signature
+  }
+
+  public async signAllTransactions<T extends AnyTransaction[]>(transactions: T): Promise<T> {
+    return (await Promise.all(
+      transactions.map(transaction => this.signTransaction(transaction))
+    )) as T
   }
 
   // -- Private ------------------------------------------ //

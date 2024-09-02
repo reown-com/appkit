@@ -23,7 +23,8 @@ import {
   RouterController,
   EnsController,
   OptionsController,
-  NetworkController
+  NetworkController,
+  AssetUtil
 } from '@web3modal/core'
 import { setColorTheme, setThemeVariables } from '@web3modal/ui'
 import { ConstantsUtil, type Chain } from '@web3modal/common'
@@ -297,6 +298,9 @@ export class AppKit {
   public setClientId: (typeof BlockchainApiController)['setClientId'] = clientId => {
     BlockchainApiController.setClientId(clientId)
   }
+
+  public getConnectorImage: (typeof AssetUtil)['getConnectorImage'] = connector =>
+    AssetUtil.getConnectorImage(connector)
 
   // -- Private ------------------------------------------------------------------
   private async initControllers(options: AppKitOptions) {

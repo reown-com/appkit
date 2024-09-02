@@ -21,7 +21,7 @@ siweWalletTest.beforeAll(async ({ browser, library }) => {
   context = await browser.newContext()
   const browserPage = await context.newPage()
 
-  modalPage = new ModalPage(browserPage, library, 'siwe')
+  modalPage = new ModalPage(browserPage, library, 'all')
   walletPage = new WalletPage(await context.newPage())
   modalValidator = new ModalValidator(browserPage)
 

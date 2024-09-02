@@ -183,6 +183,35 @@ export class WalletStandardProvider extends ProviderEventEmitter implements Prov
     return signature
   }
 
+  public async signAllTransactions<T extends AnyTransaction[]>(transactions: T): Promise<T> {
+    const feature = this.getWalletFeature(SolanaSignTransaction)
+
+    const account = this.getAccount(true)
+    const chain = this.getActiveChainName()
+
+    const result = await feature.signTransaction(
+      ...transactions.map(transaction => ({
+        transaction: this.serializeTransaction(transaction),
+        account,
+        chain
+      }))
+    )
+
+    return result.map(({ signedTransaction }, index) => {
+      const transaction = transactions[index]
+
+      if (!transaction) {
+        throw new WalletSignTransactionError('Invalid transaction signature response')
+      }
+
+      if (isVersionedTransaction(transaction)) {
+        return VersionedTransaction.deserialize(signedTransaction)
+      }
+
+      return Transaction.from(signedTransaction)
+    }) as T
+  }
+
   // -- Private ------------------------------------------- //
   private serializeTransaction(transaction: AnyTransaction) {
     return transaction.serialize({ verifySignatures: false })
