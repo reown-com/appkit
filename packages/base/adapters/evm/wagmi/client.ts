@@ -306,6 +306,7 @@ export class EVMWagmiClient {
           const { SIWEController } = await import('@web3modal/siwe')
           if (SIWEController.state._client?.options?.signOutOnDisconnect) {
             await SIWEController.signOut()
+            SIWEController.setSession(undefined)
           }
         }
       },

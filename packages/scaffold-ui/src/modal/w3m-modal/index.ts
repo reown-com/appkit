@@ -214,7 +214,7 @@ export class W3mModal extends LitElement {
         const { chainId, address } = session
 
         // If the address has changed and signOnAccountChange is enabled, sign out
-        if (address && newAddress && address.toLowerCase() !== newAddress.toLowerCase()) {
+        if (newAddress && address.toLowerCase() !== newAddress.toLowerCase()) {
           if (SIWEController.state._client?.options.signOutOnAccountChange) {
             await SIWEController.signOut()
             this.onSiweNavigation()

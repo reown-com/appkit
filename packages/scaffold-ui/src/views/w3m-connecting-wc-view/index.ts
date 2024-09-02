@@ -29,6 +29,8 @@ export class W3mConnectingWcView extends LitElement {
 
   @state() private platforms: Platform[] = []
 
+  @state() private isSiweEnabled = OptionsController.state.isSiweEnabled
+
   private unsubscribe: (() => void)[] = []
 
   public constructor() {
@@ -38,13 +40,14 @@ export class W3mConnectingWcView extends LitElement {
     this.unsubscribe.push(
       AccountController.subscribe(val => {
         if (val.siweStatus === 'authenticating') {
-          SnackController.showLoading('Authenticating', 10000)
+          SnackController.showLoading('Authenticating', 4000)
         }
 
         if (val.siweStatus === 'success') {
           ModalController.close()
         }
-      })
+      }),
+      OptionsController.subscribeKey('isSiweEnabled', val => (this.isSiweEnabled = val))
     )
   }
 
@@ -80,10 +83,11 @@ export class W3mConnectingWcView extends LitElement {
           RouterController.push('SelectAddresses')
         } else if (OptionsController.state.isSiweEnabled) {
           const { SIWEController } = await import('@web3modal/siwe')
-          if (SIWEController.state.status === 'success') {
+          const { status } = SIWEController.state
+          if (status === 'success') {
             ModalController.close()
-          } else if (SIWEController.state.status === 'authenticating') {
-            SnackController.showLoading('Authenticating', 10000)
+          } else if (status === 'authenticating') {
+            SnackController.showLoading('Authenticating', 4000)
           } else {
             RouterController.push('ConnectingSiwe')
           }
@@ -92,14 +96,18 @@ export class W3mConnectingWcView extends LitElement {
         }
       }
     } catch (error) {
+      const errorMessage = (error as BaseError)?.message
       EventsController.sendEvent({
         type: 'track',
         event: 'CONNECT_ERROR',
-        properties: { message: (error as BaseError)?.message ?? 'Unknown' }
+        properties: { message: errorMessage ?? 'Unknown' }
       })
       ConnectionController.setWcError(true)
       if (CoreHelperUtil.isAllowedRetry(this.lastRetry)) {
-        SnackController.showError('Declined')
+        SnackController.showError(
+          this.isSiweEnabled ? errorMessage : 'Declined',
+          this.isSiweEnabled ? 4000 : undefined
+        )
         this.lastRetry = Date.now()
         this.initializeConnection(true)
       }

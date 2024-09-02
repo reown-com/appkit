@@ -5,6 +5,7 @@ import {
   formatMessage,
   getAppKitAuthSession,
   getNonce,
+  SIWEController,
   type SIWECreateMessageArgs,
   type SIWESession,
   type SIWEVerifyMessageArgs
@@ -233,7 +234,10 @@ export function siweProfilesConfig(wagmiConfig: Config) {
       }
     },
     onSignIn: () => {
-      disconnect(wagmiConfig)
+      disconnect(wagmiConfig).then(async () => {
+        await appKitAuthSignOut()
+        SIWEController.setSession(undefined)
+      })
     }
   })
 }
