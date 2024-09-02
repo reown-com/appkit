@@ -1,6 +1,6 @@
 {
   "name": "@apps/gallery",
-  "version": "5.1.4",
+  "version": "5.1.4-8d342a50c",
   "private": true,
   "main": "index.js",
   "scripts": {
