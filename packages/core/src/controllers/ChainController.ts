@@ -67,30 +67,15 @@ export const ChainController = {
     return subKey(state, key, callback)
   },
 
-  subscribeChain(callback: (value: ChainAdapter | undefined) => void) {
-    let prev: ChainAdapter | undefined = undefined
-
-    return sub(state.chains, () => {
-      const activeChain = state.activeChain
-
-      if (activeChain) {
-        const nextValue = state.chains.get(activeChain)
-        if (!prev || prev !== nextValue) {
-          prev = nextValue
-          callback(nextValue)
-        }
-      }
-    })
-  },
-
   subscribeChainProp<K extends keyof ChainAdapter>(
     property: K,
-    callback: (value: ChainAdapter[K] | undefined) => void
+    callback: (value: ChainAdapter[K] | undefined) => void,
+    chain?: ChainNamespace
   ) {
     let prev: ChainAdapter[K] | undefined = undefined
 
     return sub(state.chains, () => {
-      const activeChain = state.activeChain
+      const activeChain = chain || state.activeChain
 
       if (activeChain) {
         const nextValue = state.chains.get(activeChain)?.[property]

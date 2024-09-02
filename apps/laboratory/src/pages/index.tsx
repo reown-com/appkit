@@ -224,6 +224,21 @@ export default function HomePage() {
               <Stack direction="row" justifyContent="space-between" alignItems="center">
                 <Box>
                   <Heading size="xs" textTransform="uppercase">
+                    Ethers5 + Solana
+                  </Heading>
+                  <Text pt="2" fontSize="sm">
+                    Configuration with Ethers and Solana adapters enabled for AppKit
+                  </Text>
+                </Box>
+                <Link href={'/library/multichain-ethers5-solana'}>
+                  <Button rightIcon={<IoArrowForward />}>Go</Button>
+                </Link>
+              </Stack>
+            </Box>
+            <Box>
+              <Stack direction="row" justifyContent="space-between" alignItems="center">
+                <Box>
+                  <Heading size="xs" textTransform="uppercase">
                     Basic
                   </Heading>
                   <Text pt="2" fontSize="sm">

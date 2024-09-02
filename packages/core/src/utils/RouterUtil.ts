@@ -15,6 +15,7 @@ export const RouterUtil = {
   navigateAfterNetworkSwitch() {
     const { history } = RouterController.state
     const networkSelectIndex = history.findIndex(name => name === 'Networks')
+
     if (networkSelectIndex >= 1) {
       RouterController.goBackToIndex(networkSelectIndex - 1)
     } else {

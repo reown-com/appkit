@@ -100,6 +100,7 @@ export class UniversalAdapterClient {
               }
             })
           }
+
           const result = {
             supportsAllNetworks: false,
             approvedCaipNetworkIds: nsChains as CaipNetworkId[] | undefined

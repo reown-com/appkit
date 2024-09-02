@@ -77,19 +77,24 @@ export const AccountController = {
 
   subscribeKey<K extends keyof AccountControllerState>(
     property: K,
-    callback: (val: AccountControllerState[K]) => void
+    callback: (val: AccountControllerState[K]) => void,
+    chain?: ChainNamespace
   ) {
     let prev: AccountControllerState[K] | undefined = undefined
 
-    return ChainController.subscribeChainProp('accountState', accountState => {
-      if (accountState) {
-        const nextValue = accountState[property]
-        if (prev !== nextValue) {
-          prev = nextValue
-          callback(nextValue)
+    return ChainController.subscribeChainProp(
+      'accountState',
+      accountState => {
+        if (accountState) {
+          const nextValue = accountState[property]
+          if (prev !== nextValue) {
+            prev = nextValue
+            callback(nextValue)
+          }
         }
-      }
-    })
+      },
+      chain
+    )
   },
 
   setIsConnected(
