@@ -43,9 +43,9 @@ export function mockWalletStandard() {
       'solana:signTransaction': {
         version: '1.0.0',
         supportedTransactionVersions: [0, 'legacy'],
-        signTransaction: vi.fn(() =>
-          Promise.resolve([
-            {
+        signTransaction: vi.fn((...transactions: unknown[]) =>
+          Promise.resolve(
+            Array.from({ length: transactions.length }, () => ({
               signedTransaction: new Uint8Array([
                 1, 195, 86, 227, 117, 63, 116, 76, 21, 3, 236, 37, 188, 235, 178, 151, 68, 192, 248,
                 193, 10, 232, 44, 63, 138, 193, 225, 213, 179, 76, 95, 250, 42, 74, 225, 195, 254,
@@ -62,8 +62,8 @@ export function mockWalletStandard() {
                 0, 0, 0, 0, 3, 0, 5, 2, 64, 13, 3, 0, 2, 2, 0, 1, 12, 2, 0, 0, 0, 128, 150, 152, 0,
                 0, 0, 0, 0
               ])
-            }
-          ])
+            }))
+          )
         )
       } satisfies SolanaSignTransactionFeature['solana:signTransaction'],
 
