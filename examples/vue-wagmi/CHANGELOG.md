@@ -1,5 +1,35 @@
 # @examples/vue-wagmi
 
+## 5.1.5
+
+### Patch Changes
+
+- - chore: add safety for localstorage by @zoruka in https://github.com/WalletConnect/web3modal/pull/2770
+  - fix: impossible to press on send placeholder input on mobile by @magiziz in https://github.com/WalletConnect/web3modal/pull/2771
+  - feat: solana sign all transactions by @zoruka in https://github.com/WalletConnect/web3modal/pull/2772
+  - chore: change universal provider relay url and move to constants file by @zoruka in https://github.com/WalletConnect/web3modal/pull/2776
+  - chore: remove coinbase SDK de-duplication by @tomiir in https://github.com/WalletConnect/web3modal/pull/2768
+  - fix: add missing chainId param for transactions request by @zoruka in https://github.com/WalletConnect/web3modal/pull/2779
+  - fix: remove coming message from solana transactions by @zoruka in https://github.com/WalletConnect/web3modal/pull/2780
+- Updated dependencies []:
+  - @web3modal/wagmi@5.1.5
+
+## 5.1.4
+
+### Patch Changes
+
+- - Added entries on assetlinks for flutter wallet by @quetool in https://github.com/WalletConnect/web3modal/pull/2746
+  - chore: only upgrade ethers v6 by @chris13524 in https://github.com/WalletConnect/web3modal/pull/2741
+  - chore: fix wagmi not disconnecting and add adapter tests by @magiziz in https://github.com/WalletConnect/web3modal/pull/2751
+  - Added more fingerprints to Flutter apps by @quetool in https://github.com/WalletConnect/web3modal/pull/2748
+  - fix: remove auth connector from ethers and check for socials length by @tomiir in https://github.com/WalletConnect/web3modal/pull/2715
+  - chore: make all socials enabled by default by @tomiir in https://github.com/WalletConnect/web3modal/pull/2747
+  - fix: social logins not working in laboratory by @magiziz in https://github.com/WalletConnect/web3modal/pull/2765
+  - chore: expose solana provider type by @zoruka in https://github.com/WalletConnect/web3modal/pull/2756
+  - fix: Connector image mismatch by @tomiir in https://github.com/WalletConnect/web3modal/pull/2745
+- Updated dependencies []:
+  - @web3modal/wagmi@5.1.4
+
 ## 5.1.3
 
 ### Patch Changes

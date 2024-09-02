@@ -1,6 +1,6 @@
 'use client'
 
-import Link from 'next/link'
+import { Link } from '@chakra-ui/react'
 import { useState, useEffect } from 'react'
 
 export function RandomLink({

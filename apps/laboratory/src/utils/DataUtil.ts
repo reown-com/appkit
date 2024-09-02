@@ -30,9 +30,9 @@ export const wagmiSdkOptions = [
     description: 'Configuration using wagmi and implementing sign in with ethereum'
   },
   {
-    title: 'Email & Social',
-    link: '/library/wagmi-email/',
-    description: 'Configuration using wagmi and implementing email and social login'
+    title: 'Without Email',
+    link: '/library/wagmi-no-email/',
+    description: 'Configuration using wagmi without email'
   },
   {
     title: 'Permissions(Sync)',
@@ -58,9 +58,9 @@ export const ethersSdkOptions = [
     description: 'Configuration using ethers and implementing sign in with ethereum'
   },
   {
-    title: 'Email and Social',
-    link: '/library/ethers-email/',
-    description: 'Configuration using ethers and implementing email and social login'
+    title: 'Without Email',
+    link: '/library/ethers-no-email/',
+    description: 'Configuration using ethers without email'
   }
 ]
 
@@ -74,11 +74,6 @@ export const ethers5SdkOptions = [
     title: 'SIWE',
     link: '/library/ethers5-siwe/',
     description: 'Configuration using ethers and implementing sign in with ethereum'
-  },
-  {
-    title: 'Email and Social',
-    link: '/library/ethers5-email/',
-    description: 'Configuration using ethers and implementing email and social login'
   }
 ]
 
@@ -89,8 +84,8 @@ export const solanaSdkOptions = [
     description: 'Basic configuration using solana as a driving library'
   },
   {
-    title: 'Email and Social',
-    link: '/library/solana-email/',
-    description: 'Configuration using solana and implementing email and social login'
+    title: 'Without Email',
+    link: '/library/solana-no-email/',
+    description: 'Configuration using solana without email'
   }
 ]

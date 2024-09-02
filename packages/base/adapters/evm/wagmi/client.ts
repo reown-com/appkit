@@ -71,8 +71,6 @@ export class EVMWagmiClient {
   // -- Private variables -------------------------------------------------------
   private appKit: AppKit | undefined = undefined
 
-  private hasSyncedConnectedAccount = false
-
   private wagmiConfig: AdapterOptions<Config>['wagmiConfig']
 
   // -- Public variables --------------------------------------------------------
@@ -455,11 +453,10 @@ export class EVMWagmiClient {
 
   private async syncAccount({
     address,
-    isConnected,
-    isDisconnected,
     chainId,
     connector,
-    addresses
+    addresses,
+    status
   }: Partial<
     Pick<
       GetAccountReturnType,
@@ -477,10 +474,9 @@ export class EVMWagmiClient {
     if (this.appKit?.getCaipAddress() === caipAddress) {
       return
     }
-
-    if (isConnected && address && chainId) {
-      this.syncNetwork(address, chainId, isConnected)
-      this.appKit?.setIsConnected(isConnected, this.chain)
+    if (status === 'connected' && address && chainId) {
+      this.syncNetwork(address, chainId, true)
+      this.appKit?.setIsConnected(true, this.chain)
       this.appKit?.setCaipAddress(caipAddress, this.chain)
       await Promise.all([
         this.syncProfile(address, chainId),
@@ -500,15 +496,12 @@ export class EVMWagmiClient {
           this.chain
         )
       }
-
-      this.hasSyncedConnectedAccount = true
-    } else if (isDisconnected && this.hasSyncedConnectedAccount) {
+    } else if (status === 'disconnected') {
       this.appKit?.resetAccount(this.chain)
       this.appKit?.resetWcConnection()
       this.appKit?.resetNetwork()
       this.appKit?.setAllAccounts([], this.chain)
-
-      this.hasSyncedConnectedAccount = false
+      this.appKit?.setIsConnected(false, this.chain)
     }
   }
 
@@ -535,9 +528,8 @@ export class EVMWagmiClient {
         } else {
           this.appKit?.setAddressExplorerUrl(undefined, this.chain)
         }
-        if (this.hasSyncedConnectedAccount) {
-          await this.syncBalance(address, chainId)
-        }
+
+        await this.syncBalance(address, chainId)
       }
     }
   }
@@ -632,8 +624,12 @@ export class EVMWagmiClient {
         )
       }
     } else {
+      const wagmiConnector = this.appKit?.getConnectors().find(c => c.id === connector.id)
       this.appKit?.setConnectedWalletInfo(
-        { name: connector.name, icon: connector.icon },
+        {
+          name: connector.name,
+          icon: connector.icon || this.appKit.getConnectorImage(wagmiConnector)
+        },
         this.chain
       )
     }
@@ -647,17 +643,9 @@ export class EVMWagmiClient {
 
     const w3mConnectors: Connector[] = []
 
-    const coinbaseSDKId = ConstantsUtil.COINBASE_SDK_CONNECTOR_ID
-
-    // Check if coinbase injected connector is present
-    const coinbaseConnector = filteredConnectors.find(c => c.id === coinbaseSDKId)
-
     filteredConnectors.forEach(({ id, name, type, icon }) => {
-      // If coinbase injected connector is present, skip coinbase sdk connector.
-      const isCoinbaseRepeated =
-        coinbaseConnector &&
-        id === ConstantsUtil.CONNECTOR_RDNS_MAP[ConstantsUtil.COINBASE_CONNECTOR_ID]
-      const shouldSkip = isCoinbaseRepeated || ConstantsUtil.AUTH_CONNECTOR_ID === id
+      // Auth connector is initialized separately
+      const shouldSkip = ConstantsUtil.AUTH_CONNECTOR_ID === id
       if (!shouldSkip) {
         w3mConnectors.push({
           id,
