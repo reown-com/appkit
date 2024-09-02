@@ -15,7 +15,6 @@ const solanaWeb3JsAdapter = new SolanaWeb3JsClient({
 const modal = createWeb3Modal({
   adapters: [solanaWeb3JsAdapter],
   projectId: ConstantsUtil.ProjectId,
-  metadata: ConstantsUtil.Metadata,
   caipNetworks: [solana, solanaTestnet, solanaDevnet],
   defaultCaipNetwork: solana,
   features: {

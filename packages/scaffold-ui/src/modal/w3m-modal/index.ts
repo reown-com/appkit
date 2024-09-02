@@ -1,6 +1,7 @@
 import {
   AccountController,
   ApiController,
+  ChainController,
   CoreHelperUtil,
   EventsController,
   ModalController,
@@ -13,7 +14,7 @@ import { UiHelperUtil, customElement, initializeTheming } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
-import type { CaipAddress } from '@web3modal/common'
+import { ConstantsUtil, type CaipAddress } from '@web3modal/common'
 
 // -- Helpers --------------------------------------------- //
 const SCROLL_LOCK = 'scroll-lock'
@@ -223,12 +224,15 @@ export class W3mModal extends LitElement {
   }
 
   private onSiweNavigation() {
-    if (this.open) {
-      RouterController.push('ConnectingSiwe')
-    } else {
-      ModalController.open({
-        view: 'ConnectingSiwe'
-      })
+    const isEIP155Namespace = ChainController.state.activeChain === ConstantsUtil.CHAIN.EVM
+    if (isEIP155Namespace) {
+      if (this.open && isEIP155Namespace) {
+        RouterController.push('ConnectingSiwe')
+      } else {
+        ModalController.open({
+          view: 'ConnectingSiwe'
+        })
+      }
     }
   }
 }

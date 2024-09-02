@@ -60,8 +60,6 @@ export class W3mConnectRecommendedWidget extends LitElement {
     const maxRecommended = Math.max(0, 2 - overrideLength)
     const wallets = WalletUtil.filterOutDuplicateWallets(recommended).slice(0, maxRecommended)
 
-    console.log(wallets)
-
     if (!wallets.length) {
       this.style.cssText = `display: none`
 

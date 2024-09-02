@@ -250,10 +250,8 @@ export const NetworkController = {
   },
 
   async setApprovedCaipNetworksData(chain: ChainNamespace | undefined) {
-    const isWcConnector = localStorage.getItem('@w3m/wallet_id') === 'walletConnect'
-    const networkControllerClient = isWcConnector
-      ? ChainController.state.universalAdapter.networkControllerClient
-      : ChainController.getNetworkControllerClient()
+    const networkControllerClient = ChainController.getNetworkControllerClient()
+
     const data = await networkControllerClient?.getApprovedCaipNetworksData()
 
     if (!chain) {

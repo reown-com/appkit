@@ -329,6 +329,14 @@ export class AppKit {
   private async initControllers(options: AppKitOptions) {
     this.adapters = options.adapters
 
+    options.metadata ||= {
+      name: document?.getElementsByTagName('title')[0]?.textContent || '',
+      description:
+        document?.querySelector<HTMLMetaElement>('meta[property="og:description"]')?.content || '',
+      url: window.location.origin,
+      icons: [document.querySelector<HTMLLinkElement>('link[rel~="icon"]')?.href || '']
+    }
+
     this.initializeUniversalAdapter(options)
     this.initializeAdapters(options)
 

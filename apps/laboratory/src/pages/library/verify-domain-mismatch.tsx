@@ -21,7 +21,6 @@ const modal = createWeb3Modal({
   adapters: [wagmiAdapter],
   caipNetworks: [mainnet],
   projectId,
-  metadata: ConstantsUtil.Metadata,
   termsConditionsUrl: 'https://walletconnect.com/terms',
   privacyPolicyUrl: 'https://walletconnect.com/privacy'
 })

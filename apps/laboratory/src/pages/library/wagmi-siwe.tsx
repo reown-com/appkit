@@ -22,7 +22,6 @@ const modal = createWeb3Modal({
   features: {
     analytics: true
   },
-  metadata: ConstantsUtil.Metadata,
   siweConfig,
   customWallets: ConstantsUtil.CustomWallets
 })

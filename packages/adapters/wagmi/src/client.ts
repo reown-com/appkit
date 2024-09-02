@@ -430,7 +430,8 @@ export class EVMWagmiClient {
               isConnected: true,
               addresses: response.accounts,
               connector,
-              chainId: response.chainId
+              chainId: response.chainId,
+              status: 'connected'
             })
           )
         }
@@ -586,8 +587,6 @@ export class EVMWagmiClient {
 
         await this.syncBalance(address, chainId)
       }
-    } else {
-      throw new Error('syncNetwork - chain or chainId is undefined')
     }
   }
 

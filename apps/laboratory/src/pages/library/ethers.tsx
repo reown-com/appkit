@@ -17,8 +17,7 @@ const modal = createWeb3Modal({
     analytics: true,
     email: true,
     socials: ['google', 'github', 'apple', 'discord']
-  },
-  metadata: ConstantsUtil.Metadata
+  }
 })
 
 ThemeStore.setModal(modal)

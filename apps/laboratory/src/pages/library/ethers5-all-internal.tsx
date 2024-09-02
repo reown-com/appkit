@@ -19,7 +19,6 @@ const modal = createWeb3Modal({
     analytics: true,
     socials: ['google', 'x', 'discord', 'farcaster', 'github', 'apple', 'facebook']
   },
-  metadata: ConstantsUtil.Metadata,
   termsConditionsUrl: 'https://walletconnect.com/terms',
   privacyPolicyUrl: 'https://walletconnect.com/privacy',
   siweConfig,

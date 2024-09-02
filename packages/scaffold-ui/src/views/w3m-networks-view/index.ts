@@ -1,4 +1,4 @@
-import type { CaipNetwork } from '@web3modal/common'
+import { ConstantsUtil, type CaipNetwork } from '@web3modal/common'
 import {
   AccountController,
   AssetUtil,
@@ -99,13 +99,7 @@ export class W3mNetworksView extends LitElement {
 
   private networksTemplate() {
     const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
-
     const approvedCaipNetworkIds = NetworkController.state.approvedCaipNetworkIds
-    const supportsAllNetworks = NetworkController.state.supportsAllNetworks
-
-    const walletId = localStorage.getItem('@w3m/wallet_id')
-    const connectorId = localStorage.getItem('@w3m/connected_connector')
-
     const sortedNetworks = CoreHelperUtil.sortRequestedNetworks(
       approvedCaipNetworkIds,
       requestedCaipNetworks
@@ -127,63 +121,73 @@ export class W3mNetworksView extends LitElement {
           type="network"
           name=${network.name ?? network.id}
           @click=${() => this.onSwitchNetwork(network)}
-          .disabled=${walletId === 'walletConnect' || connectorId === 'WALLET_CONNECT'
-            ? !supportsAllNetworks && !approvedCaipNetworkIds?.includes(network.id)
-            : !supportsAllNetworks &&
-              !approvedCaipNetworkIds?.includes(network.id) &&
-              network.chainNamespace === ChainController.state.activeChain}
+          .disabled=${this.getNetworkDisabled(network)}
           data-testid=${`w3m-network-switch-${network.name ?? network.id}`}
         ></wui-list-network>
       `
     )
   }
 
-  private async onSwitchNetwork(network: CaipNetwork) {
-    console.log(network, 'Switch Network 1')
+  private getNetworkDisabled(network: CaipNetwork) {
+    const networkNamespace = network.chainNamespace
+    const isNamespaceConnected = AccountController.getChainIsConnected(networkNamespace)
+    const approvedCaipNetworkIds = ChainController.getNetworkProp(
+      'approvedCaipNetworkIds',
+      networkNamespace
+    )
+    const supportsAllNetworks = ChainController.getNetworkProp(
+      'supportsAllNetworks',
+      networkNamespace
+    )
 
-    const isConnected = AccountController.state.isConnected
-    const isNetworkChainConnected = AccountController.getChainIsConnected(network.chainNamespace)
-    const allApprovedCaipNetworks = ChainController.getAllApprovedCaipNetworks()
-    const walletId = localStorage.getItem('@w3m/wallet_id')
-    const connectorId = localStorage.getItem('@w3m/connected_connector')
+    if (!isNamespaceConnected || supportsAllNetworks) {
+      return false
+    }
+
+    return !approvedCaipNetworkIds?.includes(network.id)
+  }
+
+  private async onSwitchNetwork(network: CaipNetwork) {
+    const isCurrentNamespaceConnected = AccountController.state.isConnected
+    const isNetworkNamespaceConnected = AccountController.getChainIsConnected(
+      network.chainNamespace
+    )
+    const isNamespaceConnected = AccountController.getChainIsConnected(network.chainNamespace)
+    const isEIP155Namespace = network.chainNamespace === ConstantsUtil.CHAIN.EVM
+    const isSameNetwork = network.id === this.network?.id
 
     const supportsAllNetworks = NetworkController.state.supportsAllNetworks
-    const caipNetwork = NetworkController.state.caipNetwork
     const routerData = RouterController.state.data
 
-    if (isConnected && caipNetwork?.id !== network.id) {
-      console.log(network, 'Switch Network 2')
-      if (!isNetworkChainConnected && walletId !== 'walletConnect') {
-        console.log(network, 'Switch Network 3')
-        RouterController.push('SwitchActiveChain', {
-          switchToChain: network.chainNamespace,
-          navigateTo: 'Connect',
-          navigateWithReplace: true,
-          network
-        })
-      } else if (
-        allApprovedCaipNetworks?.includes(network.id) ||
-        walletId === 'walletConnect' ||
-        connectorId === 'WALLET_CONNECT'
-      ) {
-        console.log(network, 'Switch Network 4')
-        await NetworkController.switchActiveNetwork(network)
-        await NetworkUtil.onNetworkChange()
-      } else if (supportsAllNetworks) {
-        console.log(network, 'Switch Network 5')
+    if (isSameNetwork) {
+      return
+    }
+
+    if (isNamespaceConnected) {
+      if (supportsAllNetworks) {
         RouterController.push('SwitchNetwork', { ...routerData, network })
       } else {
-        console.log(network, 'Switch Network 6')
         await NetworkController.switchActiveNetwork(network)
-        await NetworkUtil.onNetworkChange()
+        if (isEIP155Namespace) {
+          await NetworkUtil.onNetworkChange()
+        }
       }
-    } else if (!isConnected) {
-      NetworkController.setActiveCaipNetwork(network)
-      if (!isNetworkChainConnected) {
-        if (ChainController.state.noAdapters) {
-          RouterController.push('ConnectingWalletConnect')
+    } else {
+      // eslint-disable-next-line no-lonely-if
+      if (ChainController.state.noAdapters) {
+        RouterController.push('ConnectingWalletConnect')
+      } else {
+        // eslint-disable-next-line no-lonely-if
+        if (isCurrentNamespaceConnected || !isNetworkNamespaceConnected) {
+          NetworkController.setActiveCaipNetwork(network)
+          await NetworkUtil.onNetworkChange()
         } else {
-          RouterController.push('Connect')
+          RouterController.push('SwitchActiveChain', {
+            switchToChain: network.chainNamespace,
+            navigateTo: 'Connect',
+            navigateWithReplace: true,
+            network
+          })
         }
       }
     }

@@ -11,6 +11,7 @@ import { AppKitButtons } from '../../components/AppKitButtons'
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { MultiChainTestsWagmiSolana } from '../../components/MultiChainTestsWagmiSolana'
 import { MultiChainInfo } from '../../components/MultiChainInfo'
+import { siweConfig } from '../../utils/SiweUtils'
 
 const queryClient = new QueryClient()
 
@@ -22,6 +23,7 @@ const solanaWeb3JsAdapter = new SolanaWeb3JsClient({
 
 const modal = createWeb3Modal({
   adapters: [wagmiAdapter, solanaWeb3JsAdapter],
+  siweConfig,
   caipNetworks: [mainnet, polygon, base, binanceSmartChain, arbitrum, solana],
   defaultCaipNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId,
@@ -33,7 +35,7 @@ const modal = createWeb3Modal({
 
 ThemeStore.setModal(modal)
 
-export default function MultiChainAllAdapters() {
+export default function MultiChainWagmiSolana() {
   if (!wagmiAdapter.wagmiConfig) {
     return null
   }
