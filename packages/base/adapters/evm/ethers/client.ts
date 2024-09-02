@@ -1566,15 +1566,8 @@ export class EVMEthersClient {
       const { info, provider } = event.detail
       const connectors = this.appKit?.getConnectors()
       const existingConnector = connectors?.find(c => c.name === info.name)
-      const coinbaseConnector = connectors?.find(
-        c => c.id === ConstantsUtil.COINBASE_SDK_CONNECTOR_ID
-      )
-      const isCoinbaseDuplicated =
-        coinbaseConnector &&
-        event.detail.info.rdns ===
-          ConstantsUtil.CONNECTOR_RDNS_MAP[ConstantsUtil.COINBASE_SDK_CONNECTOR_ID]
 
-      if (!existingConnector && !isCoinbaseDuplicated) {
+      if (!existingConnector) {
         const type = PresetsUtil.ConnectorTypesMap[ConstantsUtil.EIP6963_CONNECTOR_ID]
         if (type) {
           this.appKit?.addConnector({
