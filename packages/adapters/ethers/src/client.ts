@@ -206,12 +206,8 @@ export class EVMEthersClient {
         }
       },
 
-      getApprovedCaipNetworksData: async () => {
-        return new Promise(resolve => {
-          const result = this.getApprovedCaipNetworksData()
-          resolve(result)
-        })
-      }
+      // eslint-disable-next-line @typescript-eslint/require-await
+      getApprovedCaipNetworksData: async () => this.getApprovedCaipNetworksData()
     }
 
     this.connectionControllerClient = {
@@ -528,11 +524,11 @@ export class EVMEthersClient {
 
     if (networkData) {
       return networkData
-    } else {
-      return {
-        supportsAllNetworks: true,
-        approvedCaipNetworkIds: []
-      }
+    }
+
+    return {
+      supportsAllNetworks: true,
+      approvedCaipNetworkIds: []
     }
   }
 
@@ -856,8 +852,8 @@ export class EVMEthersClient {
       }
 
       await Promise.all([
-        this.syncProfile(address as Address),
-        this.syncBalance(address as Address),
+        this.syncProfile(address),
+        this.syncBalance(address),
         this.appKit?.setApprovedCaipNetworksData(this.chainNamespace)
       ])
     } else if (!isConnected) {

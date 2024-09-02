@@ -482,7 +482,6 @@ export class EVMWagmiClient {
       | 'status'
     >
   >) {
-    console.log('>>> syncAccount', address, chainId, connector, addresses, status)
     if (this.wagmiConfig && chainId) {
       if (connector) {
         if (connector.name === 'WalletConnect' && connector.getProvider && address && chainId) {
@@ -561,7 +560,6 @@ export class EVMWagmiClient {
   }
 
   private async syncNetwork(address?: Hex, chainId?: number, isConnected?: boolean) {
-    console.log('syncNetwork', address, chainId, isConnected)
     const chain = this.options?.caipNetworks.find((c: CaipNetwork) => c.chainId === chainId)
 
     if (chain && chainId) {

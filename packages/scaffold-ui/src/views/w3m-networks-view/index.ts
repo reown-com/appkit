@@ -173,9 +173,11 @@ export class W3mNetworksView extends LitElement {
         }
       }
     } else {
+      // eslint-disable-next-line no-lonely-if
       if (ChainController.state.noAdapters) {
         RouterController.push('ConnectingWalletConnect')
       } else {
+        // eslint-disable-next-line no-lonely-if
         if (isCurrentNamespaceConnected || !isNetworkNamespaceConnected) {
           NetworkController.setActiveCaipNetwork(network)
           await NetworkUtil.onNetworkChange()
