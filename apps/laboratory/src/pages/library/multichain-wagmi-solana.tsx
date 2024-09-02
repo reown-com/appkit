@@ -28,7 +28,6 @@ const modal = createWeb3Modal({
   features: {
     analytics: true
   },
-  customWallets: ConstantsUtil.CustomWallets,
   metadata: ConstantsUtil.Metadata
 })
 

@@ -139,6 +139,8 @@ export class W3mNetworksView extends LitElement {
   }
 
   private async onSwitchNetwork(network: CaipNetwork) {
+    console.log(network, 'Switch Network 1')
+
     const isConnected = AccountController.state.isConnected
     const isNetworkChainConnected = AccountController.getChainIsConnected(network.chainNamespace)
     const allApprovedCaipNetworks = ChainController.getAllApprovedCaipNetworks()
@@ -150,25 +152,30 @@ export class W3mNetworksView extends LitElement {
     const routerData = RouterController.state.data
 
     if (isConnected && caipNetwork?.id !== network.id) {
+      console.log(network, 'Switch Network 2')
       if (!isNetworkChainConnected && walletId !== 'walletConnect') {
+        console.log(network, 'Switch Network 3')
         RouterController.push('SwitchActiveChain', {
           switchToChain: network.chainNamespace,
           navigateTo: 'Connect',
           navigateWithReplace: true,
           network
         })
-
-        return
-      }
-      if (
+      } else if (
         allApprovedCaipNetworks?.includes(network.id) ||
         walletId === 'walletConnect' ||
         connectorId === 'WALLET_CONNECT'
       ) {
+        console.log(network, 'Switch Network 4')
         await NetworkController.switchActiveNetwork(network)
         await NetworkUtil.onNetworkChange()
       } else if (supportsAllNetworks) {
+        console.log(network, 'Switch Network 5')
         RouterController.push('SwitchNetwork', { ...routerData, network })
+      } else {
+        console.log(network, 'Switch Network 6')
+        await NetworkController.switchActiveNetwork(network)
+        await NetworkUtil.onNetworkChange()
       }
     } else if (!isConnected) {
       NetworkController.setActiveCaipNetwork(network)
