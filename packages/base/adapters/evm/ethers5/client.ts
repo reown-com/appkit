@@ -664,6 +664,10 @@ export class EVMEthers5Client {
       EthersStoreUtil.setProvider(WalletConnectProvider as unknown as Provider)
       EthersStoreUtil.setStatus('connected')
       EthersStoreUtil.setIsConnected(true)
+      this.appKit?.setAllAccounts(
+        WalletConnectProvider.accounts.map(address => ({ address, type: 'eoa' })),
+        this.chain
+      )
       this.setAddress(WalletConnectProvider.accounts?.[0])
       this.watchWalletConnect()
     }
@@ -680,6 +684,10 @@ export class EVMEthers5Client {
         EthersStoreUtil.setProvider(provider)
         EthersStoreUtil.setStatus('connected')
         EthersStoreUtil.setIsConnected(true)
+        this.appKit?.setAllAccounts(
+          addresses.map(address => ({ address, type: 'eoa' })),
+          this.chain
+        )
         this.setAddress(addresses[0])
         this.watchEIP6963(provider)
       }
@@ -698,6 +706,10 @@ export class EVMEthers5Client {
         EthersStoreUtil.setProvider(config.injected)
         EthersStoreUtil.setStatus('connected')
         EthersStoreUtil.setIsConnected(true)
+        this.appKit?.setAllAccounts(
+          addresses.map(address => ({ address, type: 'eoa' })),
+          this.chain
+        )
         this.setAddress(addresses[0])
         this.watchCoinbase(config)
       }
@@ -718,6 +730,10 @@ export class EVMEthers5Client {
         EthersStoreUtil.setProvider(config.coinbase)
         EthersStoreUtil.setStatus('connected')
         EthersStoreUtil.setIsConnected(true)
+        this.appKit?.setAllAccounts(
+          addresses.map(address => ({ address, type: 'eoa' })),
+          this.chain
+        )
         this.setAddress(addresses[0])
         this.watchCoinbase(config)
       }
@@ -836,6 +852,9 @@ export class EVMEthers5Client {
   }
 
   private watchEIP6963(provider: Provider) {
+    const appKit = this.appKit
+    const chain = this.chain
+
     function disconnectHandler() {
       localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
       EthersStoreUtil.reset()
@@ -849,7 +868,12 @@ export class EVMEthers5Client {
       const currentAccount = accounts?.[0]
       if (currentAccount) {
         EthersStoreUtil.setAddress(utils.getAddress(currentAccount) as Address)
+        appKit?.setAllAccounts(
+          accounts.map(address => ({ address, type: 'eoa' })),
+          chain
+        )
       } else {
+        appKit?.setAllAccounts([], chain)
         localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
         EthersStoreUtil.reset()
       }
@@ -1018,6 +1042,7 @@ export class EVMEthers5Client {
     } else if (!isConnected && this.hasSyncedConnectedAccount) {
       this.appKit?.resetWcConnection()
       this.appKit?.resetNetwork()
+      this.appKit?.setAllAccounts([], this.chain)
     }
   }
 
