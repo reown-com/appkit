@@ -1,5 +1,19 @@
 # @examples/html-ethers5
 
+## 5.1.5
+
+### Patch Changes
+
+- - chore: add safety for localstorage by @zoruka in https://github.com/WalletConnect/web3modal/pull/2770
+  - fix: impossible to press on send placeholder input on mobile by @magiziz in https://github.com/WalletConnect/web3modal/pull/2771
+  - feat: solana sign all transactions by @zoruka in https://github.com/WalletConnect/web3modal/pull/2772
+  - chore: change universal provider relay url and move to constants file by @zoruka in https://github.com/WalletConnect/web3modal/pull/2776
+  - chore: remove coinbase SDK de-duplication by @tomiir in https://github.com/WalletConnect/web3modal/pull/2768
+  - fix: add missing chainId param for transactions request by @zoruka in https://github.com/WalletConnect/web3modal/pull/2779
+  - fix: remove coming message from solana transactions by @zoruka in https://github.com/WalletConnect/web3modal/pull/2780
+- Updated dependencies []:
+  - @web3modal/ethers5@5.1.5
+
 ## 5.1.4
 
 ### Patch Changes
