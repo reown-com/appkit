@@ -53,6 +53,7 @@
     "@walletconnect/ethereum-provider": "2.15.2",
     "@walletconnect/utils": "2.15.1",
     "@web3modal/base": "workspace:*",
+    "@web3modal/core": "^5.1.4",
     "@web3modal/ethers": "workspace:*",
     "@web3modal/ethers5": "workspace:*",
     "@web3modal/siwe": "workspace:*",

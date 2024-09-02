@@ -11,12 +11,13 @@ import {
   type SIWEVerifyMessageArgs
 } from '@web3modal/siwe'
 
+import { ConnectionController } from '@web3modal/core'
+
 import { type Config, disconnect } from '@wagmi/core'
 import { ProfileStore } from './ProfileStoreUtil'
-
 const queryParams = `projectId=24970167f11c121f6eb40b558edb9691&st=w3m&sv=5.0.0`
 
-const devProfileApiUrl = 'https://api-web3modal-auth-staging.walletconnect-v1-bridge.workers.dev'
+const devProfileApiUrl = 'https://staging-p-api.walletconnect.com'
 
 export async function addCurrentAccountToProfile() {
   try {
@@ -235,6 +236,7 @@ export function siweProfilesConfig(wagmiConfig: Config) {
     },
     onSignIn: () => {
       disconnect(wagmiConfig).then(async () => {
+        await ConnectionController.disconnect()
         await appKitAuthSignOut()
         SIWEController.setSession(undefined)
       })
