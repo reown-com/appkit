@@ -1,5 +1,25 @@
 # @web3modal/ethers5
 
+## 5.1.4
+
+### Patch Changes
+
+- - Added entries on assetlinks for flutter wallet by @quetool in https://github.com/WalletConnect/web3modal/pull/2746
+  - chore: only upgrade ethers v6 by @chris13524 in https://github.com/WalletConnect/web3modal/pull/2741
+  - chore: fix wagmi not disconnecting and add adapter tests by @magiziz in https://github.com/WalletConnect/web3modal/pull/2751
+  - Added more fingerprints to Flutter apps by @quetool in https://github.com/WalletConnect/web3modal/pull/2748
+  - fix: remove auth connector from ethers and check for socials length by @tomiir in https://github.com/WalletConnect/web3modal/pull/2715
+  - chore: make all socials enabled by default by @tomiir in https://github.com/WalletConnect/web3modal/pull/2747
+  - fix: social logins not working in laboratory by @magiziz in https://github.com/WalletConnect/web3modal/pull/2765
+  - chore: expose solana provider type by @zoruka in https://github.com/WalletConnect/web3modal/pull/2756
+  - fix: Connector image mismatch by @tomiir in https://github.com/WalletConnect/web3modal/pull/2745
+- Updated dependencies []:
+  - @web3modal/base@5.1.4
+  - @web3modal/common@5.1.4
+  - @web3modal/polyfills@5.1.4
+  - @web3modal/scaffold-utils@5.1.4
+  - @web3modal/siwe@5.1.4
+
 ## 5.1.3
 
 ### Patch Changes

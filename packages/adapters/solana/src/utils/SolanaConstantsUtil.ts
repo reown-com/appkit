@@ -2,6 +2,7 @@ import { PublicKey } from '@solana/web3.js'
 import { type CaipNetwork, ConstantsUtil } from '@web3modal/common'
 
 export const SolConstantsUtil = {
+  UNIVERSAL_PROVIDER_RELAY_URL: 'wss://relay.walletconnect.org',
   HASH_PREFIX: 'SPL Name Service',
   /**
    * The `.sol` TLD
