@@ -67,15 +67,19 @@ jobs:
           ref: ${{ inputs.branch }}
 
       - uses: pnpm/action-setup@v4
-        with:
-          version: 9.5.0
         name: Install pnpm
-
-      - name: setup-node
-        uses: actions/setup-node@v3
         with:
-          node-version: 21.x
+          version: 9
+          run_install: false
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
           cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
 
       - name: Get installed Playwright version
         id: playwright-version
