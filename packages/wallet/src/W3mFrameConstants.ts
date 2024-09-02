@@ -142,6 +142,7 @@ export const W3mFrameRpcConstants = {
     'eth_sendTransaction',
     'solana_signMessage',
     'solana_signTransaction',
+    'solana_signAllTransactions',
     'solana_signAndSendTransaction',
     'wallet_sendCalls',
     'wallet_grantPermissions'

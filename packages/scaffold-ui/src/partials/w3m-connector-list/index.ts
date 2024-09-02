@@ -11,7 +11,6 @@ import {
 } from '@web3modal/core'
 import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 import { state } from 'lit/decorators.js'
-import { ConstantsUtil } from '@web3modal/scaffold-utils'
 import { WalletUtil } from '../../utils/WalletUtil.js'
 @customElement('w3m-connector-list')
 export class W3mConnectorList extends LitElement {
@@ -36,17 +35,8 @@ export class W3mConnectorList extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const {
-      custom,
-      recent,
-      announced,
-      coinbase,
-      injected,
-      multiChain,
-      recommended,
-      featured,
-      external
-    } = this.getConnectorsByType()
+    const { custom, recent, announced, injected, multiChain, recommended, featured, external } =
+      this.getConnectorsByType()
 
     return html`
       <wui-flex flexDirection="column" gap="xs">
@@ -65,7 +55,6 @@ export class W3mConnectorList extends LitElement {
           ? html`<w3m-connect-featured-widget></w3m-connect-featured-widget>`
           : null}
         ${custom?.length ? html`<w3m-connect-custom-widget></w3m-connect-custom-widget>` : null}
-        ${coinbase ? html`<w3m-connect-coinbase-widget></w3m-connect-coinbase-widget>` : null}
         ${external.length
           ? html`<w3m-connect-external-widget></w3m-connect-external-widget>`
           : null}
@@ -88,16 +77,12 @@ export class W3mConnectorList extends LitElement {
     const announced = this.connectors.filter(connector => connector.type === 'ANNOUNCED')
     const injected = this.connectors.filter(connector => connector.type === 'INJECTED')
     const external = this.connectors.filter(connector => connector.type === 'EXTERNAL')
-    const coinbase = this.connectors.find(
-      connector => connector.id === ConstantsUtil.COINBASE_SDK_CONNECTOR_ID
-    )
     const isEVM = ChainController.state.activeChain === CommonConstantsUtil.CHAIN.EVM
     const includeAnnouncedAndInjected = isEVM ? OptionsController.state.enableEIP6963 : true
 
     return {
       custom,
       recent,
-      coinbase,
       external,
       multiChain,
       announced: includeAnnouncedAndInjected ? announced : [],
