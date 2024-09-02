@@ -35,6 +35,11 @@ export const wagmiSdkOptions = [
     description: 'Configuration using wagmi without email'
   },
   {
+    title: 'Without Socials',
+    link: '/library/wagmi-no-socials/',
+    description: 'Configuration using wagmi without socials'
+  },
+  {
     title: 'Permissions(Sync)',
     link: '/library/wagmi-permissions-sync/',
     description: 'Configuration using wagmi and implementing ERC-7715 with passkey'
@@ -61,6 +66,11 @@ export const ethersSdkOptions = [
     title: 'Without Email',
     link: '/library/ethers-no-email/',
     description: 'Configuration using ethers without email'
+  },
+  {
+    title: 'Without Socials',
+    link: '/library/ethers-no-socials/',
+    description: 'Configuration using ethers without socials'
   }
 ]
 
