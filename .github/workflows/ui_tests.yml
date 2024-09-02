@@ -67,6 +67,8 @@ jobs:
           ref: ${{ inputs.branch }}
 
       - uses: pnpm/action-setup@v4
+        with:
+          version: 9.5.0
         name: Install pnpm
 
       - name: setup-node
