@@ -853,7 +853,7 @@ export class EVMEthers5Client {
 
   private watchEIP6963(provider: Provider) {
     const appKit = this.appKit
-    const chain = this.chain
+    const namespace = this.chain
 
     function disconnectHandler() {
       localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
@@ -870,10 +870,10 @@ export class EVMEthers5Client {
         EthersStoreUtil.setAddress(utils.getAddress(currentAccount) as Address)
         appKit?.setAllAccounts(
           accounts.map(address => ({ address, type: 'eoa' })),
-          chain
+          namespace
         )
       } else {
-        appKit?.setAllAccounts([], chain)
+        appKit?.setAllAccounts([], namespace)
         localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
         EthersStoreUtil.reset()
       }
