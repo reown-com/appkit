@@ -10,7 +10,6 @@ import { NetworkController } from './NetworkController.js'
 import { NetworkUtil } from '@web3modal/common'
 import { EnsUtil } from '../utils/EnsUtil.js'
 import { ConstantsUtil } from '@web3modal/common'
-import { ChainController } from './ChainController.js'
 
 // -- Types --------------------------------------------- //
 type Suggestion = {
@@ -135,7 +134,7 @@ export const EnsController = {
         throw new Error('Network not found')
       }
 
-      const coinType = EnsUtil.convertEVMChainIdToCoinType(networkId)
+      const coinType = EnsUtil.convertEVMChainIdToCoinType(Number(networkId))
       await BlockchainApiController.registerEnsName({
         coinType,
         address: address as `0x${string}`,
@@ -145,7 +144,7 @@ export const EnsController = {
 
       AccountController.setProfileName(
         `${name}${ConstantsUtil.WC_NAME_SUFFIX}`,
-        ChainController.state.activeChain
+        network.chainNamespace
       )
       RouterController.replace('RegisterAccountNameSuccess')
     } catch (e) {

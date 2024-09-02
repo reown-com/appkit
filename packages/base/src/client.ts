@@ -5,8 +5,7 @@ import type {
   ModalControllerState,
   ConnectedWalletInfo,
   RouterControllerState,
-  ChainAdapter,
-  CaipNetwork
+  ChainAdapter
 } from '@web3modal/core'
 import {
   AccountController,
@@ -27,8 +26,14 @@ import {
   AssetUtil
 } from '@web3modal/core'
 import { setColorTheme, setThemeVariables } from '@web3modal/ui'
-import { ConstantsUtil, type Chain } from '@web3modal/common'
-import type { AppKitOptions } from '../utils/TypesUtil.js'
+import { ConstantsUtil, type CaipNetwork, type ChainNamespace } from '@web3modal/common'
+import type { AppKitOptions } from './utils/TypesUtil.js'
+import { UniversalAdapterClient } from './universal-adapter/client.js'
+import { PresetsUtil } from '@web3modal/scaffold-utils'
+import type { W3mFrameTypes } from '@web3modal/wallet'
+
+// -- Export Controllers -------------------------------------------------------
+export { AccountController, NetworkController }
 
 // -- Types --------------------------------------------------------------------
 export interface OpenOptions {
@@ -43,6 +48,8 @@ export class AppKit {
   private static instance?: AppKit
 
   public adapters?: ChainAdapter[]
+
+  public universalAdapter?: UniversalAdapterClient
 
   private initPromise?: Promise<void> = undefined
 
@@ -162,6 +169,10 @@ export class AppKit {
     AccountController.setIsConnected(isConnected, chain)
   }
 
+  public setStatus: (typeof AccountController)['setStatus'] = (status, chain) => {
+    AccountController.setStatus(status, chain)
+  }
+
   public getIsConnectedState = () => AccountController.state.isConnected
 
   public setAllAccounts: (typeof AccountController)['setAllAccounts'] = (addresses, chain) => {
@@ -186,8 +197,19 @@ export class AppKit {
 
   public getCaipAddress = () => AccountController.state.caipAddress
 
+  public getAddress = () => AccountController.state.address
+
+  public getProvider = () => AccountController.state.provider
+
+  public getPreferredAccountType = () =>
+    AccountController.state.preferredAccountType as W3mFrameTypes.AccountType
+
   public setCaipAddress: (typeof AccountController)['setCaipAddress'] = (caipAddress, chain) => {
     AccountController.setCaipAddress(caipAddress, chain)
+  }
+
+  public setProvider: (typeof AccountController)['setProvider'] = (provider, chain) => {
+    AccountController.setProvider(provider, chain)
   }
 
   public setBalance: (typeof AccountController)['setBalance'] = (balance, balanceSymbol, chain) => {
@@ -202,19 +224,19 @@ export class AppKit {
     AccountController.setProfileImage(profileImage, chain)
   }
 
-  public resetAccount: (typeof AccountController)['resetAccount'] = (chain: Chain) => {
+  public resetAccount: (typeof AccountController)['resetAccount'] = (chain: ChainNamespace) => {
     AccountController.resetAccount(chain)
   }
 
   public setCaipNetwork: (typeof NetworkController)['setCaipNetwork'] = caipNetwork => {
-    NetworkController.setCaipNetwork(caipNetwork)
+    NetworkController.setActiveCaipNetwork(caipNetwork)
   }
 
   public getCaipNetwork = () => NetworkController.state.caipNetwork
 
   public setRequestedCaipNetworks: (typeof NetworkController)['setRequestedCaipNetworks'] = (
     requestedCaipNetworks,
-    chain: Chain
+    chain: ChainNamespace
   ) => {
     NetworkController.setRequestedCaipNetworks(requestedCaipNetworks, chain)
   }
@@ -230,7 +252,8 @@ export class AppKit {
   }
 
   public setConnectors: (typeof ConnectorController)['setConnectors'] = connectors => {
-    ConnectorController.setConnectors(connectors)
+    const allConnectors = [...ConnectorController.getConnectors(), ...connectors]
+    ConnectorController.setConnectors(allConnectors)
   }
 
   public addConnector: (typeof ConnectorController)['addConnector'] = connector => {
@@ -304,19 +327,20 @@ export class AppKit {
 
   // -- Private ------------------------------------------------------------------
   private async initControllers(options: AppKitOptions) {
+    this.adapters = options.adapters
+
+    options.metadata ||= {
+      name: document?.getElementsByTagName('title')[0]?.textContent || '',
+      description:
+        document?.querySelector<HTMLMetaElement>('meta[property="og:description"]')?.content || '',
+      url: window.location.origin,
+      icons: [document.querySelector<HTMLLinkElement>('link[rel~="icon"]')?.href || '']
+    }
+
+    this.initializeUniversalAdapter(options)
+    this.initializeAdapters(options)
+
     OptionsController.setProjectId(options.projectId)
-    OptionsController.setSdkVersion(options.sdkVersion)
-    ChainController.initialize(options.adapters || [])
-
-    options.adapters?.forEach(adapter => {
-      // @ts-expect-error will introduce construct later
-      adapter.construct?.(this, options)
-
-      // Set this value for all chains
-      NetworkController.setAllowUnsupportedChain(options.allowUnsupportedChain, adapter.chain)
-      NetworkController.setDefaultCaipNetwork(options.defaultChain)
-    })
-
     OptionsController.setAllWallets(options.allWallets)
     OptionsController.setIncludeWalletIds(options.includeWalletIds)
     OptionsController.setExcludeWalletIds(options.excludeWalletIds)
@@ -325,9 +349,7 @@ export class AppKit {
     OptionsController.setTermsConditionsUrl(options.termsConditionsUrl)
     OptionsController.setPrivacyPolicyUrl(options.privacyPolicyUrl)
     OptionsController.setCustomWallets(options.customWallets)
-    OptionsController.setEnableAnalytics(options.enableAnalytics)
-    OptionsController.setOnrampEnabled(options.enableOnramp !== false)
-    OptionsController.setEnableSwaps(options.enableSwaps !== false)
+    OptionsController.setFeatures(options.features)
 
     if (options.metadata) {
       OptionsController.setMetadata(options.metadata)
@@ -345,7 +367,9 @@ export class AppKit {
       OptionsController.setDisableAppend(Boolean(options.disableAppend))
     }
 
-    const evmAdapter = options.adapters?.find(adapter => adapter.chain === ConstantsUtil.CHAIN.EVM)
+    const evmAdapter = options.adapters?.find(
+      adapter => adapter.chainNamespace === ConstantsUtil.CHAIN.EVM
+    )
 
     // Set the SIWE client for EVM chains
     if (evmAdapter) {
@@ -354,6 +378,38 @@ export class AppKit {
         SIWEController.setSIWEClient(options.siweConfig)
       }
     }
+  }
+
+  private initializeUniversalAdapter(options: AppKitOptions) {
+    const caipNetworks = this.extendCaipNetworksWithImages(
+      options.caipNetworks,
+      options.chainImages
+    )
+    this.universalAdapter = new UniversalAdapterClient({
+      ...options,
+      caipNetworks
+    })
+
+    ChainController.initializeUniversalAdapter(this.universalAdapter, options.adapters || [])
+
+    this.universalAdapter.construct?.(this, options)
+
+    NetworkController.setDefaultCaipNetwork(options.defaultCaipNetwork)
+  }
+
+  private initializeAdapters(options: AppKitOptions) {
+    ChainController.initialize(options.adapters || [])
+    options.adapters?.forEach(adapter => {
+      const caipNetworks = this.extendCaipNetworksWithImages(
+        options.caipNetworks,
+        options.chainImages
+      )
+      options.caipNetworks = caipNetworks
+      // @ts-expect-error will introduce construct later
+      adapter.construct?.(this, options)
+
+      NetworkController.setDefaultCaipNetwork(options.defaultCaipNetwork)
+    })
   }
 
   private async initOrContinue() {
@@ -370,5 +426,16 @@ export class AppKit {
     }
 
     return this.initPromise
+  }
+
+  private extendCaipNetworksWithImages(
+    caipNetworks: CaipNetwork[],
+    caipNetworkImages?: Record<number | string, string>
+  ): CaipNetwork[] {
+    return caipNetworks.map(caipNetwork => ({
+      ...caipNetwork,
+      imageId: PresetsUtil.NetworkImageIds[caipNetwork.chainId],
+      imageUrl: caipNetworkImages?.[caipNetwork.chainId]
+    }))
   }
 }

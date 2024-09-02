@@ -39,6 +39,17 @@ sampleWalletTest.afterAll(async () => {
 })
 
 // -- Tests --------------------------------------------------------------------
+sampleWalletTest('it should show testnet and devnet disabled on solana', async ({ library }) => {
+  if (library !== 'solana') {
+    return
+  }
+
+  await modalPage.openModal()
+  await modalPage.openNetworks()
+  await modalValidator.expectNetworksDisabled('Solana Testnet')
+  await modalPage.closeModal()
+})
+
 sampleWalletTest('it should switch networks and sign', async ({ library }) => {
   const chains = library === 'solana' ? ['Solana Testnet', 'Solana'] : ['Polygon', 'Ethereum']
 
@@ -97,6 +108,18 @@ sampleWalletTest('it should show multiple accounts', async ({ library }) => {
   await modalPage.openProfileView()
   await modalValidator.expectMultipleAccounts()
   await modalPage.closeModal()
+})
+
+sampleWalletTest('it should switch between multiple accounts', async ({ library }) => {
+  // Multi address not available in Solana wallet and wagmi does not allow programatic account switching
+  if (library === 'solana' || library === 'wagmi') {
+    return
+  }
+  const originalAddress = await modalPage.getAddress()
+  await modalPage.openAccount()
+  await modalPage.openProfileView()
+  await modalPage.switchAccount()
+  await modalValidator.expectAccountSwitched(originalAddress)
 })
 
 sampleWalletTest(

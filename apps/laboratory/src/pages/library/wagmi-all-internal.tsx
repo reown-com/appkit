@@ -1,25 +1,28 @@
-import { createWeb3Modal } from '@web3modal/wagmi/react'
+import { createWeb3Modal } from '@web3modal/base/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { useEffect, useState } from 'react'
 import { WagmiProvider } from 'wagmi'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { WagmiTests } from '../../components/Wagmi/WagmiTests'
 import { ThemeStore } from '../../utils/StoreUtil'
-import { getWagmiConfig } from '../../utils/WagmiConstants'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { SiweData } from '../../components/Siwe/SiweData'
 import { siweConfig } from '../../utils/SiweUtils'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
+import { mainnet, optimism, polygon, zkSync } from '@web3modal/base/chains'
+import { EVMWagmiClient } from '@web3modal/adapter-wagmi'
 
 const queryClient = new QueryClient()
 
-const wagmiConfig = getWagmiConfig('email')
+const wagmiAdapter = new EVMWagmiClient()
 
 const modal = createWeb3Modal({
-  wagmiConfig,
+  adapters: [wagmiAdapter],
+  caipNetworks: [mainnet, optimism, polygon, zkSync],
   projectId: ConstantsUtil.ProjectId,
-  enableAnalytics: true,
-  metadata: ConstantsUtil.Metadata,
+  features: {
+    analytics: true
+  },
+
   termsConditionsUrl: 'https://walletconnect.com/terms',
   privacyPolicyUrl: 'https://walletconnect.com/privacy',
   siweConfig,
@@ -29,14 +32,12 @@ const modal = createWeb3Modal({
 ThemeStore.setModal(modal)
 
 export default function Wagmi() {
-  const [ready, setReady] = useState(false)
+  if (!wagmiAdapter.wagmiConfig) {
+    return null
+  }
 
-  useEffect(() => {
-    setReady(true)
-  }, [])
-
-  return ready ? (
-    <WagmiProvider config={wagmiConfig}>
+  return (
+    <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <AppKitButtons />
         <WagmiModalInfo />
@@ -44,5 +45,5 @@ export default function Wagmi() {
         <WagmiTests />
       </QueryClientProvider>
     </WagmiProvider>
-  ) : null
+  )
 }

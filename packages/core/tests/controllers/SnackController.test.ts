@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { SnackController } from '../../index.js'
+import { SnackController } from '../../exports/index.js'
 
 // -- Tests --------------------------------------------------------------------
 describe('SnackController', () => {

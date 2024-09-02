@@ -4,7 +4,6 @@
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "composite": true,
-    "baseUrl": "../../",
     "declaration": true,
     "noEmit": true,
     "noImplicitAny": true,

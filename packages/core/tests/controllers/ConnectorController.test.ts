@@ -6,7 +6,7 @@ import {
   type SdkVersion,
   type ThemeMode,
   type ThemeVariables
-} from '../../index.js'
+} from '../../exports/index.js'
 import { ConstantsUtil, getW3mThemeVariables } from '@web3modal/common'
 
 // -- Setup --------------------------------------------------------------------

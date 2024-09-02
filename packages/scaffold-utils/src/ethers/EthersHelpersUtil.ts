@@ -1,10 +1,10 @@
-import type { CaipNetwork } from '@web3modal/core'
 import { ConstantsUtil } from '../ConstantsUtil.js'
 import { PresetsUtil } from '../PresetsUtil.js'
-import type { Chain, Provider } from './EthersTypesUtil.js'
+import type { Provider } from './EthersTypesUtil.js'
+import type { CaipNetwork } from '@web3modal/common'
 
 export const EthersHelpersUtil = {
-  getCaipDefaultChain(chain?: Chain) {
+  getCaipDefaultChain(chain?: CaipNetwork) {
     if (!chain) {
       return undefined
     }
@@ -12,7 +12,7 @@ export const EthersHelpersUtil = {
     return {
       id: `${ConstantsUtil.EIP155}:${chain.chainId}`,
       name: chain.name,
-      imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId]
+      imageId: PresetsUtil.NetworkImageIds[chain.chainId]
     } as CaipNetwork
   },
   hexStringToNumber(value: string) {
@@ -21,7 +21,7 @@ export const EthersHelpersUtil = {
 
     return number
   },
-  numberToHexString(value: number) {
+  numberToHexString(value: number | string) {
     return `0x${value.toString(16)}`
   },
   async getUserInfo(provider: Provider) {
@@ -47,21 +47,21 @@ export const EthersHelpersUtil = {
 
     return addresses
   },
-  async addEthereumChain(provider: Provider, chain: Chain) {
+  async addEthereumChain(provider: Provider, caipNetwork: CaipNetwork) {
     await provider.request({
       method: 'wallet_addEthereumChain',
       params: [
         {
-          chainId: EthersHelpersUtil.numberToHexString(chain.chainId),
-          rpcUrls: [chain.rpcUrl],
-          chainName: chain.name,
+          chainId: EthersHelpersUtil.numberToHexString(caipNetwork.chainId),
+          rpcUrls: [caipNetwork.rpcUrl],
+          chainName: caipNetwork.name,
           nativeCurrency: {
-            name: chain.currency,
+            name: caipNetwork.currency,
             decimals: 18,
-            symbol: chain.currency
+            symbol: caipNetwork.currency
           },
-          blockExplorerUrls: [chain.explorerUrl],
-          iconUrls: [PresetsUtil.EIP155NetworkImageIds[chain.chainId]]
+          blockExplorerUrls: [caipNetwork.explorerUrl],
+          iconUrls: [PresetsUtil.NetworkImageIds[caipNetwork.chainId]]
         }
       ]
     })

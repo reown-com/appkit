@@ -1,34 +1,39 @@
-import { createWeb3Modal } from '@web3modal/wagmi/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { WagmiTests } from '../../components/Wagmi/WagmiTests'
-import { ThemeStore } from '../../utils/StoreUtil'
-import { getWagmiConfig } from '../../utils/WagmiConstants'
-import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
-import { mainnet } from 'viem/chains'
+import { EVMWagmiClient } from '@web3modal/adapter-wagmi'
+import { createWeb3Modal } from '@web3modal/base/react'
+import { mainnet, optimism, polygon, zkSync } from '@web3modal/base/chains'
+import { ConstantsUtil } from '../../utils/ConstantsUtil'
+import { ThemeStore } from '../../utils/StoreUtil'
 
 const queryClient = new QueryClient()
-
-const wagmiConfig = getWagmiConfig('default')
+const wagmiAdapter = new EVMWagmiClient({
+  ssr: true
+})
 
 const modal = createWeb3Modal({
-  wagmiConfig,
-  defaultChain: mainnet,
+  adapters: [wagmiAdapter],
+  caipNetworks: [mainnet, optimism, polygon, zkSync],
   projectId: ConstantsUtil.ProjectId,
-  enableAnalytics: true,
-  metadata: ConstantsUtil.Metadata,
-  termsConditionsUrl: 'https://walletconnect.com/terms',
-  privacyPolicyUrl: 'https://walletconnect.com/privacy',
-  customWallets: ConstantsUtil.CustomWallets
+  features: {
+    analytics: true,
+    email: true,
+    socials: ['google', 'github', 'apple', 'discord']
+  }
 })
 
 ThemeStore.setModal(modal)
 
 export default function Wagmi() {
+  if (!wagmiAdapter.wagmiConfig) {
+    return null
+  }
+
   return (
-    <WagmiProvider config={wagmiConfig}>
+    <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <AppKitButtons />
         <WagmiModalInfo />

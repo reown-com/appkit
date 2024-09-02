@@ -37,8 +37,8 @@ export const EventsController = {
 
     return {
       'x-project-id': projectId,
-      'x-sdk-type': sdkType,
-      'x-sdk-version': sdkVersion
+      'x-sdk-type': sdkType || 'w3m',
+      'x-sdk-version': sdkVersion || 'html-wagmi-4.2.2'
     }
   },
 
@@ -66,7 +66,7 @@ export const EventsController = {
   sendEvent(data: EventsControllerState['data']) {
     state.timestamp = Date.now()
     state.data = data
-    if (OptionsController.state.enableAnalytics) {
+    if (OptionsController.state.features.analytics) {
       EventsController._sendAnalyticsEvent(state)
     }
   }

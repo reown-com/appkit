@@ -43,7 +43,10 @@ export class W3mConnectRecommendedWidget extends LitElement {
     const { connectors } = ConnectorController.state
     const recent = StorageUtil.getRecentWallets()
 
-    const injected = connectors.filter(c => c.type === 'INJECTED' || c.type === 'ANNOUNCED')
+    const injected = connectors.filter(
+      c => c.type === 'INJECTED' || c.type === 'ANNOUNCED' || c.type === 'MULTI_CHAIN'
+    )
+
     const injectedWallets = injected.filter(i => i.name !== 'Browser Wallet')
 
     if (featuredWalletIds || customWallets || !recommended.length) {
@@ -56,6 +59,7 @@ export class W3mConnectRecommendedWidget extends LitElement {
 
     const maxRecommended = Math.max(0, 2 - overrideLength)
     const wallets = WalletUtil.filterOutDuplicateWallets(recommended).slice(0, maxRecommended)
+
     if (!wallets.length) {
       this.style.cssText = `display: none`
 

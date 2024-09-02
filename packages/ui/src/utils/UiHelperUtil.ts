@@ -43,8 +43,11 @@ export const UiHelperUtil = {
   },
 
   generateAvatarColors(address: string) {
-    const hash = address.toLowerCase().replace(/^0x/iu, '')
-    const baseColor = hash.substring(0, 6)
+    const hash = address
+      .toLowerCase()
+      .replace(/^0x/iu, '')
+      .replace(/[^a-f0-9]/gu, '')
+    const baseColor = hash.substring(0, 6).padEnd(6, '0')
     const rgbColor = this.hexToRgb(baseColor)
     const masterBorderRadius = getComputedStyle(document.documentElement).getPropertyValue(
       '--w3m-border-radius-master'

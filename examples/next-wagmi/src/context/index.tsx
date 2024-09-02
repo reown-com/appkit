@@ -1,10 +1,11 @@
 'use client'
 
-import { config, projectId } from '@/config'
+import { wagmiAdapter, projectId } from '@/config'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { createWeb3Modal } from '@web3modal/wagmi/react'
+import { createWeb3Modal } from '@web3modal/base/react'
+import { mainnet, arbitrum, avalanche, base, optimism, polygon } from '@web3modal/base/chains'
 import React, { type ReactNode } from 'react'
-import { type State, WagmiProvider } from 'wagmi'
+import { cookieToInitialState, WagmiProvider, type Config } from 'wagmi'
 
 const queryClient = new QueryClient()
 
@@ -13,19 +14,24 @@ if (!projectId) {
 }
 
 createWeb3Modal({
-  wagmiConfig: config,
-  projectId
+  adapters: [wagmiAdapter],
+  projectId,
+  caipNetworks: [mainnet, arbitrum, avalanche, base, optimism, polygon],
+  metadata: {
+    name: 'My App',
+    description: 'My app description',
+    url: 'https://myapp.com',
+    icons: ['https://myapp.com/favicon.ico']
+  },
+  enableEIP6963: true,
+  enableCoinbase: true
 })
 
-function ContextProvider({
-  children,
-  initialState
-}: {
-  children: ReactNode
-  initialState: State | undefined
-}) {
+function ContextProvider({ children, cookies }: { children: ReactNode; cookies: string | null }) {
+  const initialState = cookieToInitialState(wagmiAdapter.wagmiConfig as Config, cookies)
+
   return (
-    <WagmiProvider config={config} initialState={initialState}>
+    <WagmiProvider config={wagmiAdapter.wagmiConfig as Config} initialState={initialState}>
       <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
     </WagmiProvider>
   )

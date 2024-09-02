@@ -2,40 +2,25 @@
 
 import { AppKit } from '@web3modal/base'
 import type { AppKitOptions } from '@web3modal/base'
-import { EVMEthersClient, type AdapterOptions } from '@web3modal/base/adapters/evm/ethers'
-import { ConstantsUtil } from '@web3modal/scaffold-utils'
-import { EthersStoreUtil } from '@web3modal/scaffold-utils/ethers'
-import { getWeb3Modal } from '@web3modal/base/utils/library/react'
+import type { CaipNetwork } from '@web3modal/common'
+import { ProviderUtil } from '@web3modal/base/store'
+import { EVMEthers5Client, type AdapterOptions } from '@web3modal/adapter-ethers5'
+import { getWeb3Modal } from '@web3modal/base/library/react'
 import { useSnapshot } from 'valtio'
 import { ethers } from 'ethers'
-import { type Chain } from '@web3modal/scaffold-utils/ethers'
-
-// -- Configs -----------------------------------------------------------
-export { defaultConfig } from '@web3modal/base/adapters/evm/ethers'
 
 // -- Setup -------------------------------------------------------------------
 let appkit: AppKit | undefined = undefined
-let ethersAdapter: EVMEthersClient | undefined = undefined
+let ethersAdapter: EVMEthers5Client | undefined = undefined
 
-export type Ethers5AppKitOptions = Omit<
-  AppKitOptions<Chain>,
-  'adapters' | 'sdkType' | 'sdkVersion'
-> &
+export type Ethers5AppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 'sdkVersion'> &
   AdapterOptions
 
 export function createWeb3Modal(options: Ethers5AppKitOptions) {
-  ethersAdapter = new EVMEthersClient({
-    ethersConfig: options.ethersConfig,
-    siweConfig: options.siweConfig,
-    chains: options.chains,
-    defaultChain: options.defaultChain
-  })
+  ethersAdapter = new EVMEthers5Client()
   appkit = new AppKit({
     ...options,
-    defaultChain: ethersAdapter.defaultChain,
-    adapters: [ethersAdapter],
-    sdkType: 'w3m',
-    sdkVersion: `react-ethers5-${ConstantsUtil.VERSION}`
+    adapters: [ethersAdapter]
   })
   getWeb3Modal(appkit)
 
@@ -44,10 +29,10 @@ export function createWeb3Modal(options: Ethers5AppKitOptions) {
 
 // -- Hooks -------------------------------------------------------------------
 export function useWeb3ModalProvider() {
-  const { provider, providerType } = useSnapshot(EthersStoreUtil.state)
+  const { providers, providerIds } = useSnapshot(ProviderUtil.state)
 
-  const walletProvider = provider as ethers.providers.ExternalProvider | undefined
-  const walletProviderType = providerType
+  const walletProvider = providers['eip155'] as ethers.providers.ExternalProvider | undefined
+  const walletProviderType = providerIds['eip155']
 
   return {
     walletProvider,
@@ -66,31 +51,13 @@ export function useDisconnect() {
 }
 
 export function useSwitchNetwork() {
-  async function switchNetwork(chainId: number) {
-    await ethersAdapter?.switchNetwork(chainId)
+  // Breaking change
+  async function switchNetwork(caipNetwork: CaipNetwork) {
+    await ethersAdapter?.switchNetwork(caipNetwork)
   }
 
   return {
     switchNetwork
-  }
-}
-
-export function useWeb3ModalAccount() {
-  const { address, isConnected, chainId, status } = useSnapshot(EthersStoreUtil.state)
-
-  return {
-    address,
-    isConnected,
-    chainId,
-    status
-  }
-}
-
-export function useWeb3ModalError() {
-  const { error } = useSnapshot(EthersStoreUtil.state)
-
-  return {
-    error
   }
 }
 
@@ -100,4 +67,4 @@ export {
   useWeb3ModalState,
   useWeb3ModalEvents,
   useWalletInfo
-} from '@web3modal/base/utils/library/react'
+} from '@web3modal/base/library/react'

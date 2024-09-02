@@ -1,3 +1,5 @@
+import type { Features } from './TypeUtil.js'
+
 const SECURE_SITE = 'https://secure.walletconnect.org'
 
 export const ONRAMP_PROVIDERS = [
@@ -183,8 +185,16 @@ export const ConstantsUtil = {
 
   NATIVE_TOKEN_ADDRESS: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
 
-  CONVERT_SLIPPAGE_TOLERANCE: 1
-}
+  CONVERT_SLIPPAGE_TOLERANCE: 1,
 
-export type CoinbasePaySDKChainNameValues =
-  keyof typeof ConstantsUtil.WC_COINBASE_PAY_SDK_CHAIN_NAME_MAP
+  DEFAULT_FEATURES: {
+    swaps: true,
+    onramp: true,
+    email: true,
+    emailShowWallets: true,
+    socials: ['google', 'x', 'discord', 'farcaster', 'github', 'apple', 'facebook'],
+    history: true,
+    analytics: true,
+    allWallets: true
+  } as Features
+}

@@ -9,22 +9,24 @@ import {
   VersionedTransaction,
   TransactionMessage
 } from '@solana/web3.js'
-import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/solana/react'
+import { useWeb3ModalNetwork, useWeb3ModalProvider } from '@web3modal/base/react'
 
 import { COUNTER_ACCOUNT_SIZE } from '../../utils/SolanaConstants'
 import { deserializeCounterAccount, detectProgramId } from '../../utils/SolanaUtil'
 import { useChakraToast } from '../Toast'
+import { useWeb3ModalConnection, type Provider } from '@web3modal/adapter-solana/react'
 
 export function SolanaWriteContractTest() {
   const toast = useChakraToast()
-  const { currentChain } = useWeb3ModalAccount()
-  const { walletProvider, connection } = useWeb3ModalProvider()
+  const { caipNetwork } = useWeb3ModalNetwork()
+  const { walletProvider } = useWeb3ModalProvider<Provider>('solana')
+  const { connection } = useWeb3ModalConnection()
   const [loading, setLoading] = useState(false)
 
   async function onIncrementCounter() {
     setLoading(true)
 
-    const PROGRAM_ID = new PublicKey(detectProgramId(currentChain?.chainId ?? ''))
+    const PROGRAM_ID = new PublicKey(detectProgramId(caipNetwork?.chainId?.toString() ?? ''))
 
     try {
       if (!walletProvider?.publicKey) {

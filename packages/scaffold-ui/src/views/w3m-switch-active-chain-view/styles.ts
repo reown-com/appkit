@@ -84,4 +84,8 @@ export default css`
   wui-link {
     padding: var(--wui-spacing-4xs) var(--wui-spacing-xxs);
   }
+
+  .capitalize {
+    text-transform: capitalize;
+  }
 `

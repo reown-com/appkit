@@ -1,13 +1,14 @@
 import { Button } from '@chakra-ui/react'
 
-import { useWeb3ModalProvider } from '@web3modal/solana/react'
+import { useWeb3ModalProvider } from '@web3modal/base/react'
 
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { useChakraToast } from '../Toast'
+import type { Provider } from '@web3modal/adapter-solana'
 
 export function SolanaSignMessageTest() {
   const toast = useChakraToast()
-  const { walletProvider } = useWeb3ModalProvider()
+  const { walletProvider } = useWeb3ModalProvider<Provider>('solana')
 
   async function onSignMessage() {
     try {

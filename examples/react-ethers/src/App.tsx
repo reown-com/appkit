@@ -1,11 +1,11 @@
 import {
   createWeb3Modal,
-  defaultConfig,
   useWeb3Modal,
   useWeb3ModalEvents,
   useWeb3ModalState,
   useWeb3ModalTheme
-} from '@web3modal/ethers/react'
+} from '@web3modal/base/react'
+import { EVMEthersClient } from '@web3modal/adapter-ethers'
 
 // @ts-expect-error 1. Get projectId
 const projectId = import.meta.env.VITE_PROJECT_ID
@@ -24,31 +24,25 @@ const chains = [
     name: 'Ethereum',
     currency: 'ETH',
     explorerUrl: 'https://etherscan.io',
-    rpcUrl: getBlockchainApiRpcUrl(1)
+    rpcUrl: getBlockchainApiRpcUrl(1),
+    chainNamespace: 'eip155'
   },
   {
     chainId: 42161,
     name: 'Arbitrum',
     currency: 'ETH',
     explorerUrl: 'https://arbiscan.io',
-    rpcUrl: getBlockchainApiRpcUrl(42161)
+    rpcUrl: getBlockchainApiRpcUrl(42161),
+    chainNamespace: 'eip155'
   }
 ]
 
-const ethersConfig = defaultConfig({
-  metadata: {
-    name: 'AppKit',
-    description: 'AppKit Laboratory',
-    url: 'https://example.com',
-    icons: ['https://avatars.githubusercontent.com/u/37784886']
-  },
-  defaultChainId: 1
-})
+const ethersAdapter = new EVMEthersClient()
 
 // 3. Create modal
 createWeb3Modal({
-  ethersConfig,
-  chains,
+  adapters: [ethersAdapter],
+  caipNetworks: chains,
   projectId,
   enableAnalytics: true,
   themeMode: 'light',

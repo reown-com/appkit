@@ -18,11 +18,6 @@
       "types": "./dist/types/exports/ethers.d.ts",
       "import": "./dist/esm/exports/ethers.js",
       "default": "./dist/esm/exports/ethers.js"
-    },
-    "./solana": {
-      "types": "./dist/types/exports/solana.d.ts",
-      "import": "./dist/esm/exports/solana.js",
-      "default": "./dist/esm/exports/solana.js"
     }
   },
   "typesVersions": {
@@ -40,6 +35,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
+    "@walletconnect/universal-provider": "2.15.1",
     "@web3modal/common": "workspace:*",
     "@web3modal/core": "workspace:*",
     "@web3modal/polyfills": "workspace:*",

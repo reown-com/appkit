@@ -10,8 +10,7 @@ import {
   RouterController,
   SnackController
 } from '@web3modal/core'
-
-import type { CaipNetwork } from '@web3modal/core'
+import type { CaipNetwork } from '@web3modal/common'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'

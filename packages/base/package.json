@@ -27,35 +27,35 @@
       "import": "./dist/esm/exports/react.js",
       "default": "./dist/esm/exports/react.js"
     },
-    "./adapters/evm/wagmi": {
-      "types": "./dist/types/adapters/evm/wagmi/index.d.ts",
-      "import": "./dist/esm/adapters/evm/wagmi/index.js",
-      "default": "./dist/esm/adapters/evm/wagmi/index.js"
+    "./vue": {
+      "types": "./dist/types/exports/vue.d.ts",
+      "import": "./dist/esm/exports/vue.js",
+      "default": "./dist/esm/exports/vue.js"
     },
-    "./adapters/evm/ethers": {
-      "types": "./dist/types/adapters/evm/ethers/index.d.ts",
-      "import": "./dist/esm/adapters/evm/ethers/index.js",
-      "default": "./dist/esm/adapters/evm/ethers/index.js"
+    "./library/react": {
+      "types": "./dist/types/exports/library/react.d.ts",
+      "import": "./dist/esm/exports/library/react.js",
+      "default": "./dist/esm/exports/library/react.js"
     },
-    "./adapters/evm/ethers5": {
-      "types": "./dist/types/adapters/evm/ethers5/index.d.ts",
-      "import": "./dist/esm/adapters/evm/ethers5/index.js",
-      "default": "./dist/esm/adapters/evm/ethers5/index.js"
+    "./library/vue": {
+      "types": "./dist/types/exports/library/vue.d.ts",
+      "import": "./dist/esm/exports/library/vue.js",
+      "default": "./dist/esm/exports/library/vue.js"
     },
-    "./adapters/solana/web3js": {
-      "types": "./dist/types/adapters/solana/web3js/index.d.ts",
-      "import": "./dist/esm/adapters/solana/web3js/index.js",
-      "default": "./dist/esm/adapters/solana/web3js/index.js"
+    "./store": {
+      "types": "./dist/types/exports/store.d.ts",
+      "import": "./dist/esm/exports/store.js",
+      "default": "./dist/esm/exports/store.js"
     },
-    "./utils/library/react": {
-      "types": "./dist/types/utils/library/react/index.d.ts",
-      "import": "./dist/esm/utils/library/react/index.js",
-      "default": "./dist/esm/utils/library/react/index.js"
+    "./utils": {
+      "types": "./dist/types/exports/utils.d.ts",
+      "import": "./dist/esm/exports/utils.js",
+      "default": "./dist/esm/exports/utils.js"
     },
-    "./utils/library/vue": {
-      "types": "./dist/types/utils/library/vue/index.d.ts",
-      "import": "./dist/esm/utils/library/vue/index.js",
-      "default": "./dist/esm/utils/library/vue/index.js"
+    "./chains": {
+      "types": "./dist/types/exports/chains.d.ts",
+      "import": "./dist/esm/exports/chains.js",
+      "default": "./dist/esm/exports/chains.js"
     }
   },
   "typesVersions": {
@@ -63,28 +63,27 @@
       "react": [
         "./dist/types/exports/react.d.ts"
       ],
-      "adapters/evm/ethers": [
-        "./dist/types/adapters/evm/ethers/index.d.ts"
+      "vue": [
+        "./dist/types/exports/vue.d.ts"
       ],
-      "adapters/evm/ethers5": [
-        "./dist/types/adapters/evm/ethers5/index.d.ts"
+      "library/react": [
+        "./dist/types/exports/library/react.d.ts"
       ],
-      "adapters/evm/wagmi": [
-        "./dist/types/adapters/evm/wagmi/index.d.ts"
+      "library/vue": [
+        "./dist/types/exports/library/vue.d.ts"
       ],
-      "adapters/solana/web3js": [
-        "./dist/types/adapters/solana/web3js/index.d.ts"
+      "store": [
+        "./dist/types/exports/store.d.ts"
       ],
-      "utils/library/react": [
-        "./dist/types/utils/library/react/index.d.ts"
-      ],
-      "utils/library/vue": [
-        "./dist/types/utils/library/vue/index.d.ts"
+      "chains": [
+        "./dist/types/exports/chains.d.ts"
       ]
     }
   },
   "dependencies": {
     "@walletconnect/utils": "2.14.0",
+    "@walletconnect/types": "2.13.3",
+    "@walletconnect/universal-provider": "2.15.1",
     "@web3modal/common": "workspace:*",
     "@web3modal/core": "workspace:*",
     "@web3modal/polyfills": "workspace:*",
@@ -92,40 +91,18 @@
     "@web3modal/scaffold-utils": "workspace:*",
     "@web3modal/siwe": "workspace:*",
     "@web3modal/ui": "workspace:*",
-    "@web3modal/wallet": "workspace:*"
-  },
-  "optionalDependencies": {
-    "borsh": "0.7.0",
-    "bs58": "5.0.0"
+    "@web3modal/wallet": "workspace:*",
+    "valtio": "1.11.2"
   },
   "devDependencies": {
-    "@coinbase/wallet-sdk": "4.0.3",
-    "@ethersproject/sha2": "5.7.0",
-    "@solana/wallet-adapter-base": "0.9.23",
-    "@solana/wallet-standard-features": "1.2.0",
-    "@solana/wallet-standard-util": "1.1.1",
-    "@solana/web3.js": "1.95.2",
     "@types/react": "18.2.0",
     "@types/react-dom": "18.2.0",
     "@vitest/coverage-v8": "2.0.5",
     "@vue/runtime-core": "3.4.3",
-    "@wagmi/connectors": "5.1.5",
-    "@wagmi/core": "2.13.4",
-    "@wallet-standard/app": "1.0.1",
-    "@wallet-standard/base": "1.0.1",
-    "@wallet-standard/features": "1.0.3",
-    "@wallet-standard/wallet": "1.0.1",
-    "@walletconnect/ethereum-provider": "2.15.1",
-    "@walletconnect/types": "2.13.3",
-    "@walletconnect/universal-provider": "2.15.0",
-    "ethers": "6.13.0",
-    "ethers5": "npm:ethers@5.7.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "viem": "2.19.6",
     "vitest": "2.0.3",
-    "vue": "3.4.3",
-    "wagmi": "2.12.5"
+    "vue": "3.4.3"
   },
   "keywords": [
     "web3",

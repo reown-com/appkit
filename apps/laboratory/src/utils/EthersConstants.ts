@@ -13,7 +13,7 @@ import {
   zora,
   sepolia,
   baseSepolia
-} from './ChainsUtil'
+} from '@web3modal/base/chains'
 
 export const EthersConstants = {
   chains: [

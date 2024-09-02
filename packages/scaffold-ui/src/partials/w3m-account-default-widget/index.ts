@@ -106,10 +106,10 @@ export class W3mAccountDefaultWidget extends LitElement {
 
   // -- Private ------------------------------------------- //
   private onrampTemplate() {
-    const { enableOnramp } = OptionsController.state
+    const { onramp } = OptionsController.state.features
     const isSolana = ChainController.state.activeChain === ConstantsUtil.CHAIN.SOLANA
 
-    if (!enableOnramp || isSolana) {
+    if (!onramp || isSolana) {
       return null
     }
 
@@ -143,9 +143,10 @@ export class W3mAccountDefaultWidget extends LitElement {
   }
 
   private swapsTemplate() {
-    const { enableSwaps } = OptionsController.state
+    const { swaps } = OptionsController.state.features
+    const isSolana = ChainController.state.activeChain === ConstantsUtil.CHAIN.SOLANA
 
-    if (!enableSwaps || ChainController.state.activeChain === ConstantsUtil.CHAIN.SOLANA) {
+    if (!swaps || isSolana) {
       return null
     }
 

@@ -1,10 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { OptionsController } from '../../index.js'
+import { OptionsController } from '../../exports/index.js'
+import { ConstantsUtil } from '../../src/utils/ConstantsUtil.js'
 
 // -- Tests --------------------------------------------------------------------
 describe('OptionsController', () => {
   it('should have valid default state', () => {
     expect(OptionsController.state).toEqual({
+      features: ConstantsUtil.DEFAULT_FEATURES,
       projectId: '',
       sdkType: 'w3m',
       sdkVersion: 'html-wagmi-undefined'

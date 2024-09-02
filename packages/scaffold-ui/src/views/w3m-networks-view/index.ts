@@ -1,4 +1,4 @@
-import type { CaipNetwork } from '@web3modal/core'
+import { ConstantsUtil, type CaipNetwork } from '@web3modal/common'
 import {
   AccountController,
   AssetUtil,
@@ -100,8 +100,6 @@ export class W3mNetworksView extends LitElement {
   private networksTemplate() {
     const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
     const approvedCaipNetworkIds = NetworkController.state.approvedCaipNetworkIds
-    const supportsAllNetworks = NetworkController.state.supportsAllNetworks
-
     const sortedNetworks = CoreHelperUtil.sortRequestedNetworks(
       approvedCaipNetworkIds,
       requestedCaipNetworks
@@ -123,43 +121,74 @@ export class W3mNetworksView extends LitElement {
           type="network"
           name=${network.name ?? network.id}
           @click=${() => this.onSwitchNetwork(network)}
-          .disabled=${!supportsAllNetworks &&
-          !approvedCaipNetworkIds?.includes(network.id) &&
-          network.chain === ChainController.state.activeChain}
+          .disabled=${this.getNetworkDisabled(network)}
           data-testid=${`w3m-network-switch-${network.name ?? network.id}`}
         ></wui-list-network>
       `
     )
   }
 
+  private getNetworkDisabled(network: CaipNetwork) {
+    const networkNamespace = network.chainNamespace
+    const isNamespaceConnected = AccountController.getChainIsConnected(networkNamespace)
+    const approvedCaipNetworkIds = ChainController.getNetworkProp(
+      'approvedCaipNetworkIds',
+      networkNamespace
+    )
+    const supportsAllNetworks = ChainController.getNetworkProp(
+      'supportsAllNetworks',
+      networkNamespace
+    )
+
+    if (!isNamespaceConnected || supportsAllNetworks) {
+      return false
+    }
+
+    return !approvedCaipNetworkIds?.includes(network.id)
+  }
+
   private async onSwitchNetwork(network: CaipNetwork) {
-    const isConnected = AccountController.state.isConnected
-    const isNetworkChainConnected = AccountController.getChainIsConnected(network.chain)
-    const approvedCaipNetworkIds = NetworkController.state.approvedCaipNetworkIds
+    const isCurrentNamespaceConnected = AccountController.state.isConnected
+    const isNetworkNamespaceConnected = AccountController.getChainIsConnected(
+      network.chainNamespace
+    )
+    const isNamespaceConnected = AccountController.getChainIsConnected(network.chainNamespace)
+    const isEIP155Namespace = network.chainNamespace === ConstantsUtil.CHAIN.EVM
+    const isSameNetwork = network.id === this.network?.id
+
     const supportsAllNetworks = NetworkController.state.supportsAllNetworks
-    const caipNetwork = NetworkController.state.caipNetwork
     const routerData = RouterController.state.data
 
-    if (isConnected && caipNetwork?.id !== network.id) {
-      if (!isNetworkChainConnected) {
-        RouterController.push('SwitchActiveChain', {
-          switchToChain: network.chain,
-          navigateTo: 'Connect',
-          navigateWithReplace: true
-        })
+    if (isSameNetwork) {
+      return
+    }
 
-        return
-      }
-      if (approvedCaipNetworkIds?.includes(network.id)) {
-        await NetworkController.switchActiveNetwork(network)
-        await NetworkUtil.onNetworkChange()
-      } else if (supportsAllNetworks) {
+    if (isNamespaceConnected) {
+      if (supportsAllNetworks) {
         RouterController.push('SwitchNetwork', { ...routerData, network })
+      } else {
+        await NetworkController.switchActiveNetwork(network)
+        if (isEIP155Namespace) {
+          await NetworkUtil.onNetworkChange()
+        }
       }
-    } else if (!isConnected) {
-      NetworkController.setActiveCaipNetwork(network)
-      if (!isNetworkChainConnected) {
-        RouterController.push('Connect')
+    } else {
+      // eslint-disable-next-line no-lonely-if
+      if (ChainController.state.noAdapters) {
+        RouterController.push('ConnectingWalletConnect')
+      } else {
+        // eslint-disable-next-line no-lonely-if
+        if (isCurrentNamespaceConnected || !isNetworkNamespaceConnected) {
+          NetworkController.setActiveCaipNetwork(network)
+          await NetworkUtil.onNetworkChange()
+        } else {
+          RouterController.push('SwitchActiveChain', {
+            switchToChain: network.chainNamespace,
+            navigateTo: 'Connect',
+            navigateWithReplace: true,
+            network
+          })
+        }
       }
     }
   }

@@ -1,22 +1,21 @@
 import * as React from 'react'
-import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers/react'
+import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/base/react'
 import EthereumProvider from '@walletconnect/ethereum-provider'
 
 import { AppKitInfo } from '../AppKitInfo'
 
 export function EthersModalInfo() {
-  const { isConnected, address, chainId } = useWeb3ModalAccount()
   const [ready, setReady] = React.useState(false)
-  const [clientId, setClientId] = React.useState<string | null>(null)
-  const { walletProvider, walletProviderType } = useWeb3ModalProvider()
+  const [clientId, setClientId] = React.useState<string | undefined>(undefined)
+  const { isConnected, address } = useWeb3ModalAccount()
+  const { walletProvider, walletProviderType } = useWeb3ModalProvider<EthereumProvider>('eip155')
+
   async function getClientId() {
     if (walletProviderType === 'walletConnect') {
-      const ethereumProvider = walletProvider as unknown as EthereumProvider
-
-      return await ethereumProvider?.signer?.client?.core?.crypto?.getClientId()
+      return await walletProvider?.signer?.client?.core?.crypto?.getClientId()
     }
 
-    return null
+    return undefined
   }
 
   React.useEffect(() => {
@@ -28,6 +27,6 @@ export function EthersModalInfo() {
   }, [])
 
   return ready && isConnected ? (
-    <AppKitInfo address={address} chainId={chainId} clientId={clientId} />
+    <AppKitInfo address={address} chainId={1} clientId={clientId} />
   ) : null
 }

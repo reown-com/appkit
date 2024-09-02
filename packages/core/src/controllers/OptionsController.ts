@@ -1,105 +1,43 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy } from 'valtio/vanilla'
-import type { CustomWallet, Metadata, ProjectId, SdkVersion, Tokens } from '../utils/TypeUtil.js'
+import type {
+  CustomWallet,
+  Features,
+  Metadata,
+  ProjectId,
+  SdkVersion,
+  Tokens
+} from '../utils/TypeUtil.js'
 import { ApiController } from './ApiController.js'
+import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 
 // -- Types --------------------------------------------- //
 export interface OptionsControllerState {
   projectId: ProjectId
   sdkType: 'w3m'
   sdkVersion: SdkVersion
-  /**
-   * A boolean that allows you to add or remove the "All Wallets" button on the modal
-   * @default 'SHOW'
-   * @see https://docs.walletconnect.com/appkit/react/core/options#allwallets
-   */
   allWallets?: 'SHOW' | 'HIDE' | 'ONLY_MOBILE'
-  /**
-   * Array of wallet ids to be shown in the modal's connection view with priority. These wallets will also show up first in `All Wallets` view
-   * @default []
-   * @see https://docs.walletconnect.com/appkit/react/core/options#featuredwalletids
-   */
   featuredWalletIds?: string[]
-  /**
-   * Array of wallet ids to be shown (order is respected). Unlike `featuredWalletIds`, these wallets will be the only ones shown in `All Wallets` view and as recommended wallets.
-   * @default []
-   * @see https://docs.walletconnect.com/appkit/react/core/options#includewalletids
-   */
   includeWalletIds?: string[]
-  /**
-   * Array of wallet ids to be excluded from the wallet list in the modal.
-   * @default []
-   * @see https://docs.walletconnect.com/appkit/react/core/options#excludewalletids
-   */
   excludeWalletIds?: string[]
-  /**
-   * Array of tokens to show the user's balance of. Each key represents the chain id of the token's blockchain
-   * @default {}
-   * @see https://docs.walletconnect.com/appkit/react/core/options#tokens
-   */
   tokens?: Tokens
-  /**
-   * Add custom wallets to the modal. CustomWallets is an array of objects, where each object contains specific information of a custom wallet.
-   * @default []
-   * @see https://docs.walletconnect.com/appkit/react/core/options#customwallets
-   *
-   */
   customWallets?: CustomWallet[]
-  /**
-   * You can add an url for the terms and conditions link.
-   * @default undefined
-   */
   termsConditionsUrl?: string
-  /**
-   * You can add an url for the privacy policy link.
-   * @default undefined
-   */
   privacyPolicyUrl?: string
-  /**
-   * You can enable or disable the SIWE feature in your AppKit.
-   * @default false
-   */
   isSiweEnabled?: boolean
-  /**
-   * Enable analytics to get more insights on your users activity within your WalletConnect Cloud's dashboard.
-   * @default false
-   * @see https://cloud.walletconnect.com/
-   */
-  enableAnalytics?: boolean
-  /**
-   * Set of fields that related to your project which will be used to populate the metadata of the modal.
-   * @default {}
-   */
   metadata?: Metadata
-  /**
-   * Enable or disable the onramp feature in your AppKit.
-   * @default true
-   */
-  enableOnramp?: boolean
-  /**
-   * Enable or disable the appending the AppKit to the DOM. Created for specific use cases like WebGL.
-   * @default false
-   */
   disableAppend?: boolean
-  /**
-   * Enable or disable the EIP6963 feature in your AppKit.
-   * @default false
-   */
   enableEIP6963?: boolean
-  /**
-   * Enable or disable the onramp feature in your AppKit.
-   * @default true
-   */
-  enableSwaps?: boolean
-  // -- Internal options ---------------------------------- //
   isUniversalProvider?: boolean
   hasMultipleAddresses?: boolean
+  features: Features
 }
 
 type StateKey = keyof OptionsControllerState
 
 // -- State --------------------------------------------- //
 const state = proxy<OptionsControllerState>({
+  features: ConstantsUtil.DEFAULT_FEATURES,
   projectId: '',
   sdkType: 'w3m',
   sdkVersion: 'html-wagmi-undefined'
@@ -115,6 +53,18 @@ export const OptionsController = {
 
   setOptions(options: OptionsControllerState) {
     Object.assign(state, options)
+  },
+
+  setFeatures(features: OptionsControllerState['features'] | undefined) {
+    if (!features) {
+      return
+    }
+
+    Object.entries(features).forEach(([key, value]) => {
+      if (key in state.features) {
+        ;(state.features as Record<keyof Features, unknown>)[key as keyof Features] = value
+      }
+    })
   },
 
   setProjectId(projectId: OptionsControllerState['projectId']) {
@@ -164,20 +114,12 @@ export const OptionsController = {
     state.isUniversalProvider = isUniversalProvider
   },
 
-  setEnableAnalytics(enableAnalytics: OptionsControllerState['enableAnalytics']) {
-    state.enableAnalytics = enableAnalytics
-  },
-
   setSdkVersion(sdkVersion: OptionsControllerState['sdkVersion']) {
     state.sdkVersion = sdkVersion
   },
 
   setMetadata(metadata: OptionsControllerState['metadata']) {
     state.metadata = metadata
-  },
-
-  setOnrampEnabled(enableOnramp: OptionsControllerState['enableOnramp']) {
-    state.enableOnramp = enableOnramp
   },
 
   setDisableAppend(disableAppend: OptionsControllerState['disableAppend']) {
@@ -190,9 +132,5 @@ export const OptionsController = {
 
   setHasMultipleAddresses(hasMultipleAddresses: OptionsControllerState['hasMultipleAddresses']) {
     state.hasMultipleAddresses = hasMultipleAddresses
-  },
-
-  setEnableSwaps(enableSwaps: OptionsControllerState['enableSwaps']) {
-    state.enableSwaps = enableSwaps
   }
 }

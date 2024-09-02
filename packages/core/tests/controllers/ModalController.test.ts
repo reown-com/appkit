@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { ModalController } from '../../index.js'
+import { ModalController } from '../../exports/index.js'
 
 // -- Tests --------------------------------------------------------------------
 describe('ModalController', () => {

@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import {
   createWeb3Modal,
-  defaultSolanaConfig,
   useWeb3Modal,
   useWeb3ModalEvents,
   useWeb3ModalState,
@@ -46,24 +45,17 @@ const chains = [
   }
 ]
 
-// 2. Create solanaConfig
-const solanaConfig = defaultSolanaConfig({
-  chains: chains,
-  projectId,
+// 3. Create modal
+createWeb3Modal({
   metadata: {
     name: 'AppKit React Example',
     description: 'AppKit React Example',
     url: '',
     icons: []
-  }
-})
-
-// 3. Create modal
-createWeb3Modal({
-  solanaConfig,
+  },
   projectId,
   themeMode: 'light',
-  chains,
+  caipNetworks: chains,
   wallets: [
     new BackpackWalletAdapter(),
     new HuobiWalletAdapter(),

@@ -1,4 +1,4 @@
-import { ChainController, RouterController } from '@web3modal/core'
+import { ChainController, NetworkController, RouterController } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
@@ -17,6 +17,8 @@ export class W3mSwitchActiveChainView extends LitElement {
   protected readonly navigateTo = RouterController.state.data?.navigateTo
 
   protected readonly navigateWithReplace = RouterController.state.data?.navigateWithReplace
+
+  protected readonly caipNetwork = RouterController.state.data?.network
 
   // -- State & Properties -------------------------------- //
   @property() public activeChain = ChainController.state.activeChain
@@ -41,6 +43,10 @@ export class W3mSwitchActiveChainView extends LitElement {
       ? ConstantsUtil.CHAIN_NAME_MAP[this.switchToChain]
       : 'supported'
 
+    if (!this.switchToChain) {
+      return null
+    }
+
     return html`
       <wui-flex
         flexDirection="column"
@@ -49,11 +55,19 @@ export class W3mSwitchActiveChainView extends LitElement {
         gap="xl"
       >
         <wui-flex justifyContent="center" flexDirection="column" alignItems="center" gap="xl">
-          <wui-visual name="eth"></wui-visual>
-          <wui-text variant="paragraph-500" color="fg-100" align="center">Switch to EVM</wui-text>
+          <wui-visual
+            name=${this.switchToChain === 'eip155' ? 'eth' : this.switchToChain}
+          ></wui-visual>
+          <wui-text variant="paragraph-500" color="fg-100" align="center"
+            >Switch to
+            <span class="capitalize">
+              ${this.switchToChain === 'eip155' ? 'EVM' : this.switchToChain}</span
+            ></wui-text
+          >
           <wui-text variant="small-400" color="fg-200" align="center">
-            This feature is not supported on the ${chainNameString} chain. Switch to
-            ${switchedChainNameString} chain to proceed using it.
+            This request is not supported on the ${chainNameString} chain. Disconnect from the
+            ${chainNameString} session and switch to ${switchedChainNameString} chain to proceed
+            using it.
           </wui-text>
           <wui-button size="md" @click=${this.switchActiveChain.bind(this)}>Switch</wui-button>
         </wui-flex>
@@ -62,12 +76,13 @@ export class W3mSwitchActiveChainView extends LitElement {
   }
 
   // -- Private Methods ------------------------------------ //
-  private switchActiveChain() {
+  private async switchActiveChain() {
     if (!this.switchToChain) {
       return
     }
 
-    ChainController.setActiveChain(this.switchToChain)
+    await NetworkController.switchActiveNetwork(this.caipNetwork)
+
     if (this.navigateTo) {
       if (this.navigateWithReplace) {
         RouterController.replace(this.navigateTo)
