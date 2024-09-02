@@ -143,14 +143,16 @@ export const BlockchainApiController = {
     cursor,
     onramp,
     signal,
-    cache
+    cache,
+    chainId
   }: BlockchainApiTransactionsRequest) {
     return state.api.get<BlockchainApiTransactionsResponse>({
       path: `/v1/account/${account}/history`,
       params: {
         projectId,
         cursor,
-        onramp
+        onramp,
+        chainId
       },
       signal,
       cache
