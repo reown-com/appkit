@@ -88,8 +88,10 @@ export class SolanaWeb3JsClient implements ChainAdapter<SolStoreUtilState, CaipN
 
   public defaultChain: CaipNetwork | undefined = undefined
 
+  public defaultSolanaChain: Chain | undefined = undefined
+
   public constructor(options: Web3ModalClientOptions) {
-    const { solanaConfig, chains, connectionSettings = 'confirmed' } = options
+    const { solanaConfig, chains, defaultChain, connectionSettings = 'confirmed' } = options
 
     if (!solanaConfig) {
       throw new Error('web3modal:constructor - solanaConfig is undefined')
@@ -100,6 +102,14 @@ export class SolanaWeb3JsClient implements ChainAdapter<SolStoreUtilState, CaipN
     this.chains = chains
 
     this.connectionSettings = connectionSettings
+
+    this.defaultChain = defaultChain
+      ? SolHelpersUtil.getChainFromCaip(
+          this.chains,
+          SafeLocalStorage.getItem(SolConstantsUtil.CAIP_CHAIN_ID) || defaultChain.chainId
+        )
+      : undefined
+    this.defaultSolanaChain = this.chains.find(c => c.chainId === defaultChain?.chainId)
 
     this.networkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
@@ -220,21 +230,19 @@ export class SolanaWeb3JsClient implements ChainAdapter<SolStoreUtilState, CaipN
       ...clientOptions.solanaConfig.auth
     })
 
-    this.syncRequestedNetworks(chains, this.options?.chainImages)
+    const defaultChain = this.defaultChain
 
-    const chain = SolHelpersUtil.getChainFromCaip(
-      chains,
-      SafeLocalStorage.getItem(SolConstantsUtil.CAIP_CHAIN_ID) || ''
-    )
-
-    this.defaultChain = chain as CaipNetwork
-    this.syncRequestedNetworks(chains, this.options?.chainImages)
-
-    if (chain) {
-      SolStoreUtil.setCurrentChain(chain)
-      SolStoreUtil.setCaipChainId(`solana:${chain.chainId}`)
+    if (this.defaultSolanaChain) {
+      SolStoreUtil.setCurrentChain(this.defaultSolanaChain)
+      SolStoreUtil.setCaipChainId(`solana:${this.defaultSolanaChain.chainId}`)
     }
+
+    if (defaultChain) {
+      this.appKit?.setCaipNetwork(defaultChain)
+    }
+
     this.syncNetwork()
+    this.syncRequestedNetworks(chains, this.options?.chainImages)
 
     SolStoreUtil.subscribeKey('address', () => {
       this.syncAccount()
