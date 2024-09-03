@@ -783,6 +783,25 @@ importers:
         specifier: 2.0.3
         version: 2.0.3(@types/node@20.11.5)(jsdom@24.1.0)(terser@5.31.6)
 
+  packages/adapters/polkadot:
+    dependencies:
+      '@web3modal/base':
+        specifier: workspace:*
+        version: link:../../base
+      '@web3modal/common':
+        specifier: workspace:*
+        version: link:../../common
+      '@web3modal/core':
+        specifier: workspace:*
+        version: link:../../core
+    devDependencies:
+      '@vitest/coverage-v8':
+        specifier: 2.0.5
+        version: 2.0.5(vitest@2.0.3(@types/node@20.11.5)(jsdom@24.1.0)(terser@5.31.6))
+      vitest:
+        specifier: 2.0.3
+        version: 2.0.3(@types/node@20.11.5)(jsdom@24.1.0)(terser@5.31.6)
+
   packages/adapters/solana:
     dependencies:
       '@solana/wallet-adapter-base':
@@ -23534,7 +23553,7 @@ snapshots:
 
   extension-port-stream@3.0.0:
     dependencies:
-      readable-stream: 3.6.2
+      readable-stream: 4.5.2
       webextension-polyfill: 0.10.0
 
   external-editor@3.1.0:

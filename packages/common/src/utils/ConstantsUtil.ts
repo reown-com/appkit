@@ -6,11 +6,13 @@ export const ConstantsUtil = {
   PULSE_API_URL: 'https://pulse.walletconnect.org',
   W3M_API_URL: 'https://api.web3modal.org',
   CHAIN: {
-    EVM: 'eip155' as ChainNamespace,
-    SOLANA: 'solana' as ChainNamespace
-  },
+    EVM: 'eip155',
+    SOLANA: 'solana',
+    POLKADOT: 'polkadot'
+  } as const satisfies Record<string, ChainNamespace>,
   CHAIN_NAME_MAP: {
     eip155: 'Ethereum',
-    solana: 'Solana'
-  }
-}
+    solana: 'Solana',
+    polkadot: 'Polkadot'
+  } as const satisfies Record<ChainNamespace, string>
+} as const
