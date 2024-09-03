@@ -3,6 +3,7 @@ import { createContext, useContext, useEffect, useState } from 'react'
 import { getLocalStorageItem, LOCAL_SIGNER_KEY } from '../utils/LocalStorage'
 import { generatePrivateKey, privateKeyToAccount, type PrivateKeyAccount } from 'viem/accounts'
 import { useChakraToast } from '../components/Toast'
+import { useLocalStorageState } from '../hooks/useLocalStorageState'
 
 type LocalEcdsaKeyContextType = {
   privateKey: string | undefined
@@ -24,7 +25,10 @@ export function LocalEcdsaKeyProvider({ children }: LocalEcdsaKeyProviderProps) 
   if (!projectId) {
     throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
   }
-  const [privateKey, setPrivateKey] = useState<string | undefined>(undefined)
+  const [privateKey, setPrivateKey] = useLocalStorageState<string | undefined>(
+    LOCAL_SIGNER_KEY,
+    undefined
+  )
 
   const [signer, setSigner] = useState<PrivateKeyAccount | undefined>()
 
