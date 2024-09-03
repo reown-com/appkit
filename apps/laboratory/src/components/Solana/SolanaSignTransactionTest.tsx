@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Button, Stack, Text, Spacer, Link } from '@chakra-ui/react'
+import { Button, Stack, Text, Spacer } from '@chakra-ui/react'
 import {
   PublicKey,
   Transaction,
@@ -12,6 +12,7 @@ import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/solana/rea
 
 import { solana } from '../../utils/ChainsUtil'
 import { useChakraToast } from '../Toast'
+import bs58 from 'bs58'
 
 const PHANTOM_DEVNET_ADDRESS = '8vCyX7oB6Pc3pbWMGYYZF5pbSnAdQ7Gyr32JqxqCy8ZR'
 const recipientAddress = new PublicKey(PHANTOM_DEVNET_ADDRESS)
@@ -56,7 +57,7 @@ export function SolanaSignTransactionTest() {
 
       toast({
         title: 'Success',
-        description: Uint8Array.from(signature),
+        description: bs58.encode(signature),
         type: 'success'
       })
     } catch (err) {
@@ -108,7 +109,7 @@ export function SolanaSignTransactionTest() {
 
       toast({
         title: 'Success',
-        description: signature,
+        description: bs58.encode(signature),
         type: 'success'
       })
     } catch (err) {
@@ -147,12 +148,6 @@ export function SolanaSignTransactionTest() {
         Sign Versioned Transaction
       </Button>
       <Spacer />
-
-      <Link isExternal href="https://solfaucet.com/">
-        <Button variant="outline" colorScheme="blue">
-          Solana Faucet
-        </Button>
-      </Link>
     </Stack>
   )
 }

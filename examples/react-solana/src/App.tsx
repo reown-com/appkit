@@ -60,6 +60,7 @@ createWeb3Modal({
   solanaConfig,
   projectId,
   themeMode: 'light',
+  defaultChain: chains[2],
   chains,
   wallets: [
     new HuobiWalletAdapter(),

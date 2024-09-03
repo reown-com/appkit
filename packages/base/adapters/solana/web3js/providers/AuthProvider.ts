@@ -131,6 +131,31 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
     return signature
   }
 
+  public async signAllTransactions<T extends AnyTransaction[]>(transactions: T): Promise<T> {
+    const result = await this.provider.request({
+      method: 'solana_signAllTransactions',
+      params: {
+        transactions: transactions.map(transaction => this.serializeTransaction(transaction))
+      }
+    })
+
+    return (result.transactions as string[]).map((encodedTransaction, index) => {
+      const transaction = transactions[index]
+
+      if (!transaction) {
+        throw new Error('Invalid solana_signAllTransactions response')
+      }
+
+      const decodedTransaction = base58.decode(encodedTransaction)
+
+      if (isVersionedTransaction(transaction)) {
+        return VersionedTransaction.deserialize(decodedTransaction)
+      }
+
+      return Transaction.from(decodedTransaction)
+    }) as T
+  }
+
   // -- W3mFrameProvider methods ------------------------------------------- //
   connectEmail: ProviderAuthMethods['connectEmail'] = args => this.provider.connectEmail(args)
   connectOtp: ProviderAuthMethods['connectOtp'] = args => this.provider.connectOtp(args)

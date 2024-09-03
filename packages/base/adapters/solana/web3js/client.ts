@@ -22,7 +22,8 @@ import type {
   Token,
   Connector,
   CaipAddress,
-  CaipNetwork
+  CaipNetwork,
+  ChainAdapter
 } from '@web3modal/core'
 import type { Chain as AvailableChain } from '@web3modal/common'
 
@@ -62,7 +63,7 @@ export interface Web3ModalClientOptions
 export type Web3ModalOptions = Omit<Web3ModalClientOptions, '_sdkVersion' | 'isUniversalProvider'>
 
 // -- Client --------------------------------------------------------------------
-export class SolanaWeb3JsClient {
+export class SolanaWeb3JsClient implements ChainAdapter<SolStoreUtilState, CaipNetwork> {
   private appKit: AppKit | undefined = undefined
 
   private instanceOptions: Web3ModalClientOptions | undefined = undefined
@@ -87,8 +88,10 @@ export class SolanaWeb3JsClient {
 
   public defaultChain: CaipNetwork | undefined = undefined
 
+  public defaultSolanaChain: Chain | undefined = undefined
+
   public constructor(options: Web3ModalClientOptions) {
-    const { solanaConfig, chains, connectionSettings = 'confirmed' } = options
+    const { solanaConfig, chains, defaultChain, connectionSettings = 'confirmed' } = options
 
     if (!solanaConfig) {
       throw new Error('web3modal:constructor - solanaConfig is undefined')
@@ -99,6 +102,14 @@ export class SolanaWeb3JsClient {
     this.chains = chains
 
     this.connectionSettings = connectionSettings
+
+    this.defaultChain = defaultChain
+      ? SolHelpersUtil.getChainFromCaip(
+          this.chains,
+          SafeLocalStorage.getItem(SolConstantsUtil.CAIP_CHAIN_ID) || defaultChain.chainId
+        )
+      : undefined
+    this.defaultSolanaChain = this.chains.find(c => c.chainId === defaultChain?.chainId)
 
     this.networkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
@@ -213,27 +224,23 @@ export class SolanaWeb3JsClient {
     }
 
     this.initializeProviders({
-      relayUrl: 'wss://relay.walletconnect.com',
+      relayUrl: SolConstantsUtil.UNIVERSAL_PROVIDER_RELAY_URL,
       metadata: clientOptions.metadata,
       projectId: options.projectId,
       ...clientOptions.solanaConfig.auth
     })
 
-    this.syncRequestedNetworks(chains, this.options?.chainImages)
-
-    const chain = SolHelpersUtil.getChainFromCaip(
-      chains,
-      SafeLocalStorage.getItem(SolConstantsUtil.CAIP_CHAIN_ID) || ''
-    )
-
-    this.defaultChain = chain as CaipNetwork
-    this.syncRequestedNetworks(chains, this.options?.chainImages)
-
-    if (chain) {
-      SolStoreUtil.setCurrentChain(chain)
-      SolStoreUtil.setCaipChainId(`solana:${chain.chainId}`)
+    if (this.defaultSolanaChain) {
+      SolStoreUtil.setCurrentChain(this.defaultSolanaChain)
+      SolStoreUtil.setCaipChainId(`solana:${this.defaultSolanaChain.chainId}`)
     }
+
+    if (this.defaultChain) {
+      this.appKit?.setCaipNetwork(this.defaultChain)
+    }
+
     this.syncNetwork()
+    this.syncRequestedNetworks(chains, this.options?.chainImages)
 
     SolStoreUtil.subscribeKey('address', () => {
       this.syncAccount()

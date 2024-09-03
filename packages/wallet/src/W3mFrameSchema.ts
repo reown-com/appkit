@@ -326,6 +326,13 @@ export const RpcSolanaSignTransactionRequest = z.object({
   })
 })
 
+export const RpcSolanaSignAllTransactionsRequest = z.object({
+  method: z.literal('solana_signAllTransactions'),
+  params: z.object({
+    transactions: z.array(z.string())
+  })
+})
+
 export const RpcSolanaSignAndSendTransactionRequest = z.object({
   method: z.literal('solana_signAndSendTransaction'),
   params: z.object({
@@ -503,6 +510,7 @@ export const W3mFrameSchema = {
           .or(RpcEthSendTransactionRequest)
           .or(RpcSolanaSignMessageRequest)
           .or(RpcSolanaSignTransactionRequest)
+          .or(RpcSolanaSignAllTransactionsRequest)
           .or(RpcSolanaSignAndSendTransactionRequest)
           .or(WalletGetCallsReceiptRequest)
           .or(WalletSendCallsRequest)
