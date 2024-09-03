@@ -1,5 +1,4 @@
 import type {
-  AppKit,
   AppKitOptions,
   ConnectionControllerClient,
   NetworkControllerClient
@@ -17,6 +16,4 @@ export class PolkadotClient {
   public networkControllerClient: NetworkControllerClient | undefined = undefined
   public connectionControllerClient: ConnectionControllerClient | undefined = undefined
   public defaultCaipNetwork: CaipNetwork | undefined = undefined
-
-  private appKit: AppKit | undefined = undefined
 }
