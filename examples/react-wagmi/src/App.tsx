@@ -7,7 +7,7 @@ import {
   useWeb3ModalTheme
 } from '@web3modal/wagmi/react'
 import { WagmiProvider } from 'wagmi'
-import { arbitrum, mainnet } from 'wagmi/chains'
+import { arbitrum, mainnet, polygon } from 'wagmi/chains'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiHooks } from './WagmiHooks'
 
@@ -22,7 +22,7 @@ if (!projectId) {
 
 // 2. Create wagmiConfig
 const wagmiConfig = defaultWagmiConfig({
-  chains: [mainnet, arbitrum],
+  chains: [mainnet, polygon, arbitrum],
   projectId,
   metadata: {
     name: 'AppKit',
@@ -36,6 +36,7 @@ const wagmiConfig = defaultWagmiConfig({
 createWeb3Modal({
   wagmiConfig,
   projectId,
+  defaultChain: polygon,
   themeMode: 'light',
   themeVariables: {
     '--w3m-color-mix': '#00DCFF',

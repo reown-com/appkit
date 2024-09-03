@@ -551,6 +551,7 @@ export class EVMWagmiClient implements ChainAdapter {
       this.appKit?.setProfileName(null, this.chain)
     }
   }
+
   private async syncProfile(address: Hex, chainId: Chain['id']) {
     if (!this.appKit) {
       throw new Error('syncProfile - appKit is undefined')
