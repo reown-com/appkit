@@ -230,15 +230,13 @@ export class SolanaWeb3JsClient implements ChainAdapter<SolStoreUtilState, CaipN
       ...clientOptions.solanaConfig.auth
     })
 
-    const defaultChain = this.defaultChain
-
     if (this.defaultSolanaChain) {
       SolStoreUtil.setCurrentChain(this.defaultSolanaChain)
       SolStoreUtil.setCaipChainId(`solana:${this.defaultSolanaChain.chainId}`)
     }
 
-    if (defaultChain) {
-      this.appKit?.setCaipNetwork(defaultChain)
+    if (this.defaultChain) {
+      this.appKit?.setCaipNetwork(this.defaultChain)
     }
 
     this.syncNetwork()
