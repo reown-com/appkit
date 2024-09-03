@@ -59,8 +59,8 @@ export function WagmiPurchaseDonutSyncPermissionsTest() {
       })
       if (txHash) {
         toast({
-          title: 'Transaction success',
-          description: txHash,
+          title: 'UserOp submitted successfully',
+          description: `UserOp Hash: ${txHash}`,
           type: 'success'
         })
         await fetchDonutsOwned()

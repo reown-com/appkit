@@ -62,14 +62,13 @@ export function WagmiPurchaseDonutAsyncPermissionsTest() {
       })
       if (txHash) {
         toast({
-          title: 'Transaction success',
-          description: txHash,
+          title: 'UserOp submitted successfully',
+          description: `UserOp Hash: ${txHash}`,
           type: 'success'
         })
         await fetchDonutsOwned()
       }
     } catch (error) {
-      // Console.log(error)
       toast({
         title: 'Transaction Failed',
         description: `${error}`,

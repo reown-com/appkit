@@ -58,7 +58,7 @@ type CoSignRequest = {
 }
 
 type CoSignResponse = {
-  userOperationTxHash: string
+  receipt: string
 }
 
 // Define a custom error type

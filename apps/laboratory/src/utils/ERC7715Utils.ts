@@ -156,7 +156,7 @@ export async function executeActionsWithPasskeyAndCosignerPermissions(args: {
     }
   })
 
-  return cosignResponse.userOperationTxHash as `0x${string}`
+  return cosignResponse.receipt as `0x${string}`
 }
 
 export async function executeActionsWithECDSAAndCosignerPermissions(args: {
@@ -206,5 +206,5 @@ export async function executeActionsWithECDSAAndCosignerPermissions(args: {
     }
   })
 
-  return cosignResponse.userOperationTxHash as `0x${string}`
+  return cosignResponse.receipt as `0x${string}`
 }
