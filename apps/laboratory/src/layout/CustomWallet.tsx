@@ -14,6 +14,7 @@ import {
 } from '@chakra-ui/react'
 import { useState, type ChangeEvent } from 'react'
 import { CUSTOM_WALLET } from '../utils/ConstantsUtil'
+import { setLocalStorageItem } from '../utils/LocalStorage'
 
 interface Props {
   controls: ReturnType<typeof useDisclosure>
@@ -30,7 +31,7 @@ export function CustomWallet({ controls }: Props) {
   })
 
   function handleCustomWallet() {
-    localStorage.setItem(CUSTOM_WALLET, JSON.stringify(customWallet))
+    setLocalStorageItem(CUSTOM_WALLET, JSON.stringify(customWallet))
     location.reload()
   }
 

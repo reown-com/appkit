@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { getItem, setItem } from '../utils/LocalStorage'
+import { getLocalStorageItem, setLocalStorageItem } from '../utils/LocalStorage'
 
 /**
  * Custom hook that manages state in local storage.
@@ -16,7 +16,7 @@ function useLocalStorageState<T>(
   const [state, setState] = useState<T>(initialValue)
 
   useEffect(() => {
-    const storedValue = getItem(key)
+    const storedValue = getLocalStorageItem(key)
 
     // This naive hook might write 'undefined' or 'null' to local storage as a string
     if (storedValue && storedValue !== 'undefined' && storedValue !== 'null') {
@@ -30,7 +30,7 @@ function useLocalStorageState<T>(
 
   useEffect(() => {
     if (state) {
-      setItem(key, state)
+      setLocalStorageItem(key, state)
     }
   }, [key, state])
 
