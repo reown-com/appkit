@@ -2,7 +2,7 @@ import { AppKit } from '@web3modal/base'
 import type { AppKitOptions } from '@web3modal/base'
 import { EVMEthersClient, type AdapterOptions } from '@web3modal/base/adapters/evm/ethers'
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
-import { type Chain } from '@web3modal/scaffold-utils/ethers'
+import { type Chain, type EthersStoreUtilState } from '@web3modal/scaffold-utils/ethers'
 
 // -- Types -------------------------------------------------------------
 export type { AdapterOptions } from '@web3modal/base/adapters/evm/ethers'
@@ -25,7 +25,7 @@ export function createWeb3Modal(options: EthersAppKitOptions) {
     defaultChain: options.defaultChain
   })
 
-  return new AppKit({
+  return new AppKit<EthersStoreUtilState, number>({
     ...options,
     defaultChain: ethersAdapter.defaultChain,
     adapters: [ethersAdapter],

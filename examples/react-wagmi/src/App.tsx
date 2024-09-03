@@ -9,6 +9,7 @@ import {
 import { WagmiProvider } from 'wagmi'
 import { arbitrum, mainnet } from 'wagmi/chains'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { WagmiHooks } from './WagmiHooks'
 
 // 0. Setup queryClient for WAGMIv2
 const queryClient = new QueryClient()
@@ -24,8 +25,8 @@ const wagmiConfig = defaultWagmiConfig({
   chains: [mainnet, arbitrum],
   projectId,
   metadata: {
-    name: 'AppKit React Example',
-    description: 'AppKit React Example',
+    name: 'AppKit',
+    description: 'AppKit React Wagmi Example',
     url: '',
     icons: []
   }
@@ -62,6 +63,7 @@ export default function App() {
         <button onClick={() => setThemeMode(themeMode === 'dark' ? 'light' : 'dark')}>
           Toggle Theme Mode
         </button>
+        <WagmiHooks />
         <pre>{JSON.stringify(state, null, 2)}</pre>
         <pre>{JSON.stringify({ themeMode, themeVariables }, null, 2)}</pre>
         <pre>{JSON.stringify(events, null, 2)}</pre>

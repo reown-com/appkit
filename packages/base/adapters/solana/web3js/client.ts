@@ -22,7 +22,8 @@ import type {
   Token,
   Connector,
   CaipAddress,
-  CaipNetwork
+  CaipNetwork,
+  ChainAdapter
 } from '@web3modal/core'
 import type { Chain as AvailableChain } from '@web3modal/common'
 
@@ -62,7 +63,7 @@ export interface Web3ModalClientOptions
 export type Web3ModalOptions = Omit<Web3ModalClientOptions, '_sdkVersion' | 'isUniversalProvider'>
 
 // -- Client --------------------------------------------------------------------
-export class SolanaWeb3JsClient {
+export class SolanaWeb3JsClient implements ChainAdapter<SolStoreUtilState, CaipNetwork> {
   private appKit: AppKit | undefined = undefined
 
   private instanceOptions: Web3ModalClientOptions | undefined = undefined
