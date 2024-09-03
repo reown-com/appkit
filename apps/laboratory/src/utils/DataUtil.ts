@@ -84,6 +84,11 @@ export const ethers5SdkOptions = [
     title: 'SIWE',
     link: '/library/ethers5-siwe/',
     description: 'Configuration using ethers and implementing sign in with ethereum'
+  },
+  {
+    title: 'Without Socials',
+    link: '/library/ethers5-no-socials/',
+    description: 'Configuration using ethers without socials'
   }
 ]
 
@@ -97,5 +102,10 @@ export const solanaSdkOptions = [
     title: 'Without Email',
     link: '/library/solana-no-email/',
     description: 'Configuration using solana without email'
+  },
+  {
+    title: 'Without Socials',
+    link: '/library/solana-no-socials/',
+    description: 'Configuration using ethers without socials'
   }
 ]
