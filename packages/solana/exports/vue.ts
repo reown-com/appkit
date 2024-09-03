@@ -3,16 +3,16 @@ import { ConstantsUtil } from '@web3modal/scaffold-utils'
 import { getWeb3Modal } from '@web3modal/base/utils/library/vue'
 import { AppKit } from '@web3modal/base'
 import { SolanaWeb3JsClient } from '@web3modal/base/adapters/solana/web3js'
-import { SolStoreUtil } from '@web3modal/scaffold-utils/solana'
+import { SolStoreUtil, type SolStoreUtilState } from '@web3modal/scaffold-utils/solana'
 import type { Provider, Connection } from '@web3modal/base/adapters/solana/web3js'
 import type { CaipNetwork } from '@web3modal/core'
 import type { SolanaAppKitOptions } from './options'
 
 // -- Types -------------------------------------------------------------------
-export type { SolanaAppKitOptions }
+export type { SolanaAppKitOptions, Provider }
 
 // -- Setup -------------------------------------------------------------------
-let appkit: AppKit | undefined = undefined
+let appkit: AppKit<SolStoreUtilState, CaipNetwork> | undefined = undefined
 let solanaAdapter: SolanaWeb3JsClient | undefined = undefined
 
 export function createWeb3Modal(options: SolanaAppKitOptions) {
@@ -23,7 +23,7 @@ export function createWeb3Modal(options: SolanaAppKitOptions) {
     projectId: options.projectId,
     defaultChain: options.defaultChain
   })
-  appkit = new AppKit({
+  appkit = new AppKit<SolStoreUtilState, CaipNetwork>({
     ...options,
     defaultChain: solanaAdapter.defaultChain,
     adapters: [solanaAdapter],
