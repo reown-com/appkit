@@ -24,7 +24,27 @@ export interface ConfigOptions {
 }
 
 export function defaultConfig(options: ConfigOptions) {
-  const { enableEIP6963 = true, enableInjected = true, enableCoinbase = true, metadata } = options
+  const defaultAuth = {
+    email: true,
+    showWallets: true,
+    walletFeatures: true,
+    socials: [
+      'google',
+      'x',
+      'discord',
+      'farcaster',
+      'github',
+      'apple',
+      'facebook'
+    ] as SocialProvider[]
+  }
+  const {
+    enableEIP6963 = true,
+    enableCoinbase = true,
+    enableInjected = true,
+    auth,
+    metadata
+  } = options
 
   let injectedProvider: Provider | undefined = undefined
   // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
@@ -92,6 +112,13 @@ export function defaultConfig(options: ConfigOptions) {
   if (enableEIP6963) {
     providers.EIP6963 = true
   }
+
+  const mergedAuth = {
+    ...defaultAuth,
+    ...auth
+  }
+
+  providers.auth = mergedAuth
 
   return providers
 }

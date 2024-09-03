@@ -445,7 +445,7 @@ export class EVMEthers5Client implements ChainAdapter<EthersStoreUtilState, numb
       this.checkActiveInjectedProvider(this.ethersConfig)
     }
 
-    if (this.ethersConfig.auth) {
+    if (this.ethersConfig.auth?.email || this.ethersConfig.auth?.socials?.length) {
       this.syncAuthConnector(this.options.projectId, this.ethersConfig.auth)
     }
 
