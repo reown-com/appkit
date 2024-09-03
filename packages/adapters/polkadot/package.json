@@ -1,0 +1,13 @@
+{
+  "name": "@web3modal/adapter-polkadot",
+  "scripts": {
+    "build:clean": "rm -rf dist",
+    "build": "tsc --build tsconfig.build.json",
+    "watch": "tsc --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+  },
+  "devDependencies": {
+    "vitest": "2.0.3"
+  }
+}
