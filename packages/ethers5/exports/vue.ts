@@ -1,6 +1,6 @@
 import { AppKit } from '@web3modal/base'
 import type { AppKitOptions } from '@web3modal/base'
-import { EVMEthersClient, type AdapterOptions } from '@web3modal/base/adapters/evm/ethers'
+import { EVMEthers5Client, type AdapterOptions } from '@web3modal/base/adapters/evm/ethers5'
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
 import { getWeb3Modal } from '@web3modal/base/utils/library/vue'
 import { onUnmounted, ref } from 'vue'
@@ -12,13 +12,13 @@ export { defaultConfig } from '@web3modal/base/adapters/evm/ethers'
 
 // -- Setup -------------------------------------------------------------------
 let appkit: AppKit | undefined = undefined
-let ethersAdapter: EVMEthersClient | undefined = undefined
+let ethersAdapter: EVMEthers5Client | undefined = undefined
 
 type EthersAppKitOptions = Omit<AppKitOptions<Chain>, 'adapters' | 'sdkType' | 'sdkVersion'> &
   AdapterOptions
 
 export function createWeb3Modal(options: EthersAppKitOptions) {
-  ethersAdapter = new EVMEthersClient({
+  ethersAdapter = new EVMEthers5Client({
     ethersConfig: options.ethersConfig,
     siweConfig: options.siweConfig,
     chains: options.chains,
