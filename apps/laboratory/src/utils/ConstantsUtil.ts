@@ -5,7 +5,7 @@ if (!projectId) {
   throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
 }
 export const WALLET_URL = process.env['WALLET_URL'] || 'https://react-wallet.walletconnect.com/'
-export const WC_COSIGNER_BASE_URL = 'https://rpc.walletconnect.com/v1/sessions'
+export const WC_COSIGNER_BASE_URL = 'https://rpc.walletconnect.org/v1/sessions'
 export const USEROP_BUILDER_SERVICE_BASE_URL = 'https://react-wallet.walletconnect.com/api'
 
 export function getPublicUrl() {
