@@ -8,6 +8,11 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "test": "vitest run --dir tests --coverage.enabled=true --coverage.reporter=json --coverage.reporter=json-summary --coverage.reportOnFailure=true"
   },
+  "dependencies": {
+    "@web3modal/base": "workspace:*",
+    "@web3modal/common": "workspace:*",
+    "@web3modal/core": "workspace:*"
+  },
   "devDependencies": {
     "vitest": "2.0.3",
     "@vitest/coverage-v8": "2.0.5"

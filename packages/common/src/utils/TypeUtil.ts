@@ -4,7 +4,7 @@ export type CaipAddress = `${ChainNamespace}:${ChainId}:${string}`
 
 export type ChainId = string | number
 
-export type ChainNamespace = 'eip155' | 'solana'
+export type ChainNamespace = 'eip155' | 'solana' | 'polkadot'
 
 export type CaipNetwork = {
   id: CaipNetworkId
@@ -18,7 +18,7 @@ export type CaipNetwork = {
   imageId?: string
 }
 
-export type AdapterType = 'solana' | 'wagmi' | 'ethers' | 'ethers5' | 'universal'
+export type AdapterType = 'solana' | 'wagmi' | 'ethers' | 'ethers5' | 'universal' | 'polkadot'
 
 export type CoinbaseTransactionStatus =
   | 'ONRAMP_TRANSACTION_STATUS_SUCCESS'
