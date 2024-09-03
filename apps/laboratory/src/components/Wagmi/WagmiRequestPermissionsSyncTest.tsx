@@ -101,7 +101,7 @@ function ConnectedTestContent({
     } finally {
       setRequestPermissionLoading(false)
     }
-  }, [passkey, provider])
+  }, [passkey, provider, address, chain, grantPermissions, toast])
 
   return (
     <Stack direction={['column', 'column', 'row']}>

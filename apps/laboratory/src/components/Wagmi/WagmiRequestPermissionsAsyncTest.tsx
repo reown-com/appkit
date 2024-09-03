@@ -91,7 +91,7 @@ function ConnectedTestContent({
     } finally {
       setRequestPermissionLoading(false)
     }
-  }, [signer, provider])
+  }, [signer, provider, address, chain, grantPermissions, toast])
 
   return (
     <Stack direction={['column', 'column', 'row']}>
