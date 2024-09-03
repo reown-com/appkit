@@ -7,7 +7,9 @@ const namespaceImageIds: Record<ChainNamespace, string> = {
   // Ethereum
   eip155: 'ba0ba0cd-17c6-4806-ad93-f9d174f17900',
   // Solana
-  solana: 'a1b58899-f671-4276-6a5e-56ca5bd59700'
+  solana: 'a1b58899-f671-4276-6a5e-56ca5bd59700',
+  // Polkadot
+  polkadot: ''
 }
 
 export const AssetUtil = {
