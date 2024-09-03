@@ -1,3 +1,4 @@
+import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 import type { CaipNetwork } from '@web3modal/core'
 import { ConstantsUtil } from '../ConstantsUtil.js'
 import { PresetsUtil } from '../PresetsUtil.js'
@@ -12,7 +13,8 @@ export const EthersHelpersUtil = {
     return {
       id: `${ConstantsUtil.EIP155}:${chain.chainId}`,
       name: chain.name,
-      imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId]
+      imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId],
+      chain: CommonConstantsUtil.CHAIN.EVM
     } as CaipNetwork
   },
   hexStringToNumber(value: string) {

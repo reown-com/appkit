@@ -130,10 +130,7 @@ export class EVMEthers5Client implements ChainAdapter<EthersStoreUtilState, numb
 
     this.ethersConfig = ethersConfig
     this.siweControllerClient = siweConfig
-    this.defaultChain = {
-      ...EthersHelpersUtil.getCaipDefaultChain(defaultChain),
-      chain: CommonConstantsUtil.CHAIN.EVM
-    } as CaipNetwork
+    this.defaultChain = EthersHelpersUtil.getCaipDefaultChain(defaultChain)
     this.tokens = HelpersUtil.getCaipTokens(tokens)
     this.chains = chains
 
@@ -409,6 +406,10 @@ export class EVMEthers5Client implements ChainAdapter<EthersStoreUtilState, numb
     this.options = options
     this.projectId = options.projectId
     this.metadata = this.ethersConfig.metadata
+
+    if (this.defaultChain) {
+      this.appKit?.setCaipNetwork(this.defaultChain)
+    }
 
     this.createProvider()
 
