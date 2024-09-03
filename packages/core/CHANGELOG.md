@@ -1,5 +1,17 @@
 # @web3modal/core
 
+## 5.1.6
+
+### Patch Changes
+
+- - fix: update CSP by @chris13524 in https://github.com/WalletConnect/web3modal/pull/2775
+  - fix: ethers5 adapter import in exports by @enesozturk in https://github.com/WalletConnect/web3modal/pull/2754
+  - fix/missing action functions exports from clients by @enesozturk in https://github.com/WalletConnect/web3modal/pull/2778
+  - fix: logics to set default chain by @enesozturk in https://github.com/WalletConnect/web3modal/pull/2787
+- Updated dependencies []:
+  - @web3modal/common@5.1.6
+  - @web3modal/wallet@5.1.6
+
 ## 5.1.5
 
 ### Patch Changes
