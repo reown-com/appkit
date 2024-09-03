@@ -4,17 +4,17 @@ import { AppKit } from '@web3modal/base'
 import type { AppKitOptions } from '@web3modal/base'
 import { EVMEthers5Client, type AdapterOptions } from '@web3modal/base/adapters/evm/ethers5'
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
-import { EthersStoreUtil } from '@web3modal/scaffold-utils/ethers'
+import { EthersStoreUtil, type EthersStoreUtilState } from '@web3modal/scaffold-utils/ethers'
 import { getWeb3Modal } from '@web3modal/base/utils/library/react'
 import { useSnapshot } from 'valtio'
 import { ethers } from 'ethers'
 import { type Chain } from '@web3modal/scaffold-utils/ethers'
 
 // -- Configs -----------------------------------------------------------
-export { defaultConfig } from '@web3modal/base/adapters/evm/ethers'
+export { defaultConfig } from '@web3modal/base/adapters/evm/ethers5'
 
 // -- Setup -------------------------------------------------------------------
-let appkit: AppKit | undefined = undefined
+let appkit: AppKit<EthersStoreUtilState, number> | undefined = undefined
 let ethersAdapter: EVMEthers5Client | undefined = undefined
 
 export type Ethers5AppKitOptions = Omit<
@@ -30,7 +30,7 @@ export function createWeb3Modal(options: Ethers5AppKitOptions) {
     chains: options.chains,
     defaultChain: options.defaultChain
   })
-  appkit = new AppKit({
+  appkit = new AppKit<EthersStoreUtilState, number>({
     ...options,
     defaultChain: ethersAdapter.defaultChain,
     adapters: [ethersAdapter],

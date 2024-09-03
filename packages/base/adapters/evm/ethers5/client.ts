@@ -3,6 +3,7 @@ import type {
   CaipAddress,
   CaipNetwork,
   CaipNetworkId,
+  ChainAdapter,
   ConnectionControllerClient,
   Connector,
   NetworkControllerClient,
@@ -83,7 +84,8 @@ interface ExternalProvider extends EthereumProvider {
 }
 
 // -- Client --------------------------------------------------------------------
-export class EVMEthers5Client {
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-arguments
+export class EVMEthers5Client implements ChainAdapter<EthersStoreUtilState, number> {
   // -- Private variables -------------------------------------------------------
   private appKit: AppKit | undefined = undefined
 
@@ -443,7 +445,7 @@ export class EVMEthers5Client {
       this.checkActiveInjectedProvider(this.ethersConfig)
     }
 
-    if (this.ethersConfig.auth) {
+    if (this.ethersConfig.auth?.email || this.ethersConfig.auth?.socials?.length) {
       this.syncAuthConnector(this.options.projectId, this.ethersConfig.auth)
     }
 

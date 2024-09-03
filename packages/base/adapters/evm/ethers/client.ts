@@ -3,6 +3,7 @@ import type {
   CaipAddress,
   CaipNetwork,
   CaipNetworkId,
+  ChainAdapter,
   ConnectionControllerClient,
   Connector,
   NetworkControllerClient,
@@ -99,7 +100,8 @@ interface ExternalProvider extends EthereumProvider {
 }
 
 // -- Client --------------------------------------------------------------------
-export class EVMEthersClient {
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-arguments
+export class EVMEthersClient implements ChainAdapter<EthersStoreUtilState, number> {
   // -- Private variables -------------------------------------------------------
   private appKit: AppKit | undefined = undefined
 
@@ -610,7 +612,7 @@ export class EVMEthersClient {
     return EthersStoreUtil.state.error
   }
 
-  public getChainId() {
+  public getChainId(): string | number | undefined {
     const storeChainId = EthersStoreUtil.state.chainId
     const networkControllerChainId = NetworkUtil.caipNetworkIdToNumber(
       this.appKit?.getCaipNetwork()?.id
