@@ -5,10 +5,11 @@ import { AppKitButtons } from '../../components/AppKitButtons'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { getWagmiConfig } from '../../utils/WagmiConstants'
-import { WagmiPermissionsSyncProvider } from '../../context/WagmiPermissionsSyncContext'
+import { PasskeyProvider } from '../../context/PasskeyContext'
 import { walletConnect } from '@wagmi/connectors'
 import { OPTIONAL_METHODS } from '@walletconnect/ethereum-provider'
 import { WagmiPermissionsSyncTest } from '../../components/Wagmi/WagmiPermissionsSyncTest'
+import { ERC7715PermissionsProvider } from '../../context/ERC7715PermissionsContext'
 
 const queryClient = new QueryClient()
 const connectors = [
@@ -36,10 +37,12 @@ export default function Wagmi() {
   return (
     <WagmiProvider config={wagmiEmailConfig}>
       <QueryClientProvider client={queryClient}>
-        <WagmiPermissionsSyncProvider>
-          <AppKitButtons />
-          <WagmiPermissionsSyncTest />
-        </WagmiPermissionsSyncProvider>
+        <ERC7715PermissionsProvider>
+          <PasskeyProvider>
+            <AppKitButtons />
+            <WagmiPermissionsSyncTest />
+          </PasskeyProvider>
+        </ERC7715PermissionsProvider>
       </QueryClientProvider>
     </WagmiProvider>
   )
