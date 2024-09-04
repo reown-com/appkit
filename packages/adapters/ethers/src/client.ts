@@ -1,6 +1,8 @@
 import type { AppKitOptions } from '@web3modal/base'
 import {
   NetworkUtil,
+  SafeLocalStorage,
+  SafeLocalStorageKeys,
   type AdapterType,
   type CaipAddress,
   type CaipNetwork,
@@ -335,7 +337,7 @@ export class EVMEthersClient {
         }
 
         // Common cleanup actions
-        localStorage.removeItem(WcConstantsUtil.WALLET_ID)
+        SafeLocalStorage.removeItem(SafeLocalStorageKeys.WALLET_ID)
         this.appKit?.resetAccount('eip155')
       },
       signMessage: async (message: string) => {
@@ -502,7 +504,7 @@ export class EVMEthersClient {
   }
 
   private getApprovedCaipNetworksData() {
-    const walletId = localStorage.getItem(WcConstantsUtil.WALLET_ID)
+    const walletId = SafeLocalStorage.getItem(SafeLocalStorageKeys.WALLET_ID)
 
     if (!walletId) {
       return {
@@ -533,8 +535,8 @@ export class EVMEthersClient {
   }
 
   private checkActiveProviders(config: ProviderType) {
-    const walletId = localStorage.getItem(WcConstantsUtil.WALLET_ID)
-    const walletName = localStorage.getItem(WcConstantsUtil.WALLET_NAME)
+    const walletId = SafeLocalStorage.getItem(SafeLocalStorageKeys.WALLET_ID)
+    const walletName = SafeLocalStorage.getItem(SafeLocalStorageKeys.WALLET_NAME)
 
     if (!walletId) {
       return
@@ -566,9 +568,9 @@ export class EVMEthersClient {
     } else {
       const walletId = providerId
 
-      window?.localStorage.setItem(WcConstantsUtil.WALLET_ID, walletId)
+      SafeLocalStorage.setItem(SafeLocalStorageKeys.WALLET_ID, walletId)
       if (name) {
-        window?.localStorage.setItem(WcConstantsUtil.WALLET_NAME, name)
+        SafeLocalStorage.setItem(SafeLocalStorageKeys.WALLET_NAME, name)
       }
 
       if (provider) {
@@ -595,7 +597,7 @@ export class EVMEthersClient {
   }
 
   private async setAuthProvider() {
-    window?.localStorage.setItem(WcConstantsUtil.WALLET_ID, ConstantsUtil.AUTH_CONNECTOR_ID)
+    SafeLocalStorage.setItem(SafeLocalStorageKeys.WALLET_ID, ConstantsUtil.AUTH_CONNECTOR_ID)
 
     if (this.authProvider) {
       this.appKit?.setLoading(true)
@@ -657,7 +659,7 @@ export class EVMEthersClient {
 
   private setupProviderListeners(provider: Provider, providerId: ProviderId) {
     const disconnectHandler = () => {
-      localStorage.removeItem(WcConstantsUtil.WALLET_ID)
+      SafeLocalStorage.removeItem(SafeLocalStorageKeys.WALLET_ID)
       this.removeListeners(provider)
     }
 
@@ -676,7 +678,7 @@ export class EVMEthersClient {
         if (providerId === ConstantsUtil.EIP6963_CONNECTOR_ID) {
           this.appKit?.setAllAccounts([], this.chainNamespace)
         }
-        localStorage.removeItem(WcConstantsUtil.WALLET_ID)
+        SafeLocalStorage.removeItem(SafeLocalStorageKeys.WALLET_ID)
         this.appKit?.resetAccount('eip155')
       }
     }
@@ -920,7 +922,7 @@ export class EVMEthersClient {
   }
 
   private syncConnectedWalletInfo() {
-    const currentActiveWallet = window?.localStorage.getItem(WcConstantsUtil.WALLET_ID)
+    const currentActiveWallet = SafeLocalStorage.getItem(SafeLocalStorageKeys.WALLET_ID)
     const providerType = ProviderUtil.state.providerIds['eip155']
 
     if (providerType === ConstantsUtil.EIP6963_CONNECTOR_ID) {

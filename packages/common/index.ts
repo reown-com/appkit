@@ -7,5 +7,10 @@ export { erc20ABI } from './src/contracts/erc20.js'
 export { NavigationUtil } from './src/utils/NavigationUtil.js'
 export { ConstantsUtil } from './src/utils/ConstantsUtil.js'
 export { ParseUtil } from './src/utils/ParseUtil.js'
-export * from './src/utils/ThemeUtil.js'
+export { SafeLocalStorage, SafeLocalStorageKeys } from './src/utils/SafeLocalStorage.js'
+export { getW3mThemeVariables } from './src/utils/ThemeUtil.js'
+
+// -- Types -------------------------------------------------------------------
+export type * from './src/utils/ThemeUtil.js'
+export type * from './src/utils/SafeLocalStorage.js'
 export type * from './src/utils/TypeUtil.js'

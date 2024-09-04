@@ -8,10 +8,9 @@ import { EVMEthers5Client, type AdapterOptions } from '@web3modal/adapter-ethers
 import { getWeb3Modal } from '@web3modal/base/library/react'
 import { useSnapshot } from 'valtio'
 import { ethers } from 'ethers'
-import { type EthersStoreUtilState } from '@web3modal/scaffold-utils/ethers'
 
 // -- Setup -------------------------------------------------------------------
-let appkit: AppKit<EthersStoreUtilState, number> | undefined = undefined
+let appkit: AppKit | undefined = undefined
 let ethersAdapter: EVMEthers5Client | undefined = undefined
 
 export type Ethers5AppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 'sdkVersion'> &
@@ -19,7 +18,7 @@ export type Ethers5AppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 
 
 export function createWeb3Modal(options: Ethers5AppKitOptions) {
   ethersAdapter = new EVMEthers5Client()
-  appkit = new AppKit<EthersStoreUtilState, number>({
+  appkit = new AppKit({
     ...options,
     adapters: [ethersAdapter]
   })

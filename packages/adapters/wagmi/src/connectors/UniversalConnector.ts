@@ -22,8 +22,7 @@ import { WcHelpersUtil } from '@web3modal/base'
 import type { AppKitOptions } from '@web3modal/base'
 import type { AppKit } from '@web3modal/base'
 import { convertToAppKitChains } from '../utils/helpers.js'
-import type { CaipNetwork } from '@web3modal/common'
-import { WcConstantsUtil } from '@web3modal/base/utils'
+import { SafeLocalStorage, SafeLocalStorageKeys, type CaipNetwork } from '@web3modal/common'
 
 type UniversalConnector = Connector & {
   onDisplayUri(uri: string): void
@@ -232,7 +231,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
       const currentChainId = appKit.getCaipNetwork()?.chainId
 
       if (chainId && currentChainId !== chainId) {
-        const storedCaipNetwork = localStorage.getItem(WcConstantsUtil.ACTIVE_CAIPNETWORK)
+        const storedCaipNetwork = SafeLocalStorage.getItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK)
         if (storedCaipNetwork) {
           const parsedCaipNetwork = JSON.parse(storedCaipNetwork) as CaipNetwork
           if (parsedCaipNetwork.chainNamespace === 'eip155') {

@@ -34,11 +34,8 @@ declare global {
 
 let modal: AppKit | undefined = undefined
 
-export function getWeb3Modal<StoreState = unknown, SwitchNetworkParam = number>(
-  appKit: AppKit<StoreState, SwitchNetworkParam>
-) {
+export function getWeb3Modal(appKit: AppKit) {
   if (appKit) {
-    // @ts-expect-error it we should override the modal params
     modal = appKit
   }
 }

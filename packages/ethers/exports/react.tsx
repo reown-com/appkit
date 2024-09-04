@@ -4,13 +4,14 @@ import { AppKit, AccountController } from '@web3modal/base'
 import type { AppKitOptions } from '@web3modal/base'
 import { EVMEthersClient, type AdapterOptions } from '@web3modal/adapter-ethers'
 import { getWeb3Modal } from '@web3modal/base/library/react'
-import { ConstantsUtil } from '@web3modal/scaffold-utils'
-import { type Chain, type EthersStoreUtilState } from '@web3modal/scaffold-utils/ethers'
 import { useSnapshot } from 'valtio'
 import type { CaipNetwork } from '@web3modal/common'
 
+// -- Types -------------------------------------------------------------
+export type { AdapterOptions } from '@web3modal/adapter-ethers'
+
 // -- Setup -------------------------------------------------------------------
-let appkit: AppKit<EthersStoreUtilState, number> | undefined = undefined
+let appkit: AppKit | undefined = undefined
 let ethersAdapter: EVMEthersClient | undefined = undefined
 
 export type EthersAppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 'sdkVersion'> &
@@ -18,11 +19,11 @@ export type EthersAppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | '
 
 export function createWeb3Modal(options: EthersAppKitOptions) {
   ethersAdapter = new EVMEthersClient()
-  appkit = new AppKit<EthersStoreUtilState, number>({
+  appkit = new AppKit({
     ...options,
     adapters: [ethersAdapter]
   })
-  getWeb3Modal<EthersStoreUtilState>(appkit)
+  getWeb3Modal(appkit)
 
   return appkit
 }

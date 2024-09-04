@@ -31,6 +31,7 @@ import type { AppKitOptions } from './utils/TypesUtil.js'
 import { UniversalAdapterClient } from './universal-adapter/client.js'
 import { PresetsUtil } from '@web3modal/scaffold-utils'
 import type { W3mFrameTypes } from '@web3modal/wallet'
+import { ProviderUtil } from './store/ProviderUtil.js'
 
 // -- Export Controllers -------------------------------------------------------
 export { AccountController, NetworkController }
@@ -44,12 +45,12 @@ export interface OpenOptions {
 let isInitialized = false
 
 // -- Client --------------------------------------------------------------------
-export class AppKit<AdapterStoreState = unknown, SwitchNetworkParam = unknown> {
+export class AppKit {
   private static instance?: AppKit
 
-  public adapter?: ChainAdapter<AdapterStoreState, SwitchNetworkParam>
+  public adapter?: ChainAdapter
 
-  public adapters?: ChainAdapter<AdapterStoreState, SwitchNetworkParam>[]
+  public adapters?: ChainAdapter[]
 
   public universalAdapter?: UniversalAdapterClient
 
@@ -57,11 +58,11 @@ export class AppKit<AdapterStoreState = unknown, SwitchNetworkParam = unknown> {
 
   public constructor(
     options: AppKitOptions & {
-      adapters?: ChainAdapter<AdapterStoreState, SwitchNetworkParam>[]
+      adapters?: ChainAdapter[]
     }
   ) {
     // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
-    this.adapter = options.adapters?.[0] as ChainAdapter<AdapterStoreState, SwitchNetworkParam>
+    this.adapter = options.adapters?.[0] as ChainAdapter
     this.initControllers(options)
     this.initOrContinue()
   }
@@ -87,35 +88,35 @@ export class AppKit<AdapterStoreState = unknown, SwitchNetworkParam = unknown> {
 
   // -- Adapter Methods ----------------------------------------------------------
   public getError() {
-    return this.adapter?.getError?.()
+    return ''
   }
 
   public getChainId() {
-    return this.adapter?.getChainId?.()
+    return NetworkController.state.caipNetwork?.chainId
   }
 
-  public getAddress() {
-    return this.adapter?.getAddress?.()
-  }
-
-  public switchNetwork(chainId: SwitchNetworkParam) {
-    return this.adapter?.switchNetwork?.(chainId)
+  public switchNetwork(caipNetwork: CaipNetwork) {
+    return NetworkController.switchActiveNetwork(caipNetwork)
   }
 
   public getIsConnected() {
-    return this.adapter?.getIsConnected?.()
+    return AccountController.state.isConnected
   }
 
   public getWalletProvider() {
-    return this.adapter?.getWalletProvider?.()
+    return ChainController.state.activeChain
+      ? ProviderUtil.state.providers[ChainController.state.activeChain]
+      : null
   }
 
   public getWalletProviderType() {
-    return this.adapter?.getWalletProviderType?.()
+    return ChainController.state.activeChain
+      ? ProviderUtil.state.providerIds[ChainController.state.activeChain]
+      : null
   }
 
-  public subscribeProvider(callback: (newState: AdapterStoreState) => void) {
-    return this.adapter?.subscribeProvider?.(callback)
+  public subscribeProvider() {
+    return null
   }
 
   public getThemeMode() {
@@ -369,7 +370,7 @@ export class AppKit<AdapterStoreState = unknown, SwitchNetworkParam = unknown> {
   // -- Private ------------------------------------------------------------------
   private async initControllers(
     options: AppKitOptions & {
-      adapters?: ChainAdapter<AdapterStoreState, SwitchNetworkParam>[]
+      adapters?: ChainAdapter[]
     }
   ) {
     this.adapters = options.adapters

@@ -13,7 +13,7 @@ export const EthersHelpersUtil = {
     return {
       id: `${ConstantsUtil.EIP155}:${chain.chainId}`,
       name: chain.name,
-      imageId: PresetsUtil.NetworkImageIds[chain.chainId]
+      imageId: PresetsUtil.NetworkImageIds[chain.chainId],
       chainNamespace: CommonConstantsUtil.CHAIN.EVM
     } as CaipNetwork
   },

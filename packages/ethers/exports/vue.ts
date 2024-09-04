@@ -2,12 +2,12 @@ import { AppKit } from '@web3modal/base'
 import type { AppKitOptions } from '@web3modal/base'
 import { EVMEthersClient, type AdapterOptions } from '@web3modal/adapter-ethers'
 import { getWeb3Modal } from '@web3modal/base/library/vue'
-import { type EthersStoreUtilState } from '@web3modal/scaffold-utils/ethers'
 
-// -- Configs -----------------------------------------------------------
+// -- Types -------------------------------------------------------------
+export type { AdapterOptions } from '@web3modal/adapter-ethers'
 
 // -- Setup -------------------------------------------------------------------
-let appkit: AppKit<EthersStoreUtilState, number> | undefined = undefined
+let appkit: AppKit | undefined = undefined
 let ethersAdapter: EVMEthersClient | undefined = undefined
 
 type EthersAppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 'sdkVersion'> &
@@ -15,7 +15,7 @@ type EthersAppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 'sdkVers
 
 export function createWeb3Modal(options: EthersAppKitOptions) {
   ethersAdapter = new EVMEthersClient()
-  appkit = new AppKit<EthersStoreUtilState, number>({
+  appkit = new AppKit({
     ...options,
     adapters: [ethersAdapter]
   })

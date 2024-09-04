@@ -46,7 +46,11 @@ import type {
 import { formatUnits, parseUnits } from 'viem'
 import type { Hex } from 'viem'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
-import { ConstantsUtil as CommonConstants } from '@web3modal/common'
+import {
+  ConstantsUtil as CommonConstants,
+  SafeLocalStorage,
+  SafeLocalStorageKeys
+} from '@web3modal/common'
 import {
   convertToAppKitChains,
   getEmailCaipNetworks,
@@ -66,7 +70,6 @@ import { walletConnect } from './connectors/UniversalConnector.js'
 import { coinbaseWallet } from '@wagmi/connectors'
 import { authConnector } from './connectors/AuthConnector.js'
 import { ProviderUtil } from '@web3modal/base/store'
-import { WcConstantsUtil } from '@web3modal/base/utils'
 
 // -- Types ---------------------------------------------------------------------
 export interface AdapterOptions<C extends Config>
@@ -191,7 +194,10 @@ export class EVMWagmiClient implements ChainAdapter {
 
     this.networkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
-        localStorage.setItem(WcConstantsUtil.ACTIVE_CAIPNETWORK, JSON.stringify(caipNetwork))
+        SafeLocalStorage.setItem(
+          SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK,
+          JSON.stringify(caipNetwork)
+        )
         const chainId = Number(NetworkUtil.caipNetworkIdToNumber(caipNetwork?.id))
 
         if (chainId && this.wagmiConfig) {
@@ -287,8 +293,8 @@ export class EVMWagmiClient implements ChainAdapter {
       },
       disconnect: async () => {
         await disconnect(this.wagmiConfig!)
-        localStorage.removeItem(WcConstantsUtil.WALLET_ID)
-        localStorage.removeItem(WcConstantsUtil.ACTIVE_CAIPNETWORK)
+        SafeLocalStorage.removeItem(SafeLocalStorageKeys.WALLET_ID)
+        SafeLocalStorage.removeItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK)
         this.appKit?.setClientId(null)
         this.appKit?.resetAccount('eip155')
         this.appKit?.resetAccount('solana')
@@ -542,8 +548,8 @@ export class EVMWagmiClient implements ChainAdapter {
           this.appKit?.resetWcConnection()
           this.appKit?.resetNetwork()
           this.appKit?.setAllAccounts([], this.chainNamespace)
-          localStorage.removeItem(WcConstantsUtil.WALLET_ID)
-          localStorage.removeItem(WcConstantsUtil.ACTIVE_CAIPNETWORK)
+          SafeLocalStorage.removeItem(SafeLocalStorageKeys.WALLET_ID)
+          SafeLocalStorage.removeItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK)
         } else if (status === 'reconnecting') {
           this.appKit?.setLoading(true)
           const connectors = getConnectors(this.wagmiConfig)
