@@ -82,13 +82,11 @@ smartAccountTest('it should switch to a not enabled network and sign with EOA', 
 })
 
 smartAccountTest('it should switch to smart account and sign', async () => {
-  const targetChain = 'Polygon'
+  const targetChain = 'Arbitrum'
   await page.goToSettings()
   await page.switchNetwork(targetChain)
   await validator.expectSwitchedNetwork(targetChain)
-
   await page.togglePreferredAccountType()
-  await page.goToSettings()
   await validator.expectChangePreferredAccountToShow(EOA)
   await page.closeModal()
 
@@ -106,7 +104,6 @@ smartAccountTest('it should switch to smart account and sign', async () => {
 smartAccountTest('it should switch to eoa and sign', async () => {
   await page.goToSettings()
   await page.togglePreferredAccountType()
-  await page.goToSettings()
   await validator.expectChangePreferredAccountToShow(SMART_ACCOUNT)
   await page.closeModal()
 
