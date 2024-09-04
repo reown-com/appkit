@@ -9,8 +9,8 @@
   },
   "dependencies": {
     "@tanstack/react-query": "5.24.8",
-    "@web3modal/adapter-wagmi": "workspace:*",
-    "@web3modal/base": "workspace:*",
+    "@rerock/adapter-wagmi": "workspace:*",
+    "@rerock/base": "workspace:*",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "viem": "2.19.6",

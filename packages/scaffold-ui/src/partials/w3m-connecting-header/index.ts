@@ -1,6 +1,6 @@
-import type { Platform } from '@web3modal/core'
-import { ConnectionController } from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+import type { Platform } from '@rerock/core'
+import { ConnectionController } from '@rerock/core'
+import { customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 

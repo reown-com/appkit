@@ -1,12 +1,12 @@
-import { createWeb3Modal } from '@web3modal/base/react'
+import { createWeb3Modal } from '@rerock/base/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { WagmiTests } from '../../components/Wagmi/WagmiTests'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
-import { mainnet } from '@web3modal/base/chains'
-import { EVMWagmiClient } from '@web3modal/adapter-wagmi'
+import { mainnet } from '@rerock/base/chains'
+import { EVMWagmiClient } from '@rerock/adapter-wagmi'
 
 const metadata = {
   name: 'Evil Web3Modal',

@@ -1,11 +1,11 @@
-import { ConnectorController } from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+import { ConnectorController } from '@rerock/core'
+import { customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ref, createRef } from 'lit/directives/ref.js'
 import type { Ref } from 'lit/directives/ref.js'
 import styles from './styles.js'
-import { SnackController, RouterController, EventsController } from '@web3modal/core'
+import { SnackController, RouterController, EventsController } from '@rerock/core'
 
 @customElement('w3m-update-email-wallet-view')
 export class W3mUpdateEmailWalletView extends LitElement {

@@ -1,7 +1,7 @@
-import { AppKit } from '@web3modal/base'
-import type { AppKitOptions } from '@web3modal/base'
-import { EVMWagmiClient, type AdapterOptions } from '@web3modal/adapter-wagmi'
-import { getWeb3Modal } from '@web3modal/base/library/react'
+import { AppKit } from '@rerock/base'
+import type { AppKitOptions } from '@rerock/base'
+import { EVMWagmiClient, type AdapterOptions } from '@rerock/adapter-wagmi'
+import { getWeb3Modal } from '@rerock/base/library/react'
 import { type Config, type CreateConfigParameters } from 'wagmi'
 
 // -- Setup -------------------------------------------------------------------
@@ -31,4 +31,4 @@ export {
   useWeb3ModalState,
   useWeb3ModalEvents,
   useWalletInfo
-} from '@web3modal/base/library/react'
+} from '@rerock/base/library/react'

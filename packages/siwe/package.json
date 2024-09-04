@@ -1,5 +1,5 @@
 {
-  "name": "@web3modal/siwe",
+  "name": "@rerock/siwe",
   "version": "5.1.6",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
@@ -17,11 +17,11 @@
   },
   "dependencies": {
     "@walletconnect/utils": "2.15.1",
-    "@web3modal/core": "workspace:*",
-    "@web3modal/ui": "workspace:*",
-    "@web3modal/common": "workspace:*",
-    "@web3modal/wallet": "workspace:*",
-    "@web3modal/scaffold-utils": "workspace:*",
+    "@rerock/core": "workspace:*",
+    "@rerock/ui": "workspace:*",
+    "@rerock/common": "workspace:*",
+    "@rerock/wallet": "workspace:*",
+    "@rerock/scaffold-utils": "workspace:*",
     "valtio": "1.11.2",
     "lit": "3.1.0"
   },
@@ -29,13 +29,13 @@
     "web3",
     "crypto",
     "ethereum",
-    "web3modal",
-    "walletconnect",
+    "appkit",
+    "Rerock",
     "lit",
     "webcomponents",
     "siwe"
   ],
-  "author": "WalletConnect <walletconnect.com>",
+  "author": "Rerock <rerock.com>",
   "license": "Apache-2.0",
   "homepage": "https://github.com/web3modal/web3modal",
   "repository": {

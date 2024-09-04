@@ -3,15 +3,15 @@ import type { AppKitOptions } from '../src/utils/TypesUtil.js'
 import { getWeb3Modal } from '../src/library/vue/index.js'
 
 // -- Views ------------------------------------------------------------
-export * from '@web3modal/scaffold-ui'
+export * from '@rerock/scaffold-ui'
 
 // -- Hooks ------------------------------------------------------------
 export * from '../src/library/vue/index.js'
 
 // -- Utils & Other -----------------------------------------------------
 export * from '../src/utils/index.js'
-export type * from '@web3modal/core'
-export { CoreHelperUtil, AccountController, NetworkController } from '@web3modal/core'
+export type * from '@rerock/core'
+export { CoreHelperUtil, AccountController, NetworkController } from '@rerock/core'
 
 let modal: AppKit | undefined = undefined
 

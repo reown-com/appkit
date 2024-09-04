@@ -1,9 +1,9 @@
 'use client'
 
 import { projectId } from '@/config'
-import { createWeb3Modal } from '@web3modal/base/react'
-import { EVMEthersClient } from '@web3modal/adapter-ethers'
-import { mainnet, arbitrum, avalanche, base, optimism, polygon } from '@web3modal/base/chains'
+import { createWeb3Modal } from '@rerock/base/react'
+import { EVMEthersClient } from '@rerock/adapter-ethers'
+import { mainnet, arbitrum, avalanche, base, optimism, polygon } from '@rerock/base/chains'
 import { type ReactNode } from 'react'
 
 if (!projectId) {

@@ -2,9 +2,9 @@ import type {
   AppKitOptions,
   ConnectionControllerClient,
   NetworkControllerClient
-} from '@web3modal/base'
-import type { AdapterType, CaipNetwork, ChainNamespace } from '@web3modal/common'
-import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
+} from '@rerock/base'
+import type { AdapterType, CaipNetwork, ChainNamespace } from '@rerock/common'
+import { ConstantsUtil as CommonConstantsUtil } from '@rerock/common'
 
 export class PolkadotClient {
   // Metadata

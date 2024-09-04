@@ -1,5 +1,5 @@
 import { cookieStorage, createStorage } from '@wagmi/core'
-import { EVMWagmiClient } from '@web3modal/adapter-wagmi'
+import { EVMWagmiClient } from '@rerock/adapter-wagmi'
 
 export const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
 

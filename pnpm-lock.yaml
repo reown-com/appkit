@@ -76,10 +76,10 @@ importers:
       '@tanstack/react-query':
         specifier: 5.24.8
         version: 5.24.8(react@18.2.0)
-      '@web3modal/adapter-wagmi':
+      '@rerock/adapter-wagmi':
         specifier: workspace:*
         version: link:../../packages/adapters/wagmi
-      '@web3modal/base':
+      '@rerock/base':
         specifier: workspace:*
         version: link:../../packages/base
       clsx:
@@ -146,10 +146,10 @@ importers:
 
   apps/gallery:
     dependencies:
-      '@web3modal/common':
+      '@rerock/common':
         specifier: workspace:*
         version: link:../../packages/common
-      '@web3modal/ui':
+      '@rerock/ui':
         specifier: workspace:*
         version: link:../../packages/ui
       lit:
@@ -228,28 +228,28 @@ importers:
       '@walletconnect/utils':
         specifier: 2.15.1
         version: 2.15.1
-      '@web3modal/adapter-ethers':
+      '@rerock/adapter-ethers':
         specifier: workspace:*
         version: link:../../packages/adapters/ethers
-      '@web3modal/adapter-ethers5':
+      '@rerock/adapter-ethers5':
         specifier: workspace:*
         version: link:../../packages/adapters/ethers5
-      '@web3modal/adapter-solana':
+      '@rerock/adapter-solana':
         specifier: workspace:*
         version: link:../../packages/adapters/solana
-      '@web3modal/adapter-wagmi':
+      '@rerock/adapter-wagmi':
         specifier: workspace:*
         version: link:../../packages/adapters/wagmi
-      '@web3modal/base':
+      '@rerock/base':
         specifier: workspace:*
         version: link:../../packages/base
-      '@web3modal/ethers':
+      '@rerock/ethers':
         specifier: workspace:*
         version: link:../../packages/ethers
-      '@web3modal/siwe':
+      '@rerock/siwe':
         specifier: workspace:*
         version: link:../../packages/siwe
-      '@web3modal/wallet':
+      '@rerock/wallet':
         specifier: workspace:*
         version: link:../../packages/wallet
       axios:
@@ -325,7 +325,7 @@ importers:
 
   examples/html-ethers:
     dependencies:
-      '@web3modal/ethers':
+      '@rerock/ethers':
         specifier: workspace:*
         version: link:../../packages/ethers
       ethers:
@@ -338,10 +338,10 @@ importers:
 
   examples/html-ethers5:
     dependencies:
-      '@web3modal/adapter-ethers5':
+      '@rerock/adapter-ethers5':
         specifier: workspace:*
         version: link:../../packages/adapters/ethers5
-      '@web3modal/base':
+      '@rerock/base':
         specifier: workspace:*
         version: link:../../packages/base
       ethers:
@@ -360,10 +360,10 @@ importers:
       '@wagmi/core':
         specifier: 2.13.4
         version: 2.13.4(@tanstack/query-core@5.24.8)(@types/react@18.2.62)(react@18.2.0)(typescript@5.3.3)(viem@2.19.6(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4))
-      '@web3modal/adapter-wagmi':
+      '@rerock/adapter-wagmi':
         specifier: workspace:*
         version: link:../../packages/adapters/wagmi
-      '@web3modal/base':
+      '@rerock/base':
         specifier: workspace:*
         version: link:../../packages/base
       react:
@@ -379,10 +379,10 @@ importers:
 
   examples/next-ethers:
     dependencies:
-      '@web3modal/adapter-ethers':
+      '@rerock/adapter-ethers':
         specifier: workspace:*
         version: link:../../packages/adapters/ethers
-      '@web3modal/base':
+      '@rerock/base':
         specifier: workspace:*
         version: link:../../packages/base
       ethers:
@@ -431,10 +431,10 @@ importers:
       '@wagmi/core':
         specifier: 2.13.4
         version: 2.13.4(@tanstack/query-core@5.24.8)(@types/react@18.2.62)(react@18.2.0)(typescript@5.3.3)(viem@2.19.6(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4))
-      '@web3modal/adapter-wagmi':
+      '@rerock/adapter-wagmi':
         specifier: workspace:*
         version: link:../../packages/adapters/wagmi
-      '@web3modal/base':
+      '@rerock/base':
         specifier: workspace:*
         version: link:../../packages/base
       next:
@@ -477,10 +477,10 @@ importers:
 
   examples/react-ethers:
     dependencies:
-      '@web3modal/adapter-ethers':
+      '@rerock/adapter-ethers':
         specifier: workspace:*
         version: link:../../packages/adapters/ethers
-      '@web3modal/base':
+      '@rerock/base':
         specifier: workspace:*
         version: link:../../packages/base
       ethers:
@@ -508,10 +508,10 @@ importers:
 
   examples/react-ethers5:
     dependencies:
-      '@web3modal/adapter-ethers5':
+      '@rerock/adapter-ethers5':
         specifier: workspace:*
         version: link:../../packages/adapters/ethers5
-      '@web3modal/base':
+      '@rerock/base':
         specifier: workspace:*
         version: link:../../packages/base
       ethers:
@@ -548,7 +548,7 @@ importers:
       '@tanstack/react-query':
         specifier: 5.24.8
         version: 5.24.8(react@18.2.0)
-      '@web3modal/solana':
+      '@rerock/solana':
         specifier: workspace:*
         version: link:../../packages/solana
       react:
@@ -576,10 +576,10 @@ importers:
       '@tanstack/react-query':
         specifier: 5.24.8
         version: 5.24.8(react@18.2.0)
-      '@web3modal/adapter-wagmi':
+      '@rerock/adapter-wagmi':
         specifier: workspace:*
         version: link:../../packages/adapters/wagmi
-      '@web3modal/base':
+      '@rerock/base':
         specifier: workspace:*
         version: link:../../packages/base
       react:
@@ -613,10 +613,10 @@ importers:
 
   examples/vue-ethers5:
     dependencies:
-      '@web3modal/adapter-ethers5':
+      '@rerock/adapter-ethers5':
         specifier: workspace:*
         version: link:../../packages/adapters/ethers5
-      '@web3modal/base':
+      '@rerock/base':
         specifier: workspace:*
         version: link:../../packages/base
       ethers:
@@ -641,7 +641,7 @@ importers:
       '@solana/wallet-adapter-wallets':
         specifier: 0.19.32
         version: 0.19.32(@babel/core@7.25.2)(@babel/runtime@7.25.6)(@sentry/types@7.92.0)(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(bufferutil@4.0.8)(react-native@0.75.2(@babel/core@7.25.2)(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10))(tslib@2.7.0)(utf-8-validate@5.0.10)
-      '@web3modal/solana':
+      '@rerock/solana':
         specifier: workspace:*
         version: link:../../packages/solana
       vue:
@@ -663,10 +663,10 @@ importers:
       '@wagmi/core':
         specifier: 2.13.4
         version: 2.13.4(@tanstack/query-core@5.24.8)(@types/react@18.2.62)(react@18.2.0)(typescript@5.3.3)(viem@2.19.6(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4))
-      '@web3modal/adapter-wagmi':
+      '@rerock/adapter-wagmi':
         specifier: workspace:*
         version: link:../../packages/adapters/wagmi
-      '@web3modal/base':
+      '@rerock/base':
         specifier: workspace:*
         version: link:../../packages/base
       vue:
@@ -685,31 +685,31 @@ importers:
       '@walletconnect/utils':
         specifier: 2.14.0
         version: 2.14.0
-      '@web3modal/base':
+      '@rerock/base':
         specifier: workspace:*
         version: link:../../base
-      '@web3modal/common':
+      '@rerock/common':
         specifier: workspace:*
         version: link:../../common
-      '@web3modal/core':
+      '@rerock/core':
         specifier: workspace:*
         version: link:../../core
-      '@web3modal/polyfills':
+      '@rerock/polyfills':
         specifier: workspace:*
         version: link:../../polyfills
-      '@web3modal/scaffold-ui':
+      '@rerock/scaffold-ui':
         specifier: workspace:*
         version: link:../../scaffold-ui
-      '@web3modal/scaffold-utils':
+      '@rerock/scaffold-utils':
         specifier: workspace:*
         version: link:../../scaffold-utils
-      '@web3modal/siwe':
+      '@rerock/siwe':
         specifier: workspace:*
         version: link:../../siwe
-      '@web3modal/ui':
+      '@rerock/ui':
         specifier: workspace:*
         version: link:../../ui
-      '@web3modal/wallet':
+      '@rerock/wallet':
         specifier: workspace:*
         version: link:../../wallet
       valtio:
@@ -746,31 +746,31 @@ importers:
       '@walletconnect/utils':
         specifier: 2.14.0
         version: 2.14.0
-      '@web3modal/base':
+      '@rerock/base':
         specifier: workspace:*
         version: link:../../base
-      '@web3modal/common':
+      '@rerock/common':
         specifier: workspace:*
         version: link:../../common
-      '@web3modal/core':
+      '@rerock/core':
         specifier: workspace:*
         version: link:../../core
-      '@web3modal/polyfills':
+      '@rerock/polyfills':
         specifier: workspace:*
         version: link:../../polyfills
-      '@web3modal/scaffold-ui':
+      '@rerock/scaffold-ui':
         specifier: workspace:*
         version: link:../../scaffold-ui
-      '@web3modal/scaffold-utils':
+      '@rerock/scaffold-utils':
         specifier: workspace:*
         version: link:../../scaffold-utils
-      '@web3modal/siwe':
+      '@rerock/siwe':
         specifier: workspace:*
         version: link:../../siwe
-      '@web3modal/ui':
+      '@rerock/ui':
         specifier: workspace:*
         version: link:../../ui
-      '@web3modal/wallet':
+      '@rerock/wallet':
         specifier: workspace:*
         version: link:../../wallet
       valtio:
@@ -798,13 +798,13 @@ importers:
 
   packages/adapters/polkadot:
     dependencies:
-      '@web3modal/base':
+      '@rerock/base':
         specifier: workspace:*
         version: link:../../base
-      '@web3modal/common':
+      '@rerock/common':
         specifier: workspace:*
         version: link:../../common
-      '@web3modal/core':
+      '@rerock/core':
         specifier: workspace:*
         version: link:../../core
     devDependencies:
@@ -850,31 +850,31 @@ importers:
       '@walletconnect/utils':
         specifier: 2.14.0
         version: 2.14.0
-      '@web3modal/base':
+      '@rerock/base':
         specifier: workspace:*
         version: link:../../base
-      '@web3modal/common':
+      '@rerock/common':
         specifier: workspace:*
         version: link:../../common
-      '@web3modal/core':
+      '@rerock/core':
         specifier: workspace:*
         version: link:../../core
-      '@web3modal/polyfills':
+      '@rerock/polyfills':
         specifier: workspace:*
         version: link:../../polyfills
-      '@web3modal/scaffold-ui':
+      '@rerock/scaffold-ui':
         specifier: workspace:*
         version: link:../../scaffold-ui
-      '@web3modal/scaffold-utils':
+      '@rerock/scaffold-utils':
         specifier: workspace:*
         version: link:../../scaffold-utils
-      '@web3modal/siwe':
+      '@rerock/siwe':
         specifier: workspace:*
         version: link:../../siwe
-      '@web3modal/ui':
+      '@rerock/ui':
         specifier: workspace:*
         version: link:../../ui
-      '@web3modal/wallet':
+      '@rerock/wallet':
         specifier: workspace:*
         version: link:../../wallet
       valtio:
@@ -921,31 +921,31 @@ importers:
       '@walletconnect/utils':
         specifier: 2.14.0
         version: 2.14.0
-      '@web3modal/base':
+      '@rerock/base':
         specifier: workspace:*
         version: link:../../base
-      '@web3modal/common':
+      '@rerock/common':
         specifier: workspace:*
         version: link:../../common
-      '@web3modal/core':
+      '@rerock/core':
         specifier: workspace:*
         version: link:../../core
-      '@web3modal/polyfills':
+      '@rerock/polyfills':
         specifier: workspace:*
         version: link:../../polyfills
-      '@web3modal/scaffold-ui':
+      '@rerock/scaffold-ui':
         specifier: workspace:*
         version: link:../../scaffold-ui
-      '@web3modal/scaffold-utils':
+      '@rerock/scaffold-utils':
         specifier: workspace:*
         version: link:../../scaffold-utils
-      '@web3modal/siwe':
+      '@rerock/siwe':
         specifier: workspace:*
         version: link:../../siwe
-      '@web3modal/ui':
+      '@rerock/ui':
         specifier: workspace:*
         version: link:../../ui
-      '@web3modal/wallet':
+      '@rerock/wallet':
         specifier: workspace:*
         version: link:../../wallet
       valtio:
@@ -994,28 +994,28 @@ importers:
       '@walletconnect/utils':
         specifier: 2.14.0
         version: 2.14.0
-      '@web3modal/common':
+      '@rerock/common':
         specifier: workspace:*
         version: link:../common
-      '@web3modal/core':
+      '@rerock/core':
         specifier: workspace:*
         version: link:../core
-      '@web3modal/polyfills':
+      '@rerock/polyfills':
         specifier: workspace:*
         version: link:../polyfills
-      '@web3modal/scaffold-ui':
+      '@rerock/scaffold-ui':
         specifier: workspace:*
         version: link:../scaffold-ui
-      '@web3modal/scaffold-utils':
+      '@rerock/scaffold-utils':
         specifier: workspace:*
         version: link:../scaffold-utils
-      '@web3modal/siwe':
+      '@rerock/siwe':
         specifier: workspace:*
         version: link:../siwe
-      '@web3modal/ui':
+      '@rerock/ui':
         specifier: workspace:*
         version: link:../ui
-      '@web3modal/wallet':
+      '@rerock/wallet':
         specifier: workspace:*
         version: link:../wallet
       valtio:
@@ -1055,16 +1055,16 @@ importers:
       '@wagmi/core':
         specifier: 2.13.4
         version: 2.13.4(@tanstack/query-core@5.24.8)(@types/react@18.2.62)(react@18.2.0)(typescript@5.3.3)(viem@2.19.6(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4))
-      '@web3modal/ethers':
+      '@rerock/ethers':
         specifier: workspace:*
         version: link:../ethers
-      '@web3modal/ethers5':
+      '@rerock/ethers5':
         specifier: workspace:*
         version: link:../ethers5
-      '@web3modal/polyfills':
+      '@rerock/polyfills':
         specifier: workspace:*
         version: link:../polyfills
-      '@web3modal/wagmi':
+      '@rerock/wagmi':
         specifier: workspace:*
         version: link:../wagmi
       viem:
@@ -1105,10 +1105,10 @@ importers:
       '@walletconnect/universal-provider':
         specifier: 2.15.1
         version: 2.15.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@web3modal/common':
+      '@rerock/common':
         specifier: workspace:*
         version: link:../common
-      '@web3modal/wallet':
+      '@rerock/wallet':
         specifier: workspace:*
         version: link:../wallet
       valtio:
@@ -1133,25 +1133,25 @@ importers:
       '@walletconnect/utils':
         specifier: 2.15.1
         version: 2.15.1
-      '@web3modal/adapter-ethers':
+      '@rerock/adapter-ethers':
         specifier: workspace:*
         version: link:../adapters/ethers
-      '@web3modal/base':
+      '@rerock/base':
         specifier: workspace:*
         version: link:../base
-      '@web3modal/common':
+      '@rerock/common':
         specifier: workspace:*
         version: link:../common
-      '@web3modal/polyfills':
+      '@rerock/polyfills':
         specifier: workspace:*
         version: link:../polyfills
-      '@web3modal/scaffold-utils':
+      '@rerock/scaffold-utils':
         specifier: workspace:*
         version: link:../scaffold-utils
-      '@web3modal/siwe':
+      '@rerock/siwe':
         specifier: workspace:*
         version: link:../siwe
-      '@web3modal/wallet':
+      '@rerock/wallet':
         specifier: workspace:*
         version: link:../wallet
       ethers:
@@ -1179,22 +1179,22 @@ importers:
       '@walletconnect/utils':
         specifier: 2.15.1
         version: 2.15.1
-      '@web3modal/adapter-ethers5':
+      '@rerock/adapter-ethers5':
         specifier: workspace:*
         version: link:../adapters/ethers5
-      '@web3modal/base':
+      '@rerock/base':
         specifier: workspace:*
         version: link:../base
-      '@web3modal/common':
+      '@rerock/common':
         specifier: workspace:*
         version: link:../common
-      '@web3modal/polyfills':
+      '@rerock/polyfills':
         specifier: workspace:*
         version: link:../polyfills
-      '@web3modal/scaffold-utils':
+      '@rerock/scaffold-utils':
         specifier: workspace:*
         version: link:../scaffold-utils
-      '@web3modal/siwe':
+      '@rerock/siwe':
         specifier: workspace:*
         version: link:../siwe
       valtio:
@@ -1226,22 +1226,22 @@ importers:
 
   packages/scaffold-ui:
     dependencies:
-      '@web3modal/common':
+      '@rerock/common':
         specifier: workspace:*
         version: link:../common
-      '@web3modal/core':
+      '@rerock/core':
         specifier: workspace:*
         version: link:../core
-      '@web3modal/scaffold-utils':
+      '@rerock/scaffold-utils':
         specifier: workspace:*
         version: link:../scaffold-utils
-      '@web3modal/siwe':
+      '@rerock/siwe':
         specifier: workspace:*
         version: link:../siwe
-      '@web3modal/ui':
+      '@rerock/ui':
         specifier: workspace:*
         version: link:../ui
-      '@web3modal/wallet':
+      '@rerock/wallet':
         specifier: workspace:*
         version: link:../wallet
       lit:
@@ -1253,16 +1253,16 @@ importers:
       '@walletconnect/universal-provider':
         specifier: 2.15.1
         version: 2.15.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@web3modal/common':
+      '@rerock/common':
         specifier: workspace:*
         version: link:../common
-      '@web3modal/core':
+      '@rerock/core':
         specifier: workspace:*
         version: link:../core
-      '@web3modal/polyfills':
+      '@rerock/polyfills':
         specifier: workspace:*
         version: link:../polyfills
-      '@web3modal/wallet':
+      '@rerock/wallet':
         specifier: workspace:*
         version: link:../wallet
       valtio:
@@ -1284,19 +1284,19 @@ importers:
       '@walletconnect/utils':
         specifier: 2.15.1
         version: 2.15.1
-      '@web3modal/common':
+      '@rerock/common':
         specifier: workspace:*
         version: link:../common
-      '@web3modal/core':
+      '@rerock/core':
         specifier: workspace:*
         version: link:../core
-      '@web3modal/scaffold-utils':
+      '@rerock/scaffold-utils':
         specifier: workspace:*
         version: link:../scaffold-utils
-      '@web3modal/ui':
+      '@rerock/ui':
         specifier: workspace:*
         version: link:../ui
-      '@web3modal/wallet':
+      '@rerock/wallet':
         specifier: workspace:*
         version: link:../wallet
       lit:
@@ -1335,25 +1335,25 @@ importers:
       '@wallet-standard/wallet':
         specifier: 1.0.1
         version: 1.0.1
-      '@web3modal/adapter-solana':
+      '@rerock/adapter-solana':
         specifier: workspace:*
         version: link:../adapters/solana
-      '@web3modal/base':
+      '@rerock/base':
         specifier: workspace:*
         version: link:../base
-      '@web3modal/common':
+      '@rerock/common':
         specifier: workspace:*
         version: link:../common
-      '@web3modal/core':
+      '@rerock/core':
         specifier: workspace:*
         version: link:../core
-      '@web3modal/polyfills':
+      '@rerock/polyfills':
         specifier: workspace:*
         version: link:../polyfills
-      '@web3modal/scaffold-utils':
+      '@rerock/scaffold-utils':
         specifier: workspace:*
         version: link:../scaffold-utils
-      '@web3modal/wallet':
+      '@rerock/wallet':
         specifier: workspace:*
         version: link:../wallet
       bn.js:
@@ -1409,13 +1409,13 @@ importers:
       '@vitest/coverage-v8':
         specifier: 2.0.5
         version: 2.0.5(vitest@2.0.3(@types/node@20.11.5)(jsdom@24.1.0)(terser@5.31.6))
-      '@web3modal/common':
+      '@rerock/common':
         specifier: workspace:*
         version: link:../common
-      '@web3modal/core':
+      '@rerock/core':
         specifier: workspace:*
         version: link:../core
-      '@web3modal/wallet':
+      '@rerock/wallet':
         specifier: workspace:*
         version: link:../wallet
       eslint-plugin-lit:
@@ -1433,25 +1433,25 @@ importers:
       '@walletconnect/utils':
         specifier: 2.15.1
         version: 2.15.1
-      '@web3modal/adapter-wagmi':
+      '@rerock/adapter-wagmi':
         specifier: workspace:*
         version: link:../adapters/wagmi
-      '@web3modal/base':
+      '@rerock/base':
         specifier: workspace:*
         version: link:../base
-      '@web3modal/common':
+      '@rerock/common':
         specifier: workspace:*
         version: link:../common
-      '@web3modal/polyfills':
+      '@rerock/polyfills':
         specifier: workspace:*
         version: link:../polyfills
-      '@web3modal/scaffold-utils':
+      '@rerock/scaffold-utils':
         specifier: workspace:*
         version: link:../scaffold-utils
-      '@web3modal/siwe':
+      '@rerock/siwe':
         specifier: workspace:*
         version: link:../siwe
-      '@web3modal/wallet':
+      '@rerock/wallet':
         specifier: workspace:*
         version: link:../wallet
     devDependencies:
@@ -1485,10 +1485,10 @@ importers:
       '@walletconnect/logger':
         specifier: 2.1.2
         version: 2.1.2
-      '@web3modal/common':
+      '@rerock/common':
         specifier: workspace:*
         version: link:../common
-      '@web3modal/polyfills':
+      '@rerock/polyfills':
         specifier: workspace:*
         version: link:../polyfills
       zod:

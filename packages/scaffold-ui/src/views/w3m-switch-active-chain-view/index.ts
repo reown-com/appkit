@@ -1,8 +1,8 @@
-import { ChainController, NetworkController, RouterController } from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+import { ChainController, NetworkController, RouterController } from '@rerock/core'
+import { customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
-import { ConstantsUtil } from '@web3modal/common'
+import { ConstantsUtil } from '@rerock/common'
 import { property } from 'lit/decorators.js'
 
 @customElement('w3m-switch-active-chain-view')

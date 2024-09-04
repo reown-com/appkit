@@ -1,8 +1,8 @@
-import { customElement } from '@web3modal/ui'
-import { CoreHelperUtil, RouterController } from '@web3modal/core'
+import { customElement } from '@rerock/ui'
+import { CoreHelperUtil, RouterController } from '@rerock/core'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
-import { NavigationUtil } from '@web3modal/common'
+import { NavigationUtil } from '@rerock/common'
 
 @customElement('w3m-register-account-name-success-view')
 export class W3mRegisterAccountNameSuccess extends LitElement {

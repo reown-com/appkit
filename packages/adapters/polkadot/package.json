@@ -1,5 +1,5 @@
 {
-  "name": "@web3modal/adapter-polkadot",
+  "name": "@rerock/adapter-polkadot",
   "scripts": {
     "build:clean": "rm -rf dist",
     "build": "tsc --build tsconfig.build.json",
@@ -9,9 +9,9 @@
     "test": "vitest run --dir tests --coverage.enabled=true --coverage.reporter=json --coverage.reporter=json-summary --coverage.reportOnFailure=true"
   },
   "dependencies": {
-    "@web3modal/base": "workspace:*",
-    "@web3modal/common": "workspace:*",
-    "@web3modal/core": "workspace:*"
+    "@rerock/base": "workspace:*",
+    "@rerock/common": "workspace:*",
+    "@rerock/core": "workspace:*"
   },
   "devDependencies": {
     "vitest": "2.0.3",

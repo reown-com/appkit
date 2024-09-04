@@ -1,4 +1,4 @@
-import type { ChainAdapter } from '@web3modal/core'
+import type { ChainAdapter } from '@rerock/core'
 import type { AppKitOptions } from '../../utils/index.js'
 import { mainnet, solana } from '../../chains/index.js'
 

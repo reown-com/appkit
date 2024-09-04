@@ -1,6 +1,6 @@
 import { html, LitElement } from 'lit'
-import { TooltipController } from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+import { TooltipController } from '@rerock/core'
+import { customElement } from '@rerock/ui'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
 

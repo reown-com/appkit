@@ -1,5 +1,5 @@
 {
-  "name": "@web3modal/common",
+  "name": "@rerock/common",
   "version": "5.1.6",
   "type": "module",
   "main": "./dist/esm/index.js",
@@ -30,7 +30,7 @@
     "web3",
     "web3modal"
   ],
-  "author": "WalletConnect <walletconnect.com>",
+  "author": "Rerock <rerock.com>",
   "license": "Apache-2.0",
   "homepage": "https://github.com/web3modal/web3modal",
   "repository": {

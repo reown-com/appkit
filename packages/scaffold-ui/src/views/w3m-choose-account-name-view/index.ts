@@ -1,15 +1,10 @@
-import { customElement } from '@web3modal/ui'
-import {
-  AccountController,
-  CoreHelperUtil,
-  EventsController,
-  RouterController
-} from '@web3modal/core'
+import { customElement } from '@rerock/ui'
+import { AccountController, CoreHelperUtil, EventsController, RouterController } from '@rerock/core'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
-import { NavigationUtil } from '@web3modal/common'
-import { W3mFrameRpcConstants } from '@web3modal/wallet'
+import { NavigationUtil } from '@rerock/common'
+import { W3mFrameRpcConstants } from '@rerock/wallet'
 
 @customElement('w3m-choose-account-name-view')
 export class W3mChooseAccountNameView extends LitElement {

@@ -10,7 +10,7 @@ import {
   SafeLocalStorageKeys,
   type CaipNetwork,
   type ChainNamespace
-} from '@web3modal/common'
+} from '@rerock/common'
 
 // -- Types --------------------------------------------- //
 export interface ChainControllerState {

@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@web3modal/ui/src/composites/wui-tooltip'
-import type { WuiTooltip } from '@web3modal/ui/src/composites/wui-tooltip'
+import '@rerock/ui/src/composites/wui-tooltip'
+import type { WuiTooltip } from '@rerock/ui/src/composites/wui-tooltip'
 import { html } from 'lit'
 
 import { placementOptions } from '../../utils/PresetUtils'

@@ -1,8 +1,8 @@
-import { getWeb3Modal } from '@web3modal/base/library/vue'
-import { AppKit } from '@web3modal/base'
-import { SolanaWeb3JsClient, useWeb3ModalConnection } from '@web3modal/adapter-solana/vue'
-import type { Provider } from '@web3modal/adapter-solana/vue'
-import type { CaipNetwork } from '@web3modal/common'
+import { getWeb3Modal } from '@rerock/base/library/vue'
+import { AppKit } from '@rerock/base'
+import { SolanaWeb3JsClient, useWeb3ModalConnection } from '@rerock/adapter-solana/vue'
+import type { Provider } from '@rerock/adapter-solana/vue'
+import type { CaipNetwork } from '@rerock/common'
 import type { SolanaAppKitOptions } from './options'
 
 // -- Types -------------------------------------------------------------------
@@ -57,5 +57,5 @@ export {
   useWeb3Modal,
   useWeb3ModalState,
   useWeb3ModalEvents
-} from '@web3modal/base/library/vue'
+} from '@rerock/base/library/vue'
 export { useWeb3ModalConnection }

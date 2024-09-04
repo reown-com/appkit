@@ -8,9 +8,9 @@ import type {
 } from '@solana/web3.js'
 
 import type { SendTransactionOptions } from '@solana/wallet-adapter-base'
-import type { CaipNetwork } from '@web3modal/common'
-import type { ConnectorType } from '@web3modal/core'
-import type { W3mFrameTypes } from '@web3modal/wallet'
+import type { CaipNetwork } from '@rerock/common'
+import type { ConnectorType } from '@rerock/core'
+import type { W3mFrameTypes } from '@rerock/wallet'
 
 export type Connection = SolanaConnection
 

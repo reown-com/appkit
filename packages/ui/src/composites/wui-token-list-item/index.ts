@@ -7,7 +7,7 @@ import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
-import { NumberUtil } from '@web3modal/common'
+import { NumberUtil } from '@rerock/common'
 
 @customElement('wui-token-list-item')
 export class WuiTokenListItem extends LitElement {

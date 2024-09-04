@@ -11,11 +11,11 @@ import type {
 } from '../utils/TypeUtil.js'
 import { TransactionsController } from './TransactionsController.js'
 import { ChainController } from './ChainController.js'
-import { type W3mFrameTypes } from '@web3modal/wallet'
+import { type W3mFrameTypes } from '@rerock/wallet'
 import { ModalController } from './ModalController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
-import type { ChainNamespace } from '@web3modal/common'
+import type { ChainNamespace } from '@rerock/common'
 import { NetworkController } from './NetworkController.js'
 
 // -- Types --------------------------------------------- //

@@ -1,12 +1,12 @@
-import { DateUtil, type Transaction } from '@web3modal/common'
+import { DateUtil, type Transaction } from '@rerock/common'
 import {
   AccountController,
   AssetController,
   OnRampController,
   OptionsController,
   TransactionsController
-} from '@web3modal/core'
-import { TransactionUtil, customElement } from '@web3modal/ui'
+} from '@rerock/core'
+import { TransactionUtil, customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'

@@ -1,4 +1,4 @@
-import type { AppKitOptions } from '@web3modal/base'
+import type { AppKitOptions } from '@rerock/base'
 import {
   NetworkUtil,
   SafeLocalStorage,
@@ -8,37 +8,37 @@ import {
   type CaipNetwork,
   type CaipNetworkId,
   type ChainNamespace
-} from '@web3modal/common'
+} from '@rerock/common'
 import {
   AccountController,
   ChainController,
   type CombinedProvider,
   type Connector
-} from '@web3modal/core'
+} from '@rerock/core'
 import {
   EthersHelpersUtil,
   type Provider,
   type ProviderType,
   type ProviderId,
   type Address
-} from '@web3modal/scaffold-utils/ethers'
-import type { AppKit } from '@web3modal/base'
+} from '@rerock/scaffold-utils/ethers'
+import type { AppKit } from '@rerock/base'
 import {
   W3mFrameHelpers,
   W3mFrameProvider,
   W3mFrameRpcConstants,
   type W3mFrameTypes
-} from '@web3modal/wallet'
-import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
-import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@web3modal/scaffold-utils'
+} from '@rerock/wallet'
+import { ConstantsUtil as CommonConstantsUtil } from '@rerock/common'
+import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@rerock/scaffold-utils'
 import UniversalProvider from '@walletconnect/universal-provider'
-import type { ConnectionControllerClient, NetworkControllerClient } from '@web3modal/core'
-import { ConstantsUtil as CoreConstantsUtil } from '@web3modal/core'
-import { WcConstantsUtil } from '@web3modal/base'
+import type { ConnectionControllerClient, NetworkControllerClient } from '@rerock/core'
+import { ConstantsUtil as CoreConstantsUtil } from '@rerock/core'
+import { WcConstantsUtil } from '@rerock/base'
 import { Ethers5Methods } from './utils/Ethers5Methods.js'
 import { ethers } from 'ethers5'
-import type { PublicStateControllerState } from '@web3modal/core'
-import { ProviderUtil } from '@web3modal/base/store'
+import type { PublicStateControllerState } from '@rerock/core'
+import { ProviderUtil } from '@rerock/base/store'
 import { CoinbaseWalletSDK, type ProviderInterface } from '@coinbase/wallet-sdk'
 
 // -- Types ---------------------------------------------------------------------
@@ -300,7 +300,7 @@ export class EVMEthers5Client {
 
         this.appKit?.setClientId(null)
         if (this.options?.siweConfig?.options?.signOutOnDisconnect) {
-          const { SIWEController } = await import('@web3modal/siwe')
+          const { SIWEController } = await import('@rerock/siwe')
           await SIWEController.signOut()
         }
 

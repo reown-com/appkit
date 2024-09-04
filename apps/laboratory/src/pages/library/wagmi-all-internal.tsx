@@ -1,4 +1,4 @@
-import { createWeb3Modal } from '@web3modal/base/react'
+import { createWeb3Modal } from '@rerock/base/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
 import { AppKitButtons } from '../../components/AppKitButtons'
@@ -8,8 +8,8 @@ import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { SiweData } from '../../components/Siwe/SiweData'
 import { siweConfig } from '../../utils/SiweUtils'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
-import { mainnet, optimism, polygon, zkSync } from '@web3modal/base/chains'
-import { EVMWagmiClient } from '@web3modal/adapter-wagmi'
+import { mainnet, optimism, polygon, zkSync } from '@rerock/base/chains'
+import { EVMWagmiClient } from '@rerock/adapter-wagmi'
 
 const queryClient = new QueryClient()
 

@@ -1,4 +1,4 @@
-import { customElement } from '@web3modal/ui'
+import { customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 
 import {
@@ -6,7 +6,7 @@ import {
   RouterController,
   StorageUtil,
   type SocialProvider
-} from '@web3modal/core'
+} from '@rerock/core'
 
 @customElement('w3m-account-auth-button')
 export class W3mAccountAuthButton extends LitElement {

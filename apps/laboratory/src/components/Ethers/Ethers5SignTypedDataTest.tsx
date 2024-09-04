@@ -4,7 +4,7 @@ import {
   useWeb3ModalNetwork,
   useWeb3ModalProvider,
   type Provider
-} from '@web3modal/base/react'
+} from '@rerock/base/react'
 import { ethers } from 'ethers5'
 import type { TypedDataField } from 'ethers5'
 import { useChakraToast } from '../Toast'

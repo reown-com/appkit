@@ -1,4 +1,4 @@
-import { customElement } from '@web3modal/ui'
+import { customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 
 import styles from './styles.js'
@@ -8,8 +8,8 @@ import {
   ConnectorController,
   OptionsController,
   StorageUtil
-} from '@web3modal/core'
-import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
+} from '@rerock/core'
+import { ConstantsUtil as CommonConstantsUtil } from '@rerock/common'
 import { state } from 'lit/decorators.js'
 import { WalletUtil } from '../../utils/WalletUtil.js'
 @customElement('w3m-connector-list')

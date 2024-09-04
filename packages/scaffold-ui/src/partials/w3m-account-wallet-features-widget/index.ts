@@ -8,14 +8,14 @@ import {
   ConstantsUtil as CoreConstantsUtil,
   EventsController,
   OptionsController
-} from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+} from '@rerock/core'
+import { customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
 import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
-import { W3mFrameRpcConstants } from '@web3modal/wallet'
+import { W3mFrameRpcConstants } from '@rerock/wallet'
 
 const TABS = 3
 const TABS_PADDING = 48

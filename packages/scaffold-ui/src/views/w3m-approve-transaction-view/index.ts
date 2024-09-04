@@ -1,4 +1,4 @@
-import { customElement } from '@web3modal/ui'
+import { customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
@@ -7,8 +7,8 @@ import {
   ConnectorController,
   ThemeController,
   RouterController
-} from '@web3modal/core'
-import { getW3mThemeVariables } from '@web3modal/common'
+} from '@rerock/core'
+import { getW3mThemeVariables } from '@rerock/common'
 
 // -- Variables ------------------------------------------- //
 const PAGE_HEIGHT = 400

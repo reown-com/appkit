@@ -1,4 +1,4 @@
-import type { W3mFrameProvider, W3mFrameTypes } from '@web3modal/wallet'
+import type { W3mFrameProvider, W3mFrameTypes } from '@rerock/wallet'
 import type {
   Balance,
   Transaction,
@@ -7,7 +7,7 @@ import type {
   ChainNamespace,
   CaipAddress,
   AdapterType
-} from '@web3modal/common'
+} from '@rerock/common'
 import type {
   NetworkControllerClient,
   NetworkControllerState

@@ -1,5 +1,5 @@
 {
-  "name": "@web3modal/ui",
+  "name": "@rerock/ui",
   "version": "5.1.6",
   "type": "module",
   "main": "./dist/esm/index.js",
@@ -22,24 +22,15 @@
   },
   "devDependencies": {
     "@types/qrcode": "1.5.5",
-    "@web3modal/common": "workspace:*",
-    "@web3modal/wallet": "workspace:*",
-    "@web3modal/core": "workspace:*",
+    "@rerock/common": "workspace:*",
+    "@rerock/wallet": "workspace:*",
+    "@rerock/core": "workspace:*",
     "eslint-plugin-lit": "1.11.0",
     "eslint-plugin-wc": "2.0.4",
     "vitest": "2.0.3",
     "@vitest/coverage-v8": "2.0.5"
   },
-  "keywords": [
-    "web3",
-    "crypto",
-    "ethereum",
-    "web3modal",
-    "walletconnect",
-    "lit",
-    "webcomponents"
-  ],
-  "author": "WalletConnect <walletconnect.com>",
+  "author": "Rerock <rerock.com>",
   "license": "Apache-2.0",
   "homepage": "https://github.com/web3modal/web3modal",
   "repository": {

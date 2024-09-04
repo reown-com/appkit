@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@web3modal/ui/src/composites/wui-banner'
-import type { WuiBanner } from '@web3modal/ui/src/composites/wui-banner'
+import '@rerock/ui/src/composites/wui-banner'
+import type { WuiBanner } from '@rerock/ui/src/composites/wui-banner'
 import { html } from 'lit'
 import { iconOptions } from '../../utils/PresetUtils'
 import '../../components/gallery-container'

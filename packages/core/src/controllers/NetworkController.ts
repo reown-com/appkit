@@ -9,7 +9,7 @@ import {
   type CaipNetwork,
   type CaipNetworkId,
   type ChainNamespace
-} from '@web3modal/common'
+} from '@rerock/common'
 import { ChainController } from './ChainController.js'
 import { PublicStateController } from './PublicStateController.js'
 

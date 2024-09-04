@@ -1,5 +1,5 @@
-import { createWeb3Modal } from '@web3modal/base/react'
-import { EVMEthersClient } from '@web3modal/adapter-ethers'
+import { createWeb3Modal } from '@rerock/base/react'
+import { EVMEthersClient } from '@rerock/adapter-ethers'
 import { EthersTests } from '../../components/Ethers/EthersTests'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { ThemeStore } from '../../utils/StoreUtil'

@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@web3modal/ui/src/composites/wui-avatar'
-import type { WuiAvatar } from '@web3modal/ui/src/composites/wui-avatar'
+import '@rerock/ui/src/composites/wui-avatar'
+import type { WuiAvatar } from '@rerock/ui/src/composites/wui-avatar'
 import { html } from 'lit'
 import { address, avatarImageSrc } from '../../utils/PresetUtils'
 

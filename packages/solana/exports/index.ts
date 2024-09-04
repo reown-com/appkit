@@ -1,7 +1,7 @@
-import { AppKit } from '@web3modal/base'
-import { SolanaWeb3JsClient } from '@web3modal/adapter-solana'
+import { AppKit } from '@rerock/base'
+import { SolanaWeb3JsClient } from '@rerock/adapter-solana'
 import type { SolanaAppKitOptions } from './options'
-import type { Provider } from '@web3modal/adapter-solana'
+import type { Provider } from '@rerock/adapter-solana'
 
 // -- Types -------------------------------------------------------------
 export type { SolanaAppKitOptions, Provider }

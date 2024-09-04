@@ -1,2 +1,2 @@
-import '@web3modal/polyfills'
-export * as Web3modal from '@web3modal/ethers'
+import '@rerock/polyfills'
+export * as Web3modal from '@rerock/ethers'

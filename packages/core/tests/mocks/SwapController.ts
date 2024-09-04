@@ -1,4 +1,4 @@
-import type { CaipAddress } from '@web3modal/common'
+import type { CaipAddress } from '@rerock/common'
 
 export const tokensResponse = {
   tokens: [

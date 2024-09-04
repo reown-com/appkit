@@ -7,12 +7,12 @@ import {
   EventsController,
   NetworkController,
   OptionsController
-} from '@web3modal/core'
+} from '@rerock/core'
 import {
   ConstantsUtil as CommonConstantsUtil,
   SafeLocalStorage,
   SafeLocalStorageKeys
-} from '@web3modal/common'
+} from '@rerock/common'
 
 import { SolConstantsUtil } from './utils/SolanaConstantsUtil.js'
 import { SolHelpersUtil } from './utils/SolanaHelpersUtils.js'
@@ -26,9 +26,9 @@ import type {
   ConnectionControllerClient,
   NetworkControllerClient,
   Connector
-} from '@web3modal/core'
-import type { AdapterType, CaipAddress, CaipNetwork, CaipNetworkId } from '@web3modal/common'
-import type { ChainNamespace } from '@web3modal/common'
+} from '@rerock/core'
+import type { AdapterType, CaipAddress, CaipNetwork, CaipNetworkId } from '@rerock/common'
+import type { ChainNamespace } from '@rerock/common'
 
 import type { Provider } from './utils/SolanaTypesUtil.js'
 import { watchStandard } from './utils/watchStandard.js'
@@ -39,11 +39,11 @@ import {
   W3mFrameProvider,
   W3mFrameRpcConstants,
   type W3mFrameTypes
-} from '@web3modal/wallet'
+} from '@rerock/wallet'
 import { withSolanaNamespace } from './utils/withSolanaNamespace.js'
-import type { AppKit } from '@web3modal/base'
-import type { AppKitOptions } from '@web3modal/base'
-import { ProviderUtil } from '@web3modal/base/store'
+import type { AppKit } from '@rerock/base'
+import type { AppKitOptions } from '@rerock/base'
+import { ProviderUtil } from '@rerock/base/store'
 
 export interface AdapterOptions {
   connectionSettings?: Commitment | ConnectionConfig

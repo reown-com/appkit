@@ -1,4 +1,4 @@
-import type { Connector } from '@web3modal/core'
+import type { Connector } from '@rerock/core'
 import {
   ApiController,
   AssetUtil,
@@ -7,8 +7,8 @@ import {
   ConnectorController,
   CoreHelperUtil,
   RouterController
-} from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+} from '@rerock/core'
+import { customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'

@@ -1,9 +1,9 @@
-import { AppKit } from '@web3modal/base'
-import type { AppKitOptions } from '@web3modal/base'
-import { EVMEthersClient, type AdapterOptions } from '@web3modal/adapter-ethers'
+import { AppKit } from '@rerock/base'
+import type { AppKitOptions } from '@rerock/base'
+import { EVMEthersClient, type AdapterOptions } from '@rerock/adapter-ethers'
 
 // -- Types -------------------------------------------------------------
-export type { AdapterOptions } from '@web3modal/adapter-ethers'
+export type { AdapterOptions } from '@rerock/adapter-ethers'
 
 // -- Setup -------------------------------------------------------------
 export type EthersAppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 'sdkVersion'> &

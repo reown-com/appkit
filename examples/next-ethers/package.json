@@ -9,8 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@web3modal/adapter-ethers": "workspace:*",
-    "@web3modal/base": "workspace:*",
+    "@rerock/adapter-ethers": "workspace:*",
+    "@rerock/base": "workspace:*",
     "ethers": "6.13.0",
     "next": "14.2.3",
     "react": "18.2.0",

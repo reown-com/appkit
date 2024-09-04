@@ -9,9 +9,9 @@ import {
   NetworkController,
   RouterController,
   SnackController
-} from '@web3modal/core'
-import type { CaipNetwork } from '@web3modal/common'
-import { customElement } from '@web3modal/ui'
+} from '@rerock/core'
+import type { CaipNetwork } from '@rerock/common'
+import { customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'

@@ -7,7 +7,7 @@ import {
   type ThemeMode,
   type ThemeVariables
 } from '../../exports/index.js'
-import { ConstantsUtil, getW3mThemeVariables } from '@web3modal/common'
+import { ConstantsUtil, getW3mThemeVariables } from '@rerock/common'
 
 // -- Setup --------------------------------------------------------------------
 const authProvider = {

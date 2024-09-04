@@ -1,4 +1,4 @@
-import { createWeb3Modal } from '@web3modal/base/react'
+import { createWeb3Modal } from '@rerock/base/react'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { EthersConstants } from '../../utils/EthersConstants'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
@@ -7,7 +7,7 @@ import { siweConfig } from '../../utils/SiweUtils'
 import { SiweData } from '../../components/Siwe/SiweData'
 import { Ethers5Tests } from '../../components/Ethers/Ethers5Tests'
 import { Ethers5ModalInfo } from '../../components/Ethers/Ethers5ModalInfo'
-import { EVMEthers5Client } from '@web3modal/adapter-ethers5'
+import { EVMEthers5Client } from '@rerock/adapter-ethers5'
 
 const ethersAdapter = new EVMEthers5Client()
 

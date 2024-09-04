@@ -1,4 +1,4 @@
-import { EVMEthersClient } from '@web3modal/adapter-ethers'
+import { EVMEthersClient } from '@rerock/adapter-ethers'
 
 export const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
 

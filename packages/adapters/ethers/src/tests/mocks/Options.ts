@@ -1,5 +1,5 @@
-import type { AppKitOptions, ChainAdapter } from '@web3modal/base'
-import { mainnet, solana } from '@web3modal/base/chains'
+import type { AppKitOptions, ChainAdapter } from '@rerock/base'
+import { mainnet, solana } from '@rerock/base/chains'
 
 export const mockOptions: AppKitOptions = {
   projectId: 'test-project-id',

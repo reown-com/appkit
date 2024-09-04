@@ -1,17 +1,17 @@
 import { onUnmounted, reactive, ref } from 'vue'
 import { useSnapshot } from 'valtio'
-import { AccountController, type Event } from '@web3modal/core'
+import { AccountController, type Event } from '@rerock/core'
 import type {
   W3mAccountButton,
   W3mButton,
   W3mConnectButton,
   W3mNetworkButton,
   W3mOnrampWidget
-} from '@web3modal/scaffold-ui'
+} from '@rerock/scaffold-ui'
 import type { AppKit } from '../../../src/client.js'
 import type { AppKitOptions } from '../../utils/TypesUtil.js'
 import { ProviderUtil } from '../../store/ProviderUtil.js'
-import type { ChainNamespace } from '@web3modal/common'
+import type { ChainNamespace } from '@rerock/common'
 
 type OpenOptions = {
   view: 'Account' | 'Connect' | 'Networks' | 'ApproveTransaction' | 'OnRampProviders'

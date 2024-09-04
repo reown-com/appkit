@@ -7,9 +7,9 @@ import { ConnectorController } from './ConnectorController.js'
 import { RouterController } from './RouterController.js'
 import { ConnectionController } from './ConnectionController.js'
 import { NetworkController } from './NetworkController.js'
-import { NetworkUtil } from '@web3modal/common'
+import { NetworkUtil } from '@rerock/common'
 import { EnsUtil } from '../utils/EnsUtil.js'
-import { ConstantsUtil } from '@web3modal/common'
+import { ConstantsUtil } from '@rerock/common'
 
 // -- Types --------------------------------------------- //
 type Suggestion = {

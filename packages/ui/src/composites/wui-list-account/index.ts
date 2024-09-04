@@ -7,13 +7,13 @@ import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
-import { W3mFrameRpcConstants } from '@web3modal/wallet'
+import { W3mFrameRpcConstants } from '@rerock/wallet'
 import {
   AccountController,
   BlockchainApiController,
   NetworkController,
   StorageUtil
-} from '@web3modal/core'
+} from '@rerock/core'
 
 @customElement('wui-list-account')
 export class WuiListAccount extends LitElement {

@@ -2,12 +2,12 @@ import { AppKit } from '../src/client.js'
 import type { AppKitOptions } from '../src/utils/TypesUtil.js'
 
 // -- Views ------------------------------------------------------------
-export * from '@web3modal/scaffold-ui'
+export * from '@rerock/scaffold-ui'
 
 // -- Utils & Other -----------------------------------------------------
 export * from '../src/utils/index.js'
-export type * from '@web3modal/core'
-export { CoreHelperUtil, AccountController, NetworkController } from '@web3modal/core'
+export type * from '@rerock/core'
+export { CoreHelperUtil, AccountController, NetworkController } from '@rerock/core'
 
 type CreateWeb3Modal = Omit<AppKitOptions, 'sdkType' | 'sdkVersion'>
 

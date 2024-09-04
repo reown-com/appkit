@@ -1,5 +1,5 @@
-import type { CaipNetwork } from '@web3modal/common'
-import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
+import type { CaipNetwork } from '@rerock/common'
+import { ConstantsUtil as CommonConstantsUtil } from '@rerock/common'
 
 import { SolConstantsUtil } from './SolanaConstantsUtil.js'
 import type { Provider } from './SolanaTypesUtil.js'
