@@ -718,19 +718,8 @@ export class EVMWagmiClient implements ChainAdapter {
 
       provider.onRpcRequest((request: W3mFrameTypes.RPCRequest) => {
         if (W3mFrameHelpers.checkIfRequestExists(request)) {
-          if (!W3mFrameHelpers.checkIfRequestIsAllowed(request)) {
-            if (this.appKit?.isOpen()) {
-              if (this.appKit?.isTransactionStackEmpty()) {
-                return
-              }
-              if (this.appKit?.isTransactionShouldReplaceView()) {
-                this.appKit?.replace('ApproveTransaction')
-              } else {
-                this.appKit?.redirect('ApproveTransaction')
-              }
-            } else {
-              this.appKit?.open({ view: 'ApproveTransaction' })
-            }
+          if (!W3mFrameHelpers.checkIfRequestIsSafe(request)) {
+            this.appKit?.handleUnsafeRPCRequest()
           }
         } else {
           this.appKit?.open()
@@ -757,7 +746,12 @@ export class EVMWagmiClient implements ChainAdapter {
         }
       })
 
-      provider.onRpcSuccess(() => {
+      provider.onRpcSuccess((_, request) => {
+        const isSafeRequest = W3mFrameHelpers.checkIfRequestIsSafe(request)
+        if (isSafeRequest) {
+          return
+        }
+
         if (this.appKit?.isTransactionStackEmpty()) {
           this.appKit?.close()
         } else {
