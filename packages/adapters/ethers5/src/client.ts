@@ -70,7 +70,7 @@ interface Info {
   rdns: string
 }
 
-interface EIP6963ProviderDetail {
+export interface EIP6963ProviderDetail {
   info: Info
   provider: Provider
 }
@@ -80,14 +80,14 @@ export class EVMEthers5Client {
 
   private EIP6963Providers: EIP6963ProviderDetail[] = []
 
-  private caipNetworks: CaipNetwork[] = []
-
   private ethersConfig?: AdapterOptions['ethersConfig']
 
   private authProvider?: W3mFrameProvider
 
   // -- Public variables --------------------------------------------------------
   public options: AppKitOptions | undefined = undefined
+
+  public caipNetworks: CaipNetwork[] = []
 
   public chainNamespace: ChainNamespace = CommonConstantsUtil.CHAIN.EVM
 
@@ -193,7 +193,7 @@ export class EVMEthers5Client {
     this.appKit = appKit
     this.options = options
     this.caipNetworks = options.caipNetworks
-    this.defaultCaipNetwork = options.defaultCaipNetwork
+    this.defaultCaipNetwork = options.defaultCaipNetwork || this.caipNetworks[0]
     this.tokens = HelpersUtil.getCaipTokens(options.tokens)
     this.ethersConfig = this.createEthersConfig(options)
 
@@ -1084,8 +1084,8 @@ export class EVMEthers5Client {
     this.appKit?.setConnectors(w3mConnectors)
   }
 
-  private async syncAuthConnector(projectId: string) {
-    if (typeof window !== 'undefined') {
+  private async syncAuthConnector(projectId: string, bypassWindowCheck = false) {
+    if (bypassWindowCheck || typeof window !== 'undefined') {
       this.authProvider = new W3mFrameProvider(projectId)
 
       this.appKit?.addConnector({

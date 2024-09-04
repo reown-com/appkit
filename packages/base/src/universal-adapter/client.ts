@@ -34,13 +34,15 @@ type Metadata = {
 
 // -- Client --------------------------------------------------------------------
 export class UniversalAdapterClient {
-  public caipNetworks: CaipNetwork[]
-
-  private walletConnectProvider?: UniversalProvider
-
   private walletConnectProviderInitPromise?: Promise<void>
 
-  private metadata?: Metadata
+  private appKit: AppKit | undefined = undefined
+
+  public caipNetworks: CaipNetwork[]
+
+  public walletConnectProvider?: UniversalProvider
+
+  public metadata?: Metadata
 
   public isUniversalAdapterClient = true
 
@@ -51,8 +53,6 @@ export class UniversalAdapterClient {
   public networkControllerClient: NetworkControllerClient
 
   public connectionControllerClient: ConnectionControllerClient
-
-  private appKit: AppKit | undefined = undefined
 
   public options: AppKitOptions | undefined = undefined
 
@@ -256,6 +256,14 @@ export class UniversalAdapterClient {
     this.syncConnectors()
   }
 
+  public switchNetwork(caipNetwork: CaipNetwork) {
+    if (caipNetwork) {
+      if (this.walletConnectProvider) {
+        this.walletConnectProvider.setDefaultChain(caipNetwork.id)
+      }
+    }
+  }
+
   public async disconnect() {
     if (this.walletConnectProvider) {
       await (this.walletConnectProvider as unknown as UniversalProvider).disconnect()
@@ -264,8 +272,19 @@ export class UniversalAdapterClient {
     }
   }
 
-  // -- Private -----------------------------------------------------------------
+  public async getWalletConnectProvider() {
+    if (!this.walletConnectProvider) {
+      try {
+        await this.createProvider()
+      } catch (error) {
+        throw new Error('EthereumAdapter:getWalletConnectProvider - Cannot create provider')
+      }
+    }
 
+    return this.walletConnectProvider
+  }
+
+  // -- Private -----------------------------------------------------------------
   private createProvider() {
     if (
       !this.walletConnectProviderInitPromise &&
@@ -294,18 +313,6 @@ export class UniversalAdapterClient {
     this.walletConnectProvider = await UniversalProvider.init(walletConnectProviderOptions)
 
     await this.checkActiveWalletConnectProvider()
-  }
-
-  public async getWalletConnectProvider() {
-    if (!this.walletConnectProvider) {
-      try {
-        await this.createProvider()
-      } catch (error) {
-        throw new Error('EthereumAdapter:getWalletConnectProvider - Cannot create provider')
-      }
-    }
-
-    return this.walletConnectProvider
   }
 
   private syncRequestedNetworks(caipNetworks: AppKitOptions['caipNetworks']) {
@@ -373,6 +380,7 @@ export class UniversalAdapterClient {
       SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK,
       JSON.stringify(this.appKit?.getCaipNetwork())
     )
+
     this.syncAccount()
     this.watchWalletConnect()
   }
@@ -435,14 +443,6 @@ export class UniversalAdapterClient {
       provider.on('disconnect', disconnectHandler)
       provider.on('accountsChanged', accountsChangedHandler)
       provider.on('chainChanged', chainChanged)
-    }
-  }
-
-  public switchNetwork(caipNetwork: CaipNetwork) {
-    if (caipNetwork) {
-      if (this.walletConnectProvider) {
-        this.walletConnectProvider.setDefaultChain(caipNetwork.id)
-      }
     }
   }
 
