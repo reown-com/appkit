@@ -1,6 +1,7 @@
 import type { AppKitOptions } from '@web3modal/base'
 import {
   NetworkUtil,
+  SafeLocalStorage,
   type AdapterType,
   type CaipAddress,
   type CaipNetwork,
@@ -68,7 +69,7 @@ interface Info {
   rdns: string
 }
 
-interface EIP6963ProviderDetail {
+export interface EIP6963ProviderDetail {
   info: Info
   provider: Provider
 }
@@ -78,14 +79,14 @@ export class EVMEthers5Client {
 
   private EIP6963Providers: EIP6963ProviderDetail[] = []
 
-  private caipNetworks: CaipNetwork[] = []
-
   private ethersConfig?: AdapterOptions['ethersConfig']
 
   private authProvider?: W3mFrameProvider
 
   // -- Public variables --------------------------------------------------------
   public options: AppKitOptions | undefined = undefined
+
+  public caipNetworks: CaipNetwork[] = []
 
   public chainNamespace: ChainNamespace = CommonConstantsUtil.CHAIN.EVM
 
@@ -191,7 +192,7 @@ export class EVMEthers5Client {
     this.appKit = appKit
     this.options = options
     this.caipNetworks = options.caipNetworks
-    this.defaultCaipNetwork = options.defaultCaipNetwork
+    this.defaultCaipNetwork = options.defaultCaipNetwork || this.caipNetworks[0]
     this.tokens = HelpersUtil.getCaipTokens(options.tokens)
     this.ethersConfig = this.createEthersConfig(options)
 
@@ -335,7 +336,7 @@ export class EVMEthers5Client {
         }
 
         // Common cleanup actions
-        localStorage.removeItem(WcConstantsUtil.WALLET_ID)
+        SafeLocalStorage.removeItem(WcConstantsUtil.WALLET_ID)
         this.appKit?.resetAccount('eip155')
       },
       signMessage: async (message: string) => {
@@ -511,7 +512,7 @@ export class EVMEthers5Client {
   }
 
   private getApprovedCaipNetworksData() {
-    const walletId = localStorage.getItem(WcConstantsUtil.WALLET_ID)
+    const walletId = SafeLocalStorage.getItem(WcConstantsUtil.WALLET_ID)
 
     if (!walletId) {
       return {
@@ -542,8 +543,8 @@ export class EVMEthers5Client {
   }
 
   private checkActiveProviders(config: ProviderType) {
-    const walletId = localStorage.getItem(WcConstantsUtil.WALLET_ID)
-    const walletName = localStorage.getItem(WcConstantsUtil.WALLET_NAME)
+    const walletId = SafeLocalStorage.getItem(WcConstantsUtil.WALLET_ID)
+    const walletName = SafeLocalStorage.getItem(WcConstantsUtil.WALLET_NAME)
 
     if (!walletId) {
       return
@@ -575,9 +576,9 @@ export class EVMEthers5Client {
     } else {
       const walletId = providerId
 
-      window?.localStorage.setItem(WcConstantsUtil.WALLET_ID, walletId)
+      SafeLocalStorage.setItem(WcConstantsUtil.WALLET_ID, walletId)
       if (name) {
-        window?.localStorage.setItem(WcConstantsUtil.WALLET_NAME, name)
+        SafeLocalStorage.setItem(WcConstantsUtil.WALLET_NAME, name)
       }
 
       if (provider) {
@@ -604,7 +605,7 @@ export class EVMEthers5Client {
   }
 
   private async setAuthProvider() {
-    window?.localStorage.setItem(WcConstantsUtil.WALLET_ID, ConstantsUtil.AUTH_CONNECTOR_ID)
+    SafeLocalStorage.setItem(WcConstantsUtil.WALLET_ID, ConstantsUtil.AUTH_CONNECTOR_ID)
 
     if (this.authProvider) {
       this.appKit?.setLoading(true)
@@ -666,7 +667,7 @@ export class EVMEthers5Client {
 
   private setupProviderListeners(provider: Provider, providerId: ProviderId) {
     const disconnectHandler = () => {
-      localStorage.removeItem(WcConstantsUtil.WALLET_ID)
+      SafeLocalStorage.removeItem(WcConstantsUtil.WALLET_ID)
       this.removeListeners(provider)
     }
 
@@ -685,7 +686,7 @@ export class EVMEthers5Client {
         if (providerId === ConstantsUtil.EIP6963_CONNECTOR_ID) {
           this.appKit?.setAllAccounts([], this.chainNamespace)
         }
-        localStorage.removeItem(WcConstantsUtil.WALLET_ID)
+        SafeLocalStorage.removeItem(WcConstantsUtil.WALLET_ID)
         this.appKit?.resetAccount('eip155')
       }
     }
@@ -929,7 +930,7 @@ export class EVMEthers5Client {
   }
 
   private syncConnectedWalletInfo() {
-    const currentActiveWallet = window?.localStorage.getItem(WcConstantsUtil.WALLET_ID)
+    const currentActiveWallet = SafeLocalStorage.getItem(WcConstantsUtil.WALLET_ID)
     const providerType = ProviderUtil.state.providerIds['eip155']
 
     if (providerType === ConstantsUtil.EIP6963_CONNECTOR_ID) {
@@ -1082,8 +1083,8 @@ export class EVMEthers5Client {
     this.appKit?.setConnectors(w3mConnectors)
   }
 
-  private async syncAuthConnector(projectId: string) {
-    if (typeof window !== 'undefined') {
+  private async syncAuthConnector(projectId: string, bypassWindowCheck = false) {
+    if (bypassWindowCheck || typeof window !== 'undefined') {
       this.authProvider = new W3mFrameProvider(projectId)
 
       this.appKit?.addConnector({

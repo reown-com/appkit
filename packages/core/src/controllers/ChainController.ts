@@ -6,6 +6,7 @@ import { NetworkController, type NetworkControllerState } from './NetworkControl
 import { AccountController, type AccountControllerState } from './AccountController.js'
 import { PublicStateController } from './PublicStateController.js'
 import { type CaipNetwork, type ChainNamespace } from '@web3modal/common'
+import { SafeLocalStorage } from '@web3modal/common'
 
 // -- Types --------------------------------------------- //
 export interface ChainControllerState {
@@ -264,7 +265,7 @@ export const ChainController = {
 
   getNetworkControllerClient() {
     const chain = state.activeChain
-    const isWcConnector = localStorage.getItem('@w3m/wallet_id') === 'walletConnect'
+    const isWcConnector = SafeLocalStorage.getItem('@w3m/wallet_id') === 'walletConnect'
     const universalNetworkControllerClient = state.universalAdapter.networkControllerClient
     const hasWagmiAdapter = state.chains.get('eip155')?.adapterType === 'wagmi'
 
@@ -297,7 +298,7 @@ export const ChainController = {
 
   getConnectionControllerClient(_chain?: ChainNamespace) {
     const chain = _chain || state.activeChain
-    const isWcConnector = localStorage.getItem('@w3m/wallet_id') === 'walletConnect'
+    const isWcConnector = SafeLocalStorage.getItem('@w3m/wallet_id') === 'walletConnect'
     const universalConnectionControllerClient = state.universalAdapter.connectionControllerClient
     const hasWagmiAdapter = state.chains.get('eip155')?.adapterType === 'wagmi'
 
