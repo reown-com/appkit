@@ -100,7 +100,7 @@ emailTest('it should show loading on page refresh', async () => {
 emailTest('it should use a smart account', async ({ library }) => {
   await validator.expectConnected()
 
-  let targetChain = 'Polygon'
+  const targetChain = 'Polygon'
   await page.goToSettings()
   await page.switchNetwork(targetChain)
   await page.promptSiwe()
