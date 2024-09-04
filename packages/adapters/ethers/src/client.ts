@@ -39,7 +39,6 @@ import { EthersMethods } from './utils/EthersMethods.js'
 import { formatEther, InfuraProvider, JsonRpcProvider } from 'ethers'
 import type { PublicStateControllerState } from '@web3modal/core'
 import { ProviderUtil } from '@web3modal/base/store'
-import { SafeLocalStorage } from '@web3modal/base/utils'
 import { CoinbaseWalletSDK, type ProviderInterface } from '@coinbase/wallet-sdk'
 
 // -- Types ---------------------------------------------------------------------

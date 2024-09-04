@@ -282,7 +282,6 @@ export class SolanaWeb3JsClient implements ChainAdapter {
       this.appKit?.setIsConnected(isConnected, this.chainNamespace)
       this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)
       await this.syncBalance(address)
-      this.syncConnectedWalletInfo()
 
       this.hasSyncedConnectedAccount = true
     } else if (this.hasSyncedConnectedAccount) {

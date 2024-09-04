@@ -40,7 +40,6 @@ import { ethers } from 'ethers5'
 import type { PublicStateControllerState } from '@web3modal/core'
 import { ProviderUtil } from '@web3modal/base/store'
 import { CoinbaseWalletSDK, type ProviderInterface } from '@coinbase/wallet-sdk'
-import { SafeLocalStorage } from '@web3modal/base/utils'
 
 // -- Types ---------------------------------------------------------------------
 export interface AdapterOptions {
