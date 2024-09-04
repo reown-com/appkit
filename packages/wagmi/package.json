@@ -52,8 +52,8 @@
     "test": "vitest run --dir tests"
   },
   "dependencies": {
-    "@walletconnect/ethereum-provider": "2.15.1",
-    "@walletconnect/utils": "2.15.1",
+    "@walletconnect/ethereum-provider": "2.15.2-canary-1165223df",
+    "@walletconnect/utils": "2.15.2-canary-1165223df",
     "@web3modal/polyfills": "workspace:*",
     "@web3modal/base": "workspace:*",
     "@web3modal/wallet": "workspace:*",
