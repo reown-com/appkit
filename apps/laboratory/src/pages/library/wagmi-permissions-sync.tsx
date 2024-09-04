@@ -4,10 +4,11 @@ import { WagmiProvider } from 'wagmi'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
-import { WagmiPermissionsSyncProvider } from '../../context/WagmiPermissionsSyncContext'
 import { WagmiPermissionsSyncTest } from '../../components/Wagmi/WagmiPermissionsSyncTest'
 import { mainnet, optimism, polygon, zkSync } from '@web3modal/base/chains'
 import { EVMWagmiClient } from '@web3modal/adapter-wagmi'
+import { PasskeyProvider } from '../../context/PasskeyContext'
+import { ERC7715PermissionsProvider } from '../../context/ERC7715PermissionsContext'
 
 const queryClient = new QueryClient()
 
@@ -34,10 +35,12 @@ export default function Wagmi() {
   return (
     <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={queryClient}>
-        <WagmiPermissionsSyncProvider>
-          <AppKitButtons />
-          <WagmiPermissionsSyncTest />
-        </WagmiPermissionsSyncProvider>
+        <ERC7715PermissionsProvider>
+          <PasskeyProvider>
+            <AppKitButtons />
+            <WagmiPermissionsSyncTest />
+          </PasskeyProvider>
+        </ERC7715PermissionsProvider>
       </QueryClientProvider>
     </WagmiProvider>
   )

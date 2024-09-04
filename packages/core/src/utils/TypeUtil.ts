@@ -180,6 +180,7 @@ export interface BlockchainApiTransactionsRequest {
   onramp?: 'coinbase'
   signal?: AbortSignal
   cache?: RequestCache
+  chainId?: string
 }
 
 export interface BlockchainApiTransactionsResponse {
@@ -818,7 +819,7 @@ export interface WriteContractArgs {
   abi: any
 }
 
-export type ChainAdapter = {
+export type ChainAdapter<StoreState = unknown, SwitchNetworkParam = number> = {
   connectionControllerClient?: ConnectionControllerClient
   networkControllerClient?: NetworkControllerClient
   accountState?: AccountControllerState
@@ -827,6 +828,14 @@ export type ChainAdapter = {
   chainNamespace: ChainNamespace
   isUniversalAdapterClient?: boolean
   adapterType?: AdapterType
+  getAddress?: () => string | undefined
+  getError?: () => unknown
+  getChainId?: () => number | string | undefined
+  switchNetwork?: ((chainId: SwitchNetworkParam) => void) | undefined
+  getIsConnected?: () => boolean | undefined
+  getWalletProvider?: () => unknown
+  getWalletProviderType?: () => string | undefined
+  subscribeProvider?: (callback: (newState: StoreState) => void) => void
 }
 
 type ProviderEventListener = {

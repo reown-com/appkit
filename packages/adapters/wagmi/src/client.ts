@@ -24,6 +24,7 @@ import {
 } from '@wagmi/core'
 import { ChainController, ConstantsUtil as CoreConstantsUtil } from '@web3modal/core'
 import type UniversalProvider from '@walletconnect/universal-provider'
+import type { ChainAdapter } from '@web3modal/core'
 import { prepareTransactionRequest, sendTransaction as wagmiSendTransaction } from '@wagmi/core'
 import type { Chain } from '@wagmi/core/chains'
 import { mainnet } from 'viem/chains'
@@ -80,7 +81,7 @@ interface Web3ModalState extends PublicStateControllerState {
 }
 
 // -- Client --------------------------------------------------------------------
-export class EVMWagmiClient {
+export class EVMWagmiClient implements ChainAdapter {
   // -- Private variables -------------------------------------------------------
   private appKit: AppKit | undefined = undefined
 
@@ -705,21 +706,9 @@ export class EVMWagmiClient {
 
     const w3mConnectors: Connector[] = []
 
-    const coinbaseSDKId = ConstantsUtil.COINBASE_SDK_CONNECTOR_ID
-
-    // Check if coinbase injected connector is present
-    const coinbaseConnector = filteredConnectors.find(
-      c => c.id === ConstantsUtil.CONNECTOR_RDNS_MAP[ConstantsUtil.COINBASE_CONNECTOR_ID]
-    )
-
     filteredConnectors.forEach(({ id, name, type, icon }) => {
-      // If coinbase injected connector is present, skip coinbase sdk connector.
-      const isCoinbaseRepeated = coinbaseConnector && id === coinbaseSDKId
-      const shouldSkip =
-        isCoinbaseRepeated ||
-        ConstantsUtil.AUTH_CONNECTOR_ID === id ||
-        ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID === id
-
+      // Auth connector is initialized separately
+      const shouldSkip = ConstantsUtil.AUTH_CONNECTOR_ID === id
       if (!shouldSkip) {
         w3mConnectors.push({
           id,

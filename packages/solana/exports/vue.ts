@@ -1,22 +1,24 @@
 import { getWeb3Modal } from '@web3modal/base/library/vue'
 import { AppKit } from '@web3modal/base'
 import { SolanaWeb3JsClient, useWeb3ModalConnection } from '@web3modal/adapter-solana/vue'
+import type { Provider, Connection } from '@web3modal/adapter-solana/vue'
 import type { CaipNetwork } from '@web3modal/common'
 import type { Provider } from '@web3modal/adapter-solana'
+import { SolStoreUtil, type SolStoreUtilState } from '@web3modal/scaffold-utils/solana'
 import type { SolanaAppKitOptions } from './options'
 
 // -- Types -------------------------------------------------------------------
 export type { SolanaAppKitOptions, Provider }
 
 // -- Setup -------------------------------------------------------------------
-let appkit: AppKit | undefined = undefined
+let appkit: AppKit<SolStoreUtilState, CaipNetwork> | undefined = undefined
 let solanaAdapter: SolanaWeb3JsClient | undefined = undefined
 
 export function createWeb3Modal(options: SolanaAppKitOptions) {
   solanaAdapter = new SolanaWeb3JsClient({
     wallets: options.wallets
   })
-  appkit = new AppKit({
+  appkit = new AppKit<SolStoreUtilState, CaipNetwork>({
     ...options,
     adapters: [solanaAdapter]
   })

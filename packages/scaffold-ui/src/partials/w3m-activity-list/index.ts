@@ -2,7 +2,6 @@ import { DateUtil } from '@web3modal/common'
 import type { Transaction, TransactionImage } from '@web3modal/common'
 import {
   AccountController,
-  ChainController,
   EventsController,
   NetworkController,
   OptionsController,
@@ -14,7 +13,6 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import type { TransactionType } from '@web3modal/ui'
 import { W3mFrameRpcConstants } from '@web3modal/wallet'
-import { ConstantsUtil } from '@web3modal/common'
 
 import styles from './styles.js'
 
@@ -34,8 +32,6 @@ export class W3mActivityList extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() public page: 'account' | 'activity' = 'activity'
 
-  @state() private isSolana = ChainController.state.activeChain === ConstantsUtil.CHAIN.SOLANA
-
   @state() private address: string | undefined = AccountController.state.address
 
   @state() private transactionsByYear = TransactionsController.state.transactionsByYear
@@ -52,9 +48,6 @@ export class W3mActivityList extends LitElement {
     TransactionsController.clearCursor()
     this.unsubscribe.push(
       ...[
-        ChainController.subscribeKey('activeChain', activeChain => {
-          this.isSolana = activeChain === ConstantsUtil.CHAIN.SOLANA
-        }),
         AccountController.subscribe(val => {
           if (val.isConnected) {
             if (this.address !== val.address) {
@@ -78,13 +71,6 @@ export class W3mActivityList extends LitElement {
   }
 
   public override firstUpdated() {
-    if (this.isSolana) {
-      this.loading = false
-      this.empty = true
-
-      return
-    }
-
     this.updateTransactionView()
     this.createPaginationObserver()
   }
@@ -225,19 +211,6 @@ export class W3mActivityList extends LitElement {
   }
 
   private emptyStateActivity() {
-    const comingSoon = html`
-      <wui-text align="center" variant="paragraph-500" color="fg-100"
-        >Transaction history is coming soon!</wui-text
-      >
-    `
-    const empty = html` <wui-text align="center" variant="paragraph-500" color="fg-100"
-        >No Transactions yet</wui-text
-      >
-      <wui-text align="center" variant="small-500" color="fg-200"
-        >Start trading on dApps <br />
-        to grow your wallet!</wui-text
-      >`
-
     return html`<wui-flex
       class="emptyContainer"
       flexGrow="1"
@@ -257,24 +230,18 @@ export class W3mActivityList extends LitElement {
         borderColor="wui-color-bg-125"
       ></wui-icon-box>
       <wui-flex flexDirection="column" alignItems="center" gap="xs">
-        ${this.isSolana ? comingSoon : empty}
+        <wui-text align="center" variant="paragraph-500" color="fg-100"
+          >No Transactions yet</wui-text
+        >
+        <wui-text align="center" variant="small-500" color="fg-200"
+          >Start trading on dApps <br />
+          to grow your wallet!</wui-text
+        >
       </wui-flex>
     </wui-flex>`
   }
 
   private emptyStateAccount() {
-    const comingSoon = html`
-      <wui-text variant="paragraph-500" align="center" color="fg-100"
-        >Transaction history is coming soon!</wui-text
-      >
-    `
-    const empty = html` <wui-text variant="paragraph-500" align="center" color="fg-100"
-        >No activity yet</wui-text
-      >
-      <wui-text variant="small-400" align="center" color="fg-200"
-        >Your next transactions will appear here</wui-text
-      >`
-
     return html`<wui-flex
       class="contentContainer"
       alignItems="center"
@@ -296,7 +263,10 @@ export class W3mActivityList extends LitElement {
         justifyContent="center"
         flexDirection="column"
       >
-        ${this.isSolana ? comingSoon : empty}
+        <wui-text variant="paragraph-500" align="center" color="fg-100">No activity yet</wui-text>
+        <wui-text variant="small-400" align="center" color="fg-200"
+          >Your next transactions will appear here</wui-text
+        >
       </wui-flex>
       <wui-link @click=${this.onReceiveClick.bind(this)}>Trade</wui-link>
     </wui-flex>`

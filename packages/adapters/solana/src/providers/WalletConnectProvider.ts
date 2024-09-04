@@ -180,6 +180,12 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
     return signature
   }
 
+  public async signAllTransactions<T extends AnyTransaction[]>(transactions: T): Promise<T> {
+    return (await Promise.all(
+      transactions.map(transaction => this.signTransaction(transaction))
+    )) as T
+  }
+
   // -- Private ------------------------------------------ //
   private request<Method extends WalletConnectProvider.RequestMethod>(
     method: Method,
