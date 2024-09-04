@@ -149,9 +149,6 @@ export class W3mNetworksView extends LitElement {
 
   private async onSwitchNetwork(network: CaipNetwork) {
     const isCurrentNamespaceConnected = AccountController.state.isConnected
-    const isNetworkNamespaceConnected = AccountController.getChainIsConnected(
-      network.chainNamespace
-    )
     const isNamespaceConnected = AccountController.getChainIsConnected(network.chainNamespace)
     const isEIP155Namespace = network.chainNamespace === ConstantsUtil.CHAIN.EVM
     const isSameNetwork = network.id === this.network?.id
@@ -177,17 +174,16 @@ export class W3mNetworksView extends LitElement {
       if (ChainController.state.noAdapters) {
         RouterController.push('ConnectingWalletConnect')
       } else {
-        // eslint-disable-next-line no-lonely-if
-        if (isCurrentNamespaceConnected || !isNetworkNamespaceConnected) {
-          NetworkController.setActiveCaipNetwork(network)
-          await NetworkUtil.onNetworkChange()
-        } else {
+        if (isCurrentNamespaceConnected) {
           RouterController.push('SwitchActiveChain', {
             switchToChain: network.chainNamespace,
             navigateTo: 'Connect',
             navigateWithReplace: true,
             network
           })
+        } else {
+          NetworkController.setActiveCaipNetwork(network)
+          await NetworkUtil.onNetworkChange()
         }
       }
     }
