@@ -1,5 +1,6 @@
 import {
   AccountController,
+  AssetController,
   AssetUtil,
   EventsController,
   ModalController,
@@ -26,6 +27,8 @@ export class W3mNetworkButton extends LitElement {
 
   @state() private network = NetworkController.state.caipNetwork
 
+  @state() private networkImage = this.network ? AssetUtil.getNetworkImage(this.network) : undefined
+
   @state() private connected = AccountController.state.isConnected
 
   @state() private loading = ModalController.state.loading
@@ -36,7 +39,15 @@ export class W3mNetworkButton extends LitElement {
   public override firstUpdated() {
     this.unsubscribe.push(
       ...[
-        NetworkController.subscribeKey('caipNetwork', val => (this.network = val)),
+        AssetController.subscribeNetworkImages(() => {
+          this.networkImage = this.network?.imageId
+            ? AssetUtil.getNetworkImage(this.network)
+            : undefined
+        }),
+        NetworkController.subscribeKey('caipNetwork', val => {
+          this.network = val
+          this.networkImage = val?.imageId ? AssetUtil.getNetworkImage(val) : undefined
+        }),
         AccountController.subscribeKey('isConnected', val => (this.connected = val)),
         ModalController.subscribeKey('loading', val => (this.loading = val)),
         NetworkController.subscribeKey('isUnsupportedChain', val => (this.isUnsupportedChain = val))
@@ -55,7 +66,7 @@ export class W3mNetworkButton extends LitElement {
         data-testid="wui-network-button"
         .disabled=${Boolean(this.disabled || this.loading)}
         .isUnsupportedChain=${this.isUnsupportedChain}
-        imageSrc=${ifDefined(AssetUtil.getNetworkImage(this.network))}
+        imageSrc=${ifDefined(this.networkImage)}
         @click=${this.onClick.bind(this)}
       >
         ${this.getLabel()}

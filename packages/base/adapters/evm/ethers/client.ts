@@ -3,6 +3,7 @@ import type {
   CaipAddress,
   CaipNetwork,
   CaipNetworkId,
+  ChainAdapter,
   ConnectionControllerClient,
   Connector,
   NetworkControllerClient,
@@ -99,7 +100,8 @@ interface ExternalProvider extends EthereumProvider {
 }
 
 // -- Client --------------------------------------------------------------------
-export class EVMEthersClient {
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-arguments
+export class EVMEthersClient implements ChainAdapter<EthersStoreUtilState, number> {
   // -- Private variables -------------------------------------------------------
   private appKit: AppKit | undefined = undefined
 
@@ -147,10 +149,7 @@ export class EVMEthersClient {
     this.ethersConfig = ethersConfig
     this.siweControllerClient = this.options?.siweConfig
     this.tokens = HelpersUtil.getCaipTokens(options.tokens)
-    this.defaultChain = {
-      ...EthersHelpersUtil.getCaipDefaultChain(defaultChain),
-      chain: CommonConstantsUtil.CHAIN.EVM
-    } as CaipNetwork
+    this.defaultChain = EthersHelpersUtil.getCaipDefaultChain(defaultChain)
     this.chains = chains
 
     this.networkControllerClient = {
@@ -523,6 +522,10 @@ export class EVMEthersClient {
     this.projectId = options.projectId
     this.metadata = this.ethersConfig.metadata
 
+    if (this.defaultChain) {
+      this.appKit?.setCaipNetwork(this.defaultChain)
+    }
+
     this.createProvider()
 
     EthersStoreUtil.subscribeKey('address', () => {
@@ -610,7 +613,7 @@ export class EVMEthersClient {
     return EthersStoreUtil.state.error
   }
 
-  public getChainId() {
+  public getChainId(): string | number | undefined {
     const storeChainId = EthersStoreUtil.state.chainId
     const networkControllerChainId = NetworkUtil.caipNetworkIdToNumber(
       this.appKit?.getCaipNetwork()?.id

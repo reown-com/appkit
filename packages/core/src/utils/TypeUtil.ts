@@ -826,11 +826,19 @@ export interface WriteContractArgs {
   abi: any
 }
 
-export type ChainAdapter = {
+export type ChainAdapter<StoreState = unknown, SwitchNetworkParam = number> = {
   connectionControllerClient?: ConnectionControllerClient
   networkControllerClient?: NetworkControllerClient
   accountState?: AccountControllerState
   networkState?: NetworkControllerState
   defaultChain?: CaipNetwork
   chain: Chain
+  getAddress?: () => string | undefined
+  getError?: () => unknown
+  getChainId?: () => number | string | undefined
+  switchNetwork?: ((chainId: SwitchNetworkParam) => void) | undefined
+  getIsConnected?: () => boolean | undefined
+  getWalletProvider?: () => unknown
+  getWalletProviderType?: () => string | undefined
+  subscribeProvider?: (callback: (newState: StoreState) => void) => void
 }

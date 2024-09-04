@@ -1,4 +1,4 @@
-import { createWeb3Modal, defaultConfig } from '@web3modal/ethers5'
+import { createWeb3Modal, defaultConfig } from '@web3modal/ethers'
 
 // @ts-expect-error 1. Get projectId
 const projectId = import.meta.env.VITE_PROJECT_ID
@@ -30,7 +30,7 @@ const chains = [
 
 const metadata = {
   name: 'AppKit',
-  description: 'AppKit HTML + Ethers5 Example',
+  description: 'AppKit HTML + Ethers Example',
   url: 'https://lab.web3modal.com',
   icons: ['https://avatars.githubusercontent.com/u/37784886']
 }

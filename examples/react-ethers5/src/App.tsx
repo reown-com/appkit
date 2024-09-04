@@ -49,6 +49,7 @@ const ethersConfig = defaultConfig({
 createWeb3Modal({
   ethersConfig,
   chains,
+  defaultChain: chains[1],
   projectId,
   enableAnalytics: true,
   themeMode: 'light',

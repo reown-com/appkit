@@ -4,17 +4,14 @@ import { useState } from 'react'
 import { useChakraToast } from '../Toast'
 import { encodeFunctionData, parseEther } from 'viem'
 import { abi as donutContractAbi, address as donutContractaddress } from '../../utils/DonutContract'
-import { useERC7715PermissionsSync } from '../../hooks/useERC7715PermissionsSync'
-import { useWagmiPermissionsSync } from '../../context/WagmiPermissionsSyncContext'
+import { useERC7715Permissions } from '../../hooks/useERC7715Permissions'
+import { usePasskey } from '../../context/PasskeyContext'
 import { sepolia } from 'viem/chains'
+import { executeActionsWithPasskeyAndCosignerPermissions } from '../../utils/ERC7715Utils'
 
 export function WagmiPurchaseDonutSyncPermissionsTest() {
-  const { grantedPermissions, wcCosignerData, passkeyId, projectId } = useWagmiPermissionsSync()
-  const { executeActionsWithPasskeyAndCosignerPermissions } = useERC7715PermissionsSync({
-    chain: sepolia,
-    permissions: grantedPermissions,
-    projectId
-  })
+  const { passkeyId } = usePasskey()
+  const { grantedPermissions, pci } = useERC7715Permissions()
 
   const {
     data: donutsOwned,
@@ -37,8 +34,8 @@ export function WagmiPurchaseDonutSyncPermissionsTest() {
       if (!grantedPermissions) {
         throw Error('No permissions available')
       }
-      if (!wcCosignerData) {
-        throw Error('No wc-cosigner data available')
+      if (!pci) {
+        throw Error('No WC cosigner data(PCI) available')
       }
 
       const purchaseDonutCallData = encodeFunctionData({
@@ -48,20 +45,22 @@ export function WagmiPurchaseDonutSyncPermissionsTest() {
       })
       const purchaseDonutCallDataExecution = [
         {
-          target: donutContractaddress as `0x${string}`,
+          to: donutContractaddress as `0x${string}`,
           value: parseEther('0.0001'),
-          callData: purchaseDonutCallData
+          data: purchaseDonutCallData
         }
       ]
       const txHash = await executeActionsWithPasskeyAndCosignerPermissions({
         actions: purchaseDonutCallDataExecution,
+        chain: sepolia,
         passkeyId,
-        wcCosignerData
+        permissions: grantedPermissions,
+        pci
       })
       if (txHash) {
         toast({
-          title: 'Transaction success',
-          description: txHash,
+          title: 'UserOp submitted successfully',
+          description: `UserOp Hash: ${txHash}`,
           type: 'success'
         })
         await fetchDonutsOwned()

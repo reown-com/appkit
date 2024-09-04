@@ -19,7 +19,7 @@ import {
   getConnections,
   switchAccount
 } from '@wagmi/core'
-import type { OptionsControllerState } from '@web3modal/core'
+import type { ChainAdapter, OptionsControllerState } from '@web3modal/core'
 import { mainnet } from 'viem/chains'
 import { prepareTransactionRequest, sendTransaction as wagmiSendTransaction } from '@wagmi/core'
 import type { Chain } from '@wagmi/core/chains'
@@ -67,7 +67,7 @@ interface Web3ModalState extends PublicStateControllerState {
 }
 
 // -- Client --------------------------------------------------------------------
-export class EVMWagmiClient {
+export class EVMWagmiClient implements ChainAdapter {
   // -- Private variables -------------------------------------------------------
   private appKit: AppKit | undefined = undefined
 
@@ -551,6 +551,7 @@ export class EVMWagmiClient {
       this.appKit?.setProfileName(null, this.chain)
     }
   }
+
   private async syncProfile(address: Hex, chainId: Chain['id']) {
     if (!this.appKit) {
       throw new Error('syncProfile - appKit is undefined')
