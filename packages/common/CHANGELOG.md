@@ -1,5 +1,11 @@
 # @web3modal/common
 
+## 5.1.4-b7197eec7.0
+
+### Patch Changes
+
+- New canary with 1CA error bubbling
+
 ## 5.1.4
 
 ### Patch Changes

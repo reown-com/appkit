@@ -1,5 +1,17 @@
 # @web3modal/ethers5
 
+## 5.1.4-b7197eec7.0
+
+### Patch Changes
+
+- New canary with 1CA error bubbling
+- Updated dependencies
+  - @web3modal/scaffold-utils@5.1.4-b7197eec7.0
+  - @web3modal/polyfills@5.1.4-b7197eec7.0
+  - @web3modal/common@5.1.4-b7197eec7.0
+  - @web3modal/base@5.1.4-b7197eec7.0
+  - @web3modal/siwe@5.1.4-b7197eec7.0
+
 ## 5.1.4
 
 ### Patch Changes

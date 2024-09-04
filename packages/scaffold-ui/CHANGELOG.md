@@ -1,5 +1,18 @@
 # @web3modal/scaffold
 
+## 5.1.4-b7197eec7.0
+
+### Patch Changes
+
+- New canary with 1CA error bubbling
+- Updated dependencies
+  - @web3modal/scaffold-utils@5.1.4-b7197eec7.0
+  - @web3modal/common@5.1.4-b7197eec7.0
+  - @web3modal/wallet@5.1.4-b7197eec7.0
+  - @web3modal/core@5.1.4-b7197eec7.0
+  - @web3modal/siwe@5.1.4-b7197eec7.0
+  - @web3modal/ui@5.1.4-b7197eec7.0
+
 ## 5.1.4
 
 ### Patch Changes

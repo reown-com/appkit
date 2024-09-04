@@ -1,5 +1,15 @@
 # @web3modal/cdn
 
+## 5.1.4-b7197eec7.0
+
+### Patch Changes
+
+- New canary with 1CA error bubbling
+- Updated dependencies
+  - @web3modal/ethers5@5.1.4-b7197eec7.0
+  - @web3modal/ethers@5.1.4-b7197eec7.0
+  - @web3modal/wagmi@5.1.4-b7197eec7.0
+
 ## 5.1.4
 
 ### Patch Changes
