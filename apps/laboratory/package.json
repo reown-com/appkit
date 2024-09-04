@@ -60,6 +60,7 @@
     "@web3modal/adapter-ethers5": "workspace:*",
     "@web3modal/adapter-solana": "workspace:*",
     "@web3modal/adapter-wagmi": "workspace:*",
+    "@web3modal/ethers": "workspace:*",
     "@web3modal/siwe": "workspace:*",
     "@web3modal/wallet": "workspace:*",
     "axios": "1.7.2",

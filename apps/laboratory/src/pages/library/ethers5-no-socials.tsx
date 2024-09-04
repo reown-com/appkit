@@ -1,4 +1,4 @@
-import { createWeb3Modal, defaultConfig } from '@web3modal/ethers5/react'
+import { createWeb3Modal } from '@web3modal/base/react'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { EthersConstants } from '../../utils/EthersConstants'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
@@ -7,25 +7,20 @@ import { siweConfig } from '../../utils/SiweUtils'
 import { SiweData } from '../../components/Siwe/SiweData'
 import { Ethers5Tests } from '../../components/Ethers/Ethers5Tests'
 import { Ethers5ModalInfo } from '../../components/Ethers/Ethers5ModalInfo'
+import { EVMEthers5Client } from '@web3modal/adapter-ethers5'
+
+const ethersAdapter = new EVMEthers5Client()
 
 const modal = createWeb3Modal({
-  ethersConfig: defaultConfig({
-    metadata: ConstantsUtil.Metadata,
-    defaultChainId: 1,
-    auth: {
-      email: true,
-      socials: []
-    },
-    coinbasePreference: 'smartWalletOnly'
-  }),
-  chains: EthersConstants.chains,
+  adapters: [ethersAdapter],
+  caipNetworks: EthersConstants.chains,
   projectId: ConstantsUtil.ProjectId,
-  enableAnalytics: true,
-  metadata: ConstantsUtil.Metadata,
-  termsConditionsUrl: 'https://walletconnect.com/terms',
-  privacyPolicyUrl: 'https://walletconnect.com/privacy',
-  siweConfig,
-  customWallets: ConstantsUtil.CustomWallets
+  features: {
+    analytics: true,
+    email: false,
+    socials: []
+  },
+  siweConfig
 })
 
 ThemeStore.setModal(modal)

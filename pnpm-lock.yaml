@@ -243,6 +243,9 @@ importers:
       '@web3modal/base':
         specifier: workspace:*
         version: link:../../packages/base
+      '@web3modal/ethers':
+        specifier: workspace:*
+        version: link:../../packages/ethers
       '@web3modal/siwe':
         specifier: workspace:*
         version: link:../../packages/siwe
@@ -23561,7 +23564,7 @@ snapshots:
 
   extension-port-stream@3.0.0:
     dependencies:
-      readable-stream: 4.5.2
+      readable-stream: 3.6.2
       webextension-polyfill: 0.10.0
 
   external-editor@3.1.0:
