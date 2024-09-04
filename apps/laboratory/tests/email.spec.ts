@@ -63,7 +63,7 @@ emailTest('it should reject sign', async () => {
   await validator.expectRejectedSign()
 })
 
-emailTest.only('it should switch network and sign', async () => {
+emailTest('it should switch network and sign', async () => {
   let targetChain = 'Polygon'
   await page.goToSettings()
   await page.switchNetwork(targetChain)
