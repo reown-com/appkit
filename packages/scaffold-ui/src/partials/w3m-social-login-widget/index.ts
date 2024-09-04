@@ -49,7 +49,7 @@ export class W3mSocialLoginWidget extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    if (!this.connector?.socials) {
+    if (!this.connector) {
       return null
     }
 
@@ -69,7 +69,7 @@ export class W3mSocialLoginWidget extends LitElement {
 
   // -- Private ------------------------------------------- //
   private topViewTemplate() {
-    if (!this.connector?.socials) {
+    if (!this.connector?.socials?.length) {
       return null
     }
 
@@ -100,7 +100,7 @@ export class W3mSocialLoginWidget extends LitElement {
   }
 
   private bottomViewTemplate() {
-    if (!this.connector?.socials) {
+    if (!this.connector?.socials?.length) {
       return null
     }
 
