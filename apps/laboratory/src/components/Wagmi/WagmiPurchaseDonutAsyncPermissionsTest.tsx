@@ -5,17 +5,14 @@ import { useChakraToast } from '../Toast'
 import { encodeFunctionData, parseEther } from 'viem'
 import { abi as donutContractAbi, address as donutContractaddress } from '../../utils/DonutContract'
 import { sepolia } from 'viem/chains'
-import { useWagmiPermissionsAsync } from '../../context/WagmiPermissionsAsyncContext'
-import { useERC7715PermissionsAsync } from '../../hooks/useERC7715PermissionsAsync'
+import { useLocalEcdsaKey } from '../../context/LocalEcdsaKeyContext'
+import { useERC7715Permissions } from '../../hooks/useERC7715Permissions'
+import { executeActionsWithECDSAAndCosignerPermissions } from '../../utils/ERC7715Utils'
 
 export function WagmiPurchaseDonutAsyncPermissionsTest() {
-  const { grantedPermissions, wcCosignerData, privateKey, projectId } = useWagmiPermissionsAsync()
+  const { privateKey } = useLocalEcdsaKey()
 
-  const { executeActionsWithECDSAAndCosignerPermissions } = useERC7715PermissionsAsync({
-    chain: sepolia,
-    permissions: grantedPermissions,
-    projectId
-  })
+  const { grantedPermissions, pci } = useERC7715Permissions()
 
   const {
     data: donutsOwned,
@@ -35,12 +32,14 @@ export function WagmiPurchaseDonutAsyncPermissionsTest() {
   async function onPurchaseDonutWithPermissions() {
     setTransactionPending(true)
     try {
-      if (!wcCosignerData) {
-        throw Error('No wc-cosigner data available')
-      }
-
       if (!privateKey) {
         throw new Error(`Unable to get dApp private key`)
+      }
+      if (!grantedPermissions) {
+        throw Error('No permissions available')
+      }
+      if (!pci) {
+        throw Error('No WC cosigner data(PCI) available')
       }
       const purchaseDonutCallData = encodeFunctionData({
         abi: donutContractAbi,
@@ -49,26 +48,27 @@ export function WagmiPurchaseDonutAsyncPermissionsTest() {
       })
       const purchaseDonutCallDataExecution = [
         {
-          target: donutContractaddress as `0x${string}`,
+          to: donutContractaddress as `0x${string}`,
           value: parseEther('0.0001'),
-          callData: purchaseDonutCallData
+          data: purchaseDonutCallData
         }
       ]
       const txHash = await executeActionsWithECDSAAndCosignerPermissions({
         actions: purchaseDonutCallDataExecution,
         chain: sepolia,
-        ecdsaPrivateKey: privateKey as `0x${string}`
+        ecdsaPrivateKey: privateKey as `0x${string}`,
+        permissions: grantedPermissions,
+        pci
       })
       if (txHash) {
         toast({
-          title: 'Transaction success',
-          description: txHash,
+          title: 'UserOp submitted successfully',
+          description: `UserOp Hash: ${txHash}`,
           type: 'success'
         })
         await fetchDonutsOwned()
       }
     } catch (error) {
-      // Console.log(error)
       toast({
         title: 'Transaction Failed',
         description: `${error}`,

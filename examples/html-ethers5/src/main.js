@@ -28,13 +28,16 @@ const chains = [
   }
 ]
 
+const metadata = {
+  name: 'AppKit',
+  description: 'AppKit HTML + Ethers5 Example',
+  url: 'https://lab.web3modal.com',
+  icons: ['https://avatars.githubusercontent.com/u/37784886']
+}
+
 const ethersConfig = defaultConfig({
-  metadata: {
-    name: 'AppKit',
-    description: 'AppKit Laboratory',
-    url: 'https://example.com',
-    icons: ['https://avatars.githubusercontent.com/u/37784886']
-  },
+  metadata,
+  chains,
   defaultChainId: 1
 })
 
@@ -42,6 +45,7 @@ const ethersConfig = defaultConfig({
 const modal = createWeb3Modal({
   ethersConfig: { ...ethersConfig, email: true },
   projectId,
+  metadata,
   chains,
   themeMode: 'light'
 })
@@ -53,4 +57,27 @@ const openNetworkModalBtn = document.getElementById('open-network-modal')
 openConnectModalBtn.addEventListener('click', () => modal.open())
 openNetworkModalBtn.addEventListener('click', () => modal.open({ view: 'Networks' }))
 
-// 5. Alternatively use w3m component buttons (see index.html)
+const updateElement = (id, content) => {
+  const element = document.getElementById(id)
+  if (element) {
+    element.innerHTML = content
+  }
+}
+
+const intervalId = setInterval(() => {
+  updateElement('getError', JSON.stringify(modal.getError(), null, 2))
+  updateElement('getChainId', JSON.stringify(modal.getChainId(), null, 2))
+  updateElement('getAddress', JSON.stringify(modal.getAddress(), null, 2))
+  updateElement('switchNetwork', JSON.stringify(modal.switchNetwork(), null, 2))
+  updateElement('getIsConnected', JSON.stringify(modal.getIsConnected(), null, 2))
+  updateElement('getWalletProvider', JSON.stringify(modal.getWalletProvider(), null, 2))
+  updateElement('getWalletProviderType', JSON.stringify(modal.getWalletProviderType(), null, 2))
+}, 2000)
+
+window.addEventListener('beforeunload', () => {
+  clearInterval(intervalId)
+})
+
+modal.subscribeProvider(state => {
+  updateElement('subscribeProvider', JSON.stringify(state, null, 2))
+})

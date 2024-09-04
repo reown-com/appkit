@@ -258,6 +258,10 @@ export const NetworkController = {
 
     const requestedCaipNetworks = this.getRequestedCaipNetworks()
 
+    if (!requestedCaipNetworks.length) {
+      return true
+    }
+
     return requestedCaipNetworks?.some(network => network.id === activeCaipNetwork?.id)
   },
 

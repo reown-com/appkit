@@ -7,8 +7,9 @@ import {
   useWeb3ModalTheme
 } from '@web3modal/wagmi/react'
 import { WagmiProvider } from 'wagmi'
-import { arbitrum, mainnet } from 'wagmi/chains'
+import { arbitrum, mainnet, polygon } from 'wagmi/chains'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { WagmiHooks } from './WagmiHooks'
 
 // 0. Setup queryClient for WAGMIv2
 const queryClient = new QueryClient()
@@ -21,11 +22,11 @@ if (!projectId) {
 
 // 2. Create wagmiConfig
 const wagmiConfig = defaultWagmiConfig({
-  chains: [mainnet, arbitrum],
+  chains: [mainnet, polygon, arbitrum],
   projectId,
   metadata: {
-    name: 'AppKit React Example',
-    description: 'AppKit React Example',
+    name: 'AppKit',
+    description: 'AppKit React Wagmi Example',
     url: '',
     icons: []
   }
@@ -35,6 +36,7 @@ const wagmiConfig = defaultWagmiConfig({
 createWeb3Modal({
   wagmiConfig,
   projectId,
+  defaultChain: polygon,
   themeMode: 'light',
   themeVariables: {
     '--w3m-color-mix': '#00DCFF',
@@ -62,6 +64,7 @@ export default function App() {
         <button onClick={() => setThemeMode(themeMode === 'dark' ? 'light' : 'dark')}>
           Toggle Theme Mode
         </button>
+        <WagmiHooks />
         <pre>{JSON.stringify(state, null, 2)}</pre>
         <pre>{JSON.stringify({ themeMode, themeVariables }, null, 2)}</pre>
         <pre>{JSON.stringify(events, null, 2)}</pre>

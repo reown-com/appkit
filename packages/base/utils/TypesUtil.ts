@@ -1,6 +1,5 @@
 import type { ThemeVariables } from '@web3modal/common'
 import type {
-  ChainAdapter,
   NetworkControllerState,
   OptionsControllerState,
   ThemeMode,
@@ -10,11 +9,6 @@ import type { SIWEControllerClient, Web3ModalSIWEClient } from '@web3modal/siwe'
 
 export type AppKitOptions<ChainType = NetworkControllerState['caipNetwork']> =
   OptionsControllerState & {
-    /**
-     * Adapter array to be used by the AppKit.
-     * @default []
-     */
-    adapters?: ChainAdapter[]
     /**
      * Sign In With Ethereum configuration object.
      * @default undefined
