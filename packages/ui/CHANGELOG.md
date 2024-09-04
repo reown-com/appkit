@@ -1,5 +1,19 @@
 # @web3modal/ui
 
+## 5.1.6
+
+### Patch Changes
+
+- fix: update CSP by @chris13524 in https://github.com/WalletConnect/web3modal/pull/2775
+- fix: ethers5 adapter import in exports by @enesozturk in https://github.com/WalletConnect/web3modal/pull/2754
+- fix/missing action functions exports from clients by @enesozturk in https://github.com/WalletConnect/web3modal/pull/2778
+- fix: logics to set default chain by @enesozturk in https://github.com/WalletConnect/web3modal/pull/2787
+- Implement actions using userOpBuilder service instead of permissionless.js by @KannuSingh in https://github.com/WalletConnect/web3modal/pull/2758
+- chore: run Playwright on self-hosted runners by @chris13524 in https://github.com/WalletConnect/web3modal/pull/2788
+- chore: add NEXT_PUBLIC_SECURE_SITE_SDK_URL to CSP by @tomiir in https://github.com/WalletConnect/web3modal/pull/2791
+- chore: enable verify tests by @chris13524 in https://github.com/WalletConnect/web3modal/pull/2774
+- fix: social login shows `undefined` by @magiziz in https://github.com/WalletConnect/web3modal/pull/2783
+
 ## 5.1.5
 
 ### Patch Changes

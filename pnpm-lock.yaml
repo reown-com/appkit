@@ -260,7 +260,7 @@ importers:
         version: 6.13.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       ethers5:
         specifier: npm:ethers@5.7.2
-        version: ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+        version: ethers@5.7.2
       framer-motion:
         specifier: 10.17.9
         version: 10.17.9(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -1012,6 +1012,39 @@ importers:
       '@vue/runtime-core':
         specifier: 3.4.3
         version: 3.4.3
+      '@wagmi/connectors':
+        specifier: 5.1.5
+        version: 5.1.5(@types/react@18.2.0)(@wagmi/core@2.13.4)(react-dom@18.2.0)(react-native@0.75.2)(react@18.2.0)(typescript@5.3.3)(viem@2.19.6)
+      '@wagmi/core':
+        specifier: 2.13.4
+        version: 2.13.4(@types/react@18.2.0)(react@18.2.0)(typescript@5.3.3)(viem@2.19.6)
+      '@wallet-standard/app':
+        specifier: 1.0.1
+        version: 1.0.1
+      '@wallet-standard/base':
+        specifier: 1.0.1
+        version: 1.0.1
+      '@wallet-standard/features':
+        specifier: 1.0.3
+        version: 1.0.3
+      '@wallet-standard/wallet':
+        specifier: 1.0.1
+        version: 1.0.1
+      '@walletconnect/ethereum-provider':
+        specifier: 2.15.1
+        version: 2.15.1(@types/react@18.2.0)(react@18.2.0)
+      '@walletconnect/types':
+        specifier: 2.13.3
+        version: 2.13.3
+      '@walletconnect/universal-provider':
+        specifier: 2.15.0
+        version: 2.15.0
+      ethers:
+        specifier: 6.13.0
+        version: 6.13.0
+      ethers5:
+        specifier: npm:ethers@5.7.2
+        version: ethers@5.7.2
       react:
         specifier: 18.2.0
         version: 18.2.0
@@ -4256,8 +4289,8 @@ packages:
     resolution: {integrity: sha512-I6bkduevXb72TIM9q2LRO63JSsF9EXduh3sBr9oybNX2hNNpr/j1tEjXrsG0Uabm4MJ1xkGAQEMwifvKZIkyxQ==}
     engines: {node: '>=16.0.0'}
 
-  '@metamask/utils@9.2.0':
-    resolution: {integrity: sha512-01riKC6oc6YJVJBL6g6TgCBwcmzwuVSIIMhnwvWanPWs3ZpUabJzy3GR9PlsBPa2pHd1p0Q6WMVRExWWEHzsQA==}
+  '@metamask/utils@9.2.1':
+    resolution: {integrity: sha512-/u663aUaB6+Xe75i3Mt/1cCljm41HDYIsna5oBrwGvgkY2zH7/9k9Zjd706cxoAbxN7QgLSVAReUiGnuxCuXrQ==}
     engines: {node: '>=16.0.0'}
 
   '@mobily/ts-belt@3.13.1':
@@ -4377,6 +4410,10 @@ packages:
   '@noble/hashes@1.4.0':
     resolution: {integrity: sha512-V1JJ1WTRUqHHrOSh597hURcMqVKVGL/ea3kv0gSnEdsEZ0/+VyPghM1lMNGc00z7CIQorSvbKpuJkxvuHbvdbg==}
     engines: {node: '>= 16'}
+
+  '@noble/hashes@1.5.0':
+    resolution: {integrity: sha512-1j6kQFb7QRru7eKN3ZDvRcP13rugwdxZqCjbiAVZfIJwgj2A65UmT4TgARXGlXgnRkORLTDTrO19ZErt7+QXgA==}
+    engines: {node: ^14.21.3 || >=16}
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -5298,6 +5335,9 @@ packages:
     cpu: [x64]
     os: [win32]
 
+  '@rtsao/scc@1.1.0':
+    resolution: {integrity: sha512-zt6OdqaDoOnJ1ZYsCYGt9YmWzDXl4vQdKTyJev62gFhRGKdx7mcT54V9KIjg+d2wi9EXsPvAPKe7i7WjfVWB8g==}
+
   '@rushstack/eslint-patch@1.10.4':
     resolution: {integrity: sha512-WJgX9nzTqknM393q1QJDJmoW28kUfEnybeTfVNcNAPnIx210RXm2DiXiHzfNPJNIUUb1tJnz/l4QGtJ30PgWmA==}
 
@@ -6034,8 +6074,8 @@ packages:
   '@swc/counter@0.1.3':
     resolution: {integrity: sha512-e2BR4lsJkkRlKZ/qCHPw9ZaSxc0MVUd7gtbtaB7aMvHeJVYe8sOB8DBZkP2DtISHGSku9sCK6T6cnY0CtXrOCQ==}
 
-  '@swc/helpers@0.5.12':
-    resolution: {integrity: sha512-KMZNXiGibsW9kvZAO1Pam2JPTDBm+KSHMMHWdsyI/1DbIZjT2A6Gy3hblVXUMEDvUAKq+e0vL0X0o54owWji7g==}
+  '@swc/helpers@0.5.13':
+    resolution: {integrity: sha512-UoKGxQ3r5kYI9dALKJapMmuK+1zWM/H17Z1+iwnNmzcJRnfFuevZs375TA5rW31pu4BS4NoSy1fRsexDXfWn5w==}
 
   '@swc/helpers@0.5.5':
     resolution: {integrity: sha512-KGYxvIOXcceOAbEk4bi/dVLEK9z8sZ0uBB3Il5b1rhfClSpcX0yfRO0KmTkqR2cnQDymwLB+25ZyMzICg/cm/A==}
@@ -6351,8 +6391,8 @@ packages:
   '@types/node@18.15.13':
     resolution: {integrity: sha512-N+0kuo9KgrUQ1Sn/ifDXsvg0TTleP7rIy4zOBGECxAljqvqfqpTfzx0Q1NUedOixRMBfe2Whhb056a42cWs26Q==}
 
-  '@types/node@18.19.47':
-    resolution: {integrity: sha512-1f7dB3BL/bpd9tnDJrrHb66Y+cVrhxSOTGorRNdHwYTUlTay3HuTDPKo9a/4vX9pMQkhYBcAbL4jQdNlhCFP9A==}
+  '@types/node@18.19.48':
+    resolution: {integrity: sha512-7WevbG4ekUcRQSZzOwxWgi5dZmTak7FaxXDoW7xVxPBmKx1rTzfmRLkeCgJzcbBnOV2dkhAPc8cCeT6agocpjg==}
 
   '@types/node@20.11.5':
     resolution: {integrity: sha512-g557vgQjUUfN76MZAN/dt1z3dzcUsimuysco0KeluHgrPdJXkP/XdAURgyO2W9fZWHRtRBiVKzKn8vyOAwlG+w==}
@@ -6638,8 +6678,16 @@ packages:
   '@walletconnect/core@2.14.0':
     resolution: {integrity: sha512-E/dgBM9q3judXnTfZQ5ILvDpeSdDpabBLsXtYXa3Nyc26cfNplfLJ2nXm9FgtTdhM1nZ7yx4+zDPiXawBRZl2g==}
 
+  '@walletconnect/core@2.15.0':
+    resolution: {integrity: sha512-QekYQlpxyn2bcQXMkMxo0+v7nUOQKyu3j5ZKzTg/HGU1eSgTRLIvYIEkC8VVflIgOw7meOAb5pFChX51wShksQ==}
+    engines: {node: '>=18'}
+
   '@walletconnect/core@2.15.1':
     resolution: {integrity: sha512-9MWVt33MFrLiAeK9nqY/B30/y0M4uiq8v9EXenIBQdlgkmXM++RTcOnn7u7EAbthGgzx3WLPRm4ViwIb+rI/Cg==}
+    engines: {node: '>=18'}
+
+  '@walletconnect/core@2.15.2':
+    resolution: {integrity: sha512-u4BGuazSNAQ48QBY7EphanBuBN6EJWyD5MXi83n1wXwfPQWAu0XNvmOjjF+xmMI5TsYH9N6Y78O6HP/VX9EOvg==}
     engines: {node: '>=18'}
 
   '@walletconnect/environment@1.0.1':
@@ -6718,8 +6766,14 @@ packages:
   '@walletconnect/sign-client@2.14.0':
     resolution: {integrity: sha512-UrB3S3eLjPYfBLCN3WJ5u7+WcZ8kFMe/QIDqLf76Jk6TaLwkSUy563LvnSw4KW/kA+/cY1KBSdUDfX1tzYJJXg==}
 
+  '@walletconnect/sign-client@2.15.0':
+    resolution: {integrity: sha512-efwrPfIwKWKeku44TGBCnQqPZGCILI1wBKK9bTF0F0/qrLR/zRe6RWpM3/L4+jOMr/BktxPZ5lRozBh+c2U7Pg==}
+
   '@walletconnect/sign-client@2.15.1':
     resolution: {integrity: sha512-YnLNEmCHgZ8yBpE3hwZnHD/bVznVMguSAlwLBNOoWUH2f4d9mR8bqa6KeVXqZ3e8mVHcxKTJTjTJ3oQMLyKIjw==}
+
+  '@walletconnect/sign-client@2.15.2':
+    resolution: {integrity: sha512-Yp4/z3IdTMngbjr7Zy7Qi1X6EZDH4nxY91X6K2KpA3MjLW0yPTGalEJgJ4p9WH7fmHRlwvfR4hjwM5eQcLo5Zg==}
 
   '@walletconnect/time@1.0.2':
     resolution: {integrity: sha512-uzdd9woDcJ1AaBZRhqy5rNC9laqWGErfc4dxA9a87mPdKOgWMD85mcFo9dIYIts/Jwocfwn07EC6EzclKubk/g==}
@@ -6734,11 +6788,20 @@ packages:
   '@walletconnect/types@2.14.0':
     resolution: {integrity: sha512-vevMi4jZLJ55vLuFOicQFmBBbLyb+S0sZS4IsaBdZkQflfGIq34HkN13c/KPl4Ye0aoR4/cUcUSitmGIzEQM5g==}
 
+  '@walletconnect/types@2.15.0':
+    resolution: {integrity: sha512-hLffDKKe70jIrK+YcLkAnzi6vqNki1SDBWjV+M/72mKcU2KzXxk0G2STFsWsQDx8DoqxMiuGehd0DlD1jwQmBg==}
+
   '@walletconnect/types@2.15.1':
     resolution: {integrity: sha512-4WkMsHD8ioZI5GmxNT0qMlz6msI7ZajBcTyDxfRncaNZVau0C+Btw1U4jWO+gxwJVDJY+Ue/cb1QKJ5BanZsyw==}
 
+  '@walletconnect/types@2.15.2':
+    resolution: {integrity: sha512-TGnQZYWZJJ3I8dqgpMPwhO1IRXDuY8/tWPI0nNWJDyTK7b3E9prDGugnPmDDjpTYVoETnUTgW/jQaHNTq4yV7Q==}
+
   '@walletconnect/universal-provider@2.14.0':
     resolution: {integrity: sha512-Mr8uoTmD6H0+Hh+3gxBu4l3T2uP/nNPR02sVtwEujNum++F727mMk+ifPRIpkVo21V/bvXFEy8sHTs5hqyq5iA==}
+
+  '@walletconnect/universal-provider@2.15.0':
+    resolution: {integrity: sha512-+jIuYyLfud1XRYPWt/3wYiD7DYUOSZk26qbtvZFMj1m947NRnZGzp+0gt1ORi7NInEtX3R0fUhMOYKnPwadp6g==}
 
   '@walletconnect/universal-provider@2.15.1':
     resolution: {integrity: sha512-JvKwHoE/ugWSKOmrEr03go1V79N0bbYV6w24Lqlzz4VAoReZZo8TDKsya7UkJ1L5HUCgKVP+AVktuJv8khzJ6w==}
@@ -6746,8 +6809,14 @@ packages:
   '@walletconnect/utils@2.14.0':
     resolution: {integrity: sha512-vRVomYQEtEAyCK2c5bzzEvtgxaGGITF8mWuIL+WYSAMyEJLY97mirP2urDucNwcUczwxUgI+no9RiNFbUHreQQ==}
 
+  '@walletconnect/utils@2.15.0':
+    resolution: {integrity: sha512-xaazgCMyr5fUPm2QuZ76G+W8beDfKMILqJ3INL6wyuaLil2YQNdsCSvWMNhSP+EZeKD3SUqqBmQaM/maP0YHTg==}
+
   '@walletconnect/utils@2.15.1':
     resolution: {integrity: sha512-i5AR8XpZdcX8ghaCjYV13Er/KAGe56c1mLaG9c2cv9kmnZMZijeMdInjX/flnSM1RFDUiZXvKPMUNwlCL4NsWw==}
+
+  '@walletconnect/utils@2.15.2':
+    resolution: {integrity: sha512-H+fNH9cHDezdaEiEsO7/3URSIzqhumuacwB/+0PX0sSCoktmU9AfTqA8fJGG43zOPixleBqOymzO6owB1Y7jtQ==}
 
   '@walletconnect/window-getters@1.0.0':
     resolution: {integrity: sha512-xB0SQsLaleIYIkSsl43vm8EwETpBzJ2gnzk7e0wMF3ktqiTGS6TFHxcprMl5R44KKh4tCcHCJwolMCaDSwtAaA==}
@@ -8170,8 +8239,8 @@ packages:
       eslint-plugin-import-x:
         optional: true
 
-  eslint-module-utils@2.8.2:
-    resolution: {integrity: sha512-3XnC5fDyc8M4J2E8pt8pmSVRX2M+5yWMCfI/kDZwauQeFgzQOuhcRBFKjTeJagqgk4sFKxe1mvNVnaWwImx/Tg==}
+  eslint-module-utils@2.9.0:
+    resolution: {integrity: sha512-McVbYmwA3NEKwRQY5g4aWMdcZE5xZxV8i8l7CqJSrameuGSQJtSWaL/LxTEzSKKaCcOhlpDR8XEfYXWPrdo/ZQ==}
     engines: {node: '>=4'}
     peerDependencies:
       '@typescript-eslint/parser': '*'
@@ -8191,8 +8260,8 @@ packages:
       eslint-import-resolver-webpack:
         optional: true
 
-  eslint-plugin-import@2.29.1:
-    resolution: {integrity: sha512-BbPC0cuExzhiMo4Ff1BTVwHpjjv28C5R+btTOGaCRC7UEz801up0JadwkeSk5Ued6TG34uaczuVuH6qyy5YUxw==}
+  eslint-plugin-import@2.30.0:
+    resolution: {integrity: sha512-/mHNE9jINJfiD2EKkg1BKyPyUk4zdnT54YgbOgfjSakWT5oyX/qQLVNTkehyfpcMxZXMy1zyonZ2v7hZTX43Yw==}
     engines: {node: '>=4'}
     peerDependencies:
       '@typescript-eslint/parser': '*'
@@ -8233,8 +8302,8 @@ packages:
     peerDependencies:
       eslint: ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0-0
 
-  eslint-plugin-react@7.35.0:
-    resolution: {integrity: sha512-v501SSMOWv8gerHkk+IIQBkcGRGrO2nfybfj5pLxuJNFTPxxA3PSryhXTK+9pNbtkggheDdsC0E9Q8CuPk6JKA==}
+  eslint-plugin-react@7.35.1:
+    resolution: {integrity: sha512-B5ok2JgbaaWn/zXbKCGgKDNL2tsID3Pd/c/yvjcpsd9HQDwyYc/TQv3AZMmOvrJgCs3AnYNUHRCQEMMQAYJ7Yg==}
     engines: {node: '>=4'}
     peerDependencies:
       eslint: ^3 || ^4 || ^5 || ^6 || ^7 || ^8 || ^9.7
@@ -8446,8 +8515,8 @@ packages:
     resolution: {integrity: sha512-B9/wizE4WngqQftFPmdaMYlXoJlJOYxGQOanC77fq9k8+Z0v5dDSVh+3glErdIROP//s/jgb7ZuxKfB8nVyo0g==}
     hasBin: true
 
-  fast-xml-parser@4.4.1:
-    resolution: {integrity: sha512-xkjOecfnKGkSsOwtZ5Pz7Us/T6mrbPQrq0nh+aCO5V9nk5NLWmasAHumTKjiPJPWANe+kAZ84Jc8ooJkzZ88Sw==}
+  fast-xml-parser@4.5.0:
+    resolution: {integrity: sha512-/PlTQCI96+fZMAOLMZK4CWG1ItCbfZ/0jx7UIJFChPNrx7tcEgerUgWbeieCM9MfHInUDyK8DWYZ+YrywDJuTg==}
     hasBin: true
 
   fastq@1.17.1:
@@ -10467,8 +10536,8 @@ packages:
   pend@1.2.0:
     resolution: {integrity: sha512-F3asv42UuXchdzt+xXqfW1OGlVBe+mxa2mqI0pg5yAHZPvFmY3Y6drSf/GQ1A86WgWEN9Kzh/WrgKa6iGcHXLg==}
 
-  picocolors@1.0.1:
-    resolution: {integrity: sha512-anP1Z8qwhkbmu7MFP5iTt+wQKXgwzf7zTyGlcdzabySa9vd0Xt392U0rVmz9poOaBj0uHJKyyo9/upk0HrEQew==}
+  picocolors@1.1.0:
+    resolution: {integrity: sha512-TQ92mBOW0l3LeMeyLV6mzy/kWr8lkd/hp3mTg7wYK7zJhuBStmGMBG0BdeDZS/dZx1IukaX6Bk11zcln25o1Aw==}
 
   picomatch@2.3.1:
     resolution: {integrity: sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==}
@@ -10597,8 +10666,8 @@ packages:
     resolution: {integrity: sha512-u5U8qYpBCpN13BsiEB0CbR1Hhh4Gc0zLFuedrHJKMctHCHAGrMdG0PRM/KErzAL3CU6/eckEtmHNB3x6e3c0vA==}
     engines: {node: ^10 || ^12 || >=14}
 
-  postcss@8.4.41:
-    resolution: {integrity: sha512-TesUflQ0WKZqAvg52PWL6kHgLKP6xB6heTOdoYM0Wt2UHyxNa4K25EZZMgKns3BH1RLVbZCREPpLY0rhnNoHVQ==}
+  postcss@8.4.44:
+    resolution: {integrity: sha512-Aweb9unOEpQ3ezu4Q00DPvvM2ZTUitJdNKeP/+uQgr1IBIqu574IaZoURId7BKtWMREwzKa9OgzPzezWGPWFQw==}
     engines: {node: ^10 || ^12 || >=14}
 
   preact-render-to-string@5.2.6:
@@ -12069,8 +12138,8 @@ packages:
     resolution: {integrity: sha512-pjy2bYhSsufwWlKwPc+l3cN7+wuJlK6uz0YdJEOlQDbl6jo/YlPi4mb8agUkVC8BF7V8NuzeyPNqRksA3hztKQ==}
     engines: {node: '>= 0.8'}
 
-  unplugin@1.12.2:
-    resolution: {integrity: sha512-bEqQxeC7rxtxPZ3M5V4Djcc4lQqKPgGe3mAWZvxcSmX5jhGxll19NliaRzQSQPrk4xJZSGniK3puLWpRuZN7VQ==}
+  unplugin@1.12.3:
+    resolution: {integrity: sha512-my8DH0/T/Kx33KO+6QXAqdeMYgyy0GktlOpdQjpagfHKw5DrD0ctPr7SHUyOT3g4ZVpzCQGt/qcpuoKJ/pniHA==}
     engines: {node: '>=14.0.0'}
 
   unstorage@1.10.2:
@@ -14032,7 +14101,7 @@ snapshots:
 
   '@bcoe/v8-coverage@0.2.3': {}
 
-  '@chakra-ui/accordion@2.3.1(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(framer-motion@10.17.9(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)':
+  '@chakra-ui/accordion@2.3.1(@chakra-ui/system@2.6.2)(framer-motion@10.17.9)(react@18.2.0)':
     dependencies:
       '@chakra-ui/descendant': 3.1.0(react@18.2.0)
       '@chakra-ui/icon': 3.2.0(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)
@@ -14045,7 +14114,7 @@ snapshots:
       framer-motion: 10.17.9(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       react: 18.2.0
 
-  '@chakra-ui/alert@2.2.2(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)':
+  '@chakra-ui/alert@2.2.2(@chakra-ui/system@2.6.2)(react@18.2.0)':
     dependencies:
       '@chakra-ui/icon': 3.2.0(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)
       '@chakra-ui/react-context': 2.1.0(react@18.2.0)
@@ -14056,7 +14125,7 @@ snapshots:
 
   '@chakra-ui/anatomy@2.2.2': {}
 
-  '@chakra-ui/avatar@2.3.0(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)':
+  '@chakra-ui/avatar@2.3.0(@chakra-ui/system@2.6.2)(react@18.2.0)':
     dependencies:
       '@chakra-ui/image': 2.1.0(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)
       '@chakra-ui/react-children-utils': 2.0.6(react@18.2.0)
@@ -14065,7 +14134,7 @@ snapshots:
       '@chakra-ui/system': 2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0)
       react: 18.2.0
 
-  '@chakra-ui/breadcrumb@2.2.0(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)':
+  '@chakra-ui/breadcrumb@2.2.0(@chakra-ui/system@2.6.2)(react@18.2.0)':
     dependencies:
       '@chakra-ui/react-children-utils': 2.0.6(react@18.2.0)
       '@chakra-ui/react-context': 2.1.0(react@18.2.0)
@@ -14077,7 +14146,7 @@ snapshots:
     dependencies:
       '@chakra-ui/shared-utils': 2.0.5
 
-  '@chakra-ui/button@2.1.0(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)':
+  '@chakra-ui/button@2.1.0(@chakra-ui/system@2.6.2)(react@18.2.0)':
     dependencies:
       '@chakra-ui/react-context': 2.1.0(react@18.2.0)
       '@chakra-ui/react-use-merge-refs': 2.1.0(react@18.2.0)
@@ -14086,13 +14155,13 @@ snapshots:
       '@chakra-ui/system': 2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0)
       react: 18.2.0
 
-  '@chakra-ui/card@2.2.0(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)':
+  '@chakra-ui/card@2.2.0(@chakra-ui/system@2.6.2)(react@18.2.0)':
     dependencies:
       '@chakra-ui/shared-utils': 2.0.5
       '@chakra-ui/system': 2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0)
       react: 18.2.0
 
-  '@chakra-ui/checkbox@2.3.2(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)':
+  '@chakra-ui/checkbox@2.3.2(@chakra-ui/system@2.6.2)(react@18.2.0)':
     dependencies:
       '@chakra-ui/form-control': 2.2.0(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)
       '@chakra-ui/react-context': 2.1.0(react@18.2.0)
@@ -14114,7 +14183,7 @@ snapshots:
       '@chakra-ui/shared-utils': 2.0.5
       react: 18.2.0
 
-  '@chakra-ui/close-button@2.1.1(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)':
+  '@chakra-ui/close-button@2.1.1(@chakra-ui/system@2.6.2)(react@18.2.0)':
     dependencies:
       '@chakra-ui/icon': 3.2.0(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)
       '@chakra-ui/system': 2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0)
@@ -14125,7 +14194,7 @@ snapshots:
       '@chakra-ui/react-use-safe-layout-effect': 2.1.0(react@18.2.0)
       react: 18.2.0
 
-  '@chakra-ui/control-box@2.1.0(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)':
+  '@chakra-ui/control-box@2.1.0(@chakra-ui/system@2.6.2)(react@18.2.0)':
     dependencies:
       '@chakra-ui/system': 2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0)
       react: 18.2.0
@@ -14137,7 +14206,7 @@ snapshots:
       '@chakra-ui/shared-utils': 2.0.5
       react: 18.2.0
 
-  '@chakra-ui/css-reset@2.3.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(react@18.2.0)':
+  '@chakra-ui/css-reset@2.3.0(@emotion/react@11.11.3)(react@18.2.0)':
     dependencies:
       '@emotion/react': 11.11.3(@types/react@18.2.62)(react@18.2.0)
       react: 18.2.0
@@ -14150,7 +14219,7 @@ snapshots:
 
   '@chakra-ui/dom-utils@2.1.0': {}
 
-  '@chakra-ui/editable@3.1.0(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)':
+  '@chakra-ui/editable@3.1.0(@chakra-ui/system@2.6.2)(react@18.2.0)':
     dependencies:
       '@chakra-ui/react-context': 2.1.0(react@18.2.0)
       '@chakra-ui/react-types': 2.0.7(react@18.2.0)
@@ -14174,7 +14243,7 @@ snapshots:
     transitivePeerDependencies:
       - '@types/react'
 
-  '@chakra-ui/form-control@2.2.0(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)':
+  '@chakra-ui/form-control@2.2.0(@chakra-ui/system@2.6.2)(react@18.2.0)':
     dependencies:
       '@chakra-ui/icon': 3.2.0(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)
       '@chakra-ui/react-context': 2.1.0(react@18.2.0)
@@ -14192,26 +14261,26 @@ snapshots:
       copy-to-clipboard: 3.3.3
       react: 18.2.0
 
-  '@chakra-ui/icon@3.2.0(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)':
+  '@chakra-ui/icon@3.2.0(@chakra-ui/system@2.6.2)(react@18.2.0)':
     dependencies:
       '@chakra-ui/shared-utils': 2.0.5
       '@chakra-ui/system': 2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0)
       react: 18.2.0
 
-  '@chakra-ui/icons@2.1.1(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)':
+  '@chakra-ui/icons@2.1.1(@chakra-ui/system@2.6.2)(react@18.2.0)':
     dependencies:
       '@chakra-ui/icon': 3.2.0(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)
       '@chakra-ui/system': 2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0)
       react: 18.2.0
 
-  '@chakra-ui/image@2.1.0(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)':
+  '@chakra-ui/image@2.1.0(@chakra-ui/system@2.6.2)(react@18.2.0)':
     dependencies:
       '@chakra-ui/react-use-safe-layout-effect': 2.1.0(react@18.2.0)
       '@chakra-ui/shared-utils': 2.0.5
       '@chakra-ui/system': 2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0)
       react: 18.2.0
 
-  '@chakra-ui/input@2.1.2(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)':
+  '@chakra-ui/input@2.1.2(@chakra-ui/system@2.6.2)(react@18.2.0)':
     dependencies:
       '@chakra-ui/form-control': 2.2.0(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)
       '@chakra-ui/object-utils': 2.1.0
@@ -14221,7 +14290,7 @@ snapshots:
       '@chakra-ui/system': 2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0)
       react: 18.2.0
 
-  '@chakra-ui/layout@2.3.1(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)':
+  '@chakra-ui/layout@2.3.1(@chakra-ui/system@2.6.2)(react@18.2.0)':
     dependencies:
       '@chakra-ui/breakpoint-utils': 2.0.8
       '@chakra-ui/icon': 3.2.0(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)
@@ -14238,7 +14307,7 @@ snapshots:
     dependencies:
       react: 18.2.0
 
-  '@chakra-ui/media-query@3.3.0(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)':
+  '@chakra-ui/media-query@3.3.0(@chakra-ui/system@2.6.2)(react@18.2.0)':
     dependencies:
       '@chakra-ui/breakpoint-utils': 2.0.8
       '@chakra-ui/react-env': 3.1.0(react@18.2.0)
@@ -14246,7 +14315,7 @@ snapshots:
       '@chakra-ui/system': 2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0)
       react: 18.2.0
 
-  '@chakra-ui/menu@2.2.1(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(framer-motion@10.17.9(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)':
+  '@chakra-ui/menu@2.2.1(@chakra-ui/system@2.6.2)(framer-motion@10.17.9)(react@18.2.0)':
     dependencies:
       '@chakra-ui/clickable': 2.1.0(react@18.2.0)
       '@chakra-ui/descendant': 3.1.0(react@18.2.0)
@@ -14267,7 +14336,7 @@ snapshots:
       framer-motion: 10.17.9(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       react: 18.2.0
 
-  '@chakra-ui/modal@2.3.1(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(@types/react@18.2.62)(framer-motion@10.17.9(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@chakra-ui/modal@2.3.1(@chakra-ui/system@2.6.2)(@types/react@18.2.62)(framer-motion@10.17.9)(react-dom@18.2.0)(react@18.2.0)':
     dependencies:
       '@chakra-ui/close-button': 2.1.1(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)
       '@chakra-ui/focus-lock': 2.1.0(@types/react@18.2.62)(react@18.2.0)
@@ -14286,7 +14355,7 @@ snapshots:
     transitivePeerDependencies:
       - '@types/react'
 
-  '@chakra-ui/number-input@2.1.2(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)':
+  '@chakra-ui/number-input@2.1.2(@chakra-ui/system@2.6.2)(react@18.2.0)':
     dependencies:
       '@chakra-ui/counter': 2.1.0(react@18.2.0)
       '@chakra-ui/form-control': 2.2.0(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)
@@ -14307,7 +14376,7 @@ snapshots:
 
   '@chakra-ui/object-utils@2.1.0': {}
 
-  '@chakra-ui/pin-input@2.1.0(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)':
+  '@chakra-ui/pin-input@2.1.0(@chakra-ui/system@2.6.2)(react@18.2.0)':
     dependencies:
       '@chakra-ui/descendant': 3.1.0(react@18.2.0)
       '@chakra-ui/react-children-utils': 2.0.6(react@18.2.0)
@@ -14318,7 +14387,7 @@ snapshots:
       '@chakra-ui/system': 2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0)
       react: 18.2.0
 
-  '@chakra-ui/popover@2.2.1(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(framer-motion@10.17.9(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)':
+  '@chakra-ui/popover@2.2.1(@chakra-ui/system@2.6.2)(framer-motion@10.17.9)(react@18.2.0)':
     dependencies:
       '@chakra-ui/close-button': 2.1.1(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)
       '@chakra-ui/lazy-utils': 2.0.5
@@ -14342,20 +14411,20 @@ snapshots:
       '@popperjs/core': 2.11.8
       react: 18.2.0
 
-  '@chakra-ui/portal@2.1.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@chakra-ui/portal@2.1.0(react-dom@18.2.0)(react@18.2.0)':
     dependencies:
       '@chakra-ui/react-context': 2.1.0(react@18.2.0)
       '@chakra-ui/react-use-safe-layout-effect': 2.1.0(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
 
-  '@chakra-ui/progress@2.2.0(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)':
+  '@chakra-ui/progress@2.2.0(@chakra-ui/system@2.6.2)(react@18.2.0)':
     dependencies:
       '@chakra-ui/react-context': 2.1.0(react@18.2.0)
       '@chakra-ui/system': 2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0)
       react: 18.2.0
 
-  '@chakra-ui/provider@2.4.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@chakra-ui/provider@2.4.2(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(react-dom@18.2.0)(react@18.2.0)':
     dependencies:
       '@chakra-ui/css-reset': 2.3.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(react@18.2.0)
       '@chakra-ui/portal': 2.1.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -14367,7 +14436,7 @@ snapshots:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
 
-  '@chakra-ui/radio@2.1.2(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)':
+  '@chakra-ui/radio@2.1.2(@chakra-ui/system@2.6.2)(react@18.2.0)':
     dependencies:
       '@chakra-ui/form-control': 2.2.0(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)
       '@chakra-ui/react-context': 2.1.0(react@18.2.0)
@@ -14485,7 +14554,7 @@ snapshots:
       '@chakra-ui/utils': 2.0.15
       react: 18.2.0
 
-  '@chakra-ui/react@2.8.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(framer-motion@10.17.9(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@chakra-ui/react@2.8.2(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(@types/react@18.2.62)(framer-motion@10.17.9)(react-dom@18.2.0)(react@18.2.0)':
     dependencies:
       '@chakra-ui/accordion': 2.3.1(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(framer-motion@10.17.9(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)
       '@chakra-ui/alert': 2.2.2(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)
@@ -14548,7 +14617,7 @@ snapshots:
     transitivePeerDependencies:
       - '@types/react'
 
-  '@chakra-ui/select@2.1.2(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)':
+  '@chakra-ui/select@2.1.2(@chakra-ui/system@2.6.2)(react@18.2.0)':
     dependencies:
       '@chakra-ui/form-control': 2.2.0(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)
       '@chakra-ui/shared-utils': 2.0.5
@@ -14557,7 +14626,7 @@ snapshots:
 
   '@chakra-ui/shared-utils@2.0.5': {}
 
-  '@chakra-ui/skeleton@2.1.0(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)':
+  '@chakra-ui/skeleton@2.1.0(@chakra-ui/system@2.6.2)(react@18.2.0)':
     dependencies:
       '@chakra-ui/media-query': 3.3.0(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)
       '@chakra-ui/react-use-previous': 2.1.0(react@18.2.0)
@@ -14565,12 +14634,12 @@ snapshots:
       '@chakra-ui/system': 2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0)
       react: 18.2.0
 
-  '@chakra-ui/skip-nav@2.1.0(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)':
+  '@chakra-ui/skip-nav@2.1.0(@chakra-ui/system@2.6.2)(react@18.2.0)':
     dependencies:
       '@chakra-ui/system': 2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0)
       react: 18.2.0
 
-  '@chakra-ui/slider@2.1.0(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)':
+  '@chakra-ui/slider@2.1.0(@chakra-ui/system@2.6.2)(react@18.2.0)':
     dependencies:
       '@chakra-ui/number-utils': 2.0.7
       '@chakra-ui/react-context': 2.1.0(react@18.2.0)
@@ -14585,13 +14654,13 @@ snapshots:
       '@chakra-ui/system': 2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0)
       react: 18.2.0
 
-  '@chakra-ui/spinner@2.1.0(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)':
+  '@chakra-ui/spinner@2.1.0(@chakra-ui/system@2.6.2)(react@18.2.0)':
     dependencies:
       '@chakra-ui/shared-utils': 2.0.5
       '@chakra-ui/system': 2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0)
       react: 18.2.0
 
-  '@chakra-ui/stat@2.1.1(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)':
+  '@chakra-ui/stat@2.1.1(@chakra-ui/system@2.6.2)(react@18.2.0)':
     dependencies:
       '@chakra-ui/icon': 3.2.0(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)
       '@chakra-ui/react-context': 2.1.0(react@18.2.0)
@@ -14599,7 +14668,7 @@ snapshots:
       '@chakra-ui/system': 2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0)
       react: 18.2.0
 
-  '@chakra-ui/stepper@2.3.1(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)':
+  '@chakra-ui/stepper@2.3.1(@chakra-ui/system@2.6.2)(react@18.2.0)':
     dependencies:
       '@chakra-ui/icon': 3.2.0(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)
       '@chakra-ui/react-context': 2.1.0(react@18.2.0)
@@ -14613,7 +14682,7 @@ snapshots:
       csstype: 3.1.3
       lodash.mergewith: 4.6.2
 
-  '@chakra-ui/switch@2.1.2(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(framer-motion@10.17.9(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)':
+  '@chakra-ui/switch@2.1.2(@chakra-ui/system@2.6.2)(framer-motion@10.17.9)(react@18.2.0)':
     dependencies:
       '@chakra-ui/checkbox': 2.3.2(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)
       '@chakra-ui/shared-utils': 2.0.5
@@ -14621,7 +14690,7 @@ snapshots:
       framer-motion: 10.17.9(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       react: 18.2.0
 
-  '@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0)':
+  '@chakra-ui/system@2.6.2(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(react@18.2.0)':
     dependencies:
       '@chakra-ui/color-mode': 2.2.0(react@18.2.0)
       '@chakra-ui/object-utils': 2.1.0
@@ -14634,14 +14703,14 @@ snapshots:
       react: 18.2.0
       react-fast-compare: 3.2.2
 
-  '@chakra-ui/table@2.1.0(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)':
+  '@chakra-ui/table@2.1.0(@chakra-ui/system@2.6.2)(react@18.2.0)':
     dependencies:
       '@chakra-ui/react-context': 2.1.0(react@18.2.0)
       '@chakra-ui/shared-utils': 2.0.5
       '@chakra-ui/system': 2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0)
       react: 18.2.0
 
-  '@chakra-ui/tabs@3.0.0(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)':
+  '@chakra-ui/tabs@3.0.0(@chakra-ui/system@2.6.2)(react@18.2.0)':
     dependencies:
       '@chakra-ui/clickable': 2.1.0(react@18.2.0)
       '@chakra-ui/descendant': 3.1.0(react@18.2.0)
@@ -14655,14 +14724,14 @@ snapshots:
       '@chakra-ui/system': 2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0)
       react: 18.2.0
 
-  '@chakra-ui/tag@3.1.1(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)':
+  '@chakra-ui/tag@3.1.1(@chakra-ui/system@2.6.2)(react@18.2.0)':
     dependencies:
       '@chakra-ui/icon': 3.2.0(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)
       '@chakra-ui/react-context': 2.1.0(react@18.2.0)
       '@chakra-ui/system': 2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0)
       react: 18.2.0
 
-  '@chakra-ui/textarea@2.1.2(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)':
+  '@chakra-ui/textarea@2.1.2(@chakra-ui/system@2.6.2)(react@18.2.0)':
     dependencies:
       '@chakra-ui/form-control': 2.2.0(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)
       '@chakra-ui/shared-utils': 2.0.5
@@ -14690,7 +14759,7 @@ snapshots:
       '@chakra-ui/styled-system': 2.9.2
       '@chakra-ui/theme-tools': 2.1.2(@chakra-ui/styled-system@2.9.2)
 
-  '@chakra-ui/toast@7.0.2(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(framer-motion@10.17.9(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@chakra-ui/toast@7.0.2(@chakra-ui/system@2.6.2)(framer-motion@10.17.9)(react-dom@18.2.0)(react@18.2.0)':
     dependencies:
       '@chakra-ui/alert': 2.2.2(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)
       '@chakra-ui/close-button': 2.1.1(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)
@@ -14706,7 +14775,7 @@ snapshots:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
 
-  '@chakra-ui/tooltip@2.3.1(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(framer-motion@10.17.9(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@chakra-ui/tooltip@2.3.1(@chakra-ui/system@2.6.2)(framer-motion@10.17.9)(react-dom@18.2.0)(react@18.2.0)':
     dependencies:
       '@chakra-ui/dom-utils': 2.1.0
       '@chakra-ui/popper': 3.1.0(react@18.2.0)
@@ -14721,7 +14790,7 @@ snapshots:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
 
-  '@chakra-ui/transition@2.1.0(framer-motion@10.17.9(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)':
+  '@chakra-ui/transition@2.1.0(framer-motion@10.17.9)(react@18.2.0)':
     dependencies:
       '@chakra-ui/shared-utils': 2.0.5
       framer-motion: 10.17.9(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -14734,7 +14803,7 @@ snapshots:
       framesync: 6.1.2
       lodash.mergewith: 4.6.2
 
-  '@chakra-ui/visually-hidden@2.2.0(@chakra-ui/system@2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0))(react@18.2.0)':
+  '@chakra-ui/visually-hidden@2.2.0(@chakra-ui/system@2.6.2)(react@18.2.0)':
     dependencies:
       '@chakra-ui/system': 2.6.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0))(react@18.2.0)
       react: 18.2.0
@@ -14976,7 +15045,7 @@ snapshots:
 
   '@depay/web3-blockchains@9.5.1': {}
 
-  '@depay/web3-mock@14.17.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+  '@depay/web3-mock@14.17.0':
     dependencies:
       '@depay/solana-web3.js': 1.26.0
       '@depay/web3-blockchains': 9.5.1
@@ -15053,7 +15122,7 @@ snapshots:
 
   '@emotion/sheet@1.4.0': {}
 
-  '@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0)':
+  '@emotion/styled@11.11.0(@emotion/react@11.11.3)(@types/react@18.2.62)(react@18.2.0)':
     dependencies:
       '@babel/runtime': 7.25.6
       '@emotion/babel-plugin': 11.12.0
@@ -15707,7 +15776,7 @@ snapshots:
     dependencies:
       '@ethersproject/logger': 5.7.0
 
-  '@ethersproject/providers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+  '@ethersproject/providers@5.7.2':
     dependencies:
       '@ethersproject/abstract-provider': 5.7.0
       '@ethersproject/abstract-signer': 5.7.0
@@ -15843,7 +15912,7 @@ snapshots:
       '@floating-ui/core': 1.6.7
       '@floating-ui/utils': 0.2.7
 
-  '@floating-ui/react-dom@2.1.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@floating-ui/react-dom@2.1.1(react-dom@18.2.0)(react@18.2.0)':
     dependencies:
       '@floating-ui/dom': 1.6.10
       react: 18.2.0
@@ -15851,12 +15920,12 @@ snapshots:
 
   '@floating-ui/utils@0.2.7': {}
 
-  '@fractalwagmi/popup-connection@1.1.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@fractalwagmi/popup-connection@1.1.1(react-dom@18.2.0)(react@18.2.0)':
     dependencies:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
 
-  '@fractalwagmi/solana-wallet-adapter@0.1.1(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@fractalwagmi/solana-wallet-adapter@0.1.1(@solana/web3.js@1.95.2)(react-dom@18.2.0)(react@18.2.0)':
     dependencies:
       '@fractalwagmi/popup-connection': 1.1.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
@@ -15989,7 +16058,7 @@ snapshots:
       '@types/yargs': 17.0.33
       chalk: 4.1.2
 
-  '@jnwng/walletconnect-solana@0.2.0(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+  '@jnwng/walletconnect-solana@0.2.0(@solana/web3.js@1.95.2)':
     dependencies:
       '@solana/web3.js': 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@walletconnect/qrcode-modal': 1.8.0
@@ -16068,7 +16137,7 @@ snapshots:
       rxjs: 6.6.7
       typescript: 4.9.5
 
-  '@keystonehq/sol-keyring@0.3.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+  '@keystonehq/sol-keyring@0.3.1':
     dependencies:
       '@keystonehq/bc-ur-registry': 0.5.5
       '@keystonehq/bc-ur-registry-sol': 0.3.1
@@ -16220,7 +16289,7 @@ snapshots:
 
   '@metamask/safe-event-emitter@3.1.1': {}
 
-  '@metamask/sdk-communication-layer@0.27.0(cross-fetch@4.0.0)(eciesjs@0.3.20)(eventemitter2@6.4.9)(readable-stream@3.6.2)(socket.io-client@4.7.5(bufferutil@4.0.8)(utf-8-validate@5.0.10))':
+  '@metamask/sdk-communication-layer@0.27.0(cross-fetch@4.0.0)(eciesjs@0.3.20)(eventemitter2@6.4.9)(readable-stream@3.6.2)(socket.io-client@4.7.5)':
     dependencies:
       bufferutil: 4.0.8
       cross-fetch: 4.0.0
@@ -16235,7 +16304,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@metamask/sdk-install-modal-web@0.26.5(i18next@23.11.5)(react-dom@18.2.0(react@18.2.0))(react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.2.0)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(react@18.2.0)':
+  '@metamask/sdk-install-modal-web@0.26.5(i18next@23.11.5)(react-dom@18.2.0)(react-native@0.75.2)(react@18.2.0)':
     dependencies:
       i18next: 23.11.5
       qr-code-styling: 1.6.0-rc.1
@@ -16244,16 +16313,15 @@ snapshots:
       react-dom: 18.2.0(react@18.2.0)
       react-native: 0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.2.0)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10)
 
-  '@metamask/sdk-install-modal-web@0.26.5(i18next@23.11.5)(react-dom@18.2.0(react@18.2.0))(react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(react@18.2.0)':
+  '@metamask/sdk-install-modal-web@0.26.5(i18next@23.11.5)(react-native@0.75.2)(react@18.2.0)':
     dependencies:
       i18next: 23.11.5
       qr-code-styling: 1.6.0-rc.1
     optionalDependencies:
       react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-      react-native: 0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10)
+      react-native: 0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.4)(react@18.2.0)(typescript@5.3.3)
 
-  '@metamask/sdk@0.27.0(bufferutil@4.0.8)(react-dom@18.2.0(react@18.2.0))(react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.2.0)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(react@18.2.0)(rollup@4.21.2)(utf-8-validate@5.0.10)':
+  '@metamask/sdk@0.27.0(react-dom@18.2.0)(react-native@0.75.2)(react@18.2.0)':
     dependencies:
       '@metamask/onboarding': 1.0.1
       '@metamask/providers': 16.1.0
@@ -16288,7 +16356,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@metamask/sdk@0.27.0(bufferutil@4.0.8)(react-dom@18.2.0(react@18.2.0))(react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(react@18.2.0)(rollup@4.21.2)(utf-8-validate@5.0.10)':
+  '@metamask/sdk@0.27.0(react-native@0.75.2)(react@18.2.0)':
     dependencies:
       '@metamask/onboarding': 1.0.1
       '@metamask/providers': 16.1.0
@@ -16349,7 +16417,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@metamask/utils@9.2.0':
+  '@metamask/utils@9.2.1':
     dependencies:
       '@ethereumjs/tx': 4.2.0
       '@metamask/superstruct': 3.1.0
@@ -16482,6 +16550,8 @@ snapshots:
   '@noble/hashes@1.3.2': {}
 
   '@noble/hashes@1.4.0': {}
+
+  '@noble/hashes@1.5.0': {}
 
   '@nodelib/fs.scandir@2.1.5':
     dependencies:
@@ -16657,10 +16727,16 @@ snapshots:
       crypto-js: 4.2.0
       uuidv4: 6.2.13
 
-  '@particle-network/solana-wallet@1.3.2(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(bs58@6.0.0)':
+  '@particle-network/solana-wallet@1.3.2(@solana/web3.js@1.95.2)(bs58@4.0.1)':
     dependencies:
       '@particle-network/auth': 1.3.1
-      '@solana/web3.js': 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@solana/web3.js': 1.95.2
+      bs58: 4.0.1
+
+  '@particle-network/solana-wallet@1.3.2(@solana/web3.js@1.95.2)(bs58@6.0.0)':
+    dependencies:
+      '@particle-network/auth': 1.3.1
+      '@solana/web3.js': 1.95.2
       bs58: 6.0.0
 
   '@pkgjs/parseargs@0.11.0':
@@ -16674,7 +16750,7 @@ snapshots:
 
   '@popperjs/core@2.11.8': {}
 
-  '@project-serum/sol-wallet-adapter@0.2.6(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))':
+  '@project-serum/sol-wallet-adapter@0.2.6(@solana/web3.js@1.95.2)':
     dependencies:
       '@solana/web3.js': 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       bs58: 4.0.1
@@ -16713,17 +16789,20 @@ snapshots:
 
   '@radix-ui/primitive@1.1.0': {}
 
+  '@radix-ui/react-arrow@1.0.3(react-dom@18.2.0)(react@18.2.0)':
+    dependencies:
+      '@babel/runtime': 7.25.6
+
+  '@radix-ui/primitive@1.1.0': {}
+
   '@radix-ui/react-arrow@1.0.3(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
     dependencies:
       '@babel/runtime': 7.25.6
       '@radix-ui/react-primitive': 1.0.3(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-    optionalDependencies:
-      '@types/react': 18.2.62
-      '@types/react-dom': 18.2.7
 
-  '@radix-ui/react-collection@1.0.3(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@radix-ui/react-collection@1.0.3(react-dom@18.2.0)(react@18.2.0)':
     dependencies:
       '@babel/runtime': 7.25.6
       '@radix-ui/react-compose-refs': 1.0.1(@types/react@18.2.62)(react@18.2.0)
@@ -16732,11 +16811,8 @@ snapshots:
       '@radix-ui/react-slot': 1.0.2(@types/react@18.2.62)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-    optionalDependencies:
-      '@types/react': 18.2.62
-      '@types/react-dom': 18.2.7
 
-  '@radix-ui/react-collection@1.1.0(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@radix-ui/react-collection@1.1.0(react-dom@18.2.0)(react@18.2.0)':
     dependencies:
       '@radix-ui/react-compose-refs': 1.1.0(@types/react@18.2.62)(react@18.2.0)
       '@radix-ui/react-context': 1.1.0(@types/react@18.2.62)(react@18.2.0)
@@ -16744,9 +16820,6 @@ snapshots:
       '@radix-ui/react-slot': 1.1.0(@types/react@18.2.62)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-    optionalDependencies:
-      '@types/react': 18.2.62
-      '@types/react-dom': 18.2.7
 
   '@radix-ui/react-compose-refs@1.0.1(@types/react@18.2.62)(react@18.2.0)':
     dependencies:
@@ -16774,7 +16847,7 @@ snapshots:
     optionalDependencies:
       '@types/react': 18.2.62
 
-  '@radix-ui/react-dialog@1.1.1(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@radix-ui/react-dialog@1.1.1(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.2.0)(react@18.2.0)':
     dependencies:
       '@radix-ui/primitive': 1.1.0
       '@radix-ui/react-compose-refs': 1.1.0(@types/react@18.2.62)(react@18.2.0)
@@ -16792,24 +16865,17 @@ snapshots:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
       react-remove-scroll: 2.5.7(@types/react@18.2.62)(react@18.2.0)
-    optionalDependencies:
-      '@types/react': 18.2.62
-      '@types/react-dom': 18.2.7
 
-  '@radix-ui/react-direction@1.0.1(@types/react@18.2.62)(react@18.2.0)':
+  '@radix-ui/react-direction@1.0.1(react@18.2.0)':
     dependencies:
       '@babel/runtime': 7.25.6
       react: 18.2.0
-    optionalDependencies:
-      '@types/react': 18.2.62
 
-  '@radix-ui/react-direction@1.1.0(@types/react@18.2.62)(react@18.2.0)':
+  '@radix-ui/react-direction@1.1.0(react@18.2.0)':
     dependencies:
       react: 18.2.0
-    optionalDependencies:
-      '@types/react': 18.2.62
 
-  '@radix-ui/react-dismissable-layer@1.0.4(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@radix-ui/react-dismissable-layer@1.0.4(react-dom@18.2.0)(react@18.2.0)':
     dependencies:
       '@babel/runtime': 7.25.6
       '@radix-ui/primitive': 1.0.1
@@ -16819,11 +16885,8 @@ snapshots:
       '@radix-ui/react-use-escape-keydown': 1.0.3(@types/react@18.2.62)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-    optionalDependencies:
-      '@types/react': 18.2.62
-      '@types/react-dom': 18.2.7
 
-  '@radix-ui/react-dismissable-layer@1.1.0(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@radix-ui/react-dismissable-layer@1.1.0(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.2.0)(react@18.2.0)':
     dependencies:
       '@radix-ui/primitive': 1.1.0
       '@radix-ui/react-compose-refs': 1.1.0(@types/react@18.2.62)(react@18.2.0)
@@ -16832,24 +16895,18 @@ snapshots:
       '@radix-ui/react-use-escape-keydown': 1.1.0(@types/react@18.2.62)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-    optionalDependencies:
-      '@types/react': 18.2.62
-      '@types/react-dom': 18.2.7
 
-  '@radix-ui/react-focus-guards@1.0.1(@types/react@18.2.62)(react@18.2.0)':
+  '@radix-ui/react-focus-guards@1.0.1(react@18.2.0)':
     dependencies:
       '@babel/runtime': 7.25.6
       react: 18.2.0
-    optionalDependencies:
-      '@types/react': 18.2.62
 
   '@radix-ui/react-focus-guards@1.1.0(@types/react@18.2.62)(react@18.2.0)':
     dependencies:
-      react: 18.2.0
-    optionalDependencies:
       '@types/react': 18.2.62
+      react: 18.2.0
 
-  '@radix-ui/react-focus-scope@1.0.3(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@radix-ui/react-focus-scope@1.0.3(react-dom@18.2.0)(react@18.2.0)':
     dependencies:
       '@babel/runtime': 7.25.6
       '@radix-ui/react-compose-refs': 1.0.1(@types/react@18.2.62)(react@18.2.0)
@@ -16857,28 +16914,20 @@ snapshots:
       '@radix-ui/react-use-callback-ref': 1.0.1(@types/react@18.2.62)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-    optionalDependencies:
-      '@types/react': 18.2.62
-      '@types/react-dom': 18.2.7
 
-  '@radix-ui/react-focus-scope@1.1.0(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@radix-ui/react-focus-scope@1.1.0(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.2.0)(react@18.2.0)':
     dependencies:
       '@radix-ui/react-compose-refs': 1.1.0(@types/react@18.2.62)(react@18.2.0)
       '@radix-ui/react-primitive': 2.0.0(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@radix-ui/react-use-callback-ref': 1.1.0(@types/react@18.2.62)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-    optionalDependencies:
-      '@types/react': 18.2.62
-      '@types/react-dom': 18.2.7
 
-  '@radix-ui/react-id@1.0.1(@types/react@18.2.62)(react@18.2.0)':
+  '@radix-ui/react-id@1.0.1(react@18.2.0)':
     dependencies:
       '@babel/runtime': 7.25.6
       '@radix-ui/react-use-layout-effect': 1.0.1(@types/react@18.2.62)(react@18.2.0)
       react: 18.2.0
-    optionalDependencies:
-      '@types/react': 18.2.62
 
   '@radix-ui/react-id@1.1.0(@types/react@18.2.62)(react@18.2.0)':
     dependencies:
@@ -16887,7 +16936,7 @@ snapshots:
     optionalDependencies:
       '@types/react': 18.2.62
 
-  '@radix-ui/react-popper@1.1.2(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@radix-ui/react-popper@1.1.2(react-dom@18.2.0)(react@18.2.0)':
     dependencies:
       '@babel/runtime': 7.25.6
       '@floating-ui/react-dom': 2.1.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -16902,7 +16951,18 @@ snapshots:
       '@radix-ui/rect': 1.0.1
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-    optionalDependencies:
+
+  '@radix-ui/react-portal@1.0.3(react-dom@18.2.0)(react@18.2.0)':
+    dependencies:
+      '@babel/runtime': 7.25.6
+      '@radix-ui/react-primitive': 1.0.3(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.2.0)(react@18.2.0)
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+
+  '@radix-ui/react-portal@1.1.1(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.2.0)(react@18.2.0)':
+    dependencies:
+      '@radix-ui/react-primitive': 2.0.0(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.2.0)(react@18.2.0)
+      '@radix-ui/react-use-layout-effect': 1.1.0(@types/react@18.2.62)(react@18.2.0)
       '@types/react': 18.2.62
       '@types/react-dom': 18.2.7
 
@@ -16912,31 +16972,15 @@ snapshots:
       '@radix-ui/react-primitive': 1.0.3(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-    optionalDependencies:
-      '@types/react': 18.2.62
-      '@types/react-dom': 18.2.7
 
-  '@radix-ui/react-portal@1.1.1(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
-    dependencies:
-      '@radix-ui/react-primitive': 2.0.0(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
-      '@radix-ui/react-use-layout-effect': 1.1.0(@types/react@18.2.62)(react@18.2.0)
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-    optionalDependencies:
-      '@types/react': 18.2.62
-      '@types/react-dom': 18.2.7
-
-  '@radix-ui/react-presence@1.1.0(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@radix-ui/react-presence@1.1.0(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.2.0)(react@18.2.0)':
     dependencies:
       '@radix-ui/react-compose-refs': 1.1.0(@types/react@18.2.62)(react@18.2.0)
       '@radix-ui/react-use-layout-effect': 1.1.0(@types/react@18.2.62)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-    optionalDependencies:
-      '@types/react': 18.2.62
-      '@types/react-dom': 18.2.7
 
-  '@radix-ui/react-primitive@1.0.3(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@radix-ui/react-primitive@1.0.3(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.2.0)(react@18.2.0)':
     dependencies:
       '@babel/runtime': 7.25.6
       '@radix-ui/react-slot': 1.0.2(@types/react@18.2.62)(react@18.2.0)
@@ -16946,7 +16990,7 @@ snapshots:
       '@types/react': 18.2.62
       '@types/react-dom': 18.2.7
 
-  '@radix-ui/react-primitive@2.0.0(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@radix-ui/react-primitive@2.0.0(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.2.0)(react@18.2.0)':
     dependencies:
       '@radix-ui/react-slot': 1.1.0(@types/react@18.2.62)(react@18.2.0)
       react: 18.2.0
@@ -16955,7 +16999,7 @@ snapshots:
       '@types/react': 18.2.62
       '@types/react-dom': 18.2.7
 
-  '@radix-ui/react-roving-focus@1.1.0(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@radix-ui/react-roving-focus@1.1.0(react-dom@18.2.0)(react@18.2.0)':
     dependencies:
       '@radix-ui/primitive': 1.1.0
       '@radix-ui/react-collection': 1.1.0(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -16968,11 +17012,8 @@ snapshots:
       '@radix-ui/react-use-controllable-state': 1.1.0(@types/react@18.2.62)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-    optionalDependencies:
-      '@types/react': 18.2.62
-      '@types/react-dom': 18.2.7
 
-  '@radix-ui/react-select@1.2.2(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@radix-ui/react-select@1.2.2(react-dom@18.2.0)(react@18.2.0)':
     dependencies:
       '@babel/runtime': 7.25.6
       '@radix-ui/number': 1.0.1
@@ -16997,19 +17038,13 @@ snapshots:
       aria-hidden: 1.2.4
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-      react-remove-scroll: 2.5.5(@types/react@18.2.62)(react@18.2.0)
-    optionalDependencies:
-      '@types/react': 18.2.62
-      '@types/react-dom': 18.2.7
+      react-remove-scroll: 2.5.5(react@18.2.0)
 
-  '@radix-ui/react-separator@1.1.0(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@radix-ui/react-separator@1.1.0(react-dom@18.2.0)(react@18.2.0)':
     dependencies:
       '@radix-ui/react-primitive': 2.0.0(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-    optionalDependencies:
-      '@types/react': 18.2.62
-      '@types/react-dom': 18.2.7
 
   '@radix-ui/react-slot@1.0.2(@types/react@18.2.62)(react@18.2.0)':
     dependencies:
@@ -17026,7 +17061,7 @@ snapshots:
     optionalDependencies:
       '@types/react': 18.2.62
 
-  '@radix-ui/react-switch@1.0.3(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@radix-ui/react-switch@1.0.3(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.2.0)(react@18.2.0)':
     dependencies:
       '@babel/runtime': 7.25.6
       '@radix-ui/primitive': 1.0.1
@@ -17041,8 +17076,10 @@ snapshots:
     optionalDependencies:
       '@types/react': 18.2.62
       '@types/react-dom': 18.2.7
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
 
-  '@radix-ui/react-toggle-group@1.1.0(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@radix-ui/react-toggle-group@1.1.0(react-dom@18.2.0)(react@18.2.0)':
     dependencies:
       '@radix-ui/primitive': 1.1.0
       '@radix-ui/react-context': 1.1.0(@types/react@18.2.62)(react@18.2.0)
@@ -17053,22 +17090,16 @@ snapshots:
       '@radix-ui/react-use-controllable-state': 1.1.0(@types/react@18.2.62)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-    optionalDependencies:
-      '@types/react': 18.2.62
-      '@types/react-dom': 18.2.7
 
-  '@radix-ui/react-toggle@1.1.0(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@radix-ui/react-toggle@1.1.0(react-dom@18.2.0)(react@18.2.0)':
     dependencies:
       '@radix-ui/primitive': 1.1.0
       '@radix-ui/react-primitive': 2.0.0(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@radix-ui/react-use-controllable-state': 1.1.0(@types/react@18.2.62)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-    optionalDependencies:
-      '@types/react': 18.2.62
-      '@types/react-dom': 18.2.7
 
-  '@radix-ui/react-toolbar@1.1.0(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@radix-ui/react-toolbar@1.1.0(react-dom@18.2.0)(react@18.2.0)':
     dependencies:
       '@radix-ui/primitive': 1.1.0
       '@radix-ui/react-context': 1.1.0(@types/react@18.2.62)(react@18.2.0)
@@ -17079,9 +17110,6 @@ snapshots:
       '@radix-ui/react-toggle-group': 1.1.0(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-    optionalDependencies:
-      '@types/react': 18.2.62
-      '@types/react-dom': 18.2.7
 
   '@radix-ui/react-use-callback-ref@1.0.1(@types/react@18.2.62)(react@18.2.0)':
     dependencies:
@@ -17093,48 +17121,41 @@ snapshots:
   '@radix-ui/react-use-callback-ref@1.1.0(@types/react@18.2.62)(react@18.2.0)':
     dependencies:
       react: 18.2.0
-    optionalDependencies:
-      '@types/react': 18.2.62
 
   '@radix-ui/react-use-controllable-state@1.0.1(@types/react@18.2.62)(react@18.2.0)':
     dependencies:
       '@babel/runtime': 7.25.6
       '@radix-ui/react-use-callback-ref': 1.0.1(@types/react@18.2.62)(react@18.2.0)
-      react: 18.2.0
-    optionalDependencies:
       '@types/react': 18.2.62
 
   '@radix-ui/react-use-controllable-state@1.1.0(@types/react@18.2.62)(react@18.2.0)':
     dependencies:
       '@radix-ui/react-use-callback-ref': 1.1.0(@types/react@18.2.62)(react@18.2.0)
-      react: 18.2.0
-    optionalDependencies:
       '@types/react': 18.2.62
+      react: 18.2.0
 
-  '@radix-ui/react-use-escape-keydown@1.0.3(@types/react@18.2.62)(react@18.2.0)':
+  '@radix-ui/react-use-escape-keydown@1.0.3(react@18.2.0)':
     dependencies:
       '@babel/runtime': 7.25.6
       '@radix-ui/react-use-callback-ref': 1.0.1(@types/react@18.2.62)(react@18.2.0)
       react: 18.2.0
-    optionalDependencies:
-      '@types/react': 18.2.62
 
   '@radix-ui/react-use-escape-keydown@1.1.0(@types/react@18.2.62)(react@18.2.0)':
     dependencies:
       '@radix-ui/react-use-callback-ref': 1.1.0(@types/react@18.2.62)(react@18.2.0)
       react: 18.2.0
-    optionalDependencies:
-      '@types/react': 18.2.62
 
   '@radix-ui/react-use-layout-effect@1.0.1(@types/react@18.2.62)(react@18.2.0)':
     dependencies:
       '@babel/runtime': 7.25.6
+      '@radix-ui/react-use-callback-ref': 1.0.1(@types/react@18.2.62)(react@18.2.0)
       react: 18.2.0
     optionalDependencies:
       '@types/react': 18.2.62
 
   '@radix-ui/react-use-layout-effect@1.1.0(@types/react@18.2.62)(react@18.2.0)':
     dependencies:
+      '@radix-ui/react-use-callback-ref': 1.1.0(@types/react@18.2.62)(react@18.2.0)
       react: 18.2.0
     optionalDependencies:
       '@types/react': 18.2.62
@@ -17146,13 +17167,11 @@ snapshots:
     optionalDependencies:
       '@types/react': 18.2.62
 
-  '@radix-ui/react-use-rect@1.0.1(@types/react@18.2.62)(react@18.2.0)':
+  '@radix-ui/react-use-rect@1.0.1(react@18.2.0)':
     dependencies:
       '@babel/runtime': 7.25.6
       '@radix-ui/rect': 1.0.1
       react: 18.2.0
-    optionalDependencies:
-      '@types/react': 18.2.62
 
   '@radix-ui/react-use-size@1.0.1(@types/react@18.2.62)(react@18.2.0)':
     dependencies:
@@ -17162,15 +17181,12 @@ snapshots:
     optionalDependencies:
       '@types/react': 18.2.62
 
-  '@radix-ui/react-visually-hidden@1.0.3(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@radix-ui/react-visually-hidden@1.0.3(react-dom@18.2.0)(react@18.2.0)':
     dependencies:
       '@babel/runtime': 7.25.6
       '@radix-ui/react-primitive': 1.0.3(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-    optionalDependencies:
-      '@types/react': 18.2.62
-      '@types/react-dom': 18.2.7
 
   '@radix-ui/rect@1.0.1':
     dependencies:
@@ -17249,7 +17265,7 @@ snapshots:
     dependencies:
       '@react-native-community/cli-platform-apple': 14.0.0
 
-  '@react-native-community/cli-server-api@14.0.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+  '@react-native-community/cli-server-api@14.0.0':
     dependencies:
       '@react-native-community/cli-debugger-ui': 14.0.0
       '@react-native-community/cli-tools': 14.0.0
@@ -17265,7 +17281,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@react-native-community/cli-server-api@14.0.0-alpha.11(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+  '@react-native-community/cli-server-api@14.0.0-alpha.11':
     dependencies:
       '@react-native-community/cli-debugger-ui': 14.0.0-alpha.11
       '@react-native-community/cli-tools': 14.0.0-alpha.11
@@ -17311,7 +17327,7 @@ snapshots:
     dependencies:
       joi: 17.13.3
 
-  '@react-native-community/cli@14.0.0(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)':
+  '@react-native-community/cli@14.0.0(typescript@5.3.3)':
     dependencies:
       '@react-native-community/cli-clean': 14.0.0
       '@react-native-community/cli-config': 14.0.0(typescript@5.3.3)
@@ -17337,14 +17353,14 @@ snapshots:
 
   '@react-native/assets-registry@0.75.2': {}
 
-  '@react-native/babel-plugin-codegen@0.75.2(@babel/preset-env@7.25.4(@babel/core@7.25.2))':
+  '@react-native/babel-plugin-codegen@0.75.2(@babel/preset-env@7.25.4)':
     dependencies:
       '@react-native/codegen': 0.75.2(@babel/preset-env@7.25.4(@babel/core@7.25.2))
     transitivePeerDependencies:
       - '@babel/preset-env'
       - supports-color
 
-  '@react-native/babel-preset@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))':
+  '@react-native/babel-preset@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.4)':
     dependencies:
       '@babel/core': 7.25.2
       '@babel/plugin-proposal-export-default-from': 7.24.7(@babel/core@7.25.2)
@@ -17395,7 +17411,7 @@ snapshots:
       - '@babel/preset-env'
       - supports-color
 
-  '@react-native/codegen@0.75.2(@babel/preset-env@7.25.4(@babel/core@7.25.2))':
+  '@react-native/codegen@0.75.2(@babel/preset-env@7.25.4)':
     dependencies:
       '@babel/parser': 7.25.6
       '@babel/preset-env': 7.25.4(@babel/core@7.25.2)
@@ -17409,7 +17425,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@react-native/community-cli-plugin@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+  '@react-native/community-cli-plugin@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.4)':
     dependencies:
       '@react-native-community/cli-server-api': 14.0.0-alpha.11(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@react-native-community/cli-tools': 14.0.0-alpha.11
@@ -17433,7 +17449,7 @@ snapshots:
 
   '@react-native/debugger-frontend@0.75.2': {}
 
-  '@react-native/dev-middleware@0.75.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+  '@react-native/dev-middleware@0.75.2':
     dependencies:
       '@isaacs/ttlcache': 1.4.1
       '@react-native/debugger-frontend': 0.75.2
@@ -17457,7 +17473,7 @@ snapshots:
 
   '@react-native/js-polyfills@0.75.2': {}
 
-  '@react-native/metro-babel-transformer@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))':
+  '@react-native/metro-babel-transformer@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.4)':
     dependencies:
       '@babel/core': 7.25.2
       '@react-native/babel-preset': 0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))
@@ -17469,7 +17485,7 @@ snapshots:
 
   '@react-native/normalize-colors@0.75.2': {}
 
-  '@react-native/virtualized-lists@0.75.2(@types/react@18.2.0)(react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.2.0)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(react@18.2.0)':
+  '@react-native/virtualized-lists@0.75.2(@types/react@18.2.62)(react-native@0.75.2)(react@18.2.0)':
     dependencies:
       invariant: 2.2.4
       nullthrows: 1.1.1
@@ -17487,17 +17503,14 @@ snapshots:
     optionalDependencies:
       '@types/react': 18.2.62
 
-  '@react-native/virtualized-lists@0.75.2(@types/react@18.2.62)(react-native@0.75.2(@babel/core@7.25.2)(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(react@18.2.0)':
+  '@react-native/virtualized-lists@0.75.2(react-native@0.75.2)(react@18.2.0)':
     dependencies:
       invariant: 2.2.4
       nullthrows: 1.1.1
       react: 18.2.0
-      react-native: 0.75.2(@babel/core@7.25.2)(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10)
-    optionalDependencies:
-      '@types/react': 18.2.62
-    optional: true
+      react-native: 0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.4)(react@18.2.0)(typescript@5.3.3)
 
-  '@react-native/virtualized-lists@0.75.2(react-native@0.75.2(@babel/core@7.25.2)(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10))':
+  '@rollup/plugin-inject@5.0.5':
     dependencies:
       invariant: 2.2.4
       nullthrows: 1.1.1
@@ -17509,16 +17522,12 @@ snapshots:
       '@rollup/pluginutils': 5.1.0(rollup@4.21.2)
       estree-walker: 2.0.2
       magic-string: 0.30.11
-    optionalDependencies:
-      rollup: 4.21.2
 
-  '@rollup/pluginutils@5.1.0(rollup@4.21.2)':
+  '@rollup/pluginutils@5.1.0':
     dependencies:
       '@types/estree': 1.0.5
       estree-walker: 2.0.2
       picomatch: 2.3.1
-    optionalDependencies:
-      rollup: 4.21.2
 
   '@rollup/rollup-android-arm-eabi@4.21.2':
     optional: true
@@ -17568,9 +17577,11 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.21.2':
     optional: true
 
+  '@rtsao/scc@1.1.0': {}
+
   '@rushstack/eslint-patch@1.10.4': {}
 
-  '@safe-global/safe-apps-provider@0.18.3(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4)':
+  '@safe-global/safe-apps-provider@0.18.3(typescript@5.3.3)':
     dependencies:
       '@safe-global/safe-apps-sdk': 9.1.0(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4)
       events: 3.3.0
@@ -17580,7 +17591,7 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@safe-global/safe-apps-sdk@9.1.0(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4)':
+  '@safe-global/safe-apps-sdk@9.1.0(typescript@5.3.3)':
     dependencies:
       '@safe-global/safe-gateway-typescript-sdk': 3.22.2
       viem: 2.19.6(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4)
@@ -17947,22 +17958,22 @@ snapshots:
     dependencies:
       buffer: 6.0.3
 
-  '@solana/wallet-adapter-alpha@0.1.10(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))':
+  '@solana/wallet-adapter-alpha@0.1.10(@solana/web3.js@1.95.2)':
     dependencies:
-      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/web3.js': 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2)
+      '@solana/web3.js': 1.95.2
 
-  '@solana/wallet-adapter-avana@0.1.13(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))':
+  '@solana/wallet-adapter-avana@0.1.13(@solana/web3.js@1.95.2)':
     dependencies:
-      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/web3.js': 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2)
+      '@solana/web3.js': 1.95.2
 
-  '@solana/wallet-adapter-backpack@0.1.14(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))':
+  '@solana/wallet-adapter-backpack@0.1.14(@solana/web3.js@1.95.2)':
     dependencies:
-      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/web3.js': 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2)
+      '@solana/web3.js': 1.95.2
 
-  '@solana/wallet-adapter-base@0.9.23(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))':
+  '@solana/wallet-adapter-base@0.9.23(@solana/web3.js@1.95.2)':
     dependencies:
       '@solana/wallet-standard-features': 1.2.0
       '@solana/web3.js': 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
@@ -17970,38 +17981,38 @@ snapshots:
       '@wallet-standard/features': 1.0.3
       eventemitter3: 4.0.7
 
-  '@solana/wallet-adapter-bitkeep@0.3.20(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))':
+  '@solana/wallet-adapter-bitkeep@0.3.20(@solana/web3.js@1.95.2)':
     dependencies:
-      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/web3.js': 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2)
+      '@solana/web3.js': 1.95.2
 
-  '@solana/wallet-adapter-bitpie@0.5.18(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))':
+  '@solana/wallet-adapter-bitpie@0.5.18(@solana/web3.js@1.95.2)':
     dependencies:
-      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/web3.js': 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2)
+      '@solana/web3.js': 1.95.2
 
-  '@solana/wallet-adapter-clover@0.4.19(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))':
+  '@solana/wallet-adapter-clover@0.4.19(@solana/web3.js@1.95.2)':
     dependencies:
-      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/web3.js': 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2)
+      '@solana/web3.js': 1.95.2
 
-  '@solana/wallet-adapter-coin98@0.5.20(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))':
+  '@solana/wallet-adapter-coin98@0.5.20(@solana/web3.js@1.95.2)':
     dependencies:
       '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
       '@solana/web3.js': 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       bs58: 4.0.1
 
-  '@solana/wallet-adapter-coinbase@0.1.19(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))':
+  '@solana/wallet-adapter-coinbase@0.1.19(@solana/web3.js@1.95.2)':
     dependencies:
-      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/web3.js': 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2)
+      '@solana/web3.js': 1.95.2
 
-  '@solana/wallet-adapter-coinhub@0.3.18(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))':
+  '@solana/wallet-adapter-coinhub@0.3.18(@solana/web3.js@1.95.2)':
     dependencies:
-      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/web3.js': 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2)
+      '@solana/web3.js': 1.95.2
 
-  '@solana/wallet-adapter-fractal@0.1.8(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@solana/wallet-adapter-fractal@0.1.8(@solana/web3.js@1.95.2)(react-dom@18.2.0)(react@18.2.0)':
     dependencies:
       '@fractalwagmi/solana-wallet-adapter': 0.1.1(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
@@ -18010,17 +18021,17 @@ snapshots:
       - react
       - react-dom
 
-  '@solana/wallet-adapter-huobi@0.1.15(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))':
+  '@solana/wallet-adapter-huobi@0.1.15(@solana/web3.js@1.95.2)':
     dependencies:
-      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/web3.js': 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2)
+      '@solana/web3.js': 1.95.2
 
-  '@solana/wallet-adapter-hyperpay@0.1.14(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))':
+  '@solana/wallet-adapter-hyperpay@0.1.14(@solana/web3.js@1.95.2)':
     dependencies:
-      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/web3.js': 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2)
+      '@solana/web3.js': 1.95.2
 
-  '@solana/wallet-adapter-keystone@0.1.15(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+  '@solana/wallet-adapter-keystone@0.1.15(@solana/web3.js@1.95.2)':
     dependencies:
       '@keystonehq/sol-keyring': 0.3.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
@@ -18030,12 +18041,12 @@ snapshots:
       - encoding
       - utf-8-validate
 
-  '@solana/wallet-adapter-krystal@0.1.12(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))':
+  '@solana/wallet-adapter-krystal@0.1.12(@solana/web3.js@1.95.2)':
     dependencies:
-      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/web3.js': 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2)
+      '@solana/web3.js': 1.95.2
 
-  '@solana/wallet-adapter-ledger@0.9.25(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))':
+  '@solana/wallet-adapter-ledger@0.9.25(@solana/web3.js@1.95.2)':
     dependencies:
       '@ledgerhq/devices': 6.27.1
       '@ledgerhq/hw-transport': 6.27.1
@@ -18044,32 +18055,32 @@ snapshots:
       '@solana/web3.js': 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       buffer: 6.0.3
 
-  '@solana/wallet-adapter-mathwallet@0.9.18(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))':
+  '@solana/wallet-adapter-mathwallet@0.9.18(@solana/web3.js@1.95.2)':
     dependencies:
-      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/web3.js': 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2)
+      '@solana/web3.js': 1.95.2
 
-  '@solana/wallet-adapter-neko@0.2.12(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))':
+  '@solana/wallet-adapter-neko@0.2.12(@solana/web3.js@1.95.2)':
     dependencies:
-      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/web3.js': 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2)
+      '@solana/web3.js': 1.95.2
 
-  '@solana/wallet-adapter-nightly@0.1.16(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))':
+  '@solana/wallet-adapter-nightly@0.1.16(@solana/web3.js@1.95.2)':
     dependencies:
-      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/web3.js': 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2)
+      '@solana/web3.js': 1.95.2
 
-  '@solana/wallet-adapter-nufi@0.1.17(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))':
+  '@solana/wallet-adapter-nufi@0.1.17(@solana/web3.js@1.95.2)':
     dependencies:
-      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/web3.js': 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2)
+      '@solana/web3.js': 1.95.2
 
-  '@solana/wallet-adapter-onto@0.1.7(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))':
+  '@solana/wallet-adapter-onto@0.1.7(@solana/web3.js@1.95.2)':
     dependencies:
-      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/web3.js': 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2)
+      '@solana/web3.js': 1.95.2
 
-  '@solana/wallet-adapter-particle@0.1.12(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(bs58@6.0.0)':
+  '@solana/wallet-adapter-particle@0.1.12(@solana/web3.js@1.95.2)(bs58@4.0.1)':
     dependencies:
       '@particle-network/solana-wallet': 1.3.2(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(bs58@6.0.0)
       '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
@@ -18077,62 +18088,70 @@ snapshots:
     transitivePeerDependencies:
       - bs58
 
-  '@solana/wallet-adapter-phantom@0.9.24(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))':
+  '@solana/wallet-adapter-particle@0.1.12(@solana/web3.js@1.95.2)(bs58@6.0.0)':
     dependencies:
-      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/web3.js': 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@particle-network/solana-wallet': 1.3.2(@solana/web3.js@1.95.2)(bs58@6.0.0)
+      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2)
+      '@solana/web3.js': 1.95.2
+    transitivePeerDependencies:
+      - bs58
 
-  '@solana/wallet-adapter-safepal@0.5.18(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))':
+  '@solana/wallet-adapter-phantom@0.9.24(@solana/web3.js@1.95.2)':
     dependencies:
-      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/web3.js': 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2)
+      '@solana/web3.js': 1.95.2
 
-  '@solana/wallet-adapter-saifu@0.1.15(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))':
+  '@solana/wallet-adapter-safepal@0.5.18(@solana/web3.js@1.95.2)':
     dependencies:
-      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/web3.js': 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2)
+      '@solana/web3.js': 1.95.2
 
-  '@solana/wallet-adapter-salmon@0.1.14(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))':
+  '@solana/wallet-adapter-saifu@0.1.15(@solana/web3.js@1.95.2)':
     dependencies:
-      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/web3.js': 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      salmon-adapter-sdk: 1.1.1(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
+      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2)
+      '@solana/web3.js': 1.95.2
 
-  '@solana/wallet-adapter-sky@0.1.15(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))':
+  '@solana/wallet-adapter-salmon@0.1.14(@solana/web3.js@1.95.2)':
     dependencies:
-      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/web3.js': 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2)
+      '@solana/web3.js': 1.95.2
+      salmon-adapter-sdk: 1.1.1(@solana/web3.js@1.95.2)
 
-  '@solana/wallet-adapter-solflare@0.6.28(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))':
+  '@solana/wallet-adapter-sky@0.1.15(@solana/web3.js@1.95.2)':
     dependencies:
-      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
+      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2)
+      '@solana/web3.js': 1.95.2
+
+  '@solana/wallet-adapter-solflare@0.6.28(@solana/web3.js@1.95.2)':
+    dependencies:
+      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2)
       '@solana/wallet-standard-chains': 1.1.0
       '@solana/web3.js': 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@solflare-wallet/metamask-sdk': 1.0.3(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
       '@solflare-wallet/sdk': 1.4.2(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
       '@wallet-standard/wallet': 1.0.1
 
-  '@solana/wallet-adapter-solong@0.9.18(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))':
+  '@solana/wallet-adapter-solong@0.9.18(@solana/web3.js@1.95.2)':
     dependencies:
-      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/web3.js': 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2)
+      '@solana/web3.js': 1.95.2
 
-  '@solana/wallet-adapter-spot@0.1.15(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))':
+  '@solana/wallet-adapter-spot@0.1.15(@solana/web3.js@1.95.2)':
     dependencies:
-      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/web3.js': 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2)
+      '@solana/web3.js': 1.95.2
 
-  '@solana/wallet-adapter-tokenary@0.1.12(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))':
+  '@solana/wallet-adapter-tokenary@0.1.12(@solana/web3.js@1.95.2)':
     dependencies:
-      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/web3.js': 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2)
+      '@solana/web3.js': 1.95.2
 
-  '@solana/wallet-adapter-tokenpocket@0.4.19(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))':
+  '@solana/wallet-adapter-tokenpocket@0.4.19(@solana/web3.js@1.95.2)':
     dependencies:
-      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/web3.js': 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2)
+      '@solana/web3.js': 1.95.2
 
-  '@solana/wallet-adapter-torus@0.11.28(@babel/runtime@7.25.6)(@sentry/types@7.92.0)(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+  '@solana/wallet-adapter-torus@0.11.28(@babel/runtime@7.25.6)(@solana/web3.js@1.95.2)':
     dependencies:
       '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
       '@solana/web3.js': 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
@@ -18149,7 +18168,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@solana/wallet-adapter-trezor@0.1.2(@babel/core@7.25.2)(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(bufferutil@4.0.8)(react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(tslib@2.7.0)(utf-8-validate@5.0.10)':
+  '@solana/wallet-adapter-trezor@0.1.2(@babel/core@7.25.2)(@solana/web3.js@1.95.2)(react-native@0.75.2)(tslib@2.7.0)':
     dependencies:
       '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
       '@solana/web3.js': 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
@@ -18166,54 +18185,20 @@ snapshots:
       - tslib
       - utf-8-validate
 
-  '@solana/wallet-adapter-trezor@0.1.2(@babel/core@7.25.2)(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(bufferutil@4.0.8)(react-native@0.75.2(@babel/core@7.25.2)(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(tslib@2.7.0)(utf-8-validate@5.0.10)':
+  '@solana/wallet-adapter-trust@0.1.13(@solana/web3.js@1.95.2)':
     dependencies:
-      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/web3.js': 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@trezor/connect-web': 9.4.0(@babel/core@7.25.2)(bufferutil@4.0.8)(react-native@0.75.2(@babel/core@7.25.2)(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(tslib@2.7.0)(utf-8-validate@5.0.10)
-      buffer: 6.0.3
-    transitivePeerDependencies:
-      - '@babel/core'
-      - bufferutil
-      - encoding
-      - expo-constants
-      - expo-localization
-      - react-native
-      - supports-color
-      - tslib
-      - utf-8-validate
+      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2)
+      '@solana/web3.js': 1.95.2
 
-  '@solana/wallet-adapter-trezor@0.1.2(@babel/core@7.25.2)(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(bufferutil@4.0.8)(react-native@0.75.2(@babel/core@7.25.2)(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10))(tslib@2.7.0)(utf-8-validate@5.0.10)':
-    dependencies:
-      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/web3.js': 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@trezor/connect-web': 9.4.0(@babel/core@7.25.2)(bufferutil@4.0.8)(react-native@0.75.2(@babel/core@7.25.2)(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10))(tslib@2.7.0)(utf-8-validate@5.0.10)
-      buffer: 6.0.3
-    transitivePeerDependencies:
-      - '@babel/core'
-      - bufferutil
-      - encoding
-      - expo-constants
-      - expo-localization
-      - react-native
-      - supports-color
-      - tslib
-      - utf-8-validate
-
-  '@solana/wallet-adapter-trust@0.1.13(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))':
-    dependencies:
-      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/web3.js': 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-
-  '@solana/wallet-adapter-unsafe-burner@0.1.7(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))':
+  '@solana/wallet-adapter-unsafe-burner@0.1.7(@solana/web3.js@1.95.2)':
     dependencies:
       '@noble/curves': 1.5.0
       '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
       '@solana/wallet-standard-features': 1.2.0
       '@solana/wallet-standard-util': 1.1.1
-      '@solana/web3.js': 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@solana/web3.js': 1.95.2
 
-  '@solana/wallet-adapter-walletconnect@0.1.16(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+  '@solana/wallet-adapter-walletconnect@0.1.16(@solana/web3.js@1.95.2)':
     dependencies:
       '@jnwng/walletconnect-solana': 0.2.0(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
@@ -18236,7 +18221,7 @@ snapshots:
       - uWebSockets.js
       - utf-8-validate
 
-  '@solana/wallet-adapter-wallets@0.19.32(@babel/core@7.25.2)(@babel/runtime@7.25.6)(@sentry/types@7.92.0)(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(bs58@6.0.0)(bufferutil@4.0.8)(react-dom@18.2.0(react@18.2.0))(react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(react@18.2.0)(tslib@2.7.0)(utf-8-validate@5.0.10)':
+  '@solana/wallet-adapter-wallets@0.19.32(@babel/core@7.25.2)(@babel/runtime@7.25.6)(@solana/web3.js@1.95.2)(bs58@4.0.1)(react-dom@18.2.0)(react@18.2.0)(tslib@2.7.0)':
     dependencies:
       '@solana/wallet-adapter-alpha': 0.1.10(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
       '@solana/wallet-adapter-avana': 0.1.13(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
@@ -18305,7 +18290,7 @@ snapshots:
       - uWebSockets.js
       - utf-8-validate
 
-  '@solana/wallet-adapter-wallets@0.19.32(@babel/core@7.25.2)(@babel/runtime@7.25.6)(@sentry/types@7.92.0)(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(bufferutil@4.0.8)(react-dom@18.2.0(react@18.2.0))(react-native@0.75.2(@babel/core@7.25.2)(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(react@18.2.0)(tslib@2.7.0)(utf-8-validate@5.0.10)':
+  '@solana/wallet-adapter-wallets@0.19.32(@babel/core@7.25.2)(@babel/runtime@7.25.6)(@solana/web3.js@1.95.2)(bs58@6.0.0)(react-dom@18.2.0)(react-native@0.75.2)(react@18.2.0)(tslib@2.7.0)':
     dependencies:
       '@solana/wallet-adapter-alpha': 0.1.10(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
       '@solana/wallet-adapter-avana': 0.1.13(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
@@ -18374,79 +18359,10 @@ snapshots:
       - uWebSockets.js
       - utf-8-validate
 
-  '@solana/wallet-adapter-wallets@0.19.32(@babel/core@7.25.2)(@babel/runtime@7.25.6)(@sentry/types@7.92.0)(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(bufferutil@4.0.8)(react-native@0.75.2(@babel/core@7.25.2)(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10))(tslib@2.7.0)(utf-8-validate@5.0.10)':
+  '@solana/wallet-adapter-xdefi@0.1.7(@solana/web3.js@1.95.2)':
     dependencies:
-      '@solana/wallet-adapter-alpha': 0.1.10(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/wallet-adapter-avana': 0.1.13(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/wallet-adapter-bitkeep': 0.3.20(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/wallet-adapter-bitpie': 0.5.18(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/wallet-adapter-clover': 0.4.19(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/wallet-adapter-coin98': 0.5.20(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/wallet-adapter-coinbase': 0.1.19(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/wallet-adapter-coinhub': 0.3.18(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/wallet-adapter-fractal': 0.1.8(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
-      '@solana/wallet-adapter-huobi': 0.1.15(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/wallet-adapter-hyperpay': 0.1.14(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/wallet-adapter-keystone': 0.1.15(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@solana/wallet-adapter-krystal': 0.1.12(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/wallet-adapter-ledger': 0.9.25(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/wallet-adapter-mathwallet': 0.9.18(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/wallet-adapter-neko': 0.2.12(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/wallet-adapter-nightly': 0.1.16(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/wallet-adapter-nufi': 0.1.17(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/wallet-adapter-onto': 0.1.7(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/wallet-adapter-particle': 0.1.12(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(bs58@6.0.0)
-      '@solana/wallet-adapter-phantom': 0.9.24(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/wallet-adapter-safepal': 0.5.18(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/wallet-adapter-saifu': 0.1.15(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/wallet-adapter-salmon': 0.1.14(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/wallet-adapter-sky': 0.1.15(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/wallet-adapter-solflare': 0.6.28(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/wallet-adapter-solong': 0.9.18(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/wallet-adapter-spot': 0.1.15(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/wallet-adapter-tokenary': 0.1.12(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/wallet-adapter-tokenpocket': 0.4.19(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/wallet-adapter-torus': 0.11.28(@babel/runtime@7.25.6)(@sentry/types@7.92.0)(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@solana/wallet-adapter-trezor': 0.1.2(@babel/core@7.25.2)(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(bufferutil@4.0.8)(react-native@0.75.2(@babel/core@7.25.2)(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10))(tslib@2.7.0)(utf-8-validate@5.0.10)
-      '@solana/wallet-adapter-trust': 0.1.13(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/wallet-adapter-unsafe-burner': 0.1.7(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/wallet-adapter-walletconnect': 0.1.16(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@solana/wallet-adapter-xdefi': 0.1.7(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/web3.js': 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-    transitivePeerDependencies:
-      - '@azure/app-configuration'
-      - '@azure/cosmos'
-      - '@azure/data-tables'
-      - '@azure/identity'
-      - '@azure/keyvault-secrets'
-      - '@azure/storage-blob'
-      - '@babel/core'
-      - '@babel/runtime'
-      - '@capacitor/preferences'
-      - '@netlify/blobs'
-      - '@planetscale/database'
-      - '@react-native-async-storage/async-storage'
-      - '@sentry/types'
-      - '@upstash/redis'
-      - '@vercel/kv'
-      - bs58
-      - bufferutil
-      - encoding
-      - expo-constants
-      - expo-localization
-      - ioredis
-      - react
-      - react-dom
-      - react-native
-      - supports-color
-      - tslib
-      - uWebSockets.js
-      - utf-8-validate
-
-  '@solana/wallet-adapter-xdefi@0.1.7(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))':
-    dependencies:
-      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/web3.js': 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.2)
+      '@solana/web3.js': 1.95.2
 
   '@solana/wallet-standard-chains@1.1.0':
     dependencies:
@@ -18463,7 +18379,7 @@ snapshots:
       '@solana/wallet-standard-chains': 1.1.0
       '@solana/wallet-standard-features': 1.2.0
 
-  '@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+  '@solana/web3.js@1.95.2':
     dependencies:
       '@babel/runtime': 7.25.6
       '@noble/curves': 1.5.0
@@ -18485,7 +18401,7 @@ snapshots:
       - encoding
       - utf-8-validate
 
-  '@solflare-wallet/metamask-sdk@1.0.3(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))':
+  '@solflare-wallet/metamask-sdk@1.0.3(@solana/web3.js@1.95.2)':
     dependencies:
       '@solana/wallet-standard-features': 1.2.0
       '@solana/web3.js': 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
@@ -18494,7 +18410,7 @@ snapshots:
       eventemitter3: 5.0.1
       uuid: 9.0.1
 
-  '@solflare-wallet/sdk@1.4.2(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))':
+  '@solflare-wallet/sdk@1.4.2(@solana/web3.js@1.95.2)':
     dependencies:
       '@solana/web3.js': 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       bs58: 5.0.0
@@ -18596,7 +18512,7 @@ snapshots:
       memoizerific: 1.11.3
       ts-dedent: 2.2.0
 
-  '@storybook/addon-controls@7.6.7(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@storybook/addon-controls@7.6.7(react-dom@18.2.0)(react@18.2.0)':
     dependencies:
       '@storybook/blocks': 7.6.7(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       lodash: 4.17.21
@@ -18609,7 +18525,7 @@ snapshots:
       - react-dom
       - supports-color
 
-  '@storybook/addon-docs@7.6.7(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@storybook/addon-docs@7.6.7(react-dom@18.2.0)(react@18.2.0)':
     dependencies:
       '@jest/transform': 29.7.0
       '@mdx-js/react': 2.3.0(react@18.2.0)
@@ -18638,7 +18554,7 @@ snapshots:
       - encoding
       - supports-color
 
-  '@storybook/addon-essentials@7.6.7(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@storybook/addon-essentials@7.6.7(react-dom@18.2.0)(react@18.2.0)':
     dependencies:
       '@storybook/addon-actions': 7.6.7
       '@storybook/addon-backgrounds': 7.6.7
@@ -18671,8 +18587,6 @@ snapshots:
       '@storybook/csf': 0.1.11
       '@storybook/global': 5.0.0
       ts-dedent: 2.2.0
-    optionalDependencies:
-      react: 18.2.0
 
   '@storybook/addon-measure@7.6.7':
     dependencies:
@@ -18690,7 +18604,7 @@ snapshots:
     dependencies:
       memoizerific: 1.11.3
 
-  '@storybook/blocks@7.6.7(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@storybook/blocks@7.6.7(react-dom@18.2.0)(react@18.2.0)':
     dependencies:
       '@storybook/channels': 7.6.7
       '@storybook/client-logger': 7.6.7
@@ -18745,7 +18659,7 @@ snapshots:
       - encoding
       - supports-color
 
-  '@storybook/builder-vite@7.6.7(typescript@5.3.3)(vite@5.2.11(@types/node@20.11.5)(terser@5.31.6))':
+  '@storybook/builder-vite@7.6.7(typescript@5.3.3)(vite@5.2.11)':
     dependencies:
       '@storybook/channels': 7.6.7
       '@storybook/client-logger': 7.6.7
@@ -18779,7 +18693,7 @@ snapshots:
       telejson: 7.2.0
       tiny-invariant: 1.3.3
 
-  '@storybook/cli@7.6.7(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+  '@storybook/cli@7.6.7':
     dependencies:
       '@babel/core': 7.25.2
       '@babel/preset-env': 7.25.4(@babel/core@7.25.2)
@@ -18851,7 +18765,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@storybook/components@7.6.7(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@storybook/components@7.6.7(react-dom@18.2.0)(react@18.2.0)':
     dependencies:
       '@radix-ui/react-select': 1.2.2(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@radix-ui/react-toolbar': 1.1.0(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -18907,7 +18821,7 @@ snapshots:
     dependencies:
       ts-dedent: 2.2.0
 
-  '@storybook/core-server@7.6.7(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+  '@storybook/core-server@7.6.7':
     dependencies:
       '@aw-web-design/x-default-browser': 1.4.126
       '@discoveryjs/json-ext': 0.5.7
@@ -18998,7 +18912,7 @@ snapshots:
 
   '@storybook/global@5.0.0': {}
 
-  '@storybook/manager-api@7.6.7(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@storybook/manager-api@7.6.7(react-dom@18.2.0)(react@18.2.0)':
     dependencies:
       '@storybook/channels': 7.6.7
       '@storybook/client-logger': 7.6.7
@@ -19045,7 +18959,7 @@ snapshots:
 
   '@storybook/preview@7.6.7': {}
 
-  '@storybook/react-dom-shim@7.6.7(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@storybook/react-dom-shim@7.6.7(react-dom@18.2.0)(react@18.2.0)':
     dependencies:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
@@ -19070,7 +18984,7 @@ snapshots:
       - encoding
       - supports-color
 
-  '@storybook/theming@7.6.7(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@storybook/theming@7.6.7(react-dom@18.2.0)(react@18.2.0)':
     dependencies:
       '@emotion/use-insertion-effect-with-fallbacks': 1.1.0(react@18.2.0)
       '@storybook/client-logger': 7.6.7
@@ -19086,7 +19000,7 @@ snapshots:
       '@types/express': 4.17.21
       file-system-cache: 2.3.0
 
-  '@storybook/web-components-vite@7.6.7(bufferutil@4.0.8)(lit@3.1.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10)(vite@5.2.11(@types/node@20.11.5)(terser@5.31.6))':
+  '@storybook/web-components-vite@7.6.7(lit@3.1.0)(react-dom@18.2.0)(react@18.2.0)(typescript@5.3.3)(vite@5.2.11)':
     dependencies:
       '@storybook/builder-vite': 7.6.7(typescript@5.3.3)(vite@5.2.11(@types/node@20.11.5)(terser@5.31.6))
       '@storybook/core-server': 7.6.7(bufferutil@4.0.8)(utf-8-validate@5.0.10)
@@ -19106,7 +19020,7 @@ snapshots:
       - vite
       - vite-plugin-glimmerx
 
-  '@storybook/web-components@7.6.7(lit@3.1.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@storybook/web-components@7.6.7(lit@3.1.0)(react-dom@18.2.0)(react@18.2.0)':
     dependencies:
       '@storybook/client-logger': 7.6.7
       '@storybook/core-client': 7.6.7
@@ -19126,7 +19040,7 @@ snapshots:
 
   '@swc/counter@0.1.3': {}
 
-  '@swc/helpers@0.5.12':
+  '@swc/helpers@0.5.13':
     dependencies:
       tslib: 2.7.0
 
@@ -19135,7 +19049,7 @@ snapshots:
       '@swc/counter': 0.1.3
       tslib: 2.7.0
 
-  '@synthetixio/ethereum-wallet-mock@0.0.1-alpha.7(@playwright/test@1.44.0)(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4)':
+  '@synthetixio/ethereum-wallet-mock@0.0.1-alpha.7(@playwright/test@1.44.0)(typescript@5.3.3)':
     dependencies:
       '@depay/web3-mock': 14.17.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@playwright/test': 1.44.0
@@ -19147,7 +19061,7 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@synthetixio/synpress-cache@0.0.1-alpha.7(playwright-core@1.44.0)(postcss@8.4.41)(typescript@5.3.3)':
+  '@synthetixio/synpress-cache@0.0.1-alpha.7(playwright-core@1.44.0)(typescript@5.3.3)':
     dependencies:
       axios: 1.6.7
       chalk: 5.3.0
@@ -19174,7 +19088,7 @@ snapshots:
     dependencies:
       '@playwright/test': 1.44.0
 
-  '@synthetixio/synpress-metamask@0.0.1-alpha.7(patch_hash=fj5b4lzbslgihe6pqcmuyxpfd4)(@playwright/test@1.44.0)(bufferutil@4.0.8)(playwright-core@1.44.0)(postcss@8.4.41)(typescript@5.3.3)(utf-8-validate@5.0.10)':
+  '@synthetixio/synpress-metamask@0.0.1-alpha.7(patch_hash=fj5b4lzbslgihe6pqcmuyxpfd4)(@playwright/test@1.44.0)(playwright-core@1.44.0)(typescript@5.3.3)':
     dependencies:
       '@playwright/test': 1.44.0
       '@synthetixio/synpress-cache': 0.0.1-alpha.7(playwright-core@1.44.0)(postcss@8.4.41)(typescript@5.3.3)
@@ -19194,7 +19108,7 @@ snapshots:
       - typescript
       - utf-8-validate
 
-  '@synthetixio/synpress@4.0.0-alpha.7(@playwright/test@1.44.0)(bufferutil@4.0.8)(playwright-core@1.44.0)(postcss@8.4.41)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4)':
+  '@synthetixio/synpress@4.0.0-alpha.7(@playwright/test@1.44.0)(playwright-core@1.44.0)(typescript@5.3.3)':
     dependencies:
       '@playwright/test': 1.44.0
       '@synthetixio/ethereum-wallet-mock': 0.0.1-alpha.7(@playwright/test@1.44.0)(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4)
@@ -19227,7 +19141,7 @@ snapshots:
 
   '@tootallnate/once@2.0.0': {}
 
-  '@toruslabs/base-controllers@2.9.0(@babel/runtime@7.25.6)(@sentry/types@7.92.0)(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+  '@toruslabs/base-controllers@2.9.0(@babel/runtime@7.25.6)':
     dependencies:
       '@babel/runtime': 7.25.6
       '@ethereumjs/util': 8.1.0
@@ -19247,7 +19161,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@toruslabs/broadcast-channel@6.3.1(@sentry/types@7.92.0)(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+  '@toruslabs/broadcast-channel@6.3.1':
     dependencies:
       '@babel/runtime': 7.25.6
       '@toruslabs/eccrypto': 2.2.1
@@ -19267,15 +19181,13 @@ snapshots:
     dependencies:
       elliptic: 6.5.7
 
-  '@toruslabs/http-helpers@3.4.0(@babel/runtime@7.25.6)(@sentry/types@7.92.0)':
+  '@toruslabs/http-helpers@3.4.0(@babel/runtime@7.25.6)':
     dependencies:
       '@babel/runtime': 7.25.6
       lodash.merge: 4.6.2
       loglevel: 1.9.1
-    optionalDependencies:
-      '@sentry/types': 7.92.0
 
-  '@toruslabs/metadata-helpers@3.2.0(@babel/runtime@7.25.6)(@sentry/types@7.92.0)':
+  '@toruslabs/metadata-helpers@3.2.0(@babel/runtime@7.25.6)':
     dependencies:
       '@babel/runtime': 7.25.6
       '@toruslabs/eccrypto': 2.2.1
@@ -19324,7 +19236,7 @@ snapshots:
       '@babel/runtime': 7.25.6
       base64url: 3.0.1
 
-  '@toruslabs/solana-embed@0.3.4(@babel/runtime@7.25.6)(@sentry/types@7.92.0)(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+  '@toruslabs/solana-embed@0.3.4(@babel/runtime@7.25.6)':
     dependencies:
       '@babel/runtime': 7.25.6
       '@solana/web3.js': 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
@@ -19344,7 +19256,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@trezor/analytics@1.2.0(react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(tslib@2.7.0)':
+  '@trezor/analytics@1.2.0(react-native@0.75.2)(tslib@2.7.0)':
     dependencies:
       '@trezor/env-utils': 1.2.0(react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(tslib@2.7.0)
       '@trezor/utils': 9.2.0(tslib@2.7.0)
@@ -19354,7 +19266,7 @@ snapshots:
       - expo-localization
       - react-native
 
-  '@trezor/analytics@1.2.0(react-native@0.75.2(@babel/core@7.25.2)(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(tslib@2.7.0)':
+  '@trezor/blockchain-link-types@1.2.0(tslib@2.7.0)':
     dependencies:
       '@trezor/env-utils': 1.2.0(react-native@0.75.2(@babel/core@7.25.2)(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(tslib@2.7.0)
       '@trezor/utils': 9.2.0(tslib@2.7.0)
@@ -19387,7 +19299,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@trezor/blockchain-link-utils@1.2.0(bufferutil@4.0.8)(react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(tslib@2.7.0)(utf-8-validate@5.0.10)':
+  '@trezor/blockchain-link-utils@1.2.0(react-native@0.75.2)(tslib@2.7.0)':
     dependencies:
       '@mobily/ts-belt': 3.13.1
       '@solana/web3.js': 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
@@ -19402,37 +19314,7 @@ snapshots:
       - react-native
       - utf-8-validate
 
-  '@trezor/blockchain-link-utils@1.2.0(bufferutil@4.0.8)(react-native@0.75.2(@babel/core@7.25.2)(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(tslib@2.7.0)(utf-8-validate@5.0.10)':
-    dependencies:
-      '@mobily/ts-belt': 3.13.1
-      '@solana/web3.js': 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@trezor/env-utils': 1.2.0(react-native@0.75.2(@babel/core@7.25.2)(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(tslib@2.7.0)
-      '@trezor/utils': 9.2.0(tslib@2.7.0)
-      tslib: 2.7.0
-    transitivePeerDependencies:
-      - bufferutil
-      - encoding
-      - expo-constants
-      - expo-localization
-      - react-native
-      - utf-8-validate
-
-  '@trezor/blockchain-link-utils@1.2.0(bufferutil@4.0.8)(react-native@0.75.2(@babel/core@7.25.2)(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10))(tslib@2.7.0)(utf-8-validate@5.0.10)':
-    dependencies:
-      '@mobily/ts-belt': 3.13.1
-      '@solana/web3.js': 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@trezor/env-utils': 1.2.0(react-native@0.75.2(@babel/core@7.25.2)(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10))(tslib@2.7.0)
-      '@trezor/utils': 9.2.0(tslib@2.7.0)
-      tslib: 2.7.0
-    transitivePeerDependencies:
-      - bufferutil
-      - encoding
-      - expo-constants
-      - expo-localization
-      - react-native
-      - utf-8-validate
-
-  '@trezor/blockchain-link@2.3.0(bufferutil@4.0.8)(react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(tslib@2.7.0)(utf-8-validate@5.0.10)':
+  '@trezor/blockchain-link@2.3.0(react-native@0.75.2)(tslib@2.7.0)':
     dependencies:
       '@solana/buffer-layout': 4.0.1
       '@solana/web3.js': 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
@@ -19455,7 +19337,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@trezor/blockchain-link@2.3.0(bufferutil@4.0.8)(react-native@0.75.2(@babel/core@7.25.2)(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(tslib@2.7.0)(utf-8-validate@5.0.10)':
+  '@trezor/connect-analytics@1.2.0(react-native@0.75.2)(tslib@2.7.0)':
     dependencies:
       '@solana/buffer-layout': 4.0.1
       '@solana/web3.js': 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
@@ -19510,7 +19392,7 @@ snapshots:
       - expo-localization
       - react-native
 
-  '@trezor/connect-analytics@1.2.0(react-native@0.75.2(@babel/core@7.25.2)(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(tslib@2.7.0)':
+  '@trezor/connect-common@0.2.0(react-native@0.75.2)(tslib@2.7.0)':
     dependencies:
       '@trezor/analytics': 1.2.0(react-native@0.75.2(@babel/core@7.25.2)(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(tslib@2.7.0)
       tslib: 2.7.0
@@ -19538,7 +19420,7 @@ snapshots:
       - expo-localization
       - react-native
 
-  '@trezor/connect-common@0.2.0(react-native@0.75.2(@babel/core@7.25.2)(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(tslib@2.7.0)':
+  '@trezor/connect-web@9.4.0(@babel/core@7.25.2)(react-native@0.75.2)(tslib@2.7.0)':
     dependencies:
       '@trezor/env-utils': 1.2.0(react-native@0.75.2(@babel/core@7.25.2)(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(tslib@2.7.0)
       '@trezor/utils': 9.2.0(tslib@2.7.0)
@@ -19574,39 +19456,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@trezor/connect-web@9.4.0(@babel/core@7.25.2)(bufferutil@4.0.8)(react-native@0.75.2(@babel/core@7.25.2)(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(tslib@2.7.0)(utf-8-validate@5.0.10)':
-    dependencies:
-      '@trezor/connect': 9.4.0(@babel/core@7.25.2)(bufferutil@4.0.8)(react-native@0.75.2(@babel/core@7.25.2)(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(tslib@2.7.0)(utf-8-validate@5.0.10)
-      '@trezor/connect-common': 0.2.0(react-native@0.75.2(@babel/core@7.25.2)(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(tslib@2.7.0)
-      '@trezor/utils': 9.2.0(tslib@2.7.0)
-      tslib: 2.7.0
-    transitivePeerDependencies:
-      - '@babel/core'
-      - bufferutil
-      - encoding
-      - expo-constants
-      - expo-localization
-      - react-native
-      - supports-color
-      - utf-8-validate
-
-  '@trezor/connect-web@9.4.0(@babel/core@7.25.2)(bufferutil@4.0.8)(react-native@0.75.2(@babel/core@7.25.2)(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10))(tslib@2.7.0)(utf-8-validate@5.0.10)':
-    dependencies:
-      '@trezor/connect': 9.4.0(@babel/core@7.25.2)(bufferutil@4.0.8)(react-native@0.75.2(@babel/core@7.25.2)(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10))(tslib@2.7.0)(utf-8-validate@5.0.10)
-      '@trezor/connect-common': 0.2.0(react-native@0.75.2(@babel/core@7.25.2)(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10))(tslib@2.7.0)
-      '@trezor/utils': 9.2.0(tslib@2.7.0)
-      tslib: 2.7.0
-    transitivePeerDependencies:
-      - '@babel/core'
-      - bufferutil
-      - encoding
-      - expo-constants
-      - expo-localization
-      - react-native
-      - supports-color
-      - utf-8-validate
-
-  '@trezor/connect@9.4.0(@babel/core@7.25.2)(bufferutil@4.0.8)(react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(tslib@2.7.0)(utf-8-validate@5.0.10)':
+  '@trezor/connect@9.4.0(@babel/core@7.25.2)(react-native@0.75.2)(tslib@2.7.0)':
     dependencies:
       '@babel/preset-typescript': 7.24.7(@babel/core@7.25.2)
       '@ethereumjs/common': 4.4.0
@@ -19637,89 +19487,10 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@trezor/connect@9.4.0(@babel/core@7.25.2)(bufferutil@4.0.8)(react-native@0.75.2(@babel/core@7.25.2)(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(tslib@2.7.0)(utf-8-validate@5.0.10)':
-    dependencies:
-      '@babel/preset-typescript': 7.24.7(@babel/core@7.25.2)
-      '@ethereumjs/common': 4.4.0
-      '@ethereumjs/tx': 5.4.0
-      '@fivebinaries/coin-selection': 2.2.1
-      '@trezor/blockchain-link': 2.3.0(bufferutil@4.0.8)(react-native@0.75.2(@babel/core@7.25.2)(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(tslib@2.7.0)(utf-8-validate@5.0.10)
-      '@trezor/blockchain-link-types': 1.2.0(bufferutil@4.0.8)(tslib@2.7.0)(utf-8-validate@5.0.10)
-      '@trezor/connect-analytics': 1.2.0(react-native@0.75.2(@babel/core@7.25.2)(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(tslib@2.7.0)
-      '@trezor/connect-common': 0.2.0(react-native@0.75.2(@babel/core@7.25.2)(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(tslib@2.7.0)
-      '@trezor/protobuf': 1.2.0(tslib@2.7.0)
-      '@trezor/protocol': 1.2.0(tslib@2.7.0)
-      '@trezor/schema-utils': 1.2.0(tslib@2.7.0)
-      '@trezor/transport': 1.3.0(tslib@2.7.0)
-      '@trezor/utils': 9.2.0(tslib@2.7.0)
-      '@trezor/utxo-lib': 2.2.0(tslib@2.7.0)
-      blakejs: 1.2.1
-      bs58: 5.0.0
-      bs58check: 3.0.1
-      cross-fetch: 4.0.0
-      tslib: 2.7.0
-    transitivePeerDependencies:
-      - '@babel/core'
-      - bufferutil
-      - encoding
-      - expo-constants
-      - expo-localization
-      - react-native
-      - supports-color
-      - utf-8-validate
-
-  '@trezor/connect@9.4.0(@babel/core@7.25.2)(bufferutil@4.0.8)(react-native@0.75.2(@babel/core@7.25.2)(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10))(tslib@2.7.0)(utf-8-validate@5.0.10)':
-    dependencies:
-      '@babel/preset-typescript': 7.24.7(@babel/core@7.25.2)
-      '@ethereumjs/common': 4.4.0
-      '@ethereumjs/tx': 5.4.0
-      '@fivebinaries/coin-selection': 2.2.1
-      '@trezor/blockchain-link': 2.3.0(bufferutil@4.0.8)(react-native@0.75.2(@babel/core@7.25.2)(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10))(tslib@2.7.0)(utf-8-validate@5.0.10)
-      '@trezor/blockchain-link-types': 1.2.0(bufferutil@4.0.8)(tslib@2.7.0)(utf-8-validate@5.0.10)
-      '@trezor/connect-analytics': 1.2.0(react-native@0.75.2(@babel/core@7.25.2)(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10))(tslib@2.7.0)
-      '@trezor/connect-common': 0.2.0(react-native@0.75.2(@babel/core@7.25.2)(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10))(tslib@2.7.0)
-      '@trezor/protobuf': 1.2.0(tslib@2.7.0)
-      '@trezor/protocol': 1.2.0(tslib@2.7.0)
-      '@trezor/schema-utils': 1.2.0(tslib@2.7.0)
-      '@trezor/transport': 1.3.0(tslib@2.7.0)
-      '@trezor/utils': 9.2.0(tslib@2.7.0)
-      '@trezor/utxo-lib': 2.2.0(tslib@2.7.0)
-      blakejs: 1.2.1
-      bs58: 5.0.0
-      bs58check: 3.0.1
-      cross-fetch: 4.0.0
-      tslib: 2.7.0
-    transitivePeerDependencies:
-      - '@babel/core'
-      - bufferutil
-      - encoding
-      - expo-constants
-      - expo-localization
-      - react-native
-      - supports-color
-      - utf-8-validate
-
-  '@trezor/env-utils@1.2.0(react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(tslib@2.7.0)':
+  '@trezor/env-utils@1.2.0(react-native@0.75.2)(tslib@2.7.0)':
     dependencies:
       tslib: 2.7.0
       ua-parser-js: 1.0.38
-    optionalDependencies:
-      react-native: 0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10)
-
-  '@trezor/env-utils@1.2.0(react-native@0.75.2(@babel/core@7.25.2)(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(tslib@2.7.0)':
-    dependencies:
-      tslib: 2.7.0
-      ua-parser-js: 1.0.38
-    optionalDependencies:
-      react-native: 0.75.2(@babel/core@7.25.2)(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10)
-
-  '@trezor/env-utils@1.2.0(react-native@0.75.2(@babel/core@7.25.2)(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10))(tslib@2.7.0)':
-    dependencies:
-      tslib: 2.7.0
-      ua-parser-js: 1.0.38
-    optionalDependencies:
-      react-native: 0.75.2(@babel/core@7.25.2)(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)
-
   '@trezor/protobuf@1.2.0(tslib@2.7.0)':
     dependencies:
       '@trezor/schema-utils': 1.2.0(tslib@2.7.0)
@@ -19918,7 +19689,7 @@ snapshots:
 
   '@types/node@18.15.13': {}
 
-  '@types/node@18.19.47':
+  '@types/node@18.19.48':
     dependencies:
       undici-types: 5.26.5
 
@@ -20023,7 +19794,7 @@ snapshots:
     dependencies:
       '@types/yargs-parser': 21.0.3
 
-  '@typescript-eslint/eslint-plugin@6.18.1(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint@8.56.0)(typescript@5.3.3)':
+  '@typescript-eslint/eslint-plugin@6.18.1(@typescript-eslint/parser@6.18.1)(eslint@8.56.0)(typescript@5.3.3)':
     dependencies:
       '@eslint-community/regexpp': 4.11.0
       '@typescript-eslint/parser': 6.18.1(eslint@8.56.0)(typescript@5.3.3)
@@ -20124,7 +19895,7 @@ snapshots:
 
   '@ungap/structured-clone@1.2.0': {}
 
-  '@viem/anvil@0.0.7(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+  '@viem/anvil@0.0.7':
     dependencies:
       execa: 7.2.0
       get-port: 6.1.2
@@ -20135,7 +19906,7 @@ snapshots:
       - debug
       - utf-8-validate
 
-  '@vitejs/plugin-react@4.2.1(vite@5.2.11(@types/node@20.11.5)(terser@5.31.6))':
+  '@vitejs/plugin-react@4.2.1(vite@5.2.11)':
     dependencies:
       '@babel/core': 7.25.2
       '@babel/plugin-transform-react-jsx-self': 7.24.7(@babel/core@7.25.2)
@@ -20146,7 +19917,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@vitejs/plugin-react@4.2.1(vite@5.2.9(@types/node@20.11.5)(terser@5.31.6))':
+  '@vitejs/plugin-react@4.2.1(vite@5.2.9)':
     dependencies:
       '@babel/core': 7.25.2
       '@babel/plugin-transform-react-jsx-self': 7.24.7(@babel/core@7.25.2)
@@ -20157,17 +19928,17 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@vitejs/plugin-vue@5.0.2(vite@5.2.11(@types/node@20.11.5)(terser@5.31.6))(vue@3.4.3(typescript@5.3.3))':
+  '@vitejs/plugin-vue@5.0.2(vite@5.2.11)(vue@3.4.3)':
     dependencies:
       vite: 5.2.11(@types/node@20.11.5)(terser@5.31.6)
       vue: 3.4.3(typescript@5.3.3)
 
-  '@vitejs/plugin-vue@5.1.3(vite@5.2.9(@types/node@20.11.5)(terser@5.31.6))(vue@3.4.3(typescript@5.3.3))':
+  '@vitejs/plugin-vue@5.1.3(vite@5.2.9)(vue@3.4.3)':
     dependencies:
       vite: 5.2.9(@types/node@20.11.5)(terser@5.31.6)
       vue: 3.4.3(typescript@5.3.3)
 
-  '@vitest/coverage-v8@1.1.2(vitest@2.0.3(@types/node@20.11.5)(jsdom@24.1.0)(terser@5.31.6))':
+  '@vitest/coverage-v8@1.1.2(vitest@2.0.3)':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@bcoe/v8-coverage': 0.2.3
@@ -20186,7 +19957,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@vitest/coverage-v8@2.0.5(vitest@2.0.3(@types/node@20.11.5)(jsdom@24.1.0)(terser@5.31.6))':
+  '@vitest/coverage-v8@2.0.5(vitest@2.0.3)':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@bcoe/v8-coverage': 0.2.3
@@ -20286,7 +20057,7 @@ snapshots:
       '@vue/shared': 3.4.3
       csstype: 3.1.3
 
-  '@vue/server-renderer@3.4.3(vue@3.4.3(typescript@5.3.3))':
+  '@vue/server-renderer@3.4.3(vue@3.4.3)':
     dependencies:
       '@vue/compiler-ssr': 3.4.3
       '@vue/shared': 3.4.3
@@ -20294,7 +20065,7 @@ snapshots:
 
   '@vue/shared@3.4.3': {}
 
-  '@wagmi/connectors@5.1.5(@types/react@18.2.0)(@wagmi/core@2.13.4(@tanstack/query-core@5.24.8)(@types/react@18.2.0)(react@18.2.0)(typescript@5.3.3)(viem@2.19.6(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4)))(bufferutil@4.0.8)(react-dom@18.2.0(react@18.2.0))(react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.2.0)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(react@18.2.0)(rollup@4.21.2)(typescript@5.3.3)(utf-8-validate@5.0.10)(viem@2.19.6(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4))(zod@3.22.4)':
+  '@wagmi/connectors@5.1.5(@types/react@18.2.0)(@wagmi/core@2.13.4)(react-dom@18.2.0)(react-native@0.75.2)(react@18.2.0)(typescript@5.3.3)(viem@2.19.6)':
     dependencies:
       '@coinbase/wallet-sdk': 4.0.4
       '@metamask/sdk': 0.27.0(bufferutil@4.0.8)(react-dom@18.2.0(react@18.2.0))(react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.2.0)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(react@18.2.0)(rollup@4.21.2)(utf-8-validate@5.0.10)
@@ -20304,8 +20075,6 @@ snapshots:
       '@walletconnect/ethereum-provider': 2.14.0(@types/react@18.2.0)(bufferutil@4.0.8)(react@18.2.0)(utf-8-validate@5.0.10)
       '@walletconnect/modal': 2.6.2(@types/react@18.2.0)(react@18.2.0)
       cbw-sdk: '@coinbase/wallet-sdk@3.9.3'
-      viem: 2.19.6(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4)
-    optionalDependencies:
       typescript: 5.3.3
     transitivePeerDependencies:
       - '@azure/app-configuration'
@@ -20333,7 +20102,7 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@wagmi/connectors@5.1.5(@types/react@18.2.62)(@wagmi/core@2.13.4(@tanstack/query-core@5.24.8)(@types/react@18.2.62)(react@18.2.0)(typescript@5.3.3)(viem@2.19.6(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4)))(bufferutil@4.0.8)(react-dom@18.2.0(react@18.2.0))(react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(react@18.2.0)(rollup@4.21.2)(typescript@5.3.3)(utf-8-validate@5.0.10)(viem@2.19.6(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4))(zod@3.22.4)':
+  '@wagmi/connectors@5.1.5(@types/react@18.2.62)(@wagmi/core@2.13.4)(react-dom@18.2.0)(react-native@0.75.2)(react@18.2.0)(typescript@5.3.3)(viem@2.19.6)':
     dependencies:
       '@coinbase/wallet-sdk': 4.0.4
       '@metamask/sdk': 0.27.0(bufferutil@4.0.8)(react-dom@18.2.0(react@18.2.0))(react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(react@18.2.0)(rollup@4.21.2)(utf-8-validate@5.0.10)
@@ -20343,8 +20112,6 @@ snapshots:
       '@walletconnect/ethereum-provider': 2.14.0(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(utf-8-validate@5.0.10)
       '@walletconnect/modal': 2.6.2(@types/react@18.2.62)(react@18.2.0)
       cbw-sdk: '@coinbase/wallet-sdk@3.9.3'
-      viem: 2.19.6(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4)
-    optionalDependencies:
       typescript: 5.3.3
     transitivePeerDependencies:
       - '@azure/app-configuration'
@@ -20372,18 +20139,16 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@wagmi/connectors@5.1.5(@types/react@18.2.62)(@wagmi/core@2.13.4(@tanstack/query-core@5.24.8)(@types/react@18.2.62)(react@18.2.0)(typescript@5.3.3)(viem@2.19.6(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4)))(bufferutil@4.0.8)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(rollup@4.21.2)(typescript@5.3.3)(utf-8-validate@5.0.10)(viem@2.19.6(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4))(zod@3.22.4)':
+  '@wagmi/connectors@5.1.5(@wagmi/core@2.13.4)(react-native@0.75.2)(react@18.2.0)(typescript@5.3.3)(viem@2.19.6)':
     dependencies:
       '@coinbase/wallet-sdk': 4.0.4
-      '@metamask/sdk': 0.27.0(bufferutil@4.0.8)(react-dom@18.2.0(react@18.2.0))(react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.2.0)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(react@18.2.0)(rollup@4.21.2)(utf-8-validate@5.0.10)
-      '@safe-global/safe-apps-provider': 0.18.3(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4)
-      '@safe-global/safe-apps-sdk': 9.1.0(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4)
-      '@wagmi/core': 2.13.4(@tanstack/query-core@5.24.8)(@types/react@18.2.62)(react@18.2.0)(typescript@5.3.3)(viem@2.19.6(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4))
-      '@walletconnect/ethereum-provider': 2.14.0(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(utf-8-validate@5.0.10)
-      '@walletconnect/modal': 2.6.2(@types/react@18.2.62)(react@18.2.0)
+      '@metamask/sdk': 0.27.0(react-native@0.75.2)(react@18.2.0)
+      '@safe-global/safe-apps-provider': 0.18.3(typescript@5.3.3)
+      '@safe-global/safe-apps-sdk': 9.1.0(typescript@5.3.3)
+      '@wagmi/core': 2.13.4(@types/react@18.2.0)(react@18.2.0)(typescript@5.3.3)(viem@2.19.6)
+      '@walletconnect/ethereum-provider': 2.14.0(@types/react@18.2.0)(react@18.2.0)
+      '@walletconnect/modal': 2.6.2(@types/react@18.2.0)(react@18.2.0)
       cbw-sdk: '@coinbase/wallet-sdk@3.9.3'
-      viem: 2.19.6(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4)
-    optionalDependencies:
       typescript: 5.3.3
     transitivePeerDependencies:
       - '@azure/app-configuration'
@@ -20411,7 +20176,7 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@wagmi/core@2.13.4(@tanstack/query-core@5.24.8)(@types/react@18.2.0)(react@18.2.0)(typescript@5.3.3)(viem@2.19.6(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4))':
+  '@wagmi/core@2.13.4(@types/react@18.2.0)(react@18.2.0)(typescript@5.3.3)(viem@2.19.6)':
     dependencies:
       eventemitter3: 5.0.1
       mipd: 0.0.7(typescript@5.3.3)
@@ -20425,7 +20190,7 @@ snapshots:
       - immer
       - react
 
-  '@wagmi/core@2.13.4(@tanstack/query-core@5.24.8)(@types/react@18.2.62)(react@18.2.0)(typescript@5.3.3)(viem@2.19.6(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4))':
+  '@wagmi/core@2.13.4(@types/react@18.2.62)(react@18.2.0)(typescript@5.3.3)(viem@2.19.6)':
     dependencies:
       eventemitter3: 5.0.1
       mipd: 0.0.7(typescript@5.3.3)
@@ -20461,7 +20226,7 @@ snapshots:
       '@walletconnect/window-metadata': 1.0.0
       detect-browser: 5.2.0
 
-  '@walletconnect/core@2.14.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+  '@walletconnect/core@2.14.0':
     dependencies:
       '@walletconnect/heartbeat': 1.2.2
       '@walletconnect/jsonrpc-provider': 1.0.14
@@ -20499,13 +20264,49 @@ snapshots:
       - uWebSockets.js
       - utf-8-validate
 
-  '@walletconnect/core@2.15.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+  '@walletconnect/core@2.15.0':
     dependencies:
       '@walletconnect/heartbeat': 1.2.2
       '@walletconnect/jsonrpc-provider': 1.0.14
       '@walletconnect/jsonrpc-types': 1.0.4
       '@walletconnect/jsonrpc-utils': 1.0.8
-      '@walletconnect/jsonrpc-ws-connection': 1.0.14(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@walletconnect/jsonrpc-ws-connection': 1.0.14
+      '@walletconnect/keyvaluestorage': 1.1.1
+      '@walletconnect/logger': 2.1.2
+      '@walletconnect/relay-api': 1.0.11
+      '@walletconnect/relay-auth': 1.0.4
+      '@walletconnect/safe-json': 1.0.2
+      '@walletconnect/time': 1.0.2
+      '@walletconnect/types': 2.15.0
+      '@walletconnect/utils': 2.15.0
+      events: 3.3.0
+      lodash.isequal: 4.5.0
+      uint8arrays: 3.1.0
+    transitivePeerDependencies:
+      - '@azure/app-configuration'
+      - '@azure/cosmos'
+      - '@azure/data-tables'
+      - '@azure/identity'
+      - '@azure/keyvault-secrets'
+      - '@azure/storage-blob'
+      - '@capacitor/preferences'
+      - '@netlify/blobs'
+      - '@planetscale/database'
+      - '@react-native-async-storage/async-storage'
+      - '@upstash/redis'
+      - '@vercel/kv'
+      - bufferutil
+      - ioredis
+      - uWebSockets.js
+      - utf-8-validate
+
+  '@walletconnect/core@2.15.1':
+    dependencies:
+      '@walletconnect/heartbeat': 1.2.2
+      '@walletconnect/jsonrpc-provider': 1.0.14
+      '@walletconnect/jsonrpc-types': 1.0.4
+      '@walletconnect/jsonrpc-utils': 1.0.8
+      '@walletconnect/jsonrpc-ws-connection': 1.0.14
       '@walletconnect/keyvaluestorage': 1.1.1
       '@walletconnect/logger': 2.1.2
       '@walletconnect/relay-api': 1.0.11
@@ -20535,11 +20336,47 @@ snapshots:
       - uWebSockets.js
       - utf-8-validate
 
+  '@walletconnect/core@2.15.2':
+    dependencies:
+      '@walletconnect/heartbeat': 1.2.2
+      '@walletconnect/jsonrpc-provider': 1.0.14
+      '@walletconnect/jsonrpc-types': 1.0.4
+      '@walletconnect/jsonrpc-utils': 1.0.8
+      '@walletconnect/jsonrpc-ws-connection': 1.0.14
+      '@walletconnect/keyvaluestorage': 1.1.1
+      '@walletconnect/logger': 2.1.2
+      '@walletconnect/relay-api': 1.0.11
+      '@walletconnect/relay-auth': 1.0.4
+      '@walletconnect/safe-json': 1.0.2
+      '@walletconnect/time': 1.0.2
+      '@walletconnect/types': 2.15.2
+      '@walletconnect/utils': 2.15.2
+      events: 3.3.0
+      lodash.isequal: 4.5.0
+      uint8arrays: 3.1.0
+    transitivePeerDependencies:
+      - '@azure/app-configuration'
+      - '@azure/cosmos'
+      - '@azure/data-tables'
+      - '@azure/identity'
+      - '@azure/keyvault-secrets'
+      - '@azure/storage-blob'
+      - '@capacitor/preferences'
+      - '@netlify/blobs'
+      - '@planetscale/database'
+      - '@react-native-async-storage/async-storage'
+      - '@upstash/redis'
+      - '@vercel/kv'
+      - bufferutil
+      - ioredis
+      - uWebSockets.js
+      - utf-8-validate
+
   '@walletconnect/environment@1.0.1':
     dependencies:
       tslib: 1.14.1
 
-  '@walletconnect/ethereum-provider@2.14.0(@types/react@18.2.0)(bufferutil@4.0.8)(react@18.2.0)(utf-8-validate@5.0.10)':
+  '@walletconnect/ethereum-provider@2.14.0(@types/react@18.2.0)(react@18.2.0)':
     dependencies:
       '@walletconnect/jsonrpc-http-connection': 1.0.8
       '@walletconnect/jsonrpc-provider': 1.0.14
@@ -20572,7 +20409,7 @@ snapshots:
       - uWebSockets.js
       - utf-8-validate
 
-  '@walletconnect/ethereum-provider@2.14.0(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(utf-8-validate@5.0.10)':
+  '@walletconnect/ethereum-provider@2.14.0(@types/react@18.2.62)(react@18.2.0)':
     dependencies:
       '@walletconnect/jsonrpc-http-connection': 1.0.8
       '@walletconnect/jsonrpc-provider': 1.0.14
@@ -20605,7 +20442,40 @@ snapshots:
       - uWebSockets.js
       - utf-8-validate
 
-  '@walletconnect/ethereum-provider@2.15.1(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(utf-8-validate@5.0.10)':
+  '@walletconnect/ethereum-provider@2.15.1(@types/react@18.2.0)(react@18.2.0)':
+    dependencies:
+      '@walletconnect/jsonrpc-http-connection': 1.0.8
+      '@walletconnect/jsonrpc-provider': 1.0.14
+      '@walletconnect/jsonrpc-types': 1.0.4
+      '@walletconnect/jsonrpc-utils': 1.0.8
+      '@walletconnect/modal': 2.6.2(@types/react@18.2.0)(react@18.2.0)
+      '@walletconnect/sign-client': 2.15.1
+      '@walletconnect/types': 2.15.1
+      '@walletconnect/universal-provider': 2.15.1
+      '@walletconnect/utils': 2.15.1
+      events: 3.3.0
+    transitivePeerDependencies:
+      - '@azure/app-configuration'
+      - '@azure/cosmos'
+      - '@azure/data-tables'
+      - '@azure/identity'
+      - '@azure/keyvault-secrets'
+      - '@azure/storage-blob'
+      - '@capacitor/preferences'
+      - '@netlify/blobs'
+      - '@planetscale/database'
+      - '@react-native-async-storage/async-storage'
+      - '@types/react'
+      - '@upstash/redis'
+      - '@vercel/kv'
+      - bufferutil
+      - encoding
+      - ioredis
+      - react
+      - uWebSockets.js
+      - utf-8-validate
+
+  '@walletconnect/ethereum-provider@2.15.1(@types/react@18.2.62)(react@18.2.0)':
     dependencies:
       '@walletconnect/jsonrpc-http-connection': 1.0.8
       '@walletconnect/jsonrpc-provider': 1.0.14
@@ -20675,7 +20545,7 @@ snapshots:
       '@walletconnect/jsonrpc-types': 1.0.4
       tslib: 1.14.1
 
-  '@walletconnect/jsonrpc-ws-connection@1.0.14(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+  '@walletconnect/jsonrpc-ws-connection@1.0.14':
     dependencies:
       '@walletconnect/jsonrpc-utils': 1.0.8
       '@walletconnect/safe-json': 1.0.2
@@ -20794,7 +20664,7 @@ snapshots:
     dependencies:
       tslib: 1.14.1
 
-  '@walletconnect/sign-client@2.14.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+  '@walletconnect/sign-client@2.14.0':
     dependencies:
       '@walletconnect/core': 2.14.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@walletconnect/events': 1.0.1
@@ -20824,9 +20694,38 @@ snapshots:
       - uWebSockets.js
       - utf-8-validate
 
-  '@walletconnect/sign-client@2.15.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+  '@walletconnect/sign-client@2.15.0':
     dependencies:
-      '@walletconnect/core': 2.15.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@walletconnect/core': 2.15.0
+      '@walletconnect/events': 1.0.1
+      '@walletconnect/heartbeat': 1.2.2
+      '@walletconnect/jsonrpc-utils': 1.0.8
+      '@walletconnect/logger': 2.1.2
+      '@walletconnect/time': 1.0.2
+      '@walletconnect/types': 2.15.0
+      '@walletconnect/utils': 2.15.0
+      events: 3.3.0
+    transitivePeerDependencies:
+      - '@azure/app-configuration'
+      - '@azure/cosmos'
+      - '@azure/data-tables'
+      - '@azure/identity'
+      - '@azure/keyvault-secrets'
+      - '@azure/storage-blob'
+      - '@capacitor/preferences'
+      - '@netlify/blobs'
+      - '@planetscale/database'
+      - '@react-native-async-storage/async-storage'
+      - '@upstash/redis'
+      - '@vercel/kv'
+      - bufferutil
+      - ioredis
+      - uWebSockets.js
+      - utf-8-validate
+
+  '@walletconnect/sign-client@2.15.1':
+    dependencies:
+      '@walletconnect/core': 2.15.1
       '@walletconnect/events': 1.0.1
       '@walletconnect/heartbeat': 1.2.2
       '@walletconnect/jsonrpc-utils': 1.0.8
@@ -20834,6 +20733,35 @@ snapshots:
       '@walletconnect/time': 1.0.2
       '@walletconnect/types': 2.15.1
       '@walletconnect/utils': 2.15.1
+      events: 3.3.0
+    transitivePeerDependencies:
+      - '@azure/app-configuration'
+      - '@azure/cosmos'
+      - '@azure/data-tables'
+      - '@azure/identity'
+      - '@azure/keyvault-secrets'
+      - '@azure/storage-blob'
+      - '@capacitor/preferences'
+      - '@netlify/blobs'
+      - '@planetscale/database'
+      - '@react-native-async-storage/async-storage'
+      - '@upstash/redis'
+      - '@vercel/kv'
+      - bufferutil
+      - ioredis
+      - uWebSockets.js
+      - utf-8-validate
+
+  '@walletconnect/sign-client@2.15.2':
+    dependencies:
+      '@walletconnect/core': 2.15.2
+      '@walletconnect/events': 1.0.1
+      '@walletconnect/heartbeat': 1.2.2
+      '@walletconnect/jsonrpc-utils': 1.0.8
+      '@walletconnect/logger': 2.1.2
+      '@walletconnect/time': 1.0.2
+      '@walletconnect/types': 2.15.2
+      '@walletconnect/utils': 2.15.2
       events: 3.3.0
     transitivePeerDependencies:
       - '@azure/app-configuration'
@@ -20907,6 +20835,30 @@ snapshots:
       - ioredis
       - uWebSockets.js
 
+  '@walletconnect/types@2.15.0':
+    dependencies:
+      '@walletconnect/events': 1.0.1
+      '@walletconnect/heartbeat': 1.2.2
+      '@walletconnect/jsonrpc-types': 1.0.4
+      '@walletconnect/keyvaluestorage': 1.1.1
+      '@walletconnect/logger': 2.1.2
+      events: 3.3.0
+    transitivePeerDependencies:
+      - '@azure/app-configuration'
+      - '@azure/cosmos'
+      - '@azure/data-tables'
+      - '@azure/identity'
+      - '@azure/keyvault-secrets'
+      - '@azure/storage-blob'
+      - '@capacitor/preferences'
+      - '@netlify/blobs'
+      - '@planetscale/database'
+      - '@react-native-async-storage/async-storage'
+      - '@upstash/redis'
+      - '@vercel/kv'
+      - ioredis
+      - uWebSockets.js
+
   '@walletconnect/types@2.15.1':
     dependencies:
       '@walletconnect/events': 1.0.1
@@ -20931,7 +20883,31 @@ snapshots:
       - ioredis
       - uWebSockets.js
 
-  '@walletconnect/universal-provider@2.14.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+  '@walletconnect/types@2.15.2':
+    dependencies:
+      '@walletconnect/events': 1.0.1
+      '@walletconnect/heartbeat': 1.2.2
+      '@walletconnect/jsonrpc-types': 1.0.4
+      '@walletconnect/keyvaluestorage': 1.1.1
+      '@walletconnect/logger': 2.1.2
+      events: 3.3.0
+    transitivePeerDependencies:
+      - '@azure/app-configuration'
+      - '@azure/cosmos'
+      - '@azure/data-tables'
+      - '@azure/identity'
+      - '@azure/keyvault-secrets'
+      - '@azure/storage-blob'
+      - '@capacitor/preferences'
+      - '@netlify/blobs'
+      - '@planetscale/database'
+      - '@react-native-async-storage/async-storage'
+      - '@upstash/redis'
+      - '@vercel/kv'
+      - ioredis
+      - uWebSockets.js
+
+  '@walletconnect/universal-provider@2.14.0':
     dependencies:
       '@walletconnect/jsonrpc-http-connection': 1.0.8
       '@walletconnect/jsonrpc-provider': 1.0.14
@@ -20961,14 +20937,44 @@ snapshots:
       - uWebSockets.js
       - utf-8-validate
 
-  '@walletconnect/universal-provider@2.15.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+  '@walletconnect/universal-provider@2.15.0':
     dependencies:
       '@walletconnect/jsonrpc-http-connection': 1.0.8
       '@walletconnect/jsonrpc-provider': 1.0.14
       '@walletconnect/jsonrpc-types': 1.0.4
       '@walletconnect/jsonrpc-utils': 1.0.8
       '@walletconnect/logger': 2.1.2
-      '@walletconnect/sign-client': 2.15.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@walletconnect/sign-client': 2.15.0
+      '@walletconnect/types': 2.15.0
+      '@walletconnect/utils': 2.15.0
+      events: 3.3.0
+    transitivePeerDependencies:
+      - '@azure/app-configuration'
+      - '@azure/cosmos'
+      - '@azure/data-tables'
+      - '@azure/identity'
+      - '@azure/keyvault-secrets'
+      - '@azure/storage-blob'
+      - '@capacitor/preferences'
+      - '@netlify/blobs'
+      - '@planetscale/database'
+      - '@react-native-async-storage/async-storage'
+      - '@upstash/redis'
+      - '@vercel/kv'
+      - bufferutil
+      - encoding
+      - ioredis
+      - uWebSockets.js
+      - utf-8-validate
+
+  '@walletconnect/universal-provider@2.15.1':
+    dependencies:
+      '@walletconnect/jsonrpc-http-connection': 1.0.8
+      '@walletconnect/jsonrpc-provider': 1.0.14
+      '@walletconnect/jsonrpc-types': 1.0.4
+      '@walletconnect/jsonrpc-utils': 1.0.8
+      '@walletconnect/logger': 2.1.2
+      '@walletconnect/sign-client': 2.15.1
       '@walletconnect/types': 2.15.1
       '@walletconnect/utils': 2.15.1
       events: 3.3.0
@@ -21023,6 +21029,39 @@ snapshots:
       - ioredis
       - uWebSockets.js
 
+  '@walletconnect/utils@2.15.0':
+    dependencies:
+      '@stablelib/chacha20poly1305': 1.0.1
+      '@stablelib/hkdf': 1.0.1
+      '@stablelib/random': 1.0.2
+      '@stablelib/sha256': 1.0.1
+      '@stablelib/x25519': 1.0.3
+      '@walletconnect/relay-api': 1.0.11
+      '@walletconnect/safe-json': 1.0.2
+      '@walletconnect/time': 1.0.2
+      '@walletconnect/types': 2.15.0
+      '@walletconnect/window-getters': 1.0.1
+      '@walletconnect/window-metadata': 1.0.1
+      detect-browser: 5.3.0
+      elliptic: 6.5.7
+      query-string: 7.1.3
+      uint8arrays: 3.1.0
+    transitivePeerDependencies:
+      - '@azure/app-configuration'
+      - '@azure/cosmos'
+      - '@azure/data-tables'
+      - '@azure/identity'
+      - '@azure/keyvault-secrets'
+      - '@azure/storage-blob'
+      - '@capacitor/preferences'
+      - '@netlify/blobs'
+      - '@planetscale/database'
+      - '@react-native-async-storage/async-storage'
+      - '@upstash/redis'
+      - '@vercel/kv'
+      - ioredis
+      - uWebSockets.js
+
   '@walletconnect/utils@2.15.1':
     dependencies:
       '@stablelib/chacha20poly1305': 1.0.1
@@ -21037,6 +21076,40 @@ snapshots:
       '@walletconnect/window-getters': 1.0.1
       '@walletconnect/window-metadata': 1.0.1
       detect-browser: 5.3.0
+      query-string: 7.1.3
+      uint8arrays: 3.1.0
+    transitivePeerDependencies:
+      - '@azure/app-configuration'
+      - '@azure/cosmos'
+      - '@azure/data-tables'
+      - '@azure/identity'
+      - '@azure/keyvault-secrets'
+      - '@azure/storage-blob'
+      - '@capacitor/preferences'
+      - '@netlify/blobs'
+      - '@planetscale/database'
+      - '@react-native-async-storage/async-storage'
+      - '@upstash/redis'
+      - '@vercel/kv'
+      - ioredis
+      - uWebSockets.js
+
+  '@walletconnect/utils@2.15.2':
+    dependencies:
+      '@stablelib/chacha20poly1305': 1.0.1
+      '@stablelib/hkdf': 1.0.1
+      '@stablelib/random': 1.0.2
+      '@stablelib/sha256': 1.0.1
+      '@stablelib/x25519': 1.0.3
+      '@walletconnect/relay-api': 1.0.11
+      '@walletconnect/relay-auth': 1.0.4
+      '@walletconnect/safe-json': 1.0.2
+      '@walletconnect/time': 1.0.2
+      '@walletconnect/types': 2.15.2
+      '@walletconnect/window-getters': 1.0.1
+      '@walletconnect/window-metadata': 1.0.1
+      detect-browser: 5.3.0
+      elliptic: 6.5.7
       query-string: 7.1.3
       uint8arrays: 3.1.0
     transitivePeerDependencies:
@@ -21098,15 +21171,14 @@ snapshots:
       jsonparse: 1.3.1
       through: 2.3.8
 
-  abitype@1.0.0(typescript@5.3.3)(zod@3.22.4):
-    optionalDependencies:
+  abitype@1.0.0(typescript@5.3.3):
+    dependencies:
       typescript: 5.3.3
       zod: 3.22.4
 
-  abitype@1.0.5(typescript@5.3.3)(zod@3.22.4):
-    optionalDependencies:
+  abitype@1.0.5(typescript@5.3.3):
+    dependencies:
       typescript: 5.3.3
-      zod: 3.22.4
 
   abort-controller@3.0.0:
     dependencies:
@@ -22449,7 +22521,7 @@ snapshots:
     dependencies:
       once: 1.4.0
 
-  engine.io-client@6.5.4(bufferutil@4.0.8)(utf-8-validate@5.0.10):
+  engine.io-client@6.5.4:
     dependencies:
       '@socket.io/component-emitter': 3.1.2
       debug: 4.3.6
@@ -22827,7 +22899,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1)(eslint@8.56.0):
+  eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.18.1)(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.30.0)(eslint@8.56.0):
     dependencies:
       '@nolyfill/is-core-module': 1.0.39
       debug: 4.3.6
@@ -22846,7 +22918,7 @@ snapshots:
       - eslint-import-resolver-webpack
       - supports-color
 
-  eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.18.1(eslint@8.57.0)(typescript@5.3.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1)(eslint@8.57.0):
+  eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.18.1)(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.30.0)(eslint@8.57.0):
     dependencies:
       '@nolyfill/is-core-module': 1.0.39
       debug: 4.3.6
@@ -22865,7 +22937,7 @@ snapshots:
       - eslint-import-resolver-webpack
       - supports-color
 
-  eslint-module-utils@2.8.2(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1)(eslint@8.56.0))(eslint@8.56.0):
+  eslint-module-utils@2.9.0(@typescript-eslint/parser@6.18.1)(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3)(eslint@8.56.0):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
@@ -22876,7 +22948,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-module-utils@2.8.2(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint-import-resolver-node@0.3.9)(eslint@8.57.0):
+  eslint-module-utils@2.9.0(@typescript-eslint/parser@6.18.1)(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3)(eslint@8.57.0):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
@@ -22897,7 +22969,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.29.1(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint-import-resolver-typescript@3.6.3)(eslint@8.56.0):
+  eslint-plugin-import@2.30.0(@typescript-eslint/parser@6.18.1)(eslint-import-resolver-typescript@3.6.3)(eslint@8.56.0):
     dependencies:
       array-includes: 3.1.8
       array.prototype.findlastindex: 1.2.5
@@ -22924,7 +22996,7 @@ snapshots:
       - eslint-import-resolver-webpack
       - supports-color
 
-  eslint-plugin-import@2.29.1(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint@8.57.0):
+  eslint-plugin-import@2.30.0(@typescript-eslint/parser@6.18.1)(eslint-import-resolver-typescript@3.6.3)(eslint@8.57.0):
     dependencies:
       array-includes: 3.1.8
       array.prototype.findlastindex: 1.2.5
@@ -22998,14 +23070,12 @@ snapshots:
       parse5-htmlparser2-tree-adapter: 6.0.1
       requireindex: 1.2.0
 
-  eslint-plugin-prettier@5.1.3(eslint-config-prettier@9.1.0(eslint@8.56.0))(eslint@8.56.0)(prettier@3.1.1):
+  eslint-plugin-prettier@5.1.3(eslint-config-prettier@9.1.0)(eslint@8.56.0)(prettier@3.1.1):
     dependencies:
       eslint: 8.56.0
       prettier: 3.1.1
       prettier-linter-helpers: 1.0.0
       synckit: 0.8.8
-    optionalDependencies:
-      eslint-config-prettier: 9.1.0(eslint@8.56.0)
 
   eslint-plugin-react-hooks@4.6.2(eslint@8.56.0):
     dependencies:
@@ -23015,7 +23085,7 @@ snapshots:
     dependencies:
       eslint: 8.57.0
 
-  eslint-plugin-react@7.35.0(eslint@8.56.0):
+  eslint-plugin-react@7.35.1(eslint@8.56.0):
     dependencies:
       array-includes: 3.1.8
       array.prototype.findlast: 1.2.5
@@ -23037,7 +23107,7 @@ snapshots:
       string.prototype.matchall: 4.0.11
       string.prototype.repeat: 1.0.0
 
-  eslint-plugin-react@7.35.0(eslint@8.57.0):
+  eslint-plugin-react@7.35.1(eslint@8.57.0):
     dependencies:
       array-includes: 3.1.8
       array.prototype.findlast: 1.2.5
@@ -23226,7 +23296,7 @@ snapshots:
       '@scure/bip32': 1.4.0
       '@scure/bip39': 1.3.0
 
-  ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10):
+  ethers@5.7.2:
     dependencies:
       '@ethersproject/abi': 5.7.0
       '@ethersproject/abstract-provider': 5.7.0
@@ -23262,7 +23332,7 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  ethers@6.13.0(bufferutil@4.0.8)(utf-8-validate@5.0.10):
+  ethers@6.13.0:
     dependencies:
       '@adraffy/ens-normalize': 1.10.1
       '@noble/curves': 1.2.0
@@ -23275,7 +23345,7 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  ethers@6.9.0(bufferutil@4.0.8)(utf-8-validate@5.0.10):
+  ethers@6.9.0:
     dependencies:
       '@adraffy/ens-normalize': 1.10.0
       '@noble/curves': 1.2.0
@@ -23445,7 +23515,7 @@ snapshots:
     dependencies:
       strnum: 1.0.5
 
-  fast-xml-parser@4.4.1:
+  fast-xml-parser@4.5.0:
     dependencies:
       strnum: 1.0.5
 
@@ -23585,11 +23655,14 @@ snapshots:
 
   fraction.js@4.3.7: {}
 
-  framer-motion@10.17.9(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
+  framer-motion@10.17.9(react-dom@18.2.0)(react@18.2.0):
     dependencies:
       tslib: 2.7.0
     optionalDependencies:
       '@emotion/is-prop-valid': 0.8.8
+
+  framer-motion@11.0.8(react-dom@18.2.0)(react@18.2.0):
+    dependencies:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
 
@@ -23598,8 +23671,6 @@ snapshots:
       tslib: 2.7.0
     optionalDependencies:
       '@emotion/is-prop-valid': 0.8.8
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
 
   framesync@6.1.2:
     dependencies:
@@ -24283,15 +24354,15 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  isomorphic-ws@4.0.1(ws@7.5.10(bufferutil@4.0.8)(utf-8-validate@5.0.10)):
+  isomorphic-ws@4.0.1(ws@7.5.10):
     dependencies:
       ws: 7.5.10(bufferutil@4.0.8)(utf-8-validate@5.0.10)
 
-  isows@1.0.3(ws@8.13.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)):
+  isows@1.0.3(ws@8.13.0):
     dependencies:
-      ws: 8.13.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      ws: 8.13.0
 
-  isows@1.0.4(ws@8.17.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)):
+  isows@1.0.4(ws@8.17.1):
     dependencies:
       ws: 8.17.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)
 
@@ -24361,7 +24432,7 @@ snapshots:
       filelist: 1.0.4
       minimatch: 3.1.2
 
-  jayson@4.1.2(bufferutil@4.0.8)(utf-8-validate@5.0.10):
+  jayson@4.1.2:
     dependencies:
       '@types/connect': 3.4.38
       '@types/node': 12.20.55
@@ -24488,7 +24559,7 @@ snapshots:
 
   jsc-safe-url@0.2.4: {}
 
-  jscodeshift@0.14.0(@babel/preset-env@7.25.4(@babel/core@7.25.2)):
+  jscodeshift@0.14.0(@babel/preset-env@7.25.4):
     dependencies:
       '@babel/core': 7.25.2
       '@babel/parser': 7.25.6
@@ -24513,7 +24584,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  jscodeshift@0.15.2(@babel/preset-env@7.25.4(@babel/core@7.25.2)):
+  jscodeshift@0.15.2(@babel/preset-env@7.25.4):
     dependencies:
       '@babel/core': 7.25.2
       '@babel/parser': 7.25.6
@@ -24540,7 +24611,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10):
+  jsdom@24.1.0:
     dependencies:
       cssstyle: 4.0.1
       data-urls: 5.0.0
@@ -24980,7 +25051,7 @@ snapshots:
       flow-enums-runtime: 0.0.6
       metro-core: 0.80.10
 
-  metro-config@0.80.10(bufferutil@4.0.8)(utf-8-validate@5.0.10):
+  metro-config@0.80.10:
     dependencies:
       connect: 3.7.0
       cosmiconfig: 5.2.1
@@ -25071,7 +25142,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  metro-transform-worker@0.80.10(bufferutil@4.0.8)(utf-8-validate@5.0.10):
+  metro-transform-worker@0.80.10:
     dependencies:
       '@babel/core': 7.25.2
       '@babel/generator': 7.25.6
@@ -25092,7 +25163,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  metro@0.80.10(bufferutil@4.0.8)(utf-8-validate@5.0.10):
+  metro@0.80.10:
     dependencies:
       '@babel/code-frame': 7.24.7
       '@babel/core': 7.25.2
@@ -25179,7 +25250,7 @@ snapshots:
 
   min-indent@1.0.1: {}
 
-  miniflare@3.20240524.0(bufferutil@4.0.8)(utf-8-validate@5.0.10):
+  miniflare@3.20240524.0:
     dependencies:
       '@cspotcode/source-map-support': 0.8.1
       acorn: 8.12.1
@@ -25240,7 +25311,7 @@ snapshots:
       yallist: 4.0.0
 
   mipd@0.0.7(typescript@5.3.3):
-    optionalDependencies:
+    dependencies:
       typescript: 5.3.3
 
   mixme@0.5.10: {}
@@ -25297,7 +25368,7 @@ snapshots:
 
   neo-async@2.6.2: {}
 
-  next-auth@4.24.5(next@14.2.3(@babel/core@7.25.2)(@playwright/test@1.44.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
+  next-auth@4.24.5(next@14.2.3)(react-dom@18.2.0)(react@18.2.0):
     dependencies:
       '@babel/runtime': 7.25.6
       '@panva/hkdf': 1.2.1
@@ -25312,7 +25383,7 @@ snapshots:
       react-dom: 18.2.0(react@18.2.0)
       uuid: 8.3.2
 
-  next@14.2.3(@babel/core@7.25.2)(@playwright/test@1.44.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
+  next@14.2.3(@babel/core@7.25.2)(@playwright/test@1.44.0)(react-dom@18.2.0)(react@18.2.0):
     dependencies:
       '@next/env': 14.2.3
       '@swc/helpers': 0.5.5
@@ -25722,7 +25793,7 @@ snapshots:
 
   pend@1.2.0: {}
 
-  picocolors@1.0.1: {}
+  picocolors@1.1.0: {}
 
   picomatch@2.3.1: {}
 
@@ -25813,16 +25884,6 @@ snapshots:
     dependencies:
       lilconfig: 3.1.2
       yaml: 2.5.0
-    optionalDependencies:
-      postcss: 8.4.35
-
-  postcss-load-config@4.0.2(postcss@8.4.41):
-    dependencies:
-      lilconfig: 3.1.2
-      yaml: 2.5.0
-    optionalDependencies:
-      postcss: 8.4.41
-
   postcss-nested@6.2.0(postcss@8.4.35):
     dependencies:
       postcss: 8.4.35
@@ -25847,10 +25908,10 @@ snapshots:
       picocolors: 1.0.1
       source-map-js: 1.2.0
 
-  postcss@8.4.41:
+  postcss@8.4.44:
     dependencies:
       nanoid: 3.3.7
-      picocolors: 1.0.1
+      picocolors: 1.1.0
       source-map-js: 1.2.0
 
   preact-render-to-string@5.2.6(preact@10.23.2):
@@ -25983,7 +26044,7 @@ snapshots:
 
   punycode@2.3.1: {}
 
-  puppeteer-core@2.1.1(bufferutil@4.0.8)(utf-8-validate@5.0.10):
+  puppeteer-core@2.1.1:
     dependencies:
       '@types/mime-types': 2.1.4
       debug: 4.3.6
@@ -26098,12 +26159,12 @@ snapshots:
       '@babel/runtime': 7.25.6
       react: 18.2.0
 
-  react-colorful@5.6.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
+  react-colorful@5.6.1(react-dom@18.2.0)(react@18.2.0):
     dependencies:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
 
-  react-devtools-core@5.3.1(bufferutil@4.0.8)(utf-8-validate@5.0.10):
+  react-devtools-core@5.3.1:
     dependencies:
       shell-quote: 1.8.1
       ws: 7.5.10(bufferutil@4.0.8)(utf-8-validate@5.0.10)
@@ -26136,8 +26197,6 @@ snapshots:
       react-clientside-effect: 1.2.6(react@18.2.0)
       use-callback-ref: 1.3.2(@types/react@18.2.62)(react@18.2.0)
       use-sidecar: 1.1.2(@types/react@18.2.62)(react@18.2.0)
-    optionalDependencies:
-      '@types/react': 18.2.62
 
   react-icons@4.12.0(react@18.2.0):
     dependencies:
@@ -26151,7 +26210,7 @@ snapshots:
 
   react-lifecycles-compat@3.0.4: {}
 
-  react-modal@3.16.1(react-dom@16.13.1(react@16.13.1))(react@16.13.1):
+  react-modal@3.16.1(react-dom@16.13.1)(react@16.13.1):
     dependencies:
       exenv: 1.2.2
       prop-types: 15.8.1
@@ -26160,21 +26219,14 @@ snapshots:
       react-lifecycles-compat: 3.0.4
       warning: 4.0.3
 
-  react-native-webview@11.26.1(react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.2.0)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(react@18.2.0):
+  react-native-webview@11.26.1(react-native@0.75.2)(react@18.2.0):
     dependencies:
       escape-string-regexp: 2.0.0
       invariant: 2.2.4
       react: 18.2.0
       react-native: 0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.2.0)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10)
 
-  react-native-webview@11.26.1(react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(react@18.2.0):
-    dependencies:
-      escape-string-regexp: 2.0.0
-      invariant: 2.2.4
-      react: 18.2.0
-      react-native: 0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10)
-
-  react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.2.0)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10):
+  react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.4)(@types/react@18.2.62)(react@18.2.0)(typescript@5.3.3):
     dependencies:
       '@jest/create-cache-key-function': 29.7.0
       '@react-native-community/cli': 14.0.0(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)
@@ -26278,7 +26330,7 @@ snapshots:
       - typescript
       - utf-8-validate
 
-  react-native@0.75.2(@babel/core@7.25.2)(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10):
+  react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.4)(react@18.2.0)(typescript@5.3.3):
     dependencies:
       '@jest/create-cache-key-function': 29.7.0
       '@react-native-community/cli': 14.0.0(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)
@@ -26379,9 +26431,8 @@ snapshots:
       - supports-color
       - typescript
       - utf-8-validate
-    optional: true
 
-  react-qr-reader@2.2.1(react-dom@16.13.1(react@16.13.1))(react@16.13.1):
+  react-qr-reader@2.2.1(react-dom@16.13.1)(react@16.13.1):
     dependencies:
       jsqr: 1.4.0
       prop-types: 15.8.1
@@ -26396,10 +26447,18 @@ snapshots:
       react: 18.2.0
       react-style-singleton: 2.2.1(@types/react@18.2.62)(react@18.2.0)
       tslib: 2.7.0
-    optionalDependencies:
-      '@types/react': 18.2.62
 
   react-remove-scroll@2.5.10(@types/react@18.2.62)(react@18.2.0):
+    dependencies:
+      '@types/react': 18.2.62
+      react: 18.2.0
+      react-remove-scroll-bar: 2.3.6(@types/react@18.2.62)(react@18.2.0)
+      react-style-singleton: 2.2.1(@types/react@18.2.62)(react@18.2.0)
+      tslib: 2.7.0
+      use-callback-ref: 1.3.2(@types/react@18.2.62)(react@18.2.0)
+      use-sidecar: 1.1.2(@types/react@18.2.62)(react@18.2.0)
+
+  react-remove-scroll@2.5.5(react@18.2.0):
     dependencies:
       react: 18.2.0
       react-remove-scroll-bar: 2.3.6(@types/react@18.2.62)(react@18.2.0)
@@ -26407,7 +26466,9 @@ snapshots:
       tslib: 2.7.0
       use-callback-ref: 1.3.2(@types/react@18.2.62)(react@18.2.0)
       use-sidecar: 1.1.2(@types/react@18.2.62)(react@18.2.0)
-    optionalDependencies:
+
+  react-remove-scroll@2.5.7(@types/react@18.2.62)(react@18.2.0):
+    dependencies:
       '@types/react': 18.2.62
 
   react-remove-scroll@2.5.5(@types/react@18.2.62)(react@18.2.0):
@@ -26418,7 +26479,9 @@ snapshots:
       tslib: 2.7.0
       use-callback-ref: 1.3.2(@types/react@18.2.62)(react@18.2.0)
       use-sidecar: 1.1.2(@types/react@18.2.62)(react@18.2.0)
-    optionalDependencies:
+
+  react-style-singleton@2.2.1(@types/react@18.2.62)(react@18.2.0):
+    dependencies:
       '@types/react': 18.2.62
 
   react-remove-scroll@2.5.7(@types/react@18.2.62)(react@18.2.0):
@@ -26678,7 +26741,7 @@ snapshots:
       bignumber.js: 9.1.2
       lodash: 4.17.21
 
-  ripple-lib@1.10.1(bufferutil@4.0.8)(utf-8-validate@5.0.10):
+  ripple-lib@1.10.1:
     dependencies:
       '@types/lodash': 4.17.7
       '@types/ws': 7.4.7
@@ -26706,7 +26769,7 @@ snapshots:
     dependencies:
       rollup-plugin-inject: 3.0.2
 
-  rollup-plugin-visualizer@5.12.0(rollup@4.21.2):
+  rollup-plugin-visualizer@5.12.0:
     dependencies:
       open: 8.4.2
       picomatch: 2.3.1
@@ -26804,7 +26867,7 @@ snapshots:
 
   safer-buffer@2.1.2: {}
 
-  salmon-adapter-sdk@1.1.1(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)):
+  salmon-adapter-sdk@1.1.1(@solana/web3.js@1.95.2):
     dependencies:
       '@project-serum/sol-wallet-adapter': 0.2.6(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
       '@solana/web3.js': 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
@@ -26960,7 +27023,7 @@ snapshots:
       wcwidth: 1.0.1
       yargs: 15.4.1
 
-  socket.io-client@4.7.5(bufferutil@4.0.8)(utf-8-validate@5.0.10):
+  socket.io-client@4.7.5:
     dependencies:
       '@socket.io/component-emitter': 3.1.2
       debug: 4.3.6
@@ -26995,7 +27058,7 @@ snapshots:
     dependencies:
       atomic-sleep: 1.0.0
 
-  sonner@1.4.3(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
+  sonner@1.4.3(react-dom@18.2.0)(react@18.2.0):
     dependencies:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
@@ -27079,7 +27142,7 @@ snapshots:
 
   store2@2.14.3: {}
 
-  storybook@7.6.7(bufferutil@4.0.8)(utf-8-validate@5.0.10):
+  storybook@7.6.7:
     dependencies:
       '@storybook/cli': 7.6.7(bufferutil@4.0.8)(utf-8-validate@5.0.10)
     transitivePeerDependencies:
@@ -27210,8 +27273,6 @@ snapshots:
     dependencies:
       client-only: 0.0.1
       react: 18.2.0
-    optionalDependencies:
-      '@babel/core': 7.25.2
 
   stylis@4.2.0: {}
 
@@ -27477,7 +27538,7 @@ snapshots:
 
   tslib@2.7.0: {}
 
-  tsup@8.0.2(postcss@8.4.41)(typescript@5.3.3):
+  tsup@8.0.2(typescript@5.3.3):
     dependencies:
       bundle-require: 4.2.1(esbuild@0.19.12)
       cac: 6.7.14
@@ -27688,7 +27749,7 @@ snapshots:
 
   unpipe@1.0.0: {}
 
-  unplugin@1.12.2:
+  unplugin@1.12.3:
     dependencies:
       acorn: 8.12.1
       chokidar: 3.6.0
@@ -27768,7 +27829,7 @@ snapshots:
     optionalDependencies:
       '@types/react': 18.2.62
 
-  use-resize-observer@9.1.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
+  use-resize-observer@9.1.0(react-dom@18.2.0)(react@18.2.0):
     dependencies:
       '@juggle/resize-observer': 3.4.0
       react: 18.2.0
@@ -27834,9 +27895,6 @@ snapshots:
     dependencies:
       proxy-compare: 2.5.1
       use-sync-external-store: 1.2.0(react@18.2.0)
-    optionalDependencies:
-      '@types/react': 18.2.62
-      react: 18.2.0
 
   varuint-bitcoin@1.1.2:
     dependencies:
@@ -27844,7 +27902,7 @@ snapshots:
 
   vary@1.1.2: {}
 
-  vaul@0.9.0(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
+  vaul@0.9.0(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.2.0)(react@18.2.0):
     dependencies:
       '@radix-ui/react-dialog': 1.1.1(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       react: 18.2.0
@@ -27853,7 +27911,7 @@ snapshots:
       - '@types/react'
       - '@types/react-dom'
 
-  viem@2.19.6(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4):
+  viem@2.19.6(typescript@5.3.3):
     dependencies:
       '@adraffy/ens-normalize': 1.10.0
       '@noble/curves': 1.4.0
@@ -27871,7 +27929,7 @@ snapshots:
       - utf-8-validate
       - zod
 
-  viem@2.9.9(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4):
+  viem@2.9.9(typescript@5.3.3):
     dependencies:
       '@adraffy/ens-normalize': 1.10.0
       '@noble/curves': 1.2.0
@@ -27888,7 +27946,7 @@ snapshots:
       - utf-8-validate
       - zod
 
-  vite-node@2.0.3(@types/node@20.11.5)(terser@5.31.6):
+  vite-node@2.0.3:
     dependencies:
       cac: 6.7.14
       debug: 4.3.6
@@ -27905,7 +27963,7 @@ snapshots:
       - supports-color
       - terser
 
-  vite-plugin-node-polyfills@0.22.0(rollup@4.21.2)(vite@5.2.11(@types/node@20.11.5)(terser@5.31.6)):
+  vite-plugin-node-polyfills@0.22.0(vite@5.2.11):
     dependencies:
       '@rollup/plugin-inject': 5.0.5(rollup@4.21.2)
       node-stdlib-browser: 1.2.0
@@ -27913,7 +27971,7 @@ snapshots:
     transitivePeerDependencies:
       - rollup
 
-  vite-size@0.0.5(@types/node@20.11.5)(terser@5.31.6)(vue@3.4.3(typescript@5.3.3)):
+  vite-size@0.0.5(vue@3.4.3):
     dependencies:
       '@vitejs/plugin-react': 4.2.1(vite@5.2.9(@types/node@20.11.5)(terser@5.31.6))
       '@vitejs/plugin-vue': 5.1.3(vite@5.2.9(@types/node@20.11.5)(terser@5.31.6))(vue@3.4.3(typescript@5.3.3))
@@ -27929,7 +27987,7 @@ snapshots:
       - terser
       - vue
 
-  vite@5.2.11(@types/node@20.11.5)(terser@5.31.6):
+  vite@5.2.11:
     dependencies:
       esbuild: 0.20.2
       postcss: 8.4.41
@@ -27939,7 +27997,7 @@ snapshots:
       fsevents: 2.3.3
       terser: 5.31.6
 
-  vite@5.2.9(@types/node@20.11.5)(terser@5.31.6):
+  vite@5.2.9:
     dependencies:
       esbuild: 0.20.2
       postcss: 8.4.41
@@ -27947,9 +28005,8 @@ snapshots:
     optionalDependencies:
       '@types/node': 20.11.5
       fsevents: 2.3.3
-      terser: 5.31.6
 
-  vitest@2.0.3(@types/node@20.11.5)(jsdom@24.1.0)(terser@5.31.6):
+  vitest@2.0.3(jsdom@24.1.0):
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@vitest/expect': 2.0.3
@@ -28000,7 +28057,7 @@ snapshots:
     dependencies:
       xml-name-validator: 5.0.0
 
-  wagmi@2.12.5(@tanstack/query-core@5.24.8)(@tanstack/react-query@5.24.8(react@18.2.0))(@types/react@18.2.0)(bufferutil@4.0.8)(react-dom@18.2.0(react@18.2.0))(react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.2.0)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(react@18.2.0)(rollup@4.21.2)(typescript@5.3.3)(utf-8-validate@5.0.10)(viem@2.19.6(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4))(zod@3.22.4):
+  wagmi@2.12.5(@tanstack/react-query@5.24.8)(@types/react@18.2.0)(react-dom@18.2.0)(react-native@0.75.2)(react@18.2.0)(typescript@5.3.3)(viem@2.19.6):
     dependencies:
       '@tanstack/react-query': 5.24.8(react@18.2.0)
       '@wagmi/connectors': 5.1.5(@types/react@18.2.0)(@wagmi/core@2.13.4(@tanstack/query-core@5.24.8)(@types/react@18.2.0)(react@18.2.0)(typescript@5.3.3)(viem@2.19.6(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4)))(bufferutil@4.0.8)(react-dom@18.2.0(react@18.2.0))(react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.2.0)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(react@18.2.0)(rollup@4.21.2)(typescript@5.3.3)(utf-8-validate@5.0.10)(viem@2.19.6(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4))(zod@3.22.4)
@@ -28037,7 +28094,7 @@ snapshots:
       - utf-8-validate
       - zod
 
-  wagmi@2.12.5(@tanstack/query-core@5.24.8)(@tanstack/react-query@5.24.8(react@18.2.0))(@types/react@18.2.62)(bufferutil@4.0.8)(react-dom@18.2.0(react@18.2.0))(react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(react@18.2.0)(rollup@4.21.2)(typescript@5.3.3)(utf-8-validate@5.0.10)(viem@2.19.6(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4))(zod@3.22.4):
+  wagmi@2.12.5(@tanstack/react-query@5.24.8)(@types/react@18.2.62)(react-dom@18.2.0)(react-native@0.75.2)(react@18.2.0)(typescript@5.3.3)(viem@2.19.6):
     dependencies:
       '@tanstack/react-query': 5.24.8(react@18.2.0)
       '@wagmi/connectors': 5.1.5(@types/react@18.2.62)(@wagmi/core@2.13.4(@tanstack/query-core@5.24.8)(@types/react@18.2.62)(react@18.2.0)(typescript@5.3.3)(viem@2.19.6(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4)))(bufferutil@4.0.8)(react-dom@18.2.0(react@18.2.0))(react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(react@18.2.0)(rollup@4.21.2)(typescript@5.3.3)(utf-8-validate@5.0.10)(viem@2.19.6(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4))(zod@3.22.4)
@@ -28074,7 +28131,7 @@ snapshots:
       - utf-8-validate
       - zod
 
-  wagmi@2.12.5(@tanstack/query-core@5.24.8)(@tanstack/react-query@5.24.8(react@18.2.0))(@types/react@18.2.62)(bufferutil@4.0.8)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(rollup@4.21.2)(typescript@5.3.3)(utf-8-validate@5.0.10)(viem@2.19.6(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4))(zod@3.22.4):
+  wagmi@2.12.5(@tanstack/react-query@5.24.8)(react-native@0.75.2)(react@18.2.0)(typescript@5.3.3)(viem@2.19.6):
     dependencies:
       '@tanstack/react-query': 5.24.8(react@18.2.0)
       '@wagmi/connectors': 5.1.5(@types/react@18.2.62)(@wagmi/core@2.13.4(@tanstack/query-core@5.24.8)(@types/react@18.2.62)(react@18.2.0)(typescript@5.3.3)(viem@2.19.6(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4)))(bufferutil@4.0.8)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(rollup@4.21.2)(typescript@5.3.3)(utf-8-validate@5.0.10)(viem@2.19.6(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4))(zod@3.22.4)
@@ -28131,11 +28188,11 @@ snapshots:
   webauthn-p256@0.0.2:
     dependencies:
       '@noble/curves': 1.5.0
-      '@noble/hashes': 1.4.0
+      '@noble/hashes': 1.5.0
 
   webauthn-p256@0.0.5:
     dependencies:
-      '@noble/curves': 1.5.0
+      '@noble/curves': 1.4.0
       '@noble/hashes': 1.4.0
 
   webextension-polyfill@0.10.0: {}
@@ -28253,7 +28310,7 @@ snapshots:
       '@cloudflare/workerd-linux-arm64': 1.20240524.0
       '@cloudflare/workerd-windows-64': 1.20240524.0
 
-  wrangler@3.57.2(@cloudflare/workers-types@4.20240529.0)(bufferutil@4.0.8)(utf-8-validate@5.0.10):
+  wrangler@3.57.2(@cloudflare/workers-types@4.20240529.0):
     dependencies:
       '@cloudflare/kv-asset-handler': 0.3.2
       '@esbuild-plugins/node-globals-polyfill': 0.2.3(esbuild@0.17.19)
@@ -28314,42 +28371,24 @@ snapshots:
       imurmurhash: 0.1.4
       signal-exit: 3.0.7
 
-  ws@6.2.3(bufferutil@4.0.8)(utf-8-validate@5.0.10):
+  ws@6.2.3:
     dependencies:
       async-limiter: 1.0.1
-    optionalDependencies:
-      bufferutil: 4.0.8
-      utf-8-validate: 5.0.10
 
-  ws@7.4.6(bufferutil@4.0.8)(utf-8-validate@5.0.10):
-    optionalDependencies:
-      bufferutil: 4.0.8
-      utf-8-validate: 5.0.10
+  ws@7.4.6: {}
 
-  ws@7.5.10(bufferutil@4.0.8)(utf-8-validate@5.0.10):
-    optionalDependencies:
-      bufferutil: 4.0.8
-      utf-8-validate: 5.0.10
+  ws@7.5.10: {}
 
-  ws@8.13.0(bufferutil@4.0.8)(utf-8-validate@5.0.10):
-    optionalDependencies:
-      bufferutil: 4.0.8
-      utf-8-validate: 5.0.10
+  ws@8.13.0: {}
 
-  ws@8.17.1(bufferutil@4.0.8)(utf-8-validate@5.0.10):
-    optionalDependencies:
-      bufferutil: 4.0.8
-      utf-8-validate: 5.0.10
+  ws@8.17.1: {}
 
   ws@8.18.0(bufferutil@4.0.8)(utf-8-validate@5.0.10):
-    optionalDependencies:
+    dependencies:
       bufferutil: 4.0.8
       utf-8-validate: 5.0.10
 
-  ws@8.5.0(bufferutil@4.0.8)(utf-8-validate@5.0.10):
-    optionalDependencies:
-      bufferutil: 4.0.8
-      utf-8-validate: 5.0.10
+  ws@8.5.0: {}
 
   xcase@2.0.1: {}
 
@@ -28454,6 +28493,7 @@ snapshots:
     optionalDependencies:
       '@types/react': 18.2.62
       react: 18.2.0
+      use-sync-external-store: 1.2.0(react@18.2.0)
 
   zustand@4.5.2(@types/react@18.2.62)(react@18.2.0):
     dependencies:
@@ -28461,3 +28501,4 @@ snapshots:
     optionalDependencies:
       '@types/react': 18.2.62
       react: 18.2.0
+      use-sync-external-store: 1.2.0(react@18.2.0)
