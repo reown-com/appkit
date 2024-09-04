@@ -174,6 +174,7 @@ export class W3mNetworksView extends LitElement {
       if (ChainController.state.noAdapters) {
         RouterController.push('ConnectingWalletConnect')
       } else {
+        // eslint-disable-next-line no-lonely-if
         if (isCurrentNamespaceConnected) {
           RouterController.push('SwitchActiveChain', {
             switchToChain: network.chainNamespace,
