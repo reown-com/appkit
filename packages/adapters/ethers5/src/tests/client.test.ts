@@ -147,7 +147,8 @@ describe('EVMEthersClient', () => {
       vi.spyOn(ProviderUtil, 'getProvider').mockReturnValue(mockProvider)
       vi.spyOn(ProviderUtil.state, 'providerIds', 'get').mockReturnValue({
         eip155: 'injected',
-        solana: undefined
+        solana: undefined,
+        polkadot: undefined
       })
     })
 
@@ -219,7 +220,8 @@ describe('EVMEthersClient', () => {
     it('should use universal adapter for WalletConnect', async () => {
       vi.spyOn(ProviderUtil.state, 'providerIds', 'get').mockReturnValue({
         eip155: 'walletConnect',
-        solana: undefined
+        solana: undefined,
+        polkadot: undefined
       })
 
       const newNetwork = {
@@ -824,7 +826,8 @@ describe('EVMEthersClient', () => {
       vi.spyOn(SafeLocalStorage, 'getItem').mockReturnValue('MetaMask')
       vi.spyOn(ProviderUtil.state, 'providerIds', 'get').mockReturnValue({
         eip155: 'injected',
-        solana: undefined
+        solana: undefined,
+        polkadot: undefined
       })
     })
     it('should set connected wallet info for EIP6963 provider', () => {
