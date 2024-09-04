@@ -1,0 +1,16 @@
+{
+  "name": "@examples/html-ethers",
+  "private": true,
+  "version": "5.1.5",
+  "scripts": {
+    "dev": "vite --port 3011",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "@web3modal/ethers": "workspace:*",
+    "ethers": "6.13.0"
+  },
+  "devDependencies": {
+    "vite": "5.2.11"
+  }
+}

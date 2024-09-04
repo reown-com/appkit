@@ -3,6 +3,12 @@ import bs58 from 'bs58'
 const PUBLIC_KEY_PREFIX = 0x04
 const PUBLIC_KEY_LENGTH = 65
 
+// eslint-disable-next-line no-shadow
+export enum KeyTypes {
+  secp256k1 = 'secp256k1',
+  secp256r1 = 'secp256r1'
+}
+
 export function encodePublicKeyToDID(publicKey: string, keyType: string): string {
   // Define the key type to DID prefix mapping
   const keyTypeToDIDPrefix: Record<string, string> = {
@@ -31,6 +37,43 @@ export function encodePublicKeyToDID(publicKey: string, keyType: string): string
   return `${didPrefix}${encodedPublicKey}`
 }
 
+export function decodeDIDToPublicKey(did: string): {
+  key: `0x${string}`
+  keyType: KeyTypes
+} {
+  // Define the DID prefix to key type mapping
+  const didPrefixToKeyType: Record<string, KeyTypes> = {
+    'did:key:zQ3s': KeyTypes.secp256k1,
+    'did:key:zDn': KeyTypes.secp256r1
+  }
+
+  // Find the matching key type prefix
+  const matchingPrefix = Object.keys(didPrefixToKeyType).find(prefix => did.startsWith(prefix))
+
+  if (!matchingPrefix) {
+    throw new Error('Invalid DID format. Unsupported key type.')
+  }
+
+  // Extract the Base58 encoded part
+  const encodedPart = did.slice(matchingPrefix.length)
+
+  // Decode the Base58 string
+  const decodedBuffer = bs58.decode(encodedPart)
+
+  // Convert the Buffer to a hex string
+  const publicKey = Buffer.from(decodedBuffer).toString('hex')
+
+  // Add the '0x' prefix
+  const formattedPublicKey = `0x${publicKey}`
+
+  const keyType = didPrefixToKeyType[matchingPrefix]
+
+  return {
+    key: formattedPublicKey as `0x${string}`,
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    keyType: keyType!
+  }
+}
 export function decodeUncompressedPublicKey(uncompressedPublicKey: string): `0x${string}` {
   const uncompressedPublicKeyBuffer = Buffer.from(uncompressedPublicKey, 'base64')
 

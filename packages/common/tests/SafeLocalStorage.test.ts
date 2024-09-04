@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 
-import { SafeLocalStorage } from './SafeLocalStorage'
+import { SafeLocalStorage } from '../src/utils/SafeLocalStorage'
 
 const previousLocalStorage = globalThis.localStorage
 const previousWindow = globalThis.window

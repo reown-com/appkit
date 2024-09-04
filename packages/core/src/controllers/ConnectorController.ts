@@ -61,20 +61,33 @@ export const ConnectorController = {
 
     connectors.forEach(connector => {
       const { name } = connector
+      const connectorName = this.getConnectorName(name)
 
-      if (!name) {
+      if (!connectorName) {
         return
       }
 
-      const connectorsByName = connectorsByNameMap.get(name) || []
+      const connectorsByName = connectorsByNameMap.get(connectorName) || []
       const haveSameConnector = connectorsByName.find(c => c.chain === connector.chain)
       if (!haveSameConnector) {
         connectorsByName.push(connector)
       }
-      connectorsByNameMap.set(name, connectorsByName)
+      connectorsByNameMap.set(connectorName, connectorsByName)
     })
 
     return connectorsByNameMap
+  },
+
+  getConnectorName(name: string | undefined) {
+    if (!name) {
+      return name
+    }
+
+    const nameOverrideMap = {
+      'Trust Wallet': 'Trust'
+    }
+
+    return (nameOverrideMap as Record<string, string>)[name] || name
   },
 
   getUniqueConnectorsByName(connectors: Connector[]) {

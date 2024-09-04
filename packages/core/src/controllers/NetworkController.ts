@@ -4,6 +4,8 @@ import { ModalController } from './ModalController.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import {
   NetworkUtil,
+  SafeLocalStorage,
+  SafeLocalStorageKeys,
   type CaipNetwork,
   type CaipNetworkId,
   type ChainNamespace
@@ -195,7 +197,8 @@ export const NetworkController = {
     const sameNamespace = network?.chainNamespace === ChainController.state.activeChain
 
     let networkControllerClient: NetworkControllerState['_client'] = undefined
-    const isWcConnector = localStorage.getItem('@w3m/wallet_id') === 'walletConnect'
+    const isWcConnector =
+      SafeLocalStorage.getItem(SafeLocalStorageKeys.WALLET_ID) === 'walletConnect'
     const hasWagmiAdapter = ChainController.state.chains.get('eip155')?.adapterType === 'wagmi'
 
     if (isWcConnector && network?.chainNamespace === 'solana') {
@@ -273,6 +276,10 @@ export const NetworkController = {
 
     const activeCaipNetwork = ChainController.state.chains.get(chain)?.networkState?.caipNetwork
     const requestedCaipNetworks = this.getRequestedCaipNetworks()
+
+    if (!requestedCaipNetworks.length) {
+      return true
+    }
 
     return requestedCaipNetworks?.some(network => network.id === activeCaipNetwork?.id)
   },

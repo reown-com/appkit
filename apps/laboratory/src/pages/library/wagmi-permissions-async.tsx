@@ -4,10 +4,11 @@ import { WagmiProvider } from 'wagmi'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
-import { WagmiPermissionsAsyncProvider } from '../../context/WagmiPermissionsAsyncContext'
 import { WagmiPermissionsAsyncTest } from '../../components/Wagmi/WagmiPermissionsAsyncTest'
 import { mainnet, optimism, polygon, zkSync } from '@web3modal/base/chains'
 import { EVMWagmiClient } from '@web3modal/adapter-wagmi'
+import { ERC7715PermissionsProvider } from '../../context/ERC7715PermissionsContext'
+import { LocalEcdsaKeyProvider } from '../../context/LocalEcdsaKeyContext'
 
 const queryClient = new QueryClient()
 
@@ -35,10 +36,12 @@ export default function Wagmi() {
   return (
     <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={queryClient}>
-        <WagmiPermissionsAsyncProvider>
-          <AppKitButtons />
-          <WagmiPermissionsAsyncTest />
-        </WagmiPermissionsAsyncProvider>
+        <ERC7715PermissionsProvider>
+          <LocalEcdsaKeyProvider>
+            <AppKitButtons />
+            <WagmiPermissionsAsyncTest />
+          </LocalEcdsaKeyProvider>
+        </ERC7715PermissionsProvider>
       </QueryClientProvider>
     </WagmiProvider>
   )

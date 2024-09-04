@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import {
   BlockchainApiController,
+  NetworkController,
   OptionsController,
   TransactionsController
 } from '../../exports/index.js'
@@ -276,5 +277,30 @@ describe('TransactionsController', () => {
       cache: undefined
     })
     expect(TransactionsController.state.next).toBe('cursor')
+  })
+
+  it('should call fetchTransactions with chainId', async () => {
+    const fetchTransactions = vi
+      .spyOn(BlockchainApiController, 'fetchTransactions')
+      .mockResolvedValue({
+        data: [],
+        next: 'cursor'
+      })
+
+    vi.spyOn(NetworkController, 'state', 'get').mockReturnValue({
+      caipNetwork: {
+        id: 'eip155:1'
+      }
+    } as any)
+
+    await TransactionsController.fetchTransactions('0x123', 'coinbase')
+    expect(fetchTransactions).toHaveBeenCalledWith({
+      account: '0x123',
+      projectId,
+      cursor: 'cursor',
+      onramp: 'coinbase',
+      cache: 'no-cache',
+      chainId: 'eip155:1'
+    })
   })
 })

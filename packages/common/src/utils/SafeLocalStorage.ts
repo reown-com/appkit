@@ -1,10 +1,18 @@
 export type SafeLocalStorageItems = {
   '@w3m/wallet_id': string
   '@w3m/wallet_name': string
-  '@w3m/solana_caip_chain': string
   '@w3m/solana_wallet': string
-  '@w3m/active_caipnetwork': string
-}
+  '@w3m/solana_caip_chain': string
+  '@w3m/active_caip_network': string
+  }
+
+export const SafeLocalStorageKeys = {
+  WALLET_ID: '@w3m/wallet_id',
+  WALLET_NAME: '@w3m/wallet_name',
+  SOLANA_WALLET: '@w3m/solana_wallet',
+  SOLANA_CAIP_CHAIN: '@w3m/solana_caip_chain',
+  ACTIVE_CAIP_NETWORK: '@w3m/active_caip_network'
+} as const
 
 export const SafeLocalStorage = {
   setItem<Key extends keyof SafeLocalStorageItems>(

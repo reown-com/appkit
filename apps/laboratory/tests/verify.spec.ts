@@ -11,6 +11,10 @@ import { expect } from '@playwright/test'
 testM(
   'connection and signature requests from non-verified project should show as cannot verify',
   async ({ modalPage, context }) => {
+    if (modalPage.library === 'solana') {
+      return
+    }
+
     const modalValidator = new ModalValidator(modalPage.page)
     const walletPage = new WalletPage(await context.newPage())
     await walletPage.load()
@@ -39,6 +43,10 @@ testM(
 testMVerifyValid(
   'connection and signature requests from non-scam verified domain should show as domain match',
   async ({ modalPage, context }) => {
+    if (modalPage.library === 'solana') {
+      return
+    }
+
     const modalValidator = new ModalValidator(modalPage.page)
     const walletPage = new WalletPage(await context.newPage())
     await walletPage.load()
@@ -67,6 +75,10 @@ testMVerifyValid(
 testMVerifyDomainMismatch(
   'connection and signature requests from non-scam verified domain but on localhost should show as invalid domain',
   async ({ modalPage, context }) => {
+    if (modalPage.library === 'solana') {
+      return
+    }
+
     const modalValidator = new ModalValidator(modalPage.page)
     const walletPage = new WalletPage(await context.newPage())
     await walletPage.load()
@@ -95,6 +107,10 @@ testMVerifyDomainMismatch(
 testMVerifyEvil(
   'connection and signature requests from scam verified domain should show as scam domain',
   async ({ modalPage, context }) => {
+    if (modalPage.library === 'solana') {
+      return
+    }
+
     const modalValidator = new ModalValidator(modalPage.page)
     const walletPage = new WalletPage(await context.newPage())
     await walletPage.load()

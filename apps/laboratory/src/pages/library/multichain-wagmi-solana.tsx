@@ -6,7 +6,16 @@ import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
-import { arbitrum, mainnet, polygon, base, binanceSmartChain, solana } from '@web3modal/base/chains'
+import {
+  arbitrum,
+  mainnet,
+  polygon,
+  base,
+  binanceSmartChain,
+  solana,
+  solanaTestnet,
+  solanaDevnet
+} from '@web3modal/base/chains'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { MultiChainTestsWagmiSolana } from '../../components/MultiChainTestsWagmiSolana'
@@ -24,7 +33,16 @@ const solanaWeb3JsAdapter = new SolanaWeb3JsClient({
 const modal = createWeb3Modal({
   adapters: [wagmiAdapter, solanaWeb3JsAdapter],
   siweConfig,
-  caipNetworks: [mainnet, polygon, base, binanceSmartChain, arbitrum, solana],
+  caipNetworks: [
+    mainnet,
+    polygon,
+    base,
+    binanceSmartChain,
+    arbitrum,
+    solana,
+    solanaTestnet,
+    solanaDevnet
+  ],
   defaultCaipNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId,
   features: {

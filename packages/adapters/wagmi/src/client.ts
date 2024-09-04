@@ -24,6 +24,7 @@ import {
 } from '@wagmi/core'
 import { ChainController, ConstantsUtil as CoreConstantsUtil } from '@web3modal/core'
 import type UniversalProvider from '@walletconnect/universal-provider'
+import type { ChainAdapter } from '@web3modal/core'
 import { prepareTransactionRequest, sendTransaction as wagmiSendTransaction } from '@wagmi/core'
 import type { Chain } from '@wagmi/core/chains'
 import { mainnet } from 'viem/chains'
@@ -45,7 +46,11 @@ import type {
 import { formatUnits, parseUnits } from 'viem'
 import type { Hex } from 'viem'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
-import { ConstantsUtil as CommonConstants } from '@web3modal/common'
+import {
+  ConstantsUtil as CommonConstants,
+  SafeLocalStorage,
+  SafeLocalStorageKeys
+} from '@web3modal/common'
 import {
   convertToAppKitChains,
   getEmailCaipNetworks,
@@ -65,7 +70,6 @@ import { walletConnect } from './connectors/UniversalConnector.js'
 import { coinbaseWallet } from '@wagmi/connectors'
 import { authConnector } from './connectors/AuthConnector.js'
 import { ProviderUtil } from '@web3modal/base/store'
-import { SafeLocalStorage } from '@web3modal/base/utils'
 
 // -- Types ---------------------------------------------------------------------
 export interface AdapterOptions<C extends Config>
@@ -80,7 +84,7 @@ interface Web3ModalState extends PublicStateControllerState {
 }
 
 // -- Client --------------------------------------------------------------------
-export class EVMWagmiClient {
+export class EVMWagmiClient implements ChainAdapter {
   // -- Private variables -------------------------------------------------------
   private appKit: AppKit | undefined = undefined
 
@@ -190,7 +194,10 @@ export class EVMWagmiClient {
 
     this.networkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
-        SafeLocalStorage.setItem('@w3m/active_caipnetwork', JSON.stringify(caipNetwork))
+        SafeLocalStorage.setItem(
+          SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK,
+          JSON.stringify(caipNetwork)
+        )
         const chainId = Number(NetworkUtil.caipNetworkIdToNumber(caipNetwork?.id))
 
         if (chainId && this.wagmiConfig) {
@@ -286,8 +293,8 @@ export class EVMWagmiClient {
       },
       disconnect: async () => {
         await disconnect(this.wagmiConfig!)
-        SafeLocalStorage.removeItem('@w3m/wallet_id')
-        SafeLocalStorage.removeItem('@w3m/active_caipnetwork')
+        SafeLocalStorage.removeItem(SafeLocalStorageKeys.WALLET_ID)
+        SafeLocalStorage.removeItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK)
         this.appKit?.setClientId(null)
         this.appKit?.resetAccount('eip155')
         this.appKit?.resetAccount('solana')
@@ -541,8 +548,8 @@ export class EVMWagmiClient {
           this.appKit?.resetWcConnection()
           this.appKit?.resetNetwork()
           this.appKit?.setAllAccounts([], this.chainNamespace)
-          SafeLocalStorage.removeItem('@w3m/wallet_id')
-          SafeLocalStorage.removeItem('@w3m/active_caipnetwork')
+          SafeLocalStorage.removeItem(SafeLocalStorageKeys.WALLET_ID)
+          SafeLocalStorage.removeItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK)
         } else if (status === 'reconnecting') {
           this.appKit?.setLoading(true)
           const connectors = getConnectors(this.wagmiConfig)
