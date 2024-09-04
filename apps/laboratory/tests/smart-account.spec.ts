@@ -72,9 +72,7 @@ smartAccountTest('it should switch to a not enabled network and sign with EOA', 
   const targetChain = 'Ethereum'
   await page.goToSettings()
   await page.switchNetwork(targetChain)
-
-  await page.page.waitForTimeout(2000)
-  await page.goToSettings()
+  await validator.expectSwitchedNetwork(targetChain)
   await validator.expectTogglePreferredTypeVisible(false)
   await page.closeModal()
 
