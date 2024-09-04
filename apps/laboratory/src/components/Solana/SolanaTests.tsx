@@ -17,6 +17,7 @@ import { SolanaSignMessageTest } from './SolanaSignMessageTest'
 import { SolanaWriteContractTest } from './SolanaWriteContractTest'
 import { solana, solanaDevnet, solanaTestnet } from '@web3modal/base/chains'
 import { SolanaSignAndSendTransaction } from './SolanaSignAndSendTransactionTest'
+import { SolanaSignAllTransactionsTest } from './SolanaSignAllTransactionsTest'
 
 export function SolanaTests() {
   const { isConnected } = useWeb3ModalAccount()
@@ -49,6 +50,18 @@ export function SolanaTests() {
             </Heading>
             <SolanaSignTransactionTest />
           </Box>
+          <Box>
+            <Heading size="xs" textTransform="uppercase" pb="2">
+              Sign All Transactions
+              <Tooltip label="Request the signature for 5 transactions at once">
+                <Text as="span" fontSize="sm" ml="2">
+                  ℹ️
+                </Text>
+              </Tooltip>
+            </Heading>
+            <SolanaSignAllTransactionsTest />
+          </Box>
+
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">
               Sign and Send Transaction (Dapp)

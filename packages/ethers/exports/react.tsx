@@ -7,6 +7,9 @@ import { getWeb3Modal } from '@web3modal/base/library/react'
 import { useSnapshot } from 'valtio'
 import type { CaipNetwork } from '@web3modal/common'
 
+// -- Types -------------------------------------------------------------
+export type { AdapterOptions } from '@web3modal/adapter-ethers'
+
 // -- Setup -------------------------------------------------------------------
 let appkit: AppKit | undefined = undefined
 let ethersAdapter: EVMEthersClient | undefined = undefined

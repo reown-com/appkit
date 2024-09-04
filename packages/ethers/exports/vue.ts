@@ -3,6 +3,9 @@ import type { AppKitOptions } from '@web3modal/base'
 import { EVMEthersClient, type AdapterOptions } from '@web3modal/adapter-ethers'
 import { getWeb3Modal } from '@web3modal/base/library/vue'
 
+// -- Types -------------------------------------------------------------
+export type { AdapterOptions } from '@web3modal/adapter-ethers'
+
 // -- Setup -------------------------------------------------------------------
 let appkit: AppKit | undefined = undefined
 let ethersAdapter: EVMEthersClient | undefined = undefined

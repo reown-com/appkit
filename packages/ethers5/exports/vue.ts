@@ -1,6 +1,7 @@
 import { AppKit } from '@web3modal/base'
 import type { AppKitOptions } from '@web3modal/base'
 import { EVMEthers5Client, type AdapterOptions } from '@web3modal/adapter-ethers5'
+
 import { getWeb3Modal } from '@web3modal/base/library/vue'
 
 // -- Setup -------------------------------------------------------------------

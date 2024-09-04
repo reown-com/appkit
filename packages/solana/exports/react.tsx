@@ -1,9 +1,12 @@
 'use client'
 
 import { AppKit } from '@web3modal/base'
-import { SolanaWeb3JsClient } from '@web3modal/adapter-solana'
+import {
+  SolanaWeb3JsClient,
+  type Provider,
+  useWeb3ModalConnection
+} from '@web3modal/adapter-solana/react'
 import { getWeb3Modal } from '@web3modal/base/library/react'
-import { type Provider, useWeb3ModalConnection } from '@web3modal/adapter-solana/react'
 import type { SolanaAppKitOptions } from './options.js'
 
 // -- Types -------------------------------------------------------------------

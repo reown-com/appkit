@@ -31,6 +31,7 @@ import type { AppKitOptions } from './utils/TypesUtil.js'
 import { UniversalAdapterClient } from './universal-adapter/client.js'
 import { PresetsUtil } from '@web3modal/scaffold-utils'
 import type { W3mFrameTypes } from '@web3modal/wallet'
+import { ProviderUtil } from './store/ProviderUtil.js'
 
 // -- Export Controllers -------------------------------------------------------
 export { AccountController, NetworkController }
@@ -47,13 +48,21 @@ let isInitialized = false
 export class AppKit {
   private static instance?: AppKit
 
+  public adapter?: ChainAdapter
+
   public adapters?: ChainAdapter[]
 
   public universalAdapter?: UniversalAdapterClient
 
   private initPromise?: Promise<void> = undefined
 
-  public constructor(options: AppKitOptions) {
+  public constructor(
+    options: AppKitOptions & {
+      adapters?: ChainAdapter[]
+    }
+  ) {
+    // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
+    this.adapter = options.adapters?.[0] as ChainAdapter
     this.initControllers(options)
     this.initOrContinue()
   }
@@ -75,6 +84,39 @@ export class AppKit {
 
   public setLoading(loading: ModalControllerState['loading']) {
     ModalController.setLoading(loading)
+  }
+
+  // -- Adapter Methods ----------------------------------------------------------
+  public getError() {
+    return ''
+  }
+
+  public getChainId() {
+    return NetworkController.state.caipNetwork?.chainId
+  }
+
+  public switchNetwork(caipNetwork: CaipNetwork) {
+    return NetworkController.switchActiveNetwork(caipNetwork)
+  }
+
+  public getIsConnected() {
+    return AccountController.state.isConnected
+  }
+
+  public getWalletProvider() {
+    return ChainController.state.activeChain
+      ? ProviderUtil.state.providers[ChainController.state.activeChain]
+      : null
+  }
+
+  public getWalletProviderType() {
+    return ChainController.state.activeChain
+      ? ProviderUtil.state.providerIds[ChainController.state.activeChain]
+      : null
+  }
+
+  public subscribeProvider() {
+    return null
   }
 
   public getThemeMode() {
@@ -326,7 +368,11 @@ export class AppKit {
     AssetUtil.getConnectorImage(connector)
 
   // -- Private ------------------------------------------------------------------
-  private async initControllers(options: AppKitOptions) {
+  private async initControllers(
+    options: AppKitOptions & {
+      adapters?: ChainAdapter[]
+    }
+  ) {
     this.adapters = options.adapters
 
     options.metadata ||= {

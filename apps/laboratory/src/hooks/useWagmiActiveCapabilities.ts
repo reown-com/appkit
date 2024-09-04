@@ -60,16 +60,16 @@ export function useWagmiAvailableCapabilities({
     connectedConnector: Connector,
     connectedChain: Chain
   ) {
-    const connectedProvider = await connectedConnector.getProvider?.({
+    const connectedProvider = (await connectedConnector.getProvider?.({
       chainId: connectedChain.id
-    })
-    if (connectedProvider instanceof EthereumProvider) {
-      setProvider(connectedProvider)
-      const walletCapabilities = getProviderCachedCapabilities(connectedAccount, connectedProvider)
-      setAvailableCapabilities(walletCapabilities)
-    } else if (connectedProvider instanceof W3mFrameProvider) {
+    })) as Provider
+    if (connectedProvider instanceof W3mFrameProvider) {
       const walletCapabilities = await connectedProvider.getCapabilities()
       setProvider(connectedProvider)
+      setAvailableCapabilities(walletCapabilities)
+    } else if (connectedProvider) {
+      setProvider(connectedProvider)
+      const walletCapabilities = getProviderCachedCapabilities(connectedAccount, connectedProvider)
       setAvailableCapabilities(walletCapabilities)
     }
   }

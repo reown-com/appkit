@@ -180,6 +180,7 @@ export interface BlockchainApiTransactionsRequest {
   onramp?: 'coinbase'
   signal?: AbortSignal
   cache?: RequestCache
+  chainId?: string
 }
 
 export interface BlockchainApiTransactionsResponse {
@@ -827,6 +828,14 @@ export type ChainAdapter = {
   chainNamespace: ChainNamespace
   isUniversalAdapterClient?: boolean
   adapterType?: AdapterType
+  getAddress?: () => string | undefined
+  getError?: () => unknown
+  getChainId?: () => number | string | undefined
+  switchNetwork?: ((caipNetwork: CaipNetwork) => void) | undefined
+  getIsConnected?: () => boolean | undefined
+  getWalletProvider?: () => unknown
+  getWalletProviderType?: () => string | undefined
+  subscribeProvider?: (callback: (newState: unknown) => void) => void
 }
 
 type ProviderEventListener = {
