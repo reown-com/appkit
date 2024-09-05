@@ -369,6 +369,10 @@ export class EVMEthers5Client implements ChainAdapter<EthersStoreUtilState, numb
         const provider = EthersStoreUtil.state.provider
         const address = EthersStoreUtil.state.address
 
+        if (data.chainNamespace && data.chainNamespace !== 'eip155') {
+          throw new Error('connectionControllerClient:sendTransaction - invalid chain namespace')
+        }
+
         if (!provider) {
           throw new Error('connectionControllerClient:sendTransaction - provider is undefined')
         }

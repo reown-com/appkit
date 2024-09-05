@@ -10,6 +10,7 @@ import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { EventsController } from './EventsController.js'
 import { NetworkController } from './NetworkController.js'
 import { W3mFrameRpcConstants } from '@web3modal/wallet'
+import { ChainController } from './ChainController.js'
 
 // -- Types --------------------------------------------- //
 
@@ -93,49 +94,65 @@ export const SendController = {
   },
 
   sendToken() {
-    if (this.state.token?.address && this.state.sendTokenAmount && this.state.receiverAddress) {
-      EventsController.sendEvent({
-        type: 'track',
-        event: 'SEND_INITIATED',
-        properties: {
-          isSmartAccount:
-            AccountController.state.preferredAccountType ===
-            W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
-          token: this.state.token.address,
-          amount: this.state.sendTokenAmount,
-          network: NetworkController.state.caipNetwork?.id || ''
+    switch (ChainController.state.activeCaipNetwork?.chain) {
+      case 'evm':
+        if (this.state.token?.address && this.state.sendTokenAmount && this.state.receiverAddress) {
+          EventsController.sendEvent({
+            type: 'track',
+            event: 'SEND_INITIATED',
+            properties: {
+              isSmartAccount:
+                AccountController.state.preferredAccountType ===
+                W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
+              token: this.state.token.address,
+              amount: this.state.sendTokenAmount,
+              network: NetworkController.state.caipNetwork?.id || ''
+            }
+          })
+          this.sendERC20Token({
+            receiverAddress: this.state.receiverAddress,
+            tokenAddress: this.state.token.address,
+            sendTokenAmount: this.state.sendTokenAmount,
+            decimals: this.state.token.quantity.decimals
+          })
+        } else if (
+          this.state.receiverAddress &&
+          this.state.sendTokenAmount &&
+          this.state.gasPrice &&
+          this.state.token?.quantity.decimals
+        ) {
+          EventsController.sendEvent({
+            type: 'track',
+            event: 'SEND_INITIATED',
+            properties: {
+              isSmartAccount:
+                AccountController.state.preferredAccountType ===
+                W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
+              token: this.state.token?.symbol,
+              amount: this.state.sendTokenAmount,
+              network: NetworkController.state.caipNetwork?.id || ''
+            }
+          })
+          this.sendNativeToken({
+            receiverAddress: this.state.receiverAddress,
+            sendTokenAmount: this.state.sendTokenAmount,
+            gasPrice: this.state.gasPrice,
+            decimals: this.state.token.quantity.decimals
+          })
         }
-      })
-      this.sendERC20Token({
-        receiverAddress: this.state.receiverAddress,
-        tokenAddress: this.state.token.address,
-        sendTokenAmount: this.state.sendTokenAmount,
-        decimals: this.state.token.quantity.decimals
-      })
-    } else if (
-      this.state.receiverAddress &&
-      this.state.sendTokenAmount &&
-      this.state.gasPrice &&
-      this.state.token?.quantity.decimals
-    ) {
-      EventsController.sendEvent({
-        type: 'track',
-        event: 'SEND_INITIATED',
-        properties: {
-          isSmartAccount:
-            AccountController.state.preferredAccountType ===
-            W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
-          token: this.state.token?.symbol,
-          amount: this.state.sendTokenAmount,
-          network: NetworkController.state.caipNetwork?.id || ''
-        }
-      })
-      this.sendNativeToken({
-        receiverAddress: this.state.receiverAddress,
-        sendTokenAmount: this.state.sendTokenAmount,
-        gasPrice: this.state.gasPrice,
-        decimals: this.state.token.quantity.decimals
-      })
+
+        return
+      case 'solana':
+        // Implement solana
+        ConnectionController.sendTransaction({
+          chainNamespace: 'solana',
+          to: '',
+          value: ''
+        })
+
+        return
+      default:
+        throw new Error('Unsupported chain')
     }
   },
 

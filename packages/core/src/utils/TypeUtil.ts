@@ -801,14 +801,17 @@ export type AccountType = {
   type: 'eoa' | 'smartAccount'
 }
 
-export interface SendTransactionArgs {
-  to: `0x${string}`
-  data: `0x${string}`
-  value: bigint
-  gas?: bigint
-  gasPrice: bigint
-  address: `0x${string}`
-}
+export type SendTransactionArgs =
+  | {
+      chainNamespace?: undefined | 'eip155'
+      to: `0x${string}`
+      data: `0x${string}`
+      value: bigint
+      gas?: bigint
+      gasPrice: bigint
+      address: `0x${string}`
+    }
+  | { chainNamespace: 'solana'; to: string; value: string }
 
 export interface EstimateGasTransactionArgs {
   address: `0x${string}`

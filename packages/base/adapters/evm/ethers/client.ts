@@ -418,6 +418,10 @@ export class EVMEthersClient implements ChainAdapter<EthersStoreUtilState, numbe
       sendTransaction: async (data: SendTransactionArgs) => {
         const { chainId, provider, address } = EthersStoreUtil.state
 
+        if (data.chainNamespace && data.chainNamespace !== 'eip155') {
+          throw new Error('ethersClient:sendTransaction - invalid chain namespace')
+        }
+
         if (!provider) {
           throw new Error('ethersClient:sendTransaction - provider is undefined')
         }

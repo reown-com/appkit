@@ -302,6 +302,10 @@ export class EVMWagmiClient implements ChainAdapter {
       },
 
       sendTransaction: async (data: SendTransactionArgs) => {
+        if (data.chainNamespace && data.chainNamespace !== 'eip155') {
+          throw new Error('connectionControllerClient:sendTransaction - invalid chain namespace')
+        }
+
         const { chainId } = getAccount(this.wagmiConfig)
 
         const txParams = {

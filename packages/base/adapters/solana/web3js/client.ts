@@ -47,6 +47,7 @@ import type { AppKit } from '../../../src/client.js'
 import type { AppKitOptions } from '../../../utils/TypesUtil.js'
 import type { OptionsControllerState } from '@web3modal/core'
 import { SafeLocalStorage } from '../../../utils/SafeLocalStorage.js'
+import { createSendTransaction } from './utils/createSendTransaction.js'
 
 export interface Web3ModalClientOptions
   extends Omit<AppKitOptions, 'defaultChain' | 'tokens' | 'sdkType' | 'sdkVersion'> {
@@ -196,7 +197,30 @@ export class SolanaWeb3JsClient implements ChainAdapter<SolStoreUtilState, CaipN
 
       writeContract: async () => await Promise.resolve('0x'),
 
-      sendTransaction: async () => await Promise.resolve('0x'),
+      sendTransaction: async params => {
+        if (params.chainNamespace !== 'solana') {
+          throw new Error('Chain namespace is not supported')
+        }
+
+        const connection = SolStoreUtil.state.connection
+
+        if (!connection) {
+          throw new Error('Connection is not set')
+        }
+
+        const provider = this.getProvider()
+
+        const transaction = await createSendTransaction({
+          provider,
+          connection,
+          to: params.to,
+          value: params.value
+        })
+
+        const result = await provider.sendTransaction(transaction, connection)
+
+        return result
+      },
 
       parseUnits: () => BigInt(0),
 
