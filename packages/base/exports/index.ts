@@ -7,6 +7,7 @@ export * from '@web3modal/scaffold-ui'
 // -- Utils & Other -----------------------------------------------------
 export * from '../src/utils/index.js'
 export type * from '@web3modal/core'
+export type { CaipNetwork, CaipAddress, CaipNetworkId } from '@web3modal/common'
 export { CoreHelperUtil, AccountController, NetworkController } from '@web3modal/core'
 
 type CreateWeb3Modal = Omit<AppKitOptions, 'sdkType' | 'sdkVersion'>

@@ -1,4 +1,4 @@
-import { createWeb3Modal } from '@web3modal/base/react'
+import { createWeb3Modal, type CaipNetwork } from '@web3modal/base/react'
 import { SolanaWeb3JsClient } from '@web3modal/adapter-solana/react'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
@@ -12,9 +12,19 @@ const solanaWeb3JsAdapter = new SolanaWeb3JsClient({
   wallets: [new HuobiWalletAdapter(), new SolflareWalletAdapter()]
 })
 
+export const solanaNotExist = {
+  id: 'solana:chaindoesntexist',
+  chainId: 'chaindoesntexist',
+  name: 'Solana Unsupported',
+  currency: 'SOL',
+  explorerUrl: 'https://explorer.solana.com/?cluster=devnet',
+  rpcUrl: '',
+  chainNamespace: 'solana'
+} as CaipNetwork
+
 const modal = createWeb3Modal({
   adapters: [solanaWeb3JsAdapter],
-  caipNetworks: [solana, solanaTestnet, solanaDevnet],
+  caipNetworks: [solana, solanaTestnet, solanaDevnet, solanaNotExist],
   projectId: ConstantsUtil.ProjectId,
   features: {
     analytics: true,

@@ -15,12 +15,14 @@ import { bigIntReplacer } from '../../utils/CommonUtils'
 import { getPurchaseDonutPermissions } from '../../utils/ERC7715Utils'
 import { serializePublicKey, type P256Credential } from 'webauthn-p256'
 import { KeyTypes } from '../../utils/EncodingUtils'
+import { useWeb3ModalAccount } from '@web3modal/base/react'
 
 export function WagmiRequestPermissionsSyncTest() {
   const { provider, supported } = useWagmiAvailableCapabilities({
     method: EIP_7715_RPC_METHODS.WALLET_GRANT_PERMISSIONS
   })
-  const { chain, address, isConnected } = useAccount()
+  const { address } = useWeb3ModalAccount()
+  const { chain, isConnected } = useAccount()
 
   if (!isConnected || !provider || !address || !chain) {
     return (
@@ -37,7 +39,7 @@ export function WagmiRequestPermissionsSyncTest() {
     )
   }
 
-  return <ConnectedTestContent chain={chain} provider={provider} address={address} />
+  return <ConnectedTestContent chain={chain} provider={provider} address={address as Address} />
 }
 
 function ConnectedTestContent({
@@ -47,7 +49,7 @@ function ConnectedTestContent({
 }: {
   chain: Chain
   provider: Provider
-  address: Address
+  address: Address | undefined
 }) {
   const [isRequestPermissionLoading, setRequestPermissionLoading] = useState<boolean>(false)
   const { passkey } = usePasskey()
@@ -57,6 +59,9 @@ function ConnectedTestContent({
   const onRequestPermissions = useCallback(async () => {
     setRequestPermissionLoading(true)
     try {
+      if (!address) {
+        throw new Error('No account address available, Please connect your wallet.')
+      }
       if (!passkey) {
         throw new Error('Passkey not available')
       }

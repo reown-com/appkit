@@ -1,7 +1,7 @@
-import type { CaipNetwork } from '@web3modal/common'
+import type { CaipNetwork, ChainNamespace } from '@web3modal/common'
 
-function getBlockchainApiRpcUrl(chainId: number) {
-  return `https://rpc.walletconnect.org/v1/?chainId=eip155:${chainId}&projectId=${process.env['NEXT_PUBLIC_PROJECT_ID']}`
+export function getBlockchainApiRpcUrl(chainId: number | string, namespace: ChainNamespace) {
+  return `https://rpc.walletconnect.org/v1/?chainId=${namespace}:${chainId}&projectId=${process.env['NEXT_PUBLIC_PROJECT_ID']}`
 }
 
 export const mainnet: CaipNetwork = {
@@ -10,7 +10,7 @@ export const mainnet: CaipNetwork = {
   name: 'Ethereum',
   currency: 'ETH',
   explorerUrl: 'https://etherscan.io',
-  rpcUrl: getBlockchainApiRpcUrl(1),
+  rpcUrl: getBlockchainApiRpcUrl(1, 'eip155'),
   chainNamespace: 'eip155'
 }
 
@@ -20,7 +20,7 @@ export const arbitrum: CaipNetwork = {
   name: 'Arbitrum',
   currency: 'ETH',
   explorerUrl: 'https://arbiscan.io',
-  rpcUrl: getBlockchainApiRpcUrl(42161),
+  rpcUrl: getBlockchainApiRpcUrl(42161, 'eip155'),
   chainNamespace: 'eip155'
 }
 
@@ -30,7 +30,7 @@ export const avalanche: CaipNetwork = {
   name: 'Avalanche',
   currency: 'AVAX',
   explorerUrl: 'https://snowtrace.io',
-  rpcUrl: getBlockchainApiRpcUrl(43114),
+  rpcUrl: getBlockchainApiRpcUrl(43114, 'eip155'),
   chainNamespace: 'eip155'
 }
 
@@ -40,7 +40,7 @@ export const binanceSmartChain: CaipNetwork = {
   name: 'Binance Smart Chain',
   currency: 'BNB',
   explorerUrl: 'https://bscscan.com',
-  rpcUrl: getBlockchainApiRpcUrl(56),
+  rpcUrl: getBlockchainApiRpcUrl(56, 'eip155'),
   chainNamespace: 'eip155'
 }
 
@@ -50,7 +50,7 @@ export const optimism: CaipNetwork = {
   name: 'Optimism',
   currency: 'ETH',
   explorerUrl: 'https://optimistic.etherscan.io',
-  rpcUrl: getBlockchainApiRpcUrl(10),
+  rpcUrl: getBlockchainApiRpcUrl(10, 'eip155'),
   chainNamespace: 'eip155'
 }
 
@@ -60,7 +60,7 @@ export const polygon: CaipNetwork = {
   name: 'Polygon',
   currency: 'MATIC',
   explorerUrl: 'https://polygonscan.com',
-  rpcUrl: getBlockchainApiRpcUrl(137),
+  rpcUrl: getBlockchainApiRpcUrl(137, 'eip155'),
   chainNamespace: 'eip155'
 }
 
@@ -70,7 +70,7 @@ export const gnosis: CaipNetwork = {
   name: 'Gnosis',
   currency: 'xDAI',
   explorerUrl: 'https://gnosis.blockscout.com',
-  rpcUrl: getBlockchainApiRpcUrl(100),
+  rpcUrl: getBlockchainApiRpcUrl(100, 'eip155'),
   chainNamespace: 'eip155'
 }
 
@@ -80,7 +80,7 @@ export const zkSync: CaipNetwork = {
   name: 'ZkSync',
   currency: 'ETH',
   explorerUrl: 'https://explorer.zksync.io',
-  rpcUrl: getBlockchainApiRpcUrl(324),
+  rpcUrl: getBlockchainApiRpcUrl(324, 'eip155'),
   chainNamespace: 'eip155'
 }
 
@@ -90,7 +90,7 @@ export const zora: CaipNetwork = {
   name: 'Zora',
   currency: 'ETH',
   explorerUrl: 'https://explorer.zora.energy',
-  rpcUrl: getBlockchainApiRpcUrl(7777777),
+  rpcUrl: getBlockchainApiRpcUrl(7777777, 'eip155'),
   chainNamespace: 'eip155'
 }
 
@@ -100,7 +100,7 @@ export const celo: CaipNetwork = {
   name: 'Celo',
   currency: 'CELO',
   explorerUrl: 'https://explorer.celo.org/mainnet',
-  rpcUrl: getBlockchainApiRpcUrl(42220),
+  rpcUrl: getBlockchainApiRpcUrl(42220, 'eip155'),
   chainNamespace: 'eip155'
 }
 
@@ -110,7 +110,7 @@ export const base: CaipNetwork = {
   name: 'Base',
   currency: 'BASE',
   explorerUrl: 'https://basescan.org',
-  rpcUrl: getBlockchainApiRpcUrl(8453),
+  rpcUrl: getBlockchainApiRpcUrl(8453, 'eip155'),
   chainNamespace: 'eip155'
 }
 
@@ -120,7 +120,7 @@ export const aurora: CaipNetwork = {
   name: 'Aurora',
   currency: 'ETH',
   explorerUrl: 'https://explorer.aurora.dev',
-  rpcUrl: getBlockchainApiRpcUrl(1313161554),
+  rpcUrl: getBlockchainApiRpcUrl(1313161554, 'eip155'),
   chainNamespace: 'eip155'
 }
 
@@ -130,7 +130,7 @@ export const sepolia: CaipNetwork = {
   name: 'Sepolia',
   currency: 'ETH',
   explorerUrl: 'https://sepolia.etherscan.io',
-  rpcUrl: getBlockchainApiRpcUrl(11155111),
+  rpcUrl: getBlockchainApiRpcUrl(11155111, 'eip155'),
   chainNamespace: 'eip155'
 }
 
@@ -140,7 +140,7 @@ export const baseSepolia: CaipNetwork = {
   name: 'Base Sepolia',
   currency: 'BASE',
   explorerUrl: 'https://sepolia.basescan.org',
-  rpcUrl: getBlockchainApiRpcUrl(84532),
+  rpcUrl: getBlockchainApiRpcUrl(84532, 'eip155'),
   chainNamespace: 'eip155'
 }
 
@@ -150,7 +150,7 @@ export const solana: CaipNetwork = {
   name: 'Solana',
   currency: 'SOL',
   explorerUrl: 'https://solscan.io',
-  rpcUrl: 'https://rpc.walletconnect.org/v1',
+  rpcUrl: getBlockchainApiRpcUrl('5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp', 'solana'),
   chainNamespace: 'solana'
 }
 
@@ -160,7 +160,7 @@ export const solanaTestnet: CaipNetwork = {
   name: 'Solana Testnet',
   currency: 'SOL',
   explorerUrl: 'https://explorer.solana.com/?cluster=testnet',
-  rpcUrl: 'https://rpc.walletconnect.org/v1',
+  rpcUrl: getBlockchainApiRpcUrl('4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z', 'solana'),
   chainNamespace: 'solana'
 }
 
@@ -170,6 +170,26 @@ export const solanaDevnet: CaipNetwork = {
   name: 'Solana Devnet',
   currency: 'SOL',
   explorerUrl: 'https://explorer.solana.com/?cluster=devnet',
-  rpcUrl: 'https://rpc.walletconnect.org/v1',
+  rpcUrl: getBlockchainApiRpcUrl('EtWTRABZaYq6iMfeYKouRu166VU2xqa1', 'solana'),
   chainNamespace: 'solana'
 }
+
+export const allChains = [
+  mainnet,
+  arbitrum,
+  avalanche,
+  binanceSmartChain,
+  optimism,
+  polygon,
+  gnosis,
+  zkSync,
+  zora,
+  celo,
+  base,
+  aurora,
+  sepolia,
+  baseSepolia,
+  solana,
+  solanaTestnet,
+  solanaDevnet
+]

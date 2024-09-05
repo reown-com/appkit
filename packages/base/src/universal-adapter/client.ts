@@ -24,6 +24,7 @@ import type {
 import { SafeLocalStorage, SafeLocalStorageKeys } from '@web3modal/common'
 import { ProviderUtil } from '@web3modal/base/store'
 import type { AppKitOptions } from '../utils/TypesUtil.js'
+import { allChains } from '../chains/index.js'
 
 type Metadata = {
   name: string
@@ -436,6 +437,21 @@ export class UniversalAdapterClient {
 
       if (caipNetwork) {
         NetworkController.setActiveCaipNetwork(caipNetwork)
+      } else {
+        const chain = allChains.find(c => c.chainId.toString() === chainId.toString())
+        if (chain) {
+          NetworkController.setActiveCaipNetwork(chain)
+        } else {
+          NetworkController.setActiveCaipNetwork({
+            chainId: chainId,
+            id: `eip155:${chainId}`,
+            name: 'Unknown Network',
+            currency: '',
+            explorerUrl: '',
+            rpcUrl: '',
+            chainNamespace: this.appKit?.getActiveChainNamespace() || 'eip155'
+          })
+        }
       }
     }
 
@@ -462,6 +478,7 @@ export class UniversalAdapterClient {
   }
 
   private syncAccount() {
+    console.trace('>>> syncAccount')
     const { namespaceKeys, namespaces } = this.getProviderData()
 
     const preferredAccountType = this.appKit?.getPreferredAccountType()
@@ -476,12 +493,37 @@ export class UniversalAdapterClient {
         this.appKit?.setPreferredAccountType(preferredAccountType, chainNamespace)
         this.appKit?.setCaipAddress(address, chainNamespace)
         this.syncConnectedWalletInfo()
+        this.syncAccounts()
 
         await Promise.all([this.appKit?.setApprovedCaipNetworksData(chainNamespace)])
       })
     } else {
       this.appKit?.resetWcConnection()
       this.appKit?.resetNetwork()
+      this.syncAccounts(true)
+    }
+  }
+
+  private syncAccounts(reset: boolean = false) {
+    const { namespaces } = this.getProviderData()
+    const chainNamespace = this.chainNamespace
+
+    const addresses = namespaces?.[chainNamespace]?.accounts
+      ?.map(account => {
+        const [, , address] = account.split(':')
+        return address
+      })
+      .filter((address, index, self) => self.indexOf(address) === index) as string[]
+
+    if (reset) {
+      this.appKit?.setAllAccounts([], chainNamespace)
+    }
+
+    if (addresses) {
+      this.appKit?.setAllAccounts(
+        addresses.map(address => ({ address, type: 'eoa' })),
+        chainNamespace
+      )
     }
   }
 

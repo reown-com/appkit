@@ -11,6 +11,7 @@ export * from '../src/library/react/index.js'
 // -- Utils & Other -----------------------------------------------------
 export * from '../src/utils/index.js'
 export type * from '@web3modal/core'
+export type { CaipNetwork, CaipAddress, CaipNetworkId } from '@web3modal/common'
 export { CoreHelperUtil, AccountController, NetworkController } from '@web3modal/core'
 
 export let modal: AppKit | undefined = undefined

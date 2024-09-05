@@ -1,7 +1,7 @@
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
 import { useAccount, type Connector } from 'wagmi'
 import { useState, useEffect, useMemo } from 'react'
-import { type WalletCapabilities } from 'viem'
+import { type Address, type WalletCapabilities } from 'viem'
 import { type Chain } from 'wagmi/chains'
 import {
   EIP_5792_RPC_METHODS,
@@ -10,6 +10,7 @@ import {
   getProviderCachedCapabilities
 } from '../utils/EIP5792Utils'
 import { W3mFrameProvider } from '@web3modal/wallet'
+import { useWeb3ModalAccount } from '@web3modal/base/react'
 
 type UseWagmiAvailableCapabilitiesParams = {
   capability?: string
@@ -29,7 +30,8 @@ export function useWagmiAvailableCapabilities({
     Record<number, WalletCapabilities> | undefined
   >()
 
-  const { chain, address, connector, isConnected } = useAccount()
+  const { address } = useWeb3ModalAccount()
+  const { chain, connector, isConnected } = useAccount()
 
   const supportedChains = useMemo(
     () =>
@@ -51,7 +53,7 @@ export function useWagmiAvailableCapabilities({
 
   useEffect(() => {
     if (isConnected && connector && address && chain) {
-      fetchProviderAndAccountCapabilities(address, connector, chain)
+      fetchProviderAndAccountCapabilities(address as Address, connector, chain)
     }
   }, [connector, address, chain, isConnected])
 

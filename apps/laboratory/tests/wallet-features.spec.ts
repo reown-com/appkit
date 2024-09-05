@@ -79,18 +79,3 @@ walletFeaturesTest('it should find account name as expected', async ({ library }
   await validator.expectAccountNameFound('test-ens-check')
   await page.closeModal()
 })
-
-walletFeaturesTest('it should find account name as expected', async () => {
-  await page.openAccount()
-  await page.openProfileView()
-  await page.openSettings()
-
-  await page.switchNetwork('Polygon')
-  await validator.expectSwitchedNetwork('Polygon')
-
-  await page.openChooseNameIntro()
-  await page.openChooseName()
-  await page.typeName('test-ens-check')
-  await validator.expectAccountNameFound('test-ens-check')
-  await page.closeModal()
-})
