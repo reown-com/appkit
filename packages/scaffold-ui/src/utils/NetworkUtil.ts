@@ -7,9 +7,10 @@ export const NetworkUtil = {
 
     if (OptionsController.state.isSiweEnabled) {
       const { SIWEController } = await import('@web3modal/siwe')
-      if (SIWEController.state._client?.options?.signOutOnNetworkChange && isEIP155Namespace) {
-        await SIWEController.signOut()
-      } else {
+      const shouldNotNavigate =
+        SIWEController.state._client?.options?.signOutOnNetworkChange && isEIP155Namespace
+
+      if (!shouldNotNavigate) {
         RouterUtil.navigateAfterNetworkSwitch()
       }
     } else {

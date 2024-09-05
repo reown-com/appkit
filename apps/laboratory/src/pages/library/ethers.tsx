@@ -14,10 +14,9 @@ const modal = createWeb3Modal({
   caipNetworks: [mainnet, optimism, polygon, zkSync, arbitrum],
   projectId: ConstantsUtil.ProjectId,
   features: {
-    analytics: true,
-    email: true,
-    socials: ['google', 'github', 'apple', 'discord']
-  }
+    analytics: true
+  },
+  customWallets: ConstantsUtil.CustomWallets
 })
 
 ThemeStore.setModal(modal)

@@ -251,6 +251,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
       if (chainId) {
         return chainId as number
       }
+
       const provider = await this.getProvider()
       const chain = provider.session?.namespaces['eip155']?.chains?.[0]
 

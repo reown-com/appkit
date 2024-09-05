@@ -5,7 +5,7 @@ import { AppKitButtons } from '../../components/AppKitButtons'
 import { WagmiTests } from '../../components/Wagmi/WagmiTests'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
-import { mainnet, optimism, polygon, zkSync } from '@web3modal/base/chains'
+import { arbitrum, mainnet, optimism, polygon, zkSync } from '@web3modal/base/chains'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
 import { EVMWagmiClient } from '@web3modal/adapter-wagmi'
 
@@ -17,7 +17,8 @@ const wagmiAdapter = new EVMWagmiClient({
 
 const modal = createWeb3Modal({
   adapters: [wagmiAdapter],
-  caipNetworks: [mainnet, optimism, polygon, zkSync],
+  caipNetworks: [arbitrum, mainnet, optimism, polygon, zkSync],
+  defaultCaipNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId,
   features: {
     analytics: true,

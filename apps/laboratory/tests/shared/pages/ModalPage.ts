@@ -20,6 +20,7 @@ export type ModalFlavor =
   | 'verify-evil'
   | 'no-email'
   | 'no-socials'
+  | 'siwe'
   | 'all'
 
 function getUrlByFlavor(baseUrl: string, library: string, flavor: ModalFlavor) {
