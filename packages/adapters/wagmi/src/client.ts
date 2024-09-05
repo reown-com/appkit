@@ -134,7 +134,9 @@ export class EVMWagmiClient implements ChainAdapter {
     const transports = Object.fromEntries(transportsArr)
     const connectors: CreateConnectorFn[] = []
 
-    connectors.push(walletConnect(options, appKit))
+    if (options.enableWalletConnect !== false) {
+      connectors.push(walletConnect(options, appKit))
+    }
 
     if (options.enableInjected !== false) {
       connectors.push(injected({ shimDisconnect: true }))
@@ -185,6 +187,7 @@ export class EVMWagmiClient implements ChainAdapter {
     this.appKit = appKit
     this.options = options
     this.caipNetworks = options.caipNetworks
+    this.defaultCaipNetwork = options.defaultCaipNetwork || options.caipNetworks[0]
     this.tokens = HelpersUtil.getCaipTokens(options.tokens)
     this.wagmiConfig = this.createWagmiConfig(options, appKit)
 
@@ -763,9 +766,10 @@ export class EVMWagmiClient implements ChainAdapter {
   }
 
   private async listenAuthConnector(
-    connector: AdapterOptions<Config>['wagmiConfig']['connectors'][number]
+    connector: AdapterOptions<Config>['wagmiConfig']['connectors'][number],
+    bypassWindowCheck = false
   ) {
-    if (typeof window !== 'undefined' && connector) {
+    if (bypassWindowCheck || (typeof window !== 'undefined' && connector)) {
       this.appKit?.setLoading(true)
       const provider = (await connector.getProvider()) as W3mFrameProvider
       const isLoginEmailUsed = provider.getLoginEmailUsed()
