@@ -443,7 +443,7 @@ export class UniversalAdapterClient {
           NetworkController.setActiveCaipNetwork(chain)
         } else {
           NetworkController.setActiveCaipNetwork({
-            chainId: chainId,
+            chainId,
             id: `eip155:${chainId}`,
             name: 'Unknown Network',
             currency: '',
@@ -478,7 +478,6 @@ export class UniversalAdapterClient {
   }
 
   private syncAccount() {
-    console.trace('>>> syncAccount')
     const { namespaceKeys, namespaces } = this.getProviderData()
 
     const preferredAccountType = this.appKit?.getPreferredAccountType()
@@ -504,13 +503,14 @@ export class UniversalAdapterClient {
     }
   }
 
-  private syncAccounts(reset: boolean = false) {
+  private syncAccounts(reset = false) {
     const { namespaces } = this.getProviderData()
     const chainNamespace = this.chainNamespace
 
     const addresses = namespaces?.[chainNamespace]?.accounts
       ?.map(account => {
         const [, , address] = account.split(':')
+
         return address
       })
       .filter((address, index, self) => self.indexOf(address) === index) as string[]

@@ -1,5 +1,5 @@
 import { Button, Stack, Link, Text, Spacer, Flex } from '@chakra-ui/react'
-import { parseEther, type Address } from 'viem'
+import { parseEther } from 'viem'
 import { useAccount, useSimulateContract, useWriteContract, useReadContract } from 'wagmi'
 import { useCallback, useEffect } from 'react'
 import { optimism, sepolia } from 'wagmi/chains'

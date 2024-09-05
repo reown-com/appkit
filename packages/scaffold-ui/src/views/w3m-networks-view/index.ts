@@ -1,4 +1,4 @@
-import { ConstantsUtil, type CaipNetwork } from '@web3modal/common'
+import { type CaipNetwork } from '@web3modal/common'
 import {
   AccountController,
   AssetUtil,
