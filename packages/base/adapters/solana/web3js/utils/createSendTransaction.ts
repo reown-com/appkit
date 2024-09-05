@@ -5,7 +5,7 @@ type SendTransactionArgs = {
   provider: Provider
   connection: Connection
   to: string
-  value: string
+  value: number
 }
 
 export async function createSendTransaction({
@@ -19,7 +19,7 @@ export async function createSendTransaction({
   }
 
   const toPubkey = new PublicKey(to)
-  const lamports = Number(value)
+  const lamports = value
 
   const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash()
 

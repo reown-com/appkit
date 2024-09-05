@@ -24,7 +24,7 @@ describe('createSendTransaction', () => {
       provider,
       connection,
       to: '2VqKhjZ766ZN3uBtBpb7Ls3cN4HrocP1rzxzekhVEgoP',
-      value: '10'
+      value: 10
     })
 
     expect(transaction).toBeDefined()
@@ -35,7 +35,7 @@ describe('createSendTransaction', () => {
       provider,
       connection,
       to: '2VqKhjZ766ZN3uBtBpb7Ls3cN4HrocP1rzxzekhVEgoP',
-      value: '10'
+      value: 10
     })
 
     // Serializing to base64 only for comparison of the transaction bytes

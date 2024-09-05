@@ -811,7 +811,7 @@ export type SendTransactionArgs =
       gasPrice: bigint
       address: `0x${string}`
     }
-  | { chainNamespace: 'solana'; to: string; value: string }
+  | { chainNamespace: 'solana'; to: string; value: number }
 
 export interface EstimateGasTransactionArgs {
   address: `0x${string}`

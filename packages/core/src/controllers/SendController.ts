@@ -143,11 +143,17 @@ export const SendController = {
 
         return
       case 'solana':
+        if (!this.state.sendTokenAmount || !this.state.receiverAddress) {
+          SnackController.showError('Please enter a valid amount and receiver address')
+
+          return
+        }
+
         // Implement solana
         ConnectionController.sendTransaction({
           chainNamespace: 'solana',
-          to: '',
-          value: ''
+          to: this.state.receiverAddress,
+          value: this.state.sendTokenAmount
         })
 
         return
