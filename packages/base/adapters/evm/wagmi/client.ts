@@ -249,6 +249,7 @@ export class EVMWagmiClient implements ChainAdapter {
           throw new Error('connectionControllerClient:connectExternal - connector is undefined')
         }
 
+        console.log('>> Reconnecting external', connector)
         await reconnect(this.wagmiConfig, { connectors: [connector] })
       },
 
@@ -401,11 +402,16 @@ export class EVMWagmiClient implements ChainAdapter {
       onChange: connectors => this.syncConnectors(connectors)
     })
     watchAccount(this.wagmiConfig, {
-      onChange: accountData => this.syncAccount({ ...accountData })
+      onChange: accountData => {
+        console.log('>> watchAccount : ', accountData)
+
+        return this.syncAccount({ ...accountData })
+      }
     })
 
     this.appKit?.setEIP6963Enabled(options.enableEIP6963 !== false)
     this.appKit?.subscribeShouldUpdateToAddress((newAddress?: string) => {
+      console.log('>> subscribeShouldUpdateToAddress : ', newAddress)
       if (newAddress) {
         const connections = getConnections(this.wagmiConfig)
         const connector = connections[0]?.connector
@@ -469,6 +475,7 @@ export class EVMWagmiClient implements ChainAdapter {
       | 'status'
     >
   >) {
+    console.log('>> syncAccount', { address, chainId, connector, addresses, status })
     const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`
 
     if (this.appKit?.getCaipAddress() === caipAddress) {
@@ -791,16 +798,11 @@ export class EVMWagmiClient implements ChainAdapter {
       })
 
       provider.onSetPreferredAccount(({ address, type }) => {
+        console.log('On Set Preferred Accont >> ', address, type)
         if (!address) {
           return
         }
         this.appKit?.setPreferredAccountType(type as W3mFrameTypes.AccountType, this.chain)
-        this.syncAccount({
-          address: address as `0x${string}`,
-          isConnected: true,
-          chainId: NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id),
-          connector
-        })
       })
     }
   }
