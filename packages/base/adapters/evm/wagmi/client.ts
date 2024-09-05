@@ -13,7 +13,6 @@ import {
   writeContract as wagmiWriteContract,
   getAccount,
   getEnsAddress as wagmiGetEnsAddress,
-  reconnect,
   switchChain,
   waitForTransactionReceipt,
   getConnections,
@@ -242,17 +241,6 @@ export class EVMWagmiClient implements ChainAdapter {
         await connect(this.wagmiConfig, { connector, chainId })
       },
 
-      reconnectExternal: async ({ id }) => {
-        const connector = this.wagmiConfig.connectors.find(c => c.id === id)
-
-        if (!connector) {
-          throw new Error('connectionControllerClient:connectExternal - connector is undefined')
-        }
-
-        console.log('>> Reconnecting external', connector)
-        await reconnect(this.wagmiConfig, { connectors: [connector] })
-      },
-
       checkInstalled: ids => {
         const injectedConnector = this.appKit
           ?.getConnectors()
@@ -402,16 +390,11 @@ export class EVMWagmiClient implements ChainAdapter {
       onChange: connectors => this.syncConnectors(connectors)
     })
     watchAccount(this.wagmiConfig, {
-      onChange: accountData => {
-        console.log('>> watchAccount : ', accountData)
-
-        return this.syncAccount({ ...accountData })
-      }
+      onChange: accountData => this.syncAccount({ ...accountData })
     })
 
     this.appKit?.setEIP6963Enabled(options.enableEIP6963 !== false)
     this.appKit?.subscribeShouldUpdateToAddress((newAddress?: string) => {
-      console.log('>> subscribeShouldUpdateToAddress : ', newAddress)
       if (newAddress) {
         const connections = getConnections(this.wagmiConfig)
         const connector = connections[0]?.connector
@@ -475,7 +458,6 @@ export class EVMWagmiClient implements ChainAdapter {
       | 'status'
     >
   >) {
-    console.log('>> syncAccount', { address, chainId, connector, addresses, status })
     const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`
 
     if (this.appKit?.getCaipAddress() === caipAddress) {
@@ -798,7 +780,6 @@ export class EVMWagmiClient implements ChainAdapter {
       })
 
       provider.onSetPreferredAccount(({ address, type }) => {
-        console.log('On Set Preferred Accont >> ', address, type)
         if (!address) {
           return
         }
