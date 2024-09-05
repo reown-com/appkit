@@ -785,13 +785,6 @@ export class EVMWagmiClient implements ChainAdapter {
           return
         }
         this.appKit?.setPreferredAccountType(type as W3mFrameTypes.AccountType, this.chain)
-        this.syncAccount({
-          address: address as `0x${string}`,
-          isConnected: true,
-          chainId: NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id),
-          connector,
-          status: 'connected'
-        })
         reconnect(this.wagmiConfig, { connectors: [connector] })
       })
     }
