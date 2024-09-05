@@ -17,6 +17,7 @@ import { EventsController } from './EventsController.js'
 import { W3mFrameRpcConstants } from '@web3modal/wallet'
 import { StorageUtil } from '../utils/StorageUtil.js'
 import { ConnectorController } from './ConnectorController.js'
+import { ChainController } from './ChainController.js'
 
 // -- Constants ---------------------------------------- //
 export const INITIAL_GAS_LIMIT = 150000
@@ -174,7 +175,12 @@ export const SwapController = {
   getParams() {
     const caipNetwork = NetworkController.state.caipNetwork
     const address = AccountController.state.address
-    const networkAddress = `${caipNetwork?.id}:${ConstantsUtil.NATIVE_TOKEN_ADDRESS}`
+
+    const nativeTokenAddress = ChainController.state.activeChain
+      ? ConstantsUtil.NATIVE_TOKEN_ADDRESS[ChainController.state.activeChain]
+      : ConstantsUtil.NATIVE_TOKEN_ADDRESS.DEFAULT
+
+    const networkAddress = `${caipNetwork?.id}:${nativeTokenAddress}`
     const type = StorageUtil.getConnectedConnector()
     const authConnector = ConnectorController.getAuthConnector()
 
@@ -404,6 +410,10 @@ export const SwapController = {
     const response = await BlockchainApiController.fetchTokenPrice({
       projectId: OptionsController.state.projectId,
       addresses: [networkAddress]
+    }).catch(() => {
+      SnackController.showError('Failed to fetch network token price')
+
+      return { fungibles: [] }
     })
     const token = response.fungibles?.[0]
     const price = token?.price.toString() || '0'
@@ -443,7 +453,7 @@ export const SwapController = {
   },
 
   async getInitialGasPrice() {
-    const res = await SwapApiUtil.fetchGasPrice()
+    const res = await SwapApiUtil.fetchGasPrice().catch(() => null)
 
     if (!res) {
       return { gasPrice: null, gasPriceInUsd: null }
