@@ -82,7 +82,7 @@ smartAccountTest('it should switch to a not enabled network and sign with EOA', 
 })
 
 smartAccountTest('it should switch to smart account and sign', async () => {
-  const targetChain = 'Polygon'
+  const targetChain = 'Optimism'
   await page.goToSettings()
   await page.switchNetwork(targetChain)
   await validator.expectSwitchedNetwork(targetChain)
