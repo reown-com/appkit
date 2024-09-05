@@ -185,11 +185,8 @@ export const ConstantsUtil = {
 
   NATIVE_TOKEN_ADDRESS: {
     evm: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
-    solana: 'So11111111111111111111111111111111111111111',
-    get DEFAULT() {
-      return this.evm
-    }
-  } as const satisfies Record<Chain | 'DEFAULT', string>,
+    solana: 'So11111111111111111111111111111111111111111'
+  } as const satisfies Record<Chain, string>,
 
   CONVERT_SLIPPAGE_TOLERANCE: 1
 }

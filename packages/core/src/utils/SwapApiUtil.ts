@@ -113,7 +113,9 @@ export const SwapApiUtil = {
             ...token,
             address: token?.address
               ? token.address
-              : `${token.chainId}:${ConstantsUtil.NATIVE_TOKEN_ADDRESS}`,
+              : `${token.chainId}:${
+                  ConstantsUtil.NATIVE_TOKEN_ADDRESS[ChainController.state.activeChain || 'evm']
+                }`,
             decimals: parseInt(token.quantity.decimals, 10),
             logoUri: token.iconUrl,
             eip2612: false

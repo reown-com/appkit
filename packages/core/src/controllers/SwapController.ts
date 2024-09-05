@@ -17,7 +17,6 @@ import { EventsController } from './EventsController.js'
 import { W3mFrameRpcConstants } from '@web3modal/wallet'
 import { StorageUtil } from '../utils/StorageUtil.js'
 import { ConnectorController } from './ConnectorController.js'
-import { ChainController } from './ChainController.js'
 
 // -- Constants ---------------------------------------- //
 export const INITIAL_GAS_LIMIT = 150000
@@ -173,14 +172,8 @@ export const SwapController = {
   },
 
   getParams() {
-    const caipNetwork = NetworkController.state.caipNetwork
     const address = AccountController.state.address
-
-    const nativeTokenAddress = ChainController.state.activeChain
-      ? ConstantsUtil.NATIVE_TOKEN_ADDRESS[ChainController.state.activeChain]
-      : ConstantsUtil.NATIVE_TOKEN_ADDRESS.DEFAULT
-
-    const networkAddress = `${caipNetwork?.id}:${nativeTokenAddress}`
+    const networkAddress = NetworkController.getActiveNetworkTokenAddress()
     const type = StorageUtil.getConnectedConnector()
     const authConnector = ConnectorController.getAuthConnector()
 
