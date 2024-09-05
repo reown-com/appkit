@@ -75,8 +75,10 @@ jobs:
       - name: checkout
         uses: actions/checkout@v4
         with:
-          repository: WalletConnect/web3modal
+          repository: WalletConnect/shadow-appkit
           ref: ${{ inputs.branch }}
+          # Remove once public
+          token: ${{ secrets.RELEASE_PAT }}
 
       - uses: pnpm/action-setup@v4
         name: Install pnpm
