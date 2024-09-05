@@ -216,12 +216,6 @@ export class EVMWagmiClient {
                 clientId
               })
 
-              console.log('>>>> w3m before on sign in', {
-                chainId,
-                address,
-                cacaoChainId,
-                onSignin: SIWEController.onSignIn
-              })
               if (address && cacaoChainId) {
                 SIWEController.onSignIn?.({
                   address,

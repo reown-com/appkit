@@ -1,5 +1,5 @@
 {
-  "mode": "pre",
+  "mode": "exit",
   "tag": "b7197eec7",
   "initialVersions": {
     "@web3modal/base": "5.1.4-8d342a50c",
