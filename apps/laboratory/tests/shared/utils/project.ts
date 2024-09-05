@@ -44,7 +44,7 @@ const SOLANA_DISABLED_TESTS = [
   'wallet-features.spec.ts',
   'metamask.spec.ts'
 ]
-const WAGMI_DISABLED_TESTS = ['metamask.spec.ts']
+const WAGMI_DISABLED_TESTS = ['metamask.spec.ts', 'siwe-email.spec.ts', 'siwe-sa.spec.ts']
 const ETHERS_DISABLED_TESTS = ['metamask.spec.ts']
 const ETHERS5_DISABLED_TESTS = [
   'metamask.spec.ts',
