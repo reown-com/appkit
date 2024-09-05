@@ -16,7 +16,8 @@ import {
   switchChain,
   waitForTransactionReceipt,
   getConnections,
-  switchAccount
+  switchAccount,
+  reconnect
 } from '@wagmi/core'
 import type { ChainAdapter, OptionsControllerState } from '@web3modal/core'
 import { mainnet } from 'viem/chains'
@@ -459,10 +460,10 @@ export class EVMWagmiClient implements ChainAdapter {
     >
   >) {
     const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`
-
     if (this.appKit?.getCaipAddress() === caipAddress) {
       return
     }
+
     if (status === 'connected' && address && chainId) {
       this.syncNetwork(address, chainId, true)
       this.appKit?.setIsConnected(true, this.chain)
@@ -784,6 +785,14 @@ export class EVMWagmiClient implements ChainAdapter {
           return
         }
         this.appKit?.setPreferredAccountType(type as W3mFrameTypes.AccountType, this.chain)
+        this.syncAccount({
+          address: address as `0x${string}`,
+          isConnected: true,
+          chainId: NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id),
+          connector,
+          status: 'connected'
+        })
+        reconnect(this.wagmiConfig, { connectors: [connector] })
       })
     }
   }
