@@ -37,7 +37,6 @@ export class ModalWalletPage extends ModalPage {
   override async switchNetwork(network: string) {
     await this.page.getByTestId('account-switch-network-button').click()
     const networkToSwitchButton = this.page.getByTestId(`w3m-network-switch-${network}`)
-    networkToSwitchButton.scrollIntoViewIfNeeded()
     await networkToSwitchButton.click()
   }
 
