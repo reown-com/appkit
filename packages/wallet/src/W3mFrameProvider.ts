@@ -13,8 +13,11 @@ export class W3mFrameProvider {
     []
 
   private rpcRequestHandler?: (request: W3mFrameTypes.RPCRequest) => void
-  private rpcSuccessHandler?: (response: W3mFrameTypes.RPCResponse) => void
-  private rpcErrorHandler?: (error: Error) => void
+  private rpcSuccessHandler?: (
+    response: W3mFrameTypes.RPCResponse,
+    request: W3mFrameTypes.RPCRequest
+  ) => void
+  private rpcErrorHandler?: (error: Error, request: W3mFrameTypes.RPCRequest) => void
 
   public constructor(projectId: string, chainId?: W3mFrameTypes.Network['chainId']) {
     this.w3mLogger = new W3mFrameLogger(projectId)
@@ -323,11 +326,11 @@ export class W3mFrameProvider {
         payload: req
       } as W3mFrameTypes.AppEvent)
 
-      this.rpcSuccessHandler?.(response)
+      this.rpcSuccessHandler?.(response, req)
 
       return response
     } catch (error) {
-      this.rpcErrorHandler?.(error as Error)
+      this.rpcErrorHandler?.(error as Error, req)
       this.w3mLogger.logger.error({ error }, 'Error requesting')
       throw error
     }
@@ -337,11 +340,13 @@ export class W3mFrameProvider {
     this.rpcRequestHandler = callback
   }
 
-  public onRpcSuccess(callback: (request: W3mFrameTypes.FrameEvent) => void) {
+  public onRpcSuccess(
+    callback: (response: W3mFrameTypes.FrameEvent, request: W3mFrameTypes.RPCRequest) => void
+  ) {
     this.rpcSuccessHandler = callback
   }
 
-  public onRpcError(callback: (error: Error) => void) {
+  public onRpcError(callback: (error: Error, request: W3mFrameTypes.RPCRequest) => void) {
     this.rpcErrorHandler = callback
   }
 

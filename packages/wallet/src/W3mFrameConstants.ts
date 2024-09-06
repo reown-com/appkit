@@ -134,7 +134,11 @@ export const W3mFrameRpcConstants = {
     'eth_syncing',
     'eth_uninstallFilter',
     'wallet_getCapabilities',
-    'wallet_getCallsStatus'
+    'wallet_getCallsStatus',
+    'eth_getUserOperationReceipt',
+    'eth_estimateUserOperationGas',
+    'eth_getUserOperationByHash',
+    'eth_supportedEntryPoints'
   ],
   NOT_SAFE_RPC_METHODS: [
     'personal_sign',
@@ -145,7 +149,8 @@ export const W3mFrameRpcConstants = {
     'solana_signAllTransactions',
     'solana_signAndSendTransaction',
     'wallet_sendCalls',
-    'wallet_grantPermissions'
+    'wallet_grantPermissions',
+    'eth_sendUserOperation'
   ],
   GET_CHAIN_ID: 'eth_chainId',
   RPC_METHOD_NOT_ALLOWED_MESSAGE: 'Requested RPC call is not allowed',

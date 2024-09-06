@@ -51,7 +51,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@walletconnect/utils": "2.15.1",
+    "@walletconnect/utils": "2.15.2",
     "@rerock/polyfills": "workspace:*",
     "@rerock/adapter-wagmi": "workspace:*",
     "@rerock/base": "workspace:*",

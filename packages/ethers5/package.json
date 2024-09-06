@@ -44,10 +44,11 @@
   },
   "dependencies": {
     "@coinbase/wallet-sdk": "4.0.3",
-    "@walletconnect/utils": "2.15.1",
     "@rerock/adapter-ethers5": "workspace:*",
+    "@walletconnect/utils": "2.15.2",
     "@rerock/base": "workspace:*",
     "@rerock/common": "workspace:*",
+    "@rerock/wallet": "workspace:*",
     "@rerock/polyfills": "workspace:*",
     "@rerock/scaffold-utils": "workspace:*",
     "@rerock/siwe": "workspace:*",

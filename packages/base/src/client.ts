@@ -372,6 +372,25 @@ export class AppKit {
   public getConnectorImage: (typeof AssetUtil)['getConnectorImage'] = connector =>
     AssetUtil.getConnectorImage(connector)
 
+  public handleUnsafeRPCRequest = () => {
+    if (this.isOpen()) {
+      // If we are on the modal but there is no transaction stack, close the modal
+      if (this.isTransactionStackEmpty()) {
+        return
+      }
+
+      // Check if we need to replace or redirect
+      if (this.isTransactionShouldReplaceView()) {
+        this.replace('ApproveTransaction')
+      } else {
+        this.redirect('ApproveTransaction')
+      }
+    } else {
+      // If called from outside the modal, open ApproveTransaction
+      this.open({ view: 'ApproveTransaction' })
+    }
+  }
+
   // -- Private ------------------------------------------------------------------
   private async initControllers(
     options: AppKitOptions & {

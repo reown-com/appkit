@@ -358,18 +358,6 @@ export class EVMWagmiClient implements ChainAdapter {
         const chainId = Number(NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id))
         await connect(this.wagmiConfig, { connector, chainId })
       },
-      reconnectExternal: async ({ id }) => {
-        if (!this.wagmiConfig) {
-          throw new Error(
-            'networkControllerClient:getApprovedCaipNetworksData - wagmiConfig is undefined'
-          )
-        }
-        const connector = this.wagmiConfig.connectors.find(c => c.id === id)
-        if (!connector) {
-          throw new Error('connectionControllerClient:connectExternal - connector is undefined')
-        }
-        await reconnect(this.wagmiConfig, { connectors: [connector] })
-      },
       checkInstalled: ids => {
         const injectedConnector = this.appKit
           ?.getConnectors()
@@ -515,7 +503,6 @@ export class EVMWagmiClient implements ChainAdapter {
     })
     watchAccount(this.wagmiConfig, {
       onChange: accountData => {
-        console.log('>>> onChange', accountData)
         this.syncAccount(accountData)
       }
     })
@@ -655,7 +642,6 @@ export class EVMWagmiClient implements ChainAdapter {
           const currentConnector = connectors.find(c => c.id === connector.id)
 
           if (currentConnector) {
-            console.log('>>> reconnecting duuude')
             await reconnect(this.wagmiConfig, {
               connectors: [currentConnector]
             })
@@ -667,7 +653,6 @@ export class EVMWagmiClient implements ChainAdapter {
   }
 
   private async syncNetwork(address?: Hex, chainId?: number, isConnected?: boolean) {
-    console.log('>>> syncNetwork', address, chainId, isConnected)
     const chain = this.options?.caipNetworks.find((c: CaipNetwork) => c.chainId === chainId)
 
     if (chain && chainId) {
@@ -757,14 +742,12 @@ export class EVMWagmiClient implements ChainAdapter {
   private async syncBalance(address: Hex, chainId: number) {
     const chain = this.options?.caipNetworks.find((c: CaipNetwork) => c.chainId === chainId)
 
-    console.log('>>> syncBalance', address, chain)
     if (chain && this.wagmiConfig) {
       const balance = await getBalance(this.wagmiConfig, {
         address,
         chainId,
         token: this.options?.tokens?.[chain.id]?.address as Hex
       })
-      console.log('>>> syncBalance', balance)
       this.appKit?.setBalance(balance.formatted, balance.symbol, this.chainNamespace)
 
       return
@@ -882,19 +865,8 @@ export class EVMWagmiClient implements ChainAdapter {
 
       provider.onRpcRequest((request: W3mFrameTypes.RPCRequest) => {
         if (W3mFrameHelpers.checkIfRequestExists(request)) {
-          if (!W3mFrameHelpers.checkIfRequestIsAllowed(request)) {
-            if (this.appKit?.isOpen()) {
-              if (this.appKit?.isTransactionStackEmpty()) {
-                return
-              }
-              if (this.appKit?.isTransactionShouldReplaceView()) {
-                this.appKit?.replace('ApproveTransaction')
-              } else {
-                this.appKit?.redirect('ApproveTransaction')
-              }
-            } else {
-              this.appKit?.open({ view: 'ApproveTransaction' })
-            }
+          if (!W3mFrameHelpers.checkIfRequestIsSafe(request)) {
+            this.appKit?.handleUnsafeRPCRequest()
           }
         } else {
           this.appKit?.open()
@@ -921,7 +893,12 @@ export class EVMWagmiClient implements ChainAdapter {
         }
       })
 
-      provider.onRpcSuccess(() => {
+      provider.onRpcSuccess((_, request) => {
+        const isSafeRequest = W3mFrameHelpers.checkIfRequestIsSafe(request)
+        if (isSafeRequest) {
+          return
+        }
+
         if (this.appKit?.isTransactionStackEmpty()) {
           this.appKit?.close()
         } else {
@@ -965,12 +942,9 @@ export class EVMWagmiClient implements ChainAdapter {
           return
         }
         this.appKit?.setPreferredAccountType(type as W3mFrameTypes.AccountType, this.chainNamespace)
-        this.syncAccount({
-          address: address as `0x${string}`,
-          isConnected: true,
-          chainId: Number(NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id)),
-          connector
-        })
+        if (this.wagmiConfig) {
+          reconnect(this.wagmiConfig, { connectors: [connector] })
+        }
       })
     }
   }

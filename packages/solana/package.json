@@ -61,6 +61,7 @@
     "@wallet-standard/features": "1.0.3",
     "@wallet-standard/wallet": "1.0.1",
     "@rerock/adapter-solana": "workspace:*",
+    "@walletconnect/universal-provider": "2.15.2",
     "@rerock/base": "workspace:*",
     "@rerock/common": "workspace:*",
     "@rerock/core": "workspace:*",

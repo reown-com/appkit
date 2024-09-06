@@ -1,4 +1,4 @@
-import { proxyMap, subscribeKey as subKey } from 'valtio/utils'
+import { proxyMap, subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
 import type { ChainAdapter, Connector } from '../utils/TypeUtil.js'
 

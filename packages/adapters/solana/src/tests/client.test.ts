@@ -21,7 +21,7 @@ vi.mock('@rerock/wallet', () => ({
   W3mFrameProvider: vi.fn().mockImplementation(() => mockAuthConnector),
   W3mFrameHelpers: {
     checkIfRequestExists: vi.fn(),
-    checkIfRequestIsAllowed: vi.fn()
+    checkIfRequestIsSafe: vi.fn()
   },
   W3mFrameRpcConstants: {
     RPC_METHOD_NOT_ALLOWED_UI_MESSAGE: 'RPC method not allowed'

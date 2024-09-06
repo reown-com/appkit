@@ -2,7 +2,7 @@ import { createConnector, type CreateConfigParameters } from '@wagmi/core'
 import { W3mFrameProvider } from '@rerock/wallet'
 import { ConstantsUtil as CommonConstantsUtil } from '@rerock/common'
 import { SwitchChainError, getAddress } from 'viem'
-import type { Address } from 'viem'
+import type { Address, Hex } from 'viem'
 import { ConstantsUtil } from '@rerock/scaffold-utils'
 import { NetworkUtil } from '@rerock/common'
 
@@ -94,8 +94,13 @@ export function authConnector(parameters: AuthParameters) {
           throw new SwitchChainError(new Error('chain not found on connector.'))
         }
         const provider = await this.getProvider()
-        await provider.switchNetwork(chainId)
-        config.emitter.emit('change', { chainId: Number(chainId) })
+        // We connect instead, since changing the chain may cause the address to change as well
+        const response = await provider.connect({ chainId })
+
+        config.emitter.emit('change', {
+          chainId: Number(chainId),
+          accounts: [response.address as Hex]
+        })
 
         return chain
       } catch (error) {
