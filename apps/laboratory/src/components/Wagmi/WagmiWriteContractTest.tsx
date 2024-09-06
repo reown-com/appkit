@@ -1,15 +1,17 @@
 import { Button, Stack, Link, Text, Spacer, Flex } from '@chakra-ui/react'
-import { parseEther, type Address } from 'viem'
+import { parseEther } from 'viem'
 import { useAccount, useSimulateContract, useWriteContract, useReadContract } from 'wagmi'
 import { useCallback, useEffect } from 'react'
 import { optimism, sepolia } from 'wagmi/chains'
 import { abi, address } from '../../utils/DonutContract'
 import { useChakraToast } from '../Toast'
+import { useWeb3ModalAccount } from '@web3modal/base/react'
 
 const ALLOWED_CHAINS = [sepolia.id, optimism.id] as number[]
 
 export function WagmiWriteContractTest() {
-  const { status, chain, address: accountAddress } = useAccount()
+  const { address: accountAddress } = useWeb3ModalAccount()
+  const { status, chain } = useAccount()
 
   return ALLOWED_CHAINS.includes(Number(chain?.id)) && status === 'connected' ? (
     <AvailableTestContent accountAddress={accountAddress} />
@@ -20,7 +22,7 @@ export function WagmiWriteContractTest() {
   )
 }
 
-function AvailableTestContent({ accountAddress }: { accountAddress: Address }) {
+function AvailableTestContent({ accountAddress }: { accountAddress: string | undefined }) {
   const toast = useChakraToast()
   const {
     data: donutsOwned,
