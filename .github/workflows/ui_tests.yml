@@ -9,7 +9,7 @@ on:
         required: false
         type: string
       base-url:
-        description: 'The web3modal lab url'
+        description: 'The AppKit lab url'
         default: 'http://localhost:3000/'
         required: false
         type: string
@@ -46,20 +46,10 @@ on:
         required: false
 
 jobs:
-  setup_playwright_runners:
-    uses: WalletConnect/gh-actions-runners/.github/workflows/setup-runners.yml@main
-    with:
-      cpu: 16384
-      memory: 65536
-      labels: playwright
-      count: 5
-    secrets:
-      GITHUB_PAT: ${{ secrets.RELEASE_TOKEN }}
-      TF_API_TOKEN: ${{ secrets.TFC_INFRA_TOKEN }}
-
   ui_tests:
     name: 'Playwright Tests'
-    runs-on: [self-hosted, playwright]
+    runs-on:
+      group: ubuntu-runners
     strategy:
       fail-fast: false
       matrix:
@@ -69,8 +59,8 @@ jobs:
     steps:
       # Possibly this helps with GitHub-hosted runner network issues, but it's not confirmed
       # It's not supported in self-hosted runners, however, so commenting it out for now
-      # - name: Tune GitHub-hosted runner network
-      #   uses: smorimoto/tune-github-hosted-runner-network@v1
+      - name: Tune GitHub-hosted runner network
+        uses: smorimoto/tune-github-hosted-runner-network@v1
 
       - name: checkout
         uses: actions/checkout@v4
@@ -89,18 +79,18 @@ jobs:
           node-version: 18.x
           cache: 'pnpm'
 
-      # - name: Get installed Playwright version
-      #   id: playwright-version
-      #   run: echo "PLAYWRIGHT_VERSION=$(node -e "console.log(require('./package-lock.json').packages['apps/laboratory']['devDependencies']['@playwright/test'])")" >> $GITHUB_ENV
+      - name: Get installed Playwright version
+        id: playwright-version
+        run: echo "PLAYWRIGHT_VERSION=$(node -e "console.log(require('./package-lock.json').packages['apps/laboratory']['devDependencies']['@playwright/test'])")" >> $GITHUB_ENV
 
-      # This cache causes weird errors on retry runs when using the self-hosted runners, disabling for now
-      # - name: Cache playwright binaries
-      #   uses: actions/cache@v4
-      #   id: playwright-cache
-      #   with:
-      #     path: |
-      #       ~/.cache/ms-playwright
-      #     key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}-${{ hashFiles('apps/laboratory/tests/shared/constants/devices.ts') }}
+      This cache causes weird errors on retry runs when using the self-hosted runners, disabling for now
+      - name: Cache playwright binaries
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: |
+            ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}-${{ hashFiles('apps/laboratory/tests/shared/constants/devices.ts') }}
 
       - name: Install dependencies
         run: pnpm install
