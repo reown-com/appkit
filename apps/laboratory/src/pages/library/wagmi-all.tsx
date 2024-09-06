@@ -1,4 +1,4 @@
-import { createWeb3Modal } from '@web3modal/base/react'
+import { createWeb3Modal, useWeb3ModalAccount } from '@web3modal/base/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
 import { AppKitButtons } from '../../components/AppKitButtons'
@@ -9,7 +9,7 @@ import { SiweData } from '../../components/Siwe/SiweData'
 import { siweConfig } from '../../utils/SiweUtils'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
 import { EVMWagmiClient } from '@web3modal/adapter-wagmi'
-import { mainnet, optimism, polygon, zkSync } from '@web3modal/base/chains'
+import { arbitrum, mainnet, optimism, polygon, zkSync } from '@web3modal/base/chains'
 
 const queryClient = new QueryClient()
 
@@ -17,20 +17,20 @@ const wagmiAdapter = new EVMWagmiClient()
 
 const modal = createWeb3Modal({
   adapters: [wagmiAdapter],
-  caipNetworks: [polygon, mainnet, zkSync, optimism],
+  caipNetworks: [arbitrum, mainnet, optimism, polygon, zkSync],
+  defaultCaipNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId,
   features: {
     analytics: true
   },
-
-  termsConditionsUrl: 'https://walletconnect.com/terms',
-  privacyPolicyUrl: 'https://walletconnect.com/privacy',
   siweConfig
 })
 
 ThemeStore.setModal(modal)
 
 export default function Wagmi() {
+  const { isConnected } = useWeb3ModalAccount()
+
   if (!wagmiAdapter.wagmiConfig) {
     return null
   }
@@ -41,7 +41,7 @@ export default function Wagmi() {
         <AppKitButtons />
         <WagmiModalInfo />
         <SiweData />
-        <WagmiTests />
+        {isConnected ? <WagmiTests /> : null}
       </QueryClientProvider>
     </WagmiProvider>
   )

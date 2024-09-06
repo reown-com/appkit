@@ -78,6 +78,26 @@ export interface AdapterOptions<C extends Config>
   defaultNetwork?: Chain
 }
 
+const OPTIONAL_METHODS = [
+  'eth_accounts',
+  'eth_requestAccounts',
+  'eth_sendRawTransaction',
+  'eth_sign',
+  'eth_signTransaction',
+  'eth_signTypedData',
+  'eth_signTypedData_v3',
+  'eth_signTypedData_v4',
+  'eth_sendTransaction',
+  'personal_sign',
+  'wallet_switchEthereumChain',
+  'wallet_addEthereumChain',
+  'wallet_getPermissions',
+  'wallet_requestPermissions',
+  'wallet_registerOnboarding',
+  'wallet_watchAsset',
+  'wallet_scanQRCode'
+]
+
 // @ts-expect-error: Overridden state type is correct
 interface Web3ModalState extends PublicStateControllerState {
   selectedNetworkId: number | undefined
@@ -240,6 +260,79 @@ export class EVMWagmiClient implements ChainAdapter {
 
         if (!connector) {
           throw new Error('connectionControllerClient:getWalletConnectUri - connector is undefined')
+        }
+
+        const provider = (await connector.getProvider()) as Awaited<
+          ReturnType<(typeof UniversalProvider)['init']>
+        >
+
+        const siweParams = await this.options?.siweConfig?.getMessageParams?.()
+        const isSiweEnabled = this.options?.siweConfig?.options?.enabled
+        const isProviderSupported = typeof provider?.authenticate === 'function'
+        const isSiweParamsValid = siweParams && Object.keys(siweParams || {}).length > 0
+
+        if (isSiweEnabled && isProviderSupported && isSiweParamsValid) {
+          // @ts-expect-error - setting requested chains beforehand avoids wagmi auto disconnecting the session when `connect` is called because it things chains are stale
+          await connector.setRequestedChainsIds(siweParams.chains)
+
+          const siweConfig = this.options?.siweConfig
+
+          const params = await siweConfig?.getMessageParams?.()
+
+          if (siweConfig?.options?.enabled && params && Object.keys(params || {}).length > 0) {
+            const { SIWEController, getDidChainId, getDidAddress } = await import('@web3modal/siwe')
+
+            const chains = this.options?.caipNetworks.map(network => network.id) as string[]
+
+            const result = await provider.authenticate({
+              nonce: await siweConfig.getNonce(),
+              methods: [...OPTIONAL_METHODS],
+              ...params,
+              chains
+            })
+            // Auths is an array of signed CACAO objects https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-74.md
+            const signedCacao = result?.auths?.[0]
+
+            if (signedCacao) {
+              const { p, s } = signedCacao
+              const cacaoChainId = getDidChainId(p.iss)
+              const address = getDidAddress(p.iss)
+              if (address && cacaoChainId) {
+                SIWEController.setSession({
+                  address,
+                  chainId: parseInt(cacaoChainId, 10)
+                })
+              }
+
+              try {
+                // Kicks off verifyMessage and populates external states
+                const message = provider.client.formatAuthMessage({
+                  request: p,
+                  iss: p.iss
+                })
+
+                await SIWEController.verifyMessage({
+                  message,
+                  signature: s.s,
+                  cacao: signedCacao
+                })
+              } catch (error) {
+                // eslint-disable-next-line no-console
+                console.error('Error verifying message', error)
+                // eslint-disable-next-line no-console
+                await provider.disconnect().catch(console.error)
+                // eslint-disable-next-line no-console
+                await SIWEController.signOut().catch(console.error)
+                throw error
+              }
+            }
+            /*
+             * Unassign the connector from the wagmiConfig and allow connect() to reassign it in the next step
+             * this avoids case where wagmi throws because the connector is already connected
+             * what we need connect() to do is to only setup internal event listeners
+             */
+            this.wagmiConfig.state.current = ''
+          }
         }
 
         await connect(this.wagmiConfig, { connector })
@@ -419,16 +512,15 @@ export class EVMWagmiClient implements ChainAdapter {
     })
     watchAccount(this.wagmiConfig, {
       onChange: accountData => {
+        console.log('>>> onChange', accountData)
         this.syncAccount(accountData)
       }
     })
 
     this.appKit?.setEIP6963Enabled(options.enableEIP6963 !== false)
     this.appKit?.subscribeShouldUpdateToAddress((newAddress?: string) => {
-      console.log('>>> newAddress', newAddress)
       if (newAddress) {
         const connections = getConnections(this.wagmiConfig!)
-        console.log('>>> connections', connections)
         const connector = connections[0]?.connector
         if (connector) {
           switchAccount(this.wagmiConfig!, {
@@ -491,9 +583,11 @@ export class EVMWagmiClient implements ChainAdapter {
       | 'status'
     >
   >) {
-    if (this.wagmiConfig && chainId) {
+    if (this.wagmiConfig) {
       if (connector) {
-        if (connector.name === 'WalletConnect' && connector.getProvider && address && chainId) {
+        if (connector && connector.name === 'WalletConnect' && connector.getProvider && address) {
+          const currentChainId =
+            chainId || Number(NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id))
           const provider = (await connector.getProvider()) as UniversalProvider
 
           const namespaces = provider?.session?.namespaces || {}
@@ -513,10 +607,10 @@ export class EVMWagmiClient implements ChainAdapter {
             this.appKit?.setCaipAddress(caipAddress, chainNamespace)
           })
           if (this.appKit?.getCaipNetwork()?.chainNamespace !== 'solana') {
-            this.syncNetwork(address, chainId, true)
+            this.syncNetwork(address, currentChainId, true)
             await Promise.all([
-              this.syncProfile(address, chainId),
-              this.syncBalance(address, chainId),
+              this.syncProfile(address, currentChainId),
+              this.syncBalance(address, currentChainId),
               this.syncConnectedWalletInfo(connector),
               this.appKit?.setApprovedCaipNetworksData(this.chainNamespace)
             ])
@@ -558,6 +652,7 @@ export class EVMWagmiClient implements ChainAdapter {
           const currentConnector = connectors.find(c => c.id === connector.id)
 
           if (currentConnector) {
+            console.log('>>> reconnecting duuude')
             await reconnect(this.wagmiConfig, {
               connectors: [currentConnector]
             })
@@ -569,6 +664,7 @@ export class EVMWagmiClient implements ChainAdapter {
   }
 
   private async syncNetwork(address?: Hex, chainId?: number, isConnected?: boolean) {
+    console.log('>>> syncNetwork', address, chainId, isConnected)
     const chain = this.options?.caipNetworks.find((c: CaipNetwork) => c.chainId === chainId)
 
     if (chain && chainId) {
@@ -658,12 +754,14 @@ export class EVMWagmiClient implements ChainAdapter {
   private async syncBalance(address: Hex, chainId: number) {
     const chain = this.options?.caipNetworks.find((c: CaipNetwork) => c.chainId === chainId)
 
+    console.log('>>> syncBalance', address, chain)
     if (chain && this.wagmiConfig) {
       const balance = await getBalance(this.wagmiConfig, {
         address,
         chainId,
         token: this.options?.tokens?.[chain.id]?.address as Hex
       })
+      console.log('>>> syncBalance', balance)
       this.appKit?.setBalance(balance.formatted, balance.symbol, this.chainNamespace)
 
       return
