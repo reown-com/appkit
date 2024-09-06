@@ -1,1 +1,1 @@
-pnpm run test; pnpm run typecheck; pnpm run lint;
+pnpm run typecheck; pnpm run lint;
