@@ -492,7 +492,7 @@ export class SolanaWeb3JsClient implements ChainAdapter<SolStoreUtilState, CaipN
       }
 
       if (W3mFrameHelpers.checkIfRequestExists(request)) {
-        if (!W3mFrameHelpers.checkIfRequestIsAllowed(request)) {
+        if (!W3mFrameHelpers.checkIfRequestIsSafe(request)) {
           if (this.appKit.isOpen()) {
             if (this.appKit.isTransactionStackEmpty()) {
               return
