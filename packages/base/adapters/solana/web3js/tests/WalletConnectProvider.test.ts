@@ -100,26 +100,6 @@ describe('WalletConnectProvider specific tests', () => {
       {
         method: 'solana_signTransaction',
         params: {
-          feePayer: '2VqKhjZ766ZN3uBtBpb7Ls3cN4HrocP1rzxzekhVEgoP',
-          instructions: [
-            {
-              data: '3Bxs4NN8M2Yn4TLb',
-              keys: [
-                {
-                  isSigner: true,
-                  isWritable: true,
-                  pubkey: '2VqKhjZ766ZN3uBtBpb7Ls3cN4HrocP1rzxzekhVEgoP'
-                },
-                {
-                  isSigner: true,
-                  isWritable: true,
-                  pubkey: '2VqKhjZ766ZN3uBtBpb7Ls3cN4HrocP1rzxzekhVEgoP'
-                }
-              ],
-              programId: '11111111111111111111111111111111'
-            }
-          ],
-          recentBlockhash: 'EZySCpmzXRuUtM95P2JGv9SitqYph6Nv6HaYBK7a8PKJ',
           transaction:
             'AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAQABAhY+loQT/3nqQuE+Gw4GLiTIklVzYfSLz1r9WQ1FedoGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADJmlOhYicUv7MMXLfh/CK3nuxRET//L6xrgHRfdADXpQEBAgAADAIAAACAlpgAAAAAAAA=',
           pubkey: TestConstants.accounts[0].address
@@ -301,26 +281,6 @@ describe('WalletConnectProvider specific tests', () => {
       {
         method: 'solana_signTransaction',
         params: {
-          feePayer: '2VqKhjZ766ZN3uBtBpb7Ls3cN4HrocP1rzxzekhVEgoP',
-          instructions: [
-            {
-              data: '3Bxs4NN8M2Yn4TLb',
-              keys: [
-                {
-                  isSigner: true,
-                  isWritable: true,
-                  pubkey: '2VqKhjZ766ZN3uBtBpb7Ls3cN4HrocP1rzxzekhVEgoP'
-                },
-                {
-                  isSigner: true,
-                  isWritable: true,
-                  pubkey: '2VqKhjZ766ZN3uBtBpb7Ls3cN4HrocP1rzxzekhVEgoP'
-                }
-              ],
-              programId: '11111111111111111111111111111111'
-            }
-          ],
-          recentBlockhash: 'EZySCpmzXRuUtM95P2JGv9SitqYph6Nv6HaYBK7a8PKJ',
           transaction:
             'AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAQABAhY+loQT/3nqQuE+Gw4GLiTIklVzYfSLz1r9WQ1FedoGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADJmlOhYicUv7MMXLfh/CK3nuxRET//L6xrgHRfdADXpQEBAgAADAIAAACAlpgAAAAAAAA=',
           pubkey: TestConstants.accounts[0].address
