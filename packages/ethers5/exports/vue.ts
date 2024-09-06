@@ -3,6 +3,7 @@ import type { AppKitOptions } from '@rerock/base'
 import { EVMEthers5Client, type AdapterOptions } from '@rerock/adapter-ethers5'
 
 import { getWeb3Modal } from '@rerock/base/library/vue'
+import { ConstantsUtil } from '@rerock/scaffold-utils'
 
 // -- Setup -------------------------------------------------------------------
 let appkit: AppKit | undefined = undefined
@@ -15,6 +16,7 @@ export function createWeb3Modal(options: EthersAppKitOptions) {
   ethersAdapter = new EVMEthers5Client()
   appkit = new AppKit({
     ...options,
+    sdkVersion: `vue-ethers5-${ConstantsUtil.VERSION}`,
     adapters: [ethersAdapter]
   })
   getWeb3Modal(appkit)

@@ -35,7 +35,8 @@ export const mockProvider = {
       methods: ['solana_signMessage'],
       events: ['accountsChanged', 'chainChanged'],
       rpcMap: {
-        '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': 'https://rpc.walletconnect.org/v1'
+        '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp':
+          'https://rpc.walletconnect.org/v1/?chainId=solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp&projectId=undefined'
       }
     }
   },

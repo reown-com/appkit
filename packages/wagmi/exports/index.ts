@@ -2,6 +2,7 @@ import { AppKit } from '@rerock/base'
 import type { AppKitOptions } from '@rerock/base'
 import { EVMWagmiClient, type AdapterOptions } from '@rerock/adapter-wagmi'
 import type { Config } from 'wagmi'
+import { ConstantsUtil } from '@rerock/scaffold-utils'
 
 // -- Types -------------------------------------------------------------
 export type { AdapterOptions } from '@rerock/adapter-wagmi'
@@ -18,6 +19,7 @@ export function createWeb3Modal(options: WagmiAppKitOptions) {
 
   return new AppKit({
     ...options,
+    sdkVersion: `html-wagmi-${ConstantsUtil.VERSION}`,
     adapters: [wagmiAdapter]
   })
 }

@@ -7,7 +7,7 @@ export class ModalWalletPage extends ModalPage {
   constructor(
     public override readonly page: Page,
     public override readonly library: string,
-    public override readonly flavor: 'default' | 'all'
+    public override readonly flavor: 'default' | 'all' | 'siwe'
   ) {
     super(page, library, flavor)
   }

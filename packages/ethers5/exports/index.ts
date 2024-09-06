@@ -1,6 +1,7 @@
 import { AppKit } from '@rerock/base'
 import type { AppKitOptions } from '@rerock/base'
 import { EVMEthers5Client, type AdapterOptions } from '@rerock/adapter-ethers5'
+import { ConstantsUtil } from '@rerock/scaffold-utils'
 
 // -- Types -------------------------------------------------------------
 export type { AdapterOptions } from '@rerock/adapter-ethers5'
@@ -14,6 +15,7 @@ export function createWeb3Modal(options: EthersAppKitOptions) {
 
   return new AppKit({
     ...options,
+    sdkVersion: `html-ethers5-${ConstantsUtil.VERSION}`,
     adapters: [ethers5Adapter]
   })
 }

@@ -7,7 +7,7 @@ import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
 import { EVMWagmiClient } from '@rerock/adapter-wagmi'
-import { mainnet, optimism, polygon, zkSync } from '@rerock/base/chains'
+import { arbitrum, mainnet, optimism, polygon, zkSync } from '@rerock/base/chains'
 
 const queryClient = new QueryClient()
 
@@ -15,10 +15,13 @@ const wagmiAdapter = new EVMWagmiClient()
 
 const modal = createWeb3Modal({
   adapters: [wagmiAdapter],
-  caipNetworks: [polygon, mainnet, zkSync, optimism],
+  caipNetworks: [arbitrum, mainnet, optimism, polygon, zkSync],
+  defaultCaipNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId,
   features: {
-    analytics: true
+    analytics: true,
+    email: false,
+    socials: []
   },
   termsConditionsUrl: 'https://walletconnect.com/terms',
   privacyPolicyUrl: 'https://walletconnect.com/privacy',

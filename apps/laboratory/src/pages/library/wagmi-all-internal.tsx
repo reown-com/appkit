@@ -8,7 +8,7 @@ import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { SiweData } from '../../components/Siwe/SiweData'
 import { siweConfig } from '../../utils/SiweUtils'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
-import { mainnet, optimism, polygon, zkSync } from '@rerock/base/chains'
+import { arbitrum, mainnet, optimism, polygon, zkSync } from '@rerock/base/chains'
 import { EVMWagmiClient } from '@rerock/adapter-wagmi'
 
 const queryClient = new QueryClient()
@@ -17,7 +17,8 @@ const wagmiAdapter = new EVMWagmiClient()
 
 const modal = createWeb3Modal({
   adapters: [wagmiAdapter],
-  caipNetworks: [mainnet, optimism, polygon, zkSync],
+  caipNetworks: [arbitrum, mainnet, optimism, polygon, zkSync],
+  defaultCaipNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId,
   features: {
     analytics: true

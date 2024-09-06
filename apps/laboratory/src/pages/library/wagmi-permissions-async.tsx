@@ -5,7 +5,7 @@ import { AppKitButtons } from '../../components/AppKitButtons'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { WagmiPermissionsAsyncTest } from '../../components/Wagmi/WagmiPermissionsAsyncTest'
-import { mainnet, optimism, polygon, zkSync } from '@rerock/base/chains'
+import { arbitrum, mainnet, optimism, polygon, zkSync } from '@rerock/base/chains'
 import { EVMWagmiClient } from '@rerock/adapter-wagmi'
 import { ERC7715PermissionsProvider } from '../../context/ERC7715PermissionsContext'
 import { LocalEcdsaKeyProvider } from '../../context/LocalEcdsaKeyContext'
@@ -16,8 +16,8 @@ const wagmiAdapter = new EVMWagmiClient()
 
 const modal = createWeb3Modal({
   adapters: [wagmiAdapter],
-  caipNetworks: [polygon, mainnet, zkSync, optimism],
-  defaultCaipNetwork: polygon,
+  caipNetworks: [arbitrum, mainnet, optimism, polygon, zkSync],
+  defaultCaipNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId,
   features: {
     analytics: true

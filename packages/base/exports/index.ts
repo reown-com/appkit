@@ -1,3 +1,4 @@
+import { ConstantsUtil } from '@rerock/scaffold-utils'
 import { AppKit } from '../src/client.js'
 import type { AppKitOptions } from '../src/utils/TypesUtil.js'
 
@@ -14,7 +15,8 @@ type CreateWeb3Modal = Omit<AppKitOptions, 'sdkType' | 'sdkVersion'>
 
 export function createWeb3Modal(options: CreateWeb3Modal) {
   return new AppKit({
-    ...options
+    ...options,
+    sdkVersion: `html-multichain-${ConstantsUtil.VERSION}`
   })
 }
 

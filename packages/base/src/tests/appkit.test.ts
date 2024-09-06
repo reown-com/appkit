@@ -37,6 +37,7 @@ describe('Base', () => {
 
   describe('Base Initialization', () => {
     it('should initialize controllers with required provided options', () => {
+      expect(OptionsController.setSdkVersion).toHaveBeenCalledWith(mockOptions.sdkVersion)
       expect(OptionsController.setProjectId).toHaveBeenCalledWith(mockOptions.projectId)
       expect(OptionsController.setMetadata).toHaveBeenCalled()
     })

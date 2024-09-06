@@ -33,6 +33,26 @@ type Metadata = {
   icons: string[]
 }
 
+const OPTIONAL_METHODS = [
+  'eth_accounts',
+  'eth_requestAccounts',
+  'eth_sendRawTransaction',
+  'eth_sign',
+  'eth_signTransaction',
+  'eth_signTypedData',
+  'eth_signTypedData_v3',
+  'eth_signTypedData_v4',
+  'eth_sendTransaction',
+  'personal_sign',
+  'wallet_switchEthereumChain',
+  'wallet_addEthereumChain',
+  'wallet_getPermissions',
+  'wallet_requestPermissions',
+  'wallet_registerOnboarding',
+  'wallet_watchAsset',
+  'wallet_scanQRCode'
+]
+
 // -- Client --------------------------------------------------------------------
 export class UniversalAdapterClient {
   private walletConnectProviderInitPromise?: Promise<void>
@@ -126,6 +146,7 @@ export class UniversalAdapterClient {
         WalletConnectProvider.on('display_uri', (uri: string) => {
           onUri(uri)
         })
+
         if (
           ChainController.state.activeChain &&
           ChainController.state?.chains?.get(ChainController.state.activeChain)?.adapterType ===
@@ -135,33 +156,49 @@ export class UniversalAdapterClient {
           await adapter?.connectionControllerClient?.connectWalletConnect?.(onUri)
           this.setWalletConnectProvider()
         } else {
-          if (siweConfig?.options?.enabled) {
+          const siweParams = await siweConfig?.getMessageParams?.()
+          const isSiweEnabled = siweConfig?.options?.enabled
+          const isProviderSupported = typeof WalletConnectProvider?.authenticate === 'function'
+          const isSiweParamsValid = siweParams && Object.keys(siweParams || {}).length > 0
+
+          if (
+            siweConfig &&
+            isSiweEnabled &&
+            siweParams &&
+            isProviderSupported &&
+            isSiweParamsValid
+          ) {
             const { SIWEController, getDidChainId, getDidAddress } = await import('@rerock/siwe')
+
+            const chains = this.options?.caipNetworks.map(network => network.id) as string[]
+
             const result = await WalletConnectProvider.authenticate({
-              nonce: await siweConfig.getNonce(),
-              methods: undefined,
-              uri: '',
-              chains: [],
-              domain: ''
+              nonce: await siweConfig?.getNonce?.(),
+              methods: [...OPTIONAL_METHODS],
+              ...siweParams,
+              chains
             })
             // Auths is an array of signed CACAO objects https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-74.md
             const signedCacao = result?.auths?.[0]
+
             if (signedCacao) {
               const { p, s } = signedCacao
-              const chainId = getDidChainId(p.iss)
+              const cacaoChainId = getDidChainId(p.iss)
               const address = getDidAddress(p.iss)
-              if (address && chainId) {
+              if (address && cacaoChainId) {
                 SIWEController.setSession({
                   address,
-                  chainId: parseInt(chainId, 10)
+                  chainId: parseInt(cacaoChainId, 10)
                 })
               }
+
               try {
                 // Kicks off verifyMessage and populates external states
                 const message = WalletConnectProvider.client.formatAuthMessage({
                   request: p,
                   iss: p.iss
                 })
+
                 await SIWEController.verifyMessage({
                   message,
                   signature: s.s,

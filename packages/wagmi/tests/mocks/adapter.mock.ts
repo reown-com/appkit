@@ -4,7 +4,7 @@ import { createConfig, http } from 'wagmi'
 import { mock } from 'wagmi/connectors'
 
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
-import { AppKit } from '@rerock/base'
+import { AppKit, type SdkVersion } from '@rerock/base'
 import type { CaipNetwork } from '@rerock/common'
 
 export const mainnet: CaipNetwork = {
@@ -46,7 +46,8 @@ const mockAppKitData = {
     url: 'url.com',
     icons: ['icon.png']
   },
-  projectId: '1234'
+  projectId: '1234',
+  sdkVersion: 'html-wagmi-5.1.6' as SdkVersion
 }
 
 export const appKitMock = new AppKit(mockAppKitData)

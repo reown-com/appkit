@@ -1,6 +1,7 @@
 import { AppKit } from '../src/client.js'
 import type { AppKitOptions } from '../src/utils/TypesUtil.js'
 import { getWeb3Modal } from '../src/library/vue/index.js'
+import { ConstantsUtil } from '@rerock/scaffold-utils'
 
 // -- Views ------------------------------------------------------------
 export * from '@rerock/scaffold-ui'
@@ -21,7 +22,8 @@ type CreateWeb3Modal = Omit<AppKitOptions, 'sdkType' | 'sdkVersion'>
 export function createWeb3Modal(options: CreateWeb3Modal) {
   if (!modal) {
     modal = new AppKit({
-      ...options
+      ...options,
+      sdkVersion: `vue-multichain-${ConstantsUtil.VERSION}`
     })
     getWeb3Modal(modal)
   }

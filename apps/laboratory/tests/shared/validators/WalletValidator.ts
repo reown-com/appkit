@@ -22,16 +22,25 @@ export class WalletValidator {
       'Approve screen should be closed and sessions tab visible'
     ).toBeVisible()
     await this.gotoSessions.click()
-    await this.expectSessionCard()
+    await this.expectSessionCard({ visible: true })
   }
 
-  async expectSessionCard() {
-    await expect(
-      this.page.getByTestId('session-card'),
-      'Session card should be visible'
-    ).toBeVisible({
-      timeout: MAX_WAIT
-    })
+  async expectSessionCard({ visible = true }: { visible?: boolean }) {
+    if (visible) {
+      await expect(
+        this.page.getByTestId('session-card'),
+        'Session card should be visible'
+      ).toBeVisible({
+        timeout: MAX_WAIT
+      })
+    } else {
+      await expect(
+        this.page.getByTestId('session-card'),
+        'Session card should not be visible'
+      ).not.toBeVisible({
+        timeout: MAX_WAIT
+      })
+    }
   }
 
   async expectDisconnected() {

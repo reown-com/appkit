@@ -1,28 +1,26 @@
 import { createWeb3Modal } from '@rerock/base/react'
+import { EVMEthers5Client } from '@rerock/adapter-ethers5'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
-import { EthersTests } from '../../components/Ethers/EthersTests'
+import { Ethers5ModalInfo } from '../../components/Ethers/Ethers5ModalInfo'
 import { AppKitButtons } from '../../components/AppKitButtons'
-import { siweConfig } from '../../utils/SiweUtils'
-import { SiweData } from '../../components/Siwe/SiweData'
-import { EthersModalInfo } from '../../components/Ethers/EthersModalInfo'
-import { EVMEthersClient } from '@rerock/adapter-ethers'
+import { Ethers5Tests } from '../../components/Ethers/Ethers5Tests'
 import { arbitrum, mainnet, optimism, polygon, zkSync } from '@rerock/base/chains'
 
-const ethersAdapter = new EVMEthersClient()
+const ethers5Adapter = new EVMEthers5Client()
 
 const modal = createWeb3Modal({
-  adapters: [ethersAdapter],
+  adapters: [ethers5Adapter],
   caipNetworks: [arbitrum, mainnet, optimism, polygon, zkSync],
   defaultCaipNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId,
   features: {
     analytics: true,
-    socials: ['google', 'x', 'discord', 'farcaster', 'github', 'apple', 'facebook']
+    email: false,
+    socials: []
   },
   termsConditionsUrl: 'https://walletconnect.com/terms',
   privacyPolicyUrl: 'https://walletconnect.com/privacy',
-  siweConfig,
   customWallets: ConstantsUtil.CustomWallets
 })
 
@@ -32,9 +30,8 @@ export default function Ethers() {
   return (
     <>
       <AppKitButtons />
-      <EthersModalInfo />
-      <SiweData />
-      <EthersTests />
+      <Ethers5ModalInfo />
+      <Ethers5Tests />
     </>
   )
 }

@@ -80,10 +80,8 @@ emailTest('it should switch network and sign', async ({ library }) => {
   targetChain = 'Ethereum'
   await page.goToSettings()
   await page.switchNetwork(targetChain)
-  // After switching network, it closes the modal
-  await page.goToSettings()
-
   await validator.expectSwitchedNetwork(targetChain)
+
   await page.closeModal()
   await page.sign()
   await page.approveSign()

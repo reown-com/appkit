@@ -12,7 +12,7 @@ import {
 
 type AppKitInfoProps = {
   address?: string
-  chainId?: number
+  chainId?: number | string
   clientId: string | undefined
 }
 
