@@ -2,6 +2,7 @@ import { AppKit } from '@web3modal/base'
 import type { AppKitOptions } from '@web3modal/base'
 import { EVMWagmiClient, type AdapterOptions } from '@web3modal/adapter-wagmi'
 import type { Config } from 'wagmi'
+import { ConstantsUtil } from '@web3modal/scaffold-utils'
 
 // -- Types -------------------------------------------------------------
 export type { AdapterOptions } from '@web3modal/adapter-wagmi'
@@ -18,6 +19,7 @@ export function createWeb3Modal(options: WagmiAppKitOptions) {
 
   return new AppKit({
     ...options,
+    sdkVersion: `html-wagmi-${ConstantsUtil.VERSION}`,
     adapters: [wagmiAdapter]
   })
 }

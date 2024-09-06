@@ -8,6 +8,7 @@ import {
 } from '@web3modal/adapter-solana/react'
 import { getWeb3Modal } from '@web3modal/base/library/react'
 import type { SolanaAppKitOptions } from './options.js'
+import { ConstantsUtil } from '@web3modal/scaffold-utils'
 
 // -- Types -------------------------------------------------------------------
 export type { SolanaAppKitOptions, Provider }
@@ -22,6 +23,7 @@ export function createWeb3Modal(options: SolanaAppKitOptions) {
   })
   appkit = new AppKit({
     ...options,
+    sdkVersion: `react-solana-${ConstantsUtil.VERSION}`,
     adapters: [solanaAdapter]
   })
   getWeb3Modal(appkit)

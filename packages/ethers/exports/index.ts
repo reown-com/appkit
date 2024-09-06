@@ -1,6 +1,7 @@
 import { AppKit } from '@web3modal/base'
 import type { AppKitOptions } from '@web3modal/base'
 import { EVMEthersClient, type AdapterOptions } from '@web3modal/adapter-ethers'
+import { ConstantsUtil } from '@web3modal/scaffold-utils'
 
 // -- Types -------------------------------------------------------------
 export type { AdapterOptions } from '@web3modal/adapter-ethers'
@@ -14,6 +15,7 @@ export function createWeb3Modal(options: EthersAppKitOptions) {
 
   return new AppKit({
     ...options,
+    sdkVersion: `html-ethers-${ConstantsUtil.VERSION}`,
     adapters: [ethersAdapter]
   })
 }

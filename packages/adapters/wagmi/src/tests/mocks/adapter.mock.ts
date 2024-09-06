@@ -6,6 +6,7 @@ import { AppKit } from '@web3modal/base'
 import { EVMWagmiClient } from '../../client'
 import { arbitrum, mainnet } from '@web3modal/base/chains'
 import type { CaipNetwork } from '@web3modal/common'
+import type { SdkVersion } from '@web3modal/core'
 
 const privateKey = generatePrivateKey()
 export const mockAccount = privateKeyToAccount(privateKey)
@@ -44,7 +45,8 @@ export const mockOptions = {
     url: 'url.com',
     icons: ['icon.png']
   },
-  projectId: '1234'
+  projectId: '1234',
+  sdkVersion: `html-wagmi-5.1.6` as SdkVersion
 }
 
 export const mockAppKit = new AppKit(mockOptions)

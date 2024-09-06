@@ -2,6 +2,7 @@ import { AppKit } from '@web3modal/base'
 import type { AppKitOptions } from '@web3modal/base'
 import { EVMEthersClient, type AdapterOptions } from '@web3modal/adapter-ethers'
 import { getWeb3Modal } from '@web3modal/base/library/vue'
+import { ConstantsUtil } from '@web3modal/scaffold-utils'
 
 // -- Types -------------------------------------------------------------
 export type { AdapterOptions } from '@web3modal/adapter-ethers'
@@ -17,6 +18,7 @@ export function createWeb3Modal(options: EthersAppKitOptions) {
   ethersAdapter = new EVMEthersClient()
   appkit = new AppKit({
     ...options,
+    sdkVersion: `vue-ethers-${ConstantsUtil.VERSION}`,
     adapters: [ethersAdapter]
   })
   getWeb3Modal(appkit)
