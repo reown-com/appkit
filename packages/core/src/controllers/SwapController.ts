@@ -792,10 +792,12 @@ export const SwapController = {
       sourceTokenAddress,
       state.myTokensWithBalance
     )
-    const insufficientNetworkTokenForGas = SwapCalculationUtil.isInsufficientNetworkTokenForGas(
-      state.networkBalanceInUSD,
-      state.gasPriceInUSD
-    )
+    const insufficientNetworkTokenForGas = false
+
+    // SwapCalculationUtil.isInsufficientNetworkTokenForGas(
+    //   state.networkBalanceInUSD,
+    //   state.gasPriceInUSD
+    // )
 
     return insufficientNetworkTokenForGas || isInsufficientSourceTokenForSwap
   },
