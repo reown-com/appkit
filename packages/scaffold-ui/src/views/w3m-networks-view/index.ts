@@ -1,4 +1,4 @@
-import { ConstantsUtil, type CaipNetwork } from '@rerock/common'
+import { type CaipNetwork } from '@rerock/common'
 import {
   AccountController,
   AssetUtil,
@@ -150,7 +150,6 @@ export class W3mNetworksView extends LitElement {
   private async onSwitchNetwork(network: CaipNetwork) {
     const isCurrentNamespaceConnected = AccountController.state.isConnected
     const isNamespaceConnected = AccountController.getChainIsConnected(network.chainNamespace)
-    const isEIP155Namespace = network.chainNamespace === ConstantsUtil.CHAIN.EVM
     const isSameNetwork = network.id === this.network?.id
 
     const supportsAllNetworks = NetworkController.state.supportsAllNetworks
@@ -165,9 +164,7 @@ export class W3mNetworksView extends LitElement {
         RouterController.push('SwitchNetwork', { ...routerData, network })
       } else {
         await NetworkController.switchActiveNetwork(network)
-        if (isEIP155Namespace) {
-          await NetworkUtil.onNetworkChange()
-        }
+        await NetworkUtil.onNetworkChange()
       }
     } else {
       // eslint-disable-next-line no-lonely-if

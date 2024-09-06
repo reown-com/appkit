@@ -104,6 +104,8 @@ export const NetworkController = {
       selectedNetworkId: caipNetwork?.id
     })
 
+    SafeLocalStorage.setItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK, JSON.stringify(caipNetwork))
+
     if (
       !ChainController.state.chains.get(caipNetwork.chainNamespace)?.networkState
         ?.allowUnsupportedCaipNetwork

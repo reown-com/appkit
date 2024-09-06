@@ -3,15 +3,15 @@ import { EVMEthersClient } from '@rerock/adapter-ethers'
 import { EthersTests } from '../../components/Ethers/EthersTests'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { ThemeStore } from '../../utils/StoreUtil'
-import { EthersConstants } from '../../utils/EthersConstants'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { EthersModalInfo } from '../../components/Ethers/EthersModalInfo'
+import { arbitrum, mainnet, optimism, polygon, zkSync } from '@rerock/base/chains'
 
 const ethersAdapter = new EVMEthersClient()
 
 const modal = createWeb3Modal({
   adapters: [ethersAdapter],
-  caipNetworks: EthersConstants.chains,
+  caipNetworks: [mainnet, optimism, polygon, zkSync, arbitrum],
   projectId: ConstantsUtil.ProjectId,
   features: {
     analytics: true,

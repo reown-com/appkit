@@ -14,12 +14,14 @@ import { bigIntReplacer } from '../../utils/CommonUtils'
 import { useERC7715Permissions } from '../../hooks/useERC7715Permissions'
 import { getPurchaseDonutPermissions } from '../../utils/ERC7715Utils'
 import { KeyTypes } from '../../utils/EncodingUtils'
+import { useWeb3ModalAccount } from '@rerock/base/react'
 
 export function WagmiRequestPermissionsAsyncTest() {
   const { provider, supported } = useWagmiAvailableCapabilities({
     method: EIP_7715_RPC_METHODS.WALLET_GRANT_PERMISSIONS
   })
-  const { chain, address, isConnected } = useAccount()
+  const { address } = useWeb3ModalAccount()
+  const { chain, isConnected } = useAccount()
 
   if (!isConnected || !provider || !address || !chain) {
     return (
@@ -36,7 +38,7 @@ export function WagmiRequestPermissionsAsyncTest() {
     )
   }
 
-  return <ConnectedTestContent chain={chain} provider={provider} address={address} />
+  return <ConnectedTestContent chain={chain} provider={provider} address={address as Address} />
 }
 
 function ConnectedTestContent({

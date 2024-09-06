@@ -1,8 +1,9 @@
-import * as React from 'react'
+import { useWeb3ModalAccount } from '@rerock/base/react'
 import { useAccount } from 'wagmi'
 
 export function WagmiHooks() {
-  const { isConnected, address, chainId } = useAccount()
+  const { address } = useWeb3ModalAccount()
+  const { isConnected, chainId } = useAccount()
 
   return (
     <div>

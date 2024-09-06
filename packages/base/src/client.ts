@@ -276,6 +276,8 @@ export class AppKit {
 
   public getCaipNetwork = () => NetworkController.state.caipNetwork
 
+  public getActiveChainNamespace = () => ChainController.state.activeChain
+
   public setRequestedCaipNetworks: (typeof NetworkController)['setRequestedCaipNetworks'] = (
     requestedCaipNetworks,
     chain: ChainNamespace

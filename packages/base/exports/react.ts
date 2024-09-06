@@ -11,6 +11,7 @@ export * from '../src/library/react/index.js'
 // -- Utils & Other -----------------------------------------------------
 export * from '../src/utils/index.js'
 export type * from '@rerock/core'
+export type { CaipNetwork, CaipAddress, CaipNetworkId } from '@rerock/common'
 export { CoreHelperUtil, AccountController, NetworkController } from '@rerock/core'
 
 export let modal: AppKit | undefined = undefined

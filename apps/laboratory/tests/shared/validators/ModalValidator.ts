@@ -191,7 +191,7 @@ export class ModalValidator {
 
   async expectNetworksDisabled(name: string) {
     const networkOptions = this.page.getByTestId(`w3m-network-switch-${name}`)
-    await expect(networkOptions).toBeDisabled()
+    await expect(networkOptions.locator('button')).toBeDisabled()
   }
 
   async expectConnectButtonLoading() {

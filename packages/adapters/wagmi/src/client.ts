@@ -425,8 +425,10 @@ export class EVMWagmiClient implements ChainAdapter {
 
     this.appKit?.setEIP6963Enabled(options.enableEIP6963 !== false)
     this.appKit?.subscribeShouldUpdateToAddress((newAddress?: string) => {
+      console.log('>>> newAddress', newAddress)
       if (newAddress) {
         const connections = getConnections(this.wagmiConfig!)
+        console.log('>>> connections', connections)
         const connector = connections[0]?.connector
         if (connector) {
           switchAccount(this.wagmiConfig!, {
