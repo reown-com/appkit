@@ -40,7 +40,7 @@ const state = proxy<OptionsControllerState>({
   features: ConstantsUtil.DEFAULT_FEATURES,
   projectId: '',
   sdkType: 'w3m',
-  sdkVersion: 'html-wagmi-undefined'
+  sdkVersion: 'html-wagmi-5.1.6'
 })
 
 // -- Controller ---------------------------------------- //

@@ -375,6 +375,8 @@ export class AppKit {
       adapters?: ChainAdapter[]
     }
   ) {
+    OptionsController.setProjectId(options.projectId)
+
     this.adapters = options.adapters
 
     options.metadata ||= {
@@ -398,7 +400,6 @@ export class AppKit {
     this.initializeUniversalAdapter(options)
     this.initializeAdapters(options)
 
-    OptionsController.setProjectId(options.projectId)
     OptionsController.setAllWallets(options.allWallets)
     OptionsController.setIncludeWalletIds(options.includeWalletIds)
     OptionsController.setExcludeWalletIds(options.excludeWalletIds)

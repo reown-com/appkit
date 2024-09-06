@@ -245,8 +245,8 @@ export class EVMEthersClient {
             providerType: 'coinbase' as const
           },
           [ConstantsUtil.AUTH_CONNECTOR_ID]: {
-            getProvider: () => this.ethersConfig?.auth,
-            providerType: 'auth' as const
+            getProvider: () => this.authProvider,
+            providerType: 'w3mAuth' as const
           }
         }
 
@@ -264,13 +264,13 @@ export class EVMEthersClient {
 
         try {
           // WcStoreUtil.setError(undefined)
-          if (selectedProvider) {
+          if (selectedProvider && id !== ConstantsUtil.AUTH_CONNECTOR_ID) {
             await selectedProvider.request({ method: 'eth_requestAccounts' })
           }
           await this.setProvider(
             selectedProvider,
             selectedConnector.providerType as ProviderId,
-            info.name
+            info?.name
           )
         } catch (error) {
           // WcStoreUtil.setError(error)
@@ -515,7 +515,7 @@ export class EVMEthersClient {
 
     const providerConfigs = {
       [ConstantsUtil.AUTH_CONNECTOR_ID]: {
-        supportsAllNetworks: false,
+        supportsAllNetworks: true,
         approvedCaipNetworkIds: PresetsUtil.WalletConnectRpcChainIds.map(
           id => `${ConstantsUtil.EIP155}:${id}`
         ) as CaipNetworkId[]
@@ -529,7 +529,7 @@ export class EVMEthersClient {
     }
 
     return {
-      supportsAllNetworks: true,
+      supportsAllNetworks: false,
       approvedCaipNetworkIds: []
     }
   }

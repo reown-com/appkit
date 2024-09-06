@@ -1,16 +1,16 @@
 import { createWeb3Modal } from '@web3modal/base/react'
-import { EVMEthersClient } from '@web3modal/adapter-ethers'
+import { EVMEthers5Client } from '@web3modal/adapter-ethers5'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
-import { EthersModalInfo } from '../../components/Ethers/EthersModalInfo'
+import { Ethers5ModalInfo } from '../../components/Ethers/Ethers5ModalInfo'
 import { AppKitButtons } from '../../components/AppKitButtons'
-import { EthersTests } from '../../components/Ethers/EthersTests'
+import { Ethers5Tests } from '../../components/Ethers/Ethers5Tests'
 import { arbitrum, mainnet, optimism, polygon, zkSync } from '@web3modal/base/chains'
 
-const ethersAdapter = new EVMEthersClient()
+const ethers5Adapter = new EVMEthers5Client()
 
 const modal = createWeb3Modal({
-  adapters: [ethersAdapter],
+  adapters: [ethers5Adapter],
   caipNetworks: [arbitrum, mainnet, optimism, polygon, zkSync],
   defaultCaipNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId,
@@ -30,8 +30,8 @@ export default function Ethers() {
   return (
     <>
       <AppKitButtons />
-      <EthersModalInfo />
-      <EthersTests />
+      <Ethers5ModalInfo />
+      <Ethers5Tests />
     </>
   )
 }
