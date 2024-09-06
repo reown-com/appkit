@@ -48,6 +48,7 @@
     "@walletconnect/utils": "2.15.2",
     "@web3modal/base": "workspace:*",
     "@web3modal/common": "workspace:*",
+    "@web3modal/wallet": "workspace:*",
     "@web3modal/polyfills": "workspace:*",
     "@web3modal/scaffold-utils": "workspace:*",
     "@web3modal/siwe": "workspace:*",
