@@ -138,7 +138,13 @@ export type AppKitOptions = {
    * Enable or disable the onramp feature in your AppKit.
    * @default true
    */
+
   disableAppend?: boolean
+  /**
+   * Enable or disable the WalletConnect qr code in your AppKit.
+   * @default true
+   */
+  enableWalletConnect?: boolean
   /**
    * Enable or disable the EIP6963 feature in your AppKit.
    * @default false
