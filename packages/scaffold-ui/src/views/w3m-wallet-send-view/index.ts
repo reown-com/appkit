@@ -1,7 +1,13 @@
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
-import { SwapController, CoreHelperUtil, RouterController, SendController } from '@web3modal/core'
+import {
+  SwapController,
+  CoreHelperUtil,
+  RouterController,
+  SendController,
+  ChainController
+} from '@web3modal/core'
 import { state } from 'lit/decorators.js'
 
 @customElement('w3m-wallet-send-view')
@@ -110,7 +116,10 @@ export class W3mWalletSendView extends LitElement {
   private getMessage() {
     this.message = 'Preview Send'
 
-    if (this.receiverAddress && !CoreHelperUtil.isAddress(this.receiverAddress)) {
+    if (
+      this.receiverAddress &&
+      !CoreHelperUtil.isAddress(this.receiverAddress, ChainController.state.activeChain)
+    ) {
       this.message = 'Invalid Address'
     }
 
