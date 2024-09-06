@@ -72,9 +72,7 @@ smartAccountTest('it should switch to a not enabled network and sign with EOA', 
   const targetChain = 'Ethereum'
   await page.goToSettings()
   await page.switchNetwork(targetChain)
-
-  await page.page.waitForTimeout(2000)
-  await page.goToSettings()
+  await validator.expectSwitchedNetwork(targetChain)
   await validator.expectTogglePreferredTypeVisible(false)
   await page.closeModal()
 
@@ -88,11 +86,12 @@ smartAccountTest('it should switch to smart account and sign', async () => {
   await page.goToSettings()
   await page.switchNetwork(targetChain)
   await validator.expectSwitchedNetwork(targetChain)
-
   await page.togglePreferredAccountType()
-  await page.goToSettings()
   await validator.expectChangePreferredAccountToShow(EOA)
   await page.closeModal()
+
+  // Need some time for Lab UI to refresh state
+  await page.page.waitForTimeout(1000)
 
   await page.sign()
   await page.approveSign()
@@ -108,9 +107,11 @@ smartAccountTest('it should switch to smart account and sign', async () => {
 smartAccountTest('it should switch to eoa and sign', async () => {
   await page.goToSettings()
   await page.togglePreferredAccountType()
-  await page.goToSettings()
   await validator.expectChangePreferredAccountToShow(SMART_ACCOUNT)
   await page.closeModal()
+
+  // Need some time for Lab UI to refresh state
+  await page.page.waitForTimeout(1000)
 
   await page.sign()
   await page.approveSign()

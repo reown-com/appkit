@@ -53,7 +53,8 @@ export const mockAppKit = {
       switchCaipNetwork: vi.fn()
     }
   },
-  getConnectorImage: vi.fn()
+  getConnectorImage: vi.fn(),
+  handleUnsafeRPCRequest: vi.fn()
 } as unknown as AppKit
 
 export default mockAppKit

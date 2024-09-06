@@ -727,8 +727,8 @@ export class EVMEthersClient {
   private setupAuthListeners(authProvider: W3mFrameProvider) {
     authProvider.onRpcRequest(request => {
       if (W3mFrameHelpers.checkIfRequestExists(request)) {
-        if (!W3mFrameHelpers.checkIfRequestIsAllowed(request)) {
-          this.handleAuthRpcRequest()
+        if (!W3mFrameHelpers.checkIfRequestIsSafe(request)) {
+          this.appKit?.handleUnsafeRPCRequest()
         }
       } else {
         this.handleInvalidAuthRequest()
@@ -736,7 +736,7 @@ export class EVMEthersClient {
     })
 
     authProvider.onRpcError(() => this.handleAuthRpcError())
-    authProvider.onRpcSuccess(() => this.handleAuthRpcSuccess())
+    authProvider.onRpcSuccess((_, request) => this.handleAuthRpcSuccess(_, request))
     authProvider.onNotConnected(() => this.handleAuthNotConnected())
     authProvider.onIsConnected(({ preferredAccountType }) =>
       this.handleAuthIsConnected(preferredAccountType)
@@ -746,20 +746,6 @@ export class EVMEthersClient {
         this.handleAuthSetPreferredAccount(address, type)
       }
     })
-  }
-
-  private handleAuthRpcRequest() {
-    if (this.appKit?.isOpen()) {
-      if (!this.appKit?.isTransactionStackEmpty()) {
-        if (this.appKit?.isTransactionShouldReplaceView()) {
-          this.appKit?.replace('ApproveTransaction')
-        } else {
-          this.appKit?.redirect('ApproveTransaction')
-        }
-      }
-    } else {
-      this.appKit?.open({ view: 'ApproveTransaction' })
-    }
   }
 
   private handleInvalidAuthRequest() {
@@ -779,7 +765,12 @@ export class EVMEthersClient {
     }
   }
 
-  private handleAuthRpcSuccess() {
+  private handleAuthRpcSuccess(_: W3mFrameTypes.FrameEvent, request: W3mFrameTypes.RPCRequest) {
+    const isSafeRequest = W3mFrameHelpers.checkIfRequestIsSafe(request)
+    if (isSafeRequest) {
+      return
+    }
+
     if (this.appKit?.isTransactionStackEmpty()) {
       this.appKit?.close()
     } else {
@@ -911,7 +902,7 @@ export class EVMEthersClient {
           chainId: caipNetwork.chainId as number,
           name: caipNetwork.name
         })
-        if (jsonRpcProvider) {
+        if (jsonRpcProvider && jsonRpcProvider.ready) {
           const balance = await jsonRpcProvider.getBalance(address)
           const formattedBalance = formatEther(balance)
 
