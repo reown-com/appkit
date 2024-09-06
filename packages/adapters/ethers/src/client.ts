@@ -226,7 +226,7 @@ export class EVMEthersClient {
         provider
       }: {
         id: string
-        info: Info
+        info?: Info
         provider: Provider
       }) => {
         this.appKit?.setClientId(null)

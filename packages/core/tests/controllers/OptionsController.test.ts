@@ -9,7 +9,7 @@ describe('OptionsController', () => {
       features: ConstantsUtil.DEFAULT_FEATURES,
       projectId: '',
       sdkType: 'w3m',
-      sdkVersion: 'html-wagmi-5.1.6'
+      sdkVersion: 'html-wagmi-undefined'
     })
   })
 

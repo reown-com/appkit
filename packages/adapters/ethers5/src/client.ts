@@ -193,7 +193,7 @@ export class EVMEthers5Client {
     this.appKit = appKit
     this.options = options
     this.caipNetworks = options.caipNetworks
-    this.defaultCaipNetwork = options.defaultCaipNetwork || this.caipNetworks[0]
+    this.defaultCaipNetwork = options.defaultCaipNetwork || options.caipNetworks[0]
     this.tokens = HelpersUtil.getCaipTokens(options.tokens)
     this.ethersConfig = this.createEthersConfig(options)
 
@@ -226,7 +226,7 @@ export class EVMEthers5Client {
         provider
       }: {
         id: string
-        info: Info
+        info?: Info
         provider: Provider
       }) => {
         this.appKit?.setClientId(null)
@@ -246,7 +246,7 @@ export class EVMEthers5Client {
           },
           [ConstantsUtil.AUTH_CONNECTOR_ID]: {
             getProvider: () => this.authProvider,
-            providerType: 'auth' as const
+            providerType: 'w3mAuth' as const
           }
         }
 
@@ -270,7 +270,7 @@ export class EVMEthers5Client {
           await this.setProvider(
             selectedProvider,
             selectedConnector.providerType as ProviderId,
-            info.name
+            info?.name
           )
         } catch (error) {
           // WcStoreUtil.setError(error)
@@ -382,31 +382,22 @@ export class EVMEthers5Client {
       sendTransaction: async data => {
         const provider = ProviderUtil.getProvider<Provider>('eip155')
         const address = this.appKit?.getAddress()
-
-        if (!provider) {
-          throw new Error('connectionControllerClient:sendTransaction - provider is undefined')
-        }
+        const caipNetwork = this.appKit?.getCaipNetwork()
 
         if (!address) {
-          throw new Error('connectionControllerClient:sendTransaction - address is undefined')
+          throw new Error('Address is undefined')
         }
 
-        const txParams = {
-          to: data.to,
-          value: data.value,
-          gasLimit: data.gas,
-          gasPrice: data.gasPrice,
-          data: data.data,
-          type: 0
+        if (!provider) {
+          throw new Error('Provider is undefined')
         }
 
-        const browserProvider = new ethers.providers.Web3Provider(provider)
-        const signer = browserProvider.getSigner()
-
-        const txResponse = await signer.sendTransaction(txParams)
-        const txReceipt = await txResponse.wait()
-
-        return (txReceipt?.blockHash as `0x${string}`) || null
+        return await Ethers5Methods.sendTransaction(
+          data,
+          provider,
+          address,
+          Number(caipNetwork?.chainId)
+        )
       },
 
       writeContract: async data => {
@@ -1009,44 +1000,46 @@ export class EVMEthers5Client {
     const provider = ProviderUtil.getProvider<Provider | UniversalProvider>('eip155')
     const providerType = ProviderUtil.state.providerIds['eip155']
 
-    switch (providerType) {
-      case ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID:
-        this.appKit?.universalAdapter?.networkControllerClient.switchCaipNetwork(caipNetwork)
-        break
-      case ConstantsUtil.INJECTED_CONNECTOR_ID:
-      case ConstantsUtil.EIP6963_CONNECTOR_ID:
-      case ConstantsUtil.COINBASE_SDK_CONNECTOR_ID:
-        if (provider) {
-          await requestSwitchNetwork(provider as Provider)
-        }
-        break
-      case ConstantsUtil.AUTH_CONNECTOR_ID:
-        if (this.authProvider) {
-          try {
-            this.appKit?.setLoading(true)
-            await this.authProvider.switchNetwork(caipNetwork.chainId as number)
-            this.appKit?.setCaipNetwork(caipNetwork)
-
-            const { address, preferredAccountType } = await this.authProvider.connect({
-              chainId: caipNetwork.chainId as number | undefined
-            })
-
-            // @ts-expect-error - address type will be checked todo(enes|sven)
-            this.appKit?.setCaipAddress(address, this.chainNamespace)
-            this.appKit?.setPreferredAccountType(
-              preferredAccountType as W3mFrameTypes.AccountType,
-              this.chainNamespace
-            )
-            await this.syncAccount({ address: address as Address })
-          } catch {
-            throw new Error('Switching chain failed')
-          } finally {
-            this.appKit?.setLoading(false)
+    if (provider) {
+      switch (providerType) {
+        case ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID:
+          this.appKit?.universalAdapter?.networkControllerClient.switchCaipNetwork(caipNetwork)
+          break
+        case ConstantsUtil.INJECTED_CONNECTOR_ID:
+        case ConstantsUtil.EIP6963_CONNECTOR_ID:
+        case ConstantsUtil.COINBASE_SDK_CONNECTOR_ID:
+          if (provider) {
+            await requestSwitchNetwork(provider as Provider)
           }
-        }
-        break
-      default:
-        throw new Error('Unsupported provider type')
+          break
+        case ConstantsUtil.AUTH_CONNECTOR_ID:
+          if (this.authProvider) {
+            try {
+              this.appKit?.setLoading(true)
+              await this.authProvider.switchNetwork(caipNetwork.chainId as number)
+              this.appKit?.setCaipNetwork(caipNetwork)
+
+              const { address, preferredAccountType } = await this.authProvider.connect({
+                chainId: caipNetwork.chainId as number | undefined
+              })
+
+              // @ts-expect-error - address type will be checked todo(enes|sven)
+              this.appKit?.setCaipAddress(address, this.chainNamespace)
+              this.appKit?.setPreferredAccountType(
+                preferredAccountType as W3mFrameTypes.AccountType,
+                this.chainNamespace
+              )
+              await this.syncAccount({ address: address as Address })
+            } catch {
+              throw new Error('Switching chain failed')
+            } finally {
+              this.appKit?.setLoading(false)
+            }
+          }
+          break
+        default:
+          throw new Error('Unsupported provider type')
+      }
     }
   }
 

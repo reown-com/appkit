@@ -5,7 +5,8 @@ import type {
   ModalControllerState,
   ConnectedWalletInfo,
   RouterControllerState,
-  ChainAdapter
+  ChainAdapter,
+  SdkVersion
 } from '@web3modal/core'
 import {
   AccountController,
@@ -59,6 +60,8 @@ export class AppKit {
   public constructor(
     options: AppKitOptions & {
       adapters?: ChainAdapter[]
+    } & {
+      sdkVersion: SdkVersion
     }
   ) {
     // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
@@ -373,9 +376,12 @@ export class AppKit {
   private async initControllers(
     options: AppKitOptions & {
       adapters?: ChainAdapter[]
+    } & {
+      sdkVersion: SdkVersion
     }
   ) {
     OptionsController.setProjectId(options.projectId)
+    OptionsController.setSdkVersion(options.sdkVersion)
 
     this.adapters = options.adapters
 
