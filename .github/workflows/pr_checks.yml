@@ -29,7 +29,6 @@ jobs:
           - lint
           - prettier
           - typecheck
-          - danger
           - build:sample-apps
     steps:
       - name: checkout
