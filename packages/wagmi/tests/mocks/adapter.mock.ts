@@ -1,11 +1,11 @@
-import { EVMWagmiClient } from '@web3modal/adapter-wagmi'
+import { EVMWagmiClient } from '@rerock/adapter-wagmi'
 import { mainnet as wagmiMainnet } from 'viem/chains'
 import { createConfig, http } from 'wagmi'
 import { mock } from 'wagmi/connectors'
 
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
-import { AppKit, type SdkVersion } from '@web3modal/base'
-import type { CaipNetwork } from '@web3modal/common'
+import { AppKit, type SdkVersion } from '@rerock/base'
+import type { CaipNetwork } from '@rerock/common'
 
 export const mainnet: CaipNetwork = {
   id: 'eip155:1',

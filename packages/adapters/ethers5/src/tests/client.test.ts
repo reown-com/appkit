@@ -9,16 +9,16 @@ import {
   EthersHelpersUtil,
   type ProviderId,
   type ProviderType
-} from '@web3modal/scaffold-utils/ethers'
-import { ConstantsUtil } from '@web3modal/scaffold-utils'
-import { arbitrum, mainnet, polygon } from '@web3modal/base/chains'
-import { ProviderUtil } from '@web3modal/base/store'
-import { SafeLocalStorage } from '@web3modal/common'
-import { WcConstantsUtil, type BlockchainApiLookupEnsName } from '@web3modal/base'
+} from '@rerock/scaffold-utils/ethers'
+import { ConstantsUtil } from '@rerock/scaffold-utils'
+import { arbitrum, mainnet, polygon } from '@rerock/base/chains'
+import { ProviderUtil } from '@rerock/base/store'
+import { SafeLocalStorage } from '@rerock/common'
+import { WcConstantsUtil, type BlockchainApiLookupEnsName } from '@rerock/base'
 import { ethers } from 'ethers5'
-import type { CaipNetwork, ChainNamespace } from '@web3modal/common'
+import type { CaipNetwork, ChainNamespace } from '@rerock/common'
 
-vi.mock('@web3modal/wallet', () => ({
+vi.mock('@rerock/wallet', () => ({
   W3mFrameProvider: vi.fn().mockImplementation(() => mockAuthConnector),
   W3mFrameHelpers: {
     checkIfRequestExists: vi.fn(),
@@ -29,7 +29,7 @@ vi.mock('@web3modal/wallet', () => ({
   }
 }))
 
-vi.mock('@web3modal/scaffold-utils', () => {
+vi.mock('@rerock/scaffold-utils', () => {
   const INJECTED_CONNECTOR_ID = 'injected'
   const COINBASE_SDK_CONNECTOR_ID = 'coinbaseWallet'
   const EIP6963_CONNECTOR_ID = 'eip6963'
@@ -73,7 +73,7 @@ vi.mock('@web3modal/scaffold-utils', () => {
   }
 })
 
-vi.mock('@web3modal/base/store', () => ({
+vi.mock('@rerock/base/store', () => ({
   ProviderUtil: {
     setProvider: vi.fn(),
     setProviderId: vi.fn(),

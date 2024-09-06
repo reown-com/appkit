@@ -9,7 +9,7 @@ on:
         required: false
         type: string
       base-url:
-        description: 'The web3modal lab url'
+        description: 'The AppKit lab url'
         default: 'http://localhost:3000/'
         required: false
         type: string
@@ -75,7 +75,7 @@ jobs:
       - name: checkout
         uses: actions/checkout@v4
         with:
-          repository: WalletConnect/web3modal
+          repository: WalletConnect/shadow-appkit
           ref: ${{ inputs.branch }}
 
       - uses: pnpm/action-setup@v4
@@ -136,20 +136,6 @@ jobs:
       #     SOCIAL_TEST_PASSWORD: ${{ secrets.TESTS_SOCIAL_PASSWORD }}
       #     CI: true
       #   run: xvfb-run pnpm playwright:test:metamask
-
-      - name: Run Playwright tests
-        env:
-          BASE_URL: ${{ inputs.base-url }}
-          WALLET_URL: ${{ inputs.wallet-url }}
-          NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
-          SKIP_PLAYWRIGHT_WEBSERVER: ${{ inputs.skip-playwright-webserver }}
-          NEXTAUTH_SECRET: ${{ secrets.TESTS_NEXTAUTH_SECRET }}
-          MAILSAC_API_KEY: ${{ secrets.TESTS_MAILSAC_API_KEY }}
-          NEXT_PUBLIC_SECURE_SITE_SDK_URL: ${{ inputs.secure-site-url }}
-          SOCIAL_TEST_EMAIL: ${{ secrets.TESTS_SOCIAL_EMAIL }}
-          SOCIAL_TEST_PASSWORD: ${{ secrets.TESTS_SOCIAL_PASSWORD }}
-          CI: true
-        run: xvfb-run pnpm playwright:test:metamask
 
       - name: Run Playwright tests
         env:

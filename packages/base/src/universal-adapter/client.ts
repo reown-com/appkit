@@ -7,8 +7,8 @@ import {
   type ConnectionControllerClient,
   type Connector,
   type NetworkControllerClient
-} from '@web3modal/core'
-import { ConstantsUtil, PresetsUtil } from '@web3modal/scaffold-utils'
+} from '@rerock/core'
+import { ConstantsUtil, PresetsUtil } from '@rerock/scaffold-utils'
 import UniversalProvider from '@walletconnect/universal-provider'
 import type { UniversalProviderOpts } from '@walletconnect/universal-provider'
 import { WcHelpersUtil } from '../utils/HelpersUtil.js'
@@ -20,9 +20,9 @@ import type {
   CaipAddress,
   ChainNamespace,
   AdapterType
-} from '@web3modal/common'
-import { SafeLocalStorage, SafeLocalStorageKeys } from '@web3modal/common'
-import { ProviderUtil } from '@web3modal/base/store'
+} from '@rerock/common'
+import { SafeLocalStorage, SafeLocalStorageKeys } from '@rerock/common'
+import { ProviderUtil } from '@rerock/base/store'
 import type { AppKitOptions } from '../utils/TypesUtil.js'
 import { allChains } from '../chains/index.js'
 
@@ -168,7 +168,7 @@ export class UniversalAdapterClient {
             isProviderSupported &&
             isSiweParamsValid
           ) {
-            const { SIWEController, getDidChainId, getDidAddress } = await import('@web3modal/siwe')
+            const { SIWEController, getDidChainId, getDidAddress } = await import('@rerock/siwe')
 
             const chains = this.options?.caipNetworks.map(network => network.id) as string[]
 
@@ -229,7 +229,7 @@ export class UniversalAdapterClient {
         SafeLocalStorage.removeItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK)
 
         if (siweConfig?.options?.signOutOnDisconnect) {
-          const { SIWEController } = await import('@web3modal/siwe')
+          const { SIWEController } = await import('@rerock/siwe')
           await SIWEController.signOut()
         }
 

@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@web3modal/ui/src/composites/wui-account-button'
-import type { WuiAccountButton } from '@web3modal/ui/src/composites/wui-account-button'
+import '@rerock/ui/src/composites/wui-account-button'
+import type { WuiAccountButton } from '@rerock/ui/src/composites/wui-account-button'
 import { html } from 'lit'
 import { address, avatarImageSrc, networkImageSrc } from '../../utils/PresetUtils'
 

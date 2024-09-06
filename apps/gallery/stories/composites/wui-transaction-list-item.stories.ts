@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@web3modal/ui/src/composites/wui-transaction-list-item'
-import type { WuiTransactionListItem } from '@web3modal/ui/src/composites/wui-transaction-list-item'
+import '@rerock/ui/src/composites/wui-transaction-list-item'
+import type { WuiTransactionListItem } from '@rerock/ui/src/composites/wui-transaction-list-item'
 import { html } from 'lit'
 import '../../components/gallery-container'
 import {

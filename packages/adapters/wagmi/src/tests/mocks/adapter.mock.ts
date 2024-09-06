@@ -2,11 +2,11 @@ import { mainnet as wagmiMainnet, arbitrum as wagmiArbitrum } from 'viem/chains'
 import { createConfig, http } from 'wagmi'
 import { mock } from 'wagmi/connectors'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
-import { AppKit } from '@web3modal/base'
+import { AppKit } from '@rerock/base'
 import { EVMWagmiClient } from '../../client'
-import { arbitrum, mainnet } from '@web3modal/base/chains'
-import type { CaipNetwork } from '@web3modal/common'
-import type { SdkVersion } from '@web3modal/core'
+import { arbitrum, mainnet } from '@rerock/base/chains'
+import type { CaipNetwork } from '@rerock/common'
+import type { SdkVersion } from '@rerock/core'
 
 const privateKey = generatePrivateKey()
 export const mockAccount = privateKeyToAccount(privateKey)

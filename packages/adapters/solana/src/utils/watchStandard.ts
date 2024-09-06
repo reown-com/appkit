@@ -3,8 +3,8 @@ import { WalletStandardProvider } from '../providers/WalletStandardProvider.js'
 import { isWalletAdapterCompatibleStandardWallet } from '@solana/wallet-adapter-base'
 import type { Wallet } from '@wallet-standard/base'
 
-import type { AppKit } from '@web3modal/base'
-import type { CaipNetwork } from '@web3modal/common'
+import type { AppKit } from '@rerock/base'
+import type { CaipNetwork } from '@rerock/common'
 
 const { get, on } = getWallets()
 let standardAdapters: WalletStandardProvider[] = wrapWalletsWithAdapters(get())

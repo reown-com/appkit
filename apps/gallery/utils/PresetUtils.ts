@@ -27,8 +27,8 @@ import type {
   ThemeType,
   TransactionType,
   VisualType
-} from '@web3modal/ui/src/utils/TypeUtil'
-import type { TransactionStatus, TransactionDirection } from '@web3modal/common'
+} from '@rerock/ui/src/utils/TypeUtil'
+import type { TransactionStatus, TransactionDirection } from '@rerock/common'
 
 export const colorOptions: ColorType[] = [
   'accent-100',

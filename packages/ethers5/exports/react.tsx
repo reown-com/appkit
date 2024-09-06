@@ -1,14 +1,14 @@
 'use client'
 
-import { AppKit } from '@web3modal/base'
-import type { AppKitOptions } from '@web3modal/base'
-import type { CaipNetwork } from '@web3modal/common'
-import { ProviderUtil } from '@web3modal/base/store'
-import { EVMEthers5Client, type AdapterOptions } from '@web3modal/adapter-ethers5'
-import { getWeb3Modal } from '@web3modal/base/library/react'
+import { AppKit } from '@rerock/base'
+import type { AppKitOptions } from '@rerock/base'
+import type { CaipNetwork } from '@rerock/common'
+import { ProviderUtil } from '@rerock/base/store'
+import { EVMEthers5Client, type AdapterOptions } from '@rerock/adapter-ethers5'
+import { getWeb3Modal } from '@rerock/base/library/react'
 import { useSnapshot } from 'valtio'
 import { ethers } from 'ethers'
-import { ConstantsUtil } from '@web3modal/scaffold-utils'
+import { ConstantsUtil } from '@rerock/scaffold-utils'
 
 // -- Setup -------------------------------------------------------------------
 let appkit: AppKit | undefined = undefined
@@ -69,4 +69,4 @@ export {
   useWeb3ModalState,
   useWeb3ModalEvents,
   useWalletInfo
-} from '@web3modal/base/library/react'
+} from '@rerock/base/library/react'

@@ -1,5 +1,5 @@
 import { proxy, subscribe as sub } from 'valtio/vanilla'
-import type { CaipNetworkId } from '@web3modal/common'
+import type { CaipNetworkId } from '@rerock/common'
 
 // -- Types --------------------------------------------- //
 export interface PublicStateControllerState {

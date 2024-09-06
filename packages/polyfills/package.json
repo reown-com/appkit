@@ -1,6 +1,6 @@
 {
-  "name": "@web3modal/polyfills",
-  "version": "5.1.6",
+  "name": "@rerock/polyfills",
+  "version": "0.0.2",
   "type": "module",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
@@ -25,11 +25,11 @@
     "web3",
     "crypto",
     "ethereum",
-    "web3modal",
-    "walletconnect",
+    "appkit",
+    "Rerock",
     "polyfills"
   ],
-  "author": "WalletConnect <walletconnect.com>",
+  "author": "Rerock <rerock.com>",
   "license": "Apache-2.0",
   "homepage": "https://github.com/web3modal/web3modal",
   "repository": {

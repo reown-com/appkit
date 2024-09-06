@@ -1,13 +1,13 @@
-import type { Transaction } from '@web3modal/common'
+import type { Transaction } from '@rerock/common'
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { OptionsController } from './OptionsController.js'
 import { EventsController } from './EventsController.js'
 import { SnackController } from './SnackController.js'
 import { NetworkController } from './NetworkController.js'
-import type { CaipNetworkId } from '@web3modal/common'
+import type { CaipNetworkId } from '@rerock/common'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { AccountController } from './AccountController.js'
-import { W3mFrameRpcConstants } from '@web3modal/wallet'
+import { W3mFrameRpcConstants } from '@rerock/wallet'
 
 // -- Types --------------------------------------------- //
 type TransactionByMonthMap = Record<number, Transaction[]>

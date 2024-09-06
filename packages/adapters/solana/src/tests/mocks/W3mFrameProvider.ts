@@ -1,4 +1,4 @@
-import { W3mFrameProvider, type W3mFrameTypes } from '@web3modal/wallet'
+import { W3mFrameProvider, type W3mFrameTypes } from '@rerock/wallet'
 import type { AuthProvider } from '../../providers/AuthProvider.js'
 import { vi } from 'vitest'
 import { TestConstants } from '../util/TestConstants.js'

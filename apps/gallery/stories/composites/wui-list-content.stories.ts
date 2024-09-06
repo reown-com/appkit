@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@web3modal/ui/src/composites/wui-list-content'
-import type { WuiListContent } from '@web3modal/ui/src/composites/wui-list-content'
+import '@rerock/ui/src/composites/wui-list-content'
+import type { WuiListContent } from '@rerock/ui/src/composites/wui-list-content'
 import { html } from 'lit'
 import '../../components/gallery-container'
 import { networkImageSrc } from '../../utils/PresetUtils'

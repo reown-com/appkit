@@ -5,8 +5,8 @@ import {
   RouterController,
   SnackController,
   type Connector
-} from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+} from '@rerock/core'
+import { customElement } from '@rerock/ui'
 
 import { html, LitElement } from 'lit'
 import { state } from 'lit/decorators.js'

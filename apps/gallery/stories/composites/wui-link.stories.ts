@@ -1,7 +1,7 @@
 import type { Meta } from '@storybook/web-components'
-import '@web3modal/ui/src/composites/wui-link'
-import type { WuiLink } from '@web3modal/ui/src/composites/wui-link'
-import type { IconType } from '@web3modal/ui/src/utils/TypesUtil'
+import '@rerock/ui/src/composites/wui-link'
+import type { WuiLink } from '@rerock/ui/src/composites/wui-link'
+import type { IconType } from '@rerock/ui/src/utils/TypesUtil'
 import { html } from 'lit'
 import { iconOptions } from '../../utils/PresetUtils'
 

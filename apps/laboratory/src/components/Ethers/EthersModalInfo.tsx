@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useWeb3ModalAccount, useWeb3ModalNetwork, useWeb3ModalProvider } from '@web3modal/base/react'
+import { useWeb3ModalAccount, useWeb3ModalNetwork, useWeb3ModalProvider } from '@rerock/base/react'
 import EthereumProvider from '@walletconnect/ethereum-provider'
 
 import { AppKitInfo } from '../AppKitInfo'

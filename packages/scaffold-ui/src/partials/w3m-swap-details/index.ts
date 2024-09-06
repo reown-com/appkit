@@ -1,9 +1,9 @@
 import { html, LitElement } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import styles from './styles.js'
-import { UiHelperUtil, customElement } from '@web3modal/ui'
-import { NumberUtil } from '@web3modal/common'
-import { ConstantsUtil, NetworkController, SwapController } from '@web3modal/core'
+import { UiHelperUtil, customElement } from '@rerock/ui'
+import { NumberUtil } from '@rerock/common'
+import { ConstantsUtil, NetworkController, SwapController } from '@rerock/core'
 
 // -- Constants ----------------------------------------- //
 const slippageRate = ConstantsUtil.CONVERT_SLIPPAGE_TOLERANCE

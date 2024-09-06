@@ -10,12 +10,12 @@ import {
   RouterController,
   SnackController,
   ThemeController
-} from '@web3modal/core'
-import { UiHelperUtil, customElement, initializeTheming } from '@web3modal/ui'
+} from '@rerock/core'
+import { UiHelperUtil, customElement, initializeTheming } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
-import { ConstantsUtil, type CaipAddress, type CaipNetwork } from '@web3modal/common'
+import { ConstantsUtil, type CaipAddress, type CaipNetwork } from '@rerock/common'
 
 // -- Helpers --------------------------------------------- //
 const SCROLL_LOCK = 'scroll-lock'
@@ -104,7 +104,7 @@ export class W3mModal extends LitElement {
     const isApproveSignScreen = RouterController.state.view === 'ApproveTransaction'
 
     if (this.isSiweEnabled) {
-      const { SIWEController } = await import('@web3modal/siwe')
+      const { SIWEController } = await import('@rerock/siwe')
       const isUnauthenticated = SIWEController.state.status !== 'success'
       if (isUnauthenticated && (isSiweSignScreen || isApproveSignScreen)) {
         ModalController.shake()
@@ -195,7 +195,7 @@ export class W3mModal extends LitElement {
     this.caipAddress = caipAddress
 
     if (this.isSiweEnabled) {
-      const { SIWEController } = await import('@web3modal/siwe')
+      const { SIWEController } = await import('@rerock/siwe')
       const session = await SIWEController.getSession()
 
       // If the address has changed and signOnAccountChange is enabled, sign out
@@ -219,7 +219,7 @@ export class W3mModal extends LitElement {
     this.caipNetwork = caipNetwork
 
     if (this.isSiweEnabled) {
-      const { SIWEController } = await import('@web3modal/siwe')
+      const { SIWEController } = await import('@rerock/siwe')
       const session = await SIWEController.getSession()
 
       if (session && previousNetworkId && newNetworkId && previousNetworkId !== newNetworkId) {

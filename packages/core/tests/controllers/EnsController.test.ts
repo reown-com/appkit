@@ -7,8 +7,8 @@ import {
   EnsController,
   NetworkController
 } from '../../exports/index.js'
-import { W3mFrameProvider } from '@web3modal/wallet'
-import { ConstantsUtil } from '@web3modal/common'
+import { W3mFrameProvider } from '@rerock/wallet'
+import { ConstantsUtil } from '@rerock/common'
 // -- Setup --------------------------------------------------------------------
 const TEST_NAME = {
   name: 'test',

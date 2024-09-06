@@ -1,5 +1,5 @@
-import '@web3modal/polyfills'
-export * as Web3modal from '@web3modal/wagmi'
+import '@rerock/polyfills'
+export * as Web3modal from '@rerock/wagmi'
 export * as Viem from 'viem'
 export * as Chains from 'viem/chains'
 export * as Connectors from '@wagmi/connectors'

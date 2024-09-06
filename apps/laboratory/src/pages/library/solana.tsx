@@ -1,8 +1,8 @@
-import { createWeb3Modal, type CaipNetwork } from '@web3modal/base/react'
-import { SolanaWeb3JsClient } from '@web3modal/adapter-solana/react'
+import { createWeb3Modal, type CaipNetwork } from '@rerock/base/react'
+import { SolanaWeb3JsClient } from '@rerock/adapter-solana/react'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
-import { solana, solanaDevnet, solanaTestnet } from '@web3modal/base/chains'
+import { solana, solanaDevnet, solanaTestnet } from '@rerock/base/chains'
 
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { AppKitButtons } from '../../components/AppKitButtons'

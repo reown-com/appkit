@@ -1,6 +1,6 @@
 {
-  "name": "@web3modal/ethers",
-  "version": "5.1.6",
+  "name": "@rerock/ethers",
+  "version": "0.0.2",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -45,13 +45,13 @@
   "dependencies": {
     "@coinbase/wallet-sdk": "4.0.3",
     "@walletconnect/utils": "2.15.2",
-    "@web3modal/base": "workspace:*",
-    "@web3modal/adapter-ethers": "workspace:*",
-    "@web3modal/common": "workspace:*",
-    "@web3modal/wallet": "workspace:*",
-    "@web3modal/polyfills": "workspace:*",
-    "@web3modal/scaffold-utils": "workspace:*",
-    "@web3modal/siwe": "workspace:*",
+    "@rerock/base": "workspace:*",
+    "@rerock/adapter-ethers": "workspace:*",
+    "@rerock/common": "workspace:*",
+    "@rerock/wallet": "workspace:*",
+    "@rerock/polyfills": "workspace:*",
+    "@rerock/scaffold-utils": "workspace:*",
+    "@rerock/siwe": "workspace:*",
     "valtio": "1.11.2"
   },
   "peerDependencies": {
@@ -76,16 +76,7 @@
       "optional": true
     }
   },
-  "keywords": [
-    "web3",
-    "crypto",
-    "ethereum",
-    "web3modal",
-    "walletconnect",
-    "lit",
-    "webcomponents"
-  ],
-  "author": "WalletConnect <walletconnect.com>",
+  "author": "Rerock <rerock.com>",
   "license": "Apache-2.0",
   "homepage": "https://github.com/web3modal/web3modal",
   "repository": {

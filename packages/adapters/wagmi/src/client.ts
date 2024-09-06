@@ -22,9 +22,9 @@ import {
   createConfig,
   getConnectors
 } from '@wagmi/core'
-import { ChainController, ConstantsUtil as CoreConstantsUtil } from '@web3modal/core'
+import { ChainController, ConstantsUtil as CoreConstantsUtil } from '@rerock/core'
 import type UniversalProvider from '@walletconnect/universal-provider'
-import type { ChainAdapter } from '@web3modal/core'
+import type { ChainAdapter } from '@rerock/core'
 import { prepareTransactionRequest, sendTransaction as wagmiSendTransaction } from '@wagmi/core'
 import type { Chain } from '@wagmi/core/chains'
 import { mainnet } from 'viem/chains'
@@ -42,15 +42,15 @@ import type {
   PublicStateControllerState,
   SendTransactionArgs,
   WriteContractArgs
-} from '@web3modal/core'
+} from '@rerock/core'
 import { formatUnits, parseUnits } from 'viem'
 import type { Hex } from 'viem'
-import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
+import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@rerock/scaffold-utils'
 import {
   ConstantsUtil as CommonConstants,
   SafeLocalStorage,
   SafeLocalStorageKeys
-} from '@web3modal/common'
+} from '@rerock/common'
 import {
   convertToAppKitChains,
   getEmailCaipNetworks,
@@ -58,18 +58,18 @@ import {
   getWalletConnectCaipNetworks,
   requireCaipAddress
 } from './utils/helpers.js'
-import { W3mFrameHelpers, W3mFrameRpcConstants } from '@web3modal/wallet'
-import type { W3mFrameProvider, W3mFrameTypes } from '@web3modal/wallet'
-import { NetworkUtil } from '@web3modal/common'
+import { W3mFrameHelpers, W3mFrameRpcConstants } from '@rerock/wallet'
+import type { W3mFrameProvider, W3mFrameTypes } from '@rerock/wallet'
+import { NetworkUtil } from '@rerock/common'
 import { normalize } from 'viem/ens'
-import type { AppKitOptions } from '@web3modal/base'
-import type { CaipAddress, CaipNetwork, ChainNamespace, AdapterType } from '@web3modal/common'
-import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
-import type { AppKit } from '@web3modal/base'
+import type { AppKitOptions } from '@rerock/base'
+import type { CaipAddress, CaipNetwork, ChainNamespace, AdapterType } from '@rerock/common'
+import { ConstantsUtil as CommonConstantsUtil } from '@rerock/common'
+import type { AppKit } from '@rerock/base'
 import { walletConnect } from './connectors/UniversalConnector.js'
 import { coinbaseWallet } from '@wagmi/connectors'
 import { authConnector } from './connectors/AuthConnector.js'
-import { ProviderUtil } from '@web3modal/base/store'
+import { ProviderUtil } from '@rerock/base/store'
 
 // -- Types ---------------------------------------------------------------------
 export interface AdapterOptions<C extends Config>
@@ -283,7 +283,7 @@ export class EVMWagmiClient implements ChainAdapter {
           const params = await siweConfig?.getMessageParams?.()
 
           if (siweConfig?.options?.enabled && params && Object.keys(params || {}).length > 0) {
-            const { SIWEController, getDidChainId, getDidAddress } = await import('@web3modal/siwe')
+            const { SIWEController, getDidChainId, getDidAddress } = await import('@rerock/siwe')
 
             const chains = this.options?.caipNetworks.map(network => network.id) as string[]
 
@@ -383,7 +383,7 @@ export class EVMWagmiClient implements ChainAdapter {
         this.appKit?.resetAccount('eip155')
         this.appKit?.resetAccount('solana')
         if (this.options?.siweConfig?.options?.signOutOnDisconnect) {
-          const { SIWEController } = await import('@web3modal/siwe')
+          const { SIWEController } = await import('@rerock/siwe')
           await SIWEController.signOut()
         }
       },

@@ -1,6 +1,6 @@
 {
-  "name": "@web3modal/cdn",
-  "version": "5.1.6",
+  "name": "@rerock/cdn",
+  "version": "0.0.2",
   "main": "dist/wagmi.js",
   "type": "module",
   "files": [
@@ -28,10 +28,10 @@
     }
   },
   "dependencies": {
-    "@web3modal/polyfills": "workspace:*",
-    "@web3modal/wagmi": "workspace:*",
-    "@web3modal/ethers": "workspace:*",
-    "@web3modal/ethers5": "workspace:*",
+    "@rerock/polyfills": "workspace:*",
+    "@rerock/wagmi": "workspace:*",
+    "@rerock/ethers": "workspace:*",
+    "@rerock/ethers5": "workspace:*",
     "@wagmi/connectors": "5.1.5",
     "@wagmi/core": "2.13.4",
     "viem": "2.19.6",

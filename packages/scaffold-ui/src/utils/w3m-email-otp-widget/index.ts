@@ -1,14 +1,14 @@
-import { customElement } from '@web3modal/ui'
+import { customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 import {
   RouterController,
   SnackController,
   ConnectorController,
   CoreHelperUtil
-} from '@web3modal/core'
+} from '@rerock/core'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
-import { W3mFrameHelpers } from '@web3modal/wallet'
+import { W3mFrameHelpers } from '@rerock/wallet'
 
 // -- Types --------------------------------------------- //
 export type OnOtpSubmitFn = (otp: string) => Promise<void>

@@ -1,11 +1,11 @@
-import { AppKit } from '@web3modal/base'
-import type { AppKitOptions } from '@web3modal/base'
-import { EVMEthersClient, type AdapterOptions } from '@web3modal/adapter-ethers'
-import { getWeb3Modal } from '@web3modal/base/library/vue'
-import { ConstantsUtil } from '@web3modal/scaffold-utils'
+import { AppKit } from '@rerock/base'
+import type { AppKitOptions } from '@rerock/base'
+import { EVMEthersClient, type AdapterOptions } from '@rerock/adapter-ethers'
+import { getWeb3Modal } from '@rerock/base/library/vue'
+import { ConstantsUtil } from '@rerock/scaffold-utils'
 
 // -- Types -------------------------------------------------------------
-export type { AdapterOptions } from '@web3modal/adapter-ethers'
+export type { AdapterOptions } from '@rerock/adapter-ethers'
 
 // -- Setup -------------------------------------------------------------------
 let appkit: AppKit | undefined = undefined
@@ -55,4 +55,4 @@ export {
   useWeb3ModalState,
   useWeb3ModalEvents,
   useWalletInfo
-} from '@web3modal/base/library/vue'
+} from '@rerock/base/library/vue'

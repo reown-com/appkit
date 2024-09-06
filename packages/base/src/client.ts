@@ -7,7 +7,7 @@ import type {
   RouterControllerState,
   ChainAdapter,
   SdkVersion
-} from '@web3modal/core'
+} from '@rerock/core'
 import {
   AccountController,
   BlockchainApiController,
@@ -25,13 +25,13 @@ import {
   OptionsController,
   NetworkController,
   AssetUtil
-} from '@web3modal/core'
-import { setColorTheme, setThemeVariables } from '@web3modal/ui'
-import { ConstantsUtil, type CaipNetwork, type ChainNamespace } from '@web3modal/common'
+} from '@rerock/core'
+import { setColorTheme, setThemeVariables } from '@rerock/ui'
+import { ConstantsUtil, type CaipNetwork, type ChainNamespace } from '@rerock/common'
 import type { AppKitOptions } from './utils/TypesUtil.js'
 import { UniversalAdapterClient } from './universal-adapter/client.js'
-import { PresetsUtil } from '@web3modal/scaffold-utils'
-import type { W3mFrameTypes } from '@web3modal/wallet'
+import { PresetsUtil } from '@rerock/scaffold-utils'
+import type { W3mFrameTypes } from '@rerock/wallet'
 import { ProviderUtil } from './store/ProviderUtil.js'
 
 // -- Export Controllers -------------------------------------------------------
@@ -458,7 +458,7 @@ export class AppKit {
     // Set the SIWE client for EVM chains
     if (evmAdapter) {
       if (options.siweConfig) {
-        const { SIWEController } = await import('@web3modal/siwe')
+        const { SIWEController } = await import('@rerock/siwe')
         SIWEController.setSIWEClient(options.siweConfig)
       }
     }
@@ -500,7 +500,7 @@ export class AppKit {
     if (!this.initPromise && !isInitialized && CoreHelperUtil.isClient()) {
       isInitialized = true
       this.initPromise = new Promise<void>(async resolve => {
-        await Promise.all([import('@web3modal/ui'), import('@web3modal/scaffold-ui/w3m-modal')])
+        await Promise.all([import('@rerock/ui'), import('@rerock/scaffold-ui/w3m-modal')])
         const modal = document.createElement('w3m-modal')
         if (!OptionsController.state.disableAppend) {
           document.body.insertAdjacentElement('beforeend', modal)

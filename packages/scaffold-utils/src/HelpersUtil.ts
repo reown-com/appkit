@@ -1,6 +1,6 @@
-import type { Tokens } from '@web3modal/core'
+import type { Tokens } from '@rerock/core'
 import { ConstantsUtil } from './ConstantsUtil.js'
-import type { CaipNetworkId } from '@web3modal/common'
+import type { CaipNetworkId } from '@rerock/common'
 
 export const HelpersUtil = {
   getCaipTokens(tokens?: Tokens) {

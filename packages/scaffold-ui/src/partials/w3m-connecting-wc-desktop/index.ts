@@ -1,5 +1,5 @@
-import { ConnectionController, CoreHelperUtil, EventsController } from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+import { ConnectionController, CoreHelperUtil, EventsController } from '@rerock/core'
+import { customElement } from '@rerock/ui'
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 
 @customElement('w3m-connecting-wc-desktop')

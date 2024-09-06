@@ -6,11 +6,11 @@ import type {
   W3mConnectButton,
   W3mNetworkButton,
   W3mOnrampWidget
-} from '@web3modal/scaffold-ui'
+} from '@rerock/scaffold-ui'
 import type { AppKit } from '../../../src/client.js'
 import type { AppKitOptions } from '../../utils/TypesUtil.js'
 import { ProviderUtil } from '../../store/ProviderUtil.js'
-import type { ChainNamespace } from '@web3modal/common'
+import type { ChainNamespace } from '@rerock/common'
 
 type OpenOptions = {
   view: 'Account' | 'Connect' | 'Networks' | 'ApproveTransaction' | 'OnRampProviders'

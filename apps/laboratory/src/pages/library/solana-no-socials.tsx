@@ -1,8 +1,8 @@
-import { createWeb3Modal } from '@web3modal/base/react'
-import { SolanaWeb3JsClient } from '@web3modal/adapter-solana/react'
+import { createWeb3Modal } from '@rerock/base/react'
+import { SolanaWeb3JsClient } from '@rerock/adapter-solana/react'
 
 import { ThemeStore } from '../../utils/StoreUtil'
-import { solana, solanaDevnet, solanaTestnet } from '@web3modal/base/chains'
+import { solana, solanaDevnet, solanaTestnet } from '@rerock/base/chains'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { SolanaTests } from '../../components/Solana/SolanaTests'

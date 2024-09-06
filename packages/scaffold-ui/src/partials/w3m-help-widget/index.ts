@@ -1,5 +1,5 @@
-import type { VisualType } from '@web3modal/ui'
-import { customElement } from '@web3modal/ui'
+import type { VisualType } from '@rerock/ui'
+import { customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 

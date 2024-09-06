@@ -1,7 +1,7 @@
 import { html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
-import { customElement, type ColorType } from '@web3modal/ui'
-import { ApiController } from '@web3modal/core'
+import { customElement, type ColorType } from '@rerock/ui'
+import { ApiController } from '@rerock/core'
 import styles from './styles.js'
 
 @customElement('w3m-onramp-activity-item')

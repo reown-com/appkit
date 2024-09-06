@@ -3,7 +3,7 @@ import { SwapCalculationUtil } from '../../src/utils/SwapCalculationUtil.js'
 import { INITIAL_GAS_LIMIT } from '../../src/controllers/SwapController.js'
 import { balanceResponse, networkTokenPriceResponse } from '../mocks/SwapController.js'
 import type { SwapTokenWithBalance } from '../../src/utils/TypeUtil.js'
-import { NumberUtil } from '@web3modal/common'
+import { NumberUtil } from '@rerock/common'
 import { SwapApiUtil } from '../../src/utils/SwapApiUtil.js'
 
 // - Mocks ---------------------------------------------------------------------

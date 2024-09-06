@@ -9,12 +9,12 @@ import {
   VersionedTransaction,
   TransactionMessage
 } from '@solana/web3.js'
-import { useWeb3ModalNetwork, useWeb3ModalProvider } from '@web3modal/base/react'
+import { useWeb3ModalNetwork, useWeb3ModalProvider } from '@rerock/base/react'
 
 import { COUNTER_ACCOUNT_SIZE } from '../../utils/SolanaConstants'
 import { deserializeCounterAccount, detectProgramId } from '../../utils/SolanaUtil'
 import { useChakraToast } from '../Toast'
-import { useWeb3ModalConnection, type Provider } from '@web3modal/adapter-solana/react'
+import { useWeb3ModalConnection, type Provider } from '@rerock/adapter-solana/react'
 
 export function SolanaWriteContractTest() {
   const toast = useChakraToast()

@@ -1,7 +1,7 @@
 import { proxy, ref, subscribe } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import type UniversalProvider from '@walletconnect/universal-provider'
-import type { ChainNamespace } from '@web3modal/common'
+import type { ChainNamespace } from '@rerock/common'
 
 type StateKey = keyof ProviderStoreUtilState
 

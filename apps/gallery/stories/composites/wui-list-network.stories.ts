@@ -1,9 +1,9 @@
 import type { Meta } from '@storybook/web-components'
-import '@web3modal/ui/src/composites/wui-list-network'
+import '@rerock/ui/src/composites/wui-list-network'
 import { html } from 'lit'
 import '../../components/gallery-container'
 import { networkImageSrc, walletImagesOptions } from '../../utils/PresetUtils'
-import type { WuiListNetwork } from '@web3modal/ui'
+import type { WuiListNetwork } from '@rerock/ui'
 
 type Component = Meta<WuiListNetwork>
 

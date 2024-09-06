@@ -1,5 +1,5 @@
 import type { NamespaceConfig, Namespace } from '@walletconnect/universal-provider'
-import type { CaipNetwork, ChainNamespace } from '@web3modal/common'
+import type { CaipNetwork, ChainNamespace } from '@rerock/common'
 
 export const WcHelpersUtil = {
   hexStringToNumber(value: string) {

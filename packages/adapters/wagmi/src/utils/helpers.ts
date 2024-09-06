@@ -2,14 +2,14 @@ import {
   ConstantsUtil as CommonConstantsUtil,
   type CaipNetwork,
   type CaipNetworkId
-} from '@web3modal/common'
-import { ConstantsUtil, PresetsUtil } from '@web3modal/scaffold-utils'
+} from '@rerock/common'
+import { ConstantsUtil, PresetsUtil } from '@rerock/scaffold-utils'
 import { UniversalProvider } from '@walletconnect/universal-provider'
 import { fallback, http, type Hex } from 'viem'
 
 import type { Chain } from '@wagmi/core/chains'
 import type { Connector } from '@wagmi/core'
-import { CoreHelperUtil } from '@web3modal/core'
+import { CoreHelperUtil } from '@rerock/core'
 
 export function getCaipDefaultNetwork(chain?: CaipNetwork) {
   if (!chain) {

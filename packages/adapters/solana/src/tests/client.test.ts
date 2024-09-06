@@ -4,20 +4,20 @@ import { mockOptions } from './mocks/Options'
 import mockAppKit from './mocks/AppKit'
 import { mockAuthConnector } from './mocks/AuthConnector'
 import { Connection } from '@solana/web3.js'
-import { SafeLocalStorage } from '@web3modal/common'
-import { ProviderUtil } from '@web3modal/base/store'
+import { SafeLocalStorage } from '@rerock/common'
+import { ProviderUtil } from '@rerock/base/store'
 import { SolHelpersUtil } from '../utils/SolanaHelpersUtils'
 import { SolStoreUtil } from '../utils/SolanaStoreUtil'
 import { WalletConnectProvider } from '../providers/WalletConnectProvider'
 import UniversalProvider from '@walletconnect/universal-provider'
-import { solana } from '@web3modal/base/chains'
+import { solana } from '@rerock/base/chains'
 
 vi.mock('@solana/web3.js', () => ({
   Connection: vi.fn(),
   PublicKey: vi.fn()
 }))
 
-vi.mock('@web3modal/wallet', () => ({
+vi.mock('@rerock/wallet', () => ({
   W3mFrameProvider: vi.fn().mockImplementation(() => mockAuthConnector),
   W3mFrameHelpers: {
     checkIfRequestExists: vi.fn(),
@@ -28,7 +28,7 @@ vi.mock('@web3modal/wallet', () => ({
   }
 }))
 
-vi.mock('@web3modal/base/store', () => ({
+vi.mock('@rerock/base/store', () => ({
   ProviderUtil: {
     setProvider: vi.fn(),
     setProviderId: vi.fn(),
