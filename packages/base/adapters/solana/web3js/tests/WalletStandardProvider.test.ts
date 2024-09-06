@@ -125,4 +125,17 @@ describe('WalletStandardProvider specific tests', () => {
       walletStandardProvider.signAndSendTransaction(mockLegacyTransaction())
     ).rejects.toThrowError(WalletStandardFeatureNotSupportedError)
   })
+
+  it('should call signTransaction with correct params for multiple transactions over singAllTransactions method', async () => {
+    const transactions = [mockLegacyTransaction(), mockVersionedTransaction()]
+    await walletStandardProvider.signAllTransactions(transactions)
+
+    expect(wallet.features[SolanaSignTransaction].signTransaction).toHaveBeenCalledWith(
+      ...transactions.map(transaction => ({
+        transaction: transaction.serialize({ verifySignatures: false }),
+        account: wallet.accounts[0],
+        chain: 'solana:mainnet'
+      }))
+    )
+  })
 })

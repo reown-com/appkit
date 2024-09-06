@@ -15,9 +15,7 @@ export const solanaConfig = defaultSolanaConfig({
   metadata: ConstantsUtil.Metadata,
   auth: {
     email: true,
-    socials: ['google', 'x', 'discord', 'farcaster', 'github', 'apple', 'facebook'],
-    walletFeatures: true,
-    showWallets: true
+    socials: []
   }
 })
 
@@ -25,6 +23,7 @@ const modal = createWeb3Modal({
   solanaConfig,
   projectId: ConstantsUtil.ProjectId,
   metadata: ConstantsUtil.Metadata,
+  defaultChain: solana,
   chains,
   enableAnalytics: false,
   termsConditionsUrl: 'https://walletconnect.com/terms',

@@ -1,5 +1,6 @@
 import {
   AccountController,
+  AssetController,
   AssetUtil,
   CoreHelperUtil,
   ModalController,
@@ -38,6 +39,8 @@ export class W3mAccountButton extends LitElement {
 
   @state() private network = NetworkController.state.caipNetwork
 
+  @state() private networkImage = this.network ? AssetUtil.getNetworkImage(this.network) : undefined
+
   @state() private isUnsupportedChain = NetworkController.state.isUnsupportedChain
 
   // -- Lifecycle ----------------------------------------- //
@@ -45,6 +48,11 @@ export class W3mAccountButton extends LitElement {
     super()
     this.unsubscribe.push(
       ...[
+        AssetController.subscribeNetworkImages(() => {
+          this.networkImage = this.network?.imageId
+            ? AssetUtil.getNetworkImage(this.network)
+            : undefined
+        }),
         AccountController.subscribe(val => {
           if (val.isConnected) {
             this.address = val.address
@@ -62,6 +70,7 @@ export class W3mAccountButton extends LitElement {
         }),
         NetworkController.subscribeKey('caipNetwork', val => {
           this.network = val
+          this.networkImage = val?.imageId ? AssetUtil.getNetworkImage(val) : undefined
         }),
         NetworkController.subscribeKey('isUnsupportedChain', val => {
           this.isUnsupportedChain = val
@@ -76,7 +85,6 @@ export class W3mAccountButton extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const networkImage = AssetUtil.getNetworkImage(this.network)
     const showBalance = this.balance === 'show'
 
     return html`
@@ -85,7 +93,7 @@ export class W3mAccountButton extends LitElement {
         .isUnsupportedChain=${this.isUnsupportedChain}
         address=${ifDefined(this.address)}
         profileName=${ifDefined(this.profileName)}
-        networkSrc=${ifDefined(networkImage)}
+        networkSrc=${ifDefined(this.networkImage)}
         avatarSrc=${ifDefined(this.profileImage)}
         balance=${showBalance
           ? CoreHelperUtil.formatBalance(this.balanceVal, this.balanceSymbol)

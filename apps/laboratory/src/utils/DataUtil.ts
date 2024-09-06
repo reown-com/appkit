@@ -30,9 +30,14 @@ export const wagmiSdkOptions = [
     description: 'Configuration using wagmi and implementing sign in with ethereum'
   },
   {
-    title: 'Email & Social',
-    link: '/library/wagmi-email/',
-    description: 'Configuration using wagmi and implementing email and social login'
+    title: 'Without Email',
+    link: '/library/wagmi-no-email/',
+    description: 'Configuration using wagmi without email'
+  },
+  {
+    title: 'Without Socials',
+    link: '/library/wagmi-no-socials/',
+    description: 'Configuration using wagmi without socials'
   },
   {
     title: 'Permissions(Sync)',
@@ -58,9 +63,14 @@ export const ethersSdkOptions = [
     description: 'Configuration using ethers and implementing sign in with ethereum'
   },
   {
-    title: 'Email and Social',
-    link: '/library/ethers-email/',
-    description: 'Configuration using ethers and implementing email and social login'
+    title: 'Without Email',
+    link: '/library/ethers-no-email/',
+    description: 'Configuration using ethers without email'
+  },
+  {
+    title: 'Without Socials',
+    link: '/library/ethers-no-socials/',
+    description: 'Configuration using ethers without socials'
   }
 ]
 
@@ -76,9 +86,9 @@ export const ethers5SdkOptions = [
     description: 'Configuration using ethers and implementing sign in with ethereum'
   },
   {
-    title: 'Email and Social',
-    link: '/library/ethers5-email/',
-    description: 'Configuration using ethers and implementing email and social login'
+    title: 'Without Socials',
+    link: '/library/ethers5-no-socials/',
+    description: 'Configuration using ethers without socials'
   }
 ]
 
@@ -89,8 +99,13 @@ export const solanaSdkOptions = [
     description: 'Basic configuration using solana as a driving library'
   },
   {
-    title: 'Email and Social',
-    link: '/library/solana-email/',
-    description: 'Configuration using solana and implementing email and social login'
+    title: 'Without Email',
+    link: '/library/solana-no-email/',
+    description: 'Configuration using solana without email'
+  },
+  {
+    title: 'Without Socials',
+    link: '/library/solana-no-socials/',
+    description: 'Configuration using ethers without socials'
   }
 ]

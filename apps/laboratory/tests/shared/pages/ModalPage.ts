@@ -14,13 +14,12 @@ const maliciousUrl = 'https://malicious-app-verify-simulation.vercel.app'
 
 export type ModalFlavor =
   | 'default'
-  | 'siwe'
-  | 'email'
-  | 'wallet'
   | 'external'
   | 'verify-valid'
   | 'verify-domain-mismatch'
   | 'verify-evil'
+  | 'no-email'
+  | 'no-socials'
   | 'all'
 
 function getUrlByFlavor(baseUrl: string, library: string, flavor: ModalFlavor) {
@@ -323,6 +322,10 @@ export class ModalPage {
     expect(this.page.getByTestId('w3m-modal-overlay')).not.toBeVisible()
     this.page.waitForTimeout(300)
     await this.page.getByTestId('account-button').click()
+  }
+
+  async openConnectModal() {
+    await this.page.getByTestId('connect-button').click()
   }
 
   async closeModal() {

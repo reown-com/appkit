@@ -22,7 +22,8 @@ import type {
   Token,
   Connector,
   CaipAddress,
-  CaipNetwork
+  CaipNetwork,
+  ChainAdapter
 } from '@web3modal/core'
 import type { Chain as AvailableChain } from '@web3modal/common'
 
@@ -45,6 +46,7 @@ import { withSolanaNamespace } from './utils/withSolanaNamespace.js'
 import type { AppKit } from '../../../src/client.js'
 import type { AppKitOptions } from '../../../utils/TypesUtil.js'
 import type { OptionsControllerState } from '@web3modal/core'
+import { SafeLocalStorage } from '../../../utils/SafeLocalStorage.js'
 
 export interface Web3ModalClientOptions
   extends Omit<AppKitOptions, 'defaultChain' | 'tokens' | 'sdkType' | 'sdkVersion'> {
@@ -61,7 +63,7 @@ export interface Web3ModalClientOptions
 export type Web3ModalOptions = Omit<Web3ModalClientOptions, '_sdkVersion' | 'isUniversalProvider'>
 
 // -- Client --------------------------------------------------------------------
-export class SolanaWeb3JsClient {
+export class SolanaWeb3JsClient implements ChainAdapter<SolStoreUtilState, CaipNetwork> {
   private appKit: AppKit | undefined = undefined
 
   private instanceOptions: Web3ModalClientOptions | undefined = undefined
@@ -86,8 +88,10 @@ export class SolanaWeb3JsClient {
 
   public defaultChain: CaipNetwork | undefined = undefined
 
+  public defaultSolanaChain: Chain | undefined = undefined
+
   public constructor(options: Web3ModalClientOptions) {
-    const { solanaConfig, chains, connectionSettings = 'confirmed' } = options
+    const { solanaConfig, chains, defaultChain, connectionSettings = 'confirmed' } = options
 
     if (!solanaConfig) {
       throw new Error('web3modal:constructor - solanaConfig is undefined')
@@ -98,6 +102,14 @@ export class SolanaWeb3JsClient {
     this.chains = chains
 
     this.connectionSettings = connectionSettings
+
+    this.defaultChain = defaultChain
+      ? SolHelpersUtil.getChainFromCaip(
+          this.chains,
+          SafeLocalStorage.getItem(SolConstantsUtil.CAIP_CHAIN_ID) || defaultChain.chainId
+        )
+      : undefined
+    this.defaultSolanaChain = this.chains.find(c => c.chainId === defaultChain?.chainId)
 
     this.networkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
@@ -212,27 +224,23 @@ export class SolanaWeb3JsClient {
     }
 
     this.initializeProviders({
-      relayUrl: 'wss://relay.walletconnect.com',
+      relayUrl: SolConstantsUtil.UNIVERSAL_PROVIDER_RELAY_URL,
       metadata: clientOptions.metadata,
       projectId: options.projectId,
       ...clientOptions.solanaConfig.auth
     })
 
-    this.syncRequestedNetworks(chains, this.options?.chainImages)
-
-    const chain = SolHelpersUtil.getChainFromCaip(
-      chains,
-      typeof window === 'object' ? localStorage.getItem(SolConstantsUtil.CAIP_CHAIN_ID) : ''
-    )
-
-    this.defaultChain = chain as CaipNetwork
-    this.syncRequestedNetworks(chains, this.options?.chainImages)
-
-    if (chain) {
-      SolStoreUtil.setCurrentChain(chain)
-      SolStoreUtil.setCaipChainId(`solana:${chain.chainId}`)
+    if (this.defaultSolanaChain) {
+      SolStoreUtil.setCurrentChain(this.defaultSolanaChain)
+      SolStoreUtil.setCaipChainId(`solana:${this.defaultSolanaChain.chainId}`)
     }
+
+    if (this.defaultChain) {
+      this.appKit?.setCaipNetwork(this.defaultChain)
+    }
+
     this.syncNetwork()
+    this.syncRequestedNetworks(chains, this.options?.chainImages)
 
     SolStoreUtil.subscribeKey('address', () => {
       this.syncAccount()
@@ -260,7 +268,7 @@ export class SolanaWeb3JsClient {
       if (NetworkController.state.caipNetwork && !SolStoreUtil.state.isConnected) {
         SolStoreUtil.setCaipChainId(`solana:${newChain.chainId}`)
         SolStoreUtil.setCurrentChain(newChain)
-        localStorage.setItem(SolConstantsUtil.CAIP_CHAIN_ID, `solana:${newChain.chainId}`)
+        SafeLocalStorage.setItem(SolConstantsUtil.CAIP_CHAIN_ID, `solana:${newChain.chainId}`)
         ApiController.reFetchWallets()
       }
     })
@@ -301,6 +309,27 @@ export class SolanaWeb3JsClient {
   }
 
   // -- Private -----------------------------------------------------------------
+  private syncConnectedWalletInfo() {
+    const currentActiveWallet = SafeLocalStorage.getItem(SolConstantsUtil.WALLET_ID)
+    const provider = SolStoreUtil.state.provider
+
+    if (provider?.type === 'WALLET_CONNECT') {
+      const wcProvider = provider as WalletConnectProvider
+      if (wcProvider.session) {
+        this.appKit?.setConnectedWalletInfo(
+          {
+            ...wcProvider.session.peer.metadata,
+            name: wcProvider.session.peer.metadata.name,
+            icon: wcProvider.session.peer.metadata.icons?.[0]
+          },
+          this.chain
+        )
+      }
+    } else if (currentActiveWallet) {
+      this.appKit?.setConnectedWalletInfo({ name: currentActiveWallet }, this.chain)
+    }
+  }
+
   private async syncAccount() {
     const address = SolStoreUtil.state.address
     const chainId = SolStoreUtil.state.currentChain?.chainId
@@ -309,6 +338,7 @@ export class SolanaWeb3JsClient {
       const caipAddress: CaipAddress = `${ConstantsUtil.INJECTED_CONNECTOR_ID}:${chainId}:${address}`
       this.appKit?.setCaipAddress(caipAddress, this.chain)
       await this.syncBalance(address)
+      this.syncConnectedWalletInfo()
 
       this.hasSyncedConnectedAccount = true
     } else if (this.hasSyncedConnectedAccount) {
@@ -365,7 +395,7 @@ export class SolanaWeb3JsClient {
     const chain = SolHelpersUtil.getChainFromCaip(this.chains, caipChainId)
     SolStoreUtil.setCaipChainId(chain.id)
     SolStoreUtil.setCurrentChain(chain)
-    localStorage.setItem(SolConstantsUtil.CAIP_CHAIN_ID, chain.id)
+    SafeLocalStorage.setItem(SolConstantsUtil.CAIP_CHAIN_ID, chain.id)
 
     await this.syncNetwork()
     await this.syncAccount()
@@ -437,7 +467,7 @@ export class SolanaWeb3JsClient {
       SolStoreUtil.setProvider(provider)
       this.provider = provider
 
-      window?.localStorage.setItem(SolConstantsUtil.WALLET_ID, provider.name)
+      SafeLocalStorage.setItem(SolConstantsUtil.WALLET_ID, provider.name)
 
       await this.appKit?.setApprovedCaipNetworksData(this.chain)
 
@@ -462,7 +492,7 @@ export class SolanaWeb3JsClient {
       }
 
       if (W3mFrameHelpers.checkIfRequestExists(request)) {
-        if (!W3mFrameHelpers.checkIfRequestIsAllowed(request)) {
+        if (!W3mFrameHelpers.checkIfRequestIsSafe(request)) {
           if (this.appKit.isOpen()) {
             if (this.appKit.isTransactionStackEmpty()) {
               return
@@ -517,7 +547,7 @@ export class SolanaWeb3JsClient {
     }
 
     function disconnectHandler() {
-      localStorage.removeItem(SolConstantsUtil.WALLET_ID)
+      SafeLocalStorage.removeItem(SolConstantsUtil.WALLET_ID)
       SolStoreUtil.reset()
 
       provider.removeListener('disconnect', disconnectHandler)
@@ -533,7 +563,7 @@ export class SolanaWeb3JsClient {
       if (currentAccount) {
         SolStoreUtil.setAddress(currentAccount)
       } else {
-        localStorage.removeItem(SolConstantsUtil.WALLET_ID)
+        SafeLocalStorage.removeItem(SolConstantsUtil.WALLET_ID)
         SolStoreUtil.reset()
       }
     }
@@ -564,7 +594,7 @@ export class SolanaWeb3JsClient {
         })
       )
 
-      if (opts.email || opts.socials) {
+      if (opts.email || opts.socials?.length) {
         if (!opts.projectId) {
           throw new Error('projectId is required for AuthProvider')
         }
@@ -592,7 +622,7 @@ export class SolanaWeb3JsClient {
   }
 
   private addProvider(...providers: Provider[]) {
-    const activeProviderName = localStorage.getItem(SolConstantsUtil.WALLET_ID)
+    const activeProviderName = SafeLocalStorage.getItem(SolConstantsUtil.WALLET_ID)
 
     for (const provider of providers) {
       this.availableProviders = this.availableProviders.filter(p => p.name !== provider.name)
