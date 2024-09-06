@@ -4,7 +4,7 @@ export type SafeLocalStorageItems = {
   '@w3m/solana_wallet': string
   '@w3m/solana_caip_chain': string
   '@w3m/active_caip_network': string
-  }
+}
 
 export const SafeLocalStorageKeys = {
   WALLET_ID: '@w3m/wallet_id',
