@@ -164,7 +164,6 @@ export class W3mNetworksView extends LitElement {
         RouterController.push('SwitchNetwork', { ...routerData, network })
       } else {
         await NetworkController.switchActiveNetwork(network)
-        await NetworkUtil.onNetworkChange()
       }
     } else {
       // eslint-disable-next-line no-lonely-if
@@ -181,7 +180,6 @@ export class W3mNetworksView extends LitElement {
           })
         } else {
           NetworkController.setActiveCaipNetwork(network)
-          await NetworkUtil.onNetworkChange()
         }
       }
     }

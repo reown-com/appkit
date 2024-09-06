@@ -380,11 +380,7 @@ export class AppKit {
       }
 
       // Check if we need to replace or redirect
-      if (this.isTransactionShouldReplaceView()) {
-        this.replace('ApproveTransaction')
-      } else {
-        this.redirect('ApproveTransaction')
-      }
+      this.redirect('ApproveTransaction')
     } else {
       // If called from outside the modal, open ApproveTransaction
       this.open({ view: 'ApproveTransaction' })

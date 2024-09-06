@@ -17,6 +17,7 @@ import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
 import type { ChainNamespace } from '@rerock/common'
 import { NetworkController } from './NetworkController.js'
+import { RouterController } from './RouterController.js'
 
 // -- Types --------------------------------------------- //
 export interface ConnectExternalOptions {
@@ -165,6 +166,10 @@ export const ConnectionController = {
     state.recentWallet = undefined
     TransactionsController.resetTransactions()
     StorageUtil.deleteWalletConnectDeepLink()
+    if (ModalController.state.open) {
+      ModalController.close()
+      RouterController.reset('Connect')
+    }
   },
 
   setWcLinking(wcLinking: ConnectionControllerState['wcLinking']) {
@@ -195,6 +200,7 @@ export const ConnectionController = {
       await connectionControllerClient?.disconnect()
       this.resetWcConnection()
     } catch (error) {
+      console.error(error)
       throw new Error('Failed to disconnect')
     }
   }

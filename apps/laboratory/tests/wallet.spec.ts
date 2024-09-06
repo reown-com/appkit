@@ -129,7 +129,17 @@ sampleWalletTest('it should not show onramp button accordingly', async ({ librar
   await modalPage.closeModal()
 })
 
+sampleWalletTest('it should disconnect and close modal when connecting from wallet', async () => {
+  await modalPage.openModal()
+  await walletPage.disconnectConnection()
+  await walletValidator.expectSessionCard({ visible: false })
+  await modalValidator.expectModalNotVisible()
+  await walletPage.page.waitForTimeout(500)
+})
+
 sampleWalletTest('it should disconnect as expected', async () => {
+  await modalPage.qrCodeFlow(modalPage, walletPage)
+  await modalValidator.expectConnected()
   await modalPage.disconnect()
   await modalValidator.expectDisconnected()
 })

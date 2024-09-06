@@ -134,7 +134,6 @@ export class W3mUnsupportedChainView extends LitElement {
     if (isConnected && caipNetwork?.id !== network.id) {
       if (approvedCaipNetworkIds?.includes(network.id)) {
         await NetworkController.switchActiveNetwork(network)
-        await NetworkUtil.onNetworkChange()
       } else if (supportsAllNetworks) {
         RouterController.push('SwitchNetwork', { ...routerData, network })
       }

@@ -133,7 +133,6 @@ export class W3mNetworkSwitchView extends LitElement {
       this.error = false
       if (this.network) {
         await NetworkController.switchActiveNetwork(this.network)
-        await NetworkUtil.onNetworkChange()
       }
     } catch {
       this.error = true

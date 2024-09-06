@@ -56,7 +56,7 @@ export class W3mModal extends LitElement {
           this.loading = val
           this.onNewAddress(AccountController.state.caipAddress)
         }),
-        AccountController.subscribeKey('isConnected', val => (this.connected = val)),
+        AccountController.subscribeKey('isConnected', val => this.onIsConnectedChange(val)),
         NetworkController.subscribeKey('caipNetwork', val => this.onNewNetwork(val)),
         AccountController.subscribeKey('caipAddress', val => this.onNewAddress(val)),
         OptionsController.subscribeKey('isSiweEnabled', val => (this.isSiweEnabled = val))
@@ -202,10 +202,22 @@ export class W3mModal extends LitElement {
       if (session && previousAddress && newAddress && previousAddress !== newAddress) {
         if (SIWEController.state._client?.options.signOutOnAccountChange) {
           await SIWEController.signOut()
+          this.onSiweNavigation()
         }
       }
+    }
+  }
 
-      this.onSiweNavigation()
+  private async onIsConnectedChange(isConnected: boolean) {
+    this.connected = isConnected
+
+    if (this.connected && this.isSiweEnabled) {
+      const { SIWEController } = await import('@rerock/siwe')
+      const session = await SIWEController.getSession()
+
+      if (!session) {
+        this.onSiweNavigation()
+      }
     }
   }
 
@@ -218,17 +230,20 @@ export class W3mModal extends LitElement {
     const newNetworkId = caipNetwork?.id
     this.caipNetwork = caipNetwork
 
-    if (this.isSiweEnabled) {
-      const { SIWEController } = await import('@rerock/siwe')
-      const session = await SIWEController.getSession()
+    if (newNetworkId && previousNetworkId !== newNetworkId) {
+      if (this.isSiweEnabled) {
+        const { SIWEController } = await import('@rerock/siwe')
+        const session = await SIWEController.getSession()
 
-      if (session && previousNetworkId && newNetworkId && previousNetworkId !== newNetworkId) {
-        if (SIWEController.state._client?.options.signOutOnNetworkChange) {
-          await SIWEController.signOut()
+        if (session) {
+          if (SIWEController.state._client?.options.signOutOnNetworkChange) {
+            await SIWEController.signOut()
+            this.onSiweNavigation()
+          }
         }
+      } else {
+        RouterController.goBack()
       }
-
-      this.onSiweNavigation()
     }
   }
 

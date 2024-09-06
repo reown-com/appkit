@@ -12,6 +12,7 @@ import {
 } from '@rerock/common'
 import { ChainController } from './ChainController.js'
 import { PublicStateController } from './PublicStateController.js'
+import { RouterController } from './RouterController.js'
 
 // -- Types --------------------------------------------- //
 export interface NetworkControllerClient {
@@ -114,6 +115,14 @@ export const NetworkController = {
 
       if (!isSupported) {
         this.showUnsupportedChainUI()
+      } else {
+        if (RouterController.state.view === 'SwitchNetwork') {
+          RouterController.goBack()
+        }
+      }
+    } else {
+      if (RouterController.state.view === 'SwitchNetwork') {
+        RouterController.goBack()
       }
     }
   },
@@ -265,7 +274,7 @@ export const NetworkController = {
 
     ChainController.setChainNetworkData(chain, {
       approvedCaipNetworkIds: data?.approvedCaipNetworkIds,
-      supportsAllNetworks: data?.supportsAllNetworks || false
+      supportsAllNetworks: data?.supportsAllNetworks
     })
   },
 

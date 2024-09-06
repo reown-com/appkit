@@ -109,17 +109,16 @@ export class Web3ModalSIWEClient {
       ...messageParams!
     })
     const type = StorageUtil.getConnectedConnector()
+
     if (type === 'AUTH') {
       RouterController.pushTransactionStack({
         view: null,
         goBack: false,
-        replace: true,
-        onCancel() {
-          RouterController.replace('ConnectingSiwe')
-        }
+        replace: true
       })
     }
     const signature = await ConnectionController.signMessage(message)
+
     const isValid = await this.methods.verifyMessage({ message, signature })
     if (!isValid) {
       throw new Error('Error verifying SIWE signature')
@@ -133,7 +132,9 @@ export class Web3ModalSIWEClient {
       this.methods.onSignIn(session)
     }
 
-    RouterUtil.navigateAfterNetworkSwitch()
+    if (type !== 'AUTH') {
+      RouterController.goBack()
+    }
 
     return session
   }

@@ -299,6 +299,7 @@ export class EVMEthers5Client {
         const providerId = ProviderUtil.state.providerIds['eip155']
 
         this.appKit?.setClientId(null)
+
         if (this.options?.siweConfig?.options?.signOutOnDisconnect) {
           const { SIWEController } = await import('@rerock/siwe')
           await SIWEController.signOut()
@@ -338,10 +339,10 @@ export class EVMEthers5Client {
 
         // Common cleanup actions
         SafeLocalStorage.removeItem(SafeLocalStorageKeys.WALLET_ID)
-        this.appKit?.resetAccount('eip155')
+        this.appKit?.resetAccount(this.chainNamespace)
       },
       signMessage: async (message: string) => {
-        const provider = ProviderUtil.getProvider<Provider>('eip155')
+        const provider = ProviderUtil.getProvider<Provider>(this.chainNamespace)
         const address = this.appKit?.getAddress()
 
         if (!address) {
@@ -507,10 +508,7 @@ export class EVMEthers5Client {
     const walletId = SafeLocalStorage.getItem(SafeLocalStorageKeys.WALLET_ID)
 
     if (!walletId) {
-      return {
-        supportsAllNetworks: true,
-        approvedCaipNetworkIds: []
-      }
+      throw new Error('No wallet id found to get approved networks data')
     }
 
     const providerConfigs = {
@@ -524,14 +522,11 @@ export class EVMEthers5Client {
 
     const networkData = providerConfigs[walletId as unknown as keyof typeof providerConfigs]
 
-    if (networkData) {
-      return networkData
+    if (!networkData) {
+      throw new Error('No network data found for wallet')
     }
 
-    return {
-      supportsAllNetworks: false,
-      approvedCaipNetworkIds: []
-    }
+    return networkData
   }
 
   private checkActiveProviders(config: ProviderType) {
@@ -679,7 +674,7 @@ export class EVMEthers5Client {
           this.appKit?.setAllAccounts([], this.chainNamespace)
         }
         SafeLocalStorage.removeItem(SafeLocalStorageKeys.WALLET_ID)
-        this.appKit?.resetAccount('eip155')
+        this.appKit?.resetAccount(this.chainNamespace)
       }
     }
 
@@ -775,7 +770,7 @@ export class EVMEthers5Client {
     if (this.appKit?.isTransactionStackEmpty()) {
       this.appKit?.close()
     } else {
-      this.appKit?.popTransactionStack(true)
+      this.appKit?.popTransactionStack()
     }
   }
 
@@ -898,17 +893,15 @@ export class EVMEthers5Client {
     const caipNetwork = this.appKit?.getCaipNetwork()
 
     if (caipNetwork) {
-      if (caipNetwork) {
-        const jsonRpcProvider = new ethers.providers.JsonRpcProvider(caipNetwork.rpcUrl, {
-          chainId: caipNetwork.chainId as number,
-          name: caipNetwork.name
-        })
-        if (jsonRpcProvider) {
-          const balance = await jsonRpcProvider.getBalance(address)
-          const formattedBalance = ethers.utils.formatEther(balance)
+      const jsonRpcProvider = new ethers.providers.JsonRpcProvider(caipNetwork.rpcUrl, {
+        chainId: caipNetwork.chainId as number,
+        name: caipNetwork.name
+      })
+      if (jsonRpcProvider) {
+        const balance = await jsonRpcProvider.getBalance(address)
+        const formattedBalance = ethers.utils.formatEther(balance)
 
-          this.appKit?.setBalance(formattedBalance, caipNetwork.currency, this.chainNamespace)
-        }
+        this.appKit?.setBalance(formattedBalance, caipNetwork.currency, this.chainNamespace)
       }
     }
   }

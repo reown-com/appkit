@@ -1,5 +1,6 @@
 import { Connection } from '@solana/web3.js'
 import {
+  AccountController,
   ApiController,
   AssetController,
   ChainController,
@@ -61,8 +62,6 @@ export class SolanaWeb3JsClient implements ChainAdapter {
 
   public wallets?: BaseWalletAdapter[]
 
-  private hasSyncedConnectedAccount = false
-
   private caipNetworks: CaipNetwork[] = []
 
   public chainNamespace: ChainNamespace = CommonConstantsUtil.CHAIN.SOLANA
@@ -85,8 +84,16 @@ export class SolanaWeb3JsClient implements ChainAdapter {
     const { wallets, connectionSettings = 'confirmed' } = options
 
     this.wallets = wallets
-
     this.connectionSettings = connectionSettings
+
+    AccountController.subscribeKey(
+      'isConnected',
+      val => {
+        this.syncNetwork()
+        this.syncAccount({ address: this.appKit?.getAddress() as string })
+      },
+      'solana'
+    )
   }
 
   public construct(appKit: AppKit, options: AppKitOptions) {
@@ -272,8 +279,7 @@ export class SolanaWeb3JsClient implements ChainAdapter {
   }
 
   // -- Private -----------------------------------------------------------------
-  private async syncAccount() {
-    const address = this.appKit?.getAddress()
+  private async syncAccount({ address }: { address: string | undefined }) {
     const chainId = this.appKit?.getCaipNetwork()?.chainId
     const isConnected = this.appKit?.getIsConnectedState()
 
@@ -282,9 +288,7 @@ export class SolanaWeb3JsClient implements ChainAdapter {
       this.appKit?.setIsConnected(isConnected, this.chainNamespace)
       this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)
       await this.syncBalance(address)
-
-      this.hasSyncedConnectedAccount = true
-    } else if (this.hasSyncedConnectedAccount) {
+    } else {
       this.appKit?.resetWcConnection()
       this.appKit?.resetNetwork()
       this.appKit?.resetAccount(this.chainNamespace)
@@ -333,7 +337,9 @@ export class SolanaWeb3JsClient implements ChainAdapter {
     SafeLocalStorage.setItem(SafeLocalStorageKeys.SOLANA_CAIP_CHAIN, caipNetwork.id)
 
     await this.syncNetwork()
-    await this.syncAccount()
+    await this.syncAccount({
+      address: this.appKit?.getAddress() as string
+    })
   }
 
   private async syncNetwork() {
@@ -341,14 +347,10 @@ export class SolanaWeb3JsClient implements ChainAdapter {
     const caipNetwork = this.appKit?.getCaipNetwork()
 
     if (caipNetwork) {
-      SolStoreUtil.setConnection(
-        new Connection(
-          SolHelpersUtil.detectRpcUrl(caipNetwork, OptionsController.state.projectId),
-          this.connectionSettings
-        )
-      )
+      SolStoreUtil.setConnection(new Connection(caipNetwork.rpcUrl, this.connectionSettings))
 
       this.appKit?.setCaipNetwork(caipNetwork)
+
       if (address) {
         if (caipNetwork.explorerUrl) {
           const url = `${caipNetwork.explorerUrl}/account/${address}`
@@ -356,9 +358,7 @@ export class SolanaWeb3JsClient implements ChainAdapter {
         } else {
           this.appKit?.setAddressExplorerUrl(undefined, this.chainNamespace)
         }
-        if (this.hasSyncedConnectedAccount) {
-          await this.syncBalance(address)
-        }
+        await this.syncBalance(address)
       }
     }
   }
@@ -375,7 +375,7 @@ export class SolanaWeb3JsClient implements ChainAdapter {
       // eslint-disable-next-line no-nested-ternary
       connectionChain = caipChainId
         ? SolHelpersUtil.getChainFromCaip(this.caipNetworks, caipChainId)
-        : activeCaipNetwork?.chainNamespace === 'eip155'
+        : activeCaipNetwork?.chainNamespace === 'solana'
           ? this.caipNetworks.find(chain => chain.chainNamespace === 'solana')
           : activeCaipNetwork || this.caipNetworks.find(chain => chain.chainNamespace === 'solana')
 

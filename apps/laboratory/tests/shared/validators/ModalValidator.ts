@@ -208,4 +208,9 @@ export class ModalValidator {
     const socials = this.page.getByTestId('w3m-social-login-widget')
     await expect(socials).toBeVisible()
   }
+
+  async expectModalNotVisible() {
+    const modal = this.page.getByTestId('w3m-modal')
+    await expect(modal).toBeHidden()
+  }
 }
