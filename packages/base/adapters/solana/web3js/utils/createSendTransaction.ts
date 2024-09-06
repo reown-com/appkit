@@ -1,4 +1,10 @@
-import { PublicKey, SystemProgram, type Connection, Transaction } from '@solana/web3.js'
+import {
+  PublicKey,
+  SystemProgram,
+  type Connection,
+  Transaction,
+  LAMPORTS_PER_SOL
+} from '@solana/web3.js'
 import type { Provider } from '@web3modal/scaffold-utils/solana'
 
 type SendTransactionArgs = {
@@ -19,7 +25,7 @@ export async function createSendTransaction({
   }
 
   const toPubkey = new PublicKey(to)
-  const lamports = value
+  const lamports = Math.floor(value * LAMPORTS_PER_SOL)
 
   const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash()
 
