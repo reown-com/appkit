@@ -44,10 +44,11 @@
   },
   "dependencies": {
     "@coinbase/wallet-sdk": "4.0.3",
-    "@walletconnect/utils": "2.15.1",
     "@web3modal/adapter-ethers5": "workspace:*",
+    "@walletconnect/utils": "2.15.2",
     "@web3modal/base": "workspace:*",
     "@web3modal/common": "workspace:*",
+    "@web3modal/wallet": "workspace:*",
     "@web3modal/polyfills": "workspace:*",
     "@web3modal/scaffold-utils": "workspace:*",
     "@web3modal/siwe": "workspace:*",
