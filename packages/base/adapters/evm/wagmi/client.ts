@@ -416,7 +416,7 @@ export class EVMWagmiClient implements ChainAdapter {
     })
   }
 
-  // @ts-expect-error: Overriden state type is correct
+  // @ts-expect-error: Overridden state type is correct
   public override subscribeState(callback: (state: Web3ModalState) => void) {
     return this.appKit?.subscribeState((state: PublicStateControllerState) =>
       callback({
