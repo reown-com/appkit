@@ -8,20 +8,14 @@ import {
   Stack,
   Text
 } from '@chakra-ui/react'
-import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import type { SIWESession } from '@rerock/siwe'
 
 export function SiweData() {
-  const [ready, setReady] = useState(false)
   const { data, status } = useSession()
   const session = data as unknown as SIWESession
 
-  useEffect(() => {
-    setReady(true)
-  }, [])
-
-  return ready ? (
+  return (
     <Card marginTop={10}>
       <CardHeader>
         <Heading size="md">SIWE Session Details</Heading>
@@ -58,5 +52,5 @@ export function SiweData() {
         </Stack>
       </CardBody>
     </Card>
-  ) : null
+  )
 }

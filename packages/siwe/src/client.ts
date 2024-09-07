@@ -10,7 +10,6 @@ import type { SIWEControllerClient } from '../core/controller/SIWEController.js'
 
 import {
   ConnectionController,
-  RouterUtil,
   RouterController,
   StorageUtil,
   NetworkController,

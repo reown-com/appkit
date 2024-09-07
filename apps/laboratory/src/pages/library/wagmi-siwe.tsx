@@ -30,8 +30,6 @@ const modal = createWeb3Modal({
 ThemeStore.setModal(modal)
 
 export default function Wagmi() {
-  const { isConnected } = useWeb3ModalAccount()
-
   if (!wagmiAdapter.wagmiConfig) {
     return null
   }
@@ -42,7 +40,7 @@ export default function Wagmi() {
         <AppKitButtons />
         <WagmiModalInfo />
         <SiweData />
-        {isConnected ? <WagmiTests /> : null}
+        <WagmiTests />
       </QueryClientProvider>
     </WagmiProvider>
   )

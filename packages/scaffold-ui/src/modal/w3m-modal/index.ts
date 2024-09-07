@@ -230,7 +230,7 @@ export class W3mModal extends LitElement {
     const newNetworkId = caipNetwork?.id
     this.caipNetwork = caipNetwork
 
-    if (newNetworkId && previousNetworkId !== newNetworkId) {
+    if (previousNetworkId && newNetworkId && previousNetworkId !== newNetworkId) {
       if (this.isSiweEnabled) {
         const { SIWEController } = await import('@rerock/siwe')
         const session = await SIWEController.getSession()
@@ -252,7 +252,7 @@ export class W3mModal extends LitElement {
 
     if (isEIP155Namespace) {
       if (this.open) {
-        RouterController.push('ConnectingSiwe')
+        RouterController.replace('ConnectingSiwe')
       } else {
         ModalController.open({
           view: 'ConnectingSiwe'
