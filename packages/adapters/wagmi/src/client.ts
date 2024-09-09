@@ -154,7 +154,7 @@ export class EVMWagmiClient implements ChainAdapter {
     ])
 
     const transports = Object.fromEntries(transportsArr)
-    const connectors: CreateConnectorFn[] = []
+    const connectors: CreateConnectorFn[] = [...(configParams.connectors ?? [])]
 
     this.wagmiConfig = createConfig({
       ...this.createConfigParams,
