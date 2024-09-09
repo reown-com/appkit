@@ -136,6 +136,3 @@ jobs:
       pull-requests: write
     with:
       branch: ${{ github.ref }}
-    env:
-      RELEASE_TOKEN_V2: ${{ secrets.RELEASE_TOKEN_V2 }}
-      TFC_INFRA_TOKEN: ${{ secrets.TFC_INFRA_TOKEN }}
