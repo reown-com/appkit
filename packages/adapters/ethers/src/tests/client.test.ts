@@ -266,18 +266,18 @@ describe('EVMEthersClient', () => {
         client['appKit'] = mockAppKit
       })
 
-      it.skip('should handle RPC request correctly when modal is closed', () => {
+      it('should handle RPC request correctly when modal is closed', () => {
         vi.spyOn(mockAppKit, 'isOpen').mockReturnValue(false)
         mockAppKit['handleUnsafeRPCRequest']()
         expect(mockAppKit.open).toHaveBeenCalledWith({ view: 'ApproveTransaction' })
       })
 
-      it.skip('should handle RPC request correctly when modal is open and transaction stack is not empty', () => {
+      it('should handle RPC request correctly when modal is open and transaction stack is not empty', () => {
         vi.spyOn(mockAppKit, 'isOpen').mockReturnValue(true)
         vi.spyOn(mockAppKit, 'isTransactionStackEmpty').mockReturnValue(false)
         vi.spyOn(mockAppKit, 'isTransactionShouldReplaceView').mockReturnValue(true)
         mockAppKit['handleUnsafeRPCRequest']()
-        expect(mockAppKit.replace).toHaveBeenCalledWith('ApproveTransaction')
+        expect(mockAppKit.redirect).toHaveBeenCalledWith('ApproveTransaction')
       })
 
       it('should handle invalid auth request', () => {

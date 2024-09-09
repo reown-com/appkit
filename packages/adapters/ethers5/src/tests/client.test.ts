@@ -282,7 +282,7 @@ describe('EVMEthersClient', () => {
         vi.spyOn(mockAppKit, 'isTransactionStackEmpty').mockReturnValue(false)
         vi.spyOn(mockAppKit, 'isTransactionShouldReplaceView').mockReturnValue(true)
         mockAppKit['handleUnsafeRPCRequest']()
-        expect(mockAppKit.replace).toHaveBeenCalledWith('ApproveTransaction')
+        expect(mockAppKit.redirect).toHaveBeenCalledWith('ApproveTransaction')
       })
 
       it('should handle invalid auth request', () => {
