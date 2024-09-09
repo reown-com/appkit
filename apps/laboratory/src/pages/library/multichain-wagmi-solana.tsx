@@ -55,7 +55,8 @@ const modal = createWeb3Modal({
   features: {
     analytics: true
   },
-  metadata: ConstantsUtil.Metadata
+  metadata: ConstantsUtil.Metadata,
+  siweConfig
 })
 
 ThemeStore.setModal(modal)
