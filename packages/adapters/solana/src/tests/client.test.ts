@@ -118,7 +118,7 @@ describe('SolanaWeb3JsClient', () => {
       vi.spyOn(mockAppKit, 'getIsConnectedState').mockReturnValue(true)
       vi.spyOn(client as any, 'syncBalance').mockResolvedValue(undefined)
 
-      await client['syncAccount']()
+      await client['syncAccount']({ address: mockAddress })
 
       expect(mockAppKit.setIsConnected).toHaveBeenCalledWith(true, 'solana')
       expect(mockAppKit.setCaipAddress).toHaveBeenCalledWith(

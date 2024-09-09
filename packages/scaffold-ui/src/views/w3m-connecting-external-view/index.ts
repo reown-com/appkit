@@ -1,13 +1,5 @@
 import type { BaseError } from '@rerock/core'
-import {
-  ChainController,
-  ConnectionController,
-  EventsController,
-  ModalController,
-  OptionsController,
-  RouterController
-} from '@rerock/core'
-import { ConstantsUtil as CommonConstantsUtil } from '@rerock/common'
+import { ConnectionController, EventsController } from '@rerock/core'
 import { ConstantsUtil } from '@rerock/scaffold-utils'
 import { customElement } from '@rerock/ui'
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'

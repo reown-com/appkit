@@ -504,7 +504,10 @@ export class EVMEthers5Client {
     }
   }
 
-  private getApprovedCaipNetworksData() {
+  private getApprovedCaipNetworksData(): Promise<{
+    supportsAllNetworks: boolean
+    approvedCaipNetworkIds: CaipNetworkId[]
+  }> {
     return new Promise(resolve => {
       const walletId = SafeLocalStorage.getItem(SafeLocalStorageKeys.WALLET_ID)
 

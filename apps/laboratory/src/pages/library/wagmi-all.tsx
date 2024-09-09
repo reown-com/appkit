@@ -1,4 +1,4 @@
-import { createWeb3Modal, useWeb3ModalAccount } from '@rerock/base/react'
+import { createWeb3Modal } from '@rerock/base/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
 import { AppKitButtons } from '../../components/AppKitButtons'

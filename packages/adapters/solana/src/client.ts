@@ -344,8 +344,9 @@ export class SolanaWeb3JsClient implements ChainAdapter {
   private async syncNetwork() {
     const address = this.appKit?.getAddress()
     const caipNetwork = this.appKit?.getCaipNetwork()
+    const connection = SolStoreUtil.state.connection
 
-    if (caipNetwork) {
+    if (caipNetwork && connection) {
       SolStoreUtil.setConnection(new Connection(caipNetwork.rpcUrl, this.connectionSettings))
 
       this.appKit?.setCaipNetwork(caipNetwork)

@@ -134,14 +134,13 @@ export const RouterController = {
         this.goBack()
       } else if (action.replace) {
         /*
-          if the history like ["ConnectingSiwe", "ApproveTransaction"], this means SIWE popup is opened after page rendered (not after user interaction)
-          we need to conditionally call replace. 
-          There is a chance that there is only these two views in the history; when user approved, the modal should closed and history should be empty (both connectingsiwe and approveTX should be removed)
-          If there is another views before the ConnectingSiwe (if the CS is not the first view), we should back to the first view before CS.
-        */
+         *  If the history like ["ConnectingSiwe", "ApproveTransaction"], this means SIWE popup is opened after page rendered (not after user interaction)
+         *  we need to conditionally call replace.
+         *  There is a chance that there is only these two views in the history; when user approved, the modal should closed and history should be empty (both connectingsiwe and approveTX should be removed)
+         *  If there is another views before the ConnectingSiwe (if the CS is not the first view), we should back to the first view before CS.
+         */
         const history = state.history
         const connectingSiweIndex = history.indexOf('ConnectingSiwe')
-        const approveTransactionIndex = history.indexOf('ApproveTransaction')
 
         if (connectingSiweIndex > 0) {
           // There are views before ConnectingSiwe

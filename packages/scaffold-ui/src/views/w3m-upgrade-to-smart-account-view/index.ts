@@ -4,7 +4,6 @@ import {
   ConnectorController,
   RouterController,
   CoreHelperUtil,
-  RouterUtil,
   SnackController
 } from '@rerock/core'
 import { LitElement, html } from 'lit'

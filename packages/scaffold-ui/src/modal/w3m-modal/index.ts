@@ -224,19 +224,20 @@ export class W3mModal extends LitElement {
     this.connected = nextIsConnected
   }
 
-  private async onSiweStatusChange(nextStatus: SIWEStatus | undefined) {
+  private onSiweStatusChange(nextStatus: SIWEStatus | undefined) {
     if (nextStatus === 'success') {
       ModalController.close()
     }
   }
 
-  private async onLoadingChange(nextLoading: boolean) {
+  private onLoadingChange(nextLoading: boolean) {
     this.loading = nextLoading
   }
 
   private async onNewNetwork(nextCaipNetwork: CaipNetwork | undefined) {
     if (!this.connected) {
       this.caipNetwork = nextCaipNetwork
+
       return
     }
 
