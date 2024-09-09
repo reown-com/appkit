@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@web3modal/ui/src/composites/wui-list-item'
-import type { WuiDetailsGroupItem } from '@web3modal/ui/src/composites/wui-details-group-item'
+import '@rerock/ui/src/composites/wui-list-item'
+import type { WuiDetailsGroupItem } from '@rerock/ui/src/composites/wui-details-group-item'
 import { html } from 'lit'
 import '../../components/gallery-container'
 

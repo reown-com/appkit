@@ -1,4 +1,4 @@
-import type { BaseError } from '@web3modal/core'
+import type { BaseError } from '@rerock/core'
 import {
   ChainController,
   ConnectionController,
@@ -6,10 +6,10 @@ import {
   ModalController,
   OptionsController,
   RouterController
-} from '@web3modal/core'
-import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
-import { ConstantsUtil } from '@web3modal/scaffold-utils'
-import { customElement } from '@web3modal/ui'
+} from '@rerock/core'
+import { ConstantsUtil as CommonConstantsUtil } from '@rerock/common'
+import { ConstantsUtil } from '@rerock/scaffold-utils'
+import { customElement } from '@rerock/ui'
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 
 @customElement('w3m-connecting-external-view')

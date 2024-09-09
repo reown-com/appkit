@@ -5,8 +5,9 @@ import type {
   ModalControllerState,
   ConnectedWalletInfo,
   RouterControllerState,
-  ChainAdapter
-} from '@web3modal/core'
+  ChainAdapter,
+  SdkVersion
+} from '@rerock/core'
 import {
   AccountController,
   BlockchainApiController,
@@ -24,13 +25,13 @@ import {
   OptionsController,
   NetworkController,
   AssetUtil
-} from '@web3modal/core'
-import { setColorTheme, setThemeVariables } from '@web3modal/ui'
-import { ConstantsUtil, type CaipNetwork, type ChainNamespace } from '@web3modal/common'
+} from '@rerock/core'
+import { setColorTheme, setThemeVariables } from '@rerock/ui'
+import { ConstantsUtil, type CaipNetwork, type ChainNamespace } from '@rerock/common'
 import type { AppKitOptions } from './utils/TypesUtil.js'
 import { UniversalAdapterClient } from './universal-adapter/client.js'
-import { PresetsUtil } from '@web3modal/scaffold-utils'
-import type { W3mFrameTypes } from '@web3modal/wallet'
+import { PresetsUtil } from '@rerock/scaffold-utils'
+import type { W3mFrameTypes } from '@rerock/wallet'
 import { ProviderUtil } from './store/ProviderUtil.js'
 
 // -- Export Controllers -------------------------------------------------------
@@ -59,6 +60,8 @@ export class AppKit {
   public constructor(
     options: AppKitOptions & {
       adapters?: ChainAdapter[]
+    } & {
+      sdkVersion: SdkVersion
     }
   ) {
     // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
@@ -369,12 +372,36 @@ export class AppKit {
   public getConnectorImage: (typeof AssetUtil)['getConnectorImage'] = connector =>
     AssetUtil.getConnectorImage(connector)
 
+  public handleUnsafeRPCRequest = () => {
+    if (this.isOpen()) {
+      // If we are on the modal but there is no transaction stack, close the modal
+      if (this.isTransactionStackEmpty()) {
+        return
+      }
+
+      // Check if we need to replace or redirect
+      if (this.isTransactionShouldReplaceView()) {
+        this.replace('ApproveTransaction')
+      } else {
+        this.redirect('ApproveTransaction')
+      }
+    } else {
+      // If called from outside the modal, open ApproveTransaction
+      this.open({ view: 'ApproveTransaction' })
+    }
+  }
+
   // -- Private ------------------------------------------------------------------
   private async initControllers(
     options: AppKitOptions & {
       adapters?: ChainAdapter[]
+    } & {
+      sdkVersion: SdkVersion
     }
   ) {
+    OptionsController.setProjectId(options.projectId)
+    OptionsController.setSdkVersion(options.sdkVersion)
+
     this.adapters = options.adapters
 
     options.metadata ||= {
@@ -398,7 +425,6 @@ export class AppKit {
     this.initializeUniversalAdapter(options)
     this.initializeAdapters(options)
 
-    OptionsController.setProjectId(options.projectId)
     OptionsController.setAllWallets(options.allWallets)
     OptionsController.setIncludeWalletIds(options.includeWalletIds)
     OptionsController.setExcludeWalletIds(options.excludeWalletIds)
@@ -432,7 +458,7 @@ export class AppKit {
     // Set the SIWE client for EVM chains
     if (evmAdapter) {
       if (options.siweConfig) {
-        const { SIWEController } = await import('@web3modal/siwe')
+        const { SIWEController } = await import('@rerock/siwe')
         SIWEController.setSIWEClient(options.siweConfig)
       }
     }
@@ -474,7 +500,7 @@ export class AppKit {
     if (!this.initPromise && !isInitialized && CoreHelperUtil.isClient()) {
       isInitialized = true
       this.initPromise = new Promise<void>(async resolve => {
-        await Promise.all([import('@web3modal/ui'), import('@web3modal/scaffold-ui/w3m-modal')])
+        await Promise.all([import('@rerock/ui'), import('@rerock/scaffold-ui/w3m-modal')])
         const modal = document.createElement('w3m-modal')
         if (!OptionsController.state.disableAppend) {
           document.body.insertAdjacentElement('beforeend', modal)

@@ -35,7 +35,7 @@ import base58 from 'bs58'
 import { WalletStandardFeatureNotSupportedError } from './shared/Errors.js'
 import { ProviderEventEmitter } from './shared/ProviderEventEmitter.js'
 import { solanaChains } from '../utils/chains.js'
-import type { CaipNetwork } from '@web3modal/common'
+import type { CaipNetwork } from '@rerock/common'
 
 export interface WalletStandardProviderConfig {
   wallet: Wallet

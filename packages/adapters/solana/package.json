@@ -1,6 +1,6 @@
 {
-  "name": "@web3modal/adapter-solana",
-  "version": "5.1.3",
+  "name": "@rerock/adapter-solana",
+  "version": "0.0.2",
   "type": "module",
   "main": "./dist/esm/src/index.js",
   "types": "./dist/types/src/index.d.ts",
@@ -13,7 +13,8 @@
     "build": "tsc --build tsconfig.build.json",
     "watch": "tsc --watch",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "test": "vitest run --coverage.enabled=true --coverage.reporter=json --coverage.reporter=json-summary --coverage.reportOnFailure=true"
   },
   "exports": {
     ".": {
@@ -48,21 +49,21 @@
     "@solana/wallet-standard-util": "1.1.1",
     "@solana/web3.js": "1.95.2",
     "@walletconnect/utils": "2.14.0",
-    "@walletconnect/types": "2.13.3",
-    "@walletconnect/universal-provider": "2.15.1",
+    "@walletconnect/types": "2.14.0",
+    "@walletconnect/universal-provider": "2.15.2",
     "@wallet-standard/app": "1.0.1",
     "@wallet-standard/base": "1.0.1",
     "@wallet-standard/features": "1.0.3",
     "@wallet-standard/wallet": "1.0.1",
-    "@web3modal/base": "workspace:*",
-    "@web3modal/common": "workspace:*",
-    "@web3modal/core": "workspace:*",
-    "@web3modal/polyfills": "workspace:*",
-    "@web3modal/scaffold-ui": "workspace:*",
-    "@web3modal/scaffold-utils": "workspace:*",
-    "@web3modal/siwe": "workspace:*",
-    "@web3modal/ui": "workspace:*",
-    "@web3modal/wallet": "workspace:*",
+    "@rerock/base": "workspace:*",
+    "@rerock/common": "workspace:*",
+    "@rerock/core": "workspace:*",
+    "@rerock/polyfills": "workspace:*",
+    "@rerock/scaffold-ui": "workspace:*",
+    "@rerock/scaffold-utils": "workspace:*",
+    "@rerock/siwe": "workspace:*",
+    "@rerock/ui": "workspace:*",
+    "@rerock/wallet": "workspace:*",
     "valtio": "1.11.2"
   },
   "optionalDependencies": {
@@ -79,16 +80,7 @@
     "vue": "3.4.3",
     "vitest": "2.0.3"
   },
-  "keywords": [
-    "web3",
-    "crypto",
-    "ethereum",
-    "web3modal",
-    "walletconnect",
-    "lit",
-    "webcomponents"
-  ],
-  "author": "WalletConnect <walletconnect.com>",
+  "author": "Rerock <rerock.com>",
   "license": "Apache-2.0",
   "homepage": "https://github.com/web3modal/web3modal",
   "repository": {

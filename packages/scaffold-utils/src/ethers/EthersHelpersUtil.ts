@@ -1,5 +1,5 @@
-import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
-import type { CaipNetwork } from '@web3modal/common'
+import { ConstantsUtil as CommonConstantsUtil } from '@rerock/common'
+import type { CaipNetwork } from '@rerock/common'
 import { ConstantsUtil } from '../ConstantsUtil.js'
 import { PresetsUtil } from '../PresetsUtil.js'
 import type { Provider } from './EthersTypesUtil.js'

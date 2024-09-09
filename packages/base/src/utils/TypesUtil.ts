@@ -1,4 +1,4 @@
-import type { CaipNetwork, ThemeVariables } from '@web3modal/common'
+import type { CaipNetwork, ThemeVariables } from '@rerock/common'
 import type {
   ChainAdapter,
   CustomWallet,
@@ -8,8 +8,8 @@ import type {
   ThemeMode,
   Tokens,
   ProjectId
-} from '@web3modal/core'
-import type { SIWEControllerClient, Web3ModalSIWEClient } from '@web3modal/siwe'
+} from '@rerock/core'
+import type { SIWEControllerClient, Web3ModalSIWEClient } from '@rerock/siwe'
 
 export type AppKitOptions = {
   /**
@@ -138,7 +138,13 @@ export type AppKitOptions = {
    * Enable or disable the onramp feature in your AppKit.
    * @default true
    */
+
   disableAppend?: boolean
+  /**
+   * Enable or disable the WalletConnect qr code in your AppKit.
+   * @default true
+   */
+  enableWalletConnect?: boolean
   /**
    * Enable or disable the EIP6963 feature in your AppKit.
    * @default false

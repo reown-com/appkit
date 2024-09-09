@@ -2,8 +2,8 @@
 
 import { wagmiAdapter, projectId } from '@/config'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { createWeb3Modal } from '@web3modal/base/react'
-import { mainnet, arbitrum, avalanche, base, optimism, polygon } from '@web3modal/base/chains'
+import { createWeb3Modal } from '@rerock/base/react'
+import { mainnet, arbitrum, avalanche, base, optimism, polygon } from '@rerock/base/chains'
 import React, { type ReactNode } from 'react'
 import { cookieToInitialState, WagmiProvider, type Config } from 'wagmi'
 

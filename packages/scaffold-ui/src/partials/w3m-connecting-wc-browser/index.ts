@@ -1,11 +1,11 @@
-import type { BaseError } from '@web3modal/core'
+import type { BaseError } from '@rerock/core'
 import {
   ConnectionController,
   ConnectorController,
   EventsController,
   ModalController
-} from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+} from '@rerock/core'
+import { customElement } from '@rerock/ui'
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 
 @customElement('w3m-connecting-wc-browser')

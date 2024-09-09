@@ -6,13 +6,13 @@ import type {
   Provider,
   SocialProvider
 } from '../utils/TypeUtil.js'
-import type { CaipAddress, ChainNamespace } from '@web3modal/common'
-import type { Balance } from '@web3modal/common'
+import type { CaipAddress, ChainNamespace } from '@rerock/common'
+import type { Balance } from '@rerock/common'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { SnackController } from './SnackController.js'
 import { SwapController } from './SwapController.js'
 import { SwapApiUtil } from '../utils/SwapApiUtil.js'
-import type { W3mFrameTypes } from '@web3modal/wallet'
+import type { W3mFrameTypes } from '@rerock/wallet'
 import { ChainController } from './ChainController.js'
 import { NetworkController } from './NetworkController.js'
 import { proxy, ref } from 'valtio/vanilla'

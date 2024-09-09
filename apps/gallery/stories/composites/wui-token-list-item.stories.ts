@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@web3modal/ui/src/composites/wui-list-item'
-import type { WuiTokenListItem } from '@web3modal/ui/src/composites/wui-token-list-item'
+import '@rerock/ui/src/composites/wui-list-item'
+import type { WuiTokenListItem } from '@rerock/ui/src/composites/wui-token-list-item'
 import { html } from 'lit'
 import '../../components/gallery-container'
 import { networkImageSrc } from '../../utils/PresetUtils'

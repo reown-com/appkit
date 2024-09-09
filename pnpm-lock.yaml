@@ -73,15 +73,15 @@ importers:
       '@radix-ui/react-switch':
         specifier: 1.0.3
         version: 1.0.3(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      '@rerock/adapter-wagmi':
+        specifier: workspace:*
+        version: link:../../packages/adapters/wagmi
+      '@rerock/base':
+        specifier: workspace:*
+        version: link:../../packages/base
       '@tanstack/react-query':
         specifier: 5.24.8
         version: 5.24.8(react@18.2.0)
-      '@web3modal/adapter-wagmi':
-        specifier: workspace:*
-        version: link:../../packages/adapters/wagmi
-      '@web3modal/base':
-        specifier: workspace:*
-        version: link:../../packages/base
       clsx:
         specifier: 2.1.0
         version: 2.1.0
@@ -146,10 +146,10 @@ importers:
 
   apps/gallery:
     dependencies:
-      '@web3modal/common':
+      '@rerock/common':
         specifier: workspace:*
         version: link:../../packages/common
-      '@web3modal/ui':
+      '@rerock/ui':
         specifier: workspace:*
         version: link:../../packages/ui
       lit:
@@ -198,6 +198,30 @@ importers:
       '@emotion/styled':
         specifier: 11.11.0
         version: 11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0)
+      '@rerock/adapter-ethers':
+        specifier: workspace:*
+        version: link:../../packages/adapters/ethers
+      '@rerock/adapter-ethers5':
+        specifier: workspace:*
+        version: link:../../packages/adapters/ethers5
+      '@rerock/adapter-solana':
+        specifier: workspace:*
+        version: link:../../packages/adapters/solana
+      '@rerock/adapter-wagmi':
+        specifier: workspace:*
+        version: link:../../packages/adapters/wagmi
+      '@rerock/base':
+        specifier: workspace:*
+        version: link:../../packages/base
+      '@rerock/ethers':
+        specifier: workspace:*
+        version: link:../../packages/ethers
+      '@rerock/siwe':
+        specifier: workspace:*
+        version: link:../../packages/siwe
+      '@rerock/wallet':
+        specifier: workspace:*
+        version: link:../../packages/wallet
       '@sentry/browser':
         specifier: 7.92.0
         version: 7.92.0
@@ -220,38 +244,14 @@ importers:
         specifier: 2.13.4
         version: 2.13.4(@tanstack/query-core@5.24.8)(@types/react@18.2.62)(react@18.2.0)(typescript@5.3.3)(viem@2.19.6(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4))
       '@walletconnect/ethereum-provider':
-        specifier: 2.15.1
-        version: 2.15.1(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(utf-8-validate@5.0.10)
+        specifier: 2.15.2
+        version: 2.15.2(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(utf-8-validate@5.0.10)
       '@walletconnect/universal-provider':
-        specifier: 2.15.1
-        version: 2.15.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+        specifier: 2.15.2
+        version: 2.15.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@walletconnect/utils':
-        specifier: 2.15.1
-        version: 2.15.1
-      '@web3modal/adapter-ethers':
-        specifier: workspace:*
-        version: link:../../packages/adapters/ethers
-      '@web3modal/adapter-ethers5':
-        specifier: workspace:*
-        version: link:../../packages/adapters/ethers5
-      '@web3modal/adapter-solana':
-        specifier: workspace:*
-        version: link:../../packages/adapters/solana
-      '@web3modal/adapter-wagmi':
-        specifier: workspace:*
-        version: link:../../packages/adapters/wagmi
-      '@web3modal/base':
-        specifier: workspace:*
-        version: link:../../packages/base
-      '@web3modal/ethers':
-        specifier: workspace:*
-        version: link:../../packages/ethers
-      '@web3modal/siwe':
-        specifier: workspace:*
-        version: link:../../packages/siwe
-      '@web3modal/wallet':
-        specifier: workspace:*
-        version: link:../../packages/wallet
+        specifier: 2.15.2
+        version: 2.15.2
       axios:
         specifier: 1.7.2
         version: 1.7.2
@@ -325,9 +325,12 @@ importers:
 
   examples/html-ethers:
     dependencies:
-      '@web3modal/ethers':
+      '@rerock/adapter-ethers':
         specifier: workspace:*
-        version: link:../../packages/ethers
+        version: link:../../packages/adapters/ethers
+      '@rerock/base':
+        specifier: workspace:*
+        version: link:../../packages/base
       ethers:
         specifier: 6.13.0
         version: 6.13.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
@@ -338,10 +341,10 @@ importers:
 
   examples/html-ethers5:
     dependencies:
-      '@web3modal/adapter-ethers5':
+      '@rerock/adapter-ethers5':
         specifier: workspace:*
         version: link:../../packages/adapters/ethers5
-      '@web3modal/base':
+      '@rerock/base':
         specifier: workspace:*
         version: link:../../packages/base
       ethers:
@@ -354,18 +357,18 @@ importers:
 
   examples/html-wagmi:
     dependencies:
+      '@rerock/adapter-wagmi':
+        specifier: workspace:*
+        version: link:../../packages/adapters/wagmi
+      '@rerock/base':
+        specifier: workspace:*
+        version: link:../../packages/base
       '@wagmi/connectors':
         specifier: 5.1.5
         version: 5.1.5(@types/react@18.2.62)(@wagmi/core@2.13.4(@tanstack/query-core@5.24.8)(@types/react@18.2.62)(react@18.2.0)(typescript@5.3.3)(viem@2.19.6(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4)))(bufferutil@4.0.8)(react-dom@18.2.0(react@18.2.0))(react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(react@18.2.0)(rollup@4.21.2)(typescript@5.3.3)(utf-8-validate@5.0.10)(viem@2.19.6(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4))(zod@3.22.4)
       '@wagmi/core':
         specifier: 2.13.4
         version: 2.13.4(@tanstack/query-core@5.24.8)(@types/react@18.2.62)(react@18.2.0)(typescript@5.3.3)(viem@2.19.6(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4))
-      '@web3modal/adapter-wagmi':
-        specifier: workspace:*
-        version: link:../../packages/adapters/wagmi
-      '@web3modal/base':
-        specifier: workspace:*
-        version: link:../../packages/base
       react:
         specifier: 18.2.0
         version: 18.2.0
@@ -379,10 +382,10 @@ importers:
 
   examples/next-ethers:
     dependencies:
-      '@web3modal/adapter-ethers':
+      '@rerock/adapter-ethers':
         specifier: workspace:*
         version: link:../../packages/adapters/ethers
-      '@web3modal/base':
+      '@rerock/base':
         specifier: workspace:*
         version: link:../../packages/base
       ethers:
@@ -422,6 +425,12 @@ importers:
 
   examples/next-wagmi:
     dependencies:
+      '@rerock/adapter-wagmi':
+        specifier: workspace:*
+        version: link:../../packages/adapters/wagmi
+      '@rerock/base':
+        specifier: workspace:*
+        version: link:../../packages/base
       '@tanstack/react-query':
         specifier: 5.24.8
         version: 5.24.8(react@18.2.0)
@@ -431,12 +440,6 @@ importers:
       '@wagmi/core':
         specifier: 2.13.4
         version: 2.13.4(@tanstack/query-core@5.24.8)(@types/react@18.2.62)(react@18.2.0)(typescript@5.3.3)(viem@2.19.6(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4))
-      '@web3modal/adapter-wagmi':
-        specifier: workspace:*
-        version: link:../../packages/adapters/wagmi
-      '@web3modal/base':
-        specifier: workspace:*
-        version: link:../../packages/base
       next:
         specifier: 14.2.3
         version: 14.2.3(@babel/core@7.25.2)(@playwright/test@1.44.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -477,10 +480,10 @@ importers:
 
   examples/react-ethers:
     dependencies:
-      '@web3modal/adapter-ethers':
+      '@rerock/adapter-ethers':
         specifier: workspace:*
         version: link:../../packages/adapters/ethers
-      '@web3modal/base':
+      '@rerock/base':
         specifier: workspace:*
         version: link:../../packages/base
       ethers:
@@ -508,10 +511,10 @@ importers:
 
   examples/react-ethers5:
     dependencies:
-      '@web3modal/adapter-ethers5':
+      '@rerock/adapter-ethers5':
         specifier: workspace:*
         version: link:../../packages/adapters/ethers5
-      '@web3modal/base':
+      '@rerock/base':
         specifier: workspace:*
         version: link:../../packages/base
       ethers:
@@ -539,6 +542,9 @@ importers:
 
   examples/react-solana:
     dependencies:
+      '@rerock/solana':
+        specifier: workspace:*
+        version: link:../../packages/solana
       '@solana/wallet-adapter-backpack':
         specifier: 0.1.14
         version: 0.1.14(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
@@ -548,9 +554,6 @@ importers:
       '@tanstack/react-query':
         specifier: 5.24.8
         version: 5.24.8(react@18.2.0)
-      '@web3modal/solana':
-        specifier: workspace:*
-        version: link:../../packages/solana
       react:
         specifier: 18.2.0
         version: 18.2.0
@@ -573,15 +576,15 @@ importers:
 
   examples/react-wagmi:
     dependencies:
+      '@rerock/adapter-wagmi':
+        specifier: workspace:*
+        version: link:../../packages/adapters/wagmi
+      '@rerock/base':
+        specifier: workspace:*
+        version: link:../../packages/base
       '@tanstack/react-query':
         specifier: 5.24.8
         version: 5.24.8(react@18.2.0)
-      '@web3modal/adapter-wagmi':
-        specifier: workspace:*
-        version: link:../../packages/adapters/wagmi
-      '@web3modal/base':
-        specifier: workspace:*
-        version: link:../../packages/base
       react:
         specifier: 18.2.0
         version: 18.2.0
@@ -613,10 +616,10 @@ importers:
 
   examples/vue-ethers5:
     dependencies:
-      '@web3modal/adapter-ethers5':
+      '@rerock/adapter-ethers5':
         specifier: workspace:*
         version: link:../../packages/adapters/ethers5
-      '@web3modal/base':
+      '@rerock/base':
         specifier: workspace:*
         version: link:../../packages/base
       ethers:
@@ -635,15 +638,15 @@ importers:
 
   examples/vue-solana:
     dependencies:
+      '@rerock/solana':
+        specifier: workspace:*
+        version: link:../../packages/solana
       '@solana/wallet-adapter-backpack':
         specifier: 0.1.14
         version: 0.1.14(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
       '@solana/wallet-adapter-wallets':
         specifier: 0.19.32
         version: 0.19.32(@babel/core@7.25.2)(@babel/runtime@7.25.6)(@sentry/types@7.92.0)(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(bufferutil@4.0.8)(react-native@0.75.2(@babel/core@7.25.2)(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10))(tslib@2.7.0)(utf-8-validate@5.0.10)
-      '@web3modal/solana':
-        specifier: workspace:*
-        version: link:../../packages/solana
       vue:
         specifier: 3.4.3
         version: 3.4.3(typescript@5.3.3)
@@ -657,18 +660,18 @@ importers:
 
   examples/vue-wagmi:
     dependencies:
+      '@rerock/adapter-wagmi':
+        specifier: workspace:*
+        version: link:../../packages/adapters/wagmi
+      '@rerock/base':
+        specifier: workspace:*
+        version: link:../../packages/base
       '@wagmi/connectors':
         specifier: 5.1.5
         version: 5.1.5(@types/react@18.2.62)(@wagmi/core@2.13.4(@tanstack/query-core@5.24.8)(@types/react@18.2.62)(react@18.2.0)(typescript@5.3.3)(viem@2.19.6(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4)))(bufferutil@4.0.8)(react-dom@18.2.0(react@18.2.0))(react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(react@18.2.0)(rollup@4.21.2)(typescript@5.3.3)(utf-8-validate@5.0.10)(viem@2.19.6(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4))(zod@3.22.4)
       '@wagmi/core':
         specifier: 2.13.4
         version: 2.13.4(@tanstack/query-core@5.24.8)(@types/react@18.2.62)(react@18.2.0)(typescript@5.3.3)(viem@2.19.6(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4))
-      '@web3modal/adapter-wagmi':
-        specifier: workspace:*
-        version: link:../../packages/adapters/wagmi
-      '@web3modal/base':
-        specifier: workspace:*
-        version: link:../../packages/base
       vue:
         specifier: 3.4.3
         version: 3.4.3(typescript@5.3.3)
@@ -682,36 +685,36 @@ importers:
 
   packages/adapters/ethers:
     dependencies:
+      '@rerock/base':
+        specifier: workspace:*
+        version: link:../../base
+      '@rerock/common':
+        specifier: workspace:*
+        version: link:../../common
+      '@rerock/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@rerock/polyfills':
+        specifier: workspace:*
+        version: link:../../polyfills
+      '@rerock/scaffold-ui':
+        specifier: workspace:*
+        version: link:../../scaffold-ui
+      '@rerock/scaffold-utils':
+        specifier: workspace:*
+        version: link:../../scaffold-utils
+      '@rerock/siwe':
+        specifier: workspace:*
+        version: link:../../siwe
+      '@rerock/ui':
+        specifier: workspace:*
+        version: link:../../ui
+      '@rerock/wallet':
+        specifier: workspace:*
+        version: link:../../wallet
       '@walletconnect/utils':
         specifier: 2.14.0
         version: 2.14.0
-      '@web3modal/base':
-        specifier: workspace:*
-        version: link:../../base
-      '@web3modal/common':
-        specifier: workspace:*
-        version: link:../../common
-      '@web3modal/core':
-        specifier: workspace:*
-        version: link:../../core
-      '@web3modal/polyfills':
-        specifier: workspace:*
-        version: link:../../polyfills
-      '@web3modal/scaffold-ui':
-        specifier: workspace:*
-        version: link:../../scaffold-ui
-      '@web3modal/scaffold-utils':
-        specifier: workspace:*
-        version: link:../../scaffold-utils
-      '@web3modal/siwe':
-        specifier: workspace:*
-        version: link:../../siwe
-      '@web3modal/ui':
-        specifier: workspace:*
-        version: link:../../ui
-      '@web3modal/wallet':
-        specifier: workspace:*
-        version: link:../../wallet
       valtio:
         specifier: 1.11.2
         version: 1.11.2(@types/react@18.2.62)(react@18.2.0)
@@ -726,11 +729,11 @@ importers:
         specifier: 2.0.5
         version: 2.0.5(vitest@2.0.3(@types/node@20.11.5)(jsdom@24.1.0)(terser@5.31.6))
       '@walletconnect/types':
-        specifier: 2.13.3
-        version: 2.13.3
+        specifier: 2.14.0
+        version: 2.14.0
       '@walletconnect/universal-provider':
-        specifier: 2.15.1
-        version: 2.15.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+        specifier: 2.15.2
+        version: 2.15.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       ethers:
         specifier: 6.13.0
         version: 6.13.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
@@ -740,39 +743,39 @@ importers:
 
   packages/adapters/ethers5:
     dependencies:
+      '@rerock/base':
+        specifier: workspace:*
+        version: link:../../base
+      '@rerock/common':
+        specifier: workspace:*
+        version: link:../../common
+      '@rerock/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@rerock/polyfills':
+        specifier: workspace:*
+        version: link:../../polyfills
+      '@rerock/scaffold-ui':
+        specifier: workspace:*
+        version: link:../../scaffold-ui
+      '@rerock/scaffold-utils':
+        specifier: workspace:*
+        version: link:../../scaffold-utils
+      '@rerock/siwe':
+        specifier: workspace:*
+        version: link:../../siwe
+      '@rerock/ui':
+        specifier: workspace:*
+        version: link:../../ui
+      '@rerock/wallet':
+        specifier: workspace:*
+        version: link:../../wallet
       '@walletconnect/universal-provider':
-        specifier: 2.15.1
-        version: 2.15.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+        specifier: 2.15.2
+        version: 2.15.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@walletconnect/utils':
         specifier: 2.14.0
         version: 2.14.0
-      '@web3modal/base':
-        specifier: workspace:*
-        version: link:../../base
-      '@web3modal/common':
-        specifier: workspace:*
-        version: link:../../common
-      '@web3modal/core':
-        specifier: workspace:*
-        version: link:../../core
-      '@web3modal/polyfills':
-        specifier: workspace:*
-        version: link:../../polyfills
-      '@web3modal/scaffold-ui':
-        specifier: workspace:*
-        version: link:../../scaffold-ui
-      '@web3modal/scaffold-utils':
-        specifier: workspace:*
-        version: link:../../scaffold-utils
-      '@web3modal/siwe':
-        specifier: workspace:*
-        version: link:../../siwe
-      '@web3modal/ui':
-        specifier: workspace:*
-        version: link:../../ui
-      '@web3modal/wallet':
-        specifier: workspace:*
-        version: link:../../wallet
       valtio:
         specifier: 1.11.2
         version: 1.11.2(@types/react@18.2.62)(react@18.2.0)
@@ -787,8 +790,8 @@ importers:
         specifier: 2.0.5
         version: 2.0.5(vitest@2.0.3(@types/node@20.11.5)(jsdom@24.1.0)(terser@5.31.6))
       '@walletconnect/types':
-        specifier: 2.13.3
-        version: 2.13.3
+        specifier: 2.14.0
+        version: 2.14.0
       ethers5:
         specifier: npm:ethers@5.7.2
         version: ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
@@ -798,13 +801,13 @@ importers:
 
   packages/adapters/polkadot:
     dependencies:
-      '@web3modal/base':
+      '@rerock/base':
         specifier: workspace:*
         version: link:../../base
-      '@web3modal/common':
+      '@rerock/common':
         specifier: workspace:*
         version: link:../../common
-      '@web3modal/core':
+      '@rerock/core':
         specifier: workspace:*
         version: link:../../core
     devDependencies:
@@ -817,6 +820,33 @@ importers:
 
   packages/adapters/solana:
     dependencies:
+      '@rerock/base':
+        specifier: workspace:*
+        version: link:../../base
+      '@rerock/common':
+        specifier: workspace:*
+        version: link:../../common
+      '@rerock/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@rerock/polyfills':
+        specifier: workspace:*
+        version: link:../../polyfills
+      '@rerock/scaffold-ui':
+        specifier: workspace:*
+        version: link:../../scaffold-ui
+      '@rerock/scaffold-utils':
+        specifier: workspace:*
+        version: link:../../scaffold-utils
+      '@rerock/siwe':
+        specifier: workspace:*
+        version: link:../../siwe
+      '@rerock/ui':
+        specifier: workspace:*
+        version: link:../../ui
+      '@rerock/wallet':
+        specifier: workspace:*
+        version: link:../../wallet
       '@solana/wallet-adapter-base':
         specifier: 0.9.23
         version: 0.9.23(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
@@ -842,41 +872,14 @@ importers:
         specifier: 1.0.1
         version: 1.0.1
       '@walletconnect/types':
-        specifier: 2.13.3
-        version: 2.13.3
+        specifier: 2.14.0
+        version: 2.14.0
       '@walletconnect/universal-provider':
-        specifier: 2.15.1
-        version: 2.15.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+        specifier: 2.15.2
+        version: 2.15.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@walletconnect/utils':
         specifier: 2.14.0
         version: 2.14.0
-      '@web3modal/base':
-        specifier: workspace:*
-        version: link:../../base
-      '@web3modal/common':
-        specifier: workspace:*
-        version: link:../../common
-      '@web3modal/core':
-        specifier: workspace:*
-        version: link:../../core
-      '@web3modal/polyfills':
-        specifier: workspace:*
-        version: link:../../polyfills
-      '@web3modal/scaffold-ui':
-        specifier: workspace:*
-        version: link:../../scaffold-ui
-      '@web3modal/scaffold-utils':
-        specifier: workspace:*
-        version: link:../../scaffold-utils
-      '@web3modal/siwe':
-        specifier: workspace:*
-        version: link:../../siwe
-      '@web3modal/ui':
-        specifier: workspace:*
-        version: link:../../ui
-      '@web3modal/wallet':
-        specifier: workspace:*
-        version: link:../../wallet
       valtio:
         specifier: 1.11.2
         version: 1.11.2(@types/react@18.2.0)(react@18.2.0)
@@ -915,39 +918,39 @@ importers:
 
   packages/adapters/wagmi:
     dependencies:
+      '@rerock/base':
+        specifier: workspace:*
+        version: link:../../base
+      '@rerock/common':
+        specifier: workspace:*
+        version: link:../../common
+      '@rerock/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@rerock/polyfills':
+        specifier: workspace:*
+        version: link:../../polyfills
+      '@rerock/scaffold-ui':
+        specifier: workspace:*
+        version: link:../../scaffold-ui
+      '@rerock/scaffold-utils':
+        specifier: workspace:*
+        version: link:../../scaffold-utils
+      '@rerock/siwe':
+        specifier: workspace:*
+        version: link:../../siwe
+      '@rerock/ui':
+        specifier: workspace:*
+        version: link:../../ui
+      '@rerock/wallet':
+        specifier: workspace:*
+        version: link:../../wallet
       '@walletconnect/universal-provider':
-        specifier: 2.15.1
-        version: 2.15.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+        specifier: 2.15.2
+        version: 2.15.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@walletconnect/utils':
         specifier: 2.14.0
         version: 2.14.0
-      '@web3modal/base':
-        specifier: workspace:*
-        version: link:../../base
-      '@web3modal/common':
-        specifier: workspace:*
-        version: link:../../common
-      '@web3modal/core':
-        specifier: workspace:*
-        version: link:../../core
-      '@web3modal/polyfills':
-        specifier: workspace:*
-        version: link:../../polyfills
-      '@web3modal/scaffold-ui':
-        specifier: workspace:*
-        version: link:../../scaffold-ui
-      '@web3modal/scaffold-utils':
-        specifier: workspace:*
-        version: link:../../scaffold-utils
-      '@web3modal/siwe':
-        specifier: workspace:*
-        version: link:../../siwe
-      '@web3modal/ui':
-        specifier: workspace:*
-        version: link:../../ui
-      '@web3modal/wallet':
-        specifier: workspace:*
-        version: link:../../wallet
       valtio:
         specifier: 1.11.2
         version: 1.11.2(@types/react@18.2.0)(react@18.2.0)
@@ -971,8 +974,8 @@ importers:
         specifier: 2.13.4
         version: 2.13.4(@tanstack/query-core@5.24.8)(@types/react@18.2.0)(react@18.2.0)(typescript@5.3.3)(viem@2.19.6(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4))
       '@walletconnect/types':
-        specifier: 2.13.3
-        version: 2.13.3
+        specifier: 2.14.0
+        version: 2.14.0
       viem:
         specifier: 2.19.6
         version: 2.19.6(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4)
@@ -985,39 +988,39 @@ importers:
 
   packages/base:
     dependencies:
-      '@walletconnect/types':
-        specifier: 2.13.3
-        version: 2.13.3
-      '@walletconnect/universal-provider':
-        specifier: 2.15.1
-        version: 2.15.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@walletconnect/utils':
-        specifier: 2.14.0
-        version: 2.14.0
-      '@web3modal/common':
+      '@rerock/common':
         specifier: workspace:*
         version: link:../common
-      '@web3modal/core':
+      '@rerock/core':
         specifier: workspace:*
         version: link:../core
-      '@web3modal/polyfills':
+      '@rerock/polyfills':
         specifier: workspace:*
         version: link:../polyfills
-      '@web3modal/scaffold-ui':
+      '@rerock/scaffold-ui':
         specifier: workspace:*
         version: link:../scaffold-ui
-      '@web3modal/scaffold-utils':
+      '@rerock/scaffold-utils':
         specifier: workspace:*
         version: link:../scaffold-utils
-      '@web3modal/siwe':
+      '@rerock/siwe':
         specifier: workspace:*
         version: link:../siwe
-      '@web3modal/ui':
+      '@rerock/ui':
         specifier: workspace:*
         version: link:../ui
-      '@web3modal/wallet':
+      '@rerock/wallet':
         specifier: workspace:*
         version: link:../wallet
+      '@walletconnect/types':
+        specifier: 2.14.0
+        version: 2.14.0
+      '@walletconnect/universal-provider':
+        specifier: 2.15.2
+        version: 2.15.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@walletconnect/utils':
+        specifier: 2.15.2
+        version: 2.15.2
       valtio:
         specifier: 1.11.2
         version: 1.11.2(@types/react@18.2.0)(react@18.2.0)
@@ -1049,24 +1052,24 @@ importers:
 
   packages/cdn:
     dependencies:
+      '@rerock/ethers':
+        specifier: workspace:*
+        version: link:../ethers
+      '@rerock/ethers5':
+        specifier: workspace:*
+        version: link:../ethers5
+      '@rerock/polyfills':
+        specifier: workspace:*
+        version: link:../polyfills
+      '@rerock/wagmi':
+        specifier: workspace:*
+        version: link:../wagmi
       '@wagmi/connectors':
         specifier: 5.1.5
         version: 5.1.5(@types/react@18.2.62)(@wagmi/core@2.13.4(@tanstack/query-core@5.24.8)(@types/react@18.2.62)(react@18.2.0)(typescript@5.3.3)(viem@2.19.6(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4)))(bufferutil@4.0.8)(react-dom@18.2.0(react@18.2.0))(react-native@0.75.2(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(react@18.2.0)(rollup@4.21.2)(typescript@5.3.3)(utf-8-validate@5.0.10)(viem@2.19.6(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4))(zod@3.22.4)
       '@wagmi/core':
         specifier: 2.13.4
         version: 2.13.4(@tanstack/query-core@5.24.8)(@types/react@18.2.62)(react@18.2.0)(typescript@5.3.3)(viem@2.19.6(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4))
-      '@web3modal/ethers':
-        specifier: workspace:*
-        version: link:../ethers
-      '@web3modal/ethers5':
-        specifier: workspace:*
-        version: link:../ethers5
-      '@web3modal/polyfills':
-        specifier: workspace:*
-        version: link:../polyfills
-      '@web3modal/wagmi':
-        specifier: workspace:*
-        version: link:../wagmi
       viem:
         specifier: 2.19.6
         version: 2.19.6(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4)
@@ -1102,15 +1105,15 @@ importers:
 
   packages/core:
     dependencies:
-      '@walletconnect/universal-provider':
-        specifier: 2.15.1
-        version: 2.15.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@web3modal/common':
+      '@rerock/common':
         specifier: workspace:*
         version: link:../common
-      '@web3modal/wallet':
+      '@rerock/wallet':
         specifier: workspace:*
         version: link:../wallet
+      '@walletconnect/universal-provider':
+        specifier: 2.15.2
+        version: 2.15.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       valtio:
         specifier: 1.11.2
         version: 1.11.2(@types/react@18.2.62)(react@18.2.0)
@@ -1130,30 +1133,30 @@ importers:
       '@coinbase/wallet-sdk':
         specifier: 4.0.3
         version: 4.0.3
-      '@walletconnect/utils':
-        specifier: 2.15.1
-        version: 2.15.1
-      '@web3modal/adapter-ethers':
+      '@rerock/adapter-ethers':
         specifier: workspace:*
         version: link:../adapters/ethers
-      '@web3modal/base':
+      '@rerock/base':
         specifier: workspace:*
         version: link:../base
-      '@web3modal/common':
+      '@rerock/common':
         specifier: workspace:*
         version: link:../common
-      '@web3modal/polyfills':
+      '@rerock/polyfills':
         specifier: workspace:*
         version: link:../polyfills
-      '@web3modal/scaffold-utils':
+      '@rerock/scaffold-utils':
         specifier: workspace:*
         version: link:../scaffold-utils
-      '@web3modal/siwe':
+      '@rerock/siwe':
         specifier: workspace:*
         version: link:../siwe
-      '@web3modal/wallet':
+      '@rerock/wallet':
         specifier: workspace:*
         version: link:../wallet
+      '@walletconnect/utils':
+        specifier: 2.15.2
+        version: 2.15.2
       ethers:
         specifier: '>=6.0.0'
         version: 6.13.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
@@ -1176,27 +1179,30 @@ importers:
       '@coinbase/wallet-sdk':
         specifier: 4.0.3
         version: 4.0.3
-      '@walletconnect/utils':
-        specifier: 2.15.1
-        version: 2.15.1
-      '@web3modal/adapter-ethers5':
+      '@rerock/adapter-ethers5':
         specifier: workspace:*
         version: link:../adapters/ethers5
-      '@web3modal/base':
+      '@rerock/base':
         specifier: workspace:*
         version: link:../base
-      '@web3modal/common':
+      '@rerock/common':
         specifier: workspace:*
         version: link:../common
-      '@web3modal/polyfills':
+      '@rerock/polyfills':
         specifier: workspace:*
         version: link:../polyfills
-      '@web3modal/scaffold-utils':
+      '@rerock/scaffold-utils':
         specifier: workspace:*
         version: link:../scaffold-utils
-      '@web3modal/siwe':
+      '@rerock/siwe':
         specifier: workspace:*
         version: link:../siwe
+      '@rerock/wallet':
+        specifier: workspace:*
+        version: link:../wallet
+      '@walletconnect/utils':
+        specifier: 2.15.2
+        version: 2.15.2
       valtio:
         specifier: 1.11.2
         version: 1.11.2(@types/react@18.2.62)(react@18.2.0)
@@ -1226,22 +1232,22 @@ importers:
 
   packages/scaffold-ui:
     dependencies:
-      '@web3modal/common':
+      '@rerock/common':
         specifier: workspace:*
         version: link:../common
-      '@web3modal/core':
+      '@rerock/core':
         specifier: workspace:*
         version: link:../core
-      '@web3modal/scaffold-utils':
+      '@rerock/scaffold-utils':
         specifier: workspace:*
         version: link:../scaffold-utils
-      '@web3modal/siwe':
+      '@rerock/siwe':
         specifier: workspace:*
         version: link:../siwe
-      '@web3modal/ui':
+      '@rerock/ui':
         specifier: workspace:*
         version: link:../ui
-      '@web3modal/wallet':
+      '@rerock/wallet':
         specifier: workspace:*
         version: link:../wallet
       lit:
@@ -1250,21 +1256,21 @@ importers:
 
   packages/scaffold-utils:
     dependencies:
-      '@walletconnect/universal-provider':
-        specifier: 2.15.1
-        version: 2.15.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@web3modal/common':
+      '@rerock/common':
         specifier: workspace:*
         version: link:../common
-      '@web3modal/core':
+      '@rerock/core':
         specifier: workspace:*
         version: link:../core
-      '@web3modal/polyfills':
+      '@rerock/polyfills':
         specifier: workspace:*
         version: link:../polyfills
-      '@web3modal/wallet':
+      '@rerock/wallet':
         specifier: workspace:*
         version: link:../wallet
+      '@walletconnect/universal-provider':
+        specifier: 2.15.2
+        version: 2.15.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       valtio:
         specifier: 1.11.2
         version: 1.11.2(@types/react@18.2.62)(react@18.2.0)
@@ -1281,24 +1287,24 @@ importers:
 
   packages/siwe:
     dependencies:
-      '@walletconnect/utils':
-        specifier: 2.15.1
-        version: 2.15.1
-      '@web3modal/common':
+      '@rerock/common':
         specifier: workspace:*
         version: link:../common
-      '@web3modal/core':
+      '@rerock/core':
         specifier: workspace:*
         version: link:../core
-      '@web3modal/scaffold-utils':
+      '@rerock/scaffold-utils':
         specifier: workspace:*
         version: link:../scaffold-utils
-      '@web3modal/ui':
+      '@rerock/ui':
         specifier: workspace:*
         version: link:../ui
-      '@web3modal/wallet':
+      '@rerock/wallet':
         specifier: workspace:*
         version: link:../wallet
+      '@walletconnect/utils':
+        specifier: 2.15.2
+        version: 2.15.2
       lit:
         specifier: 3.1.0
         version: 3.1.0
@@ -1311,6 +1317,27 @@ importers:
       '@ethersproject/sha2':
         specifier: 5.7.0
         version: 5.7.0
+      '@rerock/adapter-solana':
+        specifier: workspace:*
+        version: link:../adapters/solana
+      '@rerock/base':
+        specifier: workspace:*
+        version: link:../base
+      '@rerock/common':
+        specifier: workspace:*
+        version: link:../common
+      '@rerock/core':
+        specifier: workspace:*
+        version: link:../core
+      '@rerock/polyfills':
+        specifier: workspace:*
+        version: link:../polyfills
+      '@rerock/scaffold-utils':
+        specifier: workspace:*
+        version: link:../scaffold-utils
+      '@rerock/wallet':
+        specifier: workspace:*
+        version: link:../wallet
       '@solana/wallet-adapter-base':
         specifier: 0.9.23
         version: 0.9.23(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
@@ -1335,27 +1362,9 @@ importers:
       '@wallet-standard/wallet':
         specifier: 1.0.1
         version: 1.0.1
-      '@web3modal/adapter-solana':
-        specifier: workspace:*
-        version: link:../adapters/solana
-      '@web3modal/base':
-        specifier: workspace:*
-        version: link:../base
-      '@web3modal/common':
-        specifier: workspace:*
-        version: link:../common
-      '@web3modal/core':
-        specifier: workspace:*
-        version: link:../core
-      '@web3modal/polyfills':
-        specifier: workspace:*
-        version: link:../polyfills
-      '@web3modal/scaffold-utils':
-        specifier: workspace:*
-        version: link:../scaffold-utils
-      '@web3modal/wallet':
-        specifier: workspace:*
-        version: link:../wallet
+      '@walletconnect/universal-provider':
+        specifier: 2.15.2
+        version: 2.15.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       bn.js:
         specifier: 5.2.1
         version: 5.2.1
@@ -1403,21 +1412,21 @@ importers:
         specifier: 1.5.3
         version: 1.5.3
     devDependencies:
+      '@rerock/common':
+        specifier: workspace:*
+        version: link:../common
+      '@rerock/core':
+        specifier: workspace:*
+        version: link:../core
+      '@rerock/wallet':
+        specifier: workspace:*
+        version: link:../wallet
       '@types/qrcode':
         specifier: 1.5.5
         version: 1.5.5
       '@vitest/coverage-v8':
         specifier: 2.0.5
         version: 2.0.5(vitest@2.0.3(@types/node@20.11.5)(jsdom@24.1.0)(terser@5.31.6))
-      '@web3modal/common':
-        specifier: workspace:*
-        version: link:../common
-      '@web3modal/core':
-        specifier: workspace:*
-        version: link:../core
-      '@web3modal/wallet':
-        specifier: workspace:*
-        version: link:../wallet
       eslint-plugin-lit:
         specifier: 1.11.0
         version: 1.11.0(eslint@8.57.0)
@@ -1430,30 +1439,30 @@ importers:
 
   packages/wagmi:
     dependencies:
-      '@walletconnect/utils':
-        specifier: 2.15.1
-        version: 2.15.1
-      '@web3modal/adapter-wagmi':
+      '@rerock/adapter-wagmi':
         specifier: workspace:*
         version: link:../adapters/wagmi
-      '@web3modal/base':
+      '@rerock/base':
         specifier: workspace:*
         version: link:../base
-      '@web3modal/common':
+      '@rerock/common':
         specifier: workspace:*
         version: link:../common
-      '@web3modal/polyfills':
+      '@rerock/polyfills':
         specifier: workspace:*
         version: link:../polyfills
-      '@web3modal/scaffold-utils':
+      '@rerock/scaffold-utils':
         specifier: workspace:*
         version: link:../scaffold-utils
-      '@web3modal/siwe':
+      '@rerock/siwe':
         specifier: workspace:*
         version: link:../siwe
-      '@web3modal/wallet':
+      '@rerock/wallet':
         specifier: workspace:*
         version: link:../wallet
+      '@walletconnect/utils':
+        specifier: 2.15.2
+        version: 2.15.2
     devDependencies:
       '@wagmi/connectors':
         specifier: 5.1.5
@@ -1482,15 +1491,15 @@ importers:
 
   packages/wallet:
     dependencies:
+      '@rerock/common':
+        specifier: workspace:*
+        version: link:../common
+      '@rerock/polyfills':
+        specifier: workspace:*
+        version: link:../polyfills
       '@walletconnect/logger':
         specifier: 2.1.2
         version: 2.1.2
-      '@web3modal/common':
-        specifier: workspace:*
-        version: link:../common
-      '@web3modal/polyfills':
-        specifier: workspace:*
-        version: link:../polyfills
       zod:
         specifier: 3.22.4
         version: 3.22.4
@@ -6381,8 +6390,8 @@ packages:
   '@types/node@18.15.13':
     resolution: {integrity: sha512-N+0kuo9KgrUQ1Sn/ifDXsvg0TTleP7rIy4zOBGECxAljqvqfqpTfzx0Q1NUedOixRMBfe2Whhb056a42cWs26Q==}
 
-  '@types/node@18.19.49':
-    resolution: {integrity: sha512-ALCeIR6n0nQ7j0FUF1ycOhrp6+XutJWqEu/vtdEqXFUQwkBfgUA5cEg3ZNmjWGF/ZYA/FcF9QMkL55Ar0O6UrA==}
+  '@types/node@18.19.50':
+    resolution: {integrity: sha512-xonK+NRrMBRtkL1hVCc3G+uXtjh1Al4opBLjqVmipe5ZAaBYWW6cNAiBVZ1BvmkBhep698rP3UM3aRAdSALuhg==}
 
   '@types/node@20.11.5':
     resolution: {integrity: sha512-g557vgQjUUfN76MZAN/dt1z3dzcUsimuysco0KeluHgrPdJXkP/XdAURgyO2W9fZWHRtRBiVKzKn8vyOAwlG+w==}
@@ -6668,12 +6677,12 @@ packages:
   '@walletconnect/core@2.14.0':
     resolution: {integrity: sha512-E/dgBM9q3judXnTfZQ5ILvDpeSdDpabBLsXtYXa3Nyc26cfNplfLJ2nXm9FgtTdhM1nZ7yx4+zDPiXawBRZl2g==}
 
-  '@walletconnect/core@2.15.1':
-    resolution: {integrity: sha512-9MWVt33MFrLiAeK9nqY/B30/y0M4uiq8v9EXenIBQdlgkmXM++RTcOnn7u7EAbthGgzx3WLPRm4ViwIb+rI/Cg==}
-    engines: {node: '>=18'}
-
   '@walletconnect/core@2.15.2':
     resolution: {integrity: sha512-u4BGuazSNAQ48QBY7EphanBuBN6EJWyD5MXi83n1wXwfPQWAu0XNvmOjjF+xmMI5TsYH9N6Y78O6HP/VX9EOvg==}
+    engines: {node: '>=18'}
+
+  '@walletconnect/core@2.16.0':
+    resolution: {integrity: sha512-B/PPcg0MRb9pqB6nupVqEFGI5cFK5HNXYoi+y6Qaq53JIjHa6KANskNkj567iegETaPUZIniHENry7M8mHN3Bw==}
     engines: {node: '>=18'}
 
   '@walletconnect/environment@1.0.1':
@@ -6682,8 +6691,8 @@ packages:
   '@walletconnect/ethereum-provider@2.14.0':
     resolution: {integrity: sha512-Cc2/DCn85VciA10BrsNWFM//3VC1D8yjwrjfUKjGndLPDz0YIdAxTgYZViIlMjE0lzQC/DMvPYEAnGfW0O1Bwg==}
 
-  '@walletconnect/ethereum-provider@2.15.1':
-    resolution: {integrity: sha512-3ssEAKc/rLYshwyE2ZIaoTxzi/p9Ws+kj/FIsd1Ed/CC37Rl5l/KYHaRJtevWeni9s4dGqyqKsYkJ0VwwUcnfQ==}
+  '@walletconnect/ethereum-provider@2.15.2':
+    resolution: {integrity: sha512-POH2Wov2cXdASDDyv2bwY9Y2JzkGzGFS4SzltMt1zxKUMTyoJ8xKAgWaxoiJw0pqsLGY7T5msmk9qeKOavQtAA==}
 
   '@walletconnect/events@1.0.1':
     resolution: {integrity: sha512-NPTqaoi0oPBVNuLv7qPaJazmGHs5JGyO8eEAk5VGKmJzDR7AHzD4k6ilox5kxk1iwiOnFopBOOMLs86Oa76HpQ==}
@@ -6752,11 +6761,11 @@ packages:
   '@walletconnect/sign-client@2.14.0':
     resolution: {integrity: sha512-UrB3S3eLjPYfBLCN3WJ5u7+WcZ8kFMe/QIDqLf76Jk6TaLwkSUy563LvnSw4KW/kA+/cY1KBSdUDfX1tzYJJXg==}
 
-  '@walletconnect/sign-client@2.15.1':
-    resolution: {integrity: sha512-YnLNEmCHgZ8yBpE3hwZnHD/bVznVMguSAlwLBNOoWUH2f4d9mR8bqa6KeVXqZ3e8mVHcxKTJTjTJ3oQMLyKIjw==}
-
   '@walletconnect/sign-client@2.15.2':
     resolution: {integrity: sha512-Yp4/z3IdTMngbjr7Zy7Qi1X6EZDH4nxY91X6K2KpA3MjLW0yPTGalEJgJ4p9WH7fmHRlwvfR4hjwM5eQcLo5Zg==}
+
+  '@walletconnect/sign-client@2.16.0':
+    resolution: {integrity: sha512-R9C9D8jaARbosXvA9IGIAowashGqp9avmjx6gikH4lKq2qhDjD5CWZq+GrN6gcht6WQiQ1mNmrmhN1pBPvivwQ==}
 
   '@walletconnect/time@1.0.2':
     resolution: {integrity: sha512-uzdd9woDcJ1AaBZRhqy5rNC9laqWGErfc4dxA9a87mPdKOgWMD85mcFo9dIYIts/Jwocfwn07EC6EzclKubk/g==}
@@ -6765,32 +6774,29 @@ packages:
     resolution: {integrity: sha512-Cn+3I0V0vT9ghMuzh1KzZvCkiAxTq+1TR2eSqw5E5AVWfmCtECFkVZBP6uUJZ8YjwLqXheI+rnjqPy7sVM4Fyg==}
     deprecated: 'WalletConnect''s v1 SDKs are now deprecated. Please upgrade to a v2 SDK. For details see: https://docs.walletconnect.com/'
 
-  '@walletconnect/types@2.13.3':
-    resolution: {integrity: sha512-9UdtLoQqwGFfepCPprUAXeUbKg9zyDarPRmEJVco51OWXHCOpvRgroWk54fQHDhCUIfDELjObY6XNAzNrmNYUA==}
-
   '@walletconnect/types@2.14.0':
     resolution: {integrity: sha512-vevMi4jZLJ55vLuFOicQFmBBbLyb+S0sZS4IsaBdZkQflfGIq34HkN13c/KPl4Ye0aoR4/cUcUSitmGIzEQM5g==}
-
-  '@walletconnect/types@2.15.1':
-    resolution: {integrity: sha512-4WkMsHD8ioZI5GmxNT0qMlz6msI7ZajBcTyDxfRncaNZVau0C+Btw1U4jWO+gxwJVDJY+Ue/cb1QKJ5BanZsyw==}
 
   '@walletconnect/types@2.15.2':
     resolution: {integrity: sha512-TGnQZYWZJJ3I8dqgpMPwhO1IRXDuY8/tWPI0nNWJDyTK7b3E9prDGugnPmDDjpTYVoETnUTgW/jQaHNTq4yV7Q==}
 
+  '@walletconnect/types@2.16.0':
+    resolution: {integrity: sha512-n+vpli0eonAzG9wtOgmjYbJEMGz2gvOttU2VnzNkeVmvDz7otVuPgtk+7BNyRofZ6rBW6rriW5cCKtmbzvUSzA==}
+
   '@walletconnect/universal-provider@2.14.0':
     resolution: {integrity: sha512-Mr8uoTmD6H0+Hh+3gxBu4l3T2uP/nNPR02sVtwEujNum++F727mMk+ifPRIpkVo21V/bvXFEy8sHTs5hqyq5iA==}
 
-  '@walletconnect/universal-provider@2.15.1':
-    resolution: {integrity: sha512-JvKwHoE/ugWSKOmrEr03go1V79N0bbYV6w24Lqlzz4VAoReZZo8TDKsya7UkJ1L5HUCgKVP+AVktuJv8khzJ6w==}
+  '@walletconnect/universal-provider@2.15.2':
+    resolution: {integrity: sha512-AWK5nUA4tJ57C8JDPOmqAWf5aF1VXIN4JpkqKekNKMP4+xiBTotKrwj0XD5xvtDUyaqjhRZPvYmUk24z1udrHA==}
 
   '@walletconnect/utils@2.14.0':
     resolution: {integrity: sha512-vRVomYQEtEAyCK2c5bzzEvtgxaGGITF8mWuIL+WYSAMyEJLY97mirP2urDucNwcUczwxUgI+no9RiNFbUHreQQ==}
 
-  '@walletconnect/utils@2.15.1':
-    resolution: {integrity: sha512-i5AR8XpZdcX8ghaCjYV13Er/KAGe56c1mLaG9c2cv9kmnZMZijeMdInjX/flnSM1RFDUiZXvKPMUNwlCL4NsWw==}
-
   '@walletconnect/utils@2.15.2':
     resolution: {integrity: sha512-H+fNH9cHDezdaEiEsO7/3URSIzqhumuacwB/+0PX0sSCoktmU9AfTqA8fJGG43zOPixleBqOymzO6owB1Y7jtQ==}
+
+  '@walletconnect/utils@2.16.0':
+    resolution: {integrity: sha512-ASh9yyqzP4GLIU400rKEvBefcM5GFJbi2Iw7p0SFDyFC5WZYYyllU3WopU+YV/7bbukCMkthEIdioWYlpmjERQ==}
 
   '@walletconnect/window-getters@1.0.0':
     resolution: {integrity: sha512-xB0SQsLaleIYIkSsl43vm8EwETpBzJ2gnzk7e0wMF3ktqiTGS6TFHxcprMl5R44KKh4tCcHCJwolMCaDSwtAaA==}
@@ -7409,8 +7415,8 @@ packages:
     resolution: {integrity: sha512-Gmy6FhYlCY7uOElZUSbxo2UCDH8owEk996gkbrpsgGtrJLM3J7jGxl9Ic7Qwwj4ivOE5AWZWRMecDdF7hqGjFA==}
     engines: {node: '>=10'}
 
-  caniuse-lite@1.0.30001655:
-    resolution: {integrity: sha512-jRGVy3iSGO5Uutn2owlb5gR6qsGngTw9ZTb4ali9f3glshcNmJ2noam4Mo9zia5P9Dk3jNNydy7vQjuE5dQmfg==}
+  caniuse-lite@1.0.30001658:
+    resolution: {integrity: sha512-N2YVqWbJELVdrnsW5p+apoQyYt51aBMSsBZki1XZEfeBCexcM/sf4xiAHcXQBkuOwJBXtWF7aW1sYX6tKebPHw==}
 
   capnp-ts@0.7.0:
     resolution: {integrity: sha512-XKxXAC3HVPv7r674zP0VC3RTXz+/JKhfyw94ljvF80yynK6VkTnqE3jMuN8b3dUVmmc43TjyxjW4KTsmB3c86g==}
@@ -7807,8 +7813,8 @@ packages:
       supports-color:
         optional: true
 
-  debug@4.3.6:
-    resolution: {integrity: sha512-O/09Bd4Z1fBrU4VzkhFqVgpPzaGbw6Sm9FEkBT1A/YBXQFGuuSxa1dN2nxgxS34JmKXqYx8CZAwEVoJFImUXIg==}
+  debug@4.3.7:
+    resolution: {integrity: sha512-Er2nc/H7RrMXZBFCEim6TCmMk02Z8vLC2Rbi1KEBggpo0fS6l0S1nnapwmIi3yW/+GOJap1Krg4w0Hg80oCqgQ==}
     engines: {node: '>=6.0'}
     peerDependencies:
       supports-color: '*'
@@ -8008,8 +8014,8 @@ packages:
     engines: {node: '>=0.10.0'}
     hasBin: true
 
-  electron-to-chromium@1.5.13:
-    resolution: {integrity: sha512-lbBcvtIJ4J6sS4tb5TLp1b4LyfCdMkwStzXPyAgVgTRAsep4bvrAGaBOP7ZJtQMNJpSQ9SqG4brWOroNaQtm7Q==}
+  electron-to-chromium@1.5.17:
+    resolution: {integrity: sha512-Q6Q+04tjC2KJ8qsSOSgovvhWcv5t+SmpH6/YfAWmhpE5/r+zw6KQy1/yWVFFNyEBvy68twTTXr2d5eLfCq7QIw==}
 
   elliptic@6.5.4:
     resolution: {integrity: sha512-iLhC6ULemrljPZb+QutR5TQGB+pdW6KGD5RSegS+8sorOZT+rdQFbsQFJgvN3eRqNALqJer4oQ16YvJHlU8hzQ==}
@@ -8214,8 +8220,8 @@ packages:
       eslint-plugin-import-x:
         optional: true
 
-  eslint-module-utils@2.9.0:
-    resolution: {integrity: sha512-McVbYmwA3NEKwRQY5g4aWMdcZE5xZxV8i8l7CqJSrameuGSQJtSWaL/LxTEzSKKaCcOhlpDR8XEfYXWPrdo/ZQ==}
+  eslint-module-utils@2.11.0:
+    resolution: {integrity: sha512-gbBE5Hitek/oG6MUVj6sFuzEjA/ClzNflVrLovHi/JgLdC7fiN5gLAY1WIPW1a0V5I999MnsrvVrCOGmmVqDBQ==}
     engines: {node: '>=4'}
     peerDependencies:
       '@typescript-eslint/parser': '*'
@@ -8574,16 +8580,16 @@ packages:
   flow-enums-runtime@0.0.6:
     resolution: {integrity: sha512-3PYnM29RFXwvAN6Pc/scUfkI7RwhQ/xqyLUyPNlXUp9S40zI8nup9tUSrTLSVnWGBN38FNiGWbwZOB6uR4OGdw==}
 
-  flow-parser@0.245.1:
-    resolution: {integrity: sha512-KaVIjRdCY+APtxQijfV1c7GN1bofByIlR7E6omQLW0sghkA8hh8uufQOqTf3oAAVTExsSLafmdL/QwyvE/gdEg==}
+  flow-parser@0.245.2:
+    resolution: {integrity: sha512-FU4yuqC1j2IeWWicpzG0YJrXHJgKjK/AU8QKK/7MvQaNhcoGisDoE7FJLGCtbvnifzsgDWdm9/jtTF7Mp+PJXQ==}
     engines: {node: '>=0.4.0'}
 
   focus-lock@1.3.5:
     resolution: {integrity: sha512-QFaHbhv9WPUeLYBDe/PAuLKJ4Dd9OPvKs9xZBr3yLXnUrDNaVXKu2baDBXe3naPY30hgHYSsf2JW4jzas2mDEQ==}
     engines: {node: '>=10'}
 
-  follow-redirects@1.15.8:
-    resolution: {integrity: sha512-xgrmBhBToVKay1q2Tao5LI26B83UhrB/vM1avwVSDzt8rx3rO6AizBAaF46EgksTVr+rFTQaqZZ9MVBfUe4nig==}
+  follow-redirects@1.15.9:
+    resolution: {integrity: sha512-gew4GsXizNgdoRyqmyfMHyAmXsZDk6mHkSxZFCzW9gwlbtOW44CDtYavM+y+72qD/Vq2l550kMF52DT8fOLJqQ==}
     engines: {node: '>=4.0'}
     peerDependencies:
       debug: '*'
@@ -9747,8 +9753,8 @@ packages:
     resolution: {integrity: sha512-/3ER20CTTbahrCrpYfPn7Xavv9diBROZpoXGVZDWMw4b/X4uuUwAC0ki85tgsdMRONURyIJbcOvS94QsUBYPbQ==}
     hasBin: true
 
-  loglevel@1.9.1:
-    resolution: {integrity: sha512-hP3I3kCrDIMuRwAwHltphhDM1r8i55H33GgqjXbrisuJhF4kRhW1dNuxsRklp4bXl8DSdLaNLuiL4A/LWRfxvg==}
+  loglevel@1.9.2:
+    resolution: {integrity: sha512-HgMmCqIJSAKqo68l0rS2AanEWfkxaZ5wNiEFb5ggm08lDs9Xl2KxBlX3PTcaD2chBM1gXAYf491/M2Rv8Jwayg==}
     engines: {node: '>= 0.6.0'}
 
   long@4.0.0:
@@ -10066,9 +10072,6 @@ packages:
 
   ms@2.0.0:
     resolution: {integrity: sha512-Tpp60P6IUJDTuOq/5Z8cdskzJujfwqfOTkrwIwj7IRISpnkJnT6SyJ4PCPnGMoFjC9ddhal5KVIYtAt97ix05A==}
-
-  ms@2.1.2:
-    resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}
 
   ms@2.1.3:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
@@ -12122,19 +12125,19 @@ packages:
       webpack-sources:
         optional: true
 
-  unstorage@1.11.1:
-    resolution: {integrity: sha512-3NVszU4MGlO21WWnkSq0xnPVMHnMyB5DdJQyGRAg/DUZVeQjWRinLOia89iw5KGpllRtoA5+N+xnq75MAsPAOA==}
+  unstorage@1.12.0:
+    resolution: {integrity: sha512-ARZYTXiC+e8z3lRM7/qY9oyaOkaozCeNd2xoz7sYK9fv7OLGhVsf+BZbmASqiK/HTZ7T6eAlnVq9JynZppyk3w==}
     peerDependencies:
-      '@azure/app-configuration': ^1.6.0
-      '@azure/cosmos': ^4.0.0
+      '@azure/app-configuration': ^1.7.0
+      '@azure/cosmos': ^4.1.1
       '@azure/data-tables': ^13.2.2
-      '@azure/identity': ^4.2.0
+      '@azure/identity': ^4.4.1
       '@azure/keyvault-secrets': ^4.8.0
-      '@azure/storage-blob': ^12.18.0
-      '@capacitor/preferences': ^6.0.0
+      '@azure/storage-blob': ^12.24.0
+      '@capacitor/preferences': ^6.0.2
       '@netlify/blobs': ^6.5.0 || ^7.0.0
-      '@planetscale/database': ^1.18.0
-      '@upstash/redis': ^1.31.3
+      '@planetscale/database': ^1.19.0
+      '@upstash/redis': ^1.34.0
       '@vercel/kv': ^1.0.1
       idb-keyval: ^6.2.1
       ioredis: ^5.4.1
@@ -13203,7 +13206,7 @@ snapshots:
       '@babel/traverse': 7.25.6
       '@babel/types': 7.25.6
       convert-source-map: 2.0.0
-      debug: 4.3.6
+      debug: 4.3.7
       gensync: 1.0.0-beta.2
       json5: 2.2.3
       semver: 6.3.1
@@ -13261,7 +13264,7 @@ snapshots:
       '@babel/core': 7.25.2
       '@babel/helper-compilation-targets': 7.25.2
       '@babel/helper-plugin-utils': 7.24.8
-      debug: 4.3.6
+      debug: 4.3.7
       lodash.debounce: 4.0.8
       resolve: 1.22.8
     transitivePeerDependencies:
@@ -14064,7 +14067,7 @@ snapshots:
       '@babel/parser': 7.25.6
       '@babel/template': 7.25.0
       '@babel/types': 7.25.6
-      debug: 4.3.6
+      debug: 4.3.7
       globals: 11.12.0
     transitivePeerDependencies:
       - supports-color
@@ -15552,7 +15555,7 @@ snapshots:
   '@eslint/eslintrc@2.1.4':
     dependencies:
       ajv: 6.12.6
-      debug: 4.3.6
+      debug: 4.3.7
       espree: 9.6.1
       globals: 13.24.0
       ignore: 5.3.2
@@ -15933,7 +15936,7 @@ snapshots:
   '@humanwhocodes/config-array@0.11.14':
     dependencies:
       '@humanwhocodes/object-schema': 2.0.3
-      debug: 4.3.6
+      debug: 4.3.7
       minimatch: 3.1.2
     transitivePeerDependencies:
       - supports-color
@@ -16028,8 +16031,8 @@ snapshots:
     dependencies:
       '@solana/web3.js': 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@walletconnect/qrcode-modal': 1.8.0
-      '@walletconnect/sign-client': 2.15.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@walletconnect/utils': 2.15.1
+      '@walletconnect/sign-client': 2.16.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@walletconnect/utils': 2.15.2
       bs58: 5.0.0
     transitivePeerDependencies:
       - '@azure/app-configuration'
@@ -16260,7 +16263,7 @@ snapshots:
       bufferutil: 4.0.8
       cross-fetch: 4.0.0
       date-fns: 2.30.0
-      debug: 4.3.6
+      debug: 4.3.7
       eciesjs: 0.3.20
       eventemitter2: 6.4.9
       readable-stream: 3.6.2
@@ -16297,7 +16300,7 @@ snapshots:
       '@types/dom-screen-wake-lock': 1.0.3
       bowser: 2.11.0
       cross-fetch: 4.0.0
-      debug: 4.3.6
+      debug: 4.3.7
       eciesjs: 0.3.20
       eth-rpc-errors: 4.0.3
       eventemitter2: 6.4.9
@@ -16332,7 +16335,7 @@ snapshots:
       '@types/dom-screen-wake-lock': 1.0.3
       bowser: 2.11.0
       cross-fetch: 4.0.0
-      debug: 4.3.6
+      debug: 4.3.7
       eciesjs: 0.3.20
       eth-rpc-errors: 4.0.3
       eventemitter2: 6.4.9
@@ -16364,7 +16367,7 @@ snapshots:
     dependencies:
       '@ethereumjs/tx': 4.2.0
       '@types/debug': 4.1.12
-      debug: 4.3.6
+      debug: 4.3.7
       semver: 7.6.3
       superstruct: 1.0.4
     transitivePeerDependencies:
@@ -16377,7 +16380,7 @@ snapshots:
       '@noble/hashes': 1.5.0
       '@scure/base': 1.1.8
       '@types/debug': 4.1.12
-      debug: 4.3.6
+      debug: 4.3.7
       pony-cause: 2.1.11
       semver: 7.6.3
       uuid: 9.0.1
@@ -16391,7 +16394,7 @@ snapshots:
       '@noble/hashes': 1.5.0
       '@scure/base': 1.1.8
       '@types/debug': 4.1.12
-      debug: 4.3.6
+      debug: 4.3.7
       pony-cause: 2.1.11
       semver: 7.6.3
       uuid: 9.0.1
@@ -18922,7 +18925,7 @@ snapshots:
       '@storybook/node-logger': 7.6.7
       '@storybook/types': 7.6.7
       '@types/find-cache-dir': 3.2.1
-      '@types/node': 18.19.49
+      '@types/node': 18.19.50
       '@types/node-fetch': 2.6.11
       '@types/pretty-hrtime': 1.0.3
       chalk: 4.1.2
@@ -18967,7 +18970,7 @@ snapshots:
       '@storybook/telemetry': 7.6.7
       '@storybook/types': 7.6.7
       '@types/detect-port': 1.3.5
-      '@types/node': 18.19.49
+      '@types/node': 18.19.50
       '@types/pretty-hrtime': 1.0.3
       '@types/semver': 7.5.8
       better-opn: 3.0.2
@@ -19284,7 +19287,7 @@ snapshots:
       eth-rpc-errors: 4.0.3
       json-rpc-random-id: 1.0.1
       lodash: 4.17.21
-      loglevel: 1.9.1
+      loglevel: 1.9.2
     transitivePeerDependencies:
       - '@sentry/types'
       - bufferutil
@@ -19297,7 +19300,7 @@ snapshots:
       '@toruslabs/eccrypto': 2.2.1
       '@toruslabs/metadata-helpers': 3.2.0(@babel/runtime@7.25.6)(@sentry/types@7.92.0)
       bowser: 2.11.0
-      loglevel: 1.9.1
+      loglevel: 1.9.2
       oblivious-set: 1.1.1
       socket.io-client: 4.7.5(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       unload: 2.4.1
@@ -19315,7 +19318,7 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.25.6
       lodash.merge: 4.6.2
-      loglevel: 1.9.1
+      loglevel: 1.9.2
     optionalDependencies:
       '@sentry/types': 7.92.0
 
@@ -19379,7 +19382,7 @@ snapshots:
       fast-deep-equal: 3.1.3
       is-stream: 2.0.1
       lodash-es: 4.17.21
-      loglevel: 1.9.1
+      loglevel: 1.9.2
       pump: 3.0.0
     transitivePeerDependencies:
       - '@sentry/types'
@@ -19962,7 +19965,7 @@ snapshots:
 
   '@types/node@18.15.13': {}
 
-  '@types/node@18.19.49':
+  '@types/node@18.19.50':
     dependencies:
       undici-types: 5.26.5
 
@@ -20075,7 +20078,7 @@ snapshots:
       '@typescript-eslint/type-utils': 6.18.1(eslint@8.56.0)(typescript@5.3.3)
       '@typescript-eslint/utils': 6.18.1(eslint@8.56.0)(typescript@5.3.3)
       '@typescript-eslint/visitor-keys': 6.18.1
-      debug: 4.3.6
+      debug: 4.3.7
       eslint: 8.56.0
       graphemer: 1.4.0
       ignore: 5.3.2
@@ -20093,7 +20096,7 @@ snapshots:
       '@typescript-eslint/types': 6.18.1
       '@typescript-eslint/typescript-estree': 6.18.1(typescript@5.3.3)
       '@typescript-eslint/visitor-keys': 6.18.1
-      debug: 4.3.6
+      debug: 4.3.7
       eslint: 8.56.0
     optionalDependencies:
       typescript: 5.3.3
@@ -20106,7 +20109,7 @@ snapshots:
       '@typescript-eslint/types': 6.18.1
       '@typescript-eslint/typescript-estree': 6.18.1(typescript@5.3.3)
       '@typescript-eslint/visitor-keys': 6.18.1
-      debug: 4.3.6
+      debug: 4.3.7
       eslint: 8.57.0
     optionalDependencies:
       typescript: 5.3.3
@@ -20122,7 +20125,7 @@ snapshots:
     dependencies:
       '@typescript-eslint/typescript-estree': 6.18.1(typescript@5.3.3)
       '@typescript-eslint/utils': 6.18.1(eslint@8.56.0)(typescript@5.3.3)
-      debug: 4.3.6
+      debug: 4.3.7
       eslint: 8.56.0
       ts-api-utils: 1.3.0(typescript@5.3.3)
     optionalDependencies:
@@ -20136,7 +20139,7 @@ snapshots:
     dependencies:
       '@typescript-eslint/types': 6.18.1
       '@typescript-eslint/visitor-keys': 6.18.1
-      debug: 4.3.6
+      debug: 4.3.7
       globby: 11.1.0
       is-glob: 4.0.3
       minimatch: 9.0.3
@@ -20215,7 +20218,7 @@ snapshots:
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@bcoe/v8-coverage': 0.2.3
-      debug: 4.3.6
+      debug: 4.3.7
       istanbul-lib-coverage: 3.2.2
       istanbul-lib-report: 3.0.1
       istanbul-lib-source-maps: 4.0.1
@@ -20234,7 +20237,7 @@ snapshots:
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@bcoe/v8-coverage': 0.2.3
-      debug: 4.3.6
+      debug: 4.3.7
       istanbul-lib-coverage: 3.2.2
       istanbul-lib-report: 3.0.1
       istanbul-lib-source-maps: 5.0.6
@@ -20543,7 +20546,7 @@ snapshots:
       - uWebSockets.js
       - utf-8-validate
 
-  '@walletconnect/core@2.15.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+  '@walletconnect/core@2.15.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
     dependencies:
       '@walletconnect/heartbeat': 1.2.2
       '@walletconnect/jsonrpc-provider': 1.0.14
@@ -20556,8 +20559,8 @@ snapshots:
       '@walletconnect/relay-auth': 1.0.4
       '@walletconnect/safe-json': 1.0.2
       '@walletconnect/time': 1.0.2
-      '@walletconnect/types': 2.15.1
-      '@walletconnect/utils': 2.15.1
+      '@walletconnect/types': 2.15.2
+      '@walletconnect/utils': 2.15.2
       events: 3.3.0
       lodash.isequal: 4.5.0
       uint8arrays: 3.1.0
@@ -20579,7 +20582,7 @@ snapshots:
       - uWebSockets.js
       - utf-8-validate
 
-  '@walletconnect/core@2.15.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+  '@walletconnect/core@2.16.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
     dependencies:
       '@walletconnect/heartbeat': 1.2.2
       '@walletconnect/jsonrpc-provider': 1.0.14
@@ -20592,8 +20595,8 @@ snapshots:
       '@walletconnect/relay-auth': 1.0.4
       '@walletconnect/safe-json': 1.0.2
       '@walletconnect/time': 1.0.2
-      '@walletconnect/types': 2.15.2
-      '@walletconnect/utils': 2.15.2
+      '@walletconnect/types': 2.16.0
+      '@walletconnect/utils': 2.16.0
       events: 3.3.0
       lodash.isequal: 4.5.0
       uint8arrays: 3.1.0
@@ -20685,17 +20688,17 @@ snapshots:
       - uWebSockets.js
       - utf-8-validate
 
-  '@walletconnect/ethereum-provider@2.15.1(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(utf-8-validate@5.0.10)':
+  '@walletconnect/ethereum-provider@2.15.2(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(utf-8-validate@5.0.10)':
     dependencies:
       '@walletconnect/jsonrpc-http-connection': 1.0.8
       '@walletconnect/jsonrpc-provider': 1.0.14
       '@walletconnect/jsonrpc-types': 1.0.4
       '@walletconnect/jsonrpc-utils': 1.0.8
       '@walletconnect/modal': 2.6.2(@types/react@18.2.62)(react@18.2.0)
-      '@walletconnect/sign-client': 2.15.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@walletconnect/types': 2.15.1
-      '@walletconnect/universal-provider': 2.15.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@walletconnect/utils': 2.15.1
+      '@walletconnect/sign-client': 2.15.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@walletconnect/types': 2.15.2
+      '@walletconnect/universal-provider': 2.15.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@walletconnect/utils': 2.15.2
       events: 3.3.0
     transitivePeerDependencies:
       - '@azure/app-configuration'
@@ -20769,7 +20772,7 @@ snapshots:
     dependencies:
       '@walletconnect/safe-json': 1.0.2
       idb-keyval: 6.2.1
-      unstorage: 1.11.1(idb-keyval@6.2.1)
+      unstorage: 1.12.0(idb-keyval@6.2.1)
     transitivePeerDependencies:
       - '@azure/app-configuration'
       - '@azure/cosmos'
@@ -20904,35 +20907,6 @@ snapshots:
       - uWebSockets.js
       - utf-8-validate
 
-  '@walletconnect/sign-client@2.15.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
-    dependencies:
-      '@walletconnect/core': 2.15.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@walletconnect/events': 1.0.1
-      '@walletconnect/heartbeat': 1.2.2
-      '@walletconnect/jsonrpc-utils': 1.0.8
-      '@walletconnect/logger': 2.1.2
-      '@walletconnect/time': 1.0.2
-      '@walletconnect/types': 2.15.1
-      '@walletconnect/utils': 2.15.1
-      events: 3.3.0
-    transitivePeerDependencies:
-      - '@azure/app-configuration'
-      - '@azure/cosmos'
-      - '@azure/data-tables'
-      - '@azure/identity'
-      - '@azure/keyvault-secrets'
-      - '@azure/storage-blob'
-      - '@capacitor/preferences'
-      - '@netlify/blobs'
-      - '@planetscale/database'
-      - '@react-native-async-storage/async-storage'
-      - '@upstash/redis'
-      - '@vercel/kv'
-      - bufferutil
-      - ioredis
-      - uWebSockets.js
-      - utf-8-validate
-
   '@walletconnect/sign-client@2.15.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
     dependencies:
       '@walletconnect/core': 2.15.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
@@ -20962,19 +20936,16 @@ snapshots:
       - uWebSockets.js
       - utf-8-validate
 
-  '@walletconnect/time@1.0.2':
+  '@walletconnect/sign-client@2.16.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
     dependencies:
-      tslib: 1.14.1
-
-  '@walletconnect/types@1.8.0': {}
-
-  '@walletconnect/types@2.13.3':
-    dependencies:
+      '@walletconnect/core': 2.16.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@walletconnect/events': 1.0.1
       '@walletconnect/heartbeat': 1.2.2
-      '@walletconnect/jsonrpc-types': 1.0.4
-      '@walletconnect/keyvaluestorage': 1.1.1
+      '@walletconnect/jsonrpc-utils': 1.0.8
       '@walletconnect/logger': 2.1.2
+      '@walletconnect/time': 1.0.2
+      '@walletconnect/types': 2.16.0
+      '@walletconnect/utils': 2.16.0
       events: 3.3.0
     transitivePeerDependencies:
       - '@azure/app-configuration'
@@ -20989,8 +20960,16 @@ snapshots:
       - '@react-native-async-storage/async-storage'
       - '@upstash/redis'
       - '@vercel/kv'
+      - bufferutil
       - ioredis
       - uWebSockets.js
+      - utf-8-validate
+
+  '@walletconnect/time@1.0.2':
+    dependencies:
+      tslib: 1.14.1
+
+  '@walletconnect/types@1.8.0': {}
 
   '@walletconnect/types@2.14.0':
     dependencies:
@@ -21016,7 +20995,7 @@ snapshots:
       - ioredis
       - uWebSockets.js
 
-  '@walletconnect/types@2.15.1':
+  '@walletconnect/types@2.15.2':
     dependencies:
       '@walletconnect/events': 1.0.1
       '@walletconnect/heartbeat': 1.2.2
@@ -21040,7 +21019,7 @@ snapshots:
       - ioredis
       - uWebSockets.js
 
-  '@walletconnect/types@2.15.2':
+  '@walletconnect/types@2.16.0':
     dependencies:
       '@walletconnect/events': 1.0.1
       '@walletconnect/heartbeat': 1.2.2
@@ -21094,16 +21073,16 @@ snapshots:
       - uWebSockets.js
       - utf-8-validate
 
-  '@walletconnect/universal-provider@2.15.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+  '@walletconnect/universal-provider@2.15.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
     dependencies:
       '@walletconnect/jsonrpc-http-connection': 1.0.8
       '@walletconnect/jsonrpc-provider': 1.0.14
       '@walletconnect/jsonrpc-types': 1.0.4
       '@walletconnect/jsonrpc-utils': 1.0.8
       '@walletconnect/logger': 2.1.2
-      '@walletconnect/sign-client': 2.15.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@walletconnect/types': 2.15.1
-      '@walletconnect/utils': 2.15.1
+      '@walletconnect/sign-client': 2.15.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@walletconnect/types': 2.15.2
+      '@walletconnect/utils': 2.15.2
       events: 3.3.0
     transitivePeerDependencies:
       - '@azure/app-configuration'
@@ -21156,7 +21135,7 @@ snapshots:
       - ioredis
       - uWebSockets.js
 
-  '@walletconnect/utils@2.15.1':
+  '@walletconnect/utils@2.15.2':
     dependencies:
       '@stablelib/chacha20poly1305': 1.0.1
       '@stablelib/hkdf': 1.0.1
@@ -21164,12 +21143,14 @@ snapshots:
       '@stablelib/sha256': 1.0.1
       '@stablelib/x25519': 1.0.3
       '@walletconnect/relay-api': 1.0.11
+      '@walletconnect/relay-auth': 1.0.4
       '@walletconnect/safe-json': 1.0.2
       '@walletconnect/time': 1.0.2
-      '@walletconnect/types': 2.15.1
+      '@walletconnect/types': 2.15.2
       '@walletconnect/window-getters': 1.0.1
       '@walletconnect/window-metadata': 1.0.1
       detect-browser: 5.3.0
+      elliptic: 6.5.7
       query-string: 7.1.3
       uint8arrays: 3.1.0
     transitivePeerDependencies:
@@ -21188,7 +21169,7 @@ snapshots:
       - ioredis
       - uWebSockets.js
 
-  '@walletconnect/utils@2.15.2':
+  '@walletconnect/utils@2.16.0':
     dependencies:
       '@stablelib/chacha20poly1305': 1.0.1
       '@stablelib/hkdf': 1.0.1
@@ -21199,7 +21180,7 @@ snapshots:
       '@walletconnect/relay-auth': 1.0.4
       '@walletconnect/safe-json': 1.0.2
       '@walletconnect/time': 1.0.2
-      '@walletconnect/types': 2.15.2
+      '@walletconnect/types': 2.16.0
       '@walletconnect/window-getters': 1.0.1
       '@walletconnect/window-metadata': 1.0.1
       detect-browser: 5.3.0
@@ -21304,13 +21285,13 @@ snapshots:
 
   agent-base@6.0.2:
     dependencies:
-      debug: 4.3.6
+      debug: 4.3.7
     transitivePeerDependencies:
       - supports-color
 
   agent-base@7.1.1:
     dependencies:
-      debug: 4.3.6
+      debug: 4.3.7
     transitivePeerDependencies:
       - supports-color
 
@@ -21513,7 +21494,7 @@ snapshots:
   autoprefixer@10.4.18(postcss@8.4.35):
     dependencies:
       browserslist: 4.23.3
-      caniuse-lite: 1.0.30001655
+      caniuse-lite: 1.0.30001658
       fraction.js: 4.3.7
       normalize-range: 0.1.2
       picocolors: 1.1.0
@@ -21528,7 +21509,7 @@ snapshots:
 
   axios@1.6.7:
     dependencies:
-      follow-redirects: 1.15.8
+      follow-redirects: 1.15.9
       form-data: 4.0.0
       proxy-from-env: 1.1.0
     transitivePeerDependencies:
@@ -21536,7 +21517,7 @@ snapshots:
 
   axios@1.7.2:
     dependencies:
-      follow-redirects: 1.15.8
+      follow-redirects: 1.15.9
       form-data: 4.0.0
       proxy-from-env: 1.1.0
     transitivePeerDependencies:
@@ -21782,8 +21763,8 @@ snapshots:
 
   browserslist@4.23.3:
     dependencies:
-      caniuse-lite: 1.0.30001655
-      electron-to-chromium: 1.5.13
+      caniuse-lite: 1.0.30001658
+      electron-to-chromium: 1.5.17
       node-releases: 2.0.18
       update-browserslist-db: 1.1.0(browserslist@4.23.3)
 
@@ -21910,11 +21891,11 @@ snapshots:
 
   camelcase@6.3.0: {}
 
-  caniuse-lite@1.0.30001655: {}
+  caniuse-lite@1.0.30001658: {}
 
   capnp-ts@0.7.0:
     dependencies:
-      debug: 4.3.6
+      debug: 4.3.7
       tslib: 2.7.0
     transitivePeerDependencies:
       - supports-color
@@ -22303,7 +22284,7 @@ snapshots:
       chalk: 2.4.2
       commander: 2.20.3
       core-js: 3.38.1
-      debug: 4.3.6
+      debug: 4.3.7
       fast-json-patch: 3.1.1
       get-stdin: 6.0.0
       http-proxy-agent: 5.0.0
@@ -22379,9 +22360,9 @@ snapshots:
     dependencies:
       ms: 2.1.3
 
-  debug@4.3.6:
+  debug@4.3.7:
     dependencies:
-      ms: 2.1.2
+      ms: 2.1.3
 
   decamelize-keys@1.1.1:
     dependencies:
@@ -22501,7 +22482,7 @@ snapshots:
   detect-port@1.6.1:
     dependencies:
       address: 1.2.2
-      debug: 4.3.6
+      debug: 4.3.7
     transitivePeerDependencies:
       - supports-color
 
@@ -22578,7 +22559,7 @@ snapshots:
     dependencies:
       jake: 10.9.2
 
-  electron-to-chromium@1.5.13: {}
+  electron-to-chromium@1.5.17: {}
 
   elliptic@6.5.4:
     dependencies:
@@ -22617,7 +22598,7 @@ snapshots:
   engine.io-client@6.5.4(bufferutil@4.0.8)(utf-8-validate@5.0.10):
     dependencies:
       '@socket.io/component-emitter': 3.1.2
-      debug: 4.3.6
+      debug: 4.3.7
       engine.io-parser: 5.2.3
       ws: 8.17.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       xmlhttprequest-ssl: 2.0.0
@@ -22773,7 +22754,7 @@ snapshots:
 
   esbuild-register@3.6.0(esbuild@0.18.20):
     dependencies:
-      debug: 4.3.6
+      debug: 4.3.7
       esbuild: 0.18.20
     transitivePeerDependencies:
       - supports-color
@@ -22995,10 +22976,10 @@ snapshots:
   eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.30.0)(eslint@8.56.0):
     dependencies:
       '@nolyfill/is-core-module': 1.0.39
-      debug: 4.3.6
+      debug: 4.3.7
       enhanced-resolve: 5.17.1
       eslint: 8.56.0
-      eslint-module-utils: 2.9.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.30.0)(eslint@8.56.0))(eslint@8.56.0)
+      eslint-module-utils: 2.11.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.30.0)(eslint@8.56.0))(eslint@8.56.0)
       fast-glob: 3.3.2
       get-tsconfig: 4.8.0
       is-bun-module: 1.1.0
@@ -23014,10 +22995,10 @@ snapshots:
   eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.18.1(eslint@8.57.0)(typescript@5.3.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.30.0)(eslint@8.57.0):
     dependencies:
       '@nolyfill/is-core-module': 1.0.39
-      debug: 4.3.6
+      debug: 4.3.7
       enhanced-resolve: 5.17.1
       eslint: 8.57.0
-      eslint-module-utils: 2.9.0(@typescript-eslint/parser@6.18.1(eslint@8.57.0)(typescript@5.3.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.18.1(eslint@8.57.0)(typescript@5.3.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.30.0)(eslint@8.57.0))(eslint@8.57.0)
+      eslint-module-utils: 2.11.0(@typescript-eslint/parser@6.18.1(eslint@8.57.0)(typescript@5.3.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.18.1(eslint@8.57.0)(typescript@5.3.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.30.0)(eslint@8.57.0))(eslint@8.57.0)
       fast-glob: 3.3.2
       get-tsconfig: 4.8.0
       is-bun-module: 1.1.0
@@ -23030,7 +23011,7 @@ snapshots:
       - eslint-import-resolver-webpack
       - supports-color
 
-  eslint-module-utils@2.9.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.30.0)(eslint@8.56.0))(eslint@8.56.0):
+  eslint-module-utils@2.11.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.30.0)(eslint@8.56.0))(eslint@8.56.0):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
@@ -23041,7 +23022,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-module-utils@2.9.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint-import-resolver-node@0.3.9)(eslint@8.57.0):
+  eslint-module-utils@2.11.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint-import-resolver-node@0.3.9)(eslint@8.57.0):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
@@ -23051,7 +23032,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-module-utils@2.9.0(@typescript-eslint/parser@6.18.1(eslint@8.57.0)(typescript@5.3.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.18.1(eslint@8.57.0)(typescript@5.3.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.30.0)(eslint@8.57.0))(eslint@8.57.0):
+  eslint-module-utils@2.11.0(@typescript-eslint/parser@6.18.1(eslint@8.57.0)(typescript@5.3.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.18.1(eslint@8.57.0)(typescript@5.3.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.30.0)(eslint@8.57.0))(eslint@8.57.0):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
@@ -23073,7 +23054,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 8.56.0
       eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.9.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.30.0)(eslint@8.56.0))(eslint@8.56.0)
+      eslint-module-utils: 2.11.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.30.0)(eslint@8.56.0))(eslint@8.56.0)
       hasown: 2.0.2
       is-core-module: 2.15.1
       is-glob: 4.0.3
@@ -23101,7 +23082,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 8.57.0
       eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.9.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint-import-resolver-node@0.3.9)(eslint@8.57.0)
+      eslint-module-utils: 2.11.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint-import-resolver-node@0.3.9)(eslint@8.57.0)
       hasown: 2.0.2
       is-core-module: 2.15.1
       is-glob: 4.0.3
@@ -23256,7 +23237,7 @@ snapshots:
       ajv: 6.12.6
       chalk: 4.1.2
       cross-spawn: 7.0.3
-      debug: 4.3.6
+      debug: 4.3.7
       doctrine: 3.0.0
       escape-string-regexp: 4.0.0
       eslint-scope: 7.2.2
@@ -23299,7 +23280,7 @@ snapshots:
       ajv: 6.12.6
       chalk: 4.1.2
       cross-spawn: 7.0.3
-      debug: 4.3.6
+      debug: 4.3.7
       doctrine: 3.0.0
       escape-string-regexp: 4.0.0
       eslint-scope: 7.2.2
@@ -23725,13 +23706,13 @@ snapshots:
 
   flow-enums-runtime@0.0.6: {}
 
-  flow-parser@0.245.1: {}
+  flow-parser@0.245.2: {}
 
   focus-lock@1.3.5:
     dependencies:
       tslib: 2.7.0
 
-  follow-redirects@1.15.8: {}
+  follow-redirects@1.15.9: {}
 
   for-each@0.3.3:
     dependencies:
@@ -24118,21 +24099,21 @@ snapshots:
     dependencies:
       '@tootallnate/once': 2.0.0
       agent-base: 6.0.2
-      debug: 4.3.6
+      debug: 4.3.7
     transitivePeerDependencies:
       - supports-color
 
   http-proxy-agent@7.0.2:
     dependencies:
       agent-base: 7.1.1
-      debug: 4.3.6
+      debug: 4.3.7
     transitivePeerDependencies:
       - supports-color
 
   http-proxy@1.18.1:
     dependencies:
       eventemitter3: 4.0.7
-      follow-redirects: 1.15.8
+      follow-redirects: 1.15.9
       requires-port: 1.0.0
     transitivePeerDependencies:
       - debug
@@ -24149,21 +24130,21 @@ snapshots:
   https-proxy-agent@4.0.0:
     dependencies:
       agent-base: 5.1.1
-      debug: 4.3.6
+      debug: 4.3.7
     transitivePeerDependencies:
       - supports-color
 
   https-proxy-agent@5.0.1:
     dependencies:
       agent-base: 6.0.2
-      debug: 4.3.6
+      debug: 4.3.7
     transitivePeerDependencies:
       - supports-color
 
   https-proxy-agent@7.0.5:
     dependencies:
       agent-base: 7.1.1
-      debug: 4.3.6
+      debug: 4.3.7
     transitivePeerDependencies:
       - supports-color
 
@@ -24482,7 +24463,7 @@ snapshots:
 
   istanbul-lib-source-maps@4.0.1:
     dependencies:
-      debug: 4.3.6
+      debug: 4.3.7
       istanbul-lib-coverage: 3.2.2
       source-map: 0.6.1
     transitivePeerDependencies:
@@ -24491,7 +24472,7 @@ snapshots:
   istanbul-lib-source-maps@5.0.6:
     dependencies:
       '@jridgewell/trace-mapping': 0.3.25
-      debug: 4.3.6
+      debug: 4.3.7
       istanbul-lib-coverage: 3.2.2
     transitivePeerDependencies:
       - supports-color
@@ -24669,7 +24650,7 @@ snapshots:
       '@babel/register': 7.24.6(@babel/core@7.25.2)
       babel-core: 7.0.0-bridge.0(@babel/core@7.25.2)
       chalk: 4.1.2
-      flow-parser: 0.245.1
+      flow-parser: 0.245.2
       graceful-fs: 4.2.11
       micromatch: 4.0.8
       neo-async: 2.6.2
@@ -24694,7 +24675,7 @@ snapshots:
       '@babel/register': 7.24.6(@babel/core@7.25.2)
       babel-core: 7.0.0-bridge.0(@babel/core@7.25.2)
       chalk: 4.1.2
-      flow-parser: 0.245.1
+      flow-parser: 0.245.2
       graceful-fs: 4.2.11
       micromatch: 4.0.8
       neo-async: 2.6.2
@@ -25006,7 +24987,7 @@ snapshots:
       dayjs: 1.11.10
       yargs: 15.4.1
 
-  loglevel@1.9.1: {}
+  loglevel@1.9.2: {}
 
   long@4.0.0: {}
 
@@ -25436,8 +25417,6 @@ snapshots:
 
   ms@2.0.0: {}
 
-  ms@2.1.2: {}
-
   ms@2.1.3: {}
 
   multiformats@9.9.0: {}
@@ -25480,7 +25459,7 @@ snapshots:
       '@next/env': 14.2.3
       '@swc/helpers': 0.5.5
       busboy: 1.6.0
-      caniuse-lite: 1.0.30001655
+      caniuse-lite: 1.0.30001658
       graceful-fs: 4.2.11
       postcss: 8.4.31
       react: 18.2.0
@@ -26149,7 +26128,7 @@ snapshots:
   puppeteer-core@2.1.1(bufferutil@4.0.8)(utf-8-validate@5.0.10):
     dependencies:
       '@types/mime-types': 2.1.4
-      debug: 4.3.6
+      debug: 4.3.7
       extract-zip: 1.7.0
       https-proxy-agent: 4.0.0
       mime: 2.6.0
@@ -27126,7 +27105,7 @@ snapshots:
   socket.io-client@4.7.5(bufferutil@4.0.8)(utf-8-validate@5.0.10):
     dependencies:
       '@socket.io/component-emitter': 3.1.2
-      debug: 4.3.6
+      debug: 4.3.7
       engine.io-client: 6.5.4(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       socket.io-parser: 4.2.4
     transitivePeerDependencies:
@@ -27137,14 +27116,14 @@ snapshots:
   socket.io-parser@4.2.4:
     dependencies:
       '@socket.io/component-emitter': 3.1.2
-      debug: 4.3.6
+      debug: 4.3.7
     transitivePeerDependencies:
       - supports-color
 
   socks-proxy-agent@6.1.1:
     dependencies:
       agent-base: 6.0.2
-      debug: 4.3.6
+      debug: 4.3.7
       socks: 2.8.3
     transitivePeerDependencies:
       - supports-color
@@ -27645,7 +27624,7 @@ snapshots:
       bundle-require: 4.2.1(esbuild@0.19.12)
       cac: 6.7.14
       chokidar: 3.6.0
-      debug: 4.3.6
+      debug: 4.3.7
       esbuild: 0.19.12
       execa: 5.1.1
       globby: 11.1.0
@@ -27856,7 +27835,7 @@ snapshots:
       acorn: 8.12.1
       webpack-virtual-modules: 0.6.2
 
-  unstorage@1.11.1(idb-keyval@6.2.1):
+  unstorage@1.12.0(idb-keyval@6.2.1):
     dependencies:
       anymatch: 3.1.3
       chokidar: 3.6.0
@@ -28052,7 +28031,7 @@ snapshots:
   vite-node@2.0.3(@types/node@20.11.5)(terser@5.31.6):
     dependencies:
       cac: 6.7.14
-      debug: 4.3.6
+      debug: 4.3.7
       pathe: 1.1.2
       tinyrainbow: 1.2.0
       vite: 5.2.11(@types/node@20.11.5)(terser@5.31.6)
@@ -28120,7 +28099,7 @@ snapshots:
       '@vitest/spy': 2.0.3
       '@vitest/utils': 2.0.3
       chai: 5.1.1
-      debug: 4.3.6
+      debug: 4.3.7
       execa: 8.0.1
       magic-string: 0.30.11
       pathe: 1.1.2

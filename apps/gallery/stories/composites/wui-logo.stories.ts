@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@web3modal/ui/src/composites/wui-logo'
-import type { WuiLogo } from '@web3modal/ui/src/composites/wui-logo'
+import '@rerock/ui/src/composites/wui-logo'
+import type { WuiLogo } from '@rerock/ui/src/composites/wui-logo'
 import { html } from 'lit'
 import { logoOptions } from '../../utils/PresetUtils'
 

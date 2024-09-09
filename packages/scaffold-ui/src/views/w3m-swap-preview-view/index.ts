@@ -1,4 +1,4 @@
-import { UiHelperUtil, customElement } from '@web3modal/ui'
+import { UiHelperUtil, customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
 import {
@@ -6,7 +6,7 @@ import {
   NetworkController,
   RouterController,
   SwapController
-} from '@web3modal/core'
+} from '@rerock/core'
 import { state } from 'lit/decorators.js'
 
 @customElement('w3m-swap-preview-view')

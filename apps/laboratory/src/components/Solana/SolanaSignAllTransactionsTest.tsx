@@ -9,10 +9,10 @@ import {
   Connection
 } from '@solana/web3.js'
 
-import { type Provider, useWeb3ModalConnection } from '@web3modal/adapter-solana/react'
-import { useWeb3ModalNetwork, useWeb3ModalProvider } from '@web3modal/base/react'
+import { type Provider, useWeb3ModalConnection } from '@rerock/adapter-solana/react'
+import { useWeb3ModalNetwork, useWeb3ModalProvider } from '@rerock/base/react'
 
-import { solana } from '@web3modal/base/chains'
+import { solana } from '@rerock/base/chains'
 import { useChakraToast } from '../Toast'
 import bs58 from 'bs58'
 

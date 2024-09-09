@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@web3modal/ui/src/composites/wui-list-accordion'
-import type { WuiListAccordion } from '@web3modal/ui/src/composites/wui-list-accordion'
+import '@rerock/ui/src/composites/wui-list-accordion'
+import type { WuiListAccordion } from '@rerock/ui/src/composites/wui-list-accordion'
 import { html } from 'lit'
 import '../../components/gallery-container'
 import { signTypedData } from '../../utils/PresetUtils'

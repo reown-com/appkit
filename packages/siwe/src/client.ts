@@ -15,9 +15,9 @@ import {
   StorageUtil,
   NetworkController,
   AccountController
-} from '@web3modal/core'
+} from '@rerock/core'
 
-import { NetworkUtil } from '@web3modal/common'
+import { NetworkUtil } from '@rerock/common'
 import { ConstantsUtil } from '../core/utils/ConstantsUtil.js'
 
 // -- Client -------------------------------------------------------------------- //

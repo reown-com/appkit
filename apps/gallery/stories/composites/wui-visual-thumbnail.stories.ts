@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@web3modal/ui/src/composites/wui-visual-thumbnail'
-import type { WuiVisualThumbnail } from '@web3modal/ui/src/composites/wui-visual-thumbnail'
+import '@rerock/ui/src/composites/wui-visual-thumbnail'
+import type { WuiVisualThumbnail } from '@rerock/ui/src/composites/wui-visual-thumbnail'
 import { html } from 'lit'
 import { walletImageSrc } from '../../utils/PresetUtils'
 

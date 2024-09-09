@@ -1,4 +1,4 @@
-import { subscribeKey as subKey } from 'valtio/utils'
+import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import type { BlockchainApiEnsError } from '../utils/TypeUtil.js'
@@ -7,9 +7,9 @@ import { ConnectorController } from './ConnectorController.js'
 import { RouterController } from './RouterController.js'
 import { ConnectionController } from './ConnectionController.js'
 import { NetworkController } from './NetworkController.js'
-import { NetworkUtil } from '@web3modal/common'
+import { NetworkUtil } from '@rerock/common'
 import { EnsUtil } from '../utils/EnsUtil.js'
-import { ConstantsUtil } from '@web3modal/common'
+import { ConstantsUtil } from '@rerock/common'
 
 // -- Types --------------------------------------------- //
 type Suggestion = {

@@ -8,12 +8,12 @@ import {
   NetworkController,
   BlockchainApiController,
   EventsController
-} from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+} from '@rerock/core'
+import { customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
-import type { CoinbasePaySDKChainNameValues } from '@web3modal/core'
-import { W3mFrameRpcConstants } from '@web3modal/wallet'
+import type { CoinbasePaySDKChainNameValues } from '@rerock/core'
+import { W3mFrameRpcConstants } from '@rerock/wallet'
 
 @customElement('w3m-onramp-providers-view')
 export class W3mOnRampProvidersView extends LitElement {

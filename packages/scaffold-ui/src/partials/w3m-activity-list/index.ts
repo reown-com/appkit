@@ -1,5 +1,5 @@
-import { DateUtil } from '@web3modal/common'
-import type { Transaction, TransactionImage } from '@web3modal/common'
+import { DateUtil } from '@rerock/common'
+import type { Transaction, TransactionImage } from '@rerock/common'
 import {
   AccountController,
   EventsController,
@@ -7,12 +7,12 @@ import {
   OptionsController,
   RouterController,
   TransactionsController
-} from '@web3modal/core'
-import { TransactionUtil, customElement } from '@web3modal/ui'
+} from '@rerock/core'
+import { TransactionUtil, customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
-import type { TransactionType } from '@web3modal/ui'
-import { W3mFrameRpcConstants } from '@web3modal/wallet'
+import type { TransactionType } from '@rerock/ui'
+import { W3mFrameRpcConstants } from '@rerock/wallet'
 
 import styles from './styles.js'
 

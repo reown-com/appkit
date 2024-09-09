@@ -1,4 +1,4 @@
-# @web3modal/cdn
+# @rerock/cdn
 
 ## 5.1.6
 
@@ -15,9 +15,9 @@
 - fix: social login shows `undefined` by @magiziz in https://github.com/WalletConnect/web3modal/pull/2783
 
 * Updated dependencies []:
-  - @web3modal/ethers@5.1.6
-  - @web3modal/ethers5@5.1.6
-  - @web3modal/wagmi@5.1.6
+  - @rerock/ethers@5.1.6
+  - @rerock/ethers5@5.1.6
+  - @rerock/wagmi@5.1.6
 
 ## 5.1.5
 
@@ -32,9 +32,9 @@
   - fix: remove coming message from solana transactions by @zoruka in https://github.com/WalletConnect/web3modal/pull/2780
 
 - Updated dependencies []:
-  - @web3modal/ethers@5.1.5
-  - @web3modal/ethers5@5.1.5
-  - @web3modal/wagmi@5.1.5
+  - @rerock/ethers@5.1.5
+  - @rerock/ethers5@5.1.5
+  - @rerock/wagmi@5.1.5
 
 ## 5.1.4
 
@@ -50,9 +50,9 @@
   - chore: expose solana provider type by @zoruka in https://github.com/WalletConnect/web3modal/pull/2756
   - fix: Connector image mismatch by @tomiir in https://github.com/WalletConnect/web3modal/pull/2745
 - Updated dependencies []:
-  - @web3modal/ethers@5.1.4
-  - @web3modal/ethers5@5.1.4
-  - @web3modal/wagmi@5.1.4
+  - @rerock/ethers@5.1.4
+  - @rerock/ethers5@5.1.4
+  - @rerock/wagmi@5.1.4
 
 ## 5.1.3
 
@@ -61,9 +61,9 @@
 - refactor: defaultChain ts mismatch, custom hooks, separation of dependencies
 
 - Updated dependencies []:
-  - @web3modal/ethers@5.1.3
-  - @web3modal/ethers5@5.1.3
-  - @web3modal/wagmi@5.1.3
+  - @rerock/ethers@5.1.3
+  - @rerock/ethers5@5.1.3
+  - @rerock/wagmi@5.1.3
 
 ## 5.1.2
 
@@ -72,9 +72,9 @@
 - Added Solana Auth Provider types and schemas
 
 - Updated dependencies []:
-  - @web3modal/ethers@5.1.2
-  - @web3modal/ethers5@5.1.2
-  - @web3modal/wagmi@5.1.2
+  - @rerock/ethers@5.1.2
+  - @rerock/ethers5@5.1.2
+  - @rerock/wagmi@5.1.2
 
 ## 5.1.1
 
@@ -83,8 +83,8 @@
 - Update EthProvider to v 2.15.1
 
 - Updated dependencies []:
-  - @web3modal/ethers@5.1.1
-  - @web3modal/wagmi@5.1.1
+  - @rerock/ethers@5.1.1
+  - @rerock/wagmi@5.1.1
 
 ## 5.1.0
 
@@ -156,8 +156,8 @@ Enhanced compatibility, performance, developer experience, and user interface up
 ### Patch Changes
 
 - Updated dependencies []:
-  - @web3modal/ethers@5.1.0
-  - @web3modal/wagmi@5.1.0
+  - @rerock/ethers@5.1.0
+  - @rerock/wagmi@5.1.0
 
 ## 5.0.11
 
@@ -166,8 +166,8 @@ Enhanced compatibility, performance, developer experience, and user interface up
 - - Hotfix to prevent loading state with QR code
 
 - Updated dependencies []:
-  - @web3modal/ethers@5.0.11
-  - @web3modal/wagmi@5.0.11
+  - @rerock/ethers@5.0.11
+  - @rerock/wagmi@5.0.11
 
 ## 5.0.10
 
@@ -178,8 +178,8 @@ Enhanced compatibility, performance, developer experience, and user interface up
 **Full Changelog**: https://github.com/WalletConnect/web3modal/compare/5.0.9...5.0.10
 
 - Updated dependencies []:
-  - @web3modal/ethers@5.0.10
-  - @web3modal/wagmi@5.0.10
+  - @rerock/ethers@5.0.10
+  - @rerock/wagmi@5.0.10
 
 ## 5.0.9
 
@@ -214,8 +214,8 @@ Enhanced compatibility, performance, developer experience, and user interface up
   **Full Changelog**: https://github.com/WalletConnect/web3modal/compare/5.0.7...5.0.8
 
 - Updated dependencies []:
-  - @web3modal/ethers@5.0.8
-  - @web3modal/wagmi@5.0.8
+  - @rerock/ethers@5.0.8
+  - @rerock/wagmi@5.0.8
 
 ## 5.0.7
 
@@ -229,7 +229,7 @@ Enhanced compatibility, performance, developer experience, and user interface up
   - Add Wallet Standard to AppKit + Solana by @glitch-txs in https://github.com/WalletConnect/web3modal/pull/2482
   - chore: remove onramp widget from labs by @tomiir in https://github.com/WalletConnect/web3modal/pull/2526
   - feat: support custom connectors by @chris13524 in https://github.com/WalletConnect/web3modal/pull/2119
-  - fix: disconnect logic for EIP6963 & Injected provider types for @web3modal/ethers by @hmzakhalid in https://github.com/WalletConnect/web3modal/pull/2289
+  - fix: disconnect logic for EIP6963 & Injected provider types for @rerock/ethers by @hmzakhalid in https://github.com/WalletConnect/web3modal/pull/2289
   - Feat ERC7715 grant_permissions support on lab by @KannuSingh in https://github.com/WalletConnect/web3modal/pull/2500
   - update chain on network change by @glitch-txs in https://github.com/WalletConnect/web3modal/pull/2497
   - fix: make accounts optional in social response by @tomiir in https://github.com/WalletConnect/web3modal/pull/2520
@@ -246,8 +246,8 @@ Enhanced compatibility, performance, developer experience, and user interface up
   - refactor: laboratory wagmi tests by @zoruka in https://github.com/WalletConnect/web3modal/pull/2552
   - fix: sync accounts in wagmi and subscribe to account change by @tomiir in https://github.com/WalletConnect/web3modal/pull/2544
 - Updated dependencies []:
-  - @web3modal/ethers@5.0.7
-  - @web3modal/wagmi@5.0.7
+  - @rerock/ethers@5.0.7
+  - @rerock/wagmi@5.0.7
 
 ## 5.0.6
 
@@ -256,8 +256,8 @@ Enhanced compatibility, performance, developer experience, and user interface up
 - fix: Social Login illegal invocation issue. Wagmi tests
 
 - Updated dependencies []:
-  - @web3modal/ethers@5.0.6
-  - @web3modal/wagmi@5.0.6
+  - @rerock/ethers@5.0.6
+  - @rerock/wagmi@5.0.6
 
 ## 5.0.5
 
@@ -266,8 +266,8 @@ Enhanced compatibility, performance, developer experience, and user interface up
 - feat: universal link internal flag. Add kotlin assetlinks. Fix email truncation'
 
 - Updated dependencies []:
-  - @web3modal/ethers@5.0.5
-  - @web3modal/wagmi@5.0.5
+  - @rerock/ethers@5.0.5
+  - @rerock/wagmi@5.0.5
 
 ## 5.0.4
 
@@ -276,8 +276,8 @@ Enhanced compatibility, performance, developer experience, and user interface up
 - fix: wcPromise incompatibility issues
 
 - Updated dependencies []:
-  - @web3modal/ethers@5.0.4
-  - @web3modal/wagmi@5.0.4
+  - @rerock/ethers@5.0.4
+  - @rerock/wagmi@5.0.4
 
 ## 5.0.3
 
@@ -286,8 +286,8 @@ Enhanced compatibility, performance, developer experience, and user interface up
 - fix: ethers5 coinbase issues. Turbo build issues. Upate cb connector.
 
 - Updated dependencies []:
-  - @web3modal/ethers@5.0.3
-  - @web3modal/wagmi@5.0.3
+  - @rerock/ethers@5.0.3
+  - @rerock/wagmi@5.0.3
 
 ## 5.0.2
 
@@ -296,8 +296,8 @@ Enhanced compatibility, performance, developer experience, and user interface up
 - fix: siwe signOutOnNetwork change issue. fix: wallets filtered by rdns matched from explorer api. fix: solana network id issue
 
 - Updated dependencies []:
-  - @web3modal/ethers@5.0.2
-  - @web3modal/wagmi@5.0.2
+  - @rerock/ethers@5.0.2
+  - @rerock/wagmi@5.0.2
 
 ## 5.0.1
 
@@ -306,8 +306,8 @@ Enhanced compatibility, performance, developer experience, and user interface up
 - fix: remove walletconnect restriction on names
 
 - Updated dependencies []:
-  - @web3modal/ethers@5.0.1
-  - @web3modal/wagmi@5.0.1
+  - @rerock/ethers@5.0.1
+  - @rerock/wagmi@5.0.1
 
 ## 5.0.0
 
@@ -318,8 +318,8 @@ Enhanced compatibility, performance, developer experience, and user interface up
 ### Patch Changes
 
 - Updated dependencies []:
-  - @web3modal/ethers@5.0.0
-  - @web3modal/wagmi@5.0.0
+  - @rerock/ethers@5.0.0
+  - @rerock/wagmi@5.0.0
 
 ## 5.0.0-cn-v5.0
 
@@ -330,5 +330,5 @@ Enhanced compatibility, performance, developer experience, and user interface up
 ### Patch Changes
 
 - Updated dependencies []:
-  - @web3modal/ethers@5.0.0-cn-v5.0
-  - @web3modal/wagmi@5.0.0-cn-v5.0
+  - @rerock/ethers@5.0.0-cn-v5.0
+  - @rerock/wagmi@5.0.0-cn-v5.0

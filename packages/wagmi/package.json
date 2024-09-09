@@ -1,6 +1,6 @@
 {
-  "name": "@web3modal/wagmi",
-  "version": "5.1.6",
+  "name": "@rerock/wagmi",
+  "version": "0.0.2",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -48,18 +48,17 @@
     "build": "tsc --build",
     "watch": "tsc --watch",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "test": "vitest run --dir tests"
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@walletconnect/utils": "2.15.1",
-    "@web3modal/polyfills": "workspace:*",
-    "@web3modal/adapter-wagmi": "workspace:*",
-    "@web3modal/base": "workspace:*",
-    "@web3modal/wallet": "workspace:*",
-    "@web3modal/common": "workspace:*",
-    "@web3modal/scaffold-utils": "workspace:*",
-    "@web3modal/siwe": "workspace:*"
+    "@walletconnect/utils": "2.15.2",
+    "@rerock/polyfills": "workspace:*",
+    "@rerock/adapter-wagmi": "workspace:*",
+    "@rerock/base": "workspace:*",
+    "@rerock/wallet": "workspace:*",
+    "@rerock/common": "workspace:*",
+    "@rerock/scaffold-utils": "workspace:*",
+    "@rerock/siwe": "workspace:*"
   },
   "devDependencies": {
     "@wagmi/connectors": "5.1.5",
@@ -91,16 +90,7 @@
       "optional": true
     }
   },
-  "keywords": [
-    "web3",
-    "crypto",
-    "ethereum",
-    "web3modal",
-    "walletconnect",
-    "lit",
-    "webcomponents"
-  ],
-  "author": "WalletConnect <walletconnect.com>",
+  "author": "Rerock <rerock.com>",
   "license": "Apache-2.0",
   "homepage": "https://github.com/web3modal/web3modal",
   "repository": {

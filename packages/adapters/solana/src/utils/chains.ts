@@ -1,4 +1,4 @@
-import { ConstantsUtil, type CaipNetwork } from '@web3modal/common'
+import { ConstantsUtil, type CaipNetwork } from '@rerock/common'
 
 export const solana = {
   id: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',

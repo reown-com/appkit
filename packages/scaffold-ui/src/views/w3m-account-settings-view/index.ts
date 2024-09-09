@@ -12,12 +12,12 @@ import {
   ConnectorController,
   SendController,
   ConstantsUtil
-} from '@web3modal/core'
-import { UiHelperUtil, customElement } from '@web3modal/ui'
+} from '@rerock/core'
+import { UiHelperUtil, customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import { W3mFrameRpcConstants } from '@web3modal/wallet'
+import { W3mFrameRpcConstants } from '@rerock/wallet'
 
 @customElement('w3m-account-settings-view')
 export class W3mAccountSettingsView extends LitElement {

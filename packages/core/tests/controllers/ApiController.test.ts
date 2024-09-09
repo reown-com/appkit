@@ -8,7 +8,7 @@ import {
   OptionsController
 } from '../../exports/index.js'
 import { api } from '../../src/controllers/ApiController.js'
-import { ConstantsUtil } from '@web3modal/common'
+import { ConstantsUtil } from '@rerock/common'
 
 // -- Constants ----------------------------------------------------------------
 const chain = ConstantsUtil.CHAIN.EVM

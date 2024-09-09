@@ -1,5 +1,5 @@
-import type { AppKit } from '@web3modal/base'
-import { mainnet } from '@web3modal/base/chains'
+import type { AppKit } from '@rerock/base'
+import { mainnet } from '@rerock/base/chains'
 import { vi } from 'vitest'
 
 export const mockAppKit = {
@@ -53,7 +53,8 @@ export const mockAppKit = {
       switchCaipNetwork: vi.fn()
     }
   },
-  getConnectorImage: vi.fn()
+  getConnectorImage: vi.fn(),
+  handleUnsafeRPCRequest: vi.fn()
 } as unknown as AppKit
 
 export default mockAppKit

@@ -1,10 +1,10 @@
-import { UiHelperUtil, customElement } from '@web3modal/ui'
+import { UiHelperUtil, customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
 import { property } from 'lit/decorators.js'
-import { RouterController, SendController } from '@web3modal/core'
-import type { Balance } from '@web3modal/common'
-import { NumberUtil } from '@web3modal/common'
+import { RouterController, SendController } from '@rerock/core'
+import type { Balance } from '@rerock/common'
+import { NumberUtil } from '@rerock/common'
 
 @customElement('w3m-input-token')
 export class W3mInputToken extends LitElement {

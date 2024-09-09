@@ -1,4 +1,4 @@
-import { ConstantsUtil } from '@web3modal/scaffold-utils'
+import { ConstantsUtil } from '@rerock/scaffold-utils'
 import type {
   AnyTransaction,
   Connection,
@@ -10,11 +10,11 @@ import { PublicKey, Transaction, VersionedTransaction, type SendOptions } from '
 import {
   W3mFrameProvider,
   type W3mFrameProviderMethods as ProviderAuthMethods
-} from '@web3modal/wallet'
+} from '@rerock/wallet'
 import { withSolanaNamespace } from '../utils/withSolanaNamespace.js'
 import base58 from 'bs58'
 import { isVersionedTransaction } from '@solana/wallet-adapter-base'
-import type { CaipNetwork } from '@web3modal/common'
+import type { CaipNetwork } from '@rerock/common'
 
 export type AuthProviderConfig = {
   provider: W3mFrameProvider

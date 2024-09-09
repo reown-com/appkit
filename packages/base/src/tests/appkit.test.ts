@@ -19,12 +19,12 @@ import {
   ConnectorController,
   ChainController,
   type Connector
-} from '@web3modal/core'
-import type { CaipNetwork } from '@web3modal/common'
+} from '@rerock/core'
+import type { CaipNetwork } from '@rerock/common'
 import { mockOptions } from './mocks/Options'
 
 // Mock all controllers and UniversalAdapterClient
-vi.mock('@web3modal/core')
+vi.mock('@rerock/core')
 vi.mock('../universal-adapter/client')
 
 describe('Base', () => {
@@ -37,6 +37,7 @@ describe('Base', () => {
 
   describe('Base Initialization', () => {
     it('should initialize controllers with required provided options', () => {
+      expect(OptionsController.setSdkVersion).toHaveBeenCalledWith(mockOptions.sdkVersion)
       expect(OptionsController.setProjectId).toHaveBeenCalledWith(mockOptions.projectId)
       expect(OptionsController.setMetadata).toHaveBeenCalled()
     })

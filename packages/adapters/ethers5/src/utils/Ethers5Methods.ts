@@ -1,13 +1,13 @@
 /* eslint-disable max-params */
 import { ethers, Contract } from 'ethers5'
-import { type Provider } from '@web3modal/scaffold-utils/ethers'
+import { type Provider } from '@rerock/scaffold-utils/ethers'
 import type {
   EstimateGasTransactionArgs,
   SendTransactionArgs,
   WriteContractArgs
-} from '@web3modal/core'
-import { ConstantsUtil } from '@web3modal/common'
-import type { AppKit } from '@web3modal/base'
+} from '@rerock/core'
+import { ConstantsUtil } from '@rerock/common'
+import type { AppKit } from '@rerock/base'
 
 export const Ethers5Methods = {
   signMessage: async (message: string, provider: Provider, address: string) => {

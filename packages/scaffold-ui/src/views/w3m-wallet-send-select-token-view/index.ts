@@ -1,4 +1,4 @@
-import { customElement } from '@web3modal/ui'
+import { customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
 import {
@@ -7,10 +7,10 @@ import {
   NetworkController,
   RouterController,
   SendController
-} from '@web3modal/core'
+} from '@rerock/core'
 
 import { state } from 'lit/decorators.js'
-import type { Balance } from '@web3modal/common'
+import type { Balance } from '@rerock/common'
 
 @customElement('w3m-wallet-send-select-token-view')
 export class W3mSendSelectTokenView extends LitElement {

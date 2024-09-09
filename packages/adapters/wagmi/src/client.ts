@@ -22,9 +22,9 @@ import {
   createConfig,
   getConnectors
 } from '@wagmi/core'
-import { ChainController, ConstantsUtil as CoreConstantsUtil } from '@web3modal/core'
+import { ChainController, ConstantsUtil as CoreConstantsUtil } from '@rerock/core'
 import type UniversalProvider from '@walletconnect/universal-provider'
-import type { ChainAdapter } from '@web3modal/core'
+import type { ChainAdapter } from '@rerock/core'
 import { prepareTransactionRequest, sendTransaction as wagmiSendTransaction } from '@wagmi/core'
 import type { Chain } from '@wagmi/core/chains'
 import { mainnet } from 'viem/chains'
@@ -42,15 +42,15 @@ import type {
   PublicStateControllerState,
   SendTransactionArgs,
   WriteContractArgs
-} from '@web3modal/core'
+} from '@rerock/core'
 import { formatUnits, parseUnits } from 'viem'
 import type { Hex } from 'viem'
-import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
+import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@rerock/scaffold-utils'
 import {
   ConstantsUtil as CommonConstants,
   SafeLocalStorage,
   SafeLocalStorageKeys
-} from '@web3modal/common'
+} from '@rerock/common'
 import {
   convertToAppKitChains,
   getEmailCaipNetworks,
@@ -58,18 +58,18 @@ import {
   getWalletConnectCaipNetworks,
   requireCaipAddress
 } from './utils/helpers.js'
-import { W3mFrameHelpers, W3mFrameRpcConstants } from '@web3modal/wallet'
-import type { W3mFrameProvider, W3mFrameTypes } from '@web3modal/wallet'
-import { NetworkUtil } from '@web3modal/common'
+import { W3mFrameHelpers, W3mFrameRpcConstants } from '@rerock/wallet'
+import type { W3mFrameProvider, W3mFrameTypes } from '@rerock/wallet'
+import { NetworkUtil } from '@rerock/common'
 import { normalize } from 'viem/ens'
-import type { AppKitOptions } from '@web3modal/base'
-import type { CaipAddress, CaipNetwork, ChainNamespace, AdapterType } from '@web3modal/common'
-import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
-import type { AppKit } from '@web3modal/base'
+import type { AppKitOptions } from '@rerock/base'
+import type { CaipAddress, CaipNetwork, ChainNamespace, AdapterType } from '@rerock/common'
+import { ConstantsUtil as CommonConstantsUtil } from '@rerock/common'
+import type { AppKit } from '@rerock/base'
 import { walletConnect } from './connectors/UniversalConnector.js'
 import { coinbaseWallet } from '@wagmi/connectors'
 import { authConnector } from './connectors/AuthConnector.js'
-import { ProviderUtil } from '@web3modal/base/store'
+import { ProviderUtil } from '@rerock/base/store'
 
 // -- Types ---------------------------------------------------------------------
 export interface AdapterOptions<C extends Config>
@@ -77,6 +77,26 @@ export interface AdapterOptions<C extends Config>
   wagmiConfig: C
   defaultNetwork?: Chain
 }
+
+const OPTIONAL_METHODS = [
+  'eth_accounts',
+  'eth_requestAccounts',
+  'eth_sendRawTransaction',
+  'eth_sign',
+  'eth_signTransaction',
+  'eth_signTypedData',
+  'eth_signTypedData_v3',
+  'eth_signTypedData_v4',
+  'eth_sendTransaction',
+  'personal_sign',
+  'wallet_switchEthereumChain',
+  'wallet_addEthereumChain',
+  'wallet_getPermissions',
+  'wallet_requestPermissions',
+  'wallet_registerOnboarding',
+  'wallet_watchAsset',
+  'wallet_scanQRCode'
+]
 
 // @ts-expect-error: Overridden state type is correct
 interface Web3ModalState extends PublicStateControllerState {
@@ -134,7 +154,9 @@ export class EVMWagmiClient implements ChainAdapter {
     const transports = Object.fromEntries(transportsArr)
     const connectors: CreateConnectorFn[] = []
 
-    connectors.push(walletConnect(options, appKit))
+    if (options.enableWalletConnect !== false) {
+      connectors.push(walletConnect(options, appKit))
+    }
 
     if (options.enableInjected !== false) {
       connectors.push(injected({ shimDisconnect: true }))
@@ -185,6 +207,7 @@ export class EVMWagmiClient implements ChainAdapter {
     this.appKit = appKit
     this.options = options
     this.caipNetworks = options.caipNetworks
+    this.defaultCaipNetwork = options.defaultCaipNetwork || options.caipNetworks[0]
     this.tokens = HelpersUtil.getCaipTokens(options.tokens)
     this.wagmiConfig = this.createWagmiConfig(options, appKit)
 
@@ -242,6 +265,79 @@ export class EVMWagmiClient implements ChainAdapter {
           throw new Error('connectionControllerClient:getWalletConnectUri - connector is undefined')
         }
 
+        const provider = (await connector.getProvider()) as Awaited<
+          ReturnType<(typeof UniversalProvider)['init']>
+        >
+
+        const siweParams = await this.options?.siweConfig?.getMessageParams?.()
+        const isSiweEnabled = this.options?.siweConfig?.options?.enabled
+        const isProviderSupported = typeof provider?.authenticate === 'function'
+        const isSiweParamsValid = siweParams && Object.keys(siweParams || {}).length > 0
+
+        if (isSiweEnabled && isProviderSupported && isSiweParamsValid) {
+          // @ts-expect-error - setting requested chains beforehand avoids wagmi auto disconnecting the session when `connect` is called because it things chains are stale
+          await connector.setRequestedChainsIds(siweParams.chains)
+
+          const siweConfig = this.options?.siweConfig
+
+          const params = await siweConfig?.getMessageParams?.()
+
+          if (siweConfig?.options?.enabled && params && Object.keys(params || {}).length > 0) {
+            const { SIWEController, getDidChainId, getDidAddress } = await import('@rerock/siwe')
+
+            const chains = this.options?.caipNetworks.map(network => network.id) as string[]
+
+            const result = await provider.authenticate({
+              nonce: await siweConfig.getNonce(),
+              methods: [...OPTIONAL_METHODS],
+              ...params,
+              chains
+            })
+            // Auths is an array of signed CACAO objects https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-74.md
+            const signedCacao = result?.auths?.[0]
+
+            if (signedCacao) {
+              const { p, s } = signedCacao
+              const cacaoChainId = getDidChainId(p.iss)
+              const address = getDidAddress(p.iss)
+              if (address && cacaoChainId) {
+                SIWEController.setSession({
+                  address,
+                  chainId: parseInt(cacaoChainId, 10)
+                })
+              }
+
+              try {
+                // Kicks off verifyMessage and populates external states
+                const message = provider.client.formatAuthMessage({
+                  request: p,
+                  iss: p.iss
+                })
+
+                await SIWEController.verifyMessage({
+                  message,
+                  signature: s.s,
+                  cacao: signedCacao
+                })
+              } catch (error) {
+                // eslint-disable-next-line no-console
+                console.error('Error verifying message', error)
+                // eslint-disable-next-line no-console
+                await provider.disconnect().catch(console.error)
+                // eslint-disable-next-line no-console
+                await SIWEController.signOut().catch(console.error)
+                throw error
+              }
+            }
+            /*
+             * Unassign the connector from the wagmiConfig and allow connect() to reassign it in the next step
+             * this avoids case where wagmi throws because the connector is already connected
+             * what we need connect() to do is to only setup internal event listeners
+             */
+            this.wagmiConfig.state.current = ''
+          }
+        }
+
         await connect(this.wagmiConfig, { connector })
       },
       connectExternal: async ({ id, provider, info }) => {
@@ -261,18 +357,6 @@ export class EVMWagmiClient implements ChainAdapter {
         }
         const chainId = Number(NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id))
         await connect(this.wagmiConfig, { connector, chainId })
-      },
-      reconnectExternal: async ({ id }) => {
-        if (!this.wagmiConfig) {
-          throw new Error(
-            'networkControllerClient:getApprovedCaipNetworksData - wagmiConfig is undefined'
-          )
-        }
-        const connector = this.wagmiConfig.connectors.find(c => c.id === id)
-        if (!connector) {
-          throw new Error('connectionControllerClient:connectExternal - connector is undefined')
-        }
-        await reconnect(this.wagmiConfig, { connectors: [connector] })
       },
       checkInstalled: ids => {
         const injectedConnector = this.appKit
@@ -299,7 +383,7 @@ export class EVMWagmiClient implements ChainAdapter {
         this.appKit?.resetAccount('eip155')
         this.appKit?.resetAccount('solana')
         if (this.options?.siweConfig?.options?.signOutOnDisconnect) {
-          const { SIWEController } = await import('@web3modal/siwe')
+          const { SIWEController } = await import('@rerock/siwe')
           await SIWEController.signOut()
         }
       },
@@ -425,10 +509,8 @@ export class EVMWagmiClient implements ChainAdapter {
 
     this.appKit?.setEIP6963Enabled(options.enableEIP6963 !== false)
     this.appKit?.subscribeShouldUpdateToAddress((newAddress?: string) => {
-      console.log('>>> newAddress', newAddress)
       if (newAddress) {
         const connections = getConnections(this.wagmiConfig!)
-        console.log('>>> connections', connections)
         const connector = connections[0]?.connector
         if (connector) {
           switchAccount(this.wagmiConfig!, {
@@ -491,9 +573,11 @@ export class EVMWagmiClient implements ChainAdapter {
       | 'status'
     >
   >) {
-    if (this.wagmiConfig && chainId) {
+    if (this.wagmiConfig) {
       if (connector) {
-        if (connector.name === 'WalletConnect' && connector.getProvider && address && chainId) {
+        if (connector && connector.name === 'WalletConnect' && connector.getProvider && address) {
+          const currentChainId =
+            chainId || Number(NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id))
           const provider = (await connector.getProvider()) as UniversalProvider
 
           const namespaces = provider?.session?.namespaces || {}
@@ -513,10 +597,10 @@ export class EVMWagmiClient implements ChainAdapter {
             this.appKit?.setCaipAddress(caipAddress, chainNamespace)
           })
           if (this.appKit?.getCaipNetwork()?.chainNamespace !== 'solana') {
-            this.syncNetwork(address, chainId, true)
+            this.syncNetwork(address, currentChainId, true)
             await Promise.all([
-              this.syncProfile(address, chainId),
-              this.syncBalance(address, chainId),
+              this.syncProfile(address, currentChainId),
+              this.syncBalance(address, currentChainId),
               this.syncConnectedWalletInfo(connector),
               this.appKit?.setApprovedCaipNetworksData(this.chainNamespace)
             ])
@@ -765,9 +849,10 @@ export class EVMWagmiClient implements ChainAdapter {
   }
 
   private async listenAuthConnector(
-    connector: AdapterOptions<Config>['wagmiConfig']['connectors'][number]
+    connector: AdapterOptions<Config>['wagmiConfig']['connectors'][number],
+    bypassWindowCheck = false
   ) {
-    if (typeof window !== 'undefined' && connector) {
+    if (bypassWindowCheck || (typeof window !== 'undefined' && connector)) {
       this.appKit?.setLoading(true)
       const provider = (await connector.getProvider()) as W3mFrameProvider
       const isLoginEmailUsed = provider.getLoginEmailUsed()
@@ -780,19 +865,8 @@ export class EVMWagmiClient implements ChainAdapter {
 
       provider.onRpcRequest((request: W3mFrameTypes.RPCRequest) => {
         if (W3mFrameHelpers.checkIfRequestExists(request)) {
-          if (!W3mFrameHelpers.checkIfRequestIsAllowed(request)) {
-            if (this.appKit?.isOpen()) {
-              if (this.appKit?.isTransactionStackEmpty()) {
-                return
-              }
-              if (this.appKit?.isTransactionShouldReplaceView()) {
-                this.appKit?.replace('ApproveTransaction')
-              } else {
-                this.appKit?.redirect('ApproveTransaction')
-              }
-            } else {
-              this.appKit?.open({ view: 'ApproveTransaction' })
-            }
+          if (!W3mFrameHelpers.checkIfRequestIsSafe(request)) {
+            this.appKit?.handleUnsafeRPCRequest()
           }
         } else {
           this.appKit?.open()
@@ -819,7 +893,12 @@ export class EVMWagmiClient implements ChainAdapter {
         }
       })
 
-      provider.onRpcSuccess(() => {
+      provider.onRpcSuccess((_, request) => {
+        const isSafeRequest = W3mFrameHelpers.checkIfRequestIsSafe(request)
+        if (isSafeRequest) {
+          return
+        }
+
         if (this.appKit?.isTransactionStackEmpty()) {
           this.appKit?.close()
         } else {
@@ -863,12 +942,9 @@ export class EVMWagmiClient implements ChainAdapter {
           return
         }
         this.appKit?.setPreferredAccountType(type as W3mFrameTypes.AccountType, this.chainNamespace)
-        this.syncAccount({
-          address: address as `0x${string}`,
-          isConnected: true,
-          chainId: Number(NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id)),
-          connector
-        })
+        if (this.wagmiConfig) {
+          reconnect(this.wagmiConfig, { connectors: [connector] })
+        }
       })
     }
   }

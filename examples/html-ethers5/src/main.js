@@ -1,15 +1,11 @@
-import { EVMEthers5Client } from '@web3modal/adapter-ethers5'
-import { mainnet, arbitrum } from '@web3modal/base/chains'
-import { createWeb3Modal } from '@web3modal/base'
+import { EVMEthers5Client } from '@rerock/adapter-ethers5'
+import { mainnet, arbitrum } from '@rerock/base/chains'
+import { createWeb3Modal } from '@rerock/base'
 
 // @ts-expect-error 1. Get projectId
 const projectId = import.meta.env.VITE_PROJECT_ID
 if (!projectId) {
   throw new Error('VITE_PROJECT_ID is not set')
-}
-
-function getBlockchainApiRpcUrl(chainId) {
-  return `https://rpc.walletconnect.org/v1/?chainId=eip155:${chainId}&projectId=${projectId}`
 }
 
 // 2. Create wagmiConfig

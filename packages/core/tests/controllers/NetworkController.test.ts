@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import type { NetworkControllerClient } from '../../exports/index.js'
-import type { CaipNetwork, CaipNetworkId } from '@web3modal/common'
+import type { CaipNetwork, CaipNetworkId } from '@rerock/common'
 import { ChainController, EventsController, NetworkController } from '../../exports/index.js'
-import { ConstantsUtil } from '@web3modal/common'
+import { ConstantsUtil } from '@rerock/common'
 
 // -- Setup --------------------------------------------------------------------
 const caipNetwork = {

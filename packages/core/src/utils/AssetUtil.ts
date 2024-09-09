@@ -1,4 +1,4 @@
-import type { ChainNamespace, CaipNetwork } from '@web3modal/common'
+import type { ChainNamespace, CaipNetwork } from '@rerock/common'
 import { ApiController } from '../controllers/ApiController.js'
 import { AssetController } from '../controllers/AssetController.js'
 import type { Connector, WcWallet } from './TypeUtil.js'

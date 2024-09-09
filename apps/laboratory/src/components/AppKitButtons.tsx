@@ -1,4 +1,4 @@
-import { useWeb3Modal } from '@web3modal/base/react'
+import { useWeb3Modal } from '@rerock/base/react'
 import {
   Stack,
   Card,

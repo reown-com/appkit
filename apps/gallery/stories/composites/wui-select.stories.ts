@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@web3modal/ui/src/composites/wui-select'
-import type { WuiSelect } from '@web3modal/ui/src/composites/wui-select'
+import '@rerock/ui/src/composites/wui-select'
+import type { WuiSelect } from '@rerock/ui/src/composites/wui-select'
 import { html } from 'lit'
 import { networkImageSrc } from '../../utils/PresetUtils'
 

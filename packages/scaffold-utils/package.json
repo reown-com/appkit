@@ -1,6 +1,6 @@
 {
-  "name": "@web3modal/scaffold-utils",
-  "version": "5.1.6",
+  "name": "@rerock/scaffold-utils",
+  "version": "0.0.2",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -35,11 +35,11 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@walletconnect/universal-provider": "2.15.1",
-    "@web3modal/common": "workspace:*",
-    "@web3modal/core": "workspace:*",
-    "@web3modal/polyfills": "workspace:*",
-    "@web3modal/wallet": "workspace:*",
+    "@walletconnect/universal-provider": "2.15.2",
+    "@rerock/common": "workspace:*",
+    "@rerock/core": "workspace:*",
+    "@rerock/polyfills": "workspace:*",
+    "@rerock/wallet": "workspace:*",
     "valtio": "1.11.2"
   },
   "devDependencies": {
@@ -51,13 +51,13 @@
     "web3",
     "crypto",
     "ethereum",
-    "web3modal",
-    "walletconnect",
+    "appkit",
+    "Rerock",
     "utils",
     "wagmi",
     "ethers"
   ],
-  "author": "WalletConnect <walletconnect.com>",
+  "author": "Rerock <rerock.com>",
   "license": "Apache-2.0",
   "homepage": "https://github.com/web3modal/web3modal",
   "repository": {

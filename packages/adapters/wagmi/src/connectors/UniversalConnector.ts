@@ -18,11 +18,11 @@ import {
   getAddress,
   numberToHex
 } from 'viem'
-import { WcHelpersUtil } from '@web3modal/base'
-import type { AppKitOptions } from '@web3modal/base'
-import type { AppKit } from '@web3modal/base'
+import { WcHelpersUtil } from '@rerock/base'
+import type { AppKitOptions } from '@rerock/base'
+import type { AppKit } from '@rerock/base'
 import { convertToAppKitChains } from '../utils/helpers.js'
-import { SafeLocalStorage, SafeLocalStorageKeys, type CaipNetwork } from '@web3modal/common'
+import { SafeLocalStorage, SafeLocalStorageKeys, type CaipNetwork } from '@rerock/common'
 
 type UniversalConnector = Connector & {
   onDisplayUri(uri: string): void
@@ -251,6 +251,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
       if (chainId) {
         return chainId as number
       }
+
       const provider = await this.getProvider()
       const chain = provider.session?.namespaces['eip155']?.chains?.[0]
 

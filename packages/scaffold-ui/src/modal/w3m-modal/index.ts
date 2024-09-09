@@ -5,16 +5,17 @@ import {
   CoreHelperUtil,
   EventsController,
   ModalController,
+  NetworkController,
   OptionsController,
   RouterController,
   SnackController,
   ThemeController
-} from '@web3modal/core'
-import { UiHelperUtil, customElement, initializeTheming } from '@web3modal/ui'
+} from '@rerock/core'
+import { UiHelperUtil, customElement, initializeTheming } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
-import { ConstantsUtil, type CaipAddress } from '@web3modal/common'
+import { ConstantsUtil, type CaipAddress, type CaipNetwork } from '@rerock/common'
 
 // -- Helpers --------------------------------------------- //
 const SCROLL_LOCK = 'scroll-lock'
@@ -32,6 +33,8 @@ export class W3mModal extends LitElement {
   @state() private open = ModalController.state.open
 
   @state() private caipAddress = AccountController.state.caipAddress
+
+  @state() private caipNetwork = NetworkController.state.caipNetwork
 
   @state() private isSiweEnabled = OptionsController.state.isSiweEnabled
 
@@ -54,6 +57,7 @@ export class W3mModal extends LitElement {
           this.onNewAddress(AccountController.state.caipAddress)
         }),
         AccountController.subscribeKey('isConnected', val => (this.connected = val)),
+        NetworkController.subscribeKey('caipNetwork', val => this.onNewNetwork(val)),
         AccountController.subscribeKey('caipAddress', val => this.onNewAddress(val)),
         OptionsController.subscribeKey('isSiweEnabled', val => (this.isSiweEnabled = val))
       ]
@@ -100,7 +104,7 @@ export class W3mModal extends LitElement {
     const isApproveSignScreen = RouterController.state.view === 'ApproveTransaction'
 
     if (this.isSiweEnabled) {
-      const { SIWEController } = await import('@web3modal/siwe')
+      const { SIWEController } = await import('@rerock/siwe')
       const isUnauthenticated = SIWEController.state.status !== 'success'
       if (isUnauthenticated && (isSiweSignScreen || isApproveSignScreen)) {
         ModalController.shake()
@@ -188,35 +192,40 @@ export class W3mModal extends LitElement {
 
     const previousAddress = CoreHelperUtil.getPlainAddress(this.caipAddress)
     const newAddress = CoreHelperUtil.getPlainAddress(caipAddress)
-    const previousNetworkId = CoreHelperUtil.getNetworkId(this.caipAddress)
-    const newNetworkId = CoreHelperUtil.getNetworkId(caipAddress)
     this.caipAddress = caipAddress
 
     if (this.isSiweEnabled) {
-      const { SIWEController } = await import('@web3modal/siwe')
+      const { SIWEController } = await import('@rerock/siwe')
       const session = await SIWEController.getSession()
 
       // If the address has changed and signOnAccountChange is enabled, sign out
       if (session && previousAddress && newAddress && previousAddress !== newAddress) {
         if (SIWEController.state._client?.options.signOutOnAccountChange) {
           await SIWEController.signOut()
-          this.onSiweNavigation()
         }
-
-        return
       }
 
-      /*
-       * If the network has changed and signOnNetworkChange is enabled, sign out
-       * Covers case where network is switched wallet-side
-       */
+      this.onSiweNavigation()
+    }
+  }
+
+  private async onNewNetwork(caipNetwork: CaipNetwork | undefined) {
+    if (!this.connected || this.loading) {
+      return
+    }
+
+    const previousNetworkId = this.caipNetwork?.id
+    const newNetworkId = caipNetwork?.id
+    this.caipNetwork = caipNetwork
+
+    if (this.isSiweEnabled) {
+      const { SIWEController } = await import('@rerock/siwe')
+      const session = await SIWEController.getSession()
+
       if (session && previousNetworkId && newNetworkId && previousNetworkId !== newNetworkId) {
         if (SIWEController.state._client?.options.signOutOnNetworkChange) {
           await SIWEController.signOut()
-          this.onSiweNavigation()
         }
-
-        return
       }
 
       this.onSiweNavigation()
@@ -225,8 +234,9 @@ export class W3mModal extends LitElement {
 
   private onSiweNavigation() {
     const isEIP155Namespace = ChainController.state.activeChain === ConstantsUtil.CHAIN.EVM
+
     if (isEIP155Namespace) {
-      if (this.open && isEIP155Namespace) {
+      if (this.open) {
         RouterController.push('ConnectingSiwe')
       } else {
         ModalController.open({

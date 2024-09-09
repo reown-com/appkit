@@ -75,7 +75,7 @@ import {
   RpcSolanaSignAllTransactionsRequest
 } from './W3mFrameSchema.js'
 import type { W3mFrameRpcConstants } from './W3mFrameConstants.js'
-import type { CaipNetworkId } from '@web3modal/common'
+import type { CaipNetworkId } from '@rerock/common'
 
 export namespace W3mFrameTypes {
   export type AppEvent = z.infer<typeof W3mFrameSchema.appEvent>

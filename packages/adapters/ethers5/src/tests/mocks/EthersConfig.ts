@@ -1,4 +1,4 @@
-import type { ProviderType } from '@web3modal/scaffold-utils/ethers'
+import type { ProviderType } from '@rerock/scaffold-utils/ethers'
 import { vi } from 'vitest'
 
 export const mockEthersConfig = {

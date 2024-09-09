@@ -1,4 +1,4 @@
-import type { AppKitOptions } from '@web3modal/base'
+import type { AppKitOptions } from '@rerock/base'
 import {
   NetworkUtil,
   SafeLocalStorage,
@@ -8,37 +8,37 @@ import {
   type CaipNetwork,
   type CaipNetworkId,
   type ChainNamespace
-} from '@web3modal/common'
+} from '@rerock/common'
 import {
   AccountController,
   ChainController,
   type CombinedProvider,
   type Connector
-} from '@web3modal/core'
+} from '@rerock/core'
 import {
   EthersHelpersUtil,
   type Provider,
   type ProviderType,
   type ProviderId,
   type Address
-} from '@web3modal/scaffold-utils/ethers'
-import type { AppKit } from '@web3modal/base'
+} from '@rerock/scaffold-utils/ethers'
+import type { AppKit } from '@rerock/base'
 import {
   W3mFrameHelpers,
   W3mFrameProvider,
   W3mFrameRpcConstants,
   type W3mFrameTypes
-} from '@web3modal/wallet'
-import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
-import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@web3modal/scaffold-utils'
+} from '@rerock/wallet'
+import { ConstantsUtil as CommonConstantsUtil } from '@rerock/common'
+import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@rerock/scaffold-utils'
 import UniversalProvider from '@walletconnect/universal-provider'
-import type { ConnectionControllerClient, NetworkControllerClient } from '@web3modal/core'
-import { ConstantsUtil as CoreConstantsUtil } from '@web3modal/core'
-import { WcConstantsUtil } from '@web3modal/base'
+import type { ConnectionControllerClient, NetworkControllerClient } from '@rerock/core'
+import { ConstantsUtil as CoreConstantsUtil } from '@rerock/core'
+import { WcConstantsUtil } from '@rerock/base'
 import { Ethers5Methods } from './utils/Ethers5Methods.js'
 import { ethers } from 'ethers5'
-import type { PublicStateControllerState } from '@web3modal/core'
-import { ProviderUtil } from '@web3modal/base/store'
+import type { PublicStateControllerState } from '@rerock/core'
+import { ProviderUtil } from '@rerock/base/store'
 import { CoinbaseWalletSDK, type ProviderInterface } from '@coinbase/wallet-sdk'
 
 // -- Types ---------------------------------------------------------------------
@@ -193,7 +193,7 @@ export class EVMEthers5Client {
     this.appKit = appKit
     this.options = options
     this.caipNetworks = options.caipNetworks
-    this.defaultCaipNetwork = options.defaultCaipNetwork || this.caipNetworks[0]
+    this.defaultCaipNetwork = options.defaultCaipNetwork || options.caipNetworks[0]
     this.tokens = HelpersUtil.getCaipTokens(options.tokens)
     this.ethersConfig = this.createEthersConfig(options)
 
@@ -226,7 +226,7 @@ export class EVMEthers5Client {
         provider
       }: {
         id: string
-        info: Info
+        info?: Info
         provider: Provider
       }) => {
         this.appKit?.setClientId(null)
@@ -245,8 +245,8 @@ export class EVMEthers5Client {
             providerType: 'coinbase' as const
           },
           [ConstantsUtil.AUTH_CONNECTOR_ID]: {
-            getProvider: () => this.ethersConfig?.auth,
-            providerType: 'auth' as const
+            getProvider: () => this.authProvider,
+            providerType: 'w3mAuth' as const
           }
         }
 
@@ -264,13 +264,13 @@ export class EVMEthers5Client {
 
         try {
           // WcStoreUtil.setError(undefined)
-          if (selectedProvider) {
+          if (selectedProvider && id !== ConstantsUtil.AUTH_CONNECTOR_ID) {
             await selectedProvider.request({ method: 'eth_requestAccounts' })
           }
           await this.setProvider(
             selectedProvider,
             selectedConnector.providerType as ProviderId,
-            info.name
+            info?.name
           )
         } catch (error) {
           // WcStoreUtil.setError(error)
@@ -300,7 +300,7 @@ export class EVMEthers5Client {
 
         this.appKit?.setClientId(null)
         if (this.options?.siweConfig?.options?.signOutOnDisconnect) {
-          const { SIWEController } = await import('@web3modal/siwe')
+          const { SIWEController } = await import('@rerock/siwe')
           await SIWEController.signOut()
         }
 
@@ -382,31 +382,22 @@ export class EVMEthers5Client {
       sendTransaction: async data => {
         const provider = ProviderUtil.getProvider<Provider>('eip155')
         const address = this.appKit?.getAddress()
-
-        if (!provider) {
-          throw new Error('connectionControllerClient:sendTransaction - provider is undefined')
-        }
+        const caipNetwork = this.appKit?.getCaipNetwork()
 
         if (!address) {
-          throw new Error('connectionControllerClient:sendTransaction - address is undefined')
+          throw new Error('Address is undefined')
         }
 
-        const txParams = {
-          to: data.to,
-          value: data.value,
-          gasLimit: data.gas,
-          gasPrice: data.gasPrice,
-          data: data.data,
-          type: 0
+        if (!provider) {
+          throw new Error('Provider is undefined')
         }
 
-        const browserProvider = new ethers.providers.Web3Provider(provider)
-        const signer = browserProvider.getSigner()
-
-        const txResponse = await signer.sendTransaction(txParams)
-        const txReceipt = await txResponse.wait()
-
-        return (txReceipt?.blockHash as `0x${string}`) || null
+        return await Ethers5Methods.sendTransaction(
+          data,
+          provider,
+          address,
+          Number(caipNetwork?.chainId)
+        )
       },
 
       writeContract: async data => {
@@ -524,7 +515,7 @@ export class EVMEthers5Client {
 
     const providerConfigs = {
       [ConstantsUtil.AUTH_CONNECTOR_ID]: {
-        supportsAllNetworks: false,
+        supportsAllNetworks: true,
         approvedCaipNetworkIds: PresetsUtil.WalletConnectRpcChainIds.map(
           id => `${ConstantsUtil.EIP155}:${id}`
         ) as CaipNetworkId[]
@@ -538,7 +529,7 @@ export class EVMEthers5Client {
     }
 
     return {
-      supportsAllNetworks: true,
+      supportsAllNetworks: false,
       approvedCaipNetworkIds: []
     }
   }
@@ -736,8 +727,8 @@ export class EVMEthers5Client {
   private setupAuthListeners(authProvider: W3mFrameProvider) {
     authProvider.onRpcRequest(request => {
       if (W3mFrameHelpers.checkIfRequestExists(request)) {
-        if (!W3mFrameHelpers.checkIfRequestIsAllowed(request)) {
-          this.handleAuthRpcRequest()
+        if (!W3mFrameHelpers.checkIfRequestIsSafe(request)) {
+          this.appKit?.handleUnsafeRPCRequest()
         }
       } else {
         this.handleInvalidAuthRequest()
@@ -745,7 +736,7 @@ export class EVMEthers5Client {
     })
 
     authProvider.onRpcError(() => this.handleAuthRpcError())
-    authProvider.onRpcSuccess(() => this.handleAuthRpcSuccess())
+    authProvider.onRpcSuccess((_, request) => this.handleAuthRpcSuccess(_, request))
     authProvider.onNotConnected(() => this.handleAuthNotConnected())
     authProvider.onIsConnected(({ preferredAccountType }) =>
       this.handleAuthIsConnected(preferredAccountType)
@@ -755,20 +746,6 @@ export class EVMEthers5Client {
         this.handleAuthSetPreferredAccount(address, type)
       }
     })
-  }
-
-  private handleAuthRpcRequest() {
-    if (this.appKit?.isOpen()) {
-      if (!this.appKit?.isTransactionStackEmpty()) {
-        if (this.appKit?.isTransactionShouldReplaceView()) {
-          this.appKit?.replace('ApproveTransaction')
-        } else {
-          this.appKit?.redirect('ApproveTransaction')
-        }
-      }
-    } else {
-      this.appKit?.open({ view: 'ApproveTransaction' })
-    }
   }
 
   private handleInvalidAuthRequest() {
@@ -788,7 +765,13 @@ export class EVMEthers5Client {
     }
   }
 
-  private handleAuthRpcSuccess() {
+  private handleAuthRpcSuccess(_: W3mFrameTypes.FrameEvent, request: W3mFrameTypes.RPCRequest) {
+    const isSafeRequest = W3mFrameHelpers.checkIfRequestIsSafe(request)
+
+    if (isSafeRequest) {
+      return
+    }
+
     if (this.appKit?.isTransactionStackEmpty()) {
       this.appKit?.close()
     } else {
@@ -1009,44 +992,46 @@ export class EVMEthers5Client {
     const provider = ProviderUtil.getProvider<Provider | UniversalProvider>('eip155')
     const providerType = ProviderUtil.state.providerIds['eip155']
 
-    switch (providerType) {
-      case ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID:
-        this.appKit?.universalAdapter?.networkControllerClient.switchCaipNetwork(caipNetwork)
-        break
-      case ConstantsUtil.INJECTED_CONNECTOR_ID:
-      case ConstantsUtil.EIP6963_CONNECTOR_ID:
-      case ConstantsUtil.COINBASE_SDK_CONNECTOR_ID:
-        if (provider) {
-          await requestSwitchNetwork(provider as Provider)
-        }
-        break
-      case ConstantsUtil.AUTH_CONNECTOR_ID:
-        if (this.authProvider) {
-          try {
-            this.appKit?.setLoading(true)
-            await this.authProvider.switchNetwork(caipNetwork.chainId as number)
-            this.appKit?.setCaipNetwork(caipNetwork)
-
-            const { address, preferredAccountType } = await this.authProvider.connect({
-              chainId: caipNetwork.chainId as number | undefined
-            })
-
-            // @ts-expect-error - address type will be checked todo(enes|sven)
-            this.appKit?.setCaipAddress(address, this.chainNamespace)
-            this.appKit?.setPreferredAccountType(
-              preferredAccountType as W3mFrameTypes.AccountType,
-              this.chainNamespace
-            )
-            await this.syncAccount({ address: address as Address })
-          } catch {
-            throw new Error('Switching chain failed')
-          } finally {
-            this.appKit?.setLoading(false)
+    if (provider) {
+      switch (providerType) {
+        case ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID:
+          this.appKit?.universalAdapter?.networkControllerClient.switchCaipNetwork(caipNetwork)
+          break
+        case ConstantsUtil.INJECTED_CONNECTOR_ID:
+        case ConstantsUtil.EIP6963_CONNECTOR_ID:
+        case ConstantsUtil.COINBASE_SDK_CONNECTOR_ID:
+          if (provider) {
+            await requestSwitchNetwork(provider as Provider)
           }
-        }
-        break
-      default:
-        throw new Error('Unsupported provider type')
+          break
+        case ConstantsUtil.AUTH_CONNECTOR_ID:
+          if (this.authProvider) {
+            try {
+              this.appKit?.setLoading(true)
+              await this.authProvider.switchNetwork(caipNetwork.chainId as number)
+              this.appKit?.setCaipNetwork(caipNetwork)
+
+              const { address, preferredAccountType } = await this.authProvider.connect({
+                chainId: caipNetwork.chainId as number | undefined
+              })
+
+              // @ts-expect-error - address type will be checked todo(enes|sven)
+              this.appKit?.setCaipAddress(address, this.chainNamespace)
+              this.appKit?.setPreferredAccountType(
+                preferredAccountType as W3mFrameTypes.AccountType,
+                this.chainNamespace
+              )
+              await this.syncAccount({ address: address as Address })
+            } catch {
+              throw new Error('Switching chain failed')
+            } finally {
+              this.appKit?.setLoading(false)
+            }
+          }
+          break
+        default:
+          throw new Error('Unsupported provider type')
+      }
     }
   }
 

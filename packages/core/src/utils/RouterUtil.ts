@@ -2,7 +2,7 @@ import { RouterController } from '../controllers/RouterController.js'
 import { ModalController } from '../controllers/ModalController.js'
 import { OptionsController } from '../controllers/OptionsController.js'
 import { ChainController } from '../controllers/ChainController.js'
-import { ConstantsUtil } from '@web3modal/common'
+import { ConstantsUtil } from '@rerock/common'
 
 export const RouterUtil = {
   goBackOrCloseModal() {

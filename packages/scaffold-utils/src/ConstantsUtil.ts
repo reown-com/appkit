@@ -1,4 +1,4 @@
-import type { ChainNamespace } from '@web3modal/common'
+import type { ChainNamespace } from '@rerock/common'
 
 export const ConstantsUtil = {
   WALLET_CONNECT_CONNECTOR_ID: 'walletConnect',
@@ -18,5 +18,5 @@ export const ConstantsUtil = {
     coinbaseWallet: 'com.coinbase.wallet',
     coinbaseWalletSDK: 'com.coinbase.wallet'
   } as Record<string, string>,
-  VERSION: '5.1.6'
+  VERSION: '0.0.2'
 }

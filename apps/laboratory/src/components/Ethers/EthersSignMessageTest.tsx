@@ -1,6 +1,6 @@
 import { Button } from '@chakra-ui/react'
 import { useState } from 'react'
-import { useWeb3ModalAccount, useWeb3ModalProvider, type Provider } from '@web3modal/base/react'
+import { useWeb3ModalAccount, useWeb3ModalProvider, type Provider } from '@rerock/base/react'
 import { BrowserProvider, JsonRpcSigner } from 'ethers'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { useChakraToast } from '../Toast'

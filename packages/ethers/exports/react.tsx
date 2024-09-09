@@ -1,14 +1,15 @@
 'use client'
 
-import { AppKit, AccountController } from '@web3modal/base'
-import type { AppKitOptions } from '@web3modal/base'
-import { EVMEthersClient, type AdapterOptions } from '@web3modal/adapter-ethers'
-import { getWeb3Modal } from '@web3modal/base/library/react'
+import { AppKit, AccountController } from '@rerock/base'
+import type { AppKitOptions } from '@rerock/base'
+import { EVMEthersClient, type AdapterOptions } from '@rerock/adapter-ethers'
+import { getWeb3Modal } from '@rerock/base/library/react'
 import { useSnapshot } from 'valtio'
-import type { CaipNetwork } from '@web3modal/common'
+import type { CaipNetwork } from '@rerock/common'
+import { ConstantsUtil } from '@rerock/scaffold-utils'
 
 // -- Types -------------------------------------------------------------
-export type { AdapterOptions } from '@web3modal/adapter-ethers'
+export type { AdapterOptions } from '@rerock/adapter-ethers'
 
 // -- Setup -------------------------------------------------------------------
 let appkit: AppKit | undefined = undefined
@@ -21,6 +22,7 @@ export function createWeb3Modal(options: EthersAppKitOptions) {
   ethersAdapter = new EVMEthersClient()
   appkit = new AppKit({
     ...options,
+    sdkVersion: `react-ethers-${ConstantsUtil.VERSION}`,
     adapters: [ethersAdapter]
   })
   getWeb3Modal(appkit)
@@ -66,4 +68,4 @@ export {
   useWeb3ModalState,
   useWeb3ModalEvents,
   useWalletInfo
-} from '@web3modal/base/library/react'
+} from '@rerock/base/library/react'

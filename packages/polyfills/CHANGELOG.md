@@ -1,4 +1,4 @@
-# @web3modal/polyfills
+# @rerock/polyfills
 
 ## 5.1.6
 
@@ -183,7 +183,7 @@ Enhanced compatibility, performance, developer experience, and user interface up
   - Add Wallet Standard to AppKit + Solana by @glitch-txs in https://github.com/WalletConnect/web3modal/pull/2482
   - chore: remove onramp widget from labs by @tomiir in https://github.com/WalletConnect/web3modal/pull/2526
   - feat: support custom connectors by @chris13524 in https://github.com/WalletConnect/web3modal/pull/2119
-  - fix: disconnect logic for EIP6963 & Injected provider types for @web3modal/ethers by @hmzakhalid in https://github.com/WalletConnect/web3modal/pull/2289
+  - fix: disconnect logic for EIP6963 & Injected provider types for @rerock/ethers by @hmzakhalid in https://github.com/WalletConnect/web3modal/pull/2289
   - Feat ERC7715 grant_permissions support on lab by @KannuSingh in https://github.com/WalletConnect/web3modal/pull/2500
   - update chain on network change by @glitch-txs in https://github.com/WalletConnect/web3modal/pull/2497
   - fix: make accounts optional in social response by @tomiir in https://github.com/WalletConnect/web3modal/pull/2520
@@ -348,10 +348,10 @@ Enhanced compatibility, performance, developer experience, and user interface up
 - chore: canary release for siwe dependency
 
 - Updated dependencies []:
-  - @web3modal/ethers@4.1.6-a0733f5.0
-  - @web3modal/siwe@4.1.6-a0733f5.0
-  - @web3modal/solana@4.1.6-a0733f5.0
-  - @web3modal/wagmi@4.1.6-a0733f5.0
+  - @rerock/ethers@4.1.6-a0733f5.0
+  - @rerock/siwe@4.1.6-a0733f5.0
+  - @rerock/solana@4.1.6-a0733f5.0
+  - @rerock/wagmi@4.1.6-a0733f5.0
 
 ## 4.1.5
 
@@ -416,8 +416,8 @@ Enhanced compatibility, performance, developer experience, and user interface up
 ### Patch Changes
 
 - Updated dependencies []:
-  - @web3modal/ui@4.2.0-dbbd8c44.0
-  - @web3modal/common@4.2.0-dbbd8c44.0
+  - @rerock/ui@4.2.0-dbbd8c44.0
+  - @rerock/common@4.2.0-dbbd8c44.0
 
 ## 4.2.0-500a38.0
 

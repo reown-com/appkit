@@ -7,9 +7,9 @@ import {
   RouterController,
   SnackController,
   type AccountType
-} from '@web3modal/core'
+} from '@rerock/core'
 
-import { UiHelperUtil, customElement } from '@web3modal/ui'
+import { UiHelperUtil, customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'

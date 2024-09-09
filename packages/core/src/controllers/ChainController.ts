@@ -1,4 +1,4 @@
-import { proxyMap, subscribeKey as subKey } from 'valtio/utils'
+import { proxyMap, subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
 import type { ChainAdapter, Connector } from '../utils/TypeUtil.js'
 
@@ -10,7 +10,7 @@ import {
   SafeLocalStorageKeys,
   type CaipNetwork,
   type ChainNamespace
-} from '@web3modal/common'
+} from '@rerock/common'
 
 // -- Types --------------------------------------------- //
 export interface ChainControllerState {

@@ -1,9 +1,9 @@
-import { AccountController, EventsController, RouterController } from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+import { AccountController, EventsController, RouterController } from '@rerock/core'
+import { customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
 import { state } from 'lit/decorators.js'
-import { W3mFrameRpcConstants } from '@web3modal/wallet'
+import { W3mFrameRpcConstants } from '@rerock/wallet'
 
 @customElement('w3m-account-tokens-widget')
 export class W3mAccountTokensWidget extends LitElement {

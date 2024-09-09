@@ -1,4 +1,4 @@
-import type { CaipNetwork, ChainNamespace } from '@web3modal/common'
+import type { CaipNetwork, ChainNamespace } from '@rerock/common'
 
 export function getBlockchainApiRpcUrl(chainId: number | string, namespace: ChainNamespace) {
   return `https://rpc.walletconnect.org/v1/?chainId=${namespace}:${chainId}&projectId=${process.env['NEXT_PUBLIC_PROJECT_ID']}`

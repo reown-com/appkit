@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@web3modal/ui/src/composites/wui-balance'
-import type { WuiBalance } from '@web3modal/ui/src/composites/wui-balance'
+import '@rerock/ui/src/composites/wui-balance'
+import type { WuiBalance } from '@rerock/ui/src/composites/wui-balance'
 import { html } from 'lit'
 
 type Component = Meta<WuiBalance>

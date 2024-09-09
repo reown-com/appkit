@@ -9,6 +9,11 @@ export const WC_COSIGNER_BASE_URL = 'https://rpc.walletconnect.org/v1/sessions'
 export const USEROP_BUILDER_SERVICE_BASE_URL = 'https://react-wallet.walletconnect.com/api'
 
 export function getPublicUrl() {
+  const publicUrl = process.env['NEXT_PUBLIC_PUBLIC_URL']
+  if (publicUrl) {
+    return publicUrl
+  }
+
   const vercelUrl = process.env['NEXT_PUBLIC_VERCEL_URL']
   if (vercelUrl) {
     return `https://${vercelUrl}`

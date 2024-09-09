@@ -1,7 +1,7 @@
-import type { Balance } from '@web3modal/common'
-import { ConstantsUtil as CommonConstants } from '@web3modal/common'
+import type { Balance } from '@rerock/common'
+import { ConstantsUtil as CommonConstants } from '@rerock/common'
 import { ConstantsUtil } from './ConstantsUtil.js'
-import type { CaipAddress, CaipNetwork } from '@web3modal/common'
+import type { CaipAddress, CaipNetwork } from '@rerock/common'
 import type { LinkingRecord } from './TypeUtil.js'
 
 export const CoreHelperUtil = {
