@@ -18,6 +18,7 @@ import { SolanaWriteContractTest } from './SolanaWriteContractTest'
 import { solana, solanaDevnet, solanaTestnet } from '../../utils/ChainsUtil'
 import { SolanaSignAndSendTransaction } from './SolanaSignAndSendTransactionTest'
 import { SolanaSignAllTransactionsTest } from './SolanaSignAllTransactionsTest'
+import { SolanaSignJupiterSwapTest } from './SolanaSignJupiterSwapTest'
 
 export function SolanaTests() {
   const { isConnected, currentChain } = useWeb3ModalAccount()
@@ -83,6 +84,19 @@ export function SolanaTests() {
             </Heading>
             <SolanaSignAndSendTransaction />
           </Box>
+
+          <Box>
+            <Heading size="xs" textTransform="uppercase" pb="2">
+              Sign Jupiter Swap Transaction
+              <Tooltip label="Use Jupiter Swap API to create a transaction that has Address Lookup Tables and requests for the wallet to sign it">
+                <Text as="span" fontSize="sm" ml="2">
+                  ℹ️
+                </Text>
+              </Tooltip>
+            </Heading>
+            <SolanaSignJupiterSwapTest />
+          </Box>
+
           {(currentChain?.chainId === solanaTestnet.chainId ||
             currentChain?.chainId === solanaDevnet.chainId) && (
             <Stack divider={<StackDivider />} spacing="4">
