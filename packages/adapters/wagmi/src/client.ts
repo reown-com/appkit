@@ -115,11 +115,11 @@ export class EVMWagmiClient implements ChainAdapter {
 
   public chainNamespace: ChainNamespace = CommonConstantsUtil.CHAIN.EVM
 
-  public caipNetworks?: CaipNetwork[]
+  public caipNetworks: CaipNetwork[]
 
-  public wagmiChains?: readonly [Chain, ...Chain[]]
+  public wagmiChains: readonly [Chain, ...Chain[]]
 
-  public wagmiConfig?: AdapterOptions<Config>['wagmiConfig']
+  public wagmiConfig: AdapterOptions<Config>['wagmiConfig']
 
   public networkControllerClient?: NetworkControllerClient
 
@@ -135,35 +135,48 @@ export class EVMWagmiClient implements ChainAdapter {
 
   public adapterType: AdapterType = 'wagmi'
 
-  public constructor(configParams?: Partial<CreateConfigParameters>) {
-    this.createConfigParams = configParams
-  }
-
-  private createWagmiConfig(options: AppKitOptions, appKit: AppKit) {
+  public constructor(
+    configParams: Partial<CreateConfigParameters> & {
+      caipNetworks: CaipNetwork[]
+      projectId: string
+    }
+  ) {
     this.wagmiChains = convertToAppKitChains(
-      options.caipNetworks.filter(
+      configParams.caipNetworks.filter(
         caipNetwork => caipNetwork.chainNamespace === CommonConstantsUtil.CHAIN.EVM
       )
     )
+    this.caipNetworks = configParams.caipNetworks
 
     const transportsArr = this.wagmiChains.map(chain => [
       chain.id,
-      getTransport({ chain, projectId: options.projectId })
+      getTransport({ chain, projectId: configParams.projectId })
     ])
 
     const transports = Object.fromEntries(transportsArr)
     const connectors: CreateConnectorFn[] = []
 
+    this.wagmiConfig = createConfig({
+      ...this.createConfigParams,
+      chains: this.wagmiChains,
+      transports,
+      connectors: [...connectors, ...(this.createConfigParams?.connectors ?? [])]
+    })
+  }
+
+  private setCustomConnectors(options: AppKitOptions, appKit: AppKit) {
+    const customConnectors: CreateConnectorFn[] = []
+
     if (options.enableWalletConnect !== false) {
-      connectors.push(walletConnect(options, appKit))
+      customConnectors.push(walletConnect(options, appKit))
     }
 
     if (options.enableInjected !== false) {
-      connectors.push(injected({ shimDisconnect: true }))
+      customConnectors.push(injected({ shimDisconnect: true }))
     }
 
     if (options.enableCoinbase !== false) {
-      connectors.push(
+      customConnectors.push(
         coinbaseWallet({
           version: '4',
           appName: options.metadata?.name ?? 'Unknown',
@@ -183,7 +196,7 @@ export class EVMWagmiClient implements ChainAdapter {
         : options.features?.socials?.length > 0
 
     if (emailEnabled || socialsEnabled) {
-      connectors.push(
+      customConnectors.push(
         authConnector({
           chains: this.wagmiChains,
           options: { projectId: options.projectId }
@@ -191,11 +204,9 @@ export class EVMWagmiClient implements ChainAdapter {
       )
     }
 
-    return createConfig({
-      ...this.createConfigParams,
-      chains: this.wagmiChains,
-      transports,
-      connectors: [...connectors, ...(this.createConfigParams?.connectors ?? [])]
+    customConnectors.forEach(connector => {
+      const cnctr = this.wagmiConfig._internal.connectors.setup(connector)
+      this.wagmiConfig._internal.connectors.setState(prev => [...prev, cnctr])
     })
   }
 
@@ -209,7 +220,7 @@ export class EVMWagmiClient implements ChainAdapter {
     this.caipNetworks = options.caipNetworks
     this.defaultCaipNetwork = options.defaultCaipNetwork || options.caipNetworks[0]
     this.tokens = HelpersUtil.getCaipTokens(options.tokens)
-    this.wagmiConfig = this.createWagmiConfig(options, appKit)
+    this.setCustomConnectors(options, appKit)
 
     if (!this.wagmiConfig) {
       throw new Error('web3modal:wagmiConfig - is undefined')
