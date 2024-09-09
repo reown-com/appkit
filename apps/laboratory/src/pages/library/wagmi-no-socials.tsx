@@ -26,7 +26,6 @@ const modal = createWeb3Modal({
   projectId: ConstantsUtil.ProjectId,
   features: {
     analytics: true,
-    email: true,
     socials: []
   }
 })
