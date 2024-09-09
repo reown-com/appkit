@@ -505,28 +505,33 @@ export class EVMEthers5Client {
   }
 
   private getApprovedCaipNetworksData() {
-    const walletId = SafeLocalStorage.getItem(SafeLocalStorageKeys.WALLET_ID)
+    return new Promise(resolve => {
+      const walletId = SafeLocalStorage.getItem(SafeLocalStorageKeys.WALLET_ID)
 
-    if (!walletId) {
-      throw new Error('No wallet id found to get approved networks data')
-    }
-
-    const providerConfigs = {
-      [ConstantsUtil.AUTH_CONNECTOR_ID]: {
-        supportsAllNetworks: true,
-        approvedCaipNetworkIds: PresetsUtil.WalletConnectRpcChainIds.map(
-          id => `${ConstantsUtil.EIP155}:${id}`
-        ) as CaipNetworkId[]
+      if (!walletId) {
+        throw new Error('No wallet id found to get approved networks data')
       }
-    }
 
-    const networkData = providerConfigs[walletId as unknown as keyof typeof providerConfigs]
+      const providerConfigs = {
+        [ConstantsUtil.AUTH_CONNECTOR_ID]: {
+          supportsAllNetworks: true,
+          approvedCaipNetworkIds: PresetsUtil.WalletConnectRpcChainIds.map(
+            id => `${ConstantsUtil.EIP155}:${id}`
+          ) as CaipNetworkId[]
+        }
+      }
 
-    if (!networkData) {
-      throw new Error('No network data found for wallet')
-    }
+      const networkData = providerConfigs[walletId as unknown as keyof typeof providerConfigs]
 
-    return networkData
+      if (networkData) {
+        resolve(networkData)
+      } else {
+        resolve({
+          supportsAllNetworks: true,
+          approvedCaipNetworkIds: []
+        })
+      }
+    })
   }
 
   private checkActiveProviders(config: ProviderType) {
@@ -776,12 +781,10 @@ export class EVMEthers5Client {
 
   private handleAuthNotConnected() {
     this.appKit?.setIsConnected(false, this.chainNamespace)
-    this.appKit?.setLoading(false)
   }
 
   private handleAuthIsConnected(preferredAccountType: string | undefined) {
     this.appKit?.setIsConnected(true, this.chainNamespace)
-    this.appKit?.setLoading(false)
     this.appKit?.setPreferredAccountType(
       preferredAccountType as W3mFrameTypes.AccountType,
       this.chainNamespace
@@ -805,6 +808,7 @@ export class EVMEthers5Client {
     this.syncAccount({
       address: address as Address
     }).then(() => this.appKit?.setLoading(false))
+    this.appKit?.setLoading(false)
   }
 
   private async syncWalletConnectName(address: Address) {
@@ -1003,6 +1007,7 @@ export class EVMEthers5Client {
               this.appKit?.setLoading(true)
               await this.authProvider.switchNetwork(caipNetwork.chainId as number)
               this.appKit?.setCaipNetwork(caipNetwork)
+              this.appKit?.setLoading(false)
 
               const { address, preferredAccountType } = await this.authProvider.connect({
                 chainId: caipNetwork.chainId as number | undefined

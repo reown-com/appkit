@@ -46,15 +46,6 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
         if (this.connector.id !== ConstantsUtil.COINBASE_SDK_CONNECTOR_ID || !this.error) {
           await ConnectionController.connectExternal(this.connector, this.connector.chain)
 
-          if (
-            OptionsController.state.isSiweEnabled &&
-            ChainController.state.activeChain === CommonConstantsUtil.CHAIN.EVM
-          ) {
-            RouterController.push('ConnectingSiwe')
-          } else {
-            ModalController.close()
-          }
-
           EventsController.sendEvent({
             type: 'track',
             event: 'CONNECT_SUCCESS',

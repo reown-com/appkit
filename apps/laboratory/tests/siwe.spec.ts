@@ -48,7 +48,6 @@ siweWalletTest('it should require re-authentication when switching networks', as
   await modalValidator.expectUnauthenticated()
   await modalPage.promptSiwe()
   await walletPage.handleRequest({ accept: true })
-  await modalPage.closeModal()
   await modalValidator.expectAuthenticated()
 })
 

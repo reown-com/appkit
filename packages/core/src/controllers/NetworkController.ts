@@ -12,7 +12,6 @@ import {
 } from '@rerock/common'
 import { ChainController } from './ChainController.js'
 import { PublicStateController } from './PublicStateController.js'
-import { RouterController } from './RouterController.js'
 
 // -- Types --------------------------------------------- //
 export interface NetworkControllerClient {
@@ -107,23 +106,10 @@ export const NetworkController = {
 
     SafeLocalStorage.setItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK, JSON.stringify(caipNetwork))
 
-    if (
-      !ChainController.state.chains.get(caipNetwork.chainNamespace)?.networkState
-        ?.allowUnsupportedCaipNetwork
-    ) {
-      const isSupported = this.checkIfSupportedNetwork()
+    const isSupported = this.checkIfSupportedNetwork()
 
-      if (!isSupported) {
-        this.showUnsupportedChainUI()
-      } else {
-        if (RouterController.state.view === 'SwitchNetwork') {
-          RouterController.goBack()
-        }
-      }
-    } else {
-      if (RouterController.state.view === 'SwitchNetwork') {
-        RouterController.goBack()
-      }
+    if (!isSupported) {
+      this.showUnsupportedChainUI()
     }
   },
 
@@ -229,8 +215,8 @@ export const NetworkController = {
         : undefined
     }
 
-    ChainController.setActiveCaipNetwork(network)
     await networkControllerClient?.switchCaipNetwork(network)
+    ChainController.setActiveCaipNetwork(network)
 
     if (network) {
       EventsController.sendEvent({

@@ -97,6 +97,11 @@ export class ModalValidator {
     await expect(switchNetworkButton).toHaveAttribute('active-network', network)
   }
 
+  async expectSwitchedNetworkOnNetworksView(name: string) {
+    const networkOptions = this.page.getByTestId(`w3m-network-switch-${name}`)
+    await expect(networkOptions.locator('wui-icon')).toBeVisible()
+  }
+
   expectSecureSiteFrameNotInjected() {
     const secureSiteIframe = this.page.frame({ name: 'w3m-secure-iframe' })
     expect(secureSiteIframe).toBeNull()

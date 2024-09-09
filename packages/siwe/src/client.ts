@@ -13,7 +13,8 @@ import {
   RouterController,
   StorageUtil,
   NetworkController,
-  AccountController
+  AccountController,
+  ModalController
 } from '@rerock/core'
 
 import { NetworkUtil } from '@rerock/common'
@@ -113,7 +114,10 @@ export class Web3ModalSIWEClient {
       RouterController.pushTransactionStack({
         view: null,
         goBack: false,
-        replace: true
+        replace: true,
+        onSuccess() {
+          ModalController.close()
+        }
       })
     }
     const signature = await ConnectionController.signMessage(message)
@@ -124,15 +128,13 @@ export class Web3ModalSIWEClient {
     }
 
     const session = await this.methods.getSession()
+
     if (!session) {
       throw new Error('Error verifying SIWE signature')
     }
+
     if (this.methods.onSignIn) {
       this.methods.onSignIn(session)
-    }
-
-    if (type !== 'AUTH') {
-      RouterController.goBack()
     }
 
     return session

@@ -781,12 +781,10 @@ export class EVMEthersClient {
 
   private handleAuthNotConnected() {
     this.appKit?.setIsConnected(false, this.chainNamespace)
-    this.appKit?.setLoading(false)
   }
 
   private handleAuthIsConnected(preferredAccountType: string | undefined) {
     this.appKit?.setIsConnected(true, this.chainNamespace)
-    this.appKit?.setLoading(false)
     this.appKit?.setPreferredAccountType(
       preferredAccountType as W3mFrameTypes.AccountType,
       this.chainNamespace
@@ -810,6 +808,7 @@ export class EVMEthersClient {
     this.syncAccount({
       address: address as Address
     }).then(() => this.appKit?.setLoading(false))
+    this.appKit?.setLoading(false)
   }
 
   private async syncWalletConnectName(address: Address) {
@@ -1009,6 +1008,7 @@ export class EVMEthersClient {
               this.appKit?.setLoading(true)
               await this.authProvider.switchNetwork(caipNetwork.chainId as number)
               this.appKit?.setCaipNetwork(caipNetwork)
+              this.appKit?.setLoading(false)
 
               const { address, preferredAccountType } = await this.authProvider.connect({
                 chainId: caipNetwork.chainId as number | undefined

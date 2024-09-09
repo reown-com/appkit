@@ -6,8 +6,7 @@ import {
   ChainController,
   CoreHelperUtil,
   EventsController,
-  NetworkController,
-  OptionsController
+  NetworkController
 } from '@rerock/core'
 import {
   ConstantsUtil as CommonConstantsUtil,
@@ -88,7 +87,7 @@ export class SolanaWeb3JsClient implements ChainAdapter {
 
     AccountController.subscribeKey(
       'isConnected',
-      val => {
+      () => {
         this.syncNetwork()
         this.syncAccount({ address: this.appKit?.getAddress() as string })
       },

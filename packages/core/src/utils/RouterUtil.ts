@@ -21,13 +21,5 @@ export const RouterUtil = {
     } else {
       ModalController.close()
     }
-  },
-  navigateAfterPreferredAccountTypeSelect() {
-    const { isSiweEnabled } = OptionsController.state
-    if (isSiweEnabled && ChainController.state.activeChain === ConstantsUtil.CHAIN.EVM) {
-      RouterController.push('ConnectingSiwe')
-    } else {
-      RouterController.push('Account')
-    }
   }
 }
