@@ -8,15 +8,18 @@ import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
 import { EVMWagmiClient } from '@rerock/adapter-wagmi'
 import { arbitrum, mainnet, optimism, polygon, zkSync } from '@rerock/base/chains'
+import { externalTestConnector } from '../../utils/ConnectorUtil'
 
 const queryClient = new QueryClient()
 
+const connectors = [externalTestConnector()]
 const networks = [mainnet, optimism, polygon, zkSync, arbitrum]
 
 const wagmiAdapter = new EVMWagmiClient({
   ssr: true,
   caipNetworks: networks,
-  projectId: ConstantsUtil.ProjectId
+  projectId: ConstantsUtil.ProjectId,
+  connectors
 })
 
 const modal = createWeb3Modal({
