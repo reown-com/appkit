@@ -137,5 +137,5 @@ jobs:
     with:
       branch: ${{ github.ref }}
     env:
-      TESTS_RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN_V2 }}
-      TESTS_TFC_INFRA_TOKEN: ${{ secrets.TESTS_TFC_INFRA_TOKEN }}
+      RELEASE_TOKEN_V2: ${{ secrets.RELEASE_TOKEN_V2 }}
+      TFC_INFRA_TOKEN: ${{ secrets.TFC_INFRA_TOKEN }}

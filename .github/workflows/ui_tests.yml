@@ -36,9 +36,9 @@ on:
     secrets:
       NEXT_PUBLIC_PROJECT_ID:
         required: true
-      TESTS_RELEASE_TOKEN:
+      RELEASE_TOKEN_V2:
         required: true
-      TESTS_TFC_INFRA_TOKEN:
+      TFC_INFRA_TOKEN:
         required: true
       TESTS_NEXTAUTH_SECRET:
         required: false
