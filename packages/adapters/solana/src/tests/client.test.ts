@@ -103,7 +103,7 @@ describe('SolanaWeb3JsClient', () => {
         'DjPi1LtwrXJMAh2AUvuUMajCpMJEKg8N1J1PbLGjCH5B'
       )
 
-      await client['syncNetwork']()
+      await client['syncNetwork']({ address: 'DjPi1LtwrXJMAh2AUvuUMajCpMJEKg8N1J1PbLGjCH5B' })
 
       expect(SolStoreUtil.setConnection).toHaveBeenCalled()
       expect(mockAppKit.setCaipNetwork).toHaveBeenCalledWith(solana)
