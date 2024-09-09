@@ -2,7 +2,7 @@ import { UiHelperUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
 import { property } from 'lit/decorators.js'
-import { RouterController, SendController } from '@web3modal/core'
+import { ConstantsUtil, RouterController, SendController } from '@web3modal/core'
 import type { Balance } from '@web3modal/common'
 import { NumberUtil } from '@web3modal/common'
 
@@ -117,7 +117,11 @@ export class W3mInputToken extends LitElement {
         this.gasPriceInUSD.toFixed(5)
       ).dividedBy(this.token.price)
 
-      const isNetworkToken = this.token.address === undefined
+      const isNetworkToken =
+        this.token.address === undefined ||
+        Object.values(ConstantsUtil.NATIVE_TOKEN_ADDRESS).some(
+          nativeAddress => this.token?.address === nativeAddress
+        )
 
       const maxValue = isNetworkToken
         ? NumberUtil.bigNumber(this.token.quantity.numeric).minus(amountOfTokenGasRequires)

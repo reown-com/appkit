@@ -449,18 +449,37 @@ export const SwapController = {
     const res = await SwapApiUtil.fetchGasPrice().catch(() => null)
 
     if (!res) {
-      return { gasPrice: null, gasPriceInUsd: null }
+      return { gasPrice: null, gasPriceInUSD: null }
     }
 
-    const value = res.standard
-    const gasFee = BigInt(value)
-    const gasLimit = BigInt(INITIAL_GAS_LIMIT)
-    const gasPrice = SwapCalculationUtil.getGasPriceInUSD(state.networkPrice, gasLimit, gasFee)
+    switch (NetworkController.state.caipNetwork?.chain) {
+      case 'solana':
+        state.gasFee = res.standard
+        state.gasPriceInUSD = NumberUtil.multiply(res.standard, state.networkPrice)
+          .dividedBy(10 ** 9)
+          .toNumber()
 
-    state.gasFee = value
-    state.gasPriceInUSD = gasPrice
+        return {
+          gasPrice: BigInt(state.gasFee),
+          gasPriceInUSD: Number(state.gasPriceInUSD)
+        }
 
-    return { gasPrice: gasFee, gasPriceInUSD: state.gasPriceInUSD }
+      case 'evm':
+      default:
+        // eslint-disable-next-line no-case-declarations
+        const value = res.standard
+        // eslint-disable-next-line no-case-declarations
+        const gasFee = BigInt(value)
+        // eslint-disable-next-line no-case-declarations
+        const gasLimit = BigInt(INITIAL_GAS_LIMIT)
+        // eslint-disable-next-line no-case-declarations
+        const gasPrice = SwapCalculationUtil.getGasPriceInUSD(state.networkPrice, gasLimit, gasFee)
+
+        state.gasFee = value
+        state.gasPriceInUSD = gasPrice
+
+        return { gasPrice: gasFee, gasPriceInUSD: gasPrice }
+    }
   },
 
   // -- Swap -------------------------------------- //

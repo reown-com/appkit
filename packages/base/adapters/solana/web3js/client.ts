@@ -184,7 +184,17 @@ export class SolanaWeb3JsClient implements ChainAdapter<SolStoreUtilState, CaipN
         return new TextDecoder().decode(signature)
       },
 
-      estimateGas: async () => await Promise.resolve(BigInt(0)),
+      estimateGas: async () => {
+        const connection = SolStoreUtil.state.connection
+
+        if (!connection) {
+          throw new Error('Connection is not set')
+        }
+
+        const recentBlockhash = await connection.getRecentBlockhash()
+
+        return BigInt(recentBlockhash.feeCalculator.lamportsPerSignature)
+      },
       // -- Transaction methods ---------------------------------------------------
       /**
        *
@@ -517,18 +527,7 @@ export class SolanaWeb3JsClient implements ChainAdapter<SolStoreUtilState, CaipN
 
       if (W3mFrameHelpers.checkIfRequestExists(request)) {
         if (!W3mFrameHelpers.checkIfRequestIsSafe(request)) {
-          if (this.appKit.isOpen()) {
-            if (this.appKit.isTransactionStackEmpty()) {
-              return
-            }
-            if (this.appKit.isTransactionShouldReplaceView()) {
-              this.appKit.replace('ApproveTransaction')
-            } else {
-              this.appKit.redirect('ApproveTransaction')
-            }
-          } else {
-            this.appKit.open({ view: 'ApproveTransaction' })
-          }
+          this.appKit.handleUnsafeRPCRequest()
         }
       } else {
         this.appKit.open()

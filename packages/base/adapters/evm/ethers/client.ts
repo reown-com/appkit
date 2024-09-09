@@ -393,6 +393,10 @@ export class EVMEthersClient implements ChainAdapter<EthersStoreUtilState, numbe
       async estimateGas(data) {
         const { chainId, provider, address } = EthersStoreUtil.state
 
+        if (data.chainNamespace && data.chainNamespace !== 'eip155') {
+          throw new Error('connectionControllerClient:estimateGas - invalid chain namespace')
+        }
+
         if (!provider) {
           throw new Error('connectionControllerClient:sendTransaction - provider is undefined')
         }

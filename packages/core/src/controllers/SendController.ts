@@ -149,6 +149,11 @@ export const SendController = {
           return
         }
 
+        RouterController.pushTransactionStack({
+          view: 'Account',
+          goBack: false
+        })
+
         // Implement solana
         ConnectionController.sendTransaction({
           chainNamespace: 'solana',

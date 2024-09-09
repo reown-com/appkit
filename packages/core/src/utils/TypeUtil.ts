@@ -813,11 +813,16 @@ export type SendTransactionArgs =
     }
   | { chainNamespace: 'solana'; to: string; value: number }
 
-export interface EstimateGasTransactionArgs {
-  address: `0x${string}`
-  to: `0x${string}`
-  data: `0x${string}`
-}
+export type EstimateGasTransactionArgs =
+  | {
+      chainNamespace?: undefined | 'eip155'
+      address: `0x${string}`
+      to: `0x${string}`
+      data: `0x${string}`
+    }
+  | {
+      chainNamespace: 'solana'
+    }
 
 export interface WriteContractArgs {
   receiverAddress: `0x${string}`
