@@ -14,7 +14,7 @@ import type { W3mFrameTypes } from '@web3modal/wallet'
 import { ChainController } from './ChainController.js'
 import type { Chain } from '@web3modal/common'
 import { NetworkController } from './NetworkController.js'
-import { proxy, ref } from 'valtio'
+import { proxy, ref } from 'valtio/vanilla'
 
 // -- Types --------------------------------------------- //
 export interface AccountControllerState {
