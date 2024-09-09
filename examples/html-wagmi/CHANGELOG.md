@@ -1,5 +1,22 @@
 # @examples/html-wagmi
 
+## 5.1.7
+
+### Patch Changes
+
+- - fix(deps): update walletconnect to v2.15.2 by @renovate in https://github.com/WalletConnect/web3modal/pull/2722
+  - chore: fix public URL by @chris13524 in https://github.com/WalletConnect/web3modal/pull/2806
+  - fix: RPC requests causing modal to close by @tomiir in https://github.com/WalletConnect/web3modal/pull/2799
+  - chore: use apiVersion v2 on names endpoint by @tomiir in https://github.com/WalletConnect/web3modal/pull/2805
+  - fix: import valtio from vanilla path by @jd1378 in https://github.com/WalletConnect/web3modal/pull/2810
+  - chore: use shared gh token by @tomiir in https://github.com/WalletConnect/web3modal/pull/2809
+  - chore: add input secrets to setup workflow by @tomiir in https://github.com/WalletConnect/web3modal/pull/2822
+  - fix: remove deprecated params from sign transaction wc rpc request by @zoruka in https://github.com/WalletConnect/web3modal/pull/2816
+  - chore: changed android and ios links for react native sample apps by @ignaciosantise in https://github.com/WalletConnect/web3modal/pull/2825
+  - chore: changed order of links by @ignaciosantise in https://github.com/WalletConnect/web3modal/pull/2826
+- Updated dependencies []:
+  - @web3modal/wagmi@5.1.7
+
 ## 5.1.6
 
 ### Patch Changes
