@@ -98,15 +98,18 @@ describe('SolanaWeb3JsClient', () => {
     })
 
     it('should sync network', async () => {
+      const mockAddress = 'DjPi1LtwrXJMAh2AUvuUMajCpMJEKg8N1J1PbLGjCH5B'
       vi.spyOn(mockAppKit, 'getCaipNetwork').mockReturnValue(solana)
-      vi.spyOn(mockAppKit, 'getAddress').mockReturnValue(
-        'DjPi1LtwrXJMAh2AUvuUMajCpMJEKg8N1J1PbLGjCH5B'
+      vi.spyOn(mockAppKit, 'getAddress').mockReturnValue(mockAddress)
+      vi.spyOn(client as any, 'syncBalance')
+
+      await client['syncNetwork']({ address: mockAddress })
+
+      expect(mockAppKit.setAddressExplorerUrl).toHaveBeenCalledWith(
+        `${solana.explorerUrl}/account/${mockAddress}`,
+        'solana'
       )
-
-      await client['syncNetwork']()
-
-      expect(SolStoreUtil.setConnection).toHaveBeenCalled()
-      expect(mockAppKit.setCaipNetwork).toHaveBeenCalledWith(solana)
+      expect(client['syncBalance']).toHaveBeenCalledWith(mockAddress)
     })
   })
 
@@ -120,6 +123,7 @@ describe('SolanaWeb3JsClient', () => {
 
       await client['syncAccount']({ address: mockAddress })
 
+      expect(SolStoreUtil.setConnection).toHaveBeenCalled()
       expect(mockAppKit.setIsConnected).toHaveBeenCalledWith(true, 'solana')
       expect(mockAppKit.setCaipAddress).toHaveBeenCalledWith(
         `solana:${solana.chainId}:${mockAddress}`,

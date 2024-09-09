@@ -9,7 +9,10 @@ if (!projectId) {
 }
 
 // 2. Create Wagmi adapter
-const wagmiAdapter = new EVMWagmiClient()
+const wagmiAdapter = new EVMWagmiClient({
+  caipNetworks: [mainnet, arbitrum],
+  projectId
+})
 
 // 3. Create modal
 const modal = createWeb3Modal({

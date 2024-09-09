@@ -55,7 +55,7 @@ describe('Wagmi Client', () => {
     it('should switch to correct chain', async () => {
       await mockWagmiClient.networkControllerClient?.switchCaipNetwork(arbitrum)
 
-      expect(getChainId(mockWagmiClient.wagmiConfig!)).toBe(arbitrum.chainId)
+      expect(getChainId(mockWagmiClient.wagmiConfig)).toBe(arbitrum.chainId)
     })
 
     it('should sync the correct requested networks', async () => {
@@ -78,8 +78,8 @@ describe('Wagmi Client', () => {
 
       expect(mockWagmiClient.wagmiConfig).toBeDefined()
 
-      await connect(mockWagmiClient.wagmiConfig!, {
-        connector: mockWagmiClient.wagmiConfig!.connectors[0]!
+      await connect(mockWagmiClient.wagmiConfig, {
+        connector: mockWagmiClient.wagmiConfig.connectors[0]!
       })
 
       expect(setApprovedCaipNetworksData).toHaveBeenCalledOnce()
@@ -89,16 +89,16 @@ describe('Wagmi Client', () => {
         `${ConstantsUtil.EIP155}:${mainnet.chainId}:${mockAccount.address}`
       )
 
-      const connectedWagmiAccount = getAccount(mockWagmiClient.wagmiConfig!)
+      const connectedWagmiAccount = getAccount(mockWagmiClient.wagmiConfig)
 
       expect(connectedWagmiAccount.status).toBe('connected')
       expect(connectedWagmiAccount.address).toBe(mockAccount.address)
 
       expect(mockAppKit.getIsConnectedState()).toBe(true)
 
-      await disconnect(mockWagmiClient.wagmiConfig!)
+      await disconnect(mockWagmiClient.wagmiConfig)
 
-      const disconnectedWagmiAccount = getAccount(mockWagmiClient.wagmiConfig!)
+      const disconnectedWagmiAccount = getAccount(mockWagmiClient.wagmiConfig)
 
       expect(disconnectedWagmiAccount.status).toBe('disconnected')
       expect(disconnectedWagmiAccount.address).toBeUndefined()
