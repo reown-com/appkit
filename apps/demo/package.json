@@ -21,7 +21,7 @@
     "tailwind-merge": "2.2.1",
     "vaul": "0.9.0",
     "viem": "2.19.6",
-    "wagmi": "2.12.5",
+    "wagmi": "2.12.8",
     "zustand": "4.5.2"
   },
   "devDependencies": {

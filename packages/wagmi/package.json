@@ -68,7 +68,7 @@
     "react-dom": "18.2.0",
     "viem": "2.19.6",
     "vue": "3.4.3",
-    "wagmi": "2.12.5",
+    "wagmi": "2.12.8",
     "vitest": "2.0.3"
   },
   "peerDependencies": {

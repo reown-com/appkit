@@ -74,7 +74,7 @@
     "rpc-websockets": "7.11.0",
     "valtio": "1.11.2",
     "viem": "2.19.6",
-    "wagmi": "2.12.5",
+    "wagmi": "2.12.8",
     "webauthn-p256": "0.0.2"
   },
   "devDependencies": {
