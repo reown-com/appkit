@@ -1097,19 +1097,8 @@ export class EVMEthersClient implements ChainAdapter<EthersStoreUtilState, numbe
     if (this.authProvider) {
       this.authProvider.onRpcRequest(request => {
         if (W3mFrameHelpers.checkIfRequestExists(request)) {
-          if (!W3mFrameHelpers.checkIfRequestIsAllowed(request)) {
-            if (this.appKit?.isOpen()) {
-              if (this.appKit?.isTransactionStackEmpty()) {
-                return
-              }
-              if (this.appKit?.isTransactionShouldReplaceView()) {
-                this.appKit?.replace('ApproveTransaction')
-              } else {
-                this.appKit?.redirect('ApproveTransaction')
-              }
-            } else {
-              this.appKit?.open({ view: 'ApproveTransaction' })
-            }
+          if (!W3mFrameHelpers.checkIfRequestIsSafe(request)) {
+            this.appKit?.handleUnsafeRPCRequest()
           }
         } else {
           this.appKit?.open()
@@ -1135,7 +1124,12 @@ export class EVMEthersClient implements ChainAdapter<EthersStoreUtilState, numbe
         }
       })
 
-      this.authProvider.onRpcSuccess(() => {
+      this.authProvider.onRpcSuccess((_, request) => {
+        const isSafeRequest = W3mFrameHelpers.checkIfRequestIsSafe(request)
+        if (isSafeRequest) {
+          return
+        }
+
         if (this.appKit?.isTransactionStackEmpty()) {
           this.appKit?.close()
         } else {
@@ -1316,7 +1310,7 @@ export class EVMEthersClient implements ChainAdapter<EthersStoreUtilState, numbe
           chainId,
           name: chain.name
         })
-        if (jsonRpcProvider) {
+        if (jsonRpcProvider && jsonRpcProvider.ready) {
           const balance = await jsonRpcProvider.getBalance(address)
           const formattedBalance = formatEther(balance)
 
