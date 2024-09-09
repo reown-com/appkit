@@ -90,7 +90,7 @@ export class Web3ModalSIWEClient {
   }
 
   async signIn(): Promise<SIWESession> {
-    if(!SIWEController.state._client){
+    if (!SIWEController.state._client) {
       throw new Error('SIWE client needs to be initialized before calling signIn')
     }
 
@@ -100,22 +100,22 @@ export class Web3ModalSIWEClient {
     if (!address) {
       throw new Error('An address is required to create a SIWE message.')
     }
-  
+
     const caipNetwork = ChainController.getNetworkProp('caipNetwork')
-      
-    if(!caipNetwork?.id){
+
+    if (!caipNetwork?.id) {
       throw new Error('A chainId is required to create a SIWE message.')
     }
 
     const chainId = NetworkUtil.caipNetworkIdToNumber(caipNetwork.id)
-    
-    if(!chainId){
+
+    if (!chainId) {
       throw new Error('A chainId is required to create a SIWE message.')
     }
 
     const signOutOnNetworkChange = SIWEController.state._client?.options.signOutOnNetworkChange
     // Sign out if signOutOnNetworkChange is enabled to avoid re-prompting the user for a signature
-    if(signOutOnNetworkChange){
+    if (signOutOnNetworkChange) {
       SIWEController.state._client.options.signOutOnNetworkChange = false
       await this.signOut()
     }
@@ -123,7 +123,7 @@ export class Web3ModalSIWEClient {
     await NetworkController.switchActiveNetwork(caipNetwork)
 
     // Enable the signOutOnNetworkChange option if it was previously enabled
-    if(signOutOnNetworkChange){
+    if (signOutOnNetworkChange) {
       SIWEController.state._client.options.signOutOnNetworkChange = true
     }
 
