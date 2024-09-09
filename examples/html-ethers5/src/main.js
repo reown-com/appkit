@@ -8,10 +8,6 @@ if (!projectId) {
   throw new Error('VITE_PROJECT_ID is not set')
 }
 
-function getBlockchainApiRpcUrl(chainId) {
-  return `https://rpc.walletconnect.org/v1/?chainId=eip155:${chainId}&projectId=${projectId}`
-}
-
 // 2. Create wagmiConfig
 const ethers5Adapter = new EVMEthers5Client()
 

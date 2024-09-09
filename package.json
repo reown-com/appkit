@@ -30,6 +30,7 @@
     "changeset:pre:exit": "changeset pre exit",
     "changeset": "changeset",
     "changeset:version": "changeset version",
+    "changeset:publish": "echo 'publishing...'",
     "publish:latest": "pnpm install; pnpm build; changeset publish",
     "publish:alpha": "pnpm install; pnpm build; changeset publish --tag alpha",
     "publish:beta": "pnpm install; pnpm build; changeset publish --tag beta",

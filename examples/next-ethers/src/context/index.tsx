@@ -1,14 +1,11 @@
 'use client'
 
-import { projectId } from '@/config'
 import { createWeb3Modal } from '@rerock/base/react'
 import { EVMEthersClient } from '@rerock/adapter-ethers'
 import { mainnet, arbitrum, avalanche, base, optimism, polygon } from '@rerock/base/chains'
 import { type ReactNode } from 'react'
 
-if (!projectId) {
-  throw new Error('Project ID is not defined')
-}
+const projectId = 'Your project ID'
 
 const ethersAdapter = new EVMEthersClient()
 
