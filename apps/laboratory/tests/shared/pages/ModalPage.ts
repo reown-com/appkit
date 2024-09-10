@@ -387,7 +387,6 @@ export class ModalPage {
 
     const networkToSwitchButton = this.page.getByTestId(`w3m-network-switch-${networkName}`)
     await networkToSwitchButton.click()
-    await networkToSwitchButton.waitFor({ state: 'hidden' })
   }
 
   async openModal() {
