@@ -21,11 +21,14 @@ if (!projectId) {
 }
 
 // 2. Setup wagmi adapter
-const wagmiConfig = new EVMWagmiClient()
+const wagmiAdapter = new EVMWagmiClient({
+  projectId,
+  caipNetworks: [mainnet, polygon]
+})
 
 // 3. Create modal
 createWeb3Modal({
-  adapters: [wagmiConfig],
+  adapters: [wagmiAdapter],
   caipNetworks: [mainnet, polygon],
   metadata: {
     name: 'AppKit',
@@ -34,7 +37,6 @@ createWeb3Modal({
     icons: []
   },
   projectId,
-  defaultChain: polygon,
   themeMode: 'light',
   themeVariables: {
     '--w3m-color-mix': '#00DCFF',
@@ -50,7 +52,7 @@ export default function App() {
   const events = useWeb3ModalEvents()
 
   return (
-    <WagmiProvider config={wagmiConfig}>
+    <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <w3m-button />
         <w3m-network-button />

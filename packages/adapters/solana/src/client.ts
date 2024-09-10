@@ -34,16 +34,13 @@ import type { Provider } from './utils/SolanaTypesUtil.js'
 import { watchStandard } from './utils/watchStandard.js'
 import { WalletConnectProvider } from './providers/WalletConnectProvider.js'
 import { AuthProvider } from './providers/AuthProvider.js'
-import {
-  W3mFrameHelpers,
-  W3mFrameProvider,
-  W3mFrameRpcConstants,
-  type W3mFrameTypes
-} from '@rerock/wallet'
+import { W3mFrameHelpers, W3mFrameRpcConstants, type W3mFrameTypes } from '@rerock/wallet'
+import { ConstantsUtil as CoreConstantsUtil } from '@rerock/core'
 import { withSolanaNamespace } from './utils/withSolanaNamespace.js'
 import type { AppKit } from '@rerock/base'
 import type { AppKitOptions } from '@rerock/base'
 import { ProviderUtil } from '@rerock/base/store'
+import { W3mFrameProviderSingleton } from '@rerock/base/auth-provider'
 
 export interface AdapterOptions {
   connectionSettings?: Commitment | ConnectionConfig
@@ -334,7 +331,7 @@ export class SolanaWeb3JsClient implements ChainAdapter {
 
   public async switchNetwork(caipNetwork: CaipNetwork) {
     if (this.provider instanceof AuthProvider) {
-      await this.provider.switchNetwork(caipNetwork.chainId)
+      await this.provider.switchNetwork(caipNetwork.id)
     }
 
     this.appKit?.setCaipNetwork(caipNetwork)
@@ -379,10 +376,10 @@ export class SolanaWeb3JsClient implements ChainAdapter {
           : activeCaipNetwork || this.caipNetworks.find(chain => chain.chainNamespace === 'solana')
 
       if (connectionChain) {
-        this.appKit?.setCaipAddress(
-          `solana:${connectionChain.chainId}:${address}`,
-          this.chainNamespace
-        )
+        const caipAddress = `solana:${connectionChain.chainId}:${address}` as CaipAddress
+
+        this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)
+        this.appKit?.setIsConnected(true, this.chainNamespace)
 
         await this.switchNetwork(connectionChain)
 
@@ -519,16 +516,27 @@ export class SolanaWeb3JsClient implements ChainAdapter {
         throw new Error('projectId is required for AuthProvider')
       }
 
-      this.addProvider(
-        new AuthProvider({
-          provider: new W3mFrameProvider(
-            opts.projectId,
-            withSolanaNamespace(this.appKit?.getCaipNetwork(this.chainNamespace)?.chainId)
-          ),
-          getActiveChain: () => this.appKit?.getCaipNetwork(this.chainNamespace),
-          chains: this.caipNetworks
-        })
-      )
+      const emailEnabled =
+        this.options?.features?.email === undefined
+          ? CoreConstantsUtil.DEFAULT_FEATURES.email
+          : this.options?.features?.email
+      const socialsEnabled =
+        this.options?.features?.socials === undefined
+          ? CoreConstantsUtil.DEFAULT_FEATURES.socials
+          : this.options?.features?.socials?.length > 0
+
+      if (emailEnabled || socialsEnabled) {
+        this.addProvider(
+          new AuthProvider({
+            provider: W3mFrameProviderSingleton.getInstance(
+              opts.projectId,
+              withSolanaNamespace(this.appKit?.getCaipNetwork(this.chainNamespace)?.chainId)
+            ),
+            getActiveChain: () => this.appKit?.getCaipNetwork(this.chainNamespace),
+            chains: this.caipNetworks
+          })
+        )
+      }
 
       if (this.appKit && this.caipNetworks[0]) {
         watchStandard(this.appKit, this.caipNetworks[0], standardAdapters =>
