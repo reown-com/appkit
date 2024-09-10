@@ -15,6 +15,15 @@ type SendTransactionArgs = {
   value: number
 }
 
+/**
+ * These constants defines the cost of running the program, allowing to calculate the maximum
+ * amount of SOL that can be sent in case of cleaning the account and remove the rent exemption error.
+ */
+const COMPUTE_BUDGET_CONSTANTS = {
+  UNIT_PRICE_MICRO_LAMPORTS: 20000000,
+  UNIT_LIMIT: 500
+}
+
 export async function createSendTransaction({
   provider,
   to,
@@ -31,8 +40,10 @@ export async function createSendTransaction({
   const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash()
 
   const instructions = [
-    ComputeBudgetProgram.setComputeUnitPrice({ microLamports: 20000000 }),
-    ComputeBudgetProgram.setComputeUnitLimit({ units: 500 }),
+    ComputeBudgetProgram.setComputeUnitPrice({
+      microLamports: COMPUTE_BUDGET_CONSTANTS.UNIT_PRICE_MICRO_LAMPORTS
+    }),
+    ComputeBudgetProgram.setComputeUnitLimit({ units: COMPUTE_BUDGET_CONSTANTS.UNIT_LIMIT }),
     SystemProgram.transfer({
       fromPubkey: provider.publicKey,
       toPubkey,
