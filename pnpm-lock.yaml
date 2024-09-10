@@ -198,9 +198,18 @@ importers:
       '@emotion/styled':
         specifier: 11.11.0
         version: 11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0)
+      '@rerock/adapter-ethers':
+        specifier: workspace:*
+        version: link:../../packages/adapters/ethers
+      '@rerock/adapter-ethers5':
+        specifier: workspace:*
+        version: link:../../packages/adapters/ethers5
       '@rerock/adapter-solana':
         specifier: workspace:*
         version: link:../../packages/adapters/solana
+      '@rerock/adapter-wagmi':
+        specifier: workspace:*
+        version: link:../../packages/adapters/wagmi
       '@rerock/base':
         specifier: workspace:*
         version: link:../../packages/base
