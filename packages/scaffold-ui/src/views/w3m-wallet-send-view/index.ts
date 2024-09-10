@@ -30,6 +30,8 @@ export class W3mWalletSendView extends LitElement {
 
   @state() private gasPriceInUSD = SendController.state.gasPriceInUSD
 
+  @state() private gasPrice = SendController.state.gasPrice
+
   @state() private message:
     | 'Preview Send'
     | 'Select Token'
@@ -70,6 +72,7 @@ export class W3mWalletSendView extends LitElement {
           .token=${this.token}
           .sendTokenAmount=${this.sendTokenAmount}
           .gasPriceInUSD=${this.gasPriceInUSD}
+          .gasPrice=${this.gasPrice}
         ></w3m-input-token>
         <wui-icon-box
           size="inherit"

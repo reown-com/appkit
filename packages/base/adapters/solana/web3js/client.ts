@@ -184,16 +184,29 @@ export class SolanaWeb3JsClient implements ChainAdapter<SolStoreUtilState, CaipN
         return new TextDecoder().decode(signature)
       },
 
-      estimateGas: async () => {
+      estimateGas: async params => {
+        if (params.chainNamespace !== 'solana') {
+          throw new Error('Chain namespace is not supported')
+        }
+
         const connection = SolStoreUtil.state.connection
 
         if (!connection) {
           throw new Error('Connection is not set')
         }
 
-        const recentBlockhash = await connection.getRecentBlockhash()
+        const provider = this.getProvider()
 
-        return BigInt(recentBlockhash.feeCalculator.lamportsPerSignature)
+        const transaction = await createSendTransaction({
+          provider,
+          connection,
+          to: '11111111111111111111111111111111',
+          value: 1
+        })
+
+        const fee = await transaction.getEstimatedFee(connection)
+
+        return BigInt(fee || 0)
       },
       // -- Transaction methods ---------------------------------------------------
       /**
@@ -213,8 +226,9 @@ export class SolanaWeb3JsClient implements ChainAdapter<SolStoreUtilState, CaipN
         }
 
         const connection = SolStoreUtil.state.connection
+        const address = SolStoreUtil.state.address
 
-        if (!connection) {
+        if (!connection || !address) {
           throw new Error('Connection is not set')
         }
 
@@ -228,6 +242,19 @@ export class SolanaWeb3JsClient implements ChainAdapter<SolStoreUtilState, CaipN
         })
 
         const result = await provider.sendTransaction(transaction, connection)
+
+        await new Promise<void>(resolve => {
+          const interval = setInterval(async () => {
+            const status = await connection.getSignatureStatus(result)
+
+            if (status?.value) {
+              clearInterval(interval)
+              resolve()
+            }
+          }, 1000)
+        })
+
+        await this.syncBalance(address)
 
         return result
       },

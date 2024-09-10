@@ -3,7 +3,8 @@ import {
   SystemProgram,
   type Connection,
   Transaction,
-  LAMPORTS_PER_SOL
+  LAMPORTS_PER_SOL,
+  ComputeBudgetProgram
 } from '@solana/web3.js'
 import type { Provider } from '@web3modal/scaffold-utils/solana'
 
@@ -30,6 +31,8 @@ export async function createSendTransaction({
   const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash()
 
   const instructions = [
+    ComputeBudgetProgram.setComputeUnitPrice({ microLamports: 20000000 }),
+    ComputeBudgetProgram.setComputeUnitLimit({ units: 500 }),
     SystemProgram.transfer({
       fromPubkey: provider.publicKey,
       toPubkey,

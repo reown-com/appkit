@@ -160,6 +160,15 @@ export const SendController = {
           to: this.state.receiverAddress,
           value: this.state.sendTokenAmount
         })
+          .then(() => {
+            this.resetSend()
+            AccountController.fetchTokenBalance()
+          })
+          .catch(error => {
+            SnackController.showError('Failed to send transaction. Please try again.')
+            // eslint-disable-next-line no-console
+            console.error('SendController:sendToken - failed to send solana transaction', error)
+          })
 
         return
       default:

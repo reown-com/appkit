@@ -456,7 +456,7 @@ export const SwapController = {
       case 'solana':
         state.gasFee = res.standard
         state.gasPriceInUSD = NumberUtil.multiply(res.standard, state.networkPrice)
-          .dividedBy(10 ** 9)
+          .dividedBy(1e9)
           .toNumber()
 
         return {

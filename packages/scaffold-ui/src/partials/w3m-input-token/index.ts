@@ -17,6 +17,8 @@ export class W3mInputToken extends LitElement {
 
   @property({ type: Number }) public gasPriceInUSD?: number
 
+  @property({ type: Number }) public gasPrice?: number
+
   // -- Render -------------------------------------------- //
   public override render() {
     return html` <wui-flex
@@ -112,19 +114,19 @@ export class W3mInputToken extends LitElement {
   }
 
   private onMaxClick() {
-    if (this.token && this.gasPriceInUSD) {
-      const amountOfTokenGasRequires = NumberUtil.bigNumber(
-        this.gasPriceInUSD.toFixed(5)
-      ).dividedBy(this.token.price)
-
+    if (this.token && typeof this.gasPrice !== 'undefined') {
       const isNetworkToken =
         this.token.address === undefined ||
         Object.values(ConstantsUtil.NATIVE_TOKEN_ADDRESS).some(
           nativeAddress => this.token?.address === nativeAddress
         )
 
+      const numericGas = NumberUtil.bigNumber(this.gasPrice).shiftedBy(
+        -this.token.quantity.decimals
+      )
+
       const maxValue = isNetworkToken
-        ? NumberUtil.bigNumber(this.token.quantity.numeric).minus(amountOfTokenGasRequires)
+        ? NumberUtil.bigNumber(this.token.quantity.numeric).minus(numericGas)
         : NumberUtil.bigNumber(this.token.quantity.numeric)
 
       SendController.setTokenAmount(Number(maxValue.toFixed(20)))
