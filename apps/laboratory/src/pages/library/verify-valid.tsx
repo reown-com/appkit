@@ -32,7 +32,7 @@ const wagmiAdapter = new EVMWagmiClient({
 
 const modal = createWeb3Modal({
   adapters: [wagmiAdapter],
-  caipNetworks: [mainnet],
+  caipNetworks: networks,
   projectId,
   metadata,
   termsConditionsUrl: 'https://walletconnect.com/terms',
