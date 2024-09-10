@@ -1,5 +1,15 @@
 # @web3modal/cdn
 
+## 5.1.7-b13f6b079.2
+
+### Patch Changes
+
+- Remove signOut call on signIn
+- Updated dependencies
+  - @web3modal/ethers5@5.1.7-b13f6b079.2
+  - @web3modal/ethers@5.1.7-b13f6b079.2
+  - @web3modal/wagmi@5.1.7-b13f6b079.2
+
 ## 5.1.7-bb7e41a6f.1
 
 ### Patch Changes

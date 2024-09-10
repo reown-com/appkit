@@ -1,5 +1,18 @@
 # @web3modal/solana
 
+## 5.1.7-b13f6b079.2
+
+### Patch Changes
+
+- Remove signOut call on signIn
+- Updated dependencies
+  - @web3modal/scaffold-utils@5.1.7-b13f6b079.2
+  - @web3modal/polyfills@5.1.7-b13f6b079.2
+  - @web3modal/common@5.1.7-b13f6b079.2
+  - @web3modal/wallet@5.1.7-b13f6b079.2
+  - @web3modal/base@5.1.7-b13f6b079.2
+  - @web3modal/core@5.1.7-b13f6b079.2
+
 ## 5.1.7-bb7e41a6f.1
 
 ### Patch Changes
