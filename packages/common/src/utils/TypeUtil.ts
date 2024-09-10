@@ -110,3 +110,5 @@ type BalanceQuantity = {
   decimals: string
   numeric: string
 }
+
+export type SIWEStatus = 'uninitialized' | 'ready' | 'loading' | 'success' | 'rejected' | 'error'

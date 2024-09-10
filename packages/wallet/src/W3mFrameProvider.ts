@@ -221,7 +221,7 @@ export class W3mFrameProvider {
   // -- Provider Methods ------------------------------------------------
   public async connect(payload?: W3mFrameTypes.Requests['AppGetUserRequest']) {
     try {
-      const chainId = payload?.chainId ?? this.getLastUsedChainId() ?? 1
+      const chainId = payload?.chainId || this.getLastUsedChainId() || 1
       const response = await this.appEvent<'GetUser'>({
         type: W3mFrameConstants.APP_GET_USER,
         payload: { ...payload, chainId }

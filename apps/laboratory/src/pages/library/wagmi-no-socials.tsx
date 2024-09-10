@@ -11,18 +11,21 @@ import { EVMWagmiClient } from '@rerock/adapter-wagmi'
 
 const queryClient = new QueryClient()
 
+const networks = [mainnet, optimism, polygon, zkSync, arbitrum]
+
 const wagmiAdapter = new EVMWagmiClient({
-  ssr: true
+  ssr: true,
+  caipNetworks: networks,
+  projectId: ConstantsUtil.ProjectId
 })
 
 const modal = createWeb3Modal({
   adapters: [wagmiAdapter],
-  caipNetworks: [arbitrum, mainnet, optimism, polygon, zkSync],
+  caipNetworks: networks,
   defaultCaipNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId,
   features: {
     analytics: true,
-    email: true,
     socials: []
   }
 })
@@ -30,10 +33,6 @@ const modal = createWeb3Modal({
 ThemeStore.setModal(modal)
 
 export default function Wagmi() {
-  if (!wagmiAdapter.wagmiConfig) {
-    return null
-  }
-
   return (
     <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={queryClient}>

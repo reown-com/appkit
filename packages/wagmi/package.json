@@ -51,10 +51,9 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@walletconnect/ethereum-provider": "2.16.1",
-    "@rerock/adapter-wagmi": "workspace:*",
     "@walletconnect/utils": "2.16.1",
     "@rerock/polyfills": "workspace:*",
+    "@rerock/adapter-wagmi": "workspace:*",
     "@rerock/base": "workspace:*",
     "@rerock/wallet": "workspace:*",
     "@rerock/common": "workspace:*",

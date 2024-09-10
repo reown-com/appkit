@@ -49,8 +49,6 @@ siweWalletTest('it should require re-authentication when switching networks', as
   await modalPage.promptSiwe()
   await walletPage.handleRequest({ accept: true })
   await modalValidator.expectAuthenticated()
-  await modalValidator.expectAccountPageVisible()
-  await modalPage.closeModal()
 })
 
 siweWalletTest('it should disconnect when cancel siwe from AppKit', async () => {

@@ -7,12 +7,14 @@ export const NetworkUtil = {
 
     if (OptionsController.state.isSiweEnabled) {
       const { SIWEController } = await import('@rerock/siwe')
-      const shouldNotNavigate =
+      const shouldSignOut =
         SIWEController.state._client?.options?.signOutOnNetworkChange && isEIP155Namespace
 
-      if (!shouldNotNavigate) {
-        RouterUtil.navigateAfterNetworkSwitch()
+      if (shouldSignOut) {
+        await SIWEController.signOut()
       }
+
+      RouterUtil.navigateAfterNetworkSwitch()
     } else {
       RouterUtil.navigateAfterNetworkSwitch()
     }

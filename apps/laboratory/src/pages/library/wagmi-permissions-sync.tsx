@@ -12,11 +12,17 @@ import { ERC7715PermissionsProvider } from '../../context/ERC7715PermissionsCont
 
 const queryClient = new QueryClient()
 
-const wagmiAdapter = new EVMWagmiClient()
+const networks = [mainnet, optimism, polygon, zkSync, arbitrum]
+
+const wagmiAdapter = new EVMWagmiClient({
+  ssr: true,
+  caipNetworks: networks,
+  projectId: ConstantsUtil.ProjectId
+})
 
 const modal = createWeb3Modal({
   adapters: [wagmiAdapter],
-  caipNetworks: [arbitrum, mainnet, optimism, polygon, zkSync],
+  caipNetworks: networks,
   defaultCaipNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId,
   features: {
@@ -29,10 +35,6 @@ const modal = createWeb3Modal({
 ThemeStore.setModal(modal)
 
 export default function Wagmi() {
-  if (!wagmiAdapter.wagmiConfig) {
-    return null
-  }
-
   return (
     <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={queryClient}>

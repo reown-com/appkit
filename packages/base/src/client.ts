@@ -242,7 +242,13 @@ export class AppKit {
 
   public getCaipAddress = () => AccountController.state.caipAddress
 
-  public getAddress = () => AccountController.state.address
+  public getAddress = (chainNamespace?: ChainNamespace) => {
+    if (ChainController.state.activeChain === chainNamespace || !chainNamespace) {
+      return AccountController.state.address
+    }
+
+    return ChainController.getAccountProp('address', chainNamespace)
+  }
 
   public getProvider = () => AccountController.state.provider
 
@@ -277,7 +283,15 @@ export class AppKit {
     NetworkController.setActiveCaipNetwork(caipNetwork)
   }
 
-  public getCaipNetwork = () => NetworkController.state.caipNetwork
+  public getCaipNetwork = (chainNamespace?: ChainNamespace) => {
+    if (chainNamespace) {
+      return NetworkController.getRequestedCaipNetworks().filter(
+        c => c.chainNamespace === chainNamespace
+      )?.[0]
+    }
+
+    return NetworkController.state.caipNetwork
+  }
 
   public getActiveChainNamespace = () => ChainController.state.activeChain
 
@@ -380,11 +394,7 @@ export class AppKit {
       }
 
       // Check if we need to replace or redirect
-      if (this.isTransactionShouldReplaceView()) {
-        this.replace('ApproveTransaction')
-      } else {
-        this.redirect('ApproveTransaction')
-      }
+      this.redirect('ApproveTransaction')
     } else {
       // If called from outside the modal, open ApproveTransaction
       this.open({ view: 'ApproveTransaction' })

@@ -14,6 +14,7 @@ import { state } from 'lit/decorators.js'
 import styles from './styles.js'
 import type { SocialProvider } from '@rerock/scaffold-utils'
 import { SocialProviderEnum } from '@rerock/scaffold-utils'
+
 @customElement('w3m-social-login-list')
 export class W3mSocialLoginList extends LitElement {
   public static override styles = styles

@@ -54,7 +54,17 @@ export const mockAppKit = {
     }
   },
   getConnectorImage: vi.fn(),
-  handleUnsafeRPCRequest: vi.fn()
+  handleUnsafeRPCRequest: vi.fn().mockImplementation(() => {
+    if (mockAppKit.isOpen()) {
+      if (mockAppKit.isTransactionStackEmpty()) {
+        return
+      }
+
+      mockAppKit.redirect('ApproveTransaction')
+    } else {
+      mockAppKit.open({ view: 'ApproveTransaction' })
+    }
+  })
 } as unknown as AppKit
 
 export default mockAppKit
