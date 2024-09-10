@@ -13,7 +13,7 @@ import { WalletValidator } from './shared/validators/WalletValidator'
 import { expect } from '@playwright/test'
 
 testMWagmi(
-  'connection and signature requests from non-verified project should show as cannot verify',
+  'wagmi: connection and signature requests from non-verified project should show as cannot verify',
   async ({ modalPage, context }) => {
     if (modalPage.library === 'solana') {
       return
@@ -45,7 +45,7 @@ testMWagmi(
 )
 
 testMWagmiVerifyValid(
-  'connection and signature requests from non-scam verified domain should show as domain match',
+  'wagmi: connection and signature requests from non-scam verified domain should show as domain match',
   async ({ modalPage, context }) => {
     if (modalPage.library === 'solana') {
       return
@@ -77,7 +77,7 @@ testMWagmiVerifyValid(
 )
 
 testMWagmiVerifyDomainMismatch(
-  'connection and signature requests from non-scam verified domain but on localhost should show as invalid domain',
+  'wagmi: connection and signature requests from non-scam verified domain but on localhost should show as invalid domain',
   async ({ modalPage, context }) => {
     if (modalPage.library === 'solana') {
       return
@@ -109,7 +109,7 @@ testMWagmiVerifyDomainMismatch(
 )
 
 testMWagmiVerifyEvil(
-  'connection and signature requests from scam verified domain should show as scam domain',
+  'wagmi: connection and signature requests from scam verified domain should show as scam domain',
   async ({ modalPage, context }) => {
     if (modalPage.library === 'solana') {
       return
@@ -145,7 +145,7 @@ testMWagmiVerifyEvil(
 )
 
 testMEthers(
-  'connection and signature requests from non-verified project should show as cannot verify',
+  'ethers: connection and signature requests from non-verified project should show as cannot verify',
   async ({ modalPage, context }) => {
     if (modalPage.library === 'solana') {
       return
@@ -177,7 +177,7 @@ testMEthers(
 )
 
 testMEthersVerifyValid(
-  'connection and signature requests from non-scam verified domain should show as domain match',
+  'ethers: connection and signature requests from non-scam verified domain should show as domain match',
   async ({ modalPage, context }) => {
     if (modalPage.library === 'solana') {
       return
@@ -209,7 +209,7 @@ testMEthersVerifyValid(
 )
 
 testMEthersVerifyDomainMismatch(
-  'connection and signature requests from non-scam verified domain but on localhost should show as invalid domain',
+  'ethers: connection and signature requests from non-scam verified domain but on localhost should show as invalid domain',
   async ({ modalPage, context }) => {
     if (modalPage.library === 'solana') {
       return
@@ -241,7 +241,7 @@ testMEthersVerifyDomainMismatch(
 )
 
 testMEthersVerifyEvil(
-  'connection and signature requests from scam verified domain should show as scam domain',
+  'ethers: connection and signature requests from scam verified domain should show as scam domain',
   async ({ modalPage, context }) => {
     if (modalPage.library === 'solana') {
       return
