@@ -12,7 +12,7 @@ import { ERC7715PermissionsProvider } from '../../context/ERC7715PermissionsCont
 
 const queryClient = new QueryClient()
 
-const networks = [mainnet, optimism, polygon, zkSync, arbitrum]
+const networks = [mainnet, optimism, polygon, zkSync, arbitrum, sepolia]
 
 const wagmiAdapter = new EVMWagmiClient({
   ssr: true,

@@ -13,7 +13,7 @@ import { externalTestConnector } from '../../utils/ConnectorUtil'
 const queryClient = new QueryClient()
 
 const connectors = [externalTestConnector()]
-const networks = [mainnet, optimism, polygon, zkSync, arbitrum]
+const networks = [mainnet, optimism, polygon, zkSync, arbitrum, sepolia]
 
 const wagmiAdapter = new EVMWagmiClient({
   ssr: true,

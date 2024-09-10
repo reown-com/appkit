@@ -12,7 +12,7 @@ import { LocalEcdsaKeyProvider } from '../../context/LocalEcdsaKeyContext'
 
 const queryClient = new QueryClient()
 
-const networks = [mainnet, optimism, polygon, zkSync, arbitrum]
+const networks = [mainnet, optimism, polygon, zkSync, arbitrum, sepolia]
 
 const wagmiAdapter = new EVMWagmiClient({
   ssr: true,

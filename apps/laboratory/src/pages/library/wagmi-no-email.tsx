@@ -11,7 +11,7 @@ import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@rerock/b
 
 const queryClient = new QueryClient()
 
-const networks = [mainnet, optimism, polygon, zkSync, arbitrum]
+const networks = [mainnet, optimism, polygon, zkSync, arbitrum, sepolia]
 
 const wagmiAdapter = new EVMWagmiClient({
   ssr: true,

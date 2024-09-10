@@ -22,7 +22,7 @@ const projectId = 'e4eae1aad4503db9966a04fd045a7e4d'
 
 const queryClient = new QueryClient()
 
-const networks = [mainnet, optimism, polygon, zkSync, arbitrum]
+const networks = [mainnet, optimism, polygon, zkSync, arbitrum, sepolia]
 
 const wagmiAdapter = new EVMWagmiClient({
   ssr: true,

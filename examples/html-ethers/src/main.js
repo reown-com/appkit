@@ -14,7 +14,7 @@ const ethersAdapter = new EVMEthersClient()
 // Instantiate AppKit
 const modal = createWeb3Modal({
   adapters: [ethersAdapter],
-  caipNetworks: [mainnet, optimism, polygon, zkSync, arbitrum],
+  caipNetworks: [mainnet, optimism, polygon, zkSync, arbitrum, sepolia],
   projectId
 })
 

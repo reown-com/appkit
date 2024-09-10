@@ -11,7 +11,7 @@ const ethersAdapter = new EVMEthersClient()
 
 const modal = createWeb3Modal({
   adapters: [ethersAdapter],
-  caipNetworks: [mainnet, optimism, polygon, zkSync, arbitrum],
+  caipNetworks: [mainnet, optimism, polygon, zkSync, arbitrum, sepolia],
   projectId: ConstantsUtil.ProjectId,
   features: {
     analytics: true

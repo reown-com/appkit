@@ -16,7 +16,8 @@ import {
   solanaTestnet,
   solanaDevnet,
   optimism,
-  zkSync
+  zkSync,
+  sepolia
 } from '@rerock/base/chains'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
@@ -26,7 +27,7 @@ import { siweConfig } from '../../utils/SiweUtils'
 
 const queryClient = new QueryClient()
 
-const networks = [mainnet, optimism, polygon, zkSync, arbitrum]
+const networks = [mainnet, optimism, polygon, zkSync, arbitrum, sepolia]
 
 const wagmiAdapter = new EVMWagmiClient({
   ssr: true,
