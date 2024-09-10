@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/wagmi",
-  "version": "5.1.6",
+  "version": "5.1.7",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -52,8 +52,8 @@
     "test": "vitest run --dir tests"
   },
   "dependencies": {
-    "@walletconnect/ethereum-provider": "2.15.2",
-    "@walletconnect/utils": "2.15.2",
+    "@walletconnect/ethereum-provider": "2.16.1",
+    "@walletconnect/utils": "2.16.1",
     "@web3modal/polyfills": "workspace:*",
     "@web3modal/base": "workspace:*",
     "@web3modal/wallet": "workspace:*",
@@ -62,13 +62,13 @@
     "@web3modal/siwe": "workspace:*"
   },
   "devDependencies": {
-    "@wagmi/connectors": "5.1.5",
+    "@wagmi/connectors": "5.1.9",
     "@wagmi/core": "2.13.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "viem": "2.19.6",
+    "viem": "2.21.4",
     "vue": "3.4.3",
-    "wagmi": "2.12.5",
+    "wagmi": "2.12.9",
     "vitest": "2.0.3"
   },
   "peerDependencies": {
