@@ -26,6 +26,7 @@ import type {
   CaipAddress,
   CaipNetwork,
   CaipNetworkId,
+  ChainAdapter,
   ConnectionControllerClient,
   Connector,
   NetworkControllerClient,
@@ -54,6 +55,7 @@ import type { W3mFrameTypes } from '@web3modal/wallet'
 import { W3mFrameHelpers, W3mFrameProvider, W3mFrameRpcConstants } from '@web3modal/wallet'
 import type { Eip1193Provider } from 'ethers'
 import type { AppKit } from '../../../src/client.js'
+import { SafeLocalStorage } from '../../../utils/SafeLocalStorage.js'
 import type { AppKitOptions } from '../../../utils/TypesUtil.js'
 
 // -- Types ---------------------------------------------------------------------
@@ -100,7 +102,8 @@ interface ExternalProvider extends EthereumProvider {
 }
 
 // -- Client --------------------------------------------------------------------
-export class EVMEthersClient {
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-arguments
+export class EVMEthersClient implements ChainAdapter<EthersStoreUtilState, number> {
   // -- Private variables -------------------------------------------------------
   private appKit: AppKit | undefined = undefined
 
@@ -148,10 +151,7 @@ export class EVMEthersClient {
     this.ethersConfig = ethersConfig
     this.siweControllerClient = this.options?.siweConfig
     this.tokens = HelpersUtil.getCaipTokens(options.tokens)
-    this.defaultChain = {
-      ...EthersHelpersUtil.getCaipDefaultChain(defaultChain),
-      chain: CommonConstantsUtil.CHAIN.EVM
-    } as CaipNetwork
+    this.defaultChain = EthersHelpersUtil.getCaipDefaultChain(defaultChain)
     this.chains = chains
 
     this.networkControllerClient = {
@@ -170,7 +170,7 @@ export class EVMEthersClient {
 
       getApprovedCaipNetworksData: async () =>
         new Promise(async resolve => {
-          const walletChoice = localStorage.getItem(EthersConstantsUtil.WALLET_ID)
+          const walletChoice = SafeLocalStorage.getItem(EthersConstantsUtil.WALLET_ID)
           if (walletChoice?.includes(ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID)) {
             const provider = await this.getWalletConnectProvider()
             if (!provider) {
@@ -357,7 +357,7 @@ export class EVMEthersClient {
       disconnect: async () => {
         const provider = EthersStoreUtil.state.provider
         const providerType = EthersStoreUtil.state.providerType
-        localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
+        SafeLocalStorage.removeItem(EthersConstantsUtil.WALLET_ID)
         EthersStoreUtil.reset()
         this.appKit?.setClientId(null)
         if (siweConfig?.options?.signOutOnDisconnect) {
@@ -384,7 +384,7 @@ export class EVMEthersClient {
         }
 
         provider?.emit?.('disconnect')
-        localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
+        SafeLocalStorage.removeItem(EthersConstantsUtil.WALLET_ID)
         EthersStoreUtil.reset()
       },
 
@@ -538,6 +538,10 @@ export class EVMEthersClient {
     this.projectId = options.projectId
     this.metadata = this.ethersConfig.metadata
 
+    if (this.defaultChain) {
+      this.appKit?.setCaipNetwork(this.defaultChain)
+    }
+
     this.createProvider()
 
     EthersStoreUtil.subscribeKey('address', () => {
@@ -625,7 +629,7 @@ export class EVMEthersClient {
     return EthersStoreUtil.state.error
   }
 
-  public getChainId() {
+  public getChainId(): string | number | undefined {
     const storeChainId = EthersStoreUtil.state.chainId
     const networkControllerChainId = NetworkUtil.caipNetworkIdToNumber(
       this.appKit?.getCaipNetwork()?.id
@@ -657,7 +661,7 @@ export class EVMEthersClient {
   public async disconnect() {
     const { provider, providerType } = EthersStoreUtil.state
 
-    localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
+    SafeLocalStorage.removeItem(EthersConstantsUtil.WALLET_ID)
     EthersStoreUtil.reset()
     this.appKit?.setClientId(null)
 
@@ -768,7 +772,7 @@ export class EVMEthersClient {
 
   private async checkActiveWalletConnectProvider() {
     const WalletConnectProvider = await this.getWalletConnectProvider()
-    const walletId = localStorage.getItem(EthersConstantsUtil.WALLET_ID)
+    const walletId = SafeLocalStorage.getItem(EthersConstantsUtil.WALLET_ID)
 
     if (WalletConnectProvider) {
       if (walletId === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
@@ -782,7 +786,7 @@ export class EVMEthersClient {
 
   private checkActiveInjectedProvider(config: ProviderType) {
     const InjectedProvider = config.injected
-    const walletId = localStorage.getItem(EthersConstantsUtil.WALLET_ID)
+    const walletId = SafeLocalStorage.getItem(EthersConstantsUtil.WALLET_ID)
 
     if (InjectedProvider) {
       if (walletId === ConstantsUtil.INJECTED_CONNECTOR_ID) {
@@ -794,7 +798,7 @@ export class EVMEthersClient {
 
   private checkActiveCoinbaseProvider(config: ProviderType) {
     const CoinbaseProvider = config.coinbase as unknown as ExternalProvider
-    const walletId = localStorage.getItem(EthersConstantsUtil.WALLET_ID)
+    const walletId = SafeLocalStorage.getItem(EthersConstantsUtil.WALLET_ID)
 
     if (CoinbaseProvider) {
       if (walletId === ConstantsUtil.COINBASE_SDK_CONNECTOR_ID) {
@@ -802,7 +806,7 @@ export class EVMEthersClient {
           this.setCoinbaseProvider(config)
           this.watchCoinbase(config)
         } else {
-          localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
+          SafeLocalStorage.removeItem(EthersConstantsUtil.WALLET_ID)
           EthersStoreUtil.reset()
         }
       }
@@ -810,7 +814,7 @@ export class EVMEthersClient {
   }
 
   private checkActive6963Provider() {
-    const currentActiveWallet = window?.localStorage.getItem(EthersConstantsUtil.WALLET_ID)
+    const currentActiveWallet = SafeLocalStorage.getItem(EthersConstantsUtil.WALLET_ID)
     if (currentActiveWallet) {
       const currentProvider = this.EIP6963Providers.find(
         provider => provider.info.name === currentActiveWallet
@@ -822,7 +826,7 @@ export class EVMEthersClient {
   }
 
   private async setWalletConnectProvider() {
-    window?.localStorage.setItem(
+    SafeLocalStorage.setItem(
       EthersConstantsUtil.WALLET_ID,
       ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID
     )
@@ -851,7 +855,7 @@ export class EVMEthersClient {
   }
 
   private async setInjectedProvider(config: ProviderType) {
-    window?.localStorage.setItem(EthersConstantsUtil.WALLET_ID, ConstantsUtil.INJECTED_CONNECTOR_ID)
+    SafeLocalStorage.setItem(EthersConstantsUtil.WALLET_ID, ConstantsUtil.INJECTED_CONNECTOR_ID)
     const InjectedProvider = config.injected
 
     if (InjectedProvider) {
@@ -873,7 +877,7 @@ export class EVMEthersClient {
   }
 
   private async setEIP6963Provider(provider: Provider, name: string) {
-    window?.localStorage.setItem(EthersConstantsUtil.WALLET_ID, name)
+    SafeLocalStorage.setItem(EthersConstantsUtil.WALLET_ID, name)
 
     if (provider) {
       const { addresses, chainId } = await EthersHelpersUtil.getUserInfo(provider)
@@ -894,10 +898,7 @@ export class EVMEthersClient {
   }
 
   private async setCoinbaseProvider(config: ProviderType) {
-    window?.localStorage.setItem(
-      EthersConstantsUtil.WALLET_ID,
-      ConstantsUtil.COINBASE_SDK_CONNECTOR_ID
-    )
+    SafeLocalStorage.setItem(EthersConstantsUtil.WALLET_ID, ConstantsUtil.COINBASE_SDK_CONNECTOR_ID)
     const CoinbaseProvider = config.coinbase
     if (CoinbaseProvider) {
       const { addresses, chainId } = await EthersHelpersUtil.getUserInfo(CoinbaseProvider)
@@ -918,7 +919,7 @@ export class EVMEthersClient {
   }
 
   private async setAuthProvider() {
-    window?.localStorage.setItem(EthersConstantsUtil.WALLET_ID, ConstantsUtil.AUTH_CONNECTOR_ID)
+    SafeLocalStorage.setItem(EthersConstantsUtil.WALLET_ID, ConstantsUtil.AUTH_CONNECTOR_ID)
 
     if (this.authProvider) {
       this.appKit?.setLoading(true)
@@ -961,7 +962,7 @@ export class EVMEthersClient {
     const provider = await this.getWalletConnectProvider()
 
     function disconnectHandler() {
-      localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
+      SafeLocalStorage.removeItem(EthersConstantsUtil.WALLET_ID)
       EthersStoreUtil.reset()
       provider?.removeListener('disconnect', disconnectHandler)
       provider?.removeListener('accountsChanged', accountsChangedHandler)
@@ -992,7 +993,7 @@ export class EVMEthersClient {
     const provider = config.injected
 
     function disconnectHandler() {
-      localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
+      SafeLocalStorage.removeItem(EthersConstantsUtil.WALLET_ID)
       EthersStoreUtil.reset()
 
       provider?.removeListener('disconnect', disconnectHandler)
@@ -1005,7 +1006,7 @@ export class EVMEthersClient {
       if (currentAccount) {
         EthersStoreUtil.setAddress(getOriginalAddress(currentAccount) as Address)
       } else {
-        localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
+        SafeLocalStorage.removeItem(EthersConstantsUtil.WALLET_ID)
         EthersStoreUtil.reset()
       }
     }
@@ -1029,7 +1030,7 @@ export class EVMEthersClient {
 
   private watchEIP6963(provider: Provider) {
     function disconnectHandler() {
-      localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
+      SafeLocalStorage.removeItem(EthersConstantsUtil.WALLET_ID)
       EthersStoreUtil.reset()
       provider.removeListener('disconnect', disconnectHandler)
       provider.removeListener('accountsChanged', accountsChangedHandler)
@@ -1046,7 +1047,7 @@ export class EVMEthersClient {
         )
       } else {
         this.appKit?.setAllAccounts([], this.chain)
-        localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
+        SafeLocalStorage.removeItem(EthersConstantsUtil.WALLET_ID)
         EthersStoreUtil.reset()
       }
     }
@@ -1070,9 +1071,9 @@ export class EVMEthersClient {
 
   private watchCoinbase(config: ProviderType) {
     const provider = config.coinbase
-    const walletId = localStorage.getItem(EthersConstantsUtil.WALLET_ID)
+    const walletId = SafeLocalStorage.getItem(EthersConstantsUtil.WALLET_ID)
     function disconnectHandler() {
-      localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
+      SafeLocalStorage.removeItem(EthersConstantsUtil.WALLET_ID)
       EthersStoreUtil.reset()
 
       provider?.removeListener('disconnect', disconnectHandler)
@@ -1085,7 +1086,7 @@ export class EVMEthersClient {
       if (currentAccount) {
         EthersStoreUtil.setAddress(getOriginalAddress(currentAccount) as Address)
       } else {
-        localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
+        SafeLocalStorage.removeItem(EthersConstantsUtil.WALLET_ID)
         EthersStoreUtil.reset()
       }
     }
@@ -1108,19 +1109,8 @@ export class EVMEthersClient {
     if (this.authProvider) {
       this.authProvider.onRpcRequest(request => {
         if (W3mFrameHelpers.checkIfRequestExists(request)) {
-          if (!W3mFrameHelpers.checkIfRequestIsAllowed(request)) {
-            if (this.appKit?.isOpen()) {
-              if (this.appKit?.isTransactionStackEmpty()) {
-                return
-              }
-              if (this.appKit?.isTransactionShouldReplaceView()) {
-                this.appKit?.replace('ApproveTransaction')
-              } else {
-                this.appKit?.redirect('ApproveTransaction')
-              }
-            } else {
-              this.appKit?.open({ view: 'ApproveTransaction' })
-            }
+          if (!W3mFrameHelpers.checkIfRequestIsSafe(request)) {
+            this.appKit?.handleUnsafeRPCRequest()
           }
         } else {
           this.appKit?.open()
@@ -1146,7 +1136,12 @@ export class EVMEthersClient {
         }
       })
 
-      this.authProvider.onRpcSuccess(() => {
+      this.authProvider.onRpcSuccess((_, request) => {
+        const isSafeRequest = W3mFrameHelpers.checkIfRequestIsSafe(request)
+        if (isSafeRequest) {
+          return
+        }
+
         if (this.appKit?.isTransactionStackEmpty()) {
           this.appKit?.close()
         } else {
@@ -1327,7 +1322,7 @@ export class EVMEthersClient {
           chainId,
           name: chain.name
         })
-        if (jsonRpcProvider) {
+        if (jsonRpcProvider && jsonRpcProvider.ready) {
           const balance = await jsonRpcProvider.getBalance(address)
           const formattedBalance = formatEther(balance)
 
@@ -1338,7 +1333,7 @@ export class EVMEthersClient {
   }
 
   private syncConnectedWalletInfo() {
-    const currentActiveWallet = window?.localStorage.getItem(EthersConstantsUtil.WALLET_ID)
+    const currentActiveWallet = SafeLocalStorage.getItem(EthersConstantsUtil.WALLET_ID)
     const providerType = EthersStoreUtil.state.providerType
 
     if (providerType === ConstantsUtil.EIP6963_CONNECTOR_ID) {
@@ -1584,15 +1579,8 @@ export class EVMEthersClient {
       const { info, provider } = event.detail
       const connectors = this.appKit?.getConnectors()
       const existingConnector = connectors?.find(c => c.name === info.name)
-      const coinbaseConnector = connectors?.find(
-        c => c.id === ConstantsUtil.COINBASE_SDK_CONNECTOR_ID
-      )
-      const isCoinbaseDuplicated =
-        coinbaseConnector &&
-        event.detail.info.rdns ===
-          ConstantsUtil.CONNECTOR_RDNS_MAP[ConstantsUtil.COINBASE_SDK_CONNECTOR_ID]
 
-      if (!existingConnector && !isCoinbaseDuplicated) {
+      if (!existingConnector) {
         const type = PresetsUtil.ConnectorTypesMap[ConstantsUtil.EIP6963_CONNECTOR_ID]
         if (type) {
           this.appKit?.addConnector({

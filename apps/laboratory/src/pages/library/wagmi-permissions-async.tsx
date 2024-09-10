@@ -5,10 +5,11 @@ import { AppKitButtons } from '../../components/AppKitButtons'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { getWagmiConfig } from '../../utils/WagmiConstants'
-import { WagmiPermissionsAsyncProvider } from '../../context/WagmiPermissionsAsyncContext'
+import { ERC7715PermissionsProvider } from '../../context/ERC7715PermissionsContext'
 import { walletConnect } from '@wagmi/connectors'
 import { OPTIONAL_METHODS } from '@walletconnect/ethereum-provider'
 import { WagmiPermissionsAsyncTest } from '../../components/Wagmi/WagmiPermissionsAsyncTest'
+import { LocalEcdsaKeyProvider } from '../../context/LocalEcdsaKeyContext'
 
 const queryClient = new QueryClient()
 const connectors = [
@@ -36,10 +37,12 @@ export default function Wagmi() {
   return (
     <WagmiProvider config={wagmiEmailConfig}>
       <QueryClientProvider client={queryClient}>
-        <WagmiPermissionsAsyncProvider>
-          <AppKitButtons />
-          <WagmiPermissionsAsyncTest />
-        </WagmiPermissionsAsyncProvider>
+        <ERC7715PermissionsProvider>
+          <LocalEcdsaKeyProvider>
+            <AppKitButtons />
+            <WagmiPermissionsAsyncTest />
+          </LocalEcdsaKeyProvider>
+        </ERC7715PermissionsProvider>
       </QueryClientProvider>
     </WagmiProvider>
   )

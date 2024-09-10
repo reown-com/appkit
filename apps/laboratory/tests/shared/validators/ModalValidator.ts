@@ -102,6 +102,16 @@ export class ModalValidator {
     expect(secureSiteIframe).toBeNull()
   }
 
+  async expectNoSocials() {
+    const socialList = this.page.getByTestId('wui-list-social')
+    await expect(socialList).toBeHidden()
+  }
+
+  async expectEmailLogin() {
+    const emailInput = this.page.getByTestId('wui-email-input')
+    await expect(emailInput).toBeVisible()
+  }
+
   async expectValidSignature(signature: `0x${string}`, address: `0x${string}`, chainId: number) {
     const isVerified = await verifySignature({
       address,

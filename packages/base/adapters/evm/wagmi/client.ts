@@ -31,15 +31,14 @@ import {
 } from '@web3modal/common'
 import type {
   CaipAddress,
-  CaipNetwork,
-  ConnectionControllerClient,
+  CaipNetwork, ChainAdapter, ConnectionControllerClient,
   Connector,
   NetworkControllerClient,
   OptionsControllerState,
   PublicStateControllerState,
   SendTransactionArgs,
   SocialProvider,
-  WriteContractArgs
+  WriteContractArgs,
 } from '@web3modal/core'
 import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@web3modal/scaffold-utils'
 import type { W3mFrameProvider, W3mFrameTypes } from '@web3modal/wallet'
@@ -70,7 +69,7 @@ interface Web3ModalState extends PublicStateControllerState {
 }
 
 // -- Client --------------------------------------------------------------------
-export class EVMWagmiClient {
+export class EVMWagmiClient implements ChainAdapter {
   // -- Private variables -------------------------------------------------------
   private appKit: AppKit | undefined = undefined
 
@@ -261,16 +260,6 @@ export class EVMWagmiClient {
         const chainId = NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id)
 
         await connect(this.wagmiConfig, { connector, chainId })
-      },
-
-      reconnectExternal: async ({ id }) => {
-        const connector = this.wagmiConfig.connectors.find(c => c.id === id)
-
-        if (!connector) {
-          throw new Error('connectionControllerClient:connectExternal - connector is undefined')
-        }
-
-        await reconnect(this.wagmiConfig, { connectors: [connector] })
       },
 
       checkInstalled: ids => {
@@ -494,10 +483,10 @@ export class EVMWagmiClient {
     >
   >) {
     const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`
-
     if (this.appKit?.getCaipAddress() === caipAddress) {
       return
     }
+
     if (status === 'connected' && address && chainId) {
       this.syncNetwork(address, chainId, true)
       this.appKit?.setIsConnected(true, this.chain)
@@ -575,6 +564,7 @@ export class EVMWagmiClient {
       this.appKit?.setProfileName(null, this.chain)
     }
   }
+
   private async syncProfile(address: Hex, chainId: Chain['id']) {
     if (!this.appKit) {
       throw new Error('syncProfile - appKit is undefined')
@@ -667,17 +657,9 @@ export class EVMWagmiClient {
 
     const w3mConnectors: Connector[] = []
 
-    const coinbaseSDKId = ConstantsUtil.COINBASE_SDK_CONNECTOR_ID
-
-    // Check if coinbase injected connector is present
-    const coinbaseConnector = filteredConnectors.find(c => c.id === coinbaseSDKId)
-
     filteredConnectors.forEach(({ id, name, type, icon }) => {
-      // If coinbase injected connector is present, skip coinbase sdk connector.
-      const isCoinbaseRepeated =
-        coinbaseConnector &&
-        id === ConstantsUtil.CONNECTOR_RDNS_MAP[ConstantsUtil.COINBASE_CONNECTOR_ID]
-      const shouldSkip = isCoinbaseRepeated || ConstantsUtil.AUTH_CONNECTOR_ID === id
+      // Auth connector is initialized separately
+      const shouldSkip = ConstantsUtil.AUTH_CONNECTOR_ID === id
       if (!shouldSkip) {
         w3mConnectors.push({
           id,
@@ -749,19 +731,8 @@ export class EVMWagmiClient {
 
       provider.onRpcRequest((request: W3mFrameTypes.RPCRequest) => {
         if (W3mFrameHelpers.checkIfRequestExists(request)) {
-          if (!W3mFrameHelpers.checkIfRequestIsAllowed(request)) {
-            if (this.appKit?.isOpen()) {
-              if (this.appKit?.isTransactionStackEmpty()) {
-                return
-              }
-              if (this.appKit?.isTransactionShouldReplaceView()) {
-                this.appKit?.replace('ApproveTransaction')
-              } else {
-                this.appKit?.redirect('ApproveTransaction')
-              }
-            } else {
-              this.appKit?.open({ view: 'ApproveTransaction' })
-            }
+          if (!W3mFrameHelpers.checkIfRequestIsSafe(request)) {
+            this.appKit?.handleUnsafeRPCRequest()
           }
         } else {
           this.appKit?.open()
@@ -788,7 +759,12 @@ export class EVMWagmiClient {
         }
       })
 
-      provider.onRpcSuccess(() => {
+      provider.onRpcSuccess((_, request) => {
+        const isSafeRequest = W3mFrameHelpers.checkIfRequestIsSafe(request)
+        if (isSafeRequest) {
+          return
+        }
+
         if (this.appKit?.isTransactionStackEmpty()) {
           this.appKit?.close()
         } else {
@@ -832,12 +808,7 @@ export class EVMWagmiClient {
           return
         }
         this.appKit?.setPreferredAccountType(type as W3mFrameTypes.AccountType, this.chain)
-        this.syncAccount({
-          address: address as `0x${string}`,
-          isConnected: true,
-          chainId: NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id),
-          connector
-        })
+        reconnect(this.wagmiConfig, { connectors: [connector] })
       })
     }
   }

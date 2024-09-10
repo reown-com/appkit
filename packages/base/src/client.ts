@@ -40,14 +40,22 @@ export interface OpenOptions {
 let isInitialized = false
 
 // -- Client --------------------------------------------------------------------
-export class AppKit {
+export class AppKit<AdapterStoreState = unknown, SwitchNetworkParam = unknown> {
   private static instance?: AppKit
 
-  public adapters?: ChainAdapter[]
+  public adapter?: ChainAdapter<AdapterStoreState, SwitchNetworkParam>
+
+  public adapters?: ChainAdapter<AdapterStoreState, SwitchNetworkParam>[]
 
   private initPromise?: Promise<void> = undefined
 
-  public constructor(options: AppKitOptions) {
+  public constructor(
+    options: AppKitOptions & {
+      adapters?: ChainAdapter<AdapterStoreState, SwitchNetworkParam>[]
+    }
+  ) {
+    // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
+    this.adapter = options.adapters?.[0] as ChainAdapter<AdapterStoreState, SwitchNetworkParam>
     this.initControllers(options)
     this.initOrContinue()
   }
@@ -69,6 +77,39 @@ export class AppKit {
 
   public setLoading(loading: ModalControllerState['loading']) {
     ModalController.setLoading(loading)
+  }
+
+  // -- Adapter Methods ----------------------------------------------------------
+  public getError() {
+    return this.adapter?.getError?.()
+  }
+
+  public getChainId() {
+    return this.adapter?.getChainId?.()
+  }
+
+  public getAddress() {
+    return this.adapter?.getAddress?.()
+  }
+
+  public switchNetwork(chainId: SwitchNetworkParam) {
+    return this.adapter?.switchNetwork?.(chainId)
+  }
+
+  public getIsConnected() {
+    return this.adapter?.getIsConnected?.()
+  }
+
+  public getWalletProvider() {
+    return this.adapter?.getWalletProvider?.()
+  }
+
+  public getWalletProviderType() {
+    return this.adapter?.getWalletProviderType?.()
+  }
+
+  public subscribeProvider(callback: (newState: AdapterStoreState) => void) {
+    return this.adapter?.subscribeProvider?.(callback)
   }
 
   public getThemeMode() {
@@ -306,8 +347,31 @@ export class AppKit {
   public getConnectorImage: (typeof AssetUtil)['getConnectorImage'] = connector =>
     AssetUtil.getConnectorImage(connector)
 
+  public handleUnsafeRPCRequest = () => {
+    if (this.isOpen()) {
+      // If we are on the modal but there is no transaction stack, close the modal
+      if (this.isTransactionStackEmpty()) {
+        return
+      }
+
+      // Check if we need to replace or redirect
+      if (this.isTransactionShouldReplaceView()) {
+        this.replace('ApproveTransaction')
+      } else {
+        this.redirect('ApproveTransaction')
+      }
+    } else {
+      // If called from outside the modal, open ApproveTransaction
+      this.open({ view: 'ApproveTransaction' })
+    }
+  }
+
   // -- Private ------------------------------------------------------------------
-  private async initControllers(options: AppKitOptions) {
+  private async initControllers(
+    options: AppKitOptions & {
+      adapters?: ChainAdapter<AdapterStoreState, SwitchNetworkParam>[]
+    }
+  ) {
     OptionsController.setProjectId(options.projectId)
     OptionsController.setSdkVersion(options.sdkVersion)
     ChainController.initialize(options.adapters || [])

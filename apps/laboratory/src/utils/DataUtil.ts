@@ -46,6 +46,11 @@ export const wagmiSdkOptions = [
     description: 'Configuration using wagmi without email'
   },
   {
+    title: 'Without Socials',
+    link: '/library/wagmi-no-socials/',
+    description: 'Configuration using wagmi without socials'
+  },
+  {
     title: 'Permissions(Sync)',
     link: '/library/wagmi-permissions-sync/',
     description: 'Configuration using wagmi and implementing ERC-7715 with passkey'
@@ -78,6 +83,11 @@ export const ethersSdkOptions = [
     title: 'Without Email',
     link: '/library/ethers-no-email/',
     description: 'Configuration using ethers without email'
+  },
+  {
+    title: 'Without Socials',
+    link: '/library/ethers-no-socials/',
+    description: 'Configuration using ethers without socials'
   }
 ]
 
@@ -91,6 +101,11 @@ export const ethers5SdkOptions = [
     title: 'SIWE',
     link: '/library/ethers5-siwe/',
     description: 'Configuration using ethers and implementing sign in with ethereum'
+  },
+  {
+    title: 'Without Socials',
+    link: '/library/ethers5-no-socials/',
+    description: 'Configuration using ethers without socials'
   }
 ]
 
@@ -104,5 +119,10 @@ export const solanaSdkOptions = [
     title: 'Without Email',
     link: '/library/solana-no-email/',
     description: 'Configuration using solana without email'
+  },
+  {
+    title: 'Without Socials',
+    link: '/library/solana-no-socials/',
+    description: 'Configuration using ethers without socials'
   }
 ]

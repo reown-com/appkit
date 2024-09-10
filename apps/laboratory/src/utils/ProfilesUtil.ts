@@ -17,7 +17,7 @@ import { disconnect, type Config } from '@wagmi/core'
 import { ProfileStore } from './ProfileStoreUtil'
 const queryParams = `projectId=24970167f11c121f6eb40b558edb9691&st=w3m&sv=5.0.0`
 
-const devProfileApiUrl = 'http://localhost:8787'
+const devProfileApiUrl = 'https://staging-p-api.walletconnect.com'
 
 export async function addCurrentAccountToProfile() {
   try {
