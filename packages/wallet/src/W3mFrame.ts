@@ -83,6 +83,7 @@ export class W3mFrame {
       'eip155:100',
       'eip155:8453',
       'eip155:84531',
+      'eip155:84532',
       'eip155:7777777',
       'eip155:999',
       'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
