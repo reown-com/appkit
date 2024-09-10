@@ -36,7 +36,6 @@ const braveOptions: UseOptions = {
 
 const SOLANA_DISABLED_TESTS = [
   'canary.spec.ts',
-  'email.spec.ts',
   'siwe.spec.ts',
   'siwe-email.spec.ts',
   'siwe-sa.spec.ts',
@@ -44,7 +43,12 @@ const SOLANA_DISABLED_TESTS = [
   'wallet-features.spec.ts',
   'metamask.spec.ts'
 ]
-const WAGMI_DISABLED_TESTS = ['metamask.spec.ts', 'verify.spec.ts', 'multichain.spec.ts']
+const WAGMI_DISABLED_TESTS = [
+  'metamask.spec.ts',
+  'verify.spec.ts',
+  'multichain.spec.ts',
+  'siwe-email.spec.ts'
+]
 const ETHERS_DISABLED_TESTS = ['metamask.spec.ts', 'verify.spec.ts', 'multichain.spec.ts']
 const ETHERS5_DISABLED_TESTS = ['metamask.spec.ts', 'verify.spec.ts', 'multichain.spec.ts']
 

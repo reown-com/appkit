@@ -40,6 +40,7 @@ import { ethers } from 'ethers5'
 import type { PublicStateControllerState } from '@rerock/core'
 import { ProviderUtil } from '@rerock/base/store'
 import { CoinbaseWalletSDK, type ProviderInterface } from '@coinbase/wallet-sdk'
+import { W3mFrameProviderSingleton } from '@rerock/base/auth-provider'
 
 // -- Types ---------------------------------------------------------------------
 export interface AdapterOptions {
@@ -1072,7 +1073,7 @@ export class EVMEthers5Client {
 
   private async syncAuthConnector(projectId: string, bypassWindowCheck = false) {
     if (bypassWindowCheck || typeof window !== 'undefined') {
-      this.authProvider = new W3mFrameProvider(projectId)
+      this.authProvider = W3mFrameProviderSingleton.getInstance(projectId)
 
       this.appKit?.addConnector({
         id: ConstantsUtil.AUTH_CONNECTOR_ID,

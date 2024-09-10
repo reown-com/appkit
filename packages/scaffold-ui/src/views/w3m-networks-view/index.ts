@@ -3,10 +3,12 @@ import {
   AccountController,
   AssetUtil,
   ChainController,
+  ConnectorController,
   CoreHelperUtil,
   EventsController,
   NetworkController,
-  RouterController
+  RouterController,
+  StorageUtil
 } from '@rerock/core'
 import { customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'
@@ -154,12 +156,16 @@ export class W3mNetworksView extends LitElement {
     const supportsAllNetworks = NetworkController.state.supportsAllNetworks
     const routerData = RouterController.state.data
 
+    const type = StorageUtil.getConnectedConnector()
+    const authConnector = ConnectorController.getAuthConnector()
+    const isConnectedWithAuth = type === 'AUTH' && authConnector
+
     if (isSameNetwork) {
       return
     }
 
     if (isNamespaceConnected) {
-      if (supportsAllNetworks) {
+      if (supportsAllNetworks || isConnectedWithAuth) {
         RouterController.push('SwitchNetwork', { ...routerData, network })
       } else {
         await NetworkController.switchActiveNetwork(network)

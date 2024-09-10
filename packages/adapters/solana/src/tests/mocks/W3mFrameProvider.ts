@@ -1,10 +1,11 @@
-import { W3mFrameProvider, type W3mFrameTypes } from '@rerock/wallet'
+import { type W3mFrameTypes } from '@rerock/wallet'
 import type { AuthProvider } from '../../providers/AuthProvider.js'
 import { vi } from 'vitest'
 import { TestConstants } from '../util/TestConstants.js'
+import { W3mFrameProviderSingleton } from '@rerock/base/auth-provider'
 
 export function mockW3mFrameProvider() {
-  const w3mFrame = new W3mFrameProvider('projectId')
+  const w3mFrame = W3mFrameProviderSingleton.getInstance('projectId')
 
   w3mFrame.connect = vi.fn(() => Promise.resolve(mockSession()))
   w3mFrame.disconnect = vi.fn(() => Promise.resolve(undefined))

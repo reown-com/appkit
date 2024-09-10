@@ -4,7 +4,6 @@ import { WalletPage } from './shared/pages/WalletPage'
 import { WalletValidator } from './shared/validators/WalletValidator'
 import { ModalPage } from './shared/pages/ModalPage'
 import { ModalValidator } from './shared/validators/ModalValidator'
-import { expect } from 'vitest'
 
 /* eslint-disable init-declarations */
 let modalPage: ModalPage
