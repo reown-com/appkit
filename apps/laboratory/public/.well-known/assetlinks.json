@@ -273,7 +273,7 @@
     "relation": ["delegate_permission/common.handle_all_urls"],
     "target": {
       "namespace": "android_app",
-      "package_name": "com.reown.modal.wallet",
+      "package_name": "com.reown.sample.modal",
       "sha256_cert_fingerprints": [
         "9D:62:1A:04:A7:E9:28:5A:D2:4D:AA:11:74:E5:FB:6A:50:AC:B7:8B:1F:95:5B:90:9B:91:43:C2:5E:0A:27:D0"
       ]
