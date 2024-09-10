@@ -1,4 +1,4 @@
-import { arbitrum, mainnet, optimism, polygon, zkSync } from '@rerock/base/chains'
+import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@rerock/base/chains'
 import { createWeb3Modal } from '@rerock/base'
 import { EVMEthersClient } from '@rerock/adapter-ethers'
 

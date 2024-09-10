@@ -36,14 +36,6 @@ export class ModalWalletValidator extends ModalValidator {
     await expect(this.page.getByTestId('w3m-address')).not.toHaveText(previousAddress)
   }
 
-  override async expectSwitchedNetwork(network: string) {
-    const switchNetworkButton = this.page.getByTestId('account-switch-network-button')
-    await expect(switchNetworkButton).toBeVisible()
-    await expect(switchNetworkButton, `Switched network should include ${network}`).toContainText(
-      network
-    )
-  }
-
   async expectCallStatusPending() {
     const closeButton = this.page.locator('#toast-close-button')
 

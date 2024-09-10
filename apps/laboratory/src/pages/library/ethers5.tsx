@@ -5,7 +5,7 @@ import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { Ethers5ModalInfo } from '../../components/Ethers/Ethers5ModalInfo'
 import { Ethers5Tests } from '../../components/Ethers/Ethers5Tests'
 import { EVMEthers5Client } from '@rerock/adapter-ethers5'
-import { arbitrum, mainnet, optimism, polygon, zkSync } from '@rerock/base/chains'
+import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@rerock/base/chains'
 
 const ethers5Adapter = new EVMEthers5Client()
 

@@ -65,7 +65,6 @@ emailTest('it should reject sign', async () => {
 
 emailTest('it should switch network and sign', async ({ library }) => {
   let targetChain = library === 'solana' ? 'Solana Testnet' : 'Polygon'
-  await page.goToSettings()
   await page.switchNetwork(targetChain)
   await validator.expectSwitchedNetworkOnNetworksView(targetChain)
   await page.closeModal()
@@ -74,7 +73,6 @@ emailTest('it should switch network and sign', async ({ library }) => {
   await validator.expectAcceptedSign()
 
   targetChain = library === 'solana' ? 'Solana' : 'Ethereum'
-  await page.goToSettings()
   await page.switchNetwork(targetChain)
   await validator.expectSwitchedNetworkOnNetworksView(targetChain)
   await page.closeModal()
