@@ -1,3 +1,5 @@
+import type { Chain } from '@web3modal/common'
+
 const SECURE_SITE = 'https://secure.walletconnect.org'
 
 export const ONRAMP_PROVIDERS = [
@@ -181,7 +183,10 @@ export const ConstantsUtil = {
     'eip155:1313161554'
   ],
 
-  NATIVE_TOKEN_ADDRESS: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+  NATIVE_TOKEN_ADDRESS: {
+    evm: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+    solana: 'So11111111111111111111111111111111111111111'
+  } as const satisfies Record<Chain, string>,
 
   CONVERT_SLIPPAGE_TOLERANCE: 1
 }

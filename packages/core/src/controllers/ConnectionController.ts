@@ -30,7 +30,7 @@ export interface ConnectionControllerClient {
   connectWalletConnect: (onUri: (uri: string) => void) => Promise<void>
   disconnect: () => Promise<void>
   signMessage: (message: string) => Promise<string>
-  sendTransaction: (args: SendTransactionArgs) => Promise<`0x${string}` | null>
+  sendTransaction: (args: SendTransactionArgs) => Promise<string | null>
   estimateGas: (args: EstimateGasTransactionArgs) => Promise<bigint>
   parseUnits: (value: string, decimals: number) => bigint
   formatUnits: (value: bigint, decimals: number) => string
