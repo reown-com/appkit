@@ -4,6 +4,7 @@ import { WalletPage } from './shared/pages/WalletPage'
 import { WalletValidator } from './shared/validators/WalletValidator'
 import { ModalPage } from './shared/pages/ModalPage'
 import { ModalValidator } from './shared/validators/ModalValidator'
+import { expect } from 'vitest'
 
 /* eslint-disable init-declarations */
 let modalPage: ModalPage
@@ -39,6 +40,10 @@ sampleWalletTest.afterAll(async () => {
 })
 
 // -- Tests --------------------------------------------------------------------
+sampleWalletTest('it should fetch balance as expected', async ({ library }) => {
+  await modalValidator.expectBalanceFetched(library === 'solana' ? 'SOL' : 'ETH')
+})
+
 sampleWalletTest('it should show disabled networks', async ({ library }) => {
   const disabledNetworks = library === 'solana' ? 'Solana Unsupported' : 'Arbitrum'
 

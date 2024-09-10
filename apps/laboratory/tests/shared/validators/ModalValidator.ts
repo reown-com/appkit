@@ -23,6 +23,13 @@ export class ModalValidator {
     await this.page.waitForTimeout(500)
   }
 
+  async expectBalanceFetched(currency: 'SOL' | 'ETH') {
+    const accountButton = this.page.locator('w3m-account-button')
+    await expect(accountButton, `Account button should show balance as ${currency}`).toContainText(
+      `0.000 ${currency}`
+    )
+  }
+
   async expectAuthenticated() {
     await expect(
       this.page.getByTestId('w3m-authentication-status'),
