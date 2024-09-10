@@ -78,10 +78,11 @@ smartAccountSiweTest('it should switch to a smart account enabled network and si
 smartAccountSiweTest('it should switch to a not enabled network and sign with EOA', async () => {
   const targetChain = 'Ethereum'
   await page.switchNetwork(targetChain)
+  await page.page.waitForTimeout(1000)
   await page.promptSiwe()
   await page.approveSign()
 
-  await page.goToSettings()
+  await page.openAccount()
   // Shouldn't show the toggle on a non enabled network
   await validator.expectTogglePreferredTypeVisible(false)
   await page.closeModal()
