@@ -246,12 +246,12 @@ export class EVMWagmiClient implements ChainAdapter {
         }
 
         return new Promise(resolve => {
-          const connections = new Map(this.wagmiConfig!.state.connections)
-          const connection = connections.get(this.wagmiConfig!.state.current || '')
+          const connections = new Map(this.wagmiConfig.state.connections)
+          const connection = connections.get(this.wagmiConfig.state.current || '')
           if (connection?.connector?.id === ConstantsUtil.AUTH_CONNECTOR_ID) {
             resolve(getEmailCaipNetworks())
           } else if (connection?.connector?.id === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
-            const connector = this.wagmiConfig!.connectors.find(
+            const connector = this.wagmiConfig.connectors.find(
               c => c.id === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID
             )
             resolve(getWalletConnectCaipNetworks(connector))
@@ -387,7 +387,7 @@ export class EVMWagmiClient implements ChainAdapter {
         return false
       },
       disconnect: async () => {
-        await disconnect(this.wagmiConfig!)
+        await disconnect(this.wagmiConfig)
         SafeLocalStorage.removeItem(SafeLocalStorageKeys.WALLET_ID)
         SafeLocalStorage.removeItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK)
         this.appKit?.setClientId(null)
@@ -402,11 +402,11 @@ export class EVMWagmiClient implements ChainAdapter {
         const caipAddress = this.appKit?.getCaipAddress() || ''
         const account = requireCaipAddress(caipAddress)
 
-        return signMessage(this.wagmiConfig!, { message, account })
+        return signMessage(this.wagmiConfig, { message, account })
       },
       estimateGas: async args => {
         try {
-          return await wagmiEstimateGas(this.wagmiConfig!, {
+          return await wagmiEstimateGas(this.wagmiConfig, {
             account: args.address,
             to: args.to,
             data: args.data,
@@ -417,7 +417,7 @@ export class EVMWagmiClient implements ChainAdapter {
         }
       },
       sendTransaction: async (data: SendTransactionArgs) => {
-        const { chainId } = getAccount(this.wagmiConfig!)
+        const { chainId } = getAccount(this.wagmiConfig)
         const txParams = {
           account: data.address,
           to: data.to,
@@ -428,9 +428,9 @@ export class EVMWagmiClient implements ChainAdapter {
           chainId,
           type: 'legacy' as const
         }
-        await prepareTransactionRequest(this.wagmiConfig!, txParams)
-        const tx = await wagmiSendTransaction(this.wagmiConfig!, txParams)
-        await waitForTransactionReceipt(this.wagmiConfig!, { hash: tx, timeout: 25000 })
+        await prepareTransactionRequest(this.wagmiConfig, txParams)
+        const tx = await wagmiSendTransaction(this.wagmiConfig, txParams)
+        await waitForTransactionReceipt(this.wagmiConfig, { hash: tx, timeout: 25000 })
 
         return tx
       },
@@ -438,7 +438,7 @@ export class EVMWagmiClient implements ChainAdapter {
         const caipAddress = this.appKit?.getCaipAddress() || ''
         const account = requireCaipAddress(caipAddress)
         const chainId = Number(NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id))
-        const tx = await wagmiWriteContract(this.wagmiConfig!, {
+        const tx = await wagmiWriteContract(this.wagmiConfig, {
           chain: this.wagmiChains?.[chainId],
           chainId,
           address: data.tokenAddress,
@@ -482,7 +482,7 @@ export class EVMWagmiClient implements ChainAdapter {
         if (chainId !== mainnet.id) {
           return false
         }
-        const avatar = await wagmiGetEnsAvatar(this.wagmiConfig!, {
+        const avatar = await wagmiGetEnsAvatar(this.wagmiConfig, {
           name: normalize(value),
           chainId
         })
@@ -521,10 +521,10 @@ export class EVMWagmiClient implements ChainAdapter {
     this.appKit?.setEIP6963Enabled(options.enableEIP6963 !== false)
     this.appKit?.subscribeShouldUpdateToAddress((newAddress?: string) => {
       if (newAddress) {
-        const connections = getConnections(this.wagmiConfig!)
+        const connections = getConnections(this.wagmiConfig)
         const connector = connections[0]?.connector
         if (connector) {
-          switchAccount(this.wagmiConfig!, {
+          switchAccount(this.wagmiConfig, {
             connector
           }).then(response =>
             this.syncAccount({
@@ -729,10 +729,10 @@ export class EVMWagmiClient implements ChainAdapter {
       }
     } catch {
       if (chainId === mainnet.id) {
-        const profileName = await getEnsName(this.wagmiConfig!, { address, chainId })
+        const profileName = await getEnsName(this.wagmiConfig, { address, chainId })
         if (profileName) {
           this.appKit?.setProfileName(profileName, this.chainNamespace)
-          const profileImage = await wagmiGetEnsAvatar(this.wagmiConfig!, {
+          const profileImage = await wagmiGetEnsAvatar(this.wagmiConfig, {
             name: profileName,
             chainId
           })
