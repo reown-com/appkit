@@ -446,7 +446,7 @@ export const SwapController = {
   },
 
   async getInitialGasPrice() {
-    const res = await SwapApiUtil.fetchGasPrice().catch(() => null)
+    const res = await SwapApiUtil.fetchGasPrice()
 
     if (!res) {
       return { gasPrice: null, gasPriceInUSD: null }

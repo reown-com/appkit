@@ -54,25 +54,29 @@ export const SwapApiUtil = {
       return null
     }
 
-    switch (caipNetwork.chain) {
-      case 'solana':
-        // eslint-disable-next-line no-case-declarations
-        const lamportsPerSignature = (
-          await ConnectionController.estimateGas({ chainNamespace: 'solana' })
-        ).toString()
+    try {
+      switch (caipNetwork.chain) {
+        case 'solana':
+          // eslint-disable-next-line no-case-declarations
+          const lamportsPerSignature = (
+            await ConnectionController.estimateGas({ chainNamespace: 'solana' })
+          ).toString()
 
-        return {
-          standard: lamportsPerSignature,
-          fast: lamportsPerSignature,
-          instant: lamportsPerSignature
-        }
+          return {
+            standard: lamportsPerSignature,
+            fast: lamportsPerSignature,
+            instant: lamportsPerSignature
+          }
 
-      case 'evm':
-      default:
-        return await BlockchainApiController.fetchGasPrice({
-          projectId,
-          chainId: caipNetwork.id
-        })
+        case 'evm':
+        default:
+          return await BlockchainApiController.fetchGasPrice({
+            projectId,
+            chainId: caipNetwork.id
+          })
+      }
+    } catch {
+      return null
     }
   },
 
