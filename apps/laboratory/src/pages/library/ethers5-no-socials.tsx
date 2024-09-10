@@ -7,13 +7,13 @@ import { SiweData } from '../../components/Siwe/SiweData'
 import { Ethers5Tests } from '../../components/Ethers/Ethers5Tests'
 import { Ethers5ModalInfo } from '../../components/Ethers/Ethers5ModalInfo'
 import { EVMEthers5Client } from '@rerock/adapter-ethers5'
-import { arbitrum, mainnet, optimism, polygon, zkSync } from '@rerock/base/chains'
+import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@rerock/base/chains'
 
 const ethersAdapter = new EVMEthers5Client()
 
 const modal = createWeb3Modal({
   adapters: [ethersAdapter],
-  caipNetworks: [arbitrum, mainnet, optimism, polygon, zkSync],
+  caipNetworks: [arbitrum, mainnet, optimism, polygon, zkSync, sepolia],
   defaultCaipNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId,
   features: {

@@ -56,6 +56,11 @@
       "types": "./dist/types/exports/chains.d.ts",
       "import": "./dist/esm/exports/chains.js",
       "default": "./dist/esm/exports/chains.js"
+    },
+    "./auth-provider": {
+      "types": "./dist/types/exports/auth-provider.d.ts",
+      "import": "./dist/esm/exports/auth-provider.js",
+      "default": "./dist/esm/exports/auth-provider.js"
     }
   },
   "typesVersions": {
@@ -77,6 +82,9 @@
       ],
       "chains": [
         "./dist/types/exports/chains.d.ts"
+      ],
+      "auth-provider": [
+        "./dist/types/exports/auth-provider.d.ts"
       ]
     }
   },

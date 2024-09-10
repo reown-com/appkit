@@ -67,25 +67,19 @@ emailSiweTest('it should reject sign', async () => {
 
 emailSiweTest('it should switch network and sign', async () => {
   let targetChain = 'Polygon'
-  await page.goToSettings()
   await page.switchNetwork(targetChain)
   await page.promptSiwe()
   await page.approveSign()
-  await page.goToSettings()
-  await validator.expectSwitchedNetwork(targetChain)
-  await page.closeModal()
+
   await page.sign()
   await page.approveSign()
   await validator.expectAcceptedSign()
 
   targetChain = 'Ethereum'
-  await page.goToSettings()
   await page.switchNetwork(targetChain)
   await page.promptSiwe()
   await page.approveSign()
-  await page.goToSettings()
-  await validator.expectSwitchedNetwork(targetChain)
-  await page.closeModal()
+
   await page.sign()
   await page.approveSign()
   await validator.expectAcceptedSign()

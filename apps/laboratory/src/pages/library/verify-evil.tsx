@@ -5,7 +5,7 @@ import { AppKitButtons } from '../../components/AppKitButtons'
 import { WagmiTests } from '../../components/Wagmi/WagmiTests'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
-import { arbitrum, mainnet, optimism, polygon, zkSync } from '@rerock/base/chains'
+import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@rerock/base/chains'
 import { EVMWagmiClient } from '@rerock/adapter-wagmi'
 
 const metadata = {
@@ -21,7 +21,7 @@ const projectId = '9d176efa3150a1df0a76c8c138b6b657'
 
 const queryClient = new QueryClient()
 
-const networks = [mainnet, optimism, polygon, zkSync, arbitrum]
+const networks = [mainnet, optimism, polygon, zkSync, arbitrum, sepolia]
 
 const wagmiAdapter = new EVMWagmiClient({
   ssr: true,

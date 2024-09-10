@@ -1,5 +1,4 @@
 import { onUnmounted, reactive, ref } from 'vue'
-import { useSnapshot } from 'valtio'
 import { AccountController, type Event } from '@rerock/core'
 import type {
   W3mAccountButton,
@@ -40,7 +39,8 @@ export function getWeb3Modal(appKit: AppKit) {
 }
 
 export function useWeb3ModalAccount() {
-  const { address, isConnected, status } = useSnapshot(AccountController.state)
+  const state = ref(AccountController.state)
+  const { address, isConnected, status } = state.value
 
   return {
     address,
@@ -50,7 +50,8 @@ export function useWeb3ModalAccount() {
 }
 
 export function useWeb3ModalProvider<T>(chainNamespace: ChainNamespace) {
-  const { providers, providerIds } = useSnapshot(ProviderUtil.state)
+  const state = ref(ProviderUtil.state)
+  const { providers, providerIds } = state.value
 
   const walletProvider = providers[chainNamespace] as T | undefined
   const walletProviderType = providerIds[chainNamespace]
