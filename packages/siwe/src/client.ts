@@ -126,7 +126,6 @@ export class Web3ModalSIWEClient {
     // Sign out if signOutOnNetworkChange is enabled to avoid re-prompting the user for a signature
     if (signOutOnNetworkChange) {
       SIWEController.state._client.options.signOutOnNetworkChange = false
-      await this.signOut()
     }
 
     await NetworkController.switchActiveNetwork(caipNetwork)

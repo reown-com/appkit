@@ -1,5 +1,14 @@
 # @web3modal/core
 
+## 5.1.7-bb7e41a6f.1
+
+### Patch Changes
+
+- Revert Profiles API URL
+- Updated dependencies
+  - @web3modal/common@5.1.7-bb7e41a6f.1
+  - @web3modal/wallet@5.1.7-bb7e41a6f.1
+
 ## 5.1.7-bbb053961.0
 
 ### Patch Changes

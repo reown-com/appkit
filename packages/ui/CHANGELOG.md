@@ -1,5 +1,11 @@
 # @web3modal/ui
 
+## 5.1.7-bb7e41a6f.1
+
+### Patch Changes
+
+- Revert Profiles API URL
+
 ## 5.1.7-bbb053961.0
 
 ### Patch Changes
