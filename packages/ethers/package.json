@@ -1,6 +1,6 @@
 {
   "name": "@rerock/ethers",
-  "version": "0.0.2",
+  "version": "5.1.7",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -44,9 +44,10 @@
   },
   "dependencies": {
     "@coinbase/wallet-sdk": "4.0.3",
-    "@walletconnect/utils": "2.15.2",
-    "@rerock/base": "workspace:*",
+    "@walletconnect/ethereum-provider": "2.16.1",
     "@rerock/adapter-ethers": "workspace:*",
+    "@walletconnect/utils": "2.16.1",
+    "@rerock/base": "workspace:*",
     "@rerock/common": "workspace:*",
     "@rerock/wallet": "workspace:*",
     "@rerock/polyfills": "workspace:*",

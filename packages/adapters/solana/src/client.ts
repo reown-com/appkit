@@ -418,18 +418,7 @@ export class SolanaWeb3JsClient implements ChainAdapter {
 
       if (W3mFrameHelpers.checkIfRequestExists(request)) {
         if (!W3mFrameHelpers.checkIfRequestIsSafe(request)) {
-          if (this.appKit.isOpen()) {
-            if (this.appKit.isTransactionStackEmpty()) {
-              return
-            }
-            if (this.appKit.isTransactionShouldReplaceView()) {
-              this.appKit.replace('ApproveTransaction')
-            } else {
-              this.appKit.redirect('ApproveTransaction')
-            }
-          } else {
-            this.appKit.open({ view: 'ApproveTransaction' })
-          }
+          this.appKit?.handleUnsafeRPCRequest()
         }
       } else {
         this.appKit.open()

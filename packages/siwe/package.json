@@ -1,6 +1,6 @@
 {
   "name": "@rerock/siwe",
-  "version": "0.0.2",
+  "version": "5.1.7",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -16,7 +16,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@walletconnect/utils": "2.15.2",
+    "@walletconnect/utils": "2.16.1",
     "@rerock/core": "workspace:*",
     "@rerock/ui": "workspace:*",
     "@rerock/common": "workspace:*",

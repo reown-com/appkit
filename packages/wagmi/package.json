@@ -1,6 +1,6 @@
 {
   "name": "@rerock/wagmi",
-  "version": "0.0.2",
+  "version": "5.1.7",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -51,9 +51,10 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@walletconnect/utils": "2.15.2",
-    "@rerock/polyfills": "workspace:*",
+    "@walletconnect/ethereum-provider": "2.16.1",
     "@rerock/adapter-wagmi": "workspace:*",
+    "@walletconnect/utils": "2.16.1",
+    "@rerock/polyfills": "workspace:*",
     "@rerock/base": "workspace:*",
     "@rerock/wallet": "workspace:*",
     "@rerock/common": "workspace:*",
@@ -61,13 +62,13 @@
     "@rerock/siwe": "workspace:*"
   },
   "devDependencies": {
-    "@wagmi/connectors": "5.1.5",
+    "@wagmi/connectors": "5.1.9",
     "@wagmi/core": "2.13.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "viem": "2.19.6",
+    "viem": "2.21.4",
     "vue": "3.4.3",
-    "wagmi": "2.12.5",
+    "wagmi": "2.12.9",
     "vitest": "2.0.3"
   },
   "peerDependencies": {
