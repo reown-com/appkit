@@ -67,7 +67,7 @@ emailTest('it should switch network and sign', async () => {
   let targetChain = 'Polygon'
   await page.goToSettings()
   await page.switchNetwork(targetChain)
-  await validator.expectSwitchedNetwork(targetChain)
+  await validator.expectSwitchedNetworkOnNetworksView(targetChain)
   await page.closeModal()
   await page.sign()
   await page.approveSign()
@@ -76,8 +76,7 @@ emailTest('it should switch network and sign', async () => {
   targetChain = 'Ethereum'
   await page.goToSettings()
   await page.switchNetwork(targetChain)
-  await validator.expectSwitchedNetwork(targetChain)
-
+  await validator.expectSwitchedNetworkOnNetworksView(targetChain)
   await page.closeModal()
   await page.sign()
   await page.approveSign()

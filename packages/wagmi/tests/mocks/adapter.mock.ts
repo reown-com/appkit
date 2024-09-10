@@ -33,7 +33,9 @@ export const wagmiAdapterMock = new EVMWagmiClient({
   connectors: [mock({ accounts: [mockAccount.address] })],
   transports: {
     [wagmiMainnet.id]: http()
-  }
+  },
+  caipNetworks: [mainnet],
+  projectId: '1234'
 })
 
 const mockAppKitData = {

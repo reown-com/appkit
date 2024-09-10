@@ -30,8 +30,8 @@ export function useWagmiAvailableCapabilities({
     Record<number, WalletCapabilities> | undefined
   >()
 
-  const { address } = useWeb3ModalAccount()
-  const { chain, connector, isConnected } = useAccount()
+  const { address, isConnected } = useWeb3ModalAccount()
+  const { chain, connector } = useAccount()
 
   const supportedChains = useMemo(
     () =>

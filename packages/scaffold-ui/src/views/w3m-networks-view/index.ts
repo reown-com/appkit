@@ -13,7 +13,6 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
-import { NetworkUtil } from '../../utils/NetworkUtil.js'
 
 @customElement('w3m-networks-view')
 export class W3mNetworksView extends LitElement {
@@ -164,7 +163,6 @@ export class W3mNetworksView extends LitElement {
         RouterController.push('SwitchNetwork', { ...routerData, network })
       } else {
         await NetworkController.switchActiveNetwork(network)
-        await NetworkUtil.onNetworkChange()
       }
     } else {
       // eslint-disable-next-line no-lonely-if
@@ -181,7 +179,6 @@ export class W3mNetworksView extends LitElement {
           })
         } else {
           NetworkController.setActiveCaipNetwork(network)
-          await NetworkUtil.onNetworkChange()
         }
       }
     }

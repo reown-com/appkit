@@ -99,4 +99,17 @@ export class WalletPage {
     await switchNetworkButton.click()
     await expect(switchNetworkButton).toHaveText('✅')
   }
+
+  /**
+   * Disconnects the current connection in the wallet
+   */
+  async disconnectConnection() {
+    await this.page.waitForLoadState()
+    const sessionsButton = this.page.getByTestId('sessions')
+    await sessionsButton.click()
+    const sessionCard = this.page.getByTestId(`session-card`)
+    await sessionCard.click()
+    const disconnectButton = this.page.getByText('Delete')
+    await disconnectButton.click()
+  }
 }

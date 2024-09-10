@@ -21,8 +21,8 @@ export function WagmiRequestPermissionsSyncTest() {
   const { provider, supported } = useWagmiAvailableCapabilities({
     method: EIP_7715_RPC_METHODS.WALLET_GRANT_PERMISSIONS
   })
-  const { address } = useWeb3ModalAccount()
-  const { chain, isConnected } = useAccount()
+  const { address, isConnected } = useWeb3ModalAccount()
+  const { chain } = useAccount()
 
   if (!isConnected || !provider || !address || !chain) {
     return (
