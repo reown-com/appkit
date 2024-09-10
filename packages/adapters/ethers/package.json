@@ -24,7 +24,6 @@
     "@rerock/polyfills": "workspace:*",
     "@rerock/scaffold-ui": "workspace:*",
     "@rerock/scaffold-utils": "workspace:*",
-    "@rerock/auth-provider": "workspace:*",
     "@rerock/siwe": "workspace:*",
     "@rerock/ui": "workspace:*",
     "@rerock/wallet": "workspace:*",
