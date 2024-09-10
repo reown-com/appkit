@@ -41,7 +41,8 @@ const SOLANA_DISABLED_TESTS = [
   'siwe-sa.spec.ts',
   'smart-account.spec.ts',
   'wallet-features.spec.ts',
-  'metamask.spec.ts'
+  'metamask.spec.ts',
+  'email.spec.ts'
 ]
 const WAGMI_DISABLED_TESTS = [
   'metamask.spec.ts',

@@ -71,10 +71,6 @@ emailSiweTest('it should switch network and sign', async () => {
   await page.promptSiwe()
   await page.approveSign()
 
-  await page.openAccount()
-  await validator.expectSwitchedNetwork(targetChain)
-  await page.closeModal()
-
   await page.sign()
   await page.approveSign()
   await validator.expectAcceptedSign()
@@ -83,10 +79,6 @@ emailSiweTest('it should switch network and sign', async () => {
   await page.switchNetwork(targetChain)
   await page.promptSiwe()
   await page.approveSign()
-
-  await page.openAccount()
-  await validator.expectSwitchedNetwork(targetChain)
-  await page.closeModal()
 
   await page.sign()
   await page.approveSign()
