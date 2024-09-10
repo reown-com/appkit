@@ -129,13 +129,12 @@ jobs:
           json-final-path: ./coverage/coverage-merged-final.json
           json-summary-path: ./coverage/coverage-merged-summary.json
 
-  # Disabling playwright for now
-  # ui-test:
-  #   if: github.event.pull_request.draft == false
-  #   uses: ./.github/workflows/ui_tests.yml
-  #   secrets: inherit
-  #   permissions:
-  #     contents: write
-  #     pull-requests: write
-  #   with:
-  #     branch: ${{ github.ref }}
+  ui-test:
+    if: github.event.pull_request.draft == false
+    uses: ./.github/workflows/ui_tests.yml
+    secrets: inherit
+    permissions:
+      contents: write
+      pull-requests: write
+    with:
+      branch: ${{ github.ref }}
