@@ -1,6 +1,6 @@
 {
   "name": "@rerock/cdn",
-  "version": "5.1.7",
+  "version": "0.0.2",
   "main": "dist/wagmi.js",
   "type": "module",
   "files": [
