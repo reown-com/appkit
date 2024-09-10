@@ -256,7 +256,6 @@ export const SendController = {
       goBack: false
     })
 
-    // Implement solana
     ConnectionController.sendTransaction({
       chainNamespace: 'solana',
       to: this.state.receiverAddress,
