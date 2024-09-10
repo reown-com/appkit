@@ -96,83 +96,62 @@ export const SendController = {
   sendToken() {
     switch (ChainController.state.activeCaipNetwork?.chain) {
       case 'evm':
-        if (this.state.token?.address && this.state.sendTokenAmount && this.state.receiverAddress) {
-          EventsController.sendEvent({
-            type: 'track',
-            event: 'SEND_INITIATED',
-            properties: {
-              isSmartAccount:
-                AccountController.state.preferredAccountType ===
-                W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
-              token: this.state.token.address,
-              amount: this.state.sendTokenAmount,
-              network: NetworkController.state.caipNetwork?.id || ''
-            }
-          })
-          this.sendERC20Token({
-            receiverAddress: this.state.receiverAddress,
-            tokenAddress: this.state.token.address,
-            sendTokenAmount: this.state.sendTokenAmount,
-            decimals: this.state.token.quantity.decimals
-          })
-        } else if (
-          this.state.receiverAddress &&
-          this.state.sendTokenAmount &&
-          this.state.gasPrice &&
-          this.state.token?.quantity.decimals
-        ) {
-          EventsController.sendEvent({
-            type: 'track',
-            event: 'SEND_INITIATED',
-            properties: {
-              isSmartAccount:
-                AccountController.state.preferredAccountType ===
-                W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
-              token: this.state.token?.symbol,
-              amount: this.state.sendTokenAmount,
-              network: NetworkController.state.caipNetwork?.id || ''
-            }
-          })
-          this.sendNativeToken({
-            receiverAddress: this.state.receiverAddress,
-            sendTokenAmount: this.state.sendTokenAmount,
-            gasPrice: this.state.gasPrice,
-            decimals: this.state.token.quantity.decimals
-          })
-        }
+        this.sendEvmToken()
 
         return
       case 'solana':
-        if (!this.state.sendTokenAmount || !this.state.receiverAddress) {
-          SnackController.showError('Please enter a valid amount and receiver address')
-
-          return
-        }
-
-        RouterController.pushTransactionStack({
-          view: 'Account',
-          goBack: false
-        })
-
-        // Implement solana
-        ConnectionController.sendTransaction({
-          chainNamespace: 'solana',
-          to: this.state.receiverAddress,
-          value: this.state.sendTokenAmount
-        })
-          .then(() => {
-            this.resetSend()
-            AccountController.fetchTokenBalance()
-          })
-          .catch(error => {
-            SnackController.showError('Failed to send transaction. Please try again.')
-            // eslint-disable-next-line no-console
-            console.error('SendController:sendToken - failed to send solana transaction', error)
-          })
+        this.sendSolanaToken()
 
         return
       default:
         throw new Error('Unsupported chain')
+    }
+  },
+
+  sendEvmToken() {
+    if (this.state.token?.address && this.state.sendTokenAmount && this.state.receiverAddress) {
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'SEND_INITIATED',
+        properties: {
+          isSmartAccount:
+            AccountController.state.preferredAccountType ===
+            W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
+          token: this.state.token.address,
+          amount: this.state.sendTokenAmount,
+          network: NetworkController.state.caipNetwork?.id || ''
+        }
+      })
+      this.sendERC20Token({
+        receiverAddress: this.state.receiverAddress,
+        tokenAddress: this.state.token.address,
+        sendTokenAmount: this.state.sendTokenAmount,
+        decimals: this.state.token.quantity.decimals
+      })
+    } else if (
+      this.state.receiverAddress &&
+      this.state.sendTokenAmount &&
+      this.state.gasPrice &&
+      this.state.token?.quantity.decimals
+    ) {
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'SEND_INITIATED',
+        properties: {
+          isSmartAccount:
+            AccountController.state.preferredAccountType ===
+            W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
+          token: this.state.token?.symbol,
+          amount: this.state.sendTokenAmount,
+          network: NetworkController.state.caipNetwork?.id || ''
+        }
+      })
+      this.sendNativeToken({
+        receiverAddress: this.state.receiverAddress,
+        sendTokenAmount: this.state.sendTokenAmount,
+        gasPrice: this.state.gasPrice,
+        decimals: this.state.token.quantity.decimals
+      })
     }
   },
 
@@ -263,6 +242,35 @@ export const SendController = {
     } catch (error) {
       SnackController.showError('Something went wrong')
     }
+  },
+
+  sendSolanaToken() {
+    if (!this.state.sendTokenAmount || !this.state.receiverAddress) {
+      SnackController.showError('Please enter a valid amount and receiver address')
+
+      return
+    }
+
+    RouterController.pushTransactionStack({
+      view: 'Account',
+      goBack: false
+    })
+
+    // Implement solana
+    ConnectionController.sendTransaction({
+      chainNamespace: 'solana',
+      to: this.state.receiverAddress,
+      value: this.state.sendTokenAmount
+    })
+      .then(() => {
+        this.resetSend()
+        AccountController.fetchTokenBalance()
+      })
+      .catch(error => {
+        SnackController.showError('Failed to send transaction. Please try again.')
+        // eslint-disable-next-line no-console
+        console.error('SendController:sendToken - failed to send solana transaction', error)
+      })
   },
 
   resetSend() {
