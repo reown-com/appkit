@@ -334,9 +334,12 @@ importers:
 
   examples/html-ethers:
     dependencies:
-      '@rerock/ethers':
+      '@rerock/adapter-ethers':
         specifier: workspace:*
-        version: link:../../packages/ethers
+        version: link:../../packages/adapters/ethers
+      '@rerock/base':
+        specifier: workspace:*
+        version: link:../../packages/base
       ethers:
         specifier: 6.13.2
         version: 6.13.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
@@ -486,9 +489,12 @@ importers:
 
   examples/react-ethers:
     dependencies:
-      '@rerock/ethers':
+      '@rerock/adapter-ethers':
         specifier: workspace:*
-        version: link:../../packages/ethers
+        version: link:../../packages/adapters/ethers
+      '@rerock/base':
+        specifier: workspace:*
+        version: link:../../packages/base
       ethers:
         specifier: 6.13.2
         version: 6.13.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
