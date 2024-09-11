@@ -25,3 +25,5 @@ If new feature is being introduced, include the link to demo recording.
 - [ ] My changes generate no new warnings
 - [ ] I have reviewed my own code
 - [ ] I have filled out all required sections
+- [ ] I have tested my changes on the preview link
+- [ ] Approver of this PR confirms that the changes are tested on the preview link
