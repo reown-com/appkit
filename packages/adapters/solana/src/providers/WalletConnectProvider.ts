@@ -8,7 +8,6 @@ import {
   Connection,
   PublicKey,
   Transaction,
-  TransactionMessage,
   VersionedTransaction,
   type SendOptions
 } from '@solana/web3.js'
@@ -287,18 +286,9 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
    * This is a deprecated method that is used to support older versions of the
    * WalletConnect RPC API. It should be removed in the future
    */
-  private getRawRPCParams(_transaction: AnyTransaction) {
-    let transaction = _transaction
-
+  private getRawRPCParams(transaction: AnyTransaction) {
     if (isVersionedTransaction(transaction)) {
-      const instructions = TransactionMessage.decompile(transaction.message).instructions
-      const legacyMessage = new TransactionMessage({
-        payerKey: new PublicKey(this.getAccount(true).publicKey),
-        recentBlockhash: transaction.message.recentBlockhash,
-        instructions: [...instructions]
-      }).compileToLegacyMessage()
-
-      transaction = Transaction.populate(legacyMessage)
+      return {}
     }
 
     return {

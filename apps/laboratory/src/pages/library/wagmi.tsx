@@ -5,18 +5,23 @@ import { WagmiTests } from '../../components/Wagmi/WagmiTests'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
 import { EVMWagmiClient } from '@rerock/adapter-wagmi'
 import { createWeb3Modal } from '@rerock/base/react'
-import { arbitrum, mainnet, optimism, polygon, zkSync } from '@rerock/base/chains'
+import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@rerock/base/chains'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { ThemeStore } from '../../utils/StoreUtil'
 
 const queryClient = new QueryClient()
+
+const networks = [mainnet, optimism, polygon, zkSync, arbitrum, sepolia]
+
 const wagmiAdapter = new EVMWagmiClient({
-  ssr: true
+  ssr: true,
+  caipNetworks: networks,
+  projectId: ConstantsUtil.ProjectId
 })
 
 const modal = createWeb3Modal({
   adapters: [wagmiAdapter],
-  caipNetworks: [mainnet, optimism, polygon, zkSync, arbitrum],
+  caipNetworks: networks,
   projectId: ConstantsUtil.ProjectId,
   features: {
     analytics: true,
@@ -28,10 +33,6 @@ const modal = createWeb3Modal({
 ThemeStore.setModal(modal)
 
 export default function Wagmi() {
-  if (!wagmiAdapter.wagmiConfig) {
-    return null
-  }
-
   return (
     <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={queryClient}>

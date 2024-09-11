@@ -1,5 +1,33 @@
 # @rerock/ethers
 
+## 5.1.7
+
+### Patch Changes
+
+- - chore: version bump for 5.1.6 by @enesozturk in https://github.com/WalletConnect/web3modal/pull/2797
+  - fix(deps): update walletconnect to v2.15.2 by @renovate in https://github.com/WalletConnect/web3modal/pull/2722
+  - chore: fix public URL by @chris13524 in https://github.com/WalletConnect/web3modal/pull/2806
+  - fix: RPC requests causing modal to close by @tomiir in https://github.com/WalletConnect/web3modal/pull/2799
+  - chore: use apiVersion v2 on names endpoint by @tomiir in https://github.com/WalletConnect/web3modal/pull/2805
+  - fix: import valtio from vanilla path by @jd1378 in https://github.com/WalletConnect/web3modal/pull/2810
+  - chore: use shared gh token by @tomiir in https://github.com/WalletConnect/web3modal/pull/2809
+  - chore: add input secrets to setup workflow by @tomiir in https://github.com/WalletConnect/web3modal/pull/2822
+  - fix: remove deprecated params from sign transaction wc rpc request by @zoruka in https://github.com/WalletConnect/web3modal/pull/2816
+  - chore: changed android and ios links for react native sample apps by @ignaciosantise in https://github.com/WalletConnect/web3modal/pull/2825
+  - chore: changed order of links by @ignaciosantise in https://github.com/WalletConnect/web3modal/pull/2826
+  - fix(siwe): fix undefined SIWE chainId by @Cali93 in https://github.com/WalletConnect/web3modal/pull/2820
+  - chore: update monorepo deps to 2.16.1 by @tomiir in https://github.com/WalletConnect/web3modal/pull/2829
+  - fix: don't capitalize first character of email field on mobile by @chris13524 in https://github.com/WalletConnect/web3modal/pull/2815
+  - chore(deps): update dependency ethers to v6.13.2 by @renovate in https://github.com/WalletConnect/web3modal/pull/2434
+  - chore(deps): update wagmi by @renovate in https://github.com/WalletConnect/web3modal/pull/2711
+- Updated dependencies []:
+  - @rerock/base@5.1.7
+  - @rerock/common@5.1.7
+  - @rerock/polyfills@5.1.7
+  - @rerock/scaffold-utils@5.1.7
+  - @rerock/siwe@5.1.7
+  - @rerock/wallet@5.1.7
+
 ## 5.1.6
 
 ### Patch Changes

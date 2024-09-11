@@ -113,7 +113,6 @@ export class UniversalAdapterClient {
 
         return new Promise(resolve => {
           const ns = this.walletConnectProvider?.session?.namespaces
-
           const nsChains: CaipNetworkId[] | undefined = []
 
           if (ns) {
@@ -225,8 +224,6 @@ export class UniversalAdapterClient {
       },
 
       disconnect: async () => {
-        this.appKit?.resetAccount('eip155')
-        this.appKit?.resetAccount('solana')
         SafeLocalStorage.removeItem(SafeLocalStorageKeys.WALLET_ID)
         SafeLocalStorage.removeItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK)
 
@@ -235,16 +232,10 @@ export class UniversalAdapterClient {
           await SIWEController.signOut()
         }
 
-        if (this.walletConnectProvider) {
-          await this.walletConnectProvider.disconnect()
+        await this.walletConnectProvider?.disconnect()
 
-          if (NetworkController.state.caipNetwork) {
-            this.appKit?.resetAccount('eip155')
-            this.appKit?.resetAccount('solana')
-          }
-        }
-
-        // eslint-disable-next-line no-negated-condition
+        this.appKit?.resetAccount('eip155')
+        this.appKit?.resetAccount('solana')
       },
 
       signMessage: async (message: string) => {
@@ -451,10 +442,12 @@ export class UniversalAdapterClient {
 
   private async watchWalletConnect() {
     const provider = await this.getWalletConnectProvider()
-    const chainNamespace = this.chainNamespace
+    const namespaces = provider?.session?.namespaces || {}
 
     function disconnectHandler() {
-      AccountController.resetAccount(chainNamespace)
+      Object.keys(namespaces).forEach(key => {
+        AccountController.resetAccount(key as ChainNamespace)
+      })
       ConnectionController.resetWcConnection()
 
       SafeLocalStorage.removeItem(SafeLocalStorageKeys.WALLET_ID)
@@ -544,44 +537,50 @@ export class UniversalAdapterClient {
 
   private syncAccounts(reset = false) {
     const { namespaces } = this.getProviderData()
-    const chainNamespace = this.chainNamespace
+    const chainNamespaces = Object.keys(namespaces) as ChainNamespace[]
 
-    const addresses = namespaces?.[chainNamespace]?.accounts
-      ?.map(account => {
-        const [, , address] = account.split(':')
+    chainNamespaces.forEach(chainNamespace => {
+      const addresses = namespaces?.[chainNamespace]?.accounts
+        ?.map(account => {
+          const [, , address] = account.split(':')
 
-        return address
-      })
-      .filter((address, index, self) => self.indexOf(address) === index) as string[]
+          return address
+        })
+        .filter((address, index, self) => self.indexOf(address) === index) as string[]
 
-    if (reset) {
-      this.appKit?.setAllAccounts([], chainNamespace)
-    }
+      if (reset) {
+        this.appKit?.setAllAccounts([], chainNamespace)
+      }
 
-    if (addresses) {
-      this.appKit?.setAllAccounts(
-        addresses.map(address => ({ address, type: 'eoa' })),
-        chainNamespace
-      )
-    }
+      if (addresses) {
+        this.appKit?.setAllAccounts(
+          addresses.map(address => ({ address, type: 'eoa' })),
+          chainNamespace
+        )
+      }
+    })
   }
 
   private syncConnectedWalletInfo() {
     const currentActiveWallet = SafeLocalStorage.getItem(SafeLocalStorageKeys.WALLET_ID)
+    const namespaces = this.walletConnectProvider?.session?.namespaces || {}
+    const chainNamespaces = Object.keys(namespaces) as ChainNamespace[]
 
-    if (this.walletConnectProvider?.session) {
-      this.appKit?.setConnectedWalletInfo(
-        {
-          ...this.walletConnectProvider.session.peer.metadata,
-          name: this.walletConnectProvider.session.peer.metadata.name,
-          icon: this.walletConnectProvider.session.peer.metadata.icons?.[0]
-        },
-        this.chainNamespace
-      )
-    } else if (currentActiveWallet) {
-      this.appKit?.setConnectedWalletInfo({ name: currentActiveWallet }, 'eip155')
-      this.appKit?.setConnectedWalletInfo({ name: currentActiveWallet }, 'solana')
-    }
+    chainNamespaces.forEach(chainNamespace => {
+      if (this.walletConnectProvider?.session) {
+        this.appKit?.setConnectedWalletInfo(
+          {
+            ...this.walletConnectProvider.session.peer.metadata,
+            name: this.walletConnectProvider.session.peer.metadata.name,
+            icon: this.walletConnectProvider.session.peer.metadata.icons?.[0]
+          },
+          chainNamespace
+        )
+      } else if (currentActiveWallet) {
+        this.appKit?.setConnectedWalletInfo({ name: currentActiveWallet }, 'eip155')
+        this.appKit?.setConnectedWalletInfo({ name: currentActiveWallet }, 'solana')
+      }
+    })
   }
 
   private syncConnectors() {

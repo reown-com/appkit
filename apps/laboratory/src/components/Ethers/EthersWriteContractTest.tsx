@@ -35,10 +35,11 @@ export function EthersWriteContractTest() {
         description: tx.hash,
         type: 'success'
       })
-    } catch {
+    } catch (e) {
       toast({
         title: 'Error',
-        description: 'Failed to sign transaction',
+        // @ts-expect-error - error is unknown
+        description: e?.message || 'Failed to sign transaction',
         type: 'error'
       })
     } finally {

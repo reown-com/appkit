@@ -1,6 +1,7 @@
 import { Button } from '@chakra-ui/react'
 import { useAccount, useSignTypedData } from 'wagmi'
 import { useChakraToast } from '../Toast'
+import { useWeb3ModalAccount } from '@rerock/base/react'
 
 // Example data
 const types = {
@@ -29,7 +30,8 @@ const message = {
 
 export function WagmiSignTypedDataTest() {
   const toast = useChakraToast()
-  const { chain, isConnected } = useAccount()
+  const { isConnected } = useWeb3ModalAccount()
+  const { chain } = useAccount()
   const domain = {
     name: 'Ether Mail',
     version: '1',

@@ -53,7 +53,7 @@ export async function getWalletConnectCaipNetworks(connector?: Connector) {
 
 export function getEmailCaipNetworks() {
   return {
-    supportsAllNetworks: false,
+    supportsAllNetworks: true,
     approvedCaipNetworkIds: PresetsUtil.WalletConnectRpcChainIds.map(
       id => `${ConstantsUtil.EIP155}:${id}`
     ) as CaipNetworkId[]

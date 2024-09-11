@@ -28,10 +28,10 @@ noSocialsTest.afterAll(async () => {
 })
 
 // -- Tests --------------------------------------------------------------------
-noSocialsTest('should not display any socials', () => {
-  modalValidator.expectNoSocials()
+noSocialsTest('should not display any socials', async () => {
+  await modalValidator.expectNoSocials()
 })
 
-noSocialsTest('should show email login', () => {
-  modalValidator.expectEmailLogin()
+noSocialsTest('should show email login', async () => {
+  await modalValidator.expectEmailLogin()
 })
