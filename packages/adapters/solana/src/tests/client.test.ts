@@ -39,19 +39,19 @@ vi.mock('@rerock/base/store', () => ({
   }
 }))
 
-vi.mock('../utils/SolanaHelpersUtils', () => ({
+vi.mock('@rerock/scaffold-utils/solana', () => ({
   SolHelpersUtil: {
     getChainFromCaip: vi.fn(),
     detectRpcUrl: vi.fn()
-  }
-}))
-
-vi.mock('../utils/SolanaStoreUtil', () => ({
+  },
   SolStoreUtil: {
     setConnection: vi.fn(),
     state: {
       connection: null
     }
+  },
+  SolConstantsUtil: {
+    LAMPORTS_PER_SOL: 1_000_000_000
   }
 }))
 

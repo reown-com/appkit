@@ -151,7 +151,7 @@ describe('NetworkController', () => {
       'eip155:1:0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
     )
 
-    mock.mockReturnValue({ ...caipNetwork, chainNamespace: 'solana', chainId: 'mainnet' })
+    mock.mockReturnValue({ ...caipNetwork, chainNamespace: 'solana', id: 'solana:mainnet' })
     expect(NetworkController.getActiveNetworkTokenAddress()).toEqual(
       'solana:mainnet:So11111111111111111111111111111111111111111'
     )
