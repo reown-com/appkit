@@ -45,6 +45,10 @@ export const EthersMethods = {
     if (!address) {
       throw new Error('estimateGas - address is undefined')
     }
+    if (data.chainNamespace && data.chainNamespace !== 'eip155') {
+      throw new Error('estimateGas - chainNamespace is not eip155')
+    }
+
     const txParams = {
       from: data.address,
       to: data.to,
@@ -68,6 +72,9 @@ export const EthersMethods = {
     }
     if (!address) {
       throw new Error('sendTransaction - address is undefined')
+    }
+    if (data.chainNamespace && data.chainNamespace !== 'eip155') {
+      throw new Error('sendTransaction - chainNamespace is not eip155')
     }
     const txParams = {
       to: data.to,

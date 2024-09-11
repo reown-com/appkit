@@ -14,9 +14,8 @@ import {
   SafeLocalStorageKeys
 } from '@rerock/common'
 
-import { SolConstantsUtil } from './utils/SolanaConstantsUtil.js'
-import { SolHelpersUtil } from './utils/SolanaHelpersUtils.js'
-import { SolStoreUtil } from './utils/SolanaStoreUtil.js'
+import { SolConstantsUtil, SolHelpersUtil, SolStoreUtil } from '@rerock/scaffold-utils/solana'
+import type { Provider } from '@rerock/scaffold-utils/solana'
 
 import type { BaseWalletAdapter } from '@solana/wallet-adapter-base'
 import { PublicKey, type Commitment, type ConnectionConfig } from '@solana/web3.js'
@@ -30,10 +29,10 @@ import type {
 import type { AdapterType, CaipAddress, CaipNetwork, CaipNetworkId } from '@rerock/common'
 import type { ChainNamespace } from '@rerock/common'
 
-import type { Provider } from './utils/SolanaTypesUtil.js'
 import { watchStandard } from './utils/watchStandard.js'
 import { WalletConnectProvider } from './providers/WalletConnectProvider.js'
 import { AuthProvider } from './providers/AuthProvider.js'
+import { createSendTransaction } from './utils/createSendTransaction.js'
 import { W3mFrameHelpers, W3mFrameRpcConstants, type W3mFrameTypes } from '@rerock/wallet'
 import { ConstantsUtil as CoreConstantsUtil } from '@rerock/core'
 import { withSolanaNamespace } from './utils/withSolanaNamespace.js'
@@ -179,7 +178,28 @@ export class SolanaWeb3JsClient implements ChainAdapter {
         return new TextDecoder().decode(signature)
       },
 
-      estimateGas: async () => await Promise.resolve(BigInt(0)),
+      estimateGas: async params => {
+        if (params.chainNamespace !== 'solana') {
+          throw new Error('Chain namespace is not supported')
+        }
+
+        const connection = SolStoreUtil.state.connection
+
+        if (!connection || !this.provider) {
+          throw new Error('Connection is not set')
+        }
+
+        const transaction = await createSendTransaction({
+          provider: this.provider,
+          connection,
+          to: '11111111111111111111111111111111',
+          value: 1
+        })
+
+        const fee = await transaction.getEstimatedFee(connection)
+
+        return BigInt(fee || 0)
+      },
       // -- Transaction methods ---------------------------------------------------
       /**
        *
@@ -192,7 +212,42 @@ export class SolanaWeb3JsClient implements ChainAdapter {
 
       writeContract: async () => await Promise.resolve('0x'),
 
-      sendTransaction: async () => await Promise.resolve('0x'),
+      sendTransaction: async params => {
+        if (params.chainNamespace !== 'solana') {
+          throw new Error('Chain namespace is not supported')
+        }
+
+        const connection = SolStoreUtil.state.connection
+        const address = this.appKit?.getAddress(this.chainNamespace)
+
+        if (!connection || !address || !this.provider) {
+          throw new Error('Connection is not set')
+        }
+
+        const transaction = await createSendTransaction({
+          provider: this.provider,
+          connection,
+          to: params.to,
+          value: params.value
+        })
+
+        const result = await this.provider.sendTransaction(transaction, connection)
+
+        await new Promise<void>(resolve => {
+          const interval = setInterval(async () => {
+            const status = await connection.getSignatureStatus(result)
+
+            if (status?.value) {
+              clearInterval(interval)
+              resolve()
+            }
+          }, 1000)
+        })
+
+        await this.syncBalance(address)
+
+        return result
+      },
 
       parseUnits: () => BigInt(0),
 

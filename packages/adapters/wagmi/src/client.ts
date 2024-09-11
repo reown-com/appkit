@@ -405,6 +405,9 @@ export class EVMWagmiClient implements ChainAdapter {
         return signMessage(this.wagmiConfig, { message, account })
       },
       estimateGas: async args => {
+        if (args.chainNamespace && args.chainNamespace !== 'eip155') {
+          throw new Error(`Invalid chain namespace - Expected eip155, got ${args.chainNamespace}`)
+        }
         try {
           return await wagmiEstimateGas(this.wagmiConfig, {
             account: args.address,
@@ -417,6 +420,9 @@ export class EVMWagmiClient implements ChainAdapter {
         }
       },
       sendTransaction: async (data: SendTransactionArgs) => {
+        if (data.chainNamespace && data.chainNamespace !== 'eip155') {
+          throw new Error(`Invalid chain namespace - Expected eip155, got ${data.chainNamespace}`)
+        }
         const { chainId } = getAccount(this.wagmiConfig)
         const txParams = {
           account: data.address,

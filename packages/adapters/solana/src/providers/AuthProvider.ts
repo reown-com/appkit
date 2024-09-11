@@ -4,7 +4,7 @@ import type {
   Connection,
   GetActiveChain,
   Provider
-} from '../utils/SolanaTypesUtil.js'
+} from '@rerock/scaffold-utils/solana'
 import { ProviderEventEmitter } from './shared/ProviderEventEmitter.js'
 import { PublicKey, Transaction, VersionedTransaction, type SendOptions } from '@solana/web3.js'
 import {

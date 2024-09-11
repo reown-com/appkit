@@ -1,9 +1,9 @@
 import { ref } from 'vue'
-import { SolStoreUtil } from '../src/utils/SolanaStoreUtil.js'
-import { type Connection } from '../src/utils/SolanaTypesUtil.js'
+import { SolStoreUtil } from '@rerock/scaffold-utils/solana'
+import type { Connection } from '@rerock/scaffold-utils/solana'
 
 // -- Types -----------------------------------------------------------
-export * from '../src/utils/SolanaTypesUtil.js'
+export * from '@rerock/scaffold-utils/solana'
 
 // -- Source -----------------------------------------------------------
 export * from '../src/index.js'
