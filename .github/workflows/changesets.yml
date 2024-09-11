@@ -37,11 +37,11 @@ jobs:
         run: pnpm install
         shell: bash
 
-      - name: Generate NPMRC File
-        run: pnpm generate-npmrc
-        shell: bash
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Generate NPMRC File
+      #   run: pnpm generate-npmrc
+      #   shell: bash
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: PR or publish
         uses: changesets/action@v1
@@ -53,7 +53,7 @@ jobs:
           version: pnpm changeset:version
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       # - name: Publish prerelease
       #   if: steps.changesets.outputs.published != 'true'
