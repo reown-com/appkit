@@ -16,7 +16,18 @@ export const WcHelpersUtil = {
   getMethodsByChainNamespace(chainNamespace: ChainNamespace): string[] {
     switch (chainNamespace) {
       case 'solana':
-        return ['solana_signMessage']
+        return [
+          'solana_signMessage',
+          'solana_signTransaction',
+          'solana_signAllTransactions',
+          'solana_signAndSendTransaction',
+          'solana_requestAccounts',
+          'solana_getAccounts',
+          'solana_getBalance',
+          'solana_getRecentBlockhash',
+          'solana_getVersion',
+          'solana_isConnected'
+        ]
       case 'eip155':
         return [
           'personal_sign',
