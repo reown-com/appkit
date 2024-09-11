@@ -39,6 +39,7 @@ jobs:
 
       - name: Generate NPMRC File
         run: pnpm generate-npmrc
+        shell: bash
 
       - name: PR or publish
         uses: changesets/action@v1
