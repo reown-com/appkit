@@ -169,7 +169,9 @@ export class UniversalAdapterClient {
           ) {
             const { SIWEController, getDidChainId, getDidAddress } = await import('@rerock/siwe')
 
-            const chains = this.options?.caipNetworks.map(network => network.id) as string[]
+            const chains = this.options?.caipNetworks
+              ?.filter(network => network.chainNamespace === 'eip155')
+              .map(chain => chain.id) as string[]
 
             const result = await WalletConnectProvider.authenticate({
               nonce: await siweConfig?.getNonce?.(),

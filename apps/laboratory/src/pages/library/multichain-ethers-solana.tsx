@@ -7,6 +7,7 @@ import { mainnet, solana, arbitrum, optimism } from '@rerock/base/chains'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { MultiChainTestsEthersSolana } from '../../components/MultiChainTestsEthersSolana'
+import { siweConfig } from '../../utils/SiweUtils'
 
 const etherAdapter = new EVMEthersClient()
 
@@ -18,6 +19,7 @@ const modal = createWeb3Modal({
   adapters: [etherAdapter, solanaWeb3JsAdapter],
   projectId: ConstantsUtil.ProjectId,
   caipNetworks: [mainnet, arbitrum, optimism, solana],
+  siweConfig,
   features: {
     analytics: true
   },
