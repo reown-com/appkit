@@ -155,8 +155,12 @@ export class EVMWagmiClient implements ChainAdapter {
         }
 
         let chainId = NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id)
+        let address: string | undefined = undefined
+        let isSuccessful1CA = false
+
+        const supports1ClickAuth = this.appKit?.getIsSiweEnabled() && typeof provider?.authenticate === 'function'
         // Make sure client uses ethereum provider version that supports `authenticate`
-        if (this.appKit?.getIsSiweEnabled() && typeof provider?.authenticate === 'function') {
+        if (supports1ClickAuth) {
           const { SIWEController, getDidChainId, getDidAddress } = await import('@web3modal/siwe')
           if (!SIWEController.state._client) {
             return
@@ -190,7 +194,7 @@ export class EVMWagmiClient implements ChainAdapter {
           if (signedCacao) {
             const { p, s } = signedCacao
             const cacaoChainId = getDidChainId(p.iss) || ''
-            const address = getDidAddress(p.iss)
+            address = getDidAddress(p.iss)
             chainId = parseInt(cacaoChainId, 10)
             // Optimistically set the session to avoid a flash of the wrong state
             if (address && cacaoChainId) {
@@ -214,22 +218,16 @@ export class EVMWagmiClient implements ChainAdapter {
                 cacao: signedCacao,
                 clientId
               })
+              isSuccessful1CA = true
 
-              if (address && cacaoChainId) {
-                SIWEController.onSignIn?.({
-                  address,
-                  chainId
-                })
-              }
-              SIWEController.setStatus('success')
             } catch (error) {
+              isSuccessful1CA = false
               SIWEController.setStatus('ready')
               // eslint-disable-next-line no-console
               console.error('Error verifying message', error)
+              await this.connectionControllerClient.disconnect().catch(console.error)
               // eslint-disable-next-line no-console
               await provider.disconnect().catch(console.error)
-              // eslint-disable-next-line no-console
-              await SIWEController.signOut().catch(console.error)
               throw error
             }
           }
@@ -238,9 +236,21 @@ export class EVMWagmiClient implements ChainAdapter {
            * this avoids case where wagmi throws because the connector is already connected
            * what we need connect() to do is to only setup internal event listeners
            */
-          this.wagmiConfig.state.current = ''
+          this.wagmiConfig.setState(x => ({
+            ...x,
+            current: null,
+          }))
         }
         await connect(this.wagmiConfig, { connector, chainId })
+        const { SIWEController } = await import('@web3modal/siwe')
+        if(supports1ClickAuth && address && chainId && isSuccessful1CA){
+          SIWEController.setStatus('authenticating')
+          await SIWEController.onSignIn?.({
+            address,
+            chainId
+          })
+          SIWEController.setStatus('success')
+        }
       },
 
       connectExternal: async ({ id, provider, info }) => {

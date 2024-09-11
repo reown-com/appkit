@@ -66,7 +66,7 @@ export interface SIWEClientMethods {
   verifyMessage: (args: SIWEVerifyMessageArgs) => Promise<boolean>
   getSession: () => Promise<SIWESession | null>
   signOut: () => Promise<boolean>
-  onSignIn?: (session?: SIWESession) => void
+  onSignIn?: (session?: SIWESession) => Promise<void>
   onSignOut?: () => void
 }
 

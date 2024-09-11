@@ -169,7 +169,7 @@ export class Web3ModalSIWEClient {
       throw new Error('Error verifying SIWE signature')
     }
     if (this.methods.onSignIn) {
-      this.methods.onSignIn(session)
+      await this.methods.onSignIn(session)
     }
 
     RouterUtil.navigateAfterNetworkSwitch()
@@ -183,7 +183,7 @@ export class Web3ModalSIWEClient {
     return this.methods.signOut()
   }
 
-  onSignIn(session?: SIWESession) {
-    this.methods.onSignIn?.(session)
+  async onSignIn(session?: SIWESession) {
+    await this.methods.onSignIn?.(session)
   }
 }

@@ -128,9 +128,9 @@ export const SIWEController = {
     this.setNonce(undefined)
   },
 
-  onSignIn(args: SIWESession) {
+  async onSignIn(args: SIWESession) {
     const client = this._getClient()
-    client.onSignIn?.(args)
+    await client.onSignIn?.(args)
   },
 
   onSignOut() {

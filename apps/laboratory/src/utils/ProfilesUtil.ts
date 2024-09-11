@@ -5,7 +5,6 @@ import {
   formatMessage,
   getAppKitAuthSession,
   getNonce,
-  SIWEController,
   type SIWECreateMessageArgs,
   type SIWESession,
   type SIWEVerifyMessageArgs
@@ -13,7 +12,7 @@ import {
 
 import { ConnectionController } from '@web3modal/core'
 
-import { disconnect, type Config } from '@wagmi/core'
+import { type Config, disconnect } from '@wagmi/core'
 import { ProfileStore } from './ProfileStoreUtil'
 const queryParams = `projectId=24970167f11c121f6eb40b558edb9691&st=w3m&sv=5.0.0`
 
@@ -234,12 +233,9 @@ export function siweProfilesConfig(wagmiConfig: Config) {
         return false
       }
     },
-    onSignIn: () => {
-      disconnect(wagmiConfig).then(async () => {
-        await ConnectionController.disconnect()
-        await appKitAuthSignOut()
-        SIWEController.setSession(undefined)
-      })
+    onSignIn: async () => {
+      await disconnect(wagmiConfig)
+      await ConnectionController.disconnect()
     }
   })
 }

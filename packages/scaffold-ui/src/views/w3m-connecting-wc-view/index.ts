@@ -40,11 +40,15 @@ export class W3mConnectingWcView extends LitElement {
     this.unsubscribe.push(
       AccountController.subscribe(val => {
         if (val.siweStatus === 'authenticating') {
-          SnackController.showLoading('Authenticating', 4000)
+          SnackController.showLoading('Authenticating', 8000)
         }
 
         if (val.siweStatus === 'success') {
+          SnackController.hide()
           ModalController.close()
+        }
+        if (val.siweStatus === 'ready') {
+          SnackController.hide()
         }
       }),
       OptionsController.subscribeKey('isSiweEnabled', val => (this.isSiweEnabled = val))
@@ -85,10 +89,12 @@ export class W3mConnectingWcView extends LitElement {
           const { SIWEController } = await import('@web3modal/siwe')
           const { status } = SIWEController.state
           if (status === 'success') {
+            SnackController.hide()
             ModalController.close()
-          } else if (status === 'authenticating') {
-            SnackController.showLoading('Authenticating', 4000)
-          } else {
+          } else if(status === 'ready') {
+            SnackController.hide()
+          }
+          else {
             RouterController.push('ConnectingSiwe')
           }
         } else {
