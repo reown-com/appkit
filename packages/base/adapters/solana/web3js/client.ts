@@ -47,6 +47,7 @@ import type { AppKit } from '../../../src/client.js'
 import type { AppKitOptions } from '../../../utils/TypesUtil.js'
 import type { OptionsControllerState } from '@web3modal/core'
 import { SafeLocalStorage } from '../../../utils/SafeLocalStorage.js'
+import { createSendTransaction } from './utils/createSendTransaction.js'
 
 export interface Web3ModalClientOptions
   extends Omit<AppKitOptions, 'defaultChain' | 'tokens' | 'sdkType' | 'sdkVersion'> {
@@ -183,7 +184,30 @@ export class SolanaWeb3JsClient implements ChainAdapter<SolStoreUtilState, CaipN
         return new TextDecoder().decode(signature)
       },
 
-      estimateGas: async () => await Promise.resolve(BigInt(0)),
+      estimateGas: async params => {
+        if (params.chainNamespace !== 'solana') {
+          throw new Error('Chain namespace is not supported')
+        }
+
+        const connection = SolStoreUtil.state.connection
+
+        if (!connection) {
+          throw new Error('Connection is not set')
+        }
+
+        const provider = this.getProvider()
+
+        const transaction = await createSendTransaction({
+          provider,
+          connection,
+          to: '11111111111111111111111111111111',
+          value: 1
+        })
+
+        const fee = await transaction.getEstimatedFee(connection)
+
+        return BigInt(fee || 0)
+      },
       // -- Transaction methods ---------------------------------------------------
       /**
        *
@@ -196,7 +220,44 @@ export class SolanaWeb3JsClient implements ChainAdapter<SolStoreUtilState, CaipN
 
       writeContract: async () => await Promise.resolve('0x'),
 
-      sendTransaction: async () => await Promise.resolve('0x'),
+      sendTransaction: async params => {
+        if (params.chainNamespace !== 'solana') {
+          throw new Error('Chain namespace is not supported')
+        }
+
+        const connection = SolStoreUtil.state.connection
+        const address = SolStoreUtil.state.address
+
+        if (!connection || !address) {
+          throw new Error('Connection is not set')
+        }
+
+        const provider = this.getProvider()
+
+        const transaction = await createSendTransaction({
+          provider,
+          connection,
+          to: params.to,
+          value: params.value
+        })
+
+        const result = await provider.sendTransaction(transaction, connection)
+
+        await new Promise<void>(resolve => {
+          const interval = setInterval(async () => {
+            const status = await connection.getSignatureStatus(result)
+
+            if (status?.value) {
+              clearInterval(interval)
+              resolve()
+            }
+          }, 1000)
+        })
+
+        await this.syncBalance(address)
+
+        return result
+      },
 
       parseUnits: () => BigInt(0),
 
@@ -492,19 +553,8 @@ export class SolanaWeb3JsClient implements ChainAdapter<SolStoreUtilState, CaipN
       }
 
       if (W3mFrameHelpers.checkIfRequestExists(request)) {
-        if (!W3mFrameHelpers.checkIfRequestIsAllowed(request)) {
-          if (this.appKit.isOpen()) {
-            if (this.appKit.isTransactionStackEmpty()) {
-              return
-            }
-            if (this.appKit.isTransactionShouldReplaceView()) {
-              this.appKit.replace('ApproveTransaction')
-            } else {
-              this.appKit.redirect('ApproveTransaction')
-            }
-          } else {
-            this.appKit.open({ view: 'ApproveTransaction' })
-          }
+        if (!W3mFrameHelpers.checkIfRequestIsSafe(request)) {
+          this.appKit.handleUnsafeRPCRequest()
         }
       } else {
         this.appKit.open()

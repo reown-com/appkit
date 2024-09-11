@@ -49,7 +49,7 @@ export const W3mFrameHelpers = {
     return W3mFrameConstants.RPC_RESPONSE_TYPE_OBJECT
   },
 
-  checkIfRequestIsAllowed(request: W3mFrameTypes.RPCRequest) {
+  checkIfRequestIsSafe(request: W3mFrameTypes.RPCRequest) {
     return W3mFrameRpcConstants.SAFE_RPC_METHODS.includes(request.method)
   },
 

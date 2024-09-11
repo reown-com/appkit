@@ -8,7 +8,6 @@ import {
   CoreHelperUtil,
   NetworkController,
   ModalController,
-  ConstantsUtil,
   type SwapToken,
   type SwapInputTarget,
   EventsController,
@@ -207,8 +206,7 @@ export class W3mSwapView extends LitElement {
 
   private onSetMaxValue(target: SwapInputTarget, balance: string | undefined) {
     const token = target === 'sourceToken' ? this.sourceToken : this.toToken
-    const isNetworkToken = token?.address === ConstantsUtil.NATIVE_TOKEN_ADDRESS
-
+    const isNetworkToken = token?.address === NetworkController.getActiveNetworkTokenAddress()
     let value = '0'
 
     if (!balance) {

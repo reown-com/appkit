@@ -1,4 +1,4 @@
-import type { Balance } from '@web3modal/common'
+import type { Balance, Chain } from '@web3modal/common'
 import { ConstantsUtil as CommonConstants } from '@web3modal/common'
 import { ConstantsUtil } from './ConstantsUtil.js'
 import type { CaipAddress, LinkingRecord, CaipNetwork } from './TypeUtil.js'
@@ -260,14 +260,25 @@ export const CoreHelperUtil = {
     return { dollars, pennies }
   },
 
-  isAddress(address: string): boolean {
-    if (!/^(?:0x)?[0-9a-f]{40}$/iu.test(address)) {
-      return false
-    } else if (/^(?:0x)?[0-9a-f]{40}$/iu.test(address) || /^(?:0x)?[0-9A-F]{40}$/iu.test(address)) {
-      return true
-    }
+  isAddress(address: string, chain: Chain = 'evm'): boolean {
+    switch (chain) {
+      case 'evm':
+        if (!/^(?:0x)?[0-9a-f]{40}$/iu.test(address)) {
+          return false
+        } else if (
+          /^(?:0x)?[0-9a-f]{40}$/iu.test(address) ||
+          /^(?:0x)?[0-9A-F]{40}$/iu.test(address)
+        ) {
+          return true
+        }
 
-    return false
+        return false
+      case 'solana':
+        return /[1-9A-HJ-NP-Za-km-z]{32,44}$/iu.test(address)
+
+      default:
+        return false
+    }
   },
 
   uniqueBy<T>(arr: T[], key: keyof T) {

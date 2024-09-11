@@ -369,6 +369,10 @@ export class EVMEthers5Client implements ChainAdapter<EthersStoreUtilState, numb
         const provider = EthersStoreUtil.state.provider
         const address = EthersStoreUtil.state.address
 
+        if (data.chainNamespace && data.chainNamespace !== 'eip155') {
+          throw new Error('connectionControllerClient:sendTransaction - invalid chain namespace')
+        }
+
         if (!provider) {
           throw new Error('connectionControllerClient:sendTransaction - provider is undefined')
         }
@@ -935,19 +939,9 @@ export class EVMEthers5Client implements ChainAdapter<EthersStoreUtilState, numb
     if (this.authProvider) {
       this.authProvider.onRpcRequest(request => {
         if (W3mFrameHelpers.checkIfRequestExists(request)) {
-          if (!W3mFrameHelpers.checkIfRequestIsAllowed(request)) {
-            if (this.appKit?.isOpen()) {
-              if (this.appKit?.isTransactionStackEmpty()) {
-                return
-              }
-              if (this.appKit?.isTransactionShouldReplaceView()) {
-                this.appKit?.replace('ApproveTransaction')
-              } else {
-                this.appKit?.redirect('ApproveTransaction')
-              }
-            } else {
-              this.appKit?.open({ view: 'ApproveTransaction' })
-            }
+          // If it's not a safe request, show the approve transaction modal
+          if (!W3mFrameHelpers.checkIfRequestIsSafe(request)) {
+            this.appKit?.handleUnsafeRPCRequest()
           }
         } else {
           this.appKit?.open()
@@ -973,7 +967,13 @@ export class EVMEthers5Client implements ChainAdapter<EthersStoreUtilState, numb
         }
       })
 
-      this.authProvider.onRpcSuccess(() => {
+      this.authProvider.onRpcSuccess((_, request) => {
+        const isSafeRequest = W3mFrameHelpers.checkIfRequestIsSafe(request)
+
+        if (isSafeRequest) {
+          return
+        }
+
         if (this.appKit?.isTransactionStackEmpty()) {
           this.appKit?.close()
         } else {

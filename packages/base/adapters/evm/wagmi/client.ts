@@ -13,11 +13,11 @@ import {
   writeContract as wagmiWriteContract,
   getAccount,
   getEnsAddress as wagmiGetEnsAddress,
-  reconnect,
   switchChain,
   waitForTransactionReceipt,
   getConnections,
-  switchAccount
+  switchAccount,
+  reconnect
 } from '@wagmi/core'
 import type { ChainAdapter, OptionsControllerState } from '@web3modal/core'
 import { mainnet } from 'viem/chains'
@@ -242,16 +242,6 @@ export class EVMWagmiClient implements ChainAdapter {
         await connect(this.wagmiConfig, { connector, chainId })
       },
 
-      reconnectExternal: async ({ id }) => {
-        const connector = this.wagmiConfig.connectors.find(c => c.id === id)
-
-        if (!connector) {
-          throw new Error('connectionControllerClient:connectExternal - connector is undefined')
-        }
-
-        await reconnect(this.wagmiConfig, { connectors: [connector] })
-      },
-
       checkInstalled: ids => {
         const injectedConnector = this.appKit
           ?.getConnectors()
@@ -289,6 +279,10 @@ export class EVMWagmiClient implements ChainAdapter {
       },
 
       estimateGas: async args => {
+        if (args.chainNamespace && args.chainNamespace !== 'eip155') {
+          throw new Error('connectionControllerClient:estimateGas - invalid chain namespace')
+        }
+
         try {
           return await wagmiEstimateGas(this.wagmiConfig, {
             account: args.address,
@@ -302,6 +296,10 @@ export class EVMWagmiClient implements ChainAdapter {
       },
 
       sendTransaction: async (data: SendTransactionArgs) => {
+        if (data.chainNamespace && data.chainNamespace !== 'eip155') {
+          throw new Error('connectionControllerClient:sendTransaction - invalid chain namespace')
+        }
+
         const { chainId } = getAccount(this.wagmiConfig)
 
         const txParams = {
@@ -470,10 +468,10 @@ export class EVMWagmiClient implements ChainAdapter {
     >
   >) {
     const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`
-
     if (this.appKit?.getCaipAddress() === caipAddress) {
       return
     }
+
     if (status === 'connected' && address && chainId) {
       this.syncNetwork(address, chainId, true)
       this.appKit?.setIsConnected(true, this.chain)
@@ -718,19 +716,8 @@ export class EVMWagmiClient implements ChainAdapter {
 
       provider.onRpcRequest((request: W3mFrameTypes.RPCRequest) => {
         if (W3mFrameHelpers.checkIfRequestExists(request)) {
-          if (!W3mFrameHelpers.checkIfRequestIsAllowed(request)) {
-            if (this.appKit?.isOpen()) {
-              if (this.appKit?.isTransactionStackEmpty()) {
-                return
-              }
-              if (this.appKit?.isTransactionShouldReplaceView()) {
-                this.appKit?.replace('ApproveTransaction')
-              } else {
-                this.appKit?.redirect('ApproveTransaction')
-              }
-            } else {
-              this.appKit?.open({ view: 'ApproveTransaction' })
-            }
+          if (!W3mFrameHelpers.checkIfRequestIsSafe(request)) {
+            this.appKit?.handleUnsafeRPCRequest()
           }
         } else {
           this.appKit?.open()
@@ -757,7 +744,12 @@ export class EVMWagmiClient implements ChainAdapter {
         }
       })
 
-      provider.onRpcSuccess(() => {
+      provider.onRpcSuccess((_, request) => {
+        const isSafeRequest = W3mFrameHelpers.checkIfRequestIsSafe(request)
+        if (isSafeRequest) {
+          return
+        }
+
         if (this.appKit?.isTransactionStackEmpty()) {
           this.appKit?.close()
         } else {
@@ -801,12 +793,7 @@ export class EVMWagmiClient implements ChainAdapter {
           return
         }
         this.appKit?.setPreferredAccountType(type as W3mFrameTypes.AccountType, this.chain)
-        this.syncAccount({
-          address: address as `0x${string}`,
-          isConnected: true,
-          chainId: NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id),
-          connector
-        })
+        reconnect(this.wagmiConfig, { connectors: [connector] })
       })
     }
   }
