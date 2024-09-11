@@ -18,6 +18,7 @@ import { SolanaWriteContractTest } from './SolanaWriteContractTest'
 import { solana, solanaDevnet, solanaTestnet } from '@rerock/base/chains'
 import { SolanaSignAndSendTransaction } from './SolanaSignAndSendTransactionTest'
 import { SolanaSignAllTransactionsTest } from './SolanaSignAllTransactionsTest'
+import { SolanaSignJupiterSwapTest } from './SolanaSignJupiterSwapTest'
 
 export function SolanaTests() {
   const { isConnected } = useWeb3ModalAccount()
@@ -84,6 +85,19 @@ export function SolanaTests() {
             </Heading>
             <SolanaSignAndSendTransaction />
           </Box>
+
+          <Box>
+            <Heading size="xs" textTransform="uppercase" pb="2">
+              Sign Jupiter Swap Transaction
+              <Tooltip label="Use Jupiter Swap API to create a transaction that has Address Lookup Tables and requests for the wallet to sign it">
+                <Text as="span" fontSize="sm" ml="2">
+                  ℹ️
+                </Text>
+              </Tooltip>
+            </Heading>
+            <SolanaSignJupiterSwapTest />
+          </Box>
+
           {(caipNetwork?.chainId === solanaTestnet.chainId ||
             caipNetwork?.chainId === solanaDevnet.chainId) && (
             <Stack divider={<StackDivider />} spacing="4">

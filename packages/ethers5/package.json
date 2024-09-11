@@ -44,13 +44,13 @@
   },
   "dependencies": {
     "@coinbase/wallet-sdk": "4.0.3",
-    "@rerock/adapter-ethers5": "workspace:*",
     "@walletconnect/utils": "2.16.1",
     "@rerock/base": "workspace:*",
     "@rerock/common": "workspace:*",
     "@rerock/wallet": "workspace:*",
     "@rerock/polyfills": "workspace:*",
     "@rerock/scaffold-utils": "workspace:*",
+    "@rerock/adapter-ethers5": "workspace:*",
     "@rerock/siwe": "workspace:*",
     "valtio": "1.11.2"
   },

@@ -1,19 +1,20 @@
+import { SIWEController, type SIWEControllerClient } from '../core/controller/SIWEController.js'
 import type {
-  SIWECreateMessageArgs,
-  SIWEVerifyMessageArgs,
-  SIWEConfig,
   SIWEClientMethods,
+  SIWEConfig,
+  SIWECreateMessageArgs,
+  SIWEMessageArgs,
   SIWESession,
-  SIWEMessageArgs
+  SIWEVerifyMessageArgs
 } from '../core/utils/TypeUtils.js'
-import type { SIWEControllerClient } from '../core/controller/SIWEController.js'
 
 import {
+  AccountController,
+  ChainController,
   ConnectionController,
   RouterController,
   StorageUtil,
   NetworkController,
-  AccountController,
   ModalController
 } from '@rerock/core'
 
@@ -89,15 +90,43 @@ export class Web3ModalSIWEClient {
   }
 
   async signIn(): Promise<SIWESession> {
+    if (!SIWEController.state._client) {
+      throw new Error('SIWE client needs to be initialized before calling signIn')
+    }
+
     const address = AccountController.state.address
+
     const nonce = await this.methods.getNonce(address)
     if (!address) {
       throw new Error('An address is required to create a SIWE message.')
     }
-    const chainId = NetworkUtil.caipNetworkIdToNumber(NetworkController.state.caipNetwork?.id)
+
+    const caipNetwork = ChainController.getNetworkProp('caipNetwork')
+
+    if (!caipNetwork?.id) {
+      throw new Error('A chainId is required to create a SIWE message.')
+    }
+
+    const chainId = NetworkUtil.caipNetworkIdToNumber(caipNetwork.id)
+
     if (!chainId) {
       throw new Error('A chainId is required to create a SIWE message.')
     }
+
+    const signOutOnNetworkChange = SIWEController.state._client?.options.signOutOnNetworkChange
+    // Sign out if signOutOnNetworkChange is enabled to avoid re-prompting the user for a signature
+    if (signOutOnNetworkChange) {
+      SIWEController.state._client.options.signOutOnNetworkChange = false
+      await this.signOut()
+    }
+
+    await NetworkController.switchActiveNetwork(caipNetwork)
+
+    // Enable the signOutOnNetworkChange option if it was previously enabled
+    if (signOutOnNetworkChange) {
+      SIWEController.state._client.options.signOutOnNetworkChange = true
+    }
+
     const messageParams = await this.getMessageParams?.()
     const message = this.methods.createMessage({
       address: `eip155:${chainId}:${address}`,
@@ -120,6 +149,7 @@ export class Web3ModalSIWEClient {
         }
       })
     }
+
     const signature = await ConnectionController.signMessage(message)
 
     const isValid = await this.methods.verifyMessage({ message, signature })

@@ -37,7 +37,7 @@
   "devDependencies": {
     "vitest": "2.0.3",
     "@vitest/coverage-v8": "2.0.5",
-    "viem": "2.19.6"
+    "viem": "2.21.4"
   },
   "author": "Rerock <rerock.com>",
   "license": "Apache-2.0",
