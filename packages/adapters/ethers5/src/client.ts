@@ -361,6 +361,9 @@ export class EVMEthers5Client {
       formatUnits: Ethers5Methods.formatUnits,
 
       estimateGas: async data => {
+        if (data.chainNamespace && data.chainNamespace !== 'eip155') {
+          throw new Error(`Invalid chain namespace - Expected eip155, got ${data.chainNamespace}`)
+        }
         const provider = ProviderUtil.getProvider<Provider>('eip155')
         const address = this.appKit?.getAddress()
         const caipNetwork = this.appKit?.getCaipNetwork()
@@ -382,6 +385,9 @@ export class EVMEthers5Client {
       },
 
       sendTransaction: async data => {
+        if (data.chainNamespace && data.chainNamespace !== 'eip155') {
+          throw new Error(`Invalid chain namespace - Expected eip155, got ${data.chainNamespace}`)
+        }
         const provider = ProviderUtil.getProvider<Provider>('eip155')
         const address = this.appKit?.getAddress()
         const caipNetwork = this.appKit?.getCaipNetwork()

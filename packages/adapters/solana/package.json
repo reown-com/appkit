@@ -70,6 +70,9 @@
     "borsh": "0.7.0",
     "bs58": "5.0.0"
   },
+  "peerDependencies": {
+    "valtio": "1.11.2"
+  },
   "devDependencies": {
     "@types/react": "18.2.0",
     "@types/react-dom": "18.2.0",
