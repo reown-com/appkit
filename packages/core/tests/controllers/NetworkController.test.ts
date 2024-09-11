@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import type { CaipNetwork, CaipNetworkId, NetworkControllerClient } from '../../index.js'
 import { ChainController, EventsController, NetworkController } from '../../index.js'
 import { ConstantsUtil } from '@web3modal/common'
@@ -101,5 +101,27 @@ describe('NetworkController', () => {
       chain: ConstantsUtil.CHAIN.EVM
     })
     expect(NetworkController.checkIfSmartAccountEnabled()).toEqual(true)
+  })
+
+  it('should get correct active network token address', () => {
+    let mock = vi.spyOn(NetworkController.state, 'caipNetwork', 'get').mockReturnValue(undefined)
+    expect(NetworkController.getActiveNetworkTokenAddress()).toEqual(
+      'eip155:1:0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+    )
+
+    mock.mockReturnValue(caipNetwork)
+    expect(NetworkController.getActiveNetworkTokenAddress()).toEqual(
+      'eip155:1:0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+    )
+
+    mock.mockReturnValue({
+      chain: 'solana',
+      id: 'solana:mainnet'
+    })
+    expect(NetworkController.getActiveNetworkTokenAddress()).toEqual(
+      'solana:mainnet:So11111111111111111111111111111111111111111'
+    )
+
+    mock.mockClear()
   })
 })

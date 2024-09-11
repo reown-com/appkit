@@ -279,6 +279,10 @@ export class EVMWagmiClient implements ChainAdapter {
       },
 
       estimateGas: async args => {
+        if (args.chainNamespace && args.chainNamespace !== 'eip155') {
+          throw new Error('connectionControllerClient:estimateGas - invalid chain namespace')
+        }
+
         try {
           return await wagmiEstimateGas(this.wagmiConfig, {
             account: args.address,
@@ -292,6 +296,10 @@ export class EVMWagmiClient implements ChainAdapter {
       },
 
       sendTransaction: async (data: SendTransactionArgs) => {
+        if (data.chainNamespace && data.chainNamespace !== 'eip155') {
+          throw new Error('connectionControllerClient:sendTransaction - invalid chain namespace')
+        }
+
         const { chainId } = getAccount(this.wagmiConfig)
 
         const txParams = {

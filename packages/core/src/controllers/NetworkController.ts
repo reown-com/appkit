@@ -6,6 +6,7 @@ import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { NetworkUtil, type Chain } from '@web3modal/common'
 import { ChainController } from './ChainController.js'
 import { PublicStateController } from './PublicStateController.js'
+import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 
 // -- Types --------------------------------------------- //
 export interface NetworkControllerClient {
@@ -312,5 +313,11 @@ export const NetworkController = {
     setTimeout(() => {
       ModalController.open({ view: 'UnsupportedChain' })
     }, 300)
+  },
+
+  getActiveNetworkTokenAddress() {
+    const address = ConstantsUtil.NATIVE_TOKEN_ADDRESS[this.state.caipNetwork?.chain || 'evm']
+
+    return `${this.state.caipNetwork?.id || 'eip155:1'}:${address}`
   }
 }
