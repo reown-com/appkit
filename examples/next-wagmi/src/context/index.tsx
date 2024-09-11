@@ -1,9 +1,8 @@
 'use client'
 
-import { wagmiAdapter, projectId } from '@/config'
+import { wagmiAdapter, projectId, caipNetworks } from '@/config'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createWeb3Modal } from '@rerock/base/react'
-import { mainnet, arbitrum, avalanche, base, optimism, polygon } from '@rerock/base/chains'
 import React, { type ReactNode } from 'react'
 import { cookieToInitialState, WagmiProvider, type Config } from 'wagmi'
 
@@ -16,7 +15,7 @@ if (!projectId) {
 createWeb3Modal({
   adapters: [wagmiAdapter],
   projectId,
-  caipNetworks: [mainnet, arbitrum, avalanche, base, optimism, polygon],
+  caipNetworks,
   metadata: {
     name: 'My App',
     description: 'My app description',

@@ -6,18 +6,17 @@ import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { EthersModalInfo } from '../../components/Ethers/EthersModalInfo'
 import { EVMEthersClient } from '@rerock/adapter-ethers'
 import { siweConfig } from '../../utils/SiweUtils'
-import { arbitrum, mainnet, optimism, polygon, zkSync } from '@rerock/base/chains'
+import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@rerock/base/chains'
 
 const ethersAdapter = new EVMEthersClient()
 
 const modal = createWeb3Modal({
   adapters: [ethersAdapter],
-  caipNetworks: [arbitrum, mainnet, optimism, polygon, zkSync],
+  caipNetworks: [arbitrum, mainnet, optimism, polygon, zkSync, sepolia],
   defaultCaipNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId,
   features: {
     analytics: true,
-    email: false,
     socials: []
   },
   siweConfig

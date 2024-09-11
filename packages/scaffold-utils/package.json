@@ -35,7 +35,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@walletconnect/universal-provider": "2.15.2",
+    "@walletconnect/universal-provider": "2.16.1",
     "@rerock/common": "workspace:*",
     "@rerock/core": "workspace:*",
     "@rerock/polyfills": "workspace:*",

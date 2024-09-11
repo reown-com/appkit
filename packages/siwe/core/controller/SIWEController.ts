@@ -6,7 +6,8 @@ import type {
   SIWECreateMessageArgs,
   SIWEVerifyMessageArgs
 } from '../utils/TypeUtils.js'
-import { OptionsController } from '@rerock/core'
+import { AccountController, OptionsController } from '@rerock/core'
+import type { SIWEStatus } from '@rerock/common'
 
 // -- Types --------------------------------------------- //
 export interface SIWEControllerClient extends SIWEClientMethods {
@@ -26,7 +27,7 @@ export interface SIWEControllerClientState {
   nonce?: string
   session?: SIWESession
   message?: string
-  status: 'uninitialized' | 'ready' | 'loading' | 'success' | 'rejected' | 'error'
+  status: SIWEStatus
 }
 
 type StateKey = keyof SIWEControllerClientState
@@ -134,6 +135,7 @@ export const SIWEController = {
 
   setStatus(status: SIWEControllerClientState['status']) {
     state.status = status
+    AccountController.setSiweStatus(status)
   },
 
   setMessage(message: SIWEControllerClientState['message']) {

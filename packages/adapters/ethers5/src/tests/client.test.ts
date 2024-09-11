@@ -282,7 +282,7 @@ describe('EVMEthersClient', () => {
         vi.spyOn(mockAppKit, 'isTransactionStackEmpty').mockReturnValue(false)
         vi.spyOn(mockAppKit, 'isTransactionShouldReplaceView').mockReturnValue(true)
         mockAppKit['handleUnsafeRPCRequest']()
-        expect(mockAppKit.replace).toHaveBeenCalledWith('ApproveTransaction')
+        expect(mockAppKit.redirect).toHaveBeenCalledWith('ApproveTransaction')
       })
 
       it('should handle invalid auth request', () => {
@@ -323,20 +323,18 @@ describe('EVMEthersClient', () => {
           { type: '@w3m-frame/SWITCH_NETWORK_SUCCESS', payload: { chainId: '137' } },
           { method: 'eth_accounts' }
         )
-        expect(mockAppKit.popTransactionStack).toHaveBeenCalledWith(true)
+        expect(mockAppKit.popTransactionStack).toHaveBeenCalledWith()
       })
 
       it('should handle auth not connected', () => {
         client['handleAuthNotConnected']()
         expect(mockAppKit.setIsConnected).toHaveBeenCalledWith(false, 'eip155')
-        expect(mockAppKit.setLoading).toHaveBeenCalledWith(false)
       })
 
       it('should handle auth is connected', () => {
         const preferredAccountType = 'eoa'
         client['handleAuthIsConnected'](preferredAccountType)
         expect(mockAppKit.setIsConnected).toHaveBeenCalledWith(true, 'eip155')
-        expect(mockAppKit.setLoading).toHaveBeenCalledWith(false)
         expect(mockAppKit.setPreferredAccountType).toHaveBeenCalledWith(
           preferredAccountType,
           'eip155'

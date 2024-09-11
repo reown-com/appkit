@@ -36,12 +36,14 @@ export function WagmiTests() {
             </Heading>
             <WagmiTransactionTest />
           </Box>
+
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">
               Contract Write
             </Heading>
             <WagmiWriteContractTest />
           </Box>
+
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">
               USDC Send
@@ -54,12 +56,14 @@ export function WagmiTests() {
             </Heading>
             <WagmiSendCallsTest />
           </Box>
+
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">
               Get Calls Status
             </Heading>
             <WagmiGetCallsStatusTest />
           </Box>
+
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">
               Send Calls (Paymaster Service)

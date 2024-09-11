@@ -12,7 +12,10 @@ export type WagmiAppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 's
   AdapterOptions<Config>
 
 export function createWeb3Modal(options: WagmiAppKitOptions) {
-  const wagmiAdapter = new EVMWagmiClient()
+  const wagmiAdapter = new EVMWagmiClient({
+    caipNetworks: options.caipNetworks,
+    projectId: options.projectId
+  })
   appkit = new AppKit({
     ...options,
     sdkVersion: `vue-wagmi-${ConstantsUtil.VERSION}`,

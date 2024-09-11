@@ -34,12 +34,6 @@ export class ModalWalletPage extends ModalPage {
     await this.page.getByTestId('wui-ens-input').getByTestId('wui-input-text').fill(name)
   }
 
-  override async switchNetwork(network: string) {
-    await this.page.getByTestId('account-switch-network-button').click()
-    const networkToSwitchButton = this.page.getByTestId(`w3m-network-switch-${network}`)
-    await networkToSwitchButton.click()
-  }
-
   async togglePreferredAccountType() {
     const toggleButton = this.page.getByTestId('account-toggle-preferred-account-type')
     await expect(toggleButton, 'Toggle button should be visible').toBeVisible()

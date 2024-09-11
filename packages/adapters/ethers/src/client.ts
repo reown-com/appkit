@@ -40,6 +40,7 @@ import { formatEther, InfuraProvider, JsonRpcProvider } from 'ethers'
 import type { PublicStateControllerState } from '@rerock/core'
 import { ProviderUtil } from '@rerock/base/store'
 import { CoinbaseWalletSDK, type ProviderInterface } from '@coinbase/wallet-sdk'
+import { W3mFrameProviderSingleton } from '@rerock/base/auth-provider'
 
 // -- Types ---------------------------------------------------------------------
 export interface AdapterOptions {
@@ -317,7 +318,6 @@ export class EVMEthersClient {
 
           [ConstantsUtil.EIP6963_CONNECTOR_ID]: async () => {
             if (provider) {
-              ;(provider as Provider).emit('disconnect')
               await this.revokeProviderPermissions(provider as Provider)
             }
           },
@@ -338,10 +338,10 @@ export class EVMEthersClient {
 
         // Common cleanup actions
         SafeLocalStorage.removeItem(SafeLocalStorageKeys.WALLET_ID)
-        this.appKit?.resetAccount('eip155')
+        this.appKit?.resetAccount(this.chainNamespace)
       },
       signMessage: async (message: string) => {
-        const provider = ProviderUtil.getProvider<Provider>('eip155')
+        const provider = ProviderUtil.getProvider<Provider>(this.chainNamespace)
         const address = this.appKit?.getAddress()
 
         if (!address) {
@@ -503,35 +503,37 @@ export class EVMEthersClient {
     }
   }
 
-  private getApprovedCaipNetworksData() {
-    const walletId = SafeLocalStorage.getItem(SafeLocalStorageKeys.WALLET_ID)
+  private getApprovedCaipNetworksData(): Promise<{
+    supportsAllNetworks: boolean
+    approvedCaipNetworkIds: CaipNetworkId[]
+  }> {
+    return new Promise(resolve => {
+      const walletId = SafeLocalStorage.getItem(SafeLocalStorageKeys.WALLET_ID)
 
-    if (!walletId) {
-      return {
-        supportsAllNetworks: true,
-        approvedCaipNetworkIds: []
+      if (!walletId) {
+        throw new Error('No wallet id found to get approved networks data')
       }
-    }
 
-    const providerConfigs = {
-      [ConstantsUtil.AUTH_CONNECTOR_ID]: {
-        supportsAllNetworks: true,
-        approvedCaipNetworkIds: PresetsUtil.WalletConnectRpcChainIds.map(
-          id => `${ConstantsUtil.EIP155}:${id}`
-        ) as CaipNetworkId[]
+      const providerConfigs = {
+        [ConstantsUtil.AUTH_CONNECTOR_ID]: {
+          supportsAllNetworks: true,
+          approvedCaipNetworkIds: PresetsUtil.WalletConnectRpcChainIds.map(
+            id => `${ConstantsUtil.EIP155}:${id}`
+          ) as CaipNetworkId[]
+        }
       }
-    }
 
-    const networkData = providerConfigs[walletId as unknown as keyof typeof providerConfigs]
+      const networkData = providerConfigs[walletId as unknown as keyof typeof providerConfigs]
 
-    if (networkData) {
-      return networkData
-    }
-
-    return {
-      supportsAllNetworks: false,
-      approvedCaipNetworkIds: []
-    }
+      if (networkData) {
+        resolve(networkData)
+      } else {
+        resolve({
+          supportsAllNetworks: true,
+          approvedCaipNetworkIds: []
+        })
+      }
+    })
   }
 
   private checkActiveProviders(config: ProviderType) {
@@ -679,7 +681,7 @@ export class EVMEthersClient {
           this.appKit?.setAllAccounts([], this.chainNamespace)
         }
         SafeLocalStorage.removeItem(SafeLocalStorageKeys.WALLET_ID)
-        this.appKit?.resetAccount('eip155')
+        this.appKit?.resetAccount(this.chainNamespace)
       }
     }
 
@@ -774,18 +776,16 @@ export class EVMEthersClient {
     if (this.appKit?.isTransactionStackEmpty()) {
       this.appKit?.close()
     } else {
-      this.appKit?.popTransactionStack(true)
+      this.appKit?.popTransactionStack()
     }
   }
 
   private handleAuthNotConnected() {
     this.appKit?.setIsConnected(false, this.chainNamespace)
-    this.appKit?.setLoading(false)
   }
 
   private handleAuthIsConnected(preferredAccountType: string | undefined) {
     this.appKit?.setIsConnected(true, this.chainNamespace)
-    this.appKit?.setLoading(false)
     this.appKit?.setPreferredAccountType(
       preferredAccountType as W3mFrameTypes.AccountType,
       this.chainNamespace
@@ -809,6 +809,7 @@ export class EVMEthersClient {
     this.syncAccount({
       address: address as Address
     }).then(() => this.appKit?.setLoading(false))
+    this.appKit?.setLoading(false)
   }
 
   private async syncWalletConnectName(address: Address) {
@@ -897,17 +898,16 @@ export class EVMEthersClient {
     const caipNetwork = this.appKit?.getCaipNetwork()
 
     if (caipNetwork) {
-      if (caipNetwork) {
-        const jsonRpcProvider = new JsonRpcProvider(caipNetwork.rpcUrl, {
-          chainId: caipNetwork.chainId as number,
-          name: caipNetwork.name
-        })
-        if (jsonRpcProvider && jsonRpcProvider.ready) {
-          const balance = await jsonRpcProvider.getBalance(address)
-          const formattedBalance = formatEther(balance)
+      const jsonRpcProvider = new JsonRpcProvider(caipNetwork.rpcUrl, {
+        chainId: caipNetwork.chainId as number,
+        name: caipNetwork.name
+      })
 
-          this.appKit?.setBalance(formattedBalance, caipNetwork.currency, this.chainNamespace)
-        }
+      if (jsonRpcProvider) {
+        const balance = await jsonRpcProvider.getBalance(address)
+        const formattedBalance = formatEther(balance)
+
+        this.appKit?.setBalance(formattedBalance, caipNetwork.currency, this.chainNamespace)
       }
     }
   }
@@ -1009,6 +1009,7 @@ export class EVMEthersClient {
               this.appKit?.setLoading(true)
               await this.authProvider.switchNetwork(caipNetwork.chainId as number)
               this.appKit?.setCaipNetwork(caipNetwork)
+              this.appKit?.setLoading(false)
 
               const { address, preferredAccountType } = await this.authProvider.connect({
                 chainId: caipNetwork.chainId as number | undefined
@@ -1070,7 +1071,7 @@ export class EVMEthersClient {
 
   private async syncAuthConnector(projectId: string, bypassWindowCheck = false) {
     if (bypassWindowCheck || typeof window !== 'undefined') {
-      this.authProvider = new W3mFrameProvider(projectId)
+      this.authProvider = W3mFrameProviderSingleton.getInstance(projectId)
 
       this.appKit?.addConnector({
         id: ConstantsUtil.AUTH_CONNECTOR_ID,

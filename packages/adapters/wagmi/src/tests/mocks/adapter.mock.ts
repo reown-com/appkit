@@ -1,5 +1,3 @@
-import { mainnet as wagmiMainnet, arbitrum as wagmiArbitrum } from 'viem/chains'
-import { createConfig, http } from 'wagmi'
 import { mock } from 'wagmi/connectors'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { AppKit } from '@rerock/base'
@@ -11,23 +9,13 @@ import type { SdkVersion } from '@rerock/core'
 const privateKey = generatePrivateKey()
 export const mockAccount = privateKeyToAccount(privateKey)
 
-export const mockWagmiConfig = createConfig({
-  chains: [wagmiMainnet, wagmiArbitrum],
+export const mockWagmiClient = new EVMWagmiClient({
   connectors: [mock({ accounts: [mockAccount.address] })],
-  transports: {
-    [wagmiMainnet.id]: http(),
-    [wagmiArbitrum.id]: http()
-  }
+  caipNetworks: [mainnet, arbitrum],
+  projectId: '1234'
 })
 
-export const mockWagmiClient = new EVMWagmiClient({
-  chains: [wagmiMainnet, wagmiArbitrum],
-  connectors: [mock({ accounts: [mockAccount.address] })],
-  transports: {
-    [wagmiMainnet.id]: http(),
-    [wagmiArbitrum.id]: http()
-  }
-})
+export const mockWagmiConfig = mockWagmiClient.wagmiConfig
 
 export const mockOptions = {
   adapters: [mockWagmiClient],

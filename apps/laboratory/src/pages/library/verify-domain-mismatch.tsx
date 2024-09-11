@@ -7,18 +7,24 @@ import { ThemeStore } from '../../utils/StoreUtil'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
 
 import { EVMWagmiClient } from '@rerock/adapter-wagmi'
-import { mainnet } from '@rerock/base/chains'
+import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@rerock/base/chains'
 
 // Special project ID with verify enabled on localhost
 const projectId = 'e4eae1aad4503db9966a04fd045a7e4d'
 
 const queryClient = new QueryClient()
 
-const wagmiAdapter = new EVMWagmiClient()
+const networks = [mainnet, optimism, polygon, zkSync, arbitrum, sepolia]
+
+const wagmiAdapter = new EVMWagmiClient({
+  ssr: true,
+  caipNetworks: networks,
+  projectId
+})
 
 const modal = createWeb3Modal({
   adapters: [wagmiAdapter],
-  caipNetworks: [mainnet],
+  caipNetworks: networks,
   projectId,
   termsConditionsUrl: 'https://walletconnect.com/terms',
   privacyPolicyUrl: 'https://walletconnect.com/privacy'
@@ -27,10 +33,6 @@ const modal = createWeb3Modal({
 ThemeStore.setModal(modal)
 
 export default function Wagmi() {
-  if (!wagmiAdapter.wagmiConfig) {
-    return null
-  }
-
   return (
     <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={queryClient}>
