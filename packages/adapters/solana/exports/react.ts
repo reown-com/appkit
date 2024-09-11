@@ -1,5 +1,5 @@
 import { useSnapshot } from 'valtio'
-import { SolStoreUtil } from '@rerock/scaffold-utils/solana'
+import { SolStoreUtil } from '../src/utils/SolanaStoreUtil.js'
 import type { Connection } from '@rerock/scaffold-utils/solana'
 
 // -- Types -----------------------------------------------------------

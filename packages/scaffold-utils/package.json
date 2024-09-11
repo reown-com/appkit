@@ -55,6 +55,9 @@
     "@solana/web3.js": "1.95.2",
     "@solana/wallet-adapter-base": "0.9.23"
   },
+  "peerDependencies": {
+    "valtio": "1.11.2"
+  },
   "keywords": [
     "web3",
     "crypto",

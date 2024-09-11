@@ -14,7 +14,8 @@ import {
   SafeLocalStorageKeys
 } from '@rerock/common'
 
-import { SolConstantsUtil, SolHelpersUtil, SolStoreUtil } from '@rerock/scaffold-utils/solana'
+import { SolConstantsUtil, SolHelpersUtil } from '@rerock/scaffold-utils/solana'
+import { SolStoreUtil } from './utils/SolanaStoreUtil.js'
 import type { Provider } from '@rerock/scaffold-utils/solana'
 
 import type { BaseWalletAdapter } from '@solana/wallet-adapter-base'
