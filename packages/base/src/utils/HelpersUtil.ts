@@ -19,14 +19,8 @@ export const WcHelpersUtil = {
         return [
           'solana_signMessage',
           'solana_signTransaction',
-          'solana_signAllTransactions',
-          'solana_signAndSendTransaction',
           'solana_requestAccounts',
-          'solana_getAccounts',
-          'solana_getBalance',
-          'solana_getRecentBlockhash',
-          'solana_getVersion',
-          'solana_isConnected'
+          'solana_getAccounts'
         ]
       case 'eip155':
         return [

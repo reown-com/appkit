@@ -32,7 +32,12 @@ export const mockProvider = {
     },
     solana: {
       chains: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
-      methods: ['solana_signMessage'],
+      methods: [
+        'solana_signMessage',
+        'solana_signTransaction',
+        'solana_requestAccounts',
+        'solana_getAccounts'
+      ],
       events: ['accountsChanged', 'chainChanged'],
       rpcMap: {
         '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp':
@@ -55,7 +60,12 @@ export const mockProvider = {
         accounts: [
           'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:CxELquR1gPP8wHe33gZ4QxqGB3sZ9RSwGMgmR69MfN5B'
         ],
-        methods: ['solana_signTransaction', 'solana_signMessage'],
+        methods: [
+          'solana_signMessage',
+          'solana_signTransaction',
+          'solana_requestAccounts',
+          'solana_getAccounts'
+        ],
         events: ['accountChanged']
       }
     },
