@@ -14,7 +14,10 @@ import {
   binanceSmartChain,
   solana,
   solanaTestnet,
-  solanaDevnet
+  solanaDevnet,
+  optimism,
+  zkSync,
+  sepolia
 } from '@rerock/base/chains'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
@@ -24,7 +27,13 @@ import { siweConfig } from '../../utils/SiweUtils'
 
 const queryClient = new QueryClient()
 
-const wagmiAdapter = new EVMWagmiClient()
+const networks = [mainnet, optimism, polygon, zkSync, arbitrum, sepolia]
+
+const wagmiAdapter = new EVMWagmiClient({
+  ssr: true,
+  caipNetworks: networks,
+  projectId: ConstantsUtil.ProjectId
+})
 
 const solanaWeb3JsAdapter = new SolanaWeb3JsClient({
   wallets: [new HuobiWalletAdapter(), new SolflareWalletAdapter()]
@@ -32,7 +41,6 @@ const solanaWeb3JsAdapter = new SolanaWeb3JsClient({
 
 const modal = createWeb3Modal({
   adapters: [wagmiAdapter, solanaWeb3JsAdapter],
-  siweConfig,
   caipNetworks: [
     mainnet,
     polygon,
@@ -48,16 +56,13 @@ const modal = createWeb3Modal({
   features: {
     analytics: true
   },
-  metadata: ConstantsUtil.Metadata
+  metadata: ConstantsUtil.Metadata,
+  siweConfig
 })
 
 ThemeStore.setModal(modal)
 
 export default function MultiChainWagmiSolana() {
-  if (!wagmiAdapter.wagmiConfig) {
-    return null
-  }
-
   return (
     <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={queryClient}>

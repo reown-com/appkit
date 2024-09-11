@@ -4,7 +4,6 @@ import {
   ConnectorController,
   RouterController,
   CoreHelperUtil,
-  RouterUtil,
   SnackController
 } from '@rerock/core'
 import { LitElement, html } from 'lit'
@@ -94,7 +93,6 @@ export class W3mUpgradeToSmartAccountView extends LitElement {
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
         )
         this.loading = false
-        RouterUtil.navigateAfterPreferredAccountTypeSelect()
       } catch (e) {
         SnackController.showError('Error upgrading to smart account')
       }

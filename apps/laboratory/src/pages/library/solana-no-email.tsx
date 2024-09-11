@@ -19,7 +19,9 @@ const modal = createWeb3Modal({
   defaultCaipNetwork: solana,
   features: {
     analytics: false,
-    swaps: false
+    swaps: false,
+    email: false,
+    socials: []
   }
 })
 

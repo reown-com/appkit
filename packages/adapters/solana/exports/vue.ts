@@ -1,4 +1,4 @@
-import { useSnapshot } from 'valtio'
+import { ref } from 'vue'
 import { SolStoreUtil } from '../src/utils/SolanaStoreUtil.js'
 import { type Connection } from '../src/utils/SolanaTypesUtil.js'
 
@@ -12,10 +12,10 @@ export * from '../src/index.js'
 export function useWeb3ModalConnection(): {
   connection: Connection | undefined
 } {
-  const state = useSnapshot(SolStoreUtil.state)
+  const state = ref(SolStoreUtil.state)
 
   return {
-    connection: state.connection
+    connection: state.value.connection
   } as {
     connection: Connection | undefined
   }

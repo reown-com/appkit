@@ -14,7 +14,11 @@ export type WagmiAppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 's
   }
 
 export function createWeb3Modal(options: WagmiAppKitOptions) {
-  const wagmiAdapter = new EVMWagmiClient(options.wagmiConfig)
+  const wagmiAdapter = new EVMWagmiClient({
+    ...options.wagmiConfig,
+    caipNetworks: options.caipNetworks,
+    projectId: options.projectId
+  })
 
   appkit = new AppKit({
     ...options,

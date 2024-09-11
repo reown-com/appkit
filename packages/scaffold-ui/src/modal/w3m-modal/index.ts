@@ -15,7 +15,7 @@ import { UiHelperUtil, customElement, initializeTheming } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
-import { ConstantsUtil, type CaipAddress, type CaipNetwork } from '@rerock/common'
+import { ConstantsUtil, type CaipAddress, type CaipNetwork, type SIWEStatus } from '@rerock/common'
 
 // -- Helpers --------------------------------------------- //
 const SCROLL_LOCK = 'scroll-lock'
@@ -52,13 +52,11 @@ export class W3mModal extends LitElement {
       ...[
         ModalController.subscribeKey('open', val => (val ? this.onOpen() : this.onClose())),
         ModalController.subscribeKey('shake', val => (this.shake = val)),
-        ModalController.subscribeKey('loading', val => {
-          this.loading = val
-          this.onNewAddress(AccountController.state.caipAddress)
-        }),
-        AccountController.subscribeKey('isConnected', val => (this.connected = val)),
+        ModalController.subscribeKey('loading', val => this.onLoadingChange(val)),
+        AccountController.subscribeKey('isConnected', val => this.onIsConnectedChange(val)),
         NetworkController.subscribeKey('caipNetwork', val => this.onNewNetwork(val)),
         AccountController.subscribeKey('caipAddress', val => this.onNewAddress(val)),
+        AccountController.subscribeKey('siweStatus', val => this.onSiweStatusChange(val)),
         OptionsController.subscribeKey('isSiweEnabled', val => (this.isSiweEnabled = val))
       ]
     )
@@ -202,34 +200,67 @@ export class W3mModal extends LitElement {
       if (session && previousAddress && newAddress && previousAddress !== newAddress) {
         if (SIWEController.state._client?.options.signOutOnAccountChange) {
           await SIWEController.signOut()
+          this.onSiweNavigation()
         }
       }
-
-      this.onSiweNavigation()
     }
   }
 
-  private async onNewNetwork(caipNetwork: CaipNetwork | undefined) {
-    if (!this.connected || this.loading) {
-      return
-    }
+  private async onIsConnectedChange(nextIsConnected: boolean) {
+    const prevIsConnected = this.connected
 
-    const previousNetworkId = this.caipNetwork?.id
-    const newNetworkId = caipNetwork?.id
-    this.caipNetwork = caipNetwork
-
-    if (this.isSiweEnabled) {
+    if (nextIsConnected && this.isSiweEnabled) {
       const { SIWEController } = await import('@rerock/siwe')
       const session = await SIWEController.getSession()
 
-      if (session && previousNetworkId && newNetworkId && previousNetworkId !== newNetworkId) {
-        if (SIWEController.state._client?.options.signOutOnNetworkChange) {
-          await SIWEController.signOut()
-        }
+      if (!session) {
+        this.onSiweNavigation()
       }
-
-      this.onSiweNavigation()
+    } else if (!prevIsConnected && nextIsConnected) {
+      ModalController.close()
+      RouterController.reset('Connect')
     }
+
+    this.connected = nextIsConnected
+  }
+
+  private onSiweStatusChange(nextStatus: SIWEStatus | undefined) {
+    if (nextStatus === 'success') {
+      ModalController.close()
+    }
+  }
+
+  private onLoadingChange(nextLoading: boolean) {
+    this.loading = nextLoading
+  }
+
+  private async onNewNetwork(nextCaipNetwork: CaipNetwork | undefined) {
+    if (!this.connected) {
+      this.caipNetwork = nextCaipNetwork
+
+      return
+    }
+
+    const prevCaipNetworkId = this.caipNetwork?.id
+    const nextNetworkId = nextCaipNetwork?.id
+
+    if (prevCaipNetworkId && nextNetworkId && prevCaipNetworkId !== nextNetworkId) {
+      if (this.isSiweEnabled) {
+        const { SIWEController } = await import('@rerock/siwe')
+        const session = await SIWEController.getSession()
+
+        if (session) {
+          if (SIWEController.state._client?.options.signOutOnNetworkChange) {
+            await SIWEController.signOut()
+            this.onSiweNavigation()
+          }
+        }
+      } else {
+        RouterController.goBack()
+      }
+    }
+
+    this.caipNetwork = nextCaipNetwork
   }
 
   private onSiweNavigation() {
@@ -237,7 +268,7 @@ export class W3mModal extends LitElement {
 
     if (isEIP155Namespace) {
       if (this.open) {
-        RouterController.push('ConnectingSiwe')
+        RouterController.replace('ConnectingSiwe')
       } else {
         ModalController.open({
           view: 'ConnectingSiwe'

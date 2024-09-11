@@ -3,17 +3,18 @@ import {
   AccountController,
   AssetUtil,
   ChainController,
+  ConnectorController,
   CoreHelperUtil,
   EventsController,
   NetworkController,
-  RouterController
+  RouterController,
+  StorageUtil
 } from '@rerock/core'
 import { customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
-import { NetworkUtil } from '../../utils/NetworkUtil.js'
 
 @customElement('w3m-networks-view')
 export class W3mNetworksView extends LitElement {
@@ -155,16 +156,19 @@ export class W3mNetworksView extends LitElement {
     const supportsAllNetworks = NetworkController.state.supportsAllNetworks
     const routerData = RouterController.state.data
 
+    const type = StorageUtil.getConnectedConnector()
+    const authConnector = ConnectorController.getAuthConnector()
+    const isConnectedWithAuth = type === 'AUTH' && authConnector
+
     if (isSameNetwork) {
       return
     }
 
     if (isNamespaceConnected) {
-      if (supportsAllNetworks) {
+      if (supportsAllNetworks || isConnectedWithAuth) {
         RouterController.push('SwitchNetwork', { ...routerData, network })
       } else {
         await NetworkController.switchActiveNetwork(network)
-        await NetworkUtil.onNetworkChange()
       }
     } else {
       // eslint-disable-next-line no-lonely-if
@@ -181,7 +185,6 @@ export class W3mNetworksView extends LitElement {
           })
         } else {
           NetworkController.setActiveCaipNetwork(network)
-          await NetworkUtil.onNetworkChange()
         }
       }
     }

@@ -181,7 +181,7 @@ export default function HomePage() {
         </CardBody>
       </Card>
 
-      <Card marginTop={10} marginBottom={10} backgroundColor={'blue.800'}>
+      <Card marginTop={10} marginBottom={10}>
         <CardHeader>
           <Heading size="md">
             AppKit <Badge>⛓️ Multichain</Badge> <Badge>✨ New</Badge>

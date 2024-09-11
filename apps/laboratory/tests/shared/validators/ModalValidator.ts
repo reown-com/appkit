@@ -23,6 +23,13 @@ export class ModalValidator {
     await this.page.waitForTimeout(500)
   }
 
+  async expectBalanceFetched(currency: 'SOL' | 'ETH') {
+    const accountButton = this.page.locator('w3m-account-button')
+    await expect(accountButton, `Account button should show balance as ${currency}`).toContainText(
+      `0.000 ${currency}`
+    )
+  }
+
   async expectAuthenticated() {
     await expect(
       this.page.getByTestId('w3m-authentication-status'),
@@ -92,9 +99,13 @@ export class ModalValidator {
   }
 
   async expectSwitchedNetwork(network: string) {
-    const switchNetworkButton = this.page.getByTestId('w3m-account-select-network')
+    const switchNetworkButton = this.page.getByTestId(`w3m-network-switch-${network}`)
     await expect(switchNetworkButton).toBeVisible()
-    await expect(switchNetworkButton).toHaveAttribute('active-network', network)
+  }
+
+  async expectSwitchedNetworkOnNetworksView(name: string) {
+    const networkOptions = this.page.getByTestId(`w3m-network-switch-${name}`)
+    await expect(networkOptions.locator('wui-icon')).toBeVisible()
   }
 
   expectSecureSiteFrameNotInjected() {
@@ -207,5 +218,10 @@ export class ModalValidator {
   async expectSocialsVisible() {
     const socials = this.page.getByTestId('w3m-social-login-widget')
     await expect(socials).toBeVisible()
+  }
+
+  async expectModalNotVisible() {
+    const modal = this.page.getByTestId('w3m-modal')
+    await expect(modal).toBeHidden()
   }
 }

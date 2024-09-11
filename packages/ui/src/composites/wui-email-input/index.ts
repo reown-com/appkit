@@ -22,6 +22,7 @@ export class WuiEmailInput extends LitElement {
   public override render() {
     return html`
       <wui-input-text
+        type="email"
         placeholder="Email"
         icon="mail"
         size="mdl"
