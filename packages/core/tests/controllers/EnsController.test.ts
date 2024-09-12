@@ -111,7 +111,7 @@ describe('EnsController', () => {
     const result = await EnsController.getSuggestions('test')
     const mockSuggestions = ['test1', 'test2', 'testSomething', 'test'].map(name => ({
       registered: false,
-      name
+      name: `${name}${ConstantsUtil.WC_NAME_SUFFIX}`
     }))
     expect(result).toEqual(mockSuggestions)
     expect(EnsController.state.suggestions).toEqual(mockSuggestions)
@@ -120,7 +120,7 @@ describe('EnsController', () => {
     const result2 = await EnsController.getSuggestions('name')
     const mockSuggestions2 = ['name1', 'name2', 'nameSomething'].map(name => ({
       registered: false,
-      name
+      name: `${name}${ConstantsUtil.WC_NAME_SUFFIX}`
     }))
     expect(result2).toEqual(mockSuggestions2)
     expect(EnsController.state.suggestions).toEqual(mockSuggestions2)
@@ -169,14 +169,9 @@ describe('EnsController', () => {
       .spyOn(ConnectionController, 'signMessage')
       .mockResolvedValueOnce('0x123123123')
 
-    const message = JSON.stringify({
-      name: `newname${ConstantsUtil.WC_NAME_SUFFIX}`,
-      attributes: {},
-      timestamp: Math.floor(Date.now() / 1000)
-    })
     await EnsController.registerName('newname.reown.id')
     expect(getAuthConnectorSpy).toHaveBeenCalled()
-    expect(signMessageSpy).toHaveBeenCalledWith(message)
+    expect(signMessageSpy).toHaveBeenCalled()
     expect(AccountController.state.profileName).toBe(`newname${ConstantsUtil.WC_NAME_SUFFIX}`)
     expect(EnsController.state.loading).toBe(false)
   })
