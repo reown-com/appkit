@@ -14,7 +14,7 @@ import { bigIntReplacer } from '../../utils/CommonUtils'
 import { useERC7715Permissions } from '../../hooks/useERC7715Permissions'
 import { getPurchaseDonutPermissions } from '../../utils/ERC7715Utils'
 import { KeyTypes } from '../../utils/EncodingUtils'
-import { useWeb3ModalAccount } from '@rerock/base/react'
+import { useWeb3ModalAccount } from '@rerock/appkit/react'
 
 export function WagmiRequestPermissionsAsyncTest() {
   const { provider, supported } = useWagmiAvailableCapabilities({

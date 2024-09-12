@@ -1,4 +1,4 @@
-import type { AppKitOptions } from '@rerock/base'
+import type { AppKitOptions } from '@rerock/appkit'
 import {
   NetworkUtil,
   SafeLocalStorage,
@@ -22,7 +22,7 @@ import {
   type ProviderId,
   type Address
 } from '@rerock/scaffold-utils/ethers'
-import type { AppKit } from '@rerock/base'
+import type { AppKit } from '@rerock/appkit'
 import {
   W3mFrameHelpers,
   W3mFrameProvider,
@@ -34,13 +34,13 @@ import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@rerock/scaffold-utils'
 import UniversalProvider from '@walletconnect/universal-provider'
 import type { ConnectionControllerClient, NetworkControllerClient } from '@rerock/core'
 import { ConstantsUtil as CoreConstantsUtil } from '@rerock/core'
-import { WcConstantsUtil } from '@rerock/base'
+import { WcConstantsUtil } from '@rerock/appkit'
 import { Ethers5Methods } from './utils/Ethers5Methods.js'
 import { ethers } from 'ethers5'
 import type { PublicStateControllerState } from '@rerock/core'
-import { ProviderUtil } from '@rerock/base/store'
+import { ProviderUtil } from '@rerock/appkit/store'
 import { CoinbaseWalletSDK, type ProviderInterface } from '@coinbase/wallet-sdk'
-import { W3mFrameProviderSingleton } from '@rerock/base/auth-provider'
+import { W3mFrameProviderSingleton } from '@rerock/appkit/auth-provider'
 
 // -- Types ---------------------------------------------------------------------
 export interface AdapterOptions {

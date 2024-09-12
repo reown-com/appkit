@@ -1,6 +1,10 @@
 import { useState } from 'react'
 import { Button, Stack, Text, Spacer, Link } from '@chakra-ui/react'
-import { useWeb3ModalAccount, useWeb3ModalNetwork, useWeb3ModalProvider } from '@rerock/base/react'
+import {
+  useWeb3ModalAccount,
+  useWeb3ModalNetwork,
+  useWeb3ModalProvider
+} from '@rerock/appkit/react'
 import {
   PublicKey,
   Transaction,
@@ -9,7 +13,7 @@ import {
   SystemProgram
 } from '@solana/web3.js'
 
-import { solana } from '@rerock/base/chains'
+import { solana } from '@rerock/appkit/chains'
 import { useChakraToast } from '../Toast'
 import { type Provider, useWeb3ModalConnection } from '@rerock/appkit-adapter-solana/react'
 

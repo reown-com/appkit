@@ -55,7 +55,7 @@
     "@wallet-standard/base": "1.0.1",
     "@wallet-standard/features": "1.0.3",
     "@wallet-standard/wallet": "1.0.1",
-    "@rerock/base": "workspace:*",
+    "@rerock/appkit": "workspace:*",
     "@rerock/common": "workspace:*",
     "@rerock/core": "workspace:*",
     "@rerock/polyfills": "workspace:*",

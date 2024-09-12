@@ -1,9 +1,9 @@
 'use client'
 
-import { AppKit, AccountController } from '@rerock/base'
-import type { AppKitOptions } from '@rerock/base'
+import { AppKit, AccountController } from '@rerock/appkit'
+import type { AppKitOptions } from '@rerock/appkit'
 import { EVMEthersClient, type AdapterOptions } from '@rerock/appkit-adapter-ethers'
-import { getWeb3Modal } from '@rerock/base/library/react'
+import { getWeb3Modal } from '@rerock/appkit/library/react'
 import { useSnapshot } from 'valtio'
 import type { CaipNetwork } from '@rerock/common'
 import { ConstantsUtil } from '@rerock/scaffold-utils'
@@ -68,4 +68,4 @@ export {
   useWeb3ModalState,
   useWeb3ModalEvents,
   useWalletInfo
-} from '@rerock/base/library/react'
+} from '@rerock/appkit/library/react'

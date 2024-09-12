@@ -1,5 +1,5 @@
-import type { AppKit } from '@rerock/base'
-import { mainnet } from '@rerock/base/chains'
+import type { AppKit } from '@rerock/appkit'
+import { mainnet } from '@rerock/appkit/chains'
 import { vi } from 'vitest'
 
 export const mockAppKit = {

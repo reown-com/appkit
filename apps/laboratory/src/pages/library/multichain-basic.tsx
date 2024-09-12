@@ -1,8 +1,8 @@
-import { createWeb3Modal } from '@rerock/base/react'
+import { createWeb3Modal } from '@rerock/appkit/react'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { AppKitButtons } from '../../components/AppKitButtons'
-import { mainnet, optimism, arbitrum, solana } from '@rerock/base/chains'
+import { mainnet, optimism, arbitrum, solana } from '@rerock/appkit/chains'
 import { MultiChainInfo } from '../../components/MultiChainInfo'
 
 const modal = createWeb3Modal({

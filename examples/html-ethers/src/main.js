@@ -1,5 +1,5 @@
-import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@rerock/base/chains'
-import { createWeb3Modal } from '@rerock/base'
+import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@rerock/appkit/chains'
+import { createWeb3Modal } from '@rerock/appkit'
 import { EVMEthersClient } from '@rerock/appkit-adapter-ethers'
 
 // @ts-expect-error 1. Get projectId

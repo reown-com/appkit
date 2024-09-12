@@ -5,12 +5,12 @@ import mockAppKit from './mocks/AppKit'
 import { mockAuthConnector } from './mocks/AuthConnector'
 import { Connection } from '@solana/web3.js'
 import { SafeLocalStorage } from '@rerock/common'
-import { ProviderUtil } from '@rerock/base/store'
+import { ProviderUtil } from '@rerock/appkit/store'
 import { SolHelpersUtil } from '@rerock/scaffold-utils/solana'
 import { SolStoreUtil } from '../utils/SolanaStoreUtil.js'
 import { WalletConnectProvider } from '../providers/WalletConnectProvider'
 import UniversalProvider from '@walletconnect/universal-provider'
-import { solana } from '@rerock/base/chains'
+import { solana } from '@rerock/appkit/chains'
 
 vi.mock('@solana/web3.js', () => ({
   Connection: vi.fn(),
@@ -28,7 +28,7 @@ vi.mock('@rerock/wallet', () => ({
   }
 }))
 
-vi.mock('@rerock/base/store', () => ({
+vi.mock('@rerock/appkit/store', () => ({
   ProviderUtil: {
     setProvider: vi.fn(),
     setProviderId: vi.fn(),

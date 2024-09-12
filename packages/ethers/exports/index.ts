@@ -1,5 +1,5 @@
-import { AppKit } from '@rerock/base'
-import type { AppKitOptions } from '@rerock/base'
+import { AppKit } from '@rerock/appkit'
+import type { AppKitOptions } from '@rerock/appkit'
 import { EVMEthersClient, type AdapterOptions } from '@rerock/appkit-adapter-ethers'
 import { ConstantsUtil } from '@rerock/scaffold-utils'
 

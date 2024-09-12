@@ -3,7 +3,7 @@ import { WalletStandardProvider } from '../providers/WalletStandardProvider.js'
 import { isWalletAdapterCompatibleStandardWallet } from '@solana/wallet-adapter-base'
 import type { Wallet } from '@wallet-standard/base'
 
-import type { AppKit } from '@rerock/base'
+import type { AppKit } from '@rerock/appkit'
 import type { CaipNetwork } from '@rerock/common'
 
 const { get, on } = getWallets()

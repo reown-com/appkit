@@ -5,7 +5,7 @@ import {
   useWeb3ModalNetwork,
   useWeb3ModalProvider,
   type Provider
-} from '@rerock/base/react'
+} from '@rerock/appkit/react'
 import { ethers } from 'ethers5'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { useChakraToast } from '../Toast'

@@ -55,7 +55,7 @@
     "@walletconnect/ethereum-provider": "2.16.1",
     "@walletconnect/universal-provider": "2.16.1",
     "@walletconnect/utils": "2.16.1",
-    "@rerock/base": "workspace:*",
+    "@rerock/appkit": "workspace:*",
     "@rerock/ethers": "workspace:*",
     "@rerock/ethers5": "workspace:*",
     "@rerock/siwe": "workspace:*",

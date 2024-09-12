@@ -1,12 +1,12 @@
 'use client'
 
-import { AppKit } from '@rerock/base'
+import { AppKit } from '@rerock/appkit'
 import {
   SolanaWeb3JsClient,
   type Provider,
   useWeb3ModalConnection
 } from '@rerock/appkit-adapter-solana/react'
-import { getWeb3Modal } from '@rerock/base/library/react'
+import { getWeb3Modal } from '@rerock/appkit/library/react'
 import type { SolanaAppKitOptions } from './options.js'
 import { ConstantsUtil } from '@rerock/scaffold-utils'
 
@@ -47,5 +47,5 @@ export {
   useWeb3Modal,
   useWeb3ModalState,
   useWeb3ModalEvents
-} from '@rerock/base/library/react'
+} from '@rerock/appkit/library/react'
 export { useWeb3ModalConnection }

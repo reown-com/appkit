@@ -3,7 +3,7 @@ import EthereumProvider from '@walletconnect/ethereum-provider'
 
 import { useAccount } from 'wagmi'
 import { AppKitInfo } from '../AppKitInfo'
-import { useWeb3ModalAccount } from '@rerock/base/react'
+import { useWeb3ModalAccount } from '@rerock/appkit/react'
 
 export function WagmiModalInfo() {
   const { address, isConnected } = useWeb3ModalAccount()

@@ -1,4 +1,4 @@
-import { AppKit } from '@rerock/base'
+import { AppKit } from '@rerock/appkit'
 import { SolanaWeb3JsClient } from '@rerock/appkit-adapter-solana'
 import type { SolanaAppKitOptions } from './options'
 import type { Provider } from '@rerock/appkit-adapter-solana'

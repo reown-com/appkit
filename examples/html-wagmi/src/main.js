@@ -1,6 +1,6 @@
-import { arbitrum, mainnet } from '@rerock/base/chains'
+import { arbitrum, mainnet } from '@rerock/appkit/chains'
 import { EVMWagmiClient } from '@rerock/appkit-adapter-wagmi'
-import { createWeb3Modal } from '@rerock/base'
+import { createWeb3Modal } from '@rerock/appkit'
 
 // @ts-expect-error 1. Get projectId
 const projectId = import.meta.env.VITE_PROJECT_ID

@@ -9,7 +9,7 @@
     "test": "vitest run --dir tests --coverage.enabled=true --coverage.reporter=json --coverage.reporter=json-summary --coverage.reportOnFailure=true"
   },
   "dependencies": {
-    "@rerock/base": "workspace:*",
+    "@rerock/appkit": "workspace:*",
     "@rerock/common": "workspace:*",
     "@rerock/core": "workspace:*"
   },

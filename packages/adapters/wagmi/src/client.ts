@@ -62,14 +62,14 @@ import { W3mFrameHelpers, W3mFrameRpcConstants } from '@rerock/wallet'
 import type { W3mFrameProvider, W3mFrameTypes } from '@rerock/wallet'
 import { NetworkUtil } from '@rerock/common'
 import { normalize } from 'viem/ens'
-import type { AppKitOptions } from '@rerock/base'
+import type { AppKitOptions } from '@rerock/appkit'
 import type { CaipAddress, CaipNetwork, ChainNamespace, AdapterType } from '@rerock/common'
 import { ConstantsUtil as CommonConstantsUtil } from '@rerock/common'
-import type { AppKit } from '@rerock/base'
+import type { AppKit } from '@rerock/appkit'
 import { walletConnect } from './connectors/UniversalConnector.js'
 import { coinbaseWallet } from '@wagmi/connectors'
 import { authConnector } from './connectors/AuthConnector.js'
-import { ProviderUtil } from '@rerock/base/store'
+import { ProviderUtil } from '@rerock/appkit/store'
 
 // -- Types ---------------------------------------------------------------------
 export interface AdapterOptions<C extends Config>

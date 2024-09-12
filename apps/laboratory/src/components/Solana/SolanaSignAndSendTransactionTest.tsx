@@ -9,9 +9,13 @@ import {
   VersionedTransaction
 } from '@solana/web3.js'
 
-import { solana } from '@rerock/base/chains'
+import { solana } from '@rerock/appkit/chains'
 import { useChakraToast } from '../Toast'
-import { useWeb3ModalAccount, useWeb3ModalNetwork, useWeb3ModalProvider } from '@rerock/base/react'
+import {
+  useWeb3ModalAccount,
+  useWeb3ModalNetwork,
+  useWeb3ModalProvider
+} from '@rerock/appkit/react'
 import { useWeb3ModalConnection, type Provider } from '@rerock/appkit-adapter-solana/react'
 
 const PHANTOM_TESTNET_ADDRESS = '8vCyX7oB6Pc3pbWMGYYZF5pbSnAdQ7Gyr32JqxqCy8ZR'

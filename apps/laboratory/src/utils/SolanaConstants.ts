@@ -1,4 +1,4 @@
-import { solana, solanaDevnet, solanaTestnet } from '@rerock/base/chains'
+import { solana, solanaDevnet, solanaTestnet } from '@rerock/appkit/chains'
 
 export const COUNTER_ACCOUNT_SIZE = 8
 

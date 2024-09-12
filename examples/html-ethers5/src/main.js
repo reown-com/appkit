@@ -1,6 +1,6 @@
 import { EVMEthers5Client } from '@rerock/appkit-adapter-ethers5'
-import { mainnet, arbitrum } from '@rerock/base/chains'
-import { createWeb3Modal } from '@rerock/base'
+import { mainnet, arbitrum } from '@rerock/appkit/chains'
+import { createWeb3Modal } from '@rerock/appkit'
 
 // @ts-expect-error 1. Get projectId
 const projectId = import.meta.env.VITE_PROJECT_ID

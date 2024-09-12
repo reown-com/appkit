@@ -5,7 +5,7 @@ import { SwitchChainError, getAddress } from 'viem'
 import type { Address, Hex } from 'viem'
 import { ConstantsUtil } from '@rerock/scaffold-utils'
 import { NetworkUtil } from '@rerock/common'
-import { W3mFrameProviderSingleton } from '@rerock/base/auth-provider'
+import { W3mFrameProviderSingleton } from '@rerock/appkit/auth-provider'
 
 // -- Types ----------------------------------------------------------------------------------------
 interface W3mFrameProviderOptions {

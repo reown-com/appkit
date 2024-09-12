@@ -2,7 +2,7 @@ import type {
   AppKitOptions,
   ConnectionControllerClient,
   NetworkControllerClient
-} from '@rerock/base'
+} from '@rerock/appkit'
 import type { AdapterType, CaipNetwork, ChainNamespace } from '@rerock/common'
 import { ConstantsUtil as CommonConstantsUtil } from '@rerock/common'
 

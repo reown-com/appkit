@@ -4,7 +4,7 @@ import {
   useWeb3ModalEvents,
   useWeb3ModalState,
   useWeb3ModalTheme
-} from '@rerock/base/react'
+} from '@rerock/appkit/react'
 import { EVMEthersClient } from '@rerock/appkit-adapter-ethers'
 
 // @ts-expect-error 1. Get projectId

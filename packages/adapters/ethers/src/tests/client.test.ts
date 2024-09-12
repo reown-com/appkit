@@ -11,10 +11,10 @@ import {
   type ProviderType
 } from '@rerock/scaffold-utils/ethers'
 import { ConstantsUtil } from '@rerock/scaffold-utils'
-import { arbitrum, mainnet, polygon } from '@rerock/base/chains'
-import { ProviderUtil } from '@rerock/base/store'
+import { arbitrum, mainnet, polygon } from '@rerock/appkit/chains'
+import { ProviderUtil } from '@rerock/appkit/store'
 import { SafeLocalStorage } from '@rerock/common'
-import { WcConstantsUtil, type BlockchainApiLookupEnsName } from '@rerock/base'
+import { WcConstantsUtil, type BlockchainApiLookupEnsName } from '@rerock/appkit'
 import { InfuraProvider, JsonRpcProvider } from 'ethers'
 
 import type { CaipNetwork, ChainNamespace } from '@rerock/common'
@@ -74,7 +74,7 @@ vi.mock('@rerock/scaffold-utils', () => {
   }
 })
 
-vi.mock('@rerock/base/store', () => ({
+vi.mock('@rerock/appkit/store', () => ({
   ProviderUtil: {
     setProvider: vi.fn(),
     setProviderId: vi.fn(),

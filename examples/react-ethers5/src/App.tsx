@@ -5,8 +5,8 @@ import {
   useWeb3ModalEvents,
   useWeb3ModalState,
   useWeb3ModalTheme
-} from '@rerock/base/react'
-import { mainnet, arbitrum } from '@rerock/base/chains'
+} from '@rerock/appkit/react'
+import { mainnet, arbitrum } from '@rerock/appkit/chains'
 
 // @ts-expect-error 1. Get projectId
 const projectId = import.meta.env.VITE_PROJECT_ID

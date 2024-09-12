@@ -10,7 +10,7 @@
     "@wagmi/connectors": "5.1.9",
     "@wagmi/core": "2.13.4",
     "@rerock/appkit-adapter-wagmi": "workspace:*",
-    "@rerock/base": "workspace:*",
+    "@rerock/appkit": "workspace:*",
     "vue": "3.4.3"
   },
   "devDependencies": {

@@ -7,7 +7,7 @@ import type {
   WriteContractArgs
 } from '@rerock/core'
 import { ConstantsUtil } from '@rerock/common'
-import type { AppKit } from '@rerock/base'
+import type { AppKit } from '@rerock/appkit'
 
 export const Ethers5Methods = {
   signMessage: async (message: string, provider: Provider, address: string) => {

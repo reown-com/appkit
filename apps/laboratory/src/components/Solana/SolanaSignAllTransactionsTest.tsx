@@ -10,9 +10,9 @@ import {
 } from '@solana/web3.js'
 
 import { type Provider, useWeb3ModalConnection } from '@rerock/appkit-adapter-solana/react'
-import { useWeb3ModalNetwork, useWeb3ModalProvider } from '@rerock/base/react'
+import { useWeb3ModalNetwork, useWeb3ModalProvider } from '@rerock/appkit/react'
 
-import { solana } from '@rerock/base/chains'
+import { solana } from '@rerock/appkit/chains'
 import { useChakraToast } from '../Toast'
 import bs58 from 'bs58'
 

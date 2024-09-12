@@ -37,10 +37,10 @@ import { createSendTransaction } from './utils/createSendTransaction.js'
 import { W3mFrameHelpers, W3mFrameRpcConstants, type W3mFrameTypes } from '@rerock/wallet'
 import { ConstantsUtil as CoreConstantsUtil } from '@rerock/core'
 import { withSolanaNamespace } from './utils/withSolanaNamespace.js'
-import type { AppKit } from '@rerock/base'
-import type { AppKitOptions } from '@rerock/base'
-import { ProviderUtil } from '@rerock/base/store'
-import { W3mFrameProviderSingleton } from '@rerock/base/auth-provider'
+import type { AppKit } from '@rerock/appkit'
+import type { AppKitOptions } from '@rerock/appkit'
+import { ProviderUtil } from '@rerock/appkit/store'
+import { W3mFrameProviderSingleton } from '@rerock/appkit/auth-provider'
 
 export interface AdapterOptions {
   connectionSettings?: Commitment | ConnectionConfig

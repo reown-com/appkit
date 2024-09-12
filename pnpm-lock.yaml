@@ -73,12 +73,12 @@ importers:
       '@radix-ui/react-switch':
         specifier: 1.0.3
         version: 1.0.3(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      '@rerock/appkit':
+        specifier: workspace:*
+        version: link:../../packages/appkit
       '@rerock/appkit-adapter-wagmi':
         specifier: workspace:*
         version: link:../../packages/adapters/wagmi
-      '@rerock/base':
-        specifier: workspace:*
-        version: link:../../packages/base
       '@tanstack/react-query':
         specifier: 5.24.8
         version: 5.24.8(react@18.2.0)
@@ -198,6 +198,9 @@ importers:
       '@emotion/styled':
         specifier: 11.11.0
         version: 11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0)
+      '@rerock/appkit':
+        specifier: workspace:*
+        version: link:../../packages/appkit
       '@rerock/appkit-adapter-ethers':
         specifier: workspace:*
         version: link:../../packages/adapters/ethers
@@ -210,9 +213,6 @@ importers:
       '@rerock/appkit-adapter-wagmi':
         specifier: workspace:*
         version: link:../../packages/adapters/wagmi
-      '@rerock/base':
-        specifier: workspace:*
-        version: link:../../packages/base
       '@rerock/ethers':
         specifier: workspace:*
         version: link:../../packages/ethers
@@ -334,12 +334,12 @@ importers:
 
   examples/html-ethers:
     dependencies:
+      '@rerock/appkit':
+        specifier: workspace:*
+        version: link:../../packages/appkit
       '@rerock/appkit-adapter-ethers':
         specifier: workspace:*
         version: link:../../packages/adapters/ethers
-      '@rerock/base':
-        specifier: workspace:*
-        version: link:../../packages/base
       ethers:
         specifier: 6.13.2
         version: 6.13.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
@@ -350,12 +350,12 @@ importers:
 
   examples/html-ethers5:
     dependencies:
+      '@rerock/appkit':
+        specifier: workspace:*
+        version: link:../../packages/appkit
       '@rerock/appkit-adapter-ethers5':
         specifier: workspace:*
         version: link:../../packages/adapters/ethers5
-      '@rerock/base':
-        specifier: workspace:*
-        version: link:../../packages/base
       ethers:
         specifier: 5.7.2
         version: 5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
@@ -366,12 +366,12 @@ importers:
 
   examples/html-wagmi:
     dependencies:
+      '@rerock/appkit':
+        specifier: workspace:*
+        version: link:../../packages/appkit
       '@rerock/appkit-adapter-wagmi':
         specifier: workspace:*
         version: link:../../packages/adapters/wagmi
-      '@rerock/base':
-        specifier: workspace:*
-        version: link:../../packages/base
       '@wagmi/connectors':
         specifier: 5.1.9
         version: 5.1.9(@types/react@18.2.62)(@wagmi/core@2.13.4(@tanstack/query-core@5.24.8)(@types/react@18.2.62)(react@18.2.0)(typescript@5.3.3)(viem@2.21.4(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4)))(bufferutil@4.0.8)(react-dom@18.2.0(react@18.2.0))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(react@18.2.0)(rollup@4.21.3)(typescript@5.3.3)(utf-8-validate@5.0.10)(viem@2.21.4(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4))(zod@3.22.4)
@@ -391,12 +391,12 @@ importers:
 
   examples/next-ethers:
     dependencies:
+      '@rerock/appkit':
+        specifier: workspace:*
+        version: link:../../packages/appkit
       '@rerock/appkit-adapter-ethers':
         specifier: workspace:*
         version: link:../../packages/adapters/ethers
-      '@rerock/base':
-        specifier: workspace:*
-        version: link:../../packages/base
       ethers:
         specifier: 6.13.0
         version: 6.13.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
@@ -434,12 +434,12 @@ importers:
 
   examples/next-wagmi:
     dependencies:
+      '@rerock/appkit':
+        specifier: workspace:*
+        version: link:../../packages/appkit
       '@rerock/appkit-adapter-wagmi':
         specifier: workspace:*
         version: link:../../packages/adapters/wagmi
-      '@rerock/base':
-        specifier: workspace:*
-        version: link:../../packages/base
       '@tanstack/react-query':
         specifier: 5.24.8
         version: 5.24.8(react@18.2.0)
@@ -489,12 +489,12 @@ importers:
 
   examples/react-ethers:
     dependencies:
+      '@rerock/appkit':
+        specifier: workspace:*
+        version: link:../../packages/appkit
       '@rerock/appkit-adapter-ethers':
         specifier: workspace:*
         version: link:../../packages/adapters/ethers
-      '@rerock/base':
-        specifier: workspace:*
-        version: link:../../packages/base
       ethers:
         specifier: 6.13.2
         version: 6.13.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
@@ -520,12 +520,12 @@ importers:
 
   examples/react-ethers5:
     dependencies:
+      '@rerock/appkit':
+        specifier: workspace:*
+        version: link:../../packages/appkit
       '@rerock/appkit-adapter-ethers5':
         specifier: workspace:*
         version: link:../../packages/adapters/ethers5
-      '@rerock/base':
-        specifier: workspace:*
-        version: link:../../packages/base
       ethers:
         specifier: 5.7.2
         version: 5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
@@ -585,12 +585,12 @@ importers:
 
   examples/react-wagmi:
     dependencies:
+      '@rerock/appkit':
+        specifier: workspace:*
+        version: link:../../packages/appkit
       '@rerock/appkit-adapter-wagmi':
         specifier: workspace:*
         version: link:../../packages/adapters/wagmi
-      '@rerock/base':
-        specifier: workspace:*
-        version: link:../../packages/base
       '@tanstack/react-query':
         specifier: 5.24.8
         version: 5.24.8(react@18.2.0)
@@ -625,12 +625,12 @@ importers:
 
   examples/vue-ethers5:
     dependencies:
+      '@rerock/appkit':
+        specifier: workspace:*
+        version: link:../../packages/appkit
       '@rerock/appkit-adapter-ethers5':
         specifier: workspace:*
         version: link:../../packages/adapters/ethers5
-      '@rerock/base':
-        specifier: workspace:*
-        version: link:../../packages/base
       ethers:
         specifier: 5.7.2
         version: 5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
@@ -669,12 +669,12 @@ importers:
 
   examples/vue-wagmi:
     dependencies:
+      '@rerock/appkit':
+        specifier: workspace:*
+        version: link:../../packages/appkit
       '@rerock/appkit-adapter-wagmi':
         specifier: workspace:*
         version: link:../../packages/adapters/wagmi
-      '@rerock/base':
-        specifier: workspace:*
-        version: link:../../packages/base
       '@wagmi/connectors':
         specifier: 5.1.9
         version: 5.1.9(@types/react@18.2.62)(@wagmi/core@2.13.4(@tanstack/query-core@5.24.8)(@types/react@18.2.62)(react@18.2.0)(typescript@5.3.3)(viem@2.21.4(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4)))(bufferutil@4.0.8)(react-dom@18.2.0(react@18.2.0))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(react@18.2.0)(rollup@4.21.3)(typescript@5.3.3)(utf-8-validate@5.0.10)(viem@2.21.4(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4))(zod@3.22.4)
@@ -694,9 +694,9 @@ importers:
 
   packages/adapters/ethers:
     dependencies:
-      '@rerock/base':
+      '@rerock/appkit':
         specifier: workspace:*
-        version: link:../../base
+        version: link:../../appkit
       '@rerock/common':
         specifier: workspace:*
         version: link:../../common
@@ -752,9 +752,9 @@ importers:
 
   packages/adapters/ethers5:
     dependencies:
-      '@rerock/base':
+      '@rerock/appkit':
         specifier: workspace:*
-        version: link:../../base
+        version: link:../../appkit
       '@rerock/common':
         specifier: workspace:*
         version: link:../../common
@@ -810,9 +810,9 @@ importers:
 
   packages/adapters/polkadot:
     dependencies:
-      '@rerock/base':
+      '@rerock/appkit':
         specifier: workspace:*
-        version: link:../../base
+        version: link:../../appkit
       '@rerock/common':
         specifier: workspace:*
         version: link:../../common
@@ -829,9 +829,9 @@ importers:
 
   packages/adapters/solana:
     dependencies:
-      '@rerock/base':
+      '@rerock/appkit':
         specifier: workspace:*
-        version: link:../../base
+        version: link:../../appkit
       '@rerock/common':
         specifier: workspace:*
         version: link:../../common
@@ -927,9 +927,9 @@ importers:
 
   packages/adapters/wagmi:
     dependencies:
-      '@rerock/base':
+      '@rerock/appkit':
         specifier: workspace:*
-        version: link:../../base
+        version: link:../../appkit
       '@rerock/common':
         specifier: workspace:*
         version: link:../../common
@@ -995,7 +995,7 @@ importers:
         specifier: 2.12.9
         version: 2.12.9(@tanstack/query-core@5.24.8)(@tanstack/react-query@5.24.8(react@18.2.0))(@types/react@18.2.0)(bufferutil@4.0.8)(react-dom@18.2.0(react@18.2.0))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.2.0)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(react@18.2.0)(rollup@4.21.3)(typescript@5.3.3)(utf-8-validate@5.0.10)(viem@2.21.4(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4))(zod@3.22.4)
 
-  packages/base:
+  packages/appkit:
     dependencies:
       '@rerock/common':
         specifier: workspace:*
@@ -1179,12 +1179,12 @@ importers:
       '@coinbase/wallet-sdk':
         specifier: 4.0.3
         version: 4.0.3
+      '@rerock/appkit':
+        specifier: workspace:*
+        version: link:../appkit
       '@rerock/appkit-adapter-ethers':
         specifier: workspace:*
         version: link:../adapters/ethers
-      '@rerock/base':
-        specifier: workspace:*
-        version: link:../base
       '@rerock/common':
         specifier: workspace:*
         version: link:../common
@@ -1225,12 +1225,12 @@ importers:
       '@coinbase/wallet-sdk':
         specifier: 4.0.3
         version: 4.0.3
+      '@rerock/appkit':
+        specifier: workspace:*
+        version: link:../appkit
       '@rerock/appkit-adapter-ethers5':
         specifier: workspace:*
         version: link:../adapters/ethers5
-      '@rerock/base':
-        specifier: workspace:*
-        version: link:../base
       '@rerock/common':
         specifier: workspace:*
         version: link:../common
@@ -1363,12 +1363,12 @@ importers:
       '@ethersproject/sha2':
         specifier: 5.7.0
         version: 5.7.0
+      '@rerock/appkit':
+        specifier: workspace:*
+        version: link:../appkit
       '@rerock/appkit-adapter-solana':
         specifier: workspace:*
         version: link:../adapters/solana
-      '@rerock/base':
-        specifier: workspace:*
-        version: link:../base
       '@rerock/common':
         specifier: workspace:*
         version: link:../common
@@ -1485,12 +1485,12 @@ importers:
 
   packages/wagmi:
     dependencies:
+      '@rerock/appkit':
+        specifier: workspace:*
+        version: link:../appkit
       '@rerock/appkit-adapter-wagmi':
         specifier: workspace:*
         version: link:../adapters/wagmi
-      '@rerock/base':
-        specifier: workspace:*
-        version: link:../base
       '@rerock/common':
         specifier: workspace:*
         version: link:../common

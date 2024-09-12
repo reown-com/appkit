@@ -1,5 +1,5 @@
 import React from 'react'
-import { createWeb3Modal } from '@rerock/base/react'
+import { createWeb3Modal } from '@rerock/appkit/react'
 import { EVMWagmiClient } from '@rerock/appkit-adapter-wagmi'
 import { SolanaWeb3JsClient } from '@rerock/appkit-adapter-solana/react'
 import { ThemeStore } from '../../utils/StoreUtil'
@@ -18,7 +18,7 @@ import {
   optimism,
   zkSync,
   sepolia
-} from '@rerock/base/chains'
+} from '@rerock/appkit/chains'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { MultiChainTestsWagmiSolana } from '../../components/MultiChainTestsWagmiSolana'

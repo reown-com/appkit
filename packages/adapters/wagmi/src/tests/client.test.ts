@@ -7,7 +7,7 @@ import {
   mockOptions,
   mockWagmiClient
 } from './mocks/adapter.mock'
-import { arbitrum, mainnet } from '@rerock/base/chains'
+import { arbitrum, mainnet } from '@rerock/appkit/chains'
 import { connect, disconnect, getAccount, getChainId, getEnsName, getBalance } from '@wagmi/core'
 import { ConstantsUtil } from '@rerock/scaffold-utils'
 

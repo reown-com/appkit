@@ -4,9 +4,9 @@ import {
   useWeb3ModalNetwork,
   useWeb3ModalProvider,
   type Provider
-} from '@rerock/base/react'
+} from '@rerock/appkit/react'
 import { ethers } from 'ethers5'
-import { optimism, sepolia } from '@rerock/base/chains'
+import { optimism, sepolia } from '@rerock/appkit/chains'
 import { useState } from 'react'
 
 import { abi, address as donutAddress } from '../../utils/DonutContract'

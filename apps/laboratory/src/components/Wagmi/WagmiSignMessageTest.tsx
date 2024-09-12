@@ -3,7 +3,7 @@ import { Button } from '@chakra-ui/react'
 import { useSignMessage } from 'wagmi'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { useChakraToast } from '../Toast'
-import { useWeb3ModalAccount } from '@rerock/base/react'
+import { useWeb3ModalAccount } from '@rerock/appkit/react'
 
 export function WagmiSignMessageTest() {
   const toast = useChakraToast()

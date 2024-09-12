@@ -4,7 +4,7 @@ import { createConfig, http } from 'wagmi'
 import { mock } from 'wagmi/connectors'
 
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
-import { AppKit, type SdkVersion } from '@rerock/base'
+import { AppKit, type SdkVersion } from '@rerock/appkit'
 import type { CaipNetwork } from '@rerock/common'
 
 export const mainnet: CaipNetwork = {

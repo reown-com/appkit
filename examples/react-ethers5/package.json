@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@rerock/appkit-adapter-ethers5": "workspace:*",
-    "@rerock/base": "workspace:*",
+    "@rerock/appkit": "workspace:*",
     "ethers": "5.7.2",
     "react": "18.2.0",
     "react-dom": "18.2.0"

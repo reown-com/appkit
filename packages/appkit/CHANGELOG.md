@@ -1,4 +1,4 @@
-# @rerock/base
+# @rerock/appkit
 
 ## 0.0.3
 

@@ -4,8 +4,8 @@ import {
   useWeb3ModalEvents,
   useWeb3ModalState,
   useWeb3ModalTheme
-} from '@rerock/base/react'
-import { mainnet, polygon } from '@rerock/base/chains'
+} from '@rerock/appkit/react'
+import { mainnet, polygon } from '@rerock/appkit/chains'
 import { EVMWagmiClient } from '@rerock/appkit-adapter-wagmi'
 import { WagmiProvider } from 'wagmi'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'

@@ -22,7 +22,7 @@ import type {
   AdapterType
 } from '@rerock/common'
 import { SafeLocalStorage, SafeLocalStorageKeys } from '@rerock/common'
-import { ProviderUtil } from '@rerock/base/store'
+import { ProviderUtil } from '@rerock/appkit/store'
 import type { AppKitOptions } from '../utils/TypesUtil.js'
 import { allChains } from '../chains/index.js'
 

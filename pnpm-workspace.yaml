@@ -1,6 +1,6 @@
 packages:
   - 'packages/adapters/*'
-  - 'packages/base'
+  - 'packages/appkit'
   - 'packages/common'
   - 'packages/ui'
   - 'packages/core'

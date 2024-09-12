@@ -5,7 +5,7 @@ import { mockOptions } from './mocks/Options'
 import mockProvider from './mocks/UniversalProvider'
 import type UniversalProvider from '@walletconnect/universal-provider'
 import { NetworkController } from '@rerock/core'
-import { ProviderUtil } from '@rerock/base/store'
+import { ProviderUtil } from '@rerock/appkit/store'
 import { ConstantsUtil, PresetsUtil } from '@rerock/scaffold-utils'
 import mockAppKit from './mocks/AppKit'
 

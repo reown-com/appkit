@@ -54,7 +54,7 @@
     "@walletconnect/utils": "2.16.1",
     "@rerock/polyfills": "workspace:*",
     "@rerock/appkit-adapter-wagmi": "workspace:*",
-    "@rerock/base": "workspace:*",
+    "@rerock/appkit": "workspace:*",
     "@rerock/wallet": "workspace:*",
     "@rerock/common": "workspace:*",
     "@rerock/scaffold-utils": "workspace:*",

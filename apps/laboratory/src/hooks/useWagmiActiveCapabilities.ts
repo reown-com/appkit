@@ -10,7 +10,7 @@ import {
   getProviderCachedCapabilities
 } from '../utils/EIP5792Utils'
 import { W3mFrameProvider } from '@rerock/wallet'
-import { useWeb3ModalAccount } from '@rerock/base/react'
+import { useWeb3ModalAccount } from '@rerock/appkit/react'
 
 type UseWagmiAvailableCapabilitiesParams = {
   capability?: string

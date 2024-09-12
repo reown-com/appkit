@@ -1,11 +1,11 @@
-import { createWeb3Modal } from '@rerock/base/react'
+import { createWeb3Modal } from '@rerock/appkit/react'
 
 import { ThemeStore } from '../../utils/StoreUtil'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { SolanaTests } from '../../components/Solana/SolanaTests'
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
-import { solana, solanaDevnet, solanaTestnet } from '@rerock/base/chains'
+import { solana, solanaDevnet, solanaTestnet } from '@rerock/appkit/chains'
 import { SolanaWeb3JsClient } from '@rerock/appkit-adapter-solana/react'
 
 const solanaWeb3JsAdapter = new SolanaWeb3JsClient({

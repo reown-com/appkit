@@ -1,6 +1,6 @@
 import { Button } from '@chakra-ui/react'
 
-import { useWeb3ModalProvider } from '@rerock/base/react'
+import { useWeb3ModalProvider } from '@rerock/appkit/react'
 
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { useChakraToast } from '../Toast'

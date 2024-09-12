@@ -1,5 +1,5 @@
-import { AppKit } from '@rerock/base'
-import type { AppKitOptions } from '@rerock/base'
+import { AppKit } from '@rerock/appkit'
+import type { AppKitOptions } from '@rerock/appkit'
 import { EVMWagmiClient, type AdapterOptions } from '@rerock/appkit-adapter-wagmi'
 import type { Config } from 'wagmi'
 import { ConstantsUtil } from '@rerock/scaffold-utils'

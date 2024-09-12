@@ -9,7 +9,7 @@ import {
   VersionedTransaction,
   TransactionMessage
 } from '@solana/web3.js'
-import { useWeb3ModalNetwork, useWeb3ModalProvider } from '@rerock/base/react'
+import { useWeb3ModalNetwork, useWeb3ModalProvider } from '@rerock/appkit/react'
 
 import { COUNTER_ACCOUNT_SIZE } from '../../utils/SolanaConstants'
 import { deserializeCounterAccount, detectProgramId } from '../../utils/SolanaUtil'

@@ -1,4 +1,4 @@
-import { useWeb3ModalAccount, useWeb3ModalNetwork } from '@rerock/base/react'
+import { useWeb3ModalAccount, useWeb3ModalNetwork } from '@rerock/appkit/react'
 import {
   StackDivider,
   Card,
@@ -15,7 +15,7 @@ import { SolanaSignTransactionTest } from './SolanaSignTransactionTest'
 import { SolanaSendTransactionTest } from './SolanaSendTransactionTest'
 import { SolanaSignMessageTest } from './SolanaSignMessageTest'
 import { SolanaWriteContractTest } from './SolanaWriteContractTest'
-import { solana, solanaDevnet, solanaTestnet } from '@rerock/base/chains'
+import { solana, solanaDevnet, solanaTestnet } from '@rerock/appkit/chains'
 import { SolanaSignAndSendTransaction } from './SolanaSignAndSendTransactionTest'
 import { SolanaSignAllTransactionsTest } from './SolanaSignAllTransactionsTest'
 import { SolanaSignJupiterSwapTest } from './SolanaSignJupiterSwapTest'
