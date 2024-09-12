@@ -34,7 +34,7 @@ export class W3mActivityList extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() public page: 'account' | 'activity' = 'activity'
 
-  @state() private caipAddress = AccountController.state.caipAddress
+  @state() private caipAddress = ChainController.state.activeCaipAddress
 
   @state() private transactionsByYear = TransactionsController.state.transactionsByYear
 
@@ -50,7 +50,7 @@ export class W3mActivityList extends LitElement {
     TransactionsController.clearCursor()
     this.unsubscribe.push(
       ...[
-        AccountController.subscribeKey('caipAddress', val => {
+        ChainController.subscribeKey('activeCaipAddress', val => {
           if (val) {
             if (this.caipAddress !== val) {
               TransactionsController.resetTransactions()

@@ -3,8 +3,8 @@ import { getAvailableDevices } from './device'
 
 const availableDevices = getAvailableDevices()
 
-const LIBRARIES = ['ethers', 'ethers5'] as const
-const MULTICHAIN_LIBRARIES = ['multichain-ethers-solana', 'multichain-ethers5-solana'] as const
+const LIBRARIES = ['wagmi'] as const
+const MULTICHAIN_LIBRARIES = [] as const
 
 const LIBRARY_PERMUTATIONS = availableDevices.flatMap(device =>
   LIBRARIES.map(library => ({ device, library }))
@@ -32,10 +32,15 @@ export type CustomProjectProperties = {
 }
 
 const multiChainTests = [
+  'multichain-wagmi-solana.spec.ts',
+  'multichain-wagmi-solana-email.spec.ts',
+  'multichain-wagmi-solana-siwe.spec.ts',
   'multichain-ethers-solana.spec.ts',
   'multichain-ethers-solana-email.spec.ts',
+  'multichain-ethers-solana-siwe.spec.ts',
   'multichain-ethers5-solana.spec.ts',
-  'multichain-ethers5-solana-email.spec.ts'
+  'multichain-ethers5-solana-email.spec.ts',
+  'multichain-ethers5-solana-siwe.spec.ts'
 ]
 
 const SOLANA_DISABLED_TESTS = [
@@ -53,7 +58,6 @@ const WAGMI_DISABLED_TESTS = [
   'metamask.spec.ts',
   'verify.spec.ts',
   'multichain.spec.ts',
-  'siwe-email.spec.ts',
   'siwe-sa.spec.ts',
   'smart-account.spec.ts',
   ...multiChainTests

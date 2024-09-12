@@ -139,14 +139,6 @@ export class W3mNetworksView extends LitElement {
     const authConnector = ConnectorController.getAuthConnector()
     const isConnectedWithAuth = type === 'AUTH' && authConnector
 
-    console.log(
-      '>>> getNetworkDisabled',
-      network,
-      isNamespaceConnected,
-      supportsAllNetworks,
-      isConnectedWithAuth
-    )
-
     if (!isNamespaceConnected || supportsAllNetworks || isConnectedWithAuth) {
       return false
     }

@@ -8,10 +8,10 @@ import {
   NetworkController,
   RouterController,
   AccountController,
-  ChainController
+  ChainController,
+  OptionsController
 } from '@rerock/core'
 import { state } from 'lit/decorators.js'
-import type { ChainNamespace } from '@rerock/common'
 
 @customElement('w3m-email-verify-otp-view')
 export class W3mEmailVerifyOtpView extends W3mEmailOtpWidget {
@@ -39,11 +39,14 @@ export class W3mEmailVerifyOtpView extends W3mEmailOtpWidget {
         await this.authConnector.provider.connectOtp({ otp })
         EventsController.sendEvent({ type: 'track', event: 'EMAIL_VERIFICATION_CODE_PASS' })
 
-        // Here, connect only active chain, 
-        if(ChainController.state.activeChain){
-          await ConnectionController.connectExternal(this.authConnector, ChainController.state.activeChain)
+        // Here, connect only active chain,
+        if (ChainController.state.activeChain) {
+          await ConnectionController.connectExternal(
+            this.authConnector,
+            ChainController.state.activeChain
+          )
         } else {
-          throw new Error("Active chain is not set on ChainControll")
+          throw new Error('Active chain is not set on ChainControll')
         }
         // then when we switch to other chains, we need to first switch on secure site
         // and update the state a bit,
@@ -63,7 +66,9 @@ export class W3mEmailVerifyOtpView extends W3mEmailOtpWidget {
         } else if (smartAccountEnabled && !this.smartAccountDeployed) {
           RouterController.push('UpgradeToSmartAccount')
         } else {
-          ModalController.close()
+          if (!OptionsController.state.isSiweEnabled) {
+            ModalController.close()
+          }
         }
       }
     } catch (error) {

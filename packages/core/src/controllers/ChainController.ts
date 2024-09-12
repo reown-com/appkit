@@ -198,6 +198,9 @@ export const ChainController = {
     chain: ChainNamespace | undefined,
     replaceState = true
   ) {
+    if (prop === 'siweStatus') {
+      console.log('>>> setAccountProp', prop, value)
+    }
     this.setChainAccountData(
       chain,
       {
@@ -312,7 +315,7 @@ export const ChainController = {
   getConnectionControllerClient(_chain?: ChainNamespace) {
     const chain = _chain || state.activeChain
     const isWcConnector =
-      SafeLocalStorage.getItem(SafeLocalStorageKeys.WALLET_ID) === 'walletConnect'
+      SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR) === 'WALLET_CONNECT'
     const universalConnectionControllerClient = state.universalAdapter.connectionControllerClient
     const hasWagmiAdapter = state.chains.get('eip155')?.adapterType === 'wagmi'
 
@@ -405,6 +408,7 @@ export const ChainController = {
       throw new Error('Chain is required to set account prop')
     }
 
+    ChainController.state.activeCaipAddress = undefined
     this.setChainAccountData(
       chainToWrite,
       ref({

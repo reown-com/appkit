@@ -86,6 +86,8 @@ export class EVMEthersClient {
 
   private authProvider?: W3mFrameProvider
 
+  private provider: Provider | undefined = undefined
+
   // -- Public variables --------------------------------------------------------
   public options: AppKitOptions | undefined = undefined
 
@@ -293,7 +295,7 @@ export class EVMEthersClient {
         try {
           // WcStoreUtil.setError(undefined)
           if (selectedProvider && id !== ConstantsUtil.AUTH_CONNECTOR_ID) {
-            await selectedProvider.request({ method: 'eth_requestAccounts' })
+            const data = await selectedProvider.request({ method: 'eth_requestAccounts' })
           }
           await this.setProvider(
             selectedProvider,
@@ -369,7 +371,8 @@ export class EVMEthersClient {
       },
       signMessage: async (message: string) => {
         const provider = ProviderUtil.getProvider<Provider>(this.chainNamespace)
-        const address = this.appKit?.getAddress()
+        const caipAddress = ChainController.state.activeCaipAddress
+        const address = CoreHelperUtil.getPlainAddress(caipAddress)
 
         if (!address) {
           throw new Error('Address is undefined')
@@ -387,7 +390,8 @@ export class EVMEthersClient {
 
       estimateGas: async data => {
         const provider = ProviderUtil.getProvider<Provider>('eip155')
-        const address = this.appKit?.getAddress()
+        const caipAddress = ChainController.state.activeCaipAddress
+        const address = CoreHelperUtil.getPlainAddress(caipAddress)
         const caipNetwork = this.appKit?.getCaipNetwork()
 
         if (!address) {
@@ -408,7 +412,8 @@ export class EVMEthersClient {
 
       sendTransaction: async data => {
         const provider = ProviderUtil.getProvider<Provider>('eip155')
-        const address = this.appKit?.getAddress()
+        const caipAddress = ChainController.state.activeCaipAddress
+        const address = CoreHelperUtil.getPlainAddress(caipAddress)
         const caipNetwork = this.appKit?.getCaipNetwork()
 
         if (!address) {
@@ -429,7 +434,8 @@ export class EVMEthersClient {
 
       writeContract: async data => {
         const provider = ProviderUtil.getProvider<Provider>('eip155')
-        const address = this.appKit?.getAddress()
+        const caipAddress = ChainController.state.activeCaipAddress
+        const address = CoreHelperUtil.getPlainAddress(caipAddress)
         const caipNetwork = this.appKit?.getCaipNetwork()
 
         if (!address) {
@@ -596,20 +602,24 @@ export class EVMEthersClient {
       this.setAuthProvider()
     } else {
       const walletId = providerId
-
       SafeLocalStorage.setItem(SafeLocalStorageKeys.WALLET_ID, walletId)
+
       if (name) {
         SafeLocalStorage.setItem(SafeLocalStorageKeys.WALLET_NAME, name)
       }
 
       if (provider) {
         const { addresses, chainId } = await EthersHelpersUtil.getUserInfo(provider)
+        const firstAddress = addresses?.[0]
         const caipNetwork = this.caipNetworks.find(c => c.chainId === chainId)
+        const caipAddress = `${this.chainNamespace}:${chainId}:${firstAddress}` as CaipAddress
 
-        if (addresses?.[0] && chainId && caipNetwork) {
+        if (firstAddress && chainId && caipNetwork) {
+          this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)
           this.appKit?.setCaipNetwork(caipNetwork)
           ProviderUtil.setProviderId('eip155', providerId)
           ProviderUtil.setProvider<Provider>('eip155', provider)
+          this.provider = provider
           this.appKit?.setStatus('connected', this.chainNamespace)
           this.appKit?.setAllAccounts(
             addresses.map(address => ({ address, type: 'eoa' })),
@@ -802,7 +812,7 @@ export class EVMEthersClient {
   }
 
   private handleAuthNotConnected() {
-    this.appKit?.setIsConnected(false, this.chainNamespace)
+    this.appKit?.setCaipAddress(undefined, this.chainNamespace)
   }
 
   private handleAuthIsConnected(preferredAccountType: string | undefined) {
@@ -812,7 +822,6 @@ export class EVMEthersClient {
       return
     }
 
-    this.appKit?.setIsConnected(true, this.chainNamespace)
     this.appKit?.setPreferredAccountType(
       preferredAccountType as W3mFrameTypes.AccountType,
       this.chainNamespace
@@ -1047,20 +1056,19 @@ export class EVMEthersClient {
               const { chainId } = await this.authProvider.switchNetwork(
                 caipNetwork.chainId as number
               )
-              this.appKit?.setCaipNetwork(caipNetwork)
-              this.appKit?.setLoading(false)
-
               const { address, preferredAccountType } = await this.authProvider.connect({
                 chainId: caipNetwork.chainId as number | undefined
               })
               const caipAddress = `${this.chainNamespace}:${chainId}:${address}` as CaipAddress
 
+              this.appKit?.setCaipNetwork(caipNetwork)
               this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)
               this.appKit?.setPreferredAccountType(
                 preferredAccountType as W3mFrameTypes.AccountType,
                 this.chainNamespace
               )
               await this.syncAccount({ address: address as Address })
+              this.appKit?.setLoading(false)
             } catch {
               throw new Error('Switching chain failed')
             } finally {

@@ -3,6 +3,7 @@ import {
   AccountController,
   ChainController,
   ConnectionController,
+  CoreHelperUtil,
   NetworkController,
   type ConnectionControllerClient,
   type Connector,
@@ -240,6 +241,8 @@ export class UniversalAdapterClient {
 
       signMessage: async (message: string) => {
         const provider = await this.getWalletConnectProvider()
+        const caipAddress = ChainController.state.activeCaipAddress
+        const address = CoreHelperUtil.getPlainAddress(caipAddress)
 
         if (!provider) {
           throw new Error('connectionControllerClient:signMessage - provider is undefined')
@@ -247,7 +250,7 @@ export class UniversalAdapterClient {
 
         const signature = await provider.request({
           method: 'personal_sign',
-          params: [message, this.appKit?.getAddress()]
+          params: [message, address]
         })
 
         return signature as string

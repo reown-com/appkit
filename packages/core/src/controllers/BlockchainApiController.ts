@@ -34,6 +34,7 @@ import type {
 import { OptionsController } from './OptionsController.js'
 import { proxy } from 'valtio/vanilla'
 import { AccountController } from './AccountController.js'
+import { ChainController } from './ChainController.js'
 
 const DEFAULT_OPTIONS = {
   purchaseCurrencies: [
@@ -132,7 +133,9 @@ export const BlockchainApiController = {
       path: `/v1/identity/${address}`,
       params: {
         projectId: OptionsController.state.projectId,
-        sender: AccountController.state.address
+        sender: ChainController.state.activeCaipAddress
+          ? CoreHelperUtil.getPlainAddress(ChainController.state.activeCaipAddress)
+          : undefined
       }
     })
   },

@@ -45,7 +45,7 @@ export const ModalController = {
 
   async open(options?: ModalControllerArguments['open']) {
     await ApiController.state.prefetchPromise
-    const caipAddress = AccountController.state.caipAddress
+    const caipAddress = ChainController.state.activeCaipAddress
 
     const noAdapters = ChainController.state.noAdapters
 
@@ -68,7 +68,7 @@ export const ModalController = {
   },
 
   close() {
-    const connected = AccountController.state.isConnected || false
+    const connected = ChainController.state.activeCaipAddress ? true : false
     state.open = false
     PublicStateController.set({ open: false })
     EventsController.sendEvent({

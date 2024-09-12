@@ -58,7 +58,11 @@ export class W3mSwitchActiveChainView extends LitElement {
           <wui-visual
             name=${this.switchToChain === 'eip155' ? 'eth' : this.switchToChain}
           ></wui-visual>
-          <wui-text variant="paragraph-500" color="fg-100" align="center"
+          <wui-text
+            data-testid="w3m-switch-active-chain-title"
+            variant="paragraph-500"
+            color="fg-100"
+            align="center"
             >Switch to
             <span class="capitalize">
               ${this.switchToChain === 'eip155' ? 'Ethereum' : this.switchToChain}</span

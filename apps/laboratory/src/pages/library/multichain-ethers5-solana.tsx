@@ -15,7 +15,6 @@ import {
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { MultiChainTestsEthersSolana } from '../../components/MultiChainTestsEthersSolana'
-import { siweConfig } from '../../utils/SiweUtils'
 
 const etherAdapter = new EVMEthersClient()
 

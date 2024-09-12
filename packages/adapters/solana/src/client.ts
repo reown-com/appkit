@@ -206,7 +206,7 @@ export class SolanaWeb3JsClient implements ChainAdapter {
             resolve(networkData)
           } else {
             resolve({
-              supportsAllNetworks: false,
+              supportsAllNetworks: true,
               approvedCaipNetworkIds: []
             })
           }

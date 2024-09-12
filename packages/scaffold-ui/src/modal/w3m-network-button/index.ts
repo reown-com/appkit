@@ -30,7 +30,7 @@ export class W3mNetworkButton extends LitElement {
 
   @state() private networkImage = this.network ? AssetUtil.getNetworkImage(this.network) : undefined
 
-  @state() private caipAddress = AccountController.state.caipAddress
+  @state() private caipAddress = ChainController.state.activeCaipAddress
 
   @state() private loading = ModalController.state.loading
 
@@ -45,7 +45,7 @@ export class W3mNetworkButton extends LitElement {
             ? AssetUtil.getNetworkImage(this.network)
             : undefined
         }),
-        AccountController.subscribeKey('caipAddress', val => {
+        ChainController.subscribeKey('activeCaipAddress', val => {
           this.caipAddress = val
         }),
         ChainController.subscribeKey('activeCaipNetwork', val => {

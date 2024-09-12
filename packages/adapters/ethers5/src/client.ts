@@ -375,7 +375,8 @@ export class EVMEthers5Client {
       },
       signMessage: async (message: string) => {
         const provider = ProviderUtil.getProvider<Provider>(this.chainNamespace)
-        const address = this.appKit?.getAddress()
+        const caipAddress = ChainController.state.activeCaipAddress
+        const address = CoreHelperUtil.getPlainAddress(caipAddress)
 
         if (!address) {
           throw new Error('Address is undefined')
@@ -393,7 +394,8 @@ export class EVMEthers5Client {
 
       estimateGas: async data => {
         const provider = ProviderUtil.getProvider<Provider>('eip155')
-        const address = this.appKit?.getAddress()
+        const caipAddress = ChainController.state.activeCaipAddress
+        const address = CoreHelperUtil.getPlainAddress(caipAddress)
         const caipNetwork = this.appKit?.getCaipNetwork()
 
         if (!address) {
@@ -414,7 +416,8 @@ export class EVMEthers5Client {
 
       sendTransaction: async data => {
         const provider = ProviderUtil.getProvider<Provider>('eip155')
-        const address = this.appKit?.getAddress()
+        const caipAddress = ChainController.state.activeCaipAddress
+        const address = CoreHelperUtil.getPlainAddress(caipAddress)
         const caipNetwork = this.appKit?.getCaipNetwork()
 
         if (!address) {
@@ -435,7 +438,8 @@ export class EVMEthers5Client {
 
       writeContract: async data => {
         const provider = ProviderUtil.getProvider<Provider>('eip155')
-        const address = this.appKit?.getAddress()
+        const caipAddress = ChainController.state.activeCaipAddress
+        const address = CoreHelperUtil.getPlainAddress(caipAddress)
         const caipNetwork = this.appKit?.getCaipNetwork()
 
         if (!address) {
@@ -1054,20 +1058,19 @@ export class EVMEthers5Client {
               const { chainId } = await this.authProvider.switchNetwork(
                 caipNetwork.chainId as number
               )
-              this.appKit?.setCaipNetwork(caipNetwork)
-              this.appKit?.setLoading(false)
-
               const { address, preferredAccountType } = await this.authProvider.connect({
                 chainId: caipNetwork.chainId as number | undefined
               })
               const caipAddress = `${this.chainNamespace}:${chainId}:${address}` as CaipAddress
 
+              this.appKit?.setCaipNetwork(caipNetwork)
               this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)
               this.appKit?.setPreferredAccountType(
                 preferredAccountType as W3mFrameTypes.AccountType,
                 this.chainNamespace
               )
               await this.syncAccount({ address: address as Address })
+              this.appKit?.setLoading(false)
             } catch {
               throw new Error('Switching chain failed')
             } finally {

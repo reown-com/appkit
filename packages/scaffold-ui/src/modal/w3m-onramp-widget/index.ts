@@ -1,4 +1,4 @@
-import { AccountController, ModalController, OnRampController } from '@rerock/core'
+import { ChainController, ModalController, OnRampController } from '@rerock/core'
 import { customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
@@ -22,7 +22,7 @@ export class W3mOnrampWidget extends LitElement {
   // -- State & Properties -------------------------------- //
   @property({ type: Boolean }) public disabled? = false
 
-  @state() private caipAddress = AccountController.state.caipAddress
+  @state() private caipAddress = ChainController.state.activeCaipAddress
 
   @state() private loading = ModalController.state.loading
 
@@ -39,7 +39,7 @@ export class W3mOnrampWidget extends LitElement {
     super()
     this.unsubscribe.push(
       ...[
-        AccountController.subscribeKey('caipAddress', val => (this.caipAddress = val)),
+        ChainController.subscribeKey('activeCaipAddress', val => (this.caipAddress = val)),
         ModalController.subscribeKey('loading', val => {
           this.loading = val
         }),

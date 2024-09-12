@@ -106,6 +106,7 @@ export class W3mConnectingSiweView extends LitElement {
 
       return session
     } catch (error) {
+      console.log('>>> SIWEController.signIn', error)
       const preferredAccountType = AccountController.state.preferredAccountType
       const isSmartAccount =
         preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
@@ -131,7 +132,7 @@ export class W3mConnectingSiweView extends LitElement {
 
   private async onCancel() {
     this.isCancelling = true
-    const caipAddress = AccountController.state.caipAddress
+    const caipAddress = ChainController.state.activeCaipAddress
     if (caipAddress) {
       await ConnectionController.disconnect()
       ModalController.close()

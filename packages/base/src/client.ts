@@ -242,7 +242,7 @@ export class AppKit {
 
   public getCaipAddress = (chainNamespace?: ChainNamespace) => {
     if (ChainController.state.activeChain === chainNamespace || !chainNamespace) {
-      return AccountController.state.caipAddress
+      return ChainController.state.activeCaipAddress
     }
 
     return ChainController.getAccountProp('caipAddress', chainNamespace)

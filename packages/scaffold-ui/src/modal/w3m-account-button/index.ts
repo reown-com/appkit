@@ -28,7 +28,7 @@ export class W3mAccountButton extends LitElement {
 
   @property() public charsEnd?: WuiAccountButton['charsEnd'] = 6
 
-  @state() private caipAddress = AccountController.state.caipAddress
+  @state() private caipAddress = ChainController.state.activeCaipAddress
 
   @state() private balanceVal = AccountController.state.balance
 
@@ -54,7 +54,7 @@ export class W3mAccountButton extends LitElement {
             ? AssetUtil.getNetworkImage(this.network)
             : undefined
         }),
-        AccountController.subscribeKey('caipAddress', val => (this.caipAddress = val)),
+        ChainController.subscribeKey('activeCaipAddress', val => (this.caipAddress = val)),
         AccountController.subscribeKey('balance', val => (this.balanceVal = val)),
         AccountController.subscribeKey('balanceSymbol', val => (this.balanceSymbol = val)),
         AccountController.subscribeKey('profileName', val => (this.profileName = val)),

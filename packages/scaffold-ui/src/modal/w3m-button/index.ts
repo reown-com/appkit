@@ -1,4 +1,4 @@
-import { AccountController, ModalController } from '@rerock/core'
+import { AccountController, ChainController, ModalController } from '@rerock/core'
 import { customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
@@ -29,14 +29,14 @@ export class W3mButton extends LitElement {
 
   @property() public charsEnd?: W3mAccountButton['charsEnd'] = 6
 
-  @state() private caipAddress = AccountController.state.caipAddress
+  @state() private caipAddress = ChainController.state.activeCaipAddress
 
   @state() private isLoading = ModalController.state.loading
 
   // -- Lifecycle ----------------------------------------- //
   public override firstUpdated() {
     this.unsubscribe.push(
-      AccountController.subscribeKey('caipAddress', val => (this.caipAddress = val)),
+      ChainController.subscribeKey('activeCaipAddress', val => (this.caipAddress = val)),
       ModalController.subscribeKey('loading', val => (this.isLoading = val))
     )
   }

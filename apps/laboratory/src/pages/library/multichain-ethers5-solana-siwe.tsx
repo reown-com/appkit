@@ -15,6 +15,7 @@ import {
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { MultiChainTestsEthersSolana } from '../../components/MultiChainTestsEthersSolana'
+import { siweConfig } from '../../utils/SiweUtils'
 
 const etherAdapter = new EVMEthersClient()
 
@@ -26,17 +27,17 @@ const modal = createWeb3Modal({
   adapters: [etherAdapter, solanaWeb3JsAdapter],
   projectId: ConstantsUtil.ProjectId,
   caipNetworks: [mainnet, arbitrum, polygon, optimism, solana, solanaTestnet, solanaDevnet],
-  defaultCaipNetwork: mainnet,
   features: {
     analytics: true
   },
   termsConditionsUrl: 'https://walletconnect.com/terms',
-  privacyPolicyUrl: 'https://walletconnect.com/privacy'
+  privacyPolicyUrl: 'https://walletconnect.com/privacy',
+  siweConfig
 })
 
 ThemeStore.setModal(modal)
 
-export default function MultiChainEthersSolana() {
+export default function MultiChainEthers5Solana() {
   return (
     <>
       <AppKitButtons />

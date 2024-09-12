@@ -1,6 +1,7 @@
 import type { BaseError } from '@rerock/core'
 import {
   AccountController,
+  ChainController,
   ConnectionController,
   EventsController,
   ModalController,
@@ -29,16 +30,11 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
     this.onConnect = this.onConnectProxy.bind(this)
     this.onAutoConnect = this.onConnectProxy.bind(this)
     this.isWalletConnect = false
-    AccountController.subscribeKey(
-      'isConnected',
-      val => {
-        const isConnectorConnected = val
-        if (isConnectorConnected) {
-          ModalController.close()
-        }
-      },
-      this.connector.chain
-    )
+    ChainController.subscribeKey('activeCaipAddress', val => {
+      if (val) {
+        ModalController.close()
+      }
+    })
   }
 
   // -- Private ------------------------------------------- //

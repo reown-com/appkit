@@ -266,7 +266,6 @@ export const NetworkController = {
 
     const activeCaipNetwork = ChainController.state.activeCaipNetwork
     const requestedCaipNetworks = this.getRequestedCaipNetworks(chain)
-    console.log('>>> checkIfSupportedNetwork', chain, activeCaipNetwork, requestedCaipNetworks)
 
     if (!requestedCaipNetworks.length) {
       return true

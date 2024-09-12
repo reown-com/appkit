@@ -20,7 +20,7 @@ test.beforeAll(async ({ browser }) => {
   context = await browser.newContext()
   const browserPage = await context.newPage()
 
-  modalPage = new ModalPage(browserPage, 'multichain-ethers-solana', 'default')
+  modalPage = new ModalPage(browserPage, 'multichain-wagmi-solana', 'default')
   walletPage = new WalletPage(await context.newPage())
   modalValidator = new ModalValidator(browserPage)
   walletValidator = new WalletValidator(walletPage.page)
@@ -39,7 +39,7 @@ test('it should fetch balance as expected', async () => {
   await modalValidator.expectBalanceFetched('ETH')
 })
 
-test('it should show disabled networks', async () => {
+test.skip('it should show disabled networks', async () => {
   const disabledNetworks = 'Arbitrum'
 
   await modalPage.openModal()

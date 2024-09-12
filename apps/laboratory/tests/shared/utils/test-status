@@ -1,0 +1,19 @@
+Single Adapters
+
+Wallet (QR code)
+- ✅ Wagmi
+- ✅ Ethers
+- ✅ Ethers5
+
+- SIWE
+- ✅ Wagmi
+- ✅ Ethers
+- ✅ Ethers5
+
+- SIWE email
+- ⏰ Wagmi
+- ✅ Ethers
+- ✅ Ethers5
+
+Multiple Adapters
+
