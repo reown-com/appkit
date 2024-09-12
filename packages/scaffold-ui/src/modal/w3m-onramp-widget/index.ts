@@ -1,5 +1,5 @@
-import { AccountController, ModalController, OnRampController } from '@rerock/core'
-import { customElement } from '@rerock/ui'
+import { AccountController, ModalController, OnRampController } from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import styles from './styles.js'

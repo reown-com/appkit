@@ -16,9 +16,9 @@ import {
   StorageUtil,
   NetworkController,
   ModalController
-} from '@rerock/core'
+} from '@reown/appkit-core'
 
-import { NetworkUtil } from '@rerock/common'
+import { NetworkUtil } from '@reown/appkit-common'
 import { ConstantsUtil } from '../core/utils/ConstantsUtil.js'
 
 // -- Client -------------------------------------------------------------------- //

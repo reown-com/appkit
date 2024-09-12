@@ -1,5 +1,5 @@
 {
-  "name": "@rerock/adapter-ethers",
+  "name": "@reown/appkit-adapter-ethers",
   "version": "0.0.3",
   "type": "module",
   "main": "./dist/esm/src/index.js",
@@ -18,15 +18,15 @@
   },
   "dependencies": {
     "@walletconnect/utils": "2.16.1",
-    "@rerock/base": "workspace:*",
-    "@rerock/common": "workspace:*",
-    "@rerock/core": "workspace:*",
-    "@rerock/polyfills": "workspace:*",
-    "@rerock/scaffold-ui": "workspace:*",
-    "@rerock/scaffold-utils": "workspace:*",
-    "@rerock/siwe": "workspace:*",
-    "@rerock/ui": "workspace:*",
-    "@rerock/wallet": "workspace:*",
+    "@reown/appkit": "workspace:*",
+    "@reown/appkit-common": "workspace:*",
+    "@reown/appkit-core": "workspace:*",
+    "@reown/appkit-polyfills": "workspace:*",
+    "@reown/appkit-scaffold-ui": "workspace:*",
+    "@reown/appkit-utils": "workspace:*",
+    "@reown/appkit-siwe": "workspace:*",
+    "@reown/appkit-ui": "workspace:*",
+    "@reown/appkit-wallet": "workspace:*",
     "valtio": "1.11.2"
   },
   "devDependencies": {
@@ -38,7 +38,7 @@
     "ethers": "6.13.0",
     "vitest": "2.0.3"
   },
-  "author": "Rerock <rerock.com>",
+  "author": "reown <reown.com>",
   "license": "Apache-2.0",
   "homepage": "https://github.com/web3modal/web3modal",
   "repository": {

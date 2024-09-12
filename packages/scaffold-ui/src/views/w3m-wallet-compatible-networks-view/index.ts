@@ -1,9 +1,9 @@
-import { AccountController, AssetUtil, CoreHelperUtil, NetworkController } from '@rerock/core'
-import { customElement } from '@rerock/ui'
+import { AccountController, AssetUtil, CoreHelperUtil, NetworkController } from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
-import { W3mFrameRpcConstants } from '@rerock/wallet'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 import { state } from 'lit/decorators.js'
 
 @customElement('w3m-wallet-compatible-networks-view')

@@ -1,7 +1,7 @@
 import type { Meta } from '@storybook/web-components'
-import '@rerock/ui/src/composites/wui-button'
-import type { WuiButton } from '@rerock/ui/src/composites/wui-button'
-import type { IconType } from '@rerock/ui/src/utils/TypesUtil'
+import '@reown/appkit-ui/src/composites/wui-button'
+import type { WuiButton } from '@reown/appkit-ui/src/composites/wui-button'
+import type { IconType } from '@reown/appkit-ui/src/utils/TypesUtil'
 import { html } from 'lit'
 import { buttonOptions, iconOptions } from '../../utils/PresetUtils'
 

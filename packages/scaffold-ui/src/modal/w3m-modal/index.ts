@@ -10,12 +10,17 @@ import {
   RouterController,
   SnackController,
   ThemeController
-} from '@rerock/core'
-import { UiHelperUtil, customElement, initializeTheming } from '@rerock/ui'
+} from '@reown/appkit-core'
+import { UiHelperUtil, customElement, initializeTheming } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
-import { ConstantsUtil, type CaipAddress, type CaipNetwork, type SIWEStatus } from '@rerock/common'
+import {
+  ConstantsUtil,
+  type CaipAddress,
+  type CaipNetwork,
+  type SIWEStatus
+} from '@reown/appkit-common'
 
 // -- Helpers --------------------------------------------- //
 const SCROLL_LOCK = 'scroll-lock'
@@ -102,7 +107,7 @@ export class W3mModal extends LitElement {
     const isApproveSignScreen = RouterController.state.view === 'ApproveTransaction'
 
     if (this.isSiweEnabled) {
-      const { SIWEController } = await import('@rerock/siwe')
+      const { SIWEController } = await import('@reown/appkit-siwe')
       const isUnauthenticated = SIWEController.state.status !== 'success'
       if (isUnauthenticated && (isSiweSignScreen || isApproveSignScreen)) {
         ModalController.shake()
@@ -193,7 +198,7 @@ export class W3mModal extends LitElement {
     this.caipAddress = caipAddress
 
     if (this.isSiweEnabled) {
-      const { SIWEController } = await import('@rerock/siwe')
+      const { SIWEController } = await import('@reown/appkit-siwe')
       const session = await SIWEController.getSession()
 
       // If the address has changed and signOnAccountChange is enabled, sign out
@@ -210,7 +215,7 @@ export class W3mModal extends LitElement {
     const prevIsConnected = this.connected
 
     if (nextIsConnected && this.isSiweEnabled) {
-      const { SIWEController } = await import('@rerock/siwe')
+      const { SIWEController } = await import('@reown/appkit-siwe')
       const session = await SIWEController.getSession()
 
       if (!session) {
@@ -246,7 +251,7 @@ export class W3mModal extends LitElement {
 
     if (prevCaipNetworkId && nextNetworkId && prevCaipNetworkId !== nextNetworkId) {
       if (this.isSiweEnabled) {
-        const { SIWEController } = await import('@rerock/siwe')
+        const { SIWEController } = await import('@reown/appkit-siwe')
         const session = await SIWEController.getSession()
 
         if (session) {

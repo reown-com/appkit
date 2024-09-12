@@ -22,9 +22,9 @@ import {
   createConfig,
   getConnectors
 } from '@wagmi/core'
-import { ChainController, ConstantsUtil as CoreConstantsUtil } from '@rerock/core'
+import { ChainController, ConstantsUtil as CoreConstantsUtil } from '@reown/appkit-core'
 import type UniversalProvider from '@walletconnect/universal-provider'
-import type { ChainAdapter } from '@rerock/core'
+import type { ChainAdapter } from '@reown/appkit-core'
 import { prepareTransactionRequest, sendTransaction as wagmiSendTransaction } from '@wagmi/core'
 import type { Chain } from '@wagmi/core/chains'
 import { mainnet } from 'viem/chains'
@@ -42,15 +42,15 @@ import type {
   PublicStateControllerState,
   SendTransactionArgs,
   WriteContractArgs
-} from '@rerock/core'
+} from '@reown/appkit-core'
 import { formatUnits, parseUnits } from 'viem'
 import type { Hex } from 'viem'
-import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@rerock/scaffold-utils'
+import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@reown/appkit-utils'
 import {
   ConstantsUtil as CommonConstants,
   SafeLocalStorage,
   SafeLocalStorageKeys
-} from '@rerock/common'
+} from '@reown/appkit-common'
 import {
   convertToAppKitChains,
   getEmailCaipNetworks,
@@ -58,18 +58,18 @@ import {
   getWalletConnectCaipNetworks,
   requireCaipAddress
 } from './utils/helpers.js'
-import { W3mFrameHelpers, W3mFrameRpcConstants } from '@rerock/wallet'
-import type { W3mFrameProvider, W3mFrameTypes } from '@rerock/wallet'
-import { NetworkUtil } from '@rerock/common'
+import { W3mFrameHelpers, W3mFrameRpcConstants } from '@reown/appkit-wallet'
+import type { W3mFrameProvider, W3mFrameTypes } from '@reown/appkit-wallet'
+import { NetworkUtil } from '@reown/appkit-common'
 import { normalize } from 'viem/ens'
-import type { AppKitOptions } from '@rerock/base'
-import type { CaipAddress, CaipNetwork, ChainNamespace, AdapterType } from '@rerock/common'
-import { ConstantsUtil as CommonConstantsUtil } from '@rerock/common'
-import type { AppKit } from '@rerock/base'
+import type { AppKitOptions } from '@reown/appkit'
+import type { CaipAddress, CaipNetwork, ChainNamespace, AdapterType } from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import type { AppKit } from '@reown/appkit'
 import { walletConnect } from './connectors/UniversalConnector.js'
 import { coinbaseWallet } from '@wagmi/connectors'
 import { authConnector } from './connectors/AuthConnector.js'
-import { ProviderUtil } from '@rerock/base/store'
+import { ProviderUtil } from '@reown/appkit/store'
 
 // -- Types ---------------------------------------------------------------------
 export interface AdapterOptions<C extends Config>
@@ -294,7 +294,9 @@ export class EVMWagmiClient implements ChainAdapter {
           const params = await siweConfig?.getMessageParams?.()
 
           if (siweConfig?.options?.enabled && params && Object.keys(params || {}).length > 0) {
-            const { SIWEController, getDidChainId, getDidAddress } = await import('@rerock/siwe')
+            const { SIWEController, getDidChainId, getDidAddress } = await import(
+              '@reown/appkit-siwe'
+            )
 
             const chains = this.options?.caipNetworks.map(network => network.id) as string[]
 
@@ -394,7 +396,7 @@ export class EVMWagmiClient implements ChainAdapter {
         this.appKit?.resetAccount('eip155')
         this.appKit?.resetAccount('solana')
         if (this.options?.siweConfig?.options?.signOutOnDisconnect) {
-          const { SIWEController } = await import('@rerock/siwe')
+          const { SIWEController } = await import('@reown/appkit-siwe')
           await SIWEController.signOut()
         }
       },

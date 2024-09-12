@@ -8,8 +8,8 @@ import {
   NetworkController,
   OptionsController,
   RouterController
-} from '@rerock/core'
-import { customElement } from '@rerock/ui'
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
@@ -151,7 +151,7 @@ export class W3mHeader extends LitElement {
 
   private async onClose() {
     if (this.isSiweEnabled) {
-      const { SIWEController } = await import('@rerock/siwe')
+      const { SIWEController } = await import('@reown/appkit-siwe')
       const isApproveSignScreen = RouterController.state.view === 'ApproveTransaction'
       const isUnauthenticated = SIWEController.state.status !== 'success'
 

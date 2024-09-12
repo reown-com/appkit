@@ -2,7 +2,7 @@ import { SECURE_SITE_SDK, W3mFrameConstants } from './W3mFrameConstants.js'
 import { W3mFrameSchema } from './W3mFrameSchema.js'
 import { W3mFrameHelpers } from './W3mFrameHelpers.js'
 import type { W3mFrameTypes } from './W3mFrameTypes.js'
-import { ConstantsUtil } from '@rerock/common'
+import { ConstantsUtil } from '@reown/appkit-common'
 
 // -- Sdk --------------------------------------------------------------------
 export class W3mFrame {

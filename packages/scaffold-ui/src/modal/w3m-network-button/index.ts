@@ -5,9 +5,9 @@ import {
   EventsController,
   ModalController,
   NetworkController
-} from '@rerock/core'
-import type { WuiNetworkButton } from '@rerock/ui'
-import { customElement } from '@rerock/ui'
+} from '@reown/appkit-core'
+import type { WuiNetworkButton } from '@reown/appkit-ui'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'

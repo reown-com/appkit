@@ -1,4 +1,4 @@
-# @rerock/ui
+# @reown/appkit-ui
 
 ## 0.0.3
 

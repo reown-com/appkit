@@ -2,7 +2,11 @@ import { html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import { type TransactionType, TransactionTypePastTense } from '../../utils/TypeUtil.js'
-import type { TransactionStatus, TransactionDirection, TransactionImage } from '@rerock/common'
+import type {
+  TransactionStatus,
+  TransactionDirection,
+  TransactionImage
+} from '@reown/appkit-common'
 import { resetStyles } from '../../utils/ThemeUtil.js'
 import '../../components/wui-text/index.js'
 import '../wui-transaction-visual/index.js'

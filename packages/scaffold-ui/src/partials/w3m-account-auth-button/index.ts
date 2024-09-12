@@ -1,4 +1,4 @@
-import { customElement } from '@rerock/ui'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 
 import {
@@ -6,7 +6,7 @@ import {
   RouterController,
   StorageUtil,
   type SocialProvider
-} from '@rerock/core'
+} from '@reown/appkit-core'
 
 @customElement('w3m-account-auth-button')
 export class W3mAccountAuthButton extends LitElement {

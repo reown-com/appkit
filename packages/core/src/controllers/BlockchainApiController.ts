@@ -1,7 +1,7 @@
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { FetchUtil } from '../utils/FetchUtil.js'
-import { ConstantsUtil as CommonConstantsUtil } from '@rerock/common'
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import type {
   BlockchainApiTransactionsRequest,
   BlockchainApiTransactionsResponse,

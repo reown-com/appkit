@@ -11,11 +11,11 @@ import type {
 } from '../utils/TypeUtil.js'
 import { TransactionsController } from './TransactionsController.js'
 import { ChainController } from './ChainController.js'
-import { type W3mFrameTypes } from '@rerock/wallet'
+import { type W3mFrameTypes } from '@reown/appkit-wallet'
 import { ModalController } from './ModalController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
-import type { ChainNamespace } from '@rerock/common'
+import type { ChainNamespace } from '@reown/appkit-common'
 import { NetworkController } from './NetworkController.js'
 import { RouterController } from './RouterController.js'
 

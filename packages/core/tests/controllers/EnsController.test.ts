@@ -7,8 +7,8 @@ import {
   EnsController,
   NetworkController
 } from '../../exports/index.js'
-import { W3mFrameProvider } from '@rerock/wallet'
-import { ConstantsUtil } from '@rerock/common'
+import { W3mFrameProvider } from '@reown/appkit-wallet'
+import { ConstantsUtil } from '@reown/appkit-common'
 // -- Setup --------------------------------------------------------------------
 const TEST_NAME = {
   name: 'test',

@@ -1,5 +1,5 @@
 {
-  "name": "@rerock/adapter-polkadot",
+  "name": "@reown/appkit-adapter-polkadot",
   "scripts": {
     "build:clean": "rm -rf dist",
     "build": "tsc --build tsconfig.build.json",
@@ -9,9 +9,9 @@
     "test": "vitest run --dir tests --coverage.enabled=true --coverage.reporter=json --coverage.reporter=json-summary --coverage.reportOnFailure=true"
   },
   "dependencies": {
-    "@rerock/base": "workspace:*",
-    "@rerock/common": "workspace:*",
-    "@rerock/core": "workspace:*"
+    "@reown/appkit": "workspace:*",
+    "@reown/appkit-common": "workspace:*",
+    "@reown/appkit-core": "workspace:*"
   },
   "devDependencies": {
     "vitest": "2.0.3",

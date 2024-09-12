@@ -1,5 +1,5 @@
 {
-  "name": "@rerock/scaffold-ui",
+  "name": "@reown/appkit-scaffold-ui",
   "version": "0.0.3",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
@@ -28,15 +28,15 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@rerock/common": "workspace:*",
-    "@rerock/scaffold-utils": "workspace:*",
-    "@rerock/core": "workspace:*",
-    "@rerock/ui": "workspace:*",
+    "@reown/appkit-common": "workspace:*",
+    "@reown/appkit-utils": "workspace:*",
+    "@reown/appkit-core": "workspace:*",
+    "@reown/appkit-ui": "workspace:*",
     "lit": "3.1.0",
-    "@rerock/siwe": "workspace:*",
-    "@rerock/wallet": "workspace:*"
+    "@reown/appkit-siwe": "workspace:*",
+    "@reown/appkit-wallet": "workspace:*"
   },
-  "author": "Rerock <rerock.com>",
+  "author": "reown <reown.com>",
   "license": "Apache-2.0",
   "homepage": "https://github.com/web3modal/web3modal",
   "repository": {

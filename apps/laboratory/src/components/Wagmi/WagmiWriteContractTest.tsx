@@ -5,7 +5,7 @@ import { useCallback, useEffect } from 'react'
 import { optimism, sepolia } from 'wagmi/chains'
 import { abi, address } from '../../utils/DonutContract'
 import { useChakraToast } from '../Toast'
-import { useWeb3ModalAccount } from '@rerock/base/react'
+import { useWeb3ModalAccount } from '@reown/appkit/react'
 
 const ALLOWED_CHAINS = [sepolia.id, optimism.id] as number[]
 

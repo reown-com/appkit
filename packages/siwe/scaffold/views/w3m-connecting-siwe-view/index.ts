@@ -7,12 +7,12 @@ import {
   OptionsController,
   RouterController,
   SnackController
-} from '@rerock/core'
-import { customElement } from '@rerock/ui'
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { SIWEController } from '../../../core/controller/SIWEController.js'
-import { W3mFrameRpcConstants } from '@rerock/wallet'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 
 @customElement('w3m-connecting-siwe-view')
 export class W3mConnectingSiweView extends LitElement {

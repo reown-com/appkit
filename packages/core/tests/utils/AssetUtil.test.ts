@@ -3,7 +3,7 @@ import { AssetController } from '../../src/controllers/AssetController.js'
 import { AssetUtil } from '../../src/utils/AssetUtil.js'
 import type { Connector, WcWallet } from '../../src/utils/TypeUtil.js'
 import { ApiController } from '../../src/controllers/ApiController.js'
-import type { CaipNetwork } from '@rerock/common'
+import type { CaipNetwork } from '@reown/appkit-common'
 
 // - Mocks ---------------------------------------------------------------------
 const connector: Partial<Connector> = {

@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@rerock/ui/src/composites/wui-list-token'
-import type { WuiListAccount } from '@rerock/ui/src/composites/wui-list-account'
+import '@reown/appkit-ui/src/composites/wui-list-token'
+import type { WuiListAccount } from '@reown/appkit-ui/src/composites/wui-list-account'
 import { html } from 'lit'
 import '../../components/gallery-container'
 import { networkImageSrc } from '../../utils/PresetUtils'

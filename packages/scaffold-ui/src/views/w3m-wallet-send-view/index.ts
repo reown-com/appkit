@@ -1,4 +1,4 @@
-import { customElement } from '@rerock/ui'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
 import {
@@ -7,7 +7,7 @@ import {
   RouterController,
   SendController,
   ChainController
-} from '@rerock/core'
+} from '@reown/appkit-core'
 import { state } from 'lit/decorators.js'
 
 @customElement('w3m-wallet-send-view')

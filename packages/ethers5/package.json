@@ -1,5 +1,5 @@
 {
-  "name": "@rerock/ethers5",
+  "name": "@reown/appkit-ethers5",
   "version": "0.0.3",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
@@ -45,13 +45,13 @@
   "dependencies": {
     "@coinbase/wallet-sdk": "4.0.3",
     "@walletconnect/utils": "2.16.1",
-    "@rerock/base": "workspace:*",
-    "@rerock/common": "workspace:*",
-    "@rerock/wallet": "workspace:*",
-    "@rerock/polyfills": "workspace:*",
-    "@rerock/scaffold-utils": "workspace:*",
-    "@rerock/adapter-ethers5": "workspace:*",
-    "@rerock/siwe": "workspace:*",
+    "@reown/appkit": "workspace:*",
+    "@reown/appkit-common": "workspace:*",
+    "@reown/appkit-wallet": "workspace:*",
+    "@reown/appkit-polyfills": "workspace:*",
+    "@reown/appkit-utils": "workspace:*",
+    "@reown/appkit-adapter-ethers5": "workspace:*",
+    "@reown/appkit-siwe": "workspace:*",
     "valtio": "1.11.2"
   },
   "devDependencies": {
@@ -77,7 +77,7 @@
       "optional": true
     }
   },
-  "author": "Rerock <rerock.com>",
+  "author": "reown <reown.com>",
   "license": "Apache-2.0",
   "homepage": "https://github.com/web3modal/web3modal",
   "repository": {

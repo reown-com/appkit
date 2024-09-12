@@ -1,5 +1,5 @@
 {
-  "name": "@rerock/core",
+  "name": "@reown/appkit-core",
   "version": "0.0.3",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
@@ -29,8 +29,8 @@
     }
   },
   "dependencies": {
-    "@rerock/common": "workspace:*",
-    "@rerock/wallet": "workspace:*",
+    "@reown/appkit-common": "workspace:*",
+    "@reown/appkit-wallet": "workspace:*",
     "@walletconnect/universal-provider": "2.16.1",
     "valtio": "1.11.2"
   },
@@ -39,7 +39,7 @@
     "@vitest/coverage-v8": "2.0.5",
     "viem": "2.21.4"
   },
-  "author": "Rerock <rerock.com>",
+  "author": "reown <reown.com>",
   "license": "Apache-2.0",
   "homepage": "https://github.com/web3modal/web3modal",
   "repository": {

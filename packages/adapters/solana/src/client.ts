@@ -7,16 +7,16 @@ import {
   CoreHelperUtil,
   EventsController,
   NetworkController
-} from '@rerock/core'
+} from '@reown/appkit-core'
 import {
   ConstantsUtil as CommonConstantsUtil,
   SafeLocalStorage,
   SafeLocalStorageKeys
-} from '@rerock/common'
+} from '@reown/appkit-common'
 
-import { SolConstantsUtil, SolHelpersUtil } from '@rerock/scaffold-utils/solana'
+import { SolConstantsUtil, SolHelpersUtil } from '@reown/appkit-utils/solana'
 import { SolStoreUtil } from './utils/SolanaStoreUtil.js'
-import type { Provider } from '@rerock/scaffold-utils/solana'
+import type { Provider } from '@reown/appkit-utils/solana'
 
 import type { BaseWalletAdapter } from '@solana/wallet-adapter-base'
 import { PublicKey, type Commitment, type ConnectionConfig } from '@solana/web3.js'
@@ -26,21 +26,21 @@ import type {
   ConnectionControllerClient,
   NetworkControllerClient,
   Connector
-} from '@rerock/core'
-import type { AdapterType, CaipAddress, CaipNetwork, CaipNetworkId } from '@rerock/common'
-import type { ChainNamespace } from '@rerock/common'
+} from '@reown/appkit-core'
+import type { AdapterType, CaipAddress, CaipNetwork, CaipNetworkId } from '@reown/appkit-common'
+import type { ChainNamespace } from '@reown/appkit-common'
 
 import { watchStandard } from './utils/watchStandard.js'
 import { WalletConnectProvider } from './providers/WalletConnectProvider.js'
 import { AuthProvider } from './providers/AuthProvider.js'
 import { createSendTransaction } from './utils/createSendTransaction.js'
-import { W3mFrameHelpers, W3mFrameRpcConstants, type W3mFrameTypes } from '@rerock/wallet'
-import { ConstantsUtil as CoreConstantsUtil } from '@rerock/core'
+import { W3mFrameHelpers, W3mFrameRpcConstants, type W3mFrameTypes } from '@reown/appkit-wallet'
+import { ConstantsUtil as CoreConstantsUtil } from '@reown/appkit-core'
 import { withSolanaNamespace } from './utils/withSolanaNamespace.js'
-import type { AppKit } from '@rerock/base'
-import type { AppKitOptions } from '@rerock/base'
-import { ProviderUtil } from '@rerock/base/store'
-import { W3mFrameProviderSingleton } from '@rerock/base/auth-provider'
+import type { AppKit } from '@reown/appkit'
+import type { AppKitOptions } from '@reown/appkit'
+import { ProviderUtil } from '@reown/appkit/store'
+import { W3mFrameProviderSingleton } from '@reown/appkit/auth-provider'
 
 export interface AdapterOptions {
   connectionSettings?: Commitment | ConnectionConfig

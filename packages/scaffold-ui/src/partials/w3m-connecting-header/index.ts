@@ -1,6 +1,6 @@
-import type { Platform } from '@rerock/core'
-import { ConnectionController } from '@rerock/core'
-import { customElement } from '@rerock/ui'
+import type { Platform } from '@reown/appkit-core'
+import { ConnectionController } from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 

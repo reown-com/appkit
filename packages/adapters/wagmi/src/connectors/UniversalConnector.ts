@@ -18,11 +18,11 @@ import {
   getAddress,
   numberToHex
 } from 'viem'
-import { WcHelpersUtil } from '@rerock/base'
-import type { AppKitOptions } from '@rerock/base'
-import type { AppKit } from '@rerock/base'
+import { WcHelpersUtil } from '@reown/appkit'
+import type { AppKitOptions } from '@reown/appkit'
+import type { AppKit } from '@reown/appkit'
 import { convertToAppKitChains } from '../utils/helpers.js'
-import { SafeLocalStorage, SafeLocalStorageKeys, type CaipNetwork } from '@rerock/common'
+import { SafeLocalStorage, SafeLocalStorageKeys, type CaipNetwork } from '@reown/appkit-common'
 
 type UniversalConnector = Connector & {
   onDisplayUri(uri: string): void

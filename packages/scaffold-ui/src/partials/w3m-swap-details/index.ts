@@ -1,9 +1,9 @@
 import { html, LitElement } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import styles from './styles.js'
-import { UiHelperUtil, customElement } from '@rerock/ui'
-import { NumberUtil } from '@rerock/common'
-import { ConstantsUtil, NetworkController, SwapController } from '@rerock/core'
+import { UiHelperUtil, customElement } from '@reown/appkit-ui'
+import { NumberUtil } from '@reown/appkit-common'
+import { ConstantsUtil, NetworkController, SwapController } from '@reown/appkit-core'
 
 // -- Constants ----------------------------------------- //
 const slippageRate = ConstantsUtil.CONVERT_SLIPPAGE_TOLERANCE

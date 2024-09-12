@@ -1,5 +1,10 @@
-import { AssetUtil, ConnectionController, EventsController, ThemeController } from '@rerock/core'
-import { customElement } from '@rerock/ui'
+import {
+  AssetUtil,
+  ConnectionController,
+  EventsController,
+  ThemeController
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { html } from 'lit'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'

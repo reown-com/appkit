@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from 'vitest'
 import type { NetworkControllerClient } from '../../exports/index.js'
-import type { CaipNetwork, CaipNetworkId } from '@rerock/common'
+import type { CaipNetwork, CaipNetworkId } from '@reown/appkit-common'
 import { ChainController, EventsController, NetworkController } from '../../exports/index.js'
-import { ConstantsUtil } from '@rerock/common'
+import { ConstantsUtil } from '@reown/appkit-common'
 
 // -- Setup --------------------------------------------------------------------
 const caipNetwork = {

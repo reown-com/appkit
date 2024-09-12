@@ -1,4 +1,4 @@
-import type { W3mFrameProvider, W3mFrameTypes } from '@rerock/wallet'
+import type { W3mFrameProvider, W3mFrameTypes } from '@reown/appkit-wallet'
 import type {
   Balance,
   Transaction,
@@ -7,7 +7,7 @@ import type {
   ChainNamespace,
   CaipAddress,
   AdapterType
-} from '@rerock/common'
+} from '@reown/appkit-common'
 import type {
   NetworkControllerClient,
   NetworkControllerState
