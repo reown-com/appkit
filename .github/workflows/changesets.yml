@@ -37,6 +37,12 @@ jobs:
         run: pnpm install
         shell: bash
 
+      # - name: Generate NPMRC File
+      #   run: pnpm generate-npmrc
+      #   shell: bash
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: PR or publish
         uses: changesets/action@v1
         with:

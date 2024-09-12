@@ -1,6 +1,6 @@
 {
   "name": "shadow-test-apkt",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "private": true,
   "type": "module",
   "scripts": {
@@ -30,7 +30,7 @@
     "changeset:pre:exit": "changeset pre exit",
     "changeset": "changeset",
     "changeset:version": "changeset version",
-    "changeset:publish": "echo 'publishing...'",
+    "changeset:publish": "pnpm publish:latest",
     "publish:latest": "pnpm install; pnpm build; changeset publish",
     "publish:alpha": "pnpm install; pnpm build; changeset publish --tag alpha",
     "publish:beta": "pnpm install; pnpm build; changeset publish --tag beta",

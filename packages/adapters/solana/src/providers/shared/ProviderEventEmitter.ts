@@ -1,4 +1,4 @@
-import type { ProviderEventEmitterMethods } from '../../utils/SolanaTypesUtil.js'
+import type { ProviderEventEmitterMethods } from '@rerock/scaffold-utils/solana'
 
 type Listeners = {
   [Event in ProviderEventEmitterMethods.Event]: Array<

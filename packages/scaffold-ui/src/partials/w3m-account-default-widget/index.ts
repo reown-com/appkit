@@ -107,9 +107,8 @@ export class W3mAccountDefaultWidget extends LitElement {
   // -- Private ------------------------------------------- //
   private onrampTemplate() {
     const { onramp } = OptionsController.state.features
-    const isSolana = ChainController.state.activeChain === ConstantsUtil.CHAIN.SOLANA
 
-    if (!onramp || isSolana) {
+    if (!onramp) {
       return null
     }
 
