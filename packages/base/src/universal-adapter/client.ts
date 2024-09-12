@@ -126,7 +126,7 @@ export class UniversalAdapterClient {
           }
 
           const result = {
-            supportsAllNetworks: false,
+            supportsAllNetworks: true,
             approvedCaipNetworkIds: nsChains as CaipNetworkId[] | undefined
           }
 
@@ -218,6 +218,7 @@ export class UniversalAdapterClient {
             }
           } else {
             const optionalNamespaces = WcHelpersUtil.createNamespaces(this.caipNetworks)
+            console.log('>>> WalletConnectProvider.connect', optionalNamespaces)
             await WalletConnectProvider.connect({ optionalNamespaces })
           }
           this.setWalletConnectProvider()

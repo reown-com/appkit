@@ -77,7 +77,7 @@ export const SIWEController = {
         this.setStatus('success')
       }
 
-      return session
+      return session || undefined
     } catch {
       return undefined
     }
@@ -123,9 +123,10 @@ export const SIWEController = {
     client.onSignOut?.()
   },
 
-  setSIWEClient(client: SIWEControllerClient) {
+  async setSIWEClient(client: SIWEControllerClient) {
     state._client = ref(client)
-    state.status = 'ready'
+    state.session = await this.getSession()
+    state.status = state.session ? 'success' : 'ready'
     ChainController.setAccountProp('siweStatus', state.status, 'eip155')
     OptionsController.setIsSiweEnabled(client.options.enabled)
   },
@@ -145,5 +146,7 @@ export const SIWEController = {
 
   setSession(session: SIWEControllerClientState['session']) {
     state.session = session
+    state.status = session ? 'success' : 'ready'
+    ChainController.setAccountProp('siweStatus', state.status, 'eip155')
   }
 }

@@ -104,9 +104,8 @@ export class ModalValidator {
   }
 
   async expectSwitchChainView(chainName: string) {
-    const title = this.page.getByTestId(`w3m-switch-active-chain-title`)
+    const title = this.page.getByTestId(`w3m-switch-active-chain-to-${chainName}`)
     await expect(title).toBeVisible()
-    await expect(title).toContainText(chainName)
   }
 
   async expectSwitchedNetworkOnNetworksView(name: string) {

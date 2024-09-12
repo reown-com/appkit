@@ -68,7 +68,7 @@ describe('UniversalAdapter', () => {
         caipNetwork: undefined,
         requestedCaipNetworks: [mainnet, solana],
         approvedCaipNetworkIds: [],
-        supportsAllNetworks: false,
+        supportsAllNetworks: true,
         isDefaultCaipNetwork: false
       })
 

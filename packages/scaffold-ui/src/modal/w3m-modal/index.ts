@@ -234,8 +234,9 @@ export class W3mModal extends LitElement {
 
   private onSiweNavigation() {
     const isEIP155Namespace = ChainController.state.activeChain === ConstantsUtil.CHAIN.EVM
+    const authenticated = AccountController.state.siweStatus === 'success'
 
-    if (isEIP155Namespace) {
+    if (!authenticated && isEIP155Namespace) {
       if (this.open) {
         RouterController.replace('ConnectingSiwe')
       } else {
@@ -243,6 +244,8 @@ export class W3mModal extends LitElement {
           view: 'ConnectingSiwe'
         })
       }
+    } else {
+      RouterController.goBack()
     }
   }
 }

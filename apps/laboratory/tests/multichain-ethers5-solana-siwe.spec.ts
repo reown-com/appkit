@@ -1,12 +1,14 @@
 import { test, type BrowserContext } from '@playwright/test'
-import { DEFAULT_CHAIN_NAME } from './shared/constants'
-import { ModalWalletPage } from './shared/pages/ModalWalletPage'
-import { ModalWalletValidator } from './shared/validators/ModalWalletValidator'
-import { Email } from './shared/utils/email'
+import { ModalPage } from './shared/pages/ModalPage'
+import { ModalValidator } from './shared/validators/ModalValidator'
+import { WalletPage } from './shared/pages/WalletPage'
+import { WalletValidator } from './shared/validators/WalletValidator'
 
 /* eslint-disable init-declarations */
-let page: ModalWalletPage
-let validator: ModalWalletValidator
+let modalPage: ModalPage
+let modalValidator: ModalValidator
+let walletPage: WalletPage
+let walletValidator: WalletValidator
 let context: BrowserContext
 /* eslint-enable init-declarations */
 
@@ -17,51 +19,38 @@ test.beforeAll(async ({ browser }) => {
   context = await browser.newContext()
   const browserPage = await context.newPage()
 
-  page = new ModalWalletPage(browserPage, 'multichain-ethers5-solana-siwe', 'default')
-  validator = new ModalWalletValidator(browserPage)
+  modalPage = new ModalPage(browserPage, 'multichain-ethers5-solana-siwe', 'default')
+  walletPage = new WalletPage(await context.newPage())
+  modalValidator = new ModalValidator(browserPage)
+  walletValidator = new WalletValidator(walletPage.page)
 
-  await page.load()
-
-  const mailsacApiKey = process.env['MAILSAC_API_KEY']
-  if (!mailsacApiKey) {
-    throw new Error('MAILSAC_API_KEY is not set')
-  }
-  const email = new Email(mailsacApiKey)
-  const tempEmail = await email.getEmailAddressToUse()
-  await page.emailFlow(tempEmail, context, mailsacApiKey)
-
-  await validator.expectConnected()
+  await modalPage.load()
+  await modalPage.load()
+  await modalPage.qrCodeFlow(modalPage, walletPage)
+  await modalValidator.expectConnected()
 })
 
 test.afterAll(async () => {
-  await page.page.close()
+  await modalPage.page.close()
 })
 
 // -- Tests --------------------------------------------------------------------
-test('it should switch networks (including different namespaces) and sign', async () => {
-  const chains = ['Polygon', 'Solana']
+test('it should switch networks and sign siwe', async () => {
+  const chainName = 'Polygon'
+  await modalPage.switchNetwork(chainName)
+  await modalPage.promptSiwe()
+  await walletPage.handleRequest({ accept: true })
+  await modalValidator.expectAuthenticated()
 
-  async function processChain(index: number) {
-    if (index >= chains.length) {
-      return
-    }
+  // -- Sign ------------------------------------------------------------------
+  await modalPage.sign()
+  await walletValidator.expectReceivedSign({ chainName })
+  await walletPage.handleRequest({ accept: true })
+  await modalValidator.expectAcceptedSign()
+})
 
-    const chainName = chains[index] ?? DEFAULT_CHAIN_NAME
-    await page.switchNetwork(chainName)
-    await validator.expectSwitchedNetwork(chainName)
-    await page.closeModal()
-
-    // -- Sign ------------------------------------------------------------------
-    await page.sign()
-    // For Solana, the chain name on the wallet page is Solana Mainnet
-    const chainNameOnWalletPage = chainName === 'Solana' ? 'Solana Mainnet' : chainName
-    await validator.expectReceivedSign({ chainName: chainNameOnWalletPage })
-    await page.approveSign()
-    await validator.expectAcceptedSign()
-
-    await processChain(index + 1)
-  }
-
-  // Start processing from the first chain
-  await processChain(0)
+test('it should switch to Solana and validate chain title', async () => {
+  const chainName = 'Solana'
+  await modalPage.switchNetwork(chainName)
+  await modalValidator.expectSwitchChainView(chainName.toLocaleLowerCase())
 })

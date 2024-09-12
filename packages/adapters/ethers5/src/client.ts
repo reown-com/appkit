@@ -566,7 +566,7 @@ export class EVMEthers5Client {
         resolve(networkData)
       } else {
         resolve({
-          supportsAllNetworks: false,
+          supportsAllNetworks: true,
           approvedCaipNetworkIds: []
         })
       }

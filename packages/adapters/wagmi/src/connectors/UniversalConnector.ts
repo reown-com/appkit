@@ -106,10 +106,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
 
         // If there isn't an active session or chains are stale, connect.
         if (!provider.session || isChainsStale) {
-          const chains = parameters?.caipNetworks?.filter(
-            network => network.chainNamespace === 'eip155'
-          )
-          const namespaces = WcHelpersUtil.createNamespaces(chains)
+          const namespaces = WcHelpersUtil.createNamespaces(parameters.caipNetworks)
 
           await provider.connect({
             optionalNamespaces: namespaces,
