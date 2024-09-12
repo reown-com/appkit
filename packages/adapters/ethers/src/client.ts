@@ -301,7 +301,7 @@ export class EVMEthersClient {
 
         this.appKit?.setClientId(null)
         if (this.options?.siweConfig?.options?.signOutOnDisconnect) {
-          const { SIWEController } = await import('@rerock/siwe')
+          const { SIWEController } = await import('@rerock/appkit-siwe')
           await SIWEController.signOut()
         }
 

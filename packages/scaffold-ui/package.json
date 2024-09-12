@@ -33,7 +33,7 @@
     "@rerock/appkit-core": "workspace:*",
     "@rerock/ui": "workspace:*",
     "lit": "3.1.0",
-    "@rerock/siwe": "workspace:*",
+    "@rerock/appkit-siwe": "workspace:*",
     "@rerock/wallet": "workspace:*"
   },
   "author": "Rerock <rerock.com>",

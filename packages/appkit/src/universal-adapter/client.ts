@@ -167,7 +167,9 @@ export class UniversalAdapterClient {
             isProviderSupported &&
             isSiweParamsValid
           ) {
-            const { SIWEController, getDidChainId, getDidAddress } = await import('@rerock/siwe')
+            const { SIWEController, getDidChainId, getDidAddress } = await import(
+              '@rerock/appkit-siwe'
+            )
 
             const chains = this.options?.caipNetworks
               ?.filter(network => network.chainNamespace === 'eip155')
@@ -228,7 +230,7 @@ export class UniversalAdapterClient {
         SafeLocalStorage.removeItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK)
 
         if (siweConfig?.options?.signOutOnDisconnect) {
-          const { SIWEController } = await import('@rerock/siwe')
+          const { SIWEController } = await import('@rerock/appkit-siwe')
           await SIWEController.signOut()
         }
 

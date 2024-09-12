@@ -25,7 +25,7 @@
     "@rerock/appkit-polyfills": "workspace:*",
     "@rerock/appkit-scaffold-ui": "workspace:*",
     "@rerock/appkit-utils": "workspace:*",
-    "@rerock/siwe": "workspace:*",
+    "@rerock/appkit-siwe": "workspace:*",
     "@rerock/ui": "workspace:*",
     "@rerock/wallet": "workspace:*",
     "valtio": "1.11.2"

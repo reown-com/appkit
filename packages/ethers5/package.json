@@ -51,7 +51,7 @@
     "@rerock/appkit-polyfills": "workspace:*",
     "@rerock/appkit-utils": "workspace:*",
     "@rerock/appkit-adapter-ethers5": "workspace:*",
-    "@rerock/siwe": "workspace:*",
+    "@rerock/appkit-siwe": "workspace:*",
     "valtio": "1.11.2"
   },
   "devDependencies": {

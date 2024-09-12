@@ -14,6 +14,6 @@
   - @rerock/appkit-polyfills@0.0.3
   - @rerock/appkit-scaffold-ui@0.0.3
   - @rerock/appkit-utils@0.0.3
-  - @rerock/siwe@0.0.3
+  - @rerock/appkit-siwe@0.0.3
   - @rerock/ui@0.0.3
   - @rerock/wallet@0.0.3

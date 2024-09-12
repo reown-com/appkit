@@ -6,7 +6,7 @@ export const NetworkUtil = {
     const isEIP155Namespace = ChainController.state.activeChain === ConstantsUtil.CHAIN.EVM
 
     if (OptionsController.state.isSiweEnabled) {
-      const { SIWEController } = await import('@rerock/siwe')
+      const { SIWEController } = await import('@rerock/appkit-siwe')
       const shouldSignOut =
         SIWEController.state._client?.options?.signOutOnNetworkChange && isEIP155Namespace
 

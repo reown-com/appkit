@@ -151,7 +151,7 @@ export class W3mHeader extends LitElement {
 
   private async onClose() {
     if (this.isSiweEnabled) {
-      const { SIWEController } = await import('@rerock/siwe')
+      const { SIWEController } = await import('@rerock/appkit-siwe')
       const isApproveSignScreen = RouterController.state.view === 'ApproveTransaction'
       const isUnauthenticated = SIWEController.state.status !== 'success'
 

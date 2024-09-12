@@ -1,5 +1,5 @@
 {
-  "name": "@rerock/siwe",
+  "name": "@rerock/appkit-siwe",
   "version": "0.0.3",
   "type": "module",
   "main": "./dist/esm/exports/index.js",

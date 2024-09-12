@@ -9,7 +9,7 @@ import type {
   Tokens,
   ProjectId
 } from '@rerock/appkit-core'
-import type { SIWEControllerClient, Web3ModalSIWEClient } from '@rerock/siwe'
+import type { SIWEControllerClient, Web3ModalSIWEClient } from '@rerock/appkit-siwe'
 
 export type AppKitOptions = {
   /**

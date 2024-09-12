@@ -51,7 +51,7 @@
     "@rerock/wallet": "workspace:*",
     "@rerock/appkit-polyfills": "workspace:*",
     "@rerock/appkit-utils": "workspace:*",
-    "@rerock/siwe": "workspace:*",
+    "@rerock/appkit-siwe": "workspace:*",
     "valtio": "1.11.2"
   },
   "peerDependencies": {

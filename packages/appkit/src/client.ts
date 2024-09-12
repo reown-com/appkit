@@ -468,7 +468,7 @@ export class AppKit {
     // Set the SIWE client for EVM chains
     if (evmAdapter) {
       if (options.siweConfig) {
-        const { SIWEController } = await import('@rerock/siwe')
+        const { SIWEController } = await import('@rerock/appkit-siwe')
         SIWEController.setSIWEClient(options.siweConfig)
       }
     }

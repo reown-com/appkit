@@ -294,7 +294,9 @@ export class EVMWagmiClient implements ChainAdapter {
           const params = await siweConfig?.getMessageParams?.()
 
           if (siweConfig?.options?.enabled && params && Object.keys(params || {}).length > 0) {
-            const { SIWEController, getDidChainId, getDidAddress } = await import('@rerock/siwe')
+            const { SIWEController, getDidChainId, getDidAddress } = await import(
+              '@rerock/appkit-siwe'
+            )
 
             const chains = this.options?.caipNetworks.map(network => network.id) as string[]
 
@@ -394,7 +396,7 @@ export class EVMWagmiClient implements ChainAdapter {
         this.appKit?.resetAccount('eip155')
         this.appKit?.resetAccount('solana')
         if (this.options?.siweConfig?.options?.signOutOnDisconnect) {
-          const { SIWEController } = await import('@rerock/siwe')
+          const { SIWEController } = await import('@rerock/appkit-siwe')
           await SIWEController.signOut()
         }
       },

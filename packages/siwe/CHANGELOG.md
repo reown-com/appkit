@@ -1,4 +1,4 @@
-# @rerock/siwe
+# @rerock/appkit-siwe
 
 ## 0.0.3
 
