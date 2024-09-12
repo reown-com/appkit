@@ -299,7 +299,6 @@ export class EVMWagmiClient implements ChainAdapter {
           const { SIWEController } = await import('@web3modal/siwe')
           if (SIWEController.state._client?.options?.signOutOnDisconnect) {
             await SIWEController.signOut()
-            SIWEController.setSession(undefined)
           }
         }
       },

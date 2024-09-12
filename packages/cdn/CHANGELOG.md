@@ -1,5 +1,15 @@
 # @web3modal/cdn
 
+## 5.1.7-e26f36a6d.3
+
+### Patch Changes
+
+- Fix disconnect issues
+- Updated dependencies
+  - @web3modal/ethers5@5.1.7-e26f36a6d.3
+  - @web3modal/ethers@5.1.7-e26f36a6d.3
+  - @web3modal/wagmi@5.1.7-e26f36a6d.3
+
 ## 5.1.7-b13f6b079.2
 
 ### Patch Changes

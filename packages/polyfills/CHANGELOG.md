@@ -1,5 +1,11 @@
 # @web3modal/polyfills
 
+## 5.1.7-e26f36a6d.3
+
+### Patch Changes
+
+- Fix disconnect issues
+
 ## 5.1.7-b13f6b079.2
 
 ### Patch Changes

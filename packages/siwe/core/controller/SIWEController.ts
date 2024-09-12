@@ -40,7 +40,7 @@ type StateKey = keyof SIWEControllerClientState
 
 // -- State --------------------------------------------- //
 const state = proxy<SIWEControllerClientState>({
-  status: 'uninitialized'
+  status: 'uninitialized',
 })
 
 // -- Controller ---------------------------------------- //

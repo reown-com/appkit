@@ -142,7 +142,7 @@ export class EVMEthersClient implements ChainAdapter<EthersStoreUtilState, numbe
 
   // -- Public -------------------------------------------------------------------
   public constructor(options: AdapterOptions) {
-    const { ethersConfig, siweConfig, chains, defaultChain } = options
+    const { ethersConfig, chains, defaultChain } = options
 
     if (!ethersConfig) {
       throw new Error('web3modal:constructor - ethersConfig is undefined')
@@ -360,7 +360,7 @@ export class EVMEthersClient implements ChainAdapter<EthersStoreUtilState, numbe
         SafeLocalStorage.removeItem(EthersConstantsUtil.WALLET_ID)
         EthersStoreUtil.reset()
         this.appKit?.setClientId(null)
-        if (siweConfig?.options?.signOutOnDisconnect) {
+        if (this.appKit?.getIsSiweEnabled()) {
           const { SIWEController } = await import('@web3modal/siwe')
           if (SIWEController.state?._client?.options?.signOutOnDisconnect) {
             await SIWEController.signOut()

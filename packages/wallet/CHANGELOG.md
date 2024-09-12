@@ -1,5 +1,14 @@
 # @web3modal/wallet
 
+## 5.1.7-e26f36a6d.3
+
+### Patch Changes
+
+- Fix disconnect issues
+- Updated dependencies
+  - @web3modal/polyfills@5.1.7-e26f36a6d.3
+  - @web3modal/common@5.1.7-e26f36a6d.3
+
 ## 5.1.7-b13f6b079.2
 
 ### Patch Changes
