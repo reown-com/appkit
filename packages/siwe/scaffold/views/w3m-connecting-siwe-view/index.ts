@@ -106,7 +106,6 @@ export class W3mConnectingSiweView extends LitElement {
 
       return session
     } catch (error) {
-      console.log('>>> SIWEController.signIn', error)
       const preferredAccountType = AccountController.state.preferredAccountType
       const isSmartAccount =
         preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT

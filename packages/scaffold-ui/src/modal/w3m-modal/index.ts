@@ -203,20 +203,8 @@ export class W3mModal extends LitElement {
       const signed = AccountController.state.siweStatus === 'success'
 
       if (!prevConnected && nextConnected) {
-        console.log(
-          '>>> onNewAddress1',
-          prevConnected,
-          nextConnected,
-          AccountController.state.siweStatus
-        )
         this.onSiweNavigation()
       } else if (signed && prevConnected && nextConnected && prevConnected !== nextConnected) {
-        console.log(
-          '>>> onNewAddress2',
-          prevConnected,
-          nextConnected,
-          AccountController.state.siweStatus
-        )
         if (SIWEController.state._client?.options.signOutOnAccountChange) {
           await SIWEController.signOut()
           this.onSiweNavigation()
@@ -243,30 +231,12 @@ export class W3mModal extends LitElement {
         const { SIWEController } = await import('@rerock/siwe')
 
         if (SIWEController.state._client?.options.signOutOnNetworkChange) {
-          console.log(
-            '>>> onNewNetwork',
-            prevCaipNetworkId,
-            nextNetworkId,
-            AccountController.state.siweStatus
-          )
           await SIWEController.signOut()
           this.onSiweNavigation()
         } else {
-          console.log(
-            '>>> onNewNetwork2',
-            prevCaipNetworkId,
-            nextNetworkId,
-            AccountController.state.siweStatus
-          )
           RouterController.goBack()
         }
       } else {
-        console.log(
-          '>>> onNewNetwork3',
-          prevCaipNetworkId,
-          nextNetworkId,
-          AccountController.state.siweStatus
-        )
         RouterController.goBack()
       }
     }
@@ -275,7 +245,6 @@ export class W3mModal extends LitElement {
 
   private onSiweNavigation() {
     const isEIP155Namespace = ChainController.state.activeChain === ConstantsUtil.CHAIN.EVM
-    console.log('>>> onSiweNavigation', isEIP155Namespace, this.open)
 
     if (isEIP155Namespace) {
       if (this.open) {

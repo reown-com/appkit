@@ -72,7 +72,6 @@ export const SIWEController = {
     try {
       const client = this._getClient()
       const session = await client.getSession()
-      console.log('>>> SIWEController.getSession', session)
       if (session) {
         this.setSession(session)
         this.setStatus('success')

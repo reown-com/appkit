@@ -114,42 +114,6 @@ export class SolanaWeb3JsClient implements ChainAdapter {
       },
       this.chainNamespace
     )
-    ChainController.subscribeKey(
-      'activeCaipNetwork',
-      async (newCaipNetwork: CaipNetwork | undefined) => {
-        // When we switch from EVM to Solana, the Solana adapter is not connected, we need to fetch the user data from the auth provider
-        // and call the syncAccount (if the connected with AUTH connector)
-        const activeCaipNetwork = newCaipNetwork
-        const solanaChain = activeCaipNetwork?.chainNamespace === CommonConstantsUtil.CHAIN.SOLANA
-
-        if (solanaChain) {
-          // set provider as auth connector if connected
-          const authProvider = this.availableProviders.find(
-            provider =>
-              provider.name.toLocaleLowerCase() ===
-              ConstantsUtil.AUTH_CONNECTOR_ID.toLocaleLowerCase()
-          )
-
-          if (authProvider) {
-            // console.log(">>> Wow it's auth provider - fetching the user")
-            // this.provider = authProvider
-            // const user = await this.authProvider?.getUser({
-            //   chainId: activeCaipNetwork?.id
-            // })
-            // console.log('>>> hmm, user fetched', user)
-            // if (user) {
-            //   console.log('>>> hmm, setting the account', user.address)
-            //   this.syncAccount({ address: user.address, isConnected: true })
-            // }
-          } else {
-            console.log(
-              '>>> Oopsie, no auth provider found, here are all the providers',
-              this.availableProviders
-            )
-          }
-        }
-      }
-    )
   }
 
   public construct(appKit: AppKit, options: AppKitOptions) {

@@ -198,9 +198,6 @@ export const ChainController = {
     chain: ChainNamespace | undefined,
     replaceState = true
   ) {
-    if (prop === 'siweStatus') {
-      console.log('>>> setAccountProp', prop, value)
-    }
     this.setChainAccountData(
       chain,
       {
