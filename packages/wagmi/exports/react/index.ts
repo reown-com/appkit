@@ -3,7 +3,7 @@ import type { AppKitOptions } from '@reown/appkit'
 import { EVMWagmiClient, type AdapterOptions } from '@reown/appkit-adapter-wagmi'
 import { getWeb3Modal } from '@reown/appkit/library/react'
 import { type Config, type CreateConfigParameters } from 'wagmi'
-import { ConstantsUtil } from '@reown/appkit-utils'
+import packageJson from '../../package.json' assert { type: 'json' }
 
 // -- Setup -------------------------------------------------------------------
 let appkit: AppKit | undefined = undefined
@@ -22,7 +22,7 @@ export function createWeb3Modal(options: WagmiAppKitOptions) {
 
   appkit = new AppKit({
     ...options,
-    sdkVersion: `react-wagmi-${ConstantsUtil.VERSION}`,
+    sdkVersion: `react-wagmi-${packageJson.version}`,
     adapters: [wagmiAdapter]
   })
   getWeb3Modal(appkit)

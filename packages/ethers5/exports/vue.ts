@@ -3,7 +3,7 @@ import type { AppKitOptions } from '@reown/appkit'
 import { EVMEthers5Client, type AdapterOptions } from '@reown/appkit-adapter-ethers5'
 
 import { getWeb3Modal } from '@reown/appkit/library/vue'
-import { ConstantsUtil } from '@reown/appkit-utils'
+import packageJson from '../package.json' assert { type: 'json' }
 
 // -- Setup -------------------------------------------------------------------
 let appkit: AppKit | undefined = undefined
@@ -16,7 +16,7 @@ export function createWeb3Modal(options: EthersAppKitOptions) {
   ethersAdapter = new EVMEthers5Client()
   appkit = new AppKit({
     ...options,
-    sdkVersion: `vue-ethers5-${ConstantsUtil.VERSION}`,
+    sdkVersion: `vue-ethers5-${packageJson.version}`,
     adapters: [ethersAdapter]
   })
   getWeb3Modal(appkit)

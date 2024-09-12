@@ -8,7 +8,7 @@ import { EVMEthers5Client, type AdapterOptions } from '@reown/appkit-adapter-eth
 import { getWeb3Modal } from '@reown/appkit/library/react'
 import { useSnapshot } from 'valtio'
 import { ethers } from 'ethers'
-import { ConstantsUtil } from '@reown/appkit-utils'
+import packageJson from '../package.json' assert { type: 'json' }
 
 // -- Setup -------------------------------------------------------------------
 let appkit: AppKit | undefined = undefined
@@ -21,7 +21,7 @@ export function createWeb3Modal(options: Ethers5AppKitOptions) {
   ethersAdapter = new EVMEthers5Client()
   appkit = new AppKit({
     ...options,
-    sdkVersion: `react-ethers5-${ConstantsUtil.VERSION}`,
+    sdkVersion: `react-ethers5-${packageJson.version}`,
     adapters: [ethersAdapter]
   })
   getWeb3Modal(appkit)

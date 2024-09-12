@@ -22,7 +22,7 @@ import type {
   AdapterType
 } from '@reown/appkit-common'
 import { SafeLocalStorage, SafeLocalStorageKeys } from '@reown/appkit-common'
-import { ProviderUtil } from '@reown/appkit/store'
+import { ProviderUtil } from '../store/index.js'
 import type { AppKitOptions } from '../utils/TypesUtil.js'
 import { allChains } from '../chains/index.js'
 

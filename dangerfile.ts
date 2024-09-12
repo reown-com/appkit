@@ -1,7 +1,5 @@
 /* eslint-disable no-await-in-loop */
 import { danger, fail, message, warn } from 'danger'
-import corePackageJson from './packages/core/package.json' assert { type: 'json' }
-import { ConstantsUtil } from './packages/appkit-utils/src/ConstantsUtil'
 
 // -- Constants ---------------------------------------------------------------
 const TYPE_COMMENT = `// -- Types --------------------------------------------- //`
@@ -10,11 +8,10 @@ const CONTROLLER_COMMENT = `// -- Controller -----------------------------------
 const RENDER_COMMENT = `// -- Render -------------------------------------------- //`
 const STATE_PROPERTIES_COMMENT = `// -- State & Properties -------------------------------- //`
 const PRIVATE_COMMENT = `// -- Private ------------------------------------------- //`
-const PACKAGE_VERSION = ConstantsUtil.VERSION
 const RELATIVE_IMPORT_SAME_DIR = `'./`
 const RELATIVE_IMPORT_PARENT_DIR = `'../`
 const RELATIVE_IMPORT_EXTENSION = `.js'`
-const PRIVATE_FUNCTION_REGEX = /private\s+(\w+)\s*\(\s*\)/g
+const PRIVATE_FUNCTION_REGEX = /private\s+(?:\w+)\s*\(\s*\)/gu
 
 // -- Data --------------------------------------------------------------------
 const { modified_files, created_files, deleted_files, diffForFile } = danger.git
@@ -301,7 +298,7 @@ function containsRelativeImportWithoutJSExtension(addition: string | undefined) 
 }
 async function checkClientPackages() {
   const client_files = modified_files.filter(f =>
-    /\/packages\/(wagmi|solana|ethers|ethers5)\//.test(f)
+    /\/packages\/(?:wagmi|solana|ethers|ethers5)\//u.test(f)
   )
 
   for (const f of client_files) {
@@ -321,14 +318,6 @@ async function checkClientPackages() {
   }
 }
 checkClientPackages()
-
-// -- Check sdkVersion ------------------------------------------------------------
-function checkSdkVersion() {
-  if (PACKAGE_VERSION !== corePackageJson.version) {
-    fail(`VERSION in utils/constants doesn't match core package.json version`)
-  }
-}
-checkSdkVersion()
 
 // -- Check wallet ------------------------------------------------------------
 

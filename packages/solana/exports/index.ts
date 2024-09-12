@@ -2,7 +2,7 @@ import { AppKit } from '@reown/appkit'
 import { SolanaWeb3JsClient } from '@reown/appkit-adapter-solana'
 import type { SolanaAppKitOptions } from './options'
 import type { Provider } from '@reown/appkit-adapter-solana'
-import { ConstantsUtil } from '@reown/appkit-utils'
+import packageJson from '../package.json' assert { type: 'json' }
 
 // -- Types -------------------------------------------------------------
 export type { SolanaAppKitOptions, Provider }
@@ -15,7 +15,7 @@ export function createWeb3Modal(options: SolanaAppKitOptions) {
 
   return new AppKit({
     ...options,
-    sdkVersion: `html-solana-${ConstantsUtil.VERSION}`,
+    sdkVersion: `html-solana-${packageJson.version}`,
     adapters: [solanaAdapter]
   })
 }

@@ -6,7 +6,7 @@ import { EVMEthersClient, type AdapterOptions } from '@reown/appkit-adapter-ethe
 import { getWeb3Modal } from '@reown/appkit/library/react'
 import { useSnapshot } from 'valtio'
 import type { CaipNetwork } from '@reown/appkit-common'
-import { ConstantsUtil } from '@reown/appkit-utils'
+import packageJson from '../package.json' assert { type: 'json' }
 
 // -- Types -------------------------------------------------------------
 export type { AdapterOptions } from '@reown/appkit-adapter-ethers'
@@ -22,7 +22,7 @@ export function createWeb3Modal(options: EthersAppKitOptions) {
   ethersAdapter = new EVMEthersClient()
   appkit = new AppKit({
     ...options,
-    sdkVersion: `react-ethers-${ConstantsUtil.VERSION}`,
+    sdkVersion: `react-ethers-${packageJson.version}`,
     adapters: [ethersAdapter]
   })
   getWeb3Modal(appkit)
