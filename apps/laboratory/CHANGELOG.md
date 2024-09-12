@@ -14,8 +14,8 @@
   - @rerock/appkit-adapter-solana@0.0.3
   - @rerock/appkit-adapter-wagmi@0.0.3
   - @rerock/appkit@0.0.3
-  - @rerock/ethers@0.0.3
-  - @rerock/ethers5@0.0.3
+  - @rerock/appkit-ethers@0.0.3
+  - @rerock/appkit-ethers5@0.0.3
   - @rerock/siwe@0.0.3
   - @rerock/solana@0.0.3
   - @rerock/wagmi@0.0.3

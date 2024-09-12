@@ -213,10 +213,10 @@ importers:
       '@rerock/appkit-adapter-wagmi':
         specifier: workspace:*
         version: link:../../packages/adapters/wagmi
-      '@rerock/ethers':
+      '@rerock/appkit-ethers':
         specifier: workspace:*
         version: link:../../packages/ethers
-      '@rerock/ethers5':
+      '@rerock/appkit-ethers5':
         specifier: workspace:*
         version: link:../../packages/ethers5
       '@rerock/siwe':
@@ -1098,10 +1098,10 @@ importers:
 
   packages/cdn:
     dependencies:
-      '@rerock/ethers':
+      '@rerock/appkit-ethers':
         specifier: workspace:*
         version: link:../ethers
-      '@rerock/ethers5':
+      '@rerock/appkit-ethers5':
         specifier: workspace:*
         version: link:../ethers5
       '@rerock/polyfills':

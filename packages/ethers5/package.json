@@ -1,5 +1,5 @@
 {
-  "name": "@rerock/ethers5",
+  "name": "@rerock/appkit-ethers5",
   "version": "0.0.3",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
