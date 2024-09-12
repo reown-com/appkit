@@ -1,5 +1,6 @@
 {
   "name": "@reown/appkit-adapter-polkadot",
+  "version": "0.0.3",
   "scripts": {
     "build:clean": "rm -rf dist",
     "build": "tsc --build tsconfig.build.json",
@@ -16,5 +17,6 @@
   "devDependencies": {
     "vitest": "2.0.3",
     "@vitest/coverage-v8": "2.0.5"
-  }
+  },
+  "private": "true"
 }
