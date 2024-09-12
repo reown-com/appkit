@@ -31,12 +31,13 @@ export class W3mModal extends LitElement {
   @state() private open = ModalController.state.open
 
   @state() private isSiweEnabled = OptionsController.state.isSiweEnabled
+  
+  @state() private is1ClickAuthenticating = AccountController.state.is1ClickAuthenticating
 
   @state() private connected = AccountController.state.isConnected
 
   @state() private loading = ModalController.state.loading
 
-  @state() private caipAddress = AccountController.state.caipAddress
 
   @state() private shake = ModalController.state.shake
 
@@ -54,6 +55,9 @@ export class W3mModal extends LitElement {
         }),
         AccountController.subscribeKey('isConnected', val => (this.connected = val)),
         AccountController.subscribeKey('caipAddress', val => this.onNewAddress(val)),
+        AccountController.subscribeKey('is1ClickAuthenticating', val => {
+          this.is1ClickAuthenticating = val
+        }),
         OptionsController.subscribeKey('isSiweEnabled', val => (this.isSiweEnabled = val))
       ]
     )
@@ -185,31 +189,18 @@ export class W3mModal extends LitElement {
       return
     }
 
-    const previousAddress = CoreHelperUtil.getPlainAddress(this.caipAddress)
-    const previousNetworkId = CoreHelperUtil.getNetworkId(this.caipAddress)
     const newAddress = CoreHelperUtil.getPlainAddress(caipAddress)
     const newNetworkId = CoreHelperUtil.getNetworkId(caipAddress)
-    this.caipAddress = caipAddress
 
-    if (this.isSiweEnabled) {
+    if (this.isSiweEnabled && !this.is1ClickAuthenticating) {
       const { SIWEController, appKitAuthConfig } = await import('@web3modal/siwe')
       if (!SIWEController.state._client && OptionsController.state.enableAuth) {
         SIWEController.setSIWEClient(appKitAuthConfig)
       }
 
-      const isNoOp =
-        previousAddress &&
-        previousAddress === newAddress &&
-        previousNetworkId &&
-        previousNetworkId === newNetworkId
-      if (isNoOp) {
-        return
-      }
+  
 
-      let session = SIWEController.state.session
-      if (!session) {
-        session = (await SIWEController.getSession()) ?? undefined
-      }
+      const session = (await SIWEController.getSession()) ?? undefined
       if (session?.address && session?.chainId) {
         const { chainId, address } = session
 

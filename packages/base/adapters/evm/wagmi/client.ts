@@ -182,6 +182,7 @@ export class EVMWagmiClient implements ChainAdapter {
             reorderedChains = [chainId, ...reorderedChains.filter(c => c !== chainId)]
           }
 
+          SIWEController.setIs1ClickAuthenticating(true)
           const result = await provider.authenticate({
             nonce: await SIWEController.getNonce(),
             methods: [...OPTIONAL_METHODS],
@@ -222,12 +223,13 @@ export class EVMWagmiClient implements ChainAdapter {
 
             } catch (error) {
               isSuccessful1CA = false
-              SIWEController.setStatus('ready')
+              SIWEController.setIs1ClickAuthenticating(false)
               // eslint-disable-next-line no-console
               console.error('Error verifying message', error)
-              await this.connectionControllerClient.disconnect().catch(console.error)
-              // eslint-disable-next-line no-console
               await provider.disconnect().catch(console.error)
+              await this.connectionControllerClient.disconnect().catch(console.error)
+
+              SIWEController.setStatus('error')
               throw error
             }
           }
@@ -240,6 +242,7 @@ export class EVMWagmiClient implements ChainAdapter {
             ...x,
             current: null,
           }))
+          SIWEController.setIs1ClickAuthenticating(false)
         }
         await connect(this.wagmiConfig, { connector, chainId })
         const { SIWEController } = await import('@web3modal/siwe')

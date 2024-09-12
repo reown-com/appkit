@@ -45,7 +45,6 @@ export class W3mConnectingWcView extends LitElement {
 
         if (val.siweStatus === 'success') {
           SnackController.hide()
-          ModalController.close()
         }
         if (val.siweStatus === 'ready') {
           SnackController.hide()
@@ -90,7 +89,6 @@ export class W3mConnectingWcView extends LitElement {
           const { status } = SIWEController.state
           if (status === 'success') {
             SnackController.hide()
-            ModalController.close()
           } else if(status === 'ready') {
             SnackController.hide()
           }

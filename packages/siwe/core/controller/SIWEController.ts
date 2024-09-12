@@ -161,5 +161,9 @@ export const SIWEController = {
     state.session = session
 
     this.setStatus(session?.address && session?.chainId ? 'success' : 'ready')
+  },
+
+  setIs1ClickAuthenticating(is1ClickAuthenticating: boolean) {
+    AccountController.setIs1ClickAuthenticating(is1ClickAuthenticating)
   }
 }
