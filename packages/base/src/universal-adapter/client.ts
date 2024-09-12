@@ -477,14 +477,6 @@ export class UniversalAdapterClient {
       const caipNetwork = this.caipNetworks.find(c => c.chainId == chainId)
       const isSameNetwork =
         caipNetwork?.chainId === ChainController.state.activeCaipNetwork?.chainId
-      const namespaces = provider?.session?.namespaces || {}
-      const address = caipNetwork?.chainNamespace
-        ? (namespaces?.[caipNetwork.chainNamespace]?.accounts[0] as CaipAddress)
-        : undefined
-
-      // if (address) {
-      //   this.appKit?.setCaipAddress(address, caipNetwork.chainNamespace)
-      // }
 
       if (!isSameNetwork) {
         if (caipNetwork) {

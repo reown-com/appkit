@@ -1,11 +1,9 @@
 import type { BaseError } from '@rerock/core'
 import {
-  AccountController,
   ChainController,
   ConnectionController,
   EventsController,
-  ModalController,
-  RouterController
+  ModalController
 } from '@rerock/core'
 import { ConstantsUtil } from '@rerock/scaffold-utils'
 import { customElement } from '@rerock/ui'

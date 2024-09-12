@@ -8,7 +8,6 @@ import { ConnectionController } from './ConnectionController.js'
 import { SnackController } from './SnackController.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { EventsController } from './EventsController.js'
-import { NetworkController } from './NetworkController.js'
 import { W3mFrameRpcConstants } from '@rerock/wallet'
 import { ChainController } from './ChainController.js'
 

@@ -37,11 +37,7 @@ export class W3mModal extends LitElement {
 
   @state() private isSiweEnabled = OptionsController.state.isSiweEnabled
 
-  @state() private loading = ModalController.state.loading
-
   @state() private shake = ModalController.state.shake
-
-  @state() private siweStatus = AccountController.state.siweStatus
 
   public constructor() {
     super()
@@ -51,7 +47,6 @@ export class W3mModal extends LitElement {
       ...[
         ModalController.subscribeKey('open', val => (val ? this.onOpen() : this.onClose())),
         ModalController.subscribeKey('shake', val => (this.shake = val)),
-        ModalController.subscribeKey('loading', val => this.onLoadingChange(val)),
         AccountController.subscribeKey('siweStatus', val => this.onSiweStatusChange(val), 'eip155'),
         ChainController.subscribeKey('activeCaipNetwork', val => this.onNewNetwork(val)),
         ChainController.subscribeKey('activeCaipAddress', val => this.onNewAddress(val)),
@@ -185,11 +180,6 @@ export class W3mModal extends LitElement {
     if (nextStatus === 'success') {
       ModalController.close()
     }
-    this.siweStatus = nextStatus
-  }
-
-  private onLoadingChange(nextLoading: boolean) {
-    this.loading = nextLoading
   }
 
   private async onNewAddress(caipAddress?: CaipAddress) {

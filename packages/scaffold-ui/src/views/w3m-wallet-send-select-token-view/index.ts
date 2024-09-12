@@ -5,7 +5,6 @@ import {
   AccountController,
   ChainController,
   CoreHelperUtil,
-  NetworkController,
   RouterController,
   SendController
 } from '@rerock/core'

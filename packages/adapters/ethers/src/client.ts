@@ -86,8 +86,6 @@ export class EVMEthersClient {
 
   private authProvider?: W3mFrameProvider
 
-  private provider: Provider | undefined = undefined
-
   // -- Public variables --------------------------------------------------------
   public options: AppKitOptions | undefined = undefined
 
@@ -293,9 +291,8 @@ export class EVMEthersClient {
         }
 
         try {
-          // WcStoreUtil.setError(undefined)
           if (selectedProvider && id !== ConstantsUtil.AUTH_CONNECTOR_ID) {
-            const data = await selectedProvider.request({ method: 'eth_requestAccounts' })
+            await selectedProvider.request({ method: 'eth_requestAccounts' })
           }
           await this.setProvider(
             selectedProvider,
@@ -303,7 +300,6 @@ export class EVMEthersClient {
             info?.name
           )
         } catch (error) {
-          // WcStoreUtil.setError(error)
           if (id === ConstantsUtil.COINBASE_SDK_CONNECTOR_ID) {
             throw new Error((error as CoinbaseProviderError).message)
           }
@@ -619,7 +615,6 @@ export class EVMEthersClient {
           this.appKit?.setCaipNetwork(caipNetwork)
           ProviderUtil.setProviderId('eip155', providerId)
           ProviderUtil.setProvider<Provider>('eip155', provider)
-          this.provider = provider
           this.appKit?.setStatus('connected', this.chainNamespace)
           this.appKit?.setAllAccounts(
             addresses.map(address => ({ address, type: 'eoa' })),

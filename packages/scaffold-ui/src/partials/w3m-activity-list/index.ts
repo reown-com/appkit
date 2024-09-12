@@ -5,7 +5,6 @@ import {
   ChainController,
   CoreHelperUtil,
   EventsController,
-  NetworkController,
   OptionsController,
   RouterController,
   TransactionsController

@@ -5,7 +5,6 @@ import {
   OnRampController,
   type OnRampProvider,
   RouterController,
-  NetworkController,
   BlockchainApiController,
   EventsController,
   ChainController

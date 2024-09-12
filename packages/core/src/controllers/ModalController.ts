@@ -1,6 +1,5 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, subscribe as sub } from 'valtio/vanilla'
-import { AccountController } from './AccountController.js'
 import { ApiController } from './ApiController.js'
 import { EventsController } from './EventsController.js'
 import { PublicStateController } from './PublicStateController.js'

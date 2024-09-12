@@ -1,4 +1,4 @@
-import { AccountController, ChainController, ModalController } from '@rerock/core'
+import { ChainController, ModalController } from '@rerock/core'
 import { customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'

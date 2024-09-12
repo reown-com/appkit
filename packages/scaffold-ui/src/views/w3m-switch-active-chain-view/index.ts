@@ -36,9 +36,6 @@ export class W3mSwitchActiveChainView extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const chainNameString = this.activeChain
-      ? ConstantsUtil.CHAIN_NAME_MAP[this.activeChain]
-      : 'current'
     const switchedChainNameString = this.switchToChain
       ? ConstantsUtil.CHAIN_NAME_MAP[this.switchToChain]
       : 'supported'

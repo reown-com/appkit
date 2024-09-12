@@ -6,7 +6,6 @@ import {
   SwapController,
   RouterController,
   CoreHelperUtil,
-  NetworkController,
   ModalController,
   ConstantsUtil,
   type SwapToken,

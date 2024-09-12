@@ -1,5 +1,4 @@
 import {
-  AccountController,
   AssetController,
   AssetUtil,
   ChainController,

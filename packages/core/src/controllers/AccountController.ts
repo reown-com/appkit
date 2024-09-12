@@ -14,7 +14,6 @@ import { SwapController } from './SwapController.js'
 import { SwapApiUtil } from '../utils/SwapApiUtil.js'
 import type { W3mFrameTypes } from '@rerock/wallet'
 import { ChainController } from './ChainController.js'
-import { NetworkController } from './NetworkController.js'
 import { proxy, ref } from 'valtio/vanilla'
 import type UniversalProvider from '@walletconnect/universal-provider'
 
