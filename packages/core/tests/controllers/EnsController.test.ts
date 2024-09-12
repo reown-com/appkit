@@ -174,7 +174,7 @@ describe('EnsController', () => {
       attributes: {},
       timestamp: Math.floor(Date.now() / 1000)
     })
-    await EnsController.registerName('newname')
+    await EnsController.registerName('newname.reown.id')
     expect(getAuthConnectorSpy).toHaveBeenCalled()
     expect(signMessageSpy).toHaveBeenCalledWith(message)
     expect(AccountController.state.profileName).toBe(`newname${ConstantsUtil.WC_NAME_SUFFIX}`)

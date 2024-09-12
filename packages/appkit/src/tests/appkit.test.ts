@@ -394,18 +394,18 @@ describe('Base', () => {
     it('should get WalletConnect name', async () => {
       vi.mocked(EnsController.getNamesForAddress).mockResolvedValue([
         {
-          name: 'john.eth',
+          name: 'john.reown.id',
           addresses: { eip155: { address: '0x123', created: '0' } },
           attributes: [],
           registered: 0,
           updated: 0
         }
       ])
-      const result = await appKit.getWalletConnectName('john.eth')
-      expect(EnsController.getNamesForAddress).toHaveBeenCalledWith('john.eth')
+      const result = await appKit.getWalletConnectName('john.reown.id')
+      expect(EnsController.getNamesForAddress).toHaveBeenCalledWith('john.reown.id')
       expect(result).toEqual([
         {
-          name: 'john.eth',
+          name: 'john.reown.id',
           addresses: { eip155: { address: '0x123', created: '0' } },
           attributes: [],
           registered: 0,
@@ -417,13 +417,13 @@ describe('Base', () => {
     it('should resolve WalletConnect name', async () => {
       vi.mocked(EnsController.resolveName).mockResolvedValue({
         addresses: { eip155: { address: '0x123', created: '0' } },
-        name: 'john.eth',
+        name: 'john.reown.id',
         registered: 0,
         updated: 0,
         attributes: []
       })
-      const result = await appKit.resolveWalletConnectName('john.eth')
-      expect(EnsController.resolveName).toHaveBeenCalledWith('john.eth')
+      const result = await appKit.resolveReownName('john.reown.id')
+      expect(EnsController.resolveName).toHaveBeenCalledWith('john.reown.id')
       expect(result).toBe('0x123')
     })
 

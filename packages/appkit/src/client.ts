@@ -367,9 +367,8 @@ export class AppKit {
   public getWalletConnectName: (typeof EnsController)['getNamesForAddress'] = address =>
     EnsController.getNamesForAddress(address)
 
-  public resolveWalletConnectName = async (name: string) => {
-    const trimmedName = name.replace(ConstantsUtil.WC_NAME_SUFFIX, '')
-    const wcNameAddress = await EnsController.resolveName(trimmedName)
+  public resolveReownName = async (name: string) => {
+    const wcNameAddress = await EnsController.resolveName(name)
     const networkNameAddresses = Object.values(wcNameAddress?.addresses) || []
 
     return networkNameAddresses[0]?.address || false
