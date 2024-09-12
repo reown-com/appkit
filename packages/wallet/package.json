@@ -1,5 +1,5 @@
 {
-  "name": "@rerock/appkit-wallet",
+  "name": "@reown/appkit-wallet",
   "version": "0.0.3",
   "type": "module",
   "main": "./dist/esm/index.js",
@@ -18,11 +18,11 @@
   },
   "dependencies": {
     "@walletconnect/logger": "2.1.2",
-    "@rerock/appkit-common": "workspace:*",
-    "@rerock/appkit-polyfills": "workspace:*",
+    "@reown/appkit-common": "workspace:*",
+    "@reown/appkit-polyfills": "workspace:*",
     "zod": "3.22.4"
   },
-  "author": "Rerock <rerock.com>",
+  "author": "reown <reown.com>",
   "license": "Apache-2.0",
   "homepage": "https://github.com/web3modal/web3modal",
   "repository": {

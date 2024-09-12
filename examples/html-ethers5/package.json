@@ -7,8 +7,8 @@
     "build": "vite build"
   },
   "dependencies": {
-    "@rerock/appkit-adapter-ethers5": "workspace:*",
-    "@rerock/appkit": "workspace:*",
+    "@reown/appkit-adapter-ethers5": "workspace:*",
+    "@reown/appkit": "workspace:*",
     "ethers": "5.7.2"
   },
   "devDependencies": {

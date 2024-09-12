@@ -1,4 +1,4 @@
-import '@rerock/appkit-polyfills'
+import '@reown/appkit-polyfills'
 
 export { SolanaWeb3JsClient } from './client.js'
 

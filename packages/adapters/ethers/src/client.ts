@@ -1,4 +1,4 @@
-import type { AppKitOptions } from '@rerock/appkit'
+import type { AppKitOptions } from '@reown/appkit'
 import {
   NetworkUtil,
   SafeLocalStorage,
@@ -8,39 +8,39 @@ import {
   type CaipNetwork,
   type CaipNetworkId,
   type ChainNamespace
-} from '@rerock/appkit-common'
+} from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
   type CombinedProvider,
   type Connector
-} from '@rerock/appkit-core'
+} from '@reown/appkit-core'
 import {
   EthersHelpersUtil,
   type Provider,
   type ProviderType,
   type ProviderId,
   type Address
-} from '@rerock/appkit-utils/ethers'
-import type { AppKit } from '@rerock/appkit'
+} from '@reown/appkit-utils/ethers'
+import type { AppKit } from '@reown/appkit'
 import {
   W3mFrameHelpers,
   W3mFrameProvider,
   W3mFrameRpcConstants,
   type W3mFrameTypes
-} from '@rerock/appkit-wallet'
-import { ConstantsUtil as CoreConstantsUtil } from '@rerock/appkit-core'
-import { ConstantsUtil as CommonConstantsUtil } from '@rerock/appkit-common'
-import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@rerock/appkit-utils'
+} from '@reown/appkit-wallet'
+import { ConstantsUtil as CoreConstantsUtil } from '@reown/appkit-core'
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@reown/appkit-utils'
 import UniversalProvider from '@walletconnect/universal-provider'
-import type { ConnectionControllerClient, NetworkControllerClient } from '@rerock/appkit-core'
-import { WcConstantsUtil } from '@rerock/appkit'
+import type { ConnectionControllerClient, NetworkControllerClient } from '@reown/appkit-core'
+import { WcConstantsUtil } from '@reown/appkit'
 import { EthersMethods } from './utils/EthersMethods.js'
 import { formatEther, InfuraProvider, JsonRpcProvider } from 'ethers'
-import type { PublicStateControllerState } from '@rerock/appkit-core'
-import { ProviderUtil } from '@rerock/appkit/store'
+import type { PublicStateControllerState } from '@reown/appkit-core'
+import { ProviderUtil } from '@reown/appkit/store'
 import { CoinbaseWalletSDK, type ProviderInterface } from '@coinbase/wallet-sdk'
-import { W3mFrameProviderSingleton } from '@rerock/appkit/auth-provider'
+import { W3mFrameProviderSingleton } from '@reown/appkit/auth-provider'
 
 // -- Types ---------------------------------------------------------------------
 export interface AdapterOptions {
@@ -301,7 +301,7 @@ export class EVMEthersClient {
 
         this.appKit?.setClientId(null)
         if (this.options?.siweConfig?.options?.signOutOnDisconnect) {
-          const { SIWEController } = await import('@rerock/appkit-siwe')
+          const { SIWEController } = await import('@reown/appkit-siwe')
           await SIWEController.signOut()
         }
 

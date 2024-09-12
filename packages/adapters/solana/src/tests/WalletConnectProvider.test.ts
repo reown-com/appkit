@@ -3,7 +3,7 @@ import { mockUniversalProvider, mockUniversalProviderSession } from './mocks/Uni
 import { WalletConnectProvider } from '../providers/WalletConnectProvider.js'
 import { TestConstants } from './util/TestConstants.js'
 import { mockLegacyTransaction, mockVersionedTransaction } from './mocks/Transaction.js'
-import type { CaipNetwork } from '@rerock/appkit-common'
+import type { CaipNetwork } from '@reown/appkit-common'
 
 describe('WalletConnectProvider specific tests', () => {
   let provider = mockUniversalProvider()

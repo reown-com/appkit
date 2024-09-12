@@ -9,8 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@rerock/appkit-adapter-ethers": "workspace:*",
-    "@rerock/appkit": "workspace:*",
+    "@reown/appkit-adapter-ethers": "workspace:*",
+    "@reown/appkit": "workspace:*",
     "ethers": "6.13.0",
     "next": "14.2.3",
     "react": "18.2.0",

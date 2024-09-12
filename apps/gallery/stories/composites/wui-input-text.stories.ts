@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@rerock/appkit-ui/src/composites/wui-input-text'
-import type { WuiInputText } from '@rerock/appkit-ui/src/composites/wui-input-text'
+import '@reown/appkit-ui/src/composites/wui-input-text'
+import type { WuiInputText } from '@reown/appkit-ui/src/composites/wui-input-text'
 import { html } from 'lit'
 import '../../components/gallery-container'
 import { iconOptions } from '../../utils/PresetUtils'

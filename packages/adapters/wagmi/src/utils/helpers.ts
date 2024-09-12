@@ -2,14 +2,14 @@ import {
   ConstantsUtil as CommonConstantsUtil,
   type CaipNetwork,
   type CaipNetworkId
-} from '@rerock/appkit-common'
-import { ConstantsUtil, PresetsUtil } from '@rerock/appkit-utils'
+} from '@reown/appkit-common'
+import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
 import { UniversalProvider } from '@walletconnect/universal-provider'
 import { fallback, http, type Hex } from 'viem'
 
 import type { Chain } from '@wagmi/core/chains'
 import type { Connector } from '@wagmi/core'
-import { CoreHelperUtil } from '@rerock/appkit-core'
+import { CoreHelperUtil } from '@reown/appkit-core'
 
 export function getCaipDefaultNetwork(chain?: CaipNetwork) {
   if (!chain) {

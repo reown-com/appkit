@@ -5,7 +5,7 @@ import {
   useWeb3ModalNetwork,
   useWeb3ModalProvider,
   type Provider
-} from '@rerock/appkit/react'
+} from '@reown/appkit/react'
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
 import { useChakraToast } from '../Toast'
 import { parseGwei } from 'viem'
@@ -16,7 +16,7 @@ import {
   WALLET_CAPABILITIES,
   getCapabilitySupportedChainInfo
 } from '../../utils/EIP5792Utils'
-import { W3mFrameProvider } from '@rerock/appkit-wallet'
+import { W3mFrameProvider } from '@reown/appkit-wallet'
 
 export function Ethers5SendCallsWithPaymasterServiceTest() {
   const [paymasterServiceUrl, setPaymasterServiceUrl] = useState<string>('')

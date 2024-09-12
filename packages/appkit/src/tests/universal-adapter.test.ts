@@ -4,9 +4,9 @@ import { UniversalAdapterClient } from '../universal-adapter'
 import { mockOptions } from './mocks/Options'
 import mockProvider from './mocks/UniversalProvider'
 import type UniversalProvider from '@walletconnect/universal-provider'
-import { NetworkController } from '@rerock/appkit-core'
-import { ProviderUtil } from '@rerock/appkit/store'
-import { ConstantsUtil, PresetsUtil } from '@rerock/appkit-utils'
+import { NetworkController } from '@reown/appkit-core'
+import { ProviderUtil } from '@reown/appkit/store'
+import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
 import mockAppKit from './mocks/AppKit'
 
 describe('UniversalAdapter', () => {

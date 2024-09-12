@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@rerock/appkit-ui/src/composites/wui-tooltip'
-import type { WuiTooltip } from '@rerock/appkit-ui/src/composites/wui-tooltip'
+import '@reown/appkit-ui/src/composites/wui-tooltip'
+import type { WuiTooltip } from '@reown/appkit-ui/src/composites/wui-tooltip'
 import { html } from 'lit'
 
 import { placementOptions } from '../../utils/PresetUtils'

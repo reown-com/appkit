@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@rerock/appkit-ui/src/composites/wui-list-content'
-import type { WuiListContent } from '@rerock/appkit-ui/src/composites/wui-list-content'
+import '@reown/appkit-ui/src/composites/wui-list-content'
+import type { WuiListContent } from '@reown/appkit-ui/src/composites/wui-list-content'
 import { html } from 'lit'
 import '../../components/gallery-container'
 import { networkImageSrc } from '../../utils/PresetUtils'

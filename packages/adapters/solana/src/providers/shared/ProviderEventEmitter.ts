@@ -1,4 +1,4 @@
-import type { ProviderEventEmitterMethods } from '@rerock/appkit-utils/solana'
+import type { ProviderEventEmitterMethods } from '@reown/appkit-utils/solana'
 
 type Listeners = {
   [Event in ProviderEventEmitterMethods.Event]: Array<

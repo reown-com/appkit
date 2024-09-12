@@ -1,5 +1,5 @@
 {
-  "name": "@rerock/appkit-cdn",
+  "name": "@reown/appkit-cdn",
   "version": "0.0.3",
   "main": "dist/wagmi.js",
   "type": "module",
@@ -25,10 +25,10 @@
     }
   },
   "dependencies": {
-    "@rerock/appkit-wagmi": "workspace:*",
-    "@rerock/appkit-ethers": "workspace:*",
-    "@rerock/appkit-ethers5": "workspace:*",
-    "@rerock/appkit-polyfills": "workspace:*",
+    "@reown/appkit-wagmi": "workspace:*",
+    "@reown/appkit-ethers": "workspace:*",
+    "@reown/appkit-ethers5": "workspace:*",
+    "@reown/appkit-polyfills": "workspace:*",
     "@wagmi/connectors": "5.1.9",
     "@wagmi/core": "2.13.4",
     "viem": "2.21.4",

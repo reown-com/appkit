@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@rerock/appkit-ui/src/composites/wui-icon-box'
-import type { WuiIconBox } from '@rerock/appkit-ui/src/composites/wui-icon-box'
+import '@reown/appkit-ui/src/composites/wui-icon-box'
+import type { WuiIconBox } from '@reown/appkit-ui/src/composites/wui-icon-box'
 import { html } from 'lit'
 
 import {

@@ -1,10 +1,10 @@
-import { AppKit } from '@rerock/appkit'
-import type { AppKitOptions } from '@rerock/appkit'
-import { EVMEthersClient, type AdapterOptions } from '@rerock/appkit-adapter-ethers'
-import { ConstantsUtil } from '@rerock/appkit-utils'
+import { AppKit } from '@reown/appkit'
+import type { AppKitOptions } from '@reown/appkit'
+import { EVMEthersClient, type AdapterOptions } from '@reown/appkit-adapter-ethers'
+import { ConstantsUtil } from '@reown/appkit-utils'
 
 // -- Types -------------------------------------------------------------
-export type { AdapterOptions } from '@rerock/appkit-adapter-ethers'
+export type { AdapterOptions } from '@reown/appkit-adapter-ethers'
 
 // -- Setup -------------------------------------------------------------
 export type EthersAppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 'sdkVersion'> &

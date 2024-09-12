@@ -1,4 +1,4 @@
-import { customElement } from '@rerock/appkit-ui'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
@@ -12,9 +12,9 @@ import {
   type SwapInputTarget,
   EventsController,
   AccountController
-} from '@rerock/appkit-core'
-import { NumberUtil } from '@rerock/appkit-common'
-import { W3mFrameRpcConstants } from '@rerock/appkit-wallet'
+} from '@reown/appkit-core'
+import { NumberUtil } from '@reown/appkit-common'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 
 @customElement('w3m-swap-view')
 export class W3mSwapView extends LitElement {

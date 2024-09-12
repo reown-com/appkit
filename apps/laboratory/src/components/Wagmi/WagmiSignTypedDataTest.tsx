@@ -1,7 +1,7 @@
 import { Button } from '@chakra-ui/react'
 import { useAccount, useSignTypedData } from 'wagmi'
 import { useChakraToast } from '../Toast'
-import { useWeb3ModalAccount } from '@rerock/appkit/react'
+import { useWeb3ModalAccount } from '@reown/appkit/react'
 
 // Example data
 const types = {

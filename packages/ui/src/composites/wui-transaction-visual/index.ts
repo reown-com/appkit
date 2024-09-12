@@ -4,7 +4,7 @@ import type {
   TransactionDirection,
   TransactionImage,
   TransactionStatus
-} from '@rerock/appkit-common'
+} from '@reown/appkit-common'
 import type { TransactionIconType, TransactionType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import '../../components/wui-image/index.js'

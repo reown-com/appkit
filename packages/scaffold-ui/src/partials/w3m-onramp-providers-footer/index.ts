@@ -3,11 +3,11 @@ import {
   EventsController,
   OptionsController,
   RouterController
-} from '@rerock/appkit-core'
-import { customElement } from '@rerock/appkit-ui'
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
-import { W3mFrameRpcConstants } from '@rerock/appkit-wallet'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 
 @customElement('w3m-onramp-providers-footer')
 export class W3mOnRampProvidersFooter extends LitElement {

@@ -11,8 +11,8 @@
   "dependencies": {
     "@radix-ui/react-switch": "1.0.3",
     "@tanstack/react-query": "5.24.8",
-    "@rerock/appkit-adapter-wagmi": "workspace:*",
-    "@rerock/appkit": "workspace:*",
+    "@reown/appkit-adapter-wagmi": "workspace:*",
+    "@reown/appkit": "workspace:*",
     "clsx": "2.1.0",
     "framer-motion": "11.0.8",
     "next": "14.2.3",

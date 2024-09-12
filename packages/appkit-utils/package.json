@@ -1,5 +1,5 @@
 {
-  "name": "@rerock/appkit-utils",
+  "name": "@reown/appkit-utils",
   "version": "0.0.3",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
@@ -44,10 +44,10 @@
   },
   "dependencies": {
     "@walletconnect/universal-provider": "2.16.1",
-    "@rerock/appkit-common": "workspace:*",
-    "@rerock/appkit-core": "workspace:*",
-    "@rerock/appkit-polyfills": "workspace:*",
-    "@rerock/appkit-wallet": "workspace:*",
+    "@reown/appkit-common": "workspace:*",
+    "@reown/appkit-core": "workspace:*",
+    "@reown/appkit-polyfills": "workspace:*",
+    "@reown/appkit-wallet": "workspace:*",
     "valtio": "1.11.2"
   },
   "devDependencies": {
@@ -63,12 +63,12 @@
     "crypto",
     "ethereum",
     "appkit",
-    "Rerock",
+    "reown",
     "utils",
     "wagmi",
     "ethers"
   ],
-  "author": "Rerock <rerock.com>",
+  "author": "reown <reown.com>",
   "license": "Apache-2.0",
   "homepage": "https://github.com/web3modal/web3modal",
   "repository": {

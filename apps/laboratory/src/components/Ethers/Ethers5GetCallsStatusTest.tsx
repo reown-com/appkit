@@ -5,11 +5,11 @@ import {
   useWeb3ModalNetwork,
   useWeb3ModalProvider,
   type Provider
-} from '@rerock/appkit/react'
+} from '@reown/appkit/react'
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
 import { useChakraToast } from '../Toast'
 import { ethers } from 'ethers5'
-import { W3mFrameProvider } from '@rerock/appkit-wallet'
+import { W3mFrameProvider } from '@reown/appkit-wallet'
 import { type GetCallsStatusParams } from '../../types/EIP5792'
 import { EIP_5792_RPC_METHODS } from '../../utils/EIP5792Utils'
 

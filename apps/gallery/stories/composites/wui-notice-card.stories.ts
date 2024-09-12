@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@rerock/appkit-ui/src/composites/wui-notice-card'
-import type { WuiNoticeCard } from '@rerock/appkit-ui/src/composites/wui-notice-card'
+import '@reown/appkit-ui/src/composites/wui-notice-card'
+import type { WuiNoticeCard } from '@reown/appkit-ui/src/composites/wui-notice-card'
 import { html } from 'lit'
 import '../../components/gallery-container'
 import { iconOptions } from '../../utils/PresetUtils'

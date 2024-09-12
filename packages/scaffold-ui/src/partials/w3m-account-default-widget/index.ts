@@ -11,13 +11,13 @@ import {
   ConstantsUtil as CommonConstantsUtil,
   OptionsController,
   ChainController
-} from '@rerock/appkit-core'
-import { customElement, UiHelperUtil } from '@rerock/appkit-ui'
+} from '@reown/appkit-core'
+import { customElement, UiHelperUtil } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import { ConstantsUtil } from '@rerock/appkit-common'
-import { W3mFrameRpcConstants } from '@rerock/appkit-wallet'
+import { ConstantsUtil } from '@reown/appkit-common'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 
 import styles from './styles.js'
 

@@ -1,14 +1,14 @@
-import { customElement } from '@rerock/appkit-ui'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import {
   RouterController,
   SnackController,
   ConnectorController,
   CoreHelperUtil
-} from '@rerock/appkit-core'
+} from '@reown/appkit-core'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
-import { W3mFrameHelpers } from '@rerock/appkit-wallet'
+import { W3mFrameHelpers } from '@reown/appkit-wallet'
 
 // -- Types --------------------------------------------- //
 export type OnOtpSubmitFn = (otp: string) => Promise<void>

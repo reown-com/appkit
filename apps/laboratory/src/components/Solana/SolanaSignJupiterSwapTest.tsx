@@ -2,11 +2,11 @@ import { useState } from 'react'
 import { Button, Stack, Text, Spacer } from '@chakra-ui/react'
 import { PublicKey, VersionedTransaction } from '@solana/web3.js'
 
-import { useWeb3ModalNetwork, useWeb3ModalProvider } from '@rerock/appkit/react'
-import { solana } from '@rerock/appkit/chains'
+import { useWeb3ModalNetwork, useWeb3ModalProvider } from '@reown/appkit/react'
+import { solana } from '@reown/appkit/chains'
 import { useChakraToast } from '../Toast'
 import bs58 from 'bs58'
-import { useWeb3ModalConnection, type Provider } from '@rerock/appkit-adapter-solana/react'
+import { useWeb3ModalConnection, type Provider } from '@reown/appkit-adapter-solana/react'
 
 export function SolanaSignJupiterSwapTest() {
   const toast = useChakraToast()

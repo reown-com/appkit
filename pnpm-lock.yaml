@@ -73,10 +73,10 @@ importers:
       '@radix-ui/react-switch':
         specifier: 1.0.3
         version: 1.0.3(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
-      '@rerock/appkit':
+      '@reown/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
-      '@rerock/appkit-adapter-wagmi':
+      '@reown/appkit-adapter-wagmi':
         specifier: workspace:*
         version: link:../../packages/adapters/wagmi
       '@tanstack/react-query':
@@ -146,10 +146,10 @@ importers:
 
   apps/gallery:
     dependencies:
-      '@rerock/appkit-common':
+      '@reown/appkit-common':
         specifier: workspace:*
         version: link:../../packages/common
-      '@rerock/appkit-ui':
+      '@reown/appkit-ui':
         specifier: workspace:*
         version: link:../../packages/ui
       lit:
@@ -198,37 +198,37 @@ importers:
       '@emotion/styled':
         specifier: 11.11.0
         version: 11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.2.0))(@types/react@18.2.62)(react@18.2.0)
-      '@rerock/appkit':
+      '@reown/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
-      '@rerock/appkit-adapter-ethers':
+      '@reown/appkit-adapter-ethers':
         specifier: workspace:*
         version: link:../../packages/adapters/ethers
-      '@rerock/appkit-adapter-ethers5':
+      '@reown/appkit-adapter-ethers5':
         specifier: workspace:*
         version: link:../../packages/adapters/ethers5
-      '@rerock/appkit-adapter-solana':
+      '@reown/appkit-adapter-solana':
         specifier: workspace:*
         version: link:../../packages/adapters/solana
-      '@rerock/appkit-adapter-wagmi':
+      '@reown/appkit-adapter-wagmi':
         specifier: workspace:*
         version: link:../../packages/adapters/wagmi
-      '@rerock/appkit-ethers':
+      '@reown/appkit-ethers':
         specifier: workspace:*
         version: link:../../packages/ethers
-      '@rerock/appkit-ethers5':
+      '@reown/appkit-ethers5':
         specifier: workspace:*
         version: link:../../packages/ethers5
-      '@rerock/appkit-siwe':
+      '@reown/appkit-siwe':
         specifier: workspace:*
         version: link:../../packages/siwe
-      '@rerock/appkit-solana':
+      '@reown/appkit-solana':
         specifier: workspace:*
         version: link:../../packages/solana
-      '@rerock/appkit-wagmi':
+      '@reown/appkit-wagmi':
         specifier: workspace:*
         version: link:../../packages/wagmi
-      '@rerock/appkit-wallet':
+      '@reown/appkit-wallet':
         specifier: workspace:*
         version: link:../../packages/wallet
       '@sentry/browser':
@@ -334,10 +334,10 @@ importers:
 
   examples/html-ethers:
     dependencies:
-      '@rerock/appkit':
+      '@reown/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
-      '@rerock/appkit-adapter-ethers':
+      '@reown/appkit-adapter-ethers':
         specifier: workspace:*
         version: link:../../packages/adapters/ethers
       ethers:
@@ -350,10 +350,10 @@ importers:
 
   examples/html-ethers5:
     dependencies:
-      '@rerock/appkit':
+      '@reown/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
-      '@rerock/appkit-adapter-ethers5':
+      '@reown/appkit-adapter-ethers5':
         specifier: workspace:*
         version: link:../../packages/adapters/ethers5
       ethers:
@@ -366,10 +366,10 @@ importers:
 
   examples/html-wagmi:
     dependencies:
-      '@rerock/appkit':
+      '@reown/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
-      '@rerock/appkit-adapter-wagmi':
+      '@reown/appkit-adapter-wagmi':
         specifier: workspace:*
         version: link:../../packages/adapters/wagmi
       '@wagmi/connectors':
@@ -391,10 +391,10 @@ importers:
 
   examples/next-ethers:
     dependencies:
-      '@rerock/appkit':
+      '@reown/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
-      '@rerock/appkit-adapter-ethers':
+      '@reown/appkit-adapter-ethers':
         specifier: workspace:*
         version: link:../../packages/adapters/ethers
       ethers:
@@ -434,10 +434,10 @@ importers:
 
   examples/next-wagmi:
     dependencies:
-      '@rerock/appkit':
+      '@reown/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
-      '@rerock/appkit-adapter-wagmi':
+      '@reown/appkit-adapter-wagmi':
         specifier: workspace:*
         version: link:../../packages/adapters/wagmi
       '@tanstack/react-query':
@@ -489,10 +489,10 @@ importers:
 
   examples/react-ethers:
     dependencies:
-      '@rerock/appkit':
+      '@reown/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
-      '@rerock/appkit-adapter-ethers':
+      '@reown/appkit-adapter-ethers':
         specifier: workspace:*
         version: link:../../packages/adapters/ethers
       ethers:
@@ -520,10 +520,10 @@ importers:
 
   examples/react-ethers5:
     dependencies:
-      '@rerock/appkit':
+      '@reown/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
-      '@rerock/appkit-adapter-ethers5':
+      '@reown/appkit-adapter-ethers5':
         specifier: workspace:*
         version: link:../../packages/adapters/ethers5
       ethers:
@@ -551,7 +551,7 @@ importers:
 
   examples/react-solana:
     dependencies:
-      '@rerock/appkit-solana':
+      '@reown/appkit-solana':
         specifier: workspace:*
         version: link:../../packages/solana
       '@solana/wallet-adapter-backpack':
@@ -585,10 +585,10 @@ importers:
 
   examples/react-wagmi:
     dependencies:
-      '@rerock/appkit':
+      '@reown/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
-      '@rerock/appkit-adapter-wagmi':
+      '@reown/appkit-adapter-wagmi':
         specifier: workspace:*
         version: link:../../packages/adapters/wagmi
       '@tanstack/react-query':
@@ -625,10 +625,10 @@ importers:
 
   examples/vue-ethers5:
     dependencies:
-      '@rerock/appkit':
+      '@reown/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
-      '@rerock/appkit-adapter-ethers5':
+      '@reown/appkit-adapter-ethers5':
         specifier: workspace:*
         version: link:../../packages/adapters/ethers5
       ethers:
@@ -647,7 +647,7 @@ importers:
 
   examples/vue-solana:
     dependencies:
-      '@rerock/appkit-solana':
+      '@reown/appkit-solana':
         specifier: workspace:*
         version: link:../../packages/solana
       '@solana/wallet-adapter-backpack':
@@ -669,10 +669,10 @@ importers:
 
   examples/vue-wagmi:
     dependencies:
-      '@rerock/appkit':
+      '@reown/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
-      '@rerock/appkit-adapter-wagmi':
+      '@reown/appkit-adapter-wagmi':
         specifier: workspace:*
         version: link:../../packages/adapters/wagmi
       '@wagmi/connectors':
@@ -694,31 +694,31 @@ importers:
 
   packages/adapters/ethers:
     dependencies:
-      '@rerock/appkit':
+      '@reown/appkit':
         specifier: workspace:*
         version: link:../../appkit
-      '@rerock/appkit-common':
+      '@reown/appkit-common':
         specifier: workspace:*
         version: link:../../common
-      '@rerock/appkit-core':
+      '@reown/appkit-core':
         specifier: workspace:*
         version: link:../../core
-      '@rerock/appkit-polyfills':
+      '@reown/appkit-polyfills':
         specifier: workspace:*
         version: link:../../polyfills
-      '@rerock/appkit-scaffold-ui':
+      '@reown/appkit-scaffold-ui':
         specifier: workspace:*
         version: link:../../scaffold-ui
-      '@rerock/appkit-utils':
-        specifier: workspace:*
-        version: link:../../appkit-utils
-      '@rerock/appkit-siwe':
+      '@reown/appkit-siwe':
         specifier: workspace:*
         version: link:../../siwe
-      '@rerock/appkit-ui':
+      '@reown/appkit-ui':
         specifier: workspace:*
         version: link:../../ui
-      '@rerock/appkit-wallet':
+      '@reown/appkit-utils':
+        specifier: workspace:*
+        version: link:../../appkit-utils
+      '@reown/appkit-wallet':
         specifier: workspace:*
         version: link:../../wallet
       '@walletconnect/utils':
@@ -752,31 +752,31 @@ importers:
 
   packages/adapters/ethers5:
     dependencies:
-      '@rerock/appkit':
+      '@reown/appkit':
         specifier: workspace:*
         version: link:../../appkit
-      '@rerock/appkit-common':
+      '@reown/appkit-common':
         specifier: workspace:*
         version: link:../../common
-      '@rerock/appkit-core':
+      '@reown/appkit-core':
         specifier: workspace:*
         version: link:../../core
-      '@rerock/appkit-polyfills':
+      '@reown/appkit-polyfills':
         specifier: workspace:*
         version: link:../../polyfills
-      '@rerock/appkit-scaffold-ui':
+      '@reown/appkit-scaffold-ui':
         specifier: workspace:*
         version: link:../../scaffold-ui
-      '@rerock/appkit-utils':
-        specifier: workspace:*
-        version: link:../../appkit-utils
-      '@rerock/appkit-siwe':
+      '@reown/appkit-siwe':
         specifier: workspace:*
         version: link:../../siwe
-      '@rerock/appkit-ui':
+      '@reown/appkit-ui':
         specifier: workspace:*
         version: link:../../ui
-      '@rerock/appkit-wallet':
+      '@reown/appkit-utils':
+        specifier: workspace:*
+        version: link:../../appkit-utils
+      '@reown/appkit-wallet':
         specifier: workspace:*
         version: link:../../wallet
       '@walletconnect/universal-provider':
@@ -810,13 +810,13 @@ importers:
 
   packages/adapters/polkadot:
     dependencies:
-      '@rerock/appkit':
+      '@reown/appkit':
         specifier: workspace:*
         version: link:../../appkit
-      '@rerock/appkit-common':
+      '@reown/appkit-common':
         specifier: workspace:*
         version: link:../../common
-      '@rerock/appkit-core':
+      '@reown/appkit-core':
         specifier: workspace:*
         version: link:../../core
     devDependencies:
@@ -829,31 +829,31 @@ importers:
 
   packages/adapters/solana:
     dependencies:
-      '@rerock/appkit':
+      '@reown/appkit':
         specifier: workspace:*
         version: link:../../appkit
-      '@rerock/appkit-common':
+      '@reown/appkit-common':
         specifier: workspace:*
         version: link:../../common
-      '@rerock/appkit-core':
+      '@reown/appkit-core':
         specifier: workspace:*
         version: link:../../core
-      '@rerock/appkit-polyfills':
+      '@reown/appkit-polyfills':
         specifier: workspace:*
         version: link:../../polyfills
-      '@rerock/appkit-scaffold-ui':
+      '@reown/appkit-scaffold-ui':
         specifier: workspace:*
         version: link:../../scaffold-ui
-      '@rerock/appkit-utils':
-        specifier: workspace:*
-        version: link:../../appkit-utils
-      '@rerock/appkit-siwe':
+      '@reown/appkit-siwe':
         specifier: workspace:*
         version: link:../../siwe
-      '@rerock/appkit-ui':
+      '@reown/appkit-ui':
         specifier: workspace:*
         version: link:../../ui
-      '@rerock/appkit-wallet':
+      '@reown/appkit-utils':
+        specifier: workspace:*
+        version: link:../../appkit-utils
+      '@reown/appkit-wallet':
         specifier: workspace:*
         version: link:../../wallet
       '@solana/wallet-adapter-base':
@@ -927,31 +927,31 @@ importers:
 
   packages/adapters/wagmi:
     dependencies:
-      '@rerock/appkit':
+      '@reown/appkit':
         specifier: workspace:*
         version: link:../../appkit
-      '@rerock/appkit-common':
+      '@reown/appkit-common':
         specifier: workspace:*
         version: link:../../common
-      '@rerock/appkit-core':
+      '@reown/appkit-core':
         specifier: workspace:*
         version: link:../../core
-      '@rerock/appkit-polyfills':
+      '@reown/appkit-polyfills':
         specifier: workspace:*
         version: link:../../polyfills
-      '@rerock/appkit-scaffold-ui':
+      '@reown/appkit-scaffold-ui':
         specifier: workspace:*
         version: link:../../scaffold-ui
-      '@rerock/appkit-utils':
-        specifier: workspace:*
-        version: link:../../appkit-utils
-      '@rerock/appkit-siwe':
+      '@reown/appkit-siwe':
         specifier: workspace:*
         version: link:../../siwe
-      '@rerock/appkit-ui':
+      '@reown/appkit-ui':
         specifier: workspace:*
         version: link:../../ui
-      '@rerock/appkit-wallet':
+      '@reown/appkit-utils':
+        specifier: workspace:*
+        version: link:../../appkit-utils
+      '@reown/appkit-wallet':
         specifier: workspace:*
         version: link:../../wallet
       '@walletconnect/universal-provider':
@@ -997,28 +997,28 @@ importers:
 
   packages/appkit:
     dependencies:
-      '@rerock/appkit-common':
+      '@reown/appkit-common':
         specifier: workspace:*
         version: link:../common
-      '@rerock/appkit-core':
+      '@reown/appkit-core':
         specifier: workspace:*
         version: link:../core
-      '@rerock/appkit-polyfills':
+      '@reown/appkit-polyfills':
         specifier: workspace:*
         version: link:../polyfills
-      '@rerock/appkit-scaffold-ui':
+      '@reown/appkit-scaffold-ui':
         specifier: workspace:*
         version: link:../scaffold-ui
-      '@rerock/appkit-utils':
-        specifier: workspace:*
-        version: link:../appkit-utils
-      '@rerock/appkit-siwe':
+      '@reown/appkit-siwe':
         specifier: workspace:*
         version: link:../siwe
-      '@rerock/appkit-ui':
+      '@reown/appkit-ui':
         specifier: workspace:*
         version: link:../ui
-      '@rerock/appkit-wallet':
+      '@reown/appkit-utils':
+        specifier: workspace:*
+        version: link:../appkit-utils
+      '@reown/appkit-wallet':
         specifier: workspace:*
         version: link:../wallet
       '@walletconnect/types':
@@ -1098,16 +1098,16 @@ importers:
 
   packages/appkit-utils:
     dependencies:
-      '@rerock/appkit-common':
+      '@reown/appkit-common':
         specifier: workspace:*
         version: link:../common
-      '@rerock/appkit-core':
+      '@reown/appkit-core':
         specifier: workspace:*
         version: link:../core
-      '@rerock/appkit-polyfills':
+      '@reown/appkit-polyfills':
         specifier: workspace:*
         version: link:../polyfills
-      '@rerock/appkit-wallet':
+      '@reown/appkit-wallet':
         specifier: workspace:*
         version: link:../wallet
       '@walletconnect/universal-provider':
@@ -1129,16 +1129,16 @@ importers:
 
   packages/cdn:
     dependencies:
-      '@rerock/appkit-ethers':
+      '@reown/appkit-ethers':
         specifier: workspace:*
         version: link:../ethers
-      '@rerock/appkit-ethers5':
+      '@reown/appkit-ethers5':
         specifier: workspace:*
         version: link:../ethers5
-      '@rerock/appkit-polyfills':
+      '@reown/appkit-polyfills':
         specifier: workspace:*
         version: link:../polyfills
-      '@rerock/appkit-wagmi':
+      '@reown/appkit-wagmi':
         specifier: workspace:*
         version: link:../wagmi
       '@wagmi/connectors':
@@ -1182,10 +1182,10 @@ importers:
 
   packages/core:
     dependencies:
-      '@rerock/appkit-common':
+      '@reown/appkit-common':
         specifier: workspace:*
         version: link:../common
-      '@rerock/appkit-wallet':
+      '@reown/appkit-wallet':
         specifier: workspace:*
         version: link:../wallet
       '@walletconnect/universal-provider':
@@ -1210,25 +1210,25 @@ importers:
       '@coinbase/wallet-sdk':
         specifier: 4.0.3
         version: 4.0.3
-      '@rerock/appkit':
+      '@reown/appkit':
         specifier: workspace:*
         version: link:../appkit
-      '@rerock/appkit-adapter-ethers':
+      '@reown/appkit-adapter-ethers':
         specifier: workspace:*
         version: link:../adapters/ethers
-      '@rerock/appkit-common':
+      '@reown/appkit-common':
         specifier: workspace:*
         version: link:../common
-      '@rerock/appkit-polyfills':
+      '@reown/appkit-polyfills':
         specifier: workspace:*
         version: link:../polyfills
-      '@rerock/appkit-utils':
-        specifier: workspace:*
-        version: link:../appkit-utils
-      '@rerock/appkit-siwe':
+      '@reown/appkit-siwe':
         specifier: workspace:*
         version: link:../siwe
-      '@rerock/appkit-wallet':
+      '@reown/appkit-utils':
+        specifier: workspace:*
+        version: link:../appkit-utils
+      '@reown/appkit-wallet':
         specifier: workspace:*
         version: link:../wallet
       '@walletconnect/utils':
@@ -1256,25 +1256,25 @@ importers:
       '@coinbase/wallet-sdk':
         specifier: 4.0.3
         version: 4.0.3
-      '@rerock/appkit':
+      '@reown/appkit':
         specifier: workspace:*
         version: link:../appkit
-      '@rerock/appkit-adapter-ethers5':
+      '@reown/appkit-adapter-ethers5':
         specifier: workspace:*
         version: link:../adapters/ethers5
-      '@rerock/appkit-common':
+      '@reown/appkit-common':
         specifier: workspace:*
         version: link:../common
-      '@rerock/appkit-polyfills':
+      '@reown/appkit-polyfills':
         specifier: workspace:*
         version: link:../polyfills
-      '@rerock/appkit-utils':
-        specifier: workspace:*
-        version: link:../appkit-utils
-      '@rerock/appkit-siwe':
+      '@reown/appkit-siwe':
         specifier: workspace:*
         version: link:../siwe
-      '@rerock/appkit-wallet':
+      '@reown/appkit-utils':
+        specifier: workspace:*
+        version: link:../appkit-utils
+      '@reown/appkit-wallet':
         specifier: workspace:*
         version: link:../wallet
       '@walletconnect/utils':
@@ -1309,22 +1309,22 @@ importers:
 
   packages/scaffold-ui:
     dependencies:
-      '@rerock/appkit-common':
+      '@reown/appkit-common':
         specifier: workspace:*
         version: link:../common
-      '@rerock/appkit-core':
+      '@reown/appkit-core':
         specifier: workspace:*
         version: link:../core
-      '@rerock/appkit-utils':
-        specifier: workspace:*
-        version: link:../appkit-utils
-      '@rerock/appkit-siwe':
+      '@reown/appkit-siwe':
         specifier: workspace:*
         version: link:../siwe
-      '@rerock/appkit-ui':
+      '@reown/appkit-ui':
         specifier: workspace:*
         version: link:../ui
-      '@rerock/appkit-wallet':
+      '@reown/appkit-utils':
+        specifier: workspace:*
+        version: link:../appkit-utils
+      '@reown/appkit-wallet':
         specifier: workspace:*
         version: link:../wallet
       lit:
@@ -1333,19 +1333,19 @@ importers:
 
   packages/siwe:
     dependencies:
-      '@rerock/appkit-common':
+      '@reown/appkit-common':
         specifier: workspace:*
         version: link:../common
-      '@rerock/appkit-core':
+      '@reown/appkit-core':
         specifier: workspace:*
         version: link:../core
-      '@rerock/appkit-utils':
-        specifier: workspace:*
-        version: link:../appkit-utils
-      '@rerock/appkit-ui':
+      '@reown/appkit-ui':
         specifier: workspace:*
         version: link:../ui
-      '@rerock/appkit-wallet':
+      '@reown/appkit-utils':
+        specifier: workspace:*
+        version: link:../appkit-utils
+      '@reown/appkit-wallet':
         specifier: workspace:*
         version: link:../wallet
       '@walletconnect/utils':
@@ -1363,25 +1363,25 @@ importers:
       '@ethersproject/sha2':
         specifier: 5.7.0
         version: 5.7.0
-      '@rerock/appkit':
+      '@reown/appkit':
         specifier: workspace:*
         version: link:../appkit
-      '@rerock/appkit-adapter-solana':
+      '@reown/appkit-adapter-solana':
         specifier: workspace:*
         version: link:../adapters/solana
-      '@rerock/appkit-common':
+      '@reown/appkit-common':
         specifier: workspace:*
         version: link:../common
-      '@rerock/appkit-core':
+      '@reown/appkit-core':
         specifier: workspace:*
         version: link:../core
-      '@rerock/appkit-polyfills':
+      '@reown/appkit-polyfills':
         specifier: workspace:*
         version: link:../polyfills
-      '@rerock/appkit-utils':
+      '@reown/appkit-utils':
         specifier: workspace:*
         version: link:../appkit-utils
-      '@rerock/appkit-wallet':
+      '@reown/appkit-wallet':
         specifier: workspace:*
         version: link:../wallet
       '@solana/wallet-adapter-base':
@@ -1458,13 +1458,13 @@ importers:
         specifier: 1.5.3
         version: 1.5.3
     devDependencies:
-      '@rerock/appkit-common':
+      '@reown/appkit-common':
         specifier: workspace:*
         version: link:../common
-      '@rerock/appkit-core':
+      '@reown/appkit-core':
         specifier: workspace:*
         version: link:../core
-      '@rerock/appkit-wallet':
+      '@reown/appkit-wallet':
         specifier: workspace:*
         version: link:../wallet
       '@types/qrcode':
@@ -1485,25 +1485,25 @@ importers:
 
   packages/wagmi:
     dependencies:
-      '@rerock/appkit':
+      '@reown/appkit':
         specifier: workspace:*
         version: link:../appkit
-      '@rerock/appkit-adapter-wagmi':
+      '@reown/appkit-adapter-wagmi':
         specifier: workspace:*
         version: link:../adapters/wagmi
-      '@rerock/appkit-common':
+      '@reown/appkit-common':
         specifier: workspace:*
         version: link:../common
-      '@rerock/appkit-polyfills':
+      '@reown/appkit-polyfills':
         specifier: workspace:*
         version: link:../polyfills
-      '@rerock/appkit-utils':
-        specifier: workspace:*
-        version: link:../appkit-utils
-      '@rerock/appkit-siwe':
+      '@reown/appkit-siwe':
         specifier: workspace:*
         version: link:../siwe
-      '@rerock/appkit-wallet':
+      '@reown/appkit-utils':
+        specifier: workspace:*
+        version: link:../appkit-utils
+      '@reown/appkit-wallet':
         specifier: workspace:*
         version: link:../wallet
       '@walletconnect/utils':
@@ -1537,10 +1537,10 @@ importers:
 
   packages/wallet:
     dependencies:
-      '@rerock/appkit-common':
+      '@reown/appkit-common':
         specifier: workspace:*
         version: link:../common
-      '@rerock/appkit-polyfills':
+      '@reown/appkit-polyfills':
         specifier: workspace:*
         version: link:../polyfills
       '@walletconnect/logger':

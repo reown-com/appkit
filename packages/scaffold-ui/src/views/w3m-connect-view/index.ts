@@ -1,7 +1,7 @@
-import { customElement } from '@rerock/appkit-ui'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
-import { ConnectorController, OptionsController, RouterController } from '@rerock/appkit-core'
+import { ConnectorController, OptionsController, RouterController } from '@reown/appkit-core'
 import { state } from 'lit/decorators/state.js'
 
 @customElement('w3m-connect-view')

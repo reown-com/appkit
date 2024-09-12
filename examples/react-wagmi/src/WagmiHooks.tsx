@@ -1,4 +1,4 @@
-import { useWeb3ModalAccount } from '@rerock/appkit/react'
+import { useWeb3ModalAccount } from '@reown/appkit/react'
 import { useAccount } from 'wagmi'
 
 export function WagmiHooks() {

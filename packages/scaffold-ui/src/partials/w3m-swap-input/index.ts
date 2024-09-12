@@ -5,9 +5,9 @@ import {
   RouterController,
   type SwapToken,
   type SwapInputTarget
-} from '@rerock/appkit-core'
-import { InputUtil, NumberUtil } from '@rerock/appkit-common'
-import { UiHelperUtil, customElement } from '@rerock/appkit-ui'
+} from '@reown/appkit-core'
+import { InputUtil, NumberUtil } from '@reown/appkit-common'
+import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import styles from './styles.js'
 
 const MINIMUM_USD_VALUE_TO_CONVERT = 0.00005

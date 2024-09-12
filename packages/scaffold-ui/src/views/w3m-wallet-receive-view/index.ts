@@ -6,12 +6,12 @@ import {
   RouterController,
   SnackController,
   ThemeController
-} from '@rerock/appkit-core'
-import { UiHelperUtil, customElement } from '@rerock/appkit-ui'
+} from '@reown/appkit-core'
+import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
 import { state } from 'lit/decorators.js'
-import { W3mFrameRpcConstants } from '@rerock/appkit-wallet'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 
 @customElement('w3m-wallet-receive-view')
 export class W3mWalletReceiveView extends LitElement {

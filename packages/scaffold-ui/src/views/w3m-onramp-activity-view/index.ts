@@ -1,12 +1,12 @@
-import { DateUtil, type Transaction } from '@rerock/appkit-common'
+import { DateUtil, type Transaction } from '@reown/appkit-common'
 import {
   AccountController,
   AssetController,
   OnRampController,
   OptionsController,
   TransactionsController
-} from '@rerock/appkit-core'
-import { TransactionUtil, customElement } from '@rerock/appkit-ui'
+} from '@reown/appkit-core'
+import { TransactionUtil, customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'

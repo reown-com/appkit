@@ -1,6 +1,6 @@
 import { html, LitElement } from 'lit'
-import { TooltipController } from '@rerock/appkit-core'
-import { customElement } from '@rerock/appkit-ui'
+import { TooltipController } from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
 

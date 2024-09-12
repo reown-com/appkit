@@ -11,7 +11,7 @@ import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 import type { IconType } from '../../utils/TypeUtil.js'
 import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
-import { StorageUtil } from '@rerock/appkit-core'
+import { StorageUtil } from '@reown/appkit-core'
 
 @customElement('wui-profile-button-v2')
 export class WuiProfileButtonV2 extends LitElement {

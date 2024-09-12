@@ -1,5 +1,5 @@
-import { createWeb3Modal } from '@rerock/appkit/react'
-import { EVMEthersClient } from '@rerock/appkit-adapter-ethers'
+import { createWeb3Modal } from '@reown/appkit/react'
+import { EVMEthersClient } from '@reown/appkit-adapter-ethers'
 import { SiweData } from '../../components/Siwe/SiweData'
 import { EthersTests } from '../../components/Ethers/EthersTests'
 import { AppKitButtons } from '../../components/AppKitButtons'
@@ -7,7 +7,7 @@ import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { siweConfig } from '../../utils/SiweUtils'
 import { EthersModalInfo } from '../../components/Ethers/EthersModalInfo'
-import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@rerock/appkit/chains'
+import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@reown/appkit/chains'
 
 const ethersAdapter = new EVMEthersClient()
 

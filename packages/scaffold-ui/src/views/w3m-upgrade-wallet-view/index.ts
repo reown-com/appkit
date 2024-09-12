@@ -1,5 +1,5 @@
-import { customElement } from '@rerock/appkit-ui'
-import { ConstantsUtil } from '@rerock/appkit-core'
+import { customElement } from '@reown/appkit-ui'
+import { ConstantsUtil } from '@reown/appkit-core'
 import { LitElement, html } from 'lit'
 
 @customElement('w3m-upgrade-wallet-view')

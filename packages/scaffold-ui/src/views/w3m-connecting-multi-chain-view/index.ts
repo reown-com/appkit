@@ -5,8 +5,8 @@ import {
   RouterController,
   SnackController,
   type Connector
-} from '@rerock/appkit-core'
-import { customElement } from '@rerock/appkit-ui'
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 
 import { html, LitElement } from 'lit'
 import { state } from 'lit/decorators.js'

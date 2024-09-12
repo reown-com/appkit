@@ -1,4 +1,4 @@
-import { customElement } from '@rerock/appkit-ui'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 
 import styles from './styles.js'

@@ -1,7 +1,7 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
-import { type Balance, type CaipAddress } from '@rerock/appkit-common'
-import { erc20ABI } from '@rerock/appkit-common'
+import { type Balance, type CaipAddress } from '@reown/appkit-common'
+import { erc20ABI } from '@reown/appkit-common'
 import { RouterController } from './RouterController.js'
 import { AccountController } from './AccountController.js'
 import { ConnectionController } from './ConnectionController.js'
@@ -10,7 +10,7 @@ import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { EventsController } from './EventsController.js'
 import { NetworkController } from './NetworkController.js'
 import { ChainController } from './ChainController.js'
-import { W3mFrameRpcConstants } from '@rerock/appkit-wallet'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 
 // -- Types --------------------------------------------- //
 

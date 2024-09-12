@@ -1,4 +1,4 @@
-import type { CaipNetwork, ThemeVariables } from '@rerock/appkit-common'
+import type { CaipNetwork, ThemeVariables } from '@reown/appkit-common'
 import type {
   ChainAdapter,
   CustomWallet,
@@ -8,8 +8,8 @@ import type {
   ThemeMode,
   Tokens,
   ProjectId
-} from '@rerock/appkit-core'
-import type { SIWEControllerClient, Web3ModalSIWEClient } from '@rerock/appkit-siwe'
+} from '@reown/appkit-core'
+import type { SIWEControllerClient, Web3ModalSIWEClient } from '@reown/appkit-siwe'
 
 export type AppKitOptions = {
   /**

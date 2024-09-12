@@ -1,4 +1,4 @@
-import { customElement } from '@rerock/appkit-ui'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 
 import styles from './styles.js'
@@ -8,8 +8,8 @@ import {
   ConnectorController,
   OptionsController,
   StorageUtil
-} from '@rerock/appkit-core'
-import { ConstantsUtil as CommonConstantsUtil } from '@rerock/appkit-common'
+} from '@reown/appkit-core'
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import { state } from 'lit/decorators.js'
 import { WalletUtil } from '../../utils/WalletUtil.js'
 @customElement('w3m-connector-list')

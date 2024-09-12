@@ -3,15 +3,15 @@ import {
   ConnectorController,
   CoreHelperUtil,
   OptionsController
-} from '@rerock/appkit-core'
-import { customElement } from '@rerock/appkit-ui'
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ref, createRef } from 'lit/directives/ref.js'
 import type { Ref } from 'lit/directives/ref.js'
 import styles from './styles.js'
-import { SnackController, RouterController, EventsController } from '@rerock/appkit-core'
-import { ConstantsUtil } from '@rerock/appkit-common'
+import { SnackController, RouterController, EventsController } from '@reown/appkit-core'
+import { ConstantsUtil } from '@reown/appkit-common'
 
 @customElement('w3m-email-login-widget')
 export class W3mEmailLoginWidget extends LitElement {

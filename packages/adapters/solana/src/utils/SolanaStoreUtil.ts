@@ -1,7 +1,7 @@
 import { proxy, ref, subscribe as sub } from 'valtio'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
-import type { Connection } from '@rerock/appkit-utils/solana'
+import type { Connection } from '@reown/appkit-utils/solana'
 
 type StateKey = keyof SolStoreUtilState
 

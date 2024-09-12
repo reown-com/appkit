@@ -10,14 +10,14 @@ import {
   parseUnits,
   formatUnits
 } from 'ethers'
-import { type Provider } from '@rerock/appkit-utils/ethers'
+import { type Provider } from '@reown/appkit-utils/ethers'
 import type {
   EstimateGasTransactionArgs,
   SendTransactionArgs,
   WriteContractArgs
-} from '@rerock/appkit-core'
-import { ConstantsUtil } from '@rerock/appkit-common'
-import type { AppKit } from '@rerock/appkit'
+} from '@reown/appkit-core'
+import { ConstantsUtil } from '@reown/appkit-common'
+import type { AppKit } from '@reown/appkit'
 
 export const EthersMethods = {
   signMessage: async (message: string, provider: Provider, address: string) => {

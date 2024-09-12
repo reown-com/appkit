@@ -4,7 +4,7 @@ import {
   useWeb3ModalEvents,
   useWeb3ModalState,
   useWeb3ModalTheme
-} from '@rerock/appkit-solana/react'
+} from '@reown/appkit-solana/react'
 import {
   PhantomWalletAdapter,
   HuobiWalletAdapter,

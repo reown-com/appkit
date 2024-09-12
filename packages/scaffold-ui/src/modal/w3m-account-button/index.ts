@@ -5,10 +5,10 @@ import {
   CoreHelperUtil,
   ModalController,
   NetworkController
-} from '@rerock/appkit-core'
+} from '@reown/appkit-core'
 
-import type { WuiAccountButton } from '@rerock/appkit-ui'
-import { customElement } from '@rerock/appkit-ui'
+import type { WuiAccountButton } from '@reown/appkit-ui'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'

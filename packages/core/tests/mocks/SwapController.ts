@@ -1,4 +1,4 @@
-import type { CaipAddress } from '@rerock/appkit-common'
+import type { CaipAddress } from '@reown/appkit-common'
 
 export const tokensResponse = {
   tokens: [

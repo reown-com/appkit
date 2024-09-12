@@ -1,4 +1,4 @@
-# @rerock/appkit-polyfills
+# @reown/appkit-polyfills
 
 ## 0.0.3
 

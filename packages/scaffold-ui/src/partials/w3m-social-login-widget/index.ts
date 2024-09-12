@@ -8,14 +8,14 @@ import {
   RouterController,
   SnackController,
   type SocialProvider
-} from '@rerock/appkit-core'
-import { customElement } from '@rerock/appkit-ui'
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
 import styles from './styles.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import { SocialProviderEnum } from '@rerock/appkit-utils'
+import { SocialProviderEnum } from '@reown/appkit-utils'
 
 const MAX_TOP_VIEW = 2
 const MAXIMUM_LENGTH = 6

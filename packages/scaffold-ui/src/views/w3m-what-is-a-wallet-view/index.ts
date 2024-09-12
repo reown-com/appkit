@@ -1,5 +1,5 @@
-import { EventsController, RouterController } from '@rerock/appkit-core'
-import { customElement } from '@rerock/appkit-ui'
+import { EventsController, RouterController } from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 
 const data = [

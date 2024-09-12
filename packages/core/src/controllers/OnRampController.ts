@@ -10,7 +10,7 @@ import { BlockchainApiController } from './BlockchainApiController.js'
 import { ApiController } from './ApiController.js'
 import { ChainController } from './ChainController.js'
 import { AccountController } from './AccountController.js'
-import { ConstantsUtil } from '@rerock/appkit-common'
+import { ConstantsUtil } from '@reown/appkit-common'
 
 // -- Types --------------------------------------------- //
 export type OnRampProviderOption = 'coinbase' | 'moonpay' | 'stripe' | 'paypal' | 'meld'

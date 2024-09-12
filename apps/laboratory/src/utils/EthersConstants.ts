@@ -13,7 +13,7 @@ import {
   zora,
   sepolia,
   baseSepolia
-} from '@rerock/appkit/chains'
+} from '@reown/appkit/chains'
 
 export const EthersConstants = {
   chains: [

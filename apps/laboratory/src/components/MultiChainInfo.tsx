@@ -9,7 +9,7 @@ import {
   Stack,
   Text
 } from '@chakra-ui/react'
-import { useWeb3ModalState } from '@rerock/appkit/react'
+import { useWeb3ModalState } from '@reown/appkit/react'
 
 export function MultiChainInfo() {
   const { activeChain, selectedNetworkId } = useWeb3ModalState()

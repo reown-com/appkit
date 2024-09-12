@@ -8,7 +8,7 @@ import {
   OptionsController
 } from '../../exports/index.js'
 import { api } from '../../src/controllers/ApiController.js'
-import { ConstantsUtil } from '@rerock/appkit-common'
+import { ConstantsUtil } from '@reown/appkit-common'
 
 // -- Constants ----------------------------------------------------------------
 const chain = ConstantsUtil.CHAIN.EVM

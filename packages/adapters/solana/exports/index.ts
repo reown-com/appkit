@@ -1,4 +1,4 @@
 export * from '../src/index.js'
 
 // -- Types -----------------------------------------------------------
-export * from '@rerock/appkit-utils/solana'
+export * from '@reown/appkit-utils/solana'

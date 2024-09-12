@@ -1,9 +1,9 @@
-import { UiHelperUtil, customElement } from '@rerock/appkit-ui'
+import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
 import { property } from 'lit/decorators.js'
-import { AssetUtil, RouterController } from '@rerock/appkit-core'
-import { type CaipNetwork } from '@rerock/appkit-common'
+import { AssetUtil, RouterController } from '@reown/appkit-core'
+import { type CaipNetwork } from '@reown/appkit-common'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('w3m-wallet-send-details')

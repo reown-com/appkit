@@ -1,11 +1,11 @@
-import type { Connector } from '@rerock/appkit-core'
+import type { Connector } from '@reown/appkit-core'
 import {
   AssetUtil,
   ChainController,
   ConnectorController,
   RouterController
-} from '@rerock/appkit-core'
-import { customElement } from '@rerock/appkit-ui'
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'

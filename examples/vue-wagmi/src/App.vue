@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import { arbitrum, mainnet } from '@rerock/appkit/chains'
+import { arbitrum, mainnet } from '@reown/appkit/chains'
 import {
   createWeb3Modal,
   useWeb3Modal,
   useWeb3ModalEvents,
   useWeb3ModalState,
   useWeb3ModalTheme
-} from '@rerock/appkit/vue'
+} from '@reown/appkit/vue'
 
 // @ts-expect-error 1. Get projectId
 const projectId = import.meta.env.VITE_PROJECT_ID

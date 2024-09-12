@@ -1,6 +1,6 @@
 import UniversalProvider from '@walletconnect/universal-provider'
-import { SolConstantsUtil } from '@rerock/appkit-utils/solana'
-import type { AnyTransaction, Provider } from '@rerock/appkit-utils/solana'
+import { SolConstantsUtil } from '@reown/appkit-utils/solana'
+import type { AnyTransaction, Provider } from '@reown/appkit-utils/solana'
 import { ProviderEventEmitter } from './shared/ProviderEventEmitter.js'
 import type { SessionTypes } from '@walletconnect/types'
 import base58 from 'bs58'
@@ -12,7 +12,7 @@ import {
   type SendOptions
 } from '@solana/web3.js'
 import { isVersionedTransaction } from '@solana/wallet-adapter-base'
-import type { CaipNetwork, ChainId } from '@rerock/appkit-common'
+import type { CaipNetwork, ChainId } from '@reown/appkit-common'
 import { withSolanaNamespace } from '../utils/withSolanaNamespace.js'
 
 export type WalletConnectProviderConfig = {

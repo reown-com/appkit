@@ -1,6 +1,6 @@
 import { getCsrfToken, signIn, signOut, getSession } from 'next-auth/react'
-import type { SIWEVerifyMessageArgs, SIWECreateMessageArgs, SIWESession } from '@rerock/appkit-siwe'
-import { createSIWEConfig, formatMessage } from '@rerock/appkit-siwe'
+import type { SIWEVerifyMessageArgs, SIWECreateMessageArgs, SIWESession } from '@reown/appkit-siwe'
+import { createSIWEConfig, formatMessage } from '@reown/appkit-siwe'
 import { WagmiConstantsUtil } from './WagmiConstants'
 
 export const siweConfig = createSIWEConfig({

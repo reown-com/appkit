@@ -1,5 +1,5 @@
 {
-  "name": "@rerock/appkit-adapter-solana",
+  "name": "@reown/appkit-adapter-solana",
   "version": "0.0.3",
   "type": "module",
   "main": "./dist/esm/src/index.js",
@@ -55,15 +55,15 @@
     "@wallet-standard/base": "1.0.1",
     "@wallet-standard/features": "1.0.3",
     "@wallet-standard/wallet": "1.0.1",
-    "@rerock/appkit": "workspace:*",
-    "@rerock/appkit-common": "workspace:*",
-    "@rerock/appkit-core": "workspace:*",
-    "@rerock/appkit-polyfills": "workspace:*",
-    "@rerock/appkit-scaffold-ui": "workspace:*",
-    "@rerock/appkit-utils": "workspace:*",
-    "@rerock/appkit-siwe": "workspace:*",
-    "@rerock/appkit-ui": "workspace:*",
-    "@rerock/appkit-wallet": "workspace:*",
+    "@reown/appkit": "workspace:*",
+    "@reown/appkit-common": "workspace:*",
+    "@reown/appkit-core": "workspace:*",
+    "@reown/appkit-polyfills": "workspace:*",
+    "@reown/appkit-scaffold-ui": "workspace:*",
+    "@reown/appkit-utils": "workspace:*",
+    "@reown/appkit-siwe": "workspace:*",
+    "@reown/appkit-ui": "workspace:*",
+    "@reown/appkit-wallet": "workspace:*",
     "valtio": "1.11.2"
   },
   "optionalDependencies": {
@@ -83,7 +83,7 @@
     "vue": "3.4.3",
     "vitest": "2.0.3"
   },
-  "author": "Rerock <rerock.com>",
+  "author": "reown <reown.com>",
   "license": "Apache-2.0",
   "homepage": "https://github.com/web3modal/web3modal",
   "repository": {

@@ -1,5 +1,5 @@
-import type { AppKitOptions, ChainAdapter } from '@rerock/appkit'
-import { solana } from '@rerock/appkit/chains'
+import type { AppKitOptions, ChainAdapter } from '@reown/appkit'
+import { solana } from '@reown/appkit/chains'
 
 export const mockOptions: AppKitOptions = {
   projectId: 'test-project-id',

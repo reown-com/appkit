@@ -10,7 +10,7 @@ import {
   SafeLocalStorageKeys,
   type CaipNetwork,
   type ChainNamespace
-} from '@rerock/appkit-common'
+} from '@reown/appkit-common'
 
 // -- Types --------------------------------------------- //
 export interface ChainControllerState {

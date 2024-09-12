@@ -9,8 +9,8 @@
   },
   "dependencies": {
     "@tanstack/react-query": "5.24.8",
-    "@rerock/appkit-adapter-wagmi": "workspace:*",
-    "@rerock/appkit": "workspace:*",
+    "@reown/appkit-adapter-wagmi": "workspace:*",
+    "@reown/appkit": "workspace:*",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "viem": "2.21.4",

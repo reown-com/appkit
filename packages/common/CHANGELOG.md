@@ -1,4 +1,4 @@
-# @rerock/appkit-common
+# @reown/appkit-common
 
 ## 0.0.3
 

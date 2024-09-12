@@ -1,11 +1,11 @@
-import type { BaseError } from '@rerock/appkit-core'
+import type { BaseError } from '@reown/appkit-core'
 import {
   ConnectionController,
   ConnectorController,
   EventsController,
   ModalController
-} from '@rerock/appkit-core'
-import { customElement } from '@rerock/appkit-ui'
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 
 @customElement('w3m-connecting-wc-browser')

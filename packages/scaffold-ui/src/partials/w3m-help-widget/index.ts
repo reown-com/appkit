@@ -1,5 +1,5 @@
-import type { VisualType } from '@rerock/appkit-ui'
-import { customElement } from '@rerock/appkit-ui'
+import type { VisualType } from '@reown/appkit-ui'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 

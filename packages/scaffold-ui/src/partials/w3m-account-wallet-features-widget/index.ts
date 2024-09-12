@@ -8,14 +8,14 @@ import {
   ConstantsUtil as CoreConstantsUtil,
   EventsController,
   OptionsController
-} from '@rerock/appkit-core'
-import { customElement } from '@rerock/appkit-ui'
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
 import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
-import { W3mFrameRpcConstants } from '@rerock/appkit-wallet'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 
 const TABS = 3
 const TABS_PADDING = 48

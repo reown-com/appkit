@@ -1,7 +1,7 @@
-import type { Balance, ChainNamespace } from '@rerock/appkit-common'
-import { ConstantsUtil as CommonConstants } from '@rerock/appkit-common'
+import type { Balance, ChainNamespace } from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstants } from '@reown/appkit-common'
 import { ConstantsUtil } from './ConstantsUtil.js'
-import type { CaipAddress, CaipNetwork } from '@rerock/appkit-common'
+import type { CaipAddress, CaipNetwork } from '@reown/appkit-common'
 import type { LinkingRecord } from './TypeUtil.js'
 
 export const CoreHelperUtil = {

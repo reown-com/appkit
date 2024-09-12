@@ -9,7 +9,7 @@
   "dependencies": {
     "@solana/wallet-adapter-backpack": "0.1.14",
     "@solana/wallet-adapter-wallets": "0.19.32",
-    "@rerock/appkit-solana": "workspace:*",
+    "@reown/appkit-solana": "workspace:*",
     "vue": "3.4.3"
   },
   "devDependencies": {

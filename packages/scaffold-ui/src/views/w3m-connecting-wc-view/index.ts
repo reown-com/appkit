@@ -1,4 +1,4 @@
-import type { BaseError, Platform } from '@rerock/appkit-core'
+import type { BaseError, Platform } from '@reown/appkit-core'
 import {
   ConnectionController,
   ConstantsUtil,
@@ -9,8 +9,8 @@ import {
   RouterController,
   SnackController,
   StorageUtil
-} from '@rerock/appkit-core'
-import { customElement } from '@rerock/appkit-ui'
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 

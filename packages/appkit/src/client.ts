@@ -7,7 +7,7 @@ import type {
   RouterControllerState,
   ChainAdapter,
   SdkVersion
-} from '@rerock/appkit-core'
+} from '@reown/appkit-core'
 import {
   AccountController,
   BlockchainApiController,
@@ -25,13 +25,13 @@ import {
   OptionsController,
   NetworkController,
   AssetUtil
-} from '@rerock/appkit-core'
-import { setColorTheme, setThemeVariables } from '@rerock/appkit-ui'
-import { ConstantsUtil, type CaipNetwork, type ChainNamespace } from '@rerock/appkit-common'
+} from '@reown/appkit-core'
+import { setColorTheme, setThemeVariables } from '@reown/appkit-ui'
+import { ConstantsUtil, type CaipNetwork, type ChainNamespace } from '@reown/appkit-common'
 import type { AppKitOptions } from './utils/TypesUtil.js'
 import { UniversalAdapterClient } from './universal-adapter/client.js'
-import { PresetsUtil } from '@rerock/appkit-utils'
-import type { W3mFrameTypes } from '@rerock/appkit-wallet'
+import { PresetsUtil } from '@reown/appkit-utils'
+import type { W3mFrameTypes } from '@reown/appkit-wallet'
 import { ProviderUtil } from './store/ProviderUtil.js'
 
 // -- Export Controllers -------------------------------------------------------
@@ -468,7 +468,7 @@ export class AppKit {
     // Set the SIWE client for EVM chains
     if (evmAdapter) {
       if (options.siweConfig) {
-        const { SIWEController } = await import('@rerock/appkit-siwe')
+        const { SIWEController } = await import('@reown/appkit-siwe')
         SIWEController.setSIWEClient(options.siweConfig)
       }
     }
@@ -511,8 +511,8 @@ export class AppKit {
       isInitialized = true
       this.initPromise = new Promise<void>(async resolve => {
         await Promise.all([
-          import('@rerock/appkit-ui'),
-          import('@rerock/appkit-scaffold-ui/w3m-modal')
+          import('@reown/appkit-ui'),
+          import('@reown/appkit-scaffold-ui/w3m-modal')
         ])
         const modal = document.createElement('w3m-modal')
         if (!OptionsController.state.disableAppend) {

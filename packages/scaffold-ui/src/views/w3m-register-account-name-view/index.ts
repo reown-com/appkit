@@ -1,4 +1,4 @@
-import { customElement } from '@rerock/appkit-ui'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import styles from './styles.js'
@@ -9,8 +9,8 @@ import {
   EnsController,
   EventsController,
   AccountController
-} from '@rerock/appkit-core'
-import { W3mFrameRpcConstants } from '@rerock/appkit-wallet'
+} from '@reown/appkit-core'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 
 @customElement('w3m-register-account-name-view')
 export class W3mRegisterAccountNameView extends LitElement {
