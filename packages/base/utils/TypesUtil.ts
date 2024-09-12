@@ -55,4 +55,5 @@ export type AppKitOptions<ChainType = NetworkControllerState['caipNetwork']> =
     tokens?: Record<number, Token>
     // -- Internal options ---------------------------------- //
     siweControllerClient?: SIWEControllerClient
+    useInjectedInAllWallets?: boolean
   }

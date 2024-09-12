@@ -18,6 +18,7 @@ import {
   type Chain
 } from 'wagmi/chains'
 import { ConstantsUtil } from './ConstantsUtil'
+import type { SocialProvider } from '@web3modal/base'
 
 export const WagmiConstantsUtil = {
   chains: [
@@ -45,13 +46,25 @@ export function getWagmiConfig(type: 'default' | 'email', override = {}) {
     projectId: ConstantsUtil.ProjectId,
     metadata: ConstantsUtil.Metadata,
     ssr: true,
-    ...override
+    ...override,
+    auth: {
+      email: false,
+      socials: [] as SocialProvider[]
+    }
   }
 
   const emailConfig = {
     ...config,
     auth: {
-      socials: ['google', 'x', 'discord', 'farcaster', 'github', 'apple', 'facebook']
+      socials: [
+        'google',
+        'x',
+        'discord',
+        'farcaster',
+        'github',
+        'apple',
+        'facebook'
+      ] as SocialProvider[]
     }
   }
 

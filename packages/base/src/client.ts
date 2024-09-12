@@ -381,6 +381,8 @@ export class AppKit<AdapterStoreState = unknown, SwitchNetworkParam = unknown> {
       NetworkController.setDefaultCaipNetwork(options.defaultChain)
     })
 
+    // Default to true
+    OptionsController.setUseInjectedInAllWallets(options.useInjectedInAllWallets !== false)
     OptionsController.setAllWallets(options.allWallets)
     OptionsController.setIncludeWalletIds(options.includeWalletIds)
     OptionsController.setExcludeWalletIds(options.excludeWalletIds)

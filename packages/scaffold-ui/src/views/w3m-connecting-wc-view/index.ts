@@ -119,6 +119,7 @@ export class W3mConnectingWcView extends LitElement {
       return
     }
 
+    const { useInjectedInAllWallets } = OptionsController.state
     const { mobile_link, desktop_link, webapp_link, injected, rdns } = this.wallet
     const injectedIds = injected?.map(({ injected_id }) => injected_id).filter(Boolean) as string[]
     const browserIds = rdns ? [rdns] : injectedIds ?? []
@@ -126,7 +127,7 @@ export class W3mConnectingWcView extends LitElement {
     const isMobileWc = mobile_link
     const isWebWc = webapp_link
     const isBrowserInstalled = ConnectionController.checkInstalled(browserIds)
-    const isBrowserWc = isBrowser && isBrowserInstalled
+    const isBrowserWc = isBrowser && isBrowserInstalled && useInjectedInAllWallets
     const isDesktopWc = desktop_link && !CoreHelperUtil.isMobile()
 
     // Populate all preferences
@@ -176,7 +177,7 @@ export class W3mConnectingWcView extends LitElement {
   }
 
   private headerTemplate() {
-    const multiPlatform = this.platforms.length > 1
+    const multiPlatform = this.platforms.filter(p => p !== 'unsupported').length > 1
 
     if (!multiPlatform) {
       return null

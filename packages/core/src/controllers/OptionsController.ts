@@ -94,6 +94,7 @@ export interface OptionsControllerState {
   // -- Internal options ---------------------------------- //
   isUniversalProvider?: boolean
   hasMultipleAddresses?: boolean
+  useInjectedInAllWallets?: boolean
 }
 
 type StateKey = keyof OptionsControllerState
@@ -194,5 +195,11 @@ export const OptionsController = {
 
   setEnableSwaps(enableSwaps: OptionsControllerState['enableSwaps']) {
     state.enableSwaps = enableSwaps
+  },
+
+  setUseInjectedInAllWallets(
+    useInjectedInAllWallets: OptionsControllerState['useInjectedInAllWallets']
+  ) {
+    state.useInjectedInAllWallets = useInjectedInAllWallets
   }
 }

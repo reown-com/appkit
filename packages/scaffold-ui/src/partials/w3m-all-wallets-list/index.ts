@@ -1,5 +1,10 @@
 import type { WcWallet } from '@web3modal/core'
-import { ApiController, ConnectorController, RouterController } from '@web3modal/core'
+import {
+  ApiController,
+  ConnectorController,
+  OptionsController,
+  RouterController
+} from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
@@ -142,7 +147,8 @@ export class W3mAllWalletsList extends LitElement {
 
   private onConnectWallet(wallet: WcWallet) {
     const connector = ConnectorController.getConnector(wallet.id, wallet.rdns)
-    if (connector) {
+    const { useInjectedInAllWallets } = OptionsController.state
+    if (connector && useInjectedInAllWallets) {
       RouterController.push('ConnectingExternal', { connector })
     } else {
       RouterController.push('ConnectingWalletConnect', { wallet })
