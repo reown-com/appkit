@@ -1,4 +1,4 @@
-import '@rerock/polyfills'
+import '@rerock/appkit-polyfills'
 
 export { EVMEthersClient } from './client.js'
 export * from '@rerock/scaffold-utils/ethers'

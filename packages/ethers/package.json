@@ -49,7 +49,7 @@
     "@rerock/appkit-adapter-ethers": "workspace:*",
     "@rerock/appkit-common": "workspace:*",
     "@rerock/wallet": "workspace:*",
-    "@rerock/polyfills": "workspace:*",
+    "@rerock/appkit-polyfills": "workspace:*",
     "@rerock/scaffold-utils": "workspace:*",
     "@rerock/siwe": "workspace:*",
     "valtio": "1.11.2"

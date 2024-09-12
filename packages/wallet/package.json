@@ -19,7 +19,7 @@
   "dependencies": {
     "@walletconnect/logger": "2.1.2",
     "@rerock/appkit-common": "workspace:*",
-    "@rerock/polyfills": "workspace:*",
+    "@rerock/appkit-polyfills": "workspace:*",
     "zod": "3.22.4"
   },
   "author": "Rerock <rerock.com>",

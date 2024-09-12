@@ -28,7 +28,7 @@
     "@rerock/wagmi": "workspace:*",
     "@rerock/appkit-ethers": "workspace:*",
     "@rerock/appkit-ethers5": "workspace:*",
-    "@rerock/polyfills": "workspace:*",
+    "@rerock/appkit-polyfills": "workspace:*",
     "@wagmi/connectors": "5.1.9",
     "@wagmi/core": "2.13.4",
     "viem": "2.21.4",

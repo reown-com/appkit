@@ -65,7 +65,7 @@
     "@rerock/appkit": "workspace:*",
     "@rerock/appkit-common": "workspace:*",
     "@rerock/appkit-core": "workspace:*",
-    "@rerock/polyfills": "workspace:*",
+    "@rerock/appkit-polyfills": "workspace:*",
     "@rerock/scaffold-utils": "workspace:*",
     "@rerock/wallet": "workspace:*",
     "bn.js": "5.2.1",

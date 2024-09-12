@@ -92,7 +92,7 @@
     "@walletconnect/universal-provider": "2.16.1",
     "@rerock/appkit-common": "workspace:*",
     "@rerock/appkit-core": "workspace:*",
-    "@rerock/polyfills": "workspace:*",
+    "@rerock/appkit-polyfills": "workspace:*",
     "@rerock/scaffold-ui": "workspace:*",
     "@rerock/scaffold-utils": "workspace:*",
     "@rerock/siwe": "workspace:*",
