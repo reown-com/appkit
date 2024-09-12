@@ -27,7 +27,7 @@ import type {
   ThemeType,
   TransactionType,
   VisualType
-} from '@rerock/ui/src/utils/TypeUtil'
+} from '@rerock/appkit-ui/src/utils/TypeUtil'
 import type { TransactionStatus, TransactionDirection } from '@rerock/appkit-common'
 
 export const colorOptions: ColorType[] = [

@@ -26,7 +26,7 @@ import {
   NetworkController,
   AssetUtil
 } from '@rerock/appkit-core'
-import { setColorTheme, setThemeVariables } from '@rerock/ui'
+import { setColorTheme, setThemeVariables } from '@rerock/appkit-ui'
 import { ConstantsUtil, type CaipNetwork, type ChainNamespace } from '@rerock/appkit-common'
 import type { AppKitOptions } from './utils/TypesUtil.js'
 import { UniversalAdapterClient } from './universal-adapter/client.js'
@@ -510,7 +510,10 @@ export class AppKit {
     if (!this.initPromise && !isInitialized && CoreHelperUtil.isClient()) {
       isInitialized = true
       this.initPromise = new Promise<void>(async resolve => {
-        await Promise.all([import('@rerock/ui'), import('@rerock/appkit-scaffold-ui/w3m-modal')])
+        await Promise.all([
+          import('@rerock/appkit-ui'),
+          import('@rerock/appkit-scaffold-ui/w3m-modal')
+        ])
         const modal = document.createElement('w3m-modal')
         if (!OptionsController.state.disableAppend) {
           document.body.insertAdjacentElement('beforeend', modal)

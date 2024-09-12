@@ -1,5 +1,5 @@
 {
-  "name": "@rerock/solana",
+  "name": "@rerock/appkit-solana",
   "version": "0.0.3",
   "type": "module",
   "main": "./dist/esm/exports/index.js",

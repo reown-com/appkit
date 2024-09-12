@@ -1,6 +1,6 @@
 import { html, LitElement } from 'lit'
 import { property, state } from 'lit/decorators.js'
-import { customElement } from '@rerock/ui'
+import { customElement } from '@rerock/appkit-ui'
 import styles from './styles.js'
 import { ModalController, RouterController, TooltipController } from '@rerock/appkit-core'
 

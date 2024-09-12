@@ -1,4 +1,4 @@
-import { customElement } from '@rerock/ui'
+import { customElement } from '@rerock/appkit-ui'
 import {
   AccountController,
   CoreHelperUtil,

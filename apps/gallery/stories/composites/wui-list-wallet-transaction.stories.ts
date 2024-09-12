@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@rerock/ui/src/composites/wui-list-wallet-transaction'
-import type { WuiListWalletTransaction } from '@rerock/ui/src/composites/wui-list-wallet-transaction'
+import '@rerock/appkit-ui/src/composites/wui-list-wallet-transaction'
+import type { WuiListWalletTransaction } from '@rerock/appkit-ui/src/composites/wui-list-wallet-transaction'
 import { html } from 'lit'
 import '../../components/gallery-container'
 import { networkImageSrc } from '../../utils/PresetUtils'

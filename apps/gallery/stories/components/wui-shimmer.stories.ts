@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@rerock/ui/src/components/wui-shimmer'
-import type { WuiShimmer } from '@rerock/ui/src/components/wui-shimmer'
+import '@rerock/appkit-ui/src/components/wui-shimmer'
+import type { WuiShimmer } from '@rerock/appkit-ui/src/components/wui-shimmer'
 import { html } from 'lit'
 import { borderRadiusOptions } from '../../utils/PresetUtils'
 

@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@rerock/ui/src/composites/wui-token-button'
-import type { WuiTokenButton } from '@rerock/ui/src/composites/wui-token-button'
+import '@rerock/appkit-ui/src/composites/wui-token-button'
+import type { WuiTokenButton } from '@rerock/appkit-ui/src/composites/wui-token-button'
 import { html } from 'lit'
 import { networkImageSrc } from '../../utils/PresetUtils'
 

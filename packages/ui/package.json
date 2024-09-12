@@ -1,5 +1,5 @@
 {
-  "name": "@rerock/ui",
+  "name": "@rerock/appkit-ui",
   "version": "0.0.3",
   "type": "module",
   "main": "./dist/esm/index.js",

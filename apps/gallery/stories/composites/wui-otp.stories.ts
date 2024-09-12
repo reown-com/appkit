@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@rerock/ui/src/composites/wui-otp'
-import type { WuiOtp } from '@rerock/ui/src/composites/wui-otp'
+import '@rerock/appkit-ui/src/composites/wui-otp'
+import type { WuiOtp } from '@rerock/appkit-ui/src/composites/wui-otp'
 import { html } from 'lit'
 import '../../components/gallery-container'
 

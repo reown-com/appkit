@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@rerock/ui/src/composites/wui-promo'
-import type { WuiPromo } from '@rerock/ui/src/composites/wui-promo'
+import '@rerock/appkit-ui/src/composites/wui-promo'
+import type { WuiPromo } from '@rerock/appkit-ui/src/composites/wui-promo'
 import { html } from 'lit'
 
 type Component = Meta<WuiPromo>

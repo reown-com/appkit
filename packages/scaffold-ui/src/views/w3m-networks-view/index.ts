@@ -10,7 +10,7 @@ import {
   RouterController,
   StorageUtil
 } from '@rerock/appkit-core'
-import { customElement } from '@rerock/ui'
+import { customElement } from '@rerock/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'

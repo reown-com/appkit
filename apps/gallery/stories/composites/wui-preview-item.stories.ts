@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@rerock/ui/src/composites/wui-preview-item'
-import type { WuiPreviewItem } from '@rerock/ui/src/composites/wui-preview-item'
+import '@rerock/appkit-ui/src/composites/wui-preview-item'
+import type { WuiPreviewItem } from '@rerock/appkit-ui/src/composites/wui-preview-item'
 import { html } from 'lit'
 import { address, networkImageSrc } from '../../utils/PresetUtils'
 

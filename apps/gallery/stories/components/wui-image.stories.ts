@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@rerock/ui/src/components/wui-image'
-import type { WuiImage } from '@rerock/ui/src/components/wui-image'
+import '@rerock/appkit-ui/src/components/wui-image'
+import type { WuiImage } from '@rerock/appkit-ui/src/components/wui-image'
 import { html } from 'lit'
 import { walletImageSrc } from '../../utils/PresetUtils'
 

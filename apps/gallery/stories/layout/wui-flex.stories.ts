@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@rerock/ui/src/layout/wui-flex'
-import type { WuiFlex } from '@rerock/ui/src/layout/wui-flex'
+import '@rerock/appkit-ui/src/layout/wui-flex'
+import type { WuiFlex } from '@rerock/appkit-ui/src/layout/wui-flex'
 import { html } from 'lit'
 import '../../components/gallery-placeholder'
 import {

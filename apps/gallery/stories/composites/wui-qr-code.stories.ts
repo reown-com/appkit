@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@rerock/ui/src/composites/wui-qr-code'
-import type { WuiQrCode } from '@rerock/ui/src/composites/wui-qr-code'
+import '@rerock/appkit-ui/src/composites/wui-qr-code'
+import type { WuiQrCode } from '@rerock/appkit-ui/src/composites/wui-qr-code'
 import { html } from 'lit'
 import { themeOptions, walletImageSrc } from '../../utils/PresetUtils'
 

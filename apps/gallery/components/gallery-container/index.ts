@@ -1,4 +1,4 @@
-import { customElement } from '@rerock/ui'
+import { customElement } from '@rerock/appkit-ui'
 import { html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
 import styles from './styles'

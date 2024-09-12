@@ -12,7 +12,7 @@ import {
   OptionsController,
   ChainController
 } from '@rerock/appkit-core'
-import { customElement, UiHelperUtil } from '@rerock/ui'
+import { customElement, UiHelperUtil } from '@rerock/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'

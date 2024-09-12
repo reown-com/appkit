@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@rerock/ui/src/components/wui-loading-hexagon'
-import type { WuiLoadingHexagon } from '@rerock/ui/src/components/wui-loading-hexagon'
+import '@rerock/appkit-ui/src/components/wui-loading-hexagon'
+import type { WuiLoadingHexagon } from '@rerock/appkit-ui/src/components/wui-loading-hexagon'
 import { html } from 'lit'
 
 type Component = Meta<WuiLoadingHexagon>

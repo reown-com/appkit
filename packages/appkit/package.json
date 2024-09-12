@@ -96,7 +96,7 @@
     "@rerock/appkit-scaffold-ui": "workspace:*",
     "@rerock/appkit-utils": "workspace:*",
     "@rerock/appkit-siwe": "workspace:*",
-    "@rerock/ui": "workspace:*",
+    "@rerock/appkit-ui": "workspace:*",
     "@rerock/wallet": "workspace:*",
     "@walletconnect/types": "2.16.1",
     "@walletconnect/utils": "2.16.1",

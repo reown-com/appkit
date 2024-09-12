@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@rerock/ui/src/composites/wui-icon-link'
-import type { WuiIconLink } from '@rerock/ui/src/composites/wui-icon-link'
+import '@rerock/appkit-ui/src/composites/wui-icon-link'
+import type { WuiIconLink } from '@rerock/appkit-ui/src/composites/wui-icon-link'
 import { html } from 'lit'
 import { colorOptions, iconOptions } from '../../utils/PresetUtils'
 

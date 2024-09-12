@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@rerock/ui/src/composites/wui-chip-button'
-import type { WuiChipButton } from '@rerock/ui/src/composites/wui-chip-button'
+import '@rerock/appkit-ui/src/composites/wui-chip-button'
+import type { WuiChipButton } from '@rerock/appkit-ui/src/composites/wui-chip-button'
 import { html } from 'lit'
 import { chipButtonVariants, iconOptions, walletImagesOptions } from '../../utils/PresetUtils'
 

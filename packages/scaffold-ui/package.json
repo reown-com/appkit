@@ -31,7 +31,7 @@
     "@rerock/appkit-common": "workspace:*",
     "@rerock/appkit-utils": "workspace:*",
     "@rerock/appkit-core": "workspace:*",
-    "@rerock/ui": "workspace:*",
+    "@rerock/appkit-ui": "workspace:*",
     "lit": "3.1.0",
     "@rerock/appkit-siwe": "workspace:*",
     "@rerock/wallet": "workspace:*"

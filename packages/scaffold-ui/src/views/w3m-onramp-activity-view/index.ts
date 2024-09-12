@@ -6,7 +6,7 @@ import {
   OptionsController,
   TransactionsController
 } from '@rerock/appkit-core'
-import { TransactionUtil, customElement } from '@rerock/ui'
+import { TransactionUtil, customElement } from '@rerock/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'

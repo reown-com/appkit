@@ -4,7 +4,7 @@ import {
   EventsController,
   ThemeController
 } from '@rerock/appkit-core'
-import { customElement } from '@rerock/ui'
+import { customElement } from '@rerock/appkit-ui'
 import { html } from 'lit'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'

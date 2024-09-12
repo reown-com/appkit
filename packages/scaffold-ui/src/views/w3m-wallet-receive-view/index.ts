@@ -7,7 +7,7 @@ import {
   SnackController,
   ThemeController
 } from '@rerock/appkit-core'
-import { UiHelperUtil, customElement } from '@rerock/ui'
+import { UiHelperUtil, customElement } from '@rerock/appkit-ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
 import { state } from 'lit/decorators.js'

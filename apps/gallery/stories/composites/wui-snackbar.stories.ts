@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@rerock/ui/src/composites/wui-snackbar'
-import type { WuiSnackbar } from '@rerock/ui/src/composites/wui-snackbar'
+import '@rerock/appkit-ui/src/composites/wui-snackbar'
+import type { WuiSnackbar } from '@rerock/appkit-ui/src/composites/wui-snackbar'
 import { html } from 'lit'
 import { colorOptions, iconOptions } from '../../utils/PresetUtils'
 

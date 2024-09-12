@@ -1,6 +1,6 @@
 import type { WcWallet } from '@rerock/appkit-core'
 import { CoreHelperUtil, RouterController } from '@rerock/appkit-core'
-import { UiHelperUtil, customElement } from '@rerock/ui'
+import { UiHelperUtil, customElement } from '@rerock/appkit-ui'
 import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 import styles from './styles.js'

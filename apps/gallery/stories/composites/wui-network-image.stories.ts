@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@rerock/ui/src/composites/wui-network-image'
-import type { WuiNetworkImage } from '@rerock/ui/src/composites/wui-network-image'
+import '@rerock/appkit-ui/src/composites/wui-network-image'
+import type { WuiNetworkImage } from '@rerock/appkit-ui/src/composites/wui-network-image'
 import { html } from 'lit'
 import { networkImageSrc } from '../../utils/PresetUtils'
 

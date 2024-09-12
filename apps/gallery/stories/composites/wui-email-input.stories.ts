@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@rerock/ui/src/composites/wui-email-input'
-import type { WuiEmailInput } from '@rerock/ui/src/composites/wui-email-input'
+import '@rerock/appkit-ui/src/composites/wui-email-input'
+import type { WuiEmailInput } from '@rerock/appkit-ui/src/composites/wui-email-input'
 import { html } from 'lit'
 import '../../components/gallery-container'
 

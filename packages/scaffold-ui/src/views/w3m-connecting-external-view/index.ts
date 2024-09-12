@@ -1,7 +1,7 @@
 import type { BaseError } from '@rerock/appkit-core'
 import { ConnectionController, EventsController } from '@rerock/appkit-core'
 import { ConstantsUtil } from '@rerock/appkit-utils'
-import { customElement } from '@rerock/ui'
+import { customElement } from '@rerock/appkit-ui'
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 
 @customElement('w3m-connecting-external-view')

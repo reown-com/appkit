@@ -1,7 +1,7 @@
 import { html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import { customElement, type ColorType } from '@rerock/ui'
+import { customElement, type ColorType } from '@rerock/appkit-ui'
 import { AssetUtil, NetworkController, type OnRampProvider } from '@rerock/appkit-core'
 import styles from './styles.js'
 

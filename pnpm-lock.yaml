@@ -149,7 +149,7 @@ importers:
       '@rerock/appkit-common':
         specifier: workspace:*
         version: link:../../packages/common
-      '@rerock/ui':
+      '@rerock/appkit-ui':
         specifier: workspace:*
         version: link:../../packages/ui
       lit:
@@ -222,7 +222,7 @@ importers:
       '@rerock/appkit-siwe':
         specifier: workspace:*
         version: link:../../packages/siwe
-      '@rerock/solana':
+      '@rerock/appkit-solana':
         specifier: workspace:*
         version: link:../../packages/solana
       '@rerock/wagmi':
@@ -551,7 +551,7 @@ importers:
 
   examples/react-solana:
     dependencies:
-      '@rerock/solana':
+      '@rerock/appkit-solana':
         specifier: workspace:*
         version: link:../../packages/solana
       '@solana/wallet-adapter-backpack':
@@ -647,7 +647,7 @@ importers:
 
   examples/vue-solana:
     dependencies:
-      '@rerock/solana':
+      '@rerock/appkit-solana':
         specifier: workspace:*
         version: link:../../packages/solana
       '@solana/wallet-adapter-backpack':
@@ -715,7 +715,7 @@ importers:
       '@rerock/appkit-siwe':
         specifier: workspace:*
         version: link:../../siwe
-      '@rerock/ui':
+      '@rerock/appkit-ui':
         specifier: workspace:*
         version: link:../../ui
       '@rerock/wallet':
@@ -773,7 +773,7 @@ importers:
       '@rerock/appkit-siwe':
         specifier: workspace:*
         version: link:../../siwe
-      '@rerock/ui':
+      '@rerock/appkit-ui':
         specifier: workspace:*
         version: link:../../ui
       '@rerock/wallet':
@@ -850,7 +850,7 @@ importers:
       '@rerock/appkit-siwe':
         specifier: workspace:*
         version: link:../../siwe
-      '@rerock/ui':
+      '@rerock/appkit-ui':
         specifier: workspace:*
         version: link:../../ui
       '@rerock/wallet':
@@ -948,7 +948,7 @@ importers:
       '@rerock/appkit-siwe':
         specifier: workspace:*
         version: link:../../siwe
-      '@rerock/ui':
+      '@rerock/appkit-ui':
         specifier: workspace:*
         version: link:../../ui
       '@rerock/wallet':
@@ -1015,7 +1015,7 @@ importers:
       '@rerock/appkit-siwe':
         specifier: workspace:*
         version: link:../siwe
-      '@rerock/ui':
+      '@rerock/appkit-ui':
         specifier: workspace:*
         version: link:../ui
       '@rerock/wallet':
@@ -1321,7 +1321,7 @@ importers:
       '@rerock/appkit-siwe':
         specifier: workspace:*
         version: link:../siwe
-      '@rerock/ui':
+      '@rerock/appkit-ui':
         specifier: workspace:*
         version: link:../ui
       '@rerock/wallet':
@@ -1342,7 +1342,7 @@ importers:
       '@rerock/appkit-utils':
         specifier: workspace:*
         version: link:../appkit-utils
-      '@rerock/ui':
+      '@rerock/appkit-ui':
         specifier: workspace:*
         version: link:../ui
       '@rerock/wallet':

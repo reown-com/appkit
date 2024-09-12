@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@rerock/ui/src/components/wui-visual'
-import type { WuiVisual } from '@rerock/ui/src/components/wui-visual'
+import '@rerock/appkit-ui/src/components/wui-visual'
+import type { WuiVisual } from '@rerock/appkit-ui/src/components/wui-visual'
 import { html } from 'lit'
 import { visualOptions } from '../../utils/PresetUtils'
 

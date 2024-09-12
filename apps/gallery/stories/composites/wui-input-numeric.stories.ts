@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@rerock/ui/src/composites/wui-input-numeric'
-import type { WuiInputNumeric } from '@rerock/ui/src/composites/wui-input-numeric'
+import '@rerock/appkit-ui/src/composites/wui-input-numeric'
+import type { WuiInputNumeric } from '@rerock/appkit-ui/src/composites/wui-input-numeric'
 import { html } from 'lit'
 import '../../components/gallery-container'
 

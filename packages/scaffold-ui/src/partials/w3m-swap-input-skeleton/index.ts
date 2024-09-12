@@ -1,7 +1,7 @@
 import { html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
 import { type SwapInputTarget } from '@rerock/appkit-core'
-import { customElement } from '@rerock/ui'
+import { customElement } from '@rerock/appkit-ui'
 import styles from './styles.js'
 
 @customElement('w3m-swap-input-skeleton')

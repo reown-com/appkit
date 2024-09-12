@@ -1,8 +1,8 @@
 import type { Meta } from '@storybook/web-components'
-import '@rerock/ui/src/composites/wui-list-button'
+import '@rerock/appkit-ui/src/composites/wui-list-button'
 import { html } from 'lit'
 import '../../components/gallery-container'
-import type { WuiListButton } from '@rerock/ui'
+import type { WuiListButton } from '@rerock/appkit-ui'
 
 type Component = Meta<WuiListButton>
 

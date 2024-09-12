@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@rerock/ui/src/composites/wui-list-description'
-import type { WuiListDescription } from '@rerock/ui/src/composites/wui-list-description'
+import '@rerock/appkit-ui/src/composites/wui-list-description'
+import type { WuiListDescription } from '@rerock/appkit-ui/src/composites/wui-list-description'
 import { html } from 'lit'
 import '../../components/gallery-container'
 import { colorOptions, iconOptions } from '../../utils/PresetUtils'

@@ -6,7 +6,7 @@ import {
   SnackController,
   ThemeController
 } from '@rerock/appkit-core'
-import type { IconType } from '@rerock/ui'
+import type { IconType } from '@rerock/appkit-ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'

@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@rerock/ui/src/layout/wui-separator'
-import type { WuiSeparator } from '@rerock/ui/src/layout/wui-separator'
+import '@rerock/appkit-ui/src/layout/wui-separator'
+import type { WuiSeparator } from '@rerock/appkit-ui/src/layout/wui-separator'
 import { html } from 'lit'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import '../../components/gallery-container'

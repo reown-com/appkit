@@ -97,7 +97,7 @@ async function checkUiPackage() {
       fail(`${f} is a ui element, but does not define wui- prefix`)
     }
 
-    if (diff?.added.includes('@rerock/ui/')) {
+    if (diff?.added.includes('@rerock/appkit-ui/')) {
       fail(`${f} should use relative imports instead of direct package access`)
     }
   }
@@ -192,8 +192,8 @@ async function checkCorePackage() {
   for (const f of created_core_controllers) {
     const diff = await diffForFile(f)
 
-    if (diff?.added.includes('import @rerock/ui')) {
-      fail(`${f} is importing @rerock/ui, which is not allowed in core package`)
+    if (diff?.added.includes('import @rerock/appkit-ui')) {
+      fail(`${f} is importing @rerock/appkit-ui, which is not allowed in core package`)
     }
 
     if (!diff?.added.includes(TYPE_COMMENT)) {
@@ -274,7 +274,7 @@ async function checkScaffoldHtmlPackage() {
 
     if (
       diff?.added.includes('@rerock/appkit-core/') ||
-      diff?.added.includes('@rerock/ui/') ||
+      diff?.added.includes('@rerock/appkit-ui/') ||
       diff?.added.includes('@rerock/scaffold/')
     ) {
       fail(`${f} should use relative imports instead of direct package access`)
@@ -311,8 +311,8 @@ async function checkClientPackages() {
       fail(`${f} is not allowed to import from @rerock/appkit-core`)
     }
 
-    if (diff?.added.includes("from '@rerock/ui")) {
-      fail(`${f} is not allowed to import from @rerock/ui`)
+    if (diff?.added.includes("from '@rerock/appkit-ui")) {
+      fail(`${f} is not allowed to import from @rerock/appkit-ui`)
     }
 
     if (containsRelativeImportWithoutJSExtension(diff?.added)) {

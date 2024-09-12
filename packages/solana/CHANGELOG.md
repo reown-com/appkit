@@ -1,4 +1,4 @@
-# @rerock/solana
+# @rerock/appkit-solana
 
 ## 0.0.3
 

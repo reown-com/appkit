@@ -1,4 +1,4 @@
-import { customElement, MathUtil } from '@rerock/ui'
+import { customElement, MathUtil } from '@rerock/appkit-ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
 import { RouterController, SwapController, type SwapTokenWithBalance } from '@rerock/appkit-core'

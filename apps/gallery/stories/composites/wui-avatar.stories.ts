@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@rerock/ui/src/composites/wui-avatar'
-import type { WuiAvatar } from '@rerock/ui/src/composites/wui-avatar'
+import '@rerock/appkit-ui/src/composites/wui-avatar'
+import type { WuiAvatar } from '@rerock/appkit-ui/src/composites/wui-avatar'
 import { html } from 'lit'
 import { address, avatarImageSrc } from '../../utils/PresetUtils'
 

@@ -1,6 +1,6 @@
 import { html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
-import { customElement, type ColorType } from '@rerock/ui'
+import { customElement, type ColorType } from '@rerock/appkit-ui'
 import { ApiController } from '@rerock/appkit-core'
 import styles from './styles.js'
 

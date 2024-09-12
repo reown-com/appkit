@@ -61,7 +61,7 @@
           {
             "name": "lit/decorators.js",
             "importNames": ["customElement"],
-            "message": "Use import 'customElement' from '@rerock/ui' instead."
+            "message": "Use import 'customElement' from '@rerock/appkit-ui' instead."
           }
         ]
       }

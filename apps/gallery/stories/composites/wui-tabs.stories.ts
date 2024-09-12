@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@rerock/ui/src/composites/wui-tabs'
-import type { WuiTabs } from '@rerock/ui/src/composites/wui-tabs'
+import '@rerock/appkit-ui/src/composites/wui-tabs'
+import type { WuiTabs } from '@rerock/appkit-ui/src/composites/wui-tabs'
 import { html } from 'lit'
 
 type Component = Meta<WuiTabs>

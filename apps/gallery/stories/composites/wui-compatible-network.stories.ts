@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@rerock/ui/src/composites/wui-compatible-network'
-import type { WuiCompatibleNetwork } from '@rerock/ui/src/composites/wui-compatible-network'
+import '@rerock/appkit-ui/src/composites/wui-compatible-network'
+import type { WuiCompatibleNetwork } from '@rerock/appkit-ui/src/composites/wui-compatible-network'
 import { html } from 'lit'
 import { networkImages } from '../../utils/PresetUtils'
 
