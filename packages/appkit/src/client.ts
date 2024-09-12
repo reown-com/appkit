@@ -24,7 +24,8 @@ import {
   EnsController,
   OptionsController,
   NetworkController,
-  AssetUtil
+  AssetUtil,
+  ApiController
 } from '@reown/appkit-core'
 import { setColorTheme, setThemeVariables } from '@reown/appkit-ui'
 import { ConstantsUtil, type CaipNetwork, type ChainNamespace } from '@reown/appkit-common'
@@ -438,6 +439,9 @@ export class AppKit {
     OptionsController.setAllWallets(options.allWallets)
     OptionsController.setIncludeWalletIds(options.includeWalletIds)
     OptionsController.setExcludeWalletIds(options.excludeWalletIds)
+    if (options.excludeWalletIds) {
+      ApiController.searchWalletByIds({ ids: options.excludeWalletIds })
+    }
     OptionsController.setFeaturedWalletIds(options.featuredWalletIds)
     OptionsController.setTokens(options.tokens)
     OptionsController.setTermsConditionsUrl(options.termsConditionsUrl)

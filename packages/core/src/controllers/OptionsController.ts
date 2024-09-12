@@ -8,7 +8,6 @@ import type {
   SdkVersion,
   Tokens
 } from '../utils/TypeUtil.js'
-import { ApiController } from './ApiController.js'
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 
 // -- Types --------------------------------------------- //
@@ -81,9 +80,6 @@ export const OptionsController = {
 
   setExcludeWalletIds(excludeWalletIds: OptionsControllerState['excludeWalletIds']) {
     state.excludeWalletIds = excludeWalletIds
-    if (excludeWalletIds) {
-      ApiController.searchWalletByIds({ ids: excludeWalletIds })
-    }
   },
 
   setFeaturedWalletIds(featuredWalletIds: OptionsControllerState['featuredWalletIds']) {
