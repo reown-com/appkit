@@ -5,8 +5,7 @@ import {
   AssetController,
   ChainController,
   CoreHelperUtil,
-  EventsController,
-  NetworkController
+  EventsController
 } from '@rerock/core'
 import {
   ConstantsUtil as CommonConstantsUtil,
