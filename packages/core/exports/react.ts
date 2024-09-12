@@ -18,7 +18,7 @@ export function useWeb3ModalAccount() {
 
   return {
     address: CoreHelperUtil.getPlainAddress(activeCaipAddress),
-    isConnected: activeCaipAddress ? true : false,
+    isConnected: Boolean(activeCaipAddress),
     status
   }
 }
