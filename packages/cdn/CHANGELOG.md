@@ -12,4 +12,4 @@
   - @rerock/appkit-ethers@0.0.3
   - @rerock/appkit-ethers5@0.0.3
   - @rerock/appkit-polyfills@0.0.3
-  - @rerock/wagmi@0.0.3
+  - @rerock/appkit-wagmi@0.0.3

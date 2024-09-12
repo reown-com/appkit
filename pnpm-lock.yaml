@@ -225,7 +225,7 @@ importers:
       '@rerock/appkit-solana':
         specifier: workspace:*
         version: link:../../packages/solana
-      '@rerock/wagmi':
+      '@rerock/appkit-wagmi':
         specifier: workspace:*
         version: link:../../packages/wagmi
       '@rerock/wallet':
@@ -1138,7 +1138,7 @@ importers:
       '@rerock/appkit-polyfills':
         specifier: workspace:*
         version: link:../polyfills
-      '@rerock/wagmi':
+      '@rerock/appkit-wagmi':
         specifier: workspace:*
         version: link:../wagmi
       '@wagmi/connectors':

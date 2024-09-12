@@ -1,4 +1,4 @@
-# @rerock/wagmi
+# @rerock/appkit-wagmi
 
 ## 0.0.3
 
