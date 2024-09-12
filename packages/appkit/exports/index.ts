@@ -1,6 +1,6 @@
-import { ConstantsUtil } from '@reown/appkit-utils'
 import { AppKit } from '../src/client.js'
 import type { AppKitOptions } from '../src/utils/TypesUtil.js'
+import packageJson from '../package.json' assert { type: 'json' }
 
 // -- Views ------------------------------------------------------------
 export * from '@reown/appkit-scaffold-ui'
@@ -16,7 +16,7 @@ type CreateWeb3Modal = Omit<AppKitOptions, 'sdkType' | 'sdkVersion'>
 export function createWeb3Modal(options: CreateWeb3Modal) {
   return new AppKit({
     ...options,
-    sdkVersion: `html-multichain-${ConstantsUtil.VERSION}`
+    sdkVersion: `html-multichain-${packageJson.version}`
   })
 }
 

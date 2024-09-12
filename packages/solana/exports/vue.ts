@@ -4,7 +4,7 @@ import { SolanaWeb3JsClient, useWeb3ModalConnection } from '@reown/appkit-adapte
 import type { Provider } from '@reown/appkit-adapter-solana/vue'
 import type { CaipNetwork } from '@reown/appkit-common'
 import type { SolanaAppKitOptions } from './options'
-import { ConstantsUtil } from '@reown/appkit-utils'
+import packageJson from '../package.json' assert { type: 'json' }
 
 // -- Types -------------------------------------------------------------------
 export type { SolanaAppKitOptions, Provider }
@@ -19,7 +19,7 @@ export function createWeb3Modal(options: SolanaAppKitOptions) {
   })
   appkit = new AppKit({
     ...options,
-    sdkVersion: `vue-solana-${ConstantsUtil.VERSION}`,
+    sdkVersion: `vue-solana-${packageJson.version}`,
     adapters: [solanaAdapter]
   })
   getWeb3Modal(appkit)

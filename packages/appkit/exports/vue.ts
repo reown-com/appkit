@@ -1,7 +1,7 @@
 import { AppKit } from '../src/client.js'
 import type { AppKitOptions } from '../src/utils/TypesUtil.js'
 import { getWeb3Modal } from '../src/library/vue/index.js'
-import { ConstantsUtil } from '@reown/appkit-utils'
+import packageJson from '../package.json' assert { type: 'json' }
 
 // -- Views ------------------------------------------------------------
 export * from '@reown/appkit-scaffold-ui'
@@ -23,7 +23,7 @@ export function createWeb3Modal(options: CreateWeb3Modal) {
   if (!modal) {
     modal = new AppKit({
       ...options,
-      sdkVersion: `vue-multichain-${ConstantsUtil.VERSION}`
+      sdkVersion: `vue-multichain-${packageJson.version}`
     })
     getWeb3Modal(modal)
   }

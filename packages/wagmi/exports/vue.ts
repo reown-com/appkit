@@ -3,7 +3,7 @@ import type { AppKitOptions } from '@reown/appkit'
 import { EVMWagmiClient, type AdapterOptions } from '@reown/appkit-adapter-wagmi'
 import { getWeb3Modal } from '@reown/appkit/library/vue'
 import type { Config } from '@wagmi/core'
-import { ConstantsUtil } from '@reown/appkit-utils'
+import packageJson from '../package.json' assert { type: 'json' }
 
 // -- Setup -------------------------------------------------------------------
 let appkit: AppKit | undefined = undefined
@@ -18,7 +18,7 @@ export function createWeb3Modal(options: WagmiAppKitOptions) {
   })
   appkit = new AppKit({
     ...options,
-    sdkVersion: `vue-wagmi-${ConstantsUtil.VERSION}`,
+    sdkVersion: `vue-wagmi-${packageJson.version}`,
     adapters: [wagmiAdapter]
   })
   getWeb3Modal(appkit)

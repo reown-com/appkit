@@ -1,7 +1,7 @@
 import { AppKit } from '@reown/appkit'
 import type { AppKitOptions } from '@reown/appkit'
 import { EVMEthers5Client, type AdapterOptions } from '@reown/appkit-adapter-ethers5'
-import { ConstantsUtil } from '@reown/appkit-utils'
+import packageJson from '../package.json' assert { type: 'json' }
 
 // -- Types -------------------------------------------------------------
 export type { AdapterOptions } from '@reown/appkit-adapter-ethers5'
@@ -15,7 +15,7 @@ export function createWeb3Modal(options: EthersAppKitOptions) {
 
   return new AppKit({
     ...options,
-    sdkVersion: `html-ethers5-${ConstantsUtil.VERSION}`,
+    sdkVersion: `html-ethers5-${packageJson.version}`,
     adapters: [ethers5Adapter]
   })
 }

@@ -5,7 +5,7 @@ import { mockOptions } from './mocks/Options'
 import mockProvider from './mocks/UniversalProvider'
 import type UniversalProvider from '@walletconnect/universal-provider'
 import { NetworkController } from '@reown/appkit-core'
-import { ProviderUtil } from '@reown/appkit/store'
+import { ProviderUtil } from '../store/index.js'
 import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
 import mockAppKit from './mocks/AppKit'
 
