@@ -1,7 +1,7 @@
 import { AppKit } from '../src/client.js'
 import type { AppKitOptions } from '../src/utils/TypesUtil.js'
 import { getWeb3Modal } from '../src/library/react/index.js'
-import { ConstantsUtil } from '@rerock/scaffold-utils'
+import { ConstantsUtil } from '@rerock/appkit-utils'
 
 // -- Views ------------------------------------------------------------
 export * from '@rerock/appkit-scaffold-ui'

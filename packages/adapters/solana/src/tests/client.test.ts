@@ -6,7 +6,7 @@ import { mockAuthConnector } from './mocks/AuthConnector'
 import { Connection } from '@solana/web3.js'
 import { SafeLocalStorage } from '@rerock/appkit-common'
 import { ProviderUtil } from '@rerock/appkit/store'
-import { SolHelpersUtil } from '@rerock/scaffold-utils/solana'
+import { SolHelpersUtil } from '@rerock/appkit-utils/solana'
 import { SolStoreUtil } from '../utils/SolanaStoreUtil.js'
 import { WalletConnectProvider } from '../providers/WalletConnectProvider'
 import UniversalProvider from '@walletconnect/universal-provider'
@@ -49,7 +49,7 @@ vi.mock('../utils/SolanaStoreUtil.js', () => ({
   }
 }))
 
-vi.mock('@rerock/scaffold-utils/solana', () => ({
+vi.mock('@rerock/appkit-utils/solana', () => ({
   SolHelpersUtil: {
     getChainFromCaip: vi.fn(),
     detectRpcUrl: vi.fn()

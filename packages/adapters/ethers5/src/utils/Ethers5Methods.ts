@@ -1,6 +1,6 @@
 /* eslint-disable max-params */
 import { ethers, Contract } from 'ethers5'
-import { type Provider } from '@rerock/scaffold-utils/ethers'
+import { type Provider } from '@rerock/appkit-utils/ethers'
 import type {
   EstimateGasTransactionArgs,
   SendTransactionArgs,

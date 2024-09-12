@@ -10,7 +10,7 @@ import {
   parseUnits,
   formatUnits
 } from 'ethers'
-import { type Provider } from '@rerock/scaffold-utils/ethers'
+import { type Provider } from '@rerock/appkit-utils/ethers'
 import type {
   EstimateGasTransactionArgs,
   SendTransactionArgs,

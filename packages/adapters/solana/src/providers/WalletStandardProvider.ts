@@ -26,7 +26,7 @@ import {
   StandardEvents,
   type StandardEventsFeature
 } from '@wallet-standard/features'
-import type { AnyTransaction, GetActiveChain, Provider } from '@rerock/scaffold-utils/solana'
+import type { AnyTransaction, GetActiveChain, Provider } from '@rerock/appkit-utils/solana'
 import base58 from 'bs58'
 import { WalletStandardFeatureNotSupportedError } from './shared/Errors.js'
 import { ProviderEventEmitter } from './shared/ProviderEventEmitter.js'

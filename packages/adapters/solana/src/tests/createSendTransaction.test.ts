@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { mockConnection } from './mocks/Connection'
 import { createSendTransaction } from '../utils/createSendTransaction'
-import type { Provider } from '@rerock/scaffold-utils/solana'
+import type { Provider } from '@rerock/appkit-utils/solana'
 import { PublicKey } from '@solana/web3.js'
 
 const mockProvider = () => {

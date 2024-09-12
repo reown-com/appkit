@@ -4,7 +4,7 @@ import { SolanaWeb3JsClient, useWeb3ModalConnection } from '@rerock/appkit-adapt
 import type { Provider } from '@rerock/appkit-adapter-solana/vue'
 import type { CaipNetwork } from '@rerock/appkit-common'
 import type { SolanaAppKitOptions } from './options'
-import { ConstantsUtil } from '@rerock/scaffold-utils'
+import { ConstantsUtil } from '@rerock/appkit-utils'
 
 // -- Types -------------------------------------------------------------------
 export type { SolanaAppKitOptions, Provider }

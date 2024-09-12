@@ -9,7 +9,7 @@ import {
 } from './mocks/adapter.mock'
 import { arbitrum, mainnet } from '@rerock/appkit/chains'
 import { connect, disconnect, getAccount, getChainId, getEnsName, getBalance } from '@wagmi/core'
-import { ConstantsUtil } from '@rerock/scaffold-utils'
+import { ConstantsUtil } from '@rerock/appkit-utils'
 
 vi.mock('@wagmi/core', async () => {
   const actual = await vi.importActual('@wagmi/core')

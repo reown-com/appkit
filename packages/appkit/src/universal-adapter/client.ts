@@ -8,7 +8,7 @@ import {
   type Connector,
   type NetworkControllerClient
 } from '@rerock/appkit-core'
-import { ConstantsUtil, PresetsUtil } from '@rerock/scaffold-utils'
+import { ConstantsUtil, PresetsUtil } from '@rerock/appkit-utils'
 import UniversalProvider from '@walletconnect/universal-provider'
 import type { UniversalProviderOpts } from '@walletconnect/universal-provider'
 import { WcHelpersUtil } from '../utils/HelpersUtil.js'

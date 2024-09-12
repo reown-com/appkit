@@ -8,7 +8,7 @@ import { EVMEthers5Client, type AdapterOptions } from '@rerock/appkit-adapter-et
 import { getWeb3Modal } from '@rerock/appkit/library/react'
 import { useSnapshot } from 'valtio'
 import { ethers } from 'ethers'
-import { ConstantsUtil } from '@rerock/scaffold-utils'
+import { ConstantsUtil } from '@rerock/appkit-utils'
 
 // -- Setup -------------------------------------------------------------------
 let appkit: AppKit | undefined = undefined

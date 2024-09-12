@@ -1,5 +1,5 @@
 import { beforeAll, describe, expect, it, vi } from 'vitest'
-import type { Provider } from '@rerock/scaffold-utils/solana'
+import type { Provider } from '@rerock/appkit-utils/solana'
 import { WalletConnectProvider } from '../providers/WalletConnectProvider.js'
 import { mockUniversalProvider } from './mocks/UniversalProvider.js'
 import { WalletStandardProvider } from '../providers/WalletStandardProvider.js'

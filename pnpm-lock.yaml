@@ -709,9 +709,9 @@ importers:
       '@rerock/appkit-scaffold-ui':
         specifier: workspace:*
         version: link:../../scaffold-ui
-      '@rerock/scaffold-utils':
+      '@rerock/appkit-utils':
         specifier: workspace:*
-        version: link:../../scaffold-utils
+        version: link:../../appkit-utils
       '@rerock/siwe':
         specifier: workspace:*
         version: link:../../siwe
@@ -767,9 +767,9 @@ importers:
       '@rerock/appkit-scaffold-ui':
         specifier: workspace:*
         version: link:../../scaffold-ui
-      '@rerock/scaffold-utils':
+      '@rerock/appkit-utils':
         specifier: workspace:*
-        version: link:../../scaffold-utils
+        version: link:../../appkit-utils
       '@rerock/siwe':
         specifier: workspace:*
         version: link:../../siwe
@@ -844,9 +844,9 @@ importers:
       '@rerock/appkit-scaffold-ui':
         specifier: workspace:*
         version: link:../../scaffold-ui
-      '@rerock/scaffold-utils':
+      '@rerock/appkit-utils':
         specifier: workspace:*
-        version: link:../../scaffold-utils
+        version: link:../../appkit-utils
       '@rerock/siwe':
         specifier: workspace:*
         version: link:../../siwe
@@ -942,9 +942,9 @@ importers:
       '@rerock/appkit-scaffold-ui':
         specifier: workspace:*
         version: link:../../scaffold-ui
-      '@rerock/scaffold-utils':
+      '@rerock/appkit-utils':
         specifier: workspace:*
-        version: link:../../scaffold-utils
+        version: link:../../appkit-utils
       '@rerock/siwe':
         specifier: workspace:*
         version: link:../../siwe
@@ -1009,9 +1009,9 @@ importers:
       '@rerock/appkit-scaffold-ui':
         specifier: workspace:*
         version: link:../scaffold-ui
-      '@rerock/scaffold-utils':
+      '@rerock/appkit-utils':
         specifier: workspace:*
-        version: link:../scaffold-utils
+        version: link:../appkit-utils
       '@rerock/siwe':
         specifier: workspace:*
         version: link:../siwe
@@ -1095,6 +1095,37 @@ importers:
       wagmi:
         specifier: 2.12.9
         version: 2.12.9(@tanstack/query-core@5.24.8)(@tanstack/react-query@5.24.8(react@18.2.0))(@types/react@18.2.0)(bufferutil@4.0.8)(react-dom@18.2.0(react@18.2.0))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.2.0)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(react@18.2.0)(rollup@4.21.3)(typescript@5.3.3)(utf-8-validate@5.0.10)(viem@2.21.4(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4))(zod@3.22.4)
+
+  packages/appkit-utils:
+    dependencies:
+      '@rerock/appkit-common':
+        specifier: workspace:*
+        version: link:../common
+      '@rerock/appkit-core':
+        specifier: workspace:*
+        version: link:../core
+      '@rerock/appkit-polyfills':
+        specifier: workspace:*
+        version: link:../polyfills
+      '@rerock/wallet':
+        specifier: workspace:*
+        version: link:../wallet
+      '@walletconnect/universal-provider':
+        specifier: 2.16.1
+        version: 2.16.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      valtio:
+        specifier: 1.11.2
+        version: 1.11.2(@types/react@18.2.62)(react@18.2.0)
+    devDependencies:
+      '@coinbase/wallet-sdk':
+        specifier: 4.0.3
+        version: 4.0.3
+      '@solana/wallet-adapter-base':
+        specifier: 0.9.23
+        version: 0.9.23(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
+      '@solana/web3.js':
+        specifier: 1.95.2
+        version: 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
 
   packages/cdn:
     dependencies:
@@ -1191,9 +1222,9 @@ importers:
       '@rerock/appkit-polyfills':
         specifier: workspace:*
         version: link:../polyfills
-      '@rerock/scaffold-utils':
+      '@rerock/appkit-utils':
         specifier: workspace:*
-        version: link:../scaffold-utils
+        version: link:../appkit-utils
       '@rerock/siwe':
         specifier: workspace:*
         version: link:../siwe
@@ -1237,9 +1268,9 @@ importers:
       '@rerock/appkit-polyfills':
         specifier: workspace:*
         version: link:../polyfills
-      '@rerock/scaffold-utils':
+      '@rerock/appkit-utils':
         specifier: workspace:*
-        version: link:../scaffold-utils
+        version: link:../appkit-utils
       '@rerock/siwe':
         specifier: workspace:*
         version: link:../siwe
@@ -1284,9 +1315,9 @@ importers:
       '@rerock/appkit-core':
         specifier: workspace:*
         version: link:../core
-      '@rerock/scaffold-utils':
+      '@rerock/appkit-utils':
         specifier: workspace:*
-        version: link:../scaffold-utils
+        version: link:../appkit-utils
       '@rerock/siwe':
         specifier: workspace:*
         version: link:../siwe
@@ -1300,37 +1331,6 @@ importers:
         specifier: 3.1.0
         version: 3.1.0
 
-  packages/scaffold-utils:
-    dependencies:
-      '@rerock/appkit-common':
-        specifier: workspace:*
-        version: link:../common
-      '@rerock/appkit-core':
-        specifier: workspace:*
-        version: link:../core
-      '@rerock/appkit-polyfills':
-        specifier: workspace:*
-        version: link:../polyfills
-      '@rerock/wallet':
-        specifier: workspace:*
-        version: link:../wallet
-      '@walletconnect/universal-provider':
-        specifier: 2.16.1
-        version: 2.16.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      valtio:
-        specifier: 1.11.2
-        version: 1.11.2(@types/react@18.2.62)(react@18.2.0)
-    devDependencies:
-      '@coinbase/wallet-sdk':
-        specifier: 4.0.3
-        version: 4.0.3
-      '@solana/wallet-adapter-base':
-        specifier: 0.9.23
-        version: 0.9.23(@solana/web3.js@1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/web3.js':
-        specifier: 1.95.2
-        version: 1.95.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-
   packages/siwe:
     dependencies:
       '@rerock/appkit-common':
@@ -1339,9 +1339,9 @@ importers:
       '@rerock/appkit-core':
         specifier: workspace:*
         version: link:../core
-      '@rerock/scaffold-utils':
+      '@rerock/appkit-utils':
         specifier: workspace:*
-        version: link:../scaffold-utils
+        version: link:../appkit-utils
       '@rerock/ui':
         specifier: workspace:*
         version: link:../ui
@@ -1378,9 +1378,9 @@ importers:
       '@rerock/appkit-polyfills':
         specifier: workspace:*
         version: link:../polyfills
-      '@rerock/scaffold-utils':
+      '@rerock/appkit-utils':
         specifier: workspace:*
-        version: link:../scaffold-utils
+        version: link:../appkit-utils
       '@rerock/wallet':
         specifier: workspace:*
         version: link:../wallet
@@ -1497,9 +1497,9 @@ importers:
       '@rerock/appkit-polyfills':
         specifier: workspace:*
         version: link:../polyfills
-      '@rerock/scaffold-utils':
+      '@rerock/appkit-utils':
         specifier: workspace:*
-        version: link:../scaffold-utils
+        version: link:../appkit-utils
       '@rerock/siwe':
         specifier: workspace:*
         version: link:../siwe

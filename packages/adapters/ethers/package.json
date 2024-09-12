@@ -23,7 +23,7 @@
     "@rerock/appkit-core": "workspace:*",
     "@rerock/appkit-polyfills": "workspace:*",
     "@rerock/appkit-scaffold-ui": "workspace:*",
-    "@rerock/scaffold-utils": "workspace:*",
+    "@rerock/appkit-utils": "workspace:*",
     "@rerock/siwe": "workspace:*",
     "@rerock/ui": "workspace:*",
     "@rerock/wallet": "workspace:*",

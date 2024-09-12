@@ -1,4 +1,4 @@
-import { ConstantsUtil } from '@rerock/scaffold-utils'
+import { ConstantsUtil } from '@rerock/appkit-utils'
 import { AppKit } from '../src/client.js'
 import type { AppKitOptions } from '../src/utils/TypesUtil.js'
 

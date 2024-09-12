@@ -50,7 +50,7 @@
     "@rerock/appkit-common": "workspace:*",
     "@rerock/wallet": "workspace:*",
     "@rerock/appkit-polyfills": "workspace:*",
-    "@rerock/scaffold-utils": "workspace:*",
+    "@rerock/appkit-utils": "workspace:*",
     "@rerock/siwe": "workspace:*",
     "valtio": "1.11.2"
   },

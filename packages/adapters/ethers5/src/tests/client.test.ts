@@ -5,12 +5,8 @@ import { mockOptions } from './mocks/Options'
 import { mockCreateEthersConfig } from './mocks/EthersConfig'
 import mockAppKit from './mocks/AppKit'
 import { mockAuthConnector } from './mocks/AuthConnector'
-import {
-  EthersHelpersUtil,
-  type ProviderId,
-  type ProviderType
-} from '@rerock/scaffold-utils/ethers'
-import { ConstantsUtil } from '@rerock/scaffold-utils'
+import { EthersHelpersUtil, type ProviderId, type ProviderType } from '@rerock/appkit-utils/ethers'
+import { ConstantsUtil } from '@rerock/appkit-utils'
 import { arbitrum, mainnet, polygon } from '@rerock/appkit/chains'
 import { ProviderUtil } from '@rerock/appkit/store'
 import { SafeLocalStorage } from '@rerock/appkit-common'
@@ -29,7 +25,7 @@ vi.mock('@rerock/wallet', () => ({
   }
 }))
 
-vi.mock('@rerock/scaffold-utils', () => {
+vi.mock('@rerock/appkit-utils', () => {
   const INJECTED_CONNECTOR_ID = 'injected'
   const COINBASE_SDK_CONNECTOR_ID = 'coinbaseWallet'
   const EIP6963_CONNECTOR_ID = 'eip6963'

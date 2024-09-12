@@ -3,7 +3,7 @@ import type { AppKitOptions } from '@rerock/appkit'
 import { EVMEthers5Client, type AdapterOptions } from '@rerock/appkit-adapter-ethers5'
 
 import { getWeb3Modal } from '@rerock/appkit/library/vue'
-import { ConstantsUtil } from '@rerock/scaffold-utils'
+import { ConstantsUtil } from '@rerock/appkit-utils'
 
 // -- Setup -------------------------------------------------------------------
 let appkit: AppKit | undefined = undefined

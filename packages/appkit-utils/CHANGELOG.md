@@ -1,4 +1,4 @@
-# @rerock/scaffold-utils
+# @rerock/appkit-utils
 
 ## 0.0.3
 

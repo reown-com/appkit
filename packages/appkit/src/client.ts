@@ -30,7 +30,7 @@ import { setColorTheme, setThemeVariables } from '@rerock/ui'
 import { ConstantsUtil, type CaipNetwork, type ChainNamespace } from '@rerock/appkit-common'
 import type { AppKitOptions } from './utils/TypesUtil.js'
 import { UniversalAdapterClient } from './universal-adapter/client.js'
-import { PresetsUtil } from '@rerock/scaffold-utils'
+import { PresetsUtil } from '@rerock/appkit-utils'
 import type { W3mFrameTypes } from '@rerock/wallet'
 import { ProviderUtil } from './store/ProviderUtil.js'
 

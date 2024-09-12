@@ -12,8 +12,8 @@ import { customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
-import type { SocialProvider } from '@rerock/scaffold-utils'
-import { SocialProviderEnum } from '@rerock/scaffold-utils'
+import type { SocialProvider } from '@rerock/appkit-utils'
+import { SocialProviderEnum } from '@rerock/appkit-utils'
 
 @customElement('w3m-social-login-list')
 export class W3mSocialLoginList extends LitElement {

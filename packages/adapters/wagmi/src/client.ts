@@ -45,7 +45,7 @@ import type {
 } from '@rerock/appkit-core'
 import { formatUnits, parseUnits } from 'viem'
 import type { Hex } from 'viem'
-import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@rerock/scaffold-utils'
+import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@rerock/appkit-utils'
 import {
   ConstantsUtil as CommonConstants,
   SafeLocalStorage,

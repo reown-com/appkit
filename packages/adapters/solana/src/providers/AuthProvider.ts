@@ -1,10 +1,10 @@
-import { ConstantsUtil } from '@rerock/scaffold-utils'
+import { ConstantsUtil } from '@rerock/appkit-utils'
 import type {
   AnyTransaction,
   Connection,
   GetActiveChain,
   Provider
-} from '@rerock/scaffold-utils/solana'
+} from '@rerock/appkit-utils/solana'
 import { ProviderEventEmitter } from './shared/ProviderEventEmitter.js'
 import { PublicKey, Transaction, VersionedTransaction, type SendOptions } from '@solana/web3.js'
 import {

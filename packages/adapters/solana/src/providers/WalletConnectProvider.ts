@@ -1,6 +1,6 @@
 import UniversalProvider from '@walletconnect/universal-provider'
-import { SolConstantsUtil } from '@rerock/scaffold-utils/solana'
-import type { AnyTransaction, Provider } from '@rerock/scaffold-utils/solana'
+import { SolConstantsUtil } from '@rerock/appkit-utils/solana'
+import type { AnyTransaction, Provider } from '@rerock/appkit-utils/solana'
 import { ProviderEventEmitter } from './shared/ProviderEventEmitter.js'
 import type { SessionTypes } from '@walletconnect/types'
 import base58 from 'bs58'

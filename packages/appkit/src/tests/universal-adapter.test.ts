@@ -6,7 +6,7 @@ import mockProvider from './mocks/UniversalProvider'
 import type UniversalProvider from '@walletconnect/universal-provider'
 import { NetworkController } from '@rerock/appkit-core'
 import { ProviderUtil } from '@rerock/appkit/store'
-import { ConstantsUtil, PresetsUtil } from '@rerock/scaffold-utils'
+import { ConstantsUtil, PresetsUtil } from '@rerock/appkit-utils'
 import mockAppKit from './mocks/AppKit'
 
 describe('UniversalAdapter', () => {

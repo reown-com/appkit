@@ -3,7 +3,7 @@ import type { AppKitOptions } from '@rerock/appkit'
 import { EVMWagmiClient, type AdapterOptions } from '@rerock/appkit-adapter-wagmi'
 import { getWeb3Modal } from '@rerock/appkit/library/react'
 import { type Config, type CreateConfigParameters } from 'wagmi'
-import { ConstantsUtil } from '@rerock/scaffold-utils'
+import { ConstantsUtil } from '@rerock/appkit-utils'
 
 // -- Setup -------------------------------------------------------------------
 let appkit: AppKit | undefined = undefined

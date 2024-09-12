@@ -8,7 +8,7 @@ import {
 } from '@rerock/appkit-adapter-solana/react'
 import { getWeb3Modal } from '@rerock/appkit/library/react'
 import type { SolanaAppKitOptions } from './options.js'
-import { ConstantsUtil } from '@rerock/scaffold-utils'
+import { ConstantsUtil } from '@rerock/appkit-utils'
 
 // -- Types -------------------------------------------------------------------
 export type { SolanaAppKitOptions, Provider }

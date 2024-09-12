@@ -21,7 +21,7 @@ import {
   type ProviderType,
   type ProviderId,
   type Address
-} from '@rerock/scaffold-utils/ethers'
+} from '@rerock/appkit-utils/ethers'
 import type { AppKit } from '@rerock/appkit'
 import {
   W3mFrameHelpers,
@@ -31,7 +31,7 @@ import {
 } from '@rerock/wallet'
 import { ConstantsUtil as CoreConstantsUtil } from '@rerock/appkit-core'
 import { ConstantsUtil as CommonConstantsUtil } from '@rerock/appkit-common'
-import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@rerock/scaffold-utils'
+import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@rerock/appkit-utils'
 import UniversalProvider from '@walletconnect/universal-provider'
 import type { ConnectionControllerClient, NetworkControllerClient } from '@rerock/appkit-core'
 import { WcConstantsUtil } from '@rerock/appkit'

@@ -15,7 +15,7 @@ import { state } from 'lit/decorators.js'
 
 import styles from './styles.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import { SocialProviderEnum } from '@rerock/scaffold-utils'
+import { SocialProviderEnum } from '@rerock/appkit-utils'
 
 const MAX_TOP_VIEW = 2
 const MAXIMUM_LENGTH = 6
