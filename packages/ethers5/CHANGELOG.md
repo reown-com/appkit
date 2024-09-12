@@ -1,5 +1,18 @@
 # @web3modal/ethers5
 
+## 5.1.7-a1740ab9a.4
+
+### Patch Changes
+
+- Fix SIWE and 1CA bad states
+- Updated dependencies
+  - @web3modal/scaffold-utils@5.1.7-a1740ab9a.4
+  - @web3modal/polyfills@5.1.7-a1740ab9a.4
+  - @web3modal/common@5.1.7-a1740ab9a.4
+  - @web3modal/wallet@5.1.7-a1740ab9a.4
+  - @web3modal/base@5.1.7-a1740ab9a.4
+  - @web3modal/siwe@5.1.7-a1740ab9a.4
+
 ## 5.1.7-e26f36a6d.3
 
 ### Patch Changes

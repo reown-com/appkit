@@ -1,5 +1,15 @@
 # @web3modal/cdn
 
+## 5.1.7-a1740ab9a.4
+
+### Patch Changes
+
+- Fix SIWE and 1CA bad states
+- Updated dependencies
+  - @web3modal/ethers5@5.1.7-a1740ab9a.4
+  - @web3modal/ethers@5.1.7-a1740ab9a.4
+  - @web3modal/wagmi@5.1.7-a1740ab9a.4
+
 ## 5.1.7-e26f36a6d.3
 
 ### Patch Changes

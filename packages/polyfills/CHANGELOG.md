@@ -1,5 +1,11 @@
 # @web3modal/polyfills
 
+## 5.1.7-a1740ab9a.4
+
+### Patch Changes
+
+- Fix SIWE and 1CA bad states
+
 ## 5.1.7-e26f36a6d.3
 
 ### Patch Changes
