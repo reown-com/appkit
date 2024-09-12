@@ -46,11 +46,7 @@ import type {
 import { formatUnits, parseUnits } from 'viem'
 import type { Hex } from 'viem'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@reown/appkit-utils'
-import {
-  ConstantsUtil as CommonConstants,
-  SafeLocalStorage,
-  SafeLocalStorageKeys
-} from '@reown/appkit-common'
+import { isReownName, SafeLocalStorage, SafeLocalStorageKeys } from '@reown/appkit-common'
 import {
   convertToAppKitChains,
   getEmailCaipNetworks,
@@ -470,8 +466,8 @@ export class EVMWagmiClient implements ChainAdapter {
           )
           let ensName: boolean | GetEnsAddressReturnType = false
           let wcName: boolean | string = false
-          if (value?.endsWith(CommonConstants.WC_NAME_SUFFIX)) {
-            wcName = (await this.appKit?.resolveWalletConnectName(value)) || false
+          if (isReownName(value)) {
+            wcName = (await this.appKit?.resolveReownName(value)) || false
           }
           if (chainId === 1) {
             ensName = await wagmiGetEnsAddress(this.wagmiConfig, {

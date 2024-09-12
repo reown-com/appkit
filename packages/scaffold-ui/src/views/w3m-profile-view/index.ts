@@ -64,8 +64,6 @@ export class W3mProfileView extends LitElement {
       throw new Error('w3m-profile-view: No account provided')
     }
 
-    const name = this.profileName?.split('.')[0]
-
     return html`
       <wui-flex flexDirection="column" gap="l" .padding=${['0', 'xl', 'm', 'xl'] as const}>
         <wui-flex flexDirection="column" alignItems="center" gap="l">
@@ -78,9 +76,9 @@ export class W3mProfileView extends LitElement {
           <wui-flex flexDirection="column" alignItems="center">
             <wui-flex gap="3xs" alignItems="center" justifyContent="center">
               <wui-text variant="title-6-600" color="fg-100" data-testid="account-settings-address">
-                ${name
+                ${this.profileName
                   ? UiHelperUtil.getTruncateString({
-                      string: name,
+                      string: this.profileName,
                       charsStart: 20,
                       charsEnd: 0,
                       truncate: 'end'

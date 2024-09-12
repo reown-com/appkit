@@ -16,6 +16,7 @@ import type { ConnectionControllerClient } from '../controllers/ConnectionContro
 import type { AccountControllerState } from '../controllers/AccountController.js'
 import type { OnRampProviderOption } from '../controllers/OnRampController.js'
 import type { ConstantsUtil } from './ConstantsUtil.js'
+import type { ReownName } from '../controllers/EnsController.js'
 
 export type CaipNetworkCoinbaseNetwork =
   | 'Ethereum'
@@ -322,7 +323,7 @@ export interface BlockchainApiBalanceResponse {
 }
 
 export interface BlockchainApiLookupEnsName {
-  name: string
+  name: ReownName
   registered: number
   updated: number
   addresses: Record<
