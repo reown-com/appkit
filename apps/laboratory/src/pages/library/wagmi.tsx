@@ -21,9 +21,8 @@ const modal = createWeb3Modal({
   metadata: ConstantsUtil.Metadata,
   termsConditionsUrl: 'https://walletconnect.com/terms',
   privacyPolicyUrl: 'https://walletconnect.com/privacy',
-  // customWallets: ConstantsUtil.CustomWallets,
   enableEIP6963: false,
-  useInjectedInAllWallets: false // default: true
+  useInjectedInAllWallets: false
 })
 
 ThemeStore.setModal(modal)
