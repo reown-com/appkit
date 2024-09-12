@@ -10,7 +10,7 @@ import type {
 import type { SendTransactionOptions } from '@solana/wallet-adapter-base'
 import type { CaipNetwork } from '@rerock/appkit-common'
 import type { ConnectorType } from '@rerock/appkit-core'
-import type { W3mFrameTypes } from '@rerock/wallet'
+import type { W3mFrameTypes } from '@rerock/appkit-wallet'
 
 export type Connection = SolanaConnection
 

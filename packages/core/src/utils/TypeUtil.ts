@@ -1,4 +1,4 @@
-import type { W3mFrameProvider, W3mFrameTypes } from '@rerock/wallet'
+import type { W3mFrameProvider, W3mFrameTypes } from '@rerock/appkit-wallet'
 import type {
   Balance,
   Transaction,

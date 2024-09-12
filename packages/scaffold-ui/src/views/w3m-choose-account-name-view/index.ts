@@ -9,7 +9,7 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
 import { NavigationUtil } from '@rerock/appkit-common'
-import { W3mFrameRpcConstants } from '@rerock/wallet'
+import { W3mFrameRpcConstants } from '@rerock/appkit-wallet'
 
 @customElement('w3m-choose-account-name-view')
 export class W3mChooseAccountNameView extends LitElement {

@@ -11,7 +11,7 @@ import { UiHelperUtil, customElement } from '@rerock/appkit-ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
 import { state } from 'lit/decorators.js'
-import { W3mFrameRpcConstants } from '@rerock/wallet'
+import { W3mFrameRpcConstants } from '@rerock/appkit-wallet'
 
 @customElement('w3m-wallet-receive-view')
 export class W3mWalletReceiveView extends LitElement {

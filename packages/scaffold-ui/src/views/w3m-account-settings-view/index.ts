@@ -17,7 +17,7 @@ import { UiHelperUtil, customElement } from '@rerock/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import { W3mFrameRpcConstants } from '@rerock/wallet'
+import { W3mFrameRpcConstants } from '@rerock/appkit-wallet'
 
 @customElement('w3m-account-settings-view')
 export class W3mAccountSettingsView extends LitElement {

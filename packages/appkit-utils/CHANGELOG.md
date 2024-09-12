@@ -12,4 +12,4 @@
   - @rerock/appkit-common@0.0.3
   - @rerock/appkit-core@0.0.3
   - @rerock/appkit-polyfills@0.0.3
-  - @rerock/wallet@0.0.3
+  - @rerock/appkit-wallet@0.0.3

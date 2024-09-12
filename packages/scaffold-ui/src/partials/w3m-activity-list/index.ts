@@ -12,7 +12,7 @@ import { TransactionUtil, customElement } from '@rerock/appkit-ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import type { TransactionType } from '@rerock/appkit-ui'
-import { W3mFrameRpcConstants } from '@rerock/wallet'
+import { W3mFrameRpcConstants } from '@rerock/appkit-wallet'
 
 import styles from './styles.js'
 

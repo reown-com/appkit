@@ -10,7 +10,7 @@ import {
   EventsController,
   AccountController
 } from '@rerock/appkit-core'
-import { W3mFrameRpcConstants } from '@rerock/wallet'
+import { W3mFrameRpcConstants } from '@rerock/appkit-wallet'
 
 @customElement('w3m-register-account-name-view')
 export class W3mRegisterAccountNameView extends LitElement {

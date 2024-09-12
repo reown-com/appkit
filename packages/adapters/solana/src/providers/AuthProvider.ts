@@ -10,7 +10,7 @@ import { PublicKey, Transaction, VersionedTransaction, type SendOptions } from '
 import {
   W3mFrameProvider,
   type W3mFrameProviderMethods as ProviderAuthMethods
-} from '@rerock/wallet'
+} from '@rerock/appkit-wallet'
 import { withSolanaNamespace } from '../utils/withSolanaNamespace.js'
 import base58 from 'bs58'
 import { isVersionedTransaction } from '@solana/wallet-adapter-base'

@@ -14,7 +14,7 @@ import { BlockchainApiController } from './BlockchainApiController.js'
 import { OptionsController } from './OptionsController.js'
 import { SwapCalculationUtil } from '../utils/SwapCalculationUtil.js'
 import { EventsController } from './EventsController.js'
-import { W3mFrameRpcConstants } from '@rerock/wallet'
+import { W3mFrameRpcConstants } from '@rerock/appkit-wallet'
 import { StorageUtil } from '../utils/StorageUtil.js'
 
 // -- Constants ---------------------------------------- //

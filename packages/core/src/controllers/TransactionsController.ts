@@ -7,7 +7,7 @@ import { NetworkController } from './NetworkController.js'
 import type { CaipNetworkId } from '@rerock/appkit-common'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { AccountController } from './AccountController.js'
-import { W3mFrameRpcConstants } from '@rerock/wallet'
+import { W3mFrameRpcConstants } from '@rerock/appkit-wallet'
 
 // -- Types --------------------------------------------- //
 type TransactionByMonthMap = Record<number, Transaction[]>

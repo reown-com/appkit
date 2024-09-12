@@ -67,7 +67,7 @@
     "@rerock/appkit-core": "workspace:*",
     "@rerock/appkit-polyfills": "workspace:*",
     "@rerock/appkit-utils": "workspace:*",
-    "@rerock/wallet": "workspace:*",
+    "@rerock/appkit-wallet": "workspace:*",
     "bn.js": "5.2.1",
     "borsh": "0.7.0",
     "bs58": "5.0.0",

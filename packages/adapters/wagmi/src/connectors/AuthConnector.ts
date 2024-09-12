@@ -1,5 +1,5 @@
 import { createConnector, type CreateConfigParameters } from '@wagmi/core'
-import { W3mFrameProvider } from '@rerock/wallet'
+import { W3mFrameProvider } from '@rerock/appkit-wallet'
 import { ConstantsUtil as CommonConstantsUtil } from '@rerock/appkit-common'
 import { SwitchChainError, getAddress } from 'viem'
 import type { Address, Hex } from 'viem'

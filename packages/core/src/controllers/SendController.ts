@@ -10,7 +10,7 @@ import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { EventsController } from './EventsController.js'
 import { NetworkController } from './NetworkController.js'
 import { ChainController } from './ChainController.js'
-import { W3mFrameRpcConstants } from '@rerock/wallet'
+import { W3mFrameRpcConstants } from '@rerock/appkit-wallet'
 
 // -- Types --------------------------------------------- //
 

@@ -1,7 +1,7 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
 import type { Address, CombinedProvider, Provider } from './EthersTypesUtil.js'
-import type { W3mFrameTypes } from '@rerock/wallet'
+import type { W3mFrameTypes } from '@rerock/appkit-wallet'
 
 // -- Types --------------------------------------------- //
 

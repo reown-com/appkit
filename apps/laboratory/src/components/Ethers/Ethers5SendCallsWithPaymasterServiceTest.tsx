@@ -16,7 +16,7 @@ import {
   WALLET_CAPABILITIES,
   getCapabilitySupportedChainInfo
 } from '../../utils/EIP5792Utils'
-import { W3mFrameProvider } from '@rerock/wallet'
+import { W3mFrameProvider } from '@rerock/appkit-wallet'
 
 export function Ethers5SendCallsWithPaymasterServiceTest() {
   const [paymasterServiceUrl, setPaymasterServiceUrl] = useState<string>('')

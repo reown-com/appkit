@@ -97,7 +97,7 @@
     "@rerock/appkit-utils": "workspace:*",
     "@rerock/appkit-siwe": "workspace:*",
     "@rerock/appkit-ui": "workspace:*",
-    "@rerock/wallet": "workspace:*",
+    "@rerock/appkit-wallet": "workspace:*",
     "@walletconnect/types": "2.16.1",
     "@walletconnect/utils": "2.16.1",
     "valtio": "1.11.2"

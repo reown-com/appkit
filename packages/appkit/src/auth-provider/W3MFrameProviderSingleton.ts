@@ -1,5 +1,5 @@
 import type { CaipNetworkId } from '@rerock/appkit-common'
-import { W3mFrameProvider } from '@rerock/wallet'
+import { W3mFrameProvider } from '@rerock/appkit-wallet'
 
 export class W3mFrameProviderSingleton {
   private static instance: W3mFrameProvider

@@ -55,7 +55,7 @@
     "@rerock/appkit-polyfills": "workspace:*",
     "@rerock/appkit-adapter-wagmi": "workspace:*",
     "@rerock/appkit": "workspace:*",
-    "@rerock/wallet": "workspace:*",
+    "@rerock/appkit-wallet": "workspace:*",
     "@rerock/appkit-common": "workspace:*",
     "@rerock/appkit-utils": "workspace:*",
     "@rerock/appkit-siwe": "workspace:*"

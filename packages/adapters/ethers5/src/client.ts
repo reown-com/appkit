@@ -28,7 +28,7 @@ import {
   W3mFrameProvider,
   W3mFrameRpcConstants,
   type W3mFrameTypes
-} from '@rerock/wallet'
+} from '@rerock/appkit-wallet'
 import { ConstantsUtil as CommonConstantsUtil } from '@rerock/appkit-common'
 import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@rerock/appkit-utils'
 import UniversalProvider from '@walletconnect/universal-provider'

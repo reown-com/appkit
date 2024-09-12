@@ -19,4 +19,4 @@
   - @rerock/appkit-siwe@0.0.3
   - @rerock/appkit-solana@0.0.3
   - @rerock/appkit-wagmi@0.0.3
-  - @rerock/wallet@0.0.3
+  - @rerock/appkit-wallet@0.0.3

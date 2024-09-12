@@ -8,7 +8,7 @@ import {
 } from '@rerock/appkit-core'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
-import { W3mFrameHelpers } from '@rerock/wallet'
+import { W3mFrameHelpers } from '@rerock/appkit-wallet'
 
 // -- Types --------------------------------------------- //
 export type OnOtpSubmitFn = (otp: string) => Promise<void>

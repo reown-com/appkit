@@ -11,7 +11,7 @@ import type {
 } from '../utils/TypeUtil.js'
 import { TransactionsController } from './TransactionsController.js'
 import { ChainController } from './ChainController.js'
-import { type W3mFrameTypes } from '@rerock/wallet'
+import { type W3mFrameTypes } from '@rerock/appkit-wallet'
 import { ModalController } from './ModalController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'

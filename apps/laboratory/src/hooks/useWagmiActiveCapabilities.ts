@@ -9,7 +9,7 @@ import {
   getFilteredCapabilitySupportedChainInfo,
   getProviderCachedCapabilities
 } from '../utils/EIP5792Utils'
-import { W3mFrameProvider } from '@rerock/wallet'
+import { W3mFrameProvider } from '@rerock/appkit-wallet'
 import { useWeb3ModalAccount } from '@rerock/appkit/react'
 
 type UseWagmiAvailableCapabilitiesParams = {

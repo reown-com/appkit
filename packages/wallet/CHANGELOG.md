@@ -1,4 +1,4 @@
-# @rerock/wallet
+# @rerock/appkit-wallet
 
 ## 0.0.3
 

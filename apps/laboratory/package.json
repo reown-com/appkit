@@ -61,7 +61,7 @@
     "@rerock/appkit-siwe": "workspace:*",
     "@rerock/appkit-solana": "workspace:*",
     "@rerock/appkit-wagmi": "workspace:*",
-    "@rerock/wallet": "workspace:*",
+    "@rerock/appkit-wallet": "workspace:*",
     "@rerock/appkit-adapter-solana": "workspace:*",
     "@rerock/appkit-adapter-ethers": "workspace:*",
     "@rerock/appkit-adapter-ethers5": "workspace:*",

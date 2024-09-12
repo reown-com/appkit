@@ -31,7 +31,7 @@ import { ConstantsUtil, type CaipNetwork, type ChainNamespace } from '@rerock/ap
 import type { AppKitOptions } from './utils/TypesUtil.js'
 import { UniversalAdapterClient } from './universal-adapter/client.js'
 import { PresetsUtil } from '@rerock/appkit-utils'
-import type { W3mFrameTypes } from '@rerock/wallet'
+import type { W3mFrameTypes } from '@rerock/appkit-wallet'
 import { ProviderUtil } from './store/ProviderUtil.js'
 
 // -- Export Controllers -------------------------------------------------------

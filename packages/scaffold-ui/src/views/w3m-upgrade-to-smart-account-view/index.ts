@@ -8,7 +8,7 @@ import {
 } from '@rerock/appkit-core'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
-import { W3mFrameRpcConstants } from '@rerock/wallet'
+import { W3mFrameRpcConstants } from '@rerock/appkit-wallet'
 import { NavigationUtil } from '@rerock/appkit-common'
 
 @customElement('w3m-upgrade-to-smart-account-view')

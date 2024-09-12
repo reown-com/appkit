@@ -8,7 +8,7 @@ import { customElement } from '@rerock/appkit-ui'
 import { LitElement, html } from 'lit'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
-import { W3mFrameRpcConstants } from '@rerock/wallet'
+import { W3mFrameRpcConstants } from '@rerock/appkit-wallet'
 import { state } from 'lit/decorators.js'
 
 @customElement('w3m-wallet-compatible-networks-view')

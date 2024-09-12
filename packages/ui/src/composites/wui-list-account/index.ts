@@ -7,7 +7,7 @@ import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
-import { W3mFrameRpcConstants } from '@rerock/wallet'
+import { W3mFrameRpcConstants } from '@rerock/appkit-wallet'
 import {
   AccountController,
   BlockchainApiController,

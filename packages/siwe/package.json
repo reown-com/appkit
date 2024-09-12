@@ -20,7 +20,7 @@
     "@rerock/appkit-core": "workspace:*",
     "@rerock/appkit-ui": "workspace:*",
     "@rerock/appkit-common": "workspace:*",
-    "@rerock/wallet": "workspace:*",
+    "@rerock/appkit-wallet": "workspace:*",
     "@rerock/appkit-utils": "workspace:*",
     "valtio": "1.11.2",
     "lit": "3.1.0"

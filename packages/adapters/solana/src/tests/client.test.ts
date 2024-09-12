@@ -17,7 +17,7 @@ vi.mock('@solana/web3.js', () => ({
   PublicKey: vi.fn()
 }))
 
-vi.mock('@rerock/wallet', () => ({
+vi.mock('@rerock/appkit-wallet', () => ({
   W3mFrameProvider: vi.fn().mockImplementation(() => mockAuthConnector),
   W3mFrameHelpers: {
     checkIfRequestExists: vi.fn(),

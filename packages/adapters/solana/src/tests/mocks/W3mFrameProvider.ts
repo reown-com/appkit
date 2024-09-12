@@ -1,4 +1,4 @@
-import { type W3mFrameTypes } from '@rerock/wallet'
+import { type W3mFrameTypes } from '@rerock/appkit-wallet'
 import type { AuthProvider } from '../../providers/AuthProvider.js'
 import { vi } from 'vitest'
 import { TestConstants } from '../util/TestConstants.js'

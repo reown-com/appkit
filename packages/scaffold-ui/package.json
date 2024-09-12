@@ -34,7 +34,7 @@
     "@rerock/appkit-ui": "workspace:*",
     "lit": "3.1.0",
     "@rerock/appkit-siwe": "workspace:*",
-    "@rerock/wallet": "workspace:*"
+    "@rerock/appkit-wallet": "workspace:*"
   },
   "author": "Rerock <rerock.com>",
   "license": "Apache-2.0",

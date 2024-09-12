@@ -7,7 +7,7 @@ import {
 import { customElement } from '@rerock/appkit-ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
-import { W3mFrameRpcConstants } from '@rerock/wallet'
+import { W3mFrameRpcConstants } from '@rerock/appkit-wallet'
 
 @customElement('w3m-onramp-providers-footer')
 export class W3mOnRampProvidersFooter extends LitElement {

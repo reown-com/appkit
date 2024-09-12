@@ -58,8 +58,8 @@ import {
   getWalletConnectCaipNetworks,
   requireCaipAddress
 } from './utils/helpers.js'
-import { W3mFrameHelpers, W3mFrameRpcConstants } from '@rerock/wallet'
-import type { W3mFrameProvider, W3mFrameTypes } from '@rerock/wallet'
+import { W3mFrameHelpers, W3mFrameRpcConstants } from '@rerock/appkit-wallet'
+import type { W3mFrameProvider, W3mFrameTypes } from '@rerock/appkit-wallet'
 import { NetworkUtil } from '@rerock/appkit-common'
 import { normalize } from 'viem/ens'
 import type { AppKitOptions } from '@rerock/appkit'

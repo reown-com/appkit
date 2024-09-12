@@ -228,7 +228,7 @@ importers:
       '@rerock/appkit-wagmi':
         specifier: workspace:*
         version: link:../../packages/wagmi
-      '@rerock/wallet':
+      '@rerock/appkit-wallet':
         specifier: workspace:*
         version: link:../../packages/wallet
       '@sentry/browser':
@@ -718,7 +718,7 @@ importers:
       '@rerock/appkit-ui':
         specifier: workspace:*
         version: link:../../ui
-      '@rerock/wallet':
+      '@rerock/appkit-wallet':
         specifier: workspace:*
         version: link:../../wallet
       '@walletconnect/utils':
@@ -776,7 +776,7 @@ importers:
       '@rerock/appkit-ui':
         specifier: workspace:*
         version: link:../../ui
-      '@rerock/wallet':
+      '@rerock/appkit-wallet':
         specifier: workspace:*
         version: link:../../wallet
       '@walletconnect/universal-provider':
@@ -853,7 +853,7 @@ importers:
       '@rerock/appkit-ui':
         specifier: workspace:*
         version: link:../../ui
-      '@rerock/wallet':
+      '@rerock/appkit-wallet':
         specifier: workspace:*
         version: link:../../wallet
       '@solana/wallet-adapter-base':
@@ -951,7 +951,7 @@ importers:
       '@rerock/appkit-ui':
         specifier: workspace:*
         version: link:../../ui
-      '@rerock/wallet':
+      '@rerock/appkit-wallet':
         specifier: workspace:*
         version: link:../../wallet
       '@walletconnect/universal-provider':
@@ -1018,7 +1018,7 @@ importers:
       '@rerock/appkit-ui':
         specifier: workspace:*
         version: link:../ui
-      '@rerock/wallet':
+      '@rerock/appkit-wallet':
         specifier: workspace:*
         version: link:../wallet
       '@walletconnect/types':
@@ -1107,7 +1107,7 @@ importers:
       '@rerock/appkit-polyfills':
         specifier: workspace:*
         version: link:../polyfills
-      '@rerock/wallet':
+      '@rerock/appkit-wallet':
         specifier: workspace:*
         version: link:../wallet
       '@walletconnect/universal-provider':
@@ -1185,7 +1185,7 @@ importers:
       '@rerock/appkit-common':
         specifier: workspace:*
         version: link:../common
-      '@rerock/wallet':
+      '@rerock/appkit-wallet':
         specifier: workspace:*
         version: link:../wallet
       '@walletconnect/universal-provider':
@@ -1228,7 +1228,7 @@ importers:
       '@rerock/appkit-siwe':
         specifier: workspace:*
         version: link:../siwe
-      '@rerock/wallet':
+      '@rerock/appkit-wallet':
         specifier: workspace:*
         version: link:../wallet
       '@walletconnect/utils':
@@ -1274,7 +1274,7 @@ importers:
       '@rerock/appkit-siwe':
         specifier: workspace:*
         version: link:../siwe
-      '@rerock/wallet':
+      '@rerock/appkit-wallet':
         specifier: workspace:*
         version: link:../wallet
       '@walletconnect/utils':
@@ -1324,7 +1324,7 @@ importers:
       '@rerock/appkit-ui':
         specifier: workspace:*
         version: link:../ui
-      '@rerock/wallet':
+      '@rerock/appkit-wallet':
         specifier: workspace:*
         version: link:../wallet
       lit:
@@ -1345,7 +1345,7 @@ importers:
       '@rerock/appkit-ui':
         specifier: workspace:*
         version: link:../ui
-      '@rerock/wallet':
+      '@rerock/appkit-wallet':
         specifier: workspace:*
         version: link:../wallet
       '@walletconnect/utils':
@@ -1381,7 +1381,7 @@ importers:
       '@rerock/appkit-utils':
         specifier: workspace:*
         version: link:../appkit-utils
-      '@rerock/wallet':
+      '@rerock/appkit-wallet':
         specifier: workspace:*
         version: link:../wallet
       '@solana/wallet-adapter-base':
@@ -1464,7 +1464,7 @@ importers:
       '@rerock/appkit-core':
         specifier: workspace:*
         version: link:../core
-      '@rerock/wallet':
+      '@rerock/appkit-wallet':
         specifier: workspace:*
         version: link:../wallet
       '@types/qrcode':
@@ -1503,7 +1503,7 @@ importers:
       '@rerock/appkit-siwe':
         specifier: workspace:*
         version: link:../siwe
-      '@rerock/wallet':
+      '@rerock/appkit-wallet':
         specifier: workspace:*
         version: link:../wallet
       '@walletconnect/utils':

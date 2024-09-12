@@ -14,7 +14,7 @@ import {
   AccountController
 } from '@rerock/appkit-core'
 import { NumberUtil } from '@rerock/appkit-common'
-import { W3mFrameRpcConstants } from '@rerock/wallet'
+import { W3mFrameRpcConstants } from '@rerock/appkit-wallet'
 
 @customElement('w3m-swap-view')
 export class W3mSwapView extends LitElement {

@@ -14,7 +14,7 @@ import { WcConstantsUtil, type BlockchainApiLookupEnsName } from '@rerock/appkit
 import { ethers } from 'ethers5'
 import type { CaipNetwork, ChainNamespace } from '@rerock/appkit-common'
 
-vi.mock('@rerock/wallet', () => ({
+vi.mock('@rerock/appkit-wallet', () => ({
   W3mFrameProvider: vi.fn().mockImplementation(() => mockAuthConnector),
   W3mFrameHelpers: {
     checkIfRequestExists: vi.fn(),
