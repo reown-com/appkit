@@ -6,7 +6,7 @@ import {
   RouterController,
   SnackController,
   ThemeController
-} from '@rerock/core'
+} from '@rerock/appkit-core'
 import { UiHelperUtil, customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'

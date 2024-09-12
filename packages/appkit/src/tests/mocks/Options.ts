@@ -1,7 +1,7 @@
-import type { ChainAdapter } from '@rerock/core'
+import type { ChainAdapter } from '@rerock/appkit-core'
 import type { AppKitOptions } from '../../utils/index.js'
 import { mainnet, solana } from '../../chains/index.js'
-import type { SdkVersion } from '@rerock/core'
+import type { SdkVersion } from '@rerock/appkit-core'
 
 export const mockOptions = {
   projectId: 'test-project-id',

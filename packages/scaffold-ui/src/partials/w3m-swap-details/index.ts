@@ -3,7 +3,7 @@ import { property, state } from 'lit/decorators.js'
 import styles from './styles.js'
 import { UiHelperUtil, customElement } from '@rerock/ui'
 import { NumberUtil } from '@rerock/appkit-common'
-import { ConstantsUtil, NetworkController, SwapController } from '@rerock/core'
+import { ConstantsUtil, NetworkController, SwapController } from '@rerock/appkit-core'
 
 // -- Constants ----------------------------------------- //
 const slippageRate = ConstantsUtil.CONVERT_SLIPPAGE_TOLERANCE

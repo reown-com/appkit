@@ -6,7 +6,7 @@ import {
   ConnectorController,
   SnackController,
   EventsController
-} from '@rerock/core'
+} from '@rerock/appkit-core'
 import { state } from 'lit/decorators.js'
 
 @customElement('w3m-email-verify-device-view')

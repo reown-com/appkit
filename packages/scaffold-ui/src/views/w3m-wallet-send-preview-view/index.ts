@@ -2,7 +2,7 @@ import { UiHelperUtil, customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
 import { state } from 'lit/decorators.js'
-import { NetworkController, RouterController, SendController } from '@rerock/core'
+import { NetworkController, RouterController, SendController } from '@rerock/appkit-core'
 
 @customElement('w3m-wallet-send-preview-view')
 export class W3mWalletSendPreviewView extends LitElement {

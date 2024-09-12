@@ -2,7 +2,7 @@ import { UiHelperUtil, customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
 import { property } from 'lit/decorators.js'
-import { ConstantsUtil, RouterController, SendController } from '@rerock/core'
+import { ConstantsUtil, RouterController, SendController } from '@rerock/appkit-core'
 import type { Balance } from '@rerock/appkit-common'
 import { NumberUtil } from '@rerock/appkit-common'
 

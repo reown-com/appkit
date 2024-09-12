@@ -7,7 +7,7 @@ import {
   NetworkController,
   RouterController,
   SendController
-} from '@rerock/core'
+} from '@rerock/appkit-core'
 
 import { state } from 'lit/decorators.js'
 import type { Balance } from '@rerock/appkit-common'

@@ -22,9 +22,9 @@ import {
   createConfig,
   getConnectors
 } from '@wagmi/core'
-import { ChainController, ConstantsUtil as CoreConstantsUtil } from '@rerock/core'
+import { ChainController, ConstantsUtil as CoreConstantsUtil } from '@rerock/appkit-core'
 import type UniversalProvider from '@walletconnect/universal-provider'
-import type { ChainAdapter } from '@rerock/core'
+import type { ChainAdapter } from '@rerock/appkit-core'
 import { prepareTransactionRequest, sendTransaction as wagmiSendTransaction } from '@wagmi/core'
 import type { Chain } from '@wagmi/core/chains'
 import { mainnet } from 'viem/chains'
@@ -42,7 +42,7 @@ import type {
   PublicStateControllerState,
   SendTransactionArgs,
   WriteContractArgs
-} from '@rerock/core'
+} from '@rerock/appkit-core'
 import { formatUnits, parseUnits } from 'viem'
 import type { Hex } from 'viem'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@rerock/scaffold-utils'

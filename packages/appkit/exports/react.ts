@@ -11,9 +11,9 @@ export * from '../src/library/react/index.js'
 
 // -- Utils & Other -----------------------------------------------------
 export * from '../src/utils/index.js'
-export type * from '@rerock/core'
+export type * from '@rerock/appkit-core'
 export type { CaipNetwork, CaipAddress, CaipNetworkId } from '@rerock/appkit-common'
-export { CoreHelperUtil, AccountController, NetworkController } from '@rerock/core'
+export { CoreHelperUtil, AccountController, NetworkController } from '@rerock/appkit-core'
 
 export let modal: AppKit | undefined = undefined
 
@@ -33,4 +33,4 @@ export type { AppKitOptions }
 
 // -- Hooks ------------------------------------------------------------
 export * from '../src/library/react/index.js'
-export { useWeb3ModalAccount, useWeb3ModalNetwork } from '@rerock/core/react'
+export { useWeb3ModalAccount, useWeb3ModalNetwork } from '@rerock/appkit-core/react'

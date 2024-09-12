@@ -1,4 +1,4 @@
-import type { ConnectorType } from '@rerock/core'
+import type { ConnectorType } from '@rerock/appkit-core'
 import { ConstantsUtil } from './ConstantsUtil.js'
 
 export const PresetsUtil = {

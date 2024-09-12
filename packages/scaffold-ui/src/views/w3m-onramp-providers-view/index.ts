@@ -9,11 +9,11 @@ import {
   BlockchainApiController,
   EventsController,
   ChainController
-} from '@rerock/core'
+} from '@rerock/appkit-core'
 import { customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
-import type { CoinbasePaySDKChainNameValues } from '@rerock/core'
+import type { CoinbasePaySDKChainNameValues } from '@rerock/appkit-core'
 import { W3mFrameRpcConstants } from '@rerock/wallet'
 
 @customElement('w3m-onramp-providers-view')

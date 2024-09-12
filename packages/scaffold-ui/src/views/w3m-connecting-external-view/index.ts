@@ -1,5 +1,5 @@
-import type { BaseError } from '@rerock/core'
-import { ConnectionController, EventsController } from '@rerock/core'
+import type { BaseError } from '@rerock/appkit-core'
+import { ConnectionController, EventsController } from '@rerock/appkit-core'
 import { ConstantsUtil } from '@rerock/scaffold-utils'
 import { customElement } from '@rerock/ui'
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'

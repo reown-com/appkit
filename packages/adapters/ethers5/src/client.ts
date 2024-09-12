@@ -14,7 +14,7 @@ import {
   ChainController,
   type CombinedProvider,
   type Connector
-} from '@rerock/core'
+} from '@rerock/appkit-core'
 import {
   EthersHelpersUtil,
   type Provider,
@@ -32,12 +32,12 @@ import {
 import { ConstantsUtil as CommonConstantsUtil } from '@rerock/appkit-common'
 import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@rerock/scaffold-utils'
 import UniversalProvider from '@walletconnect/universal-provider'
-import type { ConnectionControllerClient, NetworkControllerClient } from '@rerock/core'
-import { ConstantsUtil as CoreConstantsUtil } from '@rerock/core'
+import type { ConnectionControllerClient, NetworkControllerClient } from '@rerock/appkit-core'
+import { ConstantsUtil as CoreConstantsUtil } from '@rerock/appkit-core'
 import { WcConstantsUtil } from '@rerock/appkit'
 import { Ethers5Methods } from './utils/Ethers5Methods.js'
 import { ethers } from 'ethers5'
-import type { PublicStateControllerState } from '@rerock/core'
+import type { PublicStateControllerState } from '@rerock/appkit-core'
 import { ProviderUtil } from '@rerock/appkit/store'
 import { CoinbaseWalletSDK, type ProviderInterface } from '@coinbase/wallet-sdk'
 import { W3mFrameProviderSingleton } from '@rerock/appkit/auth-provider'

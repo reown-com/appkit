@@ -5,7 +5,7 @@ import {
   RouterController,
   CoreHelperUtil,
   SnackController
-} from '@rerock/core'
+} from '@rerock/appkit-core'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { W3mFrameRpcConstants } from '@rerock/wallet'

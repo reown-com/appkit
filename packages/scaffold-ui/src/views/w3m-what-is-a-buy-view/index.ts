@@ -1,5 +1,5 @@
 import { customElement } from '@rerock/ui'
-import { RouterController } from '@rerock/core'
+import { RouterController } from '@rerock/appkit-core'
 import { LitElement, html } from 'lit'
 
 @customElement('w3m-what-is-a-buy-view')

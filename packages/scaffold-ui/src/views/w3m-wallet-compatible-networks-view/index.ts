@@ -1,4 +1,9 @@
-import { AccountController, AssetUtil, CoreHelperUtil, NetworkController } from '@rerock/core'
+import {
+  AccountController,
+  AssetUtil,
+  CoreHelperUtil,
+  NetworkController
+} from '@rerock/appkit-core'
 import { customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 import { ifDefined } from 'lit/directives/if-defined.js'

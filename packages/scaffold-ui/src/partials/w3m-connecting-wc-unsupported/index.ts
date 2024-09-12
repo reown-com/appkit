@@ -1,4 +1,4 @@
-import { AssetUtil, EventsController, RouterController } from '@rerock/core'
+import { AssetUtil, EventsController, RouterController } from '@rerock/appkit-core'
 import { customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 import { ifDefined } from 'lit/directives/if-defined.js'

@@ -1,5 +1,5 @@
-import type { Connector } from '@rerock/core'
-import { AssetUtil, ConnectorController, RouterController } from '@rerock/core'
+import type { Connector } from '@rerock/appkit-core'
+import { AssetUtil, ConnectorController, RouterController } from '@rerock/appkit-core'
 import { customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'

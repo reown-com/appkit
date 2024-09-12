@@ -8,7 +8,7 @@ import {
   ConnectorController,
   OptionsController,
   StorageUtil
-} from '@rerock/core'
+} from '@rerock/appkit-core'
 import { ConstantsUtil as CommonConstantsUtil } from '@rerock/appkit-common'
 import { state } from 'lit/decorators.js'
 import { WalletUtil } from '../../utils/WalletUtil.js'

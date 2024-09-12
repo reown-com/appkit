@@ -1,5 +1,5 @@
-import type { WcWallet } from '@rerock/core'
-import { ConnectorController } from '@rerock/core'
+import type { WcWallet } from '@rerock/appkit-core'
+import { ConnectorController } from '@rerock/appkit-core'
 
 export function markWalletsAsInstalled(wallets: WcWallet[]) {
   const { connectors } = ConnectorController.state

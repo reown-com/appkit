@@ -6,7 +6,7 @@ import {
   RouterController,
   StorageUtil,
   type SocialProvider
-} from '@rerock/core'
+} from '@rerock/appkit-core'
 
 @customElement('w3m-account-auth-button')
 export class W3mAccountAuthButton extends LitElement {

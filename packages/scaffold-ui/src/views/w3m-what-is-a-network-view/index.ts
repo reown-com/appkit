@@ -1,4 +1,4 @@
-import { CoreHelperUtil } from '@rerock/core'
+import { CoreHelperUtil } from '@rerock/appkit-core'
 import { customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 

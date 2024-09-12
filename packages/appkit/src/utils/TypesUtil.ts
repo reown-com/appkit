@@ -8,7 +8,7 @@ import type {
   ThemeMode,
   Tokens,
   ProjectId
-} from '@rerock/core'
+} from '@rerock/appkit-core'
 import type { SIWEControllerClient, Web3ModalSIWEClient } from '@rerock/siwe'
 
 export type AppKitOptions = {

@@ -8,7 +8,7 @@ import {
   NetworkController,
   RouterController,
   AccountController
-} from '@rerock/core'
+} from '@rerock/appkit-core'
 import { state } from 'lit/decorators.js'
 
 @customElement('w3m-email-verify-otp-view')

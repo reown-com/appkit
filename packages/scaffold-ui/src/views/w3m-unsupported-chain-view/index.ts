@@ -9,7 +9,7 @@ import {
   NetworkController,
   RouterController,
   SnackController
-} from '@rerock/core'
+} from '@rerock/appkit-core'
 import type { CaipNetwork } from '@rerock/appkit-common'
 import { customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'

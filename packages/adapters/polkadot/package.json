@@ -11,7 +11,7 @@
   "dependencies": {
     "@rerock/appkit": "workspace:*",
     "@rerock/appkit-common": "workspace:*",
-    "@rerock/core": "workspace:*"
+    "@rerock/appkit-core": "workspace:*"
   },
   "devDependencies": {
     "vitest": "2.0.3",

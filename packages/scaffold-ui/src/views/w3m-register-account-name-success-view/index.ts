@@ -1,5 +1,5 @@
 import { customElement } from '@rerock/ui'
-import { CoreHelperUtil, RouterController } from '@rerock/core'
+import { CoreHelperUtil, RouterController } from '@rerock/appkit-core'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
 import { NavigationUtil } from '@rerock/appkit-common'

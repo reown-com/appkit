@@ -7,7 +7,7 @@ import type {
   RouterControllerState,
   ChainAdapter,
   SdkVersion
-} from '@rerock/core'
+} from '@rerock/appkit-core'
 import {
   AccountController,
   BlockchainApiController,
@@ -25,7 +25,7 @@ import {
   OptionsController,
   NetworkController,
   AssetUtil
-} from '@rerock/core'
+} from '@rerock/appkit-core'
 import { setColorTheme, setThemeVariables } from '@rerock/ui'
 import { ConstantsUtil, type CaipNetwork, type ChainNamespace } from '@rerock/appkit-common'
 import type { AppKitOptions } from './utils/TypesUtil.js'

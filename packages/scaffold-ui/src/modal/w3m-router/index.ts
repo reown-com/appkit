@@ -1,5 +1,5 @@
-import type { RouterControllerState } from '@rerock/core'
-import { RouterController, TooltipController } from '@rerock/core'
+import type { RouterControllerState } from '@rerock/appkit-core'
+import { RouterController, TooltipController } from '@rerock/appkit-core'
 import { customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'

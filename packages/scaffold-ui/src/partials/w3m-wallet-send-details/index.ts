@@ -2,7 +2,7 @@ import { UiHelperUtil, customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
 import { property } from 'lit/decorators.js'
-import { AssetUtil, RouterController } from '@rerock/core'
+import { AssetUtil, RouterController } from '@rerock/appkit-core'
 import { type CaipNetwork } from '@rerock/appkit-common'
 import { ifDefined } from 'lit/directives/if-defined.js'
 

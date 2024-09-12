@@ -11,7 +11,7 @@ import {
   ConstantsUtil as CommonConstantsUtil,
   OptionsController,
   ChainController
-} from '@rerock/core'
+} from '@rerock/appkit-core'
 import { customElement, UiHelperUtil } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'

@@ -7,7 +7,7 @@ import {
   ConnectorController,
   ThemeController,
   RouterController
-} from '@rerock/core'
+} from '@rerock/appkit-core'
 import { getW3mThemeVariables } from '@rerock/appkit-common'
 
 // -- Variables ------------------------------------------- //

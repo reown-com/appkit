@@ -1,7 +1,7 @@
 import { customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
-import { AccountController, OptionsController } from '@rerock/core'
+import { AccountController, OptionsController } from '@rerock/appkit-core'
 
 @customElement('w3m-connecting-siwe')
 export class W3mConnectingSiwe extends LitElement {

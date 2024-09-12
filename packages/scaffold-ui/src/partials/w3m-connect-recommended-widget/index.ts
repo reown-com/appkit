@@ -1,4 +1,4 @@
-import type { WcWallet } from '@rerock/core'
+import type { WcWallet } from '@rerock/appkit-core'
 import {
   ApiController,
   AssetUtil,
@@ -6,7 +6,7 @@ import {
   OptionsController,
   RouterController,
   StorageUtil
-} from '@rerock/core'
+} from '@rerock/appkit-core'
 import { customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'

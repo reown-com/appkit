@@ -5,7 +5,7 @@ import {
   EventsController,
   ModalController,
   NetworkController
-} from '@rerock/core'
+} from '@rerock/appkit-core'
 import type { WuiNetworkButton } from '@rerock/ui'
 import { customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'

@@ -1,4 +1,4 @@
-import { AccountController, EventsController, RouterController } from '@rerock/core'
+import { AccountController, EventsController, RouterController } from '@rerock/appkit-core'
 import { customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'

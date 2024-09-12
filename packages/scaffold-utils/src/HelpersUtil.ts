@@ -1,4 +1,4 @@
-import type { Tokens } from '@rerock/core'
+import type { Tokens } from '@rerock/appkit-core'
 import { ConstantsUtil } from './ConstantsUtil.js'
 import type { CaipNetworkId } from '@rerock/appkit-common'
 

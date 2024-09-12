@@ -1,4 +1,4 @@
-import { OptionsController } from '@rerock/core'
+import { OptionsController } from '@rerock/appkit-core'
 import { customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'

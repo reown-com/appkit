@@ -1,5 +1,10 @@
 import { customElement } from '@rerock/ui'
-import { AccountController, CoreHelperUtil, EventsController, RouterController } from '@rerock/core'
+import {
+  AccountController,
+  CoreHelperUtil,
+  EventsController,
+  RouterController
+} from '@rerock/appkit-core'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'

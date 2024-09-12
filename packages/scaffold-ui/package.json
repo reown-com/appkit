@@ -30,7 +30,7 @@
   "dependencies": {
     "@rerock/appkit-common": "workspace:*",
     "@rerock/scaffold-utils": "workspace:*",
-    "@rerock/core": "workspace:*",
+    "@rerock/appkit-core": "workspace:*",
     "@rerock/ui": "workspace:*",
     "lit": "3.1.0",
     "@rerock/siwe": "workspace:*",

@@ -1,4 +1,4 @@
-import { ConnectionController, CoreHelperUtil, EventsController } from '@rerock/core'
+import { ConnectionController, CoreHelperUtil, EventsController } from '@rerock/appkit-core'
 import { customElement } from '@rerock/ui'
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 

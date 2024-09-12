@@ -5,7 +5,7 @@ import {
   SnackController,
   ConnectorController,
   CoreHelperUtil
-} from '@rerock/core'
+} from '@rerock/appkit-core'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
 import { W3mFrameHelpers } from '@rerock/wallet'

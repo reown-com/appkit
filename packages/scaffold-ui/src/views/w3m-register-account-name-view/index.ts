@@ -9,7 +9,7 @@ import {
   EnsController,
   EventsController,
   AccountController
-} from '@rerock/core'
+} from '@rerock/appkit-core'
 import { W3mFrameRpcConstants } from '@rerock/wallet'
 
 @customElement('w3m-register-account-name-view')

@@ -7,7 +7,7 @@ import {
   type ConnectionControllerClient,
   type Connector,
   type NetworkControllerClient
-} from '@rerock/core'
+} from '@rerock/appkit-core'
 import { ConstantsUtil, PresetsUtil } from '@rerock/scaffold-utils'
 import UniversalProvider from '@walletconnect/universal-provider'
 import type { UniversalProviderOpts } from '@walletconnect/universal-provider'

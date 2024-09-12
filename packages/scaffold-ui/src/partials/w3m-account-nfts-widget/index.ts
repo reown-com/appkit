@@ -1,4 +1,4 @@
-import { RouterController } from '@rerock/core'
+import { RouterController } from '@rerock/appkit-core'
 import { customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 

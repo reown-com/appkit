@@ -1,7 +1,7 @@
 import { customElement, MathUtil } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
-import { RouterController, SwapController, type SwapTokenWithBalance } from '@rerock/core'
+import { RouterController, SwapController, type SwapTokenWithBalance } from '@rerock/appkit-core'
 import { state } from 'lit/decorators.js'
 
 @customElement('w3m-swap-select-token-view')

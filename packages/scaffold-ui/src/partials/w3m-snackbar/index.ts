@@ -1,4 +1,4 @@
-import { SnackController } from '@rerock/core'
+import { SnackController } from '@rerock/appkit-core'
 import { customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'

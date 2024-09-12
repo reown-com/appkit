@@ -9,7 +9,7 @@ import { fallback, http, type Hex } from 'viem'
 
 import type { Chain } from '@wagmi/core/chains'
 import type { Connector } from '@wagmi/core'
-import { CoreHelperUtil } from '@rerock/core'
+import { CoreHelperUtil } from '@rerock/appkit-core'
 
 export function getCaipDefaultNetwork(chain?: CaipNetwork) {
   if (!chain) {

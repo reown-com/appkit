@@ -1,5 +1,10 @@
-import type { WcWallet } from '@rerock/core'
-import { ApiController, AssetUtil, ConnectorController, RouterController } from '@rerock/core'
+import type { WcWallet } from '@rerock/appkit-core'
+import {
+  ApiController,
+  AssetUtil,
+  ConnectorController,
+  RouterController
+} from '@rerock/appkit-core'
 import { customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 import { ifDefined } from 'lit/directives/if-defined.js'

@@ -1,5 +1,5 @@
 {
-  "name": "@rerock/core",
+  "name": "@rerock/appkit-core",
   "version": "0.0.3",
   "type": "module",
   "main": "./dist/esm/exports/index.js",

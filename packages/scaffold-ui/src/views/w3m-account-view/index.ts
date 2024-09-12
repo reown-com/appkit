@@ -1,4 +1,4 @@
-import { ConnectorController, StorageUtil } from '@rerock/core'
+import { ConnectorController, StorageUtil } from '@rerock/appkit-core'
 import { customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 

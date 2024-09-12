@@ -12,7 +12,7 @@ import {
   type SwapInputTarget,
   EventsController,
   AccountController
-} from '@rerock/core'
+} from '@rerock/appkit-core'
 import { NumberUtil } from '@rerock/appkit-common'
 import { W3mFrameRpcConstants } from '@rerock/wallet'
 

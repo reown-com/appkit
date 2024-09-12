@@ -13,7 +13,7 @@ import {
   BlockchainApiController,
   NetworkController,
   StorageUtil
-} from '@rerock/core'
+} from '@rerock/appkit-core'
 
 @customElement('wui-list-account')
 export class WuiListAccount extends LitElement {

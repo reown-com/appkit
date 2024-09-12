@@ -4,7 +4,7 @@ import { AppKit } from '@rerock/appkit'
 import { EVMWagmiClient } from '../../client'
 import { arbitrum, mainnet } from '@rerock/appkit/chains'
 import type { CaipNetwork } from '@rerock/appkit-common'
-import type { SdkVersion } from '@rerock/core'
+import type { SdkVersion } from '@rerock/appkit-core'
 
 const privateKey = generatePrivateKey()
 export const mockAccount = privateKeyToAccount(privateKey)

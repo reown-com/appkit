@@ -2,7 +2,7 @@ import { html, LitElement } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { customElement } from '@rerock/ui'
 import styles from './styles.js'
-import { ModalController, RouterController, TooltipController } from '@rerock/core'
+import { ModalController, RouterController, TooltipController } from '@rerock/appkit-core'
 
 @customElement('w3m-tooltip-trigger')
 export class WuiTooltipTrigger extends LitElement {

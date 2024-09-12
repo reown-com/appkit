@@ -1,4 +1,4 @@
-import { CoreHelperUtil, RouterController } from '@rerock/core'
+import { CoreHelperUtil, RouterController } from '@rerock/appkit-core'
 import { customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'

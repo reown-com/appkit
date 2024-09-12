@@ -7,7 +7,7 @@ import {
   CoreHelperUtil,
   EventsController,
   NetworkController
-} from '@rerock/core'
+} from '@rerock/appkit-core'
 import {
   ConstantsUtil as CommonConstantsUtil,
   SafeLocalStorage,
@@ -26,7 +26,7 @@ import type {
   ConnectionControllerClient,
   NetworkControllerClient,
   Connector
-} from '@rerock/core'
+} from '@rerock/appkit-core'
 import type { AdapterType, CaipAddress, CaipNetwork, CaipNetworkId } from '@rerock/appkit-common'
 import type { ChainNamespace } from '@rerock/appkit-common'
 
@@ -35,7 +35,7 @@ import { WalletConnectProvider } from './providers/WalletConnectProvider.js'
 import { AuthProvider } from './providers/AuthProvider.js'
 import { createSendTransaction } from './utils/createSendTransaction.js'
 import { W3mFrameHelpers, W3mFrameRpcConstants, type W3mFrameTypes } from '@rerock/wallet'
-import { ConstantsUtil as CoreConstantsUtil } from '@rerock/core'
+import { ConstantsUtil as CoreConstantsUtil } from '@rerock/appkit-core'
 import { withSolanaNamespace } from './utils/withSolanaNamespace.js'
 import type { AppKit } from '@rerock/appkit'
 import type { AppKitOptions } from '@rerock/appkit'

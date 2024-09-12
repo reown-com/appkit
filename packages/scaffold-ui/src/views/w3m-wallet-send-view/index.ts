@@ -7,7 +7,7 @@ import {
   RouterController,
   SendController,
   ChainController
-} from '@rerock/core'
+} from '@rerock/appkit-core'
 import { state } from 'lit/decorators.js'
 
 @customElement('w3m-wallet-send-view')

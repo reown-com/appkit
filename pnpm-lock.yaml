@@ -700,7 +700,7 @@ importers:
       '@rerock/appkit-common':
         specifier: workspace:*
         version: link:../../common
-      '@rerock/core':
+      '@rerock/appkit-core':
         specifier: workspace:*
         version: link:../../core
       '@rerock/polyfills':
@@ -758,7 +758,7 @@ importers:
       '@rerock/appkit-common':
         specifier: workspace:*
         version: link:../../common
-      '@rerock/core':
+      '@rerock/appkit-core':
         specifier: workspace:*
         version: link:../../core
       '@rerock/polyfills':
@@ -816,7 +816,7 @@ importers:
       '@rerock/appkit-common':
         specifier: workspace:*
         version: link:../../common
-      '@rerock/core':
+      '@rerock/appkit-core':
         specifier: workspace:*
         version: link:../../core
     devDependencies:
@@ -835,7 +835,7 @@ importers:
       '@rerock/appkit-common':
         specifier: workspace:*
         version: link:../../common
-      '@rerock/core':
+      '@rerock/appkit-core':
         specifier: workspace:*
         version: link:../../core
       '@rerock/polyfills':
@@ -933,7 +933,7 @@ importers:
       '@rerock/appkit-common':
         specifier: workspace:*
         version: link:../../common
-      '@rerock/core':
+      '@rerock/appkit-core':
         specifier: workspace:*
         version: link:../../core
       '@rerock/polyfills':
@@ -1000,7 +1000,7 @@ importers:
       '@rerock/appkit-common':
         specifier: workspace:*
         version: link:../common
-      '@rerock/core':
+      '@rerock/appkit-core':
         specifier: workspace:*
         version: link:../core
       '@rerock/polyfills':
@@ -1281,7 +1281,7 @@ importers:
       '@rerock/appkit-common':
         specifier: workspace:*
         version: link:../common
-      '@rerock/core':
+      '@rerock/appkit-core':
         specifier: workspace:*
         version: link:../core
       '@rerock/scaffold-utils':
@@ -1305,7 +1305,7 @@ importers:
       '@rerock/appkit-common':
         specifier: workspace:*
         version: link:../common
-      '@rerock/core':
+      '@rerock/appkit-core':
         specifier: workspace:*
         version: link:../core
       '@rerock/polyfills':
@@ -1336,7 +1336,7 @@ importers:
       '@rerock/appkit-common':
         specifier: workspace:*
         version: link:../common
-      '@rerock/core':
+      '@rerock/appkit-core':
         specifier: workspace:*
         version: link:../core
       '@rerock/scaffold-utils':
@@ -1372,7 +1372,7 @@ importers:
       '@rerock/appkit-common':
         specifier: workspace:*
         version: link:../common
-      '@rerock/core':
+      '@rerock/appkit-core':
         specifier: workspace:*
         version: link:../core
       '@rerock/polyfills':
@@ -1461,7 +1461,7 @@ importers:
       '@rerock/appkit-common':
         specifier: workspace:*
         version: link:../common
-      '@rerock/core':
+      '@rerock/appkit-core':
         specifier: workspace:*
         version: link:../core
       '@rerock/wallet':

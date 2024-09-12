@@ -9,7 +9,7 @@ import {
   OnRampController,
   type PaymentCurrency,
   type PurchaseCurrency
-} from '@rerock/core'
+} from '@rerock/appkit-core'
 
 type Currency = {
   name: string

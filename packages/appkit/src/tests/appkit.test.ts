@@ -19,12 +19,12 @@ import {
   ConnectorController,
   ChainController,
   type Connector
-} from '@rerock/core'
+} from '@rerock/appkit-core'
 import type { CaipNetwork } from '@rerock/appkit-common'
 import { mockOptions } from './mocks/Options'
 
 // Mock all controllers and UniversalAdapterClient
-vi.mock('@rerock/core')
+vi.mock('@rerock/appkit-core')
 vi.mock('../universal-adapter/client')
 
 describe('Base', () => {

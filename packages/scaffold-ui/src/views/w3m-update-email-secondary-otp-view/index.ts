@@ -1,7 +1,7 @@
 import { customElement } from '@rerock/ui'
 import { W3mEmailOtpWidget } from '../../utils/w3m-email-otp-widget/index.js'
 import type { OnOtpSubmitFn } from '../../utils/w3m-email-otp-widget/index.js'
-import { EventsController, RouterController } from '@rerock/core'
+import { EventsController, RouterController } from '@rerock/appkit-core'
 
 @customElement('w3m-update-email-secondary-otp-view')
 export class W3mUpdateEmailSecondaryOtpView extends W3mEmailOtpWidget {

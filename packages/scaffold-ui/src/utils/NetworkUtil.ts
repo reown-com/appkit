@@ -1,5 +1,5 @@
 import { ConstantsUtil } from '@rerock/appkit-common'
-import { ChainController, OptionsController, RouterUtil } from '@rerock/core'
+import { ChainController, OptionsController, RouterUtil } from '@rerock/appkit-core'
 
 export const NetworkUtil = {
   onNetworkChange: async () => {

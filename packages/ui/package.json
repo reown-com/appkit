@@ -24,7 +24,7 @@
     "@types/qrcode": "1.5.5",
     "@rerock/appkit-common": "workspace:*",
     "@rerock/wallet": "workspace:*",
-    "@rerock/core": "workspace:*",
+    "@rerock/appkit-core": "workspace:*",
     "eslint-plugin-lit": "1.11.0",
     "eslint-plugin-wc": "2.0.4",
     "vitest": "2.0.3",

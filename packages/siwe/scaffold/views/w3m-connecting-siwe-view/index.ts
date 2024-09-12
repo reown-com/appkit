@@ -7,7 +7,7 @@ import {
   OptionsController,
   RouterController,
   SnackController
-} from '@rerock/core'
+} from '@rerock/appkit-core'
 import { customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'

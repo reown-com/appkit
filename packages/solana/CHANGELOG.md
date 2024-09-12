@@ -12,7 +12,7 @@
   - @rerock/appkit-adapter-solana@0.0.3
   - @rerock/appkit@0.0.3
   - @rerock/appkit-common@0.0.3
-  - @rerock/core@0.0.3
+  - @rerock/appkit-core@0.0.3
   - @rerock/polyfills@0.0.3
   - @rerock/scaffold-utils@0.0.3
   - @rerock/wallet@0.0.3

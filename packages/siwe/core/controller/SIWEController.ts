@@ -6,7 +6,7 @@ import type {
   SIWECreateMessageArgs,
   SIWEVerifyMessageArgs
 } from '../utils/TypeUtils.js'
-import { AccountController, OptionsController } from '@rerock/core'
+import { AccountController, OptionsController } from '@rerock/appkit-core'
 import type { SIWEStatus } from '@rerock/appkit-common'
 
 // -- Types --------------------------------------------- //

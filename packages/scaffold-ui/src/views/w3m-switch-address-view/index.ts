@@ -7,7 +7,7 @@ import {
   OptionsController,
   StorageUtil,
   type AccountType
-} from '@rerock/core'
+} from '@rerock/appkit-core'
 import { UiHelperUtil, customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'

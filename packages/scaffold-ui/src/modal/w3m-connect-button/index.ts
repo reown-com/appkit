@@ -1,4 +1,4 @@
-import { ModalController } from '@rerock/core'
+import { ModalController } from '@rerock/appkit-core'
 import type { WuiConnectButton } from '@rerock/ui'
 import { customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'

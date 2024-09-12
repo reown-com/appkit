@@ -15,7 +15,7 @@ import type {
   EstimateGasTransactionArgs,
   SendTransactionArgs,
   WriteContractArgs
-} from '@rerock/core'
+} from '@rerock/appkit-core'
 import { ConstantsUtil } from '@rerock/appkit-common'
 import type { AppKit } from '@rerock/appkit'
 

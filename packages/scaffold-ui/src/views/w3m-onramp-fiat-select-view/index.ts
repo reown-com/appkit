@@ -1,5 +1,5 @@
-import { OnRampController, ModalController, AssetController } from '@rerock/core'
-import type { PaymentCurrency } from '@rerock/core'
+import { OnRampController, ModalController, AssetController } from '@rerock/appkit-core'
+import type { PaymentCurrency } from '@rerock/appkit-core'
 import { customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'

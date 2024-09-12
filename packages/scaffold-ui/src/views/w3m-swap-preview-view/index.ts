@@ -6,7 +6,7 @@ import {
   NetworkController,
   RouterController,
   SwapController
-} from '@rerock/core'
+} from '@rerock/appkit-core'
 import { state } from 'lit/decorators.js'
 
 @customElement('w3m-swap-preview-view')

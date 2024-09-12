@@ -5,7 +5,7 @@ import {
   CoreHelperUtil,
   ModalController,
   NetworkController
-} from '@rerock/core'
+} from '@rerock/appkit-core'
 
 import type { WuiAccountButton } from '@rerock/ui'
 import { customElement } from '@rerock/ui'
