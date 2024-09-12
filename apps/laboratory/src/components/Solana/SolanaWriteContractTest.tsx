@@ -14,7 +14,7 @@ import { useWeb3ModalNetwork, useWeb3ModalProvider } from '@rerock/base/react'
 import { COUNTER_ACCOUNT_SIZE } from '../../utils/SolanaConstants'
 import { deserializeCounterAccount, detectProgramId } from '../../utils/SolanaUtil'
 import { useChakraToast } from '../Toast'
-import { useWeb3ModalConnection, type Provider } from '@rerock/adapter-solana/react'
+import { useWeb3ModalConnection, type Provider } from '@rerock/appkit-adapter-solana/react'
 
 export function SolanaWriteContractTest() {
   const toast = useChakraToast()

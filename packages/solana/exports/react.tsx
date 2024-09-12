@@ -5,7 +5,7 @@ import {
   SolanaWeb3JsClient,
   type Provider,
   useWeb3ModalConnection
-} from '@rerock/adapter-solana/react'
+} from '@rerock/appkit-adapter-solana/react'
 import { getWeb3Modal } from '@rerock/base/library/react'
 import type { SolanaAppKitOptions } from './options.js'
 import { ConstantsUtil } from '@rerock/scaffold-utils'

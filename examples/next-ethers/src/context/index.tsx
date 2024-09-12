@@ -1,7 +1,7 @@
 'use client'
 
 import { createWeb3Modal } from '@rerock/base/react'
-import { EVMEthersClient } from '@rerock/adapter-ethers'
+import { EVMEthersClient } from '@rerock/appkit-adapter-ethers'
 import { mainnet, arbitrum, avalanche, base, optimism, polygon } from '@rerock/base/chains'
 import { type ReactNode } from 'react'
 

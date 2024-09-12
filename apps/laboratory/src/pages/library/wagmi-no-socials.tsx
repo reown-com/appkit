@@ -7,7 +7,7 @@ import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@rerock/base/chains'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
-import { EVMWagmiClient } from '@rerock/adapter-wagmi'
+import { EVMWagmiClient } from '@rerock/appkit-adapter-wagmi'
 
 const queryClient = new QueryClient()
 

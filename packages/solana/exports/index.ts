@@ -1,7 +1,7 @@
 import { AppKit } from '@rerock/base'
-import { SolanaWeb3JsClient } from '@rerock/adapter-solana'
+import { SolanaWeb3JsClient } from '@rerock/appkit-adapter-solana'
 import type { SolanaAppKitOptions } from './options'
-import type { Provider } from '@rerock/adapter-solana'
+import type { Provider } from '@rerock/appkit-adapter-solana'
 import { ConstantsUtil } from '@rerock/scaffold-utils'
 
 // -- Types -------------------------------------------------------------

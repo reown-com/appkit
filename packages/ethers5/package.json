@@ -50,7 +50,7 @@
     "@rerock/wallet": "workspace:*",
     "@rerock/polyfills": "workspace:*",
     "@rerock/scaffold-utils": "workspace:*",
-    "@rerock/adapter-ethers5": "workspace:*",
+    "@rerock/appkit-adapter-ethers5": "workspace:*",
     "@rerock/siwe": "workspace:*",
     "valtio": "1.11.2"
   },

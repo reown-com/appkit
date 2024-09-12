@@ -7,7 +7,7 @@ import { siweConfig } from '../../utils/SiweUtils'
 import { Ethers5Tests } from '../../components/Ethers/Ethers5Tests'
 import { Ethers5ModalInfo } from '../../components/Ethers/Ethers5ModalInfo'
 import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@rerock/base/chains'
-import { EVMEthers5Client } from '@rerock/adapter-ethers5'
+import { EVMEthers5Client } from '@rerock/appkit-adapter-ethers5'
 
 const ethers5Adapter = new EVMEthers5Client()
 

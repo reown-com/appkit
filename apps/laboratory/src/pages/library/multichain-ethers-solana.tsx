@@ -1,6 +1,6 @@
 import { createWeb3Modal } from '@rerock/base/react'
-import { EVMEthersClient } from '@rerock/adapter-ethers'
-import { SolanaWeb3JsClient } from '@rerock/adapter-solana'
+import { EVMEthersClient } from '@rerock/appkit-adapter-ethers'
+import { SolanaWeb3JsClient } from '@rerock/appkit-adapter-solana'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { mainnet, solana, arbitrum, optimism } from '@rerock/base/chains'

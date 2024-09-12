@@ -53,7 +53,7 @@
   "dependencies": {
     "@walletconnect/utils": "2.16.1",
     "@rerock/polyfills": "workspace:*",
-    "@rerock/adapter-wagmi": "workspace:*",
+    "@rerock/appkit-adapter-wagmi": "workspace:*",
     "@rerock/base": "workspace:*",
     "@rerock/wallet": "workspace:*",
     "@rerock/common": "workspace:*",

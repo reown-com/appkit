@@ -6,7 +6,7 @@ import { WagmiTests } from '../../components/Wagmi/WagmiTests'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
 
-import { EVMWagmiClient } from '@rerock/adapter-wagmi'
+import { EVMWagmiClient } from '@rerock/appkit-adapter-wagmi'
 import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@rerock/base/chains'
 
 // Special project ID with verify enabled on localhost

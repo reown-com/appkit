@@ -1,5 +1,5 @@
 {
-  "name": "@rerock/adapter-polkadot",
+  "name": "@rerock/appkit-adapter-polkadot",
   "scripts": {
     "build:clean": "rm -rf dist",
     "build": "tsc --build tsconfig.build.json",

@@ -1,4 +1,4 @@
-import { EVMWagmiClient } from '@rerock/adapter-wagmi'
+import { EVMWagmiClient } from '@rerock/appkit-adapter-wagmi'
 import { mainnet as wagmiMainnet } from 'viem/chains'
 import { createConfig, http } from 'wagmi'
 import { mock } from 'wagmi/connectors'

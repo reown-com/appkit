@@ -1,4 +1,4 @@
-import { EVMEthers5Client } from '@rerock/adapter-ethers5'
+import { EVMEthers5Client } from '@rerock/appkit-adapter-ethers5'
 import {
   createWeb3Modal,
   useWeb3Modal,

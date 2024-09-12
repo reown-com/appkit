@@ -46,7 +46,7 @@
     "@coinbase/wallet-sdk": "4.0.3",
     "@walletconnect/utils": "2.16.1",
     "@rerock/base": "workspace:*",
-    "@rerock/adapter-ethers": "workspace:*",
+    "@rerock/appkit-adapter-ethers": "workspace:*",
     "@rerock/common": "workspace:*",
     "@rerock/wallet": "workspace:*",
     "@rerock/polyfills": "workspace:*",

@@ -6,7 +6,7 @@ import { useWeb3ModalNetwork, useWeb3ModalProvider } from '@rerock/base/react'
 import { solana } from '@rerock/base/chains'
 import { useChakraToast } from '../Toast'
 import bs58 from 'bs58'
-import { useWeb3ModalConnection, type Provider } from '@rerock/adapter-solana/react'
+import { useWeb3ModalConnection, type Provider } from '@rerock/appkit-adapter-solana/react'
 
 export function SolanaSignJupiterSwapTest() {
   const toast = useChakraToast()

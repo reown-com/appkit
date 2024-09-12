@@ -9,7 +9,7 @@ import {
   Connection
 } from '@solana/web3.js'
 
-import { type Provider, useWeb3ModalConnection } from '@rerock/adapter-solana/react'
+import { type Provider, useWeb3ModalConnection } from '@rerock/appkit-adapter-solana/react'
 import { useWeb3ModalNetwork, useWeb3ModalProvider } from '@rerock/base/react'
 
 import { solana } from '@rerock/base/chains'

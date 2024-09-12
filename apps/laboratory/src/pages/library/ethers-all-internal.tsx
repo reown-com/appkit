@@ -6,7 +6,7 @@ import { AppKitButtons } from '../../components/AppKitButtons'
 import { siweConfig } from '../../utils/SiweUtils'
 import { SiweData } from '../../components/Siwe/SiweData'
 import { EthersModalInfo } from '../../components/Ethers/EthersModalInfo'
-import { EVMEthersClient } from '@rerock/adapter-ethers'
+import { EVMEthersClient } from '@rerock/appkit-adapter-ethers'
 import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@rerock/base/chains'
 
 const ethersAdapter = new EVMEthersClient()

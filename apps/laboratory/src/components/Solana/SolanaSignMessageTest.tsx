@@ -4,7 +4,7 @@ import { useWeb3ModalProvider } from '@rerock/base/react'
 
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { useChakraToast } from '../Toast'
-import type { Provider } from '@rerock/adapter-solana'
+import type { Provider } from '@rerock/appkit-adapter-solana'
 
 export function SolanaSignMessageTest() {
   const toast = useChakraToast()

@@ -1,6 +1,6 @@
 import { AppKit } from '@rerock/base'
 import type { AppKitOptions } from '@rerock/base'
-import { EVMWagmiClient, type AdapterOptions } from '@rerock/adapter-wagmi'
+import { EVMWagmiClient, type AdapterOptions } from '@rerock/appkit-adapter-wagmi'
 import { getWeb3Modal } from '@rerock/base/library/vue'
 import type { Config } from '@wagmi/core'
 import { ConstantsUtil } from '@rerock/scaffold-utils'

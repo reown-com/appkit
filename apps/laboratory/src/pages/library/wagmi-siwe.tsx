@@ -8,7 +8,7 @@ import { SiweData } from '../../components/Siwe/SiweData'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { siweConfig } from '../../utils/SiweUtils'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
-import { EVMWagmiClient } from '@rerock/adapter-wagmi'
+import { EVMWagmiClient } from '@rerock/appkit-adapter-wagmi'
 import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@rerock/base/chains'
 
 const queryClient = new QueryClient()

@@ -1,5 +1,5 @@
 import { cookieStorage, createStorage } from '@wagmi/core'
-import { EVMWagmiClient } from '@rerock/adapter-wagmi'
+import { EVMWagmiClient } from '@rerock/appkit-adapter-wagmi'
 import { mainnet, arbitrum, avalanche, base, optimism, polygon } from '@rerock/base/chains'
 
 export const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']

@@ -1,5 +1,5 @@
 {
-  "name": "@rerock/adapter-ethers5",
+  "name": "@rerock/appkit-adapter-ethers5",
   "version": "0.0.3",
   "type": "module",
   "main": "./dist/esm/src/index.js",

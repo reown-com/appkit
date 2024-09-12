@@ -1,4 +1,4 @@
-# @rerock/adapter-wagmi
+# @rerock/appkit-adapter-wagmi
 
 ## 0.0.3
 

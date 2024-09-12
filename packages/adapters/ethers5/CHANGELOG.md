@@ -1,4 +1,4 @@
-# @rerock/adapter-ethers5
+# @rerock/appkit-adapter-ethers5
 
 ## 0.0.3
 

@@ -1,5 +1,5 @@
 import { arbitrum, mainnet } from '@rerock/base/chains'
-import { EVMWagmiClient } from '@rerock/adapter-wagmi'
+import { EVMWagmiClient } from '@rerock/appkit-adapter-wagmi'
 import { createWeb3Modal } from '@rerock/base'
 
 // @ts-expect-error 1. Get projectId

@@ -1,5 +1,5 @@
 import { createWeb3Modal, type CaipNetwork } from '@rerock/base/react'
-import { SolanaWeb3JsClient } from '@rerock/adapter-solana/react'
+import { SolanaWeb3JsClient } from '@rerock/appkit-adapter-solana/react'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { solana, solanaDevnet, solanaTestnet } from '@rerock/base/chains'
