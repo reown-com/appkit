@@ -9,7 +9,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@rerock/common": "workspace:*",
+    "@rerock/appkit-common": "workspace:*",
     "@rerock/ui": "workspace:*",
     "lit": "3.1.0",
     "react": "18.2.0",

@@ -8,7 +8,7 @@ export * from '@rerock/scaffold-ui'
 // -- Utils & Other -----------------------------------------------------
 export * from '../src/utils/index.js'
 export type * from '@rerock/core'
-export type { CaipNetwork, CaipAddress, CaipNetworkId } from '@rerock/common'
+export type { CaipNetwork, CaipAddress, CaipNetworkId } from '@rerock/appkit-common'
 export { CoreHelperUtil, AccountController, NetworkController } from '@rerock/core'
 
 type CreateWeb3Modal = Omit<AppKitOptions, 'sdkType' | 'sdkVersion'>

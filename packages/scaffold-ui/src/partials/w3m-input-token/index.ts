@@ -3,8 +3,8 @@ import { LitElement, html } from 'lit'
 import styles from './styles.js'
 import { property } from 'lit/decorators.js'
 import { ConstantsUtil, RouterController, SendController } from '@rerock/core'
-import type { Balance } from '@rerock/common'
-import { NumberUtil } from '@rerock/common'
+import type { Balance } from '@rerock/appkit-common'
+import { NumberUtil } from '@rerock/appkit-common'
 
 @customElement('w3m-input-token')
 export class W3mInputToken extends LitElement {

@@ -10,7 +10,7 @@ import {
   RouterController,
   SnackController
 } from '@rerock/core'
-import type { CaipNetwork } from '@rerock/common'
+import type { CaipNetwork } from '@rerock/appkit-common'
 import { customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'

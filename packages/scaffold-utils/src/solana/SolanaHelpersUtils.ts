@@ -1,5 +1,5 @@
-import type { CaipNetwork } from '@rerock/common'
-import { ConstantsUtil as CommonConstantsUtil } from '@rerock/common'
+import type { CaipNetwork } from '@rerock/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil } from '@rerock/appkit-common'
 
 import { SolConstantsUtil } from './SolanaConstantsUtil.js'
 import type { Provider } from './SolanaTypesUtil.js'

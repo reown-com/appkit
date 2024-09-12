@@ -20,8 +20,8 @@ import type {
   CaipAddress,
   ChainNamespace,
   AdapterType
-} from '@rerock/common'
-import { SafeLocalStorage, SafeLocalStorageKeys } from '@rerock/common'
+} from '@rerock/appkit-common'
+import { SafeLocalStorage, SafeLocalStorageKeys } from '@rerock/appkit-common'
 import { ProviderUtil } from '@rerock/appkit/store'
 import type { AppKitOptions } from '../utils/TypesUtil.js'
 import { allChains } from '../chains/index.js'

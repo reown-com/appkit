@@ -1,4 +1,4 @@
-import { ConstantsUtil, type CaipNetwork } from '@rerock/common'
+import { ConstantsUtil, type CaipNetwork } from '@rerock/appkit-common'
 
 export const solana = {
   id: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',

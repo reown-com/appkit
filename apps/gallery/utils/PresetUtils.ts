@@ -28,7 +28,7 @@ import type {
   TransactionType,
   VisualType
 } from '@rerock/ui/src/utils/TypeUtil'
-import type { TransactionStatus, TransactionDirection } from '@rerock/common'
+import type { TransactionStatus, TransactionDirection } from '@rerock/appkit-common'
 
 export const colorOptions: ColorType[] = [
   'accent-100',

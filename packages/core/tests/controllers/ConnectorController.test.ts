@@ -7,7 +7,7 @@ import {
   type ThemeMode,
   type ThemeVariables
 } from '../../exports/index.js'
-import { ConstantsUtil, getW3mThemeVariables } from '@rerock/common'
+import { ConstantsUtil, getW3mThemeVariables } from '@rerock/appkit-common'
 
 // -- Setup --------------------------------------------------------------------
 const authProvider = {

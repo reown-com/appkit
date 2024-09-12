@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "@types/qrcode": "1.5.5",
-    "@rerock/common": "workspace:*",
+    "@rerock/appkit-common": "workspace:*",
     "@rerock/wallet": "workspace:*",
     "@rerock/core": "workspace:*",
     "eslint-plugin-lit": "1.11.0",

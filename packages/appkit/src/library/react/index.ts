@@ -10,7 +10,7 @@ import type {
 import type { AppKit } from '../../../src/client.js'
 import type { AppKitOptions } from '../../utils/TypesUtil.js'
 import { ProviderUtil } from '../../store/ProviderUtil.js'
-import type { ChainNamespace } from '@rerock/common'
+import type { ChainNamespace } from '@rerock/appkit-common'
 
 type OpenOptions = {
   view: 'Account' | 'Connect' | 'Networks' | 'ApproveTransaction' | 'OnRampProviders'

@@ -9,7 +9,7 @@ import {
   SwapController,
   type NetworkControllerClient
 } from '../../exports/index.js'
-import type { CaipNetworkId, CaipNetwork } from '@rerock/common'
+import type { CaipNetworkId, CaipNetwork } from '@rerock/appkit-common'
 import {
   allowanceResponse,
   balanceResponse,
@@ -20,7 +20,7 @@ import {
   tokensResponse
 } from '../mocks/SwapController.js'
 import { SwapApiUtil } from '../../src/utils/SwapApiUtil.js'
-import { ConstantsUtil } from '@rerock/common'
+import { ConstantsUtil } from '@rerock/appkit-common'
 
 // - Mocks ---------------------------------------------------------------------
 const caipNetwork = {

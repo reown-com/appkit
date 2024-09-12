@@ -15,7 +15,12 @@ import { UiHelperUtil, customElement, initializeTheming } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
-import { ConstantsUtil, type CaipAddress, type CaipNetwork, type SIWEStatus } from '@rerock/common'
+import {
+  ConstantsUtil,
+  type CaipAddress,
+  type CaipNetwork,
+  type SIWEStatus
+} from '@rerock/appkit-common'
 
 // -- Helpers --------------------------------------------- //
 const SCROLL_LOCK = 'scroll-lock'

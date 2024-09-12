@@ -1,6 +1,6 @@
 import { css, unsafeCSS } from 'lit'
-import { getW3mThemeVariables } from '@rerock/common'
-import type { ThemeVariables, ThemeType } from '@rerock/common'
+import { getW3mThemeVariables } from '@rerock/appkit-common'
+import type { ThemeVariables, ThemeType } from '@rerock/appkit-common'
 
 // -- Utilities ---------------------------------------------------------------
 let themeTag: HTMLStyleElement | undefined = undefined

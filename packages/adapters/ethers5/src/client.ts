@@ -8,7 +8,7 @@ import {
   type CaipNetwork,
   type CaipNetworkId,
   type ChainNamespace
-} from '@rerock/common'
+} from '@rerock/appkit-common'
 import {
   AccountController,
   ChainController,
@@ -29,7 +29,7 @@ import {
   W3mFrameRpcConstants,
   type W3mFrameTypes
 } from '@rerock/wallet'
-import { ConstantsUtil as CommonConstantsUtil } from '@rerock/common'
+import { ConstantsUtil as CommonConstantsUtil } from '@rerock/appkit-common'
 import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@rerock/scaffold-utils'
 import UniversalProvider from '@walletconnect/universal-provider'
 import type { ConnectionControllerClient, NetworkControllerClient } from '@rerock/core'

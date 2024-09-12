@@ -2,7 +2,7 @@
 
 import { AppKit } from '@rerock/appkit'
 import type { AppKitOptions } from '@rerock/appkit'
-import type { CaipNetwork } from '@rerock/common'
+import type { CaipNetwork } from '@rerock/appkit-common'
 import { ProviderUtil } from '@rerock/appkit/store'
 import { EVMEthers5Client, type AdapterOptions } from '@rerock/appkit-adapter-ethers5'
 import { getWeb3Modal } from '@rerock/appkit/library/react'

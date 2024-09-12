@@ -28,7 +28,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@rerock/common": "workspace:*",
+    "@rerock/appkit-common": "workspace:*",
     "@rerock/scaffold-utils": "workspace:*",
     "@rerock/core": "workspace:*",
     "@rerock/ui": "workspace:*",

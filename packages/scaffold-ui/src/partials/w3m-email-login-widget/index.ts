@@ -11,7 +11,7 @@ import { ref, createRef } from 'lit/directives/ref.js'
 import type { Ref } from 'lit/directives/ref.js'
 import styles from './styles.js'
 import { SnackController, RouterController, EventsController } from '@rerock/core'
-import { ConstantsUtil } from '@rerock/common'
+import { ConstantsUtil } from '@rerock/appkit-common'
 
 @customElement('w3m-email-login-widget')
 export class W3mEmailLoginWidget extends LitElement {

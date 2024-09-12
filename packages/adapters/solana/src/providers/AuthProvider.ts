@@ -14,7 +14,7 @@ import {
 import { withSolanaNamespace } from '../utils/withSolanaNamespace.js'
 import base58 from 'bs58'
 import { isVersionedTransaction } from '@solana/wallet-adapter-base'
-import type { CaipNetwork } from '@rerock/common'
+import type { CaipNetwork } from '@rerock/appkit-common'
 
 export type AuthProviderConfig = {
   provider: W3mFrameProvider

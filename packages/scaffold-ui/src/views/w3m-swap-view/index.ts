@@ -13,7 +13,7 @@ import {
   EventsController,
   AccountController
 } from '@rerock/core'
-import { NumberUtil } from '@rerock/common'
+import { NumberUtil } from '@rerock/appkit-common'
 import { W3mFrameRpcConstants } from '@rerock/wallet'
 
 @customElement('w3m-swap-view')

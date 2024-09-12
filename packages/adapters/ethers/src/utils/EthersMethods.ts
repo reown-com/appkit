@@ -16,7 +16,7 @@ import type {
   SendTransactionArgs,
   WriteContractArgs
 } from '@rerock/core'
-import { ConstantsUtil } from '@rerock/common'
+import { ConstantsUtil } from '@rerock/appkit-common'
 import type { AppKit } from '@rerock/appkit'
 
 export const EthersMethods = {

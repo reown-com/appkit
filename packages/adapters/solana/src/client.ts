@@ -12,7 +12,7 @@ import {
   ConstantsUtil as CommonConstantsUtil,
   SafeLocalStorage,
   SafeLocalStorageKeys
-} from '@rerock/common'
+} from '@rerock/appkit-common'
 
 import { SolConstantsUtil, SolHelpersUtil } from '@rerock/scaffold-utils/solana'
 import { SolStoreUtil } from './utils/SolanaStoreUtil.js'
@@ -27,8 +27,8 @@ import type {
   NetworkControllerClient,
   Connector
 } from '@rerock/core'
-import type { AdapterType, CaipAddress, CaipNetwork, CaipNetworkId } from '@rerock/common'
-import type { ChainNamespace } from '@rerock/common'
+import type { AdapterType, CaipAddress, CaipNetwork, CaipNetworkId } from '@rerock/appkit-common'
+import type { ChainNamespace } from '@rerock/appkit-common'
 
 import { watchStandard } from './utils/watchStandard.js'
 import { WalletConnectProvider } from './providers/WalletConnectProvider.js'

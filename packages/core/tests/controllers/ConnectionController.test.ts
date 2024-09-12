@@ -10,7 +10,7 @@ import {
   ConstantsUtil,
   StorageUtil
 } from '../../exports/index.js'
-import { ConstantsUtil as CommonConstantsUtil } from '@rerock/common'
+import { ConstantsUtil as CommonConstantsUtil } from '@rerock/appkit-common'
 
 // -- Setup --------------------------------------------------------------------
 const chain = CommonConstantsUtil.CHAIN.EVM

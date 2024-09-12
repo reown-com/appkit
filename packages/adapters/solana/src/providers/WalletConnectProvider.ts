@@ -12,7 +12,7 @@ import {
   type SendOptions
 } from '@solana/web3.js'
 import { isVersionedTransaction } from '@solana/wallet-adapter-base'
-import type { CaipNetwork, ChainId } from '@rerock/common'
+import type { CaipNetwork, ChainId } from '@rerock/appkit-common'
 import { withSolanaNamespace } from '../utils/withSolanaNamespace.js'
 
 export type WalletConnectProviderConfig = {

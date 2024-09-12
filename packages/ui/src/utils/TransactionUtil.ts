@@ -1,5 +1,5 @@
-import { DateUtil } from '@rerock/common'
-import type { TransactionTransfer, Transaction, TransactionImage } from '@rerock/common'
+import { DateUtil } from '@rerock/appkit-common'
+import type { TransactionTransfer, Transaction, TransactionImage } from '@rerock/appkit-common'
 import type { TransactionType } from './TypeUtil.js'
 import { UiHelperUtil } from './UiHelperUtil.js'
 

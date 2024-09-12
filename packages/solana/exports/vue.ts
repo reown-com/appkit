@@ -2,7 +2,7 @@ import { getWeb3Modal } from '@rerock/appkit/library/vue'
 import { AppKit } from '@rerock/appkit'
 import { SolanaWeb3JsClient, useWeb3ModalConnection } from '@rerock/appkit-adapter-solana/vue'
 import type { Provider } from '@rerock/appkit-adapter-solana/vue'
-import type { CaipNetwork } from '@rerock/common'
+import type { CaipNetwork } from '@rerock/appkit-common'
 import type { SolanaAppKitOptions } from './options'
 import { ConstantsUtil } from '@rerock/scaffold-utils'
 

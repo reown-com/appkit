@@ -1,4 +1,4 @@
-import type { CaipNetwork, ThemeVariables } from '@rerock/common'
+import type { CaipNetwork, ThemeVariables } from '@rerock/appkit-common'
 import type {
   ChainAdapter,
   CustomWallet,

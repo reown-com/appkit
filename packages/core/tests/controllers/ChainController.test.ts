@@ -1,5 +1,5 @@
 import { beforeAll, describe, expect, it } from 'vitest'
-import { ConstantsUtil, type CaipNetworkId, type ChainNamespace } from '@rerock/common'
+import { ConstantsUtil, type CaipNetworkId, type ChainNamespace } from '@rerock/appkit-common'
 import { ChainController } from '../../src/controllers/ChainController.js'
 import { type ConnectionControllerClient } from '../../src/controllers/ConnectionController.js'
 import { type NetworkControllerClient } from '../../src/controllers/NetworkController.js'

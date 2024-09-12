@@ -22,7 +22,7 @@ import { WcHelpersUtil } from '@rerock/appkit'
 import type { AppKitOptions } from '@rerock/appkit'
 import type { AppKit } from '@rerock/appkit'
 import { convertToAppKitChains } from '../utils/helpers.js'
-import { SafeLocalStorage, SafeLocalStorageKeys, type CaipNetwork } from '@rerock/common'
+import { SafeLocalStorage, SafeLocalStorageKeys, type CaipNetwork } from '@rerock/appkit-common'
 
 type UniversalConnector = Connector & {
   onDisplayUri(uri: string): void

@@ -5,7 +5,7 @@ import type { AppKitOptions } from '@rerock/appkit'
 import { EVMEthersClient, type AdapterOptions } from '@rerock/appkit-adapter-ethers'
 import { getWeb3Modal } from '@rerock/appkit/library/react'
 import { useSnapshot } from 'valtio'
-import type { CaipNetwork } from '@rerock/common'
+import type { CaipNetwork } from '@rerock/appkit-common'
 import { ConstantsUtil } from '@rerock/scaffold-utils'
 
 // -- Types -------------------------------------------------------------

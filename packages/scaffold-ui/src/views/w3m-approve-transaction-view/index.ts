@@ -8,7 +8,7 @@ import {
   ThemeController,
   RouterController
 } from '@rerock/core'
-import { getW3mThemeVariables } from '@rerock/common'
+import { getW3mThemeVariables } from '@rerock/appkit-common'
 
 // -- Variables ------------------------------------------- //
 const PAGE_HEIGHT = 400

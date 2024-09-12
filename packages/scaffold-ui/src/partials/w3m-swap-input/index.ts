@@ -6,7 +6,7 @@ import {
   type SwapToken,
   type SwapInputTarget
 } from '@rerock/core'
-import { InputUtil, NumberUtil } from '@rerock/common'
+import { InputUtil, NumberUtil } from '@rerock/appkit-common'
 import { UiHelperUtil, customElement } from '@rerock/ui'
 import styles from './styles.js'
 

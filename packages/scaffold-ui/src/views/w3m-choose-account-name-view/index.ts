@@ -3,7 +3,7 @@ import { AccountController, CoreHelperUtil, EventsController, RouterController }
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
-import { NavigationUtil } from '@rerock/common'
+import { NavigationUtil } from '@rerock/appkit-common'
 import { W3mFrameRpcConstants } from '@rerock/wallet'
 
 @customElement('w3m-choose-account-name-view')

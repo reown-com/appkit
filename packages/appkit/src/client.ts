@@ -27,7 +27,7 @@ import {
   AssetUtil
 } from '@rerock/core'
 import { setColorTheme, setThemeVariables } from '@rerock/ui'
-import { ConstantsUtil, type CaipNetwork, type ChainNamespace } from '@rerock/common'
+import { ConstantsUtil, type CaipNetwork, type ChainNamespace } from '@rerock/appkit-common'
 import type { AppKitOptions } from './utils/TypesUtil.js'
 import { UniversalAdapterClient } from './universal-adapter/client.js'
 import { PresetsUtil } from '@rerock/scaffold-utils'

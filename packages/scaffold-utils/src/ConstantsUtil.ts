@@ -1,4 +1,4 @@
-import type { ChainNamespace } from '@rerock/common'
+import type { ChainNamespace } from '@rerock/appkit-common'
 
 export const ConstantsUtil = {
   WALLET_CONNECT_CONNECTOR_ID: 'walletConnect',

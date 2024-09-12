@@ -7,7 +7,7 @@ import type {
   ChainNamespace,
   CaipAddress,
   AdapterType
-} from '@rerock/common'
+} from '@rerock/appkit-common'
 import type {
   NetworkControllerClient,
   NetworkControllerState

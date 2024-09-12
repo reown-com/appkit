@@ -1,4 +1,4 @@
-import { ConstantsUtil } from '@rerock/common'
+import { ConstantsUtil } from '@rerock/appkit-common'
 import { ChainController, OptionsController, RouterUtil } from '@rerock/core'
 
 export const NetworkUtil = {

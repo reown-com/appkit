@@ -20,7 +20,7 @@ import {
   ChainController,
   type Connector
 } from '@rerock/core'
-import type { CaipNetwork } from '@rerock/common'
+import type { CaipNetwork } from '@rerock/appkit-common'
 import { mockOptions } from './mocks/Options'
 
 // Mock all controllers and UniversalAdapterClient

@@ -1,5 +1,5 @@
-import { DateUtil } from '@rerock/common'
-import type { Transaction, TransactionImage } from '@rerock/common'
+import { DateUtil } from '@rerock/appkit-common'
+import type { Transaction, TransactionImage } from '@rerock/appkit-common'
 import {
   AccountController,
   EventsController,

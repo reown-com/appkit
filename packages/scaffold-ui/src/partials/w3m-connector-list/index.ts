@@ -9,7 +9,7 @@ import {
   OptionsController,
   StorageUtil
 } from '@rerock/core'
-import { ConstantsUtil as CommonConstantsUtil } from '@rerock/common'
+import { ConstantsUtil as CommonConstantsUtil } from '@rerock/appkit-common'
 import { state } from 'lit/decorators.js'
 import { WalletUtil } from '../../utils/WalletUtil.js'
 @customElement('w3m-connector-list')

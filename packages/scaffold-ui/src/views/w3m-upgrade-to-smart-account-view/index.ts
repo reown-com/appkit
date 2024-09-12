@@ -9,7 +9,7 @@ import {
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { W3mFrameRpcConstants } from '@rerock/wallet'
-import { NavigationUtil } from '@rerock/common'
+import { NavigationUtil } from '@rerock/appkit-common'
 
 @customElement('w3m-upgrade-to-smart-account-view')
 export class W3mUpgradeToSmartAccountView extends LitElement {

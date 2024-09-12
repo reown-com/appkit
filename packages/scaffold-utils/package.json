@@ -44,7 +44,7 @@
   },
   "dependencies": {
     "@walletconnect/universal-provider": "2.16.1",
-    "@rerock/common": "workspace:*",
+    "@rerock/appkit-common": "workspace:*",
     "@rerock/core": "workspace:*",
     "@rerock/polyfills": "workspace:*",
     "@rerock/wallet": "workspace:*",

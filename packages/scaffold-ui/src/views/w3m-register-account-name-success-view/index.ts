@@ -2,7 +2,7 @@ import { customElement } from '@rerock/ui'
 import { CoreHelperUtil, RouterController } from '@rerock/core'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
-import { NavigationUtil } from '@rerock/common'
+import { NavigationUtil } from '@rerock/appkit-common'
 
 @customElement('w3m-register-account-name-success-view')
 export class W3mRegisterAccountNameSuccess extends LitElement {

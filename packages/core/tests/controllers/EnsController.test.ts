@@ -8,7 +8,7 @@ import {
   NetworkController
 } from '../../exports/index.js'
 import { W3mFrameProvider } from '@rerock/wallet'
-import { ConstantsUtil } from '@rerock/common'
+import { ConstantsUtil } from '@rerock/appkit-common'
 // -- Setup --------------------------------------------------------------------
 const TEST_NAME = {
   name: 'test',

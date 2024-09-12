@@ -10,7 +10,7 @@ import {
 } from '@rerock/core'
 
 import { state } from 'lit/decorators.js'
-import type { Balance } from '@rerock/common'
+import type { Balance } from '@rerock/appkit-common'
 
 @customElement('w3m-wallet-send-select-token-view')
 export class W3mSendSelectTokenView extends LitElement {

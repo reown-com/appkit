@@ -50,7 +50,7 @@ import {
   ConstantsUtil as CommonConstants,
   SafeLocalStorage,
   SafeLocalStorageKeys
-} from '@rerock/common'
+} from '@rerock/appkit-common'
 import {
   convertToAppKitChains,
   getEmailCaipNetworks,
@@ -60,11 +60,11 @@ import {
 } from './utils/helpers.js'
 import { W3mFrameHelpers, W3mFrameRpcConstants } from '@rerock/wallet'
 import type { W3mFrameProvider, W3mFrameTypes } from '@rerock/wallet'
-import { NetworkUtil } from '@rerock/common'
+import { NetworkUtil } from '@rerock/appkit-common'
 import { normalize } from 'viem/ens'
 import type { AppKitOptions } from '@rerock/appkit'
-import type { CaipAddress, CaipNetwork, ChainNamespace, AdapterType } from '@rerock/common'
-import { ConstantsUtil as CommonConstantsUtil } from '@rerock/common'
+import type { CaipAddress, CaipNetwork, ChainNamespace, AdapterType } from '@rerock/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil } from '@rerock/appkit-common'
 import type { AppKit } from '@rerock/appkit'
 import { walletConnect } from './connectors/UniversalConnector.js'
 import { coinbaseWallet } from '@wagmi/connectors'

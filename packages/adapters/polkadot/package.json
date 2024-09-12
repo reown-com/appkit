@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@rerock/appkit": "workspace:*",
-    "@rerock/common": "workspace:*",
+    "@rerock/appkit-common": "workspace:*",
     "@rerock/core": "workspace:*"
   },
   "devDependencies": {

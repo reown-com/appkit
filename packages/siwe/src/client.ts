@@ -18,7 +18,7 @@ import {
   ModalController
 } from '@rerock/core'
 
-import { NetworkUtil } from '@rerock/common'
+import { NetworkUtil } from '@rerock/appkit-common'
 import { ConstantsUtil } from '../core/utils/ConstantsUtil.js'
 
 // -- Client -------------------------------------------------------------------- //

@@ -2,7 +2,7 @@ import { ChainController, NetworkController, RouterController } from '@rerock/co
 import { customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
-import { ConstantsUtil } from '@rerock/common'
+import { ConstantsUtil } from '@rerock/appkit-common'
 import { property } from 'lit/decorators.js'
 
 @customElement('w3m-switch-active-chain-view')

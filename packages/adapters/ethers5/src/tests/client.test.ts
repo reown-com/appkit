@@ -13,10 +13,10 @@ import {
 import { ConstantsUtil } from '@rerock/scaffold-utils'
 import { arbitrum, mainnet, polygon } from '@rerock/appkit/chains'
 import { ProviderUtil } from '@rerock/appkit/store'
-import { SafeLocalStorage } from '@rerock/common'
+import { SafeLocalStorage } from '@rerock/appkit-common'
 import { WcConstantsUtil, type BlockchainApiLookupEnsName } from '@rerock/appkit'
 import { ethers } from 'ethers5'
-import type { CaipNetwork, ChainNamespace } from '@rerock/common'
+import type { CaipNetwork, ChainNamespace } from '@rerock/appkit-common'
 
 vi.mock('@rerock/wallet', () => ({
   W3mFrameProvider: vi.fn().mockImplementation(() => mockAuthConnector),

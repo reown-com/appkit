@@ -2,7 +2,7 @@ import {
   ConstantsUtil as CommonConstantsUtil,
   type CaipNetwork,
   type CaipNetworkId
-} from '@rerock/common'
+} from '@rerock/appkit-common'
 import { ConstantsUtil, PresetsUtil } from '@rerock/scaffold-utils'
 import { UniversalProvider } from '@walletconnect/universal-provider'
 import { fallback, http, type Hex } from 'viem'

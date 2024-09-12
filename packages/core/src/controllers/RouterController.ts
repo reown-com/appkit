@@ -2,7 +2,7 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy } from 'valtio/vanilla'
 import type { Connector, WcWallet } from '../utils/TypeUtil.js'
 import type { SwapInputTarget } from './SwapController.js'
-import type { CaipNetwork, ChainNamespace } from '@rerock/common'
+import type { CaipNetwork, ChainNamespace } from '@rerock/appkit-common'
 import { ModalController } from './ModalController.js'
 
 // -- Types --------------------------------------------- //

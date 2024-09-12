@@ -9,7 +9,7 @@
 - [#12](https://github.com/WalletConnect/shadow-appkit/pull/12) [`51eff9f`](https://github.com/WalletConnect/shadow-appkit/commit/51eff9f82c296b0ba2b5ab33af92a1fa54a77f7a) Thanks [@tomiir](https://github.com/tomiir)! - Adds test vitest.workspace file
 
 - Updated dependencies [[`91d0296`](https://github.com/WalletConnect/shadow-appkit/commit/91d02963cbe3c2d06b74801b519ce23dd30ff797), [`51eff9f`](https://github.com/WalletConnect/shadow-appkit/commit/51eff9f82c296b0ba2b5ab33af92a1fa54a77f7a)]:
-  - @rerock/common@0.0.3
+  - @rerock/appkit-common@0.0.3
   - @rerock/core@0.0.3
   - @rerock/polyfills@0.0.3
   - @rerock/wallet@0.0.3

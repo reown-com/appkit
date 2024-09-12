@@ -1,4 +1,4 @@
-import { type CaipNetwork } from '@rerock/common'
+import { type CaipNetwork } from '@rerock/appkit-common'
 import {
   AccountController,
   AssetUtil,

@@ -2,7 +2,7 @@ import { html, LitElement } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import styles from './styles.js'
 import { UiHelperUtil, customElement } from '@rerock/ui'
-import { NumberUtil } from '@rerock/common'
+import { NumberUtil } from '@rerock/appkit-common'
 import { ConstantsUtil, NetworkController, SwapController } from '@rerock/core'
 
 // -- Constants ----------------------------------------- //

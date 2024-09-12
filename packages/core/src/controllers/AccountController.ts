@@ -6,8 +6,8 @@ import type {
   Provider,
   SocialProvider
 } from '../utils/TypeUtil.js'
-import type { CaipAddress, ChainNamespace } from '@rerock/common'
-import type { Balance } from '@rerock/common'
+import type { CaipAddress, ChainNamespace } from '@rerock/appkit-common'
+import type { Balance } from '@rerock/appkit-common'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { SnackController } from './SnackController.js'
 import { SwapController } from './SwapController.js'
