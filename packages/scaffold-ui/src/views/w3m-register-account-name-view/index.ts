@@ -195,7 +195,7 @@ export class W3mRegisterAccountNameView extends LitElement {
       if (!this.isAllowedToSubmit()) {
         return
       }
-      const ensName = `${this.name}${ConstantsUtil.WC_NAME_SUFFIX}` as `${string}.reown.id`
+      const ensName = `${this.name}${ConstantsUtil.WC_NAME_SUFFIX}`
       EventsController.sendEvent({
         type: 'track',
         event: 'REGISTER_NAME_INITIATED',
@@ -206,7 +206,7 @@ export class W3mRegisterAccountNameView extends LitElement {
           ensName
         }
       })
-      await EnsController.registerName(ensName)
+      await EnsController.registerName(ensName as `${string}.reown.id`)
       EventsController.sendEvent({
         type: 'track',
         event: 'REGISTER_NAME_SUCCESS',

@@ -46,12 +46,7 @@ import type {
 import { formatUnits, parseUnits } from 'viem'
 import type { Hex } from 'viem'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@reown/appkit-utils'
-import {
-  ConstantsUtil as CommonConstants,
-  isReownName,
-  SafeLocalStorage,
-  SafeLocalStorageKeys
-} from '@reown/appkit-common'
+import { isReownName, SafeLocalStorage, SafeLocalStorageKeys } from '@reown/appkit-common'
 import {
   convertToAppKitChains,
   getEmailCaipNetworks,
