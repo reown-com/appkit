@@ -39,7 +39,6 @@ export class W3mEmailVerifyOtpView extends W3mEmailOtpWidget {
         await this.authConnector.provider.connectOtp({ otp })
         EventsController.sendEvent({ type: 'track', event: 'EMAIL_VERIFICATION_CODE_PASS' })
 
-        // Here, connect only active chain,
         if (ChainController.state.activeChain) {
           await ConnectionController.connectExternal(
             this.authConnector,
@@ -48,13 +47,6 @@ export class W3mEmailVerifyOtpView extends W3mEmailOtpWidget {
         } else {
           throw new Error('Active chain is not set on ChainControll')
         }
-        // then when we switch to other chains, we need to first switch on secure site
-        // and update the state a bit,
-        // for (const [chain] of ChainController.state.chains) {
-        //   if (this.authConnector && chain !== 'polkadot') {
-        //     await ConnectionController.connectExternal(this.authConnector, chain as ChainNamespace)
-        //   }
-        // }
 
         EventsController.sendEvent({
           type: 'track',
@@ -65,10 +57,8 @@ export class W3mEmailVerifyOtpView extends W3mEmailOtpWidget {
           RouterController.push('SelectAddresses')
         } else if (smartAccountEnabled && !this.smartAccountDeployed) {
           RouterController.push('UpgradeToSmartAccount')
-        } else {
-          if (!OptionsController.state.isSiweEnabled) {
-            ModalController.close()
-          }
+        } else if (!OptionsController.state.isSiweEnabled) {
+          ModalController.close()
         }
       }
     } catch (error) {

@@ -1,5 +1,4 @@
 import { test, type BrowserContext } from '@playwright/test'
-import { DEFAULT_CHAIN_NAME } from './shared/constants'
 import { ModalPage } from './shared/pages/ModalPage'
 import { ModalValidator } from './shared/validators/ModalValidator'
 import { WalletPage } from './shared/pages/WalletPage'

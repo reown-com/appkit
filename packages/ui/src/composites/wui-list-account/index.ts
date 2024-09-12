@@ -12,7 +12,6 @@ import {
   AccountController,
   BlockchainApiController,
   ChainController,
-  NetworkController,
   StorageUtil
 } from '@rerock/core'
 

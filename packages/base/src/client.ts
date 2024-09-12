@@ -262,7 +262,6 @@ export class AppKit {
     AccountController.state.preferredAccountType as W3mFrameTypes.AccountType
 
   public setCaipAddress: (typeof AccountController)['setCaipAddress'] = (caipAddress, chain) => {
-    console.trace('>>> setCaipAddress', caipAddress, chain)
     AccountController.setCaipAddress(caipAddress, chain)
   }
 
@@ -300,9 +299,7 @@ export class AppKit {
     return ChainController.state.activeCaipNetwork
   }
 
-  public getCaipNetworks = () => {
-    return NetworkController.getRequestedCaipNetworks()
-  }
+  public getCaipNetworks = () => NetworkController.getRequestedCaipNetworks()
 
   public getActiveChainNamespace = () => ChainController.state.activeChain
 

@@ -62,12 +62,12 @@ export const ModalController = {
     EventsController.sendEvent({
       type: 'track',
       event: 'MODAL_OPEN',
-      properties: { connected: caipAddress ? true : false }
+      properties: { connected: Boolean(caipAddress) }
     })
   },
 
   close() {
-    const connected = ChainController.state.activeCaipAddress ? true : false
+    const connected = Boolean(ChainController.state.activeCaipAddress)
     state.open = false
     PublicStateController.set({ open: false })
     EventsController.sendEvent({

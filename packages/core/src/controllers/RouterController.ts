@@ -158,7 +158,6 @@ export const RouterController = {
   },
 
   push(view: RouterControllerState['view'], data?: RouterControllerState['data']) {
-    // console.trace('>>> RouterController.push')
     if (view !== state.view) {
       state.view = view
       state.history.push(view)
@@ -167,13 +166,11 @@ export const RouterController = {
   },
 
   reset(view: RouterControllerState['view']) {
-    // console.trace('>>> RouterController.reset')
     state.view = view
     state.history = [view]
   },
 
   replace(view: RouterControllerState['view'], data?: RouterControllerState['data']) {
-    // console.trace('>>> RouterController.replace')
     const lastView = state.history.at(-1)
     const isSameView = lastView === view
 
@@ -185,7 +182,6 @@ export const RouterController = {
   },
 
   goBack() {
-    // console.trace('>>> RouterController.goBack')
     if (state.history.length > 1) {
       state.history.pop()
       const [last] = state.history.slice(-1)

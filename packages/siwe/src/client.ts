@@ -13,7 +13,6 @@ import {
   ConnectionController,
   RouterController,
   StorageUtil,
-  NetworkController,
   ModalController,
   CoreHelperUtil
 } from '@rerock/core'
@@ -120,8 +119,6 @@ export class Web3ModalSIWEClient {
       SIWEController.state._client.options.signOutOnNetworkChange = false
       await this.signOut()
     }
-
-    // await NetworkController.switchActiveNetwork(caipNetwork)
 
     // Enable the signOutOnNetworkChange option if it was previously enabled
     if (signOutOnNetworkChange) {

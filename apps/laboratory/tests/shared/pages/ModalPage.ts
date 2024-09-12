@@ -44,7 +44,7 @@ export class ModalPage {
 
   constructor(
     public readonly page: Page,
-    public readonly library: string | 'multichain-ethers-solana',
+    public readonly library: string,
     public readonly flavor: ModalFlavor
   ) {
     this.connectButton = this.page.getByTestId('connect-button')

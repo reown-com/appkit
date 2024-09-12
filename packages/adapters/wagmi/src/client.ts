@@ -342,12 +342,6 @@ export class EVMWagmiClient implements ChainAdapter {
                 throw error
               }
             }
-            /*
-             * Unassign the connector from the wagmiConfig and allow connect() to reassign it in the next step
-             * this avoids case where wagmi throws because the connector is already connected
-             * what we need connect() to do is to only setup internal event listeners
-             */
-            // this.wagmiConfig.state.current = ''
           }
         }
 
@@ -605,6 +599,7 @@ export class EVMWagmiClient implements ChainAdapter {
       this.appKit?.setAllAccounts([], this.chainNamespace)
       SafeLocalStorage.removeItem(SafeLocalStorageKeys.WALLET_ID)
       SafeLocalStorage.removeItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK)
+
       return
     }
 

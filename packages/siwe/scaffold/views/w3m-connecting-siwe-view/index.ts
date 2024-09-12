@@ -4,7 +4,6 @@ import {
   ConnectionController,
   EventsController,
   ModalController,
-  NetworkController,
   OptionsController,
   RouterController,
   SnackController

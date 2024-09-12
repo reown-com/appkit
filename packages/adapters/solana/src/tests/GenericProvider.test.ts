@@ -32,8 +32,10 @@ const providers: { name: string; provider: Provider }[] = [
   {
     name: 'AuthProvider',
     provider: new AuthProvider({
-      provider: mockW3mFrameProvider(),
+      getProvider: () => mockW3mFrameProvider(),
       getActiveChain,
+      getActiveNamespace: () => 'solana',
+      getSession: () => undefined,
       chains: TestConstants.chains
     })
   }

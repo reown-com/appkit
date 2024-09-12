@@ -8,18 +8,22 @@ describe('AuthProvider specific tests', () => {
   let provider = mockW3mFrameProvider()
   let getActiveChain = vi.fn(() => TestConstants.chains[0])
   let authProvider = new AuthProvider({
-    provider,
-    chains: TestConstants.chains,
-    getActiveChain
+    getProvider: () => mockW3mFrameProvider(),
+    getActiveNamespace: () => 'solana',
+    getSession: () => undefined,
+    getActiveChain,
+    chains: TestConstants.chains
   })
 
   beforeEach(() => {
     provider = mockW3mFrameProvider()
     getActiveChain = vi.fn(() => TestConstants.chains[0])
     authProvider = new AuthProvider({
-      provider,
-      chains: TestConstants.chains,
-      getActiveChain
+      getProvider: () => mockW3mFrameProvider(),
+      getActiveNamespace: () => 'solana',
+      getSession: () => undefined,
+      getActiveChain,
+      chains: TestConstants.chains
     })
   })
 

@@ -53,11 +53,11 @@ export function useSwitchNetwork() {
 }
 
 export function useWeb3ModalAccount() {
-  const {  caipAddress, status } = useSnapshot(AccountController.state)
+  const { caipAddress, status } = useSnapshot(AccountController.state)
 
   return {
     address: CoreHelperUtil.getPlainAddress(caipAddress),
-    isConnected: caipAddress ? true : false,
+    isConnected: Boolean(caipAddress),
     status
   }
 }

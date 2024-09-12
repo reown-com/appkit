@@ -102,7 +102,7 @@ export class SolanaWeb3JsClient implements ChainAdapter {
     })
     AccountController.subscribeKey(
       'caipAddress',
-      async val => {
+      val => {
         const isSolanaAddress = val?.startsWith('solana:')
         const caipNetwork = ChainController.state.activeCaipNetwork
         const isSolanaNetwork = caipNetwork?.chainNamespace === this.chainNamespace
@@ -146,8 +146,8 @@ export class SolanaWeb3JsClient implements ChainAdapter {
         }
       },
 
-      getApprovedCaipNetworksData: async () => {
-        return new Promise(resolve => {
+      getApprovedCaipNetworksData: async () =>
+        new Promise(resolve => {
           const walletId = SafeLocalStorage.getItem(SafeLocalStorageKeys.WALLET_ID)
 
           if (!walletId) {
@@ -174,10 +174,10 @@ export class SolanaWeb3JsClient implements ChainAdapter {
             })
           }
         })
-      }
     }
 
     this.connectionControllerClient = {
+      // eslint-disable-next-line @typescript-eslint/require-await
       connectExternal: async ({ id }) => {
         const externalProvider = this.availableProviders.find(
           provider => provider.name.toLocaleLowerCase() === id.toLocaleLowerCase()
@@ -193,10 +193,8 @@ export class SolanaWeb3JsClient implements ChainAdapter {
 
         // If it's not the auth provider, we should auto connect the provider
         if (chainNamespace === this.chainNamespace || !isAuthProvider) {
-          return this.setProvider(externalProvider)
+          this.setProvider(externalProvider)
         }
-
-        return
       },
 
       disconnect: async () => {
@@ -387,7 +385,7 @@ export class SolanaWeb3JsClient implements ChainAdapter {
     const isConnectedWithAuth = connectedConnector === 'AUTH'
 
     if (isConnectedWithAuth) {
-      // if user is connected with auth provider, we need to switch the network on the auth provider and await the get user
+      // If user is connected with auth provider, we need to switch the network on the auth provider and await the get user
       await this.w3mFrameProvider?.switchNetwork(caipNetwork.id)
       const user = await this.w3mFrameProvider?.getUser({
         chainId: caipNetwork?.id
@@ -589,8 +587,8 @@ export class SolanaWeb3JsClient implements ChainAdapter {
           getProvider: () => this.w3mFrameProvider as W3mFrameProvider,
           getActiveChain: () => this.appKit?.getCaipNetwork(this.chainNamespace),
           getActiveNamespace: () => this.appKit?.getActiveChainNamespace(),
-          chains: this.caipNetworks,
-          getSession: () => this.getAuthSession()
+          getSession: () => this.getAuthSession(),
+          chains: this.caipNetworks
         })
         this.addProvider(this.authProvider)
       }

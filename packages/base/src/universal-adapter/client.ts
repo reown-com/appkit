@@ -532,9 +532,9 @@ export class UniversalAdapterClient {
       namespaceKeys.forEach(async key => {
         const chainNamespace = key as ChainNamespace
         const address = namespaces?.[key]?.accounts[0] as CaipAddress
-        const isConnected = this.appKit?.getCaipAddress(chainNamespace)
+        const isNamespaceConnected = this.appKit?.getCaipAddress(chainNamespace)
 
-        if (!isConnected) {
+        if (!isNamespaceConnected) {
           this.appKit?.setPreferredAccountType(preferredAccountType, chainNamespace)
           this.appKit?.setCaipAddress(address, chainNamespace)
           this.syncConnectedWalletInfo()

@@ -175,7 +175,7 @@ export class EVMEthers5Client {
   // -- Public -------------------------------------------------------------------
   // eslint-disable-next-line @typescript-eslint/no-useless-constructor, @typescript-eslint/no-empty-function
   public constructor() {
-    ChainController.subscribeKey('activeCaipNetwork', async val => {
+    ChainController.subscribeKey('activeCaipNetwork', val => {
       const caipAddress = this.appKit?.getCaipAddress(this.chainNamespace)
       const isEVMAddress = caipAddress?.startsWith('eip155:')
       const isEVMNetwork = val?.chainNamespace === this.chainNamespace
@@ -1061,10 +1061,10 @@ export class EVMEthers5Client {
               const { address, preferredAccountType } = await this.authProvider.connect({
                 chainId: caipNetwork.chainId as number | undefined
               })
-              const caipAddress = `${this.chainNamespace}:${chainId}:${address}` as CaipAddress
+              const caipAddress = `${this.chainNamespace}:${chainId}:${address}`
 
               this.appKit?.setCaipNetwork(caipNetwork)
-              this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)
+              this.appKit?.setCaipAddress(caipAddress as CaipAddress, this.chainNamespace)
               this.appKit?.setPreferredAccountType(
                 preferredAccountType as W3mFrameTypes.AccountType,
                 this.chainNamespace

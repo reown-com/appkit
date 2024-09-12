@@ -129,7 +129,7 @@ export const ChainController = {
     if (adapters.length === 0) {
       this.setActiveCaipNetwork(adapter?.defaultNetwork)
     }
-    const chains: ChainNamespace[] = adapters.map(adapter => adapter.chainNamespace)
+    const chains: ChainNamespace[] = adapters.map(a => a.chainNamespace)
     chains.forEach((chain: ChainNamespace) => {
       state.chains.set(chain, {
         chainNamespace: chain,
@@ -222,7 +222,7 @@ export const ChainController = {
         this.resetAccount(newAdapter.chainNamespace)
       }
 
-      NetworkController.replaceState(newAdapter.networkState) // change the network state first
+      NetworkController.replaceState(newAdapter.networkState)
       AccountController.replaceState(newAdapter.accountState)
 
       PublicStateController.set({
@@ -239,6 +239,7 @@ export const ChainController = {
 
     if (caipNetwork.chainNamespace !== state.activeChain) {
       this.setActiveChain(caipNetwork.chainNamespace, caipNetwork)
+
       return
     }
 

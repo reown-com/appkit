@@ -214,7 +214,6 @@ export class W3mModal extends LitElement {
 
     const prevCaipNetworkId = this.caipNetwork?.id?.toString()
     const nextNetworkId = nextCaipNetwork?.id?.toString()
-    // const isSwitchNetworkView = RouterController.state.view === 'SwitchNetwork'
 
     if (prevCaipNetworkId && nextNetworkId && prevCaipNetworkId !== nextNetworkId) {
       if (this.isSiweEnabled) {

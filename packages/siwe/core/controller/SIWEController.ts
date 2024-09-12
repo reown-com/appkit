@@ -6,7 +6,7 @@ import type {
   SIWECreateMessageArgs,
   SIWEVerifyMessageArgs
 } from '../utils/TypeUtils.js'
-import { AccountController, ChainController, OptionsController } from '@rerock/core'
+import { ChainController, OptionsController } from '@rerock/core'
 import type { SIWEStatus } from '@rerock/common'
 
 // -- Types --------------------------------------------- //
@@ -145,7 +145,5 @@ export const SIWEController = {
 
   setSession(session: SIWEControllerClientState['session']) {
     state.session = session
-    // state.status = session ? 'success' : 'ready'
-    // ChainController.setAccountProp('siweStatus', state.status, 'eip155')
   }
 }

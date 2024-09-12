@@ -764,7 +764,7 @@ describe('EVMEthersClient', () => {
       }
       vi.mocked(JsonRpcProvider).mockImplementation(() => mockJsonRpcProvider as any)
 
-      await client['syncBalance'](mockAddress)
+      await client['syncBalance'](mockAddress, mainnet)
 
       expect(JsonRpcProvider).toHaveBeenCalledWith(mainnet.rpcUrl, {
         chainId: 1,
@@ -777,7 +777,7 @@ describe('EVMEthersClient', () => {
     it('should not set balance when caipNetwork is unavailable', async () => {
       vi.spyOn(mockAppKit, 'getCaipNetwork').mockReturnValue(undefined)
 
-      await client['syncBalance'](mockAddress)
+      await client['syncBalance'](mockAddress, mainnet)
 
       expect(JsonRpcProvider).not.toHaveBeenCalled()
       expect(mockAppKit.setBalance).not.toHaveBeenCalled()
