@@ -1,5 +1,5 @@
 {
-  "name": "@rerock/scaffold-ui",
+  "name": "@rerock/appkit-scaffold-ui",
   "version": "0.0.3",
   "type": "module",
   "main": "./dist/esm/exports/index.js",

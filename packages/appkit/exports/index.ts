@@ -3,7 +3,7 @@ import { AppKit } from '../src/client.js'
 import type { AppKitOptions } from '../src/utils/TypesUtil.js'
 
 // -- Views ------------------------------------------------------------
-export * from '@rerock/scaffold-ui'
+export * from '@rerock/appkit-scaffold-ui'
 
 // -- Utils & Other -----------------------------------------------------
 export * from '../src/utils/index.js'

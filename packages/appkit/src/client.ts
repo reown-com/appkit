@@ -510,7 +510,7 @@ export class AppKit {
     if (!this.initPromise && !isInitialized && CoreHelperUtil.isClient()) {
       isInitialized = true
       this.initPromise = new Promise<void>(async resolve => {
-        await Promise.all([import('@rerock/ui'), import('@rerock/scaffold-ui/w3m-modal')])
+        await Promise.all([import('@rerock/ui'), import('@rerock/appkit-scaffold-ui/w3m-modal')])
         const modal = document.createElement('w3m-modal')
         if (!OptionsController.state.disableAppend) {
           document.body.insertAdjacentElement('beforeend', modal)

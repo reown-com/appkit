@@ -6,7 +6,7 @@ import type {
   W3mConnectButton,
   W3mNetworkButton,
   W3mOnrampWidget
-} from '@rerock/scaffold-ui'
+} from '@rerock/appkit-scaffold-ui'
 import type { AppKit } from '../../../src/client.js'
 import type { AppKitOptions } from '../../utils/TypesUtil.js'
 import { ProviderUtil } from '../../store/ProviderUtil.js'

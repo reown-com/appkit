@@ -706,7 +706,7 @@ importers:
       '@rerock/appkit-polyfills':
         specifier: workspace:*
         version: link:../../polyfills
-      '@rerock/scaffold-ui':
+      '@rerock/appkit-scaffold-ui':
         specifier: workspace:*
         version: link:../../scaffold-ui
       '@rerock/scaffold-utils':
@@ -764,7 +764,7 @@ importers:
       '@rerock/appkit-polyfills':
         specifier: workspace:*
         version: link:../../polyfills
-      '@rerock/scaffold-ui':
+      '@rerock/appkit-scaffold-ui':
         specifier: workspace:*
         version: link:../../scaffold-ui
       '@rerock/scaffold-utils':
@@ -841,7 +841,7 @@ importers:
       '@rerock/appkit-polyfills':
         specifier: workspace:*
         version: link:../../polyfills
-      '@rerock/scaffold-ui':
+      '@rerock/appkit-scaffold-ui':
         specifier: workspace:*
         version: link:../../scaffold-ui
       '@rerock/scaffold-utils':
@@ -939,7 +939,7 @@ importers:
       '@rerock/appkit-polyfills':
         specifier: workspace:*
         version: link:../../polyfills
-      '@rerock/scaffold-ui':
+      '@rerock/appkit-scaffold-ui':
         specifier: workspace:*
         version: link:../../scaffold-ui
       '@rerock/scaffold-utils':
@@ -1006,7 +1006,7 @@ importers:
       '@rerock/appkit-polyfills':
         specifier: workspace:*
         version: link:../polyfills
-      '@rerock/scaffold-ui':
+      '@rerock/appkit-scaffold-ui':
         specifier: workspace:*
         version: link:../scaffold-ui
       '@rerock/scaffold-utils':

@@ -4,7 +4,7 @@ import { getWeb3Modal } from '../src/library/vue/index.js'
 import { ConstantsUtil } from '@rerock/scaffold-utils'
 
 // -- Views ------------------------------------------------------------
-export * from '@rerock/scaffold-ui'
+export * from '@rerock/appkit-scaffold-ui'
 
 // -- Hooks ------------------------------------------------------------
 export * from '../src/library/vue/index.js'

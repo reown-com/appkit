@@ -1,4 +1,4 @@
-# @rerock/scaffold-ui
+# @rerock/appkit-scaffold-ui
 
 ## 0.0.3
 
