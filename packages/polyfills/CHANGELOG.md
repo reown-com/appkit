@@ -1,5 +1,11 @@
 # @reown/appkit-polyfills
 
+## 0.0.4
+
+### Patch Changes
+
+- [#38](https://github.com/WalletConnect/shadow-appkit/pull/38) [`89fb054`](https://github.com/WalletConnect/shadow-appkit/commit/89fb054d7e2513b80940c73101dc395e7ea2694b) Thanks [@tomiir](https://github.com/tomiir)! - Base reown package rename setup.
+
 ## 0.0.3
 
 ### Patch Changes
