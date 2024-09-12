@@ -1,4 +1,4 @@
-# @rerock/cdn
+# @rerock/appkit-cdn
 
 ## 0.0.3
 

@@ -1,5 +1,5 @@
 {
-  "name": "@rerock/cdn",
+  "name": "@rerock/appkit-cdn",
   "version": "0.0.3",
   "main": "dist/wagmi.js",
   "type": "module",
