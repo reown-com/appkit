@@ -11,6 +11,7 @@ import { W3mFrameRpcConstants } from '@rerock/wallet'
 import {
   AccountController,
   BlockchainApiController,
+  ChainController,
   NetworkController,
   StorageUtil
 } from '@rerock/core'
@@ -28,7 +29,7 @@ export class WuiListAccount extends LitElement {
 
   private labels = AccountController.state.addressLabels
 
-  private caipNetwork = NetworkController.state.caipNetwork
+  private caipNetwork = ChainController.state.activeCaipNetwork
 
   private socialProvider = StorageUtil.getConnectedSocialProvider()
 

@@ -23,7 +23,7 @@ export class W3mNetworksView extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() public network = NetworkController.state.caipNetwork
+  @state() public network = ChainController.state.activeCaipNetwork
 
   @state() public requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
 
@@ -35,7 +35,7 @@ export class W3mNetworksView extends LitElement {
   public constructor() {
     super()
     this.unsubscribe.push(
-      NetworkController.subscribeKey('caipNetwork', val => (this.network = val))
+      ChainController.subscribeKey('activeCaipNetwork', val => (this.network = val))
     )
   }
 
@@ -131,17 +131,23 @@ export class W3mNetworksView extends LitElement {
 
   private getNetworkDisabled(network: CaipNetwork) {
     const networkNamespace = network.chainNamespace
-    const isNamespaceConnected = AccountController.getChainIsConnected(networkNamespace)
-    const approvedCaipNetworkIds = ChainController.getNetworkProp(
-      'approvedCaipNetworkIds',
-      networkNamespace
-    )
-    const supportsAllNetworks = ChainController.getNetworkProp(
-      'supportsAllNetworks',
-      networkNamespace
+    const isNamespaceConnected = AccountController.getCaipAddress(networkNamespace)
+    const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworks()
+    const supportsAllNetworks =
+      ChainController.getNetworkProp('supportsAllNetworks', networkNamespace) !== false
+    const type = StorageUtil.getConnectedConnector()
+    const authConnector = ConnectorController.getAuthConnector()
+    const isConnectedWithAuth = type === 'AUTH' && authConnector
+
+    console.log(
+      '>>> getNetworkDisabled',
+      network,
+      isNamespaceConnected,
+      supportsAllNetworks,
+      isConnectedWithAuth
     )
 
-    if (!isNamespaceConnected || supportsAllNetworks) {
+    if (!isNamespaceConnected || supportsAllNetworks || isConnectedWithAuth) {
       return false
     }
 
@@ -149,8 +155,8 @@ export class W3mNetworksView extends LitElement {
   }
 
   private async onSwitchNetwork(network: CaipNetwork) {
-    const isCurrentNamespaceConnected = AccountController.state.isConnected
-    const isNamespaceConnected = AccountController.getChainIsConnected(network.chainNamespace)
+    const isCurrentNamespaceConnected = AccountController.state.caipAddress
+    const isNamespaceConnected = AccountController.getCaipAddress(network.chainNamespace)
     const isSameNetwork = network.id === this.network?.id
 
     const supportsAllNetworks = NetworkController.state.supportsAllNetworks
@@ -174,6 +180,8 @@ export class W3mNetworksView extends LitElement {
       // eslint-disable-next-line no-lonely-if
       if (ChainController.state.noAdapters) {
         RouterController.push('ConnectingWalletConnect')
+      } else if (isConnectedWithAuth) {
+        RouterController.push('SwitchNetwork', { ...routerData, network })
       } else {
         // eslint-disable-next-line no-lonely-if
         if (isCurrentNamespaceConnected) {

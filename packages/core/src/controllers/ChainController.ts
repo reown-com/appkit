@@ -8,6 +8,7 @@ import { PublicStateController } from './PublicStateController.js'
 import {
   SafeLocalStorage,
   SafeLocalStorageKeys,
+  type CaipAddress,
   type CaipNetwork,
   type ChainNamespace
 } from '@rerock/common'
@@ -15,6 +16,7 @@ import {
 // -- Types --------------------------------------------- //
 export interface ChainControllerState {
   activeChain: ChainNamespace | undefined
+  activeCaipAddress: CaipAddress | undefined
   activeCaipNetwork?: CaipNetwork
   chains: Map<ChainNamespace, ChainAdapter>
   activeConnector?: Connector
@@ -52,6 +54,7 @@ const networkState: NetworkControllerState = {
 // -- State --------------------------------------------- //
 const state = proxy<ChainControllerState>({
   chains: proxyMap<ChainNamespace, ChainAdapter>(),
+  activeCaipAddress: undefined,
   activeChain: undefined,
   activeCaipNetwork: undefined,
   noAdapters: false,
@@ -121,14 +124,12 @@ export const ChainController = {
     adapter: ChainsInitializerAdapter,
     adapters: ChainsInitializerAdapter[]
   ) {
-    state.activeChain = 'eip155'
-    PublicStateController.set({ activeChain: 'eip155' })
     state.universalAdapter = adapter
 
     if (adapters.length === 0) {
       this.setActiveCaipNetwork(adapter?.defaultNetwork)
     }
-    const chains: ChainNamespace[] = ['eip155', 'solana']
+    const chains: ChainNamespace[] = adapters.map(adapter => adapter.chainNamespace)
     chains.forEach((chain: ChainNamespace) => {
       state.chains.set(chain, {
         chainNamespace: chain,
@@ -182,6 +183,9 @@ export const ChainController = {
       } as AccountControllerState)
       state.chains.set(chain, chainAdapter)
       if (replaceState || state.chains.size === 1 || state.activeChain === chain) {
+        if (accountProps.caipAddress) {
+          state.activeCaipAddress = accountProps.caipAddress
+        }
         AccountController.replaceState(chainAdapter.accountState)
       }
     }
@@ -203,23 +207,24 @@ export const ChainController = {
     )
   },
 
-  setActiveChain(chain: ChainNamespace | undefined) {
+  setActiveChain(
+    chain: ChainNamespace | undefined,
+    caipNetwork?: NetworkControllerState['caipNetwork']
+  ) {
     const newAdapter = chain ? state.chains.get(chain) : undefined
 
     if (newAdapter && newAdapter.chainNamespace !== state.activeChain) {
       state.activeChain = newAdapter.chainNamespace
-      state.activeCaipNetwork = newAdapter.networkState?.caipNetwork
-        ? ref(newAdapter.networkState?.caipNetwork)
-        : undefined
+      state.activeCaipAddress = newAdapter.accountState?.caipAddress
+      state.activeCaipNetwork = caipNetwork
 
       if (!newAdapter.accountState) {
         this.resetAccount(newAdapter.chainNamespace)
       }
 
+      NetworkController.replaceState(newAdapter.networkState) // change the network state first
       AccountController.replaceState(newAdapter.accountState)
 
-      NetworkController.replaceState(newAdapter.networkState)
-      this.setCaipNetwork(newAdapter.chainNamespace, newAdapter.networkState?.caipNetwork, true)
       PublicStateController.set({
         activeChain: chain,
         selectedNetworkId: newAdapter.networkState?.caipNetwork?.id
@@ -233,16 +238,17 @@ export const ChainController = {
     }
 
     if (caipNetwork.chainNamespace !== state.activeChain) {
-      this.setActiveChain(caipNetwork.chainNamespace)
+      this.setActiveChain(caipNetwork.chainNamespace, caipNetwork)
+      return
     }
 
-    state.activeCaipNetwork = ref(caipNetwork)
+    state.activeCaipNetwork = caipNetwork
     state.activeChain = caipNetwork.chainNamespace
-    this.setCaipNetwork(caipNetwork.chainNamespace, caipNetwork, true)
     PublicStateController.set({
       activeChain: caipNetwork.chainNamespace,
       selectedNetworkId: caipNetwork?.id
     })
+    SafeLocalStorage.setItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK, JSON.stringify(caipNetwork))
   },
 
   /**
@@ -258,6 +264,8 @@ export const ChainController = {
     caipNetwork: NetworkControllerState['caipNetwork'],
     shouldReplace = false
   ) {
+    state.activeCaipNetwork = caipNetwork
+    state.activeChain = caipNetwork?.chainNamespace
     this.setChainNetworkData(chain, { caipNetwork }, shouldReplace)
   },
 

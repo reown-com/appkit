@@ -14,11 +14,14 @@ import {
 import { withSolanaNamespace } from '../utils/withSolanaNamespace.js'
 import base58 from 'bs58'
 import { isVersionedTransaction } from '@solana/wallet-adapter-base'
-import type { CaipNetwork } from '@rerock/common'
+import type { CaipNetwork, ChainNamespace } from '@rerock/common'
+import { ChainController, NetworkController } from '@rerock/core'
 
 export type AuthProviderConfig = {
-  provider: W3mFrameProvider
+  getProvider: () => W3mFrameProvider
   getActiveChain: GetActiveChain
+  getActiveNamespace: () => ChainNamespace | undefined
+  getSession: () => AuthProvider.Session | undefined
   chains: CaipNetwork[]
 }
 
@@ -26,32 +29,50 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
   public readonly name = ConstantsUtil.AUTH_CONNECTOR_ID
   public readonly type = 'AUTH'
 
-  private readonly provider: AuthProviderConfig['provider']
+  private readonly getProvider: AuthProviderConfig['getProvider']
   private readonly getActiveChain: AuthProviderConfig['getActiveChain']
+  private readonly getActiveNamespace: AuthProviderConfig['getActiveNamespace']
   private readonly requestedChains: CaipNetwork[]
-
+  private readonly getSession: AuthProviderConfig['getSession']
   private session: AuthProvider.Session | undefined
 
-  constructor({ provider, getActiveChain, chains }: AuthProviderConfig) {
+  constructor({
+    getProvider,
+    getActiveChain,
+    getActiveNamespace,
+    getSession,
+    chains
+  }: AuthProviderConfig) {
     super()
 
-    this.provider = provider
+    this.getProvider = getProvider
     this.getActiveChain = getActiveChain
+    this.getActiveNamespace = getActiveNamespace
     this.requestedChains = chains
-
+    this.getSession = getSession
+    this.session = getSession()
     this.bindEvents()
+
+    ChainController.subscribeKey('activeCaipNetwork', (caipNetwork: CaipNetwork | undefined) => {
+      const isSolana = caipNetwork?.chainNamespace === 'solana'
+      if (isSolana) {
+        this.session = this.getSession()
+      }
+    })
   }
 
   get publicKey(): PublicKey | undefined {
-    if (this.session) {
-      return new PublicKey(this.session.address)
+    const session = this.getSession()
+
+    if (session) {
+      return new PublicKey(session.address)
     }
 
     return undefined
   }
 
   get chains() {
-    const availableChainIds = this.provider.getAvailableChainIds()
+    const availableChainIds = this.getProvider().getAvailableChainIds()
 
     return this.requestedChains.filter(requestedChain =>
       availableChainIds.includes(withSolanaNamespace(requestedChain.chainId) as string)
@@ -59,7 +80,7 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
   }
 
   public async connect() {
-    this.session = await this.provider.connect({
+    this.session = await this.getProvider().connect({
       chainId: withSolanaNamespace(this.getActiveChain()?.chainId)
     })
 
@@ -71,13 +92,13 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
   }
 
   public async disconnect() {
-    await this.provider.disconnect()
+    await this.getProvider().disconnect()
 
     this.emit('disconnect', undefined)
   }
 
   public async signMessage(message: Uint8Array) {
-    const result = await this.provider.request({
+    const result = await this.getProvider().request({
       method: 'solana_signMessage',
       params: { message: base58.encode(message), pubkey: this.getPublicKey(true).toBase58() }
     })
@@ -86,7 +107,7 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
   }
 
   public async signTransaction<T extends AnyTransaction>(transaction: T) {
-    const result = await this.provider.request({
+    const result = await this.getProvider().request({
       method: 'solana_signTransaction',
       params: { transaction: this.serializeTransaction(transaction) }
     })
@@ -106,7 +127,7 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
   ) {
     const serializedTransaction = this.serializeTransaction(transaction)
 
-    const result = await this.provider.request({
+    const result = await this.getProvider().request({
       method: 'solana_signAndSendTransaction',
       params: {
         transaction: serializedTransaction,
@@ -129,7 +150,7 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
   }
 
   public async signAllTransactions<T extends AnyTransaction[]>(transactions: T): Promise<T> {
-    const result = await this.provider.request({
+    const result = await this.getProvider().request({
       method: 'solana_signAllTransactions',
       params: {
         transactions: transactions.map(transaction => this.serializeTransaction(transaction))
@@ -154,24 +175,27 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
   }
 
   // -- W3mFrameProvider methods ------------------------------------------- //
-  connectEmail: ProviderAuthMethods['connectEmail'] = args => this.provider.connectEmail(args)
-  connectOtp: ProviderAuthMethods['connectOtp'] = args => this.provider.connectOtp(args)
-  updateEmail: ProviderAuthMethods['updateEmail'] = args => this.provider.updateEmail(args)
+  connectEmail: ProviderAuthMethods['connectEmail'] = args => this.getProvider().connectEmail(args)
+  connectOtp: ProviderAuthMethods['connectOtp'] = args => this.getProvider().connectOtp(args)
+  updateEmail: ProviderAuthMethods['updateEmail'] = args => this.getProvider().updateEmail(args)
   updateEmailPrimaryOtp: ProviderAuthMethods['updateEmailPrimaryOtp'] = args =>
-    this.provider.updateEmailPrimaryOtp(args)
+    this.getProvider().updateEmailPrimaryOtp(args)
   updateEmailSecondaryOtp: ProviderAuthMethods['updateEmailSecondaryOtp'] = args =>
-    this.provider.updateEmailSecondaryOtp(args)
-  getEmail: ProviderAuthMethods['getEmail'] = () => this.provider.getEmail()
+    this.getProvider().updateEmailSecondaryOtp(args)
+  getEmail: ProviderAuthMethods['getEmail'] = () => this.getProvider().getEmail()
   getSocialRedirectUri: ProviderAuthMethods['getSocialRedirectUri'] = args =>
-    this.provider.getSocialRedirectUri(args)
-  connectDevice: ProviderAuthMethods['connectDevice'] = () => this.provider.connectDevice()
-  connectSocial: ProviderAuthMethods['connectSocial'] = args => this.provider.connectSocial(args)
-  connectFarcaster: ProviderAuthMethods['connectFarcaster'] = () => this.provider.connectFarcaster()
-  getFarcasterUri: ProviderAuthMethods['getFarcasterUri'] = () => this.provider.getFarcasterUri()
-  syncTheme: ProviderAuthMethods['syncTheme'] = args => this.provider.syncTheme(args)
-  syncDappData: ProviderAuthMethods['syncDappData'] = args => this.provider.syncDappData(args)
+    this.getProvider().getSocialRedirectUri(args)
+  connectDevice: ProviderAuthMethods['connectDevice'] = () => this.getProvider().connectDevice()
+  connectSocial: ProviderAuthMethods['connectSocial'] = args =>
+    this.getProvider().connectSocial(args)
+  connectFarcaster: ProviderAuthMethods['connectFarcaster'] = () =>
+    this.getProvider().connectFarcaster()
+  getFarcasterUri: ProviderAuthMethods['getFarcasterUri'] = () =>
+    this.getProvider().getFarcasterUri()
+  syncTheme: ProviderAuthMethods['syncTheme'] = args => this.getProvider().syncTheme(args)
+  syncDappData: ProviderAuthMethods['syncDappData'] = args => this.getProvider().syncDappData(args)
   switchNetwork: ProviderAuthMethods['switchNetwork'] = async args => {
-    const result = await this.provider.switchNetwork(args)
+    const result = await this.getProvider().switchNetwork(args)
     this.emit('chainChanged', args as string)
 
     return result
@@ -181,7 +205,8 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
   private getPublicKey<Required extends boolean>(
     required?: Required
   ): Required extends true ? PublicKey : PublicKey | undefined {
-    if (!this.session) {
+    const session = this.getSession()
+    if (!session) {
       if (required) {
         throw new Error('Account is required')
       }
@@ -189,32 +214,40 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
       return undefined as Required extends true ? PublicKey : PublicKey | undefined
     }
 
-    return new PublicKey(this.session.address)
+    return new PublicKey(session.address)
   }
 
   private serializeTransaction(transaction: AnyTransaction) {
     return base58.encode(transaction.serialize({ verifySignatures: false }))
   }
 
+  private async onConnect(response) {
+    this.session = response
+    this.emit('connect', this.getPublicKey(true))
+  }
+
   private bindEvents() {
-    this.provider.onRpcRequest(request => {
+    this.getProvider().onRpcRequest(request => {
       this.emit('auth_rpcRequest', request)
     })
 
-    this.provider.onRpcSuccess(response => {
+    this.getProvider().onRpcSuccess(response => {
       this.emit('auth_rpcSuccess', response)
     })
 
-    this.provider.onRpcError(error => {
+    this.getProvider().onRpcError(error => {
       this.emit('auth_rpcError', error)
     })
 
-    this.provider.onIsConnected(response => {
-      this.session = response
-      this.emit('connect', this.getPublicKey(true))
+    this.getProvider().onIsConnected(response => {
+      const activeNamespace = this.getActiveNamespace()
+
+      if (activeNamespace === 'solana') {
+        this.onConnect(response)
+      }
     })
 
-    this.provider.onNotConnected(() => {
+    this.getProvider().onNotConnected(() => {
       this.emit('disconnect', undefined)
     })
   }

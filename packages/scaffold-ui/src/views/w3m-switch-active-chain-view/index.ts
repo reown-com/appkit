@@ -1,4 +1,4 @@
-import { ChainController, NetworkController, RouterController } from '@rerock/core'
+import { ChainController, ModalController, NetworkController, RouterController } from '@rerock/core'
 import { customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
@@ -61,13 +61,12 @@ export class W3mSwitchActiveChainView extends LitElement {
           <wui-text variant="paragraph-500" color="fg-100" align="center"
             >Switch to
             <span class="capitalize">
-              ${this.switchToChain === 'eip155' ? 'EVM' : this.switchToChain}</span
+              ${this.switchToChain === 'eip155' ? 'Ethereum' : this.switchToChain}</span
             ></wui-text
           >
           <wui-text variant="small-400" color="fg-200" align="center">
-            This request is not supported on the ${chainNameString} chain. Disconnect from the
-            ${chainNameString} session and switch to ${switchedChainNameString} chain to proceed
-            using it.
+            Connected wallet doesn't support connecting to ${switchedChainNameString} chain. You
+            need to connect with a different wallet.
           </wui-text>
           <wui-button size="md" @click=${this.switchActiveChain.bind(this)}>Switch</wui-button>
         </wui-flex>
@@ -82,16 +81,10 @@ export class W3mSwitchActiveChainView extends LitElement {
     }
 
     await NetworkController.switchActiveNetwork(this.caipNetwork)
-
-    if (this.navigateTo) {
-      if (this.navigateWithReplace) {
-        RouterController.replace(this.navigateTo)
-      } else {
-        RouterController.push(this.navigateTo)
-      }
-    } else {
-      RouterController.goBack()
-    }
+    ModalController.close()
+    ModalController.open({
+      view: 'Connect'
+    })
   }
 }
 

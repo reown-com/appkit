@@ -8,6 +8,7 @@ import type { CaipNetworkId } from '@rerock/common'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { AccountController } from './AccountController.js'
 import { W3mFrameRpcConstants } from '@rerock/wallet'
+import { ChainController } from './ChainController.js'
 
 // -- Types --------------------------------------------- //
 type TransactionByMonthMap = Record<number, Transaction[]>
@@ -63,7 +64,7 @@ export const TransactionsController = {
         onramp,
         // Coinbase transaction history state updates require the latest data
         cache: onramp === 'coinbase' ? 'no-cache' : undefined,
-        chainId: NetworkController.state.caipNetwork?.id
+        chainId: ChainController.state.activeCaipNetwork?.id
       })
 
       const nonSpamTransactions = this.filterSpamTransactions(response.data)
@@ -144,7 +145,7 @@ export const TransactionsController = {
   },
 
   filterByConnectedChain(transactions: Transaction[]) {
-    const chainId = NetworkController.state.caipNetwork?.id
+    const chainId = ChainController.state.activeCaipNetwork?.id
     const filteredTransactions = transactions.filter(
       transaction => transaction.metadata.chain === chainId
     )

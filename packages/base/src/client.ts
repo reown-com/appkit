@@ -95,7 +95,7 @@ export class AppKit {
   }
 
   public getChainId() {
-    return NetworkController.state.caipNetwork?.chainId
+    return ChainController.state.activeCaipNetwork?.chainId
   }
 
   public switchNetwork(caipNetwork: CaipNetwork) {
@@ -240,7 +240,13 @@ export class AppKit {
     AccountController.removeAddressLabel(address, chain)
   }
 
-  public getCaipAddress = () => AccountController.state.caipAddress
+  public getCaipAddress = (chainNamespace?: ChainNamespace) => {
+    if (ChainController.state.activeChain === chainNamespace || !chainNamespace) {
+      return AccountController.state.caipAddress
+    }
+
+    return ChainController.getAccountProp('caipAddress', chainNamespace)
+  }
 
   public getAddress = (chainNamespace?: ChainNamespace) => {
     if (ChainController.state.activeChain === chainNamespace || !chainNamespace) {
@@ -256,6 +262,7 @@ export class AppKit {
     AccountController.state.preferredAccountType as W3mFrameTypes.AccountType
 
   public setCaipAddress: (typeof AccountController)['setCaipAddress'] = (caipAddress, chain) => {
+    console.trace('>>> setCaipAddress', caipAddress, chain)
     AccountController.setCaipAddress(caipAddress, chain)
   }
 
@@ -290,7 +297,11 @@ export class AppKit {
       )?.[0]
     }
 
-    return NetworkController.state.caipNetwork
+    return ChainController.state.activeCaipNetwork
+  }
+
+  public getCaipNetworks = () => {
+    return NetworkController.getRequestedCaipNetworks()
   }
 
   public getActiveChainNamespace = () => ChainController.state.activeChain

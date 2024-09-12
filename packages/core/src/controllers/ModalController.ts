@@ -45,13 +45,13 @@ export const ModalController = {
 
   async open(options?: ModalControllerArguments['open']) {
     await ApiController.state.prefetchPromise
-    const connected = AccountController.state.isConnected
+    const caipAddress = AccountController.state.caipAddress
 
     const noAdapters = ChainController.state.noAdapters
 
     if (options?.view) {
       RouterController.reset(options.view)
-    } else if (connected) {
+    } else if (caipAddress) {
       RouterController.reset('Account')
     } else if (noAdapters && !CoreHelperUtil.isMobile()) {
       RouterController.reset('ConnectingWalletConnect')
@@ -63,7 +63,7 @@ export const ModalController = {
     EventsController.sendEvent({
       type: 'track',
       event: 'MODAL_OPEN',
-      properties: { connected }
+      properties: { connected: caipAddress ? true : false }
     })
   },
 

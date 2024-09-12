@@ -107,7 +107,9 @@ export class W3mConnectingMultiChainView extends LitElement {
         RouterController.push('ConnectingWalletConnect')
       }
     } else {
-      RouterController.push('ConnectingExternal', { connector })
+      RouterController.push('ConnectingExternal', {
+        connector
+      })
     }
   }
 }

@@ -113,6 +113,10 @@ export const AccountController = {
     return ChainController.getAccountProp('isConnected', chain)
   },
 
+  getCaipAddress(chain: ChainNamespace | undefined) {
+    return ChainController.getAccountProp('caipAddress', chain)
+  },
+
   setProvider(provider: AccountControllerState['provider'], chain: ChainNamespace | undefined) {
     if (provider) {
       ChainController.setAccountProp('provider', provider, chain)
@@ -123,10 +127,11 @@ export const AccountController = {
     caipAddress: AccountControllerState['caipAddress'],
     chain: ChainNamespace | undefined
   ) {
-    const newCaipAddress = caipAddress ? CoreHelperUtil.getPlainAddress(caipAddress) : undefined
+    const newAddress = caipAddress ? CoreHelperUtil.getPlainAddress(caipAddress) : undefined
 
+    ChainController.state.activeCaipAddress = caipAddress
     ChainController.setAccountProp('caipAddress', caipAddress, chain)
-    ChainController.setAccountProp('address', newCaipAddress, chain)
+    ChainController.setAccountProp('address', newAddress, chain)
   },
 
   setBalance(
@@ -231,8 +236,8 @@ export const AccountController = {
   },
 
   async fetchTokenBalance() {
-    const chainId = NetworkController.state.caipNetwork?.id
-    const chain = NetworkController.state.caipNetwork?.chainNamespace
+    const chainId = ChainController.state.activeCaipNetwork?.id
+    const chain = ChainController.state.activeCaipNetwork?.chainNamespace
     const address = AccountController.state.address
 
     try {

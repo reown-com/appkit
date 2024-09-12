@@ -1,5 +1,6 @@
 import {
   AccountController,
+  ChainController,
   ConnectionController,
   EventsController,
   ModalController,
@@ -82,7 +83,7 @@ export class W3mConnectingSiweView extends LitElement {
       event: 'CLICK_SIGN_SIWE_MESSAGE',
       type: 'track',
       properties: {
-        network: NetworkController.state.caipNetwork?.id || '',
+        network: ChainController.state.activeCaipNetwork?.id || '',
         isSmartAccount:
           AccountController.state.preferredAccountType ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
@@ -96,7 +97,7 @@ export class W3mConnectingSiweView extends LitElement {
         event: 'SIWE_AUTH_SUCCESS',
         type: 'track',
         properties: {
-          network: NetworkController.state.caipNetwork?.id || '',
+          network: ChainController.state.activeCaipNetwork?.id || '',
           isSmartAccount:
             AccountController.state.preferredAccountType ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
@@ -119,7 +120,7 @@ export class W3mConnectingSiweView extends LitElement {
         event: 'SIWE_AUTH_ERROR',
         type: 'track',
         properties: {
-          network: NetworkController.state.caipNetwork?.id || '',
+          network: ChainController.state.activeCaipNetwork?.id || '',
           isSmartAccount
         }
       })
@@ -130,8 +131,8 @@ export class W3mConnectingSiweView extends LitElement {
 
   private async onCancel() {
     this.isCancelling = true
-    const isConnected = AccountController.state.isConnected
-    if (isConnected) {
+    const caipAddress = AccountController.state.caipAddress
+    if (caipAddress) {
       await ConnectionController.disconnect()
       ModalController.close()
     } else {
@@ -142,7 +143,7 @@ export class W3mConnectingSiweView extends LitElement {
       event: 'CLICK_CANCEL_SIWE',
       type: 'track',
       properties: {
-        network: NetworkController.state.caipNetwork?.id || '',
+        network: ChainController.state.activeCaipNetwork?.id || '',
         isSmartAccount:
           AccountController.state.preferredAccountType ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT

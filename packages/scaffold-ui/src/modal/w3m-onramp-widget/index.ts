@@ -22,7 +22,7 @@ export class W3mOnrampWidget extends LitElement {
   // -- State & Properties -------------------------------- //
   @property({ type: Boolean }) public disabled? = false
 
-  @state() private connected = AccountController.state.isConnected
+  @state() private caipAddress = AccountController.state.caipAddress
 
   @state() private loading = ModalController.state.loading
 
@@ -39,9 +39,7 @@ export class W3mOnrampWidget extends LitElement {
     super()
     this.unsubscribe.push(
       ...[
-        AccountController.subscribeKey('isConnected', val => {
-          this.connected = val
-        }),
+        AccountController.subscribeKey('caipAddress', val => (this.caipAddress = val)),
         ModalController.subscribeKey('loading', val => {
           this.loading = val
         }),
@@ -96,7 +94,7 @@ export class W3mOnrampWidget extends LitElement {
   }
 
   private templateButton() {
-    return this.connected
+    return this.caipAddress
       ? html`<wui-button
           @click=${this.getQuotes.bind(this)}
           variant="main"

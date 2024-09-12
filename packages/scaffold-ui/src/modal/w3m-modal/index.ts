@@ -34,11 +34,9 @@ export class W3mModal extends LitElement {
 
   @state() private caipAddress = AccountController.state.caipAddress
 
-  @state() private caipNetwork = NetworkController.state.caipNetwork
+  @state() private caipNetwork = ChainController.state.activeCaipNetwork
 
   @state() private isSiweEnabled = OptionsController.state.isSiweEnabled
-
-  @state() private connected = AccountController.state.isConnected
 
   @state() private loading = ModalController.state.loading
 
@@ -53,8 +51,7 @@ export class W3mModal extends LitElement {
         ModalController.subscribeKey('open', val => (val ? this.onOpen() : this.onClose())),
         ModalController.subscribeKey('shake', val => (this.shake = val)),
         ModalController.subscribeKey('loading', val => this.onLoadingChange(val)),
-        AccountController.subscribeKey('isConnected', val => this.onIsConnectedChange(val)),
-        NetworkController.subscribeKey('caipNetwork', val => this.onNewNetwork(val)),
+        ChainController.subscribeKey('activeCaipNetwork', val => this.onNewNetwork(val)),
         AccountController.subscribeKey('caipAddress', val => this.onNewAddress(val)),
         AccountController.subscribeKey('siweStatus', val => this.onSiweStatusChange(val)),
         OptionsController.subscribeKey('isSiweEnabled', val => (this.isSiweEnabled = val))
@@ -184,7 +181,7 @@ export class W3mModal extends LitElement {
   }
 
   private async onNewAddress(caipAddress?: CaipAddress) {
-    if (!this.connected || this.loading) {
+    if (!this.caipAddress || this.loading) {
       return
     }
 
@@ -207,21 +204,18 @@ export class W3mModal extends LitElement {
   }
 
   private async onIsConnectedChange(nextIsConnected: boolean) {
-    const prevIsConnected = this.connected
-
-    if (nextIsConnected && this.isSiweEnabled) {
-      const { SIWEController } = await import('@rerock/siwe')
-      const session = await SIWEController.getSession()
-
-      if (!session) {
-        this.onSiweNavigation()
-      }
-    } else if (!prevIsConnected && nextIsConnected) {
-      ModalController.close()
-      RouterController.reset('Connect')
-    }
-
-    this.connected = nextIsConnected
+    // const prevIsConnected = this.caipAddress
+    // if (nextIsConnected && this.isSiweEnabled) {
+    //   const { SIWEController } = await import('@rerock/siwe')
+    //   const session = await SIWEController.getSession()
+    //   if (!session) {
+    //     this.onSiweNavigation()
+    //   }
+    // } else if (!prevIsConnected && nextIsConnected) {
+    //   ModalController.close()
+    //   RouterController.reset('Connect')
+    // }
+    // this.connected = nextIsConnected
   }
 
   private onSiweStatusChange(nextStatus: SIWEStatus | undefined) {
@@ -235,7 +229,7 @@ export class W3mModal extends LitElement {
   }
 
   private async onNewNetwork(nextCaipNetwork: CaipNetwork | undefined) {
-    if (!this.connected) {
+    if (!this.caipAddress) {
       this.caipNetwork = nextCaipNetwork
 
       return

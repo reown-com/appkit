@@ -11,7 +11,8 @@ import {
   StorageUtil,
   ConnectorController,
   SendController,
-  ConstantsUtil
+  ConstantsUtil,
+  ChainController
 } from '@rerock/core'
 import { UiHelperUtil, customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'
@@ -33,7 +34,7 @@ export class W3mAccountSettingsView extends LitElement {
 
   @state() private profileName = AccountController.state.profileName
 
-  @state() private network = NetworkController.state.caipNetwork
+  @state() private network = ChainController.state.activeCaipNetwork
 
   @state() private preferredAccountType = AccountController.state.preferredAccountType
 
@@ -63,7 +64,7 @@ export class W3mAccountSettingsView extends LitElement {
           'preferredAccountType',
           val => (this.preferredAccountType = val)
         ),
-        NetworkController.subscribeKey('caipNetwork', val => {
+        ChainController.subscribeKey('activeCaipNetwork', val => {
           if (val?.id) {
             this.network = val
           }

@@ -2,10 +2,11 @@ import {
   AccountController,
   AssetUtil,
   CoreHelperUtil,
-  NetworkController,
+  ChainController,
   RouterController,
   SnackController,
-  ThemeController
+  ThemeController,
+  NetworkController
 } from '@rerock/core'
 import { UiHelperUtil, customElement } from '@rerock/ui'
 import { LitElement, html } from 'lit'
@@ -25,7 +26,7 @@ export class W3mWalletReceiveView extends LitElement {
 
   @state() private profileName = AccountController.state.profileName
 
-  @state() private network = NetworkController.state.caipNetwork
+  @state() private network = ChainController.state.activeCaipNetwork
 
   @state() private preferredAccountType = AccountController.state.preferredAccountType
 
@@ -43,7 +44,7 @@ export class W3mWalletReceiveView extends LitElement {
           }
         })
       ],
-      NetworkController.subscribeKey('caipNetwork', val => {
+      ChainController.subscribeKey('activeCaipNetwork', val => {
         if (val?.id) {
           this.network = val
         }
@@ -107,7 +108,7 @@ export class W3mWalletReceiveView extends LitElement {
   networkTemplate() {
     const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
     const isNetworkEnabledForSmartAccounts = NetworkController.checkIfSmartAccountEnabled()
-    const caipNetwork = NetworkController.state.caipNetwork
+    const caipNetwork = ChainController.state.activeCaipNetwork
 
     if (
       this.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT &&

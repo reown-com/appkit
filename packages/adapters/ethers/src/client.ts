@@ -12,6 +12,7 @@ import {
 import {
   AccountController,
   ChainController,
+  CoreHelperUtil,
   type CombinedProvider,
   type Connector
 } from '@rerock/core'
@@ -174,14 +175,40 @@ export class EVMEthersClient {
   // -- Public -------------------------------------------------------------------
   // eslint-disable-next-line @typescript-eslint/no-useless-constructor, @typescript-eslint/no-empty-function
   public constructor() {
-    AccountController.subscribeKey(
-      'isConnected',
-      () => this.syncAccount({ address: this.appKit?.getAddress() as Address }),
-      this.chainNamespace
-    )
+    ChainController.subscribeKey('activeCaipNetwork', async val => {
+      const caipAddress = this.appKit?.getCaipAddress(this.chainNamespace)
+      const isEVMAddress = caipAddress?.startsWith('eip155:')
+      const isEVMNetwork = val?.chainNamespace === this.chainNamespace
+
+      if (isEVMAddress && isEVMNetwork && caipAddress) {
+        this.syncBalance(CoreHelperUtil.getPlainAddress(caipAddress) as Address, val)
+        this.syncAccount({
+          address: CoreHelperUtil.getPlainAddress(caipAddress) as Address | undefined,
+          caipNetwork: val
+        })
+      }
+    })
+    ChainController.subscribeKey('activeCaipAddress', val => {
+      const isEVMAddress = val?.startsWith('eip155:')
+      const caipNetwork = ChainController.state.activeCaipNetwork
+      const isEVMNetwork = caipNetwork?.chainNamespace === this.chainNamespace
+
+      if (isEVMAddress) {
+        if (isEVMNetwork) {
+          this.syncBalance(CoreHelperUtil.getPlainAddress(val) as Address, caipNetwork)
+        }
+        this.syncAccount({ address: CoreHelperUtil.getPlainAddress(val) as Address })
+      }
+    })
     AccountController.subscribeKey(
       'shouldUpdateToAddress',
-      newAddress => this.syncAccount({ address: newAddress as Address }),
+      newAddress => {
+        const isEVMAddress = newAddress?.startsWith('0x')
+
+        if (isEVMAddress) {
+          this.syncAccount({ address: newAddress as Address })
+        }
+      },
       this.chainNamespace
     )
   }
@@ -529,7 +556,7 @@ export class EVMEthersClient {
         resolve(networkData)
       } else {
         resolve({
-          supportsAllNetworks: true,
+          supportsAllNetworks: false,
           approvedCaipNetworkIds: []
         })
       }
@@ -581,14 +608,9 @@ export class EVMEthersClient {
 
         if (addresses?.[0] && chainId && caipNetwork) {
           this.appKit?.setCaipNetwork(caipNetwork)
-          this.appKit?.setCaipAddress(
-            `${this.chainNamespace}:${chainId}:${addresses[0]}`,
-            this.chainNamespace
-          )
           ProviderUtil.setProviderId('eip155', providerId)
           ProviderUtil.setProvider<Provider>('eip155', provider)
           this.appKit?.setStatus('connected', this.chainNamespace)
-          this.appKit?.setIsConnected(true, this.chainNamespace)
           this.appKit?.setAllAccounts(
             addresses.map(address => ({ address, type: 'eoa' })),
             this.chainNamespace
@@ -630,7 +652,6 @@ export class EVMEthersClient {
         const caipNetwork = this.caipNetworks.find(c => c.chainId === chainId)
         this.appKit?.setCaipNetwork(caipNetwork)
         this.appKit?.setStatus('connected', this.chainNamespace)
-        this.appKit?.setIsConnected(true, this.chainNamespace)
         this.appKit?.setCaipAddress(
           `${this.chainNamespace}:${chainId}:${address}`,
           this.chainNamespace
@@ -785,6 +806,12 @@ export class EVMEthersClient {
   }
 
   private handleAuthIsConnected(preferredAccountType: string | undefined) {
+    const activeNamespace = this.appKit?.getActiveChainNamespace()
+
+    if (activeNamespace !== this.chainNamespace) {
+      return
+    }
+
     this.appKit?.setIsConnected(true, this.chainNamespace)
     this.appKit?.setPreferredAccountType(
       preferredAccountType as W3mFrameTypes.AccountType,
@@ -804,7 +831,6 @@ export class EVMEthersClient {
     this.appKit?.setCaipAddress(address, this.chainNamespace)
     this.appKit?.setCaipNetwork(caipNetwork)
     this.appKit?.setStatus('connected', this.chainNamespace)
-    this.appKit?.setIsConnected(true, this.chainNamespace)
     this.appKit?.setPreferredAccountType(type as W3mFrameTypes.AccountType, this.chainNamespace)
     this.syncAccount({
       address: address as Address
@@ -826,31 +852,39 @@ export class EVMEthersClient {
     }
   }
 
-  private async syncAccount({ address }: { address?: Address }) {
-    const isConnected = this.appKit?.getIsConnectedState()
-    const caipNetwork = this.appKit?.getCaipNetwork()
+  private async syncAccount({
+    address,
+    caipNetwork
+  }: {
+    address?: Address
+    caipNetwork?: CaipNetwork
+  }) {
+    const currentCaipNetwork = caipNetwork || this.appKit?.getCaipNetwork()
     const preferredAccountType = this.appKit?.getPreferredAccountType()
+    const isEipNetwork = currentCaipNetwork?.chainNamespace === CommonConstantsUtil.CHAIN.EVM
 
-    if (isConnected && address && caipNetwork) {
-      this.appKit?.setIsConnected(isConnected, this.chainNamespace)
-      this.appKit?.setCaipAddress(`eip155:${caipNetwork.chainId}:${address}`, this.chainNamespace)
-      this.appKit?.setPreferredAccountType(preferredAccountType, this.chainNamespace)
+    if (address) {
+      if (isEipNetwork) {
+        this.appKit?.setPreferredAccountType(preferredAccountType, this.chainNamespace)
 
-      this.syncConnectedWalletInfo()
+        this.syncConnectedWalletInfo()
+        if (this.ethersConfig) {
+          this.checkActiveProviders(this.ethersConfig)
+        }
 
-      if (caipNetwork?.explorerUrl) {
-        this.appKit?.setAddressExplorerUrl(
-          `${caipNetwork.explorerUrl}/address/${address}`,
-          this.chainNamespace
-        )
+        if (currentCaipNetwork?.explorerUrl) {
+          this.appKit?.setAddressExplorerUrl(
+            `${currentCaipNetwork.explorerUrl}/address/${address}`,
+            this.chainNamespace
+          )
+        }
+
+        await Promise.all([
+          this.syncProfile(address),
+          this.appKit?.setApprovedCaipNetworksData(this.chainNamespace)
+        ])
       }
-
-      await Promise.all([
-        this.syncProfile(address),
-        this.syncBalance(address),
-        this.appKit?.setApprovedCaipNetworksData(this.chainNamespace)
-      ])
-    } else if (!isConnected) {
+    } else {
       this.appKit?.resetWcConnection()
       this.appKit?.resetNetwork()
       this.appKit?.setAllAccounts([], this.chainNamespace)
@@ -894,10 +928,13 @@ export class EVMEthersClient {
     }
   }
 
-  private async syncBalance(address: Address) {
-    const caipNetwork = this.appKit?.getCaipNetwork()
+  private async syncBalance(address: Address, caipNetwork: CaipNetwork) {
+    const isExistingNetwork = this.appKit
+      ?.getCaipNetworks()
+      .find(network => network.id === caipNetwork.id)
+    const isEVMNetwork = caipNetwork.chainNamespace === CommonConstantsUtil.CHAIN.EVM
 
-    if (caipNetwork) {
+    if (caipNetwork && isExistingNetwork && isEVMNetwork) {
       const jsonRpcProvider = new JsonRpcProvider(caipNetwork.rpcUrl, {
         chainId: caipNetwork.chainId as number,
         name: caipNetwork.name
@@ -1007,16 +1044,18 @@ export class EVMEthersClient {
           if (this.authProvider) {
             try {
               this.appKit?.setLoading(true)
-              await this.authProvider.switchNetwork(caipNetwork.chainId as number)
+              const { chainId } = await this.authProvider.switchNetwork(
+                caipNetwork.chainId as number
+              )
               this.appKit?.setCaipNetwork(caipNetwork)
               this.appKit?.setLoading(false)
 
               const { address, preferredAccountType } = await this.authProvider.connect({
                 chainId: caipNetwork.chainId as number | undefined
               })
+              const caipAddress = `${this.chainNamespace}:${chainId}:${address}` as CaipAddress
 
-              // @ts-expect-error - address type will be checked todo(enes|sven)
-              this.appKit?.setCaipAddress(address, this.chainNamespace)
+              this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)
               this.appKit?.setPreferredAccountType(
                 preferredAccountType as W3mFrameTypes.AccountType,
                 this.chainNamespace

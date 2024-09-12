@@ -98,13 +98,6 @@ export const NetworkController = {
     }
 
     ChainController.setActiveCaipNetwork(caipNetwork)
-    ChainController.setChainNetworkData(caipNetwork.chainNamespace, { caipNetwork })
-    PublicStateController.set({
-      activeChain: caipNetwork.chainNamespace,
-      selectedNetworkId: caipNetwork?.id
-    })
-
-    SafeLocalStorage.setItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK, JSON.stringify(caipNetwork))
 
     const isSupported = this.checkIfSupportedNetwork()
 
@@ -271,8 +264,9 @@ export const NetworkController = {
       return false
     }
 
-    const activeCaipNetwork = ChainController.state.chains.get(chain)?.networkState?.caipNetwork
-    const requestedCaipNetworks = this.getRequestedCaipNetworks()
+    const activeCaipNetwork = ChainController.state.activeCaipNetwork
+    const requestedCaipNetworks = this.getRequestedCaipNetworks(chain)
+    console.log('>>> checkIfSupportedNetwork', chain, activeCaipNetwork, requestedCaipNetworks)
 
     if (!requestedCaipNetworks.length) {
       return true

@@ -192,6 +192,7 @@ export namespace W3mFrameTypes {
 
   export type ProviderRequestType =
     | 'GetUser'
+    | 'GetChainInstance'
     | 'GetFarcasterUri'
     | 'ConnectDevice'
     | 'ConnectEmail'

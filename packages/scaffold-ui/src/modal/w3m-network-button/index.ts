@@ -2,6 +2,7 @@ import {
   AccountController,
   AssetController,
   AssetUtil,
+  ChainController,
   EventsController,
   ModalController,
   NetworkController
@@ -25,11 +26,11 @@ export class W3mNetworkButton extends LitElement {
 
   @property({ type: String }) public label?: string
 
-  @state() private network = NetworkController.state.caipNetwork
+  @state() private network = ChainController.state.activeCaipNetwork
 
   @state() private networkImage = this.network ? AssetUtil.getNetworkImage(this.network) : undefined
 
-  @state() private connected = AccountController.state.isConnected
+  @state() private caipAddress = AccountController.state.caipAddress
 
   @state() private loading = ModalController.state.loading
 
@@ -44,11 +45,13 @@ export class W3mNetworkButton extends LitElement {
             ? AssetUtil.getNetworkImage(this.network)
             : undefined
         }),
-        NetworkController.subscribeKey('caipNetwork', val => {
+        AccountController.subscribeKey('caipAddress', val => {
+          this.caipAddress = val
+        }),
+        ChainController.subscribeKey('activeCaipNetwork', val => {
           this.network = val
           this.networkImage = val?.imageId ? AssetUtil.getNetworkImage(val) : undefined
         }),
-        AccountController.subscribeKey('isConnected', val => (this.connected = val)),
         ModalController.subscribeKey('loading', val => (this.loading = val)),
         NetworkController.subscribeKey('isUnsupportedChain', val => (this.isUnsupportedChain = val))
       ]
@@ -84,10 +87,12 @@ export class W3mNetworkButton extends LitElement {
     if (this.isUnsupportedChain) {
       return 'Switch Network'
     }
+
     if (this.network) {
       return this.network.name
     }
-    if (this.connected) {
+
+    if (this.caipAddress) {
       return 'Unknown Network'
     }
 

@@ -44,11 +44,15 @@ export class ModalPage {
 
   constructor(
     public readonly page: Page,
-    public readonly library: string,
+    public readonly library: string | 'multichain-ethers-solana',
     public readonly flavor: ModalFlavor
   ) {
     this.connectButton = this.page.getByTestId('connect-button')
-    this.url = getUrlByFlavor(this.baseURL, library, flavor)
+    if (library === 'multichain-ethers-solana') {
+      this.url = `${this.baseURL}library/multichain-ethers-solana/`
+    } else {
+      this.url = getUrlByFlavor(this.baseURL, library, flavor)
+    }
   }
 
   async load() {

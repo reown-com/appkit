@@ -12,7 +12,8 @@ import {
   type SwapToken,
   type SwapInputTarget,
   EventsController,
-  AccountController
+  AccountController,
+  ChainController
 } from '@rerock/core'
 import { NumberUtil } from '@rerock/common'
 import { W3mFrameRpcConstants } from '@rerock/wallet'
@@ -28,7 +29,7 @@ export class W3mSwapView extends LitElement {
 
   @state() private detailsOpen = false
 
-  @state() private caipNetworkId = NetworkController.state.caipNetwork?.id
+  @state() private caipNetworkId = ChainController.state.activeCaipNetwork?.id
 
   @state() private initialized = SwapController.state.initialized
 
@@ -59,7 +60,7 @@ export class W3mSwapView extends LitElement {
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
-    NetworkController.subscribeKey('caipNetwork', newCaipNetwork => {
+    ChainController.subscribeKey('activeCaipNetwork', newCaipNetwork => {
       if (this.caipNetworkId !== newCaipNetwork?.id) {
         this.caipNetworkId = newCaipNetwork?.id
         SwapController.resetState()

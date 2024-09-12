@@ -603,7 +603,6 @@ export class EVMWagmiClient implements ChainAdapter {
             ProviderUtil.setProvider(chainNamespace, provider)
             ProviderUtil.setProviderId(chainNamespace, 'walletConnect')
 
-            this.appKit?.setIsConnected(true, chainNamespace)
             this.appKit?.setPreferredAccountType(preferredAccountType, chainNamespace)
             this.appKit?.setCaipAddress(caipAddress, chainNamespace)
           })
@@ -620,7 +619,6 @@ export class EVMWagmiClient implements ChainAdapter {
           const caipAddress = `eip155:${chainId}:${address}` as CaipAddress
           this.appKit?.resetAccount(this.chainNamespace)
           this.syncNetwork(address, chainId, true)
-          this.appKit?.setIsConnected(true, this.chainNamespace)
           this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)
           await Promise.all([
             this.syncProfile(address, chainId),
@@ -870,10 +868,6 @@ export class EVMWagmiClient implements ChainAdapter {
 
       this.appKit?.setLoading(isLoginEmailUsed)
 
-      if (isLoginEmailUsed) {
-        this.appKit?.setIsConnected(false, this.chainNamespace)
-      }
-
       provider.onRpcRequest((request: W3mFrameTypes.RPCRequest) => {
         if (W3mFrameHelpers.checkIfRequestExists(request)) {
           if (!W3mFrameHelpers.checkIfRequestIsSafe(request)) {
@@ -920,13 +914,14 @@ export class EVMWagmiClient implements ChainAdapter {
       provider.onNotConnected(() => {
         const isConnected = this.appKit?.getIsConnectedState()
         if (!isConnected) {
-          this.appKit?.setIsConnected(false, this.chainNamespace)
+          this.appKit?.setCaipAddress(undefined, this.chainNamespace)
           this.appKit?.setLoading(false)
         }
       })
 
       provider.onIsConnected(req => {
-        this.appKit?.setIsConnected(true, this.chainNamespace)
+        const caipAddress = `eip155:${req.chainId}:${req.address}` as CaipAddress
+        this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)
         this.appKit?.setSmartAccountDeployed(Boolean(req.smartAccountDeployed), this.chainNamespace)
         this.appKit?.setPreferredAccountType(
           req.preferredAccountType as W3mFrameTypes.AccountType,

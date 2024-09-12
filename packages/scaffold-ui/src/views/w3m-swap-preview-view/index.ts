@@ -3,6 +3,7 @@ import { LitElement, html } from 'lit'
 import styles from './styles.js'
 import {
   AccountController,
+  ChainController,
   NetworkController,
   RouterController,
   SwapController
@@ -36,7 +37,7 @@ export class W3mSwapPreviewView extends LitElement {
 
   @state() private toTokenPriceInUSD = SwapController.state.toTokenPriceInUSD
 
-  @state() private caipNetwork = NetworkController.state.caipNetwork
+  @state() private caipNetwork = ChainController.state.activeCaipNetwork
 
   @state() private balanceSymbol = AccountController.state.balanceSymbol
 
@@ -64,7 +65,7 @@ export class W3mSwapPreviewView extends LitElement {
             // Maybe reset state as well?
           }
         }),
-        NetworkController.subscribeKey('caipNetwork', newCaipNetwork => {
+        ChainController.subscribeKey('activeCaipNetwork', newCaipNetwork => {
           if (this.caipNetwork !== newCaipNetwork) {
             this.caipNetwork = newCaipNetwork
           }

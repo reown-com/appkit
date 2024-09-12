@@ -13,6 +13,7 @@ import { AssetController } from './AssetController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { NetworkController } from './NetworkController.js'
 import { OptionsController } from './OptionsController.js'
+import { ChainController } from './ChainController.js'
 
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getApiUrl()
@@ -159,7 +160,7 @@ export const ApiController = {
         headers: ApiController._getApiHeaders(),
         params: {
           page: '1',
-          chains: NetworkController.state.caipNetwork?.id,
+          chains: ChainController.state.activeCaipNetwork?.id,
           entries: recommendedEntries,
           include: includeWalletIds?.join(','),
           exclude: exclude?.join(',')
@@ -194,7 +195,7 @@ export const ApiController = {
       params: {
         page: String(page),
         entries,
-        chains: NetworkController.state.caipNetwork?.id,
+        chains: ChainController.state.activeCaipNetwork?.id,
         include: includeWalletIds?.join(','),
         exclude: exclude.join(',')
       }
@@ -220,7 +221,7 @@ export const ApiController = {
       params: {
         page: '1',
         entries: String(ids.length),
-        chains: NetworkController.state.caipNetwork?.id,
+        chains: ChainController.state.activeCaipNetwork?.id,
         include: ids?.join(',')
       }
     })
@@ -244,7 +245,7 @@ export const ApiController = {
         page: '1',
         entries: '100',
         search: search?.trim(),
-        chains: NetworkController.state.caipNetwork?.id,
+        chains: ChainController.state.activeCaipNetwork?.id,
         include: includeWalletIds?.join(','),
         exclude: excludeWalletIds?.join(',')
       }

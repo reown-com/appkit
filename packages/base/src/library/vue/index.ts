@@ -1,5 +1,5 @@
 import { onUnmounted, reactive, ref } from 'vue'
-import { AccountController, type Event } from '@rerock/core'
+import { AccountController, CoreHelperUtil, type Event } from '@rerock/core'
 import type {
   W3mAccountButton,
   W3mButton,
@@ -40,11 +40,11 @@ export function getWeb3Modal(appKit: AppKit) {
 
 export function useWeb3ModalAccount() {
   const state = ref(AccountController.state)
-  const { address, isConnected, status } = state.value
+  const { caipAddress, status } = state.value
 
   return {
-    address,
-    isConnected,
+    address: CoreHelperUtil.getPlainAddress(caipAddress),
+    isConnected: caipAddress ? true : false,
     status
   }
 }

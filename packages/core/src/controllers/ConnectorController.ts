@@ -1,7 +1,7 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, snapshot } from 'valtio/vanilla'
 import type { AuthConnector, Connector } from '../utils/TypeUtil.js'
-import { ConstantsUtil, getW3mThemeVariables } from '@rerock/common'
+import { getW3mThemeVariables } from '@rerock/common'
 import { OptionsController } from './OptionsController.js'
 import { ThemeController } from './ThemeController.js'
 
@@ -31,15 +31,27 @@ export const ConnectorController = {
   },
 
   setConnectors(connectors: ConnectorControllerState['connectors']) {
-    connectors.forEach(this.syncIfAuthConnector)
-    state.unMergedConnectors = [...state.unMergedConnectors, ...connectors]
-    state.connectors = this.mergeMultiChainConnectors(state.unMergedConnectors)
+    state.connectors = [
+      ...state.connectors,
+      ...connectors.filter(
+        newConnector =>
+          !state.connectors.some(
+            existingConnector =>
+              existingConnector.id === newConnector.id &&
+              this.getConnectorName(existingConnector.name) ===
+                this.getConnectorName(newConnector.name)
+          )
+      )
+    ]
+    // state.connectors = this.mergeMultiChainConnectors(state.unMergedConnectors)
   },
 
   mergeMultiChainConnectors(connectors: Connector[]) {
+    // console.log('>>> CC.mergeMultiChainConnectors', connectors)
     const connectorsByNameMap = this.generateConnectorMapByName(connectors)
 
     const refactoredConnectors = Array.from(connectorsByNameMap.values()).map(_connectors => {
+      // console.log('>>> CC.mergeMultiChainConnectors', _connectors)
       if (_connectors.length > 1) {
         return {
           name: _connectors[0]?.name,
@@ -95,10 +107,7 @@ export const ConnectorController = {
 
     connectors.forEach(c => {
       if (!uniqueConnectors.find(uc => uc.chain === c.chain)) {
-        uniqueConnectors.push({
-          ...c,
-          name: ConstantsUtil.CHAIN_NAME_MAP[c.chain]
-        })
+        uniqueConnectors.push(c)
       }
     })
 
@@ -106,7 +115,27 @@ export const ConnectorController = {
   },
 
   addConnector(connector: Connector | AuthConnector) {
-    this.setConnectors([connector])
+    if (connector.id == 'w3mAuth') {
+      const authConnector = connector as AuthConnector
+
+      const optionsState = snapshot(OptionsController.state) as typeof OptionsController.state
+      const themeMode = ThemeController.getSnapshot().themeMode
+      const themeVariables = ThemeController.getSnapshot().themeVariables
+
+      authConnector?.provider?.syncDappData?.({
+        metadata: optionsState.metadata,
+        sdkVersion: optionsState.sdkVersion,
+        projectId: optionsState.projectId
+      })
+      authConnector.provider.syncTheme({
+        themeMode,
+        themeVariables,
+        w3mThemeVariables: getW3mThemeVariables(themeVariables, themeMode)
+      })
+      this.setConnectors([connector])
+    } else {
+      this.setConnectors([connector])
+    }
   },
 
   getAuthConnector() {

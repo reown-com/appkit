@@ -1,6 +1,6 @@
 'use client'
 
-import { AppKit, AccountController } from '@rerock/base'
+import { AppKit, AccountController, CoreHelperUtil } from '@rerock/base'
 import type { AppKitOptions } from '@rerock/base'
 import { EVMEthersClient, type AdapterOptions } from '@rerock/adapter-ethers'
 import { getWeb3Modal } from '@rerock/base/library/react'
@@ -53,11 +53,11 @@ export function useSwitchNetwork() {
 }
 
 export function useWeb3ModalAccount() {
-  const { address, isConnected, status } = useSnapshot(AccountController.state)
+  const {  caipAddress, status } = useSnapshot(AccountController.state)
 
   return {
-    address,
-    isConnected,
+    address: CoreHelperUtil.getPlainAddress(caipAddress),
+    isConnected: caipAddress ? true : false,
     status
   }
 }

@@ -3,7 +3,7 @@ import { property, state } from 'lit/decorators.js'
 import styles from './styles.js'
 import { UiHelperUtil, customElement } from '@rerock/ui'
 import { NumberUtil } from '@rerock/common'
-import { ConstantsUtil, NetworkController, SwapController } from '@rerock/core'
+import { ChainController, ConstantsUtil, SwapController } from '@rerock/core'
 
 // -- Constants ----------------------------------------- //
 const slippageRate = ConstantsUtil.CONVERT_SLIPPAGE_TOLERANCE
@@ -15,7 +15,7 @@ export class WuiSwapDetails extends LitElement {
   private unsubscribe: ((() => void) | undefined)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() public networkName = NetworkController.state.caipNetwork?.name
+  @state() public networkName = ChainController.state.activeCaipNetwork?.name
 
   @property() public detailsOpen = false
 

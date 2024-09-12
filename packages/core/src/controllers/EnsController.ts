@@ -10,6 +10,7 @@ import { NetworkController } from './NetworkController.js'
 import { NetworkUtil } from '@rerock/common'
 import { EnsUtil } from '../utils/EnsUtil.js'
 import { ConstantsUtil } from '@rerock/common'
+import { ChainController } from './ChainController.js'
 
 // -- Types --------------------------------------------- //
 type Suggestion = {
@@ -83,7 +84,7 @@ export const EnsController = {
 
   async getNamesForAddress(address: string) {
     try {
-      const network = NetworkController.state.caipNetwork
+      const network = ChainController.state.activeCaipNetwork
       if (!network) {
         return []
       }
@@ -98,7 +99,7 @@ export const EnsController = {
   },
 
   async registerName(name: string) {
-    const network = NetworkController.state.caipNetwork
+    const network = ChainController.state.activeCaipNetwork
     if (!network) {
       throw new Error('Network not found')
     }
