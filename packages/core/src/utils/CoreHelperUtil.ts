@@ -307,6 +307,7 @@ export const CoreHelperUtil = {
     const adapterNames = noAdapters
       ? 'universal'
       : adapters.map(adapter => adapter.adapterType).join(',')
+
     return `${platform}-${adapterNames}-${version}`
   }
 }
