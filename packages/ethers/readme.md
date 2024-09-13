@@ -2,7 +2,7 @@
 
 #### 🔎 [Examples](https://github.com/reown-com/appkit-examples)
 
-#### 🔗 [Website](https://appkit.com)
+#### 🔗 [Website](https://reown.com/appkit)
 
 # AppKit
 

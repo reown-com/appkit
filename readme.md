@@ -1,11 +1,11 @@
 > [!NOTE]
-> Looking for v2? [switch the branch](https://github.com/reown-com/appkit/tree/V2).
+> Looking for Web3Modal v[1-5]? [switch the branch](https://github.com/reown-com/appkit/tree/V5).
 
 #### 📚 [Documentation](https://docs.walletconnect.com/appkit/about)
 
 #### 🧪 [Laboratory](https://appkit-lab.reown.org)
 
-#### 🔗 [Website](https://appkit.com)
+#### 🔗 [Website](https://reown.com/appkit)
 
 # AppKit
 

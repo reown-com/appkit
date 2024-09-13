@@ -1,6 +1,6 @@
 #### 📚 [Documentation](https://docs.walletconnect.com/2.0/appkit/about)
 
-#### 🔗 [Website](https://appkit.com)
+#### 🔗 [Website](https://reown.com/appkit)
 
 # AppKit
 
