@@ -43,7 +43,7 @@
     "vitest": "2.0.3",
     "wagmi": "2.12.9"
   },
-  "author": "reown <reown.com>",
+  "author": "Reown <support@reown.com> (https://reown.com)",
   "license": "Apache-2.0",
   "homepage": "https://github.com/reown/appkit",
   "repository": {

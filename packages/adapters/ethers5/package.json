@@ -39,7 +39,7 @@
     "ethers5": "npm:ethers@5.7.2",
     "vitest": "2.0.3"
   },
-  "author": "reown <reown.com>",
+  "author": "Reown <support@reown.com> (https://reown.com)",
   "license": "Apache-2.0",
   "homepage": "https://github.com/reown/appkit",
   "repository": {
