@@ -39,11 +39,24 @@ describe('Wagmi Client', () => {
     })
 
     it('should set caipNetworks to provided caipNetworks options', () => {
-      expect(mockWagmiClient.caipNetworks).toEqual(mockOptions.caipNetworks)
+      /**
+       * Specifically to Wagmi, we are mutating caipNetworks on both Wagmi constructor and when we set adapters.
+       * So there is not proper way to compare objects since imageId and imageUrl is added later.
+       */
+      mockOptions.caipNetworks.forEach((network, index) => {
+        expect(mockWagmiClient.caipNetworks[index]?.name).toEqual(network.name)
+      })
     })
 
     it('should set defaultNetwork to first caipNetwork option', () => {
-      expect(mockWagmiClient.defaultCaipNetwork).toEqual(mockOptions.caipNetworks[0])
+      /**
+       * Specifically to Wagmi, we are mutating caipNetworks on both Wagmi constructor and when we set adapters.
+       * So there is not proper way to compare objects since imageId and imageUrl is added later.
+       */
+      expect(mockWagmiClient.defaultCaipNetwork?.chainId).toEqual(
+        mockOptions.caipNetworks[0]?.chainId
+      )
+      expect(mockWagmiClient.defaultCaipNetwork?.name).toEqual(mockOptions.caipNetworks[0]?.name)
     })
 
     it('should create wagmi config', () => {
@@ -63,7 +76,16 @@ describe('Wagmi Client', () => {
 
       mockWagmiClient['syncRequestedNetworks'](mockOptions.caipNetworks)
 
-      expect(setRequestedCaipNetworks).toHaveBeenCalledWith(mockWagmiClient.caipNetworks, 'eip155')
+      /**
+       * Specifically to Wagmi, we are mutating caipNetworks on both Wagmi constructor and when we set adapters.
+       * So there is not proper way to compare objects since imageId and imageUrl is added later.
+       */
+      mockWagmiClient.caipNetworks.forEach(network => {
+        expect(setRequestedCaipNetworks).toHaveBeenCalledWith(
+          expect.arrayContaining([expect.objectContaining({ id: network.id })]),
+          'eip155'
+        )
+      })
     })
   })
 

@@ -13,6 +13,7 @@ export const CaipNetworksUtil = {
     if (isReownUrl) {
       const url = new URL(rpcUrl)
       url.searchParams.set('projectId', projectId)
+
       return url.toString()
     }
 
