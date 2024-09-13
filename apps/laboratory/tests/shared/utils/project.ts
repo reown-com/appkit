@@ -57,41 +57,39 @@ const SINGLE_ADAPTER_SOLANA_TESTS = [
   'wallet.spec.ts'
 ]
 
-const SINGLE_ADAPTER_EVM_TESTS_REGEX = new RegExp(SINGLE_ADAPTER_EVM_TESTS.join('|'), 'u')
-const SINGLE_ADAPTER_SOLANA_TESTS_REGEX = new RegExp(SINGLE_ADAPTER_SOLANA_TESTS.join('|'), 'u')
+const SINGLE_ADAPTER_EVM_TESTS_REGEX = new RegExp(
+  `^(?!.*\/multichain\/).*(?:${SINGLE_ADAPTER_EVM_TESTS.join('|')})`,
+  'u'
+)
+const SINGLE_ADAPTER_SOLANA_TESTS_REGEX = new RegExp(
+  `^(?!.*\/multichain\/).*(?:${SINGLE_ADAPTER_SOLANA_TESTS.join('|')})`,
+  'u'
+)
 
 const customProjectProperties: CustomProjectProperties = {
   'Desktop Chrome/ethers': {
-    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX,
-    testIgnore: /^.*\/multichain\/.*$/u
+    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX
   },
   'Desktop Firefox/ethers': {
-    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX,
-    testIgnore: /^.*\/multichain\/.*$/u
+    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX
   },
   'Desktop Chrome/ethers5': {
-    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX,
-    testIgnore: /^.*\/multichain\/.*$/u
+    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX
   },
   'Desktop Firefox/ethers5': {
-    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX,
-    testIgnore: /^.*\/multichain\/.*$/u
+    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX
   },
   'Desktop Chrome/wagmi': {
-    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX,
-    testIgnore: /^.*\/multichain\/.*$/u
+    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX
   },
   'Desktop Firefox/wagmi': {
-    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX,
-    testIgnore: /^.*\/multichain\/.*$/u
+    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX
   },
   'Desktop Chrome/solana': {
-    testMatch: SINGLE_ADAPTER_SOLANA_TESTS_REGEX,
-    testIgnore: /^.*\/multichain\/.*$/u
+    testMatch: SINGLE_ADAPTER_SOLANA_TESTS_REGEX
   },
   'Desktop Firefox/solana': {
-    testMatch: SINGLE_ADAPTER_SOLANA_TESTS_REGEX,
-    testIgnore: /^.*\/multichain\/.*$/u
+    testMatch: SINGLE_ADAPTER_SOLANA_TESTS_REGEX
   },
   'Desktop Firefox/multichain-ethers-solana': {
     testMatch: /^.*\/multichain-ethers-.*\.spec\.ts$/u
