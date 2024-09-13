@@ -1,4 +1,4 @@
-import { customElement } from '@rerock/ui'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
 import {
@@ -7,10 +7,10 @@ import {
   CoreHelperUtil,
   RouterController,
   SendController
-} from '@rerock/core'
+} from '@reown/appkit-core'
 
 import { state } from 'lit/decorators.js'
-import type { Balance } from '@rerock/common'
+import type { Balance } from '@reown/appkit-common'
 
 @customElement('w3m-wallet-send-select-token-view')
 export class W3mSendSelectTokenView extends LitElement {

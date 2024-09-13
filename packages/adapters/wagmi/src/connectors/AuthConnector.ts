@@ -1,11 +1,11 @@
 import { createConnector, type CreateConfigParameters } from '@wagmi/core'
-import { W3mFrameProvider } from '@rerock/wallet'
-import { ConstantsUtil as CommonConstantsUtil } from '@rerock/common'
+import { W3mFrameProvider } from '@reown/appkit-wallet'
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import { SwitchChainError, getAddress } from 'viem'
 import type { Address, Hex } from 'viem'
-import { ConstantsUtil } from '@rerock/scaffold-utils'
-import { NetworkUtil } from '@rerock/common'
-import { W3mFrameProviderSingleton } from '@rerock/base/auth-provider'
+import { ConstantsUtil } from '@reown/appkit-utils'
+import { NetworkUtil } from '@reown/appkit-common'
+import { W3mFrameProviderSingleton } from '@reown/appkit/auth-provider'
 
 // -- Types ----------------------------------------------------------------------------------------
 interface W3mFrameProviderOptions {

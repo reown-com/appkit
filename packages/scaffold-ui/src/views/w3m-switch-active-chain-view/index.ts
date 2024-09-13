@@ -1,8 +1,13 @@
-import { ChainController, ModalController, NetworkController, RouterController } from '@rerock/core'
-import { customElement } from '@rerock/ui'
+import {
+  ChainController,
+  ModalController,
+  NetworkController,
+  RouterController
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
-import { ConstantsUtil } from '@rerock/common'
+import { ConstantsUtil } from '@reown/appkit-common'
 import { property } from 'lit/decorators.js'
 
 @customElement('w3m-switch-active-chain-view')

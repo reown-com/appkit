@@ -1,4 +1,4 @@
-import { customElement } from '@rerock/ui'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
@@ -7,15 +7,14 @@ import {
   RouterController,
   CoreHelperUtil,
   ModalController,
-  ConstantsUtil,
   type SwapToken,
   type SwapInputTarget,
   EventsController,
   AccountController,
   ChainController
-} from '@rerock/core'
-import { NumberUtil } from '@rerock/common'
-import { W3mFrameRpcConstants } from '@rerock/wallet'
+} from '@reown/appkit-core'
+import { NumberUtil } from '@reown/appkit-common'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 
 @customElement('w3m-swap-view')
 export class W3mSwapView extends LitElement {
@@ -207,8 +206,7 @@ export class W3mSwapView extends LitElement {
 
   private onSetMaxValue(target: SwapInputTarget, balance: string | undefined) {
     const token = target === 'sourceToken' ? this.sourceToken : this.toToken
-    const isNetworkToken = token?.address === ConstantsUtil.NATIVE_TOKEN_ADDRESS
-
+    const isNetworkToken = token?.address === NetworkController.getActiveNetworkTokenAddress()
     let value = '0'
 
     if (!balance) {

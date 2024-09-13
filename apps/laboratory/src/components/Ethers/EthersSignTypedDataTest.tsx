@@ -1,5 +1,5 @@
 import { Button } from '@chakra-ui/react'
-import { useWeb3ModalAccount, useWeb3ModalProvider, type Provider } from '@rerock/base/react'
+import { useWeb3ModalAccount, useWeb3ModalProvider, type Provider } from '@reown/appkit/react'
 import { BrowserProvider, JsonRpcSigner } from 'ethers'
 import type { TypedDataField } from 'ethers'
 import { useChakraToast } from '../Toast'

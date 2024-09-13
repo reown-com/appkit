@@ -1,10 +1,15 @@
-import { customElement } from '@rerock/ui'
-import { AccountController, CoreHelperUtil, EventsController, RouterController } from '@rerock/core'
+import { customElement } from '@reown/appkit-ui'
+import {
+  AccountController,
+  CoreHelperUtil,
+  EventsController,
+  RouterController
+} from '@reown/appkit-core'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
-import { NavigationUtil } from '@rerock/common'
-import { W3mFrameRpcConstants } from '@rerock/wallet'
+import { NavigationUtil } from '@reown/appkit-common'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 
 @customElement('w3m-choose-account-name-view')
 export class W3mChooseAccountNameView extends LitElement {

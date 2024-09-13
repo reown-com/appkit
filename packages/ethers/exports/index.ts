@@ -1,10 +1,10 @@
-import { AppKit } from '@rerock/base'
-import type { AppKitOptions } from '@rerock/base'
-import { EVMEthersClient, type AdapterOptions } from '@rerock/adapter-ethers'
-import { ConstantsUtil } from '@rerock/scaffold-utils'
+import { AppKit } from '@reown/appkit'
+import type { AppKitOptions } from '@reown/appkit'
+import { EVMEthersClient, type AdapterOptions } from '@reown/appkit-adapter-ethers'
+import packageJson from '../package.json' assert { type: 'json' }
 
 // -- Types -------------------------------------------------------------
-export type { AdapterOptions } from '@rerock/adapter-ethers'
+export type { AdapterOptions } from '@reown/appkit-adapter-ethers'
 
 // -- Setup -------------------------------------------------------------
 export type EthersAppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 'sdkVersion'> &
@@ -15,7 +15,7 @@ export function createWeb3Modal(options: EthersAppKitOptions) {
 
   return new AppKit({
     ...options,
-    sdkVersion: `html-ethers-${ConstantsUtil.VERSION}`,
+    sdkVersion: `html-ethers-${packageJson.version}`,
     adapters: [ethersAdapter]
   })
 }

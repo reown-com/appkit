@@ -1,8 +1,8 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import type { NetworkControllerClient } from '../../exports/index.js'
-import type { CaipNetwork, CaipNetworkId } from '@rerock/common'
+import type { CaipNetwork, CaipNetworkId } from '@reown/appkit-common'
 import { ChainController, EventsController, NetworkController } from '../../exports/index.js'
-import { ConstantsUtil } from '@rerock/common'
+import { ConstantsUtil } from '@reown/appkit-common'
 
 // -- Setup --------------------------------------------------------------------
 const caipNetwork = {
@@ -138,5 +138,24 @@ describe('NetworkController', () => {
       rpcUrl: 'https://rpc.infura.com/v1/'
     })
     expect(NetworkController.checkIfSmartAccountEnabled()).toEqual(true)
+  })
+
+  it('should get correct active network token address', () => {
+    let mock = vi.spyOn(NetworkController.state, 'caipNetwork', 'get').mockReturnValue(undefined)
+    expect(NetworkController.getActiveNetworkTokenAddress()).toEqual(
+      'eip155:1:0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+    )
+
+    mock.mockReturnValue(caipNetwork)
+    expect(NetworkController.getActiveNetworkTokenAddress()).toEqual(
+      'eip155:1:0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+    )
+
+    mock.mockReturnValue({ ...caipNetwork, chainNamespace: 'solana', id: 'solana:mainnet' })
+    expect(NetworkController.getActiveNetworkTokenAddress()).toEqual(
+      'solana:mainnet:So11111111111111111111111111111111111111111'
+    )
+
+    mock.mockClear()
   })
 })

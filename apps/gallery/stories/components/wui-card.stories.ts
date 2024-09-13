@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@rerock/ui/src/components/wui-card'
-import type { WuiCard } from '@rerock/ui/src/components/wui-card'
+import '@reown/appkit-ui/src/components/wui-card'
+import type { WuiCard } from '@reown/appkit-ui/src/components/wui-card'
 import { html } from 'lit'
 import '../../components/gallery-placeholder'
 

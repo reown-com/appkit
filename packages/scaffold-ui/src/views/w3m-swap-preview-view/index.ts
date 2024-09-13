@@ -1,7 +1,12 @@
-import { UiHelperUtil, customElement } from '@rerock/ui'
+import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
-import { AccountController, ChainController, RouterController, SwapController } from '@rerock/core'
+import {
+  AccountController,
+  ChainController,
+  RouterController,
+  SwapController
+} from '@reown/appkit-core'
 import { state } from 'lit/decorators.js'
 
 @customElement('w3m-swap-preview-view')

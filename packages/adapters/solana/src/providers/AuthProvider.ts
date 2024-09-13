@@ -1,20 +1,20 @@
-import { ConstantsUtil } from '@rerock/scaffold-utils'
+import { ConstantsUtil } from '@reown/appkit-utils'
 import type {
   AnyTransaction,
   Connection,
   GetActiveChain,
   Provider
-} from '../utils/SolanaTypesUtil.js'
+} from '@reown/appkit-utils/solana'
 import { ProviderEventEmitter } from './shared/ProviderEventEmitter.js'
 import { PublicKey, Transaction, VersionedTransaction, type SendOptions } from '@solana/web3.js'
 import {
   W3mFrameProvider,
   type W3mFrameProviderMethods as ProviderAuthMethods
-} from '@rerock/wallet'
+} from '@reown/appkit-wallet'
 import { withSolanaNamespace } from '../utils/withSolanaNamespace.js'
 import base58 from 'bs58'
 import { isVersionedTransaction } from '@solana/wallet-adapter-base'
-import type { CaipNetwork, ChainNamespace } from '@rerock/common'
+import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
 
 export type AuthProviderConfig = {
   getProvider: () => W3mFrameProvider

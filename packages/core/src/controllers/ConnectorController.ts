@@ -1,7 +1,7 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, snapshot } from 'valtio/vanilla'
 import type { AuthConnector, Connector } from '../utils/TypeUtil.js'
-import { getW3mThemeVariables } from '@rerock/common'
+import { getW3mThemeVariables } from '@reown/appkit-common'
 import { OptionsController } from './OptionsController.js'
 import { ThemeController } from './ThemeController.js'
 

@@ -1,7 +1,7 @@
 import { html, LitElement } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import { customElement } from '@rerock/ui'
+import { customElement } from '@reown/appkit-ui'
 import styles from './styles.js'
 import {
   AssetController,
@@ -9,7 +9,7 @@ import {
   OnRampController,
   type PaymentCurrency,
   type PurchaseCurrency
-} from '@rerock/core'
+} from '@reown/appkit-core'
 
 type Currency = {
   name: string

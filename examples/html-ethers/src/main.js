@@ -1,6 +1,6 @@
-import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@rerock/base/chains'
-import { createWeb3Modal } from '@rerock/base'
-import { EVMEthersClient } from '@rerock/adapter-ethers'
+import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@reown/appkit/chains'
+import { createWeb3Modal } from '@reown/appkit'
+import { EVMEthersClient } from '@reown/appkit-adapter-ethers'
 
 // @ts-expect-error 1. Get projectId
 const projectId = import.meta.env.VITE_PROJECT_ID

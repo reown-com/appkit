@@ -1,12 +1,12 @@
-import type { BaseError } from '@rerock/core'
+import type { BaseError } from '@reown/appkit-core'
 import {
   ChainController,
   ConnectionController,
   EventsController,
   ModalController
-} from '@rerock/core'
-import { ConstantsUtil } from '@rerock/scaffold-utils'
-import { customElement } from '@rerock/ui'
+} from '@reown/appkit-core'
+import { ConstantsUtil } from '@reown/appkit-utils'
+import { customElement } from '@reown/appkit-ui'
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 
 @customElement('w3m-connecting-external-view')

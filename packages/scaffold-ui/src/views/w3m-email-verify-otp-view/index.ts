@@ -1,4 +1,4 @@
-import { customElement } from '@rerock/ui'
+import { customElement } from '@reown/appkit-ui'
 import { W3mEmailOtpWidget } from '../../utils/w3m-email-otp-widget/index.js'
 import type { OnOtpSubmitFn, OnOtpResendFn } from '../../utils/w3m-email-otp-widget/index.js'
 import {
@@ -10,7 +10,7 @@ import {
   AccountController,
   ChainController,
   OptionsController
-} from '@rerock/core'
+} from '@reown/appkit-core'
 import { state } from 'lit/decorators.js'
 
 @customElement('w3m-email-verify-otp-view')

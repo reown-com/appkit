@@ -1,7 +1,7 @@
-import type { Balance } from '@rerock/common'
-import { ConstantsUtil as CommonConstants } from '@rerock/common'
+import type { Balance, ChainNamespace } from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstants } from '@reown/appkit-common'
 import { ConstantsUtil } from './ConstantsUtil.js'
-import type { CaipAddress, CaipNetwork } from '@rerock/common'
+import type { CaipAddress, CaipNetwork } from '@reown/appkit-common'
 import type { LinkingRecord } from './TypeUtil.js'
 
 export const CoreHelperUtil = {
@@ -261,14 +261,25 @@ export const CoreHelperUtil = {
     return { dollars, pennies }
   },
 
-  isAddress(address: string): boolean {
-    if (!/^(?:0x)?[0-9a-f]{40}$/iu.test(address)) {
-      return false
-    } else if (/^(?:0x)?[0-9a-f]{40}$/iu.test(address) || /^(?:0x)?[0-9A-F]{40}$/iu.test(address)) {
-      return true
-    }
+  isAddress(address: string, chain: ChainNamespace = 'eip155'): boolean {
+    switch (chain) {
+      case 'eip155':
+        if (!/^(?:0x)?[0-9a-f]{40}$/iu.test(address)) {
+          return false
+        } else if (
+          /^(?:0x)?[0-9a-f]{40}$/iu.test(address) ||
+          /^(?:0x)?[0-9A-F]{40}$/iu.test(address)
+        ) {
+          return true
+        }
 
-    return false
+        return false
+      case 'solana':
+        return /[1-9A-HJ-NP-Za-km-z]{32,44}$/iu.test(address)
+
+      default:
+        return false
+    }
   },
 
   uniqueBy<T>(arr: T[], key: keyof T) {

@@ -1,14 +1,14 @@
 'use client'
 
-import { AppKit } from '@rerock/base'
+import { AppKit } from '@reown/appkit'
 import {
   SolanaWeb3JsClient,
   type Provider,
   useWeb3ModalConnection
-} from '@rerock/adapter-solana/react'
-import { getWeb3Modal } from '@rerock/base/library/react'
+} from '@reown/appkit-adapter-solana/react'
+import { getWeb3Modal } from '@reown/appkit/library/react'
 import type { SolanaAppKitOptions } from './options.js'
-import { ConstantsUtil } from '@rerock/scaffold-utils'
+import packageJson from '../package.json' assert { type: 'json' }
 
 // -- Types -------------------------------------------------------------------
 export type { SolanaAppKitOptions, Provider }
@@ -23,7 +23,7 @@ export function createWeb3Modal(options: SolanaAppKitOptions) {
   })
   appkit = new AppKit({
     ...options,
-    sdkVersion: `react-solana-${ConstantsUtil.VERSION}`,
+    sdkVersion: `react-solana-${packageJson.version}`,
     adapters: [solanaAdapter]
   })
   getWeb3Modal(appkit)
@@ -47,5 +47,5 @@ export {
   useWeb3Modal,
   useWeb3ModalState,
   useWeb3ModalEvents
-} from '@rerock/base/library/react'
+} from '@reown/appkit/library/react'
 export { useWeb3ModalConnection }

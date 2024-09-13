@@ -11,7 +11,7 @@ import {
   type CaipAddress,
   type CaipNetwork,
   type ChainNamespace
-} from '@rerock/common'
+} from '@reown/appkit-common'
 
 // -- Types --------------------------------------------- //
 export interface ChainControllerState {

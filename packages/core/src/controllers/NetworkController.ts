@@ -9,9 +9,10 @@ import {
   type CaipNetwork,
   type CaipNetworkId,
   type ChainNamespace
-} from '@rerock/common'
+} from '@reown/appkit-common'
 import { ChainController } from './ChainController.js'
 import { PublicStateController } from './PublicStateController.js'
+import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 
 // -- Types --------------------------------------------- //
 export interface NetworkControllerClient {
@@ -325,5 +326,12 @@ export const NetworkController = {
     setTimeout(() => {
       ModalController.open({ view: 'UnsupportedChain' })
     }, 300)
+  },
+
+  getActiveNetworkTokenAddress() {
+    const address =
+      ConstantsUtil.NATIVE_TOKEN_ADDRESS[this.state.caipNetwork?.chainNamespace || 'eip155']
+
+    return `${this.state.caipNetwork?.id || 'eip155:1'}:${address}`
   }
 }

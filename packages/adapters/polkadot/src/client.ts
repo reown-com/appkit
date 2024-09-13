@@ -2,9 +2,9 @@ import type {
   AppKitOptions,
   ConnectionControllerClient,
   NetworkControllerClient
-} from '@rerock/base'
-import type { AdapterType, CaipNetwork, ChainNamespace } from '@rerock/common'
-import { ConstantsUtil as CommonConstantsUtil } from '@rerock/common'
+} from '@reown/appkit'
+import type { AdapterType, CaipNetwork, ChainNamespace } from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 
 export class PolkadotClient {
   // Metadata

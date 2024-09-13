@@ -1,4 +1,4 @@
-import type { AppKitOptions } from '@rerock/base'
+import type { AppKitOptions } from '@reown/appkit'
 import {
   NetworkUtil,
   SafeLocalStorage,
@@ -8,40 +8,40 @@ import {
   type CaipNetwork,
   type CaipNetworkId,
   type ChainNamespace
-} from '@rerock/common'
+} from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
   CoreHelperUtil,
   type CombinedProvider,
   type Connector
-} from '@rerock/core'
+} from '@reown/appkit-core'
 import {
   EthersHelpersUtil,
   type Provider,
   type ProviderType,
   type ProviderId,
   type Address
-} from '@rerock/scaffold-utils/ethers'
-import type { AppKit } from '@rerock/base'
+} from '@reown/appkit-utils/ethers'
+import type { AppKit } from '@reown/appkit'
 import {
   W3mFrameHelpers,
   W3mFrameProvider,
   W3mFrameRpcConstants,
   type W3mFrameTypes
-} from '@rerock/wallet'
-import { ConstantsUtil as CoreConstantsUtil } from '@rerock/core'
-import { ConstantsUtil as CommonConstantsUtil } from '@rerock/common'
-import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@rerock/scaffold-utils'
+} from '@reown/appkit-wallet'
+import { ConstantsUtil as CoreConstantsUtil } from '@reown/appkit-core'
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@reown/appkit-utils'
 import UniversalProvider from '@walletconnect/universal-provider'
-import type { ConnectionControllerClient, NetworkControllerClient } from '@rerock/core'
-import { WcConstantsUtil } from '@rerock/base'
+import type { ConnectionControllerClient, NetworkControllerClient } from '@reown/appkit-core'
+import { WcConstantsUtil } from '@reown/appkit'
 import { EthersMethods } from './utils/EthersMethods.js'
 import { formatEther, InfuraProvider, JsonRpcProvider } from 'ethers'
-import type { PublicStateControllerState } from '@rerock/core'
-import { ProviderUtil } from '@rerock/base/store'
+import type { PublicStateControllerState } from '@reown/appkit-core'
+import { ProviderUtil } from '@reown/appkit/store'
 import { CoinbaseWalletSDK, type ProviderInterface } from '@coinbase/wallet-sdk'
-import { W3mFrameProviderSingleton } from '@rerock/base/auth-provider'
+import { W3mFrameProviderSingleton } from '@reown/appkit/auth-provider'
 
 // -- Types ---------------------------------------------------------------------
 export interface AdapterOptions {
@@ -326,7 +326,7 @@ export class EVMEthersClient {
 
         this.appKit?.setClientId(null)
         if (this.options?.siweConfig?.options?.signOutOnDisconnect) {
-          const { SIWEController } = await import('@rerock/siwe')
+          const { SIWEController } = await import('@reown/appkit-siwe')
           await SIWEController.signOut()
         }
 
@@ -385,6 +385,9 @@ export class EVMEthersClient {
       formatUnits: EthersMethods.formatUnits,
 
       estimateGas: async data => {
+        if (data.chainNamespace && data.chainNamespace !== 'eip155') {
+          throw new Error(`Invalid chain namespace - Expected eip155, got ${data.chainNamespace}`)
+        }
         const provider = ProviderUtil.getProvider<Provider>('eip155')
         const caipAddress = ChainController.state.activeCaipAddress
         const address = CoreHelperUtil.getPlainAddress(caipAddress)
@@ -407,6 +410,9 @@ export class EVMEthersClient {
       },
 
       sendTransaction: async data => {
+        if (data.chainNamespace && data.chainNamespace !== 'eip155') {
+          throw new Error(`Invalid chain namespace - Expected eip155, got ${data.chainNamespace}`)
+        }
         const provider = ProviderUtil.getProvider<Provider>('eip155')
         const caipAddress = ChainController.state.activeCaipAddress
         const address = CoreHelperUtil.getPlainAddress(caipAddress)

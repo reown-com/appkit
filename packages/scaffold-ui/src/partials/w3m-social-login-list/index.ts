@@ -7,13 +7,13 @@ import {
   OptionsController,
   RouterController,
   SnackController
-} from '@rerock/core'
-import { customElement } from '@rerock/ui'
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
-import type { SocialProvider } from '@rerock/scaffold-utils'
-import { SocialProviderEnum } from '@rerock/scaffold-utils'
+import type { SocialProvider } from '@reown/appkit-utils'
+import { SocialProviderEnum } from '@reown/appkit-utils'
 
 @customElement('w3m-social-login-list')
 export class W3mSocialLoginList extends LitElement {

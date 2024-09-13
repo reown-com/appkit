@@ -15,9 +15,8 @@ import {
   StorageUtil,
   ModalController,
   CoreHelperUtil
-} from '@rerock/core'
-
-import { NetworkUtil, type CaipAddress } from '@rerock/common'
+} from '@reown/appkit-core'
+import { NetworkUtil, type CaipAddress } from '@reown/appkit-common'
 import { ConstantsUtil } from '../core/utils/ConstantsUtil.js'
 
 // -- Client -------------------------------------------------------------------- //

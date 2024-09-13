@@ -6,16 +6,16 @@ import {
   ChainController,
   CoreHelperUtil,
   EventsController
-} from '@rerock/core'
+} from '@reown/core'
 import {
   ConstantsUtil as CommonConstantsUtil,
   SafeLocalStorage,
   SafeLocalStorageKeys
-} from '@rerock/common'
+} from '@reown/appkit-common'
 
-import { SolConstantsUtil } from './utils/SolanaConstantsUtil.js'
-import { SolHelpersUtil } from './utils/SolanaHelpersUtils.js'
+import { SolConstantsUtil, SolHelpersUtil } from '@reown/appkit-utils/solana'
 import { SolStoreUtil } from './utils/SolanaStoreUtil.js'
+import type { Provider } from '@reown/appkit-utils/solana'
 
 import type { BaseWalletAdapter } from '@solana/wallet-adapter-base'
 import { PublicKey, type Commitment, type ConnectionConfig } from '@solana/web3.js'
@@ -25,11 +25,10 @@ import type {
   ConnectionControllerClient,
   NetworkControllerClient,
   Connector
-} from '@rerock/core'
-import type { AdapterType, CaipAddress, CaipNetwork, CaipNetworkId } from '@rerock/common'
-import type { ChainNamespace } from '@rerock/common'
+} from '@reown/appkit-core'
+import type { AdapterType, CaipAddress, CaipNetwork, CaipNetworkId } from '@reown/appkit-common'
+import type { ChainNamespace } from '@reown/appkit-common'
 
-import type { Provider } from './utils/SolanaTypesUtil.js'
 import { watchStandard } from './utils/watchStandard.js'
 import { WalletConnectProvider } from './providers/WalletConnectProvider.js'
 import { AuthProvider } from './providers/AuthProvider.js'
@@ -38,14 +37,14 @@ import {
   W3mFrameProvider,
   W3mFrameRpcConstants,
   type W3mFrameTypes
-} from '@rerock/wallet'
-import { ConstantsUtil as CoreConstantsUtil } from '@rerock/core'
+} from '@reown/wallet'
+import { ConstantsUtil as CoreConstantsUtil } from '@reown/core'
 import { withSolanaNamespace } from './utils/withSolanaNamespace.js'
-import type { AppKit } from '@rerock/base'
-import type { AppKitOptions } from '@rerock/base'
-import { ProviderUtil } from '@rerock/base/store'
-import { W3mFrameProviderSingleton } from '@rerock/base/auth-provider'
-import { ConstantsUtil, PresetsUtil } from '@rerock/scaffold-utils'
+import type { AppKit } from '@reown/base'
+import type { AppKitOptions } from '@reown/base'
+import { ProviderUtil } from '@reown/base/store'
+import { W3mFrameProviderSingleton } from '@reown/base/auth-provider'
+import { ConstantsUtil, PresetsUtil } from '@reown/scaffold-utils'
 
 export interface AdapterOptions {
   connectionSettings?: Commitment | ConnectionConfig
@@ -214,7 +213,28 @@ export class SolanaWeb3JsClient implements ChainAdapter {
         return new TextDecoder().decode(signature)
       },
 
-      estimateGas: async () => await Promise.resolve(BigInt(0)),
+      estimateGas: async params => {
+        if (params.chainNamespace !== 'solana') {
+          throw new Error('Chain namespace is not supported')
+        }
+
+        const connection = SolStoreUtil.state.connection
+
+        if (!connection || !this.provider) {
+          throw new Error('Connection is not set')
+        }
+
+        const transaction = await createSendTransaction({
+          provider: this.provider,
+          connection,
+          to: '11111111111111111111111111111111',
+          value: 1
+        })
+
+        const fee = await transaction.getEstimatedFee(connection)
+
+        return BigInt(fee || 0)
+      },
       // -- Transaction methods ---------------------------------------------------
       /**
        *
@@ -227,7 +247,42 @@ export class SolanaWeb3JsClient implements ChainAdapter {
 
       writeContract: async () => await Promise.resolve('0x'),
 
-      sendTransaction: async () => await Promise.resolve('0x'),
+      sendTransaction: async params => {
+        if (params.chainNamespace !== 'solana') {
+          throw new Error('Chain namespace is not supported')
+        }
+
+        const connection = SolStoreUtil.state.connection
+        const address = this.appKit?.getAddress(this.chainNamespace)
+
+        if (!connection || !address || !this.provider) {
+          throw new Error('Connection is not set')
+        }
+
+        const transaction = await createSendTransaction({
+          provider: this.provider,
+          connection,
+          to: params.to,
+          value: params.value
+        })
+
+        const result = await this.provider.sendTransaction(transaction, connection)
+
+        await new Promise<void>(resolve => {
+          const interval = setInterval(async () => {
+            const status = await connection.getSignatureStatus(result)
+
+            if (status?.value) {
+              clearInterval(interval)
+              resolve()
+            }
+          }, 1000)
+        })
+
+        await this.syncBalance(address)
+
+        return result
+      },
 
       parseUnits: () => BigInt(0),
 

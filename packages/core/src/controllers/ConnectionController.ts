@@ -11,11 +11,11 @@ import type {
 } from '../utils/TypeUtil.js'
 import { TransactionsController } from './TransactionsController.js'
 import { ChainController } from './ChainController.js'
-import { type W3mFrameTypes } from '@rerock/wallet'
+import { type W3mFrameTypes } from '@reown/appkit-wallet'
 import { ModalController } from './ModalController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
-import type { ChainNamespace } from '@rerock/common'
+import type { ChainNamespace } from '@reown/appkit-common'
 import { RouterController } from './RouterController.js'
 
 // -- Types --------------------------------------------- //
@@ -30,7 +30,7 @@ export interface ConnectionControllerClient {
   connectWalletConnect?: (onUri: (uri: string) => void) => Promise<void>
   disconnect: () => Promise<void>
   signMessage: (message: string) => Promise<string>
-  sendTransaction: (args: SendTransactionArgs) => Promise<`0x${string}` | null>
+  sendTransaction: (args: SendTransactionArgs) => Promise<string | null>
   estimateGas: (args: EstimateGasTransactionArgs) => Promise<bigint>
   parseUnits: (value: string, decimals: number) => bigint
   formatUnits: (value: bigint, decimals: number) => string

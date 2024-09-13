@@ -171,13 +171,9 @@ export class ModalValidator {
     await expect(switchNetworkButton).toBeVisible()
   }
 
-  async expectOnrampButton(library: string) {
+  async expectOnrampButton(_library: string) {
     const onrampButton = this.page.getByTestId('w3m-account-default-onramp-button')
-    if (library === 'solana') {
-      await expect(onrampButton).toBeHidden()
-    } else {
-      await expect(onrampButton).toBeVisible()
-    }
+    await expect(onrampButton).toBeVisible()
   }
 
   async expectAccountNameFound(name: string) {
@@ -206,8 +202,8 @@ export class ModalValidator {
   }
 
   async expectNetworksDisabled(name: string) {
-    const networkOptions = this.page.getByTestId(`w3m-network-switch-${name}`)
-    await expect(networkOptions.locator('button')).toBeDisabled()
+    const disabledNetwork = this.page.getByTestId(`w3m-network-switch-${name}`)
+    await expect(disabledNetwork.locator('button')).toBeDisabled()
   }
 
   async expectConnectButtonLoading() {

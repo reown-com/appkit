@@ -7,7 +7,7 @@ import { parseGwei, type Address } from 'viem'
 import { vitalikEthAddress } from '../../utils/DataUtil'
 import { EIP_5792_RPC_METHODS, WALLET_CAPABILITIES } from '../../utils/EIP5792Utils'
 import { useWagmiAvailableCapabilities } from '../../hooks/useWagmiActiveCapabilities'
-import { useWeb3ModalAccount } from '@rerock/base/react'
+import { useWeb3ModalAccount } from '@reown/appkit/react'
 
 const TEST_TX_1 = {
   to: vitalikEthAddress as Address,

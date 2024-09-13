@@ -15,7 +15,7 @@ import { bigIntReplacer } from '../../utils/CommonUtils'
 import { getPurchaseDonutPermissions } from '../../utils/ERC7715Utils'
 import { serializePublicKey, type P256Credential } from 'webauthn-p256'
 import { KeyTypes } from '../../utils/EncodingUtils'
-import { useWeb3ModalAccount } from '@rerock/base/react'
+import { useWeb3ModalAccount } from '@reown/appkit/react'
 
 export function WagmiRequestPermissionsSyncTest() {
   const { provider, supported } = useWagmiAvailableCapabilities({

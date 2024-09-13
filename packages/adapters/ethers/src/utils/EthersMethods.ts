@@ -10,14 +10,14 @@ import {
   parseUnits,
   formatUnits
 } from 'ethers'
-import { type Provider } from '@rerock/scaffold-utils/ethers'
+import { type Provider } from '@reown/appkit-utils/ethers'
 import type {
   EstimateGasTransactionArgs,
   SendTransactionArgs,
   WriteContractArgs
-} from '@rerock/core'
-import { ConstantsUtil } from '@rerock/common'
-import type { AppKit } from '@rerock/base'
+} from '@reown/appkit-core'
+import { isReownName } from '@reown/appkit-common'
+import type { AppKit } from '@reown/appkit'
 
 export const EthersMethods = {
   signMessage: async (message: string, provider: Provider, address: string) => {
@@ -45,6 +45,10 @@ export const EthersMethods = {
     if (!address) {
       throw new Error('estimateGas - address is undefined')
     }
+    if (data.chainNamespace && data.chainNamespace !== 'eip155') {
+      throw new Error('estimateGas - chainNamespace is not eip155')
+    }
+
     const txParams = {
       from: data.address,
       to: data.to,
@@ -68,6 +72,9 @@ export const EthersMethods = {
     }
     if (!address) {
       throw new Error('sendTransaction - address is undefined')
+    }
+    if (data.chainNamespace && data.chainNamespace !== 'eip155') {
+      throw new Error('sendTransaction - chainNamespace is not eip155')
     }
     const txParams = {
       to: data.to,
@@ -116,10 +123,11 @@ export const EthersMethods = {
       let ensName: string | null = null
       let wcName: boolean | string = false
 
-      if (value?.endsWith(ConstantsUtil.WC_NAME_SUFFIX)) {
-        wcName = (await appKit?.resolveWalletConnectName(value)) || false
+      if (isReownName(value)) {
+        wcName = (await appKit?.resolveReownName(value)) || false
       }
 
+      // If on mainnet, fetch from ENS
       if (chainId === 1) {
         const ensProvider = new InfuraProvider('mainnet')
         ensName = await ensProvider.resolveName(value)

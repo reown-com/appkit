@@ -6,8 +6,8 @@ import type {
   SIWECreateMessageArgs,
   SIWEVerifyMessageArgs
 } from '../utils/TypeUtils.js'
-import { ChainController, OptionsController } from '@rerock/core'
-import type { SIWEStatus } from '@rerock/common'
+import { ChainController, OptionsController } from '@reown/appkit-core'
+import type { SIWEStatus } from '@reown/appkit-common'
 
 // -- Types --------------------------------------------- //
 export interface SIWEControllerClient extends SIWEClientMethods {

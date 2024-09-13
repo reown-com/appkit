@@ -1,9 +1,9 @@
 import { useSnapshot } from 'valtio'
 import { SolStoreUtil } from '../src/utils/SolanaStoreUtil.js'
-import { type Connection } from '../src/utils/SolanaTypesUtil.js'
+import type { Connection } from '@reown/appkit-utils/solana'
 
 // -- Types -----------------------------------------------------------
-export * from '../src/utils/SolanaTypesUtil.js'
+export * from '@reown/appkit-utils/solana'
 
 // -- Source -----------------------------------------------------------
 export * from '../src/index.js'

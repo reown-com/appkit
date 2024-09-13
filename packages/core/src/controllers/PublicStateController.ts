@@ -1,5 +1,5 @@
 import { proxy, subscribe as sub } from 'valtio/vanilla'
-import type { CaipNetworkId } from '@rerock/common'
+import type { CaipNetworkId } from '@reown/appkit-common'
 
 // -- Types --------------------------------------------- //
 export interface PublicStateControllerState {

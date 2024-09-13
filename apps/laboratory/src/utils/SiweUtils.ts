@@ -1,6 +1,6 @@
 import { getCsrfToken, signIn, signOut, getSession } from 'next-auth/react'
-import type { SIWEVerifyMessageArgs, SIWECreateMessageArgs, SIWESession } from '@rerock/siwe'
-import { createSIWEConfig, formatMessage } from '@rerock/siwe'
+import type { SIWEVerifyMessageArgs, SIWECreateMessageArgs, SIWESession } from '@reown/appkit-siwe'
+import { createSIWEConfig, formatMessage } from '@reown/appkit-siwe'
 import { arbitrum, base, binanceSmartChain, mainnet, polygon } from '@rerock/base/chains'
 
 const chains = [mainnet, polygon, base, binanceSmartChain, arbitrum]

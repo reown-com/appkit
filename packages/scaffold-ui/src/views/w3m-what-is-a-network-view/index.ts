@@ -1,5 +1,5 @@
-import { CoreHelperUtil } from '@rerock/core'
-import { customElement } from '@rerock/ui'
+import { CoreHelperUtil } from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 
 const data = [

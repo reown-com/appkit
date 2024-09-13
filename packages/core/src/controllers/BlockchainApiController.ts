@@ -1,7 +1,6 @@
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { FetchUtil } from '../utils/FetchUtil.js'
-import { ConstantsUtil as CommonConstantsUtil } from '@rerock/common'
 import type {
   BlockchainApiTransactionsRequest,
   BlockchainApiTransactionsResponse,
@@ -314,7 +313,7 @@ export const BlockchainApiController = {
 
   async lookupEnsName(name: string) {
     return state.api.get<BlockchainApiLookupEnsName>({
-      path: `/v1/profile/account/${name}${CommonConstantsUtil.WC_NAME_SUFFIX}`,
+      path: `/v1/profile/account/${name}`,
       params: {
         projectId: OptionsController.state.projectId,
         apiVersion: '2'

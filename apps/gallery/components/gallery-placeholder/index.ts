@@ -1,4 +1,4 @@
-import { customElement } from '@rerock/ui'
+import { customElement } from '@reown/appkit-ui'
 import { html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'

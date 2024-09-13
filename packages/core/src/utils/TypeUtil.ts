@@ -1,4 +1,4 @@
-import type { W3mFrameProvider, W3mFrameTypes } from '@rerock/wallet'
+import type { W3mFrameProvider, W3mFrameTypes } from '@reown/appkit-wallet'
 import type {
   Balance,
   Transaction,
@@ -7,7 +7,7 @@ import type {
   ChainNamespace,
   CaipAddress,
   AdapterType
-} from '@rerock/common'
+} from '@reown/appkit-common'
 import type {
   NetworkControllerClient,
   NetworkControllerState
@@ -16,6 +16,7 @@ import type { ConnectionControllerClient } from '../controllers/ConnectionContro
 import type { AccountControllerState } from '../controllers/AccountController.js'
 import type { OnRampProviderOption } from '../controllers/OnRampController.js'
 import type { ConstantsUtil } from './ConstantsUtil.js'
+import type { ReownName } from '../controllers/EnsController.js'
 
 export type CaipNetworkCoinbaseNetwork =
   | 'Ethereum'
@@ -322,7 +323,7 @@ export interface BlockchainApiBalanceResponse {
 }
 
 export interface BlockchainApiLookupEnsName {
-  name: string
+  name: ReownName
   registered: number
   updated: number
   addresses: Record<
@@ -794,20 +795,28 @@ export type AccountType = {
   type: 'eoa' | 'smartAccount'
 }
 
-export interface SendTransactionArgs {
-  to: `0x${string}`
-  data: `0x${string}`
-  value: bigint
-  gas?: bigint
-  gasPrice: bigint
-  address: `0x${string}`
-}
+export type SendTransactionArgs =
+  | {
+      chainNamespace?: undefined | 'eip155'
+      to: `0x${string}`
+      data: `0x${string}`
+      value: bigint
+      gas?: bigint
+      gasPrice: bigint
+      address: `0x${string}`
+    }
+  | { chainNamespace: 'solana'; to: string; value: number }
 
-export interface EstimateGasTransactionArgs {
-  address: `0x${string}`
-  to: `0x${string}`
-  data: `0x${string}`
-}
+export type EstimateGasTransactionArgs =
+  | {
+      chainNamespace?: undefined | 'eip155'
+      address: `0x${string}`
+      to: `0x${string}`
+      data: `0x${string}`
+    }
+  | {
+      chainNamespace: 'solana'
+    }
 
 export interface WriteContractArgs {
   receiverAddress: `0x${string}`
