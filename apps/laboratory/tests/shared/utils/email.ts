@@ -90,6 +90,6 @@ export class Email {
   }
 
   getSmartAccountEnabledEmail(): string {
-    return 'appkit-smart-account@mailsac.com'
+    return 'web3modal-smart-account@mailsac.com'
   }
 }
