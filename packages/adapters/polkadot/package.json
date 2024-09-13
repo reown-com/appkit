@@ -15,7 +15,7 @@
     "@reown/appkit-core": "workspace:*"
   },
   "devDependencies": {
-    "vitest": "2.0.3",
+    "vitest": "2.0.5",
     "@vitest/coverage-v8": "2.0.5"
   },
   "private": "true"
