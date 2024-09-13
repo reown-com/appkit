@@ -1,6 +1,5 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, subscribe as sub } from 'valtio/vanilla'
-import { AccountController } from './AccountController.js'
 import { ApiController } from './ApiController.js'
 import { EventsController } from './EventsController.js'
 import { PublicStateController } from './PublicStateController.js'
@@ -45,13 +44,13 @@ export const ModalController = {
 
   async open(options?: ModalControllerArguments['open']) {
     await ApiController.state.prefetchPromise
-    const connected = AccountController.state.isConnected
+    const caipAddress = ChainController.state.activeCaipAddress
 
     const noAdapters = ChainController.state.noAdapters
 
     if (options?.view) {
       RouterController.reset(options.view)
-    } else if (connected) {
+    } else if (caipAddress) {
       RouterController.reset('Account')
     } else if (noAdapters && !CoreHelperUtil.isMobile()) {
       RouterController.reset('ConnectingWalletConnect')
@@ -63,12 +62,12 @@ export const ModalController = {
     EventsController.sendEvent({
       type: 'track',
       event: 'MODAL_OPEN',
-      properties: { connected }
+      properties: { connected: Boolean(caipAddress) }
     })
   },
 
   close() {
-    const connected = AccountController.state.isConnected || false
+    const connected = Boolean(ChainController.state.activeCaipAddress)
     state.open = false
     PublicStateController.set({ open: false })
     EventsController.sendEvent({

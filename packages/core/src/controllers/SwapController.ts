@@ -8,7 +8,6 @@ import { SnackController } from './SnackController.js'
 import { RouterController } from './RouterController.js'
 import { NumberUtil } from '@reown/appkit-common'
 import type { SwapTokenWithBalance } from '../utils/TypeUtil.js'
-import { NetworkController } from './NetworkController.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { OptionsController } from './OptionsController.js'
@@ -16,6 +15,8 @@ import { SwapCalculationUtil } from '../utils/SwapCalculationUtil.js'
 import { EventsController } from './EventsController.js'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 import { StorageUtil } from '../utils/StorageUtil.js'
+import { ChainController } from './ChainController.js'
+import { NetworkController } from './NetworkController.js'
 
 // -- Constants ---------------------------------------- //
 export const INITIAL_GAS_LIMIT = 150000
@@ -171,7 +172,8 @@ export const SwapController = {
   },
 
   getParams() {
-    const address = AccountController.state.address
+    const caipAddress = ChainController.state.activeCaipAddress
+    const address = CoreHelperUtil.getPlainAddress(caipAddress)
     const networkAddress = NetworkController.getActiveNetworkTokenAddress()
     const type = StorageUtil.getConnectedConnector()
 
@@ -179,7 +181,6 @@ export const SwapController = {
       throw new Error('No address found to swap the tokens from.')
     }
 
-    const caipAddress = AccountController.state.caipAddress
     const invalidToToken = !state.toToken?.address || !state.toToken?.decimals
     const invalidSourceToken =
       !state.sourceToken?.address ||
@@ -190,7 +191,7 @@ export const SwapController = {
     return {
       networkAddress,
       fromAddress: address,
-      fromCaipAddress: AccountController.state.caipAddress,
+      fromCaipAddress: caipAddress,
       sourceTokenAddress: state.sourceToken?.address,
       toTokenAddress: state.toToken?.address,
       toTokenAmount: state.toTokenAmount,
@@ -426,7 +427,7 @@ export const SwapController = {
 
   setBalances(balances: SwapTokenWithBalance[]) {
     const { networkAddress } = this.getParams()
-    const caipNetwork = NetworkController.state.caipNetwork
+    const caipNetwork = ChainController.state.activeCaipNetwork
 
     if (!caipNetwork) {
       return
@@ -764,7 +765,7 @@ export const SwapController = {
         type: 'track',
         event: 'SWAP_SUCCESS',
         properties: {
-          network: NetworkController.state.caipNetwork?.id || '',
+          network: ChainController.state.activeCaipNetwork?.id || '',
           swapFromToken: this.state.sourceToken?.symbol || '',
           swapToToken: this.state.toToken?.symbol || '',
           swapFromAmount: this.state.sourceTokenAmount || '',
@@ -790,7 +791,7 @@ export const SwapController = {
         type: 'track',
         event: 'SWAP_ERROR',
         properties: {
-          network: NetworkController.state.caipNetwork?.id || '',
+          network: ChainController.state.activeCaipNetwork?.id || '',
           swapFromToken: this.state.sourceToken?.symbol || '',
           swapToToken: this.state.toToken?.symbol || '',
           swapFromAmount: this.state.sourceTokenAmount || '',

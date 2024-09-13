@@ -18,6 +18,7 @@ export const mockAppKit = {
   getPreferredAccountType: vi.fn().mockReturnValue('eoa'),
   setEIP6963Enabled: vi.fn(),
   getCaipNetwork: vi.fn().mockReturnValue(mainnet),
+  getCaipNetworks: vi.fn(),
   subscribeState: vi.fn().mockImplementation(callback => vi.fn(() => callback({}))),
   setApprovedCaipNetworksData: vi.fn(),
   getAddress: vi.fn().mockReturnValue('0xE62a3eD41B21447b67a63880607CD2E746A0E35d'),
@@ -43,6 +44,7 @@ export const mockAppKit = {
   setBalance: vi.fn(),
   getWalletConnectName: vi.fn().mockResolvedValue([]),
   fetchIdentity: vi.fn().mockResolvedValue(null),
+  getActiveChainNamespace: vi.fn(),
   setClientId: vi.fn(),
   universalAdapter: {
     connectionControllerClient: {

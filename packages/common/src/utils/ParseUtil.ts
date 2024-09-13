@@ -31,7 +31,12 @@ export const ParseUtil = {
     }
   },
   parseCaipNetworkId(caipNetworkId: CaipNetworkId): ParsedCaipNetworkId {
-    const [chainNamespace, chainId] = caipNetworkId.split(':')
+    const parts = caipNetworkId.split(':')
+    if (parts.length !== 2) {
+      throw new Error(`Invalid CAIP-2 network id: ${caipNetworkId}`)
+    }
+
+    const [chainNamespace, chainId] = parts
 
     if (!chainNamespace || !chainId) {
       throw new Error(`Invalid CAIP-2 network id: ${caipNetworkId}`)

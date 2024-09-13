@@ -214,7 +214,10 @@ describe('Base', () => {
     })
 
     it('should get CAIP address', () => {
-      vi.mocked(AccountController).state = { caipAddress: 'eip155:1:0x123' } as any
+      vi.mocked(ChainController).state = {
+        activeChain: 'eip155',
+        activeCaipAddress: 'eip155:1:0x123'
+      } as any
       expect(appKit.getCaipAddress()).toBe('eip155:1:0x123')
     })
 
@@ -277,8 +280,8 @@ describe('Base', () => {
     })
 
     it('should get CAIP network', () => {
-      vi.mocked(NetworkController).state = {
-        caipNetwork: { id: 'eip155:1', name: 'Ethereum' }
+      vi.mocked(ChainController).state = {
+        activeCaipNetwork: { id: 'eip155:1', name: 'Ethereum' }
       } as any
       expect(appKit.getCaipNetwork()).toEqual({ id: 'eip155:1', name: 'Ethereum' })
     })
