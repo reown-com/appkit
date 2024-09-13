@@ -222,6 +222,7 @@ export class EVMWagmiClient implements ChainAdapter {
 
     this.appKit = appKit
     this.options = options
+    this.caipNetworks = options.caipNetworks
     this.defaultCaipNetwork = options.defaultCaipNetwork || this.caipNetworks[0]
     this.tokens = HelpersUtil.getCaipTokens(options.tokens)
     this.setCustomConnectors(options, appKit)
