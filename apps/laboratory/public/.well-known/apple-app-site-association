@@ -27,7 +27,7 @@
         ]
       },
       {
-        "appID": "W5R8AG9K22.com.walletconnect.appkit.rnsample",
+        "appID": "W5R8AG9K22.com.walletconnect.web3modal.rnsample",
         "paths": [
           "/rn_appkit/*"
         ]
