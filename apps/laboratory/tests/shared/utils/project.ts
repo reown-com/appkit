@@ -63,53 +63,53 @@ const SINGLE_ADAPTER_SOLANA_TESTS_REGEX = new RegExp(SINGLE_ADAPTER_SOLANA_TESTS
 const customProjectProperties: CustomProjectProperties = {
   'Desktop Chrome/ethers': {
     testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX,
-    testIgnore: /^multichain-.*\.spec\.ts$/
+    testIgnore: /^.*\/multichain\/.*$/
   },
   'Desktop Firefox/ethers': {
     testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX,
-    testIgnore: /^multichain-.*\.spec\.ts$/
+    testIgnore: /^.*\/multichain\/.*$/
   },
   'Desktop Chrome/ethers5': {
     testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX,
-    testIgnore: /^multichain-.*\.spec\.ts$/
+    testIgnore: /^.*\/multichain\/.*$/
   },
   'Desktop Firefox/ethers5': {
     testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX,
-    testIgnore: /^multichain-.*\.spec\.ts$/
+    testIgnore: /^.*\/multichain\/.*$/
   },
   'Desktop Chrome/wagmi': {
     testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX,
-    testIgnore: /^multichain-.*\.spec\.ts$/
+    testIgnore: /^.*\/multichain\/.*$/
   },
   'Desktop Firefox/wagmi': {
     testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX,
-    testIgnore: /^multichain-.*\.spec\.ts$/
+    testIgnore: /^.*\/multichain\/.*$/
   },
   'Desktop Chrome/solana': {
     testMatch: SINGLE_ADAPTER_SOLANA_TESTS_REGEX,
-    testIgnore: /^multichain-.*\.spec\.ts$/
+    testIgnore: /^.*\/multichain\/.*$/
   },
   'Desktop Firefox/solana': {
     testMatch: SINGLE_ADAPTER_SOLANA_TESTS_REGEX,
-    testIgnore: /^multichain-.*\.spec\.ts$/
+    testIgnore: /^.*\/multichain\/.*$/
   },
   'Desktop Firefox/multichain-ethers-solana': {
-    testMatch: /^multichain-ethers-.*\.spec\.ts$/
+    testMatch: /^.*\/multichain-ethers-.*\.spec\.ts$/
   },
   'Desktop Firefox/multichain-wagmi-solana': {
-    testMatch: /^multichain-wagmi-.*\.spec\.ts$/
+    testMatch: /^.*\/multichain-wagmi-.*\.spec\.ts$/
   },
   'Desktop Firefox/multichain-ethers5-solana': {
-    testMatch: /^multichain-ethers5-.*\.spec\.ts$/
+    testMatch: /^.*\/multichain-ethers5-.*\.spec\.ts$/
   },
   'Desktop Chrome/multichain-ethers-solana': {
-    testMatch: /^multichain-ethers-.*\.spec\.ts$/
+    testMatch: /^.*\/multichain-ethers-.*\.spec\.ts$/
   },
   'Desktop Chrome/multichain-wagmi-solana': {
-    testMatch: /^multichain-wagmi-.*\.spec\.ts$/
+    testMatch: /^.*\/multichain-wagmi-.*\.spec\.ts$/
   },
   'Desktop Chrome/multichain-ethers5-solana': {
-    testMatch: /^multichain-ethers5-.*\.spec\.ts$/
+    testMatch: /^.*\/multichain-ethers5-.*\.spec\.ts$/
   }
 }
 

@@ -1,9 +1,9 @@
 import { test, type BrowserContext } from '@playwright/test'
-import { DEFAULT_CHAIN_NAME } from './shared/constants'
-import { ModalPage } from './shared/pages/ModalPage'
-import { ModalValidator } from './shared/validators/ModalValidator'
-import { WalletPage } from './shared/pages/WalletPage'
-import { WalletValidator } from './shared/validators/WalletValidator'
+import { DEFAULT_CHAIN_NAME } from '../shared/constants'
+import { ModalPage } from '../shared/pages/ModalPage'
+import { ModalValidator } from '../shared/validators/ModalValidator'
+import { WalletPage } from '../shared/pages/WalletPage'
+import { WalletValidator } from '../shared/validators/WalletValidator'
 
 /* eslint-disable init-declarations */
 let modalPage: ModalPage
@@ -20,7 +20,7 @@ test.beforeAll(async ({ browser }) => {
   context = await browser.newContext()
   const browserPage = await context.newPage()
 
-  modalPage = new ModalPage(browserPage, 'multichain-ethers5-solana', 'default')
+  modalPage = new ModalPage(browserPage, 'multichain-ethers-solana', 'default')
   walletPage = new WalletPage(await context.newPage())
   modalValidator = new ModalValidator(browserPage)
   walletValidator = new WalletValidator(walletPage.page)
