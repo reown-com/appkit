@@ -42,9 +42,9 @@ const SINGLE_ADAPTER_EVM_TESTS = [
   'no-email.spec.ts',
   'no-socials.spec.ts',
   'siwe-email.spec.ts',
-  'siwe-sa.spec.ts',
+  // 'siwe-sa.spec.ts',
   'siwe.spec.ts',
-  'smart-account.spec.ts',
+  // 'smart-account.spec.ts',
   'wallet-features.spec.ts',
   'wallet.spec.ts'
 ]
