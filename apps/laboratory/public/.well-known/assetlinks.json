@@ -123,7 +123,7 @@
     "relation": ["delegate_permission/common.handle_all_urls"],
     "target": {
       "namespace": "android_app",
-      "package_name": "com.walletconnect.appkit.rnsample.internal",
+      "package_name": "com.walletconnect.web3modal.rnsample.internal",
       "sha256_cert_fingerprints": [
         "C5:1B:86:DA:21:D0:8F:8C:CE:D5:70:87:35:3C:D4:4A:A4:3B:E0:7B:EC:C1:34:EC:2A:59:22:E9:99:A2:B5:56"
       ]
@@ -133,7 +133,7 @@
     "relation": ["delegate_permission/common.handle_all_urls"],
     "target": {
       "namespace": "android_app",
-      "package_name": "com.walletconnect.appkit.rnsample",
+      "package_name": "com.walletconnect.web3modal.rnsample",
       "sha256_cert_fingerprints": [
         "F5:44:4B:97:C3:B9:94:DB:67:15:D9:18:04:A5:0D:30:06:72:FE:2A:E8:B6:D1:13:64:1C:2F:74:DB:DE:42:53"
       ]
@@ -143,7 +143,7 @@
     "relation": ["delegate_permission/common.handle_all_urls"],
     "target": {
       "namespace": "android_app",
-      "package_name": "com.walletconnect.appkit.rnsample.debug",
+      "package_name": "com.walletconnect.web3modal.rnsample.debug",
       "sha256_cert_fingerprints": [
         "3D:87:31:1C:66:8B:A0:CB:F9:F1:D5:28:3B:DF:2E:4F:CB:19:EA:AB:B4:B7:CE:C4:D9:E1:E0:6D:32:FB:C6:56"
       ]
