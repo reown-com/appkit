@@ -81,7 +81,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "vue": "3.4.3",
-    "vitest": "2.0.3"
+    "vitest": "2.0.5"
   },
   "author": "Reown <support@reown.com> (https://reown.com)",
   "license": "Apache-2.0",

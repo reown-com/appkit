@@ -68,7 +68,7 @@
     "viem": "2.21.4",
     "vue": "3.4.3",
     "wagmi": "2.12.9",
-    "vitest": "2.0.3"
+    "vitest": "2.0.5"
   },
   "peerDependencies": {
     "@wagmi/connectors": ">=4",

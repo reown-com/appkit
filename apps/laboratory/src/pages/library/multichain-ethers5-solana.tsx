@@ -3,11 +3,18 @@ import { EVMEthersClient } from '@reown/appkit-adapter-ethers'
 import { SolanaWeb3JsClient } from '@reown/appkit-adapter-solana'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
-import { mainnet, solana, arbitrum, optimism } from '@reown/appkit/chains'
+import {
+  mainnet,
+  polygon,
+  solana,
+  arbitrum,
+  optimism,
+  solanaTestnet,
+  solanaDevnet
+} from '@reown/appkit/chains'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { MultiChainTestsEthersSolana } from '../../components/MultiChainTestsEthersSolana'
-import { siweConfig } from '../../utils/SiweUtils'
 
 const etherAdapter = new EVMEthersClient()
 
@@ -18,8 +25,7 @@ const solanaWeb3JsAdapter = new SolanaWeb3JsClient({
 const modal = createAppKit({
   adapters: [etherAdapter, solanaWeb3JsAdapter],
   projectId: ConstantsUtil.ProjectId,
-  siweConfig,
-  caipNetworks: [mainnet, arbitrum, optimism, solana],
+  caipNetworks: [mainnet, arbitrum, polygon, optimism, solana, solanaTestnet, solanaDevnet],
   features: {
     analytics: true
   },

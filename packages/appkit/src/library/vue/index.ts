@@ -1,5 +1,5 @@
 import { onUnmounted, reactive, ref } from 'vue'
-import { AccountController, type Event } from '@reown/appkit-core'
+import { AccountController, CoreHelperUtil, type Event } from '@reown/appkit-core'
 import type {
   W3mAccountButton,
   W3mButton,
@@ -40,11 +40,11 @@ export function getAppKit(appKit: AppKit) {
 
 export function useAppKitAccount() {
   const state = ref(AccountController.state)
-  const { address, isConnected, status } = state.value
+  const { caipAddress, status } = state.value
 
   return {
-    address,
-    isConnected,
+    address: CoreHelperUtil.getPlainAddress(caipAddress),
+    isConnected: Boolean(caipAddress),
     status
   }
 }

@@ -59,6 +59,7 @@ export class W3mEmailLoginWidget extends LitElement {
   public override render() {
     const { socials, email } = OptionsController.state.features
     const multipleConnectors = this.connectors.length > 1
+    const enableWallets = OptionsController.state.enableWallets
 
     if (!this.authConnector || !email) {
       return null
@@ -78,7 +79,7 @@ export class W3mEmailLoginWidget extends LitElement {
         <input type="submit" hidden />
       </form>
 
-      ${socials || !multipleConnectors
+      ${socials || !multipleConnectors || !enableWallets
         ? null
         : html`<wui-flex .padding=${['xxs', '0', '0', '0'] as const}>
             <wui-separator text="or"></wui-separator>

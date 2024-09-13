@@ -5,7 +5,6 @@ import {
   OnRampController,
   type OnRampProvider,
   RouterController,
-  NetworkController,
   BlockchainApiController,
   EventsController,
   ChainController
@@ -99,7 +98,7 @@ export class W3mOnRampProvidersView extends LitElement {
 
   private async getCoinbaseOnRampURL() {
     const address = AccountController.state.address
-    const network = NetworkController.state.caipNetwork
+    const network = ChainController.state.activeCaipNetwork
 
     if (!address) {
       throw new Error('No address found')

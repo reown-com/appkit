@@ -11,7 +11,7 @@ import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 import {
   AccountController,
   BlockchainApiController,
-  NetworkController,
+  ChainController,
   StorageUtil
 } from '@reown/appkit-core'
 
@@ -28,7 +28,7 @@ export class WuiListAccount extends LitElement {
 
   private labels = AccountController.state.addressLabels
 
-  private caipNetwork = NetworkController.state.caipNetwork
+  private caipNetwork = ChainController.state.activeCaipNetwork
 
   private socialProvider = StorageUtil.getConnectedSocialProvider()
 

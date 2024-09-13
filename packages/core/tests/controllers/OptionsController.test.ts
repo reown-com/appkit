@@ -8,7 +8,7 @@ describe('OptionsController', () => {
     expect(OptionsController.state).toEqual({
       features: ConstantsUtil.DEFAULT_FEATURES,
       projectId: '',
-      sdkType: 'w3m',
+      sdkType: 'appkit',
       sdkVersion: 'html-wagmi-undefined'
     })
   })

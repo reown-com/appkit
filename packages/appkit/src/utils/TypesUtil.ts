@@ -141,7 +141,12 @@ export type AppKitOptions = {
 
   disableAppend?: boolean
   /**
-   * Enable or disable the Reown qr code in your AppKit.
+   * Enable or disable the all the wallet options (injected, Coinbase, QR, etc.). This is useful if you want to use only email and socials.
+   * @default true
+   */
+  enableWallets?: boolean
+  /**
+   * Enable or disable the WalletConnect qr code in your AppKit.
    * @default true
    */
   enableWalletConnect?: boolean

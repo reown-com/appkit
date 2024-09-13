@@ -6,9 +6,9 @@ import { AccountController } from './AccountController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { RouterController } from './RouterController.js'
 import { ConnectionController } from './ConnectionController.js'
-import { NetworkController } from './NetworkController.js'
 import { NetworkUtil } from '@reown/appkit-common'
 import { EnsUtil } from '../utils/EnsUtil.js'
+import { ChainController } from './ChainController.js'
 
 // -- Types --------------------------------------------- //
 type Suggestion = {
@@ -84,7 +84,7 @@ export const EnsController = {
 
   async getNamesForAddress(address: string) {
     try {
-      const network = NetworkController.state.caipNetwork
+      const network = ChainController.state.activeCaipNetwork
       if (!network) {
         return []
       }
@@ -99,7 +99,7 @@ export const EnsController = {
   },
 
   async registerName(name: ReownName) {
-    const network = NetworkController.state.caipNetwork
+    const network = ChainController.state.activeCaipNetwork
     if (!network) {
       throw new Error('Network not found')
     }

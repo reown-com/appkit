@@ -2,6 +2,7 @@ import { AppKit } from '../src/client.js'
 import type { AppKitOptions } from '../src/utils/TypesUtil.js'
 import { getAppKit } from '../src/library/react/index.js'
 import packageJson from '../package.json' assert { type: 'json' }
+import { CoreHelperUtil } from '@reown/appkit-core'
 
 // -- Views ------------------------------------------------------------
 export * from '@reown/appkit-scaffold-ui'
@@ -21,7 +22,14 @@ type CreateAppKit = Omit<AppKitOptions, 'sdkType' | 'sdkVersion'>
 
 export function createAppKit(options: CreateAppKit) {
   if (!modal) {
-    modal = new AppKit({ ...options, sdkVersion: `react-multichain-${packageJson.version}` })
+    modal = new AppKit({
+      ...options,
+      sdkVersion: CoreHelperUtil.generateSdkVersion(
+        options.adapters ?? [],
+        'react',
+        packageJson.version
+      )
+    })
     getAppKit(modal)
   }
 

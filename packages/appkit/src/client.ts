@@ -95,7 +95,7 @@ export class AppKit {
   }
 
   public getChainId() {
-    return NetworkController.state.caipNetwork?.chainId
+    return ChainController.state.activeCaipNetwork?.chainId
   }
 
   public switchNetwork(caipNetwork: CaipNetwork) {
@@ -240,7 +240,13 @@ export class AppKit {
     AccountController.removeAddressLabel(address, chain)
   }
 
-  public getCaipAddress = () => AccountController.state.caipAddress
+  public getCaipAddress = (chainNamespace?: ChainNamespace) => {
+    if (ChainController.state.activeChain === chainNamespace || !chainNamespace) {
+      return ChainController.state.activeCaipAddress
+    }
+
+    return ChainController.getAccountProp('caipAddress', chainNamespace)
+  }
 
   public getAddress = (chainNamespace?: ChainNamespace) => {
     if (ChainController.state.activeChain === chainNamespace || !chainNamespace) {
@@ -290,8 +296,10 @@ export class AppKit {
       )?.[0]
     }
 
-    return NetworkController.state.caipNetwork
+    return ChainController.state.activeCaipNetwork
   }
+
+  public getCaipNetworks = () => NetworkController.getRequestedCaipNetworks()
 
   public getActiveChainNamespace = () => ChainController.state.activeChain
 
@@ -443,6 +451,8 @@ export class AppKit {
     OptionsController.setPrivacyPolicyUrl(options.privacyPolicyUrl)
     OptionsController.setCustomWallets(options.customWallets)
     OptionsController.setFeatures(options.features)
+    OptionsController.setEnableWalletConnect(options.enableWalletConnect !== false)
+    OptionsController.setEnableWallets(options.enableWallets !== false)
 
     if (options.metadata) {
       OptionsController.setMetadata(options.metadata)

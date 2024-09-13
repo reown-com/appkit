@@ -22,8 +22,6 @@ import {
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { MultiChainTestsWagmiSolana } from '../../components/MultiChainTestsWagmiSolana'
-import { MultiChainInfo } from '../../components/MultiChainInfo'
-import { siweConfig } from '../../utils/SiweUtils'
 
 const queryClient = new QueryClient()
 
@@ -56,8 +54,7 @@ const modal = createAppKit({
   features: {
     analytics: true
   },
-  metadata: ConstantsUtil.Metadata,
-  siweConfig
+  metadata: ConstantsUtil.Metadata
 })
 
 ThemeStore.setModal(modal)
@@ -67,7 +64,6 @@ export default function MultiChainWagmiSolana() {
     <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <AppKitButtons />
-        <MultiChainInfo />
         <MultiChainTestsWagmiSolana />
       </QueryClientProvider>
     </WagmiProvider>

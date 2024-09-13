@@ -1,6 +1,6 @@
 'use client'
 
-import { AppKit, AccountController } from '@reown/appkit'
+import { AppKit, AccountController, CoreHelperUtil } from '@reown/appkit'
 import type { AppKitOptions } from '@reown/appkit'
 import { EVMEthersClient, type AdapterOptions } from '@reown/appkit-adapter-ethers'
 import { getAppKit } from '@reown/appkit/library/react'
@@ -52,12 +52,12 @@ export function useSwitchNetwork() {
   }
 }
 
-export function useAppKitAccount() {
-  const { address, isConnected, status } = useSnapshot(AccountController.state)
+export function useAppkitAccount() {
+  const { caipAddress, status } = useSnapshot(AccountController.state)
 
   return {
-    address,
-    isConnected,
+    address: CoreHelperUtil.getPlainAddress(caipAddress),
+    isConnected: Boolean(caipAddress),
     status
   }
 }

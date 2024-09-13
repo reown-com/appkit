@@ -14,7 +14,7 @@ const cspHeader = `
   connect-src 'self' https://react-wallet.walletconnect.com https://rpc.walletconnect.com https://rpc.walletconnect.org https://relay.walletconnect.com https://relay.walletconnect.org wss://relay.walletconnect.com wss://relay.walletconnect.org https://pulse.walletconnect.com https://pulse.walletconnect.org https://api.appkit.com https://api.web3modal.org wss://www.walletlink.org https://o1095249.ingest.sentry.io https://quote-api.jup.ag;
   frame-src 'self' https://verify.walletconnect.com https://verify.walletconnect.org https://secure.walletconnect.com https://secure.walletconnect.org ${
     process.env.NEXT_PUBLIC_SECURE_SITE_SDK_URL || ''
-  };
+  } https://widget.solflare.com/;
   object-src 'none';
   base-uri 'self';
   form-action 'self';
