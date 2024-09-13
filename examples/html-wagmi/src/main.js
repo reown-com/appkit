@@ -20,7 +20,7 @@ const modal = createAppKit({
   metadata: {
     name: 'Html Example',
     description: 'Html Example',
-    url: 'https://appkit.com',
+    url: 'https://reown.com/appkit',
     icons: ['https://avatars.githubusercontent.com/u/37784886']
   },
   caipNetworks: [mainnet, arbitrum],

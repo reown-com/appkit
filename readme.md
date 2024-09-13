@@ -63,8 +63,6 @@ For example: `pnpm changeset:pre a123bas2`
 9. Draft a new release in GitHub and create new tag
 10. Click on `Generate Change` and only leave the link with difference. Paste in your changelog from PR.
 11. Check `Set as the last release` and publish release.
-12. Update AppKit for https://appkit.com/ (https://github.com/WalletConnect/www-appkit) and create a PR
-13. Update AppKit for https://app.web3inbox.com (https://github.com/WalletConnect/web3inbox) and create a PR
 
 ### Running tests
 
