@@ -1,9 +1,9 @@
 import { test, type BrowserContext } from '@playwright/test'
-import { DEFAULT_CHAIN_NAME } from './shared/constants'
-import { ModalPage } from './shared/pages/ModalPage'
-import { ModalValidator } from './shared/validators/ModalValidator'
-import { WalletPage } from './shared/pages/WalletPage'
-import { WalletValidator } from './shared/validators/WalletValidator'
+import { DEFAULT_CHAIN_NAME } from '../shared/constants'
+import { ModalPage } from '../shared/pages/ModalPage'
+import { ModalValidator } from '../shared/validators/ModalValidator'
+import { WalletPage } from '../shared/pages/WalletPage'
+import { WalletValidator } from '../shared/validators/WalletValidator'
 
 /* eslint-disable init-declarations */
 let modalPage: ModalPage
