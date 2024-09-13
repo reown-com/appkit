@@ -48,21 +48,13 @@ If you need to release a canary/alpha/beta you need to enter prelease mode first
 pnpm changeset
 ```
 
-For example: `pnpm changeset:pre a123bas2`
-
 ### Steps
 
 1. Run `pnpm update` and update dependencies
 2. Run `pnpm install` and verify if everything still works correctly
-3. Merge your feature branch into `V4`
-4. Create a new branch from `V4` and name it with the version tag
-5. Run `pnpm changeset` and set new custom version, enter prelease mode first if you want to add a tag to the version.
-6. Update version in `ConstantsUtil` in `@reown/appkit-utils` to the correct version
-7. Create a new `PR` with Release Notes and merge into `V4`
-8. Checkout `V4` and run `pnpm publish:latest`
-9. Draft a new release in GitHub and create new tag
-10. Click on `Generate Change` and only leave the link with difference. Paste in your changelog from PR.
-11. Check `Set as the last release` and publish release.
+3. Merge your feature branch into `main`
+4. Changesets action will create or update a release PR
+5. When such PR is merged, it will trigger an automatic deploy to npm and publish release on github
 
 ### Running tests
 
