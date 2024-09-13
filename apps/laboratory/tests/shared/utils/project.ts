@@ -26,7 +26,7 @@ interface UseOptions {
 
 interface CustomProperties {
   testIgnore?: RegExp | string
-  testMatch?: string
+  testMatch?: RegExp | string
   useOptions?: UseOptions
   grep?: RegExp
 }
@@ -65,28 +65,28 @@ const SINGLE_ADAPTER_SOLANA_TESTS_REGEX = new RegExp(SINGLE_ADAPTER_SOLANA_TESTS
 
 const customProjectProperties: CustomProjectProperties = {
   'Desktop Chrome/ethers': {
-    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX.source
+    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX
   },
   'Desktop Firefox/ethers': {
-    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX.source
+    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX
   },
   'Desktop Chrome/ethers5': {
-    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX.source
+    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX
   },
   'Desktop Firefox/ethers5': {
-    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX.source
+    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX
   },
   'Desktop Chrome/wagmi': {
-    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX.source
+    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX
   },
   'Desktop Firefox/wagmi': {
-    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX.source
+    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX
   },
   'Desktop Chrome/solana': {
-    testMatch: SINGLE_ADAPTER_SOLANA_TESTS_REGEX.source
+    testMatch: SINGLE_ADAPTER_SOLANA_TESTS_REGEX
   },
   'Desktop Firefox/solana': {
-    testMatch: SINGLE_ADAPTER_SOLANA_TESTS_REGEX.source
+    testMatch: SINGLE_ADAPTER_SOLANA_TESTS_REGEX
   },
   'Desktop Firefox/multichain-ethers-solana': {
     testMatch: 'multichain-ethers-solana.spec.ts'
@@ -149,6 +149,7 @@ export function getProjects() {
   })
 
   const projects = [...libraryProjects, ...multichainProjects]
+  console.log(projects)
 
   return projects
 }
