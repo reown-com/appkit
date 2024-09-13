@@ -838,7 +838,6 @@ export class EVMEthersClient {
     const chainId = NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id)
     const caipNetwork = this.caipNetworks.find(c => c.chainId === chainId)
 
-    // @ts-expect-error - address type will be checked todo(enes|sven)
     this.appKit?.setCaipAddress(`eip155:${chainId}:${address}`, this.chainNamespace)
     this.appKit?.setCaipNetwork(caipNetwork)
     this.appKit?.setStatus('connected', this.chainNamespace)
