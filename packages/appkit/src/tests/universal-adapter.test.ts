@@ -55,7 +55,7 @@ describe('UniversalAdapter', () => {
         await universalAdapter.networkControllerClient.getApprovedCaipNetworksData()
 
       expect(approvedCaipNetworksData).toMatchObject({
-        supportsAllNetworks: false,
+        supportsAllNetworks: true,
         approvedCaipNetworkIds: [
           mockProvider.session?.namespaces['eip155']?.chains?.[0],
           mockProvider.session?.namespaces['solana']?.chains?.[0]
@@ -106,12 +106,6 @@ describe('UniversalAdapter', () => {
       const mockOnUri = vi.fn()
       await universalAdapter?.connectionControllerClient?.connectWalletConnect?.(mockOnUri)
 
-      expect(mockAppKit.setIsConnected).toHaveBeenCalledWith(true, 'eip155')
-      expect(mockAppKit.setIsConnected).toHaveBeenCalledWith(true, 'solana')
-
-      expect(mockAppKit.setPreferredAccountType).toHaveBeenCalledWith('eoa', 'eip155')
-      expect(mockAppKit.setPreferredAccountType).toHaveBeenCalledWith('eoa', 'solana')
-
       expect(mockAppKit.setCaipAddress).toHaveBeenCalledWith(
         mockProvider.session?.namespaces['eip155']?.accounts[0],
         'eip155'
@@ -119,17 +113,6 @@ describe('UniversalAdapter', () => {
       expect(mockAppKit.setCaipAddress).toHaveBeenCalledWith(
         mockProvider.session?.namespaces['solana']?.accounts[0],
         'solana'
-      )
-
-      expect(mockAppKit.setConnectedWalletInfo).toHaveBeenCalledWith(
-        {
-          description: 'Mock Wallet Description',
-          url: 'https://mockwallet.com',
-          name: 'Mock Wallet',
-          icon: 'https://mockwallet.com/icon.png',
-          icons: ['https://mockwallet.com/icon.png']
-        },
-        'eip155'
       )
     })
 

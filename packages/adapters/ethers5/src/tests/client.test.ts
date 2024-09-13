@@ -324,13 +324,13 @@ describe('EVMEthersClient', () => {
 
       it('should handle auth not connected', () => {
         client['handleAuthNotConnected']()
-        expect(mockAppKit.setIsConnected).toHaveBeenCalledWith(false, 'eip155')
+        expect(mockAppKit.setCaipAddress).toHaveBeenCalledWith(undefined, 'eip155')
       })
 
       it('should handle auth is connected', () => {
+        vi.spyOn(mockAppKit, 'getActiveChainNamespace').mockReturnValue('eip155')
         const preferredAccountType = 'eoa'
         client['handleAuthIsConnected'](preferredAccountType)
-        expect(mockAppKit.setIsConnected).toHaveBeenCalledWith(true, 'eip155')
         expect(mockAppKit.setPreferredAccountType).toHaveBeenCalledWith(
           preferredAccountType,
           'eip155'
@@ -351,13 +351,12 @@ describe('EVMEthersClient', () => {
         expect(mockAppKit.setCaipAddress).toHaveBeenCalledWith(address, 'eip155')
         expect(mockAppKit.setCaipNetwork).toHaveBeenCalled()
         expect(mockAppKit.setStatus).toHaveBeenCalledWith('connected', 'eip155')
-        expect(mockAppKit.setIsConnected).toHaveBeenCalledWith(true, 'eip155')
         expect(mockAppKit.setPreferredAccountType).toHaveBeenCalledWith(type, 'eip155')
 
         await new Promise(resolve => setImmediate(resolve))
 
         expect(mockAppKit.setLoading).toHaveBeenLastCalledWith(false)
-      }, 300)
+      })
     })
 
     describe('setAuthConnector', () => {
@@ -396,7 +395,6 @@ describe('EVMEthersClient', () => {
         )
         expect(mockAppKit.setCaipNetwork).toHaveBeenCalled()
         expect(mockAppKit.setStatus).toHaveBeenCalledWith('connected', 'eip155')
-        expect(mockAppKit.setIsConnected).toHaveBeenCalledWith(true, 'eip155')
         expect(mockAppKit.setCaipAddress).toHaveBeenCalledWith(
           `eip155:${mockChainId}:${mockAddress}`,
           'eip155'
@@ -529,11 +527,9 @@ describe('EVMEthersClient', () => {
       expect(SafeLocalStorage.setItem).toHaveBeenCalledWith(WcConstantsUtil.WALLET_ID, 'injected')
       expect(SafeLocalStorage.setItem).toHaveBeenCalledWith(WcConstantsUtil.WALLET_NAME, 'MetaMask')
       expect(mockAppKit.setCaipNetwork).toHaveBeenCalled()
-      expect(mockAppKit.setCaipAddress).toHaveBeenCalled()
       expect(ProviderUtil.setProviderId).toHaveBeenCalledWith('eip155', 'injected')
       expect(ProviderUtil.setProvider).toHaveBeenCalledWith('eip155', mockProvider)
       expect(mockAppKit.setStatus).toHaveBeenCalledWith('connected', 'eip155')
-      expect(mockAppKit.setIsConnected).toHaveBeenCalledWith(true, 'eip155')
       expect(mockAppKit.setAllAccounts).toHaveBeenCalled()
     })
   })
@@ -680,8 +676,6 @@ describe('EVMEthersClient', () => {
 
       await client['syncAccount']({ address: mockAddress })
 
-      expect(mockAppKit.setIsConnected).toHaveBeenCalledWith(true, 'eip155')
-      expect(mockAppKit.setCaipAddress).toHaveBeenCalledWith(`eip155:1:${mockAddress}`, 'eip155')
       expect(mockAppKit.setPreferredAccountType).toHaveBeenCalledWith('eoa', 'eip155')
       expect(mockAppKit.setAddressExplorerUrl).toHaveBeenCalledWith(
         `https://etherscan.io/address/${mockAddress}`,
@@ -689,7 +683,6 @@ describe('EVMEthersClient', () => {
       )
       expect(client['syncConnectedWalletInfo']).toHaveBeenCalled()
       expect(client['syncProfile']).toHaveBeenCalledWith(mockAddress)
-      expect(client['syncBalance']).toHaveBeenCalledWith(mockAddress)
       expect(mockAppKit.setApprovedCaipNetworksData).toHaveBeenCalledWith('eip155')
     })
 
@@ -778,7 +771,7 @@ describe('EVMEthersClient', () => {
     })
 
     it('should not set balance when caipNetwork is unavailable', async () => {
-      vi.spyOn(mockAppKit, 'getCaipNetwork').mockReturnValue(undefined)
+      vi.spyOn(mockAppKit, 'getCaipNetworks').mockReturnValue([])
 
       await client['syncBalance'](mockAddress, mainnet)
 

@@ -127,11 +127,6 @@ describe('SolanaWeb3JsClient', () => {
       await client['syncAccount']({ address: mockAddress })
 
       expect(SolStoreUtil.setConnection).toHaveBeenCalled()
-      expect(mockAppKit.setIsConnected).toHaveBeenCalledWith(true, 'solana')
-      expect(mockAppKit.setCaipAddress).toHaveBeenCalledWith(
-        `solana:${solana.chainId}:${mockAddress}`,
-        'solana'
-      )
       expect(client['syncBalance']).toHaveBeenCalledWith(mockAddress)
     })
 

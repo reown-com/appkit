@@ -84,7 +84,6 @@ describe('Wagmi Client', () => {
 
       expect(setApprovedCaipNetworksData).toHaveBeenCalledOnce()
 
-      expect(mockAppKit.getIsConnectedState()).toBe(true)
       expect(mockAppKit.getCaipAddress()).toBe(
         `${ConstantsUtil.EIP155}:${mainnet.chainId}:${mockAccount.address}`
       )
@@ -93,8 +92,6 @@ describe('Wagmi Client', () => {
 
       expect(connectedWagmiAccount.status).toBe('connected')
       expect(connectedWagmiAccount.address).toBe(mockAccount.address)
-
-      expect(mockAppKit.getIsConnectedState()).toBe(true)
 
       await disconnect(mockWagmiClient.wagmiConfig)
 
@@ -131,7 +128,6 @@ describe('Wagmi Client', () => {
         `eip155:${mockChainId}:${mockAddress}`,
         'eip155'
       )
-      expect(setIsConnectedSpy).toHaveBeenCalledWith(true, 'eip155')
       expect(syncNetworkSpy).toHaveBeenCalledWith(mockAddress, mockChainId, true)
       expect(syncProfileSpy).toHaveBeenCalledWith(mockAddress, mockChainId)
       expect(syncBalanceSpy).toHaveBeenCalledWith(mockAddress, mockChainId)

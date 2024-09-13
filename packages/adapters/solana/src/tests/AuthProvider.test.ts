@@ -10,7 +10,10 @@ describe('AuthProvider specific tests', () => {
   let authProvider = new AuthProvider({
     getProvider: () => mockW3mFrameProvider(),
     getActiveNamespace: () => 'solana',
-    getSession: () => undefined,
+    getSession: () => ({
+      chainId: 'solana',
+      address: '2VqKhjZ766ZN3uBtBpb7Ls3cN4HrocP1rzxzekhVEgoP'
+    }),
     getActiveChain,
     chains: TestConstants.chains
   })
@@ -21,7 +24,10 @@ describe('AuthProvider specific tests', () => {
     authProvider = new AuthProvider({
       getProvider: () => mockW3mFrameProvider(),
       getActiveNamespace: () => 'solana',
-      getSession: () => undefined,
+      getSession: () => ({
+        chainId: 'solana',
+        address: '2VqKhjZ766ZN3uBtBpb7Ls3cN4HrocP1rzxzekhVEgoP'
+      }),
       getActiveChain,
       chains: TestConstants.chains
     })

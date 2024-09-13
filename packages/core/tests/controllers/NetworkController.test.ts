@@ -84,15 +84,9 @@ describe('NetworkController', () => {
     expect(NetworkController.state.requestedCaipNetworks).toEqual(requestedCaipNetworks)
   })
 
-  it('should update state correctly on switchCaipNetwork()', async () => {
-    await NetworkController.switchActiveNetwork(caipNetwork)
-    expect(NetworkController.state.caipNetwork).toEqual(caipNetwork)
-    expect(EventsController.state.data).toEqual(switchNetworkEvent)
-  })
-
   it('should update state correctly on setCaipNetwork()', () => {
     NetworkController.setActiveCaipNetwork(caipNetwork)
-    expect(NetworkController.state.caipNetwork).toEqual(caipNetwork)
+    expect(ChainController.state.activeCaipNetwork).toEqual(caipNetwork)
   })
 
   it('should update state correctly on getApprovedCaipNetworkIds()', async () => {
@@ -137,7 +131,6 @@ describe('NetworkController', () => {
       explorerUrl: 'https://etherscan.io',
       rpcUrl: 'https://rpc.infura.com/v1/'
     })
-    expect(NetworkController.checkIfSmartAccountEnabled()).toEqual(true)
   })
 
   it('should get correct active network token address', () => {

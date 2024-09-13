@@ -35,7 +35,10 @@ const providers: { name: string; provider: Provider }[] = [
       getProvider: () => mockW3mFrameProvider(),
       getActiveChain,
       getActiveNamespace: () => 'solana',
-      getSession: () => undefined,
+      getSession: () => ({
+        chainId: 'solana',
+        address: '2VqKhjZ766ZN3uBtBpb7Ls3cN4HrocP1rzxzekhVEgoP'
+      }),
       chains: TestConstants.chains
     })
   }

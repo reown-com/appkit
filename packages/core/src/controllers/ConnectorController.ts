@@ -31,18 +31,9 @@ export const ConnectorController = {
   },
 
   setConnectors(connectors: ConnectorControllerState['connectors']) {
-    const test = connectors.filter(
-      newConnector =>
-        !state.connectors.some(
-          existingConnector =>
-            existingConnector.id === newConnector.id &&
-            this.getConnectorName(existingConnector.name) ===
-              this.getConnectorName(newConnector.name)
-        )
-    )
-
     state.connectors = [
-      ...state.connectors.filter(
+      ...state.connectors,
+      ...connectors.filter(
         newConnector =>
           !state.connectors.some(
             existingConnector =>
@@ -50,8 +41,7 @@ export const ConnectorController = {
               this.getConnectorName(existingConnector.name) ===
                 this.getConnectorName(newConnector.name)
           )
-      ),
-      ...test
+      )
     ]
   },
 

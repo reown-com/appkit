@@ -819,7 +819,7 @@ export class EVMEthers5Client {
   }
 
   private handleAuthNotConnected() {
-    this.appKit?.setIsConnected(false, this.chainNamespace)
+    this.appKit?.setCaipAddress(undefined, this.chainNamespace)
   }
 
   private handleAuthIsConnected(preferredAccountType: string | undefined) {
