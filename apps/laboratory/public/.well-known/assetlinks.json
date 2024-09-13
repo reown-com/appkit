@@ -143,7 +143,7 @@
     "relation": ["delegate_permission/common.handle_all_urls"],
     "target": {
       "namespace": "android_app",
-      "package_name": "com.walletconnect.appkit.rnsample.debug",
+      "package_name": "com.walletconnect.web3modal.rnsample.debug",
       "sha256_cert_fingerprints": [
         "3D:87:31:1C:66:8B:A0:CB:F9:F1:D5:28:3B:DF:2E:4F:CB:19:EA:AB:B4:B7:CE:C4:D9:E1:E0:6D:32:FB:C6:56"
       ]
