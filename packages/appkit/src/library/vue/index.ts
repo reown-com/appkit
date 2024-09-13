@@ -32,13 +32,13 @@ declare module '@vue/runtime-core' {
 
 let modal: AppKit | undefined = undefined
 
-export function getWeb3Modal(appKit: AppKit) {
+export function getAppKit(appKit: AppKit) {
   if (appKit) {
     modal = appKit
   }
 }
 
-export function useWeb3ModalAccount() {
+export function useAppKitAccount() {
   const state = ref(AccountController.state)
   const { address, isConnected, status } = state.value
 
@@ -49,7 +49,7 @@ export function useWeb3ModalAccount() {
   }
 }
 
-export function useWeb3ModalProvider<T>(chainNamespace: ChainNamespace) {
+export function useAppKitProvider<T>(chainNamespace: ChainNamespace) {
   const state = ref(ProviderUtil.state)
   const { providers, providerIds } = state.value
 
@@ -62,9 +62,9 @@ export function useWeb3ModalProvider<T>(chainNamespace: ChainNamespace) {
   }
 }
 
-export function useWeb3ModalTheme() {
+export function useAppKitTheme() {
   if (!modal) {
-    throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalTheme" hook')
+    throw new Error('Please call "createAppKit" before using "useAppKitTheme" hook')
   }
 
   function setThemeMode(themeMode: ThemeModeOptions) {
@@ -99,9 +99,9 @@ export function useWeb3ModalTheme() {
   }
 }
 
-export function useWeb3Modal() {
+export function useAppKit() {
   if (!modal) {
-    throw new Error('Please call "createWeb3Modal" before using "useWeb3Modal" composable')
+    throw new Error('Please call "createAppKit" before using "useAppKit" composable')
   }
 
   async function open(options?: OpenOptions) {
@@ -120,7 +120,7 @@ export function useWeb3Modal() {
 
 export function useWalletInfo() {
   if (!modal) {
-    throw new Error('Please call "createWeb3Modal" before using "useWeb3Modal" composable')
+    throw new Error('Please call "createAppKit" before using "useAppKit" composable')
   }
 
   const walletInfo = ref(modal.getWalletInfo())
@@ -136,9 +136,9 @@ export function useWalletInfo() {
   return { walletInfo }
 }
 
-export function useWeb3ModalState() {
+export function useAppKitState() {
   if (!modal) {
-    throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalState" composable')
+    throw new Error('Please call "createAppKit" before using "useAppKitState" composable')
   }
 
   const initial = modal.getState()
@@ -157,14 +157,14 @@ export function useWeb3ModalState() {
   return reactive({ open, selectedNetworkId })
 }
 
-export interface Web3ModalEvent {
+export interface AppKitEvent {
   timestamp: number
   data: Event
 }
 
-export function useWeb3ModalEvents(): Web3ModalEvent {
+export function useAppKitEvents(): AppKitEvent {
   if (!modal) {
-    throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalEvents" composable')
+    throw new Error('Please call "createAppKit" before using "useAppKitEvents" composable')
   }
 
   const event = reactive(modal.getEvent())

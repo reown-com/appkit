@@ -1,4 +1,4 @@
-import { createWeb3Modal, type CaipNetwork } from '@reown/appkit/react'
+import { createAppKit, type CaipNetwork } from '@reown/appkit/react'
 import { SolanaWeb3JsClient } from '@reown/appkit-adapter-solana/react'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
@@ -22,7 +22,7 @@ export const solanaNotExist = {
   chainNamespace: 'solana'
 } as CaipNetwork
 
-const modal = createWeb3Modal({
+const modal = createAppKit({
   adapters: [solanaWeb3JsAdapter],
   caipNetworks: [solana, solanaTestnet, solanaDevnet, solanaNotExist],
   projectId: ConstantsUtil.ProjectId,

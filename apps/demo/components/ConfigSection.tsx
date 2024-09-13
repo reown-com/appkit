@@ -70,7 +70,7 @@ export default function ConfigSection() {
           <Button
             variant="link"
             value="Documentation"
-            href="https://docs.walletconnect.com/web3modal/about?utm_source=docs&utm_medium=docs&utm_campaign=demo&utm_content=w3m"
+            href="https://docs.walletconnect.com/appkit/about?utm_source=docs&utm_medium=docs&utm_campaign=demo&utm_content=w3m"
           />
           <Button value="Copy Config" icon={<CopyIcon />} className="" />
         </div>

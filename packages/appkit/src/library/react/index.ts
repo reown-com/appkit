@@ -34,13 +34,13 @@ declare global {
 
 let modal: AppKit | undefined = undefined
 
-export function getWeb3Modal(appKit: AppKit) {
+export function getAppKit(appKit: AppKit) {
   if (appKit) {
     modal = appKit
   }
 }
 
-export function useWeb3ModalProvider<T>(chainNamespace: ChainNamespace) {
+export function useAppKitProvider<T>(chainNamespace: ChainNamespace) {
   const { providers, providerIds } = useSnapshot(ProviderUtil.state)
 
   const walletProvider = providers[chainNamespace] as T
@@ -52,9 +52,9 @@ export function useWeb3ModalProvider<T>(chainNamespace: ChainNamespace) {
   }
 }
 
-export function useWeb3ModalTheme() {
+export function useAppKitTheme() {
   if (!modal) {
-    throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalTheme" hook')
+    throw new Error('Please call "createAppKit" before using "useAppKitTheme" hook')
   }
 
   function setThemeMode(themeMode: ThemeModeOptions) {
@@ -91,9 +91,9 @@ export function useWeb3ModalTheme() {
   }
 }
 
-export function useWeb3Modal() {
+export function useAppKit() {
   if (!modal) {
-    throw new Error('Please call "createWeb3Modal" before using "useWeb3Modal" hook')
+    throw new Error('Please call "createAppKit" before using "useAppKit" hook')
   }
 
   async function open(options?: OpenOptions) {
@@ -109,7 +109,7 @@ export function useWeb3Modal() {
 
 export function useWalletInfo() {
   if (!modal) {
-    throw new Error('Please call "createWeb3Modal" before using "useWalletInfo" hook')
+    throw new Error('Please call "createAppKit" before using "useWalletInfo" hook')
   }
 
   const walletInfo = useSyncExternalStore(
@@ -121,9 +121,9 @@ export function useWalletInfo() {
   return { walletInfo }
 }
 
-export function useWeb3ModalState() {
+export function useAppKitState() {
   if (!modal) {
-    throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalState" hook')
+    throw new Error('Please call "createAppKit" before using "useAppKitState" hook')
   }
 
   const [state, setState] = useState(modal.getState())
@@ -141,9 +141,9 @@ export function useWeb3ModalState() {
   return state
 }
 
-export function useWeb3ModalEvents() {
+export function useAppKitEvents() {
   if (!modal) {
-    throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalEvents" hook')
+    throw new Error('Please call "createAppKit" before using "useAppKitEvents" hook')
   }
 
   const [event, setEvents] = useState(modal.getEvent())

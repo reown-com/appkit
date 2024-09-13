@@ -1,9 +1,9 @@
 import { Button } from '@chakra-ui/react'
 import { useState } from 'react'
 import {
-  useWeb3ModalAccount,
-  useWeb3ModalNetwork,
-  useWeb3ModalProvider,
+  useAppKitAccount,
+  useAppKitNetwork,
+  useAppKitProvider,
   type Provider
 } from '@reown/appkit/react'
 import { ethers } from 'ethers5'
@@ -14,9 +14,9 @@ export function Ethers5SignMessageTest() {
   const [signature, setSignature] = useState<string | undefined>()
   const toast = useChakraToast()
 
-  const { chainId } = useWeb3ModalNetwork()
-  const { address } = useWeb3ModalAccount()
-  const { walletProvider } = useWeb3ModalProvider<Provider>('eip155')
+  const { chainId } = useAppKitNetwork()
+  const { address } = useAppKitAccount()
+  const { walletProvider } = useAppKitProvider<Provider>('eip155')
 
   async function onSignMessage() {
     try {

@@ -39,7 +39,7 @@ export const StorageUtil = {
     }
   },
 
-  setWeb3ModalRecent(wallet: WcWallet) {
+  setAppKitRecent(wallet: WcWallet) {
     try {
       const recentWallets = StorageUtil.getRecentWallets()
       const exists = recentWallets.find(w => w.id === wallet.id)
@@ -51,7 +51,7 @@ export const StorageUtil = {
         localStorage.setItem(W3M_RECENT, JSON.stringify(recentWallets))
       }
     } catch {
-      console.info('Unable to set Web3Modal recent')
+      console.info('Unable to set AppKit recent')
     }
   },
 
@@ -61,7 +61,7 @@ export const StorageUtil = {
 
       return recent ? JSON.parse(recent) : []
     } catch {
-      console.info('Unable to get Web3Modal recent')
+      console.info('Unable to get AppKit recent')
     }
 
     return []

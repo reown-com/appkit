@@ -38,7 +38,7 @@ import { W3mFrameHelpers, W3mFrameRpcConstants, type W3mFrameTypes } from '@reow
 import { ConstantsUtil as CoreConstantsUtil } from '@reown/appkit-core'
 import { withSolanaNamespace } from './utils/withSolanaNamespace.js'
 import type { AppKit } from '@reown/appkit'
-import type { AppKitOptions } from '@reown/appkit'
+import type { AppKitOptions as CoreOptions } from '@reown/appkit'
 import { ProviderUtil } from '@reown/appkit/store'
 import { W3mFrameProviderSingleton } from '@reown/appkit/auth-provider'
 
@@ -48,13 +48,13 @@ export interface AdapterOptions {
   wallets?: BaseWalletAdapter[]
 }
 
-export type Web3ModalOptions = Omit<AdapterOptions, '_sdkVersion' | 'isUniversalProvider'>
+export type AppKitOptions = Omit<AdapterOptions, '_sdkVersion' | 'isUniversalProvider'>
 
 // -- Client --------------------------------------------------------------------
 export class SolanaWeb3JsClient implements ChainAdapter {
   private appKit: AppKit | undefined = undefined
 
-  public options: AppKitOptions | undefined = undefined
+  public options: CoreOptions | undefined = undefined
 
   public wallets?: BaseWalletAdapter[]
 
@@ -92,7 +92,7 @@ export class SolanaWeb3JsClient implements ChainAdapter {
     )
   }
 
-  public construct(appKit: AppKit, options: AppKitOptions) {
+  public construct(appKit: AppKit, options: CoreOptions) {
     const { projectId, caipNetworks } = options
 
     if (!options) {

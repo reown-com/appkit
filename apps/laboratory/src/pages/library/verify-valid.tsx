@@ -1,4 +1,4 @@
-import { createWeb3Modal } from '@reown/appkit/react'
+import { createAppKit } from '@reown/appkit/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
 import { AppKitButtons } from '../../components/AppKitButtons'
@@ -9,8 +9,8 @@ import { EVMWagmiClient } from '@reown/appkit-adapter-wagmi'
 import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@reown/appkit/chains'
 
 const metadata = {
-  name: 'Web3Modal',
-  description: 'Web3Modal Laboratory',
+  name: 'AppKit',
+  description: 'AppKit Laboratory',
   // Allow localhost
   url: 'http://localhost:3000',
   icons: ['https://avatars.githubusercontent.com/u/37784886'],
@@ -30,7 +30,7 @@ const wagmiAdapter = new EVMWagmiClient({
   projectId
 })
 
-const modal = createWeb3Modal({
+const modal = createAppKit({
   adapters: [wagmiAdapter],
   caipNetworks: networks,
   projectId,

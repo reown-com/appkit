@@ -1,9 +1,9 @@
 import { Button, Stack, Text, Input } from '@chakra-ui/react'
 import { useState } from 'react'
 import {
-  useWeb3ModalAccount,
-  useWeb3ModalNetwork,
-  useWeb3ModalProvider,
+  useAppKitAccount,
+  useAppKitNetwork,
+  useAppKitProvider,
   type Provider
 } from '@reown/appkit/react'
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
@@ -17,9 +17,9 @@ export function EthersGetCallsStatusTest() {
   const [isLoading, setLoading] = useState(false)
   const [batchCallId, setBatchCallId] = useState('')
 
-  const { chainId } = useWeb3ModalNetwork()
-  const { address, isConnected } = useWeb3ModalAccount()
-  const { walletProvider } = useWeb3ModalProvider<Provider>('eip155')
+  const { chainId } = useAppKitNetwork()
+  const { address, isConnected } = useAppKitAccount()
+  const { walletProvider } = useAppKitProvider<Provider>('eip155')
   const toast = useChakraToast()
 
   async function onGetCallsStatus() {

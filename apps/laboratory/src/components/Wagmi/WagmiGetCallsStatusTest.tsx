@@ -6,14 +6,14 @@ import { EIP_5792_RPC_METHODS } from '../../utils/EIP5792Utils'
 import { bigIntReplacer } from '../../utils/CommonUtils'
 import { useCallsStatus } from 'wagmi/experimental'
 import { useWagmiAvailableCapabilities } from '../../hooks/useWagmiActiveCapabilities'
-import { useWeb3ModalAccount } from '@reown/appkit/react'
+import { useAppKitAccount } from '@reown/appkit/react'
 
 export function WagmiGetCallsStatusTest() {
   const { supported } = useWagmiAvailableCapabilities({
     method: EIP_5792_RPC_METHODS.WALLET_GET_CALLS_STATUS
   })
 
-  const { address } = useWeb3ModalAccount()
+  const { address } = useAppKitAccount()
   const { status } = useAccount()
 
   const isConnected = status === 'connected'

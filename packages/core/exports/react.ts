@@ -3,7 +3,7 @@ import { NetworkController } from '../src/controllers/NetworkController.js'
 import { AccountController } from '../src/controllers/AccountController.js'
 
 // -- Hooks ------------------------------------------------------------
-export function useWeb3ModalNetwork() {
+export function useAppKitNetwork() {
   const { caipNetwork } = useSnapshot(NetworkController.state)
 
   return {
@@ -11,7 +11,7 @@ export function useWeb3ModalNetwork() {
     chainId: caipNetwork?.chainId
   }
 }
-export function useWeb3ModalAccount() {
+export function useAppKitAccount() {
   const { address, isConnected, status } = useSnapshot(AccountController.state)
 
   return {

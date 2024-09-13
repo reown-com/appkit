@@ -1,11 +1,11 @@
 import * as React from 'react'
-import { useWeb3ModalState } from '@reown/appkit/react'
+import { useAppKitState } from '@reown/appkit/react'
 
 import { SolanaTests } from './Solana/SolanaTests'
 import { EthersTests } from './Ethers/EthersTests'
 
 export function MultiChainTestsEthersSolana() {
-  const { activeChain } = useWeb3ModalState()
+  const { activeChain } = useAppKitState()
 
   return (
     <>

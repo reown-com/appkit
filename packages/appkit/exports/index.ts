@@ -11,9 +11,9 @@ export type * from '@reown/appkit-core'
 export type { CaipNetwork, CaipAddress, CaipNetworkId } from '@reown/appkit-common'
 export { CoreHelperUtil, AccountController, NetworkController } from '@reown/appkit-core'
 
-type CreateWeb3Modal = Omit<AppKitOptions, 'sdkType' | 'sdkVersion'>
+type CreateAppKit = Omit<AppKitOptions, 'sdkType' | 'sdkVersion'>
 
-export function createWeb3Modal(options: CreateWeb3Modal) {
+export function createAppKit(options: CreateAppKit) {
   return new AppKit({
     ...options,
     sdkVersion: `html-multichain-${packageJson.version}`

@@ -9,7 +9,7 @@ import type {
   Tokens,
   ProjectId
 } from '@reown/appkit-core'
-import type { SIWEControllerClient, Web3ModalSIWEClient } from '@reown/appkit-siwe'
+import type { SIWEControllerClient, AppKitSIWEClient } from '@reown/appkit-siwe'
 
 export type AppKitOptions = {
   /**
@@ -37,7 +37,7 @@ export type AppKitOptions = {
    * @default undefined
    * @see https://docs.walletconnect.com/appkit/react/core/siwe#configure-your-siwe-client
    */
-  siweConfig?: Web3ModalSIWEClient
+  siweConfig?: AppKitSIWEClient
   /**
    * Theme mode configuration flag. By default themeMode option will be set to user system settings.
    * @default `system`

@@ -10,7 +10,7 @@ export type { AdapterOptions } from '@reown/appkit-adapter-ethers5'
 type EthersAppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 'sdkVersion'> &
   AdapterOptions
 
-export function createWeb3Modal(options: EthersAppKitOptions) {
+export function createAppKit(options: EthersAppKitOptions) {
   const ethers5Adapter = new EVMEthers5Client()
 
   return new AppKit({

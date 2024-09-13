@@ -1,4 +1,4 @@
-import { createWeb3Modal } from '@reown/appkit/react'
+import { createAppKit } from '@reown/appkit/react'
 import { SolanaWeb3JsClient } from '@reown/appkit-adapter-solana/react'
 
 import { ThemeStore } from '../../utils/StoreUtil'
@@ -14,7 +14,7 @@ const solanaWeb3JsAdapter = new SolanaWeb3JsClient({
   wallets: [new HuobiWalletAdapter(), new SolflareWalletAdapter()]
 })
 
-const modal = createWeb3Modal({
+const modal = createAppKit({
   adapters: [solanaWeb3JsAdapter],
   caipNetworks: chains,
   projectId: ConstantsUtil.ProjectId,

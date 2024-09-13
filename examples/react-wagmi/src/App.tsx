@@ -1,9 +1,9 @@
 import {
-  createWeb3Modal,
-  useWeb3Modal,
-  useWeb3ModalEvents,
-  useWeb3ModalState,
-  useWeb3ModalTheme
+  createAppKit,
+  useAppKit,
+  useAppKitEvents,
+  useAppKitState,
+  useAppKitTheme
 } from '@reown/appkit/react'
 import { mainnet, polygon } from '@reown/appkit/chains'
 import { EVMWagmiClient } from '@reown/appkit-adapter-wagmi'
@@ -27,7 +27,7 @@ const wagmiAdapter = new EVMWagmiClient({
 })
 
 // 3. Create modal
-createWeb3Modal({
+createAppKit({
   adapters: [wagmiAdapter],
   caipNetworks: [mainnet, polygon],
   metadata: {
@@ -46,10 +46,10 @@ createWeb3Modal({
 
 export default function App() {
   // 4. Use modal hook
-  const modal = useWeb3Modal()
-  const state = useWeb3ModalState()
-  const { themeMode, themeVariables, setThemeMode } = useWeb3ModalTheme()
-  const events = useWeb3ModalEvents()
+  const modal = useAppKit()
+  const state = useAppKitState()
+  const { themeMode, themeVariables, setThemeMode } = useAppKitTheme()
+  const events = useAppKitEvents()
 
   return (
     <WagmiProvider config={wagmiAdapter.wagmiConfig}>

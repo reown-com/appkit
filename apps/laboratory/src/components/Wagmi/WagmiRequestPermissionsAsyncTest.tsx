@@ -14,13 +14,13 @@ import { bigIntReplacer } from '../../utils/CommonUtils'
 import { useERC7715Permissions } from '../../hooks/useERC7715Permissions'
 import { getPurchaseDonutPermissions } from '../../utils/ERC7715Utils'
 import { KeyTypes } from '../../utils/EncodingUtils'
-import { useWeb3ModalAccount } from '@reown/appkit/react'
+import { useAppKitAccount } from '@reown/appkit/react'
 
 export function WagmiRequestPermissionsAsyncTest() {
   const { provider, supported } = useWagmiAvailableCapabilities({
     method: EIP_7715_RPC_METHODS.WALLET_GRANT_PERMISSIONS
   })
-  const { address, isConnected } = useWeb3ModalAccount()
+  const { address, isConnected } = useAppKitAccount()
   const { chain } = useAccount()
 
   if (!isConnected || !provider || !address || !chain) {

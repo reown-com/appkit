@@ -15,19 +15,19 @@
         ]
       },
       {
-        "appID": "W5R8AG9K22.com.walletconnect.web3modal.sample",
+        "appID": "W5R8AG9K22.com.walletconnect.appkit.sample",
         "paths": [
           "/web3modal_example*"
         ]
       },
       {
-        "appID": "W5R8AG9K22.com.walletconnect.web3modal.rnsample.internal",
+        "appID": "W5R8AG9K22.com.walletconnect.appkit.rnsample.internal",
         "paths": [
           "/rn_appkit_internal/*"
         ]
       },
       {
-        "appID": "W5R8AG9K22.com.walletconnect.web3modal.rnsample",
+        "appID": "W5R8AG9K22.com.walletconnect.appkit.rnsample",
         "paths": [
           "/rn_appkit/*"
         ]
@@ -69,13 +69,13 @@
         ]
       },
       {
-        "appID": "W5R8AG9K22.com.web3modal.flutterExample",
+        "appID": "W5R8AG9K22.com.appkit.flutterExample",
         "paths": [
           "/flutter_appkit_modal"
         ]
       },
       {
-        "appID": "W5R8AG9K22.com.web3modal.flutterExample.internal",
+        "appID": "W5R8AG9K22.com.appkit.flutterExample.internal",
         "paths": [
           "/flutter_appkit_modal_internal"
         ]

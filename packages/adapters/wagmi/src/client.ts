@@ -95,7 +95,7 @@ const OPTIONAL_METHODS = [
 ]
 
 // @ts-expect-error: Overridden state type is correct
-interface Web3ModalState extends PublicStateControllerState {
+interface AppKitState extends PublicStateControllerState {
   selectedNetworkId: number | undefined
 }
 
@@ -208,7 +208,7 @@ export class EVMWagmiClient implements ChainAdapter {
 
   public construct(appKit: AppKit, options: AppKitOptions) {
     if (!options.projectId) {
-      throw new Error('web3modal:initialize - projectId is undefined')
+      throw new Error('appkit:initialize - projectId is undefined')
     }
 
     this.appKit = appKit
@@ -219,7 +219,7 @@ export class EVMWagmiClient implements ChainAdapter {
     this.setCustomConnectors(options, appKit)
 
     if (!this.wagmiConfig) {
-      throw new Error('web3modal:wagmiConfig - is undefined')
+      throw new Error('appkit:wagmiConfig - is undefined')
     }
 
     this.networkControllerClient = {
@@ -546,7 +546,7 @@ export class EVMWagmiClient implements ChainAdapter {
   }
 
   // @ts-expect-error: Overriden state type is correct
-  public override subscribeState(callback: (state: Web3ModalState) => void) {
+  public override subscribeState(callback: (state: AppKitState) => void) {
     return this.appKit?.subscribeState((state: PublicStateControllerState) =>
       callback({
         ...state,

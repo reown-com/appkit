@@ -3,13 +3,13 @@ import { Button } from '@chakra-ui/react'
 import { useSignMessage } from 'wagmi'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { useChakraToast } from '../Toast'
-import { useWeb3ModalAccount } from '@reown/appkit/react'
+import { useAppKitAccount } from '@reown/appkit/react'
 
 export function WagmiSignMessageTest() {
   const toast = useChakraToast()
 
   const { signMessageAsync, isPending } = useSignMessage()
-  const { isConnected } = useWeb3ModalAccount()
+  const { isConnected } = useAppKitAccount()
 
   const [signature, setSignature] = React.useState<string | undefined>()
 

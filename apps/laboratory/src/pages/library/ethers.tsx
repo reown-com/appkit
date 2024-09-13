@@ -1,4 +1,4 @@
-import { createWeb3Modal } from '@reown/appkit/react'
+import { createAppKit } from '@reown/appkit/react'
 import { EVMEthersClient } from '@reown/appkit-adapter-ethers'
 import { EthersTests } from '../../components/Ethers/EthersTests'
 import { AppKitButtons } from '../../components/AppKitButtons'
@@ -9,7 +9,7 @@ import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@reown/ap
 
 const ethersAdapter = new EVMEthersClient()
 
-const modal = createWeb3Modal({
+const modal = createAppKit({
   adapters: [ethersAdapter],
   caipNetworks: [mainnet, optimism, polygon, zkSync, arbitrum, sepolia],
   projectId: ConstantsUtil.ProjectId,

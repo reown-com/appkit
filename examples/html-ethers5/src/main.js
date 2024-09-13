@@ -1,6 +1,6 @@
 import { EVMEthers5Client } from '@reown/appkit-adapter-ethers5'
 import { mainnet, arbitrum } from '@reown/appkit/chains'
-import { createWeb3Modal } from '@reown/appkit'
+import { createAppKit } from '@reown/appkit'
 
 // @ts-expect-error 1. Get projectId
 const projectId = import.meta.env.VITE_PROJECT_ID
@@ -12,7 +12,7 @@ if (!projectId) {
 const ethers5Adapter = new EVMEthers5Client()
 
 // 3. Create modal
-const modal = createWeb3Modal({
+const modal = createAppKit({
   adapters: [ethers5Adapter],
   caipNetworks: [mainnet, arbitrum],
   metadata: {

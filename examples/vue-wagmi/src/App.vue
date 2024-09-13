@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { arbitrum, mainnet } from '@reown/appkit/chains'
 import {
-  createWeb3Modal,
-  useWeb3Modal,
-  useWeb3ModalEvents,
-  useWeb3ModalState,
-  useWeb3ModalTheme
+  createAppKit,
+  useAppKit,
+  useAppKitEvents,
+  useAppKitState,
+  useAppKitTheme
 } from '@reown/appkit/vue'
 
 // @ts-expect-error 1. Get projectId
@@ -18,7 +18,7 @@ if (!projectId) {
 const chains = [mainnet, arbitrum]
 
 // 3. Create modal
-createWeb3Modal({
+createAppKit({
   metadata: {
     name: 'AppKit Vue Example',
     description: 'AppKit Vue Example',
@@ -36,10 +36,10 @@ createWeb3Modal({
 })
 
 // 4. Use modal composable
-const modal = useWeb3Modal()
-const state = useWeb3ModalState()
-const { setThemeMode, themeMode, themeVariables } = useWeb3ModalTheme()
-const events = useWeb3ModalEvents()
+const modal = useAppKit()
+const state = useAppKitState()
+const { setThemeMode, themeMode, themeVariables } = useAppKitTheme()
+const events = useAppKitEvents()
 </script>
 
 <template>

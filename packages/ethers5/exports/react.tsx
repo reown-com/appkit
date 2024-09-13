@@ -5,7 +5,7 @@ import type { AppKitOptions } from '@reown/appkit'
 import type { CaipNetwork } from '@reown/appkit-common'
 import { ProviderUtil } from '@reown/appkit/store'
 import { EVMEthers5Client, type AdapterOptions } from '@reown/appkit-adapter-ethers5'
-import { getWeb3Modal } from '@reown/appkit/library/react'
+import { getAppKit } from '@reown/appkit/library/react'
 import { useSnapshot } from 'valtio'
 import { ethers } from 'ethers'
 import packageJson from '../package.json' assert { type: 'json' }
@@ -17,20 +17,20 @@ let ethersAdapter: EVMEthers5Client | undefined = undefined
 export type Ethers5AppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 'sdkVersion'> &
   AdapterOptions
 
-export function createWeb3Modal(options: Ethers5AppKitOptions) {
+export function createAppKit(options: Ethers5AppKitOptions) {
   ethersAdapter = new EVMEthers5Client()
   appkit = new AppKit({
     ...options,
     sdkVersion: `react-ethers5-${packageJson.version}`,
     adapters: [ethersAdapter]
   })
-  getWeb3Modal(appkit)
+  getAppKit(appkit)
 
   return appkit
 }
 
 // -- Hooks -------------------------------------------------------------------
-export function useWeb3ModalProvider() {
+export function useAppKitProvider() {
   const { providers, providerIds } = useSnapshot(ProviderUtil.state)
 
   const walletProvider = providers['eip155'] as ethers.providers.ExternalProvider | undefined
@@ -64,9 +64,9 @@ export function useSwitchNetwork() {
 }
 
 export {
-  useWeb3ModalTheme,
-  useWeb3Modal,
-  useWeb3ModalState,
-  useWeb3ModalEvents,
+  useAppKitTheme,
+  useAppKit,
+  useAppKitState,
+  useAppKitEvents,
   useWalletInfo
 } from '@reown/appkit/library/react'

@@ -1,11 +1,11 @@
 > [!NOTE]
-> Looking for v2? [switch the branch](https://github.com/WalletConnect/web3modal/tree/V2).
+> Looking for v2? [switch the branch](https://github.com/WalletConnect/appkit/tree/V2).
 
-#### 📚 [Documentation](https://docs.walletconnect.com/web3modal/about)
+#### 📚 [Documentation](https://docs.walletconnect.com/appkit/about)
 
-#### 🧪 [Laboratory](https://lab.web3modal.com)
+#### 🧪 [Laboratory](https://appkit-lab.reown.org)
 
-#### 🔗 [Website](https://web3modal.com)
+#### 🔗 [Website](https://appkit.com)
 
 # AppKit
 
@@ -63,8 +63,8 @@ For example: `pnpm changeset:pre a123bas2`
 9. Draft a new release in GitHub and create new tag
 10. Click on `Generate Change` and only leave the link with difference. Paste in your changelog from PR.
 11. Check `Set as the last release` and publish release.
-12. Update Web3Modal for https://web3modal.com/ (https://github.com/WalletConnect/www-web3modal) and create a PR
-13. Update Web3Modal for https://app.web3inbox.com (https://github.com/WalletConnect/web3inbox) and create a PR
+12. Update AppKit for https://appkit.com/ (https://github.com/WalletConnect/www-appkit) and create a PR
+13. Update AppKit for https://app.web3inbox.com (https://github.com/WalletConnect/web3inbox) and create a PR
 
 ### Running tests
 

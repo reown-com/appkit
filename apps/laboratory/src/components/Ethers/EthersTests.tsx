@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useWeb3ModalAccount } from '@reown/appkit/react'
+import { useAppKitAccount } from '@reown/appkit/react'
 import { EthersSignMessageTest } from './EthersSignMessageTest'
 import { EthersSignTypedDataTest } from './EthersSignTypedDataTest'
 import { StackDivider, Card, CardHeader, Heading, CardBody, Box, Stack } from '@chakra-ui/react'
@@ -11,7 +11,7 @@ import { EthersSendCallsWithPaymasterServiceTest } from './EthersSendCallsWithPa
 
 export function EthersTests() {
   const [ready, setReady] = React.useState(false)
-  const { isConnected } = useWeb3ModalAccount()
+  const { isConnected } = useAppKitAccount()
 
   React.useEffect(() => {
     setReady(true)

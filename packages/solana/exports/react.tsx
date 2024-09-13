@@ -4,9 +4,9 @@ import { AppKit } from '@reown/appkit'
 import {
   SolanaWeb3JsClient,
   type Provider,
-  useWeb3ModalConnection
+  useAppKitConnection
 } from '@reown/appkit-adapter-solana/react'
-import { getWeb3Modal } from '@reown/appkit/library/react'
+import { getAppKit } from '@reown/appkit/library/react'
 import type { SolanaAppKitOptions } from './options.js'
 import packageJson from '../package.json' assert { type: 'json' }
 
@@ -17,7 +17,7 @@ export type { SolanaAppKitOptions, Provider }
 let appkit: AppKit | undefined = undefined
 let solanaAdapter: SolanaWeb3JsClient | undefined = undefined
 
-export function createWeb3Modal(options: SolanaAppKitOptions) {
+export function createAppKit(options: SolanaAppKitOptions) {
   solanaAdapter = new SolanaWeb3JsClient({
     wallets: options.wallets
   })
@@ -26,7 +26,7 @@ export function createWeb3Modal(options: SolanaAppKitOptions) {
     sdkVersion: `react-solana-${packageJson.version}`,
     adapters: [solanaAdapter]
   })
-  getWeb3Modal(appkit)
+  getAppKit(appkit)
 
   return appkit
 }
@@ -43,9 +43,9 @@ export function useDisconnect() {
 }
 
 export {
-  useWeb3ModalTheme,
-  useWeb3Modal,
-  useWeb3ModalState,
-  useWeb3ModalEvents
+  useAppKitTheme,
+  useAppKit,
+  useAppKitState,
+  useAppKitEvents
 } from '@reown/appkit/library/react'
-export { useWeb3ModalConnection }
+export { useAppKitConnection }

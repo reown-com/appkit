@@ -1,10 +1,10 @@
 import { EVMEthers5Client } from '@reown/appkit-adapter-ethers5'
 import {
-  createWeb3Modal,
-  useWeb3Modal,
-  useWeb3ModalEvents,
-  useWeb3ModalState,
-  useWeb3ModalTheme
+  createAppKit,
+  useAppKit,
+  useAppKitEvents,
+  useAppKitState,
+  useAppKitTheme
 } from '@reown/appkit/react'
 import { mainnet, arbitrum } from '@reown/appkit/chains'
 
@@ -18,7 +18,7 @@ if (!projectId) {
 const ethers5Adapter = new EVMEthers5Client()
 
 // 3. Create modal
-createWeb3Modal({
+createAppKit({
   adapters: [ethers5Adapter],
   metadata: {
     name: 'AppKit',
@@ -37,10 +37,10 @@ createWeb3Modal({
 
 export default function App() {
   // 4. Use modal hook
-  const modal = useWeb3Modal()
-  const state = useWeb3ModalState()
-  const { themeMode, themeVariables, setThemeMode } = useWeb3ModalTheme()
-  const events = useWeb3ModalEvents()
+  const modal = useAppKit()
+  const state = useAppKitState()
+  const { themeMode, themeVariables, setThemeMode } = useAppKitTheme()
+  const events = useAppKitEvents()
 
   return (
     <>

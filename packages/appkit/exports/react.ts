@@ -1,6 +1,6 @@
 import { AppKit } from '../src/client.js'
 import type { AppKitOptions } from '../src/utils/TypesUtil.js'
-import { getWeb3Modal } from '../src/library/react/index.js'
+import { getAppKit } from '../src/library/react/index.js'
 import packageJson from '../package.json' assert { type: 'json' }
 
 // -- Views ------------------------------------------------------------
@@ -17,12 +17,12 @@ export { CoreHelperUtil, AccountController, NetworkController } from '@reown/app
 
 export let modal: AppKit | undefined = undefined
 
-type CreateWeb3Modal = Omit<AppKitOptions, 'sdkType' | 'sdkVersion'>
+type CreateAppKit = Omit<AppKitOptions, 'sdkType' | 'sdkVersion'>
 
-export function createWeb3Modal(options: CreateWeb3Modal) {
+export function createAppKit(options: CreateAppKit) {
   if (!modal) {
     modal = new AppKit({ ...options, sdkVersion: `react-multichain-${packageJson.version}` })
-    getWeb3Modal(modal)
+    getAppKit(modal)
   }
 
   return modal
@@ -33,4 +33,4 @@ export type { AppKitOptions }
 
 // -- Hooks ------------------------------------------------------------
 export * from '../src/library/react/index.js'
-export { useWeb3ModalAccount, useWeb3ModalNetwork } from '@reown/appkit-core/react'
+export { useAppKitAccount, useAppKitNetwork } from '@reown/appkit-core/react'
