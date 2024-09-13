@@ -130,7 +130,8 @@ export const ConnectorController = {
       authConnector?.provider?.syncDappData?.({
         metadata: optionsState.metadata,
         sdkVersion: optionsState.sdkVersion,
-        projectId: optionsState.projectId
+        projectId: optionsState.projectId,
+        sdkType: optionsState.sdkType
       })
       authConnector.provider.syncTheme({
         themeMode,
