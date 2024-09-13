@@ -1,5 +1,18 @@
 # @examples/html-wagmi
 
+## 5.1.8
+
+### Patch Changes
+
+- - chore: changed RN links to wildcards by @ignaciosantise in https://github.com/WalletConnect/web3modal/pull/2839
+  - feat: solana send transaction by @zoruka in https://github.com/WalletConnect/web3modal/pull/2802
+  - Feat/solana onramp by @phoenixVS in https://github.com/WalletConnect/web3modal/pull/2525
+  - chore: update assetlinks.json by @lukaisailovic in https://github.com/WalletConnect/web3modal/pull/2838
+  - Chore/add base sepolia by @tomiir in https://github.com/WalletConnect/web3modal/pull/2840
+  - fix: solana default chain logic by @zoruka in https://github.com/WalletConnect/web3modal/pull/2849
+- Updated dependencies []:
+  - @web3modal/wagmi@5.1.8
+
 ## 5.1.7
 
 ### Patch Changes
