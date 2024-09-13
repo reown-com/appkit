@@ -105,8 +105,8 @@ export class SolanaWeb3JsClient implements ChainAdapter<SolStoreUtilState, CaipN
     this.defaultChain = SolHelpersUtil.getChainFromCaip(
       this.chains,
       SafeLocalStorage.getItem(SolConstantsUtil.CAIP_CHAIN_ID) ||
-        defaultChain?.chainId ||
-        chains[0]?.chainId
+        withSolanaNamespace(defaultChain?.chainId) ||
+        withSolanaNamespace(chains[0]?.chainId)
     )
 
     this.networkControllerClient = {
