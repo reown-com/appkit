@@ -348,7 +348,7 @@ describe('EVMEthersClient', () => {
         await client['handleAuthSetPreferredAccount'](address, type)
 
         expect(mockAppKit.setLoading).toHaveBeenCalledWith(true)
-        expect(mockAppKit.setCaipAddress).toHaveBeenCalledWith(address, 'eip155')
+        expect(mockAppKit.setCaipAddress).toHaveBeenCalledWith(`eip155:${1}:${address}`, 'eip155')
         expect(mockAppKit.setCaipNetwork).toHaveBeenCalled()
         expect(mockAppKit.setStatus).toHaveBeenCalledWith('connected', 'eip155')
         expect(mockAppKit.setPreferredAccountType).toHaveBeenCalledWith(type, 'eip155')
