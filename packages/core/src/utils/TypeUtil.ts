@@ -6,7 +6,9 @@ import type {
   CaipNetwork,
   ChainNamespace,
   CaipAddress,
-  AdapterType
+  AdapterType,
+  SdkFramework,
+  AppKitSdkVersion
 } from '@reown/appkit-common'
 import type {
   NetworkControllerClient,
@@ -93,12 +95,7 @@ export type CaipNamespaces = Record<
   }
 >
 
-export type SdkVersion =
-  | `${'html' | 'react' | 'vue'}-wagmi-${string}`
-  | `${'html' | 'react' | 'vue'}-ethers5-${string}`
-  | `${'html' | 'react' | 'vue'}-ethers-${string}`
-  | `${'html' | 'react' | 'vue'}-solana-${string}`
-  | `${'html' | 'react' | 'vue'}-multichain-${string}`
+export type SdkVersion = `${SdkFramework}-${AdapterType}-${string}` | AppKitSdkVersion
 
 export interface BaseError {
   message?: string
