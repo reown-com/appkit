@@ -55,7 +55,7 @@ test('it should switch networks and sign', async () => {
 })
 
 test('it should switch to different namespace', async () => {
-  let chainName = 'Solana'
+  const chainName = 'Solana'
 
   await page.switchNetwork(chainName)
   await page.openNetworks()
