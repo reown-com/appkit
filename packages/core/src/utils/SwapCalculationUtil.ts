@@ -1,6 +1,6 @@
 // -- Types --------------------------------------------- //
 
-import { NumberUtil } from '@rerock/common'
+import { NumberUtil } from '@reown/appkit-common'
 import type { SwapTokenWithBalance } from './TypeUtil.js'
 
 // -- Util ---------------------------------------- //

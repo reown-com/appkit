@@ -1,21 +1,20 @@
-import { ConstantsUtil } from '@rerock/scaffold-utils'
+import { ConstantsUtil } from '@reown/appkit-utils'
 import type {
   AnyTransaction,
   Connection,
   GetActiveChain,
   Provider
-} from '../utils/SolanaTypesUtil.js'
+} from '@reown/appkit-utils/solana'
 import { ProviderEventEmitter } from './shared/ProviderEventEmitter.js'
 import { PublicKey, Transaction, VersionedTransaction, type SendOptions } from '@solana/web3.js'
 import {
   W3mFrameProvider,
   type W3mFrameProviderMethods as ProviderAuthMethods
-} from '@rerock/wallet'
+} from '@reown/appkit-wallet'
 import { withSolanaNamespace } from '../utils/withSolanaNamespace.js'
 import base58 from 'bs58'
 import { isVersionedTransaction } from '@solana/wallet-adapter-base'
-import type { CaipNetwork, ChainNamespace } from '@rerock/common'
-import { ChainController, NetworkController } from '@rerock/core'
+import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
 
 export type AuthProviderConfig = {
   getProvider: () => W3mFrameProvider
@@ -34,7 +33,6 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
   private readonly getActiveNamespace: AuthProviderConfig['getActiveNamespace']
   private readonly requestedChains: CaipNetwork[]
   private readonly getSession: AuthProviderConfig['getSession']
-  private session: AuthProvider.Session | undefined
 
   constructor({
     getProvider,
@@ -50,15 +48,7 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
     this.getActiveNamespace = getActiveNamespace
     this.requestedChains = chains
     this.getSession = getSession
-    this.session = getSession()
     this.bindEvents()
-
-    ChainController.subscribeKey('activeCaipNetwork', (caipNetwork: CaipNetwork | undefined) => {
-      const isSolana = caipNetwork?.chainNamespace === 'solana'
-      if (isSolana) {
-        this.session = this.getSession()
-      }
-    })
   }
 
   get publicKey(): PublicKey | undefined {
@@ -80,7 +70,7 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
   }
 
   public async connect() {
-    this.session = await this.getProvider().connect({
+    await this.getProvider().connect({
       chainId: withSolanaNamespace(this.getActiveChain()?.chainId)
     })
 
@@ -221,11 +211,6 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
     return base58.encode(transaction.serialize({ verifySignatures: false }))
   }
 
-  private async onConnect(response) {
-    this.session = response
-    this.emit('connect', this.getPublicKey(true))
-  }
-
   private bindEvents() {
     this.getProvider().onRpcRequest(request => {
       this.emit('auth_rpcRequest', request)
@@ -239,11 +224,11 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
       this.emit('auth_rpcError', error)
     })
 
-    this.getProvider().onIsConnected(response => {
+    this.getProvider().onIsConnected(() => {
       const activeNamespace = this.getActiveNamespace()
 
       if (activeNamespace === 'solana') {
-        this.onConnect(response)
+        this.emit('connect', this.getPublicKey(true))
       }
     })
 

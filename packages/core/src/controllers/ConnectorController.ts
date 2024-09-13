@@ -1,7 +1,7 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, snapshot } from 'valtio/vanilla'
 import type { AuthConnector, Connector } from '../utils/TypeUtil.js'
-import { getW3mThemeVariables } from '@rerock/common'
+import { getW3mThemeVariables } from '@reown/appkit-common'
 import { OptionsController } from './OptionsController.js'
 import { ThemeController } from './ThemeController.js'
 
@@ -43,15 +43,12 @@ export const ConnectorController = {
           )
       )
     ]
-    // state.connectors = this.mergeMultiChainConnectors(state.unMergedConnectors)
   },
 
   mergeMultiChainConnectors(connectors: Connector[]) {
-    // console.log('>>> CC.mergeMultiChainConnectors', connectors)
     const connectorsByNameMap = this.generateConnectorMapByName(connectors)
 
     const refactoredConnectors = Array.from(connectorsByNameMap.values()).map(_connectors => {
-      // console.log('>>> CC.mergeMultiChainConnectors', _connectors)
       if (_connectors.length > 1) {
         return {
           name: _connectors[0]?.name,
@@ -115,7 +112,7 @@ export const ConnectorController = {
   },
 
   addConnector(connector: Connector | AuthConnector) {
-    if (connector.id == 'w3mAuth') {
+    if (connector.id === 'w3mAuth') {
       const authConnector = connector as AuthConnector
 
       const optionsState = snapshot(OptionsController.state) as typeof OptionsController.state

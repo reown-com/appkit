@@ -1,10 +1,10 @@
 import { Button, Stack, Text, Spacer, Heading } from '@chakra-ui/react'
 import { useState, useEffect } from 'react'
-import { useWeb3ModalAccount, useWeb3ModalProvider, useWeb3ModalNetwork } from '@rerock/base/react'
+import { useWeb3ModalAccount, useWeb3ModalProvider, useWeb3ModalNetwork } from '@reown/appkit/react'
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
 import { useChakraToast } from '../Toast'
 import type { Address } from 'viem'
-import type { Provider as RawProvider } from '@rerock/base'
+import type { Provider as RawProvider } from '@reown/appkit'
 import { vitalikEthAddress } from '../../utils/DataUtil'
 import { ethers } from 'ethers5'
 import {
@@ -12,7 +12,7 @@ import {
   WALLET_CAPABILITIES,
   getCapabilitySupportedChainInfo
 } from '../../utils/EIP5792Utils'
-import { W3mFrameProvider } from '@rerock/wallet'
+import { W3mFrameProvider } from '@reown/appkit-wallet'
 
 type Provider = W3mFrameProvider | Awaited<ReturnType<(typeof EthereumProvider)['init']>>
 

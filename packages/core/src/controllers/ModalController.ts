@@ -1,6 +1,5 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, subscribe as sub } from 'valtio/vanilla'
-import { AccountController } from './AccountController.js'
 import { ApiController } from './ApiController.js'
 import { EventsController } from './EventsController.js'
 import { PublicStateController } from './PublicStateController.js'
@@ -45,7 +44,7 @@ export const ModalController = {
 
   async open(options?: ModalControllerArguments['open']) {
     await ApiController.state.prefetchPromise
-    const caipAddress = AccountController.state.caipAddress
+    const caipAddress = ChainController.state.activeCaipAddress
 
     const noAdapters = ChainController.state.noAdapters
 
@@ -63,12 +62,12 @@ export const ModalController = {
     EventsController.sendEvent({
       type: 'track',
       event: 'MODAL_OPEN',
-      properties: { connected: caipAddress ? true : false }
+      properties: { connected: Boolean(caipAddress) }
     })
   },
 
   close() {
-    const connected = AccountController.state.isConnected || false
+    const connected = Boolean(ChainController.state.activeCaipAddress)
     state.open = false
     PublicStateController.set({ open: false })
     EventsController.sendEvent({

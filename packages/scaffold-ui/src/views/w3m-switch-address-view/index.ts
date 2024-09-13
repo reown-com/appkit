@@ -6,13 +6,13 @@ import {
   OptionsController,
   StorageUtil,
   type AccountType
-} from '@rerock/core'
-import { UiHelperUtil, customElement } from '@rerock/ui'
+} from '@reown/appkit-core'
+import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import type { CaipAddress } from '@rerock/common'
+import type { CaipAddress } from '@reown/appkit-common'
 
 @customElement('w3m-switch-address-view')
 export class W3mSwitchAddressView extends LitElement {

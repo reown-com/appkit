@@ -1,15 +1,14 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
-import { type Balance, type CaipAddress } from '@rerock/common'
-import { erc20ABI } from '@rerock/common'
+import { type Balance, type CaipAddress } from '@reown/appkit-common'
+import { erc20ABI } from '@reown/appkit-common'
 import { RouterController } from './RouterController.js'
 import { AccountController } from './AccountController.js'
 import { ConnectionController } from './ConnectionController.js'
 import { SnackController } from './SnackController.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { EventsController } from './EventsController.js'
-import { NetworkController } from './NetworkController.js'
-import { W3mFrameRpcConstants } from '@rerock/wallet'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 import { ChainController } from './ChainController.js'
 
 // -- Types --------------------------------------------- //
@@ -94,6 +93,21 @@ export const SendController = {
   },
 
   sendToken() {
+    switch (ChainController.state.activeCaipNetwork?.chainNamespace) {
+      case 'eip155':
+        this.sendEvmToken()
+
+        return
+      case 'solana':
+        this.sendSolanaToken()
+
+        return
+      default:
+        throw new Error('Unsupported chain')
+    }
+  },
+
+  sendEvmToken() {
     if (this.state.token?.address && this.state.sendTokenAmount && this.state.receiverAddress) {
       EventsController.sendEvent({
         type: 'track',
@@ -227,6 +241,34 @@ export const SendController = {
     } catch (error) {
       SnackController.showError('Something went wrong')
     }
+  },
+
+  sendSolanaToken() {
+    if (!this.state.sendTokenAmount || !this.state.receiverAddress) {
+      SnackController.showError('Please enter a valid amount and receiver address')
+
+      return
+    }
+
+    RouterController.pushTransactionStack({
+      view: 'Account',
+      goBack: false
+    })
+
+    ConnectionController.sendTransaction({
+      chainNamespace: 'solana',
+      to: this.state.receiverAddress,
+      value: this.state.sendTokenAmount
+    })
+      .then(() => {
+        this.resetSend()
+        AccountController.fetchTokenBalance()
+      })
+      .catch(error => {
+        SnackController.showError('Failed to send transaction. Please try again.')
+        // eslint-disable-next-line no-console
+        console.error('SendController:sendToken - failed to send solana transaction', error)
+      })
   },
 
   resetSend() {

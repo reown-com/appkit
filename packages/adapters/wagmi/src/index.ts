@@ -1,4 +1,4 @@
-import '@rerock/polyfills'
+import '@reown/appkit-polyfills'
 
 export { EVMWagmiClient } from './client.js'
 

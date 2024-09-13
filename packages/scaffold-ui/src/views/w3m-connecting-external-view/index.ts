@@ -1,13 +1,12 @@
-import type { BaseError } from '@rerock/core'
+import type { BaseError } from '@reown/appkit-core'
 import {
-  AccountController,
+  ChainController,
   ConnectionController,
   EventsController,
-  ModalController,
-  RouterController
-} from '@rerock/core'
-import { ConstantsUtil } from '@rerock/scaffold-utils'
-import { customElement } from '@rerock/ui'
+  ModalController
+} from '@reown/appkit-core'
+import { ConstantsUtil } from '@reown/appkit-utils'
+import { customElement } from '@reown/appkit-ui'
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 
 @customElement('w3m-connecting-external-view')
@@ -29,16 +28,11 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
     this.onConnect = this.onConnectProxy.bind(this)
     this.onAutoConnect = this.onConnectProxy.bind(this)
     this.isWalletConnect = false
-    AccountController.subscribeKey(
-      'isConnected',
-      val => {
-        const isConnectorConnected = val
-        if (isConnectorConnected) {
-          ModalController.close()
-        }
-      },
-      this.connector.chain
-    )
+    ChainController.subscribeKey('activeCaipAddress', val => {
+      if (val) {
+        ModalController.close()
+      }
+    })
   }
 
   // -- Private ------------------------------------------- //

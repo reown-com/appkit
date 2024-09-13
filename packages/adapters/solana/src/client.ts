@@ -5,18 +5,17 @@ import {
   AssetController,
   ChainController,
   CoreHelperUtil,
-  EventsController,
-  NetworkController
-} from '@rerock/core'
+  EventsController
+} from '@reown/appkit-core'
 import {
   ConstantsUtil as CommonConstantsUtil,
   SafeLocalStorage,
   SafeLocalStorageKeys
-} from '@rerock/common'
+} from '@reown/appkit-common'
 
-import { SolConstantsUtil } from './utils/SolanaConstantsUtil.js'
-import { SolHelpersUtil } from './utils/SolanaHelpersUtils.js'
+import { SolConstantsUtil, SolHelpersUtil } from '@reown/appkit-utils/solana'
 import { SolStoreUtil } from './utils/SolanaStoreUtil.js'
+import type { Provider } from '@reown/appkit-utils/solana'
 
 import type { BaseWalletAdapter } from '@solana/wallet-adapter-base'
 import { PublicKey, type Commitment, type ConnectionConfig } from '@solana/web3.js'
@@ -26,11 +25,10 @@ import type {
   ConnectionControllerClient,
   NetworkControllerClient,
   Connector
-} from '@rerock/core'
-import type { AdapterType, CaipAddress, CaipNetwork, CaipNetworkId } from '@rerock/common'
-import type { ChainNamespace } from '@rerock/common'
+} from '@reown/appkit-core'
+import type { AdapterType, CaipAddress, CaipNetwork, CaipNetworkId } from '@reown/appkit-common'
+import type { ChainNamespace } from '@reown/appkit-common'
 
-import type { Provider } from './utils/SolanaTypesUtil.js'
 import { watchStandard } from './utils/watchStandard.js'
 import { WalletConnectProvider } from './providers/WalletConnectProvider.js'
 import { AuthProvider } from './providers/AuthProvider.js'
@@ -39,14 +37,14 @@ import {
   W3mFrameProvider,
   W3mFrameRpcConstants,
   type W3mFrameTypes
-} from '@rerock/wallet'
-import { ConstantsUtil as CoreConstantsUtil } from '@rerock/core'
+} from '@reown/appkit-wallet'
+import { ConstantsUtil as CoreConstantsUtil } from '@reown/appkit-core'
 import { withSolanaNamespace } from './utils/withSolanaNamespace.js'
-import type { AppKit } from '@rerock/base'
-import type { AppKitOptions } from '@rerock/base'
-import { ProviderUtil } from '@rerock/base/store'
-import { W3mFrameProviderSingleton } from '@rerock/base/auth-provider'
-import { ConstantsUtil, PresetsUtil } from '@rerock/scaffold-utils'
+import type { AppKit, AppKitOptions } from '@reown/appkit'
+import { ProviderUtil } from '@reown/appkit/store'
+import { W3mFrameProviderSingleton } from '@reown/appkit/auth-provider'
+import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
+import { createSendTransaction } from './utils/createSendTransaction.js'
 
 export interface AdapterOptions {
   connectionSettings?: Commitment | ConnectionConfig
@@ -80,6 +78,8 @@ export class SolanaWeb3JsClient implements ChainAdapter {
 
   private availableProviders: Provider[] = []
 
+  private provider: Provider | undefined
+
   private authSession: AuthProvider.Session | undefined
 
   public defaultCaipNetwork: CaipNetwork | undefined = undefined
@@ -103,7 +103,7 @@ export class SolanaWeb3JsClient implements ChainAdapter {
     })
     AccountController.subscribeKey(
       'caipAddress',
-      async val => {
+      val => {
         const isSolanaAddress = val?.startsWith('solana:')
         const caipNetwork = ChainController.state.activeCaipNetwork
         const isSolanaNetwork = caipNetwork?.chainNamespace === this.chainNamespace
@@ -113,42 +113,6 @@ export class SolanaWeb3JsClient implements ChainAdapter {
         }
       },
       this.chainNamespace
-    )
-    ChainController.subscribeKey(
-      'activeCaipNetwork',
-      async (newCaipNetwork: CaipNetwork | undefined) => {
-        // When we switch from EVM to Solana, the Solana adapter is not connected, we need to fetch the user data from the auth provider
-        // and call the syncAccount (if the connected with AUTH connector)
-        const activeCaipNetwork = newCaipNetwork
-        const solanaChain = activeCaipNetwork?.chainNamespace === CommonConstantsUtil.CHAIN.SOLANA
-
-        if (solanaChain) {
-          // set provider as auth connector if connected
-          const authProvider = this.availableProviders.find(
-            provider =>
-              provider.name.toLocaleLowerCase() ===
-              ConstantsUtil.AUTH_CONNECTOR_ID.toLocaleLowerCase()
-          )
-
-          if (authProvider) {
-            // console.log(">>> Wow it's auth provider - fetching the user")
-            // this.provider = authProvider
-            // const user = await this.authProvider?.getUser({
-            //   chainId: activeCaipNetwork?.id
-            // })
-            // console.log('>>> hmm, user fetched', user)
-            // if (user) {
-            //   console.log('>>> hmm, setting the account', user.address)
-            //   this.syncAccount({ address: user.address, isConnected: true })
-            // }
-          } else {
-            console.log(
-              '>>> Oopsie, no auth provider found, here are all the providers',
-              this.availableProviders
-            )
-          }
-        }
-      }
     )
   }
 
@@ -183,8 +147,8 @@ export class SolanaWeb3JsClient implements ChainAdapter {
         }
       },
 
-      getApprovedCaipNetworksData: async () => {
-        return new Promise(resolve => {
+      getApprovedCaipNetworksData: async () =>
+        new Promise(resolve => {
           const walletId = SafeLocalStorage.getItem(SafeLocalStorageKeys.WALLET_ID)
 
           if (!walletId) {
@@ -206,15 +170,15 @@ export class SolanaWeb3JsClient implements ChainAdapter {
             resolve(networkData)
           } else {
             resolve({
-              supportsAllNetworks: false,
+              supportsAllNetworks: true,
               approvedCaipNetworkIds: []
             })
           }
         })
-      }
     }
 
     this.connectionControllerClient = {
+      // eslint-disable-next-line @typescript-eslint/require-await
       connectExternal: async ({ id }) => {
         const externalProvider = this.availableProviders.find(
           provider => provider.name.toLocaleLowerCase() === id.toLocaleLowerCase()
@@ -230,10 +194,8 @@ export class SolanaWeb3JsClient implements ChainAdapter {
 
         // If it's not the auth provider, we should auto connect the provider
         if (chainNamespace === this.chainNamespace || !isAuthProvider) {
-          return this.setProvider(externalProvider)
+          this.setProvider(externalProvider)
         }
-
-        return
       },
 
       disconnect: async () => {
@@ -253,7 +215,28 @@ export class SolanaWeb3JsClient implements ChainAdapter {
         return new TextDecoder().decode(signature)
       },
 
-      estimateGas: async () => await Promise.resolve(BigInt(0)),
+      estimateGas: async params => {
+        if (params.chainNamespace !== 'solana') {
+          throw new Error('Chain namespace is not supported')
+        }
+
+        const connection = SolStoreUtil.state.connection
+
+        if (!connection || !this.provider) {
+          throw new Error('Connection is not set')
+        }
+
+        const transaction = await createSendTransaction({
+          provider: this.provider,
+          connection,
+          to: '11111111111111111111111111111111',
+          value: 1
+        })
+
+        const fee = await transaction.getEstimatedFee(connection)
+
+        return BigInt(fee || 0)
+      },
       // -- Transaction methods ---------------------------------------------------
       /**
        *
@@ -266,7 +249,42 @@ export class SolanaWeb3JsClient implements ChainAdapter {
 
       writeContract: async () => await Promise.resolve('0x'),
 
-      sendTransaction: async () => await Promise.resolve('0x'),
+      sendTransaction: async params => {
+        if (params.chainNamespace !== 'solana') {
+          throw new Error('Chain namespace is not supported')
+        }
+
+        const connection = SolStoreUtil.state.connection
+        const address = this.appKit?.getAddress(this.chainNamespace)
+
+        if (!connection || !address || !this.provider) {
+          throw new Error('Connection is not set')
+        }
+
+        const transaction = await createSendTransaction({
+          provider: this.provider,
+          connection,
+          to: params.to,
+          value: params.value
+        })
+
+        const result = await this.provider.sendTransaction(transaction, connection)
+
+        await new Promise<void>(resolve => {
+          const interval = setInterval(async () => {
+            const status = await connection.getSignatureStatus(result)
+
+            if (status?.value) {
+              clearInterval(interval)
+              resolve()
+            }
+          }, 1000)
+        })
+
+        await this.syncBalance(address)
+
+        return result
+      },
 
       parseUnits: () => BigInt(0),
 
@@ -424,7 +442,7 @@ export class SolanaWeb3JsClient implements ChainAdapter {
     const isConnectedWithAuth = connectedConnector === 'AUTH'
 
     if (isConnectedWithAuth) {
-      // if user is connected with auth provider, we need to switch the network on the auth provider and await the get user
+      // If user is connected with auth provider, we need to switch the network on the auth provider and await the get user
       await this.w3mFrameProvider?.switchNetwork(caipNetwork.id)
       const user = await this.w3mFrameProvider?.getUser({
         chainId: caipNetwork?.id
@@ -489,6 +507,7 @@ export class SolanaWeb3JsClient implements ChainAdapter {
         await this.switchNetwork(connectionChain)
 
         ProviderUtil.setProvider(this.chainNamespace, provider)
+        this.provider = provider
         ProviderUtil.setProviderId(this.chainNamespace, 'walletConnect')
 
         SafeLocalStorage.setItem(SafeLocalStorageKeys.WALLET_ID, provider.name)
@@ -626,8 +645,8 @@ export class SolanaWeb3JsClient implements ChainAdapter {
           getProvider: () => this.w3mFrameProvider as W3mFrameProvider,
           getActiveChain: () => this.appKit?.getCaipNetwork(this.chainNamespace),
           getActiveNamespace: () => this.appKit?.getActiveChainNamespace(),
-          chains: this.caipNetworks,
-          getSession: () => this.getAuthSession()
+          getSession: () => this.getAuthSession(),
+          chains: this.caipNetworks
         })
         this.addProvider(this.authProvider)
       }

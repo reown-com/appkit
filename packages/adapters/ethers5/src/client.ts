@@ -1,4 +1,4 @@
-import type { AppKitOptions } from '@rerock/base'
+import type { AppKitOptions } from '@reown/appkit'
 import {
   NetworkUtil,
   SafeLocalStorage,
@@ -8,40 +8,40 @@ import {
   type CaipNetwork,
   type CaipNetworkId,
   type ChainNamespace
-} from '@rerock/common'
+} from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
   CoreHelperUtil,
   type CombinedProvider,
   type Connector
-} from '@rerock/core'
+} from '@reown/appkit-core'
 import {
   EthersHelpersUtil,
   type Provider,
   type ProviderType,
   type ProviderId,
   type Address
-} from '@rerock/scaffold-utils/ethers'
-import type { AppKit } from '@rerock/base'
+} from '@reown/appkit-utils/ethers'
+import type { AppKit } from '@reown/appkit'
 import {
   W3mFrameHelpers,
   W3mFrameProvider,
   W3mFrameRpcConstants,
   type W3mFrameTypes
-} from '@rerock/wallet'
-import { ConstantsUtil as CommonConstantsUtil } from '@rerock/common'
-import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@rerock/scaffold-utils'
+} from '@reown/appkit-wallet'
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@reown/appkit-utils'
 import UniversalProvider from '@walletconnect/universal-provider'
-import type { ConnectionControllerClient, NetworkControllerClient } from '@rerock/core'
-import { ConstantsUtil as CoreConstantsUtil } from '@rerock/core'
-import { WcConstantsUtil } from '@rerock/base'
+import type { ConnectionControllerClient, NetworkControllerClient } from '@reown/appkit-core'
+import { ConstantsUtil as CoreConstantsUtil } from '@reown/appkit-core'
+import { WcConstantsUtil } from '@reown/appkit'
 import { Ethers5Methods } from './utils/Ethers5Methods.js'
 import { ethers } from 'ethers5'
-import type { PublicStateControllerState } from '@rerock/core'
-import { ProviderUtil } from '@rerock/base/store'
+import type { PublicStateControllerState } from '@reown/appkit-core'
+import { ProviderUtil } from '@reown/appkit/store'
 import { CoinbaseWalletSDK, type ProviderInterface } from '@coinbase/wallet-sdk'
-import { W3mFrameProviderSingleton } from '@rerock/base/auth-provider'
+import { W3mFrameProviderSingleton } from '@reown/appkit/auth-provider'
 
 // -- Types ---------------------------------------------------------------------
 export interface AdapterOptions {
@@ -175,7 +175,7 @@ export class EVMEthers5Client {
   // -- Public -------------------------------------------------------------------
   // eslint-disable-next-line @typescript-eslint/no-useless-constructor, @typescript-eslint/no-empty-function
   public constructor() {
-    ChainController.subscribeKey('activeCaipNetwork', async val => {
+    ChainController.subscribeKey('activeCaipNetwork', val => {
       const caipAddress = this.appKit?.getCaipAddress(this.chainNamespace)
       const isEVMAddress = caipAddress?.startsWith('eip155:')
       const isEVMNetwork = val?.chainNamespace === this.chainNamespace
@@ -333,7 +333,7 @@ export class EVMEthers5Client {
         this.appKit?.setClientId(null)
 
         if (this.options?.siweConfig?.options?.signOutOnDisconnect) {
-          const { SIWEController } = await import('@rerock/siwe')
+          const { SIWEController } = await import('@reown/appkit-siwe')
           await SIWEController.signOut()
         }
 
@@ -375,7 +375,8 @@ export class EVMEthers5Client {
       },
       signMessage: async (message: string) => {
         const provider = ProviderUtil.getProvider<Provider>(this.chainNamespace)
-        const address = this.appKit?.getAddress()
+        const caipAddress = ChainController.state.activeCaipAddress
+        const address = CoreHelperUtil.getPlainAddress(caipAddress)
 
         if (!address) {
           throw new Error('Address is undefined')
@@ -392,8 +393,12 @@ export class EVMEthers5Client {
       formatUnits: Ethers5Methods.formatUnits,
 
       estimateGas: async data => {
+        if (data.chainNamespace && data.chainNamespace !== 'eip155') {
+          throw new Error(`Invalid chain namespace - Expected eip155, got ${data.chainNamespace}`)
+        }
         const provider = ProviderUtil.getProvider<Provider>('eip155')
-        const address = this.appKit?.getAddress()
+        const caipAddress = ChainController.state.activeCaipAddress
+        const address = CoreHelperUtil.getPlainAddress(caipAddress)
         const caipNetwork = this.appKit?.getCaipNetwork()
 
         if (!address) {
@@ -413,8 +418,12 @@ export class EVMEthers5Client {
       },
 
       sendTransaction: async data => {
+        if (data.chainNamespace && data.chainNamespace !== 'eip155') {
+          throw new Error(`Invalid chain namespace - Expected eip155, got ${data.chainNamespace}`)
+        }
         const provider = ProviderUtil.getProvider<Provider>('eip155')
-        const address = this.appKit?.getAddress()
+        const caipAddress = ChainController.state.activeCaipAddress
+        const address = CoreHelperUtil.getPlainAddress(caipAddress)
         const caipNetwork = this.appKit?.getCaipNetwork()
 
         if (!address) {
@@ -435,7 +444,8 @@ export class EVMEthers5Client {
 
       writeContract: async data => {
         const provider = ProviderUtil.getProvider<Provider>('eip155')
-        const address = this.appKit?.getAddress()
+        const caipAddress = ChainController.state.activeCaipAddress
+        const address = CoreHelperUtil.getPlainAddress(caipAddress)
         const caipNetwork = this.appKit?.getCaipNetwork()
 
         if (!address) {
@@ -562,7 +572,7 @@ export class EVMEthers5Client {
         resolve(networkData)
       } else {
         resolve({
-          supportsAllNetworks: false,
+          supportsAllNetworks: true,
           approvedCaipNetworkIds: []
         })
       }
@@ -1054,20 +1064,19 @@ export class EVMEthers5Client {
               const { chainId } = await this.authProvider.switchNetwork(
                 caipNetwork.chainId as number
               )
-              this.appKit?.setCaipNetwork(caipNetwork)
-              this.appKit?.setLoading(false)
-
               const { address, preferredAccountType } = await this.authProvider.connect({
                 chainId: caipNetwork.chainId as number | undefined
               })
-              const caipAddress = `${this.chainNamespace}:${chainId}:${address}` as CaipAddress
+              const caipAddress = `${this.chainNamespace}:${chainId}:${address}`
 
-              this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)
+              this.appKit?.setCaipNetwork(caipNetwork)
+              this.appKit?.setCaipAddress(caipAddress as CaipAddress, this.chainNamespace)
               this.appKit?.setPreferredAccountType(
                 preferredAccountType as W3mFrameTypes.AccountType,
                 this.chainNamespace
               )
               await this.syncAccount({ address: address as Address })
+              this.appKit?.setLoading(false)
             } catch {
               throw new Error('Switching chain failed')
             } finally {

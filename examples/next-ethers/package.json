@@ -1,6 +1,6 @@
 {
   "name": "@examples/next-ethers",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -9,8 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@rerock/adapter-ethers": "workspace:*",
-    "@rerock/base": "workspace:*",
+    "@reown/appkit-adapter-ethers": "workspace:*",
+    "@reown/appkit": "workspace:*",
     "ethers": "6.13.0",
     "next": "14.2.3",
     "react": "18.2.0",

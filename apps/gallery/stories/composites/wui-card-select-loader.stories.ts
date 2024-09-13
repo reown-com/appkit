@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@rerock/ui/src/composites/wui-card-select-loader'
-import type { WuiCardSelectLoader } from '@rerock/ui/src/composites/wui-card-select-loader'
+import '@reown/appkit-ui/src/composites/wui-card-select-loader'
+import type { WuiCardSelectLoader } from '@reown/appkit-ui/src/composites/wui-card-select-loader'
 import { html } from 'lit'
 import { cardSelectOptions } from '../../utils/PresetUtils'
 

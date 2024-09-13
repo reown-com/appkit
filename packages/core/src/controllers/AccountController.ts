@@ -6,15 +6,14 @@ import type {
   Provider,
   SocialProvider
 } from '../utils/TypeUtil.js'
-import type { CaipAddress, ChainNamespace } from '@rerock/common'
-import type { Balance } from '@rerock/common'
+import type { CaipAddress, ChainNamespace } from '@reown/appkit-common'
+import type { Balance } from '@reown/appkit-common'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { SnackController } from './SnackController.js'
 import { SwapController } from './SwapController.js'
 import { SwapApiUtil } from '../utils/SwapApiUtil.js'
-import type { W3mFrameTypes } from '@rerock/wallet'
+import type { W3mFrameTypes } from '@reown/appkit-wallet'
 import { ChainController } from './ChainController.js'
-import { NetworkController } from './NetworkController.js'
 import { proxy, ref } from 'valtio/vanilla'
 import type UniversalProvider from '@walletconnect/universal-provider'
 
@@ -238,7 +237,8 @@ export const AccountController = {
   async fetchTokenBalance() {
     const chainId = ChainController.state.activeCaipNetwork?.id
     const chain = ChainController.state.activeCaipNetwork?.chainNamespace
-    const address = AccountController.state.address
+    const caipAddress = ChainController.state.activeCaipAddress
+    const address = caipAddress ? CoreHelperUtil.getPlainAddress(caipAddress) : undefined
 
     try {
       if (address && chainId && chain) {

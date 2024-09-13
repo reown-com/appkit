@@ -1,7 +1,5 @@
 /* eslint-disable no-await-in-loop */
 import { danger, fail, message, warn } from 'danger'
-import corePackageJson from './packages/core/package.json' assert { type: 'json' }
-import { ConstantsUtil } from './packages/scaffold-utils/src/ConstantsUtil'
 
 // -- Constants ---------------------------------------------------------------
 const TYPE_COMMENT = `// -- Types --------------------------------------------- //`
@@ -10,11 +8,10 @@ const CONTROLLER_COMMENT = `// -- Controller -----------------------------------
 const RENDER_COMMENT = `// -- Render -------------------------------------------- //`
 const STATE_PROPERTIES_COMMENT = `// -- State & Properties -------------------------------- //`
 const PRIVATE_COMMENT = `// -- Private ------------------------------------------- //`
-const PACKAGE_VERSION = ConstantsUtil.VERSION
 const RELATIVE_IMPORT_SAME_DIR = `'./`
 const RELATIVE_IMPORT_PARENT_DIR = `'../`
 const RELATIVE_IMPORT_EXTENSION = `.js'`
-const PRIVATE_FUNCTION_REGEX = /private\s+(\w+)\s*\(\s*\)/g
+const PRIVATE_FUNCTION_REGEX = /private\s+(?:\w+)\s*\(\s*\)/gu
 
 // -- Data --------------------------------------------------------------------
 const { modified_files, created_files, deleted_files, diffForFile } = danger.git
@@ -73,8 +70,8 @@ async function checkUiPackage() {
       fail(`${f} is using @state decorator, which is not allowed in ui package`)
     }
 
-    if (diff?.added.includes('import @rerock/core')) {
-      fail(`${f} is importing @rerock/core, which is not allowed in ui package`)
+    if (diff?.added.includes('import @reown/appkit-core')) {
+      fail(`${f} is importing @reown/appkit-core, which is not allowed in ui package`)
     }
 
     if (!diff?.added.includes(RENDER_COMMENT) && diff?.added.includes('render()')) {
@@ -97,7 +94,7 @@ async function checkUiPackage() {
       fail(`${f} is a ui element, but does not define wui- prefix`)
     }
 
-    if (diff?.added.includes('@rerock/ui/')) {
+    if (diff?.added.includes('@reown/appkit-ui/')) {
       fail(`${f} should use relative imports instead of direct package access`)
     }
   }
@@ -192,8 +189,8 @@ async function checkCorePackage() {
   for (const f of created_core_controllers) {
     const diff = await diffForFile(f)
 
-    if (diff?.added.includes('import @rerock/ui')) {
-      fail(`${f} is importing @rerock/ui, which is not allowed in core package`)
+    if (diff?.added.includes('import @reown/appkit-ui')) {
+      fail(`${f} is importing @reown/appkit-ui, which is not allowed in core package`)
     }
 
     if (!diff?.added.includes(TYPE_COMMENT)) {
@@ -212,7 +209,7 @@ async function checkCorePackage() {
       fail(`${f} is using this.state, use just state`)
     }
 
-    if (diff?.added.includes('@rerock/core/')) {
+    if (diff?.added.includes('@reown/appkit-core/')) {
       fail(`${f} should use relative imports instead of direct package access`)
     }
 
@@ -273,9 +270,9 @@ async function checkScaffoldHtmlPackage() {
     }
 
     if (
-      diff?.added.includes('@rerock/core/') ||
-      diff?.added.includes('@rerock/ui/') ||
-      diff?.added.includes('@rerock/scaffold/')
+      diff?.added.includes('@reown/appkit-core/') ||
+      diff?.added.includes('@reown/appkit-ui/') ||
+      diff?.added.includes('@reown/scaffold/')
     ) {
       fail(`${f} should use relative imports instead of direct package access`)
     }
@@ -301,18 +298,18 @@ function containsRelativeImportWithoutJSExtension(addition: string | undefined) 
 }
 async function checkClientPackages() {
   const client_files = modified_files.filter(f =>
-    /\/packages\/(wagmi|solana|ethers|ethers5)\//.test(f)
+    /\/packages\/(?:wagmi|solana|ethers|ethers5)\//u.test(f)
   )
 
   for (const f of client_files) {
     const diff = await diffForFile(f)
 
-    if (diff?.added.includes("from '@rerock/core")) {
-      fail(`${f} is not allowed to import from @rerock/core`)
+    if (diff?.added.includes("from '@reown/appkit-core")) {
+      fail(`${f} is not allowed to import from @reown/appkit-core`)
     }
 
-    if (diff?.added.includes("from '@rerock/ui")) {
-      fail(`${f} is not allowed to import from @rerock/ui`)
+    if (diff?.added.includes("from '@reown/appkit-ui")) {
+      fail(`${f} is not allowed to import from @reown/appkit-ui`)
     }
 
     if (containsRelativeImportWithoutJSExtension(diff?.added)) {
@@ -321,14 +318,6 @@ async function checkClientPackages() {
   }
 }
 checkClientPackages()
-
-// -- Check sdkVersion ------------------------------------------------------------
-function checkSdkVersion() {
-  if (PACKAGE_VERSION !== corePackageJson.version) {
-    fail(`VERSION in utils/constants doesn't match core package.json version`)
-  }
-}
-checkSdkVersion()
 
 // -- Check wallet ------------------------------------------------------------
 

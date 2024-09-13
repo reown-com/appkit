@@ -1,5 +1,5 @@
-import { ApiController, AssetUtil, CoreHelperUtil, OptionsController } from '@rerock/core'
-import { customElement } from '@rerock/ui'
+import { ApiController, AssetUtil, CoreHelperUtil, OptionsController } from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { ifDefined } from 'lit/directives/if-defined.js'
 

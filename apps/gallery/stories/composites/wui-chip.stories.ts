@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@rerock/ui/src/composites/wui-chip'
-import type { WuiChip } from '@rerock/ui/src/composites/wui-chip'
+import '@reown/appkit-ui/src/composites/wui-chip'
+import type { WuiChip } from '@reown/appkit-ui/src/composites/wui-chip'
 import { html } from 'lit'
 import {
   chipVariants,

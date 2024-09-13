@@ -1,4 +1,4 @@
-import { type CaipNetwork } from '@rerock/common'
+import { type CaipNetwork } from '@reown/appkit-common'
 import {
   AccountController,
   AssetUtil,
@@ -9,8 +9,8 @@ import {
   NetworkController,
   RouterController,
   StorageUtil
-} from '@rerock/core'
-import { customElement } from '@rerock/ui'
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -138,14 +138,6 @@ export class W3mNetworksView extends LitElement {
     const type = StorageUtil.getConnectedConnector()
     const authConnector = ConnectorController.getAuthConnector()
     const isConnectedWithAuth = type === 'AUTH' && authConnector
-
-    console.log(
-      '>>> getNetworkDisabled',
-      network,
-      isNamespaceConnected,
-      supportsAllNetworks,
-      isConnectedWithAuth
-    )
 
     if (!isNamespaceConnected || supportsAllNetworks || isConnectedWithAuth) {
       return false

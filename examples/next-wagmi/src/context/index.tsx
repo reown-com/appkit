@@ -2,7 +2,7 @@
 
 import { wagmiAdapter, projectId, caipNetworks } from '@/config'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { createWeb3Modal } from '@rerock/base/react'
+import { createWeb3Modal } from '@reown/appkit/react'
 import React, { type ReactNode } from 'react'
 import { cookieToInitialState, WagmiProvider, type Config } from 'wagmi'
 

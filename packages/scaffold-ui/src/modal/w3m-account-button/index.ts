@@ -6,10 +6,10 @@ import {
   CoreHelperUtil,
   ModalController,
   NetworkController
-} from '@rerock/core'
+} from '@reown/appkit-core'
 
-import type { WuiAccountButton } from '@rerock/ui'
-import { customElement } from '@rerock/ui'
+import type { WuiAccountButton } from '@reown/appkit-ui'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -28,7 +28,7 @@ export class W3mAccountButton extends LitElement {
 
   @property() public charsEnd?: WuiAccountButton['charsEnd'] = 6
 
-  @state() private caipAddress = AccountController.state.caipAddress
+  @state() private caipAddress = ChainController.state.activeCaipAddress
 
   @state() private balanceVal = AccountController.state.balance
 
@@ -54,7 +54,7 @@ export class W3mAccountButton extends LitElement {
             ? AssetUtil.getNetworkImage(this.network)
             : undefined
         }),
-        AccountController.subscribeKey('caipAddress', val => (this.caipAddress = val)),
+        ChainController.subscribeKey('activeCaipAddress', val => (this.caipAddress = val)),
         AccountController.subscribeKey('balance', val => (this.balanceVal = val)),
         AccountController.subscribeKey('balanceSymbol', val => (this.balanceSymbol = val)),
         AccountController.subscribeKey('profileName', val => (this.profileName = val)),

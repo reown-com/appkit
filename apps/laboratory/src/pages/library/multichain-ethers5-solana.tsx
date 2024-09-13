@@ -1,6 +1,6 @@
-import { createWeb3Modal } from '@rerock/base/react'
-import { EVMEthersClient } from '@rerock/adapter-ethers'
-import { SolanaWeb3JsClient } from '@rerock/adapter-solana'
+import { createWeb3Modal } from '@reown/appkit/react'
+import { EVMEthersClient } from '@reown/appkit-adapter-ethers'
+import { SolanaWeb3JsClient } from '@reown/appkit-adapter-solana'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import {
@@ -11,11 +11,10 @@ import {
   optimism,
   solanaTestnet,
   solanaDevnet
-} from '@rerock/base/chains'
+} from '@reown/appkit/chains'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { MultiChainTestsEthersSolana } from '../../components/MultiChainTestsEthersSolana'
-import { siweConfig } from '../../utils/SiweUtils'
 
 const etherAdapter = new EVMEthersClient()
 

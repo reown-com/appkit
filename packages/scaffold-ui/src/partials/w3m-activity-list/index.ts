@@ -1,20 +1,19 @@
-import { DateUtil } from '@rerock/common'
-import type { Transaction, TransactionImage } from '@rerock/common'
+import { DateUtil } from '@reown/appkit-common'
+import type { Transaction, TransactionImage } from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
   CoreHelperUtil,
   EventsController,
-  NetworkController,
   OptionsController,
   RouterController,
   TransactionsController
-} from '@rerock/core'
-import { TransactionUtil, customElement } from '@rerock/ui'
+} from '@reown/appkit-core'
+import { TransactionUtil, customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
-import type { TransactionType } from '@rerock/ui'
-import { W3mFrameRpcConstants } from '@rerock/wallet'
+import type { TransactionType } from '@reown/appkit-ui'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 
 import styles from './styles.js'
 
@@ -34,7 +33,7 @@ export class W3mActivityList extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() public page: 'account' | 'activity' = 'activity'
 
-  @state() private caipAddress = AccountController.state.caipAddress
+  @state() private caipAddress = ChainController.state.activeCaipAddress
 
   @state() private transactionsByYear = TransactionsController.state.transactionsByYear
 
@@ -50,7 +49,7 @@ export class W3mActivityList extends LitElement {
     TransactionsController.clearCursor()
     this.unsubscribe.push(
       ...[
-        AccountController.subscribeKey('caipAddress', val => {
+        ChainController.subscribeKey('activeCaipAddress', val => {
           if (val) {
             if (this.caipAddress !== val) {
               TransactionsController.resetTransactions()

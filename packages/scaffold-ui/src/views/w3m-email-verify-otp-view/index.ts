@@ -1,4 +1,4 @@
-import { customElement } from '@rerock/ui'
+import { customElement } from '@reown/appkit-ui'
 import { W3mEmailOtpWidget } from '../../utils/w3m-email-otp-widget/index.js'
 import type { OnOtpSubmitFn, OnOtpResendFn } from '../../utils/w3m-email-otp-widget/index.js'
 import {
@@ -8,10 +8,10 @@ import {
   NetworkController,
   RouterController,
   AccountController,
-  ChainController
-} from '@rerock/core'
+  ChainController,
+  OptionsController
+} from '@reown/appkit-core'
 import { state } from 'lit/decorators.js'
-import type { ChainNamespace } from '@rerock/common'
 
 @customElement('w3m-email-verify-otp-view')
 export class W3mEmailVerifyOtpView extends W3mEmailOtpWidget {
@@ -39,19 +39,14 @@ export class W3mEmailVerifyOtpView extends W3mEmailOtpWidget {
         await this.authConnector.provider.connectOtp({ otp })
         EventsController.sendEvent({ type: 'track', event: 'EMAIL_VERIFICATION_CODE_PASS' })
 
-        // Here, connect only active chain, 
-        if(ChainController.state.activeChain){
-          await ConnectionController.connectExternal(this.authConnector, ChainController.state.activeChain)
+        if (ChainController.state.activeChain) {
+          await ConnectionController.connectExternal(
+            this.authConnector,
+            ChainController.state.activeChain
+          )
         } else {
-          throw new Error("Active chain is not set on ChainControll")
+          throw new Error('Active chain is not set on ChainControll')
         }
-        // then when we switch to other chains, we need to first switch on secure site
-        // and update the state a bit,
-        // for (const [chain] of ChainController.state.chains) {
-        //   if (this.authConnector && chain !== 'polkadot') {
-        //     await ConnectionController.connectExternal(this.authConnector, chain as ChainNamespace)
-        //   }
-        // }
 
         EventsController.sendEvent({
           type: 'track',
@@ -62,7 +57,7 @@ export class W3mEmailVerifyOtpView extends W3mEmailOtpWidget {
           RouterController.push('SelectAddresses')
         } else if (smartAccountEnabled && !this.smartAccountDeployed) {
           RouterController.push('UpgradeToSmartAccount')
-        } else {
+        } else if (!OptionsController.state.isSiweEnabled) {
           ModalController.close()
         }
       }

@@ -28,7 +28,7 @@
         "@walletconnect/ethereum-provider",
         "@walletconnect/universal-provider",
         "@walletconnect/utils",
-        "@rerock/{/,}**"
+        "@reown/{/,}**"
       ],
       "groupName": "walletconnect",
       "prPriority": 10

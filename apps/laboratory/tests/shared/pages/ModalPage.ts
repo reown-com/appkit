@@ -44,7 +44,7 @@ export class ModalPage {
 
   constructor(
     public readonly page: Page,
-    public readonly library: string | 'multichain-ethers-solana',
+    public readonly library: string,
     public readonly flavor: ModalFlavor
   ) {
     this.connectButton = this.page.getByTestId('connect-button')
@@ -314,6 +314,8 @@ export class ModalPage {
     await this.page.getByTestId('account-button').click()
     await this.page.getByTestId('w3m-account-select-network').click()
     await this.page.getByTestId(`w3m-network-switch-${network}`).click()
+    // The state is chaing too fast and test runner doesn't wait the loading page. It's fastly checking the network selection button and detect that it's switched already.
+    await this.page.waitForTimeout(300)
   }
 
   async clickWalletDeeplink() {
