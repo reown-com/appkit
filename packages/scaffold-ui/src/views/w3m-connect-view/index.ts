@@ -48,6 +48,11 @@ export class W3mConnectView extends LitElement {
   // -- Private ------------------------------------------- //
   private walletListTemplate() {
     const { socials, emailShowWallets } = this.features
+    const enableWallets = OptionsController.state.enableWallets
+
+    if (!enableWallets) {
+      return null
+    }
 
     if (this.authConnector && socials) {
       if (this.authConnector && emailShowWallets) {
