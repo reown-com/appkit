@@ -1,7 +1,7 @@
 import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
 
 export function getBlockchainApiRpcUrl(chainId: number | string, namespace: ChainNamespace) {
-  return `https://rpc.walletconnect.org/v1/?chainId=${namespace}:${chainId}&projectId=${process.env['NEXT_PUBLIC_PROJECT_ID']}`
+  return `https://rpc.walletconnect.org/v1/?chainId=${namespace}:${chainId}`
 }
 
 export const mainnet: CaipNetwork = {
