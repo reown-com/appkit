@@ -46,7 +46,12 @@ import type {
 import { formatUnits, parseUnits } from 'viem'
 import type { Hex } from 'viem'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@reown/appkit-utils'
-import { isReownName, SafeLocalStorage, SafeLocalStorageKeys } from '@reown/appkit-common'
+import {
+  CaipNetworksUtil,
+  isReownName,
+  SafeLocalStorage,
+  SafeLocalStorageKeys
+} from '@reown/appkit-common'
 import {
   convertToAppKitChains,
   getEmailCaipNetworks,
@@ -137,12 +142,16 @@ export class EVMWagmiClient implements ChainAdapter {
       projectId: string
     }
   ) {
+    this.caipNetworks = configParams.caipNetworks.map(caipNetwork => ({
+      ...caipNetwork,
+      rpcUrl: CaipNetworksUtil.extendRpcUrlWithProjectId(caipNetwork.rpcUrl, configParams.projectId)
+    }))
+
     this.wagmiChains = convertToAppKitChains(
-      configParams.caipNetworks.filter(
+      this.caipNetworks.filter(
         caipNetwork => caipNetwork.chainNamespace === CommonConstantsUtil.CHAIN.EVM
       )
     )
-    this.caipNetworks = configParams.caipNetworks
 
     const transportsArr = this.wagmiChains.map(chain => [
       chain.id,
@@ -213,8 +222,7 @@ export class EVMWagmiClient implements ChainAdapter {
 
     this.appKit = appKit
     this.options = options
-    this.caipNetworks = options.caipNetworks
-    this.defaultCaipNetwork = options.defaultCaipNetwork || options.caipNetworks[0]
+    this.defaultCaipNetwork = options.defaultCaipNetwork || this.caipNetworks[0]
     this.tokens = HelpersUtil.getCaipTokens(options.tokens)
     this.setCustomConnectors(options, appKit)
 
@@ -294,7 +302,7 @@ export class EVMWagmiClient implements ChainAdapter {
               '@reown/appkit-siwe'
             )
 
-            const chains = this.options?.caipNetworks.map(network => network.id) as string[]
+            const chains = this.caipNetworks.map(network => network.id) as string[]
 
             const result = await provider.authenticate({
               nonce: await siweConfig.getNonce(),
@@ -668,7 +676,7 @@ export class EVMWagmiClient implements ChainAdapter {
   }
 
   private async syncNetwork(address?: Hex, chainId?: number, isConnected?: boolean) {
-    const chain = this.options?.caipNetworks.find((c: CaipNetwork) => c.chainId === chainId)
+    const chain = this.caipNetworks.find((c: CaipNetwork) => c.chainId === chainId)
 
     if (chain && chainId) {
       this.appKit?.setCaipNetwork({
@@ -755,7 +763,7 @@ export class EVMWagmiClient implements ChainAdapter {
   }
 
   private async syncBalance(address: Hex, chainId: number) {
-    const chain = this.options?.caipNetworks.find((c: CaipNetwork) => c.chainId === chainId)
+    const chain = this.caipNetworks.find((c: CaipNetwork) => c.chainId === chainId)
 
     if (chain && this.wagmiConfig) {
       const balance = await getBalance(this.wagmiConfig, {

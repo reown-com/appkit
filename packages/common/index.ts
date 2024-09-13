@@ -10,6 +10,7 @@ export { ParseUtil } from './src/utils/ParseUtil.js'
 export { SafeLocalStorage, SafeLocalStorageKeys } from './src/utils/SafeLocalStorage.js'
 export { getW3mThemeVariables } from './src/utils/ThemeUtil.js'
 export { isReownName } from './src/utils/NamesUtil.js'
+export { CaipNetworksUtil } from './src/utils/CaipNetworksUtil.js'
 
 // -- Types -------------------------------------------------------------------
 export type * from './src/utils/ThemeUtil.js'
