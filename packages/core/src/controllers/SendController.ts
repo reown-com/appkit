@@ -8,9 +8,8 @@ import { ConnectionController } from './ConnectionController.js'
 import { SnackController } from './SnackController.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { EventsController } from './EventsController.js'
-import { NetworkController } from './NetworkController.js'
-import { ChainController } from './ChainController.js'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+import { ChainController } from './ChainController.js'
 
 // -- Types --------------------------------------------- //
 
@@ -119,7 +118,7 @@ export const SendController = {
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           token: this.state.token.address,
           amount: this.state.sendTokenAmount,
-          network: NetworkController.state.caipNetwork?.id || ''
+          network: ChainController.state.activeCaipNetwork?.id || ''
         }
       })
       this.sendERC20Token({
@@ -143,7 +142,7 @@ export const SendController = {
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           token: this.state.token?.symbol,
           amount: this.state.sendTokenAmount,
-          network: NetworkController.state.caipNetwork?.id || ''
+          network: ChainController.state.activeCaipNetwork?.id || ''
         }
       })
       this.sendNativeToken({
@@ -187,7 +186,7 @@ export const SendController = {
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           token: this.state.token?.symbol || '',
           amount: params.sendTokenAmount,
-          network: NetworkController.state.caipNetwork?.id || ''
+          network: ChainController.state.activeCaipNetwork?.id || ''
         }
       })
       this.resetSend()
@@ -201,7 +200,7 @@ export const SendController = {
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           token: this.state.token?.symbol || '',
           amount: params.sendTokenAmount,
-          network: NetworkController.state.caipNetwork?.id || ''
+          network: ChainController.state.activeCaipNetwork?.id || ''
         }
       })
       SnackController.showError('Something went wrong')

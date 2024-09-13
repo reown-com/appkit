@@ -294,7 +294,9 @@ export class EVMWagmiClient implements ChainAdapter {
               '@reown/appkit-siwe'
             )
 
-            const chains = this.options?.caipNetworks.map(network => network.id) as string[]
+            const chains = this.options?.caipNetworks
+              ?.filter(network => network.chainNamespace === 'eip155')
+              .map(chain => chain.id) as string[]
 
             const result = await provider.authenticate({
               nonce: await siweConfig.getNonce(),
@@ -338,16 +340,11 @@ export class EVMWagmiClient implements ChainAdapter {
                 throw error
               }
             }
-            /*
-             * Unassign the connector from the wagmiConfig and allow connect() to reassign it in the next step
-             * this avoids case where wagmi throws because the connector is already connected
-             * what we need connect() to do is to only setup internal event listeners
-             */
-            this.wagmiConfig.state.current = ''
           }
         }
 
-        await connect(this.wagmiConfig, { connector })
+        const chainId = Number(NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id))
+        await connect(this.wagmiConfig, { connector, chainId })
       },
       connectExternal: async ({ id, provider, info }) => {
         if (!this.wagmiConfig) {
@@ -386,15 +383,24 @@ export class EVMWagmiClient implements ChainAdapter {
       },
       disconnect: async () => {
         await disconnect(this.wagmiConfig)
-        SafeLocalStorage.removeItem(SafeLocalStorageKeys.WALLET_ID)
-        SafeLocalStorage.removeItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK)
-        this.appKit?.setClientId(null)
-        this.appKit?.resetAccount('eip155')
-        this.appKit?.resetAccount('solana')
         if (this.options?.siweConfig?.options?.signOutOnDisconnect) {
           const { SIWEController } = await import('@reown/appkit-siwe')
           await SIWEController.signOut()
         }
+        SafeLocalStorage.removeItem(SafeLocalStorageKeys.WALLET_ID)
+        SafeLocalStorage.removeItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK)
+        SafeLocalStorage.removeItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR)
+        SafeLocalStorage.removeItem(SafeLocalStorageKeys.WALLET_NAME)
+        this.appKit?.setClientId(null)
+        this.syncAccount({
+          address: undefined,
+          chainId: undefined,
+          connector: undefined,
+          addresses: undefined,
+          status: 'disconnected'
+        })
+        // Should we do this?
+        this.appKit?.resetAccount('solana')
       },
       signMessage: async message => {
         const caipAddress = this.appKit?.getCaipAddress() || ''
@@ -588,6 +594,19 @@ export class EVMWagmiClient implements ChainAdapter {
       | 'status'
     >
   >) {
+    const isConnected = ChainController.state.activeCaipAddress
+
+    if (status === 'disconnected' && isConnected) {
+      this.appKit?.resetAccount(this.chainNamespace)
+      this.appKit?.resetWcConnection()
+      this.appKit?.resetNetwork()
+      this.appKit?.setAllAccounts([], this.chainNamespace)
+      SafeLocalStorage.removeItem(SafeLocalStorageKeys.WALLET_ID)
+      SafeLocalStorage.removeItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK)
+
+      return
+    }
+
     if (this.wagmiConfig) {
       if (connector) {
         if (connector && connector.name === 'WalletConnect' && connector.getProvider && address) {
@@ -607,7 +626,6 @@ export class EVMWagmiClient implements ChainAdapter {
             ProviderUtil.setProvider(chainNamespace, provider)
             ProviderUtil.setProviderId(chainNamespace, 'walletConnect')
 
-            this.appKit?.setIsConnected(true, chainNamespace)
             this.appKit?.setPreferredAccountType(preferredAccountType, chainNamespace)
             this.appKit?.setCaipAddress(caipAddress, chainNamespace)
           })
@@ -624,7 +642,6 @@ export class EVMWagmiClient implements ChainAdapter {
           const caipAddress = `eip155:${chainId}:${address}` as CaipAddress
           this.appKit?.resetAccount(this.chainNamespace)
           this.syncNetwork(address, chainId, true)
-          this.appKit?.setIsConnected(true, this.chainNamespace)
           this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)
           await Promise.all([
             this.syncProfile(address, chainId),
@@ -644,13 +661,6 @@ export class EVMWagmiClient implements ChainAdapter {
               this.chainNamespace
             )
           }
-        } else if (status === 'disconnected') {
-          this.appKit?.resetAccount(this.chainNamespace)
-          this.appKit?.resetWcConnection()
-          this.appKit?.resetNetwork()
-          this.appKit?.setAllAccounts([], this.chainNamespace)
-          SafeLocalStorage.removeItem(SafeLocalStorageKeys.WALLET_ID)
-          SafeLocalStorage.removeItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK)
         } else if (status === 'reconnecting') {
           this.appKit?.setLoading(true)
           const connectors = getConnectors(this.wagmiConfig)
@@ -874,10 +884,6 @@ export class EVMWagmiClient implements ChainAdapter {
 
       this.appKit?.setLoading(isLoginEmailUsed)
 
-      if (isLoginEmailUsed) {
-        this.appKit?.setIsConnected(false, this.chainNamespace)
-      }
-
       provider.onRpcRequest((request: W3mFrameTypes.RPCRequest) => {
         if (W3mFrameHelpers.checkIfRequestExists(request)) {
           if (!W3mFrameHelpers.checkIfRequestIsSafe(request)) {
@@ -923,14 +929,20 @@ export class EVMWagmiClient implements ChainAdapter {
 
       provider.onNotConnected(() => {
         const isConnected = this.appKit?.getIsConnectedState()
-        if (!isConnected) {
-          this.appKit?.setIsConnected(false, this.chainNamespace)
+        const connectedConnector = SafeLocalStorage.getItem(
+          SafeLocalStorageKeys.CONNECTED_CONNECTOR
+        )
+        const isConnectedWithAuth = connectedConnector === 'AUTH'
+
+        if (!isConnected && isConnectedWithAuth) {
+          this.appKit?.setCaipAddress(undefined, this.chainNamespace)
           this.appKit?.setLoading(false)
         }
       })
 
       provider.onIsConnected(req => {
-        this.appKit?.setIsConnected(true, this.chainNamespace)
+        const caipAddress = `eip155:${req.chainId}:${req.address}` as CaipAddress
+        this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)
         this.appKit?.setSmartAccountDeployed(Boolean(req.smartAccountDeployed), this.chainNamespace)
         this.appKit?.setPreferredAccountType(
           req.preferredAccountType as W3mFrameTypes.AccountType,

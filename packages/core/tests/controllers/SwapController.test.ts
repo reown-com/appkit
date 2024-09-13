@@ -51,7 +51,8 @@ beforeAll(async () => {
   ChainController.initialize([
     { chainNamespace: ConstantsUtil.CHAIN.EVM, networkControllerClient: client }
   ])
-  await NetworkController.switchActiveNetwork(caipNetwork)
+
+  NetworkController.setCaipNetwork(caipNetwork)
   AccountController.setCaipAddress(caipAddress, chain)
 
   vi.spyOn(BlockchainApiController, 'fetchSwapTokens').mockResolvedValue(tokensResponse)

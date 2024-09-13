@@ -18,6 +18,7 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+import { ChainController } from '@reown/appkit-core'
 
 @customElement('w3m-account-settings-view')
 export class W3mAccountSettingsView extends LitElement {
@@ -33,7 +34,7 @@ export class W3mAccountSettingsView extends LitElement {
 
   @state() private profileName = AccountController.state.profileName
 
-  @state() private network = NetworkController.state.caipNetwork
+  @state() private network = ChainController.state.activeCaipNetwork
 
   @state() private preferredAccountType = AccountController.state.preferredAccountType
 
@@ -63,7 +64,7 @@ export class W3mAccountSettingsView extends LitElement {
           'preferredAccountType',
           val => (this.preferredAccountType = val)
         ),
-        NetworkController.subscribeKey('caipNetwork', val => {
+        ChainController.subscribeKey('activeCaipNetwork', val => {
           if (val?.id) {
             this.network = val
           }

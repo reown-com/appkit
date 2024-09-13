@@ -46,7 +46,7 @@ export async function getWalletConnectCaipNetworks(connector?: Connector) {
   }
 
   return {
-    supportsAllNetworks: false,
+    supportsAllNetworks: true,
     approvedCaipNetworkIds: nsChains
   }
 }

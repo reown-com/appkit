@@ -4,6 +4,8 @@ export type SafeLocalStorageItems = {
   '@w3m/solana_wallet': string
   '@w3m/solana_caip_chain': string
   '@w3m/active_caip_network': string
+  '@w3m/active_caip_network_id': string
+  '@w3m/connected_connector': string
 }
 
 export const SafeLocalStorageKeys = {
@@ -11,7 +13,9 @@ export const SafeLocalStorageKeys = {
   WALLET_NAME: '@w3m/wallet_name',
   SOLANA_WALLET: '@w3m/solana_wallet',
   SOLANA_CAIP_CHAIN: '@w3m/solana_caip_chain',
-  ACTIVE_CAIP_NETWORK: '@w3m/active_caip_network'
+  ACTIVE_CAIP_NETWORK: '@w3m/active_caip_network',
+  ACTIVE_CAIP_NETWORK_ID: '@w3m/active_caip_network_id',
+  CONNECTED_CONNECTOR: '@w3m/connected_connector'
 } as const
 
 export const SafeLocalStorage = {
@@ -31,7 +35,7 @@ export const SafeLocalStorage = {
         try {
           return JSON.parse(value)
         } catch {
-          return null
+          return value
         }
       }
     }

@@ -7,7 +7,9 @@ import {
   ModalController,
   NetworkController,
   RouterController,
-  AccountController
+  AccountController,
+  ChainController,
+  OptionsController
 } from '@reown/appkit-core'
 import { state } from 'lit/decorators.js'
 
@@ -36,7 +38,16 @@ export class W3mEmailVerifyOtpView extends W3mEmailOtpWidget {
         const smartAccountEnabled = NetworkController.checkIfSmartAccountEnabled()
         await this.authConnector.provider.connectOtp({ otp })
         EventsController.sendEvent({ type: 'track', event: 'EMAIL_VERIFICATION_CODE_PASS' })
-        await ConnectionController.connectExternal(this.authConnector, this.authConnector.chain)
+
+        if (ChainController.state.activeChain) {
+          await ConnectionController.connectExternal(
+            this.authConnector,
+            ChainController.state.activeChain
+          )
+        } else {
+          throw new Error('Active chain is not set on ChainControll')
+        }
+
         EventsController.sendEvent({
           type: 'track',
           event: 'CONNECT_SUCCESS',
@@ -46,7 +57,7 @@ export class W3mEmailVerifyOtpView extends W3mEmailOtpWidget {
           RouterController.push('SelectAddresses')
         } else if (smartAccountEnabled && !this.smartAccountDeployed) {
           RouterController.push('UpgradeToSmartAccount')
-        } else {
+        } else if (!OptionsController.state.isSiweEnabled) {
           ModalController.close()
         }
       }

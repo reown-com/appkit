@@ -2,17 +2,6 @@ import type { NamespaceConfig, Namespace } from '@walletconnect/universal-provid
 import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
 
 export const WcHelpersUtil = {
-  hexStringToNumber(value: string) {
-    const string = value.startsWith('0x') ? value.slice(2) : value
-    const number = parseInt(string, 16)
-
-    return number
-  },
-
-  numberToHexString(value: number) {
-    return `0x${value.toString(16)}`
-  },
-
   getMethodsByChainNamespace(chainNamespace: ChainNamespace): string[] {
     switch (chainNamespace) {
       case 'solana':
@@ -71,31 +60,5 @@ export const WcHelpersUtil = {
 
       return acc
     }, {})
-  },
-
-  extractDetails(fullIdentifier: string | undefined): {
-    chainType: string | undefined
-    chainId: string | undefined
-    address?: string
-  } {
-    if (!fullIdentifier) {
-      return {
-        chainType: undefined,
-        chainId: undefined
-      }
-    }
-
-    const parts = fullIdentifier.split(':')
-    if (parts.length < 2 || parts.length > 3) {
-      throw new Error(`Invalid format: ${fullIdentifier}`)
-    }
-
-    const [chainType, chainId, address] = parts
-
-    return {
-      chainType,
-      chainId,
-      address
-    }
   }
 }

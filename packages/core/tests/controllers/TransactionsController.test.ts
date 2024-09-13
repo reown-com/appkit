@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import {
   BlockchainApiController,
-  NetworkController,
+  ChainController,
   OptionsController,
   TransactionsController
 } from '../../exports/index.js'
@@ -287,8 +287,8 @@ describe('TransactionsController', () => {
         next: 'cursor'
       })
 
-    vi.spyOn(NetworkController, 'state', 'get').mockReturnValue({
-      caipNetwork: {
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      activeCaipNetwork: {
         id: 'eip155:1'
       }
     } as any)
