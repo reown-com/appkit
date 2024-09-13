@@ -4,7 +4,7 @@ const MAX_EMAIL_CHECK = 96
 const EMAIL_APPROVE_BUTTON_TEXT = 'Approve this login'
 const APPROVE_URL_REGEX = /https:\/\/register.*/u
 const OTP_CODE_REGEX = /\d{3}\s?\d{3}/u
-const EMAIL_DOMAIN = 'appkit.msdc.co'
+const EMAIL_DOMAIN = 'web3modal.msdc.co'
 
 export class Email {
   // eslint-disable-next-line  @typescript-eslint/no-explicit-any
