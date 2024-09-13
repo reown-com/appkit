@@ -1,5 +1,5 @@
 > [!NOTE]
-> Looking for v2? [switch the branch](https://github.com/reown/appkit/tree/V2).
+> Looking for v2? [switch the branch](https://github.com/reown-com/appkit/tree/V2).
 
 #### 📚 [Documentation](https://docs.walletconnect.com/appkit/about)
 
