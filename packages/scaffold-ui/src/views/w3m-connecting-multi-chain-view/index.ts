@@ -12,6 +12,7 @@ import { html, LitElement } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
+import { ConstantsUtil } from '@reown/appkit-common'
 
 @customElement('w3m-connecting-multi-chain-view')
 export class W3mConnectingMultiChainView extends LitElement {
@@ -77,13 +78,13 @@ export class W3mConnectingMultiChainView extends LitElement {
 
   // Private Methods ------------------------------------- //
   private networksTemplate() {
-    return this.activeConnector?.providers?.map(provider =>
-      provider.name
+    return this.activeConnector?.connectors?.map(connector =>
+      connector.name
         ? html`
             <wui-list-wallet
-              imageSrc=${ifDefined(AssetUtil.getChainImage(provider.chain))}
-              name=${provider.name}
-              @click=${() => this.onConnector(provider)}
+              imageSrc=${ifDefined(AssetUtil.getChainImage(connector.chain))}
+              name=${ConstantsUtil.CHAIN_NAME_MAP[connector.chain]}
+              @click=${() => this.onConnector(connector)}
             ></wui-list-wallet>
           `
         : null
@@ -92,7 +93,7 @@ export class W3mConnectingMultiChainView extends LitElement {
 
   private onConnector(provider: Connector) {
     ChainController.setActiveChain(provider.chain)
-    const connector = this.activeConnector?.providers?.find(p => p.chain === provider.chain)
+    const connector = this.activeConnector?.connectors?.find(p => p.chain === provider.chain)
 
     if (!connector) {
       SnackController.showError('Failed to find connector')
