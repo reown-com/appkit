@@ -99,13 +99,6 @@ export const NetworkController = {
     }
 
     ChainController.setActiveCaipNetwork(caipNetwork)
-    ChainController.setChainNetworkData(caipNetwork.chainNamespace, { caipNetwork })
-    PublicStateController.set({
-      activeChain: caipNetwork.chainNamespace,
-      selectedNetworkId: caipNetwork?.id
-    })
-
-    SafeLocalStorage.setItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK, JSON.stringify(caipNetwork))
 
     const isSupported = this.checkIfSupportedNetwork()
 
@@ -272,8 +265,8 @@ export const NetworkController = {
       return false
     }
 
-    const activeCaipNetwork = ChainController.state.chains.get(chain)?.networkState?.caipNetwork
-    const requestedCaipNetworks = this.getRequestedCaipNetworks()
+    const activeCaipNetwork = ChainController.state.activeCaipNetwork
+    const requestedCaipNetworks = this.getRequestedCaipNetworks(chain)
 
     if (!requestedCaipNetworks.length) {
       return true
@@ -337,8 +330,10 @@ export const NetworkController = {
 
   getActiveNetworkTokenAddress() {
     const address =
-      ConstantsUtil.NATIVE_TOKEN_ADDRESS[this.state.caipNetwork?.chainNamespace || 'eip155']
+      ConstantsUtil.NATIVE_TOKEN_ADDRESS[
+        ChainController.state.activeCaipNetwork?.chainNamespace || 'eip155'
+      ]
 
-    return `${this.state.caipNetwork?.id || 'eip155:1'}:${address}`
+    return `${ChainController.state.activeCaipNetwork?.id || 'eip155:1'}:${address}`
   }
 }

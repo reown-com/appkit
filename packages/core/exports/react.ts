@@ -1,22 +1,24 @@
 import { useSnapshot } from 'valtio'
-import { NetworkController } from '../src/controllers/NetworkController.js'
 import { AccountController } from '../src/controllers/AccountController.js'
+import { CoreHelperUtil } from '../src/utils/CoreHelperUtil.js'
+import { ChainController } from '../src/controllers/ChainController.js'
 
 // -- Hooks ------------------------------------------------------------
 export function useWeb3ModalNetwork() {
-  const { caipNetwork } = useSnapshot(NetworkController.state)
+  const { activeCaipNetwork } = useSnapshot(ChainController.state)
 
   return {
-    caipNetwork,
-    chainId: caipNetwork?.chainId
+    caipNetwork: activeCaipNetwork,
+    chainId: activeCaipNetwork?.chainId
   }
 }
 export function useWeb3ModalAccount() {
-  const { address, isConnected, status } = useSnapshot(AccountController.state)
+  const { status } = useSnapshot(AccountController.state)
+  const { activeCaipAddress } = useSnapshot(ChainController.state)
 
   return {
-    address,
-    isConnected,
+    address: CoreHelperUtil.getPlainAddress(activeCaipAddress),
+    isConnected: Boolean(activeCaipAddress),
     status
   }
 }

@@ -75,7 +75,7 @@ export type Connector = {
   }
   provider?: unknown
   chain: ChainNamespace
-  providers?: Connector[]
+  connectors?: Connector[]
 }
 
 export interface AuthConnector extends Connector {

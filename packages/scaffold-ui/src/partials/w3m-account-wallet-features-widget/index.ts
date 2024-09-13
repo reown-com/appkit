@@ -7,7 +7,8 @@ import {
   CoreHelperUtil,
   ConstantsUtil as CoreConstantsUtil,
   EventsController,
-  OptionsController
+  OptionsController,
+  ChainController
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
@@ -39,7 +40,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
   @state() private smartAccountDeployed = AccountController.state.smartAccountDeployed
 
-  @state() private network = NetworkController.state.caipNetwork
+  @state() private network = ChainController.state.activeCaipNetwork
 
   @state() private currentTab = AccountController.state.currentTab
 
@@ -65,7 +66,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
           }
         })
       ],
-      NetworkController.subscribeKey('caipNetwork', val => {
+      ChainController.subscribeKey('activeCaipNetwork', val => {
         this.network = val
       })
     )

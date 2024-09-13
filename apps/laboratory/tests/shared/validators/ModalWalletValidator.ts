@@ -42,4 +42,17 @@ export class ModalWalletValidator extends ModalValidator {
     await expect(closeButton).toBeVisible()
     await closeButton.click()
   }
+
+  async expectReceivedSign({ chainName = 'Ethereum' }) {
+    await expect(
+      this.page.getByText('Approve Transaction'),
+      'Approve Transaction text should be visible'
+    ).toBeVisible({
+      timeout: 10_000
+    })
+    expect(
+      this.page.getByText(chainName),
+      `${chainName} should be visible on approve transaction page`
+    ).toBeTruthy()
+  }
 }

@@ -3,8 +3,8 @@ import { LitElement, html } from 'lit'
 import styles from './styles.js'
 import {
   AccountController,
+  ChainController,
   CoreHelperUtil,
-  NetworkController,
   RouterController,
   SendController
 } from '@reown/appkit-core'
@@ -71,7 +71,7 @@ export class W3mSendSelectTokenView extends LitElement {
 
   private templateTokens() {
     this.tokens = this.tokenBalance?.filter(
-      token => token.chainId === NetworkController.state.caipNetwork?.id
+      token => token.chainId === ChainController.state.activeCaipNetwork?.id
     )
     if (this.search) {
       this.filteredTokens = this.tokenBalance?.filter(token =>

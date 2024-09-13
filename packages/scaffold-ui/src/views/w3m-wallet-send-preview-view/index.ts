@@ -2,7 +2,7 @@ import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
 import { state } from 'lit/decorators.js'
-import { NetworkController, RouterController, SendController } from '@reown/appkit-core'
+import { ChainController, RouterController, SendController } from '@reown/appkit-core'
 
 @customElement('w3m-wallet-send-preview-view')
 export class W3mWalletSendPreviewView extends LitElement {
@@ -24,7 +24,7 @@ export class W3mWalletSendPreviewView extends LitElement {
 
   @state() private gasPriceInUSD = SendController.state.gasPriceInUSD
 
-  @state() private caipNetwork = NetworkController.state.caipNetwork
+  @state() private caipNetwork = ChainController.state.activeCaipNetwork
 
   public constructor() {
     super()
@@ -38,7 +38,7 @@ export class W3mWalletSendPreviewView extends LitElement {
           this.receiverProfileName = val.receiverProfileName
           this.receiverProfileImageUrl = val.receiverProfileImageUrl
         }),
-        NetworkController.subscribeKey('caipNetwork', val => (this.caipNetwork = val))
+        ChainController.subscribeKey('activeCaipNetwork', val => (this.caipNetwork = val))
       ]
     )
   }
