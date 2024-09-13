@@ -821,9 +821,9 @@ export class EVMEthers5Client {
     this.appKit?.setLoading(false)
   }
 
-  private async syncReOwnName(address: Address) {
+  private async syncReownName(address: Address) {
     try {
-      const registeredWcNames = await this.appKit?.getReOwnName(address)
+      const registeredWcNames = await this.appKit?.getReownName(address)
       if (registeredWcNames?.[0]) {
         const wcName = registeredWcNames[0]
         this.appKit?.setProfileName(wcName.name, this.chainNamespace)
@@ -880,7 +880,7 @@ export class EVMEthers5Client {
       this.appKit?.setProfileImage(avatar, this.chainNamespace)
 
       if (!name) {
-        await this.syncReOwnName(address)
+        await this.syncReownName(address)
       }
     } catch {
       if (caipNetwork?.chainId === 1) {
@@ -891,13 +891,13 @@ export class EVMEthers5Client {
         if (name) {
           this.appKit?.setProfileName(name, this.chainNamespace)
         } else {
-          await this.syncReOwnName(address)
+          await this.syncReownName(address)
         }
         if (avatar) {
           this.appKit?.setProfileImage(avatar, this.chainNamespace)
         }
       } else {
-        await this.syncReOwnName(address)
+        await this.syncReownName(address)
         this.appKit?.setProfileImage(null, this.chainNamespace)
       }
     }

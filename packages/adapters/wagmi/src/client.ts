@@ -698,13 +698,13 @@ export class EVMWagmiClient implements ChainAdapter {
     }
   }
 
-  private async syncReOwnName(address: Hex) {
+  private async syncReownName(address: Hex) {
     if (!this.appKit) {
-      throw new Error('syncReOwnName - appKit is undefined')
+      throw new Error('syncReownName - appKit is undefined')
     }
 
     try {
-      const registeredWcNames = await this.appKit.getReOwnName(address)
+      const registeredWcNames = await this.appKit.getReownName(address)
       if (registeredWcNames[0]) {
         const wcName = registeredWcNames[0]
         this.appKit?.setProfileName(wcName.name, this.chainNamespace)
@@ -729,7 +729,7 @@ export class EVMWagmiClient implements ChainAdapter {
       this.appKit?.setProfileImage(avatar, this.chainNamespace)
 
       if (!name) {
-        await this.syncReOwnName(address)
+        await this.syncReownName(address)
       }
     } catch {
       if (chainId === mainnet.id) {
@@ -744,11 +744,11 @@ export class EVMWagmiClient implements ChainAdapter {
             this.appKit?.setProfileImage(profileImage, this.chainNamespace)
           }
         } else {
-          await this.syncReOwnName(address)
+          await this.syncReownName(address)
           this.appKit?.setProfileImage(null, this.chainNamespace)
         }
       } else {
-        await this.syncReOwnName(address)
+        await this.syncReownName(address)
         this.appKit?.setProfileImage(null, this.chainNamespace)
       }
     }

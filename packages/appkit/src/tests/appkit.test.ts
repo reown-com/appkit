@@ -391,7 +391,7 @@ describe('Base', () => {
       expect(AccountController.setPreferredAccountType).toHaveBeenCalledWith('eoa', 'eip155')
     })
 
-    it('should get ReOwn name', async () => {
+    it('should get Reown name', async () => {
       vi.mocked(EnsController.getNamesForAddress).mockResolvedValue([
         {
           name: 'john.reown.id',
@@ -401,7 +401,7 @@ describe('Base', () => {
           updated: 0
         }
       ])
-      const result = await appKit.getReOwnName('john.reown.id')
+      const result = await appKit.getReownName('john.reown.id')
       expect(EnsController.getNamesForAddress).toHaveBeenCalledWith('john.reown.id')
       expect(result).toEqual([
         {
@@ -414,7 +414,7 @@ describe('Base', () => {
       ])
     })
 
-    it('should resolve ReOwn name', async () => {
+    it('should resolve Reown name', async () => {
       vi.mocked(EnsController.resolveName).mockResolvedValue({
         addresses: { eip155: { address: '0x123', created: '0' } },
         name: 'john.reown.id',

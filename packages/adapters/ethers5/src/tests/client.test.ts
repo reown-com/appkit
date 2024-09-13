@@ -708,7 +708,7 @@ describe('EVMEthersClient', () => {
     const mockAddress = '0x1234567890123456789012345678901234567890'
 
     beforeEach(() => {
-      vi.spyOn(client as any, 'syncReOwnName').mockImplementation(() => Promise.resolve())
+      vi.spyOn(client as any, 'syncReownName').mockImplementation(() => Promise.resolve())
     })
 
     it('should set profile from fetchIdentity when successful', async () => {
@@ -743,13 +743,13 @@ describe('EVMEthersClient', () => {
       )
     })
 
-    it('should fallback to syncReOwnName for non-mainnet chains', async () => {
+    it('should fallback to syncReownName for non-mainnet chains', async () => {
       vi.spyOn(mockAppKit, 'fetchIdentity').mockRejectedValue(new Error('Fetch failed'))
       vi.spyOn(mockAppKit, 'getCaipNetwork').mockReturnValue(polygon) // Polygon
 
       await client['syncProfile'](mockAddress)
 
-      expect(client['syncReOwnName']).toHaveBeenCalledWith(mockAddress)
+      expect(client['syncReownName']).toHaveBeenCalledWith(mockAddress)
       expect(mockAppKit.setProfileImage).toHaveBeenCalledWith(null, 'eip155')
     })
   })
@@ -787,36 +787,36 @@ describe('EVMEthersClient', () => {
     })
   })
 
-  describe('EthersClient - syncReOwnName', () => {
+  describe('EthersClient - syncReownName', () => {
     const mockAddress = '0x1234567890123456789012345678901234567890'
 
     it('should set profile name when WalletConnect name is available', async () => {
       const mockWcNames = [
         { name: 'WC Wallet', registered: 1, updated: 1234567890, addresses: [], attributes: {} }
       ] as unknown as BlockchainApiLookupEnsName[]
-      vi.spyOn(mockAppKit, 'getReOwnName').mockResolvedValue(mockWcNames)
+      vi.spyOn(mockAppKit, 'getReownName').mockResolvedValue(mockWcNames)
 
-      await client['syncReOwnName'](mockAddress)
+      await client['syncReownName'](mockAddress)
 
-      expect(mockAppKit.getReOwnName).toHaveBeenCalledWith(mockAddress)
+      expect(mockAppKit.getReownName).toHaveBeenCalledWith(mockAddress)
       expect(mockAppKit.setProfileName).toHaveBeenCalledWith('WC Wallet', 'eip155')
     })
 
     it('should set profile name to null when no WalletConnect name is available', async () => {
-      vi.spyOn(mockAppKit, 'getReOwnName').mockResolvedValue([])
+      vi.spyOn(mockAppKit, 'getReownName').mockResolvedValue([])
 
-      await client['syncReOwnName'](mockAddress)
+      await client['syncReownName'](mockAddress)
 
-      expect(mockAppKit.getReOwnName).toHaveBeenCalledWith(mockAddress)
+      expect(mockAppKit.getReownName).toHaveBeenCalledWith(mockAddress)
       expect(mockAppKit.setProfileName).toHaveBeenCalledWith(null, 'eip155')
     })
 
-    it('should set profile name to null when getReOwnName throws an error', async () => {
-      vi.spyOn(mockAppKit, 'getReOwnName').mockRejectedValue(new Error('API Error'))
+    it('should set profile name to null when getReownName throws an error', async () => {
+      vi.spyOn(mockAppKit, 'getReownName').mockRejectedValue(new Error('API Error'))
 
-      await client['syncReOwnName'](mockAddress)
+      await client['syncReownName'](mockAddress)
 
-      expect(mockAppKit.getReOwnName).toHaveBeenCalledWith(mockAddress)
+      expect(mockAppKit.getReownName).toHaveBeenCalledWith(mockAddress)
       expect(mockAppKit.setProfileName).toHaveBeenCalledWith(null, 'eip155')
     })
   })
