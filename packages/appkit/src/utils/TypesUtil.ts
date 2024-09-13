@@ -129,7 +129,7 @@ export type AppKitOptions = {
    */
   isSiweEnabled?: boolean
   /**
-   * Enable analytics to get more insights on your users activity within your WalletConnect Cloud's dashboard.
+   * Enable analytics to get more insights on your users activity within your ReOwn Cloud's dashboard.
    * @default false
    * @see https://cloud.walletconnect.com/
    */
@@ -141,7 +141,7 @@ export type AppKitOptions = {
 
   disableAppend?: boolean
   /**
-   * Enable or disable the WalletConnect qr code in your AppKit.
+   * Enable or disable the ReOwn qr code in your AppKit.
    * @default true
    */
   enableWalletConnect?: boolean

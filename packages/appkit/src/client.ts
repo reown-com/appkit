@@ -364,7 +364,7 @@ export class AppKit {
     AccountController.setPreferredAccountType(preferredAccountType, chain)
   }
 
-  public getWalletConnectName: (typeof EnsController)['getNamesForAddress'] = address =>
+  public getReOwnName: (typeof EnsController)['getNamesForAddress'] = address =>
     EnsController.getNamesForAddress(address)
 
   public resolveReownName = async (name: string) => {
