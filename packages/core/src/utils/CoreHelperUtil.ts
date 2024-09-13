@@ -1,8 +1,10 @@
-import type { Balance, ChainNamespace } from '@reown/appkit-common'
+import type { AppKitSdkVersion, Balance, ChainNamespace } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstants } from '@reown/appkit-common'
 import { ConstantsUtil } from './ConstantsUtil.js'
 import type { CaipAddress, CaipNetwork } from '@reown/appkit-common'
-import type { LinkingRecord } from './TypeUtil.js'
+import type { ChainAdapter, LinkingRecord } from './TypeUtil.js'
+
+type SDKFramework = 'html' | 'react' | 'vue'
 
 export const CoreHelperUtil = {
   isMobile() {
@@ -294,5 +296,17 @@ export const CoreHelperUtil = {
 
       return true
     })
+  },
+
+  generateSdkVersion(
+    adapters: ChainAdapter[],
+    platform: SDKFramework,
+    version: string
+  ): AppKitSdkVersion {
+    const noAdapters = adapters.length === 0
+    const adapterNames = noAdapters
+      ? 'universal'
+      : adapters.map(adapter => adapter.adapterType).join(',')
+    return `${platform}-${adapterNames}-${version}`
   }
 }

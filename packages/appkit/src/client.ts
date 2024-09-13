@@ -443,6 +443,8 @@ export class AppKit {
     OptionsController.setPrivacyPolicyUrl(options.privacyPolicyUrl)
     OptionsController.setCustomWallets(options.customWallets)
     OptionsController.setFeatures(options.features)
+    OptionsController.setEnableWalletConnect(options.enableWalletConnect !== false)
+    OptionsController.setEnableWallets(options.enableWallets !== false)
 
     if (options.metadata) {
       OptionsController.setMetadata(options.metadata)
