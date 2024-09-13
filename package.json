@@ -54,7 +54,7 @@
     "turbo": "2.0.6-canary.0",
     "typescript": "5.3.3",
     "vite": "5.2.11",
-    "vitest": "2.0.3",
+    "vitest": "2.0.5",
     "vite-plugin-node-polyfills": "0.22.0",
     "pino": "7.11.0"
   },
