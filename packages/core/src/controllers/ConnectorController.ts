@@ -51,8 +51,7 @@ export const ConnectorController = {
 
     const mergedConnectors: ConnectorWithProviders[] = []
 
-    Object.keys(connectorsByNameMap).forEach((key: string) => {
-      const keyConnectors = connectorsByNameMap[key] as Connector[]
+    connectorsByNameMap.forEach(keyConnectors => {
       const firstItem = keyConnectors[0]
 
       if (keyConnectors.length > 1) {
@@ -74,8 +73,8 @@ export const ConnectorController = {
     return mergedConnectors
   },
 
-  generateConnectorMapByName(connectors: Connector[]) {
-    const connectorsByNameMap: Record<string, Connector[]> = {}
+  generateConnectorMapByName(connectors: Connector[]): Map<string, Connector[]> {
+    const connectorsByNameMap = new Map<string, Connector[]>()
 
     connectors.forEach(connector => {
       const { name } = connector
@@ -85,13 +84,12 @@ export const ConnectorController = {
         return
       }
 
-      const connectorsByName = connectorsByNameMap[connectorName] || []
-      const haveSameConnector = connectorsByName.find((c: Connector) => c.chain === connector.chain)
+      const connectorsByName = connectorsByNameMap.get(connectorName) || []
+      const haveSameConnector = connectorsByName.find(c => c.chain === connector.chain)
       if (!haveSameConnector) {
         connectorsByName.push(connector)
       }
-
-      connectorsByNameMap[connectorName] = connectorsByName
+      connectorsByNameMap.set(connectorName, connectorsByName)
     })
 
     return connectorsByNameMap

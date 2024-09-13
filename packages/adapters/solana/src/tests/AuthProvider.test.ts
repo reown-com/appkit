@@ -14,6 +14,7 @@ describe('AuthProvider specific tests', () => {
       chainId: 'solana',
       address: '2VqKhjZ766ZN3uBtBpb7Ls3cN4HrocP1rzxzekhVEgoP'
     }),
+    setSession: vi.fn(),
     getActiveChain,
     chains: TestConstants.chains
   })
@@ -28,6 +29,7 @@ describe('AuthProvider specific tests', () => {
         chainId: 'solana',
         address: '2VqKhjZ766ZN3uBtBpb7Ls3cN4HrocP1rzxzekhVEgoP'
       }),
+      setSession: vi.fn(),
       getActiveChain,
       chains: TestConstants.chains
     })

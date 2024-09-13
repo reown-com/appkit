@@ -39,6 +39,7 @@ const providers: { name: string; provider: Provider }[] = [
         chainId: 'solana',
         address: '2VqKhjZ766ZN3uBtBpb7Ls3cN4HrocP1rzxzekhVEgoP'
       }),
+      setSession: vi.fn(),
       chains: TestConstants.chains
     })
   }

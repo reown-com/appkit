@@ -21,6 +21,7 @@ export type AuthProviderConfig = {
   getActiveChain: GetActiveChain
   getActiveNamespace: () => ChainNamespace | undefined
   getSession: () => AuthProvider.Session | undefined
+  setSession: (session: AuthProvider.Session | undefined) => void
   chains: CaipNetwork[]
 }
 
@@ -33,12 +34,14 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
   private readonly getActiveNamespace: AuthProviderConfig['getActiveNamespace']
   private readonly requestedChains: CaipNetwork[]
   private readonly getSession: AuthProviderConfig['getSession']
+  private readonly setSession: AuthProviderConfig['setSession']
 
   constructor({
     getProvider,
     getActiveChain,
     getActiveNamespace,
     getSession,
+    setSession,
     chains
   }: AuthProviderConfig) {
     super()
@@ -48,6 +51,7 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
     this.getActiveNamespace = getActiveNamespace
     this.requestedChains = chains
     this.getSession = getSession
+    this.setSession = setSession
     this.bindEvents()
   }
 
@@ -70,9 +74,10 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
   }
 
   public async connect() {
-    await this.getProvider().connect({
+    const session = await this.getProvider().connect({
       chainId: withSolanaNamespace(this.getActiveChain()?.chainId)
     })
+    this.setSession(session)
 
     const publicKey = this.getPublicKey(true)
 
@@ -224,7 +229,8 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
       this.emit('auth_rpcError', error)
     })
 
-    this.getProvider().onIsConnected(() => {
+    this.getProvider().onIsConnected(response => {
+      this.setSession(response)
       const activeNamespace = this.getActiveNamespace()
 
       if (activeNamespace === 'solana') {
