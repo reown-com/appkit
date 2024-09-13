@@ -7,10 +7,10 @@ import { ThemeController } from './ThemeController.js'
 
 // -- Types --------------------------------------------- //
 interface ConnectorWithProviders extends Connector {
-  providers?: Connector[]
+  connectors?: Connector[]
 }
 export interface ConnectorControllerState {
-  unMergedConnectors: Connector[]
+  allConnectors: Connector[]
   connectors: ConnectorWithProviders[]
 }
 
@@ -18,7 +18,7 @@ type StateKey = keyof ConnectorControllerState
 
 // -- State --------------------------------------------- //
 const state = proxy<ConnectorControllerState>({
-  unMergedConnectors: [],
+  allConnectors: [],
   connectors: []
 })
 
@@ -31,42 +31,51 @@ export const ConnectorController = {
   },
 
   setConnectors(connectors: ConnectorControllerState['connectors']) {
-    state.connectors = [
-      ...state.connectors,
-      ...connectors.filter(
-        newConnector =>
-          !state.connectors.some(
-            existingConnector =>
-              existingConnector.id === newConnector.id &&
-              this.getConnectorName(existingConnector.name) ===
-                this.getConnectorName(newConnector.name)
-          )
-      )
-    ]
+    const newConnectors = connectors.filter(
+      newConnector =>
+        !state.allConnectors.some(
+          existingConnector =>
+            existingConnector.id === newConnector.id &&
+            this.getConnectorName(existingConnector.name) ===
+              this.getConnectorName(newConnector.name) &&
+            existingConnector.chain === newConnector.chain
+        )
+    )
+
+    state.allConnectors = [...state.connectors, ...newConnectors]
+    state.connectors = this.mergeMultiChainConnectors(state.allConnectors)
   },
 
   mergeMultiChainConnectors(connectors: Connector[]) {
     const connectorsByNameMap = this.generateConnectorMapByName(connectors)
 
-    const refactoredConnectors = Array.from(connectorsByNameMap.values()).map(_connectors => {
-      if (_connectors.length > 1) {
-        return {
-          name: _connectors[0]?.name,
-          imageUrl: _connectors[0]?.imageUrl,
-          imageId: _connectors[0]?.imageId,
-          providers: this.getUniqueConnectorsByName(_connectors),
-          type: 'MULTI_CHAIN'
-        } as ConnectorWithProviders
-      }
+    const mergedConnectors: ConnectorWithProviders[] = []
 
-      return _connectors[0] as ConnectorWithProviders
+    Object.keys(connectorsByNameMap).forEach((key: string) => {
+      const keyConnectors = connectorsByNameMap[key] as Connector[]
+      const firstItem = keyConnectors[0]
+
+      if (keyConnectors.length > 1) {
+        mergedConnectors.push({
+          name: firstItem?.name,
+          imageUrl: firstItem?.imageUrl,
+          imageId: firstItem?.imageId,
+          connectors: [...keyConnectors],
+          type: 'MULTI_CHAIN',
+          // These values are just placeholders, we don't use them in multi-chain connector select screen
+          chain: 'eip155',
+          id: firstItem?.id || ''
+        })
+      } else if (firstItem) {
+        mergedConnectors.push(firstItem)
+      }
     })
 
-    return refactoredConnectors
+    return mergedConnectors
   },
 
-  generateConnectorMapByName(connectors: Connector[]): Map<string, Connector[]> {
-    const connectorsByNameMap = new Map<string, Connector[]>()
+  generateConnectorMapByName(connectors: Connector[]) {
+    const connectorsByNameMap: Record<string, Connector[]> = {}
 
     connectors.forEach(connector => {
       const { name } = connector
@@ -76,12 +85,13 @@ export const ConnectorController = {
         return
       }
 
-      const connectorsByName = connectorsByNameMap.get(connectorName) || []
-      const haveSameConnector = connectorsByName.find(c => c.chain === connector.chain)
+      const connectorsByName = connectorsByNameMap[connectorName] || []
+      const haveSameConnector = connectorsByName.find((c: Connector) => c.chain === connector.chain)
       if (!haveSameConnector) {
         connectorsByName.push(connector)
       }
-      connectorsByNameMap.set(connectorName, connectorsByName)
+
+      connectorsByNameMap[connectorName] = connectorsByName
     })
 
     return connectorsByNameMap

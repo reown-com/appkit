@@ -330,8 +330,10 @@ export const NetworkController = {
 
   getActiveNetworkTokenAddress() {
     const address =
-      ConstantsUtil.NATIVE_TOKEN_ADDRESS[this.state.caipNetwork?.chainNamespace || 'eip155']
+      ConstantsUtil.NATIVE_TOKEN_ADDRESS[
+        ChainController.state.activeCaipNetwork?.chainNamespace || 'eip155'
+      ]
 
-    return `${this.state.caipNetwork?.id || 'eip155:1'}:${address}`
+    return `${ChainController.state.activeCaipNetwork?.id || 'eip155:1'}:${address}`
   }
 }

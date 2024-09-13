@@ -43,7 +43,7 @@ const caipAddress = 'eip155:1:0x123'
 // MATIC
 const networkTokenAddress = 'eip155:137:0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
 // AVAX
-const toTokenAddress = 'eip155:137:0x3c499c542cef5e3811e1192ce70d8cc03d5c3359'
+const toTokenAddress = 'eip155:137:0x2c89bbc92bd86f8075d1decc58c7f4e0107f286b'
 
 // - Setup ---------------------------------------------------------------------
 beforeAll(async () => {
@@ -51,7 +51,8 @@ beforeAll(async () => {
   ChainController.initialize([
     { chainNamespace: ConstantsUtil.CHAIN.EVM, networkControllerClient: client }
   ])
-  await NetworkController.switchActiveNetwork(caipNetwork)
+
+  NetworkController.setCaipNetwork(caipNetwork)
   AccountController.setCaipAddress(caipAddress, chain)
 
   vi.spyOn(BlockchainApiController, 'fetchSwapTokens').mockResolvedValue(tokensResponse)
@@ -77,7 +78,7 @@ describe('SwapController', () => {
 
   it('should set toToken as expected', () => {
     expect(SwapController.state.toToken?.address).toEqual(toTokenAddress)
-    expect(SwapController.state.toTokenPriceInUSD).toEqual(0.999957504)
+    expect(SwapController.state.toTokenPriceInUSD).toEqual(40.101925674)
   })
 
   it('should calculate swap values as expected', async () => {

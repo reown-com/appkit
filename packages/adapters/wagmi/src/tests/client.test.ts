@@ -111,7 +111,7 @@ describe('Wagmi Client', () => {
       const mockConnector = { id: 'mockConnector', name: 'Mock Connector' }
 
       const setCaipAddressSpy = vi.spyOn(mockAppKit, 'setCaipAddress')
-      const setIsConnectedSpy = vi.spyOn(mockAppKit, 'setIsConnected')
+
       const syncNetworkSpy = vi.spyOn(mockWagmiClient as any, 'syncNetwork')
       const syncProfileSpy = vi.spyOn(mockWagmiClient as any, 'syncProfile')
       const syncBalanceSpy = vi.spyOn(mockWagmiClient as any, 'syncBalance')
