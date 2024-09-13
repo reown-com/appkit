@@ -58,11 +58,11 @@ const SINGLE_ADAPTER_SOLANA_TESTS = [
 ]
 
 const SINGLE_ADAPTER_EVM_TESTS_REGEX = new RegExp(
-  `^(?!.*\/multichain\/).*(?:${SINGLE_ADAPTER_EVM_TESTS.join('|')})`,
+  `^(?!.*/multichain/).*(?:${SINGLE_ADAPTER_EVM_TESTS.join('|')})`,
   'u'
 )
 const SINGLE_ADAPTER_SOLANA_TESTS_REGEX = new RegExp(
-  `^(?!.*\/multichain\/).*(?:${SINGLE_ADAPTER_SOLANA_TESTS.join('|')})`,
+  `^(?!.*/multichain/).*(?:${SINGLE_ADAPTER_SOLANA_TESTS.join('|')})`,
   'u'
 )
 
