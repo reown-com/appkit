@@ -67,7 +67,7 @@ export const uploadCanaryResultsToCloudWatch = async (
 
   const params: PutMetricDataCommandInput = {
     MetricData: metrics,
-    Namespace: `${env}_Canary_AppKit`
+    Namespace: `${env}_Canary_Web3Modal`
   }
 
   await new Promise<void>(resolve => {
