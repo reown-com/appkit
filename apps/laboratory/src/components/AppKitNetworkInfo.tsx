@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useWeb3ModalAccount, useWeb3ModalNetwork } from '@reown/appkit/react'
+import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
 import {
   StackDivider,
   Card,
@@ -12,8 +12,8 @@ import {
 } from '@chakra-ui/react'
 
 export function AppKitNetworkInfo() {
-  const { address } = useWeb3ModalAccount()
-  const { chainId } = useWeb3ModalNetwork()
+  const { address } = useAppKitAccount()
+  const { chainId } = useAppKitNetwork()
 
   return (
     <Card marginTop={10} marginBottom={10}>

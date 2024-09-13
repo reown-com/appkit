@@ -515,7 +515,7 @@ export class SolanaWeb3JsClient implements ChainAdapter {
 
   private watchProvider(provider: Provider) {
     /*
-     * The auth RPC request handlers should be moved to the primary scaffold (Web3ModalScaffold).
+     * The auth RPC request handlers should be moved to the primary scaffold (appkit).
      * They are replicated in wagmi and ethers clients and the behavior should be kept the same
      * between any client.
      */
