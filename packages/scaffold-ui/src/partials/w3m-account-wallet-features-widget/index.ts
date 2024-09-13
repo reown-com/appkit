@@ -7,7 +7,8 @@ import {
   CoreHelperUtil,
   ConstantsUtil as CoreConstantsUtil,
   EventsController,
-  OptionsController
+  OptionsController,
+  ChainController
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'

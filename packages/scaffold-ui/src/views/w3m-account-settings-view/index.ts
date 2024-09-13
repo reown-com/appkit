@@ -18,7 +18,7 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
-import { ChainController } from '@rerock/core'
+import { ChainController } from '@reown/appkit-core'
 
 @customElement('w3m-account-settings-view')
 export class W3mAccountSettingsView extends LitElement {

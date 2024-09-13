@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { useWeb3ModalNetwork, useWeb3ModalAccount } from '../../exports/react'
 
-import type { CaipNetwork } from '@rerock/common'
+import type { CaipNetwork } from '@reown/appkit-common'
 import { AccountController, ChainController } from '../../exports'
 
 vi.mock('valtio', () => ({

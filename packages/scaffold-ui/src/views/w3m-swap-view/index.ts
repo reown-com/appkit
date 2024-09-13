@@ -11,7 +11,8 @@ import {
   type SwapInputTarget,
   EventsController,
   AccountController,
-  ChainController
+  ChainController,
+  NetworkController
 } from '@reown/appkit-core'
 import { NumberUtil } from '@reown/appkit-common'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'

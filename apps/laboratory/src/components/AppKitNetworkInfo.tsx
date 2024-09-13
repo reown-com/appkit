@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useWeb3ModalAccount, useWeb3ModalNetwork } from '@rerock/base/react'
+import { useWeb3ModalAccount, useWeb3ModalNetwork } from '@reown/appkit/react'
 import {
   StackDivider,
   Card,

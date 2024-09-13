@@ -194,7 +194,7 @@ export class W3mModal extends LitElement {
     const nextConnected = caipAddress ? CoreHelperUtil.getPlainAddress(caipAddress) : undefined
 
     if (this.isSiweEnabled) {
-      const { SIWEController } = await import('@rerock/siwe')
+      const { SIWEController } = await import('@reown/appkit-siwe')
       const signed = AccountController.state.siweStatus === 'success'
 
       if (!prevConnected && nextConnected) {

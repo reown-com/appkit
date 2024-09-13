@@ -6,7 +6,7 @@ import {
   ChainController,
   CoreHelperUtil,
   EventsController
-} from '@reown/core'
+} from '@reown/appkit-core'
 import {
   ConstantsUtil as CommonConstantsUtil,
   SafeLocalStorage,
@@ -37,14 +37,14 @@ import {
   W3mFrameProvider,
   W3mFrameRpcConstants,
   type W3mFrameTypes
-} from '@reown/wallet'
-import { ConstantsUtil as CoreConstantsUtil } from '@reown/core'
+} from '@reown/appkit-wallet'
+import { ConstantsUtil as CoreConstantsUtil } from '@reown/appkit-core'
 import { withSolanaNamespace } from './utils/withSolanaNamespace.js'
-import type { AppKit } from '@reown/base'
-import type { AppKitOptions } from '@reown/base'
-import { ProviderUtil } from '@reown/base/store'
-import { W3mFrameProviderSingleton } from '@reown/base/auth-provider'
-import { ConstantsUtil, PresetsUtil } from '@reown/scaffold-utils'
+import type { AppKit, AppKitOptions } from '@reown/appkit'
+import { ProviderUtil } from '@reown/appkit/store'
+import { W3mFrameProviderSingleton } from '@reown/appkit/auth-provider'
+import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
+import { createSendTransaction } from './utils/createSendTransaction.js'
 
 export interface AdapterOptions {
   connectionSettings?: Commitment | ConnectionConfig
@@ -77,6 +77,8 @@ export class SolanaWeb3JsClient implements ChainAdapter {
   public connectionSettings: Commitment | ConnectionConfig
 
   private availableProviders: Provider[] = []
+
+  private provider: Provider | undefined
 
   private authSession: AuthProvider.Session | undefined
 
@@ -505,6 +507,7 @@ export class SolanaWeb3JsClient implements ChainAdapter {
         await this.switchNetwork(connectionChain)
 
         ProviderUtil.setProvider(this.chainNamespace, provider)
+        this.provider = provider
         ProviderUtil.setProviderId(this.chainNamespace, 'walletConnect')
 
         SafeLocalStorage.setItem(SafeLocalStorageKeys.WALLET_ID, provider.name)

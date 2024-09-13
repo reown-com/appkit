@@ -1,5 +1,5 @@
 import { onUnmounted, reactive, ref } from 'vue'
-import { AccountController, CoreHelperUtil, type Event } from '@rerock/core'
+import { AccountController, CoreHelperUtil, type Event } from '@reown/appkit-core'
 import type {
   W3mAccountButton,
   W3mButton,

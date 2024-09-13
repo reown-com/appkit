@@ -5,6 +5,7 @@ import { OptionsController } from '../controllers/OptionsController.js'
 import type { BlockchainApiSwapAllowanceRequest, BlockchainApiBalanceResponse } from './TypeUtil.js'
 import { AccountController } from '../controllers/AccountController.js'
 import { ChainController } from '../controllers/ChainController.js'
+import { NetworkController } from '../controllers/NetworkController.js'
 
 // -- Types --------------------------------------------- //
 export type TokenInfo = {

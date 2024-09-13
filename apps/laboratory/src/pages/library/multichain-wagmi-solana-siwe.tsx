@@ -1,7 +1,7 @@
 import React from 'react'
-import { createWeb3Modal } from '@rerock/base/react'
-import { EVMWagmiClient } from '@rerock/adapter-wagmi'
-import { SolanaWeb3JsClient } from '@rerock/adapter-solana/react'
+import { createWeb3Modal } from '@reown/appkit/react'
+import { EVMWagmiClient } from '@reown/appkit-adapter-wagmi'
+import { SolanaWeb3JsClient } from '@reown/appkit-adapter-solana/react'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -18,7 +18,7 @@ import {
   optimism,
   zkSync,
   sepolia
-} from '@rerock/base/chains'
+} from '@reown/appkit/chains'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { MultiChainTestsWagmiSolana } from '../../components/MultiChainTestsWagmiSolana'
