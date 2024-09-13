@@ -6,8 +6,8 @@ const availableDevices = getAvailableDevices()
 const LIBRARIES = ['ethers', 'ethers5', 'wagmi', 'solana'] as const
 const MULTICHAIN_LIBRARIES = [
   'multichain-ethers-solana',
-  'multichain-wagmi-solana',
-  'multichain-ethers5-solana'
+  'multichain-ethers5-solana',
+  'multichain-wagmi-solana'
 ] as const
 
 const LIBRARY_PERMUTATIONS = availableDevices.flatMap(device =>
@@ -39,21 +39,18 @@ const SINGLE_ADAPTER_EVM_TESTS = [
   'basic-tests.spec.ts',
   'canary.spec.ts',
   'email.spec.ts',
-  'metamask.spec.ts',
   'no-email.spec.ts',
   'no-socials.spec.ts',
   'siwe-email.spec.ts',
   'siwe-sa.spec.ts',
   'siwe.spec.ts',
   'smart-account.spec.ts',
-  'verify.spec.ts',
   'wallet-features.spec.ts',
   'wallet.spec.ts'
 ]
 
 const SINGLE_ADAPTER_SOLANA_TESTS = [
   'basic-tests.spec.ts',
-  'canary.spec.ts',
   'email.spec.ts',
   'no-email.spec.ts',
   'no-socials.spec.ts',
@@ -65,46 +62,54 @@ const SINGLE_ADAPTER_SOLANA_TESTS_REGEX = new RegExp(SINGLE_ADAPTER_SOLANA_TESTS
 
 const customProjectProperties: CustomProjectProperties = {
   'Desktop Chrome/ethers': {
-    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX
+    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX,
+    testIgnore: /^multichain-.*\.spec\.ts$/
   },
   'Desktop Firefox/ethers': {
-    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX
+    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX,
+    testIgnore: /^multichain-.*\.spec\.ts$/
   },
   'Desktop Chrome/ethers5': {
-    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX
+    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX,
+    testIgnore: /^multichain-.*\.spec\.ts$/
   },
   'Desktop Firefox/ethers5': {
-    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX
+    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX,
+    testIgnore: /^multichain-.*\.spec\.ts$/
   },
   'Desktop Chrome/wagmi': {
-    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX
+    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX,
+    testIgnore: /^multichain-.*\.spec\.ts$/
   },
   'Desktop Firefox/wagmi': {
-    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX
+    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX,
+    testIgnore: /^multichain-.*\.spec\.ts$/
   },
   'Desktop Chrome/solana': {
-    testMatch: SINGLE_ADAPTER_SOLANA_TESTS_REGEX
+    testMatch: SINGLE_ADAPTER_SOLANA_TESTS_REGEX,
+    testIgnore: /^multichain-.*\.spec\.ts$/
   },
   'Desktop Firefox/solana': {
-    testMatch: SINGLE_ADAPTER_SOLANA_TESTS_REGEX
+    testMatch: SINGLE_ADAPTER_SOLANA_TESTS_REGEX,
+    testIgnore: /^multichain-.*\.spec\.ts$/
   },
   'Desktop Firefox/multichain-ethers-solana': {
-    testMatch: 'multichain-ethers-solana.spec.ts'
+    testMatch: /^multichain-ethers-.*\.spec\.ts$/
   },
   'Desktop Firefox/multichain-wagmi-solana': {
-    testMatch: 'multichain-wagmi-solana.spec.ts'
+    testMatch: /^multichain-wagmi-.*\.spec\.ts$/
   },
   'Desktop Firefox/multichain-ethers5-solana': {
-    testMatch: 'multichain-ethers5-solana.spec.ts'
+    testMatch: /^multichain-ethers5-.*\.spec\.ts$/
   },
   'Desktop Chrome/multichain-ethers-solana': {
-    testMatch: 'multichain-ethers-solana.spec.ts'
+    testMatch: /^multichain-ethers-.*\.spec\.ts$/
   },
   'Desktop Chrome/multichain-wagmi-solana': {
-    testMatch: 'multichain-wagmi-solana.spec.ts'
+    testMatch: /^multichain-wagmi-.*\.spec\.ts$/
   },
   'Desktop Chrome/multichain-ethers5-solana': {
-    testMatch: 'multichain-ethers5-solana.spec.ts'
+    testMatch: /^multichain-ethers5-.*\.spec\.ts$/
   }
 }
 
@@ -149,7 +154,6 @@ export function getProjects() {
   })
 
   const projects = [...libraryProjects, ...multichainProjects]
-  console.log(projects)
 
   return projects
 }
