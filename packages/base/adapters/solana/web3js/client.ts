@@ -87,9 +87,7 @@ export class SolanaWeb3JsClient implements ChainAdapter<SolStoreUtilState, CaipN
 
   private provider: Provider | undefined
 
-  public defaultChain: CaipNetwork | undefined = undefined
-
-  public defaultSolanaChain: Chain | undefined = undefined
+  public defaultChain: CaipNetwork
 
   public constructor(options: Web3ModalClientOptions) {
     const { solanaConfig, chains, defaultChain, connectionSettings = 'confirmed' } = options
@@ -104,13 +102,12 @@ export class SolanaWeb3JsClient implements ChainAdapter<SolStoreUtilState, CaipN
 
     this.connectionSettings = connectionSettings
 
-    this.defaultChain = defaultChain
-      ? SolHelpersUtil.getChainFromCaip(
-          this.chains,
-          SafeLocalStorage.getItem(SolConstantsUtil.CAIP_CHAIN_ID) || defaultChain.chainId
-        )
-      : undefined
-    this.defaultSolanaChain = this.chains.find(c => c.chainId === defaultChain?.chainId)
+    this.defaultChain = SolHelpersUtil.getChainFromCaip(
+      this.chains,
+      SafeLocalStorage.getItem(SolConstantsUtil.CAIP_CHAIN_ID) ||
+        withSolanaNamespace(defaultChain?.chainId) ||
+        withSolanaNamespace(chains[0]?.chainId)
+    )
 
     this.networkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
@@ -291,13 +288,13 @@ export class SolanaWeb3JsClient implements ChainAdapter<SolStoreUtilState, CaipN
       ...clientOptions.solanaConfig.auth
     })
 
-    if (this.defaultSolanaChain) {
-      SolStoreUtil.setCurrentChain(this.defaultSolanaChain)
-      SolStoreUtil.setCaipChainId(`solana:${this.defaultSolanaChain.chainId}`)
-    }
-
     if (this.defaultChain) {
       this.appKit?.setCaipNetwork(this.defaultChain)
+      SolStoreUtil.setCaipChainId(this.defaultChain.id)
+      const chain = this.chains.find(c => withSolanaNamespace(c.chainId) === this.defaultChain.id)
+      if (chain) {
+        SolStoreUtil.setCurrentChain(chain)
+      }
     }
 
     this.syncNetwork()
