@@ -42,8 +42,7 @@ const state = proxy<OptionsControllerState>({
   features: ConstantsUtil.DEFAULT_FEATURES,
   projectId: '',
   sdkType: 'appkit',
-  sdkVersion: 'html-undefined-undefined',
-  enableWallets: true
+  sdkVersion: 'html-wagmi-undefined'
 })
 
 // -- Controller ---------------------------------------- //
