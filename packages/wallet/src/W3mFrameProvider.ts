@@ -412,7 +412,6 @@ export class W3mFrameProvider {
     return Object.keys(this.w3mFrame.networks)
   }
 
-  // -- Private Methods -------------------------------------------------
   public rejectRpcRequests() {
     try {
       this.openRpcRequests.forEach(({ abortController, method }) => {
@@ -425,6 +424,7 @@ export class W3mFrameProvider {
       this.w3mLogger.logger.error({ error: e }, 'Error aborting RPC request')
     }
   }
+  // -- Private Methods -------------------------------------------------
 
   private async appEvent<T extends W3mFrameTypes.ProviderRequestType>(
     event: Omit<W3mFrameTypes.AppEvent, 'id'>
@@ -436,7 +436,7 @@ export class W3mFrameProvider {
       const id = Math.random().toString(36).substring(7)
       this.w3mLogger.logger.info?.({ event, id }, 'Sending app event')
 
-      this.w3mFrame.events.postAppEvent({ ...event, id } as W3mFrameTypes.AppEvent)
+      // Setup an abort signal for the handler
       const abortController = new AbortController()
       if (type === 'RPC_REQUEST') {
         const rpcEvent = event as Extract<W3mFrameTypes.AppEvent, { type: '@w3m-app/RPC_REQUEST' }>
@@ -448,20 +448,29 @@ export class W3mFrameProvider {
         }
       })
 
-      function handler(framEvent: W3mFrameTypes.FrameEvent) {
-        if (framEvent.type === `@w3m-frame/${type}_SUCCESS`) {
-          if ('payload' in framEvent) {
-            resolve(framEvent.payload)
+      // Setup a handler for the Frame Response
+      function handler(logger: W3mFrameLogger) {
+        return (framEvent: W3mFrameTypes.FrameEvent) => {
+          logger.logger.info?.({ framEvent, id }, 'Received frame event')
+          if (framEvent.type === `@w3m-frame/${type}_SUCCESS`) {
+            if ('payload' in framEvent) {
+              resolve(framEvent.payload)
+            }
+            resolve(undefined as unknown as W3mFrameTypes.Responses[`Frame${T}Response`])
+          } else if (framEvent.type === `@w3m-frame/${type}_ERROR`) {
+            if ('payload' in framEvent) {
+              reject(new Error(framEvent.payload?.message || 'An error occurred'))
+            }
+            reject(new Error('An error occurred'))
           }
-          resolve(undefined as unknown as W3mFrameTypes.Responses[`Frame${T}Response`])
-        } else if (framEvent.type === `@w3m-frame/${type}_ERROR`) {
-          if ('payload' in framEvent) {
-            reject(new Error(framEvent.payload?.message || 'An error occurred'))
-          }
-          reject(new Error('An error occurred'))
         }
       }
-      this.w3mFrame.events.registerFrameEventHandler(id, handler, abortController.signal)
+      this.w3mFrame.events.registerFrameEventHandler(
+        id,
+        handler(this.w3mLogger),
+        abortController.signal
+      )
+      this.w3mFrame.events.postAppEvent({ ...event, id } as W3mFrameTypes.AppEvent)
     })
   }
 
@@ -525,4 +534,5 @@ export interface W3mFrameProviderMethods {
   syncTheme: W3mFrameProvider['syncTheme']
   syncDappData: W3mFrameProvider['syncDappData']
   switchNetwork: W3mFrameProvider['switchNetwork']
+  rejectRpcRequests: W3mFrameProvider['rejectRpcRequests']
 }

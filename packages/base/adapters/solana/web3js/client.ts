@@ -8,7 +8,7 @@ import {
   OptionsController
 } from '@web3modal/core'
 import { ConstantsUtil, PresetsUtil } from '@web3modal/scaffold-utils'
-import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
+import { ConstantsUtil as CommonConstantsUtil, NetworkUtil } from '@web3modal/common'
 
 import { SolConstantsUtil, SolHelpersUtil, SolStoreUtil } from '@web3modal/scaffold-utils/solana'
 
@@ -23,7 +23,8 @@ import type {
   Connector,
   CaipAddress,
   CaipNetwork,
-  ChainAdapter
+  ChainAdapter,
+  PublicStateControllerState
 } from '@web3modal/core'
 import type { Chain as AvailableChain } from '@web3modal/common'
 
@@ -59,6 +60,11 @@ export interface Web3ModalClientOptions
   connectorImages?: Record<string, string>
   tokens?: Record<number, Token>
   wallets?: BaseWalletAdapter[]
+}
+
+// @ts-expect-error: Overridden state type is correct
+interface Web3ModalState extends PublicStateControllerState {
+  selectedNetworkId: number | undefined
 }
 
 export type Web3ModalOptions = Omit<Web3ModalClientOptions, '_sdkVersion' | 'isUniversalProvider'>
@@ -662,6 +668,7 @@ export class SolanaWeb3JsClient implements ChainAdapter<SolStoreUtilState, CaipN
             chains: this.chains
           })
         )
+        this.watchModal()
       }
 
       watchStandard(standardAdapters => this.addProvider.bind(this)(...standardAdapters))
@@ -695,5 +702,25 @@ export class SolanaWeb3JsClient implements ChainAdapter<SolStoreUtilState, CaipN
     }))
 
     this.appKit?.setConnectors(connectors)
+  }
+
+  private subscribeState(callback: (state: Web3ModalState) => void) {
+    return this.appKit?.subscribeState(state =>
+      callback({
+        ...state,
+        selectedNetworkId: NetworkUtil.caipNetworkIdToNumber(state.selectedNetworkId)
+      })
+    )
+  }
+
+  private watchModal() {
+    const authProvider = this.availableProviders.find(provider => provider instanceof AuthProvider)
+    if (authProvider) {
+      this.subscribeState(val => {
+        if (!val.open) {
+          authProvider?.rejectRpcRequests()
+        }
+      })
+    }
   }
 }

@@ -179,6 +179,8 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
 
     return result
   }
+  rejectRpcRequests: ProviderAuthMethods['rejectRpcRequests'] = () =>
+    this.provider.rejectRpcRequests()
 
   // -- Private ------------------------------------------- //
   private getPublicKey<Required extends boolean>(
