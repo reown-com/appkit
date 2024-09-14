@@ -1,17 +1,17 @@
 import { Button, Flex, Stack, Text } from '@chakra-ui/react'
+import { useAccount } from 'wagmi'
 import { useReadContract } from 'wagmi'
 import { useState } from 'react'
 import { useChakraToast } from '../Toast'
 import { encodeFunctionData, parseEther } from 'viem'
 import { abi as donutContractAbi, address as donutContractaddress } from '../../utils/DonutContract'
-import { sepolia } from 'viem/chains'
 import { useLocalEcdsaKey } from '../../context/LocalEcdsaKeyContext'
 import { useERC7715Permissions } from '../../hooks/useERC7715Permissions'
 import { executeActionsWithECDSAAndCosignerPermissions } from '../../utils/ERC7715Utils'
 
 export function WagmiPurchaseDonutAsyncPermissionsTest() {
   const { privateKey } = useLocalEcdsaKey()
-
+  const { chain } = useAccount()
   const { grantedPermissions, pci } = useERC7715Permissions()
 
   const {
@@ -32,6 +32,9 @@ export function WagmiPurchaseDonutAsyncPermissionsTest() {
   async function onPurchaseDonutWithPermissions() {
     setTransactionPending(true)
     try {
+      if (!chain) {
+        throw new Error(`Account connected chain not available`)
+      }
       if (!privateKey) {
         throw new Error(`Unable to get dApp private key`)
       }
@@ -55,7 +58,7 @@ export function WagmiPurchaseDonutAsyncPermissionsTest() {
       ]
       const txHash = await executeActionsWithECDSAAndCosignerPermissions({
         actions: purchaseDonutCallDataExecution,
-        chain: sepolia,
+        chain,
         ecdsaPrivateKey: privateKey as `0x${string}`,
         permissions: grantedPermissions,
         pci
