@@ -4,6 +4,7 @@ import type { AuthConnector, Connector } from '../utils/TypeUtil.js'
 import { getW3mThemeVariables } from '@reown/appkit-common'
 import { OptionsController } from './OptionsController.js'
 import { ThemeController } from './ThemeController.js'
+import { ChainController } from './ChainController.js'
 
 // -- Types --------------------------------------------- //
 interface ConnectorWithProviders extends Connector {
@@ -145,7 +146,11 @@ export const ConnectorController = {
   },
 
   getAuthConnector() {
-    return state.connectors.find(c => c.type === 'AUTH') as AuthConnector | undefined
+    const activeNamespace = ChainController.state.activeCaipNetwork?.chainNamespace
+
+    return state.connectors.find(c => c.type === 'AUTH' && c.chain === activeNamespace) as
+      | AuthConnector
+      | undefined
   },
 
   getAnnouncedConnectorRdns() {
