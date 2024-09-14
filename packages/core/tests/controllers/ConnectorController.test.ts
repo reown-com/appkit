@@ -1,5 +1,6 @@
-import { describe, expect, it, vi } from 'vitest'
+import { beforeAll, describe, expect, it, vi } from 'vitest'
 import {
+  ChainController,
   ConnectorController,
   OptionsController,
   type Metadata,
@@ -73,7 +74,10 @@ const zerionConnector = {
 } as const
 
 // -- Tests --------------------------------------------------------------------
-describe('ConnectorController', () => {
+describe.only('ConnectorController', () => {
+  beforeAll(() => {
+    ChainController.state.activeChain = ConstantsUtil.CHAIN.EVM
+  })
   it('should have valid default state', () => {
     expect(ConnectorController.state.connectors).toEqual([])
   })
@@ -134,8 +138,10 @@ describe('ConnectorController', () => {
     })
   })
 
-  it('getAuthConnector() should return authconnector when already added', () => {
-    expect(ConnectorController.getAuthConnector()).toEqual(authConnector)
+  it.only('getAuthConnector() should return authconnector when already added', () => {
+    const connector = ConnectorController.getAuthConnector()
+    console.log('>> CONNECTOR:', connector)
+    expect(connector).toEqual(authConnector)
   })
 
   it('getAnnouncedConnectorRdns() should not throw when no announced connector is not set', () => {

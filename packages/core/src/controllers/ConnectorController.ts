@@ -146,7 +146,12 @@ export const ConnectorController = {
   },
 
   getAuthConnector() {
-    const activeNamespace = ChainController.state.activeCaipNetwork?.chainNamespace
+    const activeNamespace = ChainController.state.activeChain
+    console.log(
+      '>> [ConnectorController] getAuthConnector() activeNamespace:',
+      activeNamespace,
+      state.connectors
+    )
 
     return state.connectors.find(c => c.type === 'AUTH' && c.chain === activeNamespace) as
       | AuthConnector
