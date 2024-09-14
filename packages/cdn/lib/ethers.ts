@@ -1,2 +1,2 @@
 import '@reown/appkit-polyfills'
-export * as Web3modal from '@reown/appkit-ethers'
+export * as AppKit from '@reown/appkit-ethers'
