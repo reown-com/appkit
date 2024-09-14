@@ -5,40 +5,37 @@ import { USEROP_BUILDER_SERVICE_BASE_URL } from './ConstantsUtil'
 
 export type Call = { to: Address; value: bigint; data: Hex }
 
-export type BuildUserOpRequestArguments = {
-  account: Address
+export type UserOperationWithBigIntAsHex = {
+  sender: Address
+  nonce: Hex
+  factory: Address | undefined
+  factoryData: Hex | undefined
+  callData: Hex
+  callGasLimit: Hex
+  verificationGasLimit: Hex
+  preVerificationGas: Hex
+  maxFeePerGas: Hex
+  maxPriorityFeePerGas: Hex
+  paymaster: Address | undefined
+  paymasterVerificationGasLimit: Hex | undefined
+  paymasterPostOpGasLimit: Hex | undefined
+  paymasterData: Hex | undefined
+  signature: Hex
+  initCode?: never
+  paymasterAndData?: never
+}
+
+export type BuildUserOpRequestParams = {
   chainId: number
+  account: Address
   calls: Call[]
   capabilities: {
     paymasterService?: { url: string }
     permissions?: { context: Hex }
   }
 }
-/**
- * UserOperation v0.7
- */
-export type UserOperation = {
-  sender: Address
-  nonce: bigint
-  factory?: Address
-  factoryData?: Hex
-  callData: Hex
-  callGasLimit: bigint
-  verificationGasLimit: bigint
-  preVerificationGas: bigint
-  maxFeePerGas: bigint
-  maxPriorityFeePerGas: bigint
-  paymaster?: Address
-  paymasterVerificationGasLimit?: bigint
-  paymasterPostOpGasLimit?: bigint
-  paymasterData?: Hex
-  signature: Hex
-  initCode?: never
-  paymasterAndData?: never
-}
-
-export type FillUserOpResponse = {
-  userOp: UserOperation
+export type BuildUserOpResponseReturn = {
+  userOp: UserOperationWithBigIntAsHex
   hash: Hex
 }
 
@@ -47,14 +44,14 @@ export type ErrorResponse = {
   error: string
 }
 
-export type SendUserOpWithSignatureParams = {
+export type SendUserOpRequestParams = {
   chainId: number
-  userOp: UserOperation
-  signature: Hex
+  userOp: UserOperationWithBigIntAsHex
+  pci?: string
   permissionsContext?: Hex
 }
-export type SendUserOpWithSignatureResponse = {
-  receipt: Hex
+export type SendUserOpResponseReturn = {
+  userOpId: Hex
 }
 
 // Define a custom error type
@@ -111,8 +108,13 @@ async function sendUserOpBuilderRequest<
   }
 }
 
-export async function buildUserOp(args: BuildUserOpRequestArguments): Promise<FillUserOpResponse> {
-  const response = await sendUserOpBuilderRequest<BuildUserOpRequestArguments, FillUserOpResponse>({
+export async function buildUserOp(
+  args: BuildUserOpRequestParams
+): Promise<BuildUserOpResponseReturn> {
+  const response = await sendUserOpBuilderRequest<
+    BuildUserOpRequestParams,
+    BuildUserOpResponseReturn
+  >({
     url: `${USEROP_BUILDER_SERVICE_BASE_URL}/build`,
     data: args,
     headers: {
@@ -124,12 +126,16 @@ export async function buildUserOp(args: BuildUserOpRequestArguments): Promise<Fi
   return response
 }
 
-export async function sendUserOp(args: SendUserOpWithSignatureParams) {
+export async function sendUserOp(args: SendUserOpRequestParams) {
+  const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
+  if (!projectId) {
+    throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
+  }
   const response = await sendUserOpBuilderRequest<
-    SendUserOpWithSignatureParams,
-    SendUserOpWithSignatureResponse
+    SendUserOpRequestParams,
+    SendUserOpResponseReturn
   >({
-    url: `${USEROP_BUILDER_SERVICE_BASE_URL}/sendUserOp`,
+    url: `${USEROP_BUILDER_SERVICE_BASE_URL}/sendUserOp?projectId=${projectId}`,
     data: args,
     headers: {
       'Content-Type': 'application/json'

@@ -1,8 +1,7 @@
 import type { GrantPermissionsParameters, GrantPermissionsReturnType } from 'viem/experimental'
 import { abi as donutContractAbi, address as donutContractAddress } from './DonutContract'
 import { encodeAbiParameters, hashMessage, parseEther, type Chain } from 'viem'
-import { WalletConnectCosigner } from './WalletConnectCosignerUtils'
-import { buildUserOp, type Call, type FillUserOpResponse } from './UserOpBuilderServiceUtils'
+import { buildUserOp, sendUserOp, type Call } from './UserOpBuilderServiceUtils'
 import { signMessage } from 'viem/accounts'
 import { bigIntReplacer } from './CommonUtils'
 import { sign as signWithPasskey } from 'webauthn-p256'
@@ -26,39 +25,12 @@ export function getPurchaseDonutPermissions(): GrantPermissionsParameters {
           target: donutContractAddress,
           abi: donutContractAbi,
           valueLimit: parseEther('10').toString(),
-          functionName: 'function purchase()'
+          functionName: 'purchase(uint256)'
         },
         policies: []
       }
     ]
   }
-}
-
-async function prepareUserOperationWithPermissions(args: {
-  actions: Call[]
-  chain: Chain
-  permissions: GrantPermissionsReturnType
-}): Promise<FillUserOpResponse> {
-  const { actions, chain, permissions } = args
-  if (!permissions) {
-    throw new Error('No permissions available')
-  }
-  const { signerData, permissionsContext } = permissions
-
-  if (!signerData?.userOpBuilder || !signerData.submitToAddress || !permissionsContext) {
-    throw new Error(`Invalid permissions ${JSON.stringify(permissions, bigIntReplacer)}`)
-  }
-
-  const filledUserOp = await buildUserOp({
-    account: signerData.submitToAddress,
-    chainId: chain.id,
-    calls: actions,
-    capabilities: {
-      permissions: { context: permissionsContext as `0x${string}` }
-    }
-  })
-
-  return filledUserOp
 }
 
 async function signUserOperationWithPasskey(args: {
@@ -95,20 +67,6 @@ async function signUserOperationWithPasskey(args: {
   return passkeySignature
 }
 
-async function signUserOperationWithECDSAKey(args: {
-  ecdsaPrivateKey: `0x${string}`
-  userOpHash: `0x${string}`
-}): Promise<`0x${string}`> {
-  const { ecdsaPrivateKey, userOpHash } = args
-
-  const dappSignatureOnUserOp = await signMessage({
-    privateKey: ecdsaPrivateKey,
-    message: { raw: userOpHash }
-  })
-
-  return dappSignatureOnUserOp
-}
-
 export async function executeActionsWithPasskeyAndCosignerPermissions(args: {
   actions: Call[]
   passkeyId: string
@@ -117,19 +75,26 @@ export async function executeActionsWithPasskeyAndCosignerPermissions(args: {
   pci: string
 }): Promise<`0x${string}`> {
   const { actions, passkeyId, chain, permissions, pci } = args
-  const accountAddress = permissions?.signerData?.submitToAddress
-  if (!accountAddress) {
-    throw new Error(`Unable to get account details from granted permission`)
-  }
-
   if (!pci) {
     throw new Error('No WC_COSIGNER PCI data available')
   }
-  const caip10Address = `eip155:${chain?.id}:${accountAddress}`
-  const filledUserOp = await prepareUserOperationWithPermissions({
-    actions,
-    chain,
-    permissions
+  if (!permissions) {
+    throw new Error('No permissions available')
+  }
+  const { signerData, permissionsContext } = permissions
+
+  if (!signerData?.userOpBuilder || !signerData.submitToAddress || !permissionsContext) {
+    throw new Error(`Invalid permissions ${JSON.stringify(permissions, bigIntReplacer)}`)
+  }
+  const accountAddress = signerData.submitToAddress
+
+  const filledUserOp = await buildUserOp({
+    account: accountAddress,
+    chainId: chain.id,
+    calls: actions,
+    capabilities: {
+      permissions: { context: permissionsContext as `0x${string}` }
+    }
   })
   const userOp = filledUserOp.userOp
   const signature = await signUserOperationWithPasskey({
@@ -138,25 +103,14 @@ export async function executeActionsWithPasskeyAndCosignerPermissions(args: {
   })
 
   userOp.signature = signature
-
-  const walletConnectCosigner = new WalletConnectCosigner()
-  const cosignResponse = await walletConnectCosigner.coSignUserOperation(caip10Address, {
+  const sendUserOpResponse = await sendUserOp({
+    userOp,
     pci,
-    userOp: {
-      ...userOp,
-      callData: userOp.callData,
-      callGasLimit: BigInt(userOp.callGasLimit),
-      nonce: BigInt(userOp.nonce),
-      preVerificationGas: BigInt(userOp.preVerificationGas),
-      verificationGasLimit: BigInt(userOp.verificationGasLimit),
-      sender: userOp.sender,
-      signature: userOp.signature,
-      maxFeePerGas: BigInt(userOp.maxFeePerGas),
-      maxPriorityFeePerGas: BigInt(userOp.maxPriorityFeePerGas)
-    }
+    chainId: chain.id,
+    permissionsContext: permissionsContext as `0x${string}`
   })
 
-  return cosignResponse.receipt as `0x${string}`
+  return sendUserOpResponse.userOpId
 }
 
 export async function executeActionsWithECDSAAndCosignerPermissions(args: {
@@ -167,44 +121,42 @@ export async function executeActionsWithECDSAAndCosignerPermissions(args: {
   pci: string
 }): Promise<`0x${string}`> {
   const { ecdsaPrivateKey, actions, chain, permissions, pci } = args
-  const accountAddress = permissions?.signerData?.submitToAddress
-  if (!accountAddress) {
-    throw new Error(`Unable to get account details from granted permission`)
-  }
-
   if (!pci) {
     throw new Error('No WC_COSIGNER PCI data available')
   }
-  const caip10Address = `eip155:${chain?.id}:${accountAddress}`
-  const filledUserOp = await prepareUserOperationWithPermissions({
-    actions,
-    chain,
-    permissions
-  })
-  const userOp = filledUserOp.userOp
+  if (!permissions) {
+    throw new Error('No permissions available')
+  }
+  const { signerData, permissionsContext } = permissions
 
-  const dappSignature = await signUserOperationWithECDSAKey({
-    ecdsaPrivateKey,
-    userOpHash: filledUserOp.hash
-  })
+  if (!signerData?.submitToAddress || !permissionsContext) {
+    throw new Error(`Invalid permissions ${JSON.stringify(permissions, bigIntReplacer)}`)
+  }
+  const accountAddress = signerData.submitToAddress
 
-  userOp.signature = dappSignature
-  const walletConnectCosigner = new WalletConnectCosigner()
-  const cosignResponse = await walletConnectCosigner.coSignUserOperation(caip10Address, {
-    pci,
-    userOp: {
-      ...userOp,
-      callData: userOp.callData,
-      callGasLimit: BigInt(userOp.callGasLimit),
-      nonce: BigInt(userOp.nonce),
-      preVerificationGas: BigInt(userOp.preVerificationGas),
-      verificationGasLimit: BigInt(userOp.verificationGasLimit),
-      sender: userOp.sender,
-      signature: userOp.signature,
-      maxFeePerGas: BigInt(userOp.maxFeePerGas),
-      maxPriorityFeePerGas: BigInt(userOp.maxPriorityFeePerGas)
+  const filledUserOp = await buildUserOp({
+    account: accountAddress,
+    chainId: chain.id,
+    calls: actions,
+    capabilities: {
+      permissions: { context: permissionsContext as `0x${string}` }
     }
   })
 
-  return cosignResponse.receipt as `0x${string}`
+  const userOp = filledUserOp.userOp
+
+  const dappSignature = await signMessage({
+    privateKey: ecdsaPrivateKey,
+    message: { raw: filledUserOp.hash }
+  })
+  userOp.signature = dappSignature
+
+  const sendUserOpResponse = await sendUserOp({
+    userOp,
+    pci,
+    chainId: chain.id,
+    permissionsContext: permissionsContext as `0x${string}`
+  })
+
+  return sendUserOpResponse.userOpId
 }
