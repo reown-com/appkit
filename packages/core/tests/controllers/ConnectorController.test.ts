@@ -82,7 +82,7 @@ const zerionConnector = {
 } as const
 
 // -- Tests --------------------------------------------------------------------
-describe.only('ConnectorController', () => {
+describe('ConnectorController', () => {
   beforeAll(() => {
     ChainController.state.activeChain = ConstantsUtil.CHAIN.EVM
   })
