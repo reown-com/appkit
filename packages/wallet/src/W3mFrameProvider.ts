@@ -506,10 +506,12 @@ export class W3mFrameProvider {
   }
 
   private setLastUsedChainId(chainId: string | number) {
-    W3mFrameStorage.set(W3mFrameConstants.LAST_USED_CHAIN_KEY, String(chainId))
+    if (chainId) {
+      W3mFrameStorage.set(W3mFrameConstants.LAST_USED_CHAIN_KEY, String(chainId))
+    }
   }
 
-  private getLastUsedChainId() {
+  public getLastUsedChainId() {
     return Number(W3mFrameStorage.get(W3mFrameConstants.LAST_USED_CHAIN_KEY))
   }
 

@@ -837,11 +837,12 @@ export class EVMEthersClient {
     this.appKit?.setLoading(true)
     const chainId = NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id)
     const caipNetwork = this.caipNetworks.find(c => c.chainId === chainId)
-    // @ts-expect-error - address type will be checked todo(enes|sven)
-    this.appKit?.setCaipAddress(address, this.chainNamespace)
+
+    this.appKit?.setCaipAddress(`eip155:${chainId}:${address}`, this.chainNamespace)
     this.appKit?.setCaipNetwork(caipNetwork)
     this.appKit?.setStatus('connected', this.chainNamespace)
     this.appKit?.setPreferredAccountType(type as W3mFrameTypes.AccountType, this.chainNamespace)
+
     this.syncAccount({
       address: address as Address
     }).then(() => this.appKit?.setLoading(false))

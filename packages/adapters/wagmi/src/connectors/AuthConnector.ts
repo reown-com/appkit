@@ -35,12 +35,20 @@ export function authConnector(parameters: AuthParameters) {
 
     async connect(options = {}) {
       const provider = await this.getProvider()
-      const { address, chainId } = await provider.connect({
-        chainId: options.chainId
+      let chainId = options.chainId
+      if (options.isReconnecting) {
+        chainId = provider.getLastUsedChainId()
+        if (!chainId) {
+          throw new Error('ChainId not found in provider')
+        }
+      }
+
+      const { address, chainId: frameChainId } = await provider.connect({
+        chainId
       })
       await provider.getSmartAccountEnabledNetworks()
 
-      const parsedChainId = parseChainId(chainId)
+      const parsedChainId = parseChainId(frameChainId)
 
       return {
         accounts: [address as Address],
@@ -123,12 +131,6 @@ export function authConnector(parameters: AuthParameters) {
     onChainChanged(chain) {
       const chainId = Number(chain)
       config.emitter.emit('change', { chainId })
-    },
-
-    async onConnect(connectInfo) {
-      const chainId = Number(connectInfo.chainId)
-      const accounts = await this.getAccounts()
-      config.emitter.emit('connect', { accounts, chainId })
     },
 
     async onDisconnect(_error) {
