@@ -145,17 +145,20 @@ export const ConnectorController = {
     }
   },
 
-  getAuthConnector() {
+  getAuthConnector(): AuthConnector | undefined {
     const activeNamespace = ChainController.state.activeChain
-    console.log(
-      '>> [ConnectorController] getAuthConnector() activeNamespace:',
-      activeNamespace,
-      state.connectors
-    )
+    const authConnector = state.connectors.find(c => c.id === 'w3mAuth')
+    if (!authConnector) {
+      return undefined
+    }
 
-    return state.connectors.find(c => c.type === 'AUTH' && c.chain === activeNamespace) as
-      | AuthConnector
-      | undefined
+    if (authConnector.type === 'MULTI_CHAIN' && authConnector?.connectors?.length) {
+      return authConnector.connectors.find(c => c.chain === activeNamespace) as
+        | AuthConnector
+        | undefined
+    }
+
+    return authConnector as AuthConnector
   },
 
   getAnnouncedConnectorRdns() {
