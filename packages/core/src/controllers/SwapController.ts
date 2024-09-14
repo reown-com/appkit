@@ -451,7 +451,7 @@ export const SwapController = {
       return { gasPrice: null, gasPriceInUSD: null }
     }
 
-    switch (NetworkController.state.caipNetwork?.chainNamespace) {
+    switch (ChainController.state?.activeCaipNetwork?.chainNamespace) {
       case 'solana':
         state.gasFee = res.standard
         state.gasPriceInUSD = NumberUtil.multiply(res.standard, state.networkPrice)

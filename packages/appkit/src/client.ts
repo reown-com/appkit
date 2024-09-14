@@ -24,10 +24,16 @@ import {
   EnsController,
   OptionsController,
   NetworkController,
-  AssetUtil
+  AssetUtil,
+  ApiController
 } from '@reown/appkit-core'
 import { setColorTheme, setThemeVariables } from '@reown/appkit-ui'
-import { ConstantsUtil, type CaipNetwork, type ChainNamespace } from '@reown/appkit-common'
+import {
+  ConstantsUtil,
+  type CaipNetwork,
+  type ChainNamespace,
+  CaipNetworksUtil
+} from '@reown/appkit-common'
 import type { AppKitOptions } from './utils/TypesUtil.js'
 import { UniversalAdapterClient } from './universal-adapter/client.js'
 import { PresetsUtil } from '@reown/appkit-utils'
@@ -445,6 +451,9 @@ export class AppKit {
     OptionsController.setAllWallets(options.allWallets)
     OptionsController.setIncludeWalletIds(options.includeWalletIds)
     OptionsController.setExcludeWalletIds(options.excludeWalletIds)
+    if (options.excludeWalletIds) {
+      ApiController.searchWalletByIds({ ids: options.excludeWalletIds })
+    }
     OptionsController.setFeaturedWalletIds(options.featuredWalletIds)
     OptionsController.setTokens(options.tokens)
     OptionsController.setTermsConditionsUrl(options.termsConditionsUrl)
@@ -486,7 +495,8 @@ export class AppKit {
   private initializeUniversalAdapter(options: AppKitOptions) {
     const caipNetworks = this.extendCaipNetworksWithImages(
       options.caipNetworks,
-      options.chainImages
+      options.chainImages,
+      options.projectId
     )
     this.universalAdapter = new UniversalAdapterClient({
       ...options,
@@ -505,7 +515,8 @@ export class AppKit {
     options.adapters?.forEach(adapter => {
       const caipNetworks = this.extendCaipNetworksWithImages(
         options.caipNetworks,
-        options.chainImages
+        options.chainImages,
+        options.projectId
       )
       options.caipNetworks = caipNetworks
       // @ts-expect-error will introduce construct later
@@ -536,12 +547,14 @@ export class AppKit {
 
   private extendCaipNetworksWithImages(
     caipNetworks: CaipNetwork[],
-    caipNetworkImages?: Record<number | string, string>
+    caipNetworkImages: Record<number | string, string> | undefined,
+    projectId: string
   ): CaipNetwork[] {
     return caipNetworks.map(caipNetwork => ({
       ...caipNetwork,
       imageId: PresetsUtil.NetworkImageIds[caipNetwork.chainId],
-      imageUrl: caipNetworkImages?.[caipNetwork.chainId]
+      imageUrl: caipNetworkImages?.[caipNetwork.chainId],
+      rpcUrl: CaipNetworksUtil.extendRpcUrlWithProjectId(caipNetwork.rpcUrl, projectId)
     }))
   }
 }

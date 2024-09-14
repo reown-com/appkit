@@ -55,7 +55,8 @@ const mockDappData = {
     icons: ['icon.png']
   },
   projectId: '1234',
-  sdkVersion: 'react-wagmi-4.0.13' as SdkVersion
+  sdkVersion: 'react-wagmi-4.0.13' as SdkVersion,
+  sdkType: 'appkit'
 }
 const metamaskConnector = {
   id: 'metamask',
