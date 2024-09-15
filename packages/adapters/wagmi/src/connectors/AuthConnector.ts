@@ -29,7 +29,7 @@ export function authConnector(parameters: AuthParameters) {
 
   return createConnector<W3mFrameProvider, Properties>(config => ({
     id: ConstantsUtil.AUTH_CONNECTOR_ID,
-    name: 'Web3Modal Auth',
+    name: 'AppKit Auth',
     type: 'w3mAuth',
     chain: CommonConstantsUtil.CHAIN.EVM,
 

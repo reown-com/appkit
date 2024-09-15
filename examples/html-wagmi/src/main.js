@@ -1,6 +1,6 @@
 import { arbitrum, mainnet } from '@reown/appkit/chains'
 import { EVMWagmiClient } from '@reown/appkit-adapter-wagmi'
-import { createWeb3Modal } from '@reown/appkit'
+import { createAppKit } from '@reown/appkit'
 
 // @ts-expect-error 1. Get projectId
 const projectId = import.meta.env.VITE_PROJECT_ID
@@ -15,12 +15,12 @@ const wagmiAdapter = new EVMWagmiClient({
 })
 
 // 3. Create modal
-const modal = createWeb3Modal({
+const modal = createAppKit({
   adapters: [wagmiAdapter],
   metadata: {
     name: 'Html Example',
     description: 'Html Example',
-    url: 'https://web3modal.com',
+    url: 'https://reown.com/appkit',
     icons: ['https://avatars.githubusercontent.com/u/37784886']
   },
   caipNetworks: [mainnet, arbitrum],

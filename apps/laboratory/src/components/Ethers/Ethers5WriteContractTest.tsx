@@ -1,8 +1,8 @@
 import { Button, Stack, Link, Text, Spacer } from '@chakra-ui/react'
 import {
-  useWeb3ModalAccount,
-  useWeb3ModalNetwork,
-  useWeb3ModalProvider,
+  useAppKitAccount,
+  useAppKitNetwork,
+  useAppKitProvider,
   type Provider
 } from '@reown/appkit/react'
 import { ethers } from 'ethers5'
@@ -16,9 +16,9 @@ export function Ethers5WriteContractTest() {
   const [loading, setLoading] = useState(false)
 
   const toast = useChakraToast()
-  const { address } = useWeb3ModalAccount()
-  const { chainId } = useWeb3ModalNetwork()
-  const { walletProvider } = useWeb3ModalProvider<Provider>('eip155')
+  const { address } = useAppKitAccount()
+  const { chainId } = useAppKitNetwork()
+  const { walletProvider } = useAppKitProvider<Provider>('eip155')
 
   async function onSendTransaction() {
     try {

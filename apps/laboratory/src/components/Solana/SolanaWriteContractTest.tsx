@@ -9,18 +9,18 @@ import {
   VersionedTransaction,
   TransactionMessage
 } from '@solana/web3.js'
-import { useWeb3ModalNetwork, useWeb3ModalProvider } from '@reown/appkit/react'
+import { useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
 
 import { COUNTER_ACCOUNT_SIZE } from '../../utils/SolanaConstants'
 import { deserializeCounterAccount, detectProgramId } from '../../utils/SolanaUtil'
 import { useChakraToast } from '../Toast'
-import { useWeb3ModalConnection, type Provider } from '@reown/appkit-adapter-solana/react'
+import { useAppKitConnection, type Provider } from '@reown/appkit-adapter-solana/react'
 
 export function SolanaWriteContractTest() {
   const toast = useChakraToast()
-  const { caipNetwork } = useWeb3ModalNetwork()
-  const { walletProvider } = useWeb3ModalProvider<Provider>('solana')
-  const { connection } = useWeb3ModalConnection()
+  const { caipNetwork } = useAppKitNetwork()
+  const { walletProvider } = useAppKitProvider<Provider>('solana')
+  const { connection } = useAppKitConnection()
   const [loading, setLoading] = useState(false)
 
   async function onIncrementCounter() {

@@ -100,7 +100,7 @@ const OPTIONAL_METHODS = [
 ]
 
 // @ts-expect-error: Overridden state type is correct
-interface Web3ModalState extends PublicStateControllerState {
+interface AppKitState extends PublicStateControllerState {
   selectedNetworkId: number | undefined
 }
 
@@ -217,7 +217,7 @@ export class EVMWagmiClient implements ChainAdapter {
 
   public construct(appKit: AppKit, options: AppKitOptions) {
     if (!options.projectId) {
-      throw new Error('web3modal:initialize - projectId is undefined')
+      throw new Error('appkit:initialize - projectId is undefined')
     }
 
     this.appKit = appKit
@@ -228,7 +228,7 @@ export class EVMWagmiClient implements ChainAdapter {
     this.setCustomConnectors(options, appKit)
 
     if (!this.wagmiConfig) {
-      throw new Error('web3modal:wagmiConfig - is undefined')
+      throw new Error('appkit:wagmiConfig - is undefined')
     }
 
     this.networkControllerClient = {
@@ -561,7 +561,7 @@ export class EVMWagmiClient implements ChainAdapter {
   }
 
   // @ts-expect-error: Overriden state type is correct
-  public override subscribeState(callback: (state: Web3ModalState) => void) {
+  public override subscribeState(callback: (state: AppKitState) => void) {
     return this.appKit?.subscribeState((state: PublicStateControllerState) =>
       callback({
         ...state,
@@ -717,13 +717,13 @@ export class EVMWagmiClient implements ChainAdapter {
     }
   }
 
-  private async syncWalletConnectName(address: Hex) {
+  private async syncReownName(address: Hex) {
     if (!this.appKit) {
-      throw new Error('syncWalletConnectName - appKit is undefined')
+      throw new Error('syncReownName - appKit is undefined')
     }
 
     try {
-      const registeredWcNames = await this.appKit.getWalletConnectName(address)
+      const registeredWcNames = await this.appKit.getReownName(address)
       if (registeredWcNames[0]) {
         const wcName = registeredWcNames[0]
         this.appKit?.setProfileName(wcName.name, this.chainNamespace)
@@ -748,7 +748,7 @@ export class EVMWagmiClient implements ChainAdapter {
       this.appKit?.setProfileImage(avatar, this.chainNamespace)
 
       if (!name) {
-        await this.syncWalletConnectName(address)
+        await this.syncReownName(address)
       }
     } catch {
       if (chainId === mainnet.id) {
@@ -763,11 +763,11 @@ export class EVMWagmiClient implements ChainAdapter {
             this.appKit?.setProfileImage(profileImage, this.chainNamespace)
           }
         } else {
-          await this.syncWalletConnectName(address)
+          await this.syncReownName(address)
           this.appKit?.setProfileImage(null, this.chainNamespace)
         }
       } else {
-        await this.syncWalletConnectName(address)
+        await this.syncReownName(address)
         this.appKit?.setProfileImage(null, this.chainNamespace)
       }
     }

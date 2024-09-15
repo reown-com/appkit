@@ -4,7 +4,7 @@ import { CoreHelperUtil } from '../src/utils/CoreHelperUtil.js'
 import { ChainController } from '../src/controllers/ChainController.js'
 
 // -- Hooks ------------------------------------------------------------
-export function useWeb3ModalNetwork() {
+export function useAppKitNetwork() {
   const { activeCaipNetwork } = useSnapshot(ChainController.state)
 
   return {
@@ -12,7 +12,7 @@ export function useWeb3ModalNetwork() {
     chainId: activeCaipNetwork?.chainId
   }
 }
-export function useWeb3ModalAccount() {
+export function useAppKitAccount() {
   const { status } = useSnapshot(AccountController.state)
   const { activeCaipAddress } = useSnapshot(ChainController.state)
 

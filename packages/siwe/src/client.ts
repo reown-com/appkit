@@ -20,7 +20,7 @@ import { NetworkUtil, type CaipAddress } from '@reown/appkit-common'
 import { ConstantsUtil } from '../core/utils/ConstantsUtil.js'
 
 // -- Client -------------------------------------------------------------------- //
-export class Web3ModalSIWEClient {
+export class AppKitSIWEClient {
   public options: SIWEControllerClient['options']
 
   public methods: SIWEClientMethods

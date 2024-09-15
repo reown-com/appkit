@@ -43,7 +43,7 @@ export const mockAppKit = {
   setProfileImage: vi.fn(),
   setAddressExplorerUrl: vi.fn(),
   setBalance: vi.fn(),
-  getWalletConnectName: vi.fn().mockResolvedValue([]),
+  getReownName: vi.fn().mockResolvedValue([]),
   fetchIdentity: vi.fn().mockResolvedValue(null),
   setClientId: vi.fn(),
   universalAdapter: {

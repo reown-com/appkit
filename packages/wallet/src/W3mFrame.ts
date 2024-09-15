@@ -31,7 +31,7 @@ export class W3mFrame {
       this.frameLoadPromiseResolver = { resolve, reject }
     })
 
-    // Create iframe only when sdk is initialised from dapp / web3modal
+    // Create iframe only when sdk is initialised from dapp / appkit
     if (isAppClient) {
       this.frameLoadPromise = new Promise((resolve, reject) => {
         this.frameLoadPromiseResolver = { resolve, reject }

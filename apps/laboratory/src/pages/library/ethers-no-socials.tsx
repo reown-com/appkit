@@ -1,6 +1,6 @@
 import { EthersTests } from '../../components/Ethers/EthersTests'
 import { AppKitButtons } from '../../components/AppKitButtons'
-import { createWeb3Modal } from '@reown/appkit/react'
+import { createAppKit } from '@reown/appkit/react'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { EthersModalInfo } from '../../components/Ethers/EthersModalInfo'
@@ -10,7 +10,7 @@ import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@reown/ap
 
 const ethersAdapter = new EVMEthersClient()
 
-const modal = createWeb3Modal({
+const modal = createAppKit({
   adapters: [ethersAdapter],
   caipNetworks: [arbitrum, mainnet, optimism, polygon, zkSync, sepolia],
   defaultCaipNetwork: mainnet,

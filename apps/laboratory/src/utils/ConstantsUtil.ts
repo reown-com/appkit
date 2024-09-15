@@ -19,7 +19,7 @@ export function getPublicUrl() {
     return `https://${vercelUrl}`
   }
 
-  return 'https://lab.web3modal.com'
+  return 'https://appkit-lab.reown.org'
 }
 
 export const CUSTOM_WALLET = 'wc:custom_wallet'

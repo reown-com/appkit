@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { useWeb3ModalNetwork, useWeb3ModalAccount } from '../../exports/react'
+import { useAppKitNetwork, useAppKitAccount } from '../../exports/react'
 
 import type { CaipNetwork } from '@reown/appkit-common'
 import { AccountController, ChainController } from '../../exports'
@@ -10,7 +10,7 @@ vi.mock('valtio', () => ({
 
 const { useSnapshot } = vi.mocked(await import('valtio'), true)
 
-describe('useWeb3ModalNetwork', () => {
+describe('useAppKitNetwork', () => {
   beforeEach(() => {
     vi.resetAllMocks()
   })
@@ -32,7 +32,7 @@ describe('useWeb3ModalNetwork', () => {
       activeCaipNetwork: mockNetwork
     })
 
-    const { caipNetwork, chainId } = useWeb3ModalNetwork()
+    const { caipNetwork, chainId } = useAppKitNetwork()
 
     expect(caipNetwork).toBe(mockNetwork)
     expect(chainId).toBe(1)
@@ -40,7 +40,7 @@ describe('useWeb3ModalNetwork', () => {
   })
 })
 
-describe('useWeb3ModalAccount', () => {
+describe('useAppKitAccount', () => {
   beforeEach(() => {
     vi.resetAllMocks()
   })
@@ -54,7 +54,7 @@ describe('useWeb3ModalAccount', () => {
       .mockReturnValueOnce({ status: 'connected' }) // For AccountController
       .mockReturnValueOnce({ activeCaipAddress: mockCaipAddress }) // For ChainController
 
-    const result = useWeb3ModalAccount()
+    const result = useAppKitAccount()
 
     expect(result).toEqual({
       address: mockPlainAddress,
@@ -72,7 +72,7 @@ describe('useWeb3ModalAccount', () => {
       .mockReturnValueOnce({ status: 'disconnected' })
       .mockReturnValueOnce({ activeCaipAddress: undefined })
 
-    const result = useWeb3ModalAccount()
+    const result = useAppKitAccount()
 
     expect(result).toEqual({
       address: undefined,

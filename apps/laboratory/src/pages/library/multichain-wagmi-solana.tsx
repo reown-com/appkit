@@ -1,5 +1,5 @@
 import React from 'react'
-import { createWeb3Modal } from '@reown/appkit/react'
+import { createAppKit } from '@reown/appkit/react'
 import { EVMWagmiClient } from '@reown/appkit-adapter-wagmi'
 import { SolanaWeb3JsClient } from '@reown/appkit-adapter-solana/react'
 import { ThemeStore } from '../../utils/StoreUtil'
@@ -37,7 +37,7 @@ const solanaWeb3JsAdapter = new SolanaWeb3JsClient({
   wallets: [new HuobiWalletAdapter(), new SolflareWalletAdapter()]
 })
 
-const modal = createWeb3Modal({
+const modal = createAppKit({
   adapters: [wagmiAdapter, solanaWeb3JsAdapter],
   caipNetworks: [
     mainnet,

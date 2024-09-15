@@ -14,7 +14,7 @@ export { authConnector } from '@reown/appkit-adapter-wagmi'
 export type WagmiAppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 'sdkVersion'> &
   AdapterOptions<Config>
 
-export function createWeb3Modal(options: WagmiAppKitOptions) {
+export function createAppKit(options: WagmiAppKitOptions) {
   const wagmiAdapter = new EVMWagmiClient({
     caipNetworks: options.caipNetworks,
     projectId: options.projectId

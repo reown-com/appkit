@@ -91,7 +91,7 @@ export class W3mConnectingWcView extends LitElement {
       StorageUtil.setWalletConnectDeepLink(wcLinking)
     }
     if (recentWallet) {
-      StorageUtil.setWeb3ModalRecent(recentWallet)
+      StorageUtil.setAppKitRecent(recentWallet)
     }
 
     EventsController.sendEvent({

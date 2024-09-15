@@ -4,6 +4,7 @@ import type { AuthConnector, Connector } from '../utils/TypeUtil.js'
 import { getW3mThemeVariables } from '@reown/appkit-common'
 import { OptionsController } from './OptionsController.js'
 import { ThemeController } from './ThemeController.js'
+import { ChainController } from './ChainController.js'
 
 // -- Types --------------------------------------------- //
 interface ConnectorWithProviders extends Connector {
@@ -144,8 +145,20 @@ export const ConnectorController = {
     }
   },
 
-  getAuthConnector() {
-    return state.connectors.find(c => c.type === 'AUTH') as AuthConnector | undefined
+  getAuthConnector(): AuthConnector | undefined {
+    const activeNamespace = ChainController.state.activeChain
+    const authConnector = state.connectors.find(c => c.id === 'w3mAuth')
+    if (!authConnector) {
+      return undefined
+    }
+
+    if (authConnector.type === 'MULTI_CHAIN' && authConnector?.connectors?.length) {
+      return authConnector.connectors.find(c => c.chain === activeNamespace) as
+        | AuthConnector
+        | undefined
+    }
+
+    return authConnector as AuthConnector
   },
 
   getAnnouncedConnectorRdns() {

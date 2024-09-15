@@ -22,15 +22,15 @@
     "@reown/appkit-polyfills": "workspace:*",
     "zod": "3.22.4"
   },
-  "author": "reown <reown.com>",
+  "author": "Reown <support@reown.com> (https://reown.com)",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/web3modal/web3modal",
+  "homepage": "https://github.com/reown-com/appkit",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/WalletConnect/shadow-appkit.git"
   },
   "bugs": {
-    "url": "https://github.com/web3modal/web3modal/issues"
+    "url": "https://github.com/reown-com/appkit/issues"
   },
   "devDependencies": {
     "jsdom": "24.1.0",

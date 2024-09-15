@@ -215,13 +215,13 @@ describe('Wagmi Client', () => {
       const mockAddress = '0x1234567890123456789012345678901234567890'
       const mockWcName = 'MockWallet'
 
-      mockAppKit.getWalletConnectName = vi.fn().mockResolvedValue([{ name: mockWcName }])
+      mockAppKit.getReownName = vi.fn().mockResolvedValue([{ name: mockWcName }])
 
       const setProfileNameSpy = vi.spyOn(mockAppKit, 'setProfileName')
 
-      await (mockWagmiClient as any).syncWalletConnectName(mockAddress)
+      await (mockWagmiClient as any).syncReownName(mockAddress)
 
-      expect(mockAppKit.getWalletConnectName).toHaveBeenCalledWith(mockAddress)
+      expect(mockAppKit.getReownName).toHaveBeenCalledWith(mockAddress)
 
       expect(setProfileNameSpy).toHaveBeenCalledWith(mockWcName, 'eip155')
     })
@@ -229,13 +229,13 @@ describe('Wagmi Client', () => {
     it('should set profile name to null if no WalletConnect name is found', async () => {
       const mockAddress = '0x1234567890123456789012345678901234567890'
 
-      mockAppKit.getWalletConnectName = vi.fn().mockResolvedValue([])
+      mockAppKit.getReownName = vi.fn().mockResolvedValue([])
 
       const setProfileNameSpy = vi.spyOn(mockAppKit, 'setProfileName')
 
-      await (mockWagmiClient as any).syncWalletConnectName(mockAddress)
+      await (mockWagmiClient as any).syncReownName(mockAddress)
 
-      expect(mockAppKit.getWalletConnectName).toHaveBeenCalledWith(mockAddress)
+      expect(mockAppKit.getReownName).toHaveBeenCalledWith(mockAddress)
 
       expect(setProfileNameSpy).toHaveBeenCalledWith(null, 'eip155')
     })
@@ -243,13 +243,13 @@ describe('Wagmi Client', () => {
     it('should handle errors and set profile name to null', async () => {
       const mockAddress = '0x1234567890123456789012345678901234567890'
 
-      mockAppKit.getWalletConnectName = vi.fn().mockRejectedValue(new Error('Mock error'))
+      mockAppKit.getReownName = vi.fn().mockRejectedValue(new Error('Mock error'))
 
       const setProfileNameSpy = vi.spyOn(mockAppKit, 'setProfileName')
 
-      await (mockWagmiClient as any).syncWalletConnectName(mockAddress)
+      await (mockWagmiClient as any).syncReownName(mockAddress)
 
-      expect(mockAppKit.getWalletConnectName).toHaveBeenCalledWith(mockAddress)
+      expect(mockAppKit.getReownName).toHaveBeenCalledWith(mockAddress)
 
       expect(setProfileNameSpy).toHaveBeenCalledWith(null, 'eip155')
     })

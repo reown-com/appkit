@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Button, Stack, Text, Spacer, Link } from '@chakra-ui/react'
-import { useWeb3ModalAccount, useWeb3ModalNetwork, useWeb3ModalProvider } from '@reown/appkit/react'
+import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
 import {
   PublicKey,
   Transaction,
@@ -11,7 +11,7 @@ import {
 
 import { solana } from '@reown/appkit/chains'
 import { useChakraToast } from '../Toast'
-import { type Provider, useWeb3ModalConnection } from '@reown/appkit-adapter-solana/react'
+import { type Provider, useAppKitConnection } from '@reown/appkit-adapter-solana/react'
 
 const PHANTOM_TESTNET_ADDRESS = '8vCyX7oB6Pc3pbWMGYYZF5pbSnAdQ7Gyr32JqxqCy8ZR'
 const recipientAddress = new PublicKey(PHANTOM_TESTNET_ADDRESS)
@@ -19,10 +19,10 @@ const amountInLamports = 10_000_000
 
 export function SolanaSendTransactionTest() {
   const toast = useChakraToast()
-  const { address } = useWeb3ModalAccount()
-  const { caipNetwork } = useWeb3ModalNetwork()
-  const { walletProvider } = useWeb3ModalProvider<Provider>('solana')
-  const { connection } = useWeb3ModalConnection()
+  const { address } = useAppKitAccount()
+  const { caipNetwork } = useAppKitNetwork()
+  const { walletProvider } = useAppKitProvider<Provider>('solana')
+  const { connection } = useAppKitConnection()
   const [loading, setLoading] = useState(false)
 
   async function onSendTransaction() {

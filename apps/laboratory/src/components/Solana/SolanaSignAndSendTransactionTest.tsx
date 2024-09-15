@@ -11,8 +11,8 @@ import {
 
 import { solana } from '@reown/appkit/chains'
 import { useChakraToast } from '../Toast'
-import { useWeb3ModalAccount, useWeb3ModalNetwork, useWeb3ModalProvider } from '@reown/appkit/react'
-import { useWeb3ModalConnection, type Provider } from '@reown/appkit-adapter-solana/react'
+import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
+import { useAppKitConnection, type Provider } from '@reown/appkit-adapter-solana/react'
 
 const PHANTOM_TESTNET_ADDRESS = '8vCyX7oB6Pc3pbWMGYYZF5pbSnAdQ7Gyr32JqxqCy8ZR'
 const recipientAddress = new PublicKey(PHANTOM_TESTNET_ADDRESS)
@@ -20,10 +20,10 @@ const amountInLamports = 10_000_000
 
 export function SolanaSignAndSendTransaction() {
   const toast = useChakraToast()
-  const { address } = useWeb3ModalAccount()
-  const { caipNetwork } = useWeb3ModalNetwork()
-  const { walletProvider } = useWeb3ModalProvider<Provider>('solana')
-  const { connection } = useWeb3ModalConnection()
+  const { address } = useAppKitAccount()
+  const { caipNetwork } = useAppKitNetwork()
+  const { walletProvider } = useAppKitProvider<Provider>('solana')
+  const { connection } = useAppKitConnection()
 
   const [loading, setLoading] = useState(false)
 

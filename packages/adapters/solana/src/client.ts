@@ -40,7 +40,8 @@ import {
 } from '@reown/appkit-wallet'
 import { ConstantsUtil as CoreConstantsUtil } from '@reown/appkit-core'
 import { withSolanaNamespace } from './utils/withSolanaNamespace.js'
-import type { AppKit, AppKitOptions } from '@reown/appkit'
+import type { AppKit } from '@reown/appkit'
+import type { AppKitOptions as CoreOptions } from '@reown/appkit'
 import { ProviderUtil } from '@reown/appkit/store'
 import { W3mFrameProviderSingleton } from '@reown/appkit/auth-provider'
 import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
@@ -52,7 +53,7 @@ export interface AdapterOptions {
   wallets?: BaseWalletAdapter[]
 }
 
-export type Web3ModalOptions = Omit<AdapterOptions, '_sdkVersion' | 'isUniversalProvider'>
+export type AppKitOptions = Omit<AdapterOptions, '_sdkVersion' | 'isUniversalProvider'>
 
 // -- Client --------------------------------------------------------------------
 export class SolanaWeb3JsClient implements ChainAdapter {
@@ -62,7 +63,7 @@ export class SolanaWeb3JsClient implements ChainAdapter {
 
   private w3mFrameProvider?: W3mFrameProvider
 
-  public options: AppKitOptions | undefined = undefined
+  public options: CoreOptions | undefined = undefined
 
   public wallets?: BaseWalletAdapter[]
 
@@ -116,7 +117,7 @@ export class SolanaWeb3JsClient implements ChainAdapter {
     )
   }
 
-  public construct(appKit: AppKit, options: AppKitOptions) {
+  public construct(appKit: AppKit, options: CoreOptions) {
     const { projectId, caipNetworks } = options
 
     if (!options) {
@@ -514,7 +515,7 @@ export class SolanaWeb3JsClient implements ChainAdapter {
 
   private watchProvider(provider: Provider) {
     /*
-     * The auth RPC request handlers should be moved to the primary scaffold (Web3ModalScaffold).
+     * The auth RPC request handlers should be moved to the primary scaffold (appkit).
      * They are replicated in wagmi and ethers clients and the behavior should be kept the same
      * between any client.
      */

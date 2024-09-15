@@ -1,4 +1,4 @@
-import { useWeb3ModalAccount, useWeb3ModalNetwork } from '@reown/appkit/react'
+import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
 import {
   StackDivider,
   Card,
@@ -21,8 +21,8 @@ import { SolanaSignAllTransactionsTest } from './SolanaSignAllTransactionsTest'
 import { SolanaSignJupiterSwapTest } from './SolanaSignJupiterSwapTest'
 
 export function SolanaTests() {
-  const { isConnected } = useWeb3ModalAccount()
-  const { caipNetwork } = useWeb3ModalNetwork()
+  const { isConnected } = useAppKitAccount()
+  const { caipNetwork } = useAppKitNetwork()
 
   return isConnected ? (
     <Card marginTop={10} marginBottom={10}>

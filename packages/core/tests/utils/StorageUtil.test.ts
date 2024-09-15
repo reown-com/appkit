@@ -93,17 +93,17 @@ describe('StorageUtil', () => {
     })
   })
 
-  describe('setWeb3ModalRecent', () => {
+  describe('setAppKitRecent', () => {
     it('should add a new wallet to recent wallets', () => {
       const wallet: WcWallet = { id: 'wallet1', name: 'Wallet 1' }
-      StorageUtil.setWeb3ModalRecent(wallet)
+      StorageUtil.setAppKitRecent(wallet)
       expect(StorageUtil.getRecentWallets()).toEqual([wallet])
     })
 
     it('should not add duplicate wallets', () => {
       const wallet: WcWallet = { id: 'wallet1', name: 'Wallet 1' }
-      StorageUtil.setWeb3ModalRecent(wallet)
-      StorageUtil.setWeb3ModalRecent(wallet)
+      StorageUtil.setAppKitRecent(wallet)
+      StorageUtil.setAppKitRecent(wallet)
       expect(StorageUtil.getRecentWallets()).toEqual([wallet])
     })
 
@@ -111,9 +111,9 @@ describe('StorageUtil', () => {
       const wallet1: WcWallet = { id: 'wallet1', name: 'Wallet 1' }
       const wallet2: WcWallet = { id: 'wallet2', name: 'Wallet 2' }
       const wallet3: WcWallet = { id: 'wallet3', name: 'Wallet 3' }
-      StorageUtil.setWeb3ModalRecent(wallet1)
-      StorageUtil.setWeb3ModalRecent(wallet2)
-      StorageUtil.setWeb3ModalRecent(wallet3)
+      StorageUtil.setAppKitRecent(wallet1)
+      StorageUtil.setAppKitRecent(wallet2)
+      StorageUtil.setAppKitRecent(wallet3)
       expect(StorageUtil.getRecentWallets()).toEqual([wallet3, wallet2])
     })
   })

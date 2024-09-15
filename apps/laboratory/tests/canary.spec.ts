@@ -29,7 +29,7 @@ testConnectedMW.afterEach(async ({ browserName, timingRecords }, testInfo) => {
     await uploadCanaryResultsToCloudWatch(
       ENV,
       REGION,
-      'https://lab.web3modal.com/',
+      'https://appkit-lab.reown.org/',
       'HappyPath.sign',
       testInfo.status === 'passed',
       duration,

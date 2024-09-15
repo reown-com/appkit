@@ -9,7 +9,7 @@ export * from '@reown/appkit-utils/solana'
 export * from '../src/index.js'
 
 // -- Hooks -----------------------------------------------------------
-export function useWeb3ModalConnection(): {
+export function useAppKitConnection(): {
   connection: Connection | undefined
 } {
   const state = ref(SolStoreUtil.state)

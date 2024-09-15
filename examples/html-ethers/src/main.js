@@ -1,5 +1,5 @@
 import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@reown/appkit/chains'
-import { createWeb3Modal } from '@reown/appkit'
+import { createAppKit } from '@reown/appkit'
 import { EVMEthersClient } from '@reown/appkit-adapter-ethers'
 
 // @ts-expect-error 1. Get projectId
@@ -12,7 +12,7 @@ if (!projectId) {
 const ethersAdapter = new EVMEthersClient()
 
 // Instantiate AppKit
-const modal = createWeb3Modal({
+const modal = createAppKit({
   adapters: [ethersAdapter],
   caipNetworks: [mainnet, optimism, polygon, zkSync, arbitrum, sepolia],
   projectId

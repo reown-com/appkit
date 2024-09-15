@@ -8,7 +8,7 @@ import packageJson from '../package.json' assert { type: 'json' }
 export type { SolanaAppKitOptions, Provider }
 
 // -- Setup -------------------------------------------------------------
-export function createWeb3Modal(options: SolanaAppKitOptions) {
+export function createAppKit(options: SolanaAppKitOptions) {
   const solanaAdapter = new SolanaWeb3JsClient({
     wallets: options.wallets
   })

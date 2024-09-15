@@ -10,7 +10,7 @@ import {
   getProviderCachedCapabilities
 } from '../utils/EIP5792Utils'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
-import { useWeb3ModalAccount } from '@reown/appkit/react'
+import { useAppKitAccount } from '@reown/appkit/react'
 
 type UseWagmiAvailableCapabilitiesParams = {
   capability?: string
@@ -30,7 +30,7 @@ export function useWagmiAvailableCapabilities({
     Record<number, WalletCapabilities> | undefined
   >()
 
-  const { address, isConnected } = useWeb3ModalAccount()
+  const { address, isConnected } = useAppKitAccount()
   const { chain, connector } = useAccount()
 
   const supportedChains = useMemo(

@@ -1,4 +1,4 @@
-import { useWeb3Modal } from '@reown/appkit/react'
+import { useAppKit } from '@reown/appkit/react'
 import {
   Stack,
   Card,
@@ -11,7 +11,7 @@ import {
 } from '@chakra-ui/react'
 
 export function AppKitButtons() {
-  const { open } = useWeb3Modal()
+  const { open } = useAppKit()
 
   return (
     <Card marginTop={10}>
