@@ -42,7 +42,8 @@ export class W3mSocialLoginWidget extends LitElement {
       ConnectorController.subscribeKey('connectors', val => {
         this.connectors = val
         this.authConnector = this.connectors.find(c => c.type === 'AUTH')
-      })
+      }),
+      OptionsController.subscribeKey('features', val => (this.features = val))
     )
   }
 
@@ -52,7 +53,7 @@ export class W3mSocialLoginWidget extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const { socials } = this.features
+    const socials = this.features?.socials
 
     if (!this.authConnector || !socials?.length) {
       return null
@@ -74,7 +75,7 @@ export class W3mSocialLoginWidget extends LitElement {
 
   // -- Private ------------------------------------------- //
   private topViewTemplate() {
-    const { socials } = this.features
+    const socials = this.features?.socials
 
     if (!this.authConnector || !socials?.length) {
       return null
@@ -107,7 +108,7 @@ export class W3mSocialLoginWidget extends LitElement {
   }
 
   private bottomViewTemplate() {
-    const { socials } = this.features
+    const socials = this.features?.socials
 
     if (!this.authConnector || !socials?.length) {
       return null

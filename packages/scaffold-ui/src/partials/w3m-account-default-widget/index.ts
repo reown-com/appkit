@@ -43,6 +43,8 @@ export class W3mAccountDefaultWidget extends LitElement {
 
   @state() private balanceSymbol = AccountController.state.balanceSymbol
 
+  @state() private features = OptionsController.state.features
+
   public constructor() {
     super()
     this.unsubscribe.push(
@@ -54,7 +56,8 @@ export class W3mAccountDefaultWidget extends LitElement {
         AccountController.subscribeKey('balance', val => (this.balance = val)),
         AccountController.subscribeKey('balanceSymbol', val => (this.balanceSymbol = val)),
         AccountController.subscribeKey('profileName', val => (this.profileName = val)),
-        AccountController.subscribeKey('profileImage', val => (this.profileImage = val))
+        AccountController.subscribeKey('profileImage', val => (this.profileImage = val)),
+        OptionsController.subscribeKey('features', val => (this.features = val))
       ]
     )
   }
@@ -105,7 +108,7 @@ export class W3mAccountDefaultWidget extends LitElement {
 
   // -- Private ------------------------------------------- //
   private onrampTemplate() {
-    const { onramp } = OptionsController.state.features
+    const onramp = this.features?.onramp
 
     if (!onramp) {
       return null
@@ -141,7 +144,7 @@ export class W3mAccountDefaultWidget extends LitElement {
   }
 
   private swapsTemplate() {
-    const { swaps } = OptionsController.state.features
+    const swaps = this.features?.swaps
     const isSolana = ChainController.state.activeChain === ConstantsUtil.CHAIN.SOLANA
 
     if (!swaps || isSolana) {
