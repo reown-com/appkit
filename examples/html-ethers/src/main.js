@@ -1,4 +1,4 @@
-import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@reown/appkit/chains'
+import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@reown/appkit/networks'
 import { createAppKit } from '@reown/appkit'
 import { EVMEthersClient } from '@reown/appkit-adapter-ethers'
 

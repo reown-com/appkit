@@ -10,7 +10,7 @@ import { SolHelpersUtil } from '@reown/appkit-utils/solana'
 import { SolStoreUtil } from '../utils/SolanaStoreUtil.js'
 import { WalletConnectProvider } from '../providers/WalletConnectProvider'
 import UniversalProvider from '@walletconnect/universal-provider'
-import { solana } from '@reown/appkit/chains'
+import { solana } from '@reown/appkit/networks'
 
 vi.mock('@solana/web3.js', () => ({
   Connection: vi.fn(),

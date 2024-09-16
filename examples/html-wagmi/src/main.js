@@ -1,4 +1,4 @@
-import { arbitrum, mainnet } from '@reown/appkit/chains'
+import { arbitrum, mainnet } from '@reown/appkit/networks'
 import { EVMWagmiClient } from '@reown/appkit-adapter-wagmi'
 import { createAppKit } from '@reown/appkit'
 

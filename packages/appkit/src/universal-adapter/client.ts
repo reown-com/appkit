@@ -25,7 +25,7 @@ import type {
 import { SafeLocalStorage, SafeLocalStorageKeys } from '@reown/appkit-common'
 import { ProviderUtil } from '../store/index.js'
 import type { AppKitOptions } from '../utils/TypesUtil.js'
-import { allChains } from '../chains/index.js'
+import { allChains } from '../networks/index.js'
 
 type Metadata = {
   name: string

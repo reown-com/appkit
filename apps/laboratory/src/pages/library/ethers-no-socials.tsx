@@ -6,7 +6,7 @@ import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { EthersModalInfo } from '../../components/Ethers/EthersModalInfo'
 import { EVMEthersClient } from '@reown/appkit-adapter-ethers'
 import { siweConfig } from '../../utils/SiweUtils'
-import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@reown/appkit/chains'
+import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@reown/appkit/networks'
 
 const ethersAdapter = new EVMEthersClient()
 

@@ -2,7 +2,7 @@ import { createAppKit } from '@reown/appkit/react'
 import { SolanaWeb3JsClient } from '@reown/appkit-adapter-solana/react'
 
 import { ThemeStore } from '../../utils/StoreUtil'
-import { solana, solanaDevnet, solanaTestnet } from '@reown/appkit/chains'
+import { solana, solanaDevnet, solanaTestnet } from '@reown/appkit/networks'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { SolanaTests } from '../../components/Solana/SolanaTests'

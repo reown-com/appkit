@@ -1,5 +1,5 @@
 import type { AppKit } from '@reown/appkit'
-import { mainnet } from '@reown/appkit/chains'
+import { mainnet } from '@reown/appkit/networks'
 import { vi } from 'vitest'
 
 export const mockAppKit = {

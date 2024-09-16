@@ -52,10 +52,10 @@
       "import": "./dist/esm/exports/utils.js",
       "default": "./dist/esm/exports/utils.js"
     },
-    "./chains": {
-      "types": "./dist/types/exports/chains.d.ts",
-      "import": "./dist/esm/exports/chains.js",
-      "default": "./dist/esm/exports/chains.js"
+    "./networks": {
+      "types": "./dist/types/exports/networks.d.ts",
+      "import": "./dist/esm/exports/networks.js",
+      "default": "./dist/esm/exports/networks.js"
     },
     "./auth-provider": {
       "types": "./dist/types/exports/auth-provider.d.ts",
@@ -80,8 +80,8 @@
       "store": [
         "./dist/types/exports/store.d.ts"
       ],
-      "chains": [
-        "./dist/types/exports/chains.d.ts"
+      "networks": [
+        "./dist/types/exports/networks.d.ts"
       ],
       "auth-provider": [
         "./dist/types/exports/auth-provider.d.ts"

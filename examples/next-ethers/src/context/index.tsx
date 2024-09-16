@@ -2,7 +2,7 @@
 
 import { createAppKit } from '@reown/appkit/react'
 import { EVMEthersClient } from '@reown/appkit-adapter-ethers'
-import { mainnet, arbitrum, avalanche, base, optimism, polygon } from '@reown/appkit/chains'
+import { mainnet, arbitrum, avalanche, base, optimism, polygon } from '@reown/appkit/networks'
 import { type ReactNode } from 'react'
 
 const projectId = 'Your project ID'

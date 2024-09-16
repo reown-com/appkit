@@ -18,7 +18,7 @@ import {
   optimism,
   zkSync,
   sepolia
-} from '@reown/appkit/chains'
+} from '@reown/appkit/networks'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { MultiChainTestsWagmiSolana } from '../../components/MultiChainTestsWagmiSolana'

@@ -5,7 +5,7 @@ import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { Ethers5ModalInfo } from '../../components/Ethers/Ethers5ModalInfo'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { Ethers5Tests } from '../../components/Ethers/Ethers5Tests'
-import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@reown/appkit/chains'
+import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@reown/appkit/networks'
 
 const ethers5Adapter = new EVMEthers5Client()
 

@@ -11,7 +11,7 @@ import {
   optimism,
   solanaTestnet,
   solanaDevnet
-} from '@reown/appkit/chains'
+} from '@reown/appkit/networks'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { MultiChainTestsEthersSolana } from '../../components/MultiChainTestsEthersSolana'

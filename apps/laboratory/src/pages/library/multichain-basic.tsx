@@ -2,7 +2,7 @@ import { createAppKit } from '@reown/appkit/react'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { AppKitButtons } from '../../components/AppKitButtons'
-import { mainnet, optimism, arbitrum, solana } from '@reown/appkit/chains'
+import { mainnet, optimism, arbitrum, solana } from '@reown/appkit/networks'
 import { MultiChainInfo } from '../../components/MultiChainInfo'
 
 const modal = createAppKit({

@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
-import { mainnet, solana } from '../chains'
+import { mainnet, solana } from '../networks'
 import { UniversalAdapterClient } from '../universal-adapter'
 import { mockOptions } from './mocks/Options'
 import mockProvider from './mocks/UniversalProvider'

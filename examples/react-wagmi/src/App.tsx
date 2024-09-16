@@ -5,7 +5,7 @@ import {
   useAppKitState,
   useAppKitTheme
 } from '@reown/appkit/react'
-import { mainnet, polygon } from '@reown/appkit/chains'
+import { mainnet, polygon } from '@reown/appkit/networks'
 import { EVMWagmiClient } from '@reown/appkit-adapter-wagmi'
 import { WagmiProvider } from 'wagmi'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'

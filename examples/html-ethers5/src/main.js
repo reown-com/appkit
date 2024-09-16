@@ -1,5 +1,5 @@
 import { EVMEthers5Client } from '@reown/appkit-adapter-ethers5'
-import { mainnet, arbitrum } from '@reown/appkit/chains'
+import { mainnet, arbitrum } from '@reown/appkit/networks'
 import { createAppKit } from '@reown/appkit'
 
 // @ts-expect-error 1. Get projectId

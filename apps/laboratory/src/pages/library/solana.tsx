@@ -2,7 +2,7 @@ import { createAppKit, type CaipNetwork } from '@reown/appkit/react'
 import { SolanaWeb3JsClient } from '@reown/appkit-adapter-solana/react'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
-import { solana, solanaDevnet, solanaTestnet } from '@reown/appkit/chains'
+import { solana, solanaDevnet, solanaTestnet } from '@reown/appkit/networks'
 
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { AppKitButtons } from '../../components/AppKitButtons'

@@ -1,6 +1,6 @@
 import type { ChainAdapter } from '@reown/appkit-core'
 import type { AppKitOptions } from '../../utils/index.js'
-import { mainnet, solana } from '../../chains/index.js'
+import { mainnet, solana } from '../../networks/index.js'
 import type { SdkVersion } from '@reown/appkit-core'
 
 export const mockOptions = {

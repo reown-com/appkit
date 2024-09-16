@@ -13,7 +13,7 @@ import {
   SolflareWalletAdapter,
   TrustWalletAdapter
 } from '@solana/wallet-adapter-wallets'
-import { solana, solanaTestnet, solanaDevnet } from '@reown/appkit/chains'
+import { solana, solanaTestnet, solanaDevnet } from '@reown/appkit/networks'
 
 // @ts-expect-error 1. Get projectId
 const projectId = import.meta.env.VITE_PROJECT_ID

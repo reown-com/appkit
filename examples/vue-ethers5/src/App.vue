@@ -7,7 +7,7 @@ import {
   useAppKitState,
   useAppKitTheme
 } from '@reown/appkit/vue'
-import { mainnet, arbitrum } from '@reown/appkit/chains'
+import { mainnet, arbitrum } from '@reown/appkit/networks'
 
 // @ts-expect-error 1. Get projectId
 const projectId = import.meta.env.VITE_PROJECT_ID

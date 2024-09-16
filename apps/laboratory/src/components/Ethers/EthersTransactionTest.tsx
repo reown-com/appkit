@@ -7,7 +7,7 @@ import {
 } from '@reown/appkit/react'
 import { BrowserProvider, JsonRpcSigner, ethers } from 'ethers'
 import { useState } from 'react'
-import { mainnet } from '@reown/appkit/chains'
+import { mainnet } from '@reown/appkit/networks'
 import { vitalikEthAddress } from '../../utils/DataUtil'
 import { useChakraToast } from '../Toast'
 
