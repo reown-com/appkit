@@ -140,15 +140,8 @@ export class SolanaAdapter implements ChainAdapter {
     this.networkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
         if (caipNetwork) {
-          SafeLocalStorage.setItem(
-            SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK,
-            JSON.stringify(caipNetwork)
-          )
-          try {
-            await this.switchNetwork(caipNetwork)
-          } catch (error) {
-            // SolStoreUtil.setError(error)
-          }
+          SafeLocalStorage.setItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK, caipNetwork)
+          await this.switchNetwork(caipNetwork)
         }
       },
 
@@ -478,16 +471,9 @@ export class SolanaAdapter implements ChainAdapter {
       this.appKit?.setLoading(true)
       const address = await provider.connect()
       const caipChainId = SafeLocalStorage.getItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID)
-      let connectionChain: CaipNetwork | undefined = undefined
 
-      const activeCaipNetwork = this.appKit?.getCaipNetwork()
-
-      // eslint-disable-next-line no-nested-ternary
-      connectionChain = caipChainId
-        ? SolHelpersUtil.getChainFromCaip(this.caipNetworks, caipChainId)
-        : activeCaipNetwork?.chainNamespace === 'solana'
-          ? this.caipNetworks.find(chain => chain.chainNamespace === 'solana')
-          : activeCaipNetwork || this.caipNetworks.find(chain => chain.chainNamespace === 'solana')
+      const connectionChain =
+        provider.chains.find(chain => chain.id === caipChainId) || provider.chains[0]
 
       if (connectionChain) {
         const caipAddress = `solana:${connectionChain.chainId}:${address}` as CaipAddress
@@ -497,7 +483,17 @@ export class SolanaAdapter implements ChainAdapter {
 
         ProviderUtil.setProvider(this.chainNamespace, provider)
         this.provider = provider
-        ProviderUtil.setProviderId(this.chainNamespace, 'walletConnect')
+
+        switch (provider.type) {
+          case 'WALLET_CONNECT':
+            ProviderUtil.setProviderId(this.chainNamespace, 'walletConnect')
+            break
+          case 'AUTH':
+            ProviderUtil.setProviderId(this.chainNamespace, 'w3mAuth')
+            break
+          default:
+            ProviderUtil.setProviderId(this.chainNamespace, 'injected')
+        }
 
         SafeLocalStorage.setItem(SafeLocalStorageKeys.WALLET_ID, provider.name)
 
@@ -608,6 +604,8 @@ export class SolanaAdapter implements ChainAdapter {
       getActiveChain: () => this.appKit?.getCaipNetwork()
     })
 
+    this.addProvider(walletConnectProvider)
+
     return walletConnectProvider
   }
 
@@ -658,9 +656,6 @@ export class SolanaAdapter implements ChainAdapter {
 
     for (const provider of providers) {
       this.availableProviders = this.availableProviders.filter(p => p.name !== provider.name)
-      if (provider.type !== 'WALLET_CONNECT') {
-        this.availableProviders.push(provider)
-      }
 
       if (provider.name === activeProviderName && isSolana) {
         this.setProvider(provider)

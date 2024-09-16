@@ -22,7 +22,7 @@ import { WcHelpersUtil } from '@reown/appkit'
 import type { AppKitOptions } from '@reown/appkit'
 import type { AppKit } from '@reown/appkit'
 import { convertToAppKitChains } from '../utils/helpers.js'
-import { SafeLocalStorage, SafeLocalStorageKeys, type CaipNetwork } from '@reown/appkit-common'
+import { SafeLocalStorage, SafeLocalStorageKeys } from '@reown/appkit-common'
 
 type UniversalConnector = Connector & {
   onDisplayUri(uri: string): void
@@ -233,9 +233,8 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
       if (chainId && currentChainId !== chainId) {
         const storedCaipNetwork = SafeLocalStorage.getItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK)
         if (storedCaipNetwork) {
-          const parsedCaipNetwork = JSON.parse(storedCaipNetwork) as CaipNetwork
-          if (parsedCaipNetwork.chainNamespace === 'eip155') {
-            await this.switchChain?.({ chainId: Number(parsedCaipNetwork.chainId) })
+          if (storedCaipNetwork.chainNamespace === 'eip155') {
+            await this.switchChain?.({ chainId: Number(storedCaipNetwork.chainId) })
           }
         } else {
           await this.switchChain?.({ chainId })
