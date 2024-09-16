@@ -475,7 +475,8 @@ export class EthersAdapter {
       chainNamespace: this.chainNamespace,
       connectionControllerClient: this.connectionControllerClient,
       networkControllerClient: this.networkControllerClient,
-      adapterType: this.adapterType
+      adapterType: this.adapterType,
+      caipNetworks: this.caipNetworks
     })
 
     if (this.ethersConfig) {

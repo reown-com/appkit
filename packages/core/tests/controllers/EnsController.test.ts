@@ -71,7 +71,12 @@ vi.mock('../../src/controllers/BlockchainApiController.js', async importOriginal
 
 // -- Tests --------------------------------------------------------------------
 beforeAll(() => {
-  ChainController.initialize([{ chainNamespace: ConstantsUtil.CHAIN.EVM }])
+  ChainController.initialize([
+    {
+      chainNamespace: ConstantsUtil.CHAIN.EVM,
+      caipNetworks: []
+    }
+  ])
 })
 
 describe('EnsController', () => {

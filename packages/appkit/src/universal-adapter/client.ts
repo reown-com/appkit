@@ -397,11 +397,12 @@ export class UniversalAdapterClient {
         })
 
       const storedCaipNetwork = SafeLocalStorage.getItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK)
+
       if (storedCaipNetwork) {
         try {
           const parsedCaipNetwork = JSON.parse(storedCaipNetwork) as CaipNetwork
           if (parsedCaipNetwork) {
-            ChainController.setActiveCaipNetwork(parsedCaipNetwork)
+            NetworkController.setActiveCaipNetwork(parsedCaipNetwork)
           }
         } catch (error) {
           console.warn('>>> Error setting active caip network', error)
@@ -416,6 +417,7 @@ export class UniversalAdapterClient {
         this.setDefaultNetwork(nameSpaces)
       }
     }
+
     SafeLocalStorage.setItem(
       SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK,
       JSON.stringify(this.appKit?.getCaipNetwork())
@@ -526,7 +528,8 @@ export class UniversalAdapterClient {
     const { namespaceKeys, namespaces } = this.getProviderData()
 
     const preferredAccountType = this.appKit?.getPreferredAccountType()
-    const isConnected = this.appKit?.getIsConnectedState()
+
+    const isConnected = this.appKit?.getIsConnectedState() || false
 
     if (isConnected) {
       namespaceKeys.forEach(async key => {
