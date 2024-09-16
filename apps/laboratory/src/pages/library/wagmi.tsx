@@ -3,7 +3,7 @@ import { WagmiProvider } from 'wagmi'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { WagmiTests } from '../../components/Wagmi/WagmiTests'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
-import { EVMWagmiClient } from '@reown/appkit-adapter-wagmi'
+import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { createAppKit } from '@reown/appkit/react'
 import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@reown/appkit/networks'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
@@ -13,7 +13,7 @@ const queryClient = new QueryClient()
 
 const networks = [mainnet, optimism, polygon, zkSync, arbitrum, sepolia]
 
-const wagmiAdapter = new EVMWagmiClient({
+const wagmiAdapter = new WagmiAdapter({
   ssr: true,
   networks,
   projectId: ConstantsUtil.ProjectId

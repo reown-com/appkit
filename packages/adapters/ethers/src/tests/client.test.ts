@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
-import { EVMEthersClient } from '../client'
+import { EthersAdapter } from '../client'
 import type { EIP6963ProviderDetail } from '../client'
 import { mockOptions } from './mocks/Options'
 import { mockCreateEthersConfig } from './mocks/EthersConfig'
@@ -91,12 +91,12 @@ vi.mock('ethers', async () => {
   }
 })
 
-describe('EVMEthersClient', () => {
-  let client: EVMEthersClient
+describe('EthersAdapter', () => {
+  let client: EthersAdapter
 
   beforeEach(() => {
     vi.clearAllMocks()
-    client = new EVMEthersClient()
+    client = new EthersAdapter()
     const optionsWithEthersConfig = {
       ...mockOptions,
       ethersConfig: mockCreateEthersConfig()

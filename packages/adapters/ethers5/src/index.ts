@@ -1,6 +1,6 @@
 import '@reown/appkit-polyfills'
 
-export { EVMEthers5Client } from './client.js'
+export { Ethers5Adapter } from './client.js'
 export * from '@reown/appkit-utils/ethers'
 
 // -- Types

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { EVMEthers5Client } from '@reown/appkit-adapter-ethers5'
+import { Ethers5Adapter } from '@reown/appkit-adapter-ethers5'
 import {
   createAppKit,
   useAppKit,
@@ -20,7 +20,7 @@ function getBlockchainApiRpcUrl(chainId) {
 }
 
 // 2. Set Ethers adapter
-const ethersAdapter = new EVMEthers5Client()
+const ethersAdapter = new Ethers5Adapter()
 
 // 3. Create modal
 createAppKit({

@@ -2,7 +2,7 @@
 
 import { AppKit, AccountController, CoreHelperUtil } from '@reown/appkit'
 import type { AppKitOptions } from '@reown/appkit'
-import { EVMEthersClient, type AdapterOptions } from '@reown/appkit-adapter-ethers'
+import { EthersAdapter, type AdapterOptions } from '@reown/appkit-adapter-ethers'
 import { getAppKit } from '@reown/appkit/library/react'
 import { useSnapshot } from 'valtio'
 import type { CaipNetwork } from '@reown/appkit-common'
@@ -13,13 +13,13 @@ export type { AdapterOptions } from '@reown/appkit-adapter-ethers'
 
 // -- Setup -------------------------------------------------------------------
 let appkit: AppKit | undefined = undefined
-let ethersAdapter: EVMEthersClient | undefined = undefined
+let ethersAdapter: EthersAdapter | undefined = undefined
 
 export type EthersAppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 'sdkVersion'> &
   AdapterOptions
 
 export function createAppKit(options: EthersAppKitOptions) {
-  ethersAdapter = new EVMEthersClient()
+  ethersAdapter = new EthersAdapter()
   appkit = new AppKit({
     ...options,
     sdkVersion: `react-ethers-${packageJson.version}`,

@@ -105,7 +105,7 @@ interface AppKitState extends PublicStateControllerState {
 }
 
 // -- Client --------------------------------------------------------------------
-export class EVMWagmiClient implements ChainAdapter {
+export class WagmiAdapter implements ChainAdapter {
   // -- Private variables -------------------------------------------------------
   private appKit: AppKit | undefined = undefined
 

@@ -1,5 +1,5 @@
 import { AppKit } from '@reown/appkit'
-import { SolanaWeb3JsClient } from '@reown/appkit-adapter-solana'
+import { SolanaAdapter } from '@reown/appkit-adapter-solana'
 import type { SolanaAppKitOptions } from './options'
 import type { Provider } from '@reown/appkit-adapter-solana'
 import packageJson from '../package.json' assert { type: 'json' }
@@ -9,7 +9,7 @@ export type { SolanaAppKitOptions, Provider }
 
 // -- Setup -------------------------------------------------------------
 export function createAppKit(options: SolanaAppKitOptions) {
-  const solanaAdapter = new SolanaWeb3JsClient({
+  const solanaAdapter = new SolanaAdapter({
     wallets: options.wallets
   })
 

@@ -1,5 +1,5 @@
 import { createAppKit } from '@reown/appkit/react'
-import { EVMEthersClient } from '@reown/appkit-adapter-ethers'
+import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { SiweData } from '../../components/Siwe/SiweData'
 import { EthersTests } from '../../components/Ethers/EthersTests'
 import { AppKitButtons } from '../../components/AppKitButtons'
@@ -9,7 +9,7 @@ import { siweConfig } from '../../utils/SiweUtils'
 import { EthersModalInfo } from '../../components/Ethers/EthersModalInfo'
 import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@reown/appkit/networks'
 
-const ethersAdapter = new EVMEthersClient()
+const ethersAdapter = new EthersAdapter()
 
 const modal = createAppKit({
   adapters: [ethersAdapter],

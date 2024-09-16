@@ -6,7 +6,7 @@ import { WagmiTests } from '../../components/Wagmi/WagmiTests'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
 import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@reown/appkit/networks'
-import { EVMWagmiClient } from '@reown/appkit-adapter-wagmi'
+import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 
 const metadata = {
   name: 'Evil AppKit',
@@ -23,7 +23,7 @@ const queryClient = new QueryClient()
 
 const networks = [mainnet, optimism, polygon, zkSync, arbitrum, sepolia]
 
-const wagmiAdapter = new EVMWagmiClient({
+const wagmiAdapter = new WagmiAdapter({
   ssr: true,
   networks,
   projectId

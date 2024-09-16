@@ -8,14 +8,14 @@ import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { SiweData } from '../../components/Siwe/SiweData'
 import { siweConfig } from '../../utils/SiweUtils'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
-import { EVMWagmiClient } from '@reown/appkit-adapter-wagmi'
+import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@reown/appkit/networks'
 
 const queryClient = new QueryClient()
 
 const networks = [mainnet, optimism, polygon, zkSync, arbitrum, sepolia]
 
-const wagmiAdapter = new EVMWagmiClient({
+const wagmiAdapter = new WagmiAdapter({
   ssr: true,
   networks,
   projectId: ConstantsUtil.ProjectId

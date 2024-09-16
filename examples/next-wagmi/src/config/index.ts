@@ -1,5 +1,5 @@
 import { cookieStorage, createStorage } from '@wagmi/core'
-import { EVMWagmiClient } from '@reown/appkit-adapter-wagmi'
+import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { mainnet, arbitrum, avalanche, base, optimism, polygon } from '@reown/appkit/networks'
 
 export const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
@@ -10,7 +10,7 @@ if (!projectId) {
 
 export const caipNetworks = [mainnet, arbitrum, avalanche, base, optimism, polygon]
 
-export const wagmiAdapter = new EVMWagmiClient({
+export const wagmiAdapter = new WagmiAdapter({
   storage: createStorage({
     storage: cookieStorage
   }),

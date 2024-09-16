@@ -6,9 +6,9 @@ import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { SolanaTests } from '../../components/Solana/SolanaTests'
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { solana, solanaDevnet, solanaTestnet } from '@reown/appkit/networks'
-import { SolanaWeb3JsClient } from '@reown/appkit-adapter-solana/react'
+import { SolanaAdapter } from '@reown/appkit-adapter-solana/react'
 
-const solanaWeb3JsAdapter = new SolanaWeb3JsClient({
+const solanaWeb3JsAdapter = new SolanaAdapter({
   wallets: [new HuobiWalletAdapter(), new SolflareWalletAdapter()]
 })
 

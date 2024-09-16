@@ -1,6 +1,6 @@
 import { createAppKit } from '@reown/appkit/react'
-import { EVMEthersClient } from '@reown/appkit-adapter-ethers'
-import { SolanaWeb3JsClient } from '@reown/appkit-adapter-solana'
+import { EthersAdapter } from '@reown/appkit-adapter-ethers'
+import { SolanaAdapter } from '@reown/appkit-adapter-solana'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import {
@@ -18,9 +18,9 @@ import { MultiChainTestsEthersSolana } from '../../components/MultiChainTestsEth
 import { siweConfig } from '../../utils/SiweUtils'
 import { SiweData } from '../../components/Siwe/SiweData'
 
-const etherAdapter = new EVMEthersClient()
+const etherAdapter = new EthersAdapter()
 
-const solanaWeb3JsAdapter = new SolanaWeb3JsClient({
+const solanaWeb3JsAdapter = new SolanaAdapter({
   wallets: [new HuobiWalletAdapter(), new SolflareWalletAdapter()]
 })
 

@@ -1,5 +1,5 @@
 import { arbitrum, mainnet } from '@reown/appkit/networks'
-import { EVMWagmiClient } from '@reown/appkit-adapter-wagmi'
+import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { createAppKit } from '@reown/appkit'
 
 // @ts-expect-error 1. Get projectId
@@ -9,7 +9,7 @@ if (!projectId) {
 }
 
 // 2. Create Wagmi adapter
-const wagmiAdapter = new EVMWagmiClient({
+const wagmiAdapter = new WagmiAdapter({
   networks: [mainnet, arbitrum],
   projectId
 })

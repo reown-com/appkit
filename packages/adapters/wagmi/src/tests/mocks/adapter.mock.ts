@@ -1,7 +1,7 @@
 import { mock } from 'wagmi/connectors'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { AppKit } from '@reown/appkit'
-import { EVMWagmiClient } from '../../client'
+import { WagmiAdapter } from '../../client'
 import { arbitrum, mainnet } from '@reown/appkit/networks'
 import type { CaipNetwork } from '@reown/appkit-common'
 import type { SdkVersion } from '@reown/appkit-core'
@@ -9,7 +9,7 @@ import type { SdkVersion } from '@reown/appkit-core'
 const privateKey = generatePrivateKey()
 export const mockAccount = privateKeyToAccount(privateKey)
 
-export const mockWagmiClient = new EVMWagmiClient({
+export const mockWagmiClient = new WagmiAdapter({
   connectors: [mock({ accounts: [mockAccount.address] })],
   networks: [mainnet, arbitrum],
   projectId: '1234'

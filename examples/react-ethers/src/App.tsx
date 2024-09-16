@@ -5,7 +5,7 @@ import {
   useAppKitState,
   useAppKitTheme
 } from '@reown/appkit/react'
-import { EVMEthersClient } from '@reown/appkit-adapter-ethers'
+import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { mainnet, arbitrum } from '@reown/appkit/networks'
 
 // @ts-expect-error 1. Get projectId
@@ -17,7 +17,7 @@ if (!projectId) {
 // 2. Set chains
 const networks = [mainnet, arbitrum]
 
-const ethersAdapter = new EVMEthersClient()
+const ethersAdapter = new EthersAdapter()
 
 // 3. Create modal
 createAppKit({

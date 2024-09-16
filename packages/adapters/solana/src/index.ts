@@ -1,6 +1,6 @@
 import '@reown/appkit-polyfills'
 
-export { SolanaWeb3JsClient } from './client.js'
+export { SolanaAdapter } from './client.js'
 
 // -- Types -----------------------------------------------------------
 export type { AdapterOptions } from './client.js'

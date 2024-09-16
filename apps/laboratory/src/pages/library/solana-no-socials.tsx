@@ -1,5 +1,5 @@
 import { createAppKit } from '@reown/appkit/react'
-import { SolanaWeb3JsClient } from '@reown/appkit-adapter-solana/react'
+import { SolanaAdapter } from '@reown/appkit-adapter-solana/react'
 
 import { ThemeStore } from '../../utils/StoreUtil'
 import { solana, solanaDevnet, solanaTestnet } from '@reown/appkit/networks'
@@ -10,7 +10,7 @@ import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapte
 
 const networks = [solana, solanaTestnet, solanaDevnet]
 
-const solanaWeb3JsAdapter = new SolanaWeb3JsClient({
+const solanaWeb3JsAdapter = new SolanaAdapter({
   wallets: [new HuobiWalletAdapter(), new SolflareWalletAdapter()]
 })
 

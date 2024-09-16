@@ -1,19 +1,19 @@
 import { AppKit } from '@reown/appkit'
 import type { AppKitOptions } from '@reown/appkit'
-import { EVMEthers5Client, type AdapterOptions } from '@reown/appkit-adapter-ethers5'
+import { Ethers5Adapter, type AdapterOptions } from '@reown/appkit-adapter-ethers5'
 
 import { getAppKit } from '@reown/appkit/library/vue'
 import packageJson from '../package.json' assert { type: 'json' }
 
 // -- Setup -------------------------------------------------------------------
 let appkit: AppKit | undefined = undefined
-let ethersAdapter: EVMEthers5Client | undefined = undefined
+let ethersAdapter: Ethers5Adapter | undefined = undefined
 
 type EthersAppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 'sdkVersion'> &
   AdapterOptions
 
 export function createAppKit(options: EthersAppKitOptions) {
-  ethersAdapter = new EVMEthers5Client()
+  ethersAdapter = new Ethers5Adapter()
   appkit = new AppKit({
     ...options,
     sdkVersion: `vue-ethers5-${packageJson.version}`,

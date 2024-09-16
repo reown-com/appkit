@@ -1,7 +1,7 @@
 import React from 'react'
 import { createAppKit } from '@reown/appkit/react'
-import { EVMWagmiClient } from '@reown/appkit-adapter-wagmi'
-import { SolanaWeb3JsClient } from '@reown/appkit-adapter-solana/react'
+import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
+import { SolanaAdapter } from '@reown/appkit-adapter-solana/react'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -29,13 +29,13 @@ const queryClient = new QueryClient()
 
 const networks = [mainnet, optimism, polygon, zkSync, arbitrum, sepolia]
 
-const wagmiAdapter = new EVMWagmiClient({
+const wagmiAdapter = new WagmiAdapter({
   ssr: true,
   networks,
   projectId: ConstantsUtil.ProjectId
 })
 
-const solanaWeb3JsAdapter = new SolanaWeb3JsClient({
+const solanaWeb3JsAdapter = new SolanaAdapter({
   wallets: [new HuobiWalletAdapter(), new SolflareWalletAdapter()]
 })
 

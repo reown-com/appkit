@@ -1,4 +1,4 @@
-import { EVMEthers5Client } from '@reown/appkit-adapter-ethers5'
+import { Ethers5Adapter } from '@reown/appkit-adapter-ethers5'
 import {
   createAppKit,
   useAppKit,
@@ -15,7 +15,7 @@ if (!projectId) {
 }
 
 // 2. Set Ethers adapter
-const ethers5Adapter = new EVMEthers5Client()
+const ethers5Adapter = new Ethers5Adapter()
 
 // 3. Create modal
 createAppKit({

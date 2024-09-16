@@ -56,7 +56,7 @@ export interface AdapterOptions {
 export type AppKitOptions = Omit<AdapterOptions, '_sdkVersion' | 'isUniversalProvider'>
 
 // -- Client --------------------------------------------------------------------
-export class SolanaWeb3JsClient implements ChainAdapter {
+export class SolanaAdapter implements ChainAdapter {
   private appKit: AppKit | undefined = undefined
 
   private authProvider?: Provider

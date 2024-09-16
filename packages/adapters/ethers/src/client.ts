@@ -77,7 +77,7 @@ export interface EIP6963ProviderDetail {
   provider: Provider
 }
 
-export class EVMEthersClient {
+export class EthersAdapter {
   private appKit: AppKit | undefined = undefined
 
   private EIP6963Providers: EIP6963ProviderDetail[] = []

@@ -7,13 +7,13 @@ import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@reown/appkit/networks'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
-import { EVMWagmiClient } from '@reown/appkit-adapter-wagmi'
+import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 
 const queryClient = new QueryClient()
 
 const networks = [mainnet, optimism, polygon, zkSync, arbitrum, sepolia]
 
-const wagmiAdapter = new EVMWagmiClient({
+const wagmiAdapter = new WagmiAdapter({
   ssr: true,
   networks,
   projectId: ConstantsUtil.ProjectId
