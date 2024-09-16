@@ -13,7 +13,7 @@ const ethersAdapter = new EVMEthersClient()
 
 const modal = createAppKit({
   adapters: [ethersAdapter],
-  caipNetworks: [mainnet, optimism, polygon, zkSync, arbitrum, sepolia],
+  networks: [mainnet, optimism, polygon, zkSync, arbitrum, sepolia],
   projectId: ConstantsUtil.ProjectId,
   features: {
     analytics: true

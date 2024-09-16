@@ -145,7 +145,7 @@ export class EVMEthers5Client {
       const coinbaseWallet = new CoinbaseWalletSDK({
         appName: options?.metadata?.name,
         appLogoUrl: options?.metadata?.icons[0],
-        appChainIds: options.caipNetworks?.map(caipNetwork => caipNetwork.chainId as number) || [
+        appChainIds: options.networks?.map(caipNetwork => caipNetwork.chainId as number) || [
           1, 84532
         ]
       })
@@ -224,8 +224,8 @@ export class EVMEthers5Client {
 
     this.appKit = appKit
     this.options = options
-    this.caipNetworks = options.caipNetworks
-    this.defaultCaipNetwork = options.defaultCaipNetwork || options.caipNetworks[0]
+    this.caipNetworks = options.networks
+    this.defaultCaipNetwork = options.defaultNetwork || options.networks[0]
     this.tokens = HelpersUtil.getCaipTokens(options.tokens)
     this.ethersConfig = this.createEthersConfig(options)
 

@@ -130,19 +130,17 @@ export class EVMWagmiClient implements ChainAdapter {
 
   public tokens = HelpersUtil.getCaipTokens(this.options?.tokens)
 
-  public getCaipDefaultNetwork = this.options?.defaultCaipNetwork
-
   public siweControllerClient = this.options?.siweConfig
 
   public adapterType: AdapterType = 'wagmi'
 
   public constructor(
     configParams: Partial<CreateConfigParameters> & {
-      caipNetworks: CaipNetwork[]
+      networks: CaipNetwork[]
       projectId: string
     }
   ) {
-    this.caipNetworks = configParams.caipNetworks.map(caipNetwork => ({
+    this.caipNetworks = configParams.networks.map(caipNetwork => ({
       ...caipNetwork,
       rpcUrl: CaipNetworksUtil.extendRpcUrlWithProjectId(caipNetwork.rpcUrl, configParams.projectId)
     }))
@@ -222,8 +220,8 @@ export class EVMWagmiClient implements ChainAdapter {
 
     this.appKit = appKit
     this.options = options
-    this.caipNetworks = options.caipNetworks
-    this.defaultCaipNetwork = options.defaultCaipNetwork || this.caipNetworks[0]
+    this.caipNetworks = options.networks
+    this.defaultCaipNetwork = options.defaultNetwork || options.networks[0]
     this.tokens = HelpersUtil.getCaipTokens(options.tokens)
     this.setCustomConnectors(options, appKit)
 

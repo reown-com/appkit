@@ -27,7 +27,7 @@ const solanaWeb3JsAdapter = new SolanaWeb3JsClient({
 const modal = createAppKit({
   adapters: [etherAdapter, solanaWeb3JsAdapter],
   projectId: ConstantsUtil.ProjectId,
-  caipNetworks: [mainnet, arbitrum, polygon, optimism, solana, solanaTestnet, solanaDevnet],
+  networks: [mainnet, arbitrum, polygon, optimism, solana, solanaTestnet, solanaDevnet],
   features: {
     analytics: true
   },

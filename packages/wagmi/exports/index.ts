@@ -16,7 +16,7 @@ export type WagmiAppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 's
 
 export function createAppKit(options: WagmiAppKitOptions) {
   const wagmiAdapter = new EVMWagmiClient({
-    caipNetworks: options.caipNetworks,
+    networks: options.networks,
     projectId: options.projectId
   })
 

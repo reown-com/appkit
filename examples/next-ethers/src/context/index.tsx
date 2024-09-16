@@ -12,7 +12,7 @@ const ethersAdapter = new EVMEthersClient()
 createAppKit({
   adapters: [ethersAdapter],
   projectId,
-  caipNetworks: [mainnet, arbitrum, avalanche, base, optimism, polygon],
+  networks: [mainnet, arbitrum, avalanche, base, optimism, polygon],
   metadata: {
     name: 'My App',
     description: 'My app description',

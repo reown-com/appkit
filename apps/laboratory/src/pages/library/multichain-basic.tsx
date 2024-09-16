@@ -6,7 +6,7 @@ import { mainnet, optimism, arbitrum, solana } from '@reown/appkit/chains'
 import { MultiChainInfo } from '../../components/MultiChainInfo'
 
 const modal = createAppKit({
-  caipNetworks: [mainnet, optimism, arbitrum, solana],
+  networks: [mainnet, optimism, arbitrum, solana],
   projectId: ConstantsUtil.ProjectId,
   metadata: ConstantsUtil.Metadata
 })

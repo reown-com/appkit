@@ -81,17 +81,15 @@ export class UniversalAdapterClient {
   public adapterType: AdapterType = 'universal'
 
   public constructor(options: AppKitOptions) {
-    const { siweConfig, caipNetworks, metadata } = options
+    const { siweConfig, metadata } = options
 
-    this.caipNetworks = caipNetworks
+    this.caipNetworks = options.networks
 
     this.chainNamespace = 'eip155'
 
     this.metadata = metadata
 
-    this.caipNetworks = caipNetworks
-
-    this.defaultNetwork = options.defaultCaipNetwork || this.caipNetworks[0]
+    this.defaultNetwork = options.defaultNetwork || options.networks[0]
 
     this.networkControllerClient = {
       // @ts-expect-error switchCaipNetwork is async for some adapter but not for this adapter
@@ -172,7 +170,7 @@ export class UniversalAdapterClient {
               '@reown/appkit-siwe'
             )
 
-            const chains = this.options?.caipNetworks
+            const chains = this.caipNetworks
               ?.filter(network => network.chainNamespace === 'eip155')
               .map(chain => chain.id) as string[]
 
@@ -351,7 +349,7 @@ export class UniversalAdapterClient {
     await this.checkActiveWalletConnectProvider()
   }
 
-  private syncRequestedNetworks(caipNetworks: AppKitOptions['caipNetworks']) {
+  private syncRequestedNetworks(caipNetworks: AppKitOptions['networks']) {
     const uniqueChainNamespaces = [
       ...new Set(caipNetworks.map(caipNetwork => caipNetwork.chainNamespace))
     ]

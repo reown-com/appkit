@@ -8,7 +8,7 @@ import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { SolanaTests } from '../../components/Solana/SolanaTests'
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 
-const chains = [solana, solanaTestnet, solanaDevnet]
+const networks = [solana, solanaTestnet, solanaDevnet]
 
 const solanaWeb3JsAdapter = new SolanaWeb3JsClient({
   wallets: [new HuobiWalletAdapter(), new SolflareWalletAdapter()]
@@ -16,7 +16,7 @@ const solanaWeb3JsAdapter = new SolanaWeb3JsClient({
 
 const modal = createAppKit({
   adapters: [solanaWeb3JsAdapter],
-  caipNetworks: chains,
+  networks,
   projectId: ConstantsUtil.ProjectId,
   metadata: ConstantsUtil.Metadata,
   features: {

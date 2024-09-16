@@ -10,7 +10,7 @@ if (!projectId) {
 
 // 2. Create Wagmi adapter
 const wagmiAdapter = new EVMWagmiClient({
-  caipNetworks: [mainnet, arbitrum],
+  networks: [mainnet, arbitrum],
   projectId
 })
 
@@ -23,7 +23,7 @@ const modal = createAppKit({
     url: 'https://reown.com/appkit',
     icons: ['https://avatars.githubusercontent.com/u/37784886']
   },
-  caipNetworks: [mainnet, arbitrum],
+  networks: [mainnet, arbitrum],
   projectId,
   themeMode: 'light'
 })

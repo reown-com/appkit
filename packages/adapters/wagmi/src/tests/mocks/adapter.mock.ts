@@ -11,7 +11,7 @@ export const mockAccount = privateKeyToAccount(privateKey)
 
 export const mockWagmiClient = new EVMWagmiClient({
   connectors: [mock({ accounts: [mockAccount.address] })],
-  caipNetworks: [mainnet, arbitrum],
+  networks: [mainnet, arbitrum],
   projectId: '1234'
 })
 
@@ -19,7 +19,7 @@ export const mockWagmiConfig = mockWagmiClient.wagmiConfig
 
 export const mockOptions = {
   adapters: [mockWagmiClient],
-  caipNetworks: [mainnet, arbitrum],
+  networks: [mainnet, arbitrum],
   enableInjected: false,
   enableCoinbase: false,
   enableWalletConnect: false,

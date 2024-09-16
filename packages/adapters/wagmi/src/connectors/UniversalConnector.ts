@@ -106,14 +106,14 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
 
         // If there isn't an active session or chains are stale, connect.
         if (!provider.session || isChainsStale) {
-          const namespaces = WcHelpersUtil.createNamespaces(parameters.caipNetworks)
+          const namespaces = WcHelpersUtil.createNamespaces(parameters.networks)
 
           await provider.connect({
             optionalNamespaces: namespaces,
             ...('pairingTopic' in rest ? { pairingTopic: rest.pairingTopic } : {})
           })
 
-          this.setRequestedChainsIds(parameters.caipNetworks.map(x => Number(x.chainId)))
+          this.setRequestedChainsIds(parameters.networks.map(x => Number(x.chainId)))
         }
 
         // If session exists and chains are authorized, enable provider for required chain
@@ -205,7 +205,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
     },
     async getProvider({ chainId } = {}) {
       async function initProvider() {
-        const optionalChains = parameters.caipNetworks.map(x => Number(x.chainId))
+        const optionalChains = parameters.networks.map(x => Number(x.chainId))
 
         if (!optionalChains.length) {
           return undefined
@@ -255,7 +255,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
       const provider = await this.getProvider()
       const chain = provider.session?.namespaces['eip155']?.chains?.[0]
 
-      const network = parameters.caipNetworks.find(c => c.id === chain)
+      const network = parameters.networks.find(c => c.id === chain)
 
       return network?.chainId as number
     },
@@ -288,7 +288,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
         throw new ProviderNotFoundError()
       }
 
-      const chain = parameters.caipNetworks.find(x => x.chainId === chainId)
+      const chain = parameters.networks.find(x => x.chainId === chainId)
       const [wagmiChain] = chain ? convertToAppKitChains([chain]) : []
 
       if (!wagmiChain) {

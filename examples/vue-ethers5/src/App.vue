@@ -32,7 +32,7 @@ createAppKit({
     url: 'https://example.com',
     icons: ['https://avatars.githubusercontent.com/u/37784886']
   },
-  caipNetworks: [mainnet, arbitrum],
+  networks: [mainnet, arbitrum],
   themeMode: 'light',
   themeVariables: {
     '--w3m-color-mix': '#00BB7F',

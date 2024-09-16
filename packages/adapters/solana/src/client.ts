@@ -118,16 +118,20 @@ export class SolanaWeb3JsClient implements ChainAdapter {
   }
 
   public construct(appKit: AppKit, options: CoreOptions) {
-    const { projectId, caipNetworks } = options
+    const { projectId } = options
 
     if (!options) {
       throw new Error('Solana:construct - options is undefined')
     }
 
     this.appKit = appKit
-
     this.options = options
-    this.caipNetworks = caipNetworks
+    this.caipNetworks = options.networks
+    const defaultCaipNetwork = SolHelpersUtil.getChainFromCaip(
+      options.networks,
+      SafeLocalStorage.getItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID)
+    )
+    this.defaultCaipNetwork = defaultCaipNetwork
 
     if (!projectId) {
       throw new Error('Solana:construct - projectId is undefined')
@@ -306,7 +310,7 @@ export class SolanaWeb3JsClient implements ChainAdapter {
       }
     })
 
-    this.syncRequestedNetworks(caipNetworks)
+    this.syncRequestedNetworks(this.caipNetworks)
 
     this.initializeProviders({
       relayUrl: 'wss://relay.walletconnect.com',
@@ -314,14 +318,7 @@ export class SolanaWeb3JsClient implements ChainAdapter {
       projectId: options.projectId
     })
 
-    const caipNetwork = SolHelpersUtil.getChainFromCaip(
-      caipNetworks,
-      SafeLocalStorage.getItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID)
-    )
-
-    this.defaultCaipNetwork = caipNetwork
-
-    this.syncRequestedNetworks(caipNetworks)
+    this.syncRequestedNetworks(this.caipNetworks)
 
     AssetController.subscribeNetworkImages(() => {
       const address = this.appKit?.getAddress(this.chainNamespace) as string
@@ -329,7 +326,7 @@ export class SolanaWeb3JsClient implements ChainAdapter {
     })
 
     ChainController.subscribeKey('activeCaipNetwork', (newCaipNetwork: CaipNetwork | undefined) => {
-      const newChain = caipNetworks.find(
+      const newChain = this.caipNetworks.find(
         _chain => _chain.chainId === newCaipNetwork?.id.split(':')[1]
       )
 

@@ -25,13 +25,13 @@ const networks = [mainnet, optimism, polygon, zkSync, arbitrum, sepolia]
 
 const wagmiAdapter = new EVMWagmiClient({
   ssr: true,
-  caipNetworks: networks,
+  networks,
   projectId
 })
 
 const modal = createAppKit({
   adapters: [wagmiAdapter],
-  caipNetworks: networks,
+  networks,
   projectId,
   metadata,
   termsConditionsUrl: 'https://walletconnect.com/terms',

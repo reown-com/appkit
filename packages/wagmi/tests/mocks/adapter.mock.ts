@@ -34,14 +34,14 @@ export const wagmiAdapterMock = new EVMWagmiClient({
   transports: {
     [wagmiMainnet.id]: http()
   },
-  caipNetworks: [mainnet],
+  networks: [mainnet],
   projectId: '1234'
 })
 
 const mockAppKitData = {
   adapters: [wagmiAdapterMock],
-  caipNetworks: [mainnet],
-  defaultCaipNetwork: mainnet,
+  networks: [mainnet],
+  defaultNetwork: mainnet,
   metadata: {
     description: 'Desc',
     name: 'Name',

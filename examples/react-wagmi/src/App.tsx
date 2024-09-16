@@ -23,13 +23,13 @@ if (!projectId) {
 // 2. Setup wagmi adapter
 const wagmiAdapter = new EVMWagmiClient({
   projectId,
-  caipNetworks: [mainnet, polygon]
+  networks: [mainnet, polygon]
 })
 
 // 3. Create modal
 createAppKit({
   adapters: [wagmiAdapter],
-  caipNetworks: [mainnet, polygon],
+  networks: [mainnet, polygon],
   metadata: {
     name: 'AppKit',
     description: 'AppKit React Wagmi Example',

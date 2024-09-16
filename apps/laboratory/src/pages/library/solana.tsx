@@ -24,7 +24,7 @@ export const solanaNotExist = {
 
 const modal = createAppKit({
   adapters: [solanaWeb3JsAdapter],
-  caipNetworks: [solana, solanaTestnet, solanaDevnet, solanaNotExist],
+  networks: [solana, solanaTestnet, solanaDevnet, solanaNotExist],
   projectId: ConstantsUtil.ProjectId,
   features: {
     analytics: true,

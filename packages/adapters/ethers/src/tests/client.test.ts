@@ -115,11 +115,11 @@ describe('EVMEthersClient', () => {
     })
 
     it('should set caipNetworks to provided caipNetworks options', () => {
-      expect(client.caipNetworks).toEqual(mockOptions.caipNetworks)
+      expect(client.caipNetworks).toEqual(mockOptions.networks)
     })
 
     it('should set defaultNetwork to first caipNetwork option', () => {
-      expect(client.defaultCaipNetwork).toEqual(mockOptions.caipNetworks[0])
+      expect(client.defaultCaipNetwork).toEqual(mockOptions.networks[0])
     })
 
     it('should create ethers config', () => {

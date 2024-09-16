@@ -31,7 +31,7 @@ const networks = [mainnet, optimism, polygon, zkSync, arbitrum, sepolia]
 
 const wagmiAdapter = new EVMWagmiClient({
   ssr: true,
-  caipNetworks: networks,
+  networks,
   projectId: ConstantsUtil.ProjectId
 })
 
@@ -41,7 +41,7 @@ const solanaWeb3JsAdapter = new SolanaWeb3JsClient({
 
 const modal = createAppKit({
   adapters: [wagmiAdapter, solanaWeb3JsAdapter],
-  caipNetworks: [
+  networks: [
     mainnet,
     polygon,
     base,
@@ -51,7 +51,7 @@ const modal = createAppKit({
     solanaTestnet,
     solanaDevnet
   ],
-  defaultCaipNetwork: mainnet,
+  defaultNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId,
   features: {
     analytics: true

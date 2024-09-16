@@ -13,6 +13,7 @@ import {
   SolflareWalletAdapter,
   TrustWalletAdapter
 } from '@solana/wallet-adapter-wallets'
+import { solana, solanaTestnet, solanaDevnet } from '@reown/appkit/chains'
 
 // @ts-expect-error 1. Get projectId
 const projectId = import.meta.env.VITE_PROJECT_ID
@@ -21,29 +22,7 @@ if (!projectId) {
 }
 
 // 2. Set chains
-const chains = [
-  {
-    chainId: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-    name: 'Solana',
-    currency: 'SOL',
-    explorerUrl: 'https://solscan.io',
-    rpcUrl: 'https://rpc.walletconnect.org/v1'
-  },
-  {
-    chainId: '4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z',
-    name: 'Solana Testnet',
-    currency: 'SOL',
-    explorerUrl: 'https://explorer.solana.com/?cluster=testnet',
-    rpcUrl: 'https://rpc.walletconnect.org/v1'
-  },
-  {
-    chainId: 'EtWTRABZaYq6iMfeYKouRu166VU2xqa1',
-    name: 'Solana Devnet',
-    currency: 'SOL',
-    explorerUrl: 'https://explorer.solana.com/?cluster=devnet',
-    rpcUrl: 'https://rpc.walletconnect.org/v1'
-  }
-]
+const networks = [solana, solanaTestnet, solanaDevnet]
 
 // 3. Create modal
 createAppKit({
@@ -55,7 +34,7 @@ createAppKit({
   },
   projectId,
   themeMode: 'light',
-  caipNetworks: chains,
+  networks,
   wallets: [
     new BackpackWalletAdapter(),
     new HuobiWalletAdapter(),

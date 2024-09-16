@@ -64,7 +64,7 @@ describe('SolanaWeb3JsClient', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
-    client = new SolanaWeb3JsClient(mockOptions)
+    client = new SolanaWeb3JsClient({})
     client.construct(mockAppKit, mockOptions)
   })
 
@@ -79,7 +79,7 @@ describe('SolanaWeb3JsClient', () => {
     })
 
     it('should set caipNetworks to provided caipNetworks options', () => {
-      expect(client['caipNetworks']).toEqual(mockOptions.caipNetworks)
+      expect(client['caipNetworks']).toEqual(mockOptions.networks)
     })
 
     it('should create network and connection controller clients', () => {

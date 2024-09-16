@@ -26,7 +26,7 @@ createAppKit({
     url: 'https://example.com',
     icons: ['https://avatars.githubusercontent.com/u/37784886']
   },
-  caipNetworks: [mainnet, arbitrum],
+  networks: [mainnet, arbitrum],
   projectId,
   themeMode: 'light',
   themeVariables: {

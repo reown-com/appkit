@@ -6,7 +6,7 @@ import type { SdkVersion } from '@reown/appkit-core'
 export const mockOptions = {
   projectId: 'test-project-id',
   adapters: [{ chainNamespace: 'eip155' } as unknown as ChainAdapter],
-  caipNetworks: [mainnet, solana],
+  networks: [mainnet, solana],
   metadata: {
     name: 'Test App',
     description: 'Test App Description',

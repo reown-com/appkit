@@ -13,8 +13,8 @@ const ethers5Adapter = new EVMEthers5Client()
 
 const modal = createAppKit({
   adapters: [ethers5Adapter],
-  caipNetworks: [arbitrum, mainnet, optimism, polygon, zkSync, sepolia],
-  defaultCaipNetwork: mainnet,
+  networks: [arbitrum, mainnet, optimism, polygon, zkSync, sepolia],
+  defaultNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId,
   features: {
     analytics: true

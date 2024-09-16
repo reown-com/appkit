@@ -24,11 +24,11 @@ describe('UniversalAdapter', () => {
 
   describe('UniversalAdapter - Initialization', () => {
     it('should set caipNetworks to provided caipNetworks options', () => {
-      expect(universalAdapter?.caipNetworks).toEqual(mockOptions.caipNetworks)
+      expect(universalAdapter?.caipNetworks).toEqual(mockOptions.networks)
     })
 
     it('should set defaultNetwork to first caipNetwork option', () => {
-      expect(universalAdapter?.defaultNetwork).toEqual(mockOptions.caipNetworks[0])
+      expect(universalAdapter?.defaultNetwork).toEqual(mockOptions.networks[0])
     })
 
     it('should set metadata to metadata options', () => {
@@ -83,7 +83,7 @@ describe('UniversalAdapter', () => {
     })
 
     it('should set correct requestedCaipNetworks in AppKit when syncRequestedNetworks has been called', () => {
-      ;(universalAdapter as any).syncRequestedNetworks(mockOptions.caipNetworks)
+      ;(universalAdapter as any).syncRequestedNetworks(mockOptions.networks)
       expect(mockAppKit.setRequestedCaipNetworks).toHaveBeenCalledWith([mainnet], 'eip155')
       expect(mockAppKit.setRequestedCaipNetworks).toHaveBeenCalledWith([solana], 'solana')
     })

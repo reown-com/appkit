@@ -47,12 +47,12 @@ export type AppKitOptions = {
    * You can set the desired caipnetworks for the app:
    * @see https://docs.walletconnect.com/appkit/react/core/options#defaultchain
    */
-  caipNetworks: CaipNetwork[]
+  networks: CaipNetwork[]
   /**
    * You can set a desired caipnetwork for the initial connection:
    * @see https://docs.walletconnect.com/appkit/react/core/options#defaultchain
    */
-  defaultCaipNetwork?: NetworkControllerState['caipNetwork']
+  defaultNetwork?: NetworkControllerState['caipNetwork']
   /**
    * Add or override the modal's network images.
    * @see https://docs.walletconnect.com/appkit/react/core/options#chainimages

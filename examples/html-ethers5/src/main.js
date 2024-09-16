@@ -14,7 +14,7 @@ const ethers5Adapter = new EVMEthers5Client()
 // 3. Create modal
 const modal = createAppKit({
   adapters: [ethers5Adapter],
-  caipNetworks: [mainnet, arbitrum],
+  networks: [mainnet, arbitrum],
   metadata: {
     name: 'AppKit',
     description: 'AppKit Laboratory',
