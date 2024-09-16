@@ -646,6 +646,7 @@ export class SolanaAdapter implements ChainAdapter {
 
     for (const provider of providers) {
       this.availableProviders = this.availableProviders.filter(p => p.name !== provider.name)
+      this.availableProviders.push(provider)
 
       if (provider.name === activeProviderName && isSolana) {
         this.setProvider(provider)

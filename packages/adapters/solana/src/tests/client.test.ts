@@ -4,7 +4,7 @@ import { mockOptions } from './mocks/Options'
 import mockAppKit from './mocks/AppKit'
 import { mockAuthConnector } from './mocks/AuthConnector'
 import { Connection } from '@solana/web3.js'
-import { SafeLocalStorage } from '@reown/appkit-common'
+import { CaipNetworksUtil, SafeLocalStorage } from '@reown/appkit-common'
 import { ProviderUtil } from '@reown/appkit/store'
 import { SolHelpersUtil } from '@reown/appkit-utils/solana'
 import { SolStoreUtil } from '../utils/SolanaStoreUtil.js'
@@ -79,7 +79,12 @@ describe('SolanaAdapter', () => {
     })
 
     it('should set caipNetworks to provided caipNetworks options', () => {
-      expect(client['caipNetworks']).toEqual(mockOptions.networks)
+      expect(client['caipNetworks']).toEqual(
+        mockOptions.networks.map(n => ({
+          ...n,
+          rpcUrl: CaipNetworksUtil.extendRpcUrlWithProjectId(n.rpcUrl, mockOptions.projectId)
+        }))
+      )
     })
 
     it('should create network and connection controller clients', () => {
@@ -147,7 +152,8 @@ describe('SolanaAdapter', () => {
       const mockProvider = {
         connect: vi.fn().mockResolvedValue('DjPi1LtwrXJMAh2AUvuUMajCpMJEKg8N1J1PbLGjCH5B'),
         name: 'MockProvider',
-        on: vi.fn()
+        on: vi.fn(),
+        chains: [{ chainId: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp' }]
       }
       vi.spyOn(SafeLocalStorage, 'getItem').mockReturnValue(
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'
@@ -161,11 +167,16 @@ describe('SolanaAdapter', () => {
         'solana'
       )
       expect(ProviderUtil.setProvider).toHaveBeenCalledWith('solana', mockProvider)
-      expect(ProviderUtil.setProviderId).toHaveBeenCalledWith('solana', 'walletConnect')
+      expect(ProviderUtil.setProviderId).toHaveBeenCalledWith('solana', 'injected')
     })
 
     it('should add provider', () => {
-      const mockProvider = { name: 'MockProvider', type: 'INJECTED', icon: 'mock-icon' }
+      const mockProvider = {
+        name: 'MockProvider',
+        type: 'INJECTED',
+        icon: 'mock-icon',
+        chains: [{ chainId: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp' }]
+      }
       client['addProvider'](mockProvider as any)
 
       expect(client['availableProviders']).toContain(mockProvider)
