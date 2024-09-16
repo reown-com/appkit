@@ -1,6 +1,6 @@
 import '@reown/appkit-polyfills'
 
-export { EVMWagmiClient } from './client.js'
+export { WagmiAdapter } from './client.js'
 
 // -- Types
 export type { AdapterOptions } from './client.js'

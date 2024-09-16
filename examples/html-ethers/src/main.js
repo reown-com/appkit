@@ -1,6 +1,6 @@
-import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@reown/appkit/chains'
+import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@reown/appkit/networks'
 import { createAppKit } from '@reown/appkit'
-import { EVMEthersClient } from '@reown/appkit-adapter-ethers'
+import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 
 // @ts-expect-error 1. Get projectId
 const projectId = import.meta.env.VITE_PROJECT_ID
@@ -9,12 +9,12 @@ if (!projectId) {
 }
 
 // Create adapter
-const ethersAdapter = new EVMEthersClient()
+const ethersAdapter = new EthersAdapter()
 
 // Instantiate AppKit
 const modal = createAppKit({
   adapters: [ethersAdapter],
-  caipNetworks: [mainnet, optimism, polygon, zkSync, arbitrum, sepolia],
+  networks: [mainnet, optimism, polygon, zkSync, arbitrum, sepolia],
   projectId
 })
 

@@ -3,7 +3,7 @@ import { Button, Stack, Text, Spacer } from '@chakra-ui/react'
 import { PublicKey, VersionedTransaction } from '@solana/web3.js'
 
 import { useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
-import { solana } from '@reown/appkit/chains'
+import { solana } from '@reown/appkit/networks'
 import { useChakraToast } from '../Toast'
 import bs58 from 'bs58'
 import { useAppKitConnection, type Provider } from '@reown/appkit-adapter-solana/react'

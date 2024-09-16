@@ -5,7 +5,8 @@ import {
   useAppKitState,
   useAppKitTheme
 } from '@reown/appkit/react'
-import { EVMEthersClient } from '@reown/appkit-adapter-ethers'
+import { EthersAdapter } from '@reown/appkit-adapter-ethers'
+import { mainnet, arbitrum } from '@reown/appkit/networks'
 
 // @ts-expect-error 1. Get projectId
 const projectId = import.meta.env.VITE_PROJECT_ID
@@ -13,38 +14,19 @@ if (!projectId) {
   throw new Error('VITE_PROJECT_ID is not set')
 }
 
-function getBlockchainApiRpcUrl(chainId: number) {
-  return `https://rpc.walletconnect.org/v1/?chainId=eip155:${chainId}&projectId=${projectId}`
-}
-
 // 2. Set chains
-const chains = [
-  {
-    chainId: 1,
-    name: 'Ethereum',
-    currency: 'ETH',
-    explorerUrl: 'https://etherscan.io',
-    rpcUrl: getBlockchainApiRpcUrl(1),
-    chainNamespace: 'eip155'
-  },
-  {
-    chainId: 42161,
-    name: 'Arbitrum',
-    currency: 'ETH',
-    explorerUrl: 'https://arbiscan.io',
-    rpcUrl: getBlockchainApiRpcUrl(42161),
-    chainNamespace: 'eip155'
-  }
-]
+const networks = [mainnet, arbitrum]
 
-const ethersAdapter = new EVMEthersClient()
+const ethersAdapter = new EthersAdapter()
 
 // 3. Create modal
 createAppKit({
   adapters: [ethersAdapter],
-  caipNetworks: chains,
+  networks,
   projectId,
-  enableAnalytics: true,
+  features: {
+    analytics: true
+  },
   themeMode: 'light',
   themeVariables: {
     '--w3m-color-mix': '#00DCFF',

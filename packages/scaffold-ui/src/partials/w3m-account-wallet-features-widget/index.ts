@@ -48,6 +48,8 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
   @state() private preferredAccountType = AccountController.state.preferredAccountType
 
+  @state() private features = OptionsController.state.features
+
   public constructor() {
     super()
     this.unsubscribe.push(
@@ -66,9 +68,8 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
           }
         })
       ],
-      ChainController.subscribeKey('activeCaipNetwork', val => {
-        this.network = val
-      })
+      ChainController.subscribeKey('activeCaipNetwork', val => (this.network = val)),
+      OptionsController.subscribeKey('features', val => (this.features = val))
     )
     this.watchSwapValues()
   }
@@ -148,7 +149,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
   // -- Private ------------------------------------------- //
   private swapsTemplate() {
-    const { swaps } = OptionsController.state.features
+    const swaps = this.features?.swaps
 
     if (!swaps) {
       return null

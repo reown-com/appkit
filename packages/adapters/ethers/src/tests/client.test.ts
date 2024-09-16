@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
-import { EVMEthersClient } from '../client'
+import { EthersAdapter } from '../client'
 import type { EIP6963ProviderDetail } from '../client'
 import { mockOptions } from './mocks/Options'
 import { mockCreateEthersConfig } from './mocks/EthersConfig'
@@ -7,7 +7,7 @@ import mockAppKit from './mocks/AppKit'
 import { mockAuthConnector } from './mocks/AuthConnector'
 import { EthersHelpersUtil, type ProviderId, type ProviderType } from '@reown/appkit-utils/ethers'
 import { ConstantsUtil } from '@reown/appkit-utils'
-import { arbitrum, mainnet, polygon } from '@reown/appkit/chains'
+import { arbitrum, mainnet, polygon } from '@reown/appkit/networks'
 import { ProviderUtil } from '@reown/appkit/store'
 import { SafeLocalStorage } from '@reown/appkit-common'
 import { WcConstantsUtil, type BlockchainApiLookupEnsName } from '@reown/appkit'
@@ -91,12 +91,12 @@ vi.mock('ethers', async () => {
   }
 })
 
-describe('EVMEthersClient', () => {
-  let client: EVMEthersClient
+describe('EthersAdapter', () => {
+  let client: EthersAdapter
 
   beforeEach(() => {
     vi.clearAllMocks()
-    client = new EVMEthersClient()
+    client = new EthersAdapter()
     const optionsWithEthersConfig = {
       ...mockOptions,
       ethersConfig: mockCreateEthersConfig()
@@ -115,11 +115,11 @@ describe('EVMEthersClient', () => {
     })
 
     it('should set caipNetworks to provided caipNetworks options', () => {
-      expect(client.caipNetworks).toEqual(mockOptions.caipNetworks)
+      expect(client.caipNetworks).toEqual(mockOptions.networks)
     })
 
     it('should set defaultNetwork to first caipNetwork option', () => {
-      expect(client.defaultCaipNetwork).toEqual(mockOptions.caipNetworks[0])
+      expect(client.defaultCaipNetwork).toEqual(mockOptions.networks[0])
     })
 
     it('should create ethers config', () => {

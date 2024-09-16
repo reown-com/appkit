@@ -1,7 +1,7 @@
 import React from 'react'
 import { createAppKit } from '@reown/appkit/react'
-import { EVMWagmiClient } from '@reown/appkit-adapter-wagmi'
-import { SolanaWeb3JsClient } from '@reown/appkit-adapter-solana/react'
+import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
+import { SolanaAdapter } from '@reown/appkit-adapter-solana/react'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -18,7 +18,7 @@ import {
   optimism,
   zkSync,
   sepolia
-} from '@reown/appkit/chains'
+} from '@reown/appkit/networks'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { MultiChainTestsWagmiSolana } from '../../components/MultiChainTestsWagmiSolana'
@@ -29,19 +29,19 @@ const queryClient = new QueryClient()
 
 const networks = [mainnet, optimism, polygon, zkSync, arbitrum, sepolia]
 
-const wagmiAdapter = new EVMWagmiClient({
+const wagmiAdapter = new WagmiAdapter({
   ssr: true,
-  caipNetworks: networks,
+  networks,
   projectId: ConstantsUtil.ProjectId
 })
 
-const solanaWeb3JsAdapter = new SolanaWeb3JsClient({
+const solanaWeb3JsAdapter = new SolanaAdapter({
   wallets: [new HuobiWalletAdapter(), new SolflareWalletAdapter()]
 })
 
 const modal = createAppKit({
   adapters: [wagmiAdapter, solanaWeb3JsAdapter],
-  caipNetworks: [
+  networks: [
     mainnet,
     polygon,
     base,
@@ -51,7 +51,7 @@ const modal = createAppKit({
     solanaTestnet,
     solanaDevnet
   ],
-  defaultCaipNetwork: mainnet,
+  defaultNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId,
   features: {
     analytics: true

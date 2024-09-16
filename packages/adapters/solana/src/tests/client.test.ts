@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
-import { SolanaWeb3JsClient } from '../client'
+import { SolanaAdapter } from '../client'
 import { mockOptions } from './mocks/Options'
 import mockAppKit from './mocks/AppKit'
 import { mockAuthConnector } from './mocks/AuthConnector'
@@ -10,7 +10,7 @@ import { SolHelpersUtil } from '@reown/appkit-utils/solana'
 import { SolStoreUtil } from '../utils/SolanaStoreUtil.js'
 import { WalletConnectProvider } from '../providers/WalletConnectProvider'
 import UniversalProvider from '@walletconnect/universal-provider'
-import { solana } from '@reown/appkit/chains'
+import { solana } from '@reown/appkit/networks'
 
 vi.mock('@solana/web3.js', () => ({
   Connection: vi.fn(),
@@ -59,12 +59,12 @@ vi.mock('@reown/appkit-utils/solana', () => ({
   }
 }))
 
-describe('SolanaWeb3JsClient', () => {
-  let client: SolanaWeb3JsClient
+describe('SolanaAdapter', () => {
+  let client: SolanaAdapter
 
   beforeEach(() => {
     vi.clearAllMocks()
-    client = new SolanaWeb3JsClient(mockOptions)
+    client = new SolanaAdapter({})
     client.construct(mockAppKit, mockOptions)
   })
 
@@ -72,14 +72,14 @@ describe('SolanaWeb3JsClient', () => {
     vi.clearAllMocks()
   })
 
-  describe('SolanaWeb3JsClient - Initialization', () => {
+  describe('SolanaAdapter - Initialization', () => {
     it('should initialize with default values', () => {
       expect(client.chainNamespace).toBe('solana')
       expect(client.adapterType).toBe('solana')
     })
 
     it('should set caipNetworks to provided caipNetworks options', () => {
-      expect(client['caipNetworks']).toEqual(mockOptions.caipNetworks)
+      expect(client['caipNetworks']).toEqual(mockOptions.networks)
     })
 
     it('should create network and connection controller clients', () => {
@@ -88,7 +88,7 @@ describe('SolanaWeb3JsClient', () => {
     })
   })
 
-  describe('SolanaWeb3JsClient - Network', () => {
+  describe('SolanaAdapter - Network', () => {
     it('should switch network', async () => {
       vi.spyOn(SolStoreUtil.state, 'connection', 'get').mockReturnValue({
         getBalance: vi.fn()
@@ -114,7 +114,7 @@ describe('SolanaWeb3JsClient', () => {
     })
   })
 
-  describe('SolanaWeb3JsClient - Account', () => {
+  describe('SolanaAdapter - Account', () => {
     it('should sync account', async () => {
       const mockAddress = 'DjPi1LtwrXJMAh2AUvuUMajCpMJEKg8N1J1PbLGjCH5B'
       vi.spyOn(mockAppKit, 'getAddress').mockReturnValue(mockAddress)
@@ -142,7 +142,7 @@ describe('SolanaWeb3JsClient', () => {
     })
   })
 
-  describe('SolanaWeb3JsClient - Provider', () => {
+  describe('SolanaAdapter - Provider', () => {
     it('should set provider', async () => {
       const mockProvider = {
         connect: vi.fn().mockResolvedValue('DjPi1LtwrXJMAh2AUvuUMajCpMJEKg8N1J1PbLGjCH5B'),
@@ -173,7 +173,7 @@ describe('SolanaWeb3JsClient', () => {
     })
   })
 
-  describe('SolanaWeb3JsClient - GetWalletConnectProvider', () => {
+  describe('SolanaAdapter - GetWalletConnectProvider', () => {
     it('should get Solana WalletConnect provider', () => {
       const mockUniversalProvider = {} as UniversalProvider
       const result = client['getSolanaWalletConnectProvider'](mockUniversalProvider)
@@ -182,7 +182,7 @@ describe('SolanaWeb3JsClient', () => {
     })
   })
 
-  describe('SolanaWeb3JsClient - Events', () => {
+  describe('SolanaAdapter - Events', () => {
     it('should set up provider event listeners', () => {
       const mockProvider = {
         on: vi.fn(),

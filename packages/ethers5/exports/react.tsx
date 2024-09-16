@@ -4,7 +4,7 @@ import { AppKit } from '@reown/appkit'
 import type { AppKitOptions } from '@reown/appkit'
 import type { CaipNetwork } from '@reown/appkit-common'
 import { ProviderUtil } from '@reown/appkit/store'
-import { EVMEthers5Client, type AdapterOptions } from '@reown/appkit-adapter-ethers5'
+import { Ethers5Adapter, type AdapterOptions } from '@reown/appkit-adapter-ethers5'
 import { getAppKit } from '@reown/appkit/library/react'
 import { useSnapshot } from 'valtio'
 import { ethers } from 'ethers'
@@ -12,13 +12,13 @@ import packageJson from '../package.json' assert { type: 'json' }
 
 // -- Setup -------------------------------------------------------------------
 let appkit: AppKit | undefined = undefined
-let ethersAdapter: EVMEthers5Client | undefined = undefined
+let ethersAdapter: Ethers5Adapter | undefined = undefined
 
 export type Ethers5AppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 'sdkVersion'> &
   AdapterOptions
 
 export function createAppKit(options: Ethers5AppKitOptions) {
-  ethersAdapter = new EVMEthers5Client()
+  ethersAdapter = new Ethers5Adapter()
   appkit = new AppKit({
     ...options,
     sdkVersion: `react-ethers5-${packageJson.version}`,

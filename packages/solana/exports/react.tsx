@@ -2,7 +2,7 @@
 
 import { AppKit } from '@reown/appkit'
 import {
-  SolanaWeb3JsClient,
+  SolanaAdapter,
   type Provider,
   useAppKitConnection
 } from '@reown/appkit-adapter-solana/react'
@@ -15,10 +15,10 @@ export type { SolanaAppKitOptions, Provider }
 
 // -- Setup -------------------------------------------------------------
 let appkit: AppKit | undefined = undefined
-let solanaAdapter: SolanaWeb3JsClient | undefined = undefined
+let solanaAdapter: SolanaAdapter | undefined = undefined
 
 export function createAppKit(options: SolanaAppKitOptions) {
-  solanaAdapter = new SolanaWeb3JsClient({
+  solanaAdapter = new SolanaAdapter({
     wallets: options.wallets
   })
   appkit = new AppKit({

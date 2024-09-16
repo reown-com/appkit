@@ -1,18 +1,18 @@
 import { createAppKit } from '@reown/appkit/react'
-import { EVMEthersClient } from '@reown/appkit-adapter-ethers'
+import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { EthersModalInfo } from '../../components/Ethers/EthersModalInfo'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { EthersTests } from '../../components/Ethers/EthersTests'
-import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@reown/appkit/chains'
+import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@reown/appkit/networks'
 
-const ethersAdapter = new EVMEthersClient()
+const ethersAdapter = new EthersAdapter()
 
 const modal = createAppKit({
   adapters: [ethersAdapter],
-  caipNetworks: [arbitrum, mainnet, optimism, polygon, zkSync, sepolia],
-  defaultCaipNetwork: mainnet,
+  networks: [arbitrum, mainnet, optimism, polygon, zkSync, sepolia],
+  defaultNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId,
   features: {
     analytics: true,

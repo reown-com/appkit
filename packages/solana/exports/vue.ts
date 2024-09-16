@@ -1,6 +1,6 @@
 import { getAppKit } from '@reown/appkit/library/vue'
 import { AppKit } from '@reown/appkit'
-import { SolanaWeb3JsClient, useAppKitConnection } from '@reown/appkit-adapter-solana/vue'
+import { SolanaAdapter, useAppKitConnection } from '@reown/appkit-adapter-solana/vue'
 import type { Provider } from '@reown/appkit-adapter-solana/vue'
 import type { CaipNetwork } from '@reown/appkit-common'
 import type { SolanaAppKitOptions } from './options'
@@ -11,10 +11,10 @@ export type { SolanaAppKitOptions, Provider }
 
 // -- Setup -------------------------------------------------------------------
 let appkit: AppKit | undefined = undefined
-let solanaAdapter: SolanaWeb3JsClient | undefined = undefined
+let solanaAdapter: SolanaAdapter | undefined = undefined
 
 export function createAppKit(options: SolanaAppKitOptions) {
-  solanaAdapter = new SolanaWeb3JsClient({
+  solanaAdapter = new SolanaAdapter({
     wallets: options.wallets
   })
   appkit = new AppKit({

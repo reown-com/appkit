@@ -1,4 +1,4 @@
-import { EVMWagmiClient } from '@reown/appkit-adapter-wagmi'
+import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { mainnet as wagmiMainnet } from 'viem/chains'
 import { createConfig, http } from 'wagmi'
 import { mock } from 'wagmi/connectors'
@@ -28,20 +28,20 @@ export const wagmiConfigMock = createConfig({
   }
 })
 
-export const wagmiAdapterMock = new EVMWagmiClient({
+export const wagmiAdapterMock = new WagmiAdapter({
   chains: [wagmiMainnet],
   connectors: [mock({ accounts: [mockAccount.address] })],
   transports: {
     [wagmiMainnet.id]: http()
   },
-  caipNetworks: [mainnet],
+  networks: [mainnet],
   projectId: '1234'
 })
 
 const mockAppKitData = {
   adapters: [wagmiAdapterMock],
-  caipNetworks: [mainnet],
-  defaultCaipNetwork: mainnet,
+  networks: [mainnet],
+  defaultNetwork: mainnet,
   metadata: {
     description: 'Desc',
     name: 'Name',

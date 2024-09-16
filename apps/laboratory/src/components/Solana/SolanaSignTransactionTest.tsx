@@ -10,7 +10,7 @@ import {
 
 import { useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
 import { useAppKitConnection, type Provider } from '@reown/appkit-adapter-solana/react'
-import { solana } from '@reown/appkit/chains'
+import { solana } from '@reown/appkit/networks'
 import { useChakraToast } from '../Toast'
 import bs58 from 'bs58'
 

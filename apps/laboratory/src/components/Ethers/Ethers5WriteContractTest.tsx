@@ -6,7 +6,7 @@ import {
   type Provider
 } from '@reown/appkit/react'
 import { ethers } from 'ethers5'
-import { optimism, sepolia } from '@reown/appkit/chains'
+import { optimism, sepolia } from '@reown/appkit/networks'
 import { useState } from 'react'
 
 import { abi, address as donutAddress } from '../../utils/DonutContract'

@@ -1,18 +1,18 @@
 'use client'
 
 import { createAppKit } from '@reown/appkit/react'
-import { EVMEthersClient } from '@reown/appkit-adapter-ethers'
-import { mainnet, arbitrum, avalanche, base, optimism, polygon } from '@reown/appkit/chains'
+import { EthersAdapter } from '@reown/appkit-adapter-ethers'
+import { mainnet, arbitrum, avalanche, base, optimism, polygon } from '@reown/appkit/networks'
 import { type ReactNode } from 'react'
 
 const projectId = 'Your project ID'
 
-const ethersAdapter = new EVMEthersClient()
+const ethersAdapter = new EthersAdapter()
 
 createAppKit({
   adapters: [ethersAdapter],
   projectId,
-  caipNetworks: [mainnet, arbitrum, avalanche, base, optimism, polygon],
+  networks: [mainnet, arbitrum, avalanche, base, optimism, polygon],
   metadata: {
     name: 'My App',
     description: 'My app description',

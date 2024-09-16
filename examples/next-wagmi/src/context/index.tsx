@@ -1,6 +1,6 @@
 'use client'
 
-import { wagmiAdapter, projectId, caipNetworks } from '@/config'
+import { wagmiAdapter, projectId, networks } from '@/config'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createAppKit } from '@reown/appkit/react'
 import React, { type ReactNode } from 'react'
@@ -15,7 +15,7 @@ if (!projectId) {
 createAppKit({
   adapters: [wagmiAdapter],
   projectId,
-  caipNetworks,
+  networks,
   metadata: {
     name: 'My App',
     description: 'My app description',

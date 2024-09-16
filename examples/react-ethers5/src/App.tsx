@@ -1,4 +1,4 @@
-import { EVMEthers5Client } from '@reown/appkit-adapter-ethers5'
+import { Ethers5Adapter } from '@reown/appkit-adapter-ethers5'
 import {
   createAppKit,
   useAppKit,
@@ -6,7 +6,7 @@ import {
   useAppKitState,
   useAppKitTheme
 } from '@reown/appkit/react'
-import { mainnet, arbitrum } from '@reown/appkit/chains'
+import { mainnet, arbitrum } from '@reown/appkit/networks'
 
 // @ts-expect-error 1. Get projectId
 const projectId = import.meta.env.VITE_PROJECT_ID
@@ -15,7 +15,7 @@ if (!projectId) {
 }
 
 // 2. Set Ethers adapter
-const ethers5Adapter = new EVMEthers5Client()
+const ethers5Adapter = new Ethers5Adapter()
 
 // 3. Create modal
 createAppKit({
@@ -26,7 +26,7 @@ createAppKit({
     url: 'https://example.com',
     icons: ['https://avatars.githubusercontent.com/u/37784886']
   },
-  caipNetworks: [mainnet, arbitrum],
+  networks: [mainnet, arbitrum],
   projectId,
   themeMode: 'light',
   themeVariables: {

@@ -7,7 +7,7 @@ import {
   mockOptions,
   mockWagmiClient
 } from './mocks/adapter.mock'
-import { arbitrum, mainnet } from '@reown/appkit/chains'
+import { arbitrum, mainnet } from '@reown/appkit/networks'
 import { connect, disconnect, getAccount, getChainId, getEnsName, getBalance } from '@wagmi/core'
 import { ConstantsUtil } from '@reown/appkit-utils'
 
@@ -43,7 +43,7 @@ describe('Wagmi Client', () => {
        * Specifically to Wagmi, we are mutating caipNetworks on both Wagmi constructor and when we set adapters.
        * So there is not proper way to compare objects since imageId and imageUrl is added later.
        */
-      mockOptions.caipNetworks.forEach((network, index) => {
+      mockOptions.networks.forEach((network, index) => {
         expect(mockWagmiClient.caipNetworks[index]?.name).toEqual(network.name)
       })
     })
@@ -53,10 +53,8 @@ describe('Wagmi Client', () => {
        * Specifically to Wagmi, we are mutating caipNetworks on both Wagmi constructor and when we set adapters.
        * So there is not proper way to compare objects since imageId and imageUrl is added later.
        */
-      expect(mockWagmiClient.defaultCaipNetwork?.chainId).toEqual(
-        mockOptions.caipNetworks[0]?.chainId
-      )
-      expect(mockWagmiClient.defaultCaipNetwork?.name).toEqual(mockOptions.caipNetworks[0]?.name)
+      expect(mockWagmiClient.defaultCaipNetwork?.chainId).toEqual(mockOptions.networks[0]?.chainId)
+      expect(mockWagmiClient.defaultCaipNetwork?.name).toEqual(mockOptions.networks[0]?.name)
     })
 
     it('should create wagmi config', () => {
@@ -74,7 +72,7 @@ describe('Wagmi Client', () => {
     it('should sync the correct requested networks', async () => {
       const setRequestedCaipNetworks = vi.spyOn(mockAppKit, 'setRequestedCaipNetworks')
 
-      mockWagmiClient['syncRequestedNetworks'](mockOptions.caipNetworks)
+      mockWagmiClient['syncRequestedNetworks'](mockOptions.networks)
 
       /**
        * Specifically to Wagmi, we are mutating caipNetworks on both Wagmi constructor and when we set adapters.
@@ -198,7 +196,7 @@ describe('Wagmi Client', () => {
 
       mockWagmiClient.options = {
         ...mockOptions,
-        caipNetworks: []
+        networks: []
       }
       const setCaipNetworkSpy = vi.spyOn(mockAppKit, 'setCaipNetwork')
       const syncBalanceSpy = vi.spyOn(mockWagmiClient as any, 'syncBalance')
@@ -260,7 +258,7 @@ describe('Wagmi Client', () => {
     const mockChainId = 1 // Ethereum mainnet
 
     beforeEach(() => {
-      mockWagmiClient.options = { caipNetworks: [mockChain], projectId: '123' }
+      mockWagmiClient.options = { networks: [mockChain], projectId: '123' }
       mockAppKit.setBalance = vi.fn()
       ;(getBalance as any).mockReset()
     })
