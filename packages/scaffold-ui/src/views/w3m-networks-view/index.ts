@@ -171,6 +171,7 @@ export class W3mNetworksView extends LitElement {
     } else {
       // eslint-disable-next-line no-lonely-if
       if (ChainController.state.noAdapters) {
+        NetworkController.setActiveCaipNetwork(network)
         RouterController.push('ConnectingWalletConnect')
       } else if (isConnectedWithAuth) {
         RouterController.push('SwitchNetwork', { ...routerData, network })
