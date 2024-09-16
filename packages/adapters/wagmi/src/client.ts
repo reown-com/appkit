@@ -513,7 +513,8 @@ export class WagmiAdapter implements ChainAdapter {
       chainNamespace: this.chainNamespace,
       connectionControllerClient: this.connectionControllerClient,
       networkControllerClient: this.networkControllerClient,
-      adapterType: this.adapterType
+      adapterType: this.adapterType,
+      caipNetworks: this.caipNetworks
     })
 
     this.syncConnectors(this.wagmiConfig.connectors)

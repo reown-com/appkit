@@ -67,7 +67,7 @@ export class SolanaAdapter implements ChainAdapter {
 
   public wallets?: BaseWalletAdapter[]
 
-  private caipNetworks: CaipNetwork[] = []
+  public caipNetworks: CaipNetwork[] = []
 
   public chainNamespace: ChainNamespace = CommonConstantsUtil.CHAIN.SOLANA
 
@@ -300,7 +300,8 @@ export class SolanaAdapter implements ChainAdapter {
       chainNamespace: this.chainNamespace,
       connectionControllerClient: this.connectionControllerClient,
       networkControllerClient: this.networkControllerClient,
-      adapterType: this.adapterType
+      adapterType: this.adapterType,
+      caipNetworks: this.caipNetworks
     })
 
     ProviderUtil.subscribeProviders(providers => {

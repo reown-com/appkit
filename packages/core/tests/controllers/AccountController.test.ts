@@ -13,7 +13,12 @@ const chain = ConstantsUtil.CHAIN.EVM
 
 // -- Tests --------------------------------------------------------------------
 beforeAll(() => {
-  ChainController.initialize([{ chainNamespace: ConstantsUtil.CHAIN.EVM }])
+  ChainController.initialize([
+    {
+      chainNamespace: ConstantsUtil.CHAIN.EVM,
+      caipNetworks: []
+    }
+  ])
 })
 
 describe('AccountController', () => {

@@ -483,7 +483,8 @@ export class Ethers5Adapter {
       chainNamespace: this.chainNamespace,
       connectionControllerClient: this.connectionControllerClient,
       networkControllerClient: this.networkControllerClient,
-      adapterType: this.adapterType
+      adapterType: this.adapterType,
+      caipNetworks: this.caipNetworks
     })
 
     if (this.ethersConfig) {

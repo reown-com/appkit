@@ -49,7 +49,11 @@ const toTokenAddress = 'eip155:137:0x2c89bbc92bd86f8075d1decc58c7f4e0107f286b'
 beforeAll(async () => {
   //  -- Set Account and
   ChainController.initialize([
-    { chainNamespace: ConstantsUtil.CHAIN.EVM, networkControllerClient: client }
+    {
+      chainNamespace: ConstantsUtil.CHAIN.EVM,
+      networkControllerClient: client,
+      caipNetworks: []
+    }
   ])
 
   NetworkController.setCaipNetwork(caipNetwork)

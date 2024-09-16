@@ -31,7 +31,8 @@ const networkControllerClient: NetworkControllerClient = {
 const evmAdapter = {
   chainNamespace,
   connectionControllerClient,
-  networkControllerClient
+  networkControllerClient,
+  caipNetworks: []
 }
 
 beforeAll(() => {
