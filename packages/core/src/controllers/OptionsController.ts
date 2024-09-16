@@ -11,33 +11,115 @@ import type {
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 
 // -- Types --------------------------------------------- //
-export interface OptionsControllerState {
-  projectId: ProjectId
-  sdkType: 'appkit'
-  sdkVersion: SdkVersion
+export interface OptionsControllerStatePublic {
+  /**
+   * A boolean that allows you to add or remove the "All Wallets" button on the modal
+   * @default 'SHOW'
+   * @see https://docs.walletconnect.com/appkit/react/core/options#allwallets
+   */
   allWallets?: 'SHOW' | 'HIDE' | 'ONLY_MOBILE'
+  /**
+   * The project ID for the AppKit. You can find or create your project ID in the Cloud.
+   * @see https://cloud.walletconnect.com/
+   */
+  projectId: ProjectId
+  /**
+   * Array of wallet ids to be shown in the modal's connection view with priority. These wallets will also show up first in `All Wallets` view
+   * @default []
+   * @see https://docs.walletconnect.com/appkit/react/core/options#featuredwalletids
+   */
   featuredWalletIds?: string[]
+  /**
+   * Array of wallet ids to be shown (order is respected). Unlike `featuredWalletIds`, these wallets will be the only ones shown in `All Wallets` view and as recommended wallets.
+   * @default []
+   * @see https://docs.walletconnect.com/appkit/react/core/options#includewalletids
+   */
   includeWalletIds?: string[]
+  /**
+   * Array of wallet ids to be excluded from the wallet list in the modal.
+   * @default []
+   * @see https://docs.walletconnect.com/appkit/react/core/options#excludewalletids
+   */
   excludeWalletIds?: string[]
+  /**
+   * Array of tokens to show the user's balance of. Each key represents the chain id of the token's blockchain
+   * @default {}
+   * @see https://docs.walletconnect.com/appkit/react/core/options#tokens
+   */
   tokens?: Tokens
+  /**
+   * Add custom wallets to the modal. CustomWallets is an array of objects, where each object contains specific information of a custom wallet.
+   * @default []
+   * @see https://docs.walletconnect.com/appkit/react/core/options#customwallets
+   *
+   */
   customWallets?: CustomWallet[]
+  /**
+   * You can add an url for the terms and conditions link.
+   * @default undefined
+   */
   termsConditionsUrl?: string
+  /**
+   * You can add an url for the privacy policy link.
+   * @default undefined
+   */
   privacyPolicyUrl?: string
-  isSiweEnabled?: boolean
+  /**
+   * Set of fields that related to your project which will be used to populate the metadata of the modal.
+   * @default {}
+   */
   metadata?: Metadata
+  /**
+   * Enable or disable the appending the AppKit to the DOM. Created for specific use cases like WebGL.
+   * @default false
+   */
   disableAppend?: boolean
+  /**
+   * Enable or disable the all the wallet options (injected, Coinbase, QR, etc.). This is useful if you want to use only email and socials.
+   * @default true
+   */
   enableWallets?: boolean
+  /**
+   * Enable or disable the EIP6963 feature in your AppKit.
+   * @default false
+   */
   enableEIP6963?: boolean
+  /**
+   * Enable or disable the Coinbase wallet in your AppKit.
+   * @default true
+   */
+  enableCoinbase?: boolean
+  /**
+   * Enable or disable the Injected wallet in your AppKit.
+   * @default true
+   */
+  enableInjected?: boolean
+  /**
+   * Enable or disable the WalletConnect QR code in your AppKit.
+   * @default true
+   */
   enableWalletConnect?: boolean
-  isUniversalProvider?: boolean
-  hasMultipleAddresses?: boolean
-  features: Features
+  /**
+   * Features configuration object.
+   * @default { swaps: true, onramp: true, email: true, socials: ['google', 'x', 'discord', 'farcaster', 'github', 'apple', 'facebook'], history: true, analytics: true, allWallets: true }
+   * @see https://docs.walletconnect.com/appkit/react/core/options#features
+   */
+  features?: Features
 }
 
-type StateKey = keyof OptionsControllerState
+export interface OptionsControllerStateInternal {
+  sdkType: 'appkit'
+  sdkVersion: SdkVersion
+  isSiweEnabled?: boolean
+  isUniversalProvider?: boolean
+  hasMultipleAddresses?: boolean
+}
+
+type StateKey = keyof OptionsControllerStatePublic | keyof OptionsControllerStateInternal
+type OptionsControllerState = OptionsControllerStatePublic & OptionsControllerStateInternal
 
 // -- State --------------------------------------------- //
-const state = proxy<OptionsControllerState>({
+const state = proxy<OptionsControllerState & OptionsControllerStateInternal>({
   features: ConstantsUtil.DEFAULT_FEATURES,
   projectId: '',
   sdkType: 'appkit',
@@ -62,6 +144,9 @@ export const OptionsController = {
     }
 
     Object.entries(features).forEach(([key, value]) => {
+      if (!state.features) {
+        state.features = ConstantsUtil.DEFAULT_FEATURES
+      }
       if (key in state.features) {
         ;(state.features as Record<keyof Features, unknown>)[key as keyof Features] = value
       }

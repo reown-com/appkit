@@ -5,8 +5,8 @@ import {
   useAppKitState,
   useAppKitTheme
 } from '@reown/appkit/react'
-import { mainnet, polygon } from '@reown/appkit/chains'
-import { EVMWagmiClient } from '@reown/appkit-adapter-wagmi'
+import { mainnet, polygon } from '@reown/appkit/networks'
+import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { WagmiProvider } from 'wagmi'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiHooks } from './WagmiHooks'
@@ -21,15 +21,15 @@ if (!projectId) {
 }
 
 // 2. Setup wagmi adapter
-const wagmiAdapter = new EVMWagmiClient({
+const wagmiAdapter = new WagmiAdapter({
   projectId,
-  caipNetworks: [mainnet, polygon]
+  networks: [mainnet, polygon]
 })
 
 // 3. Create modal
 createAppKit({
   adapters: [wagmiAdapter],
-  caipNetworks: [mainnet, polygon],
+  networks: [mainnet, polygon],
   metadata: {
     name: 'AppKit',
     description: 'AppKit React Wagmi Example',

@@ -1,11 +1,12 @@
 <script lang="ts" setup>
+import { solana, solanaTestnet, solanaDevnet } from '@reown/appkit/networks'
 import {
   createAppKit,
   useAppKit,
   useAppKitEvents,
   useAppKitState,
   useAppKitTheme
-} from '@reown/appkit-solana/vue'
+} from '@reown/appkit/vue'
 import { BackpackWalletAdapter } from '@solana/wallet-adapter-backpack'
 import {
   PhantomWalletAdapter,
@@ -21,29 +22,7 @@ if (!projectId) {
 }
 
 // 2. Set chains
-const chains = [
-  {
-    chainId: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-    name: 'Solana',
-    currency: 'SOL',
-    explorerUrl: 'https://solscan.io',
-    rpcUrl: 'https://rpc.walletconnect.org/v1'
-  },
-  {
-    chainId: '4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z',
-    name: 'Solana Testnet',
-    currency: 'SOL',
-    explorerUrl: 'https://explorer.solana.com/?cluster=testnet',
-    rpcUrl: 'https://rpc.walletconnect.org/v1'
-  },
-  {
-    chainId: 'EtWTRABZaYq6iMfeYKouRu166VU2xqa1',
-    name: 'Solana Devnet',
-    currency: 'SOL',
-    explorerUrl: 'https://explorer.solana.com/?cluster=devnet',
-    rpcUrl: 'https://rpc.walletconnect.org/v1'
-  }
-]
+const networks = [solana, solanaTestnet, solanaDevnet]
 
 // 3. Create modal
 createAppKit({
@@ -55,7 +34,7 @@ createAppKit({
   },
   projectId,
   themeMode: 'light',
-  caipNetworks: chains,
+  networks,
   wallets: [
     new BackpackWalletAdapter(),
     new HuobiWalletAdapter(),

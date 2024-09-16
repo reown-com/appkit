@@ -46,8 +46,8 @@ export function getFilteredCapabilitySupportedChainInfo(
   return chainInfo
 }
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 export function convertCapabilitiesToRecord(
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   accountCapabilities: Record<string, any>
 ): Record<number, WalletCapabilities> {
   return Object.fromEntries(

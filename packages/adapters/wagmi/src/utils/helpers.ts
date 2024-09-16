@@ -1,8 +1,4 @@
-import {
-  ConstantsUtil as CommonConstantsUtil,
-  type CaipNetwork,
-  type CaipNetworkId
-} from '@reown/appkit-common'
+import { type CaipNetwork, type CaipNetworkId } from '@reown/appkit-common'
 import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
 import { UniversalProvider } from '@walletconnect/universal-provider'
 import { fallback, http, type Hex } from 'viem'
@@ -10,19 +6,6 @@ import { fallback, http, type Hex } from 'viem'
 import type { Chain } from '@wagmi/core/chains'
 import type { Connector } from '@wagmi/core'
 import { CoreHelperUtil } from '@reown/appkit-core'
-
-export function getCaipDefaultNetwork(chain?: CaipNetwork) {
-  if (!chain) {
-    return undefined
-  }
-
-  return {
-    id: chain.id,
-    name: chain.name,
-    imageId: PresetsUtil.NetworkImageIds[chain.chainId],
-    chainNamespace: CommonConstantsUtil.CHAIN.EVM
-  } as unknown as CaipNetwork
-}
 
 export async function getWalletConnectCaipNetworks(connector?: Connector) {
   if (!connector) {

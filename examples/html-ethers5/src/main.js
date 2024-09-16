@@ -1,5 +1,5 @@
-import { EVMEthers5Client } from '@reown/appkit-adapter-ethers5'
-import { mainnet, arbitrum } from '@reown/appkit/chains'
+import { Ethers5Adapter } from '@reown/appkit-adapter-ethers5'
+import { mainnet, arbitrum } from '@reown/appkit/networks'
 import { createAppKit } from '@reown/appkit'
 
 // @ts-expect-error 1. Get projectId
@@ -9,12 +9,12 @@ if (!projectId) {
 }
 
 // 2. Create wagmiConfig
-const ethers5Adapter = new EVMEthers5Client()
+const ethers5Adapter = new Ethers5Adapter()
 
 // 3. Create modal
 const modal = createAppKit({
   adapters: [ethers5Adapter],
-  caipNetworks: [mainnet, arbitrum],
+  networks: [mainnet, arbitrum],
   metadata: {
     name: 'AppKit',
     description: 'AppKit Laboratory',

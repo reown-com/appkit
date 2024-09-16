@@ -494,35 +494,35 @@ export class AppKit {
 
   private initializeUniversalAdapter(options: AppKitOptions) {
     const caipNetworks = this.extendCaipNetworksWithImages(
-      options.caipNetworks,
+      options.networks,
       options.chainImages,
       options.projectId
     )
     this.universalAdapter = new UniversalAdapterClient({
       ...options,
-      caipNetworks
+      networks: caipNetworks
     })
 
     ChainController.initializeUniversalAdapter(this.universalAdapter, options.adapters || [])
 
     this.universalAdapter.construct?.(this, options)
 
-    NetworkController.setDefaultCaipNetwork(options.defaultCaipNetwork)
+    NetworkController.setDefaultCaipNetwork(options.defaultNetwork)
   }
 
   private initializeAdapters(options: AppKitOptions) {
     ChainController.initialize(options.adapters || [])
     options.adapters?.forEach(adapter => {
       const caipNetworks = this.extendCaipNetworksWithImages(
-        options.caipNetworks,
+        options.networks,
         options.chainImages,
         options.projectId
       )
-      options.caipNetworks = caipNetworks
+      options.networks = caipNetworks
       // @ts-expect-error will introduce construct later
       adapter.construct?.(this, options)
 
-      NetworkController.setDefaultCaipNetwork(options.defaultCaipNetwork)
+      NetworkController.setDefaultCaipNetwork(options.defaultNetwork)
     })
   }
 

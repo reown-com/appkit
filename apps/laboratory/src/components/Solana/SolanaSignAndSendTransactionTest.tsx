@@ -9,7 +9,7 @@ import {
   VersionedTransaction
 } from '@solana/web3.js'
 
-import { solana } from '@reown/appkit/chains'
+import { solana } from '@reown/appkit/networks'
 import { useChakraToast } from '../Toast'
 import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
 import { useAppKitConnection, type Provider } from '@reown/appkit-adapter-solana/react'

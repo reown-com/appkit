@@ -77,7 +77,7 @@ export interface EIP6963ProviderDetail {
   provider: Provider
 }
 
-export class EVMEthersClient {
+export class EthersAdapter {
   private appKit: AppKit | undefined = undefined
 
   private EIP6963Providers: EIP6963ProviderDetail[] = []
@@ -145,7 +145,7 @@ export class EVMEthersClient {
       const coinbaseWallet = new CoinbaseWalletSDK({
         appName: options?.metadata?.name,
         appLogoUrl: options?.metadata?.icons[0],
-        appChainIds: options.caipNetworks?.map(caipNetwork => caipNetwork.chainId as number) || [
+        appChainIds: options.networks?.map(caipNetwork => caipNetwork.chainId as number) || [
           1, 84532
         ]
       })
@@ -220,8 +220,8 @@ export class EVMEthersClient {
 
     this.appKit = appKit
     this.options = options
-    this.caipNetworks = options.caipNetworks
-    this.defaultCaipNetwork = options.defaultCaipNetwork || options.caipNetworks[0]
+    this.caipNetworks = options.networks
+    this.defaultCaipNetwork = options.defaultNetwork || options.networks[0]
     this.tokens = HelpersUtil.getCaipTokens(options.tokens)
     this.ethersConfig = this.createEthersConfig(options)
 
@@ -492,10 +492,9 @@ export class EVMEthersClient {
       options.features?.email === undefined
         ? CoreConstantsUtil.DEFAULT_FEATURES.email
         : options.features?.email
-    const socialsEnabled =
-      options.features?.socials === undefined
-        ? CoreConstantsUtil.DEFAULT_FEATURES.socials
-        : options.features?.socials?.length > 0
+    const socialsEnabled = options.features?.socials
+      ? options.features?.socials?.length > 0
+      : CoreConstantsUtil.DEFAULT_FEATURES.socials
 
     if (emailEnabled || socialsEnabled) {
       this.syncAuthConnector(this.options.projectId)

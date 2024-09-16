@@ -1,10 +1,10 @@
 import type { AppKitOptions, ChainAdapter } from '@reown/appkit'
-import { solana } from '@reown/appkit/chains'
+import { solana } from '@reown/appkit/networks'
 
 export const mockOptions: AppKitOptions = {
   projectId: 'test-project-id',
   adapters: [{ chainNamespace: 'solana' } as unknown as ChainAdapter],
-  caipNetworks: [solana],
+  networks: [solana],
   metadata: {
     name: 'Test App',
     description: 'Test App Description',

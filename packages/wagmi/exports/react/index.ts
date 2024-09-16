@@ -1,6 +1,6 @@
 import { AppKit } from '@reown/appkit'
 import type { AppKitOptions } from '@reown/appkit'
-import { EVMWagmiClient, type AdapterOptions } from '@reown/appkit-adapter-wagmi'
+import { WagmiAdapter, type AdapterOptions } from '@reown/appkit-adapter-wagmi'
 import { getAppKit } from '@reown/appkit/library/react'
 import { type Config, type CreateConfigParameters } from 'wagmi'
 import packageJson from '../../package.json' assert { type: 'json' }
@@ -14,9 +14,9 @@ export type WagmiAppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 's
   }
 
 export function createAppKit(options: WagmiAppKitOptions) {
-  const wagmiAdapter = new EVMWagmiClient({
+  const wagmiAdapter = new WagmiAdapter({
     ...options.wagmiConfig,
-    caipNetworks: options.caipNetworks,
+    networks: options.networks,
     projectId: options.projectId
   })
 

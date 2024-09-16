@@ -45,7 +45,7 @@ export { ThemeController } from '../src/controllers/ThemeController.js'
 export type { ThemeControllerState } from '../src/controllers/ThemeController.js'
 
 export { OptionsController } from '../src/controllers/OptionsController.js'
-export type { OptionsControllerState } from '../src/controllers/OptionsController.js'
+export type { OptionsControllerStatePublic as OptionsControllerState } from '../src/controllers/OptionsController.js'
 
 export { BlockchainApiController } from '../src/controllers/BlockchainApiController.js'
 

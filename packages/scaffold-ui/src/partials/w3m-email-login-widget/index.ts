@@ -57,7 +57,8 @@ export class W3mEmailLoginWidget extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const { socials, email } = OptionsController.state.features
+    const socials = OptionsController.state.features?.socials
+    const email = OptionsController.state.features?.email
     const multipleConnectors = this.connectors.length > 1
     const enableWallets = OptionsController.state.enableWallets
 

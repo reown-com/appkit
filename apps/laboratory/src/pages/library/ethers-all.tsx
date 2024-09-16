@@ -6,15 +6,15 @@ import { AppKitButtons } from '../../components/AppKitButtons'
 import { siweConfig } from '../../utils/SiweUtils'
 import { SiweData } from '../../components/Siwe/SiweData'
 import { EthersModalInfo } from '../../components/Ethers/EthersModalInfo'
-import { EVMEthersClient } from '@reown/appkit-adapter-ethers'
-import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@reown/appkit/chains'
+import { EthersAdapter } from '@reown/appkit-adapter-ethers'
+import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@reown/appkit/networks'
 
-const ethersAdapter = new EVMEthersClient()
+const ethersAdapter = new EthersAdapter()
 
 const modal = createAppKit({
   adapters: [ethersAdapter],
-  caipNetworks: [arbitrum, mainnet, optimism, polygon, zkSync, sepolia],
-  defaultCaipNetwork: mainnet,
+  networks: [arbitrum, mainnet, optimism, polygon, zkSync, sepolia],
+  defaultNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId,
   features: {
     analytics: true,
