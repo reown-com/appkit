@@ -103,6 +103,9 @@ const customProjectProperties: CustomProjectProperties = {
   'Desktop Firefox/multichain-ethers5-solana': {
     testMatch: /^.*\/multichain-ethers5-.*\.spec\.ts$/u
   },
+  'Desktop Firefox/multichain-basic': {
+    testMatch: /^.*\/multichain-basic\.spec\.ts$/u
+  },
   'Desktop Chrome/multichain-ethers-solana': {
     testMatch: /^.*\/multichain-ethers-.*\.spec\.ts$/u
   },
@@ -111,6 +114,9 @@ const customProjectProperties: CustomProjectProperties = {
   },
   'Desktop Chrome/multichain-ethers5-solana': {
     testMatch: /^.*\/multichain-ethers5-.*\.spec\.ts$/u
+  },
+  'Desktop Chrome/multichain-basic': {
+    testMatch: /^.*\/multichain-basic\.spec\.ts$/u
   }
 }
 
