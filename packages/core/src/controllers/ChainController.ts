@@ -206,6 +206,9 @@ export const ChainController = {
       } as AccountControllerState)
       state.chains.set(chain, chainAdapter)
       if (replaceState || state.chains.size === 1 || state.activeChain === chain) {
+        if (accountProps.caipAddress) {
+          state.activeCaipAddress = accountProps.caipAddress
+        }
         AccountController.replaceState(chainAdapter.accountState)
       }
     }
@@ -235,7 +238,7 @@ export const ChainController = {
 
     if (newAdapter && newAdapter.chainNamespace !== state.activeChain) {
       state.activeChain = newAdapter.chainNamespace
-      // state.activeCaipAddress = newAdapter.accountState?.caipAddress
+      state.activeCaipAddress = newAdapter.accountState?.caipAddress
       state.activeCaipNetwork = caipNetwork
 
       if (!newAdapter.accountState) {
@@ -264,7 +267,6 @@ export const ChainController = {
     }
 
     state.activeCaipNetwork = caipNetwork
-    console.log('>>> setActiveCaipNetwork', caipNetwork)
     state.activeChain = caipNetwork.chainNamespace
     PublicStateController.set({
       activeChain: caipNetwork.chainNamespace,

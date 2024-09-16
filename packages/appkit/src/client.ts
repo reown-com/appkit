@@ -267,12 +267,8 @@ export class AppKit {
   public getPreferredAccountType = () =>
     AccountController.state.preferredAccountType as W3mFrameTypes.AccountType
 
-  public setCaipAddress: (typeof AccountController)['setCaipAddress'] = (
-    caipAddress,
-    chain,
-    switchChain = true
-  ) => {
-    AccountController.setCaipAddress(caipAddress, chain, switchChain)
+  public setCaipAddress: (typeof AccountController)['setCaipAddress'] = (caipAddress, chain) => {
+    AccountController.setCaipAddress(caipAddress, chain)
   }
 
   public setProvider: (typeof AccountController)['setProvider'] = (provider, chain) => {

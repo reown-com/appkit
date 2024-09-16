@@ -275,14 +275,6 @@ export class UniversalAdapterClient {
 
       formatUnits: () => ''
     }
-
-    ChainController.subscribeKey('activeCaipNetwork', val => {
-      const noAdapters = ChainController.state.noAdapters
-
-      if (noAdapters && val) {
-        this.syncAccount({ caipNetwork: val })
-      }
-    })
   }
 
   // -- Public ------------------------------------------------------------------
@@ -400,7 +392,7 @@ export class UniversalAdapterClient {
           ProviderUtil.setProviderId(key as ChainNamespace, 'walletConnect')
 
           if (caipAddress) {
-            this.appKit?.setCaipAddress(caipAddress, key as ChainNamespace, false)
+            this.appKit?.setCaipAddress(caipAddress, key as ChainNamespace)
           }
         })
 
@@ -415,7 +407,13 @@ export class UniversalAdapterClient {
         } catch (error) {
           console.warn('>>> Error setting active caip network', error)
         }
-      } else {
+      } else if (!ChainController.state.activeCaipNetwork) {
+        this.setDefaultNetwork(nameSpaces)
+      } else if (
+        !NetworkController.state.approvedCaipNetworkIds?.includes(
+          ChainController.state.activeCaipNetwork.id
+        )
+      ) {
         this.setDefaultNetwork(nameSpaces)
       }
     }
@@ -425,6 +423,7 @@ export class UniversalAdapterClient {
       JSON.stringify(this.appKit?.getCaipNetwork())
     )
 
+    this.syncAccount()
     this.watchWalletConnect()
   }
 
@@ -471,9 +470,7 @@ export class UniversalAdapterClient {
 
     const accountsChangedHandler = (accounts: string[]) => {
       if (accounts.length > 0) {
-        this.syncAccount({
-          caipNetwork: this.appKit?.getCaipNetwork() as CaipNetwork
-        })
+        this.syncAccount()
       }
     }
 
@@ -527,14 +524,12 @@ export class UniversalAdapterClient {
     }
   }
 
-  private syncAccount({ caipNetwork }: { caipNetwork: CaipNetwork }) {
+  private syncAccount() {
     const { namespaceKeys, namespaces } = this.getProviderData()
 
     const preferredAccountType = this.appKit?.getPreferredAccountType()
 
-    const isConnected = Object.keys(namespaces).some(
-      key => (namespaces[key]?.accounts?.length ?? 0) > 0
-    )
+    const isConnected = this.appKit?.getIsConnectedState() || false
 
     if (isConnected) {
       namespaceKeys.forEach(async key => {
@@ -542,16 +537,12 @@ export class UniversalAdapterClient {
         const address = namespaces?.[key]?.accounts[0] as CaipAddress
         const isNamespaceConnected = this.appKit?.getCaipAddress(chainNamespace)
 
-        if (isNamespaceConnected) {
+        if (!isNamespaceConnected) {
           this.appKit?.setPreferredAccountType(preferredAccountType, chainNamespace)
-          this.appKit?.setCaipAddress(address, chainNamespace, false)
+          this.appKit?.setCaipAddress(address, chainNamespace)
           this.syncConnectedWalletInfo()
           this.syncAccounts()
           await Promise.all([this.appKit?.setApprovedCaipNetworksData(chainNamespace)])
-        }
-
-        if (caipNetwork.chainNamespace === chainNamespace) {
-          this.appKit?.setCaipAddress(address, chainNamespace)
         }
       })
     } else {
