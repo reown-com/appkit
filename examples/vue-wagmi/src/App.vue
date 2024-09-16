@@ -27,7 +27,7 @@ createAppKit({
     verifyUrl: ''
   },
   projectId,
-  networks: [mainnet, arbitrum],
+  caipNetworks: [mainnet, arbitrum],
   themeMode: 'light',
   themeVariables: {
     '--w3m-color-mix': '#00BB7F',

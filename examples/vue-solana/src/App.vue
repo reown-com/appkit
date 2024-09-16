@@ -1,11 +1,12 @@
 <script lang="ts" setup>
+import { solana, solanaTestnet, solanaDevnet } from '@reown/appkit/networks'
 import {
   createAppKit,
   useAppKit,
   useAppKitEvents,
   useAppKitState,
   useAppKitTheme
-} from '@reown/appkit-solana/vue'
+} from '@reown/appkit/vue'
 import { BackpackWalletAdapter } from '@solana/wallet-adapter-backpack'
 import {
   PhantomWalletAdapter,
@@ -13,7 +14,6 @@ import {
   SolflareWalletAdapter,
   TrustWalletAdapter
 } from '@solana/wallet-adapter-wallets'
-import { solana, solanaTestnet, solanaDevnet } from '@reown/appkit/networks'
 
 // @ts-expect-error 1. Get projectId
 const projectId = import.meta.env.VITE_PROJECT_ID
