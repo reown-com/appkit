@@ -106,26 +106,31 @@ export class UniversalAdapterClient {
 
       getApprovedCaipNetworksData: async () => {
         await this.getWalletConnectProvider()
+        const namespaces = this.walletConnectProvider?.session?.namespaces
 
-        return new Promise(resolve => {
-          const ns = this.walletConnectProvider?.session?.namespaces
-          const nsChains: CaipNetworkId[] | undefined = []
+        if (!namespaces) {
+          return Promise.resolve({
+            approvedCaipNetworkIds: [],
+            supportsAllNetworks: false
+          })
+        }
 
-          if (ns) {
-            Object.keys(ns).forEach(key => {
-              const chains = ns?.[key]?.chains
-              if (chains) {
-                nsChains.push(...(chains as CaipNetworkId[]))
-              }
+        const approvedCaipNetworkIds = Object.values(namespaces).flatMap<CaipNetworkId>(
+          namespace => {
+            const chains = (namespace.chains || []) as CaipNetworkId[]
+            const accountsChains = namespace.accounts.map(account => {
+              const [chainNamespace, chainId] = account.split(':')
+
+              return `${chainNamespace}:${chainId}` as CaipNetworkId
             })
-          }
 
-          const result = {
-            supportsAllNetworks: true,
-            approvedCaipNetworkIds: nsChains as CaipNetworkId[] | undefined
+            return Array.from(new Set([...chains, ...accountsChains]))
           }
+        )
 
-          resolve(result)
+        return Promise.resolve({
+          approvedCaipNetworkIds,
+          supportsAllNetworks: false
         })
       }
     }
