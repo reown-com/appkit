@@ -8,6 +8,7 @@ import {
   EventsController
 } from '@reown/appkit-core'
 import {
+  CaipNetworksUtil,
   ConstantsUtil as CommonConstantsUtil,
   SafeLocalStorage,
   SafeLocalStorageKeys
@@ -126,7 +127,10 @@ export class SolanaAdapter implements ChainAdapter {
 
     this.appKit = appKit
     this.options = options
-    this.caipNetworks = options.networks
+    this.caipNetworks = options.networks.map(caipNetwork => ({
+      ...caipNetwork,
+      rpcUrl: CaipNetworksUtil.extendRpcUrlWithProjectId(caipNetwork.rpcUrl, options.projectId)
+    }))
     const defaultCaipNetwork = SolHelpersUtil.getChainFromCaip(
       options.networks,
       SafeLocalStorage.getItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID)
