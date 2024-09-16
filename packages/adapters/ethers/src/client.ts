@@ -492,10 +492,9 @@ export class EthersAdapter {
       options.features?.email === undefined
         ? CoreConstantsUtil.DEFAULT_FEATURES.email
         : options.features?.email
-    const socialsEnabled =
-      options.features?.socials === undefined
-        ? CoreConstantsUtil.DEFAULT_FEATURES.socials
-        : options.features?.socials?.length > 0
+    const socialsEnabled = options.features?.socials
+      ? options.features?.socials?.length > 0
+      : CoreConstantsUtil.DEFAULT_FEATURES.socials
 
     if (emailEnabled || socialsEnabled) {
       this.syncAuthConnector(this.options.projectId)

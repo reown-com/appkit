@@ -50,7 +50,7 @@ export class W3mSocialLoginList extends LitElement {
   public override render() {
     const socials = this.features?.socials
 
-    if (!this.authConnector || !socials?.length) {
+    if (!this.authConnector || !socials || !socials?.length) {
       return null
     }
 

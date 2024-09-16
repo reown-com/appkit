@@ -903,7 +903,7 @@ export type Features = {
    * @description Enable or disable the socials feature. Enabled by default.
    * @type {FeaturesSocials[]}
    */
-  socials?: FeaturesSocials[]
+  socials?: FeaturesSocials[] | false
   /**
    * @description Enable or disable the history feature. Enabled by default.
    * @type {boolean}

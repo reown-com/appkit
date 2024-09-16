@@ -621,10 +621,9 @@ export class SolanaAdapter implements ChainAdapter {
         this.options?.features?.email === undefined
           ? CoreConstantsUtil.DEFAULT_FEATURES.email
           : this.options?.features?.email
-      const socialsEnabled =
-        this.options?.features?.socials === undefined
-          ? CoreConstantsUtil.DEFAULT_FEATURES.socials
-          : this.options?.features?.socials?.length > 0
+      const socialsEnabled = this.options?.features?.socials
+        ? this.options?.features?.socials?.length > 0
+        : CoreConstantsUtil.DEFAULT_FEATURES.socials
 
       if (emailEnabled || socialsEnabled) {
         this.w3mFrameProvider = W3mFrameProviderSingleton.getInstance(
