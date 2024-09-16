@@ -33,6 +33,7 @@ type ChainsInitializerAdapter = Pick<
   | 'defaultNetwork'
   | 'chainNamespace'
   | 'adapterType'
+  | 'caipNetworks'
 >
 
 // -- Constants ----------------------------------------- //
@@ -114,7 +115,8 @@ export const ChainController = {
           networkControllerClient: adapter.networkControllerClient,
           adapterType: adapter.adapterType,
           accountState,
-          networkState
+          networkState,
+          caipNetworks: adapter.caipNetworks
         })
       })
     }
@@ -127,9 +129,26 @@ export const ChainController = {
     state.universalAdapter = adapter
 
     if (adapters.length === 0) {
-      this.setActiveCaipNetwork(adapter?.defaultNetwork)
+      const storedCaipNetwork = SafeLocalStorage.getItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK)
+
+      if (storedCaipNetwork) {
+        try {
+          const parsedCaipNetwork = JSON.parse(storedCaipNetwork) as CaipNetwork
+          if (parsedCaipNetwork) {
+            state.activeChain = parsedCaipNetwork.chainNamespace
+            this.setActiveCaipNetwork(parsedCaipNetwork)
+          }
+        } catch (error) {
+          console.warn('>>> Error setting active caip network', error)
+        }
+      } else {
+        state.activeChain =
+          adapter?.defaultNetwork?.chainNamespace ?? adapter.caipNetworks[0]?.chainNamespace
+        this.setActiveCaipNetwork(adapter?.defaultNetwork ?? adapter.caipNetworks[0])
+      }
     }
-    const chains: ChainNamespace[] = adapters.map(a => a.chainNamespace)
+
+    const chains = [...new Set(adapter.caipNetworks.map(caipNetwork => caipNetwork.chainNamespace))]
     chains.forEach((chain: ChainNamespace) => {
       state.chains.set(chain, {
         chainNamespace: chain,
@@ -137,9 +156,12 @@ export const ChainController = {
         networkControllerClient: undefined,
         adapterType: adapter.adapterType,
         accountState,
-        networkState
+        networkState,
+        caipNetworks: adapter.caipNetworks
       })
     })
+
+    this.setActiveChain(adapter.chainNamespace)
   },
 
   setChainNetworkData(
@@ -158,6 +180,7 @@ export const ChainController = {
         ...chainAdapter.networkState,
         ...props
       } as NetworkControllerState)
+
       state.chains.set(chain, ref(chainAdapter))
       if (replaceState || state.chains.size === 1 || state.activeChain === chain) {
         NetworkController.replaceState(chainAdapter.networkState)
@@ -249,6 +272,7 @@ export const ChainController = {
       activeChain: caipNetwork.chainNamespace,
       selectedNetworkId: caipNetwork?.id
     })
+
     SafeLocalStorage.setItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK, JSON.stringify(caipNetwork))
     SafeLocalStorage.setItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID, caipNetwork.id)
   },

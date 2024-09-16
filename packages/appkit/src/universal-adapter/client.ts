@@ -397,6 +397,7 @@ export class UniversalAdapterClient {
         })
 
       const storedCaipNetwork = SafeLocalStorage.getItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK)
+
       if (storedCaipNetwork) {
         try {
           const parsedCaipNetwork = JSON.parse(storedCaipNetwork) as CaipNetwork
@@ -526,7 +527,10 @@ export class UniversalAdapterClient {
     const { namespaceKeys, namespaces } = this.getProviderData()
 
     const preferredAccountType = this.appKit?.getPreferredAccountType()
-    const isConnected = this.appKit?.getIsConnectedState()
+
+    const isConnected = Object.keys(namespaces).some(
+      key => (namespaces[key]?.accounts?.length ?? 0) > 0
+    )
 
     if (isConnected) {
       namespaceKeys.forEach(async key => {
