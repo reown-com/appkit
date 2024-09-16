@@ -388,13 +388,15 @@ export class UniversalAdapterClient {
       Object.keys(nameSpaces)
         .reverse()
         .forEach(key => {
-          const caipAddress = nameSpaces?.[key]?.accounts[0] as CaipAddress
+          const chainNamespace = key as ChainNamespace
+          const caipAddress = nameSpaces?.[chainNamespace]?.accounts[0] as CaipAddress
 
-          ProviderUtil.setProvider(key as ChainNamespace, this.walletConnectProvider)
-          ProviderUtil.setProviderId(key as ChainNamespace, 'walletConnect')
+          ProviderUtil.setProvider(chainNamespace, this.walletConnectProvider)
+          ProviderUtil.setProviderId(chainNamespace, 'walletConnect')
+          this.appKit?.setApprovedCaipNetworksData(chainNamespace)
 
           if (caipAddress) {
-            this.appKit?.setCaipAddress(caipAddress, key as ChainNamespace)
+            this.appKit?.setCaipAddress(caipAddress, chainNamespace)
           }
         })
 

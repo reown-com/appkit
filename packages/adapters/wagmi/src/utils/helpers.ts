@@ -15,23 +15,30 @@ export async function getWalletConnectCaipNetworks(connector?: Connector) {
     ReturnType<(typeof UniversalProvider)['init']>
   >
 
-  const ns = provider?.session?.namespaces
+  const namespaces = provider?.session?.namespaces
 
-  const nsChains: CaipNetworkId[] | undefined = []
-
-  if (ns) {
-    Object.keys(ns).forEach(key => {
-      const chains = ns?.[key]?.chains
-      if (chains) {
-        nsChains.push(...(chains as CaipNetworkId[]))
-      }
+  if (!namespaces) {
+    return Promise.resolve({
+      approvedCaipNetworkIds: [],
+      supportsAllNetworks: false
     })
   }
 
-  return {
-    supportsAllNetworks: true,
-    approvedCaipNetworkIds: nsChains
-  }
+  const approvedCaipNetworkIds = Object.values(namespaces).flatMap<CaipNetworkId>(namespace => {
+    const chains = (namespace.chains || []) as CaipNetworkId[]
+    const accountsChains = namespace.accounts.map(account => {
+      const [chainNamespace, chainId] = account.split(':')
+
+      return `${chainNamespace}:${chainId}` as CaipNetworkId
+    })
+
+    return Array.from(new Set([...chains, ...accountsChains]))
+  })
+
+  return Promise.resolve({
+    approvedCaipNetworkIds,
+    supportsAllNetworks: false
+  })
 }
 
 export function getEmailCaipNetworks() {

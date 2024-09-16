@@ -316,7 +316,8 @@ export const ChainController = {
     const isWcConnector =
       SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR) === 'WALLET_CONNECT'
     const universalConnectionControllerClient = state.universalAdapter.connectionControllerClient
-    const hasWagmiAdapter = state.chains.get('eip155')?.adapterType === 'wagmi'
+    const hasWagmiAdapter =
+      chain === 'eip155' && state.chains.get('eip155')?.adapterType === 'wagmi'
 
     const shouldUseUniversalAdapter = (isWcConnector && !hasWagmiAdapter) || state.noAdapters
 

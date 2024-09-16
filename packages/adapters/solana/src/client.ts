@@ -26,7 +26,7 @@ import type {
   NetworkControllerClient,
   Connector
 } from '@reown/appkit-core'
-import type { AdapterType, CaipAddress, CaipNetwork, CaipNetworkId } from '@reown/appkit-common'
+import type { AdapterType, CaipAddress, CaipNetwork } from '@reown/appkit-common'
 import type { ChainNamespace } from '@reown/appkit-common'
 
 import { watchStandard } from './utils/watchStandard.js'
@@ -44,7 +44,7 @@ import type { AppKit } from '@reown/appkit'
 import type { AppKitOptions as CoreOptions } from '@reown/appkit'
 import { ProviderUtil } from '@reown/appkit/store'
 import { W3mFrameProviderSingleton } from '@reown/appkit/auth-provider'
-import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
+import { ConstantsUtil } from '@reown/appkit-utils'
 import { createSendTransaction } from './utils/createSendTransaction.js'
 
 export interface AdapterOptions {
@@ -145,34 +145,19 @@ export class SolanaAdapter implements ChainAdapter {
         }
       },
 
-      getApprovedCaipNetworksData: async () =>
-        new Promise(resolve => {
-          const walletId = SafeLocalStorage.getItem(SafeLocalStorageKeys.WALLET_ID)
+      getApprovedCaipNetworksData: async () => {
+        if (this.provider) {
+          return Promise.resolve({
+            supportsAllNetworks: false,
+            approvedCaipNetworkIds: this.provider.chains.map(chain => chain.id)
+          })
+        }
 
-          if (!walletId) {
-            throw new Error('No wallet id found to get approved networks data')
-          }
-
-          const providerConfigs = {
-            [ConstantsUtil.AUTH_CONNECTOR_ID]: {
-              supportsAllNetworks: true,
-              approvedCaipNetworkIds: PresetsUtil.WalletConnectRpcChainIds.map(
-                id => `${ConstantsUtil.EIP155}:${id}`
-              ) as CaipNetworkId[]
-            }
-          }
-
-          const networkData = providerConfigs[walletId as unknown as keyof typeof providerConfigs]
-
-          if (networkData) {
-            resolve(networkData)
-          } else {
-            resolve({
-              supportsAllNetworks: true,
-              approvedCaipNetworkIds: []
-            })
-          }
+        return Promise.resolve({
+          supportsAllNetworks: false,
+          approvedCaipNetworkIds: []
         })
+      }
     }
 
     this.connectionControllerClient = {
