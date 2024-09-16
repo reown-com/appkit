@@ -217,7 +217,20 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
   }
 
   private get sessionChains() {
-    return this.session?.namespaces['solana']?.chains || []
+    const solanaNamespace = this.session?.namespaces['solana']
+
+    if (!solanaNamespace) {
+      return []
+    }
+
+    const chains = solanaNamespace.chains || []
+    const accountsChains = solanaNamespace.accounts.map(account => {
+      const [chainNamespace, chainId] = account.split(':')
+
+      return `${chainNamespace}:${chainId}`
+    })
+
+    return Array.from(new Set([...chains, ...accountsChains]))
   }
 
   private serializeTransaction(transaction: AnyTransaction) {
