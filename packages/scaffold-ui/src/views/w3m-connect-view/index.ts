@@ -1,7 +1,7 @@
-import { customElement } from '@rerock/ui'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
-import { ConnectorController, OptionsController, RouterController } from '@rerock/core'
+import { ConnectorController, OptionsController, RouterController } from '@reown/appkit-core'
 import { state } from 'lit/decorators/state.js'
 
 @customElement('w3m-connect-view')
@@ -48,6 +48,11 @@ export class W3mConnectView extends LitElement {
   // -- Private ------------------------------------------- //
   private walletListTemplate() {
     const { socials, emailShowWallets } = this.features
+    const enableWallets = OptionsController.state.enableWallets
+
+    if (!enableWallets) {
+      return null
+    }
 
     if (this.authConnector && socials) {
       if (this.authConnector && emailShowWallets) {

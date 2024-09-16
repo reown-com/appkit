@@ -1,12 +1,12 @@
-import { createWeb3Modal } from '@rerock/base/react'
+import { createAppKit } from '@reown/appkit/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { WagmiPermissionsAsyncTest } from '../../components/Wagmi/WagmiPermissionsAsyncTest'
-import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@rerock/base/chains'
-import { EVMWagmiClient } from '@rerock/adapter-wagmi'
+import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@reown/appkit/chains'
+import { EVMWagmiClient } from '@reown/appkit-adapter-wagmi'
 import { ERC7715PermissionsProvider } from '../../context/ERC7715PermissionsContext'
 import { LocalEcdsaKeyProvider } from '../../context/LocalEcdsaKeyContext'
 
@@ -20,7 +20,7 @@ const wagmiAdapter = new EVMWagmiClient({
   projectId: ConstantsUtil.ProjectId
 })
 
-const modal = createWeb3Modal({
+const modal = createAppKit({
   adapters: [wagmiAdapter],
   caipNetworks: networks,
   defaultCaipNetwork: mainnet,

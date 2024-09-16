@@ -82,8 +82,8 @@ export function mockUniversalProviderSession(
       metadata: {
         name: 'AppKit Lab',
         description: 'Laboratory environment for AppKit testing',
-        url: 'https://lab.web3modal.com',
-        icons: ['https://lab.web3modal.com/metadata-icon.svg'],
+        url: 'https://appkit-lab.reown.org',
+        icons: ['https://appkit-lab.reown.org/metadata-icon.svg'],
         verifyUrl: ''
       }
     },

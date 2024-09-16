@@ -8,13 +8,12 @@ import type {
   SdkVersion,
   Tokens
 } from '../utils/TypeUtil.js'
-import { ApiController } from './ApiController.js'
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 
 // -- Types --------------------------------------------- //
 export interface OptionsControllerState {
   projectId: ProjectId
-  sdkType: 'w3m'
+  sdkType: 'appkit'
   sdkVersion: SdkVersion
   allWallets?: 'SHOW' | 'HIDE' | 'ONLY_MOBILE'
   featuredWalletIds?: string[]
@@ -27,7 +26,9 @@ export interface OptionsControllerState {
   isSiweEnabled?: boolean
   metadata?: Metadata
   disableAppend?: boolean
+  enableWallets?: boolean
   enableEIP6963?: boolean
+  enableWalletConnect?: boolean
   isUniversalProvider?: boolean
   hasMultipleAddresses?: boolean
   features: Features
@@ -39,7 +40,7 @@ type StateKey = keyof OptionsControllerState
 const state = proxy<OptionsControllerState>({
   features: ConstantsUtil.DEFAULT_FEATURES,
   projectId: '',
-  sdkType: 'w3m',
+  sdkType: 'appkit',
   sdkVersion: 'html-wagmi-undefined'
 })
 
@@ -81,9 +82,6 @@ export const OptionsController = {
 
   setExcludeWalletIds(excludeWalletIds: OptionsControllerState['excludeWalletIds']) {
     state.excludeWalletIds = excludeWalletIds
-    if (excludeWalletIds) {
-      ApiController.searchWalletByIds({ ids: excludeWalletIds })
-    }
   },
 
   setFeaturedWalletIds(featuredWalletIds: OptionsControllerState['featuredWalletIds']) {
@@ -128,6 +126,14 @@ export const OptionsController = {
 
   setEIP6963Enabled(enableEIP6963: OptionsControllerState['enableEIP6963']) {
     state.enableEIP6963 = enableEIP6963
+  },
+
+  setEnableWalletConnect(enableWalletConnect: OptionsControllerState['enableWalletConnect']) {
+    state.enableWalletConnect = enableWalletConnect
+  },
+
+  setEnableWallets(enableWallets: OptionsControllerState['enableWallets']) {
+    state.enableWallets = enableWallets
   },
 
   setHasMultipleAddresses(hasMultipleAddresses: OptionsControllerState['hasMultipleAddresses']) {

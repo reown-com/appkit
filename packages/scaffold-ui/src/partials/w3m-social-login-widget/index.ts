@@ -8,14 +8,14 @@ import {
   RouterController,
   SnackController,
   type SocialProvider
-} from '@rerock/core'
-import { customElement } from '@rerock/ui'
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
 import styles from './styles.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import { SocialProviderEnum } from '@rerock/scaffold-utils'
+import { SocialProviderEnum } from '@reown/appkit-utils'
 
 const MAX_TOP_VIEW = 2
 const MAXIMUM_LENGTH = 6
@@ -149,7 +149,9 @@ export class W3mSocialLoginWidget extends LitElement {
 
   private separatorTemplate() {
     const walletConnectConnector = this.connectors.find(c => c.type === 'WALLET_CONNECT')
-    if (walletConnectConnector) {
+    const enableWallets = OptionsController.state.enableWallets
+
+    if (walletConnectConnector && enableWallets) {
       return html`<wui-separator text="or"></wui-separator>`
     }
 

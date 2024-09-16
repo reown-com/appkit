@@ -1,4 +1,4 @@
-import type { ProviderType } from '@rerock/scaffold-utils/ethers'
+import type { ProviderType } from '@reown/appkit-utils/ethers'
 import { vi } from 'vitest'
 
 export const mockEthersConfig = {

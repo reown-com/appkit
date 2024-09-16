@@ -1,4 +1,4 @@
-import type { BaseError, Platform } from '@rerock/core'
+import type { BaseError, Platform } from '@reown/appkit-core'
 import {
   ConnectionController,
   ConstantsUtil,
@@ -9,8 +9,8 @@ import {
   RouterController,
   SnackController,
   StorageUtil
-} from '@rerock/core'
-import { customElement } from '@rerock/ui'
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
@@ -91,7 +91,7 @@ export class W3mConnectingWcView extends LitElement {
       StorageUtil.setWalletConnectDeepLink(wcLinking)
     }
     if (recentWallet) {
-      StorageUtil.setWeb3ModalRecent(recentWallet)
+      StorageUtil.setAppKitRecent(recentWallet)
     }
 
     EventsController.sendEvent({

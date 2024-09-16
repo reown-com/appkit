@@ -1,15 +1,15 @@
 import { useSnapshot } from 'valtio'
 import { SolStoreUtil } from '../src/utils/SolanaStoreUtil.js'
-import type { Connection } from '@rerock/scaffold-utils/solana'
+import type { Connection } from '@reown/appkit-utils/solana'
 
 // -- Types -----------------------------------------------------------
-export * from '@rerock/scaffold-utils/solana'
+export * from '@reown/appkit-utils/solana'
 
 // -- Source -----------------------------------------------------------
 export * from '../src/index.js'
 
 // -- Hooks -----------------------------------------------------------
-export function useWeb3ModalConnection(): {
+export function useAppKitConnection(): {
   connection: Connection | undefined
 } {
   const state = useSnapshot(SolStoreUtil.state)

@@ -1,5 +1,5 @@
-import type { AppKit } from '@rerock/base'
-import { mainnet } from '@rerock/base/chains'
+import type { AppKit } from '@reown/appkit'
+import { mainnet } from '@reown/appkit/chains'
 import { vi } from 'vitest'
 
 export const mockAppKit = {
@@ -18,8 +18,10 @@ export const mockAppKit = {
   getPreferredAccountType: vi.fn().mockReturnValue('eoa'),
   setEIP6963Enabled: vi.fn(),
   getCaipNetwork: vi.fn().mockReturnValue(mainnet),
+  getCaipNetworks: vi.fn(),
   subscribeState: vi.fn().mockImplementation(callback => vi.fn(() => callback({}))),
   setApprovedCaipNetworksData: vi.fn(),
+  getActiveChainNamespace: vi.fn().mockReturnValue('eip155'),
   getAddress: vi.fn().mockReturnValue('0xE62a3eD41B21447b67a63880607CD2E746A0E35d'),
   addConnector: vi.fn(),
   setCaipNetwork: vi.fn(),
@@ -41,7 +43,7 @@ export const mockAppKit = {
   setProfileImage: vi.fn(),
   setAddressExplorerUrl: vi.fn(),
   setBalance: vi.fn(),
-  getWalletConnectName: vi.fn().mockResolvedValue([]),
+  getReownName: vi.fn().mockResolvedValue([]),
   fetchIdentity: vi.fn().mockResolvedValue(null),
   setClientId: vi.fn(),
   universalAdapter: {

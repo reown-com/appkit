@@ -9,10 +9,10 @@ import {
   Connection
 } from '@solana/web3.js'
 
-import { type Provider, useWeb3ModalConnection } from '@rerock/adapter-solana/react'
-import { useWeb3ModalNetwork, useWeb3ModalProvider } from '@rerock/base/react'
+import { type Provider, useAppKitConnection } from '@reown/appkit-adapter-solana/react'
+import { useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
 
-import { solana } from '@rerock/base/chains'
+import { solana } from '@reown/appkit/chains'
 import { useChakraToast } from '../Toast'
 import bs58 from 'bs58'
 
@@ -22,9 +22,9 @@ const amountInLamports = 1_000_000
 
 export function SolanaSignAllTransactionsTest() {
   const toast = useChakraToast()
-  const { chainId } = useWeb3ModalNetwork()
-  const { walletProvider } = useWeb3ModalProvider<Provider>('solana')
-  const { connection } = useWeb3ModalConnection()
+  const { chainId } = useAppKitNetwork()
+  const { walletProvider } = useAppKitProvider<Provider>('solana')
+  const { connection } = useAppKitConnection()
   const [loading, setLoading] = useState(false)
 
   async function onSignTransaction(type: 'legacy' | 'versioned') {

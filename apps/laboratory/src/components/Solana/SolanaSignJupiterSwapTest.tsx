@@ -2,17 +2,17 @@ import { useState } from 'react'
 import { Button, Stack, Text, Spacer } from '@chakra-ui/react'
 import { PublicKey, VersionedTransaction } from '@solana/web3.js'
 
-import { useWeb3ModalNetwork, useWeb3ModalProvider } from '@rerock/base/react'
-import { solana } from '@rerock/base/chains'
+import { useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
+import { solana } from '@reown/appkit/chains'
 import { useChakraToast } from '../Toast'
 import bs58 from 'bs58'
-import { useWeb3ModalConnection, type Provider } from '@rerock/adapter-solana/react'
+import { useAppKitConnection, type Provider } from '@reown/appkit-adapter-solana/react'
 
 export function SolanaSignJupiterSwapTest() {
   const toast = useChakraToast()
-  const { connection } = useWeb3ModalConnection()
-  const { caipNetwork } = useWeb3ModalNetwork()
-  const { walletProvider } = useWeb3ModalProvider<Provider>('solana')
+  const { connection } = useAppKitConnection()
+  const { caipNetwork } = useAppKitNetwork()
+  const { walletProvider } = useAppKitProvider<Provider>('solana')
   const [loading, setLoading] = useState(false)
 
   async function onSignVersionedTransaction() {

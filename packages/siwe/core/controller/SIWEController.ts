@@ -6,8 +6,8 @@ import type {
   SIWECreateMessageArgs,
   SIWEVerifyMessageArgs
 } from '../utils/TypeUtils.js'
-import { AccountController, OptionsController } from '@rerock/core'
-import type { SIWEStatus } from '@rerock/common'
+import { ChainController, OptionsController } from '@reown/appkit-core'
+import type { SIWEStatus } from '@reown/appkit-common'
 
 // -- Types --------------------------------------------- //
 export interface SIWEControllerClient extends SIWEClientMethods {
@@ -77,7 +77,7 @@ export const SIWEController = {
         this.setStatus('success')
       }
 
-      return session
+      return session || undefined
     } catch {
       return undefined
     }
@@ -123,9 +123,11 @@ export const SIWEController = {
     client.onSignOut?.()
   },
 
-  setSIWEClient(client: SIWEControllerClient) {
+  async setSIWEClient(client: SIWEControllerClient) {
     state._client = ref(client)
-    state.status = 'ready'
+    state.session = await this.getSession()
+    state.status = state.session ? 'success' : 'ready'
+    ChainController.setAccountProp('siweStatus', state.status, 'eip155')
     OptionsController.setIsSiweEnabled(client.options.enabled)
   },
 
@@ -135,7 +137,7 @@ export const SIWEController = {
 
   setStatus(status: SIWEControllerClientState['status']) {
     state.status = status
-    AccountController.setSiweStatus(status)
+    ChainController.setAccountProp('siweStatus', state.status, 'eip155')
   },
 
   setMessage(message: SIWEControllerClientState['message']) {
@@ -145,5 +147,6 @@ export const SIWEController = {
   setSession(session: SIWEControllerClientState['session']) {
     state.session = session
     state.status = session ? 'success' : 'ready'
+    ChainController.setAccountProp('siweStatus', state.status, 'eip155')
   }
 }

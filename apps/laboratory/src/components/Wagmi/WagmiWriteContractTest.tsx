@@ -5,12 +5,12 @@ import { useCallback, useEffect } from 'react'
 import { optimism, sepolia } from 'wagmi/chains'
 import { abi, address } from '../../utils/DonutContract'
 import { useChakraToast } from '../Toast'
-import { useWeb3ModalAccount } from '@rerock/base/react'
+import { useAppKitAccount } from '@reown/appkit/react'
 
 const ALLOWED_CHAINS = [sepolia.id, optimism.id] as number[]
 
 export function WagmiWriteContractTest() {
-  const { address: accountAddress } = useWeb3ModalAccount()
+  const { address: accountAddress } = useAppKitAccount()
   const { status, chain } = useAccount()
 
   return ALLOWED_CHAINS.includes(Number(chain?.id)) && status === 'connected' ? (

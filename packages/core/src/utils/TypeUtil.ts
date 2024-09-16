@@ -1,4 +1,4 @@
-import type { W3mFrameProvider, W3mFrameTypes } from '@rerock/wallet'
+import type { W3mFrameProvider, W3mFrameTypes } from '@reown/appkit-wallet'
 import type {
   Balance,
   Transaction,
@@ -6,8 +6,10 @@ import type {
   CaipNetwork,
   ChainNamespace,
   CaipAddress,
-  AdapterType
-} from '@rerock/common'
+  AdapterType,
+  SdkFramework,
+  AppKitSdkVersion
+} from '@reown/appkit-common'
 import type {
   NetworkControllerClient,
   NetworkControllerState
@@ -16,6 +18,7 @@ import type { ConnectionControllerClient } from '../controllers/ConnectionContro
 import type { AccountControllerState } from '../controllers/AccountController.js'
 import type { OnRampProviderOption } from '../controllers/OnRampController.js'
 import type { ConstantsUtil } from './ConstantsUtil.js'
+import type { ReownName } from '../controllers/EnsController.js'
 
 export type CaipNetworkCoinbaseNetwork =
   | 'Ethereum'
@@ -74,7 +77,7 @@ export type Connector = {
   }
   provider?: unknown
   chain: ChainNamespace
-  providers?: Connector[]
+  connectors?: Connector[]
 }
 
 export interface AuthConnector extends Connector {
@@ -92,12 +95,7 @@ export type CaipNamespaces = Record<
   }
 >
 
-export type SdkVersion =
-  | `${'html' | 'react' | 'vue'}-wagmi-${string}`
-  | `${'html' | 'react' | 'vue'}-ethers5-${string}`
-  | `${'html' | 'react' | 'vue'}-ethers-${string}`
-  | `${'html' | 'react' | 'vue'}-solana-${string}`
-  | `${'html' | 'react' | 'vue'}-multichain-${string}`
+export type SdkVersion = `${SdkFramework}-${AdapterType}-${string}` | AppKitSdkVersion
 
 export interface BaseError {
   message?: string
@@ -322,7 +320,7 @@ export interface BlockchainApiBalanceResponse {
 }
 
 export interface BlockchainApiLookupEnsName {
-  name: string
+  name: ReownName
   registered: number
   updated: number
   addresses: Record<

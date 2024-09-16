@@ -1,11 +1,11 @@
 import { Button, Stack, Text, Input, Tooltip } from '@chakra-ui/react'
 import { useState, useEffect } from 'react'
 import {
-  useWeb3ModalAccount,
-  useWeb3ModalNetwork,
-  useWeb3ModalProvider,
+  useAppKitAccount,
+  useAppKitNetwork,
+  useAppKitProvider,
   type Provider
-} from '@rerock/base/react'
+} from '@reown/appkit/react'
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
 import { useChakraToast } from '../Toast'
 import { parseGwei } from 'viem'
@@ -16,15 +16,15 @@ import {
   WALLET_CAPABILITIES,
   getCapabilitySupportedChainInfo
 } from '../../utils/EIP5792Utils'
-import { W3mFrameProvider } from '@rerock/wallet'
+import { W3mFrameProvider } from '@reown/appkit-wallet'
 
 export function Ethers5SendCallsWithPaymasterServiceTest() {
   const [paymasterServiceUrl, setPaymasterServiceUrl] = useState<string>('')
   const [isLoading, setLoading] = useState(false)
 
-  const { chainId } = useWeb3ModalNetwork()
-  const { address, isConnected } = useWeb3ModalAccount()
-  const { walletProvider } = useWeb3ModalProvider<Provider>('eip155')
+  const { chainId } = useAppKitNetwork()
+  const { address, isConnected } = useAppKitAccount()
+  const { walletProvider } = useAppKitProvider<Provider>('eip155')
   const toast = useChakraToast()
 
   const [paymasterServiceSupportedChains, setPaymasterServiceSupportedChains] = useState<

@@ -5,16 +5,15 @@ import {
   OnRampController,
   type OnRampProvider,
   RouterController,
-  NetworkController,
   BlockchainApiController,
   EventsController,
   ChainController
-} from '@rerock/core'
-import { customElement } from '@rerock/ui'
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
-import type { CoinbasePaySDKChainNameValues } from '@rerock/core'
-import { W3mFrameRpcConstants } from '@rerock/wallet'
+import type { CoinbasePaySDKChainNameValues } from '@reown/appkit-core'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 
 @customElement('w3m-onramp-providers-view')
 export class W3mOnRampProvidersView extends LitElement {
@@ -99,7 +98,7 @@ export class W3mOnRampProvidersView extends LitElement {
 
   private async getCoinbaseOnRampURL() {
     const address = AccountController.state.address
-    const network = NetworkController.state.caipNetwork
+    const network = ChainController.state.activeCaipNetwork
 
     if (!address) {
       throw new Error('No address found')

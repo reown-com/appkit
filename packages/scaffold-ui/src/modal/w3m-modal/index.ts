@@ -5,17 +5,21 @@ import {
   CoreHelperUtil,
   EventsController,
   ModalController,
-  NetworkController,
   OptionsController,
   RouterController,
   SnackController,
   ThemeController
-} from '@rerock/core'
-import { UiHelperUtil, customElement, initializeTheming } from '@rerock/ui'
+} from '@reown/appkit-core'
+import { UiHelperUtil, customElement, initializeTheming } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
-import { ConstantsUtil, type CaipAddress, type CaipNetwork, type SIWEStatus } from '@rerock/common'
+import {
+  ConstantsUtil,
+  type CaipAddress,
+  type CaipNetwork,
+  type SIWEStatus
+} from '@reown/appkit-common'
 
 // -- Helpers --------------------------------------------- //
 const SCROLL_LOCK = 'scroll-lock'
@@ -32,15 +36,11 @@ export class W3mModal extends LitElement {
   // -- State & Properties -------------------------------- //
   @state() private open = ModalController.state.open
 
-  @state() private caipAddress = AccountController.state.caipAddress
+  @state() private caipAddress = ChainController.state.activeCaipAddress
 
-  @state() private caipNetwork = NetworkController.state.caipNetwork
+  @state() private caipNetwork = ChainController.state.activeCaipNetwork
 
   @state() private isSiweEnabled = OptionsController.state.isSiweEnabled
-
-  @state() private connected = AccountController.state.isConnected
-
-  @state() private loading = ModalController.state.loading
 
   @state() private shake = ModalController.state.shake
 
@@ -52,11 +52,9 @@ export class W3mModal extends LitElement {
       ...[
         ModalController.subscribeKey('open', val => (val ? this.onOpen() : this.onClose())),
         ModalController.subscribeKey('shake', val => (this.shake = val)),
-        ModalController.subscribeKey('loading', val => this.onLoadingChange(val)),
-        AccountController.subscribeKey('isConnected', val => this.onIsConnectedChange(val)),
-        NetworkController.subscribeKey('caipNetwork', val => this.onNewNetwork(val)),
-        AccountController.subscribeKey('caipAddress', val => this.onNewAddress(val)),
-        AccountController.subscribeKey('siweStatus', val => this.onSiweStatusChange(val)),
+        AccountController.subscribeKey('siweStatus', val => this.onSiweStatusChange(val), 'eip155'),
+        ChainController.subscribeKey('activeCaipNetwork', val => this.onNewNetwork(val)),
+        ChainController.subscribeKey('activeCaipAddress', val => this.onNewAddress(val)),
         OptionsController.subscribeKey('isSiweEnabled', val => (this.isSiweEnabled = val))
       ]
     )
@@ -102,7 +100,7 @@ export class W3mModal extends LitElement {
     const isApproveSignScreen = RouterController.state.view === 'ApproveTransaction'
 
     if (this.isSiweEnabled) {
-      const { SIWEController } = await import('@rerock/siwe')
+      const { SIWEController } = await import('@reown/appkit-siwe')
       const isUnauthenticated = SIWEController.state.status !== 'success'
       if (isUnauthenticated && (isSiweSignScreen || isApproveSignScreen)) {
         ModalController.shake()
@@ -183,90 +181,67 @@ export class W3mModal extends LitElement {
     this.abortController = undefined
   }
 
-  private async onNewAddress(caipAddress?: CaipAddress) {
-    if (!this.connected || this.loading) {
-      return
-    }
-
-    const previousAddress = CoreHelperUtil.getPlainAddress(this.caipAddress)
-    const newAddress = CoreHelperUtil.getPlainAddress(caipAddress)
-    this.caipAddress = caipAddress
-
-    if (this.isSiweEnabled) {
-      const { SIWEController } = await import('@rerock/siwe')
-      const session = await SIWEController.getSession()
-
-      // If the address has changed and signOnAccountChange is enabled, sign out
-      if (session && previousAddress && newAddress && previousAddress !== newAddress) {
-        if (SIWEController.state._client?.options.signOutOnAccountChange) {
-          await SIWEController.signOut()
-          this.onSiweNavigation()
-        }
-      }
-    }
-  }
-
-  private async onIsConnectedChange(nextIsConnected: boolean) {
-    const prevIsConnected = this.connected
-
-    if (nextIsConnected && this.isSiweEnabled) {
-      const { SIWEController } = await import('@rerock/siwe')
-      const session = await SIWEController.getSession()
-
-      if (!session) {
-        this.onSiweNavigation()
-      }
-    } else if (!prevIsConnected && nextIsConnected) {
-      ModalController.close()
-      RouterController.reset('Connect')
-    }
-
-    this.connected = nextIsConnected
-  }
-
   private onSiweStatusChange(nextStatus: SIWEStatus | undefined) {
     if (nextStatus === 'success') {
       ModalController.close()
     }
   }
 
-  private onLoadingChange(nextLoading: boolean) {
-    this.loading = nextLoading
+  private async onNewAddress(caipAddress?: CaipAddress) {
+    const prevConnected = this.caipAddress
+      ? CoreHelperUtil.getPlainAddress(this.caipAddress)
+      : undefined
+    const nextConnected = caipAddress ? CoreHelperUtil.getPlainAddress(caipAddress) : undefined
+
+    if (this.isSiweEnabled) {
+      const { SIWEController } = await import('@reown/appkit-siwe')
+      const signed = AccountController.state.siweStatus === 'success'
+
+      if (!prevConnected && nextConnected) {
+        this.onSiweNavigation()
+      } else if (signed && prevConnected && nextConnected && prevConnected !== nextConnected) {
+        if (SIWEController.state._client?.options.signOutOnAccountChange) {
+          await SIWEController.signOut()
+          this.onSiweNavigation()
+        }
+      }
+    }
+
+    this.caipAddress = caipAddress
   }
 
   private async onNewNetwork(nextCaipNetwork: CaipNetwork | undefined) {
-    if (!this.connected) {
+    if (!this.caipAddress) {
       this.caipNetwork = nextCaipNetwork
 
       return
     }
 
-    const prevCaipNetworkId = this.caipNetwork?.id
-    const nextNetworkId = nextCaipNetwork?.id
+    const prevCaipNetworkId = this.caipNetwork?.id?.toString()
+    const nextNetworkId = nextCaipNetwork?.id?.toString()
 
     if (prevCaipNetworkId && nextNetworkId && prevCaipNetworkId !== nextNetworkId) {
       if (this.isSiweEnabled) {
-        const { SIWEController } = await import('@rerock/siwe')
-        const session = await SIWEController.getSession()
+        const { SIWEController } = await import('@reown/appkit-siwe')
 
-        if (session) {
-          if (SIWEController.state._client?.options.signOutOnNetworkChange) {
-            await SIWEController.signOut()
-            this.onSiweNavigation()
-          }
+        if (SIWEController.state._client?.options.signOutOnNetworkChange) {
+          await SIWEController.signOut()
+          this.onSiweNavigation()
+        } else {
+          RouterController.goBack()
         }
       } else {
         RouterController.goBack()
       }
     }
-
     this.caipNetwork = nextCaipNetwork
   }
 
   private onSiweNavigation() {
     const isEIP155Namespace = ChainController.state.activeChain === ConstantsUtil.CHAIN.EVM
+    const authenticated = AccountController.state.siweStatus === 'success'
 
-    if (isEIP155Namespace) {
+    if (!authenticated && isEIP155Namespace) {
       if (this.open) {
         RouterController.replace('ConnectingSiwe')
       } else {
@@ -274,6 +249,8 @@ export class W3mModal extends LitElement {
           view: 'ConnectingSiwe'
         })
       }
+    } else {
+      RouterController.goBack()
     }
   }
 }

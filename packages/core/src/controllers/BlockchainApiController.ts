@@ -1,7 +1,6 @@
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { FetchUtil } from '../utils/FetchUtil.js'
-import { ConstantsUtil as CommonConstantsUtil } from '@rerock/common'
 import type {
   BlockchainApiTransactionsRequest,
   BlockchainApiTransactionsResponse,
@@ -34,6 +33,7 @@ import type {
 import { OptionsController } from './OptionsController.js'
 import { proxy } from 'valtio/vanilla'
 import { AccountController } from './AccountController.js'
+import { ChainController } from './ChainController.js'
 
 const DEFAULT_OPTIONS = {
   purchaseCurrencies: [
@@ -132,7 +132,9 @@ export const BlockchainApiController = {
       path: `/v1/identity/${address}`,
       params: {
         projectId: OptionsController.state.projectId,
-        sender: AccountController.state.address
+        sender: ChainController.state.activeCaipAddress
+          ? CoreHelperUtil.getPlainAddress(ChainController.state.activeCaipAddress)
+          : undefined
       }
     })
   },
@@ -219,7 +221,7 @@ export const BlockchainApiController = {
       },
       headers: {
         'Content-Type': 'application/json',
-        'x-sdk-type': sdkType || 'w3m',
+        'x-sdk-type': sdkType,
         'x-sdk-version': sdkVersion || 'html-wagmi-4.2.2'
       }
     })
@@ -232,7 +234,7 @@ export const BlockchainApiController = {
       path: `/v1/convert/gas-price`,
       headers: {
         'Content-Type': 'application/json',
-        'x-sdk-type': sdkType || 'w3m',
+        'x-sdk-type': sdkType,
         'x-sdk-version': sdkVersion || 'html-wagmi-4.2.2'
       },
       params: {
@@ -279,7 +281,7 @@ export const BlockchainApiController = {
       path: `/v1/convert/build-approve`,
       headers: {
         'Content-Type': 'application/json',
-        'x-sdk-type': sdkType || 'w3m',
+        'x-sdk-type': sdkType,
         'x-sdk-version': sdkVersion || 'html-wagmi-4.2.2'
       },
       params: {
@@ -297,7 +299,7 @@ export const BlockchainApiController = {
     return state.api.get<BlockchainApiBalanceResponse>({
       path: `/v1/account/${address}/balance`,
       headers: {
-        'x-sdk-type': sdkType || 'w3m',
+        'x-sdk-type': sdkType,
         'x-sdk-version': sdkVersion || 'html-wagmi-4.2.2'
       },
       params: {
@@ -311,7 +313,7 @@ export const BlockchainApiController = {
 
   async lookupEnsName(name: string) {
     return state.api.get<BlockchainApiLookupEnsName>({
-      path: `/v1/profile/account/${name}${CommonConstantsUtil.WC_NAME_SUFFIX}`,
+      path: `/v1/profile/account/${name}`,
       params: {
         projectId: OptionsController.state.projectId,
         apiVersion: '2'

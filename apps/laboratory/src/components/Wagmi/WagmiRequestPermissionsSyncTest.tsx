@@ -15,13 +15,13 @@ import { bigIntReplacer } from '../../utils/CommonUtils'
 import { getPurchaseDonutPermissions } from '../../utils/ERC7715Utils'
 import { serializePublicKey, type P256Credential } from 'webauthn-p256'
 import { KeyTypes } from '../../utils/EncodingUtils'
-import { useWeb3ModalAccount } from '@rerock/base/react'
+import { useAppKitAccount } from '@reown/appkit/react'
 
 export function WagmiRequestPermissionsSyncTest() {
   const { provider, supported } = useWagmiAvailableCapabilities({
     method: EIP_7715_RPC_METHODS.WALLET_GRANT_PERMISSIONS
   })
-  const { address, isConnected } = useWeb3ModalAccount()
+  const { address, isConnected } = useAppKitAccount()
   const { chain } = useAccount()
 
   if (!isConnected || !provider || !address || !chain) {

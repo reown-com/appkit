@@ -1,9 +1,9 @@
-import { AccountController, EventsController, RouterController } from '@rerock/core'
-import { customElement } from '@rerock/ui'
+import { AccountController, EventsController, RouterController } from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
 import { state } from 'lit/decorators.js'
-import { W3mFrameRpcConstants } from '@rerock/wallet'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 
 @customElement('w3m-account-tokens-widget')
 export class W3mAccountTokensWidget extends LitElement {

@@ -4,20 +4,20 @@ import { mockOptions } from './mocks/Options'
 import mockAppKit from './mocks/AppKit'
 import { mockAuthConnector } from './mocks/AuthConnector'
 import { Connection } from '@solana/web3.js'
-import { SafeLocalStorage } from '@rerock/common'
-import { ProviderUtil } from '@rerock/base/store'
-import { SolHelpersUtil } from '@rerock/scaffold-utils/solana'
+import { SafeLocalStorage } from '@reown/appkit-common'
+import { ProviderUtil } from '@reown/appkit/store'
+import { SolHelpersUtil } from '@reown/appkit-utils/solana'
 import { SolStoreUtil } from '../utils/SolanaStoreUtil.js'
 import { WalletConnectProvider } from '../providers/WalletConnectProvider'
 import UniversalProvider from '@walletconnect/universal-provider'
-import { solana } from '@rerock/base/chains'
+import { solana } from '@reown/appkit/chains'
 
 vi.mock('@solana/web3.js', () => ({
   Connection: vi.fn(),
   PublicKey: vi.fn()
 }))
 
-vi.mock('@rerock/wallet', () => ({
+vi.mock('@reown/appkit-wallet', () => ({
   W3mFrameProvider: vi.fn().mockImplementation(() => mockAuthConnector),
   W3mFrameHelpers: {
     checkIfRequestExists: vi.fn(),
@@ -28,7 +28,7 @@ vi.mock('@rerock/wallet', () => ({
   }
 }))
 
-vi.mock('@rerock/base/store', () => ({
+vi.mock('@reown/appkit/store', () => ({
   ProviderUtil: {
     setProvider: vi.fn(),
     setProviderId: vi.fn(),
@@ -49,7 +49,7 @@ vi.mock('../utils/SolanaStoreUtil.js', () => ({
   }
 }))
 
-vi.mock('@rerock/scaffold-utils/solana', () => ({
+vi.mock('@reown/appkit-utils/solana', () => ({
   SolHelpersUtil: {
     getChainFromCaip: vi.fn(),
     detectRpcUrl: vi.fn()
@@ -90,14 +90,12 @@ describe('SolanaWeb3JsClient', () => {
 
   describe('SolanaWeb3JsClient - Network', () => {
     it('should switch network', async () => {
-      vi.spyOn(SafeLocalStorage, 'setItem')
       vi.spyOn(SolStoreUtil.state, 'connection', 'get').mockReturnValue({
         getBalance: vi.fn()
       } as unknown as Connection)
       await client.switchNetwork(solana)
 
       expect(mockAppKit.setCaipNetwork).toHaveBeenCalledWith(solana)
-      expect(SafeLocalStorage.setItem).toHaveBeenCalledWith('@w3m/solana_caip_chain', solana.id)
     })
 
     it('should sync network', async () => {
@@ -127,11 +125,6 @@ describe('SolanaWeb3JsClient', () => {
       await client['syncAccount']({ address: mockAddress })
 
       expect(SolStoreUtil.setConnection).toHaveBeenCalled()
-      expect(mockAppKit.setIsConnected).toHaveBeenCalledWith(true, 'solana')
-      expect(mockAppKit.setCaipAddress).toHaveBeenCalledWith(
-        `solana:${solana.chainId}:${mockAddress}`,
-        'solana'
-      )
       expect(client['syncBalance']).toHaveBeenCalledWith(mockAddress)
     })
 
@@ -169,7 +162,6 @@ describe('SolanaWeb3JsClient', () => {
       )
       expect(ProviderUtil.setProvider).toHaveBeenCalledWith('solana', mockProvider)
       expect(ProviderUtil.setProviderId).toHaveBeenCalledWith('solana', 'walletConnect')
-      expect(SafeLocalStorage.setItem).toHaveBeenCalledWith('@w3m/wallet_id', 'MockProvider')
     })
 
     it('should add provider', () => {

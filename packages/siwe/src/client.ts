@@ -9,20 +9,18 @@ import type {
 } from '../core/utils/TypeUtils.js'
 
 import {
-  AccountController,
   ChainController,
   ConnectionController,
   RouterController,
   StorageUtil,
-  NetworkController,
-  ModalController
-} from '@rerock/core'
-
-import { NetworkUtil } from '@rerock/common'
+  ModalController,
+  CoreHelperUtil
+} from '@reown/appkit-core'
+import { NetworkUtil, type CaipAddress } from '@reown/appkit-common'
 import { ConstantsUtil } from '../core/utils/ConstantsUtil.js'
 
 // -- Client -------------------------------------------------------------------- //
-export class Web3ModalSIWEClient {
+export class AppKitSIWEClient {
   public options: SIWEControllerClient['options']
 
   public methods: SIWEClientMethods
@@ -94,14 +92,15 @@ export class Web3ModalSIWEClient {
       throw new Error('SIWE client needs to be initialized before calling signIn')
     }
 
-    const address = AccountController.state.address
+    const caipAddress = ChainController.state.activeCaipAddress
+    const address = caipAddress ? CoreHelperUtil.getPlainAddress(caipAddress) : ''
 
     const nonce = await this.methods.getNonce(address)
     if (!address) {
       throw new Error('An address is required to create a SIWE message.')
     }
 
-    const caipNetwork = ChainController.getNetworkProp('caipNetwork')
+    const caipNetwork = ChainController.state.activeCaipNetwork
 
     if (!caipNetwork?.id) {
       throw new Error('A chainId is required to create a SIWE message.')
@@ -120,8 +119,6 @@ export class Web3ModalSIWEClient {
       await this.signOut()
     }
 
-    await NetworkController.switchActiveNetwork(caipNetwork)
-
     // Enable the signOutOnNetworkChange option if it was previously enabled
     if (signOutOnNetworkChange) {
       SIWEController.state._client.options.signOutOnNetworkChange = true
@@ -129,7 +126,7 @@ export class Web3ModalSIWEClient {
 
     const messageParams = await this.getMessageParams?.()
     const message = this.methods.createMessage({
-      address: `eip155:${chainId}:${address}`,
+      address: caipAddress as CaipAddress,
       chainId: Number(chainId),
       nonce,
       version: '1',

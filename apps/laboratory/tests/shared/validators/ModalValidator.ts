@@ -103,6 +103,11 @@ export class ModalValidator {
     await expect(switchNetworkButton).toBeVisible()
   }
 
+  async expectSwitchChainView(chainName: string) {
+    const title = this.page.getByTestId(`w3m-switch-active-chain-to-${chainName}`)
+    await expect(title).toBeVisible()
+  }
+
   async expectSwitchedNetworkOnNetworksView(name: string) {
     const networkOptions = this.page.getByTestId(`w3m-network-switch-${name}`)
     await expect(networkOptions.locator('wui-icon')).toBeVisible()
@@ -197,8 +202,8 @@ export class ModalValidator {
   }
 
   async expectNetworksDisabled(name: string) {
-    const networkOptions = this.page.getByTestId(`w3m-network-switch-${name}`)
-    await expect(networkOptions.locator('button')).toBeDisabled()
+    const disabledNetwork = this.page.getByTestId(`w3m-network-switch-${name}`)
+    await expect(disabledNetwork.locator('button')).toBeDisabled()
   }
 
   async expectConnectButtonLoading() {

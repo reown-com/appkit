@@ -3,15 +3,15 @@ import {
   ConnectorController,
   CoreHelperUtil,
   OptionsController
-} from '@rerock/core'
-import { customElement } from '@rerock/ui'
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ref, createRef } from 'lit/directives/ref.js'
 import type { Ref } from 'lit/directives/ref.js'
 import styles from './styles.js'
-import { SnackController, RouterController, EventsController } from '@rerock/core'
-import { ConstantsUtil } from '@rerock/common'
+import { SnackController, RouterController, EventsController } from '@reown/appkit-core'
+import { ConstantsUtil } from '@reown/appkit-common'
 
 @customElement('w3m-email-login-widget')
 export class W3mEmailLoginWidget extends LitElement {
@@ -59,6 +59,7 @@ export class W3mEmailLoginWidget extends LitElement {
   public override render() {
     const { socials, email } = OptionsController.state.features
     const multipleConnectors = this.connectors.length > 1
+    const enableWallets = OptionsController.state.enableWallets
 
     if (!this.authConnector || !email) {
       return null
@@ -78,7 +79,7 @@ export class W3mEmailLoginWidget extends LitElement {
         <input type="submit" hidden />
       </form>
 
-      ${socials || !multipleConnectors
+      ${socials || !multipleConnectors || !enableWallets
         ? null
         : html`<wui-flex .padding=${['xxs', '0', '0', '0'] as const}>
             <wui-separator text="or"></wui-separator>

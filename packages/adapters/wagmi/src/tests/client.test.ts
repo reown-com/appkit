@@ -7,9 +7,9 @@ import {
   mockOptions,
   mockWagmiClient
 } from './mocks/adapter.mock'
-import { arbitrum, mainnet } from '@rerock/base/chains'
+import { arbitrum, mainnet } from '@reown/appkit/chains'
 import { connect, disconnect, getAccount, getChainId, getEnsName, getBalance } from '@wagmi/core'
-import { ConstantsUtil } from '@rerock/scaffold-utils'
+import { ConstantsUtil } from '@reown/appkit-utils'
 
 vi.mock('@wagmi/core', async () => {
   const actual = await vi.importActual('@wagmi/core')
@@ -39,11 +39,24 @@ describe('Wagmi Client', () => {
     })
 
     it('should set caipNetworks to provided caipNetworks options', () => {
-      expect(mockWagmiClient.caipNetworks).toEqual(mockOptions.caipNetworks)
+      /**
+       * Specifically to Wagmi, we are mutating caipNetworks on both Wagmi constructor and when we set adapters.
+       * So there is not proper way to compare objects since imageId and imageUrl is added later.
+       */
+      mockOptions.caipNetworks.forEach((network, index) => {
+        expect(mockWagmiClient.caipNetworks[index]?.name).toEqual(network.name)
+      })
     })
 
     it('should set defaultNetwork to first caipNetwork option', () => {
-      expect(mockWagmiClient.defaultCaipNetwork).toEqual(mockOptions.caipNetworks[0])
+      /**
+       * Specifically to Wagmi, we are mutating caipNetworks on both Wagmi constructor and when we set adapters.
+       * So there is not proper way to compare objects since imageId and imageUrl is added later.
+       */
+      expect(mockWagmiClient.defaultCaipNetwork?.chainId).toEqual(
+        mockOptions.caipNetworks[0]?.chainId
+      )
+      expect(mockWagmiClient.defaultCaipNetwork?.name).toEqual(mockOptions.caipNetworks[0]?.name)
     })
 
     it('should create wagmi config', () => {
@@ -63,7 +76,16 @@ describe('Wagmi Client', () => {
 
       mockWagmiClient['syncRequestedNetworks'](mockOptions.caipNetworks)
 
-      expect(setRequestedCaipNetworks).toHaveBeenCalledWith(mockWagmiClient.caipNetworks, 'eip155')
+      /**
+       * Specifically to Wagmi, we are mutating caipNetworks on both Wagmi constructor and when we set adapters.
+       * So there is not proper way to compare objects since imageId and imageUrl is added later.
+       */
+      mockWagmiClient.caipNetworks.forEach(network => {
+        expect(setRequestedCaipNetworks).toHaveBeenCalledWith(
+          expect.arrayContaining([expect.objectContaining({ id: network.id })]),
+          'eip155'
+        )
+      })
     })
   })
 
@@ -84,7 +106,6 @@ describe('Wagmi Client', () => {
 
       expect(setApprovedCaipNetworksData).toHaveBeenCalledOnce()
 
-      expect(mockAppKit.getIsConnectedState()).toBe(true)
       expect(mockAppKit.getCaipAddress()).toBe(
         `${ConstantsUtil.EIP155}:${mainnet.chainId}:${mockAccount.address}`
       )
@@ -93,8 +114,6 @@ describe('Wagmi Client', () => {
 
       expect(connectedWagmiAccount.status).toBe('connected')
       expect(connectedWagmiAccount.address).toBe(mockAccount.address)
-
-      expect(mockAppKit.getIsConnectedState()).toBe(true)
 
       await disconnect(mockWagmiClient.wagmiConfig)
 
@@ -114,7 +133,7 @@ describe('Wagmi Client', () => {
       const mockConnector = { id: 'mockConnector', name: 'Mock Connector' }
 
       const setCaipAddressSpy = vi.spyOn(mockAppKit, 'setCaipAddress')
-      const setIsConnectedSpy = vi.spyOn(mockAppKit, 'setIsConnected')
+
       const syncNetworkSpy = vi.spyOn(mockWagmiClient as any, 'syncNetwork')
       const syncProfileSpy = vi.spyOn(mockWagmiClient as any, 'syncProfile')
       const syncBalanceSpy = vi.spyOn(mockWagmiClient as any, 'syncBalance')
@@ -131,7 +150,6 @@ describe('Wagmi Client', () => {
         `eip155:${mockChainId}:${mockAddress}`,
         'eip155'
       )
-      expect(setIsConnectedSpy).toHaveBeenCalledWith(true, 'eip155')
       expect(syncNetworkSpy).toHaveBeenCalledWith(mockAddress, mockChainId, true)
       expect(syncProfileSpy).toHaveBeenCalledWith(mockAddress, mockChainId)
       expect(syncBalanceSpy).toHaveBeenCalledWith(mockAddress, mockChainId)
@@ -197,13 +215,13 @@ describe('Wagmi Client', () => {
       const mockAddress = '0x1234567890123456789012345678901234567890'
       const mockWcName = 'MockWallet'
 
-      mockAppKit.getWalletConnectName = vi.fn().mockResolvedValue([{ name: mockWcName }])
+      mockAppKit.getReownName = vi.fn().mockResolvedValue([{ name: mockWcName }])
 
       const setProfileNameSpy = vi.spyOn(mockAppKit, 'setProfileName')
 
-      await (mockWagmiClient as any).syncWalletConnectName(mockAddress)
+      await (mockWagmiClient as any).syncReownName(mockAddress)
 
-      expect(mockAppKit.getWalletConnectName).toHaveBeenCalledWith(mockAddress)
+      expect(mockAppKit.getReownName).toHaveBeenCalledWith(mockAddress)
 
       expect(setProfileNameSpy).toHaveBeenCalledWith(mockWcName, 'eip155')
     })
@@ -211,13 +229,13 @@ describe('Wagmi Client', () => {
     it('should set profile name to null if no WalletConnect name is found', async () => {
       const mockAddress = '0x1234567890123456789012345678901234567890'
 
-      mockAppKit.getWalletConnectName = vi.fn().mockResolvedValue([])
+      mockAppKit.getReownName = vi.fn().mockResolvedValue([])
 
       const setProfileNameSpy = vi.spyOn(mockAppKit, 'setProfileName')
 
-      await (mockWagmiClient as any).syncWalletConnectName(mockAddress)
+      await (mockWagmiClient as any).syncReownName(mockAddress)
 
-      expect(mockAppKit.getWalletConnectName).toHaveBeenCalledWith(mockAddress)
+      expect(mockAppKit.getReownName).toHaveBeenCalledWith(mockAddress)
 
       expect(setProfileNameSpy).toHaveBeenCalledWith(null, 'eip155')
     })
@@ -225,13 +243,13 @@ describe('Wagmi Client', () => {
     it('should handle errors and set profile name to null', async () => {
       const mockAddress = '0x1234567890123456789012345678901234567890'
 
-      mockAppKit.getWalletConnectName = vi.fn().mockRejectedValue(new Error('Mock error'))
+      mockAppKit.getReownName = vi.fn().mockRejectedValue(new Error('Mock error'))
 
       const setProfileNameSpy = vi.spyOn(mockAppKit, 'setProfileName')
 
-      await (mockWagmiClient as any).syncWalletConnectName(mockAddress)
+      await (mockWagmiClient as any).syncReownName(mockAddress)
 
-      expect(mockAppKit.getWalletConnectName).toHaveBeenCalledWith(mockAddress)
+      expect(mockAppKit.getReownName).toHaveBeenCalledWith(mockAddress)
 
       expect(setProfileNameSpy).toHaveBeenCalledWith(null, 'eip155')
     })

@@ -1,4 +1,4 @@
-import { customElement } from '@rerock/ui'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import styles from './styles.js'
@@ -9,8 +9,9 @@ import {
   EnsController,
   EventsController,
   AccountController
-} from '@rerock/core'
-import { W3mFrameRpcConstants } from '@rerock/wallet'
+} from '@reown/appkit-core'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+import { ConstantsUtil } from '@reown/appkit-common'
 
 @customElement('w3m-register-account-name-view')
 export class W3mRegisterAccountNameView extends LitElement {
@@ -194,6 +195,7 @@ export class W3mRegisterAccountNameView extends LitElement {
       if (!this.isAllowedToSubmit()) {
         return
       }
+      const ensName = `${this.name}${ConstantsUtil.WC_NAME_SUFFIX}` as const
       EventsController.sendEvent({
         type: 'track',
         event: 'REGISTER_NAME_INITIATED',
@@ -201,10 +203,10 @@ export class W3mRegisterAccountNameView extends LitElement {
           isSmartAccount:
             AccountController.state.preferredAccountType ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
-          ensName: this.name
+          ensName
         }
       })
-      await EnsController.registerName(this.name)
+      await EnsController.registerName(ensName)
       EventsController.sendEvent({
         type: 'track',
         event: 'REGISTER_NAME_SUCCESS',
@@ -212,7 +214,7 @@ export class W3mRegisterAccountNameView extends LitElement {
           isSmartAccount:
             AccountController.state.preferredAccountType ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
-          ensName: this.name
+          ensName
         }
       })
     } catch (error) {
@@ -224,7 +226,7 @@ export class W3mRegisterAccountNameView extends LitElement {
           isSmartAccount:
             AccountController.state.preferredAccountType ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
-          ensName: this.name,
+          ensName: `${this.name}${ConstantsUtil.WC_NAME_SUFFIX}`,
           error: (error as Error)?.message || 'Unknown error'
         }
       })

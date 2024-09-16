@@ -1,10 +1,10 @@
-import { getWeb3Modal } from '@rerock/base/library/vue'
-import { AppKit } from '@rerock/base'
-import { SolanaWeb3JsClient, useWeb3ModalConnection } from '@rerock/adapter-solana/vue'
-import type { Provider } from '@rerock/adapter-solana/vue'
-import type { CaipNetwork } from '@rerock/common'
+import { getAppKit } from '@reown/appkit/library/vue'
+import { AppKit } from '@reown/appkit'
+import { SolanaWeb3JsClient, useAppKitConnection } from '@reown/appkit-adapter-solana/vue'
+import type { Provider } from '@reown/appkit-adapter-solana/vue'
+import type { CaipNetwork } from '@reown/appkit-common'
 import type { SolanaAppKitOptions } from './options'
-import { ConstantsUtil } from '@rerock/scaffold-utils'
+import packageJson from '../package.json' assert { type: 'json' }
 
 // -- Types -------------------------------------------------------------------
 export type { SolanaAppKitOptions, Provider }
@@ -13,16 +13,16 @@ export type { SolanaAppKitOptions, Provider }
 let appkit: AppKit | undefined = undefined
 let solanaAdapter: SolanaWeb3JsClient | undefined = undefined
 
-export function createWeb3Modal(options: SolanaAppKitOptions) {
+export function createAppKit(options: SolanaAppKitOptions) {
   solanaAdapter = new SolanaWeb3JsClient({
     wallets: options.wallets
   })
   appkit = new AppKit({
     ...options,
-    sdkVersion: `vue-solana-${ConstantsUtil.VERSION}`,
+    sdkVersion: `vue-solana-${packageJson.version}`,
     adapters: [solanaAdapter]
   })
-  getWeb3Modal(appkit)
+  getAppKit(appkit)
 
   return appkit
 }
@@ -49,15 +49,15 @@ export function useSwitchNetwork() {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
-export function useWeb3ModalError() {
+export function useAppKitError() {
   // eslint-disable-next-line no-warning-comments
   // TODO fix error hook
 }
 
 export {
-  useWeb3ModalTheme,
-  useWeb3Modal,
-  useWeb3ModalState,
-  useWeb3ModalEvents
-} from '@rerock/base/library/vue'
-export { useWeb3ModalConnection }
+  useAppKitTheme,
+  useAppKit,
+  useAppKitState,
+  useAppKitEvents
+} from '@reown/appkit/library/vue'
+export { useAppKitConnection }

@@ -9,10 +9,10 @@ import {
   Stack,
   Text
 } from '@chakra-ui/react'
-import { useWeb3ModalState } from '@rerock/base/react'
+import { useAppKitState } from '@reown/appkit/react'
 
 export function MultiChainInfo() {
-  const { activeChain, selectedNetworkId } = useWeb3ModalState()
+  const { activeChain, selectedNetworkId } = useAppKitState()
 
   return (
     <Card marginTop={10} marginBottom={10}>

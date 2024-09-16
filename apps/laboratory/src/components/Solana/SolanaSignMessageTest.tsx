@@ -1,14 +1,14 @@
 import { Button } from '@chakra-ui/react'
 
-import { useWeb3ModalProvider } from '@rerock/base/react'
+import { useAppKitProvider } from '@reown/appkit/react'
 
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { useChakraToast } from '../Toast'
-import type { Provider } from '@rerock/adapter-solana'
+import type { Provider } from '@reown/appkit-adapter-solana'
 
 export function SolanaSignMessageTest() {
   const toast = useChakraToast()
-  const { walletProvider } = useWeb3ModalProvider<Provider>('solana')
+  const { walletProvider } = useAppKitProvider<Provider>('solana')
 
   async function onSignMessage() {
     try {
@@ -16,7 +16,7 @@ export function SolanaSignMessageTest() {
         throw Error('user is disconnected')
       }
 
-      const encodedMessage = new TextEncoder().encode('Hello from Web3Modal')
+      const encodedMessage = new TextEncoder().encode('Hello from AppKit')
       const signature = await walletProvider.signMessage(encodedMessage)
 
       toast({

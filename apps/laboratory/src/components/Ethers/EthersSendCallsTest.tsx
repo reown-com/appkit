@@ -1,6 +1,6 @@
 import { Button, Stack, Text, Spacer, Heading } from '@chakra-ui/react'
 import { useState, useEffect } from 'react'
-import { useWeb3ModalAccount, useWeb3ModalNetwork, useWeb3ModalProvider } from '@rerock/base/react'
+import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
 import { useChakraToast } from '../Toast'
 import type { Address } from 'viem'
@@ -11,16 +11,16 @@ import {
   WALLET_CAPABILITIES,
   getCapabilitySupportedChainInfo
 } from '../../utils/EIP5792Utils'
-import { W3mFrameProvider } from '@rerock/wallet'
+import { W3mFrameProvider } from '@reown/appkit-wallet'
 
 type Provider = W3mFrameProvider | Awaited<ReturnType<(typeof EthereumProvider)['init']>>
 
 export function EthersSendCallsTest() {
   const [loading, setLoading] = useState(false)
 
-  const { chainId } = useWeb3ModalNetwork()
-  const { address, isConnected } = useWeb3ModalAccount()
-  const { walletProvider } = useWeb3ModalProvider<Eip1193Provider>('eip155')
+  const { chainId } = useAppKitNetwork()
+  const { address, isConnected } = useAppKitAccount()
+  const { walletProvider } = useAppKitProvider<Eip1193Provider>('eip155')
   const toast = useChakraToast()
 
   const [atomicBatchSupportedChains, setAtomicBatchSupportedChains] = useState<

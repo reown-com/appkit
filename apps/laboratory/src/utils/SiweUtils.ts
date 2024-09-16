@@ -1,7 +1,9 @@
 import { getCsrfToken, signIn, signOut, getSession } from 'next-auth/react'
-import type { SIWEVerifyMessageArgs, SIWECreateMessageArgs, SIWESession } from '@rerock/siwe'
-import { createSIWEConfig, formatMessage } from '@rerock/siwe'
-import { WagmiConstantsUtil } from './WagmiConstants'
+import type { SIWEVerifyMessageArgs, SIWECreateMessageArgs, SIWESession } from '@reown/appkit-siwe'
+import { createSIWEConfig, formatMessage } from '@reown/appkit-siwe'
+import { arbitrum, base, binanceSmartChain, mainnet, polygon } from '@reown/appkit/chains'
+
+const chains = [mainnet, polygon, base, binanceSmartChain, arbitrum]
 
 export const siweConfig = createSIWEConfig({
   signOutOnAccountChange: true,
@@ -11,7 +13,7 @@ export const siweConfig = createSIWEConfig({
   getMessageParams: async () => ({
     domain: window.location.host,
     uri: window.location.origin,
-    chains: WagmiConstantsUtil.chains.map(chain => chain.id),
+    chains: chains.map(chain => chain.chainId as number),
     statement: 'Please sign with your account',
     iat: new Date().toISOString()
   }),

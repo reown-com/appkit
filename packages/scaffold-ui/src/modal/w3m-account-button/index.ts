@@ -2,13 +2,14 @@ import {
   AccountController,
   AssetController,
   AssetUtil,
+  ChainController,
   CoreHelperUtil,
   ModalController,
   NetworkController
-} from '@rerock/core'
+} from '@reown/appkit-core'
 
-import type { WuiAccountButton } from '@rerock/ui'
-import { customElement } from '@rerock/ui'
+import type { WuiAccountButton } from '@reown/appkit-ui'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -27,7 +28,7 @@ export class W3mAccountButton extends LitElement {
 
   @property() public charsEnd?: WuiAccountButton['charsEnd'] = 6
 
-  @state() private address = AccountController.state.address
+  @state() private caipAddress = ChainController.state.activeCaipAddress
 
   @state() private balanceVal = AccountController.state.balance
 
@@ -37,7 +38,7 @@ export class W3mAccountButton extends LitElement {
 
   @state() private profileImage = AccountController.state.profileImage
 
-  @state() private network = NetworkController.state.caipNetwork
+  @state() private network = ChainController.state.activeCaipNetwork
 
   @state() private networkImage = this.network ? AssetUtil.getNetworkImage(this.network) : undefined
 
@@ -53,22 +54,12 @@ export class W3mAccountButton extends LitElement {
             ? AssetUtil.getNetworkImage(this.network)
             : undefined
         }),
-        AccountController.subscribe(val => {
-          if (val.isConnected) {
-            this.address = val.address
-            this.balanceVal = val.balance
-            this.profileName = val.profileName
-            this.profileImage = val.profileImage
-            this.balanceSymbol = val.balanceSymbol
-          } else {
-            this.address = ''
-            this.balanceVal = ''
-            this.profileName = ''
-            this.profileImage = ''
-            this.balanceSymbol = ''
-          }
-        }),
-        NetworkController.subscribeKey('caipNetwork', val => {
+        ChainController.subscribeKey('activeCaipAddress', val => (this.caipAddress = val)),
+        AccountController.subscribeKey('balance', val => (this.balanceVal = val)),
+        AccountController.subscribeKey('balanceSymbol', val => (this.balanceSymbol = val)),
+        AccountController.subscribeKey('profileName', val => (this.profileName = val)),
+        AccountController.subscribeKey('profileImage', val => (this.profileImage = val)),
+        ChainController.subscribeKey('activeCaipNetwork', val => {
           this.network = val
           this.networkImage = val?.imageId ? AssetUtil.getNetworkImage(val) : undefined
         }),
@@ -91,7 +82,7 @@ export class W3mAccountButton extends LitElement {
       <wui-account-button
         .disabled=${Boolean(this.disabled)}
         .isUnsupportedChain=${this.isUnsupportedChain}
-        address=${ifDefined(this.address)}
+        address=${ifDefined(CoreHelperUtil.getPlainAddress(this.caipAddress))}
         profileName=${ifDefined(this.profileName)}
         networkSrc=${ifDefined(this.networkImage)}
         avatarSrc=${ifDefined(this.profileImage)}

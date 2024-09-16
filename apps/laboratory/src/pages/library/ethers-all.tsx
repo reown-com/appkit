@@ -1,4 +1,4 @@
-import { createWeb3Modal } from '@rerock/base/react'
+import { createAppKit } from '@reown/appkit/react'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { EthersTests } from '../../components/Ethers/EthersTests'
@@ -6,12 +6,12 @@ import { AppKitButtons } from '../../components/AppKitButtons'
 import { siweConfig } from '../../utils/SiweUtils'
 import { SiweData } from '../../components/Siwe/SiweData'
 import { EthersModalInfo } from '../../components/Ethers/EthersModalInfo'
-import { EVMEthersClient } from '@rerock/adapter-ethers'
-import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@rerock/base/chains'
+import { EVMEthersClient } from '@reown/appkit-adapter-ethers'
+import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@reown/appkit/chains'
 
 const ethersAdapter = new EVMEthersClient()
 
-const modal = createWeb3Modal({
+const modal = createAppKit({
   adapters: [ethersAdapter],
   caipNetworks: [arbitrum, mainnet, optimism, polygon, zkSync, sepolia],
   defaultCaipNetwork: mainnet,

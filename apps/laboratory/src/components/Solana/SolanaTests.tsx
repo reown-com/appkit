@@ -1,4 +1,4 @@
-import { useWeb3ModalAccount, useWeb3ModalNetwork } from '@rerock/base/react'
+import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
 import {
   StackDivider,
   Card,
@@ -15,14 +15,14 @@ import { SolanaSignTransactionTest } from './SolanaSignTransactionTest'
 import { SolanaSendTransactionTest } from './SolanaSendTransactionTest'
 import { SolanaSignMessageTest } from './SolanaSignMessageTest'
 import { SolanaWriteContractTest } from './SolanaWriteContractTest'
-import { solana, solanaDevnet, solanaTestnet } from '@rerock/base/chains'
+import { solana, solanaDevnet, solanaTestnet } from '@reown/appkit/chains'
 import { SolanaSignAndSendTransaction } from './SolanaSignAndSendTransactionTest'
 import { SolanaSignAllTransactionsTest } from './SolanaSignAllTransactionsTest'
 import { SolanaSignJupiterSwapTest } from './SolanaSignJupiterSwapTest'
 
 export function SolanaTests() {
-  const { isConnected } = useWeb3ModalAccount()
-  const { caipNetwork } = useWeb3ModalNetwork()
+  const { isConnected } = useAppKitAccount()
+  const { caipNetwork } = useAppKitNetwork()
 
   return isConnected ? (
     <Card marginTop={10} marginBottom={10}>

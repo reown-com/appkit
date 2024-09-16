@@ -1,11 +1,11 @@
 import { createConnector, type CreateConfigParameters } from '@wagmi/core'
-import { W3mFrameProvider } from '@rerock/wallet'
-import { ConstantsUtil as CommonConstantsUtil } from '@rerock/common'
+import { W3mFrameProvider } from '@reown/appkit-wallet'
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import { SwitchChainError, getAddress } from 'viem'
 import type { Address, Hex } from 'viem'
-import { ConstantsUtil } from '@rerock/scaffold-utils'
-import { NetworkUtil } from '@rerock/common'
-import { W3mFrameProviderSingleton } from '@rerock/base/auth-provider'
+import { ConstantsUtil } from '@reown/appkit-utils'
+import { NetworkUtil } from '@reown/appkit-common'
+import { W3mFrameProviderSingleton } from '@reown/appkit/auth-provider'
 
 // -- Types ----------------------------------------------------------------------------------------
 interface W3mFrameProviderOptions {
@@ -29,18 +29,26 @@ export function authConnector(parameters: AuthParameters) {
 
   return createConnector<W3mFrameProvider, Properties>(config => ({
     id: ConstantsUtil.AUTH_CONNECTOR_ID,
-    name: 'Web3Modal Auth',
+    name: 'AppKit Auth',
     type: 'w3mAuth',
     chain: CommonConstantsUtil.CHAIN.EVM,
 
     async connect(options = {}) {
       const provider = await this.getProvider()
-      const { address, chainId } = await provider.connect({
-        chainId: options.chainId
+      let chainId = options.chainId
+      if (options.isReconnecting) {
+        chainId = provider.getLastUsedChainId()
+        if (!chainId) {
+          throw new Error('ChainId not found in provider')
+        }
+      }
+
+      const { address, chainId: frameChainId } = await provider.connect({
+        chainId
       })
       await provider.getSmartAccountEnabledNetworks()
 
-      const parsedChainId = parseChainId(chainId)
+      const parsedChainId = parseChainId(frameChainId)
 
       return {
         accounts: [address as Address],
@@ -123,12 +131,6 @@ export function authConnector(parameters: AuthParameters) {
     onChainChanged(chain) {
       const chainId = Number(chain)
       config.emitter.emit('change', { chainId })
-    },
-
-    async onConnect(connectInfo) {
-      const chainId = Number(connectInfo.chainId)
-      const accounts = await this.getAccounts()
-      config.emitter.emit('connect', { accounts, chainId })
     },
 
     async onDisconnect(_error) {

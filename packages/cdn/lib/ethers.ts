@@ -1,2 +1,2 @@
-import '@rerock/polyfills'
-export * as Web3modal from '@rerock/ethers'
+import '@reown/appkit-polyfills'
+export * as AppKit from '@reown/appkit-ethers'

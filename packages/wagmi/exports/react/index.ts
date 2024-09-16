@@ -1,9 +1,9 @@
-import { AppKit } from '@rerock/base'
-import type { AppKitOptions } from '@rerock/base'
-import { EVMWagmiClient, type AdapterOptions } from '@rerock/adapter-wagmi'
-import { getWeb3Modal } from '@rerock/base/library/react'
+import { AppKit } from '@reown/appkit'
+import type { AppKitOptions } from '@reown/appkit'
+import { EVMWagmiClient, type AdapterOptions } from '@reown/appkit-adapter-wagmi'
+import { getAppKit } from '@reown/appkit/library/react'
 import { type Config, type CreateConfigParameters } from 'wagmi'
-import { ConstantsUtil } from '@rerock/scaffold-utils'
+import packageJson from '../../package.json' assert { type: 'json' }
 
 // -- Setup -------------------------------------------------------------------
 let appkit: AppKit | undefined = undefined
@@ -13,7 +13,7 @@ export type WagmiAppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 's
     wagmiConfig?: CreateConfigParameters
   }
 
-export function createWeb3Modal(options: WagmiAppKitOptions) {
+export function createAppKit(options: WagmiAppKitOptions) {
   const wagmiAdapter = new EVMWagmiClient({
     ...options.wagmiConfig,
     caipNetworks: options.caipNetworks,
@@ -22,19 +22,19 @@ export function createWeb3Modal(options: WagmiAppKitOptions) {
 
   appkit = new AppKit({
     ...options,
-    sdkVersion: `react-wagmi-${ConstantsUtil.VERSION}`,
+    sdkVersion: `react-wagmi-${packageJson.version}`,
     adapters: [wagmiAdapter]
   })
-  getWeb3Modal(appkit)
+  getAppKit(appkit)
 
   return appkit
 }
 
 // -- Hooks -------------------------------------------------------------------
 export {
-  useWeb3ModalTheme,
-  useWeb3Modal,
-  useWeb3ModalState,
-  useWeb3ModalEvents,
+  useAppKitTheme,
+  useAppKit,
+  useAppKitState,
+  useAppKitEvents,
   useWalletInfo
-} from '@rerock/base/library/react'
+} from '@reown/appkit/library/react'

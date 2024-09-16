@@ -1,10 +1,10 @@
 import { mock } from 'wagmi/connectors'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
-import { AppKit } from '@rerock/base'
+import { AppKit } from '@reown/appkit'
 import { EVMWagmiClient } from '../../client'
-import { arbitrum, mainnet } from '@rerock/base/chains'
-import type { CaipNetwork } from '@rerock/common'
-import type { SdkVersion } from '@rerock/core'
+import { arbitrum, mainnet } from '@reown/appkit/chains'
+import type { CaipNetwork } from '@reown/appkit-common'
+import type { SdkVersion } from '@reown/appkit-core'
 
 const privateKey = generatePrivateKey()
 export const mockAccount = privateKeyToAccount(privateKey)

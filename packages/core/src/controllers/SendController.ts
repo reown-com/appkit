@@ -1,16 +1,15 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
-import { type Balance, type CaipAddress } from '@rerock/common'
-import { erc20ABI } from '@rerock/common'
+import { type Balance, type CaipAddress } from '@reown/appkit-common'
+import { erc20ABI } from '@reown/appkit-common'
 import { RouterController } from './RouterController.js'
 import { AccountController } from './AccountController.js'
 import { ConnectionController } from './ConnectionController.js'
 import { SnackController } from './SnackController.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { EventsController } from './EventsController.js'
-import { NetworkController } from './NetworkController.js'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 import { ChainController } from './ChainController.js'
-import { W3mFrameRpcConstants } from '@rerock/wallet'
 
 // -- Types --------------------------------------------- //
 
@@ -119,7 +118,7 @@ export const SendController = {
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           token: this.state.token.address,
           amount: this.state.sendTokenAmount,
-          network: NetworkController.state.caipNetwork?.id || ''
+          network: ChainController.state.activeCaipNetwork?.id || ''
         }
       })
       this.sendERC20Token({
@@ -143,7 +142,7 @@ export const SendController = {
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           token: this.state.token?.symbol,
           amount: this.state.sendTokenAmount,
-          network: NetworkController.state.caipNetwork?.id || ''
+          network: ChainController.state.activeCaipNetwork?.id || ''
         }
       })
       this.sendNativeToken({
@@ -187,7 +186,7 @@ export const SendController = {
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           token: this.state.token?.symbol || '',
           amount: params.sendTokenAmount,
-          network: NetworkController.state.caipNetwork?.id || ''
+          network: ChainController.state.activeCaipNetwork?.id || ''
         }
       })
       this.resetSend()
@@ -201,7 +200,7 @@ export const SendController = {
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           token: this.state.token?.symbol || '',
           amount: params.sendTokenAmount,
-          network: NetworkController.state.caipNetwork?.id || ''
+          network: ChainController.state.activeCaipNetwork?.id || ''
         }
       })
       SnackController.showError('Something went wrong')

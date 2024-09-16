@@ -1,11 +1,11 @@
 import {
-  createWeb3Modal,
-  useWeb3Modal,
-  useWeb3ModalEvents,
-  useWeb3ModalState,
-  useWeb3ModalTheme
-} from '@rerock/base/react'
-import { EVMEthersClient } from '@rerock/adapter-ethers'
+  createAppKit,
+  useAppKit,
+  useAppKitEvents,
+  useAppKitState,
+  useAppKitTheme
+} from '@reown/appkit/react'
+import { EVMEthersClient } from '@reown/appkit-adapter-ethers'
 
 // @ts-expect-error 1. Get projectId
 const projectId = import.meta.env.VITE_PROJECT_ID
@@ -40,7 +40,7 @@ const chains = [
 const ethersAdapter = new EVMEthersClient()
 
 // 3. Create modal
-createWeb3Modal({
+createAppKit({
   adapters: [ethersAdapter],
   caipNetworks: chains,
   projectId,
@@ -54,10 +54,10 @@ createWeb3Modal({
 
 export default function App() {
   // 4. Use modal hook
-  const modal = useWeb3Modal()
-  const state = useWeb3ModalState()
-  const { themeMode, themeVariables, setThemeMode } = useWeb3ModalTheme()
-  const events = useWeb3ModalEvents()
+  const modal = useAppKit()
+  const state = useAppKitState()
+  const { themeMode, themeVariables, setThemeMode } = useAppKitTheme()
+  const events = useAppKitEvents()
 
   return (
     <>

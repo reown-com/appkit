@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from 'vitest'
 import type { NetworkControllerClient } from '../../exports/index.js'
-import type { CaipNetwork, CaipNetworkId } from '@rerock/common'
-import { ChainController, EventsController, NetworkController } from '../../exports/index.js'
-import { ConstantsUtil } from '@rerock/common'
+import type { CaipNetwork, CaipNetworkId } from '@reown/appkit-common'
+import { ChainController, NetworkController } from '../../exports/index.js'
+import { ConstantsUtil } from '@reown/appkit-common'
 
 // -- Setup --------------------------------------------------------------------
 const caipNetwork = {
@@ -12,6 +12,16 @@ const caipNetwork = {
   chainId: 1,
   currency: 'ETH',
   explorerUrl: 'https://etherscan.io',
+  rpcUrl: 'https://rpc.infura.com/v1/'
+} as const
+
+const solanaCaipNetwork = {
+  id: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+  name: 'Solana',
+  chainNamespace: ConstantsUtil.CHAIN.SOLANA,
+  chainId: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+  currency: 'SOL',
+  explorerUrl: 'https://solscan.io',
   rpcUrl: 'https://rpc.infura.com/v1/'
 } as const
 const requestedCaipNetworks = [
@@ -44,11 +54,7 @@ const requestedCaipNetworks = [
   }
 ] as CaipNetwork[]
 const approvedCaipNetworkIds = ['eip155:1', 'eip155:42161'] as CaipNetworkId[]
-const switchNetworkEvent = {
-  type: 'track',
-  event: 'SWITCH_NETWORK',
-  properties: { network: caipNetwork.id }
-} as const
+
 const chain = ConstantsUtil.CHAIN.EVM
 
 const client: NetworkControllerClient = {
@@ -84,15 +90,9 @@ describe('NetworkController', () => {
     expect(NetworkController.state.requestedCaipNetworks).toEqual(requestedCaipNetworks)
   })
 
-  it('should update state correctly on switchCaipNetwork()', async () => {
-    await NetworkController.switchActiveNetwork(caipNetwork)
-    expect(NetworkController.state.caipNetwork).toEqual(caipNetwork)
-    expect(EventsController.state.data).toEqual(switchNetworkEvent)
-  })
-
   it('should update state correctly on setCaipNetwork()', () => {
     NetworkController.setActiveCaipNetwork(caipNetwork)
-    expect(NetworkController.state.caipNetwork).toEqual(caipNetwork)
+    expect(ChainController.state.activeCaipNetwork).toEqual(caipNetwork)
   })
 
   it('should update state correctly on getApprovedCaipNetworkIds()', async () => {
@@ -137,11 +137,12 @@ describe('NetworkController', () => {
       explorerUrl: 'https://etherscan.io',
       rpcUrl: 'https://rpc.infura.com/v1/'
     })
-    expect(NetworkController.checkIfSmartAccountEnabled()).toEqual(true)
   })
 
   it('should get correct active network token address', () => {
-    let mock = vi.spyOn(NetworkController.state, 'caipNetwork', 'get').mockReturnValue(undefined)
+    let mock = vi
+      .spyOn(ChainController.state, 'activeCaipNetwork', 'get')
+      .mockReturnValue(undefined)
     expect(NetworkController.getActiveNetworkTokenAddress()).toEqual(
       'eip155:1:0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
     )
@@ -151,9 +152,9 @@ describe('NetworkController', () => {
       'eip155:1:0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
     )
 
-    mock.mockReturnValue({ ...caipNetwork, chainNamespace: 'solana', id: 'solana:mainnet' })
+    mock.mockReturnValue(solanaCaipNetwork)
     expect(NetworkController.getActiveNetworkTokenAddress()).toEqual(
-      'solana:mainnet:So11111111111111111111111111111111111111111'
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:So11111111111111111111111111111111111111111'
     )
 
     mock.mockClear()

@@ -1,6 +1,7 @@
 import {
   AccountController,
   AssetUtil,
+  ChainController,
   ConnectionController,
   ConnectorController,
   EventsController,
@@ -8,8 +9,8 @@ import {
   NetworkController,
   OptionsController,
   RouterController
-} from '@rerock/core'
-import { customElement } from '@rerock/ui'
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
@@ -96,7 +97,7 @@ export class W3mHeader extends LitElement {
   // -- State & Properties --------------------------------- //
   @state() private heading = headings()[RouterController.state.view]
 
-  @state() private network = NetworkController.state.caipNetwork
+  @state() private network = ChainController.state.activeCaipNetwork
 
   @state() private buffering = false
 
@@ -124,7 +125,7 @@ export class W3mHeader extends LitElement {
         this.onHistoryChange()
       }),
       ConnectionController.subscribeKey('buffering', val => (this.buffering = val)),
-      NetworkController.subscribeKey('caipNetwork', val => (this.network = val))
+      ChainController.subscribeKey('activeCaipNetwork', val => (this.network = val))
     )
   }
 
@@ -151,7 +152,7 @@ export class W3mHeader extends LitElement {
 
   private async onClose() {
     if (this.isSiweEnabled) {
-      const { SIWEController } = await import('@rerock/siwe')
+      const { SIWEController } = await import('@reown/appkit-siwe')
       const isApproveSignScreen = RouterController.state.view === 'ApproveTransaction'
       const isUnauthenticated = SIWEController.state.status !== 'success'
 

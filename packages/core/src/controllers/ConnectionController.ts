@@ -11,12 +11,11 @@ import type {
 } from '../utils/TypeUtil.js'
 import { TransactionsController } from './TransactionsController.js'
 import { ChainController } from './ChainController.js'
-import { type W3mFrameTypes } from '@rerock/wallet'
+import { type W3mFrameTypes } from '@reown/appkit-wallet'
 import { ModalController } from './ModalController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
-import type { ChainNamespace } from '@rerock/common'
-import { NetworkController } from './NetworkController.js'
+import type { ChainNamespace } from '@reown/appkit-common'
 import { RouterController } from './RouterController.js'
 
 // -- Types --------------------------------------------- //
@@ -96,10 +95,12 @@ export const ConnectionController = {
     )
   },
 
-  async connectExternal(options: ConnectExternalOptions, chain: ChainNamespace) {
+  async connectExternal(options: ConnectExternalOptions, chain: ChainNamespace, setChain = true) {
     await this._getClient(chain).connectExternal?.(options)
-    ChainController.setActiveChain(chain)
-    StorageUtil.setConnectedConnector(options.type)
+    if (setChain) {
+      ChainController.setActiveChain(chain)
+      StorageUtil.setConnectedConnector(options.type)
+    }
   },
 
   async reconnectExternal(options: ConnectExternalOptions) {
@@ -119,7 +120,7 @@ export const ConnectionController = {
     EventsController.sendEvent({
       type: 'track',
       event: 'SET_PREFERRED_ACCOUNT_TYPE',
-      properties: { accountType, network: NetworkController.state.caipNetwork?.id || '' }
+      properties: { accountType, network: ChainController.state.activeCaipNetwork?.id || '' }
     })
   },
 

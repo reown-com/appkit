@@ -9,7 +9,7 @@ import {
   SwapController,
   type NetworkControllerClient
 } from '../../exports/index.js'
-import type { CaipNetworkId, CaipNetwork } from '@rerock/common'
+import type { CaipNetworkId, CaipNetwork } from '@reown/appkit-common'
 import {
   allowanceResponse,
   balanceResponse,
@@ -20,7 +20,7 @@ import {
   tokensResponse
 } from '../mocks/SwapController.js'
 import { SwapApiUtil } from '../../src/utils/SwapApiUtil.js'
-import { ConstantsUtil } from '@rerock/common'
+import { ConstantsUtil } from '@reown/appkit-common'
 
 // - Mocks ---------------------------------------------------------------------
 const caipNetwork = {
@@ -51,7 +51,8 @@ beforeAll(async () => {
   ChainController.initialize([
     { chainNamespace: ConstantsUtil.CHAIN.EVM, networkControllerClient: client }
   ])
-  await NetworkController.switchActiveNetwork(caipNetwork)
+
+  NetworkController.setCaipNetwork(caipNetwork)
   AccountController.setCaipAddress(caipAddress, chain)
 
   vi.spyOn(BlockchainApiController, 'fetchSwapTokens').mockResolvedValue(tokensResponse)

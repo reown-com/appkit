@@ -1,14 +1,14 @@
 'use client'
 
-import { AppKit } from '@rerock/base'
+import { AppKit } from '@reown/appkit'
 import {
   SolanaWeb3JsClient,
   type Provider,
-  useWeb3ModalConnection
-} from '@rerock/adapter-solana/react'
-import { getWeb3Modal } from '@rerock/base/library/react'
+  useAppKitConnection
+} from '@reown/appkit-adapter-solana/react'
+import { getAppKit } from '@reown/appkit/library/react'
 import type { SolanaAppKitOptions } from './options.js'
-import { ConstantsUtil } from '@rerock/scaffold-utils'
+import packageJson from '../package.json' assert { type: 'json' }
 
 // -- Types -------------------------------------------------------------------
 export type { SolanaAppKitOptions, Provider }
@@ -17,16 +17,16 @@ export type { SolanaAppKitOptions, Provider }
 let appkit: AppKit | undefined = undefined
 let solanaAdapter: SolanaWeb3JsClient | undefined = undefined
 
-export function createWeb3Modal(options: SolanaAppKitOptions) {
+export function createAppKit(options: SolanaAppKitOptions) {
   solanaAdapter = new SolanaWeb3JsClient({
     wallets: options.wallets
   })
   appkit = new AppKit({
     ...options,
-    sdkVersion: `react-solana-${ConstantsUtil.VERSION}`,
+    sdkVersion: `react-solana-${packageJson.version}`,
     adapters: [solanaAdapter]
   })
-  getWeb3Modal(appkit)
+  getAppKit(appkit)
 
   return appkit
 }
@@ -43,9 +43,9 @@ export function useDisconnect() {
 }
 
 export {
-  useWeb3ModalTheme,
-  useWeb3Modal,
-  useWeb3ModalState,
-  useWeb3ModalEvents
-} from '@rerock/base/library/react'
-export { useWeb3ModalConnection }
+  useAppKitTheme,
+  useAppKit,
+  useAppKitState,
+  useAppKitEvents
+} from '@reown/appkit/library/react'
+export { useAppKitConnection }

@@ -1,15 +1,15 @@
-import { customElement } from '@rerock/ui'
+import { customElement } from '@reown/appkit-ui'
 import {
   ConnectionController,
   ConnectorController,
   RouterController,
   CoreHelperUtil,
   SnackController
-} from '@rerock/core'
+} from '@reown/appkit-core'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
-import { W3mFrameRpcConstants } from '@rerock/wallet'
-import { NavigationUtil } from '@rerock/common'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+import { NavigationUtil } from '@reown/appkit-common'
 
 @customElement('w3m-upgrade-to-smart-account-view')
 export class W3mUpgradeToSmartAccountView extends LitElement {
@@ -93,6 +93,7 @@ export class W3mUpgradeToSmartAccountView extends LitElement {
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
         )
         this.loading = false
+        RouterController.push('Account')
       } catch (e) {
         SnackController.showError('Error upgrading to smart account')
       }

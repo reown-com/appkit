@@ -1,8 +1,8 @@
-import { createWeb3Modal, type CaipNetwork } from '@rerock/base/react'
-import { SolanaWeb3JsClient } from '@rerock/adapter-solana/react'
+import { createAppKit, type CaipNetwork } from '@reown/appkit/react'
+import { SolanaWeb3JsClient } from '@reown/appkit-adapter-solana/react'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
-import { solana, solanaDevnet, solanaTestnet } from '@rerock/base/chains'
+import { solana, solanaDevnet, solanaTestnet } from '@reown/appkit/chains'
 
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { AppKitButtons } from '../../components/AppKitButtons'
@@ -22,7 +22,7 @@ export const solanaNotExist = {
   chainNamespace: 'solana'
 } as CaipNetwork
 
-const modal = createWeb3Modal({
+const modal = createAppKit({
   adapters: [solanaWeb3JsAdapter],
   caipNetworks: [solana, solanaTestnet, solanaDevnet, solanaNotExist],
   projectId: ConstantsUtil.ProjectId,

@@ -5,20 +5,16 @@ import { mockOptions } from './mocks/Options'
 import { mockCreateEthersConfig } from './mocks/EthersConfig'
 import mockAppKit from './mocks/AppKit'
 import { mockAuthConnector } from './mocks/AuthConnector'
-import {
-  EthersHelpersUtil,
-  type ProviderId,
-  type ProviderType
-} from '@rerock/scaffold-utils/ethers'
-import { ConstantsUtil } from '@rerock/scaffold-utils'
-import { arbitrum, mainnet, polygon } from '@rerock/base/chains'
-import { ProviderUtil } from '@rerock/base/store'
-import { SafeLocalStorage } from '@rerock/common'
-import { WcConstantsUtil, type BlockchainApiLookupEnsName } from '@rerock/base'
+import { EthersHelpersUtil, type ProviderId, type ProviderType } from '@reown/appkit-utils/ethers'
+import { ConstantsUtil } from '@reown/appkit-utils'
+import { arbitrum, mainnet, polygon } from '@reown/appkit/chains'
+import { ProviderUtil } from '@reown/appkit/store'
+import { SafeLocalStorage } from '@reown/appkit-common'
+import { WcConstantsUtil, type BlockchainApiLookupEnsName } from '@reown/appkit'
 import { ethers } from 'ethers5'
-import type { CaipNetwork, ChainNamespace } from '@rerock/common'
+import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
 
-vi.mock('@rerock/wallet', () => ({
+vi.mock('@reown/appkit-wallet', () => ({
   W3mFrameProvider: vi.fn().mockImplementation(() => mockAuthConnector),
   W3mFrameHelpers: {
     checkIfRequestExists: vi.fn(),
@@ -29,7 +25,7 @@ vi.mock('@rerock/wallet', () => ({
   }
 }))
 
-vi.mock('@rerock/scaffold-utils', () => {
+vi.mock('@reown/appkit-utils', () => {
   const INJECTED_CONNECTOR_ID = 'injected'
   const COINBASE_SDK_CONNECTOR_ID = 'coinbaseWallet'
   const EIP6963_CONNECTOR_ID = 'eip6963'
@@ -73,7 +69,7 @@ vi.mock('@rerock/scaffold-utils', () => {
   }
 })
 
-vi.mock('@rerock/base/store', () => ({
+vi.mock('@reown/appkit/store', () => ({
   ProviderUtil: {
     setProvider: vi.fn(),
     setProviderId: vi.fn(),
@@ -328,13 +324,13 @@ describe('EVMEthersClient', () => {
 
       it('should handle auth not connected', () => {
         client['handleAuthNotConnected']()
-        expect(mockAppKit.setIsConnected).toHaveBeenCalledWith(false, 'eip155')
+        expect(mockAppKit.setCaipAddress).toHaveBeenCalledWith(undefined, 'eip155')
       })
 
       it('should handle auth is connected', () => {
+        vi.spyOn(mockAppKit, 'getActiveChainNamespace').mockReturnValue('eip155')
         const preferredAccountType = 'eoa'
         client['handleAuthIsConnected'](preferredAccountType)
-        expect(mockAppKit.setIsConnected).toHaveBeenCalledWith(true, 'eip155')
         expect(mockAppKit.setPreferredAccountType).toHaveBeenCalledWith(
           preferredAccountType,
           'eip155'
@@ -352,16 +348,15 @@ describe('EVMEthersClient', () => {
         await client['handleAuthSetPreferredAccount'](address, type)
 
         expect(mockAppKit.setLoading).toHaveBeenCalledWith(true)
-        expect(mockAppKit.setCaipAddress).toHaveBeenCalledWith(address, 'eip155')
+        expect(mockAppKit.setCaipAddress).toHaveBeenCalledWith(`eip155:${1}:${address}`, 'eip155')
         expect(mockAppKit.setCaipNetwork).toHaveBeenCalled()
         expect(mockAppKit.setStatus).toHaveBeenCalledWith('connected', 'eip155')
-        expect(mockAppKit.setIsConnected).toHaveBeenCalledWith(true, 'eip155')
         expect(mockAppKit.setPreferredAccountType).toHaveBeenCalledWith(type, 'eip155')
 
         await new Promise(resolve => setImmediate(resolve))
 
         expect(mockAppKit.setLoading).toHaveBeenLastCalledWith(false)
-      }, 300)
+      })
     })
 
     describe('setAuthConnector', () => {
@@ -400,7 +395,6 @@ describe('EVMEthersClient', () => {
         )
         expect(mockAppKit.setCaipNetwork).toHaveBeenCalled()
         expect(mockAppKit.setStatus).toHaveBeenCalledWith('connected', 'eip155')
-        expect(mockAppKit.setIsConnected).toHaveBeenCalledWith(true, 'eip155')
         expect(mockAppKit.setCaipAddress).toHaveBeenCalledWith(
           `eip155:${mockChainId}:${mockAddress}`,
           'eip155'
@@ -533,11 +527,9 @@ describe('EVMEthersClient', () => {
       expect(SafeLocalStorage.setItem).toHaveBeenCalledWith(WcConstantsUtil.WALLET_ID, 'injected')
       expect(SafeLocalStorage.setItem).toHaveBeenCalledWith(WcConstantsUtil.WALLET_NAME, 'MetaMask')
       expect(mockAppKit.setCaipNetwork).toHaveBeenCalled()
-      expect(mockAppKit.setCaipAddress).toHaveBeenCalled()
       expect(ProviderUtil.setProviderId).toHaveBeenCalledWith('eip155', 'injected')
       expect(ProviderUtil.setProvider).toHaveBeenCalledWith('eip155', mockProvider)
       expect(mockAppKit.setStatus).toHaveBeenCalledWith('connected', 'eip155')
-      expect(mockAppKit.setIsConnected).toHaveBeenCalledWith(true, 'eip155')
       expect(mockAppKit.setAllAccounts).toHaveBeenCalled()
     })
   })
@@ -684,8 +676,6 @@ describe('EVMEthersClient', () => {
 
       await client['syncAccount']({ address: mockAddress })
 
-      expect(mockAppKit.setIsConnected).toHaveBeenCalledWith(true, 'eip155')
-      expect(mockAppKit.setCaipAddress).toHaveBeenCalledWith(`eip155:1:${mockAddress}`, 'eip155')
       expect(mockAppKit.setPreferredAccountType).toHaveBeenCalledWith('eoa', 'eip155')
       expect(mockAppKit.setAddressExplorerUrl).toHaveBeenCalledWith(
         `https://etherscan.io/address/${mockAddress}`,
@@ -693,7 +683,6 @@ describe('EVMEthersClient', () => {
       )
       expect(client['syncConnectedWalletInfo']).toHaveBeenCalled()
       expect(client['syncProfile']).toHaveBeenCalledWith(mockAddress)
-      expect(client['syncBalance']).toHaveBeenCalledWith(mockAddress)
       expect(mockAppKit.setApprovedCaipNetworksData).toHaveBeenCalledWith('eip155')
     })
 
@@ -712,7 +701,7 @@ describe('EVMEthersClient', () => {
     const mockAddress = '0x1234567890123456789012345678901234567890'
 
     beforeEach(() => {
-      vi.spyOn(client as any, 'syncWalletConnectName').mockImplementation(() => Promise.resolve())
+      vi.spyOn(client as any, 'syncReownName').mockImplementation(() => Promise.resolve())
     })
 
     it('should set profile from fetchIdentity when successful', async () => {
@@ -747,13 +736,13 @@ describe('EVMEthersClient', () => {
       )
     })
 
-    it('should fallback to syncWalletConnectName for non-mainnet chains', async () => {
+    it('should fallback to syncReownName for non-mainnet chains', async () => {
       vi.spyOn(mockAppKit, 'fetchIdentity').mockRejectedValue(new Error('Fetch failed'))
       vi.spyOn(mockAppKit, 'getCaipNetwork').mockReturnValue(polygon) // Polygon
 
       await client['syncProfile'](mockAddress)
 
-      expect(client['syncWalletConnectName']).toHaveBeenCalledWith(mockAddress)
+      expect(client['syncReownName']).toHaveBeenCalledWith(mockAddress)
       expect(mockAppKit.setProfileImage).toHaveBeenCalledWith(null, 'eip155')
     })
   })
@@ -771,7 +760,7 @@ describe('EVMEthersClient', () => {
         () => mockJsonRpcProvider as any
       )
 
-      await client['syncBalance'](mockAddress)
+      await client['syncBalance'](mockAddress, mainnet)
 
       expect(ethers.providers.JsonRpcProvider).toHaveBeenCalledWith(mainnet.rpcUrl, {
         chainId: 1,
@@ -782,45 +771,45 @@ describe('EVMEthersClient', () => {
     })
 
     it('should not set balance when caipNetwork is unavailable', async () => {
-      vi.spyOn(mockAppKit, 'getCaipNetwork').mockReturnValue(undefined)
+      vi.spyOn(mockAppKit, 'getCaipNetworks').mockReturnValue([])
 
-      await client['syncBalance'](mockAddress)
+      await client['syncBalance'](mockAddress, mainnet)
 
       expect(ethers.providers.JsonRpcProvider).not.toHaveBeenCalled()
       expect(mockAppKit.setBalance).not.toHaveBeenCalled()
     })
   })
 
-  describe('EthersClient - syncWalletConnectName', () => {
+  describe('EthersClient - syncReownName', () => {
     const mockAddress = '0x1234567890123456789012345678901234567890'
 
     it('should set profile name when WalletConnect name is available', async () => {
       const mockWcNames = [
         { name: 'WC Wallet', registered: 1, updated: 1234567890, addresses: [], attributes: {} }
       ] as unknown as BlockchainApiLookupEnsName[]
-      vi.spyOn(mockAppKit, 'getWalletConnectName').mockResolvedValue(mockWcNames)
+      vi.spyOn(mockAppKit, 'getReownName').mockResolvedValue(mockWcNames)
 
-      await client['syncWalletConnectName'](mockAddress)
+      await client['syncReownName'](mockAddress)
 
-      expect(mockAppKit.getWalletConnectName).toHaveBeenCalledWith(mockAddress)
+      expect(mockAppKit.getReownName).toHaveBeenCalledWith(mockAddress)
       expect(mockAppKit.setProfileName).toHaveBeenCalledWith('WC Wallet', 'eip155')
     })
 
     it('should set profile name to null when no WalletConnect name is available', async () => {
-      vi.spyOn(mockAppKit, 'getWalletConnectName').mockResolvedValue([])
+      vi.spyOn(mockAppKit, 'getReownName').mockResolvedValue([])
 
-      await client['syncWalletConnectName'](mockAddress)
+      await client['syncReownName'](mockAddress)
 
-      expect(mockAppKit.getWalletConnectName).toHaveBeenCalledWith(mockAddress)
+      expect(mockAppKit.getReownName).toHaveBeenCalledWith(mockAddress)
       expect(mockAppKit.setProfileName).toHaveBeenCalledWith(null, 'eip155')
     })
 
-    it('should set profile name to null when getWalletConnectName throws an error', async () => {
-      vi.spyOn(mockAppKit, 'getWalletConnectName').mockRejectedValue(new Error('API Error'))
+    it('should set profile name to null when getReownName throws an error', async () => {
+      vi.spyOn(mockAppKit, 'getReownName').mockRejectedValue(new Error('API Error'))
 
-      await client['syncWalletConnectName'](mockAddress)
+      await client['syncReownName'](mockAddress)
 
-      expect(mockAppKit.getWalletConnectName).toHaveBeenCalledWith(mockAddress)
+      expect(mockAppKit.getReownName).toHaveBeenCalledWith(mockAddress)
       expect(mockAppKit.setProfileName).toHaveBeenCalledWith(null, 'eip155')
     })
   })

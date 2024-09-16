@@ -1,5 +1,5 @@
-import type { AppKit } from '@rerock/base'
-import { mainnet } from '@rerock/base/chains'
+import type { AppKit } from '@reown/appkit'
+import { mainnet } from '@reown/appkit/chains'
 import { vi } from 'vitest'
 
 export const mockAppKit = {
@@ -47,8 +47,9 @@ export const mockAppKit = {
   setProfileImage: vi.fn(),
   setAddressExplorerUrl: vi.fn(),
   setBalance: vi.fn(),
-  getWalletConnectName: vi.fn().mockResolvedValue([]),
+  getReownName: vi.fn().mockResolvedValue([]),
   fetchIdentity: vi.fn().mockResolvedValue(null),
+  getActiveChainNamespace: vi.fn().mockReturnValue('solana'),
   setClientId: vi.fn(),
   universalAdapter: {
     connectionControllerClient: {

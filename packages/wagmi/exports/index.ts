@@ -1,20 +1,20 @@
-import { AppKit } from '@rerock/base'
-import type { AppKitOptions } from '@rerock/base'
-import { EVMWagmiClient, type AdapterOptions } from '@rerock/adapter-wagmi'
+import { AppKit } from '@reown/appkit'
+import type { AppKitOptions } from '@reown/appkit'
+import { EVMWagmiClient, type AdapterOptions } from '@reown/appkit-adapter-wagmi'
 import type { Config } from 'wagmi'
-import { ConstantsUtil } from '@rerock/scaffold-utils'
+import packageJson from '../package.json' assert { type: 'json' }
 
 // -- Types -------------------------------------------------------------
-export type { AdapterOptions } from '@rerock/adapter-wagmi'
+export type { AdapterOptions } from '@reown/appkit-adapter-wagmi'
 
 // -- Connectors --------------------------------------------------------
-export { authConnector } from '@rerock/adapter-wagmi'
+export { authConnector } from '@reown/appkit-adapter-wagmi'
 
 // -- Setup -------------------------------------------------------------
 export type WagmiAppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 'sdkVersion'> &
   AdapterOptions<Config>
 
-export function createWeb3Modal(options: WagmiAppKitOptions) {
+export function createAppKit(options: WagmiAppKitOptions) {
   const wagmiAdapter = new EVMWagmiClient({
     caipNetworks: options.caipNetworks,
     projectId: options.projectId
@@ -22,7 +22,7 @@ export function createWeb3Modal(options: WagmiAppKitOptions) {
 
   return new AppKit({
     ...options,
-    sdkVersion: `html-wagmi-${ConstantsUtil.VERSION}`,
+    sdkVersion: `html-wagmi-${packageJson.version}`,
     adapters: [wagmiAdapter]
   })
 }

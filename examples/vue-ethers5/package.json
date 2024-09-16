@@ -1,14 +1,14 @@
 {
   "name": "@examples/vue-ethers5",
   "private": true,
-  "version": "0.0.3",
+  "version": "0.0.5",
   "scripts": {
     "dev": "vite --port 3013",
     "build": "vite build"
   },
   "dependencies": {
-    "@rerock/adapter-ethers5": "workspace:*",
-    "@rerock/base": "workspace:*",
+    "@reown/appkit-adapter-ethers5": "workspace:*",
+    "@reown/appkit": "workspace:*",
     "ethers": "5.7.2",
     "vue": "3.4.3"
   },

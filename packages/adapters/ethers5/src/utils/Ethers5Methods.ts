@@ -1,13 +1,13 @@
 /* eslint-disable max-params */
 import { ethers, Contract } from 'ethers5'
-import { type Provider } from '@rerock/scaffold-utils/ethers'
+import { type Provider } from '@reown/appkit-utils/ethers'
 import type {
   EstimateGasTransactionArgs,
   SendTransactionArgs,
   WriteContractArgs
-} from '@rerock/core'
-import { ConstantsUtil } from '@rerock/common'
-import type { AppKit } from '@rerock/base'
+} from '@reown/appkit-core'
+import { isReownName } from '@reown/appkit-common'
+import type { AppKit } from '@reown/appkit'
 
 export const Ethers5Methods = {
   signMessage: async (message: string, provider: Provider, address: string) => {
@@ -117,8 +117,8 @@ export const Ethers5Methods = {
       let ensName: string | null = null
       let wcName: boolean | string = false
 
-      if (value?.endsWith(ConstantsUtil.WC_NAME_SUFFIX)) {
-        wcName = (await appKit?.resolveWalletConnectName(value)) || false
+      if (isReownName(value)) {
+        wcName = (await appKit?.resolveReownName(value)) || false
       }
 
       if (chainId === 1) {

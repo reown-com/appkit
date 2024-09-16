@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import {
-  createWeb3Modal,
-  useWeb3Modal,
-  useWeb3ModalEvents,
-  useWeb3ModalState,
-  useWeb3ModalTheme
-} from '@rerock/solana/vue'
+  createAppKit,
+  useAppKit,
+  useAppKitEvents,
+  useAppKitState,
+  useAppKitTheme
+} from '@reown/appkit-solana/vue'
 import { BackpackWalletAdapter } from '@solana/wallet-adapter-backpack'
 import {
   PhantomWalletAdapter,
@@ -46,7 +46,7 @@ const chains = [
 ]
 
 // 3. Create modal
-createWeb3Modal({
+createAppKit({
   metadata: {
     name: 'AppKit React Example',
     description: 'AppKit React Example',
@@ -70,10 +70,10 @@ createWeb3Modal({
 })
 
 // 4. Use modal composable
-const modal = useWeb3Modal()
-const state = useWeb3ModalState()
-const { setThemeMode, themeMode, themeVariables } = useWeb3ModalTheme()
-const events = useWeb3ModalEvents()
+const modal = useAppKit()
+const state = useAppKitState()
+const { setThemeMode, themeMode, themeVariables } = useAppKitTheme()
+const events = useAppKitEvents()
 </script>
 
 <template>

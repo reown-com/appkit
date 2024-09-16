@@ -1,6 +1,6 @@
 {
   "name": "shadow-test-apkt",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "private": true,
   "type": "module",
   "scripts": {
@@ -31,10 +31,10 @@
     "changeset": "changeset",
     "changeset:version": "changeset version",
     "changeset:publish": "pnpm publish:latest",
-    "publish:latest": "pnpm install; pnpm build; changeset publish",
-    "publish:alpha": "pnpm install; pnpm build; changeset publish --tag alpha",
-    "publish:beta": "pnpm install; pnpm build; changeset publish --tag beta",
-    "publish:canary": "pnpm install; pnpm build; changeset publish --tag canary",
+    "publish:latest": "pnpm install; pnpm build; changeset publish --access restricted",
+    "publish:alpha": "pnpm install; pnpm build; changeset publish --tag alpha --access restricted",
+    "publish:beta": "pnpm install; pnpm build; changeset publish --tag beta --access restricted",
+    "publish:canary": "pnpm install; pnpm build; changeset publish --tag canary --access restricted",
     "prepare": "husky",
     "size": "pnpm --filter=./examples/react-wagmi size"
   },
@@ -54,7 +54,7 @@
     "turbo": "2.0.6-canary.0",
     "typescript": "5.3.3",
     "vite": "5.2.11",
-    "vitest": "2.0.3",
+    "vitest": "2.0.5",
     "vite-plugin-node-polyfills": "0.22.0",
     "pino": "7.11.0"
   },

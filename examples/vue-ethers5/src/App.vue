@@ -1,13 +1,13 @@
 <script lang="ts" setup>
-import { EVMEthers5Client } from '@rerock/adapter-ethers5'
+import { EVMEthers5Client } from '@reown/appkit-adapter-ethers5'
 import {
-  createWeb3Modal,
-  useWeb3Modal,
-  useWeb3ModalEvents,
-  useWeb3ModalState,
-  useWeb3ModalTheme
-} from '@rerock/base/vue'
-import { mainnet, arbitrum } from '@rerock/base/chains'
+  createAppKit,
+  useAppKit,
+  useAppKitEvents,
+  useAppKitState,
+  useAppKitTheme
+} from '@reown/appkit/vue'
+import { mainnet, arbitrum } from '@reown/appkit/chains'
 
 // @ts-expect-error 1. Get projectId
 const projectId = import.meta.env.VITE_PROJECT_ID
@@ -23,7 +23,7 @@ function getBlockchainApiRpcUrl(chainId) {
 const ethersAdapter = new EVMEthers5Client()
 
 // 3. Create modal
-createWeb3Modal({
+createAppKit({
   ethersConfig,
   projectId,
   metadata: {
@@ -41,10 +41,10 @@ createWeb3Modal({
 })
 
 // 4. Use modal composable
-const modal = useWeb3Modal()
-const state = useWeb3ModalState()
-const { setThemeMode, themeMode, themeVariables } = useWeb3ModalTheme()
-const events = useWeb3ModalEvents()
+const modal = useAppKit()
+const state = useAppKitState()
+const { setThemeMode, themeMode, themeVariables } = useAppKitTheme()
+const events = useAppKitEvents()
 </script>
 
 <template>

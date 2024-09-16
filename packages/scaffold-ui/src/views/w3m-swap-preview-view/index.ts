@@ -1,12 +1,12 @@
-import { UiHelperUtil, customElement } from '@rerock/ui'
+import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
 import {
   AccountController,
-  NetworkController,
+  ChainController,
   RouterController,
   SwapController
-} from '@rerock/core'
+} from '@reown/appkit-core'
 import { state } from 'lit/decorators.js'
 
 @customElement('w3m-swap-preview-view')
@@ -36,7 +36,7 @@ export class W3mSwapPreviewView extends LitElement {
 
   @state() private toTokenPriceInUSD = SwapController.state.toTokenPriceInUSD
 
-  @state() private caipNetwork = NetworkController.state.caipNetwork
+  @state() private caipNetwork = ChainController.state.activeCaipNetwork
 
   @state() private balanceSymbol = AccountController.state.balanceSymbol
 
@@ -64,7 +64,7 @@ export class W3mSwapPreviewView extends LitElement {
             // Maybe reset state as well?
           }
         }),
-        NetworkController.subscribeKey('caipNetwork', newCaipNetwork => {
+        ChainController.subscribeKey('activeCaipNetwork', newCaipNetwork => {
           if (this.caipNetwork !== newCaipNetwork) {
             this.caipNetwork = newCaipNetwork
           }

@@ -1,10 +1,10 @@
 packages:
   - 'packages/adapters/*'
-  - 'packages/base'
+  - 'packages/appkit'
   - 'packages/common'
   - 'packages/ui'
   - 'packages/core'
-  - 'packages/scaffold-utils'
+  - 'packages/appkit-utils'
   - 'packages/scaffold-ui'
   - 'packages/polyfills'
   - 'packages/wallet'

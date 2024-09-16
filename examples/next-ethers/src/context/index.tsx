@@ -1,15 +1,15 @@
 'use client'
 
-import { createWeb3Modal } from '@rerock/base/react'
-import { EVMEthersClient } from '@rerock/adapter-ethers'
-import { mainnet, arbitrum, avalanche, base, optimism, polygon } from '@rerock/base/chains'
+import { createAppKit } from '@reown/appkit/react'
+import { EVMEthersClient } from '@reown/appkit-adapter-ethers'
+import { mainnet, arbitrum, avalanche, base, optimism, polygon } from '@reown/appkit/chains'
 import { type ReactNode } from 'react'
 
 const projectId = 'Your project ID'
 
 const ethersAdapter = new EVMEthersClient()
 
-createWeb3Modal({
+createAppKit({
   adapters: [ethersAdapter],
   projectId,
   caipNetworks: [mainnet, arbitrum, avalanche, base, optimism, polygon],

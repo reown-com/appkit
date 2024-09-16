@@ -3,10 +3,10 @@ import EthereumProvider from '@walletconnect/ethereum-provider'
 
 import { useAccount } from 'wagmi'
 import { AppKitInfo } from '../AppKitInfo'
-import { useWeb3ModalAccount } from '@rerock/base/react'
+import { useAppKitAccount } from '@reown/appkit/react'
 
 export function WagmiModalInfo() {
-  const { address, isConnected } = useWeb3ModalAccount()
+  const { address, isConnected } = useAppKitAccount()
   const { chainId, connector } = useAccount()
   const [clientId, setClientId] = React.useState<string | null>(null)
 
