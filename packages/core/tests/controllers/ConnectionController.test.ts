@@ -61,7 +61,8 @@ const evmAdapter = {
 const adapters = [evmAdapter] as ChainAdapter[]
 const universalAdapter = {
   chainNamespace: 'eip155',
-  connectionControllerClient: client
+  connectionControllerClient: client,
+  caipNetworks: []
 } as ChainAdapter
 
 // -- Tests --------------------------------------------------------------------
@@ -73,7 +74,11 @@ beforeAll(() => {
 describe('ConnectionController', () => {
   it('should have valid default state', () => {
     ChainController.initialize([
-      { chainNamespace: CommonConstantsUtil.CHAIN.EVM, connectionControllerClient: client }
+      {
+        chainNamespace: CommonConstantsUtil.CHAIN.EVM,
+        connectionControllerClient: client,
+        caipNetworks: []
+      }
     ])
 
     expect(ConnectionController.state).toEqual({
@@ -125,7 +130,11 @@ describe('ConnectionController', () => {
 
   it('should not throw when optional methods are undefined', async () => {
     ChainController.initialize([
-      { chainNamespace: CommonConstantsUtil.CHAIN.EVM, connectionControllerClient: partialClient }
+      {
+        chainNamespace: CommonConstantsUtil.CHAIN.EVM,
+        connectionControllerClient: partialClient,
+        caipNetworks: []
+      }
     ])
     await ConnectionController.connectExternal({ id: externalId, type }, chain)
     ConnectionController.checkInstalled([externalId])

@@ -33,6 +33,7 @@ type ChainsInitializerAdapter = Pick<
   | 'defaultNetwork'
   | 'chainNamespace'
   | 'adapterType'
+  | 'caipNetworks'
 >
 
 // -- Constants ----------------------------------------- //
@@ -114,7 +115,8 @@ export const ChainController = {
           networkControllerClient: adapter.networkControllerClient,
           adapterType: adapter.adapterType,
           accountState,
-          networkState
+          networkState,
+          caipNetworks: adapter.caipNetworks
         })
       })
     }
@@ -127,9 +129,19 @@ export const ChainController = {
     state.universalAdapter = adapter
 
     if (adapters.length === 0) {
-      this.setActiveCaipNetwork(adapter?.defaultNetwork)
+      const storedCaipNetwork = SafeLocalStorage.getItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK)
+
+      if (storedCaipNetwork) {
+        state.activeChain = storedCaipNetwork.chainNamespace
+        this.setActiveCaipNetwork(storedCaipNetwork)
+      } else {
+        state.activeChain =
+          adapter?.defaultNetwork?.chainNamespace ?? adapter.caipNetworks[0]?.chainNamespace
+        this.setActiveCaipNetwork(adapter?.defaultNetwork ?? adapter.caipNetworks[0])
+      }
     }
-    const chains: ChainNamespace[] = adapters.map(a => a.chainNamespace)
+
+    const chains = [...new Set(adapter.caipNetworks.map(caipNetwork => caipNetwork.chainNamespace))]
     chains.forEach((chain: ChainNamespace) => {
       state.chains.set(chain, {
         chainNamespace: chain,
@@ -137,9 +149,12 @@ export const ChainController = {
         networkControllerClient: undefined,
         adapterType: adapter.adapterType,
         accountState,
-        networkState
+        networkState,
+        caipNetworks: adapter.caipNetworks
       })
     })
+
+    this.setActiveChain(adapter.chainNamespace)
   },
 
   setChainNetworkData(
@@ -158,6 +173,7 @@ export const ChainController = {
         ...chainAdapter.networkState,
         ...props
       } as NetworkControllerState)
+
       state.chains.set(chain, ref(chainAdapter))
       if (replaceState || state.chains.size === 1 || state.activeChain === chain) {
         NetworkController.replaceState(chainAdapter.networkState)

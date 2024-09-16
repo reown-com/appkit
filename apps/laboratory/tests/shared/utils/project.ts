@@ -5,6 +5,7 @@ const availableDevices = getAvailableDevices()
 
 const LIBRARIES = ['ethers', 'ethers5', 'wagmi', 'solana'] as const
 const MULTICHAIN_LIBRARIES = [
+  'multichain-basic',
   'multichain-ethers-solana',
   'multichain-ethers5-solana',
   'multichain-wagmi-solana'
@@ -102,6 +103,9 @@ const customProjectProperties: CustomProjectProperties = {
   'Desktop Firefox/multichain-ethers5-solana': {
     testMatch: /^.*\/multichain-ethers5-.*\.spec\.ts$/u
   },
+  'Desktop Firefox/multichain-basic': {
+    testMatch: /^.*\/multichain-basic\.spec\.ts$/u
+  },
   'Desktop Chrome/multichain-ethers-solana': {
     testMatch: /^.*\/multichain-ethers-.*\.spec\.ts$/u
   },
@@ -110,6 +114,9 @@ const customProjectProperties: CustomProjectProperties = {
   },
   'Desktop Chrome/multichain-ethers5-solana': {
     testMatch: /^.*\/multichain-ethers5-.*\.spec\.ts$/u
+  },
+  'Desktop Chrome/multichain-basic': {
+    testMatch: /^.*\/multichain-basic\.spec\.ts$/u
   }
 }
 

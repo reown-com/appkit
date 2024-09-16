@@ -69,13 +69,22 @@ describe('NetworkController', () => {
     expect(NetworkController._getClient).toThrow(
       'Chain is required to get network controller client'
     )
-    ChainController.initialize([{ chainNamespace: ConstantsUtil.CHAIN.EVM }])
+    ChainController.initialize([
+      {
+        chainNamespace: ConstantsUtil.CHAIN.EVM,
+        caipNetworks: []
+      }
+    ])
     expect(NetworkController._getClient).toThrow('NetworkController client not set')
   })
 
   it('should have valid default state', () => {
     ChainController.initialize([
-      { chainNamespace: ConstantsUtil.CHAIN.EVM, networkControllerClient: client }
+      {
+        chainNamespace: ConstantsUtil.CHAIN.EVM,
+        networkControllerClient: client,
+        caipNetworks: []
+      }
     ])
 
     expect(NetworkController.state).toEqual({

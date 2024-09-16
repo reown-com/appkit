@@ -834,6 +834,7 @@ export type ChainAdapter = {
   chainNamespace: ChainNamespace
   isUniversalAdapterClient?: boolean
   adapterType?: AdapterType
+  caipNetworks: CaipNetwork[]
   getAddress?: () => string | undefined
   getError?: () => unknown
   getChainId?: () => number | string | undefined

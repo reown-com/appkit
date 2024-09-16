@@ -5,6 +5,8 @@ import { AppKitButtons } from '../../components/AppKitButtons'
 import { mainnet, optimism, arbitrum, solana } from '@reown/appkit/networks'
 import { MultiChainInfo } from '../../components/MultiChainInfo'
 
+import { UpaTests } from '../../components/UPA/UpaTests'
+
 const modal = createAppKit({
   networks: [mainnet, optimism, arbitrum, solana],
   projectId: ConstantsUtil.ProjectId,
@@ -18,6 +20,7 @@ export default function MultiChainWagmiAdapterOnly() {
     <>
       <AppKitButtons />
       <MultiChainInfo />
+      <UpaTests />
     </>
   )
 }

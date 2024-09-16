@@ -96,10 +96,37 @@ export class ModalPage {
     return uri
   }
 
-  async qrCodeFlow(page: ModalPage, walletPage: WalletPage): Promise<void> {
+  async getImmidiateConnectUri(timingRecords?: TimingRecords): Promise<string> {
+    await this.connectButton.click()
+    const qrLoadInitiatedTime = new Date()
+
+    // Using getByTestId() doesn't work on my machine, I'm guessing because this element is inside of a <slot>
+    const qrCode = this.page.locator('wui-qr-code')
+    await expect(qrCode).toBeVisible()
+
+    const uri = this.assertDefined(await qrCode.getAttribute('uri'))
+    const qrLoadedTime = new Date()
+    if (timingRecords) {
+      timingRecords.push({
+        item: 'qrLoad',
+        timeMs: qrLoadedTime.getTime() - qrLoadInitiatedTime.getTime()
+      })
+    }
+
+    return uri
+  }
+
+  async qrCodeFlow(page: ModalPage, walletPage: WalletPage, immediate?: boolean): Promise<void> {
+    // eslint-disable-next-line init-declarations
+    let uri: string
     await walletPage.load()
-    const uri = await page.getConnectUri()
+    if (immediate) {
+      uri = await page.getImmidiateConnectUri()
+    } else {
+      uri = await page.getConnectUri()
+    }
     await walletPage.connectWithUri(uri)
+
     await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
     const walletValidator = new WalletValidator(walletPage.page)
     await walletValidator.expectConnected()

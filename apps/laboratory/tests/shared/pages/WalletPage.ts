@@ -27,6 +27,7 @@ export class WalletPage {
   /**
    * Connect by inserting provided URI into the input element
    */
+
   async connectWithUri(uri: string) {
     const isVercelPreview = (await this.vercelPreview.count()) > 0
     if (isVercelPreview) {

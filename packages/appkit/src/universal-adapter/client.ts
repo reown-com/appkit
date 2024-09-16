@@ -401,6 +401,7 @@ export class UniversalAdapterClient {
         })
 
       const storedCaipNetwork = SafeLocalStorage.getItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK)
+
       if (storedCaipNetwork) {
         ChainController.setActiveCaipNetwork(storedCaipNetwork)
       } else if (!ChainController.state.activeCaipNetwork) {
