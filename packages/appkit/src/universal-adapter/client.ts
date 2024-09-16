@@ -522,11 +522,10 @@ export class UniversalAdapterClient {
 
   private syncAccount() {
     const { namespaceKeys, namespaces } = this.getProviderData()
-
     const preferredAccountType = this.appKit?.getPreferredAccountType()
-    const isConnected = this.appKit?.getIsConnectedState()
+    const hasNamespaces = namespaceKeys.length > 0
 
-    if (isConnected) {
+    if (hasNamespaces) {
       namespaceKeys.forEach(async key => {
         const chainNamespace = key as ChainNamespace
         const address = namespaces?.[key]?.accounts[0] as CaipAddress
