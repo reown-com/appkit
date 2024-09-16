@@ -289,4 +289,31 @@ describe('WalletConnectProvider specific tests', () => {
       'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'
     )
   })
+
+  it('should get chains from namespace accounts', async () => {
+    vi.spyOn(provider, 'connect').mockImplementationOnce(() =>
+      Promise.resolve(
+        mockUniversalProviderSession({
+          namespaces: {
+            solana: {
+              chains: undefined,
+              methods: [
+                'solana_signTransaction',
+                'solana_signMessage',
+                'solana_signAndSendTransaction'
+              ],
+              events: [],
+              accounts: [
+                `solana:${TestConstants.chains[0]?.chainId}:${TestConstants.accounts[0].address}`
+              ]
+            }
+          }
+        })
+      )
+    )
+
+    await walletConnectProvider.connect()
+
+    expect(walletConnectProvider.chains).toEqual([TestConstants.chains[0]])
+  })
 })
