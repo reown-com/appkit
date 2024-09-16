@@ -275,6 +275,14 @@ export class UniversalAdapterClient {
 
       formatUnits: () => ''
     }
+
+    ChainController.subscribeKey('activeCaipNetwork', val => {
+      const noAdapters = ChainController.state.noAdapters
+
+      if (noAdapters && val) {
+        this.syncAccount({ caipNetwork: val })
+      }
+    })
   }
 
   // -- Public ------------------------------------------------------------------
@@ -392,7 +400,7 @@ export class UniversalAdapterClient {
           ProviderUtil.setProviderId(key as ChainNamespace, 'walletConnect')
 
           if (caipAddress) {
-            this.appKit?.setCaipAddress(caipAddress, key as ChainNamespace)
+            this.appKit?.setCaipAddress(caipAddress, key as ChainNamespace, false)
           }
         })
 
@@ -402,27 +410,21 @@ export class UniversalAdapterClient {
         try {
           const parsedCaipNetwork = JSON.parse(storedCaipNetwork) as CaipNetwork
           if (parsedCaipNetwork) {
-            ChainController.setActiveCaipNetwork(parsedCaipNetwork)
+            NetworkController.setActiveCaipNetwork(parsedCaipNetwork)
           }
         } catch (error) {
           console.warn('>>> Error setting active caip network', error)
         }
-      } else if (!ChainController.state.activeCaipNetwork) {
-        this.setDefaultNetwork(nameSpaces)
-      } else if (
-        !NetworkController.state.approvedCaipNetworkIds?.includes(
-          ChainController.state.activeCaipNetwork.id
-        )
-      ) {
+      } else {
         this.setDefaultNetwork(nameSpaces)
       }
     }
+
     SafeLocalStorage.setItem(
       SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK,
       JSON.stringify(this.appKit?.getCaipNetwork())
     )
 
-    this.syncAccount()
     this.watchWalletConnect()
   }
 
@@ -469,7 +471,9 @@ export class UniversalAdapterClient {
 
     const accountsChangedHandler = (accounts: string[]) => {
       if (accounts.length > 0) {
-        this.syncAccount()
+        this.syncAccount({
+          caipNetwork: this.appKit?.getCaipNetwork() as CaipNetwork
+        })
       }
     }
 
@@ -523,7 +527,7 @@ export class UniversalAdapterClient {
     }
   }
 
-  private syncAccount() {
+  private syncAccount({ caipNetwork }: { caipNetwork: CaipNetwork }) {
     const { namespaceKeys, namespaces } = this.getProviderData()
 
     const preferredAccountType = this.appKit?.getPreferredAccountType()
@@ -538,12 +542,16 @@ export class UniversalAdapterClient {
         const address = namespaces?.[key]?.accounts[0] as CaipAddress
         const isNamespaceConnected = this.appKit?.getCaipAddress(chainNamespace)
 
-        if (!isNamespaceConnected) {
+        if (isNamespaceConnected) {
           this.appKit?.setPreferredAccountType(preferredAccountType, chainNamespace)
-          this.appKit?.setCaipAddress(address, chainNamespace)
+          this.appKit?.setCaipAddress(address, chainNamespace, false)
           this.syncConnectedWalletInfo()
           this.syncAccounts()
           await Promise.all([this.appKit?.setApprovedCaipNetworksData(chainNamespace)])
+        }
+
+        if (caipNetwork.chainNamespace === chainNamespace) {
+          this.appKit?.setCaipAddress(address, chainNamespace)
         }
       })
     } else {

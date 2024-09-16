@@ -124,13 +124,16 @@ export const AccountController = {
 
   setCaipAddress(
     caipAddress: AccountControllerState['caipAddress'],
-    chain: ChainNamespace | undefined
+    chain: ChainNamespace | undefined,
+    switchChain = true
   ) {
     const newAddress = caipAddress ? CoreHelperUtil.getPlainAddress(caipAddress) : undefined
 
-    ChainController.state.activeCaipAddress = caipAddress
     ChainController.setAccountProp('caipAddress', caipAddress, chain)
     ChainController.setAccountProp('address', newAddress, chain)
+    if (switchChain) {
+      ChainController.state.activeCaipAddress = caipAddress
+    }
   },
 
   setBalance(
