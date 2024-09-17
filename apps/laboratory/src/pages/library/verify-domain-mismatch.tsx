@@ -26,8 +26,8 @@ const modal = createAppKit({
   adapters: [wagmiAdapter],
   networks,
   projectId,
-  termsConditionsUrl: 'https://walletconnect.com/terms',
-  privacyPolicyUrl: 'https://walletconnect.com/privacy'
+  termsConditionsUrl: 'https://reown.com/terms-of-service',
+  privacyPolicyUrl: 'https://reown.com/privacy-policy'
 })
 
 ThemeStore.setModal(modal)

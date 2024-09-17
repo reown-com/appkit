@@ -15,7 +15,7 @@ export interface OptionsControllerStatePublic {
   /**
    * A boolean that allows you to add or remove the "All Wallets" button on the modal
    * @default 'SHOW'
-   * @see https://docs.walletconnect.com/appkit/react/core/options#allwallets
+   * @see https://docs.reown.com/appkit/react/core/options#allwallets
    */
   allWallets?: 'SHOW' | 'HIDE' | 'ONLY_MOBILE'
   /**
@@ -26,31 +26,31 @@ export interface OptionsControllerStatePublic {
   /**
    * Array of wallet ids to be shown in the modal's connection view with priority. These wallets will also show up first in `All Wallets` view
    * @default []
-   * @see https://docs.walletconnect.com/appkit/react/core/options#featuredwalletids
+   * @see https://docs.reown.com/appkit/react/core/options#featuredwalletids
    */
   featuredWalletIds?: string[]
   /**
    * Array of wallet ids to be shown (order is respected). Unlike `featuredWalletIds`, these wallets will be the only ones shown in `All Wallets` view and as recommended wallets.
    * @default []
-   * @see https://docs.walletconnect.com/appkit/react/core/options#includewalletids
+   * @see https://docs.reown.com/appkit/react/core/options#includewalletids
    */
   includeWalletIds?: string[]
   /**
    * Array of wallet ids to be excluded from the wallet list in the modal.
    * @default []
-   * @see https://docs.walletconnect.com/appkit/react/core/options#excludewalletids
+   * @see https://docs.reown.com/appkit/react/core/options#excludewalletids
    */
   excludeWalletIds?: string[]
   /**
    * Array of tokens to show the user's balance of. Each key represents the chain id of the token's blockchain
    * @default {}
-   * @see https://docs.walletconnect.com/appkit/react/core/options#tokens
+   * @see https://docs.reown.com/appkit/react/core/options#tokens
    */
   tokens?: Tokens
   /**
    * Add custom wallets to the modal. CustomWallets is an array of objects, where each object contains specific information of a custom wallet.
    * @default []
-   * @see https://docs.walletconnect.com/appkit/react/core/options#customwallets
+   * @see https://docs.reown.com/appkit/react/core/options#customwallets
    *
    */
   customWallets?: CustomWallet[]
@@ -102,7 +102,7 @@ export interface OptionsControllerStatePublic {
   /**
    * Features configuration object.
    * @default { swaps: true, onramp: true, email: true, socials: ['google', 'x', 'discord', 'farcaster', 'github', 'apple', 'facebook'], history: true, analytics: true, allWallets: true }
-   * @see https://docs.walletconnect.com/appkit/react/core/options#features
+   * @see https://docs.reown.com/appkit/react/core/options#features
    */
   features?: Features
 }

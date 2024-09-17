@@ -20,8 +20,8 @@ const modal = createAppKit({
     analytics: true,
     socials: ['google', 'x', 'discord', 'farcaster', 'github', 'apple', 'facebook']
   },
-  termsConditionsUrl: 'https://walletconnect.com/terms',
-  privacyPolicyUrl: 'https://walletconnect.com/privacy',
+  termsConditionsUrl: 'https://reown.com/terms-of-service',
+  privacyPolicyUrl: 'https://reown.com/privacy-policy',
   siweConfig,
   customWallets: ConstantsUtil.CustomWallets
 })

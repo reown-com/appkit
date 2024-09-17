@@ -19,8 +19,8 @@ const modal = createAppKit({
     email: false,
     socials: []
   },
-  termsConditionsUrl: 'https://walletconnect.com/terms',
-  privacyPolicyUrl: 'https://walletconnect.com/privacy',
+  termsConditionsUrl: 'https://reown.com/terms-of-service',
+  privacyPolicyUrl: 'https://reown.com/privacy-policy',
   customWallets: ConstantsUtil.CustomWallets
 })
 

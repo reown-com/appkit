@@ -1,4 +1,4 @@
-#### 📚 [Documentation](https://docs.walletconnect.com/2.0/appkit/about)
+#### 📚 [Documentation](https://docs.reown.com/2.0/appkit/about)
 
 #### 🔎 [Examples](https://github.com/WalletConnect/web3modal-examples)
 

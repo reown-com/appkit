@@ -63,7 +63,7 @@ export function LayoutHeader() {
           <CLink isExternal href="https://gallery.appkit.com">
             Gallery
           </CLink>
-          <CLink isExternal href="https://docs.walletconnect.com/appkit/about">
+          <CLink isExternal href="https://docs.reown.com/appkit/about">
             Docs
           </CLink>
         </HStack>

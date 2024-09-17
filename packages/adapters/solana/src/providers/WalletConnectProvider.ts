@@ -240,7 +240,7 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
     /*
      * We should consider serializing the transaction to base58 as it is the solana standard.
      * But our specs requires base64 right now:
-     * https://docs.walletconnect.com/advanced/multichain/rpc-reference/solana-rpc#solana_signtransaction
+     * https://docs.reown.com/advanced/multichain/rpc-reference/solana-rpc#solana_signtransaction
      */
     return Buffer.from(transaction.serialize({ verifySignatures: false })).toString('base64')
   }

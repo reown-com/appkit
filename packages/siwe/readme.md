@@ -1,4 +1,4 @@
-#### 📚 [Documentation](https://docs.walletconnect.com/2.0/appkit/about)
+#### 📚 [Documentation](https://docs.reown.com/2.0/appkit/about)
 
 #### 🔗 [Website](https://reown.com/appkit)
 
