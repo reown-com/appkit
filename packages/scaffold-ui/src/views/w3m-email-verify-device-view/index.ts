@@ -1,4 +1,4 @@
-import { customElement } from '@web3modal/ui'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
 import {
@@ -6,7 +6,7 @@ import {
   ConnectorController,
   SnackController,
   EventsController
-} from '@web3modal/core'
+} from '@reown/appkit-core'
 import { state } from 'lit/decorators.js'
 
 @customElement('w3m-email-verify-device-view')

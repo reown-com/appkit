@@ -4,9 +4,6 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
     branches:
-      - V3
-      - V4
-      - V5
       - main
 
 permissions:
@@ -32,7 +29,6 @@ jobs:
           - lint
           - prettier
           - typecheck
-          - danger
           - build:sample-apps
     steps:
       - name: checkout
@@ -64,6 +60,9 @@ jobs:
   bundle_size:
     runs-on: ubuntu-latest
     name: Bundle size check
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - name: checkout
         uses: actions/checkout@v3
@@ -91,6 +90,9 @@ jobs:
   test:
     runs-on: ubuntu-latest
     continue-on-error: true
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - name: checkout
         uses: actions/checkout@v3

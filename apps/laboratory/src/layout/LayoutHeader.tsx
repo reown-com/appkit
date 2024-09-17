@@ -60,10 +60,10 @@ export function LayoutHeader() {
           <CLink isExternal href="https://github.com/WalletConnect/web3modal">
             GitHub
           </CLink>
-          <CLink isExternal href="https://gallery.web3modal.com">
+          <CLink isExternal href="https://gallery.appkit.com">
             Gallery
           </CLink>
-          <CLink isExternal href="https://docs.walletconnect.com/web3modal/about">
+          <CLink isExternal href="https://docs.reown.com/appkit/about">
             Docs
           </CLink>
         </HStack>

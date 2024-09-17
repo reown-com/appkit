@@ -1,4 +1,5 @@
-import type { Chain } from '@web3modal/common'
+import type { Features } from './TypeUtil.js'
+import type { ChainNamespace } from '@reown/appkit-common'
 
 const SECURE_SITE = 'https://secure.walletconnect.org'
 
@@ -8,14 +9,14 @@ export const ONRAMP_PROVIDERS = [
     name: 'coinbase',
     feeRange: '1-2%',
     url: '',
-    supportedChains: ['evm']
+    supportedChains: ['eip155']
   },
   {
     label: 'Meld.io',
     name: 'meld',
     feeRange: '1-2%',
     url: 'https://meldcrypto.com',
-    supportedChains: ['evm', 'solana']
+    supportedChains: ['eip155', 'solana']
   }
 ]
 
@@ -195,12 +196,21 @@ export const ConstantsUtil = {
   ],
 
   NATIVE_TOKEN_ADDRESS: {
-    evm: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
-    solana: 'So11111111111111111111111111111111111111111'
-  } as const satisfies Record<Chain, string>,
+    eip155: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+    solana: 'So11111111111111111111111111111111111111111',
+    polkadot: '0x'
+  } as const satisfies Record<ChainNamespace, string>,
 
-  CONVERT_SLIPPAGE_TOLERANCE: 1
+  CONVERT_SLIPPAGE_TOLERANCE: 1,
+
+  DEFAULT_FEATURES: {
+    swaps: true,
+    onramp: true,
+    email: true,
+    emailShowWallets: true,
+    socials: ['google', 'x', 'discord', 'farcaster', 'github', 'apple', 'facebook'],
+    history: true,
+    analytics: true,
+    allWallets: true
+  } as Features
 }
-
-export type CoinbasePaySDKChainNameValues =
-  keyof typeof ConstantsUtil.WC_COINBASE_PAY_SDK_CHAIN_NAME_MAP

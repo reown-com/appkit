@@ -1,6 +1,6 @@
 {
-  "name": "@web3modal/ui",
-  "version": "5.1.8",
+  "name": "@reown/appkit-ui",
+  "version": "1.0.1",
   "type": "module",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
@@ -22,31 +22,22 @@
   },
   "devDependencies": {
     "@types/qrcode": "1.5.5",
-    "@web3modal/common": "workspace:*",
-    "@web3modal/wallet": "workspace:*",
-    "@web3modal/core": "workspace:*",
+    "@reown/appkit-common": "workspace:*",
+    "@reown/appkit-wallet": "workspace:*",
+    "@reown/appkit-core": "workspace:*",
     "eslint-plugin-lit": "1.11.0",
     "eslint-plugin-wc": "2.0.4",
-    "vitest": "2.0.3",
+    "vitest": "2.0.5",
     "@vitest/coverage-v8": "2.0.5"
   },
-  "keywords": [
-    "web3",
-    "crypto",
-    "ethereum",
-    "web3modal",
-    "walletconnect",
-    "lit",
-    "webcomponents"
-  ],
-  "author": "WalletConnect <walletconnect.com>",
+  "author": "Reown <support@reown.com> (https://reown.com)",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/web3modal/web3modal",
+  "homepage": "https://github.com/WalletConnect/web3modal",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/web3modal/web3modal.git"
+    "url": "git+https://github.com/WalletConnect/web3modal.git"
   },
   "bugs": {
-    "url": "https://github.com/web3modal/web3modal/issues"
+    "url": "https://github.com/WalletConnect/web3modal/issues"
   }
 }

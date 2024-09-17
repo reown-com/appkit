@@ -2,16 +2,17 @@ import { useState } from 'react'
 import { Button, Stack, Text, Spacer } from '@chakra-ui/react'
 import { PublicKey, VersionedTransaction } from '@solana/web3.js'
 
-import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/solana/react'
-
-import { solana } from '../../utils/ChainsUtil'
+import { useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
+import { solana } from '@reown/appkit/networks'
 import { useChakraToast } from '../Toast'
 import bs58 from 'bs58'
+import { useAppKitConnection, type Provider } from '@reown/appkit-adapter-solana/react'
 
 export function SolanaSignJupiterSwapTest() {
   const toast = useChakraToast()
-  const { chainId } = useWeb3ModalAccount()
-  const { walletProvider, connection } = useWeb3ModalProvider()
+  const { connection } = useAppKitConnection()
+  const { caipNetwork } = useAppKitNetwork()
+  const { walletProvider } = useAppKitProvider<Provider>('solana')
   const [loading, setLoading] = useState(false)
 
   async function onSignVersionedTransaction() {
@@ -51,7 +52,7 @@ export function SolanaSignJupiterSwapTest() {
     }
   }
 
-  if (chainId === solana.chainId) {
+  if (caipNetwork?.chainId === solana.chainId) {
     return (
       <Text fontSize="md" color="yellow">
         Switch to Solana Devnet or Testnet to test this feature

@@ -1,0 +1,96 @@
+{
+  "name": "@reown/appkit-adapter-solana",
+  "version": "1.0.1",
+  "type": "module",
+  "main": "./dist/esm/src/index.js",
+  "types": "./dist/types/src/index.d.ts",
+  "files": [
+    "dist",
+    "!tsconfig.tsbuildinfo"
+  ],
+  "scripts": {
+    "build:clean": "rm -rf dist",
+    "build": "tsc --build tsconfig.build.json",
+    "watch": "tsc --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "test": "vitest run --coverage.enabled=true --coverage.reporter=json --coverage.reporter=json-summary --coverage.reportOnFailure=true"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/types/exports/index.d.ts",
+      "import": "./dist/esm/exports/index.js",
+      "default": "./dist/esm/exports/index.js"
+    },
+    "./react": {
+      "types": "./dist/types/exports/react.d.ts",
+      "import": "./dist/esm/exports/react.js",
+      "default": "./dist/esm/exports/react.js"
+    },
+    "./vue": {
+      "types": "./dist/types/exports/vue.d.ts",
+      "import": "./dist/esm/exports/vue.js",
+      "default": "./dist/esm/exports/vue.js"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "react": [
+        "./dist/types/exports/react.d.ts"
+      ],
+      "vue": [
+        "./dist/types/exports/vue.d.ts"
+      ]
+    }
+  },
+  "dependencies": {
+    "@solana/wallet-adapter-base": "0.9.23",
+    "@solana/wallet-standard-features": "1.2.0",
+    "@solana/wallet-standard-util": "1.1.1",
+    "@solana/web3.js": "1.95.2",
+    "@walletconnect/utils": "2.16.1",
+    "@walletconnect/types": "2.16.1",
+    "@walletconnect/universal-provider": "2.16.1",
+    "@wallet-standard/app": "1.0.1",
+    "@wallet-standard/base": "1.0.1",
+    "@wallet-standard/features": "1.0.3",
+    "@wallet-standard/wallet": "1.0.1",
+    "@reown/appkit": "workspace:*",
+    "@reown/appkit-common": "workspace:*",
+    "@reown/appkit-core": "workspace:*",
+    "@reown/appkit-polyfills": "workspace:*",
+    "@reown/appkit-scaffold-ui": "workspace:*",
+    "@reown/appkit-utils": "workspace:*",
+    "@reown/appkit-siwe": "workspace:*",
+    "@reown/appkit-ui": "workspace:*",
+    "@reown/appkit-wallet": "workspace:*",
+    "valtio": "1.11.2"
+  },
+  "optionalDependencies": {
+    "borsh": "0.7.0",
+    "bs58": "5.0.0"
+  },
+  "peerDependencies": {
+    "valtio": "1.11.2"
+  },
+  "devDependencies": {
+    "@types/react": "18.2.0",
+    "@types/react-dom": "18.2.0",
+    "@vitest/coverage-v8": "2.0.5",
+    "@vue/runtime-core": "3.4.3",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "vue": "3.4.3",
+    "vitest": "2.0.5"
+  },
+  "author": "Reown <support@reown.com> (https://reown.com)",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/WalletConnect/web3modal",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WalletConnect/web3modal.git"
+  },
+  "bugs": {
+    "url": "https://github.com/WalletConnect/web3modal/issues"
+  }
+}

@@ -1,8 +1,8 @@
-import { customElement } from '@web3modal/ui'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
 import { property, state } from 'lit/decorators.js'
-import { ConnectionController, CoreHelperUtil, SendController } from '@web3modal/core'
+import { ConnectionController, CoreHelperUtil, SendController } from '@reown/appkit-core'
 import { createRef, ref } from 'lit/directives/ref.js'
 import type { Ref } from 'lit/directives/ref.js'
 
