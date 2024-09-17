@@ -32,12 +32,12 @@
   ],
   "author": "Reown <support@reown.com> (https://reown.com)",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/reown-com/appkit",
+  "homepage": "https://github.com/WalletConnect/web3modal",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/reown-com/appkit.git"
+    "url": "git+https://github.com/WalletConnect/web3modal.git"
   },
   "bugs": {
-    "url": "https://github.com/reown-com/appkit/issues"
+    "url": "https://github.com/WalletConnect/web3modal/issues"
   }
 }

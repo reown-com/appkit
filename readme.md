@@ -1,5 +1,5 @@
 > [!NOTE]
-> Looking for Web3modal v[1-5]? [switch the branch](https://github.com/reown-com/appkit/tree/V5).
+> Looking for Web3modal v[1-5]? [switch the branch](https://github.com/WalletConnect/web3modal/tree/V5).
 
 #### 📚 [Documentation](https://docs.walletconnect.com/appkit/about)
 

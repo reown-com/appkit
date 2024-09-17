@@ -57,7 +57,7 @@ export function LayoutHeader() {
         <Spacer />
 
         <HStack spacing={5} marginRight={[0, 0, 5]} marginTop={[3, 3, 0]} marginBottom={[3, 3, 0]}>
-          <CLink isExternal href="https://github.com/reown-com/appkit">
+          <CLink isExternal href="https://github.com/WalletConnect/web3modal">
             GitHub
           </CLink>
           <CLink isExternal href="https://gallery.appkit.com">
