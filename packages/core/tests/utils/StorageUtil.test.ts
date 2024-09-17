@@ -36,7 +36,7 @@ describe('StorageUtil', () => {
     it('should set WalletConnect deep link in localStorage', () => {
       const deepLink = { href: 'https://example.com', name: 'Example Wallet' }
       StorageUtil.setWalletConnectDeepLink(deepLink)
-      expect(localStorage.getItem('WALLETCONNECT_DEEPLINK_CHOICE')).toBe(JSON.stringify(deepLink))
+      expect(localStorage.getItem('@appkit/deeplink_choice')).toBe(JSON.stringify(deepLink))
     })
 
     it('should handle errors when setting deep link', () => {
@@ -53,7 +53,7 @@ describe('StorageUtil', () => {
   describe('getWalletConnectDeepLink', () => {
     it('should get WalletConnect deep link from localStorage', () => {
       const deepLink = { href: 'https://example.com', name: 'Example Wallet' }
-      localStorage.setItem('WALLETCONNECT_DEEPLINK_CHOICE', JSON.stringify(deepLink))
+      localStorage.setItem('@appkit/deeplink_choice', JSON.stringify(deepLink))
       expect(StorageUtil.getWalletConnectDeepLink()).toEqual(deepLink)
     })
 
@@ -75,11 +75,11 @@ describe('StorageUtil', () => {
   describe('deleteWalletConnectDeepLink', () => {
     it('should delete WalletConnect deep link from localStorage', () => {
       localStorage.setItem(
-        'WALLETCONNECT_DEEPLINK_CHOICE',
+        '@appkit/deeplink_choice',
         JSON.stringify({ href: 'https://example.com', name: 'Example Wallet' })
       )
       StorageUtil.deleteWalletConnectDeepLink()
-      expect(localStorage.getItem('WALLETCONNECT_DEEPLINK_CHOICE')).toBeNull()
+      expect(localStorage.getItem('@appkit/deeplink_choice')).toBeNull()
     })
 
     it('should handle errors when deleting deep link', () => {
@@ -125,7 +125,7 @@ describe('StorageUtil', () => {
 
     it('should return recent wallets', () => {
       const wallet: WcWallet = { id: 'wallet1', name: 'Wallet 1' }
-      localStorage.setItem('@w3m/recent', JSON.stringify([wallet]))
+      localStorage.setItem('@appkit/recent', JSON.stringify([wallet]))
       expect(StorageUtil.getRecentWallets()).toEqual([wallet])
     })
   })
@@ -134,14 +134,14 @@ describe('StorageUtil', () => {
     it('should set connected connector', () => {
       const connector: ConnectorType = 'INJECTED'
       StorageUtil.setConnectedConnector(connector)
-      expect(localStorage.getItem('@w3m/connected_connector')).toBe(connector)
+      expect(localStorage.getItem('@appkit/connected_connector')).toBe(connector)
     })
   })
 
   describe('getConnectedConnector', () => {
     it('should get connected connector', () => {
       const connector: ConnectorType = 'INJECTED'
-      localStorage.setItem('@w3m/connected_connector', connector)
+      localStorage.setItem('@appkit/connected_connector', connector)
       expect(StorageUtil.getConnectedConnector()).toBe(connector)
     })
   })
@@ -150,14 +150,14 @@ describe('StorageUtil', () => {
     it('should set connected social provider', () => {
       const provider: SocialProvider = 'google'
       StorageUtil.setConnectedSocialProvider(provider)
-      expect(localStorage.getItem('@w3m/connected_social')).toBe(provider)
+      expect(localStorage.getItem('@appkit/connected_social')).toBe(provider)
     })
   })
 
   describe('getConnectedSocialProvider', () => {
     it('should get connected social provider', () => {
       const provider: SocialProvider = 'google'
-      localStorage.setItem('@w3m/connected_social', provider)
+      localStorage.setItem('@appkit/connected_social', provider)
       expect(StorageUtil.getConnectedSocialProvider()).toBe(provider)
     })
   })
@@ -165,7 +165,7 @@ describe('StorageUtil', () => {
   describe('getConnectedSocialUsername', () => {
     it('should get connected social username', () => {
       const username = 'testuser'
-      localStorage.setItem('@w3m-storage/SOCIAL_USERNAME', username)
+      localStorage.setItem('@appkit-wallet/SOCIAL_USERNAME', username)
       expect(StorageUtil.getConnectedSocialUsername()).toBe(username)
     })
   })

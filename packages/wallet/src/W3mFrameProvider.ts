@@ -502,7 +502,6 @@ export class W3mFrameProvider {
     W3mFrameStorage.delete(W3mFrameConstants.EMAIL)
     W3mFrameStorage.delete(W3mFrameConstants.LAST_USED_CHAIN_KEY)
     W3mFrameStorage.delete(W3mFrameConstants.SOCIAL_USERNAME)
-    W3mFrameStorage.delete(W3mFrameConstants.SOCIAL, true)
   }
 
   private setLastUsedChainId(chainId: string | number) {
