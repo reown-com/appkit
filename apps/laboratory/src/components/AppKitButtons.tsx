@@ -37,7 +37,7 @@ export function AppKitButtons() {
             <Heading size="xs" textTransform="uppercase" pb="2">
               Hooks Interactions
             </Heading>
-            <Button data-testId="w3m-open-hook-button" onClick={() => open()}>
+            <Button data-testid="w3m-open-hook-button" onClick={() => open()}>
               Open
             </Button>
           </Box>
