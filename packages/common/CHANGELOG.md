@@ -1,5 +1,17 @@
 # @reown/appkit-common
 
+## 1.0.0
+
+### Major Changes
+
+- [#53](https://github.com/WalletConnect/shadow-appkit/pull/53) [`f4a378d`](https://github.com/WalletConnect/shadow-appkit/commit/f4a378de8bf67f296ab5cc2d730533e7362ba36a) Thanks [@tomiir](https://github.com/tomiir)! - Reown v1.0.0
+
+### Patch Changes
+
+- [#49](https://github.com/WalletConnect/shadow-appkit/pull/49) [`e678965`](https://github.com/WalletConnect/shadow-appkit/commit/e67896504762ea2220aaedb3202077eec83fdc7f) Thanks [@enesozturk](https://github.com/enesozturk)! - Updates prop names, adapter names, network exported path name
+
+- [#52](https://github.com/WalletConnect/shadow-appkit/pull/52) [`3d62df8`](https://github.com/WalletConnect/shadow-appkit/commit/3d62df8e0f29977ee82f96f17fbbac66f39ae6a6) Thanks [@zoruka](https://github.com/zoruka)! - Fix network availability and wagmi reconnect
+
 ## 0.0.5
 
 ### Patch Changes
