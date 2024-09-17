@@ -95,7 +95,10 @@ export class UniversalAdapterClient {
       // @ts-expect-error switchCaipNetwork is async for some adapter but not for this adapter
       switchCaipNetwork: caipNetwork => {
         if (caipNetwork) {
-          SafeLocalStorage.setItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK, caipNetwork)
+          SafeLocalStorage.setItem(
+            SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK,
+            JSON.stringify(caipNetwork)
+          )
           try {
             this.switchNetwork(caipNetwork)
           } catch (error) {
@@ -106,31 +109,26 @@ export class UniversalAdapterClient {
 
       getApprovedCaipNetworksData: async () => {
         await this.getWalletConnectProvider()
-        const namespaces = this.walletConnectProvider?.session?.namespaces
 
-        if (!namespaces) {
-          return Promise.resolve({
-            approvedCaipNetworkIds: [],
-            supportsAllNetworks: false
-          })
-        }
+        return new Promise(resolve => {
+          const ns = this.walletConnectProvider?.session?.namespaces
+          const nsChains: CaipNetworkId[] | undefined = []
 
-        const approvedCaipNetworkIds = Object.values(namespaces).flatMap<CaipNetworkId>(
-          namespace => {
-            const chains = (namespace.chains || []) as CaipNetworkId[]
-            const accountsChains = namespace.accounts.map(account => {
-              const [chainNamespace, chainId] = account.split(':')
-
-              return `${chainNamespace}:${chainId}` as CaipNetworkId
+          if (ns) {
+            Object.keys(ns).forEach(key => {
+              const chains = ns?.[key]?.chains
+              if (chains) {
+                nsChains.push(...(chains as CaipNetworkId[]))
+              }
             })
-
-            return Array.from(new Set([...chains, ...accountsChains]))
           }
-        )
 
-        return Promise.resolve({
-          approvedCaipNetworkIds,
-          supportsAllNetworks: false
+          const result = {
+            supportsAllNetworks: true,
+            approvedCaipNetworkIds: nsChains as CaipNetworkId[] | undefined
+          }
+
+          resolve(result)
         })
       }
     }
@@ -388,22 +386,27 @@ export class UniversalAdapterClient {
       Object.keys(nameSpaces)
         .reverse()
         .forEach(key => {
-          const chainNamespace = key as ChainNamespace
-          const caipAddress = nameSpaces?.[chainNamespace]?.accounts[0] as CaipAddress
+          const caipAddress = nameSpaces?.[key]?.accounts[0] as CaipAddress
 
-          ProviderUtil.setProvider(chainNamespace, this.walletConnectProvider)
-          ProviderUtil.setProviderId(chainNamespace, 'walletConnect')
-          this.appKit?.setApprovedCaipNetworksData(chainNamespace)
+          ProviderUtil.setProvider(key as ChainNamespace, this.walletConnectProvider)
+          ProviderUtil.setProviderId(key as ChainNamespace, 'walletConnect')
 
           if (caipAddress) {
-            this.appKit?.setCaipAddress(caipAddress, chainNamespace)
+            this.appKit?.setCaipAddress(caipAddress, key as ChainNamespace)
           }
         })
 
       const storedCaipNetwork = SafeLocalStorage.getItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK)
 
       if (storedCaipNetwork) {
-        ChainController.setActiveCaipNetwork(storedCaipNetwork)
+        try {
+          const parsedCaipNetwork = JSON.parse(storedCaipNetwork) as CaipNetwork
+          if (parsedCaipNetwork) {
+            NetworkController.setActiveCaipNetwork(parsedCaipNetwork)
+          }
+        } catch (error) {
+          console.warn('>>> Error setting active caip network', error)
+        }
       } else if (!ChainController.state.activeCaipNetwork) {
         this.setDefaultNetwork(nameSpaces)
       } else if (
@@ -415,10 +418,10 @@ export class UniversalAdapterClient {
       }
     }
 
-    const caipNetworkToStore = this.appKit?.getCaipNetwork()
-    if (caipNetworkToStore) {
-      SafeLocalStorage.setItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK, caipNetworkToStore)
-    }
+    SafeLocalStorage.setItem(
+      SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK,
+      JSON.stringify(this.appKit?.getCaipNetwork())
+    )
 
     this.syncAccount()
     this.watchWalletConnect()
@@ -523,10 +526,12 @@ export class UniversalAdapterClient {
 
   private syncAccount() {
     const { namespaceKeys, namespaces } = this.getProviderData()
-    const preferredAccountType = this.appKit?.getPreferredAccountType()
-    const hasNamespaces = namespaceKeys.length > 0
 
-    if (hasNamespaces) {
+    const preferredAccountType = this.appKit?.getPreferredAccountType()
+
+    const isConnected = this.appKit?.getIsConnectedState() || false
+
+    if (isConnected) {
       namespaceKeys.forEach(async key => {
         const chainNamespace = key as ChainNamespace
         const address = namespaces?.[key]?.accounts[0] as CaipAddress

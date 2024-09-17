@@ -1,11 +1,9 @@
-import type { CaipNetwork } from './TypeUtil.js'
-
 export type SafeLocalStorageItems = {
   '@w3m/wallet_id': string
   '@w3m/wallet_name': string
   '@w3m/solana_wallet': string
   '@w3m/solana_caip_chain': string
-  '@w3m/active_caip_network': CaipNetwork
+  '@w3m/active_caip_network': string
   '@w3m/active_caip_network_id': string
   '@w3m/connected_connector': string
 }
@@ -18,7 +16,7 @@ export const SafeLocalStorageKeys = {
   ACTIVE_CAIP_NETWORK: '@w3m/active_caip_network',
   ACTIVE_CAIP_NETWORK_ID: '@w3m/active_caip_network_id',
   CONNECTED_CONNECTOR: '@w3m/connected_connector'
-} as const satisfies Record<string, keyof SafeLocalStorageItems>
+} as const
 
 export const SafeLocalStorage = {
   setItem<Key extends keyof SafeLocalStorageItems>(
@@ -37,7 +35,7 @@ export const SafeLocalStorage = {
         try {
           return JSON.parse(value)
         } catch {
-          return null
+          return value
         }
       }
     }
