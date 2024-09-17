@@ -132,15 +132,8 @@ export const ChainController = {
       const storedCaipNetwork = SafeLocalStorage.getItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK)
 
       if (storedCaipNetwork) {
-        try {
-          const parsedCaipNetwork = JSON.parse(storedCaipNetwork) as CaipNetwork
-          if (parsedCaipNetwork) {
-            state.activeChain = parsedCaipNetwork.chainNamespace
-            this.setActiveCaipNetwork(parsedCaipNetwork)
-          }
-        } catch (error) {
-          console.warn('>>> Error setting active caip network', error)
-        }
+        state.activeChain = storedCaipNetwork.chainNamespace
+        this.setActiveCaipNetwork(storedCaipNetwork)
       } else {
         state.activeChain =
           adapter?.defaultNetwork?.chainNamespace ?? adapter.caipNetworks[0]?.chainNamespace
@@ -272,8 +265,7 @@ export const ChainController = {
       activeChain: caipNetwork.chainNamespace,
       selectedNetworkId: caipNetwork?.id
     })
-
-    SafeLocalStorage.setItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK, JSON.stringify(caipNetwork))
+    SafeLocalStorage.setItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK, caipNetwork)
     SafeLocalStorage.setItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID, caipNetwork.id)
   },
 
@@ -340,7 +332,8 @@ export const ChainController = {
     const isWcConnector =
       SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR) === 'WALLET_CONNECT'
     const universalConnectionControllerClient = state.universalAdapter.connectionControllerClient
-    const hasWagmiAdapter = state.chains.get('eip155')?.adapterType === 'wagmi'
+    const hasWagmiAdapter =
+      chain === 'eip155' && state.chains.get('eip155')?.adapterType === 'wagmi'
 
     const shouldUseUniversalAdapter = (isWcConnector && !hasWagmiAdapter) || state.noAdapters
 
