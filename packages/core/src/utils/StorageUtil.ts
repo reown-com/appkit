@@ -1,28 +1,36 @@
 /* eslint-disable no-console */
-import { SafeLocalStorage, SafeLocalStorageKeys } from '@reown/appkit-common'
+import { SafeLocalStorageKeys } from '@reown/appkit-common'
 import type { WcWallet, ConnectorType, SocialProvider } from './TypeUtil.js'
 
 // -- Utility -----------------------------------------------------------------
 export const StorageUtil = {
   setWalletConnectDeepLink({ href, name }: { href: string; name: string }) {
     try {
-      SafeLocalStorage.setItem(SafeLocalStorageKeys.DEEPLINK_CHOICE, JSON.stringify({ href, name }))
+      localStorage.setItem(SafeLocalStorageKeys.DEEPLINK_CHOICE, JSON.stringify({ href, name }))
     } catch {
       console.info('Unable to set WalletConnect deep link')
     }
   },
 
   getWalletConnectDeepLink() {
-    const deepLink = SafeLocalStorage.getItem(SafeLocalStorageKeys.DEEPLINK_CHOICE)
-    if (deepLink) {
-      return JSON.parse(deepLink)
+    try {
+      const deepLink = localStorage.getItem(SafeLocalStorageKeys.DEEPLINK_CHOICE)
+      if (deepLink) {
+        return JSON.parse(deepLink)
+      }
+    } catch {
+      console.info('Unable to get WalletConnect deep link')
     }
 
     return undefined
   },
 
   deleteWalletConnectDeepLink() {
-    SafeLocalStorage.removeItem(SafeLocalStorageKeys.DEEPLINK_CHOICE)
+    try {
+      localStorage.removeItem(SafeLocalStorageKeys.DEEPLINK_CHOICE)
+    } catch {
+      console.info('Unable to delete WalletConnect deep link')
+    }
   },
 
   setAppKitRecent(wallet: WcWallet) {
@@ -34,7 +42,7 @@ export const StorageUtil = {
         if (recentWallets.length > 2) {
           recentWallets.pop()
         }
-        SafeLocalStorage.setItem(SafeLocalStorageKeys.RECENT_WALLETS, JSON.stringify(recentWallets))
+        localStorage.setItem(SafeLocalStorageKeys.RECENT_WALLETS, JSON.stringify(recentWallets))
       }
     } catch {
       console.info('Unable to set AppKit recent')
@@ -42,31 +50,60 @@ export const StorageUtil = {
   },
 
   getRecentWallets(): WcWallet[] {
-    const recentWallets = SafeLocalStorage.getItem(SafeLocalStorageKeys.RECENT_WALLETS)
-    return (recentWallets as unknown as WcWallet[]) || []
+    try {
+      const recent = localStorage.getItem(SafeLocalStorageKeys.RECENT_WALLETS)
+
+      return recent ? JSON.parse(recent) : []
+    } catch {
+      console.info('Unable to get AppKit recent')
+    }
+
+    return []
   },
 
   setConnectedConnector(connectorType: ConnectorType) {
-    SafeLocalStorage.setItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR, connectorType)
+    try {
+      localStorage.setItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR, connectorType)
+    } catch {
+      console.info('Unable to set Connected Connector')
+    }
   },
 
   getConnectedConnector() {
-    return SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR) as ConnectorType
+    try {
+      return localStorage.getItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR) as ConnectorType
+    } catch {
+      console.info('Unable to get Connected Connector')
+    }
+
+    return undefined
   },
 
   setConnectedSocialProvider(socialProvider: SocialProvider) {
-    SafeLocalStorage.setItem(SafeLocalStorageKeys.CONNECTED_SOCIAL, socialProvider)
+    try {
+      localStorage.setItem(SafeLocalStorageKeys.CONNECTED_SOCIAL, socialProvider)
+    } catch {
+      console.info('Unable to set Connected Social Provider')
+    }
   },
 
   getConnectedSocialProvider() {
-    return SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTED_SOCIAL) as SocialProvider
-  },
+    try {
+      return localStorage.getItem(SafeLocalStorageKeys.CONNECTED_SOCIAL)
+    } catch {
+      console.info('Unable to get Connected Social Provider')
+    }
 
-  setConnectedSocialUsername(username: string) {
-    SafeLocalStorage.setItem(SafeLocalStorageKeys.CONNECTED_SOCIAL_USERNAME, username)
+    return undefined
   },
 
   getConnectedSocialUsername() {
-    return SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTED_SOCIAL_USERNAME) as string
+    try {
+      return localStorage.getItem(SafeLocalStorageKeys.CONNECTED_SOCIAL_USERNAME)
+    } catch {
+      console.info('Unable to get Connected Social Username')
+    }
+
+    return undefined
   }
 }

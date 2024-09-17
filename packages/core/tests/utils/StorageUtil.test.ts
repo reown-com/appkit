@@ -1,6 +1,7 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect, vi, afterEach, beforeAll, beforeEach } from 'vitest'
 import { StorageUtil } from '../../src/utils/StorageUtil'
 import type { WcWallet, ConnectorType, SocialProvider } from '../../src/utils/TypeUtil'
+import { SafeLocalStorageKeys } from '@reown/appkit-common'
 
 // Mock localStorage
 const localStorageMock = (() => {
@@ -36,7 +37,9 @@ describe('StorageUtil', () => {
     it('should set WalletConnect deep link in localStorage', () => {
       const deepLink = { href: 'https://example.com', name: 'Example Wallet' }
       StorageUtil.setWalletConnectDeepLink(deepLink)
-      expect(localStorage.getItem('@appkit/deeplink_choice')).toBe(JSON.stringify(deepLink))
+      expect(localStorageMock.getItem(SafeLocalStorageKeys.DEEPLINK_CHOICE)).toBe(
+        JSON.stringify(deepLink)
+      )
     })
 
     it('should handle errors when setting deep link', () => {
@@ -125,7 +128,7 @@ describe('StorageUtil', () => {
 
     it('should return recent wallets', () => {
       const wallet: WcWallet = { id: 'wallet1', name: 'Wallet 1' }
-      localStorage.setItem('@appkit/recent', JSON.stringify([wallet]))
+      localStorage.setItem(SafeLocalStorageKeys.RECENT_WALLETS, JSON.stringify([wallet]))
       expect(StorageUtil.getRecentWallets()).toEqual([wallet])
     })
   })
@@ -134,14 +137,14 @@ describe('StorageUtil', () => {
     it('should set connected connector', () => {
       const connector: ConnectorType = 'INJECTED'
       StorageUtil.setConnectedConnector(connector)
-      expect(localStorage.getItem('@appkit/connected_connector')).toBe(connector)
+      expect(localStorage.getItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR)).toBe(connector)
     })
   })
 
   describe('getConnectedConnector', () => {
     it('should get connected connector', () => {
       const connector: ConnectorType = 'INJECTED'
-      localStorage.setItem('@appkit/connected_connector', connector)
+      localStorage.setItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR, connector)
       expect(StorageUtil.getConnectedConnector()).toBe(connector)
     })
   })
@@ -150,14 +153,14 @@ describe('StorageUtil', () => {
     it('should set connected social provider', () => {
       const provider: SocialProvider = 'google'
       StorageUtil.setConnectedSocialProvider(provider)
-      expect(localStorage.getItem('@appkit/connected_social')).toBe(provider)
+      expect(localStorage.getItem(SafeLocalStorageKeys.CONNECTED_SOCIAL)).toBe(provider)
     })
   })
 
   describe('getConnectedSocialProvider', () => {
     it('should get connected social provider', () => {
       const provider: SocialProvider = 'google'
-      localStorage.setItem('@appkit/connected_social', provider)
+      localStorage.setItem(SafeLocalStorageKeys.CONNECTED_SOCIAL, provider)
       expect(StorageUtil.getConnectedSocialProvider()).toBe(provider)
     })
   })
@@ -165,7 +168,7 @@ describe('StorageUtil', () => {
   describe('getConnectedSocialUsername', () => {
     it('should get connected social username', () => {
       const username = 'testuser'
-      localStorage.setItem('@appkit-wallet/SOCIAL_USERNAME', username)
+      localStorage.setItem(SafeLocalStorageKeys.CONNECTED_SOCIAL_USERNAME, username)
       expect(StorageUtil.getConnectedSocialUsername()).toBe(username)
     })
   })

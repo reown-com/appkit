@@ -32,7 +32,7 @@ export const SafeLocalStorage = {
     value: SafeLocalStorageItems[Key]
   ): void {
     if (isSafe()) {
-      localStorage.setItem(key, JSON.stringify(value))
+      localStorage.setItem(key, value)
     }
   },
   getItem<Key extends keyof SafeLocalStorageItems>(key: Key): SafeLocalStorageItems[Key] | null {
