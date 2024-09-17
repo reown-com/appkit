@@ -34,7 +34,7 @@ describe('SafeLocalStorage safe', () => {
 
   it('should setItem', () => {
     expect(SafeLocalStorage.setItem('@appkit/wallet_id', 'test')).toBe(undefined)
-    expect(setItem).toHaveBeenCalledWith('@appkit/wallet_id', '"test"')
+    expect(setItem).toHaveBeenCalledWith('@appkit/wallet_id', 'test')
   })
 
   it('should getItem', () => {
