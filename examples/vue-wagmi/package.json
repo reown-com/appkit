@@ -7,8 +7,8 @@
     "build": "vite build"
   },
   "dependencies": {
-    "@wagmi/connectors": "5.1.9",
-    "@wagmi/core": "2.13.4",
+    "@wagmi/connectors": "5.1.11",
+    "@wagmi/core": "2.13.5",
     "@reown/appkit-adapter-wagmi": "workspace:*",
     "@reown/appkit": "workspace:*",
     "vue": "3.4.3"

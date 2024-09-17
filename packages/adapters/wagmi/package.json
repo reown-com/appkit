@@ -35,13 +35,13 @@
     "@types/react": "18.2.0",
     "@types/react-dom": "18.2.0",
     "@vitest/coverage-v8": "2.0.5",
-    "@wagmi/connectors": "5.1.9",
-    "@wagmi/core": "2.13.4",
+    "@wagmi/connectors": "5.1.11",
+    "@wagmi/core": "2.13.5",
     "@walletconnect/types": "2.16.1",
     "@walletconnect/universal-provider": "2.16.1",
-    "viem": "2.21.4",
+    "viem": "2.21.8",
     "vitest": "2.0.5",
-    "wagmi": "2.12.9"
+    "wagmi": "2.12.12"
   },
   "author": "Reown <support@reown.com> (https://reown.com)",
   "license": "Apache-2.0",

@@ -111,8 +111,8 @@
     "@types/react-dom": "18.2.0",
     "@vitest/coverage-v8": "2.0.5",
     "@vue/runtime-core": "3.4.3",
-    "@wagmi/connectors": "5.1.9",
-    "@wagmi/core": "2.13.4",
+    "@wagmi/connectors": "5.1.11",
+    "@wagmi/core": "2.13.5",
     "@wallet-standard/app": "1.0.1",
     "@wallet-standard/base": "1.0.1",
     "@wallet-standard/features": "1.0.3",
@@ -123,10 +123,10 @@
     "ethers5": "npm:ethers@5.7.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "viem": "2.21.4",
+    "viem": "2.21.8",
     "vitest": "2.0.5",
     "vue": "3.4.3",
-    "wagmi": "2.12.9"
+    "wagmi": "2.12.12"
   },
   "author": "Reown <support@reown.com> (https://reown.com)",
   "license": "Apache-2.0",

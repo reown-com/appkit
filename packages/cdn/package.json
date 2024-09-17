@@ -13,7 +13,7 @@
     "upload": "pnpm build && pnpm publish --public"
   },
   "devDependencies": {
-    "@wagmi/connectors": "5.1.9",
+    "@wagmi/connectors": "5.1.11",
     "vite-plugin-node-polyfills": "0.22.0"
   },
   "peerDependencies": {
@@ -29,10 +29,10 @@
     "@reown/appkit-ethers": "workspace:*",
     "@reown/appkit-ethers5": "workspace:*",
     "@reown/appkit-polyfills": "workspace:*",
-    "@wagmi/connectors": "5.1.9",
-    "@wagmi/core": "2.13.4",
-    "viem": "2.21.4",
+    "@wagmi/connectors": "5.1.11",
+    "@wagmi/core": "2.13.5",
+    "viem": "2.21.8",
     "vite": "5.2.11",
-    "wagmi": "2.12.9"
+    "wagmi": "2.12.12"
   }
 }

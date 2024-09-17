@@ -37,7 +37,7 @@
   "devDependencies": {
     "vitest": "2.0.5",
     "@vitest/coverage-v8": "2.0.5",
-    "viem": "2.21.4"
+    "viem": "2.21.8"
   },
   "author": "Reown <support@reown.com> (https://reown.com)",
   "license": "Apache-2.0",
