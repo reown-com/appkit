@@ -81,7 +81,7 @@
   "homepage": "https://github.com/reown-com/appkit",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/WalletConnect/shadow-appkit.git"
+    "url": "git+https://github.com/reown-com/appkit.git"
   },
   "bugs": {
     "url": "https://github.com/reown-com/appkit/issues"
