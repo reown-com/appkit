@@ -1,5 +1,24 @@
 # @apps/laboratory
 
+## 1.0.1
+
+### Patch Changes
+
+- [#54](https://github.com/WalletConnect/shadow-appkit/pull/54) [`dc6dd8d`](https://github.com/WalletConnect/shadow-appkit/commit/dc6dd8d37cbe79ae3b0bcaf7bdace1fe6ad11b09) Thanks [@tomiir](https://github.com/tomiir)! - Makes packages public
+
+- Updated dependencies [[`dc6dd8d`](https://github.com/WalletConnect/shadow-appkit/commit/dc6dd8d37cbe79ae3b0bcaf7bdace1fe6ad11b09)]:
+  - @reown/appkit-adapter-ethers@1.0.1
+  - @reown/appkit-adapter-ethers5@1.0.1
+  - @reown/appkit-adapter-solana@1.0.1
+  - @reown/appkit-adapter-wagmi@1.0.1
+  - @reown/appkit@1.0.1
+  - @reown/appkit-ethers@1.0.1
+  - @reown/appkit-ethers5@1.0.1
+  - @reown/appkit-siwe@1.0.1
+  - @reown/appkit-solana@1.0.1
+  - @reown/appkit-wagmi@1.0.1
+  - @reown/appkit-wallet@1.0.1
+
 ## 1.0.0
 
 ### Major Changes
