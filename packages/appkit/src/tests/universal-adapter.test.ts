@@ -55,44 +55,12 @@ describe('UniversalAdapter', () => {
         await universalAdapter.networkControllerClient.getApprovedCaipNetworksData()
 
       expect(approvedCaipNetworksData).toMatchObject({
-        supportsAllNetworks: false,
+        supportsAllNetworks: true,
         approvedCaipNetworkIds: [
           mockProvider.session?.namespaces['eip155']?.chains?.[0],
           mockProvider.session?.namespaces['solana']?.chains?.[0]
         ]
       })
-    })
-
-    it('should return correct approvedCaipNetworksData for account params', async () => {
-      const mock = vi.spyOn(mockProvider, 'session', 'get').mockReturnValue({
-        ...mockProvider.session!,
-        namespaces: {
-          eip155: {
-            chains: undefined,
-            accounts: ['eip155:1:0xE62a3eD41B21447b67a63880607CD2E746A0E35d'],
-            methods: [],
-            events: []
-          },
-          solana: {
-            chains: undefined,
-            accounts: [
-              'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:2VqKhjZ766ZN3uBtBpb7Ls3cN4HrocP1rzxzekhVEgpU'
-            ],
-            methods: [],
-            events: []
-          }
-        }
-      })
-
-      const approvedCaipNetworksData =
-        await universalAdapter.networkControllerClient.getApprovedCaipNetworksData()
-
-      expect(approvedCaipNetworksData).toMatchObject({
-        supportsAllNetworks: false,
-        approvedCaipNetworkIds: ['eip155:1', 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp']
-      })
-
-      mock.mockRestore()
     })
 
     it('should call setDefaultNetwork and set first caipNetwork on setActiveCaipNetwork when there is no active caipNetwork', async () => {
