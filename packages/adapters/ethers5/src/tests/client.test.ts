@@ -9,7 +9,7 @@ import { EthersHelpersUtil, type ProviderId, type ProviderType } from '@reown/ap
 import { ConstantsUtil } from '@reown/appkit-utils'
 import { arbitrum, mainnet, polygon } from '@reown/appkit/networks'
 import { ProviderUtil } from '@reown/appkit/store'
-import { CaipNetworksUtil, SafeLocalStorage } from '@reown/appkit-common'
+import { SafeLocalStorage } from '@reown/appkit-common'
 import { WcConstantsUtil, type BlockchainApiLookupEnsName } from '@reown/appkit'
 import { ethers } from 'ethers5'
 import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
@@ -120,12 +120,7 @@ describe('EthersAdapter', () => {
     })
 
     it('should set caipNetworks to provided caipNetworks options', () => {
-      expect(client.caipNetworks).toEqual(
-        mockOptions.networks.map(n => ({
-          ...n,
-          rpcUrl: CaipNetworksUtil.extendRpcUrlWithProjectId(n.rpcUrl, mockOptions.projectId)
-        }))
-      )
+      expect(client.caipNetworks).toEqual(mockOptions.networks)
     })
 
     it('should set defaultNetwork to first caipNetwork option', () => {

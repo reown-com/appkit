@@ -1,6 +1,5 @@
 import type { AppKitOptions } from '@reown/appkit'
 import {
-  CaipNetworksUtil,
   NetworkUtil,
   SafeLocalStorage,
   SafeLocalStorageKeys,
@@ -221,10 +220,7 @@ export class EthersAdapter {
 
     this.appKit = appKit
     this.options = options
-    this.caipNetworks = options.networks.map(caipNetwork => ({
-      ...caipNetwork,
-      rpcUrl: CaipNetworksUtil.extendRpcUrlWithProjectId(caipNetwork.rpcUrl, options.projectId)
-    }))
+    this.caipNetworks = options.networks
     this.defaultCaipNetwork = options.defaultNetwork || options.networks[0]
     this.tokens = HelpersUtil.getCaipTokens(options.tokens)
     this.ethersConfig = this.createEthersConfig(options)

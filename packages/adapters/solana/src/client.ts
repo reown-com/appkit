@@ -8,7 +8,6 @@ import {
   EventsController
 } from '@reown/appkit-core'
 import {
-  CaipNetworksUtil,
   ConstantsUtil as CommonConstantsUtil,
   SafeLocalStorage,
   SafeLocalStorageKeys
@@ -27,7 +26,7 @@ import type {
   NetworkControllerClient,
   Connector
 } from '@reown/appkit-core'
-import type { AdapterType, CaipAddress, CaipNetwork } from '@reown/appkit-common'
+import type { AdapterType, CaipAddress, CaipNetwork, CaipNetworkId } from '@reown/appkit-common'
 import type { ChainNamespace } from '@reown/appkit-common'
 
 import { watchStandard } from './utils/watchStandard.js'
@@ -45,7 +44,7 @@ import type { AppKit } from '@reown/appkit'
 import type { AppKitOptions as CoreOptions } from '@reown/appkit'
 import { ProviderUtil } from '@reown/appkit/store'
 import { W3mFrameProviderSingleton } from '@reown/appkit/auth-provider'
-import { ConstantsUtil } from '@reown/appkit-utils'
+import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
 import { createSendTransaction } from './utils/createSendTransaction.js'
 
 export interface AdapterOptions {
@@ -127,10 +126,7 @@ export class SolanaAdapter implements ChainAdapter {
 
     this.appKit = appKit
     this.options = options
-    this.caipNetworks = options.networks.map(caipNetwork => ({
-      ...caipNetwork,
-      rpcUrl: CaipNetworksUtil.extendRpcUrlWithProjectId(caipNetwork.rpcUrl, options.projectId)
-    }))
+    this.caipNetworks = options.networks
     const defaultCaipNetwork = SolHelpersUtil.getChainFromCaip(
       options.networks,
       SafeLocalStorage.getItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID)
@@ -144,24 +140,46 @@ export class SolanaAdapter implements ChainAdapter {
     this.networkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
         if (caipNetwork) {
-          SafeLocalStorage.setItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK, caipNetwork)
-          await this.switchNetwork(caipNetwork)
+          SafeLocalStorage.setItem(
+            SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK,
+            JSON.stringify(caipNetwork)
+          )
+          try {
+            await this.switchNetwork(caipNetwork)
+          } catch (error) {
+            // SolStoreUtil.setError(error)
+          }
         }
       },
 
-      getApprovedCaipNetworksData: async () => {
-        if (this.provider) {
-          return Promise.resolve({
-            supportsAllNetworks: false,
-            approvedCaipNetworkIds: this.provider.chains.map(chain => chain.id)
-          })
-        }
+      getApprovedCaipNetworksData: async () =>
+        new Promise(resolve => {
+          const walletId = SafeLocalStorage.getItem(SafeLocalStorageKeys.WALLET_ID)
 
-        return Promise.resolve({
-          supportsAllNetworks: false,
-          approvedCaipNetworkIds: []
+          if (!walletId) {
+            throw new Error('No wallet id found to get approved networks data')
+          }
+
+          const providerConfigs = {
+            [ConstantsUtil.AUTH_CONNECTOR_ID]: {
+              supportsAllNetworks: true,
+              approvedCaipNetworkIds: PresetsUtil.WalletConnectRpcChainIds.map(
+                id => `${ConstantsUtil.EIP155}:${id}`
+              ) as CaipNetworkId[]
+            }
+          }
+
+          const networkData = providerConfigs[walletId as unknown as keyof typeof providerConfigs]
+
+          if (networkData) {
+            resolve(networkData)
+          } else {
+            resolve({
+              supportsAllNetworks: true,
+              approvedCaipNetworkIds: []
+            })
+          }
         })
-      }
     }
 
     this.connectionControllerClient = {
@@ -461,9 +479,16 @@ export class SolanaAdapter implements ChainAdapter {
       this.appKit?.setLoading(true)
       const address = await provider.connect()
       const caipChainId = SafeLocalStorage.getItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID)
+      let connectionChain: CaipNetwork | undefined = undefined
 
-      const connectionChain =
-        provider.chains.find(chain => chain.id === caipChainId) || provider.chains[0]
+      const activeCaipNetwork = this.appKit?.getCaipNetwork()
+
+      // eslint-disable-next-line no-nested-ternary
+      connectionChain = caipChainId
+        ? SolHelpersUtil.getChainFromCaip(this.caipNetworks, caipChainId)
+        : activeCaipNetwork?.chainNamespace === 'solana'
+          ? this.caipNetworks.find(chain => chain.chainNamespace === 'solana')
+          : activeCaipNetwork || this.caipNetworks.find(chain => chain.chainNamespace === 'solana')
 
       if (connectionChain) {
         const caipAddress = `solana:${connectionChain.chainId}:${address}` as CaipAddress
@@ -473,17 +498,7 @@ export class SolanaAdapter implements ChainAdapter {
 
         ProviderUtil.setProvider(this.chainNamespace, provider)
         this.provider = provider
-
-        switch (provider.type) {
-          case 'WALLET_CONNECT':
-            ProviderUtil.setProviderId(this.chainNamespace, 'walletConnect')
-            break
-          case 'AUTH':
-            ProviderUtil.setProviderId(this.chainNamespace, 'w3mAuth')
-            break
-          default:
-            ProviderUtil.setProviderId(this.chainNamespace, 'injected')
-        }
+        ProviderUtil.setProviderId(this.chainNamespace, 'walletConnect')
 
         SafeLocalStorage.setItem(SafeLocalStorageKeys.WALLET_ID, provider.name)
 
@@ -594,8 +609,6 @@ export class SolanaAdapter implements ChainAdapter {
       getActiveChain: () => this.appKit?.getCaipNetwork()
     })
 
-    this.addProvider(walletConnectProvider)
-
     return walletConnectProvider
   }
 
@@ -646,7 +659,9 @@ export class SolanaAdapter implements ChainAdapter {
 
     for (const provider of providers) {
       this.availableProviders = this.availableProviders.filter(p => p.name !== provider.name)
-      this.availableProviders.push(provider)
+      if (provider.type !== 'WALLET_CONNECT') {
+        this.availableProviders.push(provider)
+      }
 
       if (provider.name === activeProviderName && isSolana) {
         this.setProvider(provider)
