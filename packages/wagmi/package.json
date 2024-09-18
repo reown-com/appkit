@@ -51,7 +51,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@walletconnect/utils": "2.16.1",
+    "@walletconnect/utils": "2.16.2",
     "@reown/appkit-polyfills": "workspace:*",
     "@reown/appkit-adapter-wagmi": "workspace:*",
     "@reown/appkit": "workspace:*",
