@@ -635,7 +635,7 @@ describe('EthersAdapter', () => {
     })
 
     it('should not set provider when wallet ID is not found', () => {
-      vi.spyOn(SafeLocalStorage, 'getItem').mockReturnValue(null)
+      vi.spyOn(SafeLocalStorage, 'getItem').mockReturnValue(undefined)
 
       const mockConfig = {
         injected: mockInjectedProvider,
