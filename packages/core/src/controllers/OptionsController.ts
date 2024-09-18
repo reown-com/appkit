@@ -100,6 +100,11 @@ export interface OptionsControllerStatePublic {
    */
   enableWalletConnect?: boolean
   /**
+   * Enable or disable the SmartSession in your AppKit.
+   * @default false
+   */
+  enableSmartSession?: boolean
+  /**
    * Features configuration object.
    * @default { swaps: true, onramp: true, email: true, socials: ['google', 'x', 'discord', 'farcaster', 'github', 'apple', 'facebook'], history: true, analytics: true, allWallets: true }
    * @see https://docs.reown.com/appkit/react/core/options#features
@@ -219,6 +224,10 @@ export const OptionsController = {
 
   setEnableWallets(enableWallets: OptionsControllerState['enableWallets']) {
     state.enableWallets = enableWallets
+  },
+
+  setEnableSmartSession(enableSmartSession: OptionsControllerState['enableSmartSession']) {
+    state.enableSmartSession = enableSmartSession
   },
 
   setHasMultipleAddresses(hasMultipleAddresses: OptionsControllerState['hasMultipleAddresses']) {
