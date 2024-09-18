@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Button, Stack, Text, Spacer } from '@chakra-ui/react'
+import { Button, Stack, Spacer } from '@chakra-ui/react'
 import {
   PublicKey,
   Transaction,
@@ -10,9 +10,8 @@ import {
 } from '@solana/web3.js'
 
 import { type Provider, useAppKitConnection } from '@reown/appkit-adapter-solana/react'
-import { useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
+import { useAppKitProvider } from '@reown/appkit/react'
 
-import { solana } from '@reown/appkit/networks'
 import { useChakraToast } from '../Toast'
 import bs58 from 'bs58'
 
@@ -22,7 +21,6 @@ const amountInLamports = 1_000_000
 
 export function SolanaSignAllTransactionsTest() {
   const toast = useChakraToast()
-  const { chainId } = useAppKitNetwork()
   const { walletProvider } = useAppKitProvider<Provider>('solana')
   const { connection } = useAppKitConnection()
   const [loading, setLoading] = useState(false)
@@ -72,14 +70,6 @@ export function SolanaSignAllTransactionsTest() {
     } finally {
       setLoading(false)
     }
-  }
-
-  if (chainId === solana.chainId) {
-    return (
-      <Text fontSize="md" color="yellow">
-        Switch to Solana Devnet or Testnet to test this feature
-      </Text>
-    )
   }
 
   return (
