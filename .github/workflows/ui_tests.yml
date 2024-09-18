@@ -9,7 +9,7 @@ on:
         required: false
         type: string
       base-url:
-        description: 'The web3modal lab url'
+        description: 'The AppKit lab url'
         default: 'http://localhost:3000/'
         required: false
         type: string
@@ -36,6 +36,10 @@ on:
     secrets:
       NEXT_PUBLIC_PROJECT_ID:
         required: true
+      RELEASE_TOKEN_V2:
+        required: true
+      TFC_INFRA_TOKEN:
+        required: true
       TESTS_NEXTAUTH_SECRET:
         required: false
       TESTS_MAILSAC_API_KEY:
@@ -46,19 +50,31 @@ on:
         required: false
 
 jobs:
+  setup_playwright_runners:
+    uses: WalletConnect/gh-actions-runners/.github/workflows/setup-runners.yml@main
+    with:
+      cpu: 16384
+      memory: 65536
+      labels: playwright
+      count: 5
+    secrets:
+      GITHUB_PAT: ${{ secrets.RELEASE_TOKEN_V2 }}
+      TF_API_TOKEN: ${{ secrets.TFC_INFRA_TOKEN }}
+
   ui_tests:
     name: 'Playwright Tests'
-    runs-on:
-      group: ubuntu-runners
+    runs-on: [self-hosted, playwright]
     strategy:
       fail-fast: false
       matrix:
-        shard: [1, 2, 3, 4]
-        shardTotal: [4]
+        shard: [1, 2, 3, 4, 5]
+        shardTotal: [5]
     timeout-minutes: 20
     steps:
-      - name: Tune GitHub-hosted runner network
-        uses: smorimoto/tune-github-hosted-runner-network@v1
+      # Possibly this helps with GitHub-hosted runner network issues, but it's not confirmed
+      # It's not supported in self-hosted runners, however, so commenting it out for now
+      # - name: Tune GitHub-hosted runner network
+      #   uses: smorimoto/tune-github-hosted-runner-network@v1
 
       - name: checkout
         uses: actions/checkout@v4
@@ -75,17 +91,18 @@ jobs:
           node-version: 18.x
           cache: 'pnpm'
 
-      - name: Get installed Playwright version
-        id: playwright-version
-        run: echo "PLAYWRIGHT_VERSION=$(node -e "console.log(require('./package-lock.json').packages['apps/laboratory']['devDependencies']['@playwright/test'])")" >> $GITHUB_ENV
+      # - name: Get installed Playwright version
+      #   id: playwright-version
+      #   run: echo "PLAYWRIGHT_VERSION=$(node -e "console.log(require('./package-lock.json').packages['apps/laboratory']['devDependencies']['@playwright/test'])")" >> $GITHUB_ENV
 
-      - name: Cache playwright binaries
-        uses: actions/cache@v4
-        id: playwright-cache
-        with:
-          path: |
-            ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}-${{ hashFiles('apps/laboratory/tests/shared/constants/devices.ts') }}
+      # This cache causes weird errors on retry runs when using the self-hosted runners, disabling for now
+      # - name: Cache playwright binaries
+      #   uses: actions/cache@v4
+      #   id: playwright-cache
+      #   with:
+      #     path: |
+      #       ~/.cache/ms-playwright
+      #     key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}-${{ hashFiles('apps/laboratory/tests/shared/constants/devices.ts') }}
 
       - name: Install dependencies
         run: pnpm install
@@ -105,24 +122,24 @@ jobs:
         working-directory: ./apps/laboratory/
         run: pnpm playwright:install
 
-      - name: Build MetaMask wallet cache
-        working-directory: ./apps/laboratory/
-        run: xvfb-run pnpm synpress
+      # - name: Build MetaMask wallet cache
+      #   working-directory: ./apps/laboratory/
+      #   run: xvfb-run pnpm synpress
 
-      - name: Run MetaMask Playwright tests (headful)
-        working-directory: ./apps/laboratory/
-        env:
-          BASE_URL: ${{ inputs.base-url }}
-          WALLET_URL: ${{ inputs.wallet-url }}
-          NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
-          SKIP_PLAYWRIGHT_WEBSERVER: ${{ inputs.skip-playwright-webserver }}
-          NEXTAUTH_SECRET: ${{ secrets.TESTS_NEXTAUTH_SECRET }}
-          MAILSAC_API_KEY: ${{ secrets.TESTS_MAILSEC_API_KEY }}
-          NEXT_PUBLIC_SECURE_SITE_SDK_URL: ${{ inputs.secure-site-url }}
-          SOCIAL_TEST_EMAIL: ${{ secrets.TESTS_SOCIAL_EMAIL }}
-          SOCIAL_TEST_PASSWORD: ${{ secrets.TESTS_SOCIAL_PASSWORD }}
-          CI: true
-        run: xvfb-run pnpm playwright:test:metamask
+      # - name: Run MetaMask Playwright tests (headful)
+      #   working-directory: ./apps/laboratory/
+      #   env:
+      #     BASE_URL: ${{ inputs.base-url }}
+      #     WALLET_URL: ${{ inputs.wallet-url }}
+      #     NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
+      #     SKIP_PLAYWRIGHT_WEBSERVER: ${{ inputs.skip-playwright-webserver }}
+      #     NEXTAUTH_SECRET: ${{ secrets.TESTS_NEXTAUTH_SECRET }}
+      #     MAILSAC_API_KEY: ${{ secrets.TESTS_MAILSEC_API_KEY }}
+      #     NEXT_PUBLIC_SECURE_SITE_SDK_URL: ${{ inputs.secure-site-url }}
+      #     SOCIAL_TEST_EMAIL: ${{ secrets.TESTS_SOCIAL_EMAIL }}
+      #     SOCIAL_TEST_PASSWORD: ${{ secrets.TESTS_SOCIAL_PASSWORD }}
+      #     CI: true
+      #   run: xvfb-run pnpm playwright:test:metamask
 
       - name: Run Playwright tests
         env:

@@ -5,7 +5,9 @@ import {
   Button,
   Spacer,
   Link as CLink,
-  useDisclosure
+  useDisclosure,
+  useColorMode,
+  Text
 } from '@chakra-ui/react'
 import Link from 'next/link'
 import { IoSettingsOutline } from 'react-icons/io5'
@@ -13,6 +15,8 @@ import { OptionsDrawer } from './OptionsDrawer'
 import { CustomWallet } from './CustomWallet'
 import { DownloadIcon } from '@chakra-ui/icons'
 import { useChakraToast } from '../components/Toast'
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/router'
 
 function downloadLogs(toast: ReturnType<typeof useChakraToast>) {
   type WindowWithLogs = typeof Window & {
@@ -35,12 +39,19 @@ export function LayoutHeader() {
   const controls = useDisclosure()
   const controlsCW = useDisclosure({ id: 'customWallet' })
   const toast = useChakraToast()
+  const { colorMode } = useColorMode()
+
+  const router = useRouter()
+  const [origin, setOrigin] = useState('')
+  useEffect(() => {
+    setOrigin(window.location.origin)
+  }, [])
 
   return (
     <>
       <Stack direction={['column', 'column', 'row']} marginBlockStart={10} justifyContent="center">
         <Link href="/">
-          <Image src="/logo.png" width={200} />
+          <Image src={`/logo-${colorMode}.svg`} width={200} />
         </Link>
 
         <Spacer />
@@ -49,10 +60,10 @@ export function LayoutHeader() {
           <CLink isExternal href="https://github.com/WalletConnect/web3modal">
             GitHub
           </CLink>
-          <CLink isExternal href="https://gallery.web3modal.com">
+          <CLink isExternal href="https://gallery.appkit.com">
             Gallery
           </CLink>
-          <CLink isExternal href="https://docs.walletconnect.com/web3modal/about">
+          <CLink isExternal href="https://docs.reown.com/appkit/about">
             Docs
           </CLink>
         </HStack>
@@ -67,6 +78,7 @@ export function LayoutHeader() {
           Logs
         </Button>
       </Stack>
+      <Text fontSize="2xs">{origin + router.asPath}</Text>
 
       <OptionsDrawer controls={controls} />
       <CustomWallet controls={controlsCW} />

@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { W3mFrameConstants, W3mFrameRpcConstants } from './W3mFrameConstants.js'
+import type { AdapterType, AppKitSdkVersion, SdkFramework } from '@reown/appkit-common'
 
 // -- Helpers ----------------------------------------------------------------
 const zError = z.object({ message: z.string() })
@@ -8,12 +9,16 @@ function zType<K extends keyof typeof W3mFrameConstants>(key: K) {
   return z.literal(W3mFrameConstants[key])
 }
 
+// -- Custom Types -----------------------------------------------------------
+type SdkType = 'w3m' | 'appkit'
+type SdkVersion = `${SdkFramework}-${AdapterType}-${string}` | AppKitSdkVersion
+
 // -- Responses --------------------------------------------------------------
 export const GetTransactionByHashResponse = z.object({
   accessList: z.array(z.string()),
   blockHash: z.string().nullable(),
   blockNumber: z.string().nullable(),
-  chainId: z.string(),
+  chainId: z.string().or(z.number()),
   from: z.string(),
   gas: z.string(),
   hash: z.string(),
@@ -29,12 +34,12 @@ export const GetTransactionByHashResponse = z.object({
   v: z.string(),
   value: z.string()
 })
-export const AppSwitchNetworkRequest = z.object({ chainId: z.number() })
+export const AppSwitchNetworkRequest = z.object({ chainId: z.string().or(z.number()) })
 export const AppConnectEmailRequest = z.object({ email: z.string().email() })
 export const AppConnectOtpRequest = z.object({ otp: z.string() })
 export const AppConnectSocialRequest = z.object({ uri: z.string() })
 export const AppGetUserRequest = z.object({
-  chainId: z.optional(z.number()),
+  chainId: z.optional(z.string().or(z.number())),
   preferredAccountType: z.optional(z.string())
 })
 export const AppGetSocialRedirectUriRequest = z.object({
@@ -57,12 +62,8 @@ export const AppSyncDappDataRequest = z.object({
       icons: z.array(z.string())
     })
     .optional(),
-  sdkVersion: z.string() as z.ZodType<
-    | `${'html' | 'react' | 'vue'}-wagmi-${string}`
-    | `${'html' | 'react' | 'vue'}-ethers5-${string}`
-    | `${'html' | 'react' | 'vue'}-ethers-${string}`
-    | `${'html' | 'react' | 'vue'}-solana-${string}`
-  >,
+  sdkVersion: z.string() as z.ZodType<SdkVersion>,
+  sdkType: (z.string() as z.ZodType<SdkType>).optional(),
   projectId: z.string()
 })
 export const AppSetPreferredAccountRequest = z.object({ type: z.string() })
@@ -82,7 +83,7 @@ export const FrameConnectFarcasterResponse = z.object({
 export const FrameConnectSocialResponse = z.object({
   email: z.string(),
   address: z.string(),
-  chainId: z.number(),
+  chainId: z.string().or(z.number()),
   accounts: z
     .array(
       z.object({
@@ -102,7 +103,7 @@ export const FrameUpdateEmailResponse = z.object({
 export const FrameGetUserResponse = z.object({
   email: z.string().email().optional().nullable(),
   address: z.string(),
-  chainId: z.number(),
+  chainId: z.string().or(z.number()),
   smartAccountDeployed: z.optional(z.boolean()),
   accounts: z
     .array(
@@ -119,8 +120,8 @@ export const FrameGetUserResponse = z.object({
 })
 export const FrameGetSocialRedirectUriResponse = z.object({ uri: z.string() })
 export const FrameIsConnectedResponse = z.object({ isConnected: z.boolean() })
-export const FrameGetChainIdResponse = z.object({ chainId: z.number() })
-export const FrameSwitchNetworkResponse = z.object({ chainId: z.number() })
+export const FrameGetChainIdResponse = z.object({ chainId: z.string().or(z.number()) })
+export const FrameSwitchNetworkResponse = z.object({ chainId: z.string().or(z.number()) })
 export const FrameUpdateEmailSecondaryOtpResponse = z.object({ newEmail: z.string().email() })
 export const FrameGetSmartAccountEnabledNetworksResponse = z.object({
   smartAccountEnabledNetworks: z.array(z.number())
@@ -310,11 +311,60 @@ export const RpcEthSendTransactionRequest = z.object({
   params: z.array(z.any())
 })
 
+export const RpcSolanaSignMessageRequest = z.object({
+  method: z.literal('solana_signMessage'),
+  params: z.object({
+    message: z.string(),
+    pubkey: z.string()
+  })
+})
+
+export const RpcSolanaSignTransactionRequest = z.object({
+  method: z.literal('solana_signTransaction'),
+  params: z.object({
+    transaction: z.string()
+  })
+})
+
+export const RpcSolanaSignAllTransactionsRequest = z.object({
+  method: z.literal('solana_signAllTransactions'),
+  params: z.object({
+    transactions: z.array(z.string())
+  })
+})
+
+export const RpcSolanaSignAndSendTransactionRequest = z.object({
+  method: z.literal('solana_signAndSendTransaction'),
+  params: z.object({
+    transaction: z.string(),
+    // Options should match https://solana-labs.github.io/solana-web3.js/types/SendOptions.html
+    options: z
+      .object({
+        skipPreflight: z.boolean().optional(),
+        preflightCommitment: z
+          .enum([
+            'processed',
+            'confirmed',
+            'finalized',
+            'recent',
+            'single',
+            'singleGossip',
+            'root',
+            'max'
+          ])
+          .optional(),
+        maxRetries: z.number().optional(),
+        minContextSlot: z.number().optional()
+      })
+      .optional()
+  })
+})
+
 export const WalletSendCallsRequest = z.object({
   method: z.literal('wallet_sendCalls'),
   params: z.array(
     z.object({
-      chainId: z.string().optional(),
+      chainId: z.string().or(z.number()).optional(),
       from: z.string().optional(),
       version: z.string().optional(),
       capabilities: z.any().optional(),
@@ -458,6 +508,10 @@ export const W3mFrameSchema = {
           .or(RpcPersonalSignRequest)
           .or(RpcEthSignTypedDataV4)
           .or(RpcEthSendTransactionRequest)
+          .or(RpcSolanaSignMessageRequest)
+          .or(RpcSolanaSignTransactionRequest)
+          .or(RpcSolanaSignAllTransactionsRequest)
+          .or(RpcSolanaSignAndSendTransactionRequest)
           .or(WalletGetCallsReceiptRequest)
           .or(WalletSendCallsRequest)
           .or(WalletGetCapabilitiesRequest)

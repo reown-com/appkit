@@ -13,12 +13,15 @@ export class W3mFrameProvider {
     []
 
   private rpcRequestHandler?: (request: W3mFrameTypes.RPCRequest) => void
-  private rpcSuccessHandler?: (response: W3mFrameTypes.RPCResponse) => void
-  private rpcErrorHandler?: (error: Error) => void
+  private rpcSuccessHandler?: (
+    response: W3mFrameTypes.RPCResponse,
+    request: W3mFrameTypes.RPCRequest
+  ) => void
+  private rpcErrorHandler?: (error: Error, request: W3mFrameTypes.RPCRequest) => void
 
-  public constructor(projectId: string) {
+  public constructor(projectId: string, chainId?: W3mFrameTypes.Network['chainId']) {
     this.w3mLogger = new W3mFrameLogger(projectId)
-    this.w3mFrame = new W3mFrame(projectId, true)
+    this.w3mFrame = new W3mFrame(projectId, true, chainId)
   }
 
   // -- Extended Methods ------------------------------------------------
@@ -218,13 +221,28 @@ export class W3mFrameProvider {
   // -- Provider Methods ------------------------------------------------
   public async connect(payload?: W3mFrameTypes.Requests['AppGetUserRequest']) {
     try {
-      const chainId = payload?.chainId ?? this.getLastUsedChainId() ?? 1
+      const chainId = payload?.chainId || this.getLastUsedChainId() || 1
       const response = await this.appEvent<'GetUser'>({
         type: W3mFrameConstants.APP_GET_USER,
         payload: { ...payload, chainId }
       } as W3mFrameTypes.AppEvent)
       this.setLoginSuccess(response.email)
       this.setLastUsedChainId(response.chainId)
+
+      return response
+    } catch (error) {
+      this.w3mLogger.logger.error({ error }, 'Error connecting')
+      throw error
+    }
+  }
+
+  public async getUser(payload: W3mFrameTypes.Requests['AppGetUserRequest']) {
+    try {
+      const chainId = payload?.chainId || this.getLastUsedChainId() || 1
+      const response = await this.appEvent<'GetUser'>({
+        type: W3mFrameConstants.APP_GET_USER,
+        payload: { ...payload, chainId }
+      } as W3mFrameTypes.AppEvent)
 
       return response
     } catch (error) {
@@ -281,7 +299,7 @@ export class W3mFrameProvider {
     }
   }
 
-  public async switchNetwork(chainId: number) {
+  public async switchNetwork(chainId: number | string) {
     try {
       const response = await this.appEvent<'SwitchNetwork'>({
         type: W3mFrameConstants.APP_SWITCH_NETWORK,
@@ -323,11 +341,11 @@ export class W3mFrameProvider {
         payload: req
       } as W3mFrameTypes.AppEvent)
 
-      this.rpcSuccessHandler?.(response)
+      this.rpcSuccessHandler?.(response, req)
 
       return response
     } catch (error) {
-      this.rpcErrorHandler?.(error as Error)
+      this.rpcErrorHandler?.(error as Error, req)
       this.w3mLogger.logger.error({ error }, 'Error requesting')
       throw error
     }
@@ -337,11 +355,13 @@ export class W3mFrameProvider {
     this.rpcRequestHandler = callback
   }
 
-  public onRpcSuccess(callback: (request: W3mFrameTypes.FrameEvent) => void) {
+  public onRpcSuccess(
+    callback: (response: W3mFrameTypes.FrameEvent, request: W3mFrameTypes.RPCRequest) => void
+  ) {
     this.rpcSuccessHandler = callback
   }
 
-  public onRpcError(callback: (error: Error) => void) {
+  public onRpcError(callback: (error: Error, request: W3mFrameTypes.RPCRequest) => void) {
     this.rpcErrorHandler = callback
   }
 
@@ -401,6 +421,10 @@ export class W3mFrameProvider {
         callback([])
       }
     })
+  }
+
+  public getAvailableChainIds() {
+    return Object.keys(this.w3mFrame.networks)
   }
 
   // -- Private Methods -------------------------------------------------
@@ -481,15 +505,41 @@ export class W3mFrameProvider {
     W3mFrameStorage.delete(W3mFrameConstants.SOCIAL, true)
   }
 
-  private setLastUsedChainId(chainId: number) {
-    W3mFrameStorage.set(W3mFrameConstants.LAST_USED_CHAIN_KEY, String(chainId))
+  private setLastUsedChainId(chainId: string | number) {
+    if (chainId) {
+      W3mFrameStorage.set(W3mFrameConstants.LAST_USED_CHAIN_KEY, String(chainId))
+    }
   }
 
-  private getLastUsedChainId() {
+  public getLastUsedChainId() {
     return Number(W3mFrameStorage.get(W3mFrameConstants.LAST_USED_CHAIN_KEY))
   }
 
   private persistSmartAccountEnabledNetworks(networks: number[]) {
     W3mFrameStorage.set(W3mFrameConstants.SMART_ACCOUNT_ENABLED_NETWORKS, networks.join(','))
   }
+}
+
+export interface W3mFrameProviderMethods {
+  // Email
+  connectEmail: W3mFrameProvider['connectEmail']
+  connectOtp: W3mFrameProvider['connectOtp']
+  updateEmail: W3mFrameProvider['updateEmail']
+  updateEmailPrimaryOtp: W3mFrameProvider['updateEmailPrimaryOtp']
+  updateEmailSecondaryOtp: W3mFrameProvider['updateEmailSecondaryOtp']
+  getEmail: W3mFrameProvider['getEmail']
+
+  // Social
+  connectDevice: W3mFrameProvider['connectDevice']
+  connectSocial: W3mFrameProvider['connectSocial']
+  getSocialRedirectUri: W3mFrameProvider['getSocialRedirectUri']
+
+  // Farcaster
+  connectFarcaster: W3mFrameProvider['connectFarcaster']
+  getFarcasterUri: W3mFrameProvider['getFarcasterUri']
+
+  // Misc
+  syncTheme: W3mFrameProvider['syncTheme']
+  syncDappData: W3mFrameProvider['syncDappData']
+  switchNetwork: W3mFrameProvider['switchNetwork']
 }

@@ -1,4 +1,4 @@
-import { customElement } from '@web3modal/ui'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
@@ -6,16 +6,16 @@ import {
   SwapController,
   RouterController,
   CoreHelperUtil,
-  NetworkController,
   ModalController,
-  ConstantsUtil,
   type SwapToken,
   type SwapInputTarget,
   EventsController,
-  AccountController
-} from '@web3modal/core'
-import { NumberUtil } from '@web3modal/common'
-import { W3mFrameRpcConstants } from '@web3modal/wallet'
+  AccountController,
+  ChainController,
+  NetworkController
+} from '@reown/appkit-core'
+import { NumberUtil } from '@reown/appkit-common'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 
 @customElement('w3m-swap-view')
 export class W3mSwapView extends LitElement {
@@ -28,7 +28,7 @@ export class W3mSwapView extends LitElement {
 
   @state() private detailsOpen = false
 
-  @state() private caipNetworkId = NetworkController.state.caipNetwork?.id
+  @state() private caipNetworkId = ChainController.state.activeCaipNetwork?.id
 
   @state() private initialized = SwapController.state.initialized
 
@@ -59,7 +59,7 @@ export class W3mSwapView extends LitElement {
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
-    NetworkController.subscribeKey('caipNetwork', newCaipNetwork => {
+    ChainController.subscribeKey('activeCaipNetwork', newCaipNetwork => {
       if (this.caipNetworkId !== newCaipNetwork?.id) {
         this.caipNetworkId = newCaipNetwork?.id
         SwapController.resetState()
@@ -207,8 +207,7 @@ export class W3mSwapView extends LitElement {
 
   private onSetMaxValue(target: SwapInputTarget, balance: string | undefined) {
     const token = target === 'sourceToken' ? this.sourceToken : this.toToken
-    const isNetworkToken = token?.address === ConstantsUtil.NATIVE_TOKEN_ADDRESS
-
+    const isNetworkToken = token?.address === NetworkController.getActiveNetworkTokenAddress()
     let value = '0'
 
     if (!balance) {

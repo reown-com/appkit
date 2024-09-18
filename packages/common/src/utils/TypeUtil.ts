@@ -1,4 +1,24 @@
-export type CaipNetworkId = `${string}:${string}`
+export type CaipNetworkId = `${ChainNamespace}:${ChainId}`
+
+export type CaipAddress = `${ChainNamespace}:${ChainId}:${string}`
+
+export type ChainId = string | number
+
+export type ChainNamespace = 'eip155' | 'solana' | 'polkadot'
+
+export type CaipNetwork = {
+  id: CaipNetworkId
+  chainId: ChainId
+  chainNamespace: ChainNamespace
+  name: string
+  currency: string
+  explorerUrl: string
+  rpcUrl: string
+  imageUrl?: string
+  imageId?: string
+}
+
+export type AdapterType = 'solana' | 'wagmi' | 'ethers' | 'ethers5' | 'universal' | 'polkadot'
 
 export type CoinbaseTransactionStatus =
   | 'ONRAMP_TRANSACTION_STATUS_SUCCESS'
@@ -14,8 +34,6 @@ export type TransactionImage = {
   url: string | undefined
 }
 
-export type Chain = 'evm' | 'solana'
-
 export interface Transaction {
   id: string
   metadata: TransactionMetadata
@@ -25,12 +43,12 @@ export interface Transaction {
 export interface TransactionMetadata {
   operationType: string
   hash: string
+  chain: `${string}:${string}`
   minedAt: string
   sentFrom: string
   sentTo: string
   status: TransactionStatus | CoinbaseTransactionStatus
   nonce: number
-  chain?: string
 }
 
 export interface TransactionTransfer {
@@ -92,3 +110,11 @@ type BalanceQuantity = {
   decimals: string
   numeric: string
 }
+
+export type SIWEStatus = 'uninitialized' | 'ready' | 'loading' | 'success' | 'rejected' | 'error'
+
+export type SdkFramework = 'html' | 'react' | 'vue'
+
+export type SdkVersion = `${SdkFramework}-${AdapterType}-${string}`
+
+export type AppKitSdkVersion = `${SdkFramework}-${string}-${string}`

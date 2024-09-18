@@ -1,18 +1,18 @@
 import {
   AccountController,
+  ChainController,
   ConnectionController,
   EventsController,
   ModalController,
-  NetworkController,
   OptionsController,
   RouterController,
   SnackController
-} from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { SIWEController } from '../../../core/controller/SIWEController.js'
-import { W3mFrameRpcConstants } from '@web3modal/wallet'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 
 @customElement('w3m-connecting-siwe-view')
 export class W3mConnectingSiweView extends LitElement {
@@ -21,10 +21,10 @@ export class W3mConnectingSiweView extends LitElement {
 
   @state() private isSigning = false
 
+  @state() private isCancelling = false
+
   // -- Render -------------------------------------------- //
   public override render() {
-    this.onRender()
-
     return html`
       <wui-flex justifyContent="center" .padding=${['2xl', '0', 'xxl', '0'] as const}>
         <w3m-connecting-siwe></w3m-connecting-siwe>
@@ -54,6 +54,7 @@ export class W3mConnectingSiweView extends LitElement {
           borderRadius="xs"
           fullWidth
           variant="neutral"
+          ?loading=${this.isCancelling}
           @click=${this.onCancel.bind(this)}
           data-testid="w3m-connecting-siwe-cancel"
         >
@@ -75,20 +76,13 @@ export class W3mConnectingSiweView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
-
-  private onRender() {
-    if (SIWEController.state.session) {
-      ModalController.close()
-    }
-  }
-
   private async onSign() {
     this.isSigning = true
     EventsController.sendEvent({
       event: 'CLICK_SIGN_SIWE_MESSAGE',
       type: 'track',
       properties: {
-        network: NetworkController.state.caipNetwork?.id || '',
+        network: ChainController.state.activeCaipNetwork?.id || '',
         isSmartAccount:
           AccountController.state.preferredAccountType ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
@@ -102,7 +96,7 @@ export class W3mConnectingSiweView extends LitElement {
         event: 'SIWE_AUTH_SUCCESS',
         type: 'track',
         properties: {
-          network: NetworkController.state.caipNetwork?.id || '',
+          network: ChainController.state.activeCaipNetwork?.id || '',
           isSmartAccount:
             AccountController.state.preferredAccountType ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
@@ -125,7 +119,7 @@ export class W3mConnectingSiweView extends LitElement {
         event: 'SIWE_AUTH_ERROR',
         type: 'track',
         properties: {
-          network: NetworkController.state.caipNetwork?.id || '',
+          network: ChainController.state.activeCaipNetwork?.id || '',
           isSmartAccount
         }
       })
@@ -135,18 +129,20 @@ export class W3mConnectingSiweView extends LitElement {
   }
 
   private async onCancel() {
-    const isConnected = AccountController.state.isConnected
-    if (isConnected) {
+    this.isCancelling = true
+    const caipAddress = ChainController.state.activeCaipAddress
+    if (caipAddress) {
       await ConnectionController.disconnect()
       ModalController.close()
     } else {
       RouterController.push('Connect')
     }
+    this.isCancelling = false
     EventsController.sendEvent({
       event: 'CLICK_CANCEL_SIWE',
       type: 'track',
       properties: {
-        network: NetworkController.state.caipNetwork?.id || '',
+        network: ChainController.state.activeCaipNetwork?.id || '',
         isSmartAccount:
           AccountController.state.preferredAccountType ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT

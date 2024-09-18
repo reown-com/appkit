@@ -1,39 +1,45 @@
-import { createWeb3Modal, defaultSolanaConfig } from '@web3modal/solana/react'
-
+import { createAppKit, type CaipNetwork } from '@reown/appkit/react'
+import { SolanaAdapter } from '@reown/appkit-adapter-solana/react'
 import { ThemeStore } from '../../utils/StoreUtil'
-import { solana, solanaDevnet, solanaTestnet } from '../../utils/ChainsUtil'
-import { Web3ModalButtons } from '../../components/Web3ModalButtons'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
+import { solana, solanaDevnet, solanaTestnet } from '@reown/appkit/networks'
+
+import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
+import { AppKitButtons } from '../../components/AppKitButtons'
 import { SolanaTests } from '../../components/Solana/SolanaTests'
-import { SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 
-const chains = [solana, solanaTestnet, solanaDevnet]
-
-export const solanaConfig = defaultSolanaConfig({
-  chains,
-  projectId: ConstantsUtil.ProjectId,
-  metadata: ConstantsUtil.Metadata
+const solanaWeb3JsAdapter = new SolanaAdapter({
+  wallets: [new HuobiWalletAdapter(), new SolflareWalletAdapter()]
 })
 
-const modal = createWeb3Modal({
-  solanaConfig,
+export const solanaNotExist = {
+  id: 'solana:chaindoesntexist',
+  chainId: 'chaindoesntexist',
+  name: 'Solana Unsupported',
+  currency: 'SOL',
+  explorerUrl: 'https://explorer.solana.com/?cluster=devnet',
+  rpcUrl: '',
+  chainNamespace: 'solana'
+} as CaipNetwork
+
+const modal = createAppKit({
+  adapters: [solanaWeb3JsAdapter],
+  networks: [solana, solanaTestnet, solanaDevnet, solanaNotExist],
   projectId: ConstantsUtil.ProjectId,
-  metadata: ConstantsUtil.Metadata,
-  chains,
-  enableAnalytics: false,
-  termsConditionsUrl: 'https://walletconnect.com/terms',
-  privacyPolicyUrl: 'https://walletconnect.com/privacy',
-  customWallets: ConstantsUtil.CustomWallets,
-  enableSwaps: false,
-  wallets: [new SolflareWalletAdapter()]
+  features: {
+    analytics: true,
+    email: true,
+    socials: ['google', 'github', 'apple', 'discord']
+  },
+  metadata: ConstantsUtil.Metadata
 })
 
 ThemeStore.setModal(modal)
 
-export default function Solana() {
+export default function MultiChainSolanaAdapterOnly() {
   return (
     <>
-      <Web3ModalButtons />
+      <AppKitButtons />
       <SolanaTests />
     </>
   )

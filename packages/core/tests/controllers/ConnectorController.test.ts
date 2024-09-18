@@ -1,13 +1,14 @@
-import { describe, expect, it, vi } from 'vitest'
+import { beforeAll, describe, expect, it, vi } from 'vitest'
 import {
+  ChainController,
   ConnectorController,
   OptionsController,
   type Metadata,
   type SdkVersion,
   type ThemeMode,
   type ThemeVariables
-} from '../../index.js'
-import { ConstantsUtil, getW3mThemeVariables } from '@web3modal/common'
+} from '../../exports/index.js'
+import { ConstantsUtil, getW3mThemeVariables } from '@reown/appkit-common'
 
 // -- Setup --------------------------------------------------------------------
 const authProvider = {
@@ -20,24 +21,36 @@ const walletConnectConnector = {
   id: 'walletConnect',
   explorerId: 'walletConnectId',
   type: 'WALLET_CONNECT',
-  chain: ConstantsUtil.CHAIN.EVM
+  chain: ConstantsUtil.CHAIN.EVM,
+  name: 'WalletConnect'
 } as const
 const externalConnector = {
   id: 'external',
   type: 'EXTERNAL',
-  chain: ConstantsUtil.CHAIN.EVM
+  chain: ConstantsUtil.CHAIN.EVM,
+  name: 'External'
 } as const
-const authConnector = {
+const evmAuthConnector = {
   id: 'w3mAuth',
   type: 'AUTH',
   provider: authProvider,
-  chain: ConstantsUtil.CHAIN.EVM
+  chain: ConstantsUtil.CHAIN.EVM,
+  name: 'Auth'
 } as const
+const solanaAuthConnector = {
+  id: 'w3mAuth',
+  type: 'AUTH',
+  provider: authProvider,
+  chain: ConstantsUtil.CHAIN.SOLANA,
+  name: 'Auth'
+} as const
+
 const announcedConnector = {
   id: 'announced',
   type: 'ANNOUNCED',
   info: { rdns: 'announced.io' },
-  chain: ConstantsUtil.CHAIN.EVM
+  chain: ConstantsUtil.CHAIN.EVM,
+  name: 'Announced'
 } as const
 
 const syncDappDataSpy = vi.spyOn(authProvider, 'syncDappData')
@@ -51,21 +64,28 @@ const mockDappData = {
     icons: ['icon.png']
   },
   projectId: '1234',
-  sdkVersion: 'react-wagmi-4.0.13' as SdkVersion
+  sdkVersion: 'react-wagmi-4.0.13' as SdkVersion,
+  sdkType: 'appkit'
 }
 const metamaskConnector = {
   id: 'metamask',
   type: 'INJECTED',
   info: { rdns: 'io.metamask.com' },
-  chain: ConstantsUtil.CHAIN.EVM
+  chain: ConstantsUtil.CHAIN.EVM,
+  name: 'MetaMask'
 } as const
 const zerionConnector = {
   id: 'ecc4036f814562b41a5268adc86270fba1365471402006302e70169465b7ac18',
   type: 'INJECTED',
-  chain: ConstantsUtil.CHAIN.EVM
+  chain: ConstantsUtil.CHAIN.EVM,
+  name: 'Zerion'
 } as const
+
 // -- Tests --------------------------------------------------------------------
 describe('ConnectorController', () => {
+  beforeAll(() => {
+    ChainController.state.activeChain = ConstantsUtil.CHAIN.EVM
+  })
   it('should have valid default state', () => {
     expect(ConnectorController.state.connectors).toEqual([])
   })
@@ -92,14 +112,17 @@ describe('ConnectorController', () => {
 
   it('should return the correct connector on getConnector', () => {
     ConnectorController.addConnector(zerionConnector)
-    expect(ConnectorController.getConnector('walletConnectId', '')).toBe(walletConnectConnector)
-    expect(ConnectorController.getConnector('', 'io.metamask.com')).toBe(metamaskConnector)
+    expect(ConnectorController.getConnector('walletConnectId', '')).toStrictEqual(
+      walletConnectConnector
+    )
+    expect(ConnectorController.getConnector('', 'io.metamask.com')).toStrictEqual(metamaskConnector)
     expect(ConnectorController.getConnector(zerionConnector.id, '')).toBeUndefined()
     expect(ConnectorController.getConnector('unknown', '')).toBeUndefined()
   })
 
   it('getAuthConnector() should not throw when auth connector is not set', () => {
-    expect(ConnectorController.getAuthConnector()).toEqual(undefined)
+    const connector = ConnectorController.getAuthConnector()
+    expect(connector).toEqual(undefined)
   })
 
   it('should trigger corresponding sync methods when adding auth connector', () => {
@@ -107,13 +130,13 @@ describe('ConnectorController', () => {
     OptionsController.setSdkVersion(mockDappData.sdkVersion)
     OptionsController.setProjectId(mockDappData.projectId)
 
-    ConnectorController.addConnector(authConnector)
+    ConnectorController.addConnector(evmAuthConnector)
     expect(ConnectorController.state.connectors).toEqual([
       walletConnectConnector,
       externalConnector,
       metamaskConnector,
       zerionConnector,
-      authConnector
+      evmAuthConnector
     ])
 
     expect(syncDappDataSpy).toHaveBeenCalledWith(mockDappData)
@@ -124,8 +147,15 @@ describe('ConnectorController', () => {
     })
   })
 
-  it('getAuthConnector() should return authconnector when already added', () => {
-    expect(ConnectorController.getAuthConnector()).toEqual(authConnector)
+  it('getAuthConnector() should return appropiate authconnector when already added', () => {
+    const connector = ConnectorController.getAuthConnector()
+    expect(connector).toEqual(evmAuthConnector)
+  })
+
+  it('getAuthConnector() should return merged connector when already added on different network', () => {
+    ConnectorController.addConnector(solanaAuthConnector)
+    const connector = ConnectorController.getAuthConnector()
+    expect(connector).toEqual(evmAuthConnector)
   })
 
   it('getAnnouncedConnectorRdns() should not throw when no announced connector is not set', () => {
@@ -143,7 +173,37 @@ describe('ConnectorController', () => {
       externalConnector,
       metamaskConnector,
       zerionConnector,
-      authConnector,
+      // Need to define inline to reference the spies
+      {
+        id: 'w3mAuth',
+        imageId: undefined,
+        imageUrl: undefined,
+        name: 'Auth',
+        type: 'MULTI_CHAIN',
+        chain: 'eip155',
+        connectors: [
+          {
+            chain: 'eip155',
+            id: 'w3mAuth',
+            name: 'Auth',
+            provider: {
+              syncDappData: syncDappDataSpy,
+              syncTheme: syncThemeSpy
+            },
+            type: 'AUTH'
+          },
+          {
+            chain: 'solana',
+            id: 'w3mAuth',
+            name: 'Auth',
+            provider: {
+              syncDappData: syncDappDataSpy,
+              syncTheme: syncThemeSpy
+            },
+            type: 'AUTH'
+          }
+        ]
+      },
       announcedConnector
     ])
   })

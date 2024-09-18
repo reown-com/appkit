@@ -1,10 +1,11 @@
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
-import { getChain } from './ChainsUtil'
+import { getChain } from './NetworksUtil'
 import { parseJSON } from './CommonUtils'
 import { fromHex, type WalletCapabilities } from 'viem'
-import { W3mFrameProvider } from '@web3modal/wallet'
+import { W3mFrameProvider } from '@reown/appkit-wallet'
 
 export const EIP_5792_RPC_METHODS = {
+  WALLET_GET_CAPABILITIES: 'wallet_getCapabilities',
   WALLET_GET_CALLS_STATUS: 'wallet_getCallsStatus',
   WALLET_SEND_CALLS: 'wallet_sendCalls'
 }
@@ -45,8 +46,8 @@ export function getFilteredCapabilitySupportedChainInfo(
   return chainInfo
 }
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 export function convertCapabilitiesToRecord(
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   accountCapabilities: Record<string, any>
 ): Record<number, WalletCapabilities> {
   return Object.fromEntries(

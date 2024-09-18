@@ -8,13 +8,28 @@ import { DeviceRegistrationPage } from './DeviceRegistrationPage'
 import type { TimingRecords } from '../fixtures/timing-fixture'
 import { WalletPage } from './WalletPage'
 import { WalletValidator } from '../validators/WalletValidator'
+import { routeInterceptUrl } from '../utils/verify'
 
-export type ModalFlavor = 'default' | 'siwe' | 'email' | 'wallet' | 'external' | 'all'
+const maliciousUrl = 'https://malicious-app-verify-simulation.vercel.app'
+
+export type ModalFlavor =
+  | 'default'
+  | 'external'
+  | 'verify-valid'
+  | 'verify-domain-mismatch'
+  | 'verify-evil'
+  | 'no-email'
+  | 'no-socials'
+  | 'siwe'
+  | 'all'
 
 function getUrlByFlavor(baseUrl: string, library: string, flavor: ModalFlavor) {
   const urlsByFlavor: Partial<Record<ModalFlavor, string>> = {
     default: `${baseUrl}library/${library}/`,
-    external: `${baseUrl}library/external/`
+    external: `${baseUrl}library/external/`,
+    'verify-valid': `${baseUrl}library/verify-valid/`,
+    'verify-domain-mismatch': `${baseUrl}library/verify-domain-mismatch/`,
+    'verify-evil': maliciousUrl
   }
 
   return urlsByFlavor[flavor] || `${baseUrl}library/${library}-${flavor}/`
@@ -33,10 +48,18 @@ export class ModalPage {
     public readonly flavor: ModalFlavor
   ) {
     this.connectButton = this.page.getByTestId('connect-button')
-    this.url = getUrlByFlavor(this.baseURL, library, flavor)
+    if (library === 'multichain-ethers-solana') {
+      this.url = `${this.baseURL}library/multichain-ethers-solana/`
+    } else {
+      this.url = getUrlByFlavor(this.baseURL, library, flavor)
+    }
   }
 
   async load() {
+    if (this.flavor === 'verify-evil') {
+      await routeInterceptUrl(this.page, maliciousUrl, this.baseURL, '/library/verify-evil/')
+    }
+
     await this.page.goto(this.url)
   }
 
@@ -73,10 +96,37 @@ export class ModalPage {
     return uri
   }
 
-  async qrCodeFlow(page: ModalPage, walletPage: WalletPage): Promise<void> {
+  async getImmidiateConnectUri(timingRecords?: TimingRecords): Promise<string> {
+    await this.connectButton.click()
+    const qrLoadInitiatedTime = new Date()
+
+    // Using getByTestId() doesn't work on my machine, I'm guessing because this element is inside of a <slot>
+    const qrCode = this.page.locator('wui-qr-code')
+    await expect(qrCode).toBeVisible()
+
+    const uri = this.assertDefined(await qrCode.getAttribute('uri'))
+    const qrLoadedTime = new Date()
+    if (timingRecords) {
+      timingRecords.push({
+        item: 'qrLoad',
+        timeMs: qrLoadedTime.getTime() - qrLoadInitiatedTime.getTime()
+      })
+    }
+
+    return uri
+  }
+
+  async qrCodeFlow(page: ModalPage, walletPage: WalletPage, immediate?: boolean): Promise<void> {
+    // eslint-disable-next-line init-declarations
+    let uri: string
     await walletPage.load()
-    const uri = await page.getConnectUri()
+    if (immediate) {
+      uri = await page.getImmidiateConnectUri()
+    } else {
+      uri = await page.getConnectUri()
+    }
     await walletPage.connectWithUri(uri)
+
     await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
     const walletValidator = new WalletValidator(walletPage.page)
     await walletValidator.expectConnected()
@@ -230,15 +280,18 @@ export class ModalPage {
   async signatureRequestFrameShouldVisible(headerText: string) {
     await expect(
       this.page.frameLocator('#w3m-iframe').getByText(headerText),
-      'Web3Modal iframe should be visible'
+      'AppKit iframe should be visible'
     ).toBeVisible({
       timeout: 10000
     })
-    await this.page.waitForTimeout(2000)
+    await this.page.waitForTimeout(500)
   }
 
   async clickSignatureRequestButton(name: string) {
+    const signatureHeader = this.page.getByText('Approve Transaction')
     await this.page.frameLocator('#w3m-iframe').getByRole('button', { name, exact: true }).click()
+    await expect(signatureHeader, 'Signature request should be closed').not.toBeVisible()
+    await this.page.waitForTimeout(300)
   }
 
   async approveSign() {
@@ -288,6 +341,8 @@ export class ModalPage {
     await this.page.getByTestId('account-button').click()
     await this.page.getByTestId('w3m-account-select-network').click()
     await this.page.getByTestId(`w3m-network-switch-${network}`).click()
+    // The state is chaing too fast and test runner doesn't wait the loading page. It's fastly checking the network selection button and detect that it's switched already.
+    await this.page.waitForTimeout(300)
   }
 
   async clickWalletDeeplink() {
@@ -297,7 +352,14 @@ export class ModalPage {
   }
 
   async openAccount() {
+    expect(this.page.getByTestId('w3m-modal-card')).not.toBeVisible()
+    expect(this.page.getByTestId('w3m-modal-overlay')).not.toBeVisible()
+    this.page.waitForTimeout(300)
     await this.page.getByTestId('account-button').click()
+  }
+
+  async openConnectModal() {
+    await this.page.getByTestId('connect-button').click()
   }
 
   async closeModal() {
@@ -306,9 +368,9 @@ export class ModalPage {
     await this.page.waitForTimeout(300)
   }
 
-  async updateEmail(mailsacApiKey: string, index: number) {
+  async updateEmail(mailsacApiKey: string) {
     const email = new Email(mailsacApiKey)
-    const newEmailAddress = email.getEmailAddressToUse(index)
+    const newEmailAddress = await email.getEmailAddressToUse()
 
     await this.page.getByTestId('account-button').click()
     await this.page.getByTestId('w3m-account-email-update').click()
@@ -352,8 +414,21 @@ export class ModalPage {
     await this.enterOTP(otp, headerTitle)
   }
 
+  async switchNetworkWithNetworkButton(networkName: string) {
+    const networkButton = this.page.getByTestId('w3m-network-button')
+    await networkButton.click()
+
+    const networkToSwitchButton = this.page.getByTestId(`w3m-network-switch-${networkName}`)
+    await networkToSwitchButton.click()
+  }
+
   async openModal() {
     await this.page.getByTestId('account-button').click()
+  }
+
+  async openNetworks() {
+    await this.page.getByTestId('w3m-account-select-network').click()
+    await expect(this.page.getByText('Choose Network')).toBeVisible()
   }
 
   async openProfileView() {
@@ -379,5 +454,32 @@ export class ModalPage {
 
     await sendCallsInput.fill(batchCallId)
     await sendCallsButton.click()
+  }
+
+  async switchAccount() {
+    const switchAccountButton1 = this.page.getByTestId('w3m-switch-address-button-1')
+    await expect(switchAccountButton1).toBeVisible()
+    await switchAccountButton1.click()
+  }
+
+  async getAddress(): Promise<`0x${string}`> {
+    const address = await this.page.getByTestId('w3m-address').textContent()
+    expect(address, 'Address should be present').toBeTruthy()
+
+    return address as `0x${string}`
+  }
+
+  async getChainId(): Promise<number> {
+    const chainId = await this.page.getByTestId('w3m-chain-id').textContent()
+    expect(chainId, 'Chain ID should be present').toBeTruthy()
+
+    return Number(chainId)
+  }
+
+  async getSignature(): Promise<`0x${string}`> {
+    const signature = await this.page.getByTestId('w3m-signature').textContent()
+    expect(signature, 'Signature should be present').toBeTruthy()
+
+    return signature as `0x${string}`
   }
 }

@@ -1,61 +1,36 @@
-import { onUnmounted, ref } from 'vue'
-
-import { ConstantsUtil } from '@web3modal/scaffold-utils'
-import { getWeb3Modal } from '@web3modal/scaffold-vue'
-
-import type { Web3ModalOptions } from '../src/client.js'
-import type { CaipNetwork } from 'packages/core/dist/types/index.js'
-import type { Provider } from '../src/utils/scaffold/index.js'
-import { SolStoreUtil } from '../src/utils/scaffold/SolanaStoreUtil.js'
-import { Web3Modal } from '../src/client.js'
+import { getAppKit } from '@reown/appkit/library/vue'
+import { AppKit } from '@reown/appkit'
+import { SolanaAdapter, useAppKitConnection } from '@reown/appkit-adapter-solana/vue'
+import type { Provider } from '@reown/appkit-adapter-solana/vue'
+import type { CaipNetwork } from '@reown/appkit-common'
+import type { SolanaAppKitOptions } from './options'
+import packageJson from '../package.json' assert { type: 'json' }
 
 // -- Types -------------------------------------------------------------------
-export type { Web3ModalOptions } from '../src/client.js'
+export type { SolanaAppKitOptions, Provider }
 
 // -- Setup -------------------------------------------------------------------
-let modal: Web3Modal | undefined = undefined
+let appkit: AppKit | undefined = undefined
+let solanaAdapter: SolanaAdapter | undefined = undefined
 
-export function createWeb3Modal(options: Web3ModalOptions) {
-  if (!modal) {
-    modal = new Web3Modal({
-      ...options,
-      _sdkVersion: `vue-solana-${ConstantsUtil.VERSION}`
-    })
-    getWeb3Modal(modal)
-  }
+export function createAppKit(options: SolanaAppKitOptions) {
+  solanaAdapter = new SolanaAdapter({
+    wallets: options.wallets
+  })
+  appkit = new AppKit({
+    ...options,
+    sdkVersion: `vue-solana-${packageJson.version}`,
+    adapters: [solanaAdapter]
+  })
+  getAppKit(appkit)
 
-  return modal
+  return appkit
 }
 
 // -- Composites --------------------------------------------------------------
-export function useWeb3ModalProvider() {
-  if (!modal) {
-    throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalProvider" composition')
-  }
-
-  const walletProvider = ref(SolStoreUtil.state.provider as Provider)
-  const walletProviderType = ref(SolStoreUtil.state.providerType)
-  const connection = ref(SolStoreUtil.state.connection)
-
-  const unsubscribe = modal.subscribeProvider(state => {
-    walletProvider.value = state.provider as Provider
-    walletProviderType.value = state.providerType
-  })
-
-  onUnmounted(() => {
-    unsubscribe?.()
-  })
-
-  return {
-    walletProvider,
-    walletProviderType,
-    connection
-  }
-}
-
 export function useDisconnect() {
-  function disconnect() {
-    modal?.disconnect()
+  async function disconnect() {
+    await solanaAdapter?.connectionControllerClient?.disconnect()
   }
 
   return {
@@ -65,7 +40,7 @@ export function useDisconnect() {
 
 export function useSwitchNetwork() {
   async function switchNetwork(chainId: string) {
-    await modal?.switchNetwork({ id: chainId } as CaipNetwork)
+    await solanaAdapter?.switchNetwork({ id: chainId } as CaipNetwork)
   }
 
   return {
@@ -73,58 +48,16 @@ export function useSwitchNetwork() {
   }
 }
 
-export function useWeb3ModalAccount() {
-  if (!modal) {
-    throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalAccount" composition')
-  }
-
-  const address = ref(modal.getAddress())
-  const isConnected = ref(SolStoreUtil.state.isConnected)
-  const chainId = ref(SolStoreUtil.state.currentChain?.chainId)
-
-  const unsubscribe = modal.subscribeProvider(state => {
-    address.value = state.address ?? ''
-    isConnected.value = state.isConnected
-    chainId.value = state.chainId
-  })
-
-  onUnmounted(() => {
-    unsubscribe?.()
-  })
-
-  return {
-    address,
-    isConnected,
-    chainId
-  }
-}
-
-export function useWeb3ModalError() {
-  if (!modal) {
-    throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalError" composition')
-  }
-
-  const error = ref(SolStoreUtil.state.error)
-
-  const unsubscribe = modal.subscribeProvider(state => {
-    error.value = state.error
-  })
-
-  onUnmounted(() => {
-    unsubscribe?.()
-  })
-
-  return {
-    error
-  }
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+export function useAppKitError() {
+  // eslint-disable-next-line no-warning-comments
+  // TODO fix error hook
 }
 
 export {
-  useWeb3ModalTheme,
-  useWeb3Modal,
-  useWeb3ModalState,
-  useWeb3ModalEvents
-} from '@web3modal/scaffold-vue'
-
-// -- Universal Exports -------------------------------------------------------
-export { defaultSolanaConfig } from '../src/utils/defaultConfig.js'
+  useAppKitTheme,
+  useAppKit,
+  useAppKitState,
+  useAppKitEvents
+} from '@reown/appkit/library/vue'
+export { useAppKitConnection }

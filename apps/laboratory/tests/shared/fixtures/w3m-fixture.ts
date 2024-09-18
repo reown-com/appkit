@@ -1,12 +1,17 @@
 /* eslint no-console: 0 */
 
 import { ModalPage } from '../pages/ModalPage'
-import { ModalValidator } from '../validators/ModalValidator'
 import { timeStart, timeEnd } from '../utils/logs'
+import { ModalValidator } from '../validators/ModalValidator'
 import { timingFixture } from './timing-fixture'
 
 // Declare the types of fixtures to use
 export interface ModalFixture {
+  modalPage: ModalPage
+  library: string
+}
+
+interface ModalWalletFixture {
   modalPage: ModalPage
   modalValidator: ModalValidator
   library: string
@@ -29,7 +34,16 @@ export const testM = timingFixture.extend<ModalFixture>({
 export const testMSiwe = timingFixture.extend<ModalFixture>({
   library: ['wagmi', { option: true }],
   modalPage: async ({ page, library }, use) => {
-    const modalPage = new ModalPage(page, library, 'siwe')
+    const modalPage = new ModalPage(page, library, 'all')
+    await modalPage.load()
+    await use(modalPage)
+  }
+})
+
+export const testMultiChainM = timingFixture.extend<ModalWalletFixture>({
+  library: ['multichain', { option: true }],
+  modalPage: async ({ page, library }, use) => {
+    const modalPage = new ModalPage(page, library, 'all')
     await modalPage.load()
     await use(modalPage)
   },

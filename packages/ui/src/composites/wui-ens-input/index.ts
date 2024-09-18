@@ -7,7 +7,7 @@ import { customElement } from '../../utils/WebComponentsUtil.js'
 import '../wui-input-text/index.js'
 import styles from './styles.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import { ConstantsUtil } from '@web3modal/common'
+import { ConstantsUtil } from '@reown/appkit-common'
 
 @customElement('wui-ens-input')
 export class WuiEnsInput extends LitElement {
@@ -29,7 +29,7 @@ export class WuiEnsInput extends LitElement {
         value=${ifDefined(this.value)}
         ?disabled=${this.disabled}
         .value=${this.value || ''}
-        data-testId="wui-ens-input"
+        data-testid="wui-ens-input"
         inputRightPadding="5xl"
       >
         ${this.baseNameTemplate()} ${this.errorTemplate()}${this.loadingTemplate()}

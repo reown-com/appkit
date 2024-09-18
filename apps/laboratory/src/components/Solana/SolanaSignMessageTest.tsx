@@ -1,43 +1,33 @@
 import { Button } from '@chakra-ui/react'
 
-import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/solana/react'
+import { useAppKitProvider } from '@reown/appkit/react'
 
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { useChakraToast } from '../Toast'
+import type { Provider } from '@reown/appkit-adapter-solana'
 
 export function SolanaSignMessageTest() {
   const toast = useChakraToast()
-  const { address } = useWeb3ModalAccount()
-  const { walletProvider } = useWeb3ModalProvider()
+  const { walletProvider } = useAppKitProvider<Provider>('solana')
 
   async function onSignMessage() {
     try {
-      if (!walletProvider || !address) {
+      if (!walletProvider) {
         throw Error('user is disconnected')
       }
 
-      const encodedMessage = new TextEncoder().encode('Hello from Web3Modal')
+      const encodedMessage = new TextEncoder().encode('Hello from AppKit')
       const signature = await walletProvider.signMessage(encodedMessage)
 
-      // Backpack has specific signature format now
-      if ((signature as { signature: Uint8Array }).signature) {
-        toast({
-          title: ConstantsUtil.SigningSucceededToastTitle,
-          description: (signature as { signature: Uint8Array }).signature,
-          type: 'success'
-        })
-
-        return
-      }
       toast({
         title: ConstantsUtil.SigningSucceededToastTitle,
-        description: signature as Uint8Array,
+        description: signature,
         type: 'success'
       })
     } catch (err) {
       toast({
         title: ConstantsUtil.SigningFailedToastTitle,
-        description: 'Failed to sign message',
+        description: (err as Error).message,
         type: 'error'
       })
     }

@@ -5,9 +5,9 @@ import {
   RouterController,
   type SwapToken,
   type SwapInputTarget
-} from '@web3modal/core'
-import { InputUtil, NumberUtil } from '@web3modal/common'
-import { UiHelperUtil, customElement } from '@web3modal/ui'
+} from '@reown/appkit-core'
+import { InputUtil, NumberUtil } from '@reown/appkit-common'
+import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import styles from './styles.js'
 
 const MINIMUM_USD_VALUE_TO_CONVERT = 0.00005

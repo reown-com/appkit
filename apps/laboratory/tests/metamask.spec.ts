@@ -1,7 +1,7 @@
 import { expect } from '@playwright/test'
 import { metaMaskFixtures, testWithSynpress } from '@synthetixio/synpress'
 import { ModalValidator } from './shared/validators/ModalValidator'
-import basicSetup from './wallet-setup/basic.setup'
+import basicSetup from './wallet-setup/basic.setup.js'
 
 // -- Setup --------------------------------------------------------------------
 const synpressTest = testWithSynpress(metaMaskFixtures(basicSetup)).extend<{ library: string }>({
@@ -19,4 +19,11 @@ synpressTest('should be connected as expected', async ({ page, metamask }) => {
   await connectMetaMaskButton.click()
   await metamask.connectToDapp()
   await modalValidator.expectConnected()
+})
+
+synpressTest('should show injected connectors on Solana as expected', async ({ page }) => {
+  await page.goto(`/library/solana`)
+  await page.getByTestId('connect-button').click()
+  const connectMetaMaskButton = page.getByTestId('wallet-selector-MetaMask')
+  await expect(connectMetaMaskButton).toBeVisible()
 })

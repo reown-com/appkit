@@ -1,15 +1,15 @@
 > [!NOTE]
-> Looking for v2? [switch the branch](https://github.com/WalletConnect/web3modal/tree/V2).
+> Looking for Web3modal v[1-5]? [switch the branch](https://github.com/WalletConnect/web3modal/tree/V5).
 
-#### 📚 [Documentation](https://docs.walletconnect.com/web3modal/about)
+#### 📚 [Documentation](https://docs.reown.com/appkit/about)
 
-#### 🧪 [Laboratory](https://lab.web3modal.com)
+#### 🧪 [Laboratory](https://appkit-lab.reown.org)
 
-#### 🔗 [Website](https://web3modal.com)
+#### 🔗 [Website](https://reown.com/appkit)
 
-# Web3Modal
+# AppKit
 
-Your on-ramp to web3 multichain. Web3Modal is a versatile library that makes it super easy to connect users with your Dapp and start interacting with the blockchain.
+Your on-ramp to web3 multichain. AppKit is a versatile library that makes it super easy to connect users with your Dapp and start interacting with the blockchain.
 
 <p align="center">
   <img src="./.github/assets/header.png" alt="" border="0">
@@ -48,23 +48,13 @@ If you need to release a canary/alpha/beta you need to enter prelease mode first
 pnpm changeset
 ```
 
-For example: `pnpm changeset:pre a123bas2`
-
 ### Steps
 
 1. Run `pnpm update` and update dependencies
 2. Run `pnpm install` and verify if everything still works correctly
-3. Merge your feature branch into `V4`
-4. Create a new branch from `V4` and name it with the version tag
-5. Run `pnpm changeset` and set new custom version, enter prelease mode first if you want to add a tag to the version.
-6. Update version in `ConstantsUtil` in `@web3modal/scaffold-utils` to the correct version
-7. Create a new `PR` with Release Notes and merge into `V4`
-8. Checkout `V4` and run `pnpm publish:latest`
-9. Draft a new release in GitHub and create new tag
-10. Click on `Generate Change` and only leave the link with difference. Paste in your changelog from PR.
-11. Check `Set as the last release` and publish release.
-12. Update Web3Modal for https://web3modal.com/ (https://github.com/WalletConnect/www-web3modal) and create a PR
-13. Update Web3Modal for https://app.web3inbox.com (https://github.com/WalletConnect/web3inbox) and create a PR
+3. Merge your feature branch into `main`
+4. Changesets action will create or update a release PR
+5. When such PR is merged, it will trigger an automatic deploy to npm and publish release on github
 
 ### Running tests
 

@@ -1,7 +1,5 @@
 /* eslint-disable no-await-in-loop */
 import { danger, fail, message, warn } from 'danger'
-import corePackageJson from './packages/core/package.json' assert { type: 'json' }
-import { ConstantsUtil } from './packages/scaffold-utils/src/ConstantsUtil'
 
 // -- Constants ---------------------------------------------------------------
 const TYPE_COMMENT = `// -- Types --------------------------------------------- //`
@@ -10,11 +8,10 @@ const CONTROLLER_COMMENT = `// -- Controller -----------------------------------
 const RENDER_COMMENT = `// -- Render -------------------------------------------- //`
 const STATE_PROPERTIES_COMMENT = `// -- State & Properties -------------------------------- //`
 const PRIVATE_COMMENT = `// -- Private ------------------------------------------- //`
-const PACKAGE_VERSION = ConstantsUtil.VERSION
 const RELATIVE_IMPORT_SAME_DIR = `'./`
 const RELATIVE_IMPORT_PARENT_DIR = `'../`
 const RELATIVE_IMPORT_EXTENSION = `.js'`
-const PRIVATE_FUNCTION_REGEX = /private\s+(\w+)\s*\(\s*\)/g
+const PRIVATE_FUNCTION_REGEX = /private\s+(?:\w+)\s*\(\s*\)/gu
 
 // -- Data --------------------------------------------------------------------
 const { modified_files, created_files, deleted_files, diffForFile } = danger.git
@@ -73,8 +70,8 @@ async function checkUiPackage() {
       fail(`${f} is using @state decorator, which is not allowed in ui package`)
     }
 
-    if (diff?.added.includes('import @web3modal/core')) {
-      fail(`${f} is importing @web3modal/core, which is not allowed in ui package`)
+    if (diff?.added.includes('import @reown/appkit-core')) {
+      fail(`${f} is importing @reown/appkit-core, which is not allowed in ui package`)
     }
 
     if (!diff?.added.includes(RENDER_COMMENT) && diff?.added.includes('render()')) {
@@ -97,7 +94,7 @@ async function checkUiPackage() {
       fail(`${f} is a ui element, but does not define wui- prefix`)
     }
 
-    if (diff?.added.includes('@web3modal/ui/')) {
+    if (diff?.added.includes('@reown/appkit-ui/')) {
       fail(`${f} should use relative imports instead of direct package access`)
     }
   }
@@ -192,8 +189,8 @@ async function checkCorePackage() {
   for (const f of created_core_controllers) {
     const diff = await diffForFile(f)
 
-    if (diff?.added.includes('import @web3modal/ui')) {
-      fail(`${f} is importing @web3modal/ui, which is not allowed in core package`)
+    if (diff?.added.includes('import @reown/appkit-ui')) {
+      fail(`${f} is importing @reown/appkit-ui, which is not allowed in core package`)
     }
 
     if (!diff?.added.includes(TYPE_COMMENT)) {
@@ -212,7 +209,7 @@ async function checkCorePackage() {
       fail(`${f} is using this.state, use just state`)
     }
 
-    if (diff?.added.includes('@web3modal/core/')) {
+    if (diff?.added.includes('@reown/appkit-core/')) {
       fail(`${f} should use relative imports instead of direct package access`)
     }
 
@@ -273,9 +270,9 @@ async function checkScaffoldHtmlPackage() {
     }
 
     if (
-      diff?.added.includes('@web3modal/core/') ||
-      diff?.added.includes('@web3modal/ui/') ||
-      diff?.added.includes('@web3modal/scaffold/')
+      diff?.added.includes('@reown/appkit-core/') ||
+      diff?.added.includes('@reown/appkit-ui/') ||
+      diff?.added.includes('@reown/scaffold/')
     ) {
       fail(`${f} should use relative imports instead of direct package access`)
     }
@@ -284,13 +281,15 @@ async function checkScaffoldHtmlPackage() {
 checkScaffoldHtmlPackage()
 
 // -- Client(s) Package Checks ----------------------------------------------------
+
 // -- Helper functions
-const isRelativeImport = (addition: string | undefined) => {
+function isRelativeImport(addition: string | undefined) {
   const sameDir = addition?.includes(RELATIVE_IMPORT_SAME_DIR)
   const parentDir = addition?.includes(RELATIVE_IMPORT_PARENT_DIR)
+
   return sameDir || parentDir
 }
-const containsRelativeImportWithoutJSExtension = (addition: string | undefined) => {
+function containsRelativeImportWithoutJSExtension(addition: string | undefined) {
   const hasImportStatement = addition?.includes('import')
   const lacksJSExtension = !addition?.includes(RELATIVE_IMPORT_EXTENSION)
   const hasRelativePath = isRelativeImport(addition)
@@ -298,17 +297,19 @@ const containsRelativeImportWithoutJSExtension = (addition: string | undefined) 
   return hasImportStatement && lacksJSExtension && hasRelativePath
 }
 async function checkClientPackages() {
-  const client_files = modified_files.filter(f => /\/(wagmi|solana|ethers|ethers5)\//.test(f))
+  const client_files = modified_files.filter(f =>
+    /\/packages\/(?:wagmi|solana|ethers|ethers5)\//u.test(f)
+  )
 
   for (const f of client_files) {
     const diff = await diffForFile(f)
 
-    if (diff?.added.includes("from '@web3modal/core")) {
-      fail(`${f} is not allowed to import from @web3modal/core`)
+    if (diff?.added.includes("from '@reown/appkit-core")) {
+      fail(`${f} is not allowed to import from @reown/appkit-core`)
     }
 
-    if (diff?.added.includes("from '@web3modal/ui")) {
-      fail(`${f} is not allowed to import from @web3modal/ui`)
+    if (diff?.added.includes("from '@reown/appkit-ui")) {
+      fail(`${f} is not allowed to import from @reown/appkit-ui`)
     }
 
     if (containsRelativeImportWithoutJSExtension(diff?.added)) {
@@ -317,14 +318,6 @@ async function checkClientPackages() {
   }
 }
 checkClientPackages()
-
-// -- Check sdkVersion ------------------------------------------------------------
-function checkSdkVersion() {
-  if (PACKAGE_VERSION !== corePackageJson.version) {
-    fail(`VERSION in utils/constants does't match core package.json version`)
-  }
-}
-checkSdkVersion()
 
 // -- Check wallet ------------------------------------------------------------
 
@@ -348,6 +341,15 @@ async function checkLaboratory() {
     const diff = await diffForFile(f)
     if (f.includes('project') && (diff?.removed.includes('spec') || diff?.added.includes('spec'))) {
       warn('Testing spec changed')
+    }
+  }
+
+  // Check that no .only is present in tests
+  const test_files = lab_files.filter(f => f.includes('.spec.ts'))
+  for (const f of test_files) {
+    const fileContent = await danger.github.utils.fileContents(f)
+    if (fileContent.includes('.only')) {
+      fail(`${f} contains .only, please remove it`)
     }
   }
 }

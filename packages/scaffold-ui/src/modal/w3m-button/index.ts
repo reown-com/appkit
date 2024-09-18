@@ -1,5 +1,5 @@
-import { AccountController, ModalController } from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+import { ChainController, ModalController } from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -29,19 +29,15 @@ export class W3mButton extends LitElement {
 
   @property() public charsEnd?: W3mAccountButton['charsEnd'] = 6
 
-  @state() private isAccount = AccountController.state.isConnected
+  @state() private caipAddress = ChainController.state.activeCaipAddress
 
   @state() private isLoading = ModalController.state.loading
 
   // -- Lifecycle ----------------------------------------- //
   public override firstUpdated() {
     this.unsubscribe.push(
-      AccountController.subscribeKey('isConnected', val => {
-        this.isAccount = val
-      }),
-      ModalController.subscribeKey('loading', val => {
-        this.isLoading = val
-      })
+      ChainController.subscribeKey('activeCaipAddress', val => (this.caipAddress = val)),
+      ModalController.subscribeKey('loading', val => (this.isLoading = val))
     )
   }
 
@@ -51,7 +47,7 @@ export class W3mButton extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    return this.isAccount && !this.isLoading
+    return this.caipAddress && !this.isLoading
       ? html`
           <w3m-account-button
             .disabled=${Boolean(this.disabled)}

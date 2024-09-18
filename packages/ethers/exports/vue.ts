@@ -1,54 +1,35 @@
-import type { Web3ModalOptions } from '../src/client.js'
-import { Web3Modal } from '../src/client.js'
-import { ConstantsUtil } from '@web3modal/scaffold-utils'
-import { getWeb3Modal } from '@web3modal/scaffold-vue'
-import { onUnmounted, ref } from 'vue'
-import type { Eip1193Provider } from 'ethers'
-// -- Types -------------------------------------------------------------------
-export type { Web3ModalOptions } from '../src/client.js'
+import { AppKit } from '@reown/appkit'
+import type { AppKitOptions } from '@reown/appkit'
+import { EthersAdapter, type AdapterOptions } from '@reown/appkit-adapter-ethers'
+import { getAppKit } from '@reown/appkit/library/vue'
+import packageJson from '../package.json' assert { type: 'json' }
+
+// -- Types -------------------------------------------------------------
+export type { AdapterOptions } from '@reown/appkit-adapter-ethers'
 
 // -- Setup -------------------------------------------------------------------
-let modal: Web3Modal | undefined = undefined
+let appkit: AppKit | undefined = undefined
+let ethersAdapter: EthersAdapter | undefined = undefined
 
-export function createWeb3Modal(options: Web3ModalOptions) {
-  if (!modal) {
-    modal = new Web3Modal({
-      ...options,
-      _sdkVersion: `vue-ethers-${ConstantsUtil.VERSION}`
-    })
-    getWeb3Modal(modal)
-  }
+type EthersAppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 'sdkVersion'> &
+  AdapterOptions
 
-  return modal
+export function createAppKit(options: EthersAppKitOptions) {
+  ethersAdapter = new EthersAdapter()
+  appkit = new AppKit({
+    ...options,
+    sdkVersion: `vue-ethers-${packageJson.version}`,
+    adapters: [ethersAdapter]
+  })
+  getAppKit(appkit)
+
+  return appkit
 }
 
 // -- Composites --------------------------------------------------------------
-export function useWeb3ModalProvider() {
-  if (!modal) {
-    throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalProvider" composition')
-  }
-
-  const walletProvider = ref(modal.getWalletProvider())
-  const walletProviderType = ref(modal.getWalletProviderType())
-
-  const unsubscribe = modal.subscribeProvider(state => {
-    walletProvider.value = state.provider as Eip1193Provider | undefined
-    walletProviderType.value = state.providerType
-  })
-
-  onUnmounted(() => {
-    unsubscribe?.()
-  })
-
-  return {
-    walletProvider,
-    walletProviderType
-  }
-}
-
 export function useDisconnect() {
   async function disconnect() {
-    await modal?.disconnect()
+    await ethersAdapter?.disconnect()
   }
 
   return {
@@ -57,70 +38,21 @@ export function useDisconnect() {
 }
 
 export function useSwitchNetwork() {
-  async function switchNetwork(chainId: number) {
-    await modal?.switchNetwork(chainId)
-  }
-
-  return {
-    switchNetwork
-  }
+  // Implement this
 }
 
-export function useWeb3ModalAccount() {
-  if (!modal) {
-    throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalAccount" composition')
-  }
-
-  const address = ref(modal.getAddress())
-  const isConnected = ref(modal.getIsConnected())
-  const status = ref(modal.getStatus())
-  const chainId = ref(modal.getChainId())
-
-  const unsubscribe = modal.subscribeProvider(state => {
-    address.value = state.address as string | undefined
-    status.value = state.status
-    isConnected.value = state.isConnected
-    chainId.value = state.chainId
-  })
-
-  onUnmounted(() => {
-    unsubscribe?.()
-  })
-
-  return {
-    address,
-    isConnected,
-    chainId
-  }
+export function useAppKitAccount() {
+  // Reimplement this
 }
 
-export function useWeb3ModalError() {
-  if (!modal) {
-    throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalError" composition')
-  }
-
-  const error = ref(modal.getError())
-
-  const unsubscribe = modal.subscribeProvider(state => {
-    error.value = state.error
-  })
-
-  onUnmounted(() => {
-    unsubscribe?.()
-  })
-
-  return {
-    error
-  }
+export function useAppKitError() {
+  // Reimplement this
 }
 
 export {
-  useWeb3ModalTheme,
-  useWeb3Modal,
-  useWeb3ModalState,
-  useWeb3ModalEvents,
+  useAppKitTheme,
+  useAppKit,
+  useAppKitState,
+  useAppKitEvents,
   useWalletInfo
-} from '@web3modal/scaffold-vue'
-
-// -- Universal Exports -------------------------------------------------------
-export { defaultConfig } from '../src/utils/defaultConfig.js'
+} from '@reown/appkit/library/vue'

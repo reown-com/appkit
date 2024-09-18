@@ -39,6 +39,19 @@ sampleWalletTest.afterAll(async () => {
 })
 
 // -- Tests --------------------------------------------------------------------
+sampleWalletTest('it should fetch balance as expected', async ({ library }) => {
+  await modalValidator.expectBalanceFetched(library === 'solana' ? 'SOL' : 'ETH')
+})
+
+sampleWalletTest.skip('it should show disabled networks', async ({ library }) => {
+  const disabledNetworks = library === 'solana' ? 'Solana Unsupported' : 'Arbitrum'
+
+  await modalPage.openModal()
+  await modalPage.openNetworks()
+  await modalValidator.expectNetworksDisabled(disabledNetworks)
+  await modalPage.closeModal()
+})
+
 sampleWalletTest('it should switch networks and sign', async ({ library }) => {
   const chains = library === 'solana' ? ['Solana Testnet', 'Solana'] : ['Polygon', 'Ethereum']
 
@@ -76,11 +89,24 @@ sampleWalletTest('it should reject sign', async ({ library }) => {
   await modalValidator.expectRejectedSign()
 })
 
+sampleWalletTest('it should switch between multiple accounts', async ({ library }) => {
+  // Multi address not available in Solana wallet
+  if (library === 'solana') {
+    return
+  }
+  const originalAddress = await modalPage.getAddress()
+  await modalPage.openAccount()
+  await modalPage.openProfileView()
+  await modalPage.switchAccount()
+  await modalValidator.expectAccountSwitched(originalAddress)
+})
+
 sampleWalletTest('it should show multiple accounts', async ({ library }) => {
   // Multi address not available in Solana wallet
   if (library === 'solana') {
     return
   }
+
   await modalPage.openAccount()
   await modalPage.openProfileView()
   await modalValidator.expectMultipleAccounts()
@@ -88,11 +114,12 @@ sampleWalletTest('it should show multiple accounts', async ({ library }) => {
 })
 
 sampleWalletTest(
-  'it should show Switch Network modal if network is not supported',
+  'it should show switch network modal if network is not supported',
   async ({ library }) => {
     if (library === 'solana') {
       return
     }
+
     await walletPage.enableTestnets()
     await walletPage.switchNetwork('eip155:5')
     await modalValidator.expectNetworkNotSupportedVisible()
@@ -103,4 +130,20 @@ sampleWalletTest(
 sampleWalletTest('it should not show onramp button accordingly', async ({ library }) => {
   await modalPage.openModal()
   await modalValidator.expectOnrampButton(library)
+  await modalPage.closeModal()
+})
+
+sampleWalletTest('it should disconnect and close modal when connecting from wallet', async () => {
+  await modalPage.openModal()
+  await walletPage.disconnectConnection()
+  await walletValidator.expectSessionCard({ visible: false })
+  await modalValidator.expectModalNotVisible()
+  await walletPage.page.waitForTimeout(500)
+})
+
+sampleWalletTest('it should disconnect as expected', async () => {
+  await modalPage.qrCodeFlow(modalPage, walletPage)
+  await modalValidator.expectConnected()
+  await modalPage.disconnect()
+  await modalValidator.expectDisconnected()
 })

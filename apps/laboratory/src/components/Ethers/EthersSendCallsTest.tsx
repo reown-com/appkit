@@ -10,12 +10,12 @@ import {
 } from '@chakra-ui/react'
 import { useCallback, useState, useEffect } from 'react'
 import { Button, Stack, Text, Spacer, Heading } from '@chakra-ui/react'
-import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers/react'
+import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
 import { useChakraToast } from '../Toast'
 import { parseGwei, type Address } from 'viem'
 import { vitalikEthAddress } from '../../utils/DataUtil'
-import { BrowserProvider } from 'ethers'
+import { BrowserProvider, type Eip1193Provider } from 'ethers'
 import {
   EIP_5792_RPC_METHODS,
   WALLET_CAPABILITIES,
@@ -23,17 +23,15 @@ import {
 } from '../../utils/EIP5792Utils'
 import { AddIcon } from '@chakra-ui/icons'
 import { AddTransactionModal } from '../AddTransactionModal'
-
-import { W3mFrameProvider } from '@web3modal/wallet'
-
-type Provider = W3mFrameProvider | Awaited<ReturnType<(typeof EthereumProvider)['init']>>
+import { W3mFrameProvider } from '@reown/appkit-wallet'
 
 export function EthersSendCallsTest(params: { onCallsHash: (hash: string) => void }) {
   const { onCallsHash } = params
   const [loading, setLoading] = useState(false)
 
-  const { address, chainId, isConnected } = useWeb3ModalAccount()
-  const { walletProvider } = useWeb3ModalProvider()
+  const { chainId } = useAppKitNetwork()
+  const { address, isConnected } = useAppKitAccount()
+  const { walletProvider } = useAppKitProvider<Eip1193Provider>('eip155')
   const [transactionsToBatch, setTransactionsToBatch] = useState<{ value: string; to: string }[]>(
     []
   )
@@ -66,7 +64,7 @@ export function EthersSendCallsTest(params: { onCallsHash: (hash: string) => voi
     if (address && walletProvider) {
       getCapabilitySupportedChainInfo(
         WALLET_CAPABILITIES.ATOMIC_BATCH,
-        walletProvider as Provider,
+        walletProvider,
         address
       ).then(capabilities => setAtomicBatchSupportedChains(capabilities))
     } else {

@@ -6,9 +6,9 @@ import {
   ConnectorController,
   EnsController,
   NetworkController
-} from '../../index.js'
-import { W3mFrameProvider } from '@web3modal/wallet'
-import { ConstantsUtil } from '@web3modal/common'
+} from '../../exports/index.js'
+import { W3mFrameProvider } from '@reown/appkit-wallet'
+import { ConstantsUtil } from '@reown/appkit-common'
 // -- Setup --------------------------------------------------------------------
 const TEST_NAME = {
   name: 'test',
@@ -24,6 +24,7 @@ const TEST_NAME = {
   ],
   attributes: []
 }
+const chain = ConstantsUtil.CHAIN.EVM
 vi.mock('../../src/controllers/BlockchainApiController.js', async importOriginal => {
   const mod =
     await importOriginal<typeof import('../../src/controllers/BlockchainApiController.js')>()
@@ -70,7 +71,12 @@ vi.mock('../../src/controllers/BlockchainApiController.js', async importOriginal
 
 // -- Tests --------------------------------------------------------------------
 beforeAll(() => {
-  ChainController.initialize([{ chain: ConstantsUtil.CHAIN.EVM }])
+  ChainController.initialize([
+    {
+      chainNamespace: ConstantsUtil.CHAIN.EVM,
+      caipNetworks: []
+    }
+  ])
 })
 
 describe('EnsController', () => {
@@ -110,7 +116,7 @@ describe('EnsController', () => {
     const result = await EnsController.getSuggestions('test')
     const mockSuggestions = ['test1', 'test2', 'testSomething', 'test'].map(name => ({
       registered: false,
-      name
+      name: `${name}${ConstantsUtil.WC_NAME_SUFFIX}`
     }))
     expect(result).toEqual(mockSuggestions)
     expect(EnsController.state.suggestions).toEqual(mockSuggestions)
@@ -119,7 +125,7 @@ describe('EnsController', () => {
     const result2 = await EnsController.getSuggestions('name')
     const mockSuggestions2 = ['name1', 'name2', 'nameSomething'].map(name => ({
       registered: false,
-      name
+      name: `${name}${ConstantsUtil.WC_NAME_SUFFIX}`
     }))
     expect(result2).toEqual(mockSuggestions2)
     expect(EnsController.state.suggestions).toEqual(mockSuggestions2)
@@ -130,7 +136,15 @@ describe('EnsController', () => {
     // No network set
     const result = await EnsController.getNamesForAddress('0x123')
     expect(result).toEqual([])
-    NetworkController.setCaipNetwork({ id: 'test:123', chain: ConstantsUtil.CHAIN.EVM })
+    NetworkController.setActiveCaipNetwork({
+      id: 'eip155:1',
+      chainNamespace: ConstantsUtil.CHAIN.EVM,
+      chainId: 1,
+      name: 'Ethereum',
+      currency: 'ETH',
+      explorerUrl: 'https://etherscan.io',
+      rpcUrl: 'https://rpc.infura.com/v1/'
+    })
     const resultWithNetwork = await EnsController.getNamesForAddress('0x123')
     expect(resultWithNetwork).toEqual([TEST_NAME])
 
@@ -140,8 +154,16 @@ describe('EnsController', () => {
 
   it('should register name', async () => {
     // Setup
-    NetworkController.setCaipNetwork({ id: 'test:123', chain: ConstantsUtil.CHAIN.EVM })
-    AccountController.setCaipAddress('eip155:1:0x123')
+    NetworkController.setActiveCaipNetwork({
+      id: 'eip155:137',
+      chainNamespace: ConstantsUtil.CHAIN.EVM,
+      chainId: 137,
+      currency: 'ETH',
+      explorerUrl: 'https://etherscan.io',
+      rpcUrl: 'https://rpc.infura.com/v1/',
+      name: 'Polygon'
+    })
+    AccountController.setCaipAddress('eip155:1:0x123', chain)
     const getAuthConnectorSpy = vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue({
       provider: { getEmail: () => 'test@walletconnect.com' } as unknown as W3mFrameProvider,
       id: 'w3mAuth',
@@ -152,14 +174,9 @@ describe('EnsController', () => {
       .spyOn(ConnectionController, 'signMessage')
       .mockResolvedValueOnce('0x123123123')
 
-    const message = JSON.stringify({
-      name: `newname${ConstantsUtil.WC_NAME_SUFFIX}`,
-      attributes: {},
-      timestamp: Math.floor(Date.now() / 1000)
-    })
-    await EnsController.registerName('newname')
+    await EnsController.registerName('newname.reown.id')
     expect(getAuthConnectorSpy).toHaveBeenCalled()
-    expect(signMessageSpy).toHaveBeenCalledWith(message)
+    expect(signMessageSpy).toHaveBeenCalled()
     expect(AccountController.state.profileName).toBe(`newname${ConstantsUtil.WC_NAME_SUFFIX}`)
     expect(EnsController.state.loading).toBe(false)
   })

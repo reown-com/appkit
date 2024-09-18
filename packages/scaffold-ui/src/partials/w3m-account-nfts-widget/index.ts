@@ -1,5 +1,5 @@
-import { RouterController } from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+import { RouterController } from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 
 import styles from './styles.js'

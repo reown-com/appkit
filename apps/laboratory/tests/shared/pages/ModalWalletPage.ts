@@ -7,9 +7,15 @@ export class ModalWalletPage extends ModalPage {
   constructor(
     public override readonly page: Page,
     public override readonly library: string,
-    public override readonly flavor: 'email' | 'all' = 'email'
+    public override readonly flavor: 'default' | 'all' | 'siwe'
   ) {
     super(page, library, flavor)
+  }
+
+  async goToSettings() {
+    await this.openAccount()
+    await this.openProfileView()
+    await this.openSettings()
   }
 
   async openSettings() {
@@ -28,11 +34,6 @@ export class ModalWalletPage extends ModalPage {
     await this.page.getByTestId('wui-ens-input').getByTestId('wui-input-text').fill(name)
   }
 
-  override async switchNetwork(network: string) {
-    await this.page.getByTestId('account-switch-network-button').click()
-    await this.page.getByTestId(`w3m-network-switch-${network}`).click()
-  }
-
   async togglePreferredAccountType() {
     const toggleButton = this.page.getByTestId('account-toggle-preferred-account-type')
     await expect(toggleButton, 'Toggle button should be visible').toBeVisible()
@@ -46,35 +47,5 @@ export class ModalWalletPage extends ModalPage {
     await expect(disconnectBtn, 'Disconnect button should be enabled').toBeEnabled()
     await disconnectBtn.click()
     await this.page.getByTestId('connect-button').waitFor({ state: 'visible', timeout: 5000 })
-  }
-
-  async getAddress(): Promise<`0x${string}`> {
-    const address = await this.page.getByTestId('w3m-address').textContent()
-    expect(address, 'Address should be present').toBeTruthy()
-
-    return address as `0x${string}`
-  }
-
-  async getChainId(): Promise<number> {
-    const chainId = await this.page.getByTestId('w3m-chain-id').textContent()
-    expect(chainId, 'Chain ID should be present').toBeTruthy()
-
-    return Number(chainId)
-  }
-
-  async getSignature(): Promise<`0x${string}`> {
-    const signature = await this.page.getByTestId('w3m-signature').textContent()
-    expect(signature, 'Signature should be present').toBeTruthy()
-
-    return signature as `0x${string}`
-  }
-
-  async switchNetworkWithNetworkButton(networkName: string) {
-    const networkButton = this.page.getByTestId('w3m-network-button')
-    await networkButton.click()
-
-    const networkToSwitchButton = this.page.getByTestId(`w3m-network-switch-${networkName}`)
-    await networkToSwitchButton.click()
-    await networkToSwitchButton.waitFor({ state: 'hidden' })
   }
 }

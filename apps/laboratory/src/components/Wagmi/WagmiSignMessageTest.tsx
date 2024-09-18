@@ -1,26 +1,28 @@
 import * as React from 'react'
 import { Button } from '@chakra-ui/react'
-import { useSignMessage, useAccount } from 'wagmi'
+import { useSignMessage } from 'wagmi'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { useChakraToast } from '../Toast'
+import { useAppKitAccount } from '@reown/appkit/react'
 
 export function WagmiSignMessageTest() {
   const toast = useChakraToast()
 
   const { signMessageAsync, isPending } = useSignMessage()
-  const { isConnected } = useAccount()
+  const { isConnected } = useAppKitAccount()
+
   const [signature, setSignature] = React.useState<string | undefined>()
 
   async function onSignMessage() {
     try {
-      const sig = await signMessageAsync({ message: 'Hello Web3Modal!' })
+      const sig = await signMessageAsync({ message: 'Hello AppKit!' })
       setSignature(sig)
       toast({
         title: ConstantsUtil.SigningSucceededToastTitle,
         description: sig,
         type: 'success'
       })
-    } catch {
+    } catch (e) {
       toast({
         title: ConstantsUtil.SigningFailedToastTitle,
         description: 'Failed to sign message',

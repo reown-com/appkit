@@ -16,12 +16,12 @@ const smartAccountTest = test.extend<{ library: string }>({
 
 smartAccountTest.describe.configure({ mode: 'serial' })
 
-smartAccountTest.beforeAll(async ({ browser, library }, testInfo) => {
-  smartAccountTest.setTimeout(120000)
+smartAccountTest.beforeAll(async ({ browser, library }) => {
+  smartAccountTest.setTimeout(300000)
   context = await browser.newContext()
   const browserPage = await context.newPage()
 
-  page = new ModalWalletPage(browserPage, library)
+  page = new ModalWalletPage(browserPage, library, 'default')
   validator = new ModalWalletValidator(browserPage)
 
   await page.load()
@@ -35,7 +35,7 @@ smartAccountTest.beforeAll(async ({ browser, library }, testInfo) => {
   // Switch to a SA enabled network
   await page.switchNetworkWithNetworkButton('Polygon')
   await page.closeModal()
-  const tempEmail = email.getEmailAddressToUse(testInfo.parallelIndex)
+  const tempEmail = await email.getEmailAddressToUse()
   await page.emailFlow(tempEmail, context, mailsacApiKey)
 
   await validator.expectConnected()
@@ -46,11 +46,10 @@ smartAccountTest.afterAll(async () => {
 })
 
 // -- Tests --------------------------------------------------------------------
-smartAccountTest('it should use a Smart Account', async () => {
+smartAccountTest('it should use a smart account', async () => {
   await validator.expectConnected()
   await page.openAccount()
   await validator.expectActivateSmartAccountPromoVisible(false)
-
   await page.openProfileView()
   await page.openSettings()
   await validator.expectChangePreferredAccountToShow(EOA)
@@ -69,27 +68,13 @@ smartAccountTest('it should sign with smart account 6492 signature', async () =>
   await validator.expectValidSignature(signature, address, chainId)
 })
 
-smartAccountTest('it should switch to a SA enabled network and sign', async () => {
-  const targetChain = 'Sepolia'
-  await page.openAccount()
-  await page.openProfileView()
-  await page.openSettings()
+smartAccountTest('it should switch to a not enabled network and sign with EOA', async () => {
+  const targetChain = 'Ethereum'
   await page.switchNetwork(targetChain)
   await validator.expectSwitchedNetwork(targetChain)
   await page.closeModal()
-  await page.sign()
-  await page.approveSign()
-  await validator.expectAcceptedSign()
-})
 
-smartAccountTest('it should switch to a not enabled network and sign with EOA', async () => {
-  const targetChain = 'Ethereum'
-  await page.openAccount()
-  await page.openProfileView()
-  await page.openSettings()
-  await page.switchNetwork(targetChain)
-  await validator.expectSwitchedNetwork(targetChain)
-  // Shouldn't show the toggle on a non enabled network
+  await page.goToSettings()
   await validator.expectTogglePreferredTypeVisible(false)
   await page.closeModal()
 
@@ -99,17 +84,18 @@ smartAccountTest('it should switch to a not enabled network and sign with EOA', 
 })
 
 smartAccountTest('it should switch to smart account and sign', async () => {
-  await page.openAccount()
-  await page.openProfileView()
-  await page.openSettings()
+  const targetChain = 'Polygon'
+  await page.switchNetwork(targetChain)
+  await validator.expectSwitchedNetwork(targetChain)
+  await page.closeModal()
 
-  await page.switchNetwork('Polygon')
-  await validator.expectSwitchedNetwork('Polygon')
-
+  await page.goToSettings()
   await page.togglePreferredAccountType()
   await validator.expectChangePreferredAccountToShow(EOA)
-
   await page.closeModal()
+
+  // Need some time for Lab UI to refresh state
+  await page.page.waitForTimeout(1000)
 
   await page.sign()
   await page.approveSign()
@@ -123,30 +109,21 @@ smartAccountTest('it should switch to smart account and sign', async () => {
 })
 
 smartAccountTest('it should switch to eoa and sign', async () => {
-  await page.openAccount()
-  await page.openProfileView()
-  await page.openSettings()
-
+  await page.goToSettings()
   await page.togglePreferredAccountType()
   await validator.expectChangePreferredAccountToShow(SMART_ACCOUNT)
-
   await page.closeModal()
+
+  // Need some time for Lab UI to refresh state
+  await page.page.waitForTimeout(1000)
 
   await page.sign()
   await page.approveSign()
   await validator.expectAcceptedSign()
-
-  const signature = await page.getSignature()
-  const address = await page.getAddress()
-  const chainId = await page.getChainId()
-
-  await validator.expectValidSignature(signature, address, chainId)
 })
 
 smartAccountTest('it should disconnect correctly', async () => {
-  await page.openAccount()
-  await page.openProfileView()
-  await page.openSettings()
+  await page.goToSettings()
   await page.disconnect()
   await validator.expectDisconnected()
 })

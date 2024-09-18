@@ -1,7 +1,6 @@
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { FetchUtil } from '../utils/FetchUtil.js'
-import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 import type {
   BlockchainApiTransactionsRequest,
   BlockchainApiTransactionsResponse,
@@ -33,6 +32,8 @@ import type {
 } from '../utils/TypeUtil.js'
 import { OptionsController } from './OptionsController.js'
 import { proxy } from 'valtio/vanilla'
+import { AccountController } from './AccountController.js'
+import { ChainController } from './ChainController.js'
 
 const DEFAULT_OPTIONS = {
   purchaseCurrencies: [
@@ -130,7 +131,10 @@ export const BlockchainApiController = {
     return state.api.get<BlockchainApiIdentityResponse>({
       path: `/v1/identity/${address}`,
       params: {
-        projectId: OptionsController.state.projectId
+        projectId: OptionsController.state.projectId,
+        sender: ChainController.state.activeCaipAddress
+          ? CoreHelperUtil.getPlainAddress(ChainController.state.activeCaipAddress)
+          : undefined
       }
     })
   },
@@ -141,15 +145,17 @@ export const BlockchainApiController = {
     cursor,
     onramp,
     signal,
-    cache
+    cache,
+    chainId
   }: BlockchainApiTransactionsRequest) {
-    const queryParams = cursor ? { cursor } : {}
-
     return state.api.get<BlockchainApiTransactionsResponse>({
-      path: `/v1/account/${account}/history?projectId=${projectId}${
-        onramp ? `&onramp=${onramp}` : ''
-      }`,
-      params: queryParams,
+      path: `/v1/account/${account}/history`,
+      params: {
+        projectId,
+        cursor,
+        onramp,
+        chainId
+      },
       signal,
       cache
     })
@@ -181,7 +187,11 @@ export const BlockchainApiController = {
 
   fetchSwapTokens({ projectId, chainId }: BlockchainApiSwapTokensRequest) {
     return state.api.get<BlockchainApiSwapTokensResponse>({
-      path: `/v1/convert/tokens?projectId=${projectId}&chainId=${chainId}`
+      path: `/v1/convert/tokens`,
+      params: {
+        projectId,
+        chainId
+      }
     })
   },
 
@@ -203,11 +213,16 @@ export const BlockchainApiController = {
     const { sdkType, sdkVersion } = OptionsController.state
 
     return state.api.get<BlockchainApiSwapAllowanceResponse>({
-      path: `/v1/convert/allowance?projectId=${projectId}&tokenAddress=${tokenAddress}&userAddress=${userAddress}`,
+      path: `/v1/convert/allowance`,
+      params: {
+        projectId,
+        tokenAddress,
+        userAddress
+      },
       headers: {
         'Content-Type': 'application/json',
         'x-sdk-type': sdkType,
-        'x-sdk-version': sdkVersion
+        'x-sdk-version': sdkVersion || 'html-wagmi-4.2.2'
       }
     })
   },
@@ -220,7 +235,7 @@ export const BlockchainApiController = {
       headers: {
         'Content-Type': 'application/json',
         'x-sdk-type': sdkType,
-        'x-sdk-version': sdkVersion
+        'x-sdk-version': sdkVersion || 'html-wagmi-4.2.2'
       },
       params: {
         projectId,
@@ -267,7 +282,7 @@ export const BlockchainApiController = {
       headers: {
         'Content-Type': 'application/json',
         'x-sdk-type': sdkType,
-        'x-sdk-version': sdkVersion
+        'x-sdk-version': sdkVersion || 'html-wagmi-4.2.2'
       },
       params: {
         projectId,
@@ -285,7 +300,7 @@ export const BlockchainApiController = {
       path: `/v1/account/${address}/balance`,
       headers: {
         'x-sdk-type': sdkType,
-        'x-sdk-version': sdkVersion
+        'x-sdk-version': sdkVersion || 'html-wagmi-4.2.2'
       },
       params: {
         currency: 'usd',
@@ -298,19 +313,31 @@ export const BlockchainApiController = {
 
   async lookupEnsName(name: string) {
     return state.api.get<BlockchainApiLookupEnsName>({
-      path: `/v1/profile/account/${name}${CommonConstantsUtil.WC_NAME_SUFFIX}?projectId=${OptionsController.state.projectId}`
+      path: `/v1/profile/account/${name}`,
+      params: {
+        projectId: OptionsController.state.projectId,
+        apiVersion: '2'
+      }
     })
   },
 
   async reverseLookupEnsName({ address }: { address: string }) {
     return state.api.get<BlockchainApiLookupEnsName[]>({
-      path: `/v1/profile/reverse/${address}?projectId=${OptionsController.state.projectId}`
+      path: `/v1/profile/reverse/${address}`,
+      params: {
+        sender: AccountController.state.address,
+        projectId: OptionsController.state.projectId,
+        apiVersion: '2'
+      }
     })
   },
 
   async getEnsNameSuggestions(name: string) {
     return state.api.get<BlockchainApiSuggestionResponse>({
-      path: `/v1/profile/suggestions/${name}?projectId=${OptionsController.state.projectId}`
+      path: `/v1/profile/suggestions/${name}`,
+      params: {
+        projectId: OptionsController.state.projectId
+      }
     })
   },
 
@@ -337,7 +364,10 @@ export const BlockchainApiController = {
     paymentAmount
   }: GenerateOnRampUrlArgs) {
     const response = await state.api.post<{ url: string }>({
-      path: `/v1/generators/onrampurl?projectId=${OptionsController.state.projectId}`,
+      path: `/v1/generators/onrampurl`,
+      params: {
+        projectId: OptionsController.state.projectId
+      },
       body: {
         destinationWallets,
         defaultNetwork,
@@ -357,7 +387,10 @@ export const BlockchainApiController = {
         paymentCurrencies: PaymentCurrency[]
         purchaseCurrencies: PurchaseCurrency[]
       }>({
-        path: `/v1/onramp/options?projectId=${OptionsController.state.projectId}`
+        path: `/v1/onramp/options`,
+        params: {
+          projectId: OptionsController.state.projectId
+        }
       })
 
       return response
@@ -369,7 +402,10 @@ export const BlockchainApiController = {
   async getOnrampQuote({ purchaseCurrency, paymentCurrency, amount, network }: GetQuoteArgs) {
     try {
       const response = await state.api.post<OnrampQuote>({
-        path: `/v1/onramp/quote?projectId=${OptionsController.state.projectId}`,
+        path: `/v1/onramp/quote`,
+        params: {
+          projectId: OptionsController.state.projectId
+        },
         body: {
           purchaseCurrency,
           paymentCurrency,

@@ -1,20 +1,21 @@
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import type {
   AccountType,
-  CaipAddress,
+  CombinedProvider,
   ConnectedWalletInfo,
+  Provider,
   SocialProvider
 } from '../utils/TypeUtil.js'
-import type { Balance } from '@web3modal/common'
+import type { CaipAddress, ChainNamespace } from '@reown/appkit-common'
+import type { Balance } from '@reown/appkit-common'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { SnackController } from './SnackController.js'
 import { SwapController } from './SwapController.js'
 import { SwapApiUtil } from '../utils/SwapApiUtil.js'
-import type { W3mFrameTypes } from '@web3modal/wallet'
+import type { W3mFrameTypes } from '@reown/appkit-wallet'
 import { ChainController } from './ChainController.js'
-import type { Chain } from '@web3modal/common'
-import { NetworkController } from './NetworkController.js'
-import { proxy, ref } from 'valtio'
+import { proxy, ref } from 'valtio/vanilla'
+import type UniversalProvider from '@walletconnect/universal-provider'
 
 // -- Types --------------------------------------------- //
 export interface AccountControllerState {
@@ -37,6 +38,9 @@ export interface AccountControllerState {
   preferredAccountType?: W3mFrameTypes.AccountType
   socialWindow?: Window
   farcasterUrl?: string
+  provider?: UniversalProvider | Provider | CombinedProvider
+  status?: 'reconnecting' | 'connected' | 'disconnected' | 'connecting'
+  siweStatus?: 'uninitialized' | 'ready' | 'loading' | 'success' | 'rejected' | 'error'
 }
 
 // -- State --------------------------------------------- //
@@ -53,8 +57,12 @@ const state = proxy<AccountControllerState>({
 export const AccountController = {
   state,
 
-  replaceState(newState: AccountControllerState) {
-    Object.assign(state, newState)
+  replaceState(newState: AccountControllerState | undefined) {
+    if (!newState) {
+      return
+    }
+
+    Object.assign(state, ref(newState))
   },
 
   subscribe(callback: (val: AccountControllerState) => void) {
@@ -69,125 +77,171 @@ export const AccountController = {
 
   subscribeKey<K extends keyof AccountControllerState>(
     property: K,
-    callback: (val: AccountControllerState[K]) => void
+    callback: (val: AccountControllerState[K]) => void,
+    chain?: ChainNamespace
   ) {
     let prev: AccountControllerState[K] | undefined = undefined
 
-    return ChainController.subscribeChainProp('accountState', accountState => {
-      if (accountState) {
-        const nextValue = accountState[property]
-        if (prev !== nextValue) {
-          prev = nextValue
-          callback(nextValue)
+    return ChainController.subscribeChainProp(
+      'accountState',
+      accountState => {
+        if (accountState) {
+          const nextValue = accountState[property]
+          if (prev !== nextValue) {
+            prev = nextValue
+            callback(nextValue)
+          }
         }
-      }
-    })
+      },
+      chain
+    )
   },
 
-  setIsConnected(isConnected: AccountControllerState['isConnected'], chain?: Chain) {
+  setIsConnected(
+    isConnected: AccountControllerState['isConnected'],
+    chain: ChainNamespace | undefined
+  ) {
     ChainController.setAccountProp('isConnected', isConnected, chain)
   },
 
-  setCaipAddress(caipAddress: AccountControllerState['caipAddress'], chain?: Chain) {
-    const newCaipAddress = caipAddress ? CoreHelperUtil.getPlainAddress(caipAddress) : undefined
+  setStatus(status: AccountControllerState['status'], chain: ChainNamespace | undefined) {
+    ChainController.setAccountProp('status', status, chain)
+  },
 
+  getChainIsConnected(chain: ChainNamespace | undefined) {
+    return ChainController.getAccountProp('isConnected', chain)
+  },
+
+  getCaipAddress(chain: ChainNamespace | undefined) {
+    return ChainController.getAccountProp('caipAddress', chain)
+  },
+
+  setProvider(provider: AccountControllerState['provider'], chain: ChainNamespace | undefined) {
+    if (provider) {
+      ChainController.setAccountProp('provider', provider, chain)
+    }
+  },
+
+  setCaipAddress(
+    caipAddress: AccountControllerState['caipAddress'],
+    chain: ChainNamespace | undefined
+  ) {
+    const newAddress = caipAddress ? CoreHelperUtil.getPlainAddress(caipAddress) : undefined
+
+    ChainController.state.activeCaipAddress = caipAddress
     ChainController.setAccountProp('caipAddress', caipAddress, chain)
-    ChainController.setAccountProp('address', newCaipAddress, chain)
+    ChainController.setAccountProp('address', newAddress, chain)
   },
 
   setBalance(
     balance: AccountControllerState['balance'],
     balanceSymbol: AccountControllerState['balanceSymbol'],
-    chain?: Chain
+    chain: ChainNamespace
   ) {
     ChainController.setAccountProp('balance', balance, chain)
     ChainController.setAccountProp('balanceSymbol', balanceSymbol, chain)
   },
 
-  setProfileName(profileName: AccountControllerState['profileName'], chain?: Chain) {
+  setProfileName(profileName: AccountControllerState['profileName'], chain: ChainNamespace) {
     ChainController.setAccountProp('profileName', profileName, chain)
   },
 
-  setProfileImage(profileImage: AccountControllerState['profileImage'], chain?: Chain) {
+  setProfileImage(profileImage: AccountControllerState['profileImage'], chain?: ChainNamespace) {
     ChainController.setAccountProp('profileImage', profileImage, chain)
   },
 
-  setAddressExplorerUrl(explorerUrl: AccountControllerState['addressExplorerUrl'], chain?: Chain) {
+  setAddressExplorerUrl(
+    explorerUrl: AccountControllerState['addressExplorerUrl'],
+    chain: ChainNamespace | undefined
+  ) {
     ChainController.setAccountProp('addressExplorerUrl', explorerUrl, chain)
   },
 
-  setSmartAccountDeployed(isDeployed: boolean, chain?: Chain) {
+  setSmartAccountDeployed(isDeployed: boolean, chain: ChainNamespace | undefined) {
     ChainController.setAccountProp('smartAccountDeployed', isDeployed, chain)
   },
 
-  setCurrentTab(currentTab: AccountControllerState['currentTab'], chain?: Chain) {
-    ChainController.setAccountProp('currentTab', currentTab, chain)
+  setCurrentTab(currentTab: AccountControllerState['currentTab']) {
+    ChainController.setAccountProp('currentTab', currentTab, ChainController.state.activeChain)
   },
 
-  setTokenBalance(tokenBalance: AccountControllerState['tokenBalance'], chain?: Chain) {
+  setTokenBalance(
+    tokenBalance: AccountControllerState['tokenBalance'],
+    chain: ChainNamespace | undefined
+  ) {
     if (tokenBalance) {
       ChainController.setAccountProp('tokenBalance', tokenBalance, chain)
     }
   },
-  setShouldUpdateToAddress(address: string) {
-    ChainController.setAccountProp('shouldUpdateToAddress', address)
+  setShouldUpdateToAddress(address: string, chain: ChainNamespace | undefined) {
+    ChainController.setAccountProp('shouldUpdateToAddress', address, chain)
   },
 
-  setAllAccounts(accounts: AccountType[], chain?: Chain) {
+  setAllAccounts(accounts: AccountType[], chain: ChainNamespace | undefined) {
     ChainController.setAccountProp('allAccounts', accounts, chain)
   },
 
-  addAddressLabel(address: string, label: string) {
-    const map = ChainController.getAccountProp('addressLabels') || new Map()
+  addAddressLabel(address: string, label: string, chain: ChainNamespace | undefined) {
+    const map = ChainController.getAccountProp('addressLabels', chain) || new Map()
     map.set(address, label)
-    ChainController.setAccountProp('addressLabels', map)
+    ChainController.setAccountProp('addressLabels', map, chain)
   },
 
-  removeAddressLabel(address: string) {
-    const map = ChainController.getAccountProp('addressLabels') || new Map()
+  removeAddressLabel(address: string, chain: ChainNamespace | undefined) {
+    const map = ChainController.getAccountProp('addressLabels', chain) || new Map()
     map.delete(address)
-    ChainController.setAccountProp('addressLabels', map)
+    ChainController.setAccountProp('addressLabels', map, chain)
   },
 
   setConnectedWalletInfo(
     connectedWalletInfo: AccountControllerState['connectedWalletInfo'],
-    chain?: Chain
+    chain: ChainNamespace
   ) {
-    ChainController.setAccountProp('connectedWalletInfo', connectedWalletInfo, chain)
+    ChainController.setAccountProp('connectedWalletInfo', connectedWalletInfo, chain, false)
   },
 
   setPreferredAccountType(
     preferredAccountType: AccountControllerState['preferredAccountType'],
-    chain?: Chain
+    chain: ChainNamespace
   ) {
     ChainController.setAccountProp('preferredAccountType', preferredAccountType, chain)
   },
 
-  setSocialProvider(socialProvider: AccountControllerState['socialProvider'], chain?: Chain) {
+  setSocialProvider(
+    socialProvider: AccountControllerState['socialProvider'],
+    chain: ChainNamespace | undefined
+  ) {
     if (socialProvider) {
       ChainController.setAccountProp('socialProvider', socialProvider, chain)
     }
   },
 
-  setSocialWindow(socialWindow: AccountControllerState['socialWindow'], chain?: Chain) {
+  setSocialWindow(
+    socialWindow: AccountControllerState['socialWindow'],
+    chain: ChainNamespace | undefined
+  ) {
     if (socialWindow) {
       ChainController.setAccountProp('socialWindow', ref(socialWindow), chain)
     }
   },
 
-  setFarcasterUrl(farcasterUrl: AccountControllerState['farcasterUrl'], chain?: Chain) {
+  setFarcasterUrl(
+    farcasterUrl: AccountControllerState['farcasterUrl'],
+    chain: ChainNamespace | undefined
+  ) {
     if (farcasterUrl) {
       ChainController.setAccountProp('farcasterUrl', farcasterUrl, chain)
     }
   },
 
   async fetchTokenBalance() {
-    const chainId = NetworkController.state.caipNetwork?.id
-    const chain = NetworkController.state.caipNetwork?.chain
-    const address = AccountController.state.address
+    const chainId = ChainController.state.activeCaipNetwork?.id
+    const chain = ChainController.state.activeCaipNetwork?.chainNamespace
+    const caipAddress = ChainController.state.activeCaipAddress
+    const address = caipAddress ? CoreHelperUtil.getPlainAddress(caipAddress) : undefined
 
     try {
-      if (address && chainId) {
+      if (address && chainId && chain) {
         const response = await BlockchainApiController.getBalance(address, chainId)
 
         const filteredBalances = response.balances.filter(
@@ -202,7 +256,11 @@ export const AccountController = {
     }
   },
 
-  resetAccount(chain?: Chain) {
+  resetAccount(chain: ChainNamespace) {
     ChainController.resetAccount(chain)
+  },
+
+  setSiweStatus(status: AccountControllerState['siweStatus']) {
+    ChainController.setAccountProp('siweStatus', status, ChainController.state.activeChain)
   }
 }

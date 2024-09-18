@@ -1,11 +1,17 @@
-import { ConnectorController, CoreHelperUtil } from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+import {
+  ChainController,
+  ConnectorController,
+  CoreHelperUtil,
+  OptionsController
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ref, createRef } from 'lit/directives/ref.js'
 import type { Ref } from 'lit/directives/ref.js'
 import styles from './styles.js'
-import { SnackController, RouterController, EventsController } from '@web3modal/core'
+import { SnackController, RouterController, EventsController } from '@reown/appkit-core'
+import { ConstantsUtil } from '@reown/appkit-common'
 
 @customElement('w3m-email-login-widget')
 export class W3mEmailLoginWidget extends LitElement {
@@ -19,6 +25,8 @@ export class W3mEmailLoginWidget extends LitElement {
   // -- State & Properties -------------------------------- //
   @state() private connectors = ConnectorController.state.connectors
 
+  @state() private authConnector = this.connectors.find(c => c.type === 'AUTH')
+
   @state() private email = ''
 
   @state() private loading = false
@@ -28,7 +36,10 @@ export class W3mEmailLoginWidget extends LitElement {
   public constructor() {
     super()
     this.unsubscribe.push(
-      ConnectorController.subscribeKey('connectors', val => (this.connectors = val))
+      ConnectorController.subscribeKey('connectors', val => {
+        this.connectors = val
+        this.authConnector = val.find(c => c.type === 'AUTH')
+      })
     )
   }
 
@@ -46,10 +57,12 @@ export class W3mEmailLoginWidget extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const connector = this.connectors.find(c => c.type === 'AUTH')
+    const socials = OptionsController.state.features?.socials
+    const email = OptionsController.state.features?.email
     const multipleConnectors = this.connectors.length > 1
+    const enableWallets = OptionsController.state.enableWallets
 
-    if (!connector?.email) {
+    if (!this.authConnector || !email) {
       return null
     }
 
@@ -67,7 +80,7 @@ export class W3mEmailLoginWidget extends LitElement {
         <input type="submit" hidden />
       </form>
 
-      ${connector.socials || !multipleConnectors
+      ${socials || !multipleConnectors || !enableWallets
         ? null
         : html`<wui-flex .padding=${['xxs', '0', '0', '0'] as const}>
             <wui-separator text="or"></wui-separator>
@@ -104,6 +117,19 @@ export class W3mEmailLoginWidget extends LitElement {
   }
 
   private async onSubmitEmail(event: Event) {
+    const availableChains = [ConstantsUtil.CHAIN.EVM, ConstantsUtil.CHAIN.SOLANA]
+    const isAvailableChain = availableChains.find(
+      chain => chain === ChainController.state.activeChain
+    )
+
+    if (!isAvailableChain) {
+      RouterController.push('SwitchActiveChain', {
+        switchToChain: ConstantsUtil.CHAIN.EVM
+      })
+
+      return
+    }
+
     try {
       if (this.loading) {
         return

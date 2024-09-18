@@ -1,20 +1,23 @@
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
 import { useAccount, type Connector } from 'wagmi'
-import { useState, useEffect } from 'react'
-import { type WalletCapabilities } from 'viem'
+import { useState, useEffect, useMemo } from 'react'
+import { type Address, type WalletCapabilities } from 'viem'
 import { type Chain } from 'wagmi/chains'
 import {
+  EIP_5792_RPC_METHODS,
+  EIP_7715_RPC_METHODS,
   getFilteredCapabilitySupportedChainInfo,
   getProviderCachedCapabilities
 } from '../utils/EIP5792Utils'
-import { W3mFrameProvider } from '@web3modal/wallet'
+import { W3mFrameProvider } from '@reown/appkit-wallet'
+import { useAppKitAccount } from '@reown/appkit/react'
 
 type UseWagmiAvailableCapabilitiesParams = {
   capability?: string
   method: string
 }
 
-type Provider = Awaited<ReturnType<(typeof EthereumProvider)['init']>> | W3mFrameProvider
+export type Provider = Awaited<ReturnType<(typeof EthereumProvider)['init']>> | W3mFrameProvider
 
 export function useWagmiAvailableCapabilities({
   capability,
@@ -23,51 +26,63 @@ export function useWagmiAvailableCapabilities({
   const [provider, setProvider] = useState<Provider>()
   const [supported, setSupported] = useState<boolean>(false)
 
-  const { chain, address, connector } = useAccount()
-
   const [availableCapabilities, setAvailableCapabilities] = useState<
     Record<number, WalletCapabilities> | undefined
   >()
 
-  const supportedChains =
-    availableCapabilities && capability
-      ? getFilteredCapabilitySupportedChainInfo(capability, availableCapabilities)
-      : []
-  const supportedChainsName = supportedChains.map(ci => ci.chainName).join(', ')
-  const currentChainsInfo = supportedChains.find(
-    chainInfo => chainInfo.chainId === Number(chain?.id)
+  const { address, isConnected } = useAppKitAccount()
+  const { chain, connector } = useAccount()
+
+  const supportedChains = useMemo(
+    () =>
+      availableCapabilities && capability
+        ? getFilteredCapabilitySupportedChainInfo(capability, availableCapabilities)
+        : [],
+    [availableCapabilities, capability]
+  )
+
+  const supportedChainsName = useMemo(
+    () => supportedChains.map(ci => ci.chainName).join(', '),
+    [supportedChains]
+  )
+
+  const currentChainsInfo = useMemo(
+    () => supportedChains.find(chainInfo => chainInfo.chainId === Number(chain?.id)),
+    [supportedChains, chain]
   )
 
   useEffect(() => {
-    if (connector && address && chain) {
-      fetchProviderAndAccountCapabilities(address, connector, chain)
+    if (isConnected && connector && address && chain) {
+      fetchProviderAndAccountCapabilities(address as Address, connector, chain)
     }
-  }, [connector, address])
+  }, [connector, address, chain, isConnected])
 
   async function fetchProviderAndAccountCapabilities(
     connectedAccount: `0x${string}`,
     connectedConnector: Connector,
     connectedChain: Chain
   ) {
-    const connectedProvider = await connectedConnector.getProvider?.({
+    const connectedProvider = (await connectedConnector.getProvider?.({
       chainId: connectedChain.id
-    })
-    if (connectedProvider instanceof EthereumProvider) {
-      setProvider(connectedProvider)
-      const walletCapabilities = getProviderCachedCapabilities(connectedAccount, connectedProvider)
-      setAvailableCapabilities(walletCapabilities)
-    } else if (connectedProvider instanceof W3mFrameProvider) {
+    })) as Provider
+    if (connectedProvider instanceof W3mFrameProvider) {
       const walletCapabilities = await connectedProvider.getCapabilities()
       setProvider(connectedProvider)
+      setAvailableCapabilities(walletCapabilities)
+    } else if (connectedProvider) {
+      setProvider(connectedProvider)
+      const walletCapabilities = getProviderCachedCapabilities(connectedAccount, connectedProvider)
       setAvailableCapabilities(walletCapabilities)
     }
   }
 
   function isMethodSupported(): boolean {
     if (provider instanceof W3mFrameProvider) {
-      return ['wallet_sendCalls', 'wallet_getCapabilities', 'wallet_getCallsStatus'].includes(
-        method
+      const supportedMethods = Object.values(EIP_5792_RPC_METHODS).concat(
+        Object.values(EIP_7715_RPC_METHODS)
       )
+
+      return supportedMethods.includes(method)
     }
 
     return Boolean(provider?.signer?.session?.namespaces?.['eip155']?.methods?.includes(method))

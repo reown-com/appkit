@@ -1,17 +1,21 @@
-import type { RouterControllerState } from '@web3modal/core'
 import {
   AccountController,
+  AssetUtil,
+  ChainController,
   ConnectionController,
   ConnectorController,
   EventsController,
   ModalController,
+  NetworkController,
   OptionsController,
   RouterController
-} from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
+import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
 
 // -- Constants ----------------------------------------- //
 const BETA_SCREENS = ['Swap', 'SwapSelectToken', 'SwapPreview']
@@ -77,13 +81,15 @@ function headings() {
     ConnectingSocial: AccountController.state.socialProvider
       ? AccountController.state.socialProvider
       : 'Connect Social',
-    ConnectingFarcaster: 'Farcaster'
+    ConnectingMultiChain: 'Select chain',
+    ConnectingFarcaster: 'Farcaster',
+    SwitchActiveChain: 'Switch chain'
   }
 }
 
 @customElement('w3m-header')
 export class W3mHeader extends LitElement {
-  public static override styles = [styles]
+  public static override styles = styles
 
   // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
@@ -91,18 +97,35 @@ export class W3mHeader extends LitElement {
   // -- State & Properties --------------------------------- //
   @state() private heading = headings()[RouterController.state.view]
 
+  @state() private network = ChainController.state.activeCaipNetwork
+
   @state() private buffering = false
 
   @state() private showBack = false
+
+  @state() private isSiweEnabled = OptionsController.state.isSiweEnabled
+
+  @state() private prevHistoryLength = 1
+
+  @state() private view = RouterController.state.view
+
+  @state() private viewDirection = ''
+
+  @state() private headerText = headings()[RouterController.state.view]
 
   public constructor() {
     super()
     this.unsubscribe.push(
       RouterController.subscribeKey('view', val => {
-        this.onViewChange(val)
+        setTimeout(() => {
+          this.view = val
+          this.headerText = headings()[val]
+        }, ConstantsUtil.ANIMATION_DURATIONS.HeaderText)
+        this.onViewChange()
         this.onHistoryChange()
       }),
-      ConnectionController.subscribeKey('buffering', val => (this.buffering = val))
+      ConnectionController.subscribeKey('buffering', val => (this.buffering = val)),
+      ChainController.subscribeKey('activeCaipNetwork', val => (this.network = val))
     )
   }
 
@@ -114,13 +137,7 @@ export class W3mHeader extends LitElement {
   public override render() {
     return html`
       <wui-flex .padding=${this.getPadding()} justifyContent="space-between" alignItems="center">
-        ${this.dynamicButtonTemplate()} ${this.titleTemplate()}
-        <wui-icon-link
-          ?disabled=${this.buffering}
-          icon="close"
-          @click=${this.onClose.bind(this)}
-          data-testid="w3m-header-close"
-        ></wui-icon-link>
+        ${this.dynamicButtonTemplate()} ${this.titleTemplate()} ${this.closeButtonTemplate()}
       </wui-flex>
     `
   }
@@ -134,21 +151,49 @@ export class W3mHeader extends LitElement {
   }
 
   private async onClose() {
-    if (OptionsController.state.isSiweEnabled) {
-      const { SIWEController } = await import('@web3modal/siwe')
-      if (SIWEController.state.status !== 'success') {
-        await ConnectionController.disconnect()
+    if (this.isSiweEnabled) {
+      const { SIWEController } = await import('@reown/appkit-siwe')
+      const isApproveSignScreen = RouterController.state.view === 'ApproveTransaction'
+      const isUnauthenticated = SIWEController.state.status !== 'success'
+
+      if (isUnauthenticated && isApproveSignScreen) {
+        RouterController.popTransactionStack(true)
+      } else {
+        ModalController.close()
       }
+    } else {
+      ModalController.close()
     }
-    ModalController.close()
+  }
+
+  private closeButtonTemplate() {
+    const isSiweSignScreen = RouterController.state.view === 'ConnectingSiwe'
+
+    if (this.isSiweEnabled && isSiweSignScreen) {
+      return html`<div style="width:40px" />`
+    }
+
+    return html`
+      <wui-icon-link
+        ?disabled=${this.buffering}
+        icon="close"
+        @click=${this.onClose.bind(this)}
+        data-testid="w3m-header-close"
+      ></wui-icon-link>
+    `
   }
 
   private titleTemplate() {
-    const isBeta = BETA_SCREENS.includes(RouterController.state.view)
+    const isBeta = BETA_SCREENS.includes(this.view)
 
     return html`
-      <wui-flex class="w3m-header-title" alignItems="center" gap="xs">
-        <wui-text variant="paragraph-700" color="fg-100">${this.heading}</wui-text>
+      <wui-flex
+        view-direction="${this.viewDirection}"
+        class="w3m-header-title"
+        alignItems="center"
+        gap="xs"
+      >
+        <wui-text variant="paragraph-700" color="fg-100">${this.headerText}</wui-text>
         ${isBeta ? html`<wui-tag variant="main">Beta</wui-tag>` : null}
       </wui-flex>
     `
@@ -160,8 +205,19 @@ export class W3mHeader extends LitElement {
     const isApproveTransaction = view === 'ApproveTransaction'
     const isUpgradeToSmartAccounts = view === 'UpgradeToSmartAccount'
     const isConnectingSIWEView = view === 'ConnectingSiwe'
+    const isAccountView = view === 'Account'
 
     const shouldHideBack = isApproveTransaction || isUpgradeToSmartAccounts || isConnectingSIWEView
+
+    if (isAccountView) {
+      return html`<wui-select
+        id="dynamic"
+        data-testid="w3m-account-select-network"
+        active-network=${this.network?.name}
+        @click=${this.onNetworks.bind(this)}
+        imageSrc=${ifDefined(AssetUtil.getNetworkImage(this.network))}
+      ></wui-select>`
+    }
 
     if (this.showBack && !shouldHideBack) {
       return html`<wui-icon-link
@@ -180,35 +236,43 @@ export class W3mHeader extends LitElement {
     ></wui-icon-link>`
   }
 
+  private onNetworks() {
+    if (this.isAllowedNetworkSwitch()) {
+      EventsController.sendEvent({ type: 'track', event: 'CLICK_NETWORKS' })
+      RouterController.push('Networks')
+    }
+  }
+
+  private isAllowedNetworkSwitch() {
+    const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
+    const isMultiNetwork = requestedCaipNetworks ? requestedCaipNetworks.length > 1 : false
+    const isValidNetwork = requestedCaipNetworks?.find(({ id }) => id === this.network?.id)
+
+    return isMultiNetwork || !isValidNetwork
+  }
+
   private getPadding() {
     if (this.heading) {
       return ['l', '2l', 'l', '2l'] as const
     }
 
-    return ['l', '2l', '0', '2l'] as const
+    return ['0', '2l', '0', '2l'] as const
   }
 
-  private async onViewChange(view: RouterControllerState['view']) {
-    const headingEl = this.shadowRoot?.querySelector('wui-flex.w3m-header-title')
+  private onViewChange() {
+    const { history } = RouterController.state
 
-    if (headingEl) {
-      const preset = headings()[view]
-      await headingEl.animate([{ opacity: 1 }, { opacity: 0 }], {
-        duration: 200,
-        fill: 'forwards',
-        easing: 'ease'
-      }).finished
-      this.heading = preset
-      headingEl.animate([{ opacity: 0 }, { opacity: 1 }], {
-        duration: 200,
-        fill: 'forwards',
-        easing: 'ease'
-      })
+    let direction = ConstantsUtil.VIEW_DIRECTION.Next
+    if (history.length < this.prevHistoryLength) {
+      direction = ConstantsUtil.VIEW_DIRECTION.Prev
     }
+    this.prevHistoryLength = history.length
+    this.viewDirection = direction
   }
 
   private async onHistoryChange() {
     const { history } = RouterController.state
+
     const buttonEl = this.shadowRoot?.querySelector('#dynamic')
     if (history.length > 1 && !this.showBack && buttonEl) {
       await buttonEl.animate([{ opacity: 1 }, { opacity: 0 }], {

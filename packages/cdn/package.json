@@ -1,6 +1,6 @@
 {
-  "name": "@web3modal/cdn",
-  "version": "5.0.10",
+  "name": "@reown/appkit-cdn",
+  "version": "1.0.1",
   "main": "dist/wagmi.js",
   "type": "module",
   "files": [
@@ -10,11 +10,10 @@
   "scripts": {
     "build:clean": "rm -rf dist",
     "build": "tsc && vite build",
-    "watch": "npx tsc --watch",
     "upload": "pnpm build && pnpm publish --public"
   },
   "devDependencies": {
-    "typescript": "5.3.3",
+    "@wagmi/connectors": "5.1.9",
     "vite-plugin-node-polyfills": "0.22.0"
   },
   "peerDependencies": {
@@ -26,11 +25,14 @@
     }
   },
   "dependencies": {
-    "@wagmi/connectors": "5.1.2",
-    "@wagmi/core": "2.13.1",
-    "@web3modal/wagmi": "workspace:*",
-    "@web3modal/ethers": "workspace:*",
-    "viem": "2.17.8",
-    "vite": "5.2.11"
+    "@reown/appkit-wagmi": "workspace:*",
+    "@reown/appkit-ethers": "workspace:*",
+    "@reown/appkit-ethers5": "workspace:*",
+    "@reown/appkit-polyfills": "workspace:*",
+    "@wagmi/connectors": "5.1.9",
+    "@wagmi/core": "2.13.4",
+    "viem": "2.21.4",
+    "vite": "5.2.11",
+    "wagmi": "2.12.9"
   }
 }

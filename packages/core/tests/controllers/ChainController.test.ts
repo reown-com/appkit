@@ -1,12 +1,13 @@
 import { beforeAll, describe, expect, it } from 'vitest'
-import { ConstantsUtil, type Chain } from '@web3modal/common'
+import { ConstantsUtil, type CaipNetworkId, type ChainNamespace } from '@reown/appkit-common'
 import { ChainController } from '../../src/controllers/ChainController.js'
 import { type ConnectionControllerClient } from '../../src/controllers/ConnectionController.js'
 import { type NetworkControllerClient } from '../../src/controllers/NetworkController.js'
 
 // -- Setup --------------------------------------------------------------------
+const chainNamespace = 'eip155' as ChainNamespace
 const caipAddress = 'eip155:1:0x123'
-const approvedCaipNetworkIds = ['eip155:1', 'eip155:4'] as `${string}:${string}`[]
+const approvedCaipNetworkIds = ['eip155:1', 'eip155:4'] as CaipNetworkId[]
 
 const connectionControllerClient: ConnectionControllerClient = {
   connectWalletConnect: async () => Promise.resolve(),
@@ -28,9 +29,10 @@ const networkControllerClient: NetworkControllerClient = {
 }
 
 const evmAdapter = {
-  chain: 'evm' as Chain,
+  chainNamespace,
   connectionControllerClient,
-  networkControllerClient
+  networkControllerClient,
+  caipNetworks: []
 }
 
 beforeAll(() => {
@@ -46,7 +48,7 @@ describe('ChainController', () => {
   })
 
   it('should update account state as expected', () => {
-    ChainController.setAccountProp('caipAddress', caipAddress)
+    ChainController.setAccountProp('caipAddress', caipAddress, chainNamespace)
     expect(ChainController.getAccountProp('caipAddress')).toEqual(caipAddress)
   })
 
@@ -55,11 +57,6 @@ describe('ChainController', () => {
       approvedCaipNetworkIds
     })
     expect(ChainController.getNetworkProp('approvedCaipNetworkIds')).toEqual(approvedCaipNetworkIds)
-  })
-
-  it('should set multi-chain enabled flag as expected', () => {
-    ChainController.setMultiChainEnabled(true)
-    expect(ChainController.state.multiChainEnabled).toEqual(true)
   })
 
   it('should reset account as expected', () => {

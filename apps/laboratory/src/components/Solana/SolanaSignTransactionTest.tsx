@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Button, Stack, Text, Spacer, Link } from '@chakra-ui/react'
+import { Button, Stack, Text, Spacer } from '@chakra-ui/react'
 import {
   PublicKey,
   Transaction,
@@ -8,25 +8,27 @@ import {
   SystemProgram
 } from '@solana/web3.js'
 
-import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/solana/react'
-
-import { solana } from '../../utils/ChainsUtil'
+import { useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
+import { useAppKitConnection, type Provider } from '@reown/appkit-adapter-solana/react'
+import { solana } from '@reown/appkit/networks'
 import { useChakraToast } from '../Toast'
+import bs58 from 'bs58'
 
 const PHANTOM_DEVNET_ADDRESS = '8vCyX7oB6Pc3pbWMGYYZF5pbSnAdQ7Gyr32JqxqCy8ZR'
 const recipientAddress = new PublicKey(PHANTOM_DEVNET_ADDRESS)
-const amountInLamports = 100000000
+const amountInLamports = 10_000_000
 
 export function SolanaSignTransactionTest() {
   const toast = useChakraToast()
-  const { address, chainId } = useWeb3ModalAccount()
-  const { walletProvider, connection } = useWeb3ModalProvider()
+  const { caipNetwork } = useAppKitNetwork()
+  const { walletProvider } = useAppKitProvider<Provider>('solana')
+  const { connection } = useAppKitConnection()
   const [loading, setLoading] = useState(false)
 
   async function onSignTransaction() {
     try {
       setLoading(true)
-      if (!walletProvider || !address) {
+      if (!walletProvider?.publicKey) {
         throw Error('user is disconnected')
       }
 
@@ -46,18 +48,23 @@ export function SolanaSignTransactionTest() {
       const { blockhash } = await connection.getLatestBlockhash()
 
       transaction.recentBlockhash = blockhash
-      const tx = await walletProvider.signTransaction(transaction)
-      const signature = tx.signatures[0]?.signature
+
+      const signedTransaction = await walletProvider.signTransaction(transaction)
+      const signature = signedTransaction.signatures[0]?.signature
+
+      if (!signature) {
+        throw Error('Empty signature')
+      }
 
       toast({
         title: 'Success',
-        description: signature,
+        description: bs58.encode(signature),
         type: 'success'
       })
     } catch (err) {
       toast({
         title: 'Error',
-        description: 'Failed to sign transaction',
+        description: (err as Error).message,
         type: 'error'
       })
     } finally {
@@ -68,7 +75,7 @@ export function SolanaSignTransactionTest() {
   async function onSignVersionedTransaction() {
     try {
       setLoading(true)
-      if (!walletProvider || !address) {
+      if (!walletProvider?.publicKey) {
         throw Error('user is disconnected')
       }
 
@@ -94,18 +101,22 @@ export function SolanaSignTransactionTest() {
       // Make a versioned transaction
       const transactionV0 = new VersionedTransaction(messageV0)
 
-      const tx = await walletProvider.signTransaction(transactionV0)
-      const signature = tx.signatures[0]?.signature
+      const signedTransaction = await walletProvider.signTransaction(transactionV0)
+      const signature = signedTransaction.signatures[0]
+
+      if (!signature) {
+        throw Error('Empty signature')
+      }
 
       toast({
         title: 'Success',
-        description: signature,
+        description: bs58.encode(signature),
         type: 'success'
       })
     } catch (err) {
       toast({
         title: 'Error',
-        description: 'Failed to sign transaction',
+        description: (err as Error).message,
         type: 'error'
       })
     } finally {
@@ -113,11 +124,7 @@ export function SolanaSignTransactionTest() {
     }
   }
 
-  if (!address) {
-    return null
-  }
-
-  if (chainId === solana.chainId) {
+  if (caipNetwork?.chainId === solana.chainId) {
     return (
       <Text fontSize="md" color="yellow">
         Switch to Solana Devnet or Testnet to test this feature
@@ -142,12 +149,6 @@ export function SolanaSignTransactionTest() {
         Sign Versioned Transaction
       </Button>
       <Spacer />
-
-      <Link isExternal href="https://solfaucet.com/">
-        <Button variant="outline" colorScheme="blue">
-          Solana Faucet
-        </Button>
-      </Link>
     </Stack>
   )
 }

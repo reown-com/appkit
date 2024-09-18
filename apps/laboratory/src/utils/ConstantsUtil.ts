@@ -1,15 +1,25 @@
+import { getLocalStorageItem } from './LocalStorage'
+
 const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
 if (!projectId) {
   throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
 }
 export const WALLET_URL = process.env['WALLET_URL'] || 'https://react-wallet.walletconnect.com/'
+export const WC_COSIGNER_BASE_URL = 'https://rpc.walletconnect.org/v1/sessions'
+export const USEROP_BUILDER_SERVICE_BASE_URL = 'https://react-wallet.walletconnect.com/api'
+
 export function getPublicUrl() {
+  const publicUrl = process.env['NEXT_PUBLIC_PUBLIC_URL']
+  if (publicUrl) {
+    return publicUrl
+  }
+
   const vercelUrl = process.env['NEXT_PUBLIC_VERCEL_URL']
   if (vercelUrl) {
     return `https://${vercelUrl}`
   }
 
-  return 'https://lab.web3modal.com'
+  return 'https://appkit-lab.reown.org'
 }
 
 export const CUSTOM_WALLET = 'wc:custom_wallet'
@@ -17,7 +27,7 @@ export const CUSTOM_WALLET = 'wc:custom_wallet'
 // eslint-disable-next-line init-declarations
 let storedCustomWallet
 if (typeof window !== 'undefined') {
-  storedCustomWallet = localStorage.getItem(CUSTOM_WALLET)
+  storedCustomWallet = getLocalStorageItem(CUSTOM_WALLET)
 }
 
 const customWallet = storedCustomWallet ? [JSON.parse(storedCustomWallet)] : []
@@ -27,8 +37,8 @@ export const ConstantsUtil = {
   SigningFailedToastTitle: 'Signing Failed',
   TestIdSiweAuthenticationStatus: 'w3m-authentication-status',
   Metadata: {
-    name: 'AppKit',
-    description: 'AppKit Laboratory',
+    name: 'AppKit Lab',
+    description: 'Laboratory environment for AppKit testing',
     url: getPublicUrl(),
     icons: [`${getPublicUrl()}/metadata-icon.png`],
     verifyUrl: ''

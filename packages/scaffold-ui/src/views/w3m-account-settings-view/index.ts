@@ -12,12 +12,13 @@ import {
   ConnectorController,
   SendController,
   ConstantsUtil
-} from '@web3modal/core'
-import { UiHelperUtil, customElement } from '@web3modal/ui'
+} from '@reown/appkit-core'
+import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import { W3mFrameRpcConstants } from '@web3modal/wallet'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+import { ChainController } from '@reown/appkit-core'
 
 @customElement('w3m-account-settings-view')
 export class W3mAccountSettingsView extends LitElement {
@@ -33,7 +34,7 @@ export class W3mAccountSettingsView extends LitElement {
 
   @state() private profileName = AccountController.state.profileName
 
-  @state() private network = NetworkController.state.caipNetwork
+  @state() private network = ChainController.state.activeCaipNetwork
 
   @state() private preferredAccountType = AccountController.state.preferredAccountType
 
@@ -63,7 +64,7 @@ export class W3mAccountSettingsView extends LitElement {
           'preferredAccountType',
           val => (this.preferredAccountType = val)
         ),
-        NetworkController.subscribeKey('caipNetwork', val => {
+        ChainController.subscribeKey('activeCaipNetwork', val => {
           if (val?.id) {
             this.network = val
           }
@@ -83,7 +84,6 @@ export class W3mAccountSettingsView extends LitElement {
     }
 
     const networkImage = this.networkImages[this.network?.imageId ?? '']
-    const name = this.profileName?.split('.')[0]
 
     return html`
       <wui-flex
@@ -101,19 +101,12 @@ export class W3mAccountSettingsView extends LitElement {
         <wui-flex flexDirection="column" alignItems="center">
           <wui-flex gap="3xs" alignItems="center" justifyContent="center">
             <wui-text variant="title-6-600" color="fg-100" data-testid="account-settings-address">
-              ${name
-                ? UiHelperUtil.getTruncateString({
-                    string: name,
-                    charsStart: 20,
-                    charsEnd: 0,
-                    truncate: 'end'
-                  })
-                : UiHelperUtil.getTruncateString({
-                    string: this.address,
-                    charsStart: 4,
-                    charsEnd: 6,
-                    truncate: 'middle'
-                  })}
+              ${UiHelperUtil.getTruncateString({
+                string: this.address,
+                charsStart: 4,
+                charsEnd: 6,
+                truncate: 'middle'
+              })}
             </wui-text>
             <wui-icon-link
               size="md"
@@ -210,10 +203,7 @@ export class W3mAccountSettingsView extends LitElement {
 
   private onCopyAddress() {
     try {
-      if (this.profileName) {
-        CoreHelperUtil.copyToClopboard(this.profileName)
-        SnackController.showSuccess('Name copied')
-      } else if (this.address) {
+      if (this.address) {
         CoreHelperUtil.copyToClopboard(this.address)
         SnackController.showSuccess('Address copied')
       }

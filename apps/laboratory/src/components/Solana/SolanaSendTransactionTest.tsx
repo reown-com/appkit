@@ -1,32 +1,34 @@
 import { useState } from 'react'
 import { Button, Stack, Text, Spacer, Link } from '@chakra-ui/react'
-import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/solana/react'
+import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
 import {
   PublicKey,
   Transaction,
   TransactionMessage,
   VersionedTransaction,
-  SystemProgram,
-  Connection
+  SystemProgram
 } from '@solana/web3.js'
 
-import { solana } from '../../utils/ChainsUtil'
+import { solana } from '@reown/appkit/networks'
 import { useChakraToast } from '../Toast'
+import { type Provider, useAppKitConnection } from '@reown/appkit-adapter-solana/react'
 
 const PHANTOM_TESTNET_ADDRESS = '8vCyX7oB6Pc3pbWMGYYZF5pbSnAdQ7Gyr32JqxqCy8ZR'
 const recipientAddress = new PublicKey(PHANTOM_TESTNET_ADDRESS)
-const amountInLamports = 100000000
+const amountInLamports = 10_000_000
 
 export function SolanaSendTransactionTest() {
   const toast = useChakraToast()
-  const { address, chainId } = useWeb3ModalAccount()
-  const { walletProvider, connection } = useWeb3ModalProvider()
+  const { address } = useAppKitAccount()
+  const { caipNetwork } = useAppKitNetwork()
+  const { walletProvider } = useAppKitProvider<Provider>('solana')
+  const { connection } = useAppKitConnection()
   const [loading, setLoading] = useState(false)
 
   async function onSendTransaction() {
     try {
       setLoading(true)
-      if (!walletProvider || !address) {
+      if (!walletProvider?.publicKey || !address) {
         throw Error('user is disconnected')
       }
 
@@ -53,7 +55,8 @@ export function SolanaSendTransactionTest() {
 
       transaction.recentBlockhash = blockhash
 
-      const signature = await walletProvider.sendTransaction(transaction, connection as Connection)
+      const signature = await walletProvider.sendTransaction(transaction, connection)
+
       toast({
         title: 'Success',
         description: signature,
@@ -73,7 +76,7 @@ export function SolanaSendTransactionTest() {
   async function onSendVersionedTransaction() {
     try {
       setLoading(true)
-      if (!walletProvider || !address) {
+      if (!walletProvider?.publicKey || !address) {
         throw Error('user is disconnected')
       }
 
@@ -106,10 +109,7 @@ export function SolanaSendTransactionTest() {
       // Make a versioned transaction
       const transactionV0 = new VersionedTransaction(messageV0)
 
-      const signature = await walletProvider.sendTransaction(
-        transactionV0,
-        connection as Connection
-      )
+      const signature = await walletProvider.sendTransaction(transactionV0, connection)
 
       toast({
         title: 'Success',
@@ -131,7 +131,7 @@ export function SolanaSendTransactionTest() {
     return null
   }
 
-  if (chainId === solana.chainId) {
+  if (caipNetwork?.chainId === solana.chainId) {
     return (
       <Text fontSize="md" color="yellow">
         Switch to Solana Devnet or Testnet to test this feature

@@ -23,6 +23,13 @@ export class ModalValidator {
     await this.page.waitForTimeout(500)
   }
 
+  async expectBalanceFetched(currency: 'SOL' | 'ETH') {
+    const accountButton = this.page.locator('w3m-account-button')
+    await expect(accountButton, `Account button should show balance as ${currency}`).toContainText(
+      `0.000 ${currency}`
+    )
+  }
+
   async expectAuthenticated() {
     await expect(
       this.page.getByTestId('w3m-authentication-status'),
@@ -49,6 +56,12 @@ export class ModalValidator {
       this.page.getByTestId('connect-button'),
       'Connect button should be present'
     ).toBeVisible({
+      timeout: MAX_WAIT
+    })
+  }
+
+  async expectConnectScreen() {
+    await expect(this.page.getByText('Connect Wallet')).toBeVisible({
       timeout: MAX_WAIT
     })
   }
@@ -86,17 +99,39 @@ export class ModalValidator {
   }
 
   async expectSwitchedNetwork(network: string) {
-    const switchNetworkButton = this.page.getByTestId('w3m-account-select-network')
+    const switchNetworkButton = this.page.getByTestId(`w3m-network-switch-${network}`)
     await expect(switchNetworkButton).toBeVisible()
-    await expect(switchNetworkButton, `Switched network should include ${network}`).toContainText(
-      network
-    )
+  }
+
+  async expectSwitchChainView(chainName: string) {
+    const title = this.page.getByTestId(`w3m-switch-active-chain-to-${chainName}`)
+    await expect(title).toBeVisible()
+  }
+
+  async expectSwitchedNetworkOnNetworksView(name: string) {
+    const networkOptions = this.page.getByTestId(`w3m-network-switch-${name}`)
+    await expect(networkOptions.locator('wui-icon')).toBeVisible()
+  }
+
+  expectSecureSiteFrameNotInjected() {
+    const secureSiteIframe = this.page.frame({ name: 'w3m-secure-iframe' })
+    expect(secureSiteIframe).toBeNull()
+  }
+
+  async expectNoSocials() {
+    const socialList = this.page.getByTestId('wui-list-social')
+    await expect(socialList).toBeHidden()
+  }
+
+  async expectEmailLogin() {
+    const emailInput = this.page.getByTestId('wui-email-input')
+    await expect(emailInput).toBeVisible()
   }
 
   async expectValidSignature(signature: `0x${string}`, address: `0x${string}`, chainId: number) {
     const isVerified = await verifySignature({
       address,
-      message: 'Hello Web3Modal!',
+      message: 'Hello AppKit!',
       signature,
       chainId
     })
@@ -110,9 +145,12 @@ export class ModalValidator {
   }
 
   async expectMultipleAccounts() {
+    await this.page.waitForTimeout(500)
     await expect(this.page.getByText('Switch Address')).toBeVisible({
       timeout: MAX_WAIT
     })
+
+    expect(this.page.getByTestId('switch-address-item').first()).toBeVisible()
     const accounts = await this.page.getByTestId('switch-address-item').all()
 
     expect(accounts.length).toBeGreaterThan(1)
@@ -133,13 +171,9 @@ export class ModalValidator {
     await expect(switchNetworkButton).toBeVisible()
   }
 
-  async expectOnrampButton(library: string) {
+  async expectOnrampButton(_library: string) {
     const onrampButton = this.page.getByTestId('w3m-account-default-onramp-button')
-    if (library === 'solana') {
-      await expect(onrampButton).toBeHidden()
-    } else {
-      await expect(onrampButton).toBeVisible()
-    }
+    await expect(onrampButton).toBeVisible()
   }
 
   async expectAccountNameFound(name: string) {
@@ -165,5 +199,30 @@ export class ModalValidator {
     }
 
     throw new Error('Call status not confirmed')
+  }
+
+  async expectNetworksDisabled(name: string) {
+    const disabledNetwork = this.page.getByTestId(`w3m-network-switch-${name}`)
+    await expect(disabledNetwork.locator('button')).toBeDisabled()
+  }
+
+  async expectConnectButtonLoading() {
+    const connectButton = this.page.getByTestId('connect-button')
+    await expect(connectButton).toContainText('Connecting...')
+  }
+
+  async expectAccountSwitched(oldAddress: string) {
+    const address = this.page.getByTestId('w3m-address')
+    await expect(address).not.toHaveText(oldAddress)
+  }
+
+  async expectSocialsVisible() {
+    const socials = this.page.getByTestId('w3m-social-login-widget')
+    await expect(socials).toBeVisible()
+  }
+
+  async expectModalNotVisible() {
+    const modal = this.page.getByTestId('w3m-modal')
+    await expect(modal).toBeHidden()
   }
 }

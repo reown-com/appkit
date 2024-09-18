@@ -1,35 +1,36 @@
-import { getWeb3Modal } from '@web3modal/scaffold-vue'
-import type { Web3ModalOptions } from '../src/client.js'
-import { Web3Modal } from '../src/client.js'
-import { ConstantsUtil } from '@web3modal/scaffold-utils'
+import { AppKit } from '@reown/appkit'
+import type { AppKitOptions } from '@reown/appkit'
+import { WagmiAdapter, type AdapterOptions } from '@reown/appkit-adapter-wagmi'
+import { getAppKit } from '@reown/appkit/library/vue'
 import type { Config } from '@wagmi/core'
-
-// -- Types -------------------------------------------------------------------
-export type { Web3ModalOptions } from '../src/client.js'
+import packageJson from '../package.json' assert { type: 'json' }
 
 // -- Setup -------------------------------------------------------------------
-let modal: Web3Modal | undefined = undefined
+let appkit: AppKit | undefined = undefined
 
-export function createWeb3Modal(options: Web3ModalOptions<Config>) {
-  if (!modal) {
-    modal = new Web3Modal({
-      ...options,
-      _sdkVersion: `vue-wagmi-${ConstantsUtil.VERSION}`
-    })
-    getWeb3Modal(modal)
-  }
+export type WagmiAppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 'sdkVersion'> &
+  AdapterOptions<Config>
 
-  return modal
+export function createAppKit(options: WagmiAppKitOptions) {
+  const wagmiAdapter = new WagmiAdapter({
+    networks: options.networks,
+    projectId: options.projectId
+  })
+  appkit = new AppKit({
+    ...options,
+    sdkVersion: `vue-wagmi-${packageJson.version}`,
+    adapters: [wagmiAdapter]
+  })
+  getAppKit(appkit)
+
+  return appkit
 }
 
 // -- Composites --------------------------------------------------------------
 export {
-  useWeb3ModalTheme,
-  useWeb3Modal,
-  useWeb3ModalState,
-  useWeb3ModalEvents,
+  useAppKitTheme,
+  useAppKit,
+  useAppKitState,
+  useAppKitEvents,
   useWalletInfo
-} from '@web3modal/scaffold-vue'
-
-// -- Universal Exports -------------------------------------------------------
-export { defaultWagmiConfig } from '../src/utils/defaultWagmiCoreConfig.js'
+} from '@reown/appkit/library/vue'

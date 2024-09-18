@@ -68,9 +68,14 @@ import {
   AppSetPreferredAccountRequest,
   FrameSetPreferredAccountResponse,
   WalletGetCapabilitiesRequest,
-  WalletGrantPermissionsRequest
+  WalletGrantPermissionsRequest,
+  RpcSolanaSignMessageRequest,
+  RpcSolanaSignTransactionRequest,
+  RpcSolanaSignAndSendTransactionRequest,
+  RpcSolanaSignAllTransactionsRequest
 } from './W3mFrameSchema.js'
 import type { W3mFrameRpcConstants } from './W3mFrameConstants.js'
+import type { CaipNetworkId } from '@reown/appkit-common'
 
 export namespace W3mFrameTypes {
   export type AppEvent = z.infer<typeof W3mFrameSchema.appEvent>
@@ -127,7 +132,7 @@ export namespace W3mFrameTypes {
 
   export interface Network {
     rpcUrl: string
-    chainId: number
+    chainId: number | CaipNetworkId
   }
 
   export type RPCRequest =
@@ -168,6 +173,10 @@ export namespace W3mFrameTypes {
     | z.infer<typeof RpcPersonalSignRequest>
     | z.infer<typeof RpcEthSignTypedDataV4>
     | z.infer<typeof RpcEthSendTransactionRequest>
+    | z.infer<typeof RpcSolanaSignMessageRequest>
+    | z.infer<typeof RpcSolanaSignTransactionRequest>
+    | z.infer<typeof RpcSolanaSignAllTransactionsRequest>
+    | z.infer<typeof RpcSolanaSignAndSendTransactionRequest>
     | z.infer<typeof WalletSendCallsRequest>
     | z.infer<typeof WalletGetCallsReceiptRequest>
     | z.infer<typeof WalletGetCapabilitiesRequest>
@@ -182,23 +191,23 @@ export namespace W3mFrameTypes {
   export type SocialProvider = 'google' | 'github' | 'apple' | 'facebook' | 'x' | 'discord'
 
   export type ProviderRequestType =
-    | 'GetUser'
-    | 'GetFarcasterUri'
-    | 'ConnectDevice'
     | 'ConnectEmail'
-    | 'ConnectSocial'
-    | 'ConnectFarcaster'
     | 'ConnectOtp'
-    | 'GetSocialRedirectUri'
+    | 'GetUser'
     | 'SwitchNetwork'
+    | 'GetChainId'
+    | 'IsConnected'
+    | 'GetSmartAccountEnabledNetworks'
     | 'UpdateEmail'
+    | 'GetSocialRedirectUri'
+    | 'ConnectSocial'
+    | 'GetFarcasterUri'
+    | 'ConnectFarcaster'
     | 'SyncTheme'
     | 'SyncDappData'
     | 'UpdateEmailPrimaryOtp'
     | 'UpdateEmailSecondaryOtp'
-    | 'GetSmartAccountEnabledNetworks'
-    | 'GetChainId'
-    | 'IsConnected'
+    | 'ConnectDevice'
     | 'SetPreferredAccount'
     | 'SignOut'
     | 'Rpc'

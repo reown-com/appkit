@@ -1,4 +1,5 @@
-export * as Web3modal from '@web3modal/wagmi'
+import '@reown/appkit-polyfills'
+export * as AppKit from '@reown/appkit-wagmi'
 export * as Viem from 'viem'
 export * as Chains from 'viem/chains'
 export * as Connectors from '@wagmi/connectors'
