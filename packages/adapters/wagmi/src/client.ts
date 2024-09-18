@@ -230,11 +230,10 @@ export class WagmiAdapter implements ChainAdapter {
 
     this.networkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
-        SafeLocalStorage.setItem(
-          SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK,
-          JSON.stringify(caipNetwork)
-        )
-        const chainId = Number(NetworkUtil.caipNetworkIdToNumber(caipNetwork?.id))
+        if (caipNetwork) {
+          SafeLocalStorage.setItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK, caipNetwork)
+        }
+        const chainId = NetworkUtil.caipNetworkIdToNumber(caipNetwork?.id)
 
         if (chainId && this.wagmiConfig) {
           await switchChain(this.wagmiConfig, { chainId })

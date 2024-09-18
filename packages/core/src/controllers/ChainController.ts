@@ -133,11 +133,8 @@ export const ChainController = {
 
       if (storedCaipNetwork) {
         try {
-          const parsedCaipNetwork = JSON.parse(storedCaipNetwork) as CaipNetwork
-          if (parsedCaipNetwork) {
-            state.activeChain = parsedCaipNetwork.chainNamespace
-            this.setActiveCaipNetwork(parsedCaipNetwork)
-          }
+          state.activeChain = storedCaipNetwork.chainNamespace
+          this.setActiveCaipNetwork(storedCaipNetwork)
         } catch (error) {
           console.warn('>>> Error setting active caip network', error)
         }
@@ -273,7 +270,7 @@ export const ChainController = {
       selectedNetworkId: caipNetwork?.id
     })
 
-    SafeLocalStorage.setItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK, JSON.stringify(caipNetwork))
+    SafeLocalStorage.setItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK, caipNetwork)
     SafeLocalStorage.setItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID, caipNetwork.id)
   },
 
