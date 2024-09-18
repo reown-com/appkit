@@ -16,11 +16,11 @@ import { type Config, disconnect } from '@wagmi/core'
 import { ProfileStore } from './ProfileStoreUtil'
 const queryParams = `projectId=24970167f11c121f6eb40b558edb9691&st=w3m&sv=5.0.0`
 
-const devProfileApiUrl = 'https://staging-p-api.walletconnect.com'
+const devProfileApiUrl = 'https://staging-p-api.walletconnect.network'
 
-export async function addCurrentAccountToProfile() {
+export async function addCurrentAccountToProfile(baseUrl = devProfileApiUrl) {
   try {
-    const res = await fetch(`${devProfileApiUrl}/profiles/v1/add-account?${queryParams}`, {
+    const res = await fetch(`${baseUrl}/profiles/v1/add-account?${queryParams}`, {
       method: 'POST',
       body: null,
       credentials: 'include'
@@ -44,9 +44,9 @@ export async function addCurrentAccountToProfile() {
   }
 }
 
-export async function getProfile() {
+export async function getProfile(baseUrl = devProfileApiUrl) {
   try {
-    const res = await fetch(`${devProfileApiUrl}/profiles/v1?${queryParams}`, {
+    const res = await fetch(`${baseUrl}/profiles/v1?${queryParams}`, {
       method: 'GET',
       credentials: 'include'
     })
@@ -65,9 +65,9 @@ export async function getProfile() {
   }
 }
 
-export async function unlinkAccountFromProfile(accountUuid: string) {
+export async function unlinkAccountFromProfile(accountUuid: string, baseUrl = devProfileApiUrl) {
   try {
-    const res = await fetch(`${devProfileApiUrl}/profiles/v1/${accountUuid}?${queryParams}`, {
+    const res = await fetch(`${baseUrl}/profiles/v1/${accountUuid}?${queryParams}`, {
       method: 'DELETE',
       credentials: 'include'
     })
@@ -89,9 +89,9 @@ export async function unlinkAccountFromProfile(accountUuid: string) {
   }
 }
 
-export async function deleteProfile() {
+export async function deleteProfile(baseUrl = devProfileApiUrl) {
   try {
-    const res = await fetch(`${devProfileApiUrl}/profiles/v1?${queryParams}`, {
+    const res = await fetch(`${baseUrl}/profiles/v1?${queryParams}`, {
       method: 'DELETE',
       credentials: 'include'
     })
@@ -104,15 +104,12 @@ export async function deleteProfile() {
   }
 }
 
-export async function updateMainAccount(accountUuid: string) {
+export async function updateMainAccount(accountUuid: string, baseUrl = devProfileApiUrl) {
   try {
-    const res = await fetch(
-      `${devProfileApiUrl}/profiles/v1/main-account/${accountUuid}?${queryParams}`,
-      {
-        method: 'PATCH',
-        credentials: 'include'
-      }
-    )
+    const res = await fetch(`${baseUrl}/profiles/v1/main-account/${accountUuid}?${queryParams}`, {
+      method: 'PATCH',
+      credentials: 'include'
+    })
 
     return { success: res.ok && res.status === 204 }
   } catch (error) {
@@ -122,9 +119,9 @@ export async function updateMainAccount(accountUuid: string) {
   }
 }
 
-export async function sendOtp() {
+export async function sendOtp(baseUrl = devProfileApiUrl) {
   try {
-    const res = await fetch(`${devProfileApiUrl}/profiles/v1/otp?${queryParams}`, {
+    const res = await fetch(`${baseUrl}/profiles/v1/otp?${queryParams}`, {
       method: 'POST',
       credentials: 'include',
       body: JSON.stringify({ email: 'example@walletconnect.com' })
@@ -142,9 +139,9 @@ export async function sendOtp() {
   }
 }
 
-export async function verifyOtp() {
+export async function verifyOtp(baseUrl = devProfileApiUrl) {
   try {
-    const res = await fetch(`${devProfileApiUrl}/profiles/v1/otp/verify?${queryParams}`, {
+    const res = await fetch(`${baseUrl}/profiles/v1/otp/verify?${queryParams}`, {
       method: 'POST',
       credentials: 'include',
       body: JSON.stringify({ otp: '123456' })
