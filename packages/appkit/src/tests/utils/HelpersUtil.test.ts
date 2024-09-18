@@ -1,6 +1,7 @@
 import { describe, test, expect } from 'vitest'
 import { WcHelpersUtil } from '../../utils/HelpersUtil'
 import type { CaipNetwork } from '@reown/appkit-common'
+import type { SessionTypes } from '@walletconnect/types'
 
 const mockEthereumNetwork = {
   id: 'eip155:1',
@@ -122,6 +123,35 @@ describe('WcHelpersUtil', () => {
     test('creates empty namespaces for empty input', () => {
       const namespaces = WcHelpersUtil.createNamespaces([])
       expect(namespaces).toEqual({})
+    })
+  })
+
+  describe('getChainsFromNamespaces', () => {
+    test('returns correct chain ids', () => {
+      const namespaces = {
+        eip155: {
+          methods: [],
+          events: [],
+          chains: ['eip155:1', 'eip155:137'],
+          accounts: ['eip155:4000:0x123', 'eip155:3000:0x456']
+        },
+        solana: {
+          methods: [],
+          events: [],
+          chains: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
+          accounts: ['solana:mainnet:address', 'solana:devnet:address']
+        }
+      } as SessionTypes.Namespaces
+
+      expect(WcHelpersUtil.getChainsFromNamespaces(namespaces)).toEqual([
+        'eip155:1',
+        'eip155:137',
+        'eip155:4000',
+        'eip155:3000',
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+        'solana:mainnet',
+        'solana:devnet'
+      ])
     })
   })
 })
