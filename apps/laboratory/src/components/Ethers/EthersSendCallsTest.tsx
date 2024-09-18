@@ -21,7 +21,7 @@ import {
   WALLET_CAPABILITIES,
   getCapabilitySupportedChainInfo
 } from '../../utils/EIP5792Utils'
-import { AddIcon } from '@chakra-ui/icons'
+import { AddIcon, DeleteIcon } from '@chakra-ui/icons'
 import { AddTransactionModal } from '../AddTransactionModal'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
 type Provider = W3mFrameProvider | Awaited<ReturnType<(typeof UniversalProvider)['init']>>
@@ -83,6 +83,10 @@ export function EthersSendCallsTest(params: { onCallsHash: (hash: string) => voi
 
   const onAddTransactionButtonClick = useCallback(() => {
     setIsOpen(true)
+  }, [])
+
+  const onRemoveTransaction = useCallback((index: number) => {
+    setTransactionsToBatch(prev => prev.filter((_, i) => i !== index))
   }, [])
 
   async function onSendCalls() {
@@ -184,7 +188,13 @@ export function EthersSendCallsTest(params: { onCallsHash: (hash: string) => voi
                   <Card>
                     <CardBody>
                       <Stat>
-                        <StatLabel>({index + 1}) Sending</StatLabel>
+                        <StatLabel>
+                          ({index + 1}) Sending
+                          <DeleteIcon
+                            style={{ float: 'right', cursor: 'pointer' }}
+                            onClick={() => onRemoveTransaction(index)}
+                          />
+                        </StatLabel>
                         <StatNumber>{parseInt(tx.value, 16) / 1000000000} ETH</StatNumber>
                         <StatHelpText>to {tx.to}</StatHelpText>
                       </Stat>
