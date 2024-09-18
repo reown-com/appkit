@@ -11,13 +11,13 @@ import {
   ConstantsUtil as CommonConstantsUtil,
   OptionsController,
   ChainController
-} from '@web3modal/core'
-import { customElement, UiHelperUtil } from '@web3modal/ui'
+} from '@reown/appkit-core'
+import { customElement, UiHelperUtil } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import { ConstantsUtil } from '@web3modal/common'
-import { W3mFrameRpcConstants } from '@web3modal/wallet'
+import { ConstantsUtil } from '@reown/appkit-common'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 
 import styles from './styles.js'
 
@@ -29,7 +29,9 @@ export class W3mAccountDefaultWidget extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() public address = AccountController.state.address
+  @state() public caipAddress = AccountController.state.caipAddress
+
+  @state() public address = CoreHelperUtil.getPlainAddress(AccountController.state.caipAddress)
 
   @state() private profileImage = AccountController.state.profileImage
 
@@ -41,21 +43,21 @@ export class W3mAccountDefaultWidget extends LitElement {
 
   @state() private balanceSymbol = AccountController.state.balanceSymbol
 
+  @state() private features = OptionsController.state.features
+
   public constructor() {
     super()
     this.unsubscribe.push(
       ...[
-        AccountController.subscribe(val => {
-          if (val.address) {
-            this.address = val.address
-            this.profileImage = val.profileImage
-            this.profileName = val.profileName
-            this.balance = val.balance
-            this.balanceSymbol = val.balanceSymbol
-          } else if (!this.disconnecting) {
-            SnackController.showError('Account not found')
-          }
-        })
+        AccountController.subscribeKey('caipAddress', val => {
+          this.address = CoreHelperUtil.getPlainAddress(val)
+          this.caipAddress = val
+        }),
+        AccountController.subscribeKey('balance', val => (this.balance = val)),
+        AccountController.subscribeKey('balanceSymbol', val => (this.balanceSymbol = val)),
+        AccountController.subscribeKey('profileName', val => (this.profileName = val)),
+        AccountController.subscribeKey('profileImage', val => (this.profileImage = val)),
+        OptionsController.subscribeKey('features', val => (this.features = val))
       ]
     )
   }
@@ -66,7 +68,7 @@ export class W3mAccountDefaultWidget extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    if (!this.address) {
+    if (!this.caipAddress) {
       throw new Error('w3m-account-view: No account provided')
     }
 
@@ -106,9 +108,9 @@ export class W3mAccountDefaultWidget extends LitElement {
 
   // -- Private ------------------------------------------- //
   private onrampTemplate() {
-    const { enableOnramp } = OptionsController.state
+    const onramp = this.features?.onramp
 
-    if (!enableOnramp) {
+    if (!onramp) {
       return null
     }
 
@@ -142,9 +144,10 @@ export class W3mAccountDefaultWidget extends LitElement {
   }
 
   private swapsTemplate() {
-    const { enableSwaps } = OptionsController.state
+    const swaps = this.features?.swaps
+    const isSolana = ChainController.state.activeChain === ConstantsUtil.CHAIN.SOLANA
 
-    if (!enableSwaps || ChainController.state.activeChain === ConstantsUtil.CHAIN.SOLANA) {
+    if (!swaps || isSolana) {
       return null
     }
 
@@ -210,8 +213,8 @@ export class W3mAccountDefaultWidget extends LitElement {
   private singleAccountTemplate() {
     return html`
       <wui-avatar
-        alt=${ifDefined(this.address)}
-        address=${ifDefined(this.address)}
+        alt=${ifDefined(this.caipAddress)}
+        address=${ifDefined(CoreHelperUtil.getPlainAddress(this.caipAddress))}
         imageSrc=${ifDefined(this.profileImage === null ? undefined : this.profileImage)}
       ></wui-avatar>
       <wui-flex flexDirection="column" alignItems="center">
@@ -225,7 +228,7 @@ export class W3mAccountDefaultWidget extends LitElement {
                   truncate: 'end'
                 })
               : UiHelperUtil.getTruncateString({
-                  string: this.address ? this.address : '',
+                  string: this.address || '',
                   charsStart: 4,
                   charsEnd: 4,
                   truncate: 'middle'

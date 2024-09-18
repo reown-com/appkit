@@ -28,6 +28,7 @@ import { lightbulbSvg } from '../../assets/visual/lightbulb.js'
 import { meldSvg } from '../../assets/visual/meld.js'
 
 import styles from './styles.js'
+import { solanaSvg } from '../../assets/visual/solana.js'
 
 // -- Svg's-------------------------------- //
 const svgOptions: Record<VisualType, TemplateResult<2>> = {
@@ -52,7 +53,8 @@ const svgOptions: Record<VisualType, TemplateResult<2>> = {
   paypal: paypalSvg,
   google: googleSvg,
   pencil: pencilSvg,
-  lightbulb: lightbulbSvg
+  lightbulb: lightbulbSvg,
+  solana: solanaSvg
 }
 
 @customElement('wui-visual')

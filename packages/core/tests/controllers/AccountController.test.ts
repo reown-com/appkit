@@ -1,6 +1,6 @@
 import { beforeAll, describe, expect, it } from 'vitest'
-import { AccountController, ChainController } from '../../index.js'
-import { ConstantsUtil } from '@web3modal/common'
+import { AccountController, ChainController } from '../../exports/index.js'
+import { ConstantsUtil } from '@reown/appkit-common'
 
 // -- Setup --------------------------------------------------------------------
 const caipAddress = 'eip155:1:0x123'
@@ -13,7 +13,12 @@ const chain = ConstantsUtil.CHAIN.EVM
 
 // -- Tests --------------------------------------------------------------------
 beforeAll(() => {
-  ChainController.initialize([{ chain: ConstantsUtil.CHAIN.EVM }])
+  ChainController.initialize([
+    {
+      chainNamespace: ConstantsUtil.CHAIN.EVM,
+      caipNetworks: []
+    }
+  ])
 })
 
 describe('AccountController', () => {

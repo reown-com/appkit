@@ -3,9 +3,9 @@ import { BlockchainApiController } from '../controllers/BlockchainApiController.
 import type { SwapTokenWithBalance } from './TypeUtil.js'
 import { OptionsController } from '../controllers/OptionsController.js'
 import type { BlockchainApiSwapAllowanceRequest, BlockchainApiBalanceResponse } from './TypeUtil.js'
-import { NetworkController } from '../controllers/NetworkController.js'
 import { AccountController } from '../controllers/AccountController.js'
 import { ChainController } from '../controllers/ChainController.js'
+import { NetworkController } from '../controllers/NetworkController.js'
 
 // -- Types --------------------------------------------- //
 export type TokenInfo = {
@@ -23,7 +23,7 @@ export type TokenInfo = {
 // -- Controller ---------------------------------------- //
 export const SwapApiUtil = {
   async getTokenList() {
-    const caipNetwork = NetworkController.state.caipNetwork
+    const caipNetwork = ChainController.state.activeCaipNetwork
     const response = await BlockchainApiController.fetchSwapTokens({
       chainId: caipNetwork?.id,
       projectId: OptionsController.state.projectId
@@ -48,14 +48,14 @@ export const SwapApiUtil = {
 
   async fetchGasPrice() {
     const projectId = OptionsController.state.projectId
-    const caipNetwork = NetworkController.state.caipNetwork
+    const caipNetwork = ChainController.state.activeCaipNetwork
 
     if (!caipNetwork) {
       return null
     }
 
     try {
-      switch (caipNetwork.chain) {
+      switch (caipNetwork.chainNamespace) {
         case 'solana':
           // eslint-disable-next-line no-case-declarations
           const lamportsPerSignature = (
@@ -68,7 +68,7 @@ export const SwapApiUtil = {
             instant: lamportsPerSignature
           }
 
-        case 'evm':
+        case 'eip155':
         default:
           return await BlockchainApiController.fetchGasPrice({
             projectId,
@@ -110,7 +110,7 @@ export const SwapApiUtil = {
 
   async getMyTokensWithBalance(forceUpdate?: string) {
     const address = AccountController.state.address
-    const caipNetwork = NetworkController.state.caipNetwork
+    const caipNetwork = ChainController.state.activeCaipNetwork
 
     if (!address || !caipNetwork) {
       return []

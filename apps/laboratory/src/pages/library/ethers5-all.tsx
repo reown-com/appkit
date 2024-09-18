@@ -1,28 +1,27 @@
-import { createWeb3Modal, defaultConfig } from '@web3modal/ethers5/react'
+import { createAppKit } from '@reown/appkit/react'
 import { ThemeStore } from '../../utils/StoreUtil'
-import { EthersConstants } from '../../utils/EthersConstants'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { siweConfig } from '../../utils/SiweUtils'
 import { SiweData } from '../../components/Siwe/SiweData'
 import { Ethers5Tests } from '../../components/Ethers/Ethers5Tests'
 import { Ethers5ModalInfo } from '../../components/Ethers/Ethers5ModalInfo'
+import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@reown/appkit/networks'
+import { Ethers5Adapter } from '@reown/appkit-adapter-ethers5'
 
-const modal = createWeb3Modal({
-  ethersConfig: defaultConfig({
-    metadata: ConstantsUtil.Metadata,
-    defaultChainId: 1,
-    auth: {
-      socials: ['google', 'x', 'discord', 'farcaster', 'github', 'apple', 'facebook']
-    },
-    coinbasePreference: 'smartWalletOnly'
-  }),
-  chains: EthersConstants.chains,
+const ethers5Adapter = new Ethers5Adapter()
+
+const modal = createAppKit({
+  adapters: [ethers5Adapter],
+  networks: [arbitrum, mainnet, optimism, polygon, zkSync, sepolia],
+  defaultNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId,
-  enableAnalytics: true,
-  metadata: ConstantsUtil.Metadata,
-  termsConditionsUrl: 'https://walletconnect.com/terms',
-  privacyPolicyUrl: 'https://walletconnect.com/privacy',
+  features: {
+    analytics: true,
+    socials: ['google', 'x', 'discord', 'farcaster', 'github', 'apple', 'facebook']
+  },
+  termsConditionsUrl: 'https://reown.com/terms-of-service',
+  privacyPolicyUrl: 'https://reown.com/privacy-policy',
   siweConfig
 })
 

@@ -1,5 +1,10 @@
 import { Button } from '@chakra-ui/react'
-import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers/react'
+import {
+  useAppKitAccount,
+  useAppKitNetwork,
+  useAppKitProvider,
+  type Provider
+} from '@reown/appkit/react'
 import { ethers } from 'ethers5'
 import type { TypedDataField } from 'ethers5'
 import { useChakraToast } from '../Toast'
@@ -30,8 +35,10 @@ const message = {
 
 export function Ethers5SignTypedDataTest() {
   const toast = useChakraToast()
-  const { address, chainId } = useWeb3ModalAccount()
-  const { walletProvider } = useWeb3ModalProvider()
+
+  const { address } = useAppKitAccount()
+  const { chainId } = useAppKitNetwork()
+  const { walletProvider } = useAppKitProvider<Provider>('eip155')
 
   async function onSignTypedData() {
     try {

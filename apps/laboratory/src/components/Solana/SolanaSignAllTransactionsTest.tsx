@@ -5,14 +5,15 @@ import {
   Transaction,
   TransactionMessage,
   VersionedTransaction,
-  SystemProgram
+  SystemProgram,
+  Connection
 } from '@solana/web3.js'
 
-import { useWeb3ModalAccount, useWeb3ModalProvider, type Provider } from '@web3modal/solana/react'
+import { type Provider, useAppKitConnection } from '@reown/appkit-adapter-solana/react'
+import { useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
 
-import { solana } from '../../utils/ChainsUtil'
+import { solana } from '@reown/appkit/networks'
 import { useChakraToast } from '../Toast'
-import type { Connection } from '@web3modal/base/adapters/solana/web3js'
 import bs58 from 'bs58'
 
 const PHANTOM_DEVNET_ADDRESS = '8vCyX7oB6Pc3pbWMGYYZF5pbSnAdQ7Gyr32JqxqCy8ZR'
@@ -21,8 +22,9 @@ const amountInLamports = 1_000_000
 
 export function SolanaSignAllTransactionsTest() {
   const toast = useChakraToast()
-  const { chainId } = useWeb3ModalAccount()
-  const { walletProvider, connection } = useWeb3ModalProvider()
+  const { chainId } = useAppKitNetwork()
+  const { walletProvider } = useAppKitProvider<Provider>('solana')
+  const { connection } = useAppKitConnection()
   const [loading, setLoading] = useState(false)
 
   async function onSignTransaction(type: 'legacy' | 'versioned') {

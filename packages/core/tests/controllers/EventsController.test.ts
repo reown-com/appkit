@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { EventsController } from '../../index.js'
+import { EventsController } from '../../exports/index.js'
 
 // -- Setup --------------------------------------------------------------------
 const event = { type: 'track', event: 'MODAL_CLOSE', properties: { connected: true } } as const

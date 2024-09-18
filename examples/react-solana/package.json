@@ -1,13 +1,14 @@
 {
   "name": "@examples/react-solana",
   "private": true,
-  "version": "5.1.8",
+  "version": "1.0.1",
   "scripts": {
     "dev": "vite --port 3002",
     "build": "vite build"
   },
   "dependencies": {
-    "@web3modal/solana": "workspace:*",
+    "@reown/appkit": "workspace:*",
+    "@reown/appkit-solana": "workspace:*",
     "@tanstack/react-query": "5.24.8",
     "react": "18.2.0",
     "react-dom": "18.2.0",

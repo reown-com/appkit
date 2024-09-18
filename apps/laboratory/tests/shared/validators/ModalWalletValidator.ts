@@ -36,18 +36,23 @@ export class ModalWalletValidator extends ModalValidator {
     await expect(this.page.getByTestId('w3m-address')).not.toHaveText(previousAddress)
   }
 
-  override async expectSwitchedNetwork(network: string) {
-    const switchNetworkButton = this.page.getByTestId('account-switch-network-button')
-    await expect(switchNetworkButton).toBeVisible()
-    await expect(switchNetworkButton, `Switched network should include ${network}`).toContainText(
-      network
-    )
-  }
-
   async expectCallStatusPending() {
     const closeButton = this.page.locator('#toast-close-button')
 
     await expect(closeButton).toBeVisible()
     await closeButton.click()
+  }
+
+  async expectReceivedSign({ chainName = 'Ethereum' }) {
+    await expect(
+      this.page.getByText('Approve Transaction'),
+      'Approve Transaction text should be visible'
+    ).toBeVisible({
+      timeout: 10_000
+    })
+    expect(
+      this.page.getByText(chainName),
+      `${chainName} should be visible on approve transaction page`
+    ).toBeTruthy()
   }
 }

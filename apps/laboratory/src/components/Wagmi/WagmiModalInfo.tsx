@@ -3,9 +3,11 @@ import EthereumProvider from '@walletconnect/ethereum-provider'
 
 import { useAccount } from 'wagmi'
 import { AppKitInfo } from '../AppKitInfo'
+import { useAppKitAccount } from '@reown/appkit/react'
 
 export function WagmiModalInfo() {
-  const { isConnected, address, chainId, connector } = useAccount()
+  const { address, isConnected } = useAppKitAccount()
+  const { chainId, connector } = useAccount()
   const [clientId, setClientId] = React.useState<string | null>(null)
 
   async function getClientId() {
@@ -23,5 +25,7 @@ export function WagmiModalInfo() {
     getClientId().then(setClientId)
   }, [connector])
 
-  return isConnected ? <AppKitInfo address={address} chainId={chainId} clientId={clientId} /> : null
+  return isConnected ? (
+    <AppKitInfo address={address} chainId={chainId} clientId={clientId || undefined} />
+  ) : null
 }

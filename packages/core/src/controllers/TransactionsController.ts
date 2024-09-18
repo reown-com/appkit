@@ -1,13 +1,13 @@
-import type { Transaction } from '@web3modal/common'
+import type { Transaction } from '@reown/appkit-common'
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { OptionsController } from './OptionsController.js'
 import { EventsController } from './EventsController.js'
 import { SnackController } from './SnackController.js'
-import { NetworkController } from './NetworkController.js'
-import type { CaipNetworkId } from '../utils/TypeUtil.js'
+import type { CaipNetworkId } from '@reown/appkit-common'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { AccountController } from './AccountController.js'
-import { W3mFrameRpcConstants } from '@web3modal/wallet'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+import { ChainController } from './ChainController.js'
 
 // -- Types --------------------------------------------- //
 type TransactionByMonthMap = Record<number, Transaction[]>
@@ -63,7 +63,7 @@ export const TransactionsController = {
         onramp,
         // Coinbase transaction history state updates require the latest data
         cache: onramp === 'coinbase' ? 'no-cache' : undefined,
-        chainId: NetworkController.state.caipNetwork?.id
+        chainId: ChainController.state.activeCaipNetwork?.id
       })
 
       const nonSpamTransactions = this.filterSpamTransactions(response.data)
@@ -144,7 +144,7 @@ export const TransactionsController = {
   },
 
   filterByConnectedChain(transactions: Transaction[]) {
-    const chainId = NetworkController.state.caipNetwork?.id
+    const chainId = ChainController.state.activeCaipNetwork?.id
     const filteredTransactions = transactions.filter(
       transaction => transaction.metadata.chain === chainId
     )

@@ -1,10 +1,15 @@
 import { Button, Stack, Text, Input } from '@chakra-ui/react'
 import { useState } from 'react'
-import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers5/react'
+import {
+  useAppKitAccount,
+  useAppKitNetwork,
+  useAppKitProvider,
+  type Provider
+} from '@reown/appkit/react'
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
 import { useChakraToast } from '../Toast'
 import { ethers } from 'ethers5'
-import { W3mFrameProvider } from '@web3modal/wallet'
+import { W3mFrameProvider } from '@reown/appkit-wallet'
 import { type GetCallsStatusParams } from '../../types/EIP5792'
 import { EIP_5792_RPC_METHODS } from '../../utils/EIP5792Utils'
 
@@ -12,8 +17,10 @@ export function Ethers5GetCallsStatusTest() {
   const [isLoading, setLoading] = useState(false)
   const [batchCallId, setBatchCallId] = useState('')
 
-  const { address, chainId, isConnected } = useWeb3ModalAccount()
-  const { walletProvider } = useWeb3ModalProvider()
+  const { chainId } = useAppKitNetwork()
+  const { isConnected, address } = useAppKitAccount()
+  const { walletProvider } = useAppKitProvider<Provider>('eip155')
+
   const toast = useChakraToast()
 
   async function onGetCallsStatus() {

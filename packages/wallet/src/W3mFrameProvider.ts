@@ -221,13 +221,28 @@ export class W3mFrameProvider {
   // -- Provider Methods ------------------------------------------------
   public async connect(payload?: W3mFrameTypes.Requests['AppGetUserRequest']) {
     try {
-      const chainId = payload?.chainId ?? this.getLastUsedChainId() ?? 1
+      const chainId = payload?.chainId || this.getLastUsedChainId() || 1
       const response = await this.appEvent<'GetUser'>({
         type: W3mFrameConstants.APP_GET_USER,
         payload: { ...payload, chainId }
       } as W3mFrameTypes.AppEvent)
       this.setLoginSuccess(response.email)
       this.setLastUsedChainId(response.chainId)
+
+      return response
+    } catch (error) {
+      this.w3mLogger.logger.error({ error }, 'Error connecting')
+      throw error
+    }
+  }
+
+  public async getUser(payload: W3mFrameTypes.Requests['AppGetUserRequest']) {
+    try {
+      const chainId = payload?.chainId || this.getLastUsedChainId() || 1
+      const response = await this.appEvent<'GetUser'>({
+        type: W3mFrameConstants.APP_GET_USER,
+        payload: { ...payload, chainId }
+      } as W3mFrameTypes.AppEvent)
 
       return response
     } catch (error) {
@@ -491,10 +506,12 @@ export class W3mFrameProvider {
   }
 
   private setLastUsedChainId(chainId: string | number) {
-    W3mFrameStorage.set(W3mFrameConstants.LAST_USED_CHAIN_KEY, String(chainId))
+    if (chainId) {
+      W3mFrameStorage.set(W3mFrameConstants.LAST_USED_CHAIN_KEY, String(chainId))
+    }
   }
 
-  private getLastUsedChainId() {
+  public getLastUsedChainId() {
     return Number(W3mFrameStorage.get(W3mFrameConstants.LAST_USED_CHAIN_KEY))
   }
 

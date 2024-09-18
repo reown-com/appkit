@@ -1,4 +1,4 @@
-import { customElement } from '@web3modal/ui'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 
 import styles from './styles.js'
@@ -8,8 +8,8 @@ import {
   ConnectorController,
   OptionsController,
   StorageUtil
-} from '@web3modal/core'
-import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
+} from '@reown/appkit-core'
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import { state } from 'lit/decorators.js'
 import { WalletUtil } from '../../utils/WalletUtil.js'
 @customElement('w3m-connector-list')
@@ -37,10 +37,13 @@ export class W3mConnectorList extends LitElement {
   public override render() {
     const { custom, recent, announced, injected, multiChain, recommended, featured, external } =
       this.getConnectorsByType()
+    const enableWalletConnect = OptionsController.state.enableWalletConnect
 
     return html`
       <wui-flex flexDirection="column" gap="xs">
-        <w3m-connect-walletconnect-widget></w3m-connect-walletconnect-widget>
+        ${enableWalletConnect
+          ? html`<w3m-connect-walletconnect-widget></w3m-connect-walletconnect-widget>`
+          : null}
         ${recent.length ? html`<w3m-connect-recent-widget></w3m-connect-recent-widget>` : null}
         ${multiChain.length
           ? html`<w3m-connect-multi-chain-widget></w3m-connect-multi-chain-widget>`

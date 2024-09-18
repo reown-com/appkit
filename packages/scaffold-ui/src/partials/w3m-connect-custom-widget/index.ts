@@ -1,4 +1,4 @@
-import type { WcWallet } from '@web3modal/core'
+import type { WcWallet } from '@reown/appkit-core'
 import {
   AssetUtil,
   ConnectorController,
@@ -6,8 +6,8 @@ import {
   OptionsController,
   RouterController,
   StorageUtil
-} from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'

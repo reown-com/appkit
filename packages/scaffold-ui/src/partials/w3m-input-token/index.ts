@@ -1,10 +1,10 @@
-import { UiHelperUtil, customElement } from '@web3modal/ui'
+import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
 import { property } from 'lit/decorators.js'
-import { ConstantsUtil, RouterController, SendController } from '@web3modal/core'
-import type { Balance } from '@web3modal/common'
-import { NumberUtil } from '@web3modal/common'
+import { ConstantsUtil, RouterController, SendController } from '@reown/appkit-core'
+import type { Balance } from '@reown/appkit-common'
+import { NumberUtil } from '@reown/appkit-common'
 
 @customElement('w3m-input-token')
 export class W3mInputToken extends LitElement {

@@ -1,41 +1,42 @@
-import { createWeb3Modal } from '@web3modal/wagmi/react'
+import { createAppKit } from '@reown/appkit/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { useEffect, useState } from 'react'
 import { WagmiProvider } from 'wagmi'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { WagmiTests } from '../../components/Wagmi/WagmiTests'
 import { ThemeStore } from '../../utils/StoreUtil'
-import { getWagmiConfig } from '../../utils/WagmiConstants'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { SiweData } from '../../components/Siwe/SiweData'
 import { siweConfig } from '../../utils/SiweUtils'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
+import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
+import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@reown/appkit/networks'
 
 const queryClient = new QueryClient()
 
-const wagmiConfig = getWagmiConfig('email')
+const networks = [mainnet, optimism, polygon, zkSync, arbitrum, sepolia]
 
-const modal = createWeb3Modal({
-  wagmiConfig,
+const wagmiAdapter = new WagmiAdapter({
+  ssr: true,
+  networks,
+  projectId: ConstantsUtil.ProjectId
+})
+
+const modal = createAppKit({
+  adapters: [wagmiAdapter],
+  networks,
+  defaultNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId,
-  enableAnalytics: true,
-  metadata: ConstantsUtil.Metadata,
-  termsConditionsUrl: 'https://walletconnect.com/terms',
-  privacyPolicyUrl: 'https://walletconnect.com/privacy',
+  features: {
+    analytics: true
+  },
   siweConfig
 })
 
 ThemeStore.setModal(modal)
 
 export default function Wagmi() {
-  const [ready, setReady] = useState(false)
-
-  useEffect(() => {
-    setReady(true)
-  }, [])
-
-  return ready ? (
-    <WagmiProvider config={wagmiConfig}>
+  return (
+    <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <AppKitButtons />
         <WagmiModalInfo />
@@ -43,5 +44,5 @@ export default function Wagmi() {
         <WagmiTests />
       </QueryClientProvider>
     </WagmiProvider>
-  ) : null
+  )
 }

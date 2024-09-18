@@ -1,13 +1,12 @@
 <script lang="ts" setup>
-import { arbitrum, mainnet } from '@wagmi/core/chains'
+import { arbitrum, mainnet } from '@reown/appkit/networks'
 import {
-  createWeb3Modal,
-  defaultWagmiConfig,
-  useWeb3Modal,
-  useWeb3ModalEvents,
-  useWeb3ModalState,
-  useWeb3ModalTheme
-} from '@web3modal/wagmi/vue'
+  createAppKit,
+  useAppKit,
+  useAppKitEvents,
+  useAppKitState,
+  useAppKitTheme
+} from '@reown/appkit/vue'
 
 // @ts-expect-error 1. Get projectId
 const projectId = import.meta.env.VITE_PROJECT_ID
@@ -17,23 +16,18 @@ if (!projectId) {
 
 // 2. Create wagmiConfig
 const chains = [mainnet, arbitrum]
-const wagmiConfig = defaultWagmiConfig({
-  chains,
-  projectId,
+
+// 3. Create modal
+createAppKit({
   metadata: {
     name: 'AppKit Vue Example',
     description: 'AppKit Vue Example',
     url: '',
     icons: [],
     verifyUrl: ''
-  }
-})
-
-// 3. Create modal
-createWeb3Modal({
-  wagmiConfig,
+  },
   projectId,
-  chains,
+  caipNetworks: [mainnet, arbitrum],
   themeMode: 'light',
   themeVariables: {
     '--w3m-color-mix': '#00BB7F',
@@ -42,10 +36,10 @@ createWeb3Modal({
 })
 
 // 4. Use modal composable
-const modal = useWeb3Modal()
-const state = useWeb3ModalState()
-const { setThemeMode, themeMode, themeVariables } = useWeb3ModalTheme()
-const events = useWeb3ModalEvents()
+const modal = useAppKit()
+const state = useAppKitState()
+const { setThemeMode, themeMode, themeVariables } = useAppKitTheme()
+const events = useAppKitEvents()
 </script>
 
 <template>

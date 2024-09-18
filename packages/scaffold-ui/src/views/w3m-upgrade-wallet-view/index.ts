@@ -1,5 +1,5 @@
-import { customElement } from '@web3modal/ui'
-import { ConstantsUtil } from '@web3modal/core'
+import { customElement } from '@reown/appkit-ui'
+import { ConstantsUtil } from '@reown/appkit-core'
 import { LitElement, html } from 'lit'
 
 @customElement('w3m-upgrade-wallet-view')
