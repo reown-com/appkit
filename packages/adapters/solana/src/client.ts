@@ -140,10 +140,6 @@ export class SolanaAdapter implements ChainAdapter {
     this.networkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
         if (caipNetwork) {
-          SafeLocalStorage.setItem(
-            SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK,
-            JSON.stringify(caipNetwork)
-          )
           try {
             await this.switchNetwork(caipNetwork)
           } catch (error) {

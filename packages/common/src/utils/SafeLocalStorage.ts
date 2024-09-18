@@ -1,9 +1,11 @@
+import type { CaipNetwork } from './TypeUtil'
+
 export type SafeLocalStorageItems = {
   '@appkit/wallet_id': string
   '@appkit/wallet_name': string
   '@appkit/solana_wallet': string
   '@appkit/solana_caip_chain': string
-  '@appkit/active_caip_network': string
+  '@appkit/active_caip_network': CaipNetwork
   '@appkit/active_caip_network_id': string
   '@appkit/connected_connector': string
   '@appkit/connected_social': string
@@ -32,10 +34,16 @@ export const SafeLocalStorage = {
     value: SafeLocalStorageItems[Key]
   ): void {
     if (isSafe()) {
-      localStorage.setItem(key, value)
+      if (typeof value === 'string') {
+        localStorage.setItem(key, value)
+      } else {
+        localStorage.setItem(key, JSON.stringify(value))
+      }
     }
   },
-  getItem<Key extends keyof SafeLocalStorageItems>(key: Key): SafeLocalStorageItems[Key] | null {
+  getItem<Key extends keyof SafeLocalStorageItems>(
+    key: Key
+  ): SafeLocalStorageItems[Key] | undefined {
     if (isSafe()) {
       const value = localStorage.getItem(key)
 
@@ -43,12 +51,12 @@ export const SafeLocalStorage = {
         try {
           return JSON.parse(value)
         } catch {
-          return value
+          return undefined
         }
       }
     }
 
-    return null
+    return undefined
   },
   removeItem<Key extends keyof SafeLocalStorageItems>(key: Key): void {
     if (isSafe()) {
