@@ -5,14 +5,14 @@ import { AppKitButtons } from '../../components/AppKitButtons'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { WagmiPermissionsSyncTest } from '../../components/Wagmi/WagmiPermissionsSyncTest'
-import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@reown/appkit/networks'
+import { sepolia, baseSepolia } from '@reown/appkit/networks'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { PasskeyProvider } from '../../context/PasskeyContext'
 import { ERC7715PermissionsProvider } from '../../context/ERC7715PermissionsContext'
 
 const queryClient = new QueryClient()
 
-const networks = [mainnet, optimism, polygon, zkSync, arbitrum, sepolia]
+const networks = [sepolia, baseSepolia]
 
 const wagmiAdapter = new WagmiAdapter({
   ssr: true,
@@ -23,7 +23,7 @@ const wagmiAdapter = new WagmiAdapter({
 const modal = createAppKit({
   adapters: [wagmiAdapter],
   networks,
-  defaultNetwork: mainnet,
+  defaultNetwork: baseSepolia,
   projectId: ConstantsUtil.ProjectId,
   features: {
     analytics: true
