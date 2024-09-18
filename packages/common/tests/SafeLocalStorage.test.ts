@@ -5,16 +5,6 @@ import { SafeLocalStorage } from '../src/utils/SafeLocalStorage'
 const previousLocalStorage = globalThis.localStorage
 const previousWindow = globalThis.window
 
-const mockCaipNetwork = {
-  id: 'eip155:1' as const,
-  chainId: 1,
-  chainNamespace: 'eip155' as const,
-  name: 'Ethereum',
-  currency: 'ETH',
-  explorerUrl: 'https://etherscan.io',
-  rpcUrl: 'https://mainnet.infura.io/v3'
-}
-
 afterAll(() => {
   Object.assign(globalThis, { localStorage: previousLocalStorage, window: previousWindow })
 })
