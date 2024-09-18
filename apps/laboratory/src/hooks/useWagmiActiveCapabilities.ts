@@ -1,4 +1,4 @@
-import { EthereumProvider } from '@walletconnect/ethereum-provider'
+import { UniversalProvider } from '@walletconnect/universal-provider'
 import { useAccount, type Connector } from 'wagmi'
 import { useState, useEffect, useMemo } from 'react'
 import { type Address, type WalletCapabilities } from 'viem'
@@ -17,7 +17,7 @@ type UseWagmiAvailableCapabilitiesParams = {
   method: string
 }
 
-export type Provider = Awaited<ReturnType<(typeof EthereumProvider)['init']>> | W3mFrameProvider
+export type Provider = Awaited<ReturnType<(typeof UniversalProvider)['init']>> | W3mFrameProvider
 
 export function useWagmiAvailableCapabilities({
   capability,
@@ -85,7 +85,7 @@ export function useWagmiAvailableCapabilities({
       return supportedMethods.includes(method)
     }
 
-    return Boolean(provider?.signer?.session?.namespaces?.['eip155']?.methods?.includes(method))
+    return Boolean(provider?.session?.namespaces?.['eip155']?.methods?.includes(method))
   }
 
   useEffect(() => {
