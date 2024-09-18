@@ -24,9 +24,11 @@ import {
 import { AddIcon } from '@chakra-ui/icons'
 import { AddTransactionModal } from '../AddTransactionModal'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
+type Provider = W3mFrameProvider | Awaited<ReturnType<(typeof UniversalProvider)['init']>>
 
 export function EthersSendCallsTest(params: { onCallsHash: (hash: string) => void }) {
   const { onCallsHash } = params
+
   const [loading, setLoading] = useState(false)
 
   const { chainId } = useAppKitNetwork()
@@ -64,11 +66,7 @@ export function EthersSendCallsTest(params: { onCallsHash: (hash: string) => voi
     if (address && walletProvider) {
       getCapabilitySupportedChainInfo(
         WALLET_CAPABILITIES.ATOMIC_BATCH,
-<<<<<<< HEAD
-        walletProvider,
-=======
         walletProvider as unknown as Provider,
->>>>>>> fix/5792-tests
         address
       ).then(capabilities => setAtomicBatchSupportedChains(capabilities))
     } else {
