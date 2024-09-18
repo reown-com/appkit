@@ -429,6 +429,30 @@ export class WagmiAdapter implements ChainAdapter {
           return BigInt(0)
         }
       },
+
+      request: async (method: string, params: unknown[] | object) => {
+        if (!this.wagmiConfig) {
+          throw new Error('connectionControllerClient:request - wagmiConfig is undefined')
+        }
+        const connector = this.wagmiConfig.connectors.find(
+          c => c.id === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID
+        )
+
+        if (!connector) {
+          throw new Error('connectionControllerClient:request - connector is undefined')
+        }
+
+        const provider = (await connector.getProvider()) as Awaited<
+          ReturnType<(typeof UniversalProvider)['init']>
+        >
+
+        if (!provider) {
+          throw new Error('connectionControllerClient:request - provider is undefined')
+        }
+
+        return provider.request({ method, params })
+      },
+
       sendTransaction: async (data: SendTransactionArgs) => {
         if (data.chainNamespace && data.chainNamespace !== 'eip155') {
           throw new Error(`Invalid chain namespace - Expected eip155, got ${data.chainNamespace}`)

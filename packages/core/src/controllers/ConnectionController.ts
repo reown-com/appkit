@@ -40,6 +40,7 @@ export interface ConnectionControllerClient {
   writeContract: (args: WriteContractArgs) => Promise<`0x${string}` | null>
   getEnsAddress: (value: string) => Promise<false | string>
   getEnsAvatar: (value: string) => Promise<false | string>
+  request: (method: string, params: unknown[] | object) => Promise<unknown>
 }
 
 export interface ConnectionControllerState {
@@ -138,6 +139,10 @@ export const ConnectionController = {
 
   async sendTransaction(args: SendTransactionArgs) {
     return this._getClient().sendTransaction(args)
+  },
+
+  async request(method: string, params: unknown[] | object) {
+    return this._getClient().request(method, params)
   },
 
   async estimateGas(args: EstimateGasTransactionArgs) {

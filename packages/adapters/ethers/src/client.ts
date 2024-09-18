@@ -409,6 +409,16 @@ export class EthersAdapter {
         )
       },
 
+      request: async (method: string, params: unknown[] | object) => {
+        const provider = ProviderUtil.getProvider<Provider>('eip155')
+
+        if (!provider) {
+          throw new Error('Provider is undefined')
+        }
+
+        return await provider.request({ method, params })
+      },
+
       sendTransaction: async data => {
         if (data.chainNamespace && data.chainNamespace !== 'eip155') {
           throw new Error(`Invalid chain namespace - Expected eip155, got ${data.chainNamespace}`)

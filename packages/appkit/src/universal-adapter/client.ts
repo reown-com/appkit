@@ -269,6 +269,8 @@ export class UniversalAdapterClient {
 
       writeContract: async () => await Promise.resolve('0x'),
 
+      request: async () => await Promise.resolve('0x'),
+
       sendTransaction: async () => await Promise.resolve('0x'),
 
       parseUnits: () => BigInt(0),
