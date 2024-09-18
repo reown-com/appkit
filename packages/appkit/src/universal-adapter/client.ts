@@ -372,7 +372,8 @@ export class UniversalAdapterClient {
     const nameSpaces = this.walletConnectProvider?.session?.namespaces
 
     if (nameSpaces) {
-      ;(Object.keys(nameSpaces) as ChainNamespace[]).reverse().forEach(chainNamespace => {
+      const reversedChainNamespaces = Object.keys(nameSpaces).reverse() as ChainNamespace[]
+      reversedChainNamespaces.forEach(chainNamespace => {
         const caipAddress = nameSpaces?.[chainNamespace]?.accounts[0] as CaipAddress | undefined
 
         ProviderUtil.setProvider(chainNamespace, this.walletConnectProvider)
