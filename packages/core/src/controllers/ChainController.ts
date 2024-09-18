@@ -131,20 +131,17 @@ export const ChainController = {
     if (adapters.length === 0) {
       const storedCaipNetwork = SafeLocalStorage.getItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK)
 
-      if (storedCaipNetwork) {
-        try {
-          const parsedCaipNetwork = JSON.parse(storedCaipNetwork) as CaipNetwork
-          if (parsedCaipNetwork) {
-            state.activeChain = parsedCaipNetwork.chainNamespace
-            this.setActiveCaipNetwork(parsedCaipNetwork)
-          }
-        } catch (error) {
-          console.warn('>>> Error setting active caip network', error)
+      try {
+        if (storedCaipNetwork) {
+          state.activeChain = storedCaipNetwork.chainNamespace
+          this.setActiveCaipNetwork(storedCaipNetwork)
+        } else {
+          state.activeChain =
+            adapter?.defaultNetwork?.chainNamespace ?? adapter.caipNetworks[0]?.chainNamespace
+          this.setActiveCaipNetwork(adapter?.defaultNetwork ?? adapter.caipNetworks[0])
         }
-      } else {
-        state.activeChain =
-          adapter?.defaultNetwork?.chainNamespace ?? adapter.caipNetworks[0]?.chainNamespace
-        this.setActiveCaipNetwork(adapter?.defaultNetwork ?? adapter.caipNetworks[0])
+      } catch (error) {
+        console.warn('>>> Error setting active caip network', error)
       }
     }
 

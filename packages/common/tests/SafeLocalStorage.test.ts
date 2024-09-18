@@ -18,7 +18,7 @@ describe('SafeLocalStorage unsafe', () => {
     const key = '@appkit/wallet_id'
 
     expect(SafeLocalStorage.setItem(key, '1')).toBe(undefined)
-    expect(SafeLocalStorage.getItem(key)).toBe(null)
+    expect(SafeLocalStorage.getItem(key)).toBe(undefined)
     expect(SafeLocalStorage.removeItem(key)).toBe(undefined)
   })
 })

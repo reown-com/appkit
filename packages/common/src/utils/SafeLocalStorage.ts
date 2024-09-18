@@ -1,4 +1,4 @@
-import type { CaipNetwork } from './TypeUtil'
+import type { CaipNetwork } from './TypeUtil.js'
 
 export type SafeLocalStorageItems = {
   '@appkit/wallet_id': string

@@ -607,7 +607,7 @@ describe('EthersAdapter', () => {
       vi.spyOn(SafeLocalStorage, 'getItem').mockImplementation(key => {
         if (key === SafeLocalStorageKeys.WALLET_ID) return ConstantsUtil.INJECTED_CONNECTOR_ID
         if (key === SafeLocalStorageKeys.WALLET_NAME) return 'MetaMask'
-        return null
+        return undefined
       })
 
       vi.spyOn(client as any, 'setProvider').mockImplementation(() => Promise.resolve())
