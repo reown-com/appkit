@@ -1,5 +1,5 @@
 import * as React from 'react'
-import EthereumProvider from '@walletconnect/ethereum-provider'
+import UniversalProvider from '@walletconnect/universal-provider'
 
 import { useAccount } from 'wagmi'
 import { AppKitInfo } from '../AppKitInfo'
@@ -13,9 +13,9 @@ export function WagmiModalInfo() {
   async function getClientId() {
     if (connector?.type === 'walletConnect') {
       const provider = await connector?.getProvider?.()
-      const ethereumProvider = provider as EthereumProvider
+      const ethereumProvider = provider as UniversalProvider
 
-      return ethereumProvider?.signer?.client?.core?.crypto?.getClientId()
+      return ethereumProvider.client?.core?.crypto?.getClientId()
     }
 
     return null

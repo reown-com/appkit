@@ -1,7 +1,7 @@
 import { Button, Stack, Text, Input, Tooltip } from '@chakra-ui/react'
 import { useState, useEffect } from 'react'
 import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
-import { EthereumProvider } from '@walletconnect/ethereum-provider'
+import { UniversalProvider } from '@walletconnect/universal-provider'
 import { useChakraToast } from '../Toast'
 import { parseGwei } from 'viem'
 import { vitalikEthAddress } from '../../utils/DataUtil'
@@ -29,7 +29,7 @@ export function EthersSendCallsWithPaymasterServiceTest() {
   useEffect(() => {
     if (
       address &&
-      (walletProvider instanceof EthereumProvider || walletProvider instanceof W3mFrameProvider)
+      (walletProvider instanceof UniversalProvider || walletProvider instanceof W3mFrameProvider)
     ) {
       getCapabilitySupportedChainInfo(
         WALLET_CAPABILITIES.PAYMASTER_SERVICE,
@@ -106,9 +106,9 @@ export function EthersSendCallsWithPaymasterServiceTest() {
 
   function isSendCallsSupported(): boolean {
     // We are currently checking capabilities above. We should use those capabilities instead of this check.
-    if (walletProvider instanceof EthereumProvider) {
+    if (walletProvider instanceof UniversalProvider) {
       return Boolean(
-        walletProvider?.signer?.session?.namespaces?.['eip155']?.methods?.includes(
+        walletProvider?.session?.namespaces?.['eip155']?.methods?.includes(
           EIP_5792_RPC_METHODS.WALLET_SEND_CALLS
         )
       )
