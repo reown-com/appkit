@@ -34,11 +34,7 @@ export const SafeLocalStorage = {
     value: SafeLocalStorageItems[Key]
   ): void {
     if (isSafe()) {
-      if (typeof value === 'string') {
-        localStorage.setItem(key, value)
-      } else {
-        localStorage.setItem(key, JSON.stringify(value))
-      }
+      localStorage.setItem(key, JSON.stringify(value))
     }
   },
   getItem<Key extends keyof SafeLocalStorageItems>(
@@ -50,7 +46,9 @@ export const SafeLocalStorage = {
       if (value) {
         try {
           return JSON.parse(value)
-        } catch {
+        } catch (e) {
+          console.warn('Error parsing value from localStorage', e)
+
           return undefined
         }
       }

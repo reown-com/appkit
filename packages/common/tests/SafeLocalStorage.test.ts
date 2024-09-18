@@ -5,6 +5,16 @@ import { SafeLocalStorage } from '../src/utils/SafeLocalStorage'
 const previousLocalStorage = globalThis.localStorage
 const previousWindow = globalThis.window
 
+const mockCaipNetwork = {
+  id: 'eip155:1' as const,
+  chainId: 1,
+  chainNamespace: 'eip155' as const,
+  name: 'Ethereum',
+  currency: 'ETH',
+  explorerUrl: 'https://etherscan.io',
+  rpcUrl: 'https://mainnet.infura.io/v3'
+}
+
 afterAll(() => {
   Object.assign(globalThis, { localStorage: previousLocalStorage, window: previousWindow })
 })
@@ -32,12 +42,18 @@ describe('SafeLocalStorage safe', () => {
     Object.assign(globalThis, { window: {}, localStorage: { getItem, setItem, removeItem } })
   })
 
-  it('should setItem', () => {
-    expect(SafeLocalStorage.setItem('@appkit/wallet_id', 'test')).toBe(undefined)
-    expect(setItem).toHaveBeenCalledWith('@appkit/wallet_id', 'test')
+  afterAll(() => {
+    getItem.mockClear()
+    setItem.mockClear()
+    removeItem.mockClear()
   })
 
-  it('should getItem', () => {
+  it('should setItem', () => {
+    expect(SafeLocalStorage.setItem('@appkit/wallet_id', 'test')).toBe(undefined)
+    expect(setItem).toHaveBeenCalledWith('@appkit/wallet_id', JSON.stringify('test'))
+  })
+
+  it('should getItem ', () => {
     expect(SafeLocalStorage.getItem('@appkit/wallet_id')).toEqual({ test: 'test' })
     expect(getItem).toHaveBeenCalledWith('@appkit/wallet_id')
   })
@@ -45,5 +61,12 @@ describe('SafeLocalStorage safe', () => {
   it('should removeItem', () => {
     expect(SafeLocalStorage.removeItem('@appkit/wallet_id')).toBe(undefined)
     expect(removeItem).toHaveBeenCalledWith('@appkit/wallet_id')
+  })
+
+  it('getItem should return undefined when value is not valid JSON', () => {
+    getItem.mockReturnValueOnce('test')
+
+    expect(SafeLocalStorage.getItem('@appkit/wallet_id')).toBe(undefined)
+    expect(getItem).toHaveBeenCalledWith('@appkit/wallet_id')
   })
 })
