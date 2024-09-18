@@ -46,4 +46,9 @@ describe('SafeLocalStorage safe', () => {
     expect(SafeLocalStorage.removeItem('@w3m/wallet_id')).toBe(undefined)
     expect(removeItem).toHaveBeenCalledWith('@w3m/wallet_id')
   })
+
+  it('should return null if fails to parse', () => {
+    getItem.mockReturnValueOnce('{invalid}')
+    expect(SafeLocalStorage.getItem('@w3m/wallet_id')).toBe(null)
+  })
 })
