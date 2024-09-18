@@ -1,31 +1,39 @@
-import { describe, it, expect, vi, afterEach, beforeEach } from 'vitest'
+import { describe, it, expect, vi, afterEach, beforeEach, beforeAll, afterAll } from 'vitest'
 import { StorageUtil } from '../../src/utils/StorageUtil'
 import type { WcWallet, ConnectorType, SocialProvider } from '../../src/utils/TypeUtil'
+import { SafeLocalStorage } from '@reown/appkit-common'
 import { SafeLocalStorageKeys } from '@reown/appkit-common'
 
-// Mock localStorage
-const localStorageMock = (() => {
-  let store: { [key: string]: string } = {}
-  return {
-    getItem: (key: string) => store[key] || null,
-    setItem: (key: string, value: string) => {
-      store[key] = value.toString()
-    },
-    removeItem: (key: string) => {
-      delete store[key]
-    },
-    clear: () => {
-      store = {}
-    }
-  }
-})()
+const previousLocalStorage = globalThis.localStorage
+const previousWindow = globalThis.window
+let store: { [key: string]: string } = {}
 
-Object.defineProperty(global, 'localStorage', { value: localStorageMock })
+afterAll(() => {
+  Object.assign(globalThis, { localStorage: previousLocalStorage, window: previousWindow })
+})
 
-describe('StorageUtil', () => {
+describe.only('StorageUtil', () => {
+  beforeAll(() => {
+    Object.assign(globalThis, {
+      window: {},
+      localStorage: {
+        getItem: (key: string) => store[key] || null,
+        setItem: (key: string, value: string) => {
+          store[key] = value.toString()
+        },
+        removeItem: (key: string) => {
+          delete store[key]
+        },
+        clear: () => {
+          store = {}
+        }
+      }
+    })
+  })
+
   beforeEach(() => {
     // Clear localStorage before each test
-    localStorage.clear()
+    SafeLocalStorage.clear()
   })
 
   afterEach(() => {
@@ -37,9 +45,9 @@ describe('StorageUtil', () => {
     it('should set WalletConnect deep link in localStorage', () => {
       const deepLink = { href: 'https://example.com', name: 'Example Wallet' }
       StorageUtil.setWalletConnectDeepLink(deepLink)
-      expect(localStorageMock.getItem(SafeLocalStorageKeys.DEEPLINK_CHOICE)).toBe(
-        JSON.stringify(deepLink)
-      )
+      const savedDL = SafeLocalStorage.getItem(SafeLocalStorageKeys.DEEPLINK_CHOICE)
+      expect(savedDL?.href).toBe(deepLink.href)
+      expect(savedDL?.name).toBe(deepLink.name)
     })
 
     it('should handle errors when setting deep link', () => {
@@ -56,7 +64,7 @@ describe('StorageUtil', () => {
   describe('getWalletConnectDeepLink', () => {
     it('should get WalletConnect deep link from localStorage', () => {
       const deepLink = { href: 'https://example.com', name: 'Example Wallet' }
-      localStorage.setItem('@appkit/deeplink_choice', JSON.stringify(deepLink))
+      SafeLocalStorage.setItem('@appkit/deeplink_choice', deepLink)
       expect(StorageUtil.getWalletConnectDeepLink()).toEqual(deepLink)
     })
 
@@ -77,12 +85,12 @@ describe('StorageUtil', () => {
 
   describe('deleteWalletConnectDeepLink', () => {
     it('should delete WalletConnect deep link from localStorage', () => {
-      localStorage.setItem(
-        '@appkit/deeplink_choice',
-        JSON.stringify({ href: 'https://example.com', name: 'Example Wallet' })
-      )
+      SafeLocalStorage.setItem('@appkit/deeplink_choice', {
+        href: 'https://example.com',
+        name: 'Example Wallet'
+      })
       StorageUtil.deleteWalletConnectDeepLink()
-      expect(localStorage.getItem('@appkit/deeplink_choice')).toBeNull()
+      expect(SafeLocalStorage.getItem('@appkit/deeplink_choice')).toBeUndefined()
     })
 
     it('should handle errors when deleting deep link', () => {
@@ -128,7 +136,7 @@ describe('StorageUtil', () => {
 
     it('should return recent wallets', () => {
       const wallet: WcWallet = { id: 'wallet1', name: 'Wallet 1' }
-      localStorage.setItem(SafeLocalStorageKeys.RECENT_WALLETS, JSON.stringify([wallet]))
+      SafeLocalStorage.setItem(SafeLocalStorageKeys.RECENT_WALLETS, JSON.stringify([wallet]))
       expect(StorageUtil.getRecentWallets()).toEqual([wallet])
     })
   })
@@ -137,14 +145,14 @@ describe('StorageUtil', () => {
     it('should set connected connector', () => {
       const connector: ConnectorType = 'INJECTED'
       StorageUtil.setConnectedConnector(connector)
-      expect(localStorage.getItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR)).toBe(connector)
+      expect(SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR)).toBe(connector)
     })
   })
 
   describe('getConnectedConnector', () => {
     it('should get connected connector', () => {
       const connector: ConnectorType = 'INJECTED'
-      localStorage.setItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR, connector)
+      SafeLocalStorage.setItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR, connector)
       expect(StorageUtil.getConnectedConnector()).toBe(connector)
     })
   })
@@ -153,14 +161,14 @@ describe('StorageUtil', () => {
     it('should set connected social provider', () => {
       const provider: SocialProvider = 'google'
       StorageUtil.setConnectedSocialProvider(provider)
-      expect(localStorage.getItem(SafeLocalStorageKeys.CONNECTED_SOCIAL)).toBe(provider)
+      expect(SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTED_SOCIAL)).toBe(provider)
     })
   })
 
   describe('getConnectedSocialProvider', () => {
     it('should get connected social provider', () => {
       const provider: SocialProvider = 'google'
-      localStorage.setItem(SafeLocalStorageKeys.CONNECTED_SOCIAL, provider)
+      SafeLocalStorage.setItem(SafeLocalStorageKeys.CONNECTED_SOCIAL, provider)
       expect(StorageUtil.getConnectedSocialProvider()).toBe(provider)
     })
   })
@@ -168,7 +176,7 @@ describe('StorageUtil', () => {
   describe('getConnectedSocialUsername', () => {
     it('should get connected social username', () => {
       const username = 'testuser'
-      localStorage.setItem(SafeLocalStorageKeys.CONNECTED_SOCIAL_USERNAME, username)
+      SafeLocalStorage.setItem(SafeLocalStorageKeys.CONNECTED_SOCIAL_USERNAME, username)
       expect(StorageUtil.getConnectedSocialUsername()).toBe(username)
     })
   })

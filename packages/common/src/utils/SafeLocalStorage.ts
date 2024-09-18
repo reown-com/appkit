@@ -11,7 +11,7 @@ export type SafeLocalStorageItems = {
   '@appkit/connected_social': string
   '@appkit/connected_social_username': string
   '@appkit/recent_wallets': string
-  '@appkit/deeplink_choice': string
+  '@appkit/deeplink_choice': { href: string; name: string }
 }
 
 export const SafeLocalStorageKeys = {
@@ -47,7 +47,7 @@ export const SafeLocalStorage = {
         try {
           return JSON.parse(value)
         } catch (e) {
-          console.warn('Error parsing value from localStorage', e)
+          console.warn('Error parsing value from localStorage', key, e)
 
           return undefined
         }
@@ -59,6 +59,11 @@ export const SafeLocalStorage = {
   removeItem<Key extends keyof SafeLocalStorageItems>(key: Key): void {
     if (isSafe()) {
       localStorage.removeItem(key)
+    }
+  },
+  clear(): void {
+    if (isSafe()) {
+      localStorage.clear()
     }
   }
 }
