@@ -6,6 +6,7 @@ export const mockAuthConnector = {
   onRpcSuccess: vi.fn(),
   onNotConnected: vi.fn(),
   onIsConnected: vi.fn(),
+  onConnect: vi.fn(),
   onSetPreferredAccount: vi.fn(),
   connect: vi.fn().mockResolvedValue({
     address: '0x1234567890123456789012345678901234567890',

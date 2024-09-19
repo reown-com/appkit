@@ -4,6 +4,7 @@ export const mockAuthConnector = {
   onRpcRequest: vi.fn(),
   onRpcError: vi.fn(),
   onRpcSuccess: vi.fn(),
+  onConnect: vi.fn(),
   onNotConnected: vi.fn(),
   onIsConnected: vi.fn(),
   onSetPreferredAccount: vi.fn(),
