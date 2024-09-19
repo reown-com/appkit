@@ -444,12 +444,6 @@ export class W3mFrameProvider {
   private async appEvent<T extends W3mFrameTypes.ProviderRequestType>(
     event: Omit<W3mFrameTypes.AppEvent, 'id'>
   ): Promise<W3mFrameTypes.Responses[`Frame${T}Response`]> {
-    // window.addEventListener('message', eventHandler)
-
-    const iframes = document.getElementsByTagName('iframe')
-
-    console.log(iframes)
-
     await this.w3mFrame.frameLoadPromise
     const type = event.type.replace('@w3m-app/', '')
 
