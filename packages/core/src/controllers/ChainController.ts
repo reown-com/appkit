@@ -195,9 +195,6 @@ export const ChainController = {
     accountProps: Partial<AccountControllerState>,
     replaceState = true
   ) {
-    if (accountProps.caipAddress) {
-      console.trace(chain, accountProps)
-    }
     if (!chain) {
       throw new Error('Chain is required to update chain account data')
     }
