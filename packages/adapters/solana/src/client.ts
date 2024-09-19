@@ -46,6 +46,7 @@ import { ProviderUtil } from '@reown/appkit/store'
 import { W3mFrameProviderSingleton } from '@reown/appkit/auth-provider'
 import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
 import { createSendTransaction } from './utils/createSendTransaction.js'
+import { CoinbaseWalletProvider } from './providers/CoinbaseWalletProvider.js'
 
 export interface AdapterOptions {
   connectionSettings?: Commitment | ConnectionConfig
@@ -337,15 +338,23 @@ export class SolanaAdapter implements ChainAdapter {
     })
 
     EventsController.subscribe(state => {
-      if (state.data.event === 'SELECT_WALLET' && state.data.properties?.name === 'Phantom') {
+      if (state.data.event === 'SELECT_WALLET') {
         const isMobile = CoreHelperUtil.isMobile()
         const isClient = CoreHelperUtil.isClient()
-        if (isMobile && isClient && !('phantom' in window)) {
-          const href = window.location.href
-          const protocol = href.startsWith('https') ? 'https' : 'http'
-          const host = href.split('/')[2]
-          const ref = `${protocol}://${host}`
-          window.location.href = `https://phantom.app/ul/browse/${href}?ref=${ref}`
+
+        if (isMobile && isClient) {
+          if (state.data.properties?.name === 'Phantom' && !('phantom' in window)) {
+            const href = window.location.href
+            const protocol = href.startsWith('https') ? 'https' : 'http'
+            const host = href.split('/')[2]
+            const ref = `${protocol}://${host}`
+            window.location.href = `https://phantom.app/ul/browse/${href}?ref=${ref}`
+          }
+
+          if (state.data.properties?.name === 'Coinbase Wallet' && !('coinbaseSolana' in window)) {
+            const href = window.location.href
+            window.location.href = `https://go.cb-w.com/dapp?cb_url=${href}`
+          }
         }
       }
     })
@@ -638,6 +647,17 @@ export class SolanaAdapter implements ChainAdapter {
           chains: this.caipNetworks
         })
         this.addProvider(this.authProvider)
+      }
+
+      if ('coinbaseSolana' in window) {
+        this.addProvider(
+          new CoinbaseWalletProvider({
+            // @ts-expect-error - window is not typed
+            provider: window.coinbaseSolana,
+            chains: this.caipNetworks,
+            getActiveChain: () => this.appKit?.getCaipNetwork(this.chainNamespace)
+          })
+        )
       }
 
       if (this.appKit && this.caipNetworks[0]) {
