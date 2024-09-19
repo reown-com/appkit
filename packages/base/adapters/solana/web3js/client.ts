@@ -48,6 +48,7 @@ import type { AppKitOptions } from '../../../utils/TypesUtil.js'
 import type { OptionsControllerState } from '@web3modal/core'
 import { SafeLocalStorage } from '../../../utils/SafeLocalStorage.js'
 import { createSendTransaction } from './utils/createSendTransaction.js'
+import { CoinbaseWalletProvider } from './providers/CoinbaseWalletProvider.js'
 
 export interface Web3ModalClientOptions
   extends Omit<AppKitOptions, 'defaultChain' | 'tokens' | 'sdkType' | 'sdkVersion'> {
@@ -660,6 +661,17 @@ export class SolanaWeb3JsClient implements ChainAdapter<SolStoreUtilState, CaipN
               walletFeatures: opts.walletFeatures
             },
             chains: this.chains
+          })
+        )
+      }
+
+      if ('coinbaseSolana' in window) {
+        this.addProvider(
+          new CoinbaseWalletProvider({
+            // @ts-expect-error - window is not typed
+            provider: window.coinbaseSolana,
+            chains: this.chains,
+            getActiveChain: () => SolStoreUtil.state.currentChain
           })
         )
       }

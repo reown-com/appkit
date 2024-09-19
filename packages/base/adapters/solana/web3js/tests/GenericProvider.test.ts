@@ -10,6 +10,8 @@ import { mockLegacyTransaction, mockVersionedTransaction } from './mocks/Transac
 import { AuthProvider } from '../providers/AuthProvider.js'
 import { mockW3mFrameProvider } from './mocks/W3mFrameProvider.js'
 import { isVersionedTransaction } from '@solana/wallet-adapter-base'
+import { CoinbaseWalletProvider } from '../providers/CoinbaseWalletProvider.js'
+import { mockCoinbaseWallet } from './mocks/CoinbaseWallet.js'
 
 const getActiveChain = vi.fn(() => TestConstants.chains[0])
 
@@ -39,6 +41,14 @@ const providers: { name: string; provider: Provider }[] = [
         socials: ['x']
       },
       chains: TestConstants.chains
+    })
+  },
+  {
+    name: 'CoinbaseWalletProvider',
+    provider: new CoinbaseWalletProvider({
+      provider: mockCoinbaseWallet(),
+      chains: TestConstants.chains,
+      getActiveChain
     })
   }
 ]
