@@ -365,12 +365,13 @@ export class W3mFrameProvider {
     this.rpcErrorHandler = callback
   }
 
-  public onIsConnected(
-    callback: (request: W3mFrameTypes.Responses['FrameGetUserResponse']) => void
-  ) {
+  public onIsConnected(callback: () => void) {
     this.w3mFrame.events.onFrameEvent(event => {
-      if (event.type === W3mFrameConstants.FRAME_GET_USER_SUCCESS) {
-        callback(event.payload)
+      if (
+        event.type === W3mFrameConstants.FRAME_IS_CONNECTED_SUCCESS &&
+        event.payload.isConnected
+      ) {
+        callback()
       }
     })
   }
@@ -385,6 +386,14 @@ export class W3mFrameProvider {
         !event.payload.isConnected
       ) {
         callback()
+      }
+    })
+  }
+
+  public onConnect(callback: (user: W3mFrameTypes.Responses['FrameGetUserResponse']) => void) {
+    this.w3mFrame.events.onFrameEvent(event => {
+      if (event.type === W3mFrameConstants.FRAME_GET_USER_SUCCESS) {
+        callback(event.payload)
       }
     })
   }
