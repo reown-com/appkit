@@ -333,15 +333,23 @@ export class SolanaWeb3JsClient implements ChainAdapter<SolStoreUtilState, CaipN
     })
 
     EventsController.subscribe(state => {
-      if (state.data.event === 'SELECT_WALLET' && state.data.properties?.name === 'Phantom') {
+      if (state.data.event === 'SELECT_WALLET') {
         const isMobile = CoreHelperUtil.isMobile()
         const isClient = CoreHelperUtil.isClient()
-        if (isMobile && isClient && !window.phantom) {
-          const href = window.location.href
-          const protocol = href.startsWith('https') ? 'https' : 'http'
-          const host = href.split('/')[2]
-          const ref = `${protocol}://${host}`
-          window.location.href = `https://phantom.app/ul/browse/${href}?ref=${ref}`
+
+        if (isMobile && isClient) {
+          if (state.data.properties?.name === 'Phantom' && !('phantom' in window)) {
+            const href = window.location.href
+            const protocol = href.startsWith('https') ? 'https' : 'http'
+            const host = href.split('/')[2]
+            const ref = `${protocol}://${host}`
+            window.location.href = `https://phantom.app/ul/browse/${href}?ref=${ref}`
+          }
+
+          if (state.data.properties?.name === 'Coinbase Wallet' && !('coinbaseSolana' in window)) {
+            const href = window.location.href
+            window.location.href = `https://go.cb-w.com/dapp?cb_url=${href}`
+          }
         }
       }
     })
