@@ -104,7 +104,7 @@ describe('SolanaAdapter', () => {
       vi.spyOn(mockAppKit, 'getAddress').mockReturnValue(mockAddress)
       vi.spyOn(client as any, 'syncBalance')
 
-      await client['syncNetwork']({ address: mockAddress })
+      await client['syncNetwork'](mockAddress)
 
       expect(mockAppKit.setAddressExplorerUrl).toHaveBeenCalledWith(
         `${solana.explorerUrl}/account/${mockAddress}`,
@@ -122,7 +122,7 @@ describe('SolanaAdapter', () => {
       vi.spyOn(mockAppKit, 'getIsConnectedState').mockReturnValue(true)
       vi.spyOn(client as any, 'syncBalance').mockResolvedValue(undefined)
 
-      await client['syncAccount']({ address: mockAddress })
+      await client['syncAccount'](mockAddress)
 
       expect(SolStoreUtil.setConnection).toHaveBeenCalled()
       expect(client['syncBalance']).toHaveBeenCalledWith(mockAddress)
