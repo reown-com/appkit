@@ -210,6 +210,7 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
 
   private serializeTransaction(transaction: AnyTransaction) {
     const serializedTransaction = transaction.serialize({ verifySignatures: false })
+
     return base58.encode(Buffer.from(serializedTransaction))
   }
 
