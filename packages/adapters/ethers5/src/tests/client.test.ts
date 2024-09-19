@@ -9,8 +9,8 @@ import { EthersHelpersUtil, type ProviderId, type ProviderType } from '@reown/ap
 import { ConstantsUtil } from '@reown/appkit-utils'
 import { arbitrum, mainnet, polygon } from '@reown/appkit/networks'
 import { ProviderUtil } from '@reown/appkit/store'
-import { SafeLocalStorage } from '@reown/appkit-common'
-import { WcConstantsUtil, type BlockchainApiLookupEnsName } from '@reown/appkit'
+import { SafeLocalStorage, SafeLocalStorageKeys } from '@reown/appkit-common'
+import { type BlockchainApiLookupEnsName } from '@reown/appkit'
 import { ethers } from 'ethers5'
 import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
 
@@ -524,8 +524,14 @@ describe('EthersAdapter', () => {
       const mockProvider = { request: vi.fn() }
       await client['setProvider'](mockProvider as any, 'injected', 'MetaMask')
 
-      expect(SafeLocalStorage.setItem).toHaveBeenCalledWith(WcConstantsUtil.WALLET_ID, 'injected')
-      expect(SafeLocalStorage.setItem).toHaveBeenCalledWith(WcConstantsUtil.WALLET_NAME, 'MetaMask')
+      expect(SafeLocalStorage.setItem).toHaveBeenCalledWith(
+        SafeLocalStorageKeys.WALLET_ID,
+        'injected'
+      )
+      expect(SafeLocalStorage.setItem).toHaveBeenCalledWith(
+        SafeLocalStorageKeys.WALLET_NAME,
+        'MetaMask'
+      )
       expect(mockAppKit.setCaipNetwork).toHaveBeenCalled()
       expect(ProviderUtil.setProviderId).toHaveBeenCalledWith('eip155', 'injected')
       expect(ProviderUtil.setProvider).toHaveBeenCalledWith('eip155', mockProvider)
@@ -561,7 +567,7 @@ describe('EthersAdapter', () => {
       )[1]
       await disconnectHandler()
 
-      expect(SafeLocalStorage.removeItem).toHaveBeenCalledWith(WcConstantsUtil.WALLET_ID)
+      expect(SafeLocalStorage.removeItem).toHaveBeenCalledWith(SafeLocalStorageKeys.WALLET_ID)
       expect(mockProvider.removeListener).toHaveBeenCalledTimes(3)
     })
 
@@ -599,9 +605,9 @@ describe('EthersAdapter', () => {
       }
 
       vi.spyOn(SafeLocalStorage, 'getItem').mockImplementation(key => {
-        if (key === WcConstantsUtil.WALLET_ID) return ConstantsUtil.INJECTED_CONNECTOR_ID
-        if (key === WcConstantsUtil.WALLET_NAME) return 'MetaMask'
-        return null
+        if (key === SafeLocalStorageKeys.WALLET_ID) return ConstantsUtil.INJECTED_CONNECTOR_ID
+        if (key === SafeLocalStorageKeys.WALLET_NAME) return 'MetaMask'
+        return undefined
       })
 
       vi.spyOn(client as any, 'setProvider').mockImplementation(() => Promise.resolve())
@@ -617,7 +623,7 @@ describe('EthersAdapter', () => {
 
       client['checkActiveProviders'](mockConfig as ProviderType)
 
-      expect(SafeLocalStorage.getItem).toHaveBeenCalledWith(WcConstantsUtil.WALLET_ID)
+      expect(SafeLocalStorage.getItem).toHaveBeenCalledWith(SafeLocalStorageKeys.WALLET_ID)
       expect(client['setProvider']).toHaveBeenCalledWith(
         mockInjectedProvider,
         ConstantsUtil.INJECTED_CONNECTOR_ID
@@ -629,7 +635,7 @@ describe('EthersAdapter', () => {
     })
 
     it('should not set provider when wallet ID is not found', () => {
-      vi.spyOn(SafeLocalStorage, 'getItem').mockReturnValue(null)
+      vi.spyOn(SafeLocalStorage, 'getItem').mockReturnValue(undefined)
 
       const mockConfig = {
         injected: mockInjectedProvider,
@@ -639,7 +645,7 @@ describe('EthersAdapter', () => {
 
       client['checkActiveProviders'](mockConfig as ProviderType)
 
-      expect(SafeLocalStorage.getItem).toHaveBeenCalledWith(WcConstantsUtil.WALLET_ID)
+      expect(SafeLocalStorage.getItem).toHaveBeenCalledWith(SafeLocalStorageKeys.WALLET_ID)
       expect(client['setProvider']).not.toHaveBeenCalled()
       expect(client['setupProviderListeners']).not.toHaveBeenCalled()
     })
@@ -653,7 +659,7 @@ describe('EthersAdapter', () => {
 
       client['checkActiveProviders'](mockConfig as ProviderType)
 
-      expect(SafeLocalStorage.getItem).toHaveBeenCalledWith(WcConstantsUtil.WALLET_ID)
+      expect(SafeLocalStorage.getItem).toHaveBeenCalledWith(SafeLocalStorageKeys.WALLET_ID)
       expect(client['setProvider']).not.toHaveBeenCalled()
       expect(client['setupProviderListeners']).not.toHaveBeenCalled()
     })
