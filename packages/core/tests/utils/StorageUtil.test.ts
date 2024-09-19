@@ -12,7 +12,7 @@ afterAll(() => {
   Object.assign(globalThis, { localStorage: previousLocalStorage, window: previousWindow })
 })
 
-describe.only('StorageUtil', () => {
+describe('StorageUtil', () => {
   beforeAll(() => {
     Object.assign(globalThis, {
       window: {},
