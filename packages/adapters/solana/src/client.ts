@@ -254,6 +254,8 @@ export class SolanaAdapter implements ChainAdapter {
 
       writeContract: async () => await Promise.resolve('0x'),
 
+      request: async () => await Promise.resolve('0x'),
+      
       sendTransaction: async params => {
         if (params.chainNamespace !== 'solana') {
           throw new Error('Chain namespace is not supported')
