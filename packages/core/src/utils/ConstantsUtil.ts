@@ -1,7 +1,7 @@
 import type { Features } from './TypeUtil.js'
 import type { ChainNamespace } from '@reown/appkit-common'
 
-const SECURE_SITE = 'https://secure.walletconnect.org'
+const SECURE_SITE = 'https://secure.reown.org'
 
 export const ONRAMP_PROVIDERS = [
   {

@@ -39,7 +39,7 @@ export class W3mFrame {
       if (W3mFrameHelpers.isClient) {
         const iframe = document.createElement('iframe')
         iframe.id = 'w3m-iframe'
-        iframe.src = `${SECURE_SITE_SDK}?projectId=${projectId}&chainId=${chainId}`
+        iframe.src = `http://localhost:3010/mobile-sdk?projectId=cad4956f31a5e40a00b62865b030c6f8&bundleId=com.walletconnect.flutterdapp.internal`
         iframe.name = 'w3m-secure-iframe'
         iframe.style.position = 'fixed'
         iframe.style.zIndex = '999999'
