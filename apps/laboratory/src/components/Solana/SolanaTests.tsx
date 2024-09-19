@@ -17,6 +17,8 @@ import { SolanaSignMessageTest } from './SolanaSignMessageTest'
 import { SolanaWriteContractTest } from './SolanaWriteContractTest'
 import { solana, solanaDevnet, solanaTestnet } from '../../utils/ChainsUtil'
 import { SolanaSignAndSendTransaction } from './SolanaSignAndSendTransactionTest'
+import { SolanaSignAllTransactionsTest } from './SolanaSignAllTransactionsTest'
+import { SolanaSignJupiterSwapTest } from './SolanaSignJupiterSwapTest'
 
 export function SolanaTests() {
   const { isConnected, currentChain } = useWeb3ModalAccount()
@@ -50,6 +52,18 @@ export function SolanaTests() {
           </Box>
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">
+              Sign All Transactions
+              <Tooltip label="Request the signature for 5 transactions at once">
+                <Text as="span" fontSize="sm" ml="2">
+                  ℹ️
+                </Text>
+              </Tooltip>
+            </Heading>
+            <SolanaSignAllTransactionsTest />
+          </Box>
+
+          <Box>
+            <Heading size="xs" textTransform="uppercase" pb="2">
               Sign and Send Transaction (Dapp)
               <Tooltip label="The transaction will be signed by the Wallet, returned to the Dapp and the Dapp will send the transaction into the network">
                 <Text as="span" fontSize="sm" ml="2">
@@ -70,6 +84,19 @@ export function SolanaTests() {
             </Heading>
             <SolanaSignAndSendTransaction />
           </Box>
+
+          <Box>
+            <Heading size="xs" textTransform="uppercase" pb="2">
+              Sign Jupiter Swap Transaction
+              <Tooltip label="Use Jupiter Swap API to create a transaction that has Address Lookup Tables and requests for the wallet to sign it">
+                <Text as="span" fontSize="sm" ml="2">
+                  ℹ️
+                </Text>
+              </Tooltip>
+            </Heading>
+            <SolanaSignJupiterSwapTest />
+          </Box>
+
           {(currentChain?.chainId === solanaTestnet.chainId ||
             currentChain?.chainId === solanaDevnet.chainId) && (
             <Stack divider={<StackDivider />} spacing="4">

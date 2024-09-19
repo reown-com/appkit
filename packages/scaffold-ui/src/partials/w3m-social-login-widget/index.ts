@@ -49,7 +49,7 @@ export class W3mSocialLoginWidget extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    if (!this.connector?.socials) {
+    if (!this.connector) {
       return null
     }
 
@@ -59,6 +59,7 @@ export class W3mSocialLoginWidget extends LitElement {
         flexDirection="column"
         gap="xs"
         .padding=${['0', '0', 'xs', '0'] as const}
+        data-testid="w3m-social-login-widget"
       >
         ${this.topViewTemplate()}${this.bottomViewTemplate()}
       </wui-flex>
@@ -68,7 +69,7 @@ export class W3mSocialLoginWidget extends LitElement {
 
   // -- Private ------------------------------------------- //
   private topViewTemplate() {
-    if (!this.connector?.socials) {
+    if (!this.connector?.socials?.length) {
       return null
     }
 
@@ -99,7 +100,7 @@ export class W3mSocialLoginWidget extends LitElement {
   }
 
   private bottomViewTemplate() {
-    if (!this.connector?.socials) {
+    if (!this.connector?.socials?.length) {
       return null
     }
 

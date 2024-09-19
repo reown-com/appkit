@@ -10,6 +10,7 @@ import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { EventsController } from './EventsController.js'
 import { NetworkController } from './NetworkController.js'
 import { W3mFrameRpcConstants } from '@web3modal/wallet'
+import { ChainController } from './ChainController.js'
 
 // -- Types --------------------------------------------- //
 
@@ -93,6 +94,21 @@ export const SendController = {
   },
 
   sendToken() {
+    switch (ChainController.state.activeCaipNetwork?.chain) {
+      case 'evm':
+        this.sendEvmToken()
+
+        return
+      case 'solana':
+        this.sendSolanaToken()
+
+        return
+      default:
+        throw new Error('Unsupported chain')
+    }
+  },
+
+  sendEvmToken() {
     if (this.state.token?.address && this.state.sendTokenAmount && this.state.receiverAddress) {
       EventsController.sendEvent({
         type: 'track',
@@ -226,6 +242,34 @@ export const SendController = {
     } catch (error) {
       SnackController.showError('Something went wrong')
     }
+  },
+
+  sendSolanaToken() {
+    if (!this.state.sendTokenAmount || !this.state.receiverAddress) {
+      SnackController.showError('Please enter a valid amount and receiver address')
+
+      return
+    }
+
+    RouterController.pushTransactionStack({
+      view: 'Account',
+      goBack: false
+    })
+
+    ConnectionController.sendTransaction({
+      chainNamespace: 'solana',
+      to: this.state.receiverAddress,
+      value: this.state.sendTokenAmount
+    })
+      .then(() => {
+        this.resetSend()
+        AccountController.fetchTokenBalance()
+      })
+      .catch(error => {
+        SnackController.showError('Failed to send transaction. Please try again.')
+        // eslint-disable-next-line no-console
+        console.error('SendController:sendToken - failed to send solana transaction', error)
+      })
   },
 
   resetSend() {

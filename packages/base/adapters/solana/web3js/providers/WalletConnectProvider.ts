@@ -12,7 +12,6 @@ import {
   Connection,
   PublicKey,
   Transaction,
-  TransactionMessage,
   VersionedTransaction,
   type SendOptions
 } from '@solana/web3.js'
@@ -32,7 +31,7 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
     'https://imagedelivery.net/_aTEfDRm7z3tKgu9JhfeKA/05338e12-4f75-4982-4e8a-83c67b826b00/md'
 
   private provider: UniversalProvider
-  private session?: SessionTypes.Struct
+  public session?: SessionTypes.Struct
   private readonly requestedChains: Chain[]
   private readonly getActiveChain: WalletConnectProviderConfig['getActiveChain']
 
@@ -177,6 +176,12 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
     return signature
   }
 
+  public async signAllTransactions<T extends AnyTransaction[]>(transactions: T): Promise<T> {
+    return (await Promise.all(
+      transactions.map(transaction => this.signTransaction(transaction))
+    )) as T
+  }
+
   // -- Private ------------------------------------------ //
   private request<Method extends WalletConnectProvider.RequestMethod>(
     method: Method,
@@ -212,7 +217,20 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
   }
 
   private get sessionChains() {
-    return this.session?.namespaces['solana']?.chains || []
+    const solanaNamespace = this.session?.namespaces['solana']
+
+    if (!solanaNamespace) {
+      return []
+    }
+
+    const chains = solanaNamespace.chains || []
+    const accountsChains = solanaNamespace.accounts.map(account => {
+      const [chainNamespace, chainId] = account.split(':')
+
+      return `${chainNamespace}:${chainId}`
+    })
+
+    return Array.from(new Set([...chains, ...accountsChains]))
   }
 
   private serializeTransaction(transaction: AnyTransaction) {
@@ -278,18 +296,9 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
    * This is a deprecated method that is used to support older versions of the
    * WalletConnect RPC API. It should be removed in the future
    */
-  private getRawRPCParams(_transaction: AnyTransaction) {
-    let transaction = _transaction
-
+  private getRawRPCParams(transaction: AnyTransaction) {
     if (isVersionedTransaction(transaction)) {
-      const instructions = TransactionMessage.decompile(transaction.message).instructions
-      const legacyMessage = new TransactionMessage({
-        payerKey: new PublicKey(this.getAccount(true).publicKey),
-        recentBlockhash: transaction.message.recentBlockhash,
-        instructions: [...instructions]
-      }).compileToLegacyMessage()
-
-      transaction = Transaction.populate(legacyMessage)
+      return {}
     }
 
     return {

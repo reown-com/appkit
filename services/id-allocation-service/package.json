@@ -1,5 +1,6 @@
 {
   "name": "@services/id-allocation-service",
+  "private": true,
   "scripts": {
     "dev": "wrangler dev src/index.ts",
     "deploy": "wrangler deploy --minify src/index.ts"

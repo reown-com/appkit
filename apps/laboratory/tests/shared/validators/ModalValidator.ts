@@ -97,6 +97,21 @@ export class ModalValidator {
     await expect(switchNetworkButton).toHaveAttribute('active-network', network)
   }
 
+  expectSecureSiteFrameNotInjected() {
+    const secureSiteIframe = this.page.frame({ name: 'w3m-secure-iframe' })
+    expect(secureSiteIframe).toBeNull()
+  }
+
+  async expectNoSocials() {
+    const socialList = this.page.getByTestId('wui-list-social')
+    await expect(socialList).toBeHidden()
+  }
+
+  async expectEmailLogin() {
+    const emailInput = this.page.getByTestId('wui-email-input')
+    await expect(emailInput).toBeVisible()
+  }
+
   async expectValidSignature(signature: `0x${string}`, address: `0x${string}`, chainId: number) {
     const isVerified = await verifySignature({
       address,
@@ -140,13 +155,9 @@ export class ModalValidator {
     await expect(switchNetworkButton).toBeVisible()
   }
 
-  async expectOnrampButton(library: string) {
+  async expectOnrampButton(_library: string) {
     const onrampButton = this.page.getByTestId('w3m-account-default-onramp-button')
-    if (library === 'solana') {
-      await expect(onrampButton).toBeHidden()
-    } else {
-      await expect(onrampButton).toBeVisible()
-    }
+    await expect(onrampButton).toBeVisible()
   }
 
   async expectAccountNameFound(name: string) {
@@ -187,5 +198,10 @@ export class ModalValidator {
   async expectAccountSwitched(oldAddress: string) {
     const address = this.page.getByTestId('w3m-address')
     await expect(address).not.toHaveText(oldAddress)
+  }
+
+  async expectSocialsVisible() {
+    const socials = this.page.getByTestId('w3m-social-login-widget')
+    await expect(socials).toBeVisible()
   }
 }

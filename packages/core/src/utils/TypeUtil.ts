@@ -187,6 +187,7 @@ export interface BlockchainApiTransactionsRequest {
   onramp?: 'coinbase'
   signal?: AbortSignal
   cache?: RequestCache
+  chainId?: string
 }
 
 export interface BlockchainApiTransactionsResponse {
@@ -800,20 +801,28 @@ export type AccountType = {
   type: 'eoa' | 'smartAccount'
 }
 
-export interface SendTransactionArgs {
-  to: `0x${string}`
-  data: `0x${string}`
-  value: bigint
-  gas?: bigint
-  gasPrice: bigint
-  address: `0x${string}`
-}
+export type SendTransactionArgs =
+  | {
+      chainNamespace?: undefined | 'eip155'
+      to: `0x${string}`
+      data: `0x${string}`
+      value: bigint
+      gas?: bigint
+      gasPrice: bigint
+      address: `0x${string}`
+    }
+  | { chainNamespace: 'solana'; to: string; value: number }
 
-export interface EstimateGasTransactionArgs {
-  address: `0x${string}`
-  to: `0x${string}`
-  data: `0x${string}`
-}
+export type EstimateGasTransactionArgs =
+  | {
+      chainNamespace?: undefined | 'eip155'
+      address: `0x${string}`
+      to: `0x${string}`
+      data: `0x${string}`
+    }
+  | {
+      chainNamespace: 'solana'
+    }
 
 export interface WriteContractArgs {
   receiverAddress: `0x${string}`
@@ -825,11 +834,19 @@ export interface WriteContractArgs {
   abi: any
 }
 
-export type ChainAdapter = {
+export type ChainAdapter<StoreState = unknown, SwitchNetworkParam = number> = {
   connectionControllerClient?: ConnectionControllerClient
   networkControllerClient?: NetworkControllerClient
   accountState?: AccountControllerState
   networkState?: NetworkControllerState
   defaultChain?: CaipNetwork
   chain: Chain
+  getAddress?: () => string | undefined
+  getError?: () => unknown
+  getChainId?: () => number | string | undefined
+  switchNetwork?: ((chainId: SwitchNetworkParam) => void) | undefined
+  getIsConnected?: () => boolean | undefined
+  getWalletProvider?: () => unknown
+  getWalletProviderType?: () => string | undefined
+  subscribeProvider?: (callback: (newState: StoreState) => void) => void
 }

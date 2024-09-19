@@ -9,6 +9,9 @@ import { Transaction, VersionedTransaction } from '@solana/web3.js'
 import { mockLegacyTransaction, mockVersionedTransaction } from './mocks/Transaction.js'
 import { AuthProvider } from '../providers/AuthProvider.js'
 import { mockW3mFrameProvider } from './mocks/W3mFrameProvider.js'
+import { isVersionedTransaction } from '@solana/wallet-adapter-base'
+import { CoinbaseWalletProvider } from '../providers/CoinbaseWalletProvider.js'
+import { mockCoinbaseWallet } from './mocks/CoinbaseWallet.js'
 
 const getActiveChain = vi.fn(() => TestConstants.chains[0])
 
@@ -38,6 +41,14 @@ const providers: { name: string; provider: Provider }[] = [
         socials: ['x']
       },
       chains: TestConstants.chains
+    })
+  },
+  {
+    name: 'CoinbaseWalletProvider',
+    provider: new CoinbaseWalletProvider({
+      provider: mockCoinbaseWallet(),
+      chains: TestConstants.chains,
+      getActiveChain
     })
   }
 ]
@@ -98,5 +109,25 @@ describe.each(providers)('Generic provider tests for $name', ({ provider }) => {
     const result = await provider.signAndSendTransaction(mockVersionedTransaction())
 
     expect(result).toBeTypeOf('string')
+  })
+
+  it('should signAllTransactions with AnyTransaction', async () => {
+    const transactions = [
+      mockLegacyTransaction(),
+      mockVersionedTransaction(),
+      mockLegacyTransaction(),
+      mockVersionedTransaction()
+    ]
+    const result = await provider.signAllTransactions(transactions)
+
+    expect(result).toHaveLength(transactions.length)
+
+    transactions.forEach((transaction, index) => {
+      if (isVersionedTransaction(transaction)) {
+        expect(result[index]).toBeInstanceOf(VersionedTransaction)
+      } else {
+        expect(result[index]).toBeInstanceOf(Transaction)
+      }
+    })
   })
 })

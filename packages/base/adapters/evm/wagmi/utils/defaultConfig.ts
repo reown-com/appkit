@@ -46,7 +46,16 @@ export function defaultConfig({
   const defaultAuth = {
     email: true,
     showWallets: true,
-    walletFeatures: true
+    walletFeatures: true,
+    socials: [
+      'google',
+      'x',
+      'discord',
+      'farcaster',
+      'github',
+      'apple',
+      'facebook'
+    ] as SocialProvider[]
   }
 
   // Enabled by default
@@ -84,7 +93,7 @@ export function defaultConfig({
     ...auth
   }
 
-  if (mergedAuth.email || mergedAuth.socials) {
+  if (mergedAuth.email || mergedAuth.socials?.length) {
     connectors.push(
       authConnector({
         chains: [...chains],

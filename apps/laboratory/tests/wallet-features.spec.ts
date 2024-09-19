@@ -17,11 +17,11 @@ const walletFeaturesTest = test.extend<{ library: string }>({
 walletFeaturesTest.describe.configure({ mode: 'serial' })
 
 walletFeaturesTest.beforeAll(async ({ browser, library }) => {
-  walletFeaturesTest.setTimeout(180000)
+  walletFeaturesTest.setTimeout(300000)
   context = await browser.newContext()
   const browserPage = await context.newPage()
 
-  page = new ModalWalletPage(browserPage, library, 'email')
+  page = new ModalWalletPage(browserPage, library, 'default')
   validator = new ModalWalletValidator(browserPage)
 
   await page.load()
@@ -65,12 +65,9 @@ walletFeaturesTest('it should initialize onramp as expected', async () => {
   await page.closeModal()
 })
 
-walletFeaturesTest('it should find account name as expected', async ({ library }) => {
+walletFeaturesTest('it should find account name as expected', async () => {
   await page.goToSettings()
   await page.switchNetwork('Polygon')
-  if (library === 'wagmi') {
-    await page.goToSettings()
-  }
   await validator.expectSwitchedNetwork('Polygon')
 
   await page.openChooseNameIntro()

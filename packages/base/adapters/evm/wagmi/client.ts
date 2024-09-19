@@ -13,13 +13,13 @@ import {
   writeContract as wagmiWriteContract,
   getAccount,
   getEnsAddress as wagmiGetEnsAddress,
-  reconnect,
   switchChain,
   waitForTransactionReceipt,
   getConnections,
-  switchAccount
+  switchAccount,
+  reconnect
 } from '@wagmi/core'
-import type { OptionsControllerState } from '@web3modal/core'
+import type { ChainAdapter, OptionsControllerState } from '@web3modal/core'
 import { mainnet } from 'viem/chains'
 import { prepareTransactionRequest, sendTransaction as wagmiSendTransaction } from '@wagmi/core'
 import type { Chain } from '@wagmi/core/chains'
@@ -67,11 +67,9 @@ interface Web3ModalState extends PublicStateControllerState {
 }
 
 // -- Client --------------------------------------------------------------------
-export class EVMWagmiClient {
+export class EVMWagmiClient implements ChainAdapter {
   // -- Private variables -------------------------------------------------------
   private appKit: AppKit | undefined = undefined
-
-  private hasSyncedConnectedAccount = false
 
   private wagmiConfig: AdapterOptions<Config>['wagmiConfig']
 
@@ -244,16 +242,6 @@ export class EVMWagmiClient {
         await connect(this.wagmiConfig, { connector, chainId })
       },
 
-      reconnectExternal: async ({ id }) => {
-        const connector = this.wagmiConfig.connectors.find(c => c.id === id)
-
-        if (!connector) {
-          throw new Error('connectionControllerClient:connectExternal - connector is undefined')
-        }
-
-        await reconnect(this.wagmiConfig, { connectors: [connector] })
-      },
-
       checkInstalled: ids => {
         const injectedConnector = this.appKit
           ?.getConnectors()
@@ -291,6 +279,10 @@ export class EVMWagmiClient {
       },
 
       estimateGas: async args => {
+        if (args.chainNamespace && args.chainNamespace !== 'eip155') {
+          throw new Error('connectionControllerClient:estimateGas - invalid chain namespace')
+        }
+
         try {
           return await wagmiEstimateGas(this.wagmiConfig, {
             account: args.address,
@@ -304,6 +296,10 @@ export class EVMWagmiClient {
       },
 
       sendTransaction: async (data: SendTransactionArgs) => {
+        if (data.chainNamespace && data.chainNamespace !== 'eip155') {
+          throw new Error('connectionControllerClient:sendTransaction - invalid chain namespace')
+        }
+
         const { chainId } = getAccount(this.wagmiConfig)
 
         const txParams = {
@@ -455,11 +451,10 @@ export class EVMWagmiClient {
 
   private async syncAccount({
     address,
-    isConnected,
-    isDisconnected,
     chainId,
     connector,
-    addresses
+    addresses,
+    status
   }: Partial<
     Pick<
       GetAccountReturnType,
@@ -473,14 +468,13 @@ export class EVMWagmiClient {
     >
   >) {
     const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`
-
     if (this.appKit?.getCaipAddress() === caipAddress) {
       return
     }
 
-    if (isConnected && address && chainId) {
-      this.syncNetwork(address, chainId, isConnected)
-      this.appKit?.setIsConnected(isConnected, this.chain)
+    if (status === 'connected' && address && chainId) {
+      this.syncNetwork(address, chainId, true)
+      this.appKit?.setIsConnected(true, this.chain)
       this.appKit?.setCaipAddress(caipAddress, this.chain)
       await Promise.all([
         this.syncProfile(address, chainId),
@@ -500,15 +494,12 @@ export class EVMWagmiClient {
           this.chain
         )
       }
-
-      this.hasSyncedConnectedAccount = true
-    } else if (isDisconnected && this.hasSyncedConnectedAccount) {
+    } else if (status === 'disconnected') {
       this.appKit?.resetAccount(this.chain)
       this.appKit?.resetWcConnection()
       this.appKit?.resetNetwork()
       this.appKit?.setAllAccounts([], this.chain)
-
-      this.hasSyncedConnectedAccount = false
+      this.appKit?.setIsConnected(false, this.chain)
     }
   }
 
@@ -535,9 +526,8 @@ export class EVMWagmiClient {
         } else {
           this.appKit?.setAddressExplorerUrl(undefined, this.chain)
         }
-        if (this.hasSyncedConnectedAccount) {
-          await this.syncBalance(address, chainId)
-        }
+
+        await this.syncBalance(address, chainId)
       }
     }
   }
@@ -559,6 +549,7 @@ export class EVMWagmiClient {
       this.appKit?.setProfileName(null, this.chain)
     }
   }
+
   private async syncProfile(address: Hex, chainId: Chain['id']) {
     if (!this.appKit) {
       throw new Error('syncProfile - appKit is undefined')
@@ -632,8 +623,12 @@ export class EVMWagmiClient {
         )
       }
     } else {
+      const wagmiConnector = this.appKit?.getConnectors().find(c => c.id === connector.id)
       this.appKit?.setConnectedWalletInfo(
-        { name: connector.name, icon: connector.icon },
+        {
+          name: connector.name,
+          icon: connector.icon || this.appKit.getConnectorImage(wagmiConnector)
+        },
         this.chain
       )
     }
@@ -647,17 +642,9 @@ export class EVMWagmiClient {
 
     const w3mConnectors: Connector[] = []
 
-    const coinbaseSDKId = ConstantsUtil.COINBASE_SDK_CONNECTOR_ID
-
-    // Check if coinbase injected connector is present
-    const coinbaseConnector = filteredConnectors.find(c => c.id === coinbaseSDKId)
-
     filteredConnectors.forEach(({ id, name, type, icon }) => {
-      // If coinbase injected connector is present, skip coinbase sdk connector.
-      const isCoinbaseRepeated =
-        coinbaseConnector &&
-        id === ConstantsUtil.CONNECTOR_RDNS_MAP[ConstantsUtil.COINBASE_CONNECTOR_ID]
-      const shouldSkip = isCoinbaseRepeated || ConstantsUtil.AUTH_CONNECTOR_ID === id
+      // Auth connector is initialized separately
+      const shouldSkip = ConstantsUtil.AUTH_CONNECTOR_ID === id
       if (!shouldSkip) {
         w3mConnectors.push({
           id,
@@ -729,19 +716,8 @@ export class EVMWagmiClient {
 
       provider.onRpcRequest((request: W3mFrameTypes.RPCRequest) => {
         if (W3mFrameHelpers.checkIfRequestExists(request)) {
-          if (!W3mFrameHelpers.checkIfRequestIsAllowed(request)) {
-            if (this.appKit?.isOpen()) {
-              if (this.appKit?.isTransactionStackEmpty()) {
-                return
-              }
-              if (this.appKit?.isTransactionShouldReplaceView()) {
-                this.appKit?.replace('ApproveTransaction')
-              } else {
-                this.appKit?.redirect('ApproveTransaction')
-              }
-            } else {
-              this.appKit?.open({ view: 'ApproveTransaction' })
-            }
+          if (!W3mFrameHelpers.checkIfRequestIsSafe(request)) {
+            this.appKit?.handleUnsafeRPCRequest()
           }
         } else {
           this.appKit?.open()
@@ -768,7 +744,12 @@ export class EVMWagmiClient {
         }
       })
 
-      provider.onRpcSuccess(() => {
+      provider.onRpcSuccess((_, request) => {
+        const isSafeRequest = W3mFrameHelpers.checkIfRequestIsSafe(request)
+        if (isSafeRequest) {
+          return
+        }
+
         if (this.appKit?.isTransactionStackEmpty()) {
           this.appKit?.close()
         } else {
@@ -812,12 +793,7 @@ export class EVMWagmiClient {
           return
         }
         this.appKit?.setPreferredAccountType(type as W3mFrameTypes.AccountType, this.chain)
-        this.syncAccount({
-          address: address as `0x${string}`,
-          isConnected: true,
-          chainId: NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id),
-          connector
-        })
+        reconnect(this.wagmiConfig, { connectors: [connector] })
       })
     }
   }

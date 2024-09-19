@@ -1,3 +1,5 @@
+import type { Chain } from '@web3modal/common'
+
 const SECURE_SITE = 'https://secure.walletconnect.org'
 
 export const ONRAMP_PROVIDERS = [
@@ -5,9 +7,20 @@ export const ONRAMP_PROVIDERS = [
     label: 'Coinbase',
     name: 'coinbase',
     feeRange: '1-2%',
-    url: ''
+    url: '',
+    supportedChains: ['evm']
+  },
+  {
+    label: 'Meld.io',
+    name: 'meld',
+    feeRange: '1-2%',
+    url: 'https://meldcrypto.com',
+    supportedChains: ['evm', 'solana']
   }
 ]
+
+export const MELD_DEV_PUBLIC_KEY = 'WXETMsajb7XcQBm7mcxAab:q3MtzJpiEMtXVNXsqYkAnAaBkgStybGVtZ'
+export const MELD_PROD_PUBLIC_KEY = 'WXETMuFUQmqqybHuRkSgxv:25B8LJHSfpG6LVjR2ytU5Cwh7Z4Sch2ocoU'
 
 export const ConstantsUtil = {
   FOUR_MINUTES_MS: 240_000,
@@ -181,7 +194,10 @@ export const ConstantsUtil = {
     'eip155:1313161554'
   ],
 
-  NATIVE_TOKEN_ADDRESS: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+  NATIVE_TOKEN_ADDRESS: {
+    evm: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+    solana: 'So11111111111111111111111111111111111111111'
+  } as const satisfies Record<Chain, string>,
 
   CONVERT_SLIPPAGE_TOLERANCE: 1
 }

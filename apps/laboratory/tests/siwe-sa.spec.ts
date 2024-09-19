@@ -18,7 +18,7 @@ const smartAccountSiweTest = test.extend<{ library: string }>({
 smartAccountSiweTest.describe.configure({ mode: 'serial' })
 
 smartAccountSiweTest.beforeAll(async ({ browser, library }) => {
-  smartAccountSiweTest.setTimeout(180000)
+  smartAccountSiweTest.setTimeout(300000)
   context = await browser.newContext()
   const browserPage = await context.newPage()
 
@@ -64,24 +64,18 @@ smartAccountSiweTest('it should upgrade wallet', async () => {
   await page.closeModal()
 })
 
-smartAccountSiweTest(
-  'it should switch to a smart account enabled network and sign',
-  async ({ library }) => {
-    const targetChain = 'Sepolia'
-    await page.goToSettings()
-    await page.switchNetwork(targetChain)
-    await page.promptSiwe()
-    await page.approveSign()
-    if (library === 'wagmi') {
-      await page.goToSettings()
-    }
-    await validator.expectSwitchedNetwork(targetChain)
-    await page.closeModal()
-    await page.sign()
-    await page.approveSign()
-    await validator.expectAcceptedSign()
-  }
-)
+smartAccountSiweTest('it should switch to a smart account enabled network and sign', async () => {
+  const targetChain = 'Sepolia'
+  await page.goToSettings()
+  await page.switchNetwork(targetChain)
+  await page.promptSiwe()
+  await page.approveSign()
+  await validator.expectSwitchedNetwork(targetChain)
+  await page.closeModal()
+  await page.sign()
+  await page.approveSign()
+  await validator.expectAcceptedSign()
+})
 
 /**
  * After switching to Etherum, the signing the SIWE throws the following Magic error:

@@ -284,13 +284,15 @@ async function checkScaffoldHtmlPackage() {
 checkScaffoldHtmlPackage()
 
 // -- Client(s) Package Checks ----------------------------------------------------
+
 // -- Helper functions
-const isRelativeImport = (addition: string | undefined) => {
+function isRelativeImport(addition: string | undefined) {
   const sameDir = addition?.includes(RELATIVE_IMPORT_SAME_DIR)
   const parentDir = addition?.includes(RELATIVE_IMPORT_PARENT_DIR)
+
   return sameDir || parentDir
 }
-const containsRelativeImportWithoutJSExtension = (addition: string | undefined) => {
+function containsRelativeImportWithoutJSExtension(addition: string | undefined) {
   const hasImportStatement = addition?.includes('import')
   const lacksJSExtension = !addition?.includes(RELATIVE_IMPORT_EXTENSION)
   const hasRelativePath = isRelativeImport(addition)
@@ -350,6 +352,15 @@ async function checkLaboratory() {
     const diff = await diffForFile(f)
     if (f.includes('project') && (diff?.removed.includes('spec') || diff?.added.includes('spec'))) {
       warn('Testing spec changed')
+    }
+  }
+
+  // Check that no .only is present in tests
+  const test_files = lab_files.filter(f => f.includes('.spec.ts'))
+  for (const f of test_files) {
+    const fileContent = await danger.github.utils.fileContents(f)
+    if (fileContent.includes('.only')) {
+      fail(`${f} contains .only, please remove it`)
     }
   }
 }

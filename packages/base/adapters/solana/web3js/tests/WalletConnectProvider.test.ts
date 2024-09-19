@@ -100,26 +100,6 @@ describe('WalletConnectProvider specific tests', () => {
       {
         method: 'solana_signTransaction',
         params: {
-          feePayer: '2VqKhjZ766ZN3uBtBpb7Ls3cN4HrocP1rzxzekhVEgoP',
-          instructions: [
-            {
-              data: '3Bxs4NN8M2Yn4TLb',
-              keys: [
-                {
-                  isSigner: true,
-                  isWritable: true,
-                  pubkey: '2VqKhjZ766ZN3uBtBpb7Ls3cN4HrocP1rzxzekhVEgoP'
-                },
-                {
-                  isSigner: true,
-                  isWritable: true,
-                  pubkey: '2VqKhjZ766ZN3uBtBpb7Ls3cN4HrocP1rzxzekhVEgoP'
-                }
-              ],
-              programId: '11111111111111111111111111111111'
-            }
-          ],
-          recentBlockhash: 'EZySCpmzXRuUtM95P2JGv9SitqYph6Nv6HaYBK7a8PKJ',
           transaction:
             'AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAQABAhY+loQT/3nqQuE+Gw4GLiTIklVzYfSLz1r9WQ1FedoGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADJmlOhYicUv7MMXLfh/CK3nuxRET//L6xrgHRfdADXpQEBAgAADAIAAACAlpgAAAAAAAA=',
           pubkey: TestConstants.accounts[0].address
@@ -257,5 +237,83 @@ describe('WalletConnectProvider specific tests', () => {
       },
       'solana:8E9rvCKLFQia2Y35HXjjpWzj8weVo44K'
     )
+  })
+
+  it('should call signTransaction correctly for signAllTransactions', async () => {
+    await walletConnectProvider.connect()
+    const transactions = [mockLegacyTransaction(), mockVersionedTransaction()]
+    await walletConnectProvider.signAllTransactions(transactions)
+
+    expect(provider.request).toHaveBeenNthCalledWith(
+      1,
+      {
+        method: 'solana_signTransaction',
+        params: {
+          feePayer: '2VqKhjZ766ZN3uBtBpb7Ls3cN4HrocP1rzxzekhVEgoP',
+          instructions: [
+            {
+              data: '3Bxs4NN8M2Yn4TLb',
+              keys: [
+                {
+                  isSigner: true,
+                  isWritable: true,
+                  pubkey: '2VqKhjZ766ZN3uBtBpb7Ls3cN4HrocP1rzxzekhVEgoP'
+                },
+                {
+                  isSigner: false,
+                  isWritable: true,
+                  pubkey: '2VqKhjZ766ZN3uBtBpb7Ls3cN4HrocP1rzxzekhVEgoP'
+                }
+              ],
+              programId: '11111111111111111111111111111111'
+            }
+          ],
+          recentBlockhash: 'EZySCpmzXRuUtM95P2JGv9SitqYph6Nv6HaYBK7a8PKJ',
+          transaction:
+            'AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAECFj6WhBP/eepC4T4bDgYuJMiSVXNh9IvPWv1ZDUV52gYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMmaU6FiJxS/swxct+H8Iree7FERP/8vrGuAdF90ANelAQECAAAMAgAAAICWmAAAAAAA',
+          pubkey: TestConstants.accounts[0].address
+        }
+      },
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'
+    )
+    expect(provider.request).toHaveBeenNthCalledWith(
+      2,
+      {
+        method: 'solana_signTransaction',
+        params: {
+          transaction:
+            'AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAQABAhY+loQT/3nqQuE+Gw4GLiTIklVzYfSLz1r9WQ1FedoGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADJmlOhYicUv7MMXLfh/CK3nuxRET//L6xrgHRfdADXpQEBAgAADAIAAACAlpgAAAAAAAA=',
+          pubkey: TestConstants.accounts[0].address
+        }
+      },
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'
+    )
+  })
+
+  it('should get chains from namespace accounts', async () => {
+    vi.spyOn(provider, 'connect').mockImplementationOnce(() =>
+      Promise.resolve(
+        mockUniversalProviderSession({
+          namespaces: {
+            solana: {
+              chains: undefined,
+              methods: [
+                'solana_signTransaction',
+                'solana_signMessage',
+                'solana_signAndSendTransaction'
+              ],
+              events: [],
+              accounts: [
+                `solana:${TestConstants.chains[0]?.chainId}:${TestConstants.accounts[0].address}`
+              ]
+            }
+          }
+        })
+      )
+    )
+
+    await walletConnectProvider.connect()
+
+    expect(walletConnectProvider.chains).toEqual([TestConstants.chains[0]])
   })
 })

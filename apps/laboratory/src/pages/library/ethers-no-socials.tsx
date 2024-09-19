@@ -1,17 +1,20 @@
-import { createWeb3Modal, defaultConfig } from '@web3modal/ethers5/react'
+import { EthersTests } from '../../components/Ethers/EthersTests'
+import { AppKitButtons } from '../../components/AppKitButtons'
+import { createWeb3Modal, defaultConfig } from '@web3modal/ethers/react'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { EthersConstants } from '../../utils/EthersConstants'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
-import { AppKitButtons } from '../../components/AppKitButtons'
-import { Ethers5ModalInfo } from '../../components/Ethers/Ethers5ModalInfo'
-import { Ethers5Tests } from '../../components/Ethers/Ethers5Tests'
+import { EthersModalInfo } from '../../components/Ethers/EthersModalInfo'
 
 const modal = createWeb3Modal({
   ethersConfig: defaultConfig({
     metadata: ConstantsUtil.Metadata,
     defaultChainId: 1,
+    chains: EthersConstants.chains,
+    coinbasePreference: 'smartWalletOnly',
     auth: {
-      socials: ['google', 'x', 'discord', 'farcaster', 'github', 'apple', 'facebook']
+      email: true,
+      socials: []
     }
   }),
   chains: EthersConstants.chains,
@@ -29,8 +32,8 @@ export default function Ethers() {
   return (
     <>
       <AppKitButtons />
-      <Ethers5ModalInfo />
-      <Ethers5Tests />
+      <EthersModalInfo />
+      <EthersTests />
     </>
   )
 }

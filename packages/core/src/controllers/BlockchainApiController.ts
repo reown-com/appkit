@@ -143,14 +143,16 @@ export const BlockchainApiController = {
     cursor,
     onramp,
     signal,
-    cache
+    cache,
+    chainId
   }: BlockchainApiTransactionsRequest) {
     return state.api.get<BlockchainApiTransactionsResponse>({
       path: `/v1/account/${account}/history`,
       params: {
         projectId,
         cursor,
-        onramp
+        onramp,
+        chainId
       },
       signal,
       cache
@@ -311,7 +313,8 @@ export const BlockchainApiController = {
     return state.api.get<BlockchainApiLookupEnsName>({
       path: `/v1/profile/account/${name}${CommonConstantsUtil.WC_NAME_SUFFIX}`,
       params: {
-        projectId: OptionsController.state.projectId
+        projectId: OptionsController.state.projectId,
+        apiVersion: '2'
       }
     })
   },
@@ -321,7 +324,8 @@ export const BlockchainApiController = {
       path: `/v1/profile/reverse/${address}`,
       params: {
         sender: AccountController.state.address,
-        projectId: OptionsController.state.projectId
+        projectId: OptionsController.state.projectId,
+        apiVersion: '2'
       }
     })
   },

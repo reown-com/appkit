@@ -7,7 +7,7 @@ export class ModalWalletPage extends ModalPage {
   constructor(
     public override readonly page: Page,
     public override readonly library: string,
-    public override readonly flavor: 'email' | 'all' = 'email'
+    public override readonly flavor: 'default' | 'all'
   ) {
     super(page, library, flavor)
   }
@@ -36,7 +36,8 @@ export class ModalWalletPage extends ModalPage {
 
   override async switchNetwork(network: string) {
     await this.page.getByTestId('account-switch-network-button').click()
-    await this.page.getByTestId(`w3m-network-switch-${network}`).click()
+    const networkToSwitchButton = this.page.getByTestId(`w3m-network-switch-${network}`)
+    await networkToSwitchButton.click()
   }
 
   async togglePreferredAccountType() {

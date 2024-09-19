@@ -1,5 +1,94 @@
 # @web3modal/wallet
 
+## 5.1.8
+
+### Patch Changes
+
+- - chore: changed RN links to wildcards by @ignaciosantise in https://github.com/WalletConnect/web3modal/pull/2839
+  - feat: solana send transaction by @zoruka in https://github.com/WalletConnect/web3modal/pull/2802
+  - Feat/solana onramp by @phoenixVS in https://github.com/WalletConnect/web3modal/pull/2525
+  - chore: update assetlinks.json by @lukaisailovic in https://github.com/WalletConnect/web3modal/pull/2838
+  - Chore/add base sepolia by @tomiir in https://github.com/WalletConnect/web3modal/pull/2840
+  - fix: solana default chain logic by @zoruka in https://github.com/WalletConnect/web3modal/pull/2849
+- Updated dependencies []:
+  - @web3modal/common@5.1.8
+  - @web3modal/polyfills@5.1.8
+
+## 5.1.7
+
+### Patch Changes
+
+- - chore: version bump for 5.1.6 by @enesozturk in https://github.com/WalletConnect/web3modal/pull/2797
+  - fix(deps): update walletconnect to v2.15.2 by @renovate in https://github.com/WalletConnect/web3modal/pull/2722
+  - chore: fix public URL by @chris13524 in https://github.com/WalletConnect/web3modal/pull/2806
+  - fix: RPC requests causing modal to close by @tomiir in https://github.com/WalletConnect/web3modal/pull/2799
+  - chore: use apiVersion v2 on names endpoint by @tomiir in https://github.com/WalletConnect/web3modal/pull/2805
+  - fix: import valtio from vanilla path by @jd1378 in https://github.com/WalletConnect/web3modal/pull/2810
+  - chore: use shared gh token by @tomiir in https://github.com/WalletConnect/web3modal/pull/2809
+  - chore: add input secrets to setup workflow by @tomiir in https://github.com/WalletConnect/web3modal/pull/2822
+  - fix: remove deprecated params from sign transaction wc rpc request by @zoruka in https://github.com/WalletConnect/web3modal/pull/2816
+  - chore: changed android and ios links for react native sample apps by @ignaciosantise in https://github.com/WalletConnect/web3modal/pull/2825
+  - chore: changed order of links by @ignaciosantise in https://github.com/WalletConnect/web3modal/pull/2826
+  - fix(siwe): fix undefined SIWE chainId by @Cali93 in https://github.com/WalletConnect/web3modal/pull/2820
+  - chore: update monorepo deps to 2.16.1 by @tomiir in https://github.com/WalletConnect/web3modal/pull/2829
+  - fix: don't capitalize first character of email field on mobile by @chris13524 in https://github.com/WalletConnect/web3modal/pull/2815
+  - chore(deps): update dependency ethers to v6.13.2 by @renovate in https://github.com/WalletConnect/web3modal/pull/2434
+  - chore(deps): update wagmi by @renovate in https://github.com/WalletConnect/web3modal/pull/2711
+- Updated dependencies []:
+  - @web3modal/common@5.1.7
+  - @web3modal/polyfills@5.1.7
+
+## 5.1.6
+
+### Patch Changes
+
+- fix: update CSP by @chris13524 in https://github.com/WalletConnect/web3modal/pull/2775
+- fix: ethers5 adapter import in exports by @enesozturk in https://github.com/WalletConnect/web3modal/pull/2754
+- fix/missing action functions exports from clients by @enesozturk in https://github.com/WalletConnect/web3modal/pull/2778
+- fix: logics to set default chain by @enesozturk in https://github.com/WalletConnect/web3modal/pull/2787
+- Implement actions using userOpBuilder service instead of permissionless.js by @KannuSingh in https://github.com/WalletConnect/web3modal/pull/2758
+- chore: run Playwright on self-hosted runners by @chris13524 in https://github.com/WalletConnect/web3modal/pull/2788
+- chore: add NEXT_PUBLIC_SECURE_SITE_SDK_URL to CSP by @tomiir in https://github.com/WalletConnect/web3modal/pull/2791
+- chore: enable verify tests by @chris13524 in https://github.com/WalletConnect/web3modal/pull/2774
+- fix: social login shows `undefined` by @magiziz in https://github.com/WalletConnect/web3modal/pull/2783
+
+* Updated dependencies []:
+  - @web3modal/common@5.1.6
+  - @web3modal/polyfills@5.1.6
+
+## 5.1.5
+
+### Patch Changes
+
+- - chore: add safety for localstorage by @zoruka in https://github.com/WalletConnect/web3modal/pull/2770
+  - fix: impossible to press on send placeholder input on mobile by @magiziz in https://github.com/WalletConnect/web3modal/pull/2771
+  - feat: solana sign all transactions by @zoruka in https://github.com/WalletConnect/web3modal/pull/2772
+  - chore: change universal provider relay url and move to constants file by @zoruka in https://github.com/WalletConnect/web3modal/pull/2776
+  - chore: remove coinbase SDK de-duplication by @tomiir in https://github.com/WalletConnect/web3modal/pull/2768
+  - fix: add missing chainId param for transactions request by @zoruka in https://github.com/WalletConnect/web3modal/pull/2779
+  - fix: remove coming message from solana transactions by @zoruka in https://github.com/WalletConnect/web3modal/pull/2780
+
+- Updated dependencies []:
+  - @web3modal/common@5.1.5
+  - @web3modal/polyfills@5.1.5
+
+## 5.1.4
+
+### Patch Changes
+
+- - Added entries on assetlinks for flutter wallet by @quetool in https://github.com/WalletConnect/web3modal/pull/2746
+  - chore: only upgrade ethers v6 by @chris13524 in https://github.com/WalletConnect/web3modal/pull/2741
+  - chore: fix wagmi not disconnecting and add adapter tests by @magiziz in https://github.com/WalletConnect/web3modal/pull/2751
+  - Added more fingerprints to Flutter apps by @quetool in https://github.com/WalletConnect/web3modal/pull/2748
+  - fix: remove auth connector from ethers and check for socials length by @tomiir in https://github.com/WalletConnect/web3modal/pull/2715
+  - chore: make all socials enabled by default by @tomiir in https://github.com/WalletConnect/web3modal/pull/2747
+  - fix: social logins not working in laboratory by @magiziz in https://github.com/WalletConnect/web3modal/pull/2765
+  - chore: expose solana provider type by @zoruka in https://github.com/WalletConnect/web3modal/pull/2756
+  - fix: Connector image mismatch by @tomiir in https://github.com/WalletConnect/web3modal/pull/2745
+- Updated dependencies []:
+  - @web3modal/common@5.1.4
+  - @web3modal/polyfills@5.1.4
+
 ## 5.1.3
 
 ### Patch Changes

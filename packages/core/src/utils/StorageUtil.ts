@@ -4,7 +4,6 @@ import type { WcWallet, ConnectorType, SocialProvider } from './TypeUtil.js'
 // -- Helpers -----------------------------------------------------------------
 const WC_DEEPLINK = 'WALLETCONNECT_DEEPLINK_CHOICE'
 const W3M_RECENT = '@w3m/recent'
-const W3M_CONNECTED_WALLET_IMAGE_URL = '@w3m/connected_wallet_image_url'
 const W3M_CONNECTED_CONNECTOR = '@w3m/connected_connector'
 const W3M_CONNECTED_SOCIAL = '@w3m/connected_social'
 const W3M_CONNECTED_SOCIAL_USERNAME = '@w3m-storage/SOCIAL_USERNAME'
@@ -66,32 +65,6 @@ export const StorageUtil = {
     }
 
     return []
-  },
-
-  setConnectedWalletImageUrl(imageUrl: string) {
-    try {
-      localStorage.setItem(W3M_CONNECTED_WALLET_IMAGE_URL, imageUrl)
-    } catch {
-      console.info('Unable to set Connected Wallet Image Url')
-    }
-  },
-
-  removeConnectedWalletImageUrl() {
-    try {
-      localStorage.removeItem(W3M_CONNECTED_WALLET_IMAGE_URL)
-    } catch {
-      console.info('Unable to remove Connected Wallet Image Url')
-    }
-  },
-
-  getConnectedWalletImageUrl() {
-    try {
-      return localStorage.getItem(W3M_CONNECTED_WALLET_IMAGE_URL)
-    } catch {
-      console.info('Unable to set Connected Wallet Image Url')
-    }
-
-    return undefined
   },
 
   setConnectedConnector(connectorType: ConnectorType) {
