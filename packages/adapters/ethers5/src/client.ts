@@ -777,7 +777,7 @@ export class Ethers5Adapter {
     authProvider.onRpcError(() => this.handleAuthRpcError())
     authProvider.onRpcSuccess((_, request) => this.handleAuthRpcSuccess(_, request))
     authProvider.onNotConnected(() => this.handleAuthNotConnected())
-    authProvider.onIsConnected(({ preferredAccountType }) =>
+    authProvider.onConnect(({ preferredAccountType }) =>
       this.handleAuthIsConnected(preferredAccountType)
     )
     authProvider.onSetPreferredAccount(({ address, type }) => {
