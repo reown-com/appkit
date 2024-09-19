@@ -50,7 +50,6 @@ import { CoinbaseWalletProvider } from './providers/CoinbaseWalletProvider.js'
 
 export interface AdapterOptions {
   connectionSettings?: Commitment | ConnectionConfig
-  defaultCaipNetwork?: CaipNetwork
   wallets?: BaseWalletAdapter[]
 }
 
@@ -70,7 +69,7 @@ export class SolanaAdapter implements ChainAdapter {
 
   public caipNetworks: CaipNetwork[] = []
 
-  public chainNamespace: ChainNamespace = CommonConstantsUtil.CHAIN.SOLANA
+  public readonly chainNamespace: ChainNamespace = CommonConstantsUtil.CHAIN.SOLANA
 
   public networkControllerClient?: NetworkControllerClient
 
@@ -86,7 +85,7 @@ export class SolanaAdapter implements ChainAdapter {
 
   public defaultCaipNetwork: CaipNetwork | undefined = undefined
 
-  public adapterType: AdapterType = 'solana'
+  public readonly adapterType: AdapterType = 'solana'
 
   public constructor(options: AdapterOptions) {
     const { wallets, connectionSettings = 'confirmed' } = options
@@ -94,24 +93,19 @@ export class SolanaAdapter implements ChainAdapter {
     this.wallets = wallets
     this.connectionSettings = connectionSettings
 
-    ChainController.subscribeKey('activeCaipNetwork', val => {
-      const caipAddress = this.appKit?.getCaipAddress(this.chainNamespace)
-      const isSolanaAddress = caipAddress?.startsWith('solana:')
-      const isSolanaNetwork = val?.chainNamespace === this.chainNamespace
-
-      if (isSolanaAddress && isSolanaNetwork && caipAddress) {
-        this.syncAccount({ address: CoreHelperUtil.getPlainAddress(caipAddress), caipNetwork: val })
+    ChainController.subscribeKey('activeCaipNetwork', caipNetwork => {
+      if (caipNetwork?.chainNamespace === 'solana') {
+        this.syncAccount()
       }
     })
+
     AccountController.subscribeKey(
       'caipAddress',
-      val => {
-        const isSolanaAddress = val?.startsWith('solana:')
-        const caipNetwork = ChainController.state.activeCaipNetwork
-        const isSolanaNetwork = caipNetwork?.chainNamespace === this.chainNamespace
+      caipAddress => {
+        const isSolanaAddress = caipAddress?.startsWith('solana:')
 
-        if (isSolanaAddress && isSolanaNetwork) {
-          this.syncAccount({ address: CoreHelperUtil.getPlainAddress(val) })
+        if (isSolanaAddress) {
+          this.syncAccount()
         }
       },
       this.chainNamespace
@@ -128,11 +122,10 @@ export class SolanaAdapter implements ChainAdapter {
     this.appKit = appKit
     this.options = options
     this.caipNetworks = options.networks
-    const defaultCaipNetwork = SolHelpersUtil.getChainFromCaip(
+    this.defaultCaipNetwork = SolHelpersUtil.getChainFromCaip(
       options.networks,
       SafeLocalStorage.getItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID)
     )
-    this.defaultCaipNetwork = defaultCaipNetwork
 
     if (!projectId) {
       throw new Error('Solana:construct - projectId is undefined')
@@ -319,8 +312,7 @@ export class SolanaAdapter implements ChainAdapter {
     this.syncRequestedNetworks(this.caipNetworks)
 
     AssetController.subscribeNetworkImages(() => {
-      const address = this.appKit?.getAddress(this.chainNamespace) as string
-      this.syncNetwork({ address })
+      this.syncNetwork()
     })
 
     ChainController.subscribeKey('activeCaipNetwork', (newCaipNetwork: CaipNetwork | undefined) => {
@@ -365,29 +357,13 @@ export class SolanaAdapter implements ChainAdapter {
   }
 
   // -- Private -----------------------------------------------------------------
-  private async syncAccount({
-    address,
-    caipNetwork
-  }: {
-    address: string | undefined
-    caipNetwork?: CaipNetwork | undefined
-  }) {
-    const currentCaipNetwork = caipNetwork || this.appKit?.getCaipNetwork()
-    const solanaNetwork =
-      currentCaipNetwork?.chainNamespace === CommonConstantsUtil.CHAIN.SOLANA
-        ? currentCaipNetwork
-        : this.appKit?.getCaipNetwork(this.chainNamespace)
+  private async syncAccount(address = this.appKit?.getAddress(this.chainNamespace)) {
+    const caipNetwork = this.appKit?.getCaipNetwork(this.chainNamespace)
 
-    if (!currentCaipNetwork && solanaNetwork) {
-      this.appKit?.setCaipNetwork(solanaNetwork)
-    }
-
-    if (address) {
-      if (solanaNetwork) {
-        SolStoreUtil.setConnection(new Connection(solanaNetwork.rpcUrl, this.connectionSettings))
-        this.appKit?.setAllAccounts([{ address, type: 'eoa' }], this.chainNamespace)
-      }
-      await this.syncNetwork({ address })
+    if (address && caipNetwork) {
+      SolStoreUtil.setConnection(new Connection(caipNetwork.rpcUrl, this.connectionSettings))
+      this.appKit?.setAllAccounts([{ address, type: 'eoa' }], this.chainNamespace)
+      await this.syncNetwork(address)
     } else {
       this.appKit?.resetWcConnection()
       this.appKit?.resetNetwork()
@@ -395,7 +371,7 @@ export class SolanaAdapter implements ChainAdapter {
     }
   }
 
-  private async syncBalance(address: string) {
+  private async syncBalance(address = this.appKit?.getAddress(this.chainNamespace)) {
     if (!address) {
       return
     }
@@ -451,32 +427,29 @@ export class SolanaAdapter implements ChainAdapter {
         ProviderUtil.setProvider(this.chainNamespace, this.authProvider)
         ProviderUtil.setProviderId(this.chainNamespace, 'walletConnect')
         this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)
-        this.syncAccount({ address: user.address })
+        this.syncAccount(user.address)
       }
     } else {
       this.appKit?.setCaipNetwork(caipNetwork)
 
       const address = this.appKit?.getAddress(this.chainNamespace) as string
-      await this.syncAccount({ address })
+      await this.syncAccount(address)
     }
   }
 
-  private async syncNetwork({ address }: { address: string | undefined }) {
-    if (!address) {
-      return
-    }
+  private async syncNetwork(address = this.appKit?.getAddress(this.chainNamespace)) {
     const caipNetwork = this.appKit?.getCaipNetwork(this.chainNamespace)
     const connection = SolStoreUtil.state.connection
 
-    if (caipNetwork && connection) {
-      if (caipNetwork.explorerUrl) {
-        const url = `${caipNetwork.explorerUrl}/account/${address}`
-        this.appKit?.setAddressExplorerUrl(url, this.chainNamespace)
-      } else {
-        this.appKit?.setAddressExplorerUrl(undefined, this.chainNamespace)
-      }
-      await this.syncBalance(address)
+    if (!address || !caipNetwork || !connection) {
+      return
     }
+
+    this.appKit?.setAddressExplorerUrl(
+      caipNetwork.explorerUrl ? `${caipNetwork.explorerUrl}/account/${address}` : undefined,
+      this.chainNamespace
+    )
+    await this.syncBalance(address)
   }
 
   private async setProvider(provider: Provider) {
