@@ -1,4 +1,4 @@
-import { customElement } from '@web3modal/ui'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
@@ -7,8 +7,8 @@ import {
   ConnectorController,
   ThemeController,
   RouterController
-} from '@web3modal/core'
-import { getW3mThemeVariables } from '@web3modal/common'
+} from '@reown/appkit-core'
+import { getW3mThemeVariables } from '@reown/appkit-common'
 
 // -- Variables ------------------------------------------- //
 const PAGE_HEIGHT = 400

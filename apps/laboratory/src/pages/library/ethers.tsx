@@ -1,25 +1,21 @@
-import { createWeb3Modal, defaultConfig } from '@web3modal/ethers/react'
+import { createAppKit } from '@reown/appkit/react'
+import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { EthersTests } from '../../components/Ethers/EthersTests'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { ThemeStore } from '../../utils/StoreUtil'
-import { EthersConstants } from '../../utils/EthersConstants'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { EthersModalInfo } from '../../components/Ethers/EthersModalInfo'
+import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@reown/appkit/networks'
 
-const modal = createWeb3Modal({
-  ethersConfig: defaultConfig({
-    metadata: ConstantsUtil.Metadata,
-    defaultChainId: 1,
-    chains: EthersConstants.chains,
-    coinbasePreference: 'smartWalletOnly'
-  }),
-  chains: EthersConstants.chains,
-  defaultChain: EthersConstants.chains[1],
+const ethersAdapter = new EthersAdapter()
+
+const modal = createAppKit({
+  adapters: [ethersAdapter],
+  networks: [mainnet, optimism, polygon, zkSync, arbitrum, sepolia],
   projectId: ConstantsUtil.ProjectId,
-  enableAnalytics: true,
-  metadata: ConstantsUtil.Metadata,
-  termsConditionsUrl: 'https://walletconnect.com/terms',
-  privacyPolicyUrl: 'https://walletconnect.com/privacy',
+  features: {
+    analytics: true
+  },
   customWallets: ConstantsUtil.CustomWallets
 })
 

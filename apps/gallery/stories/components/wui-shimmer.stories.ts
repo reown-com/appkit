@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@web3modal/ui/src/components/wui-shimmer'
-import type { WuiShimmer } from '@web3modal/ui/src/components/wui-shimmer'
+import '@reown/appkit-ui/src/components/wui-shimmer'
+import type { WuiShimmer } from '@reown/appkit-ui/src/components/wui-shimmer'
 import { html } from 'lit'
 import { borderRadiusOptions } from '../../utils/PresetUtils'
 

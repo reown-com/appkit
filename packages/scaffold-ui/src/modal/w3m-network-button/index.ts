@@ -1,13 +1,13 @@
 import {
-  AccountController,
   AssetController,
   AssetUtil,
+  ChainController,
   EventsController,
   ModalController,
   NetworkController
-} from '@web3modal/core'
-import type { WuiNetworkButton } from '@web3modal/ui'
-import { customElement } from '@web3modal/ui'
+} from '@reown/appkit-core'
+import type { WuiNetworkButton } from '@reown/appkit-ui'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -25,11 +25,11 @@ export class W3mNetworkButton extends LitElement {
 
   @property({ type: String }) public label?: string
 
-  @state() private network = NetworkController.state.caipNetwork
+  @state() private network = ChainController.state.activeCaipNetwork
 
   @state() private networkImage = this.network ? AssetUtil.getNetworkImage(this.network) : undefined
 
-  @state() private connected = AccountController.state.isConnected
+  @state() private caipAddress = ChainController.state.activeCaipAddress
 
   @state() private loading = ModalController.state.loading
 
@@ -44,11 +44,13 @@ export class W3mNetworkButton extends LitElement {
             ? AssetUtil.getNetworkImage(this.network)
             : undefined
         }),
-        NetworkController.subscribeKey('caipNetwork', val => {
+        ChainController.subscribeKey('activeCaipAddress', val => {
+          this.caipAddress = val
+        }),
+        ChainController.subscribeKey('activeCaipNetwork', val => {
           this.network = val
           this.networkImage = val?.imageId ? AssetUtil.getNetworkImage(val) : undefined
         }),
-        AccountController.subscribeKey('isConnected', val => (this.connected = val)),
         ModalController.subscribeKey('loading', val => (this.loading = val)),
         NetworkController.subscribeKey('isUnsupportedChain', val => (this.isUnsupportedChain = val))
       ]
@@ -84,10 +86,12 @@ export class W3mNetworkButton extends LitElement {
     if (this.isUnsupportedChain) {
       return 'Switch Network'
     }
+
     if (this.network) {
       return this.network.name
     }
-    if (this.connected) {
+
+    if (this.caipAddress) {
       return 'Unknown Network'
     }
 

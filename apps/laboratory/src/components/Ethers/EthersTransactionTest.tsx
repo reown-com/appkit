@@ -1,15 +1,21 @@
 import { Button, Stack, Link, Text, Spacer } from '@chakra-ui/react'
-import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers/react'
+import {
+  useAppKitAccount,
+  useAppKitNetwork,
+  useAppKitProvider,
+  type Provider
+} from '@reown/appkit/react'
 import { BrowserProvider, JsonRpcSigner, ethers } from 'ethers'
 import { useState } from 'react'
-import { mainnet } from '../../utils/ChainsUtil'
+import { mainnet } from '@reown/appkit/networks'
 import { vitalikEthAddress } from '../../utils/DataUtil'
 import { useChakraToast } from '../Toast'
 
 export function EthersTransactionTest() {
   const toast = useChakraToast()
-  const { address, chainId } = useWeb3ModalAccount()
-  const { walletProvider } = useWeb3ModalProvider()
+  const { chainId } = useAppKitNetwork()
+  const { address } = useAppKitAccount()
+  const { walletProvider } = useAppKitProvider<Provider>('eip155')
   const [loading, setLoading] = useState(false)
 
   async function onSendTransaction() {
@@ -30,10 +36,11 @@ export function EthersTransactionTest() {
         description: tx.hash,
         type: 'success'
       })
-    } catch {
+    } catch (e) {
       toast({
         title: 'Error',
-        description: 'Failed to sign transaction',
+        // @ts-expect-error - error is unknown
+        description: e?.message || 'Failed to sign transaction',
         type: 'error'
       })
     } finally {

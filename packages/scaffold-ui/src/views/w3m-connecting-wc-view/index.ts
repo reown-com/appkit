@@ -1,4 +1,4 @@
-import type { BaseError, Platform } from '@web3modal/core'
+import type { BaseError, Platform } from '@reown/appkit-core'
 import {
   ConnectionController,
   ConstantsUtil,
@@ -9,8 +9,8 @@ import {
   RouterController,
   SnackController,
   StorageUtil
-} from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
@@ -59,16 +59,7 @@ export class W3mConnectingWcView extends LitElement {
       if (retry || CoreHelperUtil.isPairingExpired(wcPairingExpiry)) {
         await ConnectionController.connectWalletConnect()
         this.finalizeConnection()
-        if (OptionsController.state.isSiweEnabled) {
-          const { SIWEController } = await import('@web3modal/siwe')
-          if (SIWEController.state.status === 'success') {
-            ModalController.close()
-          } else {
-            RouterController.push('ConnectingSiwe')
-          }
-        } else {
-          ModalController.close()
-        }
+        ModalController.close()
       }
     } catch (error) {
       EventsController.sendEvent({
@@ -92,7 +83,7 @@ export class W3mConnectingWcView extends LitElement {
       StorageUtil.setWalletConnectDeepLink(wcLinking)
     }
     if (recentWallet) {
-      StorageUtil.setWeb3ModalRecent(recentWallet)
+      StorageUtil.setAppKitRecent(recentWallet)
     }
 
     EventsController.sendEvent({

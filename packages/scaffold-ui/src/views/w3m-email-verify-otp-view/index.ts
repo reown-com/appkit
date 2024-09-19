@@ -1,7 +1,12 @@
-import { customElement } from '@web3modal/ui'
+import { customElement } from '@reown/appkit-ui'
 import { W3mEmailOtpWidget } from '../../utils/w3m-email-otp-widget/index.js'
 import type { OnOtpSubmitFn, OnOtpResendFn } from '../../utils/w3m-email-otp-widget/index.js'
-import { EventsController, ConnectionController, ModalController } from '@web3modal/core'
+import {
+  EventsController,
+  ConnectionController,
+  ModalController,
+  ChainController
+} from '@reown/appkit-core'
 
 @customElement('w3m-email-verify-otp-view')
 export class W3mEmailVerifyOtpView extends W3mEmailOtpWidget {
@@ -11,7 +16,16 @@ export class W3mEmailVerifyOtpView extends W3mEmailOtpWidget {
       if (this.authConnector) {
         await this.authConnector.provider.connectOtp({ otp })
         EventsController.sendEvent({ type: 'track', event: 'EMAIL_VERIFICATION_CODE_PASS' })
-        await ConnectionController.connectExternal(this.authConnector, this.authConnector.chain)
+
+        if (ChainController.state.activeChain) {
+          await ConnectionController.connectExternal(
+            this.authConnector,
+            ChainController.state.activeChain
+          )
+        } else {
+          throw new Error('Active chain is not set on ChainControll')
+        }
+
         EventsController.sendEvent({
           type: 'track',
           event: 'CONNECT_SUCCESS',

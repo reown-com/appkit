@@ -1,7 +1,10 @@
-import type { Balance } from '@web3modal/common'
-import { ConstantsUtil as CommonConstants } from '@web3modal/common'
+import type { AppKitSdkVersion, Balance, ChainNamespace } from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstants } from '@reown/appkit-common'
 import { ConstantsUtil } from './ConstantsUtil.js'
-import type { CaipAddress, LinkingRecord, CaipNetwork } from './TypeUtil.js'
+import type { CaipAddress, CaipNetwork } from '@reown/appkit-common'
+import type { ChainAdapter, LinkingRecord } from './TypeUtil.js'
+
+type SDKFramework = 'html' | 'react' | 'vue'
 
 export const CoreHelperUtil = {
   isMobile() {
@@ -260,14 +263,25 @@ export const CoreHelperUtil = {
     return { dollars, pennies }
   },
 
-  isAddress(address: string): boolean {
-    if (!/^(?:0x)?[0-9a-f]{40}$/iu.test(address)) {
-      return false
-    } else if (/^(?:0x)?[0-9a-f]{40}$/iu.test(address) || /^(?:0x)?[0-9A-F]{40}$/iu.test(address)) {
-      return true
-    }
+  isAddress(address: string, chain: ChainNamespace = 'eip155'): boolean {
+    switch (chain) {
+      case 'eip155':
+        if (!/^(?:0x)?[0-9a-f]{40}$/iu.test(address)) {
+          return false
+        } else if (
+          /^(?:0x)?[0-9a-f]{40}$/iu.test(address) ||
+          /^(?:0x)?[0-9A-F]{40}$/iu.test(address)
+        ) {
+          return true
+        }
 
-    return false
+        return false
+      case 'solana':
+        return /[1-9A-HJ-NP-Za-km-z]{32,44}$/iu.test(address)
+
+      default:
+        return false
+    }
   },
 
   uniqueBy<T>(arr: T[], key: keyof T) {
@@ -282,5 +296,18 @@ export const CoreHelperUtil = {
 
       return true
     })
+  },
+
+  generateSdkVersion(
+    adapters: ChainAdapter[],
+    platform: SDKFramework,
+    version: string
+  ): AppKitSdkVersion {
+    const noAdapters = adapters.length === 0
+    const adapterNames = noAdapters
+      ? 'universal'
+      : adapters.map(adapter => adapter.adapterType).join(',')
+
+    return `${platform}-${adapterNames}-${version}`
   }
 }

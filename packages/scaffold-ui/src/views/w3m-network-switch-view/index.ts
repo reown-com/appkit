@@ -4,13 +4,12 @@ import {
   NetworkController,
   RouterController,
   StorageUtil
-} from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
-import { NetworkUtil } from '../../utils/NetworkUtil.js'
 
 @customElement('w3m-network-switch-view')
 export class W3mNetworkSwitchView extends LitElement {
@@ -133,7 +132,6 @@ export class W3mNetworkSwitchView extends LitElement {
       this.error = false
       if (this.network) {
         await NetworkController.switchActiveNetwork(this.network)
-        await NetworkUtil.onNetworkChange()
       }
     } catch {
       this.error = true

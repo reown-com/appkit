@@ -1,6 +1,12 @@
-import type { Connector } from '@web3modal/core'
-import { AssetUtil, ConnectorController, CoreHelperUtil, RouterController } from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+import type { Connector } from '@reown/appkit-core'
+import {
+  AssetUtil,
+  ChainController,
+  ConnectorController,
+  CoreHelperUtil,
+  RouterController
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -55,15 +61,8 @@ export class W3mConnectWalletConnectWidget extends LitElement {
 
   // -- Private Methods ----------------------------------- //
   private onConnector(connector: Connector) {
-    if (connector.type === 'WALLET_CONNECT') {
-      if (CoreHelperUtil.isMobile()) {
-        RouterController.push('AllWallets')
-      } else {
-        RouterController.push('ConnectingWalletConnect')
-      }
-    } else {
-      RouterController.push('ConnectingExternal', { connector })
-    }
+    ChainController.setActiveConnector(connector)
+    RouterController.push('ConnectingWalletConnect')
   }
 }
 

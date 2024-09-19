@@ -174,6 +174,7 @@ export type IconType =
 
 export type VisualType =
   | 'browser'
+  | 'meld'
   | 'coinbase'
   | 'dao'
   | 'defi'
@@ -194,6 +195,7 @@ export type VisualType =
   | 'stripe'
   | 'paypal'
   | 'pencil'
+  | 'solana'
 
 export type VisualSize = 'sm' | 'md' | 'lg'
 

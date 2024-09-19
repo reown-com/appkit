@@ -1,13 +1,15 @@
-import type { Chain } from '@web3modal/common'
+import type { ChainNamespace, CaipNetwork } from '@reown/appkit-common'
 import { ApiController } from '../controllers/ApiController.js'
 import { AssetController } from '../controllers/AssetController.js'
-import type { CaipNetwork, Connector, WcWallet } from './TypeUtil.js'
+import type { Connector, WcWallet } from './TypeUtil.js'
 
-const namespaceImageIds: Record<Chain, string> = {
+const namespaceImageIds: Record<ChainNamespace, string> = {
   // Ethereum
-  evm: 'ba0ba0cd-17c6-4806-ad93-f9d174f17900',
+  eip155: 'ba0ba0cd-17c6-4806-ad93-f9d174f17900',
   // Solana
-  solana: 'a1b58899-f671-4276-6a5e-56ca5bd59700'
+  solana: 'a1b58899-f671-4276-6a5e-56ca5bd59700',
+  // Polkadot
+  polkadot: ''
 }
 
 export const AssetUtil = {
@@ -73,7 +75,7 @@ export const AssetUtil = {
     return undefined
   },
 
-  getChainImage(chain: Chain) {
+  getChainImage(chain: ChainNamespace) {
     return AssetController.state.networkImages[namespaceImageIds[chain]]
   }
 }

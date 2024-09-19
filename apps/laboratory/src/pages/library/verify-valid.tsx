@@ -1,16 +1,16 @@
-import { createWeb3Modal } from '@web3modal/wagmi/react'
+import { createAppKit } from '@reown/appkit/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { useEffect, useState } from 'react'
 import { WagmiProvider } from 'wagmi'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { WagmiTests } from '../../components/Wagmi/WagmiTests'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
-import { getWagmiConfig } from '../../utils/WagmiConstants'
+import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
+import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@reown/appkit/networks'
 
 const metadata = {
-  name: 'Web3Modal',
-  description: 'Web3Modal Laboratory',
+  name: 'AppKit',
+  description: 'AppKit Laboratory',
   // Allow localhost
   url: 'http://localhost:3000',
   icons: ['https://avatars.githubusercontent.com/u/37784886'],
@@ -22,35 +22,33 @@ const projectId = 'e4eae1aad4503db9966a04fd045a7e4d'
 
 const queryClient = new QueryClient()
 
-const wagmiConfig = getWagmiConfig('default', {
-  projectId,
-  metadata
+const networks = [mainnet, optimism, polygon, zkSync, arbitrum, sepolia]
+
+const wagmiAdapter = new WagmiAdapter({
+  ssr: true,
+  networks,
+  projectId
 })
 
-const modal = createWeb3Modal({
-  wagmiConfig,
+const modal = createAppKit({
+  adapters: [wagmiAdapter],
+  networks,
   projectId,
   metadata,
-  termsConditionsUrl: 'https://walletconnect.com/terms',
-  privacyPolicyUrl: 'https://walletconnect.com/privacy'
+  termsConditionsUrl: 'https://reown.com/terms-of-service',
+  privacyPolicyUrl: 'https://reown.com/privacy-policy'
 })
 
 ThemeStore.setModal(modal)
 
 export default function Wagmi() {
-  const [ready, setReady] = useState(false)
-
-  useEffect(() => {
-    setReady(true)
-  }, [])
-
-  return ready ? (
-    <WagmiProvider config={wagmiConfig}>
+  return (
+    <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <AppKitButtons />
         <WagmiModalInfo />
         <WagmiTests />
       </QueryClientProvider>
     </WagmiProvider>
-  ) : null
+  )
 }

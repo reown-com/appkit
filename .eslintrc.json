@@ -61,7 +61,7 @@
           {
             "name": "lit/decorators.js",
             "importNames": ["customElement"],
-            "message": "Use import 'customElement' from '@web3modal/ui' instead."
+            "message": "Use import 'customElement' from '@reown/appkit-ui' instead."
           }
         ]
       }
@@ -96,6 +96,7 @@
     "@typescript-eslint/no-confusing-void-expression": "off",
     "@typescript-eslint/prefer-nullish-coalescing": "off",
     "@typescript-eslint/no-unnecessary-condition": "off",
-    "@typescript-eslint/no-unsafe-argument": "off"
+    "@typescript-eslint/no-unsafe-argument": "off",
+    "@typescript-eslint/non-nullable-type-assertion-style": "off"
   }
 }

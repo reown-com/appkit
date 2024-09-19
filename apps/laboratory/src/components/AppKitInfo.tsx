@@ -12,8 +12,8 @@ import {
 
 type AppKitInfoProps = {
   address?: string
-  chainId?: number
-  clientId: string | null
+  chainId?: number | string
+  clientId?: string
 }
 
 export function AppKitInfo({ address, chainId, clientId }: AppKitInfoProps) {

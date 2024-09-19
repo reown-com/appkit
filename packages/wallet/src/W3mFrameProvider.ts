@@ -221,13 +221,28 @@ export class W3mFrameProvider {
   // -- Provider Methods ------------------------------------------------
   public async connect(payload?: W3mFrameTypes.Requests['AppGetUserRequest']) {
     try {
-      const chainId = payload?.chainId ?? this.getLastUsedChainId() ?? 1
+      const chainId = payload?.chainId || this.getLastUsedChainId() || 1
       const response = await this.appEvent<'GetUser'>({
         type: W3mFrameConstants.APP_GET_USER,
         payload: { ...payload, chainId }
       } as W3mFrameTypes.AppEvent)
       this.setLoginSuccess(response.email)
       this.setLastUsedChainId(response.chainId)
+
+      return response
+    } catch (error) {
+      this.w3mLogger.logger.error({ error }, 'Error connecting')
+      throw error
+    }
+  }
+
+  public async getUser(payload: W3mFrameTypes.Requests['AppGetUserRequest']) {
+    try {
+      const chainId = payload?.chainId || this.getLastUsedChainId() || 1
+      const response = await this.appEvent<'GetUser'>({
+        type: W3mFrameConstants.APP_GET_USER,
+        payload: { ...payload, chainId }
+      } as W3mFrameTypes.AppEvent)
 
       return response
     } catch (error) {
@@ -350,12 +365,13 @@ export class W3mFrameProvider {
     this.rpcErrorHandler = callback
   }
 
-  public onIsConnected(
-    callback: (request: W3mFrameTypes.Responses['FrameGetUserResponse']) => void
-  ) {
+  public onIsConnected(callback: () => void) {
     this.w3mFrame.events.onFrameEvent(event => {
-      if (event.type === W3mFrameConstants.FRAME_GET_USER_SUCCESS) {
-        callback(event.payload)
+      if (
+        event.type === W3mFrameConstants.FRAME_IS_CONNECTED_SUCCESS &&
+        event.payload.isConnected
+      ) {
+        callback()
       }
     })
   }
@@ -370,6 +386,14 @@ export class W3mFrameProvider {
         !event.payload.isConnected
       ) {
         callback()
+      }
+    })
+  }
+
+  public onConnect(callback: (user: W3mFrameTypes.Responses['FrameGetUserResponse']) => void) {
+    this.w3mFrame.events.onFrameEvent(event => {
+      if (event.type === W3mFrameConstants.FRAME_GET_USER_SUCCESS) {
+        callback(event.payload)
       }
     })
   }
@@ -448,7 +472,13 @@ export class W3mFrameProvider {
         }
       })
 
-      function handler(framEvent: W3mFrameTypes.FrameEvent) {
+      function handler(framEvent: W3mFrameTypes.FrameEvent, logger: W3mFrameLogger) {
+        if (framEvent.id !== id) {
+          return
+        }
+
+        logger.logger.info?.({ framEvent, id }, 'Received frame response')
+
         if (framEvent.type === `@w3m-frame/${type}_SUCCESS`) {
           if ('payload' in framEvent) {
             resolve(framEvent.payload)
@@ -461,7 +491,11 @@ export class W3mFrameProvider {
           reject(new Error('An error occurred'))
         }
       }
-      this.w3mFrame.events.registerFrameEventHandler(id, handler, abortController.signal)
+      this.w3mFrame.events.registerFrameEventHandler(
+        id,
+        frameEvent => handler(frameEvent, this.w3mLogger),
+        abortController.signal
+      )
     })
   }
 
@@ -487,14 +521,15 @@ export class W3mFrameProvider {
     W3mFrameStorage.delete(W3mFrameConstants.EMAIL)
     W3mFrameStorage.delete(W3mFrameConstants.LAST_USED_CHAIN_KEY)
     W3mFrameStorage.delete(W3mFrameConstants.SOCIAL_USERNAME)
-    W3mFrameStorage.delete(W3mFrameConstants.SOCIAL, true)
   }
 
   private setLastUsedChainId(chainId: string | number) {
-    W3mFrameStorage.set(W3mFrameConstants.LAST_USED_CHAIN_KEY, String(chainId))
+    if (chainId) {
+      W3mFrameStorage.set(W3mFrameConstants.LAST_USED_CHAIN_KEY, String(chainId))
+    }
   }
 
-  private getLastUsedChainId() {
+  public getLastUsedChainId() {
     return Number(W3mFrameStorage.get(W3mFrameConstants.LAST_USED_CHAIN_KEY))
   }
 

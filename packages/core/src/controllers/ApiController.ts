@@ -13,6 +13,7 @@ import { AssetController } from './AssetController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { NetworkController } from './NetworkController.js'
 import { OptionsController } from './OptionsController.js'
+import { ChainController } from './ChainController.js'
 
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getApiUrl()
@@ -61,8 +62,8 @@ export const ApiController = {
 
     return {
       'x-project-id': projectId,
-      'x-sdk-type': sdkType,
-      'x-sdk-version': sdkVersion
+      'x-sdk-type': sdkType || 'appkit',
+      'x-sdk-version': sdkVersion || 'html-wagmi-4.2.2'
     }
   },
 
@@ -151,29 +152,33 @@ export const ApiController = {
   },
 
   async fetchRecommendedWallets() {
-    const { includeWalletIds, excludeWalletIds, featuredWalletIds } = OptionsController.state
-    const exclude = [...(excludeWalletIds ?? []), ...(featuredWalletIds ?? [])].filter(Boolean)
-    const { data, count } = await api.get<ApiGetWalletsResponse>({
-      path: '/getWallets',
-      headers: ApiController._getApiHeaders(),
-      params: {
-        page: '1',
-        chains: NetworkController.state.caipNetwork?.id,
-        entries: recommendedEntries,
-        include: includeWalletIds?.join(','),
-        exclude: exclude?.join(',')
-      }
-    })
-    const recent = StorageUtil.getRecentWallets()
-    const recommendedImages = data.map(d => d.image_id).filter(Boolean)
-    const recentImages = recent.map(r => r.image_id).filter(Boolean)
-    await Promise.allSettled(
-      ([...recommendedImages, ...recentImages] as string[]).map(id =>
-        ApiController._fetchWalletImage(id)
+    try {
+      const { includeWalletIds, excludeWalletIds, featuredWalletIds } = OptionsController.state
+      const exclude = [...(excludeWalletIds ?? []), ...(featuredWalletIds ?? [])].filter(Boolean)
+      const { data, count } = await api.get<ApiGetWalletsResponse>({
+        path: '/getWallets',
+        headers: ApiController._getApiHeaders(),
+        params: {
+          page: '1',
+          chains: ChainController.state.activeCaipNetwork?.id,
+          entries: recommendedEntries,
+          include: includeWalletIds?.join(','),
+          exclude: exclude?.join(',')
+        }
+      })
+      const recent = StorageUtil.getRecentWallets()
+      const recommendedImages = data.map(d => d.image_id).filter(Boolean)
+      const recentImages = recent.map(r => r.image_id).filter(Boolean)
+      await Promise.allSettled(
+        ([...recommendedImages, ...recentImages] as string[]).map(id =>
+          ApiController._fetchWalletImage(id)
+        )
       )
-    )
-    state.recommended = data
-    state.count = count ?? 0
+      state.recommended = data
+      state.count = count ?? 0
+    } catch {
+      // Catch silently
+    }
   },
 
   async fetchWallets({ page }: Pick<ApiGetWalletsRequest, 'page'>) {
@@ -190,7 +195,7 @@ export const ApiController = {
       params: {
         page: String(page),
         entries,
-        chains: NetworkController.state.caipNetwork?.id,
+        chains: ChainController.state.activeCaipNetwork?.id,
         include: includeWalletIds?.join(','),
         exclude: exclude.join(',')
       }
@@ -216,7 +221,7 @@ export const ApiController = {
       params: {
         page: '1',
         entries: String(ids.length),
-        chains: NetworkController.state.caipNetwork?.id,
+        chains: ChainController.state.activeCaipNetwork?.id,
         include: ids?.join(',')
       }
     })
@@ -240,7 +245,7 @@ export const ApiController = {
         page: '1',
         entries: '100',
         search: search?.trim(),
-        chains: NetworkController.state.caipNetwork?.id,
+        chains: ChainController.state.activeCaipNetwork?.id,
         include: includeWalletIds?.join(','),
         exclude: excludeWalletIds?.join(',')
       }
@@ -267,7 +272,7 @@ export const ApiController = {
       ApiController.fetchNetworkImages(),
       ApiController.fetchConnectorImages()
     ]
-    if (OptionsController.state.enableAnalytics === undefined) {
+    if (OptionsController.state.features?.analytics) {
       promises.push(ApiController.fetchAnalyticsConfig())
     }
     state.prefetchPromise = Promise.race([Promise.allSettled(promises)])
@@ -278,6 +283,6 @@ export const ApiController = {
       path: '/getAnalyticsConfig',
       headers: ApiController._getApiHeaders()
     })
-    OptionsController.setEnableAnalytics(isAnalyticsEnabled)
+    OptionsController.setFeatures({ analytics: isAnalyticsEnabled })
   }
 }
