@@ -55,13 +55,15 @@ export const ConnectorController = {
     connectorsByNameMap.forEach(keyConnectors => {
       const firstItem = keyConnectors[0]
 
+      const isAuthConnector = firstItem?.id === 'w3mAuth'
+
       if (keyConnectors.length > 1) {
         mergedConnectors.push({
           name: firstItem?.name,
           imageUrl: firstItem?.imageUrl,
           imageId: firstItem?.imageId,
           connectors: [...keyConnectors],
-          type: 'MULTI_CHAIN',
+          type: isAuthConnector ? 'AUTH' : 'MULTI_CHAIN',
           // These values are just placeholders, we don't use them in multi-chain connector select screen
           chain: 'eip155',
           id: firstItem?.id || ''
@@ -152,10 +154,10 @@ export const ConnectorController = {
       return undefined
     }
 
-    if (authConnector.type === 'MULTI_CHAIN' && authConnector?.connectors?.length) {
-      return authConnector.connectors.find(c => c.chain === activeNamespace) as
-        | AuthConnector
-        | undefined
+    if (authConnector?.connectors?.length) {
+      const connector = authConnector.connectors.find(c => c.chain === activeNamespace)
+
+      return connector as AuthConnector | undefined
     }
 
     return authConnector as AuthConnector

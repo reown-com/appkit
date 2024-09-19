@@ -179,7 +179,7 @@ describe('ConnectorController', () => {
         imageId: undefined,
         imageUrl: undefined,
         name: 'Auth',
-        type: 'MULTI_CHAIN',
+        type: 'AUTH',
         chain: 'eip155',
         connectors: [
           {

@@ -863,7 +863,7 @@ export class WagmiAdapter implements ChainAdapter {
       this.appKit?.addConnector({
         id: ConstantsUtil.AUTH_CONNECTOR_ID,
         type: 'AUTH',
-        name: 'Auth',
+        name: 'w3mAuth',
         provider,
         chain: this.chainNamespace
       })
