@@ -39,7 +39,7 @@ test('it should fetch balance as expected', async () => {
   await modalValidator.expectBalanceFetched('ETH')
 })
 
-test.skip('it should show disabled networks', async () => {
+test('it should show disabled networks', async () => {
   const disabledNetworks = 'Arbitrum'
 
   await modalPage.openModal()
@@ -48,7 +48,7 @@ test.skip('it should show disabled networks', async () => {
   await modalPage.closeModal()
 })
 
-test.only('it should switch networks and sign', async () => {
+test('it should switch networks and sign', async () => {
   const chains = ['Polygon', 'Solana']
 
   async function processChain(index: number) {
