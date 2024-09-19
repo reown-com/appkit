@@ -6,7 +6,7 @@ import {
   useAppKitProvider,
   type Provider
 } from '@reown/appkit/react'
-import { EthereumProvider } from '@walletconnect/ethereum-provider'
+import { UniversalProvider } from '@walletconnect/universal-provider'
 import { useChakraToast } from '../Toast'
 import { ethers } from 'ethers5'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
@@ -59,9 +59,9 @@ export function Ethers5GetCallsStatusTest() {
     if (walletProvider instanceof W3mFrameProvider) {
       return true
     }
-    if (walletProvider instanceof EthereumProvider) {
+    if (walletProvider instanceof UniversalProvider) {
       return Boolean(
-        walletProvider?.signer?.session?.namespaces?.['eip155']?.methods?.includes(
+        walletProvider?.session?.namespaces?.['eip155']?.methods?.includes(
           EIP_5792_RPC_METHODS.WALLET_GET_CALLS_STATUS
         )
       )
