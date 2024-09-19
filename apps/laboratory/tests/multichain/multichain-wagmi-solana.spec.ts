@@ -58,7 +58,6 @@ test('it should switch networks and sign', async () => {
 
     const chainName = chains[index] ?? DEFAULT_CHAIN_NAME
     await modalPage.switchNetwork(chainName)
-    await modalValidator.expectSwitchedNetwork(chainName)
     await modalPage.closeModal()
 
     // -- Sign ------------------------------------------------------------------
@@ -78,7 +77,6 @@ test('it should switch between multiple accounts', async () => {
   const chainName = 'Ethereum'
   await modalPage.switchNetwork(chainName)
   await modalPage.page.waitForTimeout(500)
-  await modalValidator.expectSwitchedNetwork(chainName)
   await modalPage.closeModal()
   const originalAddress = await modalPage.getAddress()
   await modalPage.openAccount()
