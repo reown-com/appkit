@@ -20,7 +20,6 @@ import {
   type CaipNetwork,
   type ChainNamespace
 } from '@reown/appkit-common'
-import { ChainController } from '@reown/appkit-core'
 
 export type AuthProviderConfig = {
   getProvider: () => W3mFrameProvider
@@ -37,24 +36,15 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
 
   private readonly getProvider: AuthProviderConfig['getProvider']
   private readonly getActiveChain: AuthProviderConfig['getActiveChain']
-  private readonly getActiveNamespace: AuthProviderConfig['getActiveNamespace']
   private readonly requestedChains: CaipNetwork[]
   private readonly getSession: AuthProviderConfig['getSession']
   private readonly setSession: AuthProviderConfig['setSession']
 
-  constructor({
-    getProvider,
-    getActiveChain,
-    getActiveNamespace,
-    getSession,
-    setSession,
-    chains
-  }: AuthProviderConfig) {
+  constructor({ getProvider, getActiveChain, getSession, setSession, chains }: AuthProviderConfig) {
     super()
 
     this.getProvider = getProvider
     this.getActiveChain = getActiveChain
-    this.getActiveNamespace = getActiveNamespace
     this.requestedChains = chains
     this.getSession = getSession
     this.setSession = setSession
