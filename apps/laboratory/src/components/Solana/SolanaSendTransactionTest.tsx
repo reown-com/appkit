@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { Button, Stack, Text, Spacer, Link } from '@chakra-ui/react'
-import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
+import { Button, Stack, Spacer, Link } from '@chakra-ui/react'
+import { useAppKitAccount, useAppKitProvider } from '@reown/appkit/react'
 import {
   PublicKey,
   Transaction,
@@ -9,7 +9,6 @@ import {
   SystemProgram
 } from '@solana/web3.js'
 
-import { solana } from '@reown/appkit/networks'
 import { useChakraToast } from '../Toast'
 import { type Provider, useAppKitConnection } from '@reown/appkit-adapter-solana/react'
 
@@ -20,7 +19,6 @@ const amountInLamports = 10_000_000
 export function SolanaSendTransactionTest() {
   const toast = useChakraToast()
   const { address } = useAppKitAccount()
-  const { caipNetwork } = useAppKitNetwork()
   const { walletProvider } = useAppKitProvider<Provider>('solana')
   const { connection } = useAppKitConnection()
   const [loading, setLoading] = useState(false)
@@ -129,14 +127,6 @@ export function SolanaSendTransactionTest() {
 
   if (!address) {
     return null
-  }
-
-  if (caipNetwork?.chainId === solana.chainId) {
-    return (
-      <Text fontSize="md" color="yellow">
-        Switch to Solana Devnet or Testnet to test this feature
-      </Text>
-    )
   }
 
   return (

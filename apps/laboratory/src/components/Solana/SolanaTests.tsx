@@ -38,10 +38,11 @@ export function SolanaTests() {
             </Heading>
             <SolanaSignMessageTest />
           </Box>
-          {caipNetwork?.chainId !== solana.chainId && (
+          {caipNetwork?.chainId === solana.chainId && (
             <Box>
               <Text fontSize="md" color="yellow">
-                Please ensure your wallet is connected to the {caipNetwork?.name}
+                Please be aware that you are connected to the mainnet. Be careful with your
+                transactions.
               </Text>
             </Box>
           )}

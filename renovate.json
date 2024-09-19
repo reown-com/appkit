@@ -25,7 +25,6 @@
     {
       "enabled": true,
       "matchPackageNames": [
-        "@walletconnect/ethereum-provider",
         "@walletconnect/universal-provider",
         "@walletconnect/utils",
         "@reown/{/,}**"

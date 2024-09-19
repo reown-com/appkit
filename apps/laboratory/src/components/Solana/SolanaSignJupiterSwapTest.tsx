@@ -1,9 +1,8 @@
 import { useState } from 'react'
-import { Button, Stack, Text, Spacer } from '@chakra-ui/react'
+import { Button, Stack, Spacer } from '@chakra-ui/react'
 import { PublicKey, VersionedTransaction } from '@solana/web3.js'
 
-import { useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
-import { solana } from '@reown/appkit/networks'
+import { useAppKitProvider } from '@reown/appkit/react'
 import { useChakraToast } from '../Toast'
 import bs58 from 'bs58'
 import { useAppKitConnection, type Provider } from '@reown/appkit-adapter-solana/react'
@@ -11,7 +10,6 @@ import { useAppKitConnection, type Provider } from '@reown/appkit-adapter-solana
 export function SolanaSignJupiterSwapTest() {
   const toast = useChakraToast()
   const { connection } = useAppKitConnection()
-  const { caipNetwork } = useAppKitNetwork()
   const { walletProvider } = useAppKitProvider<Provider>('solana')
   const [loading, setLoading] = useState(false)
 
@@ -50,14 +48,6 @@ export function SolanaSignJupiterSwapTest() {
     } finally {
       setLoading(false)
     }
-  }
-
-  if (caipNetwork?.chainId === solana.chainId) {
-    return (
-      <Text fontSize="md" color="yellow">
-        Switch to Solana Devnet or Testnet to test this feature
-      </Text>
-    )
   }
 
   return (
