@@ -1,21 +1,31 @@
+import type { CaipNetwork } from './TypeUtil.js'
+
 export type SafeLocalStorageItems = {
-  '@w3m/wallet_id': string
-  '@w3m/wallet_name': string
-  '@w3m/solana_wallet': string
-  '@w3m/solana_caip_chain': string
-  '@w3m/active_caip_network': string
-  '@w3m/active_caip_network_id': string
-  '@w3m/connected_connector': string
+  '@appkit/wallet_id': string
+  '@appkit/wallet_name': string
+  '@appkit/solana_wallet': string
+  '@appkit/solana_caip_chain': string
+  '@appkit/active_caip_network': CaipNetwork
+  '@appkit/active_caip_network_id': string
+  '@appkit/connected_connector': string
+  '@appkit/connected_social': string
+  '@appkit/connected_social_username': string
+  '@appkit/recent_wallets': string
+  '@appkit/deeplink_choice': { href: string; name: string }
 }
 
 export const SafeLocalStorageKeys = {
-  WALLET_ID: '@w3m/wallet_id',
-  WALLET_NAME: '@w3m/wallet_name',
-  SOLANA_WALLET: '@w3m/solana_wallet',
-  SOLANA_CAIP_CHAIN: '@w3m/solana_caip_chain',
-  ACTIVE_CAIP_NETWORK: '@w3m/active_caip_network',
-  ACTIVE_CAIP_NETWORK_ID: '@w3m/active_caip_network_id',
-  CONNECTED_CONNECTOR: '@w3m/connected_connector'
+  WALLET_ID: '@appkit/wallet_id',
+  WALLET_NAME: '@appkit/wallet_name',
+  SOLANA_WALLET: '@appkit/solana_wallet',
+  SOLANA_CAIP_CHAIN: '@appkit/solana_caip_chain',
+  ACTIVE_CAIP_NETWORK: '@appkit/active_caip_network',
+  ACTIVE_CAIP_NETWORK_ID: '@appkit/active_caip_network_id',
+  CONNECTED_CONNECTOR: '@appkit/connected_connector',
+  CONNECTED_SOCIAL: '@appkit/connected_social',
+  CONNECTED_SOCIAL_USERNAME: '@appkit/connected_social_username',
+  RECENT_WALLETS: '@appkit/recent_wallets',
+  DEEPLINK_CHOICE: '@appkit/deeplink_choice'
 } as const
 
 export const SafeLocalStorage = {
@@ -27,24 +37,33 @@ export const SafeLocalStorage = {
       localStorage.setItem(key, JSON.stringify(value))
     }
   },
-  getItem<Key extends keyof SafeLocalStorageItems>(key: Key): SafeLocalStorageItems[Key] | null {
+  getItem<Key extends keyof SafeLocalStorageItems>(
+    key: Key
+  ): SafeLocalStorageItems[Key] | undefined {
     if (isSafe()) {
       const value = localStorage.getItem(key)
 
       if (value) {
         try {
           return JSON.parse(value)
-        } catch {
-          return value
+        } catch (e) {
+          console.warn('Error parsing value from localStorage', key, e)
+
+          return undefined
         }
       }
     }
 
-    return null
+    return undefined
   },
   removeItem<Key extends keyof SafeLocalStorageItems>(key: Key): void {
     if (isSafe()) {
       localStorage.removeItem(key)
+    }
+  },
+  clear(): void {
+    if (isSafe()) {
+      localStorage.clear()
     }
   }
 }

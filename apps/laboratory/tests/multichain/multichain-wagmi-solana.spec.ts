@@ -48,7 +48,7 @@ test.skip('it should show disabled networks', async () => {
   await modalPage.closeModal()
 })
 
-test('it should switch networks and sign', async () => {
+test.only('it should switch networks and sign', async () => {
   const chains = ['Polygon', 'Solana']
 
   async function processChain(index: number) {

@@ -131,20 +131,17 @@ export const ChainController = {
     if (adapters.length === 0) {
       const storedCaipNetwork = SafeLocalStorage.getItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK)
 
-      if (storedCaipNetwork) {
-        try {
-          const parsedCaipNetwork = JSON.parse(storedCaipNetwork) as CaipNetwork
-          if (parsedCaipNetwork) {
-            state.activeChain = parsedCaipNetwork.chainNamespace
-            this.setActiveCaipNetwork(parsedCaipNetwork)
-          }
-        } catch (error) {
-          console.warn('>>> Error setting active caip network', error)
+      try {
+        if (storedCaipNetwork) {
+          state.activeChain = storedCaipNetwork.chainNamespace
+          this.setActiveCaipNetwork(storedCaipNetwork)
+        } else {
+          state.activeChain =
+            adapter?.defaultNetwork?.chainNamespace ?? adapter.caipNetworks[0]?.chainNamespace
+          this.setActiveCaipNetwork(adapter?.defaultNetwork ?? adapter.caipNetworks[0])
         }
-      } else {
-        state.activeChain =
-          adapter?.defaultNetwork?.chainNamespace ?? adapter.caipNetworks[0]?.chainNamespace
-        this.setActiveCaipNetwork(adapter?.defaultNetwork ?? adapter.caipNetworks[0])
+      } catch (error) {
+        console.warn('>>> Error setting active caip network', error)
       }
     }
 
@@ -262,6 +259,8 @@ export const ChainController = {
 
     if (caipNetwork.chainNamespace !== state.activeChain) {
       this.setActiveChain(caipNetwork.chainNamespace, caipNetwork)
+      SafeLocalStorage.setItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK, caipNetwork)
+      SafeLocalStorage.setItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID, caipNetwork.id)
 
       return
     }
@@ -273,7 +272,7 @@ export const ChainController = {
       selectedNetworkId: caipNetwork?.id
     })
 
-    SafeLocalStorage.setItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK, JSON.stringify(caipNetwork))
+    SafeLocalStorage.setItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK, caipNetwork)
     SafeLocalStorage.setItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID, caipNetwork.id)
   },
 
@@ -306,9 +305,8 @@ export const ChainController = {
     const chain = state.activeChain
     const isWcConnector = walletId === 'walletConnect'
     const universalNetworkControllerClient = state.universalAdapter.networkControllerClient
-    const hasWagmiAdapter = state.chains.get('eip155')?.adapterType === 'wagmi'
 
-    const shouldUseUniversalAdapter = (isWcConnector && !hasWagmiAdapter) || state.noAdapters
+    const shouldUseUniversalAdapter = isWcConnector || state.noAdapters
 
     if (shouldUseUniversalAdapter) {
       if (!universalNetworkControllerClient) {
