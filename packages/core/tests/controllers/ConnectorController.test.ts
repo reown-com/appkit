@@ -14,8 +14,7 @@ import { ConstantsUtil, getW3mThemeVariables } from '@reown/appkit-common'
 const evmAuthProvider = {
   syncDappData: (_args: { metadata: Metadata; sdkVersion: SdkVersion; projectId: string }) =>
     Promise.resolve(),
-  syncTheme: (_args: { themeMode: ThemeMode; themeVariables: ThemeVariables }) => Promise.resolve(),
-  type: 'EVM'
+  syncTheme: (_args: { themeMode: ThemeMode; themeVariables: ThemeVariables }) => Promise.resolve()
 } as const
 
 const caipNetwork = {
@@ -43,7 +42,7 @@ const externalConnector = {
 } as const
 const evmAuthConnector = {
   id: 'w3mAuth',
-  type: 'AUTH_EVM',
+  type: 'AUTH',
   provider: evmAuthProvider,
   chain: ConstantsUtil.CHAIN.EVM,
   name: 'Auth'
