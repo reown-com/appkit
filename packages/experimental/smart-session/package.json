@@ -1,0 +1,40 @@
+{
+  "name": "@reown/appkit-experimental-smart-session",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "./dist/esm/exports/index.js",
+  "types": "./dist/types/exports/index.d.ts",
+  "files": [
+    "dist",
+    "!tsconfig.tsbuildinfo"
+  ],
+  "scripts": {
+    "build:clean": "rm -rf dist",
+    "build": "tsc --build",
+    "watch": "tsc --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+  },
+  "dependencies": {
+    "valtio": "1.11.2"
+  },
+  "keywords": [
+    "web3",
+    "crypto",
+    "ethereum",
+    "appkit",
+    "reown",
+    "lit",
+    "experimental"
+  ],
+  "author": "Reown <support@reown.com> (https://reown.com)",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/WalletConnect/web3modal",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WalletConnect/web3modal.git"
+  },
+  "bugs": {
+    "url": "https://github.com/WalletConnect/web3modal/issues"
+  }
+}
