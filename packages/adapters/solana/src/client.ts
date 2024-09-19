@@ -144,7 +144,7 @@ export class SolanaAdapter implements ChainAdapter {
           try {
             await this.switchNetwork(caipNetwork)
           } catch (error) {
-            // SolStoreUtil.setError(error)
+            console.warn('Error switching network', error)
           }
         }
       },

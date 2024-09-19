@@ -472,7 +472,13 @@ export class W3mFrameProvider {
         }
       })
 
-      function handler(framEvent: W3mFrameTypes.FrameEvent) {
+      function handler(framEvent: W3mFrameTypes.FrameEvent, logger: W3mFrameLogger) {
+        if (framEvent.id !== id) {
+          return
+        }
+
+        logger.logger.info?.({ framEvent, id }, 'Received frame response')
+
         if (framEvent.type === `@w3m-frame/${type}_SUCCESS`) {
           if ('payload' in framEvent) {
             resolve(framEvent.payload)
@@ -485,7 +491,11 @@ export class W3mFrameProvider {
           reject(new Error('An error occurred'))
         }
       }
-      this.w3mFrame.events.registerFrameEventHandler(id, handler, abortController.signal)
+      this.w3mFrame.events.registerFrameEventHandler(
+        id,
+        frameEvent => handler(frameEvent, this.w3mLogger),
+        abortController.signal
+      )
     })
   }
 
