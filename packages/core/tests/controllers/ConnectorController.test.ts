@@ -53,6 +53,14 @@ const announcedConnector = {
   name: 'Announced'
 } as const
 
+const announcedConnectorSolana = {
+  id: 'announced',
+  type: 'ANNOUNCED',
+  info: { rdns: 'announced.solana.io' },
+  chain: ConstantsUtil.CHAIN.SOLANA,
+  name: 'Announced'
+} as const
+
 const syncDappDataSpy = vi.spyOn(authProvider, 'syncDappData')
 const syncThemeSpy = vi.spyOn(authProvider, 'syncTheme')
 
@@ -205,6 +213,58 @@ describe('ConnectorController', () => {
         ]
       },
       announcedConnector
+    ])
+  })
+
+  it('should merge connectors with the same chain', () => {
+    const mergedAnnouncedConnector = {
+      id: 'announced',
+      imageId: undefined,
+      imageUrl: undefined,
+      name: 'Announced',
+      type: 'MULTI_CHAIN',
+      chain: 'eip155',
+      connectors: [announcedConnector, announcedConnectorSolana]
+    }
+
+    const mergedAuthConnector = {
+      id: 'w3mAuth',
+      imageId: undefined,
+      imageUrl: undefined,
+      name: 'Auth',
+      type: 'AUTH',
+      chain: 'eip155',
+      connectors: [
+        {
+          chain: 'eip155',
+          id: 'w3mAuth',
+          name: 'Auth',
+          provider: {
+            syncDappData: syncDappDataSpy,
+            syncTheme: syncThemeSpy
+          },
+          type: 'AUTH'
+        },
+        {
+          chain: 'solana',
+          id: 'w3mAuth',
+          name: 'Auth',
+          provider: {
+            syncDappData: syncDappDataSpy,
+            syncTheme: syncThemeSpy
+          },
+          type: 'AUTH'
+        }
+      ]
+    }
+    ConnectorController.addConnector(announcedConnectorSolana)
+    expect(ConnectorController.getConnectors()).toEqual([
+      walletConnectConnector,
+      externalConnector,
+      metamaskConnector,
+      zerionConnector,
+      mergedAuthConnector,
+      mergedAnnouncedConnector
     ])
   })
 })
