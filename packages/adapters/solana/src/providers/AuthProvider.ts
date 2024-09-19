@@ -229,7 +229,7 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
       this.emit('auth_rpcError', error)
     })
 
-    this.getProvider().onIsConnected(response => {
+    this.getProvider().onConnect(response => {
       this.setSession(response)
       const activeNamespace = this.getActiveNamespace()
 
