@@ -99,7 +99,10 @@ export class SolanaAdapter implements ChainAdapter {
       const isSolanaNetwork = val?.chainNamespace === this.chainNamespace
 
       if (isSolanaAddress && isSolanaNetwork && caipAddress) {
-        this.syncAccount({ address: CoreHelperUtil.getPlainAddress(caipAddress), caipNetwork: val })
+        this.syncAccount({
+          address: CoreHelperUtil.getPlainAddress(caipAddress),
+          caipNetwork: val
+        })
       }
     })
     AccountController.subscribeKey(

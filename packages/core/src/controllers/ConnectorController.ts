@@ -146,16 +146,12 @@ export const ConnectorController = {
   },
 
   getAuthConnector(): AuthConnector | undefined {
-    const activeNamespace = ChainController.state.activeChain
-    const authConnector = state.connectors.find(c => c.id === 'w3mAuth')
+    const activeNamespace = ChainController.state.activeCaipNetwork?.chainNamespace
+    const authConnector = state.connectors.find(
+      c => c.id === 'w3mAuth' && c.chain === activeNamespace
+    )
     if (!authConnector) {
       return undefined
-    }
-
-    if (authConnector.type === 'MULTI_CHAIN' && authConnector?.connectors?.length) {
-      return authConnector.connectors.find(c => c.chain === activeNamespace) as
-        | AuthConnector
-        | undefined
     }
 
     return authConnector as AuthConnector

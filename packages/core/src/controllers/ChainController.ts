@@ -106,7 +106,9 @@ export const ChainController = {
     if (!state.noAdapters) {
       state.activeChain = adapterToActivate?.chainNamespace
       PublicStateController.set({ activeChain: adapterToActivate?.chainNamespace })
-      this.setActiveCaipNetwork(adapterToActivate?.defaultNetwork)
+      this.setActiveCaipNetwork(
+        adapterToActivate?.defaultNetwork || adapterToActivate?.caipNetworks[0]
+      )
 
       adapters.forEach((adapter: ChainsInitializerAdapter) => {
         state.chains.set(adapter.chainNamespace, {
@@ -193,6 +195,9 @@ export const ChainController = {
     accountProps: Partial<AccountControllerState>,
     replaceState = true
   ) {
+    if (accountProps.caipAddress) {
+      console.trace(chain, accountProps)
+    }
     if (!chain) {
       throw new Error('Chain is required to update chain account data')
     }
@@ -262,6 +267,12 @@ export const ChainController = {
 
     if (caipNetwork.chainNamespace !== state.activeChain) {
       this.setActiveChain(caipNetwork.chainNamespace, caipNetwork)
+      state.activeCaipNetwork = caipNetwork
+      SafeLocalStorage.setItem(
+        SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK,
+        JSON.stringify(caipNetwork)
+      )
+      SafeLocalStorage.setItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID, caipNetwork.id)
 
       return
     }

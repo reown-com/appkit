@@ -236,7 +236,14 @@ export class WagmiAdapter implements ChainAdapter {
         )
         const chainId = Number(NetworkUtil.caipNetworkIdToNumber(caipNetwork?.id))
 
-        if (chainId && this.wagmiConfig) {
+        if (chainId && this.wagmiConfig && caipNetwork) {
+          const connectedConnector = SafeLocalStorage.getItem(
+            SafeLocalStorageKeys.CONNECTED_CONNECTOR
+          )
+          const isConnectedWithAuth = connectedConnector === 'AUTH'
+          if (isConnectedWithAuth) {
+            this.handleSwitchNetworkAuthConnector(caipNetwork)
+          }
           await switchChain(this.wagmiConfig, { chainId })
         }
       },
@@ -785,6 +792,16 @@ export class WagmiAdapter implements ChainAdapter {
       return
     }
     this.appKit?.setBalance(undefined, undefined, this.chainNamespace)
+  }
+
+  private async handleSwitchNetworkAuthConnector(caipNetwork: CaipNetwork) {
+    const connector = this.wagmiConfig.connectors.find(
+      c => c.id === ConstantsUtil.AUTH_CONNECTOR_ID
+    ) as unknown as AdapterOptions<Config>['wagmiConfig']['connectors'][0]
+    const provider = (await connector?.getProvider()) as W3mFrameProvider
+    if (caipNetwork?.id) {
+      await provider.switchNetwork(caipNetwork?.id)
+    }
   }
 
   private async syncConnectedWalletInfo(connector: GetAccountReturnType['connector']) {

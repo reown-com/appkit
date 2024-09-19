@@ -14,7 +14,13 @@ import {
 import { withSolanaNamespace } from '../utils/withSolanaNamespace.js'
 import base58 from 'bs58'
 import { isVersionedTransaction } from '@solana/wallet-adapter-base'
-import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
+import {
+  SafeLocalStorage,
+  SafeLocalStorageKeys,
+  type CaipNetwork,
+  type ChainNamespace
+} from '@reown/appkit-common'
+import { ChainController } from '@reown/appkit-core'
 
 export type AuthProviderConfig = {
   getProvider: () => W3mFrameProvider
@@ -213,7 +219,8 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
   }
 
   private serializeTransaction(transaction: AnyTransaction) {
-    return base58.encode(transaction.serialize({ verifySignatures: false }))
+    const serializedTransaction = transaction.serialize({ verifySignatures: false })
+    return base58.encode(Buffer.from(serializedTransaction))
   }
 
   private bindEvents() {
@@ -231,10 +238,14 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
 
     this.getProvider().onIsConnected(response => {
       this.setSession(response)
-      const activeNamespace = this.getActiveNamespace()
 
-      if (activeNamespace === 'solana') {
-        this.emit('connect', this.getPublicKey(true))
+      const storedCaipNetwork = SafeLocalStorage.getItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK)
+      if (storedCaipNetwork) {
+        const parsedCaipNetwork = JSON.parse(storedCaipNetwork) as CaipNetwork
+
+        if (parsedCaipNetwork.chainNamespace === 'solana') {
+          this.emit('connect', this.getPublicKey(true))
+        }
       }
     })
 
