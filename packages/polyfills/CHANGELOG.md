@@ -1,5 +1,11 @@
 # @web3modal/polyfills
 
+## 5.1.9
+
+### Patch Changes
+
+- Adds CoinbaseConnector to Solana package
+
 ## 5.1.8
 
 ### Patch Changes

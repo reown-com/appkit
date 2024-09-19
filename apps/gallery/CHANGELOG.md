@@ -1,5 +1,15 @@
 # @apps/gallery
 
+## 5.1.9
+
+### Patch Changes
+
+- Adds CoinbaseConnector to Solana package
+
+- Updated dependencies []:
+  - @web3modal/common@5.1.9
+  - @web3modal/ui@5.1.9
+
 ## 5.1.8
 
 ### Patch Changes

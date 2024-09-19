@@ -1,5 +1,14 @@
 # @examples/html-ethers5
 
+## 5.1.9
+
+### Patch Changes
+
+- Adds CoinbaseConnector to Solana package
+
+- Updated dependencies []:
+  - @web3modal/ethers5@5.1.9
+
 ## 5.1.8
 
 ### Patch Changes

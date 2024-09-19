@@ -1,5 +1,14 @@
 # @examples/react-wagmi
 
+## 5.1.9
+
+### Patch Changes
+
+- Adds CoinbaseConnector to Solana package
+
+- Updated dependencies []:
+  - @web3modal/solana@5.1.9
+
 ## 5.1.8
 
 ### Patch Changes

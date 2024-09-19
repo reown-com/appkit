@@ -1,5 +1,16 @@
 # @web3modal/cdn
 
+## 5.1.9
+
+### Patch Changes
+
+- Adds CoinbaseConnector to Solana package
+
+- Updated dependencies []:
+  - @web3modal/ethers5@5.1.9
+  - @web3modal/ethers@5.1.9
+  - @web3modal/wagmi@5.1.9
+
 ## 5.1.8
 
 ### Patch Changes
