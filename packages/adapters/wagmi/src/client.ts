@@ -603,7 +603,7 @@ export class WagmiAdapter implements ChainAdapter {
   >) {
     const isConnected = ChainController.state.activeCaipAddress
 
-    if (status === 'disconnected' && isConnected) {
+    if (status === 'disconnected' && !isConnected) {
       this.appKit?.resetAccount(this.chainNamespace)
       this.appKit?.resetWcConnection()
       this.appKit?.resetNetwork()

@@ -305,9 +305,8 @@ export const ChainController = {
     const chain = state.activeChain
     const isWcConnector = walletId === 'walletConnect'
     const universalNetworkControllerClient = state.universalAdapter.networkControllerClient
-    const hasWagmiAdapter = state.chains.get('eip155')?.adapterType === 'wagmi'
 
-    const shouldUseUniversalAdapter = (isWcConnector && !hasWagmiAdapter) || state.noAdapters
+    const shouldUseUniversalAdapter = isWcConnector || state.noAdapters
 
     if (shouldUseUniversalAdapter) {
       if (!universalNetworkControllerClient) {
