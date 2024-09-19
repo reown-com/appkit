@@ -35,7 +35,7 @@ const client: ConnectionControllerClient = {
   writeContract: () => Promise.resolve('0x'),
   getEnsAddress: async (value: string) => Promise.resolve(value),
   getEnsAvatar: async (value: string) => Promise.resolve(value),
-  request: async () => Promise.resolve('0x')
+  grantPermissions: async () => Promise.resolve('0x')
 }
 
 const clientConnectWalletConnectSpy = vi.spyOn(client, 'connectWalletConnect')
@@ -53,7 +53,7 @@ const partialClient: ConnectionControllerClient = {
   writeContract: () => Promise.resolve('0x'),
   getEnsAddress: async (value: string) => Promise.resolve(value),
   getEnsAvatar: async (value: string) => Promise.resolve(value),
-  request: async () => Promise.resolve('0x')
+  grantPermissions: async () => Promise.resolve('0x')
 }
 
 const evmAdapter = {

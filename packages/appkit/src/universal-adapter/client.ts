@@ -269,7 +269,7 @@ export class UniversalAdapterClient {
 
       writeContract: async () => await Promise.resolve('0x'),
 
-      request: async () => await Promise.resolve('0x'),
+      grantPermissions: async () => await Promise.resolve('0x'),
 
       sendTransaction: async () => await Promise.resolve('0x'),
 

@@ -430,7 +430,7 @@ export class WagmiAdapter implements ChainAdapter {
         }
       },
 
-      request: async (method: string, params: unknown[] | object) => {
+      grantPermissions: async params => {
         if (!this.wagmiConfig) {
           throw new Error('connectionControllerClient:request - wagmiConfig is undefined')
         }
@@ -450,7 +450,7 @@ export class WagmiAdapter implements ChainAdapter {
           throw new Error('connectionControllerClient:request - provider is undefined')
         }
 
-        return provider.request({ method, params })
+        return provider.request({ method:'wallet_grantPermissions', params })
       },
 
       sendTransaction: async (data: SendTransactionArgs) => {

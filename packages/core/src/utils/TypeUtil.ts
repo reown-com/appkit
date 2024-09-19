@@ -792,6 +792,24 @@ export type AccountType = {
   type: 'eoa' | 'smartAccount'
 }
 
+export type SmartSessionGrantPermissionsRequest = {
+  chainId: `0x${string}`
+  address?: `0x${string}`
+  expiry: number
+  signer: {
+    type: string
+    data: Record<string, unknown>
+  }
+  permissions: {
+    type: string
+    data: Record<string, unknown>
+  }[]
+  policies: {
+    type: string
+    data: Record<string, unknown>
+  }[]
+}
+
 export type SendTransactionArgs =
   | {
       chainNamespace?: undefined | 'eip155'

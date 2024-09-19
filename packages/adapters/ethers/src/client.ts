@@ -409,14 +409,14 @@ export class EthersAdapter {
         )
       },
 
-      request: async (method: string, params: unknown[] | object) => {
+      grantPermissions: async params => {
         const provider = ProviderUtil.getProvider<Provider>('eip155')
 
         if (!provider) {
           throw new Error('Provider is undefined')
         }
 
-        return await provider.request({ method, params })
+        return await provider.request({ method: 'wallet_grantPermissions', params })
       },
 
       sendTransaction: async data => {
