@@ -15,10 +15,10 @@ describe('SafeLocalStorage unsafe', () => {
   })
 
   it('should not setItem', () => {
-    const key = '@w3m/wallet_id'
+    const key = '@appkit/wallet_id'
 
     expect(SafeLocalStorage.setItem(key, '1')).toBe(undefined)
-    expect(SafeLocalStorage.getItem(key)).toBe(null)
+    expect(SafeLocalStorage.getItem(key)).toBe(undefined)
     expect(SafeLocalStorage.removeItem(key)).toBe(undefined)
   })
 })
@@ -32,18 +32,31 @@ describe('SafeLocalStorage safe', () => {
     Object.assign(globalThis, { window: {}, localStorage: { getItem, setItem, removeItem } })
   })
 
-  it('should setItem', () => {
-    expect(SafeLocalStorage.setItem('@w3m/wallet_id', 'test')).toBe(undefined)
-    expect(setItem).toHaveBeenCalledWith('@w3m/wallet_id', '"test"')
+  afterAll(() => {
+    getItem.mockClear()
+    setItem.mockClear()
+    removeItem.mockClear()
   })
 
-  it('should getItem', () => {
-    expect(SafeLocalStorage.getItem('@w3m/wallet_id')).toEqual({ test: 'test' })
-    expect(getItem).toHaveBeenCalledWith('@w3m/wallet_id')
+  it('should setItem', () => {
+    expect(SafeLocalStorage.setItem('@appkit/wallet_id', 'test')).toBe(undefined)
+    expect(setItem).toHaveBeenCalledWith('@appkit/wallet_id', JSON.stringify('test'))
+  })
+
+  it('should getItem ', () => {
+    expect(SafeLocalStorage.getItem('@appkit/wallet_id')).toEqual({ test: 'test' })
+    expect(getItem).toHaveBeenCalledWith('@appkit/wallet_id')
   })
 
   it('should removeItem', () => {
-    expect(SafeLocalStorage.removeItem('@w3m/wallet_id')).toBe(undefined)
-    expect(removeItem).toHaveBeenCalledWith('@w3m/wallet_id')
+    expect(SafeLocalStorage.removeItem('@appkit/wallet_id')).toBe(undefined)
+    expect(removeItem).toHaveBeenCalledWith('@appkit/wallet_id')
+  })
+
+  it('getItem should return undefined when value is not valid JSON', () => {
+    getItem.mockReturnValueOnce('test')
+
+    expect(SafeLocalStorage.getItem('@appkit/wallet_id')).toBe(undefined)
+    expect(getItem).toHaveBeenCalledWith('@appkit/wallet_id')
   })
 })

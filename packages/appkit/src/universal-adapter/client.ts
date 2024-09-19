@@ -89,10 +89,6 @@ export class UniversalAdapterClient {
       // @ts-expect-error switchCaipNetwork is async for some adapter but not for this adapter
       switchCaipNetwork: caipNetwork => {
         if (caipNetwork) {
-          SafeLocalStorage.setItem(
-            SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK,
-            JSON.stringify(caipNetwork)
-          )
           try {
             this.switchNetwork(caipNetwork)
           } catch (error) {
@@ -386,31 +382,22 @@ export class UniversalAdapterClient {
       })
 
       const storedCaipNetwork = SafeLocalStorage.getItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK)
+      const activeCaipNetwork = ChainController.state.activeCaipNetwork
 
-      if (storedCaipNetwork) {
-        try {
-          const parsedCaipNetwork = JSON.parse(storedCaipNetwork) as CaipNetwork
-          if (parsedCaipNetwork) {
-            NetworkController.setActiveCaipNetwork(parsedCaipNetwork)
-          }
-        } catch (error) {
-          console.warn('>>> Error setting active caip network', error)
+      try {
+        if (storedCaipNetwork) {
+          NetworkController.setActiveCaipNetwork(storedCaipNetwork)
+        } else if (!activeCaipNetwork) {
+          this.setDefaultNetwork(nameSpaces)
+        } else if (
+          !NetworkController.state.approvedCaipNetworkIds?.includes(activeCaipNetwork.id)
+        ) {
+          this.setDefaultNetwork(nameSpaces)
         }
-      } else if (!ChainController.state.activeCaipNetwork) {
-        this.setDefaultNetwork(nameSpaces)
-      } else if (
-        !NetworkController.state.approvedCaipNetworkIds?.includes(
-          ChainController.state.activeCaipNetwork.id
-        )
-      ) {
-        this.setDefaultNetwork(nameSpaces)
+      } catch (error) {
+        console.warn('>>> Error setting active caip network', error)
       }
     }
-
-    SafeLocalStorage.setItem(
-      SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK,
-      JSON.stringify(this.appKit?.getCaipNetwork())
-    )
 
     this.syncAccount()
     this.watchWalletConnect()
