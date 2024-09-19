@@ -107,7 +107,7 @@ export const ChainController = {
       state.activeChain = adapterToActivate?.chainNamespace
       PublicStateController.set({ activeChain: adapterToActivate?.chainNamespace })
       this.setActiveCaipNetwork(
-        adapterToActivate?.defaultNetwork || adapterToActivate?.caipNetworks[0]
+        adapterToActivate?.defaultNetwork || adapterToActivate?.caipNetworks?.[0]
       )
 
       adapters.forEach((adapter: ChainsInitializerAdapter) => {

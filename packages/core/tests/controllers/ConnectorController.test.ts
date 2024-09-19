@@ -11,11 +11,22 @@ import {
 import { ConstantsUtil, getW3mThemeVariables } from '@reown/appkit-common'
 
 // -- Setup --------------------------------------------------------------------
-const authProvider = {
+const evmAuthProvider = {
   syncDappData: (_args: { metadata: Metadata; sdkVersion: SdkVersion; projectId: string }) =>
     Promise.resolve(),
-  syncTheme: (_args: { themeMode: ThemeMode; themeVariables: ThemeVariables }) => Promise.resolve()
-}
+  syncTheme: (_args: { themeMode: ThemeMode; themeVariables: ThemeVariables }) => Promise.resolve(),
+  type: 'EVM'
+} as const
+
+const caipNetwork = {
+  id: 'eip155:1',
+  name: 'Ethereum',
+  chainNamespace: ConstantsUtil.CHAIN.EVM,
+  chainId: 1,
+  currency: 'ETH',
+  explorerUrl: 'https://etherscan.io',
+  rpcUrl: 'https://rpc.infura.com/v1/'
+} as const
 
 const walletConnectConnector = {
   id: 'walletConnect',
@@ -32,16 +43,9 @@ const externalConnector = {
 } as const
 const evmAuthConnector = {
   id: 'w3mAuth',
-  type: 'AUTH',
-  provider: authProvider,
+  type: 'AUTH_EVM',
+  provider: evmAuthProvider,
   chain: ConstantsUtil.CHAIN.EVM,
-  name: 'Auth'
-} as const
-const solanaAuthConnector = {
-  id: 'w3mAuth',
-  type: 'AUTH',
-  provider: authProvider,
-  chain: ConstantsUtil.CHAIN.SOLANA,
   name: 'Auth'
 } as const
 
@@ -53,8 +57,8 @@ const announcedConnector = {
   name: 'Announced'
 } as const
 
-const syncDappDataSpy = vi.spyOn(authProvider, 'syncDappData')
-const syncThemeSpy = vi.spyOn(authProvider, 'syncTheme')
+const syncDappDataSpy = vi.spyOn(evmAuthProvider, 'syncDappData')
+const syncThemeSpy = vi.spyOn(evmAuthProvider, 'syncTheme')
 
 const mockDappData = {
   metadata: {
@@ -85,6 +89,7 @@ const zerionConnector = {
 describe('ConnectorController', () => {
   beforeAll(() => {
     ChainController.state.activeChain = ConstantsUtil.CHAIN.EVM
+    ChainController.state.activeCaipNetwork = caipNetwork
   })
   it('should have valid default state', () => {
     expect(ConnectorController.state.connectors).toEqual([])
@@ -152,12 +157,6 @@ describe('ConnectorController', () => {
     expect(connector).toEqual(evmAuthConnector)
   })
 
-  it('getAuthConnector() should return merged connector when already added on different network', () => {
-    ConnectorController.addConnector(solanaAuthConnector)
-    const connector = ConnectorController.getAuthConnector()
-    expect(connector).toEqual(evmAuthConnector)
-  })
-
   it('getAnnouncedConnectorRdns() should not throw when no announced connector is not set', () => {
     expect(ConnectorController.getAnnouncedConnectorRdns()).toEqual([])
   })
@@ -173,37 +172,9 @@ describe('ConnectorController', () => {
       externalConnector,
       metamaskConnector,
       zerionConnector,
+      evmAuthConnector,
       // Need to define inline to reference the spies
-      {
-        id: 'w3mAuth',
-        imageId: undefined,
-        imageUrl: undefined,
-        name: 'Auth',
-        type: 'MULTI_CHAIN',
-        chain: 'eip155',
-        connectors: [
-          {
-            chain: 'eip155',
-            id: 'w3mAuth',
-            name: 'Auth',
-            provider: {
-              syncDappData: syncDappDataSpy,
-              syncTheme: syncThemeSpy
-            },
-            type: 'AUTH'
-          },
-          {
-            chain: 'solana',
-            id: 'w3mAuth',
-            name: 'Auth',
-            provider: {
-              syncDappData: syncDappDataSpy,
-              syncTheme: syncThemeSpy
-            },
-            type: 'AUTH'
-          }
-        ]
-      },
+
       announcedConnector
     ])
   })

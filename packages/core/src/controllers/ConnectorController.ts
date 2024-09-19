@@ -147,6 +147,8 @@ export const ConnectorController = {
 
   getAuthConnector(): AuthConnector | undefined {
     const activeNamespace = ChainController.state.activeCaipNetwork?.chainNamespace
+    console.log(state.connectors.filter(c => c.id === 'w3mAuth'))
+
     const authConnector = state.connectors.find(
       c => c.id === 'w3mAuth' && c.chain === activeNamespace
     )
