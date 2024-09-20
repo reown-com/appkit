@@ -601,14 +601,6 @@ export class WagmiAdapter implements ChainAdapter {
     >
   >) {
     const isConnected = ChainController.state.activeCaipAddress
-    console.log('>> SyncAccount - ', {
-      address,
-      chainId,
-      connector,
-      addresses,
-      status,
-      isConnected
-    })
     if (status === 'disconnected' && !isConnected) {
       this.appKit?.resetAccount(this.chainNamespace)
       this.appKit?.resetWcConnection()
@@ -621,9 +613,7 @@ export class WagmiAdapter implements ChainAdapter {
 
     if (this.wagmiConfig) {
       if (connector) {
-        console.log('>> SyncAccount - Connector', connector)
         if (connector && connector.name === 'WalletConnect' && connector.getProvider && address) {
-          console.log('>> SyncAccount - WalletConnect')
           const currentChainId =
             chainId || Number(NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id))
           const provider = (await connector.getProvider()) as UniversalProvider
@@ -653,18 +643,15 @@ export class WagmiAdapter implements ChainAdapter {
             ])
           }
         } else if (status === 'connected' && address && chainId) {
-          console.log('>> SyncAccount - Connected', address, chainId)
           const caipAddress = `eip155:${chainId}:${address}` as CaipAddress
           this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)
           await this.syncNetwork(address, chainId, true)
-          console.log('>> SyncAccount - synced Network')
           await Promise.all([
             this.syncProfile(address, chainId),
             this.syncBalance(address, chainId),
             this.syncConnectedWalletInfo(connector),
             this.appKit?.setApprovedCaipNetworksData(this.chainNamespace)
           ])
-          console.log('>> SyncAccount - Connected')
           if (connector) {
             this.syncConnectedWalletInfo(connector)
           }
