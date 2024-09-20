@@ -480,7 +480,7 @@ export class AppKit {
   }
 
   private setMetadata(options: AppKitOptions) {
-    if (typeof window === 'undefined' || !window.document) {
+    if (typeof window === 'undefined' || typeof document === 'undefined') {
       return
     }
 
