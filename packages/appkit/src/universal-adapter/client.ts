@@ -170,6 +170,10 @@ export class UniversalAdapterClient {
               ?.filter(network => network.chainNamespace === 'eip155')
               .map(chain => chain.id) as string[]
 
+            siweParams.chains = this.caipNetworks
+              ?.filter(network => network.chainNamespace === 'eip155')
+              .map(chain => chain.chainId) as number[]
+
             const result = await WalletConnectProvider.authenticate({
               nonce: await siweConfig?.getNonce?.(),
               methods: [...OPTIONAL_METHODS],
