@@ -1,6 +1,6 @@
 /* eslint-disable max-classes-per-file */
 import axios, { AxiosError } from 'axios'
-import {ConstantsUtil } from './ConstantUtils'
+import { ConstantsUtil } from './ConstantUtils'
 
 // Define types for the request and response
 type AddPermission = {

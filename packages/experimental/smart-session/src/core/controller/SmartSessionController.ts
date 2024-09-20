@@ -1,4 +1,4 @@
-import type { ChainAdapter } from '@reown/appkit-core' 
+import type { ChainAdapter } from '@reown/appkit-core'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
 import type {

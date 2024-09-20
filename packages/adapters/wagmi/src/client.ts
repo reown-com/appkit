@@ -450,7 +450,7 @@ export class WagmiAdapter implements ChainAdapter {
           throw new Error('connectionControllerClient:request - provider is undefined')
         }
 
-        return provider.request({ method:'wallet_grantPermissions', params })
+        return provider.request({ method: 'wallet_grantPermissions', params })
       },
 
       sendTransaction: async (data: SendTransactionArgs) => {
