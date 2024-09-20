@@ -1,7 +1,7 @@
 import { Button, Stack, Text, Spacer, Heading } from '@chakra-ui/react'
 import { useState, useEffect } from 'react'
 import { useAppKitAccount, useAppKitProvider, useAppKitNetwork } from '@reown/appkit/react'
-import { EthereumProvider } from '@walletconnect/ethereum-provider'
+import { UniversalProvider } from '@walletconnect/universal-provider'
 import { useChakraToast } from '../Toast'
 import type { Address } from 'viem'
 import type { Provider as RawProvider } from '@reown/appkit'
@@ -14,7 +14,7 @@ import {
 } from '../../utils/EIP5792Utils'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
 
-type Provider = W3mFrameProvider | Awaited<ReturnType<(typeof EthereumProvider)['init']>>
+type Provider = W3mFrameProvider | Awaited<ReturnType<(typeof UniversalProvider)['init']>>
 
 export function Ethers5SendCallsTest() {
   const [loading, setLoading] = useState(false)
@@ -102,9 +102,9 @@ export function Ethers5SendCallsTest() {
     if (walletProvider instanceof W3mFrameProvider) {
       return true
     }
-    if (walletProvider instanceof EthereumProvider) {
+    if (walletProvider instanceof UniversalProvider) {
       return Boolean(
-        walletProvider?.signer?.session?.namespaces?.['eip155']?.methods?.includes(
+        walletProvider?.session?.namespaces?.['eip155']?.methods?.includes(
           EIP_5792_RPC_METHODS.WALLET_SEND_CALLS
         )
       )

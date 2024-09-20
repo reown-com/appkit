@@ -1,7 +1,7 @@
 import { Button, Stack, Text, Spacer, Heading } from '@chakra-ui/react'
 import { useState, useEffect } from 'react'
 import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
-import { EthereumProvider } from '@walletconnect/ethereum-provider'
+import { UniversalProvider } from '@walletconnect/universal-provider'
 import { useChakraToast } from '../Toast'
 import type { Address } from 'viem'
 import { vitalikEthAddress } from '../../utils/DataUtil'
@@ -12,8 +12,7 @@ import {
   getCapabilitySupportedChainInfo
 } from '../../utils/EIP5792Utils'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
-
-type Provider = W3mFrameProvider | Awaited<ReturnType<(typeof EthereumProvider)['init']>>
+type Provider = W3mFrameProvider | Awaited<ReturnType<(typeof UniversalProvider)['init']>>
 
 export function EthersSendCallsTest() {
   const [loading, setLoading] = useState(false)
@@ -33,7 +32,7 @@ export function EthersSendCallsTest() {
     if (address && walletProvider) {
       getCapabilitySupportedChainInfo(
         WALLET_CAPABILITIES.ATOMIC_BATCH,
-        walletProvider as Provider,
+        walletProvider as unknown as Provider,
         address
       ).then(capabilities => setAtomicBatchSupportedChains(capabilities))
     } else {
@@ -100,9 +99,9 @@ export function EthersSendCallsTest() {
     if (walletProvider instanceof W3mFrameProvider) {
       return true
     }
-    if (walletProvider instanceof EthereumProvider) {
+    if (walletProvider instanceof UniversalProvider) {
       return Boolean(
-        walletProvider?.signer?.session?.namespaces?.['eip155']?.methods?.includes(
+        walletProvider?.session?.namespaces?.['eip155']?.methods?.includes(
           EIP_5792_RPC_METHODS.WALLET_SEND_CALLS
         )
       )
