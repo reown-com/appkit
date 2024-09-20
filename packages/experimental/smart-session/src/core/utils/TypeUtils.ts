@@ -1,7 +1,7 @@
 export interface SmartSessionClientMethods {
   grantPermissions(
     request: SmartSessionGrantPermissionsRequest
-  ): Promise<SmartSessionGrantPermissionsResponse>
+  ): Promise<WalletGrantPermissionsResponse>
 }
 
 export type SmartSessionGrantPermissionsRequest = {

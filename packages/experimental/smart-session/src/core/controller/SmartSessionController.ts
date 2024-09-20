@@ -1,5 +1,6 @@
+import type { ChainAdapter } from '@reown/appkit-core' 
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
-import { proxy, subscribe as sub } from 'valtio/vanilla'
+import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
 import type {
   SmartSessionClientMethods,
   SmartSessionGrantPermissionsRequest,
@@ -7,7 +8,9 @@ import type {
 } from '../utils/TypeUtils'
 
 // -- Types --------------------------------------------- //
-export interface SmartSessionControllerClient extends SmartSessionClientMethods {}
+export interface SmartSessionControllerClient extends SmartSessionClientMethods {
+  chainAdapter: ChainAdapter
+}
 
 export interface SmartSessionControllerClientState {
   _client?: SmartSessionControllerClient
@@ -41,6 +44,10 @@ export const SmartSessionController = {
     }
 
     return state._client
+  },
+
+  setSmartSessionControllerClient(client: SmartSessionControllerClient) {
+    state._client = ref(client)
   },
 
   grantPermissions(

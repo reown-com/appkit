@@ -490,6 +490,9 @@ export class AppKit {
         const { SIWEController } = await import('@reown/appkit-siwe')
         SIWEController.setSIWEClient(options.siweConfig)
       }
+      if (options.enableSmartSession) {
+        await import('@reown/appkit-experimental-smart-session')
+      }
     }
   }
 
