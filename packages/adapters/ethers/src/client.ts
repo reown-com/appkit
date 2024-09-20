@@ -1047,11 +1047,9 @@ export class EthersAdapter {
           if (this.authProvider) {
             try {
               this.appKit?.setLoading(true)
-              const { chainId } = await this.authProvider.switchNetwork(
-                caipNetwork.chainId as number
-              )
+              const { chainId } = await this.authProvider.switchNetwork(caipNetwork.id)
               const { address, preferredAccountType } = await this.authProvider.connect({
-                chainId: caipNetwork.chainId as number | undefined
+                chainId: caipNetwork.id
               })
               const caipAddress = `${this.chainNamespace}:${chainId}:${address}`
 

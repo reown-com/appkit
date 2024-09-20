@@ -274,29 +274,6 @@ export const ChainController = {
       this.setActiveNamespace(caipNetwork.chainNamespace, caipNetwork)
     }
   },
-
-  /**
-   * The setCaipNetwork function is being called for different purposes and it needs to be controlled if it should replace the NetworkController state or not.
-   * While we initializing the adapters, we need to set the caipNetwork without replacing the state.
-   * But when we switch the network, we need to replace the state.
-   * @param chain
-   * @param caipNetwork
-   * @param shouldReplace - if true, it will replace the NetworkController state
-   */
-  setCaipNetwork(
-    chain: ChainNamespace | undefined,
-    caipNetwork: NetworkControllerState['caipNetwork'],
-    shouldReplace = false
-  ) {
-    state.activeChain = caipNetwork?.chainNamespace
-    state.activeCaipNetwork = caipNetwork
-    PublicStateController.set({
-      activeChain: state.activeChain,
-      selectedNetworkId: state.activeCaipNetwork?.id
-    })
-    this.setChainNetworkData(chain, { caipNetwork }, shouldReplace)
-  },
-
   setActiveConnector(connector: ChainControllerState['activeConnector']) {
     if (connector) {
       state.activeConnector = ref(connector)

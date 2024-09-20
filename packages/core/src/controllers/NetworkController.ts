@@ -84,18 +84,6 @@ export const NetworkController = {
     }
   },
 
-  setCaipNetwork(caipNetwork: NetworkControllerState['caipNetwork']) {
-    if (!caipNetwork) {
-      return
-    }
-
-    if (!caipNetwork?.chainNamespace) {
-      throw new Error('chain is required to set active network')
-    }
-
-    ChainController.setCaipNetwork(caipNetwork?.chainNamespace, caipNetwork)
-  },
-
   setRequestedCaipNetworks(
     requestedNetworks: NetworkControllerState['requestedCaipNetworks'],
     chain: ChainNamespace | undefined

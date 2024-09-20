@@ -64,7 +64,7 @@ import {
   requireCaipAddress
 } from './utils/helpers.js'
 import { W3mFrameHelpers, W3mFrameRpcConstants } from '@reown/appkit-wallet'
-import type { W3mFrameProvider, W3mFrameTypes } from '@reown/appkit-wallet'
+import { W3mFrameProvider, type W3mFrameTypes } from '@reown/appkit-wallet'
 import { NetworkUtil } from '@reown/appkit-common'
 import { normalize } from 'viem/ens'
 import type { AppKitOptions } from '@reown/appkit'
@@ -234,10 +234,17 @@ export class WagmiAdapter implements ChainAdapter {
 
     this.networkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
-        const chainId = Number(NetworkUtil.caipNetworkIdToNumber(caipNetwork?.id))
-
-        if (chainId && this.wagmiConfig) {
-          await switchChain(this.wagmiConfig, { chainId })
+        if (caipNetwork?.id && this.wagmiConfig) {
+          const connections = getConnections(this.wagmiConfig)
+          const connector = connections[0]?.connector
+          const provider = await connector?.getProvider()
+          if (provider instanceof W3mFrameProvider) {
+            await provider.switchNetwork(caipNetwork.id)
+          } else {
+            await switchChain(this.wagmiConfig, {
+              chainId: Number(NetworkUtil.caipNetworkIdToNumber(caipNetwork?.id))
+            })
+          }
         }
       },
       getApprovedCaipNetworksData: async () => {
