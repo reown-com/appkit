@@ -1,51 +1,14 @@
 /* eslint-disable max-classes-per-file */
 import axios, { AxiosError } from 'axios'
 import { ConstantsUtil } from './ConstantUtils'
+import type {
+  AddPermission,
+  AddPermissionRequest,
+  AddPermissionResponse,
+  UpdatePermissionsContextRequest
+} from './TypeUtils'
 
-// Define types for the request and response
-type AddPermission = {
-  permissionType: string
-  data: string
-  required: boolean
-  onChainValidated: boolean
-}
-
-type AddPermissionRequest = {
-  permission: AddPermission
-}
-
-export type AddPermissionResponse = {
-  pci: string
-  key: string
-}
-
-type Signer = {
-  type: string
-  data: {
-    ids: string[]
-  }
-}
-
-type SignerData = {
-  userOpBuilder: string
-}
-
-type PermissionsContext = {
-  signer: Signer
-  expiry: number
-  signerData: SignerData
-  factory?: string
-  factoryData?: string
-  permissionsContext: string
-}
-
-type UpdatePermissionsContextRequest = {
-  pci: string
-  signature?: string
-  context: PermissionsContext
-}
-
-// Define a custom error type
+// -- Custom Error Class --------------------------------------------------- //
 export class CoSignerApiError extends Error {
   constructor(
     public status: number,
@@ -56,55 +19,61 @@ export class CoSignerApiError extends Error {
   }
 }
 
-// Function to send requests to the CoSigner API
-async function sendCoSignerRequest<
+// -- Helper Function for API Requests ------------------------------------- //
+export async function sendCoSignerRequest<
   TRequest,
   TResponse,
   TQueryParams extends Record<string, string> = Record<string, never>
->(args: {
+>({
+  url,
+  data,
+  queryParams = {} as TQueryParams,
+  headers,
+  transformRequest
+}: {
   url: string
   data: TRequest
   queryParams?: TQueryParams
   headers: Record<string, string>
   transformRequest?: (data: TRequest) => unknown
 }): Promise<TResponse> {
-  const { url, data, queryParams = {}, headers, transformRequest } = args
-  const transformedData = transformRequest ? transformRequest(data) : data
-
   try {
+    const transformedData = transformRequest ? transformRequest(data) : data
     const response = await axios.post<TResponse>(url, transformedData, {
       params: queryParams,
       headers
     })
-
     return response.data
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      const axiosError = error as AxiosError
-      if (axiosError.response) {
-        throw new CoSignerApiError(
-          axiosError.response.status,
-          JSON.stringify(axiosError.response.data)
-        )
-      } else {
-        throw new CoSignerApiError(500, 'Network error')
-      }
-    }
-    // Re-throw if it's not an Axios error
-    throw error
+    handleAxiosError(error)
   }
 }
 
-// Class to interact with the WalletConnect CoSigner API
+// -- Helper for Axios Error Handling -------------------------------------- //
+function handleAxiosError(error: unknown): never {
+  if (axios.isAxiosError(error)) {
+    const axiosError = error as AxiosError
+    if (axiosError.response) {
+      throw new CoSignerApiError(
+        axiosError.response.status,
+        JSON.stringify(axiosError.response.data)
+      )
+    } else {
+      throw new CoSignerApiError(500, 'Network error')
+    }
+  }
+  throw error
+}
+
+// -- WalletConnectCosigner Class ------------------------------------------ //
 export class WalletConnectCosigner {
   private baseUrl: string
   private projectId: string
 
-  constructor() {
+  constructor(projectId: string) {
     this.baseUrl = ConstantsUtil.WC_COSIGNER_BASE_URL
-    const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
     if (!projectId) {
-      throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
+      throw new Error('Project ID must be provided')
     }
     this.projectId = projectId
   }

@@ -1,58 +1,49 @@
-import type { ChainAdapter } from '@reown/appkit-core'
-import { subscribeKey as subKey } from 'valtio/vanilla/utils'
-import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
+import { proxy, subscribe as sub } from 'valtio/vanilla'
 import type {
-  SmartSessionClientMethods,
   SmartSessionGrantPermissionsRequest,
   SmartSessionGrantPermissionsResponse
 } from '../utils/TypeUtils'
+import { AppKitSmartSessionControllerClient } from '../../client'
 
 // -- Types --------------------------------------------- //
-export interface SmartSessionControllerClient extends SmartSessionClientMethods {
-  chainAdapter: ChainAdapter
+export interface SmartSessionControllerState {
+  permissionsContext?: SmartSessionGrantPermissionsResponse['context']
+  permissions?: SmartSessionGrantPermissionsResponse['permissions']
 }
 
-export interface SmartSessionControllerClientState {
-  _client?: SmartSessionControllerClient
-}
+export type StateKey = keyof SmartSessionControllerState
 
-type StateKey = keyof SmartSessionControllerClientState
-
-// -- State --------------------------------------------- //
-const state = proxy<SmartSessionControllerClientState>({
-  // status: 'uninitialized'
+// -- State --------------------------------------------------------- //
+const state = proxy<SmartSessionControllerState>({
+  permissions: undefined,
+  permissionsContext: undefined
 })
 
 // -- Controller ---------------------------------------- //
 export const SmartSessionController = {
   state,
 
-  subscribeKey<K extends StateKey>(
-    key: K,
-    callback: (value: SmartSessionControllerClientState[K]) => void
-  ) {
-    return subKey(state, key, callback)
+  async grantPermissions(
+    smartSessionGrantPermissionsRequest: SmartSessionGrantPermissionsRequest
+  ): Promise<SmartSessionGrantPermissionsResponse> {
+    const service = new AppKitSmartSessionControllerClient()
+    const response = await service.grantPermissions(smartSessionGrantPermissionsRequest)
+
+    this.setPermissions(response.permissions)
+    this.setPermissionsContext(response.context)
+
+    return response
   },
 
-  subscribe(callback: (newState: SmartSessionControllerClientState) => void) {
+  subscribe(callback: (newState: SmartSessionControllerState) => void) {
     return sub(state, () => callback(state))
   },
 
-  _getClient() {
-    if (!state._client) {
-      throw new Error('SmartSessionControllerClientState client not set')
-    }
-
-    return state._client
+  setPermissions(permissions: SmartSessionGrantPermissionsResponse['permissions']) {
+    state.permissions = permissions
   },
 
-  setSmartSessionControllerClient(client: SmartSessionControllerClient) {
-    state._client = ref(client)
-  },
-
-  grantPermissions(
-    request: SmartSessionGrantPermissionsRequest
-  ): Promise<SmartSessionGrantPermissionsResponse> {
-    return this._getClient().grantPermissions(request)
+  setPermissionsContext(context: SmartSessionGrantPermissionsResponse['context']) {
+    state.permissionsContext = context
   }
 }
