@@ -90,6 +90,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
     async connect({ ...rest } = {}) {
       try {
         const provider = await this.getProvider()
+
         if (!provider) {
           throw new ProviderNotFoundError()
         }
@@ -117,6 +118,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
         }
 
         // If session exists and chains are authorized, enable provider for required chain
+
         const accounts = (await provider.enable()).map(x => getAddress(x))
         const currentChainId = await this.getChainId()
 
@@ -412,8 +414,11 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
       return chainIds
     },
 
-    async getRequestedChainsIds() {
-      const chainIds = (await config.storage?.getItem(this.requestedChainsStorageKey)) ?? []
+    getRequestedChainsIds() {
+      const eip155Networks = parameters.networks.filter(
+        network => network.chainNamespace === 'eip155'
+      )
+      const chainIds = [...new Set(eip155Networks.map(network => Number(network.chainId)))]
 
       return [...new Set(chainIds)]
     },
@@ -442,7 +447,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
 
       const requestedChains = await this.getRequestedChainsIds()
 
-      return !connectorChains.every(id => requestedChains.includes(Number(id)))
+      return !namespaceChains.every(id => requestedChains.includes(Number(id)))
     },
     async setRequestedChainsIds(chains) {
       await config.storage?.setItem(this.requestedChainsStorageKey, chains)
