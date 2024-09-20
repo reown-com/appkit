@@ -8,6 +8,10 @@ export const WALLET_URL = process.env['WALLET_URL'] || 'https://react-wallet.wal
 export const WC_COSIGNER_BASE_URL = 'https://rpc.walletconnect.org/v1/sessions'
 export const USEROP_BUILDER_SERVICE_BASE_URL = 'https://react-wallet.walletconnect.com/api'
 
+export const GALLERY_URL = 'https://appkit-gallery.reown.com/'
+export const DOCS_URL = 'https://docs.reown.com/appkit/overview'
+export const REPO_URL = 'https://github.com/reown-com/appkit'
+
 export function getPublicUrl() {
   const publicUrl = process.env['NEXT_PUBLIC_PUBLIC_URL']
   if (publicUrl) {
