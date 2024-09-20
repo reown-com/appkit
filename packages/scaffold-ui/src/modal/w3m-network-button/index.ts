@@ -36,7 +36,8 @@ export class W3mNetworkButton extends LitElement {
   @state() private isUnsupportedChain = NetworkController.state.isUnsupportedChain
 
   // -- Lifecycle ----------------------------------------- //
-  public override firstUpdated() {
+  public constructor() {
+    super()
     this.unsubscribe.push(
       ...[
         AssetController.subscribeNetworkImages(() => {
@@ -79,16 +80,16 @@ export class W3mNetworkButton extends LitElement {
 
   // -- Private ------------------------------------------- //
   private getLabel() {
+    if (this.network) {
+      return this.network.name
+    }
+
     if (this.label) {
       return this.label
     }
 
     if (this.isUnsupportedChain) {
       return 'Switch Network'
-    }
-
-    if (this.network) {
-      return this.network.name
     }
 
     if (this.caipAddress) {

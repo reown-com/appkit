@@ -15,7 +15,7 @@ export function WagmiModalInfo() {
       const provider = await connector?.getProvider?.()
       const ethereumProvider = provider as UniversalProvider
 
-      return ethereumProvider.client?.core?.crypto?.getClientId()
+      return ethereumProvider?.client?.core?.crypto?.getClientId()
     }
 
     return null
