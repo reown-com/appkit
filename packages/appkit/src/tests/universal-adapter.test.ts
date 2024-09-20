@@ -68,8 +68,7 @@ describe('UniversalAdapter', () => {
         caipNetwork: undefined,
         requestedCaipNetworks: [mainnet, solana],
         approvedCaipNetworkIds: [],
-        supportsAllNetworks: true,
-        isDefaultCaipNetwork: false
+        supportsAllNetworks: true
       })
 
       const adapterSpy = vi.spyOn(universalAdapter as any, 'setDefaultNetwork')

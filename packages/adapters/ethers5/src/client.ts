@@ -722,13 +722,13 @@ export class Ethers5Adapter {
       }
     }
 
-    const chainChangedHandler = (networkId: string) => {
-      if (networkId) {
-        const networkIdNumber =
-          typeof networkId === 'string'
-            ? EthersHelpersUtil.hexStringToNumber(networkId)
-            : Number(networkId)
-        const caipNetwork = this.caipNetworks.find(c => c.chainId === networkIdNumber)
+    const chainChangedHandler = (chainId: string) => {
+      const chainIdNumber =
+        typeof chainId === 'string' ? EthersHelpersUtil.hexStringToNumber(chainId) : Number(chainId)
+      const caipNetwork = this.caipNetworks.find(c => c.chainId === chainIdNumber)
+      const currentCaipNetwork = this.appKit?.getCaipNetwork()
+
+      if (!currentCaipNetwork || currentCaipNetwork?.id !== caipNetwork?.id) {
         this.appKit?.setCaipNetwork(caipNetwork)
       }
     }
