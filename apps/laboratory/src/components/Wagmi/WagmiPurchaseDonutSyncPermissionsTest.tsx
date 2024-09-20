@@ -6,8 +6,8 @@ import { encodeFunctionData, parseEther } from 'viem'
 import { abi as donutContractAbi, address as donutContractaddress } from '../../utils/DonutContract'
 import { useERC7715Permissions } from '../../hooks/useERC7715Permissions'
 import { usePasskey } from '../../context/PasskeyContext'
-import { sepolia } from 'viem/chains'
 import { executeActionsWithPasskeyAndCosignerPermissions } from '../../utils/ERC7715Utils'
+import { getChain } from '../../utils/NetworksUtil'
 
 export function WagmiPurchaseDonutSyncPermissionsTest() {
   const { passkeyId } = usePasskey()
@@ -22,7 +22,7 @@ export function WagmiPurchaseDonutSyncPermissionsTest() {
     abi: donutContractAbi,
     address: donutContractaddress,
     functionName: 'getBalance',
-    args: [grantedPermissions?.signerData?.submitToAddress || '0x']
+    args: [grantedPermissions?.permissions?.signerData?.submitToAddress || '0x']
   })
 
   const [isTransactionPending, setTransactionPending] = useState<boolean>(false)
@@ -33,6 +33,14 @@ export function WagmiPurchaseDonutSyncPermissionsTest() {
     try {
       if (!grantedPermissions) {
         throw Error('No permissions available')
+      }
+      const chainId = grantedPermissions?.chainId
+      if (!chainId) {
+        throw new Error('Chain ID not available for granted permissions')
+      }
+      const chain = getChain(chainId)
+      if (!chain) {
+        throw new Error('Invalid chain')
       }
       if (!pci) {
         throw Error('No WC cosigner data(PCI) available')
@@ -52,9 +60,9 @@ export function WagmiPurchaseDonutSyncPermissionsTest() {
       ]
       const txHash = await executeActionsWithPasskeyAndCosignerPermissions({
         actions: purchaseDonutCallDataExecution,
-        chain: sepolia,
+        chain,
         passkeyId,
-        permissions: grantedPermissions,
+        permissions: grantedPermissions.permissions,
         pci
       })
       if (txHash) {
@@ -86,7 +94,7 @@ export function WagmiPurchaseDonutSyncPermissionsTest() {
   return (
     <Stack direction={['column', 'column', 'row']}>
       <Button
-        isDisabled={!grantedPermissions}
+        isDisabled={!grantedPermissions?.permissions || !grantedPermissions.chainId}
         isLoading={isTransactionPending}
         onClick={onPurchaseDonutWithPermissions}
       >

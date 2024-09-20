@@ -11,9 +11,9 @@ import type { AddPermissionResponse } from '../utils/WalletConnectCosignerUtils'
 
 export type ERC7715PermissionsContextType = {
   projectId: string
-  grantedPermissions: GrantPermissionsReturnType | undefined
+  grantedPermissions: { permissions: GrantPermissionsReturnType; chainId: number } | undefined
   setGrantedPermissions: React.Dispatch<
-    React.SetStateAction<GrantPermissionsReturnType | undefined>
+    React.SetStateAction<{ permissions: GrantPermissionsReturnType; chainId: number } | undefined>
   >
   wcCosignerData: AddPermissionResponse | undefined
   setWCCosignerData: React.Dispatch<React.SetStateAction<AddPermissionResponse | undefined>>
@@ -41,7 +41,7 @@ export function ERC7715PermissionsProvider({ children }: ERC7715PermissionsProvi
     throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
   }
   const [grantedPermissions, setGrantedPermissions] = useLocalStorageState<
-    GrantPermissionsReturnType | undefined
+    { permissions: GrantPermissionsReturnType; chainId: number } | undefined
   >(GRANTED_PERMISSIONS_KEY, undefined)
   const [wcCosignerData, setWCCosignerData] = useLocalStorageState<
     AddPermissionResponse | undefined

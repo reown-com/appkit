@@ -94,7 +94,10 @@ export function useERC7715Permissions() {
         factoryData: approvedPermissions.factoryData || ''
       }
     })
-    setGrantedPermissions(approvedPermissions)
+    setGrantedPermissions({
+      permissions: approvedPermissions,
+      chainId: chain.id
+    })
 
     return { approvedPermissions }
   }

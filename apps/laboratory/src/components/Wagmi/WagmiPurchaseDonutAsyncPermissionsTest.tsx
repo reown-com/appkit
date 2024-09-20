@@ -1,5 +1,4 @@
 import { Button, Flex, Stack, Text } from '@chakra-ui/react'
-import { useAccount } from 'wagmi'
 import { useReadContract } from 'wagmi'
 import { useState } from 'react'
 import { useChakraToast } from '../Toast'
@@ -8,10 +7,10 @@ import { abi as donutContractAbi, address as donutContractaddress } from '../../
 import { useLocalEcdsaKey } from '../../context/LocalEcdsaKeyContext'
 import { useERC7715Permissions } from '../../hooks/useERC7715Permissions'
 import { executeActionsWithECDSAAndCosignerPermissions } from '../../utils/ERC7715Utils'
+import { getChain } from '../../utils/NetworksUtil'
 
 export function WagmiPurchaseDonutAsyncPermissionsTest() {
   const { privateKey } = useLocalEcdsaKey()
-  const { chain } = useAccount()
   const { grantedPermissions, pci } = useERC7715Permissions()
 
   const {
@@ -23,7 +22,7 @@ export function WagmiPurchaseDonutAsyncPermissionsTest() {
     abi: donutContractAbi,
     address: donutContractaddress,
     functionName: 'getBalance',
-    args: [grantedPermissions?.signerData?.submitToAddress || '0x']
+    args: [grantedPermissions?.permissions?.signerData?.submitToAddress || '0x']
   })
 
   const [isTransactionPending, setTransactionPending] = useState<boolean>(false)
@@ -32,8 +31,13 @@ export function WagmiPurchaseDonutAsyncPermissionsTest() {
   async function onPurchaseDonutWithPermissions() {
     setTransactionPending(true)
     try {
+      const chainId = grantedPermissions?.chainId
+      if (!chainId) {
+        throw new Error('Chain ID not available for granted permissions')
+      }
+      const chain = getChain(chainId)
       if (!chain) {
-        throw new Error(`Account connected chain not available`)
+        throw new Error('Invalid chain')
       }
       if (!privateKey) {
         throw new Error(`Unable to get dApp private key`)
@@ -60,7 +64,7 @@ export function WagmiPurchaseDonutAsyncPermissionsTest() {
         actions: purchaseDonutCallDataExecution,
         chain,
         ecdsaPrivateKey: privateKey as `0x${string}`,
-        permissions: grantedPermissions,
+        permissions: grantedPermissions.permissions,
         pci
       })
       if (txHash) {
@@ -91,7 +95,7 @@ export function WagmiPurchaseDonutAsyncPermissionsTest() {
   return (
     <Stack direction={['column', 'column', 'row']}>
       <Button
-        isDisabled={!grantedPermissions}
+        isDisabled={!grantedPermissions?.permissions || !grantedPermissions.chainId}
         isLoading={isTransactionPending}
         onClick={onPurchaseDonutWithPermissions}
       >
