@@ -301,7 +301,9 @@ export class WagmiAdapter implements ChainAdapter {
             ?.filter(network => network.chainNamespace === 'eip155')
             .map(chain => chain.id) as string[]
 
-          siweParams.chains = chains
+          siweParams.chains = this.caipNetworks
+            ?.filter(network => network.chainNamespace === 'eip155')
+            .map(chain => chain.chainId) as number[]
 
           const result = await provider.authenticate({
             nonce: await siweConfig.getNonce(),
