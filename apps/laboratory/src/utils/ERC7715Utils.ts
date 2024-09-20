@@ -1,11 +1,12 @@
-import type { GrantPermissionsParameters, GrantPermissionsReturnType } from 'viem/experimental'
+import type { GrantPermissionsReturnType } from 'viem/experimental'
 import { abi as donutContractAbi, address as donutContractAddress } from './DonutContract'
-import { encodeAbiParameters, hashMessage, parseEther, type Chain } from 'viem'
+import { encodeAbiParameters, hashMessage, parseEther, toHex, type Chain } from 'viem'
 import { WalletConnectCosigner } from './WalletConnectCosignerUtils'
 import { buildUserOp, type Call, type FillUserOpResponse } from './UserOpBuilderServiceUtils'
 import { signMessage } from 'viem/accounts'
 import { bigIntReplacer } from './CommonUtils'
 import { sign as signWithPasskey } from 'webauthn-p256'
+import type { SmartSessionGrantPermissionsRequest } from '@reown/appkit-experimental-smart-session'
 
 export type MultikeySigner = {
   type: 'keys'
@@ -14,23 +15,28 @@ export type MultikeySigner = {
   }
 }
 
-export function getPurchaseDonutPermissions(): GrantPermissionsParameters {
+export function getPurchaseDonutPermissions(): SmartSessionGrantPermissionsRequest {
   return {
     expiry: Date.now() + 24 * 60 * 60,
     permissions: [
       {
-        type: {
-          custom: 'donut-purchase'
-        },
+        type: 'donut-purchase',
         data: {
           target: donutContractAddress,
           abi: donutContractAbi,
           valueLimit: parseEther('10').toString(),
           functionName: 'function purchase()'
-        },
-        policies: []
+        }
       }
-    ]
+    ],
+    policies: [],
+    chainId: toHex(11155111),
+    signer: {
+      type: 'key',
+      data: {
+        ids: ['0x1234567890']
+      }
+    }
   }
 }
 

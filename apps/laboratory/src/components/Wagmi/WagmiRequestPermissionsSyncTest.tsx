@@ -1,9 +1,8 @@
 import { Button, Stack, Text } from '@chakra-ui/react'
 import { useAccount } from 'wagmi'
-import { walletActionsErc7715 } from 'viem/experimental'
 import { useCallback, useState } from 'react'
 import { useChakraToast } from '../Toast'
-import { createWalletClient, custom, type Address, type Chain } from 'viem'
+import { type Address, type Chain } from 'viem'
 import { EIP_7715_RPC_METHODS } from '../../utils/EIP5792Utils'
 import { usePasskey } from '../../context/PasskeyContext'
 import {
@@ -14,8 +13,9 @@ import { useERC7715Permissions } from '../../hooks/useERC7715Permissions'
 import { bigIntReplacer } from '../../utils/CommonUtils'
 import { getPurchaseDonutPermissions } from '../../utils/ERC7715Utils'
 import { serializePublicKey, type P256Credential } from 'webauthn-p256'
-import { KeyTypes } from '../../utils/EncodingUtils'
+import { encodePublicKeyToDID, KeyTypes } from '../../utils/EncodingUtils'
 import { useAppKitAccount } from '@reown/appkit/react'
+import { useSmartSession } from '@reown/appkit-experimental-smart-session'
 
 export function WagmiRequestPermissionsSyncTest() {
   const { provider, supported } = useWagmiAvailableCapabilities({
@@ -51,9 +51,10 @@ function ConnectedTestContent({
   provider: Provider
   address: Address | undefined
 }) {
+  const { grantPermissions } = useSmartSession()
   const [isRequestPermissionLoading, setRequestPermissionLoading] = useState<boolean>(false)
   const { passkey } = usePasskey()
-  const { grantedPermissions, clearGrantedPermissions, grantPermissions } = useERC7715Permissions()
+  const { grantedPermissions, clearGrantedPermissions } = useERC7715Permissions()
   const toast = useChakraToast()
 
   const onRequestPermissions = useCallback(async () => {
@@ -65,14 +66,6 @@ function ConnectedTestContent({
       if (!passkey) {
         throw new Error('Passkey not available')
       }
-      if (!provider) {
-        throw new Error('No Provider available, Please connect your wallet.')
-      }
-      const walletClient = createWalletClient({
-        account: address,
-        chain,
-        transport: custom(provider)
-      }).extend(walletActionsErc7715())
       let p256Credential = passkey as P256Credential
       p256Credential = {
         ...p256Credential,
@@ -83,19 +76,20 @@ function ConnectedTestContent({
         }
       }
       const passkeyPublicKey = serializePublicKey(p256Credential.publicKey, { to: 'hex' })
-
       const purchaseDonutPermissions = getPurchaseDonutPermissions()
-      const response = await grantPermissions(walletClient, {
-        permissions: purchaseDonutPermissions,
-        signerKey: {
-          key: passkeyPublicKey,
-          type: KeyTypes.secp256r1
+      const dAppKeyDID = encodePublicKeyToDID(passkeyPublicKey, KeyTypes.secp256r1)
+      purchaseDonutPermissions.signer = {
+        type: 'key',
+        data: {
+          ids: [dAppKeyDID]
         }
-      })
+      }
+      const response = await grantPermissions(purchaseDonutPermissions)
+
       toast({
         type: 'success',
         title: 'Permissions Granted',
-        description: JSON.stringify(response.approvedPermissions, bigIntReplacer)
+        description: JSON.stringify(response, bigIntReplacer)
       })
     } catch (error) {
       toast({
