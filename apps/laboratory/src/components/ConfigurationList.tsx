@@ -31,7 +31,7 @@ export function ConfigurationList({ title, sdkOptions }: Props) {
         <CardBody>
           <Stack divider={<StackDivider />} spacing="4">
             {sdkOptions.map(option => (
-              <Box key={option.link}>
+              <Box key={option.link + option.title}>
                 <Stack direction="row" justifyContent="space-between" alignItems="center">
                   <Box>
                     <Heading size="xs" textTransform="uppercase">
