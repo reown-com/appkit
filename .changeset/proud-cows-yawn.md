@@ -35,4 +35,4 @@
 '@reown/appkit-wallet': patch
 ---
 
-Fix wagmi siwe issue
+Update siweParams with AppKit chains
