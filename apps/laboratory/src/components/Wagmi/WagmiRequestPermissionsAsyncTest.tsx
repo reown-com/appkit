@@ -68,7 +68,7 @@ function ConnectedTestContent({
       purchaseDonutPermissions.signer = {
         type: 'key',
         data: {
-          ids: [dAppKeyDID]
+          id: dAppKeyDID
         }
       }
       const response = await grantPermissions(purchaseDonutPermissions)
@@ -78,6 +78,7 @@ function ConnectedTestContent({
         description: JSON.stringify(response, bigIntReplacer)
       })
     } catch (error) {
+      console.log('error', error)
       toast({
         type: 'error',
         title: 'Request Permissions Errors',
