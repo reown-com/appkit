@@ -4,10 +4,15 @@ import type {
   SmartSessionGrantPermissionsRequest,
   SmartSessionGrantPermissionsResponse
 } from '../src/core/utils/TypeUtils.js'
-export { SmartSessionController } from '../src/core/controller/SmartSessionController.js'
-export * from '../src/core/utils/TypeUtils.js'
 import { AppKitSmartSessionControllerClient } from '../src/client.js'
 
+export { SmartSessionController } from '../src/core/controller/SmartSessionController.js'
+export type {
+  KeyType,
+  KeySigner,
+  SmartSessionGrantPermissionsRequest,
+  SmartSessionGrantPermissionsResponse
+} from '../src/core/utils/TypeUtils.js'
 export type { AppKitSmartSessionControllerClient }
 
 // -- Hooks -------------------------------------------------------------------

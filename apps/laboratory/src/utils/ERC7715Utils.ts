@@ -1,6 +1,6 @@
 import type { GrantPermissionsReturnType } from 'viem/experimental'
 import { abi as donutContractAbi, address as donutContractAddress } from './DonutContract'
-import { encodeAbiParameters, hashMessage, parseEther, toHex, type Chain } from 'viem'
+import { encodeAbiParameters, hashMessage, parseEther, type Chain } from 'viem'
 import { WalletConnectCosigner } from './WalletConnectCosignerUtils'
 import { buildUserOp, type Call, type FillUserOpResponse } from './UserOpBuilderServiceUtils'
 import { signMessage } from 'viem/accounts'
@@ -15,28 +15,23 @@ export type MultikeySigner = {
   }
 }
 
-export function getPurchaseDonutPermissions(): SmartSessionGrantPermissionsRequest {
+export function getPurchaseDonutPermissions(): Omit<
+  SmartSessionGrantPermissionsRequest,
+  'signer' | 'chainId' | 'address' | 'expiry'
+> {
   return {
-    expiry: Date.now() + 24 * 60 * 60,
     permissions: [
       {
-        type: 'donut-purchase',
+        type: 'contract-call-permissions',
         data: {
           target: donutContractAddress,
           abi: donutContractAbi,
           valueLimit: parseEther('10').toString(),
-          functionName: 'function purchase()'
+          functionName: 'purchase(uint256)'
         }
       }
     ],
-    policies: [],
-    chainId: toHex(11155111),
-    signer: {
-      type: 'key',
-      data: {
-        ids: ['0x1234567890']
-      }
-    }
+    policies: []
   }
 }
 

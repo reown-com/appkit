@@ -2,7 +2,7 @@ import { Button, Stack, Text } from '@chakra-ui/react'
 import { useAccount } from 'wagmi'
 import { useCallback, useState } from 'react'
 import { useChakraToast } from '../Toast'
-import { type Address, type Chain } from 'viem'
+import { toHex, type Address, type Chain } from 'viem'
 import { EIP_7715_RPC_METHODS } from '../../utils/EIP5792Utils'
 import { usePasskey } from '../../context/PasskeyContext'
 import {
@@ -13,9 +13,11 @@ import { useERC7715Permissions } from '../../hooks/useERC7715Permissions'
 import { bigIntReplacer } from '../../utils/CommonUtils'
 import { getPurchaseDonutPermissions } from '../../utils/ERC7715Utils'
 import { serializePublicKey, type P256Credential } from 'webauthn-p256'
-import { encodePublicKeyToDID, KeyTypes } from '../../utils/EncodingUtils'
 import { useAppKitAccount } from '@reown/appkit/react'
-import { useSmartSession } from '@reown/appkit-experimental-smart-session'
+import {
+  useSmartSession,
+  type SmartSessionGrantPermissionsRequest
+} from '@reown/appkit-experimental-smart-session'
 
 export function WagmiRequestPermissionsSyncTest() {
   const { provider, supported } = useWagmiAvailableCapabilities({
@@ -77,14 +79,21 @@ function ConnectedTestContent({
       }
       const passkeyPublicKey = serializePublicKey(p256Credential.publicKey, { to: 'hex' })
       const purchaseDonutPermissions = getPurchaseDonutPermissions()
-      const dAppKeyDID = encodePublicKeyToDID(passkeyPublicKey, KeyTypes.secp256r1)
-      purchaseDonutPermissions.signer = {
-        type: 'key',
-        data: {
-          ids: [dAppKeyDID]
-        }
+      const grantPurchaseDonutPermissions: SmartSessionGrantPermissionsRequest = {
+        // Adding 24 hours to the current time
+        expiry: Math.floor(Date.now() / 1000) + 24 * 60 * 60,
+        chainId: toHex(chain.id),
+        address,
+        signer: {
+          type: 'key',
+          data: {
+            type: 'secp256r1',
+            publicKey: passkeyPublicKey
+          }
+        },
+        ...purchaseDonutPermissions
       }
-      const response = await grantPermissions(purchaseDonutPermissions)
+      const response = await grantPermissions(grantPurchaseDonutPermissions)
 
       toast({
         type: 'success',

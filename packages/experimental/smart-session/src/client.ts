@@ -1,109 +1,110 @@
-import {
-  ChainController,
-  ConnectionController,
-  CoreHelperUtil,
-  OptionsController
-} from '@reown/appkit-core'
-import {
-  decodeDIDToPublicKey,
-  decodeUncompressedPublicKey,
-  encodePublicKeyToDID,
-  hexStringToBase64,
-  KeyTypes
-} from './core/helper/index.js'
+import { ChainController, ConnectionController, OptionsController } from '@reown/appkit-core'
+import { KeyTypes } from './core/helper/index.js'
 import type {
+  Signer,
   SmartSessionGrantPermissionsRequest,
   SmartSessionGrantPermissionsResponse,
   WalletGrantPermissionsResponse
 } from './core/utils/TypeUtils.js'
 import { WalletConnectCosigner } from './core/utils/WalletConnectCosigner'
 
+const ERROR_MESSAGES = {
+  UNSUPPORTED_NAMESPACE: 'Unsupported namespace',
+  NO_RESPONSE_RECEIVED: 'No response received from grantPermissions'
+}
+
+// Utility function for error logging
+function logError(context: string, error: unknown) {
+  console.error(`${context}:`, error)
+}
+
 // -- Client -------------------------------------------------------------------- //
+// Constants for error messages
 export class AppKitSmartSessionControllerClient {
   async grantPermissions(
-    smartSessionGrantPermissionsRequest: SmartSessionGrantPermissionsRequest
+    request: SmartSessionGrantPermissionsRequest
   ): Promise<SmartSessionGrantPermissionsResponse> {
     try {
-      const { signer } = smartSessionGrantPermissionsRequest
-      const { activeCaipAddress, activeCaipNetwork } = ChainController.state
-
-      // Validate address and network
-      const address = activeCaipAddress ? CoreHelperUtil.getPlainAddress(activeCaipAddress) : ''
-      if (!address) throw new Error('An address is required to create a Smart Session.')
-
-      if (!activeCaipNetwork?.id)
-        throw new Error('A chainId is required to create a Smart Session.')
-
-      // Validate signer type
-      if (signer.type !== 'key' && signer.type !== 'keys' && signer.data['id']) {
-        throw new Error('Invalid signer type.')
-      }
-
-      // Decode dAppKey and generate DID
-      const dAppKey = decodeDIDToPublicKey(signer.data['id'])
-      if (!dAppKey) throw new Error('Invalid dAppKey signer data.')
-
-      const dAppKeyDID = encodePublicKeyToDID(dAppKey.key, dAppKey.keyType)
-      const caip10Address = `${activeCaipNetwork.id}:${address}`
       const projectId = OptionsController.state.projectId
-      // Add permission using WalletConnect cosigner
+      const { activeCaipAddress } = ChainController.state
+
+      const address =
+        activeCaipAddress && activeCaipAddress.startsWith('eip155:') ? activeCaipAddress : ''
+      if (!address) throw new Error(ERROR_MESSAGES.UNSUPPORTED_NAMESPACE)
+
+      this.validateSigner(request.signer)
+
       const walletConnectCosigner = new WalletConnectCosigner(projectId)
-      const addPermissionResponse = await walletConnectCosigner.addPermission(caip10Address, {
-        permissionType: 'donut-purchase',
-        data: '',
-        onChainValidated: false,
-        required: true
-      })
+      const addPermissionResponse = await walletConnectCosigner.addPermission(address, request)
 
-      // Decode cosigner key and generate DID
-      const cosignerPublicKey = decodeUncompressedPublicKey(addPermissionResponse.key)
-      const cosignerKeyDID = encodePublicKeyToDID(cosignerPublicKey, KeyTypes.secp256k1)
+      const cosignerKey = this.getCosignerKey(addPermissionResponse.key)
+      this.updateRequestSigner(request, cosignerKey)
 
-      // Update request with cosigner info
-      smartSessionGrantPermissionsRequest.signer = {
-        type: 'keys',
-        data: {
-          ids: [cosignerKeyDID, dAppKeyDID]
-        }
-      }
-
-      // Call the connection controller to process the grant permission
       const connectionControllerClient = ConnectionController._getClient('eip155')
-      const smartSessionGrantPermissionsResponse =
-        (await connectionControllerClient.grantPermissions(
-          smartSessionGrantPermissionsRequest
-        )) as WalletGrantPermissionsResponse
+      const response = (await connectionControllerClient.grantPermissions(
+        request
+      )) as WalletGrantPermissionsResponse
 
-      if (!smartSessionGrantPermissionsResponse) {
-        throw new Error(
-          'AppKitSmartSessionControllerClient:grantPermissions - No response received from grantPermissions'
-        )
+      if (!response) {
+        throw new Error(ERROR_MESSAGES.NO_RESPONSE_RECEIVED)
       }
 
-      // Update the cosigner permissions context
-      await walletConnectCosigner.updatePermissionsContext(caip10Address, {
+      await walletConnectCosigner.activatePermissions(address, {
         pci: addPermissionResponse.pci,
-        context: {
-          expiry: smartSessionGrantPermissionsResponse.expiry,
-          signer: {
-            type: 'donut-purchase',
-            data: {
-              ids: [addPermissionResponse.key, hexStringToBase64(dAppKey.key)]
-            }
-          },
-          signerData: {
-            userOpBuilder: smartSessionGrantPermissionsResponse.signerMeta?.userOpBuilder || ''
-          },
-          permissionsContext: smartSessionGrantPermissionsResponse.context,
-          factory: smartSessionGrantPermissionsResponse.accountMeta?.factory || '',
-          factoryData: smartSessionGrantPermissionsResponse.accountMeta?.factoryData || ''
-        }
+        ...response
       })
 
-      return smartSessionGrantPermissionsResponse
+      return {
+        permissions: response.permissions,
+        context: response.context
+      }
     } catch (error) {
-      console.error('Error during grantPermissions process:', error)
+      logError('Error during grantPermissions process', error)
       throw error
+    }
+  }
+
+  private getCosignerKey(publicKey: `0x${string}`): { type: KeyTypes; publicKey: `0x${string}` } {
+    return { type: KeyTypes.secp256k1, publicKey }
+  }
+
+  private updateRequestSigner(
+    request: SmartSessionGrantPermissionsRequest,
+    cosignerKey: { type: KeyTypes; publicKey: `0x${string}` }
+  ) {
+    const dAppKey = request.signer.type === 'key' ? request.signer.data : undefined
+
+    if (dAppKey && cosignerKey) {
+      request.signer = {
+        type: 'keys',
+        data: { keys: [cosignerKey, dAppKey] }
+      }
+    }
+    return request
+  }
+
+  private validateSigner(signer: Signer) {
+    switch (signer.type) {
+      case 'wallet':
+        // No additional validation needed for wallet signers
+        break
+      case 'key':
+        if (!signer.data.publicKey) {
+          throw new Error('A public key is required for key signers.')
+        }
+        break
+      case 'keys':
+        if (!signer.data.keys || signer.data.keys.length === 0) {
+          throw new Error('A set of public keys is required for multisig signers.')
+        }
+        break
+      case 'account':
+        if (!signer.data.address) {
+          throw new Error('An address is required for account signers.')
+        }
+        break
+      default:
+        throw new Error(`Unsupported signer : ${signer}`)
     }
   }
 }

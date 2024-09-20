@@ -26,8 +26,8 @@ export const SmartSessionController = {
   async grantPermissions(
     smartSessionGrantPermissionsRequest: SmartSessionGrantPermissionsRequest
   ): Promise<SmartSessionGrantPermissionsResponse> {
-    const service = new AppKitSmartSessionControllerClient()
-    const response = await service.grantPermissions(smartSessionGrantPermissionsRequest)
+    const client = new AppKitSmartSessionControllerClient()
+    const response = await client.grantPermissions(smartSessionGrantPermissionsRequest)
 
     this.setPermissions(response.permissions)
     this.setPermissionsContext(response.context)

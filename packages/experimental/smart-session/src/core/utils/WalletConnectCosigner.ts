@@ -2,10 +2,9 @@
 import axios, { AxiosError } from 'axios'
 import { ConstantsUtil } from './ConstantUtils'
 import type {
-  AddPermission,
+  ActivatePermissionsRequest,
   AddPermissionRequest,
-  AddPermissionResponse,
-  UpdatePermissionsContextRequest
+  AddPermissionResponse
 } from './TypeUtils'
 
 // -- Custom Error Class --------------------------------------------------- //
@@ -78,7 +77,7 @@ export class WalletConnectCosigner {
     this.projectId = projectId
   }
 
-  async addPermission(address: string, permission: AddPermission): Promise<AddPermissionResponse> {
+  async addPermission(address: string, data: AddPermissionRequest): Promise<AddPermissionResponse> {
     const url = `${this.baseUrl}/${encodeURIComponent(address)}`
 
     return await sendCoSignerRequest<
@@ -87,18 +86,18 @@ export class WalletConnectCosigner {
       { projectId: string }
     >({
       url,
-      data: { permission },
+      data: data,
       queryParams: { projectId: this.projectId },
       headers: { 'Content-Type': 'application/json' }
     })
   }
 
-  async updatePermissionsContext(
+  async activatePermissions(
     address: string,
-    updateData: UpdatePermissionsContextRequest
+    updateData: ActivatePermissionsRequest
   ): Promise<void> {
     const url = `${this.baseUrl}/${encodeURIComponent(address)}/context`
-    await sendCoSignerRequest<UpdatePermissionsContextRequest, never, { projectId: string }>({
+    await sendCoSignerRequest<ActivatePermissionsRequest, never, { projectId: string }>({
       url,
       data: updateData,
       queryParams: { projectId: this.projectId },
