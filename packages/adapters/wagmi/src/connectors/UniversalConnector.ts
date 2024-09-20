@@ -45,8 +45,8 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
       chainId: number
     }>
     getNamespaceChainsIds(): number[]
-    getRequestedChainsIds(): number[]
-    isChainsStale(): boolean
+    getRequestedChainsIds(): Promise<number[]>
+    isChainsStale(): Promise<boolean>
     onConnect(connectInfo: ProviderConnectInfo): void
     onDisplayUri(uri: string): void
     onSessionDelete(data: { topic: string }): void
@@ -90,7 +90,6 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
     async connect({ ...rest } = {}) {
       try {
         const provider = await this.getProvider()
-
         if (!provider) {
           throw new ProviderNotFoundError()
         }
@@ -99,7 +98,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
           provider.on('display_uri', displayUri)
         }
 
-        const isChainsStale = this.isChainsStale()
+        const isChainsStale = await this.isChainsStale()
         // If there is an active session with stale chains, disconnect current session.
         if (provider.session && isChainsStale) {
           await provider.disconnect()
@@ -118,7 +117,6 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
         }
 
         // If session exists and chains are authorized, enable provider for required chain
-
         const accounts = (await provider.enable()).map(x => getAddress(x))
         const currentChainId = await this.getChainId()
 
@@ -268,7 +266,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
         }
 
         // If the chains are stale on the session, then the connector is unauthorized.
-        const isChainsStale = this.isChainsStale()
+        const isChainsStale = await this.isChainsStale()
         if (isChainsStale && provider.session) {
           // eslint-disable-next-line @typescript-eslint/no-empty-function
           await provider.disconnect().catch(() => {})
@@ -305,7 +303,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
         })
         config.emitter.emit('change', { chainId: Number(chainId) })
 
-        const requestedChains = this.getRequestedChainsIds()
+        const requestedChains = await this.getRequestedChainsIds()
         this.setRequestedChainsIds([...requestedChains, chainId])
 
         return wagmiChain
@@ -341,7 +339,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
             params: [addEthereumChain]
           })
 
-          const requestedChains = this.getRequestedChainsIds()
+          const requestedChains = await this.getRequestedChainsIds()
           this.setRequestedChainsIds([...requestedChains, chainId])
 
           return wagmiChain
@@ -414,11 +412,8 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
       return chainIds
     },
 
-    getRequestedChainsIds() {
-      const eip155Networks = parameters.networks.filter(
-        network => network.chainNamespace === 'eip155'
-      )
-      const chainIds = [...new Set(eip155Networks.map(network => Number(network.chainId)))]
+    async getRequestedChainsIds() {
+      const chainIds = (await config.storage?.getItem(this.requestedChainsStorageKey)) ?? []
 
       return [...new Set(chainIds)]
     },
@@ -433,7 +428,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
      * connector later on, however, this chain will not have been approved or rejected
      * by the wallet. In this case, the chain is considered stale.
      */
-    isChainsStale() {
+    async isChainsStale() {
       if (!isNewChainsStale) {
         return false
       }
@@ -445,9 +440,9 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
         return false
       }
 
-      const requestedChains = this.getRequestedChainsIds()
+      const requestedChains = await this.getRequestedChainsIds()
 
-      return !namespaceChains.every(id => requestedChains.includes(Number(id)))
+      return !connectorChains.every(id => requestedChains.includes(Number(id)))
     },
     async setRequestedChainsIds(chains) {
       await config.storage?.setItem(this.requestedChainsStorageKey, chains)
