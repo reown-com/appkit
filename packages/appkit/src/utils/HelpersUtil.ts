@@ -25,6 +25,7 @@ export const WcHelpersUtil = {
           'wallet_sendCalls',
           'wallet_showCallsStatus',
           'wallet_getCallsStatus',
+          'wallet_grantPermissions',
           'wallet_switchEthereumChain'
         ]
       default:

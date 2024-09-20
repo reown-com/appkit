@@ -51,7 +51,13 @@ const OPTIONAL_METHODS = [
   'wallet_requestPermissions',
   'wallet_registerOnboarding',
   'wallet_watchAsset',
-  'wallet_scanQRCode'
+  'wallet_scanQRCode',
+  // EIP-5792
+  'wallet_getCallsStatus',
+  'wallet_sendCalls',
+  'wallet_getCapabilities',
+  // EIP-7715
+  'wallet_grantPermissions'
 ]
 
 // -- Client --------------------------------------------------------------------

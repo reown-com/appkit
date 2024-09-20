@@ -100,7 +100,11 @@ const OPTIONAL_METHODS = [
   'wallet_requestPermissions',
   'wallet_registerOnboarding',
   'wallet_watchAsset',
-  'wallet_scanQRCode'
+  'wallet_scanQRCode',
+  'wallet_getCallsStatus',
+  'wallet_sendCalls',
+  'wallet_getCapabilities',
+  'wallet_grantPermissions'
 ]
 
 // @ts-expect-error: Overridden state type is correct
@@ -434,15 +438,17 @@ export class WagmiAdapter implements ChainAdapter {
         if (!this.wagmiConfig) {
           throw new Error('connectionControllerClient:request - wagmiConfig is undefined')
         }
-        const connector = this.wagmiConfig.connectors.find(
-          c => c.id === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID
-        )
 
-        if (!connector) {
+        const connections = getConnections(this.wagmiConfig)
+        console.log('>> Wagmi grantPermissions - connections', connections)
+
+        const connection = connections[0]
+
+        if (!connection?.connector) {
           throw new Error('connectionControllerClient:request - connector is undefined')
         }
 
-        const provider = (await connector.getProvider()) as Awaited<
+        const provider = (await connection.connector.getProvider()) as Awaited<
           ReturnType<(typeof UniversalProvider)['init']>
         >
 
@@ -450,7 +456,7 @@ export class WagmiAdapter implements ChainAdapter {
           throw new Error('connectionControllerClient:request - provider is undefined')
         }
 
-        return provider.request({ method: 'wallet_grantPermissions', params })
+        return provider.request({ method: 'wallet_grantPermissions', params: [params] })
       },
 
       sendTransaction: async (data: SendTransactionArgs) => {
