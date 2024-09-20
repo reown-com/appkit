@@ -57,8 +57,8 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
 
   get publicKey(): PublicKey | undefined {
     const session = this.getSession()
-
-    if (session) {
+    const namespace = this.getActiveNamespace()
+    if (session && namespace === 'solana') {
       return new PublicKey(session.address)
     }
 
@@ -201,7 +201,8 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
     required?: Required
   ): Required extends true ? PublicKey : PublicKey | undefined {
     const session = this.getSession()
-    if (!session) {
+    const namespace = this.getActiveNamespace()
+    if (!session || namespace !== 'solana') {
       if (required) {
         throw new Error('Account is required')
       }
@@ -229,7 +230,7 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
       this.emit('auth_rpcError', error)
     })
 
-    this.getProvider().onIsConnected(response => {
+    this.getProvider().onConnect(response => {
       this.setSession(response)
       const activeNamespace = this.getActiveNamespace()
 

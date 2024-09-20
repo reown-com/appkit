@@ -96,6 +96,10 @@ export class ModalValidator {
   async expectRejectedSign() {
     // We use Chakra Toast and it's not quite straightforward to set the `data-testid` attribute on the toast element.
     await expect(this.page.getByText(ConstantsUtil.SigningFailedToastTitle)).toBeVisible()
+    const closeButton = this.page.locator('#toast-close-button')
+
+    await expect(closeButton).toBeVisible()
+    await closeButton.click()
   }
 
   async expectSwitchedNetwork(network: string) {
