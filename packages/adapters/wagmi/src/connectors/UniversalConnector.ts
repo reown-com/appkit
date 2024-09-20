@@ -19,10 +19,10 @@ import {
   numberToHex
 } from 'viem'
 import { WcHelpersUtil } from '@reown/appkit'
+import { StorageUtil } from '@reown/appkit-core'
 import type { AppKitOptions } from '@reown/appkit'
 import type { AppKit } from '@reown/appkit'
 import { convertToAppKitChains } from '../utils/helpers.js'
-import { SafeLocalStorage, SafeLocalStorageKeys } from '@reown/appkit-common'
 
 type UniversalConnector = Connector & {
   onDisplayUri(uri: string): void
@@ -231,7 +231,8 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
       const currentChainId = appKit.getCaipNetwork()?.chainId
 
       if (chainId && currentChainId !== chainId) {
-        const storedCaipNetwork = SafeLocalStorage.getItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK)
+        const storedCaipNetwork = StorageUtil.getStoredActiveCaipNetwork()
+
         if (storedCaipNetwork && storedCaipNetwork.chainNamespace === 'eip155') {
           await this.switchChain?.({ chainId: Number(storedCaipNetwork.chainId) })
         } else {
