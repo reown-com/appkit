@@ -45,8 +45,8 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
       chainId: number
     }>
     getNamespaceChainsIds(): number[]
-    getRequestedChainsIds(): Promise<number[]>
-    isChainsStale(): Promise<boolean>
+    getRequestedChainsIds(): number[]
+    isChainsStale(): boolean
     onConnect(connectInfo: ProviderConnectInfo): void
     onDisplayUri(uri: string): void
     onSessionDelete(data: { topic: string }): void
@@ -99,7 +99,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
           provider.on('display_uri', displayUri)
         }
 
-        const isChainsStale = await this.isChainsStale()
+        const isChainsStale = this.isChainsStale()
         // If there is an active session with stale chains, disconnect current session.
         if (provider.session && isChainsStale) {
           await provider.disconnect()
@@ -268,7 +268,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
         }
 
         // If the chains are stale on the session, then the connector is unauthorized.
-        const isChainsStale = await this.isChainsStale()
+        const isChainsStale = this.isChainsStale()
         if (isChainsStale && provider.session) {
           // eslint-disable-next-line @typescript-eslint/no-empty-function
           await provider.disconnect().catch(() => {})
@@ -305,7 +305,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
         })
         config.emitter.emit('change', { chainId: Number(chainId) })
 
-        const requestedChains = await this.getRequestedChainsIds()
+        const requestedChains = this.getRequestedChainsIds()
         this.setRequestedChainsIds([...requestedChains, chainId])
 
         return wagmiChain
@@ -341,7 +341,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
             params: [addEthereumChain]
           })
 
-          const requestedChains = await this.getRequestedChainsIds()
+          const requestedChains = this.getRequestedChainsIds()
           this.setRequestedChainsIds([...requestedChains, chainId])
 
           return wagmiChain
@@ -433,7 +433,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
      * connector later on, however, this chain will not have been approved or rejected
      * by the wallet. In this case, the chain is considered stale.
      */
-    async isChainsStale() {
+    isChainsStale() {
       if (!isNewChainsStale) {
         return false
       }
@@ -445,7 +445,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
         return false
       }
 
-      const requestedChains = await this.getRequestedChainsIds()
+      const requestedChains = this.getRequestedChainsIds()
 
       return !namespaceChains.every(id => requestedChains.includes(Number(id)))
     },
