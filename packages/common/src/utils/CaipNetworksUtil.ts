@@ -1,3 +1,5 @@
+import type { CaipNetwork } from './TypeUtil'
+
 const RPC_URL_HOST = 'rpc.walletconnect.org'
 
 export const CaipNetworksUtil = {
@@ -12,11 +14,35 @@ export const CaipNetworksUtil = {
 
     if (isReownUrl) {
       const url = new URL(rpcUrl)
-      url.searchParams.set('projectId', projectId)
+      if (!url.searchParams.has('projectId')) {
+        url.searchParams.set('projectId', projectId)
+      }
 
       return url.toString()
     }
 
     return rpcUrl
+  },
+
+  /**
+   * Extends the CaipNetwork objects with the image ID and image URL if the image ID is not provided
+   * @param caipNetworks - The array of CaipNetwork objects to extend
+   * @param networkImageIds - The network image IDs
+   * @param customNetworkImageUrls - The custom network image URLs
+   * @param projectId - The project ID
+   * @returns The extended array of CaipNetwork objects
+   */
+  extendCaipNetworks(
+    caipNetworks: CaipNetwork[],
+    networkImageIds: Record<number | string, string>,
+    customNetworkImageUrls: Record<number | string, string> | undefined,
+    projectId: string
+  ): CaipNetwork[] {
+    return caipNetworks.map(caipNetwork => ({
+      ...caipNetwork,
+      imageId: networkImageIds[caipNetwork.chainId],
+      imageUrl: customNetworkImageUrls?.[caipNetwork.chainId],
+      rpcUrl: CaipNetworksUtil.extendRpcUrlWithProjectId(caipNetwork.rpcUrl, projectId)
+    }))
   }
 }

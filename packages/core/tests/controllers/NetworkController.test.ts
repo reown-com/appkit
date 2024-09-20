@@ -89,7 +89,6 @@ describe('NetworkController', () => {
 
     expect(NetworkController.state).toEqual({
       supportsAllNetworks: true,
-      isDefaultCaipNetwork: false,
       smartAccountEnabledNetworks: []
     })
   })
@@ -119,7 +118,6 @@ describe('NetworkController', () => {
   it('should update state correctly on setDefaultCaipNetwork()', () => {
     NetworkController.setDefaultCaipNetwork(caipNetwork)
     expect(NetworkController.state.caipNetwork).toEqual(caipNetwork)
-    expect(NetworkController.state.isDefaultCaipNetwork).toEqual(true)
   })
 
   it('should reset state correctly when default caip network is true', () => {

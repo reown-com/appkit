@@ -311,10 +311,6 @@ export class SolanaAdapter implements ChainAdapter {
 
     this.syncRequestedNetworks(this.caipNetworks)
 
-    AssetController.subscribeNetworkImages(() => {
-      this.syncNetwork()
-    })
-
     ChainController.subscribeKey('activeCaipNetwork', (newCaipNetwork: CaipNetwork | undefined) => {
       const newChain = this.caipNetworks.find(
         _chain => _chain.chainId === newCaipNetwork?.id.split(':')[1]

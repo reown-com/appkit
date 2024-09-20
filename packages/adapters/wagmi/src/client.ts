@@ -394,7 +394,6 @@ export class WagmiAdapter implements ChainAdapter {
           await SIWEController.signOut()
         }
         SafeLocalStorage.removeItem(SafeLocalStorageKeys.WALLET_ID)
-        SafeLocalStorage.removeItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK)
         SafeLocalStorage.removeItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR)
         SafeLocalStorage.removeItem(SafeLocalStorageKeys.WALLET_NAME)
         this.appKit?.setClientId(null)
@@ -609,7 +608,6 @@ export class WagmiAdapter implements ChainAdapter {
       this.appKit?.resetNetwork()
       this.appKit?.setAllAccounts([], this.chainNamespace)
       SafeLocalStorage.removeItem(SafeLocalStorageKeys.WALLET_ID)
-      SafeLocalStorage.removeItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK)
 
       return
     }
@@ -647,7 +645,6 @@ export class WagmiAdapter implements ChainAdapter {
           }
         } else if (status === 'connected' && address && chainId) {
           const caipAddress = `eip155:${chainId}:${address}` as CaipAddress
-          this.appKit?.resetAccount(this.chainNamespace)
           this.syncNetwork(address, chainId, true)
           this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)
           await Promise.all([
