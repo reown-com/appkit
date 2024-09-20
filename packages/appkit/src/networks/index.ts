@@ -144,6 +144,16 @@ export const baseSepolia: CaipNetwork = {
   chainNamespace: 'eip155'
 }
 
+export const optimismSepolia: CaipNetwork = {
+  id: 'eip155:11155420',
+  chainId: 11155420,
+  name: 'Optimism Sepolia',
+  currency: 'ETH',
+  explorerUrl: 'https://sepolia-optimism.etherscan.io',
+  rpcUrl: getBlockchainApiRpcUrl(11155420, 'eip155'),
+  chainNamespace: 'eip155'
+}
+
 export const solana: CaipNetwork = {
   id: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
   chainId: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
@@ -189,6 +199,7 @@ export const allChains = [
   aurora,
   sepolia,
   baseSepolia,
+  optimismSepolia,
   solana,
   solanaTestnet,
   solanaDevnet
