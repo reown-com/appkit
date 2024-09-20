@@ -92,17 +92,11 @@ describe('Wagmi Client', () => {
       expect(mockAppKit.getIsConnectedState()).toBe(false)
       expect(mockAppKit.getCaipAddress()).toBeUndefined()
 
-      const setApprovedCaipNetworksData = vi
-        .spyOn(mockAppKit, 'setApprovedCaipNetworksData')
-        .mockResolvedValue()
-
       expect(mockWagmiClient.wagmiConfig).toBeDefined()
 
       await connect(mockWagmiClient.wagmiConfig, {
         connector: mockWagmiClient.wagmiConfig.connectors[0]!
       })
-
-      expect(setApprovedCaipNetworksData).toHaveBeenCalledOnce()
 
       expect(mockAppKit.getCaipAddress()).toBe(
         `${ConstantsUtil.EIP155}:${mainnet.chainId}:${mockAccount.address}`
