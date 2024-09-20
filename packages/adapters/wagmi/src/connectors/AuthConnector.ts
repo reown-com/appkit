@@ -68,11 +68,7 @@ export function authConnector(parameters: AuthParameters) {
 
     async getAccounts() {
       const provider = await this.getProvider()
-      let chainId = provider.getLastUsedChainId()
-      if (!chainId) {
-        chainId = await this.getChainId()
-      }
-      const { address } = await provider.connect({ chainId })
+      const { address } = await provider.connect()
       config.emitter.emit('change', { accounts: [address as Address] })
 
       return [address as Address]
