@@ -645,8 +645,8 @@ export class WagmiAdapter implements ChainAdapter {
           }
         } else if (status === 'connected' && address && chainId) {
           const caipAddress = `eip155:${chainId}:${address}` as CaipAddress
-          this.syncNetwork(address, chainId, true)
           this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)
+          await this.syncNetwork(address, chainId, true)
           await Promise.all([
             this.syncProfile(address, chainId),
             this.syncBalance(address, chainId),
@@ -683,7 +683,6 @@ export class WagmiAdapter implements ChainAdapter {
 
   private async syncNetwork(address?: Hex, chainId?: number, isConnected?: boolean) {
     const chain = this.caipNetworks.find((c: CaipNetwork) => c.chainId === chainId)
-
     if (chain && chainId) {
       this.appKit?.setCaipNetwork({
         chainId: chain.chainId,
