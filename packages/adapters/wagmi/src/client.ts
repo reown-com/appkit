@@ -22,7 +22,11 @@ import {
   createConfig,
   getConnectors
 } from '@wagmi/core'
-import { ChainController, ConstantsUtil as CoreConstantsUtil } from '@reown/appkit-core'
+import {
+  ChainController,
+  ConstantsUtil as CoreConstantsUtil,
+  StorageUtil
+} from '@reown/appkit-core'
 import type UniversalProvider from '@walletconnect/universal-provider'
 import type { ChainAdapter } from '@reown/appkit-core'
 import { prepareTransactionRequest, sendTransaction as wagmiSendTransaction } from '@wagmi/core'
@@ -230,10 +234,6 @@ export class WagmiAdapter implements ChainAdapter {
 
     this.networkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
-        SafeLocalStorage.setItem(
-          SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK,
-          JSON.stringify(caipNetwork)
-        )
         const chainId = Number(NetworkUtil.caipNetworkIdToNumber(caipNetwork?.id))
 
         if (chainId && this.wagmiConfig) {
@@ -603,7 +603,7 @@ export class WagmiAdapter implements ChainAdapter {
   >) {
     const isConnected = ChainController.state.activeCaipAddress
 
-    if (status === 'disconnected' && isConnected) {
+    if (status === 'disconnected' && !isConnected) {
       this.appKit?.resetAccount(this.chainNamespace)
       this.appKit?.resetWcConnection()
       this.appKit?.resetNetwork()
@@ -863,7 +863,7 @@ export class WagmiAdapter implements ChainAdapter {
       this.appKit?.addConnector({
         id: ConstantsUtil.AUTH_CONNECTOR_ID,
         type: 'AUTH',
-        name: 'Auth',
+        name: 'w3mAuth',
         provider,
         chain: this.chainNamespace
       })
@@ -947,24 +947,32 @@ export class WagmiAdapter implements ChainAdapter {
         }
       })
 
-      provider.onIsConnected(req => {
-        const caipAddress = `eip155:${req.chainId}:${req.address}` as CaipAddress
+      provider.onIsConnected(() => {
+        provider.connect()
+      })
+
+      provider.onConnect(user => {
+        const caipAddress = `eip155:${user.chainId}:${user.address}` as CaipAddress
         this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)
-        this.appKit?.setSmartAccountDeployed(Boolean(req.smartAccountDeployed), this.chainNamespace)
-        this.appKit?.setPreferredAccountType(
-          req.preferredAccountType as W3mFrameTypes.AccountType,
+        this.appKit?.setSmartAccountDeployed(
+          Boolean(user.smartAccountDeployed),
           this.chainNamespace
         )
-        this.appKit?.setLoading(false)
+        this.appKit?.setPreferredAccountType(
+          user.preferredAccountType as W3mFrameTypes.AccountType,
+          this.chainNamespace
+        )
         this.appKit?.setAllAccounts(
-          req.accounts || [
+          user.accounts || [
             {
-              address: req.address,
-              type: (req.preferredAccountType || 'eoa') as W3mFrameTypes.AccountType
+              address: user.address,
+              type: (user.preferredAccountType || 'eoa') as W3mFrameTypes.AccountType
             }
           ],
           this.chainNamespace
         )
+        StorageUtil.setConnectedConnector('AUTH')
+        this.appKit?.setLoading(false)
       })
 
       provider.onGetSmartAccountEnabledNetworks(networks => {

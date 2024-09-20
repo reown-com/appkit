@@ -7,9 +7,11 @@ import { mockWalletStandard } from './mocks/WalletStandard.js'
 import { TestConstants } from './util/TestConstants.js'
 import { Transaction, VersionedTransaction } from '@solana/web3.js'
 import { mockLegacyTransaction, mockVersionedTransaction } from './mocks/Transaction.js'
+import { mockCoinbaseWallet } from './mocks/CoinbaseWallet.js'
 import { AuthProvider } from '../providers/AuthProvider.js'
 import { mockW3mFrameProvider } from './mocks/W3mFrameProvider.js'
 import { isVersionedTransaction } from '@solana/wallet-adapter-base'
+import { CoinbaseWalletProvider } from '../providers/CoinbaseWalletProvider.js'
 
 const getActiveChain = vi.fn(() => TestConstants.chains[0])
 
@@ -41,6 +43,14 @@ const providers: { name: string; provider: Provider }[] = [
       }),
       setSession: vi.fn(),
       chains: TestConstants.chains
+    })
+  },
+  {
+    name: 'CoinbaseWalletProvider',
+    provider: new CoinbaseWalletProvider({
+      provider: mockCoinbaseWallet(),
+      chains: TestConstants.chains,
+      getActiveChain
     })
   }
 ]
