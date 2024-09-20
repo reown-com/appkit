@@ -1,5 +1,7 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, subscribe as sub } from 'valtio/vanilla'
+import { AssetUtil } from '../utils/AssetUtil'
+import { ApiController } from './ApiController'
 
 // -- Types --------------------------------------------- //
 export interface AssetControllerState {
@@ -61,5 +63,31 @@ export const AssetController = {
 
   setCurrencyImage(key: string, value: string) {
     state.currencyImages[key] = value
+  },
+
+  getNetworkImage(
+    imageSrc: string | undefined,
+    imageId: string | undefined
+  ): Promise<string | undefined> {
+    return new Promise<string | undefined>(async resolve => {
+      if (imageSrc) {
+        resolve(imageSrc)
+        return
+      }
+
+      if (imageId) {
+        let networkImageBlob = AssetUtil.getNetworkImageById(imageId)
+
+        if (!networkImageBlob) {
+          await ApiController._fetchNetworkImage(imageId)
+          networkImageBlob = AssetUtil.getNetworkImageById(imageId)
+        }
+
+        resolve(networkImageBlob)
+        return
+      }
+
+      resolve(undefined)
+    })
   }
 }

@@ -1,7 +1,6 @@
 import { type CaipNetwork } from '@reown/appkit-common'
 import {
   AccountController,
-  AssetUtil,
   ChainController,
   ConnectorController,
   CoreHelperUtil,
@@ -114,19 +113,20 @@ export class W3mNetworksView extends LitElement {
       this.filteredNetworks = sortedNetworks
     }
 
-    return this.filteredNetworks?.map(
-      network => html`
-        <wui-list-network
+    return this.filteredNetworks?.map(network => {
+      return html`
+        <w3m-list-network-item
           .selected=${this.network?.id === network.id}
-          imageSrc=${ifDefined(AssetUtil.getNetworkImage(network))}
+          imageSrc=${ifDefined(network.imageUrl)}
+          imageId=${ifDefined(network.imageId)}
           type="network"
           name=${network.name ?? network.id}
           @click=${() => this.onSwitchNetwork(network)}
           .disabled=${this.getNetworkDisabled(network)}
           data-testid=${`w3m-network-switch-${network.name ?? network.id}`}
-        ></wui-list-network>
+        ></w3m-list-network-item>
       `
-    )
+    })
   }
 
   private getNetworkDisabled(network: CaipNetwork) {

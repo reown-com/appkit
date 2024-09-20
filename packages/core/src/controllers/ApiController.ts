@@ -105,15 +105,6 @@ export const ApiController = {
     AssetController.setTokenImage(symbol, URL.createObjectURL(blob))
   },
 
-  async fetchNetworkImages() {
-    const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
-
-    const ids = requestedCaipNetworks?.map(({ imageId }) => imageId).filter(Boolean)
-    if (ids) {
-      await Promise.allSettled((ids as string[]).map(id => ApiController._fetchNetworkImage(id)))
-    }
-  },
-
   async fetchConnectorImages() {
     const { connectors } = ConnectorController.state
     const ids = connectors.map(({ imageId }) => imageId).filter(Boolean)
@@ -269,7 +260,6 @@ export const ApiController = {
     const promises = [
       ApiController.fetchFeaturedWallets(),
       ApiController.fetchRecommendedWallets(),
-      ApiController.fetchNetworkImages(),
       ApiController.fetchConnectorImages()
     ]
     if (OptionsController.state.features?.analytics) {

@@ -47,13 +47,13 @@ export class W3mAccountButton extends LitElement {
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
+    if (this.network) {
+      AssetController.getNetworkImage(this.network?.imageUrl, this.network?.imageId).then(image => {
+        this.networkImage = image
+      })
+    }
     this.unsubscribe.push(
       ...[
-        AssetController.subscribeNetworkImages(() => {
-          this.networkImage = this.network?.imageId
-            ? AssetUtil.getNetworkImage(this.network)
-            : undefined
-        }),
         ChainController.subscribeKey('activeCaipAddress', val => (this.caipAddress = val)),
         AccountController.subscribeKey('balance', val => (this.balanceVal = val)),
         AccountController.subscribeKey('balanceSymbol', val => (this.balanceSymbol = val)),
@@ -61,7 +61,9 @@ export class W3mAccountButton extends LitElement {
         AccountController.subscribeKey('profileImage', val => (this.profileImage = val)),
         ChainController.subscribeKey('activeCaipNetwork', val => {
           this.network = val
-          this.networkImage = val?.imageId ? AssetUtil.getNetworkImage(val) : undefined
+          AssetController.getNetworkImage(val?.imageUrl, val?.imageId).then(image => {
+            this.networkImage = image
+          })
         }),
         NetworkController.subscribeKey('isUnsupportedChain', val => {
           this.isUnsupportedChain = val
