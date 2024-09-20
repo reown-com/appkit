@@ -2,6 +2,12 @@ import type { CaipNetwork } from './TypeUtil.js'
 
 const RPC_URL_HOST = 'rpc.walletconnect.org'
 
+type ExtendCaipNetworkParams = {
+  networkImageIds: Record<number | string, string>
+  customNetworkImageUrls: Record<number | string, string> | undefined
+  projectId: string
+}
+
 export const CaipNetworksUtil = {
   /**
    * Extends the RPC URL with the project ID if the RPC URL is a Reown URL
@@ -25,30 +31,45 @@ export const CaipNetworksUtil = {
   },
 
   /**
-   * Extends the CaipNetwork objects with the image ID and image URL if the image ID is not provided
+   * Extends the CaipNetwork object with the image ID and image URL if the image ID is not provided
    * @param params - The parameters object
-   * @param params.caipNetworks - The array of CaipNetwork objects to extend
+   * @param params.caipNetwork - The CaipNetwork object to extend
    * @param params.networkImageIds - The network image IDs
    * @param params.customNetworkImageUrls - The custom network image URLs
    * @param params.projectId - The project ID
    * @returns The extended array of CaipNetwork objects
    */
-  extendCaipNetworks({
-    caipNetworks,
-    networkImageIds,
-    customNetworkImageUrls,
-    projectId
-  }: {
-    caipNetworks: CaipNetwork[]
-    networkImageIds: Record<number | string, string>
-    customNetworkImageUrls: Record<number | string, string> | undefined
-    projectId: string
-  }): CaipNetwork[] {
-    return caipNetworks.map(caipNetwork => ({
+  extendCaipNetwork(
+    caipNetwork: CaipNetwork,
+    { networkImageIds, customNetworkImageUrls, projectId }: ExtendCaipNetworkParams
+  ): CaipNetwork {
+    return {
       ...caipNetwork,
       imageId: networkImageIds[caipNetwork.chainId],
       imageUrl: customNetworkImageUrls?.[caipNetwork.chainId],
       rpcUrl: CaipNetworksUtil.extendRpcUrlWithProjectId(caipNetwork.rpcUrl, projectId)
-    }))
+    }
+  },
+
+  /**
+   * Extends the array of CaipNetwork objects with the image ID and image URL if the image ID is not provided
+   * @param caipNetworks - The array of CaipNetwork objects to extend
+   * @param params - The parameters object
+   * @param params.networkImageIds - The network image IDs
+   * @param params.customNetworkImageUrls - The custom network image URLs
+   * @param params.projectId - The project ID
+   * @returns The extended array of CaipNetwork objects
+   */
+  extendCaipNetworks(
+    caipNetworks: CaipNetwork[],
+    { networkImageIds, customNetworkImageUrls, projectId }: ExtendCaipNetworkParams
+  ): CaipNetwork[] {
+    return caipNetworks.map(caipNetwork =>
+      CaipNetworksUtil.extendCaipNetwork(caipNetwork, {
+        networkImageIds,
+        customNetworkImageUrls,
+        projectId
+      })
+    )
   }
 }

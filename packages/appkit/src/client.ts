@@ -480,28 +480,21 @@ export class AppKit {
   }
 
   private setMetadata(options: AppKitOptions) {
-    options.metadata ||= {
-      name:
-        typeof document === 'undefined'
-          ? ''
-          : document.getElementsByTagName('title')[0]?.textContent || '',
+    if (typeof window === 'undefined' || !window.document) {
+      return
+    }
+
+    options.metadata = {
+      name: document.getElementsByTagName('title')[0]?.textContent || '',
       description:
-        typeof document === 'undefined'
-          ? ''
-          : document.querySelector<HTMLMetaElement>('meta[property="og:description"]')?.content ||
-            '',
-      url: typeof window === 'undefined' ? '' : window.location.origin,
-      icons: [
-        typeof document === 'undefined'
-          ? ''
-          : document.querySelector<HTMLLinkElement>('link[rel~="icon"]')?.href || ''
-      ]
+        document.querySelector<HTMLMetaElement>('meta[property="og:description"]')?.content || '',
+      url: window.location.origin,
+      icons: [document.querySelector<HTMLLinkElement>('link[rel~="icon"]')?.href || '']
     }
   }
 
   private extendCaipNetworks(options: AppKitOptions) {
-    options.networks = CaipNetworksUtil.extendCaipNetworks({
-      caipNetworks: options.networks,
+    options.networks = CaipNetworksUtil.extendCaipNetworks(options.networks, {
       networkImageIds: PresetsUtil.NetworkImageIds,
       customNetworkImageUrls: options.chainImages,
       projectId: options.projectId
@@ -524,26 +517,20 @@ export class AppKit {
   }
 
   private setDefaultNetwork(options: AppKitOptions) {
-    const [extendedDefaultNetwork] = options.defaultNetwork
-      ? CaipNetworksUtil.extendCaipNetworks({
-          caipNetworks: [options.defaultNetwork],
+    const extendedDefaultNetwork = options.defaultNetwork
+      ? CaipNetworksUtil.extendCaipNetwork(options.defaultNetwork, {
           networkImageIds: PresetsUtil.NetworkImageIds,
           customNetworkImageUrls: options.chainImages,
           projectId: options.projectId
         })
-      : [undefined]
+      : undefined
     const previousNetwork = SafeLocalStorage.getItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID)
     const caipNetwork = previousNetwork
       ? options.networks.find(n => n.id === previousNetwork)
       : undefined
 
-    if (caipNetwork) {
-      ChainController.setActiveCaipNetwork(caipNetwork)
-    } else if (extendedDefaultNetwork) {
-      ChainController.setActiveCaipNetwork(extendedDefaultNetwork)
-    } else {
-      ChainController.setActiveCaipNetwork(options.networks[0])
-    }
+    const network = caipNetwork ?? extendedDefaultNetwork ?? options.networks[0]
+    ChainController.setActiveCaipNetwork(network)
   }
 
   private async initOrContinue() {
