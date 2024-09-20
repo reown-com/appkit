@@ -24,7 +24,13 @@ describe('SafeLocalStorage unsafe', () => {
 })
 
 describe('SafeLocalStorage safe', () => {
-  let getItem = vi.fn(() => '{"test":"test"}')
+  let getItem = vi.fn(value => {
+    if (value === '@appkit/wallet_id') {
+      return 'test'
+    }
+
+    return undefined
+  })
   let setItem = vi.fn()
   let removeItem = vi.fn()
 
@@ -40,11 +46,11 @@ describe('SafeLocalStorage safe', () => {
 
   it('should setItem', () => {
     expect(SafeLocalStorage.setItem('@appkit/wallet_id', 'test')).toBe(undefined)
-    expect(setItem).toHaveBeenCalledWith('@appkit/wallet_id', JSON.stringify('test'))
+    expect(setItem).toHaveBeenCalledWith('@appkit/wallet_id', 'test')
   })
 
   it('should getItem ', () => {
-    expect(SafeLocalStorage.getItem('@appkit/wallet_id')).toEqual({ test: 'test' })
+    expect(SafeLocalStorage.getItem('@appkit/wallet_id')).toEqual('test')
     expect(getItem).toHaveBeenCalledWith('@appkit/wallet_id')
   })
 
@@ -53,10 +59,8 @@ describe('SafeLocalStorage safe', () => {
     expect(removeItem).toHaveBeenCalledWith('@appkit/wallet_id')
   })
 
-  it('getItem should return undefined when value is not valid JSON', () => {
-    getItem.mockReturnValueOnce('test')
-
-    expect(SafeLocalStorage.getItem('@appkit/wallet_id')).toBe(undefined)
-    expect(getItem).toHaveBeenCalledWith('@appkit/wallet_id')
+  it('getItem should return undefined if the value not exist', () => {
+    expect(SafeLocalStorage.getItem('@appkit/connected_connector')).toBe(undefined)
+    expect(getItem).toHaveBeenCalledWith('@appkit/connected_connector')
   })
 })

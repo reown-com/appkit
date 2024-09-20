@@ -2,7 +2,6 @@ import { Connection } from '@solana/web3.js'
 import {
   AccountController,
   ApiController,
-  AssetController,
   ChainController,
   CoreHelperUtil,
   EventsController

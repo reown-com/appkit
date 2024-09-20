@@ -1007,13 +1007,12 @@ export class EthersAdapter {
   }
 
   public async switchNetwork(caipNetwork: CaipNetwork) {
-    const requestSwitchNetwork = async (provider: Provider) => {
+    async function requestSwitchNetwork(provider: Provider) {
       try {
         await provider.request({
           method: 'wallet_switchEthereumChain',
           params: [{ chainId: EthersHelpersUtil.numberToHexString(caipNetwork.chainId) }]
         })
-        // this.appKit?.setCaipNetwork(caipNetwork)
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (switchError: any) {
         if (

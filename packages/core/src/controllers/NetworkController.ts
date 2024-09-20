@@ -70,12 +70,6 @@ export const NetworkController = {
     return ChainController.getNetworkControllerClient()
   },
 
-  setDefaultCaipNetwork(caipNetwork: NetworkControllerState['caipNetwork']) {
-    if (caipNetwork) {
-      ChainController.setActiveCaipNetwork(caipNetwork)
-    }
-  },
-
   setActiveCaipNetwork(caipNetwork: NetworkControllerState['caipNetwork']) {
     if (!caipNetwork) {
       return

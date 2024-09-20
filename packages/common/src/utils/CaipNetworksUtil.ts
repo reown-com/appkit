@@ -1,4 +1,4 @@
-import type { CaipNetwork } from './TypeUtil'
+import type { CaipNetwork } from './TypeUtil.js'
 
 const RPC_URL_HOST = 'rpc.walletconnect.org'
 
@@ -26,18 +26,24 @@ export const CaipNetworksUtil = {
 
   /**
    * Extends the CaipNetwork objects with the image ID and image URL if the image ID is not provided
-   * @param caipNetworks - The array of CaipNetwork objects to extend
-   * @param networkImageIds - The network image IDs
-   * @param customNetworkImageUrls - The custom network image URLs
-   * @param projectId - The project ID
+   * @param params - The parameters object
+   * @param params.caipNetworks - The array of CaipNetwork objects to extend
+   * @param params.networkImageIds - The network image IDs
+   * @param params.customNetworkImageUrls - The custom network image URLs
+   * @param params.projectId - The project ID
    * @returns The extended array of CaipNetwork objects
    */
-  extendCaipNetworks(
-    caipNetworks: CaipNetwork[],
-    networkImageIds: Record<number | string, string>,
-    customNetworkImageUrls: Record<number | string, string> | undefined,
+  extendCaipNetworks({
+    caipNetworks,
+    networkImageIds,
+    customNetworkImageUrls,
+    projectId
+  }: {
+    caipNetworks: CaipNetwork[]
+    networkImageIds: Record<number | string, string>
+    customNetworkImageUrls: Record<number | string, string> | undefined
     projectId: string
-  ): CaipNetwork[] {
+  }): CaipNetwork[] {
     return caipNetworks.map(caipNetwork => ({
       ...caipNetwork,
       imageId: networkImageIds[caipNetwork.chainId],

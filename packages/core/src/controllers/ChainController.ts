@@ -206,6 +206,7 @@ export const ChainController = {
     }
   },
 
+  // eslint-disable-next-line max-params
   setAccountProp(
     prop: keyof AccountControllerState,
     value: AccountControllerState[keyof AccountControllerState],
@@ -225,8 +226,7 @@ export const ChainController = {
     chain: ChainNamespace | undefined,
     caipNetwork?: NetworkControllerState['caipNetwork']
   ) {
-    console.trace('>>> setActiveNamespace', chain, caipNetwork)
-    if (caipNetwork && caipNetwork.chainNamespace) {
+    if (caipNetwork?.chainNamespace) {
       const newAdapter = chain ? state.chains.get(caipNetwork.chainNamespace) : undefined
       const newNamespace = newAdapter?.chainNamespace !== state.activeChain
 

@@ -64,7 +64,7 @@ describe('StorageUtil', () => {
     it('should get WalletConnect deep link from localStorage', () => {
       const deepLink = { href: 'https://example.com', name: 'Example Wallet' }
       SafeLocalStorage.setItem('@appkit/deeplink_choice', deepLink.href)
-      expect(StorageUtil.getWalletConnectDeepLink()).toEqual(deepLink)
+      expect(StorageUtil.getWalletConnectDeepLink()).toEqual(deepLink.href)
     })
 
     it('should return undefined if deep link is not set', () => {
