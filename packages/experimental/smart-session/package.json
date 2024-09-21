@@ -19,7 +19,6 @@
   "dependencies": {
     "@reown/appkit-core": "workspace:*",
     "axios": "1.7.2",
-    "bs58": "^6.0.0",
     "valtio": "1.11.2"
   },
   "peerDependencies": {
@@ -27,10 +26,10 @@
     "react-dom": ">=17"
   },
   "devDependencies": {
-    "@types/axios-mock-adapter": "^1.10.0",
-    "@types/react": "^18.2.0",
+    "@types/axios-mock-adapter": "1.10.0",
+    "@types/react": "^18.2.62",
     "@vitest/coverage-v8": "2.0.5",
-    "axios-mock-adapter": "^2.0.0",
+    "axios-mock-adapter": "2.0.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "vitest": "2.0.5"

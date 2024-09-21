@@ -1,103 +1,78 @@
-import bs58 from 'bs58'
+import type { Signer, SmartSessionGrantPermissionsRequest } from '../utils/TypeUtils'
 
-export function encodePublicKeyToDID(publicKey: string, keyType: string): string {
-  // Define the key type to DID prefix mapping
-  const keyTypeToDIDPrefix: Record<string, string> = {
-    secp256k1: 'did:key:zQ3s',
-    secp256r1: 'did:key:zDn'
-  }
-
-  // Check if the key type is supported
-  if (!(keyType in keyTypeToDIDPrefix)) {
-    throw new Error('Unsupported key type.')
-  }
-
-  // Remove '0x' prefix if present
-  const modifiedPublicKey = publicKey.startsWith('0x') ? publicKey.slice(2) : publicKey
-
-  // Convert publicKey to Buffer
-  const publicKeyBuffer = Buffer.from(modifiedPublicKey, 'hex')
-
-  // Base58 encode the public key
-  const encodedPublicKey = bs58.encode(publicKeyBuffer)
-
-  // Get the DID prefix for the key type
-  const didPrefix = keyTypeToDIDPrefix[keyType]
-
-  // Construct the did:key
-  return `${didPrefix}${encodedPublicKey}`
+export const ERROR_MESSAGES = {
+  UNSUPPORTED_NAMESPACE: 'Unsupported namespace',
+  NO_RESPONSE_RECEIVED: 'No response received from grantPermissions',
+  INVALID_REQUEST: 'Invalid request structure',
+  INVALID_CHAIN_ID_TYPE: 'Invalid chainId type: must be a string',
+  INVALID_EXPIRY: 'Invalid expiry: must be a positive number',
+  INVALID_PERMISSIONS: 'Invalid permissions: must be a non-empty array',
+  INVALID_POLICIES: 'Invalid policies: must be an array',
+  INVALID_SIGNER: 'Invalid signer: must be an object',
+  INVALID_SIGNER_TYPE: 'Invalid signer type: must be a string',
+  INVALID_KEY_SIGNER: 'A public key is required for key signers',
+  INVALID_KEYS_SIGNER: 'A set of public keys is required for multisig signers',
+  INVALID_ACCOUNT_SIGNER: 'An address is required for account signers',
+  UNSUPPORTED_SIGNER_TYPE: 'Unsupported signer type',
+  INVALID_CHAIN_ID_FORMAT: 'Invalid chainId: must start with "0x"'
 }
 
-// eslint-disable-next-line no-shadow
-export enum KeyTypes {
-  secp256k1 = 'secp256k1',
-  secp256r1 = 'secp256r1'
-}
-
-export function decodeDIDToPublicKey(did: string): {
-  key: `0x${string}`
-  keyType: KeyTypes
-} {
-  // Define the DID prefix to key type mapping
-  const didPrefixToKeyType: Record<string, KeyTypes> = {
-    'did:key:zQ3s': KeyTypes.secp256k1,
-    'did:key:zDn': KeyTypes.secp256r1
+export function validateRequest(request: SmartSessionGrantPermissionsRequest) {
+  if (typeof request !== 'object' || request === null) {
+    throw new Error(ERROR_MESSAGES.INVALID_REQUEST)
+  }
+  if (typeof request.chainId !== 'string') {
+    throw new Error(ERROR_MESSAGES.INVALID_CHAIN_ID_TYPE)
+  }
+  if (typeof request.chainId !== 'string' || !request.chainId.startsWith('0x')) {
+    throw new Error(ERROR_MESSAGES.INVALID_CHAIN_ID_FORMAT)
   }
 
-  // Find the matching key type prefix
-  const matchingPrefix = Object.keys(didPrefixToKeyType).find(prefix => did.startsWith(prefix))
-
-  if (!matchingPrefix) {
-    throw new Error('Invalid DID format. Unsupported key type.')
+  if (typeof request.expiry !== 'number' || request.expiry <= 0) {
+    throw new Error(ERROR_MESSAGES.INVALID_EXPIRY)
   }
 
-  // Extract the Base58 encoded part
-  const encodedPart = did.slice(matchingPrefix.length)
+  if (!Array.isArray(request.permissions) || request.permissions.length === 0) {
+    throw new Error(ERROR_MESSAGES.INVALID_PERMISSIONS)
+  }
 
-  // Decode the Base58 string
-  const decodedBuffer = bs58.decode(encodedPart)
+  if (!Array.isArray(request.policies)) {
+    throw new Error(ERROR_MESSAGES.INVALID_POLICIES)
+  }
 
-  // Convert the Buffer to a hex string
-  const publicKey = Buffer.from(decodedBuffer).toString('hex')
+  if (typeof request.signer !== 'object' || request.signer === null) {
+    throw new Error(ERROR_MESSAGES.INVALID_SIGNER)
+  }
 
-  // Add the '0x' prefix
-  const formattedPublicKey = `0x${publicKey}`
-
-  const keyType = didPrefixToKeyType[matchingPrefix]
-
-  return {
-    key: formattedPublicKey as `0x${string}`,
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    keyType: keyType!
+  if (typeof request.signer.type !== 'string') {
+    throw new Error(ERROR_MESSAGES.INVALID_SIGNER_TYPE)
+  }
+  if (!['wallet', 'key', 'keys', 'account'].includes(request.signer.type)) {
+    throw new Error(ERROR_MESSAGES.UNSUPPORTED_SIGNER_TYPE)
   }
 }
 
-export function decodeUncompressedPublicKey(uncompressedPublicKey: string): `0x${string}` {
-  const PUBLIC_KEY_PREFIX = 0x04
-  const PUBLIC_KEY_LENGTH = 65
-  const uncompressedPublicKeyBuffer = Buffer.from(uncompressedPublicKey, 'base64')
-
-  if (uncompressedPublicKeyBuffer.length !== PUBLIC_KEY_LENGTH) {
-    throw new Error('Invalid uncompressed public key length')
+export function validateSigner(signer: Signer) {
+  switch (signer.type) {
+    case 'wallet':
+      // No additional validation needed for wallet signers
+      break
+    case 'key':
+      if (!signer.data.publicKey) {
+        throw new Error(ERROR_MESSAGES.INVALID_KEY_SIGNER)
+      }
+      break
+    case 'keys':
+      if (!signer.data.keys || signer.data.keys.length === 0) {
+        throw new Error(ERROR_MESSAGES.INVALID_KEYS_SIGNER)
+      }
+      break
+    case 'account':
+      if (!signer.data.address) {
+        throw new Error(ERROR_MESSAGES.INVALID_ACCOUNT_SIGNER)
+      }
+      break
+    default:
+      throw new Error(ERROR_MESSAGES.UNSUPPORTED_SIGNER_TYPE)
   }
-
-  const header = uncompressedPublicKeyBuffer[0]
-  if (header !== PUBLIC_KEY_PREFIX) {
-    throw new Error('Invalid uncompressed public key header')
-  }
-
-  const publicKey = uncompressedPublicKeyBuffer.toString('hex')
-
-  return `0x${publicKey}`
-}
-
-export function hexStringToBase64(hexString: string): string {
-  // Remove the `0x` prefix if it exists
-  const cleanedHexString = hexString.replace(/^0x/u, '')
-
-  // Convert the hex string to a Buffer
-  const buffer = Buffer.from(cleanedHexString, 'hex')
-
-  // Convert the Buffer to a base64 string
-  return buffer.toString('base64')
 }

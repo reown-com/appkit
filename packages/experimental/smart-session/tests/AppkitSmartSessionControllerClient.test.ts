@@ -1,5 +1,5 @@
 import { describe, expect, it, beforeEach, vi } from 'vitest'
-import { AppKitSmartSessionControllerClient, ERROR_MESSAGES } from '../src/client.js'
+import { AppKitSmartSessionControllerClient } from '../src/client.js'
 import {
   ChainController,
   ConnectionController,
@@ -7,8 +7,12 @@ import {
   type ConnectionControllerClient
 } from '@reown/appkit-core'
 import { WalletConnectCosigner } from '../src/core/utils/WalletConnectCosigner'
-import { KeyTypes } from '../src/core/helper/index.js'
-import type { Signer, SmartSessionGrantPermissionsRequest } from '../src/core/utils/TypeUtils.js'
+import type {
+  KeyType,
+  Signer,
+  SmartSessionGrantPermissionsRequest
+} from '../src/core/utils/TypeUtils.js'
+import { ERROR_MESSAGES, validateRequest, validateSigner } from '../src/core/helper/index.js'
 
 vi.mock('@reown/appkit-core')
 vi.mock('../src/core/utils/WalletConnectCosigner')
@@ -131,7 +135,7 @@ describe('AppKitSmartSessionControllerClient', () => {
   describe('private methods', () => {
     it('getCosignerKey should return the correct key object', () => {
       const result = client['getCosignerKey']('0xtest-key')
-      expect(result).toEqual({ type: KeyTypes.secp256k1, publicKey: '0xtest-key' })
+      expect(result).toEqual({ type: 'secp256k1', publicKey: '0xtest-key' })
     })
 
     it('updateRequestSigner should correctly update the signer for key type', () => {
@@ -139,7 +143,10 @@ describe('AppKitSmartSessionControllerClient', () => {
         ...mockRequest,
         signer: { type: 'key', data: { type: 'secp256k1', publicKey: '0xdapp-key' } }
       }
-      const cosignerKey = { type: KeyTypes.secp256k1, publicKey: '0xcosigner-key' as `0x${string}` }
+      const cosignerKey = {
+        type: 'secp256k1' as KeyType,
+        publicKey: '0xcosigner-key' as `0x${string}`
+      }
 
       client['updateRequestSigner'](request, cosignerKey)
 
@@ -148,40 +155,81 @@ describe('AppKitSmartSessionControllerClient', () => {
         data: { keys: [cosignerKey, { type: 'secp256k1', publicKey: '0xdapp-key' }] }
       })
     })
+  })
 
-    describe('validateSigner', () => {
-      it('should not throw for valid wallet signer', () => {
-        const signer: Signer = { type: 'wallet', data: {} }
-        expect(() => client['validateSigner'](signer)).not.toThrow()
-      })
+  describe('validateSigner', () => {
+    it('should not throw for valid wallet signer', () => {
+      const signer: Signer = { type: 'wallet', data: {} }
+      expect(() => validateSigner(signer)).not.toThrow()
+    })
 
-      it('should throw for invalid key signer', () => {
-        const invalidKeySigner: Signer = { type: 'key', data: { type: 'secp256k1' } as any }
-        expect(() => client['validateSigner'](invalidKeySigner)).toThrow(
-          ERROR_MESSAGES.INVALID_KEY_SIGNER
-        )
-      })
+    it('should throw for invalid key signer', () => {
+      const invalidKeySigner: Signer = { type: 'key', data: { type: 'secp256k1' } as any }
+      expect(() => validateSigner(invalidKeySigner)).toThrow(ERROR_MESSAGES.INVALID_KEY_SIGNER)
+    })
 
-      it('should throw for invalid keys signer', () => {
-        const invalidKeysSigner: Signer = { type: 'keys', data: { keys: [] } }
-        expect(() => client['validateSigner'](invalidKeysSigner)).toThrow(
-          ERROR_MESSAGES.INVALID_KEYS_SIGNER
-        )
-      })
+    it('should throw for invalid keys signer', () => {
+      const invalidKeysSigner: Signer = { type: 'keys', data: { keys: [] } }
+      expect(() => validateSigner(invalidKeysSigner)).toThrow(ERROR_MESSAGES.INVALID_KEYS_SIGNER)
+    })
 
-      it('should throw for invalid account signer', () => {
-        const invalidAccountSigner: Signer = { type: 'account', data: {} as any }
-        expect(() => client['validateSigner'](invalidAccountSigner)).toThrow(
-          ERROR_MESSAGES.INVALID_ACCOUNT_SIGNER
-        )
-      })
+    it('should throw for invalid account signer', () => {
+      const invalidAccountSigner: Signer = { type: 'account', data: {} as any }
+      expect(() => validateSigner(invalidAccountSigner)).toThrow(
+        ERROR_MESSAGES.INVALID_ACCOUNT_SIGNER
+      )
+    })
 
-      it('should throw for unsupported signer type', () => {
-        const unsupportedSigner = { type: 'unsupported', data: {} } as unknown as Signer
-        expect(() => client['validateSigner'](unsupportedSigner)).toThrow(
-          ERROR_MESSAGES.UNSUPPORTED_SIGNER_TYPE
-        )
-      })
+    it('should throw for unsupported signer type', () => {
+      const unsupportedSigner = { type: 'unsupported', data: {} } as unknown as Signer
+      expect(() => validateSigner(unsupportedSigner)).toThrow(
+        ERROR_MESSAGES.UNSUPPORTED_SIGNER_TYPE
+      )
+    })
+  })
+
+  describe('validateRequest', () => {
+    it('should not throw for valid request', () => {
+      expect(() => validateRequest(mockRequest)).not.toThrow()
+    })
+
+    it('should throw for invalid chainId type', () => {
+      const invalidRequest = { ...mockRequest, chainId: 1 }
+      expect(() => validateRequest(invalidRequest as any)).toThrow(
+        ERROR_MESSAGES.INVALID_CHAIN_ID_TYPE
+      )
+    })
+
+    it('should throw for invalid chainId format', () => {
+      const invalidRequest = { ...mockRequest, chainId: '1' } as any
+      expect(() => validateRequest(invalidRequest)).toThrow(ERROR_MESSAGES.INVALID_CHAIN_ID_FORMAT)
+    })
+
+    it('should throw for invalid expiry', () => {
+      const invalidRequest = { ...mockRequest, expiry: -1 } as any
+      expect(() => validateRequest(invalidRequest)).toThrow(ERROR_MESSAGES.INVALID_EXPIRY)
+    })
+
+    it('should throw for empty permissions', () => {
+      const invalidRequest = { ...mockRequest, permissions: [] }
+      expect(() => validateRequest(invalidRequest)).toThrow(ERROR_MESSAGES.INVALID_PERMISSIONS)
+    })
+
+    it('should throw for invalid policies', () => {
+      const invalidRequest = { ...mockRequest, policies: {} as any }
+      expect(() => validateRequest(invalidRequest)).toThrow(ERROR_MESSAGES.INVALID_POLICIES)
+    })
+
+    it('should throw for invalid signer', () => {
+      const invalidRequest = { ...mockRequest, signer: null as any }
+      expect(() => validateRequest(invalidRequest)).toThrow(ERROR_MESSAGES.INVALID_SIGNER)
+    })
+
+    it('should throw for invalid signer type', () => {
+      const invalidRequest = { ...mockRequest, signer: { type: 'invalid', data: {} } }
+      expect(() => validateRequest(invalidRequest as any)).toThrow(
+        ERROR_MESSAGES.UNSUPPORTED_SIGNER_TYPE
+      )
     })
   })
 })
