@@ -107,7 +107,7 @@ export class AppKit {
   }
 
   public switchNetwork(caipNetwork: CaipNetwork) {
-    return NetworkController.switchActiveNetwork(caipNetwork)
+    return ChainController.switchActiveNetwork(caipNetwork)
   }
 
   public getIsConnected() {
@@ -165,7 +165,7 @@ export class AppKit {
   }
 
   public subscribeCaipNetworkChange(callback: (newState?: CaipNetwork) => void) {
-    NetworkController.subscribeKey('caipNetwork', callback)
+    ChainController.subscribeKey('activeCaipNetwork', callback)
   }
 
   public getState() {
@@ -297,7 +297,7 @@ export class AppKit {
 
   public getCaipNetwork = (chainNamespace?: ChainNamespace) => {
     if (chainNamespace) {
-      return NetworkController.getRequestedCaipNetworks().filter(
+      return ChainController.getRequestedCaipNetworks().filter(
         c => c.chainNamespace === chainNamespace
       )?.[0]
     }
@@ -305,22 +305,22 @@ export class AppKit {
     return ChainController.state.activeCaipNetwork
   }
 
-  public getCaipNetworks = () => NetworkController.getRequestedCaipNetworks()
+  public getCaipNetworks = () => ChainController.getRequestedCaipNetworks()
 
   public getActiveChainNamespace = () => ChainController.state.activeChain
 
-  public setRequestedCaipNetworks: (typeof NetworkController)['setRequestedCaipNetworks'] = (
+  public setRequestedCaipNetworks: (typeof ChainController)['setRequestedCaipNetworks'] = (
     requestedCaipNetworks,
     chain: ChainNamespace
   ) => {
-    NetworkController.setRequestedCaipNetworks(requestedCaipNetworks, chain)
+    ChainController.setRequestedCaipNetworks(requestedCaipNetworks, chain)
   }
 
-  public getApprovedCaipNetworkIds: (typeof NetworkController)['getApprovedCaipNetworkIds'] = () =>
-    NetworkController.getApprovedCaipNetworkIds()
+  public getApprovedCaipNetworkIds: (typeof ChainController)['getApprovedCaipNetworkIds'] = () =>
+    ChainController.getApprovedCaipNetworkIds()
 
-  public setApprovedCaipNetworksData: (typeof NetworkController)['setApprovedCaipNetworksData'] =
-    chain => NetworkController.setApprovedCaipNetworksData(chain)
+  public setApprovedCaipNetworksData: (typeof ChainController)['setApprovedCaipNetworksData'] =
+    chain => ChainController.setApprovedCaipNetworksData(chain)
 
   public resetNetwork: (typeof NetworkController)['resetNetwork'] = () => {
     NetworkController.resetNetwork()
@@ -527,7 +527,7 @@ export class AppKit {
       ? options.networks.find(n => n.id === previousNetwork)
       : undefined
 
-    const network = caipNetwork ?? extendedDefaultNetwork ?? options.networks[0]
+    const network = caipNetwork ?? extendedDefaultNetwork ?? (options.networks[0] as CaipNetwork)
     ChainController.setActiveCaipNetwork(network)
   }
 

@@ -112,7 +112,7 @@ describe('Base', () => {
     it('should subscribe to CAIP network changes', () => {
       const callback = vi.fn()
       appKit.subscribeCaipNetworkChange(callback)
-      expect(NetworkController.subscribeKey).toHaveBeenCalledWith('caipNetwork', callback)
+      expect(ChainController.subscribeKey).toHaveBeenCalledWith('caipNetwork', callback)
     })
 
     it('should get state', () => {
@@ -289,7 +289,7 @@ describe('Base', () => {
     it('should set requested CAIP networks', () => {
       const requestedNetworks = [{ id: 'eip155:1', name: 'Ethereum' }] as unknown as CaipNetwork[]
       appKit.setRequestedCaipNetworks(requestedNetworks, 'eip155')
-      expect(NetworkController.setRequestedCaipNetworks).toHaveBeenCalledWith(
+      expect(ChainController.setRequestedCaipNetworks).toHaveBeenCalledWith(
         requestedNetworks,
         'eip155'
       )
@@ -331,13 +331,13 @@ describe('Base', () => {
     })
 
     it('should get approved CAIP network IDs', () => {
-      vi.mocked(NetworkController.getApprovedCaipNetworkIds).mockReturnValue(['eip155:1'])
+      vi.mocked(ChainController.getApprovedCaipNetworkIds).mockReturnValue(['eip155:1'])
       expect(appKit.getApprovedCaipNetworkIds()).toEqual(['eip155:1'])
     })
 
     it('should set approved CAIP networks data', () => {
       appKit.setApprovedCaipNetworksData('eip155')
-      expect(NetworkController.setApprovedCaipNetworksData).toHaveBeenCalledWith('eip155')
+      expect(ChainController.setApprovedCaipNetworksData).toHaveBeenCalledWith('eip155')
     })
 
     it('should reset network', () => {

@@ -83,7 +83,7 @@ export class W3mUnsupportedChainView extends LitElement {
   }
 
   private networksTemplate() {
-    const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
+    const requestedCaipNetworks = ChainController.getRequestedCaipNetworks()
     const approvedCaipNetworkIds = NetworkController.state.approvedCaipNetworkIds
 
     const sortedNetworks = CoreHelperUtil.sortRequestedNetworks(
@@ -133,12 +133,12 @@ export class W3mUnsupportedChainView extends LitElement {
 
     if (caipAddress && caipNetwork?.id !== network.id) {
       if (approvedCaipNetworkIds?.includes(network.id)) {
-        await NetworkController.switchActiveNetwork(network)
+        await ChainController.switchActiveNetwork(network)
       } else if (supportsAllNetworks) {
         RouterController.push('SwitchNetwork', { ...routerData, network })
       }
     } else if (!caipAddress) {
-      NetworkController.setActiveCaipNetwork(network)
+      ChainController.setActiveCaipNetwork(network)
       RouterController.push('Connect')
     }
   }

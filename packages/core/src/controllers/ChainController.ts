@@ -2,7 +2,7 @@ import { proxyMap, subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
 import type { ChainAdapter, Connector } from '../utils/TypeUtil.js'
 
-import { NetworkController, type NetworkControllerState } from './NetworkController.js'
+import { type NetworkControllerState } from './NetworkController.js'
 import { AccountController, type AccountControllerState } from './AccountController.js'
 import { PublicStateController } from './PublicStateController.js'
 import {
@@ -10,9 +10,13 @@ import {
   SafeLocalStorageKeys,
   type CaipAddress,
   type CaipNetwork,
+  type CaipNetworkId,
   type ChainNamespace
 } from '@reown/appkit-common'
 import { StorageUtil } from '../utils/StorageUtil.js'
+import { EventsController } from './EventsController.js'
+import { ModalController } from './ModalController.js'
+import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 
 // -- Types --------------------------------------------- //
 export interface ChainControllerState {
@@ -156,17 +160,12 @@ export const ChainController = {
     })
   },
 
-  setChainNetworkData(
-    chain: ChainNamespace | undefined,
-    props: Partial<NetworkControllerState>,
-    replaceState = false
-  ) {
+  setChainNetworkData(chain: ChainNamespace | undefined, props: Partial<NetworkControllerState>) {
     if (!chain) {
       throw new Error('Chain is required to update chain network data')
     }
 
     const chainAdapter = state.chains.get(chain)
-
     if (chainAdapter) {
       chainAdapter.networkState = ref({
         ...chainAdapter.networkState,
@@ -174,9 +173,6 @@ export const ChainController = {
       } as NetworkControllerState)
 
       state.chains.set(chain, ref(chainAdapter))
-      if (replaceState || state.chains.size === 1 || state.activeChain === chain) {
-        NetworkController.replaceState(chainAdapter.networkState)
-      }
     }
   },
 
@@ -222,10 +218,7 @@ export const ChainController = {
     )
   },
 
-  setActiveNamespace(
-    chain: ChainNamespace | undefined,
-    caipNetwork?: NetworkControllerState['caipNetwork']
-  ) {
+  setActiveNamespace(chain: ChainNamespace | undefined, caipNetwork?: CaipNetwork) {
     if (caipNetwork?.chainNamespace) {
       const newAdapter = chain ? state.chains.get(caipNetwork.chainNamespace) : undefined
       const newNamespace = newAdapter?.chainNamespace !== state.activeChain
@@ -236,12 +229,11 @@ export const ChainController = {
         state.activeCaipAddress = newAdapter.accountState?.caipAddress
         SafeLocalStorage.setItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID, caipNetwork.id)
 
-        NetworkController.replaceState(newAdapter.networkState)
         AccountController.replaceState(newAdapter.accountState)
 
         PublicStateController.set({
           activeChain: chain,
-          selectedNetworkId: newAdapter.networkState?.caipNetwork?.id
+          selectedNetworkId: caipNetwork?.id
         })
       }
     } else {
@@ -255,8 +247,19 @@ export const ChainController = {
     }
   },
 
-  setActiveCaipNetwork(caipNetwork: NetworkControllerState['caipNetwork']) {
+  setActiveCaipNetwork(caipNetwork: CaipNetwork) {
     if (!caipNetwork) {
+      return
+    }
+
+    const chainAdapter = this.state.chains.get(caipNetwork.chainNamespace)
+    const isSupported =
+      chainAdapter?.networkState?.supportsAllNetworks ||
+      chainAdapter?.caipNetworks.find(network => network.id === caipNetwork.id)
+
+    if (!isSupported) {
+      this.showUnsupportedChainUI()
+
       return
     }
 
@@ -388,18 +391,81 @@ export const ChainController = {
 
     return chainNetworkState[key]
   },
+  getApprovedCaipNetworkIds(chainToFilter?: ChainNamespace) {
+    if (chainToFilter) {
+      const chain = chainToFilter
 
-  getAllRequestedCaipNetworks(): NetworkControllerState['requestedCaipNetworks'] {
-    const requestedCaipNetworks: NetworkControllerState['requestedCaipNetworks'] = []
+      if (!chain) {
+        throw new Error('chain is required to get approved network IDs')
+      }
 
-    state.chains.forEach(chainAdapter => {
-      const chainNetworkState = chainAdapter.networkState
-      if (chainNetworkState?.requestedCaipNetworks) {
-        requestedCaipNetworks.push(...chainNetworkState.requestedCaipNetworks)
+      return this.state.chains.get(chain)?.networkState?.approvedCaipNetworkIds
+    }
+
+    const allCaipNetworkIds: CaipNetworkId[] = []
+
+    Object.values(this.state.chains).forEach(adapter => {
+      if (adapter.networkState.approvedCaipNetworkIds) {
+        allCaipNetworkIds.push(...adapter.networkState.approvedCaipNetworkIds)
       }
     })
 
-    return requestedCaipNetworks
+    return allCaipNetworkIds
+  },
+
+  async setApprovedCaipNetworksData(chain: ChainNamespace | undefined) {
+    const networkControllerClient = this.getNetworkControllerClient()
+
+    const data = await networkControllerClient?.getApprovedCaipNetworksData()
+
+    if (!chain) {
+      throw new Error('chain is required to set approved network data')
+    }
+
+    this.setChainNetworkData(chain, {
+      approvedCaipNetworkIds: data?.approvedCaipNetworkIds,
+      supportsAllNetworks: data?.supportsAllNetworks
+    })
+  },
+
+  getRequestedCaipNetworks(namespace?: ChainNamespace) {
+    const approvedIds: `${string}:${string}`[] = []
+    const requestedNetworks: CaipNetwork[] = []
+    const chainAdapters: ChainNamespace[] = namespace ? [namespace] : [...this.state.chains.keys()]
+
+    chainAdapters.forEach((_namespace: ChainNamespace) => {
+      const { approvedCaipNetworkIds, requestedCaipNetworks } =
+        this.state.chains.get(_namespace)?.networkState || {}
+      if (approvedCaipNetworkIds) {
+        approvedIds.push(...approvedCaipNetworkIds)
+      }
+      if (requestedCaipNetworks) {
+        requestedNetworks.push(...requestedCaipNetworks)
+      }
+    })
+
+    const sortedNetworks = CoreHelperUtil.sortRequestedNetworks(approvedIds, requestedNetworks)
+
+    return sortedNetworks
+  },
+
+  setRequestedCaipNetworks(requestedNetworks: CaipNetwork[], namespace?: ChainNamespace) {
+    this.setChainNetworkData(namespace, { requestedCaipNetworks: requestedNetworks })
+  },
+
+  async switchActiveNetwork(network: CaipNetwork) {
+    const networkControllerClient = this.getNetworkControllerClient()
+
+    await networkControllerClient?.switchCaipNetwork(network)
+    this.setActiveCaipNetwork(network)
+
+    if (network) {
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'SWITCH_NETWORK',
+        properties: { network: network.id }
+      })
+    }
   },
 
   getAllApprovedCaipNetworks(): NetworkControllerState['approvedCaipNetworkIds'] {
@@ -422,7 +488,7 @@ export const ChainController = {
       throw new Error('Chain is required to set account prop')
     }
 
-    ChainController.state.activeCaipAddress = undefined
+    this.state.activeCaipAddress = undefined
     this.setChainAccountData(
       chainToWrite,
       ref({
@@ -445,5 +511,26 @@ export const ChainController = {
         provider: undefined
       })
     )
+  },
+
+  isCurrentNetworkSupported(): boolean {
+    const activeCaipNetwork = state.activeCaipNetwork
+    const requestedCaipNetworks = this.getRequestedCaipNetworks() || []
+
+    if (!requestedCaipNetworks.length) {
+      return true
+    }
+
+    if (!activeCaipNetwork) {
+      return true
+    }
+
+    return requestedCaipNetworks?.some(network => network.id === activeCaipNetwork?.id)
+  },
+
+  showUnsupportedChainUI() {
+    setTimeout(() => {
+      ModalController.open({ view: 'UnsupportedChain' })
+    }, 300)
   }
 }

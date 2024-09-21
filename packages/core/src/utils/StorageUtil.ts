@@ -112,7 +112,7 @@ export const StorageUtil = {
     const storedCaipNetworkId = SafeLocalStorage.getItem(
       SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID
     )
-    const allRequestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
+    const allRequestedCaipNetworks = ChainController.getRequestedCaipNetworks()
     const storedCaipNetwork = allRequestedCaipNetworks?.find(c => c.id === storedCaipNetworkId)
 
     return storedCaipNetwork

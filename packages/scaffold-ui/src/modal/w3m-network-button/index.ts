@@ -3,8 +3,7 @@ import {
   AssetUtil,
   ChainController,
   EventsController,
-  ModalController,
-  NetworkController
+  ModalController
 } from '@reown/appkit-core'
 import type { WuiNetworkButton } from '@reown/appkit-ui'
 import { customElement } from '@reown/appkit-ui'
@@ -33,8 +32,6 @@ export class W3mNetworkButton extends LitElement {
 
   @state() private loading = ModalController.state.loading
 
-  @state() private isUnsupportedChain = NetworkController.state.isUnsupportedChain
-
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
@@ -52,8 +49,7 @@ export class W3mNetworkButton extends LitElement {
           this.network = val
           this.networkImage = val?.imageId ? AssetUtil.getNetworkImage(val) : undefined
         }),
-        ModalController.subscribeKey('loading', val => (this.loading = val)),
-        NetworkController.subscribeKey('isUnsupportedChain', val => (this.isUnsupportedChain = val))
+        ModalController.subscribeKey('loading', val => (this.loading = val))
       ]
     )
   }
@@ -68,7 +64,7 @@ export class W3mNetworkButton extends LitElement {
       <wui-network-button
         data-testid="wui-network-button"
         .disabled=${Boolean(this.disabled || this.loading)}
-        .isUnsupportedChain=${this.isUnsupportedChain}
+        .isUnsupportedChain=${!ChainController.isCurrentNetworkSupported()}
         imageSrc=${ifDefined(this.networkImage)}
         @click=${this.onClick.bind(this)}
       >
@@ -88,7 +84,7 @@ export class W3mNetworkButton extends LitElement {
       return this.label
     }
 
-    if (this.isUnsupportedChain) {
+    if (!ChainController.isCurrentNetworkSupported()) {
       return 'Switch Network'
     }
 

@@ -25,8 +25,6 @@ export class W3mNetworksView extends LitElement {
   // -- State & Properties -------------------------------- //
   @state() public network = ChainController.state.activeCaipNetwork
 
-  @state() public requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
-
   @state() private filteredNetworks?: CaipNetwork[]
 
   @state() private search = ''
@@ -99,7 +97,7 @@ export class W3mNetworksView extends LitElement {
   }
 
   private networksTemplate() {
-    const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
+    const requestedCaipNetworks = ChainController.getRequestedCaipNetworks()
     const approvedCaipNetworkIds = NetworkController.state.approvedCaipNetworkIds
     const sortedNetworks = CoreHelperUtil.sortRequestedNetworks(
       approvedCaipNetworkIds,
@@ -166,7 +164,7 @@ export class W3mNetworksView extends LitElement {
       if (supportsAllNetworks || isConnectedWithAuth) {
         RouterController.push('SwitchNetwork', { ...routerData, network })
       } else {
-        await NetworkController.switchActiveNetwork(network)
+        await ChainController.switchActiveNetwork(network)
       }
     } else {
       // eslint-disable-next-line no-lonely-if
@@ -184,7 +182,7 @@ export class W3mNetworksView extends LitElement {
             network
           })
         } else {
-          NetworkController.setActiveCaipNetwork(network)
+          ChainController.setActiveCaipNetwork(network)
         }
       }
     }

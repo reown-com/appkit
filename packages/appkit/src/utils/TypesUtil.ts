@@ -52,7 +52,7 @@ export type AppKitOptions = {
    * You can set a desired caipnetwork for the initial connection:
    * @see https://docs.reown.com/appkit/react/core/options#defaultchain
    */
-  defaultNetwork?: NetworkControllerState['caipNetwork']
+  defaultNetwork?: CaipNetwork
   /**
    * Add or override the modal's network images.
    * @see https://docs.reown.com/appkit/react/core/options#chainimages

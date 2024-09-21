@@ -400,7 +400,7 @@ export class UniversalAdapterClient {
 
       try {
         if (storedCaipNetwork) {
-          NetworkController.setActiveCaipNetwork(storedCaipNetwork)
+          ChainController.setActiveCaipNetwork(storedCaipNetwork)
         } else if (!activeCaipNetwork) {
           this.setDefaultNetwork(nameSpaces)
         } else if (
@@ -433,7 +433,7 @@ export class UniversalAdapterClient {
             const network = requestedCaipNetworks.find(c => c.id === chainId)
 
             if (network) {
-              NetworkController.setActiveCaipNetwork(network as unknown as CaipNetwork)
+              ChainController.setActiveCaipNetwork(network as unknown as CaipNetwork)
             }
           }
         }
@@ -469,7 +469,7 @@ export class UniversalAdapterClient {
       const currentCaipNetwork = this.appKit?.getCaipNetwork()
 
       if (!caipNetwork) {
-        NetworkController.setActiveCaipNetwork({
+        ChainController.setActiveCaipNetwork({
           chainId: Number(chainId),
           id: `eip155:${chainId}`,
           name: 'Unknown Network',
