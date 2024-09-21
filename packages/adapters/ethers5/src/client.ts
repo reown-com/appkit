@@ -1060,11 +1060,11 @@ export class Ethers5Adapter {
           if (this.authProvider) {
             try {
               this.appKit?.setLoading(true)
-              const { chainId } = await this.authProvider.switchNetwork(caipNetwork.id)
+              await this.authProvider.switchNetwork(caipNetwork.id)
               const { address, preferredAccountType } = await this.authProvider.connect({
                 chainId: caipNetwork.id
               })
-              const caipAddress = `${this.chainNamespace}:${chainId}:${address}`
+              const caipAddress = `${caipNetwork.id}:${address}`
 
               this.appKit?.setCaipNetwork(caipNetwork)
               this.appKit?.setCaipAddress(caipAddress as CaipAddress, this.chainNamespace)

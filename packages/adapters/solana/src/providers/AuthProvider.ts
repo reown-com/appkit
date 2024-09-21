@@ -15,6 +15,7 @@ import { withSolanaNamespace } from '../utils/withSolanaNamespace.js'
 import base58 from 'bs58'
 import { isVersionedTransaction } from '@solana/wallet-adapter-base'
 import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
+import { ProviderUtil } from '@reown/appkit/store'
 
 export type AuthProviderConfig = {
   getProvider: () => W3mFrameProvider
@@ -201,8 +202,7 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
     required?: Required
   ): Required extends true ? PublicKey : PublicKey | undefined {
     const session = this.getSession()
-    const namespace = this.getActiveNamespace()
-    if (!session || namespace !== 'solana') {
+    if (!session) {
       if (required) {
         throw new Error('Account is required')
       }
@@ -231,10 +231,12 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
     })
 
     this.getProvider().onConnect(response => {
-      this.setSession(response)
-      const activeNamespace = this.getActiveNamespace()
+      const chainId = response.chainId
 
-      if (activeNamespace === 'solana') {
+      if (String(chainId)?.startsWith('solana')) {
+        ProviderUtil.setProvider('solana', this)
+        ProviderUtil.setProviderId('solana', 'w3mAuth')
+        this.setSession(response)
         this.emit('connect', this.getPublicKey(true))
       }
     })

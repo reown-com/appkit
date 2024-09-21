@@ -416,13 +416,16 @@ export class SolanaAdapter implements ChainAdapter {
       const user = await this.w3mFrameProvider?.getUser({
         chainId: caipNetwork?.id
       })
-      this.authSession = user
+      if (caipNetwork.chainNamespace === 'solana') {
+        this.authSession = user
+      }
       if (user) {
-        const caipAddress = `solana:${caipNetwork.chainId}:${user.address}` as CaipAddress
-        ProviderUtil.setProvider(this.chainNamespace, this.authProvider)
-        ProviderUtil.setProviderId(this.chainNamespace, 'walletConnect')
-        this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)
-        this.syncAccount(user.address)
+        const caipAddress = `${caipNetwork.id}:${user.address}`
+        this.appKit?.setCaipNetwork(caipNetwork)
+        this.appKit?.setCaipAddress(caipAddress as CaipAddress, this.chainNamespace)
+        if (caipNetwork.chainNamespace === 'solana') {
+          this.syncAccount(user.address)
+        }
       }
     } else {
       this.appKit?.setCaipNetwork(caipNetwork)
