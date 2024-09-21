@@ -12,6 +12,7 @@ export function SolanaSignMessageTest() {
 
   async function onSignMessage() {
     try {
+      console.log('>> SolanaSignMessageTest', walletProvider)
       if (!walletProvider) {
         throw Error('user is disconnected')
       }

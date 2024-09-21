@@ -5,7 +5,7 @@ import { SwitchChainError, getAddress } from 'viem'
 import type { Address, Hex } from 'viem'
 import { ConstantsUtil } from '@reown/appkit-utils'
 import { NetworkUtil } from '@reown/appkit-common'
-import { W3mFrameProviderSingleton } from '@reown/appkit/auth-provider'
+import { AuthProvider } from '@reown/appkit/auth-provider'
 
 // -- Types ----------------------------------------------------------------------------------------
 interface W3mFrameProviderOptions {
@@ -76,7 +76,7 @@ export function authConnector(parameters: AuthParameters) {
 
     async getProvider() {
       if (!this.provider) {
-        this.provider = W3mFrameProviderSingleton.getInstance(parameters.options.projectId)
+        this.provider = AuthProvider.getInstance(parameters.options.projectId)
       }
 
       return Promise.resolve(this.provider)

@@ -1,1 +1,1 @@
-export * from './W3MFrameProviderSingleton.js'
+export * from './AuthProvider.js'

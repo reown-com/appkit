@@ -42,7 +42,7 @@ import { withSolanaNamespace } from './utils/withSolanaNamespace.js'
 import type { AppKit } from '@reown/appkit'
 import type { AppKitOptions as CoreOptions } from '@reown/appkit'
 import { ProviderUtil } from '@reown/appkit/store'
-import { W3mFrameProviderSingleton } from '@reown/appkit/auth-provider'
+import { AuthProvider } from '@reown/appkit/auth-provider'
 import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
 import { createSendTransaction } from './utils/createSendTransaction.js'
 import { CoinbaseWalletProvider } from './providers/CoinbaseWalletProvider.js'
@@ -603,7 +603,7 @@ export class SolanaAdapter implements ChainAdapter {
         : CoreConstantsUtil.DEFAULT_FEATURES.socials
 
       if (emailEnabled || socialsEnabled) {
-        this.w3mFrameProvider = W3mFrameProviderSingleton.getInstance(
+        this.w3mFrameProvider = AuthProvider.getInstance(
           opts.projectId,
           withSolanaNamespace(this.appKit?.getCaipNetwork(this.chainNamespace)?.chainId)
         )

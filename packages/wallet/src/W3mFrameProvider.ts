@@ -91,6 +91,7 @@ export class W3mFrameProvider {
 
   public async getChainId() {
     try {
+      console.log('>> W3mFrameProvider getChainId')
       const response = await this.appEvent<'GetChainId'>({
         type: W3mFrameConstants.APP_GET_CHAIN_ID
       } as W3mFrameTypes.AppEvent)

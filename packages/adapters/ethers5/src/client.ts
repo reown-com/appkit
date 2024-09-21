@@ -41,7 +41,7 @@ import { ethers } from 'ethers5'
 import type { PublicStateControllerState } from '@reown/appkit-core'
 import { ProviderUtil } from '@reown/appkit/store'
 import { CoinbaseWalletSDK, type ProviderInterface } from '@coinbase/wallet-sdk'
-import { W3mFrameProviderSingleton } from '@reown/appkit/auth-provider'
+import { AuthProvider } from '@reown/appkit/auth-provider'
 
 // -- Types ---------------------------------------------------------------------
 export interface AdapterOptions {
@@ -1123,7 +1123,7 @@ export class Ethers5Adapter {
 
   private async syncAuthConnector(projectId: string, bypassWindowCheck = false) {
     if (bypassWindowCheck || typeof window !== 'undefined') {
-      this.authProvider = W3mFrameProviderSingleton.getInstance(projectId)
+      this.authProvider = AuthProvider.getInstance(projectId)
 
       this.appKit?.addConnector({
         id: ConstantsUtil.AUTH_CONNECTOR_ID,

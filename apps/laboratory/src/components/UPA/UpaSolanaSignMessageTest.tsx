@@ -14,6 +14,8 @@ export function UpaSolanaSignMessageTest() {
 
   async function onSignMessage() {
     try {
+      console.log('> Lab - Wallet PRovider', walletProvider)
+      console.log('> Lab . Address', address)
       if (!walletProvider || !address) {
         throw Error('user is disconnected')
       }
