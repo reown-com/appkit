@@ -719,7 +719,7 @@ export class EthersAdapter {
       const caipNetwork = this.caipNetworks.find(c => c.chainId === chainIdNumber)
       const currentCaipNetwork = this.appKit?.getCaipNetwork()
 
-      if (!currentCaipNetwork || currentCaipNetwork?.id !== caipNetwork?.id) {
+      if (caipNetwork && (!currentCaipNetwork || currentCaipNetwork?.id !== caipNetwork?.id)) {
         this.appKit?.setCaipNetwork(caipNetwork)
       }
     }

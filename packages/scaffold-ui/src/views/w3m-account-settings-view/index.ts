@@ -5,7 +5,6 @@ import {
   CoreHelperUtil,
   EventsController,
   ModalController,
-  NetworkController,
   RouterController,
   SnackController,
   StorageUtil,
@@ -213,7 +212,7 @@ export class W3mAccountSettingsView extends LitElement {
   }
 
   private togglePreferredAccountBtnTemplate() {
-    const networkEnabled = NetworkController.checkIfSmartAccountEnabled()
+    const networkEnabled = ChainController.checkIfSmartAccountEnabled()
     const type = StorageUtil.getConnectedConnector()
     const authConnector = ConnectorController.getAuthConnector()
 
@@ -249,7 +248,7 @@ export class W3mAccountSettingsView extends LitElement {
   }
 
   private async changePreferredAccountType() {
-    const smartAccountEnabled = NetworkController.checkIfSmartAccountEnabled()
+    const smartAccountEnabled = ChainController.checkIfSmartAccountEnabled()
     const accountTypeTarget =
       this.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT ||
       !smartAccountEnabled

@@ -23,7 +23,6 @@ import {
   RouterController,
   EnsController,
   OptionsController,
-  NetworkController,
   AssetUtil,
   ApiController
 } from '@reown/appkit-core'
@@ -43,7 +42,7 @@ import type { W3mFrameTypes } from '@reown/appkit-wallet'
 import { ProviderUtil } from './store/ProviderUtil.js'
 
 // -- Export Controllers -------------------------------------------------------
-export { AccountController, NetworkController }
+export { AccountController }
 
 // -- Types --------------------------------------------------------------------
 export interface OpenOptions {
@@ -322,8 +321,8 @@ export class AppKit {
   public setApprovedCaipNetworksData: (typeof ChainController)['setApprovedCaipNetworksData'] =
     chain => ChainController.setApprovedCaipNetworksData(chain)
 
-  public resetNetwork: (typeof NetworkController)['resetNetwork'] = () => {
-    NetworkController.resetNetwork()
+  public resetNetwork: (typeof ChainController)['resetNetwork'] = () => {
+    ChainController.resetNetwork()
   }
 
   public setConnectors: (typeof ConnectorController)['setConnectors'] = connectors => {
@@ -366,9 +365,9 @@ export class AppKit {
     AccountController.setConnectedWalletInfo(connectedWalletInfo, chain)
   }
 
-  public setSmartAccountEnabledNetworks: (typeof NetworkController)['setSmartAccountEnabledNetworks'] =
+  public setSmartAccountEnabledNetworks: (typeof ChainController)['setSmartAccountEnabledNetworks'] =
     (smartAccountEnabledNetworks, chain) => {
-      NetworkController.setSmartAccountEnabledNetworks(smartAccountEnabledNetworks, chain)
+      ChainController.setSmartAccountEnabledNetworks(smartAccountEnabledNetworks, chain)
     }
 
   public setPreferredAccountType: (typeof AccountController)['setPreferredAccountType'] = (

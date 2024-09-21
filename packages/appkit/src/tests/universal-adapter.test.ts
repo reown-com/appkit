@@ -4,7 +4,7 @@ import { UniversalAdapterClient } from '../universal-adapter'
 import { mockOptions } from './mocks/Options'
 import mockProvider from './mocks/UniversalProvider'
 import type UniversalProvider from '@walletconnect/universal-provider'
-import { ChainController, NetworkController } from '@reown/appkit-core'
+import { ChainController } from '@reown/appkit-core'
 import { ProviderUtil } from '../store/index.js'
 import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
 import mockAppKit from './mocks/AppKit'
@@ -64,11 +64,7 @@ describe('UniversalAdapter', () => {
     })
 
     it('should call setDefaultNetwork and set first caipNetwork on setActiveCaipNetwork when there is no active caipNetwork', async () => {
-      vi.spyOn(NetworkController, 'state', 'get').mockReturnValue({
-        requestedCaipNetworks: [mainnet, solana],
-        approvedCaipNetworkIds: [],
-        supportsAllNetworks: true
-      })
+      vi.spyOn(ChainController, 'getApprovedCaipNetworkIds').mockReturnValue([])
 
       const adapterSpy = vi.spyOn(universalAdapter as any, 'setDefaultNetwork')
       const networkControllerSpy = vi.spyOn(ChainController, 'setActiveCaipNetwork')

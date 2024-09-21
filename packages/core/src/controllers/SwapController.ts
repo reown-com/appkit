@@ -16,7 +16,6 @@ import { EventsController } from './EventsController.js'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 import { StorageUtil } from '../utils/StorageUtil.js'
 import { ChainController } from './ChainController.js'
-import { NetworkController } from './NetworkController.js'
 
 // -- Constants ---------------------------------------- //
 export const INITIAL_GAS_LIMIT = 150000
@@ -174,7 +173,7 @@ export const SwapController = {
   getParams() {
     const caipAddress = ChainController.state.activeCaipAddress
     const address = CoreHelperUtil.getPlainAddress(caipAddress)
-    const networkAddress = NetworkController.getActiveNetworkTokenAddress()
+    const networkAddress = ChainController.getActiveNetworkTokenAddress()
     const type = StorageUtil.getConnectedConnector()
 
     if (!address) {

@@ -2,7 +2,6 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { AppKit } from '../client'
 import {
   AccountController,
-  NetworkController,
   ModalController,
   ThemeController,
   PublicStateController,
@@ -342,7 +341,7 @@ describe('Base', () => {
 
     it('should reset network', () => {
       appKit.resetNetwork()
-      expect(NetworkController.resetNetwork).toHaveBeenCalled()
+      expect(ChainController.resetNetwork).toHaveBeenCalled()
     })
 
     it('should reset WC connection', () => {
@@ -383,7 +382,7 @@ describe('Base', () => {
     it('should set smart account enabled networks', () => {
       const networks = [1, 137]
       appKit.setSmartAccountEnabledNetworks(networks, 'eip155')
-      expect(NetworkController.setSmartAccountEnabledNetworks).toHaveBeenCalledWith(
+      expect(ChainController.setSmartAccountEnabledNetworks).toHaveBeenCalledWith(
         networks,
         'eip155'
       )

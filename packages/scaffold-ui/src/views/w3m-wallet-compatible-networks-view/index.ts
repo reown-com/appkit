@@ -1,10 +1,4 @@
-import {
-  AccountController,
-  AssetUtil,
-  ChainController,
-  CoreHelperUtil,
-  NetworkController
-} from '@reown/appkit-core'
+import { AccountController, AssetUtil, ChainController, CoreHelperUtil } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -53,9 +47,9 @@ export class W3mWalletCompatibleNetworksView extends LitElement {
   // -- Private ------------------------------------------- //
   networkTemplate() {
     const requestedCaipNetworks = ChainController.getRequestedCaipNetworks()
-    const approvedCaipNetworkIds = NetworkController.state.approvedCaipNetworkIds
+    const approvedCaipNetworkIds = ChainController.getApprovedCaipNetworkIds()
     const caipNetwork = ChainController.state.activeCaipNetwork
-    const isNetworkEnabledForSmartAccounts = NetworkController.checkIfSmartAccountEnabled()
+    const isNetworkEnabledForSmartAccounts = ChainController.checkIfSmartAccountEnabled()
 
     let sortedNetworks = CoreHelperUtil.sortRequestedNetworks(
       approvedCaipNetworkIds,

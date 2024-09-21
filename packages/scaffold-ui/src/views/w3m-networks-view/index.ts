@@ -6,7 +6,6 @@ import {
   ConnectorController,
   CoreHelperUtil,
   EventsController,
-  NetworkController,
   RouterController,
   StorageUtil
 } from '@reown/appkit-core'
@@ -98,7 +97,7 @@ export class W3mNetworksView extends LitElement {
 
   private networksTemplate() {
     const requestedCaipNetworks = ChainController.getRequestedCaipNetworks()
-    const approvedCaipNetworkIds = NetworkController.state.approvedCaipNetworkIds
+    const approvedCaipNetworkIds = ChainController.getApprovedCaipNetworkIds()
     const sortedNetworks = CoreHelperUtil.sortRequestedNetworks(
       approvedCaipNetworkIds,
       requestedCaipNetworks
@@ -130,7 +129,7 @@ export class W3mNetworksView extends LitElement {
   private getNetworkDisabled(network: CaipNetwork) {
     const networkNamespace = network.chainNamespace
     const isNamespaceConnected = AccountController.getCaipAddress(networkNamespace)
-    const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworks()
+    const approvedCaipNetworkIds = ChainController.getApprovedCaipNetworkIds()
     const supportsAllNetworks =
       ChainController.getNetworkProp('supportsAllNetworks', networkNamespace) !== false
     const type = StorageUtil.getConnectedConnector()
@@ -149,7 +148,10 @@ export class W3mNetworksView extends LitElement {
     const isNamespaceConnected = AccountController.getCaipAddress(network.chainNamespace)
     const isSameNetwork = network.id === this.network?.id
 
-    const supportsAllNetworks = NetworkController.state.supportsAllNetworks
+    const supportsAllNetworks = ChainController.getNetworkProp(
+      'supportsAllNetworks',
+      network.chainNamespace
+    )
     const routerData = RouterController.state.data
 
     const type = StorageUtil.getConnectedConnector()
