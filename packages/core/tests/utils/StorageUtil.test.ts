@@ -46,8 +46,7 @@ describe('StorageUtil', () => {
       const deepLink = { href: 'https://example.com', name: 'Example Wallet' }
       StorageUtil.setWalletConnectDeepLink(deepLink)
       const savedDL = SafeLocalStorage.getItem(SafeLocalStorageKeys.DEEPLINK_CHOICE)
-      expect(savedDL?.href).toBe(deepLink.href)
-      expect(savedDL?.name).toBe(deepLink.name)
+      expect(savedDL).toBe(deepLink.href)
     })
 
     it('should handle errors when setting deep link', () => {
@@ -64,8 +63,8 @@ describe('StorageUtil', () => {
   describe('getWalletConnectDeepLink', () => {
     it('should get WalletConnect deep link from localStorage', () => {
       const deepLink = { href: 'https://example.com', name: 'Example Wallet' }
-      SafeLocalStorage.setItem('@appkit/deeplink_choice', deepLink)
-      expect(StorageUtil.getWalletConnectDeepLink()).toEqual(deepLink)
+      SafeLocalStorage.setItem('@appkit/deeplink_choice', deepLink.href)
+      expect(StorageUtil.getWalletConnectDeepLink()).toEqual(deepLink.href)
     })
 
     it('should return undefined if deep link is not set', () => {
@@ -85,10 +84,7 @@ describe('StorageUtil', () => {
 
   describe('deleteWalletConnectDeepLink', () => {
     it('should delete WalletConnect deep link from localStorage', () => {
-      SafeLocalStorage.setItem('@appkit/deeplink_choice', {
-        href: 'https://example.com',
-        name: 'Example Wallet'
-      })
+      SafeLocalStorage.setItem('@appkit/deeplink_choice', 'https://example.com')
       StorageUtil.deleteWalletConnectDeepLink()
       expect(SafeLocalStorage.getItem('@appkit/deeplink_choice')).toBeUndefined()
     })
