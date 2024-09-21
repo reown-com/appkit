@@ -11,7 +11,7 @@ function zType<K extends keyof typeof W3mFrameConstants>(key: K) {
 
 // -- Custom Types -----------------------------------------------------------
 type SdkType = 'w3m' | 'appkit'
-type SdkVersion = `${SdkFramework}-${AdapterType}-${string}` | AppKitSdkVersion
+type SdkVersion = `${SdkFramework}-${AdapterType}-${string}` | AppKitSdkVersion | undefined
 
 // -- Responses --------------------------------------------------------------
 export const GetTransactionByHashResponse = z.object({
@@ -62,7 +62,7 @@ export const AppSyncDappDataRequest = z.object({
       icons: z.array(z.string())
     })
     .optional(),
-  sdkVersion: z.string() as z.ZodType<SdkVersion>,
+  sdkVersion: z.string().optional() as z.ZodType<SdkVersion>,
   sdkType: (z.string() as z.ZodType<SdkType>).optional(),
   projectId: z.string()
 })
