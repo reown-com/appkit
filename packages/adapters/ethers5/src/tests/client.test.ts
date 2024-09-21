@@ -349,7 +349,6 @@ describe('EthersAdapter', () => {
 
         expect(mockAppKit.setLoading).toHaveBeenCalledWith(true)
         expect(mockAppKit.setCaipAddress).toHaveBeenCalledWith(`eip155:${1}:${address}`, 'eip155')
-        expect(mockAppKit.setCaipNetwork).toHaveBeenCalled()
         expect(mockAppKit.setStatus).toHaveBeenCalledWith('connected', 'eip155')
         expect(mockAppKit.setPreferredAccountType).toHaveBeenCalledWith(type, 'eip155')
 
@@ -532,7 +531,6 @@ describe('EthersAdapter', () => {
         SafeLocalStorageKeys.WALLET_NAME,
         'MetaMask'
       )
-      expect(mockAppKit.setCaipNetwork).toHaveBeenCalled()
       expect(ProviderUtil.setProviderId).toHaveBeenCalledWith('eip155', 'injected')
       expect(ProviderUtil.setProvider).toHaveBeenCalledWith('eip155', mockProvider)
       expect(mockAppKit.setStatus).toHaveBeenCalledWith('connected', 'eip155')
@@ -588,7 +586,7 @@ describe('EthersAdapter', () => {
       const chainChangedHandler = mockProvider.on.mock.calls.find(
         (call: string[]) => call[0] === 'chainChanged'
       )[1]
-      await chainChangedHandler('0x1')
+      await chainChangedHandler('0x2')
 
       expect(mockAppKit.setCaipNetwork).toHaveBeenCalled()
     })

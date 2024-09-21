@@ -81,8 +81,23 @@ sampleWalletTest('it should switch networks and sign', async ({ library }) => {
   await processChain(0)
 })
 
+sampleWalletTest('it should show last connected network after refreshing', async ({ library }) => {
+  const chainName = library === 'solana' ? 'Solana Testnet' : 'Polygon'
+
+  await modalPage.switchNetwork(chainName)
+  await modalValidator.expectSwitchedNetwork(chainName)
+  await modalPage.closeModal()
+
+  await modalPage.page.reload()
+
+  await modalPage.openModal()
+  await modalPage.openNetworks()
+  await modalValidator.expectSwitchedNetwork(chainName)
+  await modalPage.closeModal()
+})
+
 sampleWalletTest('it should reject sign', async ({ library }) => {
-  const chainName = library === 'solana' ? 'Solana' : DEFAULT_CHAIN_NAME
+  const chainName = library === 'solana' ? 'Solana Testnet' : 'Polygon'
   await modalPage.sign()
   await walletValidator.expectReceivedSign({ chainName })
   await walletPage.handleRequest({ accept: false })

@@ -192,8 +192,9 @@ export class W3mModal extends LitElement {
       ? CoreHelperUtil.getPlainAddress(this.caipAddress)
       : undefined
     const nextConnected = caipAddress ? CoreHelperUtil.getPlainAddress(caipAddress) : undefined
+    const isSameAddress = prevConnected === nextConnected
 
-    if (this.isSiweEnabled) {
+    if (nextConnected && !isSameAddress && this.isSiweEnabled) {
       const { SIWEController } = await import('@reown/appkit-siwe')
       const signed = AccountController.state.siweStatus === 'success'
 
@@ -205,6 +206,10 @@ export class W3mModal extends LitElement {
           this.onSiweNavigation()
         }
       }
+    }
+
+    if (!nextConnected) {
+      ModalController.close()
     }
 
     this.caipAddress = caipAddress
