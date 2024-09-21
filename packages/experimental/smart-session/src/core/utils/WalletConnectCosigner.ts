@@ -1,11 +1,11 @@
 /* eslint-disable max-classes-per-file */
 import axios, { AxiosError } from 'axios'
-import { ConstantsUtil } from './ConstantUtils'
+import { ConstantsUtil } from './ConstantUtils.js'
 import type {
   ActivatePermissionsRequest,
   AddPermissionRequest,
   AddPermissionResponse
-} from './TypeUtils'
+} from './TypeUtils.js'
 
 // -- Custom Error Class --------------------------------------------------- //
 export class CoSignerApiError extends Error {
@@ -25,43 +25,39 @@ export async function sendCoSignerRequest<
   TQueryParams extends Record<string, string> = Record<string, never>
 >({
   url,
-  data,
+  request,
   queryParams = {} as TQueryParams,
   headers,
   transformRequest
 }: {
   url: string
-  data: TRequest
+  request: TRequest
   queryParams?: TQueryParams
   headers: Record<string, string>
   transformRequest?: (data: TRequest) => unknown
 }): Promise<TResponse> {
   try {
-    const transformedData = transformRequest ? transformRequest(data) : data
+    const transformedData = transformRequest ? transformRequest(request) : request
     const response = await axios.post<TResponse>(url, transformedData, {
       params: queryParams,
       headers
     })
+
     return response.data
   } catch (error) {
-    handleAxiosError(error)
-  }
-}
-
-// -- Helper for Axios Error Handling -------------------------------------- //
-function handleAxiosError(error: unknown): never {
-  if (axios.isAxiosError(error)) {
-    const axiosError = error as AxiosError
-    if (axiosError.response) {
-      throw new CoSignerApiError(
-        axiosError.response.status,
-        JSON.stringify(axiosError.response.data)
-      )
-    } else {
-      throw new CoSignerApiError(500, 'Network error')
+    if (axios.isAxiosError(error)) {
+      const axiosError = error as AxiosError
+      if (axiosError.response) {
+        throw new CoSignerApiError(
+          axiosError.response.status,
+          JSON.stringify(axiosError.response.data)
+        )
+      } else {
+        throw new CoSignerApiError(500, 'Network error')
+      }
     }
+    throw error
   }
-  throw error
 }
 
 // -- WalletConnectCosigner Class ------------------------------------------ //
@@ -86,7 +82,7 @@ export class WalletConnectCosigner {
       { projectId: string }
     >({
       url,
-      data: data,
+      request: data,
       queryParams: { projectId: this.projectId },
       headers: { 'Content-Type': 'application/json' }
     })
@@ -99,7 +95,7 @@ export class WalletConnectCosigner {
     const url = `${this.baseUrl}/${encodeURIComponent(address)}/context`
     await sendCoSignerRequest<ActivatePermissionsRequest, never, { projectId: string }>({
       url,
-      data: updateData,
+      request: updateData,
       queryParams: { projectId: this.projectId },
       headers: { 'Content-Type': 'application/json' }
     })

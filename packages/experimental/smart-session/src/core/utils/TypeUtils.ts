@@ -1,15 +1,19 @@
-// A wallet is the signer for these permissions
-// `data` is not necessary for this signer type as the wallet is both the signer and grantor of these permissions
+/*
+ * A wallet is the signer for these permissions
+ * `data` is not necessary for this signer type as the wallet is both the signer and grantor of these permissions
+ */
 export type WalletSigner = {
   type: 'wallet'
-  data: {}
+  data: Record<string, unknown>
 }
 
 // The types of keys that are supported for the following `key` and `keys` signer types.
 export type KeyType = 'secp256r1' | 'secp256k1' | 'ed25519' | 'schnorr'
 
-// A signer representing a single key.
-// "Key" types are explicitly secp256r1 (p256) or secp256k1, and the public keys are hex-encoded.
+/*
+ * A signer representing a single key.
+ * "Key" types are explicitly secp256r1 (p256) or secp256k1, and the public keys are hex-encoded.
+ */
 export type KeySigner = {
   type: 'key'
   data: {
@@ -18,8 +22,10 @@ export type KeySigner = {
   }
 }
 
-// A signer representing a multisig signer.
-// Each element of `publicKeys` are all explicitly the same `KeyType`, and the public keys are hex-encoded.
+/*
+ * A signer representing a multisig signer.
+ * Each element of `publicKeys` are all explicitly the same `KeyType`, and the public keys are hex-encoded.
+ */
 export type MultiKeySigner = {
   type: 'keys'
   data: {
@@ -47,11 +53,11 @@ export type SmartSessionGrantPermissionsRequest = {
   signer: Signer
   permissions: {
     type: string
-    data: Record<string, any>
+    data: Record<string, unknown>
   }[]
   policies: {
     type: string
-    data: Record<string, any>
+    data: Record<string, unknown>
   }[]
 }
 
@@ -72,9 +78,10 @@ export type WalletGrantPermissionsResponse = SmartSessionGrantPermissionsRequest
 export type SmartSessionGrantPermissionsResponse = {
   permissions: {
     type: string
-    data: Record<string, any>
+    data: Record<string, unknown>
   }[]
-  context: string // context is set to `pci`
+  // Context is set to `pci`
+  context: string
 }
 //--Cosigner Types----------------------------------------------------------------------- //
 export type AddPermissionRequest = SmartSessionGrantPermissionsRequest

@@ -2,8 +2,8 @@ import { proxy, subscribe as sub } from 'valtio/vanilla'
 import type {
   SmartSessionGrantPermissionsRequest,
   SmartSessionGrantPermissionsResponse
-} from '../utils/TypeUtils'
-import { AppKitSmartSessionControllerClient } from '../../client'
+} from '../utils/TypeUtils.js'
+import { AppKitSmartSessionControllerClient } from '../../client.js'
 
 // -- Types --------------------------------------------- //
 export interface SmartSessionControllerState {

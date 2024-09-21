@@ -1,4 +1,4 @@
-import type { Signer, SmartSessionGrantPermissionsRequest } from '../utils/TypeUtils'
+import type { Signer, SmartSessionGrantPermissionsRequest } from '../utils/TypeUtils.js'
 
 export const ERROR_MESSAGES = {
   UNSUPPORTED_NAMESPACE: 'Unsupported namespace',

@@ -16,7 +16,7 @@ export type {
 export type { AppKitSmartSessionControllerClient }
 
 // -- Hooks -------------------------------------------------------------------
-export const useSmartSession = () => {
+export function useSmartSession() {
   // Local state to store the latest smart session state
   const [permissions, setPermissions] = useState(SmartSessionController.state.permissions)
   const [permissionsContext, setPermissionsContext] = useState(
@@ -28,15 +28,11 @@ export const useSmartSession = () => {
     async (
       smartSessionGrantPermissionsRequest: SmartSessionGrantPermissionsRequest
     ): Promise<SmartSessionGrantPermissionsResponse> => {
-      try {
-        const response = await SmartSessionController.grantPermissions(
-          smartSessionGrantPermissionsRequest
-        )
-        return response
-      } catch (error) {
-        console.error('Error granting permissions:', error)
-        throw error
-      }
+      const response = await SmartSessionController.grantPermissions(
+        smartSessionGrantPermissionsRequest
+      )
+
+      return response
     },
     []
   )
