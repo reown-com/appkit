@@ -419,7 +419,6 @@ export const ChainController = {
     const networkControllerClient = this.getNetworkControllerClient()
 
     const data = await networkControllerClient?.getApprovedCaipNetworksData()
-    console.log('NetworkControllerClient response:', data, networkControllerClient)
     if (!chain) {
       throw new Error('chain is required to set approved network data')
     }
