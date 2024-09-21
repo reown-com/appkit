@@ -56,7 +56,7 @@ describe('CoSigner API Tests', () => {
 
       const response = await sendCoSignerRequest({
         url: mockUrl,
-        data: mockAddPermissionRequest,
+        request: mockAddPermissionRequest,
         headers: mockHeaders,
         queryParams: { projectId }
       })
@@ -70,7 +70,7 @@ describe('CoSigner API Tests', () => {
       await expect(
         sendCoSignerRequest({
           url: mockUrl,
-          data: mockAddPermissionRequest,
+          request: mockAddPermissionRequest,
           headers: mockHeaders,
           queryParams: { projectId }
         })
@@ -83,7 +83,7 @@ describe('CoSigner API Tests', () => {
       await expect(
         sendCoSignerRequest({
           url: mockUrl,
-          data: mockAddPermissionRequest,
+          request: mockAddPermissionRequest,
           headers: mockHeaders,
           queryParams: { projectId }
         })

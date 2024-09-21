@@ -22,7 +22,7 @@ export class CoSignerApiError extends Error {
 export async function sendCoSignerRequest<
   TRequest,
   TResponse,
-  TQueryParams extends Record<string, string> = Record<string, never>
+  TQueryParams extends Record<string, string>
 >({
   url,
   request,
