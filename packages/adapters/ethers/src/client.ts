@@ -41,7 +41,7 @@ import { formatEther, InfuraProvider, JsonRpcProvider } from 'ethers'
 import type { PublicStateControllerState } from '@reown/appkit-core'
 import { ProviderUtil } from '@reown/appkit/store'
 import { CoinbaseWalletSDK, type ProviderInterface } from '@coinbase/wallet-sdk'
-import { AuthProvider } from '@reown/appkit/auth-provider'
+import { AuthProvider as W3mFrameProviderInstance } from '@reown/appkit/auth-provider'
 
 // -- Types ---------------------------------------------------------------------
 export interface AdapterOptions {
@@ -1111,7 +1111,7 @@ export class EthersAdapter {
 
   private async syncAuthConnector(projectId: string, bypassWindowCheck = false) {
     if (bypassWindowCheck || typeof window !== 'undefined') {
-      this.authProvider = AuthProvider.getInstance(projectId)
+      this.authProvider = W3mFrameProviderInstance.getInstance(projectId)
 
       this.appKit?.addConnector({
         id: ConstantsUtil.AUTH_CONNECTOR_ID,
