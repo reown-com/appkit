@@ -658,14 +658,14 @@ export class Ethers5Adapter {
         await this.authProvider.getSmartAccountEnabledNetworks()
 
       this.appKit?.setSmartAccountEnabledNetworks(smartAccountEnabledNetworks, this.chainNamespace)
-      if (address && chainId) {
+      const caipNetwork = this.caipNetworks.find(c => c.chainId === chainId)
+      if (address && caipNetwork) {
         this.appKit?.setAllAccounts(
           accounts.length > 0
             ? accounts
             : [{ address, type: preferredAccountType as 'eoa' | 'smartAccount' }],
           this.chainNamespace
         )
-        const caipNetwork = this.caipNetworks.find(c => c.chainId === chainId)
         this.appKit?.setCaipNetwork(caipNetwork)
         this.appKit?.setStatus('connected', this.chainNamespace)
         this.appKit?.setCaipAddress(
@@ -728,7 +728,7 @@ export class Ethers5Adapter {
       const caipNetwork = this.caipNetworks.find(c => c.chainId === chainIdNumber)
       const currentCaipNetwork = this.appKit?.getCaipNetwork()
 
-      if (!currentCaipNetwork || currentCaipNetwork?.id !== caipNetwork?.id) {
+      if (caipNetwork && (!currentCaipNetwork || currentCaipNetwork?.id !== caipNetwork?.id)) {
         this.appKit?.setCaipNetwork(caipNetwork)
       }
     }
@@ -837,17 +837,19 @@ export class Ethers5Adapter {
   }
 
   private handleAuthSetPreferredAccount(address: string, type: string) {
-    if (!address) {
+    const caipNetwork = this.caipNetworks.find(c => c.chainId === chainId)
+    if (!address || !caipNetwork) {
       return
     }
 
     this.appKit?.setLoading(true)
     const chainId = NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id)
-    const caipNetwork = this.caipNetworks.find(c => c.chainId === chainId)
+
     this.appKit?.setCaipAddress(`eip155:${chainId}:${address}`, this.chainNamespace)
     this.appKit?.setCaipNetwork(caipNetwork)
     this.appKit?.setStatus('connected', this.chainNamespace)
     this.appKit?.setPreferredAccountType(type as W3mFrameTypes.AccountType, this.chainNamespace)
+
     this.syncAccount({
       address: address as Address
     }).then(() => this.appKit?.setLoading(false))

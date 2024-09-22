@@ -376,7 +376,7 @@ export class SolanaAdapter implements ChainAdapter {
     }
 
     if (!this.appKit?.getCaipNetwork()) {
-      this.appKit?.setCaipNetwork(this.defaultCaipNetwork)
+      this.appKit?.setCaipNetwork(this.defaultCaipNetwork || (this.caipNetworks[0] as CaipNetwork))
     }
 
     const balance =

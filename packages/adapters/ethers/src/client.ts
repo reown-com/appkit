@@ -826,12 +826,13 @@ export class EthersAdapter {
   }
 
   private handleAuthSetPreferredAccount(address: string, type: string) {
-    if (!address) {
+    const caipNetwork = this.caipNetworks.find(c => c.chainId === chainId)
+    if (!address || !caipNetwork) {
       return
     }
-
     this.appKit?.setLoading(true)
     const chainId = NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id)
+    this.appKit?.setCaipNetwork(caipNetwork)
     this.appKit?.setCaipAddress(`eip155:${chainId}:${address}`, this.chainNamespace)
     this.appKit?.setStatus('connected', this.chainNamespace)
     this.appKit?.setPreferredAccountType(type as W3mFrameTypes.AccountType, this.chainNamespace)
