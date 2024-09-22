@@ -76,7 +76,7 @@ export class W3mSwitchActiveChainView extends LitElement {
 
   // -- Private Methods ------------------------------------ //
   private async switchActiveChain() {
-    if (!this.switchToChain) {
+    if (!this.switchToChain || !this.caipNetwork) {
       return
     }
 
