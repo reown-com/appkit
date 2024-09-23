@@ -8,7 +8,7 @@ export type SafeLocalStorageItems = {
   '@appkit/connected_social': string
   '@appkit/connected_social_username': string
   '@appkit/recent_wallets': string
-  '@appkit/deeplink_choice': string
+  WALLETCONNECT_DEEPLINK_CHOICE: { href: string; name: string }
 }
 
 export const SafeLocalStorageKeys = {
@@ -21,7 +21,7 @@ export const SafeLocalStorageKeys = {
   CONNECTED_SOCIAL: '@appkit/connected_social',
   CONNECTED_SOCIAL_USERNAME: '@appkit/connected_social_username',
   RECENT_WALLETS: '@appkit/recent_wallets',
-  DEEPLINK_CHOICE: '@appkit/deeplink_choice'
+  DEEPLINK_CHOICE: 'WALLETCONNECT_DEEPLINK_CHOICE'
 } as const
 
 export const SafeLocalStorage = {
@@ -30,14 +30,29 @@ export const SafeLocalStorage = {
     value: SafeLocalStorageItems[Key]
   ): void {
     if (isSafe()) {
-      localStorage.setItem(key, value)
+      localStorage.setItem(
+        key,
+        key === SafeLocalStorageKeys.DEEPLINK_CHOICE ? JSON.stringify(value) : (value as string)
+      )
     }
   },
   getItem<Key extends keyof SafeLocalStorageItems>(
     key: Key
   ): SafeLocalStorageItems[Key] | undefined {
     if (isSafe()) {
-      return localStorage.getItem(key) || undefined
+      const value = localStorage.getItem(key)
+
+      if (value) {
+        if (key === SafeLocalStorageKeys.DEEPLINK_CHOICE) {
+          try {
+            return JSON.parse(value)
+          } catch {
+            return undefined
+          }
+        }
+
+        return value as SafeLocalStorageItems[Key]
+      }
     }
 
     return undefined
