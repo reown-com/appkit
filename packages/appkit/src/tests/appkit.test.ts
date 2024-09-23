@@ -276,7 +276,7 @@ describe('Base', () => {
     it('should set CAIP network', () => {
       const caipNetwork = { id: 'eip155:1', name: 'Ethereum' } as unknown as CaipNetwork
       appKit.setCaipNetwork(caipNetwork)
-      expect(NetworkController.setActiveCaipNetwork).toHaveBeenCalledWith(caipNetwork)
+      expect(ChainController.setActiveCaipNetwork).toHaveBeenCalledWith(caipNetwork)
     })
 
     it('should get CAIP network', () => {
