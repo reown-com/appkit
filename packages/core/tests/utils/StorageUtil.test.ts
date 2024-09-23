@@ -45,8 +45,8 @@ describe('StorageUtil', () => {
     it('should set WalletConnect deep link in localStorage', () => {
       const deepLink = { href: 'https://example.com', name: 'Example Wallet' }
       StorageUtil.setWalletConnectDeepLink(deepLink)
-      const savedDL = SafeLocalStorage.getItem(SafeLocalStorageKeys.DEEPLINK_CHOICE)
-      expect(savedDL).toEqual({ href: deepLink.href, name: deepLink.name })
+      const savedDL = SafeLocalStorage.getItem(SafeLocalStorageKeys.DEEPLINK)
+      expect(savedDL).toBe(JSON.stringify({ href: deepLink.href, name: deepLink.name }))
     })
 
     it('should handle errors when setting deep link', () => {
@@ -63,10 +63,10 @@ describe('StorageUtil', () => {
   describe('getWalletConnectDeepLink', () => {
     it('should get WalletConnect deep link from localStorage', () => {
       const deepLink = { href: 'https://example.com', name: 'Example Wallet' }
-      SafeLocalStorage.setItem('WALLETCONNECT_DEEPLINK_CHOICE', {
-        href: deepLink.href,
-        name: deepLink.name
-      })
+      SafeLocalStorage.setItem(
+        '@appkit/deeplink',
+        JSON.stringify({ href: deepLink.href, name: deepLink.name })
+      )
       expect(StorageUtil.getWalletConnectDeepLink()).toEqual({
         href: deepLink.href,
         name: deepLink.name
@@ -90,12 +90,12 @@ describe('StorageUtil', () => {
 
   describe('deleteWalletConnectDeepLink', () => {
     it('should delete WalletConnect deep link from localStorage', () => {
-      SafeLocalStorage.setItem('WALLETCONNECT_DEEPLINK_CHOICE', {
-        href: 'https://example.com',
-        name: 'Example'
-      })
+      SafeLocalStorage.setItem(
+        '@appkit/deeplink',
+        JSON.stringify({ href: 'https://example.com', name: 'Example' })
+      )
       StorageUtil.deleteWalletConnectDeepLink()
-      expect(SafeLocalStorage.getItem('WALLETCONNECT_DEEPLINK_CHOICE')).toBeUndefined()
+      expect(SafeLocalStorage.getItem('@appkit/deeplink')).toBeUndefined()
     })
 
     it('should handle errors when deleting deep link', () => {

@@ -7,7 +7,10 @@ import { ChainController } from '../controllers/ChainController.js'
 export const StorageUtil = {
   setWalletConnectDeepLink({ name, href }: { href: string; name: string }) {
     try {
-      SafeLocalStorage.setItem(SafeLocalStorageKeys.DEEPLINK_CHOICE, { href, name })
+      const value = JSON.stringify({ href, name })
+      SafeLocalStorage.setItem(SafeLocalStorageKeys.DEEPLINK, value)
+      // Required by @walletconnect/universal-provider to handle deep links
+      localStorage.setItem('WALLETCONNECT_DEEPLINK_CHOICE', value)
     } catch {
       console.info('Unable to set WalletConnect deep link')
     }
@@ -15,9 +18,9 @@ export const StorageUtil = {
 
   getWalletConnectDeepLink() {
     try {
-      const deepLink = SafeLocalStorage.getItem(SafeLocalStorageKeys.DEEPLINK_CHOICE)
+      const deepLink = SafeLocalStorage.getItem(SafeLocalStorageKeys.DEEPLINK)
       if (deepLink) {
-        return deepLink
+        return JSON.parse(deepLink)
       }
     } catch {
       console.info('Unable to get WalletConnect deep link')
@@ -28,7 +31,8 @@ export const StorageUtil = {
 
   deleteWalletConnectDeepLink() {
     try {
-      SafeLocalStorage.removeItem(SafeLocalStorageKeys.DEEPLINK_CHOICE)
+      SafeLocalStorage.removeItem(SafeLocalStorageKeys.DEEPLINK)
+      localStorage.removeItem('WALLETCONNECT_DEEPLINK_CHOICE')
     } catch {
       console.info('Unable to delete WalletConnect deep link')
     }
