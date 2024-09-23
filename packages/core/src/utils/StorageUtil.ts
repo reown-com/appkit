@@ -1,12 +1,13 @@
 /* eslint-disable no-console */
 import { SafeLocalStorage, SafeLocalStorageKeys } from '@reown/appkit-common'
 import type { WcWallet, ConnectorType, SocialProvider } from './TypeUtil.js'
+import { ChainController } from '../controllers/ChainController.js'
 
 // -- Utility -----------------------------------------------------------------
 export const StorageUtil = {
-  setWalletConnectDeepLink({ href, name }: { href: string; name: string }) {
+  setWalletConnectDeepLink({ href }: { href: string; name: string }) {
     try {
-      SafeLocalStorage.setItem(SafeLocalStorageKeys.DEEPLINK_CHOICE, { href, name })
+      SafeLocalStorage.setItem(SafeLocalStorageKeys.DEEPLINK_CHOICE, href)
     } catch {
       console.info('Unable to set WalletConnect deep link')
     }
@@ -105,5 +106,15 @@ export const StorageUtil = {
     }
 
     return undefined
+  },
+
+  getStoredActiveCaipNetwork() {
+    const storedCaipNetworkId = SafeLocalStorage.getItem(
+      SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID
+    )
+    const allRequestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
+    const storedCaipNetwork = allRequestedCaipNetworks?.find(c => c.id === storedCaipNetworkId)
+
+    return storedCaipNetwork
   }
 }
