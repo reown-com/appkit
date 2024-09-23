@@ -1,5 +1,11 @@
 # @web3modal/common
 
+## 5.1.10
+
+### Patch Changes
+
+- Fixes issue where non announced connectors would be filtered in the featured wallets
+
 ## 5.1.9
 
 ### Patch Changes
