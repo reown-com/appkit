@@ -166,7 +166,15 @@ export const NetworkController = {
       network?.chainNamespace
     )
 
-    await networkControllerClient?.switchCaipNetwork(network)
+    const namespace = network?.chainNamespace
+    const caipAddress = namespace
+      ? ChainController.state.chains.get(namespace)?.accountState?.caipAddress
+      : undefined
+
+    if (caipAddress && networkControllerClient) {
+      await networkControllerClient.switchCaipNetwork(network)
+    }
+
     ChainController.setActiveCaipNetwork(network)
 
     if (network) {
