@@ -8,6 +8,6 @@ export async function expectConnection(
   await modalValidator.expectConnected()
   await walletValidator.expectConnected()
   await modalValidator.page.evaluate(
-    `window.localStorage.setItem('@appkit/deeplink_choice', JSON.stringify({ href: '', name: '' }))`
+    `window.localStorage.setItem('WALLETCONNECT_DEEPLINK_CHOICE', JSON.stringify({ href: '', name: '' }))`
   )
 }

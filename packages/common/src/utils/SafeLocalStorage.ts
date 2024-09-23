@@ -8,7 +8,8 @@ export type SafeLocalStorageItems = {
   '@appkit/connected_social': string
   '@appkit/connected_social_username': string
   '@appkit/recent_wallets': string
-  '@appkit/deeplink': string
+  // Hardcoding the value since @walletconnect/universal-provider package uses it
+  WALLETCONNECT_DEEPLINK_CHOICE: string
 }
 
 export const SafeLocalStorageKeys = {
@@ -21,7 +22,7 @@ export const SafeLocalStorageKeys = {
   CONNECTED_SOCIAL: '@appkit/connected_social',
   CONNECTED_SOCIAL_USERNAME: '@appkit/connected_social_username',
   RECENT_WALLETS: '@appkit/recent_wallets',
-  DEEPLINK: '@appkit/deeplink'
+  DEEPLINK_CHOICE: 'WALLETCONNECT_DEEPLINK_CHOICE'
 } as const
 
 export const SafeLocalStorage = {
