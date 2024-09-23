@@ -167,10 +167,6 @@ export const ConnectionController = {
     state.recentWallet = undefined
     TransactionsController.resetTransactions()
     StorageUtil.deleteWalletConnectDeepLink()
-    if (ModalController.state.open) {
-      ModalController.close()
-      RouterController.reset('Connect')
-    }
   },
 
   setWcLinking(wcLinking: ConnectionControllerState['wcLinking']) {
