@@ -528,7 +528,7 @@ export class UniversalAdapterClient {
           this.syncConnectedWalletInfo()
           await Promise.all([this.appKit?.setApprovedCaipNetworksData(chainNamespace)])
         }
-        
+
         this.syncAccounts()
       })
     } else {
